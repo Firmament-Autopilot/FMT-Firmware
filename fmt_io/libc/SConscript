@@ -1,0 +1,20 @@
+# for libc component
+import os
+Import('rtconfig')
+
+from building import *
+
+objs = []
+
+if GetDepend('RT_USING_LIBC'):
+    if rtconfig.PLATFORM == 'gcc':
+        objs = objs + SConscript('newlib/SConscript')
+    elif rtconfig.PLATFORM == 'armcc':
+        objs = objs + SConscript('armlibc/SConscript')
+    elif rtconfig.PLATFORM == 'iar':
+        objs = objs + SConscript('dlib/SConscript')
+else:
+    if rtconfig.PLATFORM == 'gcc' and rtconfig.ARCH != 'sim':
+        objs = objs + SConscript('minilibc/SConscript')
+
+Return('objs')

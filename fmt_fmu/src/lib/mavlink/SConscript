@@ -1,0 +1,15 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = GetCurrentDir()
+src	= []
+
+if GetDepend(['FMT_USING_MAVLINK_V2']):
+    CPPPATH = [cwd + '/v2.0', cwd + '/v2.0/firmament']
+else:
+    CPPPATH = [cwd + '/v1.0', cwd + '/v1.0/common']
+
+group = DefineGroup('mavlink', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

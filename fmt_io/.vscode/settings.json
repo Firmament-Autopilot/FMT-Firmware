@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "ppm_decoder.h": "c",
+        "protocol.h": "c",
+        "fmu_manager.h": "c"
+    }
+}

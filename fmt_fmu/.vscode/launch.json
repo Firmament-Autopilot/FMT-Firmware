@@ -1,0 +1,53 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: 当前文件",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceFolder}/target/pixhawk/build/fmt_fmu.elf",
+            "name": "Debug Microcontroller",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "jlink",
+            "cwd": "${workspaceRoot}",
+            "serverpath": "D:/Program Files (x86)/SEGGER/JLink_V622a/JLinkGDBServerCL.exe",
+            "device": "STM32F427VG",
+            "interface": "swd",
+            "serialNumber": "", //if you have more than one J-Link probe add the serial number here 
+            // "jlinkscript":"${workspaceRoot}/BSP/SEGGER/K66FN2M0_emPower/Setup/Kinetis_K66_Target.js",
+            "runToMain": false,
+            // "svdFile": "${workspaceRoot}/SVD/MK66F18.svd" 
+            "armToolchainPath": "D:\\Program Files (x86)\\GNU Tools Arm Embedded\\7 2018-q2-update\\bin"
+        },
+        {
+            "name": "(gdb) 启动",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/pixhawk/build/fmt_fmu.elf",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "D:/Program Files (x86)/GNU Tools Arm Embedded/7 2018-q2-update/bin/arm-none-eabi-gdb.exe",
+            "miDebuggerServerAddress": "localhost:2331",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

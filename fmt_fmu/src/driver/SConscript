@@ -1,0 +1,48 @@
+from building import *
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+src += Glob('buzzer/*.c')
+src += Glob('gpio/*.c')
+src += Glob('gps/*.c')
+src += Glob('hmc5883/*.c')
+src += Glob('hw_timer/*.c')
+src += Glob('i2c/*.c')
+src += Glob('l3gd20h/*.c')
+src += Glob('lidar/*.c')
+src += Glob('lsm303d/*.c')
+src += Glob('mpu6000/*.c')
+src += Glob('ms5611/*.c')
+src += Glob('pwm/*.c')
+src += Glob('rtc/*.c')
+src += Glob('sdio/*.c')
+src += Glob('spi/*.c')
+src += Glob('systick/*.c')
+src += Glob('tca62724/*.c')
+src += Glob('usart/*.c')
+src += Glob('utils/*.c')
+
+src += Split("""
+usb/src/usb_bsp.c
+usb/src/usb_core.c
+usb/src/usb_dcd.c
+usb/src/usb_dcd_int.c
+usb/src/usbd_cdc_core_loopback.c
+usb/src/usbd_core.c
+usb/src/usbd_desc.c
+usb/src/usbd_ioreq.c
+usb/src/usbd_req.c
+usb/src/usbd_usr.c
+""")
+
+# add Ethernet drivers.
+if GetDepend('RT_USING_LWIP'):
+    src += ['stm32f4xx_eth.c']
+
+CPPPATH = [cwd, cwd + '/usb/inc']
+
+group = DefineGroup('Driver', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
+

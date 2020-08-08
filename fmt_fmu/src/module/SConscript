@@ -1,0 +1,46 @@
+from building import *
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+src += Glob('Calibration/*.c')
+src += Glob('Console/*.c')
+src += Glob('FS_Manager/*.c')
+src += Glob('FTP/*.c')
+src += Glob('Plant/*.c')
+src += Glob('Plant/lib/*.c')
+src += Glob('INS/*.c')
+src += Glob('INS/lib/*.c')
+src += Glob('Controller/*.c')
+src += Glob('Controller/codegen/*.c')
+src += Glob('FMS/*.c')
+src += Glob('FMS/codegen/*.c')
+src += Glob('IPC/*.c')
+src += Glob('LED/*.c')
+src += Glob('Log/*.c')
+src += Glob('Math/*.c')
+src += Glob('Mavproxy/*.c')
+src += Glob('Parameter/*.c')
+src += Glob('Sensor/*.c')
+src += Glob('FMTIO/*.c')
+src += Glob('SysIO/*.c')
+src += Glob('SysCmd/*.c')
+src += Glob('System/*.c')
+src += Glob('Unit_Test/*.c')
+src += Glob('Utils/*.c')
+src += Glob('Vehicle/*.c')
+src += Glob('BuzzerTune/*.c')
+
+CPPPATH = [cwd,
+           cwd + '/Calibration',
+           cwd + '/INS/lib',
+           cwd + '/Plant/lib',
+           cwd + '/Controller/codegen',
+           cwd + '/FMS/codegen',
+           cwd + '/FS_Manager',
+           cwd + '/BuzzerTune'
+           ]
+
+group = DefineGroup('Module', src, depend=[''], CPPPATH=CPPPATH)
+
+Return('group')

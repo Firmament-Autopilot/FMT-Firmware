@@ -1,0 +1,28 @@
+from building import *
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+src += Glob('mag/*.c')
+src += Glob('accel/*.c')
+src += Glob('barometer/*.c')
+src += Glob('fmtio_dev/*.c')
+src += Glob('gyro/*.c')
+src += Glob('i2c/*.c')
+src += Glob('motor/*.c')
+src += Glob('pin/*.c')
+src += Glob('rc/*.c')
+src += Glob('serial/*.c')
+src += Split("""
+spi/spi_core.c
+spi/spi_dev.c
+""")
+src += Glob('systick/*.c')
+src += Glob('tools/*.c')
+src += Glob('usb/*.c')
+
+CPPPATH = [cwd]
+
+group = DefineGroup('HAL', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

@@ -1,0 +1,56 @@
+/**
+  @page note Note for MDK-ARM
+  
+  @verbatim
+  ******************** (C) COPYRIGHT 2011 STMicroelectronics *******************
+  * @file    note.txt
+  * @author  MCD Application Team
+  * @version V3.5.0
+  * @date    08-April-2011
+  * @brief   This file contains the needed steps to use the default startup file
+  *          provided by RealView Microcontroller Development Kit(MDK-ARM).
+  ******************************************************************************
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+  * AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+  * INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+  * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
+  * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  ******************************************************************************
+
+
+With MDK-ARM toolchain, a simple putchar function executes a SWI and activates 
+a low level putchar function. 
+You have to redirect the low level to your own implementation of these functions.
+
+To guarantee that no functions using the semihosting SWI are included in your 
+application, either:
+
+1. Ensure that the MicroLib option is checked since the microlib does not support
+semihosting
+or 
+2. Use
+- IMPORT __use_no_semihosting_swi from assembly language
+- #pragma import(__use_no_semihosting_swi) from C.
+ 
+ @endverbatim
+ 
+@note
+ - Low-density Value line devices are STM32F100xx microcontrollers where the 
+   Flash memory density ranges between 16 and 32 Kbytes.
+ - Low-density devices are STM32F101xx, STM32F102xx and STM32F103xx 
+   microcontrollers where the Flash memory density ranges between 16 and 32 Kbytes.
+ - Medium-density Value line devices are STM32F100xx microcontrollers where
+   the Flash memory density ranges between 32 and 128 Kbytes.  
+ - Medium-density devices are STM32F101xx, STM32F102xx and STM32F103xx 
+   microcontrollers where the Flash memory density ranges between 32 and 128 Kbytes.
+ - High-density Value line devices are STM32F100xx microcontrollers where the 
+   Flash memory density ranges between 256 and 512 Kbytes.
+ - High-density devices are STM32F101xx and STM32F103xx microcontrollers where
+   the Flash memory density ranges between 256 and 512 Kbytes.
+ - XL-density devices are STM32F101xx and STM32F103xx microcontrollers where
+   the Flash memory density ranges between 512 and 1024 Kbytes.
+ - Connectivity line devices are STM32F105xx and STM32F107xx microcontrollers. 
+
+ * <h3><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h3>
+ */

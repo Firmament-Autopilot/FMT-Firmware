@@ -1,0 +1,50 @@
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+
+#ifndef __LIGHT_MATRIX__
+#define __LIGHT_MATRIX__
+
+#include <firmament.h>
+
+#define LIGHT_MATRIX_TYPE		float
+
+typedef struct  {
+	int row, col;
+	LIGHT_MATRIX_TYPE** element;
+} Mat;
+
+Mat* MatCreate(Mat* mat, int row, int col);
+void MatDelete(Mat* mat);
+Mat* MatSetVal(Mat* mat, LIGHT_MATRIX_TYPE* val);
+void MatDump(const Mat* mat);
+
+Mat* MatZeros(Mat* mat);
+Mat* MatEye(Mat* mat);
+
+Mat* MatAdd(Mat* src1, Mat* src2, Mat* dst);
+Mat* MatSub(Mat* src1, Mat* src2, Mat* dst);
+Mat* MatMul(Mat* src1, Mat* src2, Mat* dst);
+Mat* MatTrans(Mat* src, Mat* dst);
+LIGHT_MATRIX_TYPE MatDet(Mat* mat);
+Mat* MatAdj(Mat* src, Mat* dst);
+Mat* MatInv(Mat* src, Mat* dst);
+
+LIGHT_MATRIX_TYPE MatNorm(Mat* mat);
+void MatEig(Mat* mat, LIGHT_MATRIX_TYPE* eig_val, Mat* eig_vec, LIGHT_MATRIX_TYPE eps, int njt);
+
+void MatCopy(Mat* src, Mat* dst);
+
+#endif
