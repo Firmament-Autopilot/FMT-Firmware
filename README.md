@@ -1,8 +1,8 @@
 Firmament Firmware
 ============================
-Firmament Firmware (FMT_Firmware) is the embedded flight control system of Firmament Autopilot project. The algorithm modules are availble in Firmament Model (FMT_Model), which are developed in Simulink.
+Firmament Firmware (FMT_Firmware) is the embedded flight control system of Firmament Autopilot project. The algorithm modules are availble in Firmament Model ([FMT_Model](https://github.com/FirmamentPilot/FMT_Model)), which are developed in Simulink.
 
-Firmament Autopilot is the an open-source autopilot designed for MBD (Model-Based Design). It consists of two parts:
+Firmament Autopilot is the first open-source autopilot system designed for MBD (Model-Based Design). It consists of two parts:
 
 - FMT_Firmware: The embedded flight control system written in C. It provides all useful features/functions dedicated to MBD, which means you can easily develop your algorithm model using MATLAB/Simulink and then seamlessly integrate into FMT_Firmware. 
 
