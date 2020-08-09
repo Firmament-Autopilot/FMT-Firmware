@@ -14,123 +14,125 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
-#include <string.h>
-#include "shell.h"
-#include "yxml.h"
 #include "dfs_elm.h"
 #include "dfs_fs.h"
+#include "shell.h"
+#include "yxml.h"
+#include <firmament.h>
+#include <string.h>
 
-#include "module/fs_manager/fs_manager.h"
 #include "driver/sd_dev.h"
+#include "module/fs_manager/fs_manager.h"
 
-#define FS_TYPE             "elm"
+#define FS_TYPE "elm"
 
 static fmt_err _mk_rootfs(void)
 {
-	struct stat buf;
+    struct stat buf;
 
-	if(stat("/sys", &buf) < 0) {
-		mkdir("/sys", 0x777);
-	}
+    if (stat("/sys", &buf) < 0) {
+        mkdir("/sys", 0x777);
+    }
 
-	if(stat("/log", &buf) < 0) {
-		mkdir("/log", 0x777);
-	}
+    if (stat("/log", &buf) < 0) {
+        mkdir("/log", 0x777);
+    }
 
-	return FMT_EOK;
+    return FMT_EOK;
 }
 
 static void _deldir(char* path)
 {
-	DIR* dir = opendir(path);
+    DIR* dir = opendir(path);
 
-	struct dirent* dr = readdir(dir);
+    struct dirent* dr = readdir(dir);
 
-	while(dr) {
-		strcat(path, "/");
-		strcat(path, dr->d_name);
+    while (dr) {
+        strcat(path, "/");
+        strcat(path, dr->d_name);
 
-		if(dr->d_type == FT_DIRECTORY) {
-			_deldir(path);
-		} else {
-			unlink(path);
-		}
+        if (dr->d_type == FT_DIRECTORY) {
+            _deldir(path);
+        } else {
+            unlink(path);
+        }
 
-		for(int i = strlen(path) - 1 ; i >= 0 ; i--) {
-			if(path[i] == '/') {
-				path[i] = '\0';
-				break;
-			}
+        for (int i = strlen(path) - 1; i >= 0; i--) {
+            if (path[i] == '/') {
+                path[i] = '\0';
+                break;
+            }
 
-			path[i] = 0;
-		}
+            path[i] = 0;
+        }
 
-		dr = readdir(dir);
-	}
+        dr = readdir(dir);
+    }
 
-	closedir(dir);
-	unlink(path);
+    closedir(dir);
+    unlink(path);
 }
 
 //===================================================================================
 
 fmt_err fs_deldir(const char* path)
 {
-	char temp_path[100];
+    char temp_path[100];
 
-	strcpy(temp_path, path);
-	_deldir(temp_path);
+    strcpy(temp_path, path);
 
-	// TODO, check path
-	return FMT_EOK;
+    console_printf("del %s\n", path);
+    _deldir(temp_path);
+
+    // TODO, check path
+    return FMT_EOK;
 }
 
 bool fs_file_exist(const char* path)
 {
-	struct stat buf;
+    struct stat buf;
 
-	if(stat(path, &buf) == 0) {
-		return true;
-	} else {
-		return false;
-	}
+    if (stat(path, &buf) == 0) {
+        return true;
+    } else {
+        return false;
+    }
 
-	// return (fres == FR_OK);
+    // return (fres == FR_OK);
 }
 
 int fs_fprintf(int fd, const char* fmt, ...)
 {
-	va_list args;
-	int length;
-	char buffer[256];
+    va_list args;
+    int length;
+    char buffer[256];
 
-	va_start(args, fmt);
-	length = vsprintf(buffer, fmt, args);
-	va_end(args);
+    va_start(args, fmt);
+    length = vsprintf(buffer, fmt, args);
+    va_end(args);
 
-	return write(fd, buffer, length);
+    return write(fd, buffer, length);
 }
 
 fmt_err fs_manager_init(const char* device_name, const char* path)
 {
-	/* init dfs system */
-	dfs_init();
+    /* init dfs system */
+    dfs_init();
 
-	/* init storage devices */
-	dev_sd_init(device_name);
+    /* init storage devices */
+    dev_sd_init(device_name);
 
-	elm_init();
+    elm_init();
 
-	int res = dfs_mount(device_name, path, FS_TYPE, 0, NULL);
+    int res = dfs_mount(device_name, path, FS_TYPE, 0, NULL);
 
-	if(res != 0) {
-		console_printf("dfs mount fail\n");
-		return FMT_ERROR;
-	}
+    if (res != 0) {
+        console_printf("dfs mount fail\n");
+        return FMT_ERROR;
+    }
 
-	/* make root fs system */
-	_mk_rootfs();
+    /* make root fs system */
+    _mk_rootfs();
 
-	return FMT_EOK;
+    return FMT_EOK;
 }

@@ -68,15 +68,10 @@ static void rt_init_thread_entry(void* parameter)
 
     /********************* init tasks *********************/
     FMT_CHECK(task_vehicle_init());
-    console_printf("task vehicle init success\n");
     FMT_CHECK(task_fmtio_init());
-    console_printf("task fmtio init success\n");
     FMT_CHECK(task_comm_init());
-    console_printf("task comm init success\n");
     FMT_CHECK(task_logger_init());
-    console_printf("task logger init success\n");
     FMT_CHECK(task_status_init());
-    console_printf("task status init success\n");
 
 #ifdef FMT_USING_HIL
     console_printf("Using HIL Simulation.\n");
