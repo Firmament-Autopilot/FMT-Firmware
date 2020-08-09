@@ -73,10 +73,6 @@ static void rt_init_thread_entry(void* parameter)
     FMT_CHECK(task_logger_init());
     FMT_CHECK(task_status_init());
 
-#ifdef FMT_USING_HIL
-    console_printf("Using HIL Simulation.\n");
-#endif
-
     /********************* board post init *********************/
     board_post_init();
 

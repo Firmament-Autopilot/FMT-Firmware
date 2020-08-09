@@ -211,15 +211,27 @@ void task_status_entry(void* parameter)
     buzzer_tune_init();
     buzzer_tune_play(TUNE_STARTUP);
 
+#ifdef FMT_USING_HIL
+#ifdef FMT_USING_SIH
+    ulog_i(TAG, "SIH Simulation");
+#else
+    ulog_i(TAG, "HIL Simulation");
+#endif
+#endif
+
+#ifdef FMT_HIL_WITH_ACTUATOR
+    ulog_w(TAG, "Be causious! Actuator enabled for HIL, make sure you have removed all propellers!");
+#endif
+
     while (1) {
+        // update pilot command status
+        _update_pilot_cmd_status();
+
         // update FMS output status
         _update_fms_status();
 
         // update INS output status
         _update_ins_status();
-
-        // update pilot command status
-        _update_pilot_cmd_status();
 
         // breath light
         if (bright == 0)

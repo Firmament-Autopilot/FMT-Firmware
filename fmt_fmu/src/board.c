@@ -161,10 +161,6 @@ void board_post_init(void)
 #endif
 
     board_show_version();
-
-#ifdef FMT_HIL_WITH_ACTUATOR
-    console_printf("Be causious! Actuator enabled for HIL, make sure you have removed all propellers!\n");
-#endif
 }
 
 /**
