@@ -77,16 +77,18 @@ void _mav_send_pilot_cmd(void)
 void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, uint16_t* rc_val)
 {
     /* command history */
-    static uint8_t _kill_motor_cmd = 0;
+    static uint8_t _force_disarm_cmd = 0;
     static uint32_t _last_cmd_timestamp = 0;
 
     uint32_t time_now = systime_now_ms();
-    uint8_t kill_motor_cmd = rc_val[PILOT_SAFE_SWITCH_CHANNEL] > 1900;
+    uint8_t force_disarm_cmd = rc_val[PILOT_SAFE_SWITCH_CHANNEL] > 1900;
 
-    if (kill_motor_cmd != _kill_motor_cmd) {
-        _pilot_cmd.cmd_1 = (kill_motor_cmd == 1) ? FMS_CMD_KILL_MOTOR : FMS_CMD_RESUME_MOTOR;
-        _kill_motor_cmd = kill_motor_cmd;
+    if (force_disarm_cmd != _force_disarm_cmd) {
+        if (force_disarm_cmd) {
+            _pilot_cmd.cmd_1 = FMS_CMD_FORCE_DISARM;
+        }
 
+        _force_disarm_cmd = force_disarm_cmd;
         _last_cmd_timestamp = time_now;
     }
 

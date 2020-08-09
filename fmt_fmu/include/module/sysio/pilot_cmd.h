@@ -20,8 +20,7 @@
 #include <firmament.h>
 
 // Pilot Command
-#define FMS_CMD_KILL_MOTOR   0x10
-#define FMS_CMD_RESUME_MOTOR 0x11
+#define FMS_CMD_FORCE_DISARM 1000
 
 fmt_err pilot_cmd_init(void);
 uint8_t pilot_cmd_collect(void);

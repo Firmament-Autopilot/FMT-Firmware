@@ -152,11 +152,8 @@ static void _update_pilot_cmd_status(void)
 
         if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1) {
             switch (pilot_cmd.cmd_1) {
-            case FMS_CMD_KILL_MOTOR:
-                ulog_i(TAG, "[Pilot Cmd] Kill Motor");
-                break;
-            case FMS_CMD_RESUME_MOTOR:
-                ulog_i(TAG, "[Pilot Cmd] Resume Motor");
+            case FMS_CMD_FORCE_DISARM:
+                ulog_i(TAG, "[Pilot Cmd] Force Disarm");
                 break;
             default:
                 break;

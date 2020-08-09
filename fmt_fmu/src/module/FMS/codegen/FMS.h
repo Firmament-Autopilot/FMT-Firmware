@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.597
+ * Model version                  : 1.604
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  5 16:39:49 2020
+ * C/C++ source code generated on : Sun Aug  9 22:04:29 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -51,8 +51,8 @@ typedef struct {
 
 /* Block signals (default storage) */
 typedef struct {
-  real_T disarm_event;                 /* '<S98>/Disarm_Event' */
-  real_T arm_event;                    /* '<S98>/Arm_Event' */
+  real_T disarm_event;                 /* '<S100>/Disarm_Event' */
+  real_T arm_event;                    /* '<S100>/Arm_Event' */
   uint32_T control_mode;               /* '<S1>/Mode_Logic' */
   uint16_T PWM_Cmd;                    /* '<S3>/State_Logic' */
 } B_FMS_T;
@@ -65,25 +65,26 @@ typedef struct {
   real32_T Delay_DSTATE_pp[2];         /* '<S87>/Delay' */
   real32_T Delay_DSTATE_n;             /* '<S88>/Delay' */
   real32_T Delay_DSTATE_c;             /* '<S68>/Delay' */
-  uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S103>/Discrete-Time Integrator' */
+  uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S105>/Discrete-Time Integrator' */
   uint32_T local_mode;                 /* '<S1>/Mode_Logic' */
   uint16_T temporalCounter_i1;         /* '<S3>/State_Logic' */
   uint16_T temporalCounter_i1_b;       /* '<S71>/XY_Motion_State' */
   uint8_T Delay_DSTATE_pi;             /* '<S3>/Delay' */
-  boolean_T DelayInput1_DSTATE;        /* '<S45>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE;        /* '<S98>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_i;      /* '<S45>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_a;      /* '<S36>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_p;      /* '<S14>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_i;      /* '<S85>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_iu;     /* '<S85>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_pv;     /* '<S86>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_c;      /* '<S60>/Delay Input1' */
   int8_T SwitchCase_ActiveSubsystem;   /* '<S1>/Switch Case' */
   uint8_T is_active_c4_FMS;            /* '<S3>/State_Logic' */
   uint8_T is_Arm_Logic;                /* '<S3>/State_Logic' */
-  uint8_T is_active_c10_FMS;           /* '<S98>/Disarm_Event' */
-  uint8_T is_c10_FMS;                  /* '<S98>/Disarm_Event' */
-  uint8_T temporalCounter_i1_a;        /* '<S98>/Disarm_Event' */
-  uint8_T is_active_c3_FMS;            /* '<S98>/Arm_Event' */
-  uint8_T is_c3_FMS;                   /* '<S98>/Arm_Event' */
+  uint8_T is_active_c10_FMS;           /* '<S100>/Disarm_Event' */
+  uint8_T is_c10_FMS;                  /* '<S100>/Disarm_Event' */
+  uint8_T temporalCounter_i1_a;        /* '<S100>/Disarm_Event' */
+  uint8_T is_active_c3_FMS;            /* '<S100>/Arm_Event' */
+  uint8_T is_c3_FMS;                   /* '<S100>/Arm_Event' */
   uint8_T icLoad;                      /* '<S53>/Delay' */
   uint8_T icLoad_d;                    /* '<S37>/Delay' */
   uint8_T icLoad_i;                    /* '<S22>/Delay' */
@@ -103,9 +104,9 @@ typedef struct {
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T VecConcentate3[3];    /* '<S97>/VecConcentate3' */
-  const boolean_T Arm_Allowed_Logical_Operato;/* '<S99>/Arm_Allowed_Logical_Operator' */
-  const boolean_T Disarm_Allowed_Logical_Oper;/* '<S99>/Disarm_Allowed_Logical_Operator' */
+  const real32_T VecConcentate3[3];    /* '<S99>/VecConcentate3' */
+  const boolean_T Arm_Allowed_Logical_Operato;/* '<S101>/Arm_Allowed_Logical_Operator' */
+  const boolean_T Disarm_Allowed_Logical_Oper;/* '<S101>/Disarm_Allowed_Logical_Operator' */
 } ConstB_FMS_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -151,14 +152,14 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  */
 extern struct_QTHD3FieMDlB4oEKy11VyG FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
-                                                *   '<S93>/Constant'
-                                                *   '<S93>/Dead Zone'
                                                 *   '<S94>/Constant'
                                                 *   '<S94>/Dead Zone'
                                                 *   '<S95>/Constant'
                                                 *   '<S95>/Dead Zone'
                                                 *   '<S96>/Constant'
                                                 *   '<S96>/Dead Zone'
+                                                *   '<S97>/Constant'
+                                                *   '<S97>/Dead Zone'
                                                 *   '<S10>/Gain'
                                                 *   '<S10>/Gain1'
                                                 *   '<S11>/Saturation1'
@@ -184,7 +185,7 @@ extern struct_QTHD3FieMDlB4oEKy11VyG FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S80>/Gain6'
                                                 */
 extern struct_4XfCoaAMTej5uH3d8u88xB FMS_EXPORT;/* Variable: FMS_EXPORT
-                                                 * Referenced by: '<S103>/Constant'
+                                                 * Referenced by: '<S105>/Constant'
                                                  */
 
 /* Model entry point functions */
@@ -199,9 +200,9 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * These blocks were eliminated from the model due to optimizations:
  *
  * Block '<Root>/Constant3' : Unused code path elimination
- * Block '<S108>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S110>/FixPt Data Type Duplicate' : Unused code path elimination
  * Block '<S2>/Signal Copy4' : Eliminate redundant signal conversion block
- * Block '<S103>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S105>/Data Type Conversion' : Eliminate redundant data type conversion
  */
 
 /*-
@@ -311,23 +312,25 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S90>'  : 'FMS/Control_Mode/Position_Mode/Command_Generator/Vel_Command/Subsystem1/Velocity_Map/Compare To Constant1'
  * '<S91>'  : 'FMS/Control_Mode/Position_Mode/Command_Generator/Vel_Command/move_check/Compare To Zero'
  * '<S92>'  : 'FMS/Control_Mode/Position_Mode/Command_Generator/Vel_Command/move_check/Compare To Zero1'
- * '<S93>'  : 'FMS/FMS_Command/Dead_Zone'
- * '<S94>'  : 'FMS/FMS_Command/Dead_Zone1'
- * '<S95>'  : 'FMS/FMS_Command/Dead_Zone2'
- * '<S96>'  : 'FMS/FMS_Command/Dead_Zone3'
- * '<S97>'  : 'FMS/FMS_Command/M_CO'
- * '<S98>'  : 'FMS/State_Management/Arm_Event'
- * '<S99>'  : 'FMS/State_Management/Arm_Prerequisite '
- * '<S100>' : 'FMS/State_Management/Compare To Constant'
- * '<S101>' : 'FMS/State_Management/State_Logic'
- * '<S102>' : 'FMS/State_Management/Subsystem'
- * '<S103>' : 'FMS/State_Management/timestamp'
- * '<S104>' : 'FMS/State_Management/Arm_Event/Arm_Event'
- * '<S105>' : 'FMS/State_Management/Arm_Event/Disarm_Event'
- * '<S106>' : 'FMS/State_Management/Arm_Event/Onground_Check'
- * '<S107>' : 'FMS/State_Management/Arm_Event/Onground_Check/Compare To Constant'
- * '<S108>' : 'FMS/State_Management/Arm_Event/Onground_Check/Interval Test'
- * '<S109>' : 'FMS/State_Management/Arm_Event/Onground_Check/Quat_to_M_OB'
+ * '<S93>'  : 'FMS/FMS_Command/Compare To Constant'
+ * '<S94>'  : 'FMS/FMS_Command/Dead_Zone'
+ * '<S95>'  : 'FMS/FMS_Command/Dead_Zone1'
+ * '<S96>'  : 'FMS/FMS_Command/Dead_Zone2'
+ * '<S97>'  : 'FMS/FMS_Command/Dead_Zone3'
+ * '<S98>'  : 'FMS/FMS_Command/Detect Increase'
+ * '<S99>'  : 'FMS/FMS_Command/M_CO'
+ * '<S100>' : 'FMS/State_Management/Arm_Event'
+ * '<S101>' : 'FMS/State_Management/Arm_Prerequisite '
+ * '<S102>' : 'FMS/State_Management/Compare To Constant'
+ * '<S103>' : 'FMS/State_Management/State_Logic'
+ * '<S104>' : 'FMS/State_Management/Subsystem'
+ * '<S105>' : 'FMS/State_Management/timestamp'
+ * '<S106>' : 'FMS/State_Management/Arm_Event/Arm_Event'
+ * '<S107>' : 'FMS/State_Management/Arm_Event/Disarm_Event'
+ * '<S108>' : 'FMS/State_Management/Arm_Event/Onground_Check'
+ * '<S109>' : 'FMS/State_Management/Arm_Event/Onground_Check/Compare To Constant'
+ * '<S110>' : 'FMS/State_Management/Arm_Event/Onground_Check/Interval Test'
+ * '<S111>' : 'FMS/State_Management/Arm_Event/Onground_Check/Quat_to_M_OB'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 
