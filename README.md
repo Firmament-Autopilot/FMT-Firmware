@@ -63,9 +63,9 @@ After downloading the firmware, you could open the console via serial (TELEM 2, 
 3. It should start to download if you are not the first time to download the io firmware. Otherwise, after you typing the command, you should 
 click the io reset button to let it go to the bootloader.
 
-# Code Style
-- We use [**astyle**](http://astyle.sourceforge.net/) code beautifier to maintain the consistency of code style. Use following command to format the source code:
-
-*astyle --style=kr --indent=tab --attach-closing-while --indent-switches --indent-preproc-block --break-blocks --pad-oper --unpad-paren --align-pointer=type -r -n "&lt;dir&gt;\\\*.c,\*.h"*
+## Contributor
+A big thanks to these contributor:
+- weety, luohui2320@gmail.com
+- yangjiong, 275011821@qq.com
 
 
