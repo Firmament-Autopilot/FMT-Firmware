@@ -86,7 +86,6 @@ void board_show_version(void)
     console_println("     comm: OK");
     console_println("   logger: OK");
     console_println("   status: OK");
-    console_printf("\n");
 }
 
 /* this function will be called before rtos start, which is not thread context */

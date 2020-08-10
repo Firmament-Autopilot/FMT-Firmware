@@ -34,6 +34,10 @@ static fmt_err _mk_rootfs(void)
         mkdir("/sys", 0x777);
     }
 
+    if (stat("/usr", &buf) < 0) {
+        mkdir("/usr", 0x777);
+    }
+
     if (stat("/log", &buf) < 0) {
         mkdir("/log", 0x777);
     }
