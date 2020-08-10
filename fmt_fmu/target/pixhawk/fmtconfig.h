@@ -20,7 +20,7 @@
 #define FMT_BUILD_CHECK
 
 /* HIL simulation */
-// #define FMT_USING_HIL
+#define FMT_USING_HIL
 #ifdef FMT_USING_HIL
 #define FMT_USING_SIH
 // #define FMT_HIL_WITH_ACTUATOR
@@ -43,5 +43,7 @@
 #define FMT_USING_CM_BACKTRACE
 
 // #define FMT_USING_AUX_MOTOR
+
+#define FMT_ONLINE_PARAM_TUNING
 
 #endif

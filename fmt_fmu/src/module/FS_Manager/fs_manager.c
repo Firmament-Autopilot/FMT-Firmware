@@ -80,8 +80,6 @@ fmt_err fs_deldir(const char* path)
     char temp_path[100];
 
     strcpy(temp_path, path);
-
-    console_printf("del %s\n", path);
     _deldir(temp_path);
 
     // TODO, check path

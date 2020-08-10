@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.543
+ * Model version                  : 1.545
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul 23 19:35:14 2020
+ * C/C++ source code generated on : Mon Aug 10 21:48:16 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -130,8 +130,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_KIw15hNVifXoLoBPpkup6F_
-#define DEFINED_TYPEDEF_FOR_struct_KIw15hNVifXoLoBPpkup6F_
+#ifndef DEFINED_TYPEDEF_FOR_struct_Ae52N6uY2eO0jd5TMQiCYB_
+#define DEFINED_TYPEDEF_FOR_struct_Ae52N6uY2eO0jd5TMQiCYB_
 
 typedef struct {
   real32_T VEL_XY_P;
@@ -148,11 +148,9 @@ typedef struct {
   real32_T VEL_Z_I_MAX;
   real32_T VEL_Z_D_MIN;
   real32_T VEL_Z_D_MAX;
-  real32_T ROLL_PITCH_CMD_LIM;
-  real32_T ROLL_PITCH_RATE_CMD_LIM;
-  real32_T YAW_RATE_CMD_LIM;
   real32_T ROLL_P;
   real32_T PITCH_P;
+  real32_T ROLL_PITCH_CMD_LIM;
   real32_T ROLL_RATE_P;
   real32_T PITCH_RATE_P;
   real32_T YAW_RATE_P;
@@ -166,7 +164,9 @@ typedef struct {
   real32_T RATE_I_MAX;
   real32_T RATE_D_MIN;
   real32_T RATE_D_MAX;
-} struct_KIw15hNVifXoLoBPpkup6F;
+  real32_T P_Q_CMD_LIM;
+  real32_T R_CMD_LIM;
+} struct_Ae52N6uY2eO0jd5TMQiCYB;
 
 #endif
 

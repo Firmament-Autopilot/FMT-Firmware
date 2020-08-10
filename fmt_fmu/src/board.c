@@ -66,6 +66,7 @@ void NVIC_Configuration(void)
 
 void board_show_version(void)
 {
+    console_printf("\n");
     console_println("   _____                               __ ");
     console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
@@ -85,6 +86,7 @@ void board_show_version(void)
     console_println("     comm: OK");
     console_println("   logger: OK");
     console_println("   status: OK");
+    console_printf("\n");
 }
 
 /* this function will be called before rtos start, which is not thread context */

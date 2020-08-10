@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.543
+ * Model version                  : 1.545
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul 23 19:35:14 2020
+ * C/C++ source code generated on : Mon Aug 10 21:48:16 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_KIw15hNVifXoLoBPpkup6F CONTROL_PARAM = {
+struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.9F,
   0.09F,
   0.01F,
@@ -40,11 +40,9 @@ struct_KIw15hNVifXoLoBPpkup6F CONTROL_PARAM = {
   0.3F,
   -0.2F,
   0.2F,
+  3.0F,
+  3.0F,
   0.52359879F,
-  1.57079637F,
-  3.14159274F,
-  3.0F,
-  3.0F,
   0.05F,
   0.05F,
   0.2F,
@@ -57,7 +55,9 @@ struct_KIw15hNVifXoLoBPpkup6F CONTROL_PARAM = {
   -0.1F,
   0.1F,
   -0.1F,
-  0.1F
+  0.1F,
+  1.57079637F,
+  3.14159274F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S9>/Saturation'
@@ -331,13 +331,12 @@ void Controller_step(void)
     rtb_Atan_idx_1 = Controller_U.FMS_Out.q_cmd;
     rtb_Saturation_m = Controller_U.FMS_Out.r_cmd;
   } else {
-    if (Controller_U.FMS_Out.psi_rate_cmd > CONTROL_PARAM.YAW_RATE_CMD_LIM) {
+    if (Controller_U.FMS_Out.psi_rate_cmd > CONTROL_PARAM.R_CMD_LIM) {
       /* Saturate: '<S12>/Saturation' */
-      rtb_Saturation_m = CONTROL_PARAM.YAW_RATE_CMD_LIM;
-    } else if (Controller_U.FMS_Out.psi_rate_cmd <
-               -CONTROL_PARAM.YAW_RATE_CMD_LIM) {
+      rtb_Saturation_m = CONTROL_PARAM.R_CMD_LIM;
+    } else if (Controller_U.FMS_Out.psi_rate_cmd < -CONTROL_PARAM.R_CMD_LIM) {
       /* Saturate: '<S12>/Saturation' */
-      rtb_Saturation_m = -CONTROL_PARAM.YAW_RATE_CMD_LIM;
+      rtb_Saturation_m = -CONTROL_PARAM.R_CMD_LIM;
     } else {
       /* Saturate: '<S12>/Saturation' */
       rtb_Saturation_m = Controller_U.FMS_Out.psi_rate_cmd;
@@ -439,14 +438,14 @@ void Controller_step(void)
      *  Trigonometry: '<S29>/Tanh'
      */
     u0_0 = tanhf(CONTROL_PARAM.ROLL_P * rtb_Atan_idx_0) *
-      CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM;
+      CONTROL_PARAM.P_Q_CMD_LIM;
     rtb_Atan_idx_1 = tanhf((rtb_Atan_idx_1 - Controller_U.INS_Out.theta) *
-      CONTROL_PARAM.PITCH_P) * CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM;
-    if (rtb_Atan_idx_1 > CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM) {
-      rtb_Atan_idx_1 = CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM;
+      CONTROL_PARAM.PITCH_P) * CONTROL_PARAM.P_Q_CMD_LIM;
+    if (rtb_Atan_idx_1 > CONTROL_PARAM.P_Q_CMD_LIM) {
+      rtb_Atan_idx_1 = CONTROL_PARAM.P_Q_CMD_LIM;
     } else {
-      if (rtb_Atan_idx_1 < -CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM) {
-        rtb_Atan_idx_1 = -CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM;
+      if (rtb_Atan_idx_1 < -CONTROL_PARAM.P_Q_CMD_LIM) {
+        rtb_Atan_idx_1 = -CONTROL_PARAM.P_Q_CMD_LIM;
       }
     }
 
@@ -472,11 +471,11 @@ void Controller_step(void)
     rtb_Multiply4 *= rtb_Atan_idx_1;
 
     /* Saturate: '<S12>/Saturation1' */
-    if (u0_0 > CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM) {
-      u0_0 = CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM;
+    if (u0_0 > CONTROL_PARAM.P_Q_CMD_LIM) {
+      u0_0 = CONTROL_PARAM.P_Q_CMD_LIM;
     } else {
-      if (u0_0 < -CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM) {
-        u0_0 = -CONTROL_PARAM.ROLL_PITCH_RATE_CMD_LIM;
+      if (u0_0 < -CONTROL_PARAM.P_Q_CMD_LIM) {
+        u0_0 = -CONTROL_PARAM.P_Q_CMD_LIM;
       }
     }
 

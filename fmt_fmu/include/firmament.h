@@ -54,9 +54,6 @@
 #define PI 3.14159265358979f
 #endif
 
-// #define TIME_GAP(t1,t2)		(((t2)>=(t1))?((t2)-(t1)):(0xFFFFFFFF-(t1)+(t2)))
-// #define IN_RANGE(v,l,r)		( (v)>(l) && (v)<(r) )
-
 #define OS_ENTER_CRITICAL rt_enter_critical()
 #define OS_EXIT_CRITICAL  rt_exit_critical()
 #define OS_MALLOC(size)   rt_malloc(size)

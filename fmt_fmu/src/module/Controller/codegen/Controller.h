@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.543
+ * Model version                  : 1.545
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul 23 19:35:14 2020
+ * C/C++ source code generated on : Mon Aug 10 21:48:16 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -108,7 +108,7 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_KIw15hNVifXoLoBPpkup6F CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S9>/Saturation'
                                                     *   '<S12>/Saturation'

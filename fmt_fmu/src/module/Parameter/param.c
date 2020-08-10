@@ -102,10 +102,49 @@ PARAM_DECLARE_GROUP(CALIB) = {
     PARAM_DEFINE_FLOAT(MAG1_YZSCALE, 0.0),
 };
 
+PARAM_GROUP(CONTROL)
+PARAM_DECLARE_GROUP(CONTROL) = {
+    PARAM_DEFINE_FLOAT(VEL_XY_P, 0.9),
+    PARAM_DEFINE_FLOAT(VEL_XY_I, 0.09),
+    PARAM_DEFINE_FLOAT(VEL_XY_D, 0.1),
+    PARAM_DEFINE_FLOAT(VEL_Z_P, 0.5),
+    PARAM_DEFINE_FLOAT(VEL_Z_I, 0.2),
+    PARAM_DEFINE_FLOAT(VEL_Z_D, 0.1),
+    PARAM_DEFINE_FLOAT(VEL_XY_I_MIN, -1),
+    PARAM_DEFINE_FLOAT(VEL_XY_I_MAX, 1),
+    PARAM_DEFINE_FLOAT(VEL_XY_D_MIN, -1),
+    PARAM_DEFINE_FLOAT(VEL_XY_D_MAX, 1),
+    PARAM_DEFINE_FLOAT(VEL_Z_I_MIN, -0.3),
+    PARAM_DEFINE_FLOAT(VEL_Z_I_MAX, 0.3),
+    PARAM_DEFINE_FLOAT(VEL_Z_D_MIN, -0.2),
+    PARAM_DEFINE_FLOAT(VEL_Z_D_MAX, 0.2),
+
+    PARAM_DEFINE_FLOAT(ROLL_P, 3.0),
+    PARAM_DEFINE_FLOAT(PITCH_P, 3.0),
+    PARAM_DEFINE_FLOAT(ROLL_PITCH_CMD_LIM, PI / 6),
+
+    PARAM_DEFINE_FLOAT(ROLL_RATE_P, 0.05),
+    PARAM_DEFINE_FLOAT(PITCH_RATE_P, 0.05),
+    PARAM_DEFINE_FLOAT(YAW_RATE_P, 0.2),
+    PARAM_DEFINE_FLOAT(ROLL_RATE_I, 0.1),
+    PARAM_DEFINE_FLOAT(PITCH_RATE_I, 0.1),
+    PARAM_DEFINE_FLOAT(YAW_RATE_I, 0.1),
+    PARAM_DEFINE_FLOAT(ROLL_RATE_D, 0.0005),
+    PARAM_DEFINE_FLOAT(PITCH_RATE_D, 0.0005),
+    PARAM_DEFINE_FLOAT(YAW_RATE_D, 0.0005),
+    PARAM_DEFINE_FLOAT(RATE_I_MIN, -0.1),
+    PARAM_DEFINE_FLOAT(RATE_I_MAX, 0.1),
+    PARAM_DEFINE_FLOAT(RATE_D_MIN, -0.1),
+    PARAM_DEFINE_FLOAT(RATE_D_MAX, 0.1),
+    PARAM_DEFINE_FLOAT(P_Q_CMD_LIM, PI / 2),
+    PARAM_DEFINE_FLOAT(R_CMD_LIM, PI),
+};
+
 /******************** Step 2: Define Group ********************/
 param_list_t param_list = {
     PARAM_DEFINE_GROUP(SYSTEM),
     PARAM_DEFINE_GROUP(CALIB),
+    PARAM_DEFINE_GROUP(CONTROL),
 };
 
 static fmt_err _parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
@@ -353,6 +392,10 @@ fmt_err param_set_string_val(param_t* param, char* val)
         return FMT_ERROR;
     }
 
+#ifdef FMT_ONLINE_PARAM_TUNING
+    OS_ENTER_CRITICAL;
+#endif
+
     if (param->type == PARAM_TYPE_INT8) {
         param->val.i8 = atoi(val);
     }
@@ -384,6 +427,10 @@ fmt_err param_set_string_val(param_t* param, char* val)
     if (param->type == PARAM_TYPE_DOUBLE) {
         param->val.lf = atof(val);
     }
+
+#ifdef FMT_ONLINE_PARAM_TUNING
+    OS_EXIT_CRITICAL;
+#endif
 
     return FMT_EOK;
 }
