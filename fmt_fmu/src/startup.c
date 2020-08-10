@@ -15,12 +15,13 @@
  *****************************************************************************/
 
 #include "board.h"
+#include <firmament.h>
+
 #include "task/task_comm.h"
 #include "task/task_fmtio.h"
 #include "task/task_logger.h"
 #include "task/task_status.h"
 #include "task/task_vehicle.h"
-#include <firmament.h>
 
 static rt_thread_t tid0;
 

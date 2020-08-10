@@ -22,6 +22,14 @@
 #define FMT_SUBVERSION 0 /**< minor version number */
 #define FMT_REVISION   1 /**< revise version number */
 
+/* Thread Prority */
+#define VEHICLE_THREAD_PRIORITY    3
+#define FMTIO_THREAD_PRIORITY      4
+#define LOGGER_THREAD_PRIORITY     10
+#define MAVLINK_RX_THREAD_PRIORITY 11
+#define COMM_THREAD_PRIORITY       12
+#define STATUS_THREAD_PRIORITY     13
+
 #ifndef bool
 typedef int bool;
 #endif
@@ -33,6 +41,24 @@ typedef int bool;
 #ifndef false
 #define false (0U)
 #endif
+
+// Macro to define packed structures
+#ifdef __GNUC__
+#define __PACKED__(__Declaration__) __Declaration__ __attribute__((packed))
+#else
+#define __PACKED__(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
+#endif
+
+#ifndef PI
+#define PI 3.14159265358979f
+#endif
+
+#define OS_ENTER_CRITICAL rt_enter_critical()
+#define OS_EXIT_CRITICAL  rt_exit_critical()
+#define OS_MALLOC(size)   rt_malloc(size)
+#define OS_FREE(ptr)      rt_free(ptr)
+
+#define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
 
 typedef enum {
     FMT_EOK = 0,         /**< There is no error */

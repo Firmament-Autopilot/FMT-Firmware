@@ -20,7 +20,7 @@
 #define FMT_BUILD_CHECK
 
 /* HIL simulation */
-#define FMT_USING_HIL
+// #define FMT_USING_HIL
 #ifdef FMT_USING_HIL
 #define FMT_USING_SIH
 // #define FMT_HIL_WITH_ACTUATOR
