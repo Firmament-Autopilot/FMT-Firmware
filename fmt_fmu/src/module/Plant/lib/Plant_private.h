@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.455
+ * Model version                  : 1.515
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  5 17:18:29 2020
+ * C/C++ source code generated on : Fri Aug 14 23:04:43 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -64,11 +64,13 @@ Verification pane for ERT based targets, which will disable the \
 preprocessor word size checks.
 #endif
 
+extern void rt_mldivide_U1f3x3_U2f3x1_Yf3x1(const real32_T u0[9], const real32_T
+  u1[3], real32_T y[3]);
 extern void RandSrc_GZ_R(real32_T y[], const real32_T mean[], int32_T meanLen,
   const real32_T xstd[], int32_T xstdLen, uint32_T state[], int32_T nChans,
   int32_T nSamps);
-extern void rt_mldivide_U1f3x3_U2f3x1_Yf3x1(const real32_T u0[9], const real32_T
-  u1[3], real32_T y[3]);
+extern void RandSrcInitState_GZ(const uint32_T seed[], uint32_T state[], int32_T
+  nChans);
 extern void RandSrcInitState_U_32(const uint32_T seed[], real32_T state[],
   int32_T nChans);
 extern void RandSrc_U_R(real32_T y[], const real32_T minVec[], int32_T minLen,
@@ -76,8 +78,6 @@ extern void RandSrc_U_R(real32_T y[], const real32_T minVec[], int32_T minLen,
   int32_T nSamps);
 extern void RandSrcCreateSeeds_32(uint32_T initSeed, uint32_T seedArray[],
   int32_T numSeeds);
-extern void RandSrcInitState_GZ(const uint32_T seed[], uint32_T state[], int32_T
-  nChans);
 
 #endif                                 /* RTW_HEADER_Plant_private_h_ */
 

@@ -72,8 +72,8 @@ void board_show_version(void)
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
-    console_println("Version: Firmament %d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
-    console_println("RTOS: RT-Thread %d.%d.%d", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    console_println("Version: Firmament v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
+    console_println("RTOS: RT-Thread v%d.%d.%d", RT_VERSION, RT_SUBVERSION, RT_REVISION);
     console_println("RAM: %d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     console_println("Board: %s", BOARD_NAME);
     console_println("Vehicle Type: %s", VEHICLE_TYPE);
@@ -115,17 +115,20 @@ void board_init(void)
 
     /* init sensor drivers */
     mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME);
+
     l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME);
+
     ms5611_drv_init(MS5611_SPI_DEVICE_NAME);
+
     lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME);
 
     /* init parameter system */
     param_init();
 
-    /* init sensor devices */
+    /* init sensor manager */
     sensor_manager_init();
 
-    /* 3 color led device init */
+    /* RGB led device init */
     tca62724_drv_init();
 
     /* GDB STUB */
@@ -145,7 +148,7 @@ void board_init(void)
 
 #ifdef FMT_USING_CM_BACKTRACE
     // cortex-m backtrace
-    cm_backtrace_init("fmt_fmu", BOARD_NAME, "V0.1");
+    cm_backtrace_init("fmt_fmu", BOARD_NAME, "v0.1");
 #endif
 }
 

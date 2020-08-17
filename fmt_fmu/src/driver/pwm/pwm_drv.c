@@ -17,7 +17,8 @@
 #include "hal/motor.h"
 #include <firmament.h>
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
 #define MAX_PWM_OUT_CHAN      6        // AUX Out has 6 pwm channel
 #define TIMER_FREQUENCY       3000000  // Timer frequency: 3M

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.455
+ * Model version                  : 1.515
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  5 17:18:29 2020
+ * C/C++ source code generated on : Fri Aug 14 23:04:43 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,38 +18,35 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Plant_T Plant_ConstB = {
-  1.9966471868221032,                  /* '<S25>/Subtract1' */
-  0.00669438499958795,                 /* '<S25>/Product1' */
-  0.0,                                 /* '<S95>/Constant3' */
-  0.0,                                 /* '<S94>/Constant3' */
-  1.9966471868221032,                  /* '<S78>/Subtract1' */
-  0.00669438499958795,                 /* '<S78>/Product1' */
-
   { 34557.519189487721, 34557.519189487721, 34557.519189487721,
-    34557.519189487721 },              /* '<S103>/Gain6' */
+    34557.519189487721 },              /* '<S106>/Gain6' */
 
   { 1151.9173063162573, 1151.9173063162573, 1151.9173063162573,
-    1151.9173063162573 },              /* '<S103>/Divide1' */
+    1151.9173063162573 },              /* '<S106>/Divide1' */
 
   { 34557.519189487721, 34557.519189487721, 34557.519189487721,
     34557.519189487721 },              /* '<S87>/Gain6' */
 
   { 1151.9173063162573, 1151.9173063162573, 1151.9173063162573,
     1151.9173063162573 },              /* '<S87>/Divide1' */
+  1.9966471868221032,                  /* '<S78>/Subtract1' */
+  0.00669438499958795,                 /* '<S78>/Product1' */
+  1.9966471868221032,                  /* '<S25>/Subtract1' */
+  0.00669438499958795,                 /* '<S25>/Product1' */
 
   { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S121>/Add' */
-
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S92>/Add' */
-
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S108>/Add' */
-
-  { 0.0F, 0.0F, 1.0F },                /* '<S9>/VecConcentate3' */
-
-  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S34>/Constant1' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S119>/Vector Concatenate3' */
 
   { 0.0F, 1.0F, 0.0F },                /* '<S118>/Vector Concatenate3' */
+
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S92>/Add' */
+
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S109>/Add' */
+
+  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S34>/Constant1' */
+
+  { 0.0F, 0.0F, 1.0F },                /* '<S9>/VecConcentate3' */
   3U,                                  /* '<S63>/Data Type Conversion' */
   11U                                  /* '<S63>/Data Type Conversion1' */
 };
@@ -68,11 +65,6 @@ const ConstP_Plant_T Plant_ConstP = {
     1.779E-7F, 1.75804428E-6F, 1.75804428E-6F, -1.779E-7F, -1.75804428E-6F,
     -1.75804428E-6F, -1.779E-7F },
 
-  /* Computed Parameter: Inertia_Matrix_Value
-   * Referenced by: '<S34>/Inertia_Matrix'
-   */
-  { 0.0241F, 0.0F, 0.0F, 0.0F, 0.0239F, 0.0F, 0.0F, 0.0F, 0.0386F },
-
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<Root>/Constant'
@@ -83,7 +75,7 @@ const ConstP_Plant_T Plant_ConstP = {
    *   '<S29>/Constant'
    *   '<S31>/Constant'
    *   '<S59>/Random Source'
-   *   '<S65>/Delay1'
+   *   '<S64>/Delay1'
    *   '<S9>/Constant1'
    *   '<S13>/Saturation1'
    *   '<S39>/Constant'
@@ -97,10 +89,12 @@ const ConstP_Plant_T Plant_ConstP = {
    *   '<S69>/Random Source'
    *   '<S69>/Random Source1'
    *   '<S74>/Discrete FIR Filter'
+   *   '<S90>/integrate'
+   *   '<S90>/integrate1'
    *   '<S93>/Random Source'
-   *   '<S106>/Discrete-Time Integrator1'
-   *   '<S106>/Discrete-Time Integrator2'
-   *   '<S109>/Random Source'
+   *   '<S107>/integrate'
+   *   '<S107>/integrate1'
+   *   '<S110>/Random Source'
    *   '<S122>/Random Source'
    *   '<S118>/Constant'
    *   '<S118>/Constant2'
@@ -113,29 +107,19 @@ const ConstP_Plant_T Plant_ConstP = {
    */
   0.0F,
 
-  /* Computed Parameter: RandomSource_VarianceRTP
-   * Referenced by: '<S109>/Random Source'
+  /* Computed Parameter: Inertia_Matrix_Value
+   * Referenced by: '<S34>/Inertia_Matrix'
    */
-  { 0.005F, 0.005F, 0.005F },
-
-  /* Computed Parameter: RandomSource_VarianceRTP_f
-   * Referenced by: '<S93>/Random Source'
-   */
-  { 0.05F, 0.05F, 0.05F },
-
-  /* Computed Parameter: RandomSource_VarianceRTP_a
-   * Referenced by: '<S122>/Random Source'
-   */
-  { 0.001F, 0.001F, 0.001F },
+  { 0.0241F, 0.0F, 0.0F, 0.0F, 0.0239F, 0.0F, 0.0F, 0.0F, 0.0386F },
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S59>/Random Source'
-   *   '<S114>/Saturation'
+   *   '<S115>/Saturation'
    */
   4.0F,
 
-  /* Computed Parameter: RandomSource_VarianceRTP_b
+  /* Computed Parameter: RandomSource_VarianceRTP
    * Referenced by: '<S69>/Random Source'
    */
   { 0.02F, 0.02F, 0.04F },
@@ -144,6 +128,21 @@ const ConstP_Plant_T Plant_ConstP = {
    * Referenced by: '<S69>/Random Source1'
    */
   { 0.01F, 0.01F, 0.01F },
+
+  /* Computed Parameter: RandomSource_VarianceRTP_f
+   * Referenced by: '<S93>/Random Source'
+   */
+  { 0.05F, 0.05F, 0.05F },
+
+  /* Computed Parameter: RandomSource_VarianceRTP_b
+   * Referenced by: '<S110>/Random Source'
+   */
+  { 0.005F, 0.005F, 0.005F },
+
+  /* Computed Parameter: RandomSource_VarianceRTP_a
+   * Referenced by: '<S122>/Random Source'
+   */
+  { 0.001F, 0.001F, 0.001F },
 
   /* Computed Parameter: DeclinationLookup_table
    * Referenced by: '<S117>/Declination Lookup'
