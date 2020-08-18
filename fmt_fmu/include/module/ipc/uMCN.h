@@ -26,6 +26,7 @@
 #define MCN_EVENT_HANDLE				rt_sem_t
 #define MCN_SEND_EVENT(event)			rt_sem_release(event)
 #define MCN_WAIT_EVENT(event, time)		rt_sem_take(event, time)
+#define MCN_ASSERT(EX)                  RT_ASSERT(EX)
 
 #define MCN_MAX_LINK_NUM		30
 

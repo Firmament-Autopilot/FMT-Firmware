@@ -26,6 +26,8 @@ McnList mcn_get_list(void)
 
 fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
 {
+    MCN_ASSERT(hub != NULL);
+
 	if(hub->pdata != NULL) {
 		/* already advertised */
 		return FMT_ENOTHANDLE;
@@ -68,6 +70,8 @@ fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
 
 McnNode_t mcn_subscribe(McnHub* hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* parameter))
 {
+    MCN_ASSERT(hub != NULL);
+
 	if(hub->link_num >= MCN_MAX_LINK_NUM) {
 		console_printf("mcn link num is already full!\n");
 		return NULL;
@@ -108,9 +112,8 @@ McnNode_t mcn_subscribe(McnHub* hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* 
 
 fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node)
 {
-	if(node == NULL || hub == NULL) {
-		return FMT_EEMPTY;
-	}
+    MCN_ASSERT(hub != NULL);
+    MCN_ASSERT(node != NULL);
 
 	/* traverse each node */
 	McnNode_t cur_node = hub->link_head;
@@ -157,10 +160,8 @@ fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node)
 
 fmt_err mcn_publish(McnHub* hub, const void* data)
 {
-	if(data == NULL) {
-		/* null data publish! */
-		return FMT_ENOTHANDLE;
-	}
+    MCN_ASSERT(hub != NULL);
+    MCN_ASSERT(data != NULL);
 
 	if(hub->pdata == NULL) {
 		// hub is not advertised yet
@@ -213,6 +214,8 @@ bool mcn_poll(McnNode_t node_t)
 {
 	bool renewal;
 
+    MCN_ASSERT(node_t != NULL);
+
 	MCN_ENTER_CRITICAL;
 	renewal = node_t->renewal;
 	MCN_EXIT_CRITICAL;
@@ -222,14 +225,18 @@ bool mcn_poll(McnNode_t node_t)
 
 bool mcn_poll_sync(McnNode_t node_t, int32_t timeout)
 {
-	if(node_t->event_t == NULL)
-		return 0;
+    MCN_ASSERT(node_t != NULL);
+    MCN_ASSERT(node_t->event_t != NULL);
 
 	return MCN_WAIT_EVENT(node_t->event_t, timeout) == 0 ? 1 : 0;
 }
 
 fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer)
 {
+    MCN_ASSERT(hub != NULL);
+    MCN_ASSERT(node_t != NULL);
+    MCN_ASSERT(buffer != NULL);
+
 	if(hub->pdata == NULL) {
 		/* copy from non-advertised hub */
 		return FMT_ERROR;
@@ -250,8 +257,10 @@ fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer)
 
 fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer)
 {
+    MCN_ASSERT(hub != NULL);
+    MCN_ASSERT(buffer != NULL);
+
 	if(hub->pdata == NULL) {
-		// not advertised yet
 		/* copy from non-advertised hub */
 		return FMT_ERROR;
 	}
@@ -270,6 +279,8 @@ fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer)
 
 void mcn_node_clear(McnNode_t node_t)
 {
+    MCN_ASSERT(node_t != NULL);
+
 	if(node_t == NULL) {
 		return;
 	}
