@@ -1,10 +1,10 @@
 /** @file
- *    @brief MAVLink comm protocol testsuite generated from firmament.xml
+ *    @brief MAVLink comm protocol testsuite generated from fmt_mavlink.xml
  *    @see http://qgroundcontrol.org/mavlink/
  */
 #pragma once
-#ifndef FIRMAMENT_TESTSUITE_H
-#define FIRMAMENT_TESTSUITE_H
+#ifndef FMT_MAVLINK_TESTSUITE_H
+#define FMT_MAVLINK_TESTSUITE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,12 +13,12 @@ extern "C" {
 #ifndef MAVLINK_TEST_ALL
 #define MAVLINK_TEST_ALL
 static void mavlink_test_common(uint8_t, uint8_t, mavlink_message_t *last_msg);
-static void mavlink_test_firmament(uint8_t, uint8_t, mavlink_message_t *last_msg);
+static void mavlink_test_fmt_mavlink(uint8_t, uint8_t, mavlink_message_t *last_msg);
 
 static void mavlink_test_all(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
     mavlink_test_common(system_id, component_id, last_msg);
-    mavlink_test_firmament(system_id, component_id, last_msg);
+    mavlink_test_fmt_mavlink(system_id, component_id, last_msg);
 }
 #endif
 
@@ -86,7 +86,7 @@ static void mavlink_test_fmt_pilot_cmd(uint8_t system_id, uint8_t component_id, 
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
-static void mavlink_test_firmament(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+static void mavlink_test_fmt_mavlink(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
     mavlink_test_fmt_pilot_cmd(system_id, component_id, last_msg);
 }
@@ -94,4 +94,4 @@ static void mavlink_test_firmament(uint8_t system_id, uint8_t component_id, mavl
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // FIRMAMENT_TESTSUITE_H
+#endif // FMT_MAVLINK_TESTSUITE_H

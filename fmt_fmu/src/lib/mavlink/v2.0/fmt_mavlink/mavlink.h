@@ -1,5 +1,5 @@
 /** @file
- *  @brief MAVLink comm protocol built from firmament.xml
+ *  @brief MAVLink comm protocol built from fmt_mavlink.xml
  *  @see http://mavlink.org
  */
 #pragma once
@@ -29,6 +29,6 @@
 #endif
 
 #include "version.h"
-#include "firmament.h"
+#include "fmt_mavlink.h"
 
 #endif // MAVLINK_H
