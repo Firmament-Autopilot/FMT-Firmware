@@ -19,65 +19,65 @@
 
 #include <firmament.h>
 
-#define MCN_MALLOC(size)				rt_malloc(size)
-#define MCN_FREE(ptr)					rt_free(ptr)
-#define MCN_ENTER_CRITICAL				OS_ENTER_CRITICAL
-#define MCN_EXIT_CRITICAL				OS_EXIT_CRITICAL
-#define MCN_EVENT_HANDLE				rt_sem_t
-#define MCN_SEND_EVENT(event)			rt_sem_release(event)
-#define MCN_WAIT_EVENT(event, time)		rt_sem_take(event, time)
-#define MCN_ASSERT(EX)                  RT_ASSERT(EX)
+#define MCN_MALLOC(size)            rt_malloc(size)
+#define MCN_FREE(ptr)               rt_free(ptr)
+#define MCN_ENTER_CRITICAL          OS_ENTER_CRITICAL
+#define MCN_EXIT_CRITICAL           OS_EXIT_CRITICAL
+#define MCN_EVENT_HANDLE            rt_sem_t
+#define MCN_SEND_EVENT(event)       rt_sem_release(event)
+#define MCN_WAIT_EVENT(event, time) rt_sem_take(event, time)
+#define MCN_ASSERT(EX)              RT_ASSERT(EX)
 
-#define MCN_MAX_LINK_NUM		30
+#define MCN_MAX_LINK_NUM 30
 
-typedef struct mcn_node		McnNode;
-typedef struct mcn_node*	McnNode_t;
+typedef struct mcn_node McnNode;
+typedef struct mcn_node* McnNode_t;
 struct mcn_node {
-	volatile uint8_t renewal;
-	MCN_EVENT_HANDLE event_t;
-	void (*cb)(void* parameter);
-	McnNode_t next;
+    volatile uint8_t renewal;
+    MCN_EVENT_HANDLE event_t;
+    void (*cb)(void* parameter);
+    McnNode_t next;
 };
 
-typedef struct mcn_hub		McnHub;
+typedef struct mcn_hub McnHub;
 struct mcn_hub {
-	const char* obj_name;
-	const uint32_t obj_size;
-	void* pdata;
-	McnNode_t link_head;
-	McnNode_t link_tail;
-	uint32_t link_num;
-	uint8_t published;	// publish flag
-	int (*echo)(void* parameter);
-	// frequency estimate
-	uint32_t last_pub_time;
-	float freq;
+    const char* obj_name;
+    const uint32_t obj_size;
+    void* pdata;
+    McnNode_t link_head;
+    McnNode_t link_tail;
+    uint32_t link_num;
+    uint8_t published; // publish flag
+    int (*echo)(void* parameter);
+    // frequency estimate
+    uint32_t last_pub_time;
+    float freq;
 };
 
-typedef struct mcn_list  McnList;
+typedef struct mcn_list McnList;
 typedef struct mcn_list* McnList_t;
 struct mcn_list {
-	McnHub* hub_t;
-	McnList_t next;
+    McnHub* hub_t;
+    McnList_t next;
 };
 
 /******************* Helper Macro *******************/
-#define MCN_ID(_name)				(&__mcn_##_name)
+#define MCN_ID(_name) (&__mcn_##_name)
 
-#define MCN_DECLARE(_name) 			extern McnHub __mcn_##_name
+#define MCN_DECLARE(_name) extern McnHub __mcn_##_name
 
-#define MCN_DEFINE(_name, _size)			\
-	McnHub __mcn_##_name = {	        	\
-		.obj_name = #_name,					\
-		.obj_size = _size,					\
-		.pdata = NULL,                      \
-		.link_head = NULL,	                \
-		.link_tail = NULL,	                \
-		.link_num = 0,						\
-		.published = 0,						\
-        .last_pub_time = 0,                 \
-        .freq = 0.0f                        \
-	}
+#define MCN_DEFINE(_name, _size) \
+    McnHub __mcn_##_name = {     \
+        .obj_name = #_name,      \
+        .obj_size = _size,       \
+        .pdata = NULL,           \
+        .link_head = NULL,       \
+        .link_tail = NULL,       \
+        .link_num = 0,           \
+        .published = 0,          \
+        .last_pub_time = 0,      \
+        .freq = 0.0f             \
+    }
 
 /******************* API *******************/
 fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter));

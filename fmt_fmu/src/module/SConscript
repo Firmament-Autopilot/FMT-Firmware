@@ -12,9 +12,9 @@ src += Glob('Plant/lib/*.c')
 src += Glob('INS/*.c')
 src += Glob('INS/lib/*.c')
 src += Glob('Controller/*.c')
-src += Glob('Controller/codegen/*.c')
+src += Glob('Controller/lib/*.c')
 src += Glob('FMS/*.c')
-src += Glob('FMS/codegen/*.c')
+src += Glob('FMS/lib/*.c')
 src += Glob('IPC/*.c')
 src += Glob('LED/*.c')
 src += Glob('Log/*.c')
@@ -35,8 +35,8 @@ CPPPATH = [cwd,
            cwd + '/Calibration',
            cwd + '/INS/lib',
            cwd + '/Plant/lib',
-           cwd + '/Controller/codegen',
-           cwd + '/FMS/codegen',
+           cwd + '/Controller/lib',
+           cwd + '/FMS/lib',
            cwd + '/FS_Manager',
            cwd + '/BuzzerTune'
            ]
