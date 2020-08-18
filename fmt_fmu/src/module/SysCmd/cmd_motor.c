@@ -88,6 +88,27 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
                 console_printf("need specify motor id\n");
             }
         }
+    } else if (strcmp(argv[1], "setall") == 0) {
+        uint16_t val = atoi(argv[2]);
+        uint16_t motor_val[4];
+
+        motor_val[0] = val;
+        motor_val[1] = val;
+        motor_val[2] = val;
+        motor_val[3] = val;
+
+        if (motor_dev && argc >= 3) {
+            if (!(motor_dev->open_flag & RT_DEVICE_OFLAG_OPEN)) {
+                console_printf("open it first\n");
+                return -1;
+            }
+
+            if (rt_device_write(motor_dev, MOTOR_MASK_1_4, motor_val, 8) == 8) {
+                console_printf("%s[1-4] = %d\n", aux ? "motor_aux" : "motor", id, val);
+            } else {
+                console_printf("%s[1-4] set fail\n", aux ? "motor_aux" : "motor", id);
+            }
+        }
     } else {
         show_usage();
     }

@@ -75,6 +75,10 @@ void task_vehicle_entry(void* parameter)
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
                 send_actuator_cmd();
 #endif
+
+#if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
+                send_hil_actuator_cmd();
+#endif
             }
         }
     }

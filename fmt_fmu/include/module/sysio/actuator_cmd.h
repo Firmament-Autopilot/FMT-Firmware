@@ -20,6 +20,7 @@
 #include <firmament.h>
 
 fmt_err send_actuator_cmd(void);
+fmt_err send_hil_actuator_cmd(void);
 fmt_err actuator_init(const char* device_name);
 fmt_err actuator_deinit(void);
 

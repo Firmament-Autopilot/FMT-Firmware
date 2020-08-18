@@ -20,12 +20,17 @@
 #define FMT_BUILD_CHECK
 
 /* HIL simulation */
-#define FMT_USING_HIL
+//#define FMT_USING_HIL
 
 #ifdef FMT_USING_HIL
-    #define FMT_USING_SIH
-    // #define FMT_HIL_WITH_ACTUATOR
-    #define FMT_OUTPUT_PILOT_CMD
+    /* Simulator-in-hardware simulation, if not defined, the standard HIL will be used */
+    #define FMT_USING_SIH   
+
+    /* enable actuator output in simulation mode */
+    // #define FMT_HIL_WITH_ACTUATOR   
+
+    /* send out pilot_cmd by mavlink */ 
+    #define FMT_OUTPUT_PILOT_CMD    
 #endif
 
 /* Mavlink */

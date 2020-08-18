@@ -20,11 +20,17 @@
 #include "module/ftp/ftp_manager.h"
 #include "module/mavproxy/mavlink_param.h"
 #include "module/mavproxy/mavproxy_dev.h"
+#include "module/sensor/sensor_manager.h"
 #include "task/task_comm.h"
 
 #define TAG "MAV_Monitor"
 
 #define EVENT_MAV_RX (1 << 0)
+
+MCN_DECLARE(sensor_imu);
+MCN_DECLARE(sensor_mag);
+MCN_DECLARE(sensor_baro);
+MCN_DECLARE(sensor_gps);
 
 static char thread_mavlink_rx_stack[4096];
 struct rt_thread thread_mavlink_rx_handle;
@@ -100,28 +106,78 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
     } break;
 
     case MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL: {
-        mavlink_file_transfer_protocol_t ftp_protocol_t;
+        if (system.sysid == mavlink_msg_file_transfer_protocol_get_target_system(msg)) {
+            mavlink_file_transfer_protocol_t ftp_protocol_t;
 
-        if (system.sysid != mavlink_msg_file_transfer_protocol_get_target_system(msg)) {
-            return FMT_ERROR;
-        }
+            mavlink_msg_file_transfer_protocol_decode(msg, &ftp_protocol_t);
 
-        mavlink_msg_file_transfer_protocol_decode(msg, &ftp_protocol_t);
+            if (ftp_process_request(ftp_protocol_t.payload, msg->sysid, msg->compid) == FMT_EOK) {
 
-        if (ftp_process_request(ftp_protocol_t.payload, msg->sysid, msg->compid) == FMT_EOK) {
+                ftp_protocol_t.target_system = msg->sysid;
+                ftp_protocol_t.target_component = msg->compid;
+                ftp_protocol_t.target_network = 0;
 
-            ftp_protocol_t.target_system = msg->sysid;
-            ftp_protocol_t.target_component = msg->compid;
-            ftp_protocol_t.target_network = 0;
+                mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, msg, &ftp_protocol_t);
 
-            mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, msg, &ftp_protocol_t);
-
-            if (mavproxy_send_immediate_msg(msg, 0) != 1) {
-                console_printf("ftp msg send err\n");
-                return FMT_ERROR;
+                if (mavproxy_send_immediate_msg(msg, 0) != 1) {
+                    console_printf("ftp msg send err\n");
+                    return FMT_ERROR;
+                }
             }
         }
     } break;
+
+#if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)  
+    case MAVLINK_MSG_ID_HIL_SENSOR: {    
+        mavlink_hil_sensor_t hil_sensor;
+        IMU_Report imu_report;
+        Mag_Report mag_report;
+        Baro_Report baro_report;
+
+        mavlink_msg_hil_sensor_decode(msg, &hil_sensor);
+
+        /* publish hil sensor data */
+        imu_report.acc_B_mDs2[0] = hil_sensor.xacc;
+        imu_report.acc_B_mDs2[1] = hil_sensor.yacc;
+        imu_report.acc_B_mDs2[2] = hil_sensor.zacc;
+        imu_report.gyr_B_radDs[0] = hil_sensor.xgyro;
+        imu_report.gyr_B_radDs[1] = hil_sensor.ygyro;
+        imu_report.gyr_B_radDs[2] = hil_sensor.zgyro;
+        imu_report.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_ID(sensor_imu), &imu_report);
+
+        mag_report.mag_B_gauss[0] = hil_sensor.xmag;
+        mag_report.mag_B_gauss[1] = hil_sensor.ymag;
+        mag_report.mag_B_gauss[2] = hil_sensor.zmag;
+        mag_report.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_ID(sensor_mag), &mag_report);
+
+        baro_report.pressure_pa = hil_sensor.abs_pressure*1e-3;
+        baro_report.temperature_deg = hil_sensor.temperature;
+        baro_report.altitude_m = hil_sensor.pressure_alt;
+        baro_report.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_ID(sensor_baro), &baro_report);
+    } break;
+
+    case MAVLINK_MSG_ID_HIL_GPS: {
+        mavlink_hil_gps_t hil_gps;
+        GPS_Report gps_report;
+
+        gps_report.lat = hil_gps.lat;
+        gps_report.lon = hil_gps.lon;
+        gps_report.height = hil_gps.alt;
+        gps_report.velN = (float)hil_gps.vn * 0.01f;
+        gps_report.velE = (float)hil_gps.ve * 0.01f;
+        gps_report.velD = (float)hil_gps.vd * 0.01f;
+        gps_report.hAcc = (float)hil_gps.eph * 0.01f;
+        gps_report.vAcc = (float)hil_gps.epv * 0.01f;
+        gps_report.sAcc = 0;    // speed accurancy unknown
+        gps_report.numSV = hil_gps.satellites_visible;
+        gps_report.fixType = hil_gps.fix_type;
+        gps_report.timestamp_ms = systime_now_ms();;
+        mcn_publish(MCN_ID(sensor_gps), &gps_report);
+    } break;
+#endif
 
     default: {
         // console_printf("unknown mavlink msg:%d\n", msg->msgid);

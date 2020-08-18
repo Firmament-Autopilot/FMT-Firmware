@@ -29,6 +29,16 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 static McnNode_t _fms_out_nod;
 static McnNode_t _ins_out_nod;
 
+static int _control_out_echo(void* param)
+{
+    Control_Out_Bus control_out;
+    if(mcn_copy_from_hub((McnHub*)param, &control_out) == FMT_EOK){
+        console_printf("timestamp:%d actuator: %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0], 
+            control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3]);
+    }
+    return 0;
+}
+
 static void _update_model_parameter(void)
 {
     CONTROL_PARAM.VEL_XY_P = PARAM_GET_FLOAT(CONTROL, VEL_XY_P);
@@ -103,7 +113,7 @@ void controller_model_step(void)
 
 void controller_model_init(void)
 {
-    mcn_advertise(MCN_ID(control_output), NULL);
+    mcn_advertise(MCN_ID(control_output), _control_out_echo);
 
     _fms_out_nod = mcn_subscribe(MCN_ID(fms_output), NULL, NULL);
     _ins_out_nod = mcn_subscribe(MCN_ID(ins_output), NULL, NULL);
