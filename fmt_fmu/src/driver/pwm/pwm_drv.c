@@ -99,7 +99,7 @@ static void _pwm_timer_init(void)
     PrescalerValue = (uint16_t)((rcc_clocks.PCLK2_Frequency * 2 / TIMER_FREQUENCY) - 1);
 
     /* Time base configuration */
-    TIM_TimeBaseStructure.TIM_Period = PWM_ARR(_pwm_freq); //PWM Frequency = 3M/60K = 50 Hz
+    TIM_TimeBaseStructure.TIM_Period = PWM_ARR(_pwm_freq) - 1; //PWM Frequency = 3M/60K = 50 Hz
     TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;

@@ -70,7 +70,7 @@ void pwm_timer_init(void)
     /* Compute the prescaler value */
     PrescalerValue = (uint16_t)(TimClk / TIMER_FREQUENCY) - 1;
     /* Time base configuration */
-    TIM_TimeBaseStructure.TIM_Period = PWM_ARR(_pwm_freq);
+    TIM_TimeBaseStructure.TIM_Period = PWM_ARR(_pwm_freq) - 1;
     TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
