@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.545
+ * Model version                  : 1.561
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug 10 21:48:16 2020
+ * C/C++ source code generated on : Thu Aug 20 22:38:49 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -31,15 +31,15 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.01F,
   0.5F,
   0.2F,
-  0.1F,
+  0.01F,
   -1.0F,
   1.0F,
   -1.0F,
   1.0F,
-  -0.3F,
-  0.3F,
-  -0.2F,
-  0.2F,
+  -0.15F,
+  0.15F,
+  -0.5F,
+  0.5F,
   3.0F,
   3.0F,
   0.52359879F,
@@ -121,7 +121,7 @@ void Controller_step(void)
   real32_T rtb_Cos;
   real32_T rtb_Multiply4;
   real32_T rtb_Multiply3;
-  uint32_T rtb_Switch;
+  uint32_T rtb_throttle_cmd;
   int32_T i;
   real32_T rtb_M_z_0[3];
   real32_T rtb_Atan_idx_0;
@@ -604,13 +604,15 @@ void Controller_step(void)
   if (Controller_U.FMS_Out.state == 2) {
     /* Switch: '<S40>/Switch' incorporates:
      *  Constant: '<S41>/Constant1'
+     *  Constant: '<S41>/hover_throttle'
      *  Constant: '<S42>/Constant'
      *  Gain: '<S41>/Gain1'
      *  RelationalOperator: '<S42>/Compare'
+     *  Sum: '<S41>/Sum'
      *  Sum: '<S41>/Sum1'
      */
     if (Controller_U.FMS_Out.mode >= 4) {
-      rtb_Switch = Controller_U.FMS_Out.throttle_cmd;
+      rtb_throttle_cmd = Controller_U.FMS_Out.throttle_cmd;
     } else {
       /* Product: '<S46>/Multiply' incorporates:
        *  Constant: '<S46>/kd'
@@ -636,32 +638,18 @@ void Controller_step(void)
       u0_0 += CONTROL_PARAM.VEL_Z_P * rtb_Gain +
         Controller_DW.DiscreteTimeIntegrator_DSTATE;
 
-      /* Saturate: '<S6>/Saturation2' */
-      if (u0_0 > 1.0F) {
-        u0_0 = 1.0F;
+      /* Saturate: '<S43>/Saturation' */
+      if (u0_0 > 0.3F) {
+        u0_0 = 0.3F;
       } else {
-        if (u0_0 < -1.0F) {
-          u0_0 = -1.0F;
+        if (u0_0 < -0.3F) {
+          u0_0 = -0.3F;
         }
       }
 
-      /* End of Saturate: '<S6>/Saturation2' */
-
-      /* Saturate: '<S41>/Saturation' incorporates:
-       *  Constant: '<S41>/hover_throttle'
-       *  Sum: '<S41>/Sum'
-       */
-      if (u0_0 + 0.5F > 1.0F) {
-        u0_0 = 1.0F;
-      } else if (u0_0 + 0.5F < 0.0F) {
-        u0_0 = 0.0F;
-      } else {
-        u0_0 += 0.5F;
-      }
-
-      /* End of Saturate: '<S41>/Saturation' */
-      rtb_Switch = (uint32_T)fmodf(floorf(1000.0F * u0_0), 4.2949673E+9F) +
-        1000U;
+      /* End of Saturate: '<S43>/Saturation' */
+      rtb_throttle_cmd = (uint32_T)fmodf(floorf((u0_0 + 0.5F) * 1000.0F),
+        4.2949673E+9F) + 1000U;
     }
 
     /* End of Switch: '<S40>/Switch' */
@@ -768,7 +756,7 @@ void Controller_step(void)
                            Controller_ConstP.X_Frame_Effective_Matrix_Value[i] *
                            u0_0))), 65536.0F);
       u0 = (uint16_T)((uint32_T)(tmp < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-        (uint16_T)-tmp : (int32_T)(uint16_T)tmp) + (uint16_T)rtb_Switch);
+        (uint16_T)-tmp : (int32_T)(uint16_T)tmp) + (uint16_T)rtb_throttle_cmd);
       if (u0 > 2000) {
         /* Outport: '<Root>/Control_Out' incorporates:
          *  Reshape: '<S6>/Reshape'

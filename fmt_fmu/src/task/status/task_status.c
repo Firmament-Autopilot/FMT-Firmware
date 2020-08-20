@@ -220,7 +220,7 @@ void task_status_entry(void* parameter)
 #endif
 
 #ifdef FMT_HIL_WITH_ACTUATOR
-    ulog_w(TAG, "Be causious! Actuator enabled for HIL, make sure you have removed all propellers!");
+    ulog_w(TAG, "Actuator enabled for HIL, make sure you have removed all propellers!");
 #endif
 
     while (1) {
