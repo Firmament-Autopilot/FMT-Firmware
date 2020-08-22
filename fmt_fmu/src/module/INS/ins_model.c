@@ -139,31 +139,31 @@ void ins_model_step(void)
 
     /* record INS input bus data if updated */
     if (ins_handle.imu_updated) {
-
-        ins_handle.imu_updated = 0;
         /* Log IMU data if IMU updated */
-        blog_push_msg((uint8_t*)&INS_U.IMU1, BLOG_IMU_ID, sizeof(INS_U.IMU1));
+        if (blog_push_msg((uint8_t*)&INS_U.IMU1, BLOG_IMU_ID, sizeof(INS_U.IMU1)) == FMT_EOK) {
+            ins_handle.imu_updated = 0;
+        }
     }
 
     if (ins_handle.mag_updated) {
-
-        ins_handle.mag_updated = 0;
         /* Log Magnetometer data */
-        blog_push_msg((uint8_t*)&INS_U.MAG, BLOG_MAG_ID, sizeof(INS_U.MAG));
+        if (blog_push_msg((uint8_t*)&INS_U.MAG, BLOG_MAG_ID, sizeof(INS_U.MAG)) == FMT_EOK) {
+            ins_handle.mag_updated = 0;
+        }
     }
 
     if (ins_handle.baro_updated) {
-
-        ins_handle.baro_updated = 0;
         /* Log Barometer data */
-        blog_push_msg((uint8_t*)&INS_U.Barometer, BLOG_BARO_ID, sizeof(INS_U.Barometer));
+        if (blog_push_msg((uint8_t*)&INS_U.Barometer, BLOG_BARO_ID, sizeof(INS_U.Barometer)) == FMT_EOK) {
+            ins_handle.baro_updated = 0;
+        }
     }
 
     if (ins_handle.gps_updated) {
-
-        ins_handle.gps_updated = 0;
         /* Log GPS data */
-        blog_push_msg((uint8_t*)&INS_U.GPS_uBlox, BLOG_GPS_ID, sizeof(INS_U.GPS_uBlox));
+        if (blog_push_msg((uint8_t*)&INS_U.GPS_uBlox, BLOG_GPS_ID, sizeof(INS_U.GPS_uBlox)) == FMT_EOK) {
+            ins_handle.gps_updated = 0;
+        }
     }
 
     /* Log INS output bus data */

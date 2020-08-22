@@ -60,10 +60,11 @@ void fms_model_step(void)
     mcn_publish(MCN_ID(fms_output), &FMS_Y.FMS_Output);
 
     if (_pilot_cmd_update) {
-        _pilot_cmd_update = 0;
         FMS_U.Pilot_Cmd.timestamp = time_now - start_time;
         /* Log pilot command */
-        blog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, BLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus));
+        if (blog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, BLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus)) == FMT_EOK) {
+            _pilot_cmd_update = 0;
+        }
     }
 
     DEFINE_TIMETAG(fms_output, 100);
