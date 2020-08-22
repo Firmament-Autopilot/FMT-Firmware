@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.561
+ * Model version                  : 1.571
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 20 22:38:49 2020
+ * C/C++ source code generated on : Sat Aug 22 22:42:51 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,7 +18,7 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Controller_T Controller_ConstB = {
-  0.0F,                                /* '<S47>/Constant' */
+  0.0F,                                /* '<S48>/Constant' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S35>/VecConcentate3' */
   0.0F,                                /* '<S37>/Constant' */
