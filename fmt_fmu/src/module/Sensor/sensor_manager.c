@@ -146,20 +146,20 @@ void sensor_collect(void)
 	}
 }
 
-rt_err_t sensor_manager_init(void)
+fmt_err sensor_manager_init(void)
 {
-	rt_err_t res = RT_EOK;
+    fmt_err err = FMT_EOK;
 
-	res |= sensor_imu_init();
-	res |= sensor_mag_init();
-	res |= sensor_baro_init();
-	res |= sensor_gps_init();
+	err |= sensor_imu_init();
+	err |= sensor_mag_init();
+	err |= sensor_baro_init();
+	err |= sensor_gps_init();
 
 	/* advertise sensor data */
-	mcn_advertise(MCN_ID(sensor_imu), SENSOR_IMU_echo);
-	mcn_advertise(MCN_ID(sensor_mag), SENSOR_MAG_echo);
-	mcn_advertise(MCN_ID(sensor_baro), SENSOR_BARO_echo);
-	mcn_advertise(MCN_ID(sensor_gps), SENSOR_GPS_echo);
+	err |= mcn_advertise(MCN_ID(sensor_imu), SENSOR_IMU_echo);
+	err |= mcn_advertise(MCN_ID(sensor_mag), SENSOR_MAG_echo);
+	err |= mcn_advertise(MCN_ID(sensor_baro), SENSOR_BARO_echo);
+	err |= mcn_advertise(MCN_ID(sensor_gps), SENSOR_GPS_echo);
 
-	return res;
+	return err == FMT_EOK ? FMT_EOK : FMT_ERROR;
 }

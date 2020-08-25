@@ -76,7 +76,7 @@ typedef struct {
 	uint16_t reserved;
 } GPS_Report;
 
-rt_err_t sensor_manager_init(void);
+fmt_err sensor_manager_init(void);
 void sensor_collect(void);
 
 #endif

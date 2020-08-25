@@ -92,47 +92,47 @@ void board_show_version(void)
 void board_early_init(void)
 {
     /* systick module init */
-    systime_init();
+    FMT_CHECK(systime_init());
 
     /* init console to enable console output */
-    console_init(CONSOLE_DEVICE_NAME);
+    FMT_CHECK(console_init(CONSOLE_DEVICE_NAME));
 
-    gpio_drv_init();
+    /* init peripherals for which will be used by other drivers */
+    RTT_CHECK(gpio_drv_init());
 
-    spi_drv_init();
+    RTT_CHECK(spi_drv_init());
 
-    pwm_drv_init();
+    RTT_CHECK(pwm_drv_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void board_init(void)
 {
     /* init boot log */
-    boot_log_init();
+    FMT_CHECK(boot_log_init());
 
     /* init file manager */
-    fs_manager_init(FS_DEVICE_NAME, "/");
+    FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
 
     /* init usb device */
-    usb_cdc_init();
+    FMT_CHECK(usb_cdc_init());
 
-    /* init sensor drivers */
-    mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME);
+    /* init drivers */
+    RTT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));
 
-    l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME);
+    RTT_CHECK(l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME));
 
-    ms5611_drv_init(MS5611_SPI_DEVICE_NAME);
+    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
-    lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME);
+    RTT_CHECK(lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME));
+
+    RTT_CHECK(tca62724_drv_init());
 
     /* init parameter system */
-    param_init();
+    FMT_CHECK(param_init());
 
     /* init sensor manager */
-    sensor_manager_init();
-
-    /* RGB led device init */
-    tca62724_drv_init();
+    FMT_CHECK(sensor_manager_init());
 
     /* GDB STUB */
 #ifdef RT_USING_GDB
@@ -144,10 +144,11 @@ void board_init(void)
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
-    console_mount_shell(NULL);
+    FMT_CHECK(console_mount_shell(NULL));
 #endif
 
-    sys_stat_init();
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
 
 #ifdef FMT_USING_CM_BACKTRACE
     // cortex-m backtrace
@@ -157,20 +158,20 @@ void board_init(void)
 
 void board_post_init(void)
 {
-    pilot_cmd_init();
+    FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
 #ifdef FMT_USING_AUX_MOTOR
-    actuator_init("motor_aux");
+    FMT_CHECK(actuator_init("motor_aux"));
 #else
-    actuator_init("motor_main");
+    FMT_CHECK(actuator_init("motor_main"));
 #endif
 #endif
 
     board_show_version();
 
     /* dump boot log to file */
-    boot_log_dump();
+    FMT_CHECK(boot_log_dump());
 }
 
 /**
@@ -182,10 +183,10 @@ void rt_hw_board_init()
     NVIC_Configuration();
 
     /* system timer init */
-    systick_drv_init();
+    RTT_CHECK(systick_drv_init());
 
     /* system usart init */
-    usart_drv_init();
+    RTT_CHECK(usart_drv_init());
 
     board_early_init();
 }

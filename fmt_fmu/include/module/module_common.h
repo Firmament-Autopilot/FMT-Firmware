@@ -18,6 +18,7 @@
 #define __MODULE_COMMON_H__
 
 #include "module/system/systime.h"
+#include "module/system/statistic.h"
 #include "module/console/console.h"
 #include "module/ipc/uMCN.h"
 #include "module/param/param.h"

@@ -17,7 +17,6 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/system/system.h"
 #include "module/system/statistic.h"
 #include "module/console/console.h"
 

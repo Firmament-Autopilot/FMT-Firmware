@@ -34,7 +34,7 @@ typedef struct {
 
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;
 
-uint8_t usb_cdc_init(void);
+fmt_err usb_cdc_init(void);
 void cdc_send_data(uint8_t* pbuf, uint32_t buf_len);
 uint8_t cdc_receive_data(uint8_t* pbuf, uint32_t len);
 uint8_t cdc_check_sent(void);

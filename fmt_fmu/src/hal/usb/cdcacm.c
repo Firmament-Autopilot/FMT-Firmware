@@ -204,7 +204,7 @@ rt_err_t  usb_control(rt_device_t dev, int cmd, void* args)
 	return RT_EOK;
 }
 
-uint8_t usb_cdc_init(void)
+fmt_err usb_cdc_init(void)
 {
 	rt_err_t res;
 	data_sent = 1;
@@ -237,5 +237,5 @@ uint8_t usb_cdc_init(void)
 	res = rt_device_register(&usb_device, USB_DEVICE_NAME, RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE |
 	                         RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
 
-	return res == RT_EOK ? 0 : 1;
+	return res == RT_EOK ? FMT_EOK : FMT_ERROR;
 }

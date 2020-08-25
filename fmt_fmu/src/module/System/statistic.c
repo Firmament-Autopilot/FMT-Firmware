@@ -55,7 +55,7 @@ float sysstat_get_cpu_usage(void)
 	return _cpu_usage;
 }
 
-void sys_stat_init(void)
+fmt_err sys_stat_init(void)
 {
 	_os_idle_ctr = 0;
 
@@ -74,4 +74,6 @@ void sys_stat_init(void)
 	              OS_STATISTIC_INTERVAL,
 	              RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 	rt_timer_start(&timer_sta);
+
+    return FMT_EOK;
 }
