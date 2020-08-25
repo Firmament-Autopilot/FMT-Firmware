@@ -31,7 +31,8 @@
         "SConscript": "python",
         "initializer_list": "c",
         "cstdint": "cpp",
-        "iosfwd": "c"
+        "iosfwd": "c",
+        "cmath": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled",
     "git.ignoreLimitWarning": true

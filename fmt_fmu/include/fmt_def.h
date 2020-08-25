@@ -17,6 +17,8 @@
 #ifndef __FMT_DEF_H__
 #define __FMT_DEF_H__
 
+#include "rtdef.h"
+
 /* Firmament version information */
 #define FMT_VERSION    0 /**< major version number */
 #define FMT_SUBVERSION 0 /**< minor version number */
@@ -59,6 +61,7 @@ typedef int bool;
 #define OS_FREE(ptr)      rt_free(ptr)
 
 #define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
+#define RTT_CHECK(func) RT_ASSERT(func == RT_EOK)
 
 typedef enum {
     FMT_EOK = 0,         /**< There is no error */

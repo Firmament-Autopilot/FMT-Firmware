@@ -129,7 +129,7 @@ fmt_err fs_manager_init(const char* device_name, const char* path)
     int res = dfs_mount(device_name, path, FS_TYPE, 0, NULL);
 
     if (res != 0) {
-        console_printf("dfs mount fail\n");
+        boot_log_printf("dfs mount fail\n");
         return FMT_ERROR;
     }
 

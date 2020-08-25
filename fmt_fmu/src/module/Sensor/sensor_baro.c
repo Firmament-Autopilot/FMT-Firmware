@@ -43,13 +43,11 @@ fmt_err sensor_baro_init(void)
 {
 	rt_err_t res = RT_EOK;
 
-	// /* sensor low-level init */
-	// res |= ms5611_drv_init("spi1_dev3");
 	/* find baro device */
 	_baro_device_t = rt_device_find("barometer");
 
 	if(_baro_device_t == RT_NULL) {
-		console_printf("can't find barometer device\r\n");
+		boot_log_printf("can't find barometer device\r\n");
 		res |= RT_EEMPTY;
 	}
 

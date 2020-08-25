@@ -66,7 +66,7 @@ fmt_err sensor_gps_init(void)
 	_gps_device_t = rt_device_find("gps");
 
 	if(_gps_device_t == RT_NULL) {
-		console_printf("can't find gps device\r\n");
+		boot_log_printf("can't find gps device\r\n");
 		return FMT_ERROR;
 	}
 

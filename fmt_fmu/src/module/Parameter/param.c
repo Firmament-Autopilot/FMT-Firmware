@@ -505,19 +505,6 @@ fmt_err param_set_val_by_full_name(char* group_name, char* param_name, void* val
     return param_set_val(p, val);
 }
 
-// static int _fprintf(int fd, const char* fmt, ...)
-// {
-// 	va_list args;
-// 	int length;
-//     char buffer[100];
-
-// 	va_start(args, fmt);
-// 	length = vsprintf(buffer, fmt, args);
-// 	va_end(args);
-
-//     return write(fd, buffer, length);
-// }
-
 fmt_err param_save(char* path)
 {
     int fd;

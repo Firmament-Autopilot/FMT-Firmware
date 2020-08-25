@@ -14,18 +14,13 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MODULE_COMMON_H__
-#define __MODULE_COMMON_H__
+#ifndef __BOOT_LOG_H__
+#define __BOOT_LOG_H__
 
-#include "module/system/systime.h"
-#include "module/console/console.h"
-#include "module/ipc/uMCN.h"
-#include "module/param/param.h"
-#include "module/log/boot_log.h"
-#include "module/log/blog.h"
-#include "module/log/ulog.h"
-#include "module/math/ap_math.h"
-#include "module/math/quaternion.h"
-#include "module/math/conversion.h"
+#include <firmament.h>
+
+uint32_t boot_log_printf(const char* fmt, ...);
+fmt_err boot_log_dump(void);
+fmt_err boot_log_init(void);
 
 #endif

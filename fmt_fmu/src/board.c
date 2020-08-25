@@ -66,32 +66,32 @@ void NVIC_Configuration(void)
 
 void board_show_version(void)
 {
-    console_printf("\n");
-    console_println("   _____                               __ ");
-    console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
-    console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
-    console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
+    boot_log_printf("\n");
+    boot_log_printf("   _____                               __ \n");
+    boot_log_printf("  / __(_)_____ _  ___ ___ _  ___ ___  / /_\n");
+    boot_log_printf(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/\n");
+    boot_log_printf("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ \n");
 
-    console_println("Version: Firmament v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
-    console_println("RTOS: RT-Thread v%d.%d.%d", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    console_println("RAM: %d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    console_println("Board: %s", BOARD_NAME);
-    console_println("Vehicle Type: %s", VEHICLE_TYPE);
-    console_println("INS Model: CF INS");
-    console_println("FMS Model: UAV FMS");
-    console_println("Control Model: PID Controller");
-    console_println("Task Initialize:");
-    console_println("  vehicle: OK");
-    console_println("    fmtio: OK");
-    console_println("     comm: OK");
-    console_println("   logger: OK");
-    console_println("   status: OK");
+    boot_log_printf("Firmware: v%d.%d.%d\n", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
+    boot_log_printf("RTOS: RT-Thread v%d.%d.%d\n", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    boot_log_printf("RAM: %d KB\n", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    boot_log_printf("Board: %s\n", BOARD_NAME);
+    boot_log_printf("Vehicle Type: %s\n", VEHICLE_TYPE);
+    boot_log_printf("INS Model: CF INS\n");
+    boot_log_printf("FMS Model: UAV FMS\n");
+    boot_log_printf("Control Model: PID Controller\n");
+    boot_log_printf("Task Initialize:\n");
+    boot_log_printf("  vehicle: OK\n");
+    boot_log_printf("    fmtio: OK\n");
+    boot_log_printf("     comm: OK\n");
+    boot_log_printf("   logger: OK\n");
+    boot_log_printf("   status: OK\n");
 }
 
 /* this function will be called before rtos start, which is not thread context */
 void board_early_init(void)
 {
-    /* system time module init */
+    /* systick module init */
     systime_init();
 
     /* init console to enable console output */
@@ -107,6 +107,9 @@ void board_early_init(void)
 /* this function will be called after rtos start, which is in thread context */
 void board_init(void)
 {
+    /* init boot log */
+    boot_log_init();
+
     /* init file manager */
     fs_manager_init(FS_DEVICE_NAME, "/");
 
@@ -165,6 +168,9 @@ void board_post_init(void)
 #endif
 
     board_show_version();
+
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**

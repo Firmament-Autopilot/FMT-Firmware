@@ -52,6 +52,6 @@ void systime_delay_ms(uint32_t time_ms);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);
-uint8_t systime_init(void);
+fmt_err systime_init(void);
 
 #endif
