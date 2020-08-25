@@ -68,11 +68,11 @@ static void rt_init_thread_entry(void* parameter)
     board_init();
 
     /********************* init tasks *********************/
-    FMT_CHECK(task_vehicle_init());
     FMT_CHECK(task_fmtio_init());
     FMT_CHECK(task_comm_init());
     FMT_CHECK(task_logger_init());
     FMT_CHECK(task_status_init());
+    FMT_CHECK(task_vehicle_init());
 
     /********************* board post init *********************/
     board_post_init();

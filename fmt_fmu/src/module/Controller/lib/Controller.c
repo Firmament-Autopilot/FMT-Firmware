@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.571
+ * Model version                  : 1.580
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug 22 22:42:51 2020
+ * C/C++ source code generated on : Tue Aug 25 10:36:10 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -38,8 +38,8 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   1.0F,
   -0.15F,
   0.15F,
-  -0.05F,
-  0.05F,
+  -0.1F,
+  0.1F,
   3.0F,
   3.0F,
   0.52359879F,
@@ -179,7 +179,7 @@ void Controller_step(void)
    *  DiscreteIntegrator: '<S50>/Discrete-Time Integrator1'
    *  Sum: '<S50>/Sum5'
    */
-  rtb_k_pt = (rtb_Gain - Controller_DW.DiscreteTimeIntegrator1_DSTATE) * 10.0F;
+  rtb_k_pt = (rtb_Gain - Controller_DW.DiscreteTimeIntegrator1_DSTATE) * 5.0F;
 
   /* Trigonometry: '<S35>/TrigoFcn1' incorporates:
    *  Inport: '<Root>/INS_Out'
@@ -590,11 +590,11 @@ void Controller_step(void)
    *  Sum: '<S22>/Sum5'
    */
   rtb_Atan_idx_0 = (rtb_Cos1 - Controller_DW.DiscreteTimeIntegrator1_DSTAT_l[0])
-    * 50.0F;
+    * 100.0F;
   rtb_Atan_idx_1 = (rtb_Multiply4 -
-                    Controller_DW.DiscreteTimeIntegrator1_DSTAT_l[1]) * 50.0F;
+                    Controller_DW.DiscreteTimeIntegrator1_DSTAT_l[1]) * 100.0F;
   rtb_Saturation_m = (rtb_Multiply3 -
-                      Controller_DW.DiscreteTimeIntegrator1_DSTAT_l[2]) * 50.0F;
+                      Controller_DW.DiscreteTimeIntegrator1_DSTAT_l[2]) * 100.0F;
 
   /* Switch: '<S1>/Switch' incorporates:
    *  Constant: '<S3>/Constant'

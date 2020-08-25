@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.618
+ * Model version                  : 1.622
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 20 22:37:37 2020
+ * C/C++ source code generated on : Tue Aug 25 10:15:30 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -59,6 +59,7 @@ typedef struct {
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
+  real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S117>/Discrete-Time Integrator5' */
   real32_T Delay_DSTATE;               /* '<S57>/Delay' */
   real32_T Delay_DSTATE_e;             /* '<S39>/Delay' */
   real32_T Delay_DSTATE_p;             /* '<S24>/Delay' */
@@ -339,7 +340,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S114>' : 'FMS/State_Management/Arm_Event/Onground_Check'
  * '<S115>' : 'FMS/State_Management/Arm_Event/Onground_Check/Compare To Constant'
  * '<S116>' : 'FMS/State_Management/Arm_Event/Onground_Check/Interval Test'
- * '<S117>' : 'FMS/State_Management/Arm_Event/Onground_Check/Quat_to_M_OB'
+ * '<S117>' : 'FMS/State_Management/Arm_Event/Onground_Check/LPF'
+ * '<S118>' : 'FMS/State_Management/Arm_Event/Onground_Check/Quat_to_M_OB'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

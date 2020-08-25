@@ -20,7 +20,8 @@
 #include "module/fs_manager/fs_manager.h"
 #include "task/task_logger.h"
 
-#define TAG "BLog"
+#define TAG                   "BLog"
+#define BLOG_MAX_CALLBACK_NUM 10
 
 /* BLog element define */
 blog_elem_t IMU_Elems[] = {
@@ -199,6 +200,8 @@ struct fmt_blog {
 };
 
 static struct fmt_blog blog = { 0 };
+static void (*_blog_start_cb[BLOG_MAX_CALLBACK_NUM])(void);
+static void (*_blog_stop_cb[BLOG_MAX_CALLBACK_NUM])(void);
 
 /**************************** Local Function ********************************/
 
@@ -300,6 +303,27 @@ static void _buffer_write(const uint8_t* data, uint16_t len)
     } else {
         memcpy(&blog.buffer.data[blog.buffer.head * BLOG_SECTOR_SIZE + blog.buffer.index], data, len);
         blog.buffer.index += len;
+    }
+}
+
+static void _invoke_callback_func(uint8_t cb_type)
+{
+    uint32_t i;
+
+    if (cb_type == BLOG_CB_START) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (_blog_start_cb[i]) {
+                _blog_start_cb[i]();
+            }
+        }
+    }
+
+    if (cb_type == BLOG_CB_STOP) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (_blog_stop_cb[i]) {
+                _blog_stop_cb[i]();
+            }
+        }
     }
 }
 
@@ -484,6 +508,9 @@ fmt_err blog_start(char* file_name)
         blog.monitor[i].lost_msg = 0;
     }
 
+    /* invoke callback function */
+    _invoke_callback_func(BLOG_CB_START);
+
     /* start logging, set flag */
     blog.log_status = BLOG_STATUS_LOGGING;
 
@@ -554,14 +581,17 @@ void blog_async_output(void)
             blog.file_open = 0;
         }
 
+        /* invoke callback function */
+        _invoke_callback_func(BLOG_CB_STOP);
+
+        /* set log status to idle */
+        blog.log_status = BLOG_STATUS_IDLE;
+
         ulog_i(TAG, "stop logging:%s", blog.file_name);
         for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
             ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", _blog_bus[i].name, _blog_bus[i].msg_id,
                 blog.monitor[i].total_msg, blog.monitor[i].lost_msg);
         }
-
-        /* set log status to idle */
-        blog.log_status = BLOG_STATUS_IDLE;
     }
 }
 
@@ -583,8 +613,39 @@ void blog_show_status(void)
     }
 }
 
+fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void))
+{
+    uint32_t i;
+
+    if (cb == NULL) {
+        return FMT_ERROR;
+    }
+
+    if (cb_type == BLOG_CB_START) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (_blog_start_cb[i] == NULL) {
+                _blog_start_cb[i] = cb;
+                return FMT_EOK;
+            }
+        }
+    } else if (cb_type == BLOG_CB_STOP) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (_blog_stop_cb[i] == NULL) {
+                _blog_stop_cb[i] = cb;
+                return FMT_EOK;
+            }
+        }
+    } else {
+        return FMT_EINVAL;
+    }
+
+    return FMT_ERROR;
+}
+
 void blog_init(void)
 {
+    uint32_t i;
+
     blog.file_open = 0;
     blog.log_status = BLOG_STATUS_IDLE;
 
@@ -610,5 +671,9 @@ void blog_init(void)
 
     if (blog.buffer.data == NULL) {
         console_printf("blog buffer malloc fail\n");
+    }
+
+    for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+        _blog_start_cb[i] = _blog_stop_cb[i] = NULL;
     }
 }

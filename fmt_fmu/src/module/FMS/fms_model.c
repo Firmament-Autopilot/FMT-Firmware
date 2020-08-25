@@ -32,6 +32,11 @@ static McnNode_t _ins_out_nod;
 static McnNode_t _control_out_nod;
 static uint8_t _pilot_cmd_update = 1;
 
+static void _blog_start_cb(void)
+{
+    _pilot_cmd_update = 1;
+}
+
 void fms_model_step(void)
 {
     static uint32_t start_time = 0;
@@ -85,6 +90,8 @@ void fms_model_init(void)
     _pilot_cmd_nod = mcn_subscribe(MCN_ID(pilot_cmd), NULL, NULL);
     _ins_out_nod = mcn_subscribe(MCN_ID(ins_output), NULL, NULL);
     _control_out_nod = mcn_subscribe(MCN_ID(control_output), NULL, NULL);
+
+    blog_register_callback(BLOG_CB_START, _blog_start_cb);
 
     FMS_init();
 }

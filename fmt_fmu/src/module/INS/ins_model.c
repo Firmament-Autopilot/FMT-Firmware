@@ -64,6 +64,14 @@ static int _ins_output_echo(void* param)
     return 0;
 }
 
+static void _blog_start_cb(void)
+{
+    ins_handle.imu_updated = 1;
+    ins_handle.mag_updated = 1;
+    ins_handle.baro_updated = 1;
+    ins_handle.gps_updated = 1;
+}
+
 void ins_model_step(void)
 {
     DEFINE_TIMETAG(ins_output, 100);
@@ -183,6 +191,8 @@ void ins_model_init(void)
     ins_handle.mag_sub_node_t = mcn_subscribe(MCN_ID(sensor_mag), NULL, NULL);
     ins_handle.baro_sub_node_t = mcn_subscribe(MCN_ID(sensor_baro), NULL, NULL);
     ins_handle.gps_sub_node_t = mcn_subscribe(MCN_ID(sensor_gps), NULL, NULL);
+
+    blog_register_callback(BLOG_CB_START, _blog_start_cb);
 
     INS_init();
 
