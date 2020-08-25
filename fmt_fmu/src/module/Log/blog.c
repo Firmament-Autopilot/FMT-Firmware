@@ -205,6 +205,14 @@ static void (*_blog_stop_cb[BLOG_MAX_CALLBACK_NUM])(void);
 
 /**************************** Local Function ********************************/
 
+static void _reset_log_buffer(void)
+{
+    blog.buffer.num_sector = BLOG_BUFFER_SIZE / BLOG_SECTOR_SIZE;
+    blog.buffer.head = 0;
+    blog.buffer.tail = 0;
+    blog.buffer.index = 0;
+}
+
 static int32_t _get_bus_index(uint8_t msg_id)
 {
     for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
@@ -225,7 +233,6 @@ static int _file_write(const void* payload, uint16_t len)
         return 0;
     }
 
-    // f_write(&blog.fid, payload, len, &bw);
     bw = write(blog.fid, payload, len);
 
     return bw;
@@ -410,7 +417,6 @@ fmt_err blog_start(char* file_name)
     }
 
     /*********************** create log file ***********************/
-    // FRESULT fres = f_open(&blog.fid, file_name, FA_OPEN_ALWAYS | FA_WRITE);
     blog.fid = open(file_name, O_CREAT | O_WRONLY);
 
     if (blog.fid < 0) {
@@ -543,14 +549,13 @@ void blog_async_output(void)
     tail_p = blog.buffer.tail;
     OS_EXIT_CRITICAL;
 
-    need_sync = head_p != tail_p;
+    need_sync = (head_p != tail_p);
 
     /* write log buffer sector into storage device */
     while (head_p != tail_p) {
         uint16_t sector_to_write = _get_max_write_sector(head_p, tail_p);
 
         write(blog.fid, &blog.buffer.data[tail_p * BLOG_SECTOR_SIZE], sector_to_write * BLOG_SECTOR_SIZE);
-        // fsync(blog.fid);
 
         tail_p = (tail_p + sector_to_write) % blog.buffer.num_sector;
         OS_ENTER_CRITICAL;
@@ -564,13 +569,9 @@ void blog_async_output(void)
 
     /* if logging is off, we need to clean up buffer. */
     if (blog.log_status == BLOG_STATUS_STOPPING) {
-        // FRESULT fres = FR_OK;
-
         /* write rest data in buffer */
         if (blog.buffer.index) {
-            // fres |= f_write(&blog.fid, &blog.buffer.data[tail_p * BLOG_SECTOR_SIZE], blog.buffer.index, &bw);
             write(blog.fid, &blog.buffer.data[tail_p * BLOG_SECTOR_SIZE], blog.buffer.index);
-            // fres |= f_sync(&blog.fid);
             fsync(blog.fid);
         }
 
@@ -662,16 +663,12 @@ void blog_init(void)
     blog.header.param_group_list = (param_group_t*)&param_list;
 
     /* initialize log buffer */
-    blog.buffer.num_sector = BLOG_BUFFER_SIZE / BLOG_SECTOR_SIZE;
-    blog.buffer.head = 0;
-    blog.buffer.tail = 0;
-    blog.buffer.index = 0;
-
     blog.buffer.data = (uint8_t*)rt_malloc(BLOG_BUFFER_SIZE);
-
     if (blog.buffer.data == NULL) {
         console_printf("blog buffer malloc fail\n");
     }
+
+    _reset_log_buffer();
 
     for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
         _blog_start_cb[i] = _blog_stop_cb[i] = NULL;

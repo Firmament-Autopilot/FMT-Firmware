@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "board.h"
 #include <firmament.h>
+#include <bsp.h>
 
 #include "task/task_comm.h"
 #include "task/task_fmtio.h"
@@ -64,8 +64,8 @@ static void rt_init_thread_entry(void* parameter)
 {
     rt_err_t res;
 
-    /********************* board init *********************/
-    board_init();
+    /********************* bsp init *********************/
+    bsp_initialize();
 
     /********************* init tasks *********************/
     FMT_CHECK(task_fmtio_init());
@@ -74,8 +74,8 @@ static void rt_init_thread_entry(void* parameter)
     FMT_CHECK(task_status_init());
     FMT_CHECK(task_vehicle_init());
 
-    /********************* board post init *********************/
-    board_post_init();
+    /********************* bsp post init *********************/
+    bsp_post_initialize();
 
     /********************* start tasks *********************/
     res = rt_thread_init(&thread_vehicle_handle,

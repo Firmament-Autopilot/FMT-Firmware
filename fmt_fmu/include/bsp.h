@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __BOARD_H__
-#define __BOARD_H__
+#ifndef __FMT_BSP_H__
+#define __FMT_BSP_H__
 
 #include <firmament.h>
 
@@ -23,6 +23,8 @@
 #define BOARD_NAME   "Pixhawk V2"
 #define VEHICLE_TYPE "Quadcopter"
 
+// Interupt Vector Offset
+#define INT_VECTOR_OFFSET 0x4000
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (0x30000) // 192K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
@@ -43,9 +45,9 @@ extern int __bss_end;
 #endif
 
 void rt_hw_board_init(void);
-void board_early_init(void);
-void board_init(void);
-void board_post_init(void);
+void bsp_early_initialize(void);
+void bsp_initialize(void);
+void bsp_post_initialize(void);
 void board_show_version(void);
 
 #endif

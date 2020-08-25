@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <board.h>
+#include <bsp.h>
 #include <firmament.h>
 #include <shell.h>
 #ifdef FMT_USING_CM_BACKTRACE
@@ -54,17 +54,17 @@ void NVIC_Configuration(void)
 {
 #ifdef VECT_TAB_RAM
     /* Set the Vector Table base location at 0x20000000 */
-    NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0);
+    NVIC_SetVectorTable(NVIC_VectTab_RAM, INT_VECTOR_OFFSET);
 #else /* VECT_TAB_FLASH  */
-    /* Set the Vector Table base location at 0x08000000 */
-    /* app start from 0x8004000,so need configure vectortab offset to 0x4000 */
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x4000);
+    /* Set the Vector Table base location at 0x8004000 */
+    /* first 0x4000 is reserved for bootloader, so the vectortab offset is 0x4000 */
+    NVIC_SetVectorTable(NVIC_VectTab_FLASH, INT_VECTOR_OFFSET);
 #endif
 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 }
 
-void board_show_version(void)
+void bsp_show_version(void)
 {
     boot_log_printf("\n");
     boot_log_printf("   _____                               __ \n");
@@ -89,15 +89,24 @@ void board_show_version(void)
 }
 
 /* this function will be called before rtos start, which is not thread context */
-void board_early_init(void)
+void bsp_early_initialize(void)
 {
-    /* systick module init */
+    /* interrupt controller init */
+    NVIC_Configuration();
+
+    /* system timer init */
+    RTT_CHECK(systick_drv_init());
+
+    /* system usart init */
+    RTT_CHECK(usart_drv_init());
+
+    /* system time module init */
     FMT_CHECK(systime_init());
 
     /* init console to enable console output */
     FMT_CHECK(console_init(CONSOLE_DEVICE_NAME));
 
-    /* init peripherals for which will be used by other drivers */
+    /* init gpio, bus, etc. */
     RTT_CHECK(gpio_drv_init());
 
     RTT_CHECK(spi_drv_init());
@@ -106,7 +115,7 @@ void board_early_init(void)
 }
 
 /* this function will be called after rtos start, which is in thread context */
-void board_init(void)
+void bsp_initialize(void)
 {
     /* init boot log */
     FMT_CHECK(boot_log_init());
@@ -134,11 +143,11 @@ void board_init(void)
     /* init sensor manager */
     FMT_CHECK(sensor_manager_init());
 
-    /* GDB STUB */
-#ifdef RT_USING_GDB
-    gdb_set_device(GDB_DEVICE_NAME);
-    gdb_start();
-#endif
+//     /* GDB STUB */
+// #ifdef RT_USING_GDB
+//     gdb_set_device(GDB_DEVICE_NAME);
+//     gdb_start();
+// #endif
 
 #ifdef RT_USING_FINSH
     /* init finsh */
@@ -156,7 +165,7 @@ void board_init(void)
 #endif
 }
 
-void board_post_init(void)
+void bsp_post_initialize(void)
 {
     FMT_CHECK(pilot_cmd_init());
 
@@ -168,7 +177,7 @@ void board_post_init(void)
 #endif
 #endif
 
-    board_show_version();
+    bsp_show_version();
 
     /* dump boot log to file */
     FMT_CHECK(boot_log_dump());
@@ -179,14 +188,5 @@ void board_post_init(void)
  */
 void rt_hw_board_init()
 {
-    /* interrupt controller init */
-    NVIC_Configuration();
-
-    /* system timer init */
-    RTT_CHECK(systick_drv_init());
-
-    /* system usart init */
-    RTT_CHECK(usart_drv_init());
-
-    board_early_init();
+    bsp_early_initialize();
 }
