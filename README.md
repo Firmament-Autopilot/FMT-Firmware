@@ -8,6 +8,8 @@ Firmament Autopilot is the first open-source autopilot system designed for MBD (
 
 - FMT_Model: The algorithm model developed with Simulink. Generally, it contains the model of INS (Inertial Navigation System), FMS (Flight Management System), Controller and Plant (Dynamic model of unmaned-vehicle including sensor model). Each model can generate C/C++ source files and then integrate into FMT_Firmware. Moreover, FMT_Model provides simulation framework for MIL, SIL, HIL etc.
 
+**For more information, please check the project [document](https://firmamentpilot.github.io/docs/)**
+
 # Supported Hardware
 - The current support hardware is `Pixhawk` (FMUv2). However, it may support more hardwares in future. 
 
