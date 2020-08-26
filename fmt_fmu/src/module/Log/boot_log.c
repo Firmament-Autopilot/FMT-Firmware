@@ -24,27 +24,21 @@
 static char* _buffer_ptr = NULL;
 static uint32_t _index;
 
-uint32_t boot_log_printf(const char* fmt, ...)
+uint8_t boot_logging = 0;
+
+uint32_t boot_log_push(const char* content, uint32_t len)
 {
-    RT_ASSERT(_buffer_ptr != NULL);
+    uint32_t len_to_end = BOOT_LOG_BUFFER_SIZE - _index;
+    uint32_t len_to_write;
 
-    va_list args;
-    int length;
+    len_to_write = len_to_end < len ? len_to_end : len;
 
-    if (_index >= BOOT_LOG_BUFFER_SIZE) {
-        console_printf("boot log buffer full\n");
-        return 0;
+    if(len_to_write > 0) {
+        memcpy(&_buffer_ptr[_index], content, len_to_write);
+        _index += len_to_write;
     }
 
-    va_start(args, fmt);
-    length = vsnprintf(&_buffer_ptr[_index], BOOT_LOG_BUFFER_SIZE - _index, fmt, args);
-    va_end(args);
-
-    console_write(&_buffer_ptr[_index], length);
-
-    _index += length;
-
-    return length;
+    return len_to_write;
 }
 
 fmt_err boot_log_dump(void)
@@ -53,6 +47,9 @@ fmt_err boot_log_dump(void)
 
     int fd;
     fmt_err res = FMT_EOK;
+
+    /* clear boot logging flag */
+    boot_logging = 0;
 
     fd = open(BOOT_LOG_FILE, O_CREAT | O_WRONLY | O_TRUNC);
 
@@ -90,7 +87,11 @@ fmt_err boot_log_init(void)
         return FMT_ERROR;
     }
 
-    _index = 0; // buffer index
+    /* reset buffer index */
+    _index = 0;
+
+    /* set boot logging flag */
+    boot_logging = 1;
 
     return FMT_EOK;
 }

@@ -47,7 +47,7 @@ fmt_err sensor_baro_init(void)
 	_baro_device_t = rt_device_find("barometer");
 
 	if(_baro_device_t == RT_NULL) {
-		boot_log_printf("can't find barometer device\r\n");
+		console_printf("can't find barometer device\r\n");
 		res |= RT_EEMPTY;
 	}
 

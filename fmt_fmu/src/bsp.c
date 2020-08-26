@@ -66,26 +66,26 @@ void NVIC_Configuration(void)
 
 void bsp_show_version(void)
 {
-    boot_log_printf("\n");
-    boot_log_printf("   _____                               __ \n");
-    boot_log_printf("  / __(_)_____ _  ___ ___ _  ___ ___  / /_\n");
-    boot_log_printf(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/\n");
-    boot_log_printf("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ \n");
+    console_printf("\n");
+    console_printf("   _____                               __ \n");
+    console_printf("  / __(_)_____ _  ___ ___ _  ___ ___  / /_\n");
+    console_printf(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/\n");
+    console_printf("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ \n");
 
-    boot_log_printf("Firmware: v%d.%d.%d\n", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
-    boot_log_printf("RTOS: RT-Thread v%d.%d.%d\n", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    boot_log_printf("RAM: %d KB\n", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    boot_log_printf("Board: %s\n", BOARD_NAME);
-    boot_log_printf("Vehicle Type: %s\n", VEHICLE_TYPE);
-    boot_log_printf("INS Model: CF INS\n");
-    boot_log_printf("FMS Model: UAV FMS\n");
-    boot_log_printf("Control Model: PID Controller\n");
-    boot_log_printf("Task Initialize:\n");
-    boot_log_printf("  vehicle: OK\n");
-    boot_log_printf("    fmtio: OK\n");
-    boot_log_printf("     comm: OK\n");
-    boot_log_printf("   logger: OK\n");
-    boot_log_printf("   status: OK\n");
+    console_printf("Firmware: v%d.%d.%d\n", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
+    console_printf("RTOS: RT-Thread v%d.%d.%d\n", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    console_printf("RAM: %d KB\n", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    console_printf("Board: %s\n", BOARD_NAME);
+    console_printf("Vehicle Type: %s\n", VEHICLE_TYPE);
+    console_printf("INS Model: CF INS\n");
+    console_printf("FMS Model: UAV FMS\n");
+    console_printf("Control Model: PID Controller\n");
+    console_printf("Task Initialize:\n");
+    console_printf("  vehicle: OK\n");
+    console_printf("    fmtio: OK\n");
+    console_printf("     comm: OK\n");
+    console_printf("   logger: OK\n");
+    console_printf("   status: OK\n");
 }
 
 /* this function will be called before rtos start, which is not thread context */

@@ -19,8 +19,10 @@
 
 #include <firmament.h>
 
-uint32_t boot_log_printf(const char* fmt, ...);
+uint32_t boot_log_push(const char* content, uint32_t len);
 fmt_err boot_log_dump(void);
 fmt_err boot_log_init(void);
+
+extern uint8_t boot_logging;
 
 #endif

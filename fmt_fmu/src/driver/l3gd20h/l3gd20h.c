@@ -364,7 +364,7 @@ rt_err_t l3gd20h_drv_init(char* spi_device_name)
 	spi_device = rt_device_find(spi_device_name);
 
 	if(spi_device == RT_NULL) {
-		boot_log_printf("spi device %s not found!\r\n", spi_device_name);
+		console_printf("spi device %s not found!\r\n", spi_device_name);
 		return RT_EEMPTY;
 	}
 

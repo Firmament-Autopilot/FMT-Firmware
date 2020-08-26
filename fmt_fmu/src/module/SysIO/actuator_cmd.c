@@ -94,12 +94,12 @@ fmt_err actuator_init(const char* device_name)
     _motor_dev = rt_device_find(device_name);
 
     if (_motor_dev == NULL) {
-        boot_log_printf("Can not find motor device %s!\n", device_name);
+        console_printf("Can not find motor device %s!\n", device_name);
         return FMT_ERROR;
     }
 
     if (rt_device_open(_motor_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
-        boot_log_printf("Fail to open motor device %s!\n", device_name);
+        console_printf("Fail to open motor device %s!\n", device_name);
         /* close the motor device */
         rt_device_close(_motor_dev);
         _motor_dev = NULL;
@@ -109,7 +109,7 @@ fmt_err actuator_init(const char* device_name)
 
     _control_out_nod = mcn_subscribe(MCN_ID(control_output), NULL, NULL);
     if (_control_out_nod == NULL) {
-        boot_log_printf("Fail to subscribe control_output topic\n");
+        console_printf("Fail to subscribe control_output topic\n");
         return FMT_ERROR;
     }
 

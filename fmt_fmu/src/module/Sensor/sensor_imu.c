@@ -132,7 +132,7 @@ fmt_err sensor_imu_init(void)
 
 	if(gyro_t[0] == NULL || accel_t[0] == NULL) {
 		/* main imu must be available */
-		boot_log_printf("main imu is not available\n");
+		console_printf("main imu is not available\n");
 		rt_err = RT_ERROR;
 	}
 
