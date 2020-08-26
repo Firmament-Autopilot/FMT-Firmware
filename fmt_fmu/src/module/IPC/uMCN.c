@@ -102,9 +102,14 @@ McnNode_t mcn_subscribe(McnHub* hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* 
     hub->link_num++;
     MCN_EXIT_CRITICAL;
 
-    if (hub->published && node->cb) {
-        /* if data published before subscribe, then call callback immediately */
-        node->cb(hub->pdata);
+    if (hub->published) {
+        /* update renewal flag as it's already published */
+        node->renewal = 1;
+
+        if (node->cb) {
+            /* if data published before subscribe, then call callback immediately */
+            node->cb(hub->pdata);
+        }
     }
 
     return node;
