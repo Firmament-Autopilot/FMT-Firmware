@@ -16,9 +16,9 @@
 
 #include <firmament.h>
 
+#include "task/task_logger.h"
 #include "module/fs_manager/fs_manager.h"
 
-#define BOOT_LOG_FILE        "/log/boot_log.txt"
 #define BOOT_LOG_BUFFER_SIZE 4096
 
 static char* _buffer_ptr = NULL;
@@ -43,6 +43,8 @@ uint32_t boot_log_push(const char* content, uint32_t len)
 
 fmt_err boot_log_dump(void)
 {
+    char file[100];
+
     RT_ASSERT(_buffer_ptr != NULL);
 
     int fd;
@@ -51,10 +53,13 @@ fmt_err boot_log_dump(void)
     /* clear boot logging flag */
     boot_logging = 0;
 
-    fd = open(BOOT_LOG_FILE, O_CREAT | O_WRONLY | O_TRUNC);
+    get_working_log_session(file);
+    strcat(file, "/boot_log.txt");
+
+    fd = open(file, O_CREAT | O_WRONLY | O_TRUNC);
 
     if (fd < 0) {
-        console_printf("fail to create boot log file: %s\n", BOOT_LOG_FILE);
+        console_printf("fail to create boot log file: %s\n", file);
         res = FMT_ERROR;
     }
 

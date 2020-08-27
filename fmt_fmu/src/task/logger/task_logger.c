@@ -182,6 +182,10 @@ Out:
 }
 
 /**************************** Public Function ********************************/
+void get_working_log_session(char* path)
+{
+    sprintf(path, "%s/session_%d", LOG_SESSION_FOLDER, _log_session_id);
+}
 
 fmt_err logger_start_blog(char* path)
 {

@@ -25,6 +25,7 @@
 fmt_err logger_send_event(uint32_t event);
 fmt_err logger_start_blog(char* path);
 void logger_stop_blog(void);
+void get_working_log_session(char* path);
 
 fmt_err task_logger_init(void);
 void task_logger_entry(void* parameter);
