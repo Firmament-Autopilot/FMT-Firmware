@@ -120,6 +120,9 @@ void bsp_initialize(void)
     /* init boot log */
     FMT_CHECK(boot_log_init());
 
+    /* init uMCN */
+    FMT_CHECK(mcn_init());
+
     /* init file manager */
     FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
 

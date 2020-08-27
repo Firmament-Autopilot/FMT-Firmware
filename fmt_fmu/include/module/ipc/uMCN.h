@@ -29,6 +29,7 @@
 #define MCN_ASSERT(EX)              RT_ASSERT(EX)
 
 #define MCN_MAX_LINK_NUM 30
+#define MCN_FREQ_EST_WINDOW_LEN 10
 
 typedef struct mcn_node McnNode;
 typedef struct mcn_node* McnNode_t;
@@ -47,11 +48,12 @@ struct mcn_hub {
     McnNode_t link_head;
     McnNode_t link_tail;
     uint32_t link_num;
-    uint8_t published; // publish flag
+    uint8_t published;
     int (*echo)(void* parameter);
-    // frequency estimate
-    uint32_t last_pub_time;
+    /* publish freq estimate */
     float freq;
+    uint16_t freq_est_window[MCN_FREQ_EST_WINDOW_LEN];
+    uint16_t window_index;
 };
 
 typedef struct mcn_list McnList;
@@ -90,6 +92,7 @@ fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer);
 fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer);
 void mcn_node_clear(McnNode_t node_t);
 
+fmt_err mcn_init(void);
 McnList mcn_get_list(void);
 
 #endif

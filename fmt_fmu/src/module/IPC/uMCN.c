@@ -18,6 +18,23 @@
 #include <string.h>
 
 static McnList _Mcn_list = { NULL, NULL };
+static struct rt_timer _timer_mcn_freq_est;
+
+static void _mcn_freq_est(void* parameter)
+{
+    for (McnList_t cp = &_Mcn_list; cp != NULL; cp = cp->next) {
+        McnHub* hub_t = cp->hub_t;
+        /* calculate publish frequency */
+        uint32_t cnt = 0;
+        for (int i = 0; i < MCN_FREQ_EST_WINDOW_LEN; i++) {
+            cnt += hub_t->freq_est_window[i];
+            hub_t->freq = (float)cnt / MCN_FREQ_EST_WINDOW_LEN;
+        }
+        /* move window */
+        hub_t->window_index = (hub_t->window_index + 1) % MCN_FREQ_EST_WINDOW_LEN;
+        hub_t->freq_est_window[hub_t->window_index] = 0;
+    }
+}
 
 McnList mcn_get_list(void)
 {
@@ -62,6 +79,10 @@ fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
 
     cp->hub_t = hub;
     cp->next = NULL;
+
+    /* init publish freq estimator window */
+    memset(hub->freq_est_window, 0, 2 * MCN_FREQ_EST_WINDOW_LEN);
+    hub->window_index = 0;
 
     MCN_EXIT_CRITICAL;
 
@@ -173,10 +194,8 @@ fmt_err mcn_publish(McnHub* hub, const void* data)
         return FMT_ERROR;
     }
 
-    // calculate publish frequency
-    uint32_t time_now = systime_now_ms();
-    hub->freq = 1000.0f / (float)(time_now - hub->last_pub_time);
-    hub->last_pub_time = time_now;
+    /* update freq estimator window */
+    hub->freq_est_window[hub->window_index]++;
 
     MCN_ENTER_CRITICAL;
     /* copy data to hub */
@@ -293,4 +312,19 @@ void mcn_node_clear(McnNode_t node_t)
     MCN_ENTER_CRITICAL;
     node_t->renewal = 0;
     MCN_EXIT_CRITICAL;
+}
+
+fmt_err mcn_init(void)
+{
+    rt_timer_init(&_timer_mcn_freq_est, "mcn_freq_est",
+        _mcn_freq_est,
+        NULL,
+        1000,
+        RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+
+    if (rt_timer_start(&_timer_mcn_freq_est) != RT_EOK) {
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
 }
