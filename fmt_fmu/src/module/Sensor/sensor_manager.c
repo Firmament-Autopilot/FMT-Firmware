@@ -16,11 +16,11 @@
 
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
-#include "module/sensor/sensor_imu.h"
-#include "module/sensor/sensor_mag.h"
 #include "module/sensor/sensor_baro.h"
 #include "module/sensor/sensor_gps.h"
+#include "module/sensor/sensor_imu.h"
+#include "module/sensor/sensor_mag.h"
+#include "module/sensor/sensor_manager.h"
 
 static IMU_Report _imu_report;
 static Mag_Report _mag_report;
@@ -34,132 +34,132 @@ MCN_DEFINE(sensor_gps, sizeof(GPS_Report));
 
 static int SENSOR_IMU_echo(void* param)
 {
-	fmt_err err;
-	IMU_Report imu_report;
+    fmt_err err;
+    IMU_Report imu_report;
 
-	err = mcn_copy_from_hub((McnHub*)param, &imu_report);
+    err = mcn_copy_from_hub((McnHub*)param, &imu_report);
 
-	if(err != FMT_EOK) {
-		return -1;
-	}
+    if (err != FMT_EOK) {
+        return -1;
+    }
 
-	console_printf("gyr:%f %f %f acc:%f %f %f\n",
-	               imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2],
-	               imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
+    console_printf("gyr:%f %f %f acc:%f %f %f\n",
+        imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2],
+        imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
 
-	return 0;
+    return 0;
 }
-
 
 static int SENSOR_MAG_echo(void* param)
 {
-	fmt_err err;
-	Mag_Report mag_report;
+    fmt_err err;
+    Mag_Report mag_report;
 
-	err = mcn_copy_from_hub((McnHub*)param, &mag_report);
+    err = mcn_copy_from_hub((McnHub*)param, &mag_report);
 
-	if(err != FMT_EOK) {
-		return -1;
-	}
+    if (err != FMT_EOK) {
+        return -1;
+    }
 
-	console_printf("mag:%f %f %f\n",
-	               mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
+    console_printf("mag:%f %f %f\n",
+        mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
 
-	return 0;
+    return 0;
 }
 
 static int SENSOR_BARO_echo(void* param)
 {
-	fmt_err err;
-	Baro_Report baro_report;
+    fmt_err err;
+    Baro_Report baro_report;
 
-	err = mcn_copy_from_hub((McnHub*)param, &baro_report);
+    err = mcn_copy_from_hub((McnHub*)param, &baro_report);
 
-	if(err != FMT_EOK) {
-		return -1;
-	}
+    if (err != FMT_EOK) {
+        return -1;
+    }
 
-	console_printf("timestamp:%d pressure:%d temperature:%f altitude:%f\n",
-	               baro_report.timestamp_ms, baro_report.pressure_pa, baro_report.temperature_deg,
-	               baro_report.altitude_m);
+    console_printf("timestamp:%d pressure:%d temperature:%f altitude:%f\n",
+        baro_report.timestamp_ms, baro_report.pressure_pa, baro_report.temperature_deg,
+        baro_report.altitude_m);
 
-	return 0;
+    return 0;
 }
 
 static int SENSOR_GPS_echo(void* param)
 {
-	fmt_err err;
-	GPS_Report gps_report;
+    fmt_err err;
+    GPS_Report gps_report;
 
-	err = mcn_copy_from_hub((McnHub*)param, &gps_report);
+    err = mcn_copy_from_hub((McnHub*)param, &gps_report);
 
-	if(err != FMT_EOK) {
-		return -1;
-	}
+    if (err != FMT_EOK) {
+        return -1;
+    }
 
-	console_printf("hAcc:%f sAcc:%f\n", gps_report.hAcc, gps_report.sAcc);
+    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%f sAcc:%f\n", gps_report.lon, gps_report.lat,
+        gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.sAcc);
 
-	return 0;
+    return 0;
 }
 
 // should be called in each 1ms
 void sensor_collect(void)
 {
-	DEFINE_TIMETAG(imu_update, 1);
-	DEFINE_TIMETAG(mag_update, 10);
+    DEFINE_TIMETAG(imu_update, 1);
+    DEFINE_TIMETAG(mag_update, 10);
 
-	if(check_timetag(TIMETAG(imu_update))) {
+    if (check_timetag(TIMETAG(imu_update))) {
 
-		_imu_report.timestamp_ms = systime_now_ms();
-		sensor_gyr_measure(_imu_report.gyr_B_radDs, 0);
-		sensor_acc_measure(_imu_report.acc_B_mDs2, 0);
+        _imu_report.timestamp_ms = systime_now_ms();
+        sensor_gyr_measure(_imu_report.gyr_B_radDs, 0);
+        sensor_acc_measure(_imu_report.acc_B_mDs2, 0);
 
-		mcn_publish(MCN_ID(sensor_imu), &_imu_report);
-	}
+        mcn_publish(MCN_ID(sensor_imu), &_imu_report);
+    }
 
-	if(check_timetag(TIMETAG(mag_update))) {
+    if (check_timetag(TIMETAG(mag_update))) {
 
-		_mag_report.timestamp_ms = systime_now_ms();
-		sensor_mag_measure(_mag_report.mag_B_gauss, 0);
+        _mag_report.timestamp_ms = systime_now_ms();
+        sensor_mag_measure(_mag_report.mag_B_gauss, 0);
 
-		mcn_publish(MCN_ID(sensor_mag), &_mag_report);
-	}
+        mcn_publish(MCN_ID(sensor_mag), &_mag_report);
+    }
 
-	if(sensor_baro_check_update()) {
-		baro_report_t report;
+    if (sensor_baro_check_update()) {
+        baro_report_t report;
 
-		if(sensor_baro_get_report(&report) == FMT_EOK) {
-			_baro_report.temperature_deg = report.temperature_deg;
-			_baro_report.pressure_pa = report.pressure_Pa;
-			_baro_report.altitude_m = report.altitude_m;
-			_baro_report.timestamp_ms = report.timestamp_ms;
+        if (sensor_baro_get_report(&report) == FMT_EOK) {
+            _baro_report.temperature_deg = report.temperature_deg;
+            _baro_report.pressure_pa = report.pressure_Pa;
+            _baro_report.altitude_m = report.altitude_m;
+            _baro_report.timestamp_ms = report.timestamp_ms;
 
-			mcn_publish(MCN_ID(sensor_baro), &_baro_report);
-		}
-	}
+            mcn_publish(MCN_ID(sensor_baro), &_baro_report);
+        }
+    }
 
-	if(sensor_gps_report_ready()) {
+    if (sensor_gps_report_ready()) {
 
-		sensor_gps_get_report(&_gps_report);
+        sensor_gps_get_report(&_gps_report);
 
-		mcn_publish(MCN_ID(sensor_gps), &_gps_report);
-	}
+        mcn_publish(MCN_ID(sensor_gps), &_gps_report);
+    }
 }
 
 fmt_err sensor_manager_init(void)
 {
     fmt_err err = FMT_EOK;
 
-	err |= sensor_imu_init();
-	err |= sensor_mag_init();
-	err |= sensor_baro_init();
-	err |= sensor_gps_init();
+    err |= sensor_imu_init();
+    err |= sensor_mag_init();
+    err |= sensor_baro_init();
+    err |= sensor_gps_init();
 
-	/* advertise sensor data */
-	err |= mcn_advertise(MCN_ID(sensor_imu), SENSOR_IMU_echo);
-	err |= mcn_advertise(MCN_ID(sensor_mag), SENSOR_MAG_echo);
-	err |= mcn_advertise(MCN_ID(sensor_baro), SENSOR_BARO_echo);
-	err |= mcn_advertise(MCN_ID(sensor_gps), SENSOR_GPS_echo);
+    /* advertise sensor data */
+    err |= mcn_advertise(MCN_ID(sensor_imu), SENSOR_IMU_echo);
+    err |= mcn_advertise(MCN_ID(sensor_mag), SENSOR_MAG_echo);
+    err |= mcn_advertise(MCN_ID(sensor_baro), SENSOR_BARO_echo);
+    err |= mcn_advertise(MCN_ID(sensor_gps), SENSOR_GPS_echo);
 
-	return err == FMT_EOK ? FMT_EOK : FMT_ERROR;
+    return err == FMT_EOK ? FMT_EOK : FMT_ERROR;
 }

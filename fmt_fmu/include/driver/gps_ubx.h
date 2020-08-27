@@ -105,8 +105,8 @@
 #define UBX_TX_CFG_MSG_RATE1_1HZ	0x05		/**< {0x00, 0x05, 0x00, 0x00, 0x00, 0x00} the second entry is for UART1 */
 #define UBX_TX_CFG_MSG_RATE1_05HZ	10
 
-// #define UBX_CONFIG_TIMEOUT	200		// ms, timeout for waiting ACK
-#define UBX_CONFIG_TIMEOUT	20		// ms, timeout for waiting ACK
+#define UBX_CONFIG_TIMEOUT	200		// ms, timeout for waiting ACK
+// #define UBX_CONFIG_TIMEOUT	20		// ms, timeout for waiting ACK
 
 
 /*** u-blox protocol binary message and payload definitions ***/

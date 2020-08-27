@@ -14,10 +14,13 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "finsh.h"
+#include <finsh.h>
 #include <firmament.h>
 
+#include "hal/serial.h"
+
 #define CONSOLE_BUFF_SIZE 1024
+#define CONSOLE_BAUD_RATE 57600
 
 #define CONSOLE_OFLAG (RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_STREAM)
 
@@ -144,6 +147,8 @@ fmt_err console_set_device(char* dev_name)
 
 fmt_err console_init(char* dev_name)
 {
+    serial_dev_t serial_dev;
+
     _console_dev = rt_device_find(dev_name);
 
     if (_console_dev == RT_NULL) {
@@ -154,6 +159,17 @@ fmt_err console_init(char* dev_name)
     /* here we only enable console output, the input function will be enabled in shell mount operation */
     if (rt_device_open(_console_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_STREAM) != RT_EOK) {
         return FMT_ERROR;
+    }
+
+    /* set serial baudrate if needed */
+    serial_dev = (serial_dev_t)_console_dev;
+    if (serial_dev->config.baud_rate != CONSOLE_BAUD_RATE) {
+        struct serial_configure pconfig = serial_dev->config;
+        
+        pconfig.baud_rate = CONSOLE_BAUD_RATE;
+        if (rt_device_control(_console_dev, RT_DEVICE_CTRL_CONFIG, &pconfig) != RT_EOK) {
+            return FMT_ERROR;
+        }
     }
 
     /* set rt console device to enable kernel printf, e.g, rt_kprintf */

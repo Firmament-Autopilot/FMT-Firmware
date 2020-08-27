@@ -13,7 +13,7 @@
 #include <firmament.h>
 #include "gps_ubx.h"
 
-#define CONFIGURE_RETRY_MAX		2
+#define CONFIGURE_RETRY_MAX		3
 
 #define RD_ONLY_POSLLH			1
 #define RD_ONLY_VELNED			2
