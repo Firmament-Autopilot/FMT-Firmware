@@ -180,7 +180,7 @@ void bsp_post_initialize(void)
     bsp_show_version();
 
     /* dump boot log to file */
-    FMT_CHECK(boot_log_dump());
+    boot_log_dump();
 }
 
 /**
