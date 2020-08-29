@@ -29,7 +29,7 @@
 #define MCN_ASSERT(EX)              RT_ASSERT(EX)
 
 #define MCN_MAX_LINK_NUM 30
-#define MCN_FREQ_EST_WINDOW_LEN 10
+#define MCN_FREQ_EST_WINDOW_LEN 5
 
 typedef struct mcn_node McnNode;
 typedef struct mcn_node* McnNode_t;
@@ -77,7 +77,6 @@ struct mcn_list {
         .link_tail = NULL,       \
         .link_num = 0,           \
         .published = 0,          \
-        .last_pub_time = 0,      \
         .freq = 0.0f             \
     }
 
