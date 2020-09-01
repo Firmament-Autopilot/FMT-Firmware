@@ -20,10 +20,10 @@
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
-#define MAX_PWM_OUT_CHAN      6        // AUX Out has 6 pwm channel
-#define TIMER_FREQUENCY       3000000  // Timer frequency: 3M
-#define PWM_DEFAULT_FREQUENCY 50       // pwm default frequqncy: 50Hz
-#define PWM_DC_SCALE          0.00005f // convert motor value to pwm duty cycle
+#define MAX_PWM_OUT_CHAN      6       // AUX Out has 6 pwm channel
+#define TIMER_FREQUENCY       3000000 // Timer frequency: 3M
+#define PWM_DEFAULT_FREQUENCY 400     // pwm default frequqncy: 50Hz
+#define VAL_TO_DC(val)        ((float)(val * _pwm_freq) / 1000000.0f)
 
 #define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
 #define PWM_TIMER(id) (id < 4 ? TIM1 : TIM4)
@@ -176,7 +176,7 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
     case MOTOR_CMD_CHANNEL_ENABLE: {
         /* set to lowest pwm before open */
         for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
-            _pwm_write(i, 0.05);
+            _pwm_write(i, VAL_TO_DC(motor->config.motor_min_value));
         }
 
         TIM_Cmd(TIM1, ENABLE);
@@ -222,7 +222,7 @@ static rt_size_t motor_read(motor_dev_t motor, rt_uint16_t chan_mask, rt_uint16_
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
         if (chan_mask & (1 << i)) {
             _pwm_read(i, &dc);
-            *index = dc / PWM_DC_SCALE;
+            *index = 1000000 / _pwm_freq * dc;
             index++;
         }
     }
@@ -242,7 +242,7 @@ static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_
             /* constrain motor value */
             val = constrain_uint16(*index, motor->config.motor_min_value, motor->config.motor_max_value);
             /* calculate pwm duty cycle */
-            dc = PWM_DC_SCALE * val;
+            dc = VAL_TO_DC(val);
             /* update pwm signal */
             _pwm_write(i, dc);
 
