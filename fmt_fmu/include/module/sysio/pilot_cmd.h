@@ -19,8 +19,11 @@
 
 #include <firmament.h>
 
-// Pilot Command
+// Pilot Command 1 (Event Command)
 #define FMS_CMD_FORCE_DISARM 1000
+
+// Pilot Command 2 (State Command)
+#define FMS_CMD_TEST_MOTOR 2000
 
 fmt_err pilot_cmd_init(void);
 uint8_t pilot_cmd_collect(void);

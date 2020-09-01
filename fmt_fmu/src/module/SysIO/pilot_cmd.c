@@ -83,6 +83,7 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, uint16_t* rc_val)
     uint32_t time_now = systime_now_ms();
     uint8_t force_disarm_cmd = rc_val[PILOT_SAFE_SWITCH_CHANNEL] > 1900;
 
+    /* command 1: event command */
     if (force_disarm_cmd != _force_disarm_cmd) {
         if (force_disarm_cmd) {
             _pilot_cmd.cmd_1 = FMS_CMD_FORCE_DISARM;
@@ -96,6 +97,13 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, uint16_t* rc_val)
     if (time_now - _last_cmd_timestamp > 200) {
         _pilot_cmd.cmd_1 = _pilot_cmd.cmd_2 = 0;
     }
+
+    /* command 2: state command */
+#ifdef FMT_TEST_MOTOR
+    _pilot_cmd.cmd_2 = FMS_CMD_TEST_MOTOR;
+#else
+    _pilot_cmd.cmd_2 = 0;
+#endif
 }
 
 uint8_t pilot_cmd_collect(void)

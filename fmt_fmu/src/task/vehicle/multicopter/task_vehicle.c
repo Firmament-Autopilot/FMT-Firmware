@@ -72,7 +72,7 @@ void task_vehicle_entry(void* parameter)
                 /* run Controller model */
                 TIMETAG_CHECK_EXECUTE3(control_model_update, CONTROL_EXPORT.period, time_now, controller_model_step();)
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
+#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL) || defined(FMT_TEST_MOTOR)
                 send_actuator_cmd();
 #endif
 
