@@ -67,6 +67,7 @@ if sys.version_info[0] < 3:
 else:
     runningPython3 = True
 
+# sys.setdefaultencoding('utf8')
 
 class firmware(object):
     '''Loads a firmware file'''
@@ -839,23 +840,29 @@ def main():
         if sys.platform == "darwin":
             args.port = "/dev/tty.usbmodem1"
         else:
-            serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+            try:
+                serial_list = auto_detect_serial(preferred_list=['*FTDI*',
+                    "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
 
-            if len(serial_list) == 0:
-                print("Error: no serial connection found")
-                return
+                if len(serial_list) == 0:
+                    print("Error: no serial connection found")
+                    return
 
-            if len(serial_list) > 1:
-                print('Auto-detected serial ports are:')
-                for port in serial_list:
-                    print(" {:}".format(port))
-            print('Using port {:}'.format(serial_list[0]))
-            args.port = serial_list[0].device
+                if len(serial_list) > 1:
+                    print('Auto-detected serial ports are:')
+                    for port in serial_list:
+                        # print(" {:}".format(port))
+                        pass
+                # print('Using port {:}'.format(serial_list[0]))
+                args.port = serial_list[0].device
+            except RuntimeError as ex:
+                # print the error
+                print("\nERROR: %s" % ex.args)
 
 
     # Spin waiting for a device to show up
     try:
+        test_once = False
         while True:
             if sys.platform == "darwin":
                 args.port = "/dev/tty.usbmodem1"
@@ -877,7 +884,7 @@ def main():
                 #     print('Auto-detected serial ports are:')
                 #     for port in serial_list:
                 #         print(" {:}".format(port))
-                print('Using port {:}'.format(serial_list[0]))
+                # print('Using port {:}'.format(serial_list[0]))
                 args.port = serial_list[0].device
 
 
@@ -896,6 +903,7 @@ def main():
             baud_flightstack = [int(x) for x in args.baud_flightstack.split(',')]
 
             successful = False
+            
             for port in portlist:
                 # create an uploader attached to the port
                 try:
@@ -918,7 +926,9 @@ def main():
                 except Exception:
                     # open failed, rate-limit our attempts
                     time.sleep(0.05)
-
+                    if test_once:
+                        print("Not found fmt_fmu,please connect fmt_fmu!")
+                        time.sleep(2)
                     # and loop to the next port
                     continue
 
@@ -982,6 +992,7 @@ def main():
 
             # Delay retries to < 20 Hz to prevent spin-lock from hogging the CPU
             time.sleep(0.05)
+            test_once = True
 
     # CTRL+C aborts the upload/spin-lock by interrupt mechanics
     except KeyboardInterrupt:
