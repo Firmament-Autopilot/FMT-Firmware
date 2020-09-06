@@ -16,6 +16,7 @@
 
 #include <firmament.h>
 
+#include "module/filter/butter.h"
 #include "module/sensor/sensor_baro.h"
 #include "module/sensor/sensor_gps.h"
 #include "module/sensor/sensor_imu.h"
@@ -31,6 +32,9 @@ MCN_DEFINE(sensor_imu, sizeof(IMU_Report));
 MCN_DEFINE(sensor_mag, sizeof(Mag_Report));
 MCN_DEFINE(sensor_baro, sizeof(Baro_Report));
 MCN_DEFINE(sensor_gps, sizeof(GPS_Report));
+
+static Butter3* _butter3_gyr[3];
+static Butter3* _butter3_acc[3];
 
 static int SENSOR_IMU_echo(void* param)
 {
@@ -105,17 +109,48 @@ static int SENSOR_GPS_echo(void* param)
 // should be called in each 1ms
 void sensor_collect(void)
 {
-    DEFINE_TIMETAG(imu_update, 1);
     DEFINE_TIMETAG(mag_update, 10);
 
-    if (check_timetag(TIMETAG(imu_update))) {
+    _imu_report.timestamp_ms = systime_now_ms();
+    sensor_gyr_measure(_imu_report.gyr_B_radDs, 0);
+    sensor_acc_measure(_imu_report.acc_B_mDs2, 0);
 
-        _imu_report.timestamp_ms = systime_now_ms();
-        sensor_gyr_measure(_imu_report.gyr_B_radDs, 0);
-        sensor_acc_measure(_imu_report.acc_B_mDs2, 0);
+    if (PARAM_GET_UINT8(INS, USE_EXTERN_FILTER)) {
+        float temp[3];
 
-        mcn_publish(MCN_ID(sensor_imu), &_imu_report);
+        /* do calibration */
+        _imu_report.gyr_B_radDs[0] -= PARAM_GET_FLOAT(CALIB, GYRO0_XOFF);
+        _imu_report.gyr_B_radDs[1] -= PARAM_GET_FLOAT(CALIB, GYRO0_YOFF);
+        _imu_report.gyr_B_radDs[2] -= PARAM_GET_FLOAT(CALIB, GYRO0_ZOFF);
+
+        _imu_report.acc_B_mDs2[0] -= PARAM_GET_FLOAT(CALIB, ACC0_XOFF);
+        _imu_report.acc_B_mDs2[1] -= PARAM_GET_FLOAT(CALIB, ACC0_YOFF);
+        _imu_report.acc_B_mDs2[2] -= PARAM_GET_FLOAT(CALIB, ACC0_ZOFF);
+
+        temp[0] = _imu_report.acc_B_mDs2[0] * PARAM_GET_FLOAT(CALIB, ACC0_XXSCALE)
+            + _imu_report.acc_B_mDs2[1] * PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE)
+            + _imu_report.acc_B_mDs2[2] * PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE);
+        temp[1] = _imu_report.acc_B_mDs2[0] * PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE)
+            + _imu_report.acc_B_mDs2[1] * PARAM_GET_FLOAT(CALIB, ACC0_YYSCALE)
+            + _imu_report.acc_B_mDs2[2] * PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE);
+        temp[2] = _imu_report.acc_B_mDs2[0] * PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE)
+            + _imu_report.acc_B_mDs2[1] * PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE)
+            + _imu_report.acc_B_mDs2[2] * PARAM_GET_FLOAT(CALIB, ACC0_ZZSCALE);
+        _imu_report.acc_B_mDs2[0] = temp[0];
+        _imu_report.acc_B_mDs2[1] = temp[1];
+        _imu_report.acc_B_mDs2[2] = temp[2];
+
+        /* do filtering */
+        _imu_report.gyr_B_radDs[0] = butter3_filter_process(_imu_report.gyr_B_radDs[0], _butter3_gyr[0]);
+        _imu_report.gyr_B_radDs[1] = butter3_filter_process(_imu_report.gyr_B_radDs[1], _butter3_gyr[1]);
+        _imu_report.gyr_B_radDs[2] = butter3_filter_process(_imu_report.gyr_B_radDs[2], _butter3_gyr[2]);
+
+        _imu_report.acc_B_mDs2[0] = butter3_filter_process(_imu_report.acc_B_mDs2[0], _butter3_acc[0]);
+        _imu_report.acc_B_mDs2[1] = butter3_filter_process(_imu_report.acc_B_mDs2[1], _butter3_acc[1]);
+        _imu_report.acc_B_mDs2[2] = butter3_filter_process(_imu_report.acc_B_mDs2[2], _butter3_acc[2]);
     }
+
+    mcn_publish(MCN_ID(sensor_imu), &_imu_report);
 
     if (check_timetag(TIMETAG(mag_update))) {
 
@@ -160,6 +195,32 @@ fmt_err sensor_manager_init(void)
     err |= mcn_advertise(MCN_ID(sensor_mag), SENSOR_MAG_echo);
     err |= mcn_advertise(MCN_ID(sensor_baro), SENSOR_BARO_echo);
     err |= mcn_advertise(MCN_ID(sensor_gps), SENSOR_GPS_echo);
+
+    if (PARAM_GET_UINT8(INS, USE_EXTERN_FILTER)) {
+        /* 30Hz cut-off frequency, 1000Hz sampling frequency */
+        float B[4] = { 0.0007, 0.0021, 0.0021, 0.0007 };
+        float A[4] = { 1.0, -2.6236, 2.3147, -0.6855 };
+
+        console_printf("use external filter\n");
+
+        _butter3_gyr[0] = butter3_filter_create(B, A);
+        _butter3_gyr[1] = butter3_filter_create(B, A);
+        _butter3_gyr[2] = butter3_filter_create(B, A);
+
+        if (_butter3_gyr[0] == NULL || _butter3_gyr[1] == NULL || _butter3_gyr[2] == NULL) {
+            console_printf("Fail to create butter filter for gyr!\n");
+            return FMT_ERROR;
+        }
+
+        _butter3_acc[0] = butter3_filter_create(B, A);
+        _butter3_acc[1] = butter3_filter_create(B, A);
+        _butter3_acc[2] = butter3_filter_create(B, A);
+
+        if (_butter3_acc[0] == NULL || _butter3_acc[1] == NULL || _butter3_acc[2] == NULL) {
+            console_printf("Fail to create butter filter for acc!\n");
+            return FMT_ERROR;
+        }
+    }
 
     return err == FMT_EOK ? FMT_EOK : FMT_ERROR;
 }

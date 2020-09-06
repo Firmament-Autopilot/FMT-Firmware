@@ -192,6 +192,10 @@ typedef struct {
 } PARAM_GROUP(CALIB);
 
 typedef struct {
+    PARAM_DECLARE(USE_EXTERN_FILTER);
+} PARAM_GROUP(INS);
+
+typedef struct {
     PARAM_DECLARE(VEL_XY_P);
     PARAM_DECLARE(VEL_XY_I);
     PARAM_DECLARE(VEL_XY_D);
@@ -232,6 +236,7 @@ typedef struct {
 typedef struct {
     param_group_t PARAM_GROUP(SYSTEM);
     param_group_t PARAM_GROUP(CALIB);
+    param_group_t PARAM_GROUP(INS);
     param_group_t PARAM_GROUP(CONTROL);
 } param_list_t;
 

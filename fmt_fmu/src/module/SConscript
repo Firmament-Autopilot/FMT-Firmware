@@ -30,6 +30,7 @@ src += Glob('Unit_Test/*.c')
 src += Glob('Utils/*.c')
 src += Glob('Vehicle/*.c')
 src += Glob('BuzzerTune/*.c')
+src += Glob('Filter/*.c')
 
 CPPPATH = [cwd,
            cwd + '/Calibration',
