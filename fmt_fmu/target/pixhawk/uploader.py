@@ -840,24 +840,29 @@ def main():
         if sys.platform == "darwin":
             args.port = "/dev/tty.usbmodem1"
         else:
-            try:
-                serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                    "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+            while True:
+                try:
+                    serial_list = auto_detect_serial(preferred_list=['*FTDI*',
+                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
 
-                if len(serial_list) == 0:
-                    print("Error: no serial connection found")
-                    return
+                    if len(serial_list) == 0:
+                        print("Error: no serial connection found")
+                        print("wait for connect fmt-fmu...")
+                        time.sleep(2)
+                        continue
+                        # return
 
-                if len(serial_list) > 1:
-                    print('Auto-detected serial ports are:')
-                    for port in serial_list:
-                        # print(" {:}".format(port))
-                        pass
-                # print('Using port {:}'.format(serial_list[0]))
-                args.port = serial_list[0].device
-            except RuntimeError as ex:
-                # print the error
-                print("\nERROR: %s" % ex.args)
+                    if len(serial_list) > 1:
+                        print('Auto-detected serial ports are:')
+                        for port in serial_list:
+                            # print(" {:}".format(port))
+                            pass
+                    # print('Using port {:}'.format(serial_list[0]))
+                    args.port = serial_list[0].device
+                    break
+                except RuntimeError as ex:
+                    # print the error
+                    print("\nERROR: %s" % ex.args)
 
 
     # Spin waiting for a device to show up
