@@ -136,6 +136,8 @@ uint8_t pilot_cmd_collect(void)
                 _pilot_cmd.mode = 4; //Manual Mode
             }
 
+            //_pilot_cmd.mode = 5;    //Acro Mode, for tesing
+
             /* generate pilot command */
             _generate_cmd(&_pilot_cmd, rc_val);
             /* update timestamp */

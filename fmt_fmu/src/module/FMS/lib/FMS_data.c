@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.622
+ * Model version                  : 1.669
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug 29 13:35:31 2020
+ * C/C++ source code generated on : Sun Sep  6 09:55:56 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,9 +18,9 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  { 0.0F, 0.0F, 1.0F },                /* '<S105>/VecConcentate3' */
-  1,                                   /* '<S107>/Arm_Allowed_Logical_Operator' */
-  1                                    /* '<S107>/Disarm_Allowed_Logical_Operator' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S108>/VecConcentate3' */
+  1,                                   /* '<S113>/Arm_Allowed_Logical_Operator' */
+  1                                    /* '<S113>/Disarm_Allowed_Logical_Operator' */
 };
 
 /*

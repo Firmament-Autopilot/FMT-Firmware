@@ -24,7 +24,7 @@
 
 #ifdef FMT_USING_HIL
     /* Simulator-in-hardware simulation, if not defined, the standard HIL will be used */
-    #define FMT_USING_SIH   
+    // #define FMT_USING_SIH   
 
     /* enable actuator output in simulation mode */
     // #define FMT_HIL_WITH_ACTUATOR   
@@ -53,5 +53,7 @@
 #define FMT_ONLINE_PARAM_TUNING
 
 #define FMT_RECORD_CALIBRATION_DATA
+
+// #define FMT_TEST_MOTOR
 
 #endif

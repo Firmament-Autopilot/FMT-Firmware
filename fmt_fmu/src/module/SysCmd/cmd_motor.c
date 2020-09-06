@@ -104,7 +104,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
             }
 
             if (rt_device_write(motor_dev, MOTOR_MASK_1_4, motor_val, 8) == 8) {
-                console_printf("%s[1-4] = %d\n", aux ? "motor_aux" : "motor", id, val);
+                console_printf("%s[1-4] = %d\n", aux ? "motor_aux" : "motor", val);
             } else {
                 console_printf("%s[1-4] set fail\n", aux ? "motor_aux" : "motor", id);
             }
