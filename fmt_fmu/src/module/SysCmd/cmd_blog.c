@@ -58,6 +58,10 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
         logger_stop_blog();
     } else if (strcmp(argv[1], "status") == 0) {
         _show_blog_status();
+    }else if (strcmp(argv[1], "ws") == 0) {
+        char path[100];
+        get_working_log_session(path);
+        console_printf("working log session: %s\n", path);
     } else {
         show_usage();
     }
