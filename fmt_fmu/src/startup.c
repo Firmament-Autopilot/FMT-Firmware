@@ -17,6 +17,10 @@
 #include <firmament.h>
 #include <bsp.h>
 
+#ifdef FMT_USING_CM_BACKTRACE
+#include <cm_backtrace.h>
+#endif
+
 #include "task/task_comm.h"
 #include "task/task_fmtio.h"
 #include "task/task_logger.h"
@@ -52,17 +56,26 @@ struct rt_thread thread_status_handle;
 *******************************************************************************/
 void assert_failed(uint8_t* file, uint32_t line)
 {
-    rt_kprintf("\n\r Wrong parameter value detected on\r\n");
-    rt_kprintf("       file  %s\r\n", file);
-    rt_kprintf("       line  %d\r\n", line);
+#ifdef FMT_USING_CM_BACKTRACE
+	cm_backtrace_assert(cmb_get_sp());
+#endif
 
     while (1)
         ;
 }
 
+void assert_hook(const char* ex, const char* func, rt_size_t line)
+{
+    rt_kprintf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
+
+    assert_failed((uint8_t*)func, (uint32_t)line);
+}
+
 static void rt_init_thread_entry(void* parameter)
 {
     rt_err_t res;
+
+    rt_assert_set_hook(assert_hook);
 
     /********************* bsp init *********************/
     bsp_initialize();

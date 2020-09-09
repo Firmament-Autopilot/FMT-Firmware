@@ -38,7 +38,8 @@ typedef int (*shell_handle_func)(int, char**, int, optv_t*);
 #define PRINT_STRING(str)                       console_printf("%s", str)
 #define PRINT_ACTION(action, len, desc)         console_printf(" %-"#len"s  %s\n", action, desc)
 
-bool syscmd_is_num(char* str);
+bool syscmd_is_num(const char* str);
+bool syscmd_is_hex(const char* str);
 char syscmd_getc(void);
 bool syscmd_has_input(void);
 void syscmd_flush(void);

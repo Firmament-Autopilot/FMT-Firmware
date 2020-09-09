@@ -21,9 +21,11 @@
 #include "task/task_comm.h"
 
 MCN_DECLARE(control_output);
+MCN_DECLARE(fms_output);
 
 static McnNode_t _control_out_nod = NULL;
 static rt_device_t _motor_dev = NULL;
+static uint8_t _acturtor_suspend = 0;
 
 fmt_err send_hil_actuator_cmd(void)
 {
@@ -60,7 +62,10 @@ fmt_err send_hil_actuator_cmd(void)
 
 fmt_err send_actuator_cmd(void)
 {
-    /* send command to actuator */
+    if (_acturtor_suspend) {
+        return FMT_EOK;
+    }
+
     if (_motor_dev == NULL) {
         return FMT_ERROR;
     }
@@ -75,6 +80,50 @@ fmt_err send_actuator_cmd(void)
 
         return size == 8 ? FMT_EOK : FMT_ERROR;
     }
+
+    return FMT_EOK;
+}
+
+fmt_err actuator_suspend_output(void)
+{
+    FMS_Out_Bus fms_out;
+
+    if (_acturtor_suspend) {
+        return FMT_EOK;
+    }
+
+    mcn_copy_from_hub(MCN_ID(fms_output), &fms_out);
+
+    /* check if it's disram state */
+    if (fms_out.state != 0) {
+        /* not allowed to suspend the actuator in the air */
+        return FMT_ERROR;
+    }
+
+    if (_motor_dev && (_motor_dev->open_flag & RT_DEVICE_OFLAG_OPEN)) {
+        if (rt_device_close(_motor_dev) != RT_EOK) {
+            return FMT_ERROR;
+        }
+    }
+
+    _acturtor_suspend = 1;
+
+    return FMT_EOK;
+}
+
+fmt_err actuator_resume_output(void)
+{
+    if (_acturtor_suspend == 0) {
+        return FMT_EOK;
+    }
+
+    if (!(_motor_dev->open_flag & RT_DEVICE_OFLAG_OPEN)) {
+        if (rt_device_open(_motor_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+            return FMT_ERROR;
+        }
+    }
+
+    _acturtor_suspend = 0;
 
     return FMT_EOK;
 }

@@ -34,7 +34,31 @@ static uint8_t _is_option(char* str)
 	}
 }
 
-bool syscmd_is_num(char* str)
+bool syscmd_is_hex(const char* str)
+{
+    if(str == NULL)
+		return false;
+
+    for(int i = 0 ; i < strlen(str) ; i++) {
+        if(str[i] >= '0' && str[i] <= '9') {
+			continue;
+		}
+
+        if(str[i] >= 'a' && str[i] <= 'f') {
+			continue;
+		}
+
+        if(str[i] >= 'A' && str[i] <= 'F') {
+			continue;
+		}
+
+        return false;
+    }
+
+    return true;
+}
+
+bool syscmd_is_num(const char* str)
 {
 	uint8_t dot_cnt = 0;
 

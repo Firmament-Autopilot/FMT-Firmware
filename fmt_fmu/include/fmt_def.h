@@ -22,7 +22,7 @@
 /* Firmament version information */
 #define FMT_VERSION    0 /**< major version number */
 #define FMT_SUBVERSION 1 /**< minor version number */
-#define FMT_REVISION   1 /**< revise version number */
+#define FMT_REVISION   2 /**< revise version number */
 
 /* Thread Prority */
 #define VEHICLE_THREAD_PRIORITY    3

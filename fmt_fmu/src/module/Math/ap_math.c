@@ -16,8 +16,11 @@
 
 #include <firmament.h>
 #include <math.h>
+#include <string.h>
 
 #include "module/math/ap_math.h"
+
+#define IS_ALPHA(c) ((c >= 'a' && c < 'z') || (c >= 'A' && c <= 'Z'))
 
 // 快速算“平方根的倒数”。
 // http://zh.wikipedia.org/wiki/%E5%B9%B3%E6%96%B9%E6%A0%B9%E5%80%92%E6%95%B0%E9%80%9F%E7%AE%97%E6%B3%95
@@ -82,6 +85,30 @@ uint16_t math_crc16(uint16_t crc, const void* data, uint16_t len)
 
     //
     return crc;
+}
+
+uint32_t math_hex2dec(const char* hex)
+{
+    uint32_t i;
+    uint32_t len = strlen(hex);
+    uint32_t dec = 0;
+
+    for (i = 0; i < len; i++) {
+        char c = *(hex + i);
+        uint32_t temp;
+        if (IS_ALPHA(c)) {
+            if (c >= 'A' && c <= 'F') {
+                temp = (c - 'A') + 10;
+            } else {
+                temp = (c - 'a') + 10;
+            }
+        } else {
+            temp = c - '0';
+        }
+        dec += temp << ((len - 1 - i) * 4);
+    }
+
+    return dec;
 }
 
 // 整数转字符串。

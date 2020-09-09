@@ -36,6 +36,7 @@ float math_vector_dot(const float left[3], const float right[3]);
 void math_vector_cross(float result[3], const float left[3], const float right[3]);
 uint16_t math_crc16(uint16_t crc, const void* data, uint16_t len);
 void math_itoa(int32_t val, char* str);
+uint32_t math_hex2dec(const char* hex);
 const char* math_afromi(int32_t val);
 
 void Vector3_Set(float vector[3], float x, float y, float z);

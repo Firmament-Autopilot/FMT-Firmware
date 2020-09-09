@@ -31,8 +31,17 @@ handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
     // sd_write_speed_test();
 
-    int* a = 0;
-    *a = 2;
+    if (argv[1][0] == '1') {
+        int* a = 0;
+        *a = 2;
+    } else {
+        RT_ASSERT(0);
+    }
+
+    // uint32_t dec = math_hex2dec(argv[1]);
+    // console_printf("hex:%s dec:%u\n", argv[1], dec);
+
+    // RT_ASSERT(0);
 
     return 0;
 }
