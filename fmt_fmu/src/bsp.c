@@ -42,6 +42,7 @@
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
 #include "driver/usart.h"
+#include "driver/gps.h"
 
 /*******************************************************************************
 * Function Name  : NVIC_Configuration
@@ -129,15 +130,20 @@ void bsp_initialize(void)
     /* init usb device */
     FMT_CHECK(usb_cdc_init());
 
-    /* init drivers */
+    /* init imu0 */
     RTT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));
 
+    /* init imu1 + mag0 */
     RTT_CHECK(l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME));
-
-    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
-
     RTT_CHECK(lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME));
 
+    /* init barometer */
+    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
+
+    /* init gps */
+    RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
+    
+    /* init other device */
     RTT_CHECK(tca62724_drv_init());
 
     /* init parameter system */

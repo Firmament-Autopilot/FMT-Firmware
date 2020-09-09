@@ -87,14 +87,14 @@ static fmt_err _create_log_session(void)
     // if exist, delete it first
     if (fs_file_exist(session_name)) {
         if (fs_deldir(session_name) != FMT_EOK) {
-            console_printf("fail to delete %s\n", session_name);
+            console_printf("fail to delete %s, errno:%d\n", session_name, rt_get_errno());
             return FMT_ERROR;
         }
     }
 
     // create log session
     if (mkdir(session_name, 0x777) < 0) {
-        console_printf("fail to create %s\n", session_name);
+        console_printf("fail to create %s, errno:%d\n", session_name, rt_get_errno());
         return FMT_ERROR;
     }
 

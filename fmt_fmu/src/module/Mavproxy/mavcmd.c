@@ -112,7 +112,7 @@ static void _create_calib_data_file(const char* name)
     _cfd = open(name, O_CREAT | O_TRUNC | O_WRONLY);
 
     if (_cfd == -1) {
-        ulog_e(TAG, "fail to create file:%s\n", name);
+        ulog_e(TAG, "fail to create file:%s errno:%d\n", name, rt_get_errno());
     }
 }
 

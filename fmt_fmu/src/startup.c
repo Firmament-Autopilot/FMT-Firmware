@@ -45,15 +45,6 @@ struct rt_thread thread_logger_handle;
 static char thread_status_stack[1024];
 struct rt_thread thread_status_handle;
 
-/*******************************************************************************
-* Function Name  : assert_failed
-* Description    : Reports the name of the source file and the source line number
-*                  where the assert error has occurred.
-* Input          : - file: pointer to the source file name
-*                  - line: assert error line source number
-* Output         : None
-* Return         : None
-*******************************************************************************/
 void assert_failed(uint8_t* file, uint32_t line)
 {
 #ifdef FMT_USING_CM_BACKTRACE

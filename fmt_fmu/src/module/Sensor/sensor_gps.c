@@ -55,13 +55,6 @@ fmt_err sensor_gps_init(void)
 {
 	rt_err_t err;
 
-	/* sensor low-level init */
-	err = drv_gps_init(GPS_SERIAL_DEVICE_NAME);
-
-	if(err != RT_EOK) {
-		return FMT_ERROR;
-	}
-
 	/* find sensor device */
 	_gps_device_t = rt_device_find("gps");
 
