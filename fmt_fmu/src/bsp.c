@@ -28,6 +28,9 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
+#include "module/ins/ins_model.h"
+#include "module/fms/fms_model.h"
+#include "module/controller/controller_model.h"
 
 #include "hal/cdcacm.h"
 #include "hal/fmtio_dev.h"
@@ -78,9 +81,9 @@ void bsp_show_version(void)
     console_println("RAM: %d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     console_println("Board: %s", BOARD_NAME);
     console_println("Vehicle Type: %s", VEHICLE_TYPE);
-    console_println("INS Model: CF INS");
-    console_println("FMS Model: UAV FMS");
-    console_println("Control Model: PID Controller");
+    console_println("INS Model: %s", INS_EXPORT.model_info);
+    console_println("FMS Model: %s", FMS_EXPORT.model_info);
+    console_println("Control Model: %s", CONTROL_EXPORT.model_info);
     console_println("Task Initialize:");
     console_println("  vehicle: OK");
     console_println("    fmtio: OK");
