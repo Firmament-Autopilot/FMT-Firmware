@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.2573
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Sep  6 15:02:14 2020
+ * C/C++ source code generated on : Thu Sep 10 23:13:42 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -170,12 +170,13 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_4XfCoaAMTej5uH3d8u88xB_
-#define DEFINED_TYPEDEF_FOR_struct_4XfCoaAMTej5uH3d8u88xB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_i7E80ZuatMf603HOn7rPOE_
+#define DEFINED_TYPEDEF_FOR_struct_i7E80ZuatMf603HOn7rPOE_
 
 typedef struct {
   uint32_T period;
-} struct_4XfCoaAMTej5uH3d8u88xB;
+  int8_T model_info[9];
+} struct_i7E80ZuatMf603HOn7rPOE;
 
 #endif
 
@@ -1958,7 +1959,7 @@ extern struct_yEHaAuRwDY8DKCecxPQa0D INS_PARAM;/* Variable: INS_PARAM
                                                 *   '<S337>/Mag_Bias'
                                                 *   '<S337>/Mag_RotMatrix'
                                                 */
-extern struct_4XfCoaAMTej5uH3d8u88xB INS_EXPORT;/* Variable: INS_EXPORT
+extern struct_i7E80ZuatMf603HOn7rPOE INS_EXPORT;/* Variable: INS_EXPORT
                                                  * Referenced by:
                                                  *   '<S4>/Constant'
                                                  *   '<S314>/Constant'

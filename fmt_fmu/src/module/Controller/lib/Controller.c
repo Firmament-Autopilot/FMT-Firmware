@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.730
+ * Model version                  : 1.732
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Sep  9 12:24:16 2020
+ * C/C++ source code generated on : Thu Sep 10 23:12:22 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -28,7 +28,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.9F,
   0.09F,
-  0.01F,
+  0.1F,
   0.5F,
   0.2F,
   0.01F,
@@ -42,22 +42,22 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.1F,
   4.5F,
   4.5F,
-  0.52359879F,
-  0.075F,
-  0.075F,
+  0.523599F,
+  0.09F,
+  0.09F,
   0.2F,
   0.1F,
   0.1F,
   0.1F,
-  0.001F,
-  0.001F,
-  0.001F,
+  0.0005F,
+  0.0005F,
+  0.0005F,
   -0.1F,
   0.1F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F
+  1.57079601F,
+  3.14159298F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S9>/Saturation'
@@ -88,8 +88,10 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
                                         *   '<S21>/gain3'
                                         */
 
-struct_4XfCoaAMTej5uH3d8u88xB CONTROL_EXPORT = {
-  2U
+struct_TYt7YeNdxIDXfczXumtXXB CONTROL_EXPORT = {
+  2U,
+
+  { 66, 97, 115, 101, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S4>/Constant'
                                         */
@@ -181,7 +183,7 @@ void Controller_step(void)
    *  Sum: '<S50>/Sum5'
    */
   rtb_k_pt = (rtb_Gain - Controller_DW.DiscreteTimeIntegrator1_DSTATE) *
-    62.831852F;
+    31.415926F;
 
   /* Trigonometry: '<S35>/TrigoFcn1' incorporates:
    *  Inport: '<Root>/INS_Out'
