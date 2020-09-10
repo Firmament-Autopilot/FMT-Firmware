@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
 
 #include <bsp.h>
-#include <firmament.h>
 #include <shell.h>
+#include <string.h>
 #ifdef FMT_USING_CM_BACKTRACE
 #include <cm_backtrace.h>
 #endif
 
-#include "module/fs_manager/fs_manager.h"
-#include "module/param/param.h"
-#include "module/sensor/sensor_manager.h"
-#include "module/sysio/actuator_cmd.h"
-#include "module/sysio/pilot_cmd.h"
-#include "module/system/statistic.h"
-#include "module/system/systime.h"
-#include "module/ins/ins_model.h"
-#include "module/fms/fms_model.h"
-#include "module/controller/controller_model.h"
-
-#include "hal/cdcacm.h"
-#include "hal/fmtio_dev.h"
-
 #include "driver/gpio.h"
+#include "driver/gps.h"
 #include "driver/l3gd20h.h"
 #include "driver/lsm303d.h"
 #include "driver/mpu6000.h"
@@ -45,15 +33,35 @@
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
 #include "driver/usart.h"
-#include "driver/gps.h"
+#include "hal/cdcacm.h"
+#include "hal/fmtio_dev.h"
+#include "module/controller/controller_model.h"
+#include "module/fms/fms_model.h"
+#include "module/fs_manager/fs_manager.h"
+#include "module/ins/ins_model.h"
+#include "module/param/param.h"
+#include "module/sensor/sensor_manager.h"
+#include "module/sysio/actuator_cmd.h"
+#include "module/sysio/pilot_cmd.h"
+#include "module/system/statistic.h"
+#include "module/system/systime.h"
 
-/*******************************************************************************
-* Function Name  : NVIC_Configuration
-* Description    : Configures Vector Table base location.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
+static void _print_item(const char* name, const char* content, uint32_t len)
+{
+    int pad_len = len - strlen(name) - strlen(content);
+
+    if (pad_len < 0) {
+        pad_len = 0;
+    }
+
+    console_printf("%s", name);
+
+    while (pad_len--)
+        console_write(".", 1);
+
+    console_printf("%s\n", content);
+}
+
 void NVIC_Configuration(void)
 {
 #ifdef VECT_TAB_RAM
@@ -70,26 +78,52 @@ void NVIC_Configuration(void)
 
 void bsp_show_version(void)
 {
+    char buffer[50];
+
     console_printf("\n");
     console_println("   _____                               __ ");
     console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
-    console_println("Firmware: v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
-    console_println("RTOS: RT-Thread v%d.%d.%d", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    console_println("RAM: %d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    console_println("Board: %s", BOARD_NAME);
-    console_println("Vehicle Type: %s", VEHICLE_TYPE);
-    console_println("INS Model: %s", INS_EXPORT.model_info);
-    console_println("FMS Model: %s", FMS_EXPORT.model_info);
-    console_println("Control Model: %s", CONTROL_EXPORT.model_info);
+    sprintf(buffer, "FMT v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
+    _print_item("Firmware", buffer, 42);
+
+    sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    //console_println("RTOS: RT-Thread v%d.%d.%d", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    _print_item("Kernel", buffer, 42);
+
+    sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    //console_println("RAM: %d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    _print_item("RAM", buffer, 42);
+
+    _print_item("Board", BOARD_NAME, 42);
+    //console_println("Board: %s", BOARD_NAME);
+
+    _print_item("Vehicle", VEHICLE_TYPE, 42);
+    //console_println("Vehicle Type: %s", VEHICLE_TYPE);
+
+    _print_item("INS Model", (char*)INS_EXPORT.model_info, 42);
+    //console_println("INS Model: %s", INS_EXPORT.model_info);
+
+    _print_item("FMS Model", (char*)FMS_EXPORT.model_info, 42);
+    //console_println("FMS Model: %s", FMS_EXPORT.model_info);
+
+    _print_item("Control Model", (char*)CONTROL_EXPORT.model_info, 42);
+    //console_println("Control Model: %s", CONTROL_EXPORT.model_info);
+
+
     console_println("Task Initialize:");
-    console_println("  vehicle: OK");
-    console_println("    fmtio: OK");
-    console_println("     comm: OK");
-    console_println("   logger: OK");
-    console_println("   status: OK");
+    //console_println("  vehicle: OK");
+    _print_item("  vehicle", "OK", 42);
+    //console_println("    fmtio: OK");
+    _print_item("  fmtio", "OK", 42);
+    //console_println("     comm: OK");
+    _print_item("  comm", "OK", 42);
+    //console_println("   logger: OK");
+    _print_item("  logger", "OK", 42);
+    //console_println("   status: OK");
+    _print_item(" status", "OK", 42);
 }
 
 /* this function will be called before rtos start, which is not thread context */
@@ -145,7 +179,7 @@ void bsp_initialize(void)
 
     /* init gps */
     RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
-    
+
     /* init other device */
     RTT_CHECK(tca62724_drv_init());
 
@@ -155,11 +189,11 @@ void bsp_initialize(void)
     /* init sensor manager */
     FMT_CHECK(sensor_manager_init());
 
-//     /* GDB STUB */
-// #ifdef RT_USING_GDB
-//     gdb_set_device(GDB_DEVICE_NAME);
-//     gdb_start();
-// #endif
+    //     /* GDB STUB */
+    // #ifdef RT_USING_GDB
+    //     gdb_set_device(GDB_DEVICE_NAME);
+    //     gdb_start();
+    // #endif
 
 #ifdef RT_USING_FINSH
     /* init finsh */
