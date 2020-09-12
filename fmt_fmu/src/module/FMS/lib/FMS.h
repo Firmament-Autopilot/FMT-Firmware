@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.681
+ * Model version                  : 1.687
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 10 23:11:27 2020
+ * C/C++ source code generated on : Sat Sep 12 15:04:36 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -120,15 +120,15 @@ typedef struct {
   const real32_T Square;               /* '<S57>/Square' */
   const real32_T d;                    /* '<S57>/Multiply' */
   const real32_T Gain4;                /* '<S57>/Gain4' */
-  const real32_T Square_h;             /* '<S56>/Square' */
+  const real32_T Square_e;             /* '<S56>/Square' */
   const real32_T d_i;                  /* '<S56>/Multiply' */
-  const real32_T Gain4_h;              /* '<S56>/Gain4' */
-  const real32_T Square_i;             /* '<S20>/Square' */
-  const real32_T d_l;                  /* '<S20>/Multiply' */
-  const real32_T Gain4_p;              /* '<S20>/Gain4' */
-  const real32_T Square_n;             /* '<S19>/Square' */
-  const real32_T d_g;                  /* '<S19>/Multiply' */
-  const real32_T Gain4_k;              /* '<S19>/Gain4' */
+  const real32_T Gain4_f;              /* '<S56>/Gain4' */
+  const real32_T Square_f;             /* '<S20>/Square' */
+  const real32_T d_a;                  /* '<S20>/Multiply' */
+  const real32_T Gain4_a;              /* '<S20>/Gain4' */
+  const real32_T Square_k;             /* '<S19>/Square' */
+  const real32_T d_f;                  /* '<S19>/Multiply' */
+  const real32_T Gain4_e;              /* '<S19>/Gain4' */
   const boolean_T Arm_Allowed_Logical_Operato;/* '<S121>/Arm_Allowed_Logical_Operator' */
   const boolean_T Disarm_Allowed_Logical_Oper;/* '<S121>/Disarm_Allowed_Logical_Operator' */
 } ConstB_FMS_T;
@@ -262,8 +262,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S16>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Vel_Command'
  * '<S17>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Attitude_Command/Phi_CMD_TD'
  * '<S18>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Attitude_Command/Thera_CMD_TD'
- * '<S19>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Attitude_Command/Phi_CMD_TD/fhan'
- * '<S20>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Attitude_Command/Thera_CMD_TD/fhan'
+ * '<S19>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Attitude_Command/Phi_CMD_TD/fhan '
+ * '<S20>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Attitude_Command/Thera_CMD_TD/fhan '
  * '<S21>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Psi_Rate_Command/Compare To Constant'
  * '<S22>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Psi_Rate_Command/Compare To Constant1'
  * '<S23>'  : 'FMS/Control_Mode/Altitude_Hold_Mode/Command_Generator/Psi_Rate_Command/Detect Increase'
@@ -299,8 +299,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S53>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Throttle_Command'
  * '<S54>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Attitude_Command/Phi_CMD_TD'
  * '<S55>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Attitude_Command/Theta_CMD_TD'
- * '<S56>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Attitude_Command/Phi_CMD_TD/fhan'
- * '<S57>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Attitude_Command/Theta_CMD_TD/fhan'
+ * '<S56>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Attitude_Command/Phi_CMD_TD/fhan '
+ * '<S57>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Attitude_Command/Theta_CMD_TD/fhan '
  * '<S58>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Psi_Rate_Command/Compare To Constant'
  * '<S59>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Psi_Rate_Command/Compare To Constant1'
  * '<S60>'  : 'FMS/Control_Mode/Manual_Mode/Command_Generator/Psi_Rate_Command/Detect Increase'

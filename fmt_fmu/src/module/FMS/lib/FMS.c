@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.681
+ * Model version                  : 1.687
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 10 23:11:27 2020
+ * C/C++ source code generated on : Sat Sep 12 15:04:36 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -84,7 +84,7 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 struct_QTHD3FieMDlB4oEKy11VyG FMS_PARAM = {
   0.1F,
   0.95F,
-  1.2F,
+  0.7F,
   5.0F,
   2.5F,
   1.0F,
@@ -1918,7 +1918,7 @@ void FMS_step(void)
      *  Sum: '<S20>/Subtract'
      */
     rtb_Product_idx_1 = (sqrtf((8.0F * fabsf(rtb_stick_throttle_raw) +
-      FMS_ConstB.d_l) * FMS_ConstB.d_l) - FMS_ConstB.d_l) * 0.5F * rtb_Add_d +
+      FMS_ConstB.d_a) * FMS_ConstB.d_a) - FMS_ConstB.d_a) * 0.5F * rtb_Add_d +
       rtb_Product_idx_0;
 
     /* Sum: '<S20>/Add4' */
@@ -1926,10 +1926,10 @@ void FMS_step(void)
       rtb_Product_idx_0;
 
     /* Sum: '<S20>/Add3' */
-    rtb_Add_m = rtb_stick_throttle_raw + FMS_ConstB.d_l;
+    rtb_Add_m = rtb_stick_throttle_raw + FMS_ConstB.d_a;
 
     /* Sum: '<S20>/Subtract1' */
-    rtb_stick_throttle_raw -= FMS_ConstB.d_l;
+    rtb_stick_throttle_raw -= FMS_ConstB.d_a;
 
     /* Signum: '<S20>/Sign1' */
     if (rtb_Add_m < 0.0F) {
@@ -1962,13 +1962,13 @@ void FMS_step(void)
       rtb_stick_pitch_raw;
 
     /* Sum: '<S20>/Add6' */
-    rtb_Add_m = rtb_Product_idx_1 + FMS_ConstB.d_l;
+    rtb_Add_m = rtb_Product_idx_1 + FMS_ConstB.d_a;
 
     /* Sum: '<S20>/Subtract3' */
-    rtb_stick_pitch_raw = rtb_Product_idx_1 - FMS_ConstB.d_l;
+    rtb_stick_pitch_raw = rtb_Product_idx_1 - FMS_ConstB.d_a;
 
     /* Product: '<S20>/Divide' */
-    rtb_Product_idx_2 = rtb_Product_idx_1 / FMS_ConstB.d_l;
+    rtb_Product_idx_2 = rtb_Product_idx_1 / FMS_ConstB.d_a;
 
     /* Signum: '<S20>/Sign5' incorporates:
      *  Signum: '<S20>/Sign6'
@@ -2022,17 +2022,17 @@ void FMS_step(void)
      *  Sum: '<S19>/Subtract'
      */
     rtb_stick_throttle_raw = (sqrtf((8.0F * fabsf(rtb_Product_idx_0) +
-      FMS_ConstB.d_g) * FMS_ConstB.d_g) - FMS_ConstB.d_g) * 0.5F *
+      FMS_ConstB.d_f) * FMS_ConstB.d_f) - FMS_ConstB.d_f) * 0.5F *
       rtb_stick_roll_raw + rtb_Product_idx_1;
 
     /* Sum: '<S19>/Add4' */
     rtb_Product_idx_1 += rtb_Product_idx_0 - rtb_stick_throttle_raw;
 
     /* Sum: '<S19>/Add3' */
-    rtb_stick_roll_raw = rtb_Product_idx_0 + FMS_ConstB.d_g;
+    rtb_stick_roll_raw = rtb_Product_idx_0 + FMS_ConstB.d_f;
 
     /* Sum: '<S19>/Subtract1' */
-    rtb_Product_idx_0 -= FMS_ConstB.d_g;
+    rtb_Product_idx_0 -= FMS_ConstB.d_f;
 
     /* Signum: '<S19>/Sign1' */
     if (rtb_stick_roll_raw < 0.0F) {
@@ -2136,14 +2136,14 @@ void FMS_step(void)
      *  Sum: '<S20>/Subtract6'
      */
     FMS_DW.Integrator_DSTATE_b += ((rtb_Product_idx_2 - rtb_TrigoFcn) *
-      FMS_ConstB.Gain4_p * ((rtb_Add_m - rtb_stick_pitch_raw) * 0.5F) -
+      FMS_ConstB.Gain4_a * ((rtb_Add_m - rtb_stick_pitch_raw) * 0.5F) -
       rtb_Add_d * 12.566371F) * 0.008F;
 
     /* Sum: '<S19>/Subtract3' */
-    rtb_Add_m = rtb_stick_throttle_raw - FMS_ConstB.d_g;
+    rtb_Add_m = rtb_stick_throttle_raw - FMS_ConstB.d_f;
 
     /* Sum: '<S19>/Add6' */
-    rtb_stick_pitch_raw = rtb_stick_throttle_raw + FMS_ConstB.d_g;
+    rtb_stick_pitch_raw = rtb_stick_throttle_raw + FMS_ConstB.d_f;
 
     /* Signum: '<S19>/Sign5' */
     if (rtb_stick_throttle_raw < 0.0F) {
@@ -2199,8 +2199,8 @@ void FMS_step(void)
      *  Sum: '<S19>/Subtract5'
      *  Sum: '<S19>/Subtract6'
      */
-    FMS_DW.Integrator_DSTATE_g += ((rtb_stick_throttle_raw / FMS_ConstB.d_g -
-      rtb_Add_d) * FMS_ConstB.Gain4_k * ((rtb_stick_pitch_raw - rtb_Add_m) *
+    FMS_DW.Integrator_DSTATE_g += ((rtb_stick_throttle_raw / FMS_ConstB.d_f -
+      rtb_Add_d) * FMS_ConstB.Gain4_e * ((rtb_stick_pitch_raw - rtb_Add_m) *
       0.5F) - rtb_stick_roll_raw * 12.566371F) * 0.008F;
 
     /* End of Outputs for SubSystem: '<S1>/Altitude_Hold_Mode' */
@@ -2685,7 +2685,7 @@ void FMS_step(void)
      *  Sum: '<S56>/Subtract6'
      */
     FMS_DW.Integrator_DSTATE_d += ((rtb_Product_idx_0 / FMS_ConstB.d_i -
-      rtb_stick_roll_raw) * FMS_ConstB.Gain4_h * ((rtb_stick_pitch_raw -
+      rtb_stick_roll_raw) * FMS_ConstB.Gain4_f * ((rtb_stick_pitch_raw -
       rtb_Add_m) * 0.5F) - rtb_Add_d * 12.566371F) * 0.008F;
 
     /* End of Outputs for SubSystem: '<S1>/Manual_Mode' */
