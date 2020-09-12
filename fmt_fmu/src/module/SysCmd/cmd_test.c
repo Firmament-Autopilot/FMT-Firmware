@@ -26,22 +26,16 @@
 
 void sd_write_speed_test(void);
 
-static int
-handle_cmd(int argc, char** argv, int optc, optv_t* optv)
+static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
     // sd_write_speed_test();
 
-    if (argv[1][0] == '1') {
-        int* a = 0;
-        *a = 2;
-    } else {
-        RT_ASSERT(0);
-    }
+    char buff[80];
 
-    // uint32_t dec = math_hex2dec(argv[1]);
-    // console_printf("hex:%s dec:%u\n", argv[1], dec);
-
-    // RT_ASSERT(0);
+    memset(buff, 'a', 80);
+    console_write(buff, 80);
+    memset(buff, 'b', 80);
+    console_write(buff, 80);
 
     return 0;
 }

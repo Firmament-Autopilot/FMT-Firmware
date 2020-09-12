@@ -252,7 +252,8 @@ uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg,
         rt_sem_take(_mavproxy_tx_lock, RT_WAITING_FOREVER);
 
         len = mavlink_msg_to_send_buffer(mav_tx_buff, msg);
-        size = mavproxy_dev_sync_write(_mav_dev_chan, mav_tx_buff, len);
+        //size = mavproxy_dev_sync_write(_mav_dev_chan, mav_tx_buff, len);
+        size = mavproxy_dev_write(_mav_dev_chan, mav_tx_buff, len, RT_WAITING_FOREVER);
 
         rt_sem_release(_mavproxy_tx_lock);
 

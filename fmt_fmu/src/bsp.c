@@ -50,8 +50,8 @@ static void _print_item(const char* name, const char* content, uint32_t len)
 {
     int pad_len = len - strlen(name) - strlen(content);
 
-    if (pad_len < 0) {
-        pad_len = 0;
+    if (pad_len < 1) {
+        pad_len = 1;
     }
 
     console_printf("%s", name);
@@ -79,6 +79,7 @@ void NVIC_Configuration(void)
 void bsp_show_version(void)
 {
     char buffer[50];
+    uint32_t str_len = 42;
 
     console_printf("\n");
     console_println("   _____                               __ ");
@@ -86,44 +87,23 @@ void bsp_show_version(void)
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
-    sprintf(buffer, "FMT v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
-    _print_item("Firmware", buffer, 42);
-
+    sprintf(buffer, "FMT FMU v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
+    _print_item("Firmware", buffer, str_len);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    //console_println("RTOS: RT-Thread v%d.%d.%d", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    _print_item("Kernel", buffer, 42);
-
+    _print_item("Kernel", buffer, str_len);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    //console_println("RAM: %d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    _print_item("RAM", buffer, 42);
-
-    _print_item("Board", BOARD_NAME, 42);
-    //console_println("Board: %s", BOARD_NAME);
-
-    _print_item("Vehicle", VEHICLE_TYPE, 42);
-    //console_println("Vehicle Type: %s", VEHICLE_TYPE);
-
-    _print_item("INS Model", (char*)INS_EXPORT.model_info, 42);
-    //console_println("INS Model: %s", INS_EXPORT.model_info);
-
-    _print_item("FMS Model", (char*)FMS_EXPORT.model_info, 42);
-    //console_println("FMS Model: %s", FMS_EXPORT.model_info);
-
-    _print_item("Control Model", (char*)CONTROL_EXPORT.model_info, 42);
-    //console_println("Control Model: %s", CONTROL_EXPORT.model_info);
-
-
+    _print_item("RAM", buffer, str_len);
+    _print_item("Board", BOARD_NAME, str_len);
+    _print_item("Vehicle", VEHICLE_TYPE, str_len);
+    _print_item("INS Model", (char*)INS_EXPORT.model_info, str_len);
+    _print_item("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
+    _print_item("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
     console_println("Task Initialize:");
-    //console_println("  vehicle: OK");
-    _print_item("  vehicle", "OK", 42);
-    //console_println("    fmtio: OK");
-    _print_item("  fmtio", "OK", 42);
-    //console_println("     comm: OK");
-    _print_item("  comm", "OK", 42);
-    //console_println("   logger: OK");
-    _print_item("  logger", "OK", 42);
-    //console_println("   status: OK");
-    _print_item(" status", "OK", 42);
+    _print_item("  vehicle", "OK", str_len);
+    _print_item("  fmtio", "OK", str_len);
+    _print_item("  comm", "OK", str_len);
+    _print_item("  logger", "OK", str_len);
+    _print_item("  status", "OK", str_len);
 }
 
 /* this function will be called before rtos start, which is not thread context */

@@ -142,6 +142,21 @@ rt_size_t mavproxy_dev_sync_read(uint8_t chan, void* buffer, uint32_t len)
 	return len;
 }
 
+rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout)
+{
+	rt_size_t size;
+
+	switch_chan_if_needed(chan);
+
+	/* write data to device */
+	size = rt_device_write(_mavproxy_dev, 0, buffer, len);
+
+	/* wait write complete (synchronized write) */
+	rt_sem_take(_mavproxy_dev_tx_sem, timeout);
+
+	return size;
+}
+
 rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout)
 {
 	rt_size_t cnt = 0;

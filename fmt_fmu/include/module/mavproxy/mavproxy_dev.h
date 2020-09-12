@@ -22,6 +22,7 @@
 int mavproxy_dev_init(uint8_t chan);
 rt_size_t mavproxy_dev_sync_read(uint8_t chan, void* buffer, uint32_t len);
 rt_size_t mavproxy_dev_sync_write(uint8_t chan, const void* buffer, uint32_t len);
+rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout);
 rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout);
 uint8_t mavproxy_dev_used_channel(void);
 void mavproxy_dev_set_rx_indicate(fmt_err(*rx_ind)(uint32_t size));
