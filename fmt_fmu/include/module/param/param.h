@@ -196,6 +196,17 @@ typedef struct {
 } PARAM_GROUP(INS);
 
 typedef struct {
+    PARAM_DECLARE(STICK_DEADZONE);
+    PARAM_DECLARE(XY_P);
+    PARAM_DECLARE(Z_P);
+    PARAM_DECLARE(VEL_XY_LIM);
+    PARAM_DECLARE(VEL_Z_LIM);
+    PARAM_DECLARE(YAW_P);
+    PARAM_DECLARE(YAW_RATE_LIM);
+    PARAM_DECLARE(ROLL_PITCH_LIM);
+} PARAM_GROUP(FMS);
+
+typedef struct {
     PARAM_DECLARE(VEL_XY_P);
     PARAM_DECLARE(VEL_XY_I);
     PARAM_DECLARE(VEL_XY_D);
@@ -237,6 +248,7 @@ typedef struct {
     param_group_t PARAM_GROUP(SYSTEM);
     param_group_t PARAM_GROUP(CALIB);
     param_group_t PARAM_GROUP(INS);
+    param_group_t PARAM_GROUP(FMS);
     param_group_t PARAM_GROUP(CONTROL);
 } param_list_t;
 

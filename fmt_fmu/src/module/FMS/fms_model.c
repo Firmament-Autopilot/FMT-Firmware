@@ -37,10 +37,26 @@ static void _blog_start_cb(void)
     _pilot_cmd_update = 1;
 }
 
+static void _update_model_parameter(void)
+{
+    FMS_PARAM.StickDeadZone = PARAM_GET_FLOAT(FMS, STICK_DEADZONE);
+    FMS_PARAM.XY_P = PARAM_GET_FLOAT(FMS, XY_P);
+    FMS_PARAM.Z_P = PARAM_GET_FLOAT(FMS, Z_P);
+    FMS_PARAM.VEL_XY_LIM = PARAM_GET_FLOAT(FMS, VEL_XY_LIM);
+    FMS_PARAM.VEL_Z_LIM = PARAM_GET_FLOAT(FMS, VEL_Z_LIM);
+    FMS_PARAM.YAW_P = PARAM_GET_FLOAT(FMS, YAW_P);
+    FMS_PARAM.YAW_RATE_LIM = PARAM_GET_FLOAT(FMS, YAW_RATE_LIM);
+    FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
+}
+
 void fms_model_step(void)
 {
     static uint32_t start_time = 0;
     uint32_t time_now = systime_now_ms();
+
+#ifdef FMT_ONLINE_PARAM_TUNING
+    _update_model_parameter();
+#endif
 
     if (start_time == 0) {
         /* record first execution time */
@@ -94,4 +110,6 @@ void fms_model_init(void)
     blog_register_callback(BLOG_CB_START, _blog_start_cb);
 
     FMS_init();
+
+    _update_model_parameter();
 }
