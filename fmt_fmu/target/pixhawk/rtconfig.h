@@ -7,7 +7,7 @@
 #include <fmtconfig.h>
 
 /* RT_NAME_MAX*/
-#define RT_NAME_MAX	   16	//change log: change from 8 to 16
+#define RT_NAME_MAX	   20	//change log: change from 8 to 20
 
 /* RT_ALIGN_SIZE*/
 #define RT_ALIGN_SIZE	4
