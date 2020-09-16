@@ -92,7 +92,7 @@ fmt_err task_vehicle_init(void)
     }
 
     /* register timer event */
-    rt_timer_init(&timer_vehicle, "vehicle",
+    rt_timer_init(&timer_vehicle, "vehicle_update",
         timer_vehicle_update,
         RT_NULL,
         1,

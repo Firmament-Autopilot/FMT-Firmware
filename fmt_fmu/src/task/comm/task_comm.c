@@ -304,7 +304,7 @@ fmt_err task_comm_init(void)
     rt_event_init(&event_mavproxy, "mavproxy", RT_IPC_FLAG_FIFO);
 
     /* register timer event */
-    rt_timer_init(&timer_mavproxy, "mavproxy", timer_mavproxy_update, RT_NULL, 2,
+    rt_timer_init(&timer_mavproxy, "comm_update", timer_mavproxy_update, RT_NULL, 2,
         RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     rt_timer_start(&timer_mavproxy);
 
