@@ -39,7 +39,7 @@ void _thread_idle_hook_func(void)
 static void timer_stat_entry(void* parameter)
 {
 	/* calculate cpu usage */
-	OS_ENTER_CRITICAL;
+	//OS_ENTER_CRITICAL;
 	float usage = 100.0 * (1.0 - ((double)_os_idle_ctr) / _os_ctr_max);
 
 	/* some time the timer could be not accurate, which will generate some wrong usage. so filter it */
@@ -47,7 +47,7 @@ static void timer_stat_entry(void* parameter)
 		_cpu_usage = usage;
 
 	_os_idle_ctr = 0;
-	OS_EXIT_CRITICAL;
+	//OS_EXIT_CRITICAL;
 }
 
 float sysstat_get_cpu_usage(void)
@@ -57,22 +57,21 @@ float sysstat_get_cpu_usage(void)
 
 fmt_err sys_stat_init(void)
 {
-	_os_idle_ctr = 0;
-
 	/* we increment idle counter in idle thread */
 	rt_thread_idle_sethook(_thread_idle_hook_func);
 
+    _os_idle_ctr = 0;
 	/* suspend current thread and let idle thread wakeup to count the maximal value of counter */
 	rt_thread_delay(OS_STATISTIC_INTERVAL);
 	_os_ctr_max = _os_idle_ctr;
 	_os_idle_ctr = 0;
 
 	/* register a timer event to calculate CPU usage */
-	rt_timer_init(&timer_sta, "timer_sta",
+	rt_timer_init(&timer_sta, "stat",
 	              timer_stat_entry,
 	              RT_NULL,
 	              OS_STATISTIC_INTERVAL,
-	              RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+	              RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
 	rt_timer_start(&timer_sta);
 
     return FMT_EOK;
