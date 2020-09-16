@@ -19,8 +19,8 @@
 
 #include <firmament.h>
 
-#define BARO_OSR_256 0
-#define BARO_OSR_512 1
+#define BARO_OSR_256  0
+#define BARO_OSR_512  1
 #define BARO_OSR_1024 2
 #define BARO_OSR_2048 3
 #define BARO_OSR_4096 4
@@ -30,6 +30,7 @@
 
 /* baro command */
 #define BARO_CMD_CHECK_UPDATE 0x20
+#define BARO_CMD_UPDATE       0x21
 
 /* default config for accel sensor */
 #define BARO_CONFIG_DEFAULT             \

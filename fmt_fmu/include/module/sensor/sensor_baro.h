@@ -20,6 +20,7 @@
 #include "hal/barometer.h"
 
 fmt_err sensor_baro_init(void);
+fmt_err sensor_baro_update(void);
 uint8_t sensor_baro_check_update(void);
 fmt_err sensor_baro_get_report(baro_report_t* report);
 

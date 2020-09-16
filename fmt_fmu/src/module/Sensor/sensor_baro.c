@@ -30,6 +30,11 @@ uint8_t sensor_baro_check_update(void)
 	return update;
 }
 
+fmt_err sensor_baro_update(void)
+{
+    return rt_device_control(_baro_device_t, BARO_CMD_UPDATE, NULL) == RT_EOK ? FMT_EOK : FMT_ERROR;
+}
+
 fmt_err sensor_baro_get_report(baro_report_t* report)
 {
 	if(rt_device_read(_baro_device_t, BARO_RD_REPORT, report, sizeof(baro_report_t))) {

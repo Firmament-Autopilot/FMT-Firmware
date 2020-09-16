@@ -110,6 +110,7 @@ static int SENSOR_GPS_echo(void* param)
 void sensor_collect(void)
 {
     DEFINE_TIMETAG(mag_update, 10);
+    DEFINE_TIMETAG(baro_update, 5);
 
     _imu_report.timestamp_ms = systime_now_ms();
     sensor_gyr_measure(_imu_report.gyr_B_radDs, 0);
@@ -160,16 +161,19 @@ void sensor_collect(void)
         mcn_publish(MCN_ID(sensor_mag), &_mag_report);
     }
 
-    if (sensor_baro_check_update()) {
-        baro_report_t report;
+    if (check_timetag(TIMETAG(baro_update))) {
+        sensor_baro_update();
+        if (sensor_baro_check_update()) {
+            baro_report_t report;
 
-        if (sensor_baro_get_report(&report) == FMT_EOK) {
-            _baro_report.temperature_deg = report.temperature_deg;
-            _baro_report.pressure_pa = report.pressure_Pa;
-            _baro_report.altitude_m = report.altitude_m;
-            _baro_report.timestamp_ms = report.timestamp_ms;
+            if (sensor_baro_get_report(&report) == FMT_EOK) {
+                _baro_report.temperature_deg = report.temperature_deg;
+                _baro_report.pressure_pa = report.pressure_Pa;
+                _baro_report.altitude_m = report.altitude_m;
+                _baro_report.timestamp_ms = report.timestamp_ms;
 
-            mcn_publish(MCN_ID(sensor_baro), &_baro_report);
+                mcn_publish(MCN_ID(sensor_baro), &_baro_report);
+            }
         }
     }
 
