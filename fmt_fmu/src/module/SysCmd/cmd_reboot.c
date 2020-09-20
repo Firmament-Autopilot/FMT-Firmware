@@ -20,7 +20,7 @@
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-	console_printf("rebooting...");
+	console_printf("rebooting...\n");
 
 	rt_thread_delay(10);
 

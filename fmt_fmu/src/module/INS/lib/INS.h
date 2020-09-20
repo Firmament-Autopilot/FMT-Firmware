@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.2573
+ * Model version                  : 1.2613
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 10 23:13:42 2020
+ * C/C++ source code generated on : Sat Sep 19 09:02:39 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -193,8 +193,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_yEHaAuRwDY8DKCecxPQa0D_
-#define DEFINED_TYPEDEF_FOR_struct_yEHaAuRwDY8DKCecxPQa0D_
+#ifndef DEFINED_TYPEDEF_FOR_struct_azN3rs1DL4w8YTAQ05h9sE_
+#define DEFINED_TYPEDEF_FOR_struct_azN3rs1DL4w8YTAQ05h9sE_
 
 typedef struct {
   real32_T GyroBias[3];
@@ -209,8 +209,8 @@ typedef struct {
   real32_T AccRotMat2[9];
   real32_T MagBias2[3];
   real32_T MagRotMat2[9];
-  uint8_T USE_EXTERN_FILTER;
-} struct_yEHaAuRwDY8DKCecxPQa0D;
+  int8_T USE_EXTERN_FILTER;
+} struct_azN3rs1DL4w8YTAQ05h9sE;
 
 #endif
 
@@ -403,6 +403,9 @@ typedef struct {
 
 /* Parameters (default storage) */
 struct Parameters_INS_T_ {
+  struct_lhdUdNWnbTDz28W0g5GGc INS_CONST;/* Variable: INS_CONST
+                                          * Referenced by: '<S219>/Constant1'
+                                          */
   real_T CompareToConstant_const;      /* Mask Parameter: CompareToConstant_const
                                         * Referenced by: '<S174>/Constant'
                                         */
@@ -839,31 +842,10 @@ struct Parameters_INS_T_ {
   real32_T DiscreteTimeIntegrator_IC_e;/* Computed Parameter: DiscreteTimeIntegrator_IC_e
                                         * Referenced by: '<S17>/Discrete-Time Integrator'
                                         */
-  real32_T Constant_Value_f;           /* Computed Parameter: Constant_Value_f
-                                        * Referenced by: '<S12>/Constant'
-                                        */
-  real32_T Constant_Value_p;           /* Computed Parameter: Constant_Value_p
-                                        * Referenced by: '<S13>/Constant'
-                                        */
-  real32_T Constant_Value_k;           /* Computed Parameter: Constant_Value_k
-                                        * Referenced by: '<S14>/Constant'
-                                        */
-  real32_T Constant_Value_ih;          /* Computed Parameter: Constant_Value_ih
-                                        * Referenced by: '<S15>/Constant'
-                                        */
-  real32_T Constant_Value_kn;          /* Computed Parameter: Constant_Value_kn
-                                        * Referenced by: '<S16>/Constant'
-                                        */
-  real32_T Constant_Value_c;           /* Computed Parameter: Constant_Value_c
-                                        * Referenced by: '<S17>/Constant'
-                                        */
-  real32_T Constant_Value_j;           /* Computed Parameter: Constant_Value_j
-                                        * Referenced by: '<S18>/Constant'
-                                        */
   real32_T Constant_Value_h;           /* Computed Parameter: Constant_Value_h
                                         * Referenced by: '<S54>/Constant'
                                         */
-  real32_T Constant_Value_jj;          /* Computed Parameter: Constant_Value_jj
+  real32_T Constant_Value_j;           /* Computed Parameter: Constant_Value_j
                                         * Referenced by: '<S55>/Constant'
                                         */
   real32_T Constant_Value_n;           /* Computed Parameter: Constant_Value_n
@@ -1004,7 +986,7 @@ struct Parameters_INS_T_ {
   real32_T Relay2_YOff;                /* Computed Parameter: Relay2_YOff
                                         * Referenced by: '<S63>/Relay2'
                                         */
-  real32_T Constant_Value_fk;          /* Computed Parameter: Constant_Value_fk
+  real32_T Constant_Value_f;           /* Computed Parameter: Constant_Value_f
                                         * Referenced by: '<S134>/Constant'
                                         */
   real32_T Constant_Value_a;           /* Computed Parameter: Constant_Value_a
@@ -1103,14 +1085,14 @@ struct Parameters_INS_T_ {
   real32_T DiscreteFIRFilter_Coefficients[30];/* Computed Parameter: DiscreteFIRFilter_Coefficients
                                                * Referenced by: '<S124>/Discrete FIR Filter'
                                                */
+  real32_T Gain_Gain_oh;               /* Computed Parameter: Gain_Gain_oh
+                                        * Referenced by: '<S124>/Gain'
+                                        */
   real32_T Saturation_UpperSat_k;      /* Computed Parameter: Saturation_UpperSat_k
                                         * Referenced by: '<S124>/Saturation'
                                         */
   real32_T Saturation_LowerSat_k;      /* Computed Parameter: Saturation_LowerSat_k
                                         * Referenced by: '<S124>/Saturation'
-                                        */
-  real32_T Gain_Gain_oh;               /* Computed Parameter: Gain_Gain_oh
-                                        * Referenced by: '<S124>/Gain'
                                         */
   real32_T Switch_Threshold;           /* Computed Parameter: Switch_Threshold
                                         * Referenced by: '<S134>/Switch'
@@ -1196,7 +1178,7 @@ struct Parameters_INS_T_ {
   real32_T Saturation2_LowerSat_o;     /* Computed Parameter: Saturation2_LowerSat_o
                                         * Referenced by: '<S118>/Saturation2'
                                         */
-  real32_T Constant_Value_pu;          /* Computed Parameter: Constant_Value_pu
+  real32_T Constant_Value_p;           /* Computed Parameter: Constant_Value_p
                                         * Referenced by: '<S154>/Constant'
                                         */
   real32_T DiscreteTimeIntegrator_gainva_j;/* Computed Parameter: DiscreteTimeIntegrator_gainva_j
@@ -1337,7 +1319,7 @@ struct Parameters_INS_T_ {
   real32_T Constant_Value_aa;          /* Computed Parameter: Constant_Value_aa
                                         * Referenced by: '<S224>/Constant'
                                         */
-  real32_T Constant_Value_km;          /* Computed Parameter: Constant_Value_km
+  real32_T Constant_Value_k;           /* Computed Parameter: Constant_Value_k
                                         * Referenced by: '<S226>/Constant'
                                         */
   real32_T Merge_InitialOutput_j;      /* Computed Parameter: Merge_InitialOutput_j
@@ -1351,9 +1333,6 @@ struct Parameters_INS_T_ {
                                         */
   real32_T Gain1_Gain_kw;              /* Computed Parameter: Gain1_Gain_kw
                                         * Referenced by: '<S219>/Gain1'
-                                        */
-  real32_T Constant1_Value_f;          /* Computed Parameter: Constant1_Value_f
-                                        * Referenced by: '<S219>/Constant1'
                                         */
   real32_T Constant_Value_nn;          /* Computed Parameter: Constant_Value_nn
                                         * Referenced by: '<S219>/Constant'
@@ -1556,7 +1535,7 @@ struct Parameters_INS_T_ {
   real32_T Constant1_Value_c2;         /* Computed Parameter: Constant1_Value_c2
                                         * Referenced by: '<S352>/Constant1'
                                         */
-  real32_T Constant_Value_cl;          /* Computed Parameter: Constant_Value_cl
+  real32_T Constant_Value_c;           /* Computed Parameter: Constant_Value_c
                                         * Referenced by: '<S352>/Constant'
                                         */
   real32_T Constant1_Value_b;          /* Computed Parameter: Constant1_Value_b
@@ -1673,7 +1652,7 @@ struct Parameters_INS_T_ {
   uint32_T Delay_11_DelayLength;       /* Computed Parameter: Delay_11_DelayLength
                                         * Referenced by: '<S57>/Delay'
                                         */
-  uint32_T Constant1_Value_f5;         /* Computed Parameter: Constant1_Value_f5
+  uint32_T Constant1_Value_f;          /* Computed Parameter: Constant1_Value_f
                                         * Referenced by: '<S284>/Constant1'
                                         */
   uint32_T Delay_DelayLength_jx;       /* Computed Parameter: Delay_DelayLength_jx
@@ -1844,6 +1823,18 @@ struct Parameters_INS_T_ {
   boolean_T Constant_Value_hvm;        /* Computed Parameter: Constant_Value_hvm
                                         * Referenced by: '<S255>/Constant'
                                         */
+  int8_T Switch_Threshold_c;           /* Computed Parameter: Switch_Threshold_c
+                                        * Referenced by: '<S323>/Switch'
+                                        */
+  int8_T Switch_Threshold_k;           /* Computed Parameter: Switch_Threshold_k
+                                        * Referenced by: '<S322>/Switch'
+                                        */
+  int8_T Switch2_Threshold;            /* Computed Parameter: Switch2_Threshold
+                                        * Referenced by: '<S318>/Switch2'
+                                        */
+  int8_T Switch3_Threshold;            /* Computed Parameter: Switch3_Threshold
+                                        * Referenced by: '<S318>/Switch3'
+                                        */
   int8_T Gain1_Gain_o;                 /* Computed Parameter: Gain1_Gain_o
                                         * Referenced by: '<S346>/Gain1'
                                         */
@@ -1886,20 +1877,8 @@ struct Parameters_INS_T_ {
   uint8_T Constant_Value_jz;           /* Computed Parameter: Constant_Value_jz
                                         * Referenced by: '<S168>/Constant'
                                         */
-  uint8_T Switch_Threshold_c;          /* Computed Parameter: Switch_Threshold_c
-                                        * Referenced by: '<S323>/Switch'
-                                        */
-  uint8_T Switch_Threshold_k;          /* Computed Parameter: Switch_Threshold_k
-                                        * Referenced by: '<S322>/Switch'
-                                        */
   uint8_T Constant_Value_jn;           /* Computed Parameter: Constant_Value_jn
                                         * Referenced by: '<S317>/Constant'
-                                        */
-  uint8_T Switch2_Threshold;           /* Computed Parameter: Switch2_Threshold
-                                        * Referenced by: '<S318>/Switch2'
-                                        */
-  uint8_T Switch3_Threshold;           /* Computed Parameter: Switch3_Threshold
-                                        * Referenced by: '<S318>/Switch3'
                                         */
   uint8_T Constant1_Value_l;           /* Computed Parameter: Constant1_Value_l
                                         * Referenced by: '<S357>/Constant1'
@@ -1943,7 +1922,7 @@ extern const INS_Out_Bus INS_rtZINS_Out_Bus;/* INS_Out_Bus ground */
  * these parameters and exports their symbols.
  *
  */
-extern struct_yEHaAuRwDY8DKCecxPQa0D INS_PARAM;/* Variable: INS_PARAM
+extern struct_azN3rs1DL4w8YTAQ05h9sE INS_PARAM;/* Variable: INS_PARAM
                                                 * Referenced by:
                                                 *   '<S318>/Constant'
                                                 *   '<S322>/Acc_Bias'
@@ -1966,6 +1945,13 @@ extern struct_i7E80ZuatMf603HOn7rPOE INS_EXPORT;/* Variable: INS_EXPORT
                                                  *   '<S316>/Constant'
                                                  *   '<S335>/Constant'
                                                  *   '<S357>/Constant'
+                                                 *   '<S12>/Constant'
+                                                 *   '<S13>/Constant'
+                                                 *   '<S14>/Constant'
+                                                 *   '<S15>/Constant'
+                                                 *   '<S16>/Constant'
+                                                 *   '<S17>/Constant'
+                                                 *   '<S18>/Constant'
                                                  *   '<S283>/Constant'
                                                  *   '<S304>/Constant'
                                                  */
@@ -2139,7 +2125,7 @@ extern RT_MODEL_INS_T *const INS_M;
  * '<S145>' : 'INS/Data_Fusion/AHRS/Correct/Att_Correction/Attitude_Correct/Measured_Acc/OpticalFlow_Acc_Observer/ContinueLinearObserver'
  * '<S146>' : 'INS/Data_Fusion/AHRS/Correct/Att_Correction/Heading_Correction/Enable'
  * '<S147>' : 'INS/Data_Fusion/AHRS/Correct/Att_Correction/Heading_Correction/Mag_Correction'
- * '<S148>' : 'INS/Data_Fusion/AHRS/Correct/Att_Correction/Heading_Correction/Mag_Correction/Subsystem'
+ * '<S148>' : 'INS/Data_Fusion/AHRS/Correct/Att_Correction/Heading_Correction/Subsystem'
  * '<S149>' : 'INS/Data_Fusion/AHRS/Correct/Bias_Correction/Compare To Constant'
  * '<S150>' : 'INS/Data_Fusion/AHRS/Correct/Bias_Correction/Onground_Correction'
  * '<S151>' : 'INS/Data_Fusion/AHRS/Correct/Bias_Correction/vec_modulus'

@@ -81,7 +81,6 @@ void bsp_show_version(void)
     char buffer[50];
     uint32_t str_len = 42;
 
-    console_printf("\n");
     console_println("   _____                               __ ");
     console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.732
+ * Model version                  : 1.733
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 10 23:12:22 2020
+ * C/C++ source code generated on : Sat Sep 19 09:05:00 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -29,8 +29,8 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.9F,
   0.09F,
   0.1F,
-  0.5F,
-  0.2F,
+  0.8F,
+  0.1F,
   0.01F,
   -1.0F,
   1.0F,
@@ -40,17 +40,17 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.15F,
   -0.1F,
   0.1F,
-  4.5F,
-  4.5F,
+  5.0F,
+  5.0F,
   0.523599F,
-  0.09F,
-  0.09F,
+  0.1F,
+  0.1F,
   0.2F,
-  0.1F,
-  0.1F,
-  0.1F,
-  0.0005F,
-  0.0005F,
+  0.075F,
+  0.075F,
+  0.075F,
+  0.004F,
+  0.004F,
   0.0005F,
   -0.1F,
   0.1F,
@@ -183,7 +183,7 @@ void Controller_step(void)
    *  Sum: '<S50>/Sum5'
    */
   rtb_k_pt = (rtb_Gain - Controller_DW.DiscreteTimeIntegrator1_DSTATE) *
-    31.415926F;
+    62.831852F;
 
   /* Trigonometry: '<S35>/TrigoFcn1' incorporates:
    *  Inport: '<Root>/INS_Out'
