@@ -90,7 +90,6 @@ bool mcn_poll_sync(McnNode_t node_t, int32_t timeout);
 fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer);
 fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer);
 void mcn_node_clear(McnNode_t node_t);
-
 fmt_err mcn_init(void);
 McnList mcn_get_list(void);
 

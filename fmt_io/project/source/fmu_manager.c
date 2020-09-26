@@ -95,24 +95,9 @@ FMT_Error handle_fmu_package(const PackageStruct* pkg)
 
     case PROTO_CMD_MOTOR: {
         uint16_t chan_mask = *(uint16_t*)pkg->content;
-        uint16_t val;
-        float duty_cyc[MAX_PWM_CHAN] = { 0.0 };
-        uint16_t* val_ptr = (uint16_t*)&pkg->content[2];
+        uint16_t* value = (uint16_t*)&pkg->content[2];
 
-        for (uint8_t i = 0; i < MAX_PWM_CHAN; i++) {
-            if (chan_mask & 1 << i) {
-                val = *val_ptr;
-                if (val > 2000) {
-                    val = 2000;
-                } else if (val < 1000) {
-                    val = 1000;
-                }
-                val_ptr++;
-                duty_cyc[i] = 0.00005f * val;
-            }
-        }
-
-        pwm_write(duty_cyc, (uint8_t)chan_mask);
+        handle_motor_pkg(chan_mask, value);
     } break;
 
     case PROTO_CMD_PWM_SWITCH: {
@@ -137,17 +122,16 @@ FMT_Error handle_fmu_package(const PackageStruct* pkg)
 
         if (baud_rate) {
             usart_config_baud_rate(USART2, baud_rate);
-            debug("set baud rate:%d\n", baud_rate);
+            // debug("set baud rate:%d\n", baud_rate);
         }
 
         if (rc_chan_num) {
             ppm_set_max_rc_chan(rc_chan_num);
-            debug("set rc channel num:%d\n", rc_chan_num);
+            // debug("set rc channel num:%d\n", rc_chan_num);
         }
 
         if (pwm_freq) {
             pwm_configure(PWM_CMD_SET_FREQ, &pwm_freq);
-            debug("set pwm frequency:%d\n", pwm_freq);
         }
     } break;
 

@@ -199,7 +199,6 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
 
     case MOTOR_CMD_SET_FREQUENCY: {
         uint16_t freq = *(uint16_t*)arg;
-        // fmtio_send_message(PROTO_CMD_CONFIG, &freq, 2);
         fmtio_config(0, 0, freq);
     } break;
 

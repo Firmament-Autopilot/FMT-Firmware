@@ -22,7 +22,6 @@
 fmt_err console_init(char* dev_name);
 fmt_err console_mount_shell(rt_device_t dev);
 fmt_err console_set_device(char* dev_name);
-
 uint32_t console_write(const char* content, uint32_t len);
 uint32_t console_printf(const char* fmt, ...);
 uint32_t console_println(const char* fmt, ...);

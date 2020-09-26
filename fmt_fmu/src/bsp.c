@@ -46,6 +46,9 @@
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
 
+rt_device_t main_out_dev = NULL;
+rt_device_t aux_out_dev = NULL;
+
 static void _print_item(const char* name, const char* content, uint32_t len)
 {
     int pad_len = len - strlen(name) - strlen(content);
@@ -185,7 +188,7 @@ void bsp_initialize(void)
     FMT_CHECK(sys_stat_init());
 
 #ifdef FMT_USING_CM_BACKTRACE
-    // cortex-m backtrace
+    /* cortex-m backtrace */
     cm_backtrace_init("fmt_fmu", BOARD_NAME, "v0.1");
 #endif
 }
@@ -195,11 +198,12 @@ void bsp_post_initialize(void)
     FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
-#ifdef FMT_USING_AUX_MOTOR
-    FMT_CHECK(actuator_init("motor_aux"));
-#else
-    FMT_CHECK(actuator_init("motor_main"));
-#endif
+    /* init main out */
+    main_out_dev = rt_device_find("motor_main");
+    FMT_CHECK(actuator_init(main_out_dev));
+    /* init aux out */
+    aux_out_dev = rt_device_find("motor_aux");
+    FMT_CHECK(actuator_init(aux_out_dev));
 #endif
 
     bsp_show_version();

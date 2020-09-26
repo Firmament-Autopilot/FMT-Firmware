@@ -29,6 +29,9 @@
 
 #define EVENT_VEHICLE_UPDATE (1 << 0)
 
+extern rt_device_t main_out_dev;
+extern rt_device_t aux_out_dev;
+
 static struct rt_timer timer_vehicle;
 static struct rt_event event_vehicle;
 
@@ -73,7 +76,11 @@ void task_vehicle_entry(void* parameter)
                 TIMETAG_CHECK_EXECUTE3(control_model_update, CONTROL_EXPORT.period, time_now, controller_model_step();)
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL) || defined(FMT_TEST_MOTOR)
-                send_actuator_cmd();
+#ifdef FMT_USING_AUX_MOTOR
+                send_actuator_cmd(aux_out_dev);
+#else
+                send_actuator_cmd(main_out_dev);
+#endif
 #endif
 
 #if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)

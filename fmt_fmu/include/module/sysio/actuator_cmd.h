@@ -19,11 +19,9 @@
 
 #include <firmament.h>
 
-fmt_err send_actuator_cmd(void);
+fmt_err send_actuator_cmd(const rt_device_t dev);
 fmt_err send_hil_actuator_cmd(void);
-fmt_err actuator_suspend_output(void);
-fmt_err actuator_resume_output(void);
-fmt_err actuator_init(const char* device_name);
-fmt_err actuator_deinit(void);
+fmt_err actuator_init(const rt_device_t dev);
+fmt_err actuator_deinit(const rt_device_t dev);
 
 #endif

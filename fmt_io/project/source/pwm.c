@@ -17,7 +17,11 @@
 #include "pwm.h"
 #include "debug.h"
 
-#define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
+// #define DBG(...) debug(__VA_ARGS__)
+#define DBG(...)
+
+#define PWM_ARR(freq)  (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
+#define VAL_TO_DC(val) ((float)(val * _pwm_freq) / 1000000.0f)
 
 uint8_t _pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float _tim_duty_cycle[MAX_PWM_CHAN] = { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
@@ -184,7 +188,15 @@ uint8_t pwm_read(float* buffer, uint8_t chan_id)
 uint8_t pwm_configure(uint8_t cmd, void* args)
 {
     if (cmd == PWM_CMD_SET_FREQ) {
-        _pwm_freq = *((int*)args);
+        uint16_t freq_to_set = *((uint16_t*)args);
+
+        if (freq_to_set < 50 || freq_to_set > 400) {
+            /* invalid frequency */
+            DBG("invalid pwm freq:%d\n", freq_to_set);
+            return 1;
+        }
+        DBG("pwm freq %d => %d\n", _pwm_freq, freq_to_set);
+        _pwm_freq = freq_to_set;
 
         // configure timer
         pwm_timer_init();
@@ -193,11 +205,17 @@ uint8_t pwm_configure(uint8_t cmd, void* args)
 
         return 0;
     } else if (cmd == PWM_CMD_ENABLE) {
-        int enable = *((int*)args);
+        int new_state = *((int*)args);
 
-        if (enable) {
+        DBG("pwm enable %d => %d\n", _enable, new_state);
+
+        if (new_state) {
             /* set to min value when motor is opened */
-            float min_dc[8] = { 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.05f };
+            float min_dc[MAX_PWM_CHAN];
+
+            for (uint8_t i = 0; i < MAX_PWM_CHAN; i++) {
+                min_dc[i] = VAL_TO_DC(1000);
+            }
             pwm_write(min_dc, PWM_CHAN_ALL);
 
             TIM_Cmd(TIM2, ENABLE);
@@ -218,6 +236,28 @@ uint8_t pwm_configure(uint8_t cmd, void* args)
         // unknown command
         return 1;
     }
+}
+
+void handle_motor_pkg(uint16_t mask, uint16_t* value)
+{
+    uint16_t val;
+    float duty_cyc[MAX_PWM_CHAN] = { 0.0 };
+    uint16_t* val_ptr = value;
+
+    for (uint8_t i = 0; i < MAX_PWM_CHAN; i++) {
+        if (mask & 1 << i) {
+            val = *val_ptr;
+            if (val > 2000) {
+                val = 2000;
+            } else if (val < 1000) {
+                val = 1000;
+            }
+            val_ptr++;
+            duty_cyc[i] = VAL_TO_DC(val);
+        }
+    }
+
+    pwm_write(duty_cyc, (uint8_t)mask);
 }
 
 uint8_t pwm_init(void)

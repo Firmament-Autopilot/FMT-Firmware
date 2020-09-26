@@ -52,5 +52,6 @@ uint8_t pwm_init(void);
 uint8_t pwm_write(float* duty_cyc, uint8_t chan_id);
 uint8_t pwm_read(float* buffer, uint8_t chan_id);
 uint8_t pwm_configure(uint8_t cmd, void* args);
+void handle_motor_pkg(uint16_t mask, uint16_t* value);
 
 #endif

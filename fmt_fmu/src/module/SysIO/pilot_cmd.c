@@ -95,7 +95,7 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, uint16_t* rc_val)
 
     // command lasts for 200ms
     if (time_now - _last_cmd_timestamp > 200) {
-        _pilot_cmd.cmd_1 = _pilot_cmd.cmd_2 = 0;
+        _pilot_cmd.cmd_1 = 0;
     }
 
     /* command 2: state command */
@@ -108,7 +108,8 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, uint16_t* rc_val)
 
 uint8_t pilot_cmd_collect(void)
 {
-    uint8_t update;
+    rt_err_t rt_err;
+    uint8_t update = 0;
     uint16_t rc_val[6];
     struct rc_configure config;
 
@@ -118,9 +119,9 @@ uint8_t pilot_cmd_collect(void)
 
     float range = (float)(config.rc_max_value - config.rc_min_value);
 
-    rt_device_control(_rc_dev, RC_CMD_CHECK_UPDATE, &update);
+    rt_err = rt_device_control(_rc_dev, RC_CMD_CHECK_UPDATE, &update);
 
-    if (update) {
+    if (rt_err == RT_EOK && update) {
         if (rt_device_read(_rc_dev, RC_MASK_1_6, rc_val, 12)) {
             _pilot_cmd.ls_lr = -1.0f + (float)(rc_val[PILOT_LS_LR_CHANNEL] - config.rc_min_value) / range * 2.0f;
             _pilot_cmd.ls_ud = -1.0f + (float)(rc_val[PILOT_LS_UD_CHANNEL] - config.rc_min_value) / range * 2.0f;
@@ -135,8 +136,6 @@ uint8_t pilot_cmd_collect(void)
             } else {
                 _pilot_cmd.mode = 4; //Manual Mode
             }
-
-            //_pilot_cmd.mode = 5;    //Acro Mode, for tesing
 
             /* generate pilot command */
             _generate_cmd(&_pilot_cmd, rc_val);

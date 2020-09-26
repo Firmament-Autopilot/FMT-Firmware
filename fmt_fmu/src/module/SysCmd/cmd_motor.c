@@ -120,14 +120,14 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 
     if (STRING_COMPARE(argv[1], "request")) {
         // request motor control
-        if (actuator_suspend_output() != FMT_EOK) {
-            console_printf("Fail to get control!\n");
-        }
+        // if (actuator_suspend_output() != FMT_EOK) {
+        //     console_printf("Fail to get control!\n");
+        // }
     } else if (STRING_COMPARE(argv[1], "release")) {
         // release motor control
-        if (actuator_resume_output() != FMT_EOK) {
-            console_printf("Fail to release control!\n");
-        }
+        // if (actuator_resume_output() != FMT_EOK) {
+        //     console_printf("Fail to release control!\n");
+        // }
     } else if (strcmp(argv[1], "open") == 0) {
         if (motor_dev) {
             if (rt_device_open(motor_dev, RT_DEVICE_OFLAG_RDWR) == RT_EOK) {

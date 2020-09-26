@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
+
 #include "driver/pwm_drv.h"
 #include "hal/motor.h"
-#include <firmament.h>
 
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
-#define MAX_PWM_OUT_CHAN      6       // AUX Out has 6 pwm channel
-#define TIMER_FREQUENCY       3000000 // Timer frequency: 3M
-#define PWM_DEFAULT_FREQUENCY 400     // pwm default frequqncy: 50Hz
+#define PWM_FREQ_50HZ  (50)
+#define PWM_FREQ_125HZ (125)
+#define PWM_FREQ_250HZ (250)
+#define PWM_FREQ_400HZ (400)
+
+#define MAX_PWM_OUT_CHAN      6             // AUX Out has 6 pwm channel
+#define TIMER_FREQUENCY       3000000       // Timer frequency: 3M
+#define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
 #define VAL_TO_DC(val)        ((float)(val * _pwm_freq) / 1000000.0f)
 
 #define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
@@ -195,7 +201,14 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
     } break;
 
     case MOTOR_CMD_SET_FREQUENCY: {
-        _pwm_freq = (int)arg;
+        uint16_t freq_to_set = *((uint16_t*)arg);
+
+        if (freq_to_set < PWM_FREQ_50HZ || freq_to_set > PWM_FREQ_400HZ) {
+            /* invalid frequency */
+            return RT_EINVAL;
+        }
+
+        _pwm_freq = freq_to_set;
 
         _pwm_timer_init();
 
@@ -236,7 +249,7 @@ static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_
     rt_uint16_t val;
     float dc;
 
-    DRV_DBG("aux motor write: ");
+    // DRV_DBG("aux motor write: ");
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
         if (chan_mask & (1 << i)) {
             /* constrain motor value */
@@ -246,11 +259,11 @@ static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_
             /* update pwm signal */
             _pwm_write(i, dc);
 
-            DRV_DBG("chan[%d]=%d %.2f ", i + 1, *index, dc);
+            // DRV_DBG("chan[%d]=%d %.2f ", i + 1, *index, dc);
             index++;
         }
     }
-    DRV_DBG("\n");
+    //DRV_DBG("\n");
 
     return size;
 }
