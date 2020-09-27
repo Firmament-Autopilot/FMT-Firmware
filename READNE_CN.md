@@ -41,12 +41,13 @@ FMT Firmware 具有轻量级，易于阅读和使用的特点，并且兼具高�
 
 - C 语言编写的轻量级飞控系统，更易使用和二次开发。
 - 跨平台的开发工具链，支持Windows/Linux/Mac OS。
-- 全面支持MBD，大大提高算法开发效率。
-- 支持当前最最流行的开源飞控硬件 Pixhawk (2.4.6/2.4.8)，在未来也将支持其它更多硬件平台。
+- 支持MBD设计模式，大大提升开发和测试效率。
+- 支持当前最流行的开源飞控硬件 Pixhawk。
 - 高实时性，时间误差 < 1us。
-- 更高运行效率和更低的CPU使用率。从而保证有更大的空间可以提高算法的复杂度和运行频率。
-- 支持 Mavlink V1.0/V2.0，支持主流地面站 QGC，Mission Planner等。
+- 更高运行效率和更低的CPU使用率。有更大的空间用以提高算法复杂度和运行频率。
+- 支持 Mavlink V1.0/V2.0和主流地面站 QGC，Mission Planner等。
 - 支持硬件在环仿真 (HIl/SIH)。
+- 高度模块化，松耦合的软件架构，易于裁剪和移植。
 
 ## Contributor
 A big thanks to these contributor:
