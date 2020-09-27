@@ -45,6 +45,9 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
+#ifdef FMT_USING_SIH
+#include "module/plant/plant_model.h"
+#endif
 
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
@@ -100,6 +103,9 @@ void bsp_show_version(void)
     _print_item("INS Model", (char*)INS_EXPORT.model_info, str_len);
     _print_item("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
     _print_item("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
+#ifdef FMT_USING_SIH
+    _print_item("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
+#endif
     console_println("Task Initialize:");
     _print_item("  vehicle", "OK", str_len);
     _print_item("  fmtio", "OK", str_len);

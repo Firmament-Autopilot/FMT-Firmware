@@ -15,10 +15,17 @@
  *****************************************************************************/
 
 #include <firmament.h>
+
 #include <string.h>
 
+#include "module/controller/controller_model.h"
+#include "module/fms/fms_model.h"
 #include "module/fs_manager/fs_manager.h"
+#include "module/ins/ins_model.h"
 #include "task/task_logger.h"
+#ifdef FMT_USING_SIH
+#include "module/plant/plant_model.h"
+#endif
 
 #define TAG                   "BLog"
 #define BLOG_MAX_CALLBACK_NUM 10
@@ -443,7 +450,16 @@ fmt_err blog_start(char* file_name)
     _file_write(&blog.header.timestamp, sizeof(blog.header.timestamp));
     _file_write(&blog.header.max_name_len, sizeof(blog.header.max_name_len));
     _file_write(&blog.header.max_desc_len, sizeof(blog.header.max_desc_len));
+    _file_write(&blog.header.max_model_info_len, sizeof(blog.header.max_model_info_len));
     _file_write(blog.header.description, BLOG_DESCRIPTION_SIZE);
+#ifdef FMT_USING_SIH
+    sprintf(blog.header.model_info, "%s\n%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
+        (char*)CONTROL_EXPORT.model_info, (char*)PLANT_EXPORT.model_info);
+#else
+    sprintf(blog.header.model_info, "%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
+        (char*)CONTROL_EXPORT.model_info);
+#endif
+    _file_write(blog.header.model_info, BLOG_MODEL_INFO_SIZE);
     // clear description after it has been written
     memset(blog.header.description, 0, BLOG_DESCRIPTION_SIZE);
 
@@ -655,6 +671,7 @@ void blog_init(void)
     blog.header.timestamp = 0;
     blog.header.max_name_len = BLOG_MAX_NAME_LEN;
     blog.header.max_desc_len = BLOG_DESCRIPTION_SIZE;
+    blog.header.max_model_info_len = BLOG_MODEL_INFO_SIZE;
     memset(blog.header.description, 0, BLOG_DESCRIPTION_SIZE);
 
     blog.header.num_bus = sizeof(_blog_bus) / sizeof(blog_bus_t);

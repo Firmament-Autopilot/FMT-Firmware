@@ -33,7 +33,8 @@
 #define BLOG_END_MSG    0x26
 
 #define BLOG_MAX_NAME_LEN     20
-#define BLOG_DESCRIPTION_SIZE 50
+#define BLOG_DESCRIPTION_SIZE 128
+#define BLOG_MODEL_INFO_SIZE  256
 
 // #define BLOG_BUFFER_SIZE            16384*3
 // #define BLOG_SECTOR_SIZE             16384    /* larger block can increase wrte bandwidth */
@@ -106,7 +107,9 @@ LOGPACKED(
         uint32_t timestamp;
         uint16_t max_name_len;
         uint16_t max_desc_len;
+        uint16_t max_model_info_len;
         char description[BLOG_DESCRIPTION_SIZE];
+        char model_info[BLOG_MODEL_INFO_SIZE];
         /* bus info */
         uint8_t num_bus;
         blog_bus_t* bus_list;
