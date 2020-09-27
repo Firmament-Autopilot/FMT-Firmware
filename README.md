@@ -1,4 +1,8 @@
-<p align="center"><img width="300" src="https://github.com/FirmamentPilot/fmt_user_guide_cn/blob/master/figures/logo.png" alt=FMT logo"></p>
+<p align="center"><img width="350" src="https://github.com/FirmamentPilot/fmt_user_guide_cn/blob/master/figures/logo.png" alt=FMT logo"></p>
+  
+<p align="center">
+  <a href="/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-brightgreen" alt="GitHub license" /></a>
+</p>
 
 Firmament Firmware
 ============================
