@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.933
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 24 15:07:43 2020
+ * C/C++ source code generated on : Sun Sep 27 14:55:18 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -181,7 +181,7 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S71>/Dead Zone'
                                                 *   '<S71>/Gain'
                                                 */
-extern struct_i7E80ZuatMf603HOn7rPOE FMS_EXPORT;/* Variable: FMS_EXPORT
+extern struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT;/* Variable: FMS_EXPORT
                                                  * Referenced by: '<S80>/Constant'
                                                  */
 

@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.933
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 24 15:07:43 2020
+ * C/C++ source code generated on : Sun Sep 27 14:55:18 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -170,13 +170,13 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_i7E80ZuatMf603HOn7rPOE_
-#define DEFINED_TYPEDEF_FOR_struct_i7E80ZuatMf603HOn7rPOE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
+#define DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
 
 typedef struct {
   uint32_T period;
-  int8_T model_info[9];
-} struct_i7E80ZuatMf603HOn7rPOE;
+  int8_T model_info[16];
+} struct_TYt7YeNdxIDXfczXumtXXB;
 
 #endif
 

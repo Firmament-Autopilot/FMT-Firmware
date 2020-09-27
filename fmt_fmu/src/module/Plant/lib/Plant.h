@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.515
+ * Model version                  : 1.538
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug 14 23:04:43 2020
+ * C/C++ source code generated on : Sun Sep 27 14:51:58 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,7 +37,7 @@
 /* Block signals (default storage) */
 typedef struct {
   GPS_uBlox_Bus RateTransition;        /* '<S63>/Rate Transition' */
-  MAG_Bus RateTransition_b;            /* '<S111>/Rate Transition' */
+  MAG_Bus RateTransition_b;            /* '<S108>/Rate Transition' */
   Barometer_Bus RateTransition_m;      /* '<S57>/Rate Transition' */
 } B_Plant_T;
 
@@ -47,12 +47,12 @@ typedef struct {
   real_T DiscreteFIRFilter_states[3];  /* '<S73>/Discrete FIR Filter' */
   real_T Delay1_DSTATE[3];             /* '<S24>/Delay1' */
   real_T Delay_DSTATE_a[3];            /* '<S24>/Delay' */
-  real32_T integrate_DSTATE[3];        /* '<S107>/integrate' */
-  real32_T integrate1_DSTATE[3];       /* '<S107>/integrate1' */
-  real32_T integrate1_DSTATE_g[3];     /* '<S90>/integrate1' */
-  real32_T integrate_DSTATE_k[3];      /* '<S90>/integrate' */
-  real32_T DiscreteTimeIntegrator_DSTATE[4];/* '<S102>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_p[4];/* '<S87>/Discrete-Time Integrator' */
+  real32_T integrate_DSTATE[3];        /* '<S104>/integrate' */
+  real32_T integrate1_DSTATE[3];       /* '<S104>/integrate1' */
+  real32_T integrate1_DSTATE_g[3];     /* '<S91>/integrate1' */
+  real32_T integrate_DSTATE_k[3];      /* '<S91>/integrate' */
+  real32_T DiscreteTimeIntegrator_DSTATE[4];/* '<S99>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTATE_g[4];/* '<S87>/Discrete-Time Integrator' */
   real32_T Delay1_DSTATE_a[150];       /* '<S64>/Delay1' */
   real32_T DiscreteFIRFilter_states_f[3];/* '<S74>/Discrete FIR Filter' */
   real32_T DiscreteTimeIntegrator_DSTATE_d[4];/* '<S36>/Discrete-Time Integrator' */
@@ -61,12 +61,12 @@ typedef struct {
   real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S35>/Discrete-Time Integrator1' */
   real32_T DiscreteFilter_states[4];   /* '<S10>/Discrete Filter' */
   uint32_T Memory1_PreviousInput;      /* '<S52>/Memory1' */
-  uint32_T RandomSource_SEED_DWORK[3]; /* '<S122>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK[6];/* '<S122>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_f[3];/* '<S93>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_k[6];/* '<S93>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_n[3];/* '<S110>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_h[6];/* '<S110>/Random Source' */
+  uint32_T RandomSource_SEED_DWORK[3]; /* '<S119>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK[6];/* '<S119>/Random Source' */
+  uint32_T RandomSource_SEED_DWORK_f[3];/* '<S94>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK_k[6];/* '<S94>/Random Source' */
+  uint32_T RandomSource_SEED_DWORK_n[3];/* '<S107>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK_h[6];/* '<S107>/Random Source' */
   uint32_T RandomSource_SEED_DWORK_m[3];/* '<S69>/Random Source' */
   uint32_T RandomSource_STATE_DWORK_l[6];/* '<S69>/Random Source' */
   uint32_T RandomSource1_SEED_DWORK[3];/* '<S69>/Random Source1' */
@@ -81,19 +81,19 @@ typedef struct {
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real_T Gain6[4];               /* '<S106>/Gain6' */
-  const real_T Divide1[4];             /* '<S106>/Divide1' */
-  const real_T Gain6_b[4];             /* '<S87>/Gain6' */
-  const real_T Divide1_f[4];           /* '<S87>/Divide1' */
+  const real_T Gain6[4];               /* '<S103>/Gain6' */
+  const real_T Divide1[4];             /* '<S103>/Divide1' */
+  const real_T Gain6_j[4];             /* '<S90>/Gain6' */
+  const real_T Divide1_h[4];           /* '<S90>/Divide1' */
   const real_T Subtract1;              /* '<S78>/Subtract1' */
-  const real_T e_2;                    /* '<S78>/Product1' */
+  const real_T Product1;               /* '<S78>/Product1' */
   const real_T Subtract1_h;            /* '<S25>/Subtract1' */
-  const real_T e_2_g;                  /* '<S25>/Product1' */
-  const real32_T Add[9];               /* '<S121>/Add' */
-  const real32_T VectorConcatenate3[3];/* '<S119>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_l[3];/* '<S118>/Vector Concatenate3' */
-  const real32_T Add_m[9];             /* '<S92>/Add' */
-  const real32_T Add_g[9];             /* '<S109>/Add' */
+  const real_T e_2;                    /* '<S25>/Product1' */
+  const real32_T Add[9];               /* '<S118>/Add' */
+  const real32_T VectorConcatenate3[3];/* '<S116>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3_l[3];/* '<S115>/Vector Concatenate3' */
+  const real32_T Add_m[9];             /* '<S93>/Add' */
+  const real32_T Add_g[9];             /* '<S106>/Add' */
   const real32_T Constant1[4];         /* '<S34>/Constant1' */
   const real32_T VecConcentate3[3];    /* '<S9>/VecConcentate3' */
   const uint8_T DataTypeConversion;    /* '<S63>/Data Type Conversion' */
@@ -136,21 +136,21 @@ typedef struct {
    *   '<S69>/Random Source'
    *   '<S69>/Random Source1'
    *   '<S74>/Discrete FIR Filter'
-   *   '<S90>/integrate'
-   *   '<S90>/integrate1'
-   *   '<S93>/Random Source'
-   *   '<S107>/integrate'
-   *   '<S107>/integrate1'
-   *   '<S110>/Random Source'
-   *   '<S122>/Random Source'
-   *   '<S118>/Constant'
-   *   '<S118>/Constant2'
-   *   '<S118>/Constant3'
-   *   '<S118>/Constant4'
-   *   '<S119>/Constant1'
-   *   '<S119>/Constant2'
-   *   '<S119>/Constant3'
-   *   '<S119>/Constant4'
+   *   '<S91>/integrate'
+   *   '<S91>/integrate1'
+   *   '<S94>/Random Source'
+   *   '<S104>/integrate'
+   *   '<S104>/integrate1'
+   *   '<S107>/Random Source'
+   *   '<S119>/Random Source'
+   *   '<S115>/Constant'
+   *   '<S115>/Constant2'
+   *   '<S115>/Constant3'
+   *   '<S115>/Constant4'
+   *   '<S116>/Constant1'
+   *   '<S116>/Constant2'
+   *   '<S116>/Constant3'
+   *   '<S116>/Constant4'
    */
   real32_T pooled19;
 
@@ -162,7 +162,7 @@ typedef struct {
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S59>/Random Source'
-   *   '<S115>/Saturation'
+   *   '<S112>/Saturation'
    */
   real32_T pooled29;
 
@@ -177,32 +177,32 @@ typedef struct {
   real32_T RandomSource1_VarianceRTP[3];
 
   /* Computed Parameter: RandomSource_VarianceRTP_f
-   * Referenced by: '<S93>/Random Source'
+   * Referenced by: '<S94>/Random Source'
    */
   real32_T RandomSource_VarianceRTP_f[3];
 
   /* Computed Parameter: RandomSource_VarianceRTP_b
-   * Referenced by: '<S110>/Random Source'
+   * Referenced by: '<S107>/Random Source'
    */
   real32_T RandomSource_VarianceRTP_b[3];
 
   /* Computed Parameter: RandomSource_VarianceRTP_a
-   * Referenced by: '<S122>/Random Source'
+   * Referenced by: '<S119>/Random Source'
    */
   real32_T RandomSource_VarianceRTP_a[3];
 
   /* Computed Parameter: DeclinationLookup_table
-   * Referenced by: '<S117>/Declination Lookup'
+   * Referenced by: '<S114>/Declination Lookup'
    */
   int16_T DeclinationLookup_table[629];
 
   /* Computed Parameter: InclinationLookup_table
-   * Referenced by: '<S117>/Inclination Lookup'
+   * Referenced by: '<S114>/Inclination Lookup'
    */
   int8_T InclinationLookup_table[629];
 
   /* Computed Parameter: MagnitudeLookup_table
-   * Referenced by: '<S117>/Magnitude Lookup'
+   * Referenced by: '<S114>/Magnitude Lookup'
    */
   uint8_T MagnitudeLookup_table[629];
 } ConstP_Plant_T;
@@ -267,7 +267,7 @@ extern const ConstP_Plant_T Plant_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_4XfCoaAMTej5uH3d8u88xB PLANT_EXPORT;/* Variable: PLANT_EXPORT
+extern struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT;/* Variable: PLANT_EXPORT
                                                    * Referenced by:
                                                    *   '<S22>/dt'
                                                    *   '<S52>/dt'
@@ -309,13 +309,13 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * Block '<S87>/Gain3' : Eliminated nontunable gain of 1
  * Block '<S87>/Gain5' : Eliminated nontunable gain of 1
  * Block '<S87>/Reshape' : Reshape block reduction
- * Block '<S91>/Switch' : Eliminated due to constant selection input
- * Block '<S102>/Gain3' : Eliminated nontunable gain of 1
- * Block '<S102>/Gain5' : Eliminated nontunable gain of 1
- * Block '<S102>/Reshape' : Reshape block reduction
- * Block '<S108>/Switch' : Eliminated due to constant selection input
- * Block '<S120>/Switch' : Eliminated due to constant selection input
- * Block '<S115>/Signal Conversion1' : Unused code path elimination
+ * Block '<S92>/Switch' : Eliminated due to constant selection input
+ * Block '<S99>/Gain3' : Eliminated nontunable gain of 1
+ * Block '<S99>/Gain5' : Eliminated nontunable gain of 1
+ * Block '<S99>/Reshape' : Reshape block reduction
+ * Block '<S105>/Switch' : Eliminated due to constant selection input
+ * Block '<S117>/Switch' : Eliminated due to constant selection input
+ * Block '<S112>/Signal Conversion1' : Unused code path elimination
  */
 
 /*-
@@ -385,16 +385,16 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S50>'  : 'Plant/Kinematic_Equation/Position_Dynamic/cross_product/Subsystem'
  * '<S51>'  : 'Plant/Kinematic_Equation/Position_Dynamic/cross_product/Subsystem1'
  * '<S52>'  : 'Plant/Sensor_Model/Counter'
- * '<S53>'  : 'Plant/Sensor_Model/Sensor_Baro'
+ * '<S53>'  : 'Plant/Sensor_Model/Sensor_Barometer'
  * '<S54>'  : 'Plant/Sensor_Model/Sensor_GPS'
  * '<S55>'  : 'Plant/Sensor_Model/Sensor_IMU'
  * '<S56>'  : 'Plant/Sensor_Model/Sensor_MAG'
- * '<S57>'  : 'Plant/Sensor_Model/Sensor_Baro/Bus_Assignment'
- * '<S58>'  : 'Plant/Sensor_Model/Sensor_Baro/Physical_Model'
- * '<S59>'  : 'Plant/Sensor_Model/Sensor_Baro/Sensor_Model'
- * '<S60>'  : 'Plant/Sensor_Model/Sensor_Baro/Physical_Model/ISA Atmosphere Model'
- * '<S61>'  : 'Plant/Sensor_Model/Sensor_Baro/Sensor_Model/Routing'
- * '<S62>'  : 'Plant/Sensor_Model/Sensor_Baro/Sensor_Model/Sensor_Error'
+ * '<S57>'  : 'Plant/Sensor_Model/Sensor_Barometer/Bus_Assignment'
+ * '<S58>'  : 'Plant/Sensor_Model/Sensor_Barometer/Physical_Model'
+ * '<S59>'  : 'Plant/Sensor_Model/Sensor_Barometer/Sensor_Model'
+ * '<S60>'  : 'Plant/Sensor_Model/Sensor_Barometer/Physical_Model/ISA Atmosphere Model'
+ * '<S61>'  : 'Plant/Sensor_Model/Sensor_Barometer/Sensor_Model/Routing'
+ * '<S62>'  : 'Plant/Sensor_Model/Sensor_Barometer/Sensor_Model/Sensor_Error'
  * '<S63>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Assignment'
  * '<S64>'  : 'Plant/Sensor_Model/Sensor_GPS/Physical_Model'
  * '<S65>'  : 'Plant/Sensor_Model/Sensor_GPS/Sensor_Model'
@@ -422,39 +422,36 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S87>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model'
  * '<S88>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/prop_vel'
  * '<S89>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model/Compare To Constant1'
- * '<S90>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Lowpass_Filter'
- * '<S91>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Routing'
- * '<S92>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Sensor_Error'
- * '<S93>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/White Noise'
- * '<S94>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Lowpass_Filter/Integration'
- * '<S95>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Lowpass_Filter/Integration1'
- * '<S96>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Lowpass_Filter/Integration/Integrator_RUN_w_z_int_err_radDs'
- * '<S97>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Lowpass_Filter/Integration1/Integrator_RUN_w_z_int_err_radDs'
- * '<S98>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Bus Assignment'
- * '<S99>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model'
- * '<S100>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model'
- * '<S101>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Routing'
- * '<S102>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model'
- * '<S103>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/prop_vel'
- * '<S104>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/selection'
- * '<S105>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/Compare To Constant1'
- * '<S106>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/Max_RPM'
- * '<S107>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/LPF'
- * '<S108>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Routing'
- * '<S109>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Sensor_Error'
- * '<S110>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/White Noise'
- * '<S111>' : 'Plant/Sensor_Model/Sensor_MAG/Bus_Assignment'
- * '<S112>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer'
- * '<S113>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Bus Assignment'
- * '<S114>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model'
- * '<S115>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model'
- * '<S116>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/Magnetic_Field'
- * '<S117>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/wmm_lookup'
- * '<S118>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/Magnetic_Field/Rot_y to M'
- * '<S119>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/Magnetic_Field/Rot_z to M'
- * '<S120>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model/Routing'
- * '<S121>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model/Sensor_Error'
- * '<S122>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model/White_Noise'
+ * '<S90>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model/Max_RPM'
+ * '<S91>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Lowpass_Filter'
+ * '<S92>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Routing'
+ * '<S93>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Sensor_Error'
+ * '<S94>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/White Noise'
+ * '<S95>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Bus Assignment'
+ * '<S96>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model'
+ * '<S97>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model'
+ * '<S98>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Routing'
+ * '<S99>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model'
+ * '<S100>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/prop_vel'
+ * '<S101>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/selection'
+ * '<S102>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/Compare To Constant1'
+ * '<S103>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/Max_RPM'
+ * '<S104>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/LPF'
+ * '<S105>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Routing'
+ * '<S106>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Sensor_Error'
+ * '<S107>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/White Noise'
+ * '<S108>' : 'Plant/Sensor_Model/Sensor_MAG/Bus_Assignment'
+ * '<S109>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer'
+ * '<S110>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Bus Assignment'
+ * '<S111>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model'
+ * '<S112>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model'
+ * '<S113>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/Magnetic_Field'
+ * '<S114>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/wmm_lookup'
+ * '<S115>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/Magnetic_Field/Rot_y to M'
+ * '<S116>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Physical_Model/Magnetic_Field/Rot_z to M'
+ * '<S117>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model/Routing'
+ * '<S118>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model/Sensor_Error'
+ * '<S119>' : 'Plant/Sensor_Model/Sensor_MAG/Sensor_Magnetometer/Sensor_Model/White_Noise'
  */
 #endif                                 /* RTW_HEADER_Plant_h_ */
 

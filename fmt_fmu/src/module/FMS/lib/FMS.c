@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.933
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 24 15:07:43 2020
+ * C/C++ source code generated on : Sun Sep 27 14:55:18 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -114,10 +114,10 @@ struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM = {
                                         *   '<S71>/Gain'
                                         */
 
-struct_i7E80ZuatMf603HOn7rPOE FMS_EXPORT = {
+struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT = {
   4U,
 
-  { 66, 97, 115, 101, 32, 70, 77, 83, 0 }
+  { 66, 97, 115, 101, 32, 70, 77, 83, 32, 118, 48, 46, 49, 46, 48, 0 }
 } ;                                    /* Variable: FMS_EXPORT
                                         * Referenced by: '<S80>/Constant'
                                         */
@@ -137,6 +137,46 @@ ExtY_FMS_T FMS_Y;
 /* Real-time model */
 RT_MODEL_FMS_T FMS_M_;
 RT_MODEL_FMS_T *const FMS_M = &FMS_M_;
+
+/* Forward declaration for local functions */
+static void FMS_Unknow(const uint32_T *mode);
+
+/* Function for Chart: '<S1>/Control_Mode' */
+static void FMS_Unknow(const uint32_T *mode)
+{
+  FMS_B.control_mode = FMS_DW.local_mode;
+  switch (*mode) {
+   case 5U:
+    FMS_DW.is_c1_FMS = FMS_IN_Acro;
+    FMS_DW.local_mode = 5U;
+    break;
+
+   case 4U:
+    FMS_DW.is_c1_FMS = FMS_IN_Manual;
+    FMS_DW.local_mode = 4U;
+    break;
+
+   case 3U:
+    FMS_DW.is_c1_FMS = FMS_IN_Altitude_Hold;
+    FMS_DW.local_mode = 3U;
+    break;
+
+   case 2U:
+    FMS_DW.is_c1_FMS = FMS_IN_Position;
+    FMS_DW.local_mode = 2U;
+    break;
+
+   case 1U:
+    FMS_DW.is_c1_FMS = FMS_IN_Mission;
+    FMS_DW.local_mode = 1U;
+    break;
+
+   default:
+    FMS_DW.is_c1_FMS = FMS_IN_Unknow;
+    FMS_DW.local_mode = 0U;
+    break;
+  }
+}
 
 /* Model step function */
 void FMS_step(void)
@@ -166,6 +206,7 @@ void FMS_step(void)
   real32_T rtb_Add4_k;
   real32_T rtb_Divide_h;
   real32_T rtb_Sign5_k;
+  uint32_T mode;
   int32_T i;
   real32_T rtb_Product_idx_0;
   real32_T rtb_Product_idx_1;
@@ -599,6 +640,11 @@ void FMS_step(void)
    */
   rtb_Add_b0 = rtb_Add_b0 * FMS_PARAM.YAW_DZ + rtb_Subtract1;
 
+  /* SignalConversion: '<S84>/TmpSignal ConversionAtSignal Copy4Inport1' incorporates:
+   *  Inport: '<Root>/Pilot_Cmd'
+   */
+  mode = FMS_U.Pilot_Cmd.mode;
+
   /* Product: '<S83>/Multiply' incorporates:
    *  Inport: '<Root>/INS_Output'
    *  SignalConversion: '<S83>/ConcatBufferAtMatrix Concatenate3In1'
@@ -985,42 +1031,7 @@ void FMS_step(void)
       break;
 
      default:
-      FMS_B.control_mode = FMS_DW.local_mode;
-
-      /* Outputs for Atomic SubSystem: '<Root>/Input_Process' */
-      switch (FMS_U.Pilot_Cmd.mode) {
-       case 5U:
-        FMS_DW.is_c1_FMS = FMS_IN_Acro;
-        FMS_DW.local_mode = 5U;
-        break;
-
-       case 4U:
-        FMS_DW.is_c1_FMS = FMS_IN_Manual;
-        FMS_DW.local_mode = 4U;
-        break;
-
-       case 3U:
-        FMS_DW.is_c1_FMS = FMS_IN_Altitude_Hold;
-        FMS_DW.local_mode = 3U;
-        break;
-
-       case 2U:
-        FMS_DW.is_c1_FMS = FMS_IN_Position;
-        FMS_DW.local_mode = 2U;
-        break;
-
-       case 1U:
-        FMS_DW.is_c1_FMS = FMS_IN_Mission;
-        FMS_DW.local_mode = 1U;
-        break;
-
-       default:
-        FMS_DW.is_c1_FMS = FMS_IN_Unknow;
-        FMS_DW.local_mode = 0U;
-        break;
-      }
-
-      /* End of Outputs for SubSystem: '<Root>/Input_Process' */
+      FMS_Unknow(&mode);
       break;
     }
 

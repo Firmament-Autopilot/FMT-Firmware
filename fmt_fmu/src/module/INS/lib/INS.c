@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.2687
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Sep 25 09:06:55 2020
+ * C/C++ source code generated on : Sun Sep 27 14:54:07 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -135,10 +135,10 @@ struct_yEHaAuRwDY8DKCecxPQa0D INS_PARAM = {
                                         *   '<S333>/Mag_RotMatrix'
                                         */
 
-struct_i7E80ZuatMf603HOn7rPOE INS_EXPORT = {
+struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT = {
   2U,
 
-  { 66, 97, 115, 101, 32, 73, 78, 83, 0 }
+  { 66, 97, 115, 101, 32, 73, 78, 83, 32, 118, 48, 46, 49, 46, 48, 0 }
 } ;                                    /* Variable: INS_EXPORT
                                         * Referenced by:
                                         *   '<S4>/Constant'

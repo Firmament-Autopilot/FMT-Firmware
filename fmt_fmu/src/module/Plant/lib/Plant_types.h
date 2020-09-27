@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.515
+ * Model version                  : 1.538
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug 14 23:04:43 2020
+ * C/C++ source code generated on : Sun Sep 27 14:51:58 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -145,12 +145,13 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_4XfCoaAMTej5uH3d8u88xB_
-#define DEFINED_TYPEDEF_FOR_struct_4XfCoaAMTej5uH3d8u88xB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_zjTVXoT1Wcig2PfNqPD1gB_
+#define DEFINED_TYPEDEF_FOR_struct_zjTVXoT1Wcig2PfNqPD1gB_
 
 typedef struct {
   uint32_T period;
-} struct_4XfCoaAMTej5uH3d8u88xB;
+  int8_T model_info[19];
+} struct_zjTVXoT1Wcig2PfNqPD1gB;
 
 #endif
 

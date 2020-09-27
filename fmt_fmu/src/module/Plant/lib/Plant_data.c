@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.515
+ * Model version                  : 1.538
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug 14 23:04:43 2020
+ * C/C++ source code generated on : Sun Sep 27 14:51:58 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -19,30 +19,30 @@
 /* Invariant block signals (default storage) */
 const ConstB_Plant_T Plant_ConstB = {
   { 34557.519189487721, 34557.519189487721, 34557.519189487721,
-    34557.519189487721 },              /* '<S106>/Gain6' */
+    34557.519189487721 },              /* '<S103>/Gain6' */
 
   { 1151.9173063162573, 1151.9173063162573, 1151.9173063162573,
-    1151.9173063162573 },              /* '<S106>/Divide1' */
+    1151.9173063162573 },              /* '<S103>/Divide1' */
 
   { 34557.519189487721, 34557.519189487721, 34557.519189487721,
-    34557.519189487721 },              /* '<S87>/Gain6' */
+    34557.519189487721 },              /* '<S90>/Gain6' */
 
   { 1151.9173063162573, 1151.9173063162573, 1151.9173063162573,
-    1151.9173063162573 },              /* '<S87>/Divide1' */
+    1151.9173063162573 },              /* '<S90>/Divide1' */
   1.9966471868221032,                  /* '<S78>/Subtract1' */
   0.00669438499958795,                 /* '<S78>/Product1' */
   1.9966471868221032,                  /* '<S25>/Subtract1' */
   0.00669438499958795,                 /* '<S25>/Product1' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S121>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S118>/Add' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S119>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S116>/Vector Concatenate3' */
 
-  { 0.0F, 1.0F, 0.0F },                /* '<S118>/Vector Concatenate3' */
+  { 0.0F, 1.0F, 0.0F },                /* '<S115>/Vector Concatenate3' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S92>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S93>/Add' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S109>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S106>/Add' */
 
   { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S34>/Constant1' */
 
@@ -89,21 +89,21 @@ const ConstP_Plant_T Plant_ConstP = {
    *   '<S69>/Random Source'
    *   '<S69>/Random Source1'
    *   '<S74>/Discrete FIR Filter'
-   *   '<S90>/integrate'
-   *   '<S90>/integrate1'
-   *   '<S93>/Random Source'
-   *   '<S107>/integrate'
-   *   '<S107>/integrate1'
-   *   '<S110>/Random Source'
-   *   '<S122>/Random Source'
-   *   '<S118>/Constant'
-   *   '<S118>/Constant2'
-   *   '<S118>/Constant3'
-   *   '<S118>/Constant4'
-   *   '<S119>/Constant1'
-   *   '<S119>/Constant2'
-   *   '<S119>/Constant3'
-   *   '<S119>/Constant4'
+   *   '<S91>/integrate'
+   *   '<S91>/integrate1'
+   *   '<S94>/Random Source'
+   *   '<S104>/integrate'
+   *   '<S104>/integrate1'
+   *   '<S107>/Random Source'
+   *   '<S119>/Random Source'
+   *   '<S115>/Constant'
+   *   '<S115>/Constant2'
+   *   '<S115>/Constant3'
+   *   '<S115>/Constant4'
+   *   '<S116>/Constant1'
+   *   '<S116>/Constant2'
+   *   '<S116>/Constant3'
+   *   '<S116>/Constant4'
    */
   0.0F,
 
@@ -115,7 +115,7 @@ const ConstP_Plant_T Plant_ConstP = {
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S59>/Random Source'
-   *   '<S115>/Saturation'
+   *   '<S112>/Saturation'
    */
   4.0F,
 
@@ -130,22 +130,22 @@ const ConstP_Plant_T Plant_ConstP = {
   { 0.01F, 0.01F, 0.01F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_f
-   * Referenced by: '<S93>/Random Source'
+   * Referenced by: '<S94>/Random Source'
    */
   { 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_b
-   * Referenced by: '<S110>/Random Source'
+   * Referenced by: '<S107>/Random Source'
    */
   { 0.005F, 0.005F, 0.005F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_a
-   * Referenced by: '<S122>/Random Source'
+   * Referenced by: '<S119>/Random Source'
    */
   { 0.001F, 0.001F, 0.001F },
 
   /* Computed Parameter: DeclinationLookup_table
-   * Referenced by: '<S117>/Declination Lookup'
+   * Referenced by: '<S114>/Declination Lookup'
    */
   { 130, 86, 48, 31, 22, 17, 13, 11, 10, 9, 8, 6, 5, 3, 2, 2, 0, 118, 78, 46, 31,
     23, 17, 13, 11, 9, 9, 9, 9, 8, 7, 7, 7, 5, 106, 71, 45, 31, 23, 18, 14, 11,
@@ -183,7 +183,7 @@ const ConstP_Plant_T Plant_ConstP = {
     48, 31, 22, 17, 13, 11, 10, 9, 8, 6, 5, 3, 2, 2, 0 },
 
   /* Computed Parameter: InclinationLookup_table
-   * Referenced by: '<S117>/Inclination Lookup'
+   * Referenced by: '<S114>/Inclination Lookup'
    */
   { -78, -81, -78, -72, -64, -55, -42, -25, -5, 15, 31, 43, 53, 62, 71, 79, 86,
     -78, -79, -76, -70, -62, -53, -40, -22, -2, 18, 34, 45, 54, 63, 71, 79, 86,
@@ -224,7 +224,7 @@ const ConstP_Plant_T Plant_ConstP = {
     -78, -81, -78, -72, -64, -55, -42, -25, -5, 15, 31, 43, 53, 62, 71, 79, 86 },
 
   /* Computed Parameter: MagnitudeLookup_table
-   * Referenced by: '<S117>/Magnitude Lookup'
+   * Referenced by: '<S114>/Magnitude Lookup'
    */
   { 61U, 63U, 62U, 59U, 54U, 49U, 43U, 38U, 34U, 33U, 34U, 37U, 42U, 48U, 54U,
     57U, 58U, 60U, 62U, 60U, 56U, 52U, 46U, 41U, 36U, 33U, 33U, 34U, 37U, 42U,
