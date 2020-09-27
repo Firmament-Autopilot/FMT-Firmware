@@ -1,3 +1,5 @@
+<p align="center"><img width="300" src="https://github.com/FirmamentPilot/fmt_user_guide_cn/blob/master/figures/logo.png" alt=FMT logo"></p>
+
 Firmament Firmware
 ============================
 Firmament Firmware (FMT_Firmware) is the embedded flight control system of Firmament Autopilot project. The algorithm modules are availble in Firmament Model ([FMT_Model](https://github.com/FirmamentPilot/FMT_Model)), which are developed in Simulink.
