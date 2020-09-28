@@ -4,7 +4,7 @@
   <a href="/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-brightgreen" alt="GitHub license" /></a>
 </p>
 
-[中文页](README_CN.md) |
+[中文页](README_cn.md) |
 
 Overview
 ============================
