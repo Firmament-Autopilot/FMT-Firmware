@@ -1,35 +1,61 @@
 <p align="center"><img width="200" src="https://github.com/FirmamentPilot/fmt_user_guide_cn/blob/master/figures/logo.png" alt=FMT logo"></p>
-  
+
 <p align="center">
   <a href="/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-brightgreen" alt="GitHub license" /></a>
 </p>
 
-Firmament Firmware
+Overview
 ============================
-Firmament Firmware (FMT_Firmware) is the embedded flight control system of Firmament Autopilot project. The algorithm modules are availble in Firmament Model ([FMT_Model](https://github.com/FirmamentPilot/FMT_Model)), which are developed in Simulink.
+Firmament Autopilot (FMT) is the first open source autopilot based on Model-Based Design (MBD). The FMT project is developed from the [Starry Pilot](https://github.com/JcZou/StarryPilot) open source flight control system, including an embedded flight control system [FMT Firmware](https://github.com/FirmamentPilot/FMT_Firmware) mainly implemented in C language and an algorithm model library with simulation framework [FMT Model](https://github.com/FirmamentPilot/FMT_Model) developed based on Matlab/Simulink .
 
-Firmament Autopilot is the first open-source autopilot system designed for MBD (Model-Based Design). It consists of two parts:
+Based on the FMT platform, the algorithm can be developed and verified more quickly. There is no need to manually write embedded codes anymore. You only need to graphically design the algorithm model in Simulink and then generate C/C++ code with one click. The generated code can be directly incorporated into the flight controller without modifying and writing any embedded code, which greatly improves the efficiency of algorithm development and verification.
 
-- FMT_Firmware: The embedded flight control system written in C. It provides all useful features/functions dedicated to MBD, which means you can easily develop your algorithm model using MATLAB/Simulink and then seamlessly integrate into FMT_Firmware. 
+Project homepage : https://github.com/FirmamentPilot
 
-- FMT_Model: The algorithm model developed with Simulink. Generally, it contains the model of INS (Inertial Navigation System), FMS (Flight Management System), Controller and Plant (Dynamic model of unmaned-vehicle including sensor model). Each model can generate C/C++ source files and then integrate into FMT_Firmware. Moreover, FMT_Model provides simulation framework for MIL, SIL, HIL etc.
+## Architecture
+FMT Firmware is the embedded part of the FMT autopilot. It adopts a hierarchical design mode, with loose coupling between layers and modules. Its architecture is shown in the figure below.
 
-**For more information, please check the project [document](https://firmamentpilot.github.io/docs/)**
+![fmt_structure](figures/fmt_struct.png)
 
-# Supported Hardware
-- The current support hardware is `Pixhawk` (FMUv2). However, it may support more hardwares in future. 
+It specifically includes the following parts:
 
-# Features
-- Designed for model-based design method, you can develop and simulate your algorithm in Simulink and easily deploy to board.
-- Integrate with embedded real-time operating system RT-Thread, which is powerful and easy to use.
-- Support internal (Plant model runs on-board) and externel (Plant model runs off-board) Hardware-in-the-loop simulation.
-- High performance and real-time log system which makes it easy to record all required data be used for open-loop simulation with FMT_Model framework.
-- Safe and powerful interprocess communication module (micro Multi-communication Node, uMCN) based on publisher/subscriober model.
-- The parameter system, by which you can easily set/get parameter values via command line or ground control station.
-- There are more features waiting for you to explore!
+- Kernel layer: The kernel layer uses the real-time operating system RT-Thread, which provides multithread scheduling, semaphore, mailbox, message queue, memory management, timer, etc. DFS is the virtual file system provided by RT-Thread supporting with standard POSIX interface.
+- Driver layer: The driver layer provides hardware driver support, such as IMU, GPS, SD card, USB, etc and communication buses such as I2C, SPI, DMA, etc.
+- Hardware Abstraction Layer: HAL provides the unified read/write/control  interfaces for the upper layer. It is convenient to add new device driver or port to different hardware platforms. At the same time, the hardware-independent driver logic can be implemented on the HAL layer, which simplifies the difficulty of driver development.
+- Module layer: The module layer provides most of the functions of the system. For example, the uMCN provides IPC functions based on the publish/subscribe model. The log module provides the functions of binary log, text log and boot log. The parameter module provides powerful parameter functions and supports command line/ground station online parameter tuning. And the parameters will also be saved in the log for the simulation model to read.
+- Task layer: Each Task is a separate thread (sub-threads can be created internally) to achieve independent functions. For example, the vehicle task will periodically execute **INS**, **FMS** and **Controller** to manipulate the vehicle. 
 
-# Develop Environment
-The supported develop platform is Windows/Linux/Mac. To build the firmware, the following toolchain are needed.
+## Why FMT
+Model-based design is a mathematical and visual  method to design complex algprothms or other application in a graphical manner. The manual coding process has its advantages, but its disadvantages are becoming more and more obvious. Especially when the system becomes larger and larger, the function becomes more and more complicated, the algorithm module using handwriting becomes more and more difficult to maintain, and the security and portability of the code will inevitably become worse.
+
+The core algorithm of FMT is developped on the Matlab/Simulink platform and inherits many advantages of the MBD development method, including:
+
+1. Greatly improve the efficiency of algorithm development, saving time and  costs.
+2. Reduce errors in the manual coding process and improve system robustness.
+3. Greatly improve algorithm optimization and debug efficiency, simplify the system testing and verification procedures.
+4. Improve the maintainability and portability of the algorithm.
+
+FMT Firmware is lightweight, easy to read and use, as well as excellent stability and real-time performance. In summary, the features of FMT Firmware include:
+
+- A lightweight flight control system written in C language, easier to use and  secondary development.
+- Cross-platform development tool chain, supporting Windows/Linux/Mac OS.
+- Support MBD develop method, greatly improving the efficiency of development and testing.
+- Support the most popular open source flight control hardware.
+- Excellent real-time performance with time error < 1us.
+- Higher execution efficiency and lower CPU usage. Provide more space to improve the algorithm complexity and higher execution frequency.
+- Support Mavlink V1.0/V2.0 and  ground station QGC, Mission Planner, etc.
+- Support hardware-in-the-loop simulation (HIl/SIH).
+- Highly modular, loosely coupled software architecture, easy to tailor and port to other hardware.
+
+## Supported Hardware
+- **Pixhawk**: version 2.4.6 or 2.4.8.
+-  May support more hardwares in future. 
+
+## Documentation
+[User Guide (CN)]([用户手册](https://github.com/FirmamentPilot/fmt_user_guide_cn))
+
+## Develop Environment
+The following toolchain are needed for development.
 
 - Compiler: arm-none-eabi- toolchain (recommend: `7-2018-q2-update`，other version are not well tested). [download](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads)
 - Construction tool: Scons
@@ -37,43 +63,11 @@ The supported develop platform is Windows/Linux/Mac. To build the firmware, the 
   - Scons 2.x (Scons 2.3.6 is prederable) is needed: [download](https://sourceforge.net/projects/scons/files/scons/2.3.6/)
 - USB Driver (only needed for Windows): [download](https://www.st.com/en/development-tools/stsw-stm32102.html)
   
-# Build/Doanload Firmware
-First you need add an environment variable `RTT_EXEC_PATH`, and set its value to the compiler's path, e.g, `$path/gcc-arm-none-eabi-7-2018-q2-update-win32\bin`.
-
-Then you can build the firmware. Pixhawk has two chips, **STM32F427** for flight management unit (FMU) and **STM32F103** for input/output (IO). So the firmament firmware is constructed by two file.
-
-## Build FMU Firmware
-1. `cd $FMT_Firmware_PATH/fmt_fmu/target/pixhawk`
-2. `scons -j4`
-3. The firmware `fmt_fmu.bin` will be generated in `build/` folder.
-
-## Download FMU Firmware
-There are several ways to download the firmware. The most used 2 ways are:
-
-- Using QGC
-
-  In `Firmware Setup` tab, choose `Advanced Settings` and `Custom firmware file...`. Then choose `fmt_fmu.bin` to flash.
-
-- Using Script
-
-  `cd $FMT_Firmware_PATH/fmt_fmu/target/pixhawk` and execute `python uploader.py`, then the sciprt should automatically detect the serial port and download the firmware.
-  
-After downloading the firmware, you could open the console via serial (TELEM 2, 57600 by default) or `Mavlink Console` (In QGC).
-
-## Build IO Firmware
-1. `cd $FMT_Firmware_PATH/fmt_io/project`
-2. `scons -j4`
-3. The firmware `fmt_io.bin` will be generated in `build/` folder.
-
-## Download IO Firmware
-1. Copy the firmware `fmt_io.bin` to the sd card, e.g, `/fmt_io.bin`.
-2. Type `fmtio upload /fmt_io.bin` command in console.
-3. It should start to download if you are not the first time to download the io firmware. Otherwise, after you typing the command, you should 
-click the io reset button to let it go to the bootloader.
+## Build & Doanload Firmware
+Please refer to the user guide.
 
 ## Contributor
-A big thanks to these contributor:
-- weety, luohui2320@gmail.com
-- yangjiong, 275011821@qq.com
-
+Big thanks to these contributor:
+- [weety](https://github.com/weety)
+- [yangjiong](https://github.com/yangjion)
 
