@@ -16,11 +16,13 @@
 #include "fmu_manager.h"
 #include "debug.h"
 #include "ppm_decoder.h"
+#include "sbus.h"
 #include "pwm.h"
 #include "usart.h"
 #include <stdlib.h>
 #include <string.h>
 
+static uint16_t _rc_proto = 0;  // 0:unset 1:sbus 2:ppm
 static uint8_t _recv_sync = 0;
 /* send package data buffer */
 static uint8_t _pkg_data[256];
@@ -72,6 +74,11 @@ FMT_Error fmt_send_message(uint16_t cmd, const void* data, uint16_t len)
     return err;
 }
 
+uint16_t fmt_get_rc_proto(void)
+{
+    return _rc_proto;
+}
+
 uint8_t fmt_sync_finish(void)
 {
     return _recv_sync;
@@ -107,31 +114,36 @@ FMT_Error handle_fmu_package(const PackageStruct* pkg)
 
     case PROTO_CMD_CONFIG: {
         uint32_t baud_rate;
-        uint16_t rc_chan_num;
         uint16_t pwm_freq;
-
-        // int freq = *(uint16_t*)pkg->content;
+        uint16_t rc_proto;
 
         if (pkg->len != 8) {
             return SYS_ERROR;
         }
 
         baud_rate = *((uint32_t*)&pkg->content[0]);
-        rc_chan_num = *((uint16_t*)&pkg->content[4]);
-        pwm_freq = *((uint16_t*)&pkg->content[6]);
+        pwm_freq = *((uint16_t*)&pkg->content[4]);
+        rc_proto = *((uint16_t*)&pkg->content[6]);
+
+        // debug("config baudrate:%d pwm freq:%d rc_proto:%d\n", baud_rate, pwm_freq, rc_proto);
 
         if (baud_rate) {
             usart_config_baud_rate(USART2, baud_rate);
-            // debug("set baud rate:%d\n", baud_rate);
-        }
-
-        if (rc_chan_num) {
-            ppm_set_max_rc_chan(rc_chan_num);
-            // debug("set rc channel num:%d\n", rc_chan_num);
         }
 
         if (pwm_freq) {
             pwm_configure(PWM_CMD_SET_FREQ, &pwm_freq);
+        }
+
+        if (rc_proto && rc_proto != _rc_proto){
+            if(rc_proto == 1){
+                ppm_decoder_deinit();
+                sbus_init();
+            }else if(rc_proto == 2){
+                sbus_deinit();
+                ppm_decoder_init();
+            }
+            _rc_proto = rc_proto;
         }
     } break;
 

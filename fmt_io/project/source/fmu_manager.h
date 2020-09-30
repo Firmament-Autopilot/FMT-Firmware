@@ -26,5 +26,6 @@ FMT_Error fmt_create_pkg(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg);
 FMT_Error fmt_send_pkg(const void* data, uint16_t len, PackageStruct* pkg);
 FMT_Error fmt_send_message(uint16_t cmd, const void* data, uint16_t len);
 uint8_t fmt_sync_finish(void);
+uint16_t fmt_get_rc_proto(void);
 
 #endif

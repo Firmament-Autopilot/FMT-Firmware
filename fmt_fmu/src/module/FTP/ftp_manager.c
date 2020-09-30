@@ -379,7 +379,7 @@ fmt_err ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t tar
 		break;
 
 		case kCmdCreateFile: {
-			err_code = _request_open(ftp_payload, O_CREAT | O_WRONLY);
+			err_code = _request_open(ftp_payload, O_CREAT | O_TRUNC | O_WRONLY);
 		}
 		break;
 

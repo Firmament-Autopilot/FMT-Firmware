@@ -30,16 +30,13 @@
 #define EVENT_FMTIO_RX (1 << 0)
 #define EVENT_FMTIO_TX (1 << 1)
 
+#define FMTIO_SERIAL_BAUDRATE (230400)
+#define FMTIO_RC_PROTOCOL     (1)       // 1:sbus 2:ppm
+
 typedef struct {
     uint32_t timestamp_ms;
     uint16_t rc_chan_val[MAX_RC_CHANNEL_NUM];
 } rc_data_t;
-
-typedef struct {
-    uint32_t baud_rate;
-    uint16_t rc_chan_num;
-    uint16_t pwm_freq;
-} fmtio_config_t;
 
 static struct rt_event _fmtio_event;
 /* suspend io package send */
@@ -89,12 +86,24 @@ static void _handle_rc_message(const PackageStruct* pkg)
     _rc_updated = 1;
 }
 
+void _config_fmtio_with_default_value(void)
+{
+    fmtio_config_t io_config;
+
+    io_config.baud_rate = FMTIO_SERIAL_BAUDRATE;
+    io_config.pwm_freq = 0; // pwn frequency would be configured by actuator_cmd module
+    io_config.rc_proto = FMTIO_RC_PROTOCOL;
+    /* config fmt io */
+    fmtio_config(&io_config);
+}
+
 static fmt_err _handle_package(const PackageStruct* pkg)
 {
     switch (pkg->cmd) {
     case PROTO_CMD_SYNC: {
         /* reply sync ack */
-        fmtio_send_message(PROTO_ACK_SYNC, NULL, 0);
+        // fmtio_send_message(PROTO_ACK_SYNC, NULL, 0);
+        _config_fmtio_with_default_value();
     } break;
 
     case PROTO_DBG_TEXT: {
@@ -189,17 +198,22 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
     switch (cmd) {
     case MOTOR_CMD_CHANNEL_ENABLE: {
         uint8_t enable = 1;
-        fmtio_send_message(PROTO_CMD_PWM_SWITCH, &enable, 1);
+        ret = fmtio_send_message(PROTO_CMD_PWM_SWITCH, &enable, 1);
     } break;
 
     case MOTOR_CMD_CHANNEL_DISABLE: {
         uint8_t enable = 0;
-        fmtio_send_message(PROTO_CMD_PWM_SWITCH, &enable, 1);
+        ret = fmtio_send_message(PROTO_CMD_PWM_SWITCH, &enable, 1);
     } break;
 
     case MOTOR_CMD_SET_FREQUENCY: {
-        uint16_t freq = *(uint16_t*)arg;
-        fmtio_config(0, 0, freq);
+        fmtio_config_t io_config;
+
+        io_config.baud_rate = 0;
+        io_config.pwm_freq = *(uint16_t*)arg;
+        io_config.rc_proto = 0;
+
+        ret = fmtio_config(&io_config);
     } break;
 
     default:
@@ -357,20 +371,14 @@ fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len)
     return err;
 }
 
-fmt_err fmtio_config(uint32_t baud_rate, uint16_t rc_chan_num, uint16_t pwm_freq)
+fmt_err fmtio_config(fmtio_config_t* io_config)
 {
-    fmtio_config_t io_config = {
-        .baud_rate = baud_rate,
-        .rc_chan_num = rc_chan_num,
-        .pwm_freq = pwm_freq
-    };
-
     /* check validity */
-    if (baud_rate > BAUD_RATE_3000000 || rc_chan_num > FMTIO_RC_CHANNEL_NUM) {
+    if (io_config->baud_rate > BAUD_RATE_3000000 || io_config->pwm_freq > 400 || io_config->rc_proto > 2) {
         return FMT_EINVAL;
     }
 
-    return fmtio_send_message(PROTO_CMD_CONFIG, &io_config, sizeof(io_config));
+    return fmtio_send_message(PROTO_CMD_CONFIG, io_config, sizeof(fmtio_config_t));
 }
 
 fmt_err task_fmtio_init(void)
@@ -439,7 +447,8 @@ void task_fmtio_entry(void* parameter)
     rt_device_set_rx_indicate(_fmtio_dev, fmtio_rx_ind);
 
     /* send sync cmd */
-    fmtio_send_message(PROTO_CMD_SYNC, NULL, 0);
+    // fmtio_send_message(PROTO_CMD_SYNC, NULL, 0);
+    _config_fmtio_with_default_value();
 
     while (1) {
         /* wait event happen or timeout */

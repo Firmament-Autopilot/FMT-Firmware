@@ -42,8 +42,8 @@ int main(void)
     usart_init();
     pwm_init();
     time_init();
-    ppm_decoder_init();
-    sbus_init();
+    //ppm_decoder_init();
+    //sbus_init();
     led_init();
 #ifdef USE_LIDAR
     lidar_lite_init();
@@ -64,11 +64,14 @@ int main(void)
             led_type = LED_BLUE;
             led_on(LED_RED);
 
-            //send_sbus_value();
-
-            if (ppm_ready()) {
-                send_ppm_value();
+            if (fmt_get_rc_proto() == 1) {
+                send_sbus_value();
+            } else if (fmt_get_rc_proto() == 2) {
+                if (ppm_ready()) {
+                    send_ppm_value();
+                }
             }
+
         } else {
             led_type = LED_RED;
             led_on(LED_BLUE);

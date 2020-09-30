@@ -26,6 +26,13 @@
 #define FMTIO_MOTOR_CHANNEL_NUM     8
 #define FMTIO_RC_CHANNEL_NUM        8
 
+/* fmtio configuration, 0 means unchange */
+typedef struct {
+    uint32_t baud_rate;     // serial baudrate
+    uint16_t pwm_freq;      // pwm output frequency
+    uint16_t rc_proto;       // 1:sbus 2:ppm
+} fmtio_config_t;
+
 fmt_err task_fmtio_init(void);
 void task_fmtio_entry(void* parameter);
 fmt_err fmtio_init_pkg(uint16_t cmd, void* buffer, PackageStruct* pkg);
@@ -34,6 +41,6 @@ fmt_err fmtio_send_pkg(const void* data, uint16_t len, PackageStruct* pkg);
 fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len);
 void fmtio_suspend_comm(uint8_t suspend);
 rt_device_t fmtio_get_device(void);
-fmt_err fmtio_config(uint32_t baud_rate, uint16_t rc_chan_num, uint16_t pwm_freq);
+fmt_err fmtio_config(fmtio_config_t* io_config);
 
 #endif

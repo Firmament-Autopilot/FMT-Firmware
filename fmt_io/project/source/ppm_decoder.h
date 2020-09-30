@@ -25,14 +25,14 @@ typedef struct {
     uint8_t chan_id;
     uint8_t total_chan; /* total ppm channel number */
     uint16_t last_ic;
-    uint16_t ppm_val[MAX_PPM_CHANNEL]; /* ppm raw value in microseconds */
+    uint16_t ppm_val[16]; /* ppm raw value in microseconds */
 } ppm_encoder_t;
 
 uint8_t ppm_decoder_init(void);
-void get_ppm_value(uint16_t val[MAX_PPM_CHANNEL]);
+void ppm_decoder_deinit(void);
+void get_ppm_value(uint16_t* val);
 uint8_t ppm_ready(void);
 uint8_t send_ppm_value(void);
 uint8_t config_ppm_send_freq(uint8_t freq);
-void ppm_set_max_rc_chan(uint16_t max_chan);
 
 #endif

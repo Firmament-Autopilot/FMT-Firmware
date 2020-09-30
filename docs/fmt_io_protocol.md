@@ -28,10 +28,10 @@ client send this package to server, which contains debug information, similar to
 - `content`: content include debug information
 
 ## PROTO_DATA_RC
-RC data sent from client to server. 
+RC data sent from client to server (maximal 16 channels). 
 - `cmd`: 5
-- `len`: channel_num*2
-- `content`: uint16 chan_val[channel_num]
+- `len`: 32
+- `content`: uint16 chan_val[16]
 
 ## PROTO_CMD_MOTOR
 motor command for main pwm output. Each channel has a value between 1000 and 2000.
@@ -76,7 +76,9 @@ Set fmt io configuration
 - `cmd`: 10
 - `len`: 2
 - `content`: uint16_t frequency
-- 
-|baud_rate|rc_chan_num|pwm_freq|
+
+|baud_rate|pwm_freq|rc_proto|
 |-----------|---------|---------|
 |`uint32`|`uint16`|`uint16`|
+
+rc_proto: `1`: sbus `2`:ppm

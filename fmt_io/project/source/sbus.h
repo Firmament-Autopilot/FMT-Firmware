@@ -31,4 +31,5 @@ bool sbus_input(uint16_t* values, uint16_t* num_values, bool* sbus_failsafe,
 uint8_t send_sbus_value(void);
 
 uint8_t sbus_init(void);
+void sbus_deinit(void);
 #endif

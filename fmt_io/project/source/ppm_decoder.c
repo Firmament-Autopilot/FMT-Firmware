@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <stdio.h>
+#include <string.h>
 
 #include "debug.h"
 #include "fmu_manager.h"
@@ -29,11 +30,10 @@
 static uint32_t Scale_US = 1000000 / ENCODER_FREQ;
 static uint8_t _ppm_send_freq = 20; /* default is 20Hz */
 static uint8_t _ppm_recv = 0;
-static uint8_t _config_rc_chan_num = MAX_PPM_CHANNEL;
 static uint8_t _ppm_sending = 0;
 
 ppm_encoder_t ppm_param;
-PackageStruct _rc_pkg;
+static PackageStruct _rc_pkg;
 
 void ppm_status_machine(uint16_t IC_Val)
 {
@@ -92,16 +92,11 @@ void TIM1_irq_event_handler(void)
     }
 }
 
-void ppm_set_max_rc_chan(uint16_t max_chan)
-{
-    _config_rc_chan_num = max_chan;
-}
-
-void get_ppm_value(uint16_t val[8])
+void get_ppm_value(uint16_t* val)
 {
     uint8_t i;
 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < MAX_PPM_CHANNEL; i++) {
         val[i] = ppm_param.ppm_val[i];
     }
 }
@@ -133,17 +128,11 @@ uint8_t ppm_ready(void)
 
 uint8_t send_ppm_value(void)
 {
-    uint16_t rc_chan_num = _config_rc_chan_num < ppm_param.total_chan ? _config_rc_chan_num : ppm_param.total_chan;
+    _ppm_sending = 1;
+    fmt_send_pkg(NULL, 32, &_rc_pkg);
+    _ppm_sending = 0;
 
-    //TIMETAG_CHECK_EXECUTE(ppm_test, 200, debug("chan:%d\n", rc_chan_num);)
-    if (rc_chan_num) {
-        _ppm_sending = 1;
-        fmt_send_pkg(NULL, 2 * rc_chan_num, &_rc_pkg);
-        _ppm_sending = 0;
-        return 1;
-    }
-
-    return 0;
+    return 1;
 }
 
 uint8_t ppm_decoder_init(void)
@@ -196,8 +185,14 @@ uint8_t ppm_decoder_init(void)
     ppm_param.total_chan = 0;
     ppm_param.last_ic = 0;
 
-    // fmt_create_pkg(PROTO_DATA_RC, 16, ppm_param.ppm_val, &_rc_pkg);
+    memset(ppm_param.ppm_val, 0, sizeof(ppm_param.ppm_val));
     fmt_init_pkg(PROTO_DATA_RC, ppm_param.ppm_val, &_rc_pkg);
 
     return 1;
+}
+
+void ppm_decoder_deinit(void)
+{
+    TIM_ITConfig(TIM1, TIM_IT_CC1, DISABLE);
+    TIM_Cmd(TIM1, DISABLE);
 }
