@@ -54,7 +54,7 @@ FMT Firmware 具有轻量级，易于阅读和使用的特点，并且兼具稳�
 ## 文档
 [用户手册](https://github.com/FirmamentPilot/fmt_user_guide_cn)
 
-## 开发欢迎
+## 开发环境
 需要如下工具链进行开发：
 
 - 编译器: arm-none-eabi- toolchain (recommend: `7-2018-q2-update`，other version are not well tested). [download](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads)
