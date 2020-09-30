@@ -203,4 +203,10 @@
 // #define ULOG_USING_COLOR
 #define ULOG_USING_ASYNC_OUTPUT
 
+/* USING utest */
+
+#define RT_USING_UTEST
+#define UTEST_THR_STACK_SIZE 4096
+#define UTEST_THR_PRIORITY 20
+
 #endif
