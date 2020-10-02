@@ -11,8 +11,7 @@
 #ifndef __UTEST_H__
 #define __UTEST_H__
 
-#include <rtthread.h>
-#include "utest_log.h"
+#include <firmament.h>
 #include "utest_assert.h"
 
 #ifdef __cplusplus
@@ -160,6 +159,8 @@ utest_t utest_handle_get(void);
 #define UTEST_UNIT_RUN(test_unit_func)                                         \
     utest_unit_run(test_unit_func, #test_unit_func);                           \
     if(utest_handle_get()->failed_num != 0) return;
+
+int utest_init(void);
 
 #ifdef __cplusplus
 }

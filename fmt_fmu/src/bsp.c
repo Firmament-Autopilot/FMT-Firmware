@@ -21,6 +21,9 @@
 #ifdef FMT_USING_CM_BACKTRACE
 #include <cm_backtrace.h>
 #endif
+#ifdef FMT_USING_UNIT_TEST
+#include <utest.h>
+#endif
 
 #include "driver/gpio.h"
 #include "driver/gps.h"
@@ -196,6 +199,10 @@ void bsp_initialize(void)
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
     cm_backtrace_init("fmt_fmu", BOARD_NAME, "v0.1");
+#endif
+
+#ifdef FMT_USING_UNIT_TEST
+    utest_init();
 #endif
 }
 

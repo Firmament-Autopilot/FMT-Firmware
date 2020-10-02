@@ -48,12 +48,14 @@
 /* Cortex-M Backtrace */
 #define FMT_USING_CM_BACKTRACE
 
-#define FMT_USING_AUX_MOTOR
+/* Unit Test */
+#define FMT_USING_UNIT_TEST
 
 #define FMT_ONLINE_PARAM_TUNING
 
 #define FMT_RECORD_CALIBRATION_DATA
 
+#define FMT_USING_AUX_MOTOR
 // #define FMT_TEST_MOTOR
 
 #endif

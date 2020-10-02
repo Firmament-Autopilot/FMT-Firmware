@@ -31,9 +31,8 @@ src += Glob('Utils/*.c')
 src += Glob('Vehicle/*.c')
 src += Glob('BuzzerTune/*.c')
 src += Glob('Filter/*.c')
-src += Glob('utest/*.c')
+
 CPPPATH = [cwd,
-cwd + '/utest',
            cwd + '/Calibration',
            cwd + '/INS/lib',
            cwd + '/Plant/lib',
