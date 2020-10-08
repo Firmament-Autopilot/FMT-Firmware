@@ -68,7 +68,7 @@ The following toolchain are needed for development.
 ## Build & Doanload Firmware
 Please refer to the user guide.
 
-## Contributor
+## Acknowledgement
 Big thanks to these contributor:
 - [weety](https://github.com/weety)
 - [yangjiong](https://github.com/yangjion)
