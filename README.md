@@ -50,7 +50,7 @@ FMT Firmware is lightweight, easy to read and use, as well as excellent stabilit
 - Highly modular, loosely coupled software architecture, easy to tailor and port to other hardware.
 
 ## Supported Hardware
-- **Pixhawk**: version 2.4.6 or 2.4.8.
+- **Pixhawk**: FMUv2.
 -  May support more hardwares in future. 
 
 ## Documentation
@@ -61,8 +61,8 @@ The following toolchain are needed for development.
 
 - Compiler: arm-none-eabi- toolchain (recommend: `7-2018-q2-update`，other version are not well tested). [download](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads)
 - Construction tool: Scons
-  - Python 2.x (Python 2.7.x is preferable) is needed
-  - Scons 2.x (Scons 2.3.6 is prederable) is needed: [download](https://sourceforge.net/projects/scons/files/scons/2.3.6/)
+  - Python 2.x (**Python 2.7.x is preferable**) is needed
+  - Scons 2.x (**Scons 2.3.6 is prederable**) is needed: [download](https://sourceforge.net/projects/scons/files/scons/2.3.6/)
 - USB Driver (only needed for Windows): [download](https://www.st.com/en/development-tools/stsw-stm32102.html)
   
 ## Build & Download Firmware
