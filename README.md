@@ -65,7 +65,7 @@ The following toolchain are needed for development.
   - Scons 2.x (Scons 2.3.6 is prederable) is needed: [download](https://sourceforge.net/projects/scons/files/scons/2.3.6/)
 - USB Driver (only needed for Windows): [download](https://www.st.com/en/development-tools/stsw-stm32102.html)
   
-## Build & Doanload Firmware
+## Build & Download Firmware
 Please refer to the user guide.
 
 ## Acknowledgement
