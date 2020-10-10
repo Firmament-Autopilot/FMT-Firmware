@@ -72,4 +72,3 @@ Please refer to the user guide.
 Big thanks to these contributor:
 - [weety](https://github.com/weety)
 - [yangjiong](https://github.com/yangjion)
-
