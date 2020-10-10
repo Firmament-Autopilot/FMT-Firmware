@@ -81,6 +81,9 @@ Thank you very much for your donation, so that I can have more time and enthusia
   <img src="figures/ali_pay.jpg" width="200" />
 </p>
 
-## Contact
+## Community
 Wellcome to join our QQ Group
 <p align="left"><img width="200" src="figures/QR_code.png" alt=QR code"></p>
+  
+## License
+[Apache-2.0](./LICENSE)
