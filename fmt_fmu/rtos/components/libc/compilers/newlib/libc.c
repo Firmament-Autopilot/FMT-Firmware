@@ -35,6 +35,12 @@
 	#include <pthread.h>
 #endif
 
+// to avoid warning
+int putenv(char const* _EnvString)
+{
+    return 0;
+}
+
 int libc_system_init(void)
 {
 #if defined(RT_USING_DFS) & defined(RT_USING_DFS_DEVFS)

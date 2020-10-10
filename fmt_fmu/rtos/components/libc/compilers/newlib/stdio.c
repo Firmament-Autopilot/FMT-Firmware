@@ -33,6 +33,12 @@
 
 static FILE* std_console = NULL;
 
+// To avoid warning
+int fileno(FILE* _Stream)
+{
+    return -1;
+}
+
 int libc_stdio_set_console(const char* device_name, int mode)
 {
 	FILE* fp;
