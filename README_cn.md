@@ -68,4 +68,8 @@ FMT Firmware 具有轻量级，易于阅读和使用的特点，并且兼具稳�
 - [weety](https://github.com/weety)
 - [yangjiong](https://github.com/yangjion)
 
+## 联系
+欢迎加入QQ群
+<p align="left"><img width="200" src="figures/QR_code.png" alt=QR code"></p>
+
 

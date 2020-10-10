@@ -72,3 +72,7 @@ Please refer to the user guide.
 Big thanks to these contributor:
 - [weety](https://github.com/weety)
 - [yangjiong](https://github.com/yangjion)
+
+## Contact
+Wellcome to join our QQ Group
+<p align="left"><img width="200" src="figures/QR_code.png" alt=QR code"></p>
