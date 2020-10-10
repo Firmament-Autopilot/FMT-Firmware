@@ -76,8 +76,9 @@ FMT Firmware 具有轻量级，易于阅读和使用的特点，并且兼具稳�
   <img src="figures/ali_pay.jpg" width="200" />
 </p>
 
-## 联系
+## 社区
 欢迎加入QQ群
 <p align="left"><img width="240" src="figures/QR_code.png" alt=QR code"></p>
 
-
+## License
+[Apache-2.0](./LICENSE)
