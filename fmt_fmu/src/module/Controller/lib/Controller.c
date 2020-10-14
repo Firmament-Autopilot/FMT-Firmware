@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.754
+ * Model version                  : 1.760
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Sep 27 14:56:16 2020
+ * C/C++ source code generated on : Mon Oct 12 15:35:03 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -92,7 +92,7 @@ struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT = {
   2U,
 
   { 66, 97, 115, 101, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32,
-    118, 48, 46, 49, 46, 48, 0 }
+    118, 48, 46, 49, 46, 49, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S4>/Constant'
                                         */
@@ -373,17 +373,17 @@ void Controller_step(void)
       }
 
       /* Trigonometry: '<S31>/Atan' incorporates:
-       *  Constant: '<S31>/Constant'
+       *  Constant: '<S31>/g'
        *  Constant: '<S38>/kp'
        *  DiscreteIntegrator: '<S37>/Discrete-Time Integrator'
-       *  Gain: '<S31>/mass'
+       *  Gain: '<S31>/gain'
        *  Product: '<S31>/Divide'
        *  Product: '<S38>/Multiply'
        *  Sum: '<S33>/Add'
        */
       rtb_Atan_idx_1 = atanf(((CONTROL_PARAM.VEL_XY_P * rtb_TrigoFcn +
         Controller_DW.DiscreteTimeIntegrator_DSTATE_m[1]) +
-        rtb_Saturation_d_idx_0) * 1.4F / 9.8055F);
+        rtb_Saturation_d_idx_0) * 1.1F / 9.8055F);
 
       /* Saturate: '<S9>/Saturation' */
       if (rtb_Atan_idx_1 > CONTROL_PARAM.ROLL_PITCH_CMD_LIM) {
@@ -408,17 +408,17 @@ void Controller_step(void)
       }
 
       /* Trigonometry: '<S31>/Atan' incorporates:
-       *  Constant: '<S31>/Constant'
+       *  Constant: '<S31>/g'
        *  Constant: '<S38>/kp'
        *  DiscreteIntegrator: '<S37>/Discrete-Time Integrator'
        *  Gain: '<S31>/Gain1'
-       *  Gain: '<S31>/mass'
+       *  Gain: '<S31>/gain'
        *  Product: '<S31>/Divide'
        *  Product: '<S38>/Multiply'
        *  Sum: '<S33>/Add'
        */
       rtb_Atan_idx_1 = atanf(-((CONTROL_PARAM.VEL_XY_P * rtb_TrigoFcn1 +
-        Controller_DW.DiscreteTimeIntegrator_DSTATE_m[0]) + rtb_Cos) * 1.4F /
+        Controller_DW.DiscreteTimeIntegrator_DSTATE_m[0]) + rtb_Cos) * 1.1F /
         9.8055F);
 
       /* Saturate: '<S9>/Saturation' */
