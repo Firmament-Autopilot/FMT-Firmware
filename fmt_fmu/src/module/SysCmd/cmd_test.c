@@ -16,27 +16,20 @@
 
 #include <firmament.h>
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "hal/motor.h"
 #include "hal/rc.h"
 #include "module/console/console.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/syscmd/syscmd.h"
 #include "module/system/statistic.h"
+#include "module/toml/toml.h"
 #include "task/task_fmtio.h"
-
-void sd_write_speed_test(void);
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    // sd_write_speed_test();
-
-    char buff[80];
-
-    memset(buff, 'a', 80);
-    console_write(buff, 80);
-    memset(buff, 'b', 80);
-    console_write(buff, 80);
-
     return 0;
 }
 
