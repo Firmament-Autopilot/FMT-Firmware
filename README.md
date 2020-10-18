@@ -73,6 +73,17 @@ Big thanks to these contributor:
 - [weety](https://github.com/weety)
 - [yangjiong](https://github.com/yangjion)
 
-## Contact
+## Donation
+Thank you very much for your donation, so that I can have more time and enthusiasm to continue to work on this project.
+
+<p float="left">
+  <img src="figures/wechat_pay.png" width="200" />
+  <img src="figures/ali_pay.jpg" width="200" />
+</p>
+
+## Community
 Wellcome to join our QQ Group
 <p align="left"><img width="200" src="figures/QR_code.png" alt=QR code"></p>
+  
+## License
+[Apache-2.0](./LICENSE)
