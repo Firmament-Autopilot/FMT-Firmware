@@ -107,7 +107,7 @@ void bsp_show_information(void)
     _print_line("Kernel", buffer, str_len);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     _print_line("RAM", buffer, str_len);
-    _print_line("Board", BOARD_NAME, str_len);
+    _print_line("Target", TARGET_NAME, str_len);
     _print_line("Vehicle", VEHICLE_TYPE, str_len);
     _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
     _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
@@ -124,7 +124,7 @@ void bsp_show_information(void)
 }
 
 // fmt_err console_toml_init(toml_table_t* table);
-fmt_err bsp_load_toml_sysconfig(toml_table_t* root_tab)
+fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
     fmt_err err = FMT_EOK;
     toml_table_t* sub_tab;
@@ -133,28 +133,33 @@ fmt_err bsp_load_toml_sysconfig(toml_table_t* root_tab)
     char* target;
     int i;
 
+    /* target should be defined and match with bsp */
     if ((raw = toml_raw_in(root_tab, "target")) != 0) {
         if (toml_rtos(raw, &target) != 0) {
             console_printf("Error: fail to parse type value\n");
             err = FMT_ERROR;
         }
-
-        if(!MATCH(target, BOARD_NAME)){
+        if (!MATCH(target, TARGET_NAME)) {
             /* check if target match */
             console_printf("Error: target name doesn't match\n");
             err = FMT_ERROR;
         }
         rt_free(target);
+    } else {
+        console_printf("Error: can not find target key\n");
+        err = FMT_ERROR;
     }
 
-    /* traverse all sub-table */
-    for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
-        /* handle all sub tables */
-        if (0 != (sub_tab = toml_table_in(root_tab, key))) {
-            if (MATCH(key, "console")) {
-                err = console_toml_init(sub_tab);
-            } else {
-                console_printf("unknown table: %s\n", key);
+    if (err == FMT_EOK) {
+        /* traverse all sub-table */
+        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
+            /* handle all sub tables */
+            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
+                if (MATCH(key, "console")) {
+                    err = console_toml_init(sub_tab);
+                } else {
+                    console_printf("unknown table: %s\n", key);
+                }
             }
         }
     }
@@ -246,7 +251,7 @@ void bsp_initialize(void)
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
-    cm_backtrace_init("fmt_fmu", BOARD_NAME, "v0.1");
+    cm_backtrace_init("fmt_fmu", TARGET_NAME, "v0.1");
 #endif
 
 #ifdef FMT_USING_UNIT_TEST
@@ -270,7 +275,7 @@ void bsp_post_initialize(void)
     /* toml system configure */
     _toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (_toml_root_tab) {
-        FMT_CHECK(bsp_load_toml_sysconfig(_toml_root_tab));
+        FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
     }
 
     /* show system information */
