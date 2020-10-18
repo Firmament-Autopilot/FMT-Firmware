@@ -173,3 +173,24 @@ int toml_print_parsed_data(const char* file)
 
     return 0;
 }
+
+toml_table_t* toml_parse_config_file(const char* file)
+{
+    char  errbuf[200];
+    FILE* fp = fopen(file, "r");
+    toml_table_t* root_tab;
+
+    if (!fp) {
+        console_printf("TOML: fail to open file: %s\n", file);
+        return NULL;
+    }
+
+    root_tab = toml_parse_file(fp, errbuf, sizeof(errbuf));
+    fclose(fp);
+
+    if(root_tab == NULL){
+        console_printf("TOML: %s\n", errbuf);
+    }
+
+    return root_tab;
+}

@@ -269,11 +269,6 @@ void mavlink_console_process_rx_msg(const mavlink_serial_control_t* serial_contr
             break;
     }
 
-    if (!(device->open_flag & RT_DEVICE_OFLAG_OPEN)) {
-        /* automatically switch to mav console if data received from mavlink */
-        console_set_device(MAV_CONSOLE_DEVICE_NAME);
-    }
-
     /* call indicator if exist */
     if (device->rx_indicate) {
         device->rx_indicate(device, serial_control->count);

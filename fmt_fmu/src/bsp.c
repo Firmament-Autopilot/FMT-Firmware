@@ -48,14 +48,20 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
+#include "module/toml/toml.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
 
+#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+
+static toml_table_t* _toml_root_tab = NULL;
+
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
 
-static void _print_item(const char* name, const char* content, uint32_t len)
+static void _print_line(const char* name, const char* content, uint32_t len)
 {
     int pad_len = len - strlen(name) - strlen(content);
 
@@ -85,7 +91,7 @@ void NVIC_Configuration(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 }
 
-void bsp_show_version(void)
+void bsp_show_information(void)
 {
     char buffer[50];
     uint32_t str_len = 42;
@@ -96,25 +102,67 @@ void bsp_show_version(void)
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
     sprintf(buffer, "FMT FMU v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
-    _print_item("Firmware", buffer, str_len);
+    _print_line("Firmware", buffer, str_len);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    _print_item("Kernel", buffer, str_len);
+    _print_line("Kernel", buffer, str_len);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    _print_item("RAM", buffer, str_len);
-    _print_item("Board", BOARD_NAME, str_len);
-    _print_item("Vehicle", VEHICLE_TYPE, str_len);
-    _print_item("INS Model", (char*)INS_EXPORT.model_info, str_len);
-    _print_item("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
-    _print_item("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
+    _print_line("RAM", buffer, str_len);
+    _print_line("Board", BOARD_NAME, str_len);
+    _print_line("Vehicle", VEHICLE_TYPE, str_len);
+    _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
+    _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
+    _print_line("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
 #ifdef FMT_USING_SIH
-    _print_item("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
+    _print_line("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
 #endif
     console_println("Task Initialize:");
-    _print_item("  vehicle", "OK", str_len);
-    _print_item("  fmtio", "OK", str_len);
-    _print_item("  comm", "OK", str_len);
-    _print_item("  logger", "OK", str_len);
-    _print_item("  status", "OK", str_len);
+    _print_line("  vehicle", "OK", str_len);
+    _print_line("  fmtio", "OK", str_len);
+    _print_line("  comm", "OK", str_len);
+    _print_line("  logger", "OK", str_len);
+    _print_line("  status", "OK", str_len);
+}
+
+// fmt_err console_toml_init(toml_table_t* table);
+fmt_err bsp_load_toml_sysconfig(toml_table_t* root_tab)
+{
+    fmt_err err = FMT_EOK;
+    toml_table_t* sub_tab;
+    const char* key;
+    const char* raw;
+    char* target;
+    int i;
+
+    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
+        if (toml_rtos(raw, &target) != 0) {
+            console_printf("Error: fail to parse type value\n");
+            err = FMT_ERROR;
+        }
+
+        if(!MATCH(target, BOARD_NAME)){
+            /* check if target match */
+            console_printf("Error: target name doesn't match\n");
+            err = FMT_ERROR;
+        }
+        rt_free(target);
+    }
+
+    /* traverse all sub-table */
+    for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
+        /* handle all sub tables */
+        if (0 != (sub_tab = toml_table_in(root_tab, key))) {
+            if (MATCH(key, "console")) {
+                err = console_toml_init(sub_tab);
+            } else {
+                console_printf("unknown table: %s\n", key);
+            }
+        }
+    }
+
+    /* free toml root table */
+    toml_free(root_tab);
+
+    return err;
 }
 
 /* this function will be called before rtos start, which is not thread context */
@@ -190,7 +238,7 @@ void bsp_initialize(void)
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_mount_shell(NULL));
+    FMT_CHECK(console_enable_shell(NULL));
 #endif
 
     /* system statistic module */
@@ -219,7 +267,14 @@ void bsp_post_initialize(void)
     FMT_CHECK(actuator_init(aux_out_dev));
 #endif
 
-    bsp_show_version();
+    /* toml system configure */
+    _toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
+    if (_toml_root_tab) {
+        FMT_CHECK(bsp_load_toml_sysconfig(_toml_root_tab));
+    }
+
+    /* show system information */
+    bsp_show_information();
 
     /* dump boot log to file */
     boot_log_dump();

@@ -22,6 +22,7 @@
 #include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
 #include "module/sysio/pilot_cmd.h"
+#include "module/utils/device_mq.h"
 #include "task/task_logger.h"
 #include "task/task_status.h"
 
@@ -56,6 +57,38 @@ static void _led_off(void)
 
     if (_pin_device != RT_NULL) {
         _pin_device->write(_pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
+    }
+}
+
+static void _rgb_led_control(void)
+{
+    static int bright = 0;
+    static int inc = 0;
+    DEFINE_TIMETAG(rgb_led, 0);
+
+    if (bright <= 0) {
+        TIMETAG(rgb_led)->period = 100;
+        // delay_time = 100;
+    } else {
+        if (bright >= TCA62724_MAX_BRIGHT) {
+            // delay_time = 300;
+            TIMETAG(rgb_led)->period = 300;
+        } else {
+            // delay_time = 50;
+            TIMETAG(rgb_led)->period = 50;
+        }
+    }
+
+    if (check_timetag(TIMETAG(rgb_led))) {
+        /* breath light control */
+        if (bright <= 0)
+            inc = 1;
+
+        if (bright >= TCA62724_MAX_BRIGHT)
+            inc = -1;
+
+        bright += inc;
+        rt_device_control(_rgb_led_dev, TCA62724_CMD_SET_BRIGHT, (void*)bright);
     }
 }
 
@@ -189,7 +222,11 @@ fmt_err task_status_init(void)
     }
 
     if (rt_device_open(_rgb_led_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
-        return FMT_EOK;
+        return FMT_ERROR;
+    }
+
+    if (device_mq_create() != FMT_EOK) {
+        return FMT_ERROR;
     }
 
     return FMT_EOK;
@@ -197,9 +234,9 @@ fmt_err task_status_init(void)
 
 void task_status_entry(void* parameter)
 {
-    static int _inc;
-    static int bright = 0;
-    uint32_t delay_time;
+    // static int _inc;
+    // static int bright = 0;
+    // uint32_t delay_time;
 
     _fms_out_nod = mcn_subscribe(MCN_ID(fms_output), NULL, NULL);
     _ins_out_nod = mcn_subscribe(MCN_ID(ins_output), NULL, NULL);
@@ -233,26 +270,33 @@ void task_status_entry(void* parameter)
         // update INS output status
         _update_ins_status();
 
-        // breath light
-        if (bright == 0)
-            _inc = 1;
+        // handle device status msg
+        device_mq_handle_msg();
 
-        if (bright == TCA62724_MAX_BRIGHT)
-            _inc = -1;
+        // // breath light
+        // if (bright == 0)
+        //     _inc = 1;
 
-        bright += _inc;
+        // if (bright == TCA62724_MAX_BRIGHT)
+        //     _inc = -1;
 
-        if (bright == 0) {
-            delay_time = 100;
-        } else {
-            if (bright == TCA62724_MAX_BRIGHT) {
-                delay_time = 300;
-            } else {
-                delay_time = 50;
-            }
-        }
+        // bright += _inc;
 
-        rt_device_control(_rgb_led_dev, TCA62724_CMD_SET_BRIGHT, (void*)bright);
-        rt_thread_delay(delay_time);
+        // if (bright == 0) {
+        //     delay_time = 100;
+        // } else {
+        //     if (bright == TCA62724_MAX_BRIGHT) {
+        //         delay_time = 300;
+        //     } else {
+        //         delay_time = 50;
+        //     }
+        // }
+
+        // rt_device_control(_rgb_led_dev, TCA62724_CMD_SET_BRIGHT, (void*)bright);
+        // rt_thread_delay(delay_time);
+
+        _rgb_led_control();
+
+        rt_thread_delay(10);
     }
 }

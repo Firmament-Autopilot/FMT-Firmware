@@ -147,4 +147,8 @@ TOML_EXTERN int toml_ucs_to_utf8(int64_t code, char buf[6]);
 // 								  void* (*xxcalloc)(size_t, size_t),
 // 								  void* (*xxrealloc)(void*, size_t));
 
+/* for FMT */
+int toml_print_parsed_data(const char* file);
+toml_table_t* toml_parse_config_file(const char* file);
+
 #endif /* TOML_H */

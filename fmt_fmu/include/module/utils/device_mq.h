@@ -14,28 +14,24 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
+#ifndef __DEVICE_MQ_H__
+#define __DEVICE_MQ_H__
 
-#include <stdlib.h>
-#include <string.h>
+/* device status msg */
+#define DEVICE_STATUS_CONNECT    (1)
+#define DEVICE_STAUTS_DISCONNECT (2)
+#define DEVICE_STATUS_RX         (3)
+#define DEVICE_STATUS_TX         (4)
 
-#include "hal/motor.h"
-#include "hal/rc.h"
-#include "module/console/console.h"
-#include "module/sensor/sensor_manager.h"
-#include "module/syscmd/syscmd.h"
-#include "module/system/statistic.h"
-#include "module/toml/toml.h"
-#include "task/task_fmtio.h"
-#include "hal/serial.h"
+typedef struct {
+    rt_device_t device;
+    int status;
+} device_status;
 
-static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
-{
-    return 0;
-}
+fmt_err device_mq_create(void);
+fmt_err device_mq_register(const char* dev_name, void (*notify)(void* msg));
+fmt_err device_mq_deregister(const char* dev_name);
+fmt_err device_mq_notify(rt_device_t device, int status);
+fmt_err device_mq_handle_msg(void);
 
-int cmd_test(int argc, char** argv)
-{
-    return syscmd_process(argc, argv, handle_cmd);
-}
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);
+#endif

@@ -1,0 +1,15 @@
+# FMT System Configuration.
+
+target = "Pixhawk FMUv2"
+
+[console]
+	[[console.devices]]
+	type = "serial"
+	name = "serial1"
+	baudrate = 57600
+	auto-switch = true
+	
+	[[console.devices]]
+	type = "mavlink"
+	name = "mav_console"
+	auto-switch = true
