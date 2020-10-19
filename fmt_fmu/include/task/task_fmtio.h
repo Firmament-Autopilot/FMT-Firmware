@@ -41,6 +41,7 @@ fmt_err fmtio_send_pkg(const void* data, uint16_t len, PackageStruct* pkg);
 fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len);
 void fmtio_suspend_comm(uint8_t suspend);
 rt_device_t fmtio_get_device(void);
-fmt_err fmtio_config(fmtio_config_t* io_config);
+fmt_err fmtio_config(const fmtio_config_t* io_config);
+fmt_err fmtio_set_default_config(const fmtio_config_t* io_config);
 
 #endif

@@ -1,15 +1,30 @@
-# FMT System Configuration.
+# FMT System Configuration File
 
+# The target should match with BSP's target name
 target = "Pixhawk FMUv2"
 
+# Console Configuration
 [console]
+	# device list, the first device will be used by default
 	[[console.devices]]
-	type = "serial"
-	name = "serial1"
-	baudrate = 57600
-	auto-switch = true
+	type = "serial"			# type must be serial or mavlink
+	name = "serial1"		# device name
+	baudrate = 57600		# serial baudrate
+	auto-switch = true		# automatically switch to device if data received
 	
 	[[console.devices]]
-	type = "mavlink"
-	name = "mav_console"
-	auto-switch = true
+	type = "mavlink"		# type must be serial or mavlink
+	name = "mav_console"	# device name
+	auto-switch = true		# automatically switch to device if data received
+
+# Pilot CMD Configuration
+[pilot-cmd]
+	stick-channel = [ 3, 2, 0, 1 ] # stick channels with [ls_lr, ls_ud, rs_lr, rs_ud]
+	mode-channel = 4		# control mode switch
+	safeswitch-channel = 5	# switch to force disarm the vehicle in urgent situation
+	
+	[pilot-cmd.device]
+	type = "rc"				# type must be rc
+	name = "rc"				# device name
+	protocol = 1			# 1:sbus, 2:ppm
+	channel-num = 6			# channel number, max supported channel: sbus:16, ppm:8

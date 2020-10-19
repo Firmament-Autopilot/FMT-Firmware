@@ -16,12 +16,29 @@
 
 #include <firmament.h>
 
+#include <string.h>
+
 #include "hal/rc.h"
 #include "module/fms/fms_model.h"
 #include "module/sysio/pilot_cmd.h"
 #include "task/task_comm.h"
+#include "task/task_fmtio.h"
 
-// Channel Mapping
+#define MATCH(a, b)                 (strcmp(a, b) == 0)
+#define DEVICE_LIST                 pilot_cmd_device_list
+#define DEVICE_NUM                  pilot_cmd_device_num
+#define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
+
+#define PILOT_CMD_MAX_DEVICE_NUM 1
+
+// Channel Mapping Index
+#define PILOT_LS_LR_MAPPING_IDX       0
+#define PILOT_LS_UD_MAPPING_IDX       1
+#define PILOT_RS_LR_MAPPING_IDX       2
+#define PILOT_RS_UD_MAPPING_IDX       3
+#define PILOT_MODE_MAPPING_IDX        4
+#define PILOT_SAFE_SWITCH_MAPPING_IDX 5
+// Default Channel Mapping
 #define PILOT_LS_LR_CHANNEL       3
 #define PILOT_LS_UD_CHANNEL       2
 #define PILOT_RS_LR_CHANNEL       0
@@ -29,13 +46,138 @@
 #define PILOT_MODE_CHANNEL        4
 #define PILOT_SAFE_SWITCH_CHANNEL 5
 
+static int32_t _rc_channel_mapping[16];
+
+typedef struct {
+    uint16_t protocol;
+    uint16_t channel_num;
+} pilot_cmd_rc_dev_config;
+
+typedef struct {
+    char* type;
+    char* name;
+    void* config;
+} pilot_cmd_device_info;
+
+static pilot_cmd_device_info DEVICE_LIST[PILOT_CMD_MAX_DEVICE_NUM] = { 0 };
+static uint8_t DEVICE_NUM = 0;
+static uint16_t _rc_read_mask = RC_MASK_1_6;
 static rt_device_t _rc_dev;
 static Pilot_Cmd_Bus _pilot_cmd;
 
-// static uint8_t _kill_motor_cmd = 0;
-
 /* Define uMCN topic */
 MCN_DEFINE(pilot_cmd, sizeof(Pilot_Cmd_Bus));
+
+void list_pilot_cmd_devices(void)
+{
+    for (int i = 0; i < DEVICE_NUM; i++) {
+        pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)DEVICE_LIST[i].config;
+        console_printf("[pilot_cmd d0]:\n");
+        console_printf("type:%s\n", DEVICE_LIST[i].type);
+        console_printf("name:%s\n", DEVICE_LIST[i].name);
+        console_printf("protocol:%d\n", config->protocol);
+        console_printf("channel-num:%d\n", config->channel_num);
+    }
+}
+
+void print_channel_mapping(void)
+{
+    console_printf("ls_lr => %d\n", _rc_channel_mapping[PILOT_LS_LR_MAPPING_IDX]);
+    console_printf("ls_ud => %d\n", _rc_channel_mapping[PILOT_LS_UD_MAPPING_IDX]);
+    console_printf("rs_lr => %d\n", _rc_channel_mapping[PILOT_RS_LR_MAPPING_IDX]);
+    console_printf("rs_ud => %d\n", _rc_channel_mapping[PILOT_RS_UD_MAPPING_IDX]);
+    console_printf("mode => %d\n", _rc_channel_mapping[PILOT_MODE_MAPPING_IDX]);
+    console_printf("safe-switch => %d\n", _rc_channel_mapping[PILOT_SAFE_SWITCH_MAPPING_IDX]);
+}
+
+static fmt_err _pilot_cmd_parse_device(const toml_table_t* curtab, int idx)
+{
+    fmt_err err = FMT_EOK;
+    int i;
+    const char* key;
+    const char* raw;
+
+    /* get device type */
+    if ((raw = toml_raw_in(curtab, "type")) != 0) {
+        if (toml_rtos(raw, &DEVICE_LIST[idx].type) != 0) {
+            console_printf("Error: fail to parse type value\n");
+            err = FMT_ERROR;
+        }
+
+        if (DEVICE_TYPE_IS(idx, rc)) {
+            pilot_cmd_rc_dev_config rc_default_config = {
+                .protocol = 1, // sbus
+                .channel_num = 6
+            };
+            DEVICE_LIST[idx].config = rt_malloc(sizeof(pilot_cmd_rc_dev_config));
+
+            /* set default value */
+            if (DEVICE_LIST[idx].config)
+                *(pilot_cmd_rc_dev_config*)DEVICE_LIST[idx].config = rc_default_config;
+        } else {
+            console_printf("Error: unknown device type: %s\n", DEVICE_LIST[idx].type);
+            err = FMT_ERROR;
+        }
+
+        if (DEVICE_LIST[idx].config == NULL) {
+            console_printf("Error: fail to malloc memory\n");
+            err = FMT_ERROR;
+        }
+    } else {
+        console_printf("Error: fail to parse type value\n");
+        err = FMT_ERROR;
+    }
+
+    if (err != FMT_EOK) {
+        return err;
+    }
+
+    /* traverse keys in table */
+    for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
+        if (0 != (raw = toml_raw_in(curtab, key))) {
+            if (MATCH(key, "type")) {
+                /* already handled */
+                continue;
+            }
+
+            /* parse rc device */
+            if (DEVICE_TYPE_IS(idx, rc)) {
+                pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)DEVICE_LIST[idx].config;
+
+                if (MATCH(key, "name")) {
+                    if (toml_rtos(raw, &DEVICE_LIST[idx].name) != 0) {
+                        console_printf("Error: fail to parse name value\n");
+                        return FMT_ERROR;
+                    }
+                } else if (MATCH(key, "protocol")) {
+                    int64_t ival;
+
+                    if (toml_rtoi(raw, &ival) != 0) {
+                        console_printf("Error: fail to parse protocol value\n");
+                        continue;
+                    }
+                    config->protocol = (uint16_t)ival;
+                } else if (MATCH(key, "channel-num")) {
+                    int64_t ival;
+
+                    if (toml_rtoi(raw, &ival) != 0) {
+                        console_printf("Error: fail to parse channel-num value\n");
+                        continue;
+                    }
+                    config->channel_num = (uint16_t)ival;
+                } else {
+                    console_printf("Error: unknown config key: %s\n", key);
+                    continue;
+                }
+            }
+        } else {
+            console_printf("Error: unknown config key: %s\n", key);
+            continue;
+        }
+    }
+
+    return err;
+}
 
 static int _pilot_cmd_echo(void* parameter)
 {
@@ -81,7 +223,8 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, uint16_t* rc_val)
     static uint32_t _last_cmd_timestamp = 0;
 
     uint32_t time_now = systime_now_ms();
-    uint8_t force_disarm_cmd = rc_val[PILOT_SAFE_SWITCH_CHANNEL] > 1900;
+    // uint8_t force_disarm_cmd = rc_val[PILOT_SAFE_SWITCH_CHANNEL] > 1900;
+    uint8_t force_disarm_cmd = rc_val[_rc_channel_mapping[_rc_channel_mapping[PILOT_SAFE_SWITCH_MAPPING_IDX]]] > 1900;
 
     /* command 1: event command */
     if (force_disarm_cmd != _force_disarm_cmd) {
@@ -110,8 +253,9 @@ uint8_t pilot_cmd_collect(void)
 {
     rt_err_t rt_err;
     uint8_t update = 0;
-    uint16_t rc_val[6];
+    uint16_t rc_val[16];
     struct rc_configure config;
+    pilot_cmd_rc_dev_config* dev_config = (pilot_cmd_rc_dev_config*)DEVICE_LIST[0].config;
 
     RT_ASSERT(_rc_dev != NULL);
 
@@ -122,16 +266,31 @@ uint8_t pilot_cmd_collect(void)
     rt_err = rt_device_control(_rc_dev, RC_CMD_CHECK_UPDATE, &update);
 
     if (rt_err == RT_EOK && update) {
-        if (rt_device_read(_rc_dev, RC_MASK_1_6, rc_val, 12)) {
-            _pilot_cmd.ls_lr = -1.0f + (float)(rc_val[PILOT_LS_LR_CHANNEL] - config.rc_min_value) / range * 2.0f;
-            _pilot_cmd.ls_ud = -1.0f + (float)(rc_val[PILOT_LS_UD_CHANNEL] - config.rc_min_value) / range * 2.0f;
-            _pilot_cmd.rs_lr = -1.0f + (float)(rc_val[PILOT_RS_LR_CHANNEL] - config.rc_min_value) / range * 2.0f;
-            _pilot_cmd.rs_ud = -1.0f + (float)(rc_val[PILOT_RS_UD_CHANNEL] - config.rc_min_value) / range * 2.0f;
+        if (rt_device_read(_rc_dev, _rc_read_mask, rc_val, dev_config->channel_num*2)) {
+            // _pilot_cmd.ls_lr = -1.0f + (float)(rc_val[PILOT_LS_LR_CHANNEL] - config.rc_min_value) / range * 2.0f;
+            // _pilot_cmd.ls_ud = -1.0f + (float)(rc_val[PILOT_LS_UD_CHANNEL] - config.rc_min_value) / range * 2.0f;
+            // _pilot_cmd.rs_lr = -1.0f + (float)(rc_val[PILOT_RS_LR_CHANNEL] - config.rc_min_value) / range * 2.0f;
+            // _pilot_cmd.rs_ud = -1.0f + (float)(rc_val[PILOT_RS_UD_CHANNEL] - config.rc_min_value) / range * 2.0f;
+
+            _pilot_cmd.ls_lr = -1.0f + (float)(rc_val[_rc_channel_mapping[PILOT_LS_LR_MAPPING_IDX]] - config.rc_min_value) / range * 2.0f;
+            _pilot_cmd.ls_ud = -1.0f + (float)(rc_val[_rc_channel_mapping[PILOT_LS_UD_MAPPING_IDX]] - config.rc_min_value) / range * 2.0f;
+            _pilot_cmd.rs_lr = -1.0f + (float)(rc_val[_rc_channel_mapping[PILOT_RS_LR_MAPPING_IDX]] - config.rc_min_value) / range * 2.0f;
+            _pilot_cmd.rs_ud = -1.0f + (float)(rc_val[_rc_channel_mapping[PILOT_RS_UD_MAPPING_IDX]] - config.rc_min_value) / range * 2.0f;
+
+            
 
             /* mode switch */
-            if (rc_val[PILOT_MODE_CHANNEL] <= 1100) {
+            uint16_t mode_chan_val = rc_val[_rc_channel_mapping[PILOT_MODE_MAPPING_IDX]];
+            // if (rc_val[PILOT_MODE_CHANNEL] <= 1100) {
+            //     _pilot_cmd.mode = 2; //Position Mode
+            // } else if (rc_val[PILOT_MODE_CHANNEL] <= 1600) {
+            //     _pilot_cmd.mode = 3; //Altitude Hold
+            // } else {
+            //     _pilot_cmd.mode = 4; //Manual Mode
+            // }
+            if (mode_chan_val <= 1100) {
                 _pilot_cmd.mode = 2; //Position Mode
-            } else if (rc_val[PILOT_MODE_CHANNEL] <= 1600) {
+            } else if (mode_chan_val <= 1600) {
                 _pilot_cmd.mode = 3; //Altitude Hold
             } else {
                 _pilot_cmd.mode = 4; //Manual Mode
@@ -156,6 +315,114 @@ uint8_t pilot_cmd_collect(void)
     return 0;
 }
 
+/* config pilot_cmd via toml system configuration file */
+fmt_err pilot_cmd_toml_init(toml_table_t* table)
+{
+    int i, j;
+    const char* key;
+    const char* raw;
+    toml_table_t* tab;
+    toml_array_t* arr;
+    fmt_err err = FMT_EOK;
+    int64_t ival;
+
+    /* traverse keys in table */
+    for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {
+        if (MATCH(key, "device")) {
+            if ((tab = toml_table_in(table, key)) != 0) {
+                err = _pilot_cmd_parse_device(tab, 0);
+                if (err == FMT_EOK) {
+                    DEVICE_NUM = 1;
+                }
+            } else {
+                console_printf("Error: wrong element type: %s\n", key);
+                err = FMT_ERROR;
+            }
+        } else if (MATCH(key, "stick-channel")) {
+            if ((arr = toml_array_in(table, key)) != 0) {
+                if (toml_array_kind(arr) == 'v' && toml_array_nelem(arr) == 4) {
+                    for (j = 0; j < 4; j++) {
+                        raw = toml_raw_at(arr, j);
+                        if (toml_rtoi(raw, &ival) == 0) {
+                            _rc_channel_mapping[j] = (int32_t)ival;
+                        } else {
+                            console_printf("Error: parse stick-channel fail\n");
+                            err = FMT_ERROR;
+                        }
+                    }
+                } else {
+                    console_printf("Error: wrong stick-channel definition\n");
+                    err = FMT_ERROR;
+                }
+            } else {
+                console_printf("Error: wrong element type: %s\n", key);
+                err = FMT_ERROR;
+            }
+        } else if (MATCH(key, "mode-channel")) {
+            if ((raw = toml_raw_in(table, key)) != 0) {
+                if (toml_rtoi(raw, &ival) == 0) {
+                    _rc_channel_mapping[PILOT_MODE_MAPPING_IDX] = (int32_t)ival;
+                }
+            }
+        } else if (MATCH(key, "safeswitch-channel")) {
+            if ((raw = toml_raw_in(table, key)) != 0) {
+                if (toml_rtoi(raw, &ival) == 0) {
+                    _rc_channel_mapping[PILOT_SAFE_SWITCH_MAPPING_IDX] = (int32_t)ival;
+                }
+            }
+        } else {
+            console_printf("Error: unknown config key: %s\n", key);
+            err = FMT_ERROR;
+        }
+    }
+
+    /* open all devices by default */
+    for (int i = 0; i < DEVICE_NUM; i++) {
+        rt_device_t dev = rt_device_find(DEVICE_LIST[i].name);
+
+        if (dev == NULL) {
+            continue;
+        }
+
+        if (!(dev->open_flag & RT_DEVICE_OFLAG_OPEN)) {
+            if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+                return FMT_ERROR;
+            }
+        } else {
+            if (dev->open_flag != RT_DEVICE_OFLAG_RDWR) {
+                /* open flag is different, reopen */
+                rt_device_close(dev);
+
+                if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+                    return FMT_ERROR;
+                }
+            }
+        }
+    }
+
+    if (DEVICE_NUM) {
+        pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)DEVICE_LIST[0].config;
+        fmtio_config_t io_config = {
+            .baud_rate = 0,
+            .pwm_freq = 0,
+            .rc_proto = config->protocol
+        };
+
+        err = fmtio_set_default_config(&io_config);
+
+        /* update rc read mask */
+        _rc_read_mask = 0;
+        for (int i = 0; i < config->channel_num; i++) {
+            _rc_read_mask += 1 << i;
+        }
+
+        /* set rc to the first device by default */
+        _rc_dev = rt_device_find(DEVICE_LIST[0].name);
+    }
+
+    return err;
+}
+
 fmt_err pilot_cmd_init(void)
 {
     _rc_dev = rt_device_find("rc");
@@ -172,6 +439,17 @@ fmt_err pilot_cmd_init(void)
     if (mcn_advertise(MCN_ID(pilot_cmd), _pilot_cmd_echo) != FMT_EOK) {
         return FMT_ERROR;
     }
+
+    /* initialize rc channel mapping */
+    for (int i = 0; i < 16; i++) {
+        _rc_channel_mapping[i] = -1;
+    }
+    _rc_channel_mapping[PILOT_LS_LR_MAPPING_IDX] = PILOT_LS_LR_CHANNEL;
+    _rc_channel_mapping[PILOT_LS_UD_MAPPING_IDX] = PILOT_LS_UD_CHANNEL;
+    _rc_channel_mapping[PILOT_RS_LR_MAPPING_IDX] = PILOT_RS_LR_CHANNEL;
+    _rc_channel_mapping[PILOT_RS_UD_MAPPING_IDX] = PILOT_RS_UD_CHANNEL;
+    _rc_channel_mapping[PILOT_MODE_MAPPING_IDX] = PILOT_MODE_CHANNEL;
+    _rc_channel_mapping[PILOT_SAFE_SWITCH_MAPPING_IDX] = PILOT_SAFE_SWITCH_CHANNEL;
 
     return FMT_EOK;
 }

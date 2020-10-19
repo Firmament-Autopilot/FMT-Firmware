@@ -157,8 +157,13 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
             if (0 != (sub_tab = toml_table_in(root_tab, key))) {
                 if (MATCH(key, "console")) {
                     err = console_toml_init(sub_tab);
+                } else if (MATCH(key, "pilot-cmd")) {
+                    err = pilot_cmd_toml_init(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
+                }
+                if (err != FMT_EOK) {
+                    console_printf("fail to parse %s\n", key);
                 }
             }
         }

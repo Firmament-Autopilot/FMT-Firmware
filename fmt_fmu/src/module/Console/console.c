@@ -215,11 +215,9 @@ static fmt_err _console_parse_device(const toml_table_t* curtab, int idx)
                         continue;
                     }
                     config->baudrate = (uint32_t)ival;
-
-                    _console_device_num = idx + 1;
                 } else if (MATCH(key, "auto-switch")) {
                     int bval;
-                    console_printf("222\n");
+                    
                     if (toml_rtob(raw, &bval) != 0) {
                         console_printf("Error: fail to parse auto-switch value\n");
                         continue;

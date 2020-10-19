@@ -28,9 +28,12 @@
 #include "module/toml/toml.h"
 #include "task/task_fmtio.h"
 #include "hal/serial.h"
+#include "module/sysio/pilot_cmd.h"
 
+void print_channel_mapping(void);
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
+    print_channel_mapping();
     return 0;
 }
 

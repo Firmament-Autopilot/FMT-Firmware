@@ -18,6 +18,7 @@
 #define __PILOT_CMD_H__
 
 #include <firmament.h>
+#include "module/toml/toml.h"
 
 // Pilot Command 1 (Event Command)
 #define FMS_CMD_FORCE_DISARM 1000
@@ -27,5 +28,8 @@
 
 fmt_err pilot_cmd_init(void);
 uint8_t pilot_cmd_collect(void);
+
+fmt_err pilot_cmd_toml_init(toml_table_t* table);
+void list_pilot_cmd_devices(void);
 
 #endif

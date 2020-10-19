@@ -31,7 +31,8 @@
 #define EVENT_FMTIO_TX (1 << 1)
 
 #define FMTIO_SERIAL_BAUDRATE (230400)
-#define FMTIO_RC_PROTOCOL     (1)       // 1:sbus 2:ppm
+#define FMTIO_RC_PROTOCOL     (1) // 1:sbus 2:ppm
+#define FMTIO_PWM_FREQ        (50)
 
 typedef struct {
     uint32_t timestamp_ms;
@@ -64,9 +65,16 @@ static PackageStruct _motor_cmd_pkg;
 
 static uint8_t _sync_finish = 0;
 
+static fmtio_config_t _io_defaultconfig = {
+    .baud_rate = FMTIO_SERIAL_BAUDRATE,
+    .pwm_freq = FMTIO_PWM_FREQ,
+    .rc_proto = FMTIO_RC_PROTOCOL
+};
+
 /**************************** Callback Function ********************************/
 
-static rt_err_t fmtio_rx_ind(rt_device_t dev, rt_size_t size)
+static rt_err_t
+fmtio_rx_ind(rt_device_t dev, rt_size_t size)
 {
     /* wakeup thread to handle received data */
     return rt_event_send(&_fmtio_event, EVENT_FMTIO_RX);
@@ -86,24 +94,13 @@ static void _handle_rc_message(const PackageStruct* pkg)
     _rc_updated = 1;
 }
 
-void _config_fmtio_with_default_value(void)
-{
-    fmtio_config_t io_config;
-
-    io_config.baud_rate = FMTIO_SERIAL_BAUDRATE;
-    io_config.pwm_freq = 0; // pwn frequency would be configured by actuator_cmd module
-    io_config.rc_proto = FMTIO_RC_PROTOCOL;
-    /* config fmt io */
-    fmtio_config(&io_config);
-}
-
 static fmt_err _handle_package(const PackageStruct* pkg)
 {
     switch (pkg->cmd) {
     case PROTO_CMD_SYNC: {
         /* reply sync ack */
         // fmtio_send_message(PROTO_ACK_SYNC, NULL, 0);
-        _config_fmtio_with_default_value();
+        fmtio_config(&_io_defaultconfig);
     } break;
 
     case PROTO_DBG_TEXT: {
@@ -213,7 +210,7 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
         io_config.pwm_freq = *(uint16_t*)arg;
         io_config.rc_proto = 0;
 
-        ret = fmtio_config(&io_config);
+        ret = fmtio_set_default_config(&io_config) == FMT_EOK ? RT_EOK : RT_ERROR;
     } break;
 
     default:
@@ -371,14 +368,21 @@ fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len)
     return err;
 }
 
-fmt_err fmtio_config(fmtio_config_t* io_config)
+fmt_err fmtio_config(const fmtio_config_t* io_config)
 {
-    /* check validity */
+    /* check data valid */
     if (io_config->baud_rate > BAUD_RATE_3000000 || io_config->pwm_freq > 400 || io_config->rc_proto > 2) {
         return FMT_EINVAL;
     }
 
     return fmtio_send_message(PROTO_CMD_CONFIG, io_config, sizeof(fmtio_config_t));
+}
+
+fmt_err fmtio_set_default_config(const fmtio_config_t* io_config)
+{
+    _io_defaultconfig = *io_config;
+
+    return fmtio_config(&_io_defaultconfig);
 }
 
 fmt_err task_fmtio_init(void)
@@ -447,8 +451,7 @@ void task_fmtio_entry(void* parameter)
     rt_device_set_rx_indicate(_fmtio_dev, fmtio_rx_ind);
 
     /* send sync cmd */
-    // fmtio_send_message(PROTO_CMD_SYNC, NULL, 0);
-    _config_fmtio_with_default_value();
+    fmtio_config(&_io_defaultconfig);
 
     while (1) {
         /* wait event happen or timeout */
