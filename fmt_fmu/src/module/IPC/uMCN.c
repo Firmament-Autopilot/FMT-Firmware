@@ -143,7 +143,7 @@ fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node)
 
     /* traverse each node */
     McnNode_t cur_node = hub->link_head;
-    McnNode_t pre_node = cur_node;
+    McnNode_t pre_node = NULL;
 
     while (cur_node != NULL) {
         if (cur_node == node) {
@@ -163,16 +163,19 @@ fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node)
     /* update list */
     MCN_ENTER_CRITICAL;
 
-    if (cur_node == hub->link_head) {
-        hub->link_head = cur_node->next;
-    } else if (cur_node == hub->link_tail) {
-        if (pre_node) {
-            pre_node->next = NULL;
-        }
-
-        hub->link_tail = pre_node;
+    if (hub->link_num == 1) {
+        hub->link_head = hub->link_tail = NULL;
     } else {
-        pre_node->next = cur_node->next;
+        if (cur_node == hub->link_head) {
+            hub->link_head = cur_node->next;
+        } else if (cur_node == hub->link_tail) {
+            if (pre_node) {
+                pre_node->next = NULL;
+            }
+            hub->link_tail = pre_node;
+        } else {
+            pre_node->next = cur_node->next;
+        }
     }
 
     /* free current node */
