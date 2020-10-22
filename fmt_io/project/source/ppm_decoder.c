@@ -110,27 +110,18 @@ uint8_t config_ppm_send_freq(uint8_t freq)
         return 0;
 }
 
-uint8_t ppm_ready(void)
-{
-    static uint32_t prev_time = 0;
-    uint32_t time = time_nowMs();
-
-    if (!_ppm_send_freq)
-        return 0;
-
-    if ((time - prev_time > 1000 / _ppm_send_freq) && _ppm_recv) {
-        prev_time = time;
-        return 1;
-    }
-
-    return 0;
-}
-
 uint8_t send_ppm_value(void)
 {
-    _ppm_sending = 1;
-    fmt_send_pkg(NULL, 32, &_rc_pkg);
-    _ppm_sending = 0;
+    if (!_ppm_recv) {
+        return 0;
+    }
+
+    if (rc_signal_ready()) {
+        _ppm_sending = 1;
+        fmt_send_pkg(NULL, 32, &_rc_pkg);
+        _ppm_recv = 0;
+        _ppm_sending = 0;
+    }
 
     return 1;
 }

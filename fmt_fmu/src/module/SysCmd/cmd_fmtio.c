@@ -41,33 +41,11 @@ static void show_usage(void)
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    uint32_t baud_rate = 0;
-    uint16_t pwm_freq = 0;
-    uint16_t rc_proto = 0;
-
     /* handle operation */
     for (uint16_t i = 0; i < optc; i++) {
         if (STRING_COMPARE(optv[i].opt, "-h") || STRING_COMPARE(optv[i].opt, "--help")) {
             show_usage();
             return 0;
-        }
-
-        if (STRING_COMPARE(optv[i].opt, "--baudrate")) {
-            if (syscmd_is_num(optv[i].val)) {
-                baud_rate = atoi(optv[i].val);
-            }
-        }
-
-        if (STRING_COMPARE(optv[i].opt, "--freq")) {
-            if (syscmd_is_num(optv[i].val)) {
-                pwm_freq = atoi(optv[i].val);
-            }
-        }
-
-        if (STRING_COMPARE(optv[i].opt, "--proto")) {
-            if (syscmd_is_num(optv[i].val)) {
-                rc_proto = atoi(optv[i].val);
-            }
         }
     }
 
@@ -81,23 +59,6 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
         } else if (STRING_COMPARE(argv[1], "hello")) {
             /* say hello to fmt io */
             fmtio_send_message(PROTO_DBG_TEXT, "hello", strlen("hello"));
-        } else if (STRING_COMPARE(argv[1], "config")) {
-            fmtio_config_t io_config;
-
-            io_config.baud_rate = baud_rate;
-            io_config.pwm_freq = pwm_freq;
-            io_config.rc_proto = rc_proto;
-            /* config fmt io */
-            fmtio_config(&io_config);
-
-            if (baud_rate) {
-                struct serial_configure serial_config = RT_SERIAL4_CONFIG;
-                serial_config.baud_rate = baud_rate;
-
-                // this is tricky, we need wait config msg send finish
-                rt_thread_delay(50);
-                rt_device_control(fmtio_get_device(), FMTIO_DEV_CMD_CONFIG, &serial_config);
-            }
         } else {
             show_usage();
         }

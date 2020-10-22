@@ -142,7 +142,9 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
         }
     }
 
-    mcn_unsubscribe(cp->hub_t, node);
+    if(mcn_unsubscribe(cp->hub_t, node) != FMT_EOK){
+        console_printf("mcn unsubscribe fail\n");
+    }
 }
 
 static void show_usage(void)

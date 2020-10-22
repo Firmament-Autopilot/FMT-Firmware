@@ -42,6 +42,11 @@ int main(void)
     usart_init();
     pwm_init();
     time_init();
+    if (rc_config.protocol == 1) {
+        sbus_init();
+    } else if (rc_config.protocol == 2) {
+        ppm_decoder_init();
+    }
     //ppm_decoder_init();
     //sbus_init();
     led_init();
@@ -64,14 +69,12 @@ int main(void)
             led_type = LED_BLUE;
             led_on(LED_RED);
 
-            if (fmt_get_rc_proto() == 1) {
+            // debug("rc %d\n", rc_config.protocol);
+            if (rc_config.protocol == 1) {
                 send_sbus_value();
-            } else if (fmt_get_rc_proto() == 2) {
-                if (ppm_ready()) {
-                    send_ppm_value();
-                }
+            } else if (rc_config.protocol == 2) {
+                send_ppm_value();
             }
-
         } else {
             led_type = LED_RED;
             led_on(LED_BLUE);

@@ -17,12 +17,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "sbus.h"
-#include "protocol.h"
-#include "time.h"
-#include "usart.h"
 #include "debug.h"
 #include "fmu_manager.h"
+#include "protocol.h"
+#include "sbus.h"
+#include "time.h"
+#include "usart.h"
 
 static RING_BUFFER_Def sbus_rb;
 
@@ -533,16 +533,15 @@ uint8_t send_sbus_value(void)
     int i = 0;
     uint16_t rc_count = 0;
     bool sbus_failsafe, sbus_frame_drop;
-    DEFINE_TIMETAG(sbus_update, 20);    // 20Hz update freq
 
     bool sbus_updated = sbus_input(_rc_values, &rc_count, &sbus_failsafe, &sbus_frame_drop,
         RC_INPUT_CHANNELS);
 
-    if (sbus_updated && !sbus_failsafe && !sbus_frame_drop && check_timetag(TIMETAG(sbus_update))) {
-
-        fmt_send_pkg(NULL, 32, &_rc_pkg);
-
-        ret = 0;
+    if (sbus_updated && !sbus_failsafe && !sbus_frame_drop) {
+        if (rc_signal_ready()) {
+            fmt_send_pkg(NULL, 32, &_rc_pkg);
+            ret = 0;
+        }
     } else {
         ret = 1;
     }

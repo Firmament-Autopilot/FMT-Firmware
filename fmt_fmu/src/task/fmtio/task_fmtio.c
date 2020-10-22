@@ -30,14 +30,16 @@
 #define EVENT_FMTIO_RX (1 << 0)
 #define EVENT_FMTIO_TX (1 << 1)
 
-#define FMTIO_SERIAL_BAUDRATE (230400)
-#define FMTIO_RC_PROTOCOL     (1) // 1:sbus 2:ppm
-#define FMTIO_PWM_FREQ        (50)
-
 typedef struct {
     uint32_t timestamp_ms;
-    uint16_t rc_chan_val[MAX_RC_CHANNEL_NUM];
+    uint16_t rc_chan_val[FMTIO_RC_CHANNEL_NUM];
 } rc_data_t;
+
+typedef struct {
+    fmtio_config_t io_config;
+    fmtio_rc_config_t rc_config;
+    fmtio_motor_config_t motor_config;
+} fmtio_full_config_t;
 
 static struct rt_event _fmtio_event;
 /* suspend io package send */
@@ -59,17 +61,22 @@ static uint8_t _rc_updated = 0;
 static rt_device_t _fmtio_dev;
 static rc_dev_t _rc_dev_t;
 static motor_dev_t _motor_dev_t;
+static fmtio_full_config_t _io_default_config = {
+    .io_config = { 230400 },
+    .rc_config = { 1, 0.05 },
+    .motor_config = { 50 }
+};
 
 static uint16_t _motor_cmd[FMTIO_MOTOR_CHANNEL_NUM];
 static PackageStruct _motor_cmd_pkg;
 
 static uint8_t _sync_finish = 0;
 
-static fmtio_config_t _io_defaultconfig = {
-    .baud_rate = FMTIO_SERIAL_BAUDRATE,
-    .pwm_freq = FMTIO_PWM_FREQ,
-    .rc_proto = FMTIO_RC_PROTOCOL
-};
+// static fmtio_config_t _io_defaultconfig = {
+//     .baud_rate = FMTIO_SERIAL_BAUDRATE,
+//     .pwm_freq = FMTIO_PWM_FREQ,
+//     .rc_proto = FMTIO_RC_PROTOCOL
+// };
 
 /**************************** Callback Function ********************************/
 
@@ -94,17 +101,34 @@ static void _handle_rc_message(const PackageStruct* pkg)
     _rc_updated = 1;
 }
 
+static fmt_err _fmtio_set_default_config(const fmtio_full_config_t default_config)
+{
+    if (fmtio_send_message(PROTO_CMD_RC_CONFIG, &default_config.rc_config, sizeof(fmtio_rc_config_t)) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    if (fmtio_send_message(PROTO_CMD_MOTOR_CONFIG, &default_config.motor_config, sizeof(fmtio_motor_config_t)) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    //TODO: Need update fmtio serial device baudrate
+    if (fmtio_send_message(PROTO_CMD_CONFIG, &default_config.io_config, sizeof(fmtio_config_t)) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
+}
+
 static fmt_err _handle_package(const PackageStruct* pkg)
 {
     switch (pkg->cmd) {
     case PROTO_CMD_SYNC: {
         /* reply sync ack */
-        // fmtio_send_message(PROTO_ACK_SYNC, NULL, 0);
-        fmtio_config(&_io_defaultconfig);
+        _fmtio_set_default_config(_io_default_config);
     } break;
 
     case PROTO_DBG_TEXT: {
-        console_printf("[IO]:");
+        console_printf("[IO]:", systime_now_ms());
         console_write((char*)pkg->content, pkg->len);
     } break;
 
@@ -183,9 +207,18 @@ static fmt_err _handle_rx_data(void)
 
 static rt_err_t motor_configure(motor_dev_t motor, struct motor_configure* cfg)
 {
-    motor->config = *cfg;
+    fmtio_motor_config_t config;
 
-    return RT_EOK;
+    config.pwm_freq = cfg->pwm_frequency;
+    /* update default configuration */
+    _io_default_config.motor_config = config;
+
+    if (fmtio_send_message(PROTO_CMD_MOTOR_CONFIG, &config, sizeof(config)) == FMT_EOK) {
+        motor->config = *cfg;
+        return RT_EOK;
+    }
+
+    return RT_ERROR;
 }
 
 static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
@@ -195,22 +228,24 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
     switch (cmd) {
     case MOTOR_CMD_CHANNEL_ENABLE: {
         uint8_t enable = 1;
+
         ret = fmtio_send_message(PROTO_CMD_PWM_SWITCH, &enable, 1);
     } break;
 
     case MOTOR_CMD_CHANNEL_DISABLE: {
         uint8_t enable = 0;
+
         ret = fmtio_send_message(PROTO_CMD_PWM_SWITCH, &enable, 1);
     } break;
 
     case MOTOR_CMD_SET_FREQUENCY: {
-        fmtio_config_t io_config;
+        fmtio_motor_config_t config;
 
-        io_config.baud_rate = 0;
-        io_config.pwm_freq = *(uint16_t*)arg;
-        io_config.rc_proto = 0;
+        config.pwm_freq = *(uint16_t*)arg;
+        /* update default configuration */
+        _io_default_config.motor_config = config;
 
-        ret = fmtio_set_default_config(&io_config) == FMT_EOK ? RT_EOK : RT_ERROR;
+        ret = fmtio_send_message(PROTO_CMD_MOTOR_CONFIG, &config, sizeof(fmtio_motor_config_t));
     } break;
 
     default:
@@ -256,8 +291,21 @@ const static struct motor_ops _motor_ops = {
 
 static rt_err_t rc_configure(rc_dev_t rc, struct rc_configure* cfg)
 {
-    // TODO
-    return RT_EOK;
+    fmt_err err;
+    fmtio_rc_config_t rc_config;
+
+    rc_config.protocol = cfg->protocol;
+    rc_config.sample_time = cfg->sample_time;
+    /* update default configuration */
+    _io_default_config.rc_config = rc_config;
+
+    err = fmtio_send_message(PROTO_CMD_RC_CONFIG, &rc_config, sizeof(fmtio_rc_config_t));
+
+    if (err) {
+        rc->config = *cfg;
+    }
+
+    return err;
 }
 
 static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
@@ -289,7 +337,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
 
     _rc_updated = 0;
 
-    return chan_mask & 0xFF; // currently maximal 8 rc channel, could be expended
+    return chan_mask;
 }
 
 const static struct rc_ops _rc_ops = {
@@ -368,32 +416,32 @@ fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len)
     return err;
 }
 
-fmt_err fmtio_config(const fmtio_config_t* io_config)
-{
-    /* check data valid */
-    if (io_config->baud_rate > BAUD_RATE_3000000 || io_config->pwm_freq > 400 || io_config->rc_proto > 2) {
-        return FMT_EINVAL;
+/* default config for motor device */
+#define MOTOR_CONFIG_DEFAULT           \
+    {                                  \
+        50, /* 50Hz */                 \
+            8,                         \
+            1000, /* minimal 1000us */ \
+            2000, /* maximal 2000us */ \
     }
 
-    return fmtio_send_message(PROTO_CMD_CONFIG, io_config, sizeof(fmtio_config_t));
-}
-
-fmt_err fmtio_set_default_config(const fmtio_config_t* io_config)
-{
-    _io_defaultconfig = *io_config;
-
-    return fmtio_config(&_io_defaultconfig);
-}
+/* default config for rc device */
+#define RC_CONFIG_DEFAULT               \
+    {                                   \
+        1,         /* sbus */           \
+            6,     /* 6 channel */      \
+            0.05f, /* sample time */    \
+            1000,  /* minimal 1000us */ \
+            2000,  /* maximal 2000us */ \
+    }
 
 fmt_err task_fmtio_init(void)
 {
     static struct motor_device motor_dev = {
-        .channel_num = FMTIO_MOTOR_CHANNEL_NUM,
         .config = MOTOR_CONFIG_DEFAULT,
         .ops = &_motor_ops
     };
     static struct rc_device rc_dev = {
-        .channel_num = FMTIO_RC_CHANNEL_NUM,
         .config = RC_CONFIG_DEFAULT,
         .ops = &_rc_ops
     };
@@ -451,7 +499,7 @@ void task_fmtio_entry(void* parameter)
     rt_device_set_rx_indicate(_fmtio_dev, fmtio_rx_ind);
 
     /* send sync cmd */
-    fmtio_config(&_io_defaultconfig);
+    _fmtio_set_default_config(_io_default_config);
 
     while (1) {
         /* wait event happen or timeout */

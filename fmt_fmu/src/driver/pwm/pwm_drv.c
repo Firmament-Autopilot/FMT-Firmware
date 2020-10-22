@@ -153,6 +153,26 @@ static void _pwm_timer_init(void)
     //TIM_Cmd(TIM4, ENABLE);
 }
 
+rt_inline void _pwm_write(uint8_t chan_id, float duty_cyc);
+rt_err_t _pwm_set_frequency(uint16_t freq_to_set)
+{
+    if (freq_to_set < PWM_FREQ_50HZ || freq_to_set > PWM_FREQ_400HZ) {
+        /* invalid frequency */
+        return RT_EINVAL;
+    }
+
+    _pwm_freq = freq_to_set;
+
+    _pwm_timer_init();
+
+    /* the timer compare value should be re-configured */
+    for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
+        _pwm_write(i, _pwm_fmu_duty_cyc[i]);
+    }
+
+    return RT_EOK;
+}
+
 rt_inline void _pwm_write(uint8_t chan_id, float duty_cyc)
 {
     _timer_set_compare[chan_id](PWM_TIMER(chan_id), PWM_ARR(_pwm_freq) * duty_cyc);
@@ -170,6 +190,10 @@ static rt_err_t motor_configure(motor_dev_t motor, struct motor_configure* cfg)
     motor->config = *cfg;
 
     DRV_DBG("aux motor configured: min:%d max:%d\n", motor->config.motor_min_value, motor->config.motor_max_value);
+
+    if (_pwm_set_frequency(cfg->pwm_frequency) != RT_EOK) {
+        return RT_ERROR;
+    }
 
     return RT_EOK;
 }
@@ -203,21 +227,9 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
     case MOTOR_CMD_SET_FREQUENCY: {
         uint16_t freq_to_set = *((uint16_t*)arg);
 
-        if (freq_to_set < PWM_FREQ_50HZ || freq_to_set > PWM_FREQ_400HZ) {
-            /* invalid frequency */
-            return RT_EINVAL;
-        }
+        ret = _pwm_set_frequency(freq_to_set);
 
-        _pwm_freq = freq_to_set;
-
-        _pwm_timer_init();
-
-        /* the timer compare value should be re-configured */
-        for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
-            _pwm_write(i, _pwm_fmu_duty_cyc[i]);
-        }
-
-        DRV_DBG("aux motor set frequency to %d Hz\n", _pwm_freq);
+        DRV_DBG("aux motor set frequency to %d Hz\n", freq_to_set);
     } break;
 
     default:
@@ -271,7 +283,9 @@ static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_
 /* default config for motor device */
 #define MOTOR_CONFIG_DEFAULT           \
     {                                  \
-        1000,     /* minimal 1000us */ \
+        50, /* 50Hz */                 \
+            6,                         \
+            1000, /* minimal 1000us */ \
             2000, /* maximal 2000us */ \
     }
 

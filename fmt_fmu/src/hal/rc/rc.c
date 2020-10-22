@@ -14,95 +14,105 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include "hal/rc.h"
+#include <firmament.h>
 
 static rt_err_t hal_rc_init(struct rt_device* dev)
 {
-	rt_err_t ret = RT_EOK;
-	rc_dev_t rc;
+    rt_err_t ret = RT_EOK;
+    rc_dev_t rc;
 
-	RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
 
-	rc = (rc_dev_t)dev;
+    rc = (rc_dev_t)dev;
 
-	/* apply configuration */
-	if(rc->ops->rc_configure) {
-		ret = rc->ops->rc_configure(rc, &rc->config);
-	}
+    /* apply configuration */
+    if (rc->ops->rc_configure) {
+        ret = rc->ops->rc_configure(rc, &rc->config);
+    }
 
-	return ret;
+    return ret;
 }
 
 static rt_size_t hal_rc_read(struct rt_device* dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
-	rt_size_t rb = 0;
-	rc_dev_t rc;
+    rt_size_t rb = 0;
+    rc_dev_t rc;
+    uint16_t read_mask = (uint16_t)pos;
+    int16_t* rc_channel = (int16_t*)buffer;
 
-	RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
 
-	rc = (rc_dev_t)dev;
+    rc = (rc_dev_t)dev;
 
-	if(rc->ops->rc_read && buffer) {
-		rc->ops->rc_read(rc, (uint16_t)pos, buffer);
-		rb = size;
-	}
+    if (rc->ops->rc_read && buffer) {
+        rc->ops->rc_read(rc, read_mask, buffer);
+        rb = size;
+    }
 
-	return rb;
+    /* saturate read value */
+    for (int i = 0; i < rc->config.channel_num; i++) {
+        if (read_mask & (1 << i)) {
+            if (rc_channel[i] > rc->config.rc_max_value) {
+                rc_channel[i] = rc->config.rc_max_value;
+            }
+            if (rc_channel[i] < rc->config.rc_min_value) {
+                rc_channel[i] = rc->config.rc_min_value;
+            }
+        }
+    }
+
+    return rb;
 }
 
 static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
 {
-	rc_dev_t rc;
+    rc_dev_t rc;
 
-	RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
 
-	rc = (rc_dev_t)dev;
+    rc = (rc_dev_t)dev;
 
-	if(rc->ops->rc_control) {
-		return rc->ops->rc_control(rc, cmd, args);
-	}
+    if (rc->ops->rc_control) {
+        return rc->ops->rc_control(rc, cmd, args);
+    }
 
-	return RT_EOK;
+    return RT_EOK;
 }
 
 rt_err_t hal_rc_rx_ind(rc_dev_t rc, rt_size_t size)
 {
-	rt_device_t device = &(rc->parent);
+    rt_device_t device = &(rc->parent);
 
-	if(device->rx_indicate) {
-		return device->rx_indicate(device, size);
-	}
+    if (device->rx_indicate) {
+        return device->rx_indicate(device, size);
+    }
 
-	return RT_EOK;
+    return RT_EOK;
 }
 
 rt_err_t hal_rc_register(rc_dev_t rc, const char* name, rt_uint32_t flag, void* data)
 {
-	struct rt_device* device;
+    struct rt_device* device;
 
-	RT_ASSERT(rc != RT_NULL);
+    RT_ASSERT(rc != RT_NULL);
 
-	device = &(rc->parent);
+    device = &(rc->parent);
 
-	device->type        = RT_Device_Class_Miscellaneous;
-	device->ref_count   = 0;
-	device->rx_indicate = RT_NULL;
-	device->tx_complete = RT_NULL;
+    device->type = RT_Device_Class_Miscellaneous;
+    device->ref_count = 0;
+    device->rx_indicate = RT_NULL;
+    device->tx_complete = RT_NULL;
 
-	device->init        = hal_rc_init;
-	device->open        = RT_NULL;
-	device->close       = RT_NULL;
-	device->read        = hal_rc_read;
-	device->write       = RT_NULL;
-	device->control     = hal_rc_control;
+    device->init = hal_rc_init;
+    device->open = RT_NULL;
+    device->close = RT_NULL;
+    device->read = hal_rc_read;
+    device->write = RT_NULL;
+    device->control = hal_rc_control;
 
-	device->user_data   = data;
+    device->user_data = data;
 
-	if(rc->channel_num > MAX_RC_CHANNEL_NUM) {
-		rc->channel_num = MAX_RC_CHANNEL_NUM;
-	}
-
-	/* register pin device */
-	return rt_device_register(device, name, flag);
+    /* register pin device */
+    return rt_device_register(device, name, flag);
 }

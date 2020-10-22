@@ -19,17 +19,18 @@
 
 #include <firmament.h>
 
-#define MAX_RC_CHANNEL_NUM 16
+#define MAX_SBUS_RC_CHANNEL_NUM 16
+#define MAX_PPM_RC_CHANNEL_NUM 8
 
-#define RC_MASK_1 0x0001
-#define RC_MASK_2 0x0002
-#define RC_MASK_3 0x0004
-#define RC_MASK_4 0x0008
-#define RC_MASK_5 0x0010
-#define RC_MASK_6 0x0020
-#define RC_MASK_7 0x0040
-#define RC_MASK_8 0x0080
-#define RC_MASK_9 0x0100
+#define RC_MASK_1  0x0001
+#define RC_MASK_2  0x0002
+#define RC_MASK_3  0x0004
+#define RC_MASK_4  0x0008
+#define RC_MASK_5  0x0010
+#define RC_MASK_6  0x0020
+#define RC_MASK_7  0x0040
+#define RC_MASK_8  0x0080
+#define RC_MASK_9  0x0100
 #define RC_MASK_10 0x0200
 #define RC_MASK_11 0x0400
 #define RC_MASK_12 0x0800
@@ -38,36 +39,29 @@
 #define RC_MASK_15 0x4000
 #define RC_MASK_16 0x8000
 
-#define RC_MASK_1_2 0x0003
-#define RC_MASK_1_4 0x000F
-#define RC_MASK_1_6 0x003F
-#define RC_MASK_1_8 0x00FF
+#define RC_MASK_1_2  0x0003
+#define RC_MASK_1_4  0x000F
+#define RC_MASK_1_6  0x003F
+#define RC_MASK_1_8  0x00FF
 #define RC_MASK_1_10 0x03FF
 #define RC_MASK_1_12 0x0FFF
 #define RC_MASK_1_14 0x3FFF
-#define RC_MASK_ALL 0xFFFF
+#define RC_MASK_ALL  0xFFFF
 
 #define RC_CMD_CHECK_UPDATE 0x20
 
-/* default config for rc device */
-#define RC_CONFIG_DEFAULT              \
-    {                                  \
-        20, /* 20Hz */                 \
-            1000, /* minimal 1000us */ \
-            2000, /* maximal 2000us */ \
-    }
-
 struct rc_configure {
-    rt_uint16_t sample_rate;
-    rt_uint16_t rc_min_value;
-    rt_uint16_t rc_max_value;
+    rt_uint16_t protocol;
+    rt_uint16_t channel_num;
+    float sample_time;
+    rt_int16_t rc_min_value;
+    rt_int16_t rc_max_value;
 };
 
 struct rc_device {
     struct rt_device parent;
     const struct rc_ops* ops;
     struct rc_configure config;
-    rt_uint8_t channel_num;
 };
 typedef struct rc_device* rc_dev_t;
 

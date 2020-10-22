@@ -62,6 +62,8 @@ enum {
 	PROTO_ACK_MOTOR_VAL = 8,
 	PROTO_CMD_PWM_SWITCH = 9,
 	PROTO_CMD_CONFIG = 10,
+    PROTO_CMD_RC_CONFIG = 11,
+    PROTO_CMD_MOTOR_CONFIG = 12,
 };
 
 FMT_Error init_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg);

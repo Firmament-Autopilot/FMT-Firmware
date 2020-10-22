@@ -31,7 +31,6 @@ typedef struct {
 uint8_t ppm_decoder_init(void);
 void ppm_decoder_deinit(void);
 void get_ppm_value(uint16_t* val);
-uint8_t ppm_ready(void);
 uint8_t send_ppm_value(void);
 uint8_t config_ppm_send_freq(uint8_t freq);
 

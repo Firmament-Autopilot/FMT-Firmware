@@ -16,18 +16,43 @@
 #include "fmu_manager.h"
 #include "debug.h"
 #include "ppm_decoder.h"
-#include "sbus.h"
 #include "pwm.h"
+#include "sbus.h"
 #include "usart.h"
 #include <stdlib.h>
 #include <string.h>
 
-static uint16_t _rc_proto = 0;  // 0:unset 1:sbus 2:ppm
+// static uint16_t _rc_proto = 0;  // 0:unset 1:sbus 2:ppm
 static uint8_t _recv_sync = 0;
 /* send package data buffer */
 static uint8_t _pkg_data[256];
+fmtio_rc_config_t rc_config = {
+    .protocol = 1,
+    .sample_time = 0.05
+};
+fmtio_motor_config_t motor_config = {
+    .pwm_freq = 50
+};
 
 extern ppm_encoder_t ppm_param;
+
+uint8_t rc_signal_ready(void)
+{
+    static uint32_t prev_time = 0;
+    uint32_t time = time_nowMs();
+
+    if (rc_config.sample_time <= 0) {
+        // inherit sample time
+        return 1;
+    }
+
+    if (time - prev_time >= (uint32_t)(rc_config.sample_time * 1e3 + 0.5)) {
+        prev_time = time;
+        return 1;
+    }
+
+    return 0;
+}
 
 FMT_Error fmt_init_pkg(uint16_t cmd, void* buffer, PackageStruct* pkg)
 {
@@ -74,11 +99,6 @@ FMT_Error fmt_send_message(uint16_t cmd, const void* data, uint16_t len)
     return err;
 }
 
-uint16_t fmt_get_rc_proto(void)
-{
-    return _rc_proto;
-}
-
 uint8_t fmt_sync_finish(void)
 {
     return _recv_sync;
@@ -114,36 +134,39 @@ FMT_Error handle_fmu_package(const PackageStruct* pkg)
 
     case PROTO_CMD_CONFIG: {
         uint32_t baud_rate;
-        uint16_t pwm_freq;
-        uint16_t rc_proto;
-
-        if (pkg->len != 8) {
-            return SYS_ERROR;
-        }
 
         baud_rate = *((uint32_t*)&pkg->content[0]);
-        pwm_freq = *((uint16_t*)&pkg->content[4]);
-        rc_proto = *((uint16_t*)&pkg->content[6]);
-
-        // debug("config baudrate:%d pwm freq:%d rc_proto:%d\n", baud_rate, pwm_freq, rc_proto);
 
         if (baud_rate) {
             usart_config_baud_rate(USART2, baud_rate);
         }
+    } break;
 
-        if (pwm_freq) {
-            pwm_configure(PWM_CMD_SET_FREQ, &pwm_freq);
-        }
+    case PROTO_CMD_RC_CONFIG: {
+        fmtio_rc_config_t new_config;
+        new_config = *(fmtio_rc_config_t*)pkg->content;
 
-        if (rc_proto && rc_proto != _rc_proto){
-            if(rc_proto == 1){
+        /* check if we need switch protocol */
+        if (new_config.protocol && new_config.protocol != rc_config.protocol) {
+            if (new_config.protocol == 1) {
                 ppm_decoder_deinit();
                 sbus_init();
-            }else if(rc_proto == 2){
+            } else if (new_config.protocol == 2) {
                 sbus_deinit();
                 ppm_decoder_init();
+            } else {
+                debug("invalid rc protocol:%d\n", new_config.protocol);
+                return SYS_EINVAL;
             }
-            _rc_proto = rc_proto;
+        }
+        rc_config = new_config;
+    } break;
+
+    case PROTO_CMD_MOTOR_CONFIG: {
+        fmtio_motor_config_t new_config = *(fmtio_motor_config_t*)pkg->content;
+        if (new_config.pwm_freq >= 50 && new_config.pwm_freq <= 400) {
+            motor_config = new_config;
+            pwm_configure(PWM_CMD_SET_FREQ, &motor_config.pwm_freq);
         }
     } break;
 

@@ -53,14 +53,9 @@
 #define MOTOR_CMD_SET_FREQUENCY   0x23
 #define MOTOR_CMD_SET_DIRECTION   0x24
 
-/* default config for motor device */
-#define MOTOR_CONFIG_DEFAULT           \
-    {                                  \
-        1000,     /* minimal 1000us */ \
-            2000, /* maximal 2000us */ \
-    }
-
 struct motor_configure {
+    rt_uint16_t pwm_frequency;
+    rt_uint16_t channel_num;
     rt_uint16_t motor_min_value;
     rt_uint16_t motor_max_value;
 };

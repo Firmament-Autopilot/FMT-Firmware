@@ -358,6 +358,15 @@ fmt_err console_switch_device(int idx)
     return _set_auto_switch_indicator();
 }
 
+uint32_t console_print_args(const char* fmt, va_list args)
+{
+    int length;
+
+    length = vsnprintf(_buffer, CONSOLE_BUFF_SIZE, fmt, args);
+
+    return console_write(_buffer, length);
+}
+
 uint32_t console_write(const char* content, uint32_t len)
 {
     if (boot_logging) {
