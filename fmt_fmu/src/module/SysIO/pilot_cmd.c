@@ -27,11 +27,7 @@
 #define TOML_DBG(...)   console_printf(__VA_ARGS__)
 #define TOML_DBG_E(...) toml_debug("Pilot_Cmd", "E", __VA_ARGS__)
 #define TOML_DBG_W(...) toml_debug("Pilot_Cmd", "W", __VA_ARGS__)
-
 #define MATCH(a, b) (strcmp(a, b) == 0)
-// #define DEVICE_LIST                 pilot_cmd_device_list
-// #define DEVICE_NUM                  pilot_cmd_device_num
-// #define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
 
 #define PILOT_CMD_MAX_DEVICE_NUM 1
 
@@ -93,7 +89,7 @@ static Pilot_Cmd_Bus _pilot_cmd;
 
 /* Define uMCN topic */
 MCN_DEFINE(pilot_cmd, sizeof(Pilot_Cmd_Bus));
-MCN_DEFINE(rc_channel, sizeof(rcChannel));
+MCN_DEFINE(rc_raw, sizeof(rcChannel));
 
 void list_pilot_cmd_devices(void)
 {
@@ -478,7 +474,7 @@ static int _pilot_cmd_echo(void* parameter)
     return 0;
 }
 
-static int _rc_channel_echo(void* parameter)
+static int _rc_raw_echo(void* parameter)
 {
     fmt_err err;
     int16_t rc_chan_val[16];
@@ -549,12 +545,9 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
     uint8_t state_new;
 
     /* command history */
-    // static uint8_t _force_disarm_cmd = 0;
     static uint32_t _last_cmd_timestamp = 0;
 
     uint32_t time_now = systime_now_ms();
-    // uint8_t force_disarm_cmd = rc_channel[PILOT_SAFE_SWITCH_CHANNEL] > 1900;
-    // uint8_t force_disarm_cmd = rc_channel[5] > 1900;
 
     /* command 1: event command */
     for (i = 0; i < eventCmdNum; i++) {
@@ -588,20 +581,6 @@ void _generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
     if (time_now - _last_cmd_timestamp > 200) {
         _pilot_cmd.cmd_1 = 0;
     }
-
-    // if (force_disarm_cmd != _force_disarm_cmd) {
-    //     if (force_disarm_cmd) {
-    //         _pilot_cmd.cmd_1 = FMS_CMD_FORCE_DISARM;
-    //     }
-
-    //     _force_disarm_cmd = force_disarm_cmd;
-    //     _last_cmd_timestamp = time_now;
-    // }
-
-    // // command lasts for 200ms
-    // if (time_now - _last_cmd_timestamp > 200) {
-    //     _pilot_cmd.cmd_1 = 0;
-    // }
 
     /* command 2: status command */
 #ifdef FMT_TEST_MOTOR
@@ -651,7 +630,7 @@ uint8_t pilot_cmd_collect(void)
             /* publish pilot_cmd topic */
             mcn_publish(MCN_ID(pilot_cmd), &_pilot_cmd);
             /* publish rc_channel topic */
-            mcn_publish(MCN_ID(rc_channel), rcChannel);
+            mcn_publish(MCN_ID(rc_raw), rcChannel);
 
 #ifdef FMT_OUTPUT_PILOT_CMD
             /* send out pilot_cmd via mavlink */
@@ -757,23 +736,6 @@ fmt_err pilot_cmd_toml_init(toml_table_t* table)
     rc_dev->config.rc_min_value = config->range[0];
     rc_dev->config.rc_max_value = config->range[1];
 
-    // {
-    //     pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)rcDevInfo.config;
-    //     fmtio_config_t io_config = {
-    //         .baud_rate = 0,
-    //         .pwm_freq = 0,
-    //         .rc_proto = config->protocol
-    //     };
-
-    //     fmtio_set_default_config(&io_config);
-
-    //     /* update rc read mask */
-    //     _rc_read_mask = 0;
-    //     for (int i = 0; i < config->channel_num; i++) {
-    //         _rc_read_mask += 1 << i;
-    //     }
-    // }
-
     if (rt_device_open(rcDev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
         return FMT_ERROR;
     }
@@ -789,7 +751,7 @@ fmt_err pilot_cmd_init(void)
     }
 
     /* advertise rc channel topic */
-    if (mcn_advertise(MCN_ID(rc_channel), _rc_channel_echo) != FMT_EOK) {
+    if (mcn_advertise(MCN_ID(rc_raw), _rc_raw_echo) != FMT_EOK) {
         return FMT_ERROR;
     }
 

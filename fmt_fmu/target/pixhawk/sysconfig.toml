@@ -19,12 +19,33 @@ target = "Pixhawk FMUv2"
 
 # Pilot CMD Configuration
 [pilot-cmd]
-	stick-channel = [ 3, 2, 0, 1 ] # stick channels with [ls_lr, ls_ud, rs_lr, rs_ud]
-	mode-channel = 4		# control mode switch
-	safeswitch-channel = 5	# switch to force disarm the vehicle in urgent situation
+	stick-channel = [4,3,1,2] # channel mapping for [ls_lr,ls_ud,rs_lr,rs_ud]
 	
 	[pilot-cmd.device]
 	type = "rc"				# type must be rc
 	name = "rc"				# device name
 	protocol = 1			# 1:sbus, 2:ppm
-	channel-num = 6			# channel number, max supported channel: sbus:16, ppm:8
+	channel-num = 6			# channel in used, max supported channel: sbus:16, ppm:8
+	sample-time = 0.05		# sample time in second (-1 for inherit)
+	range = [1000,2000]		# min and max value
+	
+	[[pilot-cmd.mode]]
+	mode = 2				# position mode
+	channel = 5
+	range = [1000,1200]
+	
+	[[pilot-cmd.mode]]
+	mode = 3				# altitude hold mode
+	channel = 5
+	range = [1400,1600]
+	
+	[[pilot-cmd.mode]]
+	mode = 4				# manual mode
+	channel = 5
+	range = [1800,2000]
+	
+	[[pilot-cmd.command]]
+	type = 1				# 1:event | 2:status
+	cmd = 1000				# force-disarm: forcely disarm motors for safety concern
+	channel = 6
+	range = [1800,2000]
