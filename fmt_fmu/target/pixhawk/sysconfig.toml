@@ -8,7 +8,7 @@ target = "Pixhawk FMUv2"
 	# device list, the first device will be used by default
 	[[console.devices]]
 	type = "serial"         # type must be serial or mavlink
-	name = "serial1"        # device name
+	name = "serial0"        # device name
 	baudrate = 57600        # serial baudrate
 	auto-switch = true      # automatically switch to device if data received
 	

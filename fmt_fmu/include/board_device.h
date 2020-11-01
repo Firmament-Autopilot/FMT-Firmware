@@ -18,13 +18,13 @@
 #define __BOARD_DEVICE_H__
 
 // Device Name
-#define CONSOLE_DEVICE_NAME        "serial1"
-#define FMTIO_DEVICE_NAME          "serial4"
-#define GDB_DEVICE_NAME            "serial5"
-#define MAVPROXY_CHAN1_DEVICE_NAME "serial2"
+#define CONSOLE_DEVICE_NAME        "serial0"
+#define FMTIO_DEVICE_NAME          "serial5"
+#define GDB_DEVICE_NAME            "serial6"
+#define MAVPROXY_CHAN1_DEVICE_NAME "serial1"
 #define MAVPROXY_CHAN2_DEVICE_NAME "usb"
 #define FS_DEVICE_NAME             "sd0"
-#define GPS_SERIAL_DEVICE_NAME     "serial3"
+#define GPS_SERIAL_DEVICE_NAME     "serial2"
 #define MPU6000_SPI_DEVICE_NAME    "spi1_dev4"
 #define L3GD20H_SPI_DEVICE_NAME    "spi1_dev2"
 #define MS5611_SPI_DEVICE_NAME     "spi1_dev3"

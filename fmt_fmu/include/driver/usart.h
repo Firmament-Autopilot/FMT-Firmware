@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __USART_H__
 #define __USART_H__
 
+#include <firmament.h>
+
 rt_err_t usart_drv_init(void);
 
 #endif

@@ -81,7 +81,7 @@
 #define SERIAL_ERR_PARITY 0x03
 
 /* Default config for serial_configure structure */
-#define SERIAL_CONFIG_DEFAULT                   \
+#define SERIAL_DEFAULT_CONFIG                   \
     {                                           \
         BAUD_RATE_57600, /* 57600 bits/s */     \
             DATA_BITS_8, /* 8 databits */       \
@@ -94,7 +94,7 @@
     }
 
 /* config for serial_configure structure */
-#define RT_SERIAL3_CONFIG                       \
+#define SERIAL3_DEFAULT_CONFIG                       \
     {                                           \
         BAUD_RATE_9600, /* 9600 bits/s */       \
             DATA_BITS_8, /* 8 databits */       \
@@ -106,7 +106,7 @@
             0                                   \
     }
 
-#define RT_SERIAL4_CONFIG                       \
+#define SERIAL5_DEFAULT_CONFIG                       \
     {                                           \
         BAUD_RATE_230400, /* 115200 bits/s */   \
             DATA_BITS_8, /* 8 databits */       \
