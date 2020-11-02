@@ -31,6 +31,7 @@
 #include "driver/lsm303d.h"
 #include "driver/mpu6000.h"
 #include "driver/ms5611.h"
+#include "driver/pmw3901_l0x.h"
 #include "driver/pwm_drv.h"
 #include "driver/spi_drv.h"
 #include "driver/systick_drv.h"
@@ -52,6 +53,7 @@
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
+#include "protocol/msp/msp.h"
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
@@ -175,7 +177,7 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
     return err;
 }
 
-/* this function will be called before rtos start, which is not thread context */
+/* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
     /* interrupt controller init */
@@ -229,7 +231,8 @@ void bsp_initialize(void)
     /* init gps */
     RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
 
-    /* init other device */
+    /* init other devices */
+    RTT_CHECK(pmw3901_l0x_drv_init("serial3"));
     RTT_CHECK(tca62724_drv_init());
 
     /* init parameter system */
@@ -282,6 +285,9 @@ void bsp_post_initialize(void)
     if (_toml_root_tab) {
         FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
     }
+
+    /* start msp server */
+    FMT_CHECK(msp_server_start());
 
     /* show system information */
     bsp_show_information();

@@ -22,6 +22,7 @@ src += Glob('systick/*.c')
 src += Glob('tca62724/*.c')
 src += Glob('usart/*.c')
 src += Glob('utils/*.c')
+src += Glob('mateksys/*.c')
 
 src += Split("""
 usb/src/usb_bsp.c

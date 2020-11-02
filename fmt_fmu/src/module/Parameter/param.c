@@ -615,7 +615,7 @@ fmt_err param_load(char* path)
     fd = open(path ? path : PARAM_FILE_NAME, O_RDONLY);
 
     if (fd < 0) {
-        ulog_i(TAG, "%s load fail, use default configuration.\n", PARAM_FILE_NAME);
+        console_printf("%s load fail, use default configuration.\n", PARAM_FILE_NAME);
         return FMT_EOK;
     }
 
@@ -633,11 +633,11 @@ fmt_err param_load(char* path)
         }
 
         if (yxml_eof(&yxml_handle) != YXML_OK) {
-            ulog_e(TAG, "xml parse err\n");
+            console_printf("xml parse err\n");
             res = FMT_ERROR;
         }
     } else {
-        ulog_e(TAG, "param malloc fail\n");
+        console_printf("param malloc fail\n");
         res = FMT_ERROR;
     }
 

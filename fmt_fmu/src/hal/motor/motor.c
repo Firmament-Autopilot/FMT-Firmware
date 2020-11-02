@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
 
 #include "hal/motor.h"
-#include <firmament.h>
 
 static uint8_t _suspend = 0;
 

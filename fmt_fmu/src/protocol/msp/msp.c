@@ -17,12 +17,13 @@
 
 #include "protocol/msp/msp.h"
 
-#define MAX_MSP_PORTS    5
-#define EVENT_MSP_UPDATE (1 << 0)
+#define MAX_MSP_PORTS         5
+#define EVENT_MSP_UPDATE      (1 << 0)
+#define MSP_THREAD_PRIORITY   6
+#define MSP_THREAD_STACK_SIZE 8096
 
 static rt_thread_t mspThread = NULL;
 static mspPort_t* mspPorts[MAX_MSP_PORTS] = { 0 };
-static struct rt_timer timer_msp;
 static struct rt_event event_msp;
 
 static uint8_t crc8_dvb_s2(uint8_t crc, unsigned char a)
@@ -38,9 +39,9 @@ static uint8_t crc8_dvb_s2(uint8_t crc, unsigned char a)
     return crc;
 }
 
-static void msp_timer_update(void* parameter)
+static rt_err_t msp_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_event_send(&event_msp, EVENT_MSP_UPDATE);
+    return rt_event_send(&event_msp, EVENT_MSP_UPDATE);
 }
 
 static bool msp_process_rx_data(mspPort_t* mspPort, uint8_t c)
@@ -256,30 +257,40 @@ static void msp_server_main(void* args)
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_MSP_UPDATE;
 
-    /* register timer event */
-    rt_timer_init(&timer_msp, "msp_update", msp_timer_update, RT_NULL, 2,
-        RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
-
-    if (rt_timer_start(&timer_msp) != RT_EOK) {
-        console_printf("Error, msp timer start fail!\n");
+    /* create event */
+    if (rt_event_init(&event_msp, "msp", RT_IPC_FLAG_FIFO) != RT_EOK) {
+        console_printf("Fail to create msp event!\n");
         return;
     }
+
+    /* open all registered device */
+    for (int i = 0; i < MAX_MSP_PORTS; i++) {
+        if (mspPorts[i] != NULL) {
+            if (rt_device_open(mspPorts[i]->dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
+                console_printf("MSP server fail to open device %s\n", mspPorts[i]->dev->parent.name);
+                return ;
+            }
+        } else {
+            /* NULL indicates the end */
+            break;
+        }
+    }
+
+    console_printf("MSP server started\n");
 
     while (1) {
         /* wait event occur */
         res = rt_event_recv(&event_msp, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            RT_WAITING_FOREVER, &recv_set);
+            10, &recv_set);
 
-        if (res == RT_EOK) {
-            if (recv_set & EVENT_MSP_UPDATE) {
-                /* handle msp ports data */
-                for (int i = 0; i < MAX_MSP_PORTS; i++) {
-                    if (mspPorts[i] != NULL) {
-                        msp_process_port(mspPorts[i]);
-                    } else {
-                        /* NULL indicates the end */
-                        break;
-                    }
+        if ((res == RT_EOK && (recv_set & EVENT_MSP_UPDATE)) || res == -RT_ETIMEOUT) {
+            /* handle msp ports data */
+            for (int i = 0; i < MAX_MSP_PORTS; i++) {
+                if (mspPorts[i] != NULL) {
+                    msp_process_port(mspPorts[i]);
+                } else {
+                    /* NULL indicates the end */
+                    break;
                 }
             }
         } else {
@@ -297,6 +308,10 @@ mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessComman
     }
 
     for (idx = 0; idx < MAX_MSP_PORTS; idx++) {
+        if (mspPorts[idx] != NULL && mspPorts[idx]->dev == dev) {
+            /* already registered */
+            return NULL;
+        }
         if (mspPorts[idx] == NULL) {
             break;
         }
@@ -306,14 +321,8 @@ mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessComman
         return NULL;
     }
 
-    /* open device */
-    if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
-        return NULL;
-    }
-
     mspPorts[idx] = (mspPort_t*)rt_malloc(sizeof(mspPort_t));
     if (mspPorts[idx] == NULL) {
-        rt_device_close(dev);
         return NULL;
     }
 
@@ -325,9 +334,13 @@ mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessComman
 
     /* create msp server if it's not created before */
     if (mspThread == NULL) {
-        mspThread = rt_thread_create("msp", msp_server_main, RT_NULL, 8192, 5, 1);
+        mspThread = rt_thread_create("msp", msp_server_main, RT_NULL, MSP_THREAD_STACK_SIZE, MSP_THREAD_PRIORITY, 1);
         RT_ASSERT(mspThread != NULL);
         console_printf("MSP server created\n");
+    }
+
+    if (rt_device_set_rx_indicate(dev, msp_rx_ind) != RT_EOK) {
+        return NULL;
     }
 
     return mspPorts[idx];
@@ -339,7 +352,6 @@ fmt_err msp_server_start(void)
         if (rt_thread_startup(mspThread) != RT_EOK) {
             return FMT_ERROR;
         }
-        console_printf("MSP server started\n");
     }
 
     return FMT_EOK;

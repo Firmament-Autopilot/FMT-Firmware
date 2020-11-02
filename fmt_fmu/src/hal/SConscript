@@ -20,6 +20,7 @@ spi/spi_dev.c
 src += Glob('systick/*.c')
 src += Glob('tools/*.c')
 src += Glob('usb/*.c')
+src += Glob('optical_flow/*.c')
 
 CPPPATH = [cwd]
 

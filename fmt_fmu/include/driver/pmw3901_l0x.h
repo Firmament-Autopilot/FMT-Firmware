@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#ifndef __MPU6000_H__
-#define __MPU6000_H__
+#pragma once
 
 #include <rtthread.h>
 
-rt_err_t mpu6000_drv_init(char* spi_device_name);
+rt_err_t pmw3901_l0x_drv_init(const char* serial_dev_name);
 
-#endif

@@ -112,3 +112,6 @@ typedef struct mspPort_s {
     uint8_t checksum2;
     mspProcessCommandFnPtr mspProcessCommandFn;
 } mspPort_t;
+
+mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessCommandFn);
+fmt_err msp_server_start(void);
