@@ -64,7 +64,7 @@ struct mcn_list {
 };
 
 /******************* Helper Macro *******************/
-#define MCN_ID(_name) (&__mcn_##_name)
+#define MCN_HUB(_name) (&__mcn_##_name)
 
 #define MCN_DECLARE(_name) extern McnHub __mcn_##_name
 

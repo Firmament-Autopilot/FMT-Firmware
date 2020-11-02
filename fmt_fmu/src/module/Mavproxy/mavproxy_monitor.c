@@ -144,19 +144,19 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
         imu_report.gyr_B_radDs[1] = hil_sensor.ygyro;
         imu_report.gyr_B_radDs[2] = hil_sensor.zgyro;
         imu_report.timestamp_ms = systime_now_ms();
-        mcn_publish(MCN_ID(sensor_imu), &imu_report);
+        mcn_publish(MCN_HUB(sensor_imu), &imu_report);
 
         mag_report.mag_B_gauss[0] = hil_sensor.xmag;
         mag_report.mag_B_gauss[1] = hil_sensor.ymag;
         mag_report.mag_B_gauss[2] = hil_sensor.zmag;
         mag_report.timestamp_ms = systime_now_ms();
-        mcn_publish(MCN_ID(sensor_mag), &mag_report);
+        mcn_publish(MCN_HUB(sensor_mag), &mag_report);
 
         baro_report.pressure_pa = hil_sensor.abs_pressure*1e-3;
         baro_report.temperature_deg = hil_sensor.temperature;
         baro_report.altitude_m = hil_sensor.pressure_alt;
         baro_report.timestamp_ms = systime_now_ms();
-        mcn_publish(MCN_ID(sensor_baro), &baro_report);
+        mcn_publish(MCN_HUB(sensor_baro), &baro_report);
     } break;
 
     case MAVLINK_MSG_ID_HIL_GPS: {
@@ -175,7 +175,7 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
         gps_report.numSV = hil_gps.satellites_visible;
         gps_report.fixType = hil_gps.fix_type;
         gps_report.timestamp_ms = systime_now_ms();;
-        mcn_publish(MCN_ID(sensor_gps), &gps_report);
+        mcn_publish(MCN_HUB(sensor_gps), &gps_report);
     } break;
 #endif
 

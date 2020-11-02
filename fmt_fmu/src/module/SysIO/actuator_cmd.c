@@ -32,7 +32,7 @@ fmt_err send_hil_actuator_cmd(void)
     DEFINE_TIMETAG(hil_actuator_tt, 1000 / DEFAULT_PWM_FREQ);
 
     if (_control_out_nod == NULL) {
-        _control_out_nod = mcn_subscribe(MCN_ID(control_output), NULL, NULL);
+        _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
     }
 
     if (mcn_poll(_control_out_nod) && check_timetag(TIMETAG(hil_actuator_tt))) {
@@ -41,7 +41,7 @@ fmt_err send_hil_actuator_cmd(void)
         mavlink_message_t msg;
         mavlink_system_t mav_sys;
 
-        mcn_copy(MCN_ID(control_output), _control_out_nod, &control_out);
+        mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
 
         /* send command by mavlink */
         mav_sys = mavproxy_get_system();
@@ -71,7 +71,7 @@ fmt_err send_actuator_cmd(const rt_device_t dev)
         rt_size_t size;
         Control_Out_Bus control_out;
 
-        mcn_copy(MCN_ID(control_output), _control_out_nod, &control_out);
+        mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
 
         size = rt_device_write(dev, MOTOR_MASK_1_4, control_out.actuator_cmd, 8);
 
@@ -89,7 +89,7 @@ fmt_err send_actuator_cmd(const rt_device_t dev)
 //         return FMT_EOK;
 //     }
 
-//     mcn_copy_from_hub(MCN_ID(fms_output), &fms_out);
+//     mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
 
 //     /* check if it's disram state */
 //     if (fms_out.state != 0) {
@@ -154,7 +154,7 @@ fmt_err actuator_init(const rt_device_t dev)
         return FMT_ERROR;
     }
 
-    _control_out_nod = mcn_subscribe(MCN_ID(control_output), NULL, NULL);
+    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
     if (_control_out_nod == NULL) {
         console_printf("Fail to subscribe control_output topic\n");
         rt_device_close(dev);

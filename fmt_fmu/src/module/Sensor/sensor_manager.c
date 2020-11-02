@@ -151,14 +151,14 @@ void sensor_collect(void)
         _imu_report.acc_B_mDs2[2] = butter3_filter_process(_imu_report.acc_B_mDs2[2], _butter3_acc[2]);
     }
 
-    mcn_publish(MCN_ID(sensor_imu), &_imu_report);
+    mcn_publish(MCN_HUB(sensor_imu), &_imu_report);
 
     if (check_timetag(TIMETAG(mag_update))) {
 
         _mag_report.timestamp_ms = systime_now_ms();
         sensor_mag_measure(_mag_report.mag_B_gauss, 0);
 
-        mcn_publish(MCN_ID(sensor_mag), &_mag_report);
+        mcn_publish(MCN_HUB(sensor_mag), &_mag_report);
     }
 
     if (check_timetag(TIMETAG(baro_update))) {
@@ -172,7 +172,7 @@ void sensor_collect(void)
                 _baro_report.altitude_m = report.altitude_m;
                 _baro_report.timestamp_ms = report.timestamp_ms;
 
-                mcn_publish(MCN_ID(sensor_baro), &_baro_report);
+                mcn_publish(MCN_HUB(sensor_baro), &_baro_report);
             }
         }
     }
@@ -181,7 +181,7 @@ void sensor_collect(void)
 
         sensor_gps_get_report(&_gps_report);
 
-        mcn_publish(MCN_ID(sensor_gps), &_gps_report);
+        mcn_publish(MCN_HUB(sensor_gps), &_gps_report);
     }
 }
 
@@ -195,10 +195,10 @@ fmt_err sensor_manager_init(void)
     err |= sensor_gps_init();
 
     /* advertise sensor data */
-    err |= mcn_advertise(MCN_ID(sensor_imu), SENSOR_IMU_echo);
-    err |= mcn_advertise(MCN_ID(sensor_mag), SENSOR_MAG_echo);
-    err |= mcn_advertise(MCN_ID(sensor_baro), SENSOR_BARO_echo);
-    err |= mcn_advertise(MCN_ID(sensor_gps), SENSOR_GPS_echo);
+    err |= mcn_advertise(MCN_HUB(sensor_imu), SENSOR_IMU_echo);
+    err |= mcn_advertise(MCN_HUB(sensor_mag), SENSOR_MAG_echo);
+    err |= mcn_advertise(MCN_HUB(sensor_baro), SENSOR_BARO_echo);
+    err |= mcn_advertise(MCN_HUB(sensor_gps), SENSOR_GPS_echo);
 
     if (PARAM_GET_UINT8(INS, USE_EXTERN_FILTER)) {
         /* 30Hz cut-off frequency, 1000Hz sampling frequency */

@@ -101,7 +101,7 @@ static void _update_fms_status(void)
         return;
 
     if (mcn_poll(_fms_out_nod)) {
-        mcn_copy(MCN_ID(fms_output), _fms_out_nod, &fms_out);
+        mcn_copy(MCN_HUB(fms_output), _fms_out_nod, &fms_out);
 
         if (fms_out.mode != old_fms_out.mode) {
             switch (fms_out.mode) {
@@ -181,7 +181,7 @@ static void _update_pilot_cmd_status(void)
     Pilot_Cmd_Bus pilot_cmd;
 
     if (mcn_poll(_pilot_cmd_nod)) {
-        mcn_copy(MCN_ID(pilot_cmd), _pilot_cmd_nod, &pilot_cmd);
+        mcn_copy(MCN_HUB(pilot_cmd), _pilot_cmd_nod, &pilot_cmd);
 
         if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1) {
             switch (pilot_cmd.cmd_1) {
@@ -238,9 +238,9 @@ void task_status_entry(void* parameter)
     // static int bright = 0;
     // uint32_t delay_time;
 
-    _fms_out_nod = mcn_subscribe(MCN_ID(fms_output), NULL, NULL);
-    _ins_out_nod = mcn_subscribe(MCN_ID(ins_output), NULL, NULL);
-    _pilot_cmd_nod = mcn_subscribe(MCN_ID(pilot_cmd), NULL, NULL);
+    _fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    _pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
 
     _led_on();
 

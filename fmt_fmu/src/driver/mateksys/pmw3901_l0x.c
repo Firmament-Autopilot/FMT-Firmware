@@ -97,7 +97,7 @@ static mspResult_e mspFcProcessCommand(mspPacket_t* cmd, mspPacket_t* reply)
             rangefinder_report.timestamp_ms = systime_now_ms();
             rangefinder_report.distance_m = pkt->distanceMm > 0 ? (float)pkt->distanceMm * 0.001f : -1.0f;
 
-            mcn_publish(MCN_ID(sensor_rangefinder), &rangefinder_report);
+            mcn_publish(MCN_HUB(sensor_rangefinder), &rangefinder_report);
 
         } break;
 
@@ -120,7 +120,7 @@ static mspResult_e mspFcProcessCommand(mspPacket_t* cmd, mspPacket_t* reply)
                 optflow_report.valid = 0;
             }
 
-            mcn_publish(MCN_ID(sensor_optflow), &optflow_report);
+            mcn_publish(MCN_HUB(sensor_optflow), &optflow_report);
         } break;
 
         default:
@@ -143,8 +143,8 @@ rt_err_t pmw3901_l0x_drv_init(const char* serial_dev_name)
         return RT_ERROR;
     }
 
-    mcn_advertise(MCN_ID(sensor_optflow), sensor_opt_flow_echo);
-    mcn_advertise(MCN_ID(sensor_rangefinder), sensor_rangefinder_echo);
+    mcn_advertise(MCN_HUB(sensor_optflow), sensor_opt_flow_echo);
+    mcn_advertise(MCN_HUB(sensor_rangefinder), sensor_rangefinder_echo);
 
     return RT_EOK;
 }

@@ -58,7 +58,6 @@ void task_vehicle_entry(void* parameter)
 #ifndef FMT_USING_HIL
                 sensor_collect();
 #endif
-
                 pilot_cmd_collect();
 
 #ifdef FMT_USING_SIH

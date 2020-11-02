@@ -108,7 +108,7 @@ static void mavproxy_msg_attitude_pack(mavlink_message_t* msg_t)
     mavlink_attitude_t attitude;
     INS_Out_Bus ins_out;
 
-    mcn_copy_from_hub(MCN_ID(ins_output), &ins_out);
+    mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
 
     attitude.roll = ins_out.phi;
     attitude.pitch = ins_out.theta;
@@ -125,7 +125,7 @@ static void _msg_local_pos_pack(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
 
-    mcn_copy_from_hub(MCN_ID(ins_output), &ins_out);
+    mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
 
     mavlink_msg_local_position_ned_pack(
         mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
@@ -296,7 +296,7 @@ fmt_err task_comm_init(void)
     _mavproxy_tx_lock = rt_sem_create("mav_tx_lock", 1, RT_IPC_FLAG_FIFO);
 
     /* register callback function to monitor usb status */
-    mcn_subscribe(MCN_ID(usb_status), NULL, usb_status_change_cb);
+    mcn_subscribe(MCN_HUB(usb_status), NULL, usb_status_change_cb);
 
     /* get mavlink console device */
     _mav_console_dev = rt_device_find("mav_console");

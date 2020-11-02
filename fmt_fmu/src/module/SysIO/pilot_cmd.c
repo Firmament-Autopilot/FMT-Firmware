@@ -628,9 +628,9 @@ uint8_t pilot_cmd_collect(void)
             /* update timestamp */
             _pilot_cmd.timestamp = systime_now_ms();
             /* publish pilot_cmd topic */
-            mcn_publish(MCN_ID(pilot_cmd), &_pilot_cmd);
+            mcn_publish(MCN_HUB(pilot_cmd), &_pilot_cmd);
             /* publish rc_channel topic */
-            mcn_publish(MCN_ID(rc_raw), rcChannel);
+            mcn_publish(MCN_HUB(rc_raw), rcChannel);
 
 #ifdef FMT_OUTPUT_PILOT_CMD
             /* send out pilot_cmd via mavlink */
@@ -746,12 +746,12 @@ fmt_err pilot_cmd_toml_init(toml_table_t* table)
 fmt_err pilot_cmd_init(void)
 {
     /* advertise pilot command topic */
-    if (mcn_advertise(MCN_ID(pilot_cmd), _pilot_cmd_echo) != FMT_EOK) {
+    if (mcn_advertise(MCN_HUB(pilot_cmd), _pilot_cmd_echo) != FMT_EOK) {
         return FMT_ERROR;
     }
 
     /* advertise rc channel topic */
-    if (mcn_advertise(MCN_ID(rc_raw), _rc_raw_echo) != FMT_EOK) {
+    if (mcn_advertise(MCN_HUB(rc_raw), _rc_raw_echo) != FMT_EOK) {
         return FMT_ERROR;
     }
 

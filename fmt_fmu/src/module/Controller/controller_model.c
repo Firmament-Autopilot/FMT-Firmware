@@ -90,16 +90,16 @@ void controller_model_step(void)
     }
 
     if (mcn_poll(_fms_out_nod)) {
-        mcn_copy(MCN_ID(fms_output), _fms_out_nod, &Controller_U.FMS_Out);
+        mcn_copy(MCN_HUB(fms_output), _fms_out_nod, &Controller_U.FMS_Out);
     }
 
     if (mcn_poll(_ins_out_nod)) {
-        mcn_copy(MCN_ID(ins_output), _ins_out_nod, &Controller_U.INS_Out);
+        mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &Controller_U.INS_Out);
     }
 
     Controller_step();
 
-    mcn_publish(MCN_ID(control_output), &Controller_Y.Control_Out);
+    mcn_publish(MCN_HUB(control_output), &Controller_Y.Control_Out);
 
     DEFINE_TIMETAG(control_output, 100);
     /* Log Control output bus data */
@@ -113,10 +113,10 @@ void controller_model_step(void)
 
 void controller_model_init(void)
 {
-    mcn_advertise(MCN_ID(control_output), _control_out_echo);
+    mcn_advertise(MCN_HUB(control_output), _control_out_echo);
 
-    _fms_out_nod = mcn_subscribe(MCN_ID(fms_output), NULL, NULL);
-    _ins_out_nod = mcn_subscribe(MCN_ID(ins_output), NULL, NULL);
+    _fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
 
     Controller_init();
 

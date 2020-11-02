@@ -67,21 +67,21 @@ void fms_model_step(void)
     }
 
     if (mcn_poll(_pilot_cmd_nod)) {
-        mcn_copy(MCN_ID(pilot_cmd), _pilot_cmd_nod, &FMS_U.Pilot_Cmd);
+        mcn_copy(MCN_HUB(pilot_cmd), _pilot_cmd_nod, &FMS_U.Pilot_Cmd);
         _pilot_cmd_update = 1;
     }
 
     if (mcn_poll(_ins_out_nod)) {
-        mcn_copy(MCN_ID(ins_output), _ins_out_nod, &FMS_U.INS_Output);
+        mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &FMS_U.INS_Output);
     }
 
     if (mcn_poll(_control_out_nod)) {
-        mcn_copy(MCN_ID(control_output), _control_out_nod, &FMS_U.Control_Out);
+        mcn_copy(MCN_HUB(control_output), _control_out_nod, &FMS_U.Control_Out);
     }
 
     FMS_step();
 
-    mcn_publish(MCN_ID(fms_output), &FMS_Y.FMS_Output);
+    mcn_publish(MCN_HUB(fms_output), &FMS_Y.FMS_Output);
 
     if (_pilot_cmd_update) {
         FMS_U.Pilot_Cmd.timestamp = time_now - start_time;
@@ -104,11 +104,11 @@ void fms_model_step(void)
 
 void fms_model_init(void)
 {
-    mcn_advertise(MCN_ID(fms_output), NULL);
+    mcn_advertise(MCN_HUB(fms_output), NULL);
 
-    _pilot_cmd_nod = mcn_subscribe(MCN_ID(pilot_cmd), NULL, NULL);
-    _ins_out_nod = mcn_subscribe(MCN_ID(ins_output), NULL, NULL);
-    _control_out_nod = mcn_subscribe(MCN_ID(control_output), NULL, NULL);
+    _pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
     blog_register_callback(BLOG_CB_START, _blog_start_cb);
 

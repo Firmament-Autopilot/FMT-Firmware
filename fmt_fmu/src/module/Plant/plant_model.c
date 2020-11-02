@@ -53,7 +53,7 @@ static void _publish_sensor_data(void)
         imu_report.acc_B_mDs2[1] = Plant_Y.IMU.acc_y;
         imu_report.acc_B_mDs2[2] = Plant_Y.IMU.acc_z;
         // publish sensor_imu data
-        mcn_publish(MCN_ID(sensor_imu), &imu_report);
+        mcn_publish(MCN_HUB(sensor_imu), &imu_report);
 
         imu_timestamp = Plant_Y.IMU.timestamp;
     }
@@ -66,7 +66,7 @@ static void _publish_sensor_data(void)
         mag_report.mag_B_gauss[1] = Plant_Y.MAG.mag_y;
         mag_report.mag_B_gauss[2] = Plant_Y.MAG.mag_z;
         // publish sensor_mag data
-        mcn_publish(MCN_ID(sensor_mag), &mag_report);
+        mcn_publish(MCN_HUB(sensor_mag), &mag_report);
 
         mag_timestamp = Plant_Y.MAG.timestamp;
     }
@@ -78,7 +78,7 @@ static void _publish_sensor_data(void)
         baro_report.temperature_deg = Plant_Y.Barometer.temperature;
         baro_report.pressure_pa = Plant_Y.Barometer.pressure;
         // publish SNESOR_BARO data
-        mcn_publish(MCN_ID(sensor_baro), &baro_report);
+        mcn_publish(MCN_HUB(sensor_baro), &baro_report);
 
         baro_timestamp = Plant_Y.Barometer.timestamp;
     }
@@ -99,7 +99,7 @@ static void _publish_sensor_data(void)
         gps_report.velD = (float)Plant_Y.GPS_uBlox.velD * 1e-3;
         gps_report.sAcc = (float)Plant_Y.GPS_uBlox.sAcc * 1e-3;
         // publish sensor_gps data
-        mcn_publish(MCN_ID(sensor_gps), &gps_report);
+        mcn_publish(MCN_HUB(sensor_gps), &gps_report);
 
         gps_timestamp = Plant_Y.GPS_uBlox.timestamp;
     }
@@ -116,7 +116,7 @@ void plant_model_step(void)
     }
 
     if (mcn_poll(_control_out_nod)) {
-        mcn_copy(MCN_ID(control_output), _control_out_nod, &Plant_U.Control_Out);
+        mcn_copy(MCN_HUB(control_output), _control_out_nod, &Plant_U.Control_Out);
     }
 
     Plant_step();
@@ -136,7 +136,7 @@ void plant_model_step(void)
 
 void plant_model_init(void)
 {
-    _control_out_nod = mcn_subscribe(MCN_ID(control_output), NULL, NULL);
+    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
     if (_control_out_nod == NULL) {
         ulog_e(TAG, "uMCN topic control_output subscribe fail!\n");

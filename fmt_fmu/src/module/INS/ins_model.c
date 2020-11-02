@@ -120,7 +120,7 @@ void ins_model_step(void)
 
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
-        mcn_copy(MCN_ID(sensor_imu), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
+        mcn_copy(MCN_HUB(sensor_imu), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
 
         INS_U.IMU1.gyr_x = ins_handle.imu_report.gyr_B_radDs[0];
         INS_U.IMU1.gyr_y = ins_handle.imu_report.gyr_B_radDs[1];
@@ -134,7 +134,7 @@ void ins_model_step(void)
     }
 
     if (mcn_poll(ins_handle.mag_sub_node_t)) {
-        mcn_copy(MCN_ID(sensor_mag), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
+        mcn_copy(MCN_HUB(sensor_mag), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
 
         INS_U.MAG.mag_x = ins_handle.mag_report.mag_B_gauss[0];
         INS_U.MAG.mag_y = ins_handle.mag_report.mag_B_gauss[1];
@@ -145,7 +145,7 @@ void ins_model_step(void)
     }
 
     if (mcn_poll(ins_handle.baro_sub_node_t)) {
-        mcn_copy(MCN_ID(sensor_baro), ins_handle.baro_sub_node_t, &ins_handle.baro_report);
+        mcn_copy(MCN_HUB(sensor_baro), ins_handle.baro_sub_node_t, &ins_handle.baro_report);
 
         INS_U.Barometer.pressure = (float)ins_handle.baro_report.pressure_pa;
         INS_U.Barometer.temperature = ins_handle.baro_report.temperature_deg;
@@ -156,7 +156,7 @@ void ins_model_step(void)
 
     /* update gps data */
     if (mcn_poll(ins_handle.gps_sub_node_t)) {
-        mcn_copy(MCN_ID(sensor_gps), ins_handle.gps_sub_node_t, &ins_handle.gps_report);
+        mcn_copy(MCN_HUB(sensor_gps), ins_handle.gps_sub_node_t, &ins_handle.gps_report);
 
         INS_U.GPS_uBlox.fixType = ins_handle.gps_report.fixType;
         INS_U.GPS_uBlox.lat = ins_handle.gps_report.lat;
@@ -178,7 +178,7 @@ void ins_model_step(void)
     INS_step();
 
     /* publish INS output */
-    mcn_publish(MCN_ID(ins_output), &INS_Y.INS_Out);
+    mcn_publish(MCN_HUB(ins_output), &INS_Y.INS_Out);
 
     /* record INS input bus data if updated */
     if (ins_handle.imu_updated) {
@@ -220,12 +220,12 @@ void ins_model_step(void)
 
 void ins_model_init(void)
 {
-    mcn_advertise(MCN_ID(ins_output), _ins_output_echo);
+    mcn_advertise(MCN_HUB(ins_output), _ins_output_echo);
 
-    ins_handle.imu_sub_node_t = mcn_subscribe(MCN_ID(sensor_imu), NULL, NULL);
-    ins_handle.mag_sub_node_t = mcn_subscribe(MCN_ID(sensor_mag), NULL, NULL);
-    ins_handle.baro_sub_node_t = mcn_subscribe(MCN_ID(sensor_baro), NULL, NULL);
-    ins_handle.gps_sub_node_t = mcn_subscribe(MCN_ID(sensor_gps), NULL, NULL);
+    ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu), NULL, NULL);
+    ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag), NULL, NULL);
+    ins_handle.baro_sub_node_t = mcn_subscribe(MCN_HUB(sensor_baro), NULL, NULL);
+    ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
 
     blog_register_callback(BLOG_CB_START, _blog_start_cb);
 

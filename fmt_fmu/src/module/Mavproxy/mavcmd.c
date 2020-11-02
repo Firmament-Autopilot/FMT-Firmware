@@ -128,7 +128,7 @@ static acc_position _acc_position_detect(void)
     static uint16_t still_cnt = 0;
     float acc[3];
 
-    mcn_copy_from_hub(MCN_ID(sensor_imu), &imu_report);
+    mcn_copy_from_hub(MCN_HUB(sensor_imu), &imu_report);
     acc[0] = imu_report.acc_B_mDs2[0];
     acc[1] = imu_report.acc_B_mDs2[1];
     acc[2] = imu_report.acc_B_mDs2[2];
@@ -178,7 +178,7 @@ void _detect_jitter(void)
     IMU_Report imu_report;
 
     /* to detect jitter, we can use filtered data */
-    mcn_copy_from_hub(MCN_ID(sensor_imu), &imu_report);
+    mcn_copy_from_hub(MCN_HUB(sensor_imu), &imu_report);
 
     if (jitter_detect.cnt++ < 20) {
         float gyr_jitter[3];
@@ -546,7 +546,7 @@ void _mag_mavlink_calibration(void)
         IMU_Report imu_report;
         uint8_t rotat = 0;
 
-        mcn_copy_from_hub(MCN_ID(sensor_imu), &imu_report);
+        mcn_copy_from_hub(MCN_HUB(sensor_imu), &imu_report);
 
         if (mavcmd_calib_mag.acc_pos == ACC_POS_DOWN) {
             if (fabs(imu_report.gyr_B_radDs[2]) >= GYR_ROTAT_THRESHOLD) {

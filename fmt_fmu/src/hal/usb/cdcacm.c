@@ -69,7 +69,7 @@ void cdc_connected_status_change(uint8_t connected)
 	_cdc_connected = connected;
 
 	usb_status.connected = connected;
-	mcn_publish(MCN_ID(usb_status), &usb_status);
+	mcn_publish(MCN_HUB(usb_status), &usb_status);
 }
 
 uint8_t cdc_is_connected(void)
@@ -212,7 +212,7 @@ fmt_err usb_cdc_init(void)
 
 	rb = ringbuffer_static_create(rb_buffer, RECEIVE_RINGBUFF_SIZE);
 
-	mcn_advertise(MCN_ID(usb_status), USB_STATUS_echo);
+	mcn_advertise(MCN_HUB(usb_status), USB_STATUS_echo);
 
 	USBD_Init(&USB_OTG_dev,
 #ifdef USE_USB_OTG_HS
