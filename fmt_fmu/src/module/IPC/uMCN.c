@@ -193,8 +193,12 @@ fmt_err mcn_publish(McnHub* hub, const void* data)
     MCN_ASSERT(data != NULL);
 
     if (hub->pdata == NULL) {
-        // hub is not advertised yet
+        /* hub is not advertised yet */
         return FMT_ERROR;
+    }
+
+    if (hub->suspend) {
+        return FMT_ENOTHANDLE;
     }
 
     /* update freq estimator window */
@@ -315,6 +319,22 @@ void mcn_node_clear(McnNode_t node_t)
     MCN_ENTER_CRITICAL;
     node_t->renewal = 0;
     MCN_EXIT_CRITICAL;
+}
+
+/**
+  * \brief suspend a topic
+  */
+void mcn_suspend(McnHub* hub)
+{
+    hub->suspend = 1;
+}
+
+/**
+  * \brief resume a topic
+  */
+void mcn_resume(McnHub* hub)
+{
+    hub->suspend = 0;
 }
 
 fmt_err mcn_init(void)

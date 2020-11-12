@@ -49,6 +49,7 @@ struct mcn_hub {
     McnNode_t link_tail;
     uint32_t link_num;
     uint8_t published;
+    uint8_t suspend;
     int (*echo)(void* parameter);
     /* publish freq estimate */
     float freq;
@@ -77,6 +78,7 @@ struct mcn_list {
         .link_tail = NULL,       \
         .link_num = 0,           \
         .published = 0,          \
+        .suspend = 0,            \
         .freq = 0.0f             \
     }
 
@@ -90,6 +92,8 @@ bool mcn_poll_sync(McnNode_t node_t, int32_t timeout);
 fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer);
 fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer);
 void mcn_node_clear(McnNode_t node_t);
+void mcn_suspend(McnHub* hub);
+void mcn_resume(McnHub* hub);
 fmt_err mcn_init(void);
 McnList mcn_get_list(void);
 

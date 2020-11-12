@@ -41,10 +41,12 @@ static void _list_topics(void)
     char* title_2 = "#SUB";
     char* title_3 = "Freq(Hz)";
     char* title_4 = "Echo";
+    char* title_5 = "Suspend";
     uint32_t title1_len = _name_maxlen(title_1, &list) + 2;
     uint32_t title2_len = strlen(title_2) + 2;
     uint32_t title3_len = strlen(title_3) + 2;
     uint32_t title4_len = strlen(title_4) + 2;
+    uint32_t title5_len = strlen(title_5) + 2;
 
     syscmd_printf(' ', title1_len, SYSCMD_ALIGN_MIDDLE, title_1);
     syscmd_putc(' ', 1);
@@ -53,6 +55,8 @@ static void _list_topics(void)
     syscmd_printf(' ', title3_len, SYSCMD_ALIGN_MIDDLE, title_3);
     syscmd_putc(' ', 1);
     syscmd_printf(' ', title4_len, SYSCMD_ALIGN_MIDDLE, title_4);
+    syscmd_putc(' ', 1);
+    syscmd_printf(' ', title5_len, SYSCMD_ALIGN_MIDDLE, title_5);
     console_printf("\n");
 
     syscmd_putc('-', title1_len);
@@ -62,6 +66,8 @@ static void _list_topics(void)
     syscmd_putc('-', title3_len);
     syscmd_putc(' ', 1);
     syscmd_putc('-', title4_len);
+    syscmd_putc(' ', 1);
+    syscmd_putc('-', title5_len);
     console_printf("\n");
 
     for (McnList_t cp = &list; cp != NULL; cp = cp->next) {
@@ -72,7 +78,32 @@ static void _list_topics(void)
         syscmd_printf(' ', title3_len, SYSCMD_ALIGN_MIDDLE, "%.1f", cp->hub_t->freq);
         syscmd_putc(' ', 1);
         syscmd_printf(' ', title4_len, SYSCMD_ALIGN_MIDDLE, "%s", cp->hub_t->echo ? "true" : "false");
+        syscmd_putc(' ', 1);
+        syscmd_printf(' ', title5_len, SYSCMD_ALIGN_MIDDLE, "%s", cp->hub_t->suspend ? "true" : "false");
         console_printf("\n");
+    }
+}
+
+static void _suspend_topic(const char* topic_name, bool suspend)
+{
+    McnList_t cp;
+    McnList list = mcn_get_list();
+
+    for (cp = &list; cp != NULL; cp = cp->next) {
+        if (strcmp(cp->hub_t->obj_name, topic_name) == 0) {
+            break;
+        }
+    }
+
+    if (cp == NULL) {
+        console_printf("can not find topic %s\n", topic_name);
+        return;
+    }
+
+    if (suspend == true) {
+        mcn_suspend(cp->hub_t);
+    } else {
+        mcn_resume(cp->hub_t);
     }
 }
 
@@ -142,7 +173,7 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
         }
     }
 
-    if(mcn_unsubscribe(cp->hub_t, node) != FMT_EOK){
+    if (mcn_unsubscribe(cp->hub_t, node) != FMT_EOK) {
         console_printf("mcn unsubscribe fail\n");
     }
 }
@@ -154,6 +185,8 @@ static void show_usage(void)
     PRINT_STRING("\nAction:\n");
     PRINT_ACTION("list", 4, "List all uMCN topics.");
     PRINT_ACTION("echo", 4, "Echo a uMCN topic.");
+    PRINT_ACTION("suspend", 7, "Suspend a uMCN topic.");
+    PRINT_ACTION("resume", 6, "Resume a uMCN topic.");
 
     PRINT_STRING("\nOption:\n");
     PRINT_ACTION("-c, --cnt", 12, "Set topic echo count, e.g, -c=10 will echo 10 times.");
@@ -175,15 +208,27 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
         return -1;
     }
 
-    if (strcmp(argv[1], "list") == 0) {
+    if (STRING_COMPARE(argv[1], "list")) {
         _list_topics();
-    } else if (strcmp(argv[1], "echo") == 0) {
+    } else if (STRING_COMPARE(argv[1], "echo")) {
         if (argc < 3) {
             console_printf("usage: mcn echo <topic>\n");
             return -1;
         }
 
         _echo_topic(argv[2], optc, optv);
+    } else if (STRING_COMPARE(argv[1], "suspend")) {
+        if (argc < 3) {
+            console_printf("usage: mcn suspend <topic>\n");
+            return -1;
+        }
+        _suspend_topic(argv[2], true);
+    } else if (STRING_COMPARE(argv[1], "resume")) {
+        if (argc < 3) {
+            console_printf("usage: mcn resume <topic>\n");
+            return -1;
+        }
+        _suspend_topic(argv[2], false);
     } else {
         show_usage();
     }
