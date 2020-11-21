@@ -6,6 +6,7 @@ src = Glob('*.c')
 src += Glob('mag/*.c')
 src += Glob('accel/*.c')
 src += Glob('barometer/*.c')
+src += Glob('gps/*.c')
 src += Glob('fmtio_dev/*.c')
 src += Glob('gyro/*.c')
 src += Glob('i2c/*.c')
@@ -13,14 +14,14 @@ src += Glob('motor/*.c')
 src += Glob('pin/*.c')
 src += Glob('rc/*.c')
 src += Glob('serial/*.c')
-src += Split("""
-spi/spi_core.c
-spi/spi_dev.c
-""")
 src += Glob('systick/*.c')
 src += Glob('tools/*.c')
 src += Glob('usb/*.c')
 src += Glob('optical_flow/*.c')
+src += Split("""
+spi/spi_core.c
+spi/spi_dev.c
+""")
 
 CPPPATH = [cwd]
 

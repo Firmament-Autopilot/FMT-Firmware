@@ -45,11 +45,13 @@
 
 /* BLog Msg ID */
 enum {
-    // should start from 1
+    /* must start from 1 */
     BLOG_IMU_ID = 1,
     BLOG_MAG_ID,
     BLOG_BARO_ID,
     BLOG_GPS_ID,
+    BLOG_RANGEFINDER_ID,
+    BLOG_OPTICAL_FLOW_ID,
     BLOG_PILOT_CMD_ID,
     BLOG_INS_OUT_ID,
     BLOG_FMS_OUT_ID,

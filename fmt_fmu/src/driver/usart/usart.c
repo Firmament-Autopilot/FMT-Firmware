@@ -48,21 +48,29 @@
 #define UART1_GPIO_RCC      RCC_AHB1Periph_GPIOA
 #define RCC_APBPeriph_UART1 RCC_APB2Periph_USART1
 
-#define UART2_GPIO_TX       GPIO_Pin_5
-#define UART2_TX_PIN_SOURCE GPIO_PinSource5
-#define UART2_GPIO_RX       GPIO_Pin_6
-#define UART2_RX_PIN_SOURCE GPIO_PinSource6
-#define UART2_GPIO          GPIOD
-#define UART2_GPIO_RCC      RCC_AHB1Periph_GPIOD
-#define RCC_APBPeriph_UART2 RCC_APB1Periph_USART2
+#define UART2_GPIO_CTS       GPIO_Pin_3
+#define UART2_CTS_PIN_SOURCE GPIO_PinSource3
+#define UART2_GPIO_RTS       GPIO_Pin_4
+#define UART2_RTS_PIN_SOURCE GPIO_PinSource4
+#define UART2_GPIO_TX        GPIO_Pin_5
+#define UART2_TX_PIN_SOURCE  GPIO_PinSource5
+#define UART2_GPIO_RX        GPIO_Pin_6
+#define UART2_RX_PIN_SOURCE  GPIO_PinSource6
+#define UART2_GPIO           GPIOD
+#define UART2_GPIO_RCC       RCC_AHB1Periph_GPIOD
+#define RCC_APBPeriph_UART2  RCC_APB1Periph_USART2
 
-#define UART3_GPIO_TX       GPIO_Pin_8
-#define UART3_TX_PIN_SOURCE GPIO_PinSource8
-#define UART3_GPIO_RX       GPIO_Pin_9
-#define UART3_RX_PIN_SOURCE GPIO_PinSource9
-#define UART3_GPIO          GPIOD
-#define UART3_GPIO_RCC      RCC_AHB1Periph_GPIOD
-#define RCC_APBPeriph_UART3 RCC_APB1Periph_USART3
+#define UART3_GPIO_CTS       GPIO_Pin_11
+#define UART3_CTS_PIN_SOURCE GPIO_PinSource11
+#define UART3_GPIO_RTS       GPIO_Pin_12
+#define UART3_RTS_PIN_SOURCE GPIO_PinSource12
+#define UART3_GPIO_TX        GPIO_Pin_8
+#define UART3_TX_PIN_SOURCE  GPIO_PinSource8
+#define UART3_GPIO_RX        GPIO_Pin_9
+#define UART3_RX_PIN_SOURCE  GPIO_PinSource9
+#define UART3_GPIO           GPIOD
+#define UART3_GPIO_RCC       RCC_AHB1Periph_GPIOD
+#define RCC_APBPeriph_UART3  RCC_APB1Periph_USART3
 
 #define UART4_GPIO_TX       GPIO_Pin_0
 #define UART4_TX_PIN_SOURCE GPIO_PinSource0
@@ -927,6 +935,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+
     USART_Init(uart->uart_device, &USART_InitStructure);
 
     /* Enable USART */

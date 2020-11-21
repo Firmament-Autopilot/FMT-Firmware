@@ -17,6 +17,7 @@
 #include <firmament.h>
 
 #include "hal/serial.h"
+#include "module/sensor/sensor_manager.h"
 #include "protocol/msp/msp.h"
 
 // TBD
@@ -34,28 +35,16 @@ typedef struct __attribute__((packed)) {
     int32_t motionY;
 } mspOpflowSensor_t;
 
-typedef struct {
-    uint32_t timestamp_ms;
-    float vx_mPs;
-    float vy_mPs;
-    uint32_t valid;
-} optflow_report_t;
+MCN_DEFINE(sensor_optflow, sizeof(OptFlow_Report));
+MCN_DEFINE(sensor_rangefinder, sizeof(Rangefinder_Report));
 
-typedef struct {
-    uint32_t timestamp_ms;
-    float distance_m; // negative value indicate invalid
-} rangefinder_report_t;
-
-MCN_DEFINE(sensor_optflow, sizeof(optflow_report_t));
-MCN_DEFINE(sensor_rangefinder, sizeof(rangefinder_report_t));
-
-static rangefinder_report_t rangefinder_report = { .timestamp_ms = 0, .distance_m = -1.0f };
-static optflow_report_t optflow_report = { 0 };
+static Rangefinder_Report rangefinder_report = { .timestamp_ms = 0, .distance_m = -1.0f };
+static OptFlow_Report optflow_report = { 0 };
 
 static int sensor_opt_flow_echo(void* param)
 {
     fmt_err err;
-    optflow_report_t optflow_report;
+    OptFlow_Report optflow_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &optflow_report);
 
@@ -72,7 +61,7 @@ static int sensor_opt_flow_echo(void* param)
 static int sensor_rangefinder_echo(void* param)
 {
     fmt_err err;
-    rangefinder_report_t rangefinder_report;
+    Rangefinder_Report rangefinder_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &rangefinder_report);
 
@@ -106,8 +95,8 @@ static mspResult_e mspFcProcessCommand(mspPacket_t* cmd, mspPacket_t* reply)
 
             optflow_report.timestamp_ms = systime_now_ms();
             /* rotate to Body frame */
-            optflow_report.vx_mPs = (float)-pkt->motionY * 0.01f;
-            optflow_report.vy_mPs = (float)pkt->motionX * 0.01f;
+            optflow_report.vx_mPs = (float)(pkt->motionY * -0.01f);
+            optflow_report.vy_mPs = (float)(pkt->motionX * 0.01f);
             /* opt flow valid only if rangefinder valid and opt flow's quality is okay */
             if (rangefinder_report.distance_m > 0.0f) {
                 if (pkt->quality >= OPFLOW_SQUAL_THRESHOLD_HIGH) {

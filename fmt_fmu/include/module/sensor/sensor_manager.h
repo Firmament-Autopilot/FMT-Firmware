@@ -76,6 +76,18 @@ typedef struct {
 	uint16_t reserved;
 } GPS_Report;
 
+typedef struct {
+    uint32_t timestamp_ms;
+    float vx_mPs;
+    float vy_mPs;
+    uint32_t valid;
+} OptFlow_Report;
+
+typedef struct {
+    uint32_t timestamp_ms;
+    float distance_m; // negative value indicate invalid
+} Rangefinder_Report;
+
 fmt_err sensor_manager_init(void);
 void sensor_collect(void);
 

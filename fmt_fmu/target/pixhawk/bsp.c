@@ -27,6 +27,7 @@
 
 #include "driver/gpio.h"
 #include "driver/gps.h"
+#include "driver/gps_m8n.h"
 #include "driver/l3gd20h.h"
 #include "driver/lsm303d.h"
 #include "driver/mpu6000.h"
@@ -229,7 +230,8 @@ void bsp_initialize(void)
     RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
     /* init gps */
-    RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
+    // RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
+    RTT_CHECK(gps_m8n_init(GPS_SERIAL_DEVICE_NAME));
 
     /* init other devices */
     RTT_CHECK(pmw3901_l0x_drv_init("serial3"));

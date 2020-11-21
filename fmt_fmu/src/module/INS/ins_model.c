@@ -23,34 +23,44 @@
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 
-/* for input */
+/* INS input bus */
 MCN_DECLARE(sensor_imu);
 MCN_DECLARE(sensor_mag);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
+MCN_DECLARE(sensor_rangefinder);
+MCN_DECLARE(sensor_optflow);
 
 struct INS_Handler {
     McnNode_t imu_sub_node_t;
     McnNode_t mag_sub_node_t;
     McnNode_t baro_sub_node_t;
     McnNode_t gps_sub_node_t;
+    McnNode_t rf_sub_node_t;
+    McnNode_t optflow_sub_node_t;
 
     IMU_Report imu_report;
     Mag_Report mag_report;
     Baro_Report baro_report;
     GPS_Report gps_report;
+    Rangefinder_Report rf_report;
+    OptFlow_Report optflow_report;
 
     uint32_t start_time;
     uint8_t imu_updated;
     uint8_t mag_updated;
     uint8_t baro_updated;
     uint8_t gps_updated;
+    uint8_t rf_updated;
+    uint8_t optflow_updated;
 } ins_handle = {
     .start_time = 0,
     .imu_updated = 1, /* log data in the first run */
     .mag_updated = 1,
     .baro_updated = 1,
-    .gps_updated = 1
+    .gps_updated = 1,
+    .rf_updated = 1,
+    .optflow_updated = 1
 };
 
 static int _ins_output_echo(void* param)
@@ -174,6 +184,23 @@ void ins_model_step(void)
         ins_handle.gps_updated = 1;
     }
 
+    /* update rangefinder data */
+    if(mcn_poll(ins_handle.rf_sub_node_t)){
+        mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
+
+        // INS_U.Rangefinder.distance_m = ins_handle.rf_report.distance_m;
+        // INS_U.Rangefinder.timestamp = time_now - ins_handle.start_time;
+
+        ins_handle.rf_updated = 1;
+    }
+
+    /* update optical flow data */
+    if(mcn_poll(ins_handle.optflow_sub_node_t)){
+        mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
+
+        ins_handle.optflow_updated = 1;
+    }
+
     /* run INS */
     INS_step();
 
@@ -209,6 +236,20 @@ void ins_model_step(void)
         }
     }
 
+    if (ins_handle.rf_updated) {
+        /* Log Rangefinder data */
+        if (blog_push_msg((uint8_t*)&ins_handle.rf_report, BLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report)) == FMT_EOK) {
+            ins_handle.rf_updated = 0;
+        }
+    }
+
+    if (ins_handle.optflow_updated) {
+        /* Log Optical Flow data */
+        if (blog_push_msg((uint8_t*)&ins_handle.optflow_report, BLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report)) == FMT_EOK) {
+            ins_handle.optflow_updated = 0;
+        }
+    }
+
     /* Log INS output bus data */
     if (check_timetag(TIMETAG(ins_output))) {
         /* rewrite timestmp */
@@ -226,6 +267,8 @@ void ins_model_init(void)
     ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag), NULL, NULL);
     ins_handle.baro_sub_node_t = mcn_subscribe(MCN_HUB(sensor_baro), NULL, NULL);
     ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
+    ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
+    ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
 
     blog_register_callback(BLOG_CB_START, _blog_start_cb);
 

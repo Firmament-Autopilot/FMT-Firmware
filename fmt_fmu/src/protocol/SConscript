@@ -4,6 +4,7 @@ cwd = GetCurrentDir()
 
 src = Glob('*.c')
 src += Glob('msp/*.c')
+src += Glob('ublox/*.c')
 
 CPPPATH = [cwd]
 

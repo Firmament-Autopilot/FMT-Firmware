@@ -25,7 +25,7 @@ typedef struct {
 } systime_t;
 
 static systime_t _systime;
-static rt_device_t _systick_dev;
+rt_device_t _systick_dev;
 
 static void systick_isr_cb(void)
 {

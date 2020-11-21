@@ -17,36 +17,39 @@
 #include <firmament.h>
 
 #include "module/sensor/sensor_gps.h"
-#include "driver/gps.h"
+// #include "driver/gps.h"
+#include "hal/gps.h"
 
 static rt_device_t _gps_device_t;
-struct vehicle_gps_position_s _gps_position;
+static gps_report_t _gps_report;
 
 fmt_err sensor_gps_get_report(GPS_Report* gps_report)
 {
-	rt_size_t r_size = rt_device_read(_gps_device_t, RD_COMPLETED_REPORT, &_gps_position, sizeof(_gps_position));
+	rt_size_t r_size = rt_device_read(_gps_device_t, GPS_READ_REPORT, &_gps_report, sizeof(gps_report_t));
 
-	gps_report->timestamp_ms = _gps_position.timestamp_velocity;
-	gps_report->fixType = _gps_position.fix_type;
-	gps_report->numSV = _gps_position.satellites_used;
-	gps_report->lon = _gps_position.lon;
-	gps_report->lat = _gps_position.lat;
-	gps_report->height = _gps_position.alt;
-	gps_report->hAcc = _gps_position.eph;
-	gps_report->vAcc = _gps_position.epv;
-	gps_report->velN = _gps_position.vel_n_m_s;
-	gps_report->velE = _gps_position.vel_e_m_s;
-	gps_report->velD = _gps_position.vel_d_m_s;
-	gps_report->sAcc = _gps_position.s_variance_m_s;
+	gps_report->timestamp_ms = _gps_report.timestamp_velocity;
+	gps_report->fixType = _gps_report.fix_type;
+	gps_report->numSV = _gps_report.satellites_used;
+	gps_report->lon = _gps_report.lon;
+	gps_report->lat = _gps_report.lat;
+	gps_report->height = _gps_report.alt;
+	gps_report->hAcc = _gps_report.eph;
+	gps_report->vAcc = _gps_report.epv;
+	gps_report->velN = _gps_report.vel_n_m_s;
+	gps_report->velE = _gps_report.vel_e_m_s;
+	gps_report->velD = _gps_report.vel_d_m_s;
+	gps_report->sAcc = _gps_report.s_variance_m_s;
 
-	return (r_size == sizeof(_gps_position)) ? FMT_EOK : FMT_ERROR;
+	return (r_size == sizeof(gps_report_t)) ? FMT_EOK : FMT_ERROR;
 }
 
 uint8_t sensor_gps_report_ready(void)
 {
-	uint8_t ready;
+	uint8_t ready = 0;
 
-	rt_device_read(_gps_device_t, GPS_REPORT_READY, &ready, 1);
+	// rt_device_read(_gps_device_t, GPS_REPORT_READY, &ready, 1);
+
+    rt_device_control(_gps_device_t, GPS_CMD_CHECK_UPDATE, &ready);
 
 	return ready;
 }

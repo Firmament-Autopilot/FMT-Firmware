@@ -87,6 +87,18 @@ blog_elem_t GPS_uBlox_Elems[] = {
     BLOG_ELEMENT("reserved2", BLOG_UINT16),
 };
 
+blog_elem_t Rangefinder_Elems[] = {
+    BLOG_ELEMENT("timestamp", BLOG_UINT32),
+    BLOG_ELEMENT("distance_m", BLOG_FLOAT),
+};
+
+blog_elem_t Optflow_Elems[] = {
+    BLOG_ELEMENT("timestamp", BLOG_UINT32),
+    BLOG_ELEMENT("vx", BLOG_FLOAT),
+    BLOG_ELEMENT("vy", BLOG_FLOAT),
+    BLOG_ELEMENT("valid", BLOG_UINT32),
+};
+
 blog_elem_t Pilot_Cmd_Elems[] = {
     BLOG_ELEMENT("timestamp", BLOG_UINT32),
     BLOG_ELEMENT("ls_lr", BLOG_FLOAT),
@@ -182,6 +194,8 @@ blog_bus_t _blog_bus[] = {
     BLOG_BUS("MAG", BLOG_MAG_ID, MAG_Elems),
     BLOG_BUS("Barometer", BLOG_BARO_ID, Barometer_Elems),
     BLOG_BUS("GPS_uBlox", BLOG_GPS_ID, GPS_uBlox_Elems),
+    BLOG_BUS("Rangefinder", BLOG_RANGEFINDER_ID, Rangefinder_Elems),
+    BLOG_BUS("Optical_Flow", BLOG_OPTICAL_FLOW_ID, Optflow_Elems),
     BLOG_BUS("Pilot_Cmd", BLOG_PILOT_CMD_ID, Pilot_Cmd_Elems),
     BLOG_BUS("INS_Out", BLOG_INS_OUT_ID, INS_Out_Elems),
     BLOG_BUS("FMS_Out", BLOG_FMS_OUT_ID, FMS_Out_Elems),
