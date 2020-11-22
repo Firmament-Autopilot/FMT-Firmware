@@ -31,6 +31,8 @@
 #include "task/task_comm.h"
 #include "task/task_vehicle.h"
 
+#define MAVPROXY_DEFAULT_CHAN 0
+
 static uint8_t mav_tx_buff[1024];
 static mavlink_system_t mavlink_system;
 static rt_sem_t _mavproxy_tx_lock;
@@ -42,7 +44,7 @@ static MAV_PeriodMsg_Queue _period_msg_queue;
 static MAV_ImmediateMsg_Queue _imm_msg_queue;
 
 static rt_device_t _mav_console_dev;
-uint8_t _mav_dev_chan = 0; /* mavproxy device channel */
+uint8_t _mav_dev_chan = MAVPROXY_DEFAULT_CHAN; /* mavproxy device channel */
 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(usb_status);
@@ -58,15 +60,16 @@ static void timer_mavproxy_update(void* parameter)
 
 static void usb_status_change_cb(void* parameter)
 {
-    USB_Status* usb_status = (USB_Status*)parameter;
+    USB_Status usb_status = *(USB_Status*)parameter;
+    int usb_chan;
 
-    /* channel 0: usart    channel 1: usb */
-    if (usb_status->connected && _mav_dev_chan != 1) {
-        _mav_dev_chan = 1;
-    }
-
-    if (!usb_status->connected && _mav_dev_chan != 0) {
-        _mav_dev_chan = 0;
+    if(usb_status.connected){
+        usb_chan = mavproxy_get_dev_chan("usb");
+        if(usb_chan >= 0){
+            _mav_dev_chan = usb_chan;
+        }
+    }else{
+        _mav_dev_chan = MAVPROXY_DEFAULT_CHAN;
     }
 }
 
@@ -290,13 +293,10 @@ fmt_err task_comm_init(void)
     _imm_msg_queue.head = 0;
     _imm_msg_queue.tail = 0;
 
-    mavproxy_dev_init(_mav_dev_chan);
+    mavproxy_dev_init();
     mavlink_console_init();
 
     _mavproxy_tx_lock = rt_sem_create("mav_tx_lock", 1, RT_IPC_FLAG_FIFO);
-
-    /* register callback function to monitor usb status */
-    mcn_subscribe(MCN_HUB(usb_status), NULL, usb_status_change_cb);
 
     /* get mavlink console device */
     _mav_console_dev = rt_device_find("mav_console");
@@ -326,6 +326,9 @@ void task_comm_entry(void* parameter)
     rt_err_t res;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_MAVPROXY_UPDATE | EVENT_MAVCONSOLE_TIMEOUT | EVENT_SEND_ALL_PARAM;
+
+    /* register callback function to monitor usb status */
+    mcn_subscribe(MCN_HUB(usb_status), NULL, usb_status_change_cb);
 
     /* create mavproxy monitor to parse received msg */
     mavproxy_monitor_create();

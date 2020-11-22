@@ -150,6 +150,9 @@ TOML_EXTERN int toml_ucs_to_utf8(int64_t code, char buf[6]);
 /* for FMT */
 int toml_print_parsed_data(const char* file);
 toml_table_t* toml_parse_config_file(const char* file);
+toml_table_t* toml_parse_config_string(char* conf);
 void toml_debug(const char* tag, const char* level, const char* fmt, ...);
+char* toml_make_string(const char* str);
+void toml_print_table(toml_table_t* curtab);
 
 #endif /* TOML_H */

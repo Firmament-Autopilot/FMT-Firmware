@@ -22,6 +22,7 @@
 #include "hal/motor.h"
 #include "hal/rc.h"
 #include "hal/serial.h"
+#include "hal/systick.h"
 #include "module/console/console.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/syscmd/syscmd.h"
@@ -29,23 +30,28 @@
 #include "module/system/statistic.h"
 #include "module/toml/toml.h"
 #include "task/task_fmtio.h"
-#include "hal/systick.h"
+
+#define DEFAULT_TOML_SYS_CONFIG "\
+target = \"Pixhawk FMUv2\"\n\
+[console]\n\
+	[[console.devices]]\n\
+	type = \"serial\"\n\
+	name = \"serial0\"\n\
+	baudrate = 57600\n\
+	auto-switch = true\n\
+	[[console.devices]]\n\
+	type = \"mavlink\"\n\
+	name = \"mav_console\"\n\
+	auto-switch = true"
 
 rt_device_t _systick_dev;
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    RCC_ClocksTypeDef rcc_clocks;
-    systick_dev_t systick_device = (systick_dev_t)_systick_dev;
-    rt_uint32_t cnts;
-
-    RCC_GetClocksFreq(&rcc_clocks);
-
-    cnts = (rt_uint32_t)rcc_clocks.HCLK_Frequency / 1000;
-	cnts = cnts / 8;
-
-    console_printf("ticks_per_isr:%u ticks_per_us:%u\n", systick_device->ticks_per_isr, systick_device->ticks_per_us);
-    console_printf("load:%u tick_freq:%u cnt:%u HCLK_Frequency:%u\n", SysTick->LOAD, systick_device->config.tick_freq, cnts, rcc_clocks.HCLK_Frequency);
+    console_printf("%s\n", DEFAULT_TOML_SYS_CONFIG);
+    toml_table_t* tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
+    toml_print_table(tab);
+    toml_free(tab);
 
     return 0;
 }

@@ -171,6 +171,37 @@ static void print_table(toml_table_t* curtab)
     console_printf("}\n");
 }
 
+void toml_print_table(toml_table_t* curtab)
+{
+    int i;
+    const char* key;
+    const char* raw;
+    toml_array_t* arr;
+    toml_table_t* tab;
+
+    console_printf("[%s]{\n", toml_table_key(curtab));
+
+    /* traverse keys in table */
+    for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
+
+        if (0 != (raw = toml_raw_in(curtab, key))) {
+            console_printf("%s = ", key);
+            print_raw(raw);
+            console_printf("\n");
+        } else if (0 != (arr = toml_array_in(curtab, key))) {
+            console_printf("%s = [", key);
+            print_array(arr);
+            console_printf("]\n");
+        } else if (0 != (tab = toml_table_in(curtab, key))) {
+            print_table(tab);
+        } else {
+            //some error here
+            console_printf("ERROR: toml parse fail\n");
+        }
+    }
+    console_printf("}\n");
+}
+
 uint32_t console_print_args(const char* fmt, va_list args);
 void toml_debug(const char* tag, const char* level, const char* fmt, ...)
 {
@@ -220,4 +251,30 @@ toml_table_t* toml_parse_config_file(const char* file)
     }
 
     return root_tab;
+}
+
+toml_table_t* toml_parse_config_string(char* conf)
+{
+    char errbuf[200];
+    toml_table_t* root_tab;
+
+    root_tab = toml_parse(conf, errbuf, sizeof(errbuf));
+
+    if (root_tab == NULL) {
+        console_printf("TOML: %s\n", errbuf);
+    }
+
+    return root_tab;
+}
+
+char* toml_make_string(const char* str)
+{
+    char* new_str;
+
+    new_str = (char*)rt_malloc(strlen(str) + 1);
+    if (new_str) {
+        strcpy(new_str, str);
+    }
+
+    return new_str;
 }

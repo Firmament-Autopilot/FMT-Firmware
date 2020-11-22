@@ -65,11 +65,20 @@ static char* _strdup(const char* str1)
 static void _init_device_list(void)
 {
     for (int i = 0; i < CONSOLE_MAX_DEVICE_NUM; i++) {
+        if (_console_device_list[i].type) {
+            rt_free(_console_device_list[i].type);
+        }
+        if (_console_device_list[i].name) {
+            rt_free(_console_device_list[i].name);
+        }
+        if (_console_device_list[i].config) {
+            rt_free(_console_device_list[i].config);
+        }
         _console_device_list[i].type = NULL;
         _console_device_list[i].name = NULL;
         _console_device_list[i].config = NULL;
-        _console_device_num = 0;
     }
+    _console_device_num = 0;
 }
 
 static void _handle_device_status_change(void* msg)
@@ -81,7 +90,7 @@ static void _handle_device_status_change(void* msg)
         if (rt_device_find(_console_device_list[idx].name) == status.device) {
             /* if data received, switch console to this device */
             if (status.status == DEVICE_STATUS_RX) {
-                console_switch_device(idx);
+                console_switch_device(idx, false);
                 return;
             }
         }
@@ -163,6 +172,7 @@ static fmt_err _console_parse_device(const toml_table_t* curtab, int idx)
             /* set default value */
             if (_console_device_list[idx].config)
                 *(console_serial_dev_config*)_console_device_list[idx].config = serial_default_config;
+
         } else if (DEVICE_TYPE_IS(idx, mavlink)) {
             console_mavlink_dev_config mavlink_default_config = {
                 .auto_switch = true
@@ -217,7 +227,7 @@ static fmt_err _console_parse_device(const toml_table_t* curtab, int idx)
                     config->baudrate = (uint32_t)ival;
                 } else if (MATCH(key, "auto-switch")) {
                     int bval;
-                    
+
                     if (toml_rtob(raw, &bval) != 0) {
                         console_printf("Error: fail to parse auto-switch value\n");
                         continue;
@@ -343,13 +353,13 @@ int console_get_device_id(rt_device_t device)
     return -1;
 }
 
-fmt_err console_switch_device(int idx)
+fmt_err console_switch_device(int idx, bool close_old_dev)
 {
     if (idx >= _console_device_num || idx < 0) {
         return FMT_ERROR;
     }
 
-    if (console_set_device(_console_device_list[idx].name) == FMT_EOK) {
+    if (console_set_device(_console_device_list[idx].name, close_old_dev) == FMT_EOK) {
         _console_dev_idx = idx;
     } else {
         return FMT_ERROR;
@@ -412,7 +422,7 @@ void console_format(char* buffer, const char* fmt, ...)
     va_end(args);
 }
 
-fmt_err console_set_device(char* dev_name)
+fmt_err console_set_device(char* dev_name, bool close_old_dev)
 {
     rt_device_t new;
 
@@ -440,6 +450,12 @@ fmt_err console_set_device(char* dev_name)
 
     rt_console_set_device(dev_name);
     console_enable_shell(new);
+
+    /* now we can safely close the old console device */
+    if (close_old_dev && _console_dev && _console_dev != new) {
+        if (_console_dev->open_flag & RT_DEVICE_OFLAG_OPEN)
+            rt_device_close(_console_dev);
+    }
 
     _console_dev = new;
 
@@ -563,8 +579,8 @@ fmt_err console_toml_init(toml_table_t* table)
         }
     }
 
-    /* set console device to the first device by default */
-    err = console_switch_device(0);
+    /* set console device to the first device and close the old device */
+    err = console_switch_device(0, true);
 
     return err;
 }
@@ -580,7 +596,7 @@ fmt_err console_init(char* dev_name)
         return FMT_ERROR;
     }
 
-    /* here we only enable console output, the input function should be enabled later */
+    /* here we only enable console output, the console input should be enabled later */
     if (rt_device_open(_console_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_STREAM) != RT_EOK) {
         return FMT_ERROR;
     }

@@ -44,6 +44,7 @@
 #include "module/fms/fms_model.h"
 #include "module/fs_manager/fs_manager.h"
 #include "module/ins/ins_model.h"
+#include "module/mavproxy/mavproxy_dev.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/sysio/actuator_cmd.h"
@@ -55,6 +56,26 @@
 #include "module/plant/plant_model.h"
 #endif
 #include "protocol/msp/msp.h"
+
+#define DEFAULT_TOML_SYS_CONFIG     "target = \"Pixhawk FMUv2\"\n\
+[console]\n\
+	[[console.devices]]\n\
+	type = \"serial\"\n\
+	name = \"serial0\"\n\
+	baudrate = 57600\n\
+	auto-switch = true\n\
+	[[console.devices]]\n\
+	type = \"mavlink\"\n\
+	name = \"mav_console\"\n\
+	auto-switch = true\n\
+[mavproxy]\n\
+	[[mavproxy.devices]]\n\
+	type = \"serial\"\n\
+	name = \"serial1\"\n\
+	baudrate = 57600\n\
+	[[mavproxy.devices]]\n\
+	type = \"usb\"\n\
+	name = \"usb\""
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
@@ -126,7 +147,6 @@ void bsp_show_information(void)
     _print_line("  status", "OK", str_len);
 }
 
-// fmt_err console_toml_init(toml_table_t* table);
 fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
     fmt_err err = FMT_EOK;
@@ -135,6 +155,10 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
     const char* raw;
     char* target;
     int i;
+
+    if(root_tab == NULL){
+        return FMT_ERROR;
+    }
 
     /* target should be defined and match with bsp */
     if ((raw = toml_raw_in(root_tab, "target")) != 0) {
@@ -162,6 +186,8 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = console_toml_init(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     err = pilot_cmd_toml_init(sub_tab);
+                } else if (MATCH(key, "mavproxy")) {
+                    err = mavproxy_dev_toml_init(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -284,9 +310,11 @@ void bsp_post_initialize(void)
 
     /* toml system configure */
     _toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    if (_toml_root_tab) {
-        FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
+    if (!_toml_root_tab) {
+        /* use default system configuration */
+        _toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
     }
+    FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
 
     /* start msp server */
     FMT_CHECK(msp_server_start());
