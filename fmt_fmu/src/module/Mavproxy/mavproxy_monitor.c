@@ -18,10 +18,8 @@
 
 #include "module/fs_manager/fs_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/mavproxy/mavlink_param.h"
-#include "module/mavproxy/mavproxy_dev.h"
 #include "module/sensor/sensor_manager.h"
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 
 #define TAG "MAV_Monitor"
 
@@ -93,7 +91,7 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
             mavlink_command_long_t command;
             mavlink_msg_command_long_decode(msg, &command);
 
-            mavproxy_proc_command(&command, msg);
+            mavproxy_handle_command(&command, msg);
         }
     } break;
 
@@ -207,7 +205,7 @@ void mavproxy_rx_entry(void* param)
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
-                while (mavproxy_dev_read(_mav_dev_chan, &byte, 1, 0)) {
+                while (mavproxy_dev_read(mavproxy_get_device_channel(), &byte, 1, 0)) {
                     /* decode mavlink package */
                     if (mavlink_parse_char(0, byte, &msg, &mav_status) == 1) {
                         _handle_mavlink_msg(&msg, mavlink_system);

@@ -21,7 +21,7 @@
 #include "hal/rc.h"
 #include "module/fms/fms_model.h"
 #include "module/sysio/pilot_cmd.h"
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 #include "task/task_fmtio.h"
 
 #define TOML_DBG(...)   console_printf(__VA_ARGS__)

@@ -15,9 +15,8 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include <string.h>
+#include <mavlink.h>
 
-#include "task/task_comm.h"
 #include "module/mavproxy/mavlink_status.h"
 
 static const mav_status_t mav_status[MAV_NOTICE_NUM] = {

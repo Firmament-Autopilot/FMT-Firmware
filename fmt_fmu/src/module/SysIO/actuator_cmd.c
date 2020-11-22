@@ -18,7 +18,7 @@
 
 #include "hal/motor.h"
 #include "module/controller/controller_model.h"
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 
 #define DEFAULT_PWM_FREQ (400) // default pwm frequency in Hz
 

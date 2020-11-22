@@ -17,8 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/mavproxy/mavlink_param.h"
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 
 #define MAV_PARAM_COUNT (sizeof(mav_param_list_t) / sizeof(mav_param_t))
 

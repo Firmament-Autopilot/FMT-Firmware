@@ -14,22 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAVCMD_H__
-#define __MAVCMD_H__
+#ifndef __MAVLINK_CONSOLE_H__
+#define __MAVLINK_CONSOLE_H__
 
 #include <firmament.h>
+#include <mavlink.h>
 
-typedef enum {
-	MAVCMD_CALIBRATION_GYR = 0,
-	MAVCMD_CALIBRATION_ACC,
-	MAVCMD_CALIBRATION_MAG,
-	MAVCMD_STREAM_SESSION,
-	MAVCMD_ITEM_NUM     // do not remove it
-} MavCmd_ID;
-
-void mavcmd_process(void);
-void mavcmd_set(MavCmd_ID cmd, void* data);
-void mavcmd_clear(MavCmd_ID cmd);
+rt_err_t mavlink_console_init(void);
+void mavlink_console_process_rx_msg(const mavlink_serial_control_t* serial_control);
+void mavlink_console_handle_timeout(void);
 
 #endif
-

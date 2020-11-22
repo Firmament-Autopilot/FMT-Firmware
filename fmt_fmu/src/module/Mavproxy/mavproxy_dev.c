@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include "shell.h"
 #include <firmament.h>
 #include <string.h>
 
 #include "hal/cdcacm.h"
 #include "hal/serial.h"
-#include "module/mavproxy/mavcmd.h"
-#include "task/task_comm.h"
 
 #define MAVPROXY_SERIAL_BAUDRATE    57600
 #define MAVPROXY_MAX_DEVICE_NUM     5

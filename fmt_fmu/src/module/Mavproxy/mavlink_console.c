@@ -17,7 +17,7 @@
 #include <firmament.h>
 
 #include "module/utils/ringbuffer.h"
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 
 #define MAV_CONSOLE_DEVICE_NAME    "mav_console"
 #define MAV_CONSOLE_RX_BUFFER_SIZE 128
@@ -61,7 +61,7 @@ static void send_serial_control_msg(mavlink_serial_control_t* serial_control)
     mavproxy_send_immediate_msg(&msg, sync);
 }
 
-void mav_console_handle_timeout(void)
+void mavlink_console_handle_timeout(void)
 {
     mavlink_serial_control_t serial_control;
 

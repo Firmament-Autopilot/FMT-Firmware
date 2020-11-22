@@ -20,11 +20,10 @@
 
 #include "module/fs_manager/fs_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/mavproxy/mavcmd.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 #include "task/task_vehicle.h"
 
 #define TAG "MAVCMD"

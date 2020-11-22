@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
 
-#include "task/task_comm.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/fs_manager/fs_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/mavproxy/mavcmd.h"
 
 #define TAG         "MAV_FTP"
 
