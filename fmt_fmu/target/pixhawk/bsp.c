@@ -44,7 +44,7 @@
 #include "module/fms/fms_model.h"
 #include "module/fs_manager/fs_manager.h"
 #include "module/ins/ins_model.h"
-#include "module/mavproxy/mavproxy_dev.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/sysio/actuator_cmd.h"
@@ -187,7 +187,7 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "pilot-cmd")) {
                     err = pilot_cmd_toml_init(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
-                    err = mavproxy_dev_toml_init(sub_tab);
+                    err = mavproxy_toml_init(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }

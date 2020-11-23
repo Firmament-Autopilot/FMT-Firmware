@@ -24,7 +24,6 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/system/statistic.h"
-#include "shell.h"
 #include "task/task_comm.h"
 #include "task/task_vehicle.h"
 
@@ -97,9 +96,11 @@ static void _msg_local_pos_pack(mavlink_message_t* msg_t)
 
 fmt_err task_comm_init(void)
 {
-    mavproxy_init();
+    fmt_err err;
 
-    return FMT_EOK;
+    err = mavproxy_init();
+
+    return err;
 }
 
 void task_comm_entry(void* parameter)
@@ -116,5 +117,6 @@ void task_comm_entry(void* parameter)
     mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
         _msg_local_pos_pack, 1);
 
+    /* execute mavproxy main loop */
     mavproxy_loop();
 }

@@ -205,7 +205,7 @@ void mavproxy_rx_entry(void* param)
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
-                while (mavproxy_dev_read(mavproxy_get_device_channel(), &byte, 1, 0)) {
+                while (mavproxy_dev_read(&byte, 1, 0)) {
                     /* decode mavlink package */
                     if (mavlink_parse_char(0, byte, &msg, &mav_status) == 1) {
                         _handle_mavlink_msg(&msg, mavlink_system);

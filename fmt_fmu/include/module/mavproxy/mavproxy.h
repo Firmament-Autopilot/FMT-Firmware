@@ -31,9 +31,9 @@
 #define EVENT_SEND_ALL_PARAM     (1 << 2)
 
 fmt_err mavproxy_init(void);
+fmt_err mavproxy_toml_init(toml_table_t* table);
 void mavproxy_loop(void);
 mavlink_system_t mavproxy_get_system(void);
-uint8_t mavproxy_get_device_channel(void);
 fmt_err mavproxy_send_event(uint32_t event_set);
 uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, uint8_t sync);
 uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,

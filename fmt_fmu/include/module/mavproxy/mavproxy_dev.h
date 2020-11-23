@@ -20,14 +20,11 @@
 #include <firmament.h>
 
 fmt_err mavproxy_dev_init(void);
-fmt_err mavproxy_dev_toml_init(toml_table_t* table);
-rt_size_t mavproxy_dev_sync_read(uint8_t chan, void* buffer, uint32_t len);
-rt_size_t mavproxy_dev_sync_write(uint8_t chan, const void* buffer, uint32_t len);
-rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout);
-rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout);
-uint8_t mavproxy_dev_used_channel(void);
+rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout);
+rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout);
 void mavproxy_dev_set_rx_indicate(fmt_err(*rx_ind)(uint32_t size));
-int mavproxy_get_dev_chan(const char* name);
+fmt_err mavproxy_set_device(const char* dev_name);
+rt_device_t mavproxy_get_device(void);
 
 #endif
 

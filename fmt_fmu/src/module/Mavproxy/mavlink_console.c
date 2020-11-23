@@ -50,8 +50,6 @@ static void send_serial_control_msg(mavlink_serial_control_t* serial_control)
 			since usb driver doesn't support that. Therefore, we will push this
 			message into immediate msg queue, and let mavproxy send it out.
 		*/
-        // if(mavproxy_dev_used_channel() == 1)	/* channel 1 is usb */
-        // 	sync = 0;
 
         /* we use async send for all msg in interrupt context,
 			in order to do not influence the real-time performance */
