@@ -14,22 +14,22 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAVPROXY_CMD_H__
-#define __MAVPROXY_CMD_H__
+#ifndef __FMTIO_H__
+#define __FMTIO_H__
 
 #include <firmament.h>
 
-typedef enum {
-	MAVCMD_CALIBRATION_GYR = 0,
-	MAVCMD_CALIBRATION_ACC,
-	MAVCMD_CALIBRATION_MAG,
-	MAVCMD_STREAM_SESSION,
-	MAVCMD_ITEM_NUM     // do not remove it
-} MavCmd_ID;
+#include "module/fmtio/fmtio_protocol.h"
 
-void mavproxy_cmd_process(void);
-void mavcmd_set(MavCmd_ID cmd, void* data);
-void mavcmd_clear(MavCmd_ID cmd);
+typedef fmt_err (*fmtio_rx_handler_t)(const PackageStruct* pkg);
+
+fmt_err fmtio_init(void);
+void fmtio_loop(void);
+fmt_err fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler);
+fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len);
+fmt_err fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg);
+
+rt_device_t fmtio_get_device(void);
+void fmtio_suspend_comm(uint8_t suspend);
 
 #endif
-

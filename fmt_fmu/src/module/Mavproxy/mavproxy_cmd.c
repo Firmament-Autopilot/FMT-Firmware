@@ -738,7 +738,7 @@ void mavcmd_clear(MavCmd_ID cmd)
 #endif
 }
 
-void mavcmd_process(void)
+void mavproxy_cmd_process(void)
 {
     if (mavcmd_calib_gyr.set) {
         TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, _gyr_mavlink_calibration();)

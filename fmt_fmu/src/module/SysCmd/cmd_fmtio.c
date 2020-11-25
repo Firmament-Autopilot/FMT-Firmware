@@ -21,7 +21,7 @@
 #include "hal/serial.h"
 #include "module/fmtio/fmtio_uploader.h"
 #include "module/syscmd/syscmd.h"
-#include "task/task_fmtio.h"
+#include "module/fmtio/fmtio.h"
 
 static void show_usage(void)
 {

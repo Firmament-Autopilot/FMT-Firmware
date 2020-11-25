@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
+
 #include "module/fmtio/fmtio_protocol.h"
 
 #define TAG     "IO_PROTOCOL"
@@ -69,7 +69,7 @@ static uint16_t _calc_checksum(PackageStruct* pkg)
 
 /**************************** Public Function ********************************/
 
-fmt_err init_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg)
+fmt_err create_io_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg)
 {
 	/* fill head */
 	_fill_head(pkg);
@@ -106,7 +106,7 @@ fmt_err init_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg)
 	return FMT_EOK;
 }
 
-fmt_err init_static_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg)
+fmt_err init_io_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg)
 {
 	if(buffer == NULL)
 		return FMT_EINVAL;
@@ -134,7 +134,7 @@ fmt_err init_static_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg)
 	return FMT_EOK;
 }
 
-fmt_err write_package(uint8_t* content, uint16_t len, PackageStruct* pkg)
+fmt_err fill_io_package(const void* content, uint16_t len, PackageStruct* pkg)
 {
 	pkg->len = len;
 
@@ -154,7 +154,7 @@ fmt_err write_package(uint8_t* content, uint16_t len, PackageStruct* pkg)
 	return FMT_EOK;
 }
 
-void free_package(PackageStruct* pkg)
+void free_io_package(PackageStruct* pkg)
 {
 	if(pkg->alloc == 1 && pkg->content) {
 		/* free memory if it's allocated before */

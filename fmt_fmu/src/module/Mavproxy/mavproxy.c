@@ -461,7 +461,7 @@ void mavproxy_loop(void)
                 // send out periodical msg
                 _send_period_msg();
                 // process mavlink command
-                mavcmd_process();
+                mavproxy_cmd_process();
             }
         } else {
             // some err happen

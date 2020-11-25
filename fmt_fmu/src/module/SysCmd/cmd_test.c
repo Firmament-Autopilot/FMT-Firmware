@@ -29,7 +29,6 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/toml/toml.h"
-#include "task/task_fmtio.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "\
 target = \"Pixhawk FMUv2\"\n\

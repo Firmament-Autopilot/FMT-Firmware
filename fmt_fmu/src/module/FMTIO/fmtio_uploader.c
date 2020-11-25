@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "task/task_fmtio.h"
+#include "module/fmtio/fmtio.h"
 #include "module/fs_manager/fs_manager.h"
 #include "hal/fmtio_dev.h"
 #include "hal/serial.h"

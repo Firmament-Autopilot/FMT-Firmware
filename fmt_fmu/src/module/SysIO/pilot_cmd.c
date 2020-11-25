@@ -22,7 +22,6 @@
 #include "module/fms/fms_model.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/mavproxy/mavproxy.h"
-#include "task/task_fmtio.h"
 
 #define TOML_DBG(...)   console_printf(__VA_ARGS__)
 #define TOML_DBG_E(...) toml_debug("Pilot_Cmd", "E", __VA_ARGS__)
