@@ -33,11 +33,11 @@
 #define ACCEL_RD_SCALE 2
 
 /* default config for accel sensor */
-#define ACCEL_CONFIG_DEFAULT                                   \
-    {                                                          \
-        1000,               /* 1K sample rate */               \
-            260,            /* 260Hz internal lpf for accel */ \
-            ACCEL_RANGE_8G, /* +-8g */                         \
+#define ACCEL_CONFIG_DEFAULT                                    \
+    {                                                           \
+        1000,                /* 1K sample rate */               \
+            98,              /* 260Hz internal lpf for accel */ \
+            ACCEL_RANGE_16G, /* +-8g */                         \
     }
 
 struct accel_configure {

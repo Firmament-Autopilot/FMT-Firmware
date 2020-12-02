@@ -36,7 +36,7 @@
 #define GYRO_CONFIG_DEFAULT                        \
     {                                              \
         1000, /* 1K sample rate */                 \
-            256, /* 256Hz internal lpf */          \
+            98, /* 256Hz internal lpf */          \
             GYRO_RANGE_2000DPS, /* +-2000 deg/s */ \
     }
 
