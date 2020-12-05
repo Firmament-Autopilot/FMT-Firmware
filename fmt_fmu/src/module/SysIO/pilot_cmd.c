@@ -514,7 +514,7 @@ void _mav_send_pilot_cmd(void)
 
     mavlink_msg_fmt_pilot_cmd_encode(mav_sys.sysid, mav_sys.compid, &msg, &mav_pilot_cmd);
 
-    mavproxy_send_immediate_msg(&msg, 0);
+    mavproxy_send_immediate_msg(&msg, false);
 }
 
 void _mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)

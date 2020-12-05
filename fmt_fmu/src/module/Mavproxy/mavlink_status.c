@@ -16,8 +16,12 @@
 
 #include <firmament.h>
 #include <mavlink.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
 
-#include "module/mavproxy/mavlink_status.h"
+#include "module/mavproxy/mavproxy.h"
 
 static const mav_status_t mav_status[MAV_NOTICE_NUM] = {
 	{
@@ -239,3 +243,24 @@ mav_status_t mavlink_get_status_content(uint8_t status)
 	return mav_status[status];
 }
 
+fmt_err mavlink_send_statustext(int severity, const char *fmt, ...)
+{
+    mavlink_statustext_t statustext;
+    mavlink_message_t msg;
+    mavlink_system_t mavlink_system = mavproxy_get_system();
+
+    if (!fmt) {
+		return FMT_EEMPTY;
+	}
+
+    statustext.severity = severity;
+
+    va_list ap;
+	va_start(ap, fmt);
+	vsnprintf((char *)statustext.text, sizeof(statustext.text), fmt, ap);
+	va_end(ap);
+
+    mavlink_msg_statustext_encode(mavlink_system.sysid, mavlink_system.compid, &msg, &statustext);
+
+    return mavproxy_send_immediate_msg(&msg, true);
+}

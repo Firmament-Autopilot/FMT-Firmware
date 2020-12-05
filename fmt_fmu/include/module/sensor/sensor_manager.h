@@ -42,6 +42,23 @@
 #define SENSOR_CONVERSION			0x30
 #define SENSOR_IS_CONV_FIN			0x31
 
+struct sensor_imu{
+    rt_device_t gyr_dev;
+    rt_device_t acc_dev;
+    float gyr_rotation[3][3];
+    float gyr_offset[3];
+    float acc_rotation[3][3];
+    float acc_offset[3];
+};
+typedef struct sensor_imu* sensor_imu_t;
+
+struct sensor_mag{
+    rt_device_t dev;
+    float rotation[3][3];
+    float offset[3];
+};
+typedef struct sensor_mag* sensor_mag_t;
+
 typedef struct {
 	uint32_t timestamp_ms;
 	float gyr_B_radDs[3];

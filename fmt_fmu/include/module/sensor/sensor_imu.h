@@ -19,13 +19,20 @@
 
 #include <firmament.h>
 
-#define SENSOR_IMU_NUM              2
+#include "module/sensor/sensor_manager.h"
 
-fmt_err sensor_imu_init(void);
+sensor_imu_t sensor_imu_init(const char* gyr_dev_name, const char* acc_dev_name);
 
-fmt_err sensor_gyr_raw_measure(int16_t gyr[3], uint8_t imu_id);
-fmt_err sensor_gyr_measure(float gyr[3], uint8_t imu_id);
-fmt_err sensor_acc_raw_measure(int16_t acc[3], uint8_t imu_id);
-fmt_err sensor_acc_measure(float acc[3], uint8_t imu_id);
+fmt_err sensor_gyr_raw_measure(sensor_imu_t imu_dev, int16_t gyr[3]);
+fmt_err sensor_gyr_measure(sensor_imu_t imu_dev, float gyr[3]);
+void sensor_gyr_set_rotation(sensor_imu_t imu_dev, const float rotation[9]);
+void sensor_gyr_set_offset(sensor_imu_t imu_dev, const float offset[3]);
+void sensor_gyr_correct(sensor_imu_t imu_dev, const float gyr[3], float gyr_cor[3]);
+
+fmt_err sensor_acc_raw_measure(sensor_imu_t imu_dev, int16_t acc[3]);
+fmt_err sensor_acc_measure(sensor_imu_t imu_dev, float acc[3]);
+void sensor_acc_set_rotation(sensor_imu_t imu_dev, const float rotation[9]);
+void sensor_acc_set_offset(sensor_imu_t imu_dev, const float offset[3]);
+void sensor_acc_correct(sensor_imu_t imu_dev, const float acc[3], float acc_cor[3]);
 
 #endif

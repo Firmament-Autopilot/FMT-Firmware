@@ -55,7 +55,7 @@ fmt_err send_hil_actuator_cmd(void)
         hil_actuator_ctrl.controls[3] = (float)control_out.actuator_cmd[3] * 0.002f - 3.0f;
         mavlink_msg_hil_actuator_controls_encode(mav_sys.sysid, mav_sys.compid, &msg, &hil_actuator_ctrl);
 
-        err = mavproxy_send_immediate_msg(&msg, 1) == 1 ? FMT_EOK : FMT_ERROR;
+        err = mavproxy_send_immediate_msg(&msg, true);
     }
 
     return err;

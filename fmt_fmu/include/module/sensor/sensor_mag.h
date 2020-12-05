@@ -22,9 +22,11 @@
 #define MAG1_DEVICE_NAME			"lsm303d"
 #define MAG2_DEVICE_NAME			"hmc5883"   //external mag
 
-rt_err_t sensor_mag_init(void);
-
-rt_err_t sensor_mag_raw_measure(int16_t mag[3], uint8_t mag_id);
-rt_err_t sensor_mag_measure(float mag[3], uint8_t mag_id);
+sensor_mag_t sensor_mag_init(const char* mag_dev_name);
+rt_err_t sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t mag[3]);
+rt_err_t sensor_mag_measure(sensor_mag_t mag_dev, float mag[3]);
+void sensor_mag_set_rotation(sensor_mag_t mag_dev, const float rotation[9]);
+void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3]);
+void sensor_mag_correct(sensor_mag_t mag_dev, const float mag[3], float mag_cor[3]);
 
 #endif

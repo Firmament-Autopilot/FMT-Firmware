@@ -39,7 +39,7 @@ void mav_console_timeout(void* parameter)
 
 static void send_serial_control_msg(mavlink_serial_control_t* serial_control)
 {
-    uint8_t sync = 1;
+    bool sync = true;
     mavlink_message_t msg;
     mavlink_system_t mavlink_system = mavproxy_get_system();
 
@@ -53,7 +53,7 @@ static void send_serial_control_msg(mavlink_serial_control_t* serial_control)
 
         /* we use async send for all msg in interrupt context,
 			in order to do not influence the real-time performance */
-        sync = 0;
+        sync = false;
     }
 
     mavproxy_send_immediate_msg(&msg, sync);

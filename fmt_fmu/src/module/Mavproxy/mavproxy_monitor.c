@@ -117,7 +117,7 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
 
                 mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, msg, &ftp_protocol_t);
 
-                if (mavproxy_send_immediate_msg(msg, 0) != 1) {
+                if (mavproxy_send_immediate_msg(msg, 0) != FMT_EOK) {
                     console_printf("ftp msg send err\n");
                     return FMT_ERROR;
                 }

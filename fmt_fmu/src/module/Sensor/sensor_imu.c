@@ -16,125 +16,164 @@
 
 #include <firmament.h>
 
-#include "module/sensor/sensor_imu.h"
-#include "hal/gyro.h"
 #include "hal/accel.h"
-
-static rt_device_t gyro_t[SENSOR_IMU_NUM];
-static rt_device_t accel_t[SENSOR_IMU_NUM];
+#include "hal/gyro.h"
+#include "module/sensor/sensor_imu.h"
 
 /**************************	GYR API	**************************/
 
-fmt_err sensor_gyr_raw_measure(int16_t gyr[3], uint8_t imu_id)
+fmt_err sensor_gyr_raw_measure(sensor_imu_t imu_dev, int16_t gyr[3])
 {
-	rt_size_t r_size;
+    rt_size_t r_size;
 
-	if(imu_id > SENSOR_IMU_NUM - 1) {
-		/* invalid imu id */
-		return 0;
-	}
+    if (imu_dev == NULL || imu_dev->gyr_dev == NULL) {
+        return FMT_EEMPTY;
+    }
 
-	if(gyro_t[imu_id] == NULL) {
-		return 0;
-	}
+    r_size = rt_device_read(imu_dev->gyr_dev, GYRO_RD_RAW, (void*)gyr, 6);
 
-	r_size = rt_device_read(gyro_t[imu_id], GYRO_RD_RAW, (void*)gyr, 6);
-
-	return r_size == 6 ? FMT_EOK : FMT_ERROR;
+    return r_size == 6 ? FMT_EOK : FMT_ERROR;
 }
 
 // unit: rad/s
-fmt_err sensor_gyr_measure(float gyr[3], uint8_t imu_id)
+fmt_err sensor_gyr_measure(sensor_imu_t imu_dev, float gyr[3])
 {
-	rt_size_t r_size;
+    rt_size_t r_size;
 
-	if(imu_id > SENSOR_IMU_NUM - 1) {
-		/* invalid imu id */
-		return 0;
-	}
+    if (imu_dev == NULL || imu_dev->gyr_dev == NULL) {
+        return FMT_EEMPTY;
+    }
 
-	if(gyro_t[imu_id] == NULL) {
-		return 0;
-	}
+    r_size = rt_device_read(imu_dev->gyr_dev, GYRO_RD_SCALE, (void*)gyr, 12);
 
-	r_size = rt_device_read(gyro_t[imu_id], GYRO_RD_SCALE, (void*)gyr, 12);
-
-	return r_size == 12 ? FMT_EOK : FMT_ERROR;
+    return r_size == 12 ? FMT_EOK : FMT_ERROR;
 }
 
+void sensor_gyr_set_rotation(sensor_imu_t imu_dev, const float rotation[9])
+{
+    imu_dev->gyr_rotation[0][0] = rotation[0];
+    imu_dev->gyr_rotation[0][1] = rotation[1];
+    imu_dev->gyr_rotation[0][2] = rotation[2];
+    imu_dev->gyr_rotation[1][0] = rotation[3];
+    imu_dev->gyr_rotation[1][1] = rotation[4];
+    imu_dev->gyr_rotation[1][2] = rotation[5];
+    imu_dev->gyr_rotation[2][0] = rotation[6];
+    imu_dev->gyr_rotation[2][1] = rotation[7];
+    imu_dev->gyr_rotation[2][2] = rotation[8];
+}
+
+void sensor_gyr_set_offset(sensor_imu_t imu_dev, const float offset[3])
+{
+    imu_dev->gyr_offset[0] = offset[0];
+    imu_dev->gyr_offset[1] = offset[1];
+    imu_dev->gyr_offset[2] = offset[2];
+}
+
+void sensor_gyr_correct(sensor_imu_t imu_dev, const float gyr[3], float gyr_cor[3])
+{
+    float temp[3];
+
+    temp[0] = gyr[0] - imu_dev->gyr_offset[0];
+    temp[1] = gyr[1] - imu_dev->gyr_offset[1];
+    temp[2] = gyr[2] - imu_dev->gyr_offset[2];
+
+    gyr_cor[0] = imu_dev->gyr_rotation[0][0] * temp[0] + imu_dev->gyr_rotation[0][1] * temp[1] + imu_dev->gyr_rotation[0][2] * temp[2];
+    gyr_cor[1] = imu_dev->gyr_rotation[1][0] * temp[0] + imu_dev->gyr_rotation[1][1] * temp[1] + imu_dev->gyr_rotation[1][2] * temp[2];
+    gyr_cor[2] = imu_dev->gyr_rotation[2][0] * temp[0] + imu_dev->gyr_rotation[2][1] * temp[1] + imu_dev->gyr_rotation[2][2] * temp[2];
+}
 
 /**************************	ACC API	**************************/
 
-fmt_err sensor_acc_raw_measure(int16_t acc[3], uint8_t imu_id)
+fmt_err sensor_acc_raw_measure(sensor_imu_t imu_dev, int16_t acc[3])
 {
-	rt_size_t r_size;
+    rt_size_t r_size;
 
-	if(imu_id > SENSOR_IMU_NUM - 1) {
-		/* invalid imu id */
-		return 0;
-	}
+    if (imu_dev == NULL || imu_dev->acc_dev == NULL) {
+        return FMT_EEMPTY;
+    }
 
-	if(accel_t[imu_id] == NULL) {
-		return 0;
-	}
+    r_size = rt_device_read(imu_dev->acc_dev, ACCEL_RD_RAW, (void*)acc, 6);
 
-	r_size = rt_device_read(accel_t[imu_id], ACCEL_RD_RAW, (void*)acc, 6);
-
-	return r_size == 6 ? FMT_EOK : FMT_ERROR;
+    return r_size == 6 ? FMT_EOK : FMT_ERROR;
 }
 
 // unit: m/s2
-fmt_err sensor_acc_measure(float acc[3], uint8_t imu_id)
+fmt_err sensor_acc_measure(sensor_imu_t imu_dev, float acc[3])
 {
-	rt_size_t r_size;
+    rt_size_t r_size;
 
-	if(imu_id > SENSOR_IMU_NUM - 1) {
-		/* invalid imu id */
-		return 0;
-	}
+    if (imu_dev == NULL || imu_dev->acc_dev == NULL) {
+        return FMT_EEMPTY;
+    }
 
-	if(accel_t[imu_id] == NULL) {
-		return 0;
-	}
+    r_size = rt_device_read(imu_dev->acc_dev, ACCEL_RD_SCALE, (void*)acc, 12);
 
-	r_size = rt_device_read(accel_t[imu_id], ACCEL_RD_SCALE, (void*)acc, 12);
-
-	return r_size == 12 ? FMT_EOK : FMT_ERROR;
+    return r_size == 12 ? FMT_EOK : FMT_ERROR;
 }
 
-fmt_err sensor_imu_init(void)
+void sensor_acc_set_rotation(sensor_imu_t imu_dev, const float rotation[9])
 {
-	rt_err_t rt_err = FMT_EOK;
+    imu_dev->acc_rotation[0][0] = rotation[0];
+    imu_dev->acc_rotation[0][1] = rotation[1];
+    imu_dev->acc_rotation[0][2] = rotation[2];
+    imu_dev->acc_rotation[1][0] = rotation[3];
+    imu_dev->acc_rotation[1][1] = rotation[4];
+    imu_dev->acc_rotation[1][2] = rotation[5];
+    imu_dev->acc_rotation[2][0] = rotation[6];
+    imu_dev->acc_rotation[2][1] = rotation[7];
+    imu_dev->acc_rotation[2][2] = rotation[8];
+}
 
-	gyro_t[0] = rt_device_find("gyro0");
+void sensor_acc_set_offset(sensor_imu_t imu_dev, const float offset[3])
+{
+    imu_dev->acc_offset[0] = offset[0];
+    imu_dev->acc_offset[1] = offset[1];
+    imu_dev->acc_offset[2] = offset[2];
+}
 
-	if(gyro_t[0]) {
-		rt_err |= rt_device_open(gyro_t[0], RT_DEVICE_OFLAG_RDWR);
-	}
+void sensor_acc_correct(sensor_imu_t imu_dev, const float acc[3], float acc_cor[3])
+{
+    float temp[3];
 
-	accel_t[0] = rt_device_find("accel0");
+    temp[0] = acc[0] - imu_dev->acc_offset[0];
+    temp[1] = acc[1] - imu_dev->acc_offset[1];
+    temp[2] = acc[2] - imu_dev->acc_offset[2];
 
-	if(accel_t[0]) {
-		rt_err |= rt_device_open(accel_t[0], RT_DEVICE_OFLAG_RDWR);
-	}
+    acc_cor[0] = imu_dev->acc_rotation[0][0] * temp[0] + imu_dev->acc_rotation[0][1] * temp[1] + imu_dev->acc_rotation[0][2] * temp[2];
+    acc_cor[1] = imu_dev->acc_rotation[1][0] * temp[0] + imu_dev->acc_rotation[1][1] * temp[1] + imu_dev->acc_rotation[1][2] * temp[2];
+    acc_cor[2] = imu_dev->acc_rotation[2][0] * temp[0] + imu_dev->acc_rotation[2][1] * temp[1] + imu_dev->acc_rotation[2][2] * temp[2];
+}
 
-	gyro_t[1] = rt_device_find("gyro1");
+sensor_imu_t sensor_imu_init(const char* gyr_dev_name, const char* acc_dev_name)
+{
+    sensor_imu_t imu_dev = (sensor_imu_t)rt_malloc(sizeof(struct sensor_imu));
 
-	if(gyro_t[1]) {
-		rt_err |= rt_device_open(gyro_t[1], RT_DEVICE_OFLAG_RDWR);
-	}
+    if (imu_dev == NULL) {
+        return imu_dev;
+    }
 
-	accel_t[1] = rt_device_find("accel1");
+    if (gyr_dev_name) {
+        imu_dev->gyr_dev = rt_device_find(gyr_dev_name);
+        if (imu_dev->gyr_dev == NULL) {
+            goto err;
+        }
+        if (rt_device_open(imu_dev->gyr_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+            goto err;
+        }
+    }
 
-	if(accel_t[1]) {
-		rt_err |= rt_device_open(accel_t[1], RT_DEVICE_OFLAG_RDWR);
-	}
+    if (acc_dev_name) {
+        imu_dev->acc_dev = rt_device_find(acc_dev_name);
+        if (imu_dev->acc_dev == NULL) {
+            goto err;
+        }
+        if (rt_device_open(imu_dev->acc_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+            goto err;
+        }
+    }
 
-	if(gyro_t[0] == NULL || accel_t[0] == NULL) {
-		/* main imu must be available */
-		console_printf("main imu is not available\n");
-		rt_err = RT_ERROR;
-	}
-
-	return rt_err == RT_EOK ? FMT_EOK : FMT_ERROR;
+    return imu_dev;
+err:
+    rt_free(imu_dev);
+    return NULL;
 }

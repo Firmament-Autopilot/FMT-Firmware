@@ -541,7 +541,7 @@ Out:
 	system = mavproxy_get_system();
 
 	mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, &msg, &ftp_protocol_t);
-	mavproxy_send_immediate_msg(&msg, 1);
+	mavproxy_send_immediate_msg(&msg, true);
 
 	return FMT_EOK;
 }

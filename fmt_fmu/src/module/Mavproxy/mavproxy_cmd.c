@@ -20,25 +20,28 @@
 
 #include "module/fs_manager/fs_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/ins/ins_model.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
-#include "module/mavproxy/mavproxy.h"
+#include "module/sensor/sensor_manager.h"
 #include "task/task_vehicle.h"
 
 #define TAG "MAVCMD"
 
 MCN_DECLARE(sensor_imu);
-// MCN_DECLARE(sensor_mag);
-MCN_DECLARE(INS_FLAG);
+MCN_DECLARE(sensor_imu_scale);
+MCN_DECLARE(sensor_mag_scale);
+MCN_DECLARE(ins_output);
 
-#define GYR_CALIBRATE_COUNT 500
-#define ACC_CALIBRATE_COUNT 200
-#define MAG_CALIBRATE_COUNT 300
-#define ACC_MAX_THRESHOLD   8.8f
-#define ACC_MIN_THRESHOLD   1.0f
-#define GYR_ROTAT_THRESHOLD 1.0f
-#define CALIB_TIME_INTERVAL 20
+#define GYR_CALIBRATE_COUNT   500
+#define ACC_CALIBRATE_COUNT   200
+#define MAG_CALIBRATE_COUNT   300
+#define LEVEL_CALIBRATE_COUNT 200
+#define ACC_MAX_THRESHOLD     8.8f
+#define ACC_MIN_THRESHOLD     1.0f
+#define GYR_ROTAT_THRESHOLD   1.0f
+#define CALIB_TIME_INTERVAL   20
 
 typedef enum {
 
@@ -87,6 +90,15 @@ typedef struct {
 } MAVCMD_CALIB_MAG;
 
 typedef struct {
+    uint8_t set;
+    uint8_t num_retry;
+    uint32_t start_time;
+    uint32_t sample_cnt;
+    float board_roll_off;
+    float board_pitch_off;
+} MAVCMD_CALIB_LEVEL;
+
+typedef struct {
     float gyr_hist[3];
     uint16_t cnt;
     uint16_t jitter_num;
@@ -96,6 +108,7 @@ typedef struct {
 static MAVCMD_CALIB_GYR mavcmd_calib_gyr = { 0 };
 static MAVCMD_CALIB_ACC mavcmd_calib_acc = { 0 };
 static MAVCMD_CALIB_MAG mavcmd_calib_mag = { 0 };
+static MAVCMD_CALIB_LEVEL mavcmd_calib_level = { 0 };
 static JitterDetect jitter_detect;
 static uint8_t _mavcmd_set[MAVCMD_ITEM_NUM] = { 0 };
 static StreamSession* _ftp_stream_session = NULL;
@@ -217,7 +230,7 @@ static void _send_statustext_msg(mav_status_type status, mavlink_message_t* msg)
     memcpy(statustext.text, mavlink_get_status_content(status).string, strlen(mavlink_get_status_content(status).string));
     mavlink_msg_statustext_encode(mavlink_system.sysid, mavlink_system.compid, msg, &statustext);
 
-    mavproxy_send_immediate_msg(msg, 1);
+    mavproxy_send_immediate_msg(msg, true);
 }
 
 void _gyr_calibration_init(void)
@@ -239,7 +252,7 @@ void _gyr_calibration_reset(void)
 void _gyr_mavlink_calibration(void)
 {
     mavlink_message_t msg;
-    float gyr[3];
+    IMU_Report imu_report;
 
     if (mavcmd_calib_gyr.cnt == 0) {
 
@@ -253,15 +266,17 @@ void _gyr_mavlink_calibration(void)
         _send_statustext_msg(CAL_START_GYRO, &msg);
     }
 
-    sensor_gyr_measure(gyr, 0);
+    if(mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK){
+        return;
+    }
 
-    mavcmd_calib_gyr.sum[0] += gyr[0];
-    mavcmd_calib_gyr.sum[1] += gyr[1];
-    mavcmd_calib_gyr.sum[2] += gyr[2];
+    mavcmd_calib_gyr.sum[0] += imu_report.gyr_B_radDs[0];
+    mavcmd_calib_gyr.sum[1] += imu_report.gyr_B_radDs[1];
+    mavcmd_calib_gyr.sum[2] += imu_report.gyr_B_radDs[2];
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
     if (_cfd != -1) {
-        fs_fprintf(_cfd, "%f %f %f\n", gyr[0], gyr[1], gyr[2]);
+        fs_fprintf(_cfd, "%f %f %f\n", imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2]);
     }
 #endif
 
@@ -357,17 +372,19 @@ void _acc_mavlink_calibration(void)
         }
 
         if (mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] < ACC_CALIBRATE_COUNT) {
-            float acc[3];
+            IMU_Report imu_report;
 
-            sensor_acc_measure(acc, 0);
+            if(mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK){
+                return;
+            }
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
             if (_cfd != -1) {
-                fs_fprintf(_cfd, "%f %f %f\n", acc[0], acc[1], acc[2]);
+                fs_fprintf(_cfd, "%f %f %f\n", imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
             }
 #endif
 
-            ellipsoid_fit_step(acc[0], acc[1], acc[2],
+            ellipsoid_fit_step(imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2],
                 mavcmd_calib_acc.v, mavcmd_calib_acc.P, 0.001,
                 mavcmd_calib_acc.next_v, mavcmd_calib_acc.next_P);
 
@@ -577,17 +594,19 @@ void _mag_mavlink_calibration(void)
         }
 
         if (rotat) {
-            float mag[3];
+            Mag_Report mag_report;
 
-            sensor_mag_measure(mag, 0);
+            if(mcn_copy_from_hub(MCN_HUB(sensor_mag_scale), &mag_report) != FMT_EOK){
+                return;
+            }
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
             if (_cfd != -1) {
-                fs_fprintf(_cfd, "%f %f %f\n", mag[0], mag[1], mag[2]);
+                fs_fprintf(_cfd, "%f %f %f\n", mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
             }
 #endif
 
-            ellipsoid_fit_step(mag[0], mag[1], mag[2],
+            ellipsoid_fit_step(mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2],
                 mavcmd_calib_mag.v, mavcmd_calib_mag.P, 0.001,
                 mavcmd_calib_mag.next_v, mavcmd_calib_mag.next_P);
 
@@ -674,6 +693,93 @@ void _mag_mavlink_calibration(void)
     }
 }
 
+void _level_calibration_init(void)
+{
+    mavcmd_calib_level.sample_cnt = 0;
+    mavcmd_calib_level.start_time = systime_now_ms();
+    mavcmd_calib_level.num_retry = 0;
+    mavcmd_calib_level.board_roll_off = mavcmd_calib_level.board_pitch_off = 0.0f;
+}
+
+void _level_calibration_reset(void)
+{
+    mavcmd_calib_level.set = 0;
+
+    mavcmd_clear(MAVCMD_CALIBRATION_LEVEL);
+    _level_calibration_init();
+}
+
+static void _level_calibration(void)
+{
+    INS_Out_Bus ins_out;
+    static float min_angle[2];
+    static float max_angle[2];
+    float roll_off_current = PARAM_GET_FLOAT(CALIB, LEVEL_XOFF);
+    float pitch_off_current = PARAM_GET_FLOAT(CALIB, LEVEL_YOFF);
+
+    if (mavcmd_calib_level.sample_cnt == 0 && mavcmd_calib_level.num_retry == 0) {
+        min_angle[0] = min_angle[1] = 100.0f;
+        max_angle[0] = max_angle[1] = -100.0f;
+        mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_STARTED_MSG, "level");
+    }
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) == FMT_EOK) {
+        /* add existing offset */
+        mavcmd_calib_level.board_roll_off += (ins_out.phi + roll_off_current);
+        mavcmd_calib_level.board_pitch_off += (ins_out.theta + pitch_off_current);
+        mavcmd_calib_level.sample_cnt++;
+        /* send progress */
+        int progress = 100 * mavcmd_calib_level.sample_cnt / LEVEL_CALIBRATE_COUNT;
+        mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_PROGRESS_MSG, progress);
+        /* record min/max angle to detect jitter */
+        if (ins_out.phi < min_angle[0]) {
+            min_angle[0] = ins_out.phi;
+        }
+        if (ins_out.phi > max_angle[0]) {
+            max_angle[0] = ins_out.phi;
+        }
+        if (ins_out.theta < min_angle[1]) {
+            min_angle[1] = ins_out.theta;
+        }
+        if (ins_out.theta > max_angle[1]) {
+            max_angle[1] = ins_out.theta;
+        }
+
+        if (max_angle[0] - min_angle[0] > 0.25f || max_angle[1] - min_angle[1] > 0.25f) {
+            /* detect jitter, reset and retry again */
+            mavcmd_calib_level.num_retry++;
+            if (mavcmd_calib_level.num_retry > 10) {
+                mavlink_send_statustext(MAVLINK_STATUS_CRITICAL, CAL_QGC_FAILED_MSG, "level");
+                _level_calibration_reset();
+            } else {
+                mavcmd_calib_level.sample_cnt = 0;
+                mavcmd_calib_level.start_time = systime_now_ms();
+                mavcmd_calib_level.board_roll_off = mavcmd_calib_level.board_pitch_off = 0.0f;
+            }
+            return;
+        }
+    }
+
+    if (mavcmd_calib_level.sample_cnt >= LEVEL_CALIBRATE_COUNT) {
+        mavcmd_calib_level.board_roll_off /= mavcmd_calib_level.sample_cnt;
+        mavcmd_calib_level.board_pitch_off /= mavcmd_calib_level.sample_cnt;
+
+        if (fabs(mavcmd_calib_level.board_roll_off) > 0.8f) {
+            mavlink_send_statustext(MAVLINK_STATUS_CRITICAL, "excess roll angle");
+        } else if (fabs(mavcmd_calib_level.board_pitch_off) > 0.8f) {
+            mavlink_send_statustext(MAVLINK_STATUS_CRITICAL, "excess pitch angle");
+        } else {
+            PARAM_SET_FLOAT(CALIB, LEVEL_XOFF, mavcmd_calib_level.board_roll_off);
+            PARAM_SET_FLOAT(CALIB, LEVEL_YOFF, mavcmd_calib_level.board_pitch_off);
+
+            mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_DONE_MSG, "level");
+            //console_printf("Update Level Horizontal Offset: [%f %f]\n", mavcmd_calib_level.board_roll_off, mavcmd_calib_level.board_pitch_off);
+            
+            _level_calibration_reset();
+        }
+    }
+}
+
 void mavcmd_set(MavCmd_ID cmd, void* data)
 {
     if (cmd == MAVCMD_CALIBRATION_GYR) {
@@ -709,7 +815,10 @@ void mavcmd_set(MavCmd_ID cmd, void* data)
 #endif
 
         _mag_calibration_init();
-    } else if (cmd == MAVCMD_STREAM_SESSION) {
+    } else if (cmd == MAVCMD_CALIBRATION_LEVEL) {
+        mavcmd_calib_level.set = 1;
+        _level_calibration_init();
+    }else if (cmd == MAVCMD_STREAM_SESSION) {
 
         if (data) {
             /* ftp stream session */
@@ -745,11 +854,15 @@ void mavproxy_cmd_process(void)
     }
 
     if (mavcmd_calib_acc.set) {
-        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, _acc_mavlink_calibration();)
+        TIMETAG_CHECK_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, _acc_mavlink_calibration();)
     }
 
     if (mavcmd_calib_mag.set) {
-        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, _mag_mavlink_calibration();)
+        TIMETAG_CHECK_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, _mag_mavlink_calibration();)
+    }
+
+    if (mavcmd_calib_level.set) {
+        TIMETAG_CHECK_EXECUTE(level_calib, 10, _level_calibration();)
     }
 
     if (_mavcmd_set[MAVCMD_STREAM_SESSION]) {

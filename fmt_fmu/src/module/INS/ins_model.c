@@ -84,37 +84,6 @@ static void _blog_start_cb(void)
 
 void _update_ins_parameter(void)
 {
-    INS_PARAM.GyroBias[0] = PARAM_GET_FLOAT(CALIB, GYRO0_XOFF);
-    INS_PARAM.GyroBias[1] = PARAM_GET_FLOAT(CALIB, GYRO0_YOFF);
-    INS_PARAM.GyroBias[2] = PARAM_GET_FLOAT(CALIB, GYRO0_ZOFF);
-
-    INS_PARAM.AccBias[0] = PARAM_GET_FLOAT(CALIB, ACC0_XOFF);
-    INS_PARAM.AccBias[1] = PARAM_GET_FLOAT(CALIB, ACC0_YOFF);
-    INS_PARAM.AccBias[2] = PARAM_GET_FLOAT(CALIB, ACC0_ZOFF);
-    INS_PARAM.AccRotMat[0] = PARAM_GET_FLOAT(CALIB, ACC0_XXSCALE);
-    INS_PARAM.AccRotMat[1] = PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE);
-    INS_PARAM.AccRotMat[2] = PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE);
-    INS_PARAM.AccRotMat[3] = PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE);
-    INS_PARAM.AccRotMat[4] = PARAM_GET_FLOAT(CALIB, ACC0_YYSCALE);
-    INS_PARAM.AccRotMat[5] = PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE);
-    INS_PARAM.AccRotMat[6] = PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE);
-    INS_PARAM.AccRotMat[7] = PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE);
-    INS_PARAM.AccRotMat[8] = PARAM_GET_FLOAT(CALIB, ACC0_ZZSCALE);
-
-    INS_PARAM.MagBias[0] = PARAM_GET_FLOAT(CALIB, MAG0_XOFF);
-    INS_PARAM.MagBias[1] = PARAM_GET_FLOAT(CALIB, MAG0_YOFF);
-    INS_PARAM.MagBias[2] = PARAM_GET_FLOAT(CALIB, MAG0_ZOFF);
-    INS_PARAM.MagRotMat[0] = PARAM_GET_FLOAT(CALIB, MAG0_XXSCALE);
-    INS_PARAM.MagRotMat[1] = PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE);
-    INS_PARAM.MagRotMat[2] = PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE);
-    INS_PARAM.MagRotMat[3] = PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE);
-    INS_PARAM.MagRotMat[4] = PARAM_GET_FLOAT(CALIB, MAG0_YYSCALE);
-    INS_PARAM.MagRotMat[5] = PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE);
-    INS_PARAM.MagRotMat[6] = PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE);
-    INS_PARAM.MagRotMat[7] = PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE);
-    INS_PARAM.MagRotMat[8] = PARAM_GET_FLOAT(CALIB, MAG0_ZZSCALE);
-
-    INS_PARAM.USE_EXTERN_FILTER = PARAM_GET_UINT8(INS, USE_EXTERN_FILTER);
 }
 
 void ins_model_step(void)
@@ -185,7 +154,7 @@ void ins_model_step(void)
     }
 
     /* update rangefinder data */
-    if(mcn_poll(ins_handle.rf_sub_node_t)){
+    if (mcn_poll(ins_handle.rf_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
         // INS_U.Rangefinder.distance_m = ins_handle.rf_report.distance_m;
@@ -195,7 +164,7 @@ void ins_model_step(void)
     }
 
     /* update optical flow data */
-    if(mcn_poll(ins_handle.optflow_sub_node_t)){
+    if (mcn_poll(ins_handle.optflow_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
         ins_handle.optflow_updated = 1;

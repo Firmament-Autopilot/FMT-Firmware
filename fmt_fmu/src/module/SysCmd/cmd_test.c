@@ -29,6 +29,8 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/toml/toml.h"
+#include "module/mavproxy/mavproxy.h"
+#include "module/sensor/sensor_manager.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "\
 target = \"Pixhawk FMUv2\"\n\
@@ -47,10 +49,10 @@ rt_device_t _systick_dev;
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    console_printf("%s\n", DEFAULT_TOML_SYS_CONFIG);
-    toml_table_t* tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
-    toml_print_table(tab);
-    toml_free(tab);
+    // console_printf("%s\n", DEFAULT_TOML_SYS_CONFIG);
+    // toml_table_t* tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
+    // toml_print_table(tab);
+    // toml_free(tab);
 
     return 0;
 }

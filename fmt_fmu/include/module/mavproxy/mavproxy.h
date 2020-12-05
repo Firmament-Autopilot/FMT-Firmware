@@ -35,7 +35,7 @@ fmt_err mavproxy_toml_init(toml_table_t* table);
 void mavproxy_loop(void);
 mavlink_system_t mavproxy_get_system(void);
 fmt_err mavproxy_send_event(uint32_t event_set);
-uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, uint8_t sync);
+fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync);
 uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     void (*msg_pack_cb)(mavlink_message_t* msg_t), uint8_t enable);
 void mavproxy_handle_command(mavlink_command_long_t* command, mavlink_message_t* msg);

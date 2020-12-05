@@ -368,7 +368,7 @@ void send_mavlink_param(char* name)
 
         if (strcmp(mav_param->name, name) == 0) {
             _mav_param_pack(&msg, mav_param);
-            mavproxy_send_immediate_msg(&msg, 1);
+            mavproxy_send_immediate_msg(&msg, true);
             break;
         }
     }
@@ -389,7 +389,7 @@ void mavlink_param_send_all(void)
         }
 
         _mav_param_pack(&msg, mav_param);
-        mavproxy_send_immediate_msg(&msg, 1);
+        mavproxy_send_immediate_msg(&msg, true);
         rt_thread_delay(10);    // the delay is needed because TELEM has relatively high transfer latency
     }
 
@@ -398,7 +398,7 @@ void mavlink_param_send_all(void)
 
         for (uint32_t j = 0; j < gp->param_num; j++) {
             _param_pack(&msg, param);
-            mavproxy_send_immediate_msg(&msg, 1);
+            mavproxy_send_immediate_msg(&msg, true);
             rt_thread_delay(10);    // the delay is needed because TELEM has relatively high transfer latency
 
             param++;
@@ -473,7 +473,7 @@ fmt_err mavlink_param_send(const param_t* param)
     mavlink_message_t msg;
 
     _param_pack(&msg, param);
-    mavproxy_send_immediate_msg(&msg, 1);
+    mavproxy_send_immediate_msg(&msg, true);
 
     return FMT_EOK;
 }

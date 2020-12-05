@@ -245,8 +245,7 @@ static void _usb_status_change(void* parameter)
 static uint8_t _send_immediate_msg(void)
 {
     while (_imm_msg_queue.head != _imm_msg_queue.tail) {
-        if (mavproxy_send_immediate_msg(&_imm_msg_queue.queue[_imm_msg_queue.tail],
-                1)) {
+        if (mavproxy_send_immediate_msg(&_imm_msg_queue.queue[_imm_msg_queue.tail], true) == FMT_EOK) {
             OS_ENTER_CRITICAL;
             _imm_msg_queue.tail = (_imm_msg_queue.tail + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
             OS_EXIT_CRITICAL;
@@ -270,7 +269,7 @@ static uint8_t _send_period_msg(void)
             mavlink_message_t msg;
             msg_t->msg_pack_cb(&msg);
             // send out msg
-            mavproxy_send_immediate_msg(&msg, 1);
+            mavproxy_send_immediate_msg(&msg, true);
 
             return 1;
         }
@@ -284,7 +283,7 @@ static void _send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlin
     mavlink_msg_command_ack_encode(_mavlink_system.sysid, _mavlink_system.compid,
         msg, command_ack);
 
-    mavproxy_send_immediate_msg(msg, 1);
+    mavproxy_send_immediate_msg(msg, true);
 }
 
 fmt_err mavproxy_switch_channel(uint8_t chan)
@@ -336,7 +335,7 @@ void mavproxy_handle_command(mavlink_command_long_t* command, mavlink_message_t*
         } else if (command->param5 == 1) { // calibration acc
             mavcmd_set(MAVCMD_CALIBRATION_ACC, NULL);
         } else if (command->param5 == 2) { // calibration level
-            // mavproxy_send_statustext_msg(CAL_START_LEVEL, msg);
+            mavcmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
         } else {
             /* all 0 command, cancel current process */
         }
@@ -375,7 +374,7 @@ uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     }
 }
 
-uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, uint8_t sync)
+fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
 {
     /* if sync flag set, send out msg immediately */
     if (sync) {
@@ -390,7 +389,7 @@ uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, uint8_t sync)
 
         rt_sem_release(_mavproxy_tx_lock);
 
-        return size == len ? 1 : 0;
+        return size == len ? FMT_EOK : FMT_ERROR;
     }
 
     /* otherwise, push msg into queue (asynchronize mode) */
@@ -398,7 +397,7 @@ uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, uint8_t sync)
 
     if ((_imm_msg_queue.head + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE == _imm_msg_queue.tail) {
         OS_EXIT_CRITICAL;
-        return 0;
+        return FMT_EFULL;
     }
 
     _imm_msg_queue.queue[_imm_msg_queue.head] = *msg;
@@ -408,7 +407,7 @@ uint8_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, uint8_t sync)
     /* wakeup mavproxy to send out temporary msg immediately */
     rt_event_send(&_event_mavproxy, EVENT_MAVPROXY_UPDATE);
 
-    return 1;
+    return FMT_EOK;
 }
 
 fmt_err mavproxy_send_event(uint32_t event_set)
