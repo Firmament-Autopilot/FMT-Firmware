@@ -169,6 +169,7 @@ static void _init_rotation(void)
     /* set rotation */
     sensor_gyr_set_rotation(_imu0_dev, gyr_rot.buffer);
     sensor_acc_set_rotation(_imu0_dev, acc_rot.buffer);
+    sensor_mag_set_rotation(_mag0_dev, mag_rot.buffer);
     /* delete matrix */
     MatDelete(&gyr_rot);
     MatDelete(&acc_rot);
