@@ -28,6 +28,7 @@
 #include "task/task_vehicle.h"
 
 MCN_DECLARE(ins_output);
+MCN_DECLARE(sensor_baro);
 
 static mavlink_system_t mavlink_system;
 
@@ -94,6 +95,23 @@ static void _msg_local_pos_pack(mavlink_message_t* msg_t)
         ins_out.vd);
 }
 
+static void _msg_altitude_pack(mavlink_message_t* msg_t)
+{
+    INS_Out_Bus ins_out;
+    Baro_Report baro_report;
+
+    mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
+    mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_report);
+
+    mavlink_msg_local_position_ned_pack(
+        mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
+        ins_out.x_R, ins_out.y_R, -ins_out.h_R, ins_out.vn, ins_out.ve,
+        ins_out.vd);
+
+    mavlink_msg_altitude_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms() * 1e3,
+        baro_report.altitude_m, baro_report.altitude_m, ins_out.h_R, ins_out.h_R, ins_out.h_AGL, 0.0f);
+}
+
 fmt_err task_comm_init(void)
 {
     fmt_err err;
@@ -116,6 +134,8 @@ void task_comm_entry(void* parameter)
         mavproxy_msg_attitude_pack, 1);
     mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
         _msg_local_pos_pack, 1);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100,
+        _msg_altitude_pack, 1);
 
     /* execute mavproxy main loop */
     mavproxy_loop();
