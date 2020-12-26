@@ -30,6 +30,8 @@
 #define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)
 #define EVENT_SEND_ALL_PARAM     (1 << 2)
 
+typedef bool (*msg_pack_cb_t)(mavlink_message_t* msg_t);
+
 fmt_err mavproxy_init(void);
 fmt_err mavproxy_toml_init(toml_table_t* table);
 void mavproxy_loop(void);
@@ -37,7 +39,7 @@ mavlink_system_t mavproxy_get_system(void);
 fmt_err mavproxy_send_event(uint32_t event_set);
 fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync);
 uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
-    void (*msg_pack_cb)(mavlink_message_t* msg_t), uint8_t enable);
+    msg_pack_cb_t msg_pack_cb, uint8_t enable);
 void mavproxy_handle_command(mavlink_command_long_t* command, mavlink_message_t* msg);
 
 #endif

@@ -87,6 +87,8 @@ typedef struct {
 	float velN;
 	float velE;
 	float velD;
+    float vel;
+    float cog;
 	float sAcc;
 	uint8_t fixType;
 	uint8_t numSV;

@@ -29,10 +29,11 @@
 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
+MCN_DECLARE(sensor_gps);
 
 static mavlink_system_t mavlink_system;
 
-static void mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
+static bool mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
 {
     mavlink_heartbeat_t heartbeat;
     // uint16_t len;
@@ -46,9 +47,11 @@ static void mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
 
     mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid,
         msg_t, &heartbeat);
+
+    return true;
 }
 
-static void mavproxy_msg_sys_status_pack(mavlink_message_t* msg_t)
+static bool mavproxy_msg_sys_status_pack(mavlink_message_t* msg_t)
 {
     mavlink_sys_status_t sys_status;
     // uint16_t len;
@@ -63,9 +66,11 @@ static void mavproxy_msg_sys_status_pack(mavlink_message_t* msg_t)
 
     mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid,
         msg_t, &sys_status);
+
+    return true;
 }
 
-static void mavproxy_msg_attitude_pack(mavlink_message_t* msg_t)
+static bool mavproxy_msg_attitude_pack(mavlink_message_t* msg_t)
 {
     mavlink_attitude_t attitude;
     INS_Out_Bus ins_out;
@@ -81,9 +86,11 @@ static void mavproxy_msg_attitude_pack(mavlink_message_t* msg_t)
 
     mavlink_msg_attitude_encode(mavlink_system.sysid, mavlink_system.compid,
         msg_t, &attitude);
+
+    return true;
 }
 
-static void _msg_local_pos_pack(mavlink_message_t* msg_t)
+static bool _msg_local_pos_pack(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
 
@@ -93,9 +100,11 @@ static void _msg_local_pos_pack(mavlink_message_t* msg_t)
         mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
         ins_out.x_R, ins_out.y_R, -ins_out.h_R, ins_out.vn, ins_out.ve,
         ins_out.vd);
+
+    return true;
 }
 
-static void _msg_altitude_pack(mavlink_message_t* msg_t)
+static bool _msg_altitude_pack(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
     Baro_Report baro_report;
@@ -103,13 +112,44 @@ static void _msg_altitude_pack(mavlink_message_t* msg_t)
     mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
     mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_report);
 
-    mavlink_msg_local_position_ned_pack(
-        mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
-        ins_out.x_R, ins_out.y_R, -ins_out.h_R, ins_out.vn, ins_out.ve,
-        ins_out.vd);
-
     mavlink_msg_altitude_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms() * 1e3,
         baro_report.altitude_m, baro_report.altitude_m, ins_out.h_R, ins_out.h_R, ins_out.h_AGL, 0.0f);
+
+    return true;
+}
+
+static bool _msg_gps_raw_int_pack(mavlink_message_t* msg_t)
+{
+    GPS_Report gps_report;
+    McnHub* hub = MCN_HUB(sensor_gps);
+    mavlink_gps_raw_int_t gps_raw_int;
+
+    if (!hub->published) {
+        return false;
+    }
+
+    mcn_copy_from_hub(MCN_HUB(sensor_gps), &gps_report);
+
+    gps_raw_int.time_usec = gps_report.timestamp_ms * 1e3;
+    gps_raw_int.lat = gps_report.lat;
+    gps_raw_int.lon = gps_report.lon;
+    gps_raw_int.alt = gps_report.height;
+    gps_raw_int.eph = gps_report.hAcc * 1e3;
+    gps_raw_int.epv = gps_report.vAcc * 1e3;
+    gps_raw_int.vel = gps_report.vel * 1e2;
+    gps_raw_int.cog = gps_report.cog * 1e2;
+    gps_raw_int.fix_type = gps_report.fixType;
+    gps_raw_int.satellites_visible = gps_report.numSV;
+    gps_raw_int.alt_ellipsoid = gps_report.height;
+    gps_raw_int.h_acc = gps_report.hAcc * 1e3;
+    gps_raw_int.v_acc = gps_report.vAcc * 1e3;
+    gps_raw_int.vel_acc = gps_report.sAcc * 1e3;
+    gps_raw_int.hdg_acc = 0;
+    gps_raw_int.yaw = 0;
+
+    mavlink_msg_gps_raw_int_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &gps_raw_int);
+
+    return true;
 }
 
 fmt_err task_comm_init(void)
@@ -128,14 +168,21 @@ void task_comm_entry(void* parameter)
     /* register periodical mavlink msg */
     mavproxy_register_period_msg(MAVLINK_MSG_ID_HEARTBEAT, 1000,
         mavproxy_msg_heartbeat_pack, 1);
+
     mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000,
         mavproxy_msg_sys_status_pack, 1);
+
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100,
         mavproxy_msg_attitude_pack, 1);
+
     mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
         _msg_local_pos_pack, 1);
+
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100,
         _msg_altitude_pack, 1);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100,
+        _msg_gps_raw_int_pack, 1);
 
     /* execute mavproxy main loop */
     mavproxy_loop();

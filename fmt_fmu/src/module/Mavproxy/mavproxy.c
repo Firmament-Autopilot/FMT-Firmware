@@ -20,6 +20,7 @@
 #include "hal/serial.h"
 #include "module/mavproxy/mavproxy.h"
 
+#define MAVPROXY_INTERVAL            2
 #define MAX_PERIOD_MSG_QUEUE_SIZE    20
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 10
 #define MAVPROXY_SERIAL_BAUDRATE     57600
@@ -41,7 +42,7 @@ typedef struct {
     uint8_t enable;
     uint16_t period;
     uint32_t time_stamp;
-    void (*msg_pack_cb)(mavlink_message_t* msg_t);
+    bool (*msg_pack_cb)(mavlink_message_t* msg_t);
 } MAV_PeriodMsg;
 
 typedef struct {
@@ -262,20 +263,19 @@ static uint8_t _send_period_msg(void)
         MAV_PeriodMsg* msg_t = &_period_msg_queue.queue[_period_msg_queue.index];
         _period_msg_queue.index = (_period_msg_queue.index + 1) % _period_msg_queue.size;
 
-        // find next msg to be sent
+        // find next msg to send
         if (now - msg_t->time_stamp >= msg_t->period && msg_t->enable) {
             msg_t->time_stamp = now;
             // pack msg
             mavlink_message_t msg;
-            msg_t->msg_pack_cb(&msg);
-            // send out msg
-            mavproxy_send_immediate_msg(&msg, true);
-
-            return 1;
+            if (msg_t->msg_pack_cb(&msg) == true) {
+                // send out msg
+                mavproxy_send_immediate_msg(&msg, true);
+            }
         }
     }
 
-    return 0;
+    return 1;
 }
 
 static void _send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlink_message_t* msg)
@@ -352,7 +352,7 @@ void mavproxy_handle_command(mavlink_command_long_t* command, mavlink_message_t*
 }
 
 uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
-    void (*msg_pack_cb)(mavlink_message_t* msg_t), uint8_t enable)
+    msg_pack_cb_t msg_pack_cb, uint8_t enable)
 {
     MAV_PeriodMsg msg;
 
@@ -360,13 +360,13 @@ uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     msg.enable = enable;
     msg.period = period_ms;
     msg.msg_pack_cb = msg_pack_cb;
-    msg.time_stamp = 0;
+    /* Add offset for msg */
+    msg.time_stamp = systime_now_ms() + _period_msg_queue.size * MAVPROXY_INTERVAL;
 
     if (_period_msg_queue.size < MAX_PERIOD_MSG_QUEUE_SIZE) {
         OS_ENTER_CRITICAL;
         _period_msg_queue.queue[_period_msg_queue.size++] = msg;
         OS_EXIT_CRITICAL;
-
         return 1;
     } else {
         console_printf("mavproxy period msg queue is full\n");
@@ -543,7 +543,7 @@ fmt_err mavproxy_init(void)
     rt_event_init(&_event_mavproxy, "mavproxy", RT_IPC_FLAG_FIFO);
 
     /* register timer event */
-    rt_timer_init(&_timer_mavproxy, "mav_update", _mavproxy_timer_update, RT_NULL, 2,
+    rt_timer_init(&_timer_mavproxy, "mav_update", _mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,
         RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     rt_timer_start(&_timer_mavproxy);
 

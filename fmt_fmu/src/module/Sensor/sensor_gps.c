@@ -38,6 +38,8 @@ fmt_err sensor_gps_get_report(GPS_Report* gps_report)
 	gps_report->velN = _gps_report.vel_n_m_s;
 	gps_report->velE = _gps_report.vel_e_m_s;
 	gps_report->velD = _gps_report.vel_d_m_s;
+    gps_report->vel = _gps_report.vel_m_s;
+    gps_report->cog = _gps_report.cog_rad;
 	gps_report->sAcc = _gps_report.s_variance_m_s;
 
 	return (r_size == sizeof(gps_report_t)) ? FMT_EOK : FMT_ERROR;
