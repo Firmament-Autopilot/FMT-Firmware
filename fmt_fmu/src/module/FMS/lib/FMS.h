@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.936
+ * Model version                  : 1.964
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Oct 12 15:34:21 2020
+ * C/C++ source code generated on : Fri Dec 25 09:05:22 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,34 +37,36 @@
 
 /* Block signals (default storage) */
 typedef struct {
-  real_T disarm_event;                 /* '<S89>/Disarm_Event' */
-  real_T arm_event;                    /* '<S89>/Arm_Event' */
+  real_T disarm_event;                 /* '<S93>/Disarm_Event' */
+  real_T arm_event;                    /* '<S93>/Arm_Event' */
   uint32_T control_mode;               /* '<S1>/Control_Mode' */
   uint16_T PWM_Cmd;                    /* '<S2>/State_Management' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S97>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_e;/* '<S98>/Discrete-Time Integrator5' */
-  real32_T Integrator1_DSTATE[3];      /* '<S69>/Integrator1' */
+  real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S101>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_e;/* '<S102>/Discrete-Time Integrator5' */
+  real32_T Delay_DSTATE_g[2];          /* '<S78>/Delay' */
+  real32_T Delay_DSTATE_f;             /* '<S79>/Delay' */
+  real32_T Integrator1_DSTATE;         /* '<S70>/Integrator1' */
+  real32_T Integrator1_DSTATE_j[2];    /* '<S69>/Integrator1' */
   real32_T Integrator1_DSTATE_p;       /* '<S30>/Integrator1' */
   real32_T Integrator1_DSTATE_g;       /* '<S17>/Integrator1' */
   real32_T Integrator1_DSTATE_e;       /* '<S16>/Integrator1' */
-  real32_T Delay_DSTATE_g[2];          /* '<S76>/Delay' */
-  real32_T Delay_DSTATE_f;             /* '<S77>/Delay' */
-  real32_T Integrator_DSTATE[3];       /* '<S69>/Integrator' */
-  real32_T Delay_DSTATE_l;             /* '<S33>/Delay' */
-  real32_T Integrator_DSTATE_m;        /* '<S30>/Integrator' */
+  real32_T Integrator_DSTATE[2];       /* '<S69>/Integrator' */
   real32_T Integrator_DSTATE_c;        /* '<S16>/Integrator' */
   real32_T Integrator_DSTATE_h;        /* '<S17>/Integrator' */
-  uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S82>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_l;             /* '<S33>/Delay' */
+  real32_T Integrator_DSTATE_m;        /* '<S30>/Integrator' */
+  real32_T Integrator_DSTATE_ch;       /* '<S70>/Integrator' */
+  uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S86>/Discrete-Time Integrator' */
   uint32_T local_mode;                 /* '<S1>/Control_Mode' */
-  uint16_T temporalCounter_i1;         /* '<S89>/Disarm_Event' */
+  uint16_T temporalCounter_i1;         /* '<S93>/Disarm_Event' */
   uint16_T temporalCounter_i1_g;       /* '<S2>/State_Management' */
   uint16_T temporalCounter_i1_c;       /* '<S49>/Z_Motion_SM' */
   uint16_T temporalCounter_i1_cu;      /* '<S49>/XY_Motion_SM' */
-  boolean_T DelayInput1_DSTATE;        /* '<S91>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE;        /* '<S95>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_m;      /* '<S62>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_i[2];   /* '<S63>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_n;      /* '<S61>/Delay Input1' */
@@ -72,14 +74,14 @@ typedef struct {
   boolean_T DelayInput1_DSTATE_g;      /* '<S45>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_c;      /* '<S44>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_pc;     /* '<S43>/Delay Input1' */
-  uint8_T is_active_c12_FMS;           /* '<S89>/Disarm_Event' */
-  uint8_T is_c12_FMS;                  /* '<S89>/Disarm_Event' */
-  uint8_T is_active_c5_FMS;            /* '<S89>/Arm_Event' */
-  uint8_T is_c5_FMS;                   /* '<S89>/Arm_Event' */
+  uint8_T is_active_c12_FMS;           /* '<S93>/Disarm_Event' */
+  uint8_T is_c12_FMS;                  /* '<S93>/Disarm_Event' */
+  uint8_T is_active_c5_FMS;            /* '<S93>/Arm_Event' */
+  uint8_T is_c5_FMS;                   /* '<S93>/Arm_Event' */
   uint8_T is_active_c4_FMS;            /* '<S2>/State_Management' */
   uint8_T is_c4_FMS;                   /* '<S2>/State_Management' */
-  uint8_T icLoad;                      /* '<S76>/Delay' */
-  uint8_T icLoad_a;                    /* '<S77>/Delay' */
+  uint8_T icLoad;                      /* '<S78>/Delay' */
+  uint8_T icLoad_a;                    /* '<S79>/Delay' */
   uint8_T icLoad_k;                    /* '<S33>/Delay' */
   uint8_T is_active_c10_FMS;           /* '<S49>/Z_Motion_SM' */
   uint8_T is_c10_FMS;                  /* '<S49>/Z_Motion_SM' */
@@ -94,18 +96,21 @@ typedef struct {
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T Square;               /* '<S78>/Square' */
-  const real32_T d;                    /* '<S78>/Multiply' */
-  const real32_T Gain4;                /* '<S78>/Gain4' */
-  const real32_T Square_e;             /* '<S38>/Square' */
-  const real32_T d_l;                  /* '<S38>/Multiply' */
-  const real32_T Gain4_c;              /* '<S38>/Gain4' */
+  const real32_T Square;               /* '<S80>/Square' */
+  const real32_T d;                    /* '<S80>/Multiply' */
+  const real32_T Gain4;                /* '<S80>/Gain4' */
   const real32_T Square_b;             /* '<S18>/Square' */
   const real32_T d_e;                  /* '<S18>/Multiply' */
   const real32_T Gain4_f;              /* '<S18>/Gain4' */
   const real32_T Square_n;             /* '<S19>/Square' */
   const real32_T d_a;                  /* '<S19>/Multiply' */
   const real32_T Gain4_b;              /* '<S19>/Gain4' */
+  const real32_T Square_e;             /* '<S38>/Square' */
+  const real32_T d_l;                  /* '<S38>/Multiply' */
+  const real32_T Gain4_c;              /* '<S38>/Gain4' */
+  const real32_T Square_ba;            /* '<S81>/Square' */
+  const real32_T d_aw;                 /* '<S81>/Multiply' */
+  const real32_T Gain4_m;              /* '<S81>/Gain4' */
 } ConstB_FMS_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -153,14 +158,14 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<S12>/Gain'
                                                 *   '<S12>/Gain1'
-                                                *   '<S100>/Constant'
-                                                *   '<S100>/Dead Zone'
-                                                *   '<S101>/Constant'
-                                                *   '<S101>/Dead Zone'
-                                                *   '<S102>/Constant'
-                                                *   '<S102>/Dead Zone'
-                                                *   '<S103>/Constant'
-                                                *   '<S103>/Dead Zone'
+                                                *   '<S104>/Constant'
+                                                *   '<S104>/Dead Zone'
+                                                *   '<S105>/Constant'
+                                                *   '<S105>/Dead Zone'
+                                                *   '<S106>/Constant'
+                                                *   '<S106>/Dead Zone'
+                                                *   '<S107>/Constant'
+                                                *   '<S107>/Dead Zone'
                                                 *   '<S21>/Saturation'
                                                 *   '<S48>/Saturation'
                                                 *   '<S48>/Saturation1'
@@ -174,15 +179,15 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S68>/Gain4'
                                                 *   '<S37>/Dead Zone'
                                                 *   '<S37>/Gain'
-                                                *   '<S71>/Dead Zone'
-                                                *   '<S71>/Gain'
-                                                *   '<S72>/Dead Zone'
-                                                *   '<S72>/Gain'
                                                 *   '<S73>/Dead Zone'
                                                 *   '<S73>/Gain'
+                                                *   '<S74>/Dead Zone'
+                                                *   '<S74>/Gain'
+                                                *   '<S75>/Dead Zone'
+                                                *   '<S75>/Gain'
                                                 */
 extern struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT;/* Variable: FMS_EXPORT
-                                                 * Referenced by: '<S82>/Constant'
+                                                 * Referenced by: '<S86>/Constant'
                                                  */
 
 /* Model entry point functions */
@@ -197,9 +202,9 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * These blocks were eliminated from the model due to optimizations:
  *
  * Block '<Root>/Constant3' : Unused code path elimination
- * Block '<S96>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S82>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S86>/Signal Copy4' : Eliminate redundant signal conversion block
+ * Block '<S100>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S86>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S90>/Signal Copy4' : Eliminate redundant signal conversion block
  */
 
 /*-
@@ -286,40 +291,44 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S67>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed'
  * '<S68>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control'
  * '<S69>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD'
- * '<S70>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/Compare To Constant'
- * '<S71>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap'
- * '<S72>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap1'
- * '<S73>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap2'
- * '<S74>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error'
- * '<S75>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Bus_Selection'
- * '<S76>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_XY_Holder'
- * '<S77>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_Z_Holder1'
- * '<S78>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD/fhan '
- * '<S79>'  : 'FMS/FMS_State/Compare To Constant'
- * '<S80>'  : 'FMS/FMS_State/State_Management'
- * '<S81>'  : 'FMS/FMS_State/expand_pwm'
- * '<S82>'  : 'FMS/FMS_State/timestamp'
- * '<S83>'  : 'FMS/Input_Process/Commander'
- * '<S84>'  : 'FMS/Input_Process/M_CO'
- * '<S85>'  : 'FMS/Input_Process/Onground_Check'
- * '<S86>'  : 'FMS/Input_Process/Stick_Value'
- * '<S87>'  : 'FMS/Input_Process/Commander/Event_Commander'
- * '<S88>'  : 'FMS/Input_Process/Commander/State_Commander'
- * '<S89>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event'
- * '<S90>'  : 'FMS/Input_Process/Commander/Event_Commander/Compare To Constant'
- * '<S91>'  : 'FMS/Input_Process/Commander/Event_Commander/Detect Increase'
- * '<S92>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event/Arm_Event'
- * '<S93>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event/Disarm_Event'
- * '<S94>'  : 'FMS/Input_Process/Commander/State_Commander/Compare To Constant3'
- * '<S95>'  : 'FMS/Input_Process/Onground_Check/Compare To Constant'
- * '<S96>'  : 'FMS/Input_Process/Onground_Check/Interval Test'
- * '<S97>'  : 'FMS/Input_Process/Onground_Check/LPF'
- * '<S98>'  : 'FMS/Input_Process/Onground_Check/LPF1'
- * '<S99>'  : 'FMS/Input_Process/Onground_Check/Quat_to_M_OB'
- * '<S100>' : 'FMS/Input_Process/Stick_Value/Dead_Zone'
- * '<S101>' : 'FMS/Input_Process/Stick_Value/Dead_Zone1'
- * '<S102>' : 'FMS/Input_Process/Stick_Value/Dead_Zone2'
- * '<S103>' : 'FMS/Input_Process/Stick_Value/Dead_Zone3'
+ * '<S70>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD1'
+ * '<S71>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD2'
+ * '<S72>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/Compare To Constant'
+ * '<S73>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap'
+ * '<S74>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap1'
+ * '<S75>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap2'
+ * '<S76>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error'
+ * '<S77>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Bus_Selection'
+ * '<S78>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_XY_Holder'
+ * '<S79>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_Z_Holder1'
+ * '<S80>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD/fhan '
+ * '<S81>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD1/fhan '
+ * '<S82>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD2/fhan '
+ * '<S83>'  : 'FMS/FMS_State/Compare To Constant'
+ * '<S84>'  : 'FMS/FMS_State/State_Management'
+ * '<S85>'  : 'FMS/FMS_State/expand_pwm'
+ * '<S86>'  : 'FMS/FMS_State/timestamp'
+ * '<S87>'  : 'FMS/Input_Process/Commander'
+ * '<S88>'  : 'FMS/Input_Process/M_CO'
+ * '<S89>'  : 'FMS/Input_Process/Onground_Check'
+ * '<S90>'  : 'FMS/Input_Process/Stick_Value'
+ * '<S91>'  : 'FMS/Input_Process/Commander/Event_Commander'
+ * '<S92>'  : 'FMS/Input_Process/Commander/State_Commander'
+ * '<S93>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event'
+ * '<S94>'  : 'FMS/Input_Process/Commander/Event_Commander/Compare To Constant'
+ * '<S95>'  : 'FMS/Input_Process/Commander/Event_Commander/Detect Increase'
+ * '<S96>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event/Arm_Event'
+ * '<S97>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event/Disarm_Event'
+ * '<S98>'  : 'FMS/Input_Process/Commander/State_Commander/Compare To Constant3'
+ * '<S99>'  : 'FMS/Input_Process/Onground_Check/Compare To Constant'
+ * '<S100>' : 'FMS/Input_Process/Onground_Check/Interval Test'
+ * '<S101>' : 'FMS/Input_Process/Onground_Check/LPF'
+ * '<S102>' : 'FMS/Input_Process/Onground_Check/LPF1'
+ * '<S103>' : 'FMS/Input_Process/Onground_Check/Quat_to_M_OB'
+ * '<S104>' : 'FMS/Input_Process/Stick_Value/Dead_Zone'
+ * '<S105>' : 'FMS/Input_Process/Stick_Value/Dead_Zone1'
+ * '<S106>' : 'FMS/Input_Process/Stick_Value/Dead_Zone2'
+ * '<S107>' : 'FMS/Input_Process/Stick_Value/Dead_Zone3'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

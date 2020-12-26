@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.936
+ * Model version                  : 1.964
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Oct 12 15:34:21 2020
+ * C/C++ source code generated on : Fri Dec 25 09:05:22 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,18 +18,21 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  0.00250000018F,                      /* '<S78>/Square' */
-  0.0980600044F,                       /* '<S78>/Multiply' */
-  -39.224F,                            /* '<S78>/Gain4' */
-  0.0016F,                             /* '<S38>/Square' */
-  0.0100530963F,                       /* '<S38>/Multiply' */
-  -6.28318548F,                        /* '<S38>/Gain4' */
+  0.00250000018F,                      /* '<S80>/Square' */
+  0.14709F,                            /* '<S80>/Multiply' */
+  -58.836F,                            /* '<S80>/Gain4' */
   0.0016F,                             /* '<S18>/Square' */
   0.0201061927F,                       /* '<S18>/Multiply' */
   -12.566371F,                         /* '<S18>/Gain4' */
   0.0016F,                             /* '<S19>/Square' */
   0.0201061927F,                       /* '<S19>/Multiply' */
-  -12.566371F                          /* '<S19>/Gain4' */
+  -12.566371F,                         /* '<S19>/Gain4' */
+  0.0016F,                             /* '<S38>/Square' */
+  0.0100530963F,                       /* '<S38>/Multiply' */
+  -6.28318548F,                        /* '<S38>/Gain4' */
+  0.00250000018F,                      /* '<S81>/Square' */
+  0.196120009F,                        /* '<S81>/Multiply' */
+  -78.448F                             /* '<S81>/Gain4' */
 };
 
 /*
