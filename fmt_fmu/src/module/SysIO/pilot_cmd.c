@@ -88,7 +88,7 @@ static Pilot_Cmd_Bus _pilot_cmd;
 
 /* Define uMCN topic */
 MCN_DEFINE(pilot_cmd, sizeof(Pilot_Cmd_Bus));
-MCN_DEFINE(rc_raw, sizeof(rcChannel));
+MCN_DEFINE(rc_channels, sizeof(rcChannel));
 
 void list_pilot_cmd_devices(void)
 {
@@ -629,7 +629,7 @@ uint8_t pilot_cmd_collect(void)
             /* publish pilot_cmd topic */
             mcn_publish(MCN_HUB(pilot_cmd), &_pilot_cmd);
             /* publish rc_channel topic */
-            mcn_publish(MCN_HUB(rc_raw), rcChannel);
+            mcn_publish(MCN_HUB(rc_channels), rcChannel);
 
 #ifdef FMT_OUTPUT_PILOT_CMD
             /* send out pilot_cmd via mavlink */
@@ -750,7 +750,7 @@ fmt_err pilot_cmd_init(void)
     }
 
     /* advertise rc channel topic */
-    if (mcn_advertise(MCN_HUB(rc_raw), _rc_raw_echo) != FMT_EOK) {
+    if (mcn_advertise(MCN_HUB(rc_channels), _rc_raw_echo) != FMT_EOK) {
         return FMT_ERROR;
     }
 

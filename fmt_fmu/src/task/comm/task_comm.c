@@ -30,6 +30,7 @@
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
+MCN_DECLARE(rc_channels);
 
 static mavlink_system_t mavlink_system;
 
@@ -128,7 +129,7 @@ static bool _msg_gps_raw_int_pack(mavlink_message_t* msg_t)
         return false;
     }
 
-    mcn_copy_from_hub(MCN_HUB(sensor_gps), &gps_report);
+    mcn_copy_from_hub(hub, &gps_report);
 
     gps_raw_int.time_usec = gps_report.timestamp_ms * 1e3;
     gps_raw_int.lat = gps_report.lat;
@@ -148,6 +149,28 @@ static bool _msg_gps_raw_int_pack(mavlink_message_t* msg_t)
     gps_raw_int.yaw = 0;
 
     mavlink_msg_gps_raw_int_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &gps_raw_int);
+
+    return true;
+}
+
+static bool _msg_rc_channels_pack(mavlink_message_t* msg_t)
+{
+    int16_t rc_channels[16];
+    McnHub* hub = MCN_HUB(rc_channels);
+    mavlink_rc_channels_t mavlink_rc_channels;
+
+    if (!hub->published) {
+        return false;
+    }
+
+    mcn_copy_from_hub(hub, &rc_channels);
+
+    mavlink_rc_channels.time_boot_ms = systime_now_ms();
+    mavlink_rc_channels.chancount = 16;
+    mavlink_rc_channels.rssi = 40;
+    memcpy(&mavlink_rc_channels.chan1_raw, &rc_channels, sizeof(rc_channels));
+
+    mavlink_msg_rc_channels_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &mavlink_rc_channels);
 
     return true;
 }
@@ -183,6 +206,9 @@ void task_comm_entry(void* parameter)
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100,
         _msg_gps_raw_int_pack, 1);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_RC_CHANNELS, 100,
+        _msg_rc_channels_pack, 1);
 
     /* execute mavproxy main loop */
     mavproxy_loop();
