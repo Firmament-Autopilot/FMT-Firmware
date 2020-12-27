@@ -68,17 +68,19 @@ typedef struct {
 } mavproxy_device_info;
 
 static uint8_t _mav_tx_buff[1024];
-static mavlink_system_t _mavlink_system;
 static rt_sem_t _mavproxy_tx_lock;
 static MAV_PeriodMsg_Queue _period_msg_queue;
 static MAV_ImmediateMsg_Queue _imm_msg_queue;
 static struct rt_timer _timer_mavproxy;
 static struct rt_event _event_mavproxy;
-static rt_device_t _mav_console_dev;
 static uint8_t _mav_dev_chan = MAVPROXY_UNSET_CHAN;
 static uint8_t _new_mav_dev_chan = MAVPROXY_DEFAULT_CHAN;
 static mavproxy_device_info _mavproxy_device_list[MAVPROXY_MAX_DEVICE_NUM] = { 0 };
 static uint8_t _mavproxy_device_num = 0;
+static mavlink_system_t _mavlink_system = {
+    .sysid = FMT_MAVLINK_SYS_ID,
+    .compid = FMT_MAVLINK_COMP_ID
+};
 
 /////////////// TOML Configuration //////////////
 static void _init_device_list(void)
@@ -121,8 +123,9 @@ static fmt_err _mavproxy_parse_device(const toml_table_t* curtab, int idx)
             _mavproxy_device_list[idx].config = rt_malloc(sizeof(mavproxy_serial_dev_config));
 
             /* set default value */
-            if (_mavproxy_device_list[idx].config)
+            if (_mavproxy_device_list[idx].config) {
                 *(mavproxy_serial_dev_config*)_mavproxy_device_list[idx].config = serial_default_config;
+            }
 
         } else if (DEVICE_TYPE_IS(idx, usb)) {
             /* no configuration for usb device */
@@ -286,7 +289,7 @@ static void _send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlin
     mavproxy_send_immediate_msg(msg, true);
 }
 
-fmt_err mavproxy_switch_channel(uint8_t chan)
+static fmt_err _switch_channel(uint8_t chan)
 {
     rt_device_t old_device, new_device;
 
@@ -313,8 +316,9 @@ fmt_err mavproxy_switch_channel(uint8_t chan)
             }
         }
         /* now we can safely close the old device */
-        if (old_device)
+        if (old_device != NULL) {
             rt_device_close(old_device);
+        }
     } else {
         return FMT_ERROR;
     }
@@ -441,8 +445,10 @@ void mavproxy_loop(void)
         if (res == RT_EOK) {
             /* switch mavproxy channel if needed */
             if (_mav_dev_chan != _new_mav_dev_chan) {
-                if (mavproxy_switch_channel(_new_mav_dev_chan) == FMT_EOK) {
+                if (_switch_channel(_new_mav_dev_chan) == FMT_EOK) {
                     _mav_dev_chan = _new_mav_dev_chan;
+                }else{
+                    TIMETAG_CHECK_EXECUTE(mavproxy, 500, console_printf("mavproxy switch channel fail!\n");)
                 }
             }
 
@@ -522,27 +528,25 @@ fmt_err mavproxy_toml_init(toml_table_t* table)
 
 fmt_err mavproxy_init(void)
 {
-    /* init mavlink system info */
-    _mavlink_system.sysid = FMT_MAVLINK_SYS_ID;
-    _mavlink_system.compid = FMT_MAVLINK_COMP_ID;
-
     /* init message queue */
     _period_msg_queue.size = 0;
     _period_msg_queue.index = 0;
     _imm_msg_queue.head = 0;
     _imm_msg_queue.tail = 0;
 
+    /* init mavproxy device */
     mavproxy_dev_init();
+
+    /* init mavlink console */
     mavlink_console_init();
 
+    /* create tx lock */
     _mavproxy_tx_lock = rt_sem_create("mav_tx_lock", 1, RT_IPC_FLAG_FIFO);
 
-    /* get mavlink console device */
-    _mav_console_dev = rt_device_find("mav_console");
     /* create event */
     rt_event_init(&_event_mavproxy, "mavproxy", RT_IPC_FLAG_FIFO);
 
-    /* register timer event */
+    /* register timer event to periodly wakeup itself */
     rt_timer_init(&_timer_mavproxy, "mav_update", _mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,
         RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     rt_timer_start(&_timer_mavproxy);

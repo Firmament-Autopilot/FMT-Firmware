@@ -585,9 +585,11 @@ fmt_err console_toml_init(toml_table_t* table)
     return err;
 }
 
-fmt_err console_init(char* dev_name)
+fmt_err console_init(void)
 {
     serial_dev_t serial_dev;
+    /* by default, use serial0 as console before toml system configure complete */
+    const char* dev_name = "serial0";
 
     _console_dev = rt_device_find(dev_name);
 

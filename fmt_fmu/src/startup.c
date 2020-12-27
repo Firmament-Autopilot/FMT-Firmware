@@ -82,15 +82,6 @@ static void rt_init_thread_entry(void* parameter)
     bsp_post_initialize();
 
     /********************* start tasks *********************/
-    res = rt_thread_init(&thread_fmtio_handle,
-        "fmtio",
-        task_fmtio_entry,
-        RT_NULL,
-        &thread_fmtio_stack[0],
-        sizeof(thread_fmtio_stack), FMTIO_THREAD_PRIORITY, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_fmtio_handle);
-
     res = rt_thread_init(&thread_comm_handle,
         "comm",
         task_comm_entry,
@@ -99,6 +90,15 @@ static void rt_init_thread_entry(void* parameter)
         sizeof(thread_comm_stack), COMM_THREAD_PRIORITY, 1);
     RT_ASSERT(res == RT_EOK);
     rt_thread_startup(&thread_comm_handle);
+
+    res = rt_thread_init(&thread_fmtio_handle,
+        "fmtio",
+        task_fmtio_entry,
+        RT_NULL,
+        &thread_fmtio_stack[0],
+        sizeof(thread_fmtio_stack), FMTIO_THREAD_PRIORITY, 1);
+    RT_ASSERT(res == RT_EOK);
+    rt_thread_startup(&thread_fmtio_handle);
 
     res = rt_thread_init(&thread_logger_handle,
         "logger",

@@ -22,7 +22,7 @@
 
 #define CONSOLE_CURRENT_DEVICE      (-1)
 
-fmt_err console_init(char* dev_name);
+fmt_err console_init(void);
 fmt_err console_enable_shell(rt_device_t dev);
 fmt_err console_set_device(char* dev_name, bool close_old_dev);
 uint32_t console_printf(const char* fmt, ...);
