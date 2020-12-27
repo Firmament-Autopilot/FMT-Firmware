@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include <bsp.h>
+#include <firmament.h>
 
 #ifdef FMT_USING_CM_BACKTRACE
 #include <cm_backtrace.h>
@@ -48,7 +48,7 @@ struct rt_thread thread_status_handle;
 void assert_failed(uint8_t* file, uint32_t line)
 {
 #ifdef FMT_USING_CM_BACKTRACE
-	cm_backtrace_assert(cmb_get_sp());
+    cm_backtrace_assert(cmb_get_sp());
 #endif
 
     while (1)
@@ -82,15 +82,6 @@ static void rt_init_thread_entry(void* parameter)
     bsp_post_initialize();
 
     /********************* start tasks *********************/
-    res = rt_thread_init(&thread_vehicle_handle,
-        "vehicle",
-        task_vehicle_entry,
-        RT_NULL,
-        &thread_vehicle_stack[0],
-        sizeof(thread_vehicle_stack), VEHICLE_THREAD_PRIORITY, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_vehicle_handle);
-
     res = rt_thread_init(&thread_fmtio_handle,
         "fmtio",
         task_fmtio_entry,
@@ -126,6 +117,15 @@ static void rt_init_thread_entry(void* parameter)
         sizeof(thread_status_stack), STATUS_THREAD_PRIORITY, 1);
     RT_ASSERT(res == RT_EOK);
     rt_thread_startup(&thread_status_handle);
+
+    res = rt_thread_init(&thread_vehicle_handle,
+        "vehicle",
+        task_vehicle_entry,
+        RT_NULL,
+        &thread_vehicle_stack[0],
+        sizeof(thread_vehicle_stack), VEHICLE_THREAD_PRIORITY, 1);
+    RT_ASSERT(res == RT_EOK);
+    rt_thread_startup(&thread_vehicle_handle);
 
     /* delete itself */
     rt_thread_delete(tid0);
