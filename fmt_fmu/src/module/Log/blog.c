@@ -366,7 +366,7 @@ fmt_err blog_push_data(const void* payload, uint16_t len)
 
     /* check if buffer has enough space to store data */
     if (_buffer_check_full(len)) {
-        TIMETAG_CHECK_EXECUTE(blog_buff_full1, 500, ulog_w(TAG, "buffer is full");)
+        TIMETAG_CHECK_EXECUTE(blog_buff_full1, 500, ulog_w(TAG, "buffer is full"););
         return FMT_EFULL;
     }
 
@@ -392,7 +392,7 @@ fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
 
     /* check if buffer has enough space to store msg */
     if (_buffer_check_full(len + 4)) {
-        TIMETAG_CHECK_EXECUTE(blog_buff_full2, 500, ulog_w(TAG, "buffer is full");)
+        TIMETAG_CHECK_EXECUTE(blog_buff_full2, 500, ulog_w(TAG, "buffer is full"););
         return FMT_EFULL;
     }
 

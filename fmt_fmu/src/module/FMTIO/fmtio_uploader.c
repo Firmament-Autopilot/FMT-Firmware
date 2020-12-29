@@ -162,7 +162,7 @@ static fmt_err _get_sync(int32_t timeout)
 	}
 
 	if((c[0] != PROTO_INSYNC) || (c[1] != PROTO_OK)) {
-		TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, ulog_w(TAG, "bad sync, try to click io reset button");)
+		TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, ulog_w(TAG, "bad sync, try to click io reset button"););
 		// console_printf("bad sync 0x%02x,0x%02x\r\n", c[0], c[1]);
 		return FMT_ERROR;
 	}

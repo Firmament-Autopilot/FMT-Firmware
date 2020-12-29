@@ -850,19 +850,19 @@ void mavcmd_clear(MavCmd_ID cmd)
 void mavproxy_cmd_process(void)
 {
     if (mavcmd_calib_gyr.set) {
-        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, _gyr_mavlink_calibration();)
+        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, _gyr_mavlink_calibration(););
     }
 
     if (mavcmd_calib_acc.set) {
-        TIMETAG_CHECK_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, _acc_mavlink_calibration();)
+        TIMETAG_CHECK_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, _acc_mavlink_calibration(););
     }
 
     if (mavcmd_calib_mag.set) {
-        TIMETAG_CHECK_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, _mag_mavlink_calibration();)
+        TIMETAG_CHECK_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, _mag_mavlink_calibration(););
     }
 
     if (mavcmd_calib_level.set) {
-        TIMETAG_CHECK_EXECUTE(level_calib, 10, _level_calibration();)
+        TIMETAG_CHECK_EXECUTE(level_calib, 10, _level_calibration(););
     }
 
     if (_mavcmd_set[MAVCMD_STREAM_SESSION]) {
