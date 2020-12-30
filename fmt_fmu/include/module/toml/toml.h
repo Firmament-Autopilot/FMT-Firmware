@@ -153,6 +153,7 @@ char* toml_make_string(const char* str);
 void toml_print_table(toml_table_t* curtab);
 int toml_string_in(const toml_table_t* tab, const char* key, char** ret);
 int toml_int_in(const toml_table_t* tab, const char* key, int64_t* ret);
+int toml_bool_in(const toml_table_t* tab, const char* key, int* ret);
 int toml_array_table_in(const toml_table_t* tab, const char* key, toml_array_t** ret);
 
 #endif /* TOML_H */

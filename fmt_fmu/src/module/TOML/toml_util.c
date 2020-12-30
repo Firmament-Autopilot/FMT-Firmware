@@ -301,6 +301,17 @@ int toml_int_in(const toml_table_t* tab, const char* key, int64_t* ret)
     return toml_rtoi(raw, ret);
 }
 
+int toml_bool_in(const toml_table_t* tab, const char* key, int* ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtob(raw, ret);
+}
+
 int toml_array_table_in(const toml_table_t* tab, const char* key, toml_array_t** ret)
 {
     toml_array_t* arr = toml_array_in(tab, key);

@@ -26,7 +26,9 @@
 #define CONSOLE_MAX_DEVICE_NUM 5
 
 #define MATCH(a, b)                 (strcmp(a, b) == 0)
-#define DEVICE_TYPE_IS(_idx, _name) MATCH(_console_device_list[_idx].type, #_name)
+#define DEVICE_LIST                 _console_device_list
+#define DEVICE_NUM                  _console_device_num
+#define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
 
 #define CONSOLE_OFLAG (RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_STREAM)
 
@@ -65,20 +67,20 @@ static char* _strdup(const char* str1)
 static void _init_device_list(void)
 {
     for (int i = 0; i < CONSOLE_MAX_DEVICE_NUM; i++) {
-        if (_console_device_list[i].type) {
-            rt_free(_console_device_list[i].type);
+        if (DEVICE_LIST[i].type) {
+            rt_free(DEVICE_LIST[i].type);
         }
-        if (_console_device_list[i].name) {
-            rt_free(_console_device_list[i].name);
+        if (DEVICE_LIST[i].name) {
+            rt_free(DEVICE_LIST[i].name);
         }
-        if (_console_device_list[i].config) {
-            rt_free(_console_device_list[i].config);
+        if (DEVICE_LIST[i].config) {
+            rt_free(DEVICE_LIST[i].config);
         }
-        _console_device_list[i].type = NULL;
-        _console_device_list[i].name = NULL;
-        _console_device_list[i].config = NULL;
+        DEVICE_LIST[i].type = NULL;
+        DEVICE_LIST[i].name = NULL;
+        DEVICE_LIST[i].config = NULL;
     }
-    _console_device_num = 0;
+    DEVICE_NUM = 0;
 }
 
 static void _handle_device_status_change(void* msg)
@@ -86,8 +88,8 @@ static void _handle_device_status_change(void* msg)
     int idx;
     device_status status = *((device_status*)msg);
 
-    for (idx = 0; idx < _console_device_num; idx++) {
-        if (rt_device_find(_console_device_list[idx].name) == status.device) {
+    for (idx = 0; idx < DEVICE_NUM; idx++) {
+        if (rt_device_find(DEVICE_LIST[idx].name) == status.device) {
             /* if data received, switch console to this device */
             if (status.status == DEVICE_STATUS_RX) {
                 console_switch_device(idx, false);
@@ -114,7 +116,7 @@ static fmt_err _set_auto_switch_indicator(void)
     rt_err_t rt_err;
     int idx;
 
-    for (idx = 0; idx < _console_device_num; idx++) {
+    for (idx = 0; idx < DEVICE_NUM; idx++) {
         if (idx == console_get_device_id(_console_dev)) {
             /* do not set rx indicator for current console deivce */
             /* because shell is using that */
@@ -122,7 +124,7 @@ static fmt_err _set_auto_switch_indicator(void)
         }
 
         if (DEVICE_TYPE_IS(idx, serial)) {
-            console_serial_dev_config* config = (console_serial_dev_config*)_console_device_list[idx].config;
+            console_serial_dev_config* config = (console_serial_dev_config*)DEVICE_LIST[idx].config;
 
             if (config->auto_switch) {
                 rt_err = rt_device_set_rx_indicate(console_get_device(idx), _console_device_rx_ind);
@@ -131,7 +133,7 @@ static fmt_err _set_auto_switch_indicator(void)
                 }
             }
         } else if (DEVICE_TYPE_IS(idx, mavlink)) {
-            console_mavlink_dev_config* config = (console_mavlink_dev_config*)_console_device_list[idx].config;
+            console_mavlink_dev_config* config = (console_mavlink_dev_config*)DEVICE_LIST[idx].config;
 
             if (config->auto_switch) {
                 rt_err = rt_device_set_rx_indicate(console_get_device(idx), _console_device_rx_ind);
@@ -153,130 +155,107 @@ static fmt_err _console_parse_device(const toml_table_t* curtab, int idx)
     fmt_err err = FMT_EOK;
     int i;
     const char* key;
-    const char* raw;
 
     /* get device type */
-    if ((raw = toml_raw_in(curtab, "type")) != 0) {
-        if (toml_rtos(raw, &_console_device_list[idx].type) != 0) {
-            console_printf("Error: fail to parse type value\n");
-            err = FMT_ERROR;
-        }
-
+    if (toml_string_in(curtab, "type", &DEVICE_LIST[idx].type) == 0) {
         if (DEVICE_TYPE_IS(idx, serial)) {
             console_serial_dev_config serial_default_config = {
                 .baudrate = CONSOLE_BAUD_RATE,
                 .auto_switch = true
             };
-            _console_device_list[idx].config = rt_malloc(sizeof(console_serial_dev_config));
+            DEVICE_LIST[idx].config = rt_malloc(sizeof(console_serial_dev_config));
 
             /* set default value */
-            if (_console_device_list[idx].config)
-                *(console_serial_dev_config*)_console_device_list[idx].config = serial_default_config;
-
+            if (DEVICE_LIST[idx].config) {
+                *(console_serial_dev_config*)DEVICE_LIST[idx].config = serial_default_config;
+            } else {
+                console_printf("TOML Console: fail to malloc memory\n");
+                err = FMT_ERROR;
+            }
         } else if (DEVICE_TYPE_IS(idx, mavlink)) {
             console_mavlink_dev_config mavlink_default_config = {
                 .auto_switch = true
             };
-            _console_device_list[idx].config = rt_malloc(sizeof(console_mavlink_dev_config));
+            DEVICE_LIST[idx].config = rt_malloc(sizeof(console_mavlink_dev_config));
 
             /* set default value */
-            if (_console_device_list[idx].config)
-                *(console_mavlink_dev_config*)_console_device_list[idx].config = mavlink_default_config;
+            if (DEVICE_LIST[idx].config) {
+                *(console_mavlink_dev_config*)DEVICE_LIST[idx].config = mavlink_default_config;
+            } else {
+                console_printf("TOML Console: fail to malloc memory\n");
+                err = FMT_ERROR;
+            }
         } else {
-            console_printf("Error: unknown device type: %s\n", _console_device_list[idx].type);
-            err = FMT_ERROR;
-        }
-
-        if (_console_device_list[idx].config == NULL) {
-            console_printf("Error: fail to malloc memory\n");
+            console_printf("TOML Console: unknown device type: %s\n", DEVICE_LIST[idx].type);
             err = FMT_ERROR;
         }
     } else {
-        console_printf("Error: fail to parse type value\n");
-        err = FMT_ERROR;
+        console_printf("TOML Console: fail to parse type value\n");
+        return FMT_ERROR;
     }
 
-    if (err != FMT_EOK) {
-        return err;
+    if (toml_string_in(curtab, "name", &DEVICE_LIST[idx].name) != 0) {
+        console_printf("TOML Console: fail to parse name value\n");
+        return FMT_ERROR;
     }
 
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
-        if (0 != (raw = toml_raw_in(curtab, key))) {
-            if (MATCH(key, "type")) {
-                /* already handled */
+        if (MATCH(key, "type") || MATCH(key, "name")) {
+            /* already handled */
+            continue;
+        }
+
+        if (DEVICE_TYPE_IS(idx, serial)) {
+            console_serial_dev_config* config = (console_serial_dev_config*)DEVICE_LIST[idx].config;
+            if (MATCH(key, "baudrate")) {
+                int64_t ival;
+                if (toml_int_in(curtab, key, &ival) == 0) {
+                    config->baudrate = (uint32_t)ival;
+                } else {
+                    console_printf("TOML Console: fail to parse baudrate value\n");
+                    continue;
+                }
+            } else if (MATCH(key, "auto-switch")) {
+                int bval;
+                if (toml_bool_in(curtab, key, &bval) == 0) {
+                    config->auto_switch = bval ? true : false;
+                    if (config->auto_switch) {
+                        /* monitor device status */
+                        if (device_mq_register(DEVICE_LIST[idx].name, _handle_device_status_change) != FMT_EOK) {
+                            console_printf("Error: fail to register %s status msg\n", DEVICE_LIST[idx].name);
+                        }
+                    }
+                } else {
+                    console_printf("TOML Console: fail to parse auto-switch value\n");
+                    continue;
+                }
+            } else {
+                console_printf("TOML Console: unknown config key: %s\n", key);
                 continue;
             }
-
-            /* parse serial device */
-            if (DEVICE_TYPE_IS(idx, serial)) {
-                console_serial_dev_config* config = (console_serial_dev_config*)_console_device_list[idx].config;
-
-                if (MATCH(key, "name")) {
-                    if (toml_rtos(raw, &_console_device_list[idx].name) != 0) {
-                        console_printf("Error: fail to parse name value\n");
-                        return FMT_ERROR;
-                    }
-                } else if (MATCH(key, "baudrate")) {
-                    int64_t ival;
-
-                    if (toml_rtoi(raw, &ival) != 0) {
-                        console_printf("Error: fail to parse baudrate value\n");
-                        continue;
-                    }
-                    config->baudrate = (uint32_t)ival;
-                } else if (MATCH(key, "auto-switch")) {
-                    int bval;
-
-                    if (toml_rtob(raw, &bval) != 0) {
-                        console_printf("Error: fail to parse auto-switch value\n");
-                        continue;
-                    }
+        } else if (DEVICE_TYPE_IS(idx, mavlink)) {
+            console_mavlink_dev_config* config = (console_mavlink_dev_config*)DEVICE_LIST[idx].config;
+            if (MATCH(key, "auto-switch")) {
+                int bval;
+                if (toml_bool_in(curtab, key, &bval) == 0) {
                     config->auto_switch = bval ? true : false;
-
                     if (config->auto_switch) {
                         /* monitor device status */
-                        if (device_mq_register(_console_device_list[idx].name, _handle_device_status_change) != FMT_EOK) {
-                            console_printf("Error: fail to register %s status msg\n", _console_device_list[idx].name);
+                        if (device_mq_register(DEVICE_LIST[idx].name, _handle_device_status_change) != FMT_EOK) {
+                            console_printf("Error: fail to register %s status msg\n", DEVICE_LIST[idx].name);
                         }
                     }
                 } else {
-                    console_printf("Error: unknown config key: %s\n", key);
+                    console_printf("TOML Console: fail to parse auto-switch value\n");
                     continue;
                 }
-            }
-
-            /* parse mavlink device */
-            if (DEVICE_TYPE_IS(idx, mavlink)) {
-                console_mavlink_dev_config* config = (console_mavlink_dev_config*)_console_device_list[idx].config;
-
-                if (MATCH(key, "name")) {
-                    if (toml_rtos(raw, &_console_device_list[idx].name) != 0) {
-                        console_printf("Error: fail to parse name value\n");
-                        return FMT_ERROR;
-                    }
-                } else if (MATCH(key, "auto-switch")) {
-                    int bval;
-
-                    if (toml_rtob(raw, &bval) != 0) {
-                        console_printf("Error: fail to parse auto-switch value\n");
-                        continue;
-                    }
-                    config->auto_switch = bval ? true : false;
-
-                    if (config->auto_switch) {
-                        /* monitor device status */
-                        if (device_mq_register(_console_device_list[idx].name, _handle_device_status_change) != FMT_EOK) {
-                            console_printf("Error: fail to register %s status msg\n", _console_device_list[idx].name);
-                        }
-                    }
-                } else {
-                    console_printf("Error: unknown config key: %s\n", key);
-                    continue;
-                }
+            } else {
+                console_printf("TOML Console: unknown config key: %s\n", key);
+                continue;
             }
         } else {
-            console_printf("Error: unknown config key: %s\n", key);
+            // unknown type
             continue;
         }
     }
@@ -304,23 +283,23 @@ static fmt_err _console_parse_devices(const toml_array_t* array)
         }
     }
 
-    _console_device_num = idx;
+    DEVICE_NUM = idx;
 
     return err;
 }
 
 void list_console_devices(void)
 {
-    for (int i = 0; i < _console_device_num; i++) {
+    for (int i = 0; i < DEVICE_NUM; i++) {
         console_printf("[console d%d]:\n", i);
-        console_printf("type:%s\n", _console_device_list[i].type);
-        console_printf("name:%s\n", _console_device_list[i].name);
+        console_printf("type:%s\n", DEVICE_LIST[i].type);
+        console_printf("name:%s\n", DEVICE_LIST[i].name);
         if (DEVICE_TYPE_IS(i, serial)) {
-            console_serial_dev_config* config = (console_serial_dev_config*)_console_device_list[i].config;
+            console_serial_dev_config* config = (console_serial_dev_config*)DEVICE_LIST[i].config;
             console_printf("baudrate:%d\n", config->baudrate);
             console_printf("auto-switch:%s\n", config->auto_switch ? "true" : "false");
         } else {
-            console_mavlink_dev_config* config = (console_mavlink_dev_config*)_console_device_list[i].config;
+            console_mavlink_dev_config* config = (console_mavlink_dev_config*)DEVICE_LIST[i].config;
             console_printf("auto-switch:%s\n", config->auto_switch ? "true" : "false");
         }
         console_printf("\n");
@@ -333,19 +312,19 @@ rt_device_t console_get_device(int idx)
         return _console_dev;
     }
 
-    if (idx >= _console_device_num) {
+    if (idx >= DEVICE_NUM) {
         return NULL;
     }
 
-    return rt_device_find(_console_device_list[idx].name);
+    return rt_device_find(DEVICE_LIST[idx].name);
 }
 
 int console_get_device_id(rt_device_t device)
 {
     int idx;
 
-    for (idx = 0; idx < _console_device_num; idx++) {
-        if (rt_device_find(_console_device_list[idx].name) == device) {
+    for (idx = 0; idx < DEVICE_NUM; idx++) {
+        if (rt_device_find(DEVICE_LIST[idx].name) == device) {
             return idx;
         }
     }
@@ -355,11 +334,11 @@ int console_get_device_id(rt_device_t device)
 
 fmt_err console_switch_device(int idx, bool close_old_dev)
 {
-    if (idx >= _console_device_num || idx < 0) {
+    if (idx >= DEVICE_NUM || idx < 0) {
         return FMT_ERROR;
     }
 
-    if (console_set_device(_console_device_list[idx].name, close_old_dev) == FMT_EOK) {
+    if (console_set_device(DEVICE_LIST[idx].name, close_old_dev) == FMT_EOK) {
         _console_dev_idx = idx;
     } else {
         return FMT_ERROR;
@@ -511,19 +490,15 @@ fmt_err console_toml_init(toml_table_t* table)
             /* we get new device configuration, re-init original one */
             _init_device_list();
 
-            if ((arr = toml_array_in(table, key)) != 0) {
-                if (toml_array_kind(arr) == 't') {
-                    err = _console_parse_devices(arr);
-                    if (err != FMT_EOK) {
-                        console_printf("parse fail\n");
-                    }
-                } else {
-                    console_printf("Error: wrong element type: %s\n", key);
-                    err = FMT_ERROR;
+            if (toml_array_table_in(table, key, &arr) == 0) {
+                err = _console_parse_devices(arr);
+                if (err != FMT_EOK) {
+                    console_printf("TOML Console: fail to parse devices\n");
+                    return err;
                 }
             } else {
-                console_printf("Error: wrong element type: %s\n", key);
-                err = FMT_ERROR;
+                console_printf("TOML Console: fail to parse devices\n");
+                return FMT_ERROR;
             }
         } else if (MATCH(key, "device")) {
             /* we get new device configuration, re-init original one */
@@ -532,7 +507,7 @@ fmt_err console_toml_init(toml_table_t* table)
             if ((tab = toml_table_in(table, key)) != 0) {
                 err = _console_parse_device(tab, 0);
                 if (err == FMT_EOK) {
-                    _console_device_num = 1;
+                    DEVICE_NUM = 1;
                 }
             } else {
                 console_printf("Error: wrong element type: %s\n", key);
@@ -545,8 +520,8 @@ fmt_err console_toml_init(toml_table_t* table)
     }
 
     /* open all devices by default */
-    for (int i = 0; i < _console_device_num; i++) {
-        rt_device_t dev = rt_device_find(_console_device_list[i].name);
+    for (int i = 0; i < DEVICE_NUM; i++) {
+        rt_device_t dev = rt_device_find(DEVICE_LIST[i].name);
 
         if (dev == NULL) {
             continue;
@@ -569,7 +544,7 @@ fmt_err console_toml_init(toml_table_t* table)
 
         if (DEVICE_TYPE_IS(i, serial)) {
             serial_dev_t serial_dev = (serial_dev_t)console_get_device(i);
-            console_serial_dev_config* config = (console_serial_dev_config*)_console_device_list[i].config;
+            console_serial_dev_config* config = (console_serial_dev_config*)DEVICE_LIST[i].config;
             struct serial_configure pconfig = serial_dev->config;
 
             pconfig.baud_rate = config->baudrate;
