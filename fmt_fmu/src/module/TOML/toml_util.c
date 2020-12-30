@@ -278,3 +278,38 @@ char* toml_make_string(const char* str)
 
     return new_str;
 }
+
+int toml_string_in(const toml_table_t* tab, const char* key, char** ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtos(raw, ret);
+}
+
+int toml_int_in(const toml_table_t* tab, const char* key, int64_t* ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtoi(raw, ret);
+}
+
+int toml_array_table_in(const toml_table_t* tab, const char* key, toml_array_t** ret)
+{
+    toml_array_t* arr = toml_array_in(tab, key);
+
+    if ((arr != NULL) && (toml_array_kind(arr) == 't')) {
+        *ret = arr;
+        return 0;
+    } else {
+        *ret = NULL;
+        return -1;
+    }
+}
