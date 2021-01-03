@@ -19,9 +19,10 @@
 
 #include <firmament.h>
 
-fmt_err send_actuator_cmd(const rt_device_t dev);
+fmt_err send_actuator_cmd(void);
 fmt_err send_hil_actuator_cmd(void);
-fmt_err actuator_init(const rt_device_t dev);
+fmt_err actuator_init(void);
+fmt_err actuator_toml_init(toml_table_t* table);
 fmt_err actuator_deinit(const rt_device_t dev);
 
 #endif
