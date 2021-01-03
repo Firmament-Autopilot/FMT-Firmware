@@ -18,7 +18,6 @@
 #define __TASK_FMTIO_H__
 
 #include <firmament.h>
-#include "module/fmtio/fmtio_protocol.h"
 
 fmt_err task_fmtio_init(void);
 void task_fmtio_entry(void* parameter);

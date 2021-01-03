@@ -29,7 +29,9 @@
 #define MAVPROXY_UNSET_CHAN          0xFF
 
 #define MATCH(a, b)                 (strcmp(a, b) == 0)
-#define DEVICE_TYPE_IS(_idx, _name) MATCH(_mavproxy_device_list[_idx].type, #_name)
+#define DEVICE_LIST                 _mavproxy_device_list
+#define DEVICE_NUM                  _mavproxy_device_num
+#define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
 
 void mavproxy_monitor_create(void);
 
@@ -68,36 +70,52 @@ typedef struct {
 } mavproxy_device_info;
 
 static uint8_t _mav_tx_buff[1024];
-static mavlink_system_t _mavlink_system;
 static rt_sem_t _mavproxy_tx_lock;
 static MAV_PeriodMsg_Queue _period_msg_queue;
 static MAV_ImmediateMsg_Queue _imm_msg_queue;
 static struct rt_timer _timer_mavproxy;
 static struct rt_event _event_mavproxy;
-static rt_device_t _mav_console_dev;
 static uint8_t _mav_dev_chan = MAVPROXY_UNSET_CHAN;
 static uint8_t _new_mav_dev_chan = MAVPROXY_DEFAULT_CHAN;
 static mavproxy_device_info _mavproxy_device_list[MAVPROXY_MAX_DEVICE_NUM] = { 0 };
 static uint8_t _mavproxy_device_num = 0;
+static mavlink_system_t _mavlink_system = {
+    .sysid = FMT_MAVLINK_SYS_ID,
+    .compid = FMT_MAVLINK_COMP_ID
+};
 
 /////////////// TOML Configuration //////////////
+void list_mavproxy_devices(void)
+{
+    for (int i = 0; i < DEVICE_NUM; i++) {
+        console_printf("[mavproxy %d]:\n", i);
+        console_printf("type:%s\n", _mavproxy_device_list[i].type);
+        console_printf("name:%s\n", _mavproxy_device_list[i].name);
+        if (DEVICE_TYPE_IS(i, serial)) {
+            mavproxy_serial_dev_config* config = (mavproxy_serial_dev_config*)_mavproxy_device_list[i].config;
+            console_printf("baudrate:%d\n", config->baudrate);
+        }
+        console_printf("\n");
+    }
+}
+
 static void _init_device_list(void)
 {
     for (int i = 0; i < MAVPROXY_MAX_DEVICE_NUM; i++) {
-        if (_mavproxy_device_list[i].type) {
-            rt_free(_mavproxy_device_list[i].type);
+        if (DEVICE_LIST[i].type) {
+            rt_free(DEVICE_LIST[i].type);
         }
-        if (_mavproxy_device_list[i].name) {
-            rt_free(_mavproxy_device_list[i].name);
+        if (DEVICE_LIST[i].name) {
+            rt_free(DEVICE_LIST[i].name);
         }
-        if (_mavproxy_device_list[i].config) {
-            rt_free(_mavproxy_device_list[i].config);
+        if (DEVICE_LIST[i].config) {
+            rt_free(DEVICE_LIST[i].config);
         }
-        _mavproxy_device_list[i].type = NULL;
-        _mavproxy_device_list[i].name = NULL;
-        _mavproxy_device_list[i].config = NULL;
+        DEVICE_LIST[i].type = NULL;
+        DEVICE_LIST[i].name = NULL;
+        DEVICE_LIST[i].config = NULL;
     }
-    _mavproxy_device_num = 0;
+    DEVICE_NUM = 0;
 }
 
 static fmt_err _mavproxy_parse_device(const toml_table_t* curtab, int idx)
@@ -105,90 +123,64 @@ static fmt_err _mavproxy_parse_device(const toml_table_t* curtab, int idx)
     fmt_err err = FMT_EOK;
     int i;
     const char* key;
-    const char* raw;
 
     /* get device type */
-    if ((raw = toml_raw_in(curtab, "type")) != 0) {
-        if (toml_rtos(raw, &_mavproxy_device_list[idx].type) != 0) {
-            console_printf("Error: fail to parse type value\n");
-            err = FMT_ERROR;
-        }
-
+    if (toml_string_in(curtab, "type", &DEVICE_LIST[idx].type) == 0) {
         if (DEVICE_TYPE_IS(idx, serial)) {
             mavproxy_serial_dev_config serial_default_config = {
                 .baudrate = MAVPROXY_SERIAL_BAUDRATE
             };
-            _mavproxy_device_list[idx].config = rt_malloc(sizeof(mavproxy_serial_dev_config));
+            DEVICE_LIST[idx].config = rt_malloc(sizeof(mavproxy_serial_dev_config));
 
             /* set default value */
-            if (_mavproxy_device_list[idx].config)
-                *(mavproxy_serial_dev_config*)_mavproxy_device_list[idx].config = serial_default_config;
-
+            if (DEVICE_LIST[idx].config) {
+                *(mavproxy_serial_dev_config*)DEVICE_LIST[idx].config = serial_default_config;
+            } else {
+                console_printf("TOML Mavproxy: fail to malloc memory\n");
+                err = FMT_ERROR;
+            }
         } else if (DEVICE_TYPE_IS(idx, usb)) {
             /* no configuration for usb device */
         } else {
-            console_printf("Error: unknown device type: %s\n", _mavproxy_device_list[idx].type);
-            err = FMT_ERROR;
-        }
-
-        if (_mavproxy_device_list[idx].config == NULL && !DEVICE_TYPE_IS(idx, usb)) {
-            console_printf("Error: fail to malloc memory\n");
+            console_printf("TOML Mavproxy: unknown device type: %s\n", DEVICE_LIST[idx].type);
             err = FMT_ERROR;
         }
     } else {
-        console_printf("Error: fail to parse type value\n");
-        err = FMT_ERROR;
+        console_printf("TOML Mavproxy: fail to parse type value\n");
+        return FMT_ERROR;
     }
 
-    if (err != FMT_EOK) {
-        return err;
+    if (toml_string_in(curtab, "name", &DEVICE_LIST[idx].name) != 0) {
+        console_printf("TOML Mavproxy: fail to parse name value\n");
+        return FMT_ERROR;
     }
 
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
-        if (0 != (raw = toml_raw_in(curtab, key))) {
-            if (MATCH(key, "type")) {
-                /* already handled */
-                continue;
-            }
+        if (MATCH(key, "type") || MATCH(key, "name")) {
+            /* already handled */
+            continue;
+        }
 
-            /* parse serial device */
-            if (DEVICE_TYPE_IS(idx, serial)) {
-                mavproxy_serial_dev_config* config = (mavproxy_serial_dev_config*)_mavproxy_device_list[idx].config;
-
-                if (MATCH(key, "name")) {
-                    if (toml_rtos(raw, &_mavproxy_device_list[idx].name) != 0) {
-                        console_printf("Error: fail to parse name value\n");
-                        return FMT_ERROR;
-                    }
-                } else if (MATCH(key, "baudrate")) {
-                    int64_t ival;
-
-                    if (toml_rtoi(raw, &ival) != 0) {
-                        console_printf("Error: fail to parse baudrate value\n");
-                        continue;
-                    }
+        if (DEVICE_TYPE_IS(idx, serial)) {
+            mavproxy_serial_dev_config* config = (mavproxy_serial_dev_config*)DEVICE_LIST[idx].config;
+            if (MATCH(key, "baudrate")) {
+                int64_t ival;
+                if (toml_int_in(curtab, key, &ival) == 0) {
                     config->baudrate = (uint32_t)ival;
                 } else {
-                    console_printf("Error: unknown config key: %s\n", key);
+                    console_printf("TOML Mavproxy: fail to parse baudrate value\n");
                     continue;
                 }
+            } else {
+                console_printf("TOML Mavproxy: unknown config key: %s\n", key);
+                continue;
             }
-
-            /* parse mavlink device */
-            if (DEVICE_TYPE_IS(idx, usb)) {
-                if (MATCH(key, "name")) {
-                    if (toml_rtos(raw, &_mavproxy_device_list[idx].name) != 0) {
-                        console_printf("Error: fail to parse name value\n");
-                        return FMT_ERROR;
-                    }
-                } else {
-                    console_printf("Error: unknown config key: %s\n", key);
-                    continue;
-                }
-            }
+        } else if (DEVICE_TYPE_IS(idx, usb)) {
+            console_printf("TOML Mavproxy: unknown config key: %s\n", key);
+            continue;
         } else {
-            console_printf("Error: unknown config key: %s\n", key);
+            // unknown type
             continue;
         }
     }
@@ -207,16 +199,17 @@ static fmt_err _mavproxy_parse_devices(const toml_array_t* array)
         err = _mavproxy_parse_device(curtab, idx);
 
         if (err != FMT_EOK) {
-            console_printf("mavproxy device parse fail: %d\n", err);
+            console_printf("TOML Mavproxy: device parse fail: %d\n", err);
             continue;
         }
 
         if (++idx >= MAVPROXY_MAX_DEVICE_NUM) {
+            console_printf("TOML Mavproxy: too many devices\n");
             break;
         }
     }
 
-    _mavproxy_device_num = idx;
+    DEVICE_NUM = idx;
 
     return err;
 }
@@ -232,7 +225,7 @@ static void _usb_status_change(void* parameter)
     USB_Status usb_status = *(USB_Status*)parameter;
 
     if (usb_status.connected) {
-        for (uint8_t i = 0; i < _mavproxy_device_num; i++) {
+        for (uint8_t i = 0; i < DEVICE_NUM; i++) {
             if (DEVICE_TYPE_IS(i, usb)) {
                 _new_mav_dev_chan = i;
                 break;
@@ -286,11 +279,11 @@ static void _send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlin
     mavproxy_send_immediate_msg(msg, true);
 }
 
-fmt_err mavproxy_switch_channel(uint8_t chan)
+static fmt_err _switch_channel(uint8_t chan)
 {
     rt_device_t old_device, new_device;
 
-    if (chan >= _mavproxy_device_num) {
+    if (chan >= DEVICE_NUM) {
         return FMT_EINVAL;
     }
 
@@ -313,8 +306,9 @@ fmt_err mavproxy_switch_channel(uint8_t chan)
             }
         }
         /* now we can safely close the old device */
-        if (old_device)
+        if (old_device != NULL) {
             rt_device_close(old_device);
+        }
     } else {
         return FMT_ERROR;
     }
@@ -441,8 +435,10 @@ void mavproxy_loop(void)
         if (res == RT_EOK) {
             /* switch mavproxy channel if needed */
             if (_mav_dev_chan != _new_mav_dev_chan) {
-                if (mavproxy_switch_channel(_new_mav_dev_chan) == FMT_EOK) {
+                if (_switch_channel(_new_mav_dev_chan) == FMT_EOK) {
                     _mav_dev_chan = _new_mav_dev_chan;
+                } else {
+                    TIMETAG_CHECK_EXECUTE(mavproxy, 500, console_printf("mavproxy switch channel fail!\n"););
                 }
             }
 
@@ -484,19 +480,15 @@ fmt_err mavproxy_toml_init(toml_table_t* table)
             /* we get new device configuration, override original one */
             _init_device_list();
 
-            if ((arr = toml_array_in(table, key)) != 0) {
-                if (toml_array_kind(arr) == 't') {
-                    err = _mavproxy_parse_devices(arr);
-                    if (err != FMT_EOK) {
-                        console_printf("parse fail\n");
-                    }
-                } else {
-                    console_printf("Error: wrong element type: %s\n", key);
-                    err = FMT_ERROR;
+            if (toml_array_table_in(table, key, &arr) == 0) {
+                err = _mavproxy_parse_devices(arr);
+                if (err != FMT_EOK) {
+                    console_printf("TOML Mavproxy: fail to parse devices\n");
+                    return err;
                 }
             } else {
-                console_printf("Error: wrong element type: %s\n", key);
-                err = FMT_ERROR;
+                console_printf("TOML Mavproxy: fail to parse devices\n");
+                return FMT_ERROR;
             }
         } else if (MATCH(key, "device")) {
             /* we get new device configuration, override original one */
@@ -505,7 +497,7 @@ fmt_err mavproxy_toml_init(toml_table_t* table)
             if ((tab = toml_table_in(table, key)) != 0) {
                 err = _mavproxy_parse_device(tab, 0);
                 if (err == FMT_EOK) {
-                    _mavproxy_device_num = 1;
+                    DEVICE_NUM = 1;
                 }
             } else {
                 console_printf("Error: wrong element type: %s\n", key);
@@ -522,27 +514,25 @@ fmt_err mavproxy_toml_init(toml_table_t* table)
 
 fmt_err mavproxy_init(void)
 {
-    /* init mavlink system info */
-    _mavlink_system.sysid = FMT_MAVLINK_SYS_ID;
-    _mavlink_system.compid = FMT_MAVLINK_COMP_ID;
-
     /* init message queue */
     _period_msg_queue.size = 0;
     _period_msg_queue.index = 0;
     _imm_msg_queue.head = 0;
     _imm_msg_queue.tail = 0;
 
+    /* init mavproxy device */
     mavproxy_dev_init();
+
+    /* init mavlink console */
     mavlink_console_init();
 
+    /* create tx lock */
     _mavproxy_tx_lock = rt_sem_create("mav_tx_lock", 1, RT_IPC_FLAG_FIFO);
 
-    /* get mavlink console device */
-    _mav_console_dev = rt_device_find("mav_console");
     /* create event */
     rt_event_init(&_event_mavproxy, "mavproxy", RT_IPC_FLAG_FIFO);
 
-    /* register timer event */
+    /* register timer event to periodly wakeup itself */
     rt_timer_init(&_timer_mavproxy, "mav_update", _mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,
         RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     rt_timer_start(&_timer_mavproxy);

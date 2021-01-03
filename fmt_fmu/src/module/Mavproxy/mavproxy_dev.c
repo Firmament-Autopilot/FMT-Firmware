@@ -44,6 +44,11 @@ rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t size;
 
+    if (_mavproxy_dev == NULL) {
+        /* mavproxy device not initialized */
+        return 0;
+    }
+
     /* write data to device */
     size = rt_device_write(_mavproxy_dev, 0, buffer, len);
 
@@ -56,6 +61,11 @@ rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
 rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t cnt = 0;
+
+    if (_mavproxy_dev == NULL) {
+        /* mavproxy device not initialized */
+        return 0;
+    }
 
     /* try to read data */
     cnt = rt_device_read(_mavproxy_dev, 0, buffer, len);
@@ -95,7 +105,13 @@ fmt_err mavproxy_set_device(const char* dev_name)
     }
 
     if (new_dev != _mavproxy_dev) {
-        if (rt_device_open(new_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) != RT_EOK) {
+        rt_uint16_t flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX;
+        if (new_dev->flag & (RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) ){
+            /* if device support DMA, then use it */
+            flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX;
+        }
+        rt_err_t err = rt_device_open(new_dev, flag);
+        if (err != RT_EOK) {
             return FMT_ERROR;
         }
         _mavproxy_dev = new_dev;

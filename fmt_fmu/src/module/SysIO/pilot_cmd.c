@@ -20,13 +20,13 @@
 
 #include "hal/rc.h"
 #include "module/fms/fms_model.h"
-#include "module/sysio/pilot_cmd.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/sysio/pilot_cmd.h"
 
 #define TOML_DBG(...)   console_printf(__VA_ARGS__)
 #define TOML_DBG_E(...) toml_debug("Pilot_Cmd", "E", __VA_ARGS__)
 #define TOML_DBG_W(...) toml_debug("Pilot_Cmd", "W", __VA_ARGS__)
-#define MATCH(a, b) (strcmp(a, b) == 0)
+#define MATCH(a, b)     (strcmp(a, b) == 0)
 
 #define PILOT_CMD_MAX_DEVICE_NUM 1
 
@@ -90,18 +90,6 @@ static Pilot_Cmd_Bus _pilot_cmd;
 MCN_DEFINE(pilot_cmd, sizeof(Pilot_Cmd_Bus));
 MCN_DEFINE(rc_channels, sizeof(rcChannel));
 
-void list_pilot_cmd_devices(void)
-{
-    // for (int i = 0; i < DEVICE_NUM; i++) {
-    //     pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)DEVICE_LIST[i].config;
-    //     console_printf("[pilot_cmd d0]:\n");
-    //     console_printf("type:%s\n", DEVICE_LIST[i].type);
-    //     console_printf("name:%s\n", DEVICE_LIST[i].name);
-    //     console_printf("protocol:%d\n", config->protocol);
-    //     console_printf("channel-num:%d\n", config->channel_num);
-    // }
-}
-
 void print_channel_mapping(void)
 {
     // console_printf("ls_lr => %d\n", _rc_channel_mapping[PILOT_LS_LR_MAPPING_IDX]);
@@ -141,7 +129,6 @@ void print_channel_mapping(void)
 static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
 {
     int i, j;
-    toml_raw_t raw;
     toml_table_t* tab;
     toml_array_t* arr;
     int64_t ival;
@@ -153,22 +140,16 @@ static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
 
     /* first count the number of event command and status command */
     for (i = 0; 0 != (tab = toml_table_at(curarr, i)); i++) {
-        if ((raw = toml_raw_in(tab, "type")) != 0) {
-            if (toml_rtoi(raw, &ival) == 0) {
-                if (ival == 1) {
-                    eventCmdNum++;
-                } else if (ival == 2) {
-                    statusCmdNum++;
-                } else {
-                    TOML_DBG_E("wrong command type: %d\n", ival);
-                    return FMT_ERROR;
-                }
+        if (toml_int_in(tab, "type", &ival) == 0) {
+            if (ival == 1) {
+                eventCmdNum++;
+            } else if (ival == 2) {
+                statusCmdNum++;
             } else {
-                TOML_DBG_E("fail to parse command type\n");
-                return FMT_ERROR;
+                TOML_DBG_W("Unknown command type: %d\n", ival);
             }
         } else {
-            TOML_DBG_E("missing command type\n");
+            TOML_DBG_E("Fail to parse command type\n");
             return FMT_ERROR;
         }
     }
@@ -176,21 +157,16 @@ static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
     /* memory allocation */
     pilotEventCmds = (pilot_event_cmd_t*)rt_malloc(sizeof(pilot_event_cmd_t) * eventCmdNum);
     if (pilotEventCmds == NULL) {
-        TOML_DBG_E("fail to malloc memory\n");
-        return FMT_ERROR;
+        TOML_DBG_E("Fail to malloc memory for command list\n");
+        return FMT_ENOMEM;
     }
 
     /* start to parse command */
     int eventCmdIdx = 0;
     for (i = 0; 0 != (tab = toml_table_at(curarr, i)); i++) {
         /* get command type */
-        if ((raw = toml_raw_in(tab, "type")) != 0) {
-            if (toml_rtoi(raw, &ival) != 0) {
-                TOML_DBG_E("fail to parse command type\n");
-                return FMT_ERROR;
-            }
-        } else {
-            TOML_DBG_E("undefine command type\n");
+        if (toml_int_in(tab, "type", &ival) != 0) {
+            TOML_DBG_E("Fail to parse command type\n");
             return FMT_ERROR;
         }
 
@@ -198,63 +174,60 @@ static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
         if (ival == 1) {
             pilotEventCmds[eventCmdIdx]._set = 0;
 
-            if ((raw = toml_raw_in(tab, "cmd")) != 0) {
-                if (toml_rtoi(raw, &ival) == 0) {
-                    pilotEventCmds[eventCmdIdx].cmd = (int32_t)ival;
-                } else {
-                    TOML_DBG_E("fail to parse event command\n");
-                    return FMT_ERROR;
-                }
+            if (toml_int_in(tab, "cmd", &ival) == 0) {
+                pilotEventCmds[eventCmdIdx].cmd = (int32_t)ival;
+            } else {
+                TOML_DBG_E("Fail to parse event command\n");
+                return FMT_ERROR;
             }
 
-            if ((raw = toml_raw_in(tab, "channel")) != 0) {
-                if (toml_rtoi(raw, &ival) == 0) {
-                    pilotEventCmds[eventCmdIdx].channel = (int8_t*)rt_malloc(1);
-                    if (pilotEventCmds[eventCmdIdx].channel) {
-                        *pilotEventCmds[eventCmdIdx].channel = (int8_t)ival;
-                    } else {
-                        TOML_DBG_E("malloc fail\n");
-                        return FMT_ERROR;
-                    }
+            if (toml_int_in(tab, "channel", &ival) == 0) {
+                pilotEventCmds[eventCmdIdx].channel = (int8_t*)rt_malloc(1);
+                if (pilotEventCmds[eventCmdIdx].channel) {
+                    *pilotEventCmds[eventCmdIdx].channel = (int8_t)ival;
                 } else {
-                    TOML_DBG_E("fail to parse event command channel\n");
-                    return FMT_ERROR;
+                    TOML_DBG_E("malloc fail\n");
+                    return FMT_ENOMEM;
                 }
                 pilotEventCmds[eventCmdIdx].chan_dim = 1; // single channel mapping
-            } else if ((arr = toml_array_in(tab, "channel")) != 0) {
-                // TBA: multi-channel mapping
+            } else if ((arr = toml_array_in(tab, "channels")) != 0) {
+                // TODO: multi-channel mapping
                 TOML_DBG_E("do not support multi-channel mapping now\n");
                 return FMT_ERROR;
             } else {
+                TOML_DBG_E("Fail to parse event command channel\n");
                 return FMT_ERROR;
             }
 
-            if ((arr = toml_array_in(tab, "range")) != 0) {
+            if (toml_array_value_in(tab, "range", &arr) == 0) {
                 if ((pilotEventCmds[eventCmdIdx].range = (int16_t*)rt_malloc(pilotEventCmds[eventCmdIdx].chan_dim * 2)) == NULL) {
-                    TOML_DBG_E("malloc fail\n");
-                    return FMT_ERROR;
+                    TOML_DBG_E("Malloc fail\n");
+                    return FMT_ENOMEM;
                 }
 
                 if (pilotEventCmds[eventCmdIdx].chan_dim == 1) {
-                    for (j = 0; (raw = toml_raw_at(arr, j)) && j < 2; j++) {
-                        if (toml_rtoi(raw, &ival) == 0) {
+                    for (j = 0; j < 2; j++) {
+                        if (toml_int_at(arr, j, &ival) == 0) {
                             pilotEventCmds[eventCmdIdx].range[j] = (int16_t)ival;
                         } else {
-                            TOML_DBG_E("fail to parse event command range\n");
+                            TOML_DBG_E("Fail to parse event command range\n");
                             return FMT_ERROR;
                         }
                     }
                 } else {
-                    // TBA: multi-channel mapping
-                    TOML_DBG_E("do not support multi-channel mapping now\n");
+                    // TODO: multi-channel mapping
+                    TOML_DBG_E("Do not support multi-channel mapping now\n");
                     return FMT_ERROR;
                 }
             }
-
+            /* process next command */
             eventCmdIdx++;
-        } else {
+        } else if (ival == 2) {
             /* TODO, parse status command */
-            console_printf("do not support status command yet\n");
+            TOML_DBG_E("Do not support status command yet\n");
+            return FMT_ERROR;
+        } else {
+            TOML_DBG_E("Unknown command type:%d\n", ival);
             return FMT_ERROR;
         }
     }
@@ -265,7 +238,6 @@ static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
 static fmt_err _pilot_cmd_parse_mode(const toml_array_t* curarr)
 {
     int i, j;
-    toml_raw_t raw;
     toml_table_t* tab;
     toml_array_t* arr;
     int64_t ival;
@@ -277,64 +249,54 @@ static fmt_err _pilot_cmd_parse_mode(const toml_array_t* curarr)
 
     pilotModes = (pilot_mode_config*)rt_malloc(toml_array_nelem(curarr) * sizeof(pilot_mode_config));
     if (pilotModes == NULL) {
-        TOML_DBG_E("malloc fail\n");
+        TOML_DBG_E("Mode list malloc fail\n");
         return FMT_ERROR;
     }
 
     for (i = 0; 0 != (tab = toml_table_at(curarr, i)); i++) {
-        if ((raw = toml_raw_in(tab, "mode")) != 0) {
-            if (toml_rtoi(raw, &ival) == 0) {
-                pilotModes[i].mode = (int8_t)ival;
-            } else {
-                TOML_DBG_E("fail to parse mode\n");
-                return FMT_ERROR;
-            }
+        if (toml_int_in(tab, "mode", &ival) == 0) {
+            pilotModes[i].mode = (int8_t)ival;
         } else {
-            TOML_DBG_E("missing mode\n");
+            TOML_DBG_E("Fail to parse mode\n");
             return FMT_ERROR;
         }
 
-        if ((raw = toml_raw_in(tab, "channel")) != 0) {
-            if (toml_rtoi(raw, &ival) == 0) {
-                pilotModes[i].channel = (int8_t*)rt_malloc(1);
-                if (pilotModes[i].channel) {
-                    *pilotModes[i].channel = (int8_t)ival;
-                } else {
-                    TOML_DBG_E("malloc fail\n");
-                    return FMT_ERROR;
-                }
+        if (toml_int_in(tab, "channel", &ival) == 0) {
+            pilotModes[i].channel = (int8_t*)rt_malloc(1);
+            if (pilotModes[i].channel) {
+                *pilotModes[i].channel = (int8_t)ival;
             } else {
-                TOML_DBG_E("fail to parse channel\n");
-                return FMT_ERROR;
+                TOML_DBG_E("Malloc fail\n");
+                return FMT_ENOMEM;
             }
             pilotModes[i].chan_dim = 1; // single channel mapping
-        } else if ((arr = toml_array_in(tab, "channel")) != 0) {
-            // TBA: multi-channel mapping
-            console_printf("do not support multi-channel mapping now\n");
+        } else if ((arr = toml_array_in(tab, "channels")) != 0) {
+            // TODO: multi-channel mapping
+            TOML_DBG_E("do not support multi-channel mapping now\n");
             return FMT_ERROR;
         } else {
-            TOML_DBG_E("wrong channel type\n");
+            TOML_DBG_E("Fail to parse event command channel\n");
             return FMT_ERROR;
         }
 
-        if ((arr = toml_array_in(tab, "range")) != 0) {
+        if (toml_array_value_in(tab, "range", &arr) == 0) {
             if ((pilotModes[i].range = (int16_t*)rt_malloc(pilotModes[i].chan_dim * 2)) == NULL) {
-                TOML_DBG_E("malloc fail\n");
-                return FMT_ERROR;
+                TOML_DBG_E("Malloc fail\n");
+                return FMT_ENOMEM;
             }
 
             if (pilotModes[i].chan_dim == 1) {
-                for (j = 0; (raw = toml_raw_at(arr, j)) && j < 2; j++) {
-                    if (toml_rtoi(raw, &ival) == 0) {
+                for (j = 0; j < 2; j++) {
+                    if (toml_int_at(arr, j, &ival) == 0) {
                         pilotModes[i].range[j] = (int16_t)ival;
                     } else {
-                        TOML_DBG_E("fail to parse mode range\n");
+                        TOML_DBG_E("Fail to parse event command range\n");
                         return FMT_ERROR;
                     }
                 }
             } else {
-                // TBA: multi-channel mapping
-                console_printf("do not support multi-channel mapping now\n");
+                // TODO: multi-channel mapping
+                TOML_DBG_E("Do not support multi-channel mapping now\n");
                 return FMT_ERROR;
             }
         }
@@ -345,27 +307,18 @@ static fmt_err _pilot_cmd_parse_mode(const toml_array_t* curarr)
     return FMT_EOK;
 }
 
-static fmt_err _pilot_cmd_parse_device(const toml_table_t* tab)
+static fmt_err _pilot_cmd_parse_device(const toml_table_t* curtab)
 {
-    fmt_err err = FMT_EOK;
     int i;
-    toml_raw_t raw;
-    toml_array_t* arr;
-    int64_t ival;
-    double dval;
+    const char* key;
 
     /* get device type */
-    if ((raw = toml_raw_in(tab, "type")) != 0) {
-        if (toml_rtos(raw, &rcDevInfo.type) != 0) {
-            TOML_DBG("Error: fail to parse rc type value\n");
-            err = FMT_ERROR;
-        }
-
+    if (toml_string_in(curtab, "type", &rcDevInfo.type) == 0) {
         if (MATCH(rcDevInfo.type, "rc")) {
             pilot_cmd_rc_dev_config rc_default_config = {
                 .protocol = 1, // sbus
                 .channel_num = 6,
-                .sample_time = 0.05,
+                .sample_time = 0.05, // 20Hz
                 .range = { 1000, 2000 }
             };
 
@@ -373,87 +326,76 @@ static fmt_err _pilot_cmd_parse_device(const toml_table_t* tab)
                 /* set default value */
                 *(pilot_cmd_rc_dev_config*)rcDevInfo.config = rc_default_config;
             } else {
-                TOML_DBG("Error: fail to malloc memory for rc device config\n");
-                err = FMT_ERROR;
+                TOML_DBG_E("Fail to malloc memory for rc device config\n");
+                return FMT_ENOMEM;
             }
         } else {
-            TOML_DBG("Error: unknown rc device type: %s\n", rcDevInfo.type);
-            err = FMT_ERROR;
+            TOML_DBG_E("Unknown device type: %s\n", rcDevInfo.type);
+            return FMT_EINVAL;
         }
     } else {
-        TOML_DBG("Error: fail to parse rc type value\n");
-        err = FMT_ERROR;
-    }
-
-    if (err != FMT_EOK) {
-        return err;
-    }
-
-    pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)rcDevInfo.config;
-    /* parse device name */
-    if (0 != (raw = toml_raw_in(tab, "name"))) {
-        if (toml_rtos(raw, &rcDevInfo.name) != 0) {
-            TOML_DBG("Error: fail to parse rc device name\n");
-            return FMT_ERROR;
-        }
-    } else {
-        TOML_DBG("Error: must define rc device name\n");
+        TOML_DBG_E("Fail to parse type value\n");
         return FMT_ERROR;
     }
 
-    /* parse protocol */
-    if (0 != (raw = toml_raw_in(tab, "protocol"))) {
-        if (toml_rtoi(raw, &ival) == 0) {
-            config->protocol = (uint16_t)ival;
-        } else {
-            TOML_DBG("Warning: fail to parse rc protocol\n");
-        }
-    } else {
-        TOML_DBG("Warning: do not define rc protocol\n");
+    if (toml_string_in(curtab, "name", &rcDevInfo.name) != 0) {
+        TOML_DBG_E("Fail to parse name value\n");
+        return FMT_ERROR;
     }
 
-    /* parse channel number */
-    if (0 != (raw = toml_raw_in(tab, "channel-num"))) {
-        if (toml_rtoi(raw, &ival) == 0) {
-            config->channel_num = (uint16_t)ival;
-        } else {
-            TOML_DBG("Warning: fail to parse rc channel-num\n");
+    /* traverse keys in table */
+    for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
+        if (MATCH(key, "type") || MATCH(key, "name")) {
+            /* already handled */
+            continue;
         }
-    } else {
-        TOML_DBG("Warning: do not define rc channel-num\n");
-    }
 
-    /* parse sample time */
-    if (0 != (raw = toml_raw_in(tab, "sample-time"))) {
-        if (toml_rtod(raw, &dval) == 0) {
-            config->sample_time = (float)dval;
-        } else {
-            TOML_DBG("Warning: fail to parse rc sample-time\n");
-        }
-    } else {
-        TOML_DBG("Warning: do not define rc sample-time\n");
-    }
-
-    /* parse rc range */
-    if ((arr = toml_array_in(tab, "range")) != 0) {
-        if (toml_array_kind(arr) == 'v' && toml_array_nelem(arr) == 2) {
-            for (i = 0; i < 2; i++) {
-                raw = toml_raw_at(arr, i);
-                if (toml_rtoi(raw, &ival) == 0) {
-                    config->range[i] = (int16_t)ival;
-                } else {
-                    TOML_DBG("Error: rc parse range fail\n");
-                    return FMT_ERROR;
+        pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)rcDevInfo.config;
+        if (MATCH(key, "protocol")) {
+            int64_t ival;
+            if (toml_int_in(curtab, key, &ival) == 0) {
+                config->protocol = (uint16_t)ival;
+            } else {
+                TOML_DBG_W("Fail to parse %s value\n", key);
+                continue;
+            }
+        } else if (MATCH(key, "channel-num")) {
+            int64_t ival;
+            if (toml_int_in(curtab, key, &ival) == 0) {
+                config->channel_num = (uint16_t)ival;
+            } else {
+                TOML_DBG_W("Fail to parse %s value\n", key);
+                continue;
+            }
+        } else if (MATCH(key, "sample-time")) {
+            double dval;
+            if (toml_double_in(curtab, key, &dval) == 0) {
+                config->sample_time = (float)dval;
+            } else {
+                TOML_DBG_W("Fail to parse %s value\n", key);
+                continue;
+            }
+        } else if (MATCH(key, "range")) {
+            toml_array_t* arr;
+            int64_t ival;
+            if (toml_array_value_in(curtab, key, &arr) == 0 && toml_array_nelem(arr) == 2) {
+                int idx;
+                for (idx = 0; idx < 2; idx++) {
+                    if (toml_int_at(arr, idx, &ival) == 0) {
+                        config->range[idx] = (int16_t)ival;
+                    } else {
+                        TOML_DBG_W("Fail to parse %s value\n", key);
+                        break;
+                    }
                 }
             }
         } else {
-            TOML_DBG("Warning: wrong rc range type\n");
+            TOML_DBG_W("Unknown config key: %s\n", key);
+            continue;
         }
-    } else {
-        TOML_DBG("Warning: do not define rc range\n");
     }
 
-    return err;
+    return FMT_EOK;
 }
 
 static int _pilot_cmd_echo(void* parameter)
@@ -648,7 +590,6 @@ fmt_err pilot_cmd_toml_init(toml_table_t* table)
 {
     int i, j;
     const char* key;
-    toml_raw_t raw;
     toml_table_t* tab;
     toml_array_t* arr;
     int64_t ival;
@@ -656,63 +597,47 @@ fmt_err pilot_cmd_toml_init(toml_table_t* table)
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {
         if (MATCH(key, "stick-channel")) {
-            if ((arr = toml_array_in(table, key)) != 0) {
-                if (toml_array_kind(arr) == 'v' && toml_array_nelem(arr) == 4) {
-                    for (j = 0; j < 4; j++) {
-                        raw = toml_raw_at(arr, j);
-                        if (toml_rtoi(raw, &ival) == 0) {
-                            stickMapping[j] = (int8_t)ival;
-                        } else {
-                            TOML_DBG_E("parse stick-channel fail\n");
-                            return FMT_ERROR;
-                        }
+            if (toml_array_value_in(table, key, &arr) == 0 && toml_array_nelem(arr) == 4) {
+                for (j = 0; j < 4; j++) {
+                    if (toml_int_at(arr, j, &ival) == 0) {
+                        stickMapping[j] = (int8_t)ival;
+                    } else {
+                        TOML_DBG_E("Parse stick-channel fail\n");
+                        return FMT_ERROR;
                     }
-                } else {
-                    TOML_DBG_E("wrong stick-channel definition\n");
-                    return FMT_ERROR;
                 }
             } else {
-                TOML_DBG_E("wrong %s element type\n", key);
+                TOML_DBG_E("Wrong stick-channel definition\n");
                 return FMT_ERROR;
             }
         } else if (MATCH(key, "device")) {
             if ((tab = toml_table_in(table, key)) != 0) {
                 if (_pilot_cmd_parse_device(tab) != FMT_EOK) {
-                    TOML_DBG_E("device parse fail\n");
+                    TOML_DBG_E("Device parse fail\n");
                     return FMT_ERROR;
                 }
             } else {
-                TOML_DBG_E("fail to parse device\n");
+                TOML_DBG_E("Fail to parse device\n");
                 return FMT_ERROR;
             }
         } else if (MATCH(key, "mode")) {
-            if ((arr = toml_array_in(table, key)) != 0) {
-                if (toml_array_kind(arr) == 't') {
-                    if (_pilot_cmd_parse_mode(arr) != FMT_EOK) {
-                        TOML_DBG_E("mode parse fail\n");
-                        return FMT_ERROR;
-                    }
-                } else {
-                    TOML_DBG_E("mode should be table array\n");
+            if (toml_array_table_in(table, key, &arr) == 0) {
+                if (_pilot_cmd_parse_mode(arr) != FMT_EOK) {
+                    TOML_DBG_E("Mode parse fail\n");
                     return FMT_ERROR;
                 }
             } else {
-                TOML_DBG_E("mode should be table array\n");
+                TOML_DBG_E("Wrong mode definition\n");
                 return FMT_ERROR;
             }
         } else if (MATCH(key, "command")) {
-            if ((arr = toml_array_in(table, key)) != 0) {
-                if (toml_array_kind(arr) == 't') {
-                    if (_pilot_cmd_parse_command(arr) != FMT_EOK) {
-                        TOML_DBG_E("command parse fail\n");
-                        return FMT_ERROR;
-                    }
-                } else {
-                    TOML_DBG_E("command should be table array\n");
+            if (toml_array_table_in(table, key, &arr) == 0) {
+                if (_pilot_cmd_parse_command(arr) != FMT_EOK) {
+                    TOML_DBG_E("Command parse fail\n");
                     return FMT_ERROR;
                 }
             } else {
-                TOML_DBG_E("command should be table array\n");
+                TOML_DBG_E("Wrong command definition\n");
                 return FMT_ERROR;
             }
         } else {

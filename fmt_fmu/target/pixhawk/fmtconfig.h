@@ -55,7 +55,7 @@
 
 #define FMT_RECORD_CALIBRATION_DATA
 
-#define FMT_USING_AUX_MOTOR
+// #define FMT_USING_AUX_MOTOR
 // #define FMT_TEST_MOTOR
 
 #endif

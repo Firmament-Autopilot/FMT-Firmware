@@ -278,3 +278,84 @@ char* toml_make_string(const char* str)
 
     return new_str;
 }
+
+int toml_string_in(const toml_table_t* tab, const char* key, char** ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtos(raw, ret);
+}
+
+int toml_int_in(const toml_table_t* tab, const char* key, int64_t* ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtoi(raw, ret);
+}
+
+int toml_int_at(const toml_array_t* arr, int idx, int64_t* ret)
+{
+    const char* raw = toml_raw_at(arr, idx);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtoi(raw, ret);
+}
+
+int toml_bool_in(const toml_table_t* tab, const char* key, int* ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtob(raw, ret);
+}
+
+int toml_double_in(const toml_table_t* tab, const char* key, double* ret)
+{
+    const char* raw = toml_raw_in(tab, key);
+
+    if (raw == NULL) {
+        return -1;
+    }
+
+    return toml_rtod(raw, ret);
+}
+
+int toml_array_table_in(const toml_table_t* tab, const char* key, toml_array_t** ret)
+{
+    toml_array_t* arr = toml_array_in(tab, key);
+
+    if ((arr != NULL) && (toml_array_kind(arr) == 't')) {
+        *ret = arr;
+        return 0;
+    } else {
+        *ret = NULL;
+        return -1;
+    }
+}
+
+int toml_array_value_in(const toml_table_t* tab, const char* key, toml_array_t** ret)
+{
+    toml_array_t* arr = toml_array_in(tab, key);
+
+    if ((arr != NULL) && (toml_array_kind(arr) == 'v')) {
+        *ret = arr;
+        return 0;
+    } else {
+        *ret = NULL;
+        return -1;
+    }
+}

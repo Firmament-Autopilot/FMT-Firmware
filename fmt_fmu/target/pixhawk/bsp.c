@@ -220,7 +220,7 @@ void bsp_early_initialize(void)
     FMT_CHECK(systime_init());
 
     /* init console to enable console output */
-    FMT_CHECK(console_init(CONSOLE_DEVICE_NAME));
+    FMT_CHECK(console_init());
 
     /* init gpio, bus, etc. */
     RTT_CHECK(gpio_drv_init());
@@ -233,7 +233,7 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-    /* init boot log */
+    /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
     /* init uMCN */

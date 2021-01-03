@@ -20,30 +20,41 @@
 #include <firmament.h>
 
 typedef struct {
-	uint32_t tag;
-	uint32_t period;
+    uint32_t tag;
+    uint32_t period;
 } TimeTag;
 
-#define DEFINE_TIMETAG(_name, _period)      \
-    static TimeTag __timetag_##_name = {    \
-        .tag = 0,                           \
-        .period = _period                   \
+#define DEFINE_TIMETAG(_name, _period)   \
+    static TimeTag __timetag_##_name = { \
+        .tag = 0,                        \
+        .period = _period                \
     }
 
-#define TIMETAG(_name)          (&__timetag_##_name)
+#define TIMETAG(_name) (&__timetag_##_name)
 
-#define TIMETAG_CHECK_EXECUTE(_name, _period, _operation)   \
-    DEFINE_TIMETAG(_name, _period); \
-    if(check_timetag(TIMETAG(_name))){_operation}
+#define TIMETAG_CHECK_EXECUTE(_name, _period, _operation) \
+    DEFINE_TIMETAG(_name, _period);                       \
+    do {                                                  \
+        if (check_timetag(TIMETAG(_name))) {              \
+            _operation                                    \
+        }                                                 \
+    } while (0)
 
-#define TIMETAG_CHECK_EXECUTE2(_name, _period, _time_now, _operation)   \
-    DEFINE_TIMETAG(_name, _period); \
-    if(check_timetag2(TIMETAG(_name), _time_now)){_operation}
+#define TIMETAG_CHECK_EXECUTE2(_name, _period, _time_now, _operation) \
+    DEFINE_TIMETAG(_name, _period);                                   \
+    do {                                                              \
+        if (check_timetag2(TIMETAG(_name), _time_now)) {              \
+            _operation                                                \
+        }                                                             \
+    } while (0)
 
-#define TIMETAG_CHECK_EXECUTE3(_name, _period, _time_now, _operation)   \
-    DEFINE_TIMETAG(_name, 0); \
-    if(check_timetag3(TIMETAG(_name), _time_now, _period)){_operation}
-
+#define TIMETAG_CHECK_EXECUTE3(_name, _period, _time_now, _operation) \
+    DEFINE_TIMETAG(_name, 0);                                         \
+    do {                                                              \
+        if (check_timetag3(TIMETAG(_name), _time_now, _period)) {     \
+            _operation                                                \
+        }                                                             \
+    } while (0)
 
 uint64_t systime_now_us(void);
 uint32_t systime_now_ms(void);
