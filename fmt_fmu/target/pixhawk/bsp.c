@@ -302,12 +302,6 @@ void bsp_post_initialize(void)
     FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
-    /* init main out */
-    // main_out_dev = rt_device_find("motor_main");
-    // FMT_CHECK(actuator_init(main_out_dev));
-    // /* init aux out */
-    // aux_out_dev = rt_device_find("motor_aux");
-    // FMT_CHECK(actuator_init(aux_out_dev));
     /* init actuator */
     FMT_CHECK(actuator_init());
 #endif
