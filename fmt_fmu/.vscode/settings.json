@@ -35,5 +35,6 @@
         "cmath": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled",
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "cmake.configureOnOpen": false
 }
