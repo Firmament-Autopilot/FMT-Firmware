@@ -60,3 +60,12 @@ target = "Pixhawk FMUv2"
 	[[mavproxy.devices]]		# channel 1
 	type = "usb"
 	name = "usb"				# device name
+
+# Actuator Command Configuration
+[actuator-cmd]
+    [actuator-cmd.device]
+    type = "pwm"                # type must be pwm now
+    name = "motor_main"         # device name
+    freq = 400                  # pwm frequency in Hz
+    chan-idx = 0x000F           # map control output 1-4 to main out
+    range = [1000,2000]         # control output range

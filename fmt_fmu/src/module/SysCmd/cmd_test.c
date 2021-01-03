@@ -47,7 +47,7 @@ target = \"Pixhawk FMUv2\"\n\
 
 rt_device_t _systick_dev;
 
-void print_channel_mapping(void);
+void list_actuator_devices(void);
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
     // console_printf("%s\n", DEFAULT_TOML_SYS_CONFIG);
@@ -55,7 +55,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
     // toml_print_table(tab);
     // toml_free(tab);
 
-    print_channel_mapping();
+    list_actuator_devices();
 
     return 0;
 }

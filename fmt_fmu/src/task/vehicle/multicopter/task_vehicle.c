@@ -75,11 +75,7 @@ void task_vehicle_entry(void* parameter)
                 TIMETAG_CHECK_EXECUTE3(control_model_update, CONTROL_EXPORT.period, time_now, controller_model_step(););
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL) || defined(FMT_TEST_MOTOR)
-#ifdef FMT_USING_AUX_MOTOR
-                send_actuator_cmd(aux_out_dev);
-#else
-                send_actuator_cmd(main_out_dev);
-#endif
+                send_actuator_cmd();
 #endif
 
 #if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)

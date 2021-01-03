@@ -77,7 +77,7 @@ static rt_size_t hal_motor_write(rt_device_t dev, rt_off_t pos, const void* buff
 
     motor = (motor_dev_t)dev;
 
-    if (motor->ops->motor_write && buffer) {
+    if (motor->ops->motor_write && buffer && pos > 0) {
         wb = motor->ops->motor_write(motor, (uint16_t)pos, buffer, size);
     }
 

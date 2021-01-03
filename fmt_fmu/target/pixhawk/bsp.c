@@ -57,7 +57,7 @@
 #endif
 #include "protocol/msp/msp.h"
 
-#define DEFAULT_TOML_SYS_CONFIG     "target = \"Pixhawk FMUv2\"\n\
+#define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk FMUv2\"\n\
 [console]\n\
 	[[console.devices]]\n\
 	type = \"serial\"\n\
@@ -156,7 +156,7 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
     char* target;
     int i;
 
-    if(root_tab == NULL){
+    if (root_tab == NULL) {
         return FMT_ERROR;
     }
 
@@ -184,10 +184,12 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
             if (0 != (sub_tab = toml_table_in(root_tab, key))) {
                 if (MATCH(key, "console")) {
                     err = console_toml_init(sub_tab);
-                } else if (MATCH(key, "pilot-cmd")) {
-                    err = pilot_cmd_toml_init(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_init(sub_tab);
+                } else if (MATCH(key, "pilot-cmd")) {
+                    pilot_cmd_toml_init(sub_tab);
+                } else if (MATCH(key, "actuator-cmd")) {
+                    actuator_toml_init(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -300,12 +302,8 @@ void bsp_post_initialize(void)
     FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
-    /* init main out */
-    main_out_dev = rt_device_find("motor_main");
-    FMT_CHECK(actuator_init(main_out_dev));
-    /* init aux out */
-    aux_out_dev = rt_device_find("motor_aux");
-    FMT_CHECK(actuator_init(aux_out_dev));
+    /* init actuator */
+    FMT_CHECK(actuator_init());
 #endif
 
     /* toml system configure */
