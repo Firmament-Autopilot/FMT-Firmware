@@ -438,7 +438,8 @@ void mavproxy_loop(void)
                 if (_switch_channel(_new_mav_dev_chan) == FMT_EOK) {
                     _mav_dev_chan = _new_mav_dev_chan;
                 } else {
-                    TIMETAG_CHECK_EXECUTE(mavproxy, 500, console_printf("mavproxy switch channel fail!\n"););
+                    console_printf("mavproxy switch channel fail!\n");
+                    _new_mav_dev_chan = _mav_dev_chan;
                 }
             }
 
