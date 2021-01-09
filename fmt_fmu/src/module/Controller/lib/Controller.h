@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.795
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jan  1 14:16:13 2021
+ * C/C++ source code generated on : Sat Jan  9 08:58:31 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -229,11 +229,10 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S54>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/I_Control'
  * '<S55>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/P_Control'
  * '<S56>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/D_Control/DT1_Filter'
- * '<S57>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/D_Control/DT1_Filter1'
- * '<S58>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/D_Control/Derivative'
- * '<S59>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller1/Error'
- * '<S60>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller1/P_Controller'
- * '<S61>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller1/P_Controller/P_Control'
+ * '<S57>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller/D_Control/Derivative'
+ * '<S58>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller1/Error'
+ * '<S59>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller1/P_Controller'
+ * '<S60>'  : 'Controller/Controller/Vertical_Control/Veloxity_Z_Controller1/P_Controller/P_Control'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

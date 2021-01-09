@@ -24,7 +24,7 @@ target = "Pixhawk FMUv2"
 	[pilot-cmd.device]
 	type = "rc"					# type must be rc
 	name = "rc"             	# device name
-	protocol = 1            	# 1:sbus, 2:ppm
+	protocol = 2            	# 1:sbus, 2:ppm
 	channel-num = 6         	# channel in used, max supported channel: sbus:16, ppm:8
 	sample-time = 0.05      	# sample time in second (-1 for inherit)
 	range = [1000,2000]     	# min and max value

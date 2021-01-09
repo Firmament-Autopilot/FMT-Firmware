@@ -543,11 +543,6 @@ uint8_t pilot_cmd_collect(void)
         return -1;
     }
 
-    /* check if stick is mapped */
-    if (!stickMapping[0] || !stickMapping[1] || !stickMapping[2] || !stickMapping[3]) {
-        return -1;
-    }
-
     config = ((rc_dev_t)rcDev)->config;
     scale = 2.0f / (float)(config.rc_max_value - config.rc_min_value);
 
@@ -556,6 +551,14 @@ uint8_t pilot_cmd_collect(void)
     if (rt_err == RT_EOK && update) {
 
         if (rt_device_read(rcDev, _rc_read_mask, rcChannel, dev_config->channel_num * 2)) {
+            /* publish rc_channel topic */
+            mcn_publish(MCN_HUB(rc_channels), rcChannel);
+
+            /* check if stick is mapped */
+            if (!stickMapping[0] || !stickMapping[1] || !stickMapping[2] || !stickMapping[3]) {
+                return -1;
+            }
+
             /* convert rc value to [-1 1] */
             _pilot_cmd.ls_lr = -1.0f + (float)(rcChannel[stickMapping[0] - 1] - config.rc_min_value) * scale;
             _pilot_cmd.ls_ud = -1.0f + (float)(rcChannel[stickMapping[1] - 1] - config.rc_min_value) * scale;
@@ -570,8 +573,6 @@ uint8_t pilot_cmd_collect(void)
             _pilot_cmd.timestamp = systime_now_ms();
             /* publish pilot_cmd topic */
             mcn_publish(MCN_HUB(pilot_cmd), &_pilot_cmd);
-            /* publish rc_channel topic */
-            mcn_publish(MCN_HUB(rc_channels), rcChannel);
 
 #ifdef FMT_OUTPUT_PILOT_CMD
             /* send out pilot_cmd via mavlink */
