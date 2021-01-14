@@ -26,7 +26,7 @@ Where the **INS**, **FMS**, **Controller** and **Plant** are modules generated b
 -  May support more hardwares in future. 
 
 ## Documentation
-[User Guide (CN)](https://github.com/FirmamentPilot/fmt_user_guide_cn)
+[User Guide (CN)](https://github.com/Firmament-Autopilot/FMT_UserGuide)
 
 ## Develop Environment
 The following toolchain are needed for development.
