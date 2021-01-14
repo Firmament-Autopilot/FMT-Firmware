@@ -8,7 +8,7 @@
 
 Overview
 ============================
-Firmament Autopilot (FMT) is an open source autopilot based on Model-Based Design (MBD). This project is derived from the [Starry Pilot](https://github.com/JcZou/StarryPilot), including an embedded flight control system [FMT Firmware](https://github.com/Firmament-Autopilot/FMT_Firmware) and the algorithm model framework [FMT Model](https://github.com/FirmamentPilot/FMT_Model) developed based on Matlab/Simulink .
+Firmament Autopilot (FMT) is an open source autopilot based on Model-Based Design (MBD). This project is derived from the [Starry Pilot](https://github.com/JcZou/StarryPilot), including an embedded flight control system [FMT Firmware](https://github.com/Firmament-Autopilot/FMT_Firmware) and the algorithm model framework [FMT Model](https://github.com/Firmament-Autopilot/FMT_Model) developed based on Matlab/Simulink .
 
 Based on the FMT platform, the algorithm development and verification become much easier and quicker. There is no need to manually write embedded codes anymore. You only need to design the algorithm model in Simulink graphically and then generate C/C++ code with just one click. The generated code can be integrated into the FMT Firmware seamlessly, which dramatically improves the efficiency of development and testing work.
 
