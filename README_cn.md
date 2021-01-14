@@ -7,7 +7,7 @@
 ## 概述
 Firmament Autopilot (简称FMT) 是首个基于模型设计 (Model-Based Design， 简称MBD) 的开源自驾仪。FMT项目从 [Starry Pilot](https://github.com/JcZou/StarryPilot) 开源飞控发展而来，
 包括一个主要用C语言实现的嵌入式飞控系统 [FMT Firmware](https://github.com/Firmament-Autopilot/FMT_Firmware) 以及基于 Matlab/Simulink 开发的算法模型库和仿真框架 
-[FMT Model](https://github.com/FirmamentPilot/FMT_Model)。
+[FMT Model](hhttps://github.com/Firmament-Autopilot/FMT_Model)。
 
 基于FMT平台可以更快速的开发和验证的飞控算法，无需手动编写嵌入式代码，只需要在Simulink中通过图形化的方式设计算法模型然后一键生成C/C++代码。生成的代码可以无缝合入飞控，大大提高算法的开发和测试效率。
 
@@ -46,7 +46,7 @@ FMT Firmware 具有轻量级，易于阅读和使用的特点，并且兼具稳�
 -  未来将支持更多硬件. 
 
 ## 文档
-[用户手册](https://github.com/FirmamentPilot/fmt_user_guide_cn)
+[用户手册](https://github.com/Firmament-Autopilot/FMT_UserGuide)
 
 ## 开发环境
 需要如下工具链进行开发：
