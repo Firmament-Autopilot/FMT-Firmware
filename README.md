@@ -15,7 +15,7 @@ Based on the FMT platform, the algorithm development and verification become muc
 Project Homepage : https://github.com/Firmament-Autopilot
 
 ## Feature
-- Based on Model Based Design (MBD), dramatically increase the development and testing efficiency.
+- Based on Model Based Design (MBD), make the development and testing easier.
 - Powered by RT-Thread RTOS, better real-time performance and lower CPU usage.
 - Cross-platform toolchain supported (Linux, Windows, Mac).
 - Fully support with Pixhawk2 hardware.
