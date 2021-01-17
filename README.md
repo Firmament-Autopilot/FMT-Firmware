@@ -14,6 +14,13 @@ Based on the FMT platform, the algorithm development and verification become muc
 
 Project Homepage : https://github.com/Firmament-Autopilot
 
+## Feature
+- Based on Model Based Design (MBD), dramatically increase the development and testing efficiency.
+- Powered by RT-Thread RTOS, better real-time performance and lower CPU usage.
+- Cross-platform toolchain supported (Linux, Windows, Mac).
+- Fully support with Pixhawk2 hardware.
+- Mavlink 1.0/2.0 is supported.
+
 ## Architecture
 FMT Firmware is the embedded flight controller of the FMT Autopilot. Its architecture is shown in the figure below.
 
