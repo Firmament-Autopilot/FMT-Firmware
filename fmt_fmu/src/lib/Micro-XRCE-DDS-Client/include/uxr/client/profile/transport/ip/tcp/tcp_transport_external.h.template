@@ -1,0 +1,20 @@
+#ifndef UXR_CLIENT_PROFILE_TRANSPORT_IP_TCP_EXTERNAL_H_
+#define UXR_CLIENT_PROFILE_TRANSPORT_IP_TCP_EXTERNAL_H_
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+// Place here your includes
+
+typedef struct uxrTCPPlatform
+{
+    // Place here your platform data
+} uxrTCPPlatform;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // UXR_CLIENT_PROFILE_TRANSPORT_IP_TCP_EXTERNAL_H_
