@@ -1,0 +1,48 @@
+#include <uxr/client/profile/transport/ip/tcp/tcp_transport_external.h>
+#include "tcp_transport_internal.h"
+
+// Place here your includes
+
+bool uxr_init_tcp_platform(
+        struct uxrTCPPlatform* platform,
+        uxrIpProtocol ip_protocol,
+        const char* ip,
+        const char* port)
+{
+    // Place here your initialization platform code
+    // Return true if success
+}
+
+bool uxr_close_tcp_platform(
+        struct uxrTCPPlatform* platform)
+{
+    // Place here your closing platform code
+    // Return true if success
+}
+
+size_t uxr_write_tcp_data_platform(
+        struct uxrTCPPlatform* platform,
+        const uint8_t* buf,
+        size_t len,
+        uint8_t* errcode)
+{
+    // Place here your writing bytes platform code
+    // Return number of bytes written
+}
+
+size_t uxr_read_tcp_data_platform(
+        struct uxrTCPPlatform* platform,
+        uint8_t* buf,
+        size_t len,
+        int timeout,
+        uint8_t* errcode)
+{
+    // Place here your reading bytes platform code
+    // Return number of bytes read (max bytes: len)
+}
+
+void uxr_disconnect_tcp_platform(
+        struct uxrTCPPlatform* platform)
+{
+    // Place here your disconnection platform code
+}

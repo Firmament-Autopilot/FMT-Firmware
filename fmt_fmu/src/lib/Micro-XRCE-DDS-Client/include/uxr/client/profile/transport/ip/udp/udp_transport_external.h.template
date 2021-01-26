@@ -1,0 +1,20 @@
+#ifndef UXR_CLIENT_PROFILE_TRANSPORT_IP_UDP_EXTERNAL_H_
+#define UXR_CLIENT_PROFILE_TRANSPORT_IP_UDP_EXTERNAL_H_
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+// Place here your includes
+
+typedef struct uxrUDPPlatform
+{
+    // Place here your platform data
+} uxrUDPPlatform;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // UXR_CLIENT_PROFILE_TRANSPORT_IP_UDP_EXTERNAL_H_

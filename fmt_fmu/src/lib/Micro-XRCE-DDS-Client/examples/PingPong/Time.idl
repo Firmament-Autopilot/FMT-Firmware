@@ -1,0 +1,10 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from builtin_interfaces/msg/Time.msg
+// generated code does not contain a copyright notice
+
+
+struct Time {
+  long sec;
+  unsigned long nanosec;
+};
+
