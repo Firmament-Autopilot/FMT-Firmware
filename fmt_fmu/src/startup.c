@@ -42,7 +42,7 @@ struct rt_thread thread_fmtio_handle;
 static char thread_logger_stack[2048];
 struct rt_thread thread_logger_handle;
 
-static char thread_status_stack[1024];
+static char thread_status_stack[2048];
 struct rt_thread thread_status_handle;
 
 void assert_failed(uint8_t* file, uint32_t line)
