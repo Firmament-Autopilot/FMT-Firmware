@@ -10,7 +10,7 @@
 #ifndef __GPS_UBX_H__
 #define __GPS_UBX_H__
 
-#include "stm32f4xx.h"
+#include <bsp_header.h>
 #include <rtthread.h>
 #include <stdint.h>
 

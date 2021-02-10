@@ -26,7 +26,7 @@
 // Interupt Vector Offset
 #define INT_VECTOR_OFFSET 0x4000
 // Internal SRAM memory size[Kbytes]
-#define SYSTEM_TOTAL_MEM_SIZE (0x30000) // 196K
+#define SYSTEM_TOTAL_MEM_SIZE (0x80000) // 512K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
 #ifdef __ICCARM__
 // Use *.icf ram symbal, to avoid hardcode.

@@ -53,7 +53,7 @@
 // #error "Missing define: Evaluation board (ie. USE_STM322xG_EVAL)"
 //#endif
 
-#include "stm32f4xx.h"
+#include <bsp_header.h>
 
 
 /** @addtogroup USB_OTG_DRIVER

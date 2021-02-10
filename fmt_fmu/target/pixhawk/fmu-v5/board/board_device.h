@@ -14,21 +14,20 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FIRMAMENT_H__
-#define __FIRMAMENT_H__
+#ifndef __BOARD_DEVICE_H__
+#define __BOARD_DEVICE_H__
 
-/* Standard C Library */
-#include <stdio.h>
-#include <stdlib.h>
-/* RT-Thread */
-#include <rtdevice.h>
-#include <rthw.h>
-#include <rtthread.h>
-/* System */
-#include <fmt_def.h>
-#include <fmtconfig.h>
-#include <module/module_common.h>
-/* BSP */
-#include <bsp_header.h>
+// Device Name
+#define CONSOLE_DEVICE_NAME        "serial0"
+#define FMTIO_DEVICE_NAME          "serial5"
+#define GDB_DEVICE_NAME            "serial6"
+#define MAVPROXY_CHAN1_DEVICE_NAME "serial1"
+#define MAVPROXY_CHAN2_DEVICE_NAME "usb"
+#define FS_DEVICE_NAME             "sd0"
+#define GPS_SERIAL_DEVICE_NAME     "serial2"
+#define MPU6000_SPI_DEVICE_NAME    "spi1_dev4"
+#define L3GD20H_SPI_DEVICE_NAME    "spi1_dev2"
+#define MS5611_SPI_DEVICE_NAME     "spi1_dev3"
+#define LSM303D_SPI_DEVICE_NAME    "spi1_dev1"
 
 #endif
