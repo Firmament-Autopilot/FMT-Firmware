@@ -48,7 +48,7 @@ if PLATFORM == 'gcc':
     CFLAGS += ' -std=c99'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
-        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,Reset_Handler -T stm32_rom.ld'
+        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,Reset_Handler -T link.lds'
 
     CPATH = ''
     LPATH = ''

@@ -3,8 +3,6 @@ from building import *
 
 cwd = GetCurrentDir()
 
-print 'cur dir:' + cwd
-
 src = Glob('*.c')
 
 CPPPATH = [cwd, cwd + '/../include']

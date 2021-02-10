@@ -1,0 +1,14 @@
+# for module compiling
+import os
+from building import *
+Import('RTT_ROOT')
+
+cwd = str(Dir('#'))
+
+src = Glob('*.c') + Glob('board/*.c')
+
+CPPPATH = [cwd, cwd + '/board']
+
+group = DefineGroup('Target', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

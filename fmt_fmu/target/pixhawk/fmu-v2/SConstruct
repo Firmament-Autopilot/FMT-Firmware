@@ -2,8 +2,13 @@ import os
 import sys
 import rtconfig
 
+# FMT path
+FMU_ROOT = os.path.normpath(os.getcwd() + '/../../..')
 # RTOS path
-RTT_ROOT = os.path.normpath(os.getcwd() + '/../../rtos')
+RTT_ROOT = FMU_ROOT + '/rtos'
+
+print 'FMU_ROOT: ' + FMU_ROOT
+print 'RTT_ROOT: ' + RTT_ROOT
 
 sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
 try:
@@ -38,10 +43,10 @@ Export('rtconfig')
 objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=False)
 
 cwd = str(Dir('#'))
-list = os.listdir(cwd + '/../../')
+list = os.listdir(FMU_ROOT)
 vdir = 'build/fmt'
 for d in list:
-    path = os.path.join(cwd, '../..', d)
+    path = os.path.join(FMU_ROOT, d)
     if os.path.isfile(os.path.join(path, 'SConscript')):
         objs.extend(SConscript(os.path.join(path, 'SConscript'), variant_dir=vdir + '/' + d, duplicate=0))
 
