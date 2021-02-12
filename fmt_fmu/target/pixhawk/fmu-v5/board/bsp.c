@@ -18,72 +18,10 @@
 #include <bsp.h>
 #include <shell.h>
 #include <string.h>
-#ifdef FMT_USING_CM_BACKTRACE
-#include <cm_backtrace.h>
-#endif
-#ifdef FMT_USING_UNIT_TEST
-#include <utest.h>
-#endif
 
 #include "driver/gpio.h"
-#include "driver/gps.h"
-#include "driver/gps_m8n.h"
-#include "driver/l3gd20h.h"
-#include "driver/lsm303d.h"
-#include "driver/mpu6000.h"
-#include "driver/ms5611.h"
-#include "driver/pmw3901_l0x.h"
-#include "driver/pwm_drv.h"
-#include "driver/spi_drv.h"
 #include "driver/systick_drv.h"
-#include "driver/tca62724.h"
 #include "driver/usart.h"
-#include "hal/cdcacm.h"
-#include "hal/fmtio_dev.h"
-#include "module/controller/controller_model.h"
-#include "module/fms/fms_model.h"
-#include "module/fs_manager/fs_manager.h"
-#include "module/ins/ins_model.h"
-#include "module/mavproxy/mavproxy.h"
-#include "module/param/param.h"
-#include "module/sensor/sensor_manager.h"
-#include "module/sysio/actuator_cmd.h"
-#include "module/sysio/pilot_cmd.h"
-#include "module/system/statistic.h"
-#include "module/system/systime.h"
-#include "module/toml/toml.h"
-#ifdef FMT_USING_SIH
-#include "module/plant/plant_model.h"
-#endif
-#include "protocol/msp/msp.h"
-
-#define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk FMUv2\"\n\
-[console]\n\
-	[[console.devices]]\n\
-	type = \"serial\"\n\
-	name = \"serial0\"\n\
-	baudrate = 57600\n\
-	auto-switch = true\n\
-	[[console.devices]]\n\
-	type = \"mavlink\"\n\
-	name = \"mav_console\"\n\
-	auto-switch = true\n\
-[mavproxy]\n\
-	[[mavproxy.devices]]\n\
-	type = \"serial\"\n\
-	name = \"serial1\"\n\
-	baudrate = 57600\n\
-	[[mavproxy.devices]]\n\
-	type = \"usb\"\n\
-	name = \"usb\""
-
-#define MATCH(a, b)     (strcmp(a, b) == 0)
-#define SYS_CONFIG_FILE "/sys/sysconfig.toml"
-
-static toml_table_t* _toml_root_tab = NULL;
-
-rt_device_t main_out_dev = NULL;
-rt_device_t aux_out_dev = NULL;
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -133,77 +71,18 @@ void bsp_show_information(void)
     _print_line("RAM", buffer, str_len);
     _print_line("Target", TARGET_NAME, str_len);
     _print_line("Vehicle", VEHICLE_TYPE, str_len);
-    _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
-    _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
-    _print_line("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
-#ifdef FMT_USING_SIH
-    _print_line("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
-#endif
-    console_println("Task Initialize:");
-    _print_line("  vehicle", "OK", str_len);
-    _print_line("  fmtio", "OK", str_len);
-    _print_line("  comm", "OK", str_len);
-    _print_line("  logger", "OK", str_len);
-    _print_line("  status", "OK", str_len);
-}
-
-fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
-{
-    fmt_err err = FMT_EOK;
-    toml_table_t* sub_tab;
-    const char* key;
-    const char* raw;
-    char* target;
-    int i;
-
-    if (root_tab == NULL) {
-        return FMT_ERROR;
-    }
-
-    /* target should be defined and match with bsp */
-    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
-        if (toml_rtos(raw, &target) != 0) {
-            console_printf("Error: fail to parse type value\n");
-            err = FMT_ERROR;
-        }
-        if (!MATCH(target, TARGET_NAME)) {
-            /* check if target match */
-            console_printf("Error: target name doesn't match\n");
-            err = FMT_ERROR;
-        }
-        rt_free(target);
-    } else {
-        console_printf("Error: can not find target key\n");
-        err = FMT_ERROR;
-    }
-
-    if (err == FMT_EOK) {
-        /* traverse all sub-table */
-        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
-            /* handle all sub tables */
-            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
-                if (MATCH(key, "console")) {
-                    err = console_toml_init(sub_tab);
-                } else if (MATCH(key, "mavproxy")) {
-                    err = mavproxy_toml_init(sub_tab);
-                } else if (MATCH(key, "pilot-cmd")) {
-                    pilot_cmd_toml_init(sub_tab);
-                } else if (MATCH(key, "actuator-cmd")) {
-                    actuator_toml_init(sub_tab);
-                } else {
-                    console_printf("unknown table: %s\n", key);
-                }
-                if (err != FMT_EOK) {
-                    console_printf("fail to parse %s\n", key);
-                }
-            }
-        }
-    }
-
-    /* free toml root table */
-    toml_free(root_tab);
-
-    return err;
+//     _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
+//     _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
+//     _print_line("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
+// #ifdef FMT_USING_SIH
+//     _print_line("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
+// #endif
+    // console_println("Task Initialize:");
+    // _print_line("  vehicle", "OK", str_len);
+    // _print_line("  fmtio", "OK", str_len);
+    // _print_line("  comm", "OK", str_len);
+    // _print_line("  logger", "OK", str_len);
+    // _print_line("  status", "OK", str_len);
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
@@ -226,57 +105,11 @@ void bsp_early_initialize(void)
 
     /* init gpio, bus, etc. */
     RTT_CHECK(gpio_drv_init());
-
-    RTT_CHECK(spi_drv_init());
-
-    RTT_CHECK(pwm_drv_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-    /* start recording boot log */
-    FMT_CHECK(boot_log_init());
-
-    /* init uMCN */
-    FMT_CHECK(mcn_init());
-
-    /* init file manager */
-    FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
-
-    /* init usb device */
-    FMT_CHECK(usb_cdc_init());
-
-    /* init imu0 */
-    RTT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));
-
-    /* init imu1 + mag0 */
-    RTT_CHECK(l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME));
-    RTT_CHECK(lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME));
-
-    /* init barometer */
-    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
-
-    /* init gps */
-    // RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
-    RTT_CHECK(gps_m8n_init(GPS_SERIAL_DEVICE_NAME));
-
-    /* init other devices */
-    RTT_CHECK(pmw3901_l0x_drv_init("serial3"));
-    RTT_CHECK(tca62724_drv_init());
-
-    /* init parameter system */
-    FMT_CHECK(param_init());
-
-    /* init sensor manager */
-    FMT_CHECK(sensor_manager_init());
-
-    //     /* GDB STUB */
-    // #ifdef RT_USING_GDB
-    //     gdb_set_device(GDB_DEVICE_NAME);
-    //     gdb_start();
-    // #endif
-
 #ifdef RT_USING_FINSH
     /* init finsh */
     finsh_system_init();
@@ -286,42 +119,12 @@ void bsp_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
-
-#ifdef FMT_USING_CM_BACKTRACE
-    /* cortex-m backtrace */
-    cm_backtrace_init("fmt_fmu", TARGET_NAME, "v0.1");
-#endif
-
-#ifdef FMT_USING_UNIT_TEST
-    utest_init();
-#endif
 }
 
 void bsp_post_initialize(void)
 {
-    FMT_CHECK(pilot_cmd_init());
-
-#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
-    /* init actuator */
-    FMT_CHECK(actuator_init());
-#endif
-
-    /* toml system configure */
-    _toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    if (!_toml_root_tab) {
-        /* use default system configuration */
-        _toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
-    }
-    FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
-
-    /* start msp server */
-    FMT_CHECK(msp_server_start());
-
     /* show system information */
     bsp_show_information();
-
-    /* dump boot log to file */
-    boot_log_dump();
 }
 
 /**

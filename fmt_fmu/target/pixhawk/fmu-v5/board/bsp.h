@@ -20,7 +20,7 @@
 #include <firmament.h>
 
 // Board Information
-#define TARGET_NAME  "Pixhawk FMUv2"
+#define TARGET_NAME  "Pixhawk FMUv5"
 #define VEHICLE_TYPE "Quadcopter"
 
 // Interupt Vector Offset

@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'pixhawk-fmu-v5'
+BOARD = 'pixhawk'
 
 # toolchains options
 ARCH = 'arm'

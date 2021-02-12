@@ -17,7 +17,7 @@ DRIVERS = [
     'rtc/*.c',
     'sdio/*.c',
     'spi/*.c',
-    'systick/*.c',
+    'systick/st/f4_systick.c',
     'tca62724/*.c',
     'usart/*.c',
     'utils/*.c',

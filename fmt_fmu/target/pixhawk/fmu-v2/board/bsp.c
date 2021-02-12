@@ -101,7 +101,7 @@ static void _print_line(const char* name, const char* content, uint32_t len)
     console_printf("%s\n", content);
 }
 
-void NVIC_Configuration(void)
+static void NVIC_Configuration(void)
 {
 #ifdef VECT_TAB_RAM
     /* Set the Vector Table base location at 0x20000000 */

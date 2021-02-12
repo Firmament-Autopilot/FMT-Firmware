@@ -2,7 +2,7 @@
 
 DRIVERS = [
     'gpio/*.c',
-    'systick/*.c',
+    'systick/st/f7_systick.c',
     'usart/*.c',
 ]
 
@@ -19,6 +19,7 @@ HAL_CPPPATH = []
 MODULES = [
     'Console/*.c',
     'LED/*.c',
+    'System/*.c',
 ]
 
 MODULES_CPPPATH = []
