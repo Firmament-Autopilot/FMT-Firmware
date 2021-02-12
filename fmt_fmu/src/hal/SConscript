@@ -1,30 +1,16 @@
 from building import *
+import build_obj
 
 cwd = GetCurrentDir()
 
-src = Glob('*.c')
-src += Glob('mag/*.c')
-src += Glob('accel/*.c')
-src += Glob('barometer/*.c')
-src += Glob('gps/*.c')
-src += Glob('fmtio_dev/*.c')
-src += Glob('gyro/*.c')
-src += Glob('i2c/*.c')
-src += Glob('motor/*.c')
-src += Glob('pin/*.c')
-src += Glob('rc/*.c')
-src += Glob('serial/*.c')
-src += Glob('systick/*.c')
-src += Glob('tools/*.c')
-src += Glob('usb/*.c')
-src += Glob('optical_flow/*.c')
-src += Split("""
-spi/spi_core.c
-spi/spi_dev.c
-""")
+src = []
+for f in build_obj.HAL:
+    src += Glob(f)
 
-CPPPATH = [cwd]
+inc = []
+for d in build_obj.HAL_CPPPATH:
+    inc += [cwd + '/' + d]
 
-group = DefineGroup('HAL', src, depend = [''], CPPPATH = CPPPATH)
+group = DefineGroup('HAL', src, depend = [''], CPPPATH = inc)
 
 Return('group')

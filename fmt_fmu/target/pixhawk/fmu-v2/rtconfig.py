@@ -1,5 +1,8 @@
 import os
 
+# board options
+BOARD = 'pixhawk-fmu-v5'
+
 # toolchains options
 ARCH = 'arm'
 CPU = 'cortex-m4'

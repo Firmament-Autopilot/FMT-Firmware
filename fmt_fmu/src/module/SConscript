@@ -1,48 +1,16 @@
 from building import *
+import build_obj
 
 cwd = GetCurrentDir()
 
-src = Glob('*.c')
-src += Glob('Calibration/*.c')
-src += Glob('Console/*.c')
-src += Glob('FS_Manager/*.c')
-src += Glob('FTP/*.c')
-src += Glob('Plant/*.c')
-src += Glob('Plant/lib/*.c')
-src += Glob('INS/*.c')
-src += Glob('INS/lib/*.c')
-src += Glob('Controller/*.c')
-src += Glob('Controller/lib/*.c')
-src += Glob('FMS/*.c')
-src += Glob('FMS/lib/*.c')
-src += Glob('IPC/*.c')
-src += Glob('LED/*.c')
-src += Glob('Log/*.c')
-src += Glob('Math/*.c')
-src += Glob('Mavproxy/*.c')
-src += Glob('Parameter/*.c')
-src += Glob('Sensor/*.c')
-src += Glob('FMTIO/*.c')
-src += Glob('SysIO/*.c')
-src += Glob('SysCmd/*.c')
-src += Glob('System/*.c')
-src += Glob('Unit_Test/*.c')
-src += Glob('Utils/*.c')
-src += Glob('Vehicle/*.c')
-src += Glob('BuzzerTune/*.c')
-src += Glob('Filter/*.c')
-src += Glob('TOML/*.c')
+src = []
+for f in build_obj.MODULES:
+    src += Glob(f)
 
-CPPPATH = [cwd,
-           cwd + '/Calibration',
-           cwd + '/INS/lib',
-           cwd + '/Plant/lib',
-           cwd + '/Controller/lib',
-           cwd + '/FMS/lib',
-           cwd + '/FS_Manager',
-           cwd + '/BuzzerTune'
-           ]
+inc = []
+for d in build_obj.MODULES_CPPPATH:
+    inc += [cwd + '/' + d]
 
-group = DefineGroup('Module', src, depend=[''], CPPPATH=CPPPATH)
+group = DefineGroup('Module', src, depend=[''], CPPPATH=inc)
 
 Return('group')
