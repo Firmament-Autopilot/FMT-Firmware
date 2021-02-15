@@ -19,6 +19,7 @@
 
 /* stm32 peripheral library */
 #include <stm32f7xx.h>
+#include <stm32f7xx_hal.h>
 /* FPU Library */
 #include <arm_math.h>
 

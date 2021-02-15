@@ -6,8 +6,37 @@ from building import *
 cwd = GetCurrentDir()
 
 # The set of source files associated with this SConscript file.
-src = Glob('CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c')
-src += Glob('STM32F7xx_HAL_Driver/Src/*.c')
+#src = Glob('CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c')
+src = Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c')
+
+if GetDepend(['HAL_UART_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c')
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart_ex.c')
+if GetDepend(['HAL_USART_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_usart.c')
+if GetDepend(['HAL_GPIO_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c')
+if GetDepend(['HAL_EXTI_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exit.c')
+if GetDepend(['HAL_DMA_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c')
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma_ex.c')
+if GetDepend(['HAL_RCC_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c')
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c')
+if GetDepend(['HAL_FLASH_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash.c')
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash_ex.c')
+if GetDepend(['HAL_PWR_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_.c')
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c')
+if GetDepend(['HAL_I2C_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c')
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c')
+if GetDepend(['HAL_CORTEX_MODULE_ENABLED']):
+    src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c')
+
+# src += Glob('STM32F7xx_HAL_Driver/Src/*.c')
 
 #add for startup script 
 if rtconfig.CROSS_TOOL == 'gcc':
@@ -29,7 +58,7 @@ path = [cwd + '/STM32F7xx_HAL_Driver/Inc',
 	cwd + '/CMSIS/Include']
 
 #CPPDEFINES = ['USE_STDPERIPH_DRIVER', 'ARM_MATH_CM4', 'ARM_MATH_MATRIX_CHECK']
-#defines = ['USE_STDPERIPH_DRIVER', 'ARM_MATH_CM4', 'ARM_MATH_MATRIX_CHECK']
+defines = ['USE_HAL_DRIVER', 'STM32F765xx', '__VFP_FP__', 'ARM_MATH_MATRIX_CHECK', 'ARM_MATH_CM7', 'ARM_MATH_ROUNDING', '__FPU_PRESENT="1"']
 group = DefineGroup('STM32_StdPeriph', src, depend = [''], CPPPATH = path)
 
 Return('group')

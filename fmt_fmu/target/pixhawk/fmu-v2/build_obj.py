@@ -17,9 +17,9 @@ DRIVERS = [
     'rtc/*.c',
     'sdio/*.c',
     'spi/*.c',
-    'systick/st/f4_systick.c',
+    'systick/st/stm32f4_systick.c',
     'tca62724/*.c',
-    'usart/*.c',
+    'usart/st/stm32f4_usart.c',
     'utils/*.c',
     'mateksys/*.c',
     'usb/src/usb_bsp.c',
@@ -101,7 +101,7 @@ MODULES_CPPPATH = [
     'Controller/lib',
     'FMS/lib',
     'FS_Manager',
-    'BuzzerTune'
+    'BuzzerTune',
 ]
 
 TASKS = [
@@ -109,7 +109,14 @@ TASKS = [
     'comm/*.c',
     'logger/*.c',
     'fmtio/*.c',
-    'status/*.c'
+    'status/*.c',
 ]
 
 TASKS_CPPPATH = []
+
+LIBS = [
+    'cm_backtrace',
+    'mavlink',
+    'Micro-XRCE-DDS-Client',
+    'stm_lib/stm32f4',
+]

@@ -23,6 +23,28 @@
 #include "driver/systick_drv.h"
 #include "driver/usart.h"
 
+#define _SCB_BASE       (0xE000E010UL)
+#define _SYSTICK_CTRL   (*(rt_uint32_t *)(_SCB_BASE + 0x0))
+#define _SYSTICK_LOAD   (*(rt_uint32_t *)(_SCB_BASE + 0x4))
+#define _SYSTICK_VAL    (*(rt_uint32_t *)(_SCB_BASE + 0x8))
+#define _SYSTICK_CALIB  (*(rt_uint32_t *)(_SCB_BASE + 0xC))
+#define _SYSTICK_PRI    (*(rt_uint8_t  *)(0xE000ED23UL))
+
+static uint32_t _SysTick_Config(rt_uint32_t ticks)
+{
+    if ((ticks - 1) > 0xFFFFFF)
+    {
+        return 1;
+    }
+    
+    _SYSTICK_LOAD = ticks - 1; 
+    _SYSTICK_PRI = 0xFF;
+    _SYSTICK_VAL  = 0;
+    _SYSTICK_CTRL = 0x07;  
+    
+    return 0;
+}
+
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
     int pad_len = len - strlen(name) - strlen(content);
@@ -39,18 +61,82 @@ static void _print_line(const char* name, const char* content, uint32_t len)
     console_printf("%s\n", content);
 }
 
-void NVIC_Configuration(void)
-{
-#ifdef VECT_TAB_RAM
-    /* Set the Vector Table base location at 0x20000000 */
-    NVIC_SetVectorTable(NVIC_VectTab_RAM, INT_VECTOR_OFFSET);
-#else /* VECT_TAB_FLASH  */
-    /* Set the Vector Table base location at 0x8004000 */
-    /* first 0x4000 is reserved for bootloader, so the vectortab offset is 0x4000 */
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, INT_VECTOR_OFFSET);
-#endif
+// void NVIC_Configuration(void)
+// {
+// #ifdef VECT_TAB_RAM
+//     /* Set the Vector Table base location at 0x20000000 */
+//     NVIC_SetVectorTable(NVIC_VectTab_RAM, INT_VECTOR_OFFSET);
+// #else /* VECT_TAB_FLASH  */
+//     /* Set the Vector Table base location at 0x8004000 */
+//     /* first 0x4000 is reserved for bootloader, so the vectortab offset is 0x4000 */
+//     NVIC_SetVectorTable(NVIC_VectTab_FLASH, INT_VECTOR_OFFSET);
+// #endif
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+//     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+// }
+
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+    RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
+
+    /** Configure the main internal regulator output voltage
+  */
+    __HAL_RCC_PWR_CLK_ENABLE();
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+    /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLM = 8;
+    RCC_OscInitStruct.PLL.PLLN = 216;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+    RCC_OscInitStruct.PLL.PLLQ = 2;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+        Error_Handler();
+    }
+    /** Activate the Over-Drive mode
+  */
+    if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
+        Error_Handler();
+    }
+    /** Initializes the CPU, AHB and APB buses clocks
+  */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+        | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK) {
+        Error_Handler();
+    }
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART2 | RCC_PERIPHCLK_UART7;
+    PeriphClkInitStruct.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+    PeriphClkInitStruct.Uart7ClockSelection = RCC_UART7CLKSOURCE_PCLK1;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+        Error_Handler();
+    }
 }
 
 void bsp_show_information(void)
@@ -71,60 +157,29 @@ void bsp_show_information(void)
     _print_line("RAM", buffer, str_len);
     _print_line("Target", TARGET_NAME, str_len);
     _print_line("Vehicle", VEHICLE_TYPE, str_len);
-//     _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
-//     _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
-//     _print_line("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
-// #ifdef FMT_USING_SIH
-//     _print_line("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
-// #endif
-    // console_println("Task Initialize:");
-    // _print_line("  vehicle", "OK", str_len);
-    // _print_line("  fmtio", "OK", str_len);
-    // _print_line("  comm", "OK", str_len);
-    // _print_line("  logger", "OK", str_len);
-    // _print_line("  status", "OK", str_len);
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
-    /* interrupt controller init */
-    NVIC_Configuration();
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    FMT_ASSERT(HAL_Init() == HAL_OK);
 
-    /* system timer init */
-    RTT_CHECK(systick_drv_init());
+    /* Configure the system clock */
+    SystemClock_Config();
+    SystemCoreClockUpdate();
 
-    /* system usart init */
-    RTT_CHECK(usart_drv_init());
-
-    /* system time module init */
-    FMT_CHECK(systime_init());
-
-    /* init console to enable console output */
-    FMT_CHECK(console_init());
-
-    /* init gpio, bus, etc. */
-    RTT_CHECK(gpio_drv_init());
+    _SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-#ifdef RT_USING_FINSH
-    /* init finsh */
-    finsh_system_init();
-    /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_shell(NULL));
-#endif
 
-    /* system statistic module */
-    FMT_CHECK(sys_stat_init());
 }
 
 void bsp_post_initialize(void)
 {
-    /* show system information */
-    bsp_show_information();
 }
 
 /**
