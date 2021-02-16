@@ -1,15 +1,12 @@
 from building import *
-import build_obj
 
 cwd = GetCurrentDir()
 
 src = []
-for f in build_obj.TASKS:
-    src += Glob(f)
-
 inc = []
-for d in build_obj.TASKS_CPPPATH:
-    inc += [cwd + '/' + d]
+
+src += Glob('simple/*.c')
+inc += [cwd + '/simple']
 
 group = DefineGroup('Task', src, depend = [''], CPPPATH = inc)
 

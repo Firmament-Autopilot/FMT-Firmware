@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "task/task_logger.h"
+#include "task_logger.h"
 #include "module/fs_manager/fs_manager.h"
 
 #define BOOT_LOG_BUFFER_SIZE 4096

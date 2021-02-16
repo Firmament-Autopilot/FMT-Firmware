@@ -21,11 +21,11 @@
 #include <cm_backtrace.h>
 #endif
 
-#include "task/task_comm.h"
-#include "task/task_fmtio.h"
-#include "task/task_logger.h"
-#include "task/task_status.h"
-#include "task/task_vehicle.h"
+#include "task_comm.h"
+#include "task_fmtio.h"
+#include "task_logger.h"
+#include "task_status.h"
+#include "task_vehicle.h"
 
 static rt_thread_t tid0;
 

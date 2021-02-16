@@ -1,42 +1,20 @@
 # Build object lists
 
 DRIVERS = [
-    '*.c',
-    'buzzer/*.c',
-    'gpio/*.c',
     'gps/*.c',
     'hmc5883/*.c',
     'hw_timer/*.c',
-    'i2c/*.c',
     'l3gd20h/*.c',
     'lidar/*.c',
     'lsm303d/*.c',
     'mpu6000/*.c',
     'ms5611/*.c',
-    'pwm/*.c',
-    'rtc/*.c',
-    'sdio/*.c',
-    'spi/*.c',
-    'systick/st/stm32f4_systick.c',
     'tca62724/*.c',
-    'usart/st/stm32f4_usart.c',
     'utils/*.c',
     'mateksys/*.c',
-    'usb/src/usb_bsp.c',
-    'usb/src/usb_core.c',
-    'usb/src/usb_dcd.c',
-    'usb/src/usb_dcd_int.c',
-    'usb/src/usbd_cdc_core_loopback.c',
-    'usb/src/usbd_core.c',
-    'usb/src/usbd_desc.c',
-    'usb/src/usbd_ioreq.c',
-    'usb/src/usbd_req.c',
-    'usb/src/usbd_usr.c',
 ]
 
-DRIVERS_CPPPATH = [
-    'usb/inc'
-]
+DRIVERS_CPPPATH = []
 
 HAL = [
     '*.c',

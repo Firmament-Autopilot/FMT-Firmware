@@ -22,7 +22,7 @@
 #include "module/fms/fms_model.h"
 #include "module/fs_manager/fs_manager.h"
 #include "module/ins/ins_model.h"
-#include "task/task_logger.h"
+#include "task_logger.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif

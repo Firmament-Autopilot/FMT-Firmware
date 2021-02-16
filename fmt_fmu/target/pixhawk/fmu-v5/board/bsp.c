@@ -23,25 +23,27 @@
 #include "driver/systick_drv.h"
 #include "driver/usart.h"
 
-#define _SCB_BASE       (0xE000E010UL)
-#define _SYSTICK_CTRL   (*(rt_uint32_t *)(_SCB_BASE + 0x0))
-#define _SYSTICK_LOAD   (*(rt_uint32_t *)(_SCB_BASE + 0x4))
-#define _SYSTICK_VAL    (*(rt_uint32_t *)(_SCB_BASE + 0x8))
-#define _SYSTICK_CALIB  (*(rt_uint32_t *)(_SCB_BASE + 0xC))
-#define _SYSTICK_PRI    (*(rt_uint8_t  *)(0xE000ED23UL))
+void rt_hw_systick_init(void);
+int rt_hw_pin_init(void);
+
+#define _SCB_BASE      (0xE000E010UL)
+#define _SYSTICK_CTRL  (*(rt_uint32_t*)(_SCB_BASE + 0x0))
+#define _SYSTICK_LOAD  (*(rt_uint32_t*)(_SCB_BASE + 0x4))
+#define _SYSTICK_VAL   (*(rt_uint32_t*)(_SCB_BASE + 0x8))
+#define _SYSTICK_CALIB (*(rt_uint32_t*)(_SCB_BASE + 0xC))
+#define _SYSTICK_PRI   (*(rt_uint8_t*)(0xE000ED23UL))
 
 static uint32_t _SysTick_Config(rt_uint32_t ticks)
 {
-    if ((ticks - 1) > 0xFFFFFF)
-    {
+    if ((ticks - 1) > 0xFFFFFF) {
         return 1;
     }
-    
-    _SYSTICK_LOAD = ticks - 1; 
+
+    _SYSTICK_LOAD = ticks - 1;
     _SYSTICK_PRI = 0xFF;
-    _SYSTICK_VAL  = 0;
-    _SYSTICK_CTRL = 0x07;  
-    
+    _SYSTICK_VAL = 0;
+    _SYSTICK_CTRL = 0x07;
+
     return 0;
 }
 
@@ -61,29 +63,14 @@ static void _print_line(const char* name, const char* content, uint32_t len)
     console_printf("%s\n", content);
 }
 
-// void NVIC_Configuration(void)
-// {
-// #ifdef VECT_TAB_RAM
-//     /* Set the Vector Table base location at 0x20000000 */
-//     NVIC_SetVectorTable(NVIC_VectTab_RAM, INT_VECTOR_OFFSET);
-// #else /* VECT_TAB_FLASH  */
-//     /* Set the Vector Table base location at 0x8004000 */
-//     /* first 0x4000 is reserved for bootloader, so the vectortab offset is 0x4000 */
-//     NVIC_SetVectorTable(NVIC_VectTab_FLASH, INT_VECTOR_OFFSET);
-// #endif
-
-//     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-// }
-
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
-  /* USER CODE END Error_Handler_Debug */
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1) {
+    }
+    /* USER CODE END Error_Handler_Debug */
 }
 
 /**
@@ -159,23 +146,27 @@ void bsp_show_information(void)
     _print_line("Vehicle", VEHICLE_TYPE, str_len);
 }
 
+void MX_GPIO_Init(void);
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    FMT_ASSERT(HAL_Init() == HAL_OK);
+    HAL_Init();
 
-    /* Configure the system clock */
+    /* System clock initialization */
     SystemClock_Config();
-    SystemCoreClockUpdate();
 
-    _SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
+    // _SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
+
+    rt_hw_systick_init();
+
+    // rt_hw_pin_init();
+    MX_GPIO_Init();
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-
 }
 
 void bsp_post_initialize(void)

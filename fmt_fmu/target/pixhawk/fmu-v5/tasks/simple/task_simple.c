@@ -14,15 +14,22 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMT_BSP_HEADER_H__
-#define __FMT_BSP_HEADER_H__
+#include <firmament.h>
 
-/* stm32 peripheral library */
-#include <stm32f7xx.h>
-#include "stm32f7xx_hal.h"
-/* FPU Library */
-#include <arm_math.h>
+fmt_err task_simple_init(void)
+{
+    return FMT_EOK;
+}
 
-#include <board_device.h>
+void task_simple_entry(void* parameter)
+{
+    while (1) {
+        // console_printf("Hello FMT!\n");
+        // rt_thread_delay(1000);
 
-#endif
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+        rt_thread_mdelay(100);
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+        rt_thread_mdelay(500);
+    }
+}

@@ -17,7 +17,7 @@
 #include <firmament.h>
 #include <stdarg.h>
 
-#include "task/task_logger.h"
+#include "task_logger.h"
 #include "module/log/ulog.h"
 #include "driver/ringblk_buf.h"
 

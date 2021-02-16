@@ -1,14 +1,15 @@
 # for module compiling
 import os
-from building import *
 Import('RTT_ROOT')
+from building import *
 
-cwd = str(Dir('#'))
+cwd = GetCurrentDir()
+objs = []
+list = os.listdir(cwd)
 
-src = Glob('*.c') + Glob('board/*.c')
+for d in list:
+    path = os.path.join(cwd, d)
+    if os.path.isfile(os.path.join(path, 'SConscript')):
+        objs = objs + SConscript(os.path.join(d, 'SConscript'))
 
-CPPPATH = [cwd, cwd + '/board']
-
-group = DefineGroup('Target', src, depend = [''], CPPPATH = CPPPATH)
-
-Return('group')
+Return('objs')

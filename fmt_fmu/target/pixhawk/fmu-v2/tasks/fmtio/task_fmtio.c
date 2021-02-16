@@ -16,7 +16,7 @@
 #include <firmament.h>
 
 #include "module/fmtio/fmtio.h"
-#include "task/task_fmtio.h"
+#include "task_fmtio.h"
 
 static fmt_err _handle_rx_package(const PackageStruct* pkg)
 {

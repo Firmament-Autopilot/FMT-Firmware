@@ -18,7 +18,7 @@
 #include <string.h>
 
 #include "module/fs_manager/fs_manager.h"
-#include "task/task_logger.h"
+#include "task_logger.h"
 
 #define TAG "Logger"
 

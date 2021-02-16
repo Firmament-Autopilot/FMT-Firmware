@@ -209,4 +209,9 @@
 #define UTEST_THR_STACK_SIZE 4096
 #define UTEST_THR_PRIORITY 20
 
+/* SOC Define */
+#define SOC_FAMILY_STM32
+#define SOC_SERIES_STM32F7
+#define SOC_STM32F765II
+
 #endif

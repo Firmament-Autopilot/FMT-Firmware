@@ -14,17 +14,12 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef __TASK_STATUS_H__
+#define __TASK_STATUS_H__
+
 #include <firmament.h>
 
-fmt_err task_simple_init(void)
-{
-    return FMT_EOK;
-}
+fmt_err task_status_init(void);
+void task_status_entry(void* parameter);
 
-void task_simple_entry(void* parameter)
-{
-    while (1) {
-        console_printf("Hello FMT!\n");
-        rt_thread_delay(1000);
-    }
-}
+#endif

@@ -24,8 +24,8 @@
 #include "module/sensor/sensor_manager.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/pilot_cmd.h"
-#include "task/task_logger.h"
-#include "task/task_vehicle.h"
+#include "task_logger.h"
+#include "task_vehicle.h"
 
 #define EVENT_VEHICLE_UPDATE (1 << 0)
 

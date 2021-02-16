@@ -14,15 +14,12 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMT_BSP_HEADER_H__
-#define __FMT_BSP_HEADER_H__
+#ifndef __TASK_FMTIO_H__
+#define __TASK_FMTIO_H__
 
-/* stm32 peripheral library */
-#include <stm32f7xx.h>
-#include "stm32f7xx_hal.h"
-/* FPU Library */
-#include <arm_math.h>
+#include <firmament.h>
 
-#include <board_device.h>
+fmt_err task_fmtio_init(void);
+void task_fmtio_entry(void* parameter);
 
 #endif

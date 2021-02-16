@@ -14,15 +14,20 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMT_BSP_HEADER_H__
-#define __FMT_BSP_HEADER_H__
+#ifndef __TASK_LOGGER_H__
+#define __TASK_LOGGER_H__
 
-/* stm32 peripheral library */
-#include <stm32f7xx.h>
-#include "stm32f7xx_hal.h"
-/* FPU Library */
-#include <arm_math.h>
+#include <firmament.h>
 
-#include <board_device.h>
+#define EVENT_BLOG_UPDATE				(1<<0)
+#define EVENT_ULOG_UPDATE		        (1<<1)
+
+fmt_err logger_send_event(uint32_t event);
+fmt_err logger_start_blog(char* path);
+void logger_stop_blog(void);
+void get_working_log_session(char* path);
+
+fmt_err task_logger_init(void);
+void task_logger_entry(void* parameter);
 
 #endif

@@ -17,7 +17,13 @@
 #include <bsp.h>
 #include <firmament.h>
 
+#include "hal/pin.h"
+#include "task_simple.h"
+
 static rt_thread_t tid0;
+
+static char thread_simple_stack[2048];
+struct rt_thread thread_simple_handle;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
@@ -33,24 +39,61 @@ void assert_hook(const char* ex, const char* func, rt_size_t line)
     assert_failed((uint8_t*)func, (uint32_t)line);
 }
 
+#define FMU_LED_PIN 17
+static rt_device_t _pin_device;
+static void _led_on(void)
+{
+    struct device_pin_status pin_sta = { FMU_LED_PIN, 0 };
+
+    if (_pin_device != RT_NULL) {
+        _pin_device->write(_pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
+    }
+}
+
+static void _led_off(void)
+{
+    struct device_pin_status pin_sta = { FMU_LED_PIN, 1 };
+    ;
+
+    if (_pin_device != RT_NULL) {
+        _pin_device->write(_pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
+    }
+}
+
 static void rt_init_thread_entry(void* parameter)
 {
+    rt_err_t res;
+    // struct device_pin_mode mode = { FMU_LED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+
     rt_assert_set_hook(assert_hook);
 
     /********************* bsp init *********************/
     bsp_initialize();
 
     /********************* init tasks *********************/
-    // FMT_CHECK(task_fmtio_init());
-    // FMT_CHECK(task_comm_init());
-    // FMT_CHECK(task_logger_init());
-    // FMT_CHECK(task_status_init());
-    // FMT_CHECK(task_vehicle_init());
+    FMT_CHECK(task_simple_init());
 
     /********************* bsp post init *********************/
     bsp_post_initialize();
 
     /********************* start tasks *********************/
+    res = rt_thread_init(&thread_simple_handle,
+        "simple",
+        task_simple_entry,
+        RT_NULL,
+        &thread_simple_stack[0],
+        sizeof(thread_simple_stack), 10, 1);
+    RT_ASSERT(res == RT_EOK);
+    rt_thread_startup(&thread_simple_handle);
+
+    // _pin_device = rt_device_find("pin");
+    // _pin_device->control(_pin_device, 0, &mode);
+    // while(1) {
+    //     _led_on();
+    //     rt_thread_delay(500);
+    //     _led_off();
+    //     rt_thread_delay(500);
+    // }
 
     /* delete itself */
     rt_thread_delete(tid0);
