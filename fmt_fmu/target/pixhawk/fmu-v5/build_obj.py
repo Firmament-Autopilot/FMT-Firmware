@@ -11,7 +11,7 @@ DRIVERS_CPPPATH = []
 HAL = [
     'pin/*.c',
     'serial/*.c',
-    # 'systick/*.c',
+    'systick/*.c',
 ]
 
 HAL_CPPPATH = []

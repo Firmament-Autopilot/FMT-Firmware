@@ -20,32 +20,11 @@
 #include <string.h>
 
 #include "driver/gpio.h"
-#include "driver/systick_drv.h"
 #include "driver/usart.h"
 
-void rt_hw_systick_init(void);
+#include "drv_systick.h"
+
 int rt_hw_pin_init(void);
-
-#define _SCB_BASE      (0xE000E010UL)
-#define _SYSTICK_CTRL  (*(rt_uint32_t*)(_SCB_BASE + 0x0))
-#define _SYSTICK_LOAD  (*(rt_uint32_t*)(_SCB_BASE + 0x4))
-#define _SYSTICK_VAL   (*(rt_uint32_t*)(_SCB_BASE + 0x8))
-#define _SYSTICK_CALIB (*(rt_uint32_t*)(_SCB_BASE + 0xC))
-#define _SYSTICK_PRI   (*(rt_uint8_t*)(0xE000ED23UL))
-
-static uint32_t _SysTick_Config(rt_uint32_t ticks)
-{
-    if ((ticks - 1) > 0xFFFFFF) {
-        return 1;
-    }
-
-    _SYSTICK_LOAD = ticks - 1;
-    _SYSTICK_PRI = 0xFF;
-    _SYSTICK_VAL = 0;
-    _SYSTICK_CTRL = 0x07;
-
-    return 0;
-}
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -152,13 +131,13 @@ void bsp_early_initialize(void)
 {
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
-
     /* System clock initialization */
     SystemClock_Config();
 
-    // _SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
-
-    rt_hw_systick_init();
+    /* Systick initialization */
+    drv_systick_init();
+    /* system time module init */
+    FMT_CHECK(systime_init());
 
     // rt_hw_pin_init();
     MX_GPIO_Init();

@@ -90,9 +90,9 @@ static void rt_init_thread_entry(void* parameter)
     // _pin_device->control(_pin_device, 0, &mode);
     // while(1) {
     //     _led_on();
-    //     rt_thread_delay(500);
+    //     rt_thread_delay(1000);
     //     _led_off();
-    //     rt_thread_delay(500);
+    //     rt_thread_delay(1000);
     // }
 
     /* delete itself */

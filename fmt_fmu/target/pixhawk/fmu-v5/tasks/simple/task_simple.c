@@ -24,12 +24,11 @@ fmt_err task_simple_init(void)
 void task_simple_entry(void* parameter)
 {
     while (1) {
-        // console_printf("Hello FMT!\n");
-        // rt_thread_delay(1000);
-
         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
-        rt_thread_mdelay(1000);
+        // rt_thread_mdelay(500);
+        sys_mdelay(1000);
         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
-        rt_thread_mdelay(1000);
+        // rt_thread_mdelay(500);
+        sys_mdelay(1000);
     }
 }

@@ -1,53 +1,45 @@
-/*
- * Copyright (c) 2006-2018, RT-Thread Development Team
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Change Logs:
- * Date           Author       Notes
- * 2018-11-7      SummerGift   first version
- */
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 
 #include <firmament.h>
+#include "hal/systick.h"
 
-#include "drv_systick.h"
-#include "bsp.h"
-
-/* SysTick configuration */
-void rt_hw_systick_init(void)
-{
-#if defined (SOC_SERIES_STM32H7)
-    HAL_SYSTICK_Config((HAL_RCCEx_GetD1SysClockFreq()) / RT_TICK_PER_SECOND);
-#elif defined (SOC_SERIES_STM32MP1)
-    HAL_SYSTICK_Config(HAL_RCC_GetSystemCoreClockFreq() / RT_TICK_PER_SECOND);
-#else
-    HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / RT_TICK_PER_SECOND);
-#endif
-#if !defined (SOC_SERIES_STM32MP1)
-    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-#endif
-    NVIC_SetPriority(SysTick_IRQn, 0xFF);
-}
+static systick_dev_t systick_dev;
 
 /**
- * This is the timer interrupt service routine.
+ * This function will delay for some us.
  *
+ * @param us the delay time of us
  */
-void SysTick_Handler(void)
+static void _delay_us(rt_uint32_t us)
 {
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    HAL_IncTick();
-    rt_tick_increase();
-
-    /* leave interrupt */
-    rt_interrupt_leave();
+    rt_uint32_t start, now, delta, reload, us_tick;
+    start = SysTick->VAL;
+    reload = SysTick->LOAD;
+    us_tick =systick_dev->ticks_per_us;
+    do {
+        now = SysTick->VAL;
+        delta = start >= now ? start - now : reload + start - now;
+    } while (delta < us_tick * us);
 }
 
+/* HAL exported functions */
 uint32_t HAL_GetTick(void)
 {
-    // return rt_tick_get_millisecond();
+    /* return current ticks of ms */
     return rt_tick_get() / (RT_TICK_PER_SECOND / 1000);
 }
 
@@ -61,15 +53,11 @@ void HAL_ResumeTick(void)
 
 void HAL_Delay(__IO uint32_t Delay)
 {
-    if (rt_thread_self())
-    {
+    if (rt_thread_self()) {
         rt_thread_mdelay(Delay);
-    }
-    else
-    {
-        for (rt_uint32_t count = 0; count < Delay; count++)
-        {
-            rt_hw_us_delay(1000);
+    } else {
+        for (rt_uint32_t count = 0; count < Delay; count++) {
+            _delay_us(1000);
         }
     }
 }
@@ -82,35 +70,80 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-void _Error_Handler(char *s, int num)
+ * This is the systick timer interrupt service routine.
+ *
+ */
+void SysTick_Handler(void)
 {
-    /* USER CODE BEGIN Error_Handler */
-    /* User can add his own implementation to report the HAL error return state */
-    while (1)
-    {
-    }
-    /* USER CODE END Error_Handler */
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    HAL_IncTick();
+    rt_tick_increase();
+
+    hal_systick_isr(systick_dev);
+
+    /* leave interrupt */
+    rt_interrupt_leave();
 }
 
-/**
- * This function will delay for some us.
- *
- * @param us the delay time of us
- */
-void rt_hw_us_delay(rt_uint32_t us)
+static void _set_systick_freq(rt_uint32_t freq)
 {
-    rt_uint32_t start, now, delta, reload, us_tick;
-    start = SysTick->VAL;
-    reload = SysTick->LOAD;
-    us_tick = SystemCoreClock / 1000000UL;
-    do
-    {
-        now = SysTick->VAL;
-        delta = start >= now ? start - now : reload + start - now;
+    rt_uint32_t ClockFreq;
+    rt_uint32_t TicksNum;
+
+    RT_ASSERT(freq > 0);
+
+#if defined(SOC_SERIES_STM32H7)
+    ClockFreq = HAL_RCCEx_GetD1SysClockFreq();
+#elif defined(SOC_SERIES_STM32MP1)
+    ClockFreq = HAL_RCC_GetSystemCoreClockFreq();
+#else
+    ClockFreq = HAL_RCC_GetHCLKFreq();
+#endif
+#if !defined(SOC_SERIES_STM32MP1)
+    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+#endif
+
+    TicksNum = ClockFreq / freq;
+    HAL_SYSTICK_Config(TicksNum);
+
+    if (systick_dev) {
+        systick_dev->ticks_per_us = ClockFreq / 1e6;
+        systick_dev->ticks_per_isr = TicksNum;
     }
-    while (delta < us_tick * us);
+}
+
+static rt_err_t systick_configure(systick_dev_t systick, struct systick_configure* cfg)
+{
+    _set_systick_freq(cfg->tick_freq);
+
+    systick->config = *cfg;
+
+    return RT_EOK;
+}
+
+// TODO: return ticks number instead of us
+static rt_uint32_t systick_read(systick_dev_t systick)
+{
+    return (SysTick->LOAD - SysTick->VAL) / systick->ticks_per_us;
+}
+
+const static struct systick_ops _systick_ops = {
+    systick_configure,
+    systick_read
+};
+
+rt_err_t drv_systick_init(void)
+{
+    static struct systick_device dev = {
+        .ops = &_systick_ops,
+        .config = SYSTICK_CONFIG_DEFAULT,
+        .systick_isr_cb = RT_NULL
+    };
+    systick_dev = &dev;
+
+    _set_systick_freq(dev.config.tick_freq);
+
+    return hal_systick_register(systick_dev, "systick", RT_DEVICE_FLAG_RDONLY, RT_NULL);
 }

@@ -1,31 +1,29 @@
-/*
- * Copyright (c) 2006-2018, RT-Thread Development Team
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Change Logs:
- * Date           Author       Notes
- * 2018-11-7      SummerGift   first version
- */
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 
 #ifndef __DRV_SYSTICK_H__
 #define __DRV_SYSTICK_H__
 
-#include <rtthread.h>
-#include <rthw.h>
-#include <rtdevice.h>
+#include <firmament.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void _Error_Handler(char *s, int num);
-
-#ifndef Error_Handler
-#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
-#endif
-
-#define DMA_NOT_AVAILABLE ((DMA_INSTANCE_TYPE *)0xFFFFFFFFU)
+rt_err_t drv_systick_init(void);
 
 #ifdef __cplusplus
 }

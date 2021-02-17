@@ -26,7 +26,15 @@ rt_uint32_t _ticksPerUs;  			/* tick count for 1us */
  */
 void SysTick_Handler(void)
 {
-	hal_systick_isr(_systick_dev);
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    rt_tick_increase();
+
+    hal_systick_isr(_systick_dev);
+
+    /* leave interrupt */
+    rt_interrupt_leave();
 }
 
 static void _set_systick_freq(rt_uint32_t freq)

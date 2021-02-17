@@ -132,7 +132,7 @@ rt_int32_t stm32_get_scl(void* data)
 
 void stm32_udelay(rt_uint32_t us)
 {
-	systime_delay_us(us);
+	sys_udelay(us);
 }
 
 rt_err_t stm32_i2c_pin_init(BSP_I2C_Def i2c_dev)

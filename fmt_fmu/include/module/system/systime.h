@@ -58,8 +58,8 @@ typedef struct {
 
 uint64_t systime_now_us(void);
 uint32_t systime_now_ms(void);
-void systime_delay_us(uint32_t delay);
-void systime_delay_ms(uint32_t time_ms);
+void sys_udelay(uint32_t delay);
+void sys_mdelay(uint32_t time_ms);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);

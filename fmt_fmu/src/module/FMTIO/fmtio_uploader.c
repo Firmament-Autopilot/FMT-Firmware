@@ -363,9 +363,9 @@ Out:
 static fmt_err _reboot(void)
 {
 	_send_char(PROTO_REBOOT);
-	systime_delay_us(100 * 1000);
+	sys_udelay(100 * 1000);
 	_send_char(PROTO_EOC);
-	systime_delay_us(100 * 1000);   //TODO, why need delay here?
+	sys_udelay(100 * 1000);   //TODO, why need delay here?
 
 	return FMT_EOK;
 }

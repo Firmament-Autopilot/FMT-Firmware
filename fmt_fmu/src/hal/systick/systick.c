@@ -53,17 +53,9 @@ static rt_err_t systick_control(rt_device_t dev, int cmd, void* args)
 
 void hal_systick_isr(systick_dev_t systick)
 {
-	/* enter interrupt */
-	rt_interrupt_enter();
-
-	rt_tick_increase();
-
 	if(systick->systick_isr_cb) {
 		systick->systick_isr_cb();
 	}
-
-	/* leave interrupt */
-	rt_interrupt_leave();
 }
 
 rt_err_t hal_systick_register(systick_dev_t systick, const char* name, rt_uint32_t flag, void* data)
