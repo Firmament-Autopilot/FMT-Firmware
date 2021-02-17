@@ -20,7 +20,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
-#include <firmament.h>
+#include "stm32f7xx_hal.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */

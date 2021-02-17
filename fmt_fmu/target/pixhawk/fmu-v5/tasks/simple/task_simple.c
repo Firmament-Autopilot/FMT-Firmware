@@ -28,8 +28,8 @@ void task_simple_entry(void* parameter)
         // rt_thread_delay(1000);
 
         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
-        rt_thread_mdelay(100);
+        rt_thread_mdelay(1000);
         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
-        rt_thread_mdelay(500);
+        rt_thread_mdelay(1000);
     }
 }
