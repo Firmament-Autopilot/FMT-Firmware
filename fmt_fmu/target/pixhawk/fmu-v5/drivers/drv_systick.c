@@ -15,6 +15,8 @@
  *****************************************************************************/
 
 #include <firmament.h>
+
+#include "drv_systick.h"
 #include "hal/systick.h"
 
 static systick_dev_t systick_dev;
@@ -43,14 +45,6 @@ uint32_t HAL_GetTick(void)
     return rt_tick_get() / (RT_TICK_PER_SECOND / 1000);
 }
 
-void HAL_SuspendTick(void)
-{
-}
-
-void HAL_ResumeTick(void)
-{
-}
-
 void HAL_Delay(__IO uint32_t Delay)
 {
     if (rt_thread_self()) {
@@ -62,13 +56,6 @@ void HAL_Delay(__IO uint32_t Delay)
     }
 }
 
-/* re-implement tick interface for STM32 HAL */
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
-{
-    /* Return function status */
-    return HAL_OK;
-}
-
 /**
  * This is the systick timer interrupt service routine.
  *
@@ -78,7 +65,6 @@ void SysTick_Handler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    HAL_IncTick();
     rt_tick_increase();
 
     hal_systick_isr(systick_dev);
@@ -94,19 +80,9 @@ static void _set_systick_freq(rt_uint32_t freq)
 
     RT_ASSERT(freq > 0);
 
-#if defined(SOC_SERIES_STM32H7)
-    ClockFreq = HAL_RCCEx_GetD1SysClockFreq();
-#elif defined(SOC_SERIES_STM32MP1)
-    ClockFreq = HAL_RCC_GetSystemCoreClockFreq();
-#else
-    ClockFreq = HAL_RCC_GetHCLKFreq();
-#endif
-#if !defined(SOC_SERIES_STM32MP1)
-    HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-#endif
-
+    ClockFreq = SystemCoreClock;
     TicksNum = ClockFreq / freq;
-    HAL_SYSTICK_Config(TicksNum);
+    SysTick_Config(TicksNum);
 
     if (systick_dev) {
         systick_dev->ticks_per_us = ClockFreq / 1e6;

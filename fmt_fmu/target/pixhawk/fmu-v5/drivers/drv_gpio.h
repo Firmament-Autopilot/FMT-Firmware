@@ -1,42 +1,30 @@
-/*
- * Copyright (c) 2006-2018, RT-Thread Development Team
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Change Logs:
- * Date           Author            Notes
- * 2018-11-06     balanceTWK        first version
- * 2020-06-16     thread-liu        add stm32mp1
- * 2020-09-01     thread-liu        add GPIOZ 
- * 2020-09-18     geniusgogo        optimization design pin-index algorithm
- */
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 
 #ifndef __DRV_GPIO_H__
 #define __DRV_GPIO_H__
 
-#include "drv_systick.h"
+#include <firmament.h>
 #include "bsp.h"
-#include "hal/pin.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define __STM32_PORT(port)  GPIO##port##_BASE
-
-#if defined(SOC_SERIES_STM32MP1)
-#define GET_PIN(PORTx,PIN) (GPIO##PORTx == GPIOZ) ? (176 + PIN) : ((rt_base_t)((16 * ( ((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE)/(0x1000UL) )) + PIN))
-#else
-#define GET_PIN(PORTx,PIN) (rt_base_t)((16 * ( ((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE)/(0x0400UL) )) + PIN)
-#endif
-
-struct pin_irq_map
-{
-    rt_uint16_t pinbit;
-    IRQn_Type irqno;
-};
-
-int rt_hw_pin_init(void);
+rt_err_t drv_gpio_init(void);
 
 #ifdef __cplusplus
 }

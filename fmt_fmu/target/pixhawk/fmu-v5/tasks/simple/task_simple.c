@@ -16,6 +16,29 @@
 
 #include <firmament.h>
 
+#include "hal/pin.h"
+
+#define FMU_LED_PIN 17
+static rt_device_t pin_device;
+
+static void _led_on(void)
+{
+    struct device_pin_status pin_sta = { FMU_LED_PIN, 0 };
+
+    if (pin_device != RT_NULL) {
+        pin_device->write(pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
+    }
+}
+
+static void _led_off(void)
+{
+    struct device_pin_status pin_sta = { FMU_LED_PIN, 1 };
+
+    if (pin_device != RT_NULL) {
+        pin_device->write(pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
+    }
+}
+
 fmt_err task_simple_init(void)
 {
     return FMT_EOK;
@@ -23,12 +46,15 @@ fmt_err task_simple_init(void)
 
 void task_simple_entry(void* parameter)
 {
+    struct device_pin_mode mode = { FMU_LED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+
+    pin_device = rt_device_find("pin");
+    pin_device->control(pin_device, 0, &mode);
+
     while (1) {
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
-        // rt_thread_mdelay(500);
-        sys_mdelay(1000);
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
-        // rt_thread_mdelay(500);
-        sys_mdelay(1000);
+        _led_on();
+        rt_thread_delay(1000);
+        _led_off();
+        rt_thread_delay(1000);
     }
 }

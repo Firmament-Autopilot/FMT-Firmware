@@ -39,31 +39,9 @@ void assert_hook(const char* ex, const char* func, rt_size_t line)
     assert_failed((uint8_t*)func, (uint32_t)line);
 }
 
-#define FMU_LED_PIN 17
-static rt_device_t _pin_device;
-static void _led_on(void)
-{
-    struct device_pin_status pin_sta = { FMU_LED_PIN, 0 };
-
-    if (_pin_device != RT_NULL) {
-        _pin_device->write(_pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
-    }
-}
-
-static void _led_off(void)
-{
-    struct device_pin_status pin_sta = { FMU_LED_PIN, 1 };
-    ;
-
-    if (_pin_device != RT_NULL) {
-        _pin_device->write(_pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
-    }
-}
-
 static void rt_init_thread_entry(void* parameter)
 {
     rt_err_t res;
-    // struct device_pin_mode mode = { FMU_LED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
 
     rt_assert_set_hook(assert_hook);
 
@@ -85,15 +63,6 @@ static void rt_init_thread_entry(void* parameter)
         sizeof(thread_simple_stack), 10, 1);
     RT_ASSERT(res == RT_EOK);
     rt_thread_startup(&thread_simple_handle);
-
-    // _pin_device = rt_device_find("pin");
-    // _pin_device->control(_pin_device, 0, &mode);
-    // while(1) {
-    //     _led_on();
-    //     rt_thread_delay(1000);
-    //     _led_off();
-    //     rt_thread_delay(1000);
-    // }
 
     /* delete itself */
     rt_thread_delete(tid0);

@@ -47,7 +47,9 @@ if PLATFORM == 'gcc':
     OBJCPY = PREFIX + 'objcopy'
 
     DEVICE = ' -mcpu=' + CPU + ' -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
-    CFLAGS = DEVICE + ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -DUSE_HAL_DRIVER -DSTM32F765xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -D__FPU_PRESENT="1"'
+    # DEFINES = ' -DUSE_HAL_DRIVER -DSTM32F765xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -D__FPU_PRESENT="1"'
+    DEFINES = ' -DUSE_FULL_LL_DRIVER -DSTM32F765xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -D__FPU_PRESENT="1"'
+    CFLAGS = DEVICE + ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function' + DEFINES
     CFLAGS += ' -std=c99'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \

@@ -20,11 +20,9 @@
 #include <firmament.h>
 
 // Board Information
-#define TARGET_NAME  "Pixhawk FMUv5"
+#define TARGET_NAME  "Pixhawk4 FMUv5"
 #define VEHICLE_TYPE "Quadcopter"
 
-// Interupt Vector Offset
-#define INT_VECTOR_OFFSET 0x4000
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (0x80000) // 512K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
@@ -42,6 +40,19 @@ extern int __heap_limit;
 extern int __bss_end;
 #define SYSTEM_FREE_MEM_BEGIN (&__bss_end)
 #define SYSTEM_FREE_MEM_END   (0x20000000 + SYSTEM_TOTAL_MEM_SIZE)
+#endif
+
+#ifndef NVIC_PRIORITYGROUP_0
+#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
+                                                                 4 bits for subpriority */
+#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
+                                                                 3 bits for subpriority */
+#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
+                                                                 2 bits for subpriority */
+#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
+                                                                 1 bit  for subpriority */
+#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
+                                                                 0 bit  for subpriority */
 #endif
 
 void rt_hw_board_init(void);
