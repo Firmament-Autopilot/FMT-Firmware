@@ -46,7 +46,7 @@
 #endif
 
 /* Cortex-M Backtrace */
-// #define FMT_USING_CM_BACKTRACE
+#define FMT_USING_CM_BACKTRACE
 
 /* Unit Test */
 // #define FMT_USING_UNIT_TEST

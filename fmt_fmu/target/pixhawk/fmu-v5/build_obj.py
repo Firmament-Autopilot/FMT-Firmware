@@ -19,10 +19,15 @@ HAL_CPPPATH = []
 MODULES = [
     'Console/*.c',
     'System/*.c',
+    'IPC/*.c',
+    'SysCmd/syscmd.c',
+    'SysCmd/cmd_sys.c',
+    'SysCmd/cmd_mcn.c',
 ]
 
 MODULES_CPPPATH = []
 
 LIBS = [
-    'stm_lib/stm32f7'
+    'stm_lib/stm32f7',
+    'cm_backtrace',
 ]

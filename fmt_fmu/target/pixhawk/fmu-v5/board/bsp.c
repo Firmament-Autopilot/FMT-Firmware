@@ -19,11 +19,15 @@
 #include <shell.h>
 #include <string.h>
 
+#ifdef FMT_USING_CM_BACKTRACE
+#include <cm_backtrace.h>
+#endif
+
 #include "driver/gpio.h"
 #include "driver/usart.h"
 
-#include "drv_systick.h"
 #include "drv_gpio.h"
+#include "drv_systick.h"
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -108,21 +112,43 @@ void bsp_early_initialize(void)
     /* System clock initialization */
     SystemClock_Config();
 
-    /* Systick driver init */
+    /* systick driver init */
     RTT_CHECK(drv_systick_init());
+    /* usart driver init */
+    RTT_CHECK(usart_drv_init());
     /* system time module init */
     FMT_CHECK(systime_init());
-    /* GPIO driver init */
+
+    /* init console to enable console output */
+    FMT_CHECK(console_init());
+
+    /* gpio driver init */
     RTT_CHECK(drv_gpio_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* init uMCN */
+    FMT_CHECK(mcn_init());
+
+#ifdef RT_USING_FINSH
+    /* init finsh */
+    finsh_system_init();
+    /* Mount finsh to console after finsh system init */
+    FMT_CHECK(console_enable_shell(NULL));
+#endif
+
+#ifdef FMT_USING_CM_BACKTRACE
+    /* cortex-m backtrace */
+    cm_backtrace_init("fmt_fmu", TARGET_NAME, "v0.1");
+#endif
 }
 
 void bsp_post_initialize(void)
 {
+    /* show system information */
+    bsp_show_information();
 }
 
 /**

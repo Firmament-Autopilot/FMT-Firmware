@@ -17,6 +17,10 @@
 #include <bsp.h>
 #include <firmament.h>
 
+#ifdef FMT_USING_CM_BACKTRACE
+#include <cm_backtrace.h>
+#endif
+
 #include "hal/pin.h"
 #include "task_simple.h"
 
@@ -27,7 +31,9 @@ struct rt_thread thread_simple_handle;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
-
+#ifdef FMT_USING_CM_BACKTRACE
+    cm_backtrace_assert(cmb_get_sp());
+#endif
     while (1)
         ;
 }
