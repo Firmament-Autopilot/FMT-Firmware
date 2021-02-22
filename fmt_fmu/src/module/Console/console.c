@@ -31,6 +31,7 @@
 #define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
 
 #define CONSOLE_OFLAG (RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_STREAM)
+// #define CONSOLE_OFLAG (RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_TX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_STREAM)
 
 typedef struct {
     uint32_t baudrate;
@@ -412,7 +413,7 @@ fmt_err console_set_device(char* dev_name, bool close_old_dev)
         return FMT_ERROR;
     }
 
-    if (!(new->open_flag& RT_DEVICE_OFLAG_OPEN)) {
+    if (!(new->open_flag & RT_DEVICE_OFLAG_OPEN)) {
         if (rt_device_open(new, CONSOLE_OFLAG) != RT_EOK) {
             return FMT_ERROR;
         }
