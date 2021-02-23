@@ -2,6 +2,9 @@ import os
 import sys
 import rtconfig
 
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 # FMT path
 FMU_ROOT = os.path.normpath(os.getcwd() + '/../../..')
 # RTOS path
