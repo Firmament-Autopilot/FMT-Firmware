@@ -51,7 +51,7 @@ void task_simple_entry(void* parameter)
     pin_device = rt_device_find("pin");
     pin_device->control(pin_device, 0, &mode);
 
-    rt_device_t serial_dev = rt_device_find("serial0");
+    rt_device_t serial_dev = rt_device_find("serial1");
     if(rt_device_open(serial_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) != RT_EOK) {
         return;
     }
@@ -67,7 +67,5 @@ void task_simple_entry(void* parameter)
         if(cnt){
             rt_device_write(serial_dev, 0, buffer, cnt);
         }
-
-        // rt_device_write(serial_dev, 0, buffer, 5);
     }
 }

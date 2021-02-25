@@ -32,7 +32,7 @@
 */
 
 // #define USING_UART1
-// #define USING_UART2
+#define USING_UART2
 #define USING_UART3
 // #define USING_UART4
 // #define USING_UART5
@@ -137,8 +137,8 @@ static int usart_putc(struct serial_device* serial, char c);
 static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg);
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg);
 
-static struct serial_device serial0; // CONSOLE
-// static struct serial_device serial1; // MAVPROXY
+static struct serial_device serial0; // TELEM2
+static struct serial_device serial1; // TELEM1
 // static struct serial_device serial2; // GPS
 // static struct serial_device serial3; // SERIAL4
 // static struct serial_device serial4; // SERIAL5
@@ -262,6 +262,65 @@ static void uart_isr(struct serial_device* serial)
     }
 }
 
+#ifdef USING_UART2
+/* UART2 device driver structure */
+struct stm32_uart uart2 = {
+    .uart_device = USART2,
+    .irq = USART2_IRQn,
+    .dma = {
+        .dma_device = DMA1,
+        .rx_stream = LL_DMA_STREAM_5,
+        .rx_ch = LL_DMA_CHANNEL_4,
+        .rx_irq = DMA1_Stream5_IRQn,
+        .tx_stream = LL_DMA_STREAM_6,
+        .tx_ch = LL_DMA_CHANNEL_4,
+        .tx_irq = DMA1_Stream6_IRQn,
+        .setting_recv_len = 0,
+        .last_recv_index = 0,
+    },
+};
+
+void USART2_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial1);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void DMA1_Stream5_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    if (LL_DMA_IsActiveFlag_TC5(DMA1)) {
+        dma_rx_done_isr(&serial1);
+        /* clear the interrupt flag */
+        LL_DMA_ClearFlag_TC5(DMA1);
+    }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void DMA1_Stream6_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    if (LL_DMA_IsActiveFlag_TC6(DMA1)) {
+        dma_tx_done_isr(&serial1);
+        /* clear the interrupt flag */
+        LL_DMA_ClearFlag_TC6(DMA1);
+    }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART2
+
 #ifdef USING_UART3
 /* UART3 device driver structure */
 struct stm32_uart uart3 = {
@@ -284,9 +343,8 @@ void USART3_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
-
+    /* uart isr routine */
     uart_isr(&serial0);
-
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -354,13 +412,13 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
 
 #ifdef USING_UART2
-    /* Configure USART2 Rx/tx PIN */
-    GPIO_InitStructure.GPIO_Pin = UART2_GPIO_RX | UART2_GPIO_TX;
-    GPIO_Init(UART2_GPIO, &GPIO_InitStructure);
+    GPIO_InitStruct.Pin = UART2_GPIO_RX;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(UART2_GPIO, &GPIO_InitStruct);
 
-    /* Connect alternate function */
-    GPIO_PinAFConfig(UART2_GPIO, UART2_TX_PIN_SOURCE, GPIO_AF_USART2);
-    GPIO_PinAFConfig(UART2_GPIO, UART2_RX_PIN_SOURCE, GPIO_AF_USART2);
+    GPIO_InitStruct.Pin = UART2_GPIO_TX;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(UART2_GPIO, &GPIO_InitStruct);
 #endif /* USING_UART2 */
 
 #ifdef USING_UART3
@@ -441,6 +499,7 @@ static void _dma_rx_config(struct stm32_uart* uart, rt_uint8_t* buf, rt_size_t s
 {
     LL_DMA_InitTypeDef DMA_InitStruct;
 
+    /* set expected receive length */
     uart->dma.setting_recv_len = size;
 
     DMA_InitStruct.PeriphOrM2MSrcAddress = (uint32_t)&uart->uart_device->RDR;
@@ -456,8 +515,8 @@ static void _dma_rx_config(struct stm32_uart* uart, rt_uint8_t* buf, rt_size_t s
     DMA_InitStruct.Priority = LL_DMA_PRIORITY_HIGH;
     DMA_InitStruct.FIFOMode = LL_DMA_FIFOMODE_DISABLE;
     DMA_InitStruct.FIFOThreshold = LL_DMA_FIFOTHRESHOLD_1_4;
-    DMA_InitStruct.MemBurst = LL_DMA_MBURST_SINGLE;    // what's the usage?
-    DMA_InitStruct.PeriphBurst = LL_DMA_PBURST_SINGLE; // what's the usage?
+    DMA_InitStruct.MemBurst = LL_DMA_MBURST_SINGLE;
+    DMA_InitStruct.PeriphBurst = LL_DMA_PBURST_SINGLE;
     /* init rx dma */
     LL_DMA_Init(uart->dma.dma_device, uart->dma.rx_stream, &DMA_InitStruct);
 
@@ -486,8 +545,8 @@ static void _dma_tx_config(struct stm32_uart* uart)
     DMA_InitStruct.Priority = LL_DMA_PRIORITY_HIGH;
     DMA_InitStruct.FIFOMode = LL_DMA_FIFOMODE_DISABLE;
     DMA_InitStruct.FIFOThreshold = LL_DMA_FIFOTHRESHOLD_1_4;
-    DMA_InitStruct.MemBurst = LL_DMA_MBURST_SINGLE;    // what's the usage?
-    DMA_InitStruct.PeriphBurst = LL_DMA_PBURST_SINGLE; // what's the usage?
+    DMA_InitStruct.MemBurst = LL_DMA_MBURST_SINGLE;
+    DMA_InitStruct.PeriphBurst = LL_DMA_PBURST_SINGLE;
     /* init tx dma */
     LL_DMA_Init(uart->dma.dma_device, uart->dma.tx_stream, &DMA_InitStruct);
 
@@ -687,7 +746,6 @@ rt_err_t usart_drv_init(void)
 {
     rt_err_t rt_err = RT_EOK;
     struct serial_configure config = SERIAL_DEFAULT_CONFIG;
-    // rt_uint32_t flag = RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX;
 
     RCC_Configuration();
     GPIO_Configuration();
@@ -706,7 +764,7 @@ rt_err_t usart_drv_init(void)
     /* register UART1 device */
     rt_err |= hal_serial_register(&serial1,
         "serial1",
-        flag,
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
         &uart2);
 #endif /* USING_UART2 */
 
