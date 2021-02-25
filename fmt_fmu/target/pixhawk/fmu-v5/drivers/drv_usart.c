@@ -37,73 +37,8 @@
 // #define USING_UART4
 // #define USING_UART5
 // #define USING_UART6
-// #define USING_UART7
+#define USING_UART7
 // #define USING_UART8
-
-/* UART GPIO define. */
-#define UART1_GPIO_TX       GPIO_Pin_9
-#define UART1_TX_PIN_SOURCE GPIO_PinSource9
-#define UART1_GPIO_RX       GPIO_Pin_10
-#define UART1_RX_PIN_SOURCE GPIO_PinSource10
-#define UART1_GPIO          GPIOA
-#define UART1_GPIO_RCC      RCC_AHB1Periph_GPIOA
-#define RCC_APBPeriph_UART1 RCC_APB2Periph_USART1
-
-#define UART2_GPIO_CTS       LL_GPIO_PIN_3
-#define UART2_CTS_PIN_SOURCE GPIO_PinSource3
-#define UART2_GPIO_RTS       LL_GPIO_PIN_4
-#define UART2_RTS_PIN_SOURCE GPIO_PinSource4
-#define UART2_GPIO_TX        LL_GPIO_PIN_5
-#define UART2_TX_PIN_SOURCE  GPIO_PinSource5
-#define UART2_GPIO_RX        LL_GPIO_PIN_6
-#define UART2_RX_PIN_SOURCE  GPIO_PinSource6
-#define UART2_GPIO           GPIOD
-#define UART2_GPIO_RCC       LL_AHB1_GRP1_PERIPH_GPIOD
-#define RCC_APBPeriph_UART2  LL_APB1_GRP1_PERIPH_USART2
-
-#define UART3_GPIO_CTS       LL_GPIO_PIN_11
-#define UART3_CTS_PIN_SOURCE GPIO_PinSource11
-#define UART3_GPIO_RTS       LL_GPIO_PIN_12
-#define UART3_RTS_PIN_SOURCE GPIO_PinSource12
-#define UART3_GPIO_TX        LL_GPIO_PIN_8
-#define UART3_TX_PIN_SOURCE  GPIO_PinSource8
-#define UART3_GPIO_RX        LL_GPIO_PIN_9
-#define UART3_RX_PIN_SOURCE  GPIO_PinSource9
-#define UART3_GPIO           GPIOD
-#define UART3_GPIO_RCC       LL_AHB1_GRP1_PERIPH_GPIOD
-#define RCC_APBPeriph_UART3  LL_APB1_GRP1_PERIPH_USART3
-
-#define UART4_GPIO_TX       GPIO_Pin_0
-#define UART4_TX_PIN_SOURCE GPIO_PinSource0
-#define UART4_GPIO_RX       GPIO_Pin_1
-#define UART4_RX_PIN_SOURCE GPIO_PinSource1
-#define UART4_GPIO          GPIOA
-#define UART4_GPIO_RCC      RCC_AHB1Periph_GPIOA
-#define RCC_APBPeriph_UART4 RCC_APB1Periph_UART4
-
-#define UART6_GPIO_TX       GPIO_Pin_6
-#define UART6_TX_PIN_SOURCE GPIO_PinSource6
-#define UART6_GPIO_RX       GPIO_Pin_7
-#define UART6_RX_PIN_SOURCE GPIO_PinSource7
-#define UART6_GPIO          GPIOC
-#define UART6_GPIO_RCC      RCC_AHB1Periph_GPIOC
-#define RCC_APBPeriph_UART6 RCC_APB2Periph_USART6
-
-#define UART7_GPIO_TX       GPIO_Pin_8
-#define UART7_TX_PIN_SOURCE GPIO_PinSource8
-#define UART7_GPIO_RX       GPIO_Pin_7
-#define UART7_RX_PIN_SOURCE GPIO_PinSource7
-#define UART7_GPIO          GPIOE
-#define UART7_GPIO_RCC      RCC_AHB1Periph_GPIOE
-#define RCC_APBPeriph_UART7 RCC_APB1Periph_UART7
-
-#define UART8_GPIO_TX       GPIO_Pin_1
-#define UART8_TX_PIN_SOURCE GPIO_PinSource1
-#define UART8_GPIO_RX       GPIO_Pin_0
-#define UART8_RX_PIN_SOURCE GPIO_PinSource0
-#define UART8_GPIO          GPIOE
-#define UART8_GPIO_RCC      RCC_AHB1Periph_GPIOE
-#define RCC_APBPeriph_UART8 RCC_APB1Periph_UART8
 
 /* STM32 uart driver */
 struct stm32_uart {
@@ -143,7 +78,7 @@ static struct serial_device serial1; // TELEM1
 // static struct serial_device serial3; // SERIAL4
 // static struct serial_device serial4; // SERIAL5
 // static struct serial_device serial5; // FMTIO
-// static struct serial_device serial6;
+static struct serial_device serial6; // FMU Debug
 
 static void _dma_clear_flags(DMA_TypeDef* dma, uint32_t stream)
 {
@@ -381,21 +316,47 @@ void DMA1_Stream3_IRQHandler(void)
 }
 #endif // USING_UART3
 
+#ifdef USING_UART7
+/* UART7 device driver structure */
+struct stm32_uart uart7 = {
+    .uart_device = UART7,
+    .irq = UART7_IRQn,
+};
+
+void USART7_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial6);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART7
+
 static void RCC_Configuration(void)
 {
 #ifdef USING_UART2
     /* Enable UART2 GPIO clocks */
-    LL_AHB1_GRP1_EnableClock(UART2_GPIO_RCC);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
     /* Enable UART2 clock */
-    LL_APB1_GRP1_EnableClock(RCC_APBPeriph_UART2);
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
 #endif /* USING_UART2 */
 
 #ifdef USING_UART3
     /* Enable UART3 GPIO clocks */
-    LL_AHB1_GRP1_EnableClock(UART3_GPIO_RCC);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
     /* Enable UART3 clock */
-    LL_APB1_GRP1_EnableClock(RCC_APBPeriph_UART3);
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
 #endif /* USING_UART3 */
+
+#ifdef USING_UART7
+    /* Enable UART7 GPIO clocks */
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
+    /* Enable UART7 clock */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART7);
+#endif /* USING_UART7 */
 
     /* DMA controller clock enable */
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
@@ -412,24 +373,34 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
 
 #ifdef USING_UART2
-    GPIO_InitStruct.Pin = UART2_GPIO_RX;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
-    LL_GPIO_Init(UART2_GPIO, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = UART2_GPIO_TX;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
-    LL_GPIO_Init(UART2_GPIO, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif /* USING_UART2 */
 
 #ifdef USING_UART3
-    GPIO_InitStruct.Pin = UART3_GPIO_RX;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
-    LL_GPIO_Init(UART3_GPIO, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = UART3_GPIO_TX;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
-    LL_GPIO_Init(UART3_GPIO, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif /* USING_UART3 */
+
+#ifdef USING_UART7
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+#endif /* USING_UART7 */
 }
 
 static void NVIC_Configuration(struct stm32_uart* uart)
@@ -760,8 +731,7 @@ rt_err_t usart_drv_init(void)
 #endif
 
     NVIC_Configuration(&uart2);
-
-    /* register UART1 device */
+    /* register serial device */
     rt_err |= hal_serial_register(&serial1,
         "serial1",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
@@ -778,14 +748,29 @@ rt_err_t usart_drv_init(void)
 #endif
 
     NVIC_Configuration(&uart3);
-
-    /* register UART3 device */
+    /* register serial device */
     rt_err |= hal_serial_register(&serial0,
         "serial0",
-        // RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
         &uart3);
 #endif /* USING_UART3 */
+
+#ifdef USING_UART7
+    serial6.ops = &_usart_ops;
+#ifdef SERIAL6_DEFAULT_CONFIG
+    struct serial_configure serial6_config = SERIAL6_DEFAULT_CONFIG;
+    serial6.config = serial6_config;
+#else
+    serial6.config = config;
+#endif
+
+    NVIC_Configuration(&uart7);
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial6,
+        "serial6",
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart7);
+#endif /* USING_UART7 */
 
     return rt_err;
 }
