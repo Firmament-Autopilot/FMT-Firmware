@@ -51,10 +51,23 @@ void task_simple_entry(void* parameter)
     pin_device = rt_device_find("pin");
     pin_device->control(pin_device, 0, &mode);
 
+    rt_device_t serial_dev = rt_device_find("serial0");
+    if(rt_device_open(serial_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) != RT_EOK) {
+        return;
+    }
+
+    uint8_t buffer[50] = "Hello";
     while (1) {
         _led_on();
-        rt_thread_delay(1000);
+        rt_thread_delay(100);
         _led_off();
-        rt_thread_delay(1000);
+        rt_thread_delay(100);
+
+        uint32_t cnt = rt_device_read(serial_dev, 0, buffer, 50);
+        if(cnt){
+            rt_device_write(serial_dev, 0, buffer, cnt);
+        }
+
+        // rt_device_write(serial_dev, 0, buffer, 5);
     }
 }

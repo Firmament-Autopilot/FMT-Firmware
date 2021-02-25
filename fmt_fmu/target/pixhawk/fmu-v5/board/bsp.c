@@ -120,7 +120,7 @@ void bsp_early_initialize(void)
     FMT_CHECK(systime_init());
 
     /* init console to enable console output */
-    FMT_CHECK(console_init());
+    // FMT_CHECK(console_init());
 
     /* gpio driver init */
     RTT_CHECK(drv_gpio_init());
@@ -132,12 +132,12 @@ void bsp_initialize(void)
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
-#ifdef RT_USING_FINSH
-    /* init finsh */
-    finsh_system_init();
-    /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_shell(NULL));
-#endif
+// #ifdef RT_USING_FINSH
+//     /* init finsh */
+//     finsh_system_init();
+//     /* Mount finsh to console after finsh system init */
+//     FMT_CHECK(console_enable_shell(NULL));
+// #endif
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
@@ -148,7 +148,7 @@ void bsp_initialize(void)
 void bsp_post_initialize(void)
 {
     /* show system information */
-    bsp_show_information();
+    // bsp_show_information();
 }
 
 /**
