@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug ST-Link",
+            "cwd": "${workspaceRoot}",
+            "executable": "build/fmt_fmu.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "interface": "swd",
+            "device":"STM32F765II",
+            "configFiles": [
+                "openocd.cfg",
+            ],
+            "armToolchainPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/",
+            "serverpath": "D:/FirmamentPilot/tool/openocd-0.10.0/bin/openocd.exe",
+            "serverArgs": [
+                "test"
+            ]
+        }
+    ]
+}

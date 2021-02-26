@@ -3,25 +3,24 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../../**"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "USE_STDPERIPH_DRIVER",
-                "STM32F427X",
+                "USE_FULL_LL_DRIVER",
+                "STM32F765xx",
                 "__VFP_FP__",
-                "ARM_MATH_MATRIX_CHECK",
-                "ARM_MATH_CM4",
-                "__FPU_PRESENT=1",
-                "__FPU_USED=1"
+                "ARM_MATH_CM7",
+                "__FPU_PRESENT=1"
             ],
             "windowsSdkVersion": "10.0.14393.0",
-            "compilerPath": "E:/App/VS2015/VC/bin/cl.exe",
+            "compilerPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/arm-none-eabi-gcc.exe",
             "cStandard": "c99",
             "cppStandard": "c++17",
-            "intelliSenseMode": "msvc-x64"
+            "intelliSenseMode": "gcc-arm"
         }
     ],
     "version": 4

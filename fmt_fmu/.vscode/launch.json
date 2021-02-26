@@ -5,11 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 当前文件",
-            "type": "python",
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceFolder}/target/pixhawk/fmu-v5/build/fmt_fmu.elf",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "type": "cortex-debug",
+            "device": "STM32F765II",
+            "servertype": "openocd",
+            "interface": "swd",
+            "configFiles": [
+                "F:/openocd-20201228/OpenOCD-20201228-0.10.0/share/openocd/scripts/interface/stlink.cfg",
+                "F:/openocd-20201228/OpenOCD-20201228-0.10.0/share/openocd/scripts/target/stm32f7x.cfg"
+            ],
+            "armToolchainPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/",
+            "serverpath": "F:/openocd-20201228/OpenOCD-20201228-0.10.0/bin/openocd.exe",
         },
         {
             "cwd": "${workspaceRoot}",
