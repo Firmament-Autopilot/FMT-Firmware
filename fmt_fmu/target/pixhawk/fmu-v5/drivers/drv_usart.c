@@ -666,12 +666,12 @@ static int usart_putc(struct serial_device* serial, char c)
     RT_ASSERT(serial != RT_NULL);
     uart = (struct stm32_uart*)serial->parent.user_data;
 
-    /* clear tc flag before write */
-    LL_USART_ClearFlag_TC(uart->uart_device);
-    /* write byte */
+    // /* clear tc flag before write */
+    // LL_USART_ClearFlag_TC(uart->uart_device);
+    /* TC flag is cleared by a write to TDR */
     uart->uart_device->TDR = c;
-    /* wait it finish */
-    while (LL_USART_IsActiveFlag_TC(uart->uart_device) == 0)
+    /* wait write finish */
+    while (LL_USART_IsActiveFlag_TC(uart->uart_device) == RESET)
         ;
 
     return 1;
