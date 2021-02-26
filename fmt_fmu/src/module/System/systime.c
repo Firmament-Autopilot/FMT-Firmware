@@ -85,7 +85,7 @@ uint32_t systime_now_ms(void)
     return _systime.msPeriod + systick_us / 1e3;
 }
 
-void systime_delay_us(uint32_t time_us)
+void sys_udelay(uint32_t time_us)
 {
     uint64_t target = systime_now_us() + time_us;
 
@@ -93,9 +93,9 @@ void systime_delay_us(uint32_t time_us)
         ;
 }
 
-void systime_delay_ms(uint32_t time_ms)
+void sys_mdelay(uint32_t time_ms)
 {
-    systime_delay_us(time_ms * 1000);
+    sys_udelay(time_ms * 1000);
 }
 
 fmt_err systime_init(void)

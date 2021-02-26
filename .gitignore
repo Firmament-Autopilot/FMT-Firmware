@@ -26,5 +26,4 @@ build
 *.uvoptx*
 *.uvguix*
 *.orig
-/starry_fmu/.vscode/settings.json
 cconfig.h

@@ -70,7 +70,10 @@ static void _list_topics(void)
     syscmd_putc('-', title5_len);
     console_printf("\n");
 
-    for (McnList_t cp = &list; cp != NULL; cp = cp->next) {
+    for (McnList_t cp = &list;; cp = cp->next) {
+        if (cp->hub_t == NULL) {
+            break;
+        }
         syscmd_printf(' ', title1_len, SYSCMD_ALIGN_LEFT, cp->hub_t->obj_name);
         syscmd_putc(' ', 1);
         syscmd_printf(' ', title2_len, SYSCMD_ALIGN_MIDDLE, "%d", (int)cp->hub_t->link_num);
@@ -89,7 +92,10 @@ static void _suspend_topic(const char* topic_name, bool suspend)
     McnList_t cp;
     McnList list = mcn_get_list();
 
-    for (cp = &list; cp != NULL; cp = cp->next) {
+    for (cp = &list;; cp = cp->next) {
+        if (cp->hub_t == NULL) {
+            break;
+        }
         if (strcmp(cp->hub_t->obj_name, topic_name) == 0) {
             break;
         }
@@ -131,7 +137,10 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
         }
     }
 
-    for (cp = &list; cp != NULL; cp = cp->next) {
+    for (cp = &list;; cp = cp->next) {
+        if (cp->hub_t == NULL) {
+            break;
+        }
         if (strcmp(cp->hub_t->obj_name, topic_name) == 0) {
             break;
         }

@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "..\\..\\..\\..\\include"
+		},
+		{
+			"path": "..\\..\\..\\..\\rtos"
+		},
+		{
+			"path": "..\\..\\..\\..\\src"
+		},
+		{
+			"path": "..\\..\\..\\..\\unit_test"
+		}
+	],
+    "settings": {
+        "files.associations": {
+            "systick.h": "c",
+            "firmament.h": "c",
+            "drv_systick.h": "c",
+            "drv_usart.h": "c",
+            "serial.h": "c"
+        }
+    }
+}

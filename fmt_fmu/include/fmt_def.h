@@ -60,6 +60,7 @@ typedef int bool;
 #define OS_MALLOC(size)   rt_malloc(size)
 #define OS_FREE(ptr)      rt_free(ptr)
 
+#define FMT_ASSERT(exp) RT_ASSERT((exp))
 #define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
 #define RTT_CHECK(func) RT_ASSERT(func == RT_EOK)
 

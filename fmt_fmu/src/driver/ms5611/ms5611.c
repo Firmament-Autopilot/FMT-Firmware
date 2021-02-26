@@ -264,7 +264,7 @@ static rt_err_t _init(void)
     ret |= _write_cmd(ADDR_RESET_CMD);
 
     /* device need 2.8ms reload time */
-    systime_delay_ms(10);
+    sys_mdelay(10);
 
     /* load prom */
     ret |= _load_prom();

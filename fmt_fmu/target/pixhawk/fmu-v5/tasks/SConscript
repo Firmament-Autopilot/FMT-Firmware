@@ -1,0 +1,14 @@
+from building import *
+
+cwd = GetCurrentDir()
+
+src = []
+inc = []
+
+src += Glob('simple/*.c')
+inc += [cwd + '/simple']
+
+group = DefineGroup('Task', src, depend = [''], CPPPATH = inc)
+
+Return('group')
+

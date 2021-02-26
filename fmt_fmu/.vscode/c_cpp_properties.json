@@ -19,7 +19,7 @@
             ],
             "windowsSdkVersion": "10.0.14393.0",
             "compilerPath": "E:/App/VS2015/VC/bin/cl.exe",
-            "cStandard": "c11",
+            "cStandard": "c99",
             "cppStandard": "c++17",
             "intelliSenseMode": "msvc-x64"
         }

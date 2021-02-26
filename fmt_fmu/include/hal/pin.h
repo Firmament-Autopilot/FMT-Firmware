@@ -22,9 +22,20 @@
 #define PIN_LOW 0x00
 #define PIN_HIGH 0x01
 
-#define PIN_MODE_OUTPUT 0x00
-#define PIN_MODE_INPUT 0x01
-#define PIN_MODE_INPUT_PULLUP 0x02
+#define PIN_MODE_OUTPUT         0x00
+#define PIN_MODE_INPUT          0x01
+#define PIN_MODE_INPUT_PULLUP   0x02
+#define PIN_MODE_INPUT_PULLDOWN 0x03
+#define PIN_MODE_OUTPUT_OD      0x04
+
+#define PIN_IRQ_MODE_RISING             0x00
+#define PIN_IRQ_MODE_FALLING            0x01
+#define PIN_IRQ_MODE_RISING_FALLING     0x02
+#define PIN_IRQ_MODE_HIGH_LEVEL         0x03
+#define PIN_IRQ_MODE_LOW_LEVEL          0x04
+
+#define PIN_IRQ_DISABLE                 0x00
+#define PIN_IRQ_ENABLE                  0x01
 
 #define PIN_OUT_TYPE_PP 0x00
 #define PIN_OUT_TYPE_OD 0x01
@@ -46,11 +57,20 @@ struct device_pin_status {
     uint16_t status;
 };
 
+// new structure
+struct rt_pin_irq_hdr
+{
+    rt_int16_t        pin;
+    rt_uint16_t       mode;
+    void (*hdr)(void *args);
+    void             *args;
+};
+
 /* gpio driver opeations */
 struct pin_ops {
-    void (*pin_mode)(struct rt_device* device, rt_base_t pin, rt_base_t mode, rt_base_t otype);
-    void (*pin_write)(struct rt_device* device, rt_base_t pin, rt_base_t value);
-    int (*pin_read)(struct rt_device* device, rt_base_t pin);
+    void (*pin_mode)(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype);
+    void (*pin_write)(rt_device_t dev, rt_base_t pin, rt_base_t value);
+    int (*pin_read)(rt_device_t dev, rt_base_t pin);
 
     /* TODO: add GPIO interrupt */
 };

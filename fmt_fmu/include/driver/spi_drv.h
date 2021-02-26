@@ -18,7 +18,7 @@
 #include <stdint.h>
 #include <rtthread.h>
 #include "hal/spi.h"
-#include "stm32f4xx.h"
+#include <bsp_header.h>
 
 #define SPI_USE_DMA
 

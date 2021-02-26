@@ -25,7 +25,6 @@
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
 #include "module/sensor/sensor_manager.h"
-#include "task/task_vehicle.h"
 
 #define TAG "MAVCMD"
 

@@ -358,10 +358,10 @@ uint32_t console_print_args(const char* fmt, va_list args)
 
 uint32_t console_write(const char* content, uint32_t len)
 {
-    if (boot_logging) {
-        /* push to boot log buffer if boot_logging flag is set */
-        boot_log_push(content, len);
-    }
+    // if (boot_logging) {
+    //     /* push to boot log buffer if boot_logging flag is set */
+    //     boot_log_push(content, len);
+    // }
 
     return rt_device_write(_console_dev, 0, (void*)content, len);
 }
@@ -412,7 +412,7 @@ fmt_err console_set_device(char* dev_name, bool close_old_dev)
         return FMT_ERROR;
     }
 
-    if (!(new->open_flag& RT_DEVICE_OFLAG_OPEN)) {
+    if (!(new->open_flag & RT_DEVICE_OFLAG_OPEN)) {
         if (rt_device_open(new, CONSOLE_OFLAG) != RT_EOK) {
             return FMT_ERROR;
         }

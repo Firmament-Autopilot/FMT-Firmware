@@ -20,18 +20,15 @@
 /* Standard C Library */
 #include <stdio.h>
 #include <stdlib.h>
-/* stm32 peripheral library */
-#include "stm32f4xx.h"
-/* FPU Library */
-#include <arm_math.h>
 /* RT-Thread */
 #include <rtdevice.h>
 #include <rthw.h>
 #include <rtthread.h>
 /* System */
-#include <board_device.h>
 #include <fmt_def.h>
 #include <fmtconfig.h>
 #include <module/module_common.h>
+/* BSP */
+#include <bsp_header.h>
 
 #endif
