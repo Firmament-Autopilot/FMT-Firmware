@@ -22,7 +22,10 @@
             "firmament.h": "c",
             "drv_systick.h": "c",
             "drv_usart.h": "c",
-            "serial.h": "c"
+            "serial.h": "c",
+            "bsp_header.h": "c",
+            "arm_math.h": "c",
+            "drv_gpio.h": "c"
         }
     }
 }

@@ -97,5 +97,4 @@ LIBS = [
     'cm_backtrace',
     'mavlink',
     'Micro-XRCE-DDS-Client',
-    'stm_lib/stm32f4',
 ]

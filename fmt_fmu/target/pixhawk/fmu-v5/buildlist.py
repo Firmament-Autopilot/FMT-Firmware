@@ -29,6 +29,5 @@ MODULES = [
 MODULES_CPPPATH = []
 
 LIBS = [
-    'stm_lib/stm32f7',
     'cm_backtrace',
 ]

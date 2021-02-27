@@ -6,12 +6,23 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "scons -j6",
-            "problemMatcher": [],
+            "command": "scons",
+            "args": [
+                "-j6"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "scons",
+            "args": [
+                "-c"
+            ],
+            "problemMatcher": []
         },
         {
             "label": "download",
@@ -22,8 +33,7 @@
                 "openocd.cfg",
                 "-c",
                 "program build/fmt_fmu.elf verify reset exit 0x08008000"
-            ],
-            "problemMatcher": []
+            ]
         }
     ]
 }
