@@ -3,6 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
+                "${workspaceFolder}",
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../../../include",
                 "${workspaceFolder}/../../../rtos/**",
