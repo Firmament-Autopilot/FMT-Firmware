@@ -17,12 +17,13 @@
             "label": "download",
             "type": "shell",
             "command": "openocd",
-            "args":[
+            "args": [
                 "-f",
                 "openocd.cfg",
                 "-c",
                 "program build/fmt_fmu.elf verify reset exit 0x08008000"
-            ]
+            ],
+            "problemMatcher": []
         }
     ]
 }

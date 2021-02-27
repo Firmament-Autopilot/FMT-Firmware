@@ -1,14 +1,14 @@
 from building import *
-import build_obj
+import buildlist as bl
 
 cwd = GetCurrentDir()
 
 src = []
-for f in build_obj.HAL:
+for f in bl.HAL:
     src += Glob(f)
 
 inc = []
-for d in build_obj.HAL_CPPPATH:
+for d in bl.HAL_CPPPATH:
     inc += [cwd + '/' + d]
 
 group = DefineGroup('HAL', src, depend = [''], CPPPATH = inc)

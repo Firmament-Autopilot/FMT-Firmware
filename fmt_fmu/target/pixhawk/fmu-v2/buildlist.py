@@ -1,4 +1,5 @@
-# Build object lists
+# Build Lists
+# Modify this file to control which files/modules should be built
 
 DRIVERS = [
     'gps/*.c',

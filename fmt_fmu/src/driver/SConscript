@@ -1,14 +1,14 @@
 from building import *
-import build_obj
+import buildlist as bl
 
 cwd = GetCurrentDir()
 
 src = []
-for f in build_obj.DRIVERS:
+for f in bl.DRIVERS:
     src += Glob(f)
 
 inc = []
-for d in build_obj.DRIVERS_CPPPATH:
+for d in bl.DRIVERS_CPPPATH:
     inc += [cwd + '/' + d]
 
 group = DefineGroup('Driver', src, depend = [''], CPPPATH = inc)
