@@ -25,7 +25,14 @@
             "serial.h": "c",
             "bsp_header.h": "c",
             "arm_math.h": "c",
-            "drv_gpio.h": "c"
+            "drv_gpio.h": "c",
+            "rtthread.h": "c",
+            "rtdebug.h": "c",
+            "rtdef.h": "c",
+            "fmtconfig.h": "c",
+            "rtconfig.h": "c",
+            "rtservice.h": "c",
+            "rtm.h": "c"
         }
     }
 }

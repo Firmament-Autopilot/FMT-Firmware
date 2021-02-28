@@ -15,6 +15,7 @@
                 "UNICODE",
                 "_UNICODE",
                 "USE_FULL_LL_DRIVER",
+                "USE_HAL_DRIVER",
                 "STM32F765xx",
                 "__VFP_FP__",
                 "ARM_MATH_CM7",
