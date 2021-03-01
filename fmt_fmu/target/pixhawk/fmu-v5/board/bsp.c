@@ -27,6 +27,7 @@
 #include "driver/usart.h"
 
 #include "drv_gpio.h"
+#include "drv_sdmmc.h"
 #include "drv_systick.h"
 
 static void _print_line(const char* name, const char* content, uint32_t len)
@@ -51,6 +52,7 @@ static void _print_line(const char* name, const char* content, uint32_t len)
   */
 void Error_Handler(void)
 {
+    console_printf("Enter Error_Handler\n");
     /* USER CODE BEGIN Error_Handler_Debug */
     /* User can add his own implementation to report the HAL error return state */
     __disable_irq();
@@ -126,11 +128,7 @@ void bsp_show_information(void)
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
-
-    NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
+    HAL_Init();
     /* System clock initialization */
     SystemClock_Config();
 
@@ -171,6 +169,8 @@ void bsp_post_initialize(void)
 {
     /* show system information */
     bsp_show_information();
+
+    MX_SDMMC1_SD_Init();
 }
 
 /**

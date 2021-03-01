@@ -17,7 +17,23 @@ src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_pwr.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_dma.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usart.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_gpio.c')
-# src += Glob('STM32F7xx_HAL_Driver/Src/*.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c')
+
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exit.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma_ex.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash_ex.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c')
 
 #add for startup script 
 if rtconfig.CROSS_TOOL == 'gcc':
@@ -38,20 +54,29 @@ path = [cwd + '/STM32F7xx_HAL_Driver/Inc',
     cwd + '/CMSIS/DSP/Include',
 	cwd + '/CMSIS/Include']
 
-# defines = ['USE_HAL_DRIVER', 'STM32F765xx', '__VFP_FP__', 'ARM_MATH_MATRIX_CHECK', 'ARM_MATH_CM7', 'ARM_MATH_ROUNDING', '__FPU_PRESENT="1"']
-defines = Split('''
-    HSE_VALUE="16000000"
-    HSE_STARTUP_TIMEOUT="100"
-    LSE_STARTUP_TIMEOUT="5000"
-    LSE_VALUE="32768"
-    EXTERNAL_CLOCK_VALUE="12288000"
-    HSI_VALUE="16000000"
-    LSI_VALUE="32000"
-    VDD_VALUE="3300"
-    PREFETCH_ENABLE="0"
-    ART_ACCLERATOR_ENABLE="0"
-''')
+# defines = Split('''
+#     HSE_VALUE="16000000"
+#     HSE_STARTUP_TIMEOUT="100"
+#     LSE_STARTUP_TIMEOUT="5000"
+#     LSE_VALUE="32768"
+#     EXTERNAL_CLOCK_VALUE="12288000"
+#     HSI_VALUE="16000000"
+#     LSI_VALUE="32000"
+#     VDD_VALUE="3300"
+#     PREFETCH_ENABLE="0"
+#     ART_ACCLERATOR_ENABLE="0"
+# ''')
 
-group = DefineGroup('STM32_StdPeriph', src, depend = [''], CPPPATH = path, CPPDEFINES = defines)
+# defines = Split('''
+#     HSE_VALUE="16000000"
+#     HSE_STARTUP_TIMEOUT="100"
+#     LSE_STARTUP_TIMEOUT="5000"
+#     LSE_VALUE="32768"
+#     EXTERNAL_CLOCK_VALUE="12288000"
+#     HSI_VALUE="16000000"
+#     LSI_VALUE="32000"
+# ''')
+
+group = DefineGroup('STM32_StdPeriph', src, depend = [''], CPPPATH = path)
 
 Return('group')

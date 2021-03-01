@@ -16,13 +16,13 @@
 
 #include <firmament.h>
 
-#include "hal/pin.h"
 #include "drv_gpio.h"
+#include "hal/pin.h"
 
-enum {
-    GPIO_PIN_RESET = 0,
-    GPIO_PIN_SET
-};
+// enum {
+//     GPIO_PIN_RESET = 0,
+//     GPIO_PIN_SET
+// };
 
 #ifdef RT_USING_PIN
 
@@ -31,7 +31,7 @@ enum {
 #define PIN_NO(pin)       ((uint8_t)((pin)&0xFu))
 
 #define PIN_STPORT(pin) ((GPIO_TypeDef*)(GPIOA_BASE + (0x400u * PIN_PORT(pin))))
-#define PIN_STPIN(pin) ((uint16_t)(1u << PIN_NO(pin)))
+#define PIN_STPIN(pin)  ((uint16_t)(1u << PIN_NO(pin)))
 
 #if defined(GPIOZ)
 #define __STM32_PORT_MAX 12u
@@ -184,6 +184,7 @@ rt_err_t drv_gpio_init(void)
 {
     /* GPIO Ports Clock Enable */
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
