@@ -170,7 +170,7 @@ void bsp_post_initialize(void)
     /* show system information */
     bsp_show_information();
 
-    MX_SDMMC1_SD_Init();
+    // MX_SDMMC1_SD_Init();
 }
 
 /**

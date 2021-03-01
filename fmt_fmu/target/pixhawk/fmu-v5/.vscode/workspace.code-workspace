@@ -32,7 +32,10 @@
             "fmtconfig.h": "c",
             "rtconfig.h": "c",
             "rtservice.h": "c",
-            "rtm.h": "c"
+            "rtm.h": "c",
+            "stm32f7xx_ll_sdmmc.h": "c",
+            "stm32f7xx_hal.h": "c",
+            "stm32f7xx.h": "c"
         }
     }
 }
