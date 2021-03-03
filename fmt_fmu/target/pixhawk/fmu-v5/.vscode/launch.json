@@ -5,22 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Cortex Debug ST-Link",
+            "name": "Debug J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
             "cwd": "${workspaceRoot}",
             "executable": "build/fmt_fmu.elf",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
+            "serverpath": "C:/Program Files (x86)/SEGGER/JLink/JLinkGDBServer.exe",
+            "servertype": "jlink",
+            "device": "STM32F765II",
             "interface": "swd",
-            "device":"STM32F765II",
-            "configFiles": [
-                "openocd.cfg",
-            ],
             "armToolchainPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/",
-            "serverpath": "D:/FirmamentPilot/tool/openocd-0.10.0/bin/openocd.exe",
-            "serverArgs": [
-                "test"
-            ]
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            //"jlinkscript": "${workspaceRoot}/BSP/SEGGER/K66FN2M0_emPower/Setup/Kinetis_K66_Target.js",
+            //"svdFile": "${workspaceRoot}/SVD/MK66F18.svd",
+            "runToMain": true
         }
     ]
 }

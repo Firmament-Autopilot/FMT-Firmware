@@ -27,3 +27,4 @@ build
 *.uvguix*
 *.orig
 cconfig.h
+.cortex-debug*
