@@ -178,7 +178,9 @@ static void uart_isr(struct serial_device* serial)
     }
 
     if (LL_USART_IsActiveFlag_IDLE(uart->uart_device) != RESET) {
-        dma_uart_rx_idle_isr(serial);
+        if (uart->dma.dma_device != NULL) {
+            dma_uart_rx_idle_isr(serial);
+        }
         /* clear interrupt flag */
         LL_USART_ClearFlag_IDLE(uart->uart_device);
     }
@@ -321,9 +323,10 @@ void DMA1_Stream3_IRQHandler(void)
 struct stm32_uart uart7 = {
     .uart_device = UART7,
     .irq = UART7_IRQn,
+    .dma = { 0 }
 };
 
-void USART7_IRQHandler(void)
+void UART7_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
