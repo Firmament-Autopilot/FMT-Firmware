@@ -86,7 +86,7 @@ void bsp_show_information(void)
     char buffer[50];
     uint32_t str_len = 42;
 
-    console_println("   _____                               __ ");
+    console_println("\n   _____                               __ ");
     console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
