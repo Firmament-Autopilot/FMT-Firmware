@@ -27,7 +27,7 @@
 #include "driver/usart.h"
 
 #include "drv_gpio.h"
-#include "drv_sdmmc.h"
+#include "drv_sdio.h"
 #include "drv_systick.h"
 
 static void _print_line(const char* name, const char* content, uint32_t len)
@@ -170,7 +170,7 @@ void bsp_post_initialize(void)
     /* show system information */
     bsp_show_information();
 
-    // MX_SDMMC1_SD_Init();
+    MX_SDMMC1_SD_Init();
 }
 
 /**

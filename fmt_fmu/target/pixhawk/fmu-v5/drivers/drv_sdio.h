@@ -17,8 +17,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DRV_SDMMC_H__
-#define __DRV_SDMMC_H__
+#ifndef __DRV_SDIO_H__
+#define __DRV_SDIO_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,6 +47,6 @@ void MX_SDMMC1_SD_Init(void);
 }
 #endif
 
-#endif /* __DRV_SDMMC_H__ */
+#endif /* __DRV_SDIO_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

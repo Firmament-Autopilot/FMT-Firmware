@@ -18,7 +18,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "drv_sdmmc.h"
+#include "drv_sdio.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -81,20 +81,48 @@ void MX_DMA_Init(void)
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
 
     /* DMA2_Stream3_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
     /* DMA2_Stream6_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
+}
+
+void MX_GPIO_Init(void)
+{
+
+    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    /* GPIO Ports Clock Enable */
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
+
+    /**/
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
+
+    /**/
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 }
 
 /* SDMMC1 init function */
 
+uint8_t tx_buffer[512] = { 0 };
+uint8_t rx_buffer[512] = { 0 };
 void MX_SDMMC1_SD_Init(void)
 {
     /* GPIO Ports Clock Enable */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
+    MX_GPIO_Init();
 
     MX_DMA_Init();
 
@@ -110,6 +138,60 @@ void MX_SDMMC1_SD_Init(void)
     }
     if (HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B) != HAL_OK) {
         Error_Handler();
+    }
+
+    HAL_SD_CardInfoTypeDef pCardInfo;
+    if (HAL_SD_GetCardInfo(&hsd1, &pCardInfo) == HAL_OK) {
+        console_printf("CardType:%u\n", pCardInfo.CardType);
+        console_printf("CardVersion:%u\n", pCardInfo.CardVersion);
+        console_printf("Class:%u\n", pCardInfo.Class);
+        console_printf("RelCardAdd:%x\n", pCardInfo.RelCardAdd);
+        console_printf("BlockNbr:%u\n", pCardInfo.BlockNbr);
+        console_printf("BlockSize:%u\n", pCardInfo.BlockSize);
+        console_printf("LogBlockNbr:%u\n", pCardInfo.LogBlockNbr);
+        console_printf("LogBlockSize:%u\n", pCardInfo.LogBlockSize);
+    } else {
+        console_printf("fail to get card info\n");
+    }
+
+    int i;
+    memset(tx_buffer, 0x66, 512);
+    if (HAL_SD_WriteBlocks_DMA(&hsd1, tx_buffer, 0, 1) != HAL_OK) {
+        console_printf("write fail!\n");
+        return;
+    }
+    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
+        ;
+
+    memset(tx_buffer, 0x77, 512);
+    if (HAL_SD_WriteBlocks_DMA(&hsd1, tx_buffer, 1, 1) != HAL_OK) {
+        console_printf("write fail!\n");
+        return;
+    }
+    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
+        ;
+
+    if (HAL_SD_ReadBlocks_DMA(&hsd1, rx_buffer, 0, 1) != HAL_OK) {
+        console_printf("read fail!\n");
+        return;
+    }
+    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
+        ;
+
+    for (i = 0; i < 10; i++) {
+        console_printf("%x,", rx_buffer[i]);
+    }
+    console_printf("\n");
+
+    if (HAL_SD_ReadBlocks_DMA(&hsd1, rx_buffer, 1, 1) != HAL_OK) {
+        console_printf("read fail!\n");
+        return;
+    }
+    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
+        ;
+
+    for (i = 0; i < 10; i++) {
+        console_printf("%x,", rx_buffer[i]);
     }
 }
 

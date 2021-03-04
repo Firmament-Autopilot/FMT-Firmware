@@ -416,12 +416,12 @@ static void NVIC_Configuration(struct stm32_uart* uart)
 
     /* enable the dma interrupt */
     if (uart->dma.rx_irq > 0) {
-        NVIC_SetPriority(uart->dma.rx_irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
+        NVIC_SetPriority(uart->dma.rx_irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0));
         NVIC_EnableIRQ(uart->dma.rx_irq);
     }
 
     if (uart->dma.tx_irq > 0) {
-        NVIC_SetPriority(uart->dma.tx_irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
+        NVIC_SetPriority(uart->dma.tx_irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0));
         NVIC_EnableIRQ(uart->dma.tx_irq);
     }
 }
