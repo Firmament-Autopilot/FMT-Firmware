@@ -10,14 +10,13 @@
             "request": "launch",
             "cwd": "${workspaceRoot}",
             "executable": "build/fmt_fmu.elf",
-            "serverpath": "C:/Program Files (x86)/SEGGER/JLink/JLinkGDBServer.exe",
+            "serverpath": "${env:JLINK_SERVER}",
             "servertype": "jlink",
             "device": "STM32F765II",
             "interface": "swd",
-            "armToolchainPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
-            //"jlinkscript": "${workspaceRoot}/BSP/SEGGER/K66FN2M0_emPower/Setup/Kinetis_K66_Target.js",
-            //"svdFile": "${workspaceRoot}/SVD/MK66F18.svd",
+            "svdFile": "STM32F7x5.svd",
             "runToMain": true
         }
     ]
