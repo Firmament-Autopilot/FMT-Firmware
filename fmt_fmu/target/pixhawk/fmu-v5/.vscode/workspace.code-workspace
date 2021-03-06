@@ -18,28 +18,9 @@
 	],
     "settings": {
         "files.associations": {
-            "systick.h": "c",
-            "firmament.h": "c",
-            "drv_systick.h": "c",
-            "drv_usart.h": "c",
-            "serial.h": "c",
-            "bsp_header.h": "c",
-            "arm_math.h": "c",
-            "drv_gpio.h": "c",
-            "rtthread.h": "c",
-            "rtdebug.h": "c",
-            "rtdef.h": "c",
-            "fmtconfig.h": "c",
-            "rtconfig.h": "c",
-            "rtservice.h": "c",
-            "rtm.h": "c",
-            "stm32f7xx_ll_sdmmc.h": "c",
-            "stm32f7xx_hal.h": "c",
-            "stm32f7xx.h": "c",
-            "drv_sdio.h": "c",
-            "sd.h": "c",
-            "utest.h": "c",
-            "string.h": "c"
-        }
+            "*.h": "c",
+            "*.c": "c"
+        },
+        "C_Cpp.autoAddFileAssociations": false
     }
 }
