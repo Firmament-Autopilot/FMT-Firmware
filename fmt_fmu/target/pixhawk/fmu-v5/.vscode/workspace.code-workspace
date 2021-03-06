@@ -35,7 +35,11 @@
             "rtm.h": "c",
             "stm32f7xx_ll_sdmmc.h": "c",
             "stm32f7xx_hal.h": "c",
-            "stm32f7xx.h": "c"
+            "stm32f7xx.h": "c",
+            "drv_sdio.h": "c",
+            "sd.h": "c",
+            "utest.h": "c",
+            "string.h": "c"
         }
     }
 }
