@@ -13,6 +13,7 @@ HAL = [
     'pin/*.c',
     'serial/*.c',
     'systick/*.c',
+    'sd/*.c',
 ]
 
 HAL_CPPPATH = []
