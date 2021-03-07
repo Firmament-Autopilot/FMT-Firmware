@@ -22,17 +22,18 @@
 struct sd_device {
     struct rt_device parent;
     const struct sd_ops* ops;
+    struct rt_event event;
 };
 typedef struct sd_device* sd_dev_t;
 
 /* sd driver opeations */
 struct sd_ops {
     rt_err_t (*init)(sd_dev_t sd);
-    rt_err_t (*write_disk)(sd_dev_t sd, const rt_uint8_t* buff, rt_uint32_t sector, rt_uint32_t count);
-    rt_err_t (*read_disk)(sd_dev_t sd, rt_uint8_t* buff, rt_uint32_t sector, rt_uint32_t count);
+    rt_err_t (*write_disk)(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
+    rt_err_t (*read_disk)(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
     rt_err_t (*io_control)(sd_dev_t sd, int cmd, void* arg);
 };
 
-rt_err_t hal_sdio_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* data);
+rt_err_t hal_sd_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* data);
 
 #endif

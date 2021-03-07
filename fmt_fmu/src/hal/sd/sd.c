@@ -122,22 +122,14 @@ rt_err_t hal_sd_control(rt_device_t dev, int cmd, void* args)
     sd_dev_t sd;
 
     RT_ASSERT(dev != RT_NULL);
-
     sd = (sd_dev_t)dev;
 
     switch (cmd) {
-    case RT_DEVICE_CTRL_RESUME:
-    case RT_DEVICE_CTRL_SUSPEND:
-    case RT_DEVICE_CTRL_CONFIG:
-    case RT_DEVICE_CTRL_SET_INT:
-    case RT_DEVICE_CTRL_CLR_INT:
-    case RT_DEVICE_CTRL_GET_INT:
-        break;
-    default: {
+    default:
         if (sd->ops->io_control) {
             ret = sd->ops->io_control(sd, cmd, args);
         }
-    }
+        break;
     }
 
     return ret;

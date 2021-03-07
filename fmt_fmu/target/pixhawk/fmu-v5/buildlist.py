@@ -25,6 +25,7 @@ MODULES = [
     'SysCmd/syscmd.c',
     'SysCmd/cmd_sys.c',
     'SysCmd/cmd_mcn.c',
+    'FS_Manager/*.c',
 ]
 
 MODULES_CPPPATH = []

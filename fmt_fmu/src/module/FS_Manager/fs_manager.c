@@ -122,7 +122,7 @@ fmt_err fs_manager_init(const char* device_name, const char* path)
     dfs_init();
 
     /* init storage devices */
-    dev_sd_init(device_name);
+    // dev_sd_init(device_name);
 
     elm_init();
 

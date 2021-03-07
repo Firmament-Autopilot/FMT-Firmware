@@ -1,45 +1,70 @@
-/**
-  ******************************************************************************
-  * @file    sdmmc.c
-  * @brief   This file provides code for the configuration
-  *          of the SDMMC instances.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+#include <firmament.h>
 
-/* Includes ------------------------------------------------------------------*/
+#include "bsp.h"
 #include "drv_sdio.h"
+#include "hal/sd.h"
 
-/* USER CODE BEGIN 0 */
+#define SD_TIMEOUT    5000
+#define EVENT_TX_CPLT 0x00000001
+#define EVENT_RX_CPLT 0x00000002
+#define EVENT_ERROR   0x00000004
+#define EVENT_ABORT   0x00000008
 
-/* USER CODE END 0 */
+/* SDMMC1 */
+static SD_HandleTypeDef hsd1;
+static DMA_HandleTypeDef hdma_sdmmc1_rx;
+static DMA_HandleTypeDef hdma_sdmmc1_tx;
+static struct sd_device sd0_dev;
 
-SD_HandleTypeDef hsd1;
-DMA_HandleTypeDef hdma_sdmmc1_rx;
-DMA_HandleTypeDef hdma_sdmmc1_tx;
+void HAL_SD_TxCpltCallback(SD_HandleTypeDef* hsd)
+{
+    if (hsd == &hsd1) {
+        rt_event_send(&sd0_dev.event, EVENT_TX_CPLT);
+    }
+}
+
+void HAL_SD_RxCpltCallback(SD_HandleTypeDef* hsd)
+{
+    if (hsd == &hsd1) {
+        rt_event_send(&sd0_dev.event, EVENT_RX_CPLT);
+    }
+}
+
+void HAL_SD_ErrorCallback(SD_HandleTypeDef* hsd)
+{
+    if (hsd == &hsd1) {
+        rt_event_send(&sd0_dev.event, EVENT_ERROR);
+    }
+}
+
+void HAL_SD_AbortCallback(SD_HandleTypeDef* hsd)
+{
+    if (hsd == &hsd1) {
+        rt_event_send(&sd0_dev.event, EVENT_ABORT);
+    }
+}
 
 /**
   * @brief This function handles SDMMC1 global interrupt.
   */
 void SDMMC1_IRQHandler(void)
 {
-    /* USER CODE BEGIN SDMMC1_IRQn 0 */
-
-    /* USER CODE END SDMMC1_IRQn 0 */
     HAL_SD_IRQHandler(&hsd1);
-    /* USER CODE BEGIN SDMMC1_IRQn 1 */
-
-    /* USER CODE END SDMMC1_IRQn 1 */
 }
 
 /**
@@ -47,13 +72,7 @@ void SDMMC1_IRQHandler(void)
   */
 void DMA2_Stream3_IRQHandler(void)
 {
-    /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
-
-    /* USER CODE END DMA2_Stream3_IRQn 0 */
     HAL_DMA_IRQHandler(&hdma_sdmmc1_tx);
-    /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
-
-    /* USER CODE END DMA2_Stream3_IRQn 1 */
 }
 
 /**
@@ -61,143 +80,11 @@ void DMA2_Stream3_IRQHandler(void)
   */
 void DMA2_Stream6_IRQHandler(void)
 {
-    /* USER CODE BEGIN DMA2_Stream6_IRQn 0 */
-
-    /* USER CODE END DMA2_Stream6_IRQn 0 */
     HAL_DMA_IRQHandler(&hdma_sdmmc1_rx);
-    /* USER CODE BEGIN DMA2_Stream6_IRQn 1 */
-
-    /* USER CODE END DMA2_Stream6_IRQn 1 */
-}
-
-/**
-  * Enable DMA controller clock
-  */
-void MX_DMA_Init(void)
-{
-    /* Init with LL driver */
-    /* DMA controller clock enable */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
-
-    /* DMA2_Stream3_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 2, 0);
-    HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
-    /* DMA2_Stream6_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 2, 0);
-    HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
-}
-
-void MX_GPIO_Init(void)
-{
-
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    /* GPIO Ports Clock Enable */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
-
-    /**/
-    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
-
-    /**/
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-}
-
-/* SDMMC1 init function */
-
-uint8_t tx_buffer[512] = { 0 };
-uint8_t rx_buffer[512] = { 0 };
-void MX_SDMMC1_SD_Init(void)
-{
-    /* GPIO Ports Clock Enable */
-    MX_GPIO_Init();
-
-    MX_DMA_Init();
-
-    hsd1.Instance = SDMMC1;
-    hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
-    hsd1.Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
-    hsd1.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-    hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
-    hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    hsd1.Init.ClockDiv = 0;
-    if (HAL_SD_Init(&hsd1) != HAL_OK) {
-        Error_Handler();
-    }
-    if (HAL_SD_ConfigWideBusOperation(&hsd1, SDMMC_BUS_WIDE_4B) != HAL_OK) {
-        Error_Handler();
-    }
-
-    HAL_SD_CardInfoTypeDef pCardInfo;
-    if (HAL_SD_GetCardInfo(&hsd1, &pCardInfo) == HAL_OK) {
-        console_printf("CardType:%u\n", pCardInfo.CardType);
-        console_printf("CardVersion:%u\n", pCardInfo.CardVersion);
-        console_printf("Class:%u\n", pCardInfo.Class);
-        console_printf("RelCardAdd:%x\n", pCardInfo.RelCardAdd);
-        console_printf("BlockNbr:%u\n", pCardInfo.BlockNbr);
-        console_printf("BlockSize:%u\n", pCardInfo.BlockSize);
-        console_printf("LogBlockNbr:%u\n", pCardInfo.LogBlockNbr);
-        console_printf("LogBlockSize:%u\n", pCardInfo.LogBlockSize);
-    } else {
-        console_printf("fail to get card info\n");
-    }
-
-    int i;
-    memset(tx_buffer, 0x66, 512);
-    if (HAL_SD_WriteBlocks_DMA(&hsd1, tx_buffer, 0, 1) != HAL_OK) {
-        console_printf("write fail!\n");
-        return;
-    }
-    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
-        ;
-
-    memset(tx_buffer, 0x77, 512);
-    if (HAL_SD_WriteBlocks_DMA(&hsd1, tx_buffer, 1, 1) != HAL_OK) {
-        console_printf("write fail!\n");
-        return;
-    }
-    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
-        ;
-
-    if (HAL_SD_ReadBlocks_DMA(&hsd1, rx_buffer, 0, 1) != HAL_OK) {
-        console_printf("read fail!\n");
-        return;
-    }
-    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
-        ;
-
-    for (i = 0; i < 10; i++) {
-        console_printf("%x,", rx_buffer[i]);
-    }
-    console_printf("\n");
-
-    if (HAL_SD_ReadBlocks_DMA(&hsd1, rx_buffer, 1, 1) != HAL_OK) {
-        console_printf("read fail!\n");
-        return;
-    }
-    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
-        ;
-
-    for (i = 0; i < 10; i++) {
-        console_printf("%x,", rx_buffer[i]);
-    }
 }
 
 void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
 {
-
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
     if (sdHandle->Instance == SDMMC1) {
         /* USER CODE BEGIN SDMMC1_MspInit 0 */
@@ -208,14 +95,14 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
 
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
-        /**SDMMC1 GPIO Configuration
-    PC12     ------> SDMMC1_CK
-    PC11     ------> SDMMC1_D3
-    PC10     ------> SDMMC1_D2
-    PD2     ------> SDMMC1_CMD
-    PC9     ------> SDMMC1_D1
-    PC8     ------> SDMMC1_D0
-    */
+        /* SDMMC1 GPIO Configuration
+            PC12     ------> SDMMC1_CK
+            PC11     ------> SDMMC1_D3
+            PC10     ------> SDMMC1_D2
+            PD2     ------> SDMMC1_CMD
+            PC9     ------> SDMMC1_D1
+            PC8     ------> SDMMC1_D0
+            */
         GPIO_InitStruct.Pin = GPIO_PIN_12;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -281,30 +168,23 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
         /* SDMMC1 interrupt Init */
         HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
         HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
-        /* USER CODE BEGIN SDMMC1_MspInit 1 */
-
-        /* USER CODE END SDMMC1_MspInit 1 */
     }
 }
 
 void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
 {
-
     if (sdHandle->Instance == SDMMC1) {
-        /* USER CODE BEGIN SDMMC1_MspDeInit 0 */
-
-        /* USER CODE END SDMMC1_MspDeInit 0 */
         /* Peripheral clock disable */
         __HAL_RCC_SDMMC1_CLK_DISABLE();
 
-        /**SDMMC1 GPIO Configuration
-    PC12     ------> SDMMC1_CK
-    PC11     ------> SDMMC1_D3
-    PC10     ------> SDMMC1_D2
-    PD2     ------> SDMMC1_CMD
-    PC9     ------> SDMMC1_D1
-    PC8     ------> SDMMC1_D0
-    */
+        /* SDMMC1 GPIO Configuration
+            PC12     ------> SDMMC1_CK
+            PC11     ------> SDMMC1_D3
+            PC10     ------> SDMMC1_D2
+            PD2     ------> SDMMC1_CMD
+            PC9     ------> SDMMC1_D1
+            PC8     ------> SDMMC1_D0
+            */
         HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12 | GPIO_PIN_11 | GPIO_PIN_10 | GPIO_PIN_9 | GPIO_PIN_8);
 
         HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
@@ -315,14 +195,188 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
 
         /* SDMMC1 interrupt Deinit */
         HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
-        /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
-
-        /* USER CODE END SDMMC1_MspDeInit 1 */
     }
 }
 
-/* USER CODE BEGIN 1 */
+static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, uint32_t* status)
+{
+    if (rt_event_recv(&sd_dev->event, 0xffffffff,
+            RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, TICKS_FROM_MS(SD_TIMEOUT), status)
+        != RT_EOK) {
+        /* wait timeout */
+        return RT_ETIMEOUT;
+    }
 
-/* USER CODE END 1 */
+    return RT_EOK;
+}
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+static rt_err_t init(sd_dev_t sd)
+{
+    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    SD_HandleTypeDef* sd_handle = sd->parent.user_data;
+
+    RT_ASSERT(sd_handle != RT_NULL);
+
+    /* GPIO Ports Clock Enable */
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);
+    /* SD_CARD_EN active high */
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
+    /* init gpio */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+    /* DMA controller clock enable */
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
+    /* DMA2_Stream3_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
+    /* DMA2_Stream6_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
+
+    sd_handle->Instance = SDMMC1;
+    sd_handle->Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
+    sd_handle->Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
+    sd_handle->Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+    sd_handle->Init.BusWide = SDMMC_BUS_WIDE_1B;
+    sd_handle->Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
+    sd_handle->Init.ClockDiv = 0;
+    if (HAL_SD_Init(sd_handle) != HAL_OK) {
+        return RT_ERROR;
+    }
+    if (HAL_SD_ConfigWideBusOperation(sd_handle, SDMMC_BUS_WIDE_4B) != HAL_OK) {
+        return RT_ERROR;
+    }
+
+    return RT_EOK;
+}
+
+static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
+{
+    rt_err_t err = RT_EOK;
+    uint32_t status;
+    SD_HandleTypeDef* sd_handle = sd->parent.user_data;
+
+    RT_ASSERT(sd_handle != RT_NULL);
+
+    if (HAL_SD_WriteBlocks_DMA(sd_handle, buffer, sector, count) != HAL_OK) {
+        return RT_ERROR;
+    }
+
+    err = sdio_wait_complete(sd, &status);
+    if ((err == RT_EOK) && (status & EVENT_TX_CPLT)) {
+        /* block until SDIO IP is ready or a timeout occur */
+        uint32_t start = systime_now_ms();
+        uint32_t now;
+        while (HAL_SD_GetCardState(sd_handle) != HAL_SD_CARD_TRANSFER) {
+            now = systime_now_ms();
+            if (now - start > SD_TIMEOUT) {
+                err = RT_ETIMEOUT;
+                break;
+            }
+            rt_thread_delay(TICKS_FROM_MS(1));
+        }
+    }
+
+    return err;
+}
+
+static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
+{
+    rt_err_t err = RT_EOK;
+    uint32_t status;
+    SD_HandleTypeDef* sd_handle = sd->parent.user_data;
+
+    RT_ASSERT(sd_handle != RT_NULL);
+
+    if (HAL_SD_ReadBlocks_DMA(sd_handle, buffer, sector, count) != HAL_OK) {
+        return RT_ERROR;
+    }
+
+    err = sdio_wait_complete(sd, &status);
+    if ((err == RT_EOK) && (status & EVENT_RX_CPLT)) {
+        /* block until SDIO IP is ready or a timeout occur */
+        uint32_t start = systime_now_ms();
+        uint32_t now;
+        while (HAL_SD_GetCardState(sd_handle) != HAL_SD_CARD_TRANSFER) {
+            now = systime_now_ms();
+            if (now - start > SD_TIMEOUT) {
+                err = RT_ETIMEOUT;
+                break;
+            }
+            rt_thread_delay(TICKS_FROM_MS(1));
+        }
+    }
+
+    return err;
+}
+
+static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
+{
+    SD_HandleTypeDef* sd_handle = sd->parent.user_data;
+
+    RT_ASSERT(sd_handle != RT_NULL);
+
+    switch (cmd) {
+    case RT_DEVICE_CTRL_BLK_GETGEOME: {
+        struct rt_device_blk_geometry geometry;
+        HAL_SD_CardInfoTypeDef pCardInfo;
+
+        if (arg == RT_NULL) {
+            return RT_EINVAL;
+        }
+        /* get sd card information */
+        if (HAL_SD_GetCardInfo(sd_handle, &pCardInfo) != HAL_OK) {
+            return RT_ERROR;
+        }
+
+        geometry.bytes_per_sector = pCardInfo.BlockSize;
+        geometry.block_size = pCardInfo.BlockSize;
+        geometry.sector_count = pCardInfo.BlockNbr;
+        *(struct rt_device_blk_geometry*)arg = geometry;
+    } break;
+    case RT_DEVICE_CTRL_BLK_SYNC: {
+        //TODO, improve it?
+        if (HAL_SD_GetCardState(sd_handle) != HAL_SD_CARD_TRANSFER) {
+            return RT_ERROR;
+        }
+    } break;
+    case RT_DEVICE_CTRL_BLK_ERASE: {
+        // uint32_t* tbl = (uint32_t*)arg;
+        // HAL_SD_Erase(sd_handle, tbl[0], tbl[1]);
+
+        /* sd card is not needed to erase */
+        return RT_ERROR;
+    } break;
+    default: {
+        console_printf("unknown sd control cmd:%d\n", cmd);
+    } break;
+    }
+
+    return RT_EOK;
+}
+
+const static struct sd_ops dev_ops = {
+    .init = init,
+    .write_disk = write_disk,
+    .read_disk = read_disk,
+    .io_control = io_control
+};
+
+rt_err_t drv_sdio_init(void)
+{
+    sd0_dev.ops = &dev_ops;
+
+    if (rt_event_init(&sd0_dev.event, "sdio", RT_IPC_FLAG_FIFO) != RT_EOK) {
+        console_printf("fail to init sdio event\n");
+        return RT_ERROR;
+    }
+
+    return hal_sd_register(&sd0_dev, "sd0",
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE, &hsd1);
+}

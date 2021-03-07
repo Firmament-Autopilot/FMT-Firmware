@@ -34,6 +34,7 @@
 #include "driver/ms5611.h"
 #include "driver/pmw3901_l0x.h"
 #include "driver/pwm_drv.h"
+#include "driver/sd_dev.h"
 #include "driver/spi_drv.h"
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
@@ -242,6 +243,7 @@ void bsp_initialize(void)
     FMT_CHECK(mcn_init());
 
     /* init file manager */
+    RTT_CHECK(dev_sd_init(FS_DEVICE_NAME));
     FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
 
     /* init usb device */
