@@ -15,13 +15,14 @@
                 "UNICODE",
                 "_UNICODE",
                 "USE_FULL_LL_DRIVER",
+                "USE_HAL_DRIVER",
                 "STM32F765xx",
                 "__VFP_FP__",
                 "ARM_MATH_CM7",
                 "__FPU_PRESENT=1"
             ],
             "windowsSdkVersion": "10.0.14393.0",
-            "compilerPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/arm-none-eabi-gcc.exe",
+            "compilerPath": "${env:RTT_EXEC_PATH}/arm-none-eabi-gcc.exe",
             "cStandard": "c99",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-arm"

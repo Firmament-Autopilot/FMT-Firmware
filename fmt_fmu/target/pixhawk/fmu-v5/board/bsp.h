@@ -61,4 +61,6 @@ void bsp_initialize(void);
 void bsp_post_initialize(void);
 void board_show_version(void);
 
+void Error_Handler(void);
+
 #endif

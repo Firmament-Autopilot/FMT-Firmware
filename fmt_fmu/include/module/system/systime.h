@@ -19,6 +19,8 @@
 
 #include <firmament.h>
 
+#define TICKS_FROM_MS(_ms) ((RT_TICK_PER_SECOND * _ms + 999) / 1000)
+
 typedef struct {
     uint32_t tag;
     uint32_t period;

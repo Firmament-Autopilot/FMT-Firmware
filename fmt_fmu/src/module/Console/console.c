@@ -564,7 +564,7 @@ fmt_err console_init(void)
 {
     serial_dev_t serial_dev;
     /* by default, use serial0 as console before toml system configure complete */
-    const char* dev_name = "serial6";
+    const char* dev_name = "serial0";
 
     _console_dev = rt_device_find(dev_name);
 

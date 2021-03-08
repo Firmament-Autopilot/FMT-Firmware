@@ -18,14 +18,9 @@
 	],
     "settings": {
         "files.associations": {
-            "systick.h": "c",
-            "firmament.h": "c",
-            "drv_systick.h": "c",
-            "drv_usart.h": "c",
-            "serial.h": "c",
-            "bsp_header.h": "c",
-            "arm_math.h": "c",
-            "drv_gpio.h": "c"
-        }
+            "*.h": "c",
+            "*.c": "c"
+        },
+        "C_Cpp.autoAddFileAssociations": false
     }
 }

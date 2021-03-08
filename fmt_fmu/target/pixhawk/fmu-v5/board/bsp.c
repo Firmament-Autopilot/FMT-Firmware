@@ -27,7 +27,10 @@
 #include "driver/usart.h"
 
 #include "drv_gpio.h"
+#include "drv_sdio.h"
 #include "drv_systick.h"
+
+#include "module/fs_manager/fs_manager.h"
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -43,6 +46,21 @@ static void _print_line(const char* name, const char* content, uint32_t len)
         console_write(".", 1);
 
     console_printf("%s\n", content);
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+    console_printf("Enter Error_Handler\n");
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1) {
+    }
+    /* USER CODE END Error_Handler_Debug */
 }
 
 /**
@@ -62,6 +80,7 @@ void SystemClock_Config(void)
     while (LL_RCC_HSE_IsReady() != 1) {
     }
     LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_8, 216, LL_RCC_PLLP_DIV_2);
+    LL_RCC_PLL_ConfigDomain_48M(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_8, 216, LL_RCC_PLLQ_DIV_9);
     LL_RCC_PLL_Enable();
 
     /* Wait till PLL is ready */
@@ -75,9 +94,16 @@ void SystemClock_Config(void)
     /* Wait till System clock is ready */
     while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL) {
     }
-    LL_Init1msTick(216000000);
     LL_SetSystemCoreClock(216000000);
+
+    /* Update the time base */
+    if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
+        Error_Handler();
+    }
+    LL_RCC_SetCK48MClockSource(LL_RCC_CK48M_CLKSOURCE_PLL);
+    LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC1_CLKSOURCE_PLL48CLK);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
     LL_RCC_SetUARTClockSource(LL_RCC_UART7_CLKSOURCE_PCLK1);
 }
 
@@ -104,11 +130,7 @@ void bsp_show_information(void)
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
-
-    NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
+    HAL_Init();
     /* System clock initialization */
     SystemClock_Config();
 
@@ -131,6 +153,10 @@ void bsp_initialize(void)
 {
     /* init uMCN */
     FMT_CHECK(mcn_init());
+
+    RTT_CHECK(drv_sdio_init());
+    /* init file manager */
+    FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
 
 #ifdef RT_USING_FINSH
     /* init finsh */
