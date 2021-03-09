@@ -32,7 +32,8 @@
         "initializer_list": "c",
         "cstdint": "cpp",
         "iosfwd": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "dfs_posix.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled",
     "git.ignoreLimitWarning": true,

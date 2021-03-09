@@ -30,7 +30,7 @@
 #include "drv_sdio.h"
 #include "drv_systick.h"
 
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -155,8 +155,8 @@ void bsp_initialize(void)
     FMT_CHECK(mcn_init());
 
     RTT_CHECK(drv_sdio_init());
-    /* init file manager */
-    FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
+    /* init file system */
+    FMT_CHECK(file_manager_init());
 
 #ifdef RT_USING_FINSH
     /* init finsh */
