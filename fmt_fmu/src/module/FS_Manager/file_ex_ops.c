@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament-Autopilot Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#ifndef __FILE_MANAGER_H__
-#define __FILE_MANAGER_H__
-
 #include <firmament.h>
 #include <dfs_posix.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+int fm_fprintf(int fd, const char* fmt, ...)
+{
+    va_list args;
+    int length;
+    char buffer[256];
 
-fmt_err file_manager_init(void);
+    va_start(args, fmt);
+    length = vsprintf(buffer, fmt, args);
+    va_end(args);
 
-/* file extended operation */
-int fm_fprintf(int fd, const char* fmt, ...);
-
-#ifdef __cplusplus
+    return write(fd, buffer, length);
 }
-#endif
-
-#endif
