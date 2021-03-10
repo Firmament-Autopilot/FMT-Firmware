@@ -36,6 +36,11 @@ static const char* rfs_folder[] = {
     NULL /* NULL indicate the end */
 };
 
+/**
+ * Read log session id from /log/session_id.
+ * 
+ * @return FMT Errors.
+ */
 static int read_log_session_id(void)
 {
     char id_buffer[5] = { 0 };
@@ -68,6 +73,11 @@ static int read_log_session_id(void)
     return id;
 }
 
+/**
+ * Update log session id into /log/session_id.
+ * 
+ * @return FMT Errors.
+ */
 static fmt_err update_log_session(void)
 {
     int fd;
@@ -88,6 +98,34 @@ static fmt_err update_log_session(void)
     }
     fm_fprintf(fd, "%d", cws_id);
     close(fd);
+
+    return FMT_EOK;
+}
+
+/**
+ * Create working log session folder.
+ * 
+ * @return FMT Errors.
+ */
+static fmt_err create_log_session(void)
+{
+    char path[50];
+    struct stat sta;
+    /* get log session full path */
+    sprintf(path, "/log/session_%d", cws_id);
+
+    if (stat(path, &sta) == 0) {
+        /* delete existed folder */
+        if (fm_deldir(path) < 0) {
+            console_printf("fail to delete %s\n", path);
+            return FMT_ERROR;
+        }
+    }
+    /* create log session */
+    if (mkdir(path, 0x777) < 0) {
+        console_printf("fail to create %s, errno:%d\n", path, rt_get_errno());
+        return FMT_ERROR;
+    }
 
     return FMT_EOK;
 }
@@ -116,8 +154,12 @@ static fmt_err create_rootfs(void)
             break;
         }
     }
-    /* update log session */
-    if (update_log_session() != FMT_EOK) {
+    /* update and create log session */
+    if (update_log_session() == FMT_EOK) {
+        if (create_log_session() != FMT_EOK) {
+            return FMT_ERROR;
+        }
+    } else {
         return FMT_ERROR;
     }
 

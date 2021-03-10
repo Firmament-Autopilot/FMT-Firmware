@@ -28,6 +28,7 @@ fmt_err file_manager_init(void);
 
 /* file extended operation */
 int fm_fprintf(int fd, const char* fmt, ...);
+int fm_deldir(const char* path);
 
 #ifdef __cplusplus
 }
