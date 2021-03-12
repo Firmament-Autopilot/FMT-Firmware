@@ -356,13 +356,17 @@ uint32_t console_print_args(const char* fmt, va_list args)
     return console_write(_buffer, length);
 }
 
+RT_WEAK void console_write_hook(const char* content, uint32_t len)
+{
+    (void)content;
+    (void)len;
+}
+
 uint32_t console_write(const char* content, uint32_t len)
 {
-    // if (boot_logging) {
-    //     /* push to boot log buffer if boot_logging flag is set */
-    //     boot_log_push(content, len);
-    // }
-
+    /* can reimplement this function in other places */
+    console_write_hook(content, len);
+    /* write content into console device */
     return rt_device_write(_console_dev, 0, (void*)content, len);
 }
 

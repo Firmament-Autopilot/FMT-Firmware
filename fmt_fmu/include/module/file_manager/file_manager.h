@@ -14,16 +14,25 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FS_MANAGER_H__
-#define __FS_MANAGER_H__
+#ifndef __FILE_MANAGER_H__
+#define __FILE_MANAGER_H__
 
 #include <firmament.h>
 #include <dfs_posix.h>
 
-fmt_err fs_manager_init(const char* device_name, const char* path);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-bool fs_file_exist(const char* path);
-fmt_err fs_deldir(const char* path);
-int fs_fprintf(int fd, const char* fmt, ...);
+fmt_err file_manager_init(const struct dfs_mount_tbl* mnt_table);
+fmt_err current_log_session(char* path);
+
+/* file extended operation */
+int fm_fprintf(int fd, const char* fmt, ...);
+int fm_deldir(const char* path);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

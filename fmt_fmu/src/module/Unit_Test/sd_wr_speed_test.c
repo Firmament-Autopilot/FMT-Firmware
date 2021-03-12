@@ -2,7 +2,7 @@
 #include <firmament.h>
 #include "module/syscmd/syscmd.h"
 #include "module/console/console.h"
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 
 #define TEST_FILE_NAME      "/test_file.txt"
 

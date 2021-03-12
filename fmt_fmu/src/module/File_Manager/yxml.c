@@ -22,8 +22,8 @@
   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "yxml.h"
 #include <string.h>
+#include "module/file_manager/yxml.h"
 
 typedef enum {
 	YXMLS_string,

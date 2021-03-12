@@ -28,7 +28,7 @@
  * 2015-08-28     Bernard      Add mkfs command.
  */
 
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 #include <finsh.h>
 #include <rtthread.h>
 

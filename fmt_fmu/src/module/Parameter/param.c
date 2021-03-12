@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include "yxml.h"
 #include <firmament.h>
 #include <string.h>
 
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
+#include "module/file_manager/yxml.h"
 
 #define TAG "Param"
 
@@ -546,64 +545,64 @@ fmt_err param_save(char* path)
     }
 
     /* add title */
-    fs_fprintf(fd, "<?xml version=\"1.0\"?>\n");
+    fm_fprintf(fd, "<?xml version=\"1.0\"?>\n");
     /* add param_list element */
-    fs_fprintf(fd, "<param_list>\n");
+    fm_fprintf(fd, "<param_list>\n");
 
     param_t* p;
     param_group_t* gp = (param_group_t*)&param_list;
 
     for (int j = 0; j < sizeof(param_list) / sizeof(param_group_t); j++) {
         /* add group element */
-        fs_fprintf(fd, "\x20\x20<group name=\"%s\">\n", gp->name);
+        fm_fprintf(fd, "\x20\x20<group name=\"%s\">\n", gp->name);
         p = gp->content;
 
         for (int i = 0; i < gp->param_num; i++) {
             /* add param element */
-            fs_fprintf(fd, "\x20\x20\x20\x20<param name=\"%s\">\n", p->name);
+            fm_fprintf(fd, "\x20\x20\x20\x20<param name=\"%s\">\n", p->name);
 
             /* add value element */
             if (p->type == PARAM_TYPE_INT8) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.i8);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.i8);
             }
 
             if (p->type == PARAM_TYPE_UINT8) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.u8);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.u8);
             }
 
             if (p->type == PARAM_TYPE_INT16) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.i16);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.i16);
             }
 
             if (p->type == PARAM_TYPE_UINT16) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.u16);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.u16);
             }
 
             if (p->type == PARAM_TYPE_INT32) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.i32);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.i32);
             }
 
             if (p->type == PARAM_TYPE_UINT32) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.u32);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%d</value>\n", p->val.u32);
             }
 
             if (p->type == PARAM_TYPE_FLOAT) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%f</value>\n", p->val.f);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%f</value>\n", p->val.f);
             }
 
             if (p->type == PARAM_TYPE_DOUBLE) {
-                fs_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%lf</value>\n", p->val.lf);
+                fm_fprintf(fd, "\x20\x20\x20\x20\x20\x20<value>%lf</value>\n", p->val.lf);
             }
 
             p++;
-            fs_fprintf(fd, "\x20\x20\x20\x20</param>\n");
+            fm_fprintf(fd, "\x20\x20\x20\x20</param>\n");
         }
 
         gp++;
-        fs_fprintf(fd, "\x20\x20</group>\n");
+        fm_fprintf(fd, "\x20\x20</group>\n");
     }
 
-    fs_fprintf(fd, "</param_list>\n");
+    fm_fprintf(fd, "</param_list>\n");
     close(fd);
 
     return res;

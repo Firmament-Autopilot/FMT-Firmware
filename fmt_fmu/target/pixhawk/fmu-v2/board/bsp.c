@@ -43,7 +43,7 @@
 #include "hal/fmtio_dev.h"
 #include "module/controller/controller_model.h"
 #include "module/fms/fms_model.h"
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
@@ -57,6 +57,11 @@
 #include "module/plant/plant_model.h"
 #endif
 #include "protocol/msp/msp.h"
+
+static const struct dfs_mount_tbl mnt_table[] = {
+    { "sd0", "/", "elm", 0, NULL },
+    { NULL }    /* NULL indicate the end */
+};
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk FMUv2\"\n\
 [console]\n\
@@ -242,9 +247,10 @@ void bsp_initialize(void)
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
-    /* init file manager */
+    /* init storage devices */
     RTT_CHECK(dev_sd_init(FS_DEVICE_NAME));
-    FMT_CHECK(fs_manager_init(FS_DEVICE_NAME, "/"));
+    /* init file system */
+    FMT_CHECK(file_manager_init(mnt_table));
 
     /* init usb device */
     FMT_CHECK(usb_cdc_init());

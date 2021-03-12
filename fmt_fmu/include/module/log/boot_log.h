@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __BOOT_LOG_H__
 #define __BOOT_LOG_H__
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 uint32_t boot_log_push(const char* content, uint32_t len);
 fmt_err boot_log_dump(void);
 fmt_err boot_log_init(void);
 
-extern uint8_t boot_logging;
+#ifdef __cplusplus
+}
+#endif
 
 #endif
