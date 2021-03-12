@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/mavproxy/mavproxy.h"

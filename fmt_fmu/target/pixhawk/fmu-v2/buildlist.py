@@ -44,7 +44,7 @@ MODULES = [
     '*.c',
     'Calibration/*.c',
     'Console/*.c',
-    'FS_Manager/*.c',
+    'File_Manager/*.c',
     'FTP/*.c',
     'Plant/*.c',
     'Plant/lib/*.c',
@@ -79,7 +79,6 @@ MODULES_CPPPATH = [
     'Plant/lib',
     'Controller/lib',
     'FMS/lib',
-    'FS_Manager',
     'BuzzerTune',
 ]
 

@@ -18,6 +18,7 @@
 
 #include "module/syscmd/syscmd.h"
 #include "task_logger.h"
+#include "module/file_manager/file_manager.h"
 
 static void _show_blog_status(void)
 {
@@ -60,7 +61,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
         _show_blog_status();
     }else if (strcmp(argv[1], "ws") == 0) {
         char path[100];
-        get_working_log_session(path);
+        current_log_session(path);
         console_printf("working log session: %s\n", path);
     } else {
         show_usage();

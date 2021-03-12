@@ -24,7 +24,8 @@
 extern "C" {
 #endif
 
-fmt_err file_manager_init(void);
+fmt_err file_manager_init(const struct dfs_mount_tbl* mnt_table);
+fmt_err current_log_session(char* path);
 
 /* file extended operation */
 int fm_fprintf(int fd, const char* fmt, ...);

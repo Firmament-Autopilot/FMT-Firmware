@@ -20,7 +20,7 @@
 
 #include "module/controller/controller_model.h"
 #include "module/fms/fms_model.h"
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 #include "module/ins/ins_model.h"
 #include "task_logger.h"
 #ifdef FMT_USING_SIH

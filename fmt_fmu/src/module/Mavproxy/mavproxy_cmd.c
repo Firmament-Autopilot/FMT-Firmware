@@ -18,7 +18,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/fs_manager/fs_manager.h"
+#include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"
@@ -275,7 +275,7 @@ void _gyr_mavlink_calibration(void)
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
     if (_cfd != -1) {
-        fs_fprintf(_cfd, "%f %f %f\n", imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2]);
+        fm_fprintf(_cfd, "%f %f %f\n", imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2]);
     }
 #endif
 
@@ -379,7 +379,7 @@ void _acc_mavlink_calibration(void)
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
             if (_cfd != -1) {
-                fs_fprintf(_cfd, "%f %f %f\n", imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
+                fm_fprintf(_cfd, "%f %f %f\n", imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
             }
 #endif
 
@@ -601,7 +601,7 @@ void _mag_mavlink_calibration(void)
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
             if (_cfd != -1) {
-                fs_fprintf(_cfd, "%f %f %f\n", mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
+                fm_fprintf(_cfd, "%f %f %f\n", mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
             }
 #endif
 

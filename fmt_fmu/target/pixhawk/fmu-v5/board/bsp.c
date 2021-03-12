@@ -32,6 +32,11 @@
 
 #include "module/file_manager/file_manager.h"
 
+static const struct dfs_mount_tbl mnt_table[] = {
+    { "sd0", "/", "elm", 0, NULL },
+    { NULL }    /* NULL indicate the end */
+};
+
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
     int pad_len = len - strlen(name) - strlen(content);
@@ -151,12 +156,16 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* start recording boot log */
+    FMT_CHECK(boot_log_init());
+
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
+    /* init storage devices */
     RTT_CHECK(drv_sdio_init());
     /* init file system */
-    FMT_CHECK(file_manager_init());
+    FMT_CHECK(file_manager_init(mnt_table));
 
 #ifdef RT_USING_FINSH
     /* init finsh */
@@ -175,6 +184,9 @@ void bsp_post_initialize(void)
 {
     /* show system information */
     bsp_show_information();
+
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**

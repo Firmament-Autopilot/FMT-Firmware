@@ -25,10 +25,6 @@
 
 static int cws_id; /* current work session id */
 
-static const struct dfs_mount_tbl mnt_table[] = {
-    { "sd0", "/", "elm", 0, NULL }
-};
-
 static const char* rfs_folder[] = {
     "/sys",
     "/usr",
@@ -167,11 +163,28 @@ static fmt_err create_rootfs(void)
 }
 
 /**
+ * Get the current log session path.
+ * 
+ * @param path store the full path of current log session
+ * @return FMT Errors.
+ */
+fmt_err current_log_session(char* path)
+{
+    if (cws_id > 0) {
+        /* get log session full path */
+        sprintf(path, "/log/session_%d", cws_id);
+        return FMT_EOK;
+    } else {
+        return FMT_ERROR;
+    }
+}
+
+/**
  * Initialize the file system.
  * 
  * @return FMT Errors.
  */
-fmt_err file_manager_init(void)
+fmt_err file_manager_init(const struct dfs_mount_tbl* mnt_table)
 {
     /* init dfs system */
     if (dfs_init() != 0) {
@@ -185,7 +198,10 @@ fmt_err file_manager_init(void)
     }
 
     /* mount storage devices */
-    for (int i = 0; i < sizeof(mnt_table) / sizeof(struct dfs_mount_tbl); i++) {
+    for (int i = 0;; i++) {
+        if (mnt_table[i].device_name == NULL) {
+            break;
+        }
         if (dfs_mount(mnt_table[i].device_name,
                 mnt_table[i].path,
                 mnt_table[i].filesystemtype,
