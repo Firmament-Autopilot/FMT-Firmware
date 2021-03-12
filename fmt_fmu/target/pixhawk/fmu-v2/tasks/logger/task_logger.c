@@ -67,6 +67,11 @@ static void ulog_fs_backend_deinit(struct ulog_backend* backend)
     }
 }
 
+static void blog_update_cb(void)
+{
+    logger_send_event(EVENT_BLOG_UPDATE);
+}
+
 fmt_err logger_start_blog(char* path)
 {
     char log_name[100];
@@ -111,7 +116,7 @@ fmt_err task_logger_init(void)
     }
 
     /* init binary log */
-    blog_init();
+    binary_log_init();
 
     /* init ulog */
     ulog_init();
@@ -144,6 +149,8 @@ void task_logger_entry(void* parameter)
     rt_err_t rt_err;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_BLOG_UPDATE | EVENT_ULOG_UPDATE;
+
+    blog_register_callback(BLOG_CB_UPDATE, blog_update_cb);
 
     while (1) {
         /* wait event happen */

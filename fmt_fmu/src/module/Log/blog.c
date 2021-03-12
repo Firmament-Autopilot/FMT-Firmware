@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
-
 #include <string.h>
 
 #include "module/controller/controller_model.h"
-#include "module/fms/fms_model.h"
 #include "module/file_manager/file_manager.h"
+#include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
 #include "task_logger.h"
 #ifdef FMT_USING_SIH
@@ -29,6 +27,8 @@
 
 #define TAG                   "BLog"
 #define BLOG_MAX_CALLBACK_NUM 10
+
+#define WRITE_PAYLOAD(_payload, _len) write(blog_handle.fid, _payload, _len);
 
 /* BLog element define */
 blog_elem_t IMU_Elems[] = {
@@ -212,7 +212,7 @@ typedef struct {
 
 struct fmt_blog {
     int fid;
-    uint8_t file_open;
+    uint8_t is_open;
     char file_name[50];
     uint8_t log_status;
     blog_header_t header;
@@ -220,21 +220,84 @@ struct fmt_blog {
     blog_stat_t monitor[sizeof(_blog_bus) / sizeof(blog_bus_t)];
 };
 
-static struct fmt_blog blog = { 0 };
-static void (*_blog_start_cb[BLOG_MAX_CALLBACK_NUM])(void);
-static void (*_blog_stop_cb[BLOG_MAX_CALLBACK_NUM])(void);
+static struct fmt_blog blog_handle = { 0 };
+static void (*blog_start_cbs[BLOG_MAX_CALLBACK_NUM])(void);
+static void (*blog_stop_cbs[BLOG_MAX_CALLBACK_NUM])(void);
+static void (*blog_update_cbs[BLOG_MAX_CALLBACK_NUM])(void);
 
-/**************************** Local Function ********************************/
-
-static void _reset_log_buffer(void)
+static void __invoke_callback_func(uint8_t cb_type)
 {
-    blog.buffer.num_sector = BLOG_BUFFER_SIZE / BLOG_SECTOR_SIZE;
-    blog.buffer.head = 0;
-    blog.buffer.tail = 0;
-    blog.buffer.index = 0;
+    uint32_t i;
+
+    if (cb_type == BLOG_CB_START) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (blog_start_cbs[i]) {
+                blog_start_cbs[i]();
+            }
+        }
+    }
+
+    if (cb_type == BLOG_CB_STOP) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (blog_stop_cbs[i]) {
+                blog_stop_cbs[i]();
+            }
+        }
+    }
+
+    if (cb_type == BLOG_CB_UPDATE) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (blog_update_cbs[i]) {
+                blog_update_cbs[i]();
+            }
+        }
+    }
 }
 
-static int32_t _get_bus_index(uint8_t msg_id)
+static void __buffer_putc(uint8_t ch)
+{
+    uint32_t free_space_in_sector = BLOG_SECTOR_SIZE - blog_handle.buffer.index;
+
+    if (free_space_in_sector < 1) {
+        // move head point to next sector
+        blog_handle.buffer.head = (blog_handle.buffer.head + 1) % blog_handle.buffer.num_sector;
+        blog_handle.buffer.index = 0;
+
+        // logger_send_event(EVENT_BLOG_UPDATE);
+        /* we have a new sector data, inform callback functions */
+        __invoke_callback_func(BLOG_CB_UPDATE);
+    }
+
+    blog_handle.buffer.data[blog_handle.buffer.head * BLOG_SECTOR_SIZE + blog_handle.buffer.index] = ch;
+    blog_handle.buffer.index += 1;
+}
+
+static void __buffer_write(const uint8_t* data, uint16_t len)
+{
+    uint32_t free_space_in_sector = BLOG_SECTOR_SIZE - blog_handle.buffer.index;
+
+    // TODO: add support with len larger than BLOG_SECTOR_SIZE
+
+    if (free_space_in_sector < len) {
+        memcpy(&blog_handle.buffer.data[blog_handle.buffer.head * BLOG_SECTOR_SIZE + blog_handle.buffer.index], data, free_space_in_sector);
+
+        // move head point to next sector
+        blog_handle.buffer.head = (blog_handle.buffer.head + 1) % blog_handle.buffer.num_sector;
+        blog_handle.buffer.index = 0;
+
+        memcpy(&blog_handle.buffer.data[blog_handle.buffer.head * BLOG_SECTOR_SIZE + blog_handle.buffer.index], &data[free_space_in_sector], len - free_space_in_sector);
+        blog_handle.buffer.index += len - free_space_in_sector;
+
+        /* we have a new sector data, inform callback functions */
+        // logger_send_event(EVENT_BLOG_UPDATE);
+        __invoke_callback_func(BLOG_CB_UPDATE);
+    } else {
+        memcpy(&blog_handle.buffer.data[blog_handle.buffer.head * BLOG_SECTOR_SIZE + blog_handle.buffer.index], data, len);
+        blog_handle.buffer.index += len;
+    }
+}
+
+static int32_t get_bus_index(uint8_t msg_id)
 {
     for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
         if (_blog_bus[i].msg_id == msg_id) {
@@ -245,27 +308,13 @@ static int32_t _get_bus_index(uint8_t msg_id)
     return -1;
 }
 
-static int _file_write(const void* payload, uint16_t len)
-{
-    int bw;
-
-    if (!blog.file_open) {
-        /* no log file is opened */
-        return 0;
-    }
-
-    bw = write(blog.fid, payload, len);
-
-    return bw;
-}
-
-static uint16_t _get_max_write_sector(uint32_t head_p, uint32_t tail_p)
+static uint16_t get_max_write_sector(uint32_t head_p, uint32_t tail_p)
 {
     uint16_t sector_to_end;
     uint16_t sector_in_buffer;
     uint16_t sector_to_write;
 
-    sector_to_end = blog.buffer.num_sector - tail_p;
+    sector_to_end = blog_handle.buffer.num_sector - tail_p;
 
     if (head_p >= tail_p) {
         sector_in_buffer = head_p - tail_p;
@@ -278,15 +327,15 @@ static uint16_t _get_max_write_sector(uint32_t head_p, uint32_t tail_p)
     return sector_to_write <= BLOG_MAX_SECTOR_TO_WRITE ? sector_to_write : BLOG_MAX_SECTOR_TO_WRITE;
 }
 
-static bool _buffer_check_full(uint32_t len_to_write)
+static bool buffer_is_full(uint32_t len_to_write)
 {
-    uint32_t free_space_in_sector = BLOG_SECTOR_SIZE - blog.buffer.index;
+    uint32_t free_space_in_sector = BLOG_SECTOR_SIZE - blog_handle.buffer.index;
 
     // TODO: check if write multiple sectors at once
 
     /* check if buffer is full */
     if (free_space_in_sector < len_to_write) {
-        if ((blog.buffer.head + 1) % blog.buffer.num_sector == blog.buffer.tail) {
+        if ((blog_handle.buffer.head + 1) % blog_handle.buffer.num_sector == blog_handle.buffer.tail) {
             return true;
         }
     }
@@ -294,356 +343,46 @@ static bool _buffer_check_full(uint32_t len_to_write)
     return false;
 }
 
-static void _buffer_putc(uint8_t ch)
-{
-    uint32_t free_space_in_sector = BLOG_SECTOR_SIZE - blog.buffer.index;
-
-    if (free_space_in_sector < 1) {
-        // move head point to next sector
-        blog.buffer.head = (blog.buffer.head + 1) % blog.buffer.num_sector;
-        blog.buffer.index = 0;
-
-        logger_send_event(EVENT_BLOG_UPDATE);
-    }
-
-    blog.buffer.data[blog.buffer.head * BLOG_SECTOR_SIZE + blog.buffer.index] = ch;
-    blog.buffer.index += 1;
-}
-
-static void _buffer_write(const uint8_t* data, uint16_t len)
-{
-    uint32_t free_space_in_sector = BLOG_SECTOR_SIZE - blog.buffer.index;
-
-    // TODO: add support with len larger than BLOG_SECTOR_SIZE
-
-    if (free_space_in_sector < len) {
-        memcpy(&blog.buffer.data[blog.buffer.head * BLOG_SECTOR_SIZE + blog.buffer.index], data, free_space_in_sector);
-
-        // move head point to next sector
-        blog.buffer.head = (blog.buffer.head + 1) % blog.buffer.num_sector;
-        blog.buffer.index = 0;
-
-        memcpy(&blog.buffer.data[blog.buffer.head * BLOG_SECTOR_SIZE + blog.buffer.index], &data[free_space_in_sector], len - free_space_in_sector);
-        blog.buffer.index += len - free_space_in_sector;
-
-        /* we have a new sector data, send blog update event to wakeup logger thread */
-        logger_send_event(EVENT_BLOG_UPDATE);
-    } else {
-        memcpy(&blog.buffer.data[blog.buffer.head * BLOG_SECTOR_SIZE + blog.buffer.index], data, len);
-        blog.buffer.index += len;
-    }
-}
-
-static void _invoke_callback_func(uint8_t cb_type)
-{
-    uint32_t i;
-
-    if (cb_type == BLOG_CB_START) {
-        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
-            if (_blog_start_cb[i]) {
-                _blog_start_cb[i]();
-            }
-        }
-    }
-
-    if (cb_type == BLOG_CB_STOP) {
-        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
-            if (_blog_stop_cb[i]) {
-                _blog_stop_cb[i]();
-            }
-        }
-    }
-}
-
-/**************************** Public Function ********************************/
-
-fmt_err blog_push_data(const void* payload, uint16_t len)
-{
-    /* chceck log status */
-    if (blog.log_status != BLOG_STATUS_LOGGING) {
-        return FMT_EEMPTY;
-    }
-
-    /* check if buffer has enough space to store data */
-    if (_buffer_check_full(len)) {
-        TIMETAG_CHECK_EXECUTE(blog_buff_full1, 500, ulog_w(TAG, "buffer is full"););
-        return FMT_EFULL;
-    }
-
-    /* write payload */
-    _buffer_write(payload, len);
-
-    return FMT_EOK;
-}
-
-fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
-{
-    /*                           BLOG MSG Format                                 */
-    /*   ======================================================================= */
-    /*   | BLOG_BEGIN_MSG1 | BLOG_BEGIN_MSG2 | MSG_ID | PAYLOAD | BLOG_END_MSG | */
-    /*   ======================================================================= */
-
-    int32_t bus_index;
-
-    /* check log status */
-    if (blog.log_status != BLOG_STATUS_LOGGING) {
-        return FMT_EEMPTY;
-    }
-
-    /* check if buffer has enough space to store msg */
-    if (_buffer_check_full(len + 4)) {
-        TIMETAG_CHECK_EXECUTE(blog_buff_full2, 500, ulog_w(TAG, "buffer is full"););
-        return FMT_EFULL;
-    }
-
-    /* write msg begin flag */
-    _buffer_putc(BLOG_BEGIN_MSG1);
-    _buffer_putc(BLOG_BEGIN_MSG2);
-
-    /* write msg id */
-    _buffer_putc(msg_id);
-
-    /* write payload */
-    _buffer_write(payload, len);
-
-    /* write msg end flag */
-    _buffer_putc(BLOG_END_MSG);
-
-    bus_index = _get_bus_index(msg_id);
-
-    if (bus_index >= 0) {
-        blog.monitor[bus_index].total_msg += 1;
-    }
-
-    return FMT_EOK;
-}
-
-fmt_err blog_add_desc(char* desc)
-{
-    if (strlen(desc) > BLOG_DESCRIPTION_SIZE - 1) {
-        ulog_w(TAG, "description too long.");
-        return FMT_ENOMEM;
-    }
-
-    strcpy(blog.header.description, desc);
-
-    return FMT_EOK;
-}
-
-fmt_err blog_start(char* file_name)
-{
-    if (blog.log_status != BLOG_STATUS_IDLE) {
-        ulog_w(TAG, "%s is logging, stop it first", blog.file_name);
-        return FMT_EBUSY;
-    }
-
-    /*********************** create log file ***********************/
-    blog.fid = open(file_name, O_CREAT | O_WRONLY);
-
-    if (blog.fid < 0) {
-        ulog_e(TAG, "%s open fail", file_name);
-        return FMT_ERROR;
-    }
-
-    /* set log file open flag */
-    blog.file_open = 1;
-
-    blog.header.timestamp = systime_now_ms();
-
-    /*********************** init log buffer ***********************/
-    blog.buffer.head = blog.buffer.tail = 0;
-    blog.buffer.index = 0;
-
-    /*********************** write log header ***********************/
-    blog.log_status = BLOG_STATUS_WRITE_HEAD;
-
-    /* TODO: maybe we need check if write success */
-
-    /* write log info */
-    _file_write(&blog.header.version, sizeof(blog.header.version));
-    _file_write(&blog.header.timestamp, sizeof(blog.header.timestamp));
-    _file_write(&blog.header.max_name_len, sizeof(blog.header.max_name_len));
-    _file_write(&blog.header.max_desc_len, sizeof(blog.header.max_desc_len));
-    _file_write(&blog.header.max_model_info_len, sizeof(blog.header.max_model_info_len));
-    _file_write(blog.header.description, BLOG_DESCRIPTION_SIZE);
-#ifdef FMT_USING_SIH
-    sprintf(blog.header.model_info, "%s\n%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
-        (char*)CONTROL_EXPORT.model_info, (char*)PLANT_EXPORT.model_info);
-#else
-    sprintf(blog.header.model_info, "%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
-        (char*)CONTROL_EXPORT.model_info);
-#endif
-    _file_write(blog.header.model_info, BLOG_MODEL_INFO_SIZE);
-    // clear description after it has been written
-    memset(blog.header.description, 0, BLOG_DESCRIPTION_SIZE);
-
-    /* write bus info */
-    _file_write(&blog.header.num_bus, sizeof(blog.header.num_bus));
-
-    for (int n = 0; n < blog.header.num_bus; n++) {
-        _file_write(blog.header.bus_list[n].name, BLOG_MAX_NAME_LEN);
-        _file_write(&blog.header.bus_list[n].msg_id, sizeof(blog.header.bus_list[n].msg_id));
-        _file_write(&blog.header.bus_list[n].num_elem, sizeof(blog.header.bus_list[n].num_elem));
-
-        // write bus element
-        for (int k = 0; k < blog.header.bus_list[n].num_elem; k++) {
-            _file_write(blog.header.bus_list[n].elem_list[k].name, BLOG_MAX_NAME_LEN);
-            _file_write(&blog.header.bus_list[n].elem_list[k].type, sizeof(blog.header.bus_list[n].elem_list[k].type));
-            _file_write(&blog.header.bus_list[n].elem_list[k].number, sizeof(blog.header.bus_list[n].elem_list[k].number));
-        }
-    }
-
-    /*********************** write parameter info ***********************/
-    _file_write(&blog.header.num_param_group, sizeof(blog.header.num_param_group));
-
-    char name_buffer[BLOG_MAX_NAME_LEN + 1];
-
-    for (int n = 0; n < blog.header.num_param_group; n++) {
-        memset(name_buffer, 0, BLOG_MAX_NAME_LEN);
-        strncpy(name_buffer, blog.header.param_group_list[n].name, BLOG_MAX_NAME_LEN);
-
-        _file_write(name_buffer, BLOG_MAX_NAME_LEN);
-        _file_write(&blog.header.param_group_list[n].param_num, sizeof(blog.header.param_group_list[n].param_num));
-
-        for (int k = 0; k < blog.header.param_group_list[n].param_num; k++) {
-            memset(name_buffer, 0, BLOG_MAX_NAME_LEN);
-            strncpy(name_buffer, blog.header.param_group_list[n].content[k].name, BLOG_MAX_NAME_LEN);
-
-            _file_write(name_buffer, BLOG_MAX_NAME_LEN);
-            _file_write(&blog.header.param_group_list[n].content[k].type, sizeof(blog.header.param_group_list[n].content[k].type));
-
-            int type = blog.header.param_group_list[n].content[k].type;
-
-            if (type == PARAM_TYPE_INT8) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.i8, sizeof(int8_t));
-            } else if (type == PARAM_TYPE_UINT8) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.u8, sizeof(uint8_t));
-            } else if (type == PARAM_TYPE_INT16) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.i16, sizeof(int16_t));
-            } else if (type == PARAM_TYPE_UINT16) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.u16, sizeof(uint16_t));
-            } else if (type == PARAM_TYPE_INT32) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.i32, sizeof(int32_t));
-            } else if (type == PARAM_TYPE_UINT32) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.u32, sizeof(uint32_t));
-            } else if (type == PARAM_TYPE_FLOAT) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.f, sizeof(float));
-            } else if (type == PARAM_TYPE_DOUBLE) {
-                _file_write(&blog.header.param_group_list[n].content[k].val.lf, sizeof(double));
-            } else {
-                ulog_w(TAG, "unknown parameter type:%d", type);
-            }
-        }
-    }
-
-    /*********************** set log status ***********************/
-    strncpy(blog.file_name, file_name, sizeof(blog.file_name) - 1);
-
-    for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
-        blog.monitor[i].total_msg = 0;
-        blog.monitor[i].lost_msg = 0;
-    }
-
-    /* invoke callback function */
-    _invoke_callback_func(BLOG_CB_START);
-
-    /* start logging, set flag */
-    blog.log_status = BLOG_STATUS_LOGGING;
-
-    ulog_i(TAG, "start logging:%s", file_name);
-
-    return FMT_EOK;
-}
-
-void blog_stop(void)
-{
-    if (blog.log_status == BLOG_STATUS_LOGGING) {
-        /* set log status to stopping, let logger thread write reamined data in
-		buffer, then stop logging. */
-        blog.log_status = BLOG_STATUS_STOPPING;
-    }
-}
-
-void blog_async_output(void)
-{
-    uint32_t head_p, tail_p;
-    uint8_t need_sync = 0;
-
-    if (!blog.file_open) {
-        /* no log file is opened */
-        return;
-    }
-
-    OS_ENTER_CRITICAL;
-    head_p = blog.buffer.head;
-    tail_p = blog.buffer.tail;
-    OS_EXIT_CRITICAL;
-
-    need_sync = (head_p != tail_p);
-
-    /* write log buffer sector into storage device */
-    while (head_p != tail_p) {
-        uint16_t sector_to_write = _get_max_write_sector(head_p, tail_p);
-
-        write(blog.fid, &blog.buffer.data[tail_p * BLOG_SECTOR_SIZE], sector_to_write * BLOG_SECTOR_SIZE);
-
-        tail_p = (tail_p + sector_to_write) % blog.buffer.num_sector;
-        OS_ENTER_CRITICAL;
-        blog.buffer.tail = tail_p;
-        OS_EXIT_CRITICAL;
-    }
-
-    if (need_sync) {
-        fsync(blog.fid);
-    }
-
-    /* if logging is off, we need to clean up buffer. */
-    if (blog.log_status == BLOG_STATUS_STOPPING) {
-        /* write rest data in buffer */
-        if (blog.buffer.index) {
-            write(blog.fid, &blog.buffer.data[tail_p * BLOG_SECTOR_SIZE], blog.buffer.index);
-            fsync(blog.fid);
-        }
-
-        if (blog.file_open) {
-            // fres |= f_close(&blog.fid);
-            close(blog.fid);
-            blog.fid = -1;
-            blog.file_open = 0;
-        }
-
-        /* invoke callback function */
-        _invoke_callback_func(BLOG_CB_STOP);
-
-        /* set log status to idle */
-        blog.log_status = BLOG_STATUS_IDLE;
-
-        ulog_i(TAG, "stop logging:%s", blog.file_name);
-        for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
-            ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", _blog_bus[i].name, _blog_bus[i].msg_id,
-                blog.monitor[i].total_msg, blog.monitor[i].lost_msg);
-        }
-    }
-}
-
+/**
+ * Get current logging status
+ *
+ * @return blog status: BLOG_STATUS_IDLE | BLOG_STATUS_WRITE_HEAD | BLOG_STATUS_LOGGING | BLOG_STATUS_STOPPING
+ */
 uint8_t blog_get_status(void)
 {
-    return blog.log_status;
+    return blog_handle.log_status;
 }
 
-char* blog_get_logging_file_name(void)
+/**
+ * Get current logging file name
+ *
+ * @return blog logging file name
+ */
+char* blog_get_file_name(void)
 {
-    return blog.file_name;
+    return blog_handle.file_name;
 }
 
-void blog_show_status(void)
+/**
+ * Show the blog logging statistics
+ *
+ */
+void blog_statistic(void)
 {
     for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
         console_printf("%-20s id:%-3d record:%-8d lost:%-5d\n", _blog_bus[i].name, _blog_bus[i].msg_id,
-            blog.monitor[i].total_msg, blog.monitor[i].lost_msg);
+            blog_handle.monitor[i].total_msg, blog_handle.monitor[i].lost_msg);
     }
 }
 
+/**
+ * Register blog callback function
+ *
+ * @param cb_type BLOG_CB_START | BLOG_CB_STOP | BLOG_CB_UPDATE
+ * @param cb callback function
+ * 
+ * @return FMT Error
+ */
 fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void))
 {
     uint32_t i;
@@ -654,15 +393,22 @@ fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void))
 
     if (cb_type == BLOG_CB_START) {
         for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
-            if (_blog_start_cb[i] == NULL) {
-                _blog_start_cb[i] = cb;
+            if (blog_start_cbs[i] == NULL) {
+                blog_start_cbs[i] = cb;
                 return FMT_EOK;
             }
         }
     } else if (cb_type == BLOG_CB_STOP) {
         for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
-            if (_blog_stop_cb[i] == NULL) {
-                _blog_stop_cb[i] = cb;
+            if (blog_stop_cbs[i] == NULL) {
+                blog_stop_cbs[i] = cb;
+                return FMT_EOK;
+            }
+        }
+    } else if (cb_type == BLOG_CB_UPDATE) {
+        for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
+            if (blog_update_cbs[i] == NULL) {
+                blog_update_cbs[i] = cb;
                 return FMT_EOK;
             }
         }
@@ -673,35 +419,318 @@ fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void))
     return FMT_ERROR;
 }
 
-void blog_init(void)
+/**
+ * Add log description into blog header
+ *
+ * @param desc description text, should not longer than BLOG_DESCRIPTION_SIZE
+ * @return FMT Error
+ */
+fmt_err blog_add_desc(char* desc)
 {
-    uint32_t i;
+    if (strlen(desc) > BLOG_DESCRIPTION_SIZE - 1) {
+        ulog_w(TAG, "description too long.");
+        return FMT_ENOMEM;
+    }
 
-    blog.file_open = 0;
-    blog.log_status = BLOG_STATUS_IDLE;
+    strcpy(blog_handle.header.description, desc);
 
+    return FMT_EOK;
+}
+
+/**
+ * Push a blog message into buffer
+ *
+ * @param payload msg payload
+ * @param msg_id msg id
+ * @param len msg length
+ * 
+ * @return FMT Error
+ */
+fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
+{
+    /*                           BLOG MSG Format                                 */
+    /*   ======================================================================= */
+    /*   | BLOG_BEGIN_MSG1 | BLOG_BEGIN_MSG2 | MSG_ID | PAYLOAD | BLOG_END_MSG | */
+    /*   ======================================================================= */
+    int32_t bus_index;
+
+    /* check log status */
+    if (blog_handle.log_status != BLOG_STATUS_LOGGING) {
+        return FMT_EEMPTY;
+    }
+
+    /* check if buffer has enough space to store msg */
+    if (buffer_is_full(len + 4)) {
+        /* do not let it print too fast */
+        TIMETAG_CHECK_EXECUTE(blog_buff_full, 1000, ulog_w(TAG, "buffer is full!"););
+        return FMT_EFULL;
+    }
+
+    /* write msg begin flag */
+    __buffer_putc(BLOG_BEGIN_MSG1);
+    __buffer_putc(BLOG_BEGIN_MSG2);
+    /* write msg id */
+    __buffer_putc(msg_id);
+    /* write payload */
+    __buffer_write(payload, len);
+    /* write msg end flag */
+    __buffer_putc(BLOG_END_MSG);
+
+    bus_index = get_bus_index(msg_id);
+    if (bus_index >= 0) {
+        blog_handle.monitor[bus_index].total_msg += 1;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * Call this function to start the binary log
+ *
+ * @param file_name blog_handle file name with full path
+ * @return FMT Error
+ */
+fmt_err blog_start(char* file_name)
+{
+    if (blog_handle.log_status != BLOG_STATUS_IDLE) {
+        ulog_w(TAG, "%s is logging, stop it first", blog_handle.file_name);
+        return FMT_EBUSY;
+    }
+
+    /*********************** create log file ***********************/
+    blog_handle.fid = open(file_name, O_CREAT | O_WRONLY);
+
+    if (blog_handle.fid < 0) {
+        ulog_e(TAG, "%s open fail", file_name);
+        return FMT_ERROR;
+    }
+    /* set log file open flag */
+    blog_handle.is_open = 1;
+    /* get current time stamp */
+    blog_handle.header.timestamp = systime_now_ms();
+
+    /*********************** init log buffer ***********************/
+    blog_handle.buffer.head = blog_handle.buffer.tail = 0;
+    blog_handle.buffer.index = 0;
+
+    /*********************** write log header ***********************/
+    blog_handle.log_status = BLOG_STATUS_WRITE_HEAD;
+
+    /* write log info */
+    WRITE_PAYLOAD(&blog_handle.header.version, sizeof(blog_handle.header.version));
+    WRITE_PAYLOAD(&blog_handle.header.timestamp, sizeof(blog_handle.header.timestamp));
+    WRITE_PAYLOAD(&blog_handle.header.max_name_len, sizeof(blog_handle.header.max_name_len));
+    WRITE_PAYLOAD(&blog_handle.header.max_desc_len, sizeof(blog_handle.header.max_desc_len));
+    WRITE_PAYLOAD(&blog_handle.header.max_model_info_len, sizeof(blog_handle.header.max_model_info_len));
+    WRITE_PAYLOAD(blog_handle.header.description, BLOG_DESCRIPTION_SIZE);
+    /* clear the description after it has been written */
+    memset(blog_handle.header.description, 0, BLOG_DESCRIPTION_SIZE);
+
+    /* write model information */
+#ifdef FMT_USING_SIH
+    sprintf(blog_handle.header.model_info, "%s\n%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
+        (char*)CONTROL_EXPORT.model_info, (char*)PLANT_EXPORT.model_info);
+#else
+    sprintf(blog_handle.header.model_info, "%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
+        (char*)CONTROL_EXPORT.model_info);
+#endif
+    WRITE_PAYLOAD(blog_handle.header.model_info, BLOG_MODEL_INFO_SIZE);
+
+    /* write bus information */
+    WRITE_PAYLOAD(&blog_handle.header.num_bus, sizeof(blog_handle.header.num_bus));
+    for (int n = 0; n < blog_handle.header.num_bus; n++) {
+        /* write bus list */
+        WRITE_PAYLOAD(blog_handle.header.bus_list[n].name, BLOG_MAX_NAME_LEN);
+        WRITE_PAYLOAD(&blog_handle.header.bus_list[n].msg_id, sizeof(blog_handle.header.bus_list[n].msg_id));
+        WRITE_PAYLOAD(&blog_handle.header.bus_list[n].num_elem, sizeof(blog_handle.header.bus_list[n].num_elem));
+        /* write bus element */
+        for (int k = 0; k < blog_handle.header.bus_list[n].num_elem; k++) {
+            WRITE_PAYLOAD(blog_handle.header.bus_list[n].elem_list[k].name, BLOG_MAX_NAME_LEN);
+            WRITE_PAYLOAD(&blog_handle.header.bus_list[n].elem_list[k].type, sizeof(blog_handle.header.bus_list[n].elem_list[k].type));
+            WRITE_PAYLOAD(&blog_handle.header.bus_list[n].elem_list[k].number, sizeof(blog_handle.header.bus_list[n].elem_list[k].number));
+        }
+    }
+
+    /*********************** write parameter information ***********************/
+    char name_buffer[BLOG_MAX_NAME_LEN + 1];
+
+    WRITE_PAYLOAD(&blog_handle.header.num_param_group, sizeof(blog_handle.header.num_param_group));
+    for (int n = 0; n < blog_handle.header.num_param_group; n++) {
+        memset(name_buffer, 0, BLOG_MAX_NAME_LEN);
+        strncpy(name_buffer, blog_handle.header.param_group_list[n].name, BLOG_MAX_NAME_LEN);
+
+        WRITE_PAYLOAD(name_buffer, BLOG_MAX_NAME_LEN);
+        WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].param_num, sizeof(blog_handle.header.param_group_list[n].param_num));
+
+        for (int k = 0; k < blog_handle.header.param_group_list[n].param_num; k++) {
+            memset(name_buffer, 0, BLOG_MAX_NAME_LEN);
+            strncpy(name_buffer, blog_handle.header.param_group_list[n].content[k].name, BLOG_MAX_NAME_LEN);
+
+            WRITE_PAYLOAD(name_buffer, BLOG_MAX_NAME_LEN);
+            WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].type, sizeof(blog_handle.header.param_group_list[n].content[k].type));
+
+            int type = blog_handle.header.param_group_list[n].content[k].type;
+
+            if (type == PARAM_TYPE_INT8) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.i8, sizeof(int8_t));
+            } else if (type == PARAM_TYPE_UINT8) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.u8, sizeof(uint8_t));
+            } else if (type == PARAM_TYPE_INT16) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.i16, sizeof(int16_t));
+            } else if (type == PARAM_TYPE_UINT16) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.u16, sizeof(uint16_t));
+            } else if (type == PARAM_TYPE_INT32) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.i32, sizeof(int32_t));
+            } else if (type == PARAM_TYPE_UINT32) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.u32, sizeof(uint32_t));
+            } else if (type == PARAM_TYPE_FLOAT) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.f, sizeof(float));
+            } else if (type == PARAM_TYPE_DOUBLE) {
+                WRITE_PAYLOAD(&blog_handle.header.param_group_list[n].content[k].val.lf, sizeof(double));
+            } else {
+                ulog_w(TAG, "unknown parameter type:%d", type);
+            }
+        }
+    }
+
+    /*********************** set log status ***********************/
+    strncpy(blog_handle.file_name, file_name, sizeof(blog_handle.file_name) - 1);
+
+    for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
+        blog_handle.monitor[i].total_msg = 0;
+        blog_handle.monitor[i].lost_msg = 0;
+    }
+    /* invoke callback function */
+    __invoke_callback_func(BLOG_CB_START);
+    /* start logging, set flag */
+    blog_handle.log_status = BLOG_STATUS_LOGGING;
+
+    ulog_i(TAG, "start logging:%s", file_name);
+
+    return FMT_EOK;
+}
+
+/**
+ * Call this function to stop the binary log
+ *
+ */
+void blog_stop(void)
+{
+    /* here we just set log status to stopping, it actually stops
+       when the blog_async_output() is called later */
+    if (blog_handle.log_status == BLOG_STATUS_LOGGING) {
+        blog_handle.log_status = BLOG_STATUS_STOPPING;
+    }
+}
+
+/**
+ * Asynchronous binary logs to storage device
+ *
+ * @note you must call this function periodically
+ */
+void blog_async_output(void)
+{
+    uint32_t head_p, tail_p;
+    uint8_t need_sync = 0;
+
+    if (!blog_handle.is_open) {
+        /* no log file is opened */
+        return;
+    }
+
+    OS_ENTER_CRITICAL;
+    head_p = blog_handle.buffer.head;
+    tail_p = blog_handle.buffer.tail;
+    OS_EXIT_CRITICAL;
+
+    /* check if we need synchronous the output */
+    need_sync = (head_p != tail_p);
+    /* write log buffer sector into storage device */
+    while (head_p != tail_p) {
+        /* check how many sectors that we can write at once */
+        uint16_t sector_to_write = get_max_write_sector(head_p, tail_p);
+        /* write data to the storage device */
+        write(blog_handle.fid, &blog_handle.buffer.data[tail_p * BLOG_SECTOR_SIZE], sector_to_write * BLOG_SECTOR_SIZE);
+        /* update buffer pointer */
+        tail_p = (tail_p + sector_to_write) % blog_handle.buffer.num_sector;
+        OS_ENTER_CRITICAL;
+        blog_handle.buffer.tail = tail_p;
+        OS_EXIT_CRITICAL;
+    }
+
+    /* synchronous the disk to make sure data have been written */
+    if (need_sync) {
+        fsync(blog_handle.fid);
+    }
+
+    /* if logging is off, clean up the buffer. */
+    if (blog_handle.log_status == BLOG_STATUS_STOPPING) {
+        /* dump rest data in buffer */
+        if (blog_handle.buffer.index) {
+            write(blog_handle.fid, &blog_handle.buffer.data[tail_p * BLOG_SECTOR_SIZE], blog_handle.buffer.index);
+            fsync(blog_handle.fid);
+        }
+        /* close the file if needed */
+        if (blog_handle.is_open) {
+            close(blog_handle.fid);
+            blog_handle.fid = -1;
+            blog_handle.is_open = 0;
+        }
+        /* invoke callback function */
+        __invoke_callback_func(BLOG_CB_STOP);
+        /* set log status to idle */
+        blog_handle.log_status = BLOG_STATUS_IDLE;
+
+        ulog_i(TAG, "stop logging:%s", blog_handle.file_name);
+        for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
+            ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", _blog_bus[i].name, _blog_bus[i].msg_id,
+                blog_handle.monitor[i].total_msg, blog_handle.monitor[i].lost_msg);
+        }
+    }
+}
+
+/**
+ * Initialize binary log module.
+ * 
+ * @return FMT Errors.
+ */
+fmt_err binary_log_init(void)
+{
+    int i;
+
+    /* initialize blog_handle status */
+    blog_handle.is_open = 0;
+    blog_handle.log_status = BLOG_STATUS_IDLE;
     /* initialize log header */
-    blog.header.version = BLOG_VERSION;
-    blog.header.timestamp = 0;
-    blog.header.max_name_len = BLOG_MAX_NAME_LEN;
-    blog.header.max_desc_len = BLOG_DESCRIPTION_SIZE;
-    blog.header.max_model_info_len = BLOG_MODEL_INFO_SIZE;
-    memset(blog.header.description, 0, BLOG_DESCRIPTION_SIZE);
+    blog_handle.header.version = BLOG_VERSION;
+    blog_handle.header.timestamp = 0;
+    blog_handle.header.max_name_len = BLOG_MAX_NAME_LEN;
+    blog_handle.header.max_desc_len = BLOG_DESCRIPTION_SIZE;
+    blog_handle.header.max_model_info_len = BLOG_MODEL_INFO_SIZE;
+    blog_handle.header.num_bus = sizeof(_blog_bus) / sizeof(blog_bus_t);
+    blog_handle.header.bus_list = _blog_bus;
+    blog_handle.header.num_param_group = sizeof(param_list) / sizeof(param_group_t);
+    blog_handle.header.param_group_list = (param_group_t*)&param_list;
+    memset(blog_handle.header.description, 0, BLOG_DESCRIPTION_SIZE);
 
-    blog.header.num_bus = sizeof(_blog_bus) / sizeof(blog_bus_t);
-    blog.header.bus_list = _blog_bus;
-    blog.header.num_param_group = sizeof(param_list) / sizeof(param_group_t);
-    blog.header.param_group_list = (param_group_t*)&param_list;
-
-    /* initialize log buffer */
-    blog.buffer.data = (uint8_t*)rt_malloc(BLOG_BUFFER_SIZE);
-    if (blog.buffer.data == NULL) {
-        console_printf("blog buffer malloc fail\n");
+    /* initialize blog_handle buffer */
+    blog_handle.buffer.data = (uint8_t*)rt_malloc(BLOG_BUFFER_SIZE);
+    if (blog_handle.buffer.data == NULL) {
+        console_printf("blog_handle buffer malloc fail!\n");
+        return FMT_ENOMEM;
+    } else {
+        /* initialize buffer */
+        blog_handle.buffer.num_sector = BLOG_BUFFER_SIZE / BLOG_SECTOR_SIZE;
+        blog_handle.buffer.head = 0;
+        blog_handle.buffer.tail = 0;
+        blog_handle.buffer.index = 0;
     }
-
-    _reset_log_buffer();
-
+    /* clear callback functions */
     for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
-        _blog_start_cb[i] = _blog_stop_cb[i] = NULL;
+        blog_start_cbs[i] = NULL;
+        blog_stop_cbs[i] = NULL;
+        blog_update_cbs[i] = NULL;
     }
+
+    return FMT_EOK;
 }
