@@ -20,7 +20,6 @@
 #include "module/file_manager/file_manager.h"
 #include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
-#include "task_logger.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
