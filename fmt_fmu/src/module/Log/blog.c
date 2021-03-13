@@ -217,6 +217,7 @@ struct fmt_blog {
     uint8_t log_status;
     blog_header_t header;
     blog_buffer_t buffer;
+    struct rt_mutex lock;
     blog_stat_t monitor[sizeof(_blog_bus) / sizeof(blog_bus_t)];
 };
 
@@ -263,7 +264,6 @@ static void __buffer_putc(uint8_t ch)
         blog_handle.buffer.head = (blog_handle.buffer.head + 1) % blog_handle.buffer.num_sector;
         blog_handle.buffer.index = 0;
 
-        // logger_send_event(EVENT_BLOG_UPDATE);
         /* we have a new sector data, inform callback functions */
         __invoke_callback_func(BLOG_CB_UPDATE);
     }
@@ -289,7 +289,6 @@ static void __buffer_write(const uint8_t* data, uint16_t len)
         blog_handle.buffer.index += len - free_space_in_sector;
 
         /* we have a new sector data, inform callback functions */
-        // logger_send_event(EVENT_BLOG_UPDATE);
         __invoke_callback_func(BLOG_CB_UPDATE);
     } else {
         memcpy(&blog_handle.buffer.data[blog_handle.buffer.head * BLOG_SECTOR_SIZE + blog_handle.buffer.index], data, len);
@@ -466,6 +465,8 @@ fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
         return FMT_EFULL;
     }
 
+    rt_mutex_take(&blog_handle.lock, RT_WAITING_FOREVER);
+
     /* write msg begin flag */
     __buffer_putc(BLOG_BEGIN_MSG1);
     __buffer_putc(BLOG_BEGIN_MSG2);
@@ -475,6 +476,8 @@ fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
     __buffer_write(payload, len);
     /* write msg end flag */
     __buffer_putc(BLOG_END_MSG);
+
+    rt_mutex_release(&blog_handle.lock);
 
     bus_index = get_bus_index(msg_id);
     if (bus_index >= 0) {
@@ -725,6 +728,13 @@ fmt_err binary_log_init(void)
         blog_handle.buffer.tail = 0;
         blog_handle.buffer.index = 0;
     }
+
+    /* create write lock */
+    if (rt_mutex_init(&blog_handle.lock, "blog_lock", RT_IPC_FLAG_FIFO) != RT_EOK) {
+        console_printf("fail to create blog lock!\n");
+        return FMT_ERROR;
+    }
+
     /* clear callback functions */
     for (i = 0; i < BLOG_MAX_CALLBACK_NUM; i++) {
         blog_start_cbs[i] = NULL;
