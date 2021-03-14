@@ -235,8 +235,10 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
     } else if (STRING_COMPARE(argv[1], "load")) {
         char* path = argc > 2 ? argv[2] : NULL;
 
-        if (param_load(path) == 0) {
+        if (param_load(path) == FMT_EOK) {
             console_printf("parameter load from %s\n", path ? path : PARAM_FILE_NAME);
+        }else{
+            console_printf("can not load %s\n", path ? path : PARAM_FILE_NAME);
         }
     } else {
         show_usage();
