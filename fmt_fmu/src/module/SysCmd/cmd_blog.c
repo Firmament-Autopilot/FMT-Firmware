@@ -27,8 +27,8 @@ static void _show_blog_status(void)
         return;
     }
 
-    console_printf("log file: %s\n", blog_get_logging_file_name());
-    blog_show_status();
+    console_printf("log file: %s\n", blog_get_file_name());
+    blog_statistic();
 }
 
 static void show_usage(void)

@@ -22,7 +22,6 @@
 #define EVENT_BLOG_UPDATE				(1<<0)
 #define EVENT_ULOG_UPDATE		        (1<<1)
 
-fmt_err logger_send_event(uint32_t event);
 fmt_err logger_start_blog(char* path);
 void logger_stop_blog(void);
 void get_working_log_session(char* path);

@@ -79,7 +79,7 @@ void ulog_flush(void);
  * asynchronous output API
  */
 void ulog_async_output(void);
-// void ulog_async_waiting_log(rt_int32_t time);
+void ulog_register_callback(void (*cb)(void));
 #endif
 
 /*

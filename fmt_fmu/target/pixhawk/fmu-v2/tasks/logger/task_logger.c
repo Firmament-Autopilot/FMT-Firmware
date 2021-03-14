@@ -25,16 +25,17 @@
 #define ULOG_FILE_NAME      "ulog.txt"
 
 static struct rt_event _log_event;
-static int _ulog_fd = -1;
 
-/**************************** Callback Function ********************************/
-
+#ifdef ENABLE_ULOG_CONSOLE_BACKEND
 static void ulog_console_backend_output(struct ulog_backend* backend, rt_uint32_t level, const char* tag, rt_bool_t is_raw,
     const char* log, size_t len)
 {
     console_write(log, len);
 }
+#endif /* ENABLE_ULOG_CONSOLE_BACKEND */
 
+#ifdef ENABLE_ULOG_FS_BACKEND
+static int _ulog_fd = -1;
 static void ulog_fs_backend_init(struct ulog_backend* backend)
 {
     char file_name[50];
@@ -66,6 +67,17 @@ static void ulog_fs_backend_deinit(struct ulog_backend* backend)
         _ulog_fd = -1;
     }
 }
+#endif /* ENABLE_ULOG_FS_BACKEND */
+
+static void blog_update_cb(void)
+{
+    rt_event_send(&_log_event, EVENT_BLOG_UPDATE);
+}
+
+static void ulog_update_cb(void)
+{
+    rt_event_send(&_log_event, EVENT_ULOG_UPDATE);
+}
 
 fmt_err logger_start_blog(char* path)
 {
@@ -93,15 +105,6 @@ void logger_stop_blog(void)
     blog_stop();
 }
 
-fmt_err logger_send_event(uint32_t event)
-{
-    if (rt_event_send(&_log_event, event) == RT_EOK) {
-        return FMT_EOK;
-    }
-
-    return FMT_ERROR;
-}
-
 fmt_err task_logger_init(void)
 {
     /* create log event */
@@ -111,14 +114,10 @@ fmt_err task_logger_init(void)
     }
 
     /* init binary log */
-    blog_init();
+    binary_log_init();
 
     /* init ulog */
     ulog_init();
-
-    if (PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 2 || PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 3) {
-        logger_start_blog(NULL);
-    }
 
 #ifdef ENABLE_ULOG_CONSOLE_BACKEND
     static struct ulog_backend console;
@@ -136,6 +135,10 @@ fmt_err task_logger_init(void)
     ulog_backend_register(&fs, "filesystem", RT_FALSE);
 #endif
 
+    if (PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 2 || PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 3) {
+        logger_start_blog(NULL);
+    }
+
     return FMT_EOK;
 }
 
@@ -144,6 +147,9 @@ void task_logger_entry(void* parameter)
     rt_err_t rt_err;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_BLOG_UPDATE | EVENT_ULOG_UPDATE;
+
+    blog_register_callback(BLOG_CB_UPDATE, blog_update_cb);
+    ulog_register_callback(ulog_update_cb);
 
     while (1) {
         /* wait event happen */
@@ -163,9 +169,9 @@ void task_logger_entry(void* parameter)
             blog_async_output();
             ulog_async_output();
 
-            if (_ulog_fd >= 0) {
-                fsync(_ulog_fd);
-            }
+#ifdef ENABLE_ULOG_FS_BACKEND
+            fsync(_ulog_fd);
+#endif
         } else {
             /* some other error happen */
         }
