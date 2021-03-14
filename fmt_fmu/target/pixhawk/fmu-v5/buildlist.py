@@ -25,8 +25,10 @@ MODULES = [
     'SysCmd/syscmd.c',
     'SysCmd/cmd_sys.c',
     'SysCmd/cmd_mcn.c',
+    'SysCmd/cmd_param.c',
     'File_Manager/*.c',
     "Log/boot_log.c",
+    "Parameter/*.c",
 ]
 
 MODULES_CPPPATH = []

@@ -28,7 +28,6 @@
 
 #include "driver/ringblk_buf.h"
 #include "module/log/ulog.h"
-#include "task_logger.h"
 
 #ifdef ULOG_USING_SYSLOG
 #include <syslog.h>

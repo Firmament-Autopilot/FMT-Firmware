@@ -31,6 +31,7 @@
 #include "drv_systick.h"
 
 #include "module/file_manager/file_manager.h"
+#include "module/param/param.h"
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -166,6 +167,9 @@ void bsp_initialize(void)
     RTT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
+
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
 #ifdef RT_USING_FINSH
     /* init finsh */

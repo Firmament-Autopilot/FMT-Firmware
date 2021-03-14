@@ -19,6 +19,10 @@
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef FMT_USING_HIL
 #define PARAM_FILE_NAME "/sys/hil_param.xml"
 #else
@@ -295,8 +299,11 @@ fmt_err param_set_string_val_by_full_name(char* group_name, char* param_name, ch
 
 uint32_t param_get_count(void);
 int param_get_index(const param_t* param);
-param_t* param_get(char* group_name, char* param_name);
 param_t* param_get_by_name(const char* param_name);
 param_t* param_get_by_full_name(const char* group_name, const char* param_name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
