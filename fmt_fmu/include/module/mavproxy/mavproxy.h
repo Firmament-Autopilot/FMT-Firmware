@@ -26,6 +26,8 @@
 #include "module/mavproxy/mavproxy_dev.h"
 #include "module/mavproxy/mavlink_console.h"
 
+#include "module/toml/toml.h"
+
 #define EVENT_MAVPROXY_UPDATE    (1 << 0)
 #define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)
 #define EVENT_SEND_ALL_PARAM     (1 << 2)

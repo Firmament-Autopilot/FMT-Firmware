@@ -1073,6 +1073,12 @@ rt_device_t rt_console_get_device(void)
 }
 RTM_EXPORT(rt_console_get_device);
 
+void rt_set_console_device(rt_device_t new)
+{
+	_console_device = new;
+}
+RTM_EXPORT(rt_set_console_device);
+
 /**
  * This function will set a device as console device.
  * After set a device to console, all output of rt_kprintf will be
@@ -1090,13 +1096,10 @@ rt_device_t rt_console_set_device(const char* name)
 	new = rt_device_find(name);
 
 	if(new != RT_NULL) {
-		/* console device should be opened by upper layer console */
-		_console_device = new;
+		rt_err_t err = rt_device_open(new, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_STREAM);
 
-		// rt_err_t err = rt_device_open(new, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_STREAM);
-
-		// if(err == RT_EOK)
-		//     _console_device = new;
+		if(err == RT_EOK)
+		    _console_device = new;
 	}
 
 	return _console_device;

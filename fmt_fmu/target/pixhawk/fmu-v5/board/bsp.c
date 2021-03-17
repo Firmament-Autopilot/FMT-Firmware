@@ -171,12 +171,10 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-#ifdef RT_USING_FINSH
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_shell(NULL));
-#endif
+    FMT_CHECK(console_enable_input());
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */

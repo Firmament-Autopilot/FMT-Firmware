@@ -18,23 +18,15 @@
 #define __CONSOLE_H__
 
 #include <firmament.h>
-#include "module/toml/toml.h"
-
-#define CONSOLE_CURRENT_DEVICE      (-1)
 
 fmt_err console_init(void);
-fmt_err console_enable_shell(rt_device_t dev);
-fmt_err console_set_device(char* dev_name, bool close_old_dev);
+fmt_err console_enable_input(void);
+fmt_err console_set_device(const char* device_name);
+rt_device_t console_get_device(void);
 uint32_t console_printf(const char* fmt, ...);
 uint32_t console_println(const char* fmt, ...);
-uint32_t console_write(const char* content, uint32_t len);
+uint32_t console_print_args(const char* fmt, va_list args);
 void console_format(char* buffer, const char* fmt, ...);
-
-/* toml system configuration API */
-fmt_err console_toml_init(toml_table_t* table);
-fmt_err console_switch_device(int idx, bool close_old_dev);
-rt_device_t console_get_device(int idx);
-int console_get_device_id(rt_device_t device);
-void list_console_devices(void);
+uint32_t console_write(const char* content, uint32_t len);
 
 #endif

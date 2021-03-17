@@ -19,6 +19,8 @@
 
 #include <firmament.h>
 
+#include "module/toml/toml.h"
+
 fmt_err send_actuator_cmd(void);
 fmt_err send_hil_actuator_cmd(void);
 fmt_err actuator_init(void);

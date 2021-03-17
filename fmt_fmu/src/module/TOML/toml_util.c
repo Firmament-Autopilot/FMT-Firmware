@@ -202,7 +202,6 @@ void toml_print_table(toml_table_t* curtab)
     console_printf("}\n");
 }
 
-uint32_t console_print_args(const char* fmt, va_list args);
 void toml_debug(const char* tag, const char* level, const char* fmt, ...)
 {
     console_printf("[TOML] %s/%s: ", tag, level);

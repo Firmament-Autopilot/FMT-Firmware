@@ -91,6 +91,8 @@ static toml_table_t* _toml_root_tab = NULL;
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
 
+fmt_err console_toml_config(toml_table_t* table);
+
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
     int pad_len = len - strlen(name) - strlen(content);
@@ -189,7 +191,7 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
             /* handle all sub tables */
             if (0 != (sub_tab = toml_table_in(root_tab, key))) {
                 if (MATCH(key, "console")) {
-                    err = console_toml_init(sub_tab);
+                    err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_init(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
@@ -285,12 +287,10 @@ void bsp_initialize(void)
     //     gdb_start();
     // #endif
 
-#ifdef RT_USING_FINSH
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_shell(NULL));
-#endif
+    FMT_CHECK(console_enable_input());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
