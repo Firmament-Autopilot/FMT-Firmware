@@ -42,8 +42,8 @@
 #include "hal/cdcacm.h"
 #include "hal/fmtio_dev.h"
 #include "module/controller/controller_model.h"
-#include "module/fms/fms_model.h"
 #include "module/file_manager/file_manager.h"
+#include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
@@ -60,7 +60,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
-    { NULL }    /* NULL indicate the end */
+    { NULL } /* NULL indicate the end */
 };
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk FMUv2\"\n\
@@ -92,6 +92,7 @@ rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
 
 fmt_err console_toml_config(toml_table_t* table);
+fmt_err mavproxy_toml_config(toml_table_t* table);
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -193,7 +194,7 @@ fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 if (MATCH(key, "console")) {
                     err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
-                    err = mavproxy_toml_init(sub_tab);
+                    err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     pilot_cmd_toml_init(sub_tab);
                 } else if (MATCH(key, "actuator-cmd")) {

@@ -22,7 +22,7 @@
 #include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
 #include "module/sysio/pilot_cmd.h"
-#include "module/utils/device_mq.h"
+#include "module/utils/devmq.h"
 #include "task_logger.h"
 #include "task_status.h"
 
@@ -225,10 +225,6 @@ fmt_err task_status_init(void)
         return FMT_ERROR;
     }
 
-    if (device_mq_create() != FMT_EOK) {
-        return FMT_ERROR;
-    }
-
     return FMT_EOK;
 }
 
@@ -271,7 +267,8 @@ void task_status_entry(void* parameter)
         _update_ins_status();
 
         // handle device status msg
-        device_mq_handle_msg();
+        // device_mq_handle_msg();
+        devmq_distribute_msg();
 
         // // breath light
         // if (bright == 0)
