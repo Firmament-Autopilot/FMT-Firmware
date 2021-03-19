@@ -14,6 +14,7 @@ HAL = [
     'serial/*.c',
     'systick/*.c',
     'sd/*.c',
+    'usb/usbd_cdc.c',
 ]
 
 HAL_CPPPATH = []
@@ -29,6 +30,7 @@ MODULES = [
     'File_Manager/*.c',
     "Log/boot_log.c",
     "Parameter/*.c",
+    'Utils/*.c',
 ]
 
 MODULES_CPPPATH = []

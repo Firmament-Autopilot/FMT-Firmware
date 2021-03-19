@@ -28,3 +28,7 @@ build
 *.orig
 cconfig.h
 .cortex-debug*
+
+#developer gitignore
+/.vscode
+rtconfig.py

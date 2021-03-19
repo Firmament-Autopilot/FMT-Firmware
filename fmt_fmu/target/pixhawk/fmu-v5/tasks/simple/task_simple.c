@@ -17,6 +17,7 @@
 #include <firmament.h>
 
 #include "hal/pin.h"
+#include "hal/usbd_cdc.h"
 
 #define FMU_LED_PIN 17
 static rt_device_t pin_device;
@@ -56,6 +57,10 @@ void task_simple_entry(void* parameter)
         return;
     }
 
+    uint8_t usbd_open_res;
+    rt_device_t usbd_cdc_dev = rt_device_find("usbd0");
+    usbd_open_res = rt_device_open(usbd_cdc_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
+
     uint8_t buffer[50] = "Hello";
     while (1) {
         _led_on();
@@ -66,6 +71,15 @@ void task_simple_entry(void* parameter)
         uint32_t cnt = rt_device_read(serial_dev, 0, buffer, 50);
         if(cnt){
             rt_device_write(serial_dev, 0, buffer, cnt);
+        }
+
+        uint32_t usbd_data_len = ringbuffer_getlen(((usbd_cdc_dev_t)usbd_cdc_dev)->rx_ringbuf);
+        if((usbd_open_res == RT_EOK) && (usbd_data_len > 0)){
+            char usbd_data_buf[100];
+            char usbd_data_buf_rn[2] = {'\r','\n'};
+            rt_device_read(usbd_cdc_dev,0,usbd_data_buf,usbd_data_len);
+            rt_device_write(usbd_cdc_dev,0,usbd_data_buf,usbd_data_len);
+            rt_device_write(usbd_cdc_dev,0,usbd_data_buf_rn,2);
         }
     }
 }

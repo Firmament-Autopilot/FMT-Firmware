@@ -107,6 +107,7 @@ void SystemClock_Config(void)
         Error_Handler();
     }
     LL_RCC_SetCK48MClockSource(LL_RCC_CK48M_CLKSOURCE_PLL);
+    LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL);
     LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC1_CLKSOURCE_PLL48CLK);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
@@ -152,6 +153,9 @@ void bsp_early_initialize(void)
 
     /* gpio driver init */
     RTT_CHECK(drv_gpio_init());
+
+    /* init usbd_cdc */
+    RTT_CHECK(drv_usb_cdc_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
