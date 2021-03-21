@@ -29,6 +29,7 @@
 #include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
+#include "drv_usbd_cdc.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"

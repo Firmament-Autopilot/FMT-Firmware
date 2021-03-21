@@ -32,6 +32,9 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 
+void drv_usbd_cdc_receive(uint8_t* buffer, uint32_t size);
+void drv_usbd_cdc_transmist_complete(uint8_t* buffer, uint32_t size);
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
@@ -265,21 +268,24 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
 
-  rt_device_t usbd_dev_parent = rt_device_find("usbd0");
-  if(usbd_dev_parent != NULL){
+//   rt_device_t usbd_dev_parent = rt_device_find("usbd0");
+//   if(usbd_dev_parent != NULL){
 
-    usbd_cdc_dev_t usbd_dev = (usbd_cdc_dev_t)usbd_dev_parent;
+//     usbd_cdc_dev_t usbd_dev = (usbd_cdc_dev_t)usbd_dev_parent;
 
-    usbd_dev->ops->usbd_cdc_dev_ringbuf_put(usbd_dev_parent,Buf,Len);
+//     usbd_dev->ops->usbd_cdc_dev_ringbuf_put(usbd_dev_parent,Buf,Len);
 
-    if(usbd_dev_parent->rx_indicate != RT_NULL){
-      usbd_dev_parent->rx_indicate(usbd_dev_parent,(rt_size_t)*Len);
-    }
+//     if(usbd_dev_parent->rx_indicate != RT_NULL){
+//       usbd_dev_parent->rx_indicate(usbd_dev_parent,(rt_size_t)*Len);
+//     }
 
-  }
+//   }
 
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+
+  drv_usbd_cdc_receive(Buf, *Len);
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }
@@ -328,6 +334,8 @@ static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
   UNUSED(Buf);
   UNUSED(Len);
   UNUSED(epnum);
+  
+  drv_usbd_cdc_transmist_complete(Buf, *Len);
   /* USER CODE END 13 */
   return result;
 }

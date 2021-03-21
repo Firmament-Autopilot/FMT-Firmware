@@ -25,7 +25,7 @@
 #include "usbd_core.h"
 
 /* USER CODE BEGIN Includes */
-#include "firmament.h"
+#include <firmament.h>
 #include "hal/usbd_cdc.h"
 /* USER CODE END Includes */
 
@@ -43,6 +43,8 @@ void Error_Handler(void);
 
 /* External functions --------------------------------------------------------*/
 void SystemClock_Config(void);
+void drv_usbd_cdc_connect_cb(PCD_HandleTypeDef *hpcd);
+void drv_usbd_cdc_disconnect_cb(PCD_HandleTypeDef *hpcd);
 
 /* USER CODE BEGIN 0 */
 
@@ -281,6 +283,7 @@ void HAL_PCD_ConnectCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   USBD_LL_DevConnected((USBD_HandleTypeDef*)hpcd->pData);
+  drv_usbd_cdc_connect_cb(hpcd);
 }
 
 /**
@@ -295,6 +298,7 @@ void HAL_PCD_DisconnectCallback(PCD_HandleTypeDef *hpcd)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   USBD_LL_DevDisconnected((USBD_HandleTypeDef*)hpcd->pData);
+  drv_usbd_cdc_disconnect_cb(hpcd);
 }
 
 /*******************************************************************************

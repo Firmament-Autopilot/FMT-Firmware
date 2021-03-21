@@ -1,73 +1,152 @@
-#include "firmament.h"
-#include <rtthread.h>
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+#include <firmament.h>
+
 #include "hal/usbd_cdc.h"
+#include "module/utils/ringbuffer.h"
+
+#define USBD_WAIT_TIMEOUT 1000
+#define USBD_RX_FIFO_SIZE 1280
 
 static rt_err_t hal_usbd_cdc_init(rt_device_t device)
 {
-	usbd_cdc_dev_t dev = (usbd_cdc_dev_t)device;
+    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+    rt_err_t err = RT_EOK;
 
-	dev->ops->usbd_cdc_dev_init(device);
-	
-	return RT_EOK;
+    rt_completion_init(&usbd->tx_cplt);
+
+    usbd->rx_rb = ringbuffer_create(USBD_RX_FIFO_SIZE);
+    if (usbd->rx_rb == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    usbd->tx_lock = rt_mutex_create("usbd_tx", RT_IPC_FLAG_FIFO);
+    if (usbd->tx_lock == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    usbd->status = USBD_STATUS_DISCONNECT;
+
+    if (usbd->ops->dev_init) {
+        err = usbd->ops->dev_init(usbd);
+    }
+    return err;
+}
+
+static rt_err_t hal_usbd_cdc_open(rt_device_t device, rt_uint16_t oflag)
+{
+    // usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+
+    if ((device->flag & oflag) != oflag) {
+        return RT_EIO;
+    }
+
+    /* TODO: should we check usb status here? */
+    // if(usbd->status != USBD_STATUS_CONNECT){
+    //     return RT_ENOSYS;
+    // }
+
+    return RT_EOK;
 }
 
 static rt_size_t hal_usbd_cdc_read(rt_device_t device, rt_off_t pos, void* buffer, rt_size_t size)
 {
-	usbd_cdc_dev_t dev = (usbd_cdc_dev_t)device;
+    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+    rt_size_t rb = 0;
 
-	rt_size_t res;
+    if (usbd->ops->dev_read) {
+        rb = usbd->ops->dev_read(usbd, pos, buffer, size);
+    }
 
-	if(*(dev->connect_status)){
-		res = dev->ops->usbd_cdc_dev_read(device,pos,(void*)buffer,size);
-	}
-
-	return res;
+    return rb;
 }
 
 static rt_size_t hal_usbd_cdc_write(rt_device_t device, rt_off_t pos, const void* buffer, rt_size_t size)
 {
-	usbd_cdc_dev_t dev = (usbd_cdc_dev_t)device;
+    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+    rt_size_t wb = 0;
 
-	if(*(dev->connect_status)){
+    if (usbd->status != USBD_STATUS_CONNECT) {
+        return 0;
+    }
 
-		while(*(dev->tx_stutus) != 0)	rt_thread_delay(1);/* waiting for usbd_cdc_dev tx ready. in release version , must add re_thread_delay*/
-		dev->ops->usbd_cdc_dev_write(device,pos,(void*)buffer,size);
+    if (rt_mutex_take(usbd->tx_lock, TICKS_FROM_MS(USBD_WAIT_TIMEOUT)) != RT_EOK) {
+        return 0;
+    }
 
+    if (usbd->ops->dev_write) {
+        wb = usbd->ops->dev_write(usbd, pos, buffer, size);
+    }
 
-		if(device->tx_complete != RT_NULL){
-			device->tx_complete(device,(void*)buffer);
-		}
+    if (rt_completion_wait(&usbd->tx_cplt, TICKS_FROM_MS(USBD_WAIT_TIMEOUT)) != RT_EOK) {
+        return 0;
+    }
 
-		return size;
-		
-	}else{
-		return 0;
-	}
+    rt_mutex_release(usbd->tx_lock);
+    return wb;
 }
 
-rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t device, const char* name, rt_uint16_t flag, void* data)
+void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 {
-	rt_err_t res;
+    switch (status) {
+    case USBD_STATUS_DISCONNECT:
+        usbd->status = USBD_STATUS_DISCONNECT;
+        break;
+    case USBD_STATUS_CONNECT:
+        usbd->status = USBD_STATUS_CONNECT;
+        break;
+    case USBD_STATUS_TX_COMPLETE:
+        rt_completion_done(&usbd->tx_cplt);
+        if (usbd->parent.tx_complete) {
+            usbd->parent.tx_complete(&usbd->parent, RT_NULL);
+        }
+        break;
+    case USBD_STATUS_RX:
+        if (usbd->parent.rx_indicate) {
+            usbd->parent.rx_indicate(&usbd->parent, ringbuffer_getlen(usbd->rx_rb));
+        }
+        break;
+    default:
+        break;
+    }
+}
 
-	rt_device_t dev = &device->parent;
+rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t usbd, const char* name, rt_uint16_t flag, void* data)
+{
+    rt_err_t res;
 
-	dev->type        = RT_Device_Class_USBDevice;
-	dev->ref_count   = 0;
+    rt_device_t dev = &usbd->parent;
 
-	dev->rx_indicate = RT_NULL;
-	dev->tx_complete = RT_NULL;
+    dev->type = RT_Device_Class_USBDevice;
+    dev->ref_count = 0;
 
-	dev->init        = hal_usbd_cdc_init;
-	dev->open        = RT_NULL;
-	dev->close       = RT_NULL;
-	dev->read        = hal_usbd_cdc_read;
-	dev->write       = hal_usbd_cdc_write;
-	dev->control     = RT_NULL;
+    dev->rx_indicate = RT_NULL;
+    dev->tx_complete = RT_NULL;
 
-	dev->user_data   = RT_NULL;
+    dev->init = hal_usbd_cdc_init;
+    dev->open = hal_usbd_cdc_open;
+    dev->close = RT_NULL;
+    dev->read = hal_usbd_cdc_read;
+    dev->write = hal_usbd_cdc_write;
+    dev->control = RT_NULL;
 
-	/* register to device manager */
-    res = rt_device_register(dev,name,flag);
-    
-	return res;
+    dev->user_data = RT_NULL;
+
+    /* register to device manager */
+    res = rt_device_register(dev, name, flag);
+
+    return res;
 }

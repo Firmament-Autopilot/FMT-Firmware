@@ -145,7 +145,6 @@ rt_size_t usb_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 
 rt_size_t usb_write(rt_device_t dev, rt_off_t pos, const void* buffer, rt_size_t size)
 {
-
     if (!cdc_is_connected()) {
         /* if usb not connected, involke callback to let upper layer know send is finished */
         if (usb_device.tx_complete != RT_NULL) {

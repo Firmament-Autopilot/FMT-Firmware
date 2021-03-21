@@ -53,7 +53,7 @@ void task_simple_entry(void* parameter)
     pin_device->control(pin_device, 0, &mode);
 
     rt_device_t serial_dev = rt_device_find("serial1");
-    if(rt_device_open(serial_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) != RT_EOK) {
+    if (rt_device_open(serial_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) != RT_EOK) {
         return;
     }
 
@@ -69,17 +69,16 @@ void task_simple_entry(void* parameter)
         rt_thread_delay(100);
 
         uint32_t cnt = rt_device_read(serial_dev, 0, buffer, 50);
-        if(cnt){
+        if (cnt) {
             rt_device_write(serial_dev, 0, buffer, cnt);
         }
 
-        uint32_t usbd_data_len = ringbuffer_getlen(((usbd_cdc_dev_t)usbd_cdc_dev)->rx_ringbuf);
-        if((usbd_open_res == RT_EOK) && (usbd_data_len > 0)){
+        if (usbd_open_res == RT_EOK) {
             char usbd_data_buf[100];
-            char usbd_data_buf_rn[2] = {'\r','\n'};
-            rt_device_read(usbd_cdc_dev,0,usbd_data_buf,usbd_data_len);
-            rt_device_write(usbd_cdc_dev,0,usbd_data_buf,usbd_data_len);
-            rt_device_write(usbd_cdc_dev,0,usbd_data_buf_rn,2);
+            uint32_t rb = rt_device_read(usbd_cdc_dev, 0, usbd_data_buf, sizeof(usbd_data_buf));
+            if (rb) {
+                rt_device_write(usbd_cdc_dev, 0, usbd_data_buf, rb);
+            }
         }
     }
 }
