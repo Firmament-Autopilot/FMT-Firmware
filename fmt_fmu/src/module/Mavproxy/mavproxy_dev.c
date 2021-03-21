@@ -48,7 +48,10 @@ rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
         /* mavproxy device not initialized */
         return 0;
     }
-
+    /* reset semaphore value to 0 and resume all waiting threads */
+    if (timeout != RT_WAITING_NO) {
+        rt_sem_control(_mavproxy_dev_tx_sem, RT_IPC_CMD_RESET, 0);
+    }
     /* write data to device */
     size = rt_device_write(_mavproxy_dev, 0, buffer, len);
     if (size > 0) {
