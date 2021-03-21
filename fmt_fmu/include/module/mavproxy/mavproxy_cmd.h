@@ -19,6 +19,10 @@
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum {
 	MAVCMD_CALIBRATION_GYR = 0,
 	MAVCMD_CALIBRATION_ACC,
@@ -28,9 +32,13 @@ typedef enum {
 	MAVCMD_ITEM_NUM     // do not remove it
 } MavCmd_ID;
 
-void mavproxy_cmd_process(void);
-void mavcmd_set(MavCmd_ID cmd, void* data);
-void mavcmd_clear(MavCmd_ID cmd);
+void mavproxy_cmd_exec(void);
+void mavproxy_cmd_set(MavCmd_ID cmd, void* data);
+void mavproxy_cmd_reset(MavCmd_ID cmd);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

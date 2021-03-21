@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <calibration.h>
 #include <firmament.h>
 #include <string.h>
@@ -54,14 +53,12 @@ typedef enum {
 } acc_position;
 
 typedef struct {
-    uint8_t set;
     uint32_t cnt;
     float sum[3];
     float bias[3];
 } MAVCMD_CALIB_GYR;
 
 typedef struct {
-    uint8_t set;
     uint8_t status; //0:start 1:calibrating 2:finish
     uint8_t done_flag[6];
     uint32_t cnt[6];
@@ -75,7 +72,6 @@ typedef struct {
 } MAVCMD_CALIB_ACC;
 
 typedef struct {
-    uint8_t set;
     uint8_t status;
     uint8_t done_flag[6];
     uint32_t cnt;
@@ -89,7 +85,6 @@ typedef struct {
 } MAVCMD_CALIB_MAG;
 
 typedef struct {
-    uint8_t set;
     uint8_t num_retry;
     uint32_t start_time;
     uint32_t sample_cnt;
@@ -109,29 +104,27 @@ static MAVCMD_CALIB_ACC mavcmd_calib_acc = { 0 };
 static MAVCMD_CALIB_MAG mavcmd_calib_mag = { 0 };
 static MAVCMD_CALIB_LEVEL mavcmd_calib_level = { 0 };
 static JitterDetect jitter_detect;
-static uint8_t _mavcmd_set[MAVCMD_ITEM_NUM] = { 0 };
-static StreamSession* _ftp_stream_session = NULL;
+static uint8_t cmd_sets[MAVCMD_ITEM_NUM] = { 0 };
+static StreamSession* ftp_stream_session = NULL;
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
-static int _cfd = -1;
-
-static void _create_calib_data_file(const char* name)
+static int __cfd = -1;
+static void create_calib_data_file(const char* name)
 {
-    if (_cfd != 0) {
-        close(_cfd);
-        _cfd = -1;
+    if (__cfd != 0) {
+        close(__cfd);
+        __cfd = -1;
     }
 
-    _cfd = open(name, O_CREAT | O_TRUNC | O_WRONLY);
+    __cfd = open(name, O_CREAT | O_TRUNC | O_WRONLY);
 
-    if (_cfd == -1) {
+    if (__cfd == -1) {
         ulog_e(TAG, "fail to create file:%s errno:%d\n", name, rt_get_errno());
     }
 }
-
 #endif
 
-static acc_position _acc_position_detect(void)
+static acc_position acc_position_detect(void)
 {
     IMU_Report imu_report;
     static acc_position prev_pos = ACC_POS_IDLE;
@@ -184,7 +177,7 @@ static acc_position _acc_position_detect(void)
     }
 }
 
-void _detect_jitter(void)
+static void detect_jitter(void)
 {
     IMU_Report imu_report;
 
@@ -217,7 +210,7 @@ void _detect_jitter(void)
     jitter_detect.gyr_hist[2] = imu_report.gyr_B_radDs[2];
 }
 
-static void _send_statustext_msg(mav_status_type status, mavlink_message_t* msg)
+static void send_statustext_msg(mav_status_type status, mavlink_message_t* msg)
 {
     mavlink_statustext_t statustext;
     mavlink_system_t mavlink_system;
@@ -232,7 +225,7 @@ static void _send_statustext_msg(mav_status_type status, mavlink_message_t* msg)
     mavproxy_send_immediate_msg(msg, true);
 }
 
-void _gyr_calibration_init(void)
+static void gyr_calibration_init(void)
 {
     mavcmd_calib_gyr.cnt = 0;
     mavcmd_calib_gyr.sum[0] = 0.0f;
@@ -240,15 +233,13 @@ void _gyr_calibration_init(void)
     mavcmd_calib_gyr.sum[2] = 0.0f;
 }
 
-void _gyr_calibration_reset(void)
+static void gyr_calibration_reset(void)
 {
-    mavcmd_calib_gyr.set = 0;
-
-    mavcmd_clear(MAVCMD_CALIBRATION_GYR);
-    _gyr_calibration_init();
+    mavproxy_cmd_reset(MAVCMD_CALIBRATION_GYR);
+    gyr_calibration_init();
 }
 
-void _gyr_mavlink_calibration(void)
+static void gyr_mavlink_calibration(void)
 {
     mavlink_message_t msg;
     IMU_Report imu_report;
@@ -262,10 +253,10 @@ void _gyr_mavlink_calibration(void)
         jitter_detect.jitter_num = 0;
         jitter_detect.jitter = 0;
 
-        _send_statustext_msg(CAL_START_GYRO, &msg);
+        send_statustext_msg(CAL_START_GYRO, &msg);
     }
 
-    if(mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK){
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK) {
         return;
     }
 
@@ -274,8 +265,8 @@ void _gyr_mavlink_calibration(void)
     mavcmd_calib_gyr.sum[2] += imu_report.gyr_B_radDs[2];
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
-    if (_cfd != -1) {
-        fm_fprintf(_cfd, "%f %f %f\n", imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2]);
+    if (__cfd != -1) {
+        fm_fprintf(__cfd, "%f %f %f\n", imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2]);
     }
 #endif
 
@@ -284,7 +275,7 @@ void _gyr_mavlink_calibration(void)
     if (!(mavcmd_calib_gyr.cnt % (GYR_CALIBRATE_COUNT / 10)) && (mavcmd_calib_gyr.cnt <= GYR_CALIBRATE_COUNT)) {
         // send progress
 
-        _send_statustext_msg(CAL_PROGRESS_0 + (uint32_t)((float)mavcmd_calib_gyr.cnt / GYR_CALIBRATE_COUNT * 10), &msg);
+        send_statustext_msg(CAL_PROGRESS_0 + (uint32_t)((float)mavcmd_calib_gyr.cnt / GYR_CALIBRATE_COUNT * 10), &msg);
     }
 
     if (mavcmd_calib_gyr.cnt >= GYR_CALIBRATE_COUNT) {
@@ -293,7 +284,7 @@ void _gyr_mavlink_calibration(void)
         mavcmd_calib_gyr.bias[1] = mavcmd_calib_gyr.sum[1] / GYR_CALIBRATE_COUNT;
         mavcmd_calib_gyr.bias[2] = mavcmd_calib_gyr.sum[2] / GYR_CALIBRATE_COUNT;
 
-        _send_statustext_msg(CAL_DONE, &msg);
+        send_statustext_msg(CAL_DONE, &msg);
 
         console_printf("gyr bias:%f %f %f\n", mavcmd_calib_gyr.bias[0], mavcmd_calib_gyr.bias[1], mavcmd_calib_gyr.bias[2]);
 
@@ -301,11 +292,11 @@ void _gyr_mavlink_calibration(void)
         PARAM_SET_FLOAT(CALIB, GYRO0_YOFF, mavcmd_calib_gyr.bias[1]);
         PARAM_SET_FLOAT(CALIB, GYRO0_ZOFF, mavcmd_calib_gyr.bias[2]);
 
-        _gyr_calibration_reset();
+        gyr_calibration_reset();
     }
 }
 
-void _acc_calibration_init(void)
+static void acc_calibration_init(void)
 {
     int i;
 
@@ -317,15 +308,13 @@ void _acc_calibration_init(void)
     }
 }
 
-void _acc_calibration_reset(void)
+static void acc_calibration_reset(void)
 {
-    mavcmd_calib_acc.set = 0;
-
-    mavcmd_clear(MAVCMD_CALIBRATION_ACC);
-    _acc_calibration_init();
+    mavproxy_cmd_reset(MAVCMD_CALIBRATION_ACC);
+    acc_calibration_init();
 }
 
-void _acc_mavlink_calibration(void)
+static void accel_calibration(void)
 {
     mavlink_message_t msg;
 
@@ -354,11 +343,11 @@ void _acc_mavlink_calibration(void)
         mavcmd_calib_acc.acc_pos = ACC_POS_IDLE;
         mavcmd_calib_acc.status = 1;
 
-        _send_statustext_msg(CAL_START_ACC, &msg);
+        send_statustext_msg(CAL_START_ACC, &msg);
     }
 
-    _detect_jitter();
-    acc_position temp_pos = _acc_position_detect();
+    detect_jitter();
+    acc_position temp_pos = acc_position_detect();
 
     if (!jitter_detect.jitter && temp_pos != ACC_POS_IDLE) {
 
@@ -366,20 +355,20 @@ void _acc_mavlink_calibration(void)
             mavcmd_calib_acc.acc_pos = temp_pos;
 
             if (!mavcmd_calib_acc.done_flag[mavcmd_calib_acc.acc_pos]) {
-                _send_statustext_msg(CAL_UP_DETECTED + mavcmd_calib_acc.acc_pos, &msg);
+                send_statustext_msg(CAL_UP_DETECTED + mavcmd_calib_acc.acc_pos, &msg);
             }
         }
 
         if (mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] < ACC_CALIBRATE_COUNT) {
             IMU_Report imu_report;
 
-            if(mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK){
+            if (mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK) {
                 return;
             }
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
-            if (_cfd != -1) {
-                fm_fprintf(_cfd, "%f %f %f\n", imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
+            if (__cfd != -1) {
+                fm_fprintf(__cfd, "%f %f %f\n", imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
             }
 #endif
 
@@ -400,11 +389,11 @@ void _acc_mavlink_calibration(void)
             if (!(mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] % (ACC_CALIBRATE_COUNT / 10))
                 && (mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] <= ACC_CALIBRATE_COUNT)) {
 
-                _send_statustext_msg(CAL_PROGRESS_0 + (uint32_t)((float)mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] / ACC_CALIBRATE_COUNT * 10), &msg);
+                send_statustext_msg(CAL_PROGRESS_0 + (uint32_t)((float)mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] / ACC_CALIBRATE_COUNT * 10), &msg);
             }
         } else {
             if (!mavcmd_calib_acc.done_flag[mavcmd_calib_acc.acc_pos]) {
-                _send_statustext_msg(CAL_UP_DONE + mavcmd_calib_acc.acc_pos, &msg);
+                send_statustext_msg(CAL_UP_DONE + mavcmd_calib_acc.acc_pos, &msg);
                 mavcmd_calib_acc.done_flag[mavcmd_calib_acc.acc_pos] = 1;
             }
         }
@@ -430,7 +419,7 @@ void _acc_mavlink_calibration(void)
                 mavcmd_calib_acc.RotM[i] = mat[i].re;
             }
 
-            _send_statustext_msg(CAL_DONE, &msg);
+            send_statustext_msg(CAL_DONE, &msg);
 
             console_printf("bias:%f %f %f\n", mavcmd_calib_acc.bias[0], mavcmd_calib_acc.bias[1], mavcmd_calib_acc.bias[2]);
             console_printf("rotM:\n");
@@ -449,12 +438,12 @@ void _acc_mavlink_calibration(void)
             PARAM_SET_FLOAT(CALIB, ACC0_YZSCALE, mavcmd_calib_acc.RotM[7]);
             PARAM_SET_FLOAT(CALIB, ACC0_ZZSCALE, mavcmd_calib_acc.RotM[8]);
 
-            _acc_calibration_reset();
+            acc_calibration_reset();
         }
     }
 }
 
-void _mag_calibration_init(void)
+static void mag_calibration_init(void)
 {
     mavcmd_calib_mag.status = 0;
     mavcmd_calib_mag.done_flag[0] = 0;
@@ -466,15 +455,13 @@ void _mag_calibration_init(void)
     mavcmd_calib_mag.cnt = 0;
 }
 
-void _mag_calibration_reset(void)
+static void mag_calibration_reset(void)
 {
-    mavcmd_calib_mag.set = 0;
-
-    mavcmd_clear(MAVCMD_CALIBRATION_MAG);
-    _mag_calibration_init();
+    mavproxy_cmd_reset(MAVCMD_CALIBRATION_MAG);
+    mag_calibration_init();
 }
 
-void _mag_mavlink_calibration(void)
+static void mag_calibration(void)
 {
     mavlink_message_t msg;
 
@@ -500,20 +487,20 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.v[i] = 0.0;
         }
 
-        _send_statustext_msg(CAL_START_MAG, &msg);
+        send_statustext_msg(CAL_START_MAG, &msg);
 
         mavcmd_calib_mag.status = 1;
     } break;
 
     case 1: {
-        acc_position temp_pos = _acc_position_detect();
+        acc_position temp_pos = acc_position_detect();
 
         if (temp_pos == ACC_POS_DOWN && !mavcmd_calib_mag.done_flag[0]) {
             mavcmd_calib_mag.acc_pos = temp_pos;
             mavcmd_calib_mag.cnt = 0;
             mavcmd_calib_mag.status = 2;
 
-            _send_statustext_msg(CAL_DOWN_DETECTED, &msg);
+            send_statustext_msg(CAL_DOWN_DETECTED, &msg);
         }
 
         if (temp_pos == ACC_POS_FRONT && !mavcmd_calib_mag.done_flag[1]) {
@@ -521,7 +508,7 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.cnt = 0;
             mavcmd_calib_mag.status = 2;
 
-            _send_statustext_msg(CAL_FRONT_DETECTED, &msg);
+            send_statustext_msg(CAL_FRONT_DETECTED, &msg);
         }
 
         if (temp_pos == ACC_POS_LEFT && !mavcmd_calib_mag.done_flag[2]) {
@@ -529,7 +516,7 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.cnt = 0;
             mavcmd_calib_mag.status = 2;
 
-            _send_statustext_msg(CAL_LEFT_DETECTED, &msg);
+            send_statustext_msg(CAL_LEFT_DETECTED, &msg);
         }
 
         if (temp_pos == ACC_POS_UP && !mavcmd_calib_mag.done_flag[3]) {
@@ -537,7 +524,7 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.cnt = 0;
             mavcmd_calib_mag.status = 2;
 
-            _send_statustext_msg(CAL_UP_DETECTED, &msg);
+            send_statustext_msg(CAL_UP_DETECTED, &msg);
         }
 
         if (temp_pos == ACC_POS_BACK && !mavcmd_calib_mag.done_flag[4]) {
@@ -545,7 +532,7 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.cnt = 0;
             mavcmd_calib_mag.status = 2;
 
-            _send_statustext_msg(CAL_BACK_DETECTED, &msg);
+            send_statustext_msg(CAL_BACK_DETECTED, &msg);
         }
 
         if (temp_pos == ACC_POS_RIGHT && !mavcmd_calib_mag.done_flag[5]) {
@@ -553,7 +540,7 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.cnt = 0;
             mavcmd_calib_mag.status = 2;
 
-            _send_statustext_msg(CAL_RIGHT_DETECTED, &msg);
+            send_statustext_msg(CAL_RIGHT_DETECTED, &msg);
         }
     } break;
 
@@ -595,13 +582,13 @@ void _mag_mavlink_calibration(void)
         if (rotat) {
             Mag_Report mag_report;
 
-            if(mcn_copy_from_hub(MCN_HUB(sensor_mag_scale), &mag_report) != FMT_EOK){
+            if (mcn_copy_from_hub(MCN_HUB(sensor_mag_scale), &mag_report) != FMT_EOK) {
                 return;
             }
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
-            if (_cfd != -1) {
-                fm_fprintf(_cfd, "%f %f %f\n", mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
+            if (__cfd != -1) {
+                fm_fprintf(__cfd, "%f %f %f\n", mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
             }
 #endif
 
@@ -620,22 +607,22 @@ void _mag_mavlink_calibration(void)
             if (++mavcmd_calib_mag.cnt >= MAG_CALIBRATE_COUNT) {
                 if (mavcmd_calib_mag.acc_pos == ACC_POS_DOWN) {
                     mavcmd_calib_mag.done_flag[0] = 1;
-                    _send_statustext_msg(CAL_DOWN_DONE, &msg);
+                    send_statustext_msg(CAL_DOWN_DONE, &msg);
                 } else if (mavcmd_calib_mag.acc_pos == ACC_POS_FRONT) {
                     mavcmd_calib_mag.done_flag[1] = 1;
-                    _send_statustext_msg(CAL_FRONT_DONE, &msg);
+                    send_statustext_msg(CAL_FRONT_DONE, &msg);
                 } else if (mavcmd_calib_mag.acc_pos == ACC_POS_LEFT) {
                     mavcmd_calib_mag.done_flag[2] = 1;
-                    _send_statustext_msg(CAL_LEFT_DONE, &msg);
+                    send_statustext_msg(CAL_LEFT_DONE, &msg);
                 } else if (mavcmd_calib_mag.acc_pos == ACC_POS_UP) {
                     mavcmd_calib_mag.done_flag[3] = 1;
-                    _send_statustext_msg(CAL_UP_DONE, &msg);
+                    send_statustext_msg(CAL_UP_DONE, &msg);
                 } else if (mavcmd_calib_mag.acc_pos == ACC_POS_BACK) {
                     mavcmd_calib_mag.done_flag[4] = 1;
-                    _send_statustext_msg(CAL_BACK_DONE, &msg);
+                    send_statustext_msg(CAL_BACK_DONE, &msg);
                 } else if (mavcmd_calib_mag.acc_pos == ACC_POS_RIGHT) {
                     mavcmd_calib_mag.done_flag[5] = 1;
-                    _send_statustext_msg(CAL_RIGHT_DONE, &msg);
+                    send_statustext_msg(CAL_RIGHT_DONE, &msg);
                 }
 
                 if (mavcmd_calib_mag.done_flag[0] && mavcmd_calib_mag.done_flag[1] && mavcmd_calib_mag.done_flag[2]
@@ -649,7 +636,7 @@ void _mag_mavlink_calibration(void)
             if (!(mavcmd_calib_mag.cnt % (MAG_CALIBRATE_COUNT / 10))
                 && (mavcmd_calib_mag.cnt <= MAG_CALIBRATE_COUNT)) {
 
-                _send_statustext_msg(CAL_PROGRESS_0 + (uint32_t)((float)mavcmd_calib_mag.cnt / MAG_CALIBRATE_COUNT * 10), &msg);
+                send_statustext_msg(CAL_PROGRESS_0 + (uint32_t)((float)mavcmd_calib_mag.cnt / MAG_CALIBRATE_COUNT * 10), &msg);
             }
         }
     } break;
@@ -665,7 +652,7 @@ void _mag_mavlink_calibration(void)
             mavcmd_calib_mag.RotM[i] = mat[i].re;
         }
 
-        _send_statustext_msg(CAL_DONE, &msg);
+        send_statustext_msg(CAL_DONE, &msg);
 
         console_printf("bias:%f %f %f\n", mavcmd_calib_mag.bias[0], mavcmd_calib_mag.bias[1], mavcmd_calib_mag.bias[2]);
         console_printf("rotM:\n");
@@ -684,7 +671,7 @@ void _mag_mavlink_calibration(void)
         PARAM_SET_FLOAT(CALIB, MAG0_YZSCALE, mavcmd_calib_mag.RotM[7]);
         PARAM_SET_FLOAT(CALIB, MAG0_ZZSCALE, mavcmd_calib_mag.RotM[8]);
 
-        _mag_calibration_reset();
+        mag_calibration_reset();
     } break;
 
     default:
@@ -692,7 +679,7 @@ void _mag_mavlink_calibration(void)
     }
 }
 
-void _level_calibration_init(void)
+static void level_calibration_init(void)
 {
     mavcmd_calib_level.sample_cnt = 0;
     mavcmd_calib_level.start_time = systime_now_ms();
@@ -700,15 +687,13 @@ void _level_calibration_init(void)
     mavcmd_calib_level.board_roll_off = mavcmd_calib_level.board_pitch_off = 0.0f;
 }
 
-void _level_calibration_reset(void)
+static void level_calibration_reset(void)
 {
-    mavcmd_calib_level.set = 0;
-
-    mavcmd_clear(MAVCMD_CALIBRATION_LEVEL);
-    _level_calibration_init();
+    mavproxy_cmd_reset(MAVCMD_CALIBRATION_LEVEL);
+    level_calibration_init();
 }
 
-static void _level_calibration(void)
+static void level_calibration(void)
 {
     INS_Out_Bus ins_out;
     static float min_angle[2];
@@ -749,7 +734,7 @@ static void _level_calibration(void)
             mavcmd_calib_level.num_retry++;
             if (mavcmd_calib_level.num_retry > 10) {
                 mavlink_send_statustext(MAVLINK_STATUS_CRITICAL, CAL_QGC_FAILED_MSG, "level");
-                _level_calibration_reset();
+                level_calibration_reset();
             } else {
                 mavcmd_calib_level.sample_cnt = 0;
                 mavcmd_calib_level.start_time = systime_now_ms();
@@ -773,98 +758,82 @@ static void _level_calibration(void)
 
             mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_DONE_MSG, "level");
             //console_printf("Update Level Horizontal Offset: [%f %f]\n", mavcmd_calib_level.board_roll_off, mavcmd_calib_level.board_pitch_off);
-            
-            _level_calibration_reset();
+
+            level_calibration_reset();
         }
     }
 }
 
-void mavcmd_set(MavCmd_ID cmd, void* data)
+void mavproxy_cmd_set(MavCmd_ID cmd, void* data)
 {
     if (cmd == MAVCMD_CALIBRATION_GYR) {
-
         memset(&mavcmd_calib_gyr, 0, sizeof(mavcmd_calib_gyr));
-
-        mavcmd_calib_gyr.set = 1;
-
 #ifdef FMT_RECORD_CALIBRATION_DATA
-        _create_calib_data_file("/usr/gyr.txt");
+        create_calib_data_file("/usr/gyr.txt");
 #endif
-
-        _gyr_calibration_init();
+        gyr_calibration_init();
     } else if (cmd == MAVCMD_CALIBRATION_ACC) {
-
         memset(&mavcmd_calib_acc, 0, sizeof(mavcmd_calib_acc));
-
-        mavcmd_calib_acc.set = 1;
-
 #ifdef FMT_RECORD_CALIBRATION_DATA
-        _create_calib_data_file("/usr/acc.txt");
+        create_calib_data_file("/usr/acc.txt");
 #endif
-
-        _acc_calibration_init();
+        acc_calibration_init();
     } else if (cmd == MAVCMD_CALIBRATION_MAG) {
-
         memset(&mavcmd_calib_mag, 0, sizeof(mavcmd_calib_mag));
-
-        mavcmd_calib_mag.set = 1;
-
 #ifdef FMT_RECORD_CALIBRATION_DATA
-        _create_calib_data_file("/usr/mag.txt");
+        create_calib_data_file("/usr/mag.txt");
 #endif
-
-        _mag_calibration_init();
+        mag_calibration_init();
     } else if (cmd == MAVCMD_CALIBRATION_LEVEL) {
-        mavcmd_calib_level.set = 1;
-        _level_calibration_init();
-    }else if (cmd == MAVCMD_STREAM_SESSION) {
-
+        level_calibration_init();
+    } else if (cmd == MAVCMD_STREAM_SESSION) {
         if (data) {
             /* ftp stream session */
-            _ftp_stream_session = (StreamSession*)data;
-            _mavcmd_set[cmd] = 1;
+            ftp_stream_session = (StreamSession*)data;
         }
     } else {
         /* unknown command */
         return;
     }
+
+    cmd_sets[cmd] = 1;
 }
 
-void mavcmd_clear(MavCmd_ID cmd)
+void mavproxy_cmd_reset(MavCmd_ID cmd)
 {
     if (cmd < MAVCMD_ITEM_NUM) {
-        _mavcmd_set[cmd] = 0;
+        cmd_sets[cmd] = 0;
     }
 
 #ifdef FMT_RECORD_CALIBRATION_DATA
     if (cmd == MAVCMD_CALIBRATION_GYR || cmd == MAVCMD_CALIBRATION_ACC || cmd == MAVCMD_CALIBRATION_MAG) {
-        if (_cfd != -1) {
-            close(_cfd);
-            _cfd = -1;
+        if (__cfd != -1) {
+            close(__cfd);
+            __cfd = -1;
         }
     }
 #endif
 }
 
-void mavproxy_cmd_process(void)
+void mavproxy_cmd_exec(void)
 {
-    if (mavcmd_calib_gyr.set) {
-        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, _gyr_mavlink_calibration(););
+    if (cmd_sets[MAVCMD_CALIBRATION_GYR]) {
+        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, gyr_mavlink_calibration(););
     }
 
-    if (mavcmd_calib_acc.set) {
-        TIMETAG_CHECK_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, _acc_mavlink_calibration(););
+    if (cmd_sets[MAVCMD_CALIBRATION_ACC]) {
+        TIMETAG_CHECK_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, accel_calibration(););
     }
 
-    if (mavcmd_calib_mag.set) {
-        TIMETAG_CHECK_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, _mag_mavlink_calibration(););
+    if (cmd_sets[MAVCMD_CALIBRATION_MAG]) {
+        TIMETAG_CHECK_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, mag_calibration(););
     }
 
-    if (mavcmd_calib_level.set) {
-        TIMETAG_CHECK_EXECUTE(level_calib, 10, _level_calibration(););
+    if (cmd_sets[MAVCMD_CALIBRATION_LEVEL]) {
+        TIMETAG_CHECK_EXECUTE(level_calib, 10, level_calibration(););
     }
 
-    if (_mavcmd_set[MAVCMD_STREAM_SESSION]) {
-        ftp_stream_send(_ftp_stream_session);
+    if (cmd_sets[MAVCMD_STREAM_SESSION]) {
+        ftp_stream_send(ftp_stream_session);
     }
 }

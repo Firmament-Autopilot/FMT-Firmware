@@ -26,7 +26,7 @@
 #define MAVPROXY_DEFAULT_CHAN        0
 #define MAVPROXY_UNSET_CHAN          0xFF
 
-void mavproxy_monitor_create(void);
+fmt_err mavproxy_monitor_create(void);
 fmt_err mavproxy_switch_channel(uint8_t chan);
 uint8_t mavproxy_get_channel_num(void);
 
@@ -78,7 +78,7 @@ static void mavproxy_timer_update(void* parameter)
     rt_event_send(&mav_handle.event, EVENT_MAVPROXY_UPDATE);
 }
 
-static uint8_t _send_immediate_msg(void)
+static void dump_immediate_msg(void)
 {
     while (mav_handle.imm_mq.head != mav_handle.imm_mq.tail) {
         if (mavproxy_send_immediate_msg(&mav_handle.imm_mq.queue[mav_handle.imm_mq.tail], true) == FMT_EOK) {
@@ -87,11 +87,9 @@ static uint8_t _send_immediate_msg(void)
             OS_EXIT_CRITICAL;
         }
     }
-
-    return 1;
 }
 
-static uint8_t _send_period_msg(void)
+static void dump_period_msg(void)
 {
     for (uint16_t i = 0; i < mav_handle.period_mq.size; i++) {
         uint32_t now = systime_now_ms();
@@ -109,48 +107,19 @@ static uint8_t _send_period_msg(void)
             }
         }
     }
-
-    return 1;
 }
 
-static void _send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlink_message_t* msg)
-{
-    mavlink_msg_command_ack_encode(mav_handle.system.sysid, mav_handle.system.compid,
-        msg, command_ack);
-
-    mavproxy_send_immediate_msg(msg, true);
-}
-
-void mavproxy_handle_command(mavlink_command_long_t* command, mavlink_message_t* msg)
-{
-    switch (command->command) {
-    case MAV_CMD_PREFLIGHT_CALIBRATION: {
-        mavlink_command_ack_t command_ack;
-
-        if (command->param1 == 1) { // calibration gyr
-            mavcmd_set(MAVCMD_CALIBRATION_GYR, NULL);
-        } else if (command->param2 == 1) { // calibration mag
-            mavcmd_set(MAVCMD_CALIBRATION_MAG, NULL);
-        } else if (command->param5 == 1) { // calibration acc
-            mavcmd_set(MAVCMD_CALIBRATION_ACC, NULL);
-        } else if (command->param5 == 2) { // calibration level
-            mavcmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
-        } else {
-            /* all 0 command, cancel current process */
-        }
-
-        command_ack.command = MAV_CMD_PREFLIGHT_CALIBRATION;
-        command_ack.result = MAV_CMD_ACK_OK | MAV_CMD_ACK_ENUM_END;
-        _send_mavlink_command_ack(&command_ack, msg);
-        break;
-    }
-
-    default:
-        break;
-    }
-}
-
-uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
+/**
+ * Register to send a mavlink message periodically
+ * 
+ * @param msgid mavlink message id
+ * @param period_ms  message send period in ms
+ * @param msg_pack_cb callback function to prepare the mavlink message data
+ * @param enable enable/disable of sending the message
+ * 
+ * @return FMT Errors
+ */
+fmt_err mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     msg_pack_cb_t msg_pack_cb, uint8_t enable)
 {
     MAV_PeriodMsg msg;
@@ -159,20 +128,29 @@ uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     msg.enable = enable;
     msg.period = period_ms;
     msg.msg_pack_cb = msg_pack_cb;
-    /* Add offset for msg */
+    /* Add offset for each msg to stagger sending time */
     msg.time_stamp = systime_now_ms() + mav_handle.period_mq.size * MAVPROXY_INTERVAL;
 
     if (mav_handle.period_mq.size < MAXperiod_mq_SIZE) {
         OS_ENTER_CRITICAL;
         mav_handle.period_mq.queue[mav_handle.period_mq.size++] = msg;
         OS_EXIT_CRITICAL;
-        return 1;
+        return FMT_EOK;
     } else {
         console_printf("mavproxy period msg queue is full\n");
-        return 0;
+        return FMT_EFULL;
     }
 }
 
+/**
+ * Send a mavlink message via the mavproxy device
+ * 
+ * @param msg mavlink message
+ * @param sync  true: wait until the mavproxy device is available and send message
+ *              false: push the message into a queue and return directly
+ * 
+ * @return FMT Errors
+ */
 fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
 {
     /* if sync flag set, send out msg immediately */
@@ -209,16 +187,37 @@ fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
     return FMT_EOK;
 }
 
+/**
+ * Send a event to mavproxy
+ * 
+ * @brief the event will be handled in mavproxy main loop
+ * 
+ * @param event_set event set
+ * 
+ * @return FMT Errors
+ */
 fmt_err mavproxy_send_event(uint32_t event_set)
 {
     return rt_event_send(&mav_handle.event, event_set);
 }
 
+/**
+ * Get mavlink system information. sysid and compid
+ * 
+ * @return mavlink system
+ */
 mavlink_system_t mavproxy_get_system(void)
 {
     return mav_handle.system;
 }
 
+/**
+ * Set mavproxy channel.
+ * 
+ * @param chan channel of mavproxy device
+ * 
+ * @return FMT Errors
+ */
 fmt_err mavproxy_set_channel(uint8_t chan)
 {
     if (chan >= mavproxy_get_channel_num()) {
@@ -231,13 +230,17 @@ fmt_err mavproxy_set_channel(uint8_t chan)
     return FMT_EOK;
 }
 
+/**
+ * Main loop of mavproxy.
+ * @note this function should be called in a thread
+ */
 void mavproxy_loop(void)
 {
     rt_err_t res;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_MAVPROXY_UPDATE | EVENT_MAVCONSOLE_TIMEOUT | EVENT_SEND_ALL_PARAM;
 
-    /* create mavproxy monitor to handle received msg */
+    /* create mavproxy monitor to handle received mavlink msgs */
     mavproxy_monitor_create();
 
     while (1) {
@@ -252,7 +255,8 @@ void mavproxy_loop(void)
                 if (mavproxy_switch_channel(mav_handle.new_chan) == FMT_EOK) {
                     mav_handle.chan = mav_handle.new_chan;
                 } else {
-                    console_printf("mavproxy switch channel fail!\n");
+                    console_printf("mavproxy switch channel fail! current chan:%d new chan:%d\n",
+                        mav_handle.chan, mav_handle.new_chan);
                     mav_handle.new_chan = mav_handle.chan;
                 }
             }
@@ -266,16 +270,13 @@ void mavproxy_loop(void)
             }
 
             if (recv_set & EVENT_MAVPROXY_UPDATE) {
-                // send out immediate msg
-                _send_immediate_msg();
-                // send out periodical msg
-                _send_period_msg();
-                // process mavlink command
-                mavproxy_cmd_process();
+                /* send out immediate msg */
+                dump_immediate_msg();
+                /* send out periodical msg */
+                dump_period_msg();
+                /* handle mavlink command */
+                mavproxy_cmd_exec();
             }
-        } else {
-            // some err happen
-            console_printf("mavproxy loop, err:%d\r\n", res);
         }
     }
 }
@@ -304,7 +305,7 @@ fmt_err mavproxy_init(void)
     }
 
     /* create event */
-    rt_event_init(&mav_handle.event, "mavproxy", RT_IPC_FLAG_FIFO);
+    rt_event_init(&mav_handle.event, "mav_event", RT_IPC_FLAG_FIFO);
 
     /* register timer event to periodly wakeup itself */
     rt_timer_init(&mav_handle.timer, "mav_update", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,

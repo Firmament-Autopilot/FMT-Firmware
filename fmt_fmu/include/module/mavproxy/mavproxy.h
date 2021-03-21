@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __MAVPROXY_H__
 #define __MAVPROXY_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <firmament.h>
 #include <mavlink.h>
 
-#include "module/mavproxy/mavproxy_cmd.h"
+#include "module/mavproxy/mavlink_console.h"
 #include "module/mavproxy/mavlink_param.h"
 #include "module/mavproxy/mavlink_status.h"
+#include "module/mavproxy/mavproxy_cmd.h"
 #include "module/mavproxy/mavproxy_dev.h"
-#include "module/mavproxy/mavlink_console.h"
 
 #define EVENT_MAVPROXY_UPDATE    (1 << 0)
 #define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)
@@ -38,8 +41,10 @@ mavlink_system_t mavproxy_get_system(void);
 fmt_err mavproxy_set_channel(uint8_t chan);
 fmt_err mavproxy_send_event(uint32_t event_set);
 fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync);
-uint8_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
-    msg_pack_cb_t msg_pack_cb, uint8_t enable);
-void mavproxy_handle_command(mavlink_command_long_t* command, mavlink_message_t* msg);
+fmt_err mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms, msg_pack_cb_t msg_pack_cb, uint8_t enable);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

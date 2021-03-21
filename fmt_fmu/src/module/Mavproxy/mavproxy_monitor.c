@@ -18,8 +18,8 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/sensor/sensor_manager.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/sensor/sensor_manager.h"
 
 #define TAG "MAV_Monitor"
 
@@ -31,19 +31,55 @@ MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 
 static char thread_mavlink_rx_stack[4096];
-struct rt_thread thread_mavlink_rx_handle;
+static struct rt_thread thread_mavlink_rx_handle;
+static struct rt_event mav_rx_event;
 
-static struct rt_event _mav_rx_event;
-
-static fmt_err _mavproxy_rx_ind(uint32_t size)
+static fmt_err mavproxy_rx_ind(uint32_t size)
 {
     /* wakeup thread to handle received data */
-    rt_err_t rt_err = rt_event_send(&_mav_rx_event, EVENT_MAV_RX);
+    rt_err_t rt_err = rt_event_send(&mav_rx_event, EVENT_MAV_RX);
 
     return (rt_err == RT_EOK) ? FMT_EOK : FMT_ERROR;
 }
 
-static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
+static void send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlink_message_t* msg)
+{
+    mavlink_system_t mav_sys = mavproxy_get_system();
+
+    mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, msg, command_ack);
+    mavproxy_send_immediate_msg(msg, true);
+}
+
+static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
+{
+    switch (command->command) {
+    case MAV_CMD_PREFLIGHT_CALIBRATION: {
+        mavlink_command_ack_t command_ack;
+
+        if (command->param1 == 1) { // calibration gyr
+            mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
+        } else if (command->param2 == 1) { // calibration mag
+            mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
+        } else if (command->param5 == 1) { // calibration acc
+            mavproxy_cmd_set(MAVCMD_CALIBRATION_ACC, NULL);
+        } else if (command->param5 == 2) { // calibration level
+            mavproxy_cmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
+        } else {
+            /* all 0 command, cancel current process */
+        }
+
+        command_ack.command = MAV_CMD_PREFLIGHT_CALIBRATION;
+        command_ack.result = MAV_CMD_ACK_OK | MAV_CMD_ACK_ENUM_END;
+        send_mavlink_command_ack(&command_ack, msg);
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+static fmt_err handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT: {
@@ -91,7 +127,7 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
             mavlink_command_long_t command;
             mavlink_msg_command_long_decode(msg, &command);
 
-            mavproxy_handle_command(&command, msg);
+            handle_mavlink_command(&command, msg);
         }
     } break;
 
@@ -125,8 +161,8 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
         }
     } break;
 
-#if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)  
-    case MAVLINK_MSG_ID_HIL_SENSOR: {    
+#if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
+    case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
         IMU_Report imu_report;
         Mag_Report mag_report;
@@ -150,7 +186,7 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
         mag_report.timestamp_ms = systime_now_ms();
         mcn_publish(MCN_HUB(sensor_mag), &mag_report);
 
-        baro_report.pressure_pa = hil_sensor.abs_pressure*1e-3;
+        baro_report.pressure_pa = hil_sensor.abs_pressure * 1e-3;
         baro_report.temperature_deg = hil_sensor.temperature;
         baro_report.altitude_m = hil_sensor.pressure_alt;
         baro_report.timestamp_ms = systime_now_ms();
@@ -169,10 +205,11 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
         gps_report.velD = (float)hil_gps.vd * 0.01f;
         gps_report.hAcc = (float)hil_gps.eph * 0.01f;
         gps_report.vAcc = (float)hil_gps.epv * 0.01f;
-        gps_report.sAcc = 0;    // speed accurancy unknown
+        gps_report.sAcc = 0; // speed accurancy unknown
         gps_report.numSV = hil_gps.satellites_visible;
         gps_report.fixType = hil_gps.fix_type;
-        gps_report.timestamp_ms = systime_now_ms();;
+        gps_report.timestamp_ms = systime_now_ms();
+        ;
         mcn_publish(MCN_HUB(sensor_gps), &gps_report);
     } break;
 #endif
@@ -186,7 +223,7 @@ static fmt_err _handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syst
     return FMT_EOK;
 }
 
-void mavproxy_rx_entry(void* param)
+static void mavproxy_rx_entry(void* param)
 {
     mavlink_message_t msg;
     mavlink_status_t mav_status;
@@ -200,7 +237,7 @@ void mavproxy_rx_entry(void* param)
 
     while (1) {
         /* wait event happen */
-        rt_err = rt_event_recv(&_mav_rx_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
+        rt_err = rt_event_recv(&mav_rx_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
             RT_WAITING_FOREVER, &recv_set);
 
         if (rt_err == RT_EOK) {
@@ -208,17 +245,15 @@ void mavproxy_rx_entry(void* param)
                 while (mavproxy_dev_read(&byte, 1, 0)) {
                     /* decode mavlink package */
                     if (mavlink_parse_char(0, byte, &msg, &mav_status) == 1) {
-                        _handle_mavlink_msg(&msg, mavlink_system);
+                        handle_mavlink_msg(&msg, mavlink_system);
                     }
                 }
             }
-        } else {
-            console_printf("mav rx event err\n");
         }
     }
 }
 
-void mavproxy_monitor_create(void)
+fmt_err mavproxy_monitor_create(void)
 {
     rt_err_t res;
 
@@ -229,13 +264,19 @@ void mavproxy_monitor_create(void)
         &thread_mavlink_rx_stack[0],
         sizeof(thread_mavlink_rx_stack), MAVLINK_RX_THREAD_PRIORITY, 5);
 
-    if (rt_event_init(&_mav_rx_event, "mav_rx", RT_IPC_FLAG_FIFO) != RT_EOK) {
-        console_printf("mav rx event create fail\n");
-        return;
+    if (res != RT_EOK) {
+        console_printf("mav rx thread create fail\n");
+        return FMT_ERROR;
     }
 
-    mavproxy_dev_set_rx_indicate(_mavproxy_rx_ind);
+    if (rt_event_init(&mav_rx_event, "mav_rx", RT_IPC_FLAG_FIFO) != RT_EOK) {
+        console_printf("mav rx event create fail\n");
+        return FMT_ERROR;
+    }
+    /* set mavproxy device rx indicator */
+    mavproxy_dev_set_rx_indicate(mavproxy_rx_ind);
+    /* start rx thread */
+    rt_thread_startup(&thread_mavlink_rx_handle);
 
-    if (res == RT_EOK)
-        rt_thread_startup(&thread_mavlink_rx_handle);
+    return FMT_EOK;
 }
