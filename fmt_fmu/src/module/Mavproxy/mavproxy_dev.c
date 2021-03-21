@@ -51,9 +51,10 @@ rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
 
     /* write data to device */
     size = rt_device_write(_mavproxy_dev, 0, buffer, len);
-
-    /* wait write complete (synchronized write) */
-    rt_sem_take(_mavproxy_dev_tx_sem, timeout);
+    if (size > 0) {
+        /* wait write complete (synchronized write) */
+        rt_sem_take(_mavproxy_dev_tx_sem, timeout);
+    }
 
     return size;
 }
@@ -106,7 +107,7 @@ fmt_err mavproxy_set_device(const char* dev_name)
 
     if (new_dev != _mavproxy_dev) {
         rt_uint16_t flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX;
-        if (new_dev->flag & (RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX) ){
+        if (new_dev->flag & (RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX)) {
             /* if device support DMA, then use it */
             flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX;
         }
