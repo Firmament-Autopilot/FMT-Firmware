@@ -31,7 +31,6 @@ HAL = [
     'rc/*.c',
     'serial/*.c',
     'systick/*.c',
-    'tools/*.c',
     'usb/*.c',
     'optical_flow/*.c',
     'spi/spi_core.c',
