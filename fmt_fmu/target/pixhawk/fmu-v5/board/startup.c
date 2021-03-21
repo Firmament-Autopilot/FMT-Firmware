@@ -31,6 +31,8 @@ struct rt_thread thread_simple_handle;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
+    rt_hw_interrupt_disable();
+    
 #ifdef FMT_USING_CM_BACKTRACE
     cm_backtrace_assert(cmb_get_sp());
 #endif

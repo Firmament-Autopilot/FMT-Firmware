@@ -220,7 +220,7 @@ static uint8_t _request_burst(FTP_Msg_Payload* payload, uint8_t target_system, u
 	_stream_session.stream_target_component_id = target_component;
 	_stream_session.complete = 0;
 
-	mavcmd_set(MAVCMD_STREAM_SESSION, &_stream_session);
+	mavproxy_cmd_set(MAVCMD_STREAM_SESSION, &_stream_session);
 
 	DBG("burst read, session seq:%d offset:%d sys_id:%d comp_id:%d", _stream_session.stream_seq_number,
 	    _stream_session.stream_offset, _stream_session.stream_target_system_id, _stream_session.stream_target_component_id);
@@ -322,7 +322,7 @@ static uint8_t _request_terminate(FTP_Msg_Payload* payload)
 	_stream_session.fd = -1;
 	_stream_session.file_size = 0;
 
-	mavcmd_clear(MAVCMD_STREAM_SESSION);
+	mavproxy_cmd_reset(MAVCMD_STREAM_SESSION);
 
 	payload->size = 0;
 
@@ -338,7 +338,7 @@ static uint8_t _request_reset(FTP_Msg_Payload* payload)
 		_stream_session.fd = -1;
 		_stream_session.file_size = 0;
 
-		mavcmd_clear(MAVCMD_STREAM_SESSION);
+		mavproxy_cmd_reset(MAVCMD_STREAM_SESSION);
 	}
 
 	payload->size = 0;
@@ -460,7 +460,7 @@ fmt_err ftp_stream_send(StreamSession* stream_session)
 
 	if(ftp_msg_t->offset >= stream_session->file_size) {
 		/* stream session complete */
-		mavcmd_clear(MAVCMD_STREAM_SESSION);
+		mavproxy_cmd_reset(MAVCMD_STREAM_SESSION);
 
 		stream_session->complete = 1;
 

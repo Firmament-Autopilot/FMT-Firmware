@@ -19,6 +19,7 @@
 #include "hal/motor.h"
 #include "module/controller/controller_model.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/toml/toml.h"
 
 #define TOML_DBG_E(...)             toml_debug("Actuator_Cmd", "E", __VA_ARGS__)
 #define TOML_DBG_W(...)             toml_debug("Actuator_Cmd", "W", __VA_ARGS__)

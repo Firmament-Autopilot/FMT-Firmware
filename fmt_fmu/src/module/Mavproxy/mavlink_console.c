@@ -32,7 +32,7 @@ static uint8_t _mav_console_tx_buffer[MAV_CONSOLE_TX_BUFFER_SIZE];
 static mavlink_serial_control_t _serial_control;
 static struct rt_timer timer_mav_console;
 
-void mav_console_timeout(void* parameter)
+static void mav_console_timeout(void* parameter)
 {
     mavproxy_send_event(EVENT_MAVCONSOLE_TIMEOUT);
 }
