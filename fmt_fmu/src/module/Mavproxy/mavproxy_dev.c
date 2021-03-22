@@ -18,45 +18,43 @@
 #include "hal/cdcacm.h"
 #include "hal/serial.h"
 
-static rt_device_t _mavproxy_dev = RT_NULL;
-static rt_sem_t _mavproxy_dev_rx_sem, _mavproxy_dev_tx_sem;
+static rt_device_t mavproxy_dev = RT_NULL;
+static struct rt_completion tx_cplt, rx_cplt;
 
-fmt_err (*_mav_rx_indicate)(uint32_t size);
+static fmt_err (*mav_rx_indicate)(uint32_t size);
 
 static rt_err_t mavproxy_dev_tx_done(rt_device_t dev, void* buffer)
 {
-    return rt_sem_release(_mavproxy_dev_tx_sem);
+    rt_completion_done(&tx_cplt);
+    return RT_EOK;
 }
 
 static rt_err_t mavproxy_dev_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_err_t rt_err;
-    rt_err = rt_sem_release(_mavproxy_dev_rx_sem);
+    rt_completion_done(&rx_cplt);
 
-    if (_mav_rx_indicate) {
-        _mav_rx_indicate(size);
+    if (mav_rx_indicate) {
+        mav_rx_indicate(size);
     }
 
-    return rt_err;
+    return RT_EOK;
 }
 
 rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t size;
 
-    if (_mavproxy_dev == NULL) {
+    if (mavproxy_dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
     }
-    /* reset semaphore value to 0 and resume all waiting threads */
-    if (timeout != RT_WAITING_NO) {
-        rt_sem_control(_mavproxy_dev_tx_sem, RT_IPC_CMD_RESET, 0);
-    }
     /* write data to device */
-    size = rt_device_write(_mavproxy_dev, 0, buffer, len);
+    size = rt_device_write(mavproxy_dev, 0, buffer, len);
     if (size > 0) {
         /* wait write complete (synchronized write) */
-        rt_sem_take(_mavproxy_dev_tx_sem, timeout);
+        if (rt_completion_wait(&tx_cplt, timeout) != RT_EOK) {
+            return 0;
+        }
     }
 
     return size;
@@ -66,27 +64,34 @@ rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t cnt = 0;
 
-    if (_mavproxy_dev == NULL) {
+    if (mavproxy_dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
     }
 
     /* try to read data */
-    cnt = rt_device_read(_mavproxy_dev, 0, buffer, len);
+    cnt = rt_device_read(mavproxy_dev, 0, buffer, len);
 
     /* sync mode */
     if (timeout != 0) {
+        uint32_t time_start, elapse_time;
         /* if not enough data reveived, wait it */
         while (cnt < len) {
-            rt_err_t rt_err;
+            time_start = systime_now_ms();
             /* wait until something reveived (synchronized read) */
-            rt_err = rt_sem_take(_mavproxy_dev_rx_sem, timeout);
-
-            if (rt_err != RT_EOK)
+            if (rt_completion_wait(&rx_cplt, timeout) != RT_EOK) {
                 break;
-
+            }
+            if (timeout != RT_WAITING_FOREVER) {
+                elapse_time = systime_now_ms() - time_start;
+                timeout -= elapse_time;
+                if (timeout <= 0) {
+                    /* timeout */
+                    break;
+                }
+            }
             /* read rest data */
-            cnt += rt_device_read(_mavproxy_dev, 0, (void*)((uint32_t)buffer + cnt), len - cnt);
+            cnt += rt_device_read(mavproxy_dev, 0, (void*)((uint32_t)buffer + cnt), len - cnt);
         }
     }
 
@@ -95,7 +100,7 @@ rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
 
 void mavproxy_dev_set_rx_indicate(fmt_err (*rx_ind)(uint32_t size))
 {
-    _mav_rx_indicate = rx_ind;
+    mav_rx_indicate = rx_ind;
 }
 
 fmt_err mavproxy_set_device(const char* dev_name)
@@ -108,7 +113,7 @@ fmt_err mavproxy_set_device(const char* dev_name)
         return FMT_EEMPTY;
     }
 
-    if (new_dev != _mavproxy_dev) {
+    if (new_dev != mavproxy_dev) {
         rt_uint16_t flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX;
         if (new_dev->flag & (RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX)) {
             /* if device support DMA, then use it */
@@ -118,7 +123,7 @@ fmt_err mavproxy_set_device(const char* dev_name)
         if (err != RT_EOK) {
             return FMT_ERROR;
         }
-        _mavproxy_dev = new_dev;
+        mavproxy_dev = new_dev;
     }
 
     /* set callback functions */
@@ -130,18 +135,13 @@ fmt_err mavproxy_set_device(const char* dev_name)
 
 rt_device_t mavproxy_get_device(void)
 {
-    return _mavproxy_dev;
+    return mavproxy_dev;
 }
 
 fmt_err mavproxy_dev_init(void)
 {
-    _mavproxy_dev_rx_sem = rt_sem_create("mavdev_rx_sem", 0, RT_IPC_FLAG_FIFO);
-    _mavproxy_dev_tx_sem = rt_sem_create("mavdev_tx_sem", 0, RT_IPC_FLAG_FIFO);
-
-    if (_mavproxy_dev_rx_sem == RT_NULL || _mavproxy_dev_tx_sem == RT_NULL) {
-        console_printf("mavproxy rx/tx sem create fail\n");
-        return FMT_ERROR;
-    }
+    rt_completion_init(&tx_cplt);
+    rt_completion_init(&rx_cplt);
 
     return FMT_EOK;
 }
