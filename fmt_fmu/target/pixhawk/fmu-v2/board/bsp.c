@@ -39,7 +39,7 @@
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
 #include "driver/usart.h"
-#include "hal/cdcacm.h"
+#include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
 #include "module/controller/controller_model.h"
 #include "module/file_manager/file_manager.h"
@@ -256,7 +256,7 @@ void bsp_initialize(void)
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init usb device */
-    FMT_CHECK(usb_cdc_init());
+    RTT_CHECK(drv_usb_cdc_init());
 
     /* init imu0 */
     RTT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));

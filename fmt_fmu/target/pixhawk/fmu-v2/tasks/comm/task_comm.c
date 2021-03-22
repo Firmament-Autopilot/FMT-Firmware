@@ -18,7 +18,6 @@
 #include <string.h>
 
 #include "driver/gps.h"
-#include "hal/cdcacm.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"

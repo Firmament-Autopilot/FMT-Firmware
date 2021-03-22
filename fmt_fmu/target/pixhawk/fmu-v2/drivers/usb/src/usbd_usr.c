@@ -27,7 +27,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_usr.h"
-#include <stdio.h>
+
+void drv_usbd_cdc_connect_cb(void);
+void drv_usbd_cdc_disconnect_cb(void);
 
 USBD_Usr_cb_TypeDef USR_cb = {
 	USBD_USR_Init,
@@ -138,7 +140,6 @@ void USBD_USR_DeviceResumed(void)
 	/* Users can do their application actions here for the USB-Reset */
 }
 
-
 /**
 * @brief  USBD_USR_DeviceConnected
 *         Displays the message on LCD on device connection Event
@@ -147,8 +148,7 @@ void USBD_USR_DeviceResumed(void)
 */
 void USBD_USR_DeviceConnected(void)
 {
-	//printf("> USB Device Connected.\n");
-	cdc_connected_status_change(1);
+    drv_usbd_cdc_connect_cb();
 }
 
 
@@ -160,7 +160,7 @@ void USBD_USR_DeviceConnected(void)
 */
 void USBD_USR_DeviceDisconnected(void)
 {
-	cdc_connected_status_change(0);
+    drv_usbd_cdc_disconnect_cb();
 }
 
 /**

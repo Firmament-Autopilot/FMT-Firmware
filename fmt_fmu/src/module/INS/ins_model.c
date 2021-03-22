@@ -18,7 +18,7 @@
 #include <firmament.h>
 
 #include "module/sensor/sensor_manager.h"
-#include "task_logger.h"
+// #include "task_logger.h"
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));

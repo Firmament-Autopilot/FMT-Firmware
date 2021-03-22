@@ -15,7 +15,6 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/cdcacm.h"
 #include "hal/serial.h"
 
 static rt_device_t mavproxy_dev = RT_NULL;

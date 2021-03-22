@@ -17,6 +17,7 @@
 
 #include "hal/usbd_cdc.h"
 #include "module/utils/ringbuffer.h"
+#include "module/utils/devmq.h"
 
 #define USBD_WAIT_TIMEOUT 1000
 #define USBD_RX_FIFO_SIZE 1280
@@ -37,8 +38,6 @@ static rt_err_t hal_usbd_cdc_init(rt_device_t device)
     if (usbd->tx_lock == NULL) {
         return FMT_ENOMEM;
     }
-
-    usbd->status = USBD_STATUS_DISCONNECT;
 
     if (usbd->ops->dev_init) {
         err = usbd->ops->dev_init(usbd);
@@ -101,12 +100,19 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t device, rt_off_t pos, const void
 
 void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 {
+    int dev_sta;
     switch (status) {
     case USBD_STATUS_DISCONNECT:
         usbd->status = USBD_STATUS_DISCONNECT;
+        /* notify usb disconnect status */
+        dev_sta = DEVICE_STAUTS_DISCONNECT;
+        devmq_notify(&usbd->parent, &status);
         break;
     case USBD_STATUS_CONNECT:
         usbd->status = USBD_STATUS_CONNECT;
+        /* notify usb connect status */
+        dev_sta = DEVICE_STATUS_CONNECT;
+        devmq_notify(&usbd->parent, &dev_sta);
         break;
     case USBD_STATUS_TX_COMPLETE:
         rt_completion_done(&usbd->tx_cplt);
@@ -126,8 +132,6 @@ void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 
 rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t usbd, const char* name, rt_uint16_t flag, void* data)
 {
-    rt_err_t res;
-
     rt_device_t dev = &usbd->parent;
 
     dev->type = RT_Device_Class_USBDevice;
@@ -145,8 +149,13 @@ rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t usbd, const char* name, rt_uint16_
 
     dev->user_data = RT_NULL;
 
-    /* register to device manager */
-    res = rt_device_register(dev, name, flag);
+    if (rt_device_register(dev, name, flag) != RT_EOK) {
+        return FMT_ERROR;
+    }
 
-    return res;
+    if (devmq_create(dev, sizeof(device_status), 5) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
 }
