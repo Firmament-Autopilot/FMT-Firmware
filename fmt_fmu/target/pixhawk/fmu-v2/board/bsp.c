@@ -39,7 +39,7 @@
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
 #include "driver/usart.h"
-#include "hal/cdcacm.h"
+#include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
 #include "module/controller/controller_model.h"
 #include "module/file_manager/file_manager.h"
@@ -81,7 +81,8 @@ static const struct dfs_mount_tbl mnt_table[] = {
 	baudrate = 57600\n\
 	[[mavproxy.devices]]\n\
 	type = \"usb\"\n\
-	name = \"usb\""
+	name = \"usbd0\"\n\
+    auto-switch = true"
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
@@ -256,7 +257,7 @@ void bsp_initialize(void)
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init usb device */
-    FMT_CHECK(usb_cdc_init());
+    RTT_CHECK(drv_usb_cdc_init());
 
     /* init imu0 */
     RTT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));

@@ -19,12 +19,17 @@
 
 #include "module/syscmd/syscmd.h"
 
-static int _name_maxlen(const char* title, const McnList_t list)
+static int _name_maxlen(const char* title)
 {
     int max_len = strlen(title);
 
-    for (McnList_t cp = list; cp != NULL; cp = cp->next) {
-        int len = strlen(cp->hub_t->obj_name);
+    McnList_t ite = mcn_get_list();
+    while (1) {
+        McnHub_t hub = mcn_iterate(&ite);
+        if (hub == NULL) {
+            break;
+        }
+        int len = strlen(hub->obj_name);
 
         if (len > max_len) {
             max_len = len;
@@ -36,13 +41,12 @@ static int _name_maxlen(const char* title, const McnList_t list)
 
 static void _list_topics(void)
 {
-    McnList list = mcn_get_list();
     char* title_1 = "Topic";
     char* title_2 = "#SUB";
     char* title_3 = "Freq(Hz)";
     char* title_4 = "Echo";
     char* title_5 = "Suspend";
-    uint32_t title1_len = _name_maxlen(title_1, &list) + 2;
+    uint32_t title1_len = _name_maxlen(title_1) + 2;
     uint32_t title2_len = strlen(title_2) + 2;
     uint32_t title3_len = strlen(title_3) + 2;
     uint32_t title4_len = strlen(title_4) + 2;
@@ -70,53 +74,50 @@ static void _list_topics(void)
     syscmd_putc('-', title5_len);
     console_printf("\n");
 
-    for (McnList_t cp = &list;; cp = cp->next) {
-        if (cp == NULL) {
-            break;
-        }
-        syscmd_printf(' ', title1_len, SYSCMD_ALIGN_LEFT, cp->hub_t->obj_name);
+    McnList_t ite = mcn_get_list();
+    for (McnHub_t hub = mcn_iterate(&ite); hub != NULL; hub = mcn_iterate(&ite)) {
+        syscmd_printf(' ', title1_len, SYSCMD_ALIGN_LEFT, hub->obj_name);
         syscmd_putc(' ', 1);
-        syscmd_printf(' ', title2_len, SYSCMD_ALIGN_MIDDLE, "%d", (int)cp->hub_t->link_num);
+        syscmd_printf(' ', title2_len, SYSCMD_ALIGN_MIDDLE, "%d", (int)hub->link_num);
         syscmd_putc(' ', 1);
-        syscmd_printf(' ', title3_len, SYSCMD_ALIGN_MIDDLE, "%.1f", cp->hub_t->freq);
+        syscmd_printf(' ', title3_len, SYSCMD_ALIGN_MIDDLE, "%.1f", hub->freq);
         syscmd_putc(' ', 1);
-        syscmd_printf(' ', title4_len, SYSCMD_ALIGN_MIDDLE, "%s", cp->hub_t->echo ? "true" : "false");
+        syscmd_printf(' ', title4_len, SYSCMD_ALIGN_MIDDLE, "%s", hub->echo ? "true" : "false");
         syscmd_putc(' ', 1);
-        syscmd_printf(' ', title5_len, SYSCMD_ALIGN_MIDDLE, "%s", cp->hub_t->suspend ? "true" : "false");
+        syscmd_printf(' ', title5_len, SYSCMD_ALIGN_MIDDLE, "%s", hub->suspend ? "true" : "false");
         console_printf("\n");
     }
 }
 
 static void _suspend_topic(const char* topic_name, bool suspend)
 {
-    McnList_t cp;
-    McnList list = mcn_get_list();
-
-    for (cp = &list;; cp = cp->next) {
-        if (cp == NULL) {
+    McnList_t ite = mcn_get_list();
+    McnHub_t target_hub = NULL;
+    while (1) {
+        McnHub_t hub = mcn_iterate(&ite);
+        if (hub == NULL) {
             break;
         }
-        if (strcmp(cp->hub_t->obj_name, topic_name) == 0) {
+        if (strcmp(hub->obj_name, topic_name) == 0) {
+            target_hub = hub;
             break;
         }
     }
 
-    if (cp == NULL) {
+    if (target_hub == NULL) {
         console_printf("can not find topic %s\n", topic_name);
         return;
     }
 
     if (suspend == true) {
-        mcn_suspend(cp->hub_t);
+        mcn_suspend(target_hub);
     } else {
-        mcn_resume(cp->hub_t);
+        mcn_resume(target_hub);
     }
 }
 
 static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
 {
-    McnList_t cp;
-    McnList list = mcn_get_list();
     uint32_t cnt = 0xFFFFFFFF;
     uint32_t period = 500;
 
@@ -137,26 +138,30 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
         }
     }
 
-    for (cp = &list;; cp = cp->next) {
-        if (cp == NULL) {
+    McnList_t ite = mcn_get_list();
+    McnHub_t target_hub = NULL;
+    while (1) {
+        McnHub_t hub = mcn_iterate(&ite);
+        if (hub == NULL) {
             break;
         }
-        if (strcmp(cp->hub_t->obj_name, topic_name) == 0) {
+        if (strcmp(hub->obj_name, topic_name) == 0) {
+            target_hub = hub;
             break;
         }
     }
 
-    if (cp == NULL) {
+    if (target_hub == NULL) {
         console_printf("can not find topic %s\n", topic_name);
         return;
     }
 
-    if (cp->hub_t->echo == NULL) {
+    if (target_hub->echo == NULL) {
         console_printf("there is no topic echo function defined!\n");
         return;
     }
 
-    McnNode_t node = mcn_subscribe(cp->hub_t, NULL, NULL);
+    McnNode_t node = mcn_subscribe(target_hub, NULL, NULL);
 
     if (node == NULL) {
         console_printf("mcn subscribe fail\n");
@@ -172,7 +177,7 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
 
         if (mcn_poll(node)) {
             /* call custom echo function */
-            cp->hub_t->echo(cp->hub_t);
+            target_hub->echo(target_hub);
             mcn_node_clear(node);
             cnt--;
         }
@@ -182,7 +187,7 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
         }
     }
 
-    if (mcn_unsubscribe(cp->hub_t, node) != FMT_EOK) {
+    if (mcn_unsubscribe(target_hub, node) != FMT_EOK) {
         console_printf("mcn unsubscribe fail\n");
     }
 }

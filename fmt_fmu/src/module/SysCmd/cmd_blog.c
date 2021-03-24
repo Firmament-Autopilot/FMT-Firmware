@@ -17,7 +17,7 @@
 #include <firmament.h>
 
 #include "module/syscmd/syscmd.h"
-#include "task_logger.h"
+#include "task/task_logger.h"
 #include "module/file_manager/file_manager.h"
 
 static void _show_blog_status(void)

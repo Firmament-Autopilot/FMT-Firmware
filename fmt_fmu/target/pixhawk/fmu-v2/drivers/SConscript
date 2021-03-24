@@ -5,20 +5,8 @@ Import('RTT_ROOT')
 cwd = GetCurrentDir()
 
 src = Glob('*.c')
-src += Split('''
-usb/src/usb_bsp.c
-usb/src/usb_core.c
-usb/src/usb_dcd.c
-usb/src/usb_dcd_int.c
-usb/src/usbd_cdc_core_loopback.c
-usb/src/usbd_core.c
-usb/src/usbd_desc.c
-usb/src/usbd_ioreq.c
-usb/src/usbd_req.c
-usb/src/usbd_usr.c
-sdio/sd_dev.c
-sdio/sdio.c
-''')
+src += Glob('usb/src/*.c')
+src += Glob('sdio/*.c')
 
 inc = [cwd, cwd + '/usb/inc']
 

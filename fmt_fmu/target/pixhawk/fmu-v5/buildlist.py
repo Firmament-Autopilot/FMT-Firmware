@@ -14,11 +14,13 @@ HAL = [
     'serial/*.c',
     'systick/*.c',
     'sd/*.c',
+    'usb/usbd_cdc.c',
 ]
 
 HAL_CPPPATH = []
 
 MODULES = [
+    'Calibration/*.c',
     'Console/*.c',
     'System/*.c',
     'IPC/*.c',
@@ -27,12 +29,40 @@ MODULES = [
     'SysCmd/cmd_mcn.c',
     'SysCmd/cmd_param.c',
     'File_Manager/*.c',
+    'FTP/*.c',
+    'Plant/*.c',
+    'Plant/lib/*.c',
+    'INS/*.c',
+    'INS/lib/*.c',
+    'Controller/*.c',
+    'Controller/lib/*.c',
+    'FMS/*.c',
+    'FMS/lib/*.c',
     "Log/boot_log.c",
     "Parameter/*.c",
+    'Utils/*.c',
+    'Mavproxy/*.c',
+    'Sensor/*.c',
+    'SysIO/*.c',
+    'TOML/*.c',
 ]
 
-MODULES_CPPPATH = []
+MODULES_CPPPATH = [
+    'Calibration',
+    'INS/lib',
+    'Plant/lib',
+    'Controller/lib',
+    'FMS/lib',
+]
+
+TASKS = [
+    'simple/*.c',
+    'comm/*.c',
+]
+
+TASKS_CPPPATH = []
 
 LIBS = [
     'cm_backtrace',
+    'mavlink'
 ]

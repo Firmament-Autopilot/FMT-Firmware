@@ -18,6 +18,7 @@ src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_dma.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usart.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_gpio.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c')
 
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c')
@@ -34,6 +35,8 @@ src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c')
 
 #add for startup script 
 if rtconfig.CROSS_TOOL == 'gcc':

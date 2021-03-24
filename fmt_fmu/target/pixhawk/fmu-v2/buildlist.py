@@ -11,7 +11,6 @@ DRIVERS = [
     'mpu6000/*.c',
     'ms5611/*.c',
     'tca62724/*.c',
-    'utils/*.c',
     'mateksys/*.c',
 ]
 
@@ -31,7 +30,6 @@ HAL = [
     'rc/*.c',
     'serial/*.c',
     'systick/*.c',
-    'tools/*.c',
     'usb/*.c',
     'optical_flow/*.c',
     'spi/spi_core.c',

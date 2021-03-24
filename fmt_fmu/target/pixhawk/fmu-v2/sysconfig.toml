@@ -59,7 +59,7 @@ target = "Pixhawk FMUv2"
 	
 	[[mavproxy.devices]]		# channel 1
 	type = "usb"
-	name = "usb"				# device name
+	name = "usbd0"				# device name
 	# automatically switch to usb if connected, switch back to default device is disconnected
 	auto-switch = true
 
