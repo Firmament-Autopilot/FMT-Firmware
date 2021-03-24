@@ -17,31 +17,45 @@
 #include <firmament.h>
 #include <string.h>
 
-static McnList _Mcn_list = { NULL, NULL };
-static struct rt_timer _timer_mcn_freq_est;
+static McnList __mcn_list = { NULL, NULL };
+static struct rt_timer timer_mcn_freq_est;
 
-static void _mcn_freq_est(void* parameter)
+static void __mcn_freq_est_entry(void* parameter)
 {
-    for (McnList_t cp = &_Mcn_list; cp != NULL; cp = cp->next) {
-        McnHub* hub_t = cp->hub_t;
+    for (McnList_t cp = &__mcn_list; cp != NULL; cp = cp->next) {
+        McnHub_t hub = cp->hub;
         /* calculate publish frequency */
         uint32_t cnt = 0;
         for (int i = 0; i < MCN_FREQ_EST_WINDOW_LEN; i++) {
-            cnt += hub_t->freq_est_window[i];
-            hub_t->freq = (float)cnt / MCN_FREQ_EST_WINDOW_LEN;
+            cnt += hub->freq_est_window[i];
+            hub->freq = (float)cnt / MCN_FREQ_EST_WINDOW_LEN;
         }
         /* move window */
-        hub_t->window_index = (hub_t->window_index + 1) % MCN_FREQ_EST_WINDOW_LEN;
-        hub_t->freq_est_window[hub_t->window_index] = 0;
+        hub->window_index = (hub->window_index + 1) % MCN_FREQ_EST_WINDOW_LEN;
+        hub->freq_est_window[hub->window_index] = 0;
     }
 }
 
-McnList mcn_get_list(void)
+McnList_t mcn_get_list(void)
 {
-    return _Mcn_list;
+    return &__mcn_list;
 }
 
-fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
+McnHub_t mcn_iterate(McnList_t* ite)
+{
+    McnHub_t hub;
+    McnList_t node = *ite;
+
+    if (node == NULL) {
+        return NULL;
+    }
+    hub = node->hub;
+    *ite = node->next;
+
+    return hub;
+}
+
+fmt_err mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
 {
     MCN_ASSERT(hub != NULL);
 
@@ -61,14 +75,14 @@ fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
     memset(hub->pdata, 0, hub->obj_size);
 
     /* update Mcn List */
-    McnList_t cp = &_Mcn_list;
+    McnList_t cp = &__mcn_list;
 
     while (cp->next != NULL) {
         /* find last node */
         cp = cp->next;
     }
 
-    if (cp->hub_t != NULL) {
+    if (cp->hub != NULL) {
         cp->next = (McnList_t)MCN_MALLOC(sizeof(McnList));
 
         if (cp->next == NULL)
@@ -77,7 +91,7 @@ fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
         cp = cp->next;
     }
 
-    cp->hub_t = hub;
+    cp->hub = hub;
     cp->next = NULL;
 
     /* init publish freq estimator window */
@@ -89,7 +103,7 @@ fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter))
     return FMT_EOK;
 }
 
-McnNode_t mcn_subscribe(McnHub* hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* parameter))
+McnNode_t mcn_subscribe(McnHub_t hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* parameter))
 {
     MCN_ASSERT(hub != NULL);
 
@@ -136,7 +150,7 @@ McnNode_t mcn_subscribe(McnHub* hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* 
     return node;
 }
 
-fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node)
+fmt_err mcn_unsubscribe(McnHub_t hub, McnNode_t node)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(node != NULL);
@@ -187,7 +201,7 @@ fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node)
     return FMT_EOK;
 }
 
-fmt_err mcn_publish(McnHub* hub, const void* data)
+fmt_err mcn_publish(McnHub_t hub, const void* data)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(data != NULL);
@@ -262,7 +276,7 @@ bool mcn_poll_sync(McnNode_t node_t, int32_t timeout)
     return MCN_WAIT_EVENT(node_t->event_t, timeout) == 0 ? 1 : 0;
 }
 
-fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer)
+fmt_err mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(node_t != NULL);
@@ -286,7 +300,7 @@ fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer)
     return FMT_EOK;
 }
 
-fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer)
+fmt_err mcn_copy_from_hub(McnHub_t hub, void* buffer)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(buffer != NULL);
@@ -324,7 +338,7 @@ void mcn_node_clear(McnNode_t node_t)
 /**
   * \brief suspend a topic
   */
-void mcn_suspend(McnHub* hub)
+void mcn_suspend(McnHub_t hub)
 {
     hub->suspend = 1;
 }
@@ -332,20 +346,20 @@ void mcn_suspend(McnHub* hub)
 /**
   * \brief resume a topic
   */
-void mcn_resume(McnHub* hub)
+void mcn_resume(McnHub_t hub)
 {
     hub->suspend = 0;
 }
 
 fmt_err mcn_init(void)
 {
-    rt_timer_init(&_timer_mcn_freq_est, "mcn_freq_est",
-        _mcn_freq_est,
+    rt_timer_init(&timer_mcn_freq_est, "mcn_freq_est",
+        __mcn_freq_est_entry,
         NULL,
         1000,
         RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 
-    if (rt_timer_start(&_timer_mcn_freq_est) != RT_EOK) {
+    if (rt_timer_start(&timer_mcn_freq_est) != RT_EOK) {
         return FMT_ERROR;
     }
 
