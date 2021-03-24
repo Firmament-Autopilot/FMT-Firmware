@@ -11,7 +11,7 @@
 #include <rthw.h>
 #include <rtthread.h>
 #include <rtdevice.h>
-#include "driver/ringblk_buf.h"
+#include "ringblk_buf.h"
 
 /**
  * ring block buffer object initialization

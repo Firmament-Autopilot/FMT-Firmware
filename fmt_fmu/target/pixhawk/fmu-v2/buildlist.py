@@ -11,7 +11,6 @@ DRIVERS = [
     'mpu6000/*.c',
     'ms5611/*.c',
     'tca62724/*.c',
-    'utils/*.c',
     'mateksys/*.c',
 ]
 

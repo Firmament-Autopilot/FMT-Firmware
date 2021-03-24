@@ -33,7 +33,8 @@
         "cstdint": "cpp",
         "iosfwd": "c",
         "cmath": "c",
-        "dfs_posix.h": "c"
+        "dfs_posix.h": "c",
+        "ringblk_buf.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled",
     "git.ignoreLimitWarning": true,
