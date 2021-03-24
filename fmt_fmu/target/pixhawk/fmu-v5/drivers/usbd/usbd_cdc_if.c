@@ -20,12 +20,11 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include <firmament.h>
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "firmament.h"
-#include "hal/usbd_cdc.h"
-#include "drv_usbd_cdc.h"
+
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -267,27 +266,11 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-
-//   rt_device_t usbd_dev_parent = rt_device_find("usbd0");
-//   if(usbd_dev_parent != NULL){
-
-//     usbd_cdc_dev_t usbd_dev = (usbd_cdc_dev_t)usbd_dev_parent;
-
-//     usbd_dev->ops->usbd_cdc_dev_ringbuf_put(usbd_dev_parent,Buf,Len);
-
-//     if(usbd_dev_parent->rx_indicate != RT_NULL){
-//       usbd_dev_parent->rx_indicate(usbd_dev_parent,(rt_size_t)*Len);
-//     }
-
-//   }
-
   drv_usbd_cdc_receive(Buf, *Len);
 
   /* prepare out endpoint to receive next packet */
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-
-//   drv_usbd_cdc_receive(Buf, *Len);
 
   return (USBD_OK);
   /* USER CODE END 6 */

@@ -28,6 +28,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <firmament.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,8 +37,7 @@
 #include "stm32f7xx_hal.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "firmament.h"
-#include "stm32f7xx_hal_conf.h"
+
 /* USER CODE END INCLUDE */
 
 /** @addtogroup USBD_OTG_DRIVER

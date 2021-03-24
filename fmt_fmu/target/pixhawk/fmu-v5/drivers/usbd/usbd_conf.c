@@ -25,14 +25,13 @@
 #include "usbd_core.h"
 
 /* USER CODE BEGIN Includes */
-#include <firmament.h>
-#include "hal/usbd_cdc.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
-extern usbd_cdc_dev_t usb_cdc_device;
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
