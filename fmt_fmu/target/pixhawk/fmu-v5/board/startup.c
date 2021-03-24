@@ -22,12 +22,16 @@
 #endif
 
 #include "hal/pin.h"
-#include "task_simple.h"
+#include "task/task_simple.h"
+#include "task/task_comm.h"
 
 static rt_thread_t tid0;
 
 static char thread_simple_stack[2048];
 struct rt_thread thread_simple_handle;
+
+static char thread_comm_stack[8192];
+struct rt_thread thread_comm_handle;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
@@ -58,6 +62,7 @@ static void rt_init_thread_entry(void* parameter)
 
     /********************* init tasks *********************/
     FMT_CHECK(task_simple_init());
+    FMT_CHECK(task_comm_init());
 
     /********************* bsp post init *********************/
     bsp_post_initialize();
@@ -71,6 +76,15 @@ static void rt_init_thread_entry(void* parameter)
         sizeof(thread_simple_stack), 10, 1);
     RT_ASSERT(res == RT_EOK);
     rt_thread_startup(&thread_simple_handle);
+
+    res = rt_thread_init(&thread_comm_handle,
+        "comm",
+        task_comm_entry,
+        RT_NULL,
+        &thread_comm_stack[0],
+        sizeof(thread_comm_stack), COMM_THREAD_PRIORITY, 1);
+    RT_ASSERT(res == RT_EOK);
+    rt_thread_startup(&thread_comm_handle);
 
     /* delete itself */
     rt_thread_delete(tid0);

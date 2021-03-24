@@ -23,8 +23,8 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/system/statistic.h"
-#include "task_comm.h"
-#include "task_vehicle.h"
+#include "task/task_comm.h"
+#include "task/task_vehicle.h"
 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);

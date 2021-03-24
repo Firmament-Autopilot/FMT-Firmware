@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __DRV_USBD_CDC_H__
 #define __DRV_USBD_CDC_H__
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 rt_err_t drv_usb_cdc_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -23,8 +23,8 @@
 #include "module/ins/ins_model.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/utils/devmq.h"
-#include "task_logger.h"
-#include "task_status.h"
+#include "task/task_logger.h"
+#include "task/task_status.h"
 
 #define TAG "Status"
 

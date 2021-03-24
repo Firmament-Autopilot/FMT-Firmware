@@ -28,7 +28,7 @@
 #define MCN_WAIT_EVENT(event, time) rt_sem_take(event, time)
 #define MCN_ASSERT(EX)              RT_ASSERT(EX)
 
-#define MCN_MAX_LINK_NUM 30
+#define MCN_MAX_LINK_NUM        30
 #define MCN_FREQ_EST_WINDOW_LEN 5
 
 typedef struct mcn_node McnNode;
@@ -41,6 +41,7 @@ struct mcn_node {
 };
 
 typedef struct mcn_hub McnHub;
+typedef struct mcn_hub* McnHub_t;
 struct mcn_hub {
     const char* obj_name;
     const uint32_t obj_size;
@@ -60,7 +61,7 @@ struct mcn_hub {
 typedef struct mcn_list McnList;
 typedef struct mcn_list* McnList_t;
 struct mcn_list {
-    McnHub* hub_t;
+    McnHub_t hub;
     McnList_t next;
 };
 
@@ -83,18 +84,19 @@ struct mcn_list {
     }
 
 /******************* API *******************/
-fmt_err mcn_advertise(McnHub* hub, int (*echo)(void* parameter));
-McnNode_t mcn_subscribe(McnHub* hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* parameter));
-fmt_err mcn_unsubscribe(McnHub* hub, McnNode_t node);
-fmt_err mcn_publish(McnHub* hub, const void* data);
+fmt_err mcn_advertise(McnHub_t hub, int (*echo)(void* parameter));
+McnNode_t mcn_subscribe(McnHub_t hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* parameter));
+fmt_err mcn_unsubscribe(McnHub_t hub, McnNode_t node);
+fmt_err mcn_publish(McnHub_t hub, const void* data);
 bool mcn_poll(McnNode_t node_t);
 bool mcn_poll_sync(McnNode_t node_t, int32_t timeout);
-fmt_err mcn_copy(McnHub* hub, McnNode_t node_t, void* buffer);
-fmt_err mcn_copy_from_hub(McnHub* hub, void* buffer);
+fmt_err mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer);
+fmt_err mcn_copy_from_hub(McnHub_t hub, void* buffer);
 void mcn_node_clear(McnNode_t node_t);
-void mcn_suspend(McnHub* hub);
-void mcn_resume(McnHub* hub);
+void mcn_suspend(McnHub_t hub);
+void mcn_resume(McnHub_t hub);
 fmt_err mcn_init(void);
-McnList mcn_get_list(void);
+McnList_t mcn_get_list(void);
+McnHub_t mcn_iterate(McnList_t* ite);
 
 #endif

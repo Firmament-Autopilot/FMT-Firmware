@@ -81,7 +81,8 @@ static const struct dfs_mount_tbl mnt_table[] = {
 	baudrate = 57600\n\
 	[[mavproxy.devices]]\n\
 	type = \"usb\"\n\
-	name = \"usb\""
+	name = \"usbd0\"\n\
+    auto-switch = true"
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"

@@ -16,11 +16,10 @@
 #include <firmament.h>
 
 #include "hal/usbd_cdc.h"
-#include "module/utils/ringbuffer.h"
 #include "module/utils/devmq.h"
 
 #define USBD_WAIT_TIMEOUT 1000
-#define USBD_RX_FIFO_SIZE 1280
+#define USBD_RX_FIFO_SIZE 2048
 
 static rt_err_t hal_usbd_cdc_init(rt_device_t device)
 {
@@ -47,16 +46,9 @@ static rt_err_t hal_usbd_cdc_init(rt_device_t device)
 
 static rt_err_t hal_usbd_cdc_open(rt_device_t device, rt_uint16_t oflag)
 {
-    // usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
-
     if ((device->flag & oflag) != oflag) {
         return RT_EIO;
     }
-
-    /* TODO: should we check usb status here? */
-    // if(usbd->status != USBD_STATUS_CONNECT){
-    //     return RT_ENOSYS;
-    // }
 
     return RT_EOK;
 }
@@ -90,9 +82,8 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t device, rt_off_t pos, const void
         wb = usbd->ops->dev_write(usbd, pos, buffer, size);
     }
 
-    if (rt_completion_wait(&usbd->tx_cplt, TICKS_FROM_MS(USBD_WAIT_TIMEOUT)) != RT_EOK) {
-        return 0;
-    }
+    /* wait until send is finished */
+    rt_completion_wait(&usbd->tx_cplt, TICKS_FROM_MS(USBD_WAIT_TIMEOUT));
 
     rt_mutex_release(usbd->tx_lock);
     return wb;

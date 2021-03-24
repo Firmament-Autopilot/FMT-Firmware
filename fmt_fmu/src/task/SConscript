@@ -1,0 +1,17 @@
+from building import *
+import buildlist as bl
+
+cwd = GetCurrentDir()
+
+src = []
+for f in bl.TASKS:
+    src += Glob(f)
+
+inc = []
+for d in bl.TASKS_CPPPATH:
+    inc += [cwd + '/' + d]
+
+group = DefineGroup('Task', src, depend=[''], CPPPATH=inc)
+
+Return('group')
+

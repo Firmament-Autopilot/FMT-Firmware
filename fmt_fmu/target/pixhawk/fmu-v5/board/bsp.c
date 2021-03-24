@@ -33,11 +33,41 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
+#include "module/toml/toml.h"
+
+#define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
+[console]\n\
+	[[console.devices]]\n\
+	type = \"serial\"\n\
+	name = \"serial0\"\n\
+	baudrate = 57600\n\
+	auto-switch = true\n\
+	[[console.devices]]\n\
+	type = \"mavlink\"\n\
+	name = \"mav_console\"\n\
+	auto-switch = true\n\
+[mavproxy]\n\
+	[[mavproxy.devices]]\n\
+	type = \"serial\"\n\
+	name = \"serial1\"\n\
+	baudrate = 57600\n\
+	[[mavproxy.devices]]\n\
+	type = \"usb\"\n\
+	name = \"usbd0\"\n\
+    auto-switch = true"
+
+#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+
+fmt_err console_toml_config(toml_table_t* table);
+fmt_err mavproxy_toml_config(toml_table_t* table);
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
-    { NULL }    /* NULL indicate the end */
+    { NULL } /* NULL indicate the end */
 };
+
+static toml_table_t* __toml_root_tab = NULL;
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -53,6 +83,61 @@ static void _print_line(const char* name, const char* content, uint32_t len)
         console_write(".", 1);
 
     console_printf("%s\n", content);
+}
+
+static fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+{
+    fmt_err err = FMT_EOK;
+    toml_table_t* sub_tab;
+    const char* key;
+    const char* raw;
+    char* target;
+    int i;
+
+    if (root_tab == NULL) {
+        return FMT_ERROR;
+    }
+
+    /* target should be defined and match with bsp */
+    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
+        if (toml_rtos(raw, &target) != 0) {
+            console_printf("Error: fail to parse type value\n");
+            err = FMT_ERROR;
+        }
+        if (!MATCH(target, TARGET_NAME)) {
+            /* check if target match */
+            console_printf("Error: target name doesn't match\n");
+            err = FMT_ERROR;
+        }
+        rt_free(target);
+    } else {
+        console_printf("Error: can not find target key\n");
+        err = FMT_ERROR;
+    }
+
+    if (err == FMT_EOK) {
+        /* traverse all sub-table */
+        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
+            /* handle all sub tables */
+            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
+                if (MATCH(key, "console")) {
+                    err = console_toml_config(sub_tab);
+                } else if (MATCH(key, "mavproxy")) {
+                    err = mavproxy_toml_config(sub_tab);
+                } else {
+                    console_printf("unknown table: %s\n", key);
+                }
+                if (err != FMT_EOK) {
+                    console_printf("fail to parse %s\n", key);
+                }
+            }
+        }
+    }
+
+    /* free toml root table */
+    toml_free(root_tab);
+
+    return err;
 }
 
 /**
@@ -154,9 +239,6 @@ void bsp_early_initialize(void)
 
     /* gpio driver init */
     RTT_CHECK(drv_gpio_init());
-
-    /* init usbd_cdc */
-    RTT_CHECK(drv_usb_cdc_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
@@ -172,6 +254,9 @@ void bsp_initialize(void)
     RTT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
+
+    /* init usbd_cdc */
+    RTT_CHECK(drv_usb_cdc_init());
 
     /* init parameter system */
     FMT_CHECK(param_init());
@@ -189,6 +274,14 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
+    /* toml system configure */
+    __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
+    if (!__toml_root_tab) {
+        /* use default system configuration */
+        __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
+    }
+    FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
     /* show system information */
     bsp_show_information();
 

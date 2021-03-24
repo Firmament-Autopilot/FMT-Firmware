@@ -1,33 +1,31 @@
-/*
- * Copyright (c) 2006-2018, RT-Thread Development Team
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Change Logs:
- * Date           Author            Notes
- * 2017-12-12     ZYH               the first version
- * 2019-12-19     tyustli           port to stm32 series
- */
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #ifndef __DRV_USBD_CDC_H__
 #define __DRV_USBD_CDC_H__
-#include <rtthread.h>
 
-#include "finsh.h"
-#include "shell.h"
-#include "module/utils/ringbuffer.h"
+#include <firmament.h>
 
-#include "usb_device.h"
-#include "usbd_cdc_if.h"
-#include "usbd_desc.h"
-#include "usbd_core.h"
-#include "usbd_ctlreq.h"
-#include "usbd_def.h"
-#include "usbd_ioreq.h"
-#include "usbd_cdc_dev.h"
-#include "usbd_conf.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 rt_err_t drv_usb_cdc_init(void);
 
+#ifdef __cplusplus
+}
 #endif
 
-/************* end of file ************/
+#endif

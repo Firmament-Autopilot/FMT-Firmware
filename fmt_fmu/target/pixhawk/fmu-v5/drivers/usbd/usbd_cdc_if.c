@@ -281,10 +281,13 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
 //   }
 
+  drv_usbd_cdc_receive(Buf, *Len);
+
+  /* prepare out endpoint to receive next packet */
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 
-  drv_usbd_cdc_receive(Buf, *Len);
+//   drv_usbd_cdc_receive(Buf, *Len);
 
   return (USBD_OK);
   /* USER CODE END 6 */
