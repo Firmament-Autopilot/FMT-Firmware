@@ -796,7 +796,7 @@ int _configure_by_ubx(void)
 
         /* flush input and wait for at least 20 ms silence */
         _decode_init();
-        sys_mdelay(20);
+        systime_mdelay(20);
         _decode_init();
 
         /* Send a CFG-PRT message to set the UBX protocol for in and out
@@ -834,7 +834,7 @@ int _configure_by_ubx(void)
                 baudrate = UBX_TX_CFG_PRT_BAUDRATE;
 
                 _decode_init();
-                sys_mdelay(20);
+                systime_mdelay(20);
                 _decode_init();
             } else {
                 DRV_DBG("fail to change gps baudrate from %d to %d\n", baudrate, UBX_TX_CFG_PRT_BAUDRATE);

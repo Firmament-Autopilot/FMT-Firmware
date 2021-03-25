@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __SYSTIME_H__
 #define __SYSTIME_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define TICKS_FROM_MS(_ms) ((RT_TICK_PER_SECOND * _ms + 999) / 1000)
 
@@ -58,13 +61,17 @@ typedef struct {
         }                                                             \
     } while (0)
 
+fmt_err systime_init(void);
 uint64_t systime_now_us(void);
 uint32_t systime_now_ms(void);
-void sys_udelay(uint32_t delay);
-void sys_mdelay(uint32_t time_ms);
+void systime_udelay(uint32_t delay);
+void systime_mdelay(uint32_t time_ms);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);
-fmt_err systime_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

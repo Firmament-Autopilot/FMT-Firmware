@@ -131,6 +131,7 @@ bool mcn_poll(McnNode_t node_t)
 
 /**
  * @brief Synchronize poll for topic status
+ * @note event must has been provided when subscribe the topic
  * 
  * @param node_t uMCN node
  * @param timeout Wait timeout
@@ -142,7 +143,7 @@ bool mcn_poll_sync(McnNode_t node_t, int32_t timeout)
     MCN_ASSERT(node_t != NULL);
     MCN_ASSERT(node_t->event != NULL);
 
-    return MCN_WAIT_EVENT(node_t->event, timeout) == 0 ? 1 : 0;
+    return MCN_WAIT_EVENT(node_t->event, timeout) == 0 ? true : false;
 }
 
 /**

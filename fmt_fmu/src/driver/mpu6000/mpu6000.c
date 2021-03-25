@@ -357,13 +357,13 @@ static rt_err_t _init(void)
 
     while (--tries != 0) {
         _write_reg(MPUREG_PWR_MGMT_1, BIT_H_RESET);
-        sys_udelay(10000);
+        systime_udelay(10000);
 
         // Wake up device and select GyroZ clock. Note that the
         // MPU6000 starts up in sleep mode, and it can take some time
         // for it to come out of sleep
         _write_checked_reg(MPUREG_PWR_MGMT_1, MPU_CLK_SEL_PLLGYROZ);
-        sys_udelay(1000);
+        systime_udelay(1000);
 
         // Disable I2C bus (recommended on datasheet)
         _write_checked_reg(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
@@ -374,7 +374,7 @@ static rt_err_t _init(void)
             break;
         }
 
-        sys_udelay(2000);
+        systime_udelay(2000);
     }
 
     r_res = _read_reg(MPUREG_PWR_MGMT_1, &reg_val);
@@ -383,7 +383,7 @@ static rt_err_t _init(void)
         return RT_ERROR;
     }
 
-    sys_udelay(1000);
+    systime_udelay(1000);
 
     // SAMPLE RATE
     if (_set_sample_rate(MPU6000_ACCEL_DEFAULT_RATE) != RT_EOK) {
@@ -391,7 +391,7 @@ static rt_err_t _init(void)
         return RT_ERROR;
     }
 
-    sys_udelay(1000);
+    systime_udelay(1000);
 
     // FS & DLPF   FS=2000 deg/s, DLPF = 20Hz (low pass filter)
     // was 90 Hz, but this ruins quality and does not improve the
@@ -401,21 +401,21 @@ static rt_err_t _init(void)
         return RT_ERROR;
     }
 
-    sys_udelay(1000);
+    systime_udelay(1000);
 
     _set_gyro_range(2000);
 
-    sys_udelay(1000);
+    systime_udelay(1000);
 
     _set_accel_range(8);
 
-    sys_udelay(1000);
+    systime_udelay(1000);
 
     // INT CFG => Interrupt on Data Ready
     _write_checked_reg(MPUREG_INT_ENABLE, BIT_RAW_RDY_EN); // INT: Raw data ready
-    sys_udelay(1000);
+    systime_udelay(1000);
     _write_checked_reg(MPUREG_INT_PIN_CFG, BIT_INT_ANYRD_2CLEAR); // INT: Clear on any read
-    sys_udelay(1000);
+    systime_udelay(1000);
 
     // if (is_icm_device()) {
     // 	_write_checked_reg(MPUREG_ICM_UNDOC1, MPUREG_ICM_UNDOC1_VALUE);
@@ -423,7 +423,7 @@ static rt_err_t _init(void)
 
     // Oscillator set
     // _write_reg(MPUREG_PWR_MGMT_1,MPU_CLK_SEL_PLLGYROZ);
-    // sys_udelay(1000);
+    // systime_udelay(1000);
 
     return res;
 }

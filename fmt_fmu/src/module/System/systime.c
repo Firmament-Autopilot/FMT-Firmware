@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
 
 #include "hal/systick.h"
@@ -24,68 +23,102 @@ typedef struct {
     uint32_t msPerPeriod;       /* ms count for each period (SysTick_Handler fire) */
 } systime_t;
 
-static systime_t _systime;
-rt_device_t _systick_dev;
+static systime_t __systime;
+static rt_device_t systick_dev;
 
+/**
+ * @brief Systick ISR callback
+ * 
+ */
 static void systick_isr_cb(void)
 {
-    _systime.msPeriod += _systime.msPerPeriod;
+    __systime.msPeriod += __systime.msPerPeriod;
 }
 
+/**
+ * @brief Check if the period of time has elapsed
+ * 
+ * @param timetag Time tag which stores the period and time information
+ * @return uint8_t 1 indicates true
+ */
 uint8_t check_timetag(TimeTag* timetag)
 {
     uint32_t now = systime_now_ms();
 
     if (now - timetag->tag >= timetag->period) {
         timetag->tag = now;
-
         return 1;
     }
-
     return 0;
 }
 
+/**
+ * @brief Check if the period of time has elapsed with specified time now
+ * 
+ * @param timetag Time tag which stores the period and time information
+ * @param now Time now in ms
+ * @return uint8_t uint8_t 1 indicates true
+ */
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now)
 {
     if (now - timetag->tag >= timetag->period) {
         timetag->tag = now;
-
         return 1;
     }
-
     return 0;
 }
 
+/**
+ * @brief Check if the period of time has elapsed with specified time now and period
+ * 
+ * @param timetag Time tag which stores the period and time information
+ * @param now Time now in ms
+ * @param period Period in ms
+ * @return uint8_t uint8_t 1 indicates true
+ */
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
 {
     if (now - timetag->tag >= period) {
         timetag->tag = now;
-
         return 1;
     }
-
     return 0;
 }
 
+/**
+ * @brief Get current systime in us
+ * 
+ * @return uint64_t systime in us
+ */
 uint64_t systime_now_us(void)
 {
     uint32_t systick_us;
 
-    rt_device_read(_systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
 
-    return _systime.msPeriod * (uint64_t)1000 + systick_us;
+    return __systime.msPeriod * (uint64_t)1000 + systick_us;
 }
 
+/**
+ * @brief Get current systime in ms
+ * 
+ * @return uint32_t systime in ms
+ */
 uint32_t systime_now_ms(void)
 {
     uint32_t systick_us;
 
-    rt_device_read(_systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
 
-    return _systime.msPeriod + systick_us / 1e3;
+    return __systime.msPeriod + systick_us / 1e3;
 }
 
-void sys_udelay(uint32_t time_us)
+/**
+ * @brief Delay for us
+ * 
+ * @param time_us delay us
+ */
+inline void systime_udelay(uint32_t time_us)
 {
     uint64_t target = systime_now_us() + time_us;
 
@@ -93,29 +126,39 @@ void sys_udelay(uint32_t time_us)
         ;
 }
 
-void sys_mdelay(uint32_t time_ms)
+/**
+ * @brief Delay for ms
+ * 
+ * @param time_ms delay ms
+ */
+void systime_mdelay(uint32_t time_ms)
 {
-    sys_udelay(time_ms * 1000);
+    systime_udelay(time_ms * 1000);
 }
 
+/**
+ * @brief Initialize systime module
+ * 
+ * @return fmt_err FMT_EOK indicates success
+ */
 fmt_err systime_init(void)
 {
     systick_dev_t systick_device;
 
-    _systick_dev = rt_device_find("systick");
+    systick_dev = rt_device_find("systick");
 
-    if (_systick_dev == RT_NULL) {
+    if (systick_dev == RT_NULL) {
         return FMT_ERROR;
     }
 
-    if (rt_device_open(_systick_dev, RT_DEVICE_FLAG_RDONLY) != RT_EOK) {
+    if (rt_device_open(systick_dev, RT_DEVICE_FLAG_RDONLY) != RT_EOK) {
         return FMT_ERROR;
     }
 
-    systick_device = (systick_dev_t)_systick_dev;
+    systick_device = (systick_dev_t)systick_dev;
 
-    _systime.msPeriod = 0;
-    _systime.msPerPeriod = systick_device->ticks_per_isr / systick_device->ticks_per_us / 1e3;
+    __systime.msPeriod = 0;
+    __systime.msPerPeriod = systick_device->ticks_per_isr / systick_device->ticks_per_us / 1e3;
 
     systick_device->systick_isr_cb = systick_isr_cb;
 
