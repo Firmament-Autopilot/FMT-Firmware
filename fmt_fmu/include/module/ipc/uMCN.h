@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __UMCN_H__
 #define __UMCN_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MCN_MALLOC(size)            rt_malloc(size)
 #define MCN_FREE(ptr)               rt_free(ptr)
@@ -35,8 +38,8 @@ typedef struct mcn_node McnNode;
 typedef struct mcn_node* McnNode_t;
 struct mcn_node {
     volatile uint8_t renewal;
-    MCN_EVENT_HANDLE event_t;
-    void (*cb)(void* parameter);
+    MCN_EVENT_HANDLE event;
+    void (*pub_cb)(void* parameter);
     McnNode_t next;
 };
 
@@ -66,10 +69,11 @@ struct mcn_list {
 };
 
 /******************* Helper Macro *******************/
+/* Obtain uMCN hub according to name */
 #define MCN_HUB(_name) (&__mcn_##_name)
-
+/* Declare a uMCN topic. Declare the topic at places where you need use it */
 #define MCN_DECLARE(_name) extern McnHub __mcn_##_name
-
+/* Define a uMCN topic. A topic should only be defined once */
 #define MCN_DEFINE(_name, _size) \
     McnHub __mcn_##_name = {     \
         .obj_name = #_name,      \
@@ -84,19 +88,23 @@ struct mcn_list {
     }
 
 /******************* API *******************/
+fmt_err mcn_init(void);
 fmt_err mcn_advertise(McnHub_t hub, int (*echo)(void* parameter));
-McnNode_t mcn_subscribe(McnHub_t hub, MCN_EVENT_HANDLE event_t, void (*cb)(void* parameter));
+McnNode_t mcn_subscribe(McnHub_t hub, MCN_EVENT_HANDLE event, void (*pub_cb)(void* parameter));
 fmt_err mcn_unsubscribe(McnHub_t hub, McnNode_t node);
 fmt_err mcn_publish(McnHub_t hub, const void* data);
 bool mcn_poll(McnNode_t node_t);
 bool mcn_poll_sync(McnNode_t node_t, int32_t timeout);
 fmt_err mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer);
 fmt_err mcn_copy_from_hub(McnHub_t hub, void* buffer);
-void mcn_node_clear(McnNode_t node_t);
 void mcn_suspend(McnHub_t hub);
 void mcn_resume(McnHub_t hub);
-fmt_err mcn_init(void);
 McnList_t mcn_get_list(void);
 McnHub_t mcn_iterate(McnList_t* ite);
+void mcn_node_clear(McnNode_t node_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
