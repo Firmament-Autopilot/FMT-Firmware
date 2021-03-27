@@ -92,8 +92,9 @@ static void workqueue_executor(void* parameter)
 
     while (1) {
         if (work_queue->size == 0) {
-            /* wait for work */
-            rt_completion_wait(&work_queue->wakeup, RT_WAITING_FOREVER);
+            /* no work scheduled, suspend itself */
+            rt_thread_suspend(rt_thread_self());
+            rt_schedule();
         }
 
         time_now = systime_now_ms();
@@ -154,10 +155,10 @@ fmt_err workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
 
     work_unlock(work_queue);
 
-    /* we just schedule a new work, wakeup work queue thread */
-    if (work_queue->size == 1) {
-        rt_completion_done(&work_queue->wakeup);
-    }
+    /* wakeup workqueue thread */
+    rt_thread_resume(work_queue->thread);
+    /* perform a schedule */
+    rt_schedule();
 
     return FMT_EOK;
 }
@@ -261,7 +262,6 @@ WorkQueue_t workqueue_create(const char* name, uint8_t size, uint16_t stack_size
     work_queue->qsize = size;
     work_queue->size = 0;
 
-    rt_completion_init(&work_queue->wakeup);
     work_queue->lock = rt_sem_create(name, 1, RT_IPC_FLAG_FIFO);
     if (work_queue->lock == NULL) {
         goto error_exit;
@@ -273,6 +273,7 @@ WorkQueue_t workqueue_create(const char* name, uint8_t size, uint16_t stack_size
     }
 
     return work_queue;
+
 error_exit:
     rt_free(work_queue);
     return NULL;

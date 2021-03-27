@@ -37,7 +37,6 @@ struct WorkQueue {
     uint8_t qsize;
     uint8_t size;
     WorkItem_t* queue;
-    struct rt_completion wakeup;
     rt_sem_t lock;
 };
 typedef struct WorkQueue* WorkQueue_t;
