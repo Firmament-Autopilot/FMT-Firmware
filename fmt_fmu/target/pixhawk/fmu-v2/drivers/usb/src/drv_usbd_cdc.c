@@ -109,11 +109,11 @@ static uint16_t drv_usbd_cdc_tx_cplt_cb(void)
 
 static uint16_t drv_usbd_cdc_rx_cb(uint32_t Len)
 {
+    DCD_EP_PrepareRx(&USB_OTG_dev, CDC_OUT_EP, rx_buffer, Len);
+
     if (usbd_dev.rx_rb == NULL) {
         return 0;
     }
-
-    DCD_EP_PrepareRx(&USB_OTG_dev, CDC_OUT_EP, rx_buffer, Len);
 
     (void)ringbuffer_put(usbd_dev.rx_rb, rx_buffer, Len);
     hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_RX);
