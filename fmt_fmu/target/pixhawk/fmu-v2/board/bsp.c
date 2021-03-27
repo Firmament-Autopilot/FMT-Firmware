@@ -53,6 +53,8 @@
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
 #include "module/toml/toml.h"
+#include "module/utils/devmq.h"
+#include "module/work_queue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
@@ -251,6 +253,9 @@ void bsp_initialize(void)
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
+    /* create workqueue */
+    FMT_CHECK(workqueue_manager_init());
+
     /* init storage devices */
     RTT_CHECK(dev_sd_init(FS_DEVICE_NAME));
     /* init file system */
@@ -326,6 +331,9 @@ void bsp_post_initialize(void)
 
     /* start msp server */
     FMT_CHECK(msp_server_start());
+
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
 
     /* show system information */
     bsp_show_information();

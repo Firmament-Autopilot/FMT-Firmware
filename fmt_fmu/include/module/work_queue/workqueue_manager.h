@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __DEVMQ_H__
-#define __DEVMQ_H__
+#ifndef __WORKQUEUE_MANAGER_H__
+#define __WORKQUEUE_MANAGER_H__
 
-/* device status msg */
-#define DEVICE_STATUS_CONNECT    (1)
-#define DEVICE_STAUTS_DISCONNECT (2)
-#define DEVICE_STATUS_RX         (3)
-#define DEVICE_STATUS_TX         (4)
+#include <firmament.h>
 
-typedef int device_status;
+#include "module/work_queue/work_queue.h"
 
-fmt_err devmq_create(rt_device_t device, uint32_t msg_size, uint32_t max_msgs);
-fmt_err devmq_register(rt_device_t device, void (*handler)(rt_device_t dev, void* msg));
-fmt_err devmq_deregister(rt_device_t device);
-fmt_err devmq_notify(rt_device_t device, void* msg);
-void devmq_distribute_msg(void);
-fmt_err devmq_start_work(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* __DEVMQ_H__ */
+fmt_err workqueue_manager_init(void);
+WorkQueue_t workqueue_find(const char* name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

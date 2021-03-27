@@ -20,7 +20,7 @@
 static rt_device_t mavproxy_dev = RT_NULL;
 static struct rt_completion tx_cplt, rx_cplt;
 
-static fmt_err (*mav_rx_indicate)(uint32_t size);
+static fmt_err (*mav_rx_indicate)(uint32_t size) = NULL;
 
 static rt_err_t mavproxy_dev_tx_done(rt_device_t dev, void* buffer)
 {

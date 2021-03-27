@@ -34,6 +34,8 @@
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
 #include "module/toml/toml.h"
+#include "module/utils/devmq.h"
+#include "module/work_queue/workqueue_manager.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
 [console]\n\
@@ -250,6 +252,9 @@ void bsp_initialize(void)
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
+    /* create workqueue */
+    FMT_CHECK(workqueue_manager_init());
+
     /* init storage devices */
     RTT_CHECK(drv_sdio_init());
     /* init file system */
@@ -281,6 +286,9 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
 
     /* show system information */
     bsp_show_information();
