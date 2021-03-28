@@ -16,6 +16,7 @@
 #include <firmament.h>
 
 #include "module/utils/devmq.h"
+#include "module/work_queue/workqueue_manager.h"
 
 #define DEVMQ_MAX_HANDLER  10
 #define DEVMQ_MAX_MSG_SIZE 128
@@ -159,9 +160,28 @@ void devmq_distribute_msg(void)
                 continue;
             }
             /* now distribute messages to handler */
-            while (rt_mq_recv(nod->handle->mq, msg_buffer, nod->handle->msg_size, 0) == RT_EOK) {
+            while (rt_mq_recv(nod->handle->mq, msg_buffer, nod->handle->msg_size, RT_WAITING_NO) == RT_EOK) {
                 nod->handle->handler(nod->handle->device, msg_buffer);
             }
         }
     }
+}
+
+fmt_err devmq_start_work(void)
+{
+    static struct WorkItem item = {
+        .name = "devmq",
+        .period = 50,
+        .schedule_time = 0,
+        .run = devmq_distribute_msg
+    };
+    WorkQueue_t wq = workqueue_find("wq:system");
+    if (wq == NULL) {
+        return FMT_ENOSYS;
+    }
+
+    if (workqueue_schedule_work(wq, &item) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+    return FMT_EOK;
 }

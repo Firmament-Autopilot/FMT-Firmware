@@ -28,6 +28,7 @@ MODULES = [
     'SysCmd/cmd_sys.c',
     'SysCmd/cmd_mcn.c',
     'SysCmd/cmd_param.c',
+    'SysCmd/cmd_test.c',
     'File_Manager/*.c',
     'FTP/*.c',
     'Plant/*.c',
@@ -45,6 +46,7 @@ MODULES = [
     'Sensor/*.c',
     'SysIO/*.c',
     'TOML/*.c',
+    'WorkQueue/*.c',
 ]
 
 MODULES_CPPPATH = [

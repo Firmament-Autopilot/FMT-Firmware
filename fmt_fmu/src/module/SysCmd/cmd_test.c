@@ -24,38 +24,47 @@
 #include "hal/serial.h"
 #include "hal/systick.h"
 #include "module/console/console.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_manager.h"
 #include "module/syscmd/syscmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/toml/toml.h"
-#include "module/mavproxy/mavproxy.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/work_queue/work_queue.h"
+#include "module/work_queue/workqueue_manager.h"
 
-#define DEFAULT_TOML_SYS_CONFIG "\
-target = \"Pixhawk FMUv2\"\n\
-[console]\n\
-	[[console.devices]]\n\
-	type = \"serial\"\n\
-	name = \"serial0\"\n\
-	baudrate = 57600\n\
-	auto-switch = true\n\
-	[[console.devices]]\n\
-	type = \"mavlink\"\n\
-	name = \"mav_console\"\n\
-	auto-switch = true"
+void run1(void)
+{
+    console_printf("I am work1\n");
+}
 
-rt_device_t _systick_dev;
+void run2(void)
+{
+    console_printf("I am work2\n");
+}
 
-void list_actuator_devices(void);
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    // console_printf("%s\n", DEFAULT_TOML_SYS_CONFIG);
-    // toml_table_t* tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
-    // toml_print_table(tab);
-    // toml_free(tab);
+    // test_main();
 
-    list_actuator_devices();
+    // WorkQueue_t wq = workqueue_create("wq:test", 10, 4096, 20);
+    WorkQueue_t wq = workqueue_find("wq:system");
+    if (wq == NULL) {
+        RT_ASSERT(false);
+    }
+    static struct WorkItem item1 = { .name = "period_work", .period = 1000, .schedule_time = 0, .run = run1 };
+    static struct WorkItem item2 = { .name = "period_work2", .period = 0, .schedule_time = 0, .run = run2 };
+
+    item2.schedule_time = SCHEDULE_DELAY(2000);
+
+    FMT_CHECK(workqueue_schedule_work(wq, &item1));
+    FMT_CHECK(workqueue_schedule_work(wq, &item2));
+
+    // FMT_CHECK(workqueue_delete(wq));
+
+    // FMT_CHECK(workqueue_cancel_work(wq, &item4));
+
+    // print_wq(wq);
 
     return 0;
 }

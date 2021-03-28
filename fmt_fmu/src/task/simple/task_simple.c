@@ -59,7 +59,5 @@ void task_simple_entry(void* parameter)
         rt_thread_delay(100);
         _led_off();
         rt_thread_delay(100);
-
-        devmq_distribute_msg();
     }
 }

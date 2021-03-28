@@ -266,32 +266,6 @@ void task_status_entry(void* parameter)
         // update INS output status
         _update_ins_status();
 
-        // handle device status msg
-        // device_mq_handle_msg();
-        devmq_distribute_msg();
-
-        // // breath light
-        // if (bright == 0)
-        //     _inc = 1;
-
-        // if (bright == TCA62724_MAX_BRIGHT)
-        //     _inc = -1;
-
-        // bright += _inc;
-
-        // if (bright == 0) {
-        //     delay_time = 100;
-        // } else {
-        //     if (bright == TCA62724_MAX_BRIGHT) {
-        //         delay_time = 300;
-        //     } else {
-        //         delay_time = 50;
-        //     }
-        // }
-
-        // rt_device_control(_rgb_led_dev, TCA62724_CMD_SET_BRIGHT, (void*)bright);
-        // rt_thread_delay(delay_time);
-
         _rgb_led_control();
 
         rt_thread_delay(10);

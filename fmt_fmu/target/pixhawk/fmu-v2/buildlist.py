@@ -69,6 +69,7 @@ MODULES = [
     'BuzzerTune/*.c',
     'Filter/*.c',
     'TOML/*.c',
+    'WorkQueue/*.c',
 ]
 
 MODULES_CPPPATH = [
