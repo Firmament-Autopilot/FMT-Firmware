@@ -71,7 +71,7 @@ static rt_err_t SCL_H(struct rt_i2c_bit_ops* ops)
 		if((rt_tick_get() - start) > ops->timeout)
 			return -RT_ETIMEOUT;
 
-		rt_thread_delay((ops->timeout + 1) >> 1);
+		sys_msleep((ops->timeout + 1) >> 1);
 	}
 
 #ifdef RT_I2C_BIT_DEBUG

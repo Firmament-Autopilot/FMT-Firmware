@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #define TICKS_FROM_MS(_ms) ((RT_TICK_PER_SECOND * _ms + 999) / 1000)
+#define sys_msleep(_ms)    systime_msleep(_ms)
 
 typedef struct {
     uint32_t tag;
@@ -66,6 +67,7 @@ uint64_t systime_now_us(void);
 uint32_t systime_now_ms(void);
 void systime_udelay(uint32_t delay);
 void systime_mdelay(uint32_t time_ms);
+void systime_msleep(uint32_t time_ms);
 uint8_t check_timetag(TimeTag* timetag);
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now);
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period);

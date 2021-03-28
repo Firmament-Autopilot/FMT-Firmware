@@ -100,7 +100,7 @@ static void workqueue_executor(void* parameter)
         time_now = systime_now_ms();
         schedule_time = work_queue->queue[0]->schedule_time;
         if (schedule_time > time_now) {
-            rt_thread_mdelay(schedule_time - time_now);
+            sys_msleep(schedule_time - time_now);
             continue;
         }
 

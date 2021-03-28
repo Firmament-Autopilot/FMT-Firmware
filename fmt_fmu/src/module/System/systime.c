@@ -116,9 +116,9 @@ uint32_t systime_now_ms(void)
 /**
  * @brief Delay for us
  * 
- * @param time_us delay us
+ * @param time_us Delay time in us
  */
-inline void systime_udelay(uint32_t time_us)
+void systime_udelay(uint32_t time_us)
 {
     uint64_t target = systime_now_us() + time_us;
 
@@ -129,11 +129,27 @@ inline void systime_udelay(uint32_t time_us)
 /**
  * @brief Delay for ms
  * 
- * @param time_ms delay ms
+ * @param time_ms Delay time in ms
  */
-void systime_mdelay(uint32_t time_ms)
+inline void systime_mdelay(uint32_t time_ms)
 {
     systime_udelay(time_ms * 1000);
+}
+
+/**
+ * @brief Sleep for ms
+ * @note In thread context it will suspend the thread for specific milliseconds,
+ *       otherwise it will just do normal delay.
+ * 
+ * @param time_ms Sleep time in ms
+ */
+void systime_msleep(uint32_t time_ms)
+{
+    if (rt_thread_self()) {
+        rt_thread_delay(TICKS_FROM_MS(time_ms));
+    } else {
+        systime_mdelay(time_ms);
+    }
 }
 
 /**

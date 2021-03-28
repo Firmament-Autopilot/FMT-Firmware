@@ -268,6 +268,6 @@ void task_status_entry(void* parameter)
 
         _rgb_led_control();
 
-        rt_thread_delay(10);
+        sys_msleep(10);
     }
 }

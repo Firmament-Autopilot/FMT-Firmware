@@ -62,7 +62,7 @@ fmt_err sys_stat_init(void)
 
     _os_idle_ctr = 0;
 	/* suspend current thread and let idle thread wakeup to count the maximal value of counter */
-	rt_thread_delay(OS_STATISTIC_INTERVAL);
+	sys_msleep(OS_STATISTIC_INTERVAL);
 	_os_ctr_max = _os_idle_ctr;
 	_os_idle_ctr = 0;
 

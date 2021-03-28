@@ -183,7 +183,7 @@ static void _echo_topic(const char* topic_name, int optc, optv_t* optv)
         }
 
         if (period) {
-            rt_thread_delay(period);
+            sys_msleep(period);
         }
     }
 

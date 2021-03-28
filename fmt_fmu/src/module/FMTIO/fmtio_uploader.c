@@ -405,7 +405,7 @@ fmt_err fmtio_upload(const char* path)
 
 	fmtio_send_message(PROTO_CMD_REBOOT, NULL, 0);
 
-	rt_thread_delay(10);
+	sys_msleep(10);
 
 	err = _uploader_init();
 

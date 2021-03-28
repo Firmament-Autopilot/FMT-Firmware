@@ -390,7 +390,7 @@ void mavlink_param_send_all(void)
 
         _mav_param_pack(&msg, mav_param);
         mavproxy_send_immediate_msg(&msg, true);
-        rt_thread_delay(10);    // the delay is needed because TELEM has relatively high transfer latency
+        sys_msleep(10);    // the delay is needed because TELEM has relatively high transfer latency
     }
 
     for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
@@ -399,7 +399,7 @@ void mavlink_param_send_all(void)
         for (uint32_t j = 0; j < gp->param_num; j++) {
             _param_pack(&msg, param);
             mavproxy_send_immediate_msg(&msg, true);
-            rt_thread_delay(10);    // the delay is needed because TELEM has relatively high transfer latency
+            sys_msleep(10);    // the delay is needed because TELEM has relatively high transfer latency
 
             param++;
         }

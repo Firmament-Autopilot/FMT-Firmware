@@ -56,8 +56,8 @@ void task_simple_entry(void* parameter)
 
     while (1) {
         _led_on();
-        rt_thread_delay(100);
+        sys_msleep(100);
         _led_off();
-        rt_thread_delay(100);
+        sys_msleep(100);
     }
 }

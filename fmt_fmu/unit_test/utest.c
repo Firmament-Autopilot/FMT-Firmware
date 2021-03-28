@@ -139,7 +139,7 @@ static void utest_run(const char* utest_name)
     rt_uint32_t index;
     rt_bool_t is_find;
 
-    rt_thread_mdelay(1000);
+    sys_msleep(1000);
 
     for (index = 0; index < tc_loop; index++) {
         i = 0;

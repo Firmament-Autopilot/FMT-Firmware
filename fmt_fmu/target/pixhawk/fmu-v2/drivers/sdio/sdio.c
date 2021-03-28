@@ -2777,7 +2777,7 @@ SD_Error SD_ReadDisk(uint8_t* readbuff, uint32_t sector, uint32_t count)
 
             //while(SD_GetStatus() != SD_TRANSFER_OK);
             while (SD_GetStatus() != SD_TRANSFER_OK) {
-                rt_thread_delay(1);
+                sys_msleep(1);
             }
 
 #endif
@@ -2808,7 +2808,7 @@ SD_Error SD_ReadDisk(uint8_t* readbuff, uint32_t sector, uint32_t count)
 
         //while(SD_GetStatus() != SD_TRANSFER_OK);
         while (SD_GetStatus() != SD_TRANSFER_OK) {
-            rt_thread_delay(1);
+            sys_msleep(1);
         }
 
 #endif
@@ -2846,7 +2846,7 @@ SD_Error SD_WriteDisk(const uint8_t* writebuff, uint32_t sector, uint32_t count)
 
             //while(SD_GetStatus() != SD_TRANSFER_OK);
             while (SD_GetStatus() != SD_TRANSFER_OK) {
-                rt_thread_delay(1);
+                sys_msleep(1);
             }
 
 #endif
@@ -2872,7 +2872,7 @@ SD_Error SD_WriteDisk(const uint8_t* writebuff, uint32_t sector, uint32_t count)
             goto returen_status;
 
         while (SD_GetStatus() != SD_TRANSFER_OK) {
-            rt_thread_delay(1);
+            sys_msleep(1);
         }
 
 #endif

@@ -22,7 +22,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
 	console_printf("rebooting...\n");
 
-	rt_thread_delay(10);
+	sys_msleep(10);
 
 	NVIC_SystemReset();
 

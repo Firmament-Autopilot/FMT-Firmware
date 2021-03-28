@@ -279,7 +279,7 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
                 err = RT_ETIMEOUT;
                 break;
             }
-            rt_thread_delay(TICKS_FROM_MS(1));
+            sys_msleep(1);
         }
     }
 
@@ -309,7 +309,7 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
                 err = RT_ETIMEOUT;
                 break;
             }
-            rt_thread_delay(TICKS_FROM_MS(1));
+            sys_msleep(1);
         }
     }
 
