@@ -246,6 +246,8 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    FMT_CHECK(sys_stat_init());
+    
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 

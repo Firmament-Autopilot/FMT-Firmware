@@ -20,34 +20,52 @@
 #include "module/system/systime.h"
 #include "module/console/console.h"
 
-/* calculate CPU usage each 500ms */
-#define OS_STATISTIC_INTERVAL		500
+#define CPU_USAGE_CALC_TICK		10
+#define CPU_USAGE_LOOP			100
 
-static uint64_t _os_idle_ctr = 0;
-static uint64_t _os_ctr_max = 1;
 static float _cpu_usage = 0;
+static rt_uint32_t total_count = 0;
 
-static struct rt_timer timer_sta;
-
-void _thread_idle_hook_func(void)
+static void cpu_usage_idle_hook()
 {
-	OS_ENTER_CRITICAL;
-	_os_idle_ctr++;
-	OS_EXIT_CRITICAL;
-}
+	rt_tick_t tick;
+	rt_uint32_t count;
+	volatile rt_uint32_t loop;
 
-static void timer_stat_entry(void* parameter)
-{
-	/* calculate cpu usage */
-	//OS_ENTER_CRITICAL;
-	float usage = 100.0 * (1.0 - ((double)_os_idle_ctr) / _os_ctr_max);
+	if (total_count == 0)
+	{
+		loop = 0;
+		
+		/* get total count */
+		rt_enter_critical();
+		tick = rt_tick_get();
+		while(rt_tick_get() - tick < CPU_USAGE_CALC_TICK)
+		{
+			total_count ++;
+			while (loop < CPU_USAGE_LOOP) loop ++;
+		}
+		rt_exit_critical();
+	}
 
-	/* some time the timer could be not accurate, which will generate some wrong usage. so filter it */
-	if(usage > 0.0f && usage < 100.0f)
-		_cpu_usage = usage;
+	count = 0;
+	loop  = 0;
+	/* get CPU usage */
+	tick = rt_tick_get();
+	while (rt_tick_get() - tick < CPU_USAGE_CALC_TICK)
+	{
+		count ++;
+		while (loop < CPU_USAGE_LOOP) loop ++;
+	}
 
-	_os_idle_ctr = 0;
-	//OS_EXIT_CRITICAL;
+	/* calculate major and minor */
+	if (count < total_count)
+	{
+		_cpu_usage = 100.0f - ((float)count / (float)total_count) * 100.0f;
+	}
+	else
+	{
+		total_count = count;
+	}
 }
 
 float sysstat_get_cpu_usage(void)
@@ -55,24 +73,9 @@ float sysstat_get_cpu_usage(void)
 	return _cpu_usage;
 }
 
-fmt_err sys_stat_init(void)
+rt_err_t sys_stat_init(void)
 {
-	/* we increment idle counter in idle thread */
-	rt_thread_idle_sethook(_thread_idle_hook_func);
+	rt_thread_idle_sethook(cpu_usage_idle_hook);
 
-    _os_idle_ctr = 0;
-	/* suspend current thread and let idle thread wakeup to count the maximal value of counter */
-	sys_msleep(OS_STATISTIC_INTERVAL);
-	_os_ctr_max = _os_idle_ctr;
-	_os_idle_ctr = 0;
-
-	/* register a timer event to calculate CPU usage */
-	rt_timer_init(&timer_sta, "stat",
-	              timer_stat_entry,
-	              RT_NULL,
-	              OS_STATISTIC_INTERVAL,
-	              RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
-	rt_timer_start(&timer_sta);
-
-    return FMT_EOK;
+	return FMT_EOK;
 }

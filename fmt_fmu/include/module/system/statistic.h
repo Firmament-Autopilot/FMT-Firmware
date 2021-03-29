@@ -19,7 +19,7 @@
 
 #include <firmament.h>
 
-fmt_err sys_stat_init(void);
-float sysstat_get_cpu_usage(void);
+rt_err_t sys_stat_init(void);
+float    sysstat_get_cpu_usage(void);
 
 #endif
