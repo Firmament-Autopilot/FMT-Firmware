@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __STATISTIC_H__
 #define __STATISTIC_H__
 
 #include <firmament.h>
 
-rt_err_t sys_stat_init(void);
-float    sysstat_get_cpu_usage(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+fmt_err sys_stat_init(void);
+float get_cpu_usage(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

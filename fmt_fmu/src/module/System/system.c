@@ -335,7 +335,7 @@ static long _sys_list_device(struct rt_list_node* list)
 
 int handle_sys_shell_cmd(int argc, char** argv)
 {
-	float cpu_usage = sysstat_get_cpu_usage();
+	float cpu_usage = get_cpu_usage();
 
 	console_printf("CPU Usage: %.2f\n", cpu_usage);
 

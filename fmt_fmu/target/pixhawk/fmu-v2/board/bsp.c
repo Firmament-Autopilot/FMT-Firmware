@@ -250,6 +250,9 @@ void bsp_initialize(void)
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
+
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
@@ -298,9 +301,6 @@ void bsp_initialize(void)
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
-
-    /* system statistic module */
-    FMT_CHECK(sys_stat_init());
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
