@@ -242,6 +242,9 @@ void bsp_early_initialize(void)
     RTT_CHECK(spi_drv_init());
 
     RTT_CHECK(pwm_drv_init());
+
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
@@ -249,9 +252,6 @@ void bsp_initialize(void)
 {
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
-
-    /* system statistic module */
-    FMT_CHECK(sys_stat_init());
 
     /* init uMCN */
     FMT_CHECK(mcn_init());
