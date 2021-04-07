@@ -53,6 +53,7 @@ MODULES = [
     'TOML/*.c',
     'WorkQueue/*.c',
     'Math/*.c',
+    'Filter/*.c',
 ]
 
 MODULES_CPPPATH = [
