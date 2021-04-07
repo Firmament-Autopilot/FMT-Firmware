@@ -7,59 +7,59 @@
 #include "module/math/conversion.h"
 #include "stm32f7xx_ll_spi.h"
 
-#define DRV_DBG(...) 
+#define DRV_DBG(...)
 
 #define DIR_READ  0x80
 #define DIR_WRITE 0x00
 
-#define SELF_TEST_X_GYRO  0x00
-#define SELF_TEST_Y_GYRO  0x01 
-#define SELF_TEST_Z_GYRO  0x02
+#define SELF_TEST_X_GYRO 0x00
+#define SELF_TEST_Y_GYRO 0x01
+#define SELF_TEST_Z_GYRO 0x02
 
-#define SELF_TEST_X_ACCEL 0x0D	 
-#define SELF_TEST_Y_ACCEL 0x0E	 
-#define SELF_TEST_Z_ACCEL 0x0F	
+#define SELF_TEST_X_ACCEL 0x0D
+#define SELF_TEST_Y_ACCEL 0x0E
+#define SELF_TEST_Z_ACCEL 0x0F
 
-#define XG_OFFS_USRH      0x13	
-#define XG_OFFS_USRL      0x14
-#define YG_OFFS_USRH      0x15
-#define YG_OFFS_USRL      0x16
-#define ZG_OFFS_USRH      0x17
-#define ZG_OFFS_USRL      0x18
+#define XG_OFFS_USRH 0x13
+#define XG_OFFS_USRL 0x14
+#define YG_OFFS_USRH 0x15
+#define YG_OFFS_USRL 0x16
+#define ZG_OFFS_USRH 0x17
+#define ZG_OFFS_USRL 0x18
 
-#define SMPLRT_DIV        0x19
+#define SMPLRT_DIV 0x19
 
-#define MPUREG_CONFIG     0x1A
-#define GYRO_CONFIG       0x1B
-#define ACCEL_CONFIG      0x1C
-#define ACCEL_CONFIG_2    0x1D
+#define MPUREG_CONFIG  0x1A
+#define GYRO_CONFIG    0x1B
+#define ACCEL_CONFIG   0x1C
+#define ACCEL_CONFIG_2 0x1D
 
-#define LOW_POWER_MODE		0x1E
+#define LOW_POWER_MODE 0x1E
 
-#define MPU_FIFO_EN_REG			0X23
+#define MPU_FIFO_EN_REG 0X23
 
-#define MPU_INTBP_CFG_REG		0X37
-#define MPU_INT_EN_REG			0X38	
-#define MPU_INT_STA_REG			0X3A	
+#define MPU_INTBP_CFG_REG 0X37
+#define MPU_INT_EN_REG    0X38
+#define MPU_INT_STA_REG   0X3A
 
-#define ACCEL_XOUT_H      0x3B
-#define ACCEL_XOUT_L      0x3C
-#define ACCEL_YOUT_H      0x3D
-#define ACCEL_YOUT_L      0x3E
-#define ACCEL_ZOUT_H      0x3F
-#define ACCEL_ZOUT_L      0x40
-#define TEMP_OUT_H        0x41
-#define TEMP_OUT_L        0x42
-#define GYRO_XOUT_H       0x43
-#define GYRO_XOUT_L       0x44
-#define GYRO_YOUT_H       0x45
-#define GYRO_YOUT_L       0x46
-#define GYRO_ZOUT_H       0x47
-#define GYRO_ZOUT_L       0x48
+#define ACCEL_XOUT_H 0x3B
+#define ACCEL_XOUT_L 0x3C
+#define ACCEL_YOUT_H 0x3D
+#define ACCEL_YOUT_L 0x3E
+#define ACCEL_ZOUT_H 0x3F
+#define ACCEL_ZOUT_L 0x40
+#define TEMP_OUT_H   0x41
+#define TEMP_OUT_L   0x42
+#define GYRO_XOUT_H  0x43
+#define GYRO_XOUT_L  0x44
+#define GYRO_YOUT_H  0x45
+#define GYRO_YOUT_L  0x46
+#define GYRO_ZOUT_H  0x47
+#define GYRO_ZOUT_L  0x48
 
-#define PWR_MGMT_1        0x6B
-#define PWR_MGMT_2        0x6C
-#define WHO_AM_I          0x75
+#define PWR_MGMT_1 0x6B
+#define PWR_MGMT_2 0x6C
+#define WHO_AM_I   0x75
 
 #define ICM20689_ACCEL_DEFAULT_RANGE_G            8
 #define ICM20689_ACCEL_DEFAULT_RATE               1000
@@ -102,7 +102,6 @@ static float _gyro_range_rad_s;
 static float _accel_range_scale;
 static float _accel_range_m_s2;
 static rt_device_t spi_device;
-
 
 static rt_err_t _write_reg(rt_uint8_t reg, rt_uint8_t val)
 {
@@ -230,7 +229,7 @@ static rt_err_t _set_dlpf_filter(uint16_t frequency_hz)
 
 static rt_err_t _set_accel_range(unsigned max_g_in)
 {
-    #if 0
+#if 0
     /*
     TO DO
     */
@@ -245,7 +244,7 @@ static rt_err_t _set_accel_range(unsigned max_g_in)
         _accel_range_m_s2 = 8.0f * ICM20689_ONE_G;
         return RT_EOK;
     }
-    #endif 
+#endif
 
     uint8_t afs_sel;
     float lsb_per_g;
@@ -278,7 +277,6 @@ static rt_err_t _set_accel_range(unsigned max_g_in)
     return _write_checked_reg(ACCEL_CONFIG, afs_sel << 3);
 }
 
-
 static rt_err_t _set_gyro_range(unsigned max_dps)
 {
     rt_uint8_t fs_sel;
@@ -304,34 +302,32 @@ static rt_err_t _init(void)
     rt_err_t res = RT_EOK;
 
     /* init spi bus */
-    res =  rt_device_open(spi_device, RT_DEVICE_OFLAG_RDWR);
+    res = rt_device_open(spi_device, RT_DEVICE_OFLAG_RDWR);
 
-    if(res == RT_EOK)
-    {
-        _write_reg(PWR_MGMT_1,0X80);	//复位
+    if (res == RT_EOK) {
+        _write_reg(PWR_MGMT_1, 0X80); //复位
         LL_mDelay(100);
-        _write_reg(PWR_MGMT_1, 0x00);	//解除休眠状态   
+        _write_reg(PWR_MGMT_1, 0x00); //解除休眠状态
         LL_mDelay(100);
-        _read_reg(WHO_AM_I, &_product);    
+        _read_reg(WHO_AM_I, &_product);
 
-        if(_product != 0x98)
-        {
+        if (_product != 0x98) {
             return RT_ERROR;
-        }    
+        }
     }
 
-    _write_reg(GYRO_CONFIG,3<<3);        //设置陀螺仪满量程范围
-	_write_reg(ACCEL_CONFIG,0<<3);       //加速度计工作范围 2G
-	_write_reg(ACCEL_CONFIG_2, 0x08);    //加速计高通滤波频率 典型值 ：0x08  （1.13kHz）	
-	
-	_write_reg(SMPLRT_DIV,19);
-	_write_reg(MPUREG_CONFIG,4);				//低通滤波频率，典型值：0x07(3600Hz)此寄存器内决定Internal_Sample_Rate==8K
-	
-	_write_reg(MPU_INT_EN_REG,0X00);	//关闭所有中断
-	_write_reg(MPU_FIFO_EN_REG,0X00);	//关闭FIFO
-	
-	_write_reg(PWR_MGMT_1,0X01);	    //设置CLKSEL,PLL X轴为参考
-	_write_reg(PWR_MGMT_2,0X00);	    //加速度与陀螺仪都工作
+    _write_reg(GYRO_CONFIG, 3 << 3);  //设置陀螺仪满量程范围
+    _write_reg(ACCEL_CONFIG, 0 << 3); //加速度计工作范围 2G
+    _write_reg(ACCEL_CONFIG_2, 0x08); //加速计高通滤波频率 典型值 ：0x08  （1.13kHz）
+
+    _write_reg(SMPLRT_DIV, 19);
+    _write_reg(MPUREG_CONFIG, 4); //低通滤波频率，典型值：0x07(3600Hz)此寄存器内决定Internal_Sample_Rate==8K
+
+    _write_reg(MPU_INT_EN_REG, 0X00);  //关闭所有中断
+    _write_reg(MPU_FIFO_EN_REG, 0X00); //关闭FIFO
+
+    _write_reg(PWR_MGMT_1, 0X01); //设置CLKSEL,PLL X轴为参考
+    _write_reg(PWR_MGMT_2, 0X00); //加速度与陀螺仪都工作
 
     return res;
 }
@@ -399,7 +395,6 @@ static rt_err_t icm20689_acc_read_m_s2(float acc[3])
     return res;
 }
 
-
 static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
 {
     rt_err_t ret = RT_EOK;
@@ -445,7 +440,6 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
 
     return size;
 }
-
 
 const static struct gyro_ops _gyro_ops = {
     gyro_config,
@@ -505,9 +499,6 @@ const static struct accel_ops _accel_ops = {
     accel_read,
 };
 
-
-
-
 rt_err_t icm20689_drv_init(char* spi_device_name)
 {
     rt_err_t ret = RT_EOK;
@@ -557,10 +548,7 @@ rt_err_t icm20689_drv_init(char* spi_device_name)
     return ret;
 }
 
-int16_t acc_test[3];
-int16_t gyr_test[3];
-
-void icm20689_test(void)
+void icm20689_test(int16_t acc_test[], int16_t gyr_test[])
 {
     icm20689_acc_read_raw(acc_test);
 
