@@ -336,7 +336,8 @@ static void rotate_to_ned(int16_t val[3])
 {
     uint16_t temp = val[0];
     val[0] = val[1];
-    val[1] = -temp;
+    val[1] = temp;
+    val[2] = -val[2];
 }
 
 static rt_err_t icm20689_gyr_read_raw(int16_t gyr[3])
