@@ -31,6 +31,7 @@
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
 #include "drv_spi.h"
+#include "driver/icm20689.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
@@ -269,6 +270,8 @@ void bsp_initialize(void)
 
     /* init usbd_cdc */
     RTT_CHECK(drv_usb_cdc_init());
+
+    RTT_CHECK(icm20689_drv_init("spi1_dev1"));
 
     /* init parameter system */
     FMT_CHECK(param_init());

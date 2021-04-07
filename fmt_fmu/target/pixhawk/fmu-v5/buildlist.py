@@ -52,6 +52,7 @@ MODULES = [
     'SysIO/*.c',
     'TOML/*.c',
     'WorkQueue/*.c',
+    'Math/*.c',
 ]
 
 MODULES_CPPPATH = [
