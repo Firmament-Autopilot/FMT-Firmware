@@ -19,11 +19,8 @@
 
 /* stm32 peripheral library */
 #include <stm32f7xx.h>
-// #include "stm32f7xx_hal.h"
 /* FPU Library */
 #include <arm_math.h>
-
-#include <board_device.h>
 
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_ll_rcc.h"
@@ -34,9 +31,6 @@
 #include "stm32f7xx_ll_utils.h"
 #include "stm32f7xx_ll_pwr.h"
 #include "stm32f7xx_ll_dma.h"
-#include "stm32f7xx_ll_usart.h"
 #include "stm32f7xx_ll_gpio.h"
-#include "stm32f7xx_ll_sdmmc.h"
-#include "stm32f7xx_ll_usb.h"
 
 #endif

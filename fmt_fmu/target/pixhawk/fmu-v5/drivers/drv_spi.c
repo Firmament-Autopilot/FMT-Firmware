@@ -1,7 +1,39 @@
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include "drv_spi.h"
 #include "driver/spi_drv.h"
 #include "hal/spi.h"
 #include "stm32f7xx_ll_spi.h"
+
+#define SPI1_CS1_Pin       LL_GPIO_PIN_2
+#define SPI1_CS1_GPIO_Port GPIOF
+#define SPI1_CS2_Pin       LL_GPIO_PIN_3
+#define SPI1_CS2_GPIO_Port GPIOF
+#define SPI1_CS3_Pin       LL_GPIO_PIN_4
+#define SPI1_CS3_GPIO_Port GPIOF
+#define SPI1_CS4_Pin       LL_GPIO_PIN_10
+#define SPI1_CS4_GPIO_Port GPIOG
+#define SPI1_CS5_Pin       LL_GPIO_PIN_5
+#define SPI1_CS5_GPIO_Port GPIOH
+#define SPI2_CS1_Pin       LL_GPIO_PIN_5
+#define SPI2_CS1_GPIO_Port GPIOF
+#define SPI4_CS1_Pin       LL_GPIO_PIN_10
+#define SPI4_CS1_GPIO_Port GPIOF
+#define SPI4_CS2_Pin       LL_GPIO_PIN_11
+#define SPI4_CS2_GPIO_Port GPIOF
 
 static rt_err_t configure(struct rt_spi_device* device,
     struct rt_spi_configuration* configuration)
