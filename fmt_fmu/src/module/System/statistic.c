@@ -13,66 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
 
+#include "module/console/console.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
-#include "module/console/console.h"
 
-/* calculate CPU usage each 500ms */
-#define OS_STATISTIC_INTERVAL		500
+#define CPU_USAGE_CALC_INTERVAL 1000
+#define CPU_USAGE_LOOP          10
 
-static uint64_t _os_idle_ctr = 0;
-static uint64_t _os_ctr_max = 1;
-static float _cpu_usage = 0;
+static float cpu_usage = 0;
+static uint64_t total_count = 0;
 
-static struct rt_timer timer_sta;
-
-void _thread_idle_hook_func(void)
+static void cpu_usage_idle_hook(void)
 {
-	OS_ENTER_CRITICAL;
-	_os_idle_ctr++;
-	OS_EXIT_CRITICAL;
+    uint32_t time_start;
+    uint64_t count;
+    volatile rt_uint32_t loop;
+
+    if (total_count == 0) {
+        /* get total count */
+        rt_enter_critical();
+        time_start = systime_now_ms();
+        while (systime_now_ms() - time_start < CPU_USAGE_CALC_INTERVAL) {
+            total_count++;
+            loop = 0;
+            while (loop < CPU_USAGE_LOOP)
+                loop++;
+        }
+        rt_exit_critical();
+    }
+
+    count = 0;
+    /* get CPU usage */
+    time_start = systime_now_ms();
+    while (systime_now_ms() - time_start < CPU_USAGE_CALC_INTERVAL) {
+        count++;
+        loop = 0;
+        while (loop < CPU_USAGE_LOOP)
+            loop++;
+    }
+
+    /* calculate major and minor */
+    if (count < total_count) {
+        cpu_usage = 100.0 - ((double)count / total_count) * 100.0;
+    } else {
+        total_count = count;
+    }
 }
 
-static void timer_stat_entry(void* parameter)
+/**
+ * @brief Get the cpu usage consumption
+ * 
+ * @return float The cpu usage in percent. e.g, 50.0 means 50%
+ */
+float get_cpu_usage(void)
 {
-	/* calculate cpu usage */
-	//OS_ENTER_CRITICAL;
-	float usage = 100.0 * (1.0 - ((double)_os_idle_ctr) / _os_ctr_max);
-
-	/* some time the timer could be not accurate, which will generate some wrong usage. so filter it */
-	if(usage > 0.0f && usage < 100.0f)
-		_cpu_usage = usage;
-
-	_os_idle_ctr = 0;
-	//OS_EXIT_CRITICAL;
+    return cpu_usage;
 }
 
-float sysstat_get_cpu_usage(void)
-{
-	return _cpu_usage;
-}
-
+/**
+ * @brief Initialize system statistic module
+ * 
+ * @return fmt_err FMT_EOK if successful
+ */
 fmt_err sys_stat_init(void)
 {
-	/* we increment idle counter in idle thread */
-	rt_thread_idle_sethook(_thread_idle_hook_func);
-
-    _os_idle_ctr = 0;
-	/* suspend current thread and let idle thread wakeup to count the maximal value of counter */
-	sys_msleep(OS_STATISTIC_INTERVAL);
-	_os_ctr_max = _os_idle_ctr;
-	_os_idle_ctr = 0;
-
-	/* register a timer event to calculate CPU usage */
-	rt_timer_init(&timer_sta, "stat",
-	              timer_stat_entry,
-	              RT_NULL,
-	              OS_STATISTIC_INTERVAL,
-	              RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
-	rt_timer_start(&timer_sta);
+    rt_thread_idle_sethook(cpu_usage_idle_hook);
 
     return FMT_EOK;
 }

@@ -64,7 +64,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
     }
 
     if (STRING_COMPARE(argv[1], "status")) {
-        console_println("cpu usage: %.2f%%\n", sysstat_get_cpu_usage());
+        console_println("cpu usage: %.2f%%\n", get_cpu_usage());
         list_mem();
         console_printf("\n");
         df("/");

@@ -242,6 +242,9 @@ void bsp_early_initialize(void)
     RTT_CHECK(spi_drv_init());
 
     RTT_CHECK(pwm_drv_init());
+
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
@@ -298,9 +301,6 @@ void bsp_initialize(void)
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
-
-    /* system statistic module */
-    FMT_CHECK(sys_stat_init());
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
