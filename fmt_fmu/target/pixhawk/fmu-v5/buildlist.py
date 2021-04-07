@@ -5,6 +5,7 @@ DRIVERS = [
     # 'gpio/*.c',
     # 'systick/st/stm32f7_systick.c',
     #'usart/st/stm32f7_usart.c',
+    'icm20689/icm20689.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -17,6 +18,8 @@ HAL = [
     'usb/usbd_cdc.c',
     'spi/spi_core.c',
     'spi/spi_dev.c',
+    'gyro/*.c',
+    'accel/*.c',
 ]
 
 HAL_CPPPATH = []
