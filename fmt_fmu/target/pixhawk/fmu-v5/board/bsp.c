@@ -30,6 +30,7 @@
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
+#include "drv_spi.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
@@ -241,6 +242,9 @@ void bsp_early_initialize(void)
 
     /* gpio driver init */
     RTT_CHECK(drv_gpio_init());
+
+    /* spi driver init */
+    RTT_CHECK(spi_drv_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
