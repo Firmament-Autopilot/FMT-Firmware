@@ -191,7 +191,7 @@ static rt_err_t configure(struct rt_spi_device* device,
 	return RT_EOK;
 };
 
-static rt_uint32_t xfer(struct rt_spi_device* device, struct rt_spi_message* message)
+static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message* message)
 {
 	struct stm32_spi_bus* stm32_spi_bus = (struct stm32_spi_bus*)device->bus;
 	struct rt_spi_configuration* config = &device->config;
@@ -287,7 +287,7 @@ static rt_uint32_t xfer(struct rt_spi_device* device, struct rt_spi_message* mes
 
 static struct rt_spi_ops stm32_spi_ops = {
 	configure,
-	xfer
+	transfer
 };
 
 /** \brief init and register stm32 spi bus.
