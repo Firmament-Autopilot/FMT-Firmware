@@ -26,12 +26,14 @@
 #include "driver/gpio.h"
 #include "driver/usart.h"
 
+#include "board_device.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
 #include "drv_spi.h"
 #include "driver/icm20689.h"
+#include "driver/ms5611.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
@@ -271,7 +273,9 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RTT_CHECK(drv_usb_cdc_init());
 
-    RTT_CHECK(icm20689_drv_init("spi1_dev1"));
+    RTT_CHECK(icm20689_drv_init(ICM20689_SPI_DEVICE_NAME));
+
+    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
     /* init parameter system */
     FMT_CHECK(param_init());
