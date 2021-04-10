@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 #include "drv_spi.h"
-#include "driver/spi_drv.h"
 #include "hal/spi.h"
 #include "stm32f7xx_ll_spi.h"
+
+// #define SPI_USE_DMA
 
 #define SPI1_CS1_Pin       LL_GPIO_PIN_2
 #define SPI1_CS1_GPIO_Port GPIOF
@@ -49,6 +50,26 @@
 #define SPI4_CS2_Pin       LL_GPIO_PIN_11
 #define SPI4_CS2_GPIO_Port GPIOF
 #define SPI4_CS2_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOF
+
+struct stm32_spi_bus {
+    struct rt_spi_bus parent;
+    SPI_TypeDef* SPI;
+#ifdef SPI_USE_DMA
+    DMA_Stream_TypeDef* DMA_Stream_TX;
+    uint32_t DMA_Channel_TX;
+
+    DMA_Stream_TypeDef* DMA_Stream_RX;
+    uint32_t DMA_Channel_RX;
+
+    uint32_t DMA_Channel_TX_FLAG_TC;
+    uint32_t DMA_Channel_RX_FLAG_TC;
+#endif /* #ifdef SPI_USE_DMA */
+};
+
+struct stm32_spi_cs {
+    GPIO_TypeDef* GPIOx;
+    uint16_t GPIO_Pin;
+};
 
 /**
  * @brief Configure spi device
@@ -167,7 +188,7 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
     }
 
 #ifdef SPI_USE_DMA
-
+#error Not support SPI DMA.
 #endif
 
     {
