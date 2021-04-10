@@ -24,8 +24,8 @@
 #ifdef FMT_USING_SIH
 
 // sensor topics to publish
-MCN_DECLARE(sensor_imu);
-MCN_DECLARE(sensor_mag);
+MCN_DECLARE(sensor_imu0);
+MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 
@@ -43,7 +43,7 @@ static void _publish_sensor_data(void)
     uint32_t time_now = systime_now_ms();
 
     if (Plant_Y.IMU.timestamp != imu_timestamp) {
-        IMU_Report imu_report;
+        imu_data_t imu_report;
 
         imu_report.timestamp_ms = time_now;
         imu_report.gyr_B_radDs[0] = Plant_Y.IMU.gyr_x;
@@ -53,26 +53,26 @@ static void _publish_sensor_data(void)
         imu_report.acc_B_mDs2[1] = Plant_Y.IMU.acc_y;
         imu_report.acc_B_mDs2[2] = Plant_Y.IMU.acc_z;
         // publish sensor_imu data
-        mcn_publish(MCN_HUB(sensor_imu), &imu_report);
+        mcn_publish(MCN_HUB(sensor_imu0), &imu_report);
 
         imu_timestamp = Plant_Y.IMU.timestamp;
     }
 
     if (Plant_Y.MAG.timestamp != mag_timestamp) {
-        Mag_Report mag_report;
+        mag_data_t mag_report;
 
         mag_report.timestamp_ms = time_now;
         mag_report.mag_B_gauss[0] = Plant_Y.MAG.mag_x;
         mag_report.mag_B_gauss[1] = Plant_Y.MAG.mag_y;
         mag_report.mag_B_gauss[2] = Plant_Y.MAG.mag_z;
         // publish sensor_mag data
-        mcn_publish(MCN_HUB(sensor_mag), &mag_report);
+        mcn_publish(MCN_HUB(sensor_mag0), &mag_report);
 
         mag_timestamp = Plant_Y.MAG.timestamp;
     }
 
     if (Plant_Y.Barometer.timestamp != baro_timestamp) {
-        Baro_Report baro_report;
+        baro_data_t baro_report;
 
         baro_report.timestamp_ms = time_now;
         baro_report.temperature_deg = Plant_Y.Barometer.temperature;
@@ -84,7 +84,7 @@ static void _publish_sensor_data(void)
     }
 
     if (Plant_Y.GPS_uBlox.timestamp != gps_timestamp) {
-        GPS_Report gps_report;
+        gps_data_t gps_report;
 
         gps_report.timestamp_ms = time_now;
         gps_report.fixType = Plant_Y.GPS_uBlox.fixType;

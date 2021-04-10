@@ -26,7 +26,7 @@
 #define GPS_CMD_INIT         0x10
 #define GPS_CMD_OPEN         0x11
 #define GPS_CMD_CLOSE        0x12
-#define GPS_CMD_CHECK_UPDATE 0x20
+#define GPS_CMD_CHECK_READY 0x20
 
 typedef struct {
     uint32_t timestamp_position; /**< Timestamp for position information */

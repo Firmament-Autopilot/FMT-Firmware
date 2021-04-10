@@ -347,7 +347,7 @@ static rt_err_t baro_config(baro_dev_t baro, const struct baro_configure* cfg)
 static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
 {
     switch (cmd) {
-    case BARO_CMD_CHECK_UPDATE: {
+    case BARO_CMD_CHECK_READY: {
         *(uint8_t*)arg = _updated;
     } break;
 

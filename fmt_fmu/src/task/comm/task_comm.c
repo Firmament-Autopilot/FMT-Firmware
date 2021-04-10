@@ -107,7 +107,7 @@ static bool _msg_local_pos_pack(mavlink_message_t* msg_t)
 static bool _msg_altitude_pack(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
-    Baro_Report baro_report;
+    baro_data_t baro_report;
 
     mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
     mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_report);
@@ -120,7 +120,7 @@ static bool _msg_altitude_pack(mavlink_message_t* msg_t)
 
 static bool _msg_gps_raw_int_pack(mavlink_message_t* msg_t)
 {
-    GPS_Report gps_report;
+    gps_data_t gps_report;
     McnHub* hub = MCN_HUB(sensor_gps);
     mavlink_gps_raw_int_t gps_raw_int;
 

@@ -484,7 +484,7 @@ static rt_err_t _init(void)
 static rt_err_t gps_control(gps_dev_t gps_dev, int cmd, void* arg)
 {
     switch (cmd) {
-    case GPS_CMD_CHECK_UPDATE:
+    case GPS_CMD_CHECK_READY:
         if (arg == NULL) {
             return RT_ERROR;
         }

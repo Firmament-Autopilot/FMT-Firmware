@@ -25,8 +25,8 @@
 
 #define EVENT_MAV_RX (1 << 0)
 
-MCN_DECLARE(sensor_imu);
-MCN_DECLARE(sensor_mag);
+MCN_DECLARE(sensor_imu0);
+MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 
@@ -164,9 +164,9 @@ static fmt_err handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syste
 #if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
     case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
-        IMU_Report imu_report;
-        Mag_Report mag_report;
-        Baro_Report baro_report;
+        imu_data_t imu_report;
+        mag_data_t mag_report;
+        baro_data_t baro_report;
 
         mavlink_msg_hil_sensor_decode(msg, &hil_sensor);
 
@@ -195,7 +195,7 @@ static fmt_err handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t syste
 
     case MAVLINK_MSG_ID_HIL_GPS: {
         mavlink_hil_gps_t hil_gps;
-        GPS_Report gps_report;
+        gps_data_t gps_report;
 
         gps_report.lat = hil_gps.lat;
         gps_report.lon = hil_gps.lon;

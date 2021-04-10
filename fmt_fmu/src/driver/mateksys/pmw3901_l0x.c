@@ -35,16 +35,16 @@ typedef struct __attribute__((packed)) {
     int32_t motionY;
 } mspOpflowSensor_t;
 
-MCN_DEFINE(sensor_optflow, sizeof(OptFlow_Report));
-MCN_DEFINE(sensor_rangefinder, sizeof(Rangefinder_Report));
+MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
+MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
 
-static Rangefinder_Report rangefinder_report = { .timestamp_ms = 0, .distance_m = -1.0f };
-static OptFlow_Report optflow_report = { 0 };
+static rf_data_t rangefinder_report = { .timestamp_ms = 0, .distance_m = -1.0f };
+static optflow_data_t optflow_report = { 0 };
 
 static int sensor_opt_flow_echo(void* param)
 {
     fmt_err err;
-    OptFlow_Report optflow_report;
+    optflow_data_t optflow_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &optflow_report);
 
@@ -61,7 +61,7 @@ static int sensor_opt_flow_echo(void* param)
 static int sensor_rangefinder_echo(void* param)
 {
     fmt_err err;
-    Rangefinder_Report rangefinder_report;
+    rf_data_t rangefinder_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &rangefinder_report);
 

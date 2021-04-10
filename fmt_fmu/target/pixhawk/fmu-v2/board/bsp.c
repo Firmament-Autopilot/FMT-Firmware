@@ -289,7 +289,7 @@ void bsp_initialize(void)
     FMT_CHECK(param_init());
 
     /* init sensor manager */
-    FMT_CHECK(sensor_manager_init());
+    FMT_CHECK(sensor_hub_init());
 
     //     /* GDB STUB */
     // #ifdef RT_USING_GDB

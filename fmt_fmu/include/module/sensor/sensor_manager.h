@@ -13,36 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#ifndef __SENSOR_MANAGER_H__
-#define __SENSOR_MANAGER_H__
+#ifndef __SENSOR_HUB_H__
+#define __SENSOR_HUB_H__
 
 #include <firmament.h>
 
-#define RAW_TEMPERATURE_POS			0
-#define RAW_PRESSURE_POS			1
-#define COLLECT_DATA_POS			2
-#define GYR_RAW_POS					0
-#define GYR_SCALE_POS				1
-#define ACC_RAW_POS					2
-#define ACC_SCALE_POS				3
-#define MAG_RAW_POS					4
-#define MAG_SCLAE_POS				5
+#define RAW_TEMPERATURE_POS 0
+#define RAW_PRESSURE_POS    1
+#define COLLECT_DATA_POS    2
+#define GYR_RAW_POS         0
+#define GYR_SCALE_POS       1
+#define ACC_RAW_POS         2
+#define ACC_SCALE_POS       3
+#define MAG_RAW_POS         4
+#define MAG_SCLAE_POS       5
 
 //common cmd
-#define SENSOR_GET_DEVICE_ID		0x00
+#define SENSOR_GET_DEVICE_ID 0x00
 //acc,mag cmd
-#define SENSOR_SET_ACC_RANGE		0x01
-#define SENSOR_SET_ACC_SAMPLERATE	0x02
-#define SENSOR_SET_MAG_RANGE		0x03
-#define SENSOR_SET_MAG_SAMPLERATE	0x04
+#define SENSOR_SET_ACC_RANGE      0x01
+#define SENSOR_SET_ACC_SAMPLERATE 0x02
+#define SENSOR_SET_MAG_RANGE      0x03
+#define SENSOR_SET_MAG_SAMPLERATE 0x04
 //gyr cmd
-#define SENSOR_SET_GYR_RANGE		0x20
+#define SENSOR_SET_GYR_RANGE 0x20
 //baro cmd
-#define SENSOR_CONVERSION			0x30
-#define SENSOR_IS_CONV_FIN			0x31
+#define SENSOR_CONVERSION  0x30
+#define SENSOR_IS_CONV_FIN 0x31
 
-struct sensor_imu{
+struct sensor_imu {
     rt_device_t gyr_dev;
     rt_device_t acc_dev;
     float gyr_rotation[3][3];
@@ -52,62 +51,72 @@ struct sensor_imu{
 };
 typedef struct sensor_imu* sensor_imu_t;
 
-struct sensor_mag{
+struct sensor_mag {
     rt_device_t dev;
     float rotation[3][3];
     float offset[3];
 };
 typedef struct sensor_mag* sensor_mag_t;
 
-typedef struct {
-	uint32_t timestamp_ms;
-	float gyr_B_radDs[3];
-	float acc_B_mDs2[3];
-} IMU_Report;
+struct sensor_baro {
+    rt_device_t dev;
+};
+typedef struct sensor_baro* sensor_baro_t;
+
+struct sensor_gps {
+    rt_device_t dev;
+};
+typedef struct sensor_gps* sensor_gps_t;
 
 typedef struct {
-	uint32_t timestamp_ms;
-	float mag_B_gauss[3];
-} Mag_Report;
+    uint32_t timestamp_ms;
+    float gyr_B_radDs[3];
+    float acc_B_mDs2[3];
+} imu_data_t;
 
 typedef struct {
-	uint32_t timestamp_ms;
-	float temperature_deg;
-	int32_t pressure_pa;
-	float altitude_m;
-} Baro_Report;
+    uint32_t timestamp_ms;
+    float mag_B_gauss[3];
+} mag_data_t;
 
 typedef struct {
-	uint32_t timestamp_ms;
-	int32_t lon;
-	int32_t lat;
-	int32_t height;
-	float hAcc;
-	float vAcc;
-	float velN;
-	float velE;
-	float velD;
+    uint32_t timestamp_ms;
+    float temperature_deg;
+    int32_t pressure_pa;
+    float altitude_m;
+} baro_data_t;
+
+typedef struct {
+    uint32_t timestamp_ms;
+    int32_t lon;
+    int32_t lat;
+    int32_t height;
+    float hAcc;
+    float vAcc;
+    float velN;
+    float velE;
+    float velD;
     float vel;
     float cog;
-	float sAcc;
-	uint8_t fixType;
-	uint8_t numSV;
-	uint16_t reserved;
-} GPS_Report;
+    float sAcc;
+    uint8_t fixType;
+    uint8_t numSV;
+    uint16_t reserved;
+} gps_data_t;
 
 typedef struct {
     uint32_t timestamp_ms;
     float vx_mPs;
     float vy_mPs;
     uint32_t valid;
-} OptFlow_Report;
+} optflow_data_t;
 
 typedef struct {
     uint32_t timestamp_ms;
     float distance_m; // negative value indicate invalid
-} Rangefinder_Report;
+} rf_data_t;
 
-fmt_err sensor_manager_init(void);
+fmt_err sensor_hub_init(void);
 void sensor_collect(void);
 
 #endif

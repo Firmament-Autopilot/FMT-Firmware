@@ -17,11 +17,20 @@
 #define __SENSOR_BARO_H__
 
 #include <firmament.h>
-#include "hal/barometer.h"
 
-fmt_err sensor_baro_init(void);
-fmt_err sensor_baro_update(void);
-uint8_t sensor_baro_check_update(void);
-fmt_err sensor_baro_get_report(baro_report_t* report);
+#include "module/sensor/sensor_manager.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+sensor_baro_t sensor_baro_init(const char* baro_dev_name);
+fmt_err sensor_baro_update(sensor_baro_t baro_dev);
+uint8_t sensor_baro_check_ready(sensor_baro_t baro_dev);
+fmt_err sensor_baro_read(sensor_baro_t baro_dev, baro_data_t* baro_data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

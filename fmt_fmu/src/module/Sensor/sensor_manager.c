@@ -25,23 +25,25 @@
 #include "module/sensor/sensor_mag.h"
 #include "module/sensor/sensor_manager.h"
 
-MCN_DEFINE(sensor_imu, sizeof(IMU_Report));
-MCN_DEFINE(sensor_imu_scale, sizeof(IMU_Report));
-MCN_DEFINE(sensor_mag, sizeof(Mag_Report));
-MCN_DEFINE(sensor_mag_scale, sizeof(Mag_Report));
-MCN_DEFINE(sensor_baro, sizeof(Baro_Report));
-MCN_DEFINE(sensor_gps, sizeof(GPS_Report));
+MCN_DEFINE(sensor_imu0, sizeof(imu_data_t));
+MCN_DEFINE(sensor_imu0_native, sizeof(imu_data_t));
+MCN_DEFINE(sensor_mag0, sizeof(mag_data_t));
+MCN_DEFINE(sensor_mag0_native, sizeof(mag_data_t));
+MCN_DEFINE(sensor_baro, sizeof(baro_data_t));
+MCN_DEFINE(sensor_gps, sizeof(gps_data_t));
 
-static IMU_Report _imu_report;
-static Mag_Report _mag_report;
-static Baro_Report _baro_report;
-static GPS_Report _gps_report;
+static imu_data_t _imu_report;
+static mag_data_t _mag_report;
+static baro_data_t _baro_report;
+static gps_data_t _gps_report;
 static Butter3* _butter3_gyr[3];
 static Butter3* _butter3_acc[3];
-static sensor_imu_t _imu0_dev = NULL;
+static sensor_imu_t imu0 = NULL;
 // static sensor_imu_t _imu1_dev = NULL;
-static sensor_mag_t _mag0_dev = NULL;
+static sensor_mag_t mag0 = NULL;
 // static sensor_mag_t _mag1_dev = NULL;
+static sensor_baro_t barometer;
+static sensor_gps_t gps;
 
 static void dcm_from_euler(const float rpy[3], float dcm[9])
 {
@@ -65,10 +67,10 @@ static void dcm_from_euler(const float rpy[3], float dcm[9])
     dcm[8] = cosPhi * cosThe;
 }
 
-static int SENSOR_IMU_echo(void* param)
+static int echo_sensor_imu(void* param)
 {
     fmt_err err;
-    IMU_Report imu_report;
+    imu_data_t imu_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &imu_report);
 
@@ -83,10 +85,10 @@ static int SENSOR_IMU_echo(void* param)
     return 0;
 }
 
-static int SENSOR_MAG_echo(void* param)
+static int echo_sensor_mag(void* param)
 {
     fmt_err err;
-    Mag_Report mag_report;
+    mag_data_t mag_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &mag_report);
 
@@ -100,10 +102,10 @@ static int SENSOR_MAG_echo(void* param)
     return 0;
 }
 
-static int SENSOR_BARO_echo(void* param)
+static int echo_sensor_baro(void* param)
 {
     fmt_err err;
-    Baro_Report baro_report;
+    baro_data_t baro_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &baro_report);
 
@@ -118,10 +120,10 @@ static int SENSOR_BARO_echo(void* param)
     return 0;
 }
 
-static int SENSOR_GPS_echo(void* param)
+static int echo_sensor_gps(void* param)
 {
     fmt_err err;
-    GPS_Report gps_report;
+    gps_data_t gps_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &gps_report);
 
@@ -167,9 +169,9 @@ static void _init_rotation(void)
     MatMul(&level_rot, &acc_scale, MatCreate(&acc_rot, 3, 3));
     MatMul(&level_rot, &mag_scale, MatCreate(&mag_rot, 3, 3));
     /* set rotation */
-    sensor_gyr_set_rotation(_imu0_dev, gyr_rot.buffer);
-    sensor_acc_set_rotation(_imu0_dev, acc_rot.buffer);
-    sensor_mag_set_rotation(_mag0_dev, mag_rot.buffer);
+    sensor_gyr_set_rotation(imu0, gyr_rot.buffer);
+    sensor_acc_set_rotation(imu0, acc_rot.buffer);
+    sensor_mag_set_rotation(mag0, mag_rot.buffer);
     /* delete matrix */
     MatDelete(&gyr_rot);
     MatDelete(&acc_rot);
@@ -191,9 +193,9 @@ static void _init_offset(void)
         PARAM_GET_FLOAT(CALIB, MAG0_XOFF), PARAM_GET_FLOAT(CALIB, MAG0_YOFF), PARAM_GET_FLOAT(CALIB, MAG0_ZOFF)
     };
 
-    sensor_gyr_set_offset(_imu0_dev, gyr_off);
-    sensor_acc_set_offset(_imu0_dev, acc_off);
-    sensor_mag_set_offset(_mag0_dev, mag_off);
+    sensor_gyr_set_offset(imu0, gyr_off);
+    sensor_acc_set_offset(imu0, acc_off);
+    sensor_mag_set_offset(mag0, mag_off);
 }
 
 static fmt_err _init_filter(void)
@@ -233,16 +235,16 @@ void sensor_collect(void)
 
     /*************** Collect IMU Data ***************/
     _imu_report.timestamp_ms = systime_now_ms();
-    sensor_gyr_measure(_imu0_dev, _imu_report.gyr_B_radDs);
-    sensor_acc_measure(_imu0_dev, _imu_report.acc_B_mDs2);
+    sensor_gyr_measure(imu0, _imu_report.gyr_B_radDs);
+    sensor_acc_measure(imu0, _imu_report.acc_B_mDs2);
     /* publish scale imu data without calibration and filtering */
-    mcn_publish(MCN_HUB(sensor_imu_scale), &_imu_report);
+    mcn_publish(MCN_HUB(sensor_imu0_native), &_imu_report);
     /* do calibration */
-    sensor_gyr_correct(_imu0_dev, _imu_report.gyr_B_radDs, temp);
+    sensor_gyr_correct(imu0, _imu_report.gyr_B_radDs, temp);
     _imu_report.gyr_B_radDs[0] = temp[0];
     _imu_report.gyr_B_radDs[1] = temp[1];
     _imu_report.gyr_B_radDs[2] = temp[2];
-    sensor_acc_correct(_imu0_dev, _imu_report.acc_B_mDs2, temp);
+    sensor_acc_correct(imu0, _imu_report.acc_B_mDs2, temp);
     _imu_report.acc_B_mDs2[0] = temp[0];
     _imu_report.acc_B_mDs2[1] = temp[1];
     _imu_report.acc_B_mDs2[2] = temp[2];
@@ -254,68 +256,65 @@ void sensor_collect(void)
     _imu_report.acc_B_mDs2[1] = butter3_filter_process(_imu_report.acc_B_mDs2[1], _butter3_acc[1]);
     _imu_report.acc_B_mDs2[2] = butter3_filter_process(_imu_report.acc_B_mDs2[2], _butter3_acc[2]);
     /* publish calibrated & filtered imu data */
-    mcn_publish(MCN_HUB(sensor_imu), &_imu_report);
+    mcn_publish(MCN_HUB(sensor_imu0), &_imu_report);
 
     /*************** Collect MAG Data ***************/
     if (check_timetag(TIMETAG(mag_update))) {
         _mag_report.timestamp_ms = systime_now_ms();
-        sensor_mag_measure(_mag0_dev, _mag_report.mag_B_gauss);
-        mcn_publish(MCN_HUB(sensor_mag_scale), &_mag_report);
+        sensor_mag_measure(mag0, _mag_report.mag_B_gauss);
+        mcn_publish(MCN_HUB(sensor_mag0_native), &_mag_report);
         /* do calibration */
-        sensor_mag_correct(_mag0_dev, _mag_report.mag_B_gauss, temp);
+        sensor_mag_correct(mag0, _mag_report.mag_B_gauss, temp);
         _mag_report.mag_B_gauss[0] = temp[0];
         _mag_report.mag_B_gauss[1] = temp[1];
         _mag_report.mag_B_gauss[2] = temp[2];
         /* do filtering */
         // TBD
         /* publish calibrated & filtered mag data */
-        mcn_publish(MCN_HUB(sensor_mag), &_mag_report);
+        mcn_publish(MCN_HUB(sensor_mag0), &_mag_report);
     }
 
     if (check_timetag(TIMETAG(baro_update))) {
-        sensor_baro_update();
-        if (sensor_baro_check_update()) {
-            baro_report_t report;
-
-            if (sensor_baro_get_report(&report) == FMT_EOK) {
-                _baro_report.temperature_deg = report.temperature_deg;
-                _baro_report.pressure_pa = report.pressure_Pa;
-                _baro_report.altitude_m = report.altitude_m;
-                _baro_report.timestamp_ms = report.timestamp_ms;
+        sensor_baro_update(barometer);
+        if (sensor_baro_check_ready(barometer)) {
+            if (sensor_baro_read(barometer, &_baro_report) == FMT_EOK) {
 
                 mcn_publish(MCN_HUB(sensor_baro), &_baro_report);
             }
         }
     }
 
-    if (sensor_gps_report_ready()) {
+    if (sensor_gps_check_ready(gps)) {
 
-        sensor_gps_get_report(&_gps_report);
+        sensor_gps_read(gps, &_gps_report);
 
         mcn_publish(MCN_HUB(sensor_gps), &_gps_report);
     }
 }
 
-fmt_err sensor_manager_init(void)
+fmt_err sensor_hub_init(void)
 {
     fmt_err err = FMT_EOK;
 
-    _imu0_dev = sensor_imu_init("gyro0", "accel0");
-    _mag0_dev = sensor_mag_init("mag0");
-    err |= sensor_baro_init();
-    err |= sensor_gps_init();
+    imu0 = sensor_imu_init("gyro0", "accel0");
+    RT_ASSERT(imu0 != NULL);
 
-    if (_imu0_dev == NULL || _mag0_dev == NULL) {
-        return FMT_ERROR;
-    }
+    mag0 = sensor_mag_init("mag0");
+    RT_ASSERT(mag0 != NULL);
+
+    barometer = sensor_baro_init("barometer");
+    RT_ASSERT(barometer != NULL);
+
+    gps = sensor_gps_init("gps");
+    RT_ASSERT(gps != NULL);
 
     /* advertise sensor data */
-    err |= mcn_advertise(MCN_HUB(sensor_imu), SENSOR_IMU_echo);
-    err |= mcn_advertise(MCN_HUB(sensor_imu_scale), SENSOR_IMU_echo);
-    err |= mcn_advertise(MCN_HUB(sensor_mag), SENSOR_MAG_echo);
-    err |= mcn_advertise(MCN_HUB(sensor_mag_scale), SENSOR_MAG_echo);
-    err |= mcn_advertise(MCN_HUB(sensor_baro), SENSOR_BARO_echo);
-    err |= mcn_advertise(MCN_HUB(sensor_gps), SENSOR_GPS_echo);
+    err |= mcn_advertise(MCN_HUB(sensor_imu0), echo_sensor_imu);
+    err |= mcn_advertise(MCN_HUB(sensor_imu0_native), echo_sensor_imu);
+    err |= mcn_advertise(MCN_HUB(sensor_mag0), echo_sensor_mag);
+    err |= mcn_advertise(MCN_HUB(sensor_mag0_native), echo_sensor_mag);
+    err |= mcn_advertise(MCN_HUB(sensor_baro), echo_sensor_baro);
+    err |= mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps);
 
     _init_rotation();
     _init_offset();

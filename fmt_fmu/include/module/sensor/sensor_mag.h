@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __SENSOR_MAG_H__
 #define __SENSOR_MAG_H__
 
 #include <firmament.h>
 
-#define MAG1_DEVICE_NAME			"lsm303d"
-#define MAG2_DEVICE_NAME			"hmc5883"   //external mag
+#include "module/sensor/sensor_manager.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 sensor_mag_t sensor_mag_init(const char* mag_dev_name);
-rt_err_t sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t mag[3]);
-rt_err_t sensor_mag_measure(sensor_mag_t mag_dev, float mag[3]);
+fmt_err sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3]);
+fmt_err sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3]);
 void sensor_mag_set_rotation(sensor_mag_t mag_dev, const float rotation[9]);
 void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3]);
 void sensor_mag_correct(sensor_mag_t mag_dev, const float mag[3], float mag_cor[3]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
