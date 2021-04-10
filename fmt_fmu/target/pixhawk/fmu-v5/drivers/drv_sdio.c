@@ -18,6 +18,7 @@
 #include "bsp.h"
 #include "drv_sdio.h"
 #include "hal/sd.h"
+#include "stm32f7xx_ll_sdmmc.h"
 
 #define SD_TIMEOUT    5000
 #define EVENT_TX_CPLT 0x00000001

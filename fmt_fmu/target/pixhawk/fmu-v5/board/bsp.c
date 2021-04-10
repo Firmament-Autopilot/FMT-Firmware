@@ -26,10 +26,15 @@
 #include "driver/gpio.h"
 #include "driver/usart.h"
 
+#include "board_device.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
+#include "drv_spi.h"
+#include "driver/icm20689.h"
+#include "driver/ms5611.h"
+#include "driver/bmi055.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
@@ -242,6 +247,9 @@ void bsp_early_initialize(void)
     /* gpio driver init */
     RTT_CHECK(drv_gpio_init());
 
+    /* spi driver init */
+    RTT_CHECK(spi_drv_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -265,6 +273,14 @@ void bsp_initialize(void)
 
     /* init usbd_cdc */
     RTT_CHECK(drv_usb_cdc_init());
+
+    RTT_CHECK(icm20689_drv_init(ICM20689_SPI_DEVICE_NAME));
+
+    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
+
+    RTT_CHECK(bmi055_gyro_drv_init(BMI055_GYRO_SPI_DEVICE_NAME));
+
+    RTT_CHECK(bmi055_acc_drv_init(BMI055_ACC_SPI_DEVICE_NAME));
 
     /* init parameter system */
     FMT_CHECK(param_init());

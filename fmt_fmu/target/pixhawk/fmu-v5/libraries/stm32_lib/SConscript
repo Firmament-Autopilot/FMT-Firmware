@@ -19,6 +19,7 @@ src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usart.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_gpio.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c')
+src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_spi.c')
 
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c')
 src += Glob('STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c')
@@ -47,6 +48,7 @@ elif rtconfig.CROSS_TOOL == 'iar':
     src = src + ['CMSIS/Device/ST/STM32F7xx/Source/Templates/iar/startup_stm32f765xx.s']
 
 #add for DSP library
+src += Glob('CMSIS/DSP/Source/CommonTables/*.c')
 src += Glob('CMSIS/DSP/Source/FastMathFunctions/*f32.c')
 src += Glob('CMSIS/DSP/Source/BasicMathFunctions/*f32.c')
 # src += Glob('CMSIS/DSP/Source/MatrixFunctions/*f32.c')

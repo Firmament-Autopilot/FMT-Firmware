@@ -27,7 +27,12 @@
 #define GPS_SERIAL_DEVICE_NAME     "serial2"
 #define MPU6000_SPI_DEVICE_NAME    "spi1_dev4"
 #define L3GD20H_SPI_DEVICE_NAME    "spi1_dev2"
-#define MS5611_SPI_DEVICE_NAME     "spi1_dev3"
 #define LSM303D_SPI_DEVICE_NAME    "spi1_dev1"
+
+#define MS5611_SPI_DEVICE_NAME     "spi4_dev1"
+#define ICM20689_SPI_DEVICE_NAME   "spi1_dev1"
+
+#define BMI055_ACC_SPI_DEVICE_NAME      "spi1_dev4"
+#define BMI055_GYRO_SPI_DEVICE_NAME     "spi1_dev3"
 
 #endif

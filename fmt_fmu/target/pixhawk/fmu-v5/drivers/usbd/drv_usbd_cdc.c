@@ -19,10 +19,11 @@
 #include "hal/usbd_cdc.h"
 #include "module/utils/ringbuffer.h"
 
+#include "stm32f7xx_ll_usb.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
-#include "usbd_desc.h"
 #include "usbd_conf.h"
+#include "usbd_desc.h"
 
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 

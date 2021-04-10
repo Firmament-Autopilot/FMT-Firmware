@@ -5,6 +5,9 @@ DRIVERS = [
     # 'gpio/*.c',
     # 'systick/st/stm32f7_systick.c',
     #'usart/st/stm32f7_usart.c',
+    'icm20689/icm20689.c',
+    'ms5611/ms5611.c',
+    'bmi055/bmi055.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -15,6 +18,11 @@ HAL = [
     'systick/*.c',
     'sd/*.c',
     'usb/usbd_cdc.c',
+    'spi/spi_core.c',
+    'spi/spi_dev.c',
+    'gyro/*.c',
+    'accel/*.c',
+    'barometer/*.c',
 ]
 
 HAL_CPPPATH = []
@@ -47,6 +55,8 @@ MODULES = [
     'SysIO/*.c',
     'TOML/*.c',
     'WorkQueue/*.c',
+    'Math/*.c',
+    'Filter/*.c',
 ]
 
 MODULES_CPPPATH = [
