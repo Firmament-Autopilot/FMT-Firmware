@@ -101,29 +101,35 @@ static rt_err_t configure(struct rt_spi_device* device,
     {
         uint32_t stm32_spi_max_clock;
         uint32_t max_hz;
-        uint32_t PCLK2 = rcc_clocks.PCLK2_Frequency;
+        uint32_t PCLK;
 
-        /* stm32f7xx SPI max_clock=PCLK2/2 */
-        stm32_spi_max_clock = PCLK2 / 2;
+        if (stm32_spi_bus->SPI == SPI2 || stm32_spi_bus->SPI == SPI3) {
+            PCLK = rcc_clocks.PCLK1_Frequency;
+        } else {
+            PCLK = rcc_clocks.PCLK2_Frequency;
+        }
+
+        /* stm32f7xx SPI max_clock=PCLK/2 */
+        stm32_spi_max_clock = PCLK / 2;
         max_hz = configuration->max_hz;
 
         if (max_hz > stm32_spi_max_clock) {
             max_hz = stm32_spi_max_clock;
         }
 
-        if (max_hz >= PCLK2 / 2) {
+        if (max_hz >= PCLK / 2) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV2;
-        } else if (max_hz >= PCLK2 / 4) {
+        } else if (max_hz >= PCLK / 4) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV4;
-        } else if (max_hz >= PCLK2 / 8) {
+        } else if (max_hz >= PCLK / 8) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV8;
-        } else if (max_hz >= PCLK2 / 16) {
+        } else if (max_hz >= PCLK / 16) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV16;
-        } else if (max_hz >= PCLK2 / 32) {
+        } else if (max_hz >= PCLK / 32) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;
-        } else if (max_hz >= PCLK2 / 64) {
+        } else if (max_hz >= PCLK / 64) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
-        } else if (max_hz >= PCLK2 / 128) {
+        } else if (max_hz >= PCLK / 128) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;
         } else {
             /*  min prescaler 256 */
