@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 #define __SENSOR_HUB_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define RAW_TEMPERATURE_POS 0
 #define RAW_PRESSURE_POS    1
@@ -118,5 +122,9 @@ typedef struct {
 
 fmt_err sensor_hub_init(void);
 void sensor_collect(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

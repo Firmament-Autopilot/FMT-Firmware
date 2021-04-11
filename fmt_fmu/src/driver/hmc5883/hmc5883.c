@@ -17,7 +17,7 @@
 #include <firmament.h>
 #include <math.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 #include "hal/i2c-bit-ops.h"
 #include "hal/i2c_dev.h"
 #include "hal/i2c.h"

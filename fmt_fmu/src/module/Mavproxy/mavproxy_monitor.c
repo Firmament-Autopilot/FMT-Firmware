@@ -19,7 +19,7 @@
 #include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #define TAG "MAV_Monitor"
 

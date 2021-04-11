@@ -18,7 +18,7 @@
 
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #ifdef __cplusplus
 extern "C" {

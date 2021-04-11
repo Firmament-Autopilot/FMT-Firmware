@@ -21,7 +21,7 @@
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"
 #include "task/task_comm.h"
 #include "task/task_vehicle.h"

@@ -53,20 +53,20 @@ void sensor_gyr_set_offset(sensor_imu_t imu_dev, const float offset[3])
  * @brief Correct gyro data based on offset and rotation matrix
  * 
  * @param imu_dev IMU sensor device
- * @param gyr Original gyro data
- * @param gyr_cor Corrected gyro data
+ * @param src Original gyro data
+ * @param dst Corrected gyro data
  */
-void sensor_gyr_correct(sensor_imu_t imu_dev, const float gyr[3], float gyr_cor[3])
+void sensor_gyr_correct(sensor_imu_t imu_dev, const float src[3], float dst[3])
 {
     float temp[3];
 
-    temp[0] = gyr[0] - imu_dev->gyr_offset[0];
-    temp[1] = gyr[1] - imu_dev->gyr_offset[1];
-    temp[2] = gyr[2] - imu_dev->gyr_offset[2];
+    temp[0] = src[0] - imu_dev->gyr_offset[0];
+    temp[1] = src[1] - imu_dev->gyr_offset[1];
+    temp[2] = src[2] - imu_dev->gyr_offset[2];
 
-    gyr_cor[0] = imu_dev->gyr_rotation[0][0] * temp[0] + imu_dev->gyr_rotation[0][1] * temp[1] + imu_dev->gyr_rotation[0][2] * temp[2];
-    gyr_cor[1] = imu_dev->gyr_rotation[1][0] * temp[0] + imu_dev->gyr_rotation[1][1] * temp[1] + imu_dev->gyr_rotation[1][2] * temp[2];
-    gyr_cor[2] = imu_dev->gyr_rotation[2][0] * temp[0] + imu_dev->gyr_rotation[2][1] * temp[1] + imu_dev->gyr_rotation[2][2] * temp[2];
+    dst[0] = imu_dev->gyr_rotation[0][0] * temp[0] + imu_dev->gyr_rotation[0][1] * temp[1] + imu_dev->gyr_rotation[0][2] * temp[2];
+    dst[1] = imu_dev->gyr_rotation[1][0] * temp[0] + imu_dev->gyr_rotation[1][1] * temp[1] + imu_dev->gyr_rotation[1][2] * temp[2];
+    dst[2] = imu_dev->gyr_rotation[2][0] * temp[0] + imu_dev->gyr_rotation[2][1] * temp[1] + imu_dev->gyr_rotation[2][2] * temp[2];
 }
 
 /**
@@ -141,20 +141,20 @@ void sensor_acc_set_offset(sensor_imu_t imu_dev, const float offset[3])
  * @brief Correct accel data based on offset and rotation matrix
  * 
  * @param imu_dev IMU sensor device
- * @param acc Original accel data
- * @param acc_cor Corrected accel data
+ * @param src Original accel data
+ * @param dst Corrected accel data
  */
-void sensor_acc_correct(sensor_imu_t imu_dev, const float acc[3], float acc_cor[3])
+void sensor_acc_correct(sensor_imu_t imu_dev, const float src[3], float dst[3])
 {
     float temp[3];
 
-    temp[0] = acc[0] - imu_dev->acc_offset[0];
-    temp[1] = acc[1] - imu_dev->acc_offset[1];
-    temp[2] = acc[2] - imu_dev->acc_offset[2];
+    temp[0] = src[0] - imu_dev->acc_offset[0];
+    temp[1] = src[1] - imu_dev->acc_offset[1];
+    temp[2] = src[2] - imu_dev->acc_offset[2];
 
-    acc_cor[0] = imu_dev->acc_rotation[0][0] * temp[0] + imu_dev->acc_rotation[0][1] * temp[1] + imu_dev->acc_rotation[0][2] * temp[2];
-    acc_cor[1] = imu_dev->acc_rotation[1][0] * temp[0] + imu_dev->acc_rotation[1][1] * temp[1] + imu_dev->acc_rotation[1][2] * temp[2];
-    acc_cor[2] = imu_dev->acc_rotation[2][0] * temp[0] + imu_dev->acc_rotation[2][1] * temp[1] + imu_dev->acc_rotation[2][2] * temp[2];
+    dst[0] = imu_dev->acc_rotation[0][0] * temp[0] + imu_dev->acc_rotation[0][1] * temp[1] + imu_dev->acc_rotation[0][2] * temp[2];
+    dst[1] = imu_dev->acc_rotation[1][0] * temp[0] + imu_dev->acc_rotation[1][1] * temp[1] + imu_dev->acc_rotation[1][2] * temp[2];
+    dst[2] = imu_dev->acc_rotation[2][0] * temp[0] + imu_dev->acc_rotation[2][1] * temp[1] + imu_dev->acc_rotation[2][2] * temp[2];
 }
 
 /**

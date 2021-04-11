@@ -18,7 +18,7 @@
 
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,7 +29,7 @@ fmt_err sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3]);
 fmt_err sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3]);
 void sensor_mag_set_rotation(sensor_mag_t mag_dev, const float rotation[9]);
 void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3]);
-void sensor_mag_correct(sensor_mag_t mag_dev, const float mag[3], float mag_cor[3]);
+void sensor_mag_correct(sensor_mag_t mag_dev, const float src[3], float dst[3]);
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,7 @@
 #include <Plant.h>
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #define TAG "Plant"
 

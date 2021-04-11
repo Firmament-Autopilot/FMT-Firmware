@@ -23,7 +23,7 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #define TAG "MAVCMD"
 

@@ -52,20 +52,20 @@ void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3])
  * @brief Correct mag data based on offset and rotation matrix
  * 
  * @param mag_dev Mag sensor device
- * @param mag Original mag data
- * @param mag_cor Corrected mag data
+ * @param src Original mag data
+ * @param dst Corrected mag data
  */
-void sensor_mag_correct(sensor_mag_t mag_dev, const float mag[3], float mag_cor[3])
+void sensor_mag_correct(sensor_mag_t mag_dev, const float src[3], float dst[3])
 {
     float temp[3];
 
-    temp[0] = mag[0] - mag_dev->offset[0];
-    temp[1] = mag[1] - mag_dev->offset[1];
-    temp[2] = mag[2] - mag_dev->offset[2];
+    temp[0] = src[0] - mag_dev->offset[0];
+    temp[1] = src[1] - mag_dev->offset[1];
+    temp[2] = src[2] - mag_dev->offset[2];
 
-    mag_cor[0] = mag_dev->rotation[0][0] * temp[0] + mag_dev->rotation[0][1] * temp[1] + mag_dev->rotation[0][2] * temp[2];
-    mag_cor[1] = mag_dev->rotation[1][0] * temp[0] + mag_dev->rotation[1][1] * temp[1] + mag_dev->rotation[1][2] * temp[2];
-    mag_cor[2] = mag_dev->rotation[2][0] * temp[0] + mag_dev->rotation[2][1] * temp[1] + mag_dev->rotation[2][2] * temp[2];
+    dst[0] = mag_dev->rotation[0][0] * temp[0] + mag_dev->rotation[0][1] * temp[1] + mag_dev->rotation[0][2] * temp[2];
+    dst[1] = mag_dev->rotation[1][0] * temp[0] + mag_dev->rotation[1][1] * temp[1] + mag_dev->rotation[1][2] * temp[2];
+    dst[2] = mag_dev->rotation[2][0] * temp[0] + mag_dev->rotation[2][1] * temp[1] + mag_dev->rotation[2][2] * temp[2];
 }
 
 /**

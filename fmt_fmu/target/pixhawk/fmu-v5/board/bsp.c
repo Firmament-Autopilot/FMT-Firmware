@@ -15,6 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include <board_device.h>
 #include <bsp.h>
 #include <shell.h>
 #include <string.h>
@@ -27,20 +28,21 @@
 #include "driver/usart.h"
 
 #include "board_device.h"
-#include "drv_gpio.h"
-#include "drv_sdio.h"
-#include "drv_systick.h"
-#include "drv_usbd_cdc.h"
-#include "drv_spi.h"
+#include "driver/bmi055.h"
 #include "driver/icm20689.h"
 #include "driver/ms5611.h"
-#include "driver/bmi055.h"
+#include "drv_gpio.h"
+#include "drv_sdio.h"
+#include "drv_spi.h"
+#include "drv_systick.h"
+#include "drv_usbd_cdc.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
 [console]\n\
@@ -284,6 +286,9 @@ void bsp_initialize(void)
 
     /* init parameter system */
     FMT_CHECK(param_init());
+
+    /* init sensor hub */
+    FMT_CHECK(sensor_hub_init());
 
     /* init finsh */
     finsh_system_init();

@@ -17,7 +17,7 @@
 #include <INS.h>
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 // #include "task/task_logger.h"
 
 /* INS output bus */
