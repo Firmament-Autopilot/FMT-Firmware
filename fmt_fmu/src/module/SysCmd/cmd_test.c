@@ -25,7 +25,7 @@
 #include "hal/systick.h"
 #include "module/console/console.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/syscmd/syscmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"

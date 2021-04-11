@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,51 +13,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include <firmament.h>
-
 #include "module/sensor/sensor_baro.h"
 #include "hal/barometer.h"
 
-static rt_device_t _baro_device_t;
-
-uint8_t sensor_baro_check_update(void)
+/**
+ * @brief Check if barometer data is ready to read
+ * 
+ * @param baro_dev Barometer sensor device
+ * @return uint8_t 1:ready 0:not-ready
+ */
+uint8_t sensor_baro_check_ready(sensor_baro_t baro_dev)
 {
-	uint8_t update = 0;
+    uint8_t ready = 0;
 
-	rt_device_control(_baro_device_t, BARO_CMD_CHECK_UPDATE, &update);
+    rt_device_control(baro_dev->dev, BARO_CMD_CHECK_READY, &ready);
 
-	return update;
+    return ready;
 }
 
-fmt_err sensor_baro_update(void)
+/**
+ * @brief Trigger barometer measure/conversion process
+ * 
+ * @param baro_dev Barometer sensor device
+ * @return fmt_err FMT_EOK for success
+ */
+fmt_err sensor_baro_update(sensor_baro_t baro_dev)
 {
-    return rt_device_control(_baro_device_t, BARO_CMD_UPDATE, NULL) == RT_EOK ? FMT_EOK : FMT_ERROR;
+    if (rt_device_control(baro_dev->dev, BARO_CMD_UPDATE, NULL) != RT_EOK) {
+        return FMT_ERROR;
+    }
+    return FMT_EOK;
 }
 
-fmt_err sensor_baro_get_report(baro_report_t* report)
+/**
+ * @brief Read barometer data
+ * 
+ * @param baro_dev Barometer sensor device
+ * @param baro_data Barometer data buffer
+ * @return fmt_err FMT_EOK for success
+ */
+fmt_err sensor_baro_read(sensor_baro_t baro_dev, baro_data_t* baro_data)
 {
-	if(rt_device_read(_baro_device_t, BARO_RD_REPORT, report, sizeof(baro_report_t))) {
-		return FMT_EOK;
-	}
+    baro_report_t report;
+    if (rt_device_read(baro_dev->dev, BARO_RD_REPORT, &report, sizeof(baro_report_t)) != sizeof(baro_report_t)) {
+        return FMT_ERROR;
+    }
 
-	return FMT_ERROR;
+    baro_data->temperature_deg = report.temperature_deg;
+    baro_data->pressure_pa = report.pressure_Pa;
+    baro_data->altitude_m = report.altitude_m;
+    baro_data->timestamp_ms = report.timestamp_ms;
+
+    return FMT_EOK;
 }
 
-fmt_err sensor_baro_init(void)
+/**
+ * @brief Initialize barometer sensor device
+ * 
+ * @param baro_dev_name Barometer device name
+ * @return sensor_baro_t Barometer sensor device
+ */
+sensor_baro_t sensor_baro_init(const char* baro_dev_name)
 {
-	rt_err_t res = RT_EOK;
+    sensor_baro_t baro_dev = (sensor_baro_t)rt_malloc(sizeof(struct sensor_baro));
+    RT_ASSERT(baro_dev != NULL);
 
-	/* find baro device */
-	_baro_device_t = rt_device_find("barometer");
+    /* find baro device */
+    baro_dev->dev = rt_device_find(baro_dev_name);
+    RT_ASSERT(baro_dev->dev != NULL);
 
-	if(_baro_device_t == RT_NULL) {
-		console_printf("can't find barometer device\r\n");
-		res |= RT_EEMPTY;
-	}
+    /* open device */
+    RTT_CHECK(rt_device_open(baro_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
-	/* open device */
-	res |= rt_device_open(_baro_device_t, RT_DEVICE_OFLAG_RDWR);
-
-	return FMT_EOK;
+    return baro_dev;
 }

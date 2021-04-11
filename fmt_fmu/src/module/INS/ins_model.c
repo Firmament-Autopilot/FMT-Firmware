@@ -17,15 +17,15 @@
 #include <INS.h>
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 // #include "task/task_logger.h"
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 
 /* INS input bus */
-MCN_DECLARE(sensor_imu);
-MCN_DECLARE(sensor_mag);
+MCN_DECLARE(sensor_imu0);
+MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(sensor_rangefinder);
@@ -39,12 +39,12 @@ struct INS_Handler {
     McnNode_t rf_sub_node_t;
     McnNode_t optflow_sub_node_t;
 
-    IMU_Report imu_report;
-    Mag_Report mag_report;
-    Baro_Report baro_report;
-    GPS_Report gps_report;
-    Rangefinder_Report rf_report;
-    OptFlow_Report optflow_report;
+    imu_data_t imu_report;
+    mag_data_t mag_report;
+    baro_data_t baro_report;
+    gps_data_t gps_report;
+    rf_data_t rf_report;
+    optflow_data_t optflow_report;
 
     uint32_t start_time;
     uint8_t imu_updated;
@@ -99,7 +99,7 @@ void ins_model_step(void)
 
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_imu), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
+        mcn_copy(MCN_HUB(sensor_imu0), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
 
         INS_U.IMU1.gyr_x = ins_handle.imu_report.gyr_B_radDs[0];
         INS_U.IMU1.gyr_y = ins_handle.imu_report.gyr_B_radDs[1];
@@ -113,7 +113,7 @@ void ins_model_step(void)
     }
 
     if (mcn_poll(ins_handle.mag_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_mag), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
+        mcn_copy(MCN_HUB(sensor_mag0), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
 
         INS_U.MAG.mag_x = ins_handle.mag_report.mag_B_gauss[0];
         INS_U.MAG.mag_y = ins_handle.mag_report.mag_B_gauss[1];
@@ -232,8 +232,8 @@ void ins_model_init(void)
 {
     mcn_advertise(MCN_HUB(ins_output), _ins_output_echo);
 
-    ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu), NULL, NULL);
-    ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag), NULL, NULL);
+    ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);
+    ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag0), NULL, NULL);
     ins_handle.baro_sub_node_t = mcn_subscribe(MCN_HUB(sensor_baro), NULL, NULL);
     ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include <firmament.h>
-
 #include "hal/mag.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_mag.h"
 
-rt_err_t sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t mag[3])
-{
-	rt_size_t r_byte;
-
-	r_byte = rt_device_read(mag_dev->dev, MAG_RD_RAW, (void*)mag, 6);
-
-	return r_byte == 6 ? RT_EOK : RT_ERROR;
-}
-
-rt_err_t sensor_mag_measure(sensor_mag_t mag_dev, float mag[3])
-{
-	rt_size_t r_byte;
-
-	r_byte = rt_device_read(mag_dev->dev, MAG_RD_SCALE, (void*)mag, 12);
-
-	return r_byte == 12 ? RT_EOK : RT_ERROR;
-}
-
+/**
+ * @brief Set mag rotation matrix
+ * 
+ * @param mag_dev Mag sensor device
+ * @param rotation Mag rotation matrix (3x3)
+ */
 void sensor_mag_set_rotation(sensor_mag_t mag_dev, const float rotation[9])
 {
     mag_dev->rotation[0][0] = rotation[0];
@@ -50,6 +35,12 @@ void sensor_mag_set_rotation(sensor_mag_t mag_dev, const float rotation[9])
     mag_dev->rotation[2][2] = rotation[8];
 }
 
+/**
+ * @brief Set mag offset
+ * 
+ * @param mag_dev Mag sensor device
+ * @param offset Mag offset
+ */
 void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3])
 {
     mag_dev->offset[0] = offset[0];
@@ -57,40 +48,73 @@ void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3])
     mag_dev->offset[2] = offset[2];
 }
 
-void sensor_mag_correct(sensor_mag_t mag_dev, const float mag[3], float mag_cor[3])
+/**
+ * @brief Correct mag data based on offset and rotation matrix
+ * 
+ * @param mag_dev Mag sensor device
+ * @param src Original mag data
+ * @param dst Corrected mag data
+ */
+void sensor_mag_correct(sensor_mag_t mag_dev, const float src[3], float dst[3])
 {
     float temp[3];
 
-    temp[0] = mag[0] - mag_dev->offset[0];
-    temp[1] = mag[1] - mag_dev->offset[1];
-    temp[2] = mag[2] - mag_dev->offset[2];
+    temp[0] = src[0] - mag_dev->offset[0];
+    temp[1] = src[1] - mag_dev->offset[1];
+    temp[2] = src[2] - mag_dev->offset[2];
 
-    mag_cor[0] = mag_dev->rotation[0][0] * temp[0] + mag_dev->rotation[0][1] * temp[1] + mag_dev->rotation[0][2] * temp[2];
-    mag_cor[1] = mag_dev->rotation[1][0] * temp[0] + mag_dev->rotation[1][1] * temp[1] + mag_dev->rotation[1][2] * temp[2];
-    mag_cor[2] = mag_dev->rotation[2][0] * temp[0] + mag_dev->rotation[2][1] * temp[1] + mag_dev->rotation[2][2] * temp[2];
+    dst[0] = mag_dev->rotation[0][0] * temp[0] + mag_dev->rotation[0][1] * temp[1] + mag_dev->rotation[0][2] * temp[2];
+    dst[1] = mag_dev->rotation[1][0] * temp[0] + mag_dev->rotation[1][1] * temp[1] + mag_dev->rotation[1][2] * temp[2];
+    dst[2] = mag_dev->rotation[2][0] * temp[0] + mag_dev->rotation[2][1] * temp[1] + mag_dev->rotation[2][2] * temp[2];
 }
 
+/**
+ * @brief Measure raw mag data
+ * 
+ * @param mag_dev Mag sensor device
+ * @param buffer Data buffer
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3])
+{
+    rt_size_t r_byte;
+
+    r_byte = rt_device_read(mag_dev->dev, MAG_RD_RAW, (void*)buffer, 6);
+
+    return r_byte == 6 ? FMT_EOK : FMT_ERROR;
+}
+
+/**
+ * @brief Measure scaled mag data (gauss)
+ * 
+ * @param mag_dev Mag sensor device
+ * @param buffer Data buffer
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3])
+{
+    rt_size_t r_byte;
+
+    r_byte = rt_device_read(mag_dev->dev, MAG_RD_SCALE, (void*)buffer, 12);
+
+    return r_byte == 12 ? FMT_EOK : FMT_ERROR;
+}
+
+/**
+ * @brief Initialize magetometer sensor device
+ * 
+ * @param mag_dev_name Magnetometer device name
+ * @return sensor_mag_t Magnetometer sensor device
+ */
 sensor_mag_t sensor_mag_init(const char* mag_dev_name)
 {
     sensor_mag_t mag_dev = (sensor_mag_t)rt_malloc(sizeof(struct sensor_mag));
+    RT_ASSERT(mag_dev != NULL);
 
-    if (mag_dev == NULL) {
-        return mag_dev;
-    }
+    mag_dev->dev = rt_device_find(mag_dev_name);
+    RT_ASSERT(mag_dev->dev);
 
-    if (mag_dev_name) {
-        mag_dev->dev = rt_device_find(mag_dev_name);
-        if (mag_dev->dev == NULL) {
-            goto err;
-        }
-        if (rt_device_open(mag_dev->dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
-            goto err;
-        }
-    }
+    RTT_CHECK(rt_device_open(mag_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
     return mag_dev;
-err:
-    rt_free(mag_dev);
-    return NULL;
 }
-

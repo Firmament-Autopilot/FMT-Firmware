@@ -30,4 +30,11 @@
 #define MS5611_SPI_DEVICE_NAME     "spi1_dev3"
 #define LSM303D_SPI_DEVICE_NAME    "spi1_dev1"
 
+#define SENSOR_USING_IMU0
+// #define SENSOR_USING_IMU1
+#define SENSOR_USING_MAG0
+// #define SENSOR_USING_MAG1
+#define SENSOR_USING_BAROMETER
+#define SENSOR_USING_GPS
+
 #endif

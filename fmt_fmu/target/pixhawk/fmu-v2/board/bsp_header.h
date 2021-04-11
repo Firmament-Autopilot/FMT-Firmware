@@ -22,6 +22,4 @@
 /* FPU Library */
 #include <arm_math.h>
 
-#include <board_device.h>
-
 #endif

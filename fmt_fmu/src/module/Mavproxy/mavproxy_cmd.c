@@ -23,13 +23,13 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 
 #define TAG "MAVCMD"
 
-MCN_DECLARE(sensor_imu);
-MCN_DECLARE(sensor_imu_scale);
-MCN_DECLARE(sensor_mag_scale);
+MCN_DECLARE(sensor_imu0);
+MCN_DECLARE(sensor_imu0_native);
+MCN_DECLARE(sensor_mag0_native);
 MCN_DECLARE(ins_output);
 
 #define GYR_CALIBRATE_COUNT   500
@@ -126,13 +126,13 @@ static void create_calib_data_file(const char* name)
 
 static acc_position acc_position_detect(void)
 {
-    IMU_Report imu_report;
+    imu_data_t imu_report;
     static acc_position prev_pos = ACC_POS_IDLE;
     acc_position cur_pos;
     static uint16_t still_cnt = 0;
     float acc[3];
 
-    mcn_copy_from_hub(MCN_HUB(sensor_imu), &imu_report);
+    mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_report);
     acc[0] = imu_report.acc_B_mDs2[0];
     acc[1] = imu_report.acc_B_mDs2[1];
     acc[2] = imu_report.acc_B_mDs2[2];
@@ -179,10 +179,10 @@ static acc_position acc_position_detect(void)
 
 static void detect_jitter(void)
 {
-    IMU_Report imu_report;
+    imu_data_t imu_report;
 
     /* to detect jitter, we can use filtered data */
-    mcn_copy_from_hub(MCN_HUB(sensor_imu), &imu_report);
+    mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_report);
 
     if (jitter_detect.cnt++ < 20) {
         float gyr_jitter[3];
@@ -242,7 +242,7 @@ static void gyr_calibration_reset(void)
 static void gyr_mavlink_calibration(void)
 {
     mavlink_message_t msg;
-    IMU_Report imu_report;
+    imu_data_t imu_report;
 
     if (mavcmd_calib_gyr.cnt == 0) {
 
@@ -256,7 +256,7 @@ static void gyr_mavlink_calibration(void)
         send_statustext_msg(CAL_START_GYRO, &msg);
     }
 
-    if (mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0_native), &imu_report) != FMT_EOK) {
         return;
     }
 
@@ -360,9 +360,9 @@ static void accel_calibration(void)
         }
 
         if (mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] < ACC_CALIBRATE_COUNT) {
-            IMU_Report imu_report;
+            imu_data_t imu_report;
 
-            if (mcn_copy_from_hub(MCN_HUB(sensor_imu_scale), &imu_report) != FMT_EOK) {
+            if (mcn_copy_from_hub(MCN_HUB(sensor_imu0_native), &imu_report) != FMT_EOK) {
                 return;
             }
 
@@ -545,10 +545,10 @@ static void mag_calibration(void)
     } break;
 
     case 2: {
-        IMU_Report imu_report;
+        imu_data_t imu_report;
         uint8_t rotat = 0;
 
-        mcn_copy_from_hub(MCN_HUB(sensor_imu), &imu_report);
+        mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_report);
 
         if (mavcmd_calib_mag.acc_pos == ACC_POS_DOWN) {
             if (fabs(imu_report.gyr_B_radDs[2]) >= GYR_ROTAT_THRESHOLD) {
@@ -580,9 +580,9 @@ static void mag_calibration(void)
         }
 
         if (rotat) {
-            Mag_Report mag_report;
+            mag_data_t mag_report;
 
-            if (mcn_copy_from_hub(MCN_HUB(sensor_mag_scale), &mag_report) != FMT_EOK) {
+            if (mcn_copy_from_hub(MCN_HUB(sensor_mag0_native), &mag_report) != FMT_EOK) {
                 return;
             }
 

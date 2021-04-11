@@ -15,6 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include <board_device.h>
 #include <bsp.h>
 #include <shell.h>
 #include <string.h>
@@ -47,7 +48,7 @@
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
@@ -288,8 +289,8 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-    /* init sensor manager */
-    FMT_CHECK(sensor_manager_init());
+    /* init sensor hub */
+    FMT_CHECK(sensor_hub_init());
 
     //     /* GDB STUB */
     // #ifdef RT_USING_GDB

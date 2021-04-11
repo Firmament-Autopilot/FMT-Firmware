@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "module/sensor/sensor_manager.h"
+#include "module/sensor/sensor_hub.h"
 #include "driver/lidar.h"
 #include "hal/i2c-bit-ops.h"
 #include "hal/i2c_dev.h"

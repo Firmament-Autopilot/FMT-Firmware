@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <board_device.h>
 
 #include "hal/fmtio_dev.h"
 #include "hal/motor.h"

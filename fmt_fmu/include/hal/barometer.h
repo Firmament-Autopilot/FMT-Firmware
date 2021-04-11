@@ -29,7 +29,7 @@
 #define BARO_RD_REPORT 1
 
 /* baro command */
-#define BARO_CMD_CHECK_UPDATE 0x20
+#define BARO_CMD_CHECK_READY 0x20
 #define BARO_CMD_UPDATE       0x21
 
 /* default config for accel sensor */

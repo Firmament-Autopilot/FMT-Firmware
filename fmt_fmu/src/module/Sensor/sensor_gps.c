@@ -13,67 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include <firmament.h>
-
-#include "module/sensor/sensor_gps.h"
-// #include "driver/gps.h"
 #include "hal/gps.h"
+#include "module/sensor/sensor_gps.h"
 
-static rt_device_t _gps_device_t;
-static gps_report_t _gps_report;
-
-fmt_err sensor_gps_get_report(GPS_Report* gps_report)
+/**
+ * @brief Check if gps data is ready to read
+ * 
+ * @param gps_dev GPS sensor device
+ * @return uint8_t 1:ready 0:not-ready
+ */
+uint8_t sensor_gps_check_ready(sensor_gps_t gps_dev)
 {
-	rt_size_t r_size = rt_device_read(_gps_device_t, GPS_READ_REPORT, &_gps_report, sizeof(gps_report_t));
+    uint8_t ready = 0;
 
-	gps_report->timestamp_ms = _gps_report.timestamp_velocity;
-	gps_report->fixType = _gps_report.fix_type;
-	gps_report->numSV = _gps_report.satellites_used;
-	gps_report->lon = _gps_report.lon;
-	gps_report->lat = _gps_report.lat;
-	gps_report->height = _gps_report.alt;
-	gps_report->hAcc = _gps_report.eph;
-	gps_report->vAcc = _gps_report.epv;
-	gps_report->velN = _gps_report.vel_n_m_s;
-	gps_report->velE = _gps_report.vel_e_m_s;
-	gps_report->velD = _gps_report.vel_d_m_s;
-    gps_report->vel = _gps_report.vel_m_s;
-    gps_report->cog = _gps_report.cog_rad;
-	gps_report->sAcc = _gps_report.s_variance_m_s;
+    rt_device_control(gps_dev->dev, GPS_CMD_CHECK_READY, &ready);
 
-	return (r_size == sizeof(gps_report_t)) ? FMT_EOK : FMT_ERROR;
+    return ready;
 }
 
-uint8_t sensor_gps_report_ready(void)
+/**
+ * @brief Read gps data
+ * 
+ * @param gps_dev GPS sensor device
+ * @param gps_data GPS data buffer
+ * @return fmt_err FMT_EOK for success
+ */
+fmt_err sensor_gps_read(sensor_gps_t gps_dev, gps_data_t* gps_data)
 {
-	uint8_t ready = 0;
+    gps_report_t gps_drv_report;
+    rt_size_t r_size = rt_device_read(gps_dev->dev, GPS_READ_REPORT, &gps_drv_report, sizeof(gps_report_t));
 
-	// rt_device_read(_gps_device_t, GPS_REPORT_READY, &ready, 1);
+    gps_data->timestamp_ms = gps_drv_report.timestamp_velocity;
+    gps_data->fixType = gps_drv_report.fix_type;
+    gps_data->numSV = gps_drv_report.satellites_used;
+    gps_data->lon = gps_drv_report.lon;
+    gps_data->lat = gps_drv_report.lat;
+    gps_data->height = gps_drv_report.alt;
+    gps_data->hAcc = gps_drv_report.eph;
+    gps_data->vAcc = gps_drv_report.epv;
+    gps_data->velN = gps_drv_report.vel_n_m_s;
+    gps_data->velE = gps_drv_report.vel_e_m_s;
+    gps_data->velD = gps_drv_report.vel_d_m_s;
+    gps_data->vel = gps_drv_report.vel_m_s;
+    gps_data->cog = gps_drv_report.cog_rad;
+    gps_data->sAcc = gps_drv_report.s_variance_m_s;
 
-    rt_device_control(_gps_device_t, GPS_CMD_CHECK_UPDATE, &ready);
-
-	return ready;
+    return (r_size == sizeof(gps_report_t)) ? FMT_EOK : FMT_ERROR;
 }
 
-fmt_err sensor_gps_init(void)
+/**
+ * @brief Initialize gps sensor device
+ * 
+ * @param gps_dev_name GPS device name
+ * @return sensor_gps_t GPS sensor device
+ */
+sensor_gps_t sensor_gps_init(const char* gps_dev_name)
 {
-	rt_err_t err;
+    sensor_gps_t gps_dev = (sensor_gps_t)rt_malloc(sizeof(struct sensor_gps));
+    RT_ASSERT(gps_dev != NULL);
 
-	/* find sensor device */
-	_gps_device_t = rt_device_find("gps");
+    /* find sensor device */
+    gps_dev->dev = rt_device_find(gps_dev_name);
+    RT_ASSERT(gps_dev->dev != NULL);
 
-	if(_gps_device_t == RT_NULL) {
-		console_printf("can't find gps device\r\n");
-		return FMT_ERROR;
-	}
+    /* open device */
+    RTT_CHECK(rt_device_open(gps_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
-	/* open device */
-	err = rt_device_open(_gps_device_t, RT_DEVICE_OFLAG_RDWR);
-
-	if(err != RT_EOK) {
-		return FMT_ERROR;
-	}
-
-	return FMT_EOK;
+    return gps_dev;
 }
