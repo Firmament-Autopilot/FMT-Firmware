@@ -9,26 +9,24 @@
 
 #define DRV_DBG(...)
 
-#define BMI055_ACCEL_DEFAULT_RANGE_G            8
-#define BMI055_ACCEL_DEFAULT_RATE               1000
-#define BMI055_ACCEL_DEFAULT_DRIVER_FILTER_FREQ 30
+#define CHECK_RETURN(__func)  \
+    if ((__func) != RT_EOK) { \
+        return RT_ERROR;      \
+    }
 
-#define BMI055_GYRO_DEFAULT_RANGE_G            8
-#define BMI055_GYRO_DEFAULT_RATE               400
-#define BMI055_GYRO_DEFAULT_DRIVER_FILTER_FREQ 30
+#define DIR_READ     0x80
+#define DIR_WRITE    0x00
+#define M_PI_F       3.1415926f
+#define BMI055_ONE_G 9.80665f
 
-static rt_device_t spi_device_gyro;
-static rt_device_t spi_device_acc;
-uint8_t _gyro_id;
+static rt_device_t gyro_spi_dev;
+static rt_device_t accel_spi_dev;
 uint8_t _acc_id;
 
-static float _gyro_range_scale;
-static float _accel_range_scale;
+static float __gyro_range_scale;
+static float __accel_range_scale;
 
-#define DIR_READ  0x80
-#define DIR_WRITE 0x00
-
-static rt_err_t _write_reg(rt_device_t spi_device,rt_uint8_t reg, rt_uint8_t val)
+static rt_err_t __write_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t send_buffer[2];
     rt_size_t w_byte;
@@ -40,235 +38,193 @@ static rt_err_t _write_reg(rt_device_t spi_device,rt_uint8_t reg, rt_uint8_t val
     return w_byte == sizeof(send_buffer) ? RT_EOK : RT_ERROR;
 }
 
-static rt_err_t _read_reg(rt_device_t spi_device,rt_uint8_t reg, rt_uint8_t* buff)
+static rt_err_t __read_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t* buff)
 {
     rt_uint8_t send_val, recv_val;
-    rt_err_t res;
 
     send_val = DIR_READ | reg;
 
-    res = rt_spi_send_then_recv((struct rt_spi_device*)spi_device, (void*)&send_val, 1, (void*)&recv_val, 1);
+    CHECK_RETURN(rt_spi_send_then_recv((struct rt_spi_device*)spi_device,
+        (void*)&send_val, 1, (void*)&recv_val, 1));
+
     *buff = recv_val;
-
-    return res;
-}
-
-static rt_err_t read_multi_reg(rt_device_t spi_device,rt_uint8_t reg, rt_uint8_t* buff, uint8_t len)
-{
-    rt_uint8_t cmd;
-    rt_err_t res;
-
-    cmd = DIR_READ | reg;
-
-    res = rt_spi_send_then_recv((struct rt_spi_device*)spi_device, (void*)&cmd, 1, (void*)buff, len);
-
-    return res;
-}
-
-static rt_err_t _write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
-{
-    rt_uint8_t r_buff;
-    rt_err_t res = RT_EOK;
-
-    res |= _write_reg(spi_device,reg, val);
-    res |= _read_reg(spi_device,reg, &r_buff);
-
-    if (r_buff != val || res != RT_EOK) {
-        return RT_ERROR;
-    }
 
     return RT_EOK;
 }
 
-
-static rt_err_t _gyro_set_sample_rate(unsigned desired_sample_rate_hz)
+static rt_err_t __read_multi_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t* buff, uint8_t len)
 {
-    rt_err_t res;
+    rt_uint8_t cmd;
 
-    return res;
+    cmd = DIR_READ | reg;
+
+    CHECK_RETURN(rt_spi_send_then_recv((struct rt_spi_device*)spi_device,
+        (void*)&cmd, 1, (void*)buff, len));
+
+    return RT_EOK;
 }
 
-static rt_err_t _gyro_set_dlpf_filter(uint16_t frequency_hz)
+static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
-    uint8_t filter = 0;
+    rt_uint8_t r_val;
 
-      return _write_checked_reg(spi_device_gyro,BMI055_BW_ADDR, filter);
-}  
+    CHECK_RETURN(__write_reg(spi_device, reg, val));
+    CHECK_RETURN(__read_reg(spi_device, reg, &r_val));
 
-static rt_err_t _set_gyro_range(unsigned max_dps)
-{
-    uint8_t value;
-
-    return _write_checked_reg(spi_device_gyro,BMI055_RANGE_ADDR, value);
-}
-
-static rt_err_t _acc_set_sample_rate(unsigned desired_sample_rate_hz)
-{
-    rt_err_t res;
-
-    return res;
-}
-
-static rt_err_t _acc_set_dlpf_filter(uint16_t frequency_hz)
-{
-    uint8_t filter = 0;
-
-      return _write_checked_reg(spi_device_acc,BMI055_BW_ADDR, filter);
-}  
-
-static rt_err_t _set_accel_range(unsigned max_g_in)
-{
-    uint8_t value;
-
-    return _write_checked_reg(spi_device_acc,BMI055_PMU_RANGE, value);
-}
-
-static rt_err_t _gyro_init(void)
-{
-    rt_err_t res = RT_EOK;
-    uint8_t value;
-
-    /* init spi bus */
-    res =  rt_device_open(spi_device_gyro, RT_DEVICE_OFLAG_RDWR);
-
-    if(res == RT_EOK)
-    {
-        /* initialize BMI055  gyro*/
-        _write_reg(spi_device_gyro,BMI055_MODE_LPM1_ADDR, 0x00);			/* normal mode 						*/
-	    _write_reg(spi_device_gyro,BMI055_MODE_LPM2_ADDR, 0x80);			/* fast powerup 					*/
-        _write_reg(spi_device_gyro,BMI055_BW_ADDR,        0x03);			/* ODR:400Hz Filter Bandwidth:47Hz	*/
-	    _write_reg(spi_device_gyro,BMI055_RANGE_ADDR,     0x00);			/* 2000dps                          */
-
-        _read_reg(spi_device_gyro,BMI055_CHIP_ID_ADDR, &_gyro_id); 
-        if (_gyro_id != BMI055_GRRO_CHIP_ID)
-        {
-            //printf("Warning: not found BMI055 id: %02x\n", id);
-            res = RT_ERROR;
-        }
-
-        /* enable gyroscope */
-		_read_reg(spi_device_gyro,BMI055_MODE_LPM1_ADDR, &value);   
-		value &= ~(0x1010 << 4);					//{0; 0}  NORMAL mode
-		_write_reg(spi_device_gyro,BMI055_MODE_LPM1_ADDR, value);	//P101 NORMAL mode
+    if (r_val == val) {
+        return RT_EOK;
+    } else {
+        return RT_ERROR;
     }
-
-    return res;
 }
 
-static rt_err_t _acc_init(void)
+static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t reg_val)
 {
-    rt_err_t res = RT_EOK;
     uint8_t value;
 
-    /* init spi bus */
-    res =  rt_device_open(spi_device_acc, RT_DEVICE_OFLAG_RDWR);
+    CHECK_RETURN(__read_reg(spi_device, reg, &value));
 
-    if(res == RT_EOK)
-    {
-        /* initialize BMI055  accel*/
-        _write_reg(spi_device_acc, BMI055_BGW_SOFTRESET, 0xB6);			/* reset of the sensor  P57							*/
-        _write_reg(spi_device_acc, BMI055_PMU_LPW, 0x00);				/* PMU_LPW   NORMAL mode P55						*/
-        _write_reg(spi_device_acc, BMI055_PMU_BW, 0x0A);					/* 01010b  31.25 Hz P55								*/
-        _write_reg(spi_device_acc, BMI055_PMU_RANGE, 0x05);				/* 0101b  ±4g range PMU_RANGE set acc +-4g/s  P54	*/
+    value &= ~reg_val.clearbits;
+    value |= reg_val.setbits;
 
-        _read_reg(spi_device_acc, BMI055_ACC_BGW_CHIPID, &_acc_id);
-        if (_acc_id != BMI055_ACC_BGW_CHIPID_VALUE)
-        {
-            //printf("Warning: not found BMI055 id: %02x\n", id);
-            res = RT_ERROR;
-        }
+    CHECK_RETURN(__write_checked_reg(spi_device, reg, value));
 
-        /* enable accelerometer */
-		_read_reg(spi_device_acc, BMI055_PMU_LPW, &value); 	/* P55 */
-		value &= ~(0x07 << 7);
-		_write_reg(spi_device_acc, BMI055_PMU_LPW, value);
-
-    }
-
-    return res;
+    return RT_EOK;
 }
 
 static void rotate_to_ned(int16_t val[3])
 {
-    uint16_t temp = val[0];
+    int16_t temp = val[0];
     val[0] = val[1];
     val[1] = temp;
     val[2] = -val[2];
 }
 
-static rt_err_t bmi055_gyr_read_raw(int16_t gyr[3])
+static rt_err_t gyro_set_sample_rate(uint32_t frequency_hz)
 {
-    rt_err_t res;
-    uint16_t raw[3];
-    res = read_multi_reg(spi_device_gyro, BMI055_ACCD_X_LSB, (uint8_t*)raw, 6);
-    // big-endian to little-endian
-    gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
-    gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
-    gyr[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
+    reg_val_t reg_val;
+
+    if (frequency_hz <= 100) {
+        reg_val = BMI055_GYRO_RATE_100;
+    } else if (frequency_hz <= 200) {
+        reg_val = BMI055_GYRO_RATE_200;
+    } else if (frequency_hz <= 400) {
+        reg_val = BMI055_GYRO_RATE_400;
+    } else if (frequency_hz <= 1000) {
+        reg_val = BMI055_GYRO_RATE_1000;
+    } else if (frequency_hz <= 2000) {
+        reg_val = BMI055_GYRO_RATE_2000;
+    } else {
+        return RT_EINVAL;
+    }
+
+    CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_BW_ADDR, reg_val));
+
+    return RT_EOK;
+}
+
+static rt_err_t gyro_set_dlpf_filter(uint16_t frequency_hz)
+{
+    /* lpf bw is set by BMI055_BW_ADDR */
+    return RT_EOK;
+}
+
+static rt_err_t gyro_set_range(unsigned max_dps)
+{
+    reg_val_t reg_val;
+    float lsb_per_dps;
+
+    if (max_dps == 0) {
+        max_dps = 2000;
+    }
+
+    if (max_dps <= 125) {
+        reg_val = BMI055_GYRO_RANGE_125_DPS;
+        lsb_per_dps = 262.4;
+    } else if (max_dps <= 250) {
+        reg_val = BMI055_GYRO_RANGE_250_DPS;
+        lsb_per_dps = 131.2;
+    } else if (max_dps <= 500) {
+        reg_val = BMI055_GYRO_RANGE_500_DPS;
+        lsb_per_dps = 65.6;
+    } else if (max_dps <= 1000) {
+        reg_val = BMI055_GYRO_RANGE_1000_DPS;
+        lsb_per_dps = 32.8;
+    } else if (max_dps <= 2000) {
+        reg_val = BMI055_GYRO_RANGE_2000_DPS;
+        lsb_per_dps = 16.4;
+    } else {
+        return RT_EINVAL;
+    }
+
+    CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_RANGE_ADDR, reg_val));
+
+    __gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
+
+    return RT_EOK;
+}
+
+static rt_err_t gyro_read_raw(int16_t gyr[3])
+{
+    CHECK_RETURN(__read_multi_reg(gyro_spi_dev, BMI055_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
     rotate_to_ned(gyr);
 
-    return res;
+    return RT_EOK;
 }
 
-static rt_err_t bmi055_gyr_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(float gyr[3])
 {
     int16_t gyr_raw[3];
-    rt_err_t res;
-    res = bmi055_gyr_read_raw(gyr_raw);
 
-    gyr[0] = _gyro_range_scale * gyr_raw[0];
-    gyr[1] = _gyro_range_scale * gyr_raw[1];
-    gyr[2] = _gyro_range_scale * gyr_raw[2];
+    CHECK_RETURN(gyro_read_raw(gyr_raw));
 
-    return res;
+    gyr[0] = __gyro_range_scale * gyr_raw[0];
+    gyr[1] = __gyro_range_scale * gyr_raw[1];
+    gyr[2] = __gyro_range_scale * gyr_raw[2];
+
+    return RT_EOK;
 }
 
-static rt_err_t bmi055_acc_read_raw(int16_t acc[3])
+static rt_err_t gyroscope_init(void)
 {
-    int16_t raw[3];
-    rt_err_t res;
-    res = read_multi_reg(spi_device_acc, BMI055_ACCD_X_LSB, (rt_uint8_t*)raw, 6);
-    // big-endian to little-endian
-    acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
-    acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
-    acc[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(acc);
+    uint8_t gyro_id;
 
-    return res;
-}
+    /* init spi bus */
+    CHECK_RETURN(rt_device_open(gyro_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-static rt_err_t bmi055_acc_read_m_s2(float acc[3])
-{
-    int16_t acc_raw[3];
-    rt_err_t res;
-    res = bmi055_acc_read_raw(acc_raw);
+    __read_reg(gyro_spi_dev, BMI055_CHIP_ID_ADDR, &gyro_id);
+    if (gyro_id != BMI055_GRRO_CHIP_ID) {
+        DRV_DBG("Warning: not found BMI055 gyro id: %02x\n", gyro_id);
+        return RT_ERROR;
+    }
 
-    acc[0] = _accel_range_scale * acc_raw[0];
-    acc[1] = _accel_range_scale * acc_raw[1];
-    acc[2] = _accel_range_scale * acc_raw[2];
+    /* soft reset */
+    CHECK_RETURN(__write_reg(gyro_spi_dev, BMI055_BGW_SOFT_RST_ADDR, 0xB6));
+    systime_udelay(5000);
 
-    return res;
+    CHECK_RETURN(gyro_set_range(2000));       /* 2000dps */
+    CHECK_RETURN(gyro_set_sample_rate(1000)); /* OSR 1000KHz, Filter BW: 116Hz */
+
+    /* enable gyroscope */
+    CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_MODE_LPM1_ADDR, REG_VAL(0, BIT(7) | BIT(5)))); /* {0; 0}  NORMAL mode */
+    systime_udelay(1000);
+
+    return RT_EOK;
 }
 
 static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
 {
-    rt_err_t ret = RT_EOK;
+    RT_ASSERT(cfg != RT_NULL);
 
-    if (cfg == RT_NULL) {
-        return RT_EINVAL;
-    }
+    CHECK_RETURN(gyro_set_range(cfg->gyro_range_dps));
 
-    ret |= _set_gyro_range(cfg->gyro_range_dps);
+    CHECK_RETURN(gyro_set_sample_rate(cfg->sample_rate_hz));
 
-    ret |= _gyro_set_sample_rate(cfg->sample_rate_hz);
-
-    ret |= _gyro_set_dlpf_filter(cfg->dlpf_freq_hz);
+    CHECK_RETURN(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
 
     gyro->config = *cfg;
 
-    return ret;
+    return RT_EOK;
 }
 
 static rt_err_t gyro_control(gyro_dev_t gyro, int cmd, void* arg)
@@ -278,16 +234,14 @@ static rt_err_t gyro_control(gyro_dev_t gyro, int cmd, void* arg)
 
 static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t size)
 {
-    if (data == RT_NULL) {
-        return 0;
-    }
+    RT_ASSERT(data != RT_NULL);
 
     if (pos == GYRO_RD_RAW) {
-        if (bmi055_gyr_read_raw(((int16_t*)data)) != RT_EOK) {
+        if (gyro_read_raw(((int16_t*)data)) != RT_EOK) {
             return 0;
         }
     } else if (pos == GYRO_RD_SCALE) {
-        if (bmi055_gyr_read_rad(((float*)data)) != RT_EOK) {
+        if (gyro_read_rad(((float*)data)) != RT_EOK) {
             return 0;
         }
     } else {
@@ -298,12 +252,136 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
     return size;
 }
 
-const static struct gyro_ops _gyro_ops = {
+const static struct gyro_ops __gyro_ops = {
     gyro_config,
     gyro_control,
     gyro_read,
 };
 
+static rt_err_t accel_set_sample_rate(uint32_t frequency_hz)
+{
+    return RT_EOK;
+}
+
+static rt_err_t accel_set_dlpf_filter(uint16_t frequency_hz)
+{
+    reg_val_t reg_val;
+
+    if (frequency_hz <= (781 / 100)) {
+        reg_val = BMI055_ACCEL_BW_7_81;
+    } else if (frequency_hz <= (1563 / 100)) {
+        reg_val = BMI055_ACCEL_BW_15_63;
+    } else if (frequency_hz <= (3125 / 100)) {
+        reg_val = BMI055_ACCEL_BW_31_25;
+    } else if (frequency_hz <= 6250 / 100) {
+        reg_val = BMI055_ACCEL_BW_62_5;
+    } else if (frequency_hz <= 125) {
+        reg_val = BMI055_ACCEL_BW_125;
+    } else if (frequency_hz <= 250) {
+        reg_val = BMI055_ACCEL_BW_250;
+    } else if (frequency_hz <= 500) {
+        reg_val = BMI055_ACCEL_BW_500;
+    } else if (frequency_hz <= 1000) {
+        reg_val = BMI055_ACCEL_BW_1000;
+    } else {
+        return -EINVAL;
+    }
+
+    CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_BW, reg_val));
+
+    return RT_EOK;
+}
+
+static rt_err_t accel_set_range(uint32_t max_g)
+{
+    reg_val_t reg_val;
+    float lsb_per_g;
+
+    if (max_g == 0) {
+        max_g = 16;
+    }
+
+    if (max_g <= 2) {
+        reg_val = BMI055_ACCEL_RANGE_2_G;
+        lsb_per_g = 1024;
+    } else if (max_g <= 4) {
+        reg_val = BMI055_ACCEL_RANGE_4_G;
+        lsb_per_g = 512;
+    } else if (max_g <= 8) {
+        reg_val = BMI055_ACCEL_RANGE_8_G;
+        lsb_per_g = 256;
+    } else if (max_g <= 16) {
+        reg_val = BMI055_ACCEL_RANGE_16_G;
+        lsb_per_g = 128;
+    } else {
+        return RT_EINVAL;
+    }
+
+    CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_RANGE, reg_val));
+
+    __accel_range_scale = (BMI055_ONE_G / lsb_per_g);
+
+    return RT_EOK;
+}
+
+static rt_err_t accelerometer_init(void)
+{
+    uint8_t accel_id;
+
+    /* init spi bus */
+    CHECK_RETURN(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
+
+    __read_reg(accel_spi_dev, BMI055_ACC_BGW_CHIPID, &accel_id);
+    if (accel_id != BMI055_ACC_BGW_CHIPID_VALUE) {
+        DRV_DBG("Warning: not found BMI055 accel id: %02x\n", accel_id);
+        return RT_ERROR;
+    }
+
+    /* soft reset */
+    CHECK_RETURN(__write_reg(accel_spi_dev, BMI055_BGW_SOFTRESET, 0xB6));
+    systime_udelay(5000);
+
+    CHECK_RETURN(accel_set_range(2));          /* 2g */
+    CHECK_RETURN(accel_set_dlpf_filter(1000)); /* 1000Hz BW */
+
+    /* enable gyroscope */
+    CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_LPW, REG_VAL(0, BIT(7) | BIT(6) | BIT(5)))); /* {0; 0; 0}  NORMAL mode */
+    systime_udelay(1000);
+
+    return RT_EOK;
+}
+
+static rt_err_t accel_read_raw(int16_t acc[3])
+{
+    uint8_t buffer[6];
+    int16_t msblsb;
+    
+    CHECK_RETURN(__read_multi_reg(accel_spi_dev, BMI055_ACCD_X_LSB, buffer, 6));
+
+    msblsb = buffer[1] << 8 | buffer[0];
+    acc[0] = msblsb >> 4;
+    msblsb = buffer[3] << 8 | buffer[2];
+    acc[1] = msblsb >> 4;
+    msblsb = buffer[5] << 8 | buffer[4];
+    acc[2] = msblsb >> 4;
+
+    rotate_to_ned(acc);
+
+    return RT_EOK;
+}
+
+static rt_err_t accel_read_m_s2(float acc[3])
+{
+    int16_t acc_raw[3];
+
+    CHECK_RETURN(accel_read_raw(acc_raw));
+
+    acc[0] = __accel_range_scale * acc_raw[0];
+    acc[1] = __accel_range_scale * acc_raw[1];
+    acc[2] = __accel_range_scale * acc_raw[2];
+
+    return RT_EOK;
+}
 
 static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cfg)
 {
@@ -313,11 +391,11 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
         return RT_EINVAL;
     }
 
-    ret |= _set_accel_range(cfg->acc_range_g);
+    ret |= accel_set_range(cfg->acc_range_g);
 
-    ret |= _acc_set_sample_rate(cfg->sample_rate_hz);
+    ret |= accel_set_sample_rate(cfg->sample_rate_hz);
 
-    ret |= _acc_set_dlpf_filter(cfg->dlpf_freq_hz);
+    ret |= accel_set_dlpf_filter(cfg->dlpf_freq_hz);
 
     accel->config = *cfg;
 
@@ -336,11 +414,11 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
     }
 
     if (pos == ACCEL_RD_RAW) {
-        if (bmi055_acc_read_raw(((int16_t*)data)) != RT_EOK) {
+        if (accel_read_raw(((int16_t*)data)) != RT_EOK) {
             return 0;
         }
     } else if (pos == ACCEL_RD_SCALE) {
-        if (bmi055_acc_read_m_s2(((float*)data)) != RT_EOK) {
+        if (accel_read_m_s2(((float*)data)) != RT_EOK) {
             return 0;
         }
     } else {
@@ -357,20 +435,19 @@ const static struct accel_ops _accel_ops = {
     accel_read,
 };
 
-
 rt_err_t bmi055_gyro_drv_init(char* spi_device_name)
 {
     rt_err_t ret = RT_EOK;
 
-     static struct gyro_device gyro_dev = {
-        .ops = &_gyro_ops,
+    static struct gyro_device gyro_dev = {
+        .ops = &__gyro_ops,
         .config = GYRO_CONFIG_DEFAULT,
         .bus_type = GYRO_SPI_BUS_TYPE
     };
 
-    spi_device_gyro = rt_device_find(spi_device_name);
+    gyro_spi_dev = rt_device_find(spi_device_name);
 
-    if (spi_device_gyro == RT_NULL) {
+    if (gyro_spi_dev == RT_NULL) {
         //console_printf("spi device %s not found!\r\n", spi_device_name);
         return RT_EEMPTY;
     }
@@ -381,7 +458,7 @@ rt_err_t bmi055_gyro_drv_init(char* spi_device_name)
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
         cfg.max_hz = 3000000;
 
-        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_device_gyro;
+        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)gyro_spi_dev;
 
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
@@ -390,15 +467,13 @@ rt_err_t bmi055_gyro_drv_init(char* spi_device_name)
     }
 
     /* driver internal init */
-    ret |= _gyro_init();
+    RTT_CHECK(gyroscope_init());
 
     /* register gyro hal device */
     ret |= hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL);
 
     return ret;
-
 }
-
 
 rt_err_t bmi055_acc_drv_init(char* spi_device_name)
 {
@@ -410,9 +485,9 @@ rt_err_t bmi055_acc_drv_init(char* spi_device_name)
         .bus_type = GYRO_SPI_BUS_TYPE
     };
 
-    spi_device_acc = rt_device_find(spi_device_name);
+    accel_spi_dev = rt_device_find(spi_device_name);
 
-    if (spi_device_acc == RT_NULL) {
+    if (accel_spi_dev == RT_NULL) {
         //console_printf("spi device %s not found!\r\n", spi_device_name);
         return RT_EEMPTY;
     }
@@ -423,7 +498,7 @@ rt_err_t bmi055_acc_drv_init(char* spi_device_name)
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
         cfg.max_hz = 3000000;
 
-        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_device_acc;
+        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)accel_spi_dev;
 
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
@@ -432,12 +507,10 @@ rt_err_t bmi055_acc_drv_init(char* spi_device_name)
     }
 
     /* driver internal init */
-    ret |= _acc_init();
+    ret |= accelerometer_init();
 
     /* register accel hal device */
     ret |= hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL);
 
     return ret;
-
 }
-
