@@ -1,11 +1,25 @@
+/******************************************************************************
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include <firmament.h>
 
+#include "board_device.h"
 #include "driver/bmi055.h"
 #include "hal/accel.h"
 #include "hal/gyro.h"
 #include "hal/spi.h"
-#include "module/math/conversion.h"
-#include "stm32f7xx_ll_spi.h"
 
 #define DRV_DBG(...)
 
@@ -21,10 +35,8 @@
 
 static rt_device_t gyro_spi_dev;
 static rt_device_t accel_spi_dev;
-uint8_t _acc_id;
-
-static float __gyro_range_scale;
-static float __accel_range_scale;
+static float gyro_range_scale;
+static float accel_range_scale;
 
 static rt_err_t __write_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
@@ -159,7 +171,7 @@ static rt_err_t gyro_set_range(unsigned max_dps)
 
     CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_RANGE_ADDR, reg_val));
 
-    __gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
+    gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
 
     return RT_EOK;
 }
@@ -178,9 +190,9 @@ static rt_err_t gyro_read_rad(float gyr[3])
 
     CHECK_RETURN(gyro_read_raw(gyr_raw));
 
-    gyr[0] = __gyro_range_scale * gyr_raw[0];
-    gyr[1] = __gyro_range_scale * gyr_raw[1];
-    gyr[2] = __gyro_range_scale * gyr_raw[2];
+    gyr[0] = gyro_range_scale * gyr_raw[0];
+    gyr[1] = gyro_range_scale * gyr_raw[1];
+    gyr[2] = gyro_range_scale * gyr_raw[2];
 
     return RT_EOK;
 }
@@ -319,7 +331,7 @@ static rt_err_t accel_set_range(uint32_t max_g)
 
     CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_RANGE, reg_val));
 
-    __accel_range_scale = (BMI055_ONE_G / lsb_per_g);
+    accel_range_scale = (BMI055_ONE_G / lsb_per_g);
 
     return RT_EOK;
 }
@@ -355,7 +367,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
 {
     uint8_t buffer[6];
     int16_t msblsb;
-    
+
     CHECK_RETURN(__read_multi_reg(accel_spi_dev, BMI055_ACCD_X_LSB, buffer, 6));
 
     msblsb = buffer[1] << 8 | buffer[0];
@@ -376,30 +388,26 @@ static rt_err_t accel_read_m_s2(float acc[3])
 
     CHECK_RETURN(accel_read_raw(acc_raw));
 
-    acc[0] = __accel_range_scale * acc_raw[0];
-    acc[1] = __accel_range_scale * acc_raw[1];
-    acc[2] = __accel_range_scale * acc_raw[2];
+    acc[0] = accel_range_scale * acc_raw[0];
+    acc[1] = accel_range_scale * acc_raw[1];
+    acc[2] = accel_range_scale * acc_raw[2];
 
     return RT_EOK;
 }
 
 static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cfg)
 {
-    rt_err_t ret = RT_EOK;
+    RT_ASSERT(cfg != NULL);
 
-    if (cfg == RT_NULL) {
-        return RT_EINVAL;
-    }
+    CHECK_RETURN(accel_set_range(cfg->acc_range_g));
 
-    ret |= accel_set_range(cfg->acc_range_g);
+    CHECK_RETURN(accel_set_sample_rate(cfg->sample_rate_hz));
 
-    ret |= accel_set_sample_rate(cfg->sample_rate_hz);
-
-    ret |= accel_set_dlpf_filter(cfg->dlpf_freq_hz);
+    CHECK_RETURN(accel_set_dlpf_filter(cfg->dlpf_freq_hz));
 
     accel->config = *cfg;
 
-    return ret;
+    return RT_EOK;
 }
 
 static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
@@ -409,9 +417,7 @@ static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 
 static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size_t size)
 {
-    if (data == RT_NULL) {
-        return 0;
-    }
+    RT_ASSERT(data != NULL);
 
     if (pos == ACCEL_RD_RAW) {
         if (accel_read_raw(((int16_t*)data)) != RT_EOK) {
@@ -429,88 +435,73 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
     return size;
 }
 
-const static struct accel_ops _accel_ops = {
+const static struct accel_ops __accel_ops = {
     accel_config,
     accel_control,
     accel_read,
 };
 
-rt_err_t bmi055_gyro_drv_init(char* spi_device_name)
+static struct gyro_device gyro_dev = {
+    .ops = &__gyro_ops,
+    .config = GYRO_CONFIG_DEFAULT,
+    .bus_type = GYRO_SPI_BUS_TYPE
+};
+
+static struct accel_device accel_dev = {
+    .ops = &__accel_ops,
+    .config = ACCEL_CONFIG_DEFAULT,
+    .bus_type = GYRO_SPI_BUS_TYPE
+};
+
+rt_err_t drv_bmi055_init(void)
 {
-    rt_err_t ret = RT_EOK;
+    /* Initialize gyroscope */
 
-    static struct gyro_device gyro_dev = {
-        .ops = &__gyro_ops,
-        .config = GYRO_CONFIG_DEFAULT,
-        .bus_type = GYRO_SPI_BUS_TYPE
-    };
-
-    gyro_spi_dev = rt_device_find(spi_device_name);
-
-    if (gyro_spi_dev == RT_NULL) {
-        //console_printf("spi device %s not found!\r\n", spi_device_name);
-        return RT_EEMPTY;
-    }
+    gyro_spi_dev = rt_device_find("spi1_dev3");
+    RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz = 3000000;
+        cfg.max_hz = SPI1_SPEED_HZ;
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)gyro_spi_dev;
-
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
-        ret |= rt_spi_configure(spi_device_t, &cfg);
+
+        CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
     }
-
-    /* driver internal init */
-    RTT_CHECK(gyroscope_init());
-
+    /* gyroscope low-level init */
+    CHECK_RETURN(gyroscope_init());
     /* register gyro hal device */
-    ret |= hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
-    return ret;
-}
+    /* Initialize accelerometer */
 
-rt_err_t bmi055_acc_drv_init(char* spi_device_name)
-{
-    rt_err_t ret = RT_EOK;
-
-    static struct accel_device accel_dev = {
-        .ops = &_accel_ops,
-        .config = ACCEL_CONFIG_DEFAULT,
-        .bus_type = GYRO_SPI_BUS_TYPE
-    };
-
-    accel_spi_dev = rt_device_find(spi_device_name);
-
-    if (accel_spi_dev == RT_NULL) {
-        //console_printf("spi device %s not found!\r\n", spi_device_name);
-        return RT_EEMPTY;
-    }
+    accel_spi_dev = rt_device_find("spi1_dev4");
+    RT_ASSERT(accel_spi_dev != NULL);
     /* config spi */
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz = 3000000;
+        cfg.max_hz = SPI1_SPEED_HZ;
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)accel_spi_dev;
-
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
-        ret |= rt_spi_configure(spi_device_t, &cfg);
+
+        CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
     }
 
-    /* driver internal init */
-    ret |= accelerometer_init();
+    /* accelerometer low-level init */
+    CHECK_RETURN(accelerometer_init());
 
     /* register accel hal device */
-    ret |= hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    CHECK_RETURN(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
-    return ret;
+    return RT_EOK;
 }

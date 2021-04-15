@@ -6,6 +6,7 @@
 #include "hal/spi.h"
 #include "module/math/conversion.h"
 #include "stm32f7xx_ll_spi.h"
+#include "board_device.h"
 
 #define DRV_DBG(...)
 
@@ -527,7 +528,7 @@ rt_err_t icm20689_drv_init(char* spi_device_name)
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz = 3000000;
+        cfg.max_hz = SPI1_SPEED_HZ;
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_device;
 
