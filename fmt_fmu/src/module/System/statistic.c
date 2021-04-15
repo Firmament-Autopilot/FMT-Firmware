@@ -20,46 +20,75 @@
 #include "module/system/systime.h"
 
 #define CPU_USAGE_CALC_INTERVAL 1000
-#define CPU_USAGE_LOOP          10
 
-static float cpu_usage = 0;
-static uint64_t total_count = 0;
+static uint64_t prev_schedule_time = 0;
+static uint64_t prev_usage_cal_time = 0;
 
-static void cpu_usage_idle_hook(void)
+static void thread_idle_hook(void)
 {
-    uint32_t time_start;
-    uint64_t count;
-    volatile rt_uint32_t loop;
+    uint64_t time_now;
 
-    if (total_count == 0) {
-        /* get total count */
-        rt_enter_critical();
-        time_start = systime_now_ms();
-        while (systime_now_ms() - time_start < CPU_USAGE_CALC_INTERVAL) {
-            total_count++;
-            loop = 0;
-            while (loop < CPU_USAGE_LOOP)
-                loop++;
+    OS_ENTER_CRITICAL;
+
+    time_now = systime_now_us();
+    /* time_now could less than prev_usage_cal_time, this is because systick isr
+     * is preempted by higher priority isr, which triggers thread schedule. At that 
+     * moment, the systime is not updated yet */
+    if (time_now > prev_usage_cal_time && time_now - prev_usage_cal_time >= CPU_USAGE_CALC_INTERVAL * 1000) {
+        struct rt_object_information* info;
+        struct rt_list_node* list;
+        struct rt_thread* thread;
+        cpu_usage_stats* stats;
+
+        info = rt_object_get_information(RT_Object_Class_Thread);
+        list = &info->object_list;
+
+        for (struct rt_list_node* node = list->next; node != list; node = node->next) {
+            thread = rt_list_entry(node, struct rt_thread, list);
+            stats = (cpu_usage_stats*)thread->user_data;
+
+            stats->cpu_usage = (stats->exec_time * 100.0f) / (time_now - prev_usage_cal_time);
+            stats->exec_time = 0;
         }
-        rt_exit_critical();
+        /* update previous cpu usage calculate time */
+        prev_usage_cal_time = time_now;
     }
 
-    count = 0;
-    /* get CPU usage */
-    time_start = systime_now_ms();
-    while (systime_now_ms() - time_start < CPU_USAGE_CALC_INTERVAL) {
-        count++;
-        loop = 0;
-        while (loop < CPU_USAGE_LOOP)
-            loop++;
-    }
+    OS_EXIT_CRITICAL;
+}
 
-    /* calculate major and minor */
-    if (count < total_count) {
-        cpu_usage = 100.0 - ((double)count / total_count) * 100.0;
-    } else {
-        total_count = count;
+static void scheduler_hook(rt_thread_t from, rt_thread_t to)
+{
+    uint64_t time_now;
+    cpu_usage_stats* stats = (cpu_usage_stats*)from->user_data;
+    RT_ASSERT(stats != NULL);
+
+    time_now = systime_now_us();
+
+    if (time_now < prev_schedule_time) {
+        /* This could happen, because higher priority isr preempt systick isr,
+         * so the systick time is not updated yet. 
+         */
+        time_now += 1000000 / RT_TICK_PER_SECOND;
     }
+    /* from thread execution time = current time - last scheduled time */
+    stats->exec_time += time_now - prev_schedule_time;
+    stats->total_exec_time += stats->exec_time;
+
+    /* update previous schedule time */
+    prev_schedule_time = time_now;
+}
+
+static void thread_inited_hook(rt_thread_t thread)
+{
+    cpu_usage_stats* stats = (cpu_usage_stats*)rt_malloc(sizeof(cpu_usage_stats));
+    RT_ASSERT(stats != NULL);
+
+    stats->exec_time = 0;
+    stats->total_exec_time = 0;
+    stats->cpu_usage = 0.0;
+
+    thread->user_data = (uint32_t)stats;
 }
 
 /**
@@ -69,6 +98,10 @@ static void cpu_usage_idle_hook(void)
  */
 float get_cpu_usage(void)
 {
+    rt_thread_t idle = rt_thread_idle_gethandler();
+    cpu_usage_stats* stats = (cpu_usage_stats*)idle->user_data;
+    float cpu_usage = 100.0f - stats->cpu_usage;
+
     return cpu_usage;
 }
 
@@ -79,7 +112,9 @@ float get_cpu_usage(void)
  */
 fmt_err sys_stat_init(void)
 {
-    rt_thread_idle_sethook(cpu_usage_idle_hook);
+    rt_thread_inited_sethook(thread_inited_hook);
+    rt_scheduler_sethook(scheduler_hook);
+    rt_thread_idle_sethook(thread_idle_hook);
 
     return FMT_EOK;
 }

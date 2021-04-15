@@ -31,7 +31,7 @@ static void _delay_us(rt_uint32_t us)
     rt_uint32_t start, now, delta, reload, us_tick;
     start = SysTick->VAL;
     reload = SysTick->LOAD;
-    us_tick =systick_dev->ticks_per_us;
+    us_tick = systick_dev->ticks_per_us;
     do {
         now = SysTick->VAL;
         delta = start >= now ? start - now : reload + start - now;
@@ -64,12 +64,14 @@ void SysTick_Handler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
+
+    hal_systick_isr(systick_dev);
+    
 #ifdef USE_HAL_DRIVER
     HAL_IncTick();
 #endif
-    rt_tick_increase();
 
-    hal_systick_isr(systick_dev);
+    rt_tick_increase();
 
     /* leave interrupt */
     rt_interrupt_leave();
@@ -81,15 +83,15 @@ static void _set_systick_freq(rt_uint32_t freq)
     rt_uint32_t TicksNum;
 
     RT_ASSERT(freq > 0);
+    RT_ASSERT(systick_dev != NULL);
 
     ClockFreq = SystemCoreClock;
     TicksNum = ClockFreq / freq;
-    SysTick_Config(TicksNum);
 
-    if (systick_dev) {
-        systick_dev->ticks_per_us = ClockFreq / 1e6;
-        systick_dev->ticks_per_isr = TicksNum;
-    }
+    systick_dev->ticks_per_us = ClockFreq / 1e6;
+    systick_dev->ticks_per_isr = TicksNum;
+
+    SysTick_Config(TicksNum);
 }
 
 static rt_err_t systick_configure(systick_dev_t systick, struct systick_configure* cfg)

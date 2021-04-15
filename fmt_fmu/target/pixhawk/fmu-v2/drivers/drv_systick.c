@@ -14,11 +14,11 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include "hal/systick.h"
+#include <firmament.h>
 
 static systick_dev_t _systick_dev;
-rt_uint32_t _ticksPerUs;  			/* tick count for 1us */
+rt_uint32_t _ticksPerUs; /* tick count for 1us */
 
 /**
  * This is the systick timer interrupt service routine.
@@ -29,9 +29,9 @@ void SysTick_Handler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    rt_tick_increase();
-
     hal_systick_isr(_systick_dev);
+
+    rt_tick_increase();
 
     /* leave interrupt */
     rt_interrupt_leave();
@@ -39,56 +39,55 @@ void SysTick_Handler(void)
 
 static void _set_systick_freq(rt_uint32_t freq)
 {
-	RCC_ClocksTypeDef rcc_clocks;
-	rt_uint32_t cnts;
+    RCC_ClocksTypeDef rcc_clocks;
+    rt_uint32_t cnts;
 
-	RCC_GetClocksFreq(&rcc_clocks);
+    RCC_GetClocksFreq(&rcc_clocks);
 
-	cnts = (rt_uint32_t)rcc_clocks.HCLK_Frequency / freq;
-	cnts = cnts / 8;
+    cnts = (rt_uint32_t)rcc_clocks.HCLK_Frequency / freq;
 
-	SysTick_Config(cnts);
-	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
+    if (_systick_dev) {
+        _systick_dev->ticks_per_us = rcc_clocks.HCLK_Frequency / 1e6;
+        _systick_dev->ticks_per_isr = cnts;
+    }
 
-	if(_systick_dev) {
-		_systick_dev->ticks_per_us = rcc_clocks.HCLK_Frequency / 8 / 1e6;
-		_systick_dev->ticks_per_isr = SysTick->LOAD + 1;
-	}
+    SysTick_Config(cnts);
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
 }
 
 static rt_err_t systick_configure(systick_dev_t systick, struct systick_configure* cfg)
 {
-	_set_systick_freq(cfg->tick_freq);
+    _set_systick_freq(cfg->tick_freq);
 
-	systick->config = *cfg;
+    systick->config = *cfg;
 
-	return RT_EOK;
+    return RT_EOK;
 }
 
 static rt_uint32_t systick_read(systick_dev_t systick)
 {
-	return (SysTick->LOAD - SysTick->VAL) / systick->ticks_per_us;
+    return (SysTick->LOAD - SysTick->VAL) / systick->ticks_per_us;
 }
 
 const static struct systick_ops _systick_ops = {
-	systick_configure,
-	systick_read
+    systick_configure,
+    systick_read
 };
 
 rt_err_t systick_drv_init(void)
 {
-	RCC_ClocksTypeDef  rcc_clocks;
-	static struct systick_device systick_dev = {
-		.ops = &_systick_ops,
-		.config = SYSTICK_CONFIG_DEFAULT,
-		.systick_isr_cb = RT_NULL
-	};
+    RCC_ClocksTypeDef rcc_clocks;
+    static struct systick_device systick_dev = {
+        .ops = &_systick_ops,
+        .config = SYSTICK_CONFIG_DEFAULT,
+        .systick_isr_cb = RT_NULL
+    };
 
-	_systick_dev = &systick_dev;
+    _systick_dev = &systick_dev;
 
-	_set_systick_freq(systick_dev.config.tick_freq);
+    _set_systick_freq(systick_dev.config.tick_freq);
 
-	RCC_GetClocksFreq(&rcc_clocks);
+    RCC_GetClocksFreq(&rcc_clocks);
 
-	return hal_systick_register(&systick_dev, "systick", RT_DEVICE_FLAG_RDONLY, RT_NULL);
+    return hal_systick_register(&systick_dev, "systick", RT_DEVICE_FLAG_RDONLY, RT_NULL);
 }

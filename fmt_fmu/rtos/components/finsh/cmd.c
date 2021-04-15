@@ -48,6 +48,7 @@
 
 #include "finsh.h"
 #include <rtthread.h>
+#include <firmament.h>
 
 long hello(void)
 {
@@ -108,9 +109,9 @@ static long _list_thread(struct rt_list_node* list)
 
     maxlen = object_name_maxlen(item_title, list);
 
-    rt_kprintf("%-*.s pri  status      sp     stack size max used left tick  error\n", maxlen, item_title);
+    rt_kprintf("%-*.s pri  status      sp     stack size max used left tick  err  cpu\n", maxlen, item_title);
     object_split(maxlen);
-    rt_kprintf(" ---  ------- ---------- ----------  ------  ---------- ---\n");
+    rt_kprintf(" ---  ------- ---------- ----------  ------  ---------- --- -----\n");
 
     for (node = list->next; node != list; node = node->next) {
         rt_uint8_t stat;
@@ -133,13 +134,14 @@ static long _list_thread(struct rt_list_node* list)
         while (*ptr == '#')
             ptr++;
 
-        rt_kprintf(" 0x%08x 0x%08x    %02d%%   0x%08x %03d\n",
+        cpu_usage_stats* stats = (cpu_usage_stats*)thread->user_data;
+        console_printf(" 0x%08x 0x%08x    %02d%%   0x%08x %03d %.2f%%\n",
             thread->stack_size + ((rt_uint32_t)thread->stack_addr - (rt_uint32_t)thread->sp),
             thread->stack_size,
             (thread->stack_size - ((rt_uint32_t)ptr - (rt_uint32_t)thread->stack_addr)) * 100
                 / thread->stack_size,
             thread->remaining_tick,
-            thread->error);
+            thread->error, stats->cpu_usage);
     }
 
     return 0;
