@@ -166,11 +166,6 @@ extern "C" {
 #define BMI055_ACCEL_BW_500   REG_VAL(BIT(3) | BIT(2) | BIT(1), BIT(4) | BIT(0))
 #define BMI055_ACCEL_BW_1000  REG_VAL(BIT(3) | BIT(2) | BIT(1) | BIT(0), BIT(4))
 
-typedef struct {
-    uint8_t setbits;
-    uint8_t clearbits;
-} reg_val_t;
-
 rt_err_t drv_bmi055_init(void);
 
 #ifdef __cplusplus

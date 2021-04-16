@@ -277,7 +277,7 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RTT_CHECK(drv_usb_cdc_init());
 
-    RTT_CHECK(icm20689_drv_init(ICM20689_SPI_DEVICE_NAME));
+    RTT_CHECK(drv_icm20689_init());
 
     RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 

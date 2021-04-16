@@ -33,6 +33,11 @@
 #define M_PI_F       3.1415926f
 #define BMI055_ONE_G 9.80665f
 
+typedef struct {
+    uint8_t setbits;
+    uint8_t clearbits;
+} reg_val_t;
+
 static rt_device_t gyro_spi_dev;
 static rt_device_t accel_spi_dev;
 static float gyro_range_scale;
@@ -441,15 +446,29 @@ const static struct accel_ops __accel_ops = {
     accel_read,
 };
 
+#define GYRO_CONFIG                                   \
+    {                                                 \
+        1000,                   /* 1K sample rate */  \
+            92,                 /* 256Hz bandwidth */ \
+            GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
+    }
+
+#define ACCEL_CONFIG                               \
+    {                                              \
+        1000,                /* 1K sample rate */  \
+            125,             /* 125Hz bandwidth */ \
+            ACCEL_RANGE_16G, /* +-16g */           \
+    }
+
 static struct gyro_device gyro_dev = {
     .ops = &__gyro_ops,
-    .config = GYRO_CONFIG_DEFAULT,
+    .config = GYRO_CONFIG,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
 static struct accel_device accel_dev = {
     .ops = &__accel_ops,
-    .config = ACCEL_CONFIG_DEFAULT,
+    .config = ACCEL_CONFIG,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
