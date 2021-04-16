@@ -214,7 +214,8 @@ void bsp_show_information(void)
     char buffer[50];
     uint32_t str_len = 42;
 
-    console_println("\n   _____                               __ ");
+    console_printf("\n");
+    console_println("   _____                               __ ");
     console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
@@ -276,13 +277,11 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RTT_CHECK(drv_usb_cdc_init());
 
-    RTT_CHECK(icm20689_drv_init(ICM20689_SPI_DEVICE_NAME));
+    RTT_CHECK(drv_icm20689_init());
 
     RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
-    RTT_CHECK(bmi055_gyro_drv_init(BMI055_GYRO_SPI_DEVICE_NAME));
-
-    RTT_CHECK(bmi055_acc_drv_init(BMI055_ACC_SPI_DEVICE_NAME));
+    RTT_CHECK(drv_bmi055_init());
 
     /* init parameter system */
     FMT_CHECK(param_init());

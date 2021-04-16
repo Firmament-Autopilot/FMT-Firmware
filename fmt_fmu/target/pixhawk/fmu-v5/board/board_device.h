@@ -29,17 +29,19 @@
 #define L3GD20H_SPI_DEVICE_NAME    "spi1_dev2"
 #define LSM303D_SPI_DEVICE_NAME    "spi1_dev1"
 
-#define MS5611_SPI_DEVICE_NAME     "spi4_dev1"
-#define ICM20689_SPI_DEVICE_NAME   "spi1_dev1"
+#define MS5611_SPI_DEVICE_NAME   "spi4_dev1"
+#define ICM20689_SPI_DEVICE_NAME "spi1_dev1"
 
-#define BMI055_ACC_SPI_DEVICE_NAME      "spi1_dev4"
-#define BMI055_GYRO_SPI_DEVICE_NAME     "spi1_dev3"
+#define BMI055_ACC_SPI_DEVICE_NAME  "spi1_dev4"
+#define BMI055_GYRO_SPI_DEVICE_NAME "spi1_dev3"
 
 #define SENSOR_USING_IMU0
-// #define SENSOR_USING_IMU1
+#define SENSOR_USING_IMU1
 // #define SENSOR_USING_MAG0
 // #define SENSOR_USING_MAG1
 #define SENSOR_USING_BAROMETER
 // #define SENSOR_USING_GPS
+
+#define SPI1_SPEED_HZ 7000000
 
 #endif
