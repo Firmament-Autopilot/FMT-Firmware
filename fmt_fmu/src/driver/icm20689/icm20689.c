@@ -33,63 +33,21 @@ static float gyro_range_scale;
 static float accel_range_scale;
 static rt_device_t imu_spi_dev;
 
-static rt_err_t __write_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
-{
-    rt_uint8_t send_buffer[2];
-    rt_size_t w_byte;
-
-    send_buffer[0] = DIR_WRITE | reg;
-    send_buffer[1] = val;
-    w_byte = rt_device_write(spi_device, 0, send_buffer, sizeof(send_buffer));
-
-    return w_byte == sizeof(send_buffer) ? RT_EOK : RT_ERROR;
-}
-
-static rt_err_t __read_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t* buff)
-{
-    rt_uint8_t send_val, recv_val;
-
-    send_val = DIR_READ | reg;
-
-    CHECK_RETURN(rt_spi_send_then_recv((struct rt_spi_device*)spi_device,
-        (void*)&send_val, 1, (void*)&recv_val, 1));
-
-    *buff = recv_val;
-
-    return RT_EOK;
-}
-
-static rt_err_t __read_multi_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t* buff, uint8_t len)
-{
-    rt_uint8_t cmd;
-
-    cmd = DIR_READ | reg;
-
-    CHECK_RETURN(rt_spi_send_then_recv((struct rt_spi_device*)spi_device,
-        (void*)&cmd, 1, (void*)buff, len));
-
-    return RT_EOK;
-}
-
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t r_val;
 
-    CHECK_RETURN(__write_reg(spi_device, reg, val));
-    CHECK_RETURN(__read_reg(spi_device, reg, &r_val));
+    CHECK_RETURN(spi_write_reg8(spi_device, reg, val));
+    CHECK_RETURN(spi_read_reg8(spi_device, reg, &r_val));
 
-    if (r_val == val) {
-        return RT_EOK;
-    } else {
-        return RT_ERROR;
-    }
+    return (r_val == val) ? RT_EOK : RT_ERROR;
 }
 
 static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t reg_val)
 {
     uint8_t value;
 
-    CHECK_RETURN(__read_reg(spi_device, reg, &value));
+    CHECK_RETURN(spi_read_reg8(spi_device, reg, &value));
 
     value &= ~reg_val.clearbits;
     value |= reg_val.setbits;
@@ -230,14 +188,14 @@ static rt_err_t imu_init(void)
     /* open spi device */
     CHECK_RETURN(rt_device_open(imu_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    CHECK_RETURN(__read_reg(imu_spi_dev, WHO_AM_I, &chip_id));
+    CHECK_RETURN(spi_read_reg8(imu_spi_dev, WHO_AM_I, &chip_id));
     if (chip_id != 0x98) {
         DRV_DBG("ICM20689 unmatched chip id:%x\n", chip_id);
         return FMT_ERROR;
     }
 
     /* soft reset */
-    CHECK_RETURN(__write_reg(imu_spi_dev, PWR_MGMT_1, BIT(7)));
+    CHECK_RETURN(spi_write_reg8(imu_spi_dev, PWR_MGMT_1, BIT(7)));
     systime_udelay(5000);
     /* wakeup and set clock */
     CHECK_RETURN(__modify_reg(imu_spi_dev, PWR_MGMT_1, REG_VAL(BIT(0), BIT(6)))); /* CLKSEL[2:0] set to 001 to achieve full gyroscope performance. */
@@ -258,7 +216,7 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
 {
     uint16_t raw[3];
 
-    CHECK_RETURN(__read_multi_reg(imu_spi_dev, GYRO_XOUT_H, (uint8_t*)raw, 6));
+    CHECK_RETURN(spi_read_multi_reg8(imu_spi_dev, GYRO_XOUT_H, (uint8_t*)raw, 6));
     // big-endian to little-endian
     gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
@@ -330,7 +288,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
 {
     int16_t raw[3];
 
-    CHECK_RETURN(__read_multi_reg(imu_spi_dev, ACCEL_XOUT_H, (rt_uint8_t*)raw, 6));
+    CHECK_RETURN(spi_read_multi_reg8(imu_spi_dev, ACCEL_XOUT_H, (rt_uint8_t*)raw, 6));
     // big-endian to little-endian
     acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);

@@ -66,19 +66,19 @@ extern "C" {
 #define RT_SPI_MSB (1 << 2) /* bit[2]: 1-MSB */
 
 #define RT_SPI_MASTER (0 << 3) /* SPI master device */
-#define RT_SPI_SLAVE (1 << 3) /* SPI slave device */
+#define RT_SPI_SLAVE  (1 << 3) /* SPI slave device */
 
-#define RT_SPI_MODE_0 (0 | 0) /* CPOL = 0, CPHA = 0 */
-#define RT_SPI_MODE_1 (0 | RT_SPI_CPHA) /* CPOL = 0, CPHA = 1 */
-#define RT_SPI_MODE_2 (RT_SPI_CPOL | 0) /* CPOL = 1, CPHA = 0 */
+#define RT_SPI_MODE_0 (0 | 0)                     /* CPOL = 0, CPHA = 0 */
+#define RT_SPI_MODE_1 (0 | RT_SPI_CPHA)           /* CPOL = 0, CPHA = 1 */
+#define RT_SPI_MODE_2 (RT_SPI_CPOL | 0)           /* CPOL = 1, CPHA = 0 */
 #define RT_SPI_MODE_3 (RT_SPI_CPOL | RT_SPI_CPHA) /* CPOL = 1, CPHA = 1 */
 
 #define RT_SPI_MODE_MASK (RT_SPI_CPHA | RT_SPI_CPOL | RT_SPI_MSB)
 
 #define RT_SPI_CS_HIGH (1 << 4) /* Chipselect active high */
-#define RT_SPI_NO_CS (1 << 5) /* No chipselect */
-#define RT_SPI_3WIRE (1 << 6) /* SI/SO pin shared */
-#define RT_SPI_READY (1 << 7) /* Slave pulls low to pause */
+#define RT_SPI_NO_CS   (1 << 5) /* No chipselect */
+#define RT_SPI_3WIRE   (1 << 6) /* SI/SO pin shared */
+#define RT_SPI_READY   (1 << 7) /* Slave pulls low to pause */
 
 /**
  * SPI message structure
@@ -255,6 +255,40 @@ rt_inline rt_uint16_t rt_spi_sendrecv16(struct rt_spi_device* device,
     rt_spi_send_then_recv(device, &data, 2, &value, 2);
 
     return value;
+}
+
+#define SPI_DIR_READ  0x80
+#define SPI_DIR_WRITE 0x00
+
+rt_inline rt_err_t spi_write_reg8(rt_device_t spi_device, uint8_t reg, uint8_t val)
+{
+    uint8_t buffer[2];
+    rt_size_t w_byte;
+
+    buffer[0] = SPI_DIR_WRITE | reg;
+    buffer[1] = val;
+
+    w_byte = rt_spi_transfer((struct rt_spi_device*)spi_device, buffer, NULL, 2);
+
+    return (w_byte == 2) ? RT_EOK : RT_ERROR;
+}
+
+rt_inline rt_err_t spi_read_reg8(rt_device_t spi_device, uint8_t reg, uint8_t* buffer)
+{
+    uint8_t reg_addr;
+
+    reg_addr = SPI_DIR_READ | reg;
+
+    return rt_spi_send_then_recv((struct rt_spi_device*)spi_device, (void*)&reg_addr, 1, (void*)buffer, 1);
+}
+
+rt_inline rt_err_t spi_read_multi_reg8(rt_device_t spi_device, uint8_t reg, uint8_t* buffer, uint8_t len)
+{
+    uint8_t reg_addr;
+
+    reg_addr = SPI_DIR_READ | reg;
+
+    return rt_spi_send_then_recv((struct rt_spi_device*)spi_device, (void*)&reg_addr, 1, (void*)buffer, len);
 }
 
 /**

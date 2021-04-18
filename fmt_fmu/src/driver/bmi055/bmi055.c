@@ -43,63 +43,21 @@ static rt_device_t accel_spi_dev;
 static float gyro_range_scale;
 static float accel_range_scale;
 
-static rt_err_t __write_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
-{
-    rt_uint8_t send_buffer[2];
-    rt_size_t w_byte;
-
-    send_buffer[0] = DIR_WRITE | reg;
-    send_buffer[1] = val;
-    w_byte = rt_device_write(spi_device, 0, send_buffer, sizeof(send_buffer));
-
-    return w_byte == sizeof(send_buffer) ? RT_EOK : RT_ERROR;
-}
-
-static rt_err_t __read_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t* buff)
-{
-    rt_uint8_t send_val, recv_val;
-
-    send_val = DIR_READ | reg;
-
-    CHECK_RETURN(rt_spi_send_then_recv((struct rt_spi_device*)spi_device,
-        (void*)&send_val, 1, (void*)&recv_val, 1));
-
-    *buff = recv_val;
-
-    return RT_EOK;
-}
-
-static rt_err_t __read_multi_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t* buff, uint8_t len)
-{
-    rt_uint8_t cmd;
-
-    cmd = DIR_READ | reg;
-
-    CHECK_RETURN(rt_spi_send_then_recv((struct rt_spi_device*)spi_device,
-        (void*)&cmd, 1, (void*)buff, len));
-
-    return RT_EOK;
-}
-
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t r_val;
 
-    CHECK_RETURN(__write_reg(spi_device, reg, val));
-    CHECK_RETURN(__read_reg(spi_device, reg, &r_val));
+    CHECK_RETURN(spi_write_reg8(spi_device, reg, val));
+    CHECK_RETURN(spi_read_reg8(spi_device, reg, &r_val));
 
-    if (r_val == val) {
-        return RT_EOK;
-    } else {
-        return RT_ERROR;
-    }
+    return (r_val == val) ? RT_EOK : RT_ERROR;
 }
 
 static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t reg_val)
 {
     uint8_t value;
 
-    CHECK_RETURN(__read_reg(spi_device, reg, &value));
+    CHECK_RETURN(spi_read_reg8(spi_device, reg, &value));
 
     value &= ~reg_val.clearbits;
     value |= reg_val.setbits;
@@ -183,7 +141,7 @@ static rt_err_t gyro_set_range(unsigned max_dps)
 
 static rt_err_t gyro_read_raw(int16_t gyr[3])
 {
-    CHECK_RETURN(__read_multi_reg(gyro_spi_dev, BMI055_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
+    CHECK_RETURN(spi_read_multi_reg8(gyro_spi_dev, BMI055_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
     rotate_to_ned(gyr);
 
     return RT_EOK;
@@ -209,14 +167,14 @@ static rt_err_t gyroscope_init(void)
     /* init spi bus */
     CHECK_RETURN(rt_device_open(gyro_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    __read_reg(gyro_spi_dev, BMI055_CHIP_ID_ADDR, &gyro_id);
+    spi_read_reg8(gyro_spi_dev, BMI055_CHIP_ID_ADDR, &gyro_id);
     if (gyro_id != BMI055_GRRO_CHIP_ID) {
         DRV_DBG("Warning: not found BMI055 gyro id: %02x\n", gyro_id);
         return RT_ERROR;
     }
 
     /* soft reset */
-    CHECK_RETURN(__write_reg(gyro_spi_dev, BMI055_BGW_SOFT_RST_ADDR, 0xB6));
+    CHECK_RETURN(spi_write_reg8(gyro_spi_dev, BMI055_BGW_SOFT_RST_ADDR, 0xB6));
     systime_udelay(5000);
 
     CHECK_RETURN(gyro_set_range(2000));       /* 2000dps */
@@ -348,14 +306,14 @@ static rt_err_t accelerometer_init(void)
     /* init spi bus */
     CHECK_RETURN(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    __read_reg(accel_spi_dev, BMI055_ACC_BGW_CHIPID, &accel_id);
+    spi_read_reg8(accel_spi_dev, BMI055_ACC_BGW_CHIPID, &accel_id);
     if (accel_id != BMI055_ACC_BGW_CHIPID_VALUE) {
         DRV_DBG("Warning: not found BMI055 accel id: %02x\n", accel_id);
         return RT_ERROR;
     }
 
     /* soft reset */
-    CHECK_RETURN(__write_reg(accel_spi_dev, BMI055_BGW_SOFTRESET, 0xB6));
+    CHECK_RETURN(spi_write_reg8(accel_spi_dev, BMI055_BGW_SOFTRESET, 0xB6));
     systime_udelay(5000);
 
     CHECK_RETURN(accel_set_range(2));          /* 2g */
@@ -373,7 +331,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     uint8_t buffer[6];
     int16_t msblsb;
 
-    CHECK_RETURN(__read_multi_reg(accel_spi_dev, BMI055_ACCD_X_LSB, buffer, 6));
+    CHECK_RETURN(spi_read_multi_reg8(accel_spi_dev, BMI055_ACCD_X_LSB, buffer, 6));
 
     msblsb = buffer[1] << 8 | buffer[0];
     acc[0] = msblsb >> 4;
