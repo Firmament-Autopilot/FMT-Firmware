@@ -349,8 +349,6 @@ rt_err_t rt_hmc5883_init(char* i2c_device_name)
 	/* register to device manager */
 	res |= rt_device_register(&ext_mag_device, "hmc5883", RT_DEVICE_FLAG_RDWR);
 
-	res |= device_i2c_init(i2c_device_name);
-
 	_i2c_device = rt_device_find(i2c_device_name);
 
 	if(_i2c_device == RT_NULL) {

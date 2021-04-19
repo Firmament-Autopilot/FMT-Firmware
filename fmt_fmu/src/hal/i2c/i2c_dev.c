@@ -26,7 +26,6 @@
 
 #include <rtdevice.h>
 #include <string.h>
-#include "driver/i2c_soft.h"
 #include "hal/i2c-bit-ops.h"
 #include "hal/i2c_dev.h"
 #include "hal/i2c.h"
@@ -36,7 +35,6 @@
 
 struct rt_i2c_bus_device rt_i2c1;
 struct rt_i2c_bus_device rt_i2c2;
-BSP_I2C_Def i2c1_def = BSP_I2C1, i2c2_def = BSP_I2C2;
 
 static rt_size_t i2c_bus_device_read(rt_device_t dev,
                                      rt_off_t    pos,
@@ -119,21 +117,7 @@ static rt_err_t i2c_bus_device_control(rt_device_t dev,
 	return RT_EOK;
 }
 
-rt_err_t i2c_bus_device_init(rt_device_t dev)
-{
-	BSP_I2C_Def i2c_dev;
-	rt_err_t err;
-
-	//struct rt_i2c_bus_device *bus = (struct rt_i2c_bus_device *)dev->user_data;
-	struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev;
-	i2c_dev = *(BSP_I2C_Def*)((struct rt_i2c_bit_ops*)bus->priv)->data;
-
-	err = stm32_i2c_pin_init(i2c_dev);
-
-	return err;
-}
-
-rt_err_t rt_i2c_bus_device_device_init(struct rt_i2c_bus_device* bus,
+rt_err_t rt_i2c_bus_device_init(struct rt_i2c_bus_device* bus,
                                        const char*               name)
 {
 	struct rt_device* device;
@@ -146,7 +130,7 @@ rt_err_t rt_i2c_bus_device_device_init(struct rt_i2c_bus_device* bus,
 	/* set device type */
 	device->type    = RT_Device_Class_I2CBUS;
 	/* initialize device interface */
-	device->init    = i2c_bus_device_init;
+	device->init    = RT_NULL;
 	device->open    = RT_NULL;
 	device->close   = RT_NULL;
 	device->read    = i2c_bus_device_read;
@@ -158,29 +142,3 @@ rt_err_t rt_i2c_bus_device_device_init(struct rt_i2c_bus_device* bus,
 
 	return RT_EOK;
 }
-
-rt_err_t device_i2c_init(char* name)
-{
-	rt_err_t err;
-
-	if(!strcmp(name, "i2c1")) {
-		rt_memset((void*)&rt_i2c1, 0, sizeof(struct rt_i2c_bus_device));
-
-		stm32_i2c1_bit_ops.data = (void*)&i2c1_def;
-		rt_i2c1.priv = (void*)&stm32_i2c1_bit_ops;
-		rt_i2c1.retries = 3;
-		err = rt_i2c_bit_add_bus(&rt_i2c1, name);
-	} else if(!strcmp(name, "i2c2")) {
-		rt_memset((void*)&rt_i2c2, 0, sizeof(struct rt_i2c_bus_device));
-
-		stm32_i2c2_bit_ops.data = (void*)&i2c2_def;
-		rt_i2c2.priv = (void*)&stm32_i2c2_bit_ops;
-		rt_i2c2.retries = 3;
-		err = rt_i2c_bit_add_bus(&rt_i2c2, name);
-	} else {
-		return RT_ERROR;
-	}
-
-	return err;
-}
-

@@ -451,7 +451,7 @@ static const struct rt_i2c_bus_device_ops i2c_bit_bus_ops = {
 	RT_NULL
 };
 
-rt_err_t rt_i2c_bit_add_bus(struct rt_i2c_bus_device* bus,
+rt_err_t rt_i2c_soft_bus_register(struct rt_i2c_bus_device* bus,
                             const char*               bus_name)
 {
 	bus->ops = &i2c_bit_bus_ops;

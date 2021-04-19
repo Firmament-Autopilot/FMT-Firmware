@@ -36,7 +36,7 @@ rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus_device* bus,
 
 	if(bus->timeout == 0) bus->timeout = RT_TICK_PER_SECOND;
 
-	res = rt_i2c_bus_device_device_init(bus, bus_name);
+	res = rt_i2c_bus_device_init(bus, bus_name);
 
 	i2c_dbg("I2C bus [%s] registered\n", bus_name);
 

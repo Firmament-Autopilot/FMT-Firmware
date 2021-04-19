@@ -39,6 +39,7 @@
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
 #include "driver/usart.h"
+#include "drv_i2c_soft.h"
 #include "drv_spi.h"
 #include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
@@ -264,6 +265,8 @@ void bsp_initialize(void)
     RTT_CHECK(dev_sd_init(FS_DEVICE_NAME));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
+
+    drv_i2c_soft_init();
 
     /* init usb device */
     RTT_CHECK(drv_usb_cdc_init());
