@@ -1,8 +1,23 @@
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include "drv_i2c.h"
 #include "hal/i2c.h"
 #include "stm32f7xx_ll_i2c.h"
 
-#define I2C_TIMEOUT_US 500
+#define I2C_TIMEOUT_US (500)
 
 struct stm32_i2c_bus {
     struct rt_i2c_bus_device parent;
@@ -118,7 +133,7 @@ static const struct rt_i2c_bus_device_ops i2c_bus_ops = {
     RT_NULL
 };
 
-fmt_err_t drv_i2c_init(void)
+rt_err_t drv_i2c_init(void)
 {
     /* i2c low-level initialization */
     i2c_hw_init();
@@ -128,14 +143,14 @@ fmt_err_t drv_i2c_init(void)
     };
     stm32_i2c1.parent.ops = &i2c_bus_ops;
     /* register i2c bus */
-    rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1");
+    RT_CHECK_RETURN(rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1"));
 
     static struct rt_i2c_device i2c_dev1 = {
         .slave_addr = IST8310_ADDRESS,
         .flags = 0
     };
     /* attach i2c devices */
-    rt_i2c_bus_attach_device(&i2c_dev1, "i2c1_dev1", "i2c1", RT_NULL);
+    RT_CHECK_RETURN(rt_i2c_bus_attach_device(&i2c_dev1, "i2c1_dev1", "i2c1", RT_NULL));
 
     return RT_EOK;
 }
