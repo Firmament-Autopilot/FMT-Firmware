@@ -132,7 +132,7 @@ struct rt_spi_device {
 #define SPI_DEVICE(dev) ((struct rt_spi_device*)(dev))
 
 rt_err_t rt_spi_bus_init(struct rt_spi_bus* bus, const char* name);
-rt_err_t rt_spi_bus_device_init(struct rt_spi_device* dev, const char* name);
+rt_err_t rt_spi_device_init(struct rt_spi_device* dev, const char* name);
 
 /* register a SPI bus */
 rt_err_t rt_spi_bus_register(struct rt_spi_bus* bus,

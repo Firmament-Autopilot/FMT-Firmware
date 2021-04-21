@@ -80,7 +80,7 @@ rt_err_t rt_spi_bus_attach_device(struct rt_spi_device* device,
 		device->bus = (struct rt_spi_bus*)bus;
 
 		/* initialize spidev device */
-		result = rt_spi_bus_device_init(device, name);
+		result = rt_spi_device_init(device, name);
 
 		if(result != RT_EOK)
 			return result;

@@ -90,7 +90,7 @@ rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
         device->bus = (struct rt_i2c_bus*)bus;
 
         /* initialize i2c device */
-        result = rt_i2c_bus_device_init(device, name);
+        result = rt_i2c_device_init(device, name);
         if (result != RT_EOK)
             return result;
 

@@ -149,7 +149,7 @@ rt_err_t rt_i2c_bus_init(struct rt_i2c_bus* bus, const char* name)
     return RT_EOK;
 }
 
-rt_err_t rt_i2c_bus_device_init(struct rt_i2c_device* dev, const char* name)
+rt_err_t rt_i2c_device_init(struct rt_i2c_device* dev, const char* name)
 {
     struct rt_device* device;
     RT_ASSERT(dev != RT_NULL);
