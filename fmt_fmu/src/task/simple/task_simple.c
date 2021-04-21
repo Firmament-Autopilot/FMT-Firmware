@@ -66,9 +66,13 @@ void task_simple_entry(void* parameter)
     FMT_CHECK(workqueue_schedule_work(wq, &item));
 
     while (1) {
-        _led_on();
-        sys_msleep(100);
-        _led_off();
-        sys_msleep(100);
+        // _led_on();
+        // sys_msleep(100);
+        // _led_off();
+        // sys_msleep(100);
+
+        void ist8310_read_raw_data(void);
+        ist8310_read_raw_data();
+        sys_msleep(1000);
     }
 }

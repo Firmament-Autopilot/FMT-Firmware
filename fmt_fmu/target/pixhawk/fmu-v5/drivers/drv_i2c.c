@@ -1,0 +1,130 @@
+#include "drv_i2c.h"
+#include "hal/i2c.h"
+#include "stm32f7xx_ll_i2c.h"
+
+#define I2C_TIMEOUT_US 500
+
+struct stm32_i2c_bus {
+    struct rt_i2c_bus_device parent;
+    I2C_TypeDef* I2C;
+};
+
+static void i2c_hw_init(void)
+{
+    LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
+
+    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+    /**I2C1 GPIO Configuration
+  PB8   ------> I2C1_SCL
+  PB9   ------> I2C1_SDA
+  */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
+    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
+    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    /* Peripheral clock enable */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
+
+    /** I2C Initialization
+  */
+    LL_I2C_EnableAutoEndMode(I2C1);
+    LL_I2C_SetOwnAddress2(I2C1, 0, LL_I2C_OWNADDRESS2_NOMASK);
+    LL_I2C_DisableOwnAddress2(I2C1);
+    LL_I2C_DisableGeneralCall(I2C1);
+    LL_I2C_EnableClockStretching(I2C1);
+    I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
+    I2C_InitStruct.Timing = 0x6000030D;
+    I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
+    I2C_InitStruct.DigitalFilter = 0;
+    I2C_InitStruct.OwnAddress1 = 0;
+    I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
+    I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
+    LL_I2C_Init(I2C1, &I2C_InitStruct);
+}
+
+static rt_size_t i2c_transfer(struct rt_i2c_bus_device* bus, struct rt_i2c_msg msgs[], rt_uint32_t num)
+{
+    struct rt_i2c_msg* msg;
+    uint32_t msg_idx;
+    struct stm32_i2c_bus* stm32_i2c = (struct stm32_i2c_bus*)bus;
+
+    /* wait until bus is free */
+    WAIT_TIMEOUT(LL_I2C_IsActiveFlag_BUSY(stm32_i2c->I2C), I2C_TIMEOUT_US, return 0;);
+    /* clear stop flag */
+    LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
+
+    for (msg_idx = 0; msg_idx < num; msg_idx++) {
+        msg = &msgs[msg_idx];
+        uint16_t nbytes = msg->len;
+
+        if (msg->flags & RT_I2C_RD) {
+            /* start/restart read operation */
+            LL_I2C_HandleTransfer(stm32_i2c->I2C, msg->addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
+                LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_READ);
+
+            while (nbytes--) {
+                if (LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C)) {
+                    return msg_idx;
+                }
+                /* wait data received */
+                WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_RXNE(stm32_i2c->I2C), I2C_TIMEOUT_US, return msg_idx;);
+                /* receive data */
+                *(msg->buf++) = LL_I2C_ReceiveData8(stm32_i2c->I2C);
+            }
+        } else {
+            /* start/restart write operation */
+            LL_I2C_HandleTransfer(stm32_i2c->I2C, msg->addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
+                LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
+
+            while (nbytes--) {
+                if (LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C)) {
+                    return msg_idx;
+                }
+                /* transmit data */
+                LL_I2C_TransmitData8(stm32_i2c->I2C, *(msg->buf++));
+                /* wait write complete */
+                WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_TXE(stm32_i2c->I2C), I2C_TIMEOUT_US, return msg_idx;);
+            }
+        }
+    }
+
+    /* generate stop condition, NACK is automatically generated before stop */
+    LL_I2C_HandleTransfer(stm32_i2c->I2C, msg->addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
+        LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
+
+    return num;
+}
+
+static const struct rt_i2c_bus_device_ops i2c_bus_ops = {
+    i2c_transfer,
+    RT_NULL,
+    RT_NULL
+};
+
+int rt_i2c_hw_init(void)
+{
+    static struct stm32_i2c_bus stm32_i2c1 = {
+        .I2C = I2C1
+    };
+
+    i2c_hw_init();
+
+    stm32_i2c1.parent.ops = &i2c_bus_ops;
+    rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1");
+
+    return RT_EOK;
+}

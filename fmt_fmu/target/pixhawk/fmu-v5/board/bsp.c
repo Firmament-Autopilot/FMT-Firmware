@@ -31,9 +31,11 @@
 #include "driver/bmi055.h"
 #include "driver/icm20689.h"
 #include "driver/ms5611.h"
+#include "driver/ist8310.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
+#include "drv_i2c.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
 
@@ -207,6 +209,7 @@ void SystemClock_Config(void)
     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
     LL_RCC_SetUARTClockSource(LL_RCC_UART7_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
 }
 
 void bsp_show_information(void)
@@ -253,6 +256,8 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RTT_CHECK(spi_drv_init());
 
+    rt_i2c_hw_init();
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -282,6 +287,8 @@ void bsp_initialize(void)
     RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
     RTT_CHECK(drv_bmi055_init());
+
+    rt_ist8310_init("i2c1");
 
     /* init parameter system */
     FMT_CHECK(param_init());
