@@ -148,7 +148,7 @@ rt_inline rt_bool_t i2c_waitack(struct rt_i2c_bit_ops* ops)
     return ack;
 }
 
-static rt_int32_t i2c_writeb(struct rt_i2c_bus_device* bus, rt_uint8_t data)
+static rt_int32_t i2c_writeb(struct rt_i2c_bus* bus, rt_uint8_t data)
 {
     rt_int32_t i;
     rt_uint8_t bit;
@@ -176,7 +176,7 @@ static rt_int32_t i2c_writeb(struct rt_i2c_bus_device* bus, rt_uint8_t data)
     return i2c_waitack(ops);
 }
 
-static rt_int32_t i2c_readb(struct rt_i2c_bus_device* bus)
+static rt_int32_t i2c_readb(struct rt_i2c_bus* bus)
 {
     rt_uint8_t i;
     rt_uint8_t data = 0;
@@ -206,7 +206,7 @@ static rt_int32_t i2c_readb(struct rt_i2c_bus_device* bus)
     return data;
 }
 
-static rt_size_t i2c_send_bytes(struct rt_i2c_bus_device* bus,
+static rt_size_t i2c_send_bytes(struct rt_i2c_bus* bus,
     struct rt_i2c_msg* msg)
 {
     rt_int32_t ret;
@@ -236,7 +236,7 @@ static rt_size_t i2c_send_bytes(struct rt_i2c_bus_device* bus,
     return bytes;
 }
 
-static rt_err_t i2c_send_ack_or_nack(struct rt_i2c_bus_device* bus, int ack)
+static rt_err_t i2c_send_ack_or_nack(struct rt_i2c_bus* bus, int ack)
 {
     struct rt_i2c_bit_ops* ops = bus->priv;
 
@@ -256,7 +256,7 @@ static rt_err_t i2c_send_ack_or_nack(struct rt_i2c_bus_device* bus, int ack)
     return RT_EOK;
 }
 
-static rt_size_t i2c_recv_bytes(struct rt_i2c_bus_device* bus,
+static rt_size_t i2c_recv_bytes(struct rt_i2c_bus* bus,
     struct rt_i2c_msg* msg)
 {
     rt_int32_t val;
@@ -292,7 +292,7 @@ static rt_size_t i2c_recv_bytes(struct rt_i2c_bus_device* bus,
     return bytes;
 }
 
-static rt_int32_t i2c_send_address(struct rt_i2c_bus_device* bus,
+static rt_int32_t i2c_send_address(struct rt_i2c_bus* bus,
     rt_uint8_t addr,
     rt_int32_t retries)
 {
@@ -316,7 +316,7 @@ static rt_int32_t i2c_send_address(struct rt_i2c_bus_device* bus,
     return ret;
 }
 
-static rt_err_t i2c_bit_send_address(struct rt_i2c_bus_device* bus,
+static rt_err_t i2c_bit_send_address(struct rt_i2c_bus* bus,
     rt_uint16_t addr,
     struct rt_i2c_msg* msg)
 {
@@ -380,7 +380,7 @@ static rt_err_t i2c_bit_send_address(struct rt_i2c_bus_device* bus,
     return RT_EOK;
 }
 
-static rt_size_t i2c_bit_xfer(struct rt_i2c_bus_device* bus,
+static rt_size_t i2c_bit_xfer(struct rt_i2c_bus* bus,
     rt_uint16_t slave_addr,
     struct rt_i2c_msg msgs[],
     rt_uint32_t num)
@@ -453,7 +453,7 @@ static const struct rt_i2c_bus_device_ops i2c_bit_bus_ops = {
     RT_NULL
 };
 
-rt_err_t rt_i2c_soft_bus_register(struct rt_i2c_bus_device* bus,
+rt_err_t rt_i2c_soft_bus_register(struct rt_i2c_bus* bus,
     const char* bus_name)
 {
     bus->ops = &i2c_bit_bus_ops;

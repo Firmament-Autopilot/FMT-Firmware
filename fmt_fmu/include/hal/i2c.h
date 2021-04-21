@@ -60,24 +60,24 @@ struct rt_i2c_msg {
     rt_uint8_t* buf;
 };
 
-struct rt_i2c_bus_device;
+struct rt_i2c_bus;
 struct rt_i2c_device;
 
 struct rt_i2c_bus_device_ops {
-    rt_size_t (*master_xfer)(struct rt_i2c_bus_device* bus,
+    rt_size_t (*master_xfer)(struct rt_i2c_bus* bus,
         rt_uint16_t slave_addr,
         struct rt_i2c_msg msgs[],
         rt_uint32_t num);
-    rt_size_t (*slave_xfer)(struct rt_i2c_bus_device* bus,
+    rt_size_t (*slave_xfer)(struct rt_i2c_bus* bus,
         struct rt_i2c_msg msgs[],
         rt_uint32_t num);
-    rt_err_t (*i2c_bus_control)(struct rt_i2c_bus_device* bus,
+    rt_err_t (*i2c_bus_control)(struct rt_i2c_bus* bus,
         rt_uint32_t,
         rt_uint32_t);
 };
 
 /*for i2c bus driver*/
-struct rt_i2c_bus_device {
+struct rt_i2c_bus {
     struct rt_device parent;
     const struct rt_i2c_bus_device_ops* ops;
     rt_uint16_t flags;
@@ -90,7 +90,7 @@ struct rt_i2c_bus_device {
 
 struct rt_i2c_device {
     struct rt_device parent;
-    struct rt_i2c_bus_device* bus;
+    struct rt_i2c_bus* bus;
     rt_uint16_t slave_addr;
     rt_uint16_t flags;
 };
@@ -101,23 +101,23 @@ struct rt_i2c_device {
 #define i2c_dbg(fmt, ...)
 #endif
 
-rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus_device* bus,
+rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
     const char* bus_name);
-struct rt_i2c_bus_device* rt_i2c_bus_device_find(const char* bus_name);
+struct rt_i2c_bus* rt_i2c_bus_device_find(const char* bus_name);
 rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
     const char* name,
     const char* bus_name,
     void* user_data);
-rt_size_t rt_i2c_transfer(struct rt_i2c_bus_device* bus,
+rt_size_t rt_i2c_transfer(struct rt_i2c_bus* bus,
     rt_uint16_t addr,
     struct rt_i2c_msg msgs[],
     rt_uint32_t num);
-rt_size_t rt_i2c_master_send(struct rt_i2c_bus_device* bus,
+rt_size_t rt_i2c_master_send(struct rt_i2c_bus* bus,
     rt_uint16_t addr,
     rt_uint16_t flags,
     const rt_uint8_t* buf,
     rt_uint32_t count);
-rt_size_t rt_i2c_master_recv(struct rt_i2c_bus_device* bus,
+rt_size_t rt_i2c_master_recv(struct rt_i2c_bus* bus,
     rt_uint16_t addr,
     rt_uint16_t flags,
     rt_uint8_t* buf,

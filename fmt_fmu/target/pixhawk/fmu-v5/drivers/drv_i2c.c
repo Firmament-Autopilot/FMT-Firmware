@@ -20,7 +20,7 @@
 #define I2C_TIMEOUT_US (500)
 
 struct stm32_i2c_bus {
-    struct rt_i2c_bus_device parent;
+    struct rt_i2c_bus parent;
     I2C_TypeDef* I2C;
 };
 
@@ -71,7 +71,7 @@ static void i2c_hw_init(void)
     LL_I2C_Init(I2C1, &I2C_InitStruct);
 }
 
-static rt_size_t i2c_master_transfer(struct rt_i2c_bus_device* bus, rt_uint16_t slave_addr, struct rt_i2c_msg msgs[], rt_uint32_t num)
+static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_addr, struct rt_i2c_msg msgs[], rt_uint32_t num)
 {
     struct rt_i2c_msg* msg;
     uint32_t msg_idx;

@@ -60,7 +60,7 @@ struct rt_i2c_priv_data {
     rt_size_t number;
 };
 
-rt_err_t rt_i2c_bus_init(struct rt_i2c_bus_device* bus, const char* name);
+rt_err_t rt_i2c_bus_init(struct rt_i2c_bus* bus, const char* name);
 rt_err_t rt_i2c_bus_device_init(struct rt_i2c_device* dev, const char* name);
 
 #ifdef __cplusplus

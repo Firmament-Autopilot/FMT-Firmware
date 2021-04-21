@@ -5,12 +5,12 @@
 
 uint8_t ist8310_id;
 
-struct rt_i2c_bus_device* i2c_bus;
+struct rt_i2c_bus* i2c_bus;
 rt_device_t i2c_dev;
 
 int16_t magRaw[3] = { 0 };
 
-static rt_err_t write_reg(struct rt_i2c_bus_device* bus, rt_uint8_t reg)
+static rt_err_t write_reg(struct rt_i2c_bus* bus, rt_uint8_t reg)
 {
     rt_uint8_t buf[2];
     struct rt_i2c_msg msgs;
@@ -27,7 +27,7 @@ static rt_err_t write_reg(struct rt_i2c_bus_device* bus, rt_uint8_t reg)
     return RT_EOK;
 }
 
-static rt_err_t write_reg_data(struct rt_i2c_bus_device* bus, rt_uint8_t reg, rt_uint8_t data)
+static rt_err_t write_reg_data(struct rt_i2c_bus* bus, rt_uint8_t reg, rt_uint8_t data)
 {
     rt_uint8_t buf[2];
     struct rt_i2c_msg msgs;
@@ -45,7 +45,7 @@ static rt_err_t write_reg_data(struct rt_i2c_bus_device* bus, rt_uint8_t reg, rt
     return RT_EOK;
 }
 
-static rt_err_t read_regs(struct rt_i2c_bus_device* bus, rt_uint8_t len, rt_uint8_t* buf)
+static rt_err_t read_regs(struct rt_i2c_bus* bus, rt_uint8_t len, rt_uint8_t* buf)
 {
     struct rt_i2c_msg msgs;
 
@@ -58,7 +58,7 @@ static rt_err_t read_regs(struct rt_i2c_bus_device* bus, rt_uint8_t len, rt_uint
     return RT_EOK;
 }
 
-void my_read_reg(struct rt_i2c_bus_device* bus, rt_uint8_t reg, rt_uint8_t* buf)
+void my_read_reg(struct rt_i2c_bus* bus, rt_uint8_t reg, rt_uint8_t* buf)
 {
     rt_uint8_t send_buf;
     struct rt_i2c_msg msgs[2];
@@ -76,7 +76,7 @@ void my_read_reg(struct rt_i2c_bus_device* bus, rt_uint8_t reg, rt_uint8_t* buf)
     rt_i2c_transfer(bus, IST8310_ADDRESS, msgs, 2);
 }
 
-void my_read_multi_reg(struct rt_i2c_bus_device* bus, rt_uint8_t reg, rt_uint8_t* buf)
+void my_read_multi_reg(struct rt_i2c_bus* bus, rt_uint8_t reg, rt_uint8_t* buf)
 {
     rt_uint8_t send_buf;
     struct rt_i2c_msg msgs[2];

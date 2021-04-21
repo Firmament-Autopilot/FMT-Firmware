@@ -41,12 +41,12 @@
 #define FMU_I2C2_PIN_SCL 47
 #define FMU_I2C2_PIN_SDA 48
 
-static struct rt_i2c_bus_device i2c1_dev;
-static struct rt_i2c_bus_device i2c2_dev;
+static struct rt_i2c_bus i2c1_dev;
+static struct rt_i2c_bus i2c2_dev;
 
 void stm32_set_sda(void* data, rt_int32_t state)
 {
-    struct rt_i2c_bus_device* i2c_bus = (struct rt_i2c_bus_device*)data;
+    struct rt_i2c_bus* i2c_bus = (struct rt_i2c_bus*)data;
 
     if (i2c_bus == &i2c1_dev) {
         if (state == 1)
@@ -63,7 +63,7 @@ void stm32_set_sda(void* data, rt_int32_t state)
 
 void stm32_set_scl(void* data, rt_int32_t state)
 {
-    struct rt_i2c_bus_device* i2c_bus = (struct rt_i2c_bus_device*)data;
+    struct rt_i2c_bus* i2c_bus = (struct rt_i2c_bus*)data;
 
     if (i2c_bus == &i2c1_dev) {
         if (state == 1)
@@ -81,7 +81,7 @@ void stm32_set_scl(void* data, rt_int32_t state)
 rt_int32_t stm32_get_sda(void* data)
 {
     rt_int32_t val;
-    struct rt_i2c_bus_device* i2c_bus = (struct rt_i2c_bus_device*)data;
+    struct rt_i2c_bus* i2c_bus = (struct rt_i2c_bus*)data;
 
     if (i2c_bus == &i2c1_dev) {
         //set input mode
@@ -103,7 +103,7 @@ rt_int32_t stm32_get_sda(void* data)
 rt_int32_t stm32_get_scl(void* data)
 {
     rt_int32_t val;
-    struct rt_i2c_bus_device* i2c_bus = (struct rt_i2c_bus_device*)data;
+    struct rt_i2c_bus* i2c_bus = (struct rt_i2c_bus*)data;
 
     if (i2c_bus == &i2c1_dev) {
         //set input mode
@@ -127,7 +127,7 @@ rt_inline void stm32_udelay(rt_uint32_t us)
     systime_udelay(us);
 }
 
-rt_err_t stm32_i2c_pin_init(struct rt_i2c_bus_device* i2c_bus)
+rt_err_t stm32_i2c_pin_init(struct rt_i2c_bus* i2c_bus)
 {
     rt_device_t pin_dev;
     struct device_pin_mode mode;

@@ -62,7 +62,7 @@ struct rt_i2c_bit_ops {
     rt_uint32_t timeout; /* in tick */
 };
 
-rt_err_t rt_i2c_soft_bus_register(struct rt_i2c_bus_device* bus,
+rt_err_t rt_i2c_soft_bus_register(struct rt_i2c_bus* bus,
     const char* bus_name);
 
 #ifdef __cplusplus
