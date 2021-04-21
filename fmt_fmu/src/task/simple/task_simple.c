@@ -43,7 +43,7 @@ static void _led_off(void)
     }
 }
 
-fmt_err task_simple_init(void)
+fmt_err_t task_simple_init(void)
 {
     return FMT_EOK;
 }

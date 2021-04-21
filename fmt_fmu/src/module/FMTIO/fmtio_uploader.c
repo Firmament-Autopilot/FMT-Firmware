@@ -117,7 +117,7 @@ static uint32_t _crc32part(const uint8_t* src, size_t len, uint32_t crc32val)
 	return crc32val;
 }
 
-static fmt_err _send_char(uint8_t c)
+static fmt_err_t _send_char(uint8_t c)
 {
 	uint32_t bytes;
 
@@ -128,7 +128,7 @@ static fmt_err _send_char(uint8_t c)
 	return (bytes == 1) ? FMT_EOK : FMT_ERROR;
 }
 
-static fmt_err _send(uint8_t* buff, uint32_t size)
+static fmt_err_t _send(uint8_t* buff, uint32_t size)
 {
 	uint32_t bytes;
 
@@ -141,7 +141,7 @@ static fmt_err _send(uint8_t* buff, uint32_t size)
 	return FMT_EOK;
 }
 
-static fmt_err _get_sync(int32_t timeout)
+static fmt_err_t _get_sync(int32_t timeout)
 {
 	uint8_t c[2];
 	uint32_t bytes;
@@ -170,7 +170,7 @@ static fmt_err _get_sync(int32_t timeout)
 	return FMT_EOK;
 }
 
-static fmt_err _sync(void)
+static fmt_err_t _sync(void)
 {
 	_send_char(PROTO_GET_SYNC);
 	_send_char(PROTO_EOC);
@@ -178,7 +178,7 @@ static fmt_err _sync(void)
 	return _get_sync(50);
 }
 
-static fmt_err _get_info(int param, uint8_t* val, uint32_t size)
+static fmt_err_t _get_info(int param, uint8_t* val, uint32_t size)
 {
 	uint32_t bytes;
 
@@ -204,7 +204,7 @@ static rt_err_t _erase(void)
 	return _get_sync(10000);		/* allow 10s timeout */
 }
 
-static fmt_err _program_fs(const char* file_name)
+static fmt_err_t _program_fs(const char* file_name)
 {
 	size_t count = 0;
 	uint8_t* file_buf;
@@ -217,7 +217,7 @@ static fmt_err _program_fs(const char* file_name)
 	uint32_t bytes;
 	int fd;
 	struct stat fno;
-	fmt_err error = FMT_EOK;
+	fmt_err_t error = FMT_EOK;
 
 	ulog_i(TAG, "io firmaware:%s", file_name);
 
@@ -360,7 +360,7 @@ Out:
 	return error;
 }
 
-static fmt_err _reboot(void)
+static fmt_err_t _reboot(void)
 {
 	_send_char(PROTO_REBOOT);
 	systime_udelay(100 * 1000);
@@ -370,9 +370,9 @@ static fmt_err _reboot(void)
 	return FMT_EOK;
 }
 
-static fmt_err _uploader_init(void)
+static fmt_err_t _uploader_init(void)
 {
-	fmt_err err;
+	fmt_err_t err;
 
 	/* suspend fmt io manager communication, since uploader need to use serial dev channel */
 	fmtio_suspend_comm(1);
@@ -382,9 +382,9 @@ static fmt_err _uploader_init(void)
 	return err;
 }
 
-static fmt_err _uploader_deinit(void)
+static fmt_err_t _uploader_deinit(void)
 {
-	fmt_err err;
+	fmt_err_t err;
 
 	/* change back to serial default configuration */
 	rt_device_control(fmtio_get_device(), FMTIO_DEV_CMD_CONFIG, NULL);
@@ -398,9 +398,9 @@ static fmt_err _uploader_deinit(void)
 
 /**************************** Public Function ********************************/
 
-fmt_err fmtio_upload(const char* path)
+fmt_err_t fmtio_upload(const char* path)
 {
-	fmt_err err;
+	fmt_err_t err;
 	uint32_t time;
 
 	fmtio_send_message(PROTO_CMD_REBOOT, NULL, 0);

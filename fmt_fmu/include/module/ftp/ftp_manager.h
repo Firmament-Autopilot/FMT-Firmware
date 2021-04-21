@@ -79,7 +79,7 @@ typedef struct {
 	uint8_t     complete;
 } StreamSession;
 
-fmt_err ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t target_component);
-fmt_err ftp_stream_send(StreamSession* stream_session);
+fmt_err_t ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t target_component);
+fmt_err_t ftp_stream_send(StreamSession* stream_session);
 
 #endif

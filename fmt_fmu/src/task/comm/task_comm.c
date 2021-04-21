@@ -174,9 +174,9 @@ static bool _msg_rc_channels_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-fmt_err task_comm_init(void)
+fmt_err_t task_comm_init(void)
 {
-    fmt_err err;
+    fmt_err_t err;
 
     err = mavproxy_init();
 

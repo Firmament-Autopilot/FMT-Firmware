@@ -47,7 +47,7 @@ typedef struct {
 static uint8_t console_dev_num = 0;
 static console_device_info console_dev_list[CONSOLE_MAX_DEVICE_NUM] = { 0 };
 
-static fmt_err switch_device_to(int idx);
+static fmt_err_t switch_device_to(int idx);
 
 static void __handle_device_msg(rt_device_t dev, void* msg)
 {
@@ -108,7 +108,7 @@ static rt_err_t console_device_rx_ind(rt_device_t dev, rt_size_t size)
     return rt_err;
 }
 
-static fmt_err set_rx_indicator(void)
+static fmt_err_t set_rx_indicator(void)
 {
     rt_err_t rt_err;
     int idx;
@@ -156,7 +156,7 @@ static fmt_err set_rx_indicator(void)
  * 
  * @return FMT Errors
  */
-static fmt_err switch_device_to(int idx)
+static fmt_err_t switch_device_to(int idx)
 {
     if (idx >= DEVICE_NUM || idx < 0) {
         return FMT_ERROR;
@@ -182,9 +182,9 @@ static fmt_err switch_device_to(int idx)
  * 
  * @return FMT Errors
  */
-static fmt_err console_parse_device(const toml_table_t* curtab, int idx)
+static fmt_err_t console_parse_device(const toml_table_t* curtab, int idx)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     int i;
     const char* key;
 
@@ -312,11 +312,11 @@ static fmt_err console_parse_device(const toml_table_t* curtab, int idx)
  * 
  * @return FMT Errors
  */
-static fmt_err console_parse_devices(const toml_array_t* array)
+static fmt_err_t console_parse_devices(const toml_array_t* array)
 {
     int i;
     toml_table_t* curtab;
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     uint32_t idx = 0;
 
     for (i = 0; 0 != (curtab = toml_table_at(array, i)); i++) {
@@ -344,13 +344,13 @@ static fmt_err console_parse_devices(const toml_array_t* array)
  * 
  * @return FMT Errors
  */
-fmt_err console_toml_config(toml_table_t* table)
+fmt_err_t console_toml_config(toml_table_t* table)
 {
     int i;
     const char* key;
     toml_array_t* arr;
     toml_table_t* tab;
-    fmt_err err;
+    fmt_err_t err;
 
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {

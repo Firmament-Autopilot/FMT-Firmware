@@ -65,7 +65,7 @@ typedef int bool;
 
 #define CHECK_RETURN(__exp)    \
     do {                       \
-        fmt_err err = (__exp); \
+        fmt_err_t err = (__exp); \
         if (err != FMT_EOK) {  \
             return err;        \
         }                      \
@@ -93,6 +93,6 @@ typedef enum {
     FMT_EINTR = 9,       /**< Interrupted system call */
     FMT_EINVAL = 10,     /**< Invalid argument */
     FMT_ENOTHANDLE = 11, /**< Not handled */
-} fmt_err;
+} fmt_err_t;
 
 #endif

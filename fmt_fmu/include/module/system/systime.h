@@ -78,7 +78,7 @@ typedef struct {
         }                                                    \
     } while (0)
 
-fmt_err systime_init(void);
+fmt_err_t systime_init(void);
 uint64_t systime_now_us(void);
 uint32_t systime_now_ms(void);
 void systime_udelay(uint32_t delay);

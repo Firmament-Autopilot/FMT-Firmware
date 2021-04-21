@@ -197,7 +197,7 @@ static void _update_pilot_cmd_status(void)
     }
 }
 
-fmt_err task_status_init(void)
+fmt_err_t task_status_init(void)
 {
     struct device_pin_mode mode = { FMU_LED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
 

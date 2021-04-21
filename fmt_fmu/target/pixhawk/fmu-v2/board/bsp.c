@@ -96,8 +96,8 @@ static toml_table_t* _toml_root_tab = NULL;
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
 
-fmt_err console_toml_config(toml_table_t* table);
-fmt_err mavproxy_toml_config(toml_table_t* table);
+fmt_err_t console_toml_config(toml_table_t* table);
+fmt_err_t mavproxy_toml_config(toml_table_t* table);
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -161,9 +161,9 @@ void bsp_show_information(void)
     _print_line("  status", "OK", str_len);
 }
 
-fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     toml_table_t* sub_tab;
     const char* key;
     const char* raw;

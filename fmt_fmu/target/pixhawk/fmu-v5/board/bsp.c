@@ -70,8 +70,8 @@
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
-fmt_err console_toml_config(toml_table_t* table);
-fmt_err mavproxy_toml_config(toml_table_t* table);
+fmt_err_t console_toml_config(toml_table_t* table);
+fmt_err_t mavproxy_toml_config(toml_table_t* table);
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -96,9 +96,9 @@ static void _print_line(const char* name, const char* content, uint32_t len)
     console_printf("%s\n", content);
 }
 
-static fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     toml_table_t* sub_tab;
     const char* key;
     const char* raw;

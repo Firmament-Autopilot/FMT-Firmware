@@ -26,10 +26,10 @@
 // Pilot Command 2 (State Command)
 #define FMS_CMD_TEST_MOTOR 2000
 
-fmt_err pilot_cmd_init(void);
+fmt_err_t pilot_cmd_init(void);
 uint8_t pilot_cmd_collect(void);
 
-fmt_err pilot_cmd_toml_init(toml_table_t* table);
+fmt_err_t pilot_cmd_toml_init(toml_table_t* table);
 void list_pilot_cmd_devices(void);
 
 #endif

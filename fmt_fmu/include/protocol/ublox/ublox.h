@@ -502,10 +502,10 @@ typedef struct {
 } ubx_decoder_t;
 
 void reset_ubx_decoder(ubx_decoder_t* ubx_decoder);
-fmt_err init_ubx_decoder(ubx_decoder_t* ubx_decoder, rt_device_t ubx_dev, ubx_rx_handle_ptr ubx_rx_handle);
+fmt_err_t init_ubx_decoder(ubx_decoder_t* ubx_decoder, rt_device_t ubx_dev, ubx_rx_handle_ptr ubx_rx_handle);
 int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c);
 
-fmt_err send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t* payload, const uint16_t length);
-fmt_err configure_ubx_msg_rate(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t rate);
+fmt_err_t send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t* payload, const uint16_t length);
+fmt_err_t configure_ubx_msg_rate(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t rate);
 
 #endif /* __UBLOX_H__ */

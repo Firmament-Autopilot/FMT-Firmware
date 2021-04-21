@@ -36,9 +36,9 @@ uint8_t sensor_gps_check_ready(sensor_gps_t gps_dev)
  * 
  * @param gps_dev GPS sensor device
  * @param gps_data GPS data buffer
- * @return fmt_err FMT_EOK for success
+ * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_gps_read(sensor_gps_t gps_dev, gps_data_t* gps_data)
+fmt_err_t sensor_gps_read(sensor_gps_t gps_dev, gps_data_t* gps_data)
 {
     gps_report_t gps_drv_report;
     rt_size_t r_size = rt_device_read(gps_dev->dev, GPS_READ_REPORT, &gps_drv_report, sizeof(gps_report_t));

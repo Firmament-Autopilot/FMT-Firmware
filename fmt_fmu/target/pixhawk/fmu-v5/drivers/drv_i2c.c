@@ -118,7 +118,7 @@ static const struct rt_i2c_bus_device_ops i2c_bus_ops = {
     RT_NULL
 };
 
-fmt_err drv_i2c_init(void)
+fmt_err_t drv_i2c_init(void)
 {
     /* i2c low-level initialization */
     i2c_hw_init();

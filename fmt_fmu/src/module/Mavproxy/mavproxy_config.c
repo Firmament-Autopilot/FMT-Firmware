@@ -81,9 +81,9 @@ static void reset_device_list(void)
     DEVICE_NUM = 0;
 }
 
-static fmt_err mavproxy_parse_device(const toml_table_t* curtab, int idx)
+static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     int i;
     const char* key;
 
@@ -166,11 +166,11 @@ static fmt_err mavproxy_parse_device(const toml_table_t* curtab, int idx)
     return err;
 }
 
-static fmt_err mavproxy_parse_devices(const toml_array_t* array)
+static fmt_err_t mavproxy_parse_devices(const toml_array_t* array)
 {
     int i;
     toml_table_t* curtab;
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     uint32_t idx = 0;
 
     for (i = 0; 0 != (curtab = toml_table_at(array, i)); i++) {
@@ -197,7 +197,7 @@ uint8_t mavproxy_get_channel_num(void)
     return DEVICE_NUM;
 }
 
-fmt_err mavproxy_switch_channel(uint8_t chan)
+fmt_err_t mavproxy_switch_channel(uint8_t chan)
 {
     rt_device_t old_device, new_device;
 
@@ -235,13 +235,13 @@ fmt_err mavproxy_switch_channel(uint8_t chan)
 }
 
 /* config mavproxy via toml system configuration file */
-fmt_err mavproxy_toml_config(toml_table_t* table)
+fmt_err_t mavproxy_toml_config(toml_table_t* table)
 {
     int i;
     const char* key;
     toml_array_t* arr;
     toml_table_t* tab;
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
 
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {

@@ -243,7 +243,7 @@ mav_status_t mavlink_get_status_content(uint8_t status)
 	return mav_status[status];
 }
 
-fmt_err mavlink_send_statustext(int severity, const char *fmt, ...)
+fmt_err_t mavlink_send_statustext(int severity, const char *fmt, ...)
 {
     mavlink_statustext_t statustext;
     mavlink_message_t msg;

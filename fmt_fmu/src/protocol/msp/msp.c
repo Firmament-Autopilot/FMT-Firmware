@@ -346,7 +346,7 @@ mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessComman
     return mspPorts[idx];
 }
 
-fmt_err msp_server_start(void)
+fmt_err_t msp_server_start(void)
 {
     if (mspThread) {
         if (rt_thread_startup(mspThread) != RT_EOK) {

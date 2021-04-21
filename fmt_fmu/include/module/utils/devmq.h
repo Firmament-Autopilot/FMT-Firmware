@@ -24,11 +24,11 @@
 
 typedef int device_status;
 
-fmt_err devmq_create(rt_device_t device, uint32_t msg_size, uint32_t max_msgs);
-fmt_err devmq_register(rt_device_t device, void (*handler)(rt_device_t dev, void* msg));
-fmt_err devmq_deregister(rt_device_t device);
-fmt_err devmq_notify(rt_device_t device, void* msg);
+fmt_err_t devmq_create(rt_device_t device, uint32_t msg_size, uint32_t max_msgs);
+fmt_err_t devmq_register(rt_device_t device, void (*handler)(rt_device_t dev, void* msg));
+fmt_err_t devmq_deregister(rt_device_t device);
+fmt_err_t devmq_notify(rt_device_t device, void* msg);
 void devmq_distribute_msg(void);
-fmt_err devmq_start_work(void);
+fmt_err_t devmq_start_work(void);
 
 #endif /* __DEVMQ_H__ */

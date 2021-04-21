@@ -28,7 +28,7 @@ typedef struct {
     float cpu_usage;
 } cpu_usage_stats;
 
-fmt_err sys_stat_init(void);
+fmt_err_t sys_stat_init(void);
 float get_cpu_usage(void);
 
 #ifdef __cplusplus

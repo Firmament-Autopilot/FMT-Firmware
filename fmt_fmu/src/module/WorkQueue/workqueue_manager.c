@@ -35,7 +35,7 @@ WorkQueue_t workqueue_find(const char* name)
     return NULL;
 }
 
-fmt_err workqueue_manager_init(void)
+fmt_err_t workqueue_manager_init(void)
 {
     wq_list[0] = workqueue_create("wq:system", 20, 10240, 19);
     if (wq_list[0] == NULL) {

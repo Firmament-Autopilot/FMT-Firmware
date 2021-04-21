@@ -34,7 +34,7 @@ static char thread_mavlink_rx_stack[4096];
 static struct rt_thread thread_mavlink_rx_handle;
 static struct rt_event mav_rx_event;
 
-static fmt_err mavproxy_rx_ind(uint32_t size)
+static fmt_err_t mavproxy_rx_ind(uint32_t size)
 {
     /* wakeup thread to handle received data */
     rt_err_t rt_err = rt_event_send(&mav_rx_event, EVENT_MAV_RX);
@@ -79,7 +79,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     }
 }
 
-static fmt_err handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
+static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT: {
@@ -253,7 +253,7 @@ static void mavproxy_rx_entry(void* param)
     }
 }
 
-fmt_err mavproxy_monitor_create(void)
+fmt_err_t mavproxy_monitor_create(void)
 {
     rt_err_t res;
 

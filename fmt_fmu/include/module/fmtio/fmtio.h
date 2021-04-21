@@ -21,13 +21,13 @@
 
 #include "module/fmtio/fmtio_protocol.h"
 
-typedef fmt_err (*fmtio_rx_handler_t)(const PackageStruct* pkg);
+typedef fmt_err_t (*fmtio_rx_handler_t)(const PackageStruct* pkg);
 
-fmt_err fmtio_init(void);
+fmt_err_t fmtio_init(void);
 void fmtio_loop(void);
-fmt_err fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler);
-fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len);
-fmt_err fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg);
+fmt_err_t fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler);
+fmt_err_t fmtio_send_message(uint16_t cmd, const void* data, uint16_t len);
+fmt_err_t fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg);
 
 rt_device_t fmtio_get_device(void);
 void fmtio_suspend_comm(uint8_t suspend);

@@ -152,18 +152,18 @@ typedef struct {
             _elem_list                                \
     }
 
-fmt_err blog_add_desc(char* desc);
-fmt_err blog_start(char* file_name);
+fmt_err_t blog_add_desc(char* desc);
+fmt_err_t blog_start(char* file_name);
 void blog_stop(void);
-fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len);
+fmt_err_t blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len);
 
 uint8_t blog_get_status(void);
 char* blog_get_file_name(void);
 void blog_statistic(void);
 
-fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void));
+fmt_err_t blog_register_callback(uint8_t cb_type, void (*cb)(void));
 
-fmt_err binary_log_init(void);
+fmt_err_t binary_log_init(void);
 void blog_async_output(void);
 
 #endif

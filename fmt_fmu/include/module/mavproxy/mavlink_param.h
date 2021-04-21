@@ -340,8 +340,8 @@ enum Rotation {
 };
 
 void mavlink_param_send_all(void);
-fmt_err mavlink_param_set(const char* name, float val);
-fmt_err mavlink_param_send(const param_t* param);
+fmt_err_t mavlink_param_set(const char* name, float val);
+fmt_err_t mavlink_param_send(const param_t* param);
 
 // mavlink param (not used by FMT) api
 void send_mavlink_param(char* name);

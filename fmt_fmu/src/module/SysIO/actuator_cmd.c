@@ -89,9 +89,9 @@ static void _init_device_list(void)
     DEVICE_NUM = 0;
 }
 
-static fmt_err _actuator_parse_device(const toml_table_t* curtab, int idx)
+static fmt_err_t _actuator_parse_device(const toml_table_t* curtab, int idx)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     toml_array_t* arr;
     int i;
     const char* key;
@@ -178,11 +178,11 @@ static fmt_err _actuator_parse_device(const toml_table_t* curtab, int idx)
     return err;
 }
 
-static fmt_err _actuator_parse_devices(const toml_array_t* array)
+static fmt_err_t _actuator_parse_devices(const toml_array_t* array)
 {
     int i;
     toml_table_t* curtab;
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     uint32_t idx = 0;
 
     for (i = 0; 0 != (curtab = toml_table_at(array, i)); i++) {
@@ -204,9 +204,9 @@ static fmt_err _actuator_parse_devices(const toml_array_t* array)
     return err;
 }
 
-fmt_err send_hil_actuator_cmd(void)
+fmt_err_t send_hil_actuator_cmd(void)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     DEFINE_TIMETAG(hil_actuator_tt, 20);
 
     if (_control_out_nod == NULL) {
@@ -239,9 +239,9 @@ fmt_err send_hil_actuator_cmd(void)
     return err;
 }
 
-fmt_err send_actuator_cmd(void)
+fmt_err_t send_actuator_cmd(void)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     int i, j;
 
     DEFINE_TIMETAG(actuator_tt, 2);
@@ -279,7 +279,7 @@ fmt_err send_actuator_cmd(void)
     return err;
 }
 
-fmt_err actuator_deinit(const rt_device_t dev)
+fmt_err_t actuator_deinit(const rt_device_t dev)
 {
     if (dev == NULL) {
         return FMT_ERROR;
@@ -292,13 +292,13 @@ fmt_err actuator_deinit(const rt_device_t dev)
     return FMT_EOK;
 }
 
-fmt_err actuator_toml_init(toml_table_t* table)
+fmt_err_t actuator_toml_init(toml_table_t* table)
 {
     int i;
     const char* key;
     toml_array_t* arr;
     toml_table_t* tab;
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
 
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {
@@ -384,7 +384,7 @@ fmt_err actuator_toml_init(toml_table_t* table)
     return err;
 }
 
-fmt_err actuator_init(void)
+fmt_err_t actuator_init(void)
 {
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
     if (_control_out_nod == NULL) {

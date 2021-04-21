@@ -174,7 +174,7 @@ param_list_t param_list = {
     PARAM_DEFINE_GROUP(CONTROL),
 };
 
-static fmt_err parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
+static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
 {
     static int attr_cnt = 0;
     static char group_name[30];
@@ -423,7 +423,7 @@ param_t* param_get_by_full_name(const char* group_name, const char* param_name)
  *  
  * @return FMT Errors.
  */
-fmt_err param_set_string_val(param_t* param, char* val)
+fmt_err_t param_set_string_val(param_t* param, char* val)
 {
     if (param == NULL) {
         return FMT_EINVAL;
@@ -482,7 +482,7 @@ fmt_err param_set_string_val(param_t* param, char* val)
  *  
  * @return FMT Errors.
  */
-fmt_err param_set_string_val_by_name(char* param_name, char* val)
+fmt_err_t param_set_string_val_by_name(char* param_name, char* val)
 {
     param_t* p = param_get_by_name(param_name);
 
@@ -502,7 +502,7 @@ fmt_err param_set_string_val_by_name(char* param_name, char* val)
  *  
  * @return FMT Errors.
  */
-fmt_err param_set_string_val_by_full_name(char* group_name, char* param_name, char* val)
+fmt_err_t param_set_string_val_by_full_name(char* group_name, char* param_name, char* val)
 {
     param_t* p = param_get_by_full_name(group_name, param_name);
 
@@ -521,7 +521,7 @@ fmt_err param_set_string_val_by_full_name(char* group_name, char* param_name, ch
  *  
  * @return FMT Errors.
  */
-fmt_err param_set_val(param_t* param, void* val)
+fmt_err_t param_set_val(param_t* param, void* val)
 {
     if (param == NULL) {
         return FMT_EINVAL;
@@ -577,7 +577,7 @@ fmt_err param_set_val(param_t* param, void* val)
  *  
  * @return FMT Errors.
  */
-fmt_err param_set_val_by_name(char* param_name, void* val)
+fmt_err_t param_set_val_by_name(char* param_name, void* val)
 {
     param_t* p = param_get_by_name(param_name);
 
@@ -597,7 +597,7 @@ fmt_err param_set_val_by_name(char* param_name, void* val)
  *  
  * @return FMT Errors.
  */
-fmt_err param_set_val_by_full_name(char* group_name, char* param_name, void* val)
+fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* val)
 {
     param_t* p = param_get_by_full_name(group_name, param_name);
 
@@ -615,10 +615,10 @@ fmt_err param_set_val_by_full_name(char* group_name, char* param_name, void* val
  *  
  * @return FMT Errors.
  */
-fmt_err param_save(char* path)
+fmt_err_t param_save(char* path)
 {
     int fd;
-    fmt_err res = FMT_EOK;
+    fmt_err_t res = FMT_EOK;
 
     fd = open(path ? path : PARAM_FILE_NAME, O_CREAT | O_WRONLY);
 
@@ -695,12 +695,12 @@ fmt_err param_save(char* path)
  *  
  * @return FMT Errors.
  */
-fmt_err param_load(char* path)
+fmt_err_t param_load(char* path)
 {
     int fd;
     yxml_ret_t yxml_r;
     char c;
-    fmt_err res = FMT_EOK;
+    fmt_err_t res = FMT_EOK;
 
     fd = open(path ? path : PARAM_FILE_NAME, O_RDONLY);
 
@@ -741,7 +741,7 @@ fmt_err param_load(char* path)
  * 
  * @return FMT Errors.
  */
-fmt_err param_init(void)
+fmt_err_t param_init(void)
 {
     /* load parameter from file */
     if (param_load(PARAM_FILE_NAME) != FMT_EOK) {

@@ -18,7 +18,7 @@
 #include "module/fmtio/fmtio.h"
 #include "task/task_fmtio.h"
 
-static fmt_err _handle_rx_package(const PackageStruct* pkg)
+static fmt_err_t _handle_rx_package(const PackageStruct* pkg)
 {
     switch (pkg->cmd) {
     case PROTO_DBG_TEXT: {
@@ -33,7 +33,7 @@ static fmt_err _handle_rx_package(const PackageStruct* pkg)
 }
 
 /**************************** Public Function ********************************/
-fmt_err task_fmtio_init(void)
+fmt_err_t task_fmtio_init(void)
 {
     /* init fmtio */
     if (fmtio_init() != FMT_EOK) {

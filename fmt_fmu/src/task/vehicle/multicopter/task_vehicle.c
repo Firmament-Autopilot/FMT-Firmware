@@ -86,7 +86,7 @@ void task_vehicle_entry(void* parameter)
     }
 }
 
-fmt_err task_vehicle_init(void)
+fmt_err_t task_vehicle_init(void)
 {
     /* create event */
     if (rt_event_init(&event_vehicle, "vehicle", RT_IPC_FLAG_FIFO) != RT_EOK) {

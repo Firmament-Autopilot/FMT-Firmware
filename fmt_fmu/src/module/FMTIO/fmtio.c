@@ -112,7 +112,7 @@ static rt_err_t _io_rx_ind(rt_device_t dev, rt_size_t size)
     return rt_event_send(&_fmtio_event, EVENT_FMTIO_RX);
 }
 
-static fmt_err _dump_pkg_buffer(void)
+static fmt_err_t _dump_pkg_buffer(void)
 {
     SendPkgStruct send_pkg;
 
@@ -141,7 +141,7 @@ static fmt_err _dump_pkg_buffer(void)
     return FMT_EOK;
 }
 
-static fmt_err _set_default_config(const fmtio_config_t default_config)
+static fmt_err_t _set_default_config(const fmtio_config_t default_config)
 {
     if (fmtio_send_message(PROTO_CMD_RC_CONFIG, &default_config.rc_config, sizeof(fmtio_rc_config_t)) != FMT_EOK) {
         return FMT_ERROR;
@@ -159,7 +159,7 @@ static fmt_err _set_default_config(const fmtio_config_t default_config)
     return FMT_EOK;
 }
 
-static fmt_err _local_rx_handler(const PackageStruct* pkg)
+static fmt_err_t _local_rx_handler(const PackageStruct* pkg)
 {
     switch (pkg->cmd) {
     case PROTO_CMD_SYNC: {
@@ -189,7 +189,7 @@ static fmt_err _local_rx_handler(const PackageStruct* pkg)
     return FMT_EOK;
 }
 
-static fmt_err _handle_rx(void)
+static fmt_err_t _handle_rx(void)
 {
     uint8_t c;
 
@@ -213,7 +213,7 @@ static fmt_err _handle_rx(void)
 
 static rt_err_t _rc_configure(rc_dev_t rc, struct rc_configure* cfg)
 {
-    fmt_err err;
+    fmt_err_t err;
     fmtio_rc_config_t rc_config = {
         .protocol = cfg->protocol,
         .sample_time = cfg->sample_time
@@ -271,7 +271,7 @@ const static struct rc_ops _rc_ops = {
 
 static rt_err_t _motor_configure(motor_dev_t motor, struct motor_configure* cfg)
 {
-    fmt_err err;
+    fmt_err_t err;
     fmtio_motor_config_t config = {
         .pwm_freq = cfg->pwm_frequency
     };
@@ -323,7 +323,7 @@ static rt_err_t _motor_control(motor_dev_t motor, int cmd, void* arg)
 
 static rt_size_t _motor_read(motor_dev_t motor, rt_uint16_t chan_mask, rt_uint16_t* chan_val, rt_size_t size)
 {
-    fmt_err err;
+    fmt_err_t err;
     PackageStruct pkg;
 
     create_io_package(PROTO_GET_MOTOR_VAL, sizeof(chan_mask), &pkg);
@@ -343,7 +343,7 @@ static rt_size_t _motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt
     memcpy(&data[1], chan_val, w_size);
 
     // 2 bytes for channel mask
-    fmt_err err = fmtio_send_package(data, w_size + 2, &_motor_cmd_pkg);
+    fmt_err_t err = fmtio_send_package(data, w_size + 2, &_motor_cmd_pkg);
 
     return err == FMT_EOK ? w_size : 0;
 }
@@ -371,7 +371,7 @@ void fmtio_suspend_comm(uint8_t suspend)
     }
 }
 
-fmt_err fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg)
+fmt_err_t fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg)
 {
     if (_io_comm_suspend) {
         return FMT_EBUSY;
@@ -400,9 +400,9 @@ fmt_err fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg)
     return FMT_EOK;
 }
 
-fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len)
+fmt_err_t fmtio_send_message(uint16_t cmd, const void* data, uint16_t len)
 {
-    fmt_err err;
+    fmt_err_t err;
     PackageStruct pkg;
 
     err = create_io_package(cmd, len, &pkg);
@@ -414,7 +414,7 @@ fmt_err fmtio_send_message(uint16_t cmd, const void* data, uint16_t len)
     return err;
 }
 
-fmt_err fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler)
+fmt_err_t fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler)
 {
     if (rx_handler == NULL) {
         return FMT_ERROR;
@@ -455,7 +455,7 @@ void fmtio_loop(void)
     }
 }
 
-fmt_err fmtio_init(void)
+fmt_err_t fmtio_init(void)
 {
     static struct rc_device rc_dev = {
         .config = RC_CONFIG_DEFAULT,

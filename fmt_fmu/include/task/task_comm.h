@@ -53,7 +53,7 @@
 extern ringbuffer* _mav_serial_rb;
 extern uint8_t _mav_dev_chan;
 
-fmt_err task_comm_init(void);
+fmt_err_t task_comm_init(void);
 // mavlink_system_t mavproxy_get_system(void);
 void mavproxy_rx_entry(void* param);
 void task_comm_entry(void* parameter);

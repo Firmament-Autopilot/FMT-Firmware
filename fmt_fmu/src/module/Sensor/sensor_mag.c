@@ -75,7 +75,7 @@ void sensor_mag_correct(sensor_mag_t mag_dev, const float src[3], float dst[3])
  * @param buffer Data buffer
  * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3])
+fmt_err_t sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3])
 {
     rt_size_t r_byte;
 
@@ -91,7 +91,7 @@ fmt_err sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3])
  * @param buffer Data buffer
  * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3])
+fmt_err_t sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3])
 {
     rt_size_t r_byte;
 

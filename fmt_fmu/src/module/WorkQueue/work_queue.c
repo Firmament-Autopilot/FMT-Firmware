@@ -124,9 +124,9 @@ static void workqueue_executor(void* parameter)
  *
  * @param work_queue The target workqueue
  * @param item The work item to be scheduled
- * @return fmt_err FMT_EOK on OK
+ * @return fmt_err_t FMT_EOK on OK
  */
-fmt_err workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
+fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
 {
     RT_ASSERT(work_queue != NULL);
     RT_ASSERT(item != NULL);
@@ -168,9 +168,9 @@ fmt_err workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
  * 
  * @param work_queue The target workqueue
  * @param item The work item to be canceled
- * @return fmt_err FMT_EOK on OK
+ * @return fmt_err_t FMT_EOK on OK
  */
-fmt_err workqueue_cancel_work(WorkQueue_t work_queue, WorkItem_t item)
+fmt_err_t workqueue_cancel_work(WorkQueue_t work_queue, WorkItem_t item)
 {
     RT_ASSERT(work_queue != NULL);
     RT_ASSERT(item != NULL);
@@ -207,9 +207,9 @@ fmt_err workqueue_cancel_work(WorkQueue_t work_queue, WorkItem_t item)
  * @brief Delete a workqueue
  * 
  * @param work_queue Workqueue to be deleted
- * @return fmt_err FMT_EOK on OK
+ * @return fmt_err_t FMT_EOK on OK
  */
-fmt_err workqueue_delete(WorkQueue_t work_queue)
+fmt_err_t workqueue_delete(WorkQueue_t work_queue)
 {
     RT_ASSERT(work_queue != NULL);
 

@@ -416,7 +416,7 @@ void reset_ubx_decoder(ubx_decoder_t* ubx_decoder)
     ubx_decoder->rx_payload_index = 0;
 }
 
-fmt_err init_ubx_decoder(ubx_decoder_t* ubx_decoder, rt_device_t ubx_dev, ubx_rx_handle_ptr ubx_rx_handle)
+fmt_err_t init_ubx_decoder(ubx_decoder_t* ubx_decoder, rt_device_t ubx_dev, ubx_rx_handle_ptr ubx_rx_handle)
 {
     if (ubx_rx_handle == NULL && ubx_dev == NULL) {
         return FMT_EEMPTY;
@@ -437,7 +437,7 @@ fmt_err init_ubx_decoder(ubx_decoder_t* ubx_decoder, rt_device_t ubx_dev, ubx_rx
     return FMT_EOK;
 }
 
-fmt_err send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t* payload, const uint16_t length)
+fmt_err_t send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t* payload, const uint16_t length)
 {
     ubx_header_t header = { UBX_SYNC1, UBX_SYNC2 };
     ubx_checksum_t checksum = { 0, 0 };
@@ -472,7 +472,7 @@ fmt_err send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8
 
 /* configure message rates */
 /* the last argument is divisor for measurement rate (set by CFG RATE), i.e. 1 means 10Hz */
-fmt_err configure_ubx_msg_rate(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t rate)
+fmt_err_t configure_ubx_msg_rate(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t rate)
 {
     ubx_payload_tx_cfg_msg_t cfg_msg; // don't use _buf (allow interleaved operation)
 

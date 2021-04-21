@@ -51,11 +51,11 @@ enum {
     PROTO_CMD_MOTOR_CONFIG = 12,
 };
 
-fmt_err create_io_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg);
-fmt_err init_io_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg);
-fmt_err fill_io_package(const void* content, uint16_t len, PackageStruct* pkg);
+fmt_err_t create_io_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg);
+fmt_err_t init_io_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg);
+fmt_err_t fill_io_package(const void* content, uint16_t len, PackageStruct* pkg);
 void free_io_package(PackageStruct* pkg);
-fmt_err make_send_package(const PackageStruct pkg, SendPkgStruct* send_pkg);
-fmt_err proto_parse_package(uint8_t c, PackageStruct* pkg);
+fmt_err_t make_send_package(const PackageStruct pkg, SendPkgStruct* send_pkg);
+fmt_err_t proto_parse_package(uint8_t c, PackageStruct* pkg);
 
 #endif

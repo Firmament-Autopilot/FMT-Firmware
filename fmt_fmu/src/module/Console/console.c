@@ -133,10 +133,10 @@ rt_device_t console_get_device(void)
  * 
  * @return FMT Errors.
  */
-fmt_err console_set_device(const char* device_name)
+fmt_err_t console_set_device(const char* device_name)
 {
     rt_device_t new;
-    fmt_err err;
+    fmt_err_t err;
 
     new = rt_device_find(device_name);
     if (new == RT_NULL) {
@@ -158,7 +158,7 @@ fmt_err console_set_device(const char* device_name)
  * 
  * @return FMT Errors.
  */
-fmt_err console_enable_input(void)
+fmt_err_t console_enable_input(void)
 {
     uint16_t oflag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_STREAM;
 
@@ -191,7 +191,7 @@ fmt_err console_enable_input(void)
  * 
  * @return FMT Errors.
  */
-fmt_err console_init(void)
+fmt_err_t console_init(void)
 {
     /* console use serial0 by default */
     console_dev = rt_device_find("serial0");

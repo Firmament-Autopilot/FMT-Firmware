@@ -74,9 +74,9 @@ void sensor_gyr_correct(sensor_imu_t imu_dev, const float src[3], float dst[3])
  * 
  * @param imu_dev IMU sensor device
  * @param buffer Data buffer
- * @return fmt_err FMT_EOK for success
+ * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_gyr_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
+fmt_err_t sensor_gyr_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
 {
     rt_size_t r_size;
 
@@ -92,9 +92,9 @@ fmt_err sensor_gyr_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
  * 
  * @param imu_dev IMU sensor device
  * @param buffer Data buffer
- * @return fmt_err FMT_EOK for success
+ * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_gyr_measure(sensor_imu_t imu_dev, float buffer[3])
+fmt_err_t sensor_gyr_measure(sensor_imu_t imu_dev, float buffer[3])
 {
     rt_size_t r_size;
 
@@ -162,9 +162,9 @@ void sensor_acc_correct(sensor_imu_t imu_dev, const float src[3], float dst[3])
  * 
  * @param imu_dev IMU sensor device
  * @param buffer Data buffer
- * @return fmt_err FMT_EOK for success
+ * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_acc_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
+fmt_err_t sensor_acc_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
 {
     rt_size_t r_size;
 
@@ -180,9 +180,9 @@ fmt_err sensor_acc_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
  * 
  * @param imu_dev IMU sensor device
  * @param buffer Data buffer
- * @return fmt_err FMT_EOK for success
+ * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_acc_measure(sensor_imu_t imu_dev, float buffer[3])
+fmt_err_t sensor_acc_measure(sensor_imu_t imu_dev, float buffer[3])
 {
     rt_size_t r_size;
 
