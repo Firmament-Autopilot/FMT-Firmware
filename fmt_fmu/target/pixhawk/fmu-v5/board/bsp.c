@@ -241,9 +241,9 @@ void bsp_early_initialize(void)
     SystemClock_Config();
 
     /* systick driver init */
-    RTT_CHECK(drv_systick_init());
+    RT_CHECK(drv_systick_init());
     /* usart driver init */
-    RTT_CHECK(usart_drv_init());
+    RT_CHECK(usart_drv_init());
     /* system time module init */
     FMT_CHECK(systime_init());
 
@@ -251,12 +251,12 @@ void bsp_early_initialize(void)
     FMT_CHECK(console_init());
 
     /* gpio driver init */
-    RTT_CHECK(drv_gpio_init());
+    RT_CHECK(drv_gpio_init());
 
     /* spi driver init */
-    RTT_CHECK(spi_drv_init());
+    RT_CHECK(spi_drv_init());
 
-    rt_i2c_hw_init();
+    drv_i2c_init();
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -275,18 +275,18 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    RTT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init usbd_cdc */
-    RTT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
-    RTT_CHECK(drv_icm20689_init());
+    RT_CHECK(drv_icm20689_init());
 
-    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
+    RT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
-    RTT_CHECK(drv_bmi055_init());
+    RT_CHECK(drv_bmi055_init());
 
     rt_ist8310_init("i2c1");
 

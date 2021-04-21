@@ -77,7 +77,7 @@ sensor_gps_t sensor_gps_init(const char* gps_dev_name)
     RT_ASSERT(gps_dev->dev != NULL);
 
     /* open device */
-    RTT_CHECK(rt_device_open(gps_dev->dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK(rt_device_open(gps_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
     return gps_dev;
 }

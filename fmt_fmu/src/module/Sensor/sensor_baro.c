@@ -83,7 +83,7 @@ sensor_baro_t sensor_baro_init(const char* baro_dev_name)
     RT_ASSERT(baro_dev->dev != NULL);
 
     /* open device */
-    RTT_CHECK(rt_device_open(baro_dev->dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK(rt_device_open(baro_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
     return baro_dev;
 }

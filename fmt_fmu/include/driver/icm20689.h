@@ -22,11 +22,6 @@
 extern "C" {
 #endif
 
-#define CHECK_RETURN(__func)  \
-    if ((__func) != RT_EOK) { \
-        return RT_ERROR;      \
-    }
-
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
     (reg_val_t) { .setbits = (_setbits), .clearbits = (_clearbits) }

@@ -208,12 +208,12 @@ sensor_imu_t sensor_imu_init(const char* gyr_dev_name, const char* acc_dev_name)
     imu_dev->gyr_dev = rt_device_find(gyr_dev_name);
     RT_ASSERT(imu_dev->gyr_dev != NULL);
 
-    RTT_CHECK(rt_device_open(imu_dev->gyr_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK(rt_device_open(imu_dev->gyr_dev, RT_DEVICE_OFLAG_RDWR));
 
     imu_dev->acc_dev = rt_device_find(acc_dev_name);
     RT_ASSERT(imu_dev->acc_dev != NULL);
 
-    RTT_CHECK(rt_device_open(imu_dev->acc_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK(rt_device_open(imu_dev->acc_dev, RT_DEVICE_OFLAG_RDWR));
 
     return imu_dev;
 }

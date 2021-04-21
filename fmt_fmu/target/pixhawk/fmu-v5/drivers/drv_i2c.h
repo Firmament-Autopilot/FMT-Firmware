@@ -11,7 +11,7 @@ extern "C" {
 /* i2c slave device addresses */
 #define IST8310_ADDRESS                 0x1C
 
-int rt_i2c_hw_init(void);
+fmt_err drv_i2c_init(void);
 
 
 #ifdef __cplusplus

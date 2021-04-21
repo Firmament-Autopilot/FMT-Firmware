@@ -114,7 +114,7 @@ sensor_mag_t sensor_mag_init(const char* mag_dev_name)
     mag_dev->dev = rt_device_find(mag_dev_name);
     RT_ASSERT(mag_dev->dev);
 
-    RTT_CHECK(rt_device_open(mag_dev->dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK(rt_device_open(mag_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
     return mag_dev;
 }

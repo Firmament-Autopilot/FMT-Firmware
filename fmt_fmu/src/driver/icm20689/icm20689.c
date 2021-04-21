@@ -37,8 +37,8 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
 {
     rt_uint8_t r_val;
 
-    CHECK_RETURN(spi_write_reg8(spi_device, reg, val));
-    CHECK_RETURN(spi_read_reg8(spi_device, reg, &r_val));
+    RT_CHECK_RETURN(spi_write_reg8(spi_device, reg, val));
+    RT_CHECK_RETURN(spi_read_reg8(spi_device, reg, &r_val));
 
     return (r_val == val) ? RT_EOK : RT_ERROR;
 }
@@ -47,12 +47,12 @@ static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t r
 {
     uint8_t value;
 
-    CHECK_RETURN(spi_read_reg8(spi_device, reg, &value));
+    RT_CHECK_RETURN(spi_read_reg8(spi_device, reg, &value));
 
     value &= ~reg_val.clearbits;
     value |= reg_val.setbits;
 
-    CHECK_RETURN(__write_checked_reg(spi_device, reg, value));
+    RT_CHECK_RETURN(__write_checked_reg(spi_device, reg, value));
 
     return RT_EOK;
 }
@@ -87,7 +87,7 @@ static rt_err_t gyro_set_dlpf_filter(uint32_t frequency_hz)
         reg_val = GYRO_BW_3281;
     }
 
-    CHECK_RETURN(__modify_reg(imu_spi_dev, MPUREG_CONFIG, reg_val));
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, MPUREG_CONFIG, reg_val));
 
     return RT_EOK;
 }
@@ -117,7 +117,7 @@ static rt_err_t gyro_set_range(uint32_t max_dps)
         return RT_EINVAL;
     }
 
-    CHECK_RETURN(__modify_reg(imu_spi_dev, GYRO_CONFIG, reg_val));
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, GYRO_CONFIG, reg_val));
 
     gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
 
@@ -144,7 +144,7 @@ static rt_err_t accel_set_dlpf_filter(uint32_t frequency_hz)
         reg_val = ACCEL_BW_420;
     }
 
-    CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG_2, reg_val));
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG_2, reg_val));
 
     return RT_EOK;
 }
@@ -174,7 +174,7 @@ static rt_err_t accel_set_range(uint32_t max_g)
         return RT_EINVAL;
     }
 
-    CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG, reg_val));
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG, reg_val));
 
     accel_range_scale = (ICM20689_ONE_G / lsb_per_g);
 
@@ -186,28 +186,28 @@ static rt_err_t imu_init(void)
     uint8_t chip_id;
 
     /* open spi device */
-    CHECK_RETURN(rt_device_open(imu_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK_RETURN(rt_device_open(imu_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    CHECK_RETURN(spi_read_reg8(imu_spi_dev, WHO_AM_I, &chip_id));
+    RT_CHECK_RETURN(spi_read_reg8(imu_spi_dev, WHO_AM_I, &chip_id));
     if (chip_id != 0x98) {
         DRV_DBG("ICM20689 unmatched chip id:%x\n", chip_id);
         return FMT_ERROR;
     }
 
     /* soft reset */
-    CHECK_RETURN(spi_write_reg8(imu_spi_dev, PWR_MGMT_1, BIT(7)));
+    RT_CHECK_RETURN(spi_write_reg8(imu_spi_dev, PWR_MGMT_1, BIT(7)));
     systime_udelay(5000);
     /* wakeup and set clock */
-    CHECK_RETURN(__modify_reg(imu_spi_dev, PWR_MGMT_1, REG_VAL(BIT(0), BIT(6)))); /* CLKSEL[2:0] set to 001 to achieve full gyroscope performance. */
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, PWR_MGMT_1, REG_VAL(BIT(0), BIT(6)))); /* CLKSEL[2:0] set to 001 to achieve full gyroscope performance. */
     systime_udelay(1000);
 
-    CHECK_RETURN(__write_checked_reg(imu_spi_dev, MPUREG_CONFIG, 0x00));                             /* Gyro 8K rate, 250Hz BW */
-    CHECK_RETURN(__modify_reg(imu_spi_dev, GYRO_CONFIG, REG_VAL(BIT(3) | BIT(4), BIT(0) | BIT(1)))); /* 2000dps, FCHOICE_B[0,0] */
-    CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG, REG_VAL(BIT(3) | BIT(4), 0)));              /* 16g */
-    CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG_2, REG_VAL(0, 0x0F)));                       /* Accel 1K rate, 218Hz BW */
-    CHECK_RETURN(__write_checked_reg(imu_spi_dev, MPU_FIFO_EN_REG, 0x00));                           /* disable fifo */
-    CHECK_RETURN(__write_checked_reg(imu_spi_dev, MPU_INT_EN_REG, 0x00));                            /* disable interrupts */
-    CHECK_RETURN(__modify_reg(imu_spi_dev, USER_CONTROL, REG_VAL(BIT(4), BIT(6))));                  /* SPI only and disable fifo */
+    RT_CHECK_RETURN(__write_checked_reg(imu_spi_dev, MPUREG_CONFIG, 0x00));                             /* Gyro 8K rate, 250Hz BW */
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, GYRO_CONFIG, REG_VAL(BIT(3) | BIT(4), BIT(0) | BIT(1)))); /* 2000dps, FCHOICE_B[0,0] */
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG, REG_VAL(BIT(3) | BIT(4), 0)));              /* 16g */
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, ACCEL_CONFIG_2, REG_VAL(0, 0x0F)));                       /* Accel 1K rate, 218Hz BW */
+    RT_CHECK_RETURN(__write_checked_reg(imu_spi_dev, MPU_FIFO_EN_REG, 0x00));                           /* disable fifo */
+    RT_CHECK_RETURN(__write_checked_reg(imu_spi_dev, MPU_INT_EN_REG, 0x00));                            /* disable interrupts */
+    RT_CHECK_RETURN(__modify_reg(imu_spi_dev, USER_CONTROL, REG_VAL(BIT(4), BIT(6))));                  /* SPI only and disable fifo */
 
     return RT_EOK;
 }
@@ -216,7 +216,7 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
 {
     uint16_t raw[3];
 
-    CHECK_RETURN(spi_read_multi_reg8(imu_spi_dev, GYRO_XOUT_H, (uint8_t*)raw, 6));
+    RT_CHECK_RETURN(spi_read_multi_reg8(imu_spi_dev, GYRO_XOUT_H, (uint8_t*)raw, 6));
     // big-endian to little-endian
     gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
@@ -231,7 +231,7 @@ static rt_err_t gyro_read_rad(float gyr[3])
 {
     int16_t gyr_raw[3];
 
-    CHECK_RETURN(gyro_read_raw(gyr_raw));
+    RT_CHECK_RETURN(gyro_read_raw(gyr_raw));
 
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
@@ -244,9 +244,9 @@ static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
 {
     RT_ASSERT(cfg != NULL);
 
-    CHECK_RETURN(gyro_set_range(cfg->gyro_range_dps));
+    RT_CHECK_RETURN(gyro_set_range(cfg->gyro_range_dps));
 
-    CHECK_RETURN(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
+    RT_CHECK_RETURN(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
 
     gyro->config = *cfg;
 
@@ -288,7 +288,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
 {
     int16_t raw[3];
 
-    CHECK_RETURN(spi_read_multi_reg8(imu_spi_dev, ACCEL_XOUT_H, (rt_uint8_t*)raw, 6));
+    RT_CHECK_RETURN(spi_read_multi_reg8(imu_spi_dev, ACCEL_XOUT_H, (rt_uint8_t*)raw, 6));
     // big-endian to little-endian
     acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
@@ -303,7 +303,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
 {
     int16_t acc_raw[3];
 
-    CHECK_RETURN(accel_read_raw(acc_raw));
+    RT_CHECK_RETURN(accel_read_raw(acc_raw));
 
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
@@ -316,9 +316,9 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
 {
     RT_ASSERT(cfg != NULL);
 
-    CHECK_RETURN(accel_set_range(cfg->acc_range_g));
+    RT_CHECK_RETURN(accel_set_range(cfg->acc_range_g));
 
-    CHECK_RETURN(accel_set_dlpf_filter(cfg->dlpf_freq_hz));
+    RT_CHECK_RETURN(accel_set_dlpf_filter(cfg->dlpf_freq_hz));
 
     accel->config = *cfg;
 
@@ -399,17 +399,17 @@ rt_err_t drv_icm20689_init(void)
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
-        CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
+        RT_CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
     }
 
     /* driver low-level init */
-    CHECK_RETURN(imu_init());
+    RT_CHECK_RETURN(imu_init());
 
     /* register gyro hal device */
-    CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro0", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     /* register accel hal device */
-    CHECK_RETURN(hal_accel_register(&accel_dev, "accel0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel0", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }
