@@ -24,121 +24,133 @@
  * 2016-06-06	  zoujiachi		add i2c init func
  */
 
-#include <rtdevice.h>
-#include <string.h>
-#include "hal/i2c-bit-ops.h"
 #include "hal/i2c_dev.h"
+#include "hal/i2c-bit-ops.h"
 #include "hal/i2c.h"
-#include "module/console/console.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <firmament.h>
 
-struct rt_i2c_bus_device rt_i2c1;
-struct rt_i2c_bus_device rt_i2c2;
-
-static rt_size_t i2c_bus_device_read(rt_device_t dev,
-                                     rt_off_t    pos,
-                                     void*       buffer,
-                                     rt_size_t   count)
+static rt_size_t i2c_bus_read(rt_device_t dev,
+    rt_off_t pos,
+    void* buffer,
+    rt_size_t count)
 {
-	rt_uint16_t addr;
-	rt_uint16_t flags;
-	struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev->user_data;
+    rt_uint16_t addr;
+    rt_uint16_t flags;
+    struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev->user_data;
 
-	RT_ASSERT(bus != RT_NULL);
-	RT_ASSERT(buffer != RT_NULL);
+    RT_ASSERT(bus != RT_NULL);
+    RT_ASSERT(buffer != RT_NULL);
 
-	i2c_dbg("I2C bus dev [%s] reading %u bytes.\n", dev->parent.name, count);
+    i2c_dbg("I2C bus dev [%s] reading %u bytes.\n", dev->parent.name, count);
 
-	addr = pos & 0xffff;
-	flags = (pos >> 16) & 0xffff;
+    addr = pos & 0xffff;
+    flags = (pos >> 16) & 0xffff;
 
-	return rt_i2c_master_recv(bus, addr, flags, buffer, count);
+    return rt_i2c_master_recv(bus, addr, flags, buffer, count);
 }
 
-static rt_size_t i2c_bus_device_write(rt_device_t dev,
-                                      rt_off_t    pos,
-                                      const void* buffer,
-                                      rt_size_t   count)
+static rt_size_t i2c_bus_write(rt_device_t dev,
+    rt_off_t pos,
+    const void* buffer,
+    rt_size_t count)
 {
-	rt_uint16_t addr;
-	rt_uint16_t flags;
-	struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev->user_data;
+    rt_uint16_t addr;
+    rt_uint16_t flags;
+    struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev->user_data;
 
-	RT_ASSERT(bus != RT_NULL);
-	RT_ASSERT(buffer != RT_NULL);
+    RT_ASSERT(bus != RT_NULL);
+    RT_ASSERT(buffer != RT_NULL);
 
-	i2c_dbg("I2C bus dev %s writing %u bytes.\n", dev->parent.name, count);
+    i2c_dbg("I2C bus dev %s writing %u bytes.\n", dev->parent.name, count);
 
-	addr = pos & 0xffff;
-	flags = (pos >> 16) & 0xffff;
+    addr = pos & 0xffff;
+    flags = (pos >> 16) & 0xffff;
 
-	return rt_i2c_master_send(bus, addr, flags, buffer, count);
+    return rt_i2c_master_send(bus, addr, flags, buffer, count);
 }
 
-static rt_err_t i2c_bus_device_control(rt_device_t dev,
-                                       int  cmd,
-                                       void*       args)
+static rt_err_t i2c_bus_control(rt_device_t dev,
+    int cmd,
+    void* args)
 {
-	rt_err_t ret;
-	struct rt_i2c_priv_data* priv_data;
-	struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev->user_data;
+    rt_err_t ret;
+    struct rt_i2c_priv_data* priv_data;
+    struct rt_i2c_bus_device* bus = (struct rt_i2c_bus_device*)dev->user_data;
 
-	RT_ASSERT(bus != RT_NULL);
+    RT_ASSERT(bus != RT_NULL);
 
-	switch(cmd) {
-		/* set 10-bit addr mode */
-		case RT_I2C_DEV_CTRL_10BIT:
-			bus->flags |= RT_I2C_ADDR_10BIT;
-			break;
+    switch (cmd) {
+    /* set 10-bit addr mode */
+    case RT_I2C_DEV_CTRL_10BIT:
+        bus->flags |= RT_I2C_ADDR_10BIT;
+        break;
 
-		case RT_I2C_DEV_CTRL_ADDR:
-			bus->addr = *(rt_uint16_t*)args;
-			break;
+    case RT_I2C_DEV_CTRL_ADDR:
+        bus->addr = *(rt_uint16_t*)args;
+        break;
 
-		case RT_I2C_DEV_CTRL_TIMEOUT:
-			bus->timeout = *(rt_uint32_t*)args;
-			break;
+    case RT_I2C_DEV_CTRL_TIMEOUT:
+        bus->timeout = *(rt_uint32_t*)args;
+        break;
 
-		case RT_I2C_DEV_CTRL_RW:
-			priv_data = (struct rt_i2c_priv_data*)args;
-			ret = rt_i2c_transfer(bus, priv_data->msgs, priv_data->number);
+    case RT_I2C_DEV_CTRL_RW:
+        priv_data = (struct rt_i2c_priv_data*)args;
+        ret = rt_i2c_transfer(bus, priv_data->addr, priv_data->msgs, priv_data->number);
 
-			if(ret < 0) {
-				return -RT_EIO;
-			}
+        if (ret < 0) {
+            return -RT_EIO;
+        }
 
-			break;
+        break;
 
-		default:
-			break;
-	}
+    default:
+        break;
+    }
 
-	return RT_EOK;
+    return RT_EOK;
 }
 
-rt_err_t rt_i2c_bus_device_init(struct rt_i2c_bus_device* bus,
-                                       const char*               name)
+rt_err_t rt_i2c_bus_init(struct rt_i2c_bus_device* bus, const char* name)
 {
-	struct rt_device* device;
-	RT_ASSERT(bus != RT_NULL);
+    struct rt_device* device;
+    RT_ASSERT(bus != RT_NULL);
 
-	device = &bus->parent;
+    device = &bus->parent;
 
-	device->user_data = bus;
+    device->user_data = bus;
 
-	/* set device type */
-	device->type    = RT_Device_Class_I2CBUS;
-	/* initialize device interface */
-	device->init    = RT_NULL;
-	device->open    = RT_NULL;
-	device->close   = RT_NULL;
-	device->read    = i2c_bus_device_read;
-	device->write   = i2c_bus_device_write;
-	device->control = i2c_bus_device_control;
+    /* set device type */
+    device->type = RT_Device_Class_I2CBUS;
+    /* initialize device interface */
+    device->init = RT_NULL;
+    device->open = RT_NULL;
+    device->close = RT_NULL;
+    device->read = i2c_bus_read;
+    device->write = i2c_bus_write;
+    device->control = i2c_bus_control;
 
-	/* register to device manager */
-	rt_device_register(device, name, RT_DEVICE_FLAG_RDWR);
+    /* register to device manager */
+    rt_device_register(device, name, RT_DEVICE_FLAG_RDWR);
 
-	return RT_EOK;
+    return RT_EOK;
+}
+
+rt_err_t rt_i2c_bus_device_init(struct rt_i2c_device* dev, const char* name)
+{
+    struct rt_device* device;
+    RT_ASSERT(dev != RT_NULL);
+
+    device = &(dev->parent);
+
+    /* set device type */
+    device->type = RT_Device_Class_I2CDevice;
+    device->init = RT_NULL;
+    device->open = RT_NULL;
+    device->close = RT_NULL;
+    device->read = RT_NULL;     /* TODO: add i2c device opts */
+    device->write = RT_NULL;
+    device->control = RT_NULL;
+
+    /* register to device manager */
+    return rt_device_register(device, name, RT_DEVICE_FLAG_RDWR);
 }

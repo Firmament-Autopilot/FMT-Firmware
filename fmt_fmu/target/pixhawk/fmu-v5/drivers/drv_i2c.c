@@ -56,7 +56,7 @@ static void i2c_hw_init(void)
     LL_I2C_Init(I2C1, &I2C_InitStruct);
 }
 
-static rt_size_t i2c_transfer(struct rt_i2c_bus_device* bus, struct rt_i2c_msg msgs[], rt_uint32_t num)
+static rt_size_t i2c_transfer(struct rt_i2c_bus_device* bus, rt_uint16_t slave_addr, struct rt_i2c_msg msgs[], rt_uint32_t num)
 {
     struct rt_i2c_msg* msg;
     uint32_t msg_idx;
@@ -71,9 +71,12 @@ static rt_size_t i2c_transfer(struct rt_i2c_bus_device* bus, struct rt_i2c_msg m
         msg = &msgs[msg_idx];
         uint16_t nbytes = msg->len;
 
+        /* TODO: add support for 10bit addr */
+        RT_ASSERT(!(msg->flags & RT_I2C_ADDR_10BIT));
+
         if (msg->flags & RT_I2C_RD) {
             /* start/restart read operation */
-            LL_I2C_HandleTransfer(stm32_i2c->I2C, msg->addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
+            LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
                 LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_READ);
 
             while (nbytes--) {
@@ -87,7 +90,7 @@ static rt_size_t i2c_transfer(struct rt_i2c_bus_device* bus, struct rt_i2c_msg m
             }
         } else {
             /* start/restart write operation */
-            LL_I2C_HandleTransfer(stm32_i2c->I2C, msg->addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
+            LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
                 LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
 
             while (nbytes--) {
@@ -103,7 +106,7 @@ static rt_size_t i2c_transfer(struct rt_i2c_bus_device* bus, struct rt_i2c_msg m
     }
 
     /* generate stop condition, NACK is automatically generated before stop */
-    LL_I2C_HandleTransfer(stm32_i2c->I2C, msg->addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
+    LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
         LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
 
     return num;
@@ -125,6 +128,12 @@ int rt_i2c_hw_init(void)
 
     stm32_i2c1.parent.ops = &i2c_bus_ops;
     rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1");
+
+    static struct rt_i2c_device i2c_dev1 = {
+        .slave_addr = IST8310_ADDRESS,
+        .flags = 0
+    };
+    rt_i2c_bus_attach_device(&i2c_dev1, "i2c1_dev1", "i2c1", RT_NULL);
 
     return RT_EOK;
 }

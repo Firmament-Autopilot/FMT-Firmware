@@ -127,10 +127,12 @@ struct rt_spi_ops {
 struct rt_spi_device {
     struct rt_device parent;
     struct rt_spi_bus* bus;
-
     struct rt_spi_configuration config;
 };
 #define SPI_DEVICE(dev) ((struct rt_spi_device*)(dev))
+
+rt_err_t rt_spi_bus_init(struct rt_spi_bus* bus, const char* name);
+rt_err_t rt_spi_bus_device_init(struct rt_spi_device* dev, const char* name);
 
 /* register a SPI bus */
 rt_err_t rt_spi_bus_register(struct rt_spi_bus* bus,

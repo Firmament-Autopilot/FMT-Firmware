@@ -55,16 +55,17 @@ extern "C" {
 #define RT_I2C_NO_READ_ACK (1u << 6) /* when I2C reading, we do not ACK */
 
 struct rt_i2c_msg {
-    rt_uint16_t addr;
     rt_uint16_t flags;
     rt_uint16_t len;
     rt_uint8_t* buf;
 };
 
 struct rt_i2c_bus_device;
+struct rt_i2c_device;
 
 struct rt_i2c_bus_device_ops {
     rt_size_t (*master_xfer)(struct rt_i2c_bus_device* bus,
+        rt_uint16_t slave_addr,
         struct rt_i2c_msg msgs[],
         rt_uint32_t num);
     rt_size_t (*slave_xfer)(struct rt_i2c_bus_device* bus,
@@ -87,6 +88,13 @@ struct rt_i2c_bus_device {
     void* priv;
 };
 
+struct rt_i2c_device {
+    struct rt_device parent;
+    struct rt_i2c_bus_device* bus;
+    rt_uint16_t slave_addr;
+    rt_uint16_t flags;
+};
+
 #ifdef RT_I2C_DEBUG
 #define i2c_dbg(fmt, ...) rt_kprintf(fmt, ##__VA_ARGS__)
 #else
@@ -96,7 +104,12 @@ struct rt_i2c_bus_device {
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus_device* bus,
     const char* bus_name);
 struct rt_i2c_bus_device* rt_i2c_bus_device_find(const char* bus_name);
+rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
+    const char* name,
+    const char* bus_name,
+    void* user_data);
 rt_size_t rt_i2c_transfer(struct rt_i2c_bus_device* bus,
+    rt_uint16_t addr,
     struct rt_i2c_msg msgs[],
     rt_uint32_t num);
 rt_size_t rt_i2c_master_send(struct rt_i2c_bus_device* bus,
@@ -109,7 +122,11 @@ rt_size_t rt_i2c_master_recv(struct rt_i2c_bus_device* bus,
     rt_uint16_t flags,
     rt_uint8_t* buf,
     rt_uint32_t count);
-int rt_i2c_core_init(void);
+
+rt_err_t i2c_read_reg(rt_device_t i2c_dev, uint8_t reg, uint8_t* buffer);
+rt_err_t i2c_write_reg(rt_device_t i2c_dev, uint8_t reg, uint8_t val);
+rt_err_t i2c_read_regs(rt_device_t i2c_dev, uint8_t reg, uint8_t* buffer, uint16_t count);
+rt_err_t i2c_write_regs(rt_device_t i2c_dev, uint8_t reg, uint8_t* vals, uint16_t count);
 
 #ifdef __cplusplus
 }

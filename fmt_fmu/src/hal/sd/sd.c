@@ -144,8 +144,7 @@ rt_err_t hal_sd_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* 
 
     device = &(sd->parent);
 
-    device->type = RT_Device_Class_Block;
-    device->ref_count = 0;
+    device->type = RT_Device_Class_SDIO;
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
 

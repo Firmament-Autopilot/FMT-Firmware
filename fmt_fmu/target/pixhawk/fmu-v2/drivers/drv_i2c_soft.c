@@ -33,7 +33,7 @@
 #define BSP_I2C1_SCL_PIN GPIO_Pin_8
 #define BSP_I2C2_SCL_PIN GPIO_Pin_10
 
-#define I2C_DELAY_US      (5)
+#define I2C_DELAY_US      (10)
 #define I2C_TIMEOUT_TICKS TICKS_FROM_MS(1)
 
 #define FMU_I2C1_PIN_SCL 95
