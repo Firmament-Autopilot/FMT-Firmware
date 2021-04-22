@@ -139,7 +139,7 @@ void bsp_show_information(void)
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
-    sprintf(buffer, "FMT FMU v%d.%d.%d", FMT_VERSION, FMT_SUBVERSION, FMT_REVISION);
+    sprintf(buffer, "FMT FMU %s", FMT_VERSION);
     _print_line("Firmware", buffer, str_len);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
     _print_line("Kernel", buffer, str_len);
@@ -295,11 +295,11 @@ void bsp_initialize(void)
     /* init sensor hub */
     FMT_CHECK(sensor_hub_init());
 
-    //     /* GDB STUB */
-    // #ifdef RT_USING_GDB
-    //     gdb_set_device(GDB_DEVICE_NAME);
-    //     gdb_start();
-    // #endif
+//     /* GDB STUB */
+// #ifdef RT_USING_GDB
+//     gdb_set_device(GDB_DEVICE_NAME);
+//     gdb_start();
+// #endif
 
     /* init finsh */
     finsh_system_init();
@@ -308,7 +308,7 @@ void bsp_initialize(void)
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
-    cm_backtrace_init("fmt_fmu", TARGET_NAME, "v0.1");
+    cm_backtrace_init("fmt_fmu-v2", TARGET_NAME, FMT_VERSION);
 #endif
 
 #ifdef FMT_USING_UNIT_TEST

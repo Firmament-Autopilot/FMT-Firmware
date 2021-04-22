@@ -20,9 +20,7 @@
 #include "rtdef.h"
 
 /* Firmament version information */
-#define FMT_VERSION    0 /**< major version number */
-#define FMT_SUBVERSION 1 /**< minor version number */
-#define FMT_REVISION   4 /**< revise version number */
+#define FMT_VERSION     "v0.0.1"
 
 /* Thread Prority */
 #define VEHICLE_THREAD_PRIORITY    3
