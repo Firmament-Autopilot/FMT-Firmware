@@ -222,7 +222,7 @@ rt_err_t i2c_write_regs(rt_device_t i2c_dev, uint8_t reg, uint8_t* vals, uint16_
     msgs[0].flags = RT_I2C_WR | i2c_device->flags;
     msgs[0].buf = &reg;
     msgs[0].len = 1;
-    /* this will generate another restart, not sure if this works */
+
     msgs[1].flags = RT_I2C_WR | i2c_device->flags;
     msgs[1].buf = vals;
     msgs[1].len = count;
