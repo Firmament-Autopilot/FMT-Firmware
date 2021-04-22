@@ -1,5 +1,5 @@
 /*
- * File      : i2c-bit-ops.c
+ * File      : i2c_bit_ops.c
  * This file is part of RT-Thread RTOS
  * COPYRIGHT (C) 2006 - 2012, RT-Thread Development Team
  *
@@ -22,14 +22,28 @@
  * 2012-04-25     weety         first version
  */
 
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include "hal/i2c-bit-ops.h"
 #include "hal/i2c.h"
 #include "hal/i2c_dev.h"
-#include <rtdevice.h>
-#include <rtthread.h>
+#include <firmament.h>
 
 #ifdef RT_I2C_BIT_DEBUG
-#define bit_dbg(fmt, ...) rt_kprintf(fmt, ##__VA_ARGS__)
+#define bit_dbg(fmt, ...) console_printf(fmt, ##__VA_ARGS__)
 #else
 #define bit_dbg(fmt, ...)
 #endif
