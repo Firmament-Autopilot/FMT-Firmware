@@ -5,7 +5,6 @@
 
 uint8_t ist8310_id;
 
-struct rt_i2c_bus* i2c_bus;
 rt_device_t i2c_dev;
 
 int16_t magRaw[3] = { 0 };
@@ -96,13 +95,6 @@ void my_read_multi_reg(struct rt_i2c_bus* bus, rt_uint8_t reg, rt_uint8_t* buf)
 
 int rt_ist8310_init(char* i2c_device_name)
 {
-    i2c_bus = rt_i2c_bus_device_find(i2c_device_name);
-    if (i2c_bus == RT_NULL) {
-        rt_kprintf("find i2c bus fail!\n");
-        return RT_ERROR;
-    }
-    rt_kprintf("find i2c bus success!\n");
-
     i2c_dev = rt_device_find("i2c1_dev1");
     RT_ASSERT(i2c_dev != NULL);
     rt_device_open(i2c_dev, RT_DEVICE_OFLAG_RDWR);

@@ -96,14 +96,13 @@ struct rt_i2c_device {
 };
 
 #ifdef RT_I2C_DEBUG
-#define i2c_dbg(fmt, ...) rt_kprintf(fmt, ##__VA_ARGS__)
+#define i2c_dbg(fmt, ...) console_printf(fmt, ##__VA_ARGS__)
 #else
 #define i2c_dbg(fmt, ...)
 #endif
 
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
     const char* bus_name);
-struct rt_i2c_bus* rt_i2c_bus_device_find(const char* bus_name);
 rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
     const char* name,
     const char* bus_name,

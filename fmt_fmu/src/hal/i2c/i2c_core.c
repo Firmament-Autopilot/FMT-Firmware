@@ -59,22 +59,6 @@ rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
     return res;
 }
 
-struct rt_i2c_bus* rt_i2c_bus_device_find(const char* bus_name)
-{
-    struct rt_i2c_bus* bus;
-    rt_device_t dev = rt_device_find(bus_name);
-
-    if (dev == RT_NULL || dev->type != RT_Device_Class_I2CBUS) {
-        i2c_dbg("I2C bus %s not exist\n", bus_name);
-
-        return RT_NULL;
-    }
-
-    bus = (struct rt_i2c_bus*)dev->user_data;
-
-    return bus;
-}
-
 rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
     const char* name,
     const char* bus_name,
