@@ -30,21 +30,21 @@
 #include "board_device.h"
 #include "driver/bmi055.h"
 #include "driver/icm20689.h"
-#include "driver/ms5611.h"
 #include "driver/ist8310.h"
+#include "driver/ms5611.h"
 #include "drv_gpio.h"
+#include "drv_i2c.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
-#include "drv_i2c.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/sensor/sensor_hub.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
 [console]\n\
@@ -210,6 +210,9 @@ void SystemClock_Config(void)
     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
     LL_RCC_SetUARTClockSource(LL_RCC_UART7_CLKSOURCE_PCLK1);
     LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C2_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C3_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C4_CLKSOURCE_PCLK1);
 }
 
 void bsp_show_information(void)
@@ -246,7 +249,7 @@ void bsp_early_initialize(void)
 
     /* usart driver init */
     RT_CHECK(usart_drv_init());
-    
+
     /* system time module init */
     FMT_CHECK(systime_init());
 
