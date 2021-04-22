@@ -237,13 +237,16 @@ void bsp_show_information(void)
 void bsp_early_initialize(void)
 {
     HAL_Init();
+
     /* System clock initialization */
     SystemClock_Config();
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
+
     /* usart driver init */
     RT_CHECK(usart_drv_init());
+    
     /* system time module init */
     FMT_CHECK(systime_init());
 
@@ -256,7 +259,8 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RT_CHECK(spi_drv_init());
 
-    drv_i2c_init();
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
