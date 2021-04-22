@@ -43,7 +43,7 @@ static optflow_data_t optflow_report = { 0 };
 
 static int sensor_opt_flow_echo(void* param)
 {
-    fmt_err err;
+    fmt_err_t err;
     optflow_data_t optflow_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &optflow_report);
@@ -60,7 +60,7 @@ static int sensor_opt_flow_echo(void* param)
 
 static int sensor_rangefinder_echo(void* param)
 {
-    fmt_err err;
+    fmt_err_t err;
     rf_data_t rangefinder_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &rangefinder_report);

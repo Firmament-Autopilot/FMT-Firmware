@@ -55,6 +55,22 @@ typedef int bool;
 #define PI 3.14159265358979f
 #endif
 
+#define RT_CHECK_RETURN(__exp)  \
+    do {                        \
+        rt_err_t err = (__exp); \
+        if (err != RT_EOK) {    \
+            return err;         \
+        }                       \
+    } while (false)
+
+#define CHECK_RETURN(__exp)    \
+    do {                       \
+        fmt_err_t err = (__exp); \
+        if (err != FMT_EOK) {  \
+            return err;        \
+        }                      \
+    } while (false)
+
 #define OS_ENTER_CRITICAL rt_enter_critical()
 #define OS_EXIT_CRITICAL  rt_exit_critical()
 #define OS_MALLOC(size)   rt_malloc(size)
@@ -62,7 +78,7 @@ typedef int bool;
 
 #define FMT_ASSERT(exp) RT_ASSERT((exp))
 #define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
-#define RTT_CHECK(func) RT_ASSERT(func == RT_EOK)
+#define RT_CHECK(func)  RT_ASSERT(func == RT_EOK)
 
 typedef enum {
     FMT_EOK = 0,         /**< There is no error */
@@ -77,6 +93,6 @@ typedef enum {
     FMT_EINTR = 9,       /**< Interrupted system call */
     FMT_EINVAL = 10,     /**< Invalid argument */
     FMT_ENOTHANDLE = 11, /**< Not handled */
-} fmt_err;
+} fmt_err_t;
 
 #endif

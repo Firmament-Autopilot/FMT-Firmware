@@ -381,7 +381,7 @@ void blog_statistic(void)
  * 
  * @return FMT Error
  */
-fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void))
+fmt_err_t blog_register_callback(uint8_t cb_type, void (*cb)(void))
 {
     uint32_t i;
 
@@ -423,7 +423,7 @@ fmt_err blog_register_callback(uint8_t cb_type, void (*cb)(void))
  * @param desc description text, should not longer than BLOG_DESCRIPTION_SIZE
  * @return FMT Error
  */
-fmt_err blog_add_desc(char* desc)
+fmt_err_t blog_add_desc(char* desc)
 {
     if (strlen(desc) > BLOG_DESCRIPTION_SIZE - 1) {
         ulog_w(TAG, "description too long.");
@@ -444,7 +444,7 @@ fmt_err blog_add_desc(char* desc)
  * 
  * @return FMT Error
  */
-fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
+fmt_err_t blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
 {
     /*                           BLOG MSG Format                                 */
     /*   ======================================================================= */
@@ -492,7 +492,7 @@ fmt_err blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
  * @param file_name blog_handle file name with full path
  * @return FMT Error
  */
-fmt_err blog_start(char* file_name)
+fmt_err_t blog_start(char* file_name)
 {
     if (blog_handle.log_status != BLOG_STATUS_IDLE) {
         ulog_w(TAG, "%s is logging, stop it first", blog_handle.file_name);
@@ -696,7 +696,7 @@ void blog_async_output(void)
  * 
  * @return FMT Errors.
  */
-fmt_err binary_log_init(void)
+fmt_err_t binary_log_init(void)
 {
     int i;
 

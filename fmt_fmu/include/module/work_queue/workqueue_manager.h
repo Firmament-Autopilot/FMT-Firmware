@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-fmt_err workqueue_manager_init(void);
+fmt_err_t workqueue_manager_init(void);
 WorkQueue_t workqueue_find(const char* name);
 
 #ifdef __cplusplus

@@ -69,7 +69,7 @@ static uint16_t _calc_checksum(PackageStruct* pkg)
 
 /**************************** Public Function ********************************/
 
-fmt_err create_io_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg)
+fmt_err_t create_io_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg)
 {
 	/* fill head */
 	_fill_head(pkg);
@@ -106,7 +106,7 @@ fmt_err create_io_package(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg)
 	return FMT_EOK;
 }
 
-fmt_err init_io_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg)
+fmt_err_t init_io_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg)
 {
 	if(buffer == NULL)
 		return FMT_EINVAL;
@@ -134,7 +134,7 @@ fmt_err init_io_package(uint16_t cmd, uint8_t* buffer, PackageStruct* pkg)
 	return FMT_EOK;
 }
 
-fmt_err fill_io_package(const void* content, uint16_t len, PackageStruct* pkg)
+fmt_err_t fill_io_package(const void* content, uint16_t len, PackageStruct* pkg)
 {
 	pkg->len = len;
 
@@ -164,7 +164,7 @@ void free_io_package(PackageStruct* pkg)
 	}
 }
 
-fmt_err make_send_package(const PackageStruct pkg, SendPkgStruct* send_pkg)
+fmt_err_t make_send_package(const PackageStruct pkg, SendPkgStruct* send_pkg)
 {
 	/* user should assgin a valid address for send_buff */
 	if(send_pkg->send_buff == NULL) {
@@ -206,9 +206,9 @@ fmt_err make_send_package(const PackageStruct pkg, SendPkgStruct* send_pkg)
 #define STATE_CS_2	            0x09
 #define STATE_END	            0x0A
 
-fmt_err proto_parse_package(uint8_t c, PackageStruct* pkg)
+fmt_err_t proto_parse_package(uint8_t c, PackageStruct* pkg)
 {
-	fmt_err err = FMT_ERROR;
+	fmt_err_t err = FMT_ERROR;
 	static uint8_t state = STATE_HEAD_1;
 	static uint16_t data_cnt;
 

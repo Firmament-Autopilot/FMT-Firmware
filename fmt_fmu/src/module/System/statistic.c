@@ -108,9 +108,9 @@ float get_cpu_usage(void)
 /**
  * @brief Initialize system statistic module
  * 
- * @return fmt_err FMT_EOK if successful
+ * @return fmt_err_t FMT_EOK if successful
  */
-fmt_err sys_stat_init(void)
+fmt_err_t sys_stat_init(void)
 {
     rt_thread_inited_sethook(thread_inited_hook);
     rt_scheduler_sethook(scheduler_hook);

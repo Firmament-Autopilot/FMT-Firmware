@@ -26,8 +26,8 @@
 #define MAVPROXY_DEFAULT_CHAN        0
 #define MAVPROXY_UNSET_CHAN          0xFF
 
-fmt_err mavproxy_monitor_create(void);
-fmt_err mavproxy_switch_channel(uint8_t chan);
+fmt_err_t mavproxy_monitor_create(void);
+fmt_err_t mavproxy_switch_channel(uint8_t chan);
 uint8_t mavproxy_get_channel_num(void);
 
 typedef struct {
@@ -119,7 +119,7 @@ static void dump_period_msg(void)
  * 
  * @return FMT Errors
  */
-fmt_err mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
+fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     msg_pack_cb_t msg_pack_cb, uint8_t enable)
 {
     MAV_PeriodMsg msg;
@@ -151,7 +151,7 @@ fmt_err mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
  * 
  * @return FMT Errors
  */
-fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
+fmt_err_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
 {
     /* if sync flag set, send out msg immediately */
     if (sync) {
@@ -196,7 +196,7 @@ fmt_err mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
  * 
  * @return FMT Errors
  */
-fmt_err mavproxy_send_event(uint32_t event_set)
+fmt_err_t mavproxy_send_event(uint32_t event_set)
 {
     return rt_event_send(&mav_handle.event, event_set);
 }
@@ -218,7 +218,7 @@ mavlink_system_t mavproxy_get_system(void)
  * 
  * @return FMT Errors
  */
-fmt_err mavproxy_set_channel(uint8_t chan)
+fmt_err_t mavproxy_set_channel(uint8_t chan)
 {
     if (chan >= mavproxy_get_channel_num()) {
         return FMT_EINVAL;
@@ -286,7 +286,7 @@ void mavproxy_loop(void)
  * 
  * @return FMT Errors
  */
-fmt_err mavproxy_init(void)
+fmt_err_t mavproxy_init(void)
 {
     /* init mavproxy device */
     mavproxy_dev_init();

@@ -23,11 +23,6 @@
 
 #define DRV_DBG(...)
 
-#define CHECK_RETURN(__func)  \
-    if ((__func) != RT_EOK) { \
-        return RT_ERROR;      \
-    }
-
 #define DIR_READ     0x80
 #define DIR_WRITE    0x00
 #define M_PI_F       3.1415926f
@@ -47,8 +42,8 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
 {
     rt_uint8_t r_val;
 
-    CHECK_RETURN(spi_write_reg8(spi_device, reg, val));
-    CHECK_RETURN(spi_read_reg8(spi_device, reg, &r_val));
+    RT_CHECK_RETURN(spi_write_reg8(spi_device, reg, val));
+    RT_CHECK_RETURN(spi_read_reg8(spi_device, reg, &r_val));
 
     return (r_val == val) ? RT_EOK : RT_ERROR;
 }
@@ -57,12 +52,12 @@ static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t r
 {
     uint8_t value;
 
-    CHECK_RETURN(spi_read_reg8(spi_device, reg, &value));
+    RT_CHECK_RETURN(spi_read_reg8(spi_device, reg, &value));
 
     value &= ~reg_val.clearbits;
     value |= reg_val.setbits;
 
-    CHECK_RETURN(__write_checked_reg(spi_device, reg, value));
+    RT_CHECK_RETURN(__write_checked_reg(spi_device, reg, value));
 
     return RT_EOK;
 }
@@ -93,7 +88,7 @@ static rt_err_t gyro_set_sample_rate(uint32_t frequency_hz)
         return RT_EINVAL;
     }
 
-    CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_BW_ADDR, reg_val));
+    RT_CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_BW_ADDR, reg_val));
 
     return RT_EOK;
 }
@@ -132,7 +127,7 @@ static rt_err_t gyro_set_range(unsigned max_dps)
         return RT_EINVAL;
     }
 
-    CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_RANGE_ADDR, reg_val));
+    RT_CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_RANGE_ADDR, reg_val));
 
     gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
 
@@ -141,7 +136,7 @@ static rt_err_t gyro_set_range(unsigned max_dps)
 
 static rt_err_t gyro_read_raw(int16_t gyr[3])
 {
-    CHECK_RETURN(spi_read_multi_reg8(gyro_spi_dev, BMI055_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
+    RT_CHECK_RETURN(spi_read_multi_reg8(gyro_spi_dev, BMI055_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
     rotate_to_ned(gyr);
 
     return RT_EOK;
@@ -151,7 +146,7 @@ static rt_err_t gyro_read_rad(float gyr[3])
 {
     int16_t gyr_raw[3];
 
-    CHECK_RETURN(gyro_read_raw(gyr_raw));
+    RT_CHECK_RETURN(gyro_read_raw(gyr_raw));
 
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
@@ -165,7 +160,7 @@ static rt_err_t gyroscope_init(void)
     uint8_t gyro_id;
 
     /* init spi bus */
-    CHECK_RETURN(rt_device_open(gyro_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK_RETURN(rt_device_open(gyro_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
     spi_read_reg8(gyro_spi_dev, BMI055_CHIP_ID_ADDR, &gyro_id);
     if (gyro_id != BMI055_GRRO_CHIP_ID) {
@@ -174,14 +169,14 @@ static rt_err_t gyroscope_init(void)
     }
 
     /* soft reset */
-    CHECK_RETURN(spi_write_reg8(gyro_spi_dev, BMI055_BGW_SOFT_RST_ADDR, 0xB6));
+    RT_CHECK_RETURN(spi_write_reg8(gyro_spi_dev, BMI055_BGW_SOFT_RST_ADDR, 0xB6));
     systime_udelay(5000);
 
-    CHECK_RETURN(gyro_set_range(2000));       /* 2000dps */
-    CHECK_RETURN(gyro_set_sample_rate(1000)); /* OSR 1000KHz, Filter BW: 116Hz */
+    RT_CHECK_RETURN(gyro_set_range(2000));       /* 2000dps */
+    RT_CHECK_RETURN(gyro_set_sample_rate(1000)); /* OSR 1000KHz, Filter BW: 116Hz */
 
     /* enable gyroscope */
-    CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_MODE_LPM1_ADDR, REG_VAL(0, BIT(7) | BIT(5)))); /* {0; 0}  NORMAL mode */
+    RT_CHECK_RETURN(__modify_reg(gyro_spi_dev, BMI055_MODE_LPM1_ADDR, REG_VAL(0, BIT(7) | BIT(5)))); /* {0; 0}  NORMAL mode */
     systime_udelay(1000);
 
     return RT_EOK;
@@ -191,11 +186,11 @@ static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
 {
     RT_ASSERT(cfg != RT_NULL);
 
-    CHECK_RETURN(gyro_set_range(cfg->gyro_range_dps));
+    RT_CHECK_RETURN(gyro_set_range(cfg->gyro_range_dps));
 
-    CHECK_RETURN(gyro_set_sample_rate(cfg->sample_rate_hz));
+    RT_CHECK_RETURN(gyro_set_sample_rate(cfg->sample_rate_hz));
 
-    CHECK_RETURN(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
+    RT_CHECK_RETURN(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
 
     gyro->config = *cfg;
 
@@ -262,7 +257,7 @@ static rt_err_t accel_set_dlpf_filter(uint16_t frequency_hz)
         return -EINVAL;
     }
 
-    CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_BW, reg_val));
+    RT_CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_BW, reg_val));
 
     return RT_EOK;
 }
@@ -292,7 +287,7 @@ static rt_err_t accel_set_range(uint32_t max_g)
         return RT_EINVAL;
     }
 
-    CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_RANGE, reg_val));
+    RT_CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_RANGE, reg_val));
 
     accel_range_scale = (BMI055_ONE_G / lsb_per_g);
 
@@ -304,7 +299,7 @@ static rt_err_t accelerometer_init(void)
     uint8_t accel_id;
 
     /* init spi bus */
-    CHECK_RETURN(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK_RETURN(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
     spi_read_reg8(accel_spi_dev, BMI055_ACC_BGW_CHIPID, &accel_id);
     if (accel_id != BMI055_ACC_BGW_CHIPID_VALUE) {
@@ -313,14 +308,14 @@ static rt_err_t accelerometer_init(void)
     }
 
     /* soft reset */
-    CHECK_RETURN(spi_write_reg8(accel_spi_dev, BMI055_BGW_SOFTRESET, 0xB6));
+    RT_CHECK_RETURN(spi_write_reg8(accel_spi_dev, BMI055_BGW_SOFTRESET, 0xB6));
     systime_udelay(5000);
 
-    CHECK_RETURN(accel_set_range(2));          /* 2g */
-    CHECK_RETURN(accel_set_dlpf_filter(1000)); /* 1000Hz BW */
+    RT_CHECK_RETURN(accel_set_range(2));          /* 2g */
+    RT_CHECK_RETURN(accel_set_dlpf_filter(1000)); /* 1000Hz BW */
 
     /* enable gyroscope */
-    CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_LPW, REG_VAL(0, BIT(7) | BIT(6) | BIT(5)))); /* {0; 0; 0}  NORMAL mode */
+    RT_CHECK_RETURN(__modify_reg(accel_spi_dev, BMI055_PMU_LPW, REG_VAL(0, BIT(7) | BIT(6) | BIT(5)))); /* {0; 0; 0}  NORMAL mode */
     systime_udelay(1000);
 
     return RT_EOK;
@@ -331,7 +326,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     uint8_t buffer[6];
     int16_t msblsb;
 
-    CHECK_RETURN(spi_read_multi_reg8(accel_spi_dev, BMI055_ACCD_X_LSB, buffer, 6));
+    RT_CHECK_RETURN(spi_read_multi_reg8(accel_spi_dev, BMI055_ACCD_X_LSB, buffer, 6));
 
     msblsb = buffer[1] << 8 | buffer[0];
     acc[0] = msblsb >> 4;
@@ -349,7 +344,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
 {
     int16_t acc_raw[3];
 
-    CHECK_RETURN(accel_read_raw(acc_raw));
+    RT_CHECK_RETURN(accel_read_raw(acc_raw));
 
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
@@ -362,11 +357,11 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
 {
     RT_ASSERT(cfg != NULL);
 
-    CHECK_RETURN(accel_set_range(cfg->acc_range_g));
+    RT_CHECK_RETURN(accel_set_range(cfg->acc_range_g));
 
-    CHECK_RETURN(accel_set_sample_rate(cfg->sample_rate_hz));
+    RT_CHECK_RETURN(accel_set_sample_rate(cfg->sample_rate_hz));
 
-    CHECK_RETURN(accel_set_dlpf_filter(cfg->dlpf_freq_hz));
+    RT_CHECK_RETURN(accel_set_dlpf_filter(cfg->dlpf_freq_hz));
 
     accel->config = *cfg;
 
@@ -448,12 +443,12 @@ rt_err_t drv_bmi055_init(void)
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
 
-        CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
+        RT_CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
     }
     /* gyroscope low-level init */
-    CHECK_RETURN(gyroscope_init());
+    RT_CHECK_RETURN(gyroscope_init());
     /* register gyro hal device */
-    CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     /* Initialize accelerometer */
 
@@ -471,14 +466,14 @@ rt_err_t drv_bmi055_init(void)
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
 
-        CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
+        RT_CHECK_RETURN(rt_spi_configure(spi_device_t, &cfg));
     }
 
     /* accelerometer low-level init */
-    CHECK_RETURN(accelerometer_init());
+    RT_CHECK_RETURN(accelerometer_init());
 
     /* register accel hal device */
-    CHECK_RETURN(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

@@ -20,7 +20,7 @@
 static rt_device_t mavproxy_dev = RT_NULL;
 static struct rt_completion tx_cplt, rx_cplt;
 
-static fmt_err (*mav_rx_indicate)(uint32_t size) = NULL;
+static fmt_err_t (*mav_rx_indicate)(uint32_t size) = NULL;
 
 static rt_err_t mavproxy_dev_tx_done(rt_device_t dev, void* buffer)
 {
@@ -97,12 +97,12 @@ rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
     return cnt;
 }
 
-void mavproxy_dev_set_rx_indicate(fmt_err (*rx_ind)(uint32_t size))
+void mavproxy_dev_set_rx_indicate(fmt_err_t (*rx_ind)(uint32_t size))
 {
     mav_rx_indicate = rx_ind;
 }
 
-fmt_err mavproxy_set_device(const char* dev_name)
+fmt_err_t mavproxy_set_device(const char* dev_name)
 {
     rt_device_t new_dev;
 
@@ -137,7 +137,7 @@ rt_device_t mavproxy_get_device(void)
     return mavproxy_dev;
 }
 
-fmt_err mavproxy_dev_init(void)
+fmt_err_t mavproxy_dev_init(void)
 {
     rt_completion_init(&tx_cplt);
     rt_completion_init(&rx_cplt);

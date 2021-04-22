@@ -39,6 +39,7 @@
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
 #include "driver/usart.h"
+#include "drv_i2c_soft.h"
 #include "drv_spi.h"
 #include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
@@ -95,8 +96,8 @@ static toml_table_t* _toml_root_tab = NULL;
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
 
-fmt_err console_toml_config(toml_table_t* table);
-fmt_err mavproxy_toml_config(toml_table_t* table);
+fmt_err_t console_toml_config(toml_table_t* table);
+fmt_err_t mavproxy_toml_config(toml_table_t* table);
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -160,9 +161,9 @@ void bsp_show_information(void)
     _print_line("  status", "OK", str_len);
 }
 
-fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     toml_table_t* sub_tab;
     const char* key;
     const char* raw;
@@ -226,10 +227,10 @@ void bsp_early_initialize(void)
     NVIC_Configuration();
 
     /* system timer init */
-    RTT_CHECK(systick_drv_init());
+    RT_CHECK(systick_drv_init());
 
     /* system usart init */
-    RTT_CHECK(usart_drv_init());
+    RT_CHECK(usart_drv_init());
 
     /* system time module init */
     FMT_CHECK(systime_init());
@@ -238,11 +239,11 @@ void bsp_early_initialize(void)
     FMT_CHECK(console_init());
 
     /* init gpio, bus, etc. */
-    RTT_CHECK(gpio_drv_init());
+    RT_CHECK(gpio_drv_init());
 
-    RTT_CHECK(spi_drv_init());
+    RT_CHECK(spi_drv_init());
 
-    RTT_CHECK(pwm_drv_init());
+    RT_CHECK(pwm_drv_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -261,30 +262,32 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    RTT_CHECK(dev_sd_init(FS_DEVICE_NAME));
+    RT_CHECK(dev_sd_init(FS_DEVICE_NAME));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
+    drv_i2c_soft_init();
+
     /* init usb device */
-    RTT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
     /* init imu0 */
-    RTT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));
+    RT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));
 
     /* init imu1 + mag0 */
-    RTT_CHECK(l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME));
-    RTT_CHECK(lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME));
+    RT_CHECK(l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME));
+    RT_CHECK(lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME));
 
     /* init barometer */
-    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
+    RT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
     /* init gps */
-    // RTT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
-    RTT_CHECK(gps_m8n_init(GPS_SERIAL_DEVICE_NAME));
+    // RT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
+    RT_CHECK(gps_m8n_init(GPS_SERIAL_DEVICE_NAME));
 
     /* init other devices */
-    RTT_CHECK(pmw3901_l0x_drv_init("serial3"));
-    RTT_CHECK(tca62724_drv_init());
+    RT_CHECK(pmw3901_l0x_drv_init("serial3"));
+    RT_CHECK(tca62724_drv_init());
 
     /* init parameter system */
     FMT_CHECK(param_init());

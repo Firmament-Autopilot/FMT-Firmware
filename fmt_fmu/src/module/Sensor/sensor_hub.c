@@ -94,7 +94,7 @@ static void dcm_from_euler(const float rpy[3], float dcm[9])
 
 static int echo_sensor_imu(void* param)
 {
-    fmt_err err;
+    fmt_err_t err;
     imu_data_t imu_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &imu_report);
@@ -112,7 +112,7 @@ static int echo_sensor_imu(void* param)
 
 static int echo_sensor_mag(void* param)
 {
-    fmt_err err;
+    fmt_err_t err;
     mag_data_t mag_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &mag_report);
@@ -129,7 +129,7 @@ static int echo_sensor_mag(void* param)
 
 static int echo_sensor_baro(void* param)
 {
-    fmt_err err;
+    fmt_err_t err;
     baro_data_t baro_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &baro_report);
@@ -147,7 +147,7 @@ static int echo_sensor_baro(void* param)
 
 static int echo_sensor_gps(void* param)
 {
-    fmt_err err;
+    fmt_err_t err;
     gps_data_t gps_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &gps_report);
@@ -488,9 +488,9 @@ void sensor_collect(void)
 /**
  * @brief Initialize sensor hub module
  * 
- * @return fmt_err FMT_EOK for success
+ * @return fmt_err_t FMT_EOK for success
  */
-fmt_err sensor_hub_init(void)
+fmt_err_t sensor_hub_init(void)
 {
 #ifdef SENSOR_USING_IMU0
     imu0 = sensor_imu_init("gyro0", "accel0");

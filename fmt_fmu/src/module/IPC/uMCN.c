@@ -153,9 +153,9 @@ bool mcn_poll_sync(McnNode_t node_t, int32_t timeout)
  * @param hub uMCN hub
  * @param node_t uMCN node
  * @param buffer buffer to received the data
- * @return fmt_err FMT_EOK indicates success
+ * @return fmt_err_t FMT_EOK indicates success
  */
-fmt_err mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
+fmt_err_t mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(node_t != NULL);
@@ -186,9 +186,9 @@ fmt_err mcn_copy(McnHub_t hub, McnNode_t node_t, void* buffer)
  * 
  * @param hub 
  * @param buffer 
- * @return fmt_err 
+ * @return fmt_err_t 
  */
-fmt_err mcn_copy_from_hub(McnHub_t hub, void* buffer)
+fmt_err_t mcn_copy_from_hub(McnHub_t hub, void* buffer)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(buffer != NULL);
@@ -215,9 +215,9 @@ fmt_err mcn_copy_from_hub(McnHub_t hub, void* buffer)
  * 
  * @param hub uMCN hub
  * @param echo Echo function to print topic contents
- * @return fmt_err FMT_EOK indicates success
+ * @return fmt_err_t FMT_EOK indicates success
  */
-fmt_err mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
+fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
 {
     MCN_ASSERT(hub != NULL);
 
@@ -325,9 +325,9 @@ McnNode_t mcn_subscribe(McnHub_t hub, MCN_EVENT_HANDLE event, void (*pub_cb)(voi
  * 
  * @param hub uMCN hub
  * @param node Subscribe node
- * @return fmt_err FMT_EOK indicates success
+ * @return fmt_err_t FMT_EOK indicates success
  */
-fmt_err mcn_unsubscribe(McnHub_t hub, McnNode_t node)
+fmt_err_t mcn_unsubscribe(McnHub_t hub, McnNode_t node)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(node != NULL);
@@ -383,9 +383,9 @@ fmt_err mcn_unsubscribe(McnHub_t hub, McnNode_t node)
  * 
  * @param hub uMCN hub, which can be obtained by MCN_HUB() macro
  * @param data Data of topic to publish
- * @return fmt_err FMT_EOK indicates success
+ * @return fmt_err_t FMT_EOK indicates success
  */
-fmt_err mcn_publish(McnHub_t hub, const void* data)
+fmt_err_t mcn_publish(McnHub_t hub, const void* data)
 {
     MCN_ASSERT(hub != NULL);
     MCN_ASSERT(data != NULL);
@@ -442,9 +442,9 @@ fmt_err mcn_publish(McnHub_t hub, const void* data)
 /**
  * @brief Initialize uMCN module
  * 
- * @return fmt_err FMT_EOK indicates success
+ * @return fmt_err_t FMT_EOK indicates success
  */
-fmt_err mcn_init(void)
+fmt_err_t mcn_init(void)
 {
     rt_timer_init(&timer_mcn_freq_est, "mcn_freq_est",
         __mcn_freq_est_entry,

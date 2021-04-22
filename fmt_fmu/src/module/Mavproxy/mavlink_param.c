@@ -408,7 +408,7 @@ void mavlink_param_send_all(void)
     }
 }
 
-fmt_err mavlink_param_set(const char* name, float val)
+fmt_err_t mavlink_param_set(const char* name, float val)
 {
     param_t* param;
     param = param_get_by_name(name);
@@ -468,7 +468,7 @@ fmt_err mavlink_param_set(const char* name, float val)
     return FMT_EOK;
 }
 
-fmt_err mavlink_param_send(const param_t* param)
+fmt_err_t mavlink_param_send(const param_t* param)
 {
     mavlink_message_t msg;
 

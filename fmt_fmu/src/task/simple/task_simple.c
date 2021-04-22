@@ -18,13 +18,12 @@
 
 #include "hal/pin.h"
 #include "hal/usbd_cdc.h"
-#include "module/utils/devmq.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
 
 #define FMU_LED_PIN 17
 static rt_device_t pin_device;
-
 
 static void _led_on(void)
 {
@@ -44,7 +43,7 @@ static void _led_off(void)
     }
 }
 
-fmt_err task_simple_init(void)
+fmt_err_t task_simple_init(void)
 {
     return FMT_EOK;
 }
@@ -64,6 +63,9 @@ void task_simple_entry(void* parameter)
     WorkQueue_t wq = workqueue_find("wq:system");
     static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = test_run };
     FMT_CHECK(workqueue_schedule_work(wq, &item));
+
+    void ist8310_read_raw_data(void);
+    ist8310_read_raw_data();
 
     while (1) {
         _led_on();

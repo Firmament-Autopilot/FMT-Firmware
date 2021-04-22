@@ -19,6 +19,6 @@
 
 #include <firmament.h>
 
-fmt_err fmtio_upload(const char* path);
+fmt_err_t fmtio_upload(const char* path);
 
 #endif

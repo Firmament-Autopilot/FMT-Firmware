@@ -8,6 +8,7 @@ DRIVERS = [
     'icm20689/icm20689.c',
     'ms5611/ms5611.c',
     'bmi055/bmi055.c',
+    'ist8310/ist8310.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -20,6 +21,7 @@ HAL = [
     'usb/usbd_cdc.c',
     'spi/spi_core.c',
     'spi/spi_dev.c',
+    'i2c/*.c',
     'gyro/*.c',
     'accel/*.c',
     'barometer/*.c',

@@ -27,10 +27,22 @@
  * 2012-09-28     aozima       fixed rt_spi_release_bus assert error.
  */
 
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include "hal/spi.h"
-
-extern rt_err_t rt_spi_bus_device_init(struct rt_spi_bus* bus, const char* name);
-extern rt_err_t rt_spidev_device_init(struct rt_spi_device* dev, const char* name);
 
 rt_err_t rt_spi_bus_register(struct rt_spi_bus*       bus,
                              const char*              name,
@@ -38,7 +50,7 @@ rt_err_t rt_spi_bus_register(struct rt_spi_bus*       bus,
 {
 	rt_err_t result;
 
-	result = rt_spi_bus_device_init(bus, name);
+	result = rt_spi_bus_init(bus, name);
 
 	if(result != RT_EOK)
 		return result;
@@ -68,7 +80,7 @@ rt_err_t rt_spi_bus_attach_device(struct rt_spi_device* device,
 		device->bus = (struct rt_spi_bus*)bus;
 
 		/* initialize spidev device */
-		result = rt_spidev_device_init(device, name);
+		result = rt_spi_device_init(device, name);
 
 		if(result != RT_EOK)
 			return result;

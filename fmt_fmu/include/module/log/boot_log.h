@@ -23,8 +23,8 @@ extern "C" {
 #endif
 
 uint32_t boot_log_push(const char* content, uint32_t len);
-fmt_err boot_log_dump(void);
-fmt_err boot_log_init(void);
+fmt_err_t boot_log_dump(void);
+fmt_err_t boot_log_init(void);
 
 #ifdef __cplusplus
 }

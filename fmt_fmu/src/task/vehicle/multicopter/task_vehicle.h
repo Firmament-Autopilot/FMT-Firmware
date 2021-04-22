@@ -19,7 +19,7 @@
 
 #include <firmament.h>
 
-fmt_err task_vehicle_init(void);
+fmt_err_t task_vehicle_init(void);
 void task_vehicle_entry(void* parameter);
 
 #endif

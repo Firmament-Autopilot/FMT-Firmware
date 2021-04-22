@@ -19,9 +19,9 @@
 
 #include <firmament.h>
 
-fmt_err console_init(void);
-fmt_err console_enable_input(void);
-fmt_err console_set_device(const char* device_name);
+fmt_err_t console_init(void);
+fmt_err_t console_enable_input(void);
+fmt_err_t console_set_device(const char* device_name);
 rt_device_t console_get_device(void);
 uint32_t console_printf(const char* fmt, ...);
 uint32_t console_println(const char* fmt, ...);

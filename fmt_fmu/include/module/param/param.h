@@ -286,16 +286,16 @@ typedef struct {
 
 extern param_list_t param_list;
 
-fmt_err param_init(void);
-fmt_err param_save(char* path);
-fmt_err param_load(char* path);
+fmt_err_t param_init(void);
+fmt_err_t param_save(char* path);
+fmt_err_t param_load(char* path);
 
-fmt_err param_set_val(param_t* param, void* val);
-fmt_err param_set_val_by_name(char* param_name, void* val);
-fmt_err param_set_val_by_full_name(char* group_name, char* param_name, void* val);
-fmt_err param_set_string_val(param_t* param, char* val);
-fmt_err param_set_string_val_by_name(char* param_name, char* val);
-fmt_err param_set_string_val_by_full_name(char* group_name, char* param_name, char* val);
+fmt_err_t param_set_val(param_t* param, void* val);
+fmt_err_t param_set_val_by_name(char* param_name, void* val);
+fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* val);
+fmt_err_t param_set_string_val(param_t* param, char* val);
+fmt_err_t param_set_string_val_by_name(char* param_name, char* val);
+fmt_err_t param_set_string_val_by_full_name(char* group_name, char* param_name, char* val);
 
 uint32_t param_get_count(void);
 int param_get_index(const param_t* param);

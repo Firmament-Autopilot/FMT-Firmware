@@ -23,7 +23,7 @@
  */
 
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,10 +127,12 @@ struct rt_spi_ops {
 struct rt_spi_device {
     struct rt_device parent;
     struct rt_spi_bus* bus;
-
     struct rt_spi_configuration config;
 };
 #define SPI_DEVICE(dev) ((struct rt_spi_device*)(dev))
+
+rt_err_t rt_spi_bus_init(struct rt_spi_bus* bus, const char* name);
+rt_err_t rt_spi_device_init(struct rt_spi_device* dev, const char* name);
 
 /* register a SPI bus */
 rt_err_t rt_spi_bus_register(struct rt_spi_bus* bus,

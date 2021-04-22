@@ -79,7 +79,7 @@ static void ulog_update_cb(void)
     rt_event_send(&_log_event, EVENT_ULOG_UPDATE);
 }
 
-fmt_err logger_start_blog(char* path)
+fmt_err_t logger_start_blog(char* path)
 {
     char log_name[100];
     char file_name[50];
@@ -105,7 +105,7 @@ void logger_stop_blog(void)
     blog_stop();
 }
 
-fmt_err task_logger_init(void)
+fmt_err_t task_logger_init(void)
 {
     /* create log event */
     if (rt_event_init(&_log_event, "logger", RT_IPC_FLAG_FIFO) != RT_EOK) {

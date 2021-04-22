@@ -30,8 +30,10 @@
 #include "board_device.h"
 #include "driver/bmi055.h"
 #include "driver/icm20689.h"
+#include "driver/ist8310.h"
 #include "driver/ms5611.h"
 #include "drv_gpio.h"
+#include "drv_i2c.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
@@ -39,10 +41,10 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/sensor/sensor_hub.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
 [console]\n\
@@ -68,8 +70,8 @@
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
-fmt_err console_toml_config(toml_table_t* table);
-fmt_err mavproxy_toml_config(toml_table_t* table);
+fmt_err_t console_toml_config(toml_table_t* table);
+fmt_err_t mavproxy_toml_config(toml_table_t* table);
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -94,9 +96,9 @@ static void _print_line(const char* name, const char* content, uint32_t len)
     console_printf("%s\n", content);
 }
 
-static fmt_err bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
-    fmt_err err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     toml_table_t* sub_tab;
     const char* key;
     const char* raw;
@@ -207,6 +209,10 @@ void SystemClock_Config(void)
     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
     LL_RCC_SetUARTClockSource(LL_RCC_UART7_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C2_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C3_CLKSOURCE_PCLK1);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C4_CLKSOURCE_PCLK1);
 }
 
 void bsp_show_information(void)
@@ -234,13 +240,16 @@ void bsp_show_information(void)
 void bsp_early_initialize(void)
 {
     HAL_Init();
+
     /* System clock initialization */
     SystemClock_Config();
 
     /* systick driver init */
-    RTT_CHECK(drv_systick_init());
+    RT_CHECK(drv_systick_init());
+
     /* usart driver init */
-    RTT_CHECK(usart_drv_init());
+    RT_CHECK(usart_drv_init());
+
     /* system time module init */
     FMT_CHECK(systime_init());
 
@@ -248,10 +257,13 @@ void bsp_early_initialize(void)
     FMT_CHECK(console_init());
 
     /* gpio driver init */
-    RTT_CHECK(drv_gpio_init());
+    RT_CHECK(drv_gpio_init());
 
     /* spi driver init */
-    RTT_CHECK(spi_drv_init());
+    RT_CHECK(spi_drv_init());
+
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -270,18 +282,20 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    RTT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init usbd_cdc */
-    RTT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
-    RTT_CHECK(drv_icm20689_init());
+    RT_CHECK(drv_icm20689_init());
 
-    RTT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
+    RT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
-    RTT_CHECK(drv_bmi055_init());
+    RT_CHECK(drv_bmi055_init());
+
+    rt_ist8310_init("i2c1");
 
     /* init parameter system */
     FMT_CHECK(param_init());

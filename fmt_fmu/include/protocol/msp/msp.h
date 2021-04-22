@@ -114,4 +114,4 @@ typedef struct mspPort_s {
 } mspPort_t;
 
 mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessCommandFn);
-fmt_err msp_server_start(void);
+fmt_err_t msp_server_start(void);

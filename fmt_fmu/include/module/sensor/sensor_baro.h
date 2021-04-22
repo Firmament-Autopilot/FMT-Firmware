@@ -25,9 +25,9 @@ extern "C" {
 #endif
 
 sensor_baro_t sensor_baro_init(const char* baro_dev_name);
-fmt_err sensor_baro_update(sensor_baro_t baro_dev);
+fmt_err_t sensor_baro_update(sensor_baro_t baro_dev);
 uint8_t sensor_baro_check_ready(sensor_baro_t baro_dev);
-fmt_err sensor_baro_read(sensor_baro_t baro_dev, baro_data_t* baro_data);
+fmt_err_t sensor_baro_read(sensor_baro_t baro_dev, baro_data_t* baro_data);
 
 #ifdef __cplusplus
 }

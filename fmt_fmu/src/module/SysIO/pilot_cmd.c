@@ -126,7 +126,7 @@ void print_channel_mapping(void)
     }
 }
 
-static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
+static fmt_err_t _pilot_cmd_parse_command(const toml_array_t* curarr)
 {
     int i, j;
     toml_table_t* tab;
@@ -235,7 +235,7 @@ static fmt_err _pilot_cmd_parse_command(const toml_array_t* curarr)
     return FMT_EOK;
 }
 
-static fmt_err _pilot_cmd_parse_mode(const toml_array_t* curarr)
+static fmt_err_t _pilot_cmd_parse_mode(const toml_array_t* curarr)
 {
     int i, j;
     toml_table_t* tab;
@@ -307,7 +307,7 @@ static fmt_err _pilot_cmd_parse_mode(const toml_array_t* curarr)
     return FMT_EOK;
 }
 
-static fmt_err _pilot_cmd_parse_device(const toml_table_t* curtab)
+static fmt_err_t _pilot_cmd_parse_device(const toml_table_t* curtab)
 {
     int i;
     const char* key;
@@ -400,7 +400,7 @@ static fmt_err _pilot_cmd_parse_device(const toml_table_t* curtab)
 
 static int _pilot_cmd_echo(void* parameter)
 {
-    fmt_err err;
+    fmt_err_t err;
     Pilot_Cmd_Bus pilot_cmd;
 
     err = mcn_copy_from_hub((McnHub*)parameter, &pilot_cmd);
@@ -417,7 +417,7 @@ static int _pilot_cmd_echo(void* parameter)
 
 static int _rc_raw_echo(void* parameter)
 {
-    fmt_err err;
+    fmt_err_t err;
     int16_t rc_chan_val[16];
     pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)rcDevInfo.config;
 
@@ -587,7 +587,7 @@ uint8_t pilot_cmd_collect(void)
 }
 
 /* config pilot_cmd via toml system configuration file */
-fmt_err pilot_cmd_toml_init(toml_table_t* table)
+fmt_err_t pilot_cmd_toml_init(toml_table_t* table)
 {
     int i, j;
     const char* key;
@@ -668,7 +668,7 @@ fmt_err pilot_cmd_toml_init(toml_table_t* table)
     return FMT_EOK;
 }
 
-fmt_err pilot_cmd_init(void)
+fmt_err_t pilot_cmd_init(void)
 {
     /* advertise pilot command topic */
     if (mcn_advertise(MCN_HUB(pilot_cmd), _pilot_cmd_echo) != FMT_EOK) {

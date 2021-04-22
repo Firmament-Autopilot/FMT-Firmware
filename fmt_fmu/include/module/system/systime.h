@@ -62,7 +62,23 @@ typedef struct {
         }                                                             \
     } while (0)
 
-fmt_err systime_init(void);
+
+#define WAIT_TIMEOUT(_cond, _timeout_us, _opt)               \
+    do {                                                     \
+        uint64_t start = systime_now_us();                   \
+        uint8_t timeout = 1;                                 \
+        while ((systime_now_us() - start) < (_timeout_us)) { \
+            if (!(_cond)) {                                  \
+                timeout = 0;                                 \
+                break;                                       \
+            }                                                \
+        }                                                    \
+        if (timeout) {                                       \
+            _opt                                             \
+        }                                                    \
+    } while (0)
+
+fmt_err_t systime_init(void);
 uint64_t systime_now_us(void);
 uint32_t systime_now_ms(void);
 void systime_udelay(uint32_t delay);

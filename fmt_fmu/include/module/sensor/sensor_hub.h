@@ -120,7 +120,7 @@ typedef struct {
     float distance_m; // negative value indicate invalid
 } rf_data_t;
 
-fmt_err sensor_hub_init(void);
+fmt_err_t sensor_hub_init(void);
 void sensor_collect(void);
 
 #ifdef __cplusplus

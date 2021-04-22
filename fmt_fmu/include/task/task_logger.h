@@ -22,11 +22,11 @@
 #define EVENT_BLOG_UPDATE				(1<<0)
 #define EVENT_ULOG_UPDATE		        (1<<1)
 
-fmt_err logger_start_blog(char* path);
+fmt_err_t logger_start_blog(char* path);
 void logger_stop_blog(void);
 void get_working_log_session(char* path);
 
-fmt_err task_logger_init(void);
+fmt_err_t task_logger_init(void);
 void task_logger_entry(void* parameter);
 
 #endif

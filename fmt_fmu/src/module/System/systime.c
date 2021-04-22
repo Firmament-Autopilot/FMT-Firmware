@@ -155,9 +155,9 @@ void systime_msleep(uint32_t time_ms)
 /**
  * @brief Initialize systime module
  * 
- * @return fmt_err FMT_EOK indicates success
+ * @return fmt_err_t FMT_EOK indicates success
  */
-fmt_err systime_init(void)
+fmt_err_t systime_init(void)
 {
     systick_dev_t systick_device;
 

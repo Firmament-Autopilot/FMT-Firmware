@@ -58,11 +58,11 @@ uint32_t boot_log_push(const char* content, uint32_t len)
  * 
  * @return FMT Errors.
  */
-fmt_err boot_log_dump(void)
+fmt_err_t boot_log_dump(void)
 {
     char file[100];
     int fd;
-    fmt_err res = FMT_EOK;
+    fmt_err_t res = FMT_EOK;
 
     RT_ASSERT(log_buffer != NULL);
 
@@ -100,7 +100,7 @@ fmt_err boot_log_dump(void)
  * 
  * @return FMT Errors.
  */
-fmt_err boot_log_init(void)
+fmt_err_t boot_log_init(void)
 {
     RT_ASSERT(log_buffer == NULL);
 

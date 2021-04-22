@@ -133,11 +133,6 @@ static rt_err_t tca62724_control(rt_device_t dev, int cmd, void* args)
 
 rt_err_t tca62724_drv_init(void)
 {
-	// TODO, move it to board init
-	if(device_i2c_init("i2c2") != RT_EOK) {
-		return RT_ERROR;
-	}
-
 	_i2c_device = rt_device_find("i2c2");
 
 	if(_i2c_device == RT_NULL) {

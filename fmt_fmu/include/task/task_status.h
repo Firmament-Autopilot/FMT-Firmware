@@ -19,7 +19,7 @@
 
 #include <firmament.h>
 
-fmt_err task_status_init(void);
+fmt_err_t task_status_init(void);
 void task_status_entry(void* parameter);
 
 #endif

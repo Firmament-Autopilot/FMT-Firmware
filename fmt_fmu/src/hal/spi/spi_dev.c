@@ -21,10 +21,25 @@
  * Date           Author       Notes
  */
 
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include "hal/spi.h"
-#include <rtthread.h>
+#include <firmament.h>
 
-rt_err_t rt_spi_bus_device_init(struct rt_spi_bus* bus, const char* name)
+rt_err_t rt_spi_bus_init(struct rt_spi_bus* bus, const char* name)
 {
     struct rt_device* device;
     RT_ASSERT(bus != RT_NULL);
@@ -33,7 +48,7 @@ rt_err_t rt_spi_bus_device_init(struct rt_spi_bus* bus, const char* name)
 
     /* set device type */
     device->type = RT_Device_Class_SPIBUS;
-    /* initialize device interface */
+    /* not allowed to directly read/write spi bus */
     device->init = RT_NULL;
     device->open = RT_NULL;
     device->close = RT_NULL;
@@ -46,7 +61,7 @@ rt_err_t rt_spi_bus_device_init(struct rt_spi_bus* bus, const char* name)
 }
 
 /* SPI Dev device interface, compatible with RT-Thread 0.3.x/1.0.x */
-static rt_size_t _spidev_device_read(rt_device_t dev,
+static rt_size_t spi_bus_read(rt_device_t dev,
     rt_off_t pos,
     void* buffer,
     rt_size_t size)
@@ -60,7 +75,7 @@ static rt_size_t _spidev_device_read(rt_device_t dev,
     return rt_spi_transfer(device, RT_NULL, buffer, size);
 }
 
-static rt_size_t _spidev_device_write(rt_device_t dev,
+static rt_size_t spi_bus_write(rt_device_t dev,
     rt_off_t pos,
     const void* buffer,
     rt_size_t size)
@@ -74,7 +89,7 @@ static rt_size_t _spidev_device_write(rt_device_t dev,
     return rt_spi_transfer(device, buffer, RT_NULL, size);
 }
 
-static rt_err_t _spidev_device_control(rt_device_t dev,
+static rt_err_t spi_bus_control(rt_device_t dev,
     int cmd,
     void* args)
 {
@@ -89,7 +104,7 @@ static rt_err_t _spidev_device_control(rt_device_t dev,
     return RT_EOK;
 }
 
-rt_err_t rt_spidev_device_init(struct rt_spi_device* dev, const char* name)
+rt_err_t rt_spi_device_init(struct rt_spi_device* dev, const char* name)
 {
     struct rt_device* device;
     RT_ASSERT(dev != RT_NULL);
@@ -101,9 +116,9 @@ rt_err_t rt_spidev_device_init(struct rt_spi_device* dev, const char* name)
     device->init = RT_NULL;
     device->open = RT_NULL;
     device->close = RT_NULL;
-    device->read = _spidev_device_read;
-    device->write = _spidev_device_write;
-    device->control = _spidev_device_control;
+    device->read = spi_bus_read;
+    device->write = spi_bus_write;
+    device->control = spi_bus_control;
 
     /* register to device manager */
     return rt_device_register(device, name, RT_DEVICE_FLAG_RDWR);

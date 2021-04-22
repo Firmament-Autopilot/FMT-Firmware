@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __SENSOR_MAG_H__
-#define __SENSOR_MAG_H__
+
+#ifndef __DRV_I2C_SOFT_H__
+#define __DRV_I2C_SOFT_H__
 
 #include <firmament.h>
-
-#include "module/sensor/sensor_hub.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-sensor_mag_t sensor_mag_init(const char* mag_dev_name);
-fmt_err_t sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3]);
-fmt_err_t sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3]);
-void sensor_mag_set_rotation(sensor_mag_t mag_dev, const float rotation[9]);
-void sensor_mag_set_offset(sensor_mag_t mag_dev, const float offset[3]);
-void sensor_mag_correct(sensor_mag_t mag_dev, const float src[3], float dst[3]);
+rt_err_t drv_i2c_soft_init(void);
 
 #ifdef __cplusplus
 }

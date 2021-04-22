@@ -348,7 +348,7 @@ static uint8_t _request_reset(FTP_Msg_Payload* payload)
 
 /**************************** Public Function ********************************/
 
-fmt_err ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t target_component)
+fmt_err_t ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t target_component)
 {
 	uint8_t err_code;
 	FTP_Msg_Payload* ftp_payload = (FTP_Msg_Payload*)payload;
@@ -429,7 +429,7 @@ fmt_err ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t tar
 	return FMT_EOK;
 }
 
-fmt_err ftp_stream_send(StreamSession* stream_session)
+fmt_err_t ftp_stream_send(StreamSession* stream_session)
 {
 	mavlink_file_transfer_protocol_t ftp_protocol_t;
 	FTP_Msg_Payload* ftp_msg_t = (FTP_Msg_Payload*)ftp_protocol_t.payload;

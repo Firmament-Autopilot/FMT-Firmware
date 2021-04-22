@@ -49,21 +49,19 @@
 extern "C" {
 #endif
 
-#define RT_I2C_DEV_CTRL_10BIT 0x20
-#define RT_I2C_DEV_CTRL_ADDR 0x21
+#define RT_I2C_DEV_CTRL_10BIT   0x20
+#define RT_I2C_DEV_CTRL_ADDR    0x21
 #define RT_I2C_DEV_CTRL_TIMEOUT 0x22
-#define RT_I2C_DEV_CTRL_RW 0x23
+#define RT_I2C_DEV_CTRL_RW      0x23
 
 struct rt_i2c_priv_data {
+    rt_uint16_t addr;
     struct rt_i2c_msg* msgs;
     rt_size_t number;
 };
 
-rt_err_t rt_i2c_bus_device_device_init(struct rt_i2c_bus_device* bus,
-    const char* name);
-rt_err_t device_i2c_init(char* name);
-
-//extern struct rt_i2c_bus_device rt_i2c1 , rt_i2c2;
+rt_err_t rt_i2c_bus_init(struct rt_i2c_bus* bus, const char* name);
+rt_err_t rt_i2c_device_init(struct rt_i2c_device* dev, const char* name);
 
 #ifdef __cplusplus
 }
