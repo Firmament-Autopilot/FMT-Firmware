@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 /* i2c slave device addresses */
-#define IST8310_ADDRESS                 0x1C
+#define IST8310_ADDRESS                 0x0E
 
 rt_err_t drv_i2c_init(void);
 

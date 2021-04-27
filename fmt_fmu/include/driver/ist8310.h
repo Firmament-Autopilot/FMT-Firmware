@@ -5,7 +5,7 @@
 
 // IST8310 internal reg addr
 
-#define IST8310_ADDRESS                 0x1C
+#define IST8310_ADDRESS                 0x0E
 #define IST8310_DEVICE_ID_A             0x10
 
 #define IST8310_REG_HX_L                0x03

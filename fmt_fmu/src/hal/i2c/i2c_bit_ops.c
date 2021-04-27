@@ -380,7 +380,7 @@ static rt_err_t i2c_bit_send_address(struct rt_i2c_bus* bus,
         }
     } else {
         /* 7-bit addr */
-        addr1 = addr << 1;
+        addr1 = addr;
 
         if (flags & RT_I2C_RD)
             addr1 |= 1;

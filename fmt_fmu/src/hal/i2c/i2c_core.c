@@ -96,14 +96,15 @@ rt_size_t rt_i2c_transfer(struct rt_i2c_bus* bus,
 
     if (bus->ops->master_xfer) {
 #ifdef RT_I2C_DEBUG
-
         for (ret = 0; ret < num; ret++) {
             i2c_dbg("msgs[%d] %c, len=%d%s\n", ret,
                 (msgs[ret].flags & RT_I2C_RD) ? 'R' : 'W',
                 msgs[ret].len);
         }
-
 #endif
+        if (!(msgs[0].flags & RT_I2C_ADDR_10BIT)) {
+            addr = addr << 1;
+        }
 
         rt_mutex_take(&bus->lock, RT_WAITING_FOREVER);
         ret = bus->ops->master_xfer(bus, addr, msgs, num);
