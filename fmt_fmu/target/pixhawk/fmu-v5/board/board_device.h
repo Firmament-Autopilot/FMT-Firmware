@@ -35,6 +35,8 @@
 #define BMI055_ACC_SPI_DEVICE_NAME  "spi1_dev4"
 #define BMI055_GYRO_SPI_DEVICE_NAME "spi1_dev3"
 
+#define IST8310_I2C_DEVICE_NAME "i2c1_dev1"
+
 #define SENSOR_USING_IMU0
 #define SENSOR_USING_IMU1
 // #define SENSOR_USING_MAG0

@@ -34,7 +34,14 @@
 
 #define IST8310_MAG_TO_GAUSS            0.0015f
 
+enum Rotation
+{
+    ROTATION_NONE                = 0,
+    ROTATION_ROLL_270            = 20,
+    ROTATION_PITCH_270           = 25,
+};
 
 int rt_ist8310_init(char* i2c_device_name); 
+
 
 #endif
