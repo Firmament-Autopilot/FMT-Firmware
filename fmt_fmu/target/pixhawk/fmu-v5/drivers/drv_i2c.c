@@ -222,6 +222,7 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
     WAIT_TIMEOUT(LL_I2C_IsActiveFlag_BUSY(stm32_i2c->I2C), I2C_TIMEOUT_US, return 0;);
     /* clear stop flag */
     LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
+    LL_I2C_ClearFlag_NACK(stm32_i2c->I2C);
 
     for (msg_idx = 0; msg_idx < num; msg_idx++) {
         msg = &msgs[msg_idx];
