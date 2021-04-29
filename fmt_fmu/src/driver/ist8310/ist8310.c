@@ -7,7 +7,7 @@ uint8_t ist8310_id;
 
 rt_device_t i2c_dev;
 
-int16_t magRaw[3] = { 0 };
+
 
 
 int rt_ist8310_init(char* i2c_device_name)
@@ -27,7 +27,7 @@ int rt_ist8310_init(char* i2c_device_name)
 
 void rotateMag(enum Rotation rot, int16_t* v)
 {
-    float tmp;
+    int16_t tmp;
 
     switch (rot)
     {
@@ -50,9 +50,10 @@ void rotateMag(enum Rotation rot, int16_t* v)
     }
 }
 
-void ist8310_read_raw_data(void)
+void ist8310_read_raw_data(float *mag)
 {
     uint8_t buffer[6];
+    int16_t magRaw[3] = { 0 };
 
     i2c_read_regs(i2c_dev, IST8310_REG_HX_L, buffer, 6);
     magRaw[0] = (int16_t)buffer[1] << 8 | buffer[0];
@@ -63,6 +64,10 @@ void ist8310_read_raw_data(void)
     rotateMag(ROTATION_ROLL_270,magRaw);
     //pitch 270°
     rotateMag(ROTATION_PITCH_270,magRaw);
+
+    mag[0] = magRaw[0] * IST8310_MAG_TO_GAUSS;
+    mag[1] = magRaw[1] * IST8310_MAG_TO_GAUSS;
+    mag[2] = magRaw[2] * IST8310_MAG_TO_GAUSS;
 
     console_printf("mag %d %d %d\n", magRaw[0], magRaw[1], magRaw[2]);
 }
