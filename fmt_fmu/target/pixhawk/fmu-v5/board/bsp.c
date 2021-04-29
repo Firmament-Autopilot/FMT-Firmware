@@ -32,6 +32,7 @@
 #include "driver/icm20689.h"
 #include "driver/ist8310.h"
 #include "driver/ms5611.h"
+#include "driver/ncp5623c.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_sdio.h"
@@ -296,6 +297,8 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi055_init());
 
     rt_ist8310_init("i2c1");
+
+    RT_CHECK(drv_ncp5623c_init("i2c1_dev2"));
 
     /* init parameter system */
     FMT_CHECK(param_init());

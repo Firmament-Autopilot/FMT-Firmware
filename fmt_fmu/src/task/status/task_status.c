@@ -67,14 +67,11 @@ static void _rgb_led_control(void)
     DEFINE_TIMETAG(rgb_led, 0);
 
     if (bright <= 0) {
-        TIMETAG(rgb_led)->period = 100;
-        // delay_time = 100;
+        TIMETAG(rgb_led)->period = 150;
     } else {
         if (bright >= TCA62724_MAX_BRIGHT) {
-            // delay_time = 300;
-            TIMETAG(rgb_led)->period = 300;
+            TIMETAG(rgb_led)->period = 250;
         } else {
-            // delay_time = 50;
             TIMETAG(rgb_led)->period = 50;
         }
     }

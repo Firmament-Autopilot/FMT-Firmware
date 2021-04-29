@@ -9,6 +9,7 @@ DRIVERS = [
     'ms5611/ms5611.c',
     'bmi055/bmi055.c',
     'ist8310/ist8310.c',
+    'rgb_led/ncp5623c.c',
 ]
 
 DRIVERS_CPPPATH = []
