@@ -165,6 +165,7 @@ int  rt_thread_kill(rt_thread_t tid, int sig);
 void rt_thread_suspend_sethook(void (*hook)(rt_thread_t thread));
 void rt_thread_resume_sethook(void (*hook)(rt_thread_t thread));
 void rt_thread_inited_sethook(void (*hook)(rt_thread_t thread));
+void rt_thread_deleted_sethook(void (*hook)(rt_thread_t thread));
 #endif
 
 /*

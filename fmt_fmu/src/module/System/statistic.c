@@ -91,6 +91,11 @@ static void thread_inited_hook(rt_thread_t thread)
     thread->user_data = (uint32_t)stats;
 }
 
+static void thread_deleted_hook(rt_thread_t thread)
+{
+    rt_free((void*)thread->user_data);
+}
+
 /**
  * @brief Get the cpu usage consumption
  * 
@@ -113,6 +118,7 @@ float get_cpu_usage(void)
 fmt_err_t sys_stat_init(void)
 {
     rt_thread_inited_sethook(thread_inited_hook);
+    rt_thread_deleted_sethook(thread_deleted_hook);
     rt_scheduler_sethook(scheduler_hook);
     rt_thread_idle_sethook(thread_idle_hook);
 

@@ -52,6 +52,7 @@ extern rt_list_t rt_thread_defunct;
 static void (*rt_thread_suspend_hook)(rt_thread_t thread);
 static void (*rt_thread_resume_hook)(rt_thread_t thread);
 static void (*rt_thread_inited_hook)(rt_thread_t thread);
+static void (*rt_thread_deleted_hook)(rt_thread_t thread);
 
 /**
  * @ingroup Hook
@@ -88,6 +89,17 @@ void rt_thread_resume_sethook(void (*hook)(rt_thread_t thread))
 void rt_thread_inited_sethook(void (*hook)(rt_thread_t thread))
 {
 	rt_thread_inited_hook = hook;
+}
+
+/**
+ * @ingroup Hook
+ * This function sets a hook function when a thread is deleted.
+ *
+ * @param hook the specified hook function
+ */
+void rt_thread_deleted_sethook(void (*hook)(rt_thread_t thread))
+{
+	rt_thread_deleted_hook = hook;
 }
 
 #endif
@@ -432,6 +444,8 @@ rt_err_t rt_thread_delete(rt_thread_t thread)
 
 	/* enable interrupt */
 	rt_hw_interrupt_enable(lock);
+
+    RT_OBJECT_HOOK_CALL(rt_thread_deleted_hook, (thread));
 
 	return RT_EOK;
 }
