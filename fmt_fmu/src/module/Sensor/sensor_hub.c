@@ -25,10 +25,10 @@
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
 
-MCN_DEFINE(sensor_imu0_native, sizeof(imu_data_t));
+MCN_DEFINE(sensor_imu0_0, sizeof(imu_data_t));
 MCN_DEFINE(sensor_imu0, sizeof(imu_data_t));
 
-MCN_DEFINE(sensor_imu1_native, sizeof(imu_data_t));
+MCN_DEFINE(sensor_imu1_0, sizeof(imu_data_t));
 MCN_DEFINE(sensor_imu1, sizeof(imu_data_t));
 
 MCN_DEFINE(sensor_mag0_native, sizeof(mag_data_t));
@@ -367,7 +367,7 @@ void sensor_collect(void)
         sensor_gyr_measure(imu0, __imu_data.gyr_B_radDs);
         sensor_acc_measure(imu0, __imu_data.acc_B_mDs2);
         /* publish scaled imu data without calibration and filtering */
-        mcn_publish(MCN_HUB(sensor_imu0_native), &__imu_data);
+        mcn_publish(MCN_HUB(sensor_imu0_0), &__imu_data);
         /* do calibration */
         sensor_gyr_correct(imu0, __imu_data.gyr_B_radDs, temp);
         __imu_data.gyr_B_radDs[0] = temp[0];
@@ -392,7 +392,7 @@ void sensor_collect(void)
         sensor_gyr_measure(imu1, __imu_data.gyr_B_radDs);
         sensor_acc_measure(imu1, __imu_data.acc_B_mDs2);
         /* publish scaled imu data without calibration and filtering */
-        mcn_publish(MCN_HUB(sensor_imu1_native), &__imu_data);
+        mcn_publish(MCN_HUB(sensor_imu1_0), &__imu_data);
         /* do calibration */
         sensor_gyr_correct(imu1, __imu_data.gyr_B_radDs, temp);
         __imu_data.gyr_B_radDs[0] = temp[0];
@@ -496,7 +496,7 @@ fmt_err_t sensor_hub_init(void)
     imu0 = sensor_imu_init("gyro0", "accel0");
     RT_ASSERT(imu0 != NULL);
 
-    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_imu0_native), echo_sensor_imu));
+    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_imu0_0), echo_sensor_imu));
     FMT_CHECK(mcn_advertise(MCN_HUB(sensor_imu0), echo_sensor_imu));
 #endif
 
@@ -504,7 +504,7 @@ fmt_err_t sensor_hub_init(void)
     imu1 = sensor_imu_init("gyro1", "accel1");
     RT_ASSERT(imu1 != NULL);
 
-    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_imu1_native), echo_sensor_imu));
+    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_imu1_0), echo_sensor_imu));
     FMT_CHECK(mcn_advertise(MCN_HUB(sensor_imu1), echo_sensor_imu));
 #endif
 

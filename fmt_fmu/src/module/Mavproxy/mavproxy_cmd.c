@@ -28,7 +28,7 @@
 #define TAG "MAVCMD"
 
 MCN_DECLARE(sensor_imu0);
-MCN_DECLARE(sensor_imu0_native);
+MCN_DECLARE(sensor_imu0_0);
 MCN_DECLARE(sensor_mag0_native);
 MCN_DECLARE(ins_output);
 
@@ -256,7 +256,7 @@ static void gyr_mavlink_calibration(void)
         send_statustext_msg(CAL_START_GYRO, &msg);
     }
 
-    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0_native), &imu_report) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0_0), &imu_report) != FMT_EOK) {
         return;
     }
 
@@ -362,7 +362,7 @@ static void accel_calibration(void)
         if (mavcmd_calib_acc.cnt[mavcmd_calib_acc.acc_pos] < ACC_CALIBRATE_COUNT) {
             imu_data_t imu_report;
 
-            if (mcn_copy_from_hub(MCN_HUB(sensor_imu0_native), &imu_report) != FMT_EOK) {
+            if (mcn_copy_from_hub(MCN_HUB(sensor_imu0_0), &imu_report) != FMT_EOK) {
                 return;
             }
 

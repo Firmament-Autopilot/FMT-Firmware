@@ -52,11 +52,6 @@ fmt_err_t task_simple_init(void)
     return FMT_EOK;
 }
 
-void test_run(void)
-{
-    sensor_collect();
-}
-
 static void rgb_led_control(void)
 {
     static int bright = 0;
@@ -96,7 +91,7 @@ void task_simple_entry(void* parameter)
     pin_device->control(pin_device, 0, &mode);
 
     WorkQueue_t wq = workqueue_find("wq:lp_work");
-    static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = test_run };
+    static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = sensor_collect };
     FMT_CHECK(workqueue_schedule_work(wq, &item));
 
     void ist8310_read_raw_data(void);
