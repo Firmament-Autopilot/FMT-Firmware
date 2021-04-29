@@ -220,6 +220,7 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
 
     /* wait until bus is free */
     WAIT_TIMEOUT(LL_I2C_IsActiveFlag_BUSY(stm32_i2c->I2C), I2C_TIMEOUT_US, return 0;);
+
     /* clear stop flag */
     LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
     LL_I2C_ClearFlag_NACK(stm32_i2c->I2C);
@@ -265,6 +266,8 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
     /* generate stop condition, NACK is automatically generated before stop */
     LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
         LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
+    /* wait until stop flag is set */
+    WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
 
     return num;
 }
