@@ -48,7 +48,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
     // test_main();
 
     // WorkQueue_t wq = workqueue_create("wq:test", 10, 4096, 20);
-    WorkQueue_t wq = workqueue_find("wq:system");
+    WorkQueue_t wq = workqueue_find("wq:lp_work");
     if (wq == NULL) {
         RT_ASSERT(false);
     }

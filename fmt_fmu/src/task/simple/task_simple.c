@@ -95,7 +95,7 @@ void task_simple_entry(void* parameter)
     pin_device = rt_device_find("pin");
     pin_device->control(pin_device, 0, &mode);
 
-    WorkQueue_t wq = workqueue_find("wq:system");
+    WorkQueue_t wq = workqueue_find("wq:lp_work");
     static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = test_run };
     FMT_CHECK(workqueue_schedule_work(wq, &item));
 

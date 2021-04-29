@@ -175,7 +175,7 @@ fmt_err_t devmq_start_work(void)
         .schedule_time = 0,
         .run = devmq_distribute_msg
     };
-    WorkQueue_t wq = workqueue_find("wq:system");
+    WorkQueue_t wq = workqueue_find("wq:lp_work");
     if (wq == NULL) {
         return FMT_ENOSYS;
     }
