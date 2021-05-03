@@ -152,6 +152,25 @@ int cmd_cat(int argc, char** argv)
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_cat, __cmd_cat, Concatenate FILE(s));
 
+int cmd_rm(int argc, char** argv)
+{
+    int index;
+
+    if (argc == 1) {
+        rt_kprintf("Usage: rm FILE...\n");
+        rt_kprintf("Remove (unlink) the FILE(s).\n");
+        return 0;
+    }
+
+    for (index = 1; index < argc; index++) {
+        // unlink(argv[index]);
+        fm_deldir(argv[index]);
+    }
+
+    return 0;
+}
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_rm, __cmd_rm, Remove(unlink) the FILE(s).);
+
 #ifdef DFS_USING_WORKDIR
 int cmd_cd(int argc, char** argv)
 {
