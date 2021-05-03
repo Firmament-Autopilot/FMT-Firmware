@@ -17,6 +17,8 @@
 #include "hal/i2c.h"
 #include "stm32f7xx_ll_i2c.h"
 
+/* We want to ensure the real-time performace, so the i2c timeout here is
+ * relatively short */
 #define I2C_TIMEOUT_US (500)
 
 struct stm32_i2c_bus {
@@ -215,15 +217,14 @@ static void i2c4_hw_init(void)
 static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_addr, struct rt_i2c_msg msgs[], rt_uint32_t num)
 {
     struct rt_i2c_msg* msg;
-    uint32_t msg_idx;
+    uint32_t msg_idx = 0;
     struct stm32_i2c_bus* stm32_i2c = (struct stm32_i2c_bus*)bus;
 
-    /* wait until bus is free */
-    WAIT_TIMEOUT(LL_I2C_IsActiveFlag_BUSY(stm32_i2c->I2C), I2C_TIMEOUT_US, return 0;);
+    /* wait until bus is free. If timeout, generate stop again */
+    WAIT_TIMEOUT(LL_I2C_IsActiveFlag_BUSY(stm32_i2c->I2C), 2 * I2C_TIMEOUT_US, goto _stop;);
 
-    /* clear stop flag */
-    LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
-    LL_I2C_ClearFlag_NACK(stm32_i2c->I2C);
+    /* clear flags */
+    SET_BIT(stm32_i2c->I2C->ICR, I2C_ICR_STOPCF | I2C_ICR_NACKCF);
 
     for (msg_idx = 0; msg_idx < num; msg_idx++) {
         msg = &msgs[msg_idx];
@@ -238,11 +239,8 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
                 LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_READ);
 
             while (nbytes--) {
-                if (LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C)) {
-                    return msg_idx;
-                }
                 /* wait data received */
-                WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_RXNE(stm32_i2c->I2C), I2C_TIMEOUT_US, return msg_idx;);
+                WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_RXNE(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
                 /* receive data */
                 *(msg->buf++) = LL_I2C_ReceiveData8(stm32_i2c->I2C);
             }
@@ -251,25 +249,29 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
             LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
                 LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
 
+            /*  TXIS bit is not set when a NACK is received */
+            WAIT_TIMEOUT2(!LL_I2C_IsActiveFlag_TXIS(stm32_i2c->I2C),
+                          LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
+
             while (nbytes--) {
-                if (LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C)) {
-                    return msg_idx;
-                }
                 /* transmit data */
                 LL_I2C_TransmitData8(stm32_i2c->I2C, *(msg->buf++));
                 /* wait write complete */
-                WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_TXE(stm32_i2c->I2C), I2C_TIMEOUT_US, return msg_idx;);
+                WAIT_TIMEOUT2(!LL_I2C_IsActiveFlag_TXE(stm32_i2c->I2C),
+                              LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
             }
         }
     }
 
-    /* generate stop condition, NACK is automatically generated before stop */
-    LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
-        LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
-    /* wait until stop flag is set */
-    WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
+_stop:
+    /* in master transmit, a STOP condition is automatically sent after the NACK reception */
+    if (!LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C)) {
+        /* generate stop condition, NACK is automatically generated before stop */
+        LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
+            LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
+    }
 
-    return num;
+    return msg_idx;
 }
 
 static const struct rt_i2c_bus_device_ops i2c_bus_ops = {
