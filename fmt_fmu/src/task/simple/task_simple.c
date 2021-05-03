@@ -100,9 +100,11 @@ void task_simple_entry(void* parameter)
     rgb_led_dev = rt_device_find("ncp5623c");
     RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
     RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_BLUE));
+    sys_msleep(10);
 
     while (1) {
         rgb_led_control();
+        ist8310_read_raw_data();
         sys_msleep(10);
     }
 }

@@ -41,7 +41,7 @@ enum Rotation
     ROTATION_PITCH_270           = 25,
 };
 
-int rt_ist8310_init(char* i2c_device_name); 
+rt_err_t drv_ist8310_init(const char* device_name);
 
 
 #endif

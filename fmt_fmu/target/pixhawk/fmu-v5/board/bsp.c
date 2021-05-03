@@ -296,7 +296,9 @@ void bsp_initialize(void)
 
     RT_CHECK(drv_bmi055_init());
 
-    rt_ist8310_init(IST8310_I2C_DEVICE_NAME);
+    // rt_ist8310_init(IST8310_I2C_DEVICE_NAME);
+
+    RT_CHECK(drv_ist8310_init("i2c1_dev1"));
 
     RT_CHECK(drv_ncp5623c_init("i2c1_dev2"));
 
