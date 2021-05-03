@@ -40,6 +40,7 @@ MODULES = [
     'SysCmd/cmd_mcn.c',
     'SysCmd/cmd_param.c',
     'SysCmd/cmd_test.c',
+    'SysCmd/cmd_reboot.c',
     'File_Manager/*.c',
     'FTP/*.c',
     'Plant/*.c',
