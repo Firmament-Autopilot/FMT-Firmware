@@ -546,9 +546,8 @@ fmt_err_t sensor_hub_init(void)
     FMT_CHECK(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
 #endif
 
-    /* For testing */
-    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_optflow), NULL));
-    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_rangefinder), NULL));
+    mcn_advertise(MCN_HUB(sensor_optflow), NULL);
+    mcn_advertise(MCN_HUB(sensor_rangefinder), NULL);
 
     /* Initialize sensor rotation matrix */
     rotation_init();
