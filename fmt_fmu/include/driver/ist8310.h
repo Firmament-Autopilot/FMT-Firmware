@@ -1,47 +1,62 @@
-#ifndef __IST8310_H
-#define __IST8310_H
+/******************************************************************************
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+#ifndef __IST8310_H__
+#define __IST8310_H__
 
-#include <rtthread.h>
+#include <firmament.h>
 
-// IST8310 internal reg addr
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define IST8310_ADDRESS                 0x0E
-#define IST8310_DEVICE_ID_A             0x10
+#define REG_WHOAMI       0x00
+#define REG_STAT1        0x02
+#define REG_DATA_OUT_X_L 0x03
+#define REG_DATA_OUT_X_H 0x04
+#define REG_DATA_OUT_Y_L 0x05
+#define REG_DATA_OUT_Y_H 0x06
+#define REG_DATA_OUT_Z_L 0x07
+#define REG_DATA_OUT_Z_H 0x08
+#define REG_STAT2        0x09
+#define REG_CTRL1        0x0a
+#define REG_CTRL2        0x0b
+#define REG_TEMP_L       0x1c
+#define REG_TEMP_H       0x1d
+#define REG_CTRL3        0x41
+#define REG_CTRL4        0x42
 
-#define IST8310_REG_HX_L                0x03
-#define IST8310_REG_HX_H                0x04
-#define IST8310_REG_HY_L                0x05
-#define IST8310_REG_HY_H                0x06
-#define IST8310_REG_HZ_L                0x07
-#define IST8310_REG_HZ_H                0x08
-#define IST8310_REG_WHOAMI              0x00
-#define IST8310_REG_CNTRL1              0x0A
-#define IST8310_REG_CNTRL2              0x0B
-#define IST8310_REG_AVERAGE             0x41
-#define IST8310_REG_PDCNTL              0x42
-#define IST8310_ODR_SINGLE              0x01
-#define IST8310_ODR_10_HZ               0x03
-#define IST8310_ODR_20_HZ               0x05
-#define IST8310_ODR_50_HZ               0x07
-#define IST8310_ODR_100_HZ              0x06
-#define IST8310_ODR_200_HZ              0x0B
-#define IST8310_CHIP_ID                 0x10
-#define IST8310_AVG_16                  0x24
-#define IST8310_PULSE_DURATION_NORMAL   0xC0
-#define IST8310_CNTRL2_RESET            0x01
-#define IST8310_CNTRL2_DRPOL            0x04
-#define IST8310_CNTRL2_DRENA            0x08
+#define CTRL1_ODR_SINGLE 0x01 /* Single measurement mode */
+#define CTRL1_ODR_10_HZ  0x03
+#define CTRL1_ODR_20_HZ  0x05
+#define CTRL1_ODR_50_HZ  0x07
+#define CTRL1_ODR_100_HZ 0x06
+#define CTRL1_ODR_200_HZ 0x0B
 
-#define IST8310_MAG_TO_GAUSS            0.0015f
+#define CTRL2_SRST 0x01 /* Software reset */
 
-enum Rotation
-{
-    ROTATION_NONE                = 0,
-    ROTATION_ROLL_270            = 20,
-    ROTATION_PITCH_270           = 25,
-};
+#define CTRL3_SAMPLEAVG_16 0x24 /* Sample Averaging 16 */
+#define CTRL3_SAMPLEAVG_8  0x1b /* Sample Averaging 8 */
+#define CTRL3_SAMPLEAVG_4  0x12 /* Sample Averaging 4 */
+#define CTRL3_SAMPLEAVG_2  0x09 /* Sample Averaging 2 */
+#define CTRL4_SRPD         0xC0 /* Set Reset Pulse Duration */
 
 rt_err_t drv_ist8310_init(const char* device_name);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

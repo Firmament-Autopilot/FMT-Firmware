@@ -54,7 +54,7 @@ static void send_led_bright(void)
 
     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
     if (ret != 1) {
-        DRV_DBG("set led bright fail!\n");
+        DRV_DBG("set led bright fail! IC1 ISR:0x%x\n", I2C1->ISR);
     }
 }
 

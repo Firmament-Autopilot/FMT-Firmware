@@ -28,6 +28,7 @@
 #define MAG_RANGE_4GA 4
 #define MAG_RANGE_8GA 6
 #define MAG_RANGE_12GA 12
+#define MAG_RANGE_16GA 16
 
 /* mag device bus type */
 #define MAG_SPI_BUS_TYPE 1
