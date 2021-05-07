@@ -46,6 +46,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
+#include "module/sysio/actuator_cmd.h"
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
 [console]\n\
@@ -296,7 +297,9 @@ void bsp_initialize(void)
 
     RT_CHECK(drv_bmi055_init());
 
-    rt_ist8310_init("i2c1");
+    // rt_ist8310_init(IST8310_I2C_DEVICE_NAME);
+
+    RT_CHECK(drv_ist8310_init("i2c1_dev1"));
 
     RT_CHECK(drv_ncp5623c_init("i2c1_dev2"));
 
@@ -319,6 +322,11 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
+#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
+    /* init actuator */
+    FMT_CHECK(actuator_init());
+#endif
+
     /* toml system configure */
     __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (!__toml_root_tab) {

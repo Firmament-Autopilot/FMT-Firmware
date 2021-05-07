@@ -35,8 +35,11 @@ typedef struct __attribute__((packed)) {
     int32_t motionY;
 } mspOpflowSensor_t;
 
-MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
-MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
+// MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
+// MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
+
+MCN_DECLARE(sensor_optflow);
+MCN_DECLARE(sensor_rangefinder);
 
 static rf_data_t rangefinder_report = { .timestamp_ms = 0, .distance_m = -1.0f };
 static optflow_data_t optflow_report = { 0 };
@@ -132,8 +135,8 @@ rt_err_t pmw3901_l0x_drv_init(const char* serial_dev_name)
         return RT_ERROR;
     }
 
-    mcn_advertise(MCN_HUB(sensor_optflow), sensor_opt_flow_echo);
-    mcn_advertise(MCN_HUB(sensor_rangefinder), sensor_rangefinder_echo);
+    // mcn_advertise(MCN_HUB(sensor_optflow), sensor_opt_flow_echo);
+    // mcn_advertise(MCN_HUB(sensor_rangefinder), sensor_rangefinder_echo);
 
     return RT_EOK;
 }
