@@ -269,6 +269,7 @@ _stop:
         /* generate stop condition, NACK is automatically generated before stop */
         LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
             LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
+        WAIT_TIMEOUT(LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
     }
 
     return msg_idx;
