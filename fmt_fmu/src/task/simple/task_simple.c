@@ -90,21 +90,19 @@ void task_simple_entry(void* parameter)
     pin_device = rt_device_find("pin");
     pin_device->control(pin_device, 0, &mode);
 
-    WorkQueue_t wq = workqueue_find("wq:lp_work");
-    static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = sensor_collect };
-    FMT_CHECK(workqueue_schedule_work(wq, &item));
-
-    void ist8310_read_raw_data(void);
-    ist8310_read_raw_data();
+    // WorkQueue_t wq = workqueue_find("wq:lp_work");
+    // static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = sensor_collect };
+    // FMT_CHECK(workqueue_schedule_work(wq, &item));
 
     rgb_led_dev = rt_device_find("ncp5623c");
     RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
     RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_BLUE));
     sys_msleep(10);
 
+    printf("test printf %f %d\n", 2.13, -20);
+
     while (1) {
         rgb_led_control();
-        ist8310_read_raw_data();
         sys_msleep(10);
     }
 }

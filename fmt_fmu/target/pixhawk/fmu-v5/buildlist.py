@@ -25,6 +25,7 @@ HAL = [
     'i2c/*.c',
     'gyro/*.c',
     'accel/*.c',
+    'mag/*.c',
     'barometer/*.c',
 ]
 
@@ -51,7 +52,7 @@ MODULES = [
     'Controller/lib/*.c',
     'FMS/*.c',
     'FMS/lib/*.c',
-    "Log/boot_log.c",
+    "Log/*.c",
     "Parameter/*.c",
     'Utils/*.c',
     'Mavproxy/*.c',
@@ -74,11 +75,13 @@ MODULES_CPPPATH = [
 TASKS = [
     'simple/*.c',
     'comm/*.c',
+    'vehicle/multicopter/*.c',
 ]
 
 TASKS_CPPPATH = []
 
 LIBS = [
     'cm_backtrace',
-    'mavlink'
+    'mavlink',
+    'printf',
 ]

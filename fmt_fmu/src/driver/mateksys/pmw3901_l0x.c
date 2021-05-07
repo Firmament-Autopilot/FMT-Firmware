@@ -35,8 +35,8 @@ typedef struct __attribute__((packed)) {
     int32_t motionY;
 } mspOpflowSensor_t;
 
-MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
-MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
+MCN_DECLARE(sensor_optflow);
+MCN_DECLARE(sensor_rangefinder);
 
 static rf_data_t rangefinder_report = { .timestamp_ms = 0, .distance_m = -1.0f };
 static optflow_data_t optflow_report = { 0 };

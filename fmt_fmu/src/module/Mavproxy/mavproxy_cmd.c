@@ -29,7 +29,7 @@
 
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_imu0_0);
-MCN_DECLARE(sensor_mag0_native);
+MCN_DECLARE(sensor_mag0_0);
 MCN_DECLARE(ins_output);
 
 #define GYR_CALIBRATE_COUNT   500
@@ -582,7 +582,7 @@ static void mag_calibration(void)
         if (rotat) {
             mag_data_t mag_report;
 
-            if (mcn_copy_from_hub(MCN_HUB(sensor_mag0_native), &mag_report) != FMT_EOK) {
+            if (mcn_copy_from_hub(MCN_HUB(sensor_mag0_0), &mag_report) != FMT_EOK) {
                 return;
             }
 

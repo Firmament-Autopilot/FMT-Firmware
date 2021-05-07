@@ -31,15 +31,19 @@ MCN_DEFINE(sensor_imu0, sizeof(imu_data_t));
 MCN_DEFINE(sensor_imu1_0, sizeof(imu_data_t));
 MCN_DEFINE(sensor_imu1, sizeof(imu_data_t));
 
-MCN_DEFINE(sensor_mag0_native, sizeof(mag_data_t));
+MCN_DEFINE(sensor_mag0_0, sizeof(mag_data_t));
 MCN_DEFINE(sensor_mag0, sizeof(mag_data_t));
 
-MCN_DEFINE(sensor_mag1_native, sizeof(mag_data_t));
+MCN_DEFINE(sensor_mag1_0, sizeof(mag_data_t));
 MCN_DEFINE(sensor_mag1, sizeof(mag_data_t));
 
 MCN_DEFINE(sensor_baro, sizeof(baro_data_t));
 
 MCN_DEFINE(sensor_gps, sizeof(gps_data_t));
+
+MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
+
+MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
 
 /* Sensor devices */
 #ifdef SENSOR_USING_IMU0
@@ -364,53 +368,55 @@ void sensor_collect(void)
         __imu_data.timestamp_ms = systime_now_ms();
 
 #ifdef SENSOR_USING_IMU0
-        sensor_gyr_measure(imu0, __imu_data.gyr_B_radDs);
-        sensor_acc_measure(imu0, __imu_data.acc_B_mDs2);
-        /* publish scaled imu data without calibration and filtering */
-        mcn_publish(MCN_HUB(sensor_imu0_0), &__imu_data);
-        /* do calibration */
-        sensor_gyr_correct(imu0, __imu_data.gyr_B_radDs, temp);
-        __imu_data.gyr_B_radDs[0] = temp[0];
-        __imu_data.gyr_B_radDs[1] = temp[1];
-        __imu_data.gyr_B_radDs[2] = temp[2];
-        sensor_acc_correct(imu0, __imu_data.acc_B_mDs2, temp);
-        __imu_data.acc_B_mDs2[0] = temp[0];
-        __imu_data.acc_B_mDs2[1] = temp[1];
-        __imu_data.acc_B_mDs2[2] = temp[2];
-        /* do filtering */
-        __imu_data.gyr_B_radDs[0] = butter3_filter_process(__imu_data.gyr_B_radDs[0], butter3_gyr0[0]);
-        __imu_data.gyr_B_radDs[1] = butter3_filter_process(__imu_data.gyr_B_radDs[1], butter3_gyr0[1]);
-        __imu_data.gyr_B_radDs[2] = butter3_filter_process(__imu_data.gyr_B_radDs[2], butter3_gyr0[2]);
-        __imu_data.acc_B_mDs2[0] = butter3_filter_process(__imu_data.acc_B_mDs2[0], butter3_acc0[0]);
-        __imu_data.acc_B_mDs2[1] = butter3_filter_process(__imu_data.acc_B_mDs2[1], butter3_acc0[1]);
-        __imu_data.acc_B_mDs2[2] = butter3_filter_process(__imu_data.acc_B_mDs2[2], butter3_acc0[2]);
-        /* publish calibrated & filtered imu data */
-        mcn_publish(MCN_HUB(sensor_imu0), &__imu_data);
+        if (sensor_gyr_measure(imu0, __imu_data.gyr_B_radDs) == FMT_EOK
+            && sensor_acc_measure(imu0, __imu_data.acc_B_mDs2) == FMT_EOK) {
+            /* publish scaled imu data without calibration and filtering */
+            mcn_publish(MCN_HUB(sensor_imu0_0), &__imu_data);
+            /* do calibration */
+            sensor_gyr_correct(imu0, __imu_data.gyr_B_radDs, temp);
+            __imu_data.gyr_B_radDs[0] = temp[0];
+            __imu_data.gyr_B_radDs[1] = temp[1];
+            __imu_data.gyr_B_radDs[2] = temp[2];
+            sensor_acc_correct(imu0, __imu_data.acc_B_mDs2, temp);
+            __imu_data.acc_B_mDs2[0] = temp[0];
+            __imu_data.acc_B_mDs2[1] = temp[1];
+            __imu_data.acc_B_mDs2[2] = temp[2];
+            /* do filtering */
+            __imu_data.gyr_B_radDs[0] = butter3_filter_process(__imu_data.gyr_B_radDs[0], butter3_gyr0[0]);
+            __imu_data.gyr_B_radDs[1] = butter3_filter_process(__imu_data.gyr_B_radDs[1], butter3_gyr0[1]);
+            __imu_data.gyr_B_radDs[2] = butter3_filter_process(__imu_data.gyr_B_radDs[2], butter3_gyr0[2]);
+            __imu_data.acc_B_mDs2[0] = butter3_filter_process(__imu_data.acc_B_mDs2[0], butter3_acc0[0]);
+            __imu_data.acc_B_mDs2[1] = butter3_filter_process(__imu_data.acc_B_mDs2[1], butter3_acc0[1]);
+            __imu_data.acc_B_mDs2[2] = butter3_filter_process(__imu_data.acc_B_mDs2[2], butter3_acc0[2]);
+            /* publish calibrated & filtered imu data */
+            mcn_publish(MCN_HUB(sensor_imu0), &__imu_data);
+        }
 #endif
 
 #ifdef SENSOR_USING_IMU1
-        sensor_gyr_measure(imu1, __imu_data.gyr_B_radDs);
-        sensor_acc_measure(imu1, __imu_data.acc_B_mDs2);
-        /* publish scaled imu data without calibration and filtering */
-        mcn_publish(MCN_HUB(sensor_imu1_0), &__imu_data);
-        /* do calibration */
-        sensor_gyr_correct(imu1, __imu_data.gyr_B_radDs, temp);
-        __imu_data.gyr_B_radDs[0] = temp[0];
-        __imu_data.gyr_B_radDs[1] = temp[1];
-        __imu_data.gyr_B_radDs[2] = temp[2];
-        sensor_acc_correct(imu1, __imu_data.acc_B_mDs2, temp);
-        __imu_data.acc_B_mDs2[0] = temp[0];
-        __imu_data.acc_B_mDs2[1] = temp[1];
-        __imu_data.acc_B_mDs2[2] = temp[2];
-        /* do filtering */
-        __imu_data.gyr_B_radDs[0] = butter3_filter_process(__imu_data.gyr_B_radDs[0], butter3_gyr1[0]);
-        __imu_data.gyr_B_radDs[1] = butter3_filter_process(__imu_data.gyr_B_radDs[1], butter3_gyr1[1]);
-        __imu_data.gyr_B_radDs[2] = butter3_filter_process(__imu_data.gyr_B_radDs[2], butter3_gyr1[2]);
-        __imu_data.acc_B_mDs2[0] = butter3_filter_process(__imu_data.acc_B_mDs2[0], butter3_acc1[0]);
-        __imu_data.acc_B_mDs2[1] = butter3_filter_process(__imu_data.acc_B_mDs2[1], butter3_acc1[1]);
-        __imu_data.acc_B_mDs2[2] = butter3_filter_process(__imu_data.acc_B_mDs2[2], butter3_acc1[2]);
-        /* publish calibrated & filtered imu data */
-        mcn_publish(MCN_HUB(sensor_imu1), &__imu_data);
+        if (sensor_gyr_measure(imu1, __imu_data.gyr_B_radDs) == FMT_EOK
+            && sensor_acc_measure(imu1, __imu_data.acc_B_mDs2) == FMT_EOK) {
+            /* publish scaled imu data without calibration and filtering */
+            mcn_publish(MCN_HUB(sensor_imu1_0), &__imu_data);
+            /* do calibration */
+            sensor_gyr_correct(imu1, __imu_data.gyr_B_radDs, temp);
+            __imu_data.gyr_B_radDs[0] = temp[0];
+            __imu_data.gyr_B_radDs[1] = temp[1];
+            __imu_data.gyr_B_radDs[2] = temp[2];
+            sensor_acc_correct(imu1, __imu_data.acc_B_mDs2, temp);
+            __imu_data.acc_B_mDs2[0] = temp[0];
+            __imu_data.acc_B_mDs2[1] = temp[1];
+            __imu_data.acc_B_mDs2[2] = temp[2];
+            /* do filtering */
+            __imu_data.gyr_B_radDs[0] = butter3_filter_process(__imu_data.gyr_B_radDs[0], butter3_gyr1[0]);
+            __imu_data.gyr_B_radDs[1] = butter3_filter_process(__imu_data.gyr_B_radDs[1], butter3_gyr1[1]);
+            __imu_data.gyr_B_radDs[2] = butter3_filter_process(__imu_data.gyr_B_radDs[2], butter3_gyr1[2]);
+            __imu_data.acc_B_mDs2[0] = butter3_filter_process(__imu_data.acc_B_mDs2[0], butter3_acc1[0]);
+            __imu_data.acc_B_mDs2[1] = butter3_filter_process(__imu_data.acc_B_mDs2[1], butter3_acc1[1]);
+            __imu_data.acc_B_mDs2[2] = butter3_filter_process(__imu_data.acc_B_mDs2[2], butter3_acc1[2]);
+            /* publish calibrated & filtered imu data */
+            mcn_publish(MCN_HUB(sensor_imu1), &__imu_data);
+        }
 #endif
     }
 #endif
@@ -426,27 +432,29 @@ void sensor_collect(void)
         __mag_data.timestamp_ms = systime_now_ms();
 
 #ifdef SENSOR_USING_MAG0
-        sensor_mag_measure(mag0, __mag_data.mag_B_gauss);
-        mcn_publish(MCN_HUB(sensor_mag0_native), &__mag_data);
-        /* do calibration */
-        sensor_mag_correct(mag0, __mag_data.mag_B_gauss, temp);
-        __mag_data.mag_B_gauss[0] = temp[0];
-        __mag_data.mag_B_gauss[1] = temp[1];
-        __mag_data.mag_B_gauss[2] = temp[2];
-        /* publish calibrated mag data */
-        mcn_publish(MCN_HUB(sensor_mag0), &__mag_data);
+        if (sensor_mag_measure(mag0, __mag_data.mag_B_gauss) == FMT_EOK) {
+            mcn_publish(MCN_HUB(sensor_mag0_0), &__mag_data);
+            /* do calibration */
+            sensor_mag_correct(mag0, __mag_data.mag_B_gauss, temp);
+            __mag_data.mag_B_gauss[0] = temp[0];
+            __mag_data.mag_B_gauss[1] = temp[1];
+            __mag_data.mag_B_gauss[2] = temp[2];
+            /* publish calibrated mag data */
+            mcn_publish(MCN_HUB(sensor_mag0), &__mag_data);
+        }
 #endif
 
 #ifdef SENSOR_USING_MAG1
-        sensor_mag_measure(mag1, __mag_data.mag_B_gauss);
-        mcn_publish(MCN_HUB(sensor_mag1_native), &__mag_data);
-        /* do calibration */
-        sensor_mag_correct(mag1, __mag_data.mag_B_gauss, temp);
-        __mag_data.mag_B_gauss[0] = temp[0];
-        __mag_data.mag_B_gauss[1] = temp[1];
-        __mag_data.mag_B_gauss[2] = temp[2];
-        /* publish calibrated mag data */
-        mcn_publish(MCN_HUB(sensor_mag1), &__mag_data);
+        if (sensor_mag_measure(mag1, __mag_data.mag_B_gauss) == FMT_EOK) {
+            mcn_publish(MCN_HUB(sensor_mag1_0), &__mag_data);
+            /* do calibration */
+            sensor_mag_correct(mag1, __mag_data.mag_B_gauss, temp);
+            __mag_data.mag_B_gauss[0] = temp[0];
+            __mag_data.mag_B_gauss[1] = temp[1];
+            __mag_data.mag_B_gauss[2] = temp[2];
+            /* publish calibrated mag data */
+            mcn_publish(MCN_HUB(sensor_mag1), &__mag_data);
+        }
 #endif
     }
 #endif
@@ -512,7 +520,7 @@ fmt_err_t sensor_hub_init(void)
     mag0 = sensor_mag_init("mag0");
     RT_ASSERT(mag0 != NULL);
 
-    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_mag0_native), echo_sensor_mag));
+    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_mag0_0), echo_sensor_mag));
     FMT_CHECK(mcn_advertise(MCN_HUB(sensor_mag0), echo_sensor_mag));
 #endif
 
@@ -521,7 +529,7 @@ fmt_err_t sensor_hub_init(void)
     RT_ASSERT(mag1 != NULL);
 
     FMT_CHECK(mcn_advertise(MCN_HUB(sensor_mag1), echo_sensor_mag));
-    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_mag1_native), echo_sensor_mag));
+    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_mag1_0), echo_sensor_mag));
 #endif
 
 #ifdef SENSOR_USING_BAROMETER
@@ -537,6 +545,10 @@ fmt_err_t sensor_hub_init(void)
 
     FMT_CHECK(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
 #endif
+
+    /* For testing */
+    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_optflow), NULL));
+    FMT_CHECK(mcn_advertise(MCN_HUB(sensor_rangefinder), NULL));
 
     /* Initialize sensor rotation matrix */
     rotation_init();
