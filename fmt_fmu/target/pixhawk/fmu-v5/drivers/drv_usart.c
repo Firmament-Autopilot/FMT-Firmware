@@ -39,7 +39,7 @@
 // #define USING_UART5
 // #define USING_UART6
 #define USING_UART7
-// #define USING_UART8
+#define USING_UART8
 
 /* STM32 uart driver */
 struct stm32_uart {
@@ -79,7 +79,7 @@ static struct serial_device serial2; // TELEM2
 // static struct serial_device serial2; // GPS
 // static struct serial_device serial3; // SERIAL4
 // static struct serial_device serial4; // SERIAL5
-// static struct serial_device serial5; // FMTIO
+static struct serial_device serial5; // FMTIO
 
 static void _dma_clear_flags(DMA_TypeDef* dma, uint32_t stream)
 {
@@ -170,16 +170,16 @@ static void uart_isr(struct serial_device* serial)
 {
     struct stm32_uart* uart = (struct stm32_uart*)serial->parent.user_data;
 
-    RT_ASSERT(uart != RT_NULL);
+    // RT_ASSERT(uart != RT_NULL);
 
     if (LL_USART_IsActiveFlag_RXNE(uart->uart_device) != RESET) {
         /* high-level ISR routine */
         hal_serial_isr(serial, SERIAL_EVENT_RX_IND);
-        /* the RXNE flag is cleared by a read ti tge USART_RDR register */
+        /* the RXNE flag is cleared by reading the USART_RDR register */
     }
 
     if (LL_USART_IsActiveFlag_IDLE(uart->uart_device) != RESET) {
-        if (uart->dma.dma_device != NULL) {
+        if (LL_USART_IsEnabledDMAReq_RX(uart->uart_device)) {
             dma_uart_rx_idle_isr(serial);
         }
         /* clear interrupt flag */
@@ -338,6 +338,25 @@ void UART7_IRQHandler(void)
 }
 #endif // USING_UART7
 
+#ifdef USING_UART8
+/* UART7 device driver structure */
+struct stm32_uart uart8 = {
+    .uart_device = UART8,
+    .irq = UART8_IRQn,
+    .dma = { 0 }
+};
+
+void UART8_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial5);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART8
+
 static void RCC_Configuration(void)
 {
 #ifdef USING_UART2
@@ -361,6 +380,13 @@ static void RCC_Configuration(void)
     /* Enable UART7 clock */
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART7);
 #endif /* USING_UART7 */
+
+#ifdef USING_UART8
+    /* Enable UART8 GPIO clocks */
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
+    /* Enable UART8 clock */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART8);
+#endif /* USING_UART8 */
 
     /* DMA controller clock enable */
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
@@ -405,6 +431,16 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 #endif /* USING_UART7 */
+
+#ifdef USING_UART8
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+#endif /* USING_UART8 */
 }
 
 static void NVIC_Configuration(struct stm32_uart* uart)
@@ -744,7 +780,7 @@ rt_err_t usart_drv_init(void)
 
 #ifdef USING_UART3
     serial2.ops = &_usart_ops;
-#ifdef SERIAL0_DEFAULT_CONFIG
+#ifdef SERIAL2_DEFAULT_CONFIG
     struct serial_configure serial2_config = SERIAL2_DEFAULT_CONFIG;
     serial2.config = serial2_config;
 #else
@@ -761,7 +797,7 @@ rt_err_t usart_drv_init(void)
 
 #ifdef USING_UART7
     serial0.ops = &_usart_ops;
-#ifdef SERIAL6_DEFAULT_CONFIG
+#ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
     serial0.config = serial0_config;
 #else
@@ -775,6 +811,23 @@ rt_err_t usart_drv_init(void)
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart7);
 #endif /* USING_UART7 */
+
+#ifdef USING_UART8
+    serial5.ops = &_usart_ops;
+#ifdef SERIAL5_DEFAULT_CONFIG
+    struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
+    serial5.config = serial5_config;
+#else
+    serial5.config = config;
+#endif
+
+    NVIC_Configuration(&uart8);
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial5,
+        "serial5",
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart8);
+#endif /* USING_UART8 */
 
     return rt_err;
 }
