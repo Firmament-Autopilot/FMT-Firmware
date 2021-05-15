@@ -492,7 +492,7 @@ fmt_err_t fmtio_init(void)
     if (io_dev->flag & RT_DEVICE_FLAG_DMA_RX) {
         oflag |= RT_DEVICE_FLAG_DMA_RX;
     } else {
-        oflag |= RT_DEVICE_FLAG_INT_TX;
+        oflag |= RT_DEVICE_FLAG_INT_RX;
     }
     if (rt_device_open(_fmtio_dev, oflag) != RT_EOK) {
         console_printf("fmtio device open fail\n");
