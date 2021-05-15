@@ -55,7 +55,7 @@ static rt_err_t fmtio_dev_rx_ind(rt_device_t dev, rt_size_t size)
 
 static rt_err_t fmtio_dev_open(rt_device_t dev, rt_uint16_t oflag)
 {
-    return rt_device_open(_io_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
+    return rt_device_open(_io_dev, oflag);
 }
 
 static rt_err_t fmtio_dev_close(rt_device_t dev)
@@ -134,11 +134,13 @@ rt_err_t fmtio_dev_control(rt_device_t dev, int cmd, void* args)
     return ret;
 }
 
-rt_err_t hal_fmtio_dev_register(const char* serial_name, const char* name, rt_uint32_t flag, void* data)
+rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_t flag, void* data)
 {
     _fmtio_dev_t = &_fmtio_dev;
 
-    _io_dev = rt_device_find(serial_name);
+    _io_dev = io_dev;
+    RT_ASSERT(_io_dev != NULL);
+    RT_ASSERT(_io_dev->flag == flag);
 
     if (_io_dev == RT_NULL) {
         return RT_EEMPTY;

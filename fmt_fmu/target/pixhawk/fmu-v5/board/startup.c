@@ -23,9 +23,10 @@
 
 #include "hal/pin.h"
 #include "task/task_comm.h"
+#include "task/task_fmtio.h"
+#include "task/task_logger.h"
 #include "task/task_simple.h"
 #include "task/task_vehicle.h"
-#include "task/task_logger.h"
 
 static rt_thread_t tid0;
 
@@ -40,6 +41,9 @@ struct rt_thread thread_comm_handle;
 
 static char thread_logger_stack[2048];
 struct rt_thread thread_logger_handle;
+
+static char thread_fmtio_stack[2048];
+struct rt_thread thread_fmtio_handle;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
@@ -69,6 +73,7 @@ static void rt_init_thread_entry(void* parameter)
     bsp_initialize();
 
     /********************* init tasks *********************/
+    FMT_CHECK(task_fmtio_init());
     FMT_CHECK(task_simple_init());
     FMT_CHECK(task_comm_init());
     FMT_CHECK(task_logger_init());
@@ -95,6 +100,15 @@ static void rt_init_thread_entry(void* parameter)
         sizeof(thread_comm_stack), COMM_THREAD_PRIORITY, 1);
     RT_ASSERT(res == RT_EOK);
     rt_thread_startup(&thread_comm_handle);
+
+    res = rt_thread_init(&thread_fmtio_handle,
+        "fmtio",
+        task_fmtio_entry,
+        RT_NULL,
+        &thread_fmtio_stack[0],
+        sizeof(thread_fmtio_stack), FMTIO_THREAD_PRIORITY, 1);
+    RT_ASSERT(res == RT_EOK);
+    rt_thread_startup(&thread_fmtio_handle);
 
     res = rt_thread_init(&thread_logger_handle,
         "logger",

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include <board_device.h>
+#include <firmament.h>
 
 #include "hal/fmtio_dev.h"
 #include "hal/motor.h"
@@ -466,8 +466,10 @@ fmt_err_t fmtio_init(void)
         .ops = &_motor_ops
     };
 
+    rt_device_t io_dev = rt_device_find(FMTIO_DEVICE_NAME);
+
     /* setup fmtio_dev device */
-    if (hal_fmtio_dev_register(FMTIO_DEVICE_NAME, "fmtio_dev", RT_DEVICE_FLAG_RDWR, RT_NULL) != RT_EOK) {
+    if (hal_fmtio_dev_register(io_dev, "fmtio_dev", io_dev->flag, RT_NULL) != RT_EOK) {
         return FMT_ERROR;
     }
 
@@ -483,7 +485,16 @@ fmt_err_t fmtio_init(void)
         return FMT_ERROR;
     }
 
-    if (rt_device_open(_fmtio_dev, RT_DEVICE_FLAG_RDWR) != RT_EOK) {
+    rt_uint16_t oflag = RT_DEVICE_OFLAG_RDWR;
+    if (io_dev->flag & RT_DEVICE_FLAG_DMA_TX) {
+        oflag |= RT_DEVICE_FLAG_DMA_TX;
+    }
+    if (io_dev->flag & RT_DEVICE_FLAG_DMA_RX) {
+        oflag |= RT_DEVICE_FLAG_DMA_RX;
+    } else {
+        oflag |= RT_DEVICE_FLAG_INT_TX;
+    }
+    if (rt_device_open(_fmtio_dev, oflag) != RT_EOK) {
         console_printf("fmtio device open fail\n");
         return FMT_ERROR;
     }

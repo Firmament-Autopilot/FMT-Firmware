@@ -27,6 +27,9 @@ HAL = [
     'accel/*.c',
     'mag/*.c',
     'barometer/*.c',
+    'fmtio_dev/*.c',
+    'motor/*.c',
+    'rc/*.c',
 ]
 
 HAL_CPPPATH = []
@@ -62,6 +65,7 @@ MODULES = [
     'WorkQueue/*.c',
     'Math/*.c',
     'Filter/*.c',
+    'FMTIO/*.c',
 ]
 
 MODULES_CPPPATH = [
@@ -76,6 +80,7 @@ TASKS = [
     'simple/*.c',
     'comm/*.c',
     'logger/*.c',
+    'fmtio/*.c',
     'vehicle/multicopter/*.c',
 ]
 

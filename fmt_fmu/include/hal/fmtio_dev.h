@@ -21,6 +21,6 @@
 
 #define FMTIO_DEV_CMD_CONFIG 0x20
 
-rt_err_t hal_fmtio_dev_register(const char* serial_name, const char* name, rt_uint32_t flag, void* data);
+rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_t flag, void* data);
 
 #endif
