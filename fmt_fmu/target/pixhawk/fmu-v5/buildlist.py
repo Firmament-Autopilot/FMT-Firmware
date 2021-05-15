@@ -75,6 +75,7 @@ MODULES_CPPPATH = [
 TASKS = [
     'simple/*.c',
     'comm/*.c',
+    'logger/*.c',
     'vehicle/multicopter/*.c',
 ]
 
