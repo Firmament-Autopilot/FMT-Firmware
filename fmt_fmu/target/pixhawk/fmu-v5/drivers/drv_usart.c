@@ -170,15 +170,15 @@ static void uart_isr(struct serial_device* serial)
 {
     struct stm32_uart* uart = (struct stm32_uart*)serial->parent.user_data;
 
-    // RT_ASSERT(uart != RT_NULL);
-
-    if (LL_USART_IsActiveFlag_RXNE(uart->uart_device) != RESET) {
+    if (LL_USART_IsActiveFlag_RXNE(uart->uart_device)
+        && LL_USART_IsEnabledIT_RXNE(uart->uart_device)) {
         /* high-level ISR routine */
         hal_serial_isr(serial, SERIAL_EVENT_RX_IND);
         /* the RXNE flag is cleared by reading the USART_RDR register */
     }
 
-    if (LL_USART_IsActiveFlag_IDLE(uart->uart_device) != RESET) {
+    if (LL_USART_IsActiveFlag_IDLE(uart->uart_device)
+        && LL_USART_IsEnabledIT_IDLE(uart->uart_device)) {
         if (LL_USART_IsEnabledDMAReq_RX(uart->uart_device)) {
             dma_uart_rx_idle_isr(serial);
         }
@@ -186,10 +186,12 @@ static void uart_isr(struct serial_device* serial)
         LL_USART_ClearFlag_IDLE(uart->uart_device);
     }
 
-    if (LL_USART_IsActiveFlag_TC(uart->uart_device) != RESET) {
+    if (LL_USART_IsActiveFlag_TC(uart->uart_device)
+        && LL_USART_IsEnabledIT_TC(uart->uart_device)) {
         // TODO: this can be used for TX_INT mode?
         /* high-level ISR routine */
         // hal_serial_isr(serial, SERIAL_EVENT_TX_DONE);
+
         /* clear interrupt */
         LL_USART_ClearFlag_TC(uart->uart_device);
     }
@@ -343,7 +345,12 @@ void UART7_IRQHandler(void)
 struct stm32_uart uart8 = {
     .uart_device = UART8,
     .irq = UART8_IRQn,
-    .dma = { 0 }
+    .dma = {
+        .dma_device = DMA1,
+        .tx_stream = LL_DMA_STREAM_0,
+        .tx_ch = LL_DMA_CHANNEL_5,
+        .tx_irq = DMA1_Stream0_IRQn,
+    },
 };
 
 void UART8_IRQHandler(void)
@@ -352,6 +359,21 @@ void UART8_IRQHandler(void)
     rt_interrupt_enter();
     /* uart isr routine */
     uart_isr(&serial5);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void DMA1_Stream0_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    if (LL_DMA_IsActiveFlag_TC0(DMA1)) {
+        dma_tx_done_isr(&serial5);
+        /* clear the interrupt flag */
+        LL_DMA_ClearFlag_TC0(DMA1);
+    }
+
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -825,7 +847,7 @@ rt_err_t usart_drv_init(void)
     /* register serial device */
     rt_err |= hal_serial_register(&serial5,
         "serial5",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
         &uart8);
 #endif /* USING_UART8 */
 
