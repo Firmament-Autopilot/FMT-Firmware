@@ -165,7 +165,7 @@ static fmt_err_t _get_sync(int32_t timeout)
 
     bytes = rt_device_read(fmtio_get_device(), timeout, c, 2);
     if(bytes != 2) {
-        console_printf("err get sync:%d\n", bytes);
+        TIMETAG_CHECK_EXECUTE(io_error_sync, 1000, console_printf("err get sync:%d\n", bytes););
         return FMT_ERROR;
     }
 
@@ -179,6 +179,19 @@ static fmt_err_t _get_sync(int32_t timeout)
 
 static fmt_err_t _sync(void)
 {
+    uint8_t c;
+
+    rt_size_t ret;
+    do{
+        ret = rt_device_read(fmtio_get_device(), 40, &c, 1);
+    }while(ret);
+    
+
+    /* complete any pending program operation */
+	for (unsigned i = 0; i < (PROG_MULTI_MAX + 6); i++) {
+		_send_char(0);
+	}
+
 	_send_char(PROTO_GET_SYNC);
 	_send_char(PROTO_EOC);
 
@@ -424,10 +437,10 @@ fmt_err_t fmtio_upload(const char* path)
 
 	time = systime_now_ms();
 
-    uint8_t data[128];
-    /* flush */
-    rt_size_t size = rt_device_read(fmtio_get_device(), 0, data, sizeof(data));
-    console_printf("size=%d\n", size);
+    // uint8_t data[128];
+    // /* flush */
+    // rt_size_t size = rt_device_read(fmtio_get_device(), 0, data, sizeof(data));
+    // console_printf("size=%d\n", size);
 
 	while(systime_now_ms() - time < 15000) {
 		if(_sync() == FMT_EOK) {
