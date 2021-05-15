@@ -146,24 +146,31 @@ static fmt_err_t _get_sync(int32_t timeout)
 	uint8_t c[2];
 	uint32_t bytes;
 
-	// bytes = fmtio_dev_read(&c[0], 1, timeout);
-	bytes = rt_device_read(fmtio_get_device(), timeout, &c[0], 1);
+	// // bytes = fmtio_dev_read(&c[0], 1, timeout);
+	// bytes = rt_device_read(fmtio_get_device(), timeout, &c[0], 1);
 
-	if(bytes != 1) {
-		return FMT_ERROR;
-	}
+	// if(bytes != 1) {
+    //     console_printf("err get sync1\n");
+	// 	return FMT_ERROR;
+	// }
 
-	// ret = recv_byte_with_timeout(c + 1, timeout);
-	// bytes = fmtio_dev_read(&c[1], 1, timeout);
-	bytes = rt_device_read(fmtio_get_device(), timeout, &c[1], 1);
+	// // ret = recv_byte_with_timeout(c + 1, timeout);
+	// // bytes = fmtio_dev_read(&c[1], 1, timeout);
+	// bytes = rt_device_read(fmtio_get_device(), timeout, &c[1], 1);
 
-	if(bytes != 1) {
-		return FMT_ERROR;
-	}
+	// if(bytes != 1) {
+    //     console_printf("err get sync2\n");
+	// 	return FMT_ERROR;
+	// }
+
+    bytes = rt_device_read(fmtio_get_device(), timeout, c, 2);
+    if(bytes != 2) {
+        console_printf("err get sync:%d\n", bytes);
+        return FMT_ERROR;
+    }
 
 	if((c[0] != PROTO_INSYNC) || (c[1] != PROTO_OK)) {
-		TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, ulog_w(TAG, "bad sync, try to click io reset button"););
-		// console_printf("bad sync 0x%02x,0x%02x\r\n", c[0], c[1]);
+        TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, console_printf("bad sync 0x%02x,0x%02x\r\n", c[0], c[1]););
 		return FMT_ERROR;
 	}
 
@@ -413,7 +420,14 @@ fmt_err_t fmtio_upload(const char* path)
 		return err;
 	}
 
+    sys_msleep(10);
+
 	time = systime_now_ms();
+
+    uint8_t data[128];
+    /* flush */
+    rt_size_t size = rt_device_read(fmtio_get_device(), 0, data, sizeof(data));
+    console_printf("size=%d\n", size);
 
 	while(systime_now_ms() - time < 15000) {
 		if(_sync() == FMT_EOK) {
