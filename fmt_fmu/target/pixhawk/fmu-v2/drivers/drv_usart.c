@@ -935,8 +935,9 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
+    /* Disable USART before configuration */
+    USART_Cmd(uart->uart_device, DISABLE);
     USART_Init(uart->uart_device, &USART_InitStructure);
-
     /* Enable USART */
     USART_Cmd(uart->uart_device, ENABLE);
 
