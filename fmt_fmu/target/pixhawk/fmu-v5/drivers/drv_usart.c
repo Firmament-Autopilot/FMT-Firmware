@@ -651,6 +651,8 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     USART_InitStructure.TransferDirection = LL_USART_DIRECTION_TX_RX;
     USART_InitStructure.OverSampling = LL_USART_OVERSAMPLING_16;
 
+    /* USART need be disabled first in order to configure it */
+    LL_USART_Disable(uart->uart_device);
     LL_USART_Init(uart->uart_device, &USART_InitStructure);
     LL_USART_ConfigAsyncMode(uart->uart_device);
     LL_USART_Enable(uart->uart_device);
