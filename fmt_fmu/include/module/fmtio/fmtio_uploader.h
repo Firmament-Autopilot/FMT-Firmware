@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __FMTIO_UPLOADER_H__
 #define __FMTIO_UPLOADER_H__
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 fmt_err_t fmtio_upload(const char* path);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -19,7 +19,8 @@
 
 #include <firmament.h>
 
-#define FMTIO_DEV_CMD_CONFIG 0x20
+#define FMTIO_SET_BAUDRATE  0x10
+#define FMTIO_GET_BAUDRATE  0x11
 
 rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_t flag, void* data);
 

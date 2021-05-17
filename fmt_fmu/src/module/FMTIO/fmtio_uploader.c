@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
 
 #include "hal/fmtio_dev.h"
@@ -24,6 +23,7 @@
 #define TAG "Uploader"
 
 #define IO_FIRMWARE_NAME "./fmt_io.bin"
+#define BL_BAUDRATE      115200
 
 static const uint32_t crc32_tab[] = {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
@@ -93,20 +93,9 @@ enum {
 
 };
 
-static struct serial_configure _io_bootloader_serial_config = {
-    BAUD_RATE_115200, /* 115200 bits/s */
-    DATA_BITS_8,      /* 8 databits */
-    STOP_BITS_1,      /* 1 stopbit */
-    PARITY_NONE,      /* No parity  */
-    BIT_ORDER_LSB,    /* LSB first sent */
-    NRZ_NORMAL,       /* Normal mode */
-    SERIAL_RB_BUFSZ,  /* Buffer size */
-    0
-};
+static rt_device_t fmtio_dev;
 
-/**************************** Local Function ********************************/
-
-static uint32_t _crc32part(const uint8_t* src, size_t len, uint32_t crc32val)
+static uint32_t crc32part(const uint8_t* src, size_t len, uint32_t crc32val)
 {
     size_t i;
 
@@ -117,114 +106,90 @@ static uint32_t _crc32part(const uint8_t* src, size_t len, uint32_t crc32val)
     return crc32val;
 }
 
-static fmt_err_t _send_char(uint8_t c)
+static fmt_err_t send_char(uint8_t c)
 {
     uint32_t bytes;
 
-    // bytes = fmtio_dev_write(&c, 1, RT_WAITING_FOREVER);
-
-    bytes = rt_device_write(fmtio_get_device(), RT_WAITING_FOREVER, &c, 1);
+    bytes = rt_device_write(fmtio_dev, RT_WAITING_FOREVER, &c, 1);
 
     return (bytes == 1) ? FMT_EOK : FMT_ERROR;
 }
 
-static fmt_err_t _send(uint8_t* buff, uint32_t size)
+static fmt_err_t send(uint8_t* buff, uint32_t size)
 {
     uint32_t bytes;
 
-    // bytes = fmtio_dev_write(buff, size, RT_WAITING_FOREVER);
-    bytes = rt_device_write(fmtio_get_device(), RT_WAITING_FOREVER, buff, size);
+    bytes = rt_device_write(fmtio_dev, RT_WAITING_FOREVER, buff, size);
 
-    if (bytes != size)
-        return FMT_ERROR;
-
-    return FMT_EOK;
+    return (bytes == size) ? FMT_EOK : FMT_ERROR;
 }
 
-static fmt_err_t _get_sync(int32_t timeout)
+static fmt_err_t get_sync(int32_t timeout)
 {
     uint8_t c[2];
     uint32_t bytes;
 
-    // // bytes = fmtio_dev_read(&c[0], 1, timeout);
-    // bytes = rt_device_read(fmtio_get_device(), timeout, &c[0], 1);
-
-    // if(bytes != 1) {
-    //     console_printf("err get sync1\n");
-    // 	return FMT_ERROR;
-    // }
-
-    // // ret = recv_byte_with_timeout(c + 1, timeout);
-    // // bytes = fmtio_dev_read(&c[1], 1, timeout);
-    // bytes = rt_device_read(fmtio_get_device(), timeout, &c[1], 1);
-
-    // if(bytes != 1) {
-    //     console_printf("err get sync2\n");
-    // 	return FMT_ERROR;
-    // }
-
-    bytes = rt_device_read(fmtio_get_device(), timeout, c, 2);
+    bytes = rt_device_read(fmtio_dev, timeout, c, 2);
     if (bytes != 2) {
-        TIMETAG_CHECK_EXECUTE(io_error_sync, 1000, console_printf("err get sync:%d\n", bytes););
+        TIMETAG_CHECK_EXECUTE(io_error_sync, 1000, ulog_e(TAG, "err get sync:%d\n", bytes););
         return FMT_ERROR;
     }
 
     if ((c[0] != PROTO_INSYNC) || (c[1] != PROTO_OK)) {
-        TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, console_printf("bad sync 0x%02x,0x%02x\r\n", c[0], c[1]););
+        TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, ulog_e(TAG, "bad sync 0x%02x,0x%02x\r\n", c[0], c[1]););
         return FMT_ERROR;
     }
 
     return FMT_EOK;
 }
 
-static fmt_err_t _sync(void)
+static fmt_err_t sync(void)
 {
     uint8_t c;
     rt_size_t ret;
 
     /* flush read buffer */
     do {
-        ret = rt_device_read(fmtio_get_device(), 40, &c, 1);
+        ret = rt_device_read(fmtio_dev, 40, &c, 1);
     } while (ret);
 
     /* complete any pending program operation */
     for (unsigned i = 0; i < (PROG_MULTI_MAX + 6); i++) {
-        _send_char(0);
+        send_char(0);
     }
 
-    _send_char(PROTO_GET_SYNC);
-    _send_char(PROTO_EOC);
+    send_char(PROTO_GET_SYNC);
+    send_char(PROTO_EOC);
 
-    return _get_sync(50);
+    return get_sync(50);
 }
 
-static fmt_err_t _get_info(int param, uint8_t* val, uint32_t size)
+static fmt_err_t get_info(int param, uint8_t* val, uint32_t size)
 {
     uint32_t bytes;
 
-    _send_char(PROTO_GET_DEVICE);
-    _send_char(param);
-    _send_char(PROTO_EOC);
+    send_char(PROTO_GET_DEVICE);
+    send_char(param);
+    send_char(PROTO_EOC);
 
-    // ret = recv_bytes(val, size);
-    // bytes = fmtio_dev_read(val, size, 5000);
-    bytes = rt_device_read(fmtio_get_device(), 5000, val, size);
+    bytes = rt_device_read(fmtio_dev, 5000, val, size);
 
     if (bytes != size) {
         return FMT_ERROR;
     }
 
-    return _get_sync(100);
+    return get_sync(100);
 }
 
-static rt_err_t _erase(void)
+static rt_err_t erase(void)
 {
-    _send_char(PROTO_CHIP_ERASE);
-    _send_char(PROTO_EOC);
-    return _get_sync(10000); /* allow 10s timeout */
+    send_char(PROTO_CHIP_ERASE);
+    send_char(PROTO_EOC);
+
+    return get_sync(10000); /* allow 10s timeout */
 }
 
-static fmt_err_t _program_fs(const char* file_name)
+static fmt_err_t program_fs(const char* file_name)
 {
     size_t count = 0;
     uint8_t* file_buf;
@@ -267,7 +232,7 @@ static fmt_err_t _program_fs(const char* file_name)
     }
 
     ulog_i(TAG, "erase...");
-    ret = _erase();
+    ret = erase();
     ulog_i(TAG, "program...");
 
     int br;
@@ -283,14 +248,14 @@ static fmt_err_t _program_fs(const char* file_name)
         }
 
         /* calculate crc32 sum */
-        sum = _crc32part((uint8_t*)file_buf, PROG_MULTI_MAX, sum);
+        sum = crc32part((uint8_t*)file_buf, PROG_MULTI_MAX, sum);
 
-        _send_char(PROTO_PROG_MULTI);
-        _send_char(PROG_MULTI_MAX);
-        _send(file_buf, PROG_MULTI_MAX);
-        _send_char(PROTO_EOC);
+        send_char(PROTO_PROG_MULTI);
+        send_char(PROG_MULTI_MAX);
+        send(file_buf, PROG_MULTI_MAX);
+        send_char(PROTO_EOC);
 
-        ret = _get_sync(1000);
+        ret = get_sync(1000);
 
         if (ret != RT_EOK) {
             ulog_e(TAG, "program fail %ld", ret);
@@ -308,28 +273,25 @@ static fmt_err_t _program_fs(const char* file_name)
         }
 
         /* calculate crc32 sum */
-        sum = _crc32part((uint8_t*)file_buf, prog_offset, sum);
+        sum = crc32part((uint8_t*)file_buf, prog_offset, sum);
 
-        _send_char(PROTO_PROG_MULTI);
-        _send_char(prog_offset);
-        _send(file_buf, prog_offset);
-        _send_char(PROTO_EOC);
+        send_char(PROTO_PROG_MULTI);
+        send_char(prog_offset);
+        send(file_buf, prog_offset);
+        send_char(PROTO_EOC);
 
-        ret = _get_sync(1000);
+        ret = get_sync(1000);
 
         if (ret != RT_EOK) {
             ulog_e(TAG, "program fail %ld", ret);
         }
     }
 
-    /* free file_buf */
-    // rt_free(file_buf);
-
-    ret = _get_info(INFO_FLASH_SIZE, (uint8_t*)&fw_size_remote, sizeof(fw_size_remote));
-    _send_char(PROTO_EOC);
+    ret = get_info(INFO_FLASH_SIZE, (uint8_t*)&fw_size_remote, sizeof(fw_size_remote));
+    send_char(PROTO_EOC);
 
     if (ret != RT_EOK) {
-        console_printf("could not read firmware size\r\n");
+        ulog_e(TAG, "could not read firmware size\r\n");
         error = FMT_ERROR;
         goto Out;
     }
@@ -338,17 +300,15 @@ static fmt_err_t _program_fs(const char* file_name)
     count = fno.st_size;
 
     while (count < fw_size_remote) {
-        sum = _crc32part(&fill_blank, sizeof(fill_blank), sum);
+        sum = crc32part(&fill_blank, sizeof(fill_blank), sum);
         count += sizeof(fill_blank);
     }
 
     /* request CRC from IO */
-    _send_char(PROTO_GET_CRC);
-    _send_char(PROTO_EOC);
+    send_char(PROTO_GET_CRC);
+    send_char(PROTO_EOC);
 
-    // ret = recv_bytes((uint8_t*)(&crc), sizeof(crc));
-    // bytes = fmtio_dev_read(&crc, sizeof(crc), 5000);
-    bytes = rt_device_read(fmtio_get_device(), 5000, &crc, sizeof(crc));
+    bytes = rt_device_read(fmtio_dev, 5000, &crc, sizeof(crc));
 
     if (bytes != sizeof(crc)) {
         ulog_e(TAG, "did not receive CRC checksum");
@@ -358,12 +318,10 @@ static fmt_err_t _program_fs(const char* file_name)
 
     /* compare the CRC sum from the IO with the one calculated */
     if (sum != crc) {
-        // console_printf("CRC wrong: received: %x, expected: %x\r\n", crc, sum);
         ulog_e(TAG, "CRC wrong: received: %x, expected: %x", crc, sum);
         error = FMT_ERROR;
         goto Out;
     } else {
-        // console_printf("CRC check ok, received: %x, expected: %x\r\n", crc, sum);
         ulog_i(TAG, "CRC check ok, received: %x, expected: %x", crc, sum);
     }
 
@@ -374,83 +332,74 @@ Out:
     }
 
     if (file_buf) {
+        /* free file_buf */
         rt_free(file_buf);
     }
 
     return error;
 }
 
-static fmt_err_t _reboot(void)
+static fmt_err_t reboot(void)
 {
-    _send_char(PROTO_REBOOT);
+    send_char(PROTO_REBOOT);
     systime_udelay(100 * 1000);
-    _send_char(PROTO_EOC);
-    systime_udelay(100 * 1000); //TODO, why need delay here?
+    send_char(PROTO_EOC);
+    systime_udelay(100 * 1000);
 
     return FMT_EOK;
 }
 
-static fmt_err_t _uploader_init(void)
-{
-    fmt_err_t err;
-
-    /* suspend fmt io manager communication, since uploader need to use serial dev channel */
-    fmtio_suspend_comm(1);
-
-    rt_device_control(fmtio_get_device(), FMTIO_DEV_CMD_CONFIG, &_io_bootloader_serial_config);
-
-    return err;
-}
-
-static fmt_err_t _uploader_deinit(void)
-{
-    fmt_err_t err;
-
-    /* change back to serial default configuration */
-    rt_device_control(fmtio_get_device(), FMTIO_DEV_CMD_CONFIG, NULL);
-    // err = fmtio_dev_configure(NULL);
-
-    /* resume fmt io communication */
-    fmtio_suspend_comm(0);
-
-    return err;
-}
-
-/**************************** Public Function ********************************/
+/**
+ * @brief Upload fmtio firmware
+ * 
+ * @param path Path of fmtio firmware
+ * @return fmt_err_t FMT_EOK for success
+ */
 fmt_err_t fmtio_upload(const char* path)
 {
-    fmt_err_t err;
-    uint32_t time;
+    uint32_t old_baudrate;
 
-    fmtio_send_message(PROTO_CMD_REBOOT, NULL, 0);
-
-    sys_msleep(10);
-
-    err = _uploader_init();
-
-    if (err != FMT_EOK) {
-        return err;
+    fmtio_dev = fmtio_get_device();
+    if (fmtio_dev == NULL) {
+        return FMT_ERROR;
     }
 
-    time = systime_now_ms();
+    CHECK_RETURN(fmtio_send_message(PROTO_CMD_REBOOT, NULL, 0));
+    sys_msleep(10);
 
-    while (systime_now_ms() - time < 15000) {
-        if (_sync() == FMT_EOK) {
+    /* suspend fmtio communication, since uploader need use that channel */
+    fmtio_suspend_comm(1);
+    /* bootloader baudrate is 115200 */
+    CHECK_RETURN(rt_device_control(fmtio_dev, FMTIO_GET_BAUDRATE, &old_baudrate));
+    if (old_baudrate != BL_BAUDRATE) {
+        CHECK_RETURN(rt_device_control(fmtio_dev, FMTIO_SET_BAUDRATE, (void*)BL_BAUDRATE));
+    }
+
+    uint32_t time = systime_now_ms();
+    while (systime_now_ms() - time < 10000) {
+        if (sync() == FMT_EOK) {
             uint32_t bl_rev;
 
             ulog_i(TAG, "sync success");
-            _get_info(INFO_BL_REV, (uint8_t*)&bl_rev, sizeof(bl_rev));
+            get_info(INFO_BL_REV, (uint8_t*)&bl_rev, sizeof(bl_rev));
             ulog_i(TAG, "found bootloader revision: %d", bl_rev);
 
-            if (_program_fs(path ? path : IO_FIRMWARE_NAME) == FMT_EOK) {
-                _reboot();
-                _uploader_deinit();
+            if (program_fs(path ? path : IO_FIRMWARE_NAME) == FMT_EOK) {
+                reboot();
+            } else {
+                ulog_e(TAG, "program fail\n");
             }
-
-            return FMT_EOK;
+            break;
         }
         sys_msleep(10);
     }
+
+    /* change back baudrate */
+    if (old_baudrate != BL_BAUDRATE) {
+        CHECK_RETURN(rt_device_control(fmtio_dev, FMTIO_SET_BAUDRATE, (void*)old_baudrate));
+    }
+    /* resume fmtio communication */
+    fmtio_suspend_comm(0);
 
     return FMT_EOK;
 }
