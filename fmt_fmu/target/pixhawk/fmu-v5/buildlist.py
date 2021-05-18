@@ -27,6 +27,9 @@ HAL = [
     'accel/*.c',
     'mag/*.c',
     'barometer/*.c',
+    'fmtio_dev/*.c',
+    'motor/*.c',
+    'rc/*.c',
 ]
 
 HAL_CPPPATH = []
@@ -36,12 +39,7 @@ MODULES = [
     'Console/*.c',
     'System/*.c',
     'IPC/*.c',
-    'SysCmd/syscmd.c',
-    'SysCmd/cmd_sys.c',
-    'SysCmd/cmd_mcn.c',
-    'SysCmd/cmd_param.c',
-    'SysCmd/cmd_test.c',
-    'SysCmd/cmd_reboot.c',
+    'SysCmd/*.c',
     'File_Manager/*.c',
     'FTP/*.c',
     'Plant/*.c',
@@ -62,6 +60,7 @@ MODULES = [
     'WorkQueue/*.c',
     'Math/*.c',
     'Filter/*.c',
+    'FMTIO/*.c',
 ]
 
 MODULES_CPPPATH = [
@@ -75,6 +74,8 @@ MODULES_CPPPATH = [
 TASKS = [
     'simple/*.c',
     'comm/*.c',
+    'logger/*.c',
+    'fmtio/*.c',
     'vehicle/multicopter/*.c',
 ]
 

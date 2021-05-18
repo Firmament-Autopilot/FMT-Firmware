@@ -168,9 +168,6 @@ static void dma_uart_rx_idle_isr(struct serial_device* serial)
 
     if (recv_len)
         hal_serial_isr(serial, SERIAL_EVENT_RX_DMADONE | (recv_len << 8));
-
-    /* read a data for clear receive idle interrupt flag */
-    USART_ReceiveData(uart->uart_device);
 }
 
 /**
@@ -228,8 +225,6 @@ static void uart_isr(struct serial_device* serial)
 {
     struct stm32_uart* uart = (struct stm32_uart*)serial->parent.user_data;
 
-    RT_ASSERT(uart != RT_NULL);
-
     if (USART_GetITStatus(uart->uart_device, USART_IT_RXNE) != RESET) {
         hal_serial_isr(serial, SERIAL_EVENT_RX_IND);
         /* clear interrupt */
@@ -237,7 +232,11 @@ static void uart_isr(struct serial_device* serial)
     }
 
     if (USART_GetITStatus(uart->uart_device, USART_IT_IDLE) != RESET) {
-        dma_uart_rx_idle_isr(serial);
+        if ((uart->uart_device->CR3 & USART_CR3_DMAR)) {
+            dma_uart_rx_idle_isr(serial);
+        }
+        /* read a data for clear receive idle interrupt flag */
+        USART_ReceiveData(uart->uart_device);
     }
 
     if (USART_GetITStatus(uart->uart_device, USART_IT_TC) != RESET) {
@@ -936,8 +935,9 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
+    /* Disable USART before configuration */
+    USART_Cmd(uart->uart_device, DISABLE);
     USART_Init(uart->uart_device, &USART_InitStructure);
-
     /* Enable USART */
     USART_Cmd(uart->uart_device, ENABLE);
 

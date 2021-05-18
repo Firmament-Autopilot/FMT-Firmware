@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __FMTIO_DEV_H__
 #define __FMTIO_DEV_H__
 
 #include <firmament.h>
 
-#define FMTIO_DEV_CMD_CONFIG 0x20
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-rt_err_t hal_fmtio_dev_register(const char* serial_name, const char* name, rt_uint32_t flag, void* data);
+#define FMTIO_SET_BAUDRATE 0x10
+#define FMTIO_GET_BAUDRATE 0x11
+
+rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
