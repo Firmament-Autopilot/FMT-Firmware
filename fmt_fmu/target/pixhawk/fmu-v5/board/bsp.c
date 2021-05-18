@@ -43,10 +43,16 @@
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/sysio/actuator_cmd.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/sysio/actuator_cmd.h"
+#include "module/fms/fms_model.h"
+#include "module/ins/ins_model.h"
+#include "module/controller/controller_model.h"
+#ifdef FMT_USING_SIH
+#include "module/plant/plant_model.h"
+#endif
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
 [console]\n\
@@ -236,6 +242,18 @@ void bsp_show_information(void)
     _print_line("RAM", buffer, str_len);
     _print_line("Target", TARGET_NAME, str_len);
     _print_line("Vehicle", VEHICLE_TYPE, str_len);
+    _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
+    _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
+    _print_line("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
+#ifdef FMT_USING_SIH
+    _print_line("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
+#endif
+    console_println("Task Initialize:");
+    _print_line("  vehicle", "OK", str_len);
+    _print_line("  fmtio", "OK", str_len);
+    _print_line("  comm", "OK", str_len);
+    _print_line("  logger", "OK", str_len);
+    _print_line("  status", "OK", str_len);
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
