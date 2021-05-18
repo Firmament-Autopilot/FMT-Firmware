@@ -58,7 +58,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
             }
         } else if (STRING_COMPARE(argv[1], "hello")) {
             /* say hello to fmt io */
-            fmtio_send_message(PROTO_DBG_TEXT, "hello", strlen("hello"));
+            fmtio_send_cmd(PROTO_DBG_TEXT, "hello", strlen("hello"));
         } else {
             show_usage();
         }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
 
 #include "hal/fmtio_dev.h"
 #include "hal/serial.h"
-#include <firmament.h>
 
 static struct rt_device fmtio_dev;
 static rt_device_t fmtio_dev_t = &fmtio_dev;
@@ -70,7 +70,7 @@ static rt_size_t fmtio_dev_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_
     /* try to read data */
     cnt = rt_device_read(io_dev_t, 0, buffer, size);
 
-    /* if not enough data reveived, wait it */
+    /* if not enough data received, wait it */
     while (cnt < size) {
         /* wait receive some data */
         if (rt_completion_wait(&rx_cplt, timeout) != RT_EOK) {
@@ -105,13 +105,7 @@ static rt_size_t fmtio_dev_write(rt_device_t dev, rt_off_t pos, const void* buff
 rt_err_t fmtio_dev_control(rt_device_t dev, int cmd, void* args)
 {
     rt_err_t ret = RT_EOK;
-    serial_dev_t serial;
-
-    if (io_dev_t == NULL) {
-        return RT_ERROR;
-    }
-
-    serial = (serial_dev_t)io_dev_t;
+    serial_dev_t serial = (serial_dev_t)io_dev_t;
 
     switch (cmd) {
     case FMTIO_SET_BAUDRATE: {
@@ -137,6 +131,15 @@ rt_err_t fmtio_dev_control(rt_device_t dev, int cmd, void* args)
     return ret;
 }
 
+/**
+ * @brief Register fmtio device
+ * 
+ * @param io_dev The io device which is used by fmtio
+ * @param name The name of fmtio device
+ * @param flag Open flag, should be equal to io device flag
+ * @param data User data
+ * @return rt_err_t 
+ */
 rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_t flag, void* data)
 {
     io_dev_t = io_dev;
@@ -147,10 +150,11 @@ rt_err_t hal_fmtio_dev_register(rt_device_t io_dev, const char* name, rt_uint32_
     rt_completion_init(&tx_cplt);
     rt_completion_init(&rx_cplt);
 
+    /* write lock */
     tx_lock = rt_sem_create("io_tx_lock", 1, RT_IPC_FLAG_FIFO);
     RT_ASSERT(tx_lock != NULL);
 
-    /* set callback functions */
+    /* set tx/rx callback functions */
     RT_CHECK(rt_device_set_tx_complete(io_dev_t, fmtio_dev_tx_done));
     RT_CHECK(rt_device_set_rx_indicate(io_dev_t, fmtio_dev_rx_ind));
 

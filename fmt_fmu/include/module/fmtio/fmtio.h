@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #ifndef __FMTIO_H__
 #define __FMTIO_H__
 
 #include <firmament.h>
-
 #include "module/fmtio/fmtio_protocol.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef fmt_err_t (*fmtio_rx_handler_t)(const PackageStruct* pkg);
 
-fmt_err_t fmtio_init(void);
+fmt_err_t fmtio_init(const char* dev_name);
 void fmtio_loop(void);
 fmt_err_t fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler);
-fmt_err_t fmtio_send_message(uint16_t cmd, const void* data, uint16_t len);
+fmt_err_t fmtio_send_cmd(uint16_t cmd, const void* data, uint16_t len);
 fmt_err_t fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg);
-
 rt_device_t fmtio_get_device(void);
 void fmtio_suspend_comm(uint8_t suspend);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

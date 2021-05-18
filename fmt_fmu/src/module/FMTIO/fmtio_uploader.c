@@ -364,7 +364,7 @@ fmt_err_t fmtio_upload(const char* path)
         return FMT_ERROR;
     }
 
-    CHECK_RETURN(fmtio_send_message(PROTO_CMD_REBOOT, NULL, 0));
+    CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_REBOOT, NULL, 0));
     sys_msleep(10);
 
     /* suspend fmtio communication, since uploader need use that channel */
