@@ -15,9 +15,10 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "module/fmtio/fmtio.h"
-#include "task/task_fmtio.h"
 #include "board_device.h"
+#include "module/fmtio/fmtio.h"
+#include "module/task_manager/task_manager.h"
+#include "task/task_fmtio.h"
 
 static fmt_err_t _handle_rx_package(const PackageStruct* pkg)
 {
@@ -54,3 +55,13 @@ void task_fmtio_entry(void* parameter)
     /* execute fmtio main loop */
     fmtio_loop();
 }
+
+FMT_TASK_EXPORT(
+    fmtio,                 /* name */
+    task_fmtio_init,       /* init */
+    task_fmtio_entry,      /* entry */
+    FMTIO_THREAD_PRIORITY, /* priority */
+    2048,                  /* stack size */
+    NULL,                  /* param */
+    NULL                   /* dependency */
+);

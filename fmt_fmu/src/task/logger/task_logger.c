@@ -18,11 +18,12 @@
 #include <string.h>
 
 #include "module/file_manager/file_manager.h"
+#include "module/task_manager/task_manager.h"
 #include "task/task_logger.h"
 
 #define TAG "Logger"
 
-#define ULOG_FILE_NAME      "ulog.txt"
+#define ULOG_FILE_NAME "ulog.txt"
 
 static struct rt_event _log_event;
 
@@ -177,3 +178,13 @@ void task_logger_entry(void* parameter)
         }
     }
 }
+
+FMT_TASK_EXPORT(
+    logger,                 /* name */
+    task_logger_init,       /* init */
+    task_logger_entry,      /* entry */
+    LOGGER_THREAD_PRIORITY, /* priority */
+    2048,                   /* stack size */
+    NULL,                   /* param */
+    NULL                    /* dependency */
+);

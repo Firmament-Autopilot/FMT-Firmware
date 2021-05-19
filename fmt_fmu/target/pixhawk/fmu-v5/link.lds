@@ -45,6 +45,13 @@ SECTIONS
         KEEP(*(SORT(.rti_fn*)))
         __rt_init_end = .;
         . = ALIGN(4);
+
+        /* section information for task. */
+        . = ALIGN(4);
+        __fmt_task_start = .;
+        KEEP(*(TaskTab))
+        __fmt_task_end = .;
+        . = ALIGN(4);
 		
 		/* section information for utest */
 		. = ALIGN(4);

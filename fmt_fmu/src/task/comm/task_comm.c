@@ -25,6 +25,7 @@
 #include "module/system/statistic.h"
 #include "task/task_comm.h"
 #include "task/task_vehicle.h"
+#include "module/task_manager/task_manager.h"
 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
@@ -212,3 +213,13 @@ void task_comm_entry(void* parameter)
     /* execute mavproxy main loop */
     mavproxy_loop();
 }
+
+FMT_TASK_EXPORT(
+    comm,                 /* name */
+    task_comm_init,       /* init */
+    task_comm_entry,      /* entry */
+    COMM_THREAD_PRIORITY, /* priority */
+    8192,                   /* stack size */
+    NULL,                    /* param */
+    NULL                     /* dependency */
+);

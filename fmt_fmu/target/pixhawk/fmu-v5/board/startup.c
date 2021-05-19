@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,16 @@
 
 #include <bsp.h>
 #include <firmament.h>
-
 #ifdef FMT_USING_CM_BACKTRACE
 #include <cm_backtrace.h>
 #endif
 
 #include "hal/pin.h"
-#include "task/task_comm.h"
-#include "task/task_fmtio.h"
-#include "task/task_logger.h"
-#include "task/task_simple.h"
-#include "task/task_vehicle.h"
+#include "module/task_manager/task_manager.h"
 
 static rt_thread_t tid0;
 
-static char thread_vehicle_stack[10240];
-struct rt_thread thread_vehicle_handle;
-
-static char thread_simple_stack[2048];
-struct rt_thread thread_simple_handle;
-
-static char thread_comm_stack[8192];
-struct rt_thread thread_comm_handle;
-
-static char thread_logger_stack[2048];
-struct rt_thread thread_logger_handle;
-
-static char thread_fmtio_stack[2048];
-struct rt_thread thread_fmtio_handle;
-
-void assert_failed(uint8_t* file, uint32_t line)
+static void assert_failed(uint8_t* file, uint32_t line)
 {
     rt_hw_interrupt_disable();
 
@@ -56,77 +36,28 @@ void assert_failed(uint8_t* file, uint32_t line)
         ;
 }
 
-void assert_hook(const char* ex, const char* func, rt_size_t line)
+static void assert_hook(const char* ex, const char* func, rt_size_t line)
 {
-    rt_kprintf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
+    console_printf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
 
     assert_failed((uint8_t*)func, (uint32_t)line);
 }
 
 static void rt_init_thread_entry(void* parameter)
 {
-    rt_err_t res;
-
     rt_assert_set_hook(assert_hook);
 
-    /********************* bsp init *********************/
+    /* bsp initialization */
     bsp_initialize();
 
-    /********************* init tasks *********************/
-    FMT_CHECK(task_fmtio_init());
-    FMT_CHECK(task_simple_init());
-    FMT_CHECK(task_comm_init());
-    FMT_CHECK(task_logger_init());
-    FMT_CHECK(task_vehicle_init());
+    /* task initialization */
+    FMT_CHECK(task_init());
 
-    /********************* bsp post init *********************/
+    /* bsp post initialization */
     bsp_post_initialize();
 
-    /********************* start tasks *********************/
-    res = rt_thread_init(&thread_simple_handle,
-        "simple",
-        task_simple_entry,
-        RT_NULL,
-        &thread_simple_stack[0],
-        sizeof(thread_simple_stack), 10, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_simple_handle);
-
-    res = rt_thread_init(&thread_comm_handle,
-        "comm",
-        task_comm_entry,
-        RT_NULL,
-        &thread_comm_stack[0],
-        sizeof(thread_comm_stack), COMM_THREAD_PRIORITY, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_comm_handle);
-
-    res = rt_thread_init(&thread_fmtio_handle,
-        "fmtio",
-        task_fmtio_entry,
-        RT_NULL,
-        &thread_fmtio_stack[0],
-        sizeof(thread_fmtio_stack), FMTIO_THREAD_PRIORITY, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_fmtio_handle);
-
-    res = rt_thread_init(&thread_logger_handle,
-        "logger",
-        task_logger_entry,
-        RT_NULL,
-        &thread_logger_stack[0],
-        sizeof(thread_logger_stack), LOGGER_THREAD_PRIORITY, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_logger_handle);
-
-    res = rt_thread_init(&thread_vehicle_handle,
-        "vehicle",
-        task_vehicle_entry,
-        RT_NULL,
-        &thread_vehicle_stack[0],
-        sizeof(thread_vehicle_stack), VEHICLE_THREAD_PRIORITY, 1);
-    RT_ASSERT(res == RT_EOK);
-    rt_thread_startup(&thread_vehicle_handle);
+    /* start task */
+    FMT_CHECK(task_start());
 
     /* delete itself */
     rt_thread_delete(tid0);
@@ -151,9 +82,6 @@ void rtthread_startup(void)
 {
     /* init board */
     rt_hw_board_init();
-
-    /* show system version */
-    // rt_show_version();
 
     /* init tick */
     rt_system_tick_init();

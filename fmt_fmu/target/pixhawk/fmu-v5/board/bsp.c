@@ -40,16 +40,17 @@
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
 
+#include "module/controller/controller_model.h"
 #include "module/file_manager/file_manager.h"
+#include "module/fms/fms_model.h"
+#include "module/ins/ins_model.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/fms/fms_model.h"
-#include "module/ins/ins_model.h"
-#include "module/controller/controller_model.h"
+#include "module/task_manager/task_manager.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
@@ -87,22 +88,6 @@ static const struct dfs_mount_tbl mnt_table[] = {
 };
 
 static toml_table_t* __toml_root_tab = NULL;
-
-static void _print_line(const char* name, const char* content, uint32_t len)
-{
-    int pad_len = len - strlen(name) - strlen(content);
-
-    if (pad_len < 1) {
-        pad_len = 1;
-    }
-
-    console_printf("%s", name);
-
-    while (pad_len--)
-        console_write(".", 1);
-
-    console_printf("%s\n", content);
-}
 
 static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
@@ -223,10 +208,10 @@ void SystemClock_Config(void)
     LL_RCC_SetI2CClockSource(LL_RCC_I2C4_CLKSOURCE_PCLK1);
 }
 
+#define ITEM_LENGTH 42
 void bsp_show_information(void)
 {
     char buffer[50];
-    uint32_t str_len = 42;
 
     console_printf("\n");
     console_println("   _____                               __ ");
@@ -235,25 +220,27 @@ void bsp_show_information(void)
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
     sprintf(buffer, "FMT FMU %s", FMT_VERSION);
-    _print_line("Firmware", buffer, str_len);
+    print_item_line("Firmware", buffer, '.', ITEM_LENGTH);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    _print_line("Kernel", buffer, str_len);
+    print_item_line("Kernel", buffer, '.', ITEM_LENGTH);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    _print_line("RAM", buffer, str_len);
-    _print_line("Target", TARGET_NAME, str_len);
-    _print_line("Vehicle", VEHICLE_TYPE, str_len);
-    _print_line("INS Model", (char*)INS_EXPORT.model_info, str_len);
-    _print_line("FMS Model", (char*)FMS_EXPORT.model_info, str_len);
-    _print_line("Control Model", (char*)CONTROL_EXPORT.model_info, str_len);
+    print_item_line("RAM", buffer, '.', ITEM_LENGTH);
+    print_item_line("Target", TARGET_NAME, '.', ITEM_LENGTH);
+    print_item_line("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
+    print_item_line("INS Model", (char*)INS_EXPORT.model_info, '.', ITEM_LENGTH);
+    print_item_line("FMS Model", (char*)FMS_EXPORT.model_info, '.', ITEM_LENGTH);
+    print_item_line("Control Model", (char*)CONTROL_EXPORT.model_info, '.', ITEM_LENGTH);
 #ifdef FMT_USING_SIH
-    _print_line("Plant Model", (char*)PLANT_EXPORT.model_info, str_len);
+    print_item_line("Plant Model", (char*)PLANT_EXPORT.model_info, '.', ITEM_LENGTH);
 #endif
+
     console_println("Task Initialize:");
-    _print_line("  vehicle", "OK", str_len);
-    _print_line("  fmtio", "OK", str_len);
-    _print_line("  comm", "OK", str_len);
-    _print_line("  logger", "OK", str_len);
-    _print_line("  status", "OK", str_len);
+    fmt_task_desc_t task_tab = get_task_table();
+    for(uint32_t i = 0; i < get_task_num(); i++) {
+        sprintf(buffer, "  %s", task_tab[i].name);
+        /* task status must be okay to reach here */
+        print_item_line(buffer, "OK", '.', ITEM_LENGTH);
+    }
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
