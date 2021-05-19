@@ -45,6 +45,13 @@ SECTIONS
         KEEP(*(SORT(.rti_fn*)))
         __rt_init_end = .;
         . = ALIGN(4);
+		
+		/* section information for utest */
+		. = ALIGN(4);
+		__rt_utest_tc_tab_start = .;
+		KEEP(*(UtestTcTab))
+		__rt_utest_tc_tab_end = .;
+        . = ALIGN(4);
 
         /* section information for task. */
         . = ALIGN(4);
@@ -52,14 +59,7 @@ SECTIONS
         KEEP(*(TaskTab))
         __fmt_task_end = .;
         . = ALIGN(4);
-		
-		/* section information for utest */
-		. = ALIGN(4);
-		__rt_utest_tc_tab_start = .;
-		KEEP(*(UtestTcTab))
-		__rt_utest_tc_tab_end = .;
 
-        . = ALIGN(4);
         _etext = .;
     } > CODE = 0
 

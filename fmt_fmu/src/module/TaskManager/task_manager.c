@@ -19,22 +19,31 @@
 static fmt_task_desc_t task_table;
 static uint32_t task_num;
 
+/**
+ * @brief Get the task num
+ * 
+ * @return uint32_t Number of task
+ */
 uint32_t get_task_num(void)
 {
     return task_num;
 }
 
+/**
+ * @brief Get the task table object
+ * 
+ * @return fmt_task_desc_t Task table object
+ */
 fmt_task_desc_t get_task_table(void)
 {
     return task_table;
 }
 
 /**
- * @brief Initialize task
+ * @brief Initialize tasks
  * 
- * @return fmt_err_t FMT_EOK for success
  */
-fmt_err_t task_init(void)
+void task_init(void)
 {
     extern const int __fmt_task_start;
     extern const int __fmt_task_end;
@@ -46,20 +55,24 @@ fmt_err_t task_init(void)
         RT_ASSERT(task_table[i].init != NULL);
         RT_ASSERT(task_table[i].entry != NULL);
 
-        CHECK_RETURN(task_table[i].init());
+        if (task_table[i].init() == FMT_EOK) {
+            task_table[i].status = TASK_OK;
+        } else {
+            task_table[i].status = TASK_FAIL;
+        }
     }
-
-    return FMT_EOK;
 }
 
 /**
- * @brief Start task
+ * @brief Start tasks
  * 
- * @return fmt_err_t 
  */
-fmt_err_t task_start(void)
+void task_start(void)
 {
     for (uint32_t i = 0; i < task_num; i++) {
+        if (task_table[i].status == TASK_FAIL)
+            continue;
+
         rt_thread_t tid = rt_thread_create(task_table[i].name,
             task_table[i].entry, task_table[i].param,
             task_table[i].stack_size, task_table[i].priority, 1);
@@ -67,6 +80,4 @@ fmt_err_t task_start(void)
 
         RT_CHECK(rt_thread_startup(tid));
     }
-
-    return FMT_EOK;
 }

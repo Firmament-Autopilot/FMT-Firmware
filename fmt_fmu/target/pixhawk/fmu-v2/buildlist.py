@@ -70,6 +70,7 @@ MODULES = [
     'Filter/*.c',
     'TOML/*.c',
     'WorkQueue/*.c',
+    'TaskManager/*.c',
 ]
 
 MODULES_CPPPATH = [

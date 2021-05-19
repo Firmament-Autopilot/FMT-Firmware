@@ -47,10 +47,10 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
+#include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/task_manager/task_manager.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
@@ -236,10 +236,10 @@ void bsp_show_information(void)
 
     console_println("Task Initialize:");
     fmt_task_desc_t task_tab = get_task_table();
-    for(uint32_t i = 0; i < get_task_num(); i++) {
+    for (uint32_t i = 0; i < get_task_num(); i++) {
         sprintf(buffer, "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
-        print_item_line(buffer, "OK", '.', ITEM_LENGTH);
+        print_item_line(buffer, task_tab[i].status == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
     }
 }
 

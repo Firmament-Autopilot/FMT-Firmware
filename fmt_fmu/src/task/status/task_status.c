@@ -22,6 +22,7 @@
 #include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
 #include "module/sysio/pilot_cmd.h"
+#include "module/task_manager/task_manager.h"
 #include "module/utils/devmq.h"
 #include "task/task_logger.h"
 #include "task/task_status.h"
@@ -268,3 +269,13 @@ void task_status_entry(void* parameter)
         sys_msleep(10);
     }
 }
+
+FMT_TASK_EXPORT(
+    status,                 /* name */
+    task_status_init,       /* init */
+    task_status_entry,      /* entry */
+    STATUS_THREAD_PRIORITY, /* priority */
+    2048,                   /* stack size */
+    NULL,                   /* param */
+    NULL                    /* dependency */
+);

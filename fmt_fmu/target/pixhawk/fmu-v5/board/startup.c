@@ -20,12 +20,11 @@
 #include <cm_backtrace.h>
 #endif
 
-#include "hal/pin.h"
 #include "module/task_manager/task_manager.h"
 
 static rt_thread_t tid0;
 
-static void assert_failed(uint8_t* file, uint32_t line)
+void assert_failed(uint8_t* file, uint32_t line)
 {
     rt_hw_interrupt_disable();
 
@@ -51,13 +50,13 @@ static void rt_init_thread_entry(void* parameter)
     bsp_initialize();
 
     /* task initialization */
-    FMT_CHECK(task_init());
+    task_init();
 
     /* bsp post initialization */
     bsp_post_initialize();
 
     /* start task */
-    FMT_CHECK(task_start());
+    task_start();
 
     /* delete itself */
     rt_thread_delete(tid0);

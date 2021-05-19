@@ -25,6 +25,11 @@ extern "C" {
 typedef fmt_err_t (*task_init_t)(void);
 typedef void (*task_entry_t)(void* param);
 
+enum {
+    TASK_OK = 0,
+    TASK_FAIL
+};
+
 struct fmt_task_desc {
     const char* name;
     task_init_t init;
@@ -33,6 +38,7 @@ struct fmt_task_desc {
     uint32_t stack_size;
     void* param;
     char** dependency;
+    uint8_t status;
 };
 typedef struct fmt_task_desc* fmt_task_desc_t;
 
@@ -49,8 +55,8 @@ typedef struct fmt_task_desc* fmt_task_desc_t;
               .dependency = _dependency                                                    \
           }
 
-fmt_err_t task_init(void);
-fmt_err_t task_start(void);
+void task_init(void);
+void task_start(void);
 uint32_t get_task_num(void);
 fmt_task_desc_t get_task_table(void);
 
