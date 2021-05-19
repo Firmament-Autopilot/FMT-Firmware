@@ -51,8 +51,15 @@ SECTIONS
 		__rt_utest_tc_tab_start = .;
 		KEEP(*(UtestTcTab))
 		__rt_utest_tc_tab_end = .;
-
         . = ALIGN(4);
+
+        /* section information for task. */
+        . = ALIGN(4);
+        __fmt_task_start = .;
+        KEEP(*(TaskTab))
+        __fmt_task_end = .;
+        . = ALIGN(4);
+
         _etext = .;
     } > CODE = 0
 

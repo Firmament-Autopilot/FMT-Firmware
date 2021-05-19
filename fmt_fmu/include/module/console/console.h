@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,11 @@
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* console API */
 fmt_err_t console_init(void);
 fmt_err_t console_enable_input(void);
 fmt_err_t console_set_device(const char* device_name);
@@ -28,5 +33,12 @@ uint32_t console_println(const char* fmt, ...);
 uint32_t console_print_args(const char* fmt, va_list args);
 void console_format(char* buffer, const char* fmt, ...);
 uint32_t console_write(const char* content, uint32_t len);
+
+/* console helper API */
+void print_item_line(const char* name, const char* content, char pad, uint32_t len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

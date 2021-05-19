@@ -22,6 +22,7 @@
 #include "hal/pin.h"
 #include "hal/usbd_cdc.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/task_manager/task_manager.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
 
@@ -99,10 +100,18 @@ void task_simple_entry(void* parameter)
     RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_BLUE));
     sys_msleep(10);
 
-    printf("test printf %f %d\n", 2.13, -20);
-
     while (1) {
         rgb_led_control();
         sys_msleep(10);
     }
 }
+
+FMT_TASK_EXPORT(
+    simple,            /* name */
+    task_simple_init,  /* init */
+    task_simple_entry, /* entry */
+    10,                /* priority */
+    2048,              /* stack size */
+    NULL,              /* param */
+    NULL               /* dependency */
+);

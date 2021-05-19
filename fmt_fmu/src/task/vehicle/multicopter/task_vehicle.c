@@ -17,8 +17,8 @@
 #include <firmament.h>
 
 #include "module/controller/controller_model.h"
-#include "module/fms/fms_model.h"
 #include "module/file_manager/file_manager.h"
+#include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
 #include "module/plant/plant_model.h"
 #include "module/sensor/sensor_hub.h"
@@ -26,6 +26,7 @@
 #include "module/sysio/pilot_cmd.h"
 #include "task/task_logger.h"
 #include "task/task_vehicle.h"
+#include "module/task_manager/task_manager.h"
 
 #define EVENT_VEHICLE_UPDATE (1 << 0)
 
@@ -119,3 +120,13 @@ fmt_err_t task_vehicle_init(void)
 
     return FMT_EOK;
 }
+
+FMT_TASK_EXPORT(
+    vehicle,                 /* name */
+    task_vehicle_init,       /* init */
+    task_vehicle_entry,      /* entry */
+    VEHICLE_THREAD_PRIORITY, /* priority */
+    10240,                   /* stack size */
+    NULL,                    /* param */
+    NULL                     /* dependency */
+);

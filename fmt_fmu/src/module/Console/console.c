@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
 #include <finsh.h>
 #include <firmament.h>
 #include <string.h>
@@ -21,17 +22,11 @@
 
 #define CONSOLE_BUFF_SIZE 1024
 
+/* console write hook function, can be reimplemented by other modules. */
+RT_WEAK void console_write_hook(const char* content, uint32_t len);
+
 static rt_device_t console_dev = NULL;
 static char console_buffer[CONSOLE_BUFF_SIZE];
-
-/**
- * console write hook function, can be reimplemented by other modules.
- */
-RT_WEAK void console_write_hook(const char* content, uint32_t len)
-{
-    (void)content;
-    (void)len;
-}
 
 /**
  * Write raw data to console device.
@@ -43,10 +38,14 @@ RT_WEAK void console_write_hook(const char* content, uint32_t len)
  */
 uint32_t console_write(const char* content, uint32_t len)
 {
-    /* can reimplement this function in other places */
-    console_write_hook(content, len);
     /* write content into console device */
-    return rt_device_write(console_dev, 0, (void*)content, len);
+    uint32_t size = rt_device_write(console_dev, 0, (void*)content, len);
+
+    /* call write hook */
+    if (console_write_hook)
+        console_write_hook(content, len);
+
+    return size;
 }
 
 /**
