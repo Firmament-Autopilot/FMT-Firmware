@@ -14,20 +14,22 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef __CONSOLE_CONFIG_H__
+#define __CONSOLE_CONFIG_H__
+
 #include <firmament.h>
-#include <string.h>
 
-void print_item_line(const char* name, const char* content, char pad, uint32_t len)
-{
-    int pad_len = len - strlen(name) - strlen(content);
+#include "module/toml/toml.h"
 
-    if (pad_len < 1) {
-        pad_len = 1;
-    }
-    // e.g, name..............content
-    console_printf("%s", name);
-    while (pad_len--) {
-        console_write(&pad, 1);
-    }
-    console_printf("%s\n", content);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* toml configuration */
+fmt_err_t console_toml_config(toml_table_t* table);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif

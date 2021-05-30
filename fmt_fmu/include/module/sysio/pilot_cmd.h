@@ -18,7 +18,6 @@
 #define __PILOT_CMD_H__
 
 #include <firmament.h>
-#include "module/toml/toml.h"
 
 // Pilot Command 1 (Event Command)
 #define FMS_CMD_FORCE_DISARM 1000
@@ -26,10 +25,38 @@
 // Pilot Command 2 (State Command)
 #define FMS_CMD_TEST_MOTOR 2000
 
-fmt_err_t pilot_cmd_init(void);
-uint8_t pilot_cmd_collect(void);
+typedef struct {
+    char* type;
+    char* name;
+    void* config;
+} pilot_cmd_device_info;
 
-fmt_err_t pilot_cmd_toml_init(toml_table_t* table);
-void list_pilot_cmd_devices(void);
+typedef struct {
+    uint16_t protocol;
+    uint16_t channel_num;
+    float sample_time;
+    int16_t range[2];
+} pilot_cmd_rc_dev_config;
+
+typedef struct {
+    int8_t mode;
+    int8_t chan_dim;
+    int8_t* channel;
+    int16_t* range;
+} pilot_mode_config;
+
+typedef struct {
+    int32_t cmd;
+    int8_t chan_dim;
+    int8_t* channel;
+    int16_t* range;
+    uint8_t _set;
+} pilot_event_cmd_t;
+
+fmt_err_t pilot_cmd_init(void);
+fmt_err_t pilot_cmd_collect(void);
+fmt_err_t pilot_cmd_set_device(const char* dev_name);
+fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num);
+fmt_err_t pilot_cmd_set_stick_mapping(uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan);
 
 #endif

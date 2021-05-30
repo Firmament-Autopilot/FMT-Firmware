@@ -124,7 +124,7 @@ static fmt_err_t dump_pkg_buffer(void)
 
     while (_pkg_buff_tail != _pkg_buff_head) {
         /* read pkg from buffer and make send pkg */
-        CHECK_RETURN(make_send_package(_io_pkg_buff[_pkg_buff_tail], &send_pkg));
+        FMT_CHECK_RETURN(make_send_package(_io_pkg_buff[_pkg_buff_tail], &send_pkg));
 
         /* send out pkg data */
         if (rt_device_write(fmtio_dev, RT_WAITING_FOREVER, send_pkg.send_buff, send_pkg.buff_size) == send_pkg.buff_size) {
@@ -141,10 +141,10 @@ static fmt_err_t dump_pkg_buffer(void)
 
 static fmt_err_t configure_default(const fmtio_config_t default_config)
 {
-    CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_RC_CONFIG, &default_config.rc_config, sizeof(fmtio_rc_config_t)));
-    CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_MOTOR_CONFIG, &default_config.motor_config, sizeof(fmtio_motor_config_t)));
+    FMT_CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_RC_CONFIG, &default_config.rc_config, sizeof(fmtio_rc_config_t)));
+    FMT_CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_MOTOR_CONFIG, &default_config.motor_config, sizeof(fmtio_motor_config_t)));
     //TODO: Need update fmtio_dev baudrate
-    CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_DEV_CONFIG, &default_config.dev_config, sizeof(fmtio_dev_config_t)));
+    FMT_CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_DEV_CONFIG, &default_config.dev_config, sizeof(fmtio_dev_config_t)));
 
     return FMT_EOK;
 }
@@ -408,7 +408,7 @@ fmt_err_t fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg)
         return FMT_EFULL;
     } else {
         /* write pkg content */
-        CHECK_RETURN(fill_io_package(data, len, pkg));
+        FMT_CHECK_RETURN(fill_io_package(data, len, pkg));
         /* push pkg into send buffer */
         OS_ENTER_CRITICAL;
         _io_pkg_buff[_pkg_buff_head] = *pkg;
@@ -436,9 +436,9 @@ fmt_err_t fmtio_send_cmd(uint16_t cmd, const void* data, uint16_t len)
 
     /* Create an io package. Note that will dynamically malloc a memory space,
      * the memory will be freed when package is sent */
-    CHECK_RETURN(create_io_package(cmd, len, &pkg));
+    FMT_CHECK_RETURN(create_io_package(cmd, len, &pkg));
     /* Send io package */
-    CHECK_RETURN(fmtio_send_package(data, len, &pkg));
+    FMT_CHECK_RETURN(fmtio_send_package(data, len, &pkg));
 
     return FMT_EOK;
 }

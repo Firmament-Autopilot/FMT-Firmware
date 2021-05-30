@@ -14,8 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "hal/rc.h"
 #include <firmament.h>
+
+#include "hal/rc.h"
 
 static rt_err_t hal_rc_init(struct rt_device* dev)
 {
@@ -73,8 +74,25 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
 
     rc = (rc_dev_t)dev;
 
-    if (rc->ops->rc_control) {
-        return rc->ops->rc_control(rc, cmd, args);
+    switch (cmd) {
+    case RT_DEVICE_CTRL_CONFIG:
+        if (args) {
+            struct rc_configure* pconfig = (struct rc_configure*)args;
+            /* set rc configure */
+            rc->config = *pconfig;
+
+            /* if device is opened before, re-configure it */
+            if (rc->parent.flag & RT_DEVICE_FLAG_ACTIVATED && rc->ops->rc_configure) {
+                rc->ops->rc_configure(rc, pconfig);
+            }
+        }
+        break;
+
+    default:
+        if (rc->ops->rc_control) {
+            return rc->ops->rc_control(rc, cmd, args);
+        }
+        break;
     }
 
     return RT_EOK;

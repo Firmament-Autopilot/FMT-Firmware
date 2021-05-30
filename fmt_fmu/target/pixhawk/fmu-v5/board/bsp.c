@@ -40,13 +40,16 @@
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
 
+#include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
 #include "module/file_manager/file_manager.h"
 #include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
+#include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
+#include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
@@ -78,9 +81,6 @@
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
-
-fmt_err_t console_toml_config(toml_table_t* table);
-fmt_err_t mavproxy_toml_config(toml_table_t* table);
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },

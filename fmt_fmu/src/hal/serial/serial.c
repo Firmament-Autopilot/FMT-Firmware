@@ -616,8 +616,9 @@ static rt_err_t hal_serial_control(struct rt_device* dev,
             /* set serial configure */
             serial->config = *pconfig;
 
-            if (serial->parent.ref_count) {
-                /* serial device has been opened, to configure it */
+            /* if device is opened before, re-configure it */
+            if (serial->parent.flag & RT_DEVICE_FLAG_ACTIVATED && serial->ops->configure) {
+                /* serial device has been opened, re-configure it */
                 serial->ops->configure(serial, (struct serial_configure*)args);
             }
         }
@@ -626,7 +627,9 @@ static rt_err_t hal_serial_control(struct rt_device* dev,
 
     default:
         /* control device */
-        ret = serial->ops->control(serial, cmd, args);
+        if (serial->ops->control) {
+            ret = serial->ops->control(serial, cmd, args);
+        }
         break;
     }
 

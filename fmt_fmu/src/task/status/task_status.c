@@ -239,8 +239,9 @@ void task_status_entry(void* parameter)
     _led_on();
 
     rt_device_write(_rgb_led_dev, TCA62724_LED_BLUE, NULL, 0);
-    buzzer_tune_init();
-    buzzer_tune_play(TUNE_STARTUP);
+
+    // buzzer_tune_init();
+    // buzzer_tune_play(TUNE_STARTUP);
 
 #ifdef FMT_USING_HIL
 #ifdef FMT_USING_SIH

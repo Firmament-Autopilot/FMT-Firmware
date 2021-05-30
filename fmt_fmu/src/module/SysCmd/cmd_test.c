@@ -33,38 +33,11 @@
 #include "module/work_queue/work_queue.h"
 #include "module/work_queue/workqueue_manager.h"
 
-void run1(void)
-{
-    console_printf("I am work1\n");
-}
-
-void run2(void)
-{
-    console_printf("I am work2\n");
-}
+void print_channel_mapping(void);
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    // test_main();
-
-    // WorkQueue_t wq = workqueue_create("wq:test", 10, 4096, 20);
-    WorkQueue_t wq = workqueue_find("wq:lp_work");
-    if (wq == NULL) {
-        RT_ASSERT(false);
-    }
-    static struct WorkItem item1 = { .name = "period_work", .period = 1000, .schedule_time = 0, .run = run1 };
-    static struct WorkItem item2 = { .name = "period_work2", .period = 0, .schedule_time = 0, .run = run2 };
-
-    item2.schedule_time = SCHEDULE_DELAY(2000);
-
-    FMT_CHECK(workqueue_schedule_work(wq, &item1));
-    FMT_CHECK(workqueue_schedule_work(wq, &item2));
-
-    // FMT_CHECK(workqueue_delete(wq));
-
-    // FMT_CHECK(workqueue_cancel_work(wq, &item4));
-
-    // print_wq(wq);
+    print_channel_mapping();
 
     return 0;
 }
