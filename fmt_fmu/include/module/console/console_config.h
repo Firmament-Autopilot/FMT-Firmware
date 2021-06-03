@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,41 +14,19 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __PILOT_CMD_H__
-#define __PILOT_CMD_H__
+#ifndef __CONSOLE_CONFIG_H__
+#define __CONSOLE_CONFIG_H__
 
 #include <firmament.h>
+
+#include "module/toml/toml.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Pilot Command 1 (Event Command)
-#define FMS_CMD_FORCE_DISARM 1000
-
-// Pilot Command 2 (State Command)
-#define FMS_CMD_TEST_MOTOR 2000
-
-typedef struct {
-    int8_t mode;
-    int8_t chan_dim;
-    int8_t* channel;
-    int16_t* range;
-} pilot_mode_config;
-
-typedef struct {
-    int32_t cmd;
-    int8_t chan_dim;
-    int8_t* channel;
-    int16_t* range;
-    uint8_t _set;
-} pilot_event_cmd_t;
-
-fmt_err_t pilot_cmd_init(void);
-fmt_err_t pilot_cmd_collect(void);
-fmt_err_t pilot_cmd_set_device(const char* dev_name);
-fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num);
-fmt_err_t pilot_cmd_map_stick(uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan);
+/* toml configuration */
+fmt_err_t console_toml_config(toml_table_t* table);
 
 #ifdef __cplusplus
 }

@@ -61,7 +61,7 @@ typedef int bool;
         }                       \
     } while (false)
 
-#define CHECK_RETURN(__exp)    \
+#define FMT_CHECK_RETURN(__exp)    \
     do {                       \
         fmt_err_t err = (__exp); \
         if (err != FMT_EOK) {  \

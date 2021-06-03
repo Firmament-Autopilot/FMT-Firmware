@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "Pixhawk FMUv2"
+target = "Pixhawk4 FMUv5"
 
 # Console Configuration
 [console]
@@ -59,7 +59,9 @@ target = "Pixhawk FMUv2"
 	
 	[[mavproxy.devices]]		# channel 1
 	type = "usb"
-	name = "usb"				# device name
+	name = "usbd0"				# device name
+	# automatically switch to usb if connected, switch back to default device is disconnected
+	auto-switch = true
 
 # Actuator Command Configuration
 [actuator-cmd]

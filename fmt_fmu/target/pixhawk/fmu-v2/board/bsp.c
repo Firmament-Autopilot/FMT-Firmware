@@ -43,21 +43,23 @@
 #include "drv_spi.h"
 #include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
+#include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
 #include "module/file_manager/file_manager.h"
 #include "module/fms/fms_model.h"
 #include "module/ins/ins_model.h"
-#include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/pilot_cmd.h"
+#include "module/sysio/pilot_cmd_config.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
+#include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/task_manager/task_manager.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
@@ -96,9 +98,6 @@ static toml_table_t* _toml_root_tab = NULL;
 
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
-
-fmt_err_t console_toml_config(toml_table_t* table);
-fmt_err_t mavproxy_toml_config(toml_table_t* table);
 
 static void _print_line(const char* name, const char* content, uint32_t len)
 {
@@ -205,7 +204,7 @@ fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
-                    pilot_cmd_toml_init(sub_tab);
+                    pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator-cmd")) {
                     actuator_toml_init(sub_tab);
                 } else {
@@ -299,11 +298,11 @@ void bsp_initialize(void)
     /* init sensor hub */
     FMT_CHECK(sensor_hub_init());
 
-//     /* GDB STUB */
-// #ifdef RT_USING_GDB
-//     gdb_set_device(GDB_DEVICE_NAME);
-//     gdb_start();
-// #endif
+    //     /* GDB STUB */
+    // #ifdef RT_USING_GDB
+    //     gdb_set_device(GDB_DEVICE_NAME);
+    //     gdb_start();
+    // #endif
 
     /* init finsh */
     finsh_system_init();
