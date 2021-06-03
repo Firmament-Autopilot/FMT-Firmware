@@ -19,24 +19,15 @@
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Pilot Command 1 (Event Command)
 #define FMS_CMD_FORCE_DISARM 1000
 
 // Pilot Command 2 (State Command)
 #define FMS_CMD_TEST_MOTOR 2000
-
-typedef struct {
-    char* type;
-    char* name;
-    void* config;
-} pilot_cmd_device_info;
-
-typedef struct {
-    uint16_t protocol;
-    uint16_t channel_num;
-    float sample_time;
-    int16_t range[2];
-} pilot_cmd_rc_dev_config;
 
 typedef struct {
     int8_t mode;
@@ -57,6 +48,10 @@ fmt_err_t pilot_cmd_init(void);
 fmt_err_t pilot_cmd_collect(void);
 fmt_err_t pilot_cmd_set_device(const char* dev_name);
 fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num);
-fmt_err_t pilot_cmd_set_stick_mapping(uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan);
+fmt_err_t pilot_cmd_map_stick(uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -28,6 +28,19 @@
 #define PILOT_CMD_MAX_DEVICE_NUM 1
 #define MATCH(a, b)              (strcmp(a, b) == 0)
 
+typedef struct {
+    char* type;
+    char* name;
+    void* config;
+} pilot_cmd_device_info;
+
+typedef struct {
+    uint16_t protocol;
+    uint16_t channel_num;
+    float sample_time;
+    int16_t range[2];
+} pilot_cmd_rc_dev_config;
+
 extern uint8_t modeNum;
 extern uint8_t eventCmdNum;
 extern uint8_t statusCmdNum;
@@ -359,7 +372,7 @@ fmt_err_t pilot_cmd_toml_config(toml_table_t* table)
                         return FMT_ERROR;
                     }
                 }
-                FMT_CHECK_RETURN(pilot_cmd_set_stick_mapping(
+                FMT_CHECK_RETURN(pilot_cmd_map_stick(
                     stick_mapping[0], stick_mapping[1], stick_mapping[2], stick_mapping[3]));
             } else {
                 TOML_DBG_E("Wrong stick-channel definition\n");

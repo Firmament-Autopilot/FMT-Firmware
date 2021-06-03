@@ -38,7 +38,7 @@ pilot_mode_config* pilotModes = NULL;
 pilot_event_cmd_t* pilotEventCmds = NULL;
 
 static rt_device_t rcDev = NULL;
-static uint8_t stickMapping[4] = { 0 }; // [ls_lr,ls_ud,rs_lr,rs_ud]
+static uint8_t stickMapping[4] = { 0 };
 static int16_t rcChannel[16] = { 0 };
 
 static uint16_t rc_read_mask = RC_MASK_1_6;
@@ -266,7 +266,7 @@ fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num)
     return FMT_EOK;
 }
 
-fmt_err_t pilot_cmd_set_stick_mapping(
+fmt_err_t pilot_cmd_map_stick(
     uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan)
 {
     RT_ASSERT(yaw_chan >= 1 && yaw_chan <= 16);
@@ -292,7 +292,7 @@ fmt_err_t pilot_cmd_init(void)
     FMT_CHECK(pilot_cmd_set_device("rc"));
 
     /* set default stick mapping */
-    pilot_cmd_set_stick_mapping(4, 3, 1, 2);
+    pilot_cmd_map_stick(4, 3, 1, 2);
 
     pilot_cmd_set_chan_num(6);
 
