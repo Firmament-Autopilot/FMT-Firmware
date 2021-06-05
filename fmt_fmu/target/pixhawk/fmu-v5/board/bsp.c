@@ -39,6 +39,7 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
+#include "driver/gps_m8n.h"
 
 #include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
@@ -54,6 +55,9 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
+#include "module/sysio/pilot_cmd.h"
+#include "module/sysio/pilot_cmd_config.h"
+#include "module/sysio/actuator_cmd.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
@@ -128,6 +132,10 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
+                } else if (MATCH(key, "pilot-cmd")) {
+                    err = pilot_cmd_toml_config(sub_tab);
+                } else if (MATCH(key, "actuator-cmd")) {
+                    err = actuator_toml_init(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -199,6 +207,7 @@ void SystemClock_Config(void)
     LL_RCC_SetCK48MClockSource(LL_RCC_CK48M_CLKSOURCE_PLL);
     LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL);
     LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC1_CLKSOURCE_PLL48CLK);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_PCLK2);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
     LL_RCC_SetUARTClockSource(LL_RCC_UART7_CLKSOURCE_PCLK1);
@@ -302,11 +311,11 @@ void bsp_initialize(void)
 
     RT_CHECK(drv_bmi055_init());
 
-    // rt_ist8310_init(IST8310_I2C_DEVICE_NAME);
-
     RT_CHECK(drv_ist8310_init("i2c1_dev1"));
 
     RT_CHECK(drv_ncp5623c_init("i2c1_dev2"));
+
+    RT_CHECK(gps_m8n_init("serial3"));
 
     /* init parameter system */
     FMT_CHECK(param_init());
@@ -327,6 +336,8 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
+    FMT_CHECK(pilot_cmd_init());
+
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
     /* init actuator */
     FMT_CHECK(actuator_init());

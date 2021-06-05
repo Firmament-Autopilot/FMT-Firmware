@@ -10,6 +10,7 @@ DRIVERS = [
     'bmi055/bmi055.c',
     'ist8310/ist8310.c',
     'rgb_led/ncp5623c.c',
+    'gps/*.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -30,6 +31,7 @@ HAL = [
     'fmtio_dev/*.c',
     'motor/*.c',
     'rc/*.c',
+    'gps/*.c',
 ]
 
 HAL_CPPPATH = []
