@@ -235,9 +235,8 @@ void task_status_entry(void* parameter)
     LED_ON(FMU_LED_GREEN_PIN);
     LED_ON(FMU_LED_BLUE_PIN);
 
-    // RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_BLUE));
-    // RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_GREEN));
-    RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_WHITE));
+    RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_BLUE));
+    sys_msleep(10); /* give some time for rgb led to setup */
 
 #ifdef FMT_USING_HIL
 #ifdef FMT_USING_SIH
@@ -265,23 +264,14 @@ void task_status_entry(void* parameter)
 
         sys_msleep(10);
     }
-
-    // while (1) {
-    //     // led_on();
-    //     LED_ON(FMU_LED_BLUE_PIN);
-    //     sys_msleep(500);
-    //     // led_off();
-    //     LED_OFF(FMU_LED_BLUE_PIN);
-    //     sys_msleep(500);
-    // }
 }
 
-// FMT_TASK_EXPORT(
-//     status,                 /* name */
-//     task_status_init,       /* init */
-//     task_status_entry,      /* entry */
-//     STATUS_THREAD_PRIORITY, /* priority */
-//     2048,                   /* stack size */
-//     NULL,                   /* param */
-//     NULL                    /* dependency */
-// );
+FMT_TASK_EXPORT(
+    status,                 /* name */
+    task_status_init,       /* init */
+    task_status_entry,      /* entry */
+    STATUS_THREAD_PRIORITY, /* priority */
+    2048,                   /* stack size */
+    NULL,                   /* param */
+    NULL                    /* dependency */
+);

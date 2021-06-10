@@ -82,12 +82,12 @@ void task_simple_entry(void* parameter)
     }
 }
 
-FMT_TASK_EXPORT(
-    simple,            /* name */
-    task_simple_init,  /* init */
-    task_simple_entry, /* entry */
-    10,                /* priority */
-    2048,              /* stack size */
-    NULL,              /* param */
-    NULL               /* dependency */
-);
+// FMT_TASK_EXPORT(
+//     simple,            /* name */
+//     task_simple_init,  /* init */
+//     task_simple_entry, /* entry */
+//     10,                /* priority */
+//     2048,              /* stack size */
+//     NULL,              /* param */
+//     NULL               /* dependency */
+// );

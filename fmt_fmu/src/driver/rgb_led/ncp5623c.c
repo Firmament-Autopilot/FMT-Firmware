@@ -53,21 +53,6 @@ static void send_led_rgb(void)
     }
 }
 
-// static void send_led_rgb(void)
-// {
-//     struct rt_i2c_msg msgs;
-//     uint8_t data[3] = { NCP5623_LED_PWM0 | _r, NCP5623_LED_PWM1 | _g, NCP5623_LED_PWM2 | _b };
-
-//     msgs.flags = RT_I2C_WR | i2c_device->flags;
-//     msgs.buf = data;
-//     msgs.len = 3;
-
-//     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
-//     if (ret != 1) {
-//         DRV_DBG("set led rgb fail!\n");
-//     }
-// }
-
 static void send_led_bright(void)
 {
     struct rt_i2c_msg msgs;
@@ -79,8 +64,21 @@ static void send_led_bright(void)
 
     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
     if (ret != 1) {
-        TIMETAG_CHECK_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail! IC1 ISR:0x%x\n", I2C1->ISR););
-        
+        TIMETAG_CHECK_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail! IC1 ISR:0x%x ret:%d\n", I2C1->ISR, ret););
+    }
+}
+
+static void led_shutdown(void)
+{
+    struct rt_i2c_msg msgs;
+    uint8_t data = NCP5623_LED_OFF;
+
+    msgs.flags = RT_I2C_WR | i2c_device->flags;
+    msgs.buf = &data;
+    msgs.len = 1;
+
+    if (rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1) != 1) {
+        DRV_DBG("rgb led shutdown fail\n");
     }
 }
 
