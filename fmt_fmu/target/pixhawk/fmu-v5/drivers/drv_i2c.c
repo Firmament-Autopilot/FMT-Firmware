@@ -17,6 +17,8 @@
 #include "hal/i2c.h"
 #include "stm32f7xx_ll_i2c.h"
 
+#define DRV_DBG(...) console_printf(__VA_ARGS__)
+
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
 #define I2C_TIMEOUT_US (500)
@@ -214,6 +216,49 @@ static void i2c4_hw_init(void)
     LL_I2C_Init(I2C4, &I2C_InitStruct);
 }
 
+static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status, uint32_t timeout)
+{
+    uint32_t time_start = systime_now_ms();
+
+    while (((READ_BIT(I2Cx->ISR, I2C_ISR_TXIS) == I2C_ISR_TXIS) ? 1UL : 0UL) == status) {
+        /*  TXIS bit is not set when a NACK is received */
+        if (LL_I2C_IsActiveFlag_NACK(I2Cx)) {
+            return FMT_ERROR;
+        }
+
+        if ((systime_now_ms() - time_start) > timeout) {
+            return FMT_ETIMEOUT;
+        }
+    }
+    return FMT_EOK;
+}
+
+static fmt_err_t wait_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t flag, uint32_t status, uint32_t timeout)
+{
+    uint32_t time_start = systime_now_ms();
+
+    while (((READ_BIT(I2Cx->ISR, flag) == flag) ? 1UL : 0UL) == status) {
+        if ((systime_now_ms() - time_start) > timeout) {
+            return FMT_ETIMEOUT;
+        }
+    }
+    return FMT_EOK;
+}
+
+static void i2c_flush_TXDR(I2C_TypeDef* I2Cx)
+{
+    /* If a pending TXIS flag is set */
+    /* Write a dummy data in TXDR to clear it */
+    if (LL_I2C_IsActiveFlag_TXIS(I2Cx)) {
+        LL_I2C_TransmitData8(I2Cx, 0x00);
+    }
+
+    /* Flush TX register if not empty */
+    if (!LL_I2C_IsActiveFlag_TXE(I2Cx)) {
+        LL_I2C_ClearFlag_TXE(I2Cx);
+    }
+}
+
 static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_addr, struct rt_i2c_msg msgs[], rt_uint32_t num)
 {
     struct rt_i2c_msg* msg;
@@ -221,10 +266,10 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
     struct stm32_i2c_bus* stm32_i2c = (struct stm32_i2c_bus*)bus;
 
     /* wait until bus is free. If timeout, generate stop again */
-    WAIT_TIMEOUT(LL_I2C_IsActiveFlag_BUSY(stm32_i2c->I2C), 2 * I2C_TIMEOUT_US, goto _stop;);
-
-    /* clear flags */
-    SET_BIT(stm32_i2c->I2C->ICR, I2C_ICR_STOPCF | I2C_ICR_NACKCF);
+    if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_BUSY, 1, I2C_TIMEOUT_US) != FMT_EOK) {
+        DRV_DBG("I2C wait BUSY timeout\n");
+        goto _stop;
+    }
 
     for (msg_idx = 0; msg_idx < num; msg_idx++) {
         msg = &msgs[msg_idx];
@@ -240,28 +285,38 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
 
             while (nbytes--) {
                 /* wait data received */
-                WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_RXNE(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
+                if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_RXNE, 0, I2C_TIMEOUT_US) != FMT_EOK) {
+                    DRV_DBG("I2C wait RXNE timeout\n");
+                    goto _stop;
+                }
                 /* receive data */
                 *(msg->buf++) = LL_I2C_ReceiveData8(stm32_i2c->I2C);
             }
 
             /* Wait transmit complete */
-            WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_TC(stm32_i2c->I2C), I2C_TIMEOUT_US,  goto _stop;);
+            if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_TC, 0, I2C_TIMEOUT_US) != FMT_EOK) {
+                DRV_DBG("I2C wait RX TC timeout\n");
+                goto _stop;
+            }
         } else {
             /* start/restart write operation */
             LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
                 LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
 
             while (nbytes--) {
-                /*  TXIS bit is not set when a NACK is received */
-                WAIT_TIMEOUT2(!LL_I2C_IsActiveFlag_TXIS(stm32_i2c->I2C),
-                              LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
+                if (wait_TXIS_flag_until_timeout(stm32_i2c->I2C, 0, I2C_TIMEOUT_US) != FMT_EOK) {
+                    DRV_DBG("I2C wait TXIS timeout\n");
+                    goto _stop;
+                }
                 /* transmit data */
                 LL_I2C_TransmitData8(stm32_i2c->I2C, *(msg->buf++));
             }
 
             /* Wait transmit complete */
-            WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_TC(stm32_i2c->I2C), I2C_TIMEOUT_US,  goto _stop;);
+            if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_TC, 0, I2C_TIMEOUT_US) != FMT_EOK) {
+                DRV_DBG("I2C wait TC timeout\n");
+                goto _stop;
+            }
         }
     }
 
@@ -271,13 +326,20 @@ _stop:
         /* generate stop condition, NACK is automatically generated before stop */
         LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
             LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
-        // WAIT_TIMEOUT(LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
     }
 
     /* wait until stop flag is set */
-    WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
+    if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_STOPF, 0, I2C_TIMEOUT_US) != FMT_EOK) {
+        DRV_DBG("I2C wait STOP timeout\n");
+    }
     /* clear stop flag */
     LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
+
+    if (LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C)) {
+        LL_I2C_ClearFlag_NACK(stm32_i2c->I2C);
+        i2c_flush_TXDR(stm32_i2c->I2C);
+    }
+
     /* clear CR2 register */
     CLEAR_BIT(stm32_i2c->I2C->CR2, I2C_CR2_SADD | I2C_CR2_HEAD10R | I2C_CR2_NBYTES | I2C_CR2_RELOAD | I2C_CR2_RD_WRN);
 
