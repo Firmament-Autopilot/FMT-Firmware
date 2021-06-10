@@ -244,22 +244,24 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
                 /* receive data */
                 *(msg->buf++) = LL_I2C_ReceiveData8(stm32_i2c->I2C);
             }
+
+            /* Wait transmit complete */
+            WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_TC(stm32_i2c->I2C), I2C_TIMEOUT_US,  goto _stop;);
         } else {
             /* start/restart write operation */
             LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
                 LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
 
-            /*  TXIS bit is not set when a NACK is received */
-            WAIT_TIMEOUT2(!LL_I2C_IsActiveFlag_TXIS(stm32_i2c->I2C),
-                          LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
-
             while (nbytes--) {
+                /*  TXIS bit is not set when a NACK is received */
+                WAIT_TIMEOUT2(!LL_I2C_IsActiveFlag_TXIS(stm32_i2c->I2C),
+                              LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
                 /* transmit data */
                 LL_I2C_TransmitData8(stm32_i2c->I2C, *(msg->buf++));
-                /* wait write complete */
-                WAIT_TIMEOUT2(!LL_I2C_IsActiveFlag_TXE(stm32_i2c->I2C),
-                              LL_I2C_IsActiveFlag_NACK(stm32_i2c->I2C), I2C_TIMEOUT_US, goto _stop;);
             }
+
+            /* Wait transmit complete */
+            WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_TC(stm32_i2c->I2C), I2C_TIMEOUT_US,  goto _stop;);
         }
     }
 
@@ -269,8 +271,15 @@ _stop:
         /* generate stop condition, NACK is automatically generated before stop */
         LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, 0,
             LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_STOP);
-        WAIT_TIMEOUT(LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
+        // WAIT_TIMEOUT(LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
     }
+
+    /* wait until stop flag is set */
+    WAIT_TIMEOUT(!LL_I2C_IsActiveFlag_STOP(stm32_i2c->I2C), I2C_TIMEOUT_US, ;);
+    /* clear stop flag */
+    LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
+    /* clear CR2 register */
+    CLEAR_BIT(stm32_i2c->I2C->CR2, I2C_CR2_SADD | I2C_CR2_HEAD10R | I2C_CR2_NBYTES | I2C_CR2_RELOAD | I2C_CR2_RD_WRN);
 
     return msg_idx;
 }
