@@ -30,18 +30,43 @@ static uint8_t _brightness = 0;
 
 static void send_led_rgb(void)
 {
-    struct rt_i2c_msg msgs;
+    /* Do not pack 3 data into a single msg, otherwise color set would fail some how,
+     * it could because that the ncp5623 speed is relatively slow */
+    struct rt_i2c_msg msgs[3];
     uint8_t data[3] = { NCP5623_LED_PWM0 | _r, NCP5623_LED_PWM1 | _g, NCP5623_LED_PWM2 | _b };
 
-    msgs.flags = RT_I2C_WR | i2c_device->flags;
-    msgs.buf = data;
-    msgs.len = 3;
+    msgs[0].flags = RT_I2C_WR | i2c_device->flags;
+    msgs[0].buf = &data[0];
+    msgs[0].len = 1;
 
-    rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
-    if (ret != 1) {
+    msgs[1].flags = RT_I2C_WR | i2c_device->flags;
+    msgs[1].buf = &data[1];
+    msgs[1].len = 1;
+
+    msgs[2].flags = RT_I2C_WR | i2c_device->flags;
+    msgs[2].buf = &data[2];
+    msgs[2].len = 1;
+
+    rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, msgs, 3);
+    if (ret != 3) {
         DRV_DBG("set led rgb fail!\n");
     }
 }
+
+// static void send_led_rgb(void)
+// {
+//     struct rt_i2c_msg msgs;
+//     uint8_t data[3] = { NCP5623_LED_PWM0 | _r, NCP5623_LED_PWM1 | _g, NCP5623_LED_PWM2 | _b };
+
+//     msgs.flags = RT_I2C_WR | i2c_device->flags;
+//     msgs.buf = data;
+//     msgs.len = 3;
+
+//     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
+//     if (ret != 1) {
+//         DRV_DBG("set led rgb fail!\n");
+//     }
+// }
 
 static void send_led_bright(void)
 {
@@ -54,7 +79,8 @@ static void send_led_bright(void)
 
     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
     if (ret != 1) {
-        DRV_DBG("set led bright fail! IC1 ISR:0x%x\n", I2C1->ISR);
+        TIMETAG_CHECK_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail! IC1 ISR:0x%x\n", I2C1->ISR););
+        
     }
 }
 
@@ -89,7 +115,7 @@ static rt_err_t ncp5623c_control(rt_device_t dev, int cmd, void* args)
             _r = 0;
             _g = LED_BRIGHT;
             _b = LED_BRIGHT;
-        } else if (color == NCP5623_LED_BLUE) {
+        } else if (color == NCP5623_LED_WHITE) {
             _r = LED_BRIGHT;
             _g = LED_BRIGHT;
             _b = LED_BRIGHT;
