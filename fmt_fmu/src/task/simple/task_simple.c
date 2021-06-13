@@ -26,27 +26,8 @@
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
 
-#define FMU_LED_PIN 17
-static rt_device_t pin_device;
 static rt_device_t rgb_led_dev;
 
-static void _led_on(void)
-{
-    struct device_pin_status pin_sta = { FMU_LED_PIN, 0 };
-
-    if (pin_device != RT_NULL) {
-        pin_device->write(pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
-    }
-}
-
-static void _led_off(void)
-{
-    struct device_pin_status pin_sta = { FMU_LED_PIN, 1 };
-
-    if (pin_device != RT_NULL) {
-        pin_device->write(pin_device, 0, (void*)&pin_sta, sizeof(&pin_sta));
-    }
-}
 
 fmt_err_t task_simple_init(void)
 {
@@ -86,18 +67,13 @@ static void rgb_led_control(void)
 
 void task_simple_entry(void* parameter)
 {
-    struct device_pin_mode mode = { FMU_LED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
-
-    pin_device = rt_device_find("pin");
-    pin_device->control(pin_device, 0, &mode);
-
     // WorkQueue_t wq = workqueue_find("wq:lp_work");
     // static struct WorkItem item = { .name = "sensor_work", .period = 1, .schedule_time = 0, .run = sensor_collect };
     // FMT_CHECK(workqueue_schedule_work(wq, &item));
 
     rgb_led_dev = rt_device_find("ncp5623c");
     RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
-    RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_BLUE));
+    RT_CHECK(rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)NCP5623_LED_WHITE));
     sys_msleep(10);
 
     while (1) {
@@ -106,12 +82,12 @@ void task_simple_entry(void* parameter)
     }
 }
 
-FMT_TASK_EXPORT(
-    simple,            /* name */
-    task_simple_init,  /* init */
-    task_simple_entry, /* entry */
-    10,                /* priority */
-    2048,              /* stack size */
-    NULL,              /* param */
-    NULL               /* dependency */
-);
+// FMT_TASK_EXPORT(
+//     simple,            /* name */
+//     task_simple_init,  /* init */
+//     task_simple_entry, /* entry */
+//     10,                /* priority */
+//     2048,              /* stack size */
+//     NULL,              /* param */
+//     NULL               /* dependency */
+// );

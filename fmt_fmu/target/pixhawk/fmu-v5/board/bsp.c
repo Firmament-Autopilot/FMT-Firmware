@@ -29,6 +29,7 @@
 
 #include "board_device.h"
 #include "driver/bmi055.h"
+#include "driver/gps_m8n.h"
 #include "driver/icm20689.h"
 #include "driver/ist8310.h"
 #include "driver/ms5611.h"
@@ -39,7 +40,6 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
-#include "driver/gps_m8n.h"
 
 #include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
@@ -50,14 +50,12 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
+#include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
-#include "module/sysio/pilot_cmd.h"
-#include "module/sysio/pilot_cmd_config.h"
-#include "module/sysio/actuator_cmd.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_model.h"
 #endif
@@ -210,6 +208,7 @@ void SystemClock_Config(void)
     LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_PCLK2);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART6_CLKSOURCE_PCLK2);
     LL_RCC_SetUARTClockSource(LL_RCC_UART7_CLKSOURCE_PCLK1);
     LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_PCLK1);
     LL_RCC_SetI2CClockSource(LL_RCC_I2C2_CLKSOURCE_PCLK1);
