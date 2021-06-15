@@ -18,14 +18,15 @@
 #include "driver/gps_m8n.h"
 #include "hal/gps.h"
 #include "hal/serial.h"
+#include "module/sensor/sensor_hub.h"
 #include "protocol/ublox/ublox.h"
 
 #define CONFIGURE_RETRY_MAX 3
 #define M_DEG_TO_RAD_F      0.01745329251994f
 #define M_RAD_TO_DEG_F      57.2957795130823f
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
-// #define DRV_DBG(...)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
 static rt_device_t serial_device;
 static struct gps_device gps_device;
@@ -260,7 +261,7 @@ static int ubx_rx_handle(void)
 }
 
 // -1 = NAK, error or timeout, 0 = ACK
-static int _wait_for_ack(const uint16_t msg, const uint32_t timeout)
+static int wait_for_ack(const uint16_t msg, const uint32_t timeout)
 {
     int ret = -1;
 
@@ -281,7 +282,7 @@ static int _wait_for_ack(const uint16_t msg, const uint32_t timeout)
     return ret;
 }
 
-static rt_err_t _set_baudrate(rt_device_t dev, uint32_t baudrate)
+static rt_err_t set_baudrate(rt_device_t dev, uint32_t baudrate)
 {
     struct serial_device* serial_dev = (struct serial_device*)dev;
 
@@ -296,18 +297,16 @@ static rt_err_t _set_baudrate(rt_device_t dev, uint32_t baudrate)
     return RT_EOK;
 }
 
-static int _configure_by_ubx(void)
+static rt_err_t probe(uint32_t* gps_baudrate)
 {
     uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200 };
     uint32_t baudrate;
     uint8_t i;
 
-    ubx_decoder.configured = RT_FALSE;
-
     for (i = 0; i < sizeof(baudrates) / sizeof(baudrates[0]); i++) {
         baudrate = baudrates[i];
 
-        if (_set_baudrate(ubx_decoder.ubx_dev, baudrate) == RT_EOK) {
+        if (set_baudrate(ubx_decoder.ubx_dev, baudrate) == RT_EOK) {
             DRV_DBG("gps barud rate -> %d\n", baudrate);
         } else {
             DRV_DBG("gps barud rate -> %d fail\n", baudrate);
@@ -315,7 +314,7 @@ static int _configure_by_ubx(void)
 
         /* flush input and wait for at least 20 ms silence */
         reset_ubx_decoder(&ubx_decoder);
-        systime_mdelay(20);
+        sys_msleep(20);
         reset_ubx_decoder(&ubx_decoder);
 
         /* Send a CFG-PRT message to set the UBX protocol for in and out
@@ -329,45 +328,50 @@ static int _configure_by_ubx(void)
 
         send_ubx_msg(&ubx_decoder, UBX_MSG_CFG_PRT, ubx_decoder.buf.raw, sizeof(ubx_decoder.buf.payload_tx_cfg_prt));
 
-        if (_wait_for_ack(UBX_MSG_CFG_PRT, 2 * UBX_CONFIG_TIMEOUT) < 0) {
+        if (wait_for_ack(UBX_MSG_CFG_PRT, 2 * UBX_CONFIG_TIMEOUT) < 0) {
             /* try next baudrate */
             continue;
         }
 
-        /* Send a CFG-PRT message again, this time change the baudrate */
-        memset(&ubx_decoder.buf.payload_tx_cfg_prt, 0, sizeof(ubx_decoder.buf.payload_tx_cfg_prt));
-        ubx_decoder.buf.payload_tx_cfg_prt.portID = UBX_TX_CFG_PRT_PORTID;
-        ubx_decoder.buf.payload_tx_cfg_prt.mode = UBX_TX_CFG_PRT_MODE;
-        ubx_decoder.buf.payload_tx_cfg_prt.baudRate = UBX_TX_CFG_PRT_BAUDRATE;
-        ubx_decoder.buf.payload_tx_cfg_prt.inProtoMask = UBX_TX_CFG_PRT_INPROTOMASK;
-        ubx_decoder.buf.payload_tx_cfg_prt.outProtoMask = UBX_TX_CFG_PRT_OUTPROTOMASK;
-
-        send_ubx_msg(&ubx_decoder, UBX_MSG_CFG_PRT, ubx_decoder.buf.raw, sizeof(ubx_decoder.buf.payload_tx_cfg_prt));
-
-        /* no ACK is expected here, but read the buffer anyway in case we actually get an ACK */
-        _wait_for_ack(UBX_MSG_CFG_PRT, UBX_CONFIG_TIMEOUT);
-
-        if (UBX_TX_CFG_PRT_BAUDRATE != baudrate) {
-            if (_set_baudrate(ubx_decoder.ubx_dev, UBX_TX_CFG_PRT_BAUDRATE) == RT_EOK) {
-                DRV_DBG("change gps baudrate from %d to %d\n", baudrate, UBX_TX_CFG_PRT_BAUDRATE);
-                baudrate = UBX_TX_CFG_PRT_BAUDRATE;
-
-                reset_ubx_decoder(&ubx_decoder);
-                systime_mdelay(20);
-                reset_ubx_decoder(&ubx_decoder);
-            } else {
-                DRV_DBG("fail to change gps baudrate from %d to %d\n", baudrate, UBX_TX_CFG_PRT_BAUDRATE);
-            }
-        }
-
         /* at this point we have correct baudrate on both ends */
-        DRV_DBG("gps baudrate set finish\n");
+        *gps_baudrate = baudrate;
         break;
     }
 
     if (i >= sizeof(baudrates) / sizeof(baudrates[0])) {
         DRV_DBG("gps connection and/or baudrate detection failed\r\n");
-        return 1;
+        return RT_ERROR;
+    }
+
+    return RT_EOK;
+}
+
+static rt_err_t configure_by_ubx(uint32_t baudrate)
+{
+    /* Send a CFG-PRT message again, this time change the baudrate */
+    memset(&ubx_decoder.buf.payload_tx_cfg_prt, 0, sizeof(ubx_decoder.buf.payload_tx_cfg_prt));
+    ubx_decoder.buf.payload_tx_cfg_prt.portID = UBX_TX_CFG_PRT_PORTID;
+    ubx_decoder.buf.payload_tx_cfg_prt.mode = UBX_TX_CFG_PRT_MODE;
+    ubx_decoder.buf.payload_tx_cfg_prt.baudRate = UBX_TX_CFG_PRT_BAUDRATE;
+    ubx_decoder.buf.payload_tx_cfg_prt.inProtoMask = UBX_TX_CFG_PRT_INPROTOMASK;
+    ubx_decoder.buf.payload_tx_cfg_prt.outProtoMask = UBX_TX_CFG_PRT_OUTPROTOMASK;
+
+    send_ubx_msg(&ubx_decoder, UBX_MSG_CFG_PRT, ubx_decoder.buf.raw, sizeof(ubx_decoder.buf.payload_tx_cfg_prt));
+
+    /* no ACK is expected here, but read the buffer anyway in case we actually get an ACK */
+    wait_for_ack(UBX_MSG_CFG_PRT, UBX_CONFIG_TIMEOUT);
+
+    if (UBX_TX_CFG_PRT_BAUDRATE != baudrate) {
+        if (set_baudrate(ubx_decoder.ubx_dev, UBX_TX_CFG_PRT_BAUDRATE) == RT_EOK) {
+            DRV_DBG("change gps baudrate from %d to %d\n", baudrate, UBX_TX_CFG_PRT_BAUDRATE);
+            baudrate = UBX_TX_CFG_PRT_BAUDRATE;
+
+            reset_ubx_decoder(&ubx_decoder);
+            systime_mdelay(20);
+            reset_ubx_decoder(&ubx_decoder);
+        } else {
+            DRV_DBG("fail to change gps baudrate from %d to %d\n", baudrate, UBX_TX_CFG_PRT_BAUDRATE);
+        }
     }
 
     /* Send a CFG-RATE message to define update rate */
@@ -378,9 +382,9 @@ static int _configure_by_ubx(void)
 
     send_ubx_msg(&ubx_decoder, UBX_MSG_CFG_RATE, ubx_decoder.buf.raw, sizeof(ubx_decoder.buf.payload_tx_cfg_rate));
 
-    if (_wait_for_ack(UBX_MSG_CFG_RATE, UBX_CONFIG_TIMEOUT) < 0) {
+    if (wait_for_ack(UBX_MSG_CFG_RATE, UBX_CONFIG_TIMEOUT) < 0) {
         DRV_DBG("UBX_MSG_CFG_RATE config fail!\n");
-        return 1;
+        return RT_ERROR;
     }
 
     /* send a NAV5 message to set the options for the internal filter */
@@ -391,9 +395,9 @@ static int _configure_by_ubx(void)
 
     send_ubx_msg(&ubx_decoder, UBX_MSG_CFG_NAV5, ubx_decoder.buf.raw, sizeof(ubx_decoder.buf.payload_tx_cfg_nav5));
 
-    if (_wait_for_ack(UBX_MSG_CFG_NAV5, UBX_CONFIG_TIMEOUT) < 0) {
+    if (wait_for_ack(UBX_MSG_CFG_NAV5, UBX_CONFIG_TIMEOUT) < 0) {
         DRV_DBG("Wait ACK for UBX_MSG_CFG_NAV5 timeout\n");
-        return 1;
+        return RT_ERROR;
     }
 
     /* configure message rates */
@@ -403,7 +407,7 @@ static int _configure_by_ubx(void)
     /* (implemented for ubx7+ modules only, use NAV-SOL, NAV-POSLLH, NAV-VELNED and NAV-TIMEUTC for ubx6) */
     configure_ubx_msg_rate(&ubx_decoder, UBX_MSG_NAV_PVT, 1);
 
-    if (_wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
+    if (wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
         DRV_DBG("Don't support NAV-PVT\n");
         ubx_decoder.use_nav_pvt = false;
 
@@ -415,30 +419,30 @@ static int _configure_by_ubx(void)
     if (!ubx_decoder.use_nav_pvt) {
         // _configure_message_rate(UBX_MSG_NAV_TIMEUTC, 5);
 
-        // if (_wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
+        // if (wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
         //     DRV_DBG("UBX_MSG_NAV_TIMEUTC configure fail!\n");
         //     return 1;
         // }
 
         configure_ubx_msg_rate(&ubx_decoder, UBX_MSG_NAV_POSLLH, 1);
 
-        if (_wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
+        if (wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
             DRV_DBG("UBX_MSG_CFG_MSG configure fail!\n");
-            return 1;
+            return RT_ERROR;
         }
 
         configure_ubx_msg_rate(&ubx_decoder, UBX_MSG_NAV_SOL, 1);
 
-        if (_wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
+        if (wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
             DRV_DBG("UBX_MSG_NAV_SOL configure fail!\n");
-            return 1;
+            return RT_ERROR;
         }
 
         configure_ubx_msg_rate(&ubx_decoder, UBX_MSG_NAV_VELNED, 1);
 
-        if (_wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
+        if (wait_for_ack(UBX_MSG_CFG_MSG, UBX_CONFIG_TIMEOUT) < 0) {
             DRV_DBG("UBX_MSG_NAV_VELNED configure fail!\n");
-            return 1;
+            return RT_ERROR;
         }
     }
 
@@ -447,37 +451,6 @@ static int _configure_by_ubx(void)
 
     ubx_decoder.configured = RT_TRUE;
 
-    return 0;
-}
-
-static rt_err_t _init(void)
-{
-    if (rt_device_set_rx_indicate(serial_device, gps_serial_rx_ind) != RT_EOK) {
-        DRV_DBG("gps set rx indicator fail\n");
-        return RT_ERROR;
-    }
-
-    if (rt_device_open(serial_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
-        DRV_DBG("gps serial open fail\n");
-        return RT_ERROR;
-    }
-
-    if (init_ubx_decoder(&ubx_decoder, serial_device, ubx_rx_handle) != FMT_EOK) {
-        DRV_DBG("init ublox decoder fail\n");
-        return RT_ERROR;
-    }
-
-    for (uint8_t i = 0; i < CONFIGURE_RETRY_MAX; i++) {
-        if (_configure_by_ubx() == 0) {
-            // gps configuration success
-            DRV_DBG("gps configuration success\n");
-            return RT_EOK;
-        }
-    }
-
-    DRV_DBG("gps configuration fail\n");
-
-    // return OK, it's possible gps is not connected
     return RT_EOK;
 }
 
@@ -511,7 +484,7 @@ static rt_err_t gps_control(gps_dev_t gps_dev, int cmd, void* arg)
 static rt_size_t gps_read(gps_dev_t gps_dev, gps_report_t* report)
 {
     if (ubx_decoder.got_posllh && ubx_decoder.got_velned) {
-        
+
         OS_ENTER_CRITICAL;
         *report = gps_report;
         ubx_decoder.got_posllh = false;
@@ -529,19 +502,51 @@ static struct gps_ops gps_ops = {
     gps_read
 };
 
+static void gps_probe_entry(void* parameter)
+{
+    uint32_t baudrate;
+    uint8_t i;
+
+    for (i = 0; i < CONFIGURE_RETRY_MAX; i++) {
+        if (probe(&baudrate) == RT_EOK) {
+            if (configure_by_ubx(baudrate) == RT_EOK) {
+                /* GPS is dected, now register */
+                RT_CHECK(hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL));
+                FMT_CHECK(register_sensor_gps("gps"));
+            } else {
+                console_printf("GPS configuration fail!\n");
+            }
+            break;
+        }
+    }
+
+    if (i >= CONFIGURE_RETRY_MAX) {
+        console_printf("GPS not detected.\n");
+    }
+
+    rt_thread_delete(rt_thread_self());
+}
+
 rt_err_t gps_m8n_init(char* serial_device_name)
 {
-    rt_err_t ret;
-
     gps_device.ops = &gps_ops;
 
     serial_device = rt_device_find(serial_device_name);
+    RT_ASSERT(serial_device != NULL);
 
-    /* driver low-level init */
-    ret = _init();
-    if (ret != RT_EOK) {
-        return ret;
-    }
+    /* set gps rx indicator */
+    RT_CHECK(rt_device_set_rx_indicate(serial_device, gps_serial_rx_ind));
+    /* open serial device */
+    RT_CHECK(rt_device_open(serial_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX));
+    /* init ublox decoder */
+    FMT_CHECK(init_ubx_decoder(&ubx_decoder, serial_device, ubx_rx_handle));
 
-    return hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    /* create a thread to probe the gps connection */
+    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, RT_NULL,
+        4096, RT_THREAD_PRIORITY_MAX - 2, 5);
+    RT_ASSERT(tid != NULL);
+
+    RT_CHECK(rt_thread_startup(tid));
+
+    return RT_EOK;
 }

@@ -319,8 +319,10 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-    /* init sensor hub */
-    FMT_CHECK(sensor_hub_init());
+    /* register sensor to sensor hub */
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
 
     /* init finsh */
     finsh_system_init();
