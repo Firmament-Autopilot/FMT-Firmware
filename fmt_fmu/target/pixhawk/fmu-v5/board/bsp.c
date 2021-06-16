@@ -40,6 +40,7 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usbd_cdc.h"
+#include "led.h"
 
 #include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
@@ -310,17 +311,21 @@ void bsp_initialize(void)
 
     RT_CHECK(drv_bmi055_init());
 
-    RT_CHECK(drv_ist8310_init("i2c1_dev1"));
-
-    RT_CHECK(drv_ncp5623c_init("i2c1_dev2"));
+    /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
+    drv_ist8310_init("i2c1_dev1");
+    drv_ncp5623c_init("i2c1_dev2");
 
     RT_CHECK(gps_m8n_init("serial3"));
 
     /* init parameter system */
     FMT_CHECK(param_init());
 
-    /* init sensor hub */
-    FMT_CHECK(sensor_hub_init());
+    /* register sensor to sensor hub */
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    if (rt_device_find("mag0") != NULL) {
+        FMT_CHECK(register_sensor_mag("mag0", 0));
+    }
+    FMT_CHECK(register_sensor_barometer("barometer"));
 
     /* init finsh */
     finsh_system_init();
@@ -352,6 +357,9 @@ void bsp_post_initialize(void)
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
+
+    /* initialize led */
+    FMT_CHECK(led_control_init());
 
     /* show system information */
     bsp_show_information();

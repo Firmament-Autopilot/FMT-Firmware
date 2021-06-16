@@ -84,14 +84,24 @@ static rt_err_t mag_measure(float mag[3])
     return RT_EOK;
 }
 
-static rt_err_t ist8310_init(void)
+static rt_err_t probe(void)
 {
     uint8_t device_id;
-    RT_CHECK(i2c_read_reg(i2c_dev, REG_WHOAMI, &device_id));
+
+    RT_CHECK_RETURN(i2c_read_reg(i2c_dev, REG_WHOAMI, &device_id));
+
     if (device_id != IST8310_DEVICE_ID) {
         DRV_DBG("ist8310 unmatched id: 0x%x\n", device_id);
         return RT_ERROR;
     }
+
+    return RT_EOK;
+}
+
+static rt_err_t ist8310_init(void)
+{
+    /* check if device connected */
+    RT_CHECK_RETURN(probe());
 
     /* software reset */
     RT_CHECK(i2c_write_reg(i2c_dev, REG_CTRL2, CTRL2_SRST));
@@ -154,7 +164,7 @@ rt_err_t drv_ist8310_init(const char* device_name)
 
     RT_CHECK(rt_device_open(i2c_dev, RT_DEVICE_OFLAG_RDWR));
 
-    RT_CHECK(ist8310_init());
+    RT_CHECK_RETURN(ist8310_init());
 
     RT_CHECK(hal_mag_register(&mag_dev, "mag0", RT_DEVICE_FLAG_RDWR, RT_NULL));
 

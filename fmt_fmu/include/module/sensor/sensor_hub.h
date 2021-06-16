@@ -120,8 +120,11 @@ typedef struct {
     float distance_m; // negative value indicate invalid
 } rf_data_t;
 
-fmt_err_t sensor_hub_init(void);
 void sensor_collect(void);
+fmt_err_t register_sensor_imu(const char* gyr_dev_name, const char* acc_dev_name, uint8_t id);
+fmt_err_t register_sensor_mag(const char* dev_name, uint8_t id);
+fmt_err_t register_sensor_barometer(const char* dev_name);
+fmt_err_t register_sensor_gps(const char* dev_name);
 
 #ifdef __cplusplus
 }

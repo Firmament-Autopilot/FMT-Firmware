@@ -68,7 +68,7 @@ static void send_led_bright(void)
     }
 }
 
-static void led_shutdown(void)
+static rt_err_t led_shutdown(void)
 {
     struct rt_i2c_msg msgs;
     uint8_t data = NCP5623_LED_OFF;
@@ -79,7 +79,10 @@ static void led_shutdown(void)
 
     if (rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1) != 1) {
         DRV_DBG("rgb led shutdown fail\n");
+        return RT_ERROR;
     }
+
+    return RT_EOK;
 }
 
 static rt_err_t ncp5623c_control(rt_device_t dev, int cmd, void* args)
@@ -138,12 +141,17 @@ static rt_err_t ncp5623c_control(rt_device_t dev, int cmd, void* args)
     return RT_EOK;
 }
 
+static rt_err_t probe(void)
+{
+    return led_shutdown();
+}
+
 rt_err_t drv_ncp5623c_init(const char* dev_name)
 {
     i2c_device = (struct rt_i2c_device*)rt_device_find(dev_name);
     RT_ASSERT(i2c_device != NULL);
 
-    RT_CHECK_RETURN(rt_device_open(&i2c_device->parent, RT_DEVICE_OFLAG_RDWR));
+    RT_CHECK(rt_device_open(&i2c_device->parent, RT_DEVICE_OFLAG_RDWR));
 
     rt_device_t device = &ncp5623c_dev;
 
@@ -158,6 +166,10 @@ rt_err_t drv_ncp5623c_init(const char* dev_name)
     device->read = RT_NULL;
     device->write = RT_NULL;
     device->control = ncp5623c_control;
+    
+    RT_CHECK_RETURN(probe());
 
-    return rt_device_register(device, "ncp5623c", RT_DEVICE_OFLAG_RDWR);
+    RT_CHECK(rt_device_register(device, "ncp5623c", RT_DEVICE_OFLAG_RDWR));
+
+    return RT_EOK;
 }

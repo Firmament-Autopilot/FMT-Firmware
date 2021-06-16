@@ -26,6 +26,7 @@
 #include <utest.h>
 #endif
 
+#include "led.h"
 #include "driver/gpio.h"
 #include "driver/gps.h"
 #include "driver/gps_m8n.h"
@@ -295,8 +296,10 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-    /* init sensor hub */
-    FMT_CHECK(sensor_hub_init());
+    /* register sensor to sensor hub */
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
 
     //     /* GDB STUB */
     // #ifdef RT_USING_GDB
@@ -341,6 +344,9 @@ void bsp_post_initialize(void)
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
+
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     /* show system information */
     bsp_show_information();
