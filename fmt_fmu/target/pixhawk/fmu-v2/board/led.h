@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#ifndef __TASK_STATUS_H__
-#define __TASK_STATUS_H__
+#ifndef __LED_H__
+#define __LED_H__
 
 #include <firmament.h>
 
-fmt_err_t task_status_init(void);
-void task_status_entry(void* parameter);
+#include "driver/tca62724.h"
+#include "hal/pin.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define FMU_LED_BLUE_PIN  43
+
+#define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
+#define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
+#define LED_TOGGLE(_pin) led_toggle(_pin)
+
+fmt_err_t led_control_init(void);
+fmt_err_t led_init(struct device_pin_mode pin_mode);
+fmt_err_t led_set(struct device_pin_status pin_sta);
+fmt_err_t led_toggle(uint32_t pin);
+fmt_err_t rgb_led_set_color(uint32_t color);
+fmt_err_t rgb_led_set_bright(uint32_t bright);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

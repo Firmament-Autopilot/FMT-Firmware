@@ -26,6 +26,7 @@
 #include <utest.h>
 #endif
 
+#include "led.h"
 #include "driver/gpio.h"
 #include "driver/gps.h"
 #include "driver/gps_m8n.h"
@@ -343,6 +344,9 @@ void bsp_post_initialize(void)
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
+
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     /* show system information */
     bsp_show_information();
