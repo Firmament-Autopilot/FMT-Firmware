@@ -881,7 +881,7 @@ static const struct usart_ops _usart_ops = {
     usart_dma_transmit
 };
 
-rt_err_t usart_drv_init(void)
+rt_err_t drv_usart_init(void)
 {
     rt_err_t rt_err = RT_EOK;
     struct serial_configure config = SERIAL_DEFAULT_CONFIG;

@@ -24,11 +24,9 @@
 #include <cm_backtrace.h>
 #endif
 
-#include "driver/gpio.h"
-#include "driver/usart.h"
-
 #include "board_device.h"
 #include "driver/bmi055.h"
+#include "driver/gpio.h"
 #include "driver/gps_m8n.h"
 #include "driver/icm20689.h"
 #include "driver/ist8310.h"
@@ -39,6 +37,7 @@
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
+#include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
 
@@ -264,7 +263,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_systick_init());
 
     /* usart driver init */
-    RT_CHECK(usart_drv_init());
+    RT_CHECK(drv_usart_init());
 
     /* system time module init */
     FMT_CHECK(systime_init());
