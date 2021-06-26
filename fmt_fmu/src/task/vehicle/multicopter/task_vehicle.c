@@ -25,7 +25,6 @@
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "task/task_logger.h"
-#include "task/task_vehicle.h"
 #include "module/task_manager/task_manager.h"
 
 #define EVENT_VEHICLE_UPDATE (1 << 0)
