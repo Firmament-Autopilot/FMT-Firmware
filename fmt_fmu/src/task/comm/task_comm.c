@@ -23,8 +23,6 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"
-#include "task/task_comm.h"
-#include "task/task_vehicle.h"
 #include "module/task_manager/task_manager.h"
 
 MCN_DECLARE(ins_output);

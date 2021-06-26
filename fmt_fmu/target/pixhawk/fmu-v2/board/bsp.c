@@ -26,7 +26,6 @@
 #include <utest.h>
 #endif
 
-#include "led.h"
 #include "driver/gpio.h"
 #include "driver/gps.h"
 #include "driver/gps_m8n.h"
@@ -39,11 +38,12 @@
 #include "driver/sd_dev.h"
 #include "driver/systick_drv.h"
 #include "driver/tca62724.h"
-#include "driver/usart.h"
 #include "drv_i2c_soft.h"
 #include "drv_spi.h"
+#include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
+#include "led.h"
 #include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
 #include "module/file_manager/file_manager.h"
@@ -234,7 +234,7 @@ void bsp_early_initialize(void)
     RT_CHECK(systick_drv_init());
 
     /* system usart init */
-    RT_CHECK(usart_drv_init());
+    RT_CHECK(drv_usart_init());
 
     /* system time module init */
     FMT_CHECK(systime_init());

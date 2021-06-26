@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,21 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __TASK_FMTIO_H__
-#define __TASK_FMTIO_H__
+#ifndef __DRV_USART_H__
+#define __DRV_USART_H__
 
 #include <firmament.h>
+#include "bsp.h"
 
-fmt_err_t task_fmtio_init(void);
-void task_fmtio_entry(void* parameter);
-
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+rt_err_t drv_usart_init(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __DRV_USART_H__ */
+

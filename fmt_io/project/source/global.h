@@ -23,6 +23,20 @@
 #include <stdio.h>
 #include "stm32f10x.h"
 
+typedef enum {
+	SYS_EOK             = 0,               /**< There is no error */
+	SYS_ERROR           = 1,               /**< A generic error happens */
+	SYS_ETIMEOUT        = 2,               /**< Timed out */
+	SYS_EFULL           = 3,               /**< The resource is full */
+	SYS_EEMPTY          = 4,               /**< The resource is empty */
+	SYS_ENOMEM          = 5,               /**< No memory */
+	SYS_ENOSYS          = 6,               /**< No system */
+	SYS_EBUSY           = 7,               /**< Busy */
+	SYS_EIO             = 8,               /**< IO error */
+	SYS_EINTR           = 9,               /**< Interrupted system call */
+	SYS_EINVAL          = 10               /**< Invalid argument */
+} FMT_Error;
+
 //#define USE_LIDAR
 #define USE_PWM_OUTPUT
 

@@ -18,36 +18,10 @@
 #include "board_device.h"
 #include "module/fmtio/fmtio.h"
 #include "module/task_manager/task_manager.h"
-#include "task/task_fmtio.h"
 
-static fmt_err_t _handle_rx_package(const PackageStruct* pkg)
-{
-    switch (pkg->cmd) {
-    case PROTO_DBG_TEXT: {
-        console_printf("[IO]:", systime_now_ms());
-        console_write((char*)pkg->content, pkg->len);
-    } break;
-    default:
-        break;
-    }
-
-    return FMT_EOK;
-}
-
-/**************************** Public Function ********************************/
 fmt_err_t task_fmtio_init(void)
 {
-    /* init fmtio */
-    if (fmtio_init(FMTIO_DEVICE_NAME) != FMT_EOK) {
-        return FMT_ERROR;
-    }
-
-    /* register rx handler to handle rx messages locally */
-    if (fmtio_register_rx_handler(_handle_rx_package) != FMT_EOK) {
-        return FMT_ERROR;
-    }
-
-    return FMT_EOK;
+    return fmtio_init(FMTIO_DEVICE_NAME);
 }
 
 void task_fmtio_entry(void* parameter)
