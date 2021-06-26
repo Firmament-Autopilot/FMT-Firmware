@@ -17,7 +17,7 @@
 #include <string.h>
 
 #include "debug.h"
-#include "fmu_manager.h"
+#include "interface.h"
 #include "ppm_decoder.h"
 #include "protocol.h"
 #include "time.h"
@@ -33,7 +33,6 @@ static uint8_t _ppm_recv = 0;
 static uint8_t _ppm_sending = 0;
 
 ppm_encoder_t ppm_param;
-static PackageStruct _rc_pkg;
 
 void ppm_status_machine(uint16_t IC_Val)
 {
@@ -118,7 +117,7 @@ uint8_t send_ppm_value(void)
 
     if (rc_signal_ready()) {
         _ppm_sending = 1;
-        fmt_send_pkg(NULL, 32, &_rc_pkg);
+        send_io_cmd(IO_CODE_RC_DATA, ppm_param.ppm_val, 32);
         _ppm_recv = 0;
         _ppm_sending = 0;
     }
@@ -177,7 +176,6 @@ uint8_t ppm_decoder_init(void)
     ppm_param.last_ic = 0;
 
     memset(ppm_param.ppm_val, 0, sizeof(ppm_param.ppm_val));
-    fmt_init_pkg(PROTO_DATA_RC, ppm_param.ppm_val, &_rc_pkg);
 
     return 1;
 }

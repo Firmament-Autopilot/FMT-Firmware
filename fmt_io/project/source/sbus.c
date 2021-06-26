@@ -18,7 +18,7 @@
 #include <stdio.h>
 
 #include "debug.h"
-#include "fmu_manager.h"
+#include "interface.h"
 #include "protocol.h"
 #include "sbus.h"
 #include "time.h"
@@ -86,7 +86,6 @@ static uint64_t last_txframe_time = 0;
 static unsigned sbus_frame_drops;
 
 static uint16_t _rc_values[RC_INPUT_CHANNELS];
-static PackageStruct _rc_pkg;
 
 uint16_t sbus_send(uint8_t* data, uint16_t len);
 uint16_t sbus_read(uint8_t* buf, uint16_t size);
@@ -539,7 +538,7 @@ uint8_t send_sbus_value(void)
 
     if (sbus_updated && !sbus_failsafe && !sbus_frame_drop) {
         if (rc_signal_ready()) {
-            fmt_send_pkg(NULL, 32, &_rc_pkg);
+            send_io_cmd(IO_CODE_RC_DATA, _rc_values, 32);
             ret = 0;
         }
     } else {
@@ -653,8 +652,6 @@ uint8_t sbus_init(void)
     last_rx_time = time_nowUs();
     last_frame_time = last_rx_time;
     sbus_frame_drops = 0;
-
-    fmt_init_pkg(PROTO_DATA_RC, _rc_values, &_rc_pkg);
 
     return 0;
 }

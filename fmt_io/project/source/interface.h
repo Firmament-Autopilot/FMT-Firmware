@@ -14,31 +14,19 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef  _FMU_MANAGER_H_
-#define  _FMU_MANAGER_H_
+#ifndef  _INTERFACE_H_
+#define  _INTERFACE_H_
 
 #include "stm32f10x.h"
 #include "protocol.h"
 
-typedef struct {
-    uint16_t pwm_freq;      // pwm output frequency
-} fmtio_motor_config_t;
-
-typedef struct {
-    uint16_t protocol;      // 1:sbus 2:ppm
-    float sample_time;      // rc sample time in seconds (-1 for inherits)
-} fmtio_rc_config_t;
-
-FMT_Error handle_fmu_package(const PackageStruct* pkg);
-FMT_Error fmt_init_pkg(uint16_t cmd, void* buffer, PackageStruct* pkg);
-FMT_Error fmt_create_pkg(uint16_t cmd, uint16_t buff_len, PackageStruct* pkg);
-FMT_Error fmt_send_pkg(const void* data, uint16_t len, PackageStruct* pkg);
-FMT_Error fmt_send_message(uint16_t cmd, const void* data, uint16_t len);
-uint8_t fmt_sync_finish(void);
+FMT_Error interface_init(void);
+void interface_listen(void);
+FMT_Error send_io_cmd(uint8_t code, void* data, uint16_t len);
+uint8_t sync_finish(void);
 uint16_t fmt_get_rc_proto(void);
-
 uint8_t rc_signal_ready(void);
 
-extern fmtio_rc_config_t rc_config;
+extern IO_RCConfig rc_config;
 
 #endif

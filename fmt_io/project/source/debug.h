@@ -19,7 +19,6 @@
 
 #include "global.h"
 
-void debug_init(void);
 int debug(const char* fmt, ...);
 
 #endif

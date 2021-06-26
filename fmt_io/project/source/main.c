@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include "debug.h"
-#include "fmu_manager.h"
+#include "interface.h"
 #include "led.h"
 #include "lidar_lite.h"
 #include "ppm_decoder.h"
@@ -26,12 +26,6 @@
 #include "usart.h"
 #include <stdio.h>
 
-/* io rx pkg */
-static uint8_t _rx_pkg_buff[MAX_PACKAGE_SIZE];
-static PackageStruct _rx_pkg = {
-    .content = _rx_pkg_buff
-};
-
 int main(void)
 {
     uint8_t ch;
@@ -40,36 +34,33 @@ int main(void)
     LED_Type led_type;
 
     usart_init();
+
+    interface_init();
+
     pwm_init();
     time_init();
+
     if (rc_config.protocol == 1) {
         sbus_init();
     } else if (rc_config.protocol == 2) {
         ppm_decoder_init();
     }
-    //ppm_decoder_init();
-    //sbus_init();
+
     led_init();
 #ifdef USE_LIDAR
     lidar_lite_init();
 #endif
-    debug_init();
 
     led_on(LED_BLUE);
     led_on(LED_RED);
 
     while (1) {
-        if (read_ch(&ch)) {
-            if (proto_parse_package(ch, &_rx_pkg) == SYS_EOK) {
-                handle_fmu_package(&_rx_pkg);
-            }
-        }
+        interface_listen();
 
-        if (fmt_sync_finish()) {
+        if (sync_finish()) {
             led_type = LED_BLUE;
             led_on(LED_RED);
 
-            // debug("rc %d\n", rc_config.protocol);
             if (rc_config.protocol == 1) {
                 send_sbus_value();
             } else if (rc_config.protocol == 2) {
@@ -80,7 +71,7 @@ int main(void)
             led_on(LED_BLUE);
 
             /* try send sync cmd to fmu */
-            TIMETAG_CHECK_EXECUTE(fmu_sync, 200, fmt_send_message(PROTO_CMD_SYNC, NULL, 0);)
+            TIMETAG_CHECK_EXECUTE(fmu_sync, 200, send_io_cmd(IO_CODE_SYNC, NULL, 0);)
         }
 
         TIMETAG_CHECK_EXECUTE(led_toggle, 1000, led_toggle(led_type);)

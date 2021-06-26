@@ -15,14 +15,13 @@
  *****************************************************************************/
 
 #include "debug.h"
-#include "fmu_manager.h"
+#include "interface.h"
 #include <stdarg.h>
 #include <stdio.h>
 
 #define DEBUG_BUFFER_SIZE 100
 
 static char _dbg_buf[DEBUG_BUFFER_SIZE];
-static PackageStruct _dbg_pkg;
 
 int debug(const char* fmt, ...)
 {
@@ -35,16 +34,9 @@ int debug(const char* fmt, ...)
     length = vsnprintf(_dbg_buf, DEBUG_BUFFER_SIZE, fmt, args);
     va_end(args);
 
-    /* send dbg info to FMU */
-    if (length <= DEBUG_BUFFER_SIZE && length) {
-        fmt_send_pkg(_dbg_buf, length, &_dbg_pkg);
+    if (length <= IO_BUFFER_SIZE && length) {
+        send_io_cmd(IO_CODE_DBG_TEXT, _dbg_buf, length);
     }
 
     return length;
-}
-
-void debug_init(void)
-{
-    // fmt_create_pkg(PROTO_DBG_TEXT, DEBUG_BUFFER_SIZE, _dbg_buf, &_dbg_pkg);
-    fmt_init_pkg(PROTO_DBG_TEXT, _dbg_buf, &_dbg_pkg);
 }

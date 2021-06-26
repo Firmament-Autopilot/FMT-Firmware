@@ -17,21 +17,18 @@
 #define __FMTIO_H__
 
 #include <firmament.h>
-#include "module/fmtio/fmtio_protocol.h"
+#include "module/fmtio/protocol.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef fmt_err_t (*fmtio_rx_handler_t)(const PackageStruct* pkg);
-
 fmt_err_t fmtio_init(const char* dev_name);
 void fmtio_loop(void);
-fmt_err_t fmtio_register_rx_handler(fmtio_rx_handler_t rx_handler);
-fmt_err_t fmtio_send_cmd(uint16_t cmd, const void* data, uint16_t len);
-fmt_err_t fmtio_send_package(const void* data, uint16_t len, PackageStruct* pkg);
-rt_device_t fmtio_get_device(void);
 void fmtio_suspend_comm(uint8_t suspend);
+fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len);
+rt_device_t fmtio_get_device(void);
+fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len);
 
 #ifdef __cplusplus
 }

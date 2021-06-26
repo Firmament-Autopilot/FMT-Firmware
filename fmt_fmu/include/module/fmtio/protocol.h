@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef  _PROTOCOL_H_
-#define  _PROTOCOL_H_
+#ifndef __PROTOCOL_H__
+#define __PROTOCOL_H__
 
-#include "stm32f10x.h"
-#include "global.h"
+#include <firmament.h>
 
 #define IO_BUFFER_SIZE 256
 
@@ -65,12 +64,11 @@ typedef struct {
     float sample_time; // rc sample time in seconds (-1 for inherits)
 } IO_RCConfig;
 
-
 void init_io_pkt(struct IOPacket* pkt);
 struct IOPacket* create_io_pkt(void);
 void delete_io_pkt(struct IOPacket* pkt);
-FMT_Error set_io_pkt(struct IOPacket* pkt, uint8_t code, void* data, uint16_t len);
-FMT_Error io_parse_char(struct IOPacket* pkt, uint8_t c);
+fmt_err_t set_io_pkt(struct IOPacket* pkt, uint8_t code, void* data, uint16_t len);
+fmt_err_t io_parse_char(struct IOPacket* pkt, uint8_t c);
 uint8_t crc_packet(struct IOPacket* pkt);
 
 #endif

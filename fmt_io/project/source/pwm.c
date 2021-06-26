@@ -238,7 +238,7 @@ uint8_t pwm_configure(uint8_t cmd, void* args)
     }
 }
 
-void handle_motor_pkg(uint16_t mask, uint16_t* value)
+void handle_motor_pkt(uint16_t mask, uint16_t* value)
 {
     uint16_t val;
     float duty_cyc[MAX_PWM_CHAN] = { 0.0 };

@@ -2,6 +2,9 @@
     "files.associations": {
         "ppm_decoder.h": "c",
         "protocol.h": "c",
-        "fmu_manager.h": "c"
+        "interface.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c",
+        "debug.h": "c"
     }
 }

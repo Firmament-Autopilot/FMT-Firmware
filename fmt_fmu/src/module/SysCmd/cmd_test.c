@@ -33,11 +33,10 @@
 #include "module/work_queue/work_queue.h"
 #include "module/work_queue/workqueue_manager.h"
 
-void print_channel_mapping(void);
+#include "module/fmtio/protocol.h"
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    print_channel_mapping();
 
     return 0;
 }

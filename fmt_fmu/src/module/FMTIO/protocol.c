@@ -1,22 +1,6 @@
-/******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *****************************************************************************/
 
-#include "protocol.h"
-#include <stdlib.h>
-#include <string.h>
+
+#include "module/fmtio/protocol.h"
 
 static const uint8_t crc8_tab[256] = {
     0x00, 0x07, 0x0E, 0x09, 0x1C, 0x1B, 0x12, 0x15,
@@ -79,12 +63,12 @@ void init_io_pkt(struct IOPacket* pkt)
     pkt->crc = 0;
 
     /* clear data filed */
-    memset(pkt->data, 0, IO_BUFFER_SIZE);
+    rt_memset(pkt->data, 0, IO_BUFFER_SIZE);
 }
 
 struct IOPacket* create_io_pkt(void)
 {
-    struct IOPacket* pkt = (struct IOPacket*)malloc(sizeof(struct IOPacket));
+    struct IOPacket* pkt = (struct IOPacket*)rt_malloc(sizeof(struct IOPacket));
     if (pkt == NULL) {
         return NULL;
     }
@@ -97,34 +81,34 @@ struct IOPacket* create_io_pkt(void)
 
 void delete_io_pkt(struct IOPacket* pkt)
 {
-    free(pkt);
+    rt_free(pkt);
 }
 
-FMT_Error set_io_pkt(struct IOPacket* pkt, uint8_t code, void* data, uint16_t len)
+fmt_err_t set_io_pkt(struct IOPacket* pkt, uint8_t code, void* data, uint16_t len)
 {
     if (len > IO_BUFFER_SIZE) {
-        return SYS_EINVAL;
+        return FMT_EINVAL;
     }
 
     pkt->code = code;
     pkt->len = len;
 
     if (pkt->len > 0) {
-        memcpy(pkt->data, data, pkt->len);
+        rt_memcpy(pkt->data, data, pkt->len);
     }
 
     /* calculate checksum */
     pkt->crc = 0;
     pkt->crc = crc_packet(pkt);
 
-    return SYS_EOK;
+    return FMT_EOK;
 }
 
-FMT_Error io_parse_char(struct IOPacket* pkt, uint8_t c)
+fmt_err_t io_parse_char(struct IOPacket* pkt, uint8_t c)
 {
     static IO_RXState rx_state = RXState_HEAD;
     static uint16_t rx_cnt = 0;
-    FMT_Error ret = SYS_EBUSY;
+    fmt_err_t ret = FMT_EBUSY;
 
     switch (rx_state) {
     case RXState_HEAD:
@@ -140,7 +124,7 @@ FMT_Error io_parse_char(struct IOPacket* pkt, uint8_t c)
                 rx_state = RXState_CODE;
             } else {
                 /* wrong head */
-                ret = SYS_ERROR;
+                ret = FMT_ERROR;
                 /* back to initial state */
                 rx_state = RXState_HEAD;
             }
@@ -159,7 +143,7 @@ FMT_Error io_parse_char(struct IOPacket* pkt, uint8_t c)
             pkt->len |= (c << 8);
             rx_cnt = 0;
             if (pkt->len > IO_BUFFER_SIZE) {
-                ret = SYS_EINVAL;
+                ret = FMT_EINVAL;
                 /* back to initial state */
                 rx_state = RXState_HEAD;
             } else {
@@ -175,7 +159,7 @@ FMT_Error io_parse_char(struct IOPacket* pkt, uint8_t c)
             rx_state = RXState_DATA;
         } else {
             /* there is no more data, parse complete */
-            ret = SYS_EOK;
+            ret = FMT_EOK;
             /* back to initial state */
             rx_state = RXState_HEAD;
         }
@@ -186,7 +170,7 @@ FMT_Error io_parse_char(struct IOPacket* pkt, uint8_t c)
         if (rx_cnt >= pkt->len) {
             rx_cnt = 0;
             /* received all data, parse complete */
-            ret = SYS_EOK;
+            ret = FMT_EOK;
             /* back to initial state */
             rx_state = RXState_HEAD;
         }
