@@ -23,7 +23,7 @@
 #define PWM_ARR(freq)  (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
 #define VAL_TO_DC(val) ((float)(val * _pwm_freq) / 1000000.0f)
 
-uint8_t _pwm_freq = PWM_DEFAULT_FREQUENCY;
+uint16_t _pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float _tim_duty_cycle[MAX_PWM_CHAN] = { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 static int _enable = 0;
 
