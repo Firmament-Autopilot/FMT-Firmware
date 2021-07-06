@@ -25,8 +25,19 @@
 extern "C" {
 #endif
 
+typedef struct {
+    uint32_t baudrate;
+} mavproxy_serial_dev_config;
+
+typedef struct {
+    char* type;
+    char* name;
+    void* config;
+} mavproxy_device_info;
+
 /* toml configuration */
 fmt_err_t mavproxy_toml_config(toml_table_t* table);
+fmt_err_t mavproxy_get_devinfo(rt_device_t dev, mavproxy_device_info* info);
 
 #ifdef __cplusplus
 }

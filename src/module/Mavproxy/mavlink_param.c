@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/mavproxy_config.h"
 
 #define MAV_PARAM_COUNT (sizeof(mav_param_list_t) / sizeof(mav_param_t))
 
@@ -380,6 +381,9 @@ void mavlink_param_send_all(void)
     param_t* param;
     param_group_t* gp = (param_group_t*)&param_list;
     mav_param_t* mav_param;
+    mavproxy_device_info info;
+
+    FMT_CHECK(mavproxy_get_devinfo(mavproxy_get_device(), &info));
 
     for (uint32_t i = 0; i < MAV_PARAM_COUNT; i++) {
         mav_param = _mav_param_get_by_index(i);
@@ -390,7 +394,11 @@ void mavlink_param_send_all(void)
 
         _mav_param_pack(&msg, mav_param);
         mavproxy_send_immediate_msg(&msg, true);
-        sys_msleep(10);    // the delay is needed because TELEM has relatively high transfer latency
+
+        if (strcmp(info.type, "serial") == 0) {
+            /* Delay is needed because TELEM has high latency. TODO: improve it with serial hardware flow control */
+            sys_msleep(10);
+        }
     }
 
     for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
@@ -399,9 +407,12 @@ void mavlink_param_send_all(void)
         for (uint32_t j = 0; j < gp->param_num; j++) {
             _param_pack(&msg, param);
             mavproxy_send_immediate_msg(&msg, true);
-            sys_msleep(10);    // the delay is needed because TELEM has relatively high transfer latency
-
             param++;
+
+            if (strcmp(info.type, "serial") == 0) {
+                /* Delay is needed because TELEM has high latency. TODO: improve it with serial hardware flow control */
+                sys_msleep(10);
+            }
         }
 
         gp++;

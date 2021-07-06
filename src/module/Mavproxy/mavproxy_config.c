@@ -17,6 +17,7 @@
 
 #include "hal/serial.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/mavproxy_config.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 
@@ -30,16 +31,6 @@
 #define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
 #define FIND_DEVICE(_idx)           rt_device_find(DEVICE_LIST[_idx].name)
 #define MAVPROXY_SERIAL_BAUDRATE    57600
-
-typedef struct {
-    uint32_t baudrate;
-} mavproxy_serial_dev_config;
-
-typedef struct {
-    char* type;
-    char* name;
-    void* config;
-} mavproxy_device_info;
 
 static mavproxy_device_info mavproxy_device_list[MAVPROXY_MAX_DEVICE_NUM] = { 0 };
 static uint8_t mavproxy_device_num = 0;
@@ -195,6 +186,18 @@ static fmt_err_t mavproxy_parse_devices(const toml_array_t* array)
 uint8_t mavproxy_get_channel_num(void)
 {
     return DEVICE_NUM;
+}
+
+fmt_err_t mavproxy_get_devinfo(rt_device_t dev, mavproxy_device_info* info)
+{
+    for (int idx = 0; idx < DEVICE_NUM; idx++) {
+        if (rt_device_find(DEVICE_LIST[idx].name) == dev) {
+            *info = DEVICE_LIST[idx];
+            return FMT_EOK;
+        }
+    }
+
+    return FMT_EINVAL;
 }
 
 fmt_err_t mavproxy_switch_channel(uint8_t chan)
