@@ -18,7 +18,7 @@
 #include <string.h>
 #include "shell.h"
 
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 #include "hal/serial.h"
 
 static uint8_t _is_option(char* str)

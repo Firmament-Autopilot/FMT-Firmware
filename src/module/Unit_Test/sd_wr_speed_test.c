@@ -1,6 +1,6 @@
 
 #include <firmament.h>
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 #include "module/console/console.h"
 #include "module/file_manager/file_manager.h"
 

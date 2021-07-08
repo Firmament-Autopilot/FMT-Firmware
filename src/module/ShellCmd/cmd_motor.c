@@ -17,7 +17,7 @@
 #include <firmament.h>
 
 #include "hal/motor.h"
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 #include "module/sysio/actuator_cmd.h"
 
 static void show_usage(void)

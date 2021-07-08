@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 #include "module/system/statistic.h"
 
 extern long list_device(void);

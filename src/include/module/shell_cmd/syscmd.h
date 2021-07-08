@@ -20,23 +20,27 @@
 #include <firmament.h>
 
 enum {
-	SYSCMD_ALIGN_LEFT,
-	SYSCMD_ALIGN_MIDDLE,
-	SYSCMD_ALIGN_RIGHT
+    SYSCMD_ALIGN_LEFT,
+    SYSCMD_ALIGN_MIDDLE,
+    SYSCMD_ALIGN_RIGHT
 };
 
 typedef struct {
-	char* opt;
-	char* val;
+    char* opt;
+    char* val;
 } optv_t;
 
 typedef int (*shell_handle_func)(int, char**, int, optv_t*);
 
-#define STRING_COMPARE(str1, str2)              (strcmp(str1, str2) == 0)
+#define STRING_COMPARE(str1, str2) (strcmp(str1, str2) == 0)
 
-#define PRINT_USAGE(cmd, usage)                 console_printf("usage: %s %s\n", #cmd, #usage)
-#define PRINT_STRING(str)                       console_printf("%s", str)
-#define PRINT_ACTION(action, len, desc)         console_printf(" %-"#len"s  %s\n", action, desc)
+#define PRINT_USAGE(cmd, usage)         console_printf("usage: %s %s\n", #cmd, #usage)
+#define PRINT_STRING(str)               console_printf("%s", str)
+#define PRINT_ACTION(action, len, desc) console_printf(" %-" #len "s  %s\n", action, desc)
+
+#define COMMAND_USAGE(cmd, usage) console_printf("usage: %s %s\n", cmd, usage)
+#define SHELL_COMMAND(cmd, desc)  console_printf(" %-10s  %s\n", cmd, desc)
+#define SHELL_OPTION(opt, desc)   console_printf(" %-15s  %s\n", opt, desc)
 
 bool syscmd_is_num(const char* str);
 bool syscmd_is_hex(const char* str);

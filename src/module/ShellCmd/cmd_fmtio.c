@@ -20,7 +20,7 @@
 #include "hal/fmtio_dev.h"
 #include "hal/serial.h"
 #include "module/fmtio/fmtio_uploader.h"
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 #include "module/fmtio/fmtio.h"
 
 static void show_usage(void)

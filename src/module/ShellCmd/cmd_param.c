@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 
 static void _disp_param(param_t* p)
 {

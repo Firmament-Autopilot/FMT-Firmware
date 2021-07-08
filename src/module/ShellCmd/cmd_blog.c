@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "module/syscmd/syscmd.h"
+#include "module/shell_cmd/syscmd.h"
 #include "task/task_logger.h"
 #include "module/file_manager/file_manager.h"
 

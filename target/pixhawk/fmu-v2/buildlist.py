@@ -61,7 +61,7 @@ MODULES = [
     'Sensor/*.c',
     'FMTIO/*.c',
     'SysIO/*.c',
-    'SysCmd/*.c',
+    'ShellCmd/*.c',
     'System/*.c',
     'Unit_Test/*.c',
     'Utils/*.c',

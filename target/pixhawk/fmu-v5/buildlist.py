@@ -41,7 +41,7 @@ MODULES = [
     'Console/*.c',
     'System/*.c',
     'IPC/*.c',
-    'SysCmd/*.c',
+    'ShellCmd/*.c',
     'File_Manager/*.c',
     'FTP/*.c',
     'Plant/*.c',
