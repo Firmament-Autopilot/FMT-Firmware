@@ -40,6 +40,7 @@
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
+#include "drv_adc.h"
 
 #include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
@@ -279,6 +280,9 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
+
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());

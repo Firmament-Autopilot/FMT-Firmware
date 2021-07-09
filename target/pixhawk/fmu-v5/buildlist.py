@@ -32,6 +32,7 @@ HAL = [
     'motor/*.c',
     'rc/*.c',
     'gps/*.c',
+    'adc/*.c',
 ]
 
 HAL_CPPPATH = []
