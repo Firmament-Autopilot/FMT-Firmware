@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __DRV_ADC_H__
+#define __DRV_ADC_H__
 
 #include <firmament.h>
 
-enum {
-    ADC_CMD_DISABLE = 0,
-    ADC_CMD_ENABLE = 1,
-};
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-struct adc_device {
-    struct rt_device parent;
-    const struct adc_ops* ops;
-    rt_mutex_t lock;
-};
-typedef struct adc_device* adc_dev_t;
+rt_err_t drv_adc_init(void);
 
-/* adc driver opeations */
-struct adc_ops {
-    rt_err_t (*enable)(adc_dev_t adc_dev, uint8_t enable);
-    rt_err_t (*measure)(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt);
-};
+#ifdef __cplusplus
+}
+#endif
 
-rt_err_t hal_adc_register(adc_dev_t adc_dev, const char* name, rt_uint32_t flag, void* data);
+#endif
 
-#endif /* __ADC_H__ */

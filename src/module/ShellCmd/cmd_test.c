@@ -37,59 +37,8 @@
 
 #include "module/shell_cmd/optparse.h"
 
-static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
-{
-
-    return 0;
-}
-
 int cmd_test(int argc, char** argv)
 {
-    // return syscmd_process(argc, argv, handle_cmd);
-
-    struct optparse_long longopts[] = {
-        { "amend", 'a', OPTPARSE_NONE },
-        { "brief", 'b', OPTPARSE_NONE },
-        { "color", 'c', OPTPARSE_REQUIRED },
-        { "delay", 'd', OPTPARSE_OPTIONAL },
-        { 0 }
-    };
-
-    char* arg;
-    int option;
-    struct optparse options;
-
-    optparse_init(&options, argv);
-    // while ((option = optparse(&options, "abc:d::")) != -1) {
-    while ((option = optparse_long(&options, longopts, NULL)) != -1) {
-        switch (option) {
-        case 'a':
-            printf("option a\n");
-            break;
-        case 'b':
-            printf("option b\n");
-            break;
-        case 'c':
-            printf("option c:%s\n", options.optarg);
-            break;
-        case 'd':
-
-            if (options.optarg) {
-                printf("option d:%s\n", options.optarg);
-            } else {
-                printf("option d\n");
-            }
-            break;
-        case '?':
-            printf("%s: %s\n", argv[0], options.errmsg);
-            // printf("unknow option\n");
-            return EXIT_FAILURE;
-        }
-    }
-
-    /* Print remaining arguments. */
-    while ((arg = optparse_arg(&options)))
-        printf("%s\n", arg);
     return 0;
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);

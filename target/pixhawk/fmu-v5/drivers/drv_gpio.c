@@ -14,8 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
-
 #include "drv_gpio.h"
 #include "hal/pin.h"
 

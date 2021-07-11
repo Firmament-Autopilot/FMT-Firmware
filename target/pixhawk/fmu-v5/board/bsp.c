@@ -32,6 +32,7 @@
 #include "driver/ist8310.h"
 #include "driver/ms5611.h"
 #include "driver/ncp5623c.h"
+#include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_sdio.h"
@@ -40,7 +41,6 @@
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
-#include "drv_adc.h"
 
 #include "module/console/console_config.h"
 #include "module/controller/controller_model.h"
@@ -167,6 +167,20 @@ void Error_Handler(void)
 }
 
 /**
+  * @brief  CPU L1-Cache enable.
+  * @param  None
+  * @retval None
+  */
+static void CPU_CACHE_Enable(void)
+{
+  /* Enable I-Cache */
+  SCB_EnableICache();
+
+  /* Enable D-Cache */
+  SCB_EnableDCache();
+}
+
+/**
   * @brief System Clock Configuration
   * @retval None
   */
@@ -255,6 +269,10 @@ void bsp_show_information(void)
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
+    /* Enable CPU L1-cache */
+    CPU_CACHE_Enable();
+
+    /* HAL library initialization */
     HAL_Init();
 
     /* System clock initialization */
@@ -281,9 +299,6 @@ void bsp_early_initialize(void)
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
 
-    /* adc driver init */
-    RT_CHECK(drv_adc_init());
-
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -307,6 +322,9 @@ void bsp_initialize(void)
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
+
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
 
     RT_CHECK(drv_icm20689_init());
 
