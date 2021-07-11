@@ -41,6 +41,10 @@ fmt_err_t pmu_poll_battery_status(void)
     struct battery_status bat1_status;
     uint32_t value;
 
+    if (adc_dev == NULL) {
+        return FMT_EEMPTY;
+    }
+
     if (rt_device_read(adc_dev, 0, &value, sizeof(value)) != sizeof(value)) {
         return FMT_ERROR;
     }

@@ -104,7 +104,7 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
     }
 
     LL_ADC_REG_SetSequencerRanks(adc->adc_handle, LL_ADC_REG_RANK_1, adc_channel);
-    LL_ADC_SetChannelSamplingTime(adc->adc_handle, adc_channel, LL_ADC_SAMPLINGTIME_480CYCLES);
+    LL_ADC_SetChannelSamplingTime(adc->adc_handle, adc_channel, LL_ADC_SAMPLINGTIME_56CYCLES);
 
     LL_ADC_REG_StartConversionSWStart(adc->adc_handle);
 
