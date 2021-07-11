@@ -49,6 +49,7 @@
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
+#include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/pilot_cmd.h"
@@ -173,11 +174,11 @@ void Error_Handler(void)
   */
 static void CPU_CACHE_Enable(void)
 {
-  /* Enable I-Cache */
-  SCB_EnableICache();
+    /* Enable I-Cache */
+    SCB_EnableICache();
 
-  /* Enable D-Cache */
-  SCB_EnableDCache();
+    /* Enable D-Cache */
+    SCB_EnableDCache();
 }
 
 /**
@@ -381,6 +382,9 @@ void bsp_post_initialize(void)
 
     /* initialize led */
     FMT_CHECK(led_control_init());
+
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();

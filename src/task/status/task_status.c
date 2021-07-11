@@ -19,6 +19,7 @@
 #include "module/ins/ins_model.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
+#include "module/pmu/power_manager.h"
 #include "task/task_logger.h"
 
 #define TAG "StatusTask"
@@ -179,6 +180,8 @@ void task_status_entry(void* parameter)
 
         // update INS output status
         update_ins_status();
+
+        TIMETAG_CHECK_EXECUTE(poll_bat_status, 500, pmu_poll_battery_status(););
 
         sys_msleep(10);
     }

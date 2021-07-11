@@ -65,6 +65,7 @@ MODULES = [
     'Filter/*.c',
     'FMTIO/*.c',
     'TaskManager/*.c',
+    'PMU/*.c',
 ]
 
 MODULES_CPPPATH = [
