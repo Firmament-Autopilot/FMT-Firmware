@@ -128,6 +128,10 @@ static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
 
     if (enable == ADC_CMD_ENABLE) {
         LL_ADC_Enable(adc->adc_handle);
+        /* the ADC needs a stabilization time of tSTAB 
+         * before it starts converting accurately 
+         */
+        systime_udelay(1000);
     } else if (enable == ADC_CMD_DISABLE) {
         LL_ADC_Disable(adc->adc_handle);
     } else {
