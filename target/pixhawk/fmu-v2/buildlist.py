@@ -32,8 +32,8 @@ HAL = [
     'systick/*.c',
     'usb/*.c',
     'optical_flow/*.c',
-    'spi/spi_core.c',
-    'spi/spi_dev.c',
+    'spi/*.c',
+    'adc/*.c',
 ]
 
 HAL_CPPPATH = []
@@ -71,6 +71,7 @@ MODULES = [
     'TOML/*.c',
     'WorkQueue/*.c',
     'TaskManager/*.c',
+    'PMU/*.c',
 ]
 
 MODULES_CPPPATH = [

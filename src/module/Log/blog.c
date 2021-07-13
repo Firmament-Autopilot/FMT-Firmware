@@ -79,9 +79,9 @@ blog_elem_t GPS_uBlox_Elems[] = {
     BLOG_ELEMENT("velE", BLOG_INT32),
     BLOG_ELEMENT("velD", BLOG_INT32),
     BLOG_ELEMENT("gSpeed", BLOG_INT32),
-    BLOG_ELEMENT("headMot", BLOG_INT32),
+    BLOG_ELEMENT("heading", BLOG_INT32),
     BLOG_ELEMENT("sAcc", BLOG_UINT32),
-    BLOG_ELEMENT("headAcc", BLOG_UINT32),
+    BLOG_ELEMENT("headingAcc", BLOG_UINT32),
     BLOG_ELEMENT("pDOP", BLOG_UINT16),
     BLOG_ELEMENT("reserved2", BLOG_UINT16),
 };

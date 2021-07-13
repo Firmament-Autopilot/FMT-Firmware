@@ -32,6 +32,7 @@ HAL = [
     'motor/*.c',
     'rc/*.c',
     'gps/*.c',
+    'adc/*.c',
 ]
 
 HAL_CPPPATH = []
@@ -64,6 +65,7 @@ MODULES = [
     'Filter/*.c',
     'FMTIO/*.c',
     'TaskManager/*.c',
+    'PMU/*.c',
 ]
 
 MODULES_CPPPATH = [

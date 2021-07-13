@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,29 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef __ADC_H__
+#define __ADC_H__
+
 #include <firmament.h>
 
-#include <stdlib.h>
-#include <string.h>
+enum {
+    ADC_CMD_DISABLE = 0,
+    ADC_CMD_ENABLE = 1,
+};
 
-#include "hal/motor.h"
-#include "hal/rc.h"
-#include "hal/serial.h"
-#include "hal/systick.h"
-#include "module/console/console.h"
-#include "module/mavproxy/mavproxy.h"
-#include "module/sensor/sensor_hub.h"
-#include "module/shell_cmd/syscmd.h"
-#include "module/sysio/pilot_cmd.h"
-#include "module/system/statistic.h"
-#include "module/toml/toml.h"
-#include "module/work_queue/work_queue.h"
-#include "module/work_queue/workqueue_manager.h"
+struct adc_device {
+    struct rt_device parent;
+    const struct adc_ops* ops;
+    rt_mutex_t lock;
+};
+typedef struct adc_device* adc_dev_t;
 
-#include "module/fmtio/protocol.h"
+/* adc driver opeations */
+struct adc_ops {
+    rt_err_t (*enable)(adc_dev_t adc_dev, uint8_t enable);
+    rt_err_t (*measure)(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt);
+};
 
-#include "module/shell_cmd/optparse.h"
+rt_err_t hal_adc_register(adc_dev_t adc_dev, const char* name, rt_uint32_t flag, void* data);
 
-int cmd_test(int argc, char** argv)
-{
-    return 0;
-}
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);
+#endif /* __ADC_H__ */

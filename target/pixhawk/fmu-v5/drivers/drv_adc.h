@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef __DRV_ADC_H__
+#define __DRV_ADC_H__
 
 #include <firmament.h>
 
-#include <stdlib.h>
-#include <string.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "hal/motor.h"
-#include "hal/rc.h"
-#include "hal/serial.h"
-#include "hal/systick.h"
-#include "module/console/console.h"
-#include "module/mavproxy/mavproxy.h"
-#include "module/sensor/sensor_hub.h"
-#include "module/shell_cmd/syscmd.h"
-#include "module/sysio/pilot_cmd.h"
-#include "module/system/statistic.h"
-#include "module/toml/toml.h"
-#include "module/work_queue/work_queue.h"
-#include "module/work_queue/workqueue_manager.h"
+rt_err_t drv_adc_init(void);
 
-#include "module/fmtio/protocol.h"
-
-#include "module/shell_cmd/optparse.h"
-
-int cmd_test(int argc, char** argv)
-{
-    return 0;
+#ifdef __cplusplus
 }
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);
+#endif
+
+#endif

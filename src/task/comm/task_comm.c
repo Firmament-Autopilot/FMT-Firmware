@@ -24,11 +24,13 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
+#include "module/pmu/power_manager.h"
 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(rc_channels);
+MCN_DECLARE(bat0_status);
 
 static mavlink_system_t mavlink_system;
 
@@ -53,13 +55,15 @@ static bool mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
 static bool mavproxy_msg_sys_status_pack(mavlink_message_t* msg_t)
 {
     mavlink_sys_status_t sys_status;
-    // uint16_t len;
+    struct battery_status bat0_status;
+
+    mcn_copy_from_hub(MCN_HUB(bat0_status), &bat0_status);
 
     sys_status.onboard_control_sensors_present = 1;
     sys_status.onboard_control_sensors_enabled = 1;
     sys_status.onboard_control_sensors_health = 1;
     sys_status.load = (uint16_t)(get_cpu_usage() * 1e3);
-    sys_status.voltage_battery = 11000;
+    sys_status.voltage_battery = bat0_status.battery_voltage;
     sys_status.current_battery = -1;
     sys_status.battery_remaining = -1;
 
