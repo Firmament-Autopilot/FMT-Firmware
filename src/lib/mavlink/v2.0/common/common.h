@@ -59,7 +59,8 @@ typedef enum MAV_AUTOPILOT
    MAV_AUTOPILOT_ASLUAV=17, /* ASLUAV autopilot -- http://www.asl.ethz.ch | */
    MAV_AUTOPILOT_SMARTAP=18, /* SmartAP Autopilot - http://sky-drones.com | */
    MAV_AUTOPILOT_AIRRAILS=19, /* AirRails - http://uaventure.com | */
-   MAV_AUTOPILOT_ENUM_END=20, /*  | */
+   MAV_AUTOPILOT_FMT = 20, /*Firmament autopilot */
+   MAV_AUTOPILOT_ENUM_END=21, /*  | */
 } MAV_AUTOPILOT;
 #endif
 
