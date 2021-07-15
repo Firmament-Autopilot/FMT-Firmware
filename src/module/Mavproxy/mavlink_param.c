@@ -302,7 +302,7 @@ static mav_param_t* _mav_param_get_by_index(uint32_t index)
     return &mav_param[index];
 }
 
-static void _mav_param_pack(mavlink_message_t* msg_t, const mav_param_t* param)
+static void make_mavparam_msg(mavlink_message_t* msg_t, const mav_param_t* param)
 {
     mavlink_param_value_t mav_param_value;
     uint16_t len = strlen(param->name);
@@ -319,7 +319,7 @@ static void _mav_param_pack(mavlink_message_t* msg_t, const mav_param_t* param)
     mavlink_msg_param_value_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &mav_param_value);
 }
 
-static void _param_pack(mavlink_message_t* msg_t, const param_t* param)
+static void make_param_msg(mavlink_message_t* msg_t, const param_t* param)
 {
     mavlink_param_value_t mav_param_value;
     uint16_t len = strlen(param->name);
@@ -355,35 +355,48 @@ static void _param_pack(mavlink_message_t* msg_t, const param_t* param)
     mavlink_msg_param_value_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &mav_param_value);
 }
 
-void send_mavlink_param(char* name)
+fmt_err_t send_mavparam_by_name(char* name)
 {
     mav_param_t* mav_param;
     mavlink_message_t msg;
 
     for (uint32_t i = 0; i < MAV_PARAM_COUNT; i++) {
         mav_param = _mav_param_get_by_index(i);
-
-        if (!mav_param) {
-            continue;
+        if (mav_param == NULL) {
+            return FMT_EEMPTY;
         }
 
         if (strcmp(mav_param->name, name) == 0) {
-            _mav_param_pack(&msg, mav_param);
+            make_mavparam_msg(&msg, mav_param);
             mavproxy_send_immediate_msg(&msg, true);
-            break;
+            return FMT_EOK;
         }
     }
+
+    return FMT_EINVAL;
 }
 
-void mavlink_param_send_all(void)
+fmt_err_t send_mavparam_by_index(int16_t index)
+{
+    mav_param_t* mav_param = _mav_param_get_by_index(index);
+    mavlink_message_t msg;
+
+    if (mav_param == NULL) {
+        return FMT_EINVAL;
+    }
+
+    make_mavparam_msg(&msg, mav_param);
+    mavproxy_send_immediate_msg(&msg, true);
+
+    return FMT_EOK;
+}
+
+void mavlink_send_param_all(void)
 {
     mavlink_message_t msg;
     param_t* param;
     param_group_t* gp = (param_group_t*)&param_list;
     mav_param_t* mav_param;
-    mavproxy_device_info info;
-
-    FMT_CHECK(mavproxy_get_devinfo(mavproxy_get_device(), &info));
 
     for (uint32_t i = 0; i < MAV_PARAM_COUNT; i++) {
         mav_param = _mav_param_get_by_index(i);
@@ -392,27 +405,17 @@ void mavlink_param_send_all(void)
             break;
         }
 
-        _mav_param_pack(&msg, mav_param);
+        make_mavparam_msg(&msg, mav_param);
         mavproxy_send_immediate_msg(&msg, true);
-
-        if (strcmp(info.type, "serial") == 0) {
-            /* Delay is needed because TELEM has high latency. TODO: improve it with serial hardware flow control */
-            sys_msleep(10);
-        }
     }
 
     for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
         param = gp->content;
 
         for (uint32_t j = 0; j < gp->param_num; j++) {
-            _param_pack(&msg, param);
+            make_param_msg(&msg, param);
             mavproxy_send_immediate_msg(&msg, true);
             param++;
-
-            if (strcmp(info.type, "serial") == 0) {
-                /* Delay is needed because TELEM has high latency. TODO: improve it with serial hardware flow control */
-                sys_msleep(10);
-            }
         }
 
         gp++;
@@ -479,12 +482,21 @@ fmt_err_t mavlink_param_set(const char* name, float val)
     return FMT_EOK;
 }
 
-fmt_err_t mavlink_param_send(const param_t* param)
+fmt_err_t mavlink_send_param(const param_t* param)
 {
     mavlink_message_t msg;
 
-    _param_pack(&msg, param);
+    if (param == NULL) {
+        return FMT_EINVAL;
+    }
+
+    make_param_msg(&msg, param);
     mavproxy_send_immediate_msg(&msg, true);
 
     return FMT_EOK;
+}
+
+uint16_t get_mavparam_num(void)
+{
+    return MAV_PARAM_COUNT;
 }

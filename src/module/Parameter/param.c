@@ -334,9 +334,9 @@ uint32_t param_get_count(void)
  *  
  * @return parameter index (start from 0).
  */
-int param_get_index(const param_t* param)
+int16_t param_get_index(const param_t* param)
 {
-    int index = 0;
+    int16_t index = 0;
     param_t* p;
     param_group_t* gp = (param_group_t*)&param_list;
 
@@ -408,6 +408,34 @@ param_t* param_get_by_full_name(const char* group_name, const char* param_name)
                 }
                 p++;
             }
+        }
+        gp++;
+    }
+
+    return NULL;
+}
+
+/**
+ * @brief Get parameter by index
+ * 
+ * @param index Parameter index, start from 0
+ * @return param_t* The pointer of parameter instance.
+ */
+param_t* param_get_by_index(int16_t index)
+{
+    param_t* p;
+    param_group_t* gp = (param_group_t*)&param_list;
+    int16_t cur_idx = 0;
+
+    for (int j = 0; j < PARAM_GROUP_COUNT; j++) {
+        p = gp->content;
+
+        for (int i = 0; i < gp->param_num; i++) {
+            if (cur_idx == index) {
+                return p;
+            }
+            p++;
+            cur_idx++;
         }
         gp++;
     }
