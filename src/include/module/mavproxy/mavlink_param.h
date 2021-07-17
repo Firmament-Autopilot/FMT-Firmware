@@ -339,9 +339,9 @@ enum Rotation {
 	ROTATION_MAX
 };
 
-void mavlink_send_param_all(void);
+void mavlink_param_sendall(void);
 fmt_err_t mavlink_param_set(const char* name, float val);
-fmt_err_t mavlink_send_param(const param_t* param);
+fmt_err_t mavlink_param_send(const param_t* param);
 uint16_t get_mavparam_num(void);
 
 // mavlink param (not used by FMT) api

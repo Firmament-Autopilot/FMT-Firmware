@@ -83,7 +83,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT: {
-
+        /* do nothing */
     } break;
 
     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
@@ -96,7 +96,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
                 param_t* param = param_get_by_name(request_read.param_id);
 
                 if (param) {
-                    mavlink_send_param(param);
+                    mavlink_param_send(param);
                 } else {
                     send_mavparam_by_name(request_read.param_id);
                 }
@@ -107,7 +107,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
                     send_mavparam_by_index(request_read.param_index);
                 } else {
                     param_t* param = param_get_by_index(request_read.param_index - mavparam_num);
-                    mavlink_send_param(param);
+                    mavlink_param_send(param);
                 }
             }
         }
@@ -126,7 +126,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 
             if (mavlink_param_set(param_set.param_id, param_set.param_value) == FMT_EOK) {
                 param_t* param = param_get_by_name(param_set.param_id);
-                mavlink_send_param(param);
+                mavlink_param_send(param);
             } else {
                 ulog_w(TAG, "set unknown parameter:%s\n", param_set.param_id);
             }

@@ -262,7 +262,7 @@ void mavproxy_loop(void)
             }
 
             if (recv_set & EVENT_SEND_ALL_PARAM) {
-                mavlink_send_param_all();
+                mavlink_param_sendall();
             }
 
             if (recv_set & EVENT_MAVCONSOLE_TIMEOUT) {
