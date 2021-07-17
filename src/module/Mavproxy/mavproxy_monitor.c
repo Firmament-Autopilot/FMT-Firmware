@@ -83,7 +83,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT: {
-
+        /* do nothing */
     } break;
 
     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
@@ -91,13 +91,24 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
             mavlink_param_request_read_t request_read;
             mavlink_msg_param_request_read_decode(msg, &request_read);
 
-            param_t* param = param_get_by_name(request_read.param_id);
+            /* -1 to use the param ID field as identifier */
+            if (request_read.param_index == -1) {
+                param_t* param = param_get_by_name(request_read.param_id);
 
-            if (param) {
-                mavlink_param_send(param);
+                if (param) {
+                    mavlink_param_send(param);
+                } else {
+                    send_mavparam_by_name(request_read.param_id);
+                }
             } else {
-                // ulog_w(TAG, "get unknown parameter:%s\n", request_read.param_id);
-                send_mavlink_param(request_read.param_id);
+                uint16_t mavparam_num = get_mavparam_num();
+
+                if (request_read.param_index < mavparam_num) {
+                    send_mavparam_by_index(request_read.param_index);
+                } else {
+                    param_t* param = param_get_by_index(request_read.param_index - mavparam_num);
+                    mavlink_param_send(param);
+                }
             }
         }
     } break;
@@ -117,7 +128,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
                 param_t* param = param_get_by_name(param_set.param_id);
                 mavlink_param_send(param);
             } else {
-                // ulog_w(TAG, "set unknown parameter:%s\n", param_set.param_id);
+                ulog_w(TAG, "set unknown parameter:%s\n", param_set.param_id);
             }
         }
     } break;
