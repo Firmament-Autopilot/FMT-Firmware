@@ -331,6 +331,12 @@ static void make_param_msg(mavlink_message_t* msg_t, const param_t* param)
     memcpy(mav_param_value.param_id, param->name, len < 16 ? len : 16);
 
     switch (param->type) {
+    case PARAM_TYPE_DOUBLE:
+        /* mavlink param doesn't support double type, so transfer it to float */
+        mav_param_value.param_type = MAVLINK_TYPE_FLOAT;
+        mav_param_value.param_value = (float)param->val.lf;
+        break;
+
     case PARAM_TYPE_FLOAT:
         mav_param_value.param_type = MAVLINK_TYPE_FLOAT;
         mav_param_value.param_value = param->val.f;
@@ -346,10 +352,29 @@ static void make_param_msg(mavlink_message_t* msg_t, const param_t* param)
         memcpy(&(mav_param_value.param_value), &(param->val.u32), sizeof(param->val.u32));
         break;
 
-    default:
-        mav_param_value.param_type = MAVLINK_TYPE_FLOAT;
-        mav_param_value.param_value = param->val.f;
+    case PARAM_TYPE_INT16:
+        mav_param_value.param_type = MAVLINK_TYPE_INT16_T;
+        memcpy(&(mav_param_value.param_value), &(param->val.i16), sizeof(param->val.i16));
         break;
+
+    case PARAM_TYPE_UINT16:
+        mav_param_value.param_type = MAVLINK_TYPE_UINT16_T;
+        memcpy(&(mav_param_value.param_value), &(param->val.u16), sizeof(param->val.u16));
+        break;
+
+    case PARAM_TYPE_INT8:
+        mav_param_value.param_type = MAVLINK_TYPE_INT8_T;
+        memcpy(&(mav_param_value.param_value), &(param->val.i8), sizeof(param->val.i8));
+        break;
+
+    case PARAM_TYPE_UINT8:
+        mav_param_value.param_type = MAVLINK_TYPE_UINT8_T;
+        memcpy(&(mav_param_value.param_value), &(param->val.u8), sizeof(param->val.u8));
+        break;
+
+    default:
+        console_pritnf("unknow parameter type: %d", param->type);
+        return;
     }
 
     mavlink_msg_param_value_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &mav_param_value);
