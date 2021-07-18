@@ -637,6 +637,26 @@ fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* v
 }
 
 /**
+ * @brief Find specific group
+ * 
+ * @param group_name Group name
+ * @return param_group_t* Pointer of group instance, NULL means not found
+ */
+param_group_t* param_find_group(const char* group_name)
+{
+    param_group_t* gp = (param_group_t*)&param_list;
+
+    for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
+        if (strcmp(group_name, gp->name) == 0) {
+            return gp;
+        }
+        gp++;
+    }
+
+    return NULL;
+}
+
+/**
  * Save current parameters into a file.
  * 
  * @param path full path of parameter file
