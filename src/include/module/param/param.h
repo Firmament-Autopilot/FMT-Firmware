@@ -303,6 +303,8 @@ param_t* param_get_by_name(const char* param_name);
 param_t* param_get_by_full_name(const char* group_name, const char* param_name);
 param_t* param_get_by_index(int16_t index);
 
+param_group_t* param_find_group(const char* group_name);
+
 #ifdef __cplusplus
 }
 #endif
