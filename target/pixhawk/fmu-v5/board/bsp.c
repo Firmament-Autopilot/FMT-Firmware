@@ -167,6 +167,18 @@ void Error_Handler(void)
     /* USER CODE END Error_Handler_Debug */
 }
 
+/*
+* When enabling the D-cache there is cache coherency issue. 
+* This matter crops up when multiple masters (CPU, DMAs...) 
+* share the memory. If the CPU writes something to an area 
+* that has a write-back cache attribute (example SRAM), the 
+* write result is not seen on the SRAM as the access is 
+* buffered, and then if the DMA reads the same memory area 
+* to perform a data transfer, the values read do not match 
+* the intended data. The issue occurs for DMA read as well.
+* Currently not all drivers can ensure the data coherency 
+* when D-Cache enabled, so disable it by default.
+*/
 /**
   * @brief  CPU L1-Cache enable.
   * @param  None
@@ -178,7 +190,7 @@ static void CPU_CACHE_Enable(void)
     SCB_EnableICache();
 
     /* Enable D-Cache */
-    SCB_EnableDCache();
+    // SCB_EnableDCache();
 }
 
 /**
