@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.538
+ * Model version                  : 1.700
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Sep 27 14:51:58 2020
+ * C/C++ source code generated on : Sat Jul 31 15:23:39 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -109,9 +109,9 @@ typedef struct {
   int32_T velE;
   int32_T velD;
   int32_T gSpeed;
-  int32_T headMot;
+  int32_T heading;
   uint32_T sAcc;
-  uint32_T headAcc;
+  uint32_T headingAcc;
   uint16_T pDOP;
   uint16_T reserved2;
 } GPS_uBlox_Bus;

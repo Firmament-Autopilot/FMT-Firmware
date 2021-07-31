@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.978
+ * Model version                  : 1.985
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jan 16 09:24:03 2021
+ * C/C++ source code generated on : Sat Jul 31 15:21:50 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,8 +45,8 @@ typedef struct {
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S97>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_e;/* '<S98>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S96>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_n;/* '<S97>/Discrete-Time Integrator5' */
   real32_T Delay_DSTATE_g[2];          /* '<S75>/Delay' */
   real32_T Delay_DSTATE_f;             /* '<S76>/Delay' */
   real32_T Delay_DSTATE_l;             /* '<S32>/Delay' */
@@ -68,6 +68,8 @@ typedef struct {
   boolean_T DelayInput1_DSTATE_g;      /* '<S43>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_c;      /* '<S42>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_pc;     /* '<S41>/Delay Input1' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S96>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_n;/* '<S97>/Discrete-Time Integrator5' */
   uint8_T is_active_c12_FMS;           /* '<S89>/Disarm_Event' */
   uint8_T is_c12_FMS;                  /* '<S89>/Disarm_Event' */
   uint8_T is_active_c5_FMS;            /* '<S89>/Arm_Event' */
@@ -143,14 +145,14 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<S12>/Gain'
                                                 *   '<S12>/Gain1'
-                                                *   '<S100>/Constant'
-                                                *   '<S100>/Dead Zone'
-                                                *   '<S101>/Constant'
-                                                *   '<S101>/Dead Zone'
-                                                *   '<S102>/Constant'
-                                                *   '<S102>/Dead Zone'
-                                                *   '<S103>/Constant'
-                                                *   '<S103>/Dead Zone'
+                                                *   '<S106>/Constant'
+                                                *   '<S106>/Dead Zone'
+                                                *   '<S107>/Constant'
+                                                *   '<S107>/Dead Zone'
+                                                *   '<S108>/Constant'
+                                                *   '<S108>/Dead Zone'
+                                                *   '<S109>/Constant'
+                                                *   '<S109>/Dead Zone'
                                                 *   '<S21>/Saturation'
                                                 *   '<S46>/Saturation'
                                                 *   '<S46>/Saturation1'
@@ -187,8 +189,9 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * These blocks were eliminated from the model due to optimizations:
  *
  * Block '<Root>/Constant3' : Unused code path elimination
- * Block '<S96>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S98>/FixPt Data Type Duplicate' : Unused code path elimination
  * Block '<S82>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S96>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S86>/Signal Copy4' : Eliminate redundant signal conversion block
  */
 
@@ -290,8 +293,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S81>'  : 'FMS/FMS_State/expand_pwm'
  * '<S82>'  : 'FMS/FMS_State/timestamp'
  * '<S83>'  : 'FMS/Input_Process/Commander'
- * '<S84>'  : 'FMS/Input_Process/M_CO'
- * '<S85>'  : 'FMS/Input_Process/Onground_Check'
+ * '<S84>'  : 'FMS/Input_Process/Onground_Check'
+ * '<S85>'  : 'FMS/Input_Process/Psi To DCM'
  * '<S86>'  : 'FMS/Input_Process/Stick_Value'
  * '<S87>'  : 'FMS/Input_Process/Commander/Event_Commander'
  * '<S88>'  : 'FMS/Input_Process/Commander/State_Commander'
@@ -302,14 +305,20 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S93>'  : 'FMS/Input_Process/Commander/Event_Commander/Arm_Disarm_Event/Disarm_Event'
  * '<S94>'  : 'FMS/Input_Process/Commander/State_Commander/Compare To Constant3'
  * '<S95>'  : 'FMS/Input_Process/Onground_Check/Compare To Constant'
- * '<S96>'  : 'FMS/Input_Process/Onground_Check/Interval Test'
- * '<S97>'  : 'FMS/Input_Process/Onground_Check/LPF'
- * '<S98>'  : 'FMS/Input_Process/Onground_Check/LPF1'
- * '<S99>'  : 'FMS/Input_Process/Onground_Check/Quat_to_M_OB'
- * '<S100>' : 'FMS/Input_Process/Stick_Value/Dead_Zone'
- * '<S101>' : 'FMS/Input_Process/Stick_Value/Dead_Zone1'
- * '<S102>' : 'FMS/Input_Process/Stick_Value/Dead_Zone2'
- * '<S103>' : 'FMS/Input_Process/Stick_Value/Dead_Zone3'
+ * '<S96>'  : 'FMS/Input_Process/Onground_Check/First Order LPF'
+ * '<S97>'  : 'FMS/Input_Process/Onground_Check/First Order LPF1'
+ * '<S98>'  : 'FMS/Input_Process/Onground_Check/Interval Test'
+ * '<S99>'  : 'FMS/Input_Process/Onground_Check/Quaternion To DCM'
+ * '<S100>' : 'FMS/Input_Process/Onground_Check/Quaternion To DCM/Quaternion Normalize'
+ * '<S101>' : 'FMS/Input_Process/Onground_Check/Quaternion To DCM/column_1'
+ * '<S102>' : 'FMS/Input_Process/Onground_Check/Quaternion To DCM/column_2'
+ * '<S103>' : 'FMS/Input_Process/Onground_Check/Quaternion To DCM/column_3'
+ * '<S104>' : 'FMS/Input_Process/Onground_Check/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S105>' : 'FMS/Input_Process/Psi To DCM/Rotation Matrix Z'
+ * '<S106>' : 'FMS/Input_Process/Stick_Value/Dead_Zone'
+ * '<S107>' : 'FMS/Input_Process/Stick_Value/Dead_Zone1'
+ * '<S108>' : 'FMS/Input_Process/Stick_Value/Dead_Zone2'
+ * '<S109>' : 'FMS/Input_Process/Stick_Value/Dead_Zone3'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

@@ -101,13 +101,13 @@ void ins_model_step(void)
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_imu0), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
 
-        INS_U.IMU1.gyr_x = ins_handle.imu_report.gyr_B_radDs[0];
-        INS_U.IMU1.gyr_y = ins_handle.imu_report.gyr_B_radDs[1];
-        INS_U.IMU1.gyr_z = ins_handle.imu_report.gyr_B_radDs[2];
-        INS_U.IMU1.acc_x = ins_handle.imu_report.acc_B_mDs2[0];
-        INS_U.IMU1.acc_y = ins_handle.imu_report.acc_B_mDs2[1];
-        INS_U.IMU1.acc_z = ins_handle.imu_report.acc_B_mDs2[2];
-        INS_U.IMU1.timestamp = time_now - ins_handle.start_time;
+        INS_U.IMU.gyr_x = ins_handle.imu_report.gyr_B_radDs[0];
+        INS_U.IMU.gyr_y = ins_handle.imu_report.gyr_B_radDs[1];
+        INS_U.IMU.gyr_z = ins_handle.imu_report.gyr_B_radDs[2];
+        INS_U.IMU.acc_x = ins_handle.imu_report.acc_B_mDs2[0];
+        INS_U.IMU.acc_y = ins_handle.imu_report.acc_B_mDs2[1];
+        INS_U.IMU.acc_z = ins_handle.imu_report.acc_B_mDs2[2];
+        INS_U.IMU.timestamp = time_now - ins_handle.start_time;
 
         ins_handle.imu_updated = 1;
     }
@@ -179,7 +179,7 @@ void ins_model_step(void)
     /* record INS input bus data if updated */
     if (ins_handle.imu_updated) {
         /* Log IMU data if IMU updated */
-        if (blog_push_msg((uint8_t*)&INS_U.IMU1, BLOG_IMU_ID, sizeof(INS_U.IMU1)) == FMT_EOK) {
+        if (blog_push_msg((uint8_t*)&INS_U.IMU, BLOG_IMU_ID, sizeof(INS_U.IMU)) == FMT_EOK) {
             ins_handle.imu_updated = 0;
         }
     }
@@ -244,6 +244,4 @@ void ins_model_init(void)
     INS_init();
 
     _update_ins_parameter();
-
-    INS_U.reset = 0;
 }
