@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.700
+ * Model version                  : 1.701
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 31 15:23:39 2021
+ * C/C++ source code generated on : Sat Jul 31 15:48:30 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -2713,14 +2713,14 @@ void Plant_step(void)
     Plant_DW.DiscreteTimeIntegrator5_DSTAT_c[2] = rtb_VectorConcatenate1_d[2];
   }
 
-  /* Outport: '<Root>/IMU_Bus' incorporates:
+  /* Outport: '<Root>/IMU' incorporates:
    *  BusAssignment: '<S91>/Bus Assignment'
    *  Memory: '<S65>/Memory1'
    */
-  Plant_Y.IMU_Bus_k.timestamp = Plant_DW.Memory1_PreviousInput;
-  Plant_Y.IMU_Bus_k.gyr_x = rtb_Add_la[0];
-  Plant_Y.IMU_Bus_k.gyr_y = rtb_Add_la[1];
-  Plant_Y.IMU_Bus_k.gyr_z = rtb_Add_la[2];
+  Plant_Y.IMU.timestamp = Plant_DW.Memory1_PreviousInput;
+  Plant_Y.IMU.gyr_x = rtb_Add_la[0];
+  Plant_Y.IMU.gyr_y = rtb_Add_la[1];
+  Plant_Y.IMU.gyr_z = rtb_Add_la[2];
 
   /* Update for DiscreteIntegrator: '<S112>/Discrete-Time Integrator5' */
   Plant_DW.DiscreteTimeIntegrator5_IC_LOAD = 0U;
@@ -3070,26 +3070,26 @@ void Plant_step(void)
   Plant_DW.Memory1_PreviousInput += PLANT_EXPORT.period;
 
   /* Outputs for Atomic SubSystem: '<S5>/Sensor_IMU' */
-  /* Outport: '<Root>/IMU_Bus' incorporates:
+  /* Outport: '<Root>/IMU' incorporates:
    *  Sum: '<S95>/Sum'
    */
-  Plant_Y.IMU_Bus_k.acc_x = Rotor_Delay_tmp_idx_0 + rtb_RandomSource_f[0];
-  Plant_Y.IMU_Bus_k.acc_y = Rotor_Delay_tmp_idx_1 + rtb_RandomSource_f[1];
-  Plant_Y.IMU_Bus_k.acc_z = Rotor_Delay_tmp_idx_2 + rtb_RandomSource_f[2];
+  Plant_Y.IMU.acc_x = Rotor_Delay_tmp_idx_0 + rtb_RandomSource_f[0];
+  Plant_Y.IMU.acc_y = Rotor_Delay_tmp_idx_1 + rtb_RandomSource_f[1];
+  Plant_Y.IMU.acc_z = Rotor_Delay_tmp_idx_2 + rtb_RandomSource_f[2];
 
   /* End of Outputs for SubSystem: '<S5>/Sensor_IMU' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_Model' */
   if (Plant_M->Timing.TaskCounters.TID[1] == 0) {
-    /* Outport: '<Root>/MAG_Bus' */
-    Plant_Y.MAG_Bus_f = Plant_B.RateTransition_b;
+    /* Outport: '<Root>/MAG' */
+    Plant_Y.MAG = Plant_B.RateTransition_b;
 
-    /* Outport: '<Root>/Barometer_Bus' */
-    Plant_Y.Barometer_Bus_j = Plant_B.RateTransition_m;
+    /* Outport: '<Root>/Barometer' */
+    Plant_Y.Barometer = Plant_B.RateTransition_m;
   }
 
   if (Plant_M->Timing.TaskCounters.TID[2] == 0) {
-    /* Outport: '<Root>/GPS_Bus' */
-    Plant_Y.GPS_Bus = Plant_B.RateTransition;
+    /* Outport: '<Root>/GPS' */
+    Plant_Y.GPS = Plant_B.RateTransition;
   }
 
   rate_scheduler();

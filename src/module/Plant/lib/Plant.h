@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.700
+ * Model version                  : 1.701
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 31 15:23:39 2021
+ * C/C++ source code generated on : Sat Jul 31 15:48:30 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -211,10 +211,10 @@ typedef struct {
 typedef struct {
   Plant_States_Bus Plant_States;       /* '<Root>/Plant_States' */
   Extended_States_Bus Extended_States; /* '<Root>/Extended_States' */
-  IMU_Bus IMU_Bus_k;                   /* '<Root>/IMU_Bus' */
-  MAG_Bus MAG_Bus_f;                   /* '<Root>/MAG_Bus' */
-  Barometer_Bus Barometer_Bus_j;       /* '<Root>/Barometer_Bus' */
-  GPS_uBlox_Bus GPS_Bus;               /* '<Root>/GPS_Bus' */
+  IMU_Bus IMU;                         /* '<Root>/IMU' */
+  MAG_Bus MAG;                         /* '<Root>/MAG' */
+  Barometer_Bus Barometer;             /* '<Root>/Barometer' */
+  GPS_uBlox_Bus GPS;                   /* '<Root>/GPS' */
 } ExtY_Plant_T;
 
 /* Real-time Model Data Structure */

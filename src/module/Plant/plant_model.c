@@ -83,25 +83,25 @@ static void _publish_sensor_data(void)
         baro_timestamp = Plant_Y.Barometer.timestamp;
     }
 
-    if (Plant_Y.GPS_uBlox.timestamp != gps_timestamp) {
+    if (Plant_Y.GPS.timestamp != gps_timestamp) {
         gps_data_t gps_report;
 
         gps_report.timestamp_ms = time_now;
-        gps_report.fixType = Plant_Y.GPS_uBlox.fixType;
-        gps_report.numSV = Plant_Y.GPS_uBlox.numSV;
-        gps_report.lon = Plant_Y.GPS_uBlox.lon;
-        gps_report.lat = Plant_Y.GPS_uBlox.lat;
-        gps_report.height = Plant_Y.GPS_uBlox.height;
-        gps_report.hAcc = (float)Plant_Y.GPS_uBlox.hAcc * 1e-3;
-        gps_report.vAcc = (float)Plant_Y.GPS_uBlox.vAcc * 1e-3;
-        gps_report.velN = (float)Plant_Y.GPS_uBlox.velN * 1e-3;
-        gps_report.velE = (float)Plant_Y.GPS_uBlox.velE * 1e-3;
-        gps_report.velD = (float)Plant_Y.GPS_uBlox.velD * 1e-3;
-        gps_report.sAcc = (float)Plant_Y.GPS_uBlox.sAcc * 1e-3;
+        gps_report.fixType = Plant_Y.GPS.fixType;
+        gps_report.numSV = Plant_Y.GPS.numSV;
+        gps_report.lon = Plant_Y.GPS.lon;
+        gps_report.lat = Plant_Y.GPS.lat;
+        gps_report.height = Plant_Y.GPS.height;
+        gps_report.hAcc = (float)Plant_Y.GPS.hAcc * 1e-3;
+        gps_report.vAcc = (float)Plant_Y.GPS.vAcc * 1e-3;
+        gps_report.velN = (float)Plant_Y.GPS.velN * 1e-3;
+        gps_report.velE = (float)Plant_Y.GPS.velE * 1e-3;
+        gps_report.velD = (float)Plant_Y.GPS.velD * 1e-3;
+        gps_report.sAcc = (float)Plant_Y.GPS.sAcc * 1e-3;
         // publish sensor_gps data
         mcn_publish(MCN_HUB(sensor_gps), &gps_report);
 
-        gps_timestamp = Plant_Y.GPS_uBlox.timestamp;
+        gps_timestamp = Plant_Y.GPS.timestamp;
     }
 }
 
