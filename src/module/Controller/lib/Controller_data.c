@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.840
+ * Model version                  : 1.850
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 31 15:22:50 2021
+ * C/C++ source code generated on : Sun Aug  1 14:10:04 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,22 +18,22 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Controller_T Controller_ConstB = {
-  0.0F,                                /* '<S56>/Constant' */
+  0.0F,                                /* '<S57>/Constant' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S40>/Vector Concatenate3' */
-  0.0F,                                /* '<S43>/Constant' */
-  19.1986F,                            /* '<S31>/Gain' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S41>/Vector Concatenate3' */
+  0.0F,                                /* '<S44>/Constant' */
+  19.1986F,                            /* '<S32>/Gain' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S19>/Constant' */
-  0.00250000018F,                      /* '<S41>/Square' */
-  0.14709F,                            /* '<S41>/Multiply' */
-  -58.836F,                            /* '<S41>/Gain4' */
-  0.0004F,                             /* '<S24>/Square' */
-  0.00628318498F,                      /* '<S24>/Multiply' */
-  -15.707963F,                         /* '<S24>/Gain4' */
-  0.00250000018F,                      /* '<S54>/Square' */
-  0.196120009F,                        /* '<S54>/Multiply' */
-  -78.448F                             /* '<S54>/Gain4' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S20>/Constant' */
+  0.00250000018F,                      /* '<S42>/Square' */
+  0.14709F,                            /* '<S42>/Multiply' */
+  -58.836F,                            /* '<S42>/Gain4' */
+  0.0004F,                             /* '<S25>/Square' */
+  0.00628318498F,                      /* '<S25>/Multiply' */
+  -15.707963F,                         /* '<S25>/Gain4' */
+  0.00250000018F,                      /* '<S55>/Square' */
+  0.196120009F,                        /* '<S55>/Multiply' */
+  -78.448F                             /* '<S55>/Gain4' */
 };
 
 /* Constant parameters (default storage) */
