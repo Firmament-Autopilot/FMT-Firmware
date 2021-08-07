@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.850
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Aug  1 14:10:04 2021
+ * C/C++ source code generated on : Fri Aug  6 23:08:47 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -48,7 +48,7 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.15F,
   0.1F,
   0.1F,
-  0.075F,
+  0.2F,
   0.003F,
   0.003F,
   0.001F,
@@ -92,7 +92,7 @@ struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT = {
   2U,
 
   { 66, 97, 115, 101, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32,
-    118, 48, 46, 49, 46, 49, 0 }
+    118, 48, 46, 49, 46, 48, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S4>/Constant'
                                         */

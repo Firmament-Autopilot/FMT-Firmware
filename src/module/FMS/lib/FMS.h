@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.985
+ * Model version                  : 1.1002
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 31 15:21:50 2021
+ * C/C++ source code generated on : Fri Aug  6 23:07:17 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -47,13 +47,17 @@ typedef struct {
 typedef struct {
   real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S96>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_DSTAT_n;/* '<S97>/Discrete-Time Integrator5' */
-  real32_T Delay_DSTATE_g[2];          /* '<S75>/Delay' */
-  real32_T Delay_DSTATE_f;             /* '<S76>/Delay' */
+  real32_T Delay_DSTATE_g[2];          /* '<S77>/Delay' */
+  real32_T Delay_DSTATE_f;             /* '<S78>/Delay' */
+  real32_T Integrator1_DSTATE;         /* '<S69>/Integrator1' */
+  real32_T Integrator1_DSTATE_f[2];    /* '<S68>/Integrator1' */
   real32_T Delay_DSTATE_l;             /* '<S32>/Delay' */
-  real32_T Integrator1_DSTATE;         /* '<S17>/Integrator1' */
+  real32_T Integrator1_DSTATE_g;       /* '<S17>/Integrator1' */
   real32_T Integrator1_DSTATE_e;       /* '<S16>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S16>/Integrator' */
+  real32_T Integrator_DSTATE[2];       /* '<S68>/Integrator' */
+  real32_T Integrator_DSTATE_c;        /* '<S16>/Integrator' */
   real32_T Integrator_DSTATE_h;        /* '<S17>/Integrator' */
+  real32_T Integrator_DSTATE_o;        /* '<S69>/Integrator' */
   uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S82>/Discrete-Time Integrator' */
   uint32_T local_mode;                 /* '<S1>/Control_Mode' */
   uint16_T temporalCounter_i1;         /* '<S89>/Disarm_Event' */
@@ -76,8 +80,8 @@ typedef struct {
   uint8_T is_c5_FMS;                   /* '<S89>/Arm_Event' */
   uint8_T is_active_c4_FMS;            /* '<S2>/State_Management' */
   uint8_T is_c4_FMS;                   /* '<S2>/State_Management' */
-  uint8_T icLoad;                      /* '<S75>/Delay' */
-  uint8_T icLoad_a;                    /* '<S76>/Delay' */
+  uint8_T icLoad;                      /* '<S77>/Delay' */
+  uint8_T icLoad_a;                    /* '<S78>/Delay' */
   uint8_T icLoad_k;                    /* '<S32>/Delay' */
   uint8_T is_active_c10_FMS;           /* '<S47>/Z_Motion_SM' */
   uint8_T is_c10_FMS;                  /* '<S47>/Z_Motion_SM' */
@@ -92,12 +96,18 @@ typedef struct {
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T Square;               /* '<S18>/Square' */
-  const real32_T d;                    /* '<S18>/Multiply' */
-  const real32_T Gain4;                /* '<S18>/Gain4' */
+  const real32_T Square;               /* '<S73>/Square' */
+  const real32_T d;                    /* '<S73>/Multiply' */
+  const real32_T Gain4;                /* '<S73>/Gain4' */
+  const real32_T Square_b;             /* '<S18>/Square' */
+  const real32_T d_e;                  /* '<S18>/Multiply' */
+  const real32_T Gain4_f;              /* '<S18>/Gain4' */
   const real32_T Square_n;             /* '<S19>/Square' */
   const real32_T d_a;                  /* '<S19>/Multiply' */
   const real32_T Gain4_b;              /* '<S19>/Gain4' */
+  const real32_T Square_e;             /* '<S74>/Square' */
+  const real32_T d_k;                  /* '<S74>/Multiply' */
+  const real32_T Gain4_j;              /* '<S74>/Gain4' */
 } ConstB_FMS_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -276,18 +286,18 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S64>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Compare To Constant1'
  * '<S65>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed'
  * '<S66>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control'
- * '<S67>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD'
- * '<S68>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD1'
- * '<S69>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/Compare To Constant'
+ * '<S67>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/Compare To Constant'
+ * '<S68>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/TD'
+ * '<S69>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/TD1'
  * '<S70>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap'
  * '<S71>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap1'
  * '<S72>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/remap2'
- * '<S73>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error'
- * '<S74>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Bus_Selection'
- * '<S75>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_XY_Holder'
- * '<S76>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_Z_Holder1'
- * '<S77>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD/fhan '
- * '<S78>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/TD1/fhan '
+ * '<S73>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/TD/fhan '
+ * '<S74>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Motion_Speed/TD1/fhan '
+ * '<S75>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error'
+ * '<S76>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Bus_Selection'
+ * '<S77>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_XY_Holder'
+ * '<S78>'  : 'FMS/Control_Mode/FMS_Command_Generator/Velocity_Command/Velocity_Commander/Position_Control/Position_Error/Pos_Z_Holder1'
  * '<S79>'  : 'FMS/FMS_State/Compare To Constant'
  * '<S80>'  : 'FMS/FMS_State/State_Management'
  * '<S81>'  : 'FMS/FMS_State/expand_pwm'
