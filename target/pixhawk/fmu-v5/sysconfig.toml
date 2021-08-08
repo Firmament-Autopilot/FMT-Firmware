@@ -16,6 +16,19 @@ target = "Pixhawk4 FMUv5"
 	type = "mavlink"        	# type must be serial or mavlink
 	name = "mav_console"    	# device name
 	auto-switch = true      	# automatically switch to device if data received
+	
+# Mavproxy Device Configuration
+[mavproxy]
+	[[mavproxy.devices]]		# channel 0
+	type = "serial"
+	name = "serial1"        	# device name
+	baudrate = 57600        	# serial baudrate
+	
+	[[mavproxy.devices]]		# channel 1
+	type = "usb"
+	name = "usbd0"				# device name
+	# automatically switch to usb if connected, switch back to default device is disconnected
+	auto-switch = true
 
 # Pilot CMD Configuration
 [pilot-cmd]
@@ -50,24 +63,15 @@ target = "Pixhawk4 FMUv5"
 	channel = 6             	# command channel
 	range = [1800,2000]     	# if channel value in this range, the event is triggered
 	
-# Mavproxy Device Configuration
-[mavproxy]
-	[[mavproxy.devices]]		# channel 0
-	type = "serial"
-	name = "serial1"        	# device name
-	baudrate = 57600        	# serial baudrate
+# Actuator Configuration
+[actuator]
+	[[actuator.devices]]
+	protocol = "pwm"			# pwm or dshot
+	name = "main_out"			# device name
+	freq = 400					# pwm frequency in Hz
 	
-	[[mavproxy.devices]]		# channel 1
-	type = "usb"
-	name = "usbd0"				# device name
-	# automatically switch to usb if connected, switch back to default device is disconnected
-	auto-switch = true
-
-# Actuator Command Configuration
-[actuator-cmd]
-    [actuator-cmd.device]
-    type = "pwm"                # type must be pwm now
-    name = "motor_main"         # device name
-    freq = 400                  # pwm frequency in Hz
-    chan-idx = 0x000F           # map control output 1-4 to main out
-    range = [1000,2000]         # control output range
+	[[actuator.mappings]]
+	from = "control_out"
+	to = "main_out"
+	chan-map = [[1,2,3,4],[1,2,3,4]]
+	
