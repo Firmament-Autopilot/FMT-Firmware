@@ -40,7 +40,7 @@ static bool mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
     // uint16_t len;
 
     heartbeat.type = MAV_TYPE_QUADROTOR;
-    heartbeat.autopilot = MAV_AUTOPILOT_FMT;
+    heartbeat.autopilot = MAV_AUTOPILOT_PX4;
     // TODO, fill base_mode and custom_mode
     heartbeat.base_mode = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
     heartbeat.custom_mode = 0;

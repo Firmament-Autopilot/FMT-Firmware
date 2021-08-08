@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "module/fmtio/fmtio.h"
+#include "hal/actuator.h"
 #include "hal/fmtio_dev.h"
 #include "hal/motor.h"
 #include "hal/rc.h"
@@ -86,6 +87,11 @@ const static struct motor_ops _motor_ops = {
     motor_control,
     motor_read,
     motor_write
+};
+
+static struct motor_device motor_dev = {
+    .config = MOTOR_CONFIG_DEFAULT,
+    .ops = &_motor_ops
 };
 
 static rt_err_t io_rx_ind(rt_device_t dev, rt_size_t size)
@@ -311,10 +317,96 @@ static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_
     return err == FMT_EOK ? w_size : 0;
 }
 
-static struct motor_device motor_dev = {
-    .config = MOTOR_CONFIG_DEFAULT,
-    .ops = &_motor_ops
+/////////////////////////////////
+
+rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+{
+    IO_ActuatorConfig new_config = { .pwm_freq = cfg->pwm_config.pwm_freq };
+
+    if (actuator_config.pwm_freq == new_config.pwm_freq) {
+        /* it's same configuration already */
+        return RT_EOK;
+    }
+
+    if (io_actuator_config(new_config) != FMT_EOK) {
+        return RT_ERROR;
+    }
+
+    /* update default configuration */
+    actuator_config = new_config;
+    /* update device configuration */
+    dev->config = *cfg;
+
+    return RT_EOK;
+}
+
+rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
+{
+    rt_err_t ret = RT_EOK;
+
+    switch (cmd) {
+    case ACT_CMD_CHANNEL_ENABLE: {
+        uint8_t enable = 1;
+
+        fmt_err_t err = send_io_cmd(IO_CODE_CTRL_ACTUATOR, &enable, sizeof(enable));
+        ret = (err == FMT_EOK) ? RT_EOK : RT_ERROR;
+    } break;
+
+    case ACT_CMD_CHANNEL_DISABLE: {
+        uint8_t enable = 0;
+
+        fmt_err_t err = send_io_cmd(IO_CODE_CTRL_ACTUATOR, &enable, sizeof(enable));
+        ret = (err == FMT_EOK) ? RT_EOK : RT_ERROR;
+    } break;
+
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+{
+    // TODO
+    return 0;
+}
+
+rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+{
+    uint16_t data[FMTIO_MOTOR_CHANNEL_NUM + 1];
+
+    if (size > FMTIO_MOTOR_CHANNEL_NUM * sizeof(uint16_t)) {
+        return 0;
+    }
+
+    /* construct io data: <chan_sel> [chan val1] [chan val2] ... */
+    data[0] = chan_sel;
+    memcpy(&data[1], chan_val, size);
+
+    if (send_io_cmd(IO_CODE_W_ACTUATOR, data, size + sizeof(chan_sel)) != FMT_EOK) {
+        return 0;
+    }
+
+    return size;
+}
+
+const static struct actuator_ops _act_ops = {
+    .dev_config = pwm_config,
+    .dev_control = pwm_control,
+    .dev_read = pwm_read,
+    .dev_write = pwm_write
 };
+
+static struct actuator_device act_dev = {
+    .config = {
+        .protocol = 1,
+        .chan_num = FMTIO_MOTOR_CHANNEL_NUM,
+        .pwm_config = { .pwm_freq = 50 } },
+    .ops = &_act_ops
+};
+
+/////////////////////////////////
 
 fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len)
 {
@@ -437,6 +529,8 @@ fmt_err_t fmtio_init(const char* dev_name)
 
     /* register motor hal device */
     RT_CHECK(hal_motor_register(&motor_dev, "motor_main", RT_DEVICE_FLAG_RDWR, NULL));
+
+    RT_CHECK(hal_actuator_register(&act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
 
     /* register rc hal device */
     RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, NULL));

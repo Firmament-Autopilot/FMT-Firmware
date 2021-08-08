@@ -52,6 +52,7 @@
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
+#include "module/sysio/actuator_config.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
@@ -136,6 +137,8 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator-cmd")) {
                     err = actuator_toml_init(sub_tab);
+                } else if (MATCH(key, "actuator")) {
+                    act_toml_config(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -376,11 +379,6 @@ void bsp_post_initialize(void)
 {
     FMT_CHECK(pilot_cmd_init());
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
-    /* init actuator */
-    FMT_CHECK(actuator_init());
-#endif
-
     /* toml system configure */
     __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (!__toml_root_tab) {
@@ -388,6 +386,11 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
+    /* init actuator */
+    FMT_CHECK(actuator_init());
+#endif
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
