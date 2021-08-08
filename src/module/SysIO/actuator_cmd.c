@@ -15,10 +15,12 @@
  *****************************************************************************/
 
 #include <firmament.h>
+#include <string.h>
 
 #include "hal/motor.h"
 #include "module/controller/controller_model.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/sysio/actuator_config.h"
 #include "module/toml/toml.h"
 
 #define TOML_DBG_E(...)             toml_debug("Actuator_Cmd", "E", __VA_ARGS__)
@@ -30,6 +32,7 @@
 #define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
 
 MCN_DECLARE(control_output);
+MCN_DECLARE(rc_channels);
 
 typedef struct {
     uint16_t freq;
@@ -49,10 +52,21 @@ typedef struct {
     uint16_t* buffer;
 } actuator_send_list;
 
-static McnNode_t _control_out_nod = NULL;
-static uint8_t _actuator_cmd_device_num = 0;
+enum {
+    ACTUATOR_FROM_CONTROL_OUT,
+    ACTUATOR_FROM_RC_CHANNELS,
+    ACTUATOR_FROM_UNKNOWN
+};
+
+static McnNode_t _control_out_nod;
+static McnNode_t _rc_channels_nod;
+static uint8_t _actuator_cmd_device_num;
 static actuator_cmd_device_info _actuator_cmd_device_list[MAX_DEVICE_NUM] = { 0 };
 static actuator_send_list _actuator_send_list[MAX_DEVICE_NUM] = { 0 };
+static uint8_t* from_dev;
+static rt_device_t* to_dev;
+static uint8_t mapping_num;
+static actuator_mapping* mapping_list;
 
 void list_actuator_devices(void)
 {
@@ -244,9 +258,69 @@ fmt_err_t send_actuator_cmd(void)
     fmt_err_t err = FMT_EOK;
     int i, j;
 
-    DEFINE_TIMETAG(actuator_tt, 2);
+    DEFINE_TIMETAG(actuator_intv, 2);
 
-    if (mcn_poll(_control_out_nod) && check_timetag(TIMETAG(actuator_tt))) {
+    if (check_timetag(TIMETAG(actuator_intv)) == 0) {
+        return FMT_EBUSY;
+    }
+
+    for (i = 0; i < mapping_num; i++) {
+        if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
+            if (mcn_poll(_control_out_nod)) {
+                rt_size_t size;
+                Control_Out_Bus control_out;
+                uint16_t chan_sel = 0;
+                uint16_t chan_val[16];
+
+                mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
+
+                for (j = 0; j < mapping_list[i].map_size; j++) {
+                    rt_size_t wb;
+
+                    size = mapping_list[i].map_size * sizeof(uint16_t);
+                    /* set channel select according to to mapping */
+                    chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
+                    /* set channel value according to from mapping */
+                    chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
+                    /* write actuator command */
+                    wb = rt_device_write(to_dev[i], chan_sel, chan_val, size);
+
+                    if (wb != size) {
+                        err = FMT_ERROR;
+                    }
+                }
+            }
+        } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
+            if (mcn_poll(_rc_channels_nod)) {
+                rt_size_t size;
+                int16_t rc_channel[16];
+                uint16_t chan_val[16];
+                uint16_t chan_sel = 0;
+
+                mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
+
+                for (j = 0; j < mapping_list[i].map_size; j++) {
+                    rt_size_t wb;
+
+                    size = mapping_list[i].map_size * sizeof(uint16_t);
+                    /* set channel select according to to mapping */
+                    chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
+                    /* set channel value according to from mapping */
+                    chan_val[j] = rc_channel[mapping_list[i].from_map[j] - 1];
+                    /* write actuator command */
+                    wb = rt_device_write(to_dev[i], chan_sel, chan_val, size);
+
+                    if (wb != size) {
+                        err = FMT_ERROR;
+                    }
+                }
+            }
+        } else {
+            continue;
+        }
+    }
+
+    if (mcn_poll(_control_out_nod) && check_timetag(TIMETAG(actuator_intv))) {
         rt_size_t size;
         Control_Out_Bus control_out;
 
@@ -388,8 +462,33 @@ fmt_err_t actuator_init(void)
 {
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
     if (_control_out_nod == NULL) {
-        console_printf("Fail to subscribe control_output topic\n");
         return FMT_ERROR;
+    }
+
+    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_channels), NULL, NULL);
+    if (_rc_channels_nod == NULL) {
+        return FMT_ERROR;
+    }
+
+    mapping_num = actuator_toml_get_mapping_num();
+    mapping_list = actuator_toml_get_mapping_list();
+
+    from_dev = (uint8_t*)rt_malloc(sizeof(uint8_t) * mapping_num);
+    to_dev = (rt_device_t*)rt_malloc(sizeof(rt_device_t) * mapping_num);
+    if (from_dev == NULL || to_dev == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    for (int i = 0; i < mapping_num; i++) {
+        if (strcmp(mapping_list[i].from, "control_out") == 0) {
+            from_dev[i] = ACTUATOR_FROM_CONTROL_OUT;
+        } else if (strcmp(mapping_list[i].from, "rc_channels") == 0) {
+            from_dev[i] = ACTUATOR_FROM_RC_CHANNELS;
+        } else {
+            from_dev[i] = ACTUATOR_FROM_UNKNOWN;
+        }
+
+        to_dev[i] = rt_device_find(mapping_list[i].to);
     }
 
     return FMT_EOK;

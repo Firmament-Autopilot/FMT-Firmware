@@ -44,8 +44,8 @@ typedef struct {
     char* from;
     char* to;
     uint8_t map_size;
-    uint8_t from_map[16];
-    uint8_t to_map[16];
+    uint8_t from_map[16];   /* channel mapping start from 1 */
+    uint8_t to_map[16];     /* channel mapping start from 1 */
 } actuator_mapping;
 
 /* toml configuration */
