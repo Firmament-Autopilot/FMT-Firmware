@@ -16,7 +16,6 @@
 #include "module/fmtio/fmtio.h"
 #include "hal/actuator.h"
 #include "hal/fmtio_dev.h"
-#include "hal/motor.h"
 #include "hal/rc.h"
 #include "hal/serial.h"
 
@@ -24,15 +23,6 @@
 
 #define FMTIO_MOTOR_CHANNEL_NUM 8
 #define FMTIO_RC_CHANNEL_NUM    16
-
-/* default config for motor device */
-#define MOTOR_CONFIG_DEFAULT           \
-    {                                  \
-        50,       /* 50Hz */           \
-            8,    /* 8 channel */      \
-            1000, /* minimal 1000us */ \
-            2000, /* maximal 2000us */ \
-    }
 
 /* default config for rc device */
 #define RC_CONFIG_DEFAULT               \
@@ -66,10 +56,10 @@ static IO_RCConfig rc_config = { .protocol = 1, .sample_time = 0.05 };
 static rt_err_t rc_configure(rc_dev_t rc, struct rc_configure* cfg);
 static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg);
 static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan_val);
-static rt_err_t motor_configure(motor_dev_t motor, struct motor_configure* cfg);
-static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg);
-static rt_size_t motor_read(motor_dev_t motor, rt_uint16_t chan_mask, rt_uint16_t* chan_val, rt_size_t size);
-static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_uint16_t* chan_val, rt_size_t size);
+static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg);
+static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg);
+static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
+static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
 
 const static struct rc_ops _rc_ops = {
     rc_configure,
@@ -82,16 +72,19 @@ static struct rc_device rc_dev = {
     .ops = &_rc_ops
 };
 
-const static struct motor_ops _motor_ops = {
-    motor_configure,
-    motor_control,
-    motor_read,
-    motor_write
+const static struct actuator_ops _act_ops = {
+    .dev_config = pwm_config,
+    .dev_control = pwm_control,
+    .dev_read = pwm_read,
+    .dev_write = pwm_write
 };
 
-static struct motor_device motor_dev = {
-    .config = MOTOR_CONFIG_DEFAULT,
-    .ops = &_motor_ops
+static struct actuator_device act_dev = {
+    .config = {
+        .protocol = ACT_PROTOCOL_PWM,
+        .chan_num = FMTIO_MOTOR_CHANNEL_NUM,
+        .pwm_config = { .pwm_freq = 50 } },
+    .ops = &_act_ops
 };
 
 static rt_err_t io_rx_ind(rt_device_t dev, rt_size_t size)
@@ -243,82 +236,6 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
     return chan_mask;
 }
 
-static rt_err_t motor_configure(motor_dev_t motor, struct motor_configure* cfg)
-{
-    IO_ActuatorConfig new_config = { .pwm_freq = cfg->pwm_frequency };
-
-    if (actuator_config.pwm_freq == new_config.pwm_freq) {
-        /* it's same configuration already */
-        return RT_EOK;
-    }
-
-    if (io_actuator_config(new_config) == FMT_EOK) {
-        /* update default configuration */
-        actuator_config = new_config;
-        /* update device configuration */
-        motor->config = *cfg;
-        return RT_EOK;
-    } else {
-        return RT_ERROR;
-    }
-}
-
-static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
-{
-    rt_err_t ret = RT_EOK;
-
-    switch (cmd) {
-    case MOTOR_CMD_CHANNEL_ENABLE: {
-        uint8_t enable = 1;
-
-        fmt_err_t err = send_io_cmd(IO_CODE_CTRL_ACTUATOR, &enable, sizeof(enable));
-        ret = (err == FMT_EOK) ? RT_EOK : RT_ERROR;
-    } break;
-
-    case MOTOR_CMD_CHANNEL_DISABLE: {
-        uint8_t enable = 0;
-
-        fmt_err_t err = send_io_cmd(IO_CODE_CTRL_ACTUATOR, &enable, sizeof(enable));
-        ret = (err == FMT_EOK) ? RT_EOK : RT_ERROR;
-    } break;
-
-    case MOTOR_CMD_SET_FREQUENCY: {
-        /* update actuator default configuration */
-        actuator_config.pwm_freq = *(uint16_t*)arg;
-        ret = io_actuator_config(actuator_config);
-    } break;
-
-    default:
-        break;
-    }
-
-    return ret;
-}
-
-static rt_size_t motor_read(motor_dev_t motor, rt_uint16_t chan_mask, rt_uint16_t* chan_val, rt_size_t size)
-{
-    //TODO
-    return FMT_EOK;
-}
-
-static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_uint16_t* chan_val, rt_size_t size)
-{
-    uint16_t data[FMTIO_MOTOR_CHANNEL_NUM + 1];
-    uint16_t max_size = FMTIO_MOTOR_CHANNEL_NUM * sizeof(uint16_t);
-    uint16_t w_size = size <= max_size ? size : max_size;
-
-    data[0] = chan_mask;
-    memcpy(&data[1], chan_val, w_size);
-
-    /* 2 bytes for channel mask */
-    // fmt_err_t err = fmtio_send_package(data, w_size + 2, &_motor_cmd_pkg);
-    fmt_err_t err = send_io_cmd(IO_CODE_W_ACTUATOR, data, w_size + 2);
-
-    return err == FMT_EOK ? w_size : 0;
-}
-
-/////////////////////////////////
-
 rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
     IO_ActuatorConfig new_config = { .pwm_freq = cfg->pwm_config.pwm_freq };
@@ -360,6 +277,7 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
     } break;
 
     default:
+        ret = RT_EINVAL;
         break;
     }
 
@@ -390,23 +308,6 @@ rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t*
 
     return size;
 }
-
-const static struct actuator_ops _act_ops = {
-    .dev_config = pwm_config,
-    .dev_control = pwm_control,
-    .dev_read = pwm_read,
-    .dev_write = pwm_write
-};
-
-static struct actuator_device act_dev = {
-    .config = {
-        .protocol = 1,
-        .chan_num = FMTIO_MOTOR_CHANNEL_NUM,
-        .pwm_config = { .pwm_freq = 50 } },
-    .ops = &_act_ops
-};
-
-/////////////////////////////////
 
 fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len)
 {
@@ -528,8 +429,6 @@ fmt_err_t fmtio_init(const char* dev_name)
     init_io_pkt(&io_rx_pkt);
 
     /* register motor hal device */
-    RT_CHECK(hal_motor_register(&motor_dev, "motor_main", RT_DEVICE_FLAG_RDWR, NULL));
-
     RT_CHECK(hal_actuator_register(&act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
 
     /* register rc hal device */

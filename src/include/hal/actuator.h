@@ -42,7 +42,7 @@ struct dshot_drv_configure {
 };
 
 struct actuator_configure {
-    rt_uint8_t protocol; /* 1:pwm 2:dshot */
+    rt_uint8_t protocol;
     rt_uint16_t chan_num;
     struct pwm_drv_configure pwm_config;
     struct dshot_drv_configure dshot_config;

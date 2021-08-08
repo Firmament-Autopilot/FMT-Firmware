@@ -135,11 +135,9 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     err = pilot_cmd_toml_config(sub_tab);
-                } else if (MATCH(key, "actuator-cmd")) {
-                    err = actuator_toml_init(sub_tab);
                 } else if (MATCH(key, "actuator")) {
-                    act_toml_config(sub_tab);
-                } else {
+                    err = actuator_toml_config(sub_tab);
+                }else {
                     console_printf("unknown table: %s\n", key);
                 }
                 if (err != FMT_EOK) {

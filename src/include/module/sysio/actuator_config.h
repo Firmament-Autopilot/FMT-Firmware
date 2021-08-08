@@ -44,12 +44,12 @@ typedef struct {
     char* from;
     char* to;
     uint8_t map_size;
-    uint8_t from_map[16];   /* channel mapping start from 1 */
-    uint8_t to_map[16];     /* channel mapping start from 1 */
+    uint8_t from_map[16]; /* channel mapping start from 1 */
+    uint8_t to_map[16];   /* channel mapping start from 1 */
 } actuator_mapping;
 
 /* toml configuration */
-fmt_err_t act_toml_config(toml_table_t* table);
+fmt_err_t actuator_toml_config(toml_table_t* table);
 uint8_t actuator_toml_get_device_num(void);
 uint8_t actuator_toml_get_mapping_num(void);
 actuator_device_info* actuator_toml_get_device_list(void);

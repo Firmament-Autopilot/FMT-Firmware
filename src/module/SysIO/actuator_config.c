@@ -60,7 +60,7 @@ static fmt_err_t actuator_parse_device(const toml_table_t* curtab, int idx)
             /* set protocol if it's not the case */
             if (act_dev->config.protocol != ACT_PROTOCOL_PWM) {
                 int protocol = ACT_PROTOCOL_PWM;
-                if (rt_device_control(act_dev, ACT_CMD_SET_PROTOCOL, &protocol) != RT_EOK) {
+                if (rt_device_control(&act_dev->parent, ACT_CMD_SET_PROTOCOL, &protocol) != RT_EOK) {
                     TOML_DBG_E("fail to set protocol to pwm\n");
                     return FMT_ERROR;
                 }
@@ -83,7 +83,7 @@ static fmt_err_t actuator_parse_device(const toml_table_t* curtab, int idx)
             /* set protocol if it's not the case */
             if (act_dev->config.protocol != ACT_PROTOCOL_DSHOT) {
                 int protocol = ACT_PROTOCOL_DSHOT;
-                if (rt_device_control(act_dev, ACT_CMD_SET_PROTOCOL, &protocol) != RT_EOK) {
+                if (rt_device_control(&act_dev->parent, ACT_CMD_SET_PROTOCOL, &protocol) != RT_EOK) {
                     TOML_DBG_E("fail to set protocol to dshot\n");
                     return FMT_ERROR;
                 }
@@ -325,14 +325,14 @@ actuator_mapping* actuator_toml_get_mapping_list(void)
     return actuator_mappings_list;
 }
 
-fmt_err_t act_toml_config(toml_table_t* table)
+fmt_err_t actuator_toml_config(toml_table_t* table)
 {
     int i;
     const char* key;
     toml_array_t* arr;
     fmt_err_t err = FMT_EOK;
 
-    /* first parse devices */
+    /* first parse devices and mappings */
     for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {
         if (MATCH(key, "devices")) {
             if (toml_array_table_in(table, key, &arr) == 0) {
@@ -356,6 +356,28 @@ fmt_err_t act_toml_config(toml_table_t* table)
             }
         } else {
             TOML_DBG_W("unknown config key: %s\n", key);
+        }
+    }
+
+    /* open actuator devices */
+    for (i = 0; i < DEVICE_NUM; i++) {
+        actuator_dev_t act_dev = (actuator_dev_t)rt_device_find(DEVICE_LIST[i].name);
+
+        if (DEVICE_PROTOCOL_IS(i, pwm)) {
+            act_pwm_drv_config* config = (act_pwm_drv_config*)DEVICE_LIST[i].config;
+
+            act_dev->config.pwm_config.pwm_freq = config->freq;
+        } else if (DEVICE_PROTOCOL_IS(i, dshot)) {
+            act_dshot_drv_config* config = (act_dshot_drv_config*)DEVICE_LIST[i].config;
+
+            act_dev->config.dshot_config.speed = config->speed;
+            act_dev->config.dshot_config.telem_req = config->telem_req;
+        } else {
+            continue;
+        }
+
+        if (rt_device_open(&act_dev->parent, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+            return FMT_ERROR;
         }
     }
 

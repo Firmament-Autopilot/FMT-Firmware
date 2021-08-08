@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hal/motor.h"
 #include "hal/rc.h"
 #include "hal/serial.h"
 #include "hal/systick.h"
