@@ -16,7 +16,7 @@
 #include <firmament.h>
 
 #include "driver/pwm_drv.h"
-#include "hal/motor.h"
+#include "hal/actuator.h"
 
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
@@ -29,7 +29,8 @@
 #define MAX_PWM_OUT_CHAN      6             // AUX Out has 6 pwm channel
 #define TIMER_FREQUENCY       3000000       // Timer frequency: 3M
 #define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
-#define VAL_TO_DC(val)        ((float)(val * _pwm_freq) / 1000000.0f)
+#define VAL_TO_DC(_val)       ((float)(_val * _pwm_freq) / 1000000.0f)
+#define DC_TO_VAL(_dc)        (1000000.0f / _pwm_freq * _dc)
 
 #define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
 #define PWM_TIMER(id) (id < 4 ? TIM1 : TIM4)
@@ -185,28 +186,28 @@ rt_inline void _pwm_read(uint8_t chan_id, float* duty_cyc)
     *duty_cyc = _pwm_fmu_duty_cyc[chan_id];
 }
 
-static rt_err_t motor_configure(motor_dev_t motor, struct motor_configure* cfg)
+rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
-    motor->config = *cfg;
+    DRV_DBG("aux motor configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
-    DRV_DBG("aux motor configured: min:%d max:%d\n", motor->config.motor_min_value, motor->config.motor_max_value);
-
-    if (_pwm_set_frequency(cfg->pwm_frequency) != RT_EOK) {
+    if (_pwm_set_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
         return RT_ERROR;
     }
+    /* update device configuration */
+    dev->config = *cfg;
 
     return RT_EOK;
 }
 
-static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
+rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
 
     switch (cmd) {
-    case MOTOR_CMD_CHANNEL_ENABLE: {
+    case ACT_CMD_CHANNEL_ENABLE:
         /* set to lowest pwm before open */
         for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
-            _pwm_write(i, VAL_TO_DC(motor->config.motor_min_value));
+            _pwm_write(i, VAL_TO_DC(1000));
         }
 
         TIM_Cmd(TIM1, ENABLE);
@@ -214,40 +215,31 @@ static rt_err_t motor_control(motor_dev_t motor, int cmd, void* arg)
         TIM_Cmd(TIM4, ENABLE);
 
         DRV_DBG("aux motor enabled\n");
-    } break;
-
-    case MOTOR_CMD_CHANNEL_DISABLE: {
+        break;
+    case ACT_CMD_CHANNEL_DISABLE:
         TIM_Cmd(TIM1, DISABLE);
         TIM_CtrlPWMOutputs(TIM1, DISABLE);
         TIM_Cmd(TIM4, DISABLE);
 
         DRV_DBG("aux motor disabled\n");
-    } break;
-
-    case MOTOR_CMD_SET_FREQUENCY: {
-        uint16_t freq_to_set = *((uint16_t*)arg);
-
-        ret = _pwm_set_frequency(freq_to_set);
-
-        DRV_DBG("aux motor set frequency to %d Hz\n", freq_to_set);
-    } break;
-
+        break;
     default:
+        ret = RT_EINVAL;
         break;
     }
 
     return ret;
 }
 
-static rt_size_t motor_read(motor_dev_t motor, rt_uint16_t chan_mask, rt_uint16_t* chan_val, rt_size_t size)
+rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
     float dc;
 
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
-        if (chan_mask & (1 << i)) {
+        if (chan_sel & (1 << i)) {
             _pwm_read(i, &dc);
-            *index = 1000000 / _pwm_freq * dc;
+            *index = DC_TO_VAL(dc);
             index++;
         }
     }
@@ -255,52 +247,46 @@ static rt_size_t motor_read(motor_dev_t motor, rt_uint16_t chan_mask, rt_uint16_
     return size;
 }
 
-static rt_size_t motor_write(motor_dev_t motor, rt_uint16_t chan_mask, const rt_uint16_t* chan_val, rt_size_t size)
+rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
     float dc;
 
-    // DRV_DBG("aux motor write: ");
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
-        if (chan_mask & (1 << i)) {
+        if (chan_sel & (1 << i)) {
             /* constrain motor value */
-            val = constrain_uint16(*index, motor->config.motor_min_value, motor->config.motor_max_value);
+            val = constrain_uint16(*index, 1000, 2000);
             /* calculate pwm duty cycle */
             dc = VAL_TO_DC(val);
             /* update pwm signal */
             _pwm_write(i, dc);
 
-            // DRV_DBG("chan[%d]=%d %.2f ", i + 1, *index, dc);
             index++;
         }
     }
-    //DRV_DBG("\n");
 
     return size;
 }
 
-/* default config for motor device */
-#define MOTOR_CONFIG_DEFAULT           \
-    {                                  \
-        50, /* 50Hz */                 \
-            6,                         \
-            1000, /* minimal 1000us */ \
-            2000, /* maximal 2000us */ \
-    }
+const static struct actuator_ops _act_ops = {
+    .dev_config = pwm_config,
+    .dev_control = pwm_control,
+    .dev_read = pwm_read,
+    .dev_write = pwm_write
+};
 
-const static struct motor_ops _motor_ops = {
-    motor_configure,
-    motor_control,
-    motor_read,
-    motor_write
+static struct actuator_device act_dev = {
+    .config = {
+        .protocol = ACT_PROTOCOL_PWM,
+        .chan_num = MAX_PWM_OUT_CHAN,
+        .pwm_config = { .pwm_freq = 50 } },
+    .ops = &_act_ops
 };
 
 rt_err_t pwm_drv_init(void)
 {
     rt_err_t ret;
-    static struct motor_device motor;
-    struct motor_configure motor_config = MOTOR_CONFIG_DEFAULT;
 
     _pwm_gpio_init();
     _pwm_timer_init();
@@ -310,11 +296,8 @@ rt_err_t pwm_drv_init(void)
     TIM_CtrlPWMOutputs(TIM1, DISABLE);
     TIM_Cmd(TIM4, DISABLE);
 
-    /* register motor hal device */
-    motor.channel_num = MAX_PWM_OUT_CHAN;
-    motor.config = motor_config;
-    motor.ops = &_motor_ops;
-    ret = hal_motor_register(&motor, "motor_aux", RT_DEVICE_FLAG_RDWR, NULL);
+    /* register actuator hal device */
+    ret = hal_actuator_register(&act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL);
 
     return ret;
 }

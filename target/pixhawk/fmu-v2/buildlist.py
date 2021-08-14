@@ -25,7 +25,7 @@ HAL = [
     'fmtio_dev/*.c',
     'gyro/*.c',
     'i2c/*.c',
-    'motor/*.c',
+    'actuator/*.c',
     'pin/*.c',
     'rc/*.c',
     'serial/*.c',

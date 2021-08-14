@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hal/motor.h"
 #include "hal/rc.h"
 #include "hal/serial.h"
 #include "hal/systick.h"
@@ -37,8 +36,11 @@
 
 #include "module/shell_cmd/optparse.h"
 
+void show_actuator_config(void);
+
 int cmd_test(int argc, char** argv)
 {
+    show_actuator_config();
     return 0;
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);
