@@ -40,6 +40,7 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "drv_pwm.h"
 #include "led.h"
 
 #include "module/console/console_config.h"
@@ -312,6 +313,9 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
+
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
