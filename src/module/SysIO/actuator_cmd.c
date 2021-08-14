@@ -94,19 +94,16 @@ fmt_err_t send_actuator_cmd(void)
                 mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
 
                 for (j = 0; j < mapping_list[i].map_size; j++) {
-                    rt_size_t wb;
-
                     size = mapping_list[i].map_size * sizeof(uint16_t);
                     /* set channel select according to to mapping */
                     chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                     /* set channel value according to from mapping */
                     chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
-                    /* write actuator command */
-                    wb = rt_device_write(to_dev[i], chan_sel, chan_val, size);
+                }
 
-                    if (wb != size) {
-                        err = FMT_ERROR;
-                    }
+                /* write actuator command */
+                if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
+                    err = FMT_ERROR;
                 }
             }
         } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
@@ -119,19 +116,16 @@ fmt_err_t send_actuator_cmd(void)
                 mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
 
                 for (j = 0; j < mapping_list[i].map_size; j++) {
-                    rt_size_t wb;
-
                     size = mapping_list[i].map_size * sizeof(uint16_t);
                     /* set channel select according to to mapping */
                     chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                     /* set channel value according to from mapping */
                     chan_val[j] = rc_channel[mapping_list[i].from_map[j] - 1];
-                    /* write actuator command */
-                    wb = rt_device_write(to_dev[i], chan_sel, chan_val, size);
+                }
 
-                    if (wb != size) {
-                        err = FMT_ERROR;
-                    }
+                /* write actuator command */
+                if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
+                    err = FMT_ERROR;
                 }
             }
         } else {
