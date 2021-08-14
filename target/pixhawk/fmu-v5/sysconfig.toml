@@ -70,6 +70,11 @@ target = "Pixhawk4 FMUv5"
 	name = "main_out"			# device name
 	freq = 400					# pwm frequency in Hz
 	
+	[[actuator.devices]]
+	protocol = "pwm"			# pwm or dshot
+	name = "aux_out"			# device name, "main_out" or "aux_out"
+	freq = 400					# pwm frequency in Hz
+	
 	[[actuator.mappings]]
 	from = "control_out"
 	to = "main_out"
