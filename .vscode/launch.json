@@ -5,58 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Cortex Debug",
-            "cwd": "${workspaceRoot}",
-            "executable": "${workspaceFolder}/target/pixhawk/fmu-v5/build/fmt_fmu.elf",
-            "request": "launch",
+            "name": "FMUv5 Debug J-Link",
             "type": "cortex-debug",
-            "device": "STM32F765II",
-            "servertype": "openocd",
-            "interface": "swd",
-            "configFiles": [
-                "F:/openocd-20201228/OpenOCD-20201228-0.10.0/share/openocd/scripts/interface/stlink.cfg",
-                "F:/openocd-20201228/OpenOCD-20201228-0.10.0/share/openocd/scripts/target/stm32f7x.cfg"
-            ],
-            "armToolchainPath": "D:/gcc-arm-none-eabi-7-2018-q2-update-win32/bin/",
-            "serverpath": "F:/openocd-20201228/OpenOCD-20201228-0.10.0/bin/openocd.exe",
-        },
-        {
-            "cwd": "${workspaceRoot}",
-            "executable": "${workspaceFolder}/target/pixhawk/build/fmt_fmu.elf",
-            "name": "Debug Microcontroller",
             "request": "launch",
-            "type": "cortex-debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/pixhawk/fmu-v5/build/fmt_fmu.elf",
+            "serverpath": "${env:JLINK_SERVER}",
             "servertype": "jlink",
-            "cwd": "${workspaceRoot}",
-            "serverpath": "D:/Program Files (x86)/SEGGER/JLink_V622a/JLinkGDBServerCL.exe",
-            "device": "STM32F427VG",
+            "device": "STM32F765II",
             "interface": "swd",
-            "serialNumber": "", //if you have more than one J-Link probe add the serial number here 
-            // "jlinkscript":"${workspaceRoot}/BSP/SEGGER/K66FN2M0_emPower/Setup/Kinetis_K66_Target.js",
-            "runToMain": false,
-            // "svdFile": "${workspaceRoot}/SVD/MK66F18.svd" 
-            "armToolchainPath": "D:\\Program Files (x86)\\GNU Tools Arm Embedded\\7 2018-q2-update\\bin"
-        },
-        {
-            "name": "(gdb) 启动",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/target/pixhawk/build/fmt_fmu.elf",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "D:/Program Files (x86)/GNU Tools Arm Embedded/7 2018-q2-update/bin/arm-none-eabi-gdb.exe",
-            "miDebuggerServerAddress": "localhost:2331",
-            "setupCommands": [
-                {
-                    "description": "为 gdb 启用整齐打印",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "STM32F7x5.svd",
+            "runToMain": true
         }
     ]
 }
