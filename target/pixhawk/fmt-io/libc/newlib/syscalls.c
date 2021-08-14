@@ -173,9 +173,7 @@ _write_r(struct _reent* ptr, int fd, const void* buf, size_t nbytes)
 void
 _exit(int status)
 {
-	/*printf("program exit with %d\n", status);
-
-	while (1);*/
+	while (1);
 }
 
 void
