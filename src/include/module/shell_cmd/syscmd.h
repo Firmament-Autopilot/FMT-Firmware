@@ -18,6 +18,7 @@
 #define __SYSCMD_H__
 
 #include <firmament.h>
+#include <string.h>
 
 enum {
     SYSCMD_ALIGN_LEFT,

@@ -94,7 +94,7 @@ fmt_err_t send_actuator_cmd(void)
                 mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
 
                 for (j = 0; j < mapping_list[i].map_size; j++) {
-                    size = mapping_list[i].map_size * sizeof(uint16_t);
+                    size = mapping_list[i].map_size;
                     /* set channel select according to to mapping */
                     chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                     /* set channel value according to from mapping */
@@ -116,7 +116,7 @@ fmt_err_t send_actuator_cmd(void)
                 mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
 
                 for (j = 0; j < mapping_list[i].map_size; j++) {
-                    size = mapping_list[i].map_size * sizeof(uint16_t);
+                    size = mapping_list[i].map_size;
                     /* set channel select according to to mapping */
                     chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                     /* set channel value according to from mapping */
@@ -151,10 +151,12 @@ fmt_err_t actuator_init(void)
     mapping_num = actuator_toml_get_mapping_num();
     mapping_list = actuator_toml_get_mapping_list();
 
-    from_dev = (uint8_t*)rt_malloc(sizeof(uint8_t) * mapping_num);
-    to_dev = (rt_device_t*)rt_malloc(sizeof(rt_device_t) * mapping_num);
-    if (from_dev == NULL || to_dev == NULL) {
-        return FMT_ENOMEM;
+    if (mapping_num) {
+        from_dev = (uint8_t*)rt_malloc(sizeof(uint8_t) * mapping_num);
+        to_dev = (rt_device_t*)rt_malloc(sizeof(rt_device_t) * mapping_num);
+        if (from_dev == NULL || to_dev == NULL) {
+            return FMT_ENOMEM;
+        }
     }
 
     for (int i = 0; i < mapping_num; i++) {

@@ -80,10 +80,13 @@ const static struct actuator_ops _act_ops = {
 };
 
 static struct actuator_device act_dev = {
+    .chan_mask = 0xFF,
+    .range = { 1000, 2000 },
     .config = {
         .protocol = ACT_PROTOCOL_PWM,
         .chan_num = FMTIO_MOTOR_CHANNEL_NUM,
-        .pwm_config = { .pwm_freq = 50 } },
+        .pwm_config = { .pwm_freq = 50 },
+        .dshot_config = { 0 } },
     .ops = &_act_ops
 };
 
@@ -293,16 +296,19 @@ rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_v
 rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     uint16_t data[FMTIO_MOTOR_CHANNEL_NUM + 1];
+    uint8_t chan_num = 0;
 
-    if (size > FMTIO_MOTOR_CHANNEL_NUM * sizeof(uint16_t)) {
-        return 0;
+    for (int i = 0; i < 16; i++) {
+        if (chan_sel & (1 << i)) {
+            chan_num++;
+        }
     }
 
     /* construct io data: <chan_sel> [chan val1] [chan val2] ... */
     data[0] = chan_sel;
-    memcpy(&data[1], chan_val, size);
+    memcpy(&data[1], chan_val, chan_num * sizeof(uint16_t));
 
-    if (send_io_cmd(IO_CODE_W_ACTUATOR, data, size + sizeof(chan_sel)) != FMT_EOK) {
+    if (send_io_cmd(IO_CODE_W_ACTUATOR, data, chan_num * sizeof(uint16_t) + sizeof(chan_sel)) != FMT_EOK) {
         return 0;
     }
 

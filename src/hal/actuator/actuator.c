@@ -24,14 +24,6 @@ static rt_err_t hal_actuator_init(struct rt_device* dev)
 
     actuator_dev_t act = (actuator_dev_t)dev;
 
-    act->range[0] = 1000;
-    act->range[1] = 2000;
-
-    act->chan_mask = 0;
-    for (uint8_t i = 0; i < act->config.chan_num; i++) {
-        act->chan_mask |= (1 << i);
-    }
-
     /* apply default configuration */
     if (act->ops->dev_config) {
         return act->ops->dev_config(act, &act->config);
@@ -81,9 +73,14 @@ static rt_size_t hal_actuator_read(struct rt_device* dev, rt_off_t pos, void* bu
     actuator_dev_t act = (actuator_dev_t)dev;
     rt_size_t rb = 0;
 
+    if (buffer == NULL || pos == 0) {
+        return 0;
+    }
+
+    /* apply channel mask */
     pos = pos & act->chan_mask;
 
-    if (act->ops->dev_read && buffer && pos) {
+    if (act->ops->dev_read) {
         rb = act->ops->dev_read(act, pos, buffer, size);
     }
 
@@ -96,16 +93,26 @@ static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* b
 
     actuator_dev_t act = (actuator_dev_t)dev;
     rt_size_t wb = 0;
+    uint16_t chan_val[16];
+    uint8_t index = 0;
+    uint16_t* val_ptr = (uint16_t*)buffer;
 
-    if (dev_suspend == RT_TRUE) {
-        /* device suspended */
+    if (dev_suspend == RT_TRUE || buffer == NULL || pos == 0) {
         return 0;
     }
 
+    /* apply channel mask */
     pos = pos & act->chan_mask;
+    /* saturate channel value */
+    for (uint8_t i = 0; i < 16; i++) {
+        if (pos & (1 << i)) {
+            chan_val[index] = constrain_uint16(val_ptr[index], act->range[0], act->range[1]);
+            index++;
+        }
+    }
 
-    if (act->ops->dev_write && buffer && pos) {
-        wb = act->ops->dev_write(act, pos, buffer, size);
+    if (act->ops->dev_write) {
+        wb = act->ops->dev_write(act, pos, chan_val, size);
     }
 
     return wb;

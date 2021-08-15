@@ -405,7 +405,7 @@ rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t*
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
         if (chan_sel & (1 << i)) {
             /* constrain motor value */
-            val = constrain_uint16(*index, 1000, 2000);
+            val = *index;
             /* calculate pwm duty cycle */
             dc = VAL_TO_DC(val);
             /* update pwm signal */
@@ -427,10 +427,14 @@ const static struct actuator_ops __act_ops = {
 
 //TODO modify channel mask
 static struct actuator_device act_dev = {
+    .chan_mask = 0xFF,
+    .range = {1000, 2000},
     .config = {
         .protocol = ACT_PROTOCOL_PWM,
         .chan_num = MAX_PWM_OUT_CHAN,
-        .pwm_config = { .pwm_freq = 50 } },
+        .pwm_config = { .pwm_freq = 50 },
+        .dshot_config = {0}
+        },
     .ops = &__act_ops
 };
 
