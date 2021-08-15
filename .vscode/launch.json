@@ -16,7 +16,7 @@
             "interface": "swd",
             "armToolchainPath": "${env:RTT_EXEC_PATH}",
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
-            "svdFile": "STM32F7x5.svd",
+            "svdFile": "target/pixhawk/fmu-v5/STM32F7x5.svd",
             "runToMain": true
         }
     ]
