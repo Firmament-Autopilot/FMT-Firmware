@@ -188,7 +188,7 @@ rt_inline void _pwm_read(uint8_t chan_id, float* duty_cyc)
 
 rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
-    DRV_DBG("aux motor configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
+    DRV_DBG("aux out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
     if (_pwm_set_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
         return RT_ERROR;
@@ -214,14 +214,14 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
         TIM_CtrlPWMOutputs(TIM1, ENABLE);
         TIM_Cmd(TIM4, ENABLE);
 
-        DRV_DBG("aux motor enabled\n");
+        DRV_DBG("aux out enabled\n");
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         TIM_Cmd(TIM1, DISABLE);
         TIM_CtrlPWMOutputs(TIM1, DISABLE);
         TIM_Cmd(TIM4, DISABLE);
 
-        DRV_DBG("aux motor disabled\n");
+        DRV_DBG("aux out disabled\n");
         break;
     default:
         ret = RT_EINVAL;
@@ -255,7 +255,6 @@ rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t*
 
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
         if (chan_sel & (1 << i)) {
-            /* constrain motor value */
             val = *index;
             /* calculate pwm duty cycle */
             dc = VAL_TO_DC(val);

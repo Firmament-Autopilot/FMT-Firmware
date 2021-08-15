@@ -54,7 +54,7 @@ typedef enum {
     RXState_DATA,
 } IO_RXState;
 
-/* fmtio motor configuration */
+/* fmtio actuator configuration */
 typedef struct {
     uint16_t pwm_freq; // pwm output frequency
 } IO_ActuatorConfig;

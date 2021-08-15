@@ -313,7 +313,7 @@ rt_err_t __set_pwm_frequency(uint16_t freq)
 
 rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
-    DRV_DBG("aux motor configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
+    DRV_DBG("aux out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
     if (__set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
         return RT_ERROR;
@@ -349,7 +349,7 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
         LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH2);
 
-        DRV_DBG("aux motor enabled\n");
+        DRV_DBG("aux out enabled\n");
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         LL_TIM_DisableCounter(TIM1);
@@ -366,7 +366,7 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
         LL_TIM_CC_DisableChannel(TIM12, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_DisableChannel(TIM12, LL_TIM_CHANNEL_CH2);
 
-        DRV_DBG("aux motor disabled\n");
+        DRV_DBG("aux out disabled\n");
         break;
     case ACT_CMD_SET_PROTOCOL:
         /* TODO: Support dshot */
@@ -404,7 +404,6 @@ rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t*
 
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
         if (chan_sel & (1 << i)) {
-            /* constrain motor value */
             val = *index;
             /* calculate pwm duty cycle */
             dc = VAL_TO_DC(val);
