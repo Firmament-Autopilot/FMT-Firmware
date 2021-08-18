@@ -40,6 +40,7 @@ if PLATFORM == 'gcc':
     CC = PREFIX + 'gcc'
     AS = PREFIX + 'gcc'
     AR = PREFIX + 'ar'
+    CXX = PREFIX + 'g++'
     LINK = PREFIX + 'gcc'
     TARGET_EXT = 'elf'
     SIZE = PREFIX + 'size'
@@ -48,7 +49,6 @@ if PLATFORM == 'gcc':
 
     DEVICE = '  -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
     CFLAGS = DEVICE + ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -DUSE_STDPERIPH_DRIVER -DSTM32F427X -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM4 -D__FPU_PRESENT="1" -D__FPU_USED="1"'
-    CFLAGS += ' -std=c99'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
         ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,Reset_Handler -T link.lds'
@@ -61,6 +61,10 @@ if PLATFORM == 'gcc':
         AFLAGS += ' -gdwarf-2'
     else:
         CFLAGS += ' -O2'
+
+    CXXFLAGS = CFLAGS
+    CFLAGS += ' -std=c99'
+    CXXFLAGS += ' -std=c++14'
 
     POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmu.bin\n' + SIZE + ' $TARGET \n'
     # POST_ACTION += 'python px_mkfw.py --prototype px4fmu-v2.prototype --git_identity ../../.. --image fmt_fmu.bin \n'

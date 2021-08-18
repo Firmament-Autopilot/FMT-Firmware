@@ -209,4 +209,7 @@
 #define UTEST_THR_STACK_SIZE 4096
 #define UTEST_THR_PRIORITY 20
 
+/* USING C++ */
+// #define RT_USING_CPLUSPLUS
+
 #endif

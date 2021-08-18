@@ -30,7 +30,7 @@
 #define COMM_THREAD_PRIORITY       12
 #define STATUS_THREAD_PRIORITY     13
 
-#ifndef bool
+#if !defined(bool) && !defined(__cplusplus)
 typedef int bool;
 #endif
 

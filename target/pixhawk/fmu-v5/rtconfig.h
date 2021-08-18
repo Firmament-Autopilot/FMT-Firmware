@@ -214,4 +214,7 @@
 #define SOC_SERIES_STM32F7
 #define SOC_STM32F765II
 
+/* USING C++ */
+// #define RT_USING_CPLUSPLUS
+
 #endif

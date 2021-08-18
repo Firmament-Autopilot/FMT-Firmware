@@ -39,8 +39,6 @@
 
 int cmd_test(int argc, char** argv)
 {
-    int test_cpp(void);
-    test_cpp();
     return 0;
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);

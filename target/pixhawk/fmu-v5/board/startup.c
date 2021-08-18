@@ -46,6 +46,12 @@ static void rt_init_thread_entry(void* parameter)
 {
     rt_assert_set_hook(assert_hook);
 
+#if defined(RT_USING_CPLUSPLUS)
+    /* c++ component initialization */
+    int cplusplus_system_init(void);
+    cplusplus_system_init();
+#endif
+
     /* bsp initialization */
     bsp_initialize();
 

@@ -39,16 +39,18 @@ if PLATFORM == 'gcc':
     CC = PREFIX + 'gcc'
     AS = PREFIX + 'gcc'
     AR = PREFIX + 'ar'
+    CXX = PREFIX + 'g++'
     LINK = PREFIX + 'gcc'
     TARGET_EXT = 'elf'
     SIZE = PREFIX + 'size'
     OBJDUMP = PREFIX + 'objdump'
     OBJCPY = PREFIX + 'objcopy'
 
-    DEVICE = ' -mcpu=' + CPU + ' -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
+    DEVICE = ' -mcpu=' + CPU + \
+        ' -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
     DEFINES = ' -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F765xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -D__FPU_PRESENT="1"'
-    CFLAGS = DEVICE + ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function' + DEFINES
-    CFLAGS += ' -std=c99'
+    CFLAGS = DEVICE + \
+        ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
         ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,Reset_Handler -T link.lds'
@@ -61,6 +63,10 @@ if PLATFORM == 'gcc':
         AFLAGS += ' -gdwarf-2'
     else:
         CFLAGS += ' -O2'
+
+    CXXFLAGS = CFLAGS
+    CFLAGS += ' -std=c99'
+    CXXFLAGS += ' -std=c++14'
 
     POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmu.bin\n' + SIZE + ' $TARGET \n'
     # POST_ACTION += 'python px_mkfw.py --prototype px4fmu-v2.prototype --git_identity ../../.. --image fmt_fmu.bin \n'

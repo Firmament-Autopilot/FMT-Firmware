@@ -4,6 +4,7 @@
 #include "Header.h"
 
 #include <firmament.h>
+#include <stdio.h>
 #include "hal/serial.h"
 
 #define STREAM_HISTORY  1
@@ -28,7 +29,7 @@ int pingpong_main(void)
     if (!(dev->open_flag & RT_DEVICE_OFLAG_OPEN))  {
         rt_err_t err = rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
         if(err != RT_EOK) {
-            console_printf("fail open serial0 device: %d\n", err);
+            printf("fail open serial0 device: %ld\n", err);
         }
 
         struct serial_configure pconfig = serial_dev->config;
@@ -41,7 +42,7 @@ int pingpong_main(void)
 
 	if(!uxr_init_serial_transport(&transport, &serial_platform, (int)dev, 0, 1))
     {
-        console_printf("Error at create transport.\n");
+        printf("Error at create transport.\n");
         return 1;
     }
 
@@ -125,7 +126,7 @@ int pingpong_main(void)
             uxr_prepare_output_stream(&session, reliable_out, datawriter_id, &ub, topic_size);
             Header_serialize_topic(&ub, &topic);
 
-            console_printf("Send topic: %s at %d\n", topic.frame_id, topic.stamp.sec);
+            printf("Send topic: %s at %ld\n", topic.frame_id, topic.stamp.sec);
             connected = uxr_run_session_until_confirm_delivery(&session, 1000);
         }
     }
