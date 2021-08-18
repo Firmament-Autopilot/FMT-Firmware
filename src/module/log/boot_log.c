@@ -74,7 +74,7 @@ fmt_err_t boot_log_dump(void)
     /* create boot log file */
     fd = open(file, O_CREAT | O_WRONLY | O_TRUNC);
     if (fd < 0) {
-        console_printf("fail to create boot log file: %s, errno:%d\n", file, rt_get_errno());
+        console_printf("fail to create boot log file: %s, errno:%ld\n", file, rt_get_errno());
         res = FMT_ERROR;
     }
     /* dump boot log buffer if there are any */

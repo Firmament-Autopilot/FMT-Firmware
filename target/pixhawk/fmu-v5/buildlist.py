@@ -88,5 +88,4 @@ TASKS_CPPPATH = []
 LIBS = [
     'cm_backtrace',
     'mavlink',
-    'printf',
 ]

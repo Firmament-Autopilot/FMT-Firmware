@@ -71,7 +71,7 @@ void print_channel_mapping(void)
 
     for (i = 0; i < eventCmdNum; i++) {
         console_printf("[event cmd %d]:\n", i);
-        console_printf("cmd:%d\n", pilotEventCmds[i].cmd);
+        console_printf("cmd:%ld\n", pilotEventCmds[i].cmd);
         console_printf("channel:%d\n", pilotEventCmds[i].channel[0]);
         console_printf("dim:%d\n", pilotEventCmds[i].chan_dim);
         console_printf("range:%d %d\n", pilotEventCmds[i].range[0], pilotEventCmds[i].range[1]);

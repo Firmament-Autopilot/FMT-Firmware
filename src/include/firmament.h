@@ -18,8 +18,6 @@
 #define __FIRMAMENT_H__
 
 /* Standard C Library */
-// #include <stdio.h>
-#include <printf.h> /* tiny printf lib to replace stdio */
 #include <stdlib.h>
 /* RT-Thread */
 #include <rtdevice.h>

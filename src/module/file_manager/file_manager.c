@@ -89,7 +89,7 @@ static fmt_err_t update_log_session(void)
     /* open or create the log session id file */
     fd = open(LOG_SESSION_FILE, O_TRUNC | O_CREAT | O_RDWR);
     if (fd < 0) {
-        console_printf("fail to create log session id file! err:%d\n", rt_get_errno());
+        console_printf("fail to create log session id file! err:%ld\n", rt_get_errno());
         return FMT_ERROR;
     }
     fm_fprintf(fd, "%d", cws_id);
@@ -119,7 +119,7 @@ static fmt_err_t create_log_session(void)
     }
     /* create log session */
     if (mkdir(path, 0x777) < 0) {
-        console_printf("fail to create %s, errno:%d\n", path, rt_get_errno());
+        console_printf("fail to create %s, errno:%ld\n", path, rt_get_errno());
         return FMT_ERROR;
     }
 
@@ -141,7 +141,7 @@ static fmt_err_t create_rootfs(void)
         if (rfs_folder[i] != NULL) {
             if (stat(rfs_folder[i], &buf) < 0) {
                 if (mkdir(rfs_folder[i], 0x777) < 0) {
-                    console_printf("fail to create %s, errno:%d\n", rfs_folder[i], rt_get_errno());
+                    console_printf("fail to create %s, errno:%ld\n", rfs_folder[i], rt_get_errno());
                     return FMT_ERROR;
                 }
             }

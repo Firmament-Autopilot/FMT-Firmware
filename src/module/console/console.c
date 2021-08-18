@@ -36,7 +36,7 @@ static char console_buffer[CONSOLE_BUFF_SIZE];
  * 
  * @return length has been written.
  */
-uint32_t console_write(const char* content, uint32_t len)
+int console_write(const char* content, uint32_t len)
 {
     /* write content into console device */
     uint32_t size = rt_device_write(console_dev, 0, (void*)content, len);
@@ -56,7 +56,7 @@ uint32_t console_write(const char* content, uint32_t len)
  * 
  * @return length of output.
  */
-uint32_t console_print_args(const char* fmt, va_list args)
+int console_print_args(const char* fmt, va_list args)
 {
     int length;
 
@@ -72,7 +72,7 @@ uint32_t console_print_args(const char* fmt, va_list args)
  * 
  * @return length of output.
  */
-uint32_t console_printf(const char* fmt, ...)
+int console_printf(const char* fmt, ...)
 {
     va_list args;
     int length;
@@ -90,7 +90,7 @@ uint32_t console_printf(const char* fmt, ...)
  * @param fmt string format
  * @return length of output.
  */
-uint32_t console_println(const char* fmt, ...)
+int console_println(const char* fmt, ...)
 {
     va_list args;
     int length;

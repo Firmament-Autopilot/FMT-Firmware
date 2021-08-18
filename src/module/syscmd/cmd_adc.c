@@ -121,4 +121,4 @@ int cmd_adc(int argc, char** argv)
 
     return res;
 }
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_adc, __cmd_adc, ADC device operations);
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_adc, __cmd_adc, adc device operations);

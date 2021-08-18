@@ -368,7 +368,7 @@ char* blog_get_file_name(void)
 void blog_statistic(void)
 {
     for (int i = 0; i < sizeof(_blog_bus) / sizeof(blog_bus_t); i++) {
-        console_printf("%-20s id:%-3d record:%-8d lost:%-5d\n", _blog_bus[i].name, _blog_bus[i].msg_id,
+        console_printf("%-20s id:%-3d record:%-8ld lost:%-5ld\n", _blog_bus[i].name, _blog_bus[i].msg_id,
             blog_handle.monitor[i].total_msg, blog_handle.monitor[i].lost_msg);
     }
 }
