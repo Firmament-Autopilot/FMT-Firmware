@@ -20,12 +20,12 @@ except:
 
 TARGET = 'build/fmt_fmu.' + rtconfig.TARGET_EXT
 
-env = Environment(tools = ['mingw'],
-	AS = rtconfig.AS, ASFLAGS = rtconfig.AFLAGS,
-	CC = rtconfig.CC, CFLAGS = rtconfig.CFLAGS,
-	AR = rtconfig.AR, ARFLAGS = '-rc',
-    CXX = rtconfig.CXX, CXXFLAGS = rtconfig.CXXFLAGS,
-	LINK = rtconfig.LINK, LINKFLAGS = rtconfig.LFLAGS)
+env = Environment(tools=['mingw'],
+                  AS=rtconfig.AS, ASFLAGS=rtconfig.AFLAGS,
+                  CC=rtconfig.CC, CFLAGS=rtconfig.CFLAGS,
+                  AR=rtconfig.AR, ARFLAGS='-rc',
+                  CXX=rtconfig.CXX, CXXFLAGS=rtconfig.CXXFLAGS,
+                  LINK=rtconfig.LINK, LINKFLAGS=rtconfig.LFLAGS)
 
 # Add sys execute PATH to env PATH
 env.PrependENVPath('PATH', os.getenv('PATH'))
@@ -33,9 +33,11 @@ env.PrependENVPath('PATH', os.getenv('PATH'))
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
 
 if rtconfig.PLATFORM == 'iar':
-	env.Replace(CCCOM = ['$CC $CCFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -o $TARGET $SOURCES'])
-	env.Replace(ARFLAGS = [''])
-	env.Replace(LINKCOM = ['$LINK $SOURCES $LINKFLAGS -o $TARGET --map project.map'])
+    env.Replace(
+        CCCOM=['$CC $CCFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -o $TARGET $SOURCES'])
+    env.Replace(ARFLAGS=[''])
+    env.Replace(
+        LINKCOM=['$LINK $SOURCES $LINKFLAGS -o $TARGET --map project.map'])
 
 Export('RTT_ROOT')
 Export('rtconfig')
@@ -49,7 +51,8 @@ vdir = 'build/fmt'
 for d in list:
     path = os.path.join(FMU_ROOT, d)
     if os.path.isfile(os.path.join(path, 'SConscript')):
-        objs.extend(SConscript(os.path.join(path, 'SConscript'), variant_dir=vdir + '/' + d, duplicate=0))
+        objs.extend(SConscript(os.path.join(path, 'SConscript'),
+                    variant_dir=vdir + '/' + d, duplicate=0))
 
 # print env.get('CPPPATH', [''])
 
