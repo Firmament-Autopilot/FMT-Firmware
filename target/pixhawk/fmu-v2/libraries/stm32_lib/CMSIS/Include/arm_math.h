@@ -5816,7 +5816,7 @@ __STATIC_INLINE float32_t arm_linear_interp_f32(
 	if(i < 0) {
 		/* Iniatilize output for below specified range as least output value of table */
 		y = pYData[0];
-	} else if(i >= S->nValues) {
+	} else if((uint32_t)i >= S->nValues) {
 		/* Iniatilize output for above specified range as last output value of table */
 		y = pYData[S->nValues - 1];
 	} else {
@@ -5867,7 +5867,7 @@ __STATIC_INLINE q31_t arm_linear_interp_q31(
 	/* Index value calculation */
 	index = ((x & 0xFFF00000) >> 20);
 
-	if(index >= (nValues - 1)) {
+	if(index >= (int32_t)(nValues - 1)) {
 		return (pYData[nValues - 1]);
 	} else if(index < 0) {
 		return (pYData[0]);
@@ -5924,7 +5924,7 @@ __STATIC_INLINE q15_t arm_linear_interp_q15(
 	/* Index value calculation */
 	index = ((x & 0xFFF00000) >> 20u);
 
-	if(index >= (nValues - 1)) {
+	if(index >= (int32_t)(nValues - 1)) {
 		return (pYData[nValues - 1]);
 	} else if(index < 0) {
 		return (pYData[0]);
@@ -5972,12 +5972,16 @@ __STATIC_INLINE q7_t arm_linear_interp_q7(
 	q31_t y;                                     /* output */
 	q7_t y0, y1;                                 /* Nearest output values */
 	q31_t fract;                                 /* fractional part */
-	int32_t index;                               /* Index to read nearest output values */
+	uint32_t index;                              /* Index to read nearest output values */
 
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
-	index = ((x & 0xFFF00000) >> 20u);
+	if (x < 0)
+    {
+      return (pYData[0]);
+    }
+    index = (x >> 20) & 0xfff;
 
 
 	if(index >= (nValues - 1)) {
