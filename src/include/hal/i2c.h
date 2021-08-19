@@ -38,8 +38,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __I2C_H__
-#define __I2C_H__
+#ifndef I2C_H__
+#define I2C_H__
 
 #include <firmament.h>
 
@@ -95,11 +95,8 @@ struct rt_i2c_device {
     rt_uint16_t flags;
 };
 
-#ifdef RT_I2C_DEBUG
-#define i2c_dbg(fmt, ...) console_printf(fmt, ##__VA_ARGS__)
-#else
 #define i2c_dbg(fmt, ...)
-#endif
+// #define i2c_dbg(fmt, ...) console_printf(fmt, ##__VA_ARGS__)
 
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
     const char* bus_name);

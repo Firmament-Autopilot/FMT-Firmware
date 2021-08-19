@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __RC_H__
-#define __RC_H__
+#ifndef RC_H__
+#define RC_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MAX_SBUS_RC_CHANNEL_NUM 16
 #define MAX_PPM_RC_CHANNEL_NUM 8
@@ -73,5 +77,9 @@ struct rc_ops {
 
 rt_err_t hal_rc_register(rc_dev_t rc, const char* name, rt_uint32_t flag, void* data);
 rt_err_t hal_rc_rx_ind(rc_dev_t rc, rt_size_t size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

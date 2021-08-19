@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __SD_H__
-#define __SD_H__
+#ifndef SD_H__
+#define SD_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct sd_device {
     struct rt_device parent;
@@ -35,5 +39,9 @@ struct sd_ops {
 };
 
 rt_err_t hal_sd_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

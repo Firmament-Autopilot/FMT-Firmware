@@ -14,13 +14,17 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __GYRO_H__
-#define __GYRO_H__
+#ifndef GYRO_H__
+#define GYRO_H__
 
 #include <firmament.h>
 
-#define GYRO_RANGE_250DPS 250
-#define GYRO_RANGE_500DPS 500
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define GYRO_RANGE_250DPS  250
+#define GYRO_RANGE_500DPS  500
 #define GYRO_RANGE_1000DPS 1000
 #define GYRO_RANGE_2000DPS 2000
 
@@ -29,15 +33,15 @@
 #define GYRO_I2C_BUS_TYPE 2
 
 /* accel read pos */
-#define GYRO_RD_RAW 1
+#define GYRO_RD_RAW   1
 #define GYRO_RD_SCALE 2
 
 /* default config for accel sensor */
-#define GYRO_CONFIG_DEFAULT                        \
-    {                                              \
-        1000, /* 1K sample rate */                 \
-            98, /* 256Hz internal lpf */          \
-            GYRO_RANGE_2000DPS, /* +-2000 deg/s */ \
+#define GYRO_CONFIG_DEFAULT                              \
+    {                                                    \
+        1000,                   /* 1K sample rate */     \
+            98,                 /* 256Hz internal lpf */ \
+            GYRO_RANGE_2000DPS, /* +-2000 deg/s */       \
     }
 
 struct gyro_configure {
@@ -62,5 +66,9 @@ struct gyro_ops {
 };
 
 rt_err_t hal_gyro_register(gyro_dev_t gyro, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

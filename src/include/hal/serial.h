@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __SERIAL_H__
-#define __SERIAL_H__
+#ifndef SERIAL_H__
+#define SERIAL_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* serial configuration */
 #define BAUD_RATE_2400    2400
@@ -157,5 +161,9 @@ struct usart_ops {
 
 void hal_serial_isr(struct serial_device* serial, int event);
 rt_err_t hal_serial_register(struct serial_device* serial, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

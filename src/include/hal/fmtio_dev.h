@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __FMTIO_DEV_H__
-#define __FMTIO_DEV_H__
+#ifndef FMTIO_DEV_H__
+#define FMTIO_DEV_H__
 
 #include <firmament.h>
 

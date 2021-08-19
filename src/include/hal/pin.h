@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __PIN_H__
-#define __PIN_H__
+#ifndef PIN_H__
+#define PIN_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define PIN_LOW 0x00
 #define PIN_HIGH 0x01
@@ -76,5 +80,9 @@ struct pin_ops {
 };
 
 rt_err_t hal_pin_register(pin_dev_t pin, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

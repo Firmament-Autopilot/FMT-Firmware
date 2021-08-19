@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef ADC_H__
+#define ADC_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
     ADC_CMD_DISABLE = 0,
@@ -39,4 +43,8 @@ struct adc_ops {
 
 rt_err_t hal_adc_register(adc_dev_t adc_dev, const char* name, rt_uint32_t flag, void* data);
 
-#endif /* __ADC_H__ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* ADC_H__ */

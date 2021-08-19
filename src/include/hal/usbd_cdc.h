@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __USBD_CDC_H__
-#define __USBD_CDC_H__
+#ifndef USBD_CDC_H__
+#define USBD_CDC_H__
 
 #include <firmament.h>
 

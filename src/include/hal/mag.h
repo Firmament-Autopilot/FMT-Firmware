@@ -14,19 +14,23 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAG_H__
-#define __MAG_H__
+#ifndef MAG_H__
+#define MAG_H__
 
 #include <firmament.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define LSM303D_MAG_DEFAULT_RANGE_GA 2
-#define LSM303D_MAG_DEFAULT_RATE 100
+#define LSM303D_MAG_DEFAULT_RATE     100
 
 #define LSM303D_ONE_G 9.80665f
 
-#define MAG_RANGE_2GA 2
-#define MAG_RANGE_4GA 4
-#define MAG_RANGE_8GA 6
+#define MAG_RANGE_2GA  2
+#define MAG_RANGE_4GA  4
+#define MAG_RANGE_8GA  6
 #define MAG_RANGE_12GA 12
 #define MAG_RANGE_16GA 16
 
@@ -35,15 +39,15 @@
 #define MAG_I2C_BUS_TYPE 2
 
 /* mag read pos */
-#define MAG_RD_RAW 1
+#define MAG_RD_RAW   1
 #define MAG_RD_SCALE 2
 
 /* default config for mag sensor */
-#define MAG_CONFIG_DEFAULT                       \
-    {                                            \
-        100, /* 100hz sample rate */             \
-            50, /* 260Hz internal lpf for mag */ \
-            MAG_RANGE_8GA, /* +-8guess */        \
+#define MAG_CONFIG_DEFAULT                                  \
+    {                                                       \
+        100,               /* 100hz sample rate */          \
+            50,            /* 260Hz internal lpf for mag */ \
+            MAG_RANGE_8GA, /* +-8guess */                   \
     }
 
 struct mag_configure {
@@ -68,5 +72,9 @@ struct mag_ops {
 };
 
 rt_err_t hal_mag_register(mag_dev_t mag, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

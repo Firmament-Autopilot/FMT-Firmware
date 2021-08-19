@@ -38,11 +38,10 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __SPI_H__
-#define __SPI_H__
+#ifndef SPI_H__
+#define SPI_H__
 
 #include <firmament.h>
-#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

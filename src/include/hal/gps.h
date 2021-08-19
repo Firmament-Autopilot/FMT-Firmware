@@ -14,18 +14,22 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __GPS_H__
-#define __GPS_H__
+#ifndef GPS_H__
+#define GPS_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* g[s] read pos */
 #define GPS_READ_REPORT 0
 
 /* gps command */
-#define GPS_CMD_INIT         0x10
-#define GPS_CMD_OPEN         0x11
-#define GPS_CMD_CLOSE        0x12
+#define GPS_CMD_INIT        0x10
+#define GPS_CMD_OPEN        0x11
+#define GPS_CMD_CLOSE       0x12
 #define GPS_CMD_CHECK_READY 0x20
 
 typedef struct {
@@ -79,4 +83,8 @@ struct gps_ops {
 
 rt_err_t hal_gps_register(gps_dev_t gps_dev, const char* name, rt_uint32_t flag, void* data);
 
-#endif /* __GPS_H__ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* GPS_H__ */

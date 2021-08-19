@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __SYSTICK_H__
-#define __SYSTICK_H__
+#ifndef SYSTICK_H__
+#define SYSTICK_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define SYSTICK_RD_TIME_US 0
 
@@ -50,5 +54,9 @@ struct systick_ops {
 
 rt_err_t hal_systick_register(systick_dev_t systick, const char* name, rt_uint32_t flag, void* data);
 void hal_systick_isr(systick_dev_t systick);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

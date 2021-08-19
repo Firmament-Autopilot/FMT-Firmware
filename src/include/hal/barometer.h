@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __BAROMETER_H__
-#define __BAROMETER_H__
+#ifndef BAROMETER_H__
+#define BAROMETER_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define BARO_OSR_256  0
 #define BARO_OSR_512  1
@@ -66,5 +70,9 @@ struct baro_ops {
 };
 
 rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

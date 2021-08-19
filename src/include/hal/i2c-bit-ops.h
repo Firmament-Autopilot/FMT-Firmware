@@ -38,8 +38,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __I2C_BIT_OPS_H__
-#define __I2C_BIT_OPS_H__
+#ifndef I2C_BIT_OPS_H__
+#define I2C_BIT_OPS_H__
 
 #include <firmament.h>
 

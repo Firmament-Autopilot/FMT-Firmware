@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __ACCEL_H__
-#define __ACCEL_H__
+#ifndef ACCEL_H__
+#define ACCEL_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define ACCEL_RANGE_2G  2
 #define ACCEL_RANGE_4G  4
@@ -62,5 +66,9 @@ struct accel_ops {
 };
 
 rt_err_t hal_accel_register(accel_dev_t accel, const char* name, rt_uint32_t flag, void* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
