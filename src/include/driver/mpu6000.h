@@ -14,11 +14,19 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MPU6000_H__
-#define __MPU6000_H__
+#ifndef MPU6000_H__
+#define MPU6000_H__
 
 #include <rtthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 rt_err_t mpu6000_drv_init(char* spi_device_name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

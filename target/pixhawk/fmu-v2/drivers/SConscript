@@ -8,7 +8,7 @@ src = Glob('*.c')
 src += Glob('usb/src/*.c')
 src += Glob('sdio/*.c')
 
-inc = [cwd, cwd + '/usb/inc']
+inc = [cwd, cwd + '/usb/inc', cwd + '/sdio']
 
 group = DefineGroup('PeripheralDriver', src, depend = [''], CPPPATH = inc)
 

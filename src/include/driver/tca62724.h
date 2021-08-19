@@ -29,13 +29,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef __TCA62724_H__
-#define __TCA62724_H__
+#ifndef TCA62724_H__
+#define TCA62724_H__
 
 #include <rtthread.h>
 
-#define TCA62724_MAX_BRIGHT             15
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#define TCA62724_MAX_BRIGHT             15
 #define TCA62724_CMD_SET_BRIGHT         0x20
 
 enum {
@@ -48,5 +51,9 @@ enum {
 };
 
 rt_err_t tca62724_drv_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

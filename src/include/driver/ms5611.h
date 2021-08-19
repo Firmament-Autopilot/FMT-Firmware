@@ -29,11 +29,19 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef __MS5611_H__
-#define __MS5611_H__
+#ifndef MS5611_H__
+#define MS5611_H__
 
 #include <rtthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 rt_err_t ms5611_drv_init(char* spi_device_name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

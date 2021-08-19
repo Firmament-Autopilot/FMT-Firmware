@@ -29,14 +29,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef __GPIO_H__
-#define __GPIO_H__
+#ifndef DRV_SYSTICK_H__
+#define DRV_SYSTICK_H__
 
 #include <rtthread.h>
 
-rt_err_t gpio_drv_init(void);
-void gpio_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype);
-int gpio_pin_read(rt_device_t dev, rt_base_t pin);
-void gpio_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value);
+rt_err_t drv_systick_init(void);
 
 #endif

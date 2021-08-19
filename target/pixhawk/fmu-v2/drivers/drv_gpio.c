@@ -134,7 +134,7 @@ static const struct pin_index* _get_pin(uint8_t pin)
     return RT_NULL;
 };
 
-void gpio_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
+static void gpio_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
 {
     const struct pin_index* index;
 
@@ -151,7 +151,7 @@ void gpio_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
     }
 }
 
-int gpio_pin_read(rt_device_t dev, rt_base_t pin)
+static int gpio_pin_read(rt_device_t dev, rt_base_t pin)
 {
     int value;
     const struct pin_index* index;
@@ -173,7 +173,7 @@ int gpio_pin_read(rt_device_t dev, rt_base_t pin)
     return value;
 }
 
-void gpio_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
+static void gpio_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
 {
     const struct pin_index* index;
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -225,7 +225,7 @@ const static struct pin_ops _gpio_pin_ops = {
     gpio_pin_read,
 };
 
-rt_err_t gpio_drv_init(void)
+rt_err_t drv_gpio_init(void)
 {
     pin_device.ops = &_gpio_pin_ops;
 
@@ -243,4 +243,3 @@ rt_err_t gpio_drv_init(void)
 
     return hal_pin_register(&pin_device, "pin", RT_DEVICE_FLAG_RDWR, RT_NULL);
 }
-// INIT_BOARD_EXPORT(gpio_drv_init);

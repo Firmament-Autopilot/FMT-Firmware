@@ -2,7 +2,6 @@
 Copyright (c) 2018-2020, Firmament Autopilot Team. All rights reserved.
 
 Author: J Zou: jiachi.zou@gmail.com
-        yangjian
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -29,20 +28,11 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
+#ifndef DRV_SDIO_H__
+#define DRV_SDIO_H__
 
-#ifndef L3GD20H_H__
-#define L3GD20H_H__
+#include <rtdef.h>
 
-#include <rtthread.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-rt_err_t l3gd20h_drv_init(char* spi_device_name);
-
-#ifdef __cplusplus
-}
-#endif
+rt_err_t drv_sdio_init(void);
 
 #endif

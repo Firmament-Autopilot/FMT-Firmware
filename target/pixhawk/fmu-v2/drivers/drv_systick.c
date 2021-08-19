@@ -14,8 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "hal/systick.h"
 #include <firmament.h>
+
+#include "hal/systick.h"
 
 static systick_dev_t _systick_dev;
 rt_uint32_t _ticksPerUs; /* tick count for 1us */
@@ -74,7 +75,7 @@ const static struct systick_ops _systick_ops = {
     systick_read
 };
 
-rt_err_t systick_drv_init(void)
+rt_err_t drv_systick_init(void)
 {
     RCC_ClocksTypeDef rcc_clocks;
     static struct systick_device systick_dev = {

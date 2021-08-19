@@ -26,20 +26,19 @@
 #include <utest.h>
 #endif
 
-#include "driver/gpio.h"
-#include "driver/gps.h"
 #include "driver/gps_m8n.h"
 #include "driver/l3gd20h.h"
 #include "driver/lsm303d.h"
 #include "driver/mpu6000.h"
 #include "driver/ms5611.h"
 #include "driver/pmw3901_l0x.h"
-#include "driver/pwm_drv.h"
-#include "driver/sd_dev.h"
-#include "driver/systick_drv.h"
 #include "driver/tca62724.h"
+#include "drv_gpio.h"
 #include "drv_i2c_soft.h"
+#include "drv_pwm.h"
+#include "drv_sdio.h"
 #include "drv_spi.h"
+#include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev.h"
@@ -230,7 +229,7 @@ void bsp_early_initialize(void)
     NVIC_Configuration();
 
     /* system timer init */
-    RT_CHECK(systick_drv_init());
+    RT_CHECK(drv_systick_init());
 
     /* system usart init */
     RT_CHECK(drv_usart_init());
@@ -242,11 +241,11 @@ void bsp_early_initialize(void)
     FMT_CHECK(console_init());
 
     /* init gpio, bus, etc. */
-    RT_CHECK(gpio_drv_init());
+    RT_CHECK(drv_gpio_init());
 
     RT_CHECK(spi_drv_init());
 
-    RT_CHECK(pwm_drv_init());
+    RT_CHECK(drv_pwm_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -265,7 +264,7 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    RT_CHECK(dev_sd_init(FS_DEVICE_NAME));
+    RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
@@ -285,7 +284,6 @@ void bsp_initialize(void)
     RT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
 
     /* init gps */
-    // RT_CHECK(drv_gps_init(GPS_SERIAL_DEVICE_NAME));
     RT_CHECK(gps_m8n_init(GPS_SERIAL_DEVICE_NAME));
 
     /* init other devices */

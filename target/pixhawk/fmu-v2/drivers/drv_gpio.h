@@ -29,13 +29,19 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef __PWM_DRV_H__
-#define __PWM_DRV_H__
+#ifndef DRV_GPIO_H__
+#define DRV_GPIO_H__
 
 #include <rtthread.h>
 
-rt_err_t pwm_drv_init(void);
-
+#ifdef __cplusplus
+extern "C" {
 #endif
 
+rt_err_t drv_gpio_init(void);
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif

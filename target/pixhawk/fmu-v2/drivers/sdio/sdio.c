@@ -222,8 +222,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "driver/sdio.h"
 #include <firmament.h>
+#include "sdio.h"
 
 /** @addtogroup Utilities
   * @{

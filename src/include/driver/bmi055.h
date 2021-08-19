@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __BMI055_H__
-#define __BMI055_H__
+#ifndef BMI055_H__
+#define BMI055_H__
 
-#include <firmament.h>
+#include <rtthread.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -93,5 +93,4 @@ TASKS_CPPPATH = []
 LIBS = [
     'cm_backtrace',
     'mavlink',
-    'Micro-XRCE-DDS-Client',
 ]

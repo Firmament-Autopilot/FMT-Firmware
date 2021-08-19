@@ -14,11 +14,19 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __GPS_M8N_H__
-#define __GPS_M8N_H__
+#ifndef GPS_M8N_H__
+#define GPS_M8N_H__
 
-#include <firmament.h>
+#include <rtthread.h>
 
-rt_err_t gps_m8n_init(char* serial_device_name);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* __GPS_M8N_H__ */
+rt_err_t gps_m8n_init(char* device_name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* GPS_M8N_H__ */

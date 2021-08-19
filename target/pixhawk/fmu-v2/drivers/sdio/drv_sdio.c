@@ -15,7 +15,8 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "driver/sdio.h"
+
+#include "sdio.h"
 #include "diskio.h"
 
 #define SECTOR_SIZE		512
@@ -121,7 +122,7 @@ rt_err_t  _sd_dev_control(rt_device_t dev, int cmd, void* args)
 	return RT_EOK;
 }
 
-rt_err_t dev_sd_init(const char* device_name)
+rt_err_t drv_sdio_init(const char* device_name)
 {
 	rt_err_t res = RT_EOK;;
 
@@ -136,7 +137,7 @@ rt_err_t dev_sd_init(const char* device_name)
 
 	/* register to device manager */
 	/* standalone device means it can be opened by only one host */
-	res |= rt_device_register(&_sd_dev, device_name, RT_DEVICE_FLAG_RDWR | \
+	res |= rt_device_register(&_sd_dev, "sd0", RT_DEVICE_FLAG_RDWR | \
 	                          RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE);
 
 	return res;

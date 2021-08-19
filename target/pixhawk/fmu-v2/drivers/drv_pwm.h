@@ -29,11 +29,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef __SYSTICK_DRV_H__
-#define __SYSTICK_DRV_H__
+#ifndef DRV_PWM_H__
+#define DRV_PWM_H__
 
 #include <rtthread.h>
 
-rt_err_t systick_drv_init(void);
+rt_err_t drv_pwm_init(void);
 
 #endif
+
+

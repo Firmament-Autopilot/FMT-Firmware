@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __ICM20689_H__
-#define __ICM20689_H__
+#ifndef ICM20689_H__
+#define ICM20689_H__
 
-#include <firmament.h>
+#include <rtthread.h>
 
 #ifdef __cplusplus
 extern "C" {

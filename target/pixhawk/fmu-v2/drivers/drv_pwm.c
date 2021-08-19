@@ -15,7 +15,6 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "driver/pwm_drv.h"
 #include "hal/actuator.h"
 
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
@@ -287,7 +286,7 @@ static struct actuator_device act_dev = {
     .ops = &_act_ops
 };
 
-rt_err_t pwm_drv_init(void)
+rt_err_t drv_pwm_init(void)
 {
     rt_err_t ret;
 

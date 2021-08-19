@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __NCP5623C_H__
-#define __NCP5623C_H__
+#ifndef NCP5623C_H__
+#define NCP5623C_H__
 
-#include <firmament.h>
+#include <rtthread.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #define NCP5623_LED_OFF     0x00 /**< off */
-#define NCP5623_LED_CURRENT 0x20 /**< Current register */
+#define NCP5623_LED_CURRENT 0x20 /**< current register */
 #define NCP5623_LED_PWM0    0x40 /**< pwm0 register */
 #define NCP5623_LED_PWM1    0x60 /**< pwm1 register */
 #define NCP5623_LED_PWM2    0x80 /**< pwm2 register */

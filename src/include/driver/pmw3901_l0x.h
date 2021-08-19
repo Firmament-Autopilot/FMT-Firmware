@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#pragma once
+#ifndef PMW3901_L0X_H__
+#define PMW3901_L0X_H__
 
 #include <rtthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 rt_err_t pmw3901_l0x_drv_init(const char* serial_dev_name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
 

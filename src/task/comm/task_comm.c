@@ -17,7 +17,6 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "driver/gps.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_model.h"
 #include "module/mavproxy/mavproxy.h"
