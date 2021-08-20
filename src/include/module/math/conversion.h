@@ -14,16 +14,23 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __CONVERSION_H__
-#define __CONVERSION_H__
+#ifndef CONVERSION_H__
+#define CONVERSION_H__
 
 #include <firmament.h>
-#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define RAF2DEG(u)      (u*180.0f/PI)
 #define DEG2RAD(u)      (u*PI/180.0f)
 
 void Msb2Lsb(uint8_t* data, uint8_t bytes);
 int16_t int16_t_from_bytes(uint8_t bytes[]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

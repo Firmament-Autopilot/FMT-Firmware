@@ -20,11 +20,15 @@
   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef YXML_H
-#define YXML_H
+#ifndef YXML_H__
+#define YXML_H__
 
 #include <stdint.h>
 #include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #if defined(_MSC_VER) && !defined(__cplusplus) && !defined(inline)
 	#define inline __inline
@@ -157,6 +161,10 @@ static inline size_t yxml_symlen(yxml_t* x, const char* s)
 {
 	return (x->stack + x->stacklen) - (const unsigned char*)s;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

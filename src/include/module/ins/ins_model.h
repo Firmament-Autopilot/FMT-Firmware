@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __INS_MODEL_H__
-#define __INS_MODEL_H__
+#ifndef INS_MODEL_H__
+#define INS_MODEL_H__
 
 #include <INS.h>
 
@@ -53,9 +53,7 @@ typedef struct {
 	} flag;
 } INS_Flag;
 
-
 void ins_model_init(void);
 void ins_model_step(void);
-
 
 #endif

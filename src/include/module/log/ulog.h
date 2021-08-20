@@ -8,8 +8,8 @@
  * 2018-08-25     armink       the first version
  */
 
-#ifndef _ULOG_H_
-#define _ULOG_H_
+#ifndef ULOG_H__
+#define ULOG_H__
 
 #include <rtthread.h>
 #include "module/log/ulog_def.h"
@@ -19,7 +19,6 @@ extern "C" {
 #endif
 
 #define ULOG_VERSION_STR               "0.1.1"
-
 
 /*
  * ulog init and deint
@@ -98,4 +97,4 @@ void ulog_raw(const char* format, ...);
 }
 #endif
 
-#endif /* _ULOG_H_ */
+#endif /* ULOG_H__ */

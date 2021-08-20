@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMT_BSP_H__
-#define __FMT_BSP_H__
+#ifndef FMT_BSP_H__
+#define FMT_BSP_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Board Information
 #define TARGET_NAME  "Pixhawk FMUv2"
@@ -49,5 +53,9 @@ void bsp_early_initialize(void);
 void bsp_initialize(void);
 void bsp_post_initialize(void);
 void board_show_version(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

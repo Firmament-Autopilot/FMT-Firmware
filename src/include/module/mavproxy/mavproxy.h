@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __MAVPROXY_H__
-#define __MAVPROXY_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef MAVPROXY_H__
+#define MAVPROXY_H__
 
 #include <firmament.h>
 #include <mavlink.h>
@@ -28,6 +24,10 @@ extern "C" {
 #include "module/mavproxy/mavlink_status.h"
 #include "module/mavproxy/mavproxy_cmd.h"
 #include "module/mavproxy/mavproxy_dev.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define EVENT_MAVPROXY_UPDATE    (1 << 0)
 #define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)

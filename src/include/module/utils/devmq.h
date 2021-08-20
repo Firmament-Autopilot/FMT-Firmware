@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __DEVMQ_H__
-#define __DEVMQ_H__
+#ifndef DEVMQ_H__
+#define DEVMQ_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* device status msg */
 #define DEVICE_STATUS_CONNECT    (1)
@@ -31,4 +35,8 @@ fmt_err_t devmq_notify(rt_device_t device, void* msg);
 void devmq_distribute_msg(void);
 fmt_err_t devmq_start_work(void);
 
-#endif /* __DEVMQ_H__ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* DEVMQ_H__ */

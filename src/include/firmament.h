@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FIRMAMENT_H__
-#define __FIRMAMENT_H__
+#ifndef FIRMAMENT_H__
+#define FIRMAMENT_H__
 
 /* Standard C Library */
 #include <stdlib.h>

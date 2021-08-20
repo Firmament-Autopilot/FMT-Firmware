@@ -16,8 +16,8 @@
 
 #include <firmament.h>
 
-#include "module/shell_cmd/optparse.h"
-#include "module/shell_cmd/syscmd.h"
+#include "module/syscmd/optparse.h"
+#include "module/syscmd/syscmd.h"
 
 extern long list_device(void);
 extern long list_timer(void);

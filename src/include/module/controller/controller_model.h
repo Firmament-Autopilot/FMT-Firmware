@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __CONTROLLER_MODEL_H__
-#define __CONTROLLER_MODEL_H__
+#ifndef CONTROLLER_MODEL_H__
+#define CONTROLLER_MODEL_H__
 
 #include <Controller.h>
 

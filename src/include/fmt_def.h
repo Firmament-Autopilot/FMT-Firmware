@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMT_DEF_H__
-#define __FMT_DEF_H__
+#ifndef FMT_DEF_H__
+#define FMT_DEF_H__
 
 #include "rtdef.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Firmament version information */
 #define FMT_VERSION     "v0.0.1"
@@ -92,5 +96,9 @@ typedef enum {
     FMT_EINVAL = 10,     /**< Invalid argument */
     FMT_ENOTHANDLE = 11, /**< Not handled */
 } fmt_err_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

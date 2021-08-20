@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAVLINK_PARAM_H__
-#define __MAVLINK_PARAM_H__
+#ifndef MAVLINK_PARAM_H__
+#define MAVLINK_PARAM_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	const char* name;
@@ -347,6 +351,10 @@ uint16_t get_mavparam_num(void);
 // mavlink param (not used by FMT) api
 fmt_err_t send_mavparam_by_name(char* name);
 fmt_err_t send_mavparam_by_index(int16_t index);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

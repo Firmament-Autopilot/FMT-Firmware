@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __BOARD_DEVICE_H__
-#define __BOARD_DEVICE_H__
+#ifndef BOARD_DEVICE_H__
+#define BOARD_DEVICE_H__
 
 // Device Name
 #define CONSOLE_DEVICE_NAME        "serial0"

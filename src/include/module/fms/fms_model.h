@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMS_MODEL_H__
-#define __FMS_MODEL_H__
+#ifndef FMS_MODEL_H__
+#define FMS_MODEL_H__
 
 #include <FMS.h>
 

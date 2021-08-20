@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __SYSTIME_H__
-#define __SYSTIME_H__
+#ifndef SYSTIME_H__
+#define SYSTIME_H__
 
 #include <firmament.h>
 

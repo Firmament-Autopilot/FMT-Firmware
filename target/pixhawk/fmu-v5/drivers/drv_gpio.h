@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __DRV_GPIO_H__
-#define __DRV_GPIO_H__
+#ifndef DRV_GPIO_H__
+#define DRV_GPIO_H__
 
 #include <firmament.h>
 #include "bsp.h"

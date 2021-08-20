@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __DRV_USART_H__
-#define __DRV_USART_H__
+#ifndef DRV_USART_H__
+#define DRV_USART_H__
 
 #include <firmament.h>
 #include "bsp.h"
@@ -30,5 +30,5 @@ rt_err_t drv_usart_init(void);
 }
 #endif
 
-#endif /* __DRV_USART_H__ */
+#endif /* DRV_USART_H__ */
 

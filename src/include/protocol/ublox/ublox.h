@@ -14,12 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __UBLOX_H__
-#define __UBLOX_H__
+#ifndef UBLOX_H__
+#define UBLOX_H__
 
 #include <firmament.h>
 
-#include "protocol/ublox/ublox.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define UBX_SYNC1 0xB5
 #define UBX_SYNC2 0x62
@@ -508,4 +510,8 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c);
 fmt_err_t send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t* payload, const uint16_t length);
 fmt_err_t configure_ubx_msg_rate(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uint8_t rate);
 
-#endif /* __UBLOX_H__ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* UBLOX_H__ */

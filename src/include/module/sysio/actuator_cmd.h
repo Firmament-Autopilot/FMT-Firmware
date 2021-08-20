@@ -14,13 +14,21 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __ACTUATOR_CMD_H__
-#define __ACTUATOR_CMD_H__
+#ifndef ACTUATOR_CMD_H__
+#define ACTUATOR_CMD_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 fmt_err_t send_actuator_cmd(void);
 fmt_err_t send_hil_actuator_cmd(void);
 fmt_err_t actuator_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

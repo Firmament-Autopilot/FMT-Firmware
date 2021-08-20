@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __SENSOR_MAG_H__
-#define __SENSOR_MAG_H__
+#ifndef SENSOR_MAG_H__
+#define SENSOR_MAG_H__
 
 #include <firmament.h>
 

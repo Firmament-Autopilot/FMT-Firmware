@@ -14,11 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __SYSCMD_H__
-#define __SYSCMD_H__
+#ifndef SYSCMD_H__
+#define SYSCMD_H__
 
 #include <firmament.h>
-#include <string.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
     SYSCMD_ALIGN_LEFT,
@@ -51,5 +54,9 @@ void syscmd_flush(void);
 void syscmd_putc(const char c, int cnt);
 void syscmd_printf(const char pad, uint32_t len, uint8_t align, const char* fmt, ...);
 int syscmd_process(int argc, char** argv, shell_handle_func func);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

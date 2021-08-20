@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __PROTOCOL_H__
-#define __PROTOCOL_H__
+#ifndef PROTOCOL_H__
+#define PROTOCOL_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define IO_BUFFER_SIZE 256
 
@@ -70,5 +74,9 @@ void delete_io_pkt(struct IOPacket* pkt);
 fmt_err_t set_io_pkt(struct IOPacket* pkt, uint8_t code, void* data, uint16_t len);
 fmt_err_t io_parse_char(struct IOPacket* pkt, uint8_t c);
 uint8_t crc_packet(struct IOPacket* pkt);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

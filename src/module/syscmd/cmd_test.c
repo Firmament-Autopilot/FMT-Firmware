@@ -25,7 +25,7 @@
 #include "module/console/console.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_hub.h"
-#include "module/shell_cmd/syscmd.h"
+#include "module/syscmd/syscmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/toml/toml.h"
@@ -34,7 +34,7 @@
 
 #include "module/fmtio/protocol.h"
 
-#include "module/shell_cmd/optparse.h"
+#include "module/syscmd/optparse.h"
 
 
 int cmd_test(int argc, char** argv)

@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __DRV_I2C_SOFT_H__
-#define __DRV_I2C_SOFT_H__
+#ifndef DRV_I2C_SOFT_H__
+#define DRV_I2C_SOFT_H__
 
 #include <firmament.h>
 

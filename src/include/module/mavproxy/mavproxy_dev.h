@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAVPROXY_DEV_H__
-#define __MAVPROXY_DEV_H__
+#ifndef MAVPROXY_DEV_H__
+#define MAVPROXY_DEV_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 fmt_err_t mavproxy_dev_init(void);
 rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout);
@@ -25,6 +29,10 @@ rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout);
 void mavproxy_dev_set_rx_indicate(fmt_err_t(*rx_ind)(uint32_t size));
 fmt_err_t mavproxy_set_device(const char* dev_name);
 rt_device_t mavproxy_get_device(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

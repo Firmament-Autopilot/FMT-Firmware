@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __BINARY_LOG_H__
-#define __BINARY_LOG_H__
+#ifndef BINARY_LOG_H__
+#define BINARY_LOG_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Macro to define packed structures */
 #ifdef __GNUC__
@@ -156,14 +160,15 @@ fmt_err_t blog_add_desc(char* desc);
 fmt_err_t blog_start(char* file_name);
 void blog_stop(void);
 fmt_err_t blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len);
-
 uint8_t blog_get_status(void);
 char* blog_get_file_name(void);
 void blog_statistic(void);
-
 fmt_err_t blog_register_callback(uint8_t cb_type, void (*cb)(void));
-
 fmt_err_t binary_log_init(void);
 void blog_async_output(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

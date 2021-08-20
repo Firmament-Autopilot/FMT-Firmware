@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __LED_H__
-#define __LED_H__
+#ifndef LED_H__
+#define LED_H__
 
 #include <firmament.h>
 

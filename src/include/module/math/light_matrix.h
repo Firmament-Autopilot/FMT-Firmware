@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __LIGHT_MATRIX__
-#define __LIGHT_MATRIX__
+#ifndef LIGHT_MATRIX__
+#define LIGHT_MATRIX__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MAT_TYPE		float
 #define MAT_MALLOC      rt_malloc
@@ -50,5 +54,9 @@ MAT_TYPE MatNorm(Mat* mat);
 void MatEig(Mat* mat, MAT_TYPE* eig_val, Mat* eig_vec, MAT_TYPE eps, int njt);
 
 void MatCopy(Mat* src, Mat* dst);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

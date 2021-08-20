@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FILE_MANAGER_H__
-#define __FILE_MANAGER_H__
+#ifndef FILE_MANAGER_H__
+#define FILE_MANAGER_H__
 
 #include <firmament.h>
 #include <dfs_posix.h>

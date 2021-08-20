@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __BOOT_LOG_H__
-#define __BOOT_LOG_H__
+#ifndef BOOT_LOG_H__
+#define BOOT_LOG_H__
 
 #include <firmament.h>
 

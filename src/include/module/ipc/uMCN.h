@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __UMCN_H__
-#define __UMCN_H__
+#ifndef UMCN_H__
+#define UMCN_H__
 
 #include <firmament.h>
 

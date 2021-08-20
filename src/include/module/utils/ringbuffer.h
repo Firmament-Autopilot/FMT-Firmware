@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __RINGBUFFER_H__
-#define __RINGBUFFER_H__
+#ifndef RINGBUFFER_H__
+#define RINGBUFFER_H__
 
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	uint8_t	static_flag;
@@ -36,5 +40,9 @@ uint32_t ringbuffer_get(ringbuffer* rb, uint8_t* buffer, uint32_t len);
 uint32_t ringbuffer_put(ringbuffer* rb, const uint8_t* buffer, uint32_t len);
 void ringbuffer_flush(ringbuffer* rb);
 void ringbuffer_delete(ringbuffer* rb);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

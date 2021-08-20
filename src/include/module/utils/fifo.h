@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FIFO_H__
-#define __FIFO_H__
+#ifndef FIFO_H__
+#define FIFO_H__
 
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	uint32_t size;
@@ -31,5 +35,9 @@ void fifo_flush(FIFO* fifo);
 void fifo_push(FIFO* fifo, float val);
 float fifo_pop(FIFO* fifo);
 float fifo_read_back(FIFO* fifo, uint16_t offset);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

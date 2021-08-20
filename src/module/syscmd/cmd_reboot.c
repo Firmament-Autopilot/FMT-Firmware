@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "module/shell_cmd/syscmd.h"
+#include "module/syscmd/syscmd.h"
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {

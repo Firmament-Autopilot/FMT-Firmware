@@ -14,7 +14,20 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef MSP_PROTOCOL_V2_SENSOR_H__
+#define MSP_PROTOCOL_V2_SENSOR_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MSP2_IS_SENSOR_MESSAGE(x)   ((x) >= 0x1F00 && (x) <= 0x1FFF)
 
 #define MSP2_SENSOR_RANGEFINDER     0x1F01
 #define MSP2_SENSOR_OPTIC_FLOW      0x1F02
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

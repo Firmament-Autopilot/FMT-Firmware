@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __DRV_SPI_H__
-#define __DRV_SPI_H__
+#ifndef DRV_SPI_H__
+#define DRV_SPI_H__
 
 #include <firmament.h>
 

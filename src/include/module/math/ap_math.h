@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __AP_MATH_H__
-#define __AP_MATH_H__
+#ifndef AP_MATH_H__
+#define AP_MATH_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
     float x;
@@ -51,5 +55,9 @@ uint8_t constrain(float* val, float min_val, float max_val);
 float constrain_float(float amt, float low, float high);
 uint16_t constrain_uint16(uint16_t amt, uint16_t low, uint16_t high);
 uint32_t constrain_uint32(uint32_t amt, uint32_t low, uint32_t high);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

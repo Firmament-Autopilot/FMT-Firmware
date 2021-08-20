@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#pragma once
+#ifndef MSP_H__
+#define MSP_H__
 
 #include <firmament.h>
 
 #include "protocol/msp/msp_protocol_v2_sensor.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MSP_V2_FRAME_ID      255
 #define MSP_PORT_INBUF_SIZE  192
@@ -115,3 +120,9 @@ typedef struct mspPort_s {
 
 mspPort_t* msp_register(rt_device_t dev, mspProcessCommandFnPtr mspProcessCommandFn);
 fmt_err_t msp_server_start(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

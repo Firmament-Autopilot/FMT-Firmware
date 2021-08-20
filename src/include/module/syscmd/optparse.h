@@ -11,8 +11,12 @@
  * 2018-06-20     liu2guang    Adapter RT-Thread.
  */
 
-#ifndef __OPTPARSE_H_
-#define __OPTPARSE_H_
+#ifndef OPTPARSE_H__
+#define OPTPARSE_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct optparse
 {
@@ -74,4 +78,8 @@ int optparse_long(struct optparse *options, const struct optparse_long *longopts
  */
 char *optparse_arg(struct optparse *options);
 
-#endif /* __OPTPARSE_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* OPTPARSE_H__ */

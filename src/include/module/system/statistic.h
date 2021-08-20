@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __STATISTIC_H__
-#define __STATISTIC_H__
+#ifndef STATISTIC_H__
+#define STATISTIC_H__
 
 #include <firmament.h>
 

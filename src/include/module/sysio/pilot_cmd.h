@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __PILOT_CMD_H__
-#define __PILOT_CMD_H__
+#ifndef PILOT_CMD_H__
+#define PILOT_CMD_H__
 
 #include <firmament.h>
 

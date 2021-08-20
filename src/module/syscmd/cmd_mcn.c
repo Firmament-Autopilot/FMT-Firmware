@@ -17,8 +17,8 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/shell_cmd/optparse.h"
-#include "module/shell_cmd/syscmd.h"
+#include "module/syscmd/optparse.h"
+#include "module/syscmd/syscmd.h"
 
 static void show_usage(void)
 {

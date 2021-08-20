@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __TASK_LOGGER_H__
-#define __TASK_LOGGER_H__
+#ifndef TASK_LOGGER_H__
+#define TASK_LOGGER_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define EVENT_BLOG_UPDATE				(1<<0)
 #define EVENT_ULOG_UPDATE		        (1<<1)
@@ -26,7 +30,8 @@ fmt_err_t logger_start_blog(char* path);
 void logger_stop_blog(void);
 void get_working_log_session(char* path);
 
-// fmt_err_t task_logger_init(void);
-// void task_logger_entry(void* parameter);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

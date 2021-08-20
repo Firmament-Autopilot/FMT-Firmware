@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __QUATERNION_H__
-#define __QUATERNION_H__
+#ifndef QUATERNION_H__
+#define QUATERNION_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	float roll;
@@ -51,5 +55,9 @@ static inline void quaternion_load_init_attitude(quaternion* q)
 	q->w = 1;
 	q->x = q->y = q->z = 0;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

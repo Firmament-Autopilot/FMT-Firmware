@@ -11,7 +11,7 @@
  * 2018-06-20     liu2guang    Adapter RT-Thread.
  */
 
-#include "module/shell_cmd/optparse.h"
+#include "module/syscmd/optparse.h"
 
 #define OPTPARSE_MSG_INVALID "invalid option"
 #define OPTPARSE_MSG_MISSING "option requires an argument"

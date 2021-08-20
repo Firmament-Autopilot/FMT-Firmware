@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __DRV_SYSTICK_H__
-#define __DRV_SYSTICK_H__
+#ifndef DRV_SYSTICK_H__
+#define DRV_SYSTICK_H__
 
 #include <firmament.h>
 #include "bsp.h"

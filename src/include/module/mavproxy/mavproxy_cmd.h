@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAVPROXY_CMD_H__
-#define __MAVPROXY_CMD_H__
+#ifndef MAVPROXY_CMD_H__
+#define MAVPROXY_CMD_H__
 
 #include <firmament.h>
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __PARAM_H__
-#define __PARAM_H__
+#ifndef PARAM_H__
+#define PARAM_H__
 
 #include <firmament.h>
 

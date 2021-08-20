@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __PLANT_MODEL_H__
-#define __PLANT_MODEL_H__
+#ifndef PLANT_MODEL_H__
+#define PLANT_MODEL_H__
 
 #include <Plant.h>
 

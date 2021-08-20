@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __CONSOLE_CONFIG_H__
-#define __CONSOLE_CONFIG_H__
+#ifndef CONSOLE_CONFIG_H__
+#define CONSOLE_CONFIG_H__
 
 #include <firmament.h>
 

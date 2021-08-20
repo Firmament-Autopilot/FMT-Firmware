@@ -34,7 +34,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <rtthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 rt_err_t drv_pwm_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

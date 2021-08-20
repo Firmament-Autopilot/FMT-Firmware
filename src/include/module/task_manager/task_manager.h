@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __TASK_MANAGER_H__
-#define __TASK_MANAGER_H__
+#ifndef TASK_MANAGER_H__
+#define TASK_MANAGER_H__
 
 #include <firmament.h>
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMT_BSP_HEADER_H__
-#define __FMT_BSP_HEADER_H__
+#ifndef FMT_BSP_HEADER_H__
+#define FMT_BSP_HEADER_H__
 
 /* stm32 peripheral library */
 #include <stm32f4xx.h>

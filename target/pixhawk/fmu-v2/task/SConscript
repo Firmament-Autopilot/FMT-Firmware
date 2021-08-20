@@ -5,6 +5,8 @@ Import('RTT_ROOT')
 cwd = GetCurrentDir()
 
 src = Glob('*.c')
+if GetDepend(['RT_USING_CPLUSPLUS']):
+    src += Glob('*.cpp')
 
 inc = [cwd]
 

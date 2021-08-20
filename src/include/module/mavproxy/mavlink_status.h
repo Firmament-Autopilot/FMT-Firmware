@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MAVLINK_STATUS_H__
-#define __MAVLINK_STATUS_H__
+#ifndef MAVLINK_STATUS_H__
+#define MAVLINK_STATUS_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MAVLINK_STATUS_DEBUG     7
 #define MAVLINK_STATUS_INFO      6
@@ -110,5 +114,9 @@ typedef struct {
 mav_status_t mavlink_get_status_content(uint8_t status);
 
 fmt_err_t mavlink_send_statustext(int severity, const char *fmt, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

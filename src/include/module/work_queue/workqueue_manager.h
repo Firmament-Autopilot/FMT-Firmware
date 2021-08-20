@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __WORKQUEUE_MANAGER_H__
-#define __WORKQUEUE_MANAGER_H__
+#ifndef WORKQUEUE_MANAGER_H__
+#define WORKQUEUE_MANAGER_H__
 
 #include <firmament.h>
 

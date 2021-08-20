@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __BUTTER_H__
-#define __BUTTER_H__
+#ifndef BUTTER_H__
+#define BUTTER_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct
 {
@@ -30,5 +34,9 @@ typedef struct
 /* butter lpf filter */
 Butter3* butter3_filter_create(float b[4], float a[4]);
 float butter3_filter_process(float in, Butter3* butter);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

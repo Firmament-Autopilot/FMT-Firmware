@@ -8,8 +8,8 @@
  * 2018-08-25     armink       the first version
  */
 
-#ifndef _ULOG_DEF_H_
-#define _ULOG_DEF_H_
+#ifndef ULOG_DEF_H__
+#define ULOG_DEF_H__
 
 #ifdef __cplusplus
 extern "C" {

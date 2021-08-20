@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __MODULE_COMMON_H__
-#define __MODULE_COMMON_H__
+#ifndef MODULE_COMMON_H__
+#define MODULE_COMMON_H__
 
 #include "module/system/systime.h"
 #include "module/system/statistic.h"

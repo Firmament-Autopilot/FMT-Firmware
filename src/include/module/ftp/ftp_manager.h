@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FTP_MANAGER_H__
-#define __FTP_MANAGER_H__
+#ifndef FTP_MANAGER_H__
+#define FTP_MANAGER_H__
 
 #include <firmament.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MAX_FTP_DATA_LEN        239
 
@@ -81,5 +85,9 @@ typedef struct {
 
 fmt_err_t ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t target_component);
 fmt_err_t ftp_stream_send(StreamSession* stream_session);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

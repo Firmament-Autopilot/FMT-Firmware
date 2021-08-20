@@ -22,8 +22,8 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-#ifndef TOML_H
-#define TOML_H
+#ifndef TOML_H__
+#define TOML_H__
 
 #include <stdint.h>
 #include <stdio.h>
