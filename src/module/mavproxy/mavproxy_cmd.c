@@ -19,7 +19,7 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/ins/ins_model.h"
+#include "module/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"

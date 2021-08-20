@@ -17,7 +17,7 @@
 #include <firmament.h>
 
 #include "hal/rc.h"
-#include "module/fms/fms_model.h"
+#include "module/fms/fms_interface.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sysio/pilot_cmd.h"
 

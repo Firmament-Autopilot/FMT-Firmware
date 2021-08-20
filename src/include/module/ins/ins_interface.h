@@ -14,10 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef INS_MODEL_H__
-#define INS_MODEL_H__
+#ifndef INS_INTERFACE_H__
+#define INS_INTERFACE_H__
 
 #include <INS.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
 	union {
@@ -53,7 +57,11 @@ typedef struct {
 	} flag;
 } INS_Flag;
 
-void ins_model_init(void);
-void ins_model_step(void);
+void ins_interface_init(void);
+void ins_interface_step(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

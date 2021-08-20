@@ -32,12 +32,12 @@ static McnNode_t _ins_out_nod;
 static McnNode_t _control_out_nod;
 static uint8_t _pilot_cmd_update = 1;
 
-static void _blog_start_cb(void)
+static void blog_start_cb(void)
 {
     _pilot_cmd_update = 1;
 }
 
-static void _update_model_parameter(void)
+static void update_parameter(void)
 {
     FMS_PARAM.THROTTLE_DZ = PARAM_GET_FLOAT(FMS, THROTTLE_DZ);
     FMS_PARAM.YAW_DZ = PARAM_GET_FLOAT(FMS, YAW_DZ);
@@ -52,13 +52,13 @@ static void _update_model_parameter(void)
     FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
 }
 
-void fms_model_step(void)
+void fms_interface_step(void)
 {
     static uint32_t start_time = 0;
     uint32_t time_now = systime_now_ms();
 
 #ifdef FMT_ONLINE_PARAM_TUNING
-    _update_model_parameter();
+    update_parameter();
 #endif
 
     if (start_time == 0) {
@@ -102,7 +102,7 @@ void fms_model_step(void)
     }
 }
 
-void fms_model_init(void)
+void fms_interface_init(void)
 {
     mcn_advertise(MCN_HUB(fms_output), NULL);
 
@@ -110,9 +110,9 @@ void fms_model_init(void)
     _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
-    blog_register_callback(BLOG_CB_START, _blog_start_cb);
+    blog_register_callback(BLOG_CB_START, blog_start_cb);
 
     FMS_init();
 
-    _update_model_parameter();
+    update_parameter();
 }

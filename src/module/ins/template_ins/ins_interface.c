@@ -14,12 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef FMS_MODEL_H__
-#define FMS_MODEL_H__
+#include <firmament.h>
 
-#include <FMS.h>
+void ins_interface_step(void)
+{
+    /* Add your code here */
+}
 
-void fms_model_init(void);
-void fms_model_step(void);
-
-#endif
+void ins_interface_init(void)
+{
+    /* Add your code here */
+}

@@ -16,11 +16,11 @@
 
 #include <firmament.h>
 
-#include "module/controller/controller_model.h"
+#include "module/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
-#include "module/fms/fms_model.h"
-#include "module/ins/ins_model.h"
-#include "module/plant/plant_model.h"
+#include "module/fms/fms_interface.h"
+#include "module/ins/ins_interface.h"
+#include "module/plant/plant_interface.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/pilot_cmd.h"
@@ -62,17 +62,17 @@ void task_vehicle_entry(void* parameter)
 
 #ifdef FMT_USING_SIH
                 /* run Plant model in internal HIL mode */
-                TIMETAG_CHECK_EXECUTE3(plant_model_update, PLANT_EXPORT.period, time_now, plant_model_step(););
+                TIMETAG_CHECK_EXECUTE3(plant_model_update, PLANT_EXPORT.period, time_now, plant_interface_step(););
 #endif
 
                 /* run INS model */
-                TIMETAG_CHECK_EXECUTE3(ins_model_update, INS_EXPORT.period, time_now, ins_model_step(););
+                TIMETAG_CHECK_EXECUTE3(ins_period, INS_EXPORT.period, time_now, ins_interface_step(););
 
                 /* run FMS model */
-                TIMETAG_CHECK_EXECUTE3(fms_model_update, FMS_EXPORT.period, time_now, fms_model_step(););
+                TIMETAG_CHECK_EXECUTE3(fms_period, FMS_EXPORT.period, time_now, fms_interface_step(););
 
                 /* run Controller model */
-                TIMETAG_CHECK_EXECUTE3(control_model_update, CONTROL_EXPORT.period, time_now, controller_model_step(););
+                TIMETAG_CHECK_EXECUTE3(control_period, CONTROL_EXPORT.period, time_now, control_interface_step(););
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL) || defined(FMT_TEST_MOTOR)
                 send_actuator_cmd();
@@ -104,17 +104,17 @@ fmt_err_t task_vehicle_init(void)
     }
 
     /* init ins model */
-    ins_model_init();
+    ins_interface_init();
 
     /* init fms model */
-    fms_model_init();
+    fms_interface_init();
 
     /* init controller model */
-    controller_model_init();
+    control_interface_init();
 
 #if defined(FMT_USING_SIH)
     /* init plant model */
-    plant_model_init();
+    plant_interface_init();
 #endif
 
     return FMT_EOK;

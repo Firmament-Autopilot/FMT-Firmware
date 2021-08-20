@@ -16,12 +16,12 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/controller/controller_model.h"
+#include "module/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
-#include "module/fms/fms_model.h"
-#include "module/ins/ins_model.h"
+#include "module/fms/fms_interface.h"
+#include "module/ins/ins_interface.h"
 #ifdef FMT_USING_SIH
-#include "module/plant/plant_model.h"
+#include "module/plant/plant_interface.h"
 #endif
 
 #define TAG                   "BLog"

@@ -18,7 +18,7 @@
 #include <string.h>
 
 #include "module/ftp/ftp_manager.h"
-#include "module/ins/ins_model.h"
+#include "module/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"

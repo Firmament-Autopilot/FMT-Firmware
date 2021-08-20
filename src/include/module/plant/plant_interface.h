@@ -14,12 +14,20 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef CONTROLLER_MODEL_H__
-#define CONTROLLER_MODEL_H__
+#ifndef PLANT_INTERFACE_H__
+#define PLANT_INTERFACE_H__
 
-#include <Controller.h>
+#include <Plant.h>
 
-void controller_model_init(void);
-void controller_model_step(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void plant_interface_init(void);
+void plant_interface_step(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

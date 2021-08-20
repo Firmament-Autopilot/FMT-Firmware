@@ -18,7 +18,6 @@
 #include <firmament.h>
 
 #include "module/sensor/sensor_hub.h"
-// #include "task/task_logger.h"
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -63,7 +62,7 @@ struct INS_Handler {
     .optflow_updated = 1
 };
 
-static int _ins_output_echo(void* param)
+static int ins_output_echo(void* param)
 {
     INS_Out_Bus ins_out;
 
@@ -74,7 +73,7 @@ static int _ins_output_echo(void* param)
     return 0;
 }
 
-static void _blog_start_cb(void)
+static void blog_start_cb(void)
 {
     ins_handle.imu_updated = 1;
     ins_handle.mag_updated = 1;
@@ -82,11 +81,12 @@ static void _blog_start_cb(void)
     ins_handle.gps_updated = 1;
 }
 
-void _update_ins_parameter(void)
+static void update_parameter(void)
 {
+    return;
 }
 
-void ins_model_step(void)
+void ins_interface_step(void)
 {
     DEFINE_TIMETAG(ins_output, 100);
 
@@ -228,9 +228,9 @@ void ins_model_step(void)
     }
 }
 
-void ins_model_init(void)
+void ins_interface_init(void)
 {
-    mcn_advertise(MCN_HUB(ins_output), _ins_output_echo);
+    mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
 
     ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);
     ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag0), NULL, NULL);
@@ -239,9 +239,9 @@ void ins_model_init(void)
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
 
-    blog_register_callback(BLOG_CB_START, _blog_start_cb);
+    blog_register_callback(BLOG_CB_START, blog_start_cb);
 
     INS_init();
 
-    _update_ins_parameter();
+    update_parameter();
 }

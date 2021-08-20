@@ -14,12 +14,20 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef PLANT_MODEL_H__
-#define PLANT_MODEL_H__
+#ifndef FMS_INTERFACE_H__
+#define FMS_INTERFACE_H__
 
-#include <Plant.h>
+#include <FMS.h>
 
-void plant_model_init(void);
-void plant_model_step(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void fms_interface_init(void);
+void fms_interface_step(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

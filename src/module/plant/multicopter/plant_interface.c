@@ -34,7 +34,7 @@ MCN_DECLARE(control_output);
 
 static McnNode_t _control_out_nod;
 
-static void _publish_sensor_data(void)
+static void publish_sensor_data(void)
 {
     static uint32_t imu_timestamp = 0xFFFF;
     static uint32_t mag_timestamp = 0xFFFF;
@@ -105,7 +105,7 @@ static void _publish_sensor_data(void)
     }
 }
 
-void plant_model_step(void)
+void plant_interface_step(void)
 {
     static uint32_t start_time = 0;
     uint32_t time_now = systime_now_ms();
@@ -131,10 +131,10 @@ void plant_model_step(void)
         blog_push_msg((uint8_t*)&Plant_Y.Plant_States, BLOG_PLANT_STATE_ID, sizeof(Plant_States_Bus));
     }
 
-    _publish_sensor_data();
+    publish_sensor_data();
 }
 
-void plant_model_init(void)
+void plant_interface_init(void)
 {
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
@@ -146,7 +146,7 @@ void plant_model_init(void)
 
     /* run plant model to ensure INS can get valid sensor in its first run */
     Plant_step();
-    _publish_sensor_data();
+    publish_sensor_data();
 }
 
 #endif

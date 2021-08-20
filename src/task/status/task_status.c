@@ -15,8 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "module/fms/fms_model.h"
-#include "module/ins/ins_model.h"
+#include "module/fms/fms_interface.h"
+#include "module/ins/ins_interface.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
 #include "module/pmu/power_manager.h"

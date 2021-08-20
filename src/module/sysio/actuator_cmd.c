@@ -17,7 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/controller/controller_model.h"
+#include "module/control/control_interface.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sysio/actuator_config.h"
 

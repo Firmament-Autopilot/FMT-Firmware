@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __FMTCONFIG_H__
-#define __FMTCONFIG_H__
+#ifndef FMTCONFIG_H__
+#define FMTCONFIG_H__
 
 #define FMT_BUILD_CHECK
 
