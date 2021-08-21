@@ -40,12 +40,9 @@ extern "C" {
 #define BLOG_DESCRIPTION_SIZE 128
 #define BLOG_MODEL_INFO_SIZE  256
 
-// #define BLOG_BUFFER_SIZE            16384*3
-// #define BLOG_SECTOR_SIZE             16384    /* larger block can increase wrte bandwidth */
-
-#define BLOG_BUFFER_SIZE         24 * 1024
-#define BLOG_SECTOR_SIZE         4096 /* larger block can increase wrte bandwidth */
-#define BLOG_MAX_SECTOR_TO_WRITE 3
+#define BLOG_BUFFER_SIZE         40 * 1024
+#define BLOG_SECTOR_SIZE         4096 /* larger block can increase write bandwidth */
+#define BLOG_MAX_SECTOR_TO_WRITE 5
 
 /* BLog Msg ID */
 enum {
