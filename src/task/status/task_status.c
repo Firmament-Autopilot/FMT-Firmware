@@ -61,7 +61,7 @@ static void update_fms_status(void)
                 break;
 
             case 4:
-                ulog_i(TAG, "[Mode] Manual");
+                ulog_i(TAG, "[Mode] Stabilize");
                 break;
 
             case 5:
