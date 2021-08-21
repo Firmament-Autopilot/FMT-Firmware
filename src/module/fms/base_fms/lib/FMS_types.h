@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1002
+ * Model version                  : 1.1006
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug  6 23:07:17 2021
+ * C/C++ source code generated on : Sat Aug 21 08:40:05 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -34,7 +34,13 @@ typedef struct {
   /* Right stick up/down */
   real32_T rs_ud;
 
-  /* flight mode, 0: attitude  1: altitude hold  2: autonomous */
+  /* mode
+     0: Unknown Mode
+     1: Mission Mode
+     2: Position Mode
+     3: Altitude Hold Mode
+     4: Stabilize Mode
+     5: Acro Mode */
   uint32_T mode;
 
   /* Operation channel 1 */
@@ -140,7 +146,7 @@ typedef struct {
      1: Mission Mode
      2: Position Mode
      3: Altitude Hold Mode
-     4: Manual Mode
+     4: Stabilize Mode
      5: Acro Mode */
   uint8_T mode;
 

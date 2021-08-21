@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.850
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug  6 23:08:47 2021
+ * C/C++ source code generated on : Sat Aug 21 09:50:15 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,7 +42,7 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.1F,
   5.0F,
   5.0F,
-  0.52359879F,
+  0.523599F,
   0.1F,
   0.1F,
   0.15F,
@@ -56,8 +56,8 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.1F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F
+  1.57079601F,
+  3.14159298F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S35>/Saturation'

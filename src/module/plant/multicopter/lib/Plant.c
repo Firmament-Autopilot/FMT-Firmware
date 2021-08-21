@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.701
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 31 15:48:30 2021
+ * C/C++ source code generated on : Sat Aug 21 08:42:01 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -66,7 +66,7 @@ struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT = {
   2U,
 
   { 77, 117, 108, 116, 105, 99, 111, 112, 116, 101, 114, 32, 118, 48, 46, 49, 46,
-    51, 0 }
+    48, 0 }
 } ;                                    /* Variable: PLANT_EXPORT
                                         * Referenced by:
                                         *   '<S23>/dt'

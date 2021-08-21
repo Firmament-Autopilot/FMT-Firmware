@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1002
+ * Model version                  : 1.1006
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug  6 23:07:17 2021
+ * C/C++ source code generated on : Sat Aug 21 08:40:05 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -49,15 +49,15 @@ typedef struct {
   real32_T DiscreteTimeIntegrator5_DSTAT_n;/* '<S97>/Discrete-Time Integrator5' */
   real32_T Delay_DSTATE_g[2];          /* '<S77>/Delay' */
   real32_T Delay_DSTATE_f;             /* '<S78>/Delay' */
-  real32_T Integrator1_DSTATE;         /* '<S69>/Integrator1' */
-  real32_T Integrator1_DSTATE_f[2];    /* '<S68>/Integrator1' */
   real32_T Delay_DSTATE_l;             /* '<S32>/Delay' */
-  real32_T Integrator1_DSTATE_g;       /* '<S17>/Integrator1' */
+  real32_T Integrator1_DSTATE;         /* '<S17>/Integrator1' */
   real32_T Integrator1_DSTATE_e;       /* '<S16>/Integrator1' */
+  real32_T Integrator1_DSTATE_l;       /* '<S69>/Integrator1' */
+  real32_T Integrator1_DSTATE_f[2];    /* '<S68>/Integrator1' */
   real32_T Integrator_DSTATE[2];       /* '<S68>/Integrator' */
+  real32_T Integrator_DSTATE_o;        /* '<S69>/Integrator' */
   real32_T Integrator_DSTATE_c;        /* '<S16>/Integrator' */
   real32_T Integrator_DSTATE_h;        /* '<S17>/Integrator' */
-  real32_T Integrator_DSTATE_o;        /* '<S69>/Integrator' */
   uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S82>/Discrete-Time Integrator' */
   uint32_T local_mode;                 /* '<S1>/Control_Mode' */
   uint16_T temporalCounter_i1;         /* '<S89>/Disarm_Event' */
@@ -99,15 +99,15 @@ typedef struct {
   const real32_T Square;               /* '<S73>/Square' */
   const real32_T d;                    /* '<S73>/Multiply' */
   const real32_T Gain4;                /* '<S73>/Gain4' */
+  const real32_T Square_e;             /* '<S74>/Square' */
+  const real32_T d_k;                  /* '<S74>/Multiply' */
+  const real32_T Gain4_j;              /* '<S74>/Gain4' */
   const real32_T Square_b;             /* '<S18>/Square' */
   const real32_T d_e;                  /* '<S18>/Multiply' */
   const real32_T Gain4_f;              /* '<S18>/Gain4' */
   const real32_T Square_n;             /* '<S19>/Square' */
   const real32_T d_a;                  /* '<S19>/Multiply' */
   const real32_T Gain4_b;              /* '<S19>/Gain4' */
-  const real32_T Square_e;             /* '<S74>/Square' */
-  const real32_T d_k;                  /* '<S74>/Multiply' */
-  const real32_T Gain4_j;              /* '<S74>/Gain4' */
 } ConstB_FMS_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -227,8 +227,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S5>'   : 'FMS/Control_Mode/Altitude_Hold_Mode'
  * '<S6>'   : 'FMS/Control_Mode/Control_Mode'
  * '<S7>'   : 'FMS/Control_Mode/FMS_Command_Generator'
- * '<S8>'   : 'FMS/Control_Mode/Manual_Mode'
- * '<S9>'   : 'FMS/Control_Mode/Position_Mode'
+ * '<S8>'   : 'FMS/Control_Mode/Position_Mode'
+ * '<S9>'   : 'FMS/Control_Mode/Stabilize_Mode'
  * '<S10>'  : 'FMS/Control_Mode/Unknown_Mode'
  * '<S11>'  : 'FMS/Control_Mode/FMS_Command_Generator/Angel_Rate_Command'
  * '<S12>'  : 'FMS/Control_Mode/FMS_Command_Generator/Attitude_Command'
