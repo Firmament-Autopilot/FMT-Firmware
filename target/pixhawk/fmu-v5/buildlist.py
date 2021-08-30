@@ -56,7 +56,7 @@ MODULES = [
     'utils/*.c',
     'mavproxy/*.c',
     'sensor/*.c',
-    'sysIO/*.c',
+    'sysio/*.c',
     'toml/*.c',
     'workqueue/*.c',
     'math/*.c',
