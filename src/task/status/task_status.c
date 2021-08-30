@@ -159,12 +159,12 @@ fmt_err_t task_status_init(void)
 
 void task_status_entry(void* parameter)
 {
-#ifdef FMT_USING_HIL
-#ifdef FMT_USING_SIH
-    ulog_i(TAG, "SIH Simulation");
-#else
+#if defined(FMT_USING_HIL)
     ulog_i(TAG, "HIL Simulation");
 #endif
+
+#if defined(FMT_USING_SIH)
+    ulog_i(TAG, "SIH Simulation");
 #endif
 
 #ifdef FMT_HIL_WITH_ACTUATOR

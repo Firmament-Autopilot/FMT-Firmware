@@ -172,7 +172,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         }
     } break;
 
-#if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
+#if defined(FMT_USING_HIL)
     case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
         imu_data_t imu_report;

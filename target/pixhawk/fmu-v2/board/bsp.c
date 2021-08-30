@@ -331,7 +331,7 @@ void bsp_post_initialize(void)
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL)
+#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */
     FMT_CHECK(actuator_init());
 #endif

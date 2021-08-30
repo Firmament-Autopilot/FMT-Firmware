@@ -55,7 +55,7 @@ void task_vehicle_entry(void* parameter)
 
                 uint32_t time_now = systime_now_ms();
 
-#ifndef FMT_USING_HIL
+#if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
                 sensor_collect();
 #endif
                 pilot_cmd_collect();
@@ -74,11 +74,11 @@ void task_vehicle_entry(void* parameter)
                 /* run Controller model */
                 TIMETAG_CHECK_EXECUTE3(control_period, CONTROL_EXPORT.period, time_now, control_interface_step(););
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || !defined(FMT_USING_HIL) || defined(FMT_TEST_MOTOR)
+#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
                 send_actuator_cmd();
 #endif
 
-#if defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
+#if defined(FMT_USING_HIL)
                 send_hil_actuator_cmd();
 #endif
             }

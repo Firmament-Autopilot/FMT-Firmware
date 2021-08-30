@@ -21,22 +21,16 @@
 
 /* HIL simulation */
 // #define FMT_USING_HIL
-
-#ifdef FMT_USING_HIL
-    /* Simulator-in-hardware simulation, if not defined, the standard HIL will be used */
-    #define FMT_USING_SIH   
-
-    /* enable actuator output in simulation mode */
-    // #define FMT_HIL_WITH_ACTUATOR   
-
-    /* send out pilot_cmd by mavlink */ 
-    #define FMT_OUTPUT_PILOT_CMD    
-#endif
+/* SIH simulation */
+// #define FMT_USING_SIH   
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
 #define FMT_MAVLINK_SYS_ID  1
 #define FMT_MAVLINK_COMP_ID 1
+
+/* Send out pilot cmd via mavlink */
+#define FMT_OUTPUT_PILOT_CMD
 
 /* ULog */
 #define FMT_USING_ULOG
@@ -51,10 +45,8 @@
 /* Unit Test */
 // #define FMT_USING_UNIT_TEST
 
-#define FMT_ONLINE_PARAM_TUNING
+// #define FMT_ONLINE_PARAM_TUNING
 
-#define FMT_RECORD_CALIBRATION_DATA
-
-// #define FMT_TEST_MOTOR
+// #define FMT_RECORD_CALIBRATION_DATA
 
 #endif
