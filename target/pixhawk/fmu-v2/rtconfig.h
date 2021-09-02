@@ -210,6 +210,6 @@
 #define UTEST_THR_PRIORITY 20
 
 /* USING C++ */
-// #define RT_USING_CPLUSPLUS
+#define RT_USING_CPLUSPLUS
 
 #endif
