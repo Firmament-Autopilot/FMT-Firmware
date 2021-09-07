@@ -17,7 +17,7 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define FMT_BUILD_CHECK
+#define FMT_CHECK_BUILD
 
 /* HIL simulation */
 // #define FMT_USING_HIL
