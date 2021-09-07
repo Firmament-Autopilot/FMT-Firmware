@@ -524,13 +524,18 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
 
         pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)rcDevInfo.config;
         if (MATCH(key, "protocol")) {
-            int64_t ival;
-            if (toml_int_in(curtab, key, &ival) == 0) {
-                config->protocol = (uint16_t)ival;
-            } else {
-                TOML_DBG_W("Fail to parse %s value\n", key);
-                continue;
+            char* strval;
+            if (toml_string_in(curtab, "protocol", &strval) == 0) {
+                if (MATCH(strval, "sbus")) {
+                    config->protocol = 1;
+                } else if (MATCH(strval, "ppm")) {
+                    config->protocol = 2;
+                } else {
+                    TOML_DBG_W("unknown rc protocol:%s\n", strval);
+                    rt_free(strval);
+                }
             }
+            rt_free(strval);
         } else if (MATCH(key, "channel-num")) {
             int64_t ival;
             if (toml_int_in(curtab, key, &ival) == 0) {
