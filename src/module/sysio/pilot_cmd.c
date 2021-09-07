@@ -36,6 +36,7 @@ uint8_t eventCmdNum = 0;
 uint8_t statusCmdNum = 0;
 pilot_mode_config* pilotModes = NULL;
 pilot_event_cmd_t* pilotEventCmds = NULL;
+pilot_status_cmd_t* pilotStatusCmds = NULL;
 
 static rt_device_t rcDev = NULL;
 static uint8_t stickMapping[4] = { 0 };
@@ -208,13 +209,31 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
         pilot_cmd_bus.cmd_1 = 0;
     }
 
-    //TODO: parse status command (command 2)
     /* command 2: status command */
-#ifdef FMT_TEST_MOTOR
-    pilot_cmd_bus.cmd_2 = FMS_CMD_TEST_MOTOR;
-#else
-    pilot_cmd_bus.cmd_2 = 0;
-#endif
+    for (i = 0; i < statusCmdNum; i++) {
+        in_range = true;
+
+        for (j = 0; j < pilotStatusCmds[i].chan_dim; j++) {
+            if (pilotStatusCmds[i].channel[j] < 1) {
+                /* invalid channel */
+                in_range = false;
+                break;
+            }
+
+            val = rc_channel[pilotStatusCmds[i].channel[j] - 1];
+            if (val < pilotStatusCmds[i].range[j * 2] || val > pilotStatusCmds[i].range[j * 2 + 1]) {
+                /* channel value out of range */
+                in_range = false;
+                break;
+            }
+        }
+
+        if (in_range) {
+            pilot_cmd_bus.cmd_2 = pilotStatusCmds[i].cmd;
+        } else {
+            pilot_cmd_bus.cmd_2 = 0;
+        }
+    }
 }
 
 fmt_err_t pilot_cmd_collect(void)
