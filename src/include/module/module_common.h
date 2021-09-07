@@ -23,7 +23,7 @@
 #include "module/ipc/uMCN.h"
 #include "module/param/param.h"
 #include "module/log/boot_log.h"
-#include "module/log/blog.h"
+#include "module/log/mlog.h"
 #include "module/log/ulog.h"
 #include "module/math/ap_math.h"
 #include "module/math/quaternion.h"

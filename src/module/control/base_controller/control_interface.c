@@ -107,7 +107,7 @@ void control_interface_step(void)
         /* rewrite timestmp */
         Controller_Y.Control_Out.timestamp = time_now - start_time;
         /* Log Control out data */
-        blog_push_msg((uint8_t*)&Controller_Y.Control_Out, BLOG_CONTROL_OUT_ID, sizeof(Control_Out_Bus));
+        mlog_push_msg((uint8_t*)&Controller_Y.Control_Out, MLOG_CONTROL_OUT_ID, sizeof(Control_Out_Bus));
     }
 }
 

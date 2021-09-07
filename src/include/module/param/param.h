@@ -149,7 +149,7 @@ typedef struct {
 
 /******************** Step 3: Declare Parameters In Group ********************/
 typedef struct {
-    PARAM_DECLARE(BLOG_MODE);
+    PARAM_DECLARE(MLOG_MODE);
 } PARAM_GROUP(SYSTEM);
 
 typedef struct {

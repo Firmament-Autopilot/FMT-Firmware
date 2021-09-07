@@ -32,7 +32,7 @@ static McnNode_t _ins_out_nod;
 static McnNode_t _control_out_nod;
 static uint8_t _pilot_cmd_update = 1;
 
-static void blog_start_cb(void)
+static void mlog_start_cb(void)
 {
     _pilot_cmd_update = 1;
 }
@@ -86,7 +86,7 @@ void fms_interface_step(void)
     if (_pilot_cmd_update) {
         FMS_U.Pilot_Cmd.timestamp = time_now - start_time;
         /* Log pilot command */
-        if (blog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, BLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, MLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus)) == FMT_EOK) {
             _pilot_cmd_update = 0;
         }
     }
@@ -98,7 +98,7 @@ void fms_interface_step(void)
         /* rewrite timestmp */
         FMS_Y.FMS_Output.timestamp = time_now - start_time;
         /* Log FMS out data */
-        blog_push_msg((uint8_t*)&FMS_Y.FMS_Output, BLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
+        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Output, MLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
     }
 }
 
@@ -110,7 +110,7 @@ void fms_interface_init(void)
     _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
-    blog_register_callback(BLOG_CB_START, blog_start_cb);
+    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     FMS_init();
 

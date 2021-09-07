@@ -35,12 +35,12 @@
 /******************** Step 4: Define Parameters In Group ********************/
 PARAM_GROUP(SYSTEM)
 PARAM_DECLARE_GROUP(SYSTEM) = {
-    /* Determines when to start and stop logging (Blog).
+    /* Determines when to start and stop logging.
 	0: disabled
 	1: when armed until disarm
 	2: from boot until disarm
 	3: from boot until shutdown  */
-    PARAM_DEFINE_INT32(BLOG_MODE, 0),
+    PARAM_DEFINE_INT32(MLOG_MODE, 0),
 };
 
 PARAM_GROUP(CALIB)

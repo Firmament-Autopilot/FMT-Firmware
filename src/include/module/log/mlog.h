@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef BINARY_LOG_H__
-#define BINARY_LOG_H__
+#ifndef MLOG_H__
+#define MLOG_H__
 
 #include <firmament.h>
 
@@ -30,79 +30,79 @@ extern "C" {
 #define LOGPACKED(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
 #endif
 
-#define BLOG_VERSION 1
+#define MLOG_VERSION 1
 
-#define BLOG_BEGIN_MSG1 0x92
-#define BLOG_BEGIN_MSG2 0x05
-#define BLOG_END_MSG    0x26
+#define MLOG_BEGIN_MSG1 0x92
+#define MLOG_BEGIN_MSG2 0x05
+#define MLOG_END_MSG    0x26
 
-#define BLOG_MAX_NAME_LEN     20
-#define BLOG_DESCRIPTION_SIZE 128
-#define BLOG_MODEL_INFO_SIZE  256
+#define MLOG_MAX_NAME_LEN     20
+#define MLOG_DESCRIPTION_SIZE 128
+#define MLOG_MODEL_INFO_SIZE  256
 
-#define BLOG_BUFFER_SIZE         40 * 1024
-#define BLOG_SECTOR_SIZE         4096 /* larger block can increase write bandwidth */
-#define BLOG_MAX_SECTOR_TO_WRITE 5
+#define MLOG_BUFFER_SIZE         40 * 1024
+#define MLOG_SECTOR_SIZE         4096 /* larger block can increase write bandwidth */
+#define MLOG_MAX_SECTOR_TO_WRITE 5
 
-/* BLog Msg ID */
+/* MLog Msg ID */
 enum {
     /* must start from 1 */
-    BLOG_IMU_ID = 1,
-    BLOG_MAG_ID,
-    BLOG_BARO_ID,
-    BLOG_GPS_ID,
-    BLOG_RANGEFINDER_ID,
-    BLOG_OPTICAL_FLOW_ID,
-    BLOG_PILOT_CMD_ID,
-    BLOG_INS_OUT_ID,
-    BLOG_FMS_OUT_ID,
-    BLOG_CONTROL_OUT_ID,
+    MLOG_IMU_ID = 1,
+    MLOG_MAG_ID,
+    MLOG_BARO_ID,
+    MLOG_GPS_ID,
+    MLOG_RANGEFINDER_ID,
+    MLOG_OPTICAL_FLOW_ID,
+    MLOG_PILOT_CMD_ID,
+    MLOG_INS_OUT_ID,
+    MLOG_FMS_OUT_ID,
+    MLOG_CONTROL_OUT_ID,
 #if defined(FMT_USING_SIH)
-    BLOG_PLANT_STATE_ID,
+    MLOG_PLANT_STATE_ID,
 #endif
 };
 
 enum {
-    BLOG_CB_START,
-    BLOG_CB_STOP,
-    BLOG_CB_UPDATE,
+    MLOG_CB_START,
+    MLOG_CB_STOP,
+    MLOG_CB_UPDATE,
 };
 
 enum {
-    BLOG_INT8 = 0,
-    BLOG_UINT8,
-    BLOG_INT16,
-    BLOG_UINT16,
-    BLOG_INT32,
-    BLOG_UINT32,
-    BLOG_FLOAT,
-    BLOG_DOUBLE,
-    BLOG_BOOLEAN,
+    MLOG_INT8 = 0,
+    MLOG_UINT8,
+    MLOG_INT16,
+    MLOG_UINT16,
+    MLOG_INT32,
+    MLOG_UINT32,
+    MLOG_FLOAT,
+    MLOG_DOUBLE,
+    MLOG_BOOLEAN,
 };
 
 enum {
-    BLOG_STATUS_IDLE = 0,
-    BLOG_STATUS_WRITE_HEAD,
-    BLOG_STATUS_LOGGING,
-    BLOG_STATUS_STOPPING,
+    MLOG_STATUS_IDLE = 0,
+    MLOG_STATUS_WRITE_HEAD,
+    MLOG_STATUS_LOGGING,
+    MLOG_STATUS_STOPPING,
 };
 
 LOGPACKED(
     typedef struct {
-        char name[BLOG_MAX_NAME_LEN];
+        char name[MLOG_MAX_NAME_LEN];
         uint16_t type;
         uint16_t number;
     })
-blog_elem_t;
+mlog_elem_t;
 
 LOGPACKED(
     typedef struct {
-        char name[BLOG_MAX_NAME_LEN];
+        char name[MLOG_MAX_NAME_LEN];
         uint8_t msg_id;
         uint8_t num_elem;
-        blog_elem_t* elem_list;
+        mlog_elem_t* elem_list;
     })
-blog_bus_t;
+mlog_bus_t;
 
 LOGPACKED(
     typedef struct {
@@ -112,16 +112,16 @@ LOGPACKED(
         uint16_t max_name_len;
         uint16_t max_desc_len;
         uint16_t max_model_info_len;
-        char description[BLOG_DESCRIPTION_SIZE];
-        char model_info[BLOG_MODEL_INFO_SIZE];
+        char description[MLOG_DESCRIPTION_SIZE];
+        char model_info[MLOG_MODEL_INFO_SIZE];
         /* bus info */
         uint8_t num_bus;
-        blog_bus_t* bus_list;
+        mlog_bus_t* bus_list;
         /* parameter info */
         uint8_t num_param_group;
         param_group_t* param_group_list;
     })
-blog_header_t;
+mlog_header_t;
 
 typedef struct {
     uint8_t* data;
@@ -129,40 +129,40 @@ typedef struct {
     uint32_t tail; // tail point for sector
     uint32_t num_sector;
     uint32_t index; // index in sector
-} blog_buffer_t;
+} mlog_buffer_t;
 
-#define BLOG_ELEMENT(_name, _type) \
+#define MLOG_ELEMENT(_name, _type) \
     {                              \
 #_name,                    \
             _type,                 \
             1                      \
     }
 
-#define BLOG_ELEMENT_VEC(_name, _type, _num) \
+#define MLOG_ELEMENT_VEC(_name, _type, _num) \
     {                                        \
 #_name,                              \
             _type,                           \
             _num                             \
     }
 
-#define BLOG_BUS(_name, _id, _elem_list)              \
+#define MLOG_BUS(_name, _id, _elem_list)              \
     {                                                 \
 #_name,                                       \
             _id,                                      \
-            sizeof(_elem_list) / sizeof(blog_elem_t), \
+            sizeof(_elem_list) / sizeof(mlog_elem_t), \
             _elem_list                                \
     }
 
-fmt_err_t blog_add_desc(char* desc);
-fmt_err_t blog_start(char* file_name);
-void blog_stop(void);
-fmt_err_t blog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len);
-uint8_t blog_get_status(void);
-char* blog_get_file_name(void);
-void blog_statistic(void);
-fmt_err_t blog_register_callback(uint8_t cb_type, void (*cb)(void));
-fmt_err_t binary_log_init(void);
-void blog_async_output(void);
+fmt_err_t mlog_add_desc(char* desc);
+fmt_err_t mlog_start(char* file_name);
+void mlog_stop(void);
+fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len);
+uint8_t mlog_get_status(void);
+char* mlog_get_file_name(void);
+void mlog_statistic(void);
+fmt_err_t mlog_register_callback(uint8_t cb_type, void (*cb)(void));
+fmt_err_t mlog_init(void);
+void mlog_async_output(void);
 
 #ifdef __cplusplus
 }
