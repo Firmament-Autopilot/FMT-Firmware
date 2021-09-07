@@ -90,22 +90,22 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
             if (DEVICE_LIST[idx].config) {
                 *(mavproxy_serial_dev_config*)DEVICE_LIST[idx].config = serial_default_config;
             } else {
-                console_printf("TOML Mavproxy: fail to malloc memory\n");
+                TOML_DBG_E("malloc fail\n");
                 err = FMT_ERROR;
             }
         } else if (DEVICE_TYPE_IS(idx, usb)) {
-            /* no configuration for usb device */
+            /* do nothing */
         } else {
-            console_printf("TOML Mavproxy: unknown device type: %s\n", DEVICE_LIST[idx].type);
+            TOML_DBG_E("unknown device type: %s\n", DEVICE_LIST[idx].type);
             err = FMT_ERROR;
         }
     } else {
-        console_printf("TOML Mavproxy: fail to parse type value\n");
+        TOML_DBG_E("fail to parse type value\n");
         return FMT_ERROR;
     }
 
     if (toml_string_in(curtab, "name", &DEVICE_LIST[idx].name) != 0) {
-        console_printf("TOML Mavproxy: fail to parse name value\n");
+        TOML_DBG_E("fail to parse name value\n");
         return FMT_ERROR;
     }
 
@@ -123,11 +123,11 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
                 if (toml_int_in(curtab, key, &ival) == 0) {
                     config->baudrate = (uint32_t)ival;
                 } else {
-                    console_printf("TOML Mavproxy: fail to parse baudrate value\n");
+                    TOML_DBG_W("fail to parse baudrate value\n");
                     continue;
                 }
             } else {
-                console_printf("TOML Mavproxy: unknown config key: %s\n", key);
+                TOML_DBG_W("unknown config key: %s\n", key);
                 continue;
             }
         } else if (DEVICE_TYPE_IS(idx, usb)) {
@@ -149,7 +149,7 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
                 continue;
             }
         } else {
-            // unknown type
+            TOML_DBG_W("unknown device type:%s\n", DEVICE_LIST[idx].type);
             continue;
         }
     }
@@ -168,12 +168,12 @@ static fmt_err_t mavproxy_parse_devices(const toml_array_t* array)
         err = mavproxy_parse_device(curtab, idx);
 
         if (err != FMT_EOK) {
-            console_printf("TOML Mavproxy: device parse fail: %d\n", err);
+            TOML_DBG_W("device parse fail: %d\n", err);
             continue;
         }
 
         if (++idx >= MAVPROXY_MAX_DEVICE_NUM) {
-            console_printf("TOML Mavproxy: too many devices\n");
+            TOML_DBG_W("too many devices\n");
             break;
         }
     }
@@ -255,11 +255,11 @@ fmt_err_t mavproxy_toml_config(toml_table_t* table)
             if (toml_array_table_in(table, key, &arr) == 0) {
                 err = mavproxy_parse_devices(arr);
                 if (err != FMT_EOK) {
-                    console_printf("TOML Mavproxy: fail to parse devices\n");
+                    TOML_DBG_E("fail to parse devices\n");
                     return err;
                 }
             } else {
-                console_printf("TOML Mavproxy: fail to parse devices\n");
+                TOML_DBG_E("fail to get devices table\n");
                 return FMT_ERROR;
             }
         } else if (MATCH(key, "device")) {
@@ -272,11 +272,11 @@ fmt_err_t mavproxy_toml_config(toml_table_t* table)
                     DEVICE_NUM = 1;
                 }
             } else {
-                console_printf("Error: wrong element type: %s\n", key);
+                TOML_DBG_E("wrong element type: %s\n", key);
                 err = FMT_ERROR;
             }
         } else {
-            console_printf("Error: unknown config key: %s\n", key);
+            TOML_DBG_E("unknown config key: %s\n", key);
             err = FMT_ERROR;
         }
     }

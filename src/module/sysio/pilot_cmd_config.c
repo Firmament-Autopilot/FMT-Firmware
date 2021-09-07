@@ -21,7 +21,6 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/toml/toml.h"
 
-#define TOML_DBG(...)   console_printf(__VA_ARGS__)
 #define TOML_DBG_E(...) toml_debug("Pilot_Cmd", "E", __VA_ARGS__)
 #define TOML_DBG_W(...) toml_debug("Pilot_Cmd", "W", __VA_ARGS__)
 
@@ -50,67 +49,6 @@ extern pilot_status_cmd_t* pilotStatusCmds;
 
 static pilot_cmd_device_info rcDevInfo;
 
-void print_channel_mapping(void)
-{
-    int i;
-
-    pilot_cmd_rc_dev_config* config = (pilot_cmd_rc_dev_config*)rcDevInfo.config;
-    console_printf("type:%s\n", rcDevInfo.type);
-    console_printf("name:%s\n", rcDevInfo.name);
-    console_printf("protocol:%d\n", config->protocol);
-    console_printf("channel-num:%d\n", config->channel_num);
-    console_printf("sample time:%f\n", config->sample_time);
-    console_printf("range: [%d %d]\n", config->range[0], config->range[1]);
-
-    for (i = 0; i < modeNum; i++) {
-        console_printf("[mode %d]:\n", i);
-        console_printf("mode:%d\n", pilotModes[i].mode);
-        printf("channel:");
-        for (int k = 0; k < pilotModes[i].chan_dim; k++) {
-            printf("%d,", pilotModes[i].channel[k]);
-        }
-        printf("\n");
-        console_printf("dim:%d\n", pilotModes[i].chan_dim);
-        printf("range:");
-        for (int k = 0; k < pilotModes[i].chan_dim; k++) {
-            printf("[%d %d],", pilotModes[i].range[k * 2], pilotModes[i].range[k * 2 + 1]);
-        }
-        printf("\n");
-    }
-
-    for (i = 0; i < eventCmdNum; i++) {
-        console_printf("[event cmd %d]:\n", i);
-        console_printf("cmd:%ld\n", pilotEventCmds[i].cmd);
-        printf("channel:");
-        for (int k = 0; k < pilotEventCmds[i].chan_dim; k++) {
-            printf("%d,", pilotEventCmds[i].channel[k]);
-        }
-        printf("\n");
-        console_printf("dim:%d\n", pilotEventCmds[i].chan_dim);
-        printf("range:");
-        for (int k = 0; k < pilotEventCmds[i].chan_dim; k++) {
-            printf("[%d %d],", pilotEventCmds[i].range[k * 2], pilotEventCmds[i].range[k * 2 + 1]);
-        }
-        printf("\n");
-    }
-
-    for (i = 0; i < statusCmdNum; i++) {
-        console_printf("[status cmd %d]:\n", i);
-        console_printf("cmd:%ld\n", pilotStatusCmds[i].cmd);
-        printf("channel:");
-        for (int k = 0; k < pilotStatusCmds[i].chan_dim; k++) {
-            printf("%d,", pilotStatusCmds[i].channel[k]);
-        }
-        printf("\n");
-        console_printf("dim:%d\n", pilotStatusCmds[i].chan_dim);
-        printf("range:");
-        for (int k = 0; k < pilotStatusCmds[i].chan_dim; k++) {
-            printf("[%d %d],", pilotStatusCmds[i].range[k * 2], pilotStatusCmds[i].range[k * 2 + 1]);
-        }
-        printf("\n");
-    }
-}
-
 static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
 {
     int i, j;
@@ -131,10 +69,10 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
             } else if (ival == 2) {
                 statusCmdNum++;
             } else {
-                TOML_DBG_W("Unknown command type: %d\n", ival);
+                TOML_DBG_W("unknown type value: %d\n", ival);
             }
         } else {
-            TOML_DBG_E("Fail to parse command type\n");
+            TOML_DBG_E("fail to parse type value\n");
             return FMT_ERROR;
         }
     }
@@ -142,13 +80,13 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
     /* memory allocation */
     pilotEventCmds = (pilot_event_cmd_t*)rt_malloc(sizeof(pilot_event_cmd_t) * eventCmdNum);
     if (pilotEventCmds == NULL && eventCmdNum > 0) {
-        TOML_DBG_E("Fail to malloc memory for command list\n");
+        TOML_DBG_E("event command malloc fail\n");
         return FMT_ENOMEM;
     }
 
     pilotStatusCmds = (pilot_status_cmd_t*)rt_malloc(sizeof(pilot_status_cmd_t) * statusCmdNum);
     if (pilotStatusCmds == NULL && statusCmdNum > 0) {
-        TOML_DBG_E("Fail to malloc memory for command list\n");
+        TOML_DBG_E("status command malloc fail\n");
         return FMT_ENOMEM;
     }
 
@@ -158,7 +96,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
     for (i = 0; 0 != (tab = toml_table_at(curarr, i)); i++) {
         /* get command type */
         if (toml_int_in(tab, "type", &ival) != 0) {
-            TOML_DBG_E("Fail to parse command type\n");
+            TOML_DBG_E("fail to parse type value\n");
             return FMT_ERROR;
         }
 
@@ -169,7 +107,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
             if (toml_int_in(tab, "cmd", &ival) == 0) {
                 pilotEventCmds[eventCmdIdx].cmd = (int32_t)ival;
             } else {
-                TOML_DBG_E("Fail to parse event command\n");
+                TOML_DBG_E("fail to parse event command\n");
                 return FMT_ERROR;
             }
 
@@ -190,7 +128,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
 
                 pilotEventCmds[eventCmdIdx].channel = (int8_t*)rt_malloc(pilotEventCmds[eventCmdIdx].chan_dim);
                 if (pilotEventCmds[eventCmdIdx].channel == NULL) {
-                    TOML_DBG_E("rc command channel malloc fail\n");
+                    TOML_DBG_E("malloc fail\n");
                     return FMT_ENOMEM;
                 }
 
@@ -198,19 +136,19 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                     if (toml_int_at(arr, d, &ival) == 0) {
                         pilotEventCmds[eventCmdIdx].channel[d] = ival;
                     } else {
-                        TOML_DBG_E("fail to parse rc command channel value\n");
+                        TOML_DBG_E("fail to parse channel value\n");
                         return FMT_ERROR;
                     }
                 }
             } else {
-                TOML_DBG_E("Fail to parse event command channel\n");
+                TOML_DBG_E("fail to get channel value\n");
                 return FMT_ERROR;
             }
 
             if (pilotEventCmds[eventCmdIdx].chan_dim == 1) {
                 if (toml_array_value_in(tab, "range", &arr) == 0) {
                     if ((pilotEventCmds[eventCmdIdx].range = (int16_t*)rt_malloc(pilotEventCmds[eventCmdIdx].chan_dim * 2)) == NULL) {
-                        TOML_DBG_E("Malloc fail\n");
+                        TOML_DBG_E("malloc fail\n");
                         return FMT_ENOMEM;
                     }
 
@@ -218,7 +156,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                         if (toml_int_at(arr, j, &ival) == 0) {
                             pilotEventCmds[eventCmdIdx].range[j] = (int16_t)ival;
                         } else {
-                            TOML_DBG_E("Fail to parse event command range\n");
+                            TOML_DBG_E("fail to parse range\n");
                             return FMT_ERROR;
                         }
                     }
@@ -227,17 +165,17 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                 toml_array_t* range_array;
                 toml_array_t* arr;
                 if ((range_array = toml_array_in(tab, "range")) == NULL) {
-                    TOML_DBG_E("rc mode[%d] range parse fail\n", eventCmdIdx);
+                    TOML_DBG_E("mode[%d] range parse fail\n", eventCmdIdx);
                     return FMT_ERROR;
                 }
 
                 if (toml_array_nelem(range_array) != pilotEventCmds[eventCmdIdx].chan_dim) {
-                    TOML_DBG_E("rc command[%d] range dim not match\n", eventCmdIdx);
+                    TOML_DBG_E("command[%d] range dim not match\n", eventCmdIdx);
                     return FMT_ERROR;
                 }
 
                 if ((pilotEventCmds[eventCmdIdx].range = (int16_t*)rt_malloc(pilotEventCmds[eventCmdIdx].chan_dim * 2)) == NULL) {
-                    TOML_DBG_E("Malloc fail\n");
+                    TOML_DBG_E("malloc fail\n");
                     return FMT_ENOMEM;
                 }
 
@@ -248,13 +186,13 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                         if (toml_int_at(arr, k, &ival) == 0) {
                             pilotEventCmds[eventCmdIdx].range[d * 2 + k] = (int16_t)ival;
                         } else {
-                            TOML_DBG_E("rc command[%d] range value parse fail\n", eventCmdIdx);
+                            TOML_DBG_E("command[%d] range value parse fail\n", eventCmdIdx);
                             return FMT_ERROR;
                         }
                     }
                 }
             } else {
-                TOML_DBG_E("rc command[%d] requires a channel mapping\n", i);
+                TOML_DBG_E("command[%d] requires a channel mapping\n", i);
                 return FMT_ERROR;
             }
 
@@ -264,7 +202,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
             if (toml_int_in(tab, "cmd", &ival) == 0) {
                 pilotStatusCmds[statusCmdIdx].cmd = (int32_t)ival;
             } else {
-                TOML_DBG_E("Fail to parse status command\n");
+                TOML_DBG_E("fail to parse status command\n");
                 return FMT_ERROR;
             }
 
@@ -285,7 +223,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
 
                 pilotStatusCmds[statusCmdIdx].channel = (int8_t*)rt_malloc(pilotStatusCmds[statusCmdIdx].chan_dim);
                 if (pilotStatusCmds[statusCmdIdx].channel == NULL) {
-                    TOML_DBG_E("rc command channel malloc fail\n");
+                    TOML_DBG_E("malloc fail\n");
                     return FMT_ENOMEM;
                 }
 
@@ -298,14 +236,14 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                     }
                 }
             } else {
-                TOML_DBG_E("Fail to parse status command channel\n");
+                TOML_DBG_E("fail to parse status command channel\n");
                 return FMT_ERROR;
             }
 
             if (pilotStatusCmds[statusCmdIdx].chan_dim == 1) {
                 if (toml_array_value_in(tab, "range", &arr) == 0) {
                     if ((pilotStatusCmds[statusCmdIdx].range = (int16_t*)rt_malloc(pilotStatusCmds[statusCmdIdx].chan_dim * 2)) == NULL) {
-                        TOML_DBG_E("Malloc fail\n");
+                        TOML_DBG_E("malloc fail\n");
                         return FMT_ENOMEM;
                     }
 
@@ -313,7 +251,7 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                         if (toml_int_at(arr, j, &ival) == 0) {
                             pilotStatusCmds[statusCmdIdx].range[j] = (int16_t)ival;
                         } else {
-                            TOML_DBG_E("Fail to parse event command range\n");
+                            TOML_DBG_E("fail to parse event command range\n");
                             return FMT_ERROR;
                         }
                     }
@@ -322,17 +260,17 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                 toml_array_t* range_array;
                 toml_array_t* arr;
                 if ((range_array = toml_array_in(tab, "range")) == NULL) {
-                    TOML_DBG_E("rc mode[%d] range parse fail\n", statusCmdIdx);
+                    TOML_DBG_E("mode[%d] range parse fail\n", statusCmdIdx);
                     return FMT_ERROR;
                 }
 
                 if (toml_array_nelem(range_array) != pilotStatusCmds[statusCmdIdx].chan_dim) {
-                    TOML_DBG_E("rc command[%d] range dim not match\n", statusCmdIdx);
+                    TOML_DBG_E("command[%d] range dim not match\n", statusCmdIdx);
                     return FMT_ERROR;
                 }
 
                 if ((pilotStatusCmds[statusCmdIdx].range = (int16_t*)rt_malloc(pilotStatusCmds[statusCmdIdx].chan_dim * 2)) == NULL) {
-                    TOML_DBG_E("Malloc fail\n");
+                    TOML_DBG_E("malloc fail\n");
                     return FMT_ENOMEM;
                 }
 
@@ -343,19 +281,19 @@ static fmt_err_t pilot_cmd_parse_command(const toml_array_t* curarr)
                         if (toml_int_at(arr, k, &ival) == 0) {
                             pilotStatusCmds[statusCmdIdx].range[d * 2 + k] = (int16_t)ival;
                         } else {
-                            TOML_DBG_E("rc command[%d] range value parse fail\n", statusCmdIdx);
+                            TOML_DBG_E("command[%d] range value parse fail\n", statusCmdIdx);
                             return FMT_ERROR;
                         }
                     }
                 }
             } else {
-                TOML_DBG_E("rc command[%d] requires a channel mapping\n", statusCmdIdx);
+                TOML_DBG_E("command[%d] requires a channel mapping\n", statusCmdIdx);
                 return FMT_ERROR;
             }
 
             statusCmdIdx++;
         } else {
-            TOML_DBG_E("Unknown command type:%d\n", ival);
+            TOML_DBG_E("unknown command type:%d\n", ival);
             return FMT_ERROR;
         }
     }
@@ -377,7 +315,7 @@ static fmt_err_t pilot_cmd_parse_mode(const toml_array_t* curarr)
 
     pilotModes = (pilot_mode_config*)rt_malloc(toml_array_nelem(curarr) * sizeof(pilot_mode_config));
     if (pilotModes == NULL) {
-        TOML_DBG_E("Mode list malloc fail\n");
+        TOML_DBG_E("mode malloc fail\n");
         return FMT_ERROR;
     }
 
@@ -385,7 +323,7 @@ static fmt_err_t pilot_cmd_parse_mode(const toml_array_t* curarr)
         if (toml_int_in(tab, "mode", &ival) == 0) {
             pilotModes[i].mode = (int8_t)ival;
         } else {
-            TOML_DBG_E("Fail to parse mode\n");
+            TOML_DBG_E("fail to parse mode\n");
             return FMT_ERROR;
         }
 
@@ -395,7 +333,7 @@ static fmt_err_t pilot_cmd_parse_mode(const toml_array_t* curarr)
             if (pilotModes[i].channel) {
                 *pilotModes[i].channel = (int8_t)ival;
             } else {
-                TOML_DBG_E("Malloc fail\n");
+                TOML_DBG_E("malloc fail\n");
                 return FMT_ENOMEM;
             }
             pilotModes[i].chan_dim = 1; // single channel mapping
@@ -405,7 +343,7 @@ static fmt_err_t pilot_cmd_parse_mode(const toml_array_t* curarr)
 
             pilotModes[i].channel = (int8_t*)rt_malloc(pilotModes[i].chan_dim);
             if (pilotModes[i].channel == NULL) {
-                TOML_DBG_E("rc mode channel malloc fail\n");
+                TOML_DBG_E("mode channel malloc fail\n");
                 return FMT_ENOMEM;
             }
 
@@ -418,14 +356,14 @@ static fmt_err_t pilot_cmd_parse_mode(const toml_array_t* curarr)
                 }
             }
         } else {
-            TOML_DBG_E("Fail to parse event command channel\n");
+            TOML_DBG_E("fail to parse channel\n");
             return FMT_ERROR;
         }
 
         if (pilotModes[i].chan_dim == 1) {
             if (toml_array_value_in(tab, "range", &arr) == 0) {
                 if ((pilotModes[i].range = (int16_t*)rt_malloc(pilotModes[i].chan_dim * 2)) == NULL) {
-                    TOML_DBG_E("Malloc fail\n");
+                    TOML_DBG_E("malloc fail\n");
                     return FMT_ENOMEM;
                 }
 
@@ -433,7 +371,7 @@ static fmt_err_t pilot_cmd_parse_mode(const toml_array_t* curarr)
                     if (toml_int_at(arr, j, &ival) == 0) {
                         pilotModes[i].range[j] = (int16_t)ival;
                     } else {
-                        TOML_DBG_E("Fail to parse event command range\n");
+                        TOML_DBG_E("fail to parse event command range\n");
                         return FMT_ERROR;
                     }
                 }
