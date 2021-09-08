@@ -70,9 +70,9 @@ static void ulog_fs_backend_deinit(struct ulog_backend* backend)
 }
 #endif /* ENABLE_ULOG_FS_BACKEND */
 
-static void blog_update_cb(void)
+static void mlog_update_cb(void)
 {
-    rt_event_send(&_log_event, EVENT_BLOG_UPDATE);
+    rt_event_send(&_log_event, EVENT_MLOG_UPDATE);
 }
 
 static void ulog_update_cb(void)
@@ -80,30 +80,30 @@ static void ulog_update_cb(void)
     rt_event_send(&_log_event, EVENT_ULOG_UPDATE);
 }
 
-fmt_err_t logger_start_blog(char* path)
+fmt_err_t logger_start_mlog(char* path)
 {
     char log_name[100];
     char file_name[50];
-    static uint8_t blog_id = 0;
+    static uint8_t mlog_id = 0;
 
     if (path) {
-        /* if a valid path is provided, use it for blog */
-        return blog_start(path);
+        /* if a valid path is provided, use it for mlog */
+        return mlog_start(path);
     }
 
     if (current_log_session(log_name) != FMT_EOK) {
         console_printf("no available log session\n");
         return FMT_ERROR;
     }
-    sprintf(file_name, "/blog%d.bin", ++blog_id);
+    sprintf(file_name, "/mlog%d.bin", ++mlog_id);
     strcat(log_name, file_name);
 
-    return blog_start(log_name);
+    return mlog_start(log_name);
 }
 
-void logger_stop_blog(void)
+void logger_stop_mlog(void)
 {
-    blog_stop();
+    mlog_stop();
 }
 
 fmt_err_t task_logger_init(void)
@@ -115,7 +115,7 @@ fmt_err_t task_logger_init(void)
     }
 
     /* init binary log */
-    binary_log_init();
+    mlog_init();
 
     /* init ulog */
     ulog_init();
@@ -136,8 +136,8 @@ fmt_err_t task_logger_init(void)
     ulog_backend_register(&fs, "filesystem", RT_FALSE);
 #endif
 
-    if (PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 2 || PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 3) {
-        logger_start_blog(NULL);
+    if (PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 2 || PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 3) {
+        logger_start_mlog(NULL);
     }
 
     return FMT_EOK;
@@ -147,9 +147,9 @@ void task_logger_entry(void* parameter)
 {
     rt_err_t rt_err;
     rt_uint32_t recv_set = 0;
-    rt_uint32_t wait_set = EVENT_BLOG_UPDATE | EVENT_ULOG_UPDATE;
+    rt_uint32_t wait_set = EVENT_MLOG_UPDATE | EVENT_ULOG_UPDATE;
 
-    blog_register_callback(BLOG_CB_UPDATE, blog_update_cb);
+    mlog_register_callback(MLOG_CB_UPDATE, mlog_update_cb);
     ulog_register_callback(ulog_update_cb);
 
     while (1) {
@@ -158,8 +158,8 @@ void task_logger_entry(void* parameter)
             20, &recv_set);
 
         if (rt_err == RT_EOK) {
-            if (recv_set & EVENT_BLOG_UPDATE) {
-                blog_async_output();
+            if (recv_set & EVENT_MLOG_UPDATE) {
+                mlog_async_output();
             }
 
             if (recv_set & EVENT_ULOG_UPDATE) {
@@ -167,7 +167,7 @@ void task_logger_entry(void* parameter)
             }
         } else if (rt_err == -RT_ETIMEOUT) {
             /* if timeout, check if there are log data need to send */
-            blog_async_output();
+            mlog_async_output();
             ulog_async_output();
 
 #ifdef ENABLE_ULOG_FS_BACKEND

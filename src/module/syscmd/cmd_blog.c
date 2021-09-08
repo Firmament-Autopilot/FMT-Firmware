@@ -20,15 +20,15 @@
 #include "task/task_logger.h"
 #include "module/file_manager/file_manager.h"
 
-static void _show_blog_status(void)
+static void _show_mlog_status(void)
 {
-    if (blog_get_status() == BLOG_STATUS_IDLE) {
+    if (mlog_get_status() == MLOG_STATUS_IDLE) {
         console_printf("no working log file.\n");
         return;
     }
 
-    console_printf("log file: %s\n", blog_get_file_name());
-    blog_statistic();
+    console_printf("log file: %s\n", mlog_get_file_name());
+    mlog_statistic();
 }
 
 static void show_usage(void)
@@ -45,20 +45,20 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
     for (uint16_t i = 0; i < optc; i++) {
 
         if (STRING_COMPARE(optv[i].opt, "-m") || STRING_COMPARE(optv[i].opt, "--msg")) {
-            blog_add_desc(optv[i].val);
+            mlog_add_desc(optv[i].val);
         }
     }
 
     if (strcmp(argv[1], "start") == 0) {
         if (argc >= 3) {
-            logger_start_blog(argv[2]);
+            logger_start_mlog(argv[2]);
         } else {
-            logger_start_blog(NULL);
+            logger_start_mlog(NULL);
         }
     } else if (strcmp(argv[1], "stop") == 0) {
-        logger_stop_blog();
+        logger_stop_mlog();
     } else if (strcmp(argv[1], "status") == 0) {
-        _show_blog_status();
+        _show_mlog_status();
     }else if (strcmp(argv[1], "ws") == 0) {
         char path[100];
         current_log_session(path);
@@ -70,8 +70,8 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
     return 0;
 }
 
-int cmd_blog(int argc, char** argv)
+int cmd_mlog(int argc, char** argv)
 {
     return syscmd_process(argc, argv, handle_cmd);
 }
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_blog, __cmd_blog, Blog operations);
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_mlog, __cmd_mlog, start/stop mlog);

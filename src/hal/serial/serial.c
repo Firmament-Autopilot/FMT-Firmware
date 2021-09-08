@@ -252,12 +252,6 @@ static void _dma_recv_update_put_index(struct serial_device* serial, rt_size_t l
         rx_fifo->get_index = rx_fifo->put_index;
     }
 
-#ifdef FMT_BUILD_CHECK
-    if (rx_fifo->is_full == RT_TRUE) {
-        TIMETAG_CHECK_EXECUTE(_serial_full_check, 100, console_printf("serial dma rx fifo full\n"););
-    }
-#endif
-
     if (rx_fifo->get_index >= serial->config.bufsz)
         rx_fifo->get_index = 0;
 }

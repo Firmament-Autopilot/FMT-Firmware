@@ -73,7 +73,7 @@ static int ins_output_echo(void* param)
     return 0;
 }
 
-static void blog_start_cb(void)
+static void mlog_start_cb(void)
 {
     ins_handle.imu_updated = 1;
     ins_handle.mag_updated = 1;
@@ -179,42 +179,42 @@ void ins_interface_step(void)
     /* record INS input bus data if updated */
     if (ins_handle.imu_updated) {
         /* Log IMU data if IMU updated */
-        if (blog_push_msg((uint8_t*)&INS_U.IMU, BLOG_IMU_ID, sizeof(INS_U.IMU)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&INS_U.IMU, MLOG_IMU_ID, sizeof(INS_U.IMU)) == FMT_EOK) {
             ins_handle.imu_updated = 0;
         }
     }
 
     if (ins_handle.mag_updated) {
         /* Log Magnetometer data */
-        if (blog_push_msg((uint8_t*)&INS_U.MAG, BLOG_MAG_ID, sizeof(INS_U.MAG)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&INS_U.MAG, MLOG_MAG_ID, sizeof(INS_U.MAG)) == FMT_EOK) {
             ins_handle.mag_updated = 0;
         }
     }
 
     if (ins_handle.baro_updated) {
         /* Log Barometer data */
-        if (blog_push_msg((uint8_t*)&INS_U.Barometer, BLOG_BARO_ID, sizeof(INS_U.Barometer)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&INS_U.Barometer, MLOG_BARO_ID, sizeof(INS_U.Barometer)) == FMT_EOK) {
             ins_handle.baro_updated = 0;
         }
     }
 
     if (ins_handle.gps_updated) {
         /* Log GPS data */
-        if (blog_push_msg((uint8_t*)&INS_U.GPS_uBlox, BLOG_GPS_ID, sizeof(INS_U.GPS_uBlox)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&INS_U.GPS_uBlox, MLOG_GPS_ID, sizeof(INS_U.GPS_uBlox)) == FMT_EOK) {
             ins_handle.gps_updated = 0;
         }
     }
 
     if (ins_handle.rf_updated) {
         /* Log Rangefinder data */
-        if (blog_push_msg((uint8_t*)&ins_handle.rf_report, BLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&ins_handle.rf_report, MLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report)) == FMT_EOK) {
             ins_handle.rf_updated = 0;
         }
     }
 
     if (ins_handle.optflow_updated) {
         /* Log Optical Flow data */
-        if (blog_push_msg((uint8_t*)&ins_handle.optflow_report, BLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report)) == FMT_EOK) {
+        if (mlog_push_msg((uint8_t*)&ins_handle.optflow_report, MLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report)) == FMT_EOK) {
             ins_handle.optflow_updated = 0;
         }
     }
@@ -224,7 +224,7 @@ void ins_interface_step(void)
         /* rewrite timestmp */
         INS_Y.INS_Out.timestamp = time_now - ins_handle.start_time;
         /* Log INS out data */
-        blog_push_msg((uint8_t*)&INS_Y.INS_Out, BLOG_INS_OUT_ID, sizeof(INS_Y.INS_Out));
+        mlog_push_msg((uint8_t*)&INS_Y.INS_Out, MLOG_INS_OUT_ID, sizeof(INS_Y.INS_Out));
     }
 }
 
@@ -239,7 +239,7 @@ void ins_interface_init(void)
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
 
-    blog_register_callback(BLOG_CB_START, blog_start_cb);
+    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     INS_init();
 

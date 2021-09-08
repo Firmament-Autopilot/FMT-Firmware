@@ -44,6 +44,13 @@ typedef struct {
     uint8_t _set;
 } pilot_event_cmd_t;
 
+typedef struct {
+    int32_t cmd;
+    int8_t chan_dim;
+    int8_t* channel;
+    int16_t* range;
+} pilot_status_cmd_t;
+
 fmt_err_t pilot_cmd_init(void);
 fmt_err_t pilot_cmd_collect(void);
 fmt_err_t pilot_cmd_set_device(const char* dev_name);

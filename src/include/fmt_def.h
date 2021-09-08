@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /* Firmament version information */
-#define FMT_VERSION     "v0.0.1"
+#define FMT_VERSION "v0.0.1"
 
 /* Thread Prority */
 #define VEHICLE_THREAD_PRIORITY    3
@@ -65,12 +65,12 @@ typedef int bool;
         }                       \
     } while (false)
 
-#define FMT_CHECK_RETURN(__exp)    \
-    do {                       \
+#define FMT_CHECK_RETURN(__exp)  \
+    do {                         \
         fmt_err_t err = (__exp); \
-        if (err != FMT_EOK) {  \
-            return err;        \
-        }                      \
+        if (err != FMT_EOK) {    \
+            return err;          \
+        }                        \
     } while (false)
 
 #define OS_ENTER_CRITICAL rt_enter_critical()
@@ -78,9 +78,15 @@ typedef int bool;
 #define OS_MALLOC(size)   rt_malloc(size)
 #define OS_FREE(ptr)      rt_free(ptr)
 
+#ifdef FMT_CHECK_BUILD
 #define FMT_ASSERT(exp) RT_ASSERT((exp))
 #define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
 #define RT_CHECK(func)  RT_ASSERT(func == RT_EOK)
+#else
+#define FMT_ASSERT(exp)
+#define FMT_CHECK(func)
+#define RT_CHECK(func)
+#endif
 
 typedef enum {
     FMT_EOK = 0,         /**< There is no error */

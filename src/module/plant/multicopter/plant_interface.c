@@ -128,7 +128,7 @@ void plant_interface_step(void)
         /* rewrite timestmp */
         Plant_Y.Plant_States.timestamp = time_now - start_time;
         /* Log Control out data */
-        blog_push_msg((uint8_t*)&Plant_Y.Plant_States, BLOG_PLANT_STATE_ID, sizeof(Plant_States_Bus));
+        mlog_push_msg((uint8_t*)&Plant_Y.Plant_States, MLOG_PLANT_STATE_ID, sizeof(Plant_States_Bus));
     }
 
     publish_sensor_data();

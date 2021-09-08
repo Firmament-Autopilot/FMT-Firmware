@@ -83,9 +83,9 @@ static void update_fms_status(void)
             case 0:
                 ulog_i(TAG, "[Status] Disarm");
 
-                /* stop blog when disarm */
-                if (PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 1 || PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 2) {
-                    blog_stop();
+                /* stop mlog when disarm */
+                if (PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 || PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 2) {
+                    mlog_stop();
                 }
                 break;
 
@@ -96,9 +96,9 @@ static void update_fms_status(void)
             case 2:
                 ulog_i(TAG, "[Status] Arm");
 
-                /* start blog from arm */
-                if (PARAM_GET_INT32(SYSTEM, BLOG_MODE) == 1 && blog_get_status() == BLOG_STATUS_IDLE) {
-                    logger_start_blog(NULL);
+                /* start mlog from arm */
+                if (PARAM_GET_INT32(SYSTEM, MLOG_MODE) == 1 && mlog_get_status() == MLOG_STATUS_IDLE) {
+                    logger_start_mlog(NULL);
                 }
                 break;
 

@@ -36,6 +36,7 @@ uint8_t eventCmdNum = 0;
 uint8_t statusCmdNum = 0;
 pilot_mode_config* pilotModes = NULL;
 pilot_event_cmd_t* pilotEventCmds = NULL;
+pilot_status_cmd_t* pilotStatusCmds = NULL;
 
 static rt_device_t rcDev = NULL;
 static uint8_t stickMapping[4] = { 0 };
@@ -121,30 +122,42 @@ static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
 
 static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 {
-    int i;
+    int i, j;
     int16_t val;
+    bool in_range;
 
     pilot_cmd->mode = 0xFF; // unknow mode
 
     for (i = 0; i < modeNum; i++) {
-        if (pilotModes[i].chan_dim == 1) {
-            if (pilotModes[i].channel[0] < 1)
-                continue;
-            val = rc_channel[pilotModes[i].channel[0] - 1];
-            if (val >= pilotModes[i].range[0] && val <= pilotModes[i].range[1]) {
-                pilot_cmd->mode = pilotModes[i].mode;
+        in_range = true;
+
+        for (j = 0; j < pilotModes[i].chan_dim; j++) {
+            if (pilotModes[i].channel[j] < 1) {
+                /* invalid channel */
+                in_range = false;
+                break;
+            }
+
+            val = rc_channel[pilotModes[i].channel[j] - 1];
+            if (val < pilotModes[i].range[j * 2] || val > pilotModes[i].range[j * 2 + 1]) {
+                /* channel value out of range */
+                in_range = false;
                 break;
             }
         }
-        // TODO: support multi-channel mapping
+
+        if (in_range) {
+            pilot_cmd->mode = pilotModes[i].mode;
+        }
     }
 }
 
 static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 {
-    int i;
+    int i, j;
     int16_t val;
     uint8_t state_new;
+    bool in_range;
 
     /* command history */
     static uint32_t _last_cmd_timestamp = 0;
@@ -153,30 +166,42 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 
     /* command 1: event command */
     for (i = 0; i < eventCmdNum; i++) {
-        if (pilotEventCmds[i].chan_dim == 1) {
-            if (pilotEventCmds[i].channel[0] < 1)
-                continue;
-            val = rc_channel[pilotEventCmds[i].channel[0] - 1];
-            if (val >= pilotEventCmds[i].range[0] && val <= pilotEventCmds[i].range[1]) {
-                state_new = 1;
-            } else {
-                state_new = 0;
+        in_range = true;
+
+        for (j = 0; j < pilotEventCmds[i].chan_dim; j++) {
+            if (pilotEventCmds[i].channel[j] < 1) {
+                /* invalid channel */
+                in_range = false;
+                break;
             }
 
-            if (state_new != pilotEventCmds[i]._set) {
-                if (state_new) {
-                    /* set event command */
-                    pilot_cmd_bus.cmd_1 = pilotEventCmds[i].cmd;
-                    /* record last event command trigger time */
-                    _last_cmd_timestamp = time_now;
-                }
-
-                pilotEventCmds[i]._set = state_new;
-
-                /* only one command is allowed at the same time */
-                if (state_new)
-                    break;
+            val = rc_channel[pilotEventCmds[i].channel[j] - 1];
+            if (val < pilotEventCmds[i].range[j * 2] || val > pilotEventCmds[i].range[j * 2 + 1]) {
+                /* channel value out of range */
+                in_range = false;
+                break;
             }
+        }
+
+        if (in_range) {
+            state_new = 1;
+        } else {
+            state_new = 0;
+        }
+
+        if (state_new != pilotEventCmds[i]._set) {
+            if (state_new) {
+                /* set event command */
+                pilot_cmd_bus.cmd_1 = pilotEventCmds[i].cmd;
+                /* record last event command trigger time */
+                _last_cmd_timestamp = time_now;
+            }
+
+            pilotEventCmds[i]._set = state_new;
+
+            /* only one command is allowed at the same time */
+            if (state_new)
+                break;
         }
     }
     /* command lasts for 200ms */
@@ -185,11 +210,30 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
     }
 
     /* command 2: status command */
-#ifdef FMT_TEST_MOTOR
-    pilot_cmd_bus.cmd_2 = FMS_CMD_TEST_MOTOR;
-#else
-    pilot_cmd_bus.cmd_2 = 0;
-#endif
+    for (i = 0; i < statusCmdNum; i++) {
+        in_range = true;
+
+        for (j = 0; j < pilotStatusCmds[i].chan_dim; j++) {
+            if (pilotStatusCmds[i].channel[j] < 1) {
+                /* invalid channel */
+                in_range = false;
+                break;
+            }
+
+            val = rc_channel[pilotStatusCmds[i].channel[j] - 1];
+            if (val < pilotStatusCmds[i].range[j * 2] || val > pilotStatusCmds[i].range[j * 2 + 1]) {
+                /* channel value out of range */
+                in_range = false;
+                break;
+            }
+        }
+
+        if (in_range) {
+            pilot_cmd_bus.cmd_2 = pilotStatusCmds[i].cmd;
+        } else {
+            pilot_cmd_bus.cmd_2 = 0;
+        }
+    }
 }
 
 fmt_err_t pilot_cmd_collect(void)
