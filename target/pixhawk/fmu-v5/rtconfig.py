@@ -51,7 +51,7 @@ if PLATFORM == 'gcc':
         ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
-        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,Reset_Handler -T link.lds'
+        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmuv5.map,-cref,-u,Reset_Handler -T link.lds'
 
     CPATH = ''
     LPATH = ''
