@@ -8,8 +8,6 @@ ARCH = 'arm'
 CPU = 'cortex-m4'
 CROSS_TOOL = 'gcc'
 
-# TARGET='fmt_fmu.elf'
-
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')
 
@@ -66,7 +64,7 @@ if PLATFORM == 'gcc':
     CFLAGS += ' -std=c99'
     CXXFLAGS += ' -std=c++14'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmu.bin\n' + SIZE + ' $TARGET \n'
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmuv2.bin\n' + SIZE + ' $TARGET \n'
     # POST_ACTION += 'python px_mkfw.py --prototype px4fmu-v2.prototype --git_identity ../../.. --image fmt_fmu.bin \n'
 
 elif PLATFORM == 'armcc':
