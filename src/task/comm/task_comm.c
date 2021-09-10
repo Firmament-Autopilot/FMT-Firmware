@@ -17,33 +17,71 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "module/fms/fms_interface.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
-#include "module/pmu/power_manager.h"
 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(rc_channels);
 MCN_DECLARE(bat0_status);
+MCN_DECLARE(fms_output);
 
 static mavlink_system_t mavlink_system;
+static McnNode_t fms_out_nod;
+
+static uint32_t get_custom_mode(uint32_t mode)
+{
+    uint32_t custom_mode = 0;
+
+    switch (mode) {
+    case 1: // Mission
+        custom_mode = (4 << 16) + (4 << 24);
+        break;
+    case 2: // Position
+        custom_mode = 3 << 16;
+        break;
+    case 3: // Altitude
+        custom_mode = 2 << 16;
+        break;
+    case 4: // Stabilize
+        custom_mode = 7 << 16;
+        break;
+    case 5: // Acro
+        custom_mode = 5 << 16;
+        break;
+    }
+
+    return custom_mode;
+}
 
 static bool mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
 {
     mavlink_heartbeat_t heartbeat;
-    // uint16_t len;
+    FMS_Out_Bus fms_out;
 
     heartbeat.type = MAV_TYPE_QUADROTOR;
     heartbeat.autopilot = MAV_AUTOPILOT_PX4;
-    // TODO, fill base_mode and custom_mode
     heartbeat.base_mode = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
     heartbeat.custom_mode = 0;
     heartbeat.system_status = MAV_STATE_STANDBY;
+
+    if (mcn_poll(fms_out_nod)) {
+        mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
+
+        if (fms_out.state == 2) {
+            heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
+            heartbeat.system_status = MAV_STATE_ACTIVE;
+        }
+        /* map fms mode to px4 ctrl mode */
+        heartbeat.custom_mode = get_custom_mode(fms_out.mode);
+    }
 
     mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid,
         msg_t, &heartbeat);
@@ -182,6 +220,9 @@ fmt_err_t task_comm_init(void)
 
     err = mavproxy_init();
 
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    FMT_ASSERT(fms_out_nod != NULL);
+
     return err;
 }
 
@@ -220,7 +261,7 @@ FMT_TASK_EXPORT(
     task_comm_init,       /* init */
     task_comm_entry,      /* entry */
     COMM_THREAD_PRIORITY, /* priority */
-    8192,                   /* stack size */
-    NULL,                    /* param */
-    NULL                     /* dependency */
+    8192,                 /* stack size */
+    NULL,                 /* param */
+    NULL                  /* dependency */
 );
