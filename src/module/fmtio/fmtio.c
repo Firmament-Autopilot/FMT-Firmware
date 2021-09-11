@@ -239,7 +239,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
     return chan_mask;
 }
 
-rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
     IO_ActuatorConfig new_config = { .pwm_freq = cfg->pwm_config.pwm_freq };
 
@@ -260,7 +260,7 @@ rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
     return RT_EOK;
 }
 
-rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
+static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
 
@@ -287,13 +287,13 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
     return ret;
 }
 
-rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     // TODO
     return 0;
 }
 
-rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     uint16_t data[FMTIO_MOTOR_CHANNEL_NUM + 1];
     uint8_t chan_num = 0;
@@ -315,6 +315,14 @@ rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t*
     return size;
 }
 
+/**
+ * @brief Send command to io processor
+ * 
+ * @param code command code
+ * @param data command data
+ * @param len data length
+ * @return fmt_err_t FMT_EOK for success
+ */
 fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len)
 {
     fmt_err_t ret = FMT_ERROR;
