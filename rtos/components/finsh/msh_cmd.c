@@ -364,7 +364,7 @@ int cmd_free(int argc, char** argv)
 #endif
     return 0;
 }
-// FINSH_FUNCTION_EXPORT_ALIAS(cmd_free, __cmd_free, Show the memory usage in the system.);
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_free, __cmd_free, Show the memory usage in the system.);
 #endif
 
 #endif
