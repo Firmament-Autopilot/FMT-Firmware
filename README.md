@@ -28,7 +28,7 @@ The system is mainly composed of two parts.
 ## Architecture
 FMT Firmware's architecture is shown in the figure below.
 
-<img src="figures/fmt_struct.png" width="75%">
+<img src="figures/fmt_struct.png" width="80%">
 
 ## Hardware
 The current supported hardware platforms are [Pixhawk(FMUv2)](https://docs.px4.io/master/en/flight_controller/pixhawk.html) and [Pixhawk 4(FMUv5)](https://docs.px4.io/master/en/flight_controller/pixhawk4.html). Please visit the [websit](https://pixhawk.org/) to get more information about the hardware.
