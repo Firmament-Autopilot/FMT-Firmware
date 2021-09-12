@@ -23,9 +23,6 @@
 extern "C" {
 #endif
 
-#define EVENT_MLOG_UPDATE				(1<<0)
-#define EVENT_ULOG_UPDATE		        (1<<1)
-
 fmt_err_t logger_start_mlog(char* path);
 void logger_stop_mlog(void);
 void get_working_log_session(char* path);
