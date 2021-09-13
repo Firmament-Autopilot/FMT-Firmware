@@ -62,17 +62,17 @@ void task_vehicle_entry(void* parameter)
 
 #ifdef FMT_USING_SIH
                 /* run Plant model in internal HIL mode */
-                TIMETAG_CHECK_EXECUTE3(plant_model_update, PLANT_EXPORT.period, time_now, plant_interface_step(););
+                TIMETAG_CHECK_EXECUTE3(plant_model_update, plant_model_info.period, time_now, plant_interface_step(););
 #endif
 
                 /* run INS model */
-                TIMETAG_CHECK_EXECUTE3(ins_period, INS_EXPORT.period, time_now, ins_interface_step(););
+                TIMETAG_CHECK_EXECUTE3(ins_period, ins_model_info.period, time_now, ins_interface_step(););
 
                 /* run FMS model */
-                TIMETAG_CHECK_EXECUTE3(fms_period, FMS_EXPORT.period, time_now, fms_interface_step(););
+                TIMETAG_CHECK_EXECUTE3(fms_period, fms_model_info.period, time_now, fms_interface_step(););
 
                 /* run Controller model */
-                TIMETAG_CHECK_EXECUTE3(control_period, CONTROL_EXPORT.period, time_now, control_interface_step(););
+                TIMETAG_CHECK_EXECUTE3(control_period, control_model_info.period, time_now, control_interface_step(););
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
                 send_actuator_cmd();

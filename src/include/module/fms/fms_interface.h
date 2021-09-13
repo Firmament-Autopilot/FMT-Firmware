@@ -23,6 +23,8 @@
 extern "C" {
 #endif
 
+extern fmt_model_info_t fms_model_info;
+
 void fms_interface_init(void);
 void fms_interface_step(void);
 

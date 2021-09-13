@@ -15,6 +15,12 @@
  *****************************************************************************/
 
 #include <firmament.h>
+#include <Controller.h>
+
+/* controller output topic */
+MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
+/* Model information */
+fmt_model_info_t control_model_info;
 
 void control_interface_step(void)
 {
@@ -23,5 +29,9 @@ void control_interface_step(void)
 
 void control_interface_init(void)
 {
+    /* Fill in the modle information */
+    control_model_info.period = 10;
+    control_model_info.info = "Template Controller";
+
     /* Add your code here */
 }

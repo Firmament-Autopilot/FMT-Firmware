@@ -62,6 +62,8 @@ struct INS_Handler {
     .optflow_updated = 1
 };
 
+fmt_model_info_t ins_model_info;
+
 static int ins_output_echo(void* param)
 {
     INS_Out_Bus ins_out;
@@ -230,6 +232,9 @@ void ins_interface_step(void)
 
 void ins_interface_init(void)
 {
+    ins_model_info.period = INS_EXPORT.period;
+    ins_model_info.info = (char*)INS_EXPORT.model_info;
+
     mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
 
     ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);

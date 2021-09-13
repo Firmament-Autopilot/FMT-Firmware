@@ -14,6 +14,12 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <FMS.h>
+
+/* FMS output topic */
+MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
+/* Model information */
+fmt_model_info_t fms_model_info;
 
 void fms_interface_step(void)
 {
@@ -22,5 +28,9 @@ void fms_interface_step(void)
 
 void fms_interface_init(void)
 {
+    /* Fill in the modle information */
+    fms_model_info.period = 10;
+    fms_model_info.info = "Template FMS";
+
     /* Add your code here */
 }

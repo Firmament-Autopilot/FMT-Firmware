@@ -34,6 +34,8 @@ MCN_DECLARE(control_output);
 
 static McnNode_t _control_out_nod;
 
+fmt_model_info_t plant_model_info;
+
 static void publish_sensor_data(void)
 {
     static uint32_t imu_timestamp = 0xFFFF;
@@ -136,6 +138,9 @@ void plant_interface_step(void)
 
 void plant_interface_init(void)
 {
+    plant_model_info.period = PLANT_EXPORT.period;
+    plant_model_info.info = (char*)PLANT_EXPORT.model_info;
+
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
     if (_control_out_nod == NULL) {

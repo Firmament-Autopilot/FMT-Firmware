@@ -60,7 +60,7 @@ static int echo_pilot_cmd(void* parameter)
     if (err != FMT_EOK)
         return -1;
 
-    console_printf("ls_lr:%.2f ls_ud:%.2f rs_lr:%.2f rs_ud:%.2f mode:%d cmd:[%d %d]\n",
+    console_printf("ls_lr:%.2f ls_ud:%.2f rs_lr:%.2f rs_ud:%.2f mode:%u cmd:[%u %u]\n",
         pilot_cmd.ls_lr, pilot_cmd.ls_ud, pilot_cmd.rs_lr, pilot_cmd.rs_ud, pilot_cmd.mode,
         pilot_cmd.cmd_1, pilot_cmd.cmd_2);
 

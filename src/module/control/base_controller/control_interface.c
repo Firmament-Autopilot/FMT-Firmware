@@ -29,6 +29,8 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 static McnNode_t _fms_out_nod;
 static McnNode_t _ins_out_nod;
 
+fmt_model_info_t control_model_info;
+
 static int control_out_echo(void* param)
 {
     Control_Out_Bus control_out;
@@ -113,6 +115,9 @@ void control_interface_step(void)
 
 void control_interface_init(void)
 {
+    control_model_info.period = CONTROL_EXPORT.period;
+    control_model_info.info = (char*)CONTROL_EXPORT.model_info;
+
     mcn_advertise(MCN_HUB(control_output), control_out_echo);
 
     _fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);

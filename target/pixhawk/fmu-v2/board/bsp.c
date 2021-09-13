@@ -149,11 +149,11 @@ void bsp_show_information(void)
     print_item_line("RAM", buffer, '.', ITEM_LENGTH);
     print_item_line("Target", TARGET_NAME, '.', ITEM_LENGTH);
     print_item_line("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
-    print_item_line("INS Model", (char*)INS_EXPORT.model_info, '.', ITEM_LENGTH);
-    print_item_line("FMS Model", (char*)FMS_EXPORT.model_info, '.', ITEM_LENGTH);
-    print_item_line("Control Model", (char*)CONTROL_EXPORT.model_info, '.', ITEM_LENGTH);
+    print_item_line("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
+    print_item_line("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
+    print_item_line("Control Model", control_model_info.info, '.', ITEM_LENGTH);
 #ifdef FMT_USING_SIH
-    print_item_line("Plant Model", (char*)PLANT_EXPORT.model_info, '.', ITEM_LENGTH);
+    print_item_line("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
 #endif
 
     console_println("Task Initialize:");

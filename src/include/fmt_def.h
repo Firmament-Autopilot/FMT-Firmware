@@ -103,6 +103,11 @@ typedef enum {
     FMT_ENOTHANDLE = 11, /**< Not handled */
 } fmt_err_t;
 
+typedef struct {
+    uint32_t period;
+    char* info;
+} fmt_model_info_t;
+
 #ifdef __cplusplus
 }
 #endif

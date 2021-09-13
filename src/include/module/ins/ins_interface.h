@@ -57,6 +57,8 @@ typedef struct {
 	} flag;
 } INS_Flag;
 
+extern fmt_model_info_t ins_model_info;
+
 void ins_interface_init(void);
 void ins_interface_step(void);
 

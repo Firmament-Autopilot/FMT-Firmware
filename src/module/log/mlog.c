@@ -534,11 +534,11 @@ fmt_err_t mlog_start(char* file_name)
 
     /* write model information */
 #ifdef FMT_USING_SIH
-    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
-        (char*)CONTROL_EXPORT.model_info, (char*)PLANT_EXPORT.model_info);
+    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s\n%s", ins_model_info.info, fms_model_info.info,
+        control_model_info.info, plant_model_info.info);
 #else
-    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s", (char*)INS_EXPORT.model_info, (char*)FMS_EXPORT.model_info,
-        (char*)CONTROL_EXPORT.model_info);
+    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s", ins_model_info.info, fms_model_info.info,
+        control_model_info.info);
 #endif
     WRITE_PAYLOAD(mlog_handle.header.model_info, MLOG_MODEL_INFO_SIZE);
 

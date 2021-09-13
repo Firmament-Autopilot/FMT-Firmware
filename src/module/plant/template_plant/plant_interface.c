@@ -15,6 +15,9 @@
  *****************************************************************************/
 #include <firmament.h>
 
+/* Model information */
+fmt_model_info_t plant_model_info;
+
 void plant_interface_step(void)
 {
     /* Add your code here */
@@ -22,5 +25,9 @@ void plant_interface_step(void)
 
 void plant_interface_init(void)
 {
+    /* Fill in the modle information */
+    plant_model_info.period = 10;
+    plant_model_info.info = "Template Plant";
+
     /* Add your code here */
 }

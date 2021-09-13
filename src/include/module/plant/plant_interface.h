@@ -23,6 +23,8 @@
 extern "C" {
 #endif
 
+extern fmt_model_info_t plant_model_info;
+
 void plant_interface_init(void);
 void plant_interface_step(void);
 

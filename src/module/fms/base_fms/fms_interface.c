@@ -32,6 +32,8 @@ static McnNode_t _ins_out_nod;
 static McnNode_t _control_out_nod;
 static uint8_t _pilot_cmd_update = 1;
 
+fmt_model_info_t fms_model_info;
+
 static void mlog_start_cb(void)
 {
     _pilot_cmd_update = 1;
@@ -104,6 +106,9 @@ void fms_interface_step(void)
 
 void fms_interface_init(void)
 {
+    fms_model_info.period = FMS_EXPORT.period;
+    fms_model_info.info = (char*)FMS_EXPORT.model_info;
+
     mcn_advertise(MCN_HUB(fms_output), NULL);
 
     _pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);

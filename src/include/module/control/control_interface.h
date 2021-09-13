@@ -23,6 +23,8 @@
 extern "C" {
 #endif
 
+extern fmt_model_info_t control_model_info;
+
 void control_interface_init(void);
 void control_interface_step(void);
 

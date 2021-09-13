@@ -15,6 +15,12 @@
  *****************************************************************************/
 
 #include <firmament.h>
+#include <INS.h>
+
+/* INS output bus */
+MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
+/* Model information */
+fmt_model_info_t ins_model_info;
 
 void ins_interface_step(void)
 {
@@ -23,5 +29,9 @@ void ins_interface_step(void)
 
 void ins_interface_init(void)
 {
+    /* Fill in the modle information */
+    ins_model_info.period = 10;
+    ins_model_info.info = "Template INS";
+    
     /* Add your code here */
 }
