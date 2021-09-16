@@ -26,6 +26,7 @@ import os
 import sys
 import string
 import building
+import utils
 
 import xml.etree.ElementTree as etree
 from xml.etree.ElementTree import SubElement
@@ -33,7 +34,7 @@ from utils import _make_path_relative
 from utils import xml_indent
 fs_encoding = sys.getfilesystemencoding()
 
-def VS_AddGroup(ProjectFiles, parent, name, files, project_path):
+def VS_AddGroup(ProjectFiles, parent, name, files, libs, project_path):
     Filter = SubElement(parent, 'Filter')
     Filter.set('Name', name) #set group name to group
 
@@ -44,22 +45,43 @@ def VS_AddGroup(ProjectFiles, parent, name, files, project_path):
 
         path = _make_path_relative(project_path, path)
         path = os.path.join(path, name)
+        try:
+            path = path.decode(fs_encoding)
+        except:
+            path = path
+        File = SubElement(Filter, 'File')
+        File.set('RelativePath', path)
+
+    for lib in libs:
+        name = os.path.basename(lib)
+        path = os.path.dirname(lib)
+
+        path = _make_path_relative(project_path, path)
+        path = os.path.join(path, name)
 
         File = SubElement(Filter, 'File')
-        File.set('RelativePath', path.decode(fs_encoding))
+        try:
+            path = path.decode(fs_encoding)
+        except:
+            path = path
+        File.set('RelativePath', path)
 
 def VS_AddHeadFilesGroup(program, elem, project_path):
-    building.source_ext = []
-    building.source_ext = ["h"]
+    utils.source_ext = []
+    utils.source_ext = ["h"]
     for item in program:
-        building.walk_children(item)    
-    building.source_list.sort()
-    # print building.source_list
+        utils.walk_children(item)    
+    utils.source_list.sort()
+    # print utils.source_list
     
-    for f in building.source_list:
+    for f in utils.source_list:
         path = _make_path_relative(project_path, f)
         File = SubElement(elem, 'File')
-        File.set('RelativePath', path.decode(fs_encoding))
+        try:
+            path = path.decode(fs_encoding)
+        except:
+            path = path
+        File.set('RelativePath', path)
 
 def VSProject(target, script, program):
     project_path = os.path.dirname(os.path.abspath(target))
@@ -67,7 +89,7 @@ def VSProject(target, script, program):
     tree = etree.parse('template_vs2005.vcproj')
     root = tree.getroot()
     
-    out = file(target, 'wb')
+    out = open(target, 'w')
     out.write('<?xml version="1.0" encoding="UTF-8"?>\r\n')
     
     ProjectFiles = []
@@ -79,7 +101,19 @@ def VSProject(target, script, program):
             break
 
     for group in script:
-        group_xml = VS_AddGroup(ProjectFiles, elem, group['name'], group['src'], project_path)
+        libs = []
+        if 'LIBS' in group and group['LIBS']:
+            for item in group['LIBS']:
+                lib_path = ''
+                for path_item in group['LIBPATH']:
+                    full_path = os.path.join(path_item, item + '.lib')
+                    if os.path.isfile(full_path): # has this library
+                        lib_path = full_path
+
+                if lib_path != '':
+                    libs.append(lib_path)
+
+        group_xml = VS_AddGroup(ProjectFiles, elem, group['name'], group['src'], libs, project_path)
 
     # add "*.h" files group
     for elem in tree.iter(tag='Filter'):
@@ -88,7 +122,7 @@ def VSProject(target, script, program):
     VS_AddHeadFilesGroup(program, elem, project_path)
     
     # write head include path
-    if building.Env.has_key('CPPPATH'):
+    if 'CPPPATH' in building.Env:
         cpp_path = building.Env['CPPPATH']
         paths  = set()
         for path in cpp_path:
@@ -107,13 +141,20 @@ def VSProject(target, script, program):
         elem.set('AdditionalIncludeDirectories', cpp_path)
 
     # write cppdefinitons flags
-    if building.Env.has_key('CPPDEFINES'):
-        definitions = ';'.join(building.Env['CPPDEFINES'])
+    if 'CPPDEFINES' in building.Env:
+        CPPDEFINES = building.Env['CPPDEFINES']
+        definitions = []
+        if type(CPPDEFINES[0]) == type(()):
+            for item in CPPDEFINES:
+                definitions += [i for i in item]
+            definitions = ';'.join(definitions)
+        else:
+            definitions = ';'.join(building.Env['CPPDEFINES'])
         elem.set('PreprocessorDefinitions', definitions)
     # write link flags
 
     # write lib dependence 
-    if building.Env.has_key('LIBS'):
+    if 'LIBS' in building.Env:
         for elem in tree.iter(tag='Tool'):
             if elem.attrib['Name'] == 'VCLinkerTool':
                 break
@@ -122,18 +163,23 @@ def VSProject(target, script, program):
         elem.set('AdditionalDependencies', libs)
 
     # write lib include path
-    if building.Env.has_key('LIBPATH'):
+    if 'LIBPATH' in building.Env:
         lib_path = building.Env['LIBPATH']
         paths  = set()
         for path in lib_path:
             inc = _make_path_relative(project_path, os.path.normpath(path))
             paths.add(inc) #.replace('\\', '/')
-    
+
         paths = [i for i in paths]
         paths.sort()
         lib_paths = ';'.join(paths)
         elem.set('AdditionalLibraryDirectories', lib_paths)
 
     xml_indent(root)
-    out.write(etree.tostring(root, encoding='utf-8'))
+    text = etree.tostring(root, encoding='utf-8')
+    try:
+        text = text.decode(encoding="utf-8")
+    except:
+        text = text
+    out.write(text)
     out.close()

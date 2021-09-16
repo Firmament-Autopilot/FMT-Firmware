@@ -11,7 +11,7 @@ for d in bl.LIBS:
     if os.path.isfile(os.path.join(path, 'SConscript')):
         objs = objs + SConscript(os.path.join(d, 'SConscript'))
     else:
-        print 'Error: can not find SConscript in ' + path
+        print('Error: can not find SConscript in ' + path)
         exit(0)
 
 Return('objs')
