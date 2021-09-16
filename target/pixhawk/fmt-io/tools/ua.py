@@ -45,18 +45,18 @@ def PrepareUA(project, RTT_ROOT, BSP_ROOT):
         # ua.write('import sys\n')
         ua.write('\n')
         
-        print RTT_ROOT
+        print(RTT_ROOT)
         
         CPPPATH = []
         CPPDEFINES = []
 
         for group in project:
             # get each include path
-            if group.has_key('CPPPATH') and group['CPPPATH']:
+            if 'CPPPATH' in group and group['CPPPATH']:
                 CPPPATH += group['CPPPATH']
 
             # get each group's definitions
-            if group.has_key('CPPDEFINES') and group['CPPDEFINES']:
+            if 'CPPDEFINES' in group and group['CPPDEFINES']:
                 CPPDEFINES += group['CPPDEFINES']
 
         if len(CPPPATH):

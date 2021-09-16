@@ -45,9 +45,12 @@ def VS_AddGroup(ProjectFiles, parent, name, files, libs, project_path):
 
         path = _make_path_relative(project_path, path)
         path = os.path.join(path, name)
-
+        try:
+            path = path.decode(fs_encoding)
+        except:
+            path = path
         File = SubElement(Filter, 'File')
-        File.set('RelativePath', path.decode(fs_encoding))
+        File.set('RelativePath', path)
 
     for lib in libs:
         name = os.path.basename(lib)
@@ -57,7 +60,11 @@ def VS_AddGroup(ProjectFiles, parent, name, files, libs, project_path):
         path = os.path.join(path, name)
 
         File = SubElement(Filter, 'File')
-        File.set('RelativePath', path.decode(fs_encoding))
+        try:
+            path = path.decode(fs_encoding)
+        except:
+            path = path
+        File.set('RelativePath', path)
 
 def VS_AddHeadFilesGroup(program, elem, project_path):
     utils.source_ext = []
@@ -70,7 +77,11 @@ def VS_AddHeadFilesGroup(program, elem, project_path):
     for f in utils.source_list:
         path = _make_path_relative(project_path, f)
         File = SubElement(elem, 'File')
-        File.set('RelativePath', path.decode(fs_encoding))
+        try:
+            path = path.decode(fs_encoding)
+        except:
+            path = path
+        File.set('RelativePath', path)
 
 def VSProject(target, script, program):
     project_path = os.path.dirname(os.path.abspath(target))
@@ -78,7 +89,7 @@ def VSProject(target, script, program):
     tree = etree.parse('template_vs2005.vcproj')
     root = tree.getroot()
     
-    out = file(target, 'wb')
+    out = open(target, 'w')
     out.write('<?xml version="1.0" encoding="UTF-8"?>\r\n')
     
     ProjectFiles = []
@@ -91,7 +102,7 @@ def VSProject(target, script, program):
 
     for group in script:
         libs = []
-        if group.has_key('LIBS') and group['LIBS']:
+        if 'LIBS' in group and group['LIBS']:
             for item in group['LIBS']:
                 lib_path = ''
                 for path_item in group['LIBPATH']:
@@ -111,7 +122,7 @@ def VSProject(target, script, program):
     VS_AddHeadFilesGroup(program, elem, project_path)
     
     # write head include path
-    if building.Env.has_key('CPPPATH'):
+    if 'CPPPATH' in building.Env:
         cpp_path = building.Env['CPPPATH']
         paths  = set()
         for path in cpp_path:
@@ -130,7 +141,7 @@ def VSProject(target, script, program):
         elem.set('AdditionalIncludeDirectories', cpp_path)
 
     # write cppdefinitons flags
-    if building.Env.has_key('CPPDEFINES'):
+    if 'CPPDEFINES' in building.Env:
         CPPDEFINES = building.Env['CPPDEFINES']
         definitions = []
         if type(CPPDEFINES[0]) == type(()):
@@ -143,7 +154,7 @@ def VSProject(target, script, program):
     # write link flags
 
     # write lib dependence 
-    if building.Env.has_key('LIBS'):
+    if 'LIBS' in building.Env:
         for elem in tree.iter(tag='Tool'):
             if elem.attrib['Name'] == 'VCLinkerTool':
                 break
@@ -152,18 +163,23 @@ def VSProject(target, script, program):
         elem.set('AdditionalDependencies', libs)
 
     # write lib include path
-    if building.Env.has_key('LIBPATH'):
+    if 'LIBPATH' in building.Env:
         lib_path = building.Env['LIBPATH']
         paths  = set()
         for path in lib_path:
             inc = _make_path_relative(project_path, os.path.normpath(path))
             paths.add(inc) #.replace('\\', '/')
-    
+
         paths = [i for i in paths]
         paths.sort()
         lib_paths = ';'.join(paths)
         elem.set('AdditionalLibraryDirectories', lib_paths)
 
     xml_indent(root)
-    out.write(etree.tostring(root, encoding='utf-8'))
+    text = etree.tostring(root, encoding='utf-8')
+    try:
+        text = text.decode(encoding="utf-8")
+    except:
+        text = text
+    out.write(text)
     out.close()

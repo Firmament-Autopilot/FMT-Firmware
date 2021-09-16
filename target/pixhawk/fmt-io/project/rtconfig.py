@@ -6,11 +6,6 @@ CPU='cortex-m3'
 CROSS_TOOL='gcc'
 
 #device options
-# STM32_TYPE = 
-# 'STM32F10X_LD','STM32F10X_LD_VL',
-# 'STM32F10X_MD','STM32F10X_MD_VL',
-# 'STM32F10X_HD','STM32F10X_HD_VL',
-# 'STM32F10X_XL','STM32F10X_CL'
 STM32_TYPE = 'STM32F10X_MD'
 
 # cross_tool provides the cross compiler
@@ -30,7 +25,6 @@ elif CROSS_TOOL == 'iar':
 if os.getenv('RTT_EXEC_PATH'):
 	EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
-print EXEC_PATH
 BUILD = ''
 
 if PLATFORM == 'gcc':
