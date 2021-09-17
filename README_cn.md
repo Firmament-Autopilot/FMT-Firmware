@@ -5,7 +5,7 @@
 </p>
 
 ## 概述
-Firmament (FMT) 是一款基于模型设计 (Model-Based-Design, MBD) 的开源自驾仪.
+Firmament (FMT) 是一款基于模型设计 (Model-Based-Design, MBD) 的开源自驾仪，可被用来快速构建无人机，无人车，无人船，机器人等平台的控制系统。
 
 系统主要由两部分构成.
 
