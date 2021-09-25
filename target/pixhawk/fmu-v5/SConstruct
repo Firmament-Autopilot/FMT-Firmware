@@ -5,7 +5,7 @@ import rtconfig
 # FMT path
 FMU_ROOT = os.path.normpath(os.getcwd() + '/../../..')
 # RTOS path
-RTT_ROOT = FMU_ROOT + '/rtos'
+RTT_ROOT = FMU_ROOT + '/rtos/rt-thread'
 
 sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
 try:
