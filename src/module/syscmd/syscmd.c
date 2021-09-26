@@ -21,6 +21,8 @@
 #include "module/syscmd/syscmd.h"
 #include "hal/serial.h"
 
+extern struct finsh_shell *shell;
+
 static uint8_t _is_option(char* str)
 {
 	if(strlen(str) < 2)
@@ -88,7 +90,7 @@ bool syscmd_is_num(const char* str)
 char syscmd_getc(void)
 {
 	char ch[SERIAL_RB_BUFSZ];
-	struct finsh_shell* shell = finsh_get_shell();
+	// struct finsh_shell* shell = finsh_get_shell();
 
 	if(rt_sem_take(&shell->rx_sem, RT_WAITING_FOREVER) != RT_EOK) return -1;
 
@@ -99,14 +101,14 @@ char syscmd_getc(void)
 
 bool syscmd_has_input(void)
 {
-	struct finsh_shell* shell = finsh_get_shell();
+	// struct finsh_shell* shell = finsh_get_shell();
 
 	return rt_sem_trytake(&shell->rx_sem) == RT_EOK;
 }
 
 void syscmd_flush(void)
 {
-	struct finsh_shell* shell = finsh_get_shell();
+	// struct finsh_shell* shell = finsh_get_shell();
 
 	char ch[SERIAL_RB_BUFSZ];
 	rt_device_read(shell->device, 0, &ch, SERIAL_RB_BUFSZ);

@@ -179,7 +179,7 @@ fmt_err_t console_enable_input(void)
     /* set rt console device to enable kernel printf, e.g, rt_kprintf */
     rt_set_console_device(console_dev);
     /* mount finsh to current console device */
-    finsh_set_device(console_dev->parent.name);
+    finsh_set_device_without_open(console_dev->parent.name);
 
     return FMT_EOK;
 }

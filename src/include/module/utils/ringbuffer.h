@@ -14,8 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef RINGBUFFER_H__
-#define RINGBUFFER_H__
+#pragma once
 
 #include <stdint.h>
 
@@ -43,6 +42,4 @@ void ringbuffer_delete(ringbuffer* rb);
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

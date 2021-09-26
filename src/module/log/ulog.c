@@ -26,7 +26,7 @@
 #include <firmament.h>
 #include <stdarg.h>
 
-#include "ringblk_buf.h"
+#include "ipc/ringblk_buf.h"
 #include "module/log/ulog.h"
 
 #ifdef ULOG_USING_SYSLOG

@@ -1,0 +1,4 @@
+[submodule "rtos/rt-thread"]
+	path = rtos/rt-thread
+	url = https://github.com/Firmament-Autopilot/rt-thread.git
+	branch = rtt-v4.0.3-patched

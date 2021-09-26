@@ -64,20 +64,6 @@
 /* Using Device System */
 #define RT_USING_DEVICE
 #define RT_USING_DEVICE_IPC
-/* Using serial framework */
-#define RT_USING_SERIAL
-
-#define RT_USING_UART1
-#define RT_USING_UART2
-#define RT_USING_UART3
-#define RT_USING_UART4
-#define RT_USING_UART6
-
-/* Using GPIO pin framework */
-#define RT_USING_PIN
-
-/* Using Hardware Timer framework */
-//#define RT_USING_HWTIMER
 
 /* SECTION: Console options */
 #define RT_USING_CONSOLE
@@ -96,6 +82,8 @@
 #define FINSH_THREAD_STACK_SIZE 4096
 /* Enable finsh history */
 #define FINSH_USING_HISTORY
+/* Finsh maximal arguments number */
+#define FINSH_ARG_MAX   20
 
 /* SECTION: device filesystem */
 /* Using Device file system */
@@ -181,30 +169,7 @@
 #define CHECKSUM_GEN_IP                 0
 #define CHECKSUM_GEN_UDP                0
 
-/* RT_GDB_STUB */
-//#define RT_USING_GDB
-
-/* USING SPI */
-#define RT_USING_SPI
-
-/* USING I2C */
-#define RT_USING_I2C
-#define RT_USING_I2C_BITOPS
-
-//#define RT_I2C_DEBUG
-//#define RT_I2C_BIT_DEBUG
-
-/* USING ULOG */
-#define RT_USING_ULOG
-#define ULOG_OUTPUT_FLOAT
-#define ULOG_OUTPUT_TIME
-#define ULOG_OUTPUT_LEVEL
-#define ULOG_OUTPUT_TAG
-// #define ULOG_USING_COLOR
-#define ULOG_USING_ASYNC_OUTPUT
-
 /* USING utest */
-
 #define RT_USING_UTEST
 #define UTEST_THR_STACK_SIZE 4096
 #define UTEST_THR_PRIORITY 20

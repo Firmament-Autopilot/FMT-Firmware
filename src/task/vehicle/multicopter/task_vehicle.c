@@ -43,7 +43,7 @@ static void timer_vehicle_update(void* parameter)
 void task_vehicle_entry(void* parameter)
 {
     rt_err_t res;
-    uint32_t recv_set = 0;
+    rt_uint32_t recv_set = 0;
     uint32_t wait_set = EVENT_VEHICLE_UPDATE;
 
     while (1) {

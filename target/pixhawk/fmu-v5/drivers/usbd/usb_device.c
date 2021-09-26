@@ -26,7 +26,7 @@
 #include "usbd_desc.h"
 #include "usbd_cdc_dev.h"
 #include "usbd_cdc_if.h"
-#include "bsp.h"
+#include "board.h"
 
 /* USER CODE BEGIN Includes */
 

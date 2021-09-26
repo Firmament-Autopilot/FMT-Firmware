@@ -18,6 +18,14 @@
 extern "C" {
 #endif
 
+#define RT_USING_ULOG
+#define ULOG_OUTPUT_FLOAT
+#define ULOG_OUTPUT_TIME
+#define ULOG_OUTPUT_LEVEL
+#define ULOG_OUTPUT_TAG
+// #define ULOG_USING_COLOR
+#define ULOG_USING_ASYNC_OUTPUT
+
 #define ULOG_VERSION_STR               "0.1.1"
 
 /*

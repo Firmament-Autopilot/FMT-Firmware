@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <bsp.h>
+#include <board.h>
 #include <firmament.h>
 #ifdef FMT_USING_CM_BACKTRACE
 #include <cm_backtrace.h>
@@ -63,9 +63,6 @@ static void rt_init_thread_entry(void* parameter)
 
     /* start task */
     task_start();
-
-    /* delete itself */
-    rt_thread_delete(tid0);
 }
 
 int rt_application_init()
@@ -85,22 +82,24 @@ int rt_application_init()
  */
 void rtthread_startup(void)
 {
-    /* init board */
+    /* disable interrupt first */
+    rt_hw_interrupt_disable();
+
+    /* board level initialization
+     * NOTE: please initialize heap inside board initialization.
+     */
     rt_hw_board_init();
-
-    /* init tick */
-    rt_system_tick_init();
-
-    /* init kernel object */
-    rt_system_object_init();
 
     /* init timer system */
     rt_system_timer_init();
 
-    rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
-
     /* init scheduler system */
     rt_system_scheduler_init();
+
+#ifdef RT_USING_SIGNALS
+    /* signal system initialization */
+    rt_system_signal_init();
+#endif
 
     /* init application */
     rt_application_init();
@@ -111,6 +110,10 @@ void rtthread_startup(void)
     /* init idle thread */
     rt_thread_idle_init();
 
+#ifdef RT_USING_SMP
+    rt_hw_spin_lock(&_cpus_lock);
+#endif /*RT_USING_SMP*/
+
     /* start scheduler */
     rt_system_scheduler_start();
 
@@ -120,9 +123,6 @@ void rtthread_startup(void)
 
 int main(void)
 {
-    /* disable interrupt first */
-    rt_hw_interrupt_disable();
-
     /* startup RT-Thread RTOS */
     rtthread_startup();
 
