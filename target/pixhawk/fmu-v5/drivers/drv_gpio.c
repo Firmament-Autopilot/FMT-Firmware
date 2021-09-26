@@ -17,13 +17,6 @@
 #include "drv_gpio.h"
 #include "hal/pin.h"
 
-// enum {
-//     GPIO_PIN_RESET = 0,
-//     GPIO_PIN_SET
-// };
-
-#ifdef RT_USING_PIN
-
 #define PIN_NUM(port, no) (((((port)&0xFu) << 4) | ((no)&0xFu)))
 #define PIN_PORT(pin)     ((uint8_t)(((pin) >> 4) & 0xFu))
 #define PIN_NO(pin)       ((uint8_t)((pin)&0xFu))
@@ -194,5 +187,3 @@ rt_err_t drv_gpio_init(void)
 
     return hal_pin_register(&pin_device, "pin", RT_DEVICE_FLAG_RDWR, RT_NULL);
 }
-
-#endif /* RT_USING_PIN */

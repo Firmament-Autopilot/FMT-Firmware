@@ -523,8 +523,6 @@ static void gps_probe_entry(void* parameter)
     if (i >= CONFIGURE_RETRY_MAX) {
         console_printf("GPS not detected.\n");
     }
-
-    rt_thread_delete(rt_thread_self());
 }
 
 rt_err_t gps_m8n_init(char* device_name)

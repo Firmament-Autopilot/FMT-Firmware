@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "bsp.h"
+#include "board.h"
 
 rt_err_t drv_sdio_init(void);
 

@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "bsp.h"
+#include "board.h"
 #include "drv_sdio.h"
 #include "hal/sd.h"
 #include "stm32f7xx_ll_sdmmc.h"
@@ -199,7 +199,7 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
     }
 }
 
-static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, uint32_t* status)
+static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, rt_uint32_t* status)
 {
     if (rt_event_recv(&sd_dev->event, 0xffffffff,
             RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, TICKS_FROM_MS(SD_TIMEOUT), status)
@@ -260,7 +260,7 @@ static rt_err_t init(sd_dev_t sd)
 static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
 {
     rt_err_t err = RT_EOK;
-    uint32_t status;
+    rt_uint32_t status;
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
 
     RT_ASSERT(sd_handle != RT_NULL);
@@ -290,7 +290,7 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
 static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
 {
     rt_err_t err = RT_EOK;
-    uint32_t status;
+    rt_uint32_t status;
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
 
     RT_ASSERT(sd_handle != RT_NULL);

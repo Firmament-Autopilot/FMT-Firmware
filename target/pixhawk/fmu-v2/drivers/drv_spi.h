@@ -18,7 +18,7 @@
 
 #include <firmament.h>
 
-#include "bsp.h"
+#include "board.h"
 
 #ifdef __cplusplus
 extern "C" {
