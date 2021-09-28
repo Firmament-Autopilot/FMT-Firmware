@@ -72,51 +72,23 @@ static int name_maxlen(const char* title)
 
 static void list_topic(void)
 {
-    char* title_1 = "Topic";
-    char* title_2 = "#SUB";
-    char* title_3 = "Freq(Hz)";
-    char* title_4 = "Echo";
-    char* title_5 = "Suspend";
-    uint32_t title1_len = name_maxlen(title_1) + 2;
-    uint32_t title2_len = strlen(title_2) + 2;
-    uint32_t title3_len = strlen(title_3) + 2;
-    uint32_t title4_len = strlen(title_4) + 2;
-    uint32_t title5_len = strlen(title_5) + 2;
+    uint32_t max_len = name_maxlen("Topic") + 2;
 
-    syscmd_printf(' ', title1_len, SYSCMD_ALIGN_MIDDLE, title_1);
-    syscmd_putc(' ', 1);
-    syscmd_printf(' ', title2_len, SYSCMD_ALIGN_MIDDLE, title_2);
-    syscmd_putc(' ', 1);
-    syscmd_printf(' ', title3_len, SYSCMD_ALIGN_MIDDLE, title_3);
-    syscmd_putc(' ', 1);
-    syscmd_printf(' ', title4_len, SYSCMD_ALIGN_MIDDLE, title_4);
-    syscmd_putc(' ', 1);
-    syscmd_printf(' ', title5_len, SYSCMD_ALIGN_MIDDLE, title_5);
-    console_printf("\n");
-
-    syscmd_putc('-', title1_len);
-    syscmd_putc(' ', 1);
-    syscmd_putc('-', title2_len);
-    syscmd_putc(' ', 1);
-    syscmd_putc('-', title3_len);
-    syscmd_putc(' ', 1);
-    syscmd_putc('-', title4_len);
-    syscmd_putc(' ', 1);
-    syscmd_putc('-', title5_len);
-    console_printf("\n");
+    rt_kprintf("%-*.s    #SUB   Freq(Hz)   Echo   Suspend\n", max_len - 2, "Topic"); syscmd_putc('-', max_len);
+    printf(           " ------ ---------- ------ ---------\n");
 
     McnList_t ite = mcn_get_list();
     for (McnHub_t hub = mcn_iterate(&ite); hub != NULL; hub = mcn_iterate(&ite)) {
-        syscmd_printf(' ', title1_len, SYSCMD_ALIGN_LEFT, hub->obj_name);
-        syscmd_putc(' ', 1);
-        syscmd_printf(' ', title2_len, SYSCMD_ALIGN_MIDDLE, "%d", (int)hub->link_num);
-        syscmd_putc(' ', 1);
-        syscmd_printf(' ', title3_len, SYSCMD_ALIGN_MIDDLE, "%.1f", hub->freq);
-        syscmd_putc(' ', 1);
-        syscmd_printf(' ', title4_len, SYSCMD_ALIGN_MIDDLE, "%s", hub->echo ? "true" : "false");
-        syscmd_putc(' ', 1);
-        syscmd_printf(' ', title5_len, SYSCMD_ALIGN_MIDDLE, "%s", hub->suspend ? "true" : "false");
-        console_printf("\n");
+        syscmd_printf(' ', max_len, SYSCMD_ALIGN_LEFT, hub->obj_name);
+        printf(" ");
+        syscmd_printf(' ', strlen("#SUB") + 2, SYSCMD_ALIGN_MIDDLE, "%d", (int)hub->link_num);
+        printf(" ");
+        syscmd_printf(' ', strlen("Freq(Hz)") + 2, SYSCMD_ALIGN_MIDDLE, "%.1f", hub->freq);
+        printf(" ");
+        syscmd_printf(' ', strlen("Echo") + 2, SYSCMD_ALIGN_MIDDLE, "%s", hub->echo ? "true" : "false");
+        printf(" ");
+        syscmd_printf(' ', strlen("Suspend") + 2, SYSCMD_ALIGN_MIDDLE, "%s", hub->suspend ? "true" : "false");
+        printf("\n");
     }
 }
 
