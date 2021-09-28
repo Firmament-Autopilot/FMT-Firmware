@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
 #include <firmament.h>
 
 #include "module/syscmd/syscmd.h"
 
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-	console_printf("rebooting...\n");
-
+	printf("rebooting...\n");
 	sys_msleep(10);
 
 	NVIC_SystemReset();
