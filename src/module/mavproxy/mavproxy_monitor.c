@@ -175,53 +175,52 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #if defined(FMT_USING_HIL)
     case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
-        imu_data_t imu_report;
-        mag_data_t mag_report;
-        baro_data_t baro_report;
+        imu_data_t imu_data;
+        mag_data_t mag_data;
+        baro_data_t baro_data;
 
         mavlink_msg_hil_sensor_decode(msg, &hil_sensor);
 
         /* publish hil sensor data */
-        imu_report.acc_B_mDs2[0] = hil_sensor.xacc;
-        imu_report.acc_B_mDs2[1] = hil_sensor.yacc;
-        imu_report.acc_B_mDs2[2] = hil_sensor.zacc;
-        imu_report.gyr_B_radDs[0] = hil_sensor.xgyro;
-        imu_report.gyr_B_radDs[1] = hil_sensor.ygyro;
-        imu_report.gyr_B_radDs[2] = hil_sensor.zgyro;
-        imu_report.timestamp_ms = systime_now_ms();
-        mcn_publish(MCN_HUB(sensor_imu), &imu_report);
+        imu_data.acc_B_mDs2[0] = hil_sensor.xacc;
+        imu_data.acc_B_mDs2[1] = hil_sensor.yacc;
+        imu_data.acc_B_mDs2[2] = hil_sensor.zacc;
+        imu_data.gyr_B_radDs[0] = hil_sensor.xgyro;
+        imu_data.gyr_B_radDs[1] = hil_sensor.ygyro;
+        imu_data.gyr_B_radDs[2] = hil_sensor.zgyro;
+        imu_data.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_HUB(sensor_imu0), &imu_data);
 
-        mag_report.mag_B_gauss[0] = hil_sensor.xmag;
-        mag_report.mag_B_gauss[1] = hil_sensor.ymag;
-        mag_report.mag_B_gauss[2] = hil_sensor.zmag;
-        mag_report.timestamp_ms = systime_now_ms();
-        mcn_publish(MCN_HUB(sensor_mag), &mag_report);
+        mag_data.mag_B_gauss[0] = hil_sensor.xmag;
+        mag_data.mag_B_gauss[1] = hil_sensor.ymag;
+        mag_data.mag_B_gauss[2] = hil_sensor.zmag;
+        mag_data.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_HUB(sensor_mag0), &mag_data);
 
-        baro_report.pressure_pa = hil_sensor.abs_pressure * 1e-3;
-        baro_report.temperature_deg = hil_sensor.temperature;
-        baro_report.altitude_m = hil_sensor.pressure_alt;
-        baro_report.timestamp_ms = systime_now_ms();
-        mcn_publish(MCN_HUB(sensor_baro), &baro_report);
+        baro_data.pressure_pa = hil_sensor.abs_pressure * 1e-3;
+        baro_data.temperature_deg = hil_sensor.temperature;
+        baro_data.altitude_m = hil_sensor.pressure_alt;
+        baro_data.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_HUB(sensor_baro), &baro_data);
     } break;
 
     case MAVLINK_MSG_ID_HIL_GPS: {
         mavlink_hil_gps_t hil_gps;
-        gps_data_t gps_report;
+        gps_data_t gps_data;
 
-        gps_report.lat = hil_gps.lat;
-        gps_report.lon = hil_gps.lon;
-        gps_report.height = hil_gps.alt;
-        gps_report.velN = (float)hil_gps.vn * 0.01f;
-        gps_report.velE = (float)hil_gps.ve * 0.01f;
-        gps_report.velD = (float)hil_gps.vd * 0.01f;
-        gps_report.hAcc = (float)hil_gps.eph * 0.01f;
-        gps_report.vAcc = (float)hil_gps.epv * 0.01f;
-        gps_report.sAcc = 0; // speed accurancy unknown
-        gps_report.numSV = hil_gps.satellites_visible;
-        gps_report.fixType = hil_gps.fix_type;
-        gps_report.timestamp_ms = systime_now_ms();
-        ;
-        mcn_publish(MCN_HUB(sensor_gps), &gps_report);
+        gps_data.lat = hil_gps.lat;
+        gps_data.lon = hil_gps.lon;
+        gps_data.height = hil_gps.alt;
+        gps_data.velN = (float)hil_gps.vn * 0.01f;
+        gps_data.velE = (float)hil_gps.ve * 0.01f;
+        gps_data.velD = (float)hil_gps.vd * 0.01f;
+        gps_data.hAcc = (float)hil_gps.eph * 0.01f;
+        gps_data.vAcc = (float)hil_gps.epv * 0.01f;
+        gps_data.sAcc = 0; // speed accurancy unknown
+        gps_data.numSV = hil_gps.satellites_visible;
+        gps_data.fixType = hil_gps.fix_type;
+        gps_data.timestamp_ms = systime_now_ms();
+        mcn_publish(MCN_HUB(sensor_gps), &gps_data);
     } break;
 #endif
 
