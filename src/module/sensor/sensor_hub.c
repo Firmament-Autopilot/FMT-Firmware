@@ -142,8 +142,8 @@ static int echo_sensor_gps(void* param)
         return -1;
     }
 
-    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%f sAcc:%f\n", gps_report.lon, gps_report.lat,
-        gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.sAcc);
+    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f\n", gps_report.lon, gps_report.lat,
+        gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.vAcc, gps_report.sAcc);
 
     return 0;
 }

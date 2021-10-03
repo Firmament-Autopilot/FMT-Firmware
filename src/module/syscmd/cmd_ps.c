@@ -114,13 +114,11 @@ static int list_thread(void)
     rt_list_t* obj_list[LIST_FIND_OBJ_NR];
     rt_list_t* next = (rt_list_t*)RT_NULL;
     const char* item_title = "thread";
-    int maxlen;
+    int maxlen = RT_NAME_MAX;
 
     list_find_init(&find_arg, RT_Object_Class_Thread, obj_list, sizeof(obj_list) / sizeof(obj_list[0]));
 
-    maxlen = RT_NAME_MAX;
-
-    printf("%-*.s pri  status      sp     stack size max used left tick  error cpu\n", maxlen, item_title);
+    rt_kprintf("%-*.s pri  status      sp     stack size max used left tick  error cpu\n", maxlen, item_title);
     object_split(maxlen);
     printf(" ---  ------- ---------- ----------  ------  ---------- ---   -----\n");
 
@@ -148,7 +146,7 @@ static int list_thread(void)
                     rt_uint8_t stat;
                     rt_uint8_t* ptr;
 
-                    printf("%-*.*s %3d ", maxlen, RT_NAME_MAX, thread->name, thread->current_priority);
+                    rt_kprintf("%-*.*s %3d ", maxlen, RT_NAME_MAX, thread->name, thread->current_priority);
 
                     stat = (thread->stat & RT_THREAD_STAT_MASK);
                     if (stat == RT_THREAD_READY)

@@ -65,8 +65,8 @@ fmt_err_t send_hil_actuator_cmd(void)
         hil_actuator_ctrl.controls[2] = (float)control_out.actuator_cmd[2] * 0.002f - 3.0f;
         hil_actuator_ctrl.controls[3] = (float)control_out.actuator_cmd[3] * 0.002f - 3.0f;
         mavlink_msg_hil_actuator_controls_encode(mav_sys.sysid, mav_sys.compid, &msg, &hil_actuator_ctrl);
-
-        err = mavproxy_send_immediate_msg(&msg, true);
+        /* async mode to avoid block the task when usb is not connected */
+        err = mavproxy_send_immediate_msg(&msg, false);
     }
 
     return err;
