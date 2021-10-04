@@ -208,6 +208,8 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         mavlink_hil_gps_t hil_gps;
         gps_data_t gps_data;
 
+        mavlink_msg_hil_gps_decode(msg, &hil_gps);
+
         gps_data.lat = hil_gps.lat;
         gps_data.lon = hil_gps.lon;
         gps_data.height = hil_gps.alt;
@@ -220,6 +222,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         gps_data.numSV = hil_gps.satellites_visible;
         gps_data.fixType = hil_gps.fix_type;
         gps_data.timestamp_ms = systime_now_ms();
+
         mcn_publish(MCN_HUB(sensor_gps), &gps_data);
     } break;
 #endif
