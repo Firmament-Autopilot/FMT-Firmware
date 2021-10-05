@@ -2,16 +2,14 @@
 # Modify this file to control which files/modules should be built
 
 DRIVERS = [
-    'gps/*.c',
-    'hmc5883/*.c',
-    'hw_timer/*.c',
-    'l3gd20h/*.c',
-    'lidar/*.c',
-    'lsm303d/*.c',
-    'mpu6000/*.c',
-    'ms5611/*.c',
-    'tca62724/*.c',
-    'mateksys/*.c',
+    'imu/l3gd20h/*.c',
+    'imu/lsm303d/*.c',
+    'imu/mpu6000/*.c',
+    'mag/hmc5883/*.c',
+    'barometer/ms5611/*.c',
+    'gps/m8n/*.c',
+    'vision_flow/mateksys/*.c',
+    'rgb_led/tca62724/*.c',
 ]
 
 DRIVERS_CPPPATH = []
