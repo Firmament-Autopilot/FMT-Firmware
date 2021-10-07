@@ -305,10 +305,10 @@ fmt_err_t mavproxy_init(void)
     }
 
     /* create event */
-    rt_event_init(&mav_handle.event, "mav_event", RT_IPC_FLAG_FIFO);
+    rt_event_init(&mav_handle.event, "mavproxy", RT_IPC_FLAG_FIFO);
 
     /* register timer event to periodly wakeup itself */
-    rt_timer_init(&mav_handle.timer, "mav_update", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,
+    rt_timer_init(&mav_handle.timer, "mavproxy", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,
         RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     rt_timer_start(&mav_handle.timer);
 

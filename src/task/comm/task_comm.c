@@ -61,7 +61,7 @@ static uint32_t get_custom_mode(uint32_t mode)
     return custom_mode;
 }
 
-static bool mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
 {
     mavlink_heartbeat_t heartbeat;
     FMS_Out_Bus fms_out;
@@ -89,7 +89,7 @@ static bool mavproxy_msg_heartbeat_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-static bool mavproxy_msg_sys_status_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_sys_status_cb(mavlink_message_t* msg_t)
 {
     mavlink_sys_status_t sys_status;
     struct battery_status bat0_status;
@@ -110,7 +110,7 @@ static bool mavproxy_msg_sys_status_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-static bool mavproxy_msg_attitude_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
 {
     mavlink_attitude_t attitude;
     INS_Out_Bus ins_out;
@@ -130,7 +130,7 @@ static bool mavproxy_msg_attitude_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-static bool _msg_local_pos_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_local_pos_cb(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
 
@@ -144,7 +144,7 @@ static bool _msg_local_pos_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-static bool _msg_altitude_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
     baro_data_t baro_report;
@@ -158,7 +158,7 @@ static bool _msg_altitude_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-static bool _msg_gps_raw_int_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_gps_raw_int_cb(mavlink_message_t* msg_t)
 {
     gps_data_t gps_report;
     McnHub* hub = MCN_HUB(sensor_gps);
@@ -192,7 +192,7 @@ static bool _msg_gps_raw_int_pack(mavlink_message_t* msg_t)
     return true;
 }
 
-static bool _msg_rc_channels_pack(mavlink_message_t* msg_t)
+static bool mavlink_msg_rc_channels_cb(mavlink_message_t* msg_t)
 {
     int16_t rc_channels[16];
     McnHub* hub = MCN_HUB(rc_channels);
@@ -232,25 +232,25 @@ void task_comm_entry(void* parameter)
 
     /* register periodical mavlink msg */
     mavproxy_register_period_msg(MAVLINK_MSG_ID_HEARTBEAT, 1000,
-        mavproxy_msg_heartbeat_pack, 1);
+        mavlink_msg_heartbeat_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000,
-        mavproxy_msg_sys_status_pack, 1);
+        mavlink_msg_sys_status_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100,
-        mavproxy_msg_attitude_pack, 1);
+        mavlink_msg_attitude_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
-        _msg_local_pos_pack, 1);
+        mavlink_msg_local_pos_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100,
-        _msg_altitude_pack, 1);
+        mavlink_msg_altitude_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100,
-        _msg_gps_raw_int_pack, 1);
+        mavlink_msg_gps_raw_int_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_RC_CHANNELS, 100,
-        _msg_rc_channels_pack, 1);
+        mavlink_msg_rc_channels_cb, 1);
 
     /* execute mavproxy main loop */
     mavproxy_loop();
