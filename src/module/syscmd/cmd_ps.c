@@ -107,6 +107,43 @@ static rt_list_t* list_get_next(rt_list_t* current, list_get_next_t* arg)
     return node;
 }
 
+static int name_maxlen(const char* title)
+{
+    list_get_next_t find_arg;
+    rt_list_t* obj_list[LIST_FIND_OBJ_NR];
+    int max_len = strlen(title);
+
+    rt_list_t* next = (rt_list_t*)RT_NULL;
+    list_find_init(&find_arg, RT_Object_Class_Thread, obj_list, sizeof(obj_list) / sizeof(obj_list[0]));
+
+    do {
+        next = list_get_next(next, &find_arg);
+        for (int i = 0; i < find_arg.nr_out; i++) {
+            struct rt_object* obj;
+            struct rt_thread thread_info, *thread;
+            rt_ubase_t level;
+
+            obj = rt_list_entry(obj_list[i], struct rt_object, list);
+            level = rt_hw_interrupt_disable();
+
+            if ((obj->type & ~RT_Object_Class_Static) != find_arg.type) {
+                rt_hw_interrupt_enable(level);
+                continue;
+            }
+            /* copy info */
+            memcpy(&thread_info, obj, sizeof thread_info);
+            rt_hw_interrupt_enable(level);
+
+            thread = (struct rt_thread*)obj;
+            if (strlen(thread->name) > max_len) {
+                max_len = strlen(thread->name);
+            }
+        }
+    } while (next != (rt_list_t*)RT_NULL);
+
+    return max_len;
+}
+
 static int list_thread(void)
 {
     rt_ubase_t level;
@@ -114,7 +151,7 @@ static int list_thread(void)
     rt_list_t* obj_list[LIST_FIND_OBJ_NR];
     rt_list_t* next = (rt_list_t*)RT_NULL;
     const char* item_title = "thread";
-    int maxlen = RT_NAME_MAX;
+    int maxlen = name_maxlen(item_title) + 1;
 
     list_find_init(&find_arg, RT_Object_Class_Thread, obj_list, sizeof(obj_list) / sizeof(obj_list[0]));
 
