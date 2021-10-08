@@ -664,10 +664,5 @@ rt_err_t hal_serial_register(struct serial_device* serial,
     /* register a character device */
     ret = rt_device_register(device, name, flag);
 
-#if defined(RT_USING_POSIX)
-    /* set fops */
-    device->fops = &_serial_fops;
-#endif
-
     return ret;
 }

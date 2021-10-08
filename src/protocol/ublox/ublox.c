@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <string.h>
 
 #include "protocol/ublox/ublox.h"
 
