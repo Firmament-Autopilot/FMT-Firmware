@@ -86,7 +86,7 @@ fmt_err_t send_actuator_cmd(void)
     for (i = 0; i < mapping_num; i++) {
         if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
             if (mcn_poll(_control_out_nod)) {
-                rt_size_t size;
+                rt_size_t size = mapping_list[i].map_size;
                 Control_Out_Bus control_out;
                 uint16_t chan_sel = 0;
                 uint16_t chan_val[16];
@@ -94,7 +94,6 @@ fmt_err_t send_actuator_cmd(void)
                 mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
 
                 for (j = 0; j < mapping_list[i].map_size; j++) {
-                    size = mapping_list[i].map_size;
                     /* set channel select according to to mapping */
                     chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                     /* set channel value according to from mapping */
@@ -108,7 +107,7 @@ fmt_err_t send_actuator_cmd(void)
             }
         } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
             if (mcn_poll(_rc_channels_nod)) {
-                rt_size_t size;
+                rt_size_t size = mapping_list[i].map_size;
                 int16_t rc_channel[16];
                 uint16_t chan_val[16];
                 uint16_t chan_sel = 0;
@@ -116,7 +115,6 @@ fmt_err_t send_actuator_cmd(void)
                 mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
 
                 for (j = 0; j < mapping_list[i].map_size; j++) {
-                    size = mapping_list[i].map_size;
                     /* set channel select according to to mapping */
                     chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                     /* set channel value according to from mapping */
