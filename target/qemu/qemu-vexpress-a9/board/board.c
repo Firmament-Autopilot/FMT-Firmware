@@ -176,17 +176,20 @@ void bsp_early_initialize(void)
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
 
-    /* systick driver init */
-    RT_CHECK(drv_systick_init());
-
     /* usart driver init */
     RT_CHECK(drv_usart_init());
+
+    /* init console to enable console output */
+    FMT_CHECK(console_init());
+
+    /* systick driver init */
+    RT_CHECK(drv_systick_init());
 
     /* system time module init */
     FMT_CHECK(systime_init());
 
-    /* init console to enable console output */
-    FMT_CHECK(console_init());
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
 
     rt_thread_idle_sethook(idle_wfi);
 }

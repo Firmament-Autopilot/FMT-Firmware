@@ -1,5 +1,15 @@
+
+/*
+ * Copyright (c) 2006-2018, RT-Thread Development Team
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Change Logs:
+ * Date           Author       Notes
+ * 2018-11-22     Jesven       first version
+ */
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +40,15 @@ static rt_err_t systick_configure(systick_dev_t systick, struct systick_configur
 static rt_uint32_t systick_read(systick_dev_t systick)
 {
     return (TIMER_LOAD(TIMER_HW_BASE) - TIMER_VALUE(TIMER_HW_BASE)) / systick->ticks_per_us;
-    // return (SysTick->LOAD - SysTick->VAL) / systick->ticks_per_us;
 }
 
-
-static void rt_hw_timer_isr(int vector, void *param)
+static void rt_hw_timer_isr(int vector, void* param)
 {
     /* enter interrupt */
     rt_interrupt_enter();
 
     hal_systick_isr(systick_dev);
-    
+
     rt_tick_increase();
     /* clear interrupt */
     TIMER_INTCLR(TIMER_HW_BASE) = 0x01;
@@ -61,7 +69,7 @@ int rt_hw_timer_init(void)
     val |= (TIMER_CTRL_32BIT | TIMER_CTRL_PERIODIC | TIMER_CTRL_IE);
     TIMER_CTRL(TIMER_HW_BASE) = val;
 
-    TIMER_LOAD(TIMER_HW_BASE) = 1000000/RT_TICK_PER_SECOND;
+    TIMER_LOAD(TIMER_HW_BASE) = 1000000 / RT_TICK_PER_SECOND;
 
     /* enable timer */
     TIMER_CTRL(TIMER_HW_BASE) |= TIMER_CTRL_ENABLE;
@@ -71,7 +79,6 @@ int rt_hw_timer_init(void)
 
     return 0;
 }
-
 
 const static struct systick_ops _systick_ops = {
     systick_configure,
@@ -88,6 +95,9 @@ rt_err_t drv_systick_init(void)
     systick_dev = &dev;
 
     rt_hw_timer_init();
+
+    systick_dev->ticks_per_us = 1000;
+    systick_dev->ticks_per_isr = 1000000;
 
     return hal_systick_register(systick_dev, "systick", RT_DEVICE_FLAG_RDONLY, RT_NULL);
 }

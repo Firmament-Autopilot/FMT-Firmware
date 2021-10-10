@@ -24,7 +24,7 @@ fmt_err_t task_local_init(void)
 
 void task_local_entry(void* parameter)
 {
-    printf("Hello FMT! This is a local task.\n");
+    printf("Hello FMT!\n");
 
     while (1) {
         sys_msleep(1000);
@@ -32,7 +32,7 @@ void task_local_entry(void* parameter)
 }
 
 FMT_TASK_EXPORT(
-    local_task,       /* name */
+    local,            /* name */
     task_local_init,  /* init */
     task_local_entry, /* entry */
     25,               /* priority */

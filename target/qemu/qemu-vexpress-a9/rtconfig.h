@@ -30,7 +30,6 @@
 
 /* Using Software Timer */
 #define RT_USING_TIMER_SOFT
-// #define RT_TIMER_THREAD_PRIO		2
 #define RT_TIMER_THREAD_PRIO		5
 #define RT_TIMER_THREAD_STACK_SIZE	1024
 
