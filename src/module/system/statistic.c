@@ -47,8 +47,10 @@ static void thread_idle_hook(void)
             thread = rt_list_entry(node, struct rt_thread, list);
             stats = (cpu_usage_stats*)thread->user_data;
 
-            stats->cpu_usage = (stats->exec_time * 100.0f) / (time_now - prev_usage_cal_time);
-            stats->exec_time = 0;
+            if (stats != NULL) {
+                stats->cpu_usage = (stats->exec_time * 100.0f) / (time_now - prev_usage_cal_time);
+                stats->exec_time = 0;
+            }
         }
         /* update previous cpu usage calculate time */
         prev_usage_cal_time = time_now;
@@ -105,7 +107,11 @@ float get_cpu_usage(void)
 {
     rt_thread_t idle = rt_thread_idle_gethandler();
     cpu_usage_stats* stats = (cpu_usage_stats*)idle->user_data;
-    float cpu_usage = 100.0f - stats->cpu_usage;
+    float cpu_usage = -1.0f;
+
+    if (stats != NULL) {
+        cpu_usage = 100.0f - stats->cpu_usage;
+    }
 
     return cpu_usage;
 }
