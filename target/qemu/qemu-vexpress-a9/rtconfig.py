@@ -39,7 +39,7 @@ if PLATFORM == 'gcc':
     CFLAGS = DEVICE + ' -Wall'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -D__ASSEMBLY__ -I.'
     LINK_SCRIPT = 'link.lds'
-    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,system_vectors'+\
+    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,system_vectors'+\
                       ' -T %s' % LINK_SCRIPT
 
     CPATH = ''
@@ -59,5 +59,5 @@ if PLATFORM == 'gcc':
                                     ' -shared -fPIC -nostartfiles -nostdlib -static-libgcc'
     M_POST_ACTION = STRIP + ' -R .hash $TARGET\n' + SIZE + ' $TARGET \n'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET rtthread.bin\n' +\
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmu.bin\n' +\
                   SIZE + ' $TARGET \n'

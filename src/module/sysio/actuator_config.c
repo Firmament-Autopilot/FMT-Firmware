@@ -15,6 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
+#include <string.h>
 
 #include "hal/actuator.h"
 #include "module/sysio/actuator_config.h"

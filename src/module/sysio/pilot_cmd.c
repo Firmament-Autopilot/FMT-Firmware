@@ -86,6 +86,7 @@ static int echo_rc_channels(void* parameter)
     return 0;
 }
 
+#ifdef FMT_OUTPUT_PILOT_CMD
 static void mavlink_send_pilot_cmd(void)
 {
     mavlink_message_t msg;
@@ -105,6 +106,7 @@ static void mavlink_send_pilot_cmd(void)
 
     mavproxy_send_immediate_msg(&msg, false);
 }
+#endif
 
 static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
 {
@@ -238,9 +240,12 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 
 fmt_err_t pilot_cmd_collect(void)
 {
-    RT_ASSERT(rcDev != NULL);
-
     uint8_t update = 0;
+    
+    if (rcDev == NULL) {
+        /* no rc device */
+        return FMT_ENOTHANDLE;
+    }
 
     FMT_CHECK_RETURN(rt_device_control(rcDev, RC_CMD_CHECK_UPDATE, &update));
 

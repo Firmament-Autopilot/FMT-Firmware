@@ -19,7 +19,13 @@
 
 void print_item_line(const char* name, const char* content, char pad, uint32_t len)
 {
-    int pad_len = len - strlen(name) - strlen(content);
+    int pad_len;
+
+    if (content == NULL) {
+        content = "NULL";
+    }
+
+    pad_len = len - strlen(name) - strlen(content);
 
     if (pad_len < 1) {
         pad_len = 1;
@@ -29,5 +35,6 @@ void print_item_line(const char* name, const char* content, char pad, uint32_t l
     while (pad_len--) {
         console_write(&pad, 1);
     }
+
     console_printf("%s\n", content);
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <string.h>
 
 #include "module/syscmd/optparse.h"
 #include "module/syscmd/syscmd.h"
@@ -209,7 +210,7 @@ static int list_thread(void)
                         ((rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr) * 100 / thread->stack_size,
                         thread->remaining_tick,
                         thread->error,
-                        stats->cpu_usage);
+                        stats!= NULL ? stats->cpu_usage : -1.0f);
 #else
                     ptr = (rt_uint8_t*)thread->stack_addr;
                     while (*ptr == '#')
@@ -222,7 +223,7 @@ static int list_thread(void)
                             / thread->stack_size,
                         thread->remaining_tick,
                         thread->error,
-                        stats->cpu_usage);
+                        stats!= NULL ? stats->cpu_usage : -1.0f);
 #endif
                 }
             }
