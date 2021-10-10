@@ -212,7 +212,7 @@ void bsp_initialize(void)
     RT_CHECK(pl180_init());
     /* init file system */
     rt_thread_delay(RT_TICK_PER_SECOND); /* wait sd card detected */
-    FMT_CHECK(file_manager_init(mnt_table));
+    file_manager_init(mnt_table);
 
     /* init parameter system */
     FMT_CHECK(param_init());
