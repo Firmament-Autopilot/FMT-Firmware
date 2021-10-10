@@ -108,6 +108,14 @@
 /* Using ROM file system */
 // #define RT_USING_DFS_ROMFS
 
+/* SDIO */
+#define RT_USING_SDIO
+#define RT_SDIO_STACK_SIZE 512
+#define RT_SDIO_THREAD_PRIORITY 15
+#define RT_MMCSD_STACK_SIZE 1024
+#define RT_MMCSD_THREAD_PREORITY 22
+#define RT_MMCSD_MAX_PARTITION 16
+
 /* C standard library */
 #define RT_USING_LIBC
 // #define RT_USING_PTHREADS

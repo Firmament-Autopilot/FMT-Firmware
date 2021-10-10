@@ -16,12 +16,14 @@
 #include <firmament.h>
 
 #include <board.h>
+#include <mmu.h>
 #include <shell.h>
 #include <string.h>
-#include <mmu.h>
 
+#include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
+#include <drivers/mmcsd_core.h>
 
 #include "module/file_manager/file_manager.h"
 #include "module/param/param.h"
@@ -47,7 +49,7 @@ struct mem_desc platform_mem_desc[] = {
 const rt_uint32_t platform_mem_desc_size = sizeof(platform_mem_desc) / sizeof(platform_mem_desc[0]);
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    // { "sd0", "/", "elm", 0, NULL },
+    { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -124,7 +126,12 @@ void bsp_initialize(void)
     /* init uMCN */
     FMT_CHECK(mcn_init());
 
+    /* mmcsd core init */
+    RT_CHECK(rt_mmcsd_core_init());
+    /* sdio driver init */
+    RT_CHECK(pl180_init());
     /* init file system */
+    rt_thread_delay(RT_TICK_PER_SECOND); /* wait sd card detected */
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init finsh */
@@ -137,6 +144,9 @@ void bsp_post_initialize(void)
 {
     /* show system information */
     bsp_show_information();
+
+    /* dump boot log to file */
+    // boot_log_dump();
 }
 
 /**
