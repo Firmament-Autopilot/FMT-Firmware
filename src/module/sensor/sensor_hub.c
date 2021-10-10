@@ -333,6 +333,92 @@ static void mag_filter_init(uint8_t id)
 }
 
 /**
+ * @brief Advertise sensor imu topic
+ * 
+ * @param id sensor id
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_imu(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu0_0), echo_sensor_imu));
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu0), echo_sensor_imu));
+        break;
+    case 1:
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu1_0), echo_sensor_imu));
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu1), echo_sensor_imu));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;    
+}
+
+/**
+ * @brief Advertise sensor mag topic
+ * 
+ * @param id sensor id
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_mag(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag0_0), echo_sensor_mag));
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag0), echo_sensor_mag));
+        break;
+    case 1:
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag1_0), echo_sensor_mag));
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag1), echo_sensor_mag));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Advertise sensor barometer topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_baro(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_baro), echo_sensor_baro));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Advertise sensor gps topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_gps(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
  * @brief Register imu sensor
  * 
  * @param gyr_dev_name Gyroscope device name
@@ -356,20 +442,7 @@ fmt_err_t register_sensor_imu(const char* gyr_dev_name, const char* acc_dev_name
     /* Initialize imu filter */
     imu_filter_init(id);
 
-    switch (id) {
-    case 0:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu0_0), echo_sensor_imu));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu0), echo_sensor_imu));
-        break;
-    case 1:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu1_0), echo_sensor_imu));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu1), echo_sensor_imu));
-        break;
-    default:
-        return FMT_EINVAL;
-    }
-
-    return FMT_EOK;
+    return advertise_sensor_imu(id);
 }
 
 /**
@@ -395,20 +468,7 @@ fmt_err_t register_sensor_mag(const char* dev_name, uint8_t id)
     /* Initialize mag filter */
     mag_filter_init(id);
 
-    switch (id) {
-    case 0:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag0_0), echo_sensor_mag));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag0), echo_sensor_mag));
-        break;
-    case 1:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag1_0), echo_sensor_mag));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag1), echo_sensor_mag));
-        break;
-    default:
-        return FMT_EINVAL;
-    }
-
-    return FMT_EOK;
+    return advertise_sensor_mag(id);
 }
 
 /**
@@ -424,9 +484,7 @@ fmt_err_t register_sensor_barometer(const char* dev_name)
         return FMT_ERROR;
     }
 
-    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_baro), echo_sensor_baro));
-
-    return FMT_EOK;
+    return advertise_sensor_baro(0);
 }
 
 /**
@@ -442,9 +500,7 @@ fmt_err_t register_sensor_gps(const char* dev_name)
         return FMT_ERROR;
     }
 
-    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
-
-    return FMT_EOK;
+    return advertise_sensor_gps(0);
 }
 
 fmt_err_t register_sensor_optflow(const char* dev_name)

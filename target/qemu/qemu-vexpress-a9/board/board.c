@@ -41,6 +41,9 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"
+#ifdef FMT_USING_SIH
+#include "module/plant/plant_interface.h"
+#endif
 
 #define DEFAULT_TOML_SYS_CONFIG "target = \"QEMU vexpress-a9\"\n\
 [console]\n\
@@ -216,6 +219,12 @@ void bsp_initialize(void)
 
     /* init parameter system */
     FMT_CHECK(param_init());
+
+    /* init sensor */
+    advertise_sensor_imu(0);
+    advertise_sensor_mag(0);
+    advertise_sensor_baro(0);
+    advertise_sensor_gps(0);
 
     /* init finsh */
     finsh_system_init();
