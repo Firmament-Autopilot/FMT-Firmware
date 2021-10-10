@@ -17,8 +17,6 @@
 #include <firmament.h>
 #include <math.h>
 
-#include "arm_math.h"
-
 #include "module/math/quaternion.h"
 #include "module/math/ap_math.h"
 

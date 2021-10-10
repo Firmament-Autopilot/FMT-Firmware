@@ -17,8 +17,6 @@
 #include <firmament.h>
 #include <math.h>
 
-#include "arm_math.h"
-
 #include "module/filter/butter.h"
 #include "module/math/light_matrix.h"
 #include "module/sensor/sensor_baro.h"

@@ -17,4 +17,6 @@
 #ifndef FMT_BSP_HEADER_H__
 #define FMT_BSP_HEADER_H__
 
+#include <arm_math.h>
+
 #endif
