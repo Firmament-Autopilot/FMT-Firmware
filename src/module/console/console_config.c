@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <string.h>
 
 #include "hal/serial.h"
 #include "module/toml/toml.h"

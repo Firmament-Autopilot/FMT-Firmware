@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <string.h>
 
 #include "module/utils/devmq.h"
 #include "module/work_queue/workqueue_manager.h"

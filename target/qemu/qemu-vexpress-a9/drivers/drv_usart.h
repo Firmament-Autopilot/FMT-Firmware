@@ -14,27 +14,21 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifndef DRV_USART_H__
+#define DRV_USART_H__
+
 #include <firmament.h>
-#include <string.h>
+#include "board.h"
 
-void print_item_line(const char* name, const char* content, char pad, uint32_t len)
-{
-    int pad_len;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    if (content == NULL) {
-        content = "NULL";
-    }
+rt_err_t drv_usart_init(void);
 
-    pad_len = len - strlen(name) - strlen(content);
-
-    if (pad_len < 1) {
-        pad_len = 1;
-    }
-    // e.g, name..............content
-    console_printf("%s", name);
-    while (pad_len--) {
-        console_write(&pad, 1);
-    }
-
-    console_printf("%s\n", content);
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* __DRV_USART_H__ */
+

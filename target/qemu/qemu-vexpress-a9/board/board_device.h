@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,24 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
-#include <string.h>
+#ifndef BOARD_DEVICE_H__
+#define BOARD_DEVICE_H__
 
-void print_item_line(const char* name, const char* content, char pad, uint32_t len)
-{
-    int pad_len;
+// Device Name
+#define CONSOLE_DEVICE_NAME        "serial0"
+#define FMTIO_DEVICE_NAME          "serial5"
+#define GDB_DEVICE_NAME            "serial6"
+#define MAVPROXY_CHAN1_DEVICE_NAME "serial1"
+#define MAVPROXY_CHAN2_DEVICE_NAME "usb"
+#define FS_DEVICE_NAME             "sd0"
 
-    if (content == NULL) {
-        content = "NULL";
-    }
+#define SENSOR_USING_IMU0
+// #define SENSOR_USING_IMU1
+#define SENSOR_USING_MAG0
+// #define SENSOR_USING_MAG1
+#define SENSOR_USING_BAROMETER
+#define SENSOR_USING_GPS
 
-    pad_len = len - strlen(name) - strlen(content);
+#define SPI1_SPEED_HZ 7000000
 
-    if (pad_len < 1) {
-        pad_len = 1;
-    }
-    // e.g, name..............content
-    console_printf("%s", name);
-    while (pad_len--) {
-        console_write(&pad, 1);
-    }
-
-    console_printf("%s\n", content);
-}
+#endif

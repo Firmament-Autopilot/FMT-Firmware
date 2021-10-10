@@ -94,7 +94,9 @@ static bool mavlink_msg_sys_status_cb(mavlink_message_t* msg_t)
     mavlink_sys_status_t sys_status;
     struct battery_status bat0_status;
 
-    mcn_copy_from_hub(MCN_HUB(bat0_status), &bat0_status);
+    if (mcn_copy_from_hub(MCN_HUB(bat0_status), &bat0_status) != FMT_EOK) {
+        return false;
+    }
 
     sys_status.onboard_control_sensors_present = 1;
     sys_status.onboard_control_sensors_enabled = 1;
@@ -115,7 +117,9 @@ static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
     mavlink_attitude_t attitude;
     INS_Out_Bus ins_out;
 
-    mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
 
     attitude.roll = ins_out.phi;
     attitude.pitch = ins_out.theta;
@@ -134,7 +138,9 @@ static bool mavlink_msg_local_pos_cb(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
 
-    mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
 
     mavlink_msg_local_position_ned_pack(
         mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
@@ -149,8 +155,12 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
     INS_Out_Bus ins_out;
     baro_data_t baro_report;
 
-    mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
-    mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_report);
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+    if (mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_report) != FMT_EOK) {
+        return false;
+    }
 
     mavlink_msg_altitude_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms() * 1e3,
         baro_report.altitude_m, baro_report.altitude_m, ins_out.h_R, ins_out.h_R, ins_out.h_AGL, 0.0f);
@@ -168,7 +178,9 @@ static bool mavlink_msg_gps_raw_int_cb(mavlink_message_t* msg_t)
         return false;
     }
 
-    mcn_copy_from_hub(hub, &gps_report);
+    if (mcn_copy_from_hub(hub, &gps_report) != FMT_EOK) {
+        return false;
+    }
 
     gps_raw_int.time_usec = gps_report.timestamp_ms * 1e3;
     gps_raw_int.lat = gps_report.lat;
@@ -202,7 +214,9 @@ static bool mavlink_msg_rc_channels_cb(mavlink_message_t* msg_t)
         return false;
     }
 
-    mcn_copy_from_hub(hub, &rc_channels);
+    if (mcn_copy_from_hub(hub, &rc_channels) != FMT_EOK) {
+        return false;
+    }
 
     mavlink_rc_channels.time_boot_ms = systime_now_ms();
     mavlink_rc_channels.chancount = 16;

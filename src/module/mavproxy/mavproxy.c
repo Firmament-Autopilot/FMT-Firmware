@@ -69,7 +69,7 @@ static mavproxy_handler mav_handle = {
     .imm_mq = { .head = 0, .tail = 0 },
     .period_mq = { .size = 0, .index = 0 },
     .chan = MAVPROXY_UNSET_CHAN,
-    .new_chan = 0,
+    .new_chan = MAVPROXY_UNSET_CHAN,
     .tx_buffer = NULL
 };
 
@@ -97,7 +97,7 @@ static void dump_period_msg(void)
         mav_handle.period_mq.index = (mav_handle.period_mq.index + 1) % mav_handle.period_mq.size;
 
         // find next msg to send
-        if (now - msg_t->time_stamp >= msg_t->period && msg_t->enable) {
+        if (now - msg_t->time_stamp >= msg_t->period && msg_t->enable && msg_t->msg_pack_cb) {
             msg_t->time_stamp = now;
             // pack msg
             mavlink_message_t msg;
@@ -242,6 +242,11 @@ void mavproxy_loop(void)
 
     /* create mavproxy monitor to handle received mavlink msgs */
     mavproxy_monitor_create();
+
+    /* if there are mavproxy device defined, switch to channel 0 by default */
+    if (mavproxy_get_channel_num() > 0) {
+        mav_handle.new_chan = 0;
+    }
 
     while (1) {
         /* wait event occur */

@@ -15,6 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
+#include <string.h>
 
 #include "module/toml/toml.h"
 

@@ -178,5 +178,7 @@ fmt_err_t systime_init(void)
 
     systick_device->systick_isr_cb = systick_isr_cb;
 
+    FMT_ASSERT(__systime.msPerPeriod > 0);
+
     return FMT_EOK;
 }

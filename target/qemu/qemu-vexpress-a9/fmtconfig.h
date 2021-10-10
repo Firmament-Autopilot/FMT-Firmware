@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,36 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
-#include <string.h>
+#ifndef FMTCONFIG_H__
+#define FMTCONFIG_H__
 
-void print_item_line(const char* name, const char* content, char pad, uint32_t len)
-{
-    int pad_len;
+#define FMT_CHECK_BUILD
 
-    if (content == NULL) {
-        content = "NULL";
-    }
+/* HIL simulation */
+// #define FMT_USING_HIL
+/* SIG simulation */
+#define FMT_USING_SIH
 
-    pad_len = len - strlen(name) - strlen(content);
+/* Mavlink */
+#define FMT_USING_MAVLINK_V2
+#define FMT_MAVLINK_SYS_ID  1
+#define FMT_MAVLINK_COMP_ID 1
 
-    if (pad_len < 1) {
-        pad_len = 1;
-    }
-    // e.g, name..............content
-    console_printf("%s", name);
-    while (pad_len--) {
-        console_write(&pad, 1);
-    }
+/* Send out pilot cmd via mavlink */
+// #define FMT_OUTPUT_PILOT_CMD
 
-    console_printf("%s\n", content);
-}
+/* ULog */
+#define FMT_USING_ULOG
+#ifdef FMT_USING_ULOG
+// #define ENABLE_ULOG_FS_BACKEND
+#define ENABLE_ULOG_CONSOLE_BACKEND
+#endif
+
+/* Unit Test */
+// #define FMT_USING_UNIT_TEST
+
+// #define FMT_ONLINE_PARAM_TUNING
+
+// #define FMT_RECORD_CALIBRATION_DATA
+
+#endif

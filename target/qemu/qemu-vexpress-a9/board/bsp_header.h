@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,9 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
-#include <string.h>
+#ifndef FMT_BSP_HEADER_H__
+#define FMT_BSP_HEADER_H__
 
-void print_item_line(const char* name, const char* content, char pad, uint32_t len)
-{
-    int pad_len;
+#include <arm_math.h>
 
-    if (content == NULL) {
-        content = "NULL";
-    }
-
-    pad_len = len - strlen(name) - strlen(content);
-
-    if (pad_len < 1) {
-        pad_len = 1;
-    }
-    // e.g, name..............content
-    console_printf("%s", name);
-    while (pad_len--) {
-        console_write(&pad, 1);
-    }
-
-    console_printf("%s\n", content);
-}
+#endif
