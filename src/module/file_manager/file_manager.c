@@ -42,7 +42,7 @@ static int read_log_session_id(void)
     char id_buffer[5] = { 0 };
     struct stat sta;
     int id = -1;
-    int fd;
+    int fd = -1;
 
     /* if file existed, read it */
     if (stat(LOG_SESSION_FILE, &sta) == 0) {
@@ -62,9 +62,10 @@ static int read_log_session_id(void)
                 return -1;
             }
         }
+        
         id = atoi(id_buffer);
+        close(fd);
     }
-    close(fd);
 
     return id;
 }
