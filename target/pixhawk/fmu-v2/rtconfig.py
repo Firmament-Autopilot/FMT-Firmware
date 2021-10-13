@@ -7,6 +7,8 @@ BOARD = 'pixhawk'
 ARCH = 'arm'
 CPU = 'cortex-m4'
 CROSS_TOOL = 'gcc'
+# build version: debug or release
+BUILD = 'release'
 
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')
@@ -15,10 +17,7 @@ if os.getenv('RTT_CC'):
 # EXEC_PATH is the compiler execute path, for example, CodeSourcery, Keil MDK, IAR
 if CROSS_TOOL == 'gcc':
     PLATFORM = 'gcc'
-    EXEC_PATH = r'D:\gcc-arm-none-eabi-7-2018-q2-update-win32\bin'
-elif CROSS_TOOL == 'keil':
-    PLATFORM = 'armcc'
-    EXEC_PATH = r'C:/Keil'
+    EXEC_PATH = 'your-compiler-path'
 else:
     print('================ERROR============================')
     print('Not support %s yet!' % CROSS_TOOL)
@@ -27,9 +26,6 @@ else:
 
 if os.getenv('RTT_EXEC_PATH'):
     EXEC_PATH = os.getenv('RTT_EXEC_PATH')
-
-BUILD = ''
-# BUILD = 'debug'
 
 if PLATFORM == 'gcc':
     # toolchains
@@ -64,36 +60,4 @@ if PLATFORM == 'gcc':
     CXXFLAGS += ' -std=c++14'
 
     POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmuv2.bin\n' + SIZE + ' $TARGET \n'
-    # POST_ACTION += 'python px_mkfw.py --prototype px4fmu-v2.prototype --git_identity ../../.. --image fmt_fmu.bin \n'
-
-elif PLATFORM == 'armcc':
-    # toolchains
-    CC = 'armcc'
-    AS = 'armasm'
-    AR = 'armar'
-    LINK = 'armlink'
-    TARGET_EXT = 'axf'
-
-    DEVICE = ' --cpu=cortex-m4.fp'
-    CFLAGS = DEVICE + ' --apcs=interwork -DUSE_STDPERIPH_DRIVER -DSTM32F40_41xxx'
-    AFLAGS = DEVICE
-    LFLAGS = DEVICE + ' --info sizes --info totals --info unused --info veneers --list starry_fmu.map --scatter stm32_rom.sct'
-
-    CFLAGS += ' -I' + EXEC_PATH + '/ARM/RV31/INC'
-    LFLAGS += ' --libpath ' + EXEC_PATH + '/ARM/RV31/LIB'
-
-    EXEC_PATH += '/arm/bin40/'
-
-    if BUILD == 'debug':
-        CFLAGS += ' -g -O0'
-        AFLAGS += ' -g'
-    else:
-        CFLAGS += ' -O2'
-
-    POST_ACTION = 'fromelf --bin $TARGET --output starry_fmu.bin \nfromelf -z $TARGET'
-
-else:
-    print('================ERROR============================')
-    print('Not support %s yet!' % PLATFORM)
-    print('=================================================')
-    exit(0)
+    
