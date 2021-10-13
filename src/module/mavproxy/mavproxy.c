@@ -243,10 +243,13 @@ void mavproxy_loop(void)
     /* create mavproxy monitor to handle received mavlink msgs */
     mavproxy_monitor_create();
 
-    /* if there are mavproxy device defined, switch to channel 0 by default */
-    if (mavproxy_get_channel_num() > 0) {
+    /* Set mavproxy new channel to 0 if not set. Here we need critical section
+       since the new channel can possible be set in usb ISR. */
+    OS_ENTER_CRITICAL;
+    if (mavproxy_get_channel_num() > 0 && mav_handle.new_chan == MAVPROXY_UNSET_CHAN) {
         mav_handle.new_chan = 0;
     }
+    OS_EXIT_CRITICAL;
 
     while (1) {
         /* wait event occur */
