@@ -91,13 +91,13 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t device, rt_off_t pos, const void
 
 void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 {
-    int dev_sta;
+    device_status dev_sta;
     switch (status) {
     case USBD_STATUS_DISCONNECT:
         usbd->status = USBD_STATUS_DISCONNECT;
         /* notify usb disconnect status */
         dev_sta = DEVICE_STAUTS_DISCONNECT;
-        devmq_notify(&usbd->parent, &status);
+        devmq_notify(&usbd->parent, &dev_sta);
         break;
     case USBD_STATUS_CONNECT:
         usbd->status = USBD_STATUS_CONNECT;
