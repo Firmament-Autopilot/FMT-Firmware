@@ -324,8 +324,6 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    FMT_CHECK(pilot_cmd_init());
-
     /* toml system configure */
     _toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (!_toml_root_tab) {
@@ -333,6 +331,9 @@ void bsp_post_initialize(void)
         _toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
+
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */

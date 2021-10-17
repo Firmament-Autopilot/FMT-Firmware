@@ -38,9 +38,9 @@ pilot_mode_config* pilotModes = NULL;
 pilot_event_cmd_t* pilotEventCmds = NULL;
 pilot_status_cmd_t* pilotStatusCmds = NULL;
 
-static rt_device_t rcDev = NULL;
-static uint8_t stickMapping[4] = { 0 };
-static int16_t rcChannel[16] = { 0 };
+static rt_device_t rcDev;
+static uint8_t stickMapping[4];
+static int16_t rcChannel[16];
 
 static uint16_t rc_read_mask = RC_MASK_1_6;
 static uint8_t rc_chan_num;
@@ -336,14 +336,6 @@ fmt_err_t pilot_cmd_init(void)
     /* advertise pilot command topic */
     FMT_CHECK(mcn_advertise(MCN_HUB(pilot_cmd), echo_pilot_cmd));
     FMT_CHECK(mcn_advertise(MCN_HUB(rc_channels), echo_rc_channels));
-
-    /* set default pilot_cmd device */
-    FMT_CHECK(pilot_cmd_set_device("rc"));
-
-    /* set default stick mapping */
-    pilot_cmd_map_stick(4, 3, 1, 2);
-
-    pilot_cmd_set_chan_num(6);
 
     return FMT_EOK;
 }

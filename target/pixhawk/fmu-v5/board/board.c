@@ -15,8 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include <board_device.h>
 #include <board.h>
+#include <board_device.h>
 #include <shell.h>
 #include <string.h>
 
@@ -34,12 +34,12 @@
 #include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
+#include "drv_pwm.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
-#include "drv_pwm.h"
 #include "led.h"
 
 #include "module/console/console_config.h"
@@ -137,7 +137,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
                     err = actuator_toml_config(sub_tab);
-                }else {
+                } else {
                     console_printf("unknown table: %s\n", key);
                 }
                 if (err != FMT_EOK) {
@@ -381,8 +381,6 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    FMT_CHECK(pilot_cmd_init());
-
     /* toml system configure */
     __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (!__toml_root_tab) {
@@ -390,6 +388,9 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */

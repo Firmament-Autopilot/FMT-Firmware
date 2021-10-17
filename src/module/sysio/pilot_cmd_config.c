@@ -478,6 +478,8 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
             int64_t ival;
             if (toml_int_in(curtab, key, &ival) == 0) {
                 config->channel_num = (uint16_t)ival;
+                /* set channel number */
+                pilot_cmd_set_chan_num(config->channel_num);
             } else {
                 TOML_DBG_W("Fail to parse %s value\n", key);
                 continue;
