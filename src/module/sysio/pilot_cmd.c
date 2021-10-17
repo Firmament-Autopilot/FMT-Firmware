@@ -79,9 +79,12 @@ static int echo_rc_channels(void* parameter)
 
     console_printf("rc channel: [");
     for (int i = 0; i < rc_chan_num; i++) {
-        console_printf("%d,", rc_chan_val[i]);
+        if (i == rc_chan_num - 1) {
+            console_printf("%d]\n", rc_chan_val[i]);
+        } else {
+            console_printf("%d,", rc_chan_val[i]);
+        }
     }
-    console_printf("]\n");
 
     return 0;
 }
@@ -241,7 +244,7 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 fmt_err_t pilot_cmd_collect(void)
 {
     uint8_t update = 0;
-    
+
     if (rcDev == NULL) {
         /* no rc device */
         return FMT_ENOTHANDLE;
