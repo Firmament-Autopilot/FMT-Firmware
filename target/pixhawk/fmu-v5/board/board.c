@@ -295,17 +295,17 @@ void bsp_early_initialize(void)
     /* System clock initialization */
     SystemClock_Config();
 
-    /* systick driver init */
-    RT_CHECK(drv_systick_init());
-
     /* usart driver init */
     RT_CHECK(drv_usart_init());
 
-    /* system time module init */
-    FMT_CHECK(systime_init());
-
     /* init console to enable console output */
     FMT_CHECK(console_init());
+
+    /* systick driver init */
+    RT_CHECK(drv_systick_init());
+
+    /* system time module init */
+    FMT_CHECK(systime_init());
 
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());

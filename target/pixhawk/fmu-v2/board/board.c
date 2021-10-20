@@ -15,8 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include <board_device.h>
 #include <board.h>
+#include <board_device.h>
 #include <shell.h>
 #include <string.h>
 #ifdef FMT_USING_CM_BACKTRACE
@@ -231,17 +231,17 @@ void bsp_early_initialize(void)
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
 
-    /* system timer init */
-    RT_CHECK(drv_systick_init());
-
     /* system usart init */
     RT_CHECK(drv_usart_init());
 
-    /* system time module init */
-    FMT_CHECK(systime_init());
-
     /* init console to enable console output */
     FMT_CHECK(console_init());
+
+    /* system timer init */
+    RT_CHECK(drv_systick_init());
+
+    /* system time module init */
+    FMT_CHECK(systime_init());
 
     /* init gpio, bus, etc. */
     RT_CHECK(drv_gpio_init());
@@ -300,12 +300,6 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
-
-    //     /* GDB STUB */
-    // #ifdef RT_USING_GDB
-    //     gdb_set_device(GDB_DEVICE_NAME);
-    //     gdb_start();
-    // #endif
 
     /* init finsh */
     finsh_system_init();
