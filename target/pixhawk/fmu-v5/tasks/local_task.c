@@ -22,21 +22,27 @@ fmt_err_t task_local_init(void)
     return FMT_EOK;
 }
 
+char** str = (char*[]) { "Hello", "C++", "World", NULL };
+
 void task_local_entry(void* parameter)
 {
     printf("Hello FMT! This is a local demo task.\n");
+
+    for (int i = 0; str[i] != NULL; i++) {
+        printf("%s\n", str[i]);
+    }
 
     while (1) {
         sys_msleep(1000);
     }
 }
 
-// FMT_TASK_EXPORT(
-//     local_task,       /* name */
-//     task_local_init,  /* init */
-//     task_local_entry, /* entry */
-//     25,               /* priority */
-//     1024,             /* stack size */
-//     NULL,             /* param */
-//     NULL              /* dependency */
-// );
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "local",
+//     .init = task_local_init,
+//     .entry = task_local_entry,
+//     .priority = 25,
+//     .stack_size = 1024,
+//     .param = NULL,
+//     .dependency = NULL
+// };

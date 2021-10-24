@@ -30,12 +30,12 @@ void task_fmtio_entry(void* parameter)
     fmtio_loop();
 }
 
-FMT_TASK_EXPORT(
-    fmtio,                 /* name */
-    task_fmtio_init,       /* init */
-    task_fmtio_entry,      /* entry */
-    FMTIO_THREAD_PRIORITY, /* priority */
-    2048,                  /* stack size */
-    NULL,                  /* param */
-    NULL                   /* dependency */
-);
+TASK_EXPORT __fmt_task_desc = {
+    .name = "fmtio",
+    .init = task_fmtio_init,
+    .entry = task_fmtio_entry,
+    .priority = FMTIO_THREAD_PRIORITY,
+    .stack_size = 2048,
+    .param = NULL,
+    .dependency = NULL
+};

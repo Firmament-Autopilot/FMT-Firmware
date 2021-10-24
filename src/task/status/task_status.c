@@ -187,12 +187,12 @@ void task_status_entry(void* parameter)
     }
 }
 
-FMT_TASK_EXPORT(
-    status,                 /* name */
-    task_status_init,       /* init */
-    task_status_entry,      /* entry */
-    STATUS_THREAD_PRIORITY, /* priority */
-    2048,                   /* stack size */
-    NULL,                   /* param */
-    NULL                    /* dependency */
-);
+TASK_EXPORT __fmt_task_desc = {
+    .name = "status",
+    .init = task_status_init,
+    .entry = task_status_entry,
+    .priority = STATUS_THREAD_PRIORITY,
+    .stack_size = 2048,
+    .param = NULL,
+    .dependency = NULL
+};

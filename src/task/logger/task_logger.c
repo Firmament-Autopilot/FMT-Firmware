@@ -179,12 +179,12 @@ void task_logger_entry(void* parameter)
     }
 }
 
-FMT_TASK_EXPORT(
-    logger,                 /* name */
-    task_logger_init,       /* init */
-    task_logger_entry,      /* entry */
-    LOGGER_THREAD_PRIORITY, /* priority */
-    2048,                   /* stack size */
-    NULL,                   /* param */
-    NULL                    /* dependency */
-);
+TASK_EXPORT __fmt_task_desc = {
+    .name = "logger",
+    .init = task_logger_init,
+    .entry = task_logger_entry,
+    .priority = LOGGER_THREAD_PRIORITY,
+    .stack_size = 2048,
+    .param = NULL,
+    .dependency = (char*[]) { "vehicle", NULL }
+};

@@ -161,7 +161,7 @@ void bsp_show_information(void)
     for (uint32_t i = 0; i < get_task_num(); i++) {
         sprintf(buffer, "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
-        print_item_line(buffer, task_tab[i].status == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
+        print_item_line(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
     }
 }
 

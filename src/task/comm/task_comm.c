@@ -270,12 +270,12 @@ void task_comm_entry(void* parameter)
     mavproxy_loop();
 }
 
-FMT_TASK_EXPORT(
-    comm,                 /* name */
-    task_comm_init,       /* init */
-    task_comm_entry,      /* entry */
-    COMM_THREAD_PRIORITY, /* priority */
-    8192,                 /* stack size */
-    NULL,                 /* param */
-    NULL                  /* dependency */
-);
+TASK_EXPORT __fmt_task_desc = {
+    .name = "comm",
+    .init = task_comm_init,
+    .entry = task_comm_entry,
+    .priority = COMM_THREAD_PRIORITY,
+    .stack_size = 8192,
+    .param = NULL,
+    .dependency = NULL
+};

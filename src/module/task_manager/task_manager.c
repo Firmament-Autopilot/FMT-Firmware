@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <string.h>
 
 #include "module/task_manager/task_manager.h"
 
+#define MAX_INIT_TIME (5000)
+
 static fmt_task_desc_t task_table;
 static uint32_t task_num;
+static uint8_t* task_status;
 
 /**
  * @brief Get the task num
@@ -40,6 +44,23 @@ fmt_task_desc_t get_task_table(void)
 }
 
 /**
+ * @brief Get the task status object
+ * 
+ * @param name Task name
+ * @return uint8_t Task status
+ */
+uint8_t get_task_status(const char* name)
+{
+    for (uint32_t i = 0; i < task_num; i++) {
+        if (strcmp(name, task_table[i].name) == 0) {
+            return task_status[i];
+        }
+    }
+
+    return 0;
+}
+
+/**
  * @brief Initialize tasks
  * 
  */
@@ -47,18 +68,58 @@ void task_init(void)
 {
     extern const int __fmt_task_start;
     extern const int __fmt_task_end;
+
+    uint32_t init_done = 0;
+    uint32_t time_start_init = systime_now_ms();
+
     task_table = (fmt_task_desc_t)&__fmt_task_start;
     task_num = (fmt_task_desc_t)&__fmt_task_end - task_table;
+
+    task_status = (uint8_t*)rt_malloc(task_num);
+    RT_ASSERT(task_status != NULL);
+    memset(task_status, TASK_IDLE, task_num);
 
     for (uint32_t i = 0; i < task_num; i++) {
         RT_ASSERT(task_table[i].name != NULL);
         RT_ASSERT(task_table[i].init != NULL);
         RT_ASSERT(task_table[i].entry != NULL);
+    }
 
-        if (task_table[i].init() == FMT_EOK) {
-            task_table[i].status = TASK_OK;
-        } else {
-            task_table[i].status = TASK_FAIL;
+    /* wait all task has been initialized or init timeout */
+    while (init_done < task_num && (systime_now_ms() - time_start_init) < MAX_INIT_TIME) {
+        for (uint32_t i = 0; i < task_num; i++) {
+            uint8_t depend_met = 1;
+
+            /* check task dependency */
+            for (uint32_t n = 0; task_table[i].dependency != NULL && task_table[i].dependency[n] != NULL; n++) {
+                for (uint32_t k = 0; k < task_num; k++) {
+                    /* find depended task */
+                    if (strcmp(task_table[i].dependency[n], task_table[k].name) == 0) {
+                        if (task_status[k] == TASK_IDLE) {
+                            /* wait the depended task to be initialized */
+                            depend_met = 0;
+                            break;
+                        } else if (task_status[k] == TASK_FAIL) {
+                            /* if the depended task failed, then the related task fails as well */
+                            depend_met = 0;
+                            task_status[i] = TASK_FAIL;
+                            /* increase init task count */
+                            init_done++;
+                        }
+                    }
+                }
+            }
+
+            /* if task is not initialized yet, call the init function */
+            if (depend_met && task_status[i] == TASK_IDLE) {
+                if (task_table[i].init() == FMT_EOK) {
+                    task_status[i] = TASK_OK;
+                } else {
+                    task_status[i] = TASK_FAIL;
+                }
+                /* increase init task count */
+                init_done++;
+            }
         }
     }
 }
@@ -70,7 +131,7 @@ void task_init(void)
 void task_start(void)
 {
     for (uint32_t i = 0; i < task_num; i++) {
-        if (task_table[i].status == TASK_FAIL)
+        if (task_status[i] != TASK_OK)
             continue;
 
         rt_thread_t tid = rt_thread_create(task_table[i].name,

@@ -26,7 +26,8 @@ typedef fmt_err_t (*task_init_t)(void);
 typedef void (*task_entry_t)(void* param);
 
 enum {
-    TASK_OK = 0,
+    TASK_IDLE = 0,
+    TASK_OK,
     TASK_FAIL
 };
 
@@ -38,25 +39,14 @@ struct fmt_task_desc {
     uint32_t stack_size;
     void* param;
     char** dependency;
-    uint8_t status;
 };
 typedef struct fmt_task_desc* fmt_task_desc_t;
 
-#define FMT_TASK_EXPORT(_name, _init, _entry, _priority, _stack_size, _param, _dependency) \
-    RT_USED static const struct fmt_task_desc __fmt_task_##_name                           \
-        SECTION("TaskTab")                                                                 \
-        = {                                                                                \
-              .name = #_name,                                                              \
-              .init = _init,                                                               \
-              .entry = _entry,                                                             \
-              .priority = _priority,                                                       \
-              .stack_size = _stack_size,                                                   \
-              .param = _param,                                                             \
-              .dependency = _dependency                                                    \
-          }
+#define TASK_EXPORT RT_USED static const struct fmt_task_desc SECTION("TaskTab")
 
 void task_init(void);
 void task_start(void);
+uint8_t get_task_status(const char* name);
 uint32_t get_task_num(void);
 fmt_task_desc_t get_task_table(void);
 

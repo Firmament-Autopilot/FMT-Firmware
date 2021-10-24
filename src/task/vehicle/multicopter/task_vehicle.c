@@ -120,12 +120,12 @@ fmt_err_t task_vehicle_init(void)
     return FMT_EOK;
 }
 
-FMT_TASK_EXPORT(
-    vehicle,                 /* name */
-    task_vehicle_init,       /* init */
-    task_vehicle_entry,      /* entry */
-    VEHICLE_THREAD_PRIORITY, /* priority */
-    10240,                   /* stack size */
-    NULL,                    /* param */
-    NULL                     /* dependency */
-);
+TASK_EXPORT __fmt_task_desc = {
+    .name = "vehicle",
+    .init = task_vehicle_init,
+    .entry = task_vehicle_entry,
+    .priority = VEHICLE_THREAD_PRIORITY,
+    .stack_size = 10240,
+    .param = NULL,
+    .dependency = NULL
+};
