@@ -45,7 +45,7 @@
 /* Unit Test */
 // #define FMT_USING_UNIT_TEST
 
-// #define FMT_ONLINE_PARAM_TUNING
+#define FMT_ONLINE_PARAM_TUNING
 
 // #define FMT_RECORD_CALIBRATION_DATA
 
