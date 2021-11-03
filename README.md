@@ -8,7 +8,7 @@
 
 Overview
 ============================
-Firmament (FMT) is an advanced autopilot system which is developed for Model-Based Design (MBD), which can be used to quickly build control systems for unmanned aerial vehicles, cars, ships, robots, etc.
+Firmament (FMT) is an advanced autopilot system which is developed for Model-Based Design (MBD), which can be used to quickly build control systems for autonomous vehicle, such as uav, car, ship, robot, etc.
 
 The system is mainly composed of two parts.
 
