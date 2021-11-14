@@ -26,6 +26,7 @@ static rt_thread_t tid0;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
+#ifdef FMT_CHECK_BUILD
     rt_hw_interrupt_disable();
 
 #ifdef FMT_USING_CM_BACKTRACE
@@ -33,6 +34,11 @@ void assert_failed(uint8_t* file, uint32_t line)
 #endif
     while (1)
         ;
+#else
+    /* do nothing */
+    (void)file;
+    (void)line;
+#endif
 }
 
 static void assert_hook(const char* ex, const char* func, rt_size_t line)

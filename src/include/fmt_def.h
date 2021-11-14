@@ -78,15 +78,9 @@ typedef int bool;
 #define OS_MALLOC(size)   rt_malloc(size)
 #define OS_FREE(ptr)      rt_free(ptr)
 
-#ifdef FMT_CHECK_BUILD
 #define FMT_ASSERT(exp) RT_ASSERT((exp))
 #define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
 #define RT_CHECK(func)  RT_ASSERT(func == RT_EOK)
-#else
-#define FMT_ASSERT(exp)
-#define FMT_CHECK(func)
-#define RT_CHECK(func)
-#endif
 
 typedef enum {
     FMT_EOK = 0,         /**< There is no error */
