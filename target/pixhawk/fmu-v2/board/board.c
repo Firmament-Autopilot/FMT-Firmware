@@ -246,8 +246,13 @@ void bsp_early_initialize(void)
     /* init gpio, bus, etc. */
     RT_CHECK(drv_gpio_init());
 
+    /* spi driver init */
     RT_CHECK(spi_drv_init());
 
+    /* init soft i2c */
+    RT_CHECK(drv_i2c_soft_init());
+
+    /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
     /* system statistic module */
@@ -270,8 +275,6 @@ void bsp_initialize(void)
     RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
-
-    drv_i2c_soft_init();
 
     /* init usb device */
     RT_CHECK(drv_usb_cdc_init());
