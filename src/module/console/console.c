@@ -25,19 +25,23 @@
 /* console write hook function, can be reimplemented by other modules. */
 RT_WEAK void console_write_hook(const char* content, uint32_t len);
 
-static rt_device_t console_dev = NULL;
+static rt_device_t console_dev;
 static char console_buffer[CONSOLE_BUFF_SIZE];
 
 /**
  * Write raw data to console device.
- * 
+ *
  * @param content data to be written
  * @param len length of data
- * 
+ *
  * @return length has been written.
  */
 int console_write(const char* content, uint32_t len)
 {
+    if (console_dev == NULL) {
+        return 0;
+    }
+
     /* write content into console device */
     uint32_t size = rt_device_write(console_dev, 0, (void*)content, len);
 
@@ -50,10 +54,10 @@ int console_write(const char* content, uint32_t len)
 
 /**
  * Console print arguments.
- * 
+ *
  * @param fmt string format
  * @param args arguments list
- * 
+ *
  * @return length of output.
  */
 int console_print_args(const char* fmt, va_list args)
@@ -67,9 +71,9 @@ int console_print_args(const char* fmt, va_list args)
 
 /**
  * Console printf.
- * 
+ *
  * @param fmt string format
- * 
+ *
  * @return length of output.
  */
 int console_printf(const char* fmt, ...)
@@ -86,7 +90,7 @@ int console_printf(const char* fmt, ...)
 
 /**
  * Console print line.
- * 
+ *
  * @param fmt string format
  * @return length of output.
  */
@@ -118,7 +122,7 @@ void console_format(char* buffer, const char* fmt, ...)
 
 /**
  * Get current console device.
- * 
+ *
  * @return current console device. NULL indicates no device.
  */
 rt_device_t console_get_device(void)
@@ -129,7 +133,7 @@ rt_device_t console_get_device(void)
 /**
  * Set console to a specific device.
  * @note console input/output will be enabled as well
- * 
+ *
  * @return FMT Errors.
  */
 fmt_err_t console_set_device(const char* device_name)
@@ -154,7 +158,7 @@ fmt_err_t console_set_device(const char* device_name)
 /**
  * Enable console input and output.
  * @note console_dev should be set already
- * 
+ *
  * @return FMT Errors.
  */
 fmt_err_t console_enable_input(void)
@@ -187,7 +191,7 @@ fmt_err_t console_enable_input(void)
 /**
  * Initialize the console device.
  * @note only console output is enabled
- * 
+ *
  * @return FMT Errors.
  */
 fmt_err_t console_init(void)
