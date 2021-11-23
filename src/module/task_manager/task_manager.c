@@ -25,7 +25,7 @@ static uint8_t* task_status;
 
 /**
  * @brief Get the task num
- * 
+ *
  * @return uint32_t Number of task
  */
 uint32_t get_task_num(void)
@@ -35,7 +35,7 @@ uint32_t get_task_num(void)
 
 /**
  * @brief Get the task table object
- * 
+ *
  * @return fmt_task_desc_t Task table object
  */
 fmt_task_desc_t get_task_table(void)
@@ -45,7 +45,7 @@ fmt_task_desc_t get_task_table(void)
 
 /**
  * @brief Get the task status object
- * 
+ *
  * @param name Task name
  * @return uint8_t Task status
  */
@@ -62,7 +62,7 @@ uint8_t get_task_status(const char* name)
 
 /**
  * @brief Initialize tasks
- * 
+ *
  */
 void task_init(void)
 {
@@ -74,6 +74,11 @@ void task_init(void)
 
     task_table = (fmt_task_desc_t)&__fmt_task_start;
     task_num = (fmt_task_desc_t)&__fmt_task_end - task_table;
+
+    if (task_num == 0) {
+        /* No task defined */
+        return;
+    }
 
     task_status = (uint8_t*)rt_malloc(task_num);
     RT_ASSERT(task_status != NULL);
@@ -126,7 +131,7 @@ void task_init(void)
 
 /**
  * @brief Start tasks
- * 
+ *
  */
 void task_start(void)
 {
