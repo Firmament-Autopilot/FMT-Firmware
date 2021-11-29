@@ -92,11 +92,16 @@ uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
  */
 uint64_t systime_now_us(void)
 {
-    uint32_t systick_us;
+    uint32_t systick_us = 0;
+    uint64_t time_now_ms = 0;
+    uint32_t level;
 
+    level = rt_hw_interrupt_disable();
     rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+    time_now_ms = __systime.msPeriod;
+    rt_hw_interrupt_enable(level);
 
-    return __systime.msPeriod * (uint64_t)1000 + systick_us;
+    return time_now_ms * (uint64_t)1000 + systick_us;
 }
 
 /**
@@ -106,11 +111,9 @@ uint64_t systime_now_us(void)
  */
 uint32_t systime_now_ms(void)
 {
-    uint32_t systick_us;
+    uint32_t time_now_ms = systime_now_us() / 1e3;
 
-    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
-
-    return __systime.msPeriod + systick_us / 1e3;
+    return time_now_ms;
 }
 
 /**
