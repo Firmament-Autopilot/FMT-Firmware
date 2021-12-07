@@ -22,7 +22,7 @@
 #include "hal/spi.h"
 #include "module/math/conversion.h"
 
-#define DRV_DBG(...)
+#define DRV_DBG(...)    printf(__VA_ARGS__)
 
 #define DIR_READ       0x80
 #define DIR_WRITE      0x00
@@ -197,6 +197,7 @@ static rt_err_t imu_init(void)
     /* soft reset */
     RT_CHECK_RETURN(spi_write_reg8(imu_spi_dev, PWR_MGMT_1, BIT(7)));
     systime_udelay(5000);
+
     /* wakeup and set clock */
     RT_CHECK_RETURN(__modify_reg(imu_spi_dev, PWR_MGMT_1, REG_VAL(BIT(0), BIT(6)))); /* CLKSEL[2:0] set to 001 to achieve full gyroscope performance. */
     systime_udelay(1000);
@@ -406,10 +407,10 @@ rt_err_t drv_icm20689_init(void)
     RT_CHECK_RETURN(imu_init());
 
     /* register gyro hal device */
-    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     /* register accel hal device */
-    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

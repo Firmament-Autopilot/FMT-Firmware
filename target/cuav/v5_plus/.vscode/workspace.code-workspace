@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "..\\..\\..\\..\\include"
+		},
+		{
+			"path": "..\\..\\..\\..\\rtos"
+		},
+		{
+			"path": "..\\..\\..\\..\\src"
+		},
+		{
+			"path": "..\\..\\..\\..\\unit_test"
+		}
+	],
+    "settings": {
+        "files.associations": {
+            "*.h": "c",
+            "*.c": "c"
+        },
+        "C_Cpp.autoAddFileAssociations": false
+    }
+}

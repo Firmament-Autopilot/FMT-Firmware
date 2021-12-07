@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "build/fmt_fmu.elf",
+            "serverpath": "${env:JLINK_SERVER}",
+            "servertype": "jlink",
+            "device": "STM32F765II",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "STM32F7x5.svd",
+            "runToMain": true
+        }
+    ]
+}
