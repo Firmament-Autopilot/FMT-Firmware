@@ -1,16 +1,7 @@
 import os
 from building import *
-Import('RTT_ROOT')
 
-cwd = GetCurrentDir()
+# reuse drivers of pixhawk fmuv5
+objs = SConscript('../../../../pixhawk/fmu-v5/drivers/SConscript')
 
-src = Glob('*.c')
-src += Glob('usbd/*.c')
-
-
-inc = [cwd]
-inc += [cwd + '/usbd']
-
-group = DefineGroup('PeripheralDriver', src, depend = [''], CPPPATH = inc)
-
-Return('group')
+Return('objs')

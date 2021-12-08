@@ -425,11 +425,11 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi055_init(void)
+rt_err_t drv_bmi055_init(const char* device_name)
 {
     /* Initialize gyroscope */
 
-    gyro_spi_dev = rt_device_find("spi1_dev3");
+    gyro_spi_dev = rt_device_find(device_name);
     RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {

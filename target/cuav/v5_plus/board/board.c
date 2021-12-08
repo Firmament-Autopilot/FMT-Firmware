@@ -394,11 +394,11 @@ void bsp_initialize(void)
     /* adc driver init */
     RT_CHECK(drv_adc_init());
 
-    RT_CHECK(drv_icm20689_init());
+    RT_CHECK(drv_icm20689_init("spi1_dev1"));
 
-    RT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
+    RT_CHECK(drv_bmi055_init("spi1_dev3"));
 
-    RT_CHECK(drv_bmi055_init());
+    RT_CHECK(ms5611_drv_init("spi4_dev1"));
 
     /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
     drv_ist8310_init("i2c1_dev1");

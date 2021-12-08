@@ -383,9 +383,9 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_icm20689_init(void)
+rt_err_t drv_icm20689_init(const char* device_name)
 {
-    imu_spi_dev = rt_device_find("spi1_dev1");
+    imu_spi_dev = rt_device_find(device_name);
     RT_ASSERT(imu_spi_dev != NULL);
 
     /* config spi */
