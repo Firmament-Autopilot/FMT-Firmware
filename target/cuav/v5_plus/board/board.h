@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 // Board Information
-#define TARGET_NAME  "Pixhawk4 FMUv5"
+#define TARGET_NAME  "CUAV V5+"
 #define VEHICLE_TYPE "Quadcopter"
 
 // Internal SRAM memory size[Kbytes]

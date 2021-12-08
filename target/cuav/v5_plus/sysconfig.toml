@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "Pixhawk4 FMUv5"
+target = "CUAV V5+"
 
 # Console Configuration
 [console]

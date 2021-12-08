@@ -63,7 +63,7 @@
 #include "module/plant/plant_interface.h"
 #endif
 
-#define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
+#define DEFAULT_TOML_SYS_CONFIG "target = \"CUAV V5+\"\n\
 [console]\n\
 	[[console.devices]]\n\
 	type = \"serial\"\n\
