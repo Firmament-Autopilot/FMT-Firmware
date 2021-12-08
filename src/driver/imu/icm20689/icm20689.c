@@ -22,7 +22,7 @@
 #include "hal/spi.h"
 #include "module/math/conversion.h"
 
-#define DRV_DBG(...)    printf(__VA_ARGS__)
+#define DRV_DBG(...) printf(__VA_ARGS__)
 
 #define DIR_READ       0x80
 #define DIR_WRITE      0x00
@@ -190,7 +190,7 @@ static rt_err_t imu_init(void)
 
     RT_CHECK_RETURN(spi_read_reg8(imu_spi_dev, WHO_AM_I, &chip_id));
     if (chip_id != 0x98) {
-        DRV_DBG("ICM20689 unmatched chip id:%x\n", chip_id);
+        DRV_DBG("ICM20689 unmatched chip id:0x%x\n", chip_id);
         return FMT_ERROR;
     }
 
@@ -407,10 +407,10 @@ rt_err_t drv_icm20689_init(void)
     RT_CHECK_RETURN(imu_init());
 
     /* register gyro hal device */
-    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro0", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     /* register accel hal device */
-    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel0", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

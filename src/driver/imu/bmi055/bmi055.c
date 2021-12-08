@@ -448,7 +448,7 @@ rt_err_t drv_bmi055_init(void)
     /* gyroscope low-level init */
     RT_CHECK_RETURN(gyroscope_init());
     /* register gyro hal device */
-    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     /* Initialize accelerometer */
 
@@ -473,7 +473,7 @@ rt_err_t drv_bmi055_init(void)
     RT_CHECK_RETURN(accelerometer_init());
 
     /* register accel hal device */
-    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK_RETURN(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

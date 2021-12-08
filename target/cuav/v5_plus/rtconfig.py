@@ -1,14 +1,14 @@
 import os
 
 # board options
-BOARD = 'pixhawk4'
+BOARD = 'cuav-v5+'
 
 # toolchains options
 ARCH = 'arm'
 CPU = 'cortex-m7'
 CROSS_TOOL = 'gcc'
 # build version: debug or release
-BUILD = 'debug'
+BUILD = 'release'
 
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')
