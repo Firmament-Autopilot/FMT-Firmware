@@ -20,6 +20,9 @@
 
 static rt_device_t pin_dev;
 static rt_device_t rgb_led_dev;
+static uint8_t _r;
+static uint8_t _g;
+static uint8_t _b;
 
 static void run_led(void)
 {
@@ -119,6 +122,48 @@ fmt_err_t led_init(struct device_pin_mode pin_mode)
 
 fmt_err_t rgb_led_set_color(uint32_t color)
 {
+    switch (color) {
+    case NCP5623_LED_RED:
+        _r = 1;
+        _g = 0;
+        _b = 0;
+        break;
+    case NCP5623_LED_GREEN:
+        _r = 0;
+        _g = 1;
+        _b = 0;
+        break;
+    case NCP5623_LED_BLUE:
+        _r = 0;
+        _g = 0;
+        _b = 1;
+        break;
+    case NCP5623_LED_YELLOW:
+        _r = 1;
+        _g = 1;
+        _b = 0;
+        break;
+    case NCP5623_LED_PURPLE:
+        _r = 1;
+        _g = 0;
+        _b = 1;
+        break;
+    case NCP5623_LED_CYAN:
+        _r = 0;
+        _g = 1;
+        _b = 1;
+        break;
+    case NCP5623_LED_WHITE:
+        _r = 1;
+        _g = 1;
+        _b = 1;
+        break;
+    default:
+        _r = 0;
+        _g = 0;
+        _b = 0;
+    }
+
     if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
         return FMT_ERROR;
     }
@@ -128,6 +173,26 @@ fmt_err_t rgb_led_set_color(uint32_t color)
 
 fmt_err_t rgb_led_set_bright(uint32_t bright)
 {
+    /* on-board rgb led control */
+    if (_r * bright > 1) {
+        LED_ON(FMU_RGB_LED_RED_PIN);
+    } else {
+        LED_OFF(FMU_RGB_LED_RED_PIN);
+    }
+
+    if (_g * bright > 1) {
+        LED_ON(FMU_RGB_LED_GREEN_PIN);
+    } else {
+        LED_OFF(FMU_RGB_LED_GREEN_PIN);
+    }
+
+    if (_b * bright > 1) {
+        LED_ON(FMU_RGB_LED_BLUE_PIN);
+    } else {
+        LED_OFF(FMU_RGB_LED_BLUE_PIN);
+    }
+
+    /* ncp5623 on gps module */
     if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
         return FMT_ERROR;
     }
@@ -154,19 +219,29 @@ fmt_err_t led_control_init(void)
     struct device_pin_mode r_pin_mode = { FMU_LED_RED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
     struct device_pin_mode g_pin_mode = { FMU_LED_GREEN_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
     struct device_pin_mode b_pin_mode = { FMU_LED_BLUE_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+    struct device_pin_mode rgbled_r_mode = { FMU_RGB_LED_RED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+    struct device_pin_mode rgbled_g_mode = { FMU_RGB_LED_GREEN_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+    struct device_pin_mode rgbled_b_mode = { FMU_RGB_LED_BLUE_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
 
     /* configure led pin */
     pin_dev = rt_device_find("pin");
     RT_ASSERT(pin_dev != NULL);
 
     RT_CHECK(rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR));
-    led_init(r_pin_mode);
-    led_init(g_pin_mode);
-    led_init(b_pin_mode);
 
     LED_ON(FMU_LED_RED_PIN);
     LED_ON(FMU_LED_GREEN_PIN);
     LED_ON(FMU_LED_BLUE_PIN);
+    LED_OFF(FMU_RGB_LED_RED_PIN);
+    LED_OFF(FMU_RGB_LED_GREEN_PIN);
+    LED_OFF(FMU_RGB_LED_BLUE_PIN);
+
+    led_init(r_pin_mode);
+    led_init(g_pin_mode);
+    led_init(b_pin_mode);
+    led_init(rgbled_r_mode);
+    led_init(rgbled_g_mode);
+    led_init(rgbled_b_mode);
 
     /* It's possible that ncp5623c is not connected */
     if (rt_device_find("ncp5623c") != NULL) {
