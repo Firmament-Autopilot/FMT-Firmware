@@ -25,9 +25,12 @@
 extern "C" {
 #endif
 
-#define FMU_LED_RED_PIN   17
-#define FMU_LED_GREEN_PIN 38
-#define FMU_LED_BLUE_PIN  39
+#define __STM32_PORT(port)  GPIO##port##_BASE
+#define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
+
+#define FMU_LED_RED_PIN   GET_PIN(B, 1)
+#define FMU_LED_GREEN_PIN GET_PIN(C, 6)
+#define FMU_LED_BLUE_PIN  GET_PIN(C, 7)
 
 #define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
 #define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
