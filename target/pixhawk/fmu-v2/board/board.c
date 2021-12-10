@@ -116,6 +116,37 @@ static void _print_line(const char* name, const char* content, uint32_t len)
     console_printf("%s\n", content);
 }
 
+/**
+ * @brief Enable on-board device power supply
+ * 
+ */
+static void EnablePower(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure = { 0 };
+
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+    GPIO_SetBits(GPIOE, GPIO_Pin_3);
+
+    /* Wait some time for power becoming stable */
+    systime_mdelay(100);
+}
+
 static void NVIC_Configuration(void)
 {
 #ifdef VECT_TAB_RAM
@@ -262,6 +293,8 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    EnablePower();
+
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
