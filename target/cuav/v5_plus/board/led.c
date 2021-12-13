@@ -164,6 +164,10 @@ fmt_err_t rgb_led_set_color(uint32_t color)
         _b = 0;
     }
 
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
+    }
+
     if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
         return FMT_ERROR;
     }
@@ -190,6 +194,10 @@ fmt_err_t rgb_led_set_bright(uint32_t bright)
         LED_ON(FMU_RGB_LED_BLUE_PIN);
     } else {
         LED_OFF(FMU_RGB_LED_BLUE_PIN);
+    }
+
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
     }
 
     /* ncp5623 on gps module */
@@ -243,27 +251,23 @@ fmt_err_t led_control_init(void)
     led_init(rgbled_g_mode);
     led_init(rgbled_b_mode);
 
+    rgb_led_dev = rt_device_find("ncp5623c");
+
     /* It's possible that ncp5623c is not connected */
-    if (rt_device_find("ncp5623c") != NULL) {
-        /* configure rgd led */
-        rgb_led_dev = rt_device_find("ncp5623c");
-        RT_ASSERT(rgb_led_dev != NULL);
-
-        RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
-        FMT_CHECK(rgb_led_set_color(NCP5623_LED_BLUE));
-
+    if (rgb_led_dev != NULL) {
+        rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR);
         sys_msleep(10); /* give some time for rgb led to startup */
     }
+    /* set rgb led initial color */
+    rgb_led_set_color(NCP5623_LED_BLUE);
 
     WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
     WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
     RT_ASSERT(lp_wq != NULL && hp_wq != NULL);
 
     FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
-    if (rgb_led_dev != NULL) {
-        /* rgb led work in high priority workqueue to try not blocking other i2c user */
-        FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
-    }
+    /* rgb led work in high priority workqueue to try not blocking other i2c user */
+    FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
 
     return FMT_EOK;
 }
