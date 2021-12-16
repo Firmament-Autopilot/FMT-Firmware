@@ -21,6 +21,37 @@
 // #define DRV_DBG(...)                   console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
+#define REG_WHOAMI       0x00
+#define REG_STAT1        0x02
+#define REG_DATA_OUT_X_L 0x03
+#define REG_DATA_OUT_X_H 0x04
+#define REG_DATA_OUT_Y_L 0x05
+#define REG_DATA_OUT_Y_H 0x06
+#define REG_DATA_OUT_Z_L 0x07
+#define REG_DATA_OUT_Z_H 0x08
+#define REG_STAT2        0x09
+#define REG_CTRL1        0x0a
+#define REG_CTRL2        0x0b
+#define REG_TEMP_L       0x1c
+#define REG_TEMP_H       0x1d
+#define REG_CTRL3        0x41
+#define REG_CTRL4        0x42
+
+#define CTRL1_ODR_SINGLE 0x01 /* Single measurement mode */
+#define CTRL1_ODR_10_HZ  0x03
+#define CTRL1_ODR_20_HZ  0x05
+#define CTRL1_ODR_50_HZ  0x07
+#define CTRL1_ODR_100_HZ 0x06
+#define CTRL1_ODR_200_HZ 0x0B
+
+#define CTRL2_SRST 0x01 /* Software reset */
+
+#define CTRL3_SAMPLEAVG_16 0x24 /* Sample Averaging 16 */
+#define CTRL3_SAMPLEAVG_8  0x1b /* Sample Averaging 8 */
+#define CTRL3_SAMPLEAVG_4  0x12 /* Sample Averaging 4 */
+#define CTRL3_SAMPLEAVG_2  0x09 /* Sample Averaging 2 */
+#define CTRL4_SRPD         0xC0 /* Set Reset Pulse Duration */
+
 #define IST8310_DEVICE_ID      0x10
 #define IST8310_SCALE_TO_GAUSS 0.003f
 
@@ -150,7 +181,7 @@ const static struct mag_ops __mag_ops = {
     ist8310_read,
 };
 
-rt_err_t drv_ist8310_init(const char* device_name)
+rt_err_t drv_ist8310_init(const char* i2c_device_name)
 {
     static struct mag_device mag_dev = {
         .ops = &__mag_ops,
@@ -158,7 +189,7 @@ rt_err_t drv_ist8310_init(const char* device_name)
         .bus_type = MAG_I2C_BUS_TYPE
     };
 
-    i2c_dev = rt_device_find(device_name);
+    i2c_dev = rt_device_find(i2c_device_name);
 
     RT_ASSERT(i2c_dev != NULL);
 

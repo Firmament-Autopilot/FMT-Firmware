@@ -22,12 +22,6 @@
 extern "C" {
 #endif
 
-#define NCP5623_LED_OFF     0x00 /**< off */
-#define NCP5623_LED_CURRENT 0x20 /**< current register */
-#define NCP5623_LED_PWM0    0x40 /**< pwm0 register */
-#define NCP5623_LED_PWM1    0x60 /**< pwm1 register */
-#define NCP5623_LED_PWM2    0x80 /**< pwm2 register */
-
 #define NCP5623_CMD_SET_COLOR  0x01
 #define NCP5623_CMD_SET_BRIGHT 0x02
 
@@ -41,7 +35,7 @@ enum {
 	NCP5623_LED_WHITE,
 };
 
-rt_err_t drv_ncp5623c_init(const char* dev_name);
+rt_err_t drv_ncp5623c_init(const char* i2c_dev_name);
 
 #ifdef __cplusplus
 }

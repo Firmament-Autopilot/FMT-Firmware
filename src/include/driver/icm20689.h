@@ -99,7 +99,7 @@ typedef struct {
     uint8_t clearbits;
 } reg_val_t;
 
-rt_err_t drv_icm20689_init(void);
+rt_err_t drv_icm20689_init(const char* device_name);
 
 #ifdef __cplusplus
 }

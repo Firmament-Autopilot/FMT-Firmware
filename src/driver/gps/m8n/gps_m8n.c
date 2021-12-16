@@ -21,7 +21,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "protocol/ublox/ublox.h"
 
-#define CONFIGURE_RETRY_MAX 3
+#define CONFIGURE_RETRY_MAX 5
 #define M_DEG_TO_RAD_F      0.01745329251994f
 #define M_RAD_TO_DEG_F      57.2957795130823f
 
@@ -299,7 +299,7 @@ static rt_err_t set_baudrate(rt_device_t dev, uint32_t baudrate)
 
 static rt_err_t probe(uint32_t* gps_baudrate)
 {
-    uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200 };
+    uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200, 230400, 460800 };
     uint32_t baudrate;
     uint8_t i;
 
@@ -525,11 +525,11 @@ static void gps_probe_entry(void* parameter)
     }
 }
 
-rt_err_t gps_m8n_init(char* device_name)
+rt_err_t gps_m8n_init(char* serial_device_name)
 {
     gps_device.ops = &gps_ops;
 
-    serial_device = rt_device_find(device_name);
+    serial_device = rt_device_find(serial_device_name);
     RT_ASSERT(serial_device != NULL);
 
     /* set gps rx indicator */

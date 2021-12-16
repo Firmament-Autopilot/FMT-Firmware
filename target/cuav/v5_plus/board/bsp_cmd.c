@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
 
-#ifndef GPS_M8N_H__
-#define GPS_M8N_H__
+#include "module/syscmd/syscmd.h"
 
-#include <rtthread.h>
+static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
+{
+	printf("rebooting...\n");
+	sys_msleep(10);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+	NVIC_SystemReset();
 
-rt_err_t gps_m8n_init(char* serial_device_name);
-
-#ifdef __cplusplus
+	return 0;
 }
-#endif
 
-#endif /* GPS_M8N_H__ */
+int cmd_reboot(int argc, char** argv)
+{
+	return syscmd_process(argc, argv, handle_cmd);
+}
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_reboot, __cmd_reboot, reboot the system);

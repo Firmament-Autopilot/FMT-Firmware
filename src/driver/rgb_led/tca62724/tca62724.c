@@ -131,9 +131,9 @@ static rt_err_t tca62724_control(rt_device_t dev, int cmd, void* args)
 	return RT_EOK;
 }
 
-rt_err_t tca62724_drv_init(void)
+rt_err_t tca62724_drv_init(const char* i2c_dev_name)
 {
-	_i2c_device = rt_device_find("i2c2");
+	_i2c_device = rt_device_find(i2c_dev_name);
 
 	if(_i2c_device == RT_NULL) {
 		return RT_ERROR;

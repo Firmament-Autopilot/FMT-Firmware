@@ -14,19 +14,23 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef GPS_M8N_H__
-#define GPS_M8N_H__
+#ifndef FMT_BSP_HEADER_H__
+#define FMT_BSP_HEADER_H__
 
-#include <rtthread.h>
+/* stm32 peripheral library */
+#include <stm32f7xx.h>
+/* FPU Library */
+#include <arm_math.h>
 
-#ifdef __cplusplus
-extern "C" {
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_ll_rcc.h"
+#include "stm32f7xx_ll_bus.h"
+#include "stm32f7xx_ll_system.h"
+#include "stm32f7xx_ll_exti.h"
+#include "stm32f7xx_ll_cortex.h"
+#include "stm32f7xx_ll_utils.h"
+#include "stm32f7xx_ll_pwr.h"
+#include "stm32f7xx_ll_dma.h"
+#include "stm32f7xx_ll_gpio.h"
+
 #endif
-
-rt_err_t gps_m8n_init(char* serial_device_name);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* GPS_M8N_H__ */

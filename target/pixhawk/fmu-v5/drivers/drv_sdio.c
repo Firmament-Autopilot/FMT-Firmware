@@ -213,22 +213,9 @@ static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, rt_uint32_t* status)
 
 static rt_err_t init(sd_dev_t sd)
 {
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
 
     RT_ASSERT(sd_handle != RT_NULL);
-
-    /* GPIO Ports Clock Enable */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);
-    /* SD_CARD_EN active high */
-    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
-    /* init gpio */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     /* DMA controller clock enable */
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);

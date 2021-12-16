@@ -14,19 +14,39 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef GPS_M8N_H__
-#define GPS_M8N_H__
+#ifndef FMTCONFIG_H__
+#define FMTCONFIG_H__
 
-#include <rtthread.h>
+#define FMT_CHECK_BUILD
 
-#ifdef __cplusplus
-extern "C" {
+/* HIL simulation */
+// #define FMT_USING_HIL
+/* SIG simulation */
+// #define FMT_USING_SIH
+
+/* Mavlink */
+#define FMT_USING_MAVLINK_V2
+#define FMT_MAVLINK_SYS_ID  1
+#define FMT_MAVLINK_COMP_ID 1
+
+/* Send out pilot cmd via mavlink */
+#define FMT_OUTPUT_PILOT_CMD
+
+/* ULog */
+#define FMT_USING_ULOG
+#ifdef FMT_USING_ULOG
+// #define ENABLE_ULOG_FS_BACKEND
+#define ENABLE_ULOG_CONSOLE_BACKEND
 #endif
 
-rt_err_t gps_m8n_init(char* serial_device_name);
+/* Cortex-M Backtrace */
+#define FMT_USING_CM_BACKTRACE
 
-#ifdef __cplusplus
-}
+/* Unit Test */
+// #define FMT_USING_UNIT_TEST
+
+#define FMT_ONLINE_PARAM_TUNING
+
+// #define FMT_RECORD_CALIBRATION_DATA
+
 #endif
-
-#endif /* GPS_M8N_H__ */

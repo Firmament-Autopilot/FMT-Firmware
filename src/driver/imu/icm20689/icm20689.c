@@ -22,7 +22,7 @@
 #include "hal/spi.h"
 #include "module/math/conversion.h"
 
-#define DRV_DBG(...)
+#define DRV_DBG(...) printf(__VA_ARGS__)
 
 #define DIR_READ       0x80
 #define DIR_WRITE      0x00
@@ -190,13 +190,14 @@ static rt_err_t imu_init(void)
 
     RT_CHECK_RETURN(spi_read_reg8(imu_spi_dev, WHO_AM_I, &chip_id));
     if (chip_id != 0x98) {
-        DRV_DBG("ICM20689 unmatched chip id:%x\n", chip_id);
+        DRV_DBG("ICM20689 unmatched chip id:0x%x\n", chip_id);
         return FMT_ERROR;
     }
 
     /* soft reset */
     RT_CHECK_RETURN(spi_write_reg8(imu_spi_dev, PWR_MGMT_1, BIT(7)));
     systime_udelay(5000);
+
     /* wakeup and set clock */
     RT_CHECK_RETURN(__modify_reg(imu_spi_dev, PWR_MGMT_1, REG_VAL(BIT(0), BIT(6)))); /* CLKSEL[2:0] set to 001 to achieve full gyroscope performance. */
     systime_udelay(1000);
@@ -382,9 +383,9 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_icm20689_init(void)
+rt_err_t drv_icm20689_init(const char* device_name)
 {
-    imu_spi_dev = rt_device_find("spi1_dev1");
+    imu_spi_dev = rt_device_find(device_name);
     RT_ASSERT(imu_spi_dev != NULL);
 
     /* config spi */

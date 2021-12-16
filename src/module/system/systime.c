@@ -93,11 +93,13 @@ uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
 uint64_t systime_now_us(void)
 {
     uint32_t systick_us = 0;
-    uint64_t time_now_ms = 0;
+    uint64_t time_now_ms;
     uint32_t level;
 
-    level = rt_hw_interrupt_disable();
     rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+
+    level = rt_hw_interrupt_disable();
+    /* atomic read */
     time_now_ms = __systime.msPeriod;
     rt_hw_interrupt_enable(level);
 

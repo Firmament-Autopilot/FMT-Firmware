@@ -63,7 +63,7 @@
 #include "module/plant/plant_interface.h"
 #endif
 
-#define DEFAULT_TOML_SYS_CONFIG "target = \"Pixhawk4 FMUv5\"\n\
+#define DEFAULT_TOML_SYS_CONFIG "target = \"CUAV V5+\"\n\
 [console]\n\
 	[[console.devices]]\n\
 	type = \"serial\"\n\
@@ -373,7 +373,7 @@ void bsp_initialize(void)
 {
     /* enable on-board power supply */
     EnablePower();
-    
+
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
@@ -397,7 +397,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_icm20689_init("spi1_dev1"));
 
     RT_CHECK(drv_bmi055_init("spi1_dev3"));
-    
+
     RT_CHECK(ms5611_drv_init("spi4_dev1"));
 
     /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
