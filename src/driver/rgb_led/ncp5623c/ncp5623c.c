@@ -16,8 +16,8 @@
 #include "driver/ncp5623c.h"
 #include "hal/i2c.h"
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
-// #define DRV_DBG(...)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
 #define LED_BRIGHT 0x1f /**< full brightness */
 
