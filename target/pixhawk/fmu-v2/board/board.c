@@ -327,7 +327,7 @@ void bsp_initialize(void)
 
     /* init other devices */
     RT_CHECK(pmw3901_l0x_drv_init("serial3"));
-    RT_CHECK(tca62724_drv_init());
+    RT_CHECK(tca62724_drv_init("i2c2"));
 
     /* init parameter system */
     FMT_CHECK(param_init());

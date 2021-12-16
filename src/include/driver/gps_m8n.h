@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-rt_err_t gps_m8n_init(char* device_name);
+rt_err_t gps_m8n_init(char* serial_device_name);
 
 #ifdef __cplusplus
 }

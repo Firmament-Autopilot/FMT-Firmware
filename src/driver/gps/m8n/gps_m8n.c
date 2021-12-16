@@ -525,11 +525,11 @@ static void gps_probe_entry(void* parameter)
     }
 }
 
-rt_err_t gps_m8n_init(char* device_name)
+rt_err_t gps_m8n_init(char* serial_device_name)
 {
     gps_device.ops = &gps_ops;
 
-    serial_device = rt_device_find(device_name);
+    serial_device = rt_device_find(serial_device_name);
     RT_ASSERT(serial_device != NULL);
 
     /* set gps rx indicator */

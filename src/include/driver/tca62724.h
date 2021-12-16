@@ -50,7 +50,7 @@ enum {
 	TCA62724_COLOR_NUM      // don't remove this
 };
 
-rt_err_t tca62724_drv_init(void);
+rt_err_t tca62724_drv_init(const char* i2c_dev_name);
 
 #ifdef __cplusplus
 }

@@ -19,6 +19,12 @@
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
+#define NCP5623_LED_OFF     0x00 /**< off */
+#define NCP5623_LED_CURRENT 0x20 /**< current register */
+#define NCP5623_LED_PWM0    0x40 /**< pwm0 register */
+#define NCP5623_LED_PWM1    0x60 /**< pwm1 register */
+#define NCP5623_LED_PWM2    0x80 /**< pwm2 register */
+
 #define LED_BRIGHT 0x1f /**< full brightness */
 
 static struct rt_i2c_device* i2c_device;
@@ -146,9 +152,9 @@ static rt_err_t probe(void)
     return led_shutdown();
 }
 
-rt_err_t drv_ncp5623c_init(const char* dev_name)
+rt_err_t drv_ncp5623c_init(const char* i2c_dev_name)
 {
-    i2c_device = (struct rt_i2c_device*)rt_device_find(dev_name);
+    i2c_device = (struct rt_i2c_device*)rt_device_find(i2c_dev_name);
     RT_ASSERT(i2c_device != NULL);
 
     RT_CHECK(rt_device_open(&i2c_device->parent, RT_DEVICE_OFLAG_RDWR));
