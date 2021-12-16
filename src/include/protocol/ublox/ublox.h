@@ -90,7 +90,7 @@ extern "C" {
 /* TX CFG-PRT message contents */
 #define UBX_TX_CFG_PRT_PORTID       0x01       /**< UART1 */
 #define UBX_TX_CFG_PRT_MODE         0x000008D0 /**< 0b0000100011010000: 8N1 */
-#define UBX_TX_CFG_PRT_BAUDRATE     38400      /**< choose 38400 as GPS baudrate */
+#define UBX_TX_CFG_PRT_BAUDRATE     57600      /**< choose 38400 as GPS baudrate */
 #define UBX_TX_CFG_PRT_INPROTOMASK  0x01       /**< UBX in */
 #define UBX_TX_CFG_PRT_OUTPROTOMASK 0x01       /**< UBX out */
 
