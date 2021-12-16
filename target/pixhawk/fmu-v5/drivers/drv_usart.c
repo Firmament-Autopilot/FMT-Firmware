@@ -37,7 +37,7 @@
 #define USING_UART3
 // #define USING_UART4
 // #define USING_UART5
-#define USING_UART6
+// #define USING_UART6  /* disable USART6, as it conflicts with io sbus input */
 #define USING_UART7
 #define USING_UART8
 
@@ -97,13 +97,6 @@ static int usart_getc(struct serial_device* serial);
 static int usart_putc(struct serial_device* serial, char c);
 static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg);
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg);
-
-static struct serial_device serial0; // FMU Debug
-static struct serial_device serial1; // TELEM1
-static struct serial_device serial2; // TELEM2
-static struct serial_device serial3; // GPS
-static struct serial_device serial4; // TELEM3
-static struct serial_device serial5; // FMTIO
 
 static void _dma_clear_flags(DMA_TypeDef* dma, uint32_t stream)
 {
@@ -227,6 +220,8 @@ static void uart_isr(struct serial_device* serial)
 }
 
 #ifdef USING_UART1
+static struct serial_device serial3; // GPS
+
 /* UART2 device driver structure */
 struct stm32_uart uart1 = {
     .uart_device = USART1,
@@ -286,6 +281,7 @@ void DMA2_Stream7_IRQHandler(void)
 #endif // USING_UART1
 
 #ifdef USING_UART2
+static struct serial_device serial1; // TELEM1
 /* UART2 device driver structure */
 struct stm32_uart uart2 = {
     .uart_device = USART2,
@@ -305,6 +301,8 @@ void USART2_IRQHandler(void)
 #endif // USING_UART2
 
 #ifdef USING_UART3
+static struct serial_device serial2; // TELEM2
+
 /* UART3 device driver structure */
 struct stm32_uart uart3 = {
     .uart_device = USART3,
@@ -365,6 +363,8 @@ void DMA1_Stream3_IRQHandler(void)
 #endif // USING_UART3
 
 #ifdef USING_UART6
+static struct serial_device serial4; // TELEM3
+
 /* UART6 device driver structure */
 struct stm32_uart uart6 = {
     .uart_device = USART6,
@@ -384,6 +384,8 @@ void USART6_IRQHandler(void)
 #endif // USING_UART6
 
 #ifdef USING_UART7
+static struct serial_device serial0; // FMU Debug
+
 /* UART7 device driver structure */
 struct stm32_uart uart7 = {
     .uart_device = UART7,
@@ -403,6 +405,8 @@ void UART7_IRQHandler(void)
 #endif // USING_UART7
 
 #ifdef USING_UART8
+static struct serial_device serial5; // FMTIO
+
 /* UART7 device driver structure */
 struct stm32_uart uart8 = {
     .uart_device = UART8,
