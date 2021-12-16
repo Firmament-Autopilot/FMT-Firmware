@@ -18,10 +18,11 @@
 #include "stm32f7xx_ll_i2c.h"
 
 #define DRV_DBG(...) console_printf(__VA_ARGS__)
+// #define DRV_DBG(...)
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-#define I2C_TIMEOUT_US (500)
+#define I2C_TIMEOUT_US (1000)
 
 struct stm32_i2c_bus {
     struct rt_i2c_bus parent;
@@ -233,12 +234,12 @@ static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status
     return FMT_EOK;
 }
 
-static fmt_err_t wait_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t flag, uint32_t status, uint32_t timeout)
+static fmt_err_t wait_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t flag, uint32_t status, uint64_t timeout_us)
 {
-    uint32_t time_start = systime_now_ms();
+    uint64_t time_start = systime_now_us();
 
     while (((READ_BIT(I2Cx->ISR, flag) == flag) ? 1UL : 0UL) == status) {
-        if ((systime_now_ms() - time_start) > timeout) {
+        if ((systime_now_us() - time_start) > timeout_us) {
             return FMT_ETIMEOUT;
         }
     }
