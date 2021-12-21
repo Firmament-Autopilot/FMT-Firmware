@@ -74,7 +74,7 @@ void fms_interface_step(void)
     }
 
     if (mcn_poll(_ins_out_nod)) {
-        mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &FMS_U.INS_Output);
+        mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &FMS_U.INS_Out);
     }
 
     if (mcn_poll(_control_out_nod)) {
@@ -83,7 +83,7 @@ void fms_interface_step(void)
 
     FMS_step();
 
-    mcn_publish(MCN_HUB(fms_output), &FMS_Y.FMS_Output);
+    mcn_publish(MCN_HUB(fms_output), &FMS_Y.FMS_Out);
 
     if (_pilot_cmd_update) {
         FMS_U.Pilot_Cmd.timestamp = time_now - start_time;
@@ -98,9 +98,9 @@ void fms_interface_step(void)
     /* Log FMS output bus data */
     if (check_timetag(TIMETAG(fms_output))) {
         /* rewrite timestmp */
-        FMS_Y.FMS_Output.timestamp = time_now - start_time;
+        FMS_Y.FMS_Out.timestamp = time_now - start_time;
         /* Log FMS out data */
-        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Output, MLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
+        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Out, MLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
     }
 }
 
