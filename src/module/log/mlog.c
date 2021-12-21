@@ -100,10 +100,10 @@ mlog_elem_t Optflow_Elems[] = {
 
 mlog_elem_t Pilot_Cmd_Elems[] = {
     MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("ls_lr", MLOG_FLOAT),
-    MLOG_ELEMENT("ls_ud", MLOG_FLOAT),
-    MLOG_ELEMENT("rs_lr", MLOG_FLOAT),
-    MLOG_ELEMENT("rs_ud", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_yaw", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_throttle", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_roll", MLOG_FLOAT),
+    MLOG_ELEMENT("sltick_pitch", MLOG_FLOAT),
     MLOG_ELEMENT("mode", MLOG_UINT32),
     MLOG_ELEMENT("cmd_1", MLOG_UINT32),
     MLOG_ELEMENT("cmd_2", MLOG_UINT32),
@@ -149,10 +149,10 @@ mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT("w_cmd", MLOG_FLOAT),
     MLOG_ELEMENT("throttle_cmd", MLOG_UINT32),
     MLOG_ELEMENT_VEC("actuator_cmd", MLOG_UINT16, 16),
-    MLOG_ELEMENT("state", MLOG_UINT8),
+    MLOG_ELEMENT("status", MLOG_UINT8),
     MLOG_ELEMENT("mode", MLOG_UINT8),
+    MLOG_ELEMENT("ctrl_mode", MLOG_UINT8),
     MLOG_ELEMENT("reset", MLOG_UINT8),
-    MLOG_ELEMENT("reserved", MLOG_UINT8),
 };
 
 mlog_elem_t Control_Out_Elems[] = {

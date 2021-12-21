@@ -60,8 +60,8 @@ static int echo_pilot_cmd(void* parameter)
     if (err != FMT_EOK)
         return -1;
 
-    console_printf("ls_lr:%.2f ls_ud:%.2f rs_lr:%.2f rs_ud:%.2f mode:%u cmd:[%u %u]\n",
-        pilot_cmd.ls_lr, pilot_cmd.ls_ud, pilot_cmd.rs_lr, pilot_cmd.rs_ud, pilot_cmd.mode,
+    console_printf("stick_yaw:%.2f stick_throttle:%.2f stick_roll:%.2f stick_pitch:%.2f mode:%u cmd:[%u %u]\n",
+        pilot_cmd.stick_yaw, pilot_cmd.stick_throttle, pilot_cmd.stick_roll, pilot_cmd.stick_pitch, pilot_cmd.mode,
         pilot_cmd.cmd_1, pilot_cmd.cmd_2);
 
     return 0;
@@ -97,10 +97,10 @@ static void mavlink_send_pilot_cmd(void)
     mavlink_system_t mav_sys = mavproxy_get_system();
 
     mav_pilot_cmd.timestamp = pilot_cmd_bus.timestamp;
-    mav_pilot_cmd.ls_lr = pilot_cmd_bus.ls_lr;
-    mav_pilot_cmd.ls_ud = pilot_cmd_bus.ls_ud;
-    mav_pilot_cmd.rs_lr = pilot_cmd_bus.rs_lr;
-    mav_pilot_cmd.rs_ud = pilot_cmd_bus.rs_ud;
+    mav_pilot_cmd.ls_lr = pilot_cmd_bus.stick_yaw;
+    mav_pilot_cmd.ls_ud = pilot_cmd_bus.stick_throttle;
+    mav_pilot_cmd.rs_lr = pilot_cmd_bus.stick_roll;
+    mav_pilot_cmd.rs_ud = pilot_cmd_bus.stick_pitch;
     mav_pilot_cmd.mode = pilot_cmd_bus.mode;
     mav_pilot_cmd.command_1 = pilot_cmd_bus.cmd_1;
     mav_pilot_cmd.command_2 = pilot_cmd_bus.cmd_2;
@@ -119,10 +119,10 @@ static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
     float scale = 2.0f / (float)(config.rc_max_value - config.rc_min_value);
     float offset = -1.0f;
 
-    pilot_cmd->ls_lr = (float)(chan_val[CHAN_IDX(STICK_YAW)] - config.rc_min_value) * scale + offset;
-    pilot_cmd->ls_ud = (float)(chan_val[CHAN_IDX(STICK_THRO)] - config.rc_min_value) * scale + offset;
-    pilot_cmd->rs_lr = (float)(chan_val[CHAN_IDX(STICK_ROLL)] - config.rc_min_value) * scale + offset;
-    pilot_cmd->rs_ud = (float)(chan_val[CHAN_IDX(STICK_PITCH)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_yaw = (float)(chan_val[CHAN_IDX(STICK_YAW)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_throttle = (float)(chan_val[CHAN_IDX(STICK_THRO)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_roll = (float)(chan_val[CHAN_IDX(STICK_ROLL)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_pitch = (float)(chan_val[CHAN_IDX(STICK_PITCH)] - config.rc_min_value) * scale + offset;
 }
 
 static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)

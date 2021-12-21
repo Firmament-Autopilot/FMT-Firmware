@@ -17,9 +17,9 @@
 
 #include "module/fms/fms_interface.h"
 #include "module/ins/ins_interface.h"
+#include "module/pmu/power_manager.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
-#include "module/pmu/power_manager.h"
 #include "task/task_logger.h"
 
 #define TAG "StatusTask"
@@ -46,41 +46,9 @@ static void update_fms_status(void)
     if (mcn_poll(fms_out_nod)) {
         mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
 
-        if (fms_out.mode != old_fms_out.mode) {
-            switch (fms_out.mode) {
-            case 1:
-                ulog_i(TAG, "[Mode]] Mission");
-                break;
-
-            case 2:
-                ulog_i(TAG, "[Mode] Position");
-                break;
-
-            case 3:
-                ulog_i(TAG, "[Mode] Altitude Hold");
-                break;
-
-            case 4:
-                ulog_i(TAG, "[Mode] Stabilize");
-                break;
-
-            case 5:
-                ulog_i(TAG, "[Mode] Acro");
-                break;
-
-            default:
-                ulog_w(TAG, "[Mode] Unknown");
-                break;
-            }
-
-            if (vehicle_mode_change_cb) {
-                vehicle_mode_change_cb(fms_out.mode);
-            }
-        }
-
-        if (fms_out.state != old_fms_out.state) {
-            switch (fms_out.state) {
-            case 0:
+        if (fms_out.status != old_fms_out.status) {
+            switch (fms_out.status) {
+            case VehicleStatus_Disarm:
                 ulog_i(TAG, "[Status] Disarm");
 
                 /* stop mlog when disarm */
@@ -89,11 +57,11 @@ static void update_fms_status(void)
                 }
                 break;
 
-            case 1:
+            case VehicleStatus_Standby:
                 ulog_i(TAG, "[Status] Standby");
                 break;
 
-            case 2:
+            case VehicleStatus_Arm:
                 ulog_i(TAG, "[Status] Arm");
 
                 /* start mlog from arm */
@@ -108,11 +76,15 @@ static void update_fms_status(void)
             }
 
             if (vehicle_status_change_cb) {
-                vehicle_status_change_cb(fms_out.state);
+                vehicle_status_change_cb(fms_out.status);
             }
         }
 
         old_fms_out = fms_out;
+
+        // if (vehicle_mode_change_cb) {
+        //     vehicle_mode_change_cb(fms_out.mode);
+        // }
     }
 }
 
@@ -131,10 +103,60 @@ static void update_pilot_cmd_status(void)
 
         if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1) {
             switch (pilot_cmd.cmd_1) {
-            case FMS_CMD_FORCE_DISARM:
-                ulog_i(TAG, "[Pilot Cmd] Force Disarm");
+            case CMD_PreArm:
+                ulog_i(TAG, "[FMS Cmd] PreArm");
+                break;
+            case CMD_Arm:
+                ulog_i(TAG, "[FMS Cmd] Arm");
+                break;
+            case CMD_Disarm:
+                ulog_i(TAG, "[FMS Cmd] Disarm");
+                break;
+            case CMD_Takeoff:
+                ulog_i(TAG, "[FMS Cmd] Takeoff");
+                break;
+            case CMD_Land:
+                ulog_i(TAG, "[FMS Cmd] Land");
+                break;
+            case CMD_Return:
+                ulog_i(TAG, "[FMS Cmd] Return");
+                break;
+            case CMD_Pause:
+                ulog_i(TAG, "[FMS Cmd] Pause");
+                break;
+            case CMD_Continue:
+                ulog_i(TAG, "[FMS Cmd] Continue");
                 break;
             default:
+                break;
+            }
+        }
+
+        if (pilot_cmd.mode != old_pilot_cmd.mode) {
+            switch (pilot_cmd.mode) {
+            case PilotMode_Manual:
+                ulog_i(TAG, "[Pilot Mode] Manual");
+                break;
+            case PilotMode_Acro:
+                ulog_i(TAG, "[Pilot Mode] Acro");
+                break;
+            case PilotMode_Stabilize:
+                ulog_i(TAG, "[Pilot Mode] Stabilize");
+                break;
+            case PilotMode_Altitude:
+                ulog_i(TAG, "[Pilot Mode] Altitude");
+                break;
+            case PilotMode_Position:
+                ulog_i(TAG, "[Pilot Mode] Position");
+                break;
+            case PilotMode_Mission:
+                ulog_i(TAG, "[Pilot Mode] Mission");
+                break;
+            case PilotMode_Offboard:
+                ulog_i(TAG, "[Pilot Mode] Offboard");
+                break;
+            default:
+                ulog_i(TAG, "[Pilot Mode] Unknown");
                 break;
             }
         }

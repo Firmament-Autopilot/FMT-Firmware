@@ -17,6 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "FMS.h"
 #include "module/fms/fms_interface.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_interface.h"
@@ -38,24 +39,44 @@ static McnNode_t fms_out_nod;
 
 static uint32_t get_custom_mode(uint32_t mode)
 {
-    uint32_t custom_mode = 0;
+    uint32_t custom_mode;
 
     switch (mode) {
-    case 1: // Mission
-        custom_mode = (4 << 16) + (4 << 24);
+    case VehicleMode_Manual:
+        custom_mode = 1 << 16;
         break;
-    case 2: // Position
-        custom_mode = 3 << 16;
-        break;
-    case 3: // Altitude
+    case VehicleMode_Altitude:
         custom_mode = 2 << 16;
         break;
-    case 4: // Stabilize
-        custom_mode = 7 << 16;
+    case VehicleMode_Position:
+        custom_mode = 3 << 16;
         break;
-    case 5: // Acro
+    case VehicleMode_Takeoff:
+        custom_mode = (4 << 16) + (2 << 24);
+        break;
+    case VehicleMode_Hold:
+        custom_mode = (4 << 16) + (3 << 24);
+        break;
+    case VehicleMode_Mission:
+        custom_mode = (4 << 16) + (4 << 24);
+        break;
+    case VehicleMode_Return:
+        custom_mode = (4 << 16) + (5 << 24);
+        break;
+    case VehicleMode_Land:
+        custom_mode = (4 << 16) + (6 << 24);
+        break;
+    case VehicleMode_Acro:
         custom_mode = 5 << 16;
         break;
+    case VehicleMode_Offboard:
+        custom_mode = 6 << 16;
+        break;
+    case VehicleMode_Stabilize:
+        custom_mode = 7 << 16;
+        break;
+    default:
+        custom_mode = 0;
     }
 
     return custom_mode;
@@ -75,7 +96,7 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
     if (mcn_poll(fms_out_nod)) {
         mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
 
-        if (fms_out.state == 2) {
+        if (fms_out.status == VehicleStatus_Arm) {
             heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
             heartbeat.system_status = MAV_STATE_ACTIVE;
         }
