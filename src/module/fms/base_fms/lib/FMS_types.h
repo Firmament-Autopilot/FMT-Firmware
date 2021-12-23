@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1018
+ * Model version                  : 1.1129
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Dec 21 14:39:40 2021
+ * C/C++ source code generated on : Thu Dec 23 16:25:01 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -49,6 +49,13 @@ typedef struct {
 
 typedef struct {
   uint32_T timestamp;
+  uint32_T mode;
+
+  /* Operation channel 1 */
+  uint32_T cmd_1;
+
+  /* Operation channel 2 */
+  uint32_T cmd_2;
 
   /* rate x command in body frame */
   real32_T p_cmd;
@@ -307,6 +314,16 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
+#define DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
+
+typedef struct {
+  uint32_T period;
+  int8_T model_info[16];
+} struct_TYt7YeNdxIDXfczXumtXXB;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_struct_5vUBwe4VfGkNikzOx8lYKF_
 #define DEFINED_TYPEDEF_FOR_struct_5vUBwe4VfGkNikzOx8lYKF_
 
@@ -323,16 +340,6 @@ typedef struct {
   real32_T YAW_RATE_LIM;
   real32_T ROLL_PITCH_LIM;
 } struct_5vUBwe4VfGkNikzOx8lYKF;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
-#define DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
-
-typedef struct {
-  uint32_T period;
-  int8_T model_info[16];
-} struct_TYt7YeNdxIDXfczXumtXXB;
 
 #endif
 

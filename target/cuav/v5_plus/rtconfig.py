@@ -44,7 +44,7 @@ if PLATFORM == 'gcc':
         ' -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
     DEFINES = ' -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F765xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -D__FPU_PRESENT="1"'
     CFLAGS = DEVICE + \
-        ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function' + DEFINES
+        ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
         ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_cuav-v5.map,-cref,-u,Reset_Handler -T link.lds'
