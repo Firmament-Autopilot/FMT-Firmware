@@ -80,11 +80,13 @@ static void update_fms_status(void)
             }
         }
 
-        old_fms_out = fms_out;
+        if (fms_out.mode != old_fms_out.mode) {
+            if (vehicle_mode_change_cb) {
+                vehicle_mode_change_cb(fms_out.mode);
+            }
+        }
 
-        // if (vehicle_mode_change_cb) {
-        //     vehicle_mode_change_cb(fms_out.mode);
-        // }
+        old_fms_out = fms_out;
     }
 }
 
