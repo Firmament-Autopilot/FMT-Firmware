@@ -15,6 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include "FMS.h"
 #include "led.h"
 #include "module/work_queue/workqueue_manager.h"
 
@@ -60,13 +61,13 @@ static void run_rgb_led(void)
 void vehicle_status_change_cb(uint8_t status)
 {
     switch (status) {
-    case 0:
+    case VehicleStatus_Disarm:
         rgb_led_set_color(NCP5623_LED_BLUE);
         break;
-    case 1:
+    case VehicleStatus_Standby:
         rgb_led_set_color(NCP5623_LED_GREEN);
         break;
-    case 2:
+    case VehicleStatus_Arm:
         rgb_led_set_color(NCP5623_LED_GREEN);
         break;
     default:
@@ -77,12 +78,11 @@ void vehicle_status_change_cb(uint8_t status)
 
 void vehicle_mode_change_cb(uint8_t mode)
 {
-    if (mode == 0) {
+    if (mode == VehicleMode_None) {
         /* unknown mode */
         rgb_led_set_color(NCP5623_LED_RED);
     }
 }
-
 fmt_err_t led_set(struct device_pin_status pin_sta)
 {
     if (pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
