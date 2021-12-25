@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1129
+ * Model version                  : 1.1137
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Dec 23 16:25:01 2021
+ * C/C++ source code generated on : Sat Dec 25 10:36:30 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -49,13 +49,6 @@ typedef struct {
 
 typedef struct {
   uint32_T timestamp;
-  uint32_T mode;
-
-  /* Operation channel 1 */
-  uint32_T cmd_1;
-
-  /* Operation channel 2 */
-  uint32_T cmd_2;
 
   /* rate x command in body frame */
   real32_T p_cmd;
@@ -86,10 +79,23 @@ typedef struct {
 
   /* throttle command */
   uint32_T throttle_cmd;
-
-  /* actuator command, e.g, pwm command for motors */
-  uint16_T actuator_cmd[16];
 } Auto_Cmd_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_GCS_Cmd_Bus_
+#define DEFINED_TYPEDEF_FOR_GCS_Cmd_Bus_
+
+typedef struct {
+  uint32_T timestamp;
+  uint32_T mode;
+
+  /* Operation channel 1 */
+  uint32_T cmd_1;
+
+  /* Operation channel 2 */
+  uint32_T cmd_2;
+} GCS_Cmd_Bus;
 
 #endif
 

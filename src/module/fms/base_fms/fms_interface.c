@@ -24,6 +24,8 @@ MCN_DECLARE(pilot_cmd);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(control_output);
 
+MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
+
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
