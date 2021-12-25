@@ -133,6 +133,19 @@ static bool mavlink_msg_sys_status_cb(mavlink_message_t* msg_t)
     return true;
 }
 
+static bool mavlink_msg_system_time_cb(mavlink_message_t* msg_t)
+{
+    mavlink_system_time_t system_time;
+
+    system_time.time_unix_usec = systime_now_us();
+    system_time.time_boot_ms = systime_now_ms();
+
+    mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid,
+        msg_t, &system_time);
+
+    return true;
+}
+
 static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
 {
     mavlink_attitude_t attitude;
@@ -271,6 +284,9 @@ void task_comm_entry(void* parameter)
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000,
         mavlink_msg_sys_status_cb, 1);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYSTEM_TIME, 1000,
+        mavlink_msg_system_time_cb, 1);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100,
         mavlink_msg_attitude_cb, 1);
