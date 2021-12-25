@@ -42,20 +42,67 @@ static fmt_err_t mavproxy_rx_ind(uint32_t size)
     return (rt_err == RT_EOK) ? FMT_EOK : FMT_ERROR;
 }
 
-static void send_mavlink_command_ack(mavlink_command_ack_t* command_ack, mavlink_message_t* msg)
+static void acknowledge(uint16_t command, uint8_t result)
 {
     mavlink_system_t mav_sys = mavproxy_get_system();
+    mavlink_command_ack_t command_ack;
+    mavlink_message_t msg;
 
-    mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, msg, command_ack);
-    mavproxy_send_immediate_msg(msg, true);
+    command_ack.command = command;
+    command_ack.result = result;
+
+
+    mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, &msg, &command_ack);
+    mavproxy_send_immediate_msg(&msg, true);
 }
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
     switch (command->command) {
-    case MAV_CMD_PREFLIGHT_CALIBRATION: {
-        mavlink_command_ack_t command_ack;
+    case MAV_CMD_REQUEST_PROTOCOL_VERSION: {
+        mavlink_system_t mav_sys = mavproxy_get_system();
+        mavlink_protocol_version_t protocol_version = { 0 };
 
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+
+#ifdef FMT_USING_MAVLINK_V2
+        protocol_version.version = 200;
+#else
+        protocol_version.version = 100;
+#endif
+        protocol_version.min_version = 100;
+        protocol_version.max_version = 200;
+
+        mavlink_msg_protocol_version_encode(mav_sys.sysid, mav_sys.compid, msg, &protocol_version);
+        mavproxy_send_immediate_msg(msg, true);
+    } break;
+    case MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES: {
+        mavlink_system_t mav_sys = mavproxy_get_system();
+        mavlink_autopilot_version_t autopilot_version = { 0 };
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+
+        autopilot_version.capabilities = MAV_PROTOCOL_CAPABILITY_MISSION_FLOAT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MISSION_INT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_PARAM_FLOAT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_COMMAND_INT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_FTP;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_ATTITUDE_TARGET;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_LOCAL_NED;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_ACTUATOR_TARGET;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MAVLINK2;
+        // autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MISSION_FENCE;
+        // autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MISSION_RALLY;
+
+        /* cheat QGC that we are using the right px4 version */
+        autopilot_version.flight_sw_version = ((uint8_t)1 << 8 * 3) | ((uint8_t)10 << 8 * 2) | ((uint8_t)0 << 8 * 1);
+        autopilot_version.middleware_sw_version = autopilot_version.flight_sw_version;
+
+        mavlink_msg_autopilot_version_encode(mav_sys.sysid, mav_sys.compid, msg, &autopilot_version);
+        mavproxy_send_immediate_msg(msg, true);
+    } break;
+
+    case MAV_CMD_PREFLIGHT_CALIBRATION:
         if (command->param1 == 1) { // calibration gyr
             mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
@@ -68,13 +115,31 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             /* all 0 command, cancel current process */
         }
 
-        command_ack.command = MAV_CMD_PREFLIGHT_CALIBRATION;
-        command_ack.result = MAV_CMD_ACK_OK | MAV_CMD_ACK_ENUM_END;
-        send_mavlink_command_ack(&command_ack, msg);
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
         break;
-    }
+
+    case MAV_CMD_COMPONENT_ARM_DISARM:
+        if (command->param1 == 1.0f) {
+            printf("arm cmd\n");
+        } else if (command->param1 == 0.0f) {
+            printf("disarm cmd\n");
+        } else {
+            printf("invalid arm/disarm cmd\n");
+        }
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+
+        break;
+
+    case MAV_CMD_NAV_TAKEOFF: {
+
+        printf("takeoff send cmd\n");
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+    } break;
 
     default:
+        printf("unhandled command long:%d\n", command->command);
         break;
     }
 }
@@ -228,7 +293,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #endif
 
     default: {
-        // console_printf("unknown mavlink msg:%d\n", msg->msgid);
+        console_printf("unknown mavlink msg:%d\n", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }
