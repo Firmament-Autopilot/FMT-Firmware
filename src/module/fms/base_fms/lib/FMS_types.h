@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1157
+ * Model version                  : 1.1205
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Dec 26 20:49:47 2021
+ * C/C++ source code generated on : Tue Dec 28 21:03:15 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -216,56 +216,51 @@ typedef struct {
   /* actuator command, e.g, pwm command for motors */
   uint16_T actuator_cmd[16];
 
-  /* Vehicle Status:
-     0: Unknown
-     1: Disarm
-     2: Standby
-     3: Arm
-     4: Takeoff
-     5: Land
-     6: RTL */
+  /* enum of VehicleStatus */
   uint8_T status;
 
-  /* Control Mode:
-     0: Unknown
-     1: Manual
-     2: Acro
-     3: Stabilize
-     4: ALTCTL
-     5: POSCTL */
-  uint8_T mode;
+  /* enum of VehicleState */
+  uint8_T state;
   uint8_T ctrl_mode;
 
   /* reset the controller */
   uint8_T reset;
+
+  /* enum of PilotMode */
+  uint8_T mode;
+
+  /* enum of PilotMode */
+  uint8_T reserved1;
+
+  /* enum of PilotMode */
+  uint16_T reserved2;
 } FMS_Out_Bus;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_VehicleMode_
-#define DEFINED_TYPEDEF_FOR_VehicleMode_
+#ifndef DEFINED_TYPEDEF_FOR_VehicleState_
+#define DEFINED_TYPEDEF_FOR_VehicleState_
 
-/* enumeration to track active leaf state of NewArch_FMS/Chart/Mode_Manager */
 typedef enum {
-  VehicleMode_None = 0,                /* Default value */
-  VehicleMode_Disarm,
-  VehicleMode_Standby,
-  VehicleMode_Takeoff,
-  VehicleMode_Offboard,
-  VehicleMode_Mission,
-  VehicleMode_InvalidAutoMode,
-  VehicleMode_Hold,
-  VehicleMode_Acro,
-  VehicleMode_Stabilize,
-  VehicleMode_Altitude,
-  VehicleMode_Position,
-  VehicleMode_InvalidAssistMode,
-  VehicleMode_Manual,
-  VehicleMode_InValidManualMode,
-  VehicleMode_InvalidArmMode,
-  VehicleMode_Return,
-  VehicleMode_Land
-} VehicleMode;
+  VehicleState_None = 0,               /* Default value */
+  VehicleState_Disarm,
+  VehicleState_Standby,
+  VehicleState_Offboard,
+  VehicleState_Mission,
+  VehicleState_InvalidAutoMode,
+  VehicleState_Hold,
+  VehicleState_Acro,
+  VehicleState_Stabilize,
+  VehicleState_Altitude,
+  VehicleState_Position,
+  VehicleState_InvalidAssistMode,
+  VehicleState_Manual,
+  VehicleState_InValidManualMode,
+  VehicleState_InvalidArmMode,
+  VehicleState_Land,
+  VehicleState_Return,
+  VehicleState_Takeoff
+} VehicleState;
 
 #endif
 

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1157
+ * Model version                  : 1.1205
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Dec 26 20:49:47 2021
+ * C/C++ source code generated on : Tue Dec 28 21:03:15 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -119,7 +119,7 @@ typedef struct {
   real32_T Merge_n;                    /* '<S152>/Merge' */
   real32_T Merge_mv[2];                /* '<S218>/Merge' */
   real32_T Merge_mu;                   /* '<S208>/Merge' */
-  VehicleMode VehicleMode_e;           /* '<Root>/FMS State Machine' */
+  VehicleState VehicleState_f;         /* '<Root>/FMS State Machine' */
   PilotMode safe_mode;                 /* '<Root>/Mode Degrade' */
   FMS_Cmd fms_cmd;                     /* '<S7>/Switch' */
   boolean_T LogicalOperator1;          /* '<S6>/Logical Operator1' */
