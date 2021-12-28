@@ -96,7 +96,7 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
     if (mcn_poll(fms_out_nod)) {
         mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
 
-        if (fms_out.status == VehicleStatus_Arm) {
+        if (fms_out.status == VehicleStatus_Arm || fms_out.status == VehicleStatus_Standby) {
             heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
             heartbeat.system_status = MAV_STATE_ACTIVE;
         }

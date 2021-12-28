@@ -20,6 +20,8 @@
 #include "module/ftp/ftp_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/sysio/gcs_cmd.h"
+#include "px4_custom_mode.h"
 
 #define TAG "MAV_Monitor"
 
@@ -45,12 +47,11 @@ static fmt_err_t mavproxy_rx_ind(uint32_t size)
 static void acknowledge(uint16_t command, uint8_t result)
 {
     mavlink_system_t mav_sys = mavproxy_get_system();
-    mavlink_command_ack_t command_ack;
+    mavlink_command_ack_t command_ack = { 0 };
     mavlink_message_t msg;
 
     command_ack.command = command;
     command_ack.result = result;
-
 
     mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, &msg, &command_ack);
     mavproxy_send_immediate_msg(&msg, true);
@@ -120,11 +121,15 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 
     case MAV_CMD_COMPONENT_ARM_DISARM:
         if (command->param1 == 1.0f) {
-            printf("arm cmd\n");
+            printf("Detected GCS Arm Cmd\n");
+
+            gcs_set_cmd(CMD_PreArm);
         } else if (command->param1 == 0.0f) {
-            printf("disarm cmd\n");
+            printf("Detected GCS Disarm Cmd\n");
+
+            gcs_set_cmd(CMD_Disarm);
         } else {
-            printf("invalid arm/disarm cmd\n");
+            printf("Detected GCS Arm/Disarm Cmd\n");
         }
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
@@ -132,8 +137,17 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         break;
 
     case MAV_CMD_NAV_TAKEOFF: {
+        printf("Detected GCS Takeoff Cmd\n");
 
-        printf("takeoff send cmd\n");
+        gcs_set_cmd(CMD_Takeoff);
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+    } break;
+
+    case MAV_CMD_NAV_LAND: {
+        printf("Detected GCS Land Cmd\n");
+
+        gcs_set_cmd(CMD_Land);
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
@@ -150,6 +164,38 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
     case MAVLINK_MSG_ID_HEARTBEAT: {
         /* do nothing */
     } break;
+
+    case MAVLINK_MSG_ID_SET_MODE: {
+        if (system.sysid == mavlink_msg_set_mode_get_target_system(msg)) {
+            mavlink_set_mode_t set_mode;
+            mavlink_msg_set_mode_decode(msg, &set_mode);
+
+            uint8_t base_mode = set_mode.base_mode;
+            uint8_t custom_main_mode = (set_mode.custom_mode >> 16) & 0xFF;
+            uint8_t custom_sub_mode = (set_mode.custom_mode >> 24) & 0xFF;
+
+            if (base_mode & VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED) {
+                if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_AUTO) {
+                    if (custom_sub_mode > 0) {
+                        switch (custom_sub_mode) {
+                        case PX4_CUSTOM_SUB_MODE_AUTO_RTL:
+                            gcs_set_cmd(CMD_Return);
+                            break;
+                        case PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF:
+                            gcs_set_cmd(CMD_Takeoff);
+                            break;
+                        case PX4_CUSTOM_SUB_MODE_AUTO_LAND:
+                            gcs_set_cmd(CMD_Land);
+                            break;
+                        default:
+                            mavlink_send_statustext(MAV_SEVERITY_INFO, "Unsupported auto mode: %d", custom_sub_mode);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
         if (system.sysid == mavlink_msg_param_request_read_get_target_system(msg)) {

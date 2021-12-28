@@ -21,6 +21,7 @@
 
 // FMS input topic
 MCN_DECLARE(pilot_cmd);
+MCN_DECLARE(gcs_cmd);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(control_output);
 
@@ -30,6 +31,7 @@ MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 static McnNode_t _pilot_cmd_nod;
+static McnNode_t _gcs_cmd_nod;
 static McnNode_t _ins_out_nod;
 static McnNode_t _control_out_nod;
 static uint8_t _pilot_cmd_update = 1;
@@ -75,6 +77,10 @@ void fms_interface_step(void)
         _pilot_cmd_update = 1;
     }
 
+    if (mcn_poll(_gcs_cmd_nod)) {
+        mcn_copy(MCN_HUB(gcs_cmd), _gcs_cmd_nod, &FMS_U.GCS_Cmd);
+    }
+
     if (mcn_poll(_ins_out_nod)) {
         mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &FMS_U.INS_Out);
     }
@@ -114,6 +120,7 @@ void fms_interface_init(void)
     mcn_advertise(MCN_HUB(fms_output), NULL);
 
     _pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    _gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
     _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 

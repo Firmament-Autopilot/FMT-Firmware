@@ -23,9 +23,10 @@
 #include "module/plant/plant_interface.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
+#include "module/sysio/gcs_cmd.h"
 #include "module/sysio/pilot_cmd.h"
-#include "task/task_logger.h"
 #include "module/task_manager/task_manager.h"
+#include "task/task_logger.h"
 
 #define EVENT_VEHICLE_UPDATE (1 << 0)
 
@@ -59,6 +60,8 @@ void task_vehicle_entry(void* parameter)
                 sensor_collect();
 #endif
                 pilot_cmd_collect();
+
+                gcs_cmd_collect();
 
 #ifdef FMT_USING_SIH
                 /* run Plant model in internal HIL mode */

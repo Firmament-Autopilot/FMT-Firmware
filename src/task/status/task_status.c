@@ -17,6 +17,7 @@
 
 #include "module/fms/fms_interface.h"
 #include "module/ins/ins_interface.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/pmu/power_manager.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
@@ -34,6 +35,29 @@ static McnNode_t pilot_cmd_nod;
 
 RT_WEAK void vehicle_status_change_cb(uint8_t status);
 RT_WEAK void vehicle_mode_change_cb(uint8_t mode);
+
+static void send_extended_sys_state(FMS_Out_Bus fms_out)
+{
+    mavlink_system_t mav_sys = mavproxy_get_system();
+    uint8_t vtol_state = 0;
+    uint8_t landed_state = MAV_LANDED_STATE_UNDEFINED;
+    mavlink_message_t msg;
+
+    if (fms_out.status == VehicleStatus_Disarm || fms_out.status == VehicleStatus_Standby) {
+        landed_state = MAV_LANDED_STATE_ON_GROUND;
+    } else {
+        if (fms_out.mode == VehicleMode_Takeoff) {
+            landed_state = MAV_LANDED_STATE_TAKEOFF;
+        } else if (fms_out.mode == VehicleMode_Land) {
+            landed_state = MAV_LANDED_STATE_LANDING;
+        } else {
+            landed_state = MAV_LANDED_STATE_IN_AIR;
+        }
+    }
+
+    mavlink_msg_extended_sys_state_pack(mav_sys.sysid, mav_sys.compid, &msg, vtol_state, landed_state);
+    mavproxy_send_immediate_msg(&msg, false);
+}
 
 static void update_fms_status(void)
 {
@@ -81,6 +105,19 @@ static void update_fms_status(void)
         }
 
         if (fms_out.mode != old_fms_out.mode) {
+            switch (fms_out.mode) {
+            case VehicleMode_Takeoff:
+                mavlink_send_statustext(MAV_SEVERITY_INFO, "Takeoff detected");
+                break;
+            case VehicleMode_Land:
+                mavlink_send_statustext(MAV_SEVERITY_INFO, "Landing detected");
+                break;
+            default:
+                break;
+            }
+
+            send_extended_sys_state(fms_out);
+
             if (vehicle_mode_change_cb) {
                 vehicle_mode_change_cb(fms_out.mode);
             }

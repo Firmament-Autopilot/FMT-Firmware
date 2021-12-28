@@ -53,6 +53,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/gcs_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
@@ -439,6 +440,9 @@ void bsp_post_initialize(void)
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());
+
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */
