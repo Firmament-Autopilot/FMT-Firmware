@@ -19,9 +19,9 @@
 #include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/px4_custom_mode.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/gcs_cmd.h"
-#include "px4_custom_mode.h"
 
 #define TAG "MAV_Monitor"
 
@@ -187,11 +187,26 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
                         case PX4_CUSTOM_SUB_MODE_AUTO_LAND:
                             gcs_set_cmd(CMD_Land);
                             break;
+                        case PX4_CUSTOM_SUB_MODE_AUTO_MISSION:
+                            gcs_set_mode(PilotMode_Mission);
+                            break;
                         default:
                             mavlink_send_statustext(MAV_SEVERITY_INFO, "Unsupported auto mode: %d", custom_sub_mode);
                             break;
                         }
                     }
+                } else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_MANUAL) {
+                    gcs_set_mode(PilotMode_Manual);
+                } else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_ALTCTL) {
+                    gcs_set_mode(PilotMode_Altitude);
+                } else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_POSCTL) {
+                    gcs_set_mode(PilotMode_Position);
+                } else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_ACRO) {
+                    gcs_set_mode(PilotMode_Acro);
+                } else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_OFFBOARD) {
+                    gcs_set_mode(PilotMode_Offboard);
+                } else if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_STABILIZED) {
+                    gcs_set_mode(PilotMode_Stabilize);
                 }
             }
         }
@@ -339,7 +354,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #endif
 
     default: {
-        console_printf("unknown mavlink msg:%d\n", msg->msgid);
+        // console_printf("unknown mavlink msg:%d\n", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }

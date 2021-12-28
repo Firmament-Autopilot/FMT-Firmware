@@ -76,9 +76,9 @@ void vehicle_status_change_cb(uint8_t status)
     }
 }
 
-void vehicle_mode_change_cb(uint8_t mode)
+void vehicle_state_change_cb(uint8_t mode)
 {
-    if (mode == VehicleMode_None) {
+    if (mode == VehicleState_None) {
         /* unknown mode */
         rgb_led_set_color(NCP5623_LED_RED);
     }

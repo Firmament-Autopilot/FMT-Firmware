@@ -34,7 +34,7 @@ static McnNode_t ins_out_nod;
 static McnNode_t pilot_cmd_nod;
 
 RT_WEAK void vehicle_status_change_cb(uint8_t status);
-RT_WEAK void vehicle_mode_change_cb(uint8_t mode);
+RT_WEAK void vehicle_state_change_cb(uint8_t mode);
 
 static void send_extended_sys_state(FMS_Out_Bus fms_out)
 {
@@ -46,9 +46,9 @@ static void send_extended_sys_state(FMS_Out_Bus fms_out)
     if (fms_out.status == VehicleStatus_Disarm || fms_out.status == VehicleStatus_Standby) {
         landed_state = MAV_LANDED_STATE_ON_GROUND;
     } else {
-        if (fms_out.mode == VehicleMode_Takeoff) {
+        if (fms_out.state == VehicleState_Takeoff) {
             landed_state = MAV_LANDED_STATE_TAKEOFF;
-        } else if (fms_out.mode == VehicleMode_Land) {
+        } else if (fms_out.state == VehicleState_Land) {
             landed_state = MAV_LANDED_STATE_LANDING;
         } else {
             landed_state = MAV_LANDED_STATE_IN_AIR;
@@ -104,12 +104,12 @@ static void update_fms_status(void)
             }
         }
 
-        if (fms_out.mode != old_fms_out.mode) {
-            switch (fms_out.mode) {
-            case VehicleMode_Takeoff:
+        if (fms_out.state != old_fms_out.state) {
+            switch (fms_out.state) {
+            case VehicleState_Takeoff:
                 mavlink_send_statustext(MAV_SEVERITY_INFO, "Takeoff detected");
                 break;
-            case VehicleMode_Land:
+            case VehicleState_Land:
                 mavlink_send_statustext(MAV_SEVERITY_INFO, "Landing detected");
                 break;
             default:
@@ -118,8 +118,8 @@ static void update_fms_status(void)
 
             send_extended_sys_state(fms_out);
 
-            if (vehicle_mode_change_cb) {
-                vehicle_mode_change_cb(fms_out.mode);
+            if (vehicle_state_change_cb) {
+                vehicle_state_change_cb(fms_out.state);
             }
         }
 
@@ -253,7 +253,7 @@ TASK_EXPORT __fmt_task_desc = {
     .init = task_status_init,
     .entry = task_status_entry,
     .priority = STATUS_THREAD_PRIORITY,
-    .stack_size = 2048,
+    .stack_size = 4096,
     .param = NULL,
     .dependency = NULL
 };

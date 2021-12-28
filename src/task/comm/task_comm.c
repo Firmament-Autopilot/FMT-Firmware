@@ -22,6 +22,7 @@
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/px4_custom_mode.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"
@@ -37,46 +38,75 @@ MCN_DECLARE(fms_output);
 static mavlink_system_t mavlink_system;
 static McnNode_t fms_out_nod;
 
-static uint32_t get_custom_mode(uint32_t mode)
+static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 {
-    uint32_t custom_mode;
+    uint32_t custom_mode = 0;
 
-    switch (mode) {
-    case VehicleMode_Manual:
-        custom_mode = 1 << 16;
-        break;
-    case VehicleMode_Altitude:
-        custom_mode = 2 << 16;
-        break;
-    case VehicleMode_Position:
-        custom_mode = 3 << 16;
-        break;
-    case VehicleMode_Takeoff:
-        custom_mode = (4 << 16) + (2 << 24);
-        break;
-    case VehicleMode_Hold:
-        custom_mode = (4 << 16) + (3 << 24);
-        break;
-    case VehicleMode_Mission:
-        custom_mode = (4 << 16) + (4 << 24);
-        break;
-    case VehicleMode_Return:
-        custom_mode = (4 << 16) + (5 << 24);
-        break;
-    case VehicleMode_Land:
-        custom_mode = (4 << 16) + (6 << 24);
-        break;
-    case VehicleMode_Acro:
-        custom_mode = 5 << 16;
-        break;
-    case VehicleMode_Offboard:
-        custom_mode = 6 << 16;
-        break;
-    case VehicleMode_Stabilize:
-        custom_mode = 7 << 16;
-        break;
-    default:
-        custom_mode = 0;
+    if (fms_out.status == VehicleStatus_Arm) {
+        switch (fms_out.state) {
+        case VehicleState_Manual:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_MANUAL << 16;
+            break;
+        case VehicleState_Altitude:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ALTCTL << 16;
+            break;
+        case VehicleState_Position:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_POSCTL << 16;
+            break;
+        case VehicleState_Takeoff:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF << 24);
+            break;
+        case VehicleState_Hold:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_LOITER << 24);
+            break;
+        case VehicleState_Mission:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_MISSION << 24);
+            break;
+        case VehicleState_Return:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_RTL << 24);
+            break;
+        case VehicleState_Land:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_LAND << 24);
+            break;
+        case VehicleState_Acro:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ACRO << 16;
+            break;
+        case VehicleState_Offboard:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_OFFBOARD << 16;
+            break;
+        case VehicleState_Stabilize:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_STABILIZED << 16;
+            break;
+        default:
+            custom_mode = 0;
+        }
+    } else {
+        switch (fms_out.mode) {
+        case PilotMode_Manual:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_MANUAL << 16;
+            break;
+        case PilotMode_Acro:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ACRO << 16;
+            break;
+        case PilotMode_Stabilize:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_STABILIZED << 16;
+            break;
+        case PilotMode_Altitude:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ALTCTL << 16;
+            break;
+        case PilotMode_Position:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_POSCTL << 16;
+            break;
+        case PilotMode_Mission:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_MISSION << 24);
+            break;
+        case PilotMode_Offboard:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_OFFBOARD << 16;
+            break;
+        default:
+            custom_mode = 0;
+            break;
+        }
     }
 
     return custom_mode;
@@ -101,7 +131,7 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
             heartbeat.system_status = MAV_STATE_ACTIVE;
         }
         /* map fms mode to px4 ctrl mode */
-        heartbeat.custom_mode = get_custom_mode(fms_out.mode);
+        heartbeat.custom_mode = get_custom_mode(fms_out);
     }
 
     mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid,

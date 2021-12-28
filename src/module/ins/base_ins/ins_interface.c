@@ -180,51 +180,45 @@ void ins_interface_step(void)
 
     /* record INS input bus data if updated */
     if (ins_handle.imu_updated) {
+        ins_handle.imu_updated = 0;
         /* Log IMU data if IMU updated */
-        if (mlog_push_msg((uint8_t*)&INS_U.IMU, MLOG_IMU_ID, sizeof(INS_U.IMU)) == FMT_EOK) {
-            ins_handle.imu_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.IMU, MLOG_IMU_ID, sizeof(INS_U.IMU));
     }
 
     if (ins_handle.mag_updated) {
+        ins_handle.mag_updated = 0;
         /* Log Magnetometer data */
-        if (mlog_push_msg((uint8_t*)&INS_U.MAG, MLOG_MAG_ID, sizeof(INS_U.MAG)) == FMT_EOK) {
-            ins_handle.mag_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.MAG, MLOG_MAG_ID, sizeof(INS_U.MAG));
     }
 
     if (ins_handle.baro_updated) {
+        ins_handle.baro_updated = 0;
         /* Log Barometer data */
-        if (mlog_push_msg((uint8_t*)&INS_U.Barometer, MLOG_BARO_ID, sizeof(INS_U.Barometer)) == FMT_EOK) {
-            ins_handle.baro_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.Barometer, MLOG_BARO_ID, sizeof(INS_U.Barometer));
     }
 
     if (ins_handle.gps_updated) {
+        ins_handle.gps_updated = 0;
         /* Log GPS data */
-        if (mlog_push_msg((uint8_t*)&INS_U.GPS_uBlox, MLOG_GPS_ID, sizeof(INS_U.GPS_uBlox)) == FMT_EOK) {
-            ins_handle.gps_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.GPS_uBlox, MLOG_GPS_ID, sizeof(INS_U.GPS_uBlox));
     }
 
     if (ins_handle.rf_updated) {
+        ins_handle.rf_updated = 0;
         /* Log Rangefinder data */
-        if (mlog_push_msg((uint8_t*)&ins_handle.rf_report, MLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report)) == FMT_EOK) {
-            ins_handle.rf_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&ins_handle.rf_report, MLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report));
     }
 
     if (ins_handle.optflow_updated) {
+        ins_handle.optflow_updated = 0;
         /* Log Optical Flow data */
-        if (mlog_push_msg((uint8_t*)&ins_handle.optflow_report, MLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report)) == FMT_EOK) {
-            ins_handle.optflow_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&ins_handle.optflow_report, MLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report));
     }
 
     /* Log INS output bus data */
     if (check_timetag(TIMETAG(ins_output))) {
         /* rewrite timestmp */
-        INS_Y.INS_Out.timestamp = time_now - ins_handle.start_time;
+        INS_Y.INS_Out.timestamp = time_now - ins_handle.start_time; // can be removed?
         /* Log INS out data */
         mlog_push_msg((uint8_t*)&INS_Y.INS_Out, MLOG_INS_OUT_ID, sizeof(INS_Y.INS_Out));
     }

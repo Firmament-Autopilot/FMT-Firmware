@@ -26,6 +26,20 @@ static GCS_Cmd_Bus gcs_cmd;
 
 MCN_DEFINE(gcs_cmd, sizeof(GCS_Cmd_Bus));
 
+static int gcs_cmd_echo(void* parameter)
+{
+    GCS_Cmd_Bus gcs_cmd;
+
+    if (mcn_copy_from_hub((McnHub*)parameter, &gcs_cmd) != FMT_EOK) {
+        return -1;
+    }
+
+    printf("timestamp:%u mode:%u cmd1:%u cmd2:%u\n",
+        gcs_cmd.timestamp, gcs_cmd.mode, gcs_cmd.cmd_1, gcs_cmd.cmd_2);
+
+    return 0;
+}
+
 fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
 {
     uint32_t new_cmd = cmd;
@@ -71,6 +85,8 @@ fmt_err_t gcs_cmd_collect(void)
     }
 
     if (updated) {
+        gcs_cmd.timestamp = systime_now_ms();
+
         FMT_CHECK_RETURN(mcn_publish(MCN_HUB(gcs_cmd), &gcs_cmd));
     }
 
@@ -82,7 +98,7 @@ fmt_err_t gcs_cmd_init(void)
     gcs_cmd_rb = ringbuffer_static_create((uint8_t*)gcs_cmd_buffer, sizeof(gcs_cmd_buffer));
     RT_ASSERT(gcs_cmd_rb != NULL);
 
-    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(gcs_cmd), NULL));
+    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
 
     return FMT_EOK;
 }
