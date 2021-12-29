@@ -103,7 +103,14 @@ mlog_elem_t Pilot_Cmd_Elems[] = {
     MLOG_ELEMENT("stick_yaw", MLOG_FLOAT),
     MLOG_ELEMENT("stick_throttle", MLOG_FLOAT),
     MLOG_ELEMENT("stick_roll", MLOG_FLOAT),
-    MLOG_ELEMENT("sltick_pitch", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_pitch", MLOG_FLOAT),
+    MLOG_ELEMENT("mode", MLOG_UINT32),
+    MLOG_ELEMENT("cmd_1", MLOG_UINT32),
+    MLOG_ELEMENT("cmd_2", MLOG_UINT32),
+};
+
+mlog_elem_t GCS_Cmd_Elems[] = {
+    MLOG_ELEMENT("timestamp", MLOG_UINT32),
     MLOG_ELEMENT("mode", MLOG_UINT32),
     MLOG_ELEMENT("cmd_1", MLOG_UINT32),
     MLOG_ELEMENT("cmd_2", MLOG_UINT32),
@@ -150,9 +157,12 @@ mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT("throttle_cmd", MLOG_UINT32),
     MLOG_ELEMENT_VEC("actuator_cmd", MLOG_UINT16, 16),
     MLOG_ELEMENT("status", MLOG_UINT8),
-    MLOG_ELEMENT("mode", MLOG_UINT8),
+    MLOG_ELEMENT("state", MLOG_UINT8),
     MLOG_ELEMENT("ctrl_mode", MLOG_UINT8),
     MLOG_ELEMENT("reset", MLOG_UINT8),
+    MLOG_ELEMENT("mode", MLOG_UINT8),
+    MLOG_ELEMENT("reserved1", MLOG_UINT8),
+    MLOG_ELEMENT("reserved2", MLOG_UINT16),
 };
 
 mlog_elem_t Control_Out_Elems[] = {
@@ -196,6 +206,7 @@ mlog_bus_t _mlog_bus[] = {
     MLOG_BUS("Rangefinder", MLOG_RANGEFINDER_ID, Rangefinder_Elems),
     MLOG_BUS("Optical_Flow", MLOG_OPTICAL_FLOW_ID, Optflow_Elems),
     MLOG_BUS("Pilot_Cmd", MLOG_PILOT_CMD_ID, Pilot_Cmd_Elems),
+    MLOG_BUS("GCS_Cmd", MLOG_GCS_CMD_ID, GCS_Cmd_Elems),
     MLOG_BUS("INS_Out", MLOG_INS_OUT_ID, INS_Out_Elems),
     MLOG_BUS("FMS_Out", MLOG_FMS_OUT_ID, FMS_Out_Elems),
     MLOG_BUS("Control_Out", MLOG_CONTROL_OUT_ID, Control_Out_Elems),
