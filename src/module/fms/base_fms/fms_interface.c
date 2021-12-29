@@ -35,6 +35,7 @@ static McnNode_t _gcs_cmd_nod;
 static McnNode_t _ins_out_nod;
 static McnNode_t _control_out_nod;
 static uint8_t _pilot_cmd_update = 1;
+static uint8_t _gcs_cmd_update = 1;
 
 fmt_model_info_t fms_model_info;
 
@@ -83,6 +84,7 @@ void fms_interface_step(void)
         mcn_copy(MCN_HUB(gcs_cmd), _gcs_cmd_nod, &FMS_U.GCS_Cmd);
 
         FMS_U.GCS_Cmd.timestamp = time_now - start_time;
+        _gcs_cmd_update = 1;
     }
 
     if (mcn_poll(_ins_out_nod)) {
@@ -101,6 +103,12 @@ void fms_interface_step(void)
         _pilot_cmd_update = 0;
         /* Log pilot command */
         mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, MLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus));
+    }
+
+    if (_gcs_cmd_update) {
+        _gcs_cmd_update = 0;
+        /* Log gcs command */
+        mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, MLOG_GCS_CMD_ID, sizeof(GCS_Cmd_Bus));
     }
 
     DEFINE_TIMETAG(fms_output, 100);
