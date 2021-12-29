@@ -61,7 +61,8 @@ static void send_extended_sys_state(FMS_Out_Bus fms_out)
 
 static void update_fms_status(void)
 {
-    static FMS_Out_Bus old_fms_out;
+    /* set initial status/state to disarm to avoid mlog stop unintentionally */
+    static FMS_Out_Bus old_fms_out = {.status = VehicleStatus_Disarm, .state = VehicleState_Disarm};
     FMS_Out_Bus fms_out;
 
     if (fms_out_nod == NULL)
