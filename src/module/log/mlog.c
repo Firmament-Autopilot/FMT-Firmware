@@ -471,7 +471,7 @@ fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
     /* check if buffer has enough space to store msg */
     if (buffer_is_full(len + 4)) {
         /* do not let it print too fast */
-        TIMETAG_CHECK_EXECUTE(mlog_buff_full, 1000, ulog_w(TAG, "buffer is full!"););
+        PERIOD_EXECUTE(mlog_buff_full, 1000, ulog_w(TAG, "buffer is full!"););
 
         bus_index = get_bus_index(msg_id);
         mlog_handle.monitor[bus_index].lost_msg += 1;

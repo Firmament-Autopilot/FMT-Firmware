@@ -38,7 +38,7 @@ typedef struct {
 
 #define TIMETAG(_name) (&__timetag_##_name)
 
-#define TIMETAG_CHECK_EXECUTE(_name, _period, _operation) \
+#define PERIOD_EXECUTE(_name, _period, _operation) \
     DEFINE_TIMETAG(_name, _period);                       \
     do {                                                  \
         if (check_timetag(TIMETAG(_name))) {              \
@@ -46,7 +46,7 @@ typedef struct {
         }                                                 \
     } while (0)
 
-#define TIMETAG_CHECK_EXECUTE2(_name, _period, _time_now, _operation) \
+#define PERIOD_EXECUTE2(_name, _period, _time_now, _operation) \
     DEFINE_TIMETAG(_name, _period);                                   \
     do {                                                              \
         if (check_timetag2(TIMETAG(_name), _time_now)) {              \
@@ -54,7 +54,7 @@ typedef struct {
         }                                                             \
     } while (0)
 
-#define TIMETAG_CHECK_EXECUTE3(_name, _period, _time_now, _operation) \
+#define PERIOD_EXECUTE3(_name, _period, _time_now, _operation) \
     DEFINE_TIMETAG(_name, 0);                                         \
     do {                                                              \
         if (check_timetag3(TIMETAG(_name), _time_now, _period)) {     \

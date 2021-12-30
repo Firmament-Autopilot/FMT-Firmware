@@ -32,7 +32,7 @@ typedef struct {
 
 #define TIMETAG(_name)          (&__timetag_##_name)
 
-#define TIMETAG_CHECK_EXECUTE(_name, _period, _operation)   \
+#define PERIOD_EXECUTE(_name, _period, _operation)   \
     DEFINE_TIMETAG(_name, _period); \
     if(check_timetag(TIMETAG(_name))){_operation}
 

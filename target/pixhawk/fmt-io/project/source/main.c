@@ -71,9 +71,9 @@ int main(void)
             led_on(LED_BLUE);
 
             /* try send sync cmd to fmu */
-            TIMETAG_CHECK_EXECUTE(fmu_sync, 200, send_io_cmd(IO_CODE_SYNC, NULL, 0);)
+            PERIOD_EXECUTE(fmu_sync, 200, send_io_cmd(IO_CODE_SYNC, NULL, 0);)
         }
 
-        TIMETAG_CHECK_EXECUTE(led_toggle, 1000, led_toggle(led_type);)
+        PERIOD_EXECUTE(led_toggle, 1000, led_toggle(led_type);)
     }
 }

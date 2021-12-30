@@ -30,18 +30,19 @@ MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
-static McnNode_t _pilot_cmd_nod;
-static McnNode_t _gcs_cmd_nod;
-static McnNode_t _ins_out_nod;
-static McnNode_t _control_out_nod;
-static uint8_t _pilot_cmd_update = 1;
-static uint8_t _gcs_cmd_update = 1;
+static McnNode_t pilot_cmd_nod;
+static McnNode_t gcs_cmd_nod;
+static McnNode_t ins_out_nod;
+static McnNode_t control_out_nod;
+static uint8_t pilot_cmd_updated = 1;
+static uint8_t gcs_cmd_updated = 1;
 
 fmt_model_info_t fms_model_info;
 
 static void mlog_start_cb(void)
 {
-    _pilot_cmd_update = 1;
+    pilot_cmd_updated = 1;
+    gcs_cmd_updated = 1;
 }
 
 static void update_parameter(void)
@@ -59,64 +60,53 @@ static void update_parameter(void)
     FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
 }
 
-void fms_interface_step(void)
+void fms_interface_step(uint32_t timestamp)
 {
-    static uint32_t start_time = 0;
-    uint32_t time_now = systime_now_ms();
-
 #ifdef FMT_ONLINE_PARAM_TUNING
     update_parameter();
 #endif
 
-    if (start_time == 0) {
-        /* record first execution time */
-        start_time = time_now;
+    if (mcn_poll(pilot_cmd_nod)) {
+        mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &FMS_U.Pilot_Cmd);
+
+        FMS_U.Pilot_Cmd.timestamp = timestamp;
+        pilot_cmd_updated = 1;
     }
 
-    if (mcn_poll(_pilot_cmd_nod)) {
-        mcn_copy(MCN_HUB(pilot_cmd), _pilot_cmd_nod, &FMS_U.Pilot_Cmd);
+    if (mcn_poll(gcs_cmd_nod)) {
+        mcn_copy(MCN_HUB(gcs_cmd), gcs_cmd_nod, &FMS_U.GCS_Cmd);
 
-        FMS_U.Pilot_Cmd.timestamp = time_now - start_time;
-        _pilot_cmd_update = 1;
+        FMS_U.GCS_Cmd.timestamp = timestamp;
+        gcs_cmd_updated = 1;
     }
 
-    if (mcn_poll(_gcs_cmd_nod)) {
-        mcn_copy(MCN_HUB(gcs_cmd), _gcs_cmd_nod, &FMS_U.GCS_Cmd);
-
-        FMS_U.GCS_Cmd.timestamp = time_now - start_time;
-        _gcs_cmd_update = 1;
+    if (mcn_poll(ins_out_nod)) {
+        mcn_copy(MCN_HUB(ins_output), ins_out_nod, &FMS_U.INS_Out);
     }
 
-    if (mcn_poll(_ins_out_nod)) {
-        mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &FMS_U.INS_Out);
-    }
-
-    if (mcn_poll(_control_out_nod)) {
-        mcn_copy(MCN_HUB(control_output), _control_out_nod, &FMS_U.Control_Out);
+    if (mcn_poll(control_out_nod)) {
+        mcn_copy(MCN_HUB(control_output), control_out_nod, &FMS_U.Control_Out);
     }
 
     FMS_step();
 
     mcn_publish(MCN_HUB(fms_output), &FMS_Y.FMS_Out);
 
-    if (_pilot_cmd_update) {
-        _pilot_cmd_update = 0;
+    if (pilot_cmd_updated) {
+        pilot_cmd_updated = 0;
         /* Log pilot command */
         mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, MLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus));
     }
 
-    if (_gcs_cmd_update) {
-        _gcs_cmd_update = 0;
+    if (gcs_cmd_updated) {
+        gcs_cmd_updated = 0;
         /* Log gcs command */
         mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, MLOG_GCS_CMD_ID, sizeof(GCS_Cmd_Bus));
     }
 
-    DEFINE_TIMETAG(fms_output, 100);
-
     /* Log FMS output bus data */
+    DEFINE_TIMETAG(fms_output, 100);
     if (check_timetag(TIMETAG(fms_output))) {
-        /* rewrite timestmp */
-        FMS_Y.FMS_Out.timestamp = time_now - start_time;
         /* Log FMS out data */
         mlog_push_msg((uint8_t*)&FMS_Y.FMS_Out, MLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
     }
@@ -129,10 +119,10 @@ void fms_interface_init(void)
 
     mcn_advertise(MCN_HUB(fms_output), NULL);
 
-    _pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
-    _gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
-    _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
-    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
+    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 

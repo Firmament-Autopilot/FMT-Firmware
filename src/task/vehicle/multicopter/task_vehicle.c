@@ -43,6 +43,9 @@ static void timer_vehicle_update(void* parameter)
 
 void task_vehicle_entry(void* parameter)
 {
+    static uint32_t time_start = 0;
+    uint32_t time_now;
+    uint32_t timestamp;
     rt_err_t res;
     rt_uint32_t recv_set = 0;
     uint32_t wait_set = EVENT_VEHICLE_UPDATE;
@@ -53,29 +56,30 @@ void task_vehicle_entry(void* parameter)
 
         if (res == RT_EOK) {
             if (recv_set & EVENT_VEHICLE_UPDATE) {
-
-                uint32_t time_now = systime_now_ms();
+                time_now = systime_now_ms();
+                /* record loop start time */
+                if (time_start == 0) {
+                    time_start = time_now;
+                }
+                /* the model simulation start from 0, so we calcualtet the timestamp relative to start time */
+                timestamp = time_now - time_start;
 
 #if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
                 sensor_collect();
 #endif
                 pilot_cmd_collect();
-
                 gcs_cmd_collect();
 
 #ifdef FMT_USING_SIH
-                /* run Plant model in internal HIL mode */
-                TIMETAG_CHECK_EXECUTE3(plant_model_update, plant_model_info.period, time_now, plant_interface_step(););
+                /* run Plant model */
+                PERIOD_EXECUTE3(plant_step, plant_model_info.period, time_now, plant_interface_step(timestamp););
 #endif
-
                 /* run INS model */
-                TIMETAG_CHECK_EXECUTE3(ins_period, ins_model_info.period, time_now, ins_interface_step(););
-
+                PERIOD_EXECUTE3(ins_step, ins_model_info.period, time_now, ins_interface_step(timestamp););
                 /* run FMS model */
-                TIMETAG_CHECK_EXECUTE3(fms_period, fms_model_info.period, time_now, fms_interface_step(););
-
+                PERIOD_EXECUTE3(fms_step, fms_model_info.period, time_now, fms_interface_step(timestamp););
                 /* run Controller model */
-                TIMETAG_CHECK_EXECUTE3(control_period, control_model_info.period, time_now, control_interface_step(););
+                PERIOD_EXECUTE3(control_step, control_model_info.period, time_now, control_interface_step(timestamp););
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
                 send_actuator_cmd();
@@ -106,6 +110,11 @@ fmt_err_t task_vehicle_init(void)
         return FMT_ERROR;
     }
 
+#if defined(FMT_USING_SIH)
+    /* init plant model */
+    plant_interface_init();
+#endif
+
     /* init ins model */
     ins_interface_init();
 
@@ -114,11 +123,6 @@ fmt_err_t task_vehicle_init(void)
 
     /* init controller model */
     control_interface_init();
-
-#if defined(FMT_USING_SIH)
-    /* init plant model */
-    plant_interface_init();
-#endif
 
     return FMT_EOK;
 }

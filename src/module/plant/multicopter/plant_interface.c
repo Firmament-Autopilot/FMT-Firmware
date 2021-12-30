@@ -32,22 +32,20 @@ MCN_DECLARE(sensor_gps);
 // plant model input
 MCN_DECLARE(control_output);
 
-static McnNode_t _control_out_nod;
+static McnNode_t control_out_nod;
+static uint32_t imu_timestamp = 0xFFFF;
+static uint32_t mag_timestamp = 0xFFFF;
+static uint32_t baro_timestamp = 0xFFFF;
+static uint32_t gps_timestamp = 0xFFFF;
 
 fmt_model_info_t plant_model_info;
 
-static void publish_sensor_data(void)
+static void publish_sensor_data(uint32_t timestamp)
 {
-    static uint32_t imu_timestamp = 0xFFFF;
-    static uint32_t mag_timestamp = 0xFFFF;
-    static uint32_t baro_timestamp = 0xFFFF;
-    static uint32_t gps_timestamp = 0xFFFF;
-    uint32_t time_now = systime_now_ms();
-
     if (Plant_Y.IMU.timestamp != imu_timestamp) {
         imu_data_t imu_report;
 
-        imu_report.timestamp_ms = time_now;
+        imu_report.timestamp_ms = timestamp;
         imu_report.gyr_B_radDs[0] = Plant_Y.IMU.gyr_x;
         imu_report.gyr_B_radDs[1] = Plant_Y.IMU.gyr_y;
         imu_report.gyr_B_radDs[2] = Plant_Y.IMU.gyr_z;
@@ -63,7 +61,7 @@ static void publish_sensor_data(void)
     if (Plant_Y.MAG.timestamp != mag_timestamp) {
         mag_data_t mag_report;
 
-        mag_report.timestamp_ms = time_now;
+        mag_report.timestamp_ms = timestamp;
         mag_report.mag_B_gauss[0] = Plant_Y.MAG.mag_x;
         mag_report.mag_B_gauss[1] = Plant_Y.MAG.mag_y;
         mag_report.mag_B_gauss[2] = Plant_Y.MAG.mag_z;
@@ -76,7 +74,7 @@ static void publish_sensor_data(void)
     if (Plant_Y.Barometer.timestamp != baro_timestamp) {
         baro_data_t baro_report;
 
-        baro_report.timestamp_ms = time_now;
+        baro_report.timestamp_ms = timestamp;
         baro_report.temperature_deg = Plant_Y.Barometer.temperature;
         baro_report.pressure_pa = Plant_Y.Barometer.pressure;
         // publish SNESOR_BARO data
@@ -88,7 +86,7 @@ static void publish_sensor_data(void)
     if (Plant_Y.GPS.timestamp != gps_timestamp) {
         gps_data_t gps_report;
 
-        gps_report.timestamp_ms = time_now;
+        gps_report.timestamp_ms = timestamp;
         gps_report.fixType = Plant_Y.GPS.fixType;
         gps_report.numSV = Plant_Y.GPS.numSV;
         gps_report.lon = Plant_Y.GPS.lon;
@@ -107,33 +105,24 @@ static void publish_sensor_data(void)
     }
 }
 
-void plant_interface_step(void)
+void plant_interface_step(uint32_t timestamp)
 {
-    static uint32_t start_time = 0;
-    uint32_t time_now = systime_now_ms();
-
-    if (start_time == 0) {
-        /* record first execution time */
-        start_time = time_now;
+    if (mcn_poll(control_out_nod)) {
+        mcn_copy(MCN_HUB(control_output), control_out_nod, &Plant_U.Control_Out);
     }
 
-    if (mcn_poll(_control_out_nod)) {
-        mcn_copy(MCN_HUB(control_output), _control_out_nod, &Plant_U.Control_Out);
-    }
-
+    /* run plant model */
     Plant_step();
 
-    DEFINE_TIMETAG(plant_output, 100);
-
     /* Log Plant output bus data */
+    DEFINE_TIMETAG(plant_output, 100);
     if (check_timetag(TIMETAG(plant_output))) {
-        /* rewrite timestmp */
-        Plant_Y.Plant_States.timestamp = time_now - start_time;
         /* Log Control out data */
         mlog_push_msg((uint8_t*)&Plant_Y.Plant_States, MLOG_PLANT_STATE_ID, sizeof(Plant_States_Bus));
     }
 
-    publish_sensor_data();
+    /* publish sensor model's data */
+    publish_sensor_data(timestamp);
 }
 
 void plant_interface_init(void)
@@ -141,17 +130,13 @@ void plant_interface_init(void)
     plant_model_info.period = PLANT_EXPORT.period;
     plant_model_info.info = (char*)PLANT_EXPORT.model_info;
 
-    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
-    if (_control_out_nod == NULL) {
+    if (control_out_nod == NULL) {
         ulog_e(TAG, "uMCN topic control_output subscribe fail!\n");
     }
 
     Plant_init();
-
-    /* run plant model to ensure INS can get valid sensor in its first run */
-    Plant_step();
-    publish_sensor_data();
 }
 
 #endif

@@ -26,7 +26,7 @@ extern "C" {
 extern fmt_model_info_t plant_model_info;
 
 void plant_interface_init(void);
-void plant_interface_step(void);
+void plant_interface_step(uint32_t timestamp);
 
 #ifdef __cplusplus
 }

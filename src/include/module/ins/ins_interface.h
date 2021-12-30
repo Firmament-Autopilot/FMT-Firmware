@@ -60,7 +60,7 @@ typedef struct {
 extern fmt_model_info_t ins_model_info;
 
 void ins_interface_init(void);
-void ins_interface_step(void);
+void ins_interface_step(uint32_t timestamp);
 
 #ifdef __cplusplus
 }

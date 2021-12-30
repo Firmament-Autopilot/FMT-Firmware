@@ -26,8 +26,8 @@ MCN_DECLARE(ins_output);
 /* controller output topic */
 MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 
-static McnNode_t _fms_out_nod;
-static McnNode_t _ins_out_nod;
+static McnNode_t fms_out_nod;
+static McnNode_t ins_out_nod;
 
 fmt_model_info_t control_model_info;
 
@@ -77,26 +77,18 @@ static void update_parameter(void)
     CONTROL_PARAM.R_CMD_LIM = PARAM_GET_FLOAT(CONTROL, R_CMD_LIM);
 }
 
-void control_interface_step(void)
+void control_interface_step(uint32_t timestamp)
 {
-    static uint32_t start_time = 0;
-    uint32_t time_now = systime_now_ms();
-
 #ifdef FMT_ONLINE_PARAM_TUNING
     update_parameter();
 #endif
 
-    if (start_time == 0) {
-        /* record first execution time */
-        start_time = time_now;
+    if (mcn_poll(fms_out_nod)) {
+        mcn_copy(MCN_HUB(fms_output), fms_out_nod, &Controller_U.FMS_Out);
     }
 
-    if (mcn_poll(_fms_out_nod)) {
-        mcn_copy(MCN_HUB(fms_output), _fms_out_nod, &Controller_U.FMS_Out);
-    }
-
-    if (mcn_poll(_ins_out_nod)) {
-        mcn_copy(MCN_HUB(ins_output), _ins_out_nod, &Controller_U.INS_Out);
+    if (mcn_poll(ins_out_nod)) {
+        mcn_copy(MCN_HUB(ins_output), ins_out_nod, &Controller_U.INS_Out);
     }
 
     Controller_step();
@@ -106,8 +98,6 @@ void control_interface_step(void)
     DEFINE_TIMETAG(control_output, 100);
     /* Log Control output bus data */
     if (check_timetag(TIMETAG(control_output))) {
-        /* rewrite timestmp */
-        Controller_Y.Control_Out.timestamp = time_now - start_time;
         /* Log Control out data */
         mlog_push_msg((uint8_t*)&Controller_Y.Control_Out, MLOG_CONTROL_OUT_ID, sizeof(Control_Out_Bus));
     }
@@ -120,8 +110,8 @@ void control_interface_init(void)
 
     mcn_advertise(MCN_HUB(control_output), control_out_echo);
 
-    _fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
-    _ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
 
     Controller_init();
 

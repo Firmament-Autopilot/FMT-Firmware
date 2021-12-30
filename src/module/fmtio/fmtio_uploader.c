@@ -131,12 +131,12 @@ static fmt_err_t get_sync(int32_t timeout)
 
     bytes = rt_device_read(fmtio_dev, timeout, c, 2);
     if (bytes != 2) {
-        TIMETAG_CHECK_EXECUTE(io_error_sync, 1000, ulog_e(TAG, "err get sync:%d\n", bytes););
+        PERIOD_EXECUTE(io_error_sync, 1000, ulog_e(TAG, "err get sync:%d\n", bytes););
         return FMT_ERROR;
     }
 
     if ((c[0] != PROTO_INSYNC) || (c[1] != PROTO_OK)) {
-        TIMETAG_CHECK_EXECUTE(io_bad_sync, 1000, ulog_e(TAG, "bad sync 0x%02x,0x%02x\r\n", c[0], c[1]););
+        PERIOD_EXECUTE(io_bad_sync, 1000, ulog_e(TAG, "bad sync 0x%02x,0x%02x\r\n", c[0], c[1]););
         return FMT_ERROR;
     }
 
