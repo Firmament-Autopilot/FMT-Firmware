@@ -36,29 +36,6 @@ static McnNode_t pilot_cmd_nod;
 RT_WEAK void vehicle_status_change_cb(uint8_t status);
 RT_WEAK void vehicle_state_change_cb(uint8_t mode);
 
-static void send_extended_sys_state(FMS_Out_Bus fms_out)
-{
-    mavlink_system_t mav_sys = mavproxy_get_system();
-    uint8_t vtol_state = 0;
-    uint8_t landed_state = MAV_LANDED_STATE_UNDEFINED;
-    mavlink_message_t msg;
-
-    if (fms_out.status == VehicleStatus_Disarm || fms_out.status == VehicleStatus_Standby) {
-        landed_state = MAV_LANDED_STATE_ON_GROUND;
-    } else {
-        if (fms_out.state == VehicleState_Takeoff) {
-            landed_state = MAV_LANDED_STATE_TAKEOFF;
-        } else if (fms_out.state == VehicleState_Land) {
-            landed_state = MAV_LANDED_STATE_LANDING;
-        } else {
-            landed_state = MAV_LANDED_STATE_IN_AIR;
-        }
-    }
-
-    mavlink_msg_extended_sys_state_pack(mav_sys.sysid, mav_sys.compid, &msg, vtol_state, landed_state);
-    mavproxy_send_immediate_msg(&msg, false);
-}
-
 static void update_fms_status(void)
 {
     /* set initial status/state to disarm to avoid mlog stop unintentionally */
@@ -116,8 +93,6 @@ static void update_fms_status(void)
             default:
                 break;
             }
-
-            send_extended_sys_state(fms_out);
 
             if (vehicle_state_change_cb) {
                 vehicle_state_change_cb(fms_out.state);

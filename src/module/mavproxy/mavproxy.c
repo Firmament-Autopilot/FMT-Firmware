@@ -115,17 +115,17 @@ static void dump_period_msg(void)
  * @param msgid mavlink message id
  * @param period_ms  message send period in ms
  * @param msg_pack_cb callback function to prepare the mavlink message data
- * @param enable enable/disable of sending the message
+ * @param auto_start auto start of sending the message
  * 
  * @return FMT Errors
  */
 fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
-    msg_pack_cb_t msg_pack_cb, uint8_t enable)
+    msg_pack_cb_t msg_pack_cb, bool auto_start)
 {
     MAV_PeriodMsg msg;
 
     msg.msgid = msgid;
-    msg.enable = enable;
+    msg.enable = (auto_start == true) ? 1 : 0;
     msg.period = period_ms;
     msg.msg_pack_cb = msg_pack_cb;
     /* Add offset for each msg to stagger sending time */

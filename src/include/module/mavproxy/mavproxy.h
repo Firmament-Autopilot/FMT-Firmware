@@ -41,7 +41,7 @@ mavlink_system_t mavproxy_get_system(void);
 fmt_err_t mavproxy_set_channel(uint8_t chan);
 fmt_err_t mavproxy_send_event(uint32_t event_set);
 fmt_err_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync);
-fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms, msg_pack_cb_t msg_pack_cb, uint8_t enable);
+fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms, msg_pack_cb_t msg_pack_cb, bool auto_start);
 
 #ifdef __cplusplus
 }
