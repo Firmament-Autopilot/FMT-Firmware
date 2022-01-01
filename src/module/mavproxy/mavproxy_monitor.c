@@ -152,6 +152,15 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
 
+    case MAV_CMD_DO_REPOSITION: {
+        /* When click pause button, GCS will send this command */
+        printf("Detected GCS Pause Cmd\n");
+
+        gcs_set_cmd(CMD_Pause);
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+    } break;
+
     default:
         printf("unhandled command long:%d\n", command->command);
         break;

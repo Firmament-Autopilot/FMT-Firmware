@@ -18,9 +18,9 @@
 
 #include "protocol/ublox/ublox.h"
 
-#define FNV1_32_INIT   ((uint32_t)0x811c9dc5) // init value for FNV1 hash algorithm
-#define FNV1_32_PRIME  ((uint32_t)0x01000193) // magic prime for FNV1 hash algorithm
-#define MIN(x, y)      (x < y ? x : y)
+#define FNV1_32_INIT  ((uint32_t)0x811c9dc5) // init value for FNV1 hash algorithm
+#define FNV1_32_PRIME ((uint32_t)0x01000193) // magic prime for FNV1 hash algorithm
+#define MIN(x, y)     (x < y ? x : y)
 
 static uint32_t _fnv1_32_str(uint8_t* str, uint32_t hval)
 {
@@ -410,11 +410,19 @@ int parse_ubx_char(ubx_decoder_t* ubx_decoder, const uint8_t c)
 
 void reset_ubx_decoder(ubx_decoder_t* ubx_decoder)
 {
+    uint8_t c;
+    rt_size_t ret;
+
     ubx_decoder->decode_state = UBX_DECODE_SYNC1;
     ubx_decoder->rx_ck_a = 0;
     ubx_decoder->rx_ck_b = 0;
     ubx_decoder->rx_payload_length = 0;
     ubx_decoder->rx_payload_index = 0;
+
+    /* flush read buffer */
+    do {
+        ret = rt_device_read(ubx_decoder->ubx_dev, 0, &c, 1);
+    } while (ret);
 }
 
 fmt_err_t init_ubx_decoder(ubx_decoder_t* ubx_decoder, rt_device_t ubx_dev, ubx_rx_handle_ptr ubx_rx_handle)

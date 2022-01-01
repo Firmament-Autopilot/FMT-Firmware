@@ -22,7 +22,7 @@
 /* HIL simulation */
 // #define FMT_USING_HIL
 /* SIH simulation */
-// #define FMT_USING_SIH   
+// #define FMT_USING_SIH 
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2

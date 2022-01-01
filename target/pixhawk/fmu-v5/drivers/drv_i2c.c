@@ -17,8 +17,8 @@
 #include "hal/i2c.h"
 #include "stm32f7xx_ll_i2c.h"
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
-// #define DRV_DBG(...)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
