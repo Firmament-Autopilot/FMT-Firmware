@@ -40,7 +40,7 @@ extern "C" {
 #define MLOG_DESCRIPTION_SIZE 128
 #define MLOG_MODEL_INFO_SIZE  256
 
-#define MLOG_BUFFER_SIZE         80 * 1024
+#define MLOG_BUFFER_SIZE         40 * 1024
 #define MLOG_SECTOR_SIZE         4096 /* larger block can increase write bandwidth */
 #define MLOG_MAX_SECTOR_TO_WRITE 5
 
