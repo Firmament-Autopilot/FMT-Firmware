@@ -717,8 +717,6 @@ void mlog_async_output(void)
  */
 fmt_err_t mlog_init(void)
 {
-    int i;
-
     /* initialize mlog_handle status */
     mlog_handle.is_open = 0;
     mlog_handle.log_status = MLOG_STATUS_IDLE;

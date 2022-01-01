@@ -44,6 +44,35 @@ fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
 {
     uint32_t new_cmd = cmd;
 
+    switch (cmd) {
+    case CMD_PreArm:
+        printf("GCS PreArm Command\n");
+        break;
+    case CMD_Arm:
+        printf("GCS Arm Command\n");
+        break;
+    case CMD_Disarm:
+        printf("GCS Disarm Command\n");
+        break;
+    case CMD_Takeoff:
+        printf("GCS Takeoff Command\n");
+        break;
+    case CMD_Land:
+        printf("GCS Land Command\n");
+        break;
+    case CMD_Return:
+        printf("GCS Return Command\n");
+        break;
+    case CMD_Pause:
+        printf("GCS Pause Command\n");
+        break;
+    case CMD_Continue:
+        printf("GCS Continue Command\n");
+        break;
+    default:
+        break;
+    }
+
     ringbuffer_put(gcs_cmd_rb, (uint8_t*)&new_cmd, sizeof(new_cmd));
 
     return FMT_EOK;

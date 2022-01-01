@@ -121,15 +121,9 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 
     case MAV_CMD_COMPONENT_ARM_DISARM:
         if (command->param1 == 1.0f) {
-            printf("Detected GCS Arm Cmd\n");
-
             gcs_set_cmd(CMD_PreArm);
         } else if (command->param1 == 0.0f) {
-            printf("Detected GCS Disarm Cmd\n");
-
             gcs_set_cmd(CMD_Disarm);
-        } else {
-            printf("Detected GCS Arm/Disarm Cmd\n");
         }
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
@@ -137,16 +131,12 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         break;
 
     case MAV_CMD_NAV_TAKEOFF: {
-        printf("Detected GCS Takeoff Cmd\n");
-
         gcs_set_cmd(CMD_Takeoff);
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
 
     case MAV_CMD_NAV_LAND: {
-        printf("Detected GCS Land Cmd\n");
-
         gcs_set_cmd(CMD_Land);
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
@@ -154,8 +144,6 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 
     case MAV_CMD_DO_REPOSITION: {
         /* When click pause button, GCS will send this command */
-        printf("Detected GCS Pause Cmd\n");
-
         gcs_set_cmd(CMD_Pause);
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
