@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1213
+ * Model version                  : 1.1229
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jan  1 10:44:14 2022
+ * C/C++ source code generated on : Sat Jan  1 18:52:40 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -118,8 +118,8 @@ struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM = {
   5.0F,
   2.5F,
   2.5F,
-  1.04719758F,
-  0.52359879F
+  1.04719806F,
+  0.523599F
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<S34>/Gain'
@@ -1814,39 +1814,46 @@ static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag)
 {
   boolean_T valid;
-  valid = true;
-  if (((ins_flag & 2U) == 0U) || ((ins_flag & 4U) == 0U)) {
-    valid = false;
-  } else {
-    switch (cmd_in) {
-     case CMD_Takeoff:
-     case CMD_Land:
-     case CMD_Return:
-     case CMD_Pause:
-      if (((ins_flag & 8U) == 0U) || ((ins_flag & 32U) == 0U) || ((ins_flag &
-            64U) == 0U)) {
-        valid = false;
-      }
-      break;
+  valid = false;
+  switch (cmd_in) {
+   case CMD_Takeoff:
+   case CMD_Land:
+   case CMD_Return:
+   case CMD_Pause:
+    if (((ins_flag & 1U) != 0U) && ((ins_flag & 4U) != 0U) && ((ins_flag & 8U)
+         != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) &&
+        ((ins_flag & 128U) != 0U)) {
+      valid = true;
+    }
+    break;
 
-     case CMD_PreArm:
+   case CMD_PreArm:
+    if (((ins_flag & 1U) != 0U) && ((ins_flag & 4U) != 0U) && ((ins_flag & 8U)
+         != 0U)) {
       switch (mode_in) {
-       case PilotMode_Mission:
        case PilotMode_Position:
-        if (((ins_flag & 8U) == 0U) || ((ins_flag & 32U) == 0U) || ((ins_flag &
-              64U) == 0U)) {
-          valid = false;
+        if (((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) && ((ins_flag &
+              128U) != 0U)) {
+          valid = true;
         }
         break;
 
        case PilotMode_Altitude:
-        if (((ins_flag & 8U) == 0U) || ((ins_flag & 64U) == 0U)) {
-          valid = false;
+        if ((ins_flag & 128U) != 0U) {
+          valid = true;
         }
         break;
+
+       case PilotMode_Stabilize:
+        valid = true;
+        break;
       }
-      break;
     }
+    break;
+
+   case CMD_Disarm:
+    valid = true;
+    break;
   }
 
   return valid;
