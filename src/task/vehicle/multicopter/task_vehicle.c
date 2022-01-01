@@ -95,6 +95,20 @@ void task_vehicle_entry(void* parameter)
 
 fmt_err_t task_vehicle_init(void)
 {
+#if defined(FMT_USING_SIH)
+    /* init plant model */
+    plant_interface_init();
+#endif
+
+    /* init ins model */
+    ins_interface_init();
+
+    /* init fms model */
+    fms_interface_init();
+
+    /* init controller model */
+    control_interface_init();
+
     /* create event */
     if (rt_event_init(&event_vehicle, "vehicle", RT_IPC_FLAG_FIFO) != RT_EOK) {
         return FMT_ERROR;
@@ -109,20 +123,6 @@ fmt_err_t task_vehicle_init(void)
     if (rt_timer_start(&timer_vehicle) != RT_EOK) {
         return FMT_ERROR;
     }
-
-#if defined(FMT_USING_SIH)
-    /* init plant model */
-    plant_interface_init();
-#endif
-
-    /* init ins model */
-    ins_interface_init();
-
-    /* init fms model */
-    fms_interface_init();
-
-    /* init controller model */
-    control_interface_init();
 
     return FMT_EOK;
 }

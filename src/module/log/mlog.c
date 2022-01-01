@@ -475,7 +475,7 @@ fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
 
         bus_index = get_bus_index(msg_id);
         mlog_handle.monitor[bus_index].lost_msg += 1;
-        
+
         return FMT_EFULL;
     }
 
@@ -617,10 +617,12 @@ fmt_err_t mlog_start(char* file_name)
         mlog_handle.monitor[i].total_msg = 0;
         mlog_handle.monitor[i].lost_msg = 0;
     }
-    /* invoke callback function */
-    __invoke_callback_func(MLOG_CB_START);
+
     /* start logging, set flag */
     mlog_handle.log_status = MLOG_STATUS_LOGGING;
+
+    /* invoke callback function */
+    __invoke_callback_func(MLOG_CB_START);
 
     ulog_i(TAG, "start logging:%s", file_name);
 
@@ -693,10 +695,12 @@ void mlog_async_output(void)
             mlog_handle.fid = -1;
             mlog_handle.is_open = 0;
         }
-        /* invoke callback function */
-        __invoke_callback_func(MLOG_CB_STOP);
+
         /* set log status to idle */
         mlog_handle.log_status = MLOG_STATUS_IDLE;
+
+        /* invoke callback function */
+        __invoke_callback_func(MLOG_CB_STOP);
 
         ulog_i(TAG, "stop logging:%s", mlog_handle.file_name);
         for (int i = 0; i < sizeof(_mlog_bus) / sizeof(mlog_bus_t); i++) {
@@ -747,13 +751,6 @@ fmt_err_t mlog_init(void)
     if (rt_mutex_init(&mlog_handle.lock, "mlog_lock", RT_IPC_FLAG_FIFO) != RT_EOK) {
         console_printf("fail to create mlog lock!\n");
         return FMT_ERROR;
-    }
-
-    /* clear callback functions */
-    for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-        mlog_start_cbs[i] = NULL;
-        mlog_stop_cbs[i] = NULL;
-        mlog_update_cbs[i] = NULL;
     }
 
     return FMT_EOK;
