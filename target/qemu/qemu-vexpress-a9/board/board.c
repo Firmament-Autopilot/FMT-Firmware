@@ -35,6 +35,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/gcs_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
@@ -220,11 +221,14 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-    /* init sensor */
-    advertise_sensor_imu(0);
-    advertise_sensor_mag(0);
-    advertise_sensor_baro(0);
-    advertise_sensor_gps(0);
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+#else
+#error QEMU only support SIH or HIL mode
+#endif
 
     /* init finsh */
     finsh_system_init();
@@ -241,6 +245,9 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */

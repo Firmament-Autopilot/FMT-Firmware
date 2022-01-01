@@ -395,16 +395,8 @@ void bsp_initialize(void)
     /* adc driver init */
     RT_CHECK(drv_adc_init());
 
-    RT_CHECK(drv_icm20689_init("spi1_dev1"));
-    RT_CHECK(drv_bmi055_init("spi1_dev3"));
-    RT_CHECK(ms5611_drv_init("spi4_dev1"));
     /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
-    drv_ist8310_init("i2c1_dev1");
     drv_ncp5623c_init("i2c1_dev2");
-    RT_CHECK(gps_m8n_init("serial3"));
-
-    /* init parameter system */
-    FMT_CHECK(param_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
@@ -412,20 +404,21 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_baro(0));
     FMT_CHECK(advertise_sensor_gps(0));
 #else
+    /* init onboard sensors */
+    RT_CHECK(drv_icm20689_init("spi1_dev1"));
+    RT_CHECK(drv_bmi055_init("spi1_dev3"));
+    RT_CHECK(ms5611_drv_init("spi4_dev1"));
+    drv_ist8310_init("i2c1_dev1");
+    RT_CHECK(gps_m8n_init("serial3"));
+
     /* register sensor to sensor hub */
-    if (rt_device_find("gyro0") != NULL && rt_device_find("accel0") != NULL) {
-        FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    }
-    if (rt_device_find("mag0") != NULL) {
-        FMT_CHECK(register_sensor_mag("mag0", 0));
-    }
-    if (rt_device_find("barometer") != NULL) {
-        FMT_CHECK(register_sensor_barometer("barometer"));
-    }
-    if (rt_device_find("gps") != NULL) {
-        FMT_CHECK(register_sensor_gps("gps"));
-    }
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
 #endif
+
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
     /* init finsh */
     finsh_system_init();

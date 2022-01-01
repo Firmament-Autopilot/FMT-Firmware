@@ -511,7 +511,8 @@ static void gps_probe_entry(void* parameter)
         if (probe(&baudrate) == RT_EOK) {
             if (configure_by_ubx(baudrate) == RT_EOK) {
                 /* GPS is dected, now register */
-                RT_CHECK(hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL));
+                hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
+                register_sensor_gps("gps");
                 break;
             }
         }
