@@ -29,6 +29,8 @@
 
 #define WRITE_PAYLOAD(_payload, _len) write(mlog_handle.fid, _payload, _len);
 
+static uint8_t mlog_data_buffer[MLOG_BUFFER_SIZE];
+
 /* MLog element define */
 mlog_elem_t IMU_Elems[] = {
     MLOG_ELEMENT("timestamp", MLOG_UINT32),
@@ -733,7 +735,8 @@ fmt_err_t mlog_init(void)
     memset(mlog_handle.header.description, 0, MLOG_DESCRIPTION_SIZE);
 
     /* initialize mlog_handle buffer */
-    mlog_handle.buffer.data = (uint8_t*)rt_malloc(MLOG_BUFFER_SIZE);
+    mlog_handle.buffer.data = mlog_data_buffer;
+
     if (mlog_handle.buffer.data == NULL) {
         console_printf("mlog_handle buffer malloc fail!\n");
         return FMT_ENOMEM;
