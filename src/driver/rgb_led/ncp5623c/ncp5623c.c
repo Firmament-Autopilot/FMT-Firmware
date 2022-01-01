@@ -173,7 +173,7 @@ rt_err_t drv_ncp5623c_init(const char* i2c_dev_name)
     device->write = RT_NULL;
     device->control = ncp5623c_control;
     
-    RT_CHECK_RETURN(probe());
+    RT_TRY(probe());
 
     RT_CHECK(rt_device_register(device, "ncp5623c", RT_DEVICE_OFLAG_RDWR));
 

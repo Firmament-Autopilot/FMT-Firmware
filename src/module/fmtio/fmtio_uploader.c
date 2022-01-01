@@ -364,7 +364,7 @@ fmt_err_t fmtio_upload(const char* path)
         return FMT_ERROR;
     }
 
-    // FMT_CHECK_RETURN(fmtio_send_cmd(PROTO_CMD_REBOOT, NULL, 0));
+    // FMT_TRY(fmtio_send_cmd(PROTO_CMD_REBOOT, NULL, 0));
     uint16_t reboot_magic = IO_REBOOT_MAGIC;
     send_io_cmd(IO_CODE_REBOOT, &reboot_magic, sizeof(reboot_magic));
     sys_msleep(10);
@@ -372,9 +372,9 @@ fmt_err_t fmtio_upload(const char* path)
     /* suspend fmtio communication, since uploader need use that channel */
     fmtio_suspend_comm(1);
     /* bootloader baudrate is 115200 */
-    FMT_CHECK_RETURN(rt_device_control(fmtio_dev, FMTIO_GET_BAUDRATE, &old_baudrate));
+    FMT_TRY(rt_device_control(fmtio_dev, FMTIO_GET_BAUDRATE, &old_baudrate));
     if (old_baudrate != BL_BAUDRATE) {
-        FMT_CHECK_RETURN(rt_device_control(fmtio_dev, FMTIO_SET_BAUDRATE, (void*)BL_BAUDRATE));
+        FMT_TRY(rt_device_control(fmtio_dev, FMTIO_SET_BAUDRATE, (void*)BL_BAUDRATE));
     }
 
     uint32_t time = systime_now_ms();
@@ -398,7 +398,7 @@ fmt_err_t fmtio_upload(const char* path)
 
     /* change back baudrate */
     if (old_baudrate != BL_BAUDRATE) {
-        FMT_CHECK_RETURN(rt_device_control(fmtio_dev, FMTIO_SET_BAUDRATE, (void*)old_baudrate));
+        FMT_TRY(rt_device_control(fmtio_dev, FMTIO_SET_BAUDRATE, (void*)old_baudrate));
     }
     /* resume fmtio communication */
     fmtio_suspend_comm(0);

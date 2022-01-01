@@ -82,7 +82,7 @@ static rt_err_t mag_raw_measure(int16_t mag[3])
 {
     uint8_t buffer[6];
 
-    RT_CHECK_RETURN(i2c_read_regs(i2c_dev, REG_DATA_OUT_X_L, buffer, sizeof(buffer)));
+    RT_TRY(i2c_read_regs(i2c_dev, REG_DATA_OUT_X_L, buffer, sizeof(buffer)));
 
     /* swap the data */
     mag[0] = ((int16_t)buffer[1] << 8) | (int16_t)buffer[0];
@@ -92,7 +92,7 @@ static rt_err_t mag_raw_measure(int16_t mag[3])
     ist8310_user_rotation(mag);
 
     /* start next measurement */
-    // RT_CHECK_RETURN(i2c_write_reg(i2c_dev, REG_CTRL1, CTRL1_ODR_SINGLE));
+    // RT_TRY(i2c_write_reg(i2c_dev, REG_CTRL1, CTRL1_ODR_SINGLE));
 
     return RT_EOK;
 }
@@ -101,7 +101,7 @@ static rt_err_t mag_measure(float mag[3])
 {
     int16_t raw[3];
 
-    RT_CHECK_RETURN(mag_raw_measure(raw));
+    RT_TRY(mag_raw_measure(raw));
 
     mag[0] = _range_scale * raw[0];
     mag[1] = _range_scale * raw[1];
@@ -119,7 +119,7 @@ static rt_err_t probe(void)
 {
     uint8_t device_id;
 
-    RT_CHECK_RETURN(i2c_read_reg(i2c_dev, REG_WHOAMI, &device_id));
+    RT_TRY(i2c_read_reg(i2c_dev, REG_WHOAMI, &device_id));
 
     if (device_id != IST8310_DEVICE_ID) {
         DRV_DBG("ist8310 unmatched id: 0x%x\n", device_id);
@@ -132,7 +132,7 @@ static rt_err_t probe(void)
 static rt_err_t ist8310_init(void)
 {
     /* check if device connected */
-    RT_CHECK_RETURN(probe());
+    RT_TRY(probe());
 
     /* software reset */
     RT_CHECK(i2c_write_reg(i2c_dev, REG_CTRL2, CTRL2_SRST));
@@ -195,7 +195,7 @@ rt_err_t drv_ist8310_init(const char* i2c_device_name)
 
     RT_CHECK(rt_device_open(i2c_dev, RT_DEVICE_OFLAG_RDWR));
 
-    RT_CHECK_RETURN(ist8310_init());
+    RT_TRY(ist8310_init());
 
     RT_CHECK(hal_mag_register(&mag_dev, "mag0", RT_DEVICE_FLAG_RDWR, RT_NULL));
 

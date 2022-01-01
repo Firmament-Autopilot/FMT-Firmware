@@ -116,7 +116,7 @@ fmt_err_t gcs_cmd_collect(void)
     if (updated) {
         gcs_cmd.timestamp = systime_now_ms();
 
-        FMT_CHECK_RETURN(mcn_publish(MCN_HUB(gcs_cmd), &gcs_cmd));
+        FMT_TRY(mcn_publish(MCN_HUB(gcs_cmd), &gcs_cmd));
     }
 
     return FMT_EOK;
@@ -127,7 +127,7 @@ fmt_err_t gcs_cmd_init(void)
     gcs_cmd_rb = ringbuffer_static_create((uint8_t*)gcs_cmd_buffer, sizeof(gcs_cmd_buffer));
     RT_ASSERT(gcs_cmd_rb != NULL);
 
-    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
+    FMT_TRY(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
 
     return FMT_EOK;
 }

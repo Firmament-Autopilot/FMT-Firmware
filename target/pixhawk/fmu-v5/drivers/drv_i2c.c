@@ -394,14 +394,14 @@ rt_err_t drv_i2c_init(void)
     i2c4_hw_init();
 
     /* register i2c bus */
-    RT_CHECK_RETURN(rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1"));
-    RT_CHECK_RETURN(rt_i2c_bus_device_register(&stm32_i2c2.parent, "i2c2"));
-    RT_CHECK_RETURN(rt_i2c_bus_device_register(&stm32_i2c3.parent, "i2c3"));
-    RT_CHECK_RETURN(rt_i2c_bus_device_register(&stm32_i2c4.parent, "i2c4"));
+    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1"));
+    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c2.parent, "i2c2"));
+    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c3.parent, "i2c3"));
+    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c4.parent, "i2c4"));
 
     /* attach i2c devices */
-    RT_CHECK_RETURN(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
-    RT_CHECK_RETURN(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
 
     return RT_EOK;
 }

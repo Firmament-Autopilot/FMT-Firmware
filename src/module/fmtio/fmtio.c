@@ -108,8 +108,8 @@ static fmt_err_t io_rc_config(IO_RCConfig config)
 
 static fmt_err_t io_default_config(void)
 {
-    FMT_CHECK_RETURN(io_actuator_config(actuator_config));
-    FMT_CHECK_RETURN(io_rc_config(rc_config));
+    FMT_TRY(io_actuator_config(actuator_config));
+    FMT_TRY(io_rc_config(rc_config));
 
     return FMT_EOK;
 }

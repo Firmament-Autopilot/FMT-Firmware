@@ -57,7 +57,7 @@ typedef int bool;
 #define PI 3.14159265358979f
 #endif
 
-#define RT_CHECK_RETURN(__exp)  \
+#define RT_TRY(__exp)  \
     do {                        \
         rt_err_t err = (__exp); \
         if (err != RT_EOK) {    \
@@ -65,7 +65,7 @@ typedef int bool;
         }                       \
     } while (false)
 
-#define FMT_CHECK_RETURN(__exp)  \
+#define FMT_TRY(__exp)  \
     do {                         \
         fmt_err_t err = (__exp); \
         if (err != FMT_EOK) {    \

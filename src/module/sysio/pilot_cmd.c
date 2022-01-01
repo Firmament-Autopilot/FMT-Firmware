@@ -250,7 +250,7 @@ fmt_err_t pilot_cmd_collect(void)
         return FMT_ENOTHANDLE;
     }
 
-    FMT_CHECK_RETURN(rt_device_control(rcDev, RC_CMD_CHECK_UPDATE, &update));
+    FMT_TRY(rt_device_control(rcDev, RC_CMD_CHECK_UPDATE, &update));
 
     if (update) {
         if (rt_device_read(rcDev, rc_read_mask, rcChannel, rc_chan_num * sizeof(uint16_t))) {
@@ -294,7 +294,7 @@ fmt_err_t pilot_cmd_set_device(const char* dev_name)
     }
 
     /* open new device */
-    FMT_CHECK_RETURN(rt_device_open(new_dev, RT_DEVICE_OFLAG_RDWR));
+    FMT_TRY(rt_device_open(new_dev, RT_DEVICE_OFLAG_RDWR));
 
     /* set new device */
     rcDev = new_dev;

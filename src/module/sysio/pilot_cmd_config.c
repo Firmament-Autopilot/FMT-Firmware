@@ -537,7 +537,7 @@ fmt_err_t pilot_cmd_toml_config(toml_table_t* table)
                         return FMT_ERROR;
                     }
                 }
-                FMT_CHECK_RETURN(pilot_cmd_map_stick(
+                FMT_TRY(pilot_cmd_map_stick(
                     stick_mapping[0], stick_mapping[1], stick_mapping[2], stick_mapping[3]));
             } else {
                 TOML_DBG_E("Wrong stick-channel definition\n");
@@ -597,7 +597,7 @@ fmt_err_t pilot_cmd_toml_config(toml_table_t* table)
         return FMT_ERROR;
     }
 
-    FMT_CHECK_RETURN(pilot_cmd_set_device(rcDevInfo.name));
+    FMT_TRY(pilot_cmd_set_device(rcDevInfo.name));
 
     return FMT_EOK;
 }
