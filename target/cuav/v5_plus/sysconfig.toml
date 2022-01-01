@@ -58,7 +58,7 @@ target = "CUAV V5+"
 
     [[pilot-cmd.command]]
     type = 1                    # 1:event | 2:status
-    cmd = 1005                  # CMD_Disarm
+    cmd = 1002                  # CMD_Disarm
     channel = 6
     range = [1800,2000]
 
