@@ -38,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-rt_err_t ms5611_drv_init(char* spi_device_name);
+rt_err_t drv_ms5611_init(char* spi_device_name);
 
 #ifdef __cplusplus
 }

@@ -407,7 +407,7 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_icm20689_init("spi1_dev1"));
     RT_CHECK(drv_bmi055_init("spi1_dev3"));
-    RT_CHECK(ms5611_drv_init("spi4_dev1"));
+    RT_CHECK(drv_ms5611_init("spi4_dev1"));
     drv_ist8310_init("i2c1_dev1");
     RT_CHECK(gps_m8n_init("serial3"));
 
