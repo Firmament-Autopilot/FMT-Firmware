@@ -342,12 +342,12 @@ fmt_err_t advertise_sensor_imu(uint8_t id)
 {
     switch (id) {
     case 0:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu0_0), echo_sensor_imu));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu0), echo_sensor_imu));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_imu0_0), echo_sensor_imu));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_imu0), echo_sensor_imu));
         break;
     case 1:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu1_0), echo_sensor_imu));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_imu1), echo_sensor_imu));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_imu1_0), echo_sensor_imu));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_imu1), echo_sensor_imu));
         break;
     default:
         return FMT_EINVAL;
@@ -366,12 +366,12 @@ fmt_err_t advertise_sensor_mag(uint8_t id)
 {
     switch (id) {
     case 0:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag0_0), echo_sensor_mag));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag0), echo_sensor_mag));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_mag0_0), echo_sensor_mag));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_mag0), echo_sensor_mag));
         break;
     case 1:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag1_0), echo_sensor_mag));
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_mag1), echo_sensor_mag));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_mag1_0), echo_sensor_mag));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_mag1), echo_sensor_mag));
         break;
     default:
         return FMT_EINVAL;
@@ -390,7 +390,7 @@ fmt_err_t advertise_sensor_baro(uint8_t id)
 {
     switch (id) {
     case 0:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_baro), echo_sensor_baro));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_baro), echo_sensor_baro));
         break;
     default:
         return FMT_EINVAL;
@@ -409,7 +409,7 @@ fmt_err_t advertise_sensor_gps(uint8_t id)
 {
     switch (id) {
     case 0:
-        FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
         break;
     default:
         return FMT_EINVAL;
@@ -506,14 +506,14 @@ fmt_err_t register_sensor_gps(const char* dev_name)
 fmt_err_t register_sensor_optflow(const char* dev_name)
 {
     //TODO
-    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_optflow), NULL));
+    FMT_TRY(mcn_advertise(MCN_HUB(sensor_optflow), NULL));
     return FMT_EOK;
 }
 
 fmt_err_t register_sensor_rangefinder(const char* dev_name)
 {
     //TODO
-    FMT_CHECK_RETURN(mcn_advertise(MCN_HUB(sensor_rangefinder), NULL));
+    FMT_TRY(mcn_advertise(MCN_HUB(sensor_rangefinder), NULL));
     return FMT_EOK;
 }
 

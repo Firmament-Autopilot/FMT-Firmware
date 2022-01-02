@@ -17,10 +17,12 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "FMS.h"
 #include "module/fms/fms_interface.h"
 #include "module/ftp/ftp_manager.h"
 #include "module/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/px4_custom_mode.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/system/statistic.h"
@@ -36,26 +38,75 @@ MCN_DECLARE(fms_output);
 static mavlink_system_t mavlink_system;
 static McnNode_t fms_out_nod;
 
-static uint32_t get_custom_mode(uint32_t mode)
+static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 {
     uint32_t custom_mode = 0;
 
-    switch (mode) {
-    case 1: // Mission
-        custom_mode = (4 << 16) + (4 << 24);
-        break;
-    case 2: // Position
-        custom_mode = 3 << 16;
-        break;
-    case 3: // Altitude
-        custom_mode = 2 << 16;
-        break;
-    case 4: // Stabilize
-        custom_mode = 7 << 16;
-        break;
-    case 5: // Acro
-        custom_mode = 5 << 16;
-        break;
+    if (fms_out.status == VehicleStatus_Arm) {
+        switch (fms_out.state) {
+        case VehicleState_Manual:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_MANUAL << 16;
+            break;
+        case VehicleState_Altitude:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ALTCTL << 16;
+            break;
+        case VehicleState_Position:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_POSCTL << 16;
+            break;
+        case VehicleState_Takeoff:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF << 24);
+            break;
+        case VehicleState_Hold:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_LOITER << 24);
+            break;
+        case VehicleState_Mission:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_MISSION << 24);
+            break;
+        case VehicleState_Return:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_RTL << 24);
+            break;
+        case VehicleState_Land:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_LAND << 24);
+            break;
+        case VehicleState_Acro:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ACRO << 16;
+            break;
+        case VehicleState_Offboard:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_OFFBOARD << 16;
+            break;
+        case VehicleState_Stabilize:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_STABILIZED << 16;
+            break;
+        default:
+            custom_mode = 0;
+        }
+    } else {
+        switch (fms_out.mode) {
+        case PilotMode_Manual:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_MANUAL << 16;
+            break;
+        case PilotMode_Acro:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ACRO << 16;
+            break;
+        case PilotMode_Stabilize:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_STABILIZED << 16;
+            break;
+        case PilotMode_Altitude:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_ALTCTL << 16;
+            break;
+        case PilotMode_Position:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_POSCTL << 16;
+            break;
+        case PilotMode_Mission:
+            custom_mode = (PX4_CUSTOM_MAIN_MODE_AUTO << 16) + (PX4_CUSTOM_SUB_MODE_AUTO_MISSION << 24);
+            break;
+        case PilotMode_Offboard:
+            custom_mode = PX4_CUSTOM_MAIN_MODE_OFFBOARD << 16;
+            break;
+        default:
+            custom_mode = 0;
+            break;
+        }
     }
 
     return custom_mode;
@@ -75,16 +126,43 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
     if (mcn_poll(fms_out_nod)) {
         mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
 
-        if (fms_out.state == 2) {
+        if (fms_out.status == VehicleStatus_Arm || fms_out.status == VehicleStatus_Standby) {
             heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
             heartbeat.system_status = MAV_STATE_ACTIVE;
         }
         /* map fms mode to px4 ctrl mode */
-        heartbeat.custom_mode = get_custom_mode(fms_out.mode);
+        heartbeat.custom_mode = get_custom_mode(fms_out);
     }
 
     mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid,
         msg_t, &heartbeat);
+
+    return true;
+}
+
+static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t)
+{
+    mavlink_extended_sys_state_t ext_sys_state = { .vtol_state = 0, .landed_state = MAV_LANDED_STATE_UNDEFINED };
+    FMS_Out_Bus fms_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+        return false;
+    }
+
+    if (fms_out.status == VehicleStatus_Disarm || fms_out.status == VehicleStatus_Standby) {
+        ext_sys_state.landed_state = MAV_LANDED_STATE_ON_GROUND;
+    } else {
+        if (fms_out.state == VehicleState_Takeoff) {
+            ext_sys_state.landed_state = MAV_LANDED_STATE_TAKEOFF;
+        } else if (fms_out.state == VehicleState_Land) {
+            ext_sys_state.landed_state = MAV_LANDED_STATE_LANDING;
+        } else {
+            ext_sys_state.landed_state = MAV_LANDED_STATE_IN_AIR;
+        }
+    }
+
+    mavlink_msg_extended_sys_state_encode(mavlink_system.sysid, mavlink_system.compid,
+        msg_t, &ext_sys_state);
 
     return true;
 }
@@ -108,6 +186,19 @@ static bool mavlink_msg_sys_status_cb(mavlink_message_t* msg_t)
 
     mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid,
         msg_t, &sys_status);
+
+    return true;
+}
+
+static bool mavlink_msg_system_time_cb(mavlink_message_t* msg_t)
+{
+    mavlink_system_time_t system_time;
+
+    system_time.time_unix_usec = systime_now_us();
+    system_time.time_boot_ms = systime_now_ms();
+
+    mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid,
+        msg_t, &system_time);
 
     return true;
 }
@@ -246,25 +337,31 @@ void task_comm_entry(void* parameter)
 
     /* register periodical mavlink msg */
     mavproxy_register_period_msg(MAVLINK_MSG_ID_HEARTBEAT, 1000,
-        mavlink_msg_heartbeat_cb, 1);
+        mavlink_msg_heartbeat_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000,
-        mavlink_msg_sys_status_cb, 1);
+        mavlink_msg_sys_status_cb, true);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYSTEM_TIME, 1000,
+        mavlink_msg_system_time_cb, true);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1000,
+        mavlink_msg_extended_sys_state_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100,
-        mavlink_msg_attitude_cb, 1);
+        mavlink_msg_attitude_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
-        mavlink_msg_local_pos_cb, 1);
+        mavlink_msg_local_pos_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100,
-        mavlink_msg_altitude_cb, 1);
+        mavlink_msg_altitude_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100,
-        mavlink_msg_gps_raw_int_cb, 1);
+        mavlink_msg_gps_raw_int_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_RC_CHANNELS, 100,
-        mavlink_msg_rc_channels_cb, 1);
+        mavlink_msg_rc_channels_cb, true);
 
     /* execute mavproxy main loop */
     mavproxy_loop();

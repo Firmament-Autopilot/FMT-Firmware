@@ -29,6 +29,8 @@
 
 #define WRITE_PAYLOAD(_payload, _len) write(mlog_handle.fid, _payload, _len);
 
+static uint8_t mlog_data_buffer[MLOG_BUFFER_SIZE];
+
 /* MLog element define */
 mlog_elem_t IMU_Elems[] = {
     MLOG_ELEMENT("timestamp", MLOG_UINT32),
@@ -100,10 +102,17 @@ mlog_elem_t Optflow_Elems[] = {
 
 mlog_elem_t Pilot_Cmd_Elems[] = {
     MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("ls_lr", MLOG_FLOAT),
-    MLOG_ELEMENT("ls_ud", MLOG_FLOAT),
-    MLOG_ELEMENT("rs_lr", MLOG_FLOAT),
-    MLOG_ELEMENT("rs_ud", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_yaw", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_throttle", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_roll", MLOG_FLOAT),
+    MLOG_ELEMENT("stick_pitch", MLOG_FLOAT),
+    MLOG_ELEMENT("mode", MLOG_UINT32),
+    MLOG_ELEMENT("cmd_1", MLOG_UINT32),
+    MLOG_ELEMENT("cmd_2", MLOG_UINT32),
+};
+
+mlog_elem_t GCS_Cmd_Elems[] = {
+    MLOG_ELEMENT("timestamp", MLOG_UINT32),
     MLOG_ELEMENT("mode", MLOG_UINT32),
     MLOG_ELEMENT("cmd_1", MLOG_UINT32),
     MLOG_ELEMENT("cmd_2", MLOG_UINT32),
@@ -149,10 +158,13 @@ mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT("w_cmd", MLOG_FLOAT),
     MLOG_ELEMENT("throttle_cmd", MLOG_UINT32),
     MLOG_ELEMENT_VEC("actuator_cmd", MLOG_UINT16, 16),
+    MLOG_ELEMENT("status", MLOG_UINT8),
     MLOG_ELEMENT("state", MLOG_UINT8),
-    MLOG_ELEMENT("mode", MLOG_UINT8),
+    MLOG_ELEMENT("ctrl_mode", MLOG_UINT8),
     MLOG_ELEMENT("reset", MLOG_UINT8),
-    MLOG_ELEMENT("reserved", MLOG_UINT8),
+    MLOG_ELEMENT("mode", MLOG_UINT8),
+    MLOG_ELEMENT("reserved1", MLOG_UINT8),
+    MLOG_ELEMENT("reserved2", MLOG_UINT16),
 };
 
 mlog_elem_t Control_Out_Elems[] = {
@@ -196,6 +208,7 @@ mlog_bus_t _mlog_bus[] = {
     MLOG_BUS("Rangefinder", MLOG_RANGEFINDER_ID, Rangefinder_Elems),
     MLOG_BUS("Optical_Flow", MLOG_OPTICAL_FLOW_ID, Optflow_Elems),
     MLOG_BUS("Pilot_Cmd", MLOG_PILOT_CMD_ID, Pilot_Cmd_Elems),
+    MLOG_BUS("GCS_Cmd", MLOG_GCS_CMD_ID, GCS_Cmd_Elems),
     MLOG_BUS("INS_Out", MLOG_INS_OUT_ID, INS_Out_Elems),
     MLOG_BUS("FMS_Out", MLOG_FMS_OUT_ID, FMS_Out_Elems),
     MLOG_BUS("Control_Out", MLOG_CONTROL_OUT_ID, Control_Out_Elems),
@@ -460,11 +473,11 @@ fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
     /* check if buffer has enough space to store msg */
     if (buffer_is_full(len + 4)) {
         /* do not let it print too fast */
-        TIMETAG_CHECK_EXECUTE(mlog_buff_full, 1000, ulog_w(TAG, "buffer is full!"););
+        PERIOD_EXECUTE(mlog_buff_full, 1000, ulog_w(TAG, "buffer is full!"););
 
         bus_index = get_bus_index(msg_id);
         mlog_handle.monitor[bus_index].lost_msg += 1;
-        
+
         return FMT_EFULL;
     }
 
@@ -606,10 +619,12 @@ fmt_err_t mlog_start(char* file_name)
         mlog_handle.monitor[i].total_msg = 0;
         mlog_handle.monitor[i].lost_msg = 0;
     }
-    /* invoke callback function */
-    __invoke_callback_func(MLOG_CB_START);
+
     /* start logging, set flag */
     mlog_handle.log_status = MLOG_STATUS_LOGGING;
+
+    /* invoke callback function */
+    __invoke_callback_func(MLOG_CB_START);
 
     ulog_i(TAG, "start logging:%s", file_name);
 
@@ -682,10 +697,12 @@ void mlog_async_output(void)
             mlog_handle.fid = -1;
             mlog_handle.is_open = 0;
         }
-        /* invoke callback function */
-        __invoke_callback_func(MLOG_CB_STOP);
+
         /* set log status to idle */
         mlog_handle.log_status = MLOG_STATUS_IDLE;
+
+        /* invoke callback function */
+        __invoke_callback_func(MLOG_CB_STOP);
 
         ulog_i(TAG, "stop logging:%s", mlog_handle.file_name);
         for (int i = 0; i < sizeof(_mlog_bus) / sizeof(mlog_bus_t); i++) {
@@ -702,8 +719,6 @@ void mlog_async_output(void)
  */
 fmt_err_t mlog_init(void)
 {
-    int i;
-
     /* initialize mlog_handle status */
     mlog_handle.is_open = 0;
     mlog_handle.log_status = MLOG_STATUS_IDLE;
@@ -720,7 +735,8 @@ fmt_err_t mlog_init(void)
     memset(mlog_handle.header.description, 0, MLOG_DESCRIPTION_SIZE);
 
     /* initialize mlog_handle buffer */
-    mlog_handle.buffer.data = (uint8_t*)rt_malloc(MLOG_BUFFER_SIZE);
+    mlog_handle.buffer.data = mlog_data_buffer;
+
     if (mlog_handle.buffer.data == NULL) {
         console_printf("mlog_handle buffer malloc fail!\n");
         return FMT_ENOMEM;
@@ -736,13 +752,6 @@ fmt_err_t mlog_init(void)
     if (rt_mutex_init(&mlog_handle.lock, "mlog_lock", RT_IPC_FLAG_FIFO) != RT_EOK) {
         console_printf("fail to create mlog lock!\n");
         return FMT_ERROR;
-    }
-
-    /* clear callback functions */
-    for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-        mlog_start_cbs[i] = NULL;
-        mlog_stop_cbs[i] = NULL;
-        mlog_update_cbs[i] = NULL;
     }
 
     return FMT_EOK;

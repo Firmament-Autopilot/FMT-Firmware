@@ -818,19 +818,19 @@ void mavproxy_cmd_reset(MavCmd_ID cmd)
 void mavproxy_cmd_exec(void)
 {
     if (cmd_sets[MAVCMD_CALIBRATION_GYR]) {
-        TIMETAG_CHECK_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, gyr_mavlink_calibration(););
+        PERIOD_EXECUTE(gyr_calib, CALIB_TIME_INTERVAL, gyr_mavlink_calibration(););
     }
 
     if (cmd_sets[MAVCMD_CALIBRATION_ACC]) {
-        TIMETAG_CHECK_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, accel_calibration(););
+        PERIOD_EXECUTE(acc_calib, CALIB_TIME_INTERVAL, accel_calibration(););
     }
 
     if (cmd_sets[MAVCMD_CALIBRATION_MAG]) {
-        TIMETAG_CHECK_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, mag_calibration(););
+        PERIOD_EXECUTE(mag_calib, CALIB_TIME_INTERVAL, mag_calibration(););
     }
 
     if (cmd_sets[MAVCMD_CALIBRATION_LEVEL]) {
-        TIMETAG_CHECK_EXECUTE(level_calib, 10, level_calibration(););
+        PERIOD_EXECUTE(level_calib, 10, level_calibration(););
     }
 
     if (cmd_sets[MAVCMD_STREAM_SESSION]) {

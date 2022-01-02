@@ -24,7 +24,7 @@
             "type": "cortex-debug",
             "request": "launch",
             "cwd": "${workspaceRoot}",
-            "executable": "target/cuav/v5_plus/build/fmt_fmuv5.elf",
+            "executable": "target/cuav/v5_plus/build/fmt_cuav-v5.elf",
             "serverpath": "${env:JLINK_SERVER}",
             "servertype": "jlink",
             "device": "STM32F765II",

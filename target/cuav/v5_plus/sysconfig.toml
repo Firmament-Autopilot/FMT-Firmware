@@ -30,7 +30,7 @@ target = "CUAV V5+"
 
 # Pilot CMD Configuration
 [pilot-cmd]
-    # channel mapping for [ls_lr,ls_ud,rs_lr,rs_ud]
+    # channel mapping for [yaw, throttle, roll, pitch]
     stick-channel = [4,3,1,2]
 
     [pilot-cmd.device]
@@ -42,23 +42,23 @@ target = "CUAV V5+"
     range = [1000,2000]
 
     [[pilot-cmd.mode]]
-    mode = 2                    # position mode
+    mode = 5                    # Position mode
     channel = 5
     range = [1000,1200]
 
     [[pilot-cmd.mode]]
-    mode = 3                    # altitude mode
+    mode = 4                    # Altitude mode
     channel = 5
     range = [1400,1600]
 
     [[pilot-cmd.mode]]
-    mode = 4                    # stabilize mode
+    mode = 3                    # Stabilize mode
     channel = 5
     range = [1800,2000]
 
     [[pilot-cmd.command]]
     type = 1                    # 1:event | 2:status
-    cmd = 1000                  # force-disarm: forcely disarm motors for safety concern
+    cmd = 1002                  # CMD_Disarm
     channel = 6
     range = [1800,2000]
 

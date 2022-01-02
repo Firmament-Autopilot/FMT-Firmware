@@ -53,6 +53,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/gcs_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
 #include "module/system/statistic.h"
@@ -312,30 +313,37 @@ void bsp_initialize(void)
     /* init usb device */
     RT_CHECK(drv_usb_cdc_init());
 
-    /* init imu0 */
-    RT_CHECK(mpu6000_drv_init(MPU6000_SPI_DEVICE_NAME));
-
-    /* init imu1 + mag0 */
-    RT_CHECK(l3gd20h_drv_init(L3GD20H_SPI_DEVICE_NAME));
-    RT_CHECK(lsm303d_drv_init(LSM303D_SPI_DEVICE_NAME));
-
-    /* init barometer */
-    RT_CHECK(ms5611_drv_init(MS5611_SPI_DEVICE_NAME));
-
-    /* init gps */
-    RT_CHECK(gps_m8n_init(GPS_SERIAL_DEVICE_NAME));
-
     /* init other devices */
-    RT_CHECK(pmw3901_l0x_drv_init("serial3"));
     RT_CHECK(tca62724_drv_init("i2c2"));
 
-    /* init parameter system */
-    FMT_CHECK(param_init());
+    /* register sensor to sensor hub */
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+#else
+    /* init onboard sensors */
+
+    /* init imu0 */
+    RT_CHECK(mpu6000_drv_init("spi1_dev4"));
+    /* init imu1 + mag0 */
+    RT_CHECK(l3gd20h_drv_init("spi1_dev2"));
+    RT_CHECK(lsm303d_drv_init("spi1_dev1"));
+    /* init barometer */
+    RT_CHECK(drv_ms5611_init("spi1_dev3"));
+    RT_CHECK(pmw3901_l0x_drv_init("serial3"));
+    /* init gps */
+    RT_CHECK(gps_m8n_init("serial2"));
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
+#endif
+
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
     /* init finsh */
     finsh_system_init();
@@ -364,6 +372,9 @@ void bsp_post_initialize(void)
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());
+
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */

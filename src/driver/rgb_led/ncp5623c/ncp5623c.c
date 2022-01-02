@@ -70,7 +70,7 @@ static void send_led_bright(void)
 
     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
     if (ret != 1) {
-        TIMETAG_CHECK_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail! IC1 ISR:0x%x ret:%d\n", I2C1->ISR, ret););
+        PERIOD_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail! IC1 ISR:0x%x ret:%d\n", I2C1->ISR, ret););
     }
 }
 
@@ -173,7 +173,7 @@ rt_err_t drv_ncp5623c_init(const char* i2c_dev_name)
     device->write = RT_NULL;
     device->control = ncp5623c_control;
     
-    RT_CHECK_RETURN(probe());
+    RT_TRY(probe());
 
     RT_CHECK(rt_device_register(device, "ncp5623c", RT_DEVICE_OFLAG_RDWR));
 

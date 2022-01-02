@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef FMS_INTERFACE_H__
-#define FMS_INTERFACE_H__
+#ifndef GCS_CMD_H__
+#define GCS_CMD_H__
 
 #include <FMS.h>
 
@@ -23,10 +23,10 @@
 extern "C" {
 #endif
 
-extern fmt_model_info_t fms_model_info;
-
-void fms_interface_init(void);
-void fms_interface_step(uint32_t timestamp);
+fmt_err_t gcs_cmd_init(void);
+fmt_err_t gcs_cmd_collect(void);
+fmt_err_t gcs_set_cmd(FMS_Cmd cmd);
+fmt_err_t gcs_set_mode(PilotMode mode);
 
 #ifdef __cplusplus
 }

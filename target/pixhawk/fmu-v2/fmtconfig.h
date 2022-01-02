@@ -17,12 +17,12 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define FMT_CHECK_BUILD
+#define FMT_USING_CHECKED
 
 /* HIL simulation */
 // #define FMT_USING_HIL
 /* SIH simulation */
-// #define FMT_USING_SIH   
+// #define FMT_USING_SIH 
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
@@ -31,6 +31,11 @@
 
 /* Send out pilot cmd via mavlink */
 #define FMT_OUTPUT_PILOT_CMD
+
+/* MLog */
+#define MLOG_BUFFER_SIZE         40 * 1024
+#define MLOG_SECTOR_SIZE         4096
+#define MLOG_MAX_SECTOR_TO_WRITE 5
 
 /* ULog */
 #define FMT_USING_ULOG

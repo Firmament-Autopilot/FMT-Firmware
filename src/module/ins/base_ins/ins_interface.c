@@ -30,7 +30,7 @@ MCN_DECLARE(sensor_gps);
 MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(sensor_optflow);
 
-struct INS_Handler {
+static struct INS_Handler {
     McnNode_t imu_sub_node_t;
     McnNode_t mag_sub_node_t;
     McnNode_t baro_sub_node_t;
@@ -44,23 +44,14 @@ struct INS_Handler {
     gps_data_t gps_report;
     rf_data_t rf_report;
     optflow_data_t optflow_report;
+} ins_handle;
 
-    uint32_t start_time;
-    uint8_t imu_updated;
-    uint8_t mag_updated;
-    uint8_t baro_updated;
-    uint8_t gps_updated;
-    uint8_t rf_updated;
-    uint8_t optflow_updated;
-} ins_handle = {
-    .start_time = 0,
-    .imu_updated = 1, /* log data in the first run */
-    .mag_updated = 1,
-    .baro_updated = 1,
-    .gps_updated = 1,
-    .rf_updated = 1,
-    .optflow_updated = 1
-};
+static uint8_t imu_data_updated;
+static uint8_t mag_data_updated;
+static uint8_t baro_data_updated;
+static uint8_t gps_data_updated;
+static uint8_t rf_data_updated;
+static uint8_t optflow_data_updated;
 
 fmt_model_info_t ins_model_info;
 
@@ -77,10 +68,13 @@ static int ins_output_echo(void* param)
 
 static void mlog_start_cb(void)
 {
-    ins_handle.imu_updated = 1;
-    ins_handle.mag_updated = 1;
-    ins_handle.baro_updated = 1;
-    ins_handle.gps_updated = 1;
+    /* when mlog started, record at least first data even there is no data publiced */
+    imu_data_updated = 1;
+    mag_data_updated = 1;
+    baro_data_updated = 1;
+    gps_data_updated = 1;
+    rf_data_updated = 1;
+    optflow_data_updated = 1;
 }
 
 static void update_parameter(void)
@@ -88,17 +82,8 @@ static void update_parameter(void)
     return;
 }
 
-void ins_interface_step(void)
+void ins_interface_step(uint32_t timestamp)
 {
-    DEFINE_TIMETAG(ins_output, 100);
-
-    uint32_t time_now = systime_now_ms();
-
-    if (ins_handle.start_time == 0) {
-        /* record first execution time */
-        ins_handle.start_time = time_now;
-    }
-
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_imu0), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
@@ -109,9 +94,10 @@ void ins_interface_step(void)
         INS_U.IMU.acc_x = ins_handle.imu_report.acc_B_mDs2[0];
         INS_U.IMU.acc_y = ins_handle.imu_report.acc_B_mDs2[1];
         INS_U.IMU.acc_z = ins_handle.imu_report.acc_B_mDs2[2];
-        INS_U.IMU.timestamp = time_now - ins_handle.start_time;
+        // INS_U.IMU.timestamp = time_now - ins_handle.start_time;
+        INS_U.IMU.timestamp = timestamp;
 
-        ins_handle.imu_updated = 1;
+        imu_data_updated = 1;
     }
 
     if (mcn_poll(ins_handle.mag_sub_node_t)) {
@@ -120,9 +106,9 @@ void ins_interface_step(void)
         INS_U.MAG.mag_x = ins_handle.mag_report.mag_B_gauss[0];
         INS_U.MAG.mag_y = ins_handle.mag_report.mag_B_gauss[1];
         INS_U.MAG.mag_z = ins_handle.mag_report.mag_B_gauss[2];
-        INS_U.MAG.timestamp = time_now - ins_handle.start_time;
+        INS_U.MAG.timestamp = timestamp;
 
-        ins_handle.mag_updated = 1;
+        mag_data_updated = 1;
     }
 
     if (mcn_poll(ins_handle.baro_sub_node_t)) {
@@ -130,9 +116,9 @@ void ins_interface_step(void)
 
         INS_U.Barometer.pressure = (float)ins_handle.baro_report.pressure_pa;
         INS_U.Barometer.temperature = ins_handle.baro_report.temperature_deg;
-        INS_U.Barometer.timestamp = time_now - ins_handle.start_time;
+        INS_U.Barometer.timestamp = timestamp;
 
-        ins_handle.baro_updated = 1;
+        baro_data_updated = 1;
     }
 
     /* update gps data */
@@ -150,26 +136,25 @@ void ins_interface_step(void)
         INS_U.GPS_uBlox.vAcc = (uint32_t)(ins_handle.gps_report.vAcc * 1e3);
         INS_U.GPS_uBlox.sAcc = (uint32_t)(ins_handle.gps_report.sAcc * 1e3);
         INS_U.GPS_uBlox.numSV = ins_handle.gps_report.numSV;
-        INS_U.GPS_uBlox.timestamp = time_now - ins_handle.start_time;
+        INS_U.GPS_uBlox.timestamp = timestamp;
 
-        ins_handle.gps_updated = 1;
+        gps_data_updated = 1;
     }
 
     /* update rangefinder data */
     if (mcn_poll(ins_handle.rf_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
-        // INS_U.Rangefinder.distance_m = ins_handle.rf_report.distance_m;
-        // INS_U.Rangefinder.timestamp = time_now - ins_handle.start_time;
-
-        ins_handle.rf_updated = 1;
+        // TODO
+        rf_data_updated = 1;
     }
 
     /* update optical flow data */
     if (mcn_poll(ins_handle.optflow_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
-        ins_handle.optflow_updated = 1;
+        // TODO
+        optflow_data_updated = 1;
     }
 
     /* run INS */
@@ -179,52 +164,45 @@ void ins_interface_step(void)
     mcn_publish(MCN_HUB(ins_output), &INS_Y.INS_Out);
 
     /* record INS input bus data if updated */
-    if (ins_handle.imu_updated) {
+    if (imu_data_updated) {
+        imu_data_updated = 0;
         /* Log IMU data if IMU updated */
-        if (mlog_push_msg((uint8_t*)&INS_U.IMU, MLOG_IMU_ID, sizeof(INS_U.IMU)) == FMT_EOK) {
-            ins_handle.imu_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.IMU, MLOG_IMU_ID, sizeof(INS_U.IMU));
     }
 
-    if (ins_handle.mag_updated) {
+    if (mag_data_updated) {
+        mag_data_updated = 0;
         /* Log Magnetometer data */
-        if (mlog_push_msg((uint8_t*)&INS_U.MAG, MLOG_MAG_ID, sizeof(INS_U.MAG)) == FMT_EOK) {
-            ins_handle.mag_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.MAG, MLOG_MAG_ID, sizeof(INS_U.MAG));
     }
 
-    if (ins_handle.baro_updated) {
+    if (baro_data_updated) {
+        baro_data_updated = 0;
         /* Log Barometer data */
-        if (mlog_push_msg((uint8_t*)&INS_U.Barometer, MLOG_BARO_ID, sizeof(INS_U.Barometer)) == FMT_EOK) {
-            ins_handle.baro_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.Barometer, MLOG_BARO_ID, sizeof(INS_U.Barometer));
     }
 
-    if (ins_handle.gps_updated) {
+    if (gps_data_updated) {
+        gps_data_updated = 0;
         /* Log GPS data */
-        if (mlog_push_msg((uint8_t*)&INS_U.GPS_uBlox, MLOG_GPS_ID, sizeof(INS_U.GPS_uBlox)) == FMT_EOK) {
-            ins_handle.gps_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&INS_U.GPS_uBlox, MLOG_GPS_ID, sizeof(INS_U.GPS_uBlox));
     }
 
-    if (ins_handle.rf_updated) {
+    if (rf_data_updated) {
+        rf_data_updated = 0;
         /* Log Rangefinder data */
-        if (mlog_push_msg((uint8_t*)&ins_handle.rf_report, MLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report)) == FMT_EOK) {
-            ins_handle.rf_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&ins_handle.rf_report, MLOG_RANGEFINDER_ID, sizeof(ins_handle.rf_report));
     }
 
-    if (ins_handle.optflow_updated) {
+    if (optflow_data_updated) {
+        optflow_data_updated = 0;
         /* Log Optical Flow data */
-        if (mlog_push_msg((uint8_t*)&ins_handle.optflow_report, MLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report)) == FMT_EOK) {
-            ins_handle.optflow_updated = 0;
-        }
+        mlog_push_msg((uint8_t*)&ins_handle.optflow_report, MLOG_OPTICAL_FLOW_ID, sizeof(ins_handle.optflow_report));
     }
 
     /* Log INS output bus data */
+    DEFINE_TIMETAG(ins_output, 100);
     if (check_timetag(TIMETAG(ins_output))) {
-        /* rewrite timestmp */
-        INS_Y.INS_Out.timestamp = time_now - ins_handle.start_time;
         /* Log INS out data */
         mlog_push_msg((uint8_t*)&INS_Y.INS_Out, MLOG_INS_OUT_ID, sizeof(INS_Y.INS_Out));
     }

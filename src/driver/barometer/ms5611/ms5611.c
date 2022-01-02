@@ -385,7 +385,7 @@ static struct baro_ops _baro_ops = {
     baro_read
 };
 
-rt_err_t ms5611_drv_init(char* spi_device_name)
+rt_err_t drv_ms5611_init(char* spi_device_name)
 {
     rt_err_t ret = RT_EOK;
     static struct baro_device baro_device = {

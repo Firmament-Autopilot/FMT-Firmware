@@ -18,31 +18,7 @@
 #define BOARD_DEVICE_H__
 
 // Device Name
-#define CONSOLE_DEVICE_NAME        "serial0"
 #define FMTIO_DEVICE_NAME          "serial5"
-#define GDB_DEVICE_NAME            "serial6"
-#define MAVPROXY_CHAN1_DEVICE_NAME "serial1"
-#define MAVPROXY_CHAN2_DEVICE_NAME "usb"
-#define FS_DEVICE_NAME             "sd0"
-#define GPS_SERIAL_DEVICE_NAME     "serial2"
-#define MPU6000_SPI_DEVICE_NAME    "spi1_dev4"
-#define L3GD20H_SPI_DEVICE_NAME    "spi1_dev2"
-#define LSM303D_SPI_DEVICE_NAME    "spi1_dev1"
-
-#define MS5611_SPI_DEVICE_NAME   "spi4_dev1"
-#define ICM20689_SPI_DEVICE_NAME "spi1_dev1"
-
-#define BMI055_ACC_SPI_DEVICE_NAME  "spi1_dev4"
-#define BMI055_GYRO_SPI_DEVICE_NAME "spi1_dev3"
-
-#define IST8310_I2C_DEVICE_NAME "i2c1_dev1"
-
-#define SENSOR_USING_IMU0
-// #define SENSOR_USING_IMU1
-#define SENSOR_USING_MAG0
-// #define SENSOR_USING_MAG1
-#define SENSOR_USING_BAROMETER
-#define SENSOR_USING_GPS
 
 #define SPI1_SPEED_HZ 7000000
 

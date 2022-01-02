@@ -26,7 +26,7 @@ extern "C" {
 extern fmt_model_info_t control_model_info;
 
 void control_interface_init(void);
-void control_interface_step(void);
+void control_interface_step(uint32_t timestamp);
 
 #ifdef __cplusplus
 }

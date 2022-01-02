@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.850
+ * Model version                  : 1.877
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug 21 09:50:15 2021
+ * C/C++ source code generated on : Thu Dec 23 16:49:46 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -55,24 +55,28 @@ typedef struct {
   /* actuator command, e.g, pwm command for motors */
   uint16_T actuator_cmd[16];
 
-  /* state
-     0: Disarm
-     1: Standby
-     2: Arm */
-  uint8_T state;
+  /* Vehicle Status:
+     0: Unknown
+     1: Disarm
+     2: Standby
+     3: Arm
+     4: Takeoff
+     5: Land
+     6: RTL */
+  uint8_T status;
 
-  /* mode
-     0: Unknown Mode
-     1: Mission Mode
-     2: Position Mode
-     3: Altitude Hold Mode
-     4: Stabilize Mode
-     5: Acro Mode */
+  /* Control Mode:
+     0: Unknown
+     1: Manual
+     2: Acro
+     3: Stabilize
+     4: ALTCTL
+     5: POSCTL */
   uint8_T mode;
+  uint8_T ctrl_mode;
 
   /* reset the controller */
   uint8_T reset;
-  uint8_T reserved;
 } FMS_Out_Bus;
 
 #endif

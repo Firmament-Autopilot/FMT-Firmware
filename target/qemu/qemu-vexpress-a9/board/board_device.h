@@ -18,19 +18,7 @@
 #define BOARD_DEVICE_H__
 
 // Device Name
-#define CONSOLE_DEVICE_NAME        "serial0"
 #define FMTIO_DEVICE_NAME          "serial5"
-#define GDB_DEVICE_NAME            "serial6"
-#define MAVPROXY_CHAN1_DEVICE_NAME "serial1"
-#define MAVPROXY_CHAN2_DEVICE_NAME "usb"
-#define FS_DEVICE_NAME             "sd0"
-
-#define SENSOR_USING_IMU0
-// #define SENSOR_USING_IMU1
-#define SENSOR_USING_MAG0
-// #define SENSOR_USING_MAG1
-#define SENSOR_USING_BAROMETER
-#define SENSOR_USING_GPS
 
 #define SPI1_SPEED_HZ 7000000
 
