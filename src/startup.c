@@ -26,7 +26,7 @@ static rt_thread_t tid0;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
-#ifdef FMT_CHECK_BUILD
+#ifdef FMT_USING_CHECKED
     rt_hw_interrupt_disable();
 
 #ifdef FMT_USING_CM_BACKTRACE
