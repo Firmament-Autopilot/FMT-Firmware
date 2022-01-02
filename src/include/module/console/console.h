@@ -36,9 +36,6 @@ int console_print_args(const char* fmt, va_list args);
 int console_write(const char* content, uint32_t len);
 void console_format(char* buffer, const char* fmt, ...);
 
-/* console helper API */
-void print_item_line(const char* name, const char* content, char pad, uint32_t len);
-
 #ifdef __cplusplus
 }
 #endif

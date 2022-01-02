@@ -72,13 +72,30 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { NULL } /* NULL indicate the end */
 };
 
-void idle_wfi(void)
+static void banner_item(const char* name, const char* content, char pad, uint32_t len)
 {
-    asm volatile("wfi");
+    int pad_len;
+
+    if (content == NULL) {
+        content = "NULL";
+    }
+
+    pad_len = len - strlen(name) - strlen(content);
+
+    if (pad_len < 1) {
+        pad_len = 1;
+    }
+    // e.g, name..............content
+    console_printf("%s", name);
+    while (pad_len--) {
+        console_write(&pad, 1);
+    }
+
+    console_printf("%s\n", content);
 }
 
 #define ITEM_LENGTH 42
-void bsp_show_information(void)
+static void bsp_show_information(void)
 {
     char buffer[50];
 
@@ -89,18 +106,18 @@ void bsp_show_information(void)
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
     sprintf(buffer, "FMT FMU %s", FMT_VERSION);
-    print_item_line("Firmware", buffer, '.', ITEM_LENGTH);
+    banner_item("Firmware", buffer, '.', ITEM_LENGTH);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    print_item_line("Kernel", buffer, '.', ITEM_LENGTH);
+    banner_item("Kernel", buffer, '.', ITEM_LENGTH);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    print_item_line("RAM", buffer, '.', ITEM_LENGTH);
-    print_item_line("Target", TARGET_NAME, '.', ITEM_LENGTH);
-    print_item_line("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
-    print_item_line("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
-    print_item_line("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
-    print_item_line("Control Model", control_model_info.info, '.', ITEM_LENGTH);
+    banner_item("RAM", buffer, '.', ITEM_LENGTH);
+    banner_item("Target", TARGET_NAME, '.', ITEM_LENGTH);
+    banner_item("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
+    banner_item("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
+    banner_item("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
+    banner_item("Control Model", control_model_info.info, '.', ITEM_LENGTH);
 #ifdef FMT_USING_SIH
-    print_item_line("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
+    banner_item("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
 #endif
 
     console_println("Task Initialize:");
@@ -108,8 +125,13 @@ void bsp_show_information(void)
     for (uint32_t i = 0; i < get_task_num(); i++) {
         sprintf(buffer, "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
-        print_item_line(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
     }
+}
+
+static void idle_wfi(void)
+{
+    asm volatile("wfi");
 }
 
 static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)

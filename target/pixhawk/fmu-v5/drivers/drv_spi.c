@@ -319,7 +319,7 @@ static rt_err_t stm32_spi_register(SPI_TypeDef* SPI,
  * 
  * @return rt_err_t RT_EOK for success
  */
-rt_err_t spi_drv_init(void)
+rt_err_t drv_spi_init(void)
 {
     rt_err_t ret;
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };

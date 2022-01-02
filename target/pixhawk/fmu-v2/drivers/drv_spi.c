@@ -394,7 +394,7 @@ SPI1_MOSI: PA7
 SPI1_MISO: PA6
 SPI1_SCK : PA5
 */
-rt_err_t spi_drv_init(void)
+rt_err_t drv_spi_init(void)
 {
     rt_err_t ret = RT_EOK;
     /* register SPI bus */
