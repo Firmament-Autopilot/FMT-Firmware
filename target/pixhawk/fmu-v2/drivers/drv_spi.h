@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-rt_err_t spi_drv_init(void);
+rt_err_t drv_spi_init(void);
 
 #ifdef __cplusplus
 }

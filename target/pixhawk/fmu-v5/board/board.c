@@ -357,7 +357,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_gpio_init());
 
     /* spi driver init */
-    RT_CHECK(spi_drv_init());
+    RT_CHECK(drv_spi_init());
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
