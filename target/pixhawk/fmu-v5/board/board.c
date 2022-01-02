@@ -95,6 +95,63 @@ static const struct dfs_mount_tbl mnt_table[] = {
 
 static toml_table_t* __toml_root_tab = NULL;
 
+static void banner_item(const char* name, const char* content, char pad, uint32_t len)
+{
+    int pad_len;
+
+    if (content == NULL) {
+        content = "NULL";
+    }
+
+    pad_len = len - strlen(name) - strlen(content);
+
+    if (pad_len < 1) {
+        pad_len = 1;
+    }
+    // e.g, name..............content
+    console_printf("%s", name);
+    while (pad_len--) {
+        console_write(&pad, 1);
+    }
+
+    console_printf("%s\n", content);
+}
+
+#define ITEM_LENGTH 42
+static void bsp_show_information(void)
+{
+    char buffer[50];
+
+    console_printf("\n");
+    console_println("   _____                               __ ");
+    console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
+    console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
+    console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
+
+    sprintf(buffer, "FMT FMU %s", FMT_VERSION);
+    banner_item("Firmware", buffer, '.', ITEM_LENGTH);
+    sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    banner_item("Kernel", buffer, '.', ITEM_LENGTH);
+    sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    banner_item("RAM", buffer, '.', ITEM_LENGTH);
+    banner_item("Target", TARGET_NAME, '.', ITEM_LENGTH);
+    banner_item("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
+    banner_item("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
+    banner_item("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
+    banner_item("Control Model", control_model_info.info, '.', ITEM_LENGTH);
+#ifdef FMT_USING_SIH
+    banner_item("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
+#endif
+
+    console_println("Task Initialize:");
+    fmt_task_desc_t task_tab = get_task_table();
+    for (uint32_t i = 0; i < get_task_num(); i++) {
+        sprintf(buffer, "  %s", task_tab[i].name);
+        /* task status must be okay to reach here */
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
+    }
+}
+
 static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
     fmt_err_t err = FMT_EOK;
@@ -199,21 +256,6 @@ static void EnablePower(void)
     systime_mdelay(100);
 }
 
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
-    console_printf("Enter Error_Handler\n");
-    /* USER CODE BEGIN Error_Handler_Debug */
-    /* User can add his own implementation to report the HAL error return state */
-    __disable_irq();
-    while (1) {
-    }
-    /* USER CODE END Error_Handler_Debug */
-}
-
 /*
 * When enabling the D-cache there is cache coherency issue. 
 * This matter crops up when multiple masters (CPU, DMAs...) 
@@ -238,6 +280,21 @@ static void CPU_CACHE_Enable(void)
 
     /* Enable D-Cache */
     // SCB_EnableDCache();
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+    console_printf("Enter Error_Handler\n");
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1) {
+    }
+    /* USER CODE END Error_Handler_Debug */
 }
 
 /**
@@ -289,41 +346,6 @@ void SystemClock_Config(void)
     LL_RCC_SetI2CClockSource(LL_RCC_I2C2_CLKSOURCE_PCLK1);
     LL_RCC_SetI2CClockSource(LL_RCC_I2C3_CLKSOURCE_PCLK1);
     LL_RCC_SetI2CClockSource(LL_RCC_I2C4_CLKSOURCE_PCLK1);
-}
-
-#define ITEM_LENGTH 42
-void bsp_show_information(void)
-{
-    char buffer[50];
-
-    console_printf("\n");
-    console_println("   _____                               __ ");
-    console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
-    console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
-    console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
-
-    sprintf(buffer, "FMT FMU %s", FMT_VERSION);
-    print_item_line("Firmware", buffer, '.', ITEM_LENGTH);
-    sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    print_item_line("Kernel", buffer, '.', ITEM_LENGTH);
-    sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    print_item_line("RAM", buffer, '.', ITEM_LENGTH);
-    print_item_line("Target", TARGET_NAME, '.', ITEM_LENGTH);
-    print_item_line("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
-    print_item_line("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
-    print_item_line("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
-    print_item_line("Control Model", control_model_info.info, '.', ITEM_LENGTH);
-#ifdef FMT_USING_SIH
-    print_item_line("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
-#endif
-
-    console_println("Task Initialize:");
-    fmt_task_desc_t task_tab = get_task_table();
-    for (uint32_t i = 0; i < get_task_num(); i++) {
-        sprintf(buffer, "  %s", task_tab[i].name);
-        /* task status must be okay to reach here */
-        print_item_line(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
-    }
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
