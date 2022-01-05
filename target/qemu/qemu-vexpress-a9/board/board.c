@@ -46,12 +46,7 @@
 #include "module/plant/plant_interface.h"
 #endif
 
-#define DEFAULT_TOML_SYS_CONFIG "target = \"QEMU vexpress-a9\"\n\
-[console]\n\
-	[[console.devices]]\n\
-	type = \"serial\"\n\
-	name = \"serial0\"\n\
-	baudrate = 57600"
+#define STRING(...) #__VA_ARGS__
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
@@ -62,6 +57,25 @@ struct mem_desc platform_mem_desc[] = {
     { 0x10000000, 0x50000000, 0x10000000, DEVICE_MEM },
     { 0x60000000, 0xe0000000, 0x60000000, NORMAL_MEM }
 };
+
+static char* default_conf = STRING(
+target = "QEMU vexpress-a9"\n
+[console]\n
+	[[console.devices]]\n
+	type = "serial"\n
+	name = "serial0"\n
+	baudrate = 57600\n
+	auto-switch = true\n
+	[[console.devices]]\n
+	type = "mavlink"\n
+	name = "mav_console"\n
+	auto-switch = true\n
+[mavproxy]\n
+	[[mavproxy.devices]]\n
+	type = "serial"\n
+	name = "serial1"\n
+	baudrate = 115200
+);
 
 static toml_table_t* __toml_root_tab = NULL;
 
@@ -264,7 +278,7 @@ void bsp_post_initialize(void)
     __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (!__toml_root_tab) {
         /* use default system configuration */
-        __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
+        __toml_root_tab = toml_parse_config_string(default_conf);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
