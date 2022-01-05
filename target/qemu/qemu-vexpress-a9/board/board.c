@@ -46,8 +46,6 @@
 #include "module/plant/plant_interface.h"
 #endif
 
-#define STRING(...) #__VA_ARGS__
-
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
@@ -56,6 +54,11 @@
 struct mem_desc platform_mem_desc[] = {
     { 0x10000000, 0x50000000, 0x10000000, DEVICE_MEM },
     { 0x60000000, 0xe0000000, 0x60000000, NORMAL_MEM }
+};
+
+static const struct dfs_mount_tbl mnt_table[] = {
+    { "sd0", "/", "elm", 0, NULL },
+    { NULL } /* NULL indicate the end */
 };
 
 static char* default_conf = STRING(
@@ -80,11 +83,6 @@ target = "QEMU vexpress-a9"\n
 static toml_table_t* __toml_root_tab = NULL;
 
 const rt_uint32_t platform_mem_desc_size = sizeof(platform_mem_desc) / sizeof(platform_mem_desc[0]);
-
-static const struct dfs_mount_tbl mnt_table[] = {
-    { "sd0", "/", "elm", 0, NULL },
-    { NULL } /* NULL indicate the end */
-};
 
 static void banner_item(const char* name, const char* content, char pad, uint32_t len)
 {

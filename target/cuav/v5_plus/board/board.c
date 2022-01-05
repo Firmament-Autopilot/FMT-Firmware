@@ -64,27 +64,6 @@
 #include "module/plant/plant_interface.h"
 #endif
 
-#define DEFAULT_TOML_SYS_CONFIG "target = \"CUAV V5+\"\n\
-[console]\n\
-	[[console.devices]]\n\
-	type = \"serial\"\n\
-	name = \"serial0\"\n\
-	baudrate = 57600\n\
-	auto-switch = true\n\
-	[[console.devices]]\n\
-	type = \"mavlink\"\n\
-	name = \"mav_console\"\n\
-	auto-switch = true\n\
-[mavproxy]\n\
-	[[mavproxy.devices]]\n\
-	type = \"serial\"\n\
-	name = \"serial1\"\n\
-	baudrate = 57600\n\
-	[[mavproxy.devices]]\n\
-	type = \"usb\"\n\
-	name = \"usbd0\"\n\
-    auto-switch = true"
-
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
@@ -92,6 +71,29 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
+
+static char* default_conf = STRING(
+target = "CUAV V5+"\n
+[console]\n
+	[[console.devices]]\n
+	type = "serial"\n
+	name = "serial0"\n
+	baudrate = 57600\n
+	auto-switch = true\n
+	[[console.devices]]\n
+	type = "mavlink"\n
+	name = "mav_console"\n
+	auto-switch = true\n
+[mavproxy]\n
+	[[mavproxy.devices]]\n
+	type = "serial"\n
+	name = "serial1"\n
+	baudrate = 57600\n
+    [[mavproxy.devices]]\n
+	type = "usb"\n
+	name = "usbd0"\n
+    auto-switch = true
+);
 
 static toml_table_t* __toml_root_tab = NULL;
 
@@ -459,7 +461,7 @@ void bsp_post_initialize(void)
     __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     if (!__toml_root_tab) {
         /* use default system configuration */
-        __toml_root_tab = toml_parse_config_string(DEFAULT_TOML_SYS_CONFIG);
+        __toml_root_tab = toml_parse_config_string(default_conf);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
