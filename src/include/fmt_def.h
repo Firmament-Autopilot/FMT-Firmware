@@ -57,6 +57,10 @@ typedef int bool;
 #define PI 3.14159265358979f
 #endif
 
+#ifndef STRING
+#define STRING(...) #__VA_ARGS__
+#endif
+
 #define RT_TRY(__exp)  \
     do {                        \
         rt_err_t err = (__exp); \
