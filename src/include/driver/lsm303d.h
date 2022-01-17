@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-rt_err_t lsm303d_drv_init(char* spi_device_name);
+rt_err_t lsm303d_drv_init(const char* spi_device_name, const char* mag_device_name, const char* accel_device_name);
 
 #ifdef __cplusplus
 }

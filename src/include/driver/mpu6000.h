@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-rt_err_t mpu6000_drv_init(char* spi_device_name);
+rt_err_t mpu6000_drv_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name);
 
 #ifdef __cplusplus
 }

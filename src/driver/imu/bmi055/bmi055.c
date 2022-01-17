@@ -569,7 +569,7 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi055_init(const char* spi_device_name)
+rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
 {
     /* Initialize gyroscope */
 
@@ -592,7 +592,7 @@ rt_err_t drv_bmi055_init(const char* spi_device_name)
     /* gyroscope low-level init */
     RT_TRY(gyroscope_init());
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     /* Initialize accelerometer */
 
@@ -617,7 +617,7 @@ rt_err_t drv_bmi055_init(const char* spi_device_name)
     RT_TRY(accelerometer_init());
 
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, "accel1", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

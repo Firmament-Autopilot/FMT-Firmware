@@ -595,7 +595,7 @@ const static struct accel_ops _accel_ops = {
     accel_read,
 };
 
-rt_err_t mpu6000_drv_init(char* spi_device_name)
+rt_err_t mpu6000_drv_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
 {
     rt_err_t ret = RT_EOK;
     static struct accel_device accel_dev = {
@@ -635,10 +635,10 @@ rt_err_t mpu6000_drv_init(char* spi_device_name)
     ret |= _init();
 
     /* register gyro hal device */
-    ret |= hal_gyro_register(&gyro_dev, "gyro0", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    ret |= hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL);
 
     /* register accel hal device */
-    ret |= hal_accel_register(&accel_dev, "accel0", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    ret |= hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL);
 
     return ret;
 }

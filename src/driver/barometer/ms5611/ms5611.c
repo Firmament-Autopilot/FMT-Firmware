@@ -385,7 +385,7 @@ static struct baro_ops _baro_ops = {
     baro_read
 };
 
-rt_err_t drv_ms5611_init(char* spi_device_name)
+rt_err_t drv_ms5611_init(const char* spi_device_name, const char* sensor_device_name)
 {
     rt_err_t ret = RT_EOK;
     static struct baro_device baro_device = {
@@ -417,7 +417,7 @@ rt_err_t drv_ms5611_init(char* spi_device_name)
     /* driver internal init */
     ret |= _init();
 
-    ret |= hal_baro_register(&baro_device, "barometer", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    ret |= hal_baro_register(&baro_device, sensor_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL);
 
     return ret;
 }

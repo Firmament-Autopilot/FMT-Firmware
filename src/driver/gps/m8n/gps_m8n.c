@@ -512,7 +512,7 @@ static void gps_probe_entry(void* parameter)
             if (configure_by_ubx(baudrate) == RT_EOK) {
                 /* GPS is dected, now register */
                 hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
-                register_sensor_gps("gps");
+                register_sensor_gps((char*)parameter);
                 break;
             }
         }
@@ -521,11 +521,20 @@ static void gps_probe_entry(void* parameter)
     if (i >= CONFIGURE_RETRY_MAX) {
         console_printf("GPS configuration fail!\n");
     }
+
+    rt_free(parameter);
 }
 
-rt_err_t gps_m8n_init(char* serial_device_name)
+rt_err_t gps_m8n_init(const char* serial_device_name, const char* gps_device_name)
 {
+    char* str_buffer;
+
     gps_device.ops = &gps_ops;
+
+    str_buffer = (char*)rt_malloc(21);
+    RT_ASSERT(str_buffer != NULL);
+    memset(str_buffer, 0, 21);
+    strncpy(str_buffer, gps_device_name, 20);
 
     serial_device = rt_device_find(serial_device_name);
     RT_ASSERT(serial_device != NULL);
@@ -538,7 +547,7 @@ rt_err_t gps_m8n_init(char* serial_device_name)
     FMT_CHECK(init_ubx_decoder(&ubx_decoder, serial_device, ubx_rx_handle));
 
     /* create a thread to probe the gps connection */
-    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, RT_NULL,
+    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, str_buffer,
         4096, RT_THREAD_PRIORITY_MAX - 2, 5);
     RT_ASSERT(tid != NULL);
 

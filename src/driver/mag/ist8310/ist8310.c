@@ -181,7 +181,7 @@ const static struct mag_ops __mag_ops = {
     ist8310_read,
 };
 
-rt_err_t drv_ist8310_init(const char* i2c_device_name)
+rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_name)
 {
     static struct mag_device mag_dev = {
         .ops = &__mag_ops,
@@ -197,7 +197,7 @@ rt_err_t drv_ist8310_init(const char* i2c_device_name)
 
     RT_TRY(ist8310_init());
 
-    RT_CHECK(hal_mag_register(&mag_dev, "mag0", RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

@@ -352,7 +352,7 @@ const static struct gyro_ops _gyro_ops = {
 	gyro_read,
 };
 
-rt_err_t l3gd20h_drv_init(char* spi_device_name)
+rt_err_t l3gd20h_drv_init(const char* spi_device_name, const char* gyro_device_name)
 {
 	rt_err_t ret = RT_EOK;
 	static struct gyro_device gyro_dev = {
@@ -387,7 +387,7 @@ rt_err_t l3gd20h_drv_init(char* spi_device_name)
 	ret |= _init();
 
 	/* register gyro hal device */
-	ret |= hal_gyro_register(&gyro_dev, "gyro1", RT_DEVICE_FLAG_RDWR, RT_NULL);
+	ret |= hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL);
 
 	return ret;
 }
