@@ -17,6 +17,8 @@
 #include <FMS.h>
 #include <firmament.h>
 
+#include "module/param/param.h"
+
 #define TAG "FMS"
 
 // FMS input topic
@@ -29,6 +31,23 @@ MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
 
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
+
+/* define parameters */
+static param_t __param_list[] = {
+    /* Stick Dead Zone */
+    PARAM_DEFINE_FLOAT(THROTTLE_DZ, 0.15),
+    PARAM_DEFINE_FLOAT(YAW_DZ, 0.15),
+    PARAM_DEFINE_FLOAT(ROLL_DZ, 0.1),
+    PARAM_DEFINE_FLOAT(PITCH_DZ, 0.1),
+    PARAM_DEFINE_FLOAT(XY_P, 0.95),
+    PARAM_DEFINE_FLOAT(Z_P, 1),
+    PARAM_DEFINE_FLOAT(VEL_XY_LIM, 5.0),
+    PARAM_DEFINE_FLOAT(VEL_Z_LIM, 2.5),
+    PARAM_DEFINE_FLOAT(YAW_P, 2.5),
+    PARAM_DEFINE_FLOAT(YAW_RATE_LIM, PI / 3),
+    PARAM_DEFINE_FLOAT(ROLL_PITCH_LIM, PI / 6),
+};
+PARAM_DEFINE_GROUP(FMS, __param_list);
 
 static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
@@ -45,7 +64,7 @@ static void mlog_start_cb(void)
     gcs_cmd_updated = 1;
 }
 
-static void update_parameter(void)
+static void init_parameter(void)
 {
     FMS_PARAM.THROTTLE_DZ = PARAM_GET_FLOAT(FMS, THROTTLE_DZ);
     FMS_PARAM.YAW_DZ = PARAM_GET_FLOAT(FMS, YAW_DZ);
@@ -58,6 +77,21 @@ static void update_parameter(void)
     FMS_PARAM.YAW_P = PARAM_GET_FLOAT(FMS, YAW_P);
     FMS_PARAM.YAW_RATE_LIM = PARAM_GET_FLOAT(FMS, YAW_RATE_LIM);
     FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
+}
+
+static void update_parameter(void)
+{
+    FMS_PARAM.THROTTLE_DZ = PARAM_VALUE_FLOAT(&__param_list[0]);
+    FMS_PARAM.YAW_DZ = PARAM_VALUE_FLOAT(&__param_list[1]);
+    FMS_PARAM.ROLL_DZ = PARAM_VALUE_FLOAT(&__param_list[2]);
+    FMS_PARAM.PITCH_DZ = PARAM_VALUE_FLOAT(&__param_list[3]);
+    FMS_PARAM.XY_P = PARAM_VALUE_FLOAT(&__param_list[4]);
+    FMS_PARAM.Z_P = PARAM_VALUE_FLOAT(&__param_list[5]);
+    FMS_PARAM.VEL_XY_LIM = PARAM_VALUE_FLOAT(&__param_list[6]);
+    FMS_PARAM.VEL_Z_LIM = PARAM_VALUE_FLOAT(&__param_list[7]);
+    FMS_PARAM.YAW_P = PARAM_VALUE_FLOAT(&__param_list[8]);
+    FMS_PARAM.YAW_RATE_LIM = PARAM_VALUE_FLOAT(&__param_list[9]);
+    FMS_PARAM.ROLL_PITCH_LIM = PARAM_VALUE_FLOAT(&__param_list[10]);
 }
 
 void fms_interface_step(uint32_t timestamp)
@@ -128,5 +162,5 @@ void fms_interface_init(void)
 
     FMS_init();
 
-    update_parameter();
+    init_parameter();
 }

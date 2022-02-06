@@ -77,11 +77,6 @@ static void mlog_start_cb(void)
     optflow_data_updated = 1;
 }
 
-static void update_parameter(void)
-{
-    return;
-}
-
 void ins_interface_step(uint32_t timestamp)
 {
     /* get sensor data */
@@ -225,6 +220,4 @@ void ins_interface_init(void)
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     INS_init();
-
-    update_parameter();
 }

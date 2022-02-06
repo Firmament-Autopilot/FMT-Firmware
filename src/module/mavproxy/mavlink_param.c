@@ -498,7 +498,7 @@ void mavlink_param_sendall(void)
 {
     mavlink_message_t msg;
     param_t* param;
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = get_param_table();
     mav_param_t* mav_param;
 
     for (uint32_t i = 0; i < MAV_PARAM_COUNT; i++) {
@@ -512,8 +512,8 @@ void mavlink_param_sendall(void)
         mavproxy_send_immediate_msg(&msg, true);
     }
 
-    for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
-        param = gp->content;
+    for (uint32_t i = 0; i < get_param_group_num(); i++) {
+        param = gp->param_list;
 
         for (uint32_t j = 0; j < gp->param_num; j++) {
             make_mavlink_param_msg(&msg, param);
