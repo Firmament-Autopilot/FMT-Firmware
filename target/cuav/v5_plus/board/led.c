@@ -25,12 +25,12 @@ static uint8_t _r;
 static uint8_t _g;
 static uint8_t _b;
 
-static void run_led(void)
+static void run_led(void* parameter)
 {
     LED_TOGGLE(FMU_LED_BLUE_PIN);
 }
 
-static void run_rgb_led(void)
+static void run_rgb_led(void* parameter)
 {
     static int bright = 0;
     static int inc = 0;
@@ -266,9 +266,9 @@ fmt_err_t led_control_init(void)
     WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
     RT_ASSERT(lp_wq != NULL && hp_wq != NULL);
 
-    FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
+    FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item, NULL));
     /* rgb led work in high priority workqueue to try not blocking other i2c user */
-    FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
+    FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item, NULL));
 
     return FMT_EOK;
 }

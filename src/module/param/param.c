@@ -18,13 +18,30 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/file_manager/yxml.h"
+#include "module/utils/list.h"
+#include "module/work_queue/workqueue_manager.h"
 
 #define TAG "Param"
 
 #define YXML_STACK_SIZE 1024
 
+static void on_parameter_modify(void* parameter);
+
 static param_group_t* __param_table;
 static int16_t __param_group_num;
+static struct list_head __cb_list_head;
+
+struct on_modify_cb {
+    void (*on_modify)(param_t*);
+    struct list_head link;
+};
+
+static struct WorkItem on_modify_work_item = {
+    .name = "param_cb",
+    .period = 0,
+    .schedule_time = 0,
+    .run = on_parameter_modify
+};
 
 static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
 {
@@ -159,6 +176,16 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
     }
 
     return FMT_ERROR;
+}
+
+static void on_parameter_modify(void* parameter)
+{
+    struct on_modify_cb* pos;
+    list_for_each_entry(pos, struct on_modify_cb, &__cb_list_head, link)
+    {
+        /* invoke registered callback function */
+        pos->on_modify((param_t*)parameter);
+    }
 }
 
 /**
@@ -348,6 +375,11 @@ fmt_err_t param_set_str_val(param_t* param, char* val)
 #ifdef FMT_ONLINE_PARAM_TUNING
     OS_EXIT_CRITICAL;
 #endif
+
+    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
+    if (workqueue_schedule_work(lp_wq, &on_modify_work_item, param) != FMT_EOK) {
+        return FMT_ERROR;
+    }
 
     return FMT_EOK;
 }
@@ -666,6 +698,22 @@ int16_t get_param_group_num(void)
     return __param_group_num;
 }
 
+fmt_err_t param_register_callback(void (*on_modify)(param_t* param))
+{
+    struct on_modify_cb* node = (struct on_modify_cb*)rt_malloc(sizeof(struct on_modify_cb));
+
+    if (node == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    INIT_LIST_HEAD(&node->link);
+    node->on_modify = on_modify;
+
+    list_add_tail(&node->link, &__cb_list_head);
+
+    return FMT_EOK;
+}
+
 /**
  * Initialize parameter module.
  * 
@@ -675,6 +723,8 @@ fmt_err_t param_init(void)
 {
     extern const int __fmt_param_start;
     extern const int __fmt_param_end;
+
+    INIT_LIST_HEAD(&__cb_list_head);
 
     __param_table = (param_group_t*)&__fmt_param_start;
     __param_group_num = (param_group_t*)&__fmt_param_end - __param_table;

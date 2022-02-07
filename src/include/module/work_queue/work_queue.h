@@ -28,7 +28,8 @@ struct WorkItem {
     const char* name;
     uint32_t schedule_time; /* work scheduled time */
     uint16_t period;        /* period of work, 0 means only execute once */
-    void (*run)(void);
+    void* parameter;
+    void (*run)(void* parameter);
 };
 typedef struct WorkItem* WorkItem_t;
 
@@ -43,7 +44,7 @@ typedef struct WorkQueue* WorkQueue_t;
 
 WorkQueue_t workqueue_create(const char* name, uint8_t size, uint16_t stack_size, uint8_t priority);
 fmt_err_t workqueue_delete(WorkQueue_t work_queue);
-fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item);
+fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item, void* parameter);
 fmt_err_t workqueue_cancel_work(WorkQueue_t work_queue, WorkItem_t item);
 
 #ifdef __cplusplus

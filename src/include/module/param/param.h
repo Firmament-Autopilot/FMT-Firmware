@@ -193,6 +193,8 @@ param_group_t* param_find_group(const char* group_name);
 param_group_t* get_param_table(void);
 int16_t get_param_group_num(void);
 
+fmt_err_t param_register_callback(void (*on_modify)(param_t* param));
+
 #ifdef __cplusplus
 }
 #endif
