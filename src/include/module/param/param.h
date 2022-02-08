@@ -188,12 +188,13 @@ int32_t param_get_index(const param_t* param);
 param_t* param_get_by_name(const char* param_name);
 param_t* param_get_by_full_name(const char* group_name, const char* param_name);
 param_t* param_get_by_index(int32_t index);
+param_group_t* param_get_group(const param_t* param);
 param_group_t* param_find_group(const char* group_name);
 
 param_group_t* get_param_table(void);
 int16_t get_param_group_num(void);
 
-fmt_err_t param_register_callback(void (*on_modify)(param_t* param));
+fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param));
 
 #ifdef __cplusplus
 }

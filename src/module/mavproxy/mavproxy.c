@@ -73,6 +73,12 @@ static mavproxy_handler mav_handle = {
     .tx_buffer = NULL
 };
 
+static void on_param_modify(param_t* param)
+{
+    /* parameter modified, send new value to GCS */
+    mavlink_param_send(param);
+}
+
 static void mavproxy_timer_update(void* parameter)
 {
     rt_event_send(&mav_handle.event, EVENT_MAVPROXY_UPDATE);
@@ -314,6 +320,9 @@ fmt_err_t mavproxy_init(void)
 
     /* create event */
     rt_event_init(&mav_handle.event, "mavproxy", RT_IPC_FLAG_FIFO);
+
+    /* register parameter modify callback */
+    register_param_modify_callback(on_param_modify);
 
     /* register timer event to periodly wakeup itself */
     rt_timer_init(&mav_handle.timer, "mavproxy", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,

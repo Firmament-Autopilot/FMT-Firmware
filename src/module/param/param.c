@@ -181,6 +181,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
 static void on_parameter_modify(void* parameter)
 {
     struct on_modify_cb* pos;
+
     list_for_each_entry(pos, struct on_modify_cb, &__cb_list_head, link)
     {
         /* invoke registered callback function */
@@ -332,56 +333,50 @@ param_t* param_get_by_index(int32_t index)
  */
 fmt_err_t param_set_str_val(param_t* param, char* val)
 {
+    param_value_t pval;
+
     if (param == NULL) {
         return FMT_EINVAL;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_ENTER_CRITICAL;
-#endif
+    switch (param->type) {
+    case PARAM_TYPE_INT8:
+        pval.i8 = atoi(val);
+        break;
 
-    if (param->type == PARAM_TYPE_INT8) {
-        param->val.i8 = atoi(val);
+    case PARAM_TYPE_UINT8:
+        pval.u8 = atoi(val);
+        break;
+
+    case PARAM_TYPE_INT16:
+        pval.i16 = atoi(val);
+        break;
+
+    case PARAM_TYPE_UINT16:
+        pval.u16 = atoi(val);
+        break;
+
+    case PARAM_TYPE_INT32:
+        pval.i32 = atoi(val);
+        break;
+
+    case PARAM_TYPE_UINT32:
+        pval.u32 = atoi(val);
+        break;
+
+    case PARAM_TYPE_FLOAT:
+        pval.f = atof(val);
+        break;
+
+    case PARAM_TYPE_DOUBLE:
+        pval.lf = atof(val);
+        break;
+
+    default:
+        return FMT_ENOTHANDLE;
     }
 
-    if (param->type == PARAM_TYPE_UINT8) {
-        param->val.u8 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_INT16) {
-        param->val.i16 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_UINT16) {
-        param->val.u16 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_INT32) {
-        param->val.i32 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_UINT32) {
-        param->val.u32 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_FLOAT) {
-        param->val.f = atof(val);
-    }
-
-    if (param->type == PARAM_TYPE_DOUBLE) {
-        param->val.lf = atof(val);
-    }
-
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_EXIT_CRITICAL;
-#endif
-
-    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
-    if (workqueue_schedule_work(lp_wq, &on_modify_work_item, param) != FMT_EOK) {
-        return FMT_ERROR;
-    }
-
-    return FMT_EOK;
+    return param_set_val(param, &pval);
 }
 
 /**
@@ -435,58 +430,64 @@ fmt_err_t param_set_str_val_by_full_name(char* group_name, char* param_name, cha
  */
 fmt_err_t param_set_val(param_t* param, void* val)
 {
-    fmt_err_t err = FMT_EOK;
+    size_t val_size;
 
     if (param == NULL) {
         return FMT_EINVAL;
+    }
+
+    switch (param->type) {
+    case PARAM_TYPE_INT8:
+        val_size = sizeof(param->val.i8);
+        break;
+
+    case PARAM_TYPE_UINT8:
+        val_size = sizeof(param->val.u8);
+        break;
+
+    case PARAM_TYPE_INT16:
+        val_size = sizeof(param->val.i16);
+        break;
+
+    case PARAM_TYPE_UINT16:
+        val_size = sizeof(param->val.u16);
+        break;
+
+    case PARAM_TYPE_INT32:
+        val_size = sizeof(param->val.i32);
+        break;
+
+    case PARAM_TYPE_UINT32:
+        val_size = sizeof(param->val.u32);
+        break;
+
+    case PARAM_TYPE_FLOAT:
+        val_size = sizeof(param->val.f);
+        break;
+
+    case PARAM_TYPE_DOUBLE:
+        val_size = sizeof(param->val.lf);
+        break;
+
+    default:
+        return FMT_ENOTHANDLE;
     }
 
 #ifdef FMT_ONLINE_PARAM_TUNING
     OS_ENTER_CRITICAL;
 #endif
 
-    switch (param->type) {
-    case PARAM_TYPE_INT8:
-        memcpy(&(param->val.i8), val, sizeof(param->val.i8));
-        break;
-
-    case PARAM_TYPE_UINT8:
-        memcpy(&(param->val.u8), val, sizeof(param->val.u8));
-        break;
-
-    case PARAM_TYPE_INT16:
-        memcpy(&(param->val.i16), val, sizeof(param->val.i16));
-        break;
-
-    case PARAM_TYPE_UINT16:
-        memcpy(&(param->val.u16), val, sizeof(param->val.u16));
-        break;
-
-    case PARAM_TYPE_INT32:
-        memcpy(&(param->val.i32), val, sizeof(param->val.i32));
-        break;
-
-    case PARAM_TYPE_UINT32:
-        memcpy(&(param->val.u32), val, sizeof(param->val.u32));
-        break;
-
-    case PARAM_TYPE_FLOAT:
-        memcpy(&(param->val.f), val, sizeof(param->val.f));
-        break;
-
-    case PARAM_TYPE_DOUBLE:
-        memcpy(&(param->val.lf), val, sizeof(param->val.lf));
-        break;
-
-    default:
-        err = FMT_ENOTHANDLE;
-    }
+    memcpy(&(param->val), val, val_size);
 
 #ifdef FMT_ONLINE_PARAM_TUNING
     OS_EXIT_CRITICAL;
 #endif
 
-    return err;
+    /* schedule a work to invoke callbacks */
+    if (!list_empty(&__cb_list_head))
+        workqueue_schedule_work(workqueue_find("wq:lp_work"), &on_modify_work_item, param);
+
+    return FMT_EOK;
 }
 
 /**
@@ -528,6 +529,28 @@ fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* v
     }
 
     return param_set_val(p, val);
+}
+
+/**
+ * @brief get parameter's group
+ * 
+ * @param param parameter object
+ * @return param_group_t* group object
+ */
+param_group_t* param_get_group(const param_t* param)
+{
+    param_group_t* gp = __param_table;
+
+    for (uint32_t i = 0; i < __param_group_num; i++) {
+        for (uint32_t j = 0; j < gp->param_num; j++) {
+            if (&gp->param_list[j] == param) {
+                return gp;
+            }
+        }
+        gp++;
+    }
+
+    return NULL;
 }
 
 /**
@@ -698,7 +721,7 @@ int16_t get_param_group_num(void)
     return __param_group_num;
 }
 
-fmt_err_t param_register_callback(void (*on_modify)(param_t* param))
+fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param))
 {
     struct on_modify_cb* node = (struct on_modify_cb*)rt_malloc(sizeof(struct on_modify_cb));
 

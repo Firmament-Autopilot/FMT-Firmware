@@ -422,62 +422,35 @@ static void make_mavlink_param_msg(mavlink_message_t* msg_t, const param_t* para
 
 fmt_err_t mavlink_param_set(const char* name, float val)
 {
+    fmt_err_t err;
     param_t* param;
+    double lfval;
+
     param = param_get_by_name(name);
 
     if (param == NULL) {
         return FMT_ERROR;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_ENTER_CRITICAL;
-#endif
-
     switch (param->type) {
     case PARAM_TYPE_INT8:
-        memcpy(&(param->val.i8), &val, sizeof(param->val.i8));
-        break;
-
     case PARAM_TYPE_UINT8:
-        memcpy(&(param->val.u8), &val, sizeof(param->val.u8));
-        break;
-
     case PARAM_TYPE_INT16:
-        memcpy(&(param->val.i16), &val, sizeof(param->val.i16));
-        break;
-
     case PARAM_TYPE_UINT16:
-        memcpy(&(param->val.u16), &val, sizeof(param->val.u16));
-        break;
-
     case PARAM_TYPE_INT32:
-        memcpy(&(param->val.i32), &val, sizeof(param->val.i32));
-        break;
-
     case PARAM_TYPE_UINT32:
-        memcpy(&(param->val.u32), &val, sizeof(param->val.u32));
-        break;
-
     case PARAM_TYPE_FLOAT:
-        param->val.f = val;
+        err = param_set_val(param, &val);
         break;
-
     case PARAM_TYPE_DOUBLE:
-        param->val.lf = val;
+        lfval = val;
+        err = param_set_val(param, &lfval);
         break;
-
     default:
-#ifdef FMT_ONLINE_PARAM_TUNING
-        OS_EXIT_CRITICAL;
-#endif
         return FMT_EINVAL;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_EXIT_CRITICAL;
-#endif
-
-    return FMT_EOK;
+    return err;
 }
 
 fmt_err_t mavlink_param_send(const param_t* param)
