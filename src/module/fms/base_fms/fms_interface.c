@@ -16,6 +16,7 @@
 
 #include <FMS.h>
 #include <firmament.h>
+#include <string.h>
 
 #include "module/param/param.h"
 
@@ -58,6 +59,59 @@ static uint8_t gcs_cmd_updated = 1;
 
 fmt_model_info_t fms_model_info;
 
+static void on_param_modify(param_t* param)
+{
+    param_group_t* gp = param_get_group(param);
+
+    if (strcmp(gp->name, "FMS") == 0) {
+        if (strcmp(param->name, "THROTTLE_DZ") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.THROTTLE_DZ = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "YAW_DZ") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.YAW_DZ = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "ROLL_DZ") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.ROLL_DZ = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "PITCH_DZ") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.PITCH_DZ = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "XY_P") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.XY_P = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "Z_P") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.Z_P = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "VEL_XY_LIM") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.VEL_XY_LIM = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "VEL_Z_LIM") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.VEL_Z_LIM = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "YAW_P") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.YAW_P = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "YAW_RATE_LIM") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.YAW_RATE_LIM = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        } else if (strcmp(param->name, "ROLL_PITCH_LIM") == 0) {
+            OS_ENTER_CRITICAL;
+            FMS_PARAM.ROLL_PITCH_LIM = PARAM_VALUE_FLOAT(param);
+            OS_EXIT_CRITICAL;
+        }
+    }
+}
+
 static void mlog_start_cb(void)
 {
     pilot_cmd_updated = 1;
@@ -79,27 +133,8 @@ static void init_parameter(void)
     FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
 }
 
-static void update_parameter(void)
-{
-    FMS_PARAM.THROTTLE_DZ = PARAM_VALUE_FLOAT(&__param_list[0]);
-    FMS_PARAM.YAW_DZ = PARAM_VALUE_FLOAT(&__param_list[1]);
-    FMS_PARAM.ROLL_DZ = PARAM_VALUE_FLOAT(&__param_list[2]);
-    FMS_PARAM.PITCH_DZ = PARAM_VALUE_FLOAT(&__param_list[3]);
-    FMS_PARAM.XY_P = PARAM_VALUE_FLOAT(&__param_list[4]);
-    FMS_PARAM.Z_P = PARAM_VALUE_FLOAT(&__param_list[5]);
-    FMS_PARAM.VEL_XY_LIM = PARAM_VALUE_FLOAT(&__param_list[6]);
-    FMS_PARAM.VEL_Z_LIM = PARAM_VALUE_FLOAT(&__param_list[7]);
-    FMS_PARAM.YAW_P = PARAM_VALUE_FLOAT(&__param_list[8]);
-    FMS_PARAM.YAW_RATE_LIM = PARAM_VALUE_FLOAT(&__param_list[9]);
-    FMS_PARAM.ROLL_PITCH_LIM = PARAM_VALUE_FLOAT(&__param_list[10]);
-}
-
 void fms_interface_step(uint32_t timestamp)
 {
-#ifdef FMT_ONLINE_PARAM_TUNING
-    update_parameter();
-#endif
-
     if (mcn_poll(pilot_cmd_nod)) {
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &FMS_U.Pilot_Cmd);
 
@@ -158,9 +193,10 @@ void fms_interface_init(void)
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
-    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
-
     FMS_init();
 
     init_parameter();
+
+    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
+    register_param_modify_callback(on_param_modify);
 }
