@@ -133,7 +133,7 @@ fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item, void*
     RT_ASSERT(item->run != NULL);
 
     /* first cancel old work if any */
-    workqueue_cancel_work(work_queue, item);
+    // workqueue_cancel_work(work_queue, item);
 
     work_lock(work_queue);
 
