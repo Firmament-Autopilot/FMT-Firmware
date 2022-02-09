@@ -473,9 +473,7 @@ fmt_err_t param_set_val(param_t* param, void* val)
         return FMT_ENOTHANDLE;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
     OS_ENTER_CRITICAL;
-#endif
 
     memcpy(&(param->val), val, val_size);
     /* also update the linked object */
@@ -483,9 +481,7 @@ fmt_err_t param_set_val(param_t* param, void* val)
         memcpy(param->obj, val, val_size);
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
     OS_EXIT_CRITICAL;
-#endif
 
     /* schedule a work to invoke callbacks */
     if (!list_empty(&__cb_list_head))
