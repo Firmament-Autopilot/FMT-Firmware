@@ -478,6 +478,10 @@ fmt_err_t param_set_val(param_t* param, void* val)
 #endif
 
     memcpy(&(param->val), val, val_size);
+    /* also update the linked object */
+    if (param->obj != NULL) {
+        memcpy(param->obj, val, val_size);
+    }
 
 #ifdef FMT_ONLINE_PARAM_TUNING
     OS_EXIT_CRITICAL;
@@ -721,6 +725,74 @@ int16_t get_param_group_num(void)
     return __param_group_num;
 }
 
+/**
+ * @brief Link parameter with a object. When parameter modified, the linked
+ *        object will also be modified.
+ * 
+ * @param param parameter object
+ * @param obj 
+ * @return fmt_err_t 
+ */
+fmt_err_t param_link_object(param_t* param, void* obj)
+{
+    size_t val_size;
+
+    if (param == NULL) {
+        return FMT_EINVAL;
+    }
+
+    switch (param->type) {
+    case PARAM_TYPE_INT8:
+        val_size = sizeof(param->val.i8);
+        break;
+
+    case PARAM_TYPE_UINT8:
+        val_size = sizeof(param->val.u8);
+        break;
+
+    case PARAM_TYPE_INT16:
+        val_size = sizeof(param->val.i16);
+        break;
+
+    case PARAM_TYPE_UINT16:
+        val_size = sizeof(param->val.u16);
+        break;
+
+    case PARAM_TYPE_INT32:
+        val_size = sizeof(param->val.i32);
+        break;
+
+    case PARAM_TYPE_UINT32:
+        val_size = sizeof(param->val.u32);
+        break;
+
+    case PARAM_TYPE_FLOAT:
+        val_size = sizeof(param->val.f);
+        break;
+
+    case PARAM_TYPE_DOUBLE:
+        val_size = sizeof(param->val.lf);
+        break;
+
+    default:
+        return FMT_ENOTHANDLE;
+    }
+
+    OS_ENTER_CRITICAL;
+    param->obj = obj;
+    /* update object value immediately */
+    memcpy(param->obj, &param->val, val_size);
+    OS_EXIT_CRITICAL;
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Register parameter modify callback
+ * 
+ * @param on_modify callback function pointer
+ * @return fmt_err_t 
+ */
 fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param))
 {
     struct on_modify_cb* node = (struct on_modify_cb*)rt_malloc(sizeof(struct on_modify_cb));
@@ -735,6 +807,28 @@ fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param))
     list_add_tail(&node->link, &__cb_list_head);
 
     return FMT_EOK;
+}
+
+/**
+ * @brief Deregister parameter modify callback
+ * 
+ * @param on_modify callback function pointer
+ * @return fmt_err_t 
+ */
+fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param))
+{
+    struct on_modify_cb* pos;
+
+    list_for_each_entry(pos, struct on_modify_cb, &__cb_list_head, link)
+    {
+        if (pos->on_modify == on_modify) {
+            list_del(&pos->link);
+
+            return FMT_EOK;
+        }
+    }
+
+    return FMT_ERROR;
 }
 
 /**

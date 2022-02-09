@@ -80,177 +80,40 @@ static int control_out_echo(void* param)
     return 0;
 }
 
-static void on_param_modify(param_t* param)
-{
-    param_group_t* gp = param_get_group(param);
-
-    if (strcmp(gp->name, "CONTROL") == 0) {
-        if (strcmp(param->name, "VEL_XY_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_I") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_I = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_D") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_D = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_I") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_I = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_D") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_D = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_I_MIN") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_I_MIN = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_I_MAX") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_I_MAX = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_D_MIN") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_D_MIN = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_D_MAX") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_XY_D_MAX = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_I_MIN") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_I_MIN = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_I_MAX") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_I_MAX = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_D_MIN") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_D_MIN = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_D_MAX") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.VEL_Z_D_MAX = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.ROLL_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "PITCH_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.PITCH_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_PITCH_CMD_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.ROLL_PITCH_CMD_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_RATE_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.ROLL_RATE_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "PITCH_RATE_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.PITCH_RATE_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "YAW_RATE_P") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.YAW_RATE_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_RATE_I") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.ROLL_RATE_I = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "PITCH_RATE_I") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.PITCH_RATE_I = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "YAW_RATE_I") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.YAW_RATE_I = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_RATE_D") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.ROLL_RATE_D = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "PITCH_RATE_D") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.PITCH_RATE_D = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "YAW_RATE_D") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.YAW_RATE_D = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "RATE_I_MIN") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.RATE_I_MIN = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "RATE_I_MAX") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.RATE_I_MAX = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "RATE_D_MIN") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.RATE_D_MIN = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "RATE_D_MAX") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.RATE_D_MAX = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "P_Q_CMD_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.P_Q_CMD_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "R_CMD_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            CONTROL_PARAM.R_CMD_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        }
-    }
-}
-
 static void init_parameter(void)
 {
-    CONTROL_PARAM.VEL_XY_P = PARAM_GET_FLOAT(CONTROL, VEL_XY_P);
-    CONTROL_PARAM.VEL_XY_I = PARAM_GET_FLOAT(CONTROL, VEL_XY_I);
-    CONTROL_PARAM.VEL_XY_D = PARAM_GET_FLOAT(CONTROL, VEL_XY_D);
-    CONTROL_PARAM.VEL_Z_P = PARAM_GET_FLOAT(CONTROL, VEL_Z_P);
-    CONTROL_PARAM.VEL_Z_I = PARAM_GET_FLOAT(CONTROL, VEL_Z_I);
-    CONTROL_PARAM.VEL_Z_D = PARAM_GET_FLOAT(CONTROL, VEL_Z_D);
-    CONTROL_PARAM.VEL_XY_I_MIN = PARAM_GET_FLOAT(CONTROL, VEL_XY_I_MIN);
-    CONTROL_PARAM.VEL_XY_I_MAX = PARAM_GET_FLOAT(CONTROL, VEL_XY_I_MAX);
-    CONTROL_PARAM.VEL_XY_D_MIN = PARAM_GET_FLOAT(CONTROL, VEL_XY_D_MIN);
-    CONTROL_PARAM.VEL_XY_D_MAX = PARAM_GET_FLOAT(CONTROL, VEL_XY_D_MAX);
-    CONTROL_PARAM.VEL_Z_I_MIN = PARAM_GET_FLOAT(CONTROL, VEL_Z_I_MIN);
-    CONTROL_PARAM.VEL_Z_I_MAX = PARAM_GET_FLOAT(CONTROL, VEL_Z_I_MAX);
-    CONTROL_PARAM.VEL_Z_D_MIN = PARAM_GET_FLOAT(CONTROL, VEL_Z_D_MIN);
-    CONTROL_PARAM.VEL_Z_D_MAX = PARAM_GET_FLOAT(CONTROL, VEL_Z_D_MAX);
-    CONTROL_PARAM.ROLL_P = PARAM_GET_FLOAT(CONTROL, ROLL_P);
-    CONTROL_PARAM.PITCH_P = PARAM_GET_FLOAT(CONTROL, PITCH_P);
-    CONTROL_PARAM.ROLL_PITCH_CMD_LIM = PARAM_GET_FLOAT(CONTROL, ROLL_PITCH_CMD_LIM);
-    CONTROL_PARAM.ROLL_RATE_P = PARAM_GET_FLOAT(CONTROL, ROLL_RATE_P);
-    CONTROL_PARAM.PITCH_RATE_P = PARAM_GET_FLOAT(CONTROL, PITCH_RATE_P);
-    CONTROL_PARAM.YAW_RATE_P = PARAM_GET_FLOAT(CONTROL, YAW_RATE_P);
-    CONTROL_PARAM.ROLL_RATE_I = PARAM_GET_FLOAT(CONTROL, ROLL_RATE_I);
-    CONTROL_PARAM.PITCH_RATE_I = PARAM_GET_FLOAT(CONTROL, PITCH_RATE_I);
-    CONTROL_PARAM.YAW_RATE_I = PARAM_GET_FLOAT(CONTROL, YAW_RATE_I);
-    CONTROL_PARAM.ROLL_RATE_D = PARAM_GET_FLOAT(CONTROL, ROLL_RATE_D);
-    CONTROL_PARAM.PITCH_RATE_D = PARAM_GET_FLOAT(CONTROL, PITCH_RATE_D);
-    CONTROL_PARAM.YAW_RATE_D = PARAM_GET_FLOAT(CONTROL, YAW_RATE_D);
-    CONTROL_PARAM.RATE_I_MIN = PARAM_GET_FLOAT(CONTROL, RATE_I_MIN);
-    CONTROL_PARAM.RATE_I_MAX = PARAM_GET_FLOAT(CONTROL, RATE_I_MAX);
-    CONTROL_PARAM.RATE_D_MIN = PARAM_GET_FLOAT(CONTROL, RATE_D_MIN);
-    CONTROL_PARAM.RATE_D_MAX = PARAM_GET_FLOAT(CONTROL, RATE_D_MAX);
-    CONTROL_PARAM.P_Q_CMD_LIM = PARAM_GET_FLOAT(CONTROL, P_Q_CMD_LIM);
-    CONTROL_PARAM.R_CMD_LIM = PARAM_GET_FLOAT(CONTROL, R_CMD_LIM);
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_P"), &CONTROL_PARAM.VEL_XY_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_I"), &CONTROL_PARAM.VEL_XY_I));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_D"), &CONTROL_PARAM.VEL_XY_D));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_P"), &CONTROL_PARAM.VEL_Z_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_I"), &CONTROL_PARAM.VEL_Z_I));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_D"), &CONTROL_PARAM.VEL_Z_D));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_I_MIN"), &CONTROL_PARAM.VEL_XY_I_MIN));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_I_MAX"), &CONTROL_PARAM.VEL_XY_I_MAX));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_D_MIN"), &CONTROL_PARAM.VEL_XY_D_MIN));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_XY_D_MAX"), &CONTROL_PARAM.VEL_XY_D_MAX));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_I_MIN"), &CONTROL_PARAM.VEL_Z_I_MIN));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_I_MAX"), &CONTROL_PARAM.VEL_Z_I_MAX));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_D_MIN"), &CONTROL_PARAM.VEL_Z_D_MIN));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "VEL_Z_D_MAX"), &CONTROL_PARAM.VEL_Z_D_MAX));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "ROLL_P"), &CONTROL_PARAM.ROLL_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "PITCH_P"), &CONTROL_PARAM.PITCH_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "ROLL_PITCH_CMD_LIM"), &CONTROL_PARAM.ROLL_PITCH_CMD_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "ROLL_RATE_P"), &CONTROL_PARAM.ROLL_RATE_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "PITCH_RATE_P"), &CONTROL_PARAM.PITCH_RATE_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "YAW_RATE_P"), &CONTROL_PARAM.YAW_RATE_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "ROLL_RATE_I"), &CONTROL_PARAM.ROLL_RATE_I));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "PITCH_RATE_I"), &CONTROL_PARAM.PITCH_RATE_I));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "YAW_RATE_I"), &CONTROL_PARAM.YAW_RATE_I));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "ROLL_RATE_D"), &CONTROL_PARAM.ROLL_RATE_D));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "PITCH_RATE_D"), &CONTROL_PARAM.PITCH_RATE_D));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "YAW_RATE_D"), &CONTROL_PARAM.YAW_RATE_D));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "RATE_I_MIN"), &CONTROL_PARAM.RATE_I_MIN));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "RATE_I_MAX"), &CONTROL_PARAM.RATE_I_MAX));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "RATE_D_MIN"), &CONTROL_PARAM.RATE_D_MIN));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "RATE_D_MAX"), &CONTROL_PARAM.RATE_D_MAX));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "P_Q_CMD_LIM"), &CONTROL_PARAM.P_Q_CMD_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("CONTROL", "R_CMD_LIM"), &CONTROL_PARAM.R_CMD_LIM));
 }
 
 void control_interface_step(uint32_t timestamp)
@@ -288,6 +151,4 @@ void control_interface_init(void)
     Controller_init();
 
     init_parameter();
-
-    register_param_modify_callback(on_param_modify);
 }

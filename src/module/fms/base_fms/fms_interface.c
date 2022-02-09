@@ -59,59 +59,6 @@ static uint8_t gcs_cmd_updated = 1;
 
 fmt_model_info_t fms_model_info;
 
-static void on_param_modify(param_t* param)
-{
-    param_group_t* gp = param_get_group(param);
-
-    if (strcmp(gp->name, "FMS") == 0) {
-        if (strcmp(param->name, "THROTTLE_DZ") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.THROTTLE_DZ = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "YAW_DZ") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.YAW_DZ = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_DZ") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.ROLL_DZ = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "PITCH_DZ") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.PITCH_DZ = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "XY_P") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.XY_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "Z_P") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.Z_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_XY_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.VEL_XY_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "VEL_Z_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.VEL_Z_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "YAW_P") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.YAW_P = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "YAW_RATE_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.YAW_RATE_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        } else if (strcmp(param->name, "ROLL_PITCH_LIM") == 0) {
-            OS_ENTER_CRITICAL;
-            FMS_PARAM.ROLL_PITCH_LIM = PARAM_VALUE_FLOAT(param);
-            OS_EXIT_CRITICAL;
-        }
-    }
-}
-
 static void mlog_start_cb(void)
 {
     pilot_cmd_updated = 1;
@@ -120,17 +67,17 @@ static void mlog_start_cb(void)
 
 static void init_parameter(void)
 {
-    FMS_PARAM.THROTTLE_DZ = PARAM_GET_FLOAT(FMS, THROTTLE_DZ);
-    FMS_PARAM.YAW_DZ = PARAM_GET_FLOAT(FMS, YAW_DZ);
-    FMS_PARAM.ROLL_DZ = PARAM_GET_FLOAT(FMS, ROLL_DZ);
-    FMS_PARAM.PITCH_DZ = PARAM_GET_FLOAT(FMS, PITCH_DZ);
-    FMS_PARAM.XY_P = PARAM_GET_FLOAT(FMS, XY_P);
-    FMS_PARAM.Z_P = PARAM_GET_FLOAT(FMS, Z_P);
-    FMS_PARAM.VEL_XY_LIM = PARAM_GET_FLOAT(FMS, VEL_XY_LIM);
-    FMS_PARAM.VEL_Z_LIM = PARAM_GET_FLOAT(FMS, VEL_Z_LIM);
-    FMS_PARAM.YAW_P = PARAM_GET_FLOAT(FMS, YAW_P);
-    FMS_PARAM.YAW_RATE_LIM = PARAM_GET_FLOAT(FMS, YAW_RATE_LIM);
-    FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "THROTTLE_DZ"), &FMS_PARAM.THROTTLE_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_DZ"), &FMS_PARAM.YAW_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "ROLL_DZ"), &FMS_PARAM.ROLL_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "PITCH_DZ"), &FMS_PARAM.PITCH_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "XY_P"), &FMS_PARAM.XY_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "Z_P"), &FMS_PARAM.Z_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "VEL_XY_LIM"), &FMS_PARAM.VEL_XY_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "VEL_Z_LIM"), &FMS_PARAM.VEL_Z_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_P"), &FMS_PARAM.YAW_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_RATE_LIM"), &FMS_PARAM.YAW_RATE_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "ROLL_PITCH_LIM"), &FMS_PARAM.ROLL_PITCH_LIM));
 }
 
 void fms_interface_step(uint32_t timestamp)
@@ -193,10 +140,9 @@ void fms_interface_init(void)
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
+    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
+
     FMS_init();
 
     init_parameter();
-
-    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
-    register_param_modify_callback(on_param_modify);
 }

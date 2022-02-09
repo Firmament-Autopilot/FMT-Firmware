@@ -70,6 +70,7 @@ typedef union {
 typedef struct {
     const char* name;
     const uint8_t type;
+    void* obj;
     param_value_t val;
 } param_t;
 
@@ -84,6 +85,7 @@ typedef struct {
     {                                      \
         .name = #_name,                    \
         .type = PARAM_TYPE_INT8,           \
+        .obj = NULL,                       \
         .val.i8 = _default                 \
     }
 
@@ -91,6 +93,7 @@ typedef struct {
     {                                       \
         .name = #_name,                     \
         .type = PARAM_TYPE_UINT8,           \
+        .obj = NULL,                        \
         .val.u8 = _default                  \
     }
 
@@ -98,6 +101,7 @@ typedef struct {
     {                                       \
         .name = #_name,                     \
         .type = PARAM_TYPE_INT16,           \
+        .obj = NULL,                        \
         .val.i16 = _default                 \
     }
 
@@ -105,6 +109,7 @@ typedef struct {
     {                                        \
         .name = #_name,                      \
         .type = PARAM_TYPE_UINT16,           \
+        .obj = NULL,                         \
         .val.u16 = _default                  \
     }
 
@@ -112,6 +117,7 @@ typedef struct {
     {                                       \
         .name = #_name,                     \
         .type = PARAM_TYPE_INT32,           \
+        .obj = NULL,                        \
         .val.i32 = _default                 \
     }
 
@@ -119,6 +125,7 @@ typedef struct {
     {                                        \
         .name = #_name,                      \
         .type = PARAM_TYPE_UINT32,           \
+        .obj = NULL,                         \
         .val.u32 = _default                  \
     }
 
@@ -126,6 +133,7 @@ typedef struct {
     {                                       \
         .name = #_name,                     \
         .type = PARAM_TYPE_FLOAT,           \
+        .obj = NULL,                        \
         .val.f = _default                   \
     }
 
@@ -133,6 +141,7 @@ typedef struct {
     {                                        \
         .name = #_name,                      \
         .type = PARAM_TYPE_DOUBLE,           \
+        .obj = NULL,                         \
         .val.lf = _default                   \
     }
 
@@ -195,6 +204,8 @@ param_group_t* get_param_table(void);
 int16_t get_param_group_num(void);
 
 fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param));
+fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param));
+fmt_err_t param_link_object(param_t* param, void* obj);
 
 #ifdef __cplusplus
 }
