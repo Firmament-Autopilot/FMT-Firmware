@@ -111,7 +111,7 @@ static void workqueue_executor(void* parameter)
             /* if period is set, push work item back to queue */
             if (work_item->period > 0) {
                 work_item->schedule_time = SCHEDULE_DELAY(work_item->period);
-                workqueue_schedule_work(work_queue, work_item, work_item->parameter);
+                workqueue_schedule_work(work_queue, work_item);
             }
         }
     }
@@ -126,14 +126,14 @@ static void workqueue_executor(void* parameter)
  * @param item The work item to be scheduled
  * @return fmt_err_t FMT_EOK on OK
  */
-fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item, void* parameter)
+fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
 {
     RT_ASSERT(work_queue != NULL);
     RT_ASSERT(item != NULL);
     RT_ASSERT(item->run != NULL);
 
     /* first cancel old work if any */
-    // workqueue_cancel_work(work_queue, item);
+    workqueue_cancel_work(work_queue, item);
 
     work_lock(work_queue);
 
@@ -141,9 +141,6 @@ fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item, void*
         work_unlock(work_queue);
         return FMT_EFULL;
     }
-
-    /* it's safe to assign parameter here as it's protected by work_lock */
-    item->parameter = parameter;
 
     if (work_queue->size == 0) {
         work_queue->queue[0] = item;

@@ -181,7 +181,7 @@ fmt_err_t devmq_start_work(void)
         return FMT_ENOSYS;
     }
 
-    if (workqueue_schedule_work(wq, &item, NULL) != FMT_EOK) {
+    if (workqueue_schedule_work(wq, &item) != FMT_EOK) {
         return FMT_ERROR;
     }
     return FMT_EOK;

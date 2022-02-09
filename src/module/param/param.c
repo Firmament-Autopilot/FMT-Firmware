@@ -19,13 +19,10 @@
 #include "module/file_manager/file_manager.h"
 #include "module/file_manager/yxml.h"
 #include "module/utils/list.h"
-#include "module/work_queue/workqueue_manager.h"
 
 #define TAG "Param"
 
 #define YXML_STACK_SIZE 1024
-
-static void on_parameter_modify(void* parameter);
 
 static param_group_t* __param_table;
 static int16_t __param_group_num;
@@ -34,13 +31,6 @@ static struct list_head __cb_list_head;
 struct on_modify_cb {
     void (*on_modify)(param_t*);
     struct list_head link;
-};
-
-static struct WorkItem on_modify_work_item = {
-    .name = "param_cb",
-    .period = 0,
-    .schedule_time = 0,
-    .run = on_parameter_modify
 };
 
 static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
@@ -483,9 +473,9 @@ fmt_err_t param_set_val(param_t* param, void* val)
 
     OS_EXIT_CRITICAL;
 
-    /* schedule a work to invoke callbacks */
+    /* invoke parameter modify callbacks */
     if (!list_empty(&__cb_list_head))
-        workqueue_schedule_work(workqueue_find("wq:lp_work"), &on_modify_work_item, param);
+        on_parameter_modify(param);
 
     return FMT_EOK;
 }
