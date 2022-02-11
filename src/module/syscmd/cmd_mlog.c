@@ -28,7 +28,7 @@ static void _show_mlog_status(void)
     }
 
     console_printf("log file: %s\n", mlog_get_file_name());
-    mlog_statistic();
+    mlog_show_statistic();
 }
 
 static void show_usage(void)

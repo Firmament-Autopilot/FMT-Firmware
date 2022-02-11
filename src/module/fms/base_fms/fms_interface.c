@@ -18,6 +18,7 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "module/log/mlog.h"
 #include "module/param/param.h"
 
 #define TAG "FMS"
@@ -50,12 +51,60 @@ static param_t __param_list[] = {
 };
 PARAM_DEFINE_GROUP(FMS, __param_list);
 
+/* define log data */
+static mlog_elem_t Pilot_Cmd_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(stick_yaw, MLOG_FLOAT),
+    MLOG_ELEMENT(stick_throttle, MLOG_FLOAT),
+    MLOG_ELEMENT(stick_roll, MLOG_FLOAT),
+    MLOG_ELEMENT(stick_pitch, MLOG_FLOAT),
+    MLOG_ELEMENT(mode, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_1, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+};
+MLOG_BUS_DEFINE(Pilot_Cmd, Pilot_Cmd_Elems);
+
+static mlog_elem_t GCS_Cmd_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(mode, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_1, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+};
+MLOG_BUS_DEFINE(GCS_Cmd, GCS_Cmd_Elems);
+
+static mlog_elem_t FMS_Out_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(p_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(q_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(r_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(phi_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(theta_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(psi_rate_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(u_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(v_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(w_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(throttle_cmd, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(actuator_cmd, MLOG_UINT16, 16),
+    MLOG_ELEMENT(status, MLOG_UINT8),
+    MLOG_ELEMENT(state, MLOG_UINT8),
+    MLOG_ELEMENT(ctrl_mode, MLOG_UINT8),
+    MLOG_ELEMENT(reset, MLOG_UINT8),
+    MLOG_ELEMENT(mode, MLOG_UINT8),
+    MLOG_ELEMENT(reserved1, MLOG_UINT8),
+    MLOG_ELEMENT(reserved2, MLOG_UINT16),
+};
+MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
+
 static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
 static uint8_t pilot_cmd_updated = 1;
 static uint8_t gcs_cmd_updated = 1;
+
+static int Pilot_Cmd_ID;
+static int GCS_Cmd_ID;
+static int FMS_Out_ID;
 
 fmt_model_info_t fms_model_info;
 
@@ -111,20 +160,20 @@ void fms_interface_step(uint32_t timestamp)
     if (pilot_cmd_updated) {
         pilot_cmd_updated = 0;
         /* Log pilot command */
-        mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, MLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus));
+        mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, Pilot_Cmd_ID, sizeof(Pilot_Cmd_Bus));
     }
 
     if (gcs_cmd_updated) {
         gcs_cmd_updated = 0;
         /* Log gcs command */
-        mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, MLOG_GCS_CMD_ID, sizeof(GCS_Cmd_Bus));
+        mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, GCS_Cmd_ID, sizeof(GCS_Cmd_Bus));
     }
 
     /* Log FMS output bus data */
     DEFINE_TIMETAG(fms_output, 100);
     if (check_timetag(TIMETAG(fms_output))) {
         /* Log FMS out data */
-        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Out, MLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
+        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Out, FMS_Out_ID, sizeof(FMS_Out_Bus));
     }
 }
 
@@ -139,6 +188,13 @@ void fms_interface_init(void)
     gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+
+    Pilot_Cmd_ID = mlog_get_bus_id("Pilot_Cmd");
+    GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
+    FMS_Out_ID = mlog_get_bus_id("FMS_Out");
+    FMT_ASSERT(Pilot_Cmd_ID >= 0);
+    FMT_ASSERT(GCS_Cmd_ID >= 0);
+    FMT_ASSERT(FMS_Out_ID >= 0);
 
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 

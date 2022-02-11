@@ -17,6 +17,7 @@
 #include <Controller.h>
 #include <firmament.h>
 
+#include "module/log/mlog.h"
 #include "module/param/param.h"
 
 #define TAG "Controller"
@@ -65,8 +66,17 @@ static param_t __param_list[] = {
 };
 PARAM_DEFINE_GROUP(CONTROL, __param_list);
 
+/* define log data */
+static mlog_elem_t Control_Out_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(actuator_cmd, MLOG_UINT16, 16),
+};
+MLOG_BUS_DEFINE(Control_Out, Control_Out_Elems);
+
 static McnNode_t fms_out_nod;
 static McnNode_t ins_out_nod;
+
+static int Control_Out_ID;
 
 fmt_model_info_t control_model_info;
 
@@ -134,7 +144,7 @@ void control_interface_step(uint32_t timestamp)
     /* Log Control output bus data */
     if (check_timetag(TIMETAG(control_output))) {
         /* Log Control out data */
-        mlog_push_msg((uint8_t*)&Controller_Y.Control_Out, MLOG_CONTROL_OUT_ID, sizeof(Control_Out_Bus));
+        mlog_push_msg((uint8_t*)&Controller_Y.Control_Out, Control_Out_ID, sizeof(Control_Out_Bus));
     }
 }
 
@@ -147,6 +157,9 @@ void control_interface_init(void)
 
     fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+
+    Control_Out_ID = mlog_get_bus_id("Control_Out");
+    FMT_ASSERT(Control_Out_ID >= 0);
 
     Controller_init();
 

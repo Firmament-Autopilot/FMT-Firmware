@@ -20,207 +20,24 @@
 #include "module/file_manager/file_manager.h"
 #include "module/fms/fms_interface.h"
 #include "module/ins/ins_interface.h"
+#include "module/utils/list.h"
 #ifdef FMT_USING_SIH
 #include "module/plant/plant_interface.h"
 #endif
 
-#define TAG                   "MLog"
-#define MLOG_MAX_CALLBACK_NUM 10
+#define TAG "MLog"
 
 #define WRITE_PAYLOAD(_payload, _len) write(mlog_handle.fid, _payload, _len);
 
-static uint8_t mlog_data_buffer[MLOG_BUFFER_SIZE];
-
-/* MLog element define */
-mlog_elem_t IMU_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("gyr_x", MLOG_FLOAT),
-    MLOG_ELEMENT("gyr_y", MLOG_FLOAT),
-    MLOG_ELEMENT("gyr_z", MLOG_FLOAT),
-    MLOG_ELEMENT("acc_x", MLOG_FLOAT),
-    MLOG_ELEMENT("acc_y", MLOG_FLOAT),
-    MLOG_ELEMENT("acc_z", MLOG_FLOAT),
-};
-
-mlog_elem_t MAG_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("mag_x", MLOG_FLOAT),
-    MLOG_ELEMENT("mag_y", MLOG_FLOAT),
-    MLOG_ELEMENT("mag_z", MLOG_FLOAT),
-};
-
-mlog_elem_t Barometer_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("pressure", MLOG_FLOAT),
-    MLOG_ELEMENT("temperature", MLOG_FLOAT),
-};
-
-mlog_elem_t GPS_uBlox_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("iTOW", MLOG_UINT32),
-    MLOG_ELEMENT("year", MLOG_UINT16),
-    MLOG_ELEMENT("month", MLOG_UINT8),
-    MLOG_ELEMENT("day", MLOG_UINT8),
-    MLOG_ELEMENT("hour", MLOG_UINT8),
-    MLOG_ELEMENT("min", MLOG_UINT8),
-    MLOG_ELEMENT("sec", MLOG_UINT8),
-    MLOG_ELEMENT("valid", MLOG_UINT8),
-    MLOG_ELEMENT("tAcc", MLOG_UINT32),
-    MLOG_ELEMENT("nano", MLOG_INT32),
-    MLOG_ELEMENT("fixType", MLOG_UINT8),
-    MLOG_ELEMENT("flags", MLOG_UINT8),
-    MLOG_ELEMENT("reserved1", MLOG_UINT8),
-    MLOG_ELEMENT("numSV", MLOG_UINT8),
-    MLOG_ELEMENT("lon", MLOG_INT32),
-    MLOG_ELEMENT("lat", MLOG_INT32),
-    MLOG_ELEMENT("height", MLOG_INT32),
-    MLOG_ELEMENT("hMSL", MLOG_INT32),
-    MLOG_ELEMENT("hAcc", MLOG_UINT32),
-    MLOG_ELEMENT("vAcc", MLOG_UINT32),
-    MLOG_ELEMENT("velN", MLOG_INT32),
-    MLOG_ELEMENT("velE", MLOG_INT32),
-    MLOG_ELEMENT("velD", MLOG_INT32),
-    MLOG_ELEMENT("gSpeed", MLOG_INT32),
-    MLOG_ELEMENT("heading", MLOG_INT32),
-    MLOG_ELEMENT("sAcc", MLOG_UINT32),
-    MLOG_ELEMENT("headingAcc", MLOG_UINT32),
-    MLOG_ELEMENT("pDOP", MLOG_UINT16),
-    MLOG_ELEMENT("reserved2", MLOG_UINT16),
-};
-
-mlog_elem_t Rangefinder_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("distance_m", MLOG_FLOAT),
-};
-
-mlog_elem_t Optflow_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("vx", MLOG_FLOAT),
-    MLOG_ELEMENT("vy", MLOG_FLOAT),
-    MLOG_ELEMENT("valid", MLOG_UINT32),
-};
-
-mlog_elem_t Pilot_Cmd_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("stick_yaw", MLOG_FLOAT),
-    MLOG_ELEMENT("stick_throttle", MLOG_FLOAT),
-    MLOG_ELEMENT("stick_roll", MLOG_FLOAT),
-    MLOG_ELEMENT("stick_pitch", MLOG_FLOAT),
-    MLOG_ELEMENT("mode", MLOG_UINT32),
-    MLOG_ELEMENT("cmd_1", MLOG_UINT32),
-    MLOG_ELEMENT("cmd_2", MLOG_UINT32),
-};
-
-mlog_elem_t GCS_Cmd_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("mode", MLOG_UINT32),
-    MLOG_ELEMENT("cmd_1", MLOG_UINT32),
-    MLOG_ELEMENT("cmd_2", MLOG_UINT32),
-};
-
-mlog_elem_t INS_Out_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("phi", MLOG_FLOAT),
-    MLOG_ELEMENT("theta", MLOG_FLOAT),
-    MLOG_ELEMENT("psi", MLOG_FLOAT),
-    MLOG_ELEMENT_VEC("quat", MLOG_FLOAT, 4),
-    MLOG_ELEMENT("p", MLOG_FLOAT),
-    MLOG_ELEMENT("q", MLOG_FLOAT),
-    MLOG_ELEMENT("r", MLOG_FLOAT),
-    MLOG_ELEMENT("ax", MLOG_FLOAT),
-    MLOG_ELEMENT("ay", MLOG_FLOAT),
-    MLOG_ELEMENT("az", MLOG_FLOAT),
-    MLOG_ELEMENT("vn", MLOG_FLOAT),
-    MLOG_ELEMENT("ve", MLOG_FLOAT),
-    MLOG_ELEMENT("vd", MLOG_FLOAT),
-    MLOG_ELEMENT("reserved", MLOG_FLOAT),
-    MLOG_ELEMENT("lon", MLOG_DOUBLE),
-    MLOG_ELEMENT("lat", MLOG_DOUBLE),
-    MLOG_ELEMENT("alt", MLOG_DOUBLE),
-    MLOG_ELEMENT("x_R", MLOG_FLOAT),
-    MLOG_ELEMENT("y_R", MLOG_FLOAT),
-    MLOG_ELEMENT("h_R", MLOG_FLOAT),
-    MLOG_ELEMENT("h_AGL", MLOG_FLOAT),
-    MLOG_ELEMENT("flag", MLOG_UINT32),
-    MLOG_ELEMENT("status", MLOG_UINT32),
-};
-
-mlog_elem_t FMS_Out_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("p_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("q_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("r_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("phi_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("theta_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("psi_rate_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("u_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("v_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("w_cmd", MLOG_FLOAT),
-    MLOG_ELEMENT("throttle_cmd", MLOG_UINT32),
-    MLOG_ELEMENT_VEC("actuator_cmd", MLOG_UINT16, 16),
-    MLOG_ELEMENT("status", MLOG_UINT8),
-    MLOG_ELEMENT("state", MLOG_UINT8),
-    MLOG_ELEMENT("ctrl_mode", MLOG_UINT8),
-    MLOG_ELEMENT("reset", MLOG_UINT8),
-    MLOG_ELEMENT("mode", MLOG_UINT8),
-    MLOG_ELEMENT("reserved1", MLOG_UINT8),
-    MLOG_ELEMENT("reserved2", MLOG_UINT16),
-};
-
-mlog_elem_t Control_Out_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT_VEC("actuator_cmd", MLOG_UINT16, 16),
-};
-
-#if defined(FMT_USING_SIH)
-mlog_elem_t Plant_States_Elems[] = {
-    MLOG_ELEMENT("timestamp", MLOG_UINT32),
-    MLOG_ELEMENT("phi", MLOG_FLOAT),
-    MLOG_ELEMENT("theta", MLOG_FLOAT),
-    MLOG_ELEMENT("psi", MLOG_FLOAT),
-    MLOG_ELEMENT("rot_x_B", MLOG_FLOAT),
-    MLOG_ELEMENT("rot_y_B", MLOG_FLOAT),
-    MLOG_ELEMENT("rot_z_B", MLOG_FLOAT),
-    MLOG_ELEMENT("acc_x_O", MLOG_FLOAT),
-    MLOG_ELEMENT("acc_y_O", MLOG_FLOAT),
-    MLOG_ELEMENT("acc_z_O", MLOG_FLOAT),
-    MLOG_ELEMENT("vel_x_O", MLOG_FLOAT),
-    MLOG_ELEMENT("vel_y_O", MLOG_FLOAT),
-    MLOG_ELEMENT("vel_z_O", MLOG_FLOAT),
-    MLOG_ELEMENT("x_R", MLOG_FLOAT),
-    MLOG_ELEMENT("y_R", MLOG_FLOAT),
-    MLOG_ELEMENT("h_R", MLOG_FLOAT),
-    MLOG_ELEMENT("lon", MLOG_DOUBLE),
-    MLOG_ELEMENT("lat", MLOG_DOUBLE),
-    MLOG_ELEMENT("alt", MLOG_DOUBLE),
-    MLOG_ELEMENT("lon_ref", MLOG_DOUBLE),
-    MLOG_ELEMENT("lat_ref", MLOG_DOUBLE),
-    MLOG_ELEMENT("alt_ref", MLOG_DOUBLE),
-};
-#endif
-
-/* MLog bus define */
-mlog_bus_t _mlog_bus[] = {
-    MLOG_BUS("IMU", MLOG_IMU_ID, IMU_Elems),
-    MLOG_BUS("MAG", MLOG_MAG_ID, MAG_Elems),
-    MLOG_BUS("Barometer", MLOG_BARO_ID, Barometer_Elems),
-    MLOG_BUS("GPS_uBlox", MLOG_GPS_ID, GPS_uBlox_Elems),
-    MLOG_BUS("Rangefinder", MLOG_RANGEFINDER_ID, Rangefinder_Elems),
-    MLOG_BUS("Optical_Flow", MLOG_OPTICAL_FLOW_ID, Optflow_Elems),
-    MLOG_BUS("Pilot_Cmd", MLOG_PILOT_CMD_ID, Pilot_Cmd_Elems),
-    MLOG_BUS("GCS_Cmd", MLOG_GCS_CMD_ID, GCS_Cmd_Elems),
-    MLOG_BUS("INS_Out", MLOG_INS_OUT_ID, INS_Out_Elems),
-    MLOG_BUS("FMS_Out", MLOG_FMS_OUT_ID, FMS_Out_Elems),
-    MLOG_BUS("Control_Out", MLOG_CONTROL_OUT_ID, Control_Out_Elems),
-#if defined(FMT_USING_SIH)
-    MLOG_BUS("Plant_States", MLOG_PLANT_STATE_ID, Plant_States_Elems),
-#endif
+struct mlog_cb {
+    void (*func)(void);
+    struct list_head link;
 };
 
 typedef struct {
     uint32_t total_msg;
     uint32_t lost_msg;
-} mlog_stat_t;
+} mlog_stats_t;
 
 struct fmt_mlog {
     int fid;
@@ -230,44 +47,50 @@ struct fmt_mlog {
     mlog_header_t header;
     mlog_buffer_t buffer;
     struct rt_mutex lock;
-    mlog_stat_t monitor[sizeof(_mlog_bus) / sizeof(mlog_bus_t)];
+    mlog_stats_t* stats;
 };
 
-static struct fmt_mlog mlog_handle = { 0 };
-static void (*mlog_start_cbs[MLOG_MAX_CALLBACK_NUM])(void);
-static void (*mlog_stop_cbs[MLOG_MAX_CALLBACK_NUM])(void);
-static void (*mlog_update_cbs[MLOG_MAX_CALLBACK_NUM])(void);
+extern const int __fmt_mlog_start;
+extern const int __fmt_mlog_end;
 
-static void __invoke_callback_func(uint8_t cb_type)
+static uint8_t __mlog_data_buffer[MLOG_BUFFER_SIZE];
+static mlog_bus_t* __mlog_table;
+static uint8_t __mlog_bus_num;
+static struct fmt_mlog mlog_handle;
+static LIST_HEAD(__start_cb_list_head);
+static LIST_HEAD(__stop_cb_list_head);
+static LIST_HEAD(__update_cb_list_head);
+
+static void invoke_callback_func(uint8_t cb_type)
 {
-    uint32_t i;
+    struct mlog_cb* pos;
 
     if (cb_type == MLOG_CB_START) {
-        for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-            if (mlog_start_cbs[i]) {
-                mlog_start_cbs[i]();
-            }
+        list_for_each_entry(pos, struct mlog_cb, &__start_cb_list_head, link)
+        {
+            /* invoke registered callback function */
+            pos->func();
         }
     }
 
     if (cb_type == MLOG_CB_STOP) {
-        for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-            if (mlog_stop_cbs[i]) {
-                mlog_stop_cbs[i]();
-            }
+        list_for_each_entry(pos, struct mlog_cb, &__stop_cb_list_head, link)
+        {
+            /* invoke registered callback function */
+            pos->func();
         }
     }
 
     if (cb_type == MLOG_CB_UPDATE) {
-        for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-            if (mlog_update_cbs[i]) {
-                mlog_update_cbs[i]();
-            }
+        list_for_each_entry(pos, struct mlog_cb, &__update_cb_list_head, link)
+        {
+            /* invoke registered callback function */
+            pos->func();
         }
     }
 }
 
-static void __buffer_putc(uint8_t ch)
+static void buffer_putc(uint8_t ch)
 {
     uint32_t free_space_in_sector = MLOG_SECTOR_SIZE - mlog_handle.buffer.index;
 
@@ -277,14 +100,14 @@ static void __buffer_putc(uint8_t ch)
         mlog_handle.buffer.index = 0;
 
         /* we have a new sector data, inform callback functions */
-        __invoke_callback_func(MLOG_CB_UPDATE);
+        invoke_callback_func(MLOG_CB_UPDATE);
     }
 
     mlog_handle.buffer.data[mlog_handle.buffer.head * MLOG_SECTOR_SIZE + mlog_handle.buffer.index] = ch;
     mlog_handle.buffer.index += 1;
 }
 
-static void __buffer_write(const uint8_t* data, uint16_t len)
+static void buffer_write(const uint8_t* data, uint16_t len)
 {
     uint32_t free_space_in_sector = MLOG_SECTOR_SIZE - mlog_handle.buffer.index;
 
@@ -301,22 +124,11 @@ static void __buffer_write(const uint8_t* data, uint16_t len)
         mlog_handle.buffer.index += len - free_space_in_sector;
 
         /* we have a new sector data, inform callback functions */
-        __invoke_callback_func(MLOG_CB_UPDATE);
+        invoke_callback_func(MLOG_CB_UPDATE);
     } else {
         memcpy(&mlog_handle.buffer.data[mlog_handle.buffer.head * MLOG_SECTOR_SIZE + mlog_handle.buffer.index], data, len);
         mlog_handle.buffer.index += len;
     }
-}
-
-static int32_t get_bus_index(uint8_t msg_id)
-{
-    for (int i = 0; i < sizeof(_mlog_bus) / sizeof(mlog_bus_t); i++) {
-        if (_mlog_bus[i].msg_id == msg_id) {
-            return i;
-        }
-    }
-
-    return -1;
 }
 
 static uint16_t get_max_write_sector(uint32_t head_p, uint32_t tail_p)
@@ -378,11 +190,11 @@ char* mlog_get_file_name(void)
  * Show the mlog logging statistics
  *
  */
-void mlog_statistic(void)
+void mlog_show_statistic(void)
 {
-    for (int i = 0; i < sizeof(_mlog_bus) / sizeof(mlog_bus_t); i++) {
-        console_printf("%-20s id:%-3d record:%-8ld lost:%-5ld\n", _mlog_bus[i].name, _mlog_bus[i].msg_id,
-            mlog_handle.monitor[i].total_msg, mlog_handle.monitor[i].lost_msg);
+    for (int i = 0; i < __mlog_bus_num; i++) {
+        printf("%-20s id:%-3d record:%-8ld lost:%-5ld\n", __mlog_table[i].name, i,
+            mlog_handle.stats[i].total_msg, mlog_handle.stats[i].lost_msg);
     }
 }
 
@@ -394,40 +206,85 @@ void mlog_statistic(void)
  * 
  * @return FMT Error
  */
-fmt_err_t mlog_register_callback(uint8_t cb_type, void (*cb)(void))
+fmt_err_t mlog_register_callback(mlog_cb_type type, void (*cb_func)(void))
 {
-    uint32_t i;
+    struct mlog_cb* node;
 
-    if (cb == NULL) {
-        return FMT_ERROR;
-    }
-
-    if (cb_type == MLOG_CB_START) {
-        for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-            if (mlog_start_cbs[i] == NULL) {
-                mlog_start_cbs[i] = cb;
-                return FMT_EOK;
-            }
-        }
-    } else if (cb_type == MLOG_CB_STOP) {
-        for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-            if (mlog_stop_cbs[i] == NULL) {
-                mlog_stop_cbs[i] = cb;
-                return FMT_EOK;
-            }
-        }
-    } else if (cb_type == MLOG_CB_UPDATE) {
-        for (i = 0; i < MLOG_MAX_CALLBACK_NUM; i++) {
-            if (mlog_update_cbs[i] == NULL) {
-                mlog_update_cbs[i] = cb;
-                return FMT_EOK;
-            }
-        }
-    } else {
+    if (cb_func == NULL) {
         return FMT_EINVAL;
     }
 
+    node = (struct mlog_cb*)rt_malloc(sizeof(struct mlog_cb));
+    if (node == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    INIT_LIST_HEAD(&node->link);
+    node->func = cb_func;
+
+    if (type == MLOG_CB_START) {
+        list_add_tail(&node->link, &__start_cb_list_head);
+    } else if (type == MLOG_CB_STOP) {
+        list_add_tail(&node->link, &__stop_cb_list_head);
+    } else if (type == MLOG_CB_UPDATE) {
+        list_add_tail(&node->link, &__update_cb_list_head);
+    }
+
     return FMT_ERROR;
+}
+
+fmt_err_t mlog_deregister_callback(mlog_cb_type type, void (*cb_func)(void))
+{
+    struct mlog_cb* pos;
+
+    if (cb_func == NULL) {
+        return FMT_EINVAL;
+    }
+
+    if (type == MLOG_CB_START) {
+        list_for_each_entry(pos, struct mlog_cb, &__start_cb_list_head, link)
+        {
+            if (pos->func == cb_func) {
+                list_del(&pos->link);
+                rt_free(pos);
+                return FMT_EOK;
+            }
+        }
+    } else if (type == MLOG_CB_STOP) {
+        list_for_each_entry(pos, struct mlog_cb, &__stop_cb_list_head, link)
+        {
+            if (pos->func == cb_func) {
+                list_del(&pos->link);
+                rt_free(pos);
+                return FMT_EOK;
+            }
+        }
+    } else if (type == MLOG_CB_UPDATE) {
+        list_for_each_entry(pos, struct mlog_cb, &__update_cb_list_head, link)
+        {
+            if (pos->func == cb_func) {
+                list_del(&pos->link);
+                rt_free(pos);
+                return FMT_EOK;
+            }
+        }
+    }
+
+    return FMT_ERROR;
+}
+
+int mlog_get_bus_id(const char* bus_name)
+{
+    mlog_bus_t* mlog_table = (mlog_bus_t*)&__fmt_mlog_start;
+    uint8_t mlog_bus_num = (mlog_bus_t*)&__fmt_mlog_end - __mlog_table;
+
+    for (uint8_t n = 0; n < mlog_bus_num; n++) {
+        if (strcmp(bus_name, mlog_table[n].name) == 0) {
+            return n;
+        }
+    }
+
+    return -1;
 }
 
 /**
@@ -463,7 +320,11 @@ fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
     /*   ======================================================================= */
     /*   | MLOG_BEGIN_MSG1 | MLOG_BEGIN_MSG2 | MSG_ID | PAYLOAD | MLOG_END_MSG | */
     /*   ======================================================================= */
-    int32_t bus_index;
+
+    if (msg_id + 1 > __mlog_bus_num) {
+        /* invalid msg id */
+        return FMT_EINVAL;
+    }
 
     /* check log status */
     if (mlog_handle.log_status != MLOG_STATUS_LOGGING) {
@@ -475,8 +336,7 @@ fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
         /* do not let it print too fast */
         PERIOD_EXECUTE(mlog_buff_full, 1000, ulog_w(TAG, "buffer is full!"););
 
-        bus_index = get_bus_index(msg_id);
-        mlog_handle.monitor[bus_index].lost_msg += 1;
+        mlog_handle.stats[msg_id].lost_msg += 1;
 
         return FMT_EFULL;
     }
@@ -484,21 +344,18 @@ fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len)
     rt_mutex_take(&mlog_handle.lock, RT_WAITING_FOREVER);
 
     /* write msg begin flag */
-    __buffer_putc(MLOG_BEGIN_MSG1);
-    __buffer_putc(MLOG_BEGIN_MSG2);
+    buffer_putc(MLOG_BEGIN_MSG1);
+    buffer_putc(MLOG_BEGIN_MSG2);
     /* write msg id */
-    __buffer_putc(msg_id);
+    buffer_putc(msg_id);
     /* write payload */
-    __buffer_write(payload, len);
+    buffer_write(payload, len);
     /* write msg end flag */
-    __buffer_putc(MLOG_END_MSG);
+    buffer_putc(MLOG_END_MSG);
 
     rt_mutex_release(&mlog_handle.lock);
 
-    bus_index = get_bus_index(msg_id);
-    if (bus_index >= 0) {
-        mlog_handle.monitor[bus_index].total_msg += 1;
-    }
+    mlog_handle.stats[msg_id].total_msg += 1;
 
     return FMT_EOK;
 }
@@ -557,10 +414,12 @@ fmt_err_t mlog_start(char* file_name)
 
     /* write bus information */
     WRITE_PAYLOAD(&mlog_handle.header.num_bus, sizeof(mlog_handle.header.num_bus));
-    for (int n = 0; n < mlog_handle.header.num_bus; n++) {
+    for (uint8_t n = 0; n < mlog_handle.header.num_bus; n++) {
+        uint8_t msg_id = n;
+
         /* write bus list */
         WRITE_PAYLOAD(mlog_handle.header.bus_list[n].name, MLOG_MAX_NAME_LEN);
-        WRITE_PAYLOAD(&mlog_handle.header.bus_list[n].msg_id, sizeof(mlog_handle.header.bus_list[n].msg_id));
+        WRITE_PAYLOAD(&msg_id, sizeof(msg_id));
         WRITE_PAYLOAD(&mlog_handle.header.bus_list[n].num_elem, sizeof(mlog_handle.header.bus_list[n].num_elem));
         /* write bus element */
         for (int k = 0; k < mlog_handle.header.bus_list[n].num_elem; k++) {
@@ -615,16 +474,16 @@ fmt_err_t mlog_start(char* file_name)
     /*********************** set log status ***********************/
     strncpy(mlog_handle.file_name, file_name, sizeof(mlog_handle.file_name) - 1);
 
-    for (int i = 0; i < sizeof(_mlog_bus) / sizeof(mlog_bus_t); i++) {
-        mlog_handle.monitor[i].total_msg = 0;
-        mlog_handle.monitor[i].lost_msg = 0;
+    for (uint8_t i = 0; i < __mlog_bus_num; i++) {
+        mlog_handle.stats[i].total_msg = 0;
+        mlog_handle.stats[i].lost_msg = 0;
     }
 
     /* start logging, set flag */
     mlog_handle.log_status = MLOG_STATUS_LOGGING;
 
     /* invoke callback function */
-    __invoke_callback_func(MLOG_CB_START);
+    invoke_callback_func(MLOG_CB_START);
 
     ulog_i(TAG, "start logging:%s", file_name);
 
@@ -702,12 +561,12 @@ void mlog_async_output(void)
         mlog_handle.log_status = MLOG_STATUS_IDLE;
 
         /* invoke callback function */
-        __invoke_callback_func(MLOG_CB_STOP);
+        invoke_callback_func(MLOG_CB_STOP);
 
         ulog_i(TAG, "stop logging:%s", mlog_handle.file_name);
-        for (int i = 0; i < sizeof(_mlog_bus) / sizeof(mlog_bus_t); i++) {
-            ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", _mlog_bus[i].name, _mlog_bus[i].msg_id,
-                mlog_handle.monitor[i].total_msg, mlog_handle.monitor[i].lost_msg);
+        for (uint8_t i = 0; i < __mlog_bus_num; i++) {
+            ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", __mlog_table[i].name, i,
+                mlog_handle.stats[i].total_msg, mlog_handle.stats[i].lost_msg);
         }
     }
 }
@@ -719,6 +578,9 @@ void mlog_async_output(void)
  */
 fmt_err_t mlog_init(void)
 {
+    __mlog_table = (mlog_bus_t*)&__fmt_mlog_start;
+    __mlog_bus_num = (mlog_bus_t*)&__fmt_mlog_end - __mlog_table;
+
     /* initialize mlog_handle status */
     mlog_handle.is_open = 0;
     mlog_handle.log_status = MLOG_STATUS_IDLE;
@@ -728,14 +590,19 @@ fmt_err_t mlog_init(void)
     mlog_handle.header.max_name_len = MLOG_MAX_NAME_LEN;
     mlog_handle.header.max_desc_len = MLOG_DESCRIPTION_SIZE;
     mlog_handle.header.max_model_info_len = MLOG_MODEL_INFO_SIZE;
-    mlog_handle.header.num_bus = sizeof(_mlog_bus) / sizeof(mlog_bus_t);
-    mlog_handle.header.bus_list = _mlog_bus;
+    mlog_handle.header.num_bus = __mlog_bus_num;
+    mlog_handle.header.bus_list = __mlog_table;
     mlog_handle.header.num_param_group = get_param_group_num();
     mlog_handle.header.param_group_list = get_param_table();
     memset(mlog_handle.header.description, 0, MLOG_DESCRIPTION_SIZE);
 
     /* initialize mlog_handle buffer */
-    mlog_handle.buffer.data = mlog_data_buffer;
+    mlog_handle.buffer.data = __mlog_data_buffer;
+
+    mlog_handle.stats = (mlog_stats_t*)rt_malloc(__mlog_bus_num * sizeof(mlog_stats_t));
+    if (mlog_handle.stats == NULL) {
+        return FMT_ENOMEM;
+    }
 
     if (mlog_handle.buffer.data == NULL) {
         console_printf("mlog_handle buffer malloc fail!\n");

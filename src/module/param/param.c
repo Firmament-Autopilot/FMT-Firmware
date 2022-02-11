@@ -26,7 +26,7 @@
 
 static param_group_t* __param_table;
 static int16_t __param_group_num;
-static struct list_head __cb_list_head;
+static LIST_HEAD(__cb_list_head);
 
 struct on_modify_cb {
     void (*on_modify)(param_t*);
@@ -809,6 +809,7 @@ fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param))
     {
         if (pos->on_modify == on_modify) {
             list_del(&pos->link);
+            rt_free(pos);
 
             return FMT_EOK;
         }
@@ -826,8 +827,6 @@ fmt_err_t param_init(void)
 {
     extern const int __fmt_param_start;
     extern const int __fmt_param_end;
-
-    INIT_LIST_HEAD(&__cb_list_head);
 
     __param_table = (param_group_t*)&__fmt_param_start;
     __param_group_num = (param_group_t*)&__fmt_param_end - __param_table;
