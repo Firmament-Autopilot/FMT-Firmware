@@ -61,27 +61,23 @@ static LIST_HEAD(__start_cb_list_head);
 static LIST_HEAD(__stop_cb_list_head);
 static LIST_HEAD(__update_cb_list_head);
 
-static void invoke_callback_func(uint8_t cb_type)
+static void invoke_callback_func(mlog_cb_type type)
 {
     struct mlog_cb* pos;
 
-    if (cb_type == MLOG_CB_START) {
+    if (type == MLOG_CB_START) {
         list_for_each_entry(pos, struct mlog_cb, &__start_cb_list_head, link)
         {
             /* invoke registered callback function */
             pos->func();
         }
-    }
-
-    if (cb_type == MLOG_CB_STOP) {
+    } else if (type == MLOG_CB_STOP) {
         list_for_each_entry(pos, struct mlog_cb, &__stop_cb_list_head, link)
         {
             /* invoke registered callback function */
             pos->func();
         }
-    }
-
-    if (cb_type == MLOG_CB_UPDATE) {
+    } else if (type == MLOG_CB_UPDATE) {
         list_for_each_entry(pos, struct mlog_cb, &__update_cb_list_head, link)
         {
             /* invoke registered callback function */
