@@ -25,6 +25,6 @@ static param_t __param_list[] = {
 	1: when armed until disarm
 	2: from boot until disarm
 	3: from boot until shutdown  */
-    PARAM_DEFINE_INT32(MLOG_MODE, 0),
+    PARAM_INT32(MLOG_MODE, 0),
 };
-PARAM_DEFINE_GROUP(SYSTEM, __param_list);
+PARAM_GROUP_DEFINE(SYSTEM, __param_list);

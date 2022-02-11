@@ -37,19 +37,19 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 /* define parameters */
 static param_t __param_list[] = {
     /* Stick Dead Zone */
-    PARAM_DEFINE_FLOAT(THROTTLE_DZ, 0.15),
-    PARAM_DEFINE_FLOAT(YAW_DZ, 0.15),
-    PARAM_DEFINE_FLOAT(ROLL_DZ, 0.1),
-    PARAM_DEFINE_FLOAT(PITCH_DZ, 0.1),
-    PARAM_DEFINE_FLOAT(XY_P, 0.95),
-    PARAM_DEFINE_FLOAT(Z_P, 1),
-    PARAM_DEFINE_FLOAT(VEL_XY_LIM, 5.0),
-    PARAM_DEFINE_FLOAT(VEL_Z_LIM, 2.5),
-    PARAM_DEFINE_FLOAT(YAW_P, 2.5),
-    PARAM_DEFINE_FLOAT(YAW_RATE_LIM, PI / 3),
-    PARAM_DEFINE_FLOAT(ROLL_PITCH_LIM, PI / 6),
+    PARAM_FLOAT(THROTTLE_DZ, 0.15),
+    PARAM_FLOAT(YAW_DZ, 0.15),
+    PARAM_FLOAT(ROLL_DZ, 0.1),
+    PARAM_FLOAT(PITCH_DZ, 0.1),
+    PARAM_FLOAT(XY_P, 0.95),
+    PARAM_FLOAT(Z_P, 1),
+    PARAM_FLOAT(VEL_XY_LIM, 5.0),
+    PARAM_FLOAT(VEL_Z_LIM, 2.5),
+    PARAM_FLOAT(YAW_P, 2.5),
+    PARAM_FLOAT(YAW_RATE_LIM, PI / 3),
+    PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6),
 };
-PARAM_DEFINE_GROUP(FMS, __param_list);
+PARAM_GROUP_DEFINE(FMS, __param_list);
 
 /* define log data */
 static mlog_elem_t Pilot_Cmd_Elems[] = {

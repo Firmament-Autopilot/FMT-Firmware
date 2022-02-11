@@ -81,72 +81,72 @@ typedef struct {
 } param_group_t;
 
 /********************** Function Macro **********************/
-#define PARAM_DEFINE_INT8(_name, _default) \
-    {                                      \
-        .name = #_name,                    \
-        .type = PARAM_TYPE_INT8,           \
-        .obj = NULL,                       \
-        .val.i8 = _default                 \
+#define PARAM_INT8(_name, _default) \
+    {                               \
+        .name = #_name,             \
+        .type = PARAM_TYPE_INT8,    \
+        .obj = NULL,                \
+        .val.i8 = _default          \
     }
 
-#define PARAM_DEFINE_UINT8(_name, _default) \
-    {                                       \
-        .name = #_name,                     \
-        .type = PARAM_TYPE_UINT8,           \
-        .obj = NULL,                        \
-        .val.u8 = _default                  \
+#define PARAM_UINT8(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_UINT8,    \
+        .obj = NULL,                 \
+        .val.u8 = _default           \
     }
 
-#define PARAM_DEFINE_INT16(_name, _default) \
-    {                                       \
-        .name = #_name,                     \
-        .type = PARAM_TYPE_INT16,           \
-        .obj = NULL,                        \
-        .val.i16 = _default                 \
+#define PARAM_INT16(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_INT16,    \
+        .obj = NULL,                 \
+        .val.i16 = _default          \
     }
 
-#define PARAM_DEFINE_UINT16(_name, _default) \
-    {                                        \
-        .name = #_name,                      \
-        .type = PARAM_TYPE_UINT16,           \
-        .obj = NULL,                         \
-        .val.u16 = _default                  \
+#define PARAM_UINT16(_name, _default) \
+    {                                 \
+        .name = #_name,               \
+        .type = PARAM_TYPE_UINT16,    \
+        .obj = NULL,                  \
+        .val.u16 = _default           \
     }
 
-#define PARAM_DEFINE_INT32(_name, _default) \
-    {                                       \
-        .name = #_name,                     \
-        .type = PARAM_TYPE_INT32,           \
-        .obj = NULL,                        \
-        .val.i32 = _default                 \
+#define PARAM_INT32(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_INT32,    \
+        .obj = NULL,                 \
+        .val.i32 = _default          \
     }
 
-#define PARAM_DEFINE_UINT32(_name, _default) \
-    {                                        \
-        .name = #_name,                      \
-        .type = PARAM_TYPE_UINT32,           \
-        .obj = NULL,                         \
-        .val.u32 = _default                  \
+#define PARAM_UINT32(_name, _default) \
+    {                                 \
+        .name = #_name,               \
+        .type = PARAM_TYPE_UINT32,    \
+        .obj = NULL,                  \
+        .val.u32 = _default           \
     }
 
-#define PARAM_DEFINE_FLOAT(_name, _default) \
-    {                                       \
-        .name = #_name,                     \
-        .type = PARAM_TYPE_FLOAT,           \
-        .obj = NULL,                        \
-        .val.f = _default                   \
+#define PARAM_FLOAT(_name, _default) \
+    {                                \
+        .name = #_name,              \
+        .type = PARAM_TYPE_FLOAT,    \
+        .obj = NULL,                 \
+        .val.f = _default            \
     }
 
-#define PARAM_DEFINE_DOUBLE(_name, _default) \
-    {                                        \
-        .name = #_name,                      \
-        .type = PARAM_TYPE_DOUBLE,           \
-        .obj = NULL,                         \
-        .val.lf = _default                   \
+#define PARAM_DOUBLE(_name, _default) \
+    {                                 \
+        .name = #_name,               \
+        .type = PARAM_TYPE_DOUBLE,    \
+        .obj = NULL,                  \
+        .val.lf = _default            \
     }
 
 #define PARAM_GROUP_EXPORT                     RT_USED static const param_group_t SECTION("ParamTab")
-#define PARAM_DEFINE_GROUP(_name, _param_list) PARAM_GROUP_EXPORT __param_group_##_name = { \
+#define PARAM_GROUP_DEFINE(_name, _param_list) PARAM_GROUP_EXPORT __param_group_##_name = { \
     .name = #_name,                                                                         \
     .param_num = sizeof(_param_list) / sizeof(param_t),                                     \
     .param_list = _param_list                                                               \
