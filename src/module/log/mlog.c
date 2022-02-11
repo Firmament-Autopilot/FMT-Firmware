@@ -233,6 +233,13 @@ fmt_err_t mlog_register_callback(mlog_cb_type type, void (*cb_func)(void))
     return FMT_ERROR;
 }
 
+/**
+ * @brief Deregister mlog callback function
+ * 
+ * @param type MLOG_CB_START | MLOG_CB_STOP | MLOG_CB_UPDATE
+ * @param cb_func callback function
+ * @return fmt_err_t 
+ */
 fmt_err_t mlog_deregister_callback(mlog_cb_type type, void (*cb_func)(void))
 {
     struct mlog_cb* pos;
@@ -273,13 +280,21 @@ fmt_err_t mlog_deregister_callback(mlog_cb_type type, void (*cb_func)(void))
     return FMT_ERROR;
 }
 
+/**
+ * @brief Return bus id based on bus_name
+ * 
+ * @param bus_name The bus name
+ * @return int Finded bus id, -1 means not found
+ */
 int mlog_get_bus_id(const char* bus_name)
 {
+    /* this function may be called before mlog_init */
     mlog_bus_t* mlog_table = (mlog_bus_t*)&__fmt_mlog_start;
     uint8_t mlog_bus_num = (mlog_bus_t*)&__fmt_mlog_end - __mlog_table;
 
     for (uint8_t n = 0; n < mlog_bus_num; n++) {
         if (strcmp(bus_name, mlog_table[n].name) == 0) {
+            /* the bus id is the same as index */
             return n;
         }
     }
