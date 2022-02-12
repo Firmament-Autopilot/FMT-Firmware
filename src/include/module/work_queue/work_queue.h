@@ -28,7 +28,8 @@ struct WorkItem {
     const char* name;
     uint32_t schedule_time; /* work scheduled time */
     uint16_t period;        /* period of work, 0 means only execute once */
-    void (*run)(void);
+    void* parameter;
+    void (*run)(void* parameter);
 };
 typedef struct WorkItem* WorkItem_t;
 

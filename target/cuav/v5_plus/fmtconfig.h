@@ -22,7 +22,7 @@
 /* HIL simulation */
 // #define FMT_USING_HIL
 /* SIG simulation */
-// #define FMT_USING_SIH
+#define FMT_USING_SIH
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
@@ -49,8 +49,6 @@
 
 /* Unit Test */
 // #define FMT_USING_UNIT_TEST
-
-#define FMT_ONLINE_PARAM_TUNING
 
 // #define FMT_RECORD_CALIBRATION_DATA
 

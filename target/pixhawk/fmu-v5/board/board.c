@@ -413,6 +413,9 @@ void bsp_initialize(void)
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
+    /* init parameter system */
+    FMT_CHECK(param_init());
+
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
@@ -440,9 +443,6 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
 #endif
-
-    /* init parameter system */
-    FMT_CHECK(param_init());
 
     /* init finsh */
     finsh_system_init();

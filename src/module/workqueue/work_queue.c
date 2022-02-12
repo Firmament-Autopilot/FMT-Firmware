@@ -107,7 +107,7 @@ static void workqueue_executor(void* parameter)
         work_item = workqueue_pop(work_queue);
         if (work_item != NULL) {
             /* do work */
-            work_item->run();
+            work_item->run(work_item->parameter);
             /* if period is set, push work item back to queue */
             if (work_item->period > 0) {
                 work_item->schedule_time = SCHEDULE_DELAY(work_item->period);
@@ -132,7 +132,7 @@ fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
     RT_ASSERT(item != NULL);
     RT_ASSERT(item->run != NULL);
 
-    /* first cancel old work */
+    /* first cancel old work if any */
     workqueue_cancel_work(work_queue, item);
 
     work_lock(work_queue);
@@ -164,7 +164,7 @@ fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
 }
 
 /**
- * @brief Can a work from workqueue
+ * @brief Cancel a work from workqueue
  * 
  * @param work_queue The target workqueue
  * @param item The work item to be canceled

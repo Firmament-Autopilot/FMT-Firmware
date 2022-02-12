@@ -40,6 +40,20 @@ SECTIONS
         KEEP(*(SORT(.rti_fn*)))
         __rt_init_end = .;
 
+        /* section information for parameters. */
+        . = ALIGN(4);
+        __fmt_param_start = .;
+        KEEP(*(ParamTab))
+        __fmt_param_end = .;
+        . = ALIGN(4); 
+
+        /* section information for mlog. */
+        . = ALIGN(4);
+        __fmt_mlog_start = .;
+        KEEP(*(MlogTab))
+        __fmt_mlog_end = .;
+        . = ALIGN(4);       
+
         /* section information for utest */
 		. = ALIGN(4);
 		__rt_utest_tc_tab_start = .;

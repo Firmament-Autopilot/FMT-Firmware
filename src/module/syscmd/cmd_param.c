@@ -119,7 +119,7 @@ static void list_group(param_group_t* gp)
         return;
 
     printf("%s:\n", gp->name);
-    p = gp->content;
+    p = gp->param_list;
 
     for (int i = 0; i < gp->param_num; i++) {
         disp_param(p++);
@@ -128,12 +128,12 @@ static void list_group(param_group_t* gp)
 
 static void list_groups(void)
 {
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = get_param_table();
 
     printf(" parameter groups \n");
     printf("------------------\n");
 
-    for (int j = 0; j < sizeof(param_list) / sizeof(param_group_t); j++) {
+    for (int i = 0; i < get_param_group_num(); i++) {
         printf("%s\n", gp->name);
         gp++;
     }
@@ -141,9 +141,9 @@ static void list_groups(void)
 
 static void list_all(void)
 {
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = get_param_table();
 
-    for (int i = 0; i < sizeof(param_list) / sizeof(param_group_t); i++) {
+    for (int i = 0; i < get_param_group_num(); i++) {
         list_group(gp++);
     }
 }
@@ -216,7 +216,7 @@ static int set(int argc, struct optparse options)
         char* param_name = optparse_arg(&options);
         char* value = optparse_arg(&options);
 
-        if (param_set_string_val_by_name(param_name, value) != FMT_EOK) {
+        if (param_set_str_val_by_name(param_name, value) != FMT_EOK) {
             printf("fail to set parameter: %s=%s\n", param_name, value);
             return EXIT_FAILURE;
         }
@@ -225,7 +225,7 @@ static int set(int argc, struct optparse options)
         char* param_name = optparse_arg(&options);
         char* value = optparse_arg(&options);
 
-        if (param_set_string_val_by_full_name(group_name, param_name, value) != FMT_EOK) {
+        if (param_set_str_val_by_full_name(group_name, param_name, value) != FMT_EOK) {
             printf("fail to set parameter: %s.%s=%s\n", group_name, param_name, value);
             return EXIT_FAILURE;
         }

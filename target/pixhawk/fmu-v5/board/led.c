@@ -22,12 +22,12 @@
 static rt_device_t pin_dev;
 static rt_device_t rgb_led_dev;
 
-static void run_led(void)
+static void run_led(void* parameter)
 {
     LED_TOGGLE(FMU_LED_BLUE_PIN);
 }
 
-static void run_rgb_led(void)
+static void run_rgb_led(void* parameter)
 {
     static int bright = 0;
     static int inc = 0;

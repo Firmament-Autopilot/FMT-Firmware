@@ -149,7 +149,7 @@ fmt_err_t devmq_notify(rt_device_t device, void* msg)
     return (rt_err == RT_EOK) ? FMT_EOK : FMT_ERROR;
 }
 
-void devmq_distribute_msg(void)
+void devmq_distribute_msg(void* parameter)
 {
     static uint8_t msg_buffer[DEVMQ_MAX_MSG_SIZE];
 

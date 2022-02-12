@@ -40,30 +40,11 @@ extern "C" {
 #define MLOG_DESCRIPTION_SIZE 128
 #define MLOG_MODEL_INFO_SIZE  256
 
-/* MLog Msg ID */
-enum {
-    /* must start from 1 */
-    MLOG_IMU_ID = 1,
-    MLOG_MAG_ID,
-    MLOG_BARO_ID,
-    MLOG_GPS_ID,
-    MLOG_RANGEFINDER_ID,
-    MLOG_OPTICAL_FLOW_ID,
-    MLOG_PILOT_CMD_ID,
-    MLOG_GCS_CMD_ID,
-    MLOG_INS_OUT_ID,
-    MLOG_FMS_OUT_ID,
-    MLOG_CONTROL_OUT_ID,
-#if defined(FMT_USING_SIH)
-    MLOG_PLANT_STATE_ID,
-#endif
-};
-
-enum {
+typedef enum {
     MLOG_CB_START,
     MLOG_CB_STOP,
     MLOG_CB_UPDATE,
-};
+} mlog_cb_type;
 
 enum {
     MLOG_INT8 = 0,
@@ -84,41 +65,34 @@ enum {
     MLOG_STATUS_STOPPING,
 };
 
-LOGPACKED(
-    typedef struct {
-        char name[MLOG_MAX_NAME_LEN];
-        uint16_t type;
-        uint16_t number;
-    })
-mlog_elem_t;
+typedef struct {
+    char name[MLOG_MAX_NAME_LEN];
+    uint16_t type;
+    uint16_t number;
+} mlog_elem_t;
 
-LOGPACKED(
-    typedef struct {
-        char name[MLOG_MAX_NAME_LEN];
-        uint8_t msg_id;
-        uint8_t num_elem;
-        mlog_elem_t* elem_list;
-    })
-mlog_bus_t;
+typedef struct {
+    char name[MLOG_MAX_NAME_LEN];
+    uint8_t num_elem;
+    mlog_elem_t* elem_list;
+} mlog_bus_t;
 
-LOGPACKED(
-    typedef struct {
-        /* log info */
-        uint16_t version;
-        uint32_t timestamp;
-        uint16_t max_name_len;
-        uint16_t max_desc_len;
-        uint16_t max_model_info_len;
-        char description[MLOG_DESCRIPTION_SIZE];
-        char model_info[MLOG_MODEL_INFO_SIZE];
-        /* bus info */
-        uint8_t num_bus;
-        mlog_bus_t* bus_list;
-        /* parameter info */
-        uint8_t num_param_group;
-        param_group_t* param_group_list;
-    })
-mlog_header_t;
+typedef struct {
+    /* log info */
+    uint16_t version;
+    uint32_t timestamp;
+    uint16_t max_name_len;
+    uint16_t max_desc_len;
+    uint16_t max_model_info_len;
+    char description[MLOG_DESCRIPTION_SIZE];
+    char model_info[MLOG_MODEL_INFO_SIZE];
+    /* bus info */
+    uint8_t num_bus;
+    mlog_bus_t* bus_list;
+    /* parameter info */
+    uint8_t num_param_group;
+    param_group_t* param_group_list;
+} mlog_header_t;
 
 typedef struct {
     uint8_t* data;
@@ -130,34 +104,35 @@ typedef struct {
 
 #define MLOG_ELEMENT(_name, _type) \
     {                              \
-#_name,                    \
-            _type,                 \
-            1                      \
+        .name = #_name,            \
+        .type = _type,             \
+        .number = 1                \
     }
 
 #define MLOG_ELEMENT_VEC(_name, _type, _num) \
     {                                        \
-#_name,                              \
-            _type,                           \
-            _num                             \
+        .name = #_name,                      \
+        .type = _type,                       \
+        .number = _num                       \
     }
 
-#define MLOG_BUS(_name, _id, _elem_list)              \
-    {                                                 \
-#_name,                                       \
-            _id,                                      \
-            sizeof(_elem_list) / sizeof(mlog_elem_t), \
-            _elem_list                                \
-    }
+#define MLOG_BUS_EXPORT                    RT_USED static const mlog_bus_t SECTION("MlogTab")
+#define MLOG_BUS_DEFINE(_name, _elem_list) MLOG_BUS_EXPORT __mlog_bus_##_name = { \
+    .name = #_name,                                                               \
+    .num_elem = sizeof(_elem_list) / sizeof(mlog_elem_t),                         \
+    .elem_list = _elem_list                                                       \
+}
 
+int mlog_get_bus_id(const char* bus_name);
 fmt_err_t mlog_add_desc(char* desc);
 fmt_err_t mlog_start(char* file_name);
 void mlog_stop(void);
 fmt_err_t mlog_push_msg(const uint8_t* payload, uint8_t msg_id, uint16_t len);
 uint8_t mlog_get_status(void);
 char* mlog_get_file_name(void);
-void mlog_statistic(void);
-fmt_err_t mlog_register_callback(uint8_t cb_type, void (*cb)(void));
+void mlog_show_statistic(void);
+fmt_err_t mlog_register_callback(mlog_cb_type type, void (*cb_func)(void));
+fmt_err_t mlog_deregister_callback(mlog_cb_type type, void (*cb_func)(void));
 fmt_err_t mlog_init(void);
 void mlog_async_output(void);
 

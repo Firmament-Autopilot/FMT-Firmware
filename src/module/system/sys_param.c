@@ -14,43 +14,17 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef FMTCONFIG_H__
-#define FMTCONFIG_H__
+#include <firmament.h>
 
-#define FMT_USING_CHECKED
+#include "module/param/param.h"
 
-/* HIL simulation */
-// #define FMT_USING_HIL
-/* SIH simulation */
-// #define FMT_USING_SIH 
-
-/* Mavlink */
-#define FMT_USING_MAVLINK_V2
-#define FMT_MAVLINK_SYS_ID  1
-#define FMT_MAVLINK_COMP_ID 1
-
-/* Send out pilot cmd via mavlink */
-#define FMT_OUTPUT_PILOT_CMD
-
-/* MLog */
-#define MLOG_BUFFER_SIZE         40 * 1024
-#define MLOG_SECTOR_SIZE         4096
-#define MLOG_MAX_SECTOR_TO_WRITE 5
-
-/* ULog */
-#define FMT_USING_ULOG
-#ifdef FMT_USING_ULOG
-// #define ENABLE_ULOG_FS_BACKEND
-#define ENABLE_ULOG_CONSOLE_BACKEND
-#endif
-
-/* Cortex-M Backtrace */
-#define FMT_USING_CM_BACKTRACE
-
-/* Unit Test */
-// #define FMT_USING_UNIT_TEST
-
-
-// #define FMT_RECORD_CALIBRATION_DATA
-
-#endif
+/* define parameters */
+static param_t __param_list[] = {
+    /* Determines when to start and stop logging.
+	0: disabled
+	1: when armed until disarm
+	2: from boot until disarm
+	3: from boot until shutdown  */
+    PARAM_INT32(MLOG_MODE, 0),
+};
+PARAM_GROUP_DEFINE(SYSTEM, __param_list);

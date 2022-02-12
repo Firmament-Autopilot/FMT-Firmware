@@ -18,160 +18,19 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/file_manager/yxml.h"
+#include "module/utils/list.h"
 
 #define TAG "Param"
 
 #define YXML_STACK_SIZE 1024
 
-#define PARAM_GROUP_COUNT (sizeof(param_list_t) / sizeof(param_group_t))
+static param_group_t* __param_table;
+static int16_t __param_group_num;
+static LIST_HEAD(__cb_list_head);
 
-/* Define Parameters/Group include 4 steps
-	* Step 1:	Declare Group
-    * Step 2:	Define Groups
-	* Step 3:	Declare Parameters In Group
-	* Step 4:	Define Parameters In Group
-	 */
-
-/******************** Step 4: Define Parameters In Group ********************/
-PARAM_GROUP(SYSTEM)
-PARAM_DECLARE_GROUP(SYSTEM) = {
-    /* Determines when to start and stop logging.
-	0: disabled
-	1: when armed until disarm
-	2: from boot until disarm
-	3: from boot until shutdown  */
-    PARAM_DEFINE_INT32(MLOG_MODE, 0),
-};
-
-PARAM_GROUP(CALIB)
-PARAM_DECLARE_GROUP(CALIB) = {
-    /* GYRO_CAL = GYRO - OFFSET */
-    PARAM_DEFINE_FLOAT(GYRO0_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(GYRO0_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(GYRO0_ZOFF, 0.0),
-    /* ACC_CAL = ROT_M * (ACC-OFFSET)
-	           |  XX  XY  XZ |
-	   ROT_M = |  XY  YY  YZ |
-	           |  XZ  YZ  ZZ |   */
-    PARAM_DEFINE_FLOAT(ACC0_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(ACC0_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(ACC0_ZOFF, 0.0),
-    PARAM_DEFINE_FLOAT(ACC0_XXSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(ACC0_YYSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(ACC0_ZZSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(ACC0_XYSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(ACC0_XZSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(ACC0_YZSCALE, 0.0),
-    /* MAG_CAL = ROT_M * (MAG-OFFSET)
-	           |  XX  XY  XZ |
-	   ROT_M = |  XY  YY  YZ |
-	           |  XZ  YZ  ZZ |   */
-    PARAM_DEFINE_FLOAT(MAG0_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(MAG0_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(MAG0_ZOFF, 0.0),
-    PARAM_DEFINE_FLOAT(MAG0_XXSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(MAG0_YYSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(MAG0_ZZSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(MAG0_XYSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(MAG0_XZSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(MAG0_YZSCALE, 0.0),
-
-    PARAM_DEFINE_FLOAT(GYRO1_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(GYRO1_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(GYRO1_ZOFF, 0.0),
-
-    PARAM_DEFINE_FLOAT(ACC1_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(ACC1_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(ACC1_ZOFF, 0.0),
-    PARAM_DEFINE_FLOAT(ACC1_XXSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(ACC1_YYSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(ACC1_ZZSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(ACC1_XYSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(ACC1_XZSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(ACC1_YZSCALE, 0.0),
-
-    PARAM_DEFINE_FLOAT(MAG1_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(MAG1_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(MAG1_ZOFF, 0.0),
-    PARAM_DEFINE_FLOAT(MAG1_XXSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(MAG1_YYSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(MAG1_ZZSCALE, 1.0),
-    PARAM_DEFINE_FLOAT(MAG1_XYSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(MAG1_XZSCALE, 0.0),
-    PARAM_DEFINE_FLOAT(MAG1_YZSCALE, 0.0),
-    /* Level Calibration. Roll,Pitch,Yaw offset in rad */
-    PARAM_DEFINE_FLOAT(LEVEL_XOFF, 0.0),
-    PARAM_DEFINE_FLOAT(LEVEL_YOFF, 0.0),
-    PARAM_DEFINE_FLOAT(LEVEL_ZOFF, 0.0),
-};
-
-PARAM_GROUP(INS)
-PARAM_DECLARE_GROUP(INS) = {
-    /* User external filter for IMU*/
-    PARAM_DEFINE_INT8(USE_EXTERN_FILTER, 1),
-};
-
-PARAM_GROUP(FMS)
-PARAM_DECLARE_GROUP(FMS) = {
-    /* Stick Dead Zone */
-    PARAM_DEFINE_FLOAT(THROTTLE_DZ, 0.15),
-    PARAM_DEFINE_FLOAT(YAW_DZ, 0.15),
-    PARAM_DEFINE_FLOAT(ROLL_DZ, 0.1),
-    PARAM_DEFINE_FLOAT(PITCH_DZ, 0.1),
-    PARAM_DEFINE_FLOAT(XY_P, 0.95),
-    PARAM_DEFINE_FLOAT(Z_P, 1),
-    PARAM_DEFINE_FLOAT(VEL_XY_LIM, 5.0),
-    PARAM_DEFINE_FLOAT(VEL_Z_LIM, 2.5),
-    PARAM_DEFINE_FLOAT(YAW_P, 2.5),
-    PARAM_DEFINE_FLOAT(YAW_RATE_LIM, PI / 3),
-    PARAM_DEFINE_FLOAT(ROLL_PITCH_LIM, PI / 6),
-};
-
-PARAM_GROUP(CONTROL)
-PARAM_DECLARE_GROUP(CONTROL) = {
-    PARAM_DEFINE_FLOAT(VEL_XY_P, 1.4),
-    PARAM_DEFINE_FLOAT(VEL_XY_I, 0.2),
-    PARAM_DEFINE_FLOAT(VEL_XY_D, 0.2),
-    PARAM_DEFINE_FLOAT(VEL_Z_P, 0.6),
-    PARAM_DEFINE_FLOAT(VEL_Z_I, 0.1),
-    PARAM_DEFINE_FLOAT(VEL_Z_D, 0.0),
-    PARAM_DEFINE_FLOAT(VEL_XY_I_MIN, -1),
-    PARAM_DEFINE_FLOAT(VEL_XY_I_MAX, 1),
-    PARAM_DEFINE_FLOAT(VEL_XY_D_MIN, -1),
-    PARAM_DEFINE_FLOAT(VEL_XY_D_MAX, 1),
-    PARAM_DEFINE_FLOAT(VEL_Z_I_MIN, -0.15),
-    PARAM_DEFINE_FLOAT(VEL_Z_I_MAX, 0.15),
-    PARAM_DEFINE_FLOAT(VEL_Z_D_MIN, -0.1),
-    PARAM_DEFINE_FLOAT(VEL_Z_D_MAX, 0.1),
-
-    PARAM_DEFINE_FLOAT(ROLL_P, 5),
-    PARAM_DEFINE_FLOAT(PITCH_P, 5),
-    PARAM_DEFINE_FLOAT(ROLL_PITCH_CMD_LIM, PI / 6),
-
-    PARAM_DEFINE_FLOAT(ROLL_RATE_P, 0.1),
-    PARAM_DEFINE_FLOAT(PITCH_RATE_P, 0.1),
-    PARAM_DEFINE_FLOAT(YAW_RATE_P, 0.15),
-    PARAM_DEFINE_FLOAT(ROLL_RATE_I, 0.1),
-    PARAM_DEFINE_FLOAT(PITCH_RATE_I, 0.1),
-    PARAM_DEFINE_FLOAT(YAW_RATE_I, 0.2),
-    PARAM_DEFINE_FLOAT(ROLL_RATE_D, 0.003),
-    PARAM_DEFINE_FLOAT(PITCH_RATE_D, 0.003),
-    PARAM_DEFINE_FLOAT(YAW_RATE_D, 0.001),
-    PARAM_DEFINE_FLOAT(RATE_I_MIN, -0.1),
-    PARAM_DEFINE_FLOAT(RATE_I_MAX, 0.1),
-    PARAM_DEFINE_FLOAT(RATE_D_MIN, -0.1),
-    PARAM_DEFINE_FLOAT(RATE_D_MAX, 0.1),
-    PARAM_DEFINE_FLOAT(P_Q_CMD_LIM, PI / 2),
-    PARAM_DEFINE_FLOAT(R_CMD_LIM, PI),
-};
-
-/******************** Step 2: Define Group ********************/
-param_list_t param_list = {
-    PARAM_DEFINE_GROUP(SYSTEM),
-    PARAM_DEFINE_GROUP(CALIB),
-    PARAM_DEFINE_GROUP(INS),
-    PARAM_DEFINE_GROUP(FMS),
-    PARAM_DEFINE_GROUP(CONTROL),
+struct on_modify_cb {
+    void (*on_modify)(param_t*);
+    struct list_head link;
 };
 
 static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
@@ -301,7 +160,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
             attr_cnt = 0;
             *status = PARAM_PARSE_PARAM;
 
-            param_set_string_val_by_full_name(group_name, param_name, content);
+            param_set_str_val_by_full_name(group_name, param_name, content);
         }
     } break;
     }
@@ -309,17 +168,28 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
     return FMT_ERROR;
 }
 
+static void on_parameter_modify(void* parameter)
+{
+    struct on_modify_cb* pos;
+
+    list_for_each_entry(pos, struct on_modify_cb, &__cb_list_head, link)
+    {
+        /* invoke registered callback function */
+        pos->on_modify((param_t*)parameter);
+    }
+}
+
 /**
  * Get total parameter count.
  * 
  * @return parameter count.
  */
-uint32_t param_get_count(void)
+int32_t param_get_count(void)
 {
-    uint32_t count = 0;
-    param_group_t* gp = (param_group_t*)&param_list;
+    int32_t count = 0;
+    param_group_t* gp = __param_table;
 
-    for (int j = 0; j < PARAM_GROUP_COUNT; j++) {
+    for (int i = 0; i < __param_group_num; i++) {
         count += gp->param_num;
         gp++;
     }
@@ -334,14 +204,14 @@ uint32_t param_get_count(void)
  *  
  * @return parameter index (start from 0).
  */
-int16_t param_get_index(const param_t* param)
+int32_t param_get_index(const param_t* param)
 {
-    int16_t index = 0;
+    int32_t index = 0;
     param_t* p;
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = __param_table;
 
-    for (int i = 0; i < PARAM_GROUP_COUNT; i++) {
-        p = gp->content;
+    for (int i = 0; i < __param_group_num; i++) {
+        p = gp->param_list;
 
         for (int j = 0; j < gp->param_num; j++) {
             if (strcmp(param->name, p->name) == 0) {
@@ -368,10 +238,10 @@ int16_t param_get_index(const param_t* param)
 param_t* param_get_by_name(const char* param_name)
 {
     param_t* p;
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = __param_table;
 
-    for (int j = 0; j < PARAM_GROUP_COUNT; j++) {
-        p = gp->content;
+    for (int j = 0; j < __param_group_num; j++) {
+        p = gp->param_list;
 
         for (int i = 0; i < gp->param_num; i++) {
             if (strcmp(param_name, p->name) == 0) {
@@ -396,13 +266,13 @@ param_t* param_get_by_name(const char* param_name)
 param_t* param_get_by_full_name(const char* group_name, const char* param_name)
 {
     param_t* p;
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = __param_table;
 
-    for (int j = 0; j < PARAM_GROUP_COUNT; j++) {
-        p = gp->content;
+    for (int i = 0; i < __param_group_num; i++) {
+        p = gp->param_list;
 
         if (strcmp(group_name, gp->name) == 0) {
-            for (int i = 0; i < gp->param_num; i++) {
+            for (int j = 0; j < gp->param_num; j++) {
                 if (strcmp(param_name, p->name) == 0) {
                     return p;
                 }
@@ -421,16 +291,16 @@ param_t* param_get_by_full_name(const char* group_name, const char* param_name)
  * @param index Parameter index, start from 0
  * @return param_t* The pointer of parameter instance.
  */
-param_t* param_get_by_index(int16_t index)
+param_t* param_get_by_index(int32_t index)
 {
     param_t* p;
-    param_group_t* gp = (param_group_t*)&param_list;
-    int16_t cur_idx = 0;
+    param_group_t* gp = __param_table;
+    int32_t cur_idx = 0;
 
-    for (int j = 0; j < PARAM_GROUP_COUNT; j++) {
-        p = gp->content;
+    for (int i = 0; i < __param_group_num; i++) {
+        p = gp->param_list;
 
-        for (int i = 0; i < gp->param_num; i++) {
+        for (int j = 0; j < gp->param_num; j++) {
             if (cur_idx == index) {
                 return p;
             }
@@ -451,53 +321,52 @@ param_t* param_get_by_index(int16_t index)
  *  
  * @return FMT Errors.
  */
-fmt_err_t param_set_string_val(param_t* param, char* val)
+fmt_err_t param_set_str_val(param_t* param, char* val)
 {
+    param_value_t pval;
+
     if (param == NULL) {
         return FMT_EINVAL;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_ENTER_CRITICAL;
-#endif
+    switch (param->type) {
+    case PARAM_TYPE_INT8:
+        pval.i8 = atoi(val);
+        break;
 
-    if (param->type == PARAM_TYPE_INT8) {
-        param->val.i8 = atoi(val);
+    case PARAM_TYPE_UINT8:
+        pval.u8 = atoi(val);
+        break;
+
+    case PARAM_TYPE_INT16:
+        pval.i16 = atoi(val);
+        break;
+
+    case PARAM_TYPE_UINT16:
+        pval.u16 = atoi(val);
+        break;
+
+    case PARAM_TYPE_INT32:
+        pval.i32 = atoi(val);
+        break;
+
+    case PARAM_TYPE_UINT32:
+        pval.u32 = atoi(val);
+        break;
+
+    case PARAM_TYPE_FLOAT:
+        pval.f = atof(val);
+        break;
+
+    case PARAM_TYPE_DOUBLE:
+        pval.lf = atof(val);
+        break;
+
+    default:
+        return FMT_ENOTHANDLE;
     }
 
-    if (param->type == PARAM_TYPE_UINT8) {
-        param->val.u8 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_INT16) {
-        param->val.i16 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_UINT16) {
-        param->val.u16 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_INT32) {
-        param->val.i32 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_UINT32) {
-        param->val.u32 = atoi(val);
-    }
-
-    if (param->type == PARAM_TYPE_FLOAT) {
-        param->val.f = atof(val);
-    }
-
-    if (param->type == PARAM_TYPE_DOUBLE) {
-        param->val.lf = atof(val);
-    }
-
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_EXIT_CRITICAL;
-#endif
-
-    return FMT_EOK;
+    return param_set_val(param, &pval);
 }
 
 /**
@@ -510,7 +379,7 @@ fmt_err_t param_set_string_val(param_t* param, char* val)
  *  
  * @return FMT Errors.
  */
-fmt_err_t param_set_string_val_by_name(char* param_name, char* val)
+fmt_err_t param_set_str_val_by_name(char* param_name, char* val)
 {
     param_t* p = param_get_by_name(param_name);
 
@@ -518,7 +387,7 @@ fmt_err_t param_set_string_val_by_name(char* param_name, char* val)
         return FMT_EINVAL;
     }
 
-    return param_set_string_val(p, val);
+    return param_set_str_val(p, val);
 }
 
 /**
@@ -530,7 +399,7 @@ fmt_err_t param_set_string_val_by_name(char* param_name, char* val)
  *  
  * @return FMT Errors.
  */
-fmt_err_t param_set_string_val_by_full_name(char* group_name, char* param_name, char* val)
+fmt_err_t param_set_str_val_by_full_name(char* group_name, char* param_name, char* val)
 {
     param_t* p = param_get_by_full_name(group_name, param_name);
 
@@ -538,7 +407,7 @@ fmt_err_t param_set_string_val_by_full_name(char* group_name, char* param_name, 
         return FMT_EINVAL;
     }
 
-    return param_set_string_val(p, val);
+    return param_set_str_val(p, val);
 }
 
 /**
@@ -551,46 +420,62 @@ fmt_err_t param_set_string_val_by_full_name(char* group_name, char* param_name, 
  */
 fmt_err_t param_set_val(param_t* param, void* val)
 {
+    size_t val_size;
+
     if (param == NULL) {
         return FMT_EINVAL;
     }
 
     switch (param->type) {
     case PARAM_TYPE_INT8:
-        memcpy(&(param->val.i8), val, sizeof(param->val.i8));
+        val_size = sizeof(param->val.i8);
         break;
 
     case PARAM_TYPE_UINT8:
-        memcpy(&(param->val.u8), val, sizeof(param->val.u8));
+        val_size = sizeof(param->val.u8);
         break;
 
     case PARAM_TYPE_INT16:
-        memcpy(&(param->val.i16), val, sizeof(param->val.i16));
+        val_size = sizeof(param->val.i16);
         break;
 
     case PARAM_TYPE_UINT16:
-        memcpy(&(param->val.u16), val, sizeof(param->val.u16));
+        val_size = sizeof(param->val.u16);
         break;
 
     case PARAM_TYPE_INT32:
-        memcpy(&(param->val.i32), val, sizeof(param->val.i32));
+        val_size = sizeof(param->val.i32);
         break;
 
     case PARAM_TYPE_UINT32:
-        memcpy(&(param->val.u32), val, sizeof(param->val.u32));
+        val_size = sizeof(param->val.u32);
         break;
 
     case PARAM_TYPE_FLOAT:
-        memcpy(&(param->val.f), val, sizeof(param->val.f));
+        val_size = sizeof(param->val.f);
         break;
 
     case PARAM_TYPE_DOUBLE:
-        memcpy(&(param->val.lf), val, sizeof(param->val.lf));
+        val_size = sizeof(param->val.lf);
         break;
 
     default:
         return FMT_ENOTHANDLE;
     }
+
+    OS_ENTER_CRITICAL;
+
+    memcpy(&(param->val), val, val_size);
+    /* also update the linked object */
+    if (param->obj != NULL) {
+        memcpy(param->obj, val, val_size);
+    }
+
+    OS_EXIT_CRITICAL;
+
+    /* invoke parameter modify callbacks */
+    if (!list_empty(&__cb_list_head))
+        on_parameter_modify(param);
 
     return FMT_EOK;
 }
@@ -637,6 +522,28 @@ fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* v
 }
 
 /**
+ * @brief get parameter's group
+ * 
+ * @param param parameter object
+ * @return param_group_t* group object
+ */
+param_group_t* param_get_group(const param_t* param)
+{
+    param_group_t* gp = __param_table;
+
+    for (uint32_t i = 0; i < __param_group_num; i++) {
+        for (uint32_t j = 0; j < gp->param_num; j++) {
+            if (&gp->param_list[j] == param) {
+                return gp;
+            }
+        }
+        gp++;
+    }
+
+    return NULL;
+}
+
+/**
  * @brief Find specific group
  * 
  * @param group_name Group name
@@ -644,9 +551,9 @@ fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* v
  */
 param_group_t* param_find_group(const char* group_name)
 {
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = __param_table;
 
-    for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
+    for (uint32_t i = 0; i < __param_group_num; i++) {
         if (strcmp(group_name, gp->name) == 0) {
             return gp;
         }
@@ -681,14 +588,14 @@ fmt_err_t param_save(char* path)
     fm_fprintf(fd, "<param_list>\n");
 
     param_t* p;
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = __param_table;
 
-    for (int j = 0; j < sizeof(param_list) / sizeof(param_group_t); j++) {
+    for (int i = 0; i < __param_group_num; i++) {
         /* add group element */
         fm_fprintf(fd, "\x20\x20<group name=\"%s\">\n", gp->name);
-        p = gp->content;
+        p = gp->param_list;
 
-        for (int i = 0; i < gp->param_num; i++) {
+        for (int j = 0; j < gp->param_num; j++) {
             /* add param element */
             fm_fprintf(fd, "\x20\x20\x20\x20<param name=\"%s\">\n", p->name);
 
@@ -785,12 +692,145 @@ fmt_err_t param_load(char* path)
 }
 
 /**
+ * @brief Get the param table object
+ * 
+ * @return param_group_t* 
+ */
+param_group_t* get_param_table(void)
+{
+    return __param_table;
+}
+
+/**
+ * @brief Get the param group num
+ * 
+ * @return uint16_t 
+ */
+int16_t get_param_group_num(void)
+{
+    return __param_group_num;
+}
+
+/**
+ * @brief Link parameter with a object. When parameter modified, the linked
+ *        object will also be modified.
+ * 
+ * @param param parameter object
+ * @param obj 
+ * @return fmt_err_t 
+ */
+fmt_err_t param_link_object(param_t* param, void* obj)
+{
+    size_t val_size;
+
+    if (param == NULL) {
+        return FMT_EINVAL;
+    }
+
+    switch (param->type) {
+    case PARAM_TYPE_INT8:
+        val_size = sizeof(param->val.i8);
+        break;
+
+    case PARAM_TYPE_UINT8:
+        val_size = sizeof(param->val.u8);
+        break;
+
+    case PARAM_TYPE_INT16:
+        val_size = sizeof(param->val.i16);
+        break;
+
+    case PARAM_TYPE_UINT16:
+        val_size = sizeof(param->val.u16);
+        break;
+
+    case PARAM_TYPE_INT32:
+        val_size = sizeof(param->val.i32);
+        break;
+
+    case PARAM_TYPE_UINT32:
+        val_size = sizeof(param->val.u32);
+        break;
+
+    case PARAM_TYPE_FLOAT:
+        val_size = sizeof(param->val.f);
+        break;
+
+    case PARAM_TYPE_DOUBLE:
+        val_size = sizeof(param->val.lf);
+        break;
+
+    default:
+        return FMT_ENOTHANDLE;
+    }
+
+    OS_ENTER_CRITICAL;
+    param->obj = obj;
+    /* update object value immediately */
+    memcpy(param->obj, &param->val, val_size);
+    OS_EXIT_CRITICAL;
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Register parameter modify callback
+ * 
+ * @param on_modify callback function pointer
+ * @return fmt_err_t 
+ */
+fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param))
+{
+    struct on_modify_cb* node = (struct on_modify_cb*)rt_malloc(sizeof(struct on_modify_cb));
+
+    if (node == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    INIT_LIST_HEAD(&node->link);
+    node->on_modify = on_modify;
+
+    list_add_tail(&node->link, &__cb_list_head);
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Deregister parameter modify callback
+ * 
+ * @param on_modify callback function pointer
+ * @return fmt_err_t 
+ */
+fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param))
+{
+    struct on_modify_cb* pos;
+
+    list_for_each_entry(pos, struct on_modify_cb, &__cb_list_head, link)
+    {
+        if (pos->on_modify == on_modify) {
+            list_del(&pos->link);
+            rt_free(pos);
+
+            return FMT_EOK;
+        }
+    }
+
+    return FMT_ERROR;
+}
+
+/**
  * Initialize parameter module.
  * 
  * @return FMT Errors.
  */
 fmt_err_t param_init(void)
 {
+    extern const int __fmt_param_start;
+    extern const int __fmt_param_end;
+
+    __param_table = (param_group_t*)&__fmt_param_start;
+    __param_group_num = (param_group_t*)&__fmt_param_end - __param_table;
+
     /* load parameter from file */
     if (param_load(PARAM_FILE_NAME) != FMT_EOK) {
         console_printf("can not load %s, use default parameter value.\n", PARAM_FILE_NAME);

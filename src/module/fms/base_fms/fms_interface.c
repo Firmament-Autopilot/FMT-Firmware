@@ -16,6 +16,10 @@
 
 #include <FMS.h>
 #include <firmament.h>
+#include <string.h>
+
+#include "module/log/mlog.h"
+#include "module/param/param.h"
 
 #define TAG "FMS"
 
@@ -30,12 +34,77 @@ MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
+/* define parameters */
+static param_t __param_list[] = {
+    /* Stick Dead Zone */
+    PARAM_FLOAT(THROTTLE_DZ, 0.15),
+    PARAM_FLOAT(YAW_DZ, 0.15),
+    PARAM_FLOAT(ROLL_DZ, 0.1),
+    PARAM_FLOAT(PITCH_DZ, 0.1),
+    PARAM_FLOAT(XY_P, 0.95),
+    PARAM_FLOAT(Z_P, 1),
+    PARAM_FLOAT(VEL_XY_LIM, 5.0),
+    PARAM_FLOAT(VEL_Z_LIM, 2.5),
+    PARAM_FLOAT(YAW_P, 2.5),
+    PARAM_FLOAT(YAW_RATE_LIM, PI / 3),
+    PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6),
+};
+PARAM_GROUP_DEFINE(FMS, __param_list);
+
+/* define log data */
+static mlog_elem_t Pilot_Cmd_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(stick_yaw, MLOG_FLOAT),
+    MLOG_ELEMENT(stick_throttle, MLOG_FLOAT),
+    MLOG_ELEMENT(stick_roll, MLOG_FLOAT),
+    MLOG_ELEMENT(stick_pitch, MLOG_FLOAT),
+    MLOG_ELEMENT(mode, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_1, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+};
+MLOG_BUS_DEFINE(Pilot_Cmd, Pilot_Cmd_Elems);
+
+static mlog_elem_t GCS_Cmd_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(mode, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_1, MLOG_UINT32),
+    MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+};
+MLOG_BUS_DEFINE(GCS_Cmd, GCS_Cmd_Elems);
+
+static mlog_elem_t FMS_Out_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(p_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(q_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(r_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(phi_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(theta_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(psi_rate_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(u_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(v_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(w_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(throttle_cmd, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(actuator_cmd, MLOG_UINT16, 16),
+    MLOG_ELEMENT(status, MLOG_UINT8),
+    MLOG_ELEMENT(state, MLOG_UINT8),
+    MLOG_ELEMENT(ctrl_mode, MLOG_UINT8),
+    MLOG_ELEMENT(reset, MLOG_UINT8),
+    MLOG_ELEMENT(mode, MLOG_UINT8),
+    MLOG_ELEMENT(reserved1, MLOG_UINT8),
+    MLOG_ELEMENT(reserved2, MLOG_UINT16),
+};
+MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
+
 static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
 static uint8_t pilot_cmd_updated = 1;
 static uint8_t gcs_cmd_updated = 1;
+
+static int Pilot_Cmd_ID;
+static int GCS_Cmd_ID;
+static int FMS_Out_ID;
 
 fmt_model_info_t fms_model_info;
 
@@ -45,27 +114,23 @@ static void mlog_start_cb(void)
     gcs_cmd_updated = 1;
 }
 
-static void update_parameter(void)
+static void init_parameter(void)
 {
-    FMS_PARAM.THROTTLE_DZ = PARAM_GET_FLOAT(FMS, THROTTLE_DZ);
-    FMS_PARAM.YAW_DZ = PARAM_GET_FLOAT(FMS, YAW_DZ);
-    FMS_PARAM.ROLL_DZ = PARAM_GET_FLOAT(FMS, ROLL_DZ);
-    FMS_PARAM.PITCH_DZ = PARAM_GET_FLOAT(FMS, PITCH_DZ);
-    FMS_PARAM.XY_P = PARAM_GET_FLOAT(FMS, XY_P);
-    FMS_PARAM.Z_P = PARAM_GET_FLOAT(FMS, Z_P);
-    FMS_PARAM.VEL_XY_LIM = PARAM_GET_FLOAT(FMS, VEL_XY_LIM);
-    FMS_PARAM.VEL_Z_LIM = PARAM_GET_FLOAT(FMS, VEL_Z_LIM);
-    FMS_PARAM.YAW_P = PARAM_GET_FLOAT(FMS, YAW_P);
-    FMS_PARAM.YAW_RATE_LIM = PARAM_GET_FLOAT(FMS, YAW_RATE_LIM);
-    FMS_PARAM.ROLL_PITCH_LIM = PARAM_GET_FLOAT(FMS, ROLL_PITCH_LIM);
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "THROTTLE_DZ"), &FMS_PARAM.THROTTLE_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_DZ"), &FMS_PARAM.YAW_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "ROLL_DZ"), &FMS_PARAM.ROLL_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "PITCH_DZ"), &FMS_PARAM.PITCH_DZ));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "XY_P"), &FMS_PARAM.XY_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "Z_P"), &FMS_PARAM.Z_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "VEL_XY_LIM"), &FMS_PARAM.VEL_XY_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "VEL_Z_LIM"), &FMS_PARAM.VEL_Z_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_P"), &FMS_PARAM.YAW_P));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_RATE_LIM"), &FMS_PARAM.YAW_RATE_LIM));
+    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "ROLL_PITCH_LIM"), &FMS_PARAM.ROLL_PITCH_LIM));
 }
 
 void fms_interface_step(uint32_t timestamp)
 {
-#ifdef FMT_ONLINE_PARAM_TUNING
-    update_parameter();
-#endif
-
     if (mcn_poll(pilot_cmd_nod)) {
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &FMS_U.Pilot_Cmd);
 
@@ -95,20 +160,20 @@ void fms_interface_step(uint32_t timestamp)
     if (pilot_cmd_updated) {
         pilot_cmd_updated = 0;
         /* Log pilot command */
-        mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, MLOG_PILOT_CMD_ID, sizeof(Pilot_Cmd_Bus));
+        mlog_push_msg((uint8_t*)&FMS_U.Pilot_Cmd, Pilot_Cmd_ID, sizeof(Pilot_Cmd_Bus));
     }
 
     if (gcs_cmd_updated) {
         gcs_cmd_updated = 0;
         /* Log gcs command */
-        mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, MLOG_GCS_CMD_ID, sizeof(GCS_Cmd_Bus));
+        mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, GCS_Cmd_ID, sizeof(GCS_Cmd_Bus));
     }
 
     /* Log FMS output bus data */
     DEFINE_TIMETAG(fms_output, 100);
     if (check_timetag(TIMETAG(fms_output))) {
         /* Log FMS out data */
-        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Out, MLOG_FMS_OUT_ID, sizeof(FMS_Out_Bus));
+        mlog_push_msg((uint8_t*)&FMS_Y.FMS_Out, FMS_Out_ID, sizeof(FMS_Out_Bus));
     }
 }
 
@@ -124,9 +189,16 @@ void fms_interface_init(void)
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
+    Pilot_Cmd_ID = mlog_get_bus_id("Pilot_Cmd");
+    GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
+    FMS_Out_ID = mlog_get_bus_id("FMS_Out");
+    FMT_ASSERT(Pilot_Cmd_ID >= 0);
+    FMT_ASSERT(GCS_Cmd_ID >= 0);
+    FMT_ASSERT(FMS_Out_ID >= 0);
+
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     FMS_init();
 
-    update_parameter();
+    init_parameter();
 }

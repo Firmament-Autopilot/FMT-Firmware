@@ -247,10 +247,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
             mavlink_param_set_t param_set;
             mavlink_msg_param_set_decode(msg, &param_set);
 
-            if (mavlink_param_set(param_set.param_id, param_set.param_value) == FMT_EOK) {
-                param_t* param = param_get_by_name(param_set.param_id);
-                mavlink_param_send(param);
-            } else {
+            if (mavlink_param_set(param_set.param_id, param_set.param_value) != FMT_EOK) {
                 ulog_w(TAG, "set unknown parameter:%s\n", param_set.param_id);
             }
         }

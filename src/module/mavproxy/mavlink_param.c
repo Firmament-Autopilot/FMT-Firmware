@@ -422,62 +422,35 @@ static void make_mavlink_param_msg(mavlink_message_t* msg_t, const param_t* para
 
 fmt_err_t mavlink_param_set(const char* name, float val)
 {
+    fmt_err_t err;
     param_t* param;
+    double lfval;
+
     param = param_get_by_name(name);
 
     if (param == NULL) {
         return FMT_ERROR;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_ENTER_CRITICAL;
-#endif
-
     switch (param->type) {
     case PARAM_TYPE_INT8:
-        memcpy(&(param->val.i8), &val, sizeof(param->val.i8));
-        break;
-
     case PARAM_TYPE_UINT8:
-        memcpy(&(param->val.u8), &val, sizeof(param->val.u8));
-        break;
-
     case PARAM_TYPE_INT16:
-        memcpy(&(param->val.i16), &val, sizeof(param->val.i16));
-        break;
-
     case PARAM_TYPE_UINT16:
-        memcpy(&(param->val.u16), &val, sizeof(param->val.u16));
-        break;
-
     case PARAM_TYPE_INT32:
-        memcpy(&(param->val.i32), &val, sizeof(param->val.i32));
-        break;
-
     case PARAM_TYPE_UINT32:
-        memcpy(&(param->val.u32), &val, sizeof(param->val.u32));
-        break;
-
     case PARAM_TYPE_FLOAT:
-        param->val.f = val;
+        err = param_set_val(param, &val);
         break;
-
     case PARAM_TYPE_DOUBLE:
-        param->val.lf = val;
+        lfval = val;
+        err = param_set_val(param, &lfval);
         break;
-
     default:
-#ifdef FMT_ONLINE_PARAM_TUNING
-        OS_EXIT_CRITICAL;
-#endif
         return FMT_EINVAL;
     }
 
-#ifdef FMT_ONLINE_PARAM_TUNING
-    OS_EXIT_CRITICAL;
-#endif
-
-    return FMT_EOK;
+    return err;
 }
 
 fmt_err_t mavlink_param_send(const param_t* param)
@@ -498,7 +471,7 @@ void mavlink_param_sendall(void)
 {
     mavlink_message_t msg;
     param_t* param;
-    param_group_t* gp = (param_group_t*)&param_list;
+    param_group_t* gp = get_param_table();
     mav_param_t* mav_param;
 
     for (uint32_t i = 0; i < MAV_PARAM_COUNT; i++) {
@@ -512,8 +485,8 @@ void mavlink_param_sendall(void)
         mavproxy_send_immediate_msg(&msg, true);
     }
 
-    for (uint32_t i = 0; i < sizeof(param_list_t) / sizeof(param_group_t); i++) {
-        param = gp->content;
+    for (uint32_t i = 0; i < get_param_group_num(); i++) {
+        param = gp->param_list;
 
         for (uint32_t j = 0; j < gp->param_num; j++) {
             make_mavlink_param_msg(&msg, param);

@@ -17,6 +17,8 @@
 #include <Plant.h>
 #include <firmament.h>
 
+#include "module/log/mlog.h"
+#include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
 #define TAG "Plant"
@@ -32,11 +34,40 @@ MCN_DECLARE(sensor_gps);
 // plant model input
 MCN_DECLARE(control_output);
 
+/* define log data */
+static mlog_elem_t Plant_States_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(phi, MLOG_FLOAT),
+    MLOG_ELEMENT(theta, MLOG_FLOAT),
+    MLOG_ELEMENT(psi, MLOG_FLOAT),
+    MLOG_ELEMENT(rot_x_B, MLOG_FLOAT),
+    MLOG_ELEMENT(rot_y_B, MLOG_FLOAT),
+    MLOG_ELEMENT(rot_z_B, MLOG_FLOAT),
+    MLOG_ELEMENT(acc_x_O, MLOG_FLOAT),
+    MLOG_ELEMENT(acc_y_O, MLOG_FLOAT),
+    MLOG_ELEMENT(acc_z_O, MLOG_FLOAT),
+    MLOG_ELEMENT(vel_x_O, MLOG_FLOAT),
+    MLOG_ELEMENT(vel_y_O, MLOG_FLOAT),
+    MLOG_ELEMENT(vel_z_O, MLOG_FLOAT),
+    MLOG_ELEMENT(x_R, MLOG_FLOAT),
+    MLOG_ELEMENT(y_R, MLOG_FLOAT),
+    MLOG_ELEMENT(h_R, MLOG_FLOAT),
+    MLOG_ELEMENT(lon, MLOG_DOUBLE),
+    MLOG_ELEMENT(lat, MLOG_DOUBLE),
+    MLOG_ELEMENT(alt, MLOG_DOUBLE),
+    MLOG_ELEMENT(lon_ref, MLOG_DOUBLE),
+    MLOG_ELEMENT(lat_ref, MLOG_DOUBLE),
+    MLOG_ELEMENT(alt_ref, MLOG_DOUBLE),
+};
+MLOG_BUS_DEFINE(Plant_States, Plant_States_Elems);
+
 static McnNode_t control_out_nod;
 static uint32_t imu_timestamp = 0xFFFF;
 static uint32_t mag_timestamp = 0xFFFF;
 static uint32_t baro_timestamp = 0xFFFF;
 static uint32_t gps_timestamp = 0xFFFF;
+
+static int Plant_States_ID;
 
 fmt_model_info_t plant_model_info;
 
@@ -118,7 +149,7 @@ void plant_interface_step(uint32_t timestamp)
     DEFINE_TIMETAG(plant_output, 100);
     if (check_timetag(TIMETAG(plant_output))) {
         /* Log Control out data */
-        mlog_push_msg((uint8_t*)&Plant_Y.Plant_States, MLOG_PLANT_STATE_ID, sizeof(Plant_States_Bus));
+        mlog_push_msg((uint8_t*)&Plant_Y.Plant_States, Plant_States_ID, sizeof(Plant_States_Bus));
     }
 
     /* publish sensor model's data */
@@ -131,6 +162,9 @@ void plant_interface_init(void)
     plant_model_info.info = (char*)PLANT_EXPORT.model_info;
 
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+
+    Plant_States_ID = mlog_get_bus_id("Plant_States");
+    FMT_ASSERT(Plant_States_ID >= 0);
 
     if (control_out_nod == NULL) {
         ulog_e(TAG, "uMCN topic control_output subscribe fail!\n");
