@@ -1,0 +1,16 @@
+from building import *
+import buildlist as bl
+
+cwd = GetCurrentDir()
+
+src = []
+for f in bl.MODELS:
+    src += Glob(f)
+
+inc = []
+for d in bl.MODELS_CPPPATH:
+    inc += [cwd + '/' + d]
+
+group = DefineGroup('Model', src, depend=[''], CPPPATH=inc)
+
+Return('group')

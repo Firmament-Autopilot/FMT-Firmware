@@ -35,14 +35,6 @@ MODULES = [
     'system/*.c',
     'ipc/*.c',
     'ftp/*.c',
-    'plant/multicopter/*.c',
-    'plant/multicopter/lib/*.c',
-    'ins/base_ins/*.c',
-    'ins/base_ins/lib/*.c',
-    'control/base_controller/*.c',
-    'control/base_controller/lib/*.c',
-    'fms/base_fms/*.c',
-    'fms/base_fms/lib/*.c',
     "log/*.c",
     "param/*.c",
     'utils/*.c',
@@ -69,10 +61,24 @@ MODULES = [
 
 MODULES_CPPPATH = [
     'calibration',
-    'ins/base_ins/lib',
+]
+
+MODELS = [
+    'plant/multicopter/*.c',
+    'plant/multicopter/lib/*.c',
+    'ins/base_ins/*.c',
+    'ins/base_ins/lib/*.c',
+    'fms/base_fms/*.c',
+    'fms/base_fms/lib/*.c',
+    'control/base_controller/*.c',
+    'control/base_controller/lib/*.c',
+]
+
+MODELS_CPPPATH = [
     'plant/multicopter/lib',
-    'control/base_controller/lib',
+    'ins/base_ins/lib',
     'fms/base_fms/lib',
+    'control/base_controller/lib',
 ]
 
 TASKS = [
