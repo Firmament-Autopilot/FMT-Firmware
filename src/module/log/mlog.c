@@ -286,7 +286,7 @@ int mlog_get_bus_id(const char* bus_name)
 {
     /* this function may be called before mlog_init */
     mlog_bus_t* mlog_table = (mlog_bus_t*)&__fmt_mlog_start;
-    uint8_t mlog_bus_num = (mlog_bus_t*)&__fmt_mlog_end - __mlog_table;
+    uint8_t mlog_bus_num = (mlog_bus_t*)&__fmt_mlog_end - mlog_table;
 
     for (uint8_t n = 0; n < mlog_bus_num; n++) {
         if (strcmp(bus_name, mlog_table[n].name) == 0) {
