@@ -292,6 +292,14 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         }
     } break;
 
+    case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+    case MAVLINK_MSG_ID_MISSION_COUNT:
+    case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
+    case MAVLINK_MSG_ID_MISSION_ITEM_INT:
+    case MAVLINK_MSG_ID_MISSION_ACK:
+        handle_mission_message(msg);
+        break;
+
 #if defined(FMT_USING_HIL)
     case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
@@ -348,7 +356,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #endif
 
     default: {
-        // console_printf("unknown mavlink msg:%d\n", msg->msgid);
+        console_printf("unknown mavlink msg:%d\n", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }
