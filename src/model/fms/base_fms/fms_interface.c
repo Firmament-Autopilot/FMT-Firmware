@@ -116,17 +116,17 @@ static void mlog_start_cb(void)
 
 static void init_parameter(void)
 {
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "THROTTLE_DZ"), &FMS_PARAM.THROTTLE_DZ));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_DZ"), &FMS_PARAM.YAW_DZ));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "ROLL_DZ"), &FMS_PARAM.ROLL_DZ));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "PITCH_DZ"), &FMS_PARAM.PITCH_DZ));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "XY_P"), &FMS_PARAM.XY_P));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "Z_P"), &FMS_PARAM.Z_P));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "VEL_XY_LIM"), &FMS_PARAM.VEL_XY_LIM));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "VEL_Z_LIM"), &FMS_PARAM.VEL_Z_LIM));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_P"), &FMS_PARAM.YAW_P));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "YAW_RATE_LIM"), &FMS_PARAM.YAW_RATE_LIM));
-    FMT_CHECK(param_link_object(param_get_by_full_name("FMS", "ROLL_PITCH_LIM"), &FMS_PARAM.ROLL_PITCH_LIM));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "THROTTLE_DZ"), &FMS_PARAM.THROTTLE_DZ));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "YAW_DZ"), &FMS_PARAM.YAW_DZ));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "ROLL_DZ"), &FMS_PARAM.ROLL_DZ));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "PITCH_DZ"), &FMS_PARAM.PITCH_DZ));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "XY_P"), &FMS_PARAM.XY_P));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "Z_P"), &FMS_PARAM.Z_P));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "VEL_XY_LIM"), &FMS_PARAM.VEL_XY_LIM));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "VEL_Z_LIM"), &FMS_PARAM.VEL_Z_LIM));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "YAW_P"), &FMS_PARAM.YAW_P));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "YAW_RATE_LIM"), &FMS_PARAM.YAW_RATE_LIM));
+    FMT_CHECK(param_link_variable(param_get_by_full_name("FMS", "ROLL_PITCH_LIM"), &FMS_PARAM.ROLL_PITCH_LIM));
 }
 
 void fms_interface_step(uint32_t timestamp)

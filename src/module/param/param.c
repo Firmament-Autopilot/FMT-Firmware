@@ -466,9 +466,9 @@ fmt_err_t param_set_val(param_t* param, void* val)
     OS_ENTER_CRITICAL;
 
     memcpy(&(param->val), val, val_size);
-    /* also update the linked object */
-    if (param->obj != NULL) {
-        memcpy(param->obj, val, val_size);
+    /* also update the linked variable */
+    if (param->var != NULL) {
+        memcpy(param->var, val, val_size);
     }
 
     OS_EXIT_CRITICAL;
@@ -719,7 +719,7 @@ int16_t get_param_group_num(void)
  * @param obj 
  * @return fmt_err_t 
  */
-fmt_err_t param_link_object(param_t* param, void* obj)
+fmt_err_t param_link_variable(param_t* param, void* var)
 {
     size_t val_size;
 
@@ -765,9 +765,9 @@ fmt_err_t param_link_object(param_t* param, void* obj)
     }
 
     OS_ENTER_CRITICAL;
-    param->obj = obj;
+    param->var = var;
     /* update object value immediately */
-    memcpy(param->obj, &param->val, val_size);
+    memcpy(param->var, &param->val, val_size);
     OS_EXIT_CRITICAL;
 
     return FMT_EOK;

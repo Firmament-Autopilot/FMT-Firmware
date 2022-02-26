@@ -70,7 +70,7 @@ typedef union {
 typedef struct {
     const char* name;
     const uint8_t type;
-    void* obj;
+    void* var;
     param_value_t val;
 } param_t;
 
@@ -85,7 +85,7 @@ typedef struct {
     {                               \
         .name = #_name,             \
         .type = PARAM_TYPE_INT8,    \
-        .obj = NULL,                \
+        .var = NULL,                \
         .val.i8 = _default          \
     }
 
@@ -93,7 +93,7 @@ typedef struct {
     {                                \
         .name = #_name,              \
         .type = PARAM_TYPE_UINT8,    \
-        .obj = NULL,                 \
+        .var = NULL,                 \
         .val.u8 = _default           \
     }
 
@@ -101,7 +101,7 @@ typedef struct {
     {                                \
         .name = #_name,              \
         .type = PARAM_TYPE_INT16,    \
-        .obj = NULL,                 \
+        .var = NULL,                 \
         .val.i16 = _default          \
     }
 
@@ -109,7 +109,7 @@ typedef struct {
     {                                 \
         .name = #_name,               \
         .type = PARAM_TYPE_UINT16,    \
-        .obj = NULL,                  \
+        .var = NULL,                  \
         .val.u16 = _default           \
     }
 
@@ -117,7 +117,7 @@ typedef struct {
     {                                \
         .name = #_name,              \
         .type = PARAM_TYPE_INT32,    \
-        .obj = NULL,                 \
+        .var = NULL,                 \
         .val.i32 = _default          \
     }
 
@@ -125,7 +125,7 @@ typedef struct {
     {                                 \
         .name = #_name,               \
         .type = PARAM_TYPE_UINT32,    \
-        .obj = NULL,                  \
+        .var = NULL,                  \
         .val.u32 = _default           \
     }
 
@@ -133,7 +133,7 @@ typedef struct {
     {                                \
         .name = #_name,              \
         .type = PARAM_TYPE_FLOAT,    \
-        .obj = NULL,                 \
+        .var = NULL,                 \
         .val.f = _default            \
     }
 
@@ -141,7 +141,7 @@ typedef struct {
     {                                 \
         .name = #_name,               \
         .type = PARAM_TYPE_DOUBLE,    \
-        .obj = NULL,                  \
+        .var = NULL,                  \
         .val.lf = _default            \
     }
 
@@ -162,23 +162,24 @@ typedef struct {
 #define PARAM_VALUE_FLOAT(_param)  (_param)->val.f
 #define PARAM_VALUE_DOUBLE(_param) (_param)->val.lf
 
-#define PARAM_GET_INT8(_group, _name)   PARAM_VALUE_INT8(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_UINT8(_group, _name)  PARAM_VALUE_UINT8(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_INT16(_group, _name)  PARAM_VALUE_INT16(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_UINT16(_group, _name) PARAM_VALUE_UINT16(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_INT32(_group, _name)  PARAM_VALUE_INT32(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_UINT32(_group, _name) PARAM_VALUE_UINT32(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_FLOAT(_group, _name)  PARAM_VALUE_FLOAT(param_get_by_full_name(#_group, #_name))
-#define PARAM_GET_DOUBLE(_group, _name) PARAM_VALUE_DOUBLE(param_get_by_full_name(#_group, #_name))
+#define PARAM_GET(_group, _name)        param_get_by_full_name(#_group, #_name)
+#define PARAM_GET_INT8(_group, _name)   PARAM_VALUE_INT8(PARAM_GET(_group, _name))
+#define PARAM_GET_UINT8(_group, _name)  PARAM_VALUE_UINT8(PARAM_GET(_group, _name))
+#define PARAM_GET_INT16(_group, _name)  PARAM_VALUE_INT16(PARAM_GET(_group, _name))
+#define PARAM_GET_UINT16(_group, _name) PARAM_VALUE_UINT16(PARAM_GET(_group, _name))
+#define PARAM_GET_INT32(_group, _name)  PARAM_VALUE_INT32(PARAM_GET(_group, _name))
+#define PARAM_GET_UINT32(_group, _name) PARAM_VALUE_UINT32(PARAM_GET(_group, _name))
+#define PARAM_GET_FLOAT(_group, _name)  PARAM_VALUE_FLOAT(PARAM_GET(_group, _name))
+#define PARAM_GET_DOUBLE(_group, _name) PARAM_VALUE_DOUBLE(PARAM_GET(_group, _name))
 
-#define PARAM_SET_INT8(_group, _name, _val)   param_set_val(param_get_by_full_name(#_group, #_name), &((int8_t) { _val }))
-#define PARAM_SET_UINT8(_group, _name, _val)  param_set_val(param_get_by_full_name(#_group, #_name), &((uint8_t) { _val }))
-#define PARAM_SET_INT16(_group, _name, _val)  param_set_val(param_get_by_full_name(#_group, #_name), &((int16_t) { _val }))
-#define PARAM_SET_UINT16(_group, _name, _val) param_set_val(param_get_by_full_name(#_group, #_name), &((uint16_t) { _val }))
-#define PARAM_SET_INT32(_group, _name, _val)  param_set_val(param_get_by_full_name(#_group, #_name), &((int32_t) { _val }))
-#define PARAM_SET_UINT32(_group, _name, _val) param_set_val(param_get_by_full_name(#_group, #_name), &((uint32_t) { _val }))
-#define PARAM_SET_FLOAT(_group, _name, _val)  param_set_val(param_get_by_full_name(#_group, #_name), &((float) { _val }))
-#define PARAM_SET_DOUBLE(_group, _name, _val) param_set_val(param_get_by_full_name(#_group, #_name), &((double) { _val }))
+#define PARAM_SET_INT8(_group, _name, _val)   param_set_val(PARAM_GET(_group, _name), &((int8_t) { _val }))
+#define PARAM_SET_UINT8(_group, _name, _val)  param_set_val(PARAM_GET(_group, _name), &((uint8_t) { _val }))
+#define PARAM_SET_INT16(_group, _name, _val)  param_set_val(PARAM_GET(_group, _name), &((int16_t) { _val }))
+#define PARAM_SET_UINT16(_group, _name, _val) param_set_val(PARAM_GET(_group, _name), &((uint16_t) { _val }))
+#define PARAM_SET_INT32(_group, _name, _val)  param_set_val(PARAM_GET(_group, _name), &((int32_t) { _val }))
+#define PARAM_SET_UINT32(_group, _name, _val) param_set_val(PARAM_GET(_group, _name), &((uint32_t) { _val }))
+#define PARAM_SET_FLOAT(_group, _name, _val)  param_set_val(PARAM_GET(_group, _name), &((float) { _val }))
+#define PARAM_SET_DOUBLE(_group, _name, _val) param_set_val(PARAM_GET(_group, _name), &((double) { _val }))
 
 /********************** API **********************/
 fmt_err_t param_init(void);
@@ -205,7 +206,7 @@ int16_t get_param_group_num(void);
 
 fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param));
 fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param));
-fmt_err_t param_link_object(param_t* param, void* obj);
+fmt_err_t param_link_variable(param_t* param, void* var);
 
 #ifdef __cplusplus
 }
