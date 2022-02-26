@@ -603,8 +603,8 @@ fmt_err_t mlog_init(void)
     mlog_handle.header.max_model_info_len = MLOG_MODEL_INFO_SIZE;
     mlog_handle.header.num_bus = __mlog_bus_num;
     mlog_handle.header.bus_list = __mlog_table;
-    mlog_handle.header.num_param_group = get_param_group_num();
-    mlog_handle.header.param_group_list = get_param_table();
+    mlog_handle.header.num_param_group = param_get_group_count();
+    mlog_handle.header.param_group_list = param_get_table();
     memset(mlog_handle.header.description, 0, MLOG_DESCRIPTION_SIZE);
 
     /* initialize mlog_handle buffer */

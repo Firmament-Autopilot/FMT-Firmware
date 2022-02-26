@@ -128,12 +128,12 @@ static void list_group(param_group_t* gp)
 
 static void list_groups(void)
 {
-    param_group_t* gp = get_param_table();
+    param_group_t* gp = param_get_table();
 
     printf(" parameter groups \n");
     printf("------------------\n");
 
-    for (int i = 0; i < get_param_group_num(); i++) {
+    for (int i = 0; i < param_get_group_count(); i++) {
         printf("%s\n", gp->name);
         gp++;
     }
@@ -141,9 +141,9 @@ static void list_groups(void)
 
 static void list_all(void)
 {
-    param_group_t* gp = get_param_table();
+    param_group_t* gp = param_get_table();
 
-    for (int i = 0; i < get_param_group_num(); i++) {
+    for (int i = 0; i < param_get_group_count(); i++) {
         list_group(gp++);
     }
 }

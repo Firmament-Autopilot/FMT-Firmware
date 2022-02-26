@@ -696,7 +696,7 @@ fmt_err_t param_load(char* path)
  * 
  * @return param_group_t* 
  */
-param_group_t* get_param_table(void)
+param_group_t* param_get_table(void)
 {
     return __param_table;
 }
@@ -706,7 +706,7 @@ param_group_t* get_param_table(void)
  * 
  * @return uint16_t 
  */
-int16_t get_param_group_num(void)
+int16_t param_get_group_count(void)
 {
     return __param_group_num;
 }
