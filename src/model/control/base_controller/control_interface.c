@@ -92,38 +92,38 @@ static int control_out_echo(void* param)
 
 static void init_parameter(void)
 {
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_P"), &CONTROL_PARAM.VEL_XY_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_I"), &CONTROL_PARAM.VEL_XY_I));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_D"), &CONTROL_PARAM.VEL_XY_D));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_P"), &CONTROL_PARAM.VEL_Z_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_I"), &CONTROL_PARAM.VEL_Z_I));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_D"), &CONTROL_PARAM.VEL_Z_D));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_I_MIN"), &CONTROL_PARAM.VEL_XY_I_MIN));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_I_MAX"), &CONTROL_PARAM.VEL_XY_I_MAX));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_D_MIN"), &CONTROL_PARAM.VEL_XY_D_MIN));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_XY_D_MAX"), &CONTROL_PARAM.VEL_XY_D_MAX));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_I_MIN"), &CONTROL_PARAM.VEL_Z_I_MIN));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_I_MAX"), &CONTROL_PARAM.VEL_Z_I_MAX));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_D_MIN"), &CONTROL_PARAM.VEL_Z_D_MIN));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "VEL_Z_D_MAX"), &CONTROL_PARAM.VEL_Z_D_MAX));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "ROLL_P"), &CONTROL_PARAM.ROLL_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "PITCH_P"), &CONTROL_PARAM.PITCH_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "ROLL_PITCH_CMD_LIM"), &CONTROL_PARAM.ROLL_PITCH_CMD_LIM));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "ROLL_RATE_P"), &CONTROL_PARAM.ROLL_RATE_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "PITCH_RATE_P"), &CONTROL_PARAM.PITCH_RATE_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "YAW_RATE_P"), &CONTROL_PARAM.YAW_RATE_P));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "ROLL_RATE_I"), &CONTROL_PARAM.ROLL_RATE_I));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "PITCH_RATE_I"), &CONTROL_PARAM.PITCH_RATE_I));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "YAW_RATE_I"), &CONTROL_PARAM.YAW_RATE_I));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "ROLL_RATE_D"), &CONTROL_PARAM.ROLL_RATE_D));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "PITCH_RATE_D"), &CONTROL_PARAM.PITCH_RATE_D));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "YAW_RATE_D"), &CONTROL_PARAM.YAW_RATE_D));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "RATE_I_MIN"), &CONTROL_PARAM.RATE_I_MIN));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "RATE_I_MAX"), &CONTROL_PARAM.RATE_I_MAX));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "RATE_D_MIN"), &CONTROL_PARAM.RATE_D_MIN));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "RATE_D_MAX"), &CONTROL_PARAM.RATE_D_MAX));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "P_Q_CMD_LIM"), &CONTROL_PARAM.P_Q_CMD_LIM));
-    FMT_CHECK(param_link_variable(param_get_by_full_name("CONTROL", "R_CMD_LIM"), &CONTROL_PARAM.R_CMD_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_P), &CONTROL_PARAM.VEL_XY_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_I), &CONTROL_PARAM.VEL_XY_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_D), &CONTROL_PARAM.VEL_XY_D));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_P), &CONTROL_PARAM.VEL_Z_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_I), &CONTROL_PARAM.VEL_Z_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_D), &CONTROL_PARAM.VEL_Z_D));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_I_MIN), &CONTROL_PARAM.VEL_XY_I_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_I_MAX), &CONTROL_PARAM.VEL_XY_I_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_D_MIN), &CONTROL_PARAM.VEL_XY_D_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_XY_D_MAX), &CONTROL_PARAM.VEL_XY_D_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_I_MIN), &CONTROL_PARAM.VEL_Z_I_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_I_MAX), &CONTROL_PARAM.VEL_Z_I_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_D_MIN), &CONTROL_PARAM.VEL_Z_D_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_Z_D_MAX), &CONTROL_PARAM.VEL_Z_D_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_P), &CONTROL_PARAM.ROLL_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, PITCH_P), &CONTROL_PARAM.PITCH_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_PITCH_CMD_LIM), &CONTROL_PARAM.ROLL_PITCH_CMD_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_RATE_P), &CONTROL_PARAM.ROLL_RATE_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, PITCH_RATE_P), &CONTROL_PARAM.PITCH_RATE_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, YAW_RATE_P), &CONTROL_PARAM.YAW_RATE_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_RATE_I), &CONTROL_PARAM.ROLL_RATE_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, PITCH_RATE_I), &CONTROL_PARAM.PITCH_RATE_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, YAW_RATE_I), &CONTROL_PARAM.YAW_RATE_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_RATE_D), &CONTROL_PARAM.ROLL_RATE_D));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, PITCH_RATE_D), &CONTROL_PARAM.PITCH_RATE_D));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, YAW_RATE_D), &CONTROL_PARAM.YAW_RATE_D));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_I_MIN), &CONTROL_PARAM.RATE_I_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_I_MAX), &CONTROL_PARAM.RATE_I_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_D_MIN), &CONTROL_PARAM.RATE_D_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_D_MAX), &CONTROL_PARAM.RATE_D_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, P_Q_CMD_LIM), &CONTROL_PARAM.P_Q_CMD_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_CMD_LIM), &CONTROL_PARAM.R_CMD_LIM));
 }
 
 void control_interface_step(uint32_t timestamp)
