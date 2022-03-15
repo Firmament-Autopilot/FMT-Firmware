@@ -18,8 +18,7 @@
 
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
-
-#define MISSION_FILE "/sys/mission.txt"
+#include "module/sysio/mission_data.h"
 
 static uint16_t wp_cnt;
 static uint16_t wp_seq;
@@ -92,7 +91,8 @@ static void handle_message_mission_count(mavlink_message_t* msg)
         if (wp_fd < 0) {
             printf("Fail to open %s\n", MISSION_FILE);
         }
-
+        /* write mission count to the first line */
+        fm_fprintf(wp_fd, "%u\n", wp_cnt);
         /* start to download waypoint from GCS */
         send_mission_request(msg->sysid, msg->compid, wp_seq);
     }
@@ -121,7 +121,8 @@ static void handle_message_mission_item(mavlink_message_t* msg)
      * <INDEX> <CURRENT WP> <COORD FRAME> <COMMAND> <PARAM1> <PARAM2> <PARAM3> <PARAM4> 
      * <PARAM5/X/LATITUDE> <PARAM6/Y/LONGITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE> 
      */
-    fm_fprintf(wp_fd, "%d\t%u\t%u\t%u\t%f\t%f\t%f\t%f\t%d\t%d\t%f\t%d\n",
+    // fm_fprintf(wp_fd, "%d\t%u\t%u\t%u\t%f\t%f\t%f\t%f\t%d\t%d\t%f\t%d\n",
+    fm_fprintf(wp_fd, "%hu\t%hhu\t%hhu\t%hu\t%f\t%f\t%f\t%f\t%ld\t%ld\t%f\t%hhu\n",
         mission_item_int.seq, mission_item_int.current, mission_item_int.frame, mission_item_int.command,
         mission_item_int.param1, mission_item_int.param2, mission_item_int.param3, mission_item_int.param4,
         mission_item_int.x, mission_item_int.y, mission_item_int.z, mission_item_int.autocontinue);
@@ -133,6 +134,12 @@ static void handle_message_mission_item(mavlink_message_t* msg)
         wp_fd = -1;
         /* send ack with accepted result */
         send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
+        /* load new mission data */
+        if (load_mission_data(MISSION_FILE) == FMT_EOK) {
+            printf("mission data loaded from %s\n", MISSION_FILE);
+        } else {
+            printf("fail to load mission data from %s\n", MISSION_FILE);
+        }
     } else {
         /* request next item */
         wp_seq++;

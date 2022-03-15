@@ -56,6 +56,7 @@
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
+#include "module/sysio/mission_data.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
 #include "module/task_manager/task_manager.h"
@@ -383,6 +384,9 @@ void bsp_post_initialize(void)
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
+
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */
