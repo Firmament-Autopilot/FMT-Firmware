@@ -34,6 +34,20 @@ static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
 static uint16_t mission_data_size = sizeof(data_bus.seq) / sizeof(data_bus.seq[0]);
 
+uint16_t get_mission_count(void)
+{
+    return mission_count;
+}
+
+struct mission_item* get_mission_item(uint16_t seq)
+{
+    if (seq >= mission_count || mission_data == NULL) {
+        return NULL;
+    }
+
+    return &mission_data[seq];
+}
+
 fmt_err_t mission_data_reset(void)
 {
     /* reset current sequence number */

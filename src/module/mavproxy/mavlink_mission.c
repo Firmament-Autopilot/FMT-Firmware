@@ -40,6 +40,45 @@ static void send_mission_count(uint8_t sysid, uint8_t compid, uint16_t count, MA
     mavproxy_send_immediate_msg(&msg, true);
 }
 
+static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq)
+{
+    mavlink_system_t mavsys = mavproxy_get_system();
+    mavlink_message_t msg;
+    mavlink_mission_item_int_t mav_mission_item;
+    struct mission_item* mission_item;
+
+    mission_item = get_mission_item(seq);
+    if (mission_item == NULL) {
+        printf("Error: can't find mission item with seq=%d\n", seq);
+        return;
+    }
+
+    if (mission_item->seq != seq) {
+        printf("Error: mission item seq not matched! %d %d\n", seq, mission_item->seq);
+        return;
+    }
+
+    mav_mission_item.param1 = mission_item->param1;
+    mav_mission_item.param2 = mission_item->param2;
+    mav_mission_item.param3 = mission_item->param3;
+    mav_mission_item.param4 = mission_item->param4;
+    mav_mission_item.x = mission_item->x;
+    mav_mission_item.y = mission_item->y;
+    mav_mission_item.z = mission_item->z;
+    mav_mission_item.seq = mission_item->seq;
+    mav_mission_item.command = mission_item->command;
+    mav_mission_item.target_system = sysid;
+    mav_mission_item.target_component = compid;
+    mav_mission_item.frame = mission_item->frame;
+    mav_mission_item.current = mission_item->current;
+    mav_mission_item.autocontinue = mission_item->autocontinue;
+    mav_mission_item.mission_type = mission_item->mission_type;
+
+    mavlink_msg_mission_item_int_encode(mavsys.sysid, mavsys.compid, &msg, &mav_mission_item);
+
+    mavproxy_send_immediate_msg(&msg, true);
+}
+
 static void send_mission_request(uint8_t sysid, uint8_t compid, uint16_t seq)
 {
     mavlink_system_t mavsys = mavproxy_get_system();
@@ -68,6 +107,20 @@ static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type)
 
     mavlink_msg_mission_ack_encode(mavsys.sysid, mavsys.compid, &msg, &mission_ack);
     mavproxy_send_immediate_msg(&msg, true);
+}
+
+static void handle_message_mission_request_list(mavlink_message_t* msg)
+{
+    send_mission_count(msg->sysid, msg->compid, get_mission_count(), MAV_MISSION_TYPE_MISSION);
+}
+
+static void handle_message_mission_request_int(mavlink_message_t* msg)
+{
+    mavlink_mission_request_int_t mission_req_int;
+
+    mavlink_msg_mission_request_int_decode(msg, &mission_req_int);
+
+    send_mission_item(msg->sysid, msg->compid, mission_req_int.seq);
 }
 
 static void handle_message_mission_count(mavlink_message_t* msg)
@@ -151,15 +204,19 @@ void handle_mission_message(mavlink_message_t* msg)
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-        send_mission_count(msg->sysid, msg->compid, 0, MAV_MISSION_TYPE_MISSION);
+        handle_message_mission_request_list(msg);
         break;
     case MAVLINK_MSG_ID_MISSION_COUNT:
         handle_message_mission_count(msg);
         break;
     case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
+        handle_message_mission_request_int(msg);
         break;
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
         handle_message_mission_item(msg);
+        break;
+    case MAVLINK_MSG_ID_MISSION_ACK:
+        printf("Received mission ack!\n");
         break;
     default:
         break;
