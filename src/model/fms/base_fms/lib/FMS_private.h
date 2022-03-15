@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1592
+ * Model version                  : 1.1608
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 15 10:56:38 2022
+ * C/C++ source code generated on : Tue Mar 15 16:08:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -123,6 +123,9 @@ extern void FMS_MotionStatus_o_Init(DW_MotionStatus_FMS_a_T *localDW);
 extern void FMS_MotionStatus_n_Reset(DW_MotionStatus_FMS_a_T *localDW);
 extern void FMS_MotionStatus_b(boolean_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionStatus_FMS_a_T *localDW);
+extern void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const
+  real_T rtu_llo[2], real_T rtu_href, real_T rtu_psio, real32_T rty_pos[3],
+  const ConstB_VehicleArmAutoMissionL_T *localC);
 
 #endif                                 /* RTW_HEADER_FMS_private_h_ */
 

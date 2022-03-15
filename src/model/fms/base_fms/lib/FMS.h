@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1592
+ * Model version                  : 1.1608
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 15 10:56:38 2022
+ * C/C++ source code generated on : Tue Mar 15 16:08:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -112,7 +112,7 @@ typedef struct {
   real_T href;                         /* '<Root>/FMS State Machine' */
   real_T psio;                         /* '<Root>/FMS State Machine' */
   real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
-  real32_T DataTypeConversion[3];      /* '<S321>/Data Type Conversion' */
+  real32_T DataTypeConversion[3];      /* '<S323>/Data Type Conversion' */
   real32_T Merge[2];                   /* '<S93>/Merge' */
   real32_T Merge_k;                    /* '<S69>/Merge' */
   real32_T Merge_d;                    /* '<S80>/Merge' */
@@ -129,9 +129,9 @@ typedef struct {
   VehicleState state;                  /* '<Root>/FMS State Machine' */
   PilotMode target_mode;               /* '<Root>/Mode Degrade' */
   FMS_Cmd fms_cmd;                     /* '<S8>/Switch' */
-  uint16_T WPIndex;                    /* '<Root>/FMS State Machine' */
+  uint16_T wp_consume;                 /* '<Root>/FMS State Machine' */
   boolean_T LogicalOperator1;          /* '<S6>/Logical Operator1' */
-  boolean_T Compare;                   /* '<S333>/Compare' */
+  boolean_T Compare;                   /* '<S335>/Compare' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -144,8 +144,8 @@ typedef struct {
   void* M_msgInterface;                /* '<Root>/FMS State Machine' */
   void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S335>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S336>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S337>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S338>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE;         /* '<S49>/Integrator1' */
   real32_T Integrator_DSTATE;          /* '<S49>/Integrator' */
   real32_T Integrator1_DSTATE_o;       /* '<S50>/Integrator1' */
@@ -214,8 +214,8 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_bn;/* '<S221>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_k; /* '<S287>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_g; /* '<S277>/Switch Case' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S335>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S336>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S337>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S338>/Discrete-Time Integrator5' */
   uint8_T is_active_c3_FMS;            /* '<Root>/Mode Degrade' */
   uint8_T is_c3_FMS;                   /* '<Root>/Mode Degrade' */
   uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
@@ -323,11 +323,15 @@ typedef struct {
   const real32_T Gain4;                /* '<S231>/Gain4' */
 } ConstB_MoveControl_FMS_f_T;
 
+/* Invariant block signals for system '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+typedef struct {
+  const real_T Sum;                    /* '<S326>/Sum' */
+  const real_T ff;                     /* '<S326>/Multiply3' */
+  const real_T Sum4;                   /* '<S326>/Sum4' */
+} ConstB_VehicleArmAutoMissionL_T;
+
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real_T Sum;                    /* '<S324>/Sum' */
-  const real_T ff;                     /* '<S324>/Multiply3' */
-  const real_T Sum4;                   /* '<S324>/Sum4' */
   const real32_T Square;               /* '<S51>/Square' */
   const real32_T d;                    /* '<S51>/Multiply' */
   const real32_T Gain4;                /* '<S51>/Gain4' */
@@ -363,7 +367,7 @@ typedef struct {
   const real32_T d_l;                  /* '<S263>/Multiply' */
   const real32_T Gain4_np;             /* '<S263>/Gain4' */
   const real32_T VectorConcatenate3_f[3];/* '<S250>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_fb[3];/* '<S320>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3_fb[3];/* '<S322>/Vector Concatenate3' */
   const uint8_T DataTypeConversion;    /* '<S23>/Data Type Conversion' */
   const uint8_T DataTypeConversion1;   /* '<S23>/Data Type Conversion1' */
   const uint8_T DataTypeConversion_b;  /* '<S28>/Data Type Conversion' */
@@ -397,6 +401,7 @@ typedef struct {
   const uint8_T DataTypeConversion2_d; /* '<S206>/Data Type Conversion2' */
   const uint8_T DataTypeConversion2_h; /* '<S19>/Data Type Conversion2' */
   const uint8_T DataTypeConversion1_f; /* '<S19>/Data Type Conversion1' */
+  ConstB_VehicleArmAutoMissionL_T VehicleArmAutoMissionLLA2FLAT;/* '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   ConstB_Disarm_FMS_T Unknown;         /* '<S17>/Unknown' */
   ConstB_Disarm_FMS_T Unknown_i;       /* '<S21>/Unknown' */
   ConstB_MoveControl_FMS_k_T MoveControl_k1;/* '<S93>/Move Control' */
@@ -472,8 +477,8 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S108>/Gain'
                                                 *   '<S108>/Gain1'
                                                 *   '<S246>/Saturation1'
-                                                *   '<S317>/Gain2'
-                                                *   '<S317>/Saturation1'
+                                                *   '<S318>/Gain2'
+                                                *   '<S318>/Saturation1'
                                                 *   '<S36>/Saturation1'
                                                 *   '<S47>/Dead Zone'
                                                 *   '<S47>/Gain'
@@ -603,7 +608,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S307>/Data Type Duplicate' : Unused code path elimination
  * Block '<S308>/Data Type Duplicate' : Unused code path elimination
  * Block '<S314>/Data Type Duplicate' : Unused code path elimination
- * Block '<S337>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S339>/FixPt Data Type Duplicate' : Unused code path elimination
  * Block '<S154>/Reshape' : Reshape block reduction
  * Block '<S135>/Reshape' : Reshape block reduction
  * Block '<S135>/Reshape1' : Reshape block reduction
@@ -613,11 +618,11 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S253>/Reshape' : Reshape block reduction
  * Block '<S253>/Reshape1' : Reshape block reduction
  * Block '<S253>/Reshape2' : Reshape block reduction
- * Block '<S317>/Reshape' : Reshape block reduction
+ * Block '<S321>/Reshape' : Reshape block reduction
  * Block '<S20>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S3>/Signal Copy3' : Eliminate redundant signal conversion block
- * Block '<S321>/Signal Conversion' : Eliminate redundant signal conversion block
- * Block '<S335>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S323>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S337>/Data Type Conversion' : Eliminate redundant data type conversion
  */
 
 /*-
@@ -951,27 +956,29 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S314>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Ground Speed/Vector Normalize2'
  * '<S315>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM'
  * '<S316>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM/Rotation Matrix Z'
- * '<S317>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position'
- * '<S318>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position/Bus_Selection'
- * '<S319>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position/Psi To DCM'
- * '<S320>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position/Psi To DCM/Rotation Matrix Z'
- * '<S321>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
- * '<S322>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
- * '<S323>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
- * '<S324>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
- * '<S325>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
- * '<S326>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
- * '<S327>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
- * '<S328>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
- * '<S329>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
- * '<S330>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
- * '<S331>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
- * '<S332>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
- * '<S333>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
- * '<S334>' : 'FMS/Onground Check/Compare To Constant'
- * '<S335>' : 'FMS/Onground Check/First Order LPF'
- * '<S336>' : 'FMS/Onground Check/First Order LPF2'
- * '<S337>' : 'FMS/Onground Check/Interval Test'
+ * '<S317>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Climb Speed'
+ * '<S318>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position'
+ * '<S319>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Bus_Selection'
+ * '<S320>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Psi To DCM'
+ * '<S321>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Target Position'
+ * '<S322>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Psi To DCM/Rotation Matrix Z'
+ * '<S323>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
+ * '<S324>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
+ * '<S325>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
+ * '<S326>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
+ * '<S327>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
+ * '<S328>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
+ * '<S329>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
+ * '<S330>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
+ * '<S331>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
+ * '<S332>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
+ * '<S333>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
+ * '<S334>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
+ * '<S335>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
+ * '<S336>' : 'FMS/Onground Check/Compare To Constant'
+ * '<S337>' : 'FMS/Onground Check/First Order LPF'
+ * '<S338>' : 'FMS/Onground Check/First Order LPF2'
+ * '<S339>' : 'FMS/Onground Check/Interval Test'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

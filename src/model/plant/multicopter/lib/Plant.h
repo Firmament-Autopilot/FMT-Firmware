@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.751
+ * Model version                  : 1.752
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 15 10:58:05 2022
+ * C/C++ source code generated on : Tue Mar 15 15:44:51 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -81,10 +81,11 @@ typedef struct {
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real_T Subtract1;              /* '<S89>/Subtract1' */
-  const real_T Product1;               /* '<S89>/Product1' */
-  const real_T Subtract1_e;            /* '<S31>/Subtract1' */
-  const real_T Product1_f;             /* '<S31>/Product1' */
+  const real_T Sum;                    /* '<S89>/Sum' */
+  const real_T ff;                     /* '<S89>/Multiply3' */
+  const real_T Sum4;                   /* '<S89>/Sum4' */
+  const real_T Subtract1;              /* '<S31>/Subtract1' */
+  const real_T Product1;               /* '<S31>/Product1' */
   const real32_T Add[9];               /* '<S124>/Add' */
   const real32_T VectorConcatenate3[3];/* '<S123>/Vector Concatenate3' */
   const real32_T VectorConcatenate3_a[3];/* '<S122>/Vector Concatenate3' */
@@ -147,7 +148,7 @@ typedef struct {
    *   '<S123>/Constant3'
    *   '<S123>/Constant4'
    */
-  real32_T pooled16;
+  real32_T pooled15;
 
   /* Computed Parameter: Inertia_Matrix_Value
    * Referenced by: '<S40>/Inertia_Matrix'
@@ -159,7 +160,7 @@ typedef struct {
    *   '<S119>/Saturation'
    *   '<S76>/Random Source'
    */
-  real32_T pooled25;
+  real32_T pooled24;
 
   /* Computed Parameter: RandomSource_VarianceRTP
    * Referenced by: '<S85>/Random Source'
@@ -413,7 +414,7 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S86>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization'
  * '<S87>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/pos_filter'
  * '<S88>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/vel_filter'
- * '<S89>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization/WGS84_Derivative'
+ * '<S89>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization/LAT2FLAT Curve'
  * '<S90>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer'
  * '<S91>'  : 'Plant/Sensor_Model/Sensor_IMU/Bus_Constructor'
  * '<S92>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope'

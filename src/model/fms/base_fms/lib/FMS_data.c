@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1592
+ * Model version                  : 1.1608
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 15 10:56:38 2022
+ * C/C++ source code generated on : Tue Mar 15 16:08:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,9 +18,6 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  1.9966471893352524,                  /* '<S324>/Sum' */
-  0.0066943799901413165,               /* '<S324>/Multiply3' */
-  0.99330562000985867,                 /* '<S324>/Sum4' */
   0.0016F,                             /* '<S51>/Square' */
   0.0201061927F,                       /* '<S51>/Multiply' */
   -12.566371F,                         /* '<S51>/Gain4' */
@@ -70,7 +67,7 @@ const ConstB_FMS_T FMS_ConstB = {
 
   { 0.0F, 0.0F, 1.0F },                /* '<S250>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S320>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S322>/Vector Concatenate3' */
   1U,                                  /* '<S23>/Data Type Conversion' */
   12U,                                 /* '<S23>/Data Type Conversion1' */
   3U,                                  /* '<S28>/Data Type Conversion' */
@@ -104,6 +101,16 @@ const ConstB_FMS_T FMS_ConstB = {
   5U,                                  /* '<S206>/Data Type Conversion2' */
   2U,                                  /* '<S19>/Data Type Conversion2' */
   2U,                                  /* '<S19>/Data Type Conversion1' */
+
+  /* Start of '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+  {
+    1.9966471893352524,                /* '<S326>/Sum' */
+    0.0066943799901413165,             /* '<S326>/Multiply3' */
+    0.99330562000985867                /* '<S326>/Sum4' */
+  }
+  ,
+
+  /* End of '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 
   /* Start of '<S17>/Unknown' */
   {
