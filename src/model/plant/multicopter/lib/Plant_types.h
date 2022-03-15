@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.701
+ * Model version                  : 1.751
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug 21 08:42:01 2021
+ * C/C++ source code generated on : Tue Mar 15 10:58:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -46,12 +46,12 @@ typedef struct {
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;
-  real_T lon;
   real_T lat;
+  real_T lon;
   real_T alt;
-  real_T lon_ref;
-  real_T lat_ref;
-  real_T alt_ref;
+  real_T lat_0;
+  real_T lon_0;
+  real_T alt_0;
 } Plant_States_Bus;
 
 #endif

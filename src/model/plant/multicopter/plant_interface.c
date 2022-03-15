@@ -52,12 +52,12 @@ static mlog_elem_t Plant_States_Elems[] = {
     MLOG_ELEMENT(x_R, MLOG_FLOAT),
     MLOG_ELEMENT(y_R, MLOG_FLOAT),
     MLOG_ELEMENT(h_R, MLOG_FLOAT),
-    MLOG_ELEMENT(lon, MLOG_DOUBLE),
     MLOG_ELEMENT(lat, MLOG_DOUBLE),
+    MLOG_ELEMENT(lon, MLOG_DOUBLE),
     MLOG_ELEMENT(alt, MLOG_DOUBLE),
-    MLOG_ELEMENT(lon_ref, MLOG_DOUBLE),
-    MLOG_ELEMENT(lat_ref, MLOG_DOUBLE),
-    MLOG_ELEMENT(alt_ref, MLOG_DOUBLE),
+    MLOG_ELEMENT(lat_0, MLOG_DOUBLE),
+    MLOG_ELEMENT(lon_0, MLOG_DOUBLE),
+    MLOG_ELEMENT(alt_0, MLOG_DOUBLE),
 };
 MLOG_BUS_DEFINE(Plant_States, Plant_States_Elems);
 

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1229
+ * Model version                  : 1.1592
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jan  1 18:52:40 2022
+ * C/C++ source code generated on : Tue Mar 15 10:56:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -66,6 +66,7 @@ Verification pane for ERT based targets, which will disable the \
 preprocessor word size checks.
 #endif
 
+extern real_T rt_modd(real_T u0, real_T u1);
 extern real32_T rt_remf(real32_T u0, real32_T u1);
 
 /* Exported functions */
@@ -103,6 +104,8 @@ extern void FMS_MotionState_Init(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState_Reset(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState(real32_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionState_FMS_T *localDW);
+extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
+  rtu_P3_g, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
 extern void FMS_HoldControl_p_Init(DW_HoldControl_FMS_g_T *localDW);
 extern void FMS_HoldControl_h_Reset(DW_HoldControl_FMS_g_T *localDW);
 extern void FMS_HoldControl_kq(real32_T rtu_FMS_In, real32_T

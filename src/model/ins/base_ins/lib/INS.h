@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3579
+ * Model version                  : 1.3588
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec 29 18:39:38 2021
+ * C/C++ source code generated on : Sun Mar 13 09:23:07 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -157,9 +157,12 @@ typedef struct {
   real32_T ve;
   real32_T vd;
   real32_T reserved;
-  real_T lon;
   real_T lat;
+  real_T lon;
   real_T alt;
+  real_T lat_0;
+  real_T lon_0;
+  real_T alt_0;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;
@@ -197,8 +200,8 @@ typedef struct {
 typedef struct {
   real_T DataTypeConversion;           /* '<S303>/Data Type Conversion' */
   real_T DataTypeConversion1;          /* '<S303>/Data Type Conversion1' */
-  real_T Add;                          /* '<S317>/Add' */
-  real_T Product4;                     /* '<S317>/Product4' */
+  real_T Multiply2;                    /* '<S317>/Multiply2' */
+  real_T Rm;                           /* '<S317>/Product3' */
   real32_T Divide;                     /* '<S290>/Divide' */
   real32_T h_0;                        /* '<S222>/Merge' */
   real32_T vel_D_0;                    /* '<S222>/Merge1' */
@@ -715,20 +718,20 @@ struct Parameters_INS_T_ {
   real_T dz_dh_Y0;                     /* Expression: 1
                                         * Referenced by: '<S303>/dz_dh'
                                         */
-  real_T constant2_Value;              /* Expression: 1
-                                        * Referenced by: '<S317>/constant2'
+  real_T Constant_Value_n;             /* Expression: 1
+                                        * Referenced by: '<S317>/Constant'
                                         */
-  real_T b_Value;                      /* Expression: 1/298.257
-                                        * Referenced by: '<S317>/b'
+  real_T Constant1_Value;              /* Expression: 1
+                                        * Referenced by: '<S317>/Constant1'
                                         */
-  real_T constant_Value;               /* Expression: 2
-                                        * Referenced by: '<S317>/constant'
+  real_T Constant2_Value;              /* Expression: 2
+                                        * Referenced by: '<S317>/Constant2'
                                         */
-  real_T earth_radius_Value;           /* Expression: 6378137
-                                        * Referenced by: '<S317>/earth_radius'
+  real_T R_Value;                      /* Expression: 6378137
+                                        * Referenced by: '<S317>/R'
                                         */
-  real_T c_Value;                      /* Expression: 1
-                                        * Referenced by: '<S317>/c'
+  real_T f_Value;                      /* Expression: 1/298.257223563
+                                        * Referenced by: '<S317>/f'
                                         */
   int32_T UnitDelay_InitialCondition;  /* Computed Parameter: UnitDelay_InitialCondition
                                         * Referenced by: '<S312>/Unit Delay'
@@ -868,7 +871,7 @@ struct Parameters_INS_T_ {
   real32_T Constant_Value_j;           /* Computed Parameter: Constant_Value_j
                                         * Referenced by: '<S54>/Constant'
                                         */
-  real32_T Constant_Value_n;           /* Computed Parameter: Constant_Value_n
+  real32_T Constant_Value_d;           /* Computed Parameter: Constant_Value_d
                                         * Referenced by: '<S7>/Constant'
                                         */
   real32_T Constant_Value_c;           /* Computed Parameter: Constant_Value_c
@@ -880,10 +883,10 @@ struct Parameters_INS_T_ {
   real32_T Saturation_LowerSat_m;      /* Computed Parameter: Saturation_LowerSat_m
                                         * Referenced by: '<S64>/Saturation'
                                         */
-  real32_T Constant1_Value;            /* Computed Parameter: Constant1_Value
+  real32_T Constant1_Value_o;          /* Computed Parameter: Constant1_Value_o
                                         * Referenced by: '<S64>/Constant1'
                                         */
-  real32_T Constant2_Value;            /* Computed Parameter: Constant2_Value
+  real32_T Constant2_Value_d;          /* Computed Parameter: Constant2_Value_d
                                         * Referenced by: '<S64>/Constant2'
                                         */
   real32_T Gain_Gain_f;                /* Computed Parameter: Gain_Gain_f
@@ -1900,7 +1903,7 @@ struct Parameters_INS_T_ {
   boolean_T Constant_Value_nm;         /* Computed Parameter: Constant_Value_nm
                                         * Referenced by: '<S265>/Constant'
                                         */
-  boolean_T Constant_Value_d;          /* Computed Parameter: Constant_Value_d
+  boolean_T Constant_Value_dc;         /* Computed Parameter: Constant_Value_dc
                                         * Referenced by: '<S270>/Constant'
                                         */
   boolean_T Constant_Value_ej0;        /* Computed Parameter: Constant_Value_ej0
@@ -2330,7 +2333,7 @@ extern RT_MODEL_INS_T *const INS_M;
  * '<S314>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/check_timeout/Compare To Constant4'
  * '<S315>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/check_timeout/Detect Change'
  * '<S316>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/speed_acc/Second Order LPF'
- * '<S317>' : 'INS/Sensor_PreProcess/GPS_PreProcess/WGS84_Model/WGS84_Derivative'
+ * '<S317>' : 'INS/Sensor_PreProcess/GPS_PreProcess/WGS84_Model/LAT2FLAT Curve'
  * '<S318>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Data_Select'
  * '<S319>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid'
  * '<S320>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Compare To Constant4'

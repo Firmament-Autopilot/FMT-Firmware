@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1229
+ * Model version                  : 1.1592
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jan  1 18:52:40 2022
+ * C/C++ source code generated on : Tue Mar 15 10:56:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -41,6 +41,22 @@ typedef struct {
   /* Operation channel 2 */
   uint32_T cmd_2;
 } Pilot_Cmd_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_GCS_Cmd_Bus_
+#define DEFINED_TYPEDEF_FOR_GCS_Cmd_Bus_
+
+typedef struct {
+  uint32_T timestamp;
+  uint32_T mode;
+
+  /* Operation channel 1 */
+  uint32_T cmd_1;
+
+  /* Operation channel 2 */
+  uint32_T cmd_2;
+} GCS_Cmd_Bus;
 
 #endif
 
@@ -83,19 +99,29 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_GCS_Cmd_Bus_
-#define DEFINED_TYPEDEF_FOR_GCS_Cmd_Bus_
+#ifndef DEFINED_TYPEDEF_FOR_Mission_Data_Bus_
+#define DEFINED_TYPEDEF_FOR_Mission_Data_Bus_
 
 typedef struct {
   uint32_T timestamp;
-  uint32_T mode;
+  uint16_T valid_items;
+  uint16_T reserved;
 
-  /* Operation channel 1 */
-  uint32_T cmd_1;
-
-  /* Operation channel 2 */
-  uint32_T cmd_2;
-} GCS_Cmd_Bus;
+  /* Start from 0 */
+  uint16_T seq[8];
+  uint16_T command[8];
+  uint8_T frame[8];
+  uint8_T current[8];
+  uint8_T autocontinue[8];
+  uint8_T mission_type[8];
+  real32_T param1[8];
+  real32_T param2[8];
+  real32_T param3[8];
+  real32_T param4[8];
+  int32_T x[8];
+  int32_T y[8];
+  real32_T z[8];
+} Mission_Data_Bus;
 
 #endif
 
@@ -117,12 +143,13 @@ typedef struct {
   real32_T vn;
   real32_T ve;
   real32_T vd;
-
-  /* padding */
   real32_T reserved;
-  real_T lon;
   real_T lat;
+  real_T lon;
   real_T alt;
+  real_T lat_0;
+  real_T lon_0;
+  real_T alt_0;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;
@@ -233,7 +260,7 @@ typedef struct {
   uint8_T reserved1;
 
   /* enum of PilotMode */
-  uint16_T reserved2;
+  uint16_T wp_index;
 } FMS_Out_Bus;
 
 #endif
@@ -305,14 +332,30 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_Cmd_In_Bus_
-#define DEFINED_TYPEDEF_FOR_Cmd_In_Bus_
+#ifndef DEFINED_TYPEDEF_FOR_Commander_In_Bus_
+#define DEFINED_TYPEDEF_FOR_Commander_In_Bus_
 
 typedef struct {
-  real32_T p_takeoff[2];
-  real32_T p_land[2];
-  real32_T p_return[2];
-} Cmd_In_Bus;
+  real32_T sp_takeoff[3];
+  real32_T sp_land[2];
+  real32_T sp_return[2];
+  real32_T sp_waypoint[3];
+  real32_T cur_waypoint[3];
+} Commander_In_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_NAV_Cmd_
+#define DEFINED_TYPEDEF_FOR_NAV_Cmd_
+
+/* enumeration of navigation command */
+typedef enum {
+  NAV_Cmd_None = 0,                    /* Default value */
+  NAV_Cmd_Waypoint = 16,
+  NAV_Cmd_Return = 20,
+  NAV_Cmd_Land,
+  NAV_Cmd_Takeoff
+} NAV_Cmd;
 
 #endif
 
