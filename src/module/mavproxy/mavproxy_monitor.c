@@ -187,6 +187,9 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
                         case PX4_CUSTOM_SUB_MODE_AUTO_MISSION:
                             gcs_set_mode(PilotMode_Mission);
                             break;
+                        case PX4_CUSTOM_SUB_MODE_AUTO_LOITER:
+                            gcs_set_cmd(CMD_Pause);
+                            break;
                         default:
                             mavlink_send_statustext(MAV_SEVERITY_INFO, "Unsupported auto mode: %d", custom_sub_mode);
                             break;
@@ -296,6 +299,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
     case MAVLINK_MSG_ID_MISSION_COUNT:
     case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
+    case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
     case MAVLINK_MSG_ID_MISSION_ACK:
         handle_mission_message(msg);
         break;

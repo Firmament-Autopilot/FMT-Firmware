@@ -79,6 +79,23 @@ fmt_err_t mission_data_reset(void)
     return FMT_EOK;
 }
 
+fmt_err_t clear_mission_data(const char* path)
+{
+    if (unlink(path) != 0) {
+        printf("fail to remove mission file %s\n", path);
+        return FMT_ERROR;
+    }
+
+    mission_count = 0;
+
+    if (mission_data != NULL) {
+        rt_free(mission_data);
+        mission_data = NULL;
+    }
+
+    return FMT_EOK;
+}
+
 fmt_err_t load_mission_data(const char* path)
 {
     FILE* fp;

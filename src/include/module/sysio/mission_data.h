@@ -45,6 +45,7 @@ fmt_err_t mission_data_collect(void);
 fmt_err_t load_mission_data(const char* path);
 uint16_t get_mission_count(void);
 struct mission_item* get_mission_item(uint16_t seq);
+fmt_err_t clear_mission_data(const char* path);
 void dump_mission_data(void);
 
 #ifdef __cplusplus

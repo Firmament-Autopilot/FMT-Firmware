@@ -36,7 +36,6 @@ static void send_mission_count(uint8_t sysid, uint8_t compid, uint16_t count, MA
     wpc.mission_type = mission_type;
 
     mavlink_msg_mission_count_encode(mavsys.sysid, mavsys.compid, &msg, &wpc);
-
     mavproxy_send_immediate_msg(&msg, true);
 }
 
@@ -75,7 +74,6 @@ static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq)
     mav_mission_item.mission_type = mission_item->mission_type;
 
     mavlink_msg_mission_item_int_encode(mavsys.sysid, mavsys.compid, &msg, &mav_mission_item);
-
     mavproxy_send_immediate_msg(&msg, true);
 }
 
@@ -109,6 +107,23 @@ static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type)
     mavproxy_send_immediate_msg(&msg, true);
 }
 
+static void handle_message_mission_clear_all(mavlink_message_t* msg)
+{
+    mavlink_mission_clear_all_t mission_clear_all;
+
+    mavlink_msg_mission_clear_all_decode(msg, &mission_clear_all);
+
+    if (mission_clear_all.mission_type == MAV_MISSION_TYPE_MISSION) {
+        if (clear_mission_data(MISSION_FILE) == FMT_EOK) {
+            printf("mission data cleared.\n");
+            /* send accepted ack */
+            send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
+        }else{
+            send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ERROR);
+        }
+    }
+}
+
 static void handle_message_mission_request_list(mavlink_message_t* msg)
 {
     send_mission_count(msg->sysid, msg->compid, get_mission_count(), MAV_MISSION_TYPE_MISSION);
@@ -119,7 +134,6 @@ static void handle_message_mission_request_int(mavlink_message_t* msg)
     mavlink_mission_request_int_t mission_req_int;
 
     mavlink_msg_mission_request_int_decode(msg, &mission_req_int);
-
     send_mission_item(msg->sysid, msg->compid, mission_req_int.seq);
 }
 
@@ -214,6 +228,9 @@ void handle_mission_message(mavlink_message_t* msg)
         break;
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
         handle_message_mission_item(msg);
+        break;
+    case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+        handle_message_mission_clear_all(msg);
         break;
     case MAVLINK_MSG_ID_MISSION_ACK:
         printf("Received mission ack!\n");

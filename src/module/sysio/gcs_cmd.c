@@ -19,12 +19,16 @@
 #include "module/utils/ringbuffer.h"
 #include <FMS.h>
 
+MCN_DEFINE(gcs_cmd, sizeof(GCS_Cmd_Bus));
+MCN_DECLARE(fms_output);
+
 static uint32_t gcs_cmd_buffer[20];
 static ringbuffer* gcs_cmd_rb;
-static PilotMode new_mode;
+static PilotMode gcs_mode_buffer[20];
+static ringbuffer* gcs_mode_rb;
+// static PilotMode new_mode;
 static GCS_Cmd_Bus gcs_cmd;
-
-MCN_DEFINE(gcs_cmd, sizeof(GCS_Cmd_Bus));
+static McnNode_t fms_out_nod;
 
 static int gcs_cmd_echo(void* parameter)
 {
@@ -80,7 +84,49 @@ fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
 
 fmt_err_t gcs_set_mode(PilotMode mode)
 {
-    new_mode = mode;
+    uint32_t new_mode = mode;
+    FMS_Out_Bus fms_out;
+
+    switch (mode) {
+    case PilotMode_Manual:
+        printf("GCS Mode Manual\n");
+        break;
+    case PilotMode_Acro:
+        printf("GCS Mode Acro\n");
+        break;
+    case PilotMode_Stabilize:
+        printf("GCS Mode Stabilize\n");
+        break;
+    case PilotMode_Altitude:
+        printf("GCS Mode Altitude\n");
+        break;
+    case PilotMode_Position:
+        printf("GCS Mode Position\n");
+        break;
+    case PilotMode_Mission:
+        printf("GCS Mode Mission\n");
+        break;
+    case PilotMode_Offboard:
+        printf("GCS Mode Offboard\n");
+        break;
+    default:
+        printf("GCS invalid mode %d\n", mode);
+        return FMT_EINVAL;
+    }
+
+    fmt_err_t err = mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
+
+    if (err == FMT_EOK && (fms_out.mode == PilotMode_Mission || fms_out.mode == PilotMode_Offboard)
+        && fms_out.mode == mode && fms_out.state == VehicleState_Hold) {
+        uint32_t new_cmd = CMD_Continue;
+        ringbuffer_put(gcs_cmd_rb, (uint8_t*)&new_cmd, sizeof(new_cmd));
+    } else {
+        ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
+        new_mode = PilotMode_None;
+        ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
+    }
+
+    // new_mode = mode;
 
     return FMT_EOK;
 }
@@ -91,9 +137,14 @@ fmt_err_t gcs_cmd_collect(void)
     uint8_t updated = 0;
     uint32_t time_now = systime_now_ms();
 
-    if (gcs_cmd.mode != new_mode) {
-        gcs_cmd.mode = new_mode;
+    // if (gcs_cmd.mode != new_mode) {
+    //     gcs_cmd.mode = new_mode;
 
+    //     updated = 1;
+    // }
+
+    if (ringbuffer_getlen(gcs_mode_rb) > 0) {
+        ringbuffer_get(gcs_mode_rb, (uint8_t*)&gcs_cmd.mode, sizeof(gcs_cmd.mode));
         updated = 1;
     }
 
@@ -125,9 +176,16 @@ fmt_err_t gcs_cmd_collect(void)
 fmt_err_t gcs_cmd_init(void)
 {
     gcs_cmd_rb = ringbuffer_static_create((uint8_t*)gcs_cmd_buffer, sizeof(gcs_cmd_buffer));
+    gcs_mode_rb = ringbuffer_static_create((uint8_t*)gcs_mode_buffer, sizeof(gcs_mode_buffer));
     RT_ASSERT(gcs_cmd_rb != NULL);
+    RT_ASSERT(gcs_mode_rb != NULL);
 
     FMT_TRY(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
+
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    if (fms_out_nod == NULL) {
+        return FMT_ERROR;
+    }
 
     return FMT_EOK;
 }
