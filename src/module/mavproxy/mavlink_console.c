@@ -293,7 +293,7 @@ rt_err_t mavlink_console_init(void)
     device->user_data = RT_NULL;
 
     if (_mav_console_rx_rb == RT_NULL) {
-        _mav_console_rx_rb = ringbuffer_static_create(_mav_console_rx_buffer, MAV_CONSOLE_RX_BUFFER_SIZE);
+        _mav_console_rx_rb = ringbuffer_static_create(MAV_CONSOLE_RX_BUFFER_SIZE, _mav_console_rx_buffer);
 
         if (_mav_console_rx_rb == RT_NULL) {
             console_printf("mav console ringbuffer create fail\n");
@@ -302,7 +302,7 @@ rt_err_t mavlink_console_init(void)
     }
 
     if (_mav_console_tx_rb == RT_NULL) {
-        _mav_console_tx_rb = ringbuffer_static_create(_mav_console_tx_buffer, MAV_CONSOLE_TX_BUFFER_SIZE);
+        _mav_console_tx_rb = ringbuffer_static_create(MAV_CONSOLE_TX_BUFFER_SIZE, _mav_console_tx_buffer);
 
         if (_mav_console_tx_rb == RT_NULL) {
             console_printf("mav console ringbuffer create fail\n");

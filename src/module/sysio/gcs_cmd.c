@@ -175,8 +175,8 @@ fmt_err_t gcs_cmd_collect(void)
 
 fmt_err_t gcs_cmd_init(void)
 {
-    gcs_cmd_rb = ringbuffer_static_create((uint8_t*)gcs_cmd_buffer, sizeof(gcs_cmd_buffer));
-    gcs_mode_rb = ringbuffer_static_create((uint8_t*)gcs_mode_buffer, sizeof(gcs_mode_buffer));
+    gcs_cmd_rb = ringbuffer_static_create(sizeof(gcs_cmd_buffer), (uint8_t*)gcs_cmd_buffer);
+    gcs_mode_rb = ringbuffer_static_create(sizeof(gcs_mode_buffer), (uint8_t*)gcs_mode_buffer);
     RT_ASSERT(gcs_cmd_rb != NULL);
     RT_ASSERT(gcs_mode_rb != NULL);
 
