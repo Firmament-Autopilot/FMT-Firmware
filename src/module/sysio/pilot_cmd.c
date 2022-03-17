@@ -209,8 +209,8 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
                 break;
         }
     }
-    /* command lasts for 200ms */
-    if (time_now - _last_cmd_timestamp > 200) {
+    /* the command need to last at least FMS_CONST.dt */
+    if (time_now - _last_cmd_timestamp > 100) {
         pilot_cmd_bus.cmd_1 = 0;
     }
 

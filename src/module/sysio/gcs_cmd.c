@@ -19,6 +19,9 @@
 #include "module/utils/ringbuffer.h"
 #include <FMS.h>
 
+#undef LOG_TAG
+#define LOG_TAG "GCS"
+
 MCN_DEFINE(gcs_cmd, sizeof(GCS_Cmd_Bus));
 MCN_DECLARE(fms_output);
 
@@ -26,9 +29,9 @@ static uint32_t gcs_cmd_buffer[20];
 static ringbuffer* gcs_cmd_rb;
 static PilotMode gcs_mode_buffer[20];
 static ringbuffer* gcs_mode_rb;
-// static PilotMode new_mode;
 static GCS_Cmd_Bus gcs_cmd;
 static McnNode_t fms_out_nod;
+static FMS_Out_Bus fms_out;
 
 static int gcs_cmd_echo(void* parameter)
 {
@@ -50,31 +53,32 @@ fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
 
     switch (cmd) {
     case CMD_PreArm:
-        printf("GCS PreArm Command\n");
+        LOG_I("recv PreArm command.");
         break;
     case CMD_Arm:
-        printf("GCS Arm Command\n");
+        LOG_I("recv Arm command.");
         break;
     case CMD_Disarm:
-        printf("GCS Disarm Command\n");
+        LOG_I("recv Disarm command.");
         break;
     case CMD_Takeoff:
-        printf("GCS Takeoff Command\n");
+        LOG_I("recv Takeoff command.");
         break;
     case CMD_Land:
-        printf("GCS Land Command\n");
+        LOG_I("recv Land command.");
         break;
     case CMD_Return:
-        printf("GCS Return Command\n");
+        LOG_I("recv Return command.");
         break;
     case CMD_Pause:
-        printf("GCS Pause Command\n");
+        LOG_I("recv Pause command.");
         break;
     case CMD_Continue:
-        printf("GCS Continue Command\n");
+        LOG_I("recv Continue command.");
         break;
     default:
-        break;
+        LOG_W("recv Unknown command %d.", cmd);
+        return FMT_ENOTHANDLE;
     }
 
     ringbuffer_put(gcs_cmd_rb, (uint8_t*)&new_cmd, sizeof(new_cmd));
@@ -85,74 +89,70 @@ fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
 fmt_err_t gcs_set_mode(PilotMode mode)
 {
     uint32_t new_mode = mode;
-    FMS_Out_Bus fms_out;
 
     switch (mode) {
     case PilotMode_Manual:
-        printf("GCS Mode Manual\n");
+        LOG_I("set Manual mode.");
         break;
     case PilotMode_Acro:
-        printf("GCS Mode Acro\n");
+        LOG_I("set Acro mode.");
         break;
     case PilotMode_Stabilize:
-        printf("GCS Mode Stabilize\n");
+        LOG_I("set Stabilize mode.");
         break;
     case PilotMode_Altitude:
-        printf("GCS Mode Altitude\n");
+        LOG_I("set Altitude mode.");
         break;
     case PilotMode_Position:
-        printf("GCS Mode Position\n");
+        LOG_I("set Position mode.");
         break;
     case PilotMode_Mission:
-        printf("GCS Mode Mission\n");
+        LOG_I("set Mission mode.");
         break;
     case PilotMode_Offboard:
-        printf("GCS Mode Offboard\n");
+        LOG_I("set Offboard mode.");
         break;
     default:
-        printf("GCS invalid mode %d\n", mode);
+        LOG_W("set Unknown mode %d.", mode);
         return FMT_EINVAL;
     }
 
-    fmt_err_t err = mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
-
-    if (err == FMT_EOK && (fms_out.mode == PilotMode_Mission || fms_out.mode == PilotMode_Offboard)
-        && fms_out.mode == mode && fms_out.state == VehicleState_Hold) {
-        uint32_t new_cmd = CMD_Continue;
-        ringbuffer_put(gcs_cmd_rb, (uint8_t*)&new_cmd, sizeof(new_cmd));
-    } else {
-        ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
-        new_mode = PilotMode_None;
-        ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
+    if (mcn_poll(fms_out_nod)) {
+        mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
     }
 
-    // new_mode = mode;
+    if ((fms_out.mode == PilotMode_Mission || fms_out.mode == PilotMode_Offboard)
+        && fms_out.mode == mode && fms_out.state == VehicleState_Hold) {
+        /* When vehicle is in auto mode (mission,offboard), reset the mode would trigger CMD_Continue.
+           e.g, When mission is paused, the vehicle would enter hold mode (state = VehicleState_Hold), 
+           however, the mode is still PilotMode_Mission, so the mode would not change when user try
+           to set mode to Mission and continue. Therefore, we send CMD_Continue instead to continue
+           the mission mode. */
+        gcs_set_cmd(CMD_Continue);
+    } else {
+        /* For normal case, we just set the new mode. */
+        ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
+    }
 
     return FMT_EOK;
 }
 
 fmt_err_t gcs_cmd_collect(void)
 {
-    static uint32_t _last_cmd_timestamp = 0;
+    static uint32_t last_cmd_timestamp = 0;
     uint8_t updated = 0;
     uint32_t time_now = systime_now_ms();
 
-    // if (gcs_cmd.mode != new_mode) {
-    //     gcs_cmd.mode = new_mode;
-
-    //     updated = 1;
-    // }
-
-    if (ringbuffer_getlen(gcs_mode_rb) > 0) {
+    if (ringbuffer_getlen(gcs_mode_rb) >= sizeof(gcs_cmd.mode)) {
         ringbuffer_get(gcs_mode_rb, (uint8_t*)&gcs_cmd.mode, sizeof(gcs_cmd.mode));
         updated = 1;
     }
 
-    /* command lasts for 100ms */
-    if (time_now - _last_cmd_timestamp > 100) {
+    /* the command need to last at least FMS_CONST.dt */
+    if (time_now - last_cmd_timestamp > 100) {
         /* check if there is new command in buffer */
-        if (ringbuffer_getlen(gcs_cmd_rb) > 0) {
-            _last_cmd_timestamp = time_now;
+        if (ringbuffer_getlen(gcs_cmd_rb) >= sizeof(gcs_cmd.cmd_1)) {
+            last_cmd_timestamp = time_now;
 
             ringbuffer_get(gcs_cmd_rb, (uint8_t*)&gcs_cmd.cmd_1, sizeof(gcs_cmd.cmd_1));
             updated = 1;
@@ -166,7 +166,6 @@ fmt_err_t gcs_cmd_collect(void)
 
     if (updated) {
         gcs_cmd.timestamp = systime_now_ms();
-
         FMT_TRY(mcn_publish(MCN_HUB(gcs_cmd), &gcs_cmd));
     }
 
@@ -177,15 +176,13 @@ fmt_err_t gcs_cmd_init(void)
 {
     gcs_cmd_rb = ringbuffer_static_create(sizeof(gcs_cmd_buffer), (uint8_t*)gcs_cmd_buffer);
     gcs_mode_rb = ringbuffer_static_create(sizeof(gcs_mode_buffer), (uint8_t*)gcs_mode_buffer);
-    RT_ASSERT(gcs_cmd_rb != NULL);
-    RT_ASSERT(gcs_mode_rb != NULL);
+    FMT_ASSERT(gcs_cmd_rb != NULL);
+    FMT_ASSERT(gcs_mode_rb != NULL);
 
     FMT_TRY(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
 
     fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
-    if (fms_out_nod == NULL) {
-        return FMT_ERROR;
-    }
+    FMT_ASSERT(fms_out_nod != NULL);
 
     return FMT_EOK;
 }
