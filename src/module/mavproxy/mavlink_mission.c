@@ -20,6 +20,9 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/sysio/mission_data.h"
 
+#undef LOG_TAG
+#define LOG_TAG "MavMission"
+
 static uint16_t wp_cnt;
 static uint16_t wp_seq;
 static int wp_fd = -1;
@@ -48,12 +51,12 @@ static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq)
 
     mission_item = get_mission_item(seq);
     if (mission_item == NULL) {
-        printf("Error: can't find mission item with seq=%d\n", seq);
+        LOG_E("can't find mission item with seq %d", seq);
         return;
     }
 
     if (mission_item->seq != seq) {
-        printf("Error: mission item seq not matched! %d %d\n", seq, mission_item->seq);
+        LOG_E("mission item seq not matched! expect %d, current %d", seq, mission_item->seq);
         return;
     }
 
@@ -115,10 +118,10 @@ static void handle_message_mission_clear_all(mavlink_message_t* msg)
 
     if (mission_clear_all.mission_type == MAV_MISSION_TYPE_MISSION) {
         if (clear_mission_data(MISSION_FILE) == FMT_EOK) {
-            printf("mission data cleared.\n");
+            LOG_I("mission data cleared.");
             /* send accepted ack */
             send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
-        }else{
+        } else {
             send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ERROR);
         }
     }
@@ -156,7 +159,7 @@ static void handle_message_mission_count(mavlink_message_t* msg)
         /* open mission file */
         wp_fd = open(MISSION_FILE, O_CREAT | O_WRONLY | O_TRUNC);
         if (wp_fd < 0) {
-            printf("Fail to open %s\n", MISSION_FILE);
+            LOG_E("fail to open mission file %s", MISSION_FILE);
         }
         /* write mission count to the first line */
         fm_fprintf(wp_fd, "%u\n", wp_cnt);
@@ -196,16 +199,17 @@ static void handle_message_mission_item(mavlink_message_t* msg)
 
     /* check if we received all mission items */
     if (wp_seq + 1 >= wp_cnt) {
-        printf("Received %u mission items.\n", wp_cnt);
+        LOG_I("mission data received with %u items", wp_cnt);
+
         close(wp_fd);
         wp_fd = -1;
         /* send ack with accepted result */
         send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
         /* load new mission data */
         if (load_mission_data(MISSION_FILE) == FMT_EOK) {
-            printf("mission data loaded from %s\n", MISSION_FILE);
+            LOG_I("mission data reloaded.");
         } else {
-            printf("fail to load mission data from %s\n", MISSION_FILE);
+            LOG_E("mission data reloaded fail.");
         }
     } else {
         /* request next item */
@@ -233,7 +237,7 @@ void handle_mission_message(mavlink_message_t* msg)
         handle_message_mission_clear_all(msg);
         break;
     case MAVLINK_MSG_ID_MISSION_ACK:
-        printf("Received mission ack!\n");
+        /* do nothing here */
         break;
     default:
         break;

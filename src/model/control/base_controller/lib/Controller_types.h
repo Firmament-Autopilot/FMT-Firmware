@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.877
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 15 12:34:19 2022
+ * C/C++ source code generated on : Sun Mar 20 17:26:09 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -72,7 +72,10 @@ typedef struct {
   uint8_T reserved1;
 
   /* enum of PilotMode */
-  uint16_T wp_consume;
+  uint8_T wp_consume;
+
+  /* enum of PilotMode */
+  uint8_T wp_current;
 } FMS_Out_Bus;
 
 #endif
