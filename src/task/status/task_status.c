@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <FMS.h>
 #include <firmament.h>
 
+#include "FMS.h"
 #include "module/fms/fms_interface.h"
 #include "module/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
@@ -52,6 +52,36 @@ static void send_mission_current(uint16_t seq)
     mavproxy_send_immediate_msg(&msg, true);
 }
 
+static void send_home_position(void)
+{
+    mavlink_system_t mavsys = mavproxy_get_system();
+    mavlink_message_t msg;
+    mavlink_home_position_t home_position;
+    INS_Out_Bus ins_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return;
+    }
+
+    home_position.latitude = ins_out.lat * 180 / PI * 1e7;
+    home_position.longitude = ins_out.lon * 180 / PI * 1e7;
+    home_position.altitude = ins_out.alt * 100;
+    home_position.x = ins_out.x_R;
+    home_position.y = ins_out.y_R;
+    home_position.z = -ins_out.h_R;
+    home_position.q[0] = ins_out.quat[0];
+    home_position.q[1] = ins_out.quat[1];
+    home_position.q[2] = ins_out.quat[2];
+    home_position.q[3] = ins_out.quat[3];
+    home_position.approach_x = 0;
+    home_position.approach_y = 0;
+    home_position.approach_z = 0;
+    home_position.time_usec = systime_now_us();
+
+    mavlink_msg_home_position_encode(mavsys.sysid, mavsys.compid, &msg, &home_position);
+    mavproxy_send_immediate_msg(&msg, true);
+}
+
 static void update_fms_status(void)
 {
     /* set initial status/state to disarm to avoid mlog stop unintentionally */
@@ -81,6 +111,8 @@ static void update_fms_status(void)
                 old_fms_out.wp_current = 0;
                 /* we assume the mission data sequence always start from 0 */
                 send_mission_current(0);
+                /* on standby, the home is set to current position */
+                send_home_position();
 
                 LOG_I("[Status] Standby");
                 break;
