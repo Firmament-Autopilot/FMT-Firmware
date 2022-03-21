@@ -241,6 +241,43 @@ static bool mavlink_msg_local_pos_cb(mavlink_message_t* msg_t)
     return true;
 }
 
+static bool mavlink_msg_global_pos_cb(mavlink_message_t* msg_t)
+{
+    INS_Out_Bus ins_out;
+    uint16_t hdg;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    hdg = (ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 180 / PI * 100;
+
+    mavlink_msg_global_position_int_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
+        ins_out.lat * 180 / PI * 1e7, ins_out.lon * 180 / PI * 1e7, ins_out.alt * 1e3,
+        ins_out.h_R * 1e3, ins_out.vn * 10, ins_out.ve * 10, ins_out.vd * 10, hdg);
+
+    return true;
+}
+
+static bool mavlink_msg_vfr_hud_cb(mavlink_message_t* msg_t)
+{
+    INS_Out_Bus ins_out;
+    float groundspeed;
+    int16_t heading;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    groundspeed = sqrtf(ins_out.vn * ins_out.vn + ins_out.ve * ins_out.ve);
+    heading = (ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 180 / PI;
+
+    mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t,
+        0, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);
+
+    return true;
+}
+
 static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
@@ -353,6 +390,12 @@ void task_comm_entry(void* parameter)
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
         mavlink_msg_local_pos_cb, true);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 200,
+        mavlink_msg_global_pos_cb, true);
+
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_VFR_HUD, 200,
+        mavlink_msg_vfr_hud_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100,
         mavlink_msg_altitude_cb, true);
