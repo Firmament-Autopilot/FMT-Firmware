@@ -388,10 +388,10 @@ void task_comm_entry(void* parameter)
     mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100,
         mavlink_msg_attitude_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 200,
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 100,
         mavlink_msg_local_pos_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 200,
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 100,
         mavlink_msg_global_pos_cb, true);
 
     mavproxy_register_period_msg(MAVLINK_MSG_ID_VFR_HUD, 200,

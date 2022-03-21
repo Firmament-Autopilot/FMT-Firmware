@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1651
+ * Model version                  : 1.1666
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar 20 17:24:25 2022
+ * C/C++ source code generated on : Mon Mar 21 14:28:14 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -262,8 +262,6 @@ RT_MODEL_FMS_T FMS_M_;
 RT_MODEL_FMS_T *const FMS_M = &FMS_M_;
 
 /* Forward declaration for local functions */
-static void FMS_Stabilize(void);
-static void FMS_Acro(void);
 static void FMS_sf_msg_send_M(void);
 static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag);
@@ -274,16 +272,13 @@ static boolean_T FMS_BottomLeft(real32_T pilot_cmd_stick_yaw, real32_T
 static boolean_T FMS_sf_msg_pop_M(void);
 static real32_T FMS_norm(const real32_T x[2]);
 static void FMS_exit_internal_Auto(void);
-static void FMS_Auto(void);
 static real_T FMS_getArmMode(PilotMode pilotMode);
-static void FMS_enter_internal_Assist(void);
-static void FMS_enter_internal_Auto(void);
 static void FMS_enter_internal_Arm(void);
 static void FMS_SubMode(void);
 static void FMS_exit_internal_Arm(void);
+static void FMS_Arm(void);
 static real_T FMS_ManualArmEvent(real32_T pilot_cmd_stick_throttle, uint32_T
   pilot_cmd_mode);
-static void FMS_Standby(void);
 static void FMS_Vehicle(void);
 static void FMS_c11_FMS(void);
 static void FMS_sf_msg_discard_M(void);
@@ -1954,98 +1949,6 @@ void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const real_T
   rty_pos[2] = (real32_T)-(rtu_lla[2] + rtu_href);
 }
 
-/* Function for Chart: '<Root>/Mode Degrade' */
-static void FMS_Stabilize(void)
-{
-  /* Inport: '<Root>/INS_Out' */
-  if ((FMS_U.INS_Out.flag & 4U) != 0U) {
-    FMS_B.target_mode = PilotMode_Stabilize;
-
-    /* Delay: '<S9>/Delay' */
-    switch (FMS_DW.Delay_DSTATE_c) {
-     case PilotMode_Manual:
-      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      break;
-
-     case PilotMode_Acro:
-      FMS_DW.is_c3_FMS = FMS_IN_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      break;
-
-     case PilotMode_Mission:
-      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-      break;
-
-     default:
-      FMS_DW.is_c3_FMS = FMS_IN_Other;
-      break;
-    }
-
-    /* End of Delay: '<S9>/Delay' */
-  } else {
-    FMS_DW.is_c3_FMS = FMS_IN_Acro;
-  }
-
-  /* End of Inport: '<Root>/INS_Out' */
-}
-
-/* Function for Chart: '<Root>/Mode Degrade' */
-static void FMS_Acro(void)
-{
-  /* Inport: '<Root>/INS_Out' */
-  if ((FMS_U.INS_Out.flag & 4U) != 0U) {
-    FMS_B.target_mode = PilotMode_Acro;
-
-    /* Delay: '<S9>/Delay' */
-    switch (FMS_DW.Delay_DSTATE_c) {
-     case PilotMode_Manual:
-      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      break;
-
-     case PilotMode_Acro:
-      FMS_DW.is_c3_FMS = FMS_IN_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      break;
-
-     case PilotMode_Mission:
-      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-      break;
-
-     default:
-      FMS_DW.is_c3_FMS = FMS_IN_Other;
-      break;
-    }
-
-    /* End of Delay: '<S9>/Delay' */
-  } else {
-    FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-  }
-
-  /* End of Inport: '<Root>/INS_Out' */
-}
-
 int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn)
 {
   int32_T isEmplaced;
@@ -2230,259 +2133,6 @@ static void FMS_exit_internal_Auto(void)
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
-static void FMS_Auto(void)
-{
-  boolean_T sf_internal_predicateOutput;
-  real32_T tmp[2];
-  uint32_T qY;
-  int32_T tmp_0;
-  if (FMS_sf_msg_pop_M()) {
-    sf_internal_predicateOutput = (FMS_DW.M_msgReservedData == CMD_Pause);
-  } else {
-    sf_internal_predicateOutput = false;
-  }
-
-  if (sf_internal_predicateOutput) {
-    FMS_exit_internal_Auto();
-    FMS_DW.is_Arm = FMS_IN_SubMode;
-    FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-    FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-    FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-    FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-    FMS_DW.is_SubMode = FMS_IN_Hold_k;
-    FMS_B.state = VehicleState_Hold;
-  } else {
-    switch (FMS_DW.is_Auto) {
-     case FMS_IN_InvalidAutoMode:
-      FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD_h;
-      FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-      FMS_DW.is_Vehicle = FMS_IN_Disarm;
-      FMS_B.state = VehicleState_Disarm;
-      break;
-
-     case FMS_IN_Mission:
-      if (FMS_DW.mission_timestamp_prev != FMS_DW.mission_timestamp_start) {
-        FMS_DW.is_Mission = FMS_IN_NextWP;
-
-        /* Inport: '<Root>/Mission_Data' */
-        if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
-          FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
-        } else {
-          FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
-          qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
-          if (qY > FMS_B.wp_index) {
-            qY = 0U;
-          }
-
-          FMS_B.wp_consume = (uint8_T)qY;
-        }
-      } else {
-        switch (FMS_DW.is_Mission) {
-         case FMS_IN_Disarming:
-          FMS_DW.is_Mission = FMS_IN_NO_ACTIVE_CHILD_h;
-          FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD_h;
-          FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-          FMS_DW.is_Vehicle = FMS_IN_Disarm;
-          FMS_B.state = VehicleState_Disarm;
-          break;
-
-         case FMS_IN_Land:
-          if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1))
-          {
-            FMS_DW.durationLastReferenceTick_1 = FMS_DW.chartAbsoluteTimeCounter;
-          }
-
-          FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
-          if (FMS_DW.chartAbsoluteTimeCounter -
-              FMS_DW.durationLastReferenceTick_1 >= 500) {
-            tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
-            if ((uint32_T)tmp_0 > 255U) {
-              tmp_0 = 255;
-            }
-
-            FMS_B.wp_index = (uint8_T)tmp_0;
-            FMS_DW.is_Mission = FMS_IN_NextWP;
-
-            /* Inport: '<Root>/Mission_Data' */
-            if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
-              FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
-            } else {
-              FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
-              qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
-              if (qY > FMS_B.wp_index) {
-                qY = 0U;
-              }
-
-              FMS_B.wp_consume = (uint8_T)qY;
-            }
-          }
-          break;
-
-         case FMS_IN_Loiter:
-          break;
-
-         case FMS_IN_NextWP:
-          if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Takeoff) {
-            FMS_DW.is_Mission = FMS_IN_Takeoff_a;
-            FMS_B.Cmd_In.cur_waypoint[0] =
-              FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-            FMS_B.Cmd_In.cur_waypoint[1] =
-              FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-            FMS_B.Cmd_In.cur_waypoint[2] =
-              FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
-
-            /* Inport: '<Root>/Mission_Data' */
-            FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[FMS_B.wp_index - 1] *
-              1.0E-7;
-            FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[FMS_B.wp_index - 1] *
-              1.0E-7;
-            FMS_B.lla[2] = -FMS_U.Mission_Data.z[FMS_B.wp_index - 1];
-            FMS_B.llo[0] = FMS_DW.llo[0];
-            FMS_B.llo[1] = FMS_DW.llo[1];
-            FMS_B.href = 0.0;
-            FMS_B.psio = 0.0;
-
-            /* Outputs for Function Call SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-            F_VehicleArmAutoMissionLLA2FLAT(FMS_B.lla, FMS_B.llo, FMS_B.href,
-              FMS_B.psio, FMS_B.DataTypeConversion,
-              &FMS_ConstB.VehicleArmAutoMissionLLA2FLAT);
-
-            /* End of Outputs for SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-            FMS_B.Cmd_In.sp_takeoff[0] = FMS_B.DataTypeConversion[0];
-            FMS_B.Cmd_In.sp_takeoff[1] = FMS_B.DataTypeConversion[1];
-            FMS_B.Cmd_In.sp_takeoff[2] = FMS_B.DataTypeConversion[2];
-            FMS_B.state = VehicleState_Takeoff;
-          } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Waypoint) {
-            FMS_DW.is_Mission = FMS_IN_Waypoint;
-
-            /* Inport: '<Root>/Mission_Data' */
-            FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[FMS_B.wp_index - 1] *
-              1.0E-7;
-            FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[FMS_B.wp_index - 1] *
-              1.0E-7;
-            FMS_B.lla[2] = -FMS_U.Mission_Data.z[FMS_B.wp_index - 1];
-            FMS_B.llo[0] = FMS_DW.llo[0];
-            FMS_B.llo[1] = FMS_DW.llo[1];
-            FMS_B.href = 0.0;
-            FMS_B.psio = 0.0;
-
-            /* Outputs for Function Call SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-            F_VehicleArmAutoMissionLLA2FLAT(FMS_B.lla, FMS_B.llo, FMS_B.href,
-              FMS_B.psio, FMS_B.DataTypeConversion,
-              &FMS_ConstB.VehicleArmAutoMissionLLA2FLAT);
-
-            /* End of Outputs for SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-            FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.DataTypeConversion[0];
-            FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.DataTypeConversion[1];
-            FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.DataTypeConversion[2];
-            FMS_B.state = VehicleState_Mission;
-          } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Land) {
-            FMS_DW.durationLastReferenceTick_1 = FMS_DW.chartAbsoluteTimeCounter;
-            FMS_DW.is_Mission = FMS_IN_Land;
-            FMS_B.Cmd_In.sp_land[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-            FMS_B.Cmd_In.sp_land[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-            FMS_B.state = VehicleState_Land;
-            FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
-          } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Return) {
-            FMS_DW.is_Mission = FMS_IN_Return_d;
-            FMS_B.Cmd_In.sp_return[0] = FMS_DW.home[0];
-            FMS_B.Cmd_In.sp_return[1] = FMS_DW.home[1];
-            FMS_B.state = VehicleState_Return;
-          } else if (FMS_B.LogicalOperator1) {
-            FMS_DW.is_Mission = FMS_IN_Disarming;
-          } else {
-            FMS_DW.is_Mission = FMS_IN_Loiter;
-            FMS_B.state = VehicleState_Hold;
-          }
-          break;
-
-         case FMS_IN_Return_d:
-          tmp[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R -
-            FMS_B.Cmd_In.sp_return[0];
-          tmp[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R -
-            FMS_B.Cmd_In.sp_return[1];
-          if (FMS_norm(tmp) < 0.5F) {
-            FMS_DW.durationLastReferenceTick_1 = FMS_DW.chartAbsoluteTimeCounter;
-            FMS_DW.is_Mission = FMS_IN_Land;
-            FMS_B.Cmd_In.sp_land[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-            FMS_B.Cmd_In.sp_land[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-            FMS_B.state = VehicleState_Land;
-            FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
-          }
-          break;
-
-         case FMS_IN_Takeoff_a:
-          if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R - FMS_DW.home[2] >=
-              FMS_B.Cmd_In.sp_takeoff[2]) {
-            FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_takeoff[0];
-            FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_takeoff[1];
-            FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_takeoff[2];
-            tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
-            if ((uint32_T)tmp_0 > 255U) {
-              tmp_0 = 255;
-            }
-
-            FMS_B.wp_index = (uint8_T)tmp_0;
-            FMS_DW.is_Mission = FMS_IN_NextWP;
-
-            /* Inport: '<Root>/Mission_Data' */
-            if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
-              FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
-            } else {
-              FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
-              qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
-              if (qY > FMS_B.wp_index) {
-                qY = 0U;
-              }
-
-              FMS_B.wp_consume = (uint8_T)qY;
-            }
-          }
-          break;
-
-         case FMS_IN_Waypoint:
-          tmp[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R -
-            FMS_B.Cmd_In.sp_waypoint[0];
-          tmp[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R -
-            FMS_B.Cmd_In.sp_waypoint[1];
-          if (FMS_norm(tmp) < 0.5F) {
-            FMS_B.state = VehicleState_Hold;
-            FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
-            FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
-            FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
-            tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
-            if ((uint32_T)tmp_0 > 255U) {
-              tmp_0 = 255;
-            }
-
-            FMS_B.wp_index = (uint8_T)tmp_0;
-            FMS_DW.is_Mission = FMS_IN_NextWP;
-
-            /* Inport: '<Root>/Mission_Data' */
-            if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
-              FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
-            } else {
-              FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
-              qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
-              if (qY > FMS_B.wp_index) {
-                qY = 0U;
-              }
-
-              FMS_B.wp_consume = (uint8_T)qY;
-            }
-          }
-          break;
-        }
-      }
-      break;
-
-     case FMS_IN_Offboard:
-      break;
-    }
-  }
-}
-
-/* Function for Chart: '<Root>/FMS State Machine' */
 static real_T FMS_getArmMode(PilotMode pilotMode)
 {
   real_T armMode;
@@ -2524,86 +2174,74 @@ static real_T FMS_getArmMode(PilotMode pilotMode)
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
-static void FMS_enter_internal_Assist(void)
-{
-  switch (FMS_B.target_mode) {
-   case PilotMode_Acro:
-    FMS_DW.is_Assist = FMS_IN_Acro;
-    FMS_B.state = VehicleState_Acro;
-    break;
-
-   case PilotMode_Stabilize:
-    FMS_DW.is_Assist = FMS_IN_Stabilize;
-    FMS_B.state = VehicleState_Stabilize;
-    break;
-
-   case PilotMode_Altitude:
-    FMS_DW.is_Assist = FMS_IN_Altitude;
-    FMS_B.state = VehicleState_Altitude;
-    break;
-
-   case PilotMode_Position:
-    FMS_DW.is_Assist = FMS_IN_Position;
-    FMS_B.state = VehicleState_Position;
-    break;
-
-   default:
-    FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-    break;
-  }
-}
-
-/* Function for Chart: '<Root>/FMS State Machine' */
-static void FMS_enter_internal_Auto(void)
-{
-  uint32_T qY;
-  switch (FMS_B.target_mode) {
-   case PilotMode_Offboard:
-    FMS_DW.is_Auto = FMS_IN_Offboard;
-    FMS_B.state = VehicleState_Offboard;
-    break;
-
-   case PilotMode_Mission:
-    FMS_DW.is_Auto = FMS_IN_Mission;
-    FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat_0 *
-      57.295779513082323;
-    FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
-      57.295779513082323;
-    FMS_DW.is_Mission = FMS_IN_NextWP;
-
-    /* Inport: '<Root>/Mission_Data' */
-    if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
-      FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
-    } else {
-      FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
-      qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
-      if (qY > FMS_B.wp_index) {
-        qY = 0U;
-      }
-
-      FMS_B.wp_consume = (uint8_T)qY;
-    }
-
-    /* End of Inport: '<Root>/Mission_Data' */
-    break;
-
-   default:
-    FMS_DW.is_Auto = FMS_IN_InvalidAutoMode;
-    break;
-  }
-}
-
-/* Function for Chart: '<Root>/FMS State Machine' */
 static void FMS_enter_internal_Arm(void)
 {
+  uint32_T qY;
   real_T tmp;
   tmp = FMS_getArmMode(FMS_B.target_mode);
   if (tmp == 3.0) {
     FMS_DW.is_Arm = FMS_IN_Auto;
-    FMS_enter_internal_Auto();
+    switch (FMS_B.target_mode) {
+     case PilotMode_Offboard:
+      FMS_DW.is_Auto = FMS_IN_Offboard;
+      FMS_B.state = VehicleState_Offboard;
+      break;
+
+     case PilotMode_Mission:
+      FMS_DW.is_Auto = FMS_IN_Mission;
+      FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat_0 *
+        57.295779513082323;
+      FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
+        57.295779513082323;
+      FMS_DW.is_Mission = FMS_IN_NextWP;
+
+      /* Inport: '<Root>/Mission_Data' */
+      if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+        FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
+      } else {
+        FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+        qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+        if (qY > FMS_B.wp_index) {
+          qY = 0U;
+        }
+
+        FMS_B.wp_consume = (uint8_T)qY;
+      }
+
+      /* End of Inport: '<Root>/Mission_Data' */
+      break;
+
+     default:
+      FMS_DW.is_Auto = FMS_IN_InvalidAutoMode;
+      break;
+    }
   } else if (tmp == 2.0) {
     FMS_DW.is_Arm = FMS_IN_Assist;
-    FMS_enter_internal_Assist();
+    switch (FMS_B.target_mode) {
+     case PilotMode_Acro:
+      FMS_DW.is_Assist = FMS_IN_Acro;
+      FMS_B.state = VehicleState_Acro;
+      break;
+
+     case PilotMode_Stabilize:
+      FMS_DW.is_Assist = FMS_IN_Stabilize;
+      FMS_B.state = VehicleState_Stabilize;
+      break;
+
+     case PilotMode_Altitude:
+      FMS_DW.is_Assist = FMS_IN_Altitude;
+      FMS_B.state = VehicleState_Altitude;
+      break;
+
+     case PilotMode_Position:
+      FMS_DW.is_Assist = FMS_IN_Position;
+      FMS_B.state = VehicleState_Position;
+      break;
+
+     default:
+      FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
+      break;
+    }
   } else if (tmp == 1.0) {
     FMS_DW.is_Arm = FMS_IN_Manual;
     if (FMS_B.target_mode == PilotMode_Manual) {
@@ -2626,6 +2264,7 @@ static void FMS_SubMode(void)
   real32_T absxk;
   real32_T t;
   real_T tmp;
+  uint32_T qY_tmp;
   FMS_B.stick_val[0] = FMS_DW.stick_val[0];
   FMS_B.stick_val[1] = FMS_DW.stick_val[1];
   FMS_B.stick_val[2] = FMS_DW.stick_val[2];
@@ -2650,11 +2289,66 @@ static void FMS_SubMode(void)
     if (FMS_getArmMode(FMS_B.target_mode) == 3.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Auto;
-      FMS_enter_internal_Auto();
+      switch (FMS_B.target_mode) {
+       case PilotMode_Offboard:
+        FMS_DW.is_Auto = FMS_IN_Offboard;
+        FMS_B.state = VehicleState_Offboard;
+        break;
+
+       case PilotMode_Mission:
+        FMS_DW.is_Auto = FMS_IN_Mission;
+        FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat_0 *
+          57.295779513082323;
+        FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
+          57.295779513082323;
+        FMS_DW.is_Mission = FMS_IN_NextWP;
+
+        /* Inport: '<Root>/Mission_Data' */
+        if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+          FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
+        } else {
+          FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+          qY_tmp = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+          if (qY_tmp > FMS_B.wp_index) {
+            qY_tmp = 0U;
+          }
+
+          FMS_B.wp_consume = (uint8_T)qY_tmp;
+        }
+        break;
+
+       default:
+        FMS_DW.is_Auto = FMS_IN_InvalidAutoMode;
+        break;
+      }
     } else if (FMS_getArmMode(FMS_B.target_mode) == 2.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Assist;
-      FMS_enter_internal_Assist();
+      switch (FMS_B.target_mode) {
+       case PilotMode_Acro:
+        FMS_DW.is_Assist = FMS_IN_Acro;
+        FMS_B.state = VehicleState_Acro;
+        break;
+
+       case PilotMode_Stabilize:
+        FMS_DW.is_Assist = FMS_IN_Stabilize;
+        FMS_B.state = VehicleState_Stabilize;
+        break;
+
+       case PilotMode_Altitude:
+        FMS_DW.is_Assist = FMS_IN_Altitude;
+        FMS_B.state = VehicleState_Altitude;
+        break;
+
+       case PilotMode_Position:
+        FMS_DW.is_Assist = FMS_IN_Position;
+        FMS_B.state = VehicleState_Position;
+        break;
+
+       default:
+        FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
+        break;
+      }
     } else if (FMS_getArmMode(FMS_B.target_mode) == 1.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Manual;
@@ -2751,11 +2445,66 @@ static void FMS_SubMode(void)
             if (tmp == 3.0) {
               FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
               FMS_DW.is_Arm = FMS_IN_Auto;
-              FMS_enter_internal_Auto();
+              switch (FMS_B.target_mode) {
+               case PilotMode_Offboard:
+                FMS_DW.is_Auto = FMS_IN_Offboard;
+                FMS_B.state = VehicleState_Offboard;
+                break;
+
+               case PilotMode_Mission:
+                FMS_DW.is_Auto = FMS_IN_Mission;
+                FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat_0 *
+                  57.295779513082323;
+                FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
+                  57.295779513082323;
+                FMS_DW.is_Mission = FMS_IN_NextWP;
+
+                /* Inport: '<Root>/Mission_Data' */
+                if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+                  FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
+                } else {
+                  FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+                  qY_tmp = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+                  if (qY_tmp > FMS_B.wp_index) {
+                    qY_tmp = 0U;
+                  }
+
+                  FMS_B.wp_consume = (uint8_T)qY_tmp;
+                }
+                break;
+
+               default:
+                FMS_DW.is_Auto = FMS_IN_InvalidAutoMode;
+                break;
+              }
             } else if (tmp == 2.0) {
               FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
               FMS_DW.is_Arm = FMS_IN_Assist;
-              FMS_enter_internal_Assist();
+              switch (FMS_B.target_mode) {
+               case PilotMode_Acro:
+                FMS_DW.is_Assist = FMS_IN_Acro;
+                FMS_B.state = VehicleState_Acro;
+                break;
+
+               case PilotMode_Stabilize:
+                FMS_DW.is_Assist = FMS_IN_Stabilize;
+                FMS_B.state = VehicleState_Stabilize;
+                break;
+
+               case PilotMode_Altitude:
+                FMS_DW.is_Assist = FMS_IN_Altitude;
+                FMS_B.state = VehicleState_Altitude;
+                break;
+
+               case PilotMode_Position:
+                FMS_DW.is_Assist = FMS_IN_Position;
+                FMS_B.state = VehicleState_Position;
+                break;
+
+               default:
+                FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
+                break;
+              }
             } else if (tmp == 1.0) {
               FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
               FMS_DW.is_Arm = FMS_IN_Manual;
@@ -2795,6 +2544,441 @@ static void FMS_exit_internal_Arm(void)
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
+static void FMS_Arm(void)
+{
+  boolean_T c_sf_internal_predicateOutput;
+  real32_T tmp[2];
+  uint32_T qY;
+  int32_T tmp_0;
+  boolean_T tmp_1;
+  real_T tmp_2;
+  tmp_1 = !FMS_B.LogicalOperator1;
+  if (tmp_1 || (!FMS_DW.condWasTrueAtLastTimeStep_1_i)) {
+    FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+  }
+
+  FMS_DW.condWasTrueAtLastTimeStep_1_i = FMS_B.LogicalOperator1;
+  if ((FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_1_g >=
+       500) && (FMS_B.target_mode != PilotMode_Mission)) {
+    FMS_exit_internal_Arm();
+    FMS_DW.is_Vehicle = FMS_IN_Disarm;
+    FMS_B.state = VehicleState_Disarm;
+  } else if ((FMS_DW.mode_prev != FMS_DW.mode_start) && (FMS_B.target_mode !=
+              PilotMode_None)) {
+    tmp_2 = FMS_getArmMode(FMS_B.target_mode);
+    if (tmp_2 == 3.0) {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_Auto;
+      switch (FMS_B.target_mode) {
+       case PilotMode_Offboard:
+        FMS_DW.is_Auto = FMS_IN_Offboard;
+        FMS_B.state = VehicleState_Offboard;
+        break;
+
+       case PilotMode_Mission:
+        FMS_DW.is_Auto = FMS_IN_Mission;
+        FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat_0 *
+          57.295779513082323;
+        FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
+          57.295779513082323;
+        FMS_DW.is_Mission = FMS_IN_NextWP;
+
+        /* Inport: '<Root>/Mission_Data' */
+        if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+          FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
+        } else {
+          FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+          qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+          if (qY > FMS_B.wp_index) {
+            qY = 0U;
+          }
+
+          FMS_B.wp_consume = (uint8_T)qY;
+        }
+        break;
+
+       default:
+        FMS_DW.is_Auto = FMS_IN_InvalidAutoMode;
+        break;
+      }
+    } else if (tmp_2 == 2.0) {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_Assist;
+      switch (FMS_B.target_mode) {
+       case PilotMode_Acro:
+        FMS_DW.is_Assist = FMS_IN_Acro;
+        FMS_B.state = VehicleState_Acro;
+        break;
+
+       case PilotMode_Stabilize:
+        FMS_DW.is_Assist = FMS_IN_Stabilize;
+        FMS_B.state = VehicleState_Stabilize;
+        break;
+
+       case PilotMode_Altitude:
+        FMS_DW.is_Assist = FMS_IN_Altitude;
+        FMS_B.state = VehicleState_Altitude;
+        break;
+
+       case PilotMode_Position:
+        FMS_DW.is_Assist = FMS_IN_Position;
+        FMS_B.state = VehicleState_Position;
+        break;
+
+       default:
+        FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
+        break;
+      }
+    } else if (tmp_2 == 1.0) {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_Manual;
+      if (FMS_B.target_mode == PilotMode_Manual) {
+        FMS_DW.is_Manual = FMS_IN_Manual_n;
+        FMS_B.state = VehicleState_Manual;
+      } else {
+        FMS_DW.is_Manual = FMS_IN_InValidManualMode;
+      }
+    } else {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_InvalidArmMode;
+    }
+  } else {
+    if (FMS_sf_msg_pop_M()) {
+      c_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData == CMD_Land);
+    } else {
+      c_sf_internal_predicateOutput = false;
+    }
+
+    if (c_sf_internal_predicateOutput) {
+      FMS_B.Cmd_In.sp_land[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+      FMS_B.Cmd_In.sp_land[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_SubMode;
+      FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+      FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+      FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+      FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+      FMS_DW.durationLastReferenceTick_1_p = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.is_SubMode = FMS_IN_Land;
+      FMS_B.state = VehicleState_Land;
+      FMS_DW.condWasTrueAtLastTimeStep_1_g = FMS_B.LogicalOperator1;
+    } else {
+      if (FMS_sf_msg_pop_M()) {
+        c_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData == CMD_Return);
+      } else {
+        c_sf_internal_predicateOutput = false;
+      }
+
+      if (c_sf_internal_predicateOutput) {
+        FMS_B.Cmd_In.sp_return[0] = FMS_DW.home[0];
+        FMS_B.Cmd_In.sp_return[1] = FMS_DW.home[1];
+        FMS_exit_internal_Arm();
+        FMS_DW.is_Arm = FMS_IN_SubMode;
+        FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+        FMS_DW.stick_val[1] =
+          FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+        FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+        FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+        FMS_DW.is_SubMode = FMS_IN_Return;
+        FMS_B.state = VehicleState_Return;
+      } else {
+        switch (FMS_DW.is_Arm) {
+         case FMS_IN_Assist:
+          if (FMS_DW.is_Assist == FMS_IN_InvalidAssistMode) {
+            FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Vehicle = FMS_IN_Disarm;
+            FMS_B.state = VehicleState_Disarm;
+          }
+          break;
+
+         case FMS_IN_Auto:
+          if (FMS_sf_msg_pop_M()) {
+            c_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
+              CMD_Pause);
+          } else {
+            c_sf_internal_predicateOutput = false;
+          }
+
+          if (c_sf_internal_predicateOutput) {
+            FMS_exit_internal_Auto();
+            FMS_DW.is_Arm = FMS_IN_SubMode;
+            FMS_DW.stick_val[0] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+            FMS_DW.stick_val[1] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+            FMS_DW.stick_val[2] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+            FMS_DW.stick_val[3] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+            FMS_DW.is_SubMode = FMS_IN_Hold_k;
+            FMS_B.state = VehicleState_Hold;
+          } else {
+            switch (FMS_DW.is_Auto) {
+             case FMS_IN_InvalidAutoMode:
+              FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD_h;
+              FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+              FMS_DW.is_Vehicle = FMS_IN_Disarm;
+              FMS_B.state = VehicleState_Disarm;
+              break;
+
+             case FMS_IN_Mission:
+              if (FMS_DW.mission_timestamp_prev !=
+                  FMS_DW.mission_timestamp_start) {
+                FMS_DW.is_Mission = FMS_IN_NextWP;
+
+                /* Inport: '<Root>/Mission_Data' */
+                if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+                  FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index - 1];
+                } else {
+                  FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+                  qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+                  if (qY > FMS_B.wp_index) {
+                    qY = 0U;
+                  }
+
+                  FMS_B.wp_consume = (uint8_T)qY;
+                }
+              } else {
+                switch (FMS_DW.is_Mission) {
+                 case FMS_IN_Disarming:
+                  FMS_DW.is_Mission = FMS_IN_NO_ACTIVE_CHILD_h;
+                  FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD_h;
+                  FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+                  FMS_DW.is_Vehicle = FMS_IN_Disarm;
+                  FMS_B.state = VehicleState_Disarm;
+                  break;
+
+                 case FMS_IN_Land:
+                  if (tmp_1 || (!FMS_DW.condWasTrueAtLastTimeStep_1)) {
+                    FMS_DW.durationLastReferenceTick_1 =
+                      FMS_DW.chartAbsoluteTimeCounter;
+                  }
+
+                  FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
+                  if (FMS_DW.chartAbsoluteTimeCounter -
+                      FMS_DW.durationLastReferenceTick_1 >= 500) {
+                    tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
+                    if ((uint32_T)tmp_0 > 255U) {
+                      tmp_0 = 255;
+                    }
+
+                    FMS_B.wp_index = (uint8_T)tmp_0;
+                    FMS_DW.is_Mission = FMS_IN_NextWP;
+
+                    /* Inport: '<Root>/Mission_Data' */
+                    if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+                      FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index
+                        - 1];
+                    } else {
+                      FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+                      qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+                      if (qY > FMS_B.wp_index) {
+                        qY = 0U;
+                      }
+
+                      FMS_B.wp_consume = (uint8_T)qY;
+                    }
+                  }
+                  break;
+
+                 case FMS_IN_Loiter:
+                  break;
+
+                 case FMS_IN_NextWP:
+                  if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Takeoff) {
+                    FMS_DW.is_Mission = FMS_IN_Takeoff_a;
+                    FMS_B.Cmd_In.cur_waypoint[0] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+                    FMS_B.Cmd_In.cur_waypoint[1] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+                    FMS_B.Cmd_In.cur_waypoint[2] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
+
+                    /* Inport: '<Root>/Mission_Data' */
+                    FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[FMS_B.wp_index -
+                      1] * 1.0E-7;
+                    FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[FMS_B.wp_index -
+                      1] * 1.0E-7;
+                    FMS_B.lla[2] = -FMS_U.Mission_Data.z[FMS_B.wp_index - 1];
+                    FMS_B.llo[0] = FMS_DW.llo[0];
+                    FMS_B.llo[1] = FMS_DW.llo[1];
+                    FMS_B.href = 0.0;
+                    FMS_B.psio = 0.0;
+
+                    /* Outputs for Function Call SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+                    F_VehicleArmAutoMissionLLA2FLAT(FMS_B.lla, FMS_B.llo,
+                      FMS_B.href, FMS_B.psio, FMS_B.DataTypeConversion,
+                      &FMS_ConstB.VehicleArmAutoMissionLLA2FLAT);
+
+                    /* End of Outputs for SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+                    FMS_B.Cmd_In.sp_takeoff[0] = FMS_B.DataTypeConversion[0];
+                    FMS_B.Cmd_In.sp_takeoff[1] = FMS_B.DataTypeConversion[1];
+                    FMS_B.Cmd_In.sp_takeoff[2] = FMS_B.DataTypeConversion[2];
+                    FMS_B.state = VehicleState_Takeoff;
+                  } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Waypoint) {
+                    FMS_DW.is_Mission = FMS_IN_Waypoint;
+
+                    /* Inport: '<Root>/Mission_Data' */
+                    FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[FMS_B.wp_index -
+                      1] * 1.0E-7;
+                    FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[FMS_B.wp_index -
+                      1] * 1.0E-7;
+                    FMS_B.lla[2] = -FMS_U.Mission_Data.z[FMS_B.wp_index - 1];
+                    FMS_B.llo[0] = FMS_DW.llo[0];
+                    FMS_B.llo[1] = FMS_DW.llo[1];
+                    FMS_B.href = 0.0;
+                    FMS_B.psio = 0.0;
+
+                    /* Outputs for Function Call SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+                    F_VehicleArmAutoMissionLLA2FLAT(FMS_B.lla, FMS_B.llo,
+                      FMS_B.href, FMS_B.psio, FMS_B.DataTypeConversion,
+                      &FMS_ConstB.VehicleArmAutoMissionLLA2FLAT);
+
+                    /* End of Outputs for SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+                    FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.DataTypeConversion[0];
+                    FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.DataTypeConversion[1];
+                    FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.DataTypeConversion[2];
+                    FMS_B.state = VehicleState_Mission;
+                  } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Land) {
+                    FMS_DW.durationLastReferenceTick_1 =
+                      FMS_DW.chartAbsoluteTimeCounter;
+                    FMS_DW.is_Mission = FMS_IN_Land;
+                    FMS_B.Cmd_In.sp_land[0] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+                    FMS_B.Cmd_In.sp_land[1] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+                    FMS_B.state = VehicleState_Land;
+                    FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
+                  } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Return) {
+                    FMS_DW.is_Mission = FMS_IN_Return_d;
+                    FMS_B.Cmd_In.sp_return[0] = FMS_DW.home[0];
+                    FMS_B.Cmd_In.sp_return[1] = FMS_DW.home[1];
+                    FMS_B.state = VehicleState_Return;
+                  } else if (FMS_B.LogicalOperator1) {
+                    FMS_DW.is_Mission = FMS_IN_Disarming;
+                  } else {
+                    FMS_DW.is_Mission = FMS_IN_Loiter;
+                    FMS_B.state = VehicleState_Hold;
+                  }
+                  break;
+
+                 case FMS_IN_Return_d:
+                  tmp[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R -
+                    FMS_B.Cmd_In.sp_return[0];
+                  tmp[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R -
+                    FMS_B.Cmd_In.sp_return[1];
+                  if (FMS_norm(tmp) < 0.5F) {
+                    FMS_DW.durationLastReferenceTick_1 =
+                      FMS_DW.chartAbsoluteTimeCounter;
+                    FMS_DW.is_Mission = FMS_IN_Land;
+                    FMS_B.Cmd_In.sp_land[0] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+                    FMS_B.Cmd_In.sp_land[1] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+                    FMS_B.state = VehicleState_Land;
+                    FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
+                  }
+                  break;
+
+                 case FMS_IN_Takeoff_a:
+                  if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R - FMS_DW.home[2]
+                      >= FMS_B.Cmd_In.sp_takeoff[2]) {
+                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_takeoff[0];
+                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_takeoff[1];
+                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_takeoff[2];
+                    tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
+                    if ((uint32_T)tmp_0 > 255U) {
+                      tmp_0 = 255;
+                    }
+
+                    FMS_B.wp_index = (uint8_T)tmp_0;
+                    FMS_DW.is_Mission = FMS_IN_NextWP;
+
+                    /* Inport: '<Root>/Mission_Data' */
+                    if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+                      FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index
+                        - 1];
+                    } else {
+                      FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+                      qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+                      if (qY > FMS_B.wp_index) {
+                        qY = 0U;
+                      }
+
+                      FMS_B.wp_consume = (uint8_T)qY;
+                    }
+                  }
+                  break;
+
+                 case FMS_IN_Waypoint:
+                  tmp[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R -
+                    FMS_B.Cmd_In.sp_waypoint[0];
+                  tmp[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R -
+                    FMS_B.Cmd_In.sp_waypoint[1];
+                  if (FMS_norm(tmp) < 0.5F) {
+                    FMS_B.state = VehicleState_Hold;
+                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
+                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
+                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
+                    tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
+                    if ((uint32_T)tmp_0 > 255U) {
+                      tmp_0 = 255;
+                    }
+
+                    FMS_B.wp_index = (uint8_T)tmp_0;
+                    FMS_DW.is_Mission = FMS_IN_NextWP;
+
+                    /* Inport: '<Root>/Mission_Data' */
+                    if (FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) {
+                      FMS_DW.nav_cmd = FMS_U.Mission_Data.command[FMS_B.wp_index
+                        - 1];
+                    } else {
+                      FMS_DW.nav_cmd = (uint16_T)NAV_Cmd_None;
+                      qY = FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+                      if (qY > FMS_B.wp_index) {
+                        qY = 0U;
+                      }
+
+                      FMS_B.wp_consume = (uint8_T)qY;
+                    }
+                  }
+                  break;
+                }
+              }
+              break;
+
+             case FMS_IN_Offboard:
+              break;
+            }
+          }
+          break;
+
+         case FMS_IN_InvalidArmMode:
+          FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+          FMS_DW.is_Vehicle = FMS_IN_Disarm;
+          FMS_B.state = VehicleState_Disarm;
+          break;
+
+         case FMS_IN_Manual:
+          if (FMS_DW.is_Manual == FMS_IN_InValidManualMode) {
+            FMS_DW.is_Manual = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Vehicle = FMS_IN_Disarm;
+            FMS_B.state = VehicleState_Disarm;
+          }
+          break;
+
+         case FMS_IN_SubMode:
+          FMS_SubMode();
+          break;
+        }
+      }
+    }
+  }
+}
+
+/* Function for Chart: '<Root>/FMS State Machine' */
 static real_T FMS_ManualArmEvent(real32_T pilot_cmd_stick_throttle, uint32_T
   pilot_cmd_mode)
 {
@@ -2821,129 +3005,14 @@ static real_T FMS_ManualArmEvent(real32_T pilot_cmd_stick_throttle, uint32_T
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
-static void FMS_Standby(void)
-{
-  boolean_T condIsTrue;
-  boolean_T guard1 = false;
-  boolean_T guard2 = false;
-  guard1 = false;
-  guard2 = false;
-  if ((FMS_ManualArmEvent(FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle,
-                          FMS_B.BusConversion_InsertedFor_FMS_f.mode) == 1.0) &&
-      (FMS_B.target_mode != PilotMode_None)) {
-    guard1 = true;
-  } else {
-    condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
-      FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_1_n = condIsTrue;
-    if (FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_1_l >=
-        500) {
-      guard2 = true;
-    } else {
-      if (FMS_sf_msg_pop_M()) {
-        condIsTrue = (FMS_DW.M_msgReservedData == CMD_Takeoff);
-      } else {
-        condIsTrue = false;
-      }
-
-      if (condIsTrue) {
-        guard2 = true;
-      } else if ((FMS_DW.temporalCounter_i1 >= 2500U) || (FMS_DW.sfEvent ==
-                  FMS_event_DisarmEvent)) {
-        FMS_DW.prep_takeoff = 0.0;
-        condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-        if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
-          FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
-        }
-
-        FMS_DW.condWasTrueAtLastTimeStep_1_n = condIsTrue;
-        FMS_DW.prep_mission_takeoff = 0.0;
-        condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-        if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-          FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-        }
-
-        FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-        FMS_DW.is_Vehicle = FMS_IN_Disarm;
-        FMS_B.state = VehicleState_Disarm;
-      } else {
-        condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-        if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-          FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-        }
-
-        FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-        if (FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_2
-            >= 500) {
-          guard1 = true;
-        }
-      }
-    }
-  }
-
-  if (guard2) {
-    FMS_B.Cmd_In.sp_takeoff[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-    FMS_B.Cmd_In.sp_takeoff[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-    FMS_B.Cmd_In.sp_takeoff[2] = 1.5F;
-    FMS_DW.prep_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
-      FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_1_n = condIsTrue;
-    FMS_DW.prep_mission_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-      FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-    FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
-    FMS_DW.is_Vehicle = FMS_IN_Arm;
-    FMS_DW.condWasTrueAtLastTimeStep_1_i = FMS_B.LogicalOperator1;
-    FMS_DW.is_Arm = FMS_IN_SubMode;
-    FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-    FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-    FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-    FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-    FMS_DW.is_SubMode = FMS_IN_Takeoff;
-    FMS_B.state = VehicleState_Takeoff;
-  }
-
-  if (guard1) {
-    FMS_DW.prep_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
-      FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_1_n = condIsTrue;
-    FMS_DW.prep_mission_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-      FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-    FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
-    FMS_DW.is_Vehicle = FMS_IN_Arm;
-    FMS_DW.condWasTrueAtLastTimeStep_1_i = FMS_B.LogicalOperator1;
-    FMS_enter_internal_Arm();
-  }
-}
-
-/* Function for Chart: '<Root>/FMS State Machine' */
 static void FMS_Vehicle(void)
 {
   boolean_T sf_internal_predicateOutput;
   int32_T b_previousEvent;
-  real_T tmp;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  boolean_T guard3 = false;
+  boolean_T guard4 = false;
   if (FMS_DW.mission_timestamp_prev != FMS_DW.mission_timestamp_start) {
     FMS_B.wp_consume = 0U;
     FMS_B.wp_index = 1U;
@@ -2991,126 +3060,11 @@ static void FMS_Vehicle(void)
     FMS_B.state = VehicleState_Disarm;
   } else {
     guard1 = false;
+    guard2 = false;
+    guard3 = false;
     switch (FMS_DW.is_Vehicle) {
      case FMS_IN_Arm:
-      if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_i))
-      {
-        FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
-      }
-
-      FMS_DW.condWasTrueAtLastTimeStep_1_i = FMS_B.LogicalOperator1;
-      if ((FMS_DW.chartAbsoluteTimeCounter -
-           FMS_DW.durationLastReferenceTick_1_g >= 500) && (FMS_B.target_mode !=
-           PilotMode_Mission)) {
-        FMS_exit_internal_Arm();
-        FMS_DW.is_Vehicle = FMS_IN_Disarm;
-        FMS_B.state = VehicleState_Disarm;
-      } else if ((FMS_DW.mode_prev != FMS_DW.mode_start) && (FMS_B.target_mode
-                  != PilotMode_None)) {
-        tmp = FMS_getArmMode(FMS_B.target_mode);
-        if (tmp == 3.0) {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_Auto;
-          FMS_enter_internal_Auto();
-        } else if (tmp == 2.0) {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_Assist;
-          FMS_enter_internal_Assist();
-        } else if (tmp == 1.0) {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_Manual;
-          if (FMS_B.target_mode == PilotMode_Manual) {
-            FMS_DW.is_Manual = FMS_IN_Manual_n;
-            FMS_B.state = VehicleState_Manual;
-          } else {
-            FMS_DW.is_Manual = FMS_IN_InValidManualMode;
-          }
-        } else {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_InvalidArmMode;
-        }
-      } else {
-        if (FMS_sf_msg_pop_M()) {
-          sf_internal_predicateOutput = (FMS_DW.M_msgReservedData == CMD_Land);
-        } else {
-          sf_internal_predicateOutput = false;
-        }
-
-        if (sf_internal_predicateOutput) {
-          FMS_B.Cmd_In.sp_land[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-          FMS_B.Cmd_In.sp_land[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_SubMode;
-          FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-          FMS_DW.stick_val[1] =
-            FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-          FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-          FMS_DW.stick_val[3] =
-            FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-          FMS_DW.durationLastReferenceTick_1_p = FMS_DW.chartAbsoluteTimeCounter;
-          FMS_DW.is_SubMode = FMS_IN_Land;
-          FMS_B.state = VehicleState_Land;
-          FMS_DW.condWasTrueAtLastTimeStep_1_g = FMS_B.LogicalOperator1;
-        } else {
-          if (FMS_sf_msg_pop_M()) {
-            sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
-              CMD_Return);
-          } else {
-            sf_internal_predicateOutput = false;
-          }
-
-          if (sf_internal_predicateOutput) {
-            FMS_B.Cmd_In.sp_return[0] = FMS_DW.home[0];
-            FMS_B.Cmd_In.sp_return[1] = FMS_DW.home[1];
-            FMS_exit_internal_Arm();
-            FMS_DW.is_Arm = FMS_IN_SubMode;
-            FMS_DW.stick_val[0] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-            FMS_DW.stick_val[1] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-            FMS_DW.stick_val[2] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-            FMS_DW.stick_val[3] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-            FMS_DW.is_SubMode = FMS_IN_Return;
-            FMS_B.state = VehicleState_Return;
-          } else {
-            switch (FMS_DW.is_Arm) {
-             case FMS_IN_Assist:
-              if (FMS_DW.is_Assist == FMS_IN_InvalidAssistMode) {
-                FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Vehicle = FMS_IN_Disarm;
-                FMS_B.state = VehicleState_Disarm;
-              }
-              break;
-
-             case FMS_IN_Auto:
-              FMS_Auto();
-              break;
-
-             case FMS_IN_InvalidArmMode:
-              FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-              FMS_DW.is_Vehicle = FMS_IN_Disarm;
-              FMS_B.state = VehicleState_Disarm;
-              break;
-
-             case FMS_IN_Manual:
-              if (FMS_DW.is_Manual == FMS_IN_InValidManualMode) {
-                FMS_DW.is_Manual = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Vehicle = FMS_IN_Disarm;
-                FMS_B.state = VehicleState_Disarm;
-              }
-              break;
-
-             case FMS_IN_SubMode:
-              FMS_SubMode();
-              break;
-            }
-          }
-        }
-      }
+      FMS_Arm();
       break;
 
      case FMS_IN_Disarm:
@@ -3145,8 +3099,126 @@ static void FMS_Vehicle(void)
       break;
 
      case FMS_IN_Standby:
-      FMS_Standby();
+      if ((FMS_ManualArmEvent
+           (FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle,
+            FMS_B.BusConversion_InsertedFor_FMS_f.mode) == 1.0) &&
+          (FMS_B.target_mode != PilotMode_None)) {
+        guard2 = true;
+      } else {
+        sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+        if ((!sf_internal_predicateOutput) ||
+            (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
+          FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
+        }
+
+        FMS_DW.condWasTrueAtLastTimeStep_1_n = sf_internal_predicateOutput;
+        if (FMS_DW.chartAbsoluteTimeCounter -
+            FMS_DW.durationLastReferenceTick_1_l >= 500) {
+          guard3 = true;
+        } else {
+          if (FMS_sf_msg_pop_M()) {
+            sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
+              CMD_Takeoff);
+          } else {
+            sf_internal_predicateOutput = false;
+          }
+
+          if (sf_internal_predicateOutput) {
+            guard3 = true;
+          } else if ((FMS_DW.temporalCounter_i1 >= 2500U) || (FMS_DW.sfEvent ==
+                      FMS_event_DisarmEvent)) {
+            FMS_DW.prep_takeoff = 0.0;
+            sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+            if ((!sf_internal_predicateOutput) ||
+                (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
+              FMS_DW.durationLastReferenceTick_1_l =
+                FMS_DW.chartAbsoluteTimeCounter;
+            }
+
+            FMS_DW.condWasTrueAtLastTimeStep_1_n = sf_internal_predicateOutput;
+            FMS_DW.prep_mission_takeoff = 0.0;
+            sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+            if ((!sf_internal_predicateOutput) ||
+                (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
+              FMS_DW.durationLastReferenceTick_2 =
+                FMS_DW.chartAbsoluteTimeCounter;
+            }
+
+            FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+            FMS_DW.is_Vehicle = FMS_IN_Disarm;
+            FMS_B.state = VehicleState_Disarm;
+          } else {
+            sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+            if ((!sf_internal_predicateOutput) ||
+                (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
+              FMS_DW.durationLastReferenceTick_2 =
+                FMS_DW.chartAbsoluteTimeCounter;
+            }
+
+            FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+            if (FMS_DW.chartAbsoluteTimeCounter -
+                FMS_DW.durationLastReferenceTick_2 >= 500) {
+              guard2 = true;
+            }
+          }
+        }
+      }
       break;
+    }
+
+    if (guard3) {
+      FMS_B.Cmd_In.sp_takeoff[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+      FMS_B.Cmd_In.sp_takeoff[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+      FMS_B.Cmd_In.sp_takeoff[2] = 1.5F;
+      FMS_DW.prep_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) ||
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
+        FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_1_n = sf_internal_predicateOutput;
+      FMS_DW.prep_mission_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
+      {
+        FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+      FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.is_Vehicle = FMS_IN_Arm;
+      FMS_DW.condWasTrueAtLastTimeStep_1_i = FMS_B.LogicalOperator1;
+      FMS_DW.is_Arm = FMS_IN_SubMode;
+      FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+      FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+      FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+      FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+      FMS_DW.is_SubMode = FMS_IN_Takeoff;
+      FMS_B.state = VehicleState_Takeoff;
+    }
+
+    if (guard2) {
+      FMS_DW.prep_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) ||
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_n)) {
+        FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_1_n = sf_internal_predicateOutput;
+      FMS_DW.prep_mission_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
+      {
+        FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+      FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.is_Vehicle = FMS_IN_Arm;
+      FMS_DW.condWasTrueAtLastTimeStep_1_i = FMS_B.LogicalOperator1;
+      FMS_enter_internal_Arm();
     }
 
     if (guard1) {
@@ -3156,7 +3228,7 @@ static void FMS_Vehicle(void)
       FMS_DW.durationLastReferenceTick_1_l = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Standby;
       FMS_DW.temporalCounter_i1 = 0U;
-      guard2 = false;
+      guard4 = false;
       if (FMS_B.target_mode == PilotMode_Mission) {
         if ((FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) &&
             (FMS_U.Mission_Data.command[FMS_B.wp_index - 1] == (int32_T)
@@ -3166,7 +3238,7 @@ static void FMS_Vehicle(void)
             1.0);
           FMS_DW.prep_takeoff = 0.0;
           FMS_DW.condWasTrueAtLastTimeStep_1_n = (FMS_DW.prep_takeoff == 1.0);
-          guard2 = true;
+          guard4 = true;
         } else {
           b_previousEvent = FMS_DW.sfEvent;
           FMS_DW.sfEvent = FMS_event_DisarmEvent;
@@ -3176,14 +3248,14 @@ static void FMS_Vehicle(void)
           FMS_DW.sfEvent = b_previousEvent;
           if (FMS_DW.is_Vehicle != FMS_IN_Standby) {
           } else {
-            guard2 = true;
+            guard4 = true;
           }
         }
       } else {
-        guard2 = true;
+        guard4 = true;
       }
 
-      if (guard2) {
+      if (guard4) {
         FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
         FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
         FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
@@ -3422,8 +3494,8 @@ void FMS_step(void)
   int32_T i;
   real32_T rtb_VectorConcatenate_a[3];
   boolean_T u;
+  real32_T rtb_MathFunction_hf_idx_1;
   real32_T rtb_MathFunction_hf_idx_0;
-  real32_T rtb_MathFunction_iq_idx_1;
   real32_T rtb_MathFunction_iq_idx_0;
   real32_T rtb_MathFunction_h_idx_0;
   real32_T rtb_Switch_b_idx_1;
@@ -3520,7 +3592,40 @@ void FMS_step(void)
   } else {
     switch (FMS_DW.is_c3_FMS) {
      case FMS_IN_Acro:
-      FMS_Acro();
+      if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+        FMS_B.target_mode = PilotMode_Acro;
+        switch (FMS_DW.Delay_DSTATE_c) {
+         case PilotMode_Manual:
+          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+          break;
+
+         case PilotMode_Acro:
+          FMS_DW.is_c3_FMS = FMS_IN_Acro;
+          break;
+
+         case PilotMode_Stabilize:
+          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+          break;
+
+         case PilotMode_Altitude:
+          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+          break;
+
+         case PilotMode_Position:
+          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+          break;
+
+         case PilotMode_Mission:
+          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+          break;
+
+         default:
+          FMS_DW.is_c3_FMS = FMS_IN_Other;
+          break;
+        }
+      } else {
+        FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+      }
       break;
 
      case FMS_IN_Altitude:
@@ -3704,7 +3809,40 @@ void FMS_step(void)
       break;
 
      default:
-      FMS_Stabilize();
+      if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+        FMS_B.target_mode = PilotMode_Stabilize;
+        switch (FMS_DW.Delay_DSTATE_c) {
+         case PilotMode_Manual:
+          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+          break;
+
+         case PilotMode_Acro:
+          FMS_DW.is_c3_FMS = FMS_IN_Acro;
+          break;
+
+         case PilotMode_Stabilize:
+          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+          break;
+
+         case PilotMode_Altitude:
+          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+          break;
+
+         case PilotMode_Position:
+          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+          break;
+
+         case PilotMode_Mission:
+          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+          break;
+
+         default:
+          FMS_DW.is_c3_FMS = FMS_IN_Other;
+          break;
+        }
+      } else {
+        FMS_DW.is_c3_FMS = FMS_IN_Acro;
+      }
       break;
     }
   }
@@ -4996,7 +5134,7 @@ void FMS_step(void)
         /* Switch: '<S252>/Switch' incorporates:
          *  Product: '<S273>/Multiply'
          */
-        if (rtb_Rem_p > 0.261799395F) {
+        if (rtb_Rem_p > 0.34906584F) {
           /* Saturate: '<S287>/Saturation1' */
           if (FMS_B.Merge_mv[0] > FMS_PARAM.VEL_XY_LIM) {
             rtb_Switch_l[0] = FMS_PARAM.VEL_XY_LIM;
@@ -5302,7 +5440,7 @@ void FMS_step(void)
          *  SignalConversion: '<S3>/Signal Copy1'
          */
         FMS_NearbyRefWP(rtb_Divide_lq, FMS_U.INS_Out.x_R, FMS_U.INS_Out.y_R,
-                        10.0F, rtb_Divide_e, &rtb_Rem_o);
+                        10.0F, rtb_Divide_e, &rtb_MathFunction_hf_idx_1);
 
         /* End of Outputs for SubSystem: '<Root>/FMS Input' */
 
@@ -5330,7 +5468,7 @@ void FMS_step(void)
         /* End of Outputs for SubSystem: '<Root>/FMS Input' */
         rtb_Sqrt_k0 = -1.0F;
         rtb_MathFunction_iq_idx_0 = 0.0F;
-        rtb_MathFunction_iq_idx_1 = 0.0F;
+        rtb_Rem_o = 0.0F;
         guard1 = false;
         if (D > 0.0F) {
           u1_tmp = sqrtf(D);
@@ -5362,8 +5500,7 @@ void FMS_step(void)
         if (guard1) {
           rtb_MathFunction_iq_idx_0 = rtb_MathFunction_h_idx_0 * rtb_Sqrt_k0 +
             FMS_DW.Delay_DSTATE_p[0];
-          rtb_MathFunction_iq_idx_1 = rtb_Add4_ft * rtb_Sqrt_k0 +
-            FMS_DW.Delay_DSTATE_p[1];
+          rtb_Rem_o = rtb_Add4_ft * rtb_Sqrt_k0 + FMS_DW.Delay_DSTATE_p[1];
         }
 
         /* Outputs for Atomic SubSystem: '<Root>/FMS Input' */
@@ -5397,7 +5534,7 @@ void FMS_step(void)
          *  Constant: '<S301>/Constant'
          *  RelationalOperator: '<S301>/Compare'
          */
-        if (rtb_Rem_o <= 0.0F) {
+        if (rtb_MathFunction_hf_idx_1 <= 0.0F) {
           /* Switch: '<S271>/Switch' incorporates:
            *  Constant: '<S300>/Constant'
            *  MATLAB Function: '<S271>/SearchL1RefWP'
@@ -5405,7 +5542,7 @@ void FMS_step(void)
            */
           if (rtb_Sqrt_k0 >= 0.0F) {
             rtb_Divide_e[0] = rtb_MathFunction_iq_idx_0;
-            rtb_Divide_e[1] = rtb_MathFunction_iq_idx_1;
+            rtb_Divide_e[1] = rtb_Rem_o;
           } else {
             rtb_Divide_e[0] = rtb_MathFunction_h_idx_0;
 
@@ -5436,11 +5573,11 @@ void FMS_step(void)
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S3>/Signal Copy1'
          */
-        rtb_MathFunction_iq_idx_1 = rtb_Divide_e[0] - FMS_U.INS_Out.x_R;
+        rtb_MathFunction_hf_idx_1 = rtb_Divide_e[0] - FMS_U.INS_Out.x_R;
 
         /* End of Outputs for SubSystem: '<Root>/FMS Input' */
-        rtb_Divide_e[0] = rtb_MathFunction_iq_idx_1;
-        rtb_Sqrt_k0 = rtb_MathFunction_iq_idx_1 * rtb_MathFunction_iq_idx_1;
+        rtb_Divide_e[0] = rtb_MathFunction_hf_idx_1;
+        rtb_Sqrt_k0 = rtb_MathFunction_hf_idx_1 * rtb_MathFunction_hf_idx_1;
 
         /* Outputs for Atomic SubSystem: '<Root>/FMS Input' */
         /* Sum: '<S272>/Subtract' incorporates:
@@ -5448,14 +5585,14 @@ void FMS_step(void)
          *  Math: '<S308>/Math Function'
          *  SignalConversion: '<S3>/Signal Copy1'
          */
-        rtb_MathFunction_iq_idx_1 = rtb_Divide_e[1] - FMS_U.INS_Out.y_R;
+        rtb_MathFunction_hf_idx_1 = rtb_Divide_e[1] - FMS_U.INS_Out.y_R;
 
         /* End of Outputs for SubSystem: '<Root>/FMS Input' */
 
         /* Sum: '<S308>/Sum of Elements' incorporates:
          *  Math: '<S308>/Math Function'
          */
-        rtb_Sqrt_k0 += rtb_MathFunction_iq_idx_1 * rtb_MathFunction_iq_idx_1;
+        rtb_Sqrt_k0 += rtb_MathFunction_hf_idx_1 * rtb_MathFunction_hf_idx_1;
 
         /* Math: '<S308>/Math Function1' incorporates:
          *  Sum: '<S308>/Sum of Elements'
@@ -5479,7 +5616,7 @@ void FMS_step(void)
           rtb_MathFunction_hf_idx_0 = rtb_Divide_e[0];
         } else {
           rtb_MathFunction_hf_idx_0 = 0.0F;
-          rtb_MathFunction_iq_idx_1 = 0.0F;
+          rtb_MathFunction_hf_idx_1 = 0.0F;
           rtb_Rem_o = 1.0F;
         }
 
@@ -5487,7 +5624,7 @@ void FMS_step(void)
 
         /* Product: '<S308>/Divide' */
         rtb_Divide_lq[0] = rtb_MathFunction_hf_idx_0 / rtb_Rem_o;
-        rtb_Divide_lq[1] = rtb_MathFunction_iq_idx_1 / rtb_Rem_o;
+        rtb_Divide_lq[1] = rtb_MathFunction_hf_idx_1 / rtb_Rem_o;
 
         /* Sum: '<S311>/Sum of Elements' incorporates:
          *  Math: '<S311>/Math Function'
@@ -5516,10 +5653,10 @@ void FMS_step(void)
          */
         if (rtb_Rem_o > 0.0F) {
           rtb_MathFunction_hf_idx_0 = rtb_Divide_lq[1];
-          rtb_MathFunction_iq_idx_1 = rtb_Divide_lq[0];
+          rtb_MathFunction_hf_idx_1 = rtb_Divide_lq[0];
         } else {
           rtb_MathFunction_hf_idx_0 = 0.0F;
-          rtb_MathFunction_iq_idx_1 = 0.0F;
+          rtb_MathFunction_hf_idx_1 = 0.0F;
           rtb_Rem_o = 1.0F;
         }
 
@@ -5532,7 +5669,7 @@ void FMS_step(void)
         rtb_Divide_e[0] = rtb_Switch_l[0] / rtb_Switch_l[2];
 
         /* Product: '<S311>/Divide' */
-        rtb_Divide_lq[1] = rtb_MathFunction_iq_idx_1 / rtb_Rem_o;
+        rtb_Divide_lq[1] = rtb_MathFunction_hf_idx_1 / rtb_Rem_o;
 
         /* Product: '<S310>/Divide' */
         rtb_Divide_e[1] = rtb_Switch_l[1] / rtb_Switch_l[2];
@@ -5614,7 +5751,7 @@ void FMS_step(void)
         /* Math: '<S258>/Rem' incorporates:
          *  Constant: '<S258>/Constant1'
          */
-        rtb_Rem_o = rt_remf(rtb_Saturation_l, 6.28318548F);
+        rtb_MathFunction_hf_idx_1 = rt_remf(rtb_Saturation_l, 6.28318548F);
 
         /* Switch: '<S258>/Switch' incorporates:
          *  Abs: '<S258>/Abs'
@@ -5624,31 +5761,39 @@ void FMS_step(void)
          *  RelationalOperator: '<S264>/Compare'
          *  Sum: '<S258>/Add'
          */
-        if (fabsf(rtb_Rem_o) > 3.14159274F) {
+        if (fabsf(rtb_MathFunction_hf_idx_1) > 3.14159274F) {
           /* Signum: '<S258>/Sign' */
-          if (rtb_Rem_o < 0.0F) {
+          if (rtb_MathFunction_hf_idx_1 < 0.0F) {
             rtb_Sqrt_k0 = -1.0F;
-          } else if (rtb_Rem_o > 0.0F) {
+          } else if (rtb_MathFunction_hf_idx_1 > 0.0F) {
             rtb_Sqrt_k0 = 1.0F;
           } else {
-            rtb_Sqrt_k0 = rtb_Rem_o;
+            rtb_Sqrt_k0 = rtb_MathFunction_hf_idx_1;
           }
 
           /* End of Signum: '<S258>/Sign' */
-          rtb_Rem_o -= 6.28318548F * rtb_Sqrt_k0;
+          rtb_MathFunction_hf_idx_1 -= 6.28318548F * rtb_Sqrt_k0;
         }
 
         /* End of Switch: '<S258>/Switch' */
 
-        /* Sum: '<S263>/Add' incorporates:
+        /* Sum: '<S254>/Sum' incorporates:
          *  Delay: '<S254>/Delay'
+         */
+        rtb_Sqrt_k0 = rtb_MathFunction_hf_idx_1 + FMS_DW.Delay_DSTATE_a;
+
+        /* Product: '<S263>/Multiply1' incorporates:
+         *  Constant: '<S263>/const1'
          *  DiscreteIntegrator: '<S257>/Integrator'
+         */
+        rtb_MathFunction_hf_idx_1 = FMS_DW.Integrator_DSTATE_bs * 0.785398185F;
+
+        /* Sum: '<S263>/Add' incorporates:
          *  DiscreteIntegrator: '<S257>/Integrator1'
-         *  Sum: '<S254>/Sum'
          *  Sum: '<S257>/Subtract'
          */
-        rtb_Rem_o = (FMS_DW.Integrator1_DSTATE_e - (rtb_Rem_o +
-          FMS_DW.Delay_DSTATE_a)) + FMS_DW.Integrator_DSTATE_bs;
+        rtb_Rem_o = (FMS_DW.Integrator1_DSTATE_e - rtb_Sqrt_k0) +
+          rtb_MathFunction_hf_idx_1;
 
         /* Signum: '<S263>/Sign' */
         if (rtb_Rem_o < 0.0F) {
@@ -5663,7 +5808,6 @@ void FMS_step(void)
 
         /* Sum: '<S263>/Add2' incorporates:
          *  Abs: '<S263>/Abs'
-         *  DiscreteIntegrator: '<S257>/Integrator'
          *  Gain: '<S263>/Gain'
          *  Gain: '<S263>/Gain1'
          *  Product: '<S263>/Multiply2'
@@ -5674,13 +5818,10 @@ void FMS_step(void)
          */
         rtb_Saturation_l = (sqrtf((8.0F * fabsf(rtb_Rem_o) + FMS_ConstB.d_l) *
           FMS_ConstB.d_l) - FMS_ConstB.d_l) * 0.5F * rtb_Sqrt_k0 +
-          FMS_DW.Integrator_DSTATE_bs;
+          rtb_MathFunction_hf_idx_1;
 
-        /* Sum: '<S263>/Add4' incorporates:
-         *  DiscreteIntegrator: '<S257>/Integrator'
-         */
-        rtb_Add4_ft = (rtb_Rem_o - rtb_Saturation_l) +
-          FMS_DW.Integrator_DSTATE_bs;
+        /* Sum: '<S263>/Add4' */
+        rtb_Add4_ft = (rtb_Rem_o - rtb_Saturation_l) + rtb_MathFunction_hf_idx_1;
 
         /* Sum: '<S263>/Add3' */
         rtb_Sqrt_k0 = rtb_Rem_o + FMS_ConstB.d_l;
@@ -5800,7 +5941,7 @@ void FMS_step(void)
          */
         FMS_DW.Integrator_DSTATE_bs += ((rtb_Saturation_l / FMS_ConstB.d_l -
           rtb_Switch_b_idx_1) * FMS_ConstB.Gain4_np * ((rtb_Sqrt_k0 - rtb_Rem_p)
-          * 0.5F) - rtb_Switch_k * 0.785398185F) * 0.004F;
+          * 0.5F) - rtb_Switch_k * 1.04719758F) * 0.004F;
         if (FMS_DW.Integrator_DSTATE_bs >= FMS_PARAM.YAW_RATE_LIM) {
           FMS_DW.Integrator_DSTATE_bs = FMS_PARAM.YAW_RATE_LIM;
         } else {
@@ -6628,11 +6769,11 @@ void FMS_step(void)
          */
         if (rtb_Saturation_l > 0.0F) {
           rtb_MathFunction_hf_idx_0 = rtb_Add4_ft;
-          rtb_MathFunction_iq_idx_1 = rtb_MathFunction_h_idx_0;
+          rtb_MathFunction_hf_idx_1 = rtb_MathFunction_h_idx_0;
           rtb_Rem_o = rtb_Saturation_l;
         } else {
           rtb_MathFunction_hf_idx_0 = 0.0F;
-          rtb_MathFunction_iq_idx_1 = 0.0F;
+          rtb_MathFunction_hf_idx_1 = 0.0F;
           rtb_Rem_o = 1.0F;
         }
 
@@ -6640,7 +6781,7 @@ void FMS_step(void)
 
         /* Product: '<S150>/Divide' */
         rtb_Divide_gr[0] = rtb_MathFunction_hf_idx_0 / rtb_Rem_o;
-        rtb_Divide_gr[1] = rtb_MathFunction_iq_idx_1 / rtb_Rem_o;
+        rtb_Divide_gr[1] = rtb_MathFunction_hf_idx_1 / rtb_Rem_o;
 
         /* Sum: '<S148>/Subtract' incorporates:
          *  Product: '<S148>/Multiply'
@@ -6730,7 +6871,7 @@ void FMS_step(void)
         /* Switch: '<S134>/Switch' incorporates:
          *  Product: '<S156>/Multiply'
          */
-        if (rtb_Rem_p > 0.261799395F) {
+        if (rtb_Rem_p > 0.34906584F) {
           /* Saturate: '<S173>/Saturation1' */
           if (FMS_B.Merge_n[0] > FMS_PARAM.VEL_XY_LIM) {
             rtb_MathFunction_hf_idx_0 = FMS_PARAM.VEL_XY_LIM;
@@ -6741,11 +6882,11 @@ void FMS_step(void)
           }
 
           if (FMS_B.Merge_n[1] > FMS_PARAM.VEL_XY_LIM) {
-            rtb_MathFunction_iq_idx_1 = FMS_PARAM.VEL_XY_LIM;
+            rtb_MathFunction_hf_idx_1 = FMS_PARAM.VEL_XY_LIM;
           } else if (FMS_B.Merge_n[1] < -FMS_PARAM.VEL_XY_LIM) {
-            rtb_MathFunction_iq_idx_1 = -FMS_PARAM.VEL_XY_LIM;
+            rtb_MathFunction_hf_idx_1 = -FMS_PARAM.VEL_XY_LIM;
           } else {
-            rtb_MathFunction_iq_idx_1 = FMS_B.Merge_n[1];
+            rtb_MathFunction_hf_idx_1 = FMS_B.Merge_n[1];
           }
 
           /* End of Saturate: '<S173>/Saturation1' */
@@ -6899,7 +7040,7 @@ void FMS_step(void)
 
           /* End of Outputs for SubSystem: '<Root>/FMS Input' */
           rtb_MathFunction_hf_idx_0 = rtb_VectorConcatenate_a[0];
-          rtb_MathFunction_iq_idx_1 = rtb_VectorConcatenate_a[1];
+          rtb_MathFunction_hf_idx_1 = rtb_VectorConcatenate_a[1];
 
           /* Saturate: '<S151>/Saturation1' incorporates:
            *  Product: '<S156>/Multiply'
@@ -6941,8 +7082,8 @@ void FMS_step(void)
          *  SignalConversion: '<S3>/Signal Copy1'
          *  Sum: '<S138>/Sum'
          */
-        rtb_Switch_b_idx_1 = rt_remf(FMS_DW.Integrator1_DSTATE_p -
-          FMS_U.INS_Out.psi, 6.28318548F);
+        rtb_Rem_p = rt_remf(FMS_DW.Integrator1_DSTATE_p - FMS_U.INS_Out.psi,
+                            6.28318548F);
 
         /* End of Outputs for SubSystem: '<Root>/FMS Input' */
 
@@ -6954,31 +7095,31 @@ void FMS_step(void)
          *  RelationalOperator: '<S144>/Compare'
          *  Sum: '<S143>/Add'
          */
-        if (fabsf(rtb_Switch_b_idx_1) > 3.14159274F) {
+        if (fabsf(rtb_Rem_p) > 3.14159274F) {
           /* Signum: '<S143>/Sign' */
-          if (rtb_Switch_b_idx_1 < 0.0F) {
+          if (rtb_Rem_p < 0.0F) {
             rtb_Sqrt_k0 = -1.0F;
-          } else if (rtb_Switch_b_idx_1 > 0.0F) {
+          } else if (rtb_Rem_p > 0.0F) {
             rtb_Sqrt_k0 = 1.0F;
           } else {
-            rtb_Sqrt_k0 = rtb_Switch_b_idx_1;
+            rtb_Sqrt_k0 = rtb_Rem_p;
           }
 
           /* End of Signum: '<S143>/Sign' */
-          rtb_Switch_b_idx_1 -= 6.28318548F * rtb_Sqrt_k0;
+          rtb_Rem_p -= 6.28318548F * rtb_Sqrt_k0;
         }
 
         /* End of Switch: '<S143>/Switch' */
 
         /* Gain: '<S138>/Gain2' */
-        rtb_Switch_b_idx_1 *= FMS_PARAM.YAW_P;
+        rtb_Rem_p *= FMS_PARAM.YAW_P;
 
         /* Saturate: '<S138>/Saturation' */
-        if (rtb_Switch_b_idx_1 > FMS_PARAM.YAW_RATE_LIM) {
-          rtb_Switch_b_idx_1 = FMS_PARAM.YAW_RATE_LIM;
+        if (rtb_Rem_p > FMS_PARAM.YAW_RATE_LIM) {
+          rtb_Rem_p = FMS_PARAM.YAW_RATE_LIM;
         } else {
-          if (rtb_Switch_b_idx_1 < -FMS_PARAM.YAW_RATE_LIM) {
-            rtb_Switch_b_idx_1 = -FMS_PARAM.YAW_RATE_LIM;
+          if (rtb_Rem_p < -FMS_PARAM.YAW_RATE_LIM) {
+            rtb_Rem_p = -FMS_PARAM.YAW_RATE_LIM;
           }
         }
 
@@ -6999,9 +7140,9 @@ void FMS_step(void)
         FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_b;
         FMS_Y.FMS_Out.ctrl_mode = FMS_ConstB.DataTypeConversion2_by;
         FMS_Y.FMS_Out.u_cmd = rtb_MathFunction_hf_idx_0;
-        FMS_Y.FMS_Out.v_cmd = rtb_MathFunction_iq_idx_1;
+        FMS_Y.FMS_Out.v_cmd = rtb_MathFunction_hf_idx_1;
         FMS_Y.FMS_Out.w_cmd = rtb_Rem_o;
-        FMS_Y.FMS_Out.psi_rate_cmd = rtb_Switch_b_idx_1;
+        FMS_Y.FMS_Out.psi_rate_cmd = rtb_Rem_p;
 
         /* Outputs for Atomic SubSystem: '<Root>/FMS Input' */
         /* Math: '<S193>/Math Function' incorporates:
@@ -7028,9 +7169,9 @@ void FMS_step(void)
          *  Operator: sqrt
          */
         if (rtb_Switch_b_idx_1 < 0.0F) {
-          rtb_Switch_b_idx_1 = -sqrtf(fabsf(rtb_Switch_b_idx_1));
+          rtb_Rem_p = -sqrtf(fabsf(rtb_Switch_b_idx_1));
         } else {
-          rtb_Switch_b_idx_1 = sqrtf(rtb_Switch_b_idx_1);
+          rtb_Rem_p = sqrtf(rtb_Switch_b_idx_1);
         }
 
         /* End of Math: '<S193>/Math Function1' */
@@ -7041,16 +7182,16 @@ void FMS_step(void)
          *  Product: '<S193>/Product'
          *  SignalConversion: '<S3>/Signal Copy1'
          */
-        if (rtb_Switch_b_idx_1 > 0.0F) {
+        if (rtb_Rem_p > 0.0F) {
           /* Outputs for Atomic SubSystem: '<Root>/FMS Input' */
           rtb_MathFunction_hf_idx_0 = FMS_U.INS_Out.vn;
-          rtb_MathFunction_iq_idx_1 = FMS_U.INS_Out.ve;
+          rtb_MathFunction_hf_idx_1 = FMS_U.INS_Out.ve;
 
           /* End of Outputs for SubSystem: '<Root>/FMS Input' */
-          rtb_Rem_o = rtb_Switch_b_idx_1;
+          rtb_Rem_o = rtb_Rem_p;
         } else {
           rtb_MathFunction_hf_idx_0 = 0.0F;
-          rtb_MathFunction_iq_idx_1 = 0.0F;
+          rtb_MathFunction_hf_idx_1 = 0.0F;
           rtb_Rem_o = 1.0F;
         }
 
@@ -7230,9 +7371,9 @@ void FMS_step(void)
          *  Operator: sqrt
          */
         if (rtb_Switch_b_idx_1 < 0.0F) {
-          rtb_Switch_b_idx_1 = -sqrtf(fabsf(rtb_Switch_b_idx_1));
+          rtb_Rem_p = -sqrtf(fabsf(rtb_Switch_b_idx_1));
         } else {
-          rtb_Switch_b_idx_1 = sqrtf(rtb_Switch_b_idx_1);
+          rtb_Rem_p = sqrtf(rtb_Switch_b_idx_1);
         }
 
         /* End of Math: '<S194>/Math Function1' */
@@ -7241,10 +7382,10 @@ void FMS_step(void)
          *  Constant: '<S194>/Constant'
          *  Product: '<S194>/Product'
          */
-        if (rtb_Switch_b_idx_1 > 0.0F) {
+        if (rtb_Rem_p > 0.0F) {
           rtb_Switch_l[0] = rtb_Divide_e[0];
           rtb_Switch_l[1] = rtb_Divide_e[1];
-          rtb_Switch_l[2] = rtb_Switch_b_idx_1;
+          rtb_Switch_l[2] = rtb_Rem_p;
         } else {
           rtb_Switch_l[0] = 0.0F;
           rtb_Switch_l[1] = 0.0F;
@@ -7255,7 +7396,7 @@ void FMS_step(void)
 
         /* Product: '<S193>/Divide' */
         rtb_Divide_e[0] = rtb_MathFunction_hf_idx_0 / rtb_Rem_o;
-        rtb_Divide_e[1] = rtb_MathFunction_iq_idx_1 / rtb_Rem_o;
+        rtb_Divide_e[1] = rtb_MathFunction_hf_idx_1 / rtb_Rem_o;
 
         /* Sum: '<S196>/Sum of Elements' incorporates:
          *  Math: '<S196>/Math Function'
@@ -7271,9 +7412,9 @@ void FMS_step(void)
          *  Operator: sqrt
          */
         if (rtb_Switch_b_idx_1 < 0.0F) {
-          rtb_Switch_b_idx_1 = -sqrtf(fabsf(rtb_Switch_b_idx_1));
+          rtb_Rem_p = -sqrtf(fabsf(rtb_Switch_b_idx_1));
         } else {
-          rtb_Switch_b_idx_1 = sqrtf(rtb_Switch_b_idx_1);
+          rtb_Rem_p = sqrtf(rtb_Switch_b_idx_1);
         }
 
         /* End of Math: '<S196>/Math Function1' */
@@ -7282,13 +7423,13 @@ void FMS_step(void)
          *  Constant: '<S196>/Constant'
          *  Product: '<S196>/Product'
          */
-        if (rtb_Switch_b_idx_1 > 0.0F) {
+        if (rtb_Rem_p > 0.0F) {
           rtb_MathFunction_hf_idx_0 = rtb_Divide_e[1];
-          rtb_MathFunction_iq_idx_1 = rtb_Divide_e[0];
-          rtb_Rem_o = rtb_Switch_b_idx_1;
+          rtb_MathFunction_hf_idx_1 = rtb_Divide_e[0];
+          rtb_Rem_o = rtb_Rem_p;
         } else {
           rtb_MathFunction_hf_idx_0 = 0.0F;
-          rtb_MathFunction_iq_idx_1 = 0.0F;
+          rtb_MathFunction_hf_idx_1 = 0.0F;
           rtb_Rem_o = 1.0F;
         }
 
@@ -7312,9 +7453,9 @@ void FMS_step(void)
          *  Operator: sqrt
          */
         if (rtb_Switch_b_idx_1 < 0.0F) {
-          rtb_Switch_b_idx_1 = -sqrtf(fabsf(rtb_Switch_b_idx_1));
+          rtb_Rem_p = -sqrtf(fabsf(rtb_Switch_b_idx_1));
         } else {
-          rtb_Switch_b_idx_1 = sqrtf(rtb_Switch_b_idx_1);
+          rtb_Rem_p = sqrtf(rtb_Switch_b_idx_1);
         }
 
         /* End of Math: '<S197>/Math Function1' */
@@ -7323,10 +7464,10 @@ void FMS_step(void)
          *  Constant: '<S197>/Constant'
          *  Product: '<S197>/Product'
          */
-        if (rtb_Switch_b_idx_1 > 0.0F) {
+        if (rtb_Rem_p > 0.0F) {
           rtb_Switch_l[0] = rtb_Divide_e[1];
           rtb_Switch_l[1] = rtb_Divide_e[0];
-          rtb_Switch_l[2] = rtb_Switch_b_idx_1;
+          rtb_Switch_l[2] = rtb_Rem_p;
         } else {
           rtb_Switch_l[0] = 0.0F;
           rtb_Switch_l[1] = 0.0F;
@@ -7345,7 +7486,7 @@ void FMS_step(void)
         rtb_Divide_e[1] = rtb_Switch_l[1] / rtb_Switch_l[2];
 
         /* Product: '<S196>/Divide' */
-        rtb_Divide_gr[1] = rtb_MathFunction_iq_idx_1 / rtb_Rem_o;
+        rtb_Divide_gr[1] = rtb_MathFunction_hf_idx_1 / rtb_Rem_o;
 
         /* Outputs for Atomic SubSystem: '<Root>/FMS Input' */
         /* Sqrt: '<S192>/Sqrt' incorporates:
@@ -7354,7 +7495,7 @@ void FMS_step(void)
          *  SignalConversion: '<S3>/Signal Copy1'
          *  Sum: '<S192>/Sum of Elements'
          */
-        rtb_Rem_p = sqrtf(FMS_U.INS_Out.vn * FMS_U.INS_Out.vn + FMS_U.INS_Out.ve
+        rtb_Rem_o = sqrtf(FMS_U.INS_Out.vn * FMS_U.INS_Out.vn + FMS_U.INS_Out.ve
                           * FMS_U.INS_Out.ve);
 
         /* End of Outputs for SubSystem: '<Root>/FMS Input' */
@@ -7363,15 +7504,15 @@ void FMS_step(void)
          *  Product: '<S195>/Multiply'
          *  Product: '<S195>/Multiply1'
          */
-        rtb_Switch_b_idx_1 = rtb_Divide_e[0] * rtb_Divide_gr[1] - rtb_Divide_e[1]
-          * rtb_Divide_gr[0];
+        rtb_Rem_p = rtb_Divide_e[0] * rtb_Divide_gr[1] - rtb_Divide_e[1] *
+          rtb_Divide_gr[0];
 
         /* Signum: '<S191>/Sign1' */
-        if (rtb_Switch_b_idx_1 < 0.0F) {
-          rtb_Switch_b_idx_1 = -1.0F;
+        if (rtb_Rem_p < 0.0F) {
+          rtb_Rem_p = -1.0F;
         } else {
-          if (rtb_Switch_b_idx_1 > 0.0F) {
-            rtb_Switch_b_idx_1 = 1.0F;
+          if (rtb_Rem_p > 0.0F) {
+            rtb_Rem_p = 1.0F;
           }
         }
 
@@ -7380,8 +7521,8 @@ void FMS_step(void)
         /* Switch: '<S191>/Switch2' incorporates:
          *  Constant: '<S191>/Constant4'
          */
-        if (rtb_Switch_b_idx_1 == 0.0F) {
-          rtb_Switch_b_idx_1 = 1.0F;
+        if (rtb_Rem_p == 0.0F) {
+          rtb_Rem_p = 1.0F;
         }
 
         /* End of Switch: '<S191>/Switch2' */
@@ -7404,21 +7545,21 @@ void FMS_step(void)
         /* Product: '<S191>/Multiply' incorporates:
          *  Trigonometry: '<S191>/Acos'
          */
-        rtb_Switch_b_idx_1 *= acosf(rtb_Sqrt_k0);
+        rtb_Rem_p *= acosf(rtb_Sqrt_k0);
 
         /* Saturate: '<S155>/Saturation' */
-        if (rtb_Switch_b_idx_1 > 1.57079637F) {
-          rtb_Switch_b_idx_1 = 1.57079637F;
+        if (rtb_Rem_p > 1.57079637F) {
+          rtb_Rem_p = 1.57079637F;
         } else {
-          if (rtb_Switch_b_idx_1 < -1.57079637F) {
-            rtb_Switch_b_idx_1 = -1.57079637F;
+          if (rtb_Rem_p < -1.57079637F) {
+            rtb_Rem_p = -1.57079637F;
           }
         }
 
         /* End of Saturate: '<S155>/Saturation' */
 
         /* Trigonometry: '<S155>/Sin' */
-        rtb_Rem_o = arm_sin_f32(rtb_Switch_b_idx_1);
+        rtb_Add4_ft = arm_sin_f32(rtb_Rem_p);
 
         /* Sum: '<S136>/Sum2' incorporates:
          *  Delay: '<S136>/Delay'
@@ -7454,30 +7595,37 @@ void FMS_step(void)
 
         /* End of Switch: '<S140>/Switch' */
 
-        /* Sum: '<S145>/Add' incorporates:
+        /* Sum: '<S136>/Sum' incorporates:
          *  Delay: '<S136>/Delay'
+         */
+        rtb_Sqrt_k0 = rtb_Switch_b_idx_1 + FMS_DW.Delay_DSTATE;
+
+        /* Product: '<S145>/Multiply1' incorporates:
+         *  Constant: '<S145>/const1'
          *  DiscreteIntegrator: '<S139>/Integrator'
+         */
+        rtb_Switch_b_idx_1 = FMS_DW.Integrator_DSTATE_i * 0.785398185F;
+
+        /* Sum: '<S145>/Add' incorporates:
          *  DiscreteIntegrator: '<S139>/Integrator1'
-         *  Sum: '<S136>/Sum'
          *  Sum: '<S139>/Subtract'
          */
-        rtb_Switch_b_idx_1 = (FMS_DW.Integrator1_DSTATE_p - (rtb_Switch_b_idx_1
-          + FMS_DW.Delay_DSTATE)) + FMS_DW.Integrator_DSTATE_i;
+        rtb_Rem_p = (FMS_DW.Integrator1_DSTATE_p - rtb_Sqrt_k0) +
+          rtb_Switch_b_idx_1;
 
         /* Signum: '<S145>/Sign' */
-        if (rtb_Switch_b_idx_1 < 0.0F) {
+        if (rtb_Rem_p < 0.0F) {
           rtb_Sqrt_k0 = -1.0F;
-        } else if (rtb_Switch_b_idx_1 > 0.0F) {
+        } else if (rtb_Rem_p > 0.0F) {
           rtb_Sqrt_k0 = 1.0F;
         } else {
-          rtb_Sqrt_k0 = rtb_Switch_b_idx_1;
+          rtb_Sqrt_k0 = rtb_Rem_p;
         }
 
         /* End of Signum: '<S145>/Sign' */
 
         /* Sum: '<S145>/Add2' incorporates:
          *  Abs: '<S145>/Abs'
-         *  DiscreteIntegrator: '<S139>/Integrator'
          *  Gain: '<S145>/Gain'
          *  Gain: '<S145>/Gain1'
          *  Product: '<S145>/Multiply2'
@@ -7486,21 +7634,18 @@ void FMS_step(void)
          *  Sum: '<S145>/Add1'
          *  Sum: '<S145>/Subtract'
          */
-        rtb_Saturation_l = (sqrtf((8.0F * fabsf(rtb_Switch_b_idx_1) +
-          FMS_ConstB.d_j) * FMS_ConstB.d_j) - FMS_ConstB.d_j) * 0.5F *
-          rtb_Sqrt_k0 + FMS_DW.Integrator_DSTATE_i;
+        rtb_Saturation_l = (sqrtf((8.0F * fabsf(rtb_Rem_p) + FMS_ConstB.d_j) *
+          FMS_ConstB.d_j) - FMS_ConstB.d_j) * 0.5F * rtb_Sqrt_k0 +
+          rtb_Switch_b_idx_1;
 
-        /* Sum: '<S145>/Add4' incorporates:
-         *  DiscreteIntegrator: '<S139>/Integrator'
-         */
-        rtb_Add4_ft = (rtb_Switch_b_idx_1 - rtb_Saturation_l) +
-          FMS_DW.Integrator_DSTATE_i;
+        /* Sum: '<S145>/Add4' */
+        rtb_Switch_b_idx_1 += rtb_Rem_p - rtb_Saturation_l;
 
         /* Sum: '<S145>/Add3' */
-        rtb_Sqrt_k0 = rtb_Switch_b_idx_1 + FMS_ConstB.d_j;
+        rtb_Sqrt_k0 = rtb_Rem_p + FMS_ConstB.d_j;
 
         /* Sum: '<S145>/Subtract1' */
-        rtb_Switch_b_idx_1 -= FMS_ConstB.d_j;
+        rtb_Rem_p -= FMS_ConstB.d_j;
 
         /* Signum: '<S145>/Sign1' */
         if (rtb_Sqrt_k0 < 0.0F) {
@@ -7514,11 +7659,11 @@ void FMS_step(void)
         /* End of Signum: '<S145>/Sign1' */
 
         /* Signum: '<S145>/Sign2' */
-        if (rtb_Switch_b_idx_1 < 0.0F) {
-          rtb_Switch_b_idx_1 = -1.0F;
+        if (rtb_Rem_p < 0.0F) {
+          rtb_Rem_p = -1.0F;
         } else {
-          if (rtb_Switch_b_idx_1 > 0.0F) {
-            rtb_Switch_b_idx_1 = 1.0F;
+          if (rtb_Rem_p > 0.0F) {
+            rtb_Rem_p = 1.0F;
           }
         }
 
@@ -7529,8 +7674,8 @@ void FMS_step(void)
          *  Product: '<S145>/Multiply4'
          *  Sum: '<S145>/Subtract2'
          */
-        rtb_Saturation_l += (rtb_Sqrt_k0 - rtb_Switch_b_idx_1) * 0.5F *
-          rtb_Add4_ft;
+        rtb_Saturation_l += (rtb_Sqrt_k0 - rtb_Rem_p) * 0.5F *
+          rtb_Switch_b_idx_1;
 
         /* Update for DiscreteIntegrator: '<S199>/Discrete-Time Integrator' incorporates:
          *  Constant: '<S130>/L1'
@@ -7541,8 +7686,8 @@ void FMS_step(void)
          *  Product: '<S156>/Divide1'
          *  Sqrt: '<S192>/Sqrt'
          */
-        FMS_DW.l1_heading += rtb_Rem_o * (rtb_Rem_p * rtb_Rem_p * 2.0F) / 10.0F /
-          rtb_Switch_k * 0.004F;
+        FMS_DW.l1_heading += rtb_Add4_ft * (rtb_Rem_o * rtb_Rem_o * 2.0F) /
+          10.0F / rtb_Switch_k * 0.004F;
 
         /* Update for Delay: '<S136>/Delay' */
         FMS_DW.icLoad = 0U;
@@ -7615,7 +7760,7 @@ void FMS_step(void)
          */
         FMS_DW.Integrator_DSTATE_i += ((rtb_Saturation_l / FMS_ConstB.d_j -
           rtb_Switch_b_idx_1) * FMS_ConstB.Gain4_c * ((rtb_Sqrt_k0 - rtb_Rem_p) *
-          0.5F) - rtb_Switch_k * 0.785398185F) * 0.004F;
+          0.5F) - rtb_Switch_k * 1.04719758F) * 0.004F;
         if (FMS_DW.Integrator_DSTATE_i >= FMS_PARAM.YAW_RATE_LIM) {
           FMS_DW.Integrator_DSTATE_i = FMS_PARAM.YAW_RATE_LIM;
         } else {

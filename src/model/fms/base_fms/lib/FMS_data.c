@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1651
+ * Model version                  : 1.1666
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar 20 17:24:25 2022
+ * C/C++ source code generated on : Mon Mar 21 14:28:14 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -44,9 +44,9 @@ const ConstB_FMS_T FMS_ConstB = {
   { 0.0F, 1.0F, 1.0F },                /* '<S149>/Switch' */
 
   { 0.0F, 1.0F },                      /* '<S149>/Divide' */
-  1.0F,                                /* '<S145>/Square' */
-  0.785398185F,                        /* '<S145>/Multiply' */
-  -0.785398185F,                       /* '<S145>/Gain4' */
+  0.616850317F,                        /* '<S145>/Square' */
+  0.645964146F,                        /* '<S145>/Multiply' */
+  -1.04719758F,                        /* '<S145>/Gain4' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S316>/Vector Concatenate3' */
 
@@ -61,9 +61,9 @@ const ConstB_FMS_T FMS_ConstB = {
   { 0.0F, 1.0F, 1.0F },                /* '<S267>/Switch' */
 
   { 0.0F, 1.0F },                      /* '<S267>/Divide' */
-  1.0F,                                /* '<S263>/Square' */
-  0.785398185F,                        /* '<S263>/Multiply' */
-  -0.785398185F,                       /* '<S263>/Gain4' */
+  0.616850317F,                        /* '<S263>/Square' */
+  0.645964146F,                        /* '<S263>/Multiply' */
+  -1.04719758F,                        /* '<S263>/Gain4' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S250>/Vector Concatenate3' */
 
