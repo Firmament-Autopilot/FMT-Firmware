@@ -158,9 +158,13 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
 {
     switch (msg->msgid) {
-    case MAVLINK_MSG_ID_HEARTBEAT: {
+    case MAVLINK_MSG_ID_HEARTBEAT:
         /* do nothing */
-    } break;
+        break;
+
+    case MAVLINK_MSG_ID_SYSTEM_TIME:
+        /* do nothing */
+        break;
 
     case MAVLINK_MSG_ID_SET_MODE: {
         if (system.sysid == mavlink_msg_set_mode_get_target_system(msg)) {

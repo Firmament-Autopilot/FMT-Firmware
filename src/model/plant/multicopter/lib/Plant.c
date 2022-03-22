@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.752
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 15 15:44:51 2022
+ * C/C++ source code generated on : Tue Mar 22 09:43:31 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -65,8 +65,8 @@ const Extended_States_Bus Plant_rtZExtended_States_Bus = {
 struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT = {
   2U,
 
-  { 77, 117, 108, 116, 105, 99, 111, 112, 116, 101, 114, 32, 118, 48, 46, 49, 46,
-    49, 0 }
+  { 77, 117, 108, 116, 105, 99, 111, 112, 116, 101, 114, 32, 118, 48, 46, 50, 46,
+    48, 0 }
 } ;                                    /* Variable: PLANT_EXPORT
                                         * Referenced by:
                                         *   '<S23>/dt'

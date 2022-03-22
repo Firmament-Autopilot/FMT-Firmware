@@ -137,7 +137,7 @@ static void bsp_show_information(void)
     console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
-    sprintf(buffer, "FMT FMU %s", FMT_VERSION);
+    sprintf(buffer, "FMT FW %s", FMT_VERSION);
     banner_item("Firmware", buffer, '.', ITEM_LENGTH);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
     banner_item("Kernel", buffer, '.', ITEM_LENGTH);
