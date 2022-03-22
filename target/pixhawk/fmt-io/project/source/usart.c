@@ -127,7 +127,7 @@ uint8_t usart_init(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     /* Configure USART Rx as input pull down, 
      * because input floating will result in unstable voltage level if sbus cable is not connected */
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
