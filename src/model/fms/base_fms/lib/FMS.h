@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1229
+ * Model version                  : 1.1668
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jan  1 18:52:40 2022
+ * C/C++ source code generated on : Tue Mar 22 09:46:51 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,54 +37,54 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
-/* Block states (default storage) for system '<S207>/Hold Control' */
+/* Block states (default storage) for system '<S277>/Hold Control' */
 typedef struct {
-  real32_T Delay_DSTATE;               /* '<S210>/Delay' */
-  uint8_T icLoad;                      /* '<S210>/Delay' */
+  real32_T Delay_DSTATE;               /* '<S280>/Delay' */
+  uint8_T icLoad;                      /* '<S280>/Delay' */
 } DW_HoldControl_FMS_T;
 
-/* Block states (default storage) for system '<S207>/Move Control' */
+/* Block states (default storage) for system '<S277>/Move Control' */
 typedef struct {
-  real32_T Integrator1_DSTATE;         /* '<S214>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S214>/Integrator' */
+  real32_T Integrator1_DSTATE;         /* '<S284>/Integrator1' */
+  real32_T Integrator_DSTATE;          /* '<S284>/Integrator' */
 } DW_MoveControl_FMS_T;
 
-/* Block states (default storage) for system '<S208>/Motion Status' */
+/* Block states (default storage) for system '<S278>/Motion Status' */
 typedef struct {
-  uint16_T temporalCounter_i1;         /* '<S208>/Motion Status' */
-  uint8_T is_active_c1_FMS;            /* '<S208>/Motion Status' */
-  uint8_T is_c1_FMS;                   /* '<S208>/Motion Status' */
+  uint16_T temporalCounter_i1;         /* '<S278>/Motion Status' */
+  uint8_T is_active_c1_FMS;            /* '<S278>/Motion Status' */
+  uint8_T is_c1_FMS;                   /* '<S278>/Motion Status' */
 } DW_MotionStatus_FMS_T;
 
-/* Block states (default storage) for system '<S217>/Hold Control' */
+/* Block states (default storage) for system '<S287>/Hold Control' */
 typedef struct {
-  real32_T Delay_DSTATE[2];            /* '<S220>/Delay' */
-  uint8_T icLoad;                      /* '<S220>/Delay' */
+  real32_T Delay_DSTATE[2];            /* '<S290>/Delay' */
+  uint8_T icLoad;                      /* '<S290>/Delay' */
 } DW_HoldControl_FMS_l_T;
 
-/* Block states (default storage) for system '<S217>/Move Control' */
+/* Block states (default storage) for system '<S287>/Move Control' */
 typedef struct {
-  real32_T Integrator1_DSTATE[2];      /* '<S227>/Integrator1' */
-  real32_T Integrator_DSTATE[2];       /* '<S227>/Integrator' */
+  real32_T Integrator1_DSTATE[2];      /* '<S297>/Integrator1' */
+  real32_T Integrator_DSTATE[2];       /* '<S297>/Integrator' */
 } DW_MoveControl_FMS_d_T;
 
-/* Block states (default storage) for system '<S218>/Motion State' */
+/* Block states (default storage) for system '<S288>/Motion State' */
 typedef struct {
-  uint16_T temporalCounter_i1;         /* '<S218>/Motion State' */
-  uint8_T is_active_c2_FMS;            /* '<S218>/Motion State' */
-  uint8_T is_c2_FMS;                   /* '<S218>/Motion State' */
+  uint16_T temporalCounter_i1;         /* '<S288>/Motion State' */
+  uint8_T is_active_c2_FMS;            /* '<S288>/Motion State' */
+  uint8_T is_c2_FMS;                   /* '<S288>/Motion State' */
 } DW_MotionState_FMS_T;
 
-/* Block states (default storage) for system '<S151>/Hold Control' */
+/* Block states (default storage) for system '<S221>/Hold Control' */
 typedef struct {
-  real32_T Delay_DSTATE;               /* '<S154>/Delay' */
-  uint8_T icLoad;                      /* '<S154>/Delay' */
+  real32_T Delay_DSTATE;               /* '<S224>/Delay' */
+  uint8_T icLoad;                      /* '<S224>/Delay' */
 } DW_HoldControl_FMS_g_T;
 
-/* Block states (default storage) for system '<S151>/Move Control' */
+/* Block states (default storage) for system '<S221>/Move Control' */
 typedef struct {
-  real32_T Integrator1_DSTATE;         /* '<S160>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S160>/Integrator' */
+  real32_T Integrator1_DSTATE;         /* '<S230>/Integrator1' */
+  real32_T Integrator_DSTATE;          /* '<S230>/Integrator' */
 } DW_MoveControl_FMS_c_T;
 
 /* Block states (default storage) for system '<S118>/Motion State' */
@@ -104,38 +104,49 @@ typedef struct {
 /* Block signals (default storage) */
 typedef struct {
   INS_Out_Bus BusConversion_InsertedFor_FMSSt;
+  Commander_In_Bus Cmd_In;             /* '<Root>/FMS State Machine' */
   Pilot_Cmd_Bus BusConversion_InsertedFor_FMS_f;
   Pilot_Cmd_Bus pilot_cmd;             /* '<Root>/FMS State Machine' */
-  Cmd_In_Bus Cmd_In;                   /* '<Root>/FMS State Machine' */
+  real_T lla[3];                       /* '<Root>/FMS State Machine' */
+  real_T llo[2];                       /* '<Root>/FMS State Machine' */
+  real_T href;                         /* '<Root>/FMS State Machine' */
+  real_T psio;                         /* '<Root>/FMS State Machine' */
   real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
+  real32_T DataTypeConversion[3];      /* '<S325>/Data Type Conversion' */
   real32_T Merge[2];                   /* '<S93>/Merge' */
   real32_T Merge_k;                    /* '<S69>/Merge' */
   real32_T Merge_d;                    /* '<S80>/Merge' */
   real32_T Merge_l;                    /* '<S36>/Merge' */
   real32_T Merge_m;                    /* '<S53>/Merge' */
   real32_T Merge_j;                    /* '<S117>/Merge' */
-  real32_T Merge_o[2];                 /* '<S163>/Merge' */
-  real32_T Merge_e;                    /* '<S141>/Merge' */
-  real32_T Merge_n;                    /* '<S151>/Merge' */
-  real32_T Merge_mv[2];                /* '<S217>/Merge' */
-  real32_T Merge_mu;                   /* '<S207>/Merge' */
-  VehicleState VehicleState_f;         /* '<Root>/FMS State Machine' */
-  PilotMode safe_mode;                 /* '<Root>/Mode Degrade' */
-  FMS_Cmd fms_cmd;                     /* '<S8>/Switch' */
+  real32_T Merge_n[2];                 /* '<S173>/Merge' */
+  real32_T Merge_e;                    /* '<S163>/Merge' */
+  real32_T Merge_o[2];                 /* '<S233>/Merge' */
+  real32_T Merge_ey;                   /* '<S211>/Merge' */
+  real32_T Merge_n1;                   /* '<S221>/Merge' */
+  real32_T Merge_mv[2];                /* '<S287>/Merge' */
+  real32_T Merge_mu;                   /* '<S277>/Merge' */
+  VehicleState state;                  /* '<Root>/FMS State Machine' */
+  PilotMode target_mode;               /* '<Root>/Mode Degrade' */
+  FMS_Cmd Switch1;                     /* '<S8>/Switch1' */
+  uint8_T wp_consume;                  /* '<Root>/FMS State Machine' */
+  uint8_T wp_index;                    /* '<Root>/FMS State Machine' */
   boolean_T LogicalOperator1;          /* '<S6>/Logical Operator1' */
-  boolean_T Compare;                   /* '<S252>/Compare' */
+  boolean_T Compare;                   /* '<S337>/Compare' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   real_T prep_takeoff;                 /* '<Root>/FMS State Machine' */
-  Msg_FMS_Cmd Msg_FMS_Cmd_p[11];       /* '<Root>/FMS State Machine' */
-  Queue_FMS_Cmd Queue_FMS_Cmd_o;       /* '<Root>/FMS State Machine' */
+  real_T llo[2];                       /* '<Root>/FMS State Machine' */
+  real_T prep_mission_takeoff;         /* '<Root>/FMS State Machine' */
+  Msg_FMS_Cmd Msg_FMS_Cmd_m[11];       /* '<Root>/FMS State Machine' */
+  Queue_FMS_Cmd Queue_FMS_Cmd_p;       /* '<Root>/FMS State Machine' */
   void* M_msgInterface;                /* '<Root>/FMS State Machine' */
   void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S254>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S255>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S339>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S340>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE;         /* '<S49>/Integrator1' */
   real32_T Integrator_DSTATE;          /* '<S49>/Integrator' */
   real32_T Integrator1_DSTATE_o;       /* '<S50>/Integrator1' */
@@ -144,16 +155,20 @@ typedef struct {
   real32_T Integrator_DSTATE_c;        /* '<S113>/Integrator' */
   real32_T Integrator1_DSTATE_jt;      /* '<S114>/Integrator1' */
   real32_T Integrator_DSTATE_cq;       /* '<S114>/Integrator' */
-  real32_T Delay_DSTATE[2];            /* '<S183>/Delay' */
-  real32_T l1_heading;                 /* '<S243>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_a;             /* '<S184>/Delay' */
-  real32_T Integrator1_DSTATE_e;       /* '<S187>/Integrator1' */
-  real32_T Integrator_DSTATE_bs;       /* '<S187>/Integrator' */
+  real32_T l1_heading;                 /* '<S199>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE;               /* '<S136>/Delay' */
+  real32_T Integrator1_DSTATE_p;       /* '<S139>/Integrator1' */
+  real32_T Integrator_DSTATE_i;        /* '<S139>/Integrator' */
+  real32_T Delay_DSTATE_p[2];          /* '<S253>/Delay' */
+  real32_T l1_heading_m;               /* '<S313>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_a;             /* '<S254>/Delay' */
+  real32_T Integrator1_DSTATE_e;       /* '<S257>/Integrator1' */
+  real32_T Integrator_DSTATE_bs;       /* '<S257>/Integrator' */
   uint32_T DelayInput1_DSTATE;         /* '<S11>/Delay Input1' */
   uint32_T DiscreteTimeIntegrator1_DSTATE;/* '<S7>/Discrete-Time Integrator1' */
   uint32_T DelayInput1_DSTATE_f;       /* '<S16>/Delay Input1' */
-  uint32_T DelayInput1_DSTATE_h;       /* '<S12>/Delay Input1' */
-  uint32_T DelayInput1_DSTATE_m;       /* '<S13>/Delay Input1' */
+  uint32_T DelayInput1_DSTATE_i;       /* '<S12>/Delay Input1' */
+  uint32_T DelayInput1_DSTATE_p;       /* '<S13>/Delay Input1' */
   uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S20>/Discrete-Time Integrator' */
   PilotMode Delay_DSTATE_c;            /* '<S9>/Delay' */
   real32_T home[3];                    /* '<Root>/FMS State Machine' */
@@ -161,21 +176,26 @@ typedef struct {
   int32_T sfEvent;                     /* '<Root>/FMS State Machine' */
   int32_T chartAbsoluteTimeCounter;    /* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_1; /* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_d;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_p;/* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_1_l;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_m;/* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_2; /* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_g;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_a;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_2_d;/* '<Root>/FMS State Machine' */
   int32_T M_qId;                       /* '<Root>/FMS State Machine' */
+  uint32_T mission_timestamp_prev;     /* '<Root>/FMS State Machine' */
+  uint32_T mission_timestamp_start;    /* '<Root>/FMS State Machine' */
   FMS_Cmd M;                           /* '<Root>/FMS State Machine' */
+  FMS_Cmd save_cmd;                    /* '<Root>/FMS State Machine' */
   FMS_Cmd cmd_prev;                    /* '<Root>/FMS State Machine' */
   FMS_Cmd cmd_start;                   /* '<Root>/FMS State Machine' */
   FMS_Cmd M_msgData;                   /* '<Root>/FMS State Machine' */
   FMS_Cmd M_msgReservedData;           /* '<Root>/FMS State Machine' */
   PilotMode mode_prev;                 /* '<Root>/FMS State Machine' */
   PilotMode mode_start;                /* '<Root>/FMS State Machine' */
+  uint16_T nav_cmd;                    /* '<Root>/FMS State Machine' */
   uint16_T temporalCounter_i1;         /* '<Root>/FMS State Machine' */
   uint16_T temporalCounter_i1_i;       /* '<S94>/Motion State' */
-  int8_T Delay_DSTATE_g;               /* '<S8>/Delay' */
   int8_T SwitchCase_ActiveSubsystem;   /* '<S2>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_b; /* '<S17>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_f; /* '<S21>/Switch Case' */
@@ -185,14 +205,17 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_m; /* '<S36>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_h; /* '<S53>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_fs;/* '<S117>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_a; /* '<S24>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_p; /* '<S163>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_pp;/* '<S141>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_bn;/* '<S151>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_k; /* '<S217>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_g; /* '<S207>/Switch Case' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S254>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S255>/Discrete-Time Integrator5' */
+  int8_T SwitchCase_ActiveSubsystem_i; /* '<S22>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_a; /* '<S173>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_e; /* '<S163>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_at;/* '<S24>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_p; /* '<S233>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_pp;/* '<S211>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_bn;/* '<S221>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_k; /* '<S287>/Switch Case' */
+  int8_T SwitchCase_ActiveSubsystem_g; /* '<S277>/Switch Case' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S339>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S340>/Discrete-Time Integrator5' */
   uint8_T is_active_c3_FMS;            /* '<Root>/Mode Degrade' */
   uint8_T is_c3_FMS;                   /* '<Root>/Mode Degrade' */
   uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
@@ -203,37 +226,42 @@ typedef struct {
   uint8_T is_Arm;                      /* '<Root>/FMS State Machine' */
   uint8_T is_SubMode;                  /* '<Root>/FMS State Machine' */
   uint8_T is_Auto;                     /* '<Root>/FMS State Machine' */
+  uint8_T is_Mission;                  /* '<Root>/FMS State Machine' */
   uint8_T is_Assist;                   /* '<Root>/FMS State Machine' */
   uint8_T is_Manual;                   /* '<Root>/FMS State Machine' */
   uint8_T is_Combo_Stick;              /* '<Root>/FMS State Machine' */
   uint8_T is_active_Combo_Stick;       /* '<Root>/FMS State Machine' */
   uint8_T is_active_c16_FMS;           /* '<S94>/Motion State' */
   uint8_T is_c16_FMS;                  /* '<S94>/Motion State' */
-  uint8_T is_active_c15_FMS;           /* '<S152>/Motion State' */
-  uint8_T is_c15_FMS;                  /* '<S152>/Motion State' */
-  uint8_T temporalCounter_i1_a;        /* '<S152>/Motion State' */
-  uint8_T icLoad;                      /* '<S183>/Delay' */
-  uint8_T icLoad_j;                    /* '<S184>/Delay' */
-  uint8_T Integrator1_IC_LOADING;      /* '<S187>/Integrator1' */
+  uint8_T icLoad;                      /* '<S136>/Delay' */
+  uint8_T Integrator1_IC_LOADING;      /* '<S139>/Integrator1' */
+  uint8_T is_active_c15_FMS;           /* '<S222>/Motion State' */
+  uint8_T is_c15_FMS;                  /* '<S222>/Motion State' */
+  uint8_T temporalCounter_i1_a;        /* '<S222>/Motion State' */
+  uint8_T icLoad_c;                    /* '<S253>/Delay' */
+  uint8_T icLoad_j;                    /* '<S254>/Delay' */
+  uint8_T Integrator1_IC_LOADING_j;    /* '<S257>/Integrator1' */
   boolean_T valid_cmd;                 /* '<Root>/FMS State Machine' */
   boolean_T bl;                        /* '<Root>/FMS State Machine' */
   boolean_T br;                        /* '<Root>/FMS State Machine' */
   boolean_T M_isValid;                 /* '<Root>/FMS State Machine' */
   boolean_T condWasTrueAtLastTimeStep_1;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_i;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_j;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_l;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_g;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_n;/* '<Root>/FMS State Machine' */
   boolean_T condWasTrueAtLastTimeStep_2;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_i;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_gz;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_2_l;/* '<Root>/FMS State Machine' */
   DW_MoveControl_FMS_d_T MoveControl_k1;/* '<S93>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_a;/* '<S93>/Hold Control' */
+  DW_HoldControl_FMS_l_T HoldControl_at;/* '<S93>/Hold Control' */
   DW_MotionState_FMS_g_T sf_MotionState_j;/* '<S81>/Motion State' */
-  DW_MoveControl_FMS_c_T MoveControl_m;/* '<S80>/Move Control' */
+  DW_MoveControl_FMS_c_T MoveControl_mr;/* '<S80>/Move Control' */
   DW_HoldControl_FMS_g_T HoldControl_e;/* '<S80>/Hold Control' */
   DW_MotionStatus_FMS_a_T sf_MotionStatus_i;/* '<S70>/Motion Status' */
   DW_MoveControl_FMS_T MoveControl_be; /* '<S69>/Move Control' */
   DW_HoldControl_FMS_T HoldControl_p;  /* '<S69>/Hold Control' */
   DW_MotionState_FMS_g_T sf_MotionState_k;/* '<S54>/Motion State' */
-  DW_MoveControl_FMS_c_T MoveControl_c;/* '<S53>/Move Control' */
+  DW_MoveControl_FMS_c_T MoveControl_cr;/* '<S53>/Move Control' */
   DW_HoldControl_FMS_g_T HoldControl_o;/* '<S53>/Hold Control' */
   DW_MotionStatus_FMS_a_T sf_MotionStatus_b;/* '<S37>/Motion Status' */
   DW_MoveControl_FMS_T MoveControl_l;  /* '<S36>/Move Control' */
@@ -241,20 +269,26 @@ typedef struct {
   DW_MotionState_FMS_g_T sf_MotionState_e;/* '<S118>/Motion State' */
   DW_MoveControl_FMS_c_T MoveControl_k;/* '<S117>/Move Control' */
   DW_HoldControl_FMS_g_T HoldControl_h;/* '<S117>/Hold Control' */
-  DW_MotionState_FMS_T sf_MotionState_g;/* '<S164>/Motion State' */
-  DW_MoveControl_FMS_d_T MoveControl_i;/* '<S163>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_f;/* '<S163>/Hold Control' */
-  DW_MoveControl_FMS_c_T MoveControl_b;/* '<S151>/Move Control' */
-  DW_HoldControl_FMS_g_T HoldControl_kq;/* '<S151>/Hold Control' */
-  DW_MotionStatus_FMS_T sf_MotionStatus_j;/* '<S142>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl_n;  /* '<S141>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl_n;  /* '<S141>/Hold Control' */
-  DW_MotionState_FMS_T sf_MotionState; /* '<S218>/Motion State' */
-  DW_MoveControl_FMS_d_T MoveControl_o;/* '<S217>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_k;/* '<S217>/Hold Control' */
-  DW_MotionStatus_FMS_T sf_MotionStatus;/* '<S208>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl;    /* '<S207>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl;    /* '<S207>/Hold Control' */
+  DW_MotionState_FMS_T sf_MotionState_n;/* '<S174>/Motion State' */
+  DW_MoveControl_FMS_d_T MoveControl_c;/* '<S173>/Move Control' */
+  DW_HoldControl_FMS_l_T HoldControl_d;/* '<S173>/Hold Control' */
+  DW_MotionStatus_FMS_T sf_MotionStatus_jt;/* '<S164>/Motion Status' */
+  DW_MoveControl_FMS_T MoveControl_m;  /* '<S163>/Move Control' */
+  DW_HoldControl_FMS_T HoldControl_a;  /* '<S163>/Hold Control' */
+  DW_MotionState_FMS_T sf_MotionState_g;/* '<S234>/Motion State' */
+  DW_MoveControl_FMS_d_T MoveControl_i;/* '<S233>/Move Control' */
+  DW_HoldControl_FMS_l_T HoldControl_f;/* '<S233>/Hold Control' */
+  DW_MoveControl_FMS_c_T MoveControl_b;/* '<S221>/Move Control' */
+  DW_HoldControl_FMS_g_T HoldControl_kq;/* '<S221>/Hold Control' */
+  DW_MotionStatus_FMS_T sf_MotionStatus_j;/* '<S212>/Motion Status' */
+  DW_MoveControl_FMS_T MoveControl_n;  /* '<S211>/Move Control' */
+  DW_HoldControl_FMS_T HoldControl_n;  /* '<S211>/Hold Control' */
+  DW_MotionState_FMS_T sf_MotionState; /* '<S288>/Motion State' */
+  DW_MoveControl_FMS_d_T MoveControl_o;/* '<S287>/Move Control' */
+  DW_HoldControl_FMS_l_T HoldControl_k;/* '<S287>/Hold Control' */
+  DW_MotionStatus_FMS_T sf_MotionStatus;/* '<S278>/Motion Status' */
+  DW_MoveControl_FMS_T MoveControl;    /* '<S277>/Move Control' */
+  DW_HoldControl_FMS_T HoldControl;    /* '<S277>/Hold Control' */
 } DW_FMS_T;
 
 /* Invariant block signals for system '<S2>/Disarm' */
@@ -263,31 +297,38 @@ typedef struct {
   const uint8_T DataTypeConversion1;   /* '<S18>/Data Type Conversion1' */
 } ConstB_Disarm_FMS_T;
 
-/* Invariant block signals for system '<S207>/Move Control' */
+/* Invariant block signals for system '<S277>/Move Control' */
 typedef struct {
-  const real32_T Square;               /* '<S215>/Square' */
-  const real32_T d;                    /* '<S215>/Multiply' */
-  const real32_T Gain4;                /* '<S215>/Gain4' */
+  const real32_T Square;               /* '<S285>/Square' */
+  const real32_T d;                    /* '<S285>/Multiply' */
+  const real32_T Gain4;                /* '<S285>/Gain4' */
 } ConstB_MoveControl_FMS_T;
 
-/* Invariant block signals for system '<S217>/Hold Control' */
+/* Invariant block signals for system '<S287>/Hold Control' */
 typedef struct {
-  const real32_T VectorConcatenate3[3];/* '<S224>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3[3];/* '<S294>/Vector Concatenate3' */
 } ConstB_HoldControl_FMS_k_T;
 
-/* Invariant block signals for system '<S217>/Move Control' */
+/* Invariant block signals for system '<S287>/Move Control' */
 typedef struct {
-  const real32_T Square;               /* '<S228>/Square' */
-  const real32_T d;                    /* '<S228>/Multiply' */
-  const real32_T Gain4;                /* '<S228>/Gain4' */
+  const real32_T Square;               /* '<S298>/Square' */
+  const real32_T d;                    /* '<S298>/Multiply' */
+  const real32_T Gain4;                /* '<S298>/Gain4' */
 } ConstB_MoveControl_FMS_k_T;
 
-/* Invariant block signals for system '<S151>/Move Control' */
+/* Invariant block signals for system '<S221>/Move Control' */
 typedef struct {
-  const real32_T Square;               /* '<S161>/Square' */
-  const real32_T d;                    /* '<S161>/Multiply' */
-  const real32_T Gain4;                /* '<S161>/Gain4' */
+  const real32_T Square;               /* '<S231>/Square' */
+  const real32_T d;                    /* '<S231>/Multiply' */
+  const real32_T Gain4;                /* '<S231>/Gain4' */
 } ConstB_MoveControl_FMS_f_T;
+
+/* Invariant block signals for system '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+typedef struct {
+  const real_T Sum;                    /* '<S328>/Sum' */
+  const real_T ff;                     /* '<S328>/Multiply3' */
+  const real_T Sum4;                   /* '<S328>/Sum4' */
+} ConstB_VehicleArmAutoMissionL_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
@@ -303,19 +344,30 @@ typedef struct {
   const real32_T Square_n;             /* '<S116>/Square' */
   const real32_T d_o;                  /* '<S116>/Multiply' */
   const real32_T Gain4_n3;             /* '<S116>/Gain4' */
-  const real32_T VectorConcatenate3[3];/* '<S246>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3[3];/* '<S202>/Vector Concatenate3' */
   const real32_T TmpSignalConversionAtMathFu[2];
-  const real32_T MathFunction[2];      /* '<S197>/Math Function' */
-  const real32_T SumofElements;        /* '<S197>/Sum of Elements' */
-  const real32_T MathFunction1;        /* '<S197>/Math Function1' */
-  const real32_T Product[2];           /* '<S197>/Product' */
-  const real32_T Switch[3];            /* '<S197>/Switch' */
-  const real32_T Divide[2];            /* '<S197>/Divide' */
-  const real32_T Square_k;             /* '<S193>/Square' */
-  const real32_T d_l;                  /* '<S193>/Multiply' */
-  const real32_T Gain4_np;             /* '<S193>/Gain4' */
-  const real32_T VectorConcatenate3_f[3];/* '<S180>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_fb[3];/* '<S250>/Vector Concatenate3' */
+  const real32_T MathFunction[2];      /* '<S149>/Math Function' */
+  const real32_T SumofElements;        /* '<S149>/Sum of Elements' */
+  const real32_T MathFunction1;        /* '<S149>/Math Function1' */
+  const real32_T Product[2];           /* '<S149>/Product' */
+  const real32_T Switch[3];            /* '<S149>/Switch' */
+  const real32_T Divide[2];            /* '<S149>/Divide' */
+  const real32_T Square_g;             /* '<S145>/Square' */
+  const real32_T d_j;                  /* '<S145>/Multiply' */
+  const real32_T Gain4_c;              /* '<S145>/Gain4' */
+  const real32_T VectorConcatenate3_b[3];/* '<S316>/Vector Concatenate3' */
+  const real32_T TmpSignalConversionAtMath_a[2];
+  const real32_T MathFunction_n[2];    /* '<S267>/Math Function' */
+  const real32_T SumofElements_p;      /* '<S267>/Sum of Elements' */
+  const real32_T MathFunction1_m;      /* '<S267>/Math Function1' */
+  const real32_T Product_c[2];         /* '<S267>/Product' */
+  const real32_T Switch_h[3];          /* '<S267>/Switch' */
+  const real32_T Divide_d[2];          /* '<S267>/Divide' */
+  const real32_T Square_k;             /* '<S263>/Square' */
+  const real32_T d_l;                  /* '<S263>/Multiply' */
+  const real32_T Gain4_np;             /* '<S263>/Gain4' */
+  const real32_T VectorConcatenate3_f[3];/* '<S250>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3_fb[3];/* '<S324>/Vector Concatenate3' */
   const uint8_T DataTypeConversion;    /* '<S23>/Data Type Conversion' */
   const uint8_T DataTypeConversion1;   /* '<S23>/Data Type Conversion1' */
   const uint8_T DataTypeConversion_b;  /* '<S28>/Data Type Conversion' */
@@ -332,48 +384,54 @@ typedef struct {
   const uint8_T DataTypeConversion2_b; /* '<S26>/Data Type Conversion2' */
   const uint8_T DataTypeConversion_l;  /* '<S130>/Data Type Conversion' */
   const uint8_T DataTypeConversion1_b; /* '<S130>/Data Type Conversion1' */
+  const uint8_T DataTypeConversion2_by;/* '<S130>/Data Type Conversion2' */
   const uint8_T DataTypeConversion_a;  /* '<S131>/Data Type Conversion' */
   const uint8_T DataTypeConversion1_n; /* '<S131>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion_g;  /* '<S133>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_i; /* '<S133>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_j; /* '<S133>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_o;  /* '<S135>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_m; /* '<S135>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_p; /* '<S135>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_c;  /* '<S134>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_h; /* '<S134>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_m; /* '<S134>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_ld; /* '<S136>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_dh;/* '<S136>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_d; /* '<S136>/Data Type Conversion2' */
+  const uint8_T DataTypeConversion_g;  /* '<S203>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1_i; /* '<S203>/Data Type Conversion1' */
+  const uint8_T DataTypeConversion2_j; /* '<S203>/Data Type Conversion2' */
+  const uint8_T DataTypeConversion_o;  /* '<S205>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1_m; /* '<S205>/Data Type Conversion1' */
+  const uint8_T DataTypeConversion2_p; /* '<S205>/Data Type Conversion2' */
+  const uint8_T DataTypeConversion_c;  /* '<S204>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1_h; /* '<S204>/Data Type Conversion1' */
+  const uint8_T DataTypeConversion2_m; /* '<S204>/Data Type Conversion2' */
+  const uint8_T DataTypeConversion_ld; /* '<S206>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1_dh;/* '<S206>/Data Type Conversion1' */
+  const uint8_T DataTypeConversion2_d; /* '<S206>/Data Type Conversion2' */
   const uint8_T DataTypeConversion2_h; /* '<S19>/Data Type Conversion2' */
   const uint8_T DataTypeConversion1_f; /* '<S19>/Data Type Conversion1' */
+  ConstB_VehicleArmAutoMissionL_T VehicleArmAutoMissionLLA2FLAT;/* '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   ConstB_Disarm_FMS_T Unknown;         /* '<S17>/Unknown' */
   ConstB_Disarm_FMS_T Unknown_i;       /* '<S21>/Unknown' */
   ConstB_MoveControl_FMS_k_T MoveControl_k1;/* '<S93>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_a;/* '<S93>/Hold Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_m;/* '<S80>/Move Control' */
+  ConstB_HoldControl_FMS_k_T HoldControl_at;/* '<S93>/Hold Control' */
+  ConstB_MoveControl_FMS_f_T MoveControl_mr;/* '<S80>/Move Control' */
   ConstB_MoveControl_FMS_T MoveControl_be;/* '<S69>/Move Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_c;/* '<S53>/Move Control' */
+  ConstB_MoveControl_FMS_f_T MoveControl_cr;/* '<S53>/Move Control' */
   ConstB_MoveControl_FMS_T MoveControl_l;/* '<S36>/Move Control' */
   ConstB_MoveControl_FMS_f_T MoveControl_k;/* '<S117>/Move Control' */
   ConstB_Disarm_FMS_T Unknown_d;       /* '<S22>/Unknown' */
+  ConstB_MoveControl_FMS_k_T MoveControl_c;/* '<S173>/Move Control' */
+  ConstB_HoldControl_FMS_k_T HoldControl_d;/* '<S173>/Hold Control' */
+  ConstB_MoveControl_FMS_T MoveControl_m;/* '<S163>/Move Control' */
   ConstB_Disarm_FMS_T Unknown_g;       /* '<S24>/Unknown' */
-  ConstB_MoveControl_FMS_k_T MoveControl_i;/* '<S163>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_f;/* '<S163>/Hold Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_b;/* '<S151>/Move Control' */
-  ConstB_MoveControl_FMS_T MoveControl_n;/* '<S141>/Move Control' */
-  ConstB_MoveControl_FMS_k_T MoveControl_o;/* '<S217>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_k;/* '<S217>/Hold Control' */
-  ConstB_MoveControl_FMS_T MoveControl;/* '<S207>/Move Control' */
+  ConstB_MoveControl_FMS_k_T MoveControl_i;/* '<S233>/Move Control' */
+  ConstB_HoldControl_FMS_k_T HoldControl_f;/* '<S233>/Hold Control' */
+  ConstB_MoveControl_FMS_f_T MoveControl_b;/* '<S221>/Move Control' */
+  ConstB_MoveControl_FMS_T MoveControl_n;/* '<S211>/Move Control' */
+  ConstB_MoveControl_FMS_k_T MoveControl_o;/* '<S287>/Move Control' */
+  ConstB_HoldControl_FMS_k_T HoldControl_k;/* '<S287>/Hold Control' */
+  ConstB_MoveControl_FMS_T MoveControl;/* '<S277>/Move Control' */
   ConstB_Disarm_FMS_T Disarm;          /* '<S2>/Disarm' */
 } ConstB_FMS_T;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   Pilot_Cmd_Bus Pilot_Cmd;             /* '<Root>/Pilot_Cmd' */
-  Auto_Cmd_Bus Auto_Cmd;               /* '<Root>/Auto_Cmd' */
   GCS_Cmd_Bus GCS_Cmd;                 /* '<Root>/GCS_Cmd' */
+  Auto_Cmd_Bus Auto_Cmd;               /* '<Root>/Auto_Cmd' */
+  Mission_Data_Bus Mission_Data;       /* '<Root>/Mission_Data' */
   INS_Out_Bus INS_Out;                 /* '<Root>/INS_Out' */
   Control_Out_Bus Control_Out;         /* '<Root>/Control_Out' */
 } ExtU_FMS_T;
@@ -418,9 +476,9 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S34>/Gain1'
                                                 *   '<S108>/Gain'
                                                 *   '<S108>/Gain1'
-                                                *   '<S176>/Saturation1'
-                                                *   '<S247>/Gain2'
-                                                *   '<S247>/Saturation1'
+                                                *   '<S246>/Saturation1'
+                                                *   '<S318>/Gain2'
+                                                *   '<S318>/Saturation1'
                                                 *   '<S36>/Saturation1'
                                                 *   '<S47>/Dead Zone'
                                                 *   '<S47>/Gain'
@@ -435,10 +493,12 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S112>/Dead Zone'
                                                 *   '<S112>/Gain'
                                                 *   '<S117>/Saturation'
-                                                *   '<S141>/Saturation1'
-                                                *   '<S151>/Saturation'
-                                                *   '<S163>/Saturation1'
-                                                *   '<S177>/Gain2'
+                                                *   '<S151>/Gain'
+                                                *   '<S151>/Saturation1'
+                                                *   '<S211>/Saturation1'
+                                                *   '<S221>/Saturation'
+                                                *   '<S233>/Saturation1'
+                                                *   '<S247>/Gain2'
                                                 *   '<S39>/Gain2'
                                                 *   '<S40>/Gain1'
                                                 *   '<S45>/Constant'
@@ -458,15 +518,18 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S120>/Gain2'
                                                 *   '<S121>/Gain1'
                                                 *   '<S128>/Constant'
-                                                *   '<S144>/Gain2'
-                                                *   '<S145>/Gain1'
-                                                *   '<S154>/Gain2'
-                                                *   '<S155>/Gain1'
-                                                *   '<S166>/Gain2'
-                                                *   '<S167>/Gain6'
-                                                *   '<S186>/Gain2'
-                                                *   '<S186>/Saturation'
-                                                *   '<S187>/Integrator'
+                                                *   '<S138>/Gain2'
+                                                *   '<S138>/Saturation'
+                                                *   '<S139>/Integrator'
+                                                *   '<S214>/Gain2'
+                                                *   '<S215>/Gain1'
+                                                *   '<S224>/Gain2'
+                                                *   '<S225>/Gain1'
+                                                *   '<S236>/Gain2'
+                                                *   '<S237>/Gain6'
+                                                *   '<S256>/Gain2'
+                                                *   '<S256>/Saturation'
+                                                *   '<S257>/Integrator'
                                                 *   '<S42>/Dead Zone'
                                                 *   '<S42>/Gain'
                                                 *   '<S61>/Dead Zone'
@@ -481,26 +544,38 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S102>/Gain'
                                                 *   '<S125>/Dead Zone'
                                                 *   '<S125>/Gain'
-                                                *   '<S147>/Dead Zone'
-                                                *   '<S147>/Gain'
-                                                *   '<S159>/Dead Zone'
-                                                *   '<S159>/Gain'
-                                                *   '<S171>/Dead Zone'
-                                                *   '<S171>/Gain'
-                                                *   '<S172>/Dead Zone'
-                                                *   '<S172>/Gain'
-                                                *   '<S207>/Saturation1'
-                                                *   '<S217>/Saturation1'
-                                                *   '<S210>/Gain2'
-                                                *   '<S211>/Gain1'
-                                                *   '<S220>/Gain2'
-                                                *   '<S221>/Gain6'
-                                                *   '<S213>/Dead Zone'
-                                                *   '<S213>/Gain'
-                                                *   '<S225>/Dead Zone'
-                                                *   '<S225>/Gain'
-                                                *   '<S226>/Dead Zone'
-                                                *   '<S226>/Gain'
+                                                *   '<S163>/Saturation1'
+                                                *   '<S173>/Saturation1'
+                                                *   '<S217>/Dead Zone'
+                                                *   '<S217>/Gain'
+                                                *   '<S229>/Dead Zone'
+                                                *   '<S229>/Gain'
+                                                *   '<S241>/Dead Zone'
+                                                *   '<S241>/Gain'
+                                                *   '<S242>/Dead Zone'
+                                                *   '<S242>/Gain'
+                                                *   '<S277>/Saturation1'
+                                                *   '<S287>/Saturation1'
+                                                *   '<S166>/Gain2'
+                                                *   '<S167>/Gain1'
+                                                *   '<S176>/Gain2'
+                                                *   '<S177>/Gain6'
+                                                *   '<S280>/Gain2'
+                                                *   '<S281>/Gain1'
+                                                *   '<S290>/Gain2'
+                                                *   '<S291>/Gain6'
+                                                *   '<S169>/Dead Zone'
+                                                *   '<S169>/Gain'
+                                                *   '<S181>/Dead Zone'
+                                                *   '<S181>/Gain'
+                                                *   '<S182>/Dead Zone'
+                                                *   '<S182>/Gain'
+                                                *   '<S283>/Dead Zone'
+                                                *   '<S283>/Gain'
+                                                *   '<S295>/Dead Zone'
+                                                *   '<S295>/Gain'
+                                                *   '<S296>/Dead Zone'
+                                                *   '<S296>/Gain'
                                                 */
 extern struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT;/* Variable: FMS_EXPORT
                                                  * Referenced by:
@@ -519,23 +594,35 @@ extern RT_MODEL_FMS_T *const FMS_M;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
+ * Block '<S149>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S150>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S196>/Data Type Duplicate' : Unused code path elimination
  * Block '<S197>/Data Type Duplicate' : Unused code path elimination
- * Block '<S198>/Data Type Duplicate' : Unused code path elimination
- * Block '<S240>/Data Type Duplicate' : Unused code path elimination
- * Block '<S241>/Data Type Duplicate' : Unused code path elimination
- * Block '<S237>/Data Type Duplicate' : Unused code path elimination
- * Block '<S238>/Data Type Duplicate' : Unused code path elimination
- * Block '<S244>/Data Type Duplicate' : Unused code path elimination
- * Block '<S256>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S134>/Reshape' : Reshape block reduction
- * Block '<S201>/Reshape' : Reshape block reduction
- * Block '<S183>/Reshape' : Reshape block reduction
- * Block '<S183>/Reshape1' : Reshape block reduction
- * Block '<S183>/Reshape2' : Reshape block reduction
- * Block '<S247>/Reshape' : Reshape block reduction
+ * Block '<S193>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S194>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S200>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S267>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S268>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S310>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S311>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S307>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S308>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S314>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S341>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S154>/Reshape' : Reshape block reduction
+ * Block '<S135>/Reshape' : Reshape block reduction
+ * Block '<S135>/Reshape1' : Reshape block reduction
+ * Block '<S135>/Reshape2' : Reshape block reduction
+ * Block '<S204>/Reshape' : Reshape block reduction
+ * Block '<S271>/Reshape' : Reshape block reduction
+ * Block '<S253>/Reshape' : Reshape block reduction
+ * Block '<S253>/Reshape1' : Reshape block reduction
+ * Block '<S253>/Reshape2' : Reshape block reduction
+ * Block '<S323>/Reshape' : Reshape block reduction
  * Block '<S20>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S3>/Signal Copy3' : Eliminate redundant signal conversion block
- * Block '<S254>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S325>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S339>/Data Type Conversion' : Eliminate redundant data type conversion
  */
 
 /*-
@@ -564,8 +651,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S9>'   : 'FMS/Command Process/Mode Routing'
  * '<S10>'  : 'FMS/Command Process/Check Valid/Compare To Constant1'
  * '<S11>'  : 'FMS/Command Process/Check Valid/Detect Change1'
- * '<S12>'  : 'FMS/Command Process/Command Routing/Detect Change1'
- * '<S13>'  : 'FMS/Command Process/Command Routing/Detect Change2'
+ * '<S12>'  : 'FMS/Command Process/Command Routing/Detect Change3'
+ * '<S13>'  : 'FMS/Command Process/Command Routing/Detect Change4'
  * '<S14>'  : 'FMS/Command Process/Mode Routing/Compare To Zero'
  * '<S15>'  : 'FMS/Command Process/Mode Routing/Compare To Zero1'
  * '<S16>'  : 'FMS/Command Process/Mode Routing/Detect Change'
@@ -685,130 +772,215 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S130>' : 'FMS/FMS Commander/Arm/Auto/Mission'
  * '<S131>' : 'FMS/FMS Commander/Arm/Auto/Offboard'
  * '<S132>' : 'FMS/FMS Commander/Arm/Auto/Unknown'
- * '<S133>' : 'FMS/FMS Commander/Arm/SubMode/Hold'
- * '<S134>' : 'FMS/FMS Commander/Arm/SubMode/Land'
- * '<S135>' : 'FMS/FMS Commander/Arm/SubMode/Return'
- * '<S136>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff'
- * '<S137>' : 'FMS/FMS Commander/Arm/SubMode/Unknown'
- * '<S138>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold'
- * '<S139>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold'
- * '<S140>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold'
- * '<S141>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller'
- * '<S142>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Detect Movement'
- * '<S143>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Brake Control'
- * '<S144>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Hold Control'
- * '<S145>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control'
- * '<S146>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Hold Control/Bus_Selection'
- * '<S147>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control/DeadZone'
- * '<S148>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control/TD1'
- * '<S149>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control/TD1/fhan '
- * '<S150>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Detect Movement/Motion Status'
- * '<S151>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller'
- * '<S152>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Detect Movement'
- * '<S153>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Brake Control'
- * '<S154>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control'
- * '<S155>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control'
- * '<S156>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control/Bus_Selection'
- * '<S157>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control/psi_err_saturation'
- * '<S158>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control/psi_err_saturation/Compare To Constant'
- * '<S159>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control/DeadZone'
- * '<S160>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control/TD'
- * '<S161>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control/TD/fhan '
- * '<S162>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Detect Movement/Motion State'
- * '<S163>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller'
- * '<S164>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Detect Movement'
- * '<S165>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Brake Control'
- * '<S166>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control'
- * '<S167>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control'
- * '<S168>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control/Bus_Selection'
- * '<S169>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control/Psi To DCM'
- * '<S170>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control/Psi To DCM/Rotation Matrix Z'
- * '<S171>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/DeadZone'
- * '<S172>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/DeadZone1'
- * '<S173>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/TD'
- * '<S174>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/TD/fhan '
- * '<S175>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Detect Movement/Motion State'
- * '<S176>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command'
- * '<S177>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control'
- * '<S178>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control/Bus_Selection'
- * '<S179>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control/Psi To DCM'
- * '<S180>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control/Psi To DCM/Rotation Matrix Z'
- * '<S181>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander'
- * '<S182>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander'
- * '<S183>' : 'FMS/FMS Commander/Arm/SubMode/Return/Way Points'
- * '<S184>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control'
- * '<S185>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle'
- * '<S186>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control'
- * '<S187>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/TD'
- * '<S188>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation'
- * '<S189>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation1'
- * '<S190>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control/Bus_Selection'
- * '<S191>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control/psi_saturation'
- * '<S192>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control/psi_saturation/Compare To Constant'
- * '<S193>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/TD/fhan '
- * '<S194>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation/Compare To Constant'
- * '<S195>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation1/Compare To Constant'
- * '<S196>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle/2D Cross Product'
- * '<S197>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle/Vector Normalize'
- * '<S198>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle/Vector Normalize1'
- * '<S199>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Cruise Speed '
- * '<S200>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position'
- * '<S201>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP'
- * '<S202>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration'
- * '<S203>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed'
- * '<S204>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Cruise Speed /Vector Modulus'
- * '<S205>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold'
- * '<S206>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold'
- * '<S207>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller'
- * '<S208>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Detect Movement'
- * '<S209>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Brake Control'
- * '<S210>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Hold Control'
- * '<S211>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control'
- * '<S212>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Hold Control/Bus_Selection'
- * '<S213>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/DeadZone'
- * '<S214>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/TD1'
- * '<S215>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/TD1/fhan '
- * '<S216>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Detect Movement/Motion Status'
- * '<S217>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller'
- * '<S218>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Detect Movement'
- * '<S219>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Brake Control'
- * '<S220>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control'
- * '<S221>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control'
- * '<S222>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Bus_Selection'
- * '<S223>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Psi To DCM'
- * '<S224>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Psi To DCM/Rotation Matrix Z'
- * '<S225>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/DeadZone'
- * '<S226>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/DeadZone1'
- * '<S227>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/TD'
- * '<S228>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/TD/fhan '
- * '<S229>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Detect Movement/Motion State'
- * '<S230>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/Compare To Constant'
- * '<S231>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/Compare To Constant1'
- * '<S232>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/NearbyRefWP'
- * '<S233>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/OutRegionRegWP'
- * '<S234>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/SearchL1RefWP'
- * '<S235>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle'
- * '<S236>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Vector Modulus'
- * '<S237>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Vector Normalize'
- * '<S238>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Vector Normalize1'
- * '<S239>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle/2D Cross Product'
- * '<S240>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle/Vector Normalize'
- * '<S241>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle/Vector Normalize1'
- * '<S242>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Ground Speed'
- * '<S243>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix'
- * '<S244>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Ground Speed/Vector Normalize2'
- * '<S245>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM'
- * '<S246>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM/Rotation Matrix Z'
- * '<S247>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position'
- * '<S248>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position/Bus_Selection'
- * '<S249>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position/Psi To DCM'
- * '<S250>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Hold Position/Psi To DCM/Rotation Matrix Z'
- * '<S251>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
- * '<S252>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
- * '<S253>' : 'FMS/Onground Check/Compare To Constant'
- * '<S254>' : 'FMS/Onground Check/First Order LPF'
- * '<S255>' : 'FMS/Onground Check/First Order LPF2'
- * '<S256>' : 'FMS/Onground Check/Interval Test'
+ * '<S133>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander'
+ * '<S134>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander'
+ * '<S135>' : 'FMS/FMS Commander/Arm/Auto/Mission/Way Points'
+ * '<S136>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control'
+ * '<S137>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Included Angle'
+ * '<S138>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/Heading Control'
+ * '<S139>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/TD'
+ * '<S140>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/psi_saturation'
+ * '<S141>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/psi_saturation1'
+ * '<S142>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/Heading Control/Bus_Selection'
+ * '<S143>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/Heading Control/psi_saturation'
+ * '<S144>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/Heading Control/psi_saturation/Compare To Constant'
+ * '<S145>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/TD/fhan '
+ * '<S146>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/psi_saturation/Compare To Constant'
+ * '<S147>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Heading Control/psi_saturation1/Compare To Constant'
+ * '<S148>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Included Angle/2D Cross Product'
+ * '<S149>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Included Angle/Vector Normalize'
+ * '<S150>' : 'FMS/FMS Commander/Arm/Auto/Mission/Heading Commander/Included Angle/Vector Normalize1'
+ * '<S151>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Altitude Control'
+ * '<S152>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Cruise Speed '
+ * '<S153>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position'
+ * '<S154>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/L1 Reference WP'
+ * '<S155>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration'
+ * '<S156>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration To Speed'
+ * '<S157>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Altitude Control/Target Height'
+ * '<S158>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Altitude Control/Target Height/Vector Modulus'
+ * '<S159>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Altitude Control/Target Height/Vector Modulus1'
+ * '<S160>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Cruise Speed /Vector Modulus'
+ * '<S161>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold'
+ * '<S162>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold'
+ * '<S163>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller'
+ * '<S164>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Detect Movement'
+ * '<S165>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Brake Control'
+ * '<S166>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Hold Control'
+ * '<S167>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control'
+ * '<S168>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Hold Control/Bus_Selection'
+ * '<S169>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/DeadZone'
+ * '<S170>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/TD1'
+ * '<S171>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/TD1/fhan '
+ * '<S172>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Altitude Hold/Detect Movement/Motion Status'
+ * '<S173>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller'
+ * '<S174>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Detect Movement'
+ * '<S175>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Brake Control'
+ * '<S176>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control'
+ * '<S177>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Move Control'
+ * '<S178>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Bus_Selection'
+ * '<S179>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Psi To DCM'
+ * '<S180>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Psi To DCM/Rotation Matrix Z'
+ * '<S181>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/DeadZone'
+ * '<S182>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/DeadZone1'
+ * '<S183>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/TD'
+ * '<S184>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/TD/fhan '
+ * '<S185>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Hold Position/Position Hold/Detect Movement/Motion State'
+ * '<S186>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/L1 Reference WP/Compare To Constant'
+ * '<S187>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/L1 Reference WP/Compare To Constant1'
+ * '<S188>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/L1 Reference WP/NearbyRefWP'
+ * '<S189>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/L1 Reference WP/OutRegionRegWP'
+ * '<S190>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/L1 Reference WP/SearchL1RefWP'
+ * '<S191>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Included Angle'
+ * '<S192>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Vector Modulus'
+ * '<S193>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Vector Normalize'
+ * '<S194>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Vector Normalize1'
+ * '<S195>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Included Angle/2D Cross Product'
+ * '<S196>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Included Angle/Vector Normalize'
+ * '<S197>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration/Included Angle/Vector Normalize1'
+ * '<S198>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration To Speed/Ground Speed'
+ * '<S199>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix'
+ * '<S200>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration To Speed/Ground Speed/Vector Normalize2'
+ * '<S201>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM'
+ * '<S202>' : 'FMS/FMS Commander/Arm/Auto/Mission/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM/Rotation Matrix Z'
+ * '<S203>' : 'FMS/FMS Commander/Arm/SubMode/Hold'
+ * '<S204>' : 'FMS/FMS Commander/Arm/SubMode/Land'
+ * '<S205>' : 'FMS/FMS Commander/Arm/SubMode/Return'
+ * '<S206>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff'
+ * '<S207>' : 'FMS/FMS Commander/Arm/SubMode/Unknown'
+ * '<S208>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold'
+ * '<S209>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold'
+ * '<S210>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold'
+ * '<S211>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller'
+ * '<S212>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Detect Movement'
+ * '<S213>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Brake Control'
+ * '<S214>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Hold Control'
+ * '<S215>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control'
+ * '<S216>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Hold Control/Bus_Selection'
+ * '<S217>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control/DeadZone'
+ * '<S218>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control/TD1'
+ * '<S219>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Controller/Move Control/TD1/fhan '
+ * '<S220>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Altitude Hold/Detect Movement/Motion Status'
+ * '<S221>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller'
+ * '<S222>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Detect Movement'
+ * '<S223>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Brake Control'
+ * '<S224>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control'
+ * '<S225>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control'
+ * '<S226>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control/Bus_Selection'
+ * '<S227>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control/psi_err_saturation'
+ * '<S228>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Hold Control/psi_err_saturation/Compare To Constant'
+ * '<S229>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control/DeadZone'
+ * '<S230>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control/TD'
+ * '<S231>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Controller/Move Control/TD/fhan '
+ * '<S232>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Heading Hold/Detect Movement/Motion State'
+ * '<S233>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller'
+ * '<S234>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Detect Movement'
+ * '<S235>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Brake Control'
+ * '<S236>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control'
+ * '<S237>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control'
+ * '<S238>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control/Bus_Selection'
+ * '<S239>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control/Psi To DCM'
+ * '<S240>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Hold Control/Psi To DCM/Rotation Matrix Z'
+ * '<S241>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/DeadZone'
+ * '<S242>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/DeadZone1'
+ * '<S243>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/TD'
+ * '<S244>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Controller/Move Control/TD/fhan '
+ * '<S245>' : 'FMS/FMS Commander/Arm/SubMode/Hold/Position Hold/Detect Movement/Motion State'
+ * '<S246>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command'
+ * '<S247>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control'
+ * '<S248>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control/Bus_Selection'
+ * '<S249>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control/Psi To DCM'
+ * '<S250>' : 'FMS/FMS Commander/Arm/SubMode/Land/Position Command/Position Control/Psi To DCM/Rotation Matrix Z'
+ * '<S251>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander'
+ * '<S252>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander'
+ * '<S253>' : 'FMS/FMS Commander/Arm/SubMode/Return/Way Points'
+ * '<S254>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control'
+ * '<S255>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle'
+ * '<S256>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control'
+ * '<S257>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/TD'
+ * '<S258>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation'
+ * '<S259>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation1'
+ * '<S260>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control/Bus_Selection'
+ * '<S261>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control/psi_saturation'
+ * '<S262>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/Heading Control/psi_saturation/Compare To Constant'
+ * '<S263>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/TD/fhan '
+ * '<S264>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation/Compare To Constant'
+ * '<S265>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Heading Control/psi_saturation1/Compare To Constant'
+ * '<S266>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle/2D Cross Product'
+ * '<S267>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle/Vector Normalize'
+ * '<S268>' : 'FMS/FMS Commander/Arm/SubMode/Return/Heading Commander/Included Angle/Vector Normalize1'
+ * '<S269>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Cruise Speed '
+ * '<S270>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position'
+ * '<S271>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP'
+ * '<S272>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration'
+ * '<S273>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed'
+ * '<S274>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Cruise Speed /Vector Modulus'
+ * '<S275>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold'
+ * '<S276>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold'
+ * '<S277>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller'
+ * '<S278>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Detect Movement'
+ * '<S279>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Brake Control'
+ * '<S280>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Hold Control'
+ * '<S281>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control'
+ * '<S282>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Hold Control/Bus_Selection'
+ * '<S283>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/DeadZone'
+ * '<S284>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/TD1'
+ * '<S285>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Controller/Move Control/TD1/fhan '
+ * '<S286>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Altitude Hold/Detect Movement/Motion Status'
+ * '<S287>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller'
+ * '<S288>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Detect Movement'
+ * '<S289>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Brake Control'
+ * '<S290>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control'
+ * '<S291>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control'
+ * '<S292>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Bus_Selection'
+ * '<S293>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Psi To DCM'
+ * '<S294>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Hold Control/Psi To DCM/Rotation Matrix Z'
+ * '<S295>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/DeadZone'
+ * '<S296>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/DeadZone1'
+ * '<S297>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/TD'
+ * '<S298>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Controller/Move Control/TD/fhan '
+ * '<S299>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Hold Position/Position Hold/Detect Movement/Motion State'
+ * '<S300>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/Compare To Constant'
+ * '<S301>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/Compare To Constant1'
+ * '<S302>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/NearbyRefWP'
+ * '<S303>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/OutRegionRegWP'
+ * '<S304>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/L1 Reference WP/SearchL1RefWP'
+ * '<S305>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle'
+ * '<S306>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Vector Modulus'
+ * '<S307>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Vector Normalize'
+ * '<S308>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Vector Normalize1'
+ * '<S309>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle/2D Cross Product'
+ * '<S310>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle/Vector Normalize'
+ * '<S311>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration/Included Angle/Vector Normalize1'
+ * '<S312>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Ground Speed'
+ * '<S313>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix'
+ * '<S314>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Ground Speed/Vector Normalize2'
+ * '<S315>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM'
+ * '<S316>' : 'FMS/FMS Commander/Arm/SubMode/Return/Velocity Commander/Lateral Acceleration To Speed/Rotation Matrix/Psi To DCM/Rotation Matrix Z'
+ * '<S317>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Climb Speed'
+ * '<S318>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position'
+ * '<S319>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Climb Speed/Compare To Constant'
+ * '<S320>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Climb Speed/Compare To Constant1'
+ * '<S321>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Bus_Selection'
+ * '<S322>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Psi To DCM'
+ * '<S323>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Target Position'
+ * '<S324>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Psi To DCM/Rotation Matrix Z'
+ * '<S325>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
+ * '<S326>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
+ * '<S327>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
+ * '<S328>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
+ * '<S329>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
+ * '<S330>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
+ * '<S331>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
+ * '<S332>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
+ * '<S333>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
+ * '<S334>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
+ * '<S335>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
+ * '<S336>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
+ * '<S337>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
+ * '<S338>' : 'FMS/Onground Check/Compare To Constant'
+ * '<S339>' : 'FMS/Onground Check/First Order LPF'
+ * '<S340>' : 'FMS/Onground Check/First Order LPF2'
+ * '<S341>' : 'FMS/Onground Check/Interval Test'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

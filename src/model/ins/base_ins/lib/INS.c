@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3579
+ * Model version                  : 1.3588
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec 29 18:39:38 2021
+ * C/C++ source code generated on : Tue Mar 22 09:44:36 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -81,9 +81,12 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
   0.0F,                                /* ve */
   0.0F,                                /* vd */
   0.0F,                                /* reserved */
-  0.0,                                 /* lon */
   0.0,                                 /* lat */
+  0.0,                                 /* lon */
   0.0,                                 /* alt */
+  0.0,                                 /* lat_0 */
+  0.0,                                 /* lon_0 */
+  0.0,                                 /* alt_0 */
   0.0F,                                /* x_R */
   0.0F,                                /* y_R */
   0.0F,                                /* h_R */
@@ -96,7 +99,7 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
 struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT = {
   2U,
 
-  { 66, 97, 115, 101, 32, 73, 78, 83, 32, 118, 48, 46, 49, 46, 48, 0 }
+  { 66, 97, 115, 101, 32, 73, 78, 83, 32, 118, 48, 46, 50, 46, 48, 0 }
 } ;                                    /* Variable: INS_EXPORT
                                         * Referenced by:
                                         *   '<S4>/Constant'
@@ -487,10 +490,10 @@ Parameters_INS_T INS_P = {
   1.0,
   1.0,
   1.0,
-  0.0033528131778969143,
+  1.0,
   2.0,
   6.378137E+6,
-  1.0,
+  0.0033528106647474805,
   0,
   10000,
   0,
@@ -989,7 +992,7 @@ void INS_step(void)
   real_T rtb_Scalefactor3;
   real32_T rtb_Product1;
   real32_T rtb_Gain3;
-  real32_T rtb_Product2_j;
+  real32_T rtb_Product2;
   real32_T rtb_VectorConcatenate[3];
   real32_T rtb_VectorConcatenate1[3];
   real32_T rtb_Square_le[3];
@@ -1017,6 +1020,7 @@ void INS_step(void)
   real32_T rtb_DiscreteTimeIntegrator_dl;
   uint32_T rtb_Sum1_o;
   real32_T rtb_Sum2_by;
+  real_T rtb_ff;
   real32_T rtb_Gain_cv[3];
   real32_T rtb_Add_n;
   real32_T rtb_MatrixConcatenate1[9];
@@ -1041,7 +1045,6 @@ void INS_step(void)
   real32_T rtb_MathFunction_e_idx_0;
   real32_T rtb_Sum_p_idx_1;
   real_T rtb_Switch1_idx_0;
-  real_T rtb_Switch1_idx_1;
   real32_T rtb_Switch_k_idx_1;
   uint32_T qY;
   int32_T rtb_Saturation1_idx_1_0;
@@ -1414,7 +1417,7 @@ void INS_step(void)
   /* Product: '<S302>/Product2' incorporates:
    *  Saturate: '<S308>/Saturation'
    */
-  rtb_Product2_j = rtb_Delay_h ? rtb_Delay_d ?
+  rtb_Product2 = rtb_Delay_h ? rtb_Delay_d ?
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_m > INS_P.Saturation_UpperSat_l ?
     INS_P.Saturation_UpperSat_l : INS_DWork.DiscreteTimeIntegrator1_DSTAT_m <
     INS_P.Saturation_LowerSat_ku ? INS_P.Saturation_LowerSat_ku :
@@ -1446,65 +1449,46 @@ void INS_step(void)
     /* DataTypeConversion: '<S303>/Data Type Conversion1' */
     INS_B.DataTypeConversion1 = rtb_Scalefactor1;
 
-    /* Trigonometry: '<S317>/Trigonometric Function1' incorporates:
-     *  Trigonometry: '<S317>/Trigonometric Function2'
+    /* Product: '<S317>/Multiply3' incorporates:
+     *  Constant: '<S317>/Constant2'
+     *  Constant: '<S317>/f'
+     *  Sum: '<S317>/Sum'
      */
-    rtb_Switch1_idx_1 = cos(INS_B.DataTypeConversion1);
+    rtb_ff = (INS_P.Constant2_Value - INS_P.f_Value) * INS_P.f_Value;
 
-    /* Product: '<S317>/Product1' incorporates:
-     *  Constant: '<S317>/b'
-     *  Constant: '<S317>/constant'
-     *  Sum: '<S317>/Subtract1'
+    /* Trigonometry: '<S317>/Sin' */
+    rtb_DataTypeConversion1 = sin(INS_B.DataTypeConversion1);
+
+    /* Math: '<S317>/Square1' */
+    rtb_DataTypeConversion1 *= rtb_DataTypeConversion1;
+
+    /* Product: '<S317>/Multiply' incorporates:
+     *  Product: '<S317>/Multiply1'
      */
-    rtb_DataTypeConversion1 = (INS_P.constant_Value - INS_P.b_Value) *
-      INS_P.b_Value;
-
-    /* Trigonometry: '<S317>/Trigonometric Function' */
-    rtb_DataTypeConversion2 = sin(INS_B.DataTypeConversion1);
-
-    /* Sum: '<S317>/Subtract' incorporates:
-     *  Constant: '<S317>/c'
-     *  Math: '<S317>/u^2'
-     *  Product: '<S317>/Product'
-     */
-    rtb_DataTypeConversion2 = INS_P.c_Value - rtb_DataTypeConversion2 *
-      rtb_DataTypeConversion2 * rtb_DataTypeConversion1;
-
-    /* Math: '<S317>/sqrt'
-     *
-     * About '<S317>/sqrt':
-     *  Operator: sqrt
-     */
-    if (rtb_DataTypeConversion2 < 0.0) {
-      rtb_DataTypeConversion2 = -sqrt(fabs(rtb_DataTypeConversion2));
-    } else {
-      rtb_DataTypeConversion2 = sqrt(rtb_DataTypeConversion2);
-    }
-
-    /* End of Math: '<S317>/sqrt' */
+    rtb_DataTypeConversion1 *= rtb_ff;
 
     /* Product: '<S317>/Divide' incorporates:
-     *  Constant: '<S317>/earth_radius'
+     *  Constant: '<S317>/Constant'
+     *  Constant: '<S317>/R'
+     *  Product: '<S317>/Multiply'
+     *  Sqrt: '<S317>/Sqrt'
+     *  Sum: '<S317>/Sum1'
      */
-    rtb_DataTypeConversion2 = INS_P.earth_radius_Value / rtb_DataTypeConversion2;
+    rtb_DataTypeConversion2 = INS_P.R_Value / sqrt(INS_P.Constant_Value_n -
+      rtb_DataTypeConversion1);
 
-    /* Sum: '<S317>/Add' incorporates:
-     *  Constant: '<S317>/constant2'
-     *  Math: '<S317>/u^1'
-     *  Product: '<S317>/Product2'
-     *  Product: '<S317>/Product3'
-     *  Sum: '<S317>/Subtract2'
-     *  Trigonometry: '<S317>/Trigonometric Function1'
+    /* Product: '<S317>/Multiply2' incorporates:
+     *  Trigonometry: '<S317>/Cos'
      */
-    INS_B.Add = (INS_P.constant2_Value - rtb_Switch1_idx_1 * rtb_Switch1_idx_1 *
-                 rtb_DataTypeConversion1) * rtb_DataTypeConversion2 +
-      rtb_Scalefactor3;
+    INS_B.Multiply2 = rtb_DataTypeConversion2 * cos(INS_B.DataTypeConversion1);
 
-    /* Product: '<S317>/Product4' incorporates:
-     *  Sum: '<S317>/Add1'
+    /* Product: '<S317>/Product3' incorporates:
+     *  Constant: '<S317>/Constant1'
+     *  Sum: '<S317>/Sum2'
+     *  Sum: '<S317>/Sum4'
      */
-    INS_B.Product4 = (rtb_Scalefactor3 + rtb_DataTypeConversion2) *
-      rtb_Switch1_idx_1;
+    INS_B.Rm = 1.0 / (INS_P.Constant1_Value - rtb_DataTypeConversion1) *
+      (INS_P.Constant1_Value - rtb_ff) * rtb_DataTypeConversion2;
   }
 
   INS_PrevZCSigState.WGS84_Model_Trig_ZCE = rtb_Delay_n;
@@ -1697,16 +1681,16 @@ void INS_step(void)
   /* Gain: '<S329>/rad_to_index' incorporates:
    *  SignalConversion: '<S329>/TmpSignal ConversionAtrad_to_indexInport1'
    */
-  rtb_DataTypeConversion1 = 57.295779513082323 / INS_P.WMM_LUT_resolution;
-  rtb_Switch1_idx_1 = fmod(floor(rtb_DataTypeConversion1 *
-    INS_B.DataTypeConversion1), 4.294967296E+9);
+  rtb_ff = 57.295779513082323 / INS_P.WMM_LUT_resolution;
+  rtb_DataTypeConversion1 = fmod(floor(rtb_ff * INS_B.DataTypeConversion1),
+    4.294967296E+9);
 
   /* Sum: '<S329>/Add' incorporates:
    *  Constant: '<S329>/offset'
    *  Gain: '<S329>/rad_to_index'
    */
-  rtb_Saturation1_idx_0 = (rtb_Switch1_idx_1 < 0.0 ? -(int32_T)(uint32_T)
-    -rtb_Switch1_idx_1 : (int32_T)(uint32_T)rtb_Switch1_idx_1) +
+  rtb_Saturation1_idx_0 = (rtb_DataTypeConversion1 < 0.0 ? -(int32_T)(uint32_T)
+    -rtb_DataTypeConversion1 : (int32_T)(uint32_T)rtb_DataTypeConversion1) +
     INS_P.offset_Value[0];
 
   /* Saturate: '<S329>/Saturation1' */
@@ -1721,15 +1705,15 @@ void INS_step(void)
   /* Gain: '<S329>/rad_to_index' incorporates:
    *  SignalConversion: '<S329>/TmpSignal ConversionAtrad_to_indexInport1'
    */
-  rtb_Switch1_idx_1 = fmod(floor(rtb_DataTypeConversion1 *
-    INS_B.DataTypeConversion), 4.294967296E+9);
+  rtb_DataTypeConversion1 = fmod(floor(rtb_ff * INS_B.DataTypeConversion),
+    4.294967296E+9);
 
   /* Sum: '<S329>/Add' incorporates:
    *  Constant: '<S329>/offset'
    *  Gain: '<S329>/rad_to_index'
    */
-  rtb_Saturation1_idx_1 = (rtb_Switch1_idx_1 < 0.0 ? -(int32_T)(uint32_T)
-    -rtb_Switch1_idx_1 : (int32_T)(uint32_T)rtb_Switch1_idx_1) +
+  rtb_Saturation1_idx_1 = (rtb_DataTypeConversion1 < 0.0 ? -(int32_T)(uint32_T)
+    -rtb_DataTypeConversion1 : (int32_T)(uint32_T)rtb_DataTypeConversion1) +
     INS_P.offset_Value[1];
 
   /* Saturate: '<S329>/Saturation1' */
@@ -2828,10 +2812,10 @@ void INS_step(void)
   rtb_Sum_gn_idx_2 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2];
 
   /* Relay: '<S92>/Relay' */
-  if (rtb_Product2_j >= INS_P.Relay_OnVal) {
+  if (rtb_Product2 >= INS_P.Relay_OnVal) {
     INS_DWork.Relay_Mode_nf = true;
   } else {
-    if (rtb_Product2_j <= INS_P.Relay_OffVal) {
+    if (rtb_Product2 <= INS_P.Relay_OffVal) {
       INS_DWork.Relay_Mode_nf = false;
     }
   }
@@ -4012,10 +3996,10 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
   /* Relay: '<S241>/Relay' */
-  if (rtb_Product2_j >= INS_P.Relay_OnVal_l) {
+  if (rtb_Product2 >= INS_P.Relay_OnVal_l) {
     INS_DWork.Relay_Mode = true;
   } else {
-    if (rtb_Product2_j <= INS_P.Relay_OffVal_p) {
+    if (rtb_Product2 <= INS_P.Relay_OffVal_p) {
       INS_DWork.Relay_Mode = false;
     }
   }
@@ -4253,9 +4237,9 @@ void INS_step(void)
    *  UnitDelay: '<S253>/Delay Input1'
    */
   if ((int32_T)rtb_Compare_dd > (int32_T)INS_DWork.DelayInput1_DSTATE_dp) {
-    rtb_DataTypeConversion1 = rtb_Scalefactor3 - INS_DWork.Delay_6_DSTATE;
+    rtb_ff = rtb_Scalefactor3 - INS_DWork.Delay_6_DSTATE;
   } else {
-    rtb_DataTypeConversion1 = INS_DWork.Delay1_DSTATE;
+    rtb_ff = INS_DWork.Delay1_DSTATE;
   }
 
   /* End of Switch: '<S251>/Switch4' */
@@ -4312,15 +4296,15 @@ void INS_step(void)
    *  UnitDelay: '<S255>/Delay Input1'
    */
   if ((int32_T)rtb_Compare_bl > (int32_T)INS_DWork.DelayInput1_DSTATE_m) {
-    rtb_Switch1_idx_0 = INS_B.Add;
-    rtb_Switch1_idx_1 = INS_B.Product4;
+    rtb_Switch1_idx_0 = INS_B.Rm;
+    rtb_DataTypeConversion1 = INS_B.Multiply2;
     rtb_DataTypeConversion2 = rtb_Scalefactor1 - INS_DWork.Delay_4_DSTATE /
-      INS_B.Add;
+      INS_B.Rm;
     rtb_Switch4_c_idx_1 = rtb_Scalefactor2 - INS_DWork.Delay_5_DSTATE /
-      INS_B.Product4;
+      INS_B.Multiply2;
   } else {
     rtb_Switch1_idx_0 = INS_DWork.Delay1_DSTATE_o[0];
-    rtb_Switch1_idx_1 = INS_DWork.Delay1_DSTATE_o[1];
+    rtb_DataTypeConversion1 = INS_DWork.Delay1_DSTATE_o[1];
     rtb_DataTypeConversion2 = INS_DWork.Delay_DSTATE[0];
     rtb_Switch4_c_idx_1 = INS_DWork.Delay_DSTATE[1];
   }
@@ -4343,7 +4327,7 @@ void INS_step(void)
    */
   rtb_Compare_b2 = (((int32_T)rtb_Compare_aa > (int32_T)
                      INS_P.CompareToConstant2_const_j) > (int32_T)
-                    INS_P.Constant_Value_d);
+                    INS_P.Constant_Value_dc);
 
   /* RelationalOperator: '<S277>/Compare' incorporates:
    *  Constant: '<S275>/Constant'
@@ -4428,7 +4412,7 @@ void INS_step(void)
     INS_DWork.DelayInput1_DSTATE_p) || INS_DWork.Delay_DSTATE_k4);
 
   /* Update for Delay: '<S251>/Delay1' */
-  INS_DWork.Delay1_DSTATE = rtb_DataTypeConversion1;
+  INS_DWork.Delay1_DSTATE = rtb_ff;
 
   /* Update for UnitDelay: '<S253>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_dp = rtb_Compare_dd;
@@ -4472,7 +4456,7 @@ void INS_step(void)
   INS_DWork.Delay_DSTATE[1] = rtb_Switch4_c_idx_1;
 
   /* Update for Delay: '<S252>/Delay1' */
-  INS_DWork.Delay1_DSTATE_o[1] = rtb_Switch1_idx_1;
+  INS_DWork.Delay1_DSTATE_o[1] = rtb_DataTypeConversion1;
 
   /* Update for UnitDelay: '<S255>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_m = rtb_Compare_bl;
@@ -4536,7 +4520,7 @@ void INS_step(void)
     INS_B.DataTypeConversion_n[0] = (real32_T)((rtb_Scalefactor1 -
       rtb_DataTypeConversion2) * rtb_Switch1_idx_0);
     INS_B.DataTypeConversion_n[1] = (real32_T)((rtb_Scalefactor2 -
-      rtb_Switch4_c_idx_1) * rtb_Switch1_idx_1);
+      rtb_Switch4_c_idx_1) * rtb_DataTypeConversion1);
 
     /* Reshape: '<S197>/Reshape' incorporates:
      *  SignalConversion: '<S239>/TmpSignal ConversionAtSignal Copy6Inport1'
@@ -4717,7 +4701,7 @@ void INS_step(void)
     rtb_dec_rad = (real32_T)((rtb_Scalefactor1 - rtb_DataTypeConversion2) *
       rtb_Switch1_idx_0);
     rtb_Product1 = (real32_T)((rtb_Scalefactor2 - rtb_Switch4_c_idx_1) *
-      rtb_Switch1_idx_1);
+      rtb_DataTypeConversion1);
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
@@ -4912,12 +4896,12 @@ void INS_step(void)
 
   /* Signum: '<S178>/Sign' */
   rtb_Scalefactor2 = rtb_Scalefactor1;
-  if (rtb_Switch1_idx_1 < 0.0) {
+  if (rtb_DataTypeConversion1 < 0.0) {
     rtb_Scalefactor1 = -1.0;
-  } else if (rtb_Switch1_idx_1 > 0.0) {
+  } else if (rtb_DataTypeConversion1 > 0.0) {
     rtb_Scalefactor1 = 1.0;
   } else {
-    rtb_Scalefactor1 = rtb_Switch1_idx_1;
+    rtb_Scalefactor1 = rtb_DataTypeConversion1;
   }
 
   /* Switch: '<S178>/Switch' incorporates:
@@ -4936,7 +4920,7 @@ void INS_step(void)
      *  SignalConversion: '<S239>/TmpSignal ConversionAtSignal Copy5Inport1'
      *  Sum: '<S226>/Sum'
      */
-    INS_B.h_0 = (real32_T)(rtb_Scalefactor3 - rtb_DataTypeConversion1);
+    INS_B.h_0 = (real32_T)(rtb_Scalefactor3 - rtb_ff);
 
     /* DataTypeConversion: '<S226>/Data Type Conversion1' incorporates:
      *  SignalConversion: '<S239>/TmpSignal ConversionAtSignal Copy8Inport1'
@@ -5278,7 +5262,7 @@ void INS_step(void)
      *  SignalConversion: '<S239>/TmpSignal ConversionAtSignal Copy5Inport1'
      *  Sum: '<S216>/Sum'
      */
-    rtb_Sum2_m = (real32_T)(rtb_Scalefactor3 - rtb_DataTypeConversion1);
+    rtb_Sum2_m = (real32_T)(rtb_Scalefactor3 - rtb_ff);
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
@@ -5442,7 +5426,7 @@ void INS_step(void)
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
   /* Abs: '<S178>/Abs' */
-  rtb_Scalefactor3 = fabs(rtb_Switch1_idx_1);
+  rtb_Scalefactor3 = fabs(rtb_DataTypeConversion1);
 
   /* Saturate: '<S178>/Saturation' */
   if (rtb_Scalefactor3 > INS_P.Saturation_UpperSat) {
@@ -5467,8 +5451,7 @@ void INS_step(void)
    */
   INS_Y.INS_Out.lon = (rtb_Sum_g0[1] / (rtb_Scalefactor3 * rtb_Scalefactor1) +
                        rtb_Switch4_c_idx_1) * (real_T)rtb_Compare_l1;
-  INS_Y.INS_Out.alt = (rtb_dec_rad + rtb_DataTypeConversion1) * (real_T)
-    rtb_Compare_l1;
+  INS_Y.INS_Out.alt = (rtb_dec_rad + rtb_ff) * (real_T)rtb_Compare_l1;
 
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
@@ -5938,9 +5921,8 @@ void INS_step(void)
   INS_Y.INS_Out.status = (((rtb_Delay_d + mul_u32_loSR(INS_P.Gain1_Gain_ap,
     INS_P.Constant_Value_lm, 30U)) + (rtb_MathFunction1 > INS_P.Constant_Value_h
     ? (uint32_T)INS_P.Gain2_Gain_ha >> 5 : 0U)) + (rtb_LogicalOperator_i ?
-    (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) + (fmaxf(rtb_Product2_j,
-    rtb_Sum2_by) > INS_P.Constant_Value_j ? (uint32_T)INS_P.Gain4_Gain_p >> 3 :
-    0U);
+    (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) + (fmaxf(rtb_Product2, rtb_Sum2_by)
+    > INS_P.Constant_Value_j ? (uint32_T)INS_P.Gain4_Gain_p >> 3 : 0U);
 
   /* Update for DiscreteIntegrator: '<S12>/Discrete-Time Integrator' incorporates:
    *  Constant: '<S12>/Constant'
@@ -6191,8 +6173,8 @@ void INS_step(void)
    */
   INS_Y.INS_Out.phi = atan2f((rtb_Gain_gz_idx_0 * rtb_Switch_k_idx_1 +
     rtb_Sum_p_idx_1 * rtb_MathFunction_e_idx_2) * INS_P.Constant_Value_c,
-    INS_P.Constant2_Value - (rtb_Switch_k_idx_1 * rtb_Switch_k_idx_1 + rtb_Add_n)
-    * INS_P.Constant_Value_c);
+    INS_P.Constant2_Value_d - (rtb_Switch_k_idx_1 * rtb_Switch_k_idx_1 +
+    rtb_Add_n) * INS_P.Constant_Value_c);
 
   /* Product: '<S64>/Multiply6' incorporates:
    *  Constant: '<S64>/Constant'
@@ -6238,6 +6220,9 @@ void INS_step(void)
    *  Product: '<S64>/Multiply8'
    *  Product: '<S64>/Multiply9'
    *  Product: '<S65>/Divide'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy1Inport1'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy2Inport1'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy3Inport1'
    *  SignalConversion: '<S318>/TmpSignal ConversionAtBus Selector1Outport1'
    *  SignalConversion: '<S318>/TmpSignal ConversionAtBus Selector1Outport2'
    *  SignalConversion: '<S318>/TmpSignal ConversionAtBus Selector1Outport3'
@@ -6252,8 +6237,8 @@ void INS_step(void)
   INS_Y.INS_Out.theta = asinf(rtb_DiscreteTimeIntegrator_g);
   INS_Y.INS_Out.psi = atan2f((rtb_Gain_gz_idx_0 * rtb_MathFunction_e_idx_2 +
     rtb_Switch_k_idx_1 * rtb_Sum_p_idx_1) * INS_P.Constant_Value_c,
-    INS_P.Constant1_Value - (rtb_MathFunction_e_idx_2 * rtb_MathFunction_e_idx_2
-    + rtb_Add_n) * INS_P.Constant_Value_c);
+    INS_P.Constant1_Value_o - (rtb_MathFunction_e_idx_2 *
+    rtb_MathFunction_e_idx_2 + rtb_Add_n) * INS_P.Constant_Value_c);
   INS_Y.INS_Out.quat[0] = rtb_Sum_gn_idx_0;
   INS_Y.INS_Out.quat[1] = rtb_Sum_gn_idx_1;
   INS_Y.INS_Out.quat[2] = rtb_Sum_gn_idx_2;
@@ -6283,7 +6268,16 @@ void INS_step(void)
 
   /* End of Outputs for SubSystem: '<S1>/Translation_Output' */
   /* End of Outputs for SubSystem: '<Root>/Bus_Constructor' */
-  INS_Y.INS_Out.reserved = INS_P.Constant_Value_n;
+  INS_Y.INS_Out.reserved = INS_P.Constant_Value_d;
+
+  /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
+  /* Outputs for Atomic SubSystem: '<S56>/CF' */
+  INS_Y.INS_Out.lat_0 = rtb_DataTypeConversion2;
+  INS_Y.INS_Out.lon_0 = rtb_Switch4_c_idx_1;
+  INS_Y.INS_Out.alt_0 = rtb_ff;
+
+  /* End of Outputs for SubSystem: '<S56>/CF' */
+  /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Bus_Constructor' */
   /* Outputs for Atomic SubSystem: '<S1>/Translation_Output' */
@@ -6403,10 +6397,10 @@ void INS_init(void)
     INS_B.DataTypeConversion1 = INS_P.lat_0_rad_Y0;
 
     /* SystemInitialize for Outport: '<S303>/dx_dlat' */
-    INS_B.Add = INS_P.dx_dlat_Y0;
+    INS_B.Rm = INS_P.dx_dlat_Y0;
 
     /* SystemInitialize for Outport: '<S303>/dy_dlon' */
-    INS_B.Product4 = INS_P.dy_dlon_Y0;
+    INS_B.Multiply2 = INS_P.dy_dlon_Y0;
 
     /* End of SystemInitialize for SubSystem: '<S284>/WGS84_Model' */
     /* End of SystemInitialize for SubSystem: '<S3>/GPS_PreProcess' */

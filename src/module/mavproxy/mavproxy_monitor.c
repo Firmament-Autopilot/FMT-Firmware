@@ -158,9 +158,13 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
 {
     switch (msg->msgid) {
-    case MAVLINK_MSG_ID_HEARTBEAT: {
+    case MAVLINK_MSG_ID_HEARTBEAT:
         /* do nothing */
-    } break;
+        break;
+
+    case MAVLINK_MSG_ID_SYSTEM_TIME:
+        /* do nothing */
+        break;
 
     case MAVLINK_MSG_ID_SET_MODE: {
         if (system.sysid == mavlink_msg_set_mode_get_target_system(msg)) {
@@ -183,6 +187,9 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
                             break;
                         case PX4_CUSTOM_SUB_MODE_AUTO_LAND:
                             gcs_set_cmd(CMD_Land);
+                            break;
+                        case PX4_CUSTOM_SUB_MODE_AUTO_LOITER:
+                            gcs_set_cmd(CMD_Pause);
                             break;
                         case PX4_CUSTOM_SUB_MODE_AUTO_MISSION:
                             gcs_set_mode(PilotMode_Mission);
@@ -292,6 +299,15 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         }
     } break;
 
+    case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+    case MAVLINK_MSG_ID_MISSION_COUNT:
+    case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
+    case MAVLINK_MSG_ID_MISSION_ITEM_INT:
+    case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
+    case MAVLINK_MSG_ID_MISSION_ACK:
+        handle_mission_message(msg);
+        break;
+
 #if defined(FMT_USING_HIL)
     case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
@@ -348,7 +364,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #endif
 
     default: {
-        // console_printf("unknown mavlink msg:%d\n", msg->msgid);
+        console_printf("unknown mavlink msg:%d\n", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }

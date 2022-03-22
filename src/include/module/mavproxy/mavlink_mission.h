@@ -14,27 +14,14 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef FIFO_H__
-#define FIFO_H__
-
-#include <stdint.h>
+#ifndef MAVLINK_MISSION_H__
+#define MAVLINK_MISSION_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct {
-	uint32_t size;
-	uint32_t head;
-	uint32_t cnt;
-	float* data;
-} FIFO;
-
-uint8_t fifo_create(FIFO* fifo, uint16_t size);
-void fifo_flush(FIFO* fifo);
-void fifo_push(FIFO* fifo, float val);
-float fifo_pop(FIFO* fifo);
-float fifo_read_back(FIFO* fifo, uint16_t offset);
+void handle_mission_message(mavlink_message_t* msg);
 
 #ifdef __cplusplus
 }

@@ -17,157 +17,143 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/utils/ringbuffer.h"
 #include "module/console/console.h"
+#include "module/utils/ringbuffer.h"
 
 ringbuffer* ringbuffer_create(uint32_t size)
 {
-	ringbuffer* rb = (ringbuffer*)rt_malloc(sizeof(ringbuffer));
+    ringbuffer* rb = (ringbuffer*)rt_malloc(sizeof(ringbuffer));
+    if (rb == NULL) {
+        return NULL;
+    }
 
-	if(rb == NULL) {
-		console_printf("ringbuffer_create fail\r\n");
-		return NULL;
-	}
+    rb->buff = (uint8_t*)rt_malloc(size);
+    if (rb->buff == NULL) {
+        rt_free(rb);
+        return NULL;
+    }
 
-	rb->buff = (uint8_t*)rt_malloc(size);
+    rb->size = size;
+    rb->head = 0;
+    rb->tail = 0;
+    rb->static_flag = 0;
 
-	if(rb->buff == NULL) {
-		console_printf("ringbuffer_create fail\r\n");
-		return NULL;
-	}
-
-	rb->size = size;
-	rb->head = 0;
-	rb->tail = 0;
-	rb->static_flag = 0;
-
-	return rb;
+    return rb;
 }
 
-ringbuffer* ringbuffer_static_create(uint8_t* buffer, uint32_t size)
+ringbuffer* ringbuffer_static_create(uint32_t size, uint8_t* buffer)
 {
-	ringbuffer* rb = (ringbuffer*)rt_malloc(sizeof(ringbuffer));
+    ringbuffer* rb = (ringbuffer*)rt_malloc(sizeof(ringbuffer));
+    if (rb == NULL) {
+        return rb;
+    }
 
-	if(rb == NULL) {
-		console_printf("ringbuffer_static_create fail\r\n");
-		return NULL;
-	}
+    rb->buff = buffer;
+    rb->size = size;
+    rb->head = 0;
+    rb->tail = 0;
+    rb->static_flag = 1;
 
-	rb->buff = buffer;
-
-	rb->size = size;
-	rb->head = 0;
-	rb->tail = 0;
-	rb->static_flag = 1;
-
-	return rb;
+    return rb;
 }
 
 void ringbuffer_delete(ringbuffer* rb)
 {
-	if(!rb->static_flag)
-		rt_free(rb->buff);
+    if (rb->static_flag != 0)
+        rt_free(rb->buff);
 
-	rt_free(rb);
+    rt_free(rb);
 }
 
 uint32_t ringbuffer_getlen(ringbuffer* rb)
 {
-	uint32_t len;
+    uint32_t len;
 
-	OS_ENTER_CRITICAL;
+    OS_ENTER_CRITICAL;
+    if (rb->head >= rb->tail)
+        len = rb->head - rb->tail;
+    else
+        len = rb->head + (rb->size - rb->tail);
+    OS_EXIT_CRITICAL;
 
-	if(rb->head >= rb->tail)
-		len = rb->head - rb->tail;
-	else
-		len = rb->head + (rb->size - rb->tail);
-
-	OS_EXIT_CRITICAL;
-
-	return len;
+    return len;
 }
 
 uint8_t ringbuffer_putc(ringbuffer* rb, uint8_t c)
 {
-	OS_ENTER_CRITICAL;
+    OS_ENTER_CRITICAL;
+    if ((rb->head + 1) % rb->size == rb->tail) {
+        OS_EXIT_CRITICAL;
+        return 0;
+    }
 
-	if((rb->head + 1) % rb->size == rb->tail) {
-		OS_EXIT_CRITICAL;
-		return 0;
-	}
+    rb->buff[rb->head] = c;
+    rb->head = (rb->head + 1) % rb->size;
+    OS_EXIT_CRITICAL;
 
-	rb->buff[rb->head] = c;
-	rb->head = (rb->head + 1) % rb->size;
-	OS_EXIT_CRITICAL;
-
-	return 1;
+    return 1;
 }
 
 uint8_t ringbuffer_getc(ringbuffer* rb)
 {
-	uint8_t c;
+    uint8_t c;
 
-	OS_ENTER_CRITICAL;
-	c = rb->buff[rb->tail];
-	rb->tail = (rb->tail + 1) % rb->size;
-	OS_EXIT_CRITICAL;
+    OS_ENTER_CRITICAL;
+    c = rb->buff[rb->tail];
+    rb->tail = (rb->tail + 1) % rb->size;
+    OS_EXIT_CRITICAL;
 
-	return c;
+    return c;
 }
 
-uint32_t ringbuffer_get(ringbuffer* rb, uint8_t* buffer, uint32_t len)
+uint32_t ringbuffer_get(ringbuffer* rb, uint8_t* ptr, uint32_t len)
 {
-	uint32_t r_len, buffer_len;
+    uint32_t r_len, buffer_len;
 
-	/* check if there are enough data to read */
-	buffer_len = ringbuffer_getlen(rb);
-	r_len = buffer_len < len ? buffer_len : len;
+    /* check if there are enough data to read */
+    buffer_len = ringbuffer_getlen(rb);
+    r_len = buffer_len < len ? buffer_len : len;
 
-	OS_ENTER_CRITICAL;
+    OS_ENTER_CRITICAL;
+    for (uint32_t i = 0; i < r_len; i++) {
+        ptr[i] = rb->buff[rb->tail];
+        rb->tail = (rb->tail + 1) % rb->size;
+    }
+    OS_EXIT_CRITICAL;
 
-	for(uint32_t i = 0 ; i < r_len ; i++) {
-		buffer[i] = rb->buff[rb->tail];
-		rb->tail = (rb->tail + 1) % rb->size;
-	}
-
-	OS_EXIT_CRITICAL;
-
-	return r_len;
+    return r_len;
 }
 
-uint32_t ringbuffer_put(ringbuffer* rb, const uint8_t* buffer, uint32_t len)
+uint32_t ringbuffer_put(ringbuffer* rb, const uint8_t* ptr, uint32_t len)
 {
-	uint32_t w_len, buffer_len;
-	uint32_t free_space;
-	uint32_t space_to_end;
+    uint32_t w_len, buffer_len;
+    uint32_t free_space;
+    uint32_t space_to_end;
 
-	/* check if there are enough space to write */
-	buffer_len = ringbuffer_getlen(rb);
-	free_space = rb->size - buffer_len;
-	w_len = (len <= free_space) ? len : free_space;
+    /* check if there are enough space to write */
+    buffer_len = ringbuffer_getlen(rb);
+    free_space = rb->size - buffer_len;
+    w_len = (len <= free_space) ? len : free_space;
 
-	OS_ENTER_CRITICAL;
+    OS_ENTER_CRITICAL;
+    space_to_end = rb->size - rb->head;
 
-	space_to_end = rb->size - rb->head;
+    if (w_len <= space_to_end) {
+        memcpy(&rb->buff[rb->head], ptr, w_len);
+    } else {
+        memcpy(&rb->buff[rb->head], ptr, space_to_end);
+        memcpy(rb->buff, &ptr[space_to_end], w_len - space_to_end);
+    }
 
-	if(w_len <= space_to_end) {
-		memcpy(&rb->buff[rb->head], buffer, w_len);
-	} else {
-		memcpy(&rb->buff[rb->head], buffer, space_to_end);
-		memcpy(rb->buff, &buffer[space_to_end], w_len - space_to_end);
-	}
+    rb->head = (rb->head + w_len) % rb->size;
+    OS_EXIT_CRITICAL;
 
-	rb->head = (rb->head + w_len) % rb->size;
-
-	OS_EXIT_CRITICAL;
-
-	return w_len;
+    return w_len;
 }
 
 void ringbuffer_flush(ringbuffer* rb)
 {
-	OS_ENTER_CRITICAL;
-	rb->head = rb->tail = 0;
-	OS_EXIT_CRITICAL;
+    OS_ENTER_CRITICAL;
+    rb->head = rb->tail = 0;
+    OS_EXIT_CRITICAL;
 }
-

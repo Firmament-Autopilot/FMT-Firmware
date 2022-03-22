@@ -24,6 +24,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/gcs_cmd.h"
+#include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
 #include "task/task_logger.h"
@@ -69,6 +70,7 @@ void task_vehicle_entry(void* parameter)
 #endif
                 pilot_cmd_collect();
                 gcs_cmd_collect();
+                mission_data_collect();
 
 #ifdef FMT_USING_SIH
                 /* run Plant model */

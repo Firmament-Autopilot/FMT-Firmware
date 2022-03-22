@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.701
+ * Model version                  : 1.752
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug 21 08:42:01 2021
+ * C/C++ source code generated on : Tue Mar 22 09:43:31 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,8 +18,9 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Plant_T Plant_ConstB = {
-  1.9966471868221032,                  /* '<S89>/Subtract1' */
-  0.00669438499958795,                 /* '<S89>/Product1' */
+  1.9966471893352524,                  /* '<S89>/Sum' */
+  0.0066943799901413165,               /* '<S89>/Multiply3' */
+  0.99330562000985867,                 /* '<S89>/Sum4' */
   1.9966471868221032,                  /* '<S31>/Subtract1' */
   0.00669438499958795,                 /* '<S31>/Product1' */
 

@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.877
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Dec 23 16:49:46 2021
+ * C/C++ source code generated on : Tue Mar 22 09:47:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -55,28 +55,27 @@ typedef struct {
   /* actuator command, e.g, pwm command for motors */
   uint16_T actuator_cmd[16];
 
-  /* Vehicle Status:
-     0: Unknown
-     1: Disarm
-     2: Standby
-     3: Arm
-     4: Takeoff
-     5: Land
-     6: RTL */
+  /* enum of VehicleStatus */
   uint8_T status;
 
-  /* Control Mode:
-     0: Unknown
-     1: Manual
-     2: Acro
-     3: Stabilize
-     4: ALTCTL
-     5: POSCTL */
-  uint8_T mode;
+  /* enum of VehicleState */
+  uint8_T state;
   uint8_T ctrl_mode;
 
   /* reset the controller */
   uint8_T reset;
+
+  /* enum of PilotMode */
+  uint8_T mode;
+
+  /* enum of PilotMode */
+  uint8_T reserved1;
+
+  /* enum of PilotMode */
+  uint8_T wp_consume;
+
+  /* enum of PilotMode */
+  uint8_T wp_current;
 } FMS_Out_Bus;
 
 #endif
@@ -99,12 +98,13 @@ typedef struct {
   real32_T vn;
   real32_T ve;
   real32_T vd;
-
-  /* padding */
   real32_T reserved;
-  real_T lon;
   real_T lat;
+  real_T lon;
   real_T alt;
+  real_T lat_0;
+  real_T lon_0;
+  real_T alt_0;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;
