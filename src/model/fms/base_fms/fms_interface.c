@@ -49,6 +49,9 @@ static param_t __param_list[] = {
     PARAM_FLOAT(YAW_P, 2.5),
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6),
+    PARAM_FLOAT(L1, 10.0),
+    PARAM_FLOAT(CRUISE_SPEED, 5.0),
+    PARAM_FLOAT(TAKEOFF_H, 1.5),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -153,6 +156,9 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_P), &FMS_PARAM.YAW_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_RATE_LIM), &FMS_PARAM.YAW_RATE_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_PITCH_LIM), &FMS_PARAM.ROLL_PITCH_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, L1), &FMS_PARAM.L1));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_H), &FMS_PARAM.TAKEOFF_H));
 }
 
 void fms_interface_step(uint32_t timestamp)

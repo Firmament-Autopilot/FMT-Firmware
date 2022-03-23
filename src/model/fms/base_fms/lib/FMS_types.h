@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1668
+ * Model version                  : 1.1679
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:46:51 2022
+ * C/C++ source code generated on : Tue Mar 22 16:04:04 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -372,8 +372,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_5vUBwe4VfGkNikzOx8lYKF_
-#define DEFINED_TYPEDEF_FOR_struct_5vUBwe4VfGkNikzOx8lYKF_
+#ifndef DEFINED_TYPEDEF_FOR_struct_uudoY3KKhhekMiesgAnP2G_
+#define DEFINED_TYPEDEF_FOR_struct_uudoY3KKhhekMiesgAnP2G_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -387,7 +387,10 @@ typedef struct {
   real32_T YAW_P;
   real32_T YAW_RATE_LIM;
   real32_T ROLL_PITCH_LIM;
-} struct_5vUBwe4VfGkNikzOx8lYKF;
+  real32_T L1;
+  real32_T TAKEOFF_H;
+  real32_T CRUISE_SPEED;
+} struct_uudoY3KKhhekMiesgAnP2G;
 
 #endif
 

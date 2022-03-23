@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1668
+ * Model version                  : 1.1679
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:46:51 2022
+ * C/C++ source code generated on : Tue Mar 22 16:04:04 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -112,6 +112,8 @@ typedef struct {
   real_T href;                         /* '<Root>/FMS State Machine' */
   real_T psio;                         /* '<Root>/FMS State Machine' */
   real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
+  real32_T xy_R[2];                    /* '<Root>/FMS State Machine' */
+  real32_T Reshape[3];                 /* '<S326>/Reshape' */
   real32_T DataTypeConversion[3];      /* '<S325>/Data Type Conversion' */
   real32_T Merge[2];                   /* '<S93>/Merge' */
   real32_T Merge_k;                    /* '<S69>/Merge' */
@@ -132,7 +134,7 @@ typedef struct {
   uint8_T wp_consume;                  /* '<Root>/FMS State Machine' */
   uint8_T wp_index;                    /* '<Root>/FMS State Machine' */
   boolean_T LogicalOperator1;          /* '<S6>/Logical Operator1' */
-  boolean_T Compare;                   /* '<S337>/Compare' */
+  boolean_T Compare;                   /* '<S338>/Compare' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -145,8 +147,8 @@ typedef struct {
   void* M_msgInterface;                /* '<Root>/FMS State Machine' */
   void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S339>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S340>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S340>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S341>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE;         /* '<S49>/Integrator1' */
   real32_T Integrator_DSTATE;          /* '<S49>/Integrator' */
   real32_T Integrator1_DSTATE_o;       /* '<S50>/Integrator1' */
@@ -214,8 +216,8 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_bn;/* '<S221>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_k; /* '<S287>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_g; /* '<S277>/Switch Case' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S339>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S340>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S340>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S341>/Discrete-Time Integrator5' */
   uint8_T is_active_c3_FMS;            /* '<Root>/Mode Degrade' */
   uint8_T is_c3_FMS;                   /* '<Root>/Mode Degrade' */
   uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
@@ -325,9 +327,9 @@ typedef struct {
 
 /* Invariant block signals for system '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 typedef struct {
-  const real_T Sum;                    /* '<S328>/Sum' */
-  const real_T ff;                     /* '<S328>/Multiply3' */
-  const real_T Sum4;                   /* '<S328>/Sum4' */
+  const real_T Sum;                    /* '<S329>/Sum' */
+  const real_T ff;                     /* '<S329>/Multiply3' */
+  const real_T Sum4;                   /* '<S329>/Sum4' */
 } ConstB_VehicleArmAutoMissionL_T;
 
 /* Invariant block signals (default storage) */
@@ -470,8 +472,11 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_uudoY3KKhhekMiesgAnP2G FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
+                                                *   '<S326>/Constant'
+                                                *   '<S130>/L1'
+                                                *   '<S205>/L1'
                                                 *   '<S34>/Gain'
                                                 *   '<S34>/Gain1'
                                                 *   '<S108>/Gain'
@@ -495,10 +500,12 @@ extern struct_5vUBwe4VfGkNikzOx8lYKF FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S117>/Saturation'
                                                 *   '<S151>/Gain'
                                                 *   '<S151>/Saturation1'
+                                                *   '<S152>/vel'
                                                 *   '<S211>/Saturation1'
                                                 *   '<S221>/Saturation'
                                                 *   '<S233>/Saturation1'
                                                 *   '<S247>/Gain2'
+                                                *   '<S269>/vel'
                                                 *   '<S39>/Gain2'
                                                 *   '<S40>/Gain1'
                                                 *   '<S45>/Constant'
@@ -608,7 +615,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S307>/Data Type Duplicate' : Unused code path elimination
  * Block '<S308>/Data Type Duplicate' : Unused code path elimination
  * Block '<S314>/Data Type Duplicate' : Unused code path elimination
- * Block '<S341>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S342>/FixPt Data Type Duplicate' : Unused code path elimination
  * Block '<S154>/Reshape' : Reshape block reduction
  * Block '<S135>/Reshape' : Reshape block reduction
  * Block '<S135>/Reshape1' : Reshape block reduction
@@ -622,7 +629,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S20>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S3>/Signal Copy3' : Eliminate redundant signal conversion block
  * Block '<S325>/Signal Conversion' : Eliminate redundant signal conversion block
- * Block '<S339>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S340>/Data Type Conversion' : Eliminate redundant data type conversion
  */
 
 /*-
@@ -965,22 +972,23 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S323>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Target Position'
  * '<S324>' : 'FMS/FMS Commander/Arm/SubMode/Takeoff/Track Position/Psi To DCM/Rotation Matrix Z'
  * '<S325>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
- * '<S326>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
- * '<S327>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
- * '<S328>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
- * '<S329>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
- * '<S330>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
- * '<S331>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
- * '<S332>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
- * '<S333>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
- * '<S334>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
- * '<S335>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
- * '<S336>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
- * '<S337>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
- * '<S338>' : 'FMS/Onground Check/Compare To Constant'
- * '<S339>' : 'FMS/Onground Check/First Order LPF'
- * '<S340>' : 'FMS/Onground Check/First Order LPF2'
- * '<S341>' : 'FMS/Onground Check/Interval Test'
+ * '<S326>' : 'FMS/FMS State Machine/Vehicle.PrepTakeoff'
+ * '<S327>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
+ * '<S328>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
+ * '<S329>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
+ * '<S330>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
+ * '<S331>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
+ * '<S332>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
+ * '<S333>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
+ * '<S334>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
+ * '<S335>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
+ * '<S336>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
+ * '<S337>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
+ * '<S338>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
+ * '<S339>' : 'FMS/Onground Check/Compare To Constant'
+ * '<S340>' : 'FMS/Onground Check/First Order LPF'
+ * '<S341>' : 'FMS/Onground Check/First Order LPF2'
+ * '<S342>' : 'FMS/Onground Check/Interval Test'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 
