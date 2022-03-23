@@ -32,6 +32,30 @@ MCN_DECLARE(sensor_optflow);
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 
+/* define parameters */
+static param_t __param_list[] = {
+    PARAM_FLOAT(GPS_HOR_Q_BIAS, 3),
+    PARAM_FLOAT(GPS_HOR_Q_SCALE, 0.4),
+    PARAM_FLOAT(GPS_VER_Q_BIAS, 6),
+    PARAM_FLOAT(GPS_VER_Q_SCALE, 0.25),
+    PARAM_FLOAT(GPS_VEL_Q_BIAS, 0.8),
+    PARAM_FLOAT(GPS_VEL_Q_SCALE, 2),
+    PARAM_FLOAT(ATT_CORR_GAIN, 0.2),
+    PARAM_FLOAT(HEADING_CORR_GAIN, 0.05),
+    PARAM_FLOAT(MAG_CORR_GAIN, 0.2),
+    PARAM_FLOAT(BIAS_G_CORR_GAIN, 0.25),
+    PARAM_FLOAT(GPS_POS_CORR_GAIN, 0),
+    PARAM_FLOAT(GPS_VEL_CORR_GAIN, 2),
+    PARAM_FLOAT(GPS_BIAS_A_CORR_GAIN, 1),
+    PARAM_UINT32(GPS_POS_DELAY, 150),
+    PARAM_UINT32(GPS_VEL_DELAY, 100),
+    PARAM_FLOAT(BARO_H_CORR_GAIN, 2),
+    PARAM_FLOAT(BARO_VZ_CORR_GAIN, 1),
+    PARAM_FLOAT(BARO_BIAS_AZ_CORR_GAIN, 0.2),
+    PARAM_UINT32(BARO_H_DELAY, 10),
+};
+PARAM_GROUP_DEFINE(INS, __param_list);
+
 /* define log data */
 static mlog_elem_t IMU_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
@@ -193,6 +217,29 @@ static void mlog_start_cb(void)
     optflow_data_updated = 1;
 }
 
+static void init_parameter(void)
+{
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_HOR_Q_BIAS), &INS_PARAM.GPS_HOR_Q_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_HOR_Q_SCALE), &INS_PARAM.GPS_HOR_Q_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VER_Q_BIAS), &INS_PARAM.GPS_VER_Q_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VER_Q_SCALE), &INS_PARAM.GPS_VER_Q_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_Q_BIAS), &INS_PARAM.GPS_VEL_Q_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_Q_SCALE), &INS_PARAM.GPS_VEL_Q_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ATT_CORR_GAIN), &INS_PARAM.ATT_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, HEADING_CORR_GAIN), &INS_PARAM.HEADING_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, MAG_CORR_GAIN), &INS_PARAM.MAG_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BIAS_G_CORR_GAIN), &INS_PARAM.BIAS_G_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_CORR_GAIN), &INS_PARAM.GPS_POS_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_CORR_GAIN), &INS_PARAM.GPS_VEL_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_BIAS_A_CORR_GAIN), &INS_PARAM.GPS_BIAS_A_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_DELAY), &INS_PARAM.GPS_POS_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_DELAY), &INS_PARAM.GPS_VEL_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_CORR_GAIN), &INS_PARAM.BARO_H_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_VZ_CORR_GAIN), &INS_PARAM.BARO_VZ_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_BIAS_AZ_CORR_GAIN), &INS_PARAM.BARO_BIAS_AZ_CORR_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_DELAY), &INS_PARAM.BARO_H_DELAY));
+}
+
 void ins_interface_step(uint32_t timestamp)
 {
     /* get sensor data */
@@ -351,4 +398,6 @@ void ins_interface_init(void)
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     INS_init();
+
+    init_parameter();
 }
