@@ -78,7 +78,7 @@ static void disp_param(param_t* p)
     if (p == NULL)
         return;
 
-    console_printf("%16s: ", p->name);
+    console_printf("%25s: ", p->name);
 
     switch (p->type) {
     case PARAM_TYPE_INT8:
