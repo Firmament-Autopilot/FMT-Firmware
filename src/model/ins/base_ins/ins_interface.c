@@ -201,7 +201,20 @@ static int ins_output_echo(void* param)
 
     mcn_copy_from_hub((McnHub*)param, &ins_out);
 
-    console_printf("euler angle(deg) %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
+    printf("timestamp:%u\n", ins_out.timestamp);
+    printf("attitude: %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
+    printf("gyro: %.2f %.2f %.2f\n", RAD2DEG(ins_out.p), RAD2DEG(ins_out.q), RAD2DEG(ins_out.r));
+    printf("accel: %.2f %.2f %.2f\n", ins_out.ax, ins_out.ay, ins_out.az);
+    printf("vel: %.2f %.2f %.2f\n", ins_out.vn, ins_out.ve, ins_out.vd);
+    printf("xyh, h_AGL: %.2f %.2f %.2f, %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);
+    printf("LLA: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt);
+    printf("LLA0: %lf %lf %f\n", ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
+    printf("standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
+        BIT(ins_out.flag, 1) > 0, BIT(ins_out.flag, 2) > 0, BIT(ins_out.flag, 3) > 0, BIT(ins_out.flag, 4) > 0,
+        BIT(ins_out.flag, 5) > 0, BIT(ins_out.flag, 6) > 0, BIT(ins_out.flag, 7) > 0, BIT(ins_out.flag, 8) > 0);
+    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0,
+        BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+    printf("------------------------------------------\n");
 
     return 0;
 }
