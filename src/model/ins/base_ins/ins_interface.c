@@ -201,7 +201,7 @@ static int ins_output_echo(void* param)
 
     mcn_copy_from_hub((McnHub*)param, &ins_out);
 
-    console_printf("euler angle(deg) %.2f %.2f %.2f\n", RAF2DEG(ins_out.phi), RAF2DEG(ins_out.theta), RAF2DEG(ins_out.psi));
+    console_printf("euler angle(deg) %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
 
     return 0;
 }
