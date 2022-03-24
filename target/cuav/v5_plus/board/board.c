@@ -436,7 +436,12 @@ void bsp_initialize(void)
     RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
     RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
-    drv_ist8310_init("i2c1_dev1", "mag0");
+
+    /* if no gps mag then use onboard mag */
+    if (drv_ist8310_init("i2c1_dev1", "mag0") != FMT_EOK) {
+        RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
+    }
+
     RT_CHECK(gps_m8n_init("serial3", "gps"));
 
     /* register sensor to sensor hub */
