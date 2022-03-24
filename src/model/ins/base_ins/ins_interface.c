@@ -204,8 +204,8 @@ static int ins_output_echo(void* param)
     mcn_copy_from_hub((McnHub*)param, &ins_out);
 
     printf("timestamp:%u\n", ins_out.timestamp);
-    printf("attitude: %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
-    printf("gyro: %.2f %.2f %.2f\n", RAD2DEG(ins_out.p), RAD2DEG(ins_out.q), RAD2DEG(ins_out.r));
+    printf("att: %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
+    printf("rate: %.2f %.2f %.2f\n", ins_out.p, ins_out.q, ins_out.r);
     printf("accel: %.2f %.2f %.2f\n", ins_out.ax, ins_out.ay, ins_out.az);
     printf("vel: %.2f %.2f %.2f\n", ins_out.vn, ins_out.ve, ins_out.vd);
     printf("xyh, h_AGL: %.2f %.2f %.2f, %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);

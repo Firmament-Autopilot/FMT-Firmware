@@ -134,7 +134,75 @@ static int GCS_Cmd_ID;
 static int Mission_Data_ID;
 static int FMS_Out_ID;
 
+static char* fms_status[] = {
+    "None",
+    "Disarm",
+    "Standby",
+    "Arm"
+};
+
+static char* fms_state[] = {
+    "None",
+    "Disarm",
+    "Standby",
+    "Offboard",
+    "Mission",
+    "InvalidAutoMode",
+    "Hold",
+    "Acro",
+    "Stabilize",
+    "Altitude",
+    "Position",
+    "InvalidAssistMode",
+    "Manual",
+    "InValidManualMode",
+    "InvalidArmMode",
+    "Land",
+    "Return",
+    "Takeoff"
+};
+
+static char* fms_ctrl_mode[] = {
+    "None",
+    "Manual",
+    "Acro",
+    "Stabilize",
+    "ALTCTL",
+    "POSCTL"
+};
+
+static char* fms_mode[] = {
+    "None",
+    "Manual",
+    "Acro",
+    "Stabilize",
+    "Altitude",
+    "Position",
+    "Mission",
+    "Offboard"
+};
+
 fmt_model_info_t fms_model_info;
+
+static int fms_output_echo(void* param)
+{
+    FMS_Out_Bus fms_out;
+
+    mcn_copy_from_hub((McnHub*)param, &fms_out);
+
+    printf("timestamp:%u\n", fms_out.timestamp);
+    printf("rate cmd: %.2f %.2f %.2f\n", fms_out.p_cmd, fms_out.q_cmd, fms_out.r_cmd);
+    printf("att cmd: %.2f %.2f %.2f\n", fms_out.phi_cmd, fms_out.theta_cmd, fms_out.psi_rate_cmd);
+    printf("vel cmd: %.2f %.2f %.2f\n", fms_out.u_cmd, fms_out.v_cmd, fms_out.w_cmd);
+    printf("throttle cmd: %.2f\n", fms_out.throttle_cmd);
+    printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
+    printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
+    printf("reset:%d mode:%s\n", fms_out.reset, fms_mode[fms_out.mode]);
+    printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
+    printf("------------------------------------------\n");
+
+    return 0;
+}
 
 static void mlog_start_cb(void)
 {
@@ -227,7 +295,7 @@ void fms_interface_init(void)
     fms_model_info.period = FMS_EXPORT.period;
     fms_model_info.info = (char*)FMS_EXPORT.model_info;
 
-    mcn_advertise(MCN_HUB(fms_output), NULL);
+    mcn_advertise(MCN_HUB(fms_output), fms_output_echo);
 
     pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
     gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
