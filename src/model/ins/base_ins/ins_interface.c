@@ -21,6 +21,8 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
+#define BIT(u, n)   (u & (1 << n))
+
 /* INS input bus */
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);

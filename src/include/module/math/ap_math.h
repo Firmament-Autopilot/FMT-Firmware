@@ -34,8 +34,6 @@ typedef struct {
     float z;
 } Vector3f_t;
 
-#define BIT(u, n)   (u & (1 << n))
-
 float math_rsqrt(float number);
 float math_vector_length(const float v[3]);
 float math_vector_dot(const float left[3], const float right[3]);
