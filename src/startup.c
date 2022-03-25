@@ -26,26 +26,23 @@ static rt_thread_t tid0;
 
 void assert_failed(uint8_t* file, uint32_t line)
 {
-#ifdef FMT_USING_CHECKED
     rt_hw_interrupt_disable();
 
 #ifdef FMT_USING_CM_BACKTRACE
     cm_backtrace_assert(cmb_get_sp());
 #endif
+
     while (1)
         ;
-#else
-    /* do nothing */
-    (void)file;
-    (void)line;
-#endif
 }
 
 static void assert_hook(const char* ex, const char* func, rt_size_t line)
 {
-    console_printf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
+    printf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
 
+#ifdef FMT_USING_CHECKED
     assert_failed((uint8_t*)func, (uint32_t)line);
+#endif
 }
 
 static void rt_init_thread_entry(void* parameter)
