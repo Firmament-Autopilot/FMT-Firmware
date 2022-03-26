@@ -250,10 +250,10 @@ static bool mavlink_msg_global_pos_cb(mavlink_message_t* msg_t)
         return false;
     }
 
-    hdg = (ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 180 / PI * 100;
+    hdg = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 100;
 
     mavlink_msg_global_position_int_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
-        ins_out.lat * 180 / PI * 1e7, ins_out.lon * 180 / PI * 1e7, ins_out.alt * 1e3,
+        RAD2DEG(ins_out.lat) * 1e7, RAD2DEG(ins_out.lon) * 1e7, ins_out.alt * 1e3,
         ins_out.h_R * 1e3, ins_out.vn * 10, ins_out.ve * 10, ins_out.vd * 10, hdg);
 
     return true;
@@ -270,7 +270,7 @@ static bool mavlink_msg_vfr_hud_cb(mavlink_message_t* msg_t)
     }
 
     groundspeed = sqrtf(ins_out.vn * ins_out.vn + ins_out.ve * ins_out.ve);
-    heading = (ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 180 / PI;
+    heading = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi);
 
     mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t,
         0, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);

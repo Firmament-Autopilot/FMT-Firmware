@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3588
+ * Model version                  : 1.3614
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:44:36 2022
+ * C/C++ source code generated on : Sat Mar 26 08:48:40 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -96,10 +96,52 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
 } ;                                    /* INS_Out_Bus ground */
 
 /* Exported block parameters */
+struct_m8WuITzinGYaB71fNVUvOC INS_PARAM = {
+  3.0F,
+  0.4F,
+  6.0F,
+  0.25F,
+  0.8F,
+  2.0F,
+  0.2F,
+  0.05F,
+  0.2F,
+  0.25F,
+  0.0F,
+  2.0F,
+  1.0F,
+  150U,
+  100U,
+  2.0F,
+  1.0F,
+  0.2F,
+  10U
+} ;                                    /* Variable: INS_PARAM
+                                        * Referenced by:
+                                        *   '<S307>/Constant1'
+                                        *   '<S307>/Gain2'
+                                        *   '<S308>/Constant7'
+                                        *   '<S308>/Gain3'
+                                        *   '<S309>/Constant1'
+                                        *   '<S309>/Gain2'
+                                        *   '<S69>/Gain1'
+                                        *   '<S71>/mag_correct_gain'
+                                        *   '<S184>/Gain'
+                                        *   '<S184>/Gain2'
+                                        *   '<S184>/Gain3'
+                                        *   '<S74>/Gain'
+                                        *   '<S205>/Gain'
+                                        *   '<S205>/Gain1'
+                                        *   '<S205>/Gain2'
+                                        *   '<S214>/Gain'
+                                        *   '<S214>/Gain1'
+                                        *   '<S214>/Gain2'
+                                        */
+
 struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT = {
   2U,
 
-  { 66, 97, 115, 101, 32, 73, 78, 83, 32, 118, 48, 46, 50, 46, 48, 0 }
+  { 66, 97, 115, 101, 32, 73, 78, 83, 32, 118, 48, 46, 50, 46, 49, 0 }
 } ;                                    /* Variable: INS_EXPORT
                                         * Referenced by:
                                         *   '<S4>/Constant'
@@ -576,7 +618,6 @@ Parameters_INS_T INS_P = {
   0.0F,
   -0.2F,
   0.2F,
-  0.05F,
   0.5F,
   -0.5F,
   0.0F,
@@ -595,10 +636,8 @@ Parameters_INS_T INS_P = {
   0.2F,
   1.0F,
   0.0F,
-  -0.2F,
   0.0F,
   0.002F,
-  0.25F,
   0.00174532924F,
   -0.00174532924F,
   0.002F,
@@ -670,9 +709,6 @@ Parameters_INS_T INS_P = {
   0.0F,
   1.0F,
   0.0F,
-  2.0F,
-  -1.0F,
-  0.0F,
 
   { 0.0F, 0.0F },
   0.0F,
@@ -683,18 +719,12 @@ Parameters_INS_T INS_P = {
   0.0F,
   1.0F,
   -1.0F,
-  2.0F,
-  -1.0F,
-  0.2F,
   0.0F,
   0.0F,
   0.0F,
   0.002F,
   0.5F,
   -0.5F,
-  0.0F,
-  2.0F,
-  -1.0F,
   0.0F,
   0.0F,
   0.0F,
@@ -750,17 +780,11 @@ Parameters_INS_T INS_P = {
   0.1902612F,
   288.15F,
   -0.0065F,
-  3.0F,
-  0.4F,
   1.0F,
   0.0F,
-  6.0F,
-  0.25F,
   1.0F,
   0.0F,
   0.0F,
-  0.8F,
-  2.0F,
   0.002F,
   1.0F,
   0.0F,
@@ -1362,9 +1386,9 @@ void INS_step(void)
    *  Inport: '<Root>/GPS_uBlox'
    *  Sum: '<S307>/Sum1'
    */
-  rtb_DiscreteTimeIntegrator_g = (INS_P.Constant1_Value_g - (real32_T)
+  rtb_DiscreteTimeIntegrator_g = (INS_PARAM.GPS_HOR_Q_BIAS - (real32_T)
     INS_P.Gain1_Gain_po * 4.54747351E-13F * (real32_T)INS_U.GPS_uBlox.hAcc) *
-    INS_P.Gain2_Gain_p;
+    INS_PARAM.GPS_HOR_Q_SCALE;
 
   /* Product: '<S302>/Product' incorporates:
    *  Saturate: '<S307>/Saturation1'
@@ -1380,9 +1404,9 @@ void INS_step(void)
    *  Inport: '<Root>/GPS_uBlox'
    *  Sum: '<S309>/Sum1'
    */
-  rtb_DiscreteTimeIntegrator_g = (INS_P.Constant1_Value_gm - (real32_T)
+  rtb_DiscreteTimeIntegrator_g = (INS_PARAM.GPS_VER_Q_BIAS - (real32_T)
     INS_P.Gain1_Gain_e * 4.54747351E-13F * (real32_T)INS_U.GPS_uBlox.vAcc) *
-    INS_P.Gain2_Gain_h;
+    INS_PARAM.GPS_VER_Q_SCALE;
 
   /* Product: '<S302>/Product1' incorporates:
    *  Saturate: '<S309>/Saturation1'
@@ -1398,9 +1422,9 @@ void INS_step(void)
    *  Inport: '<Root>/GPS_uBlox'
    *  Sum: '<S308>/Sum'
    */
-  rtb_Gain3 = (INS_P.Constant7_Value - (real32_T)INS_P.Gain5_Gain *
+  rtb_Gain3 = (INS_PARAM.GPS_VEL_Q_BIAS - (real32_T)INS_P.Gain5_Gain *
                4.54747351E-13F * (real32_T)INS_U.GPS_uBlox.sAcc) *
-    INS_P.Gain3_Gain_l;
+    INS_PARAM.GPS_VEL_Q_SCALE;
 
   /* DiscreteIntegrator: '<S316>/Discrete-Time Integrator1' incorporates:
    *  Constant: '<S316>/Constant'
@@ -1820,7 +1844,7 @@ void INS_step(void)
     /* Gain: '<S336>/Gain' incorporates:
      *  Trigonometry: '<S336>/Trigonometric Function2'
      */
-    rtb_VectorConcatenate_g[3] = INS_P.Gain_Gain_bo * rtb_dec_rad;
+    rtb_VectorConcatenate_g[3] = INS_P.Gain_Gain_b * rtb_dec_rad;
     rtb_VectorConcatenate_g[2] = INS_P.Constant3_Value_f;
 
     /* Trigonometry: '<S336>/Trigonometric Function' incorporates:
@@ -1955,7 +1979,7 @@ void INS_step(void)
    */
   rtb_DiscreteTimeIntegrator_g = INS_P.Constant2_Value_h - fabsf
     (INS_P.INS_CONST.wmm_inc[rtb_Saturation1_idx_1 * 17 + rtb_Saturation1_idx_0]
-     * INS_P.Gain1_Gain_od - atan2f(rtb_MathFunction[2], sqrtf(rtb_MathFunction1
+     * INS_P.Gain1_Gain_o - atan2f(rtb_MathFunction[2], sqrtf(rtb_MathFunction1
        + rtb_Gain3))) * INS_P.gain_Gain_g;
 
   /* Sum: '<S332>/Sum' incorporates:
@@ -2068,7 +2092,7 @@ void INS_step(void)
    *  Sum: '<S333>/Sum2'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE += ((rtb_DiscreteTimeIntegrator_g -
-    INS_DWork.DiscreteTimeIntegrator1_DSTATE) * INS_P.Gain_Gain_cw -
+    INS_DWork.DiscreteTimeIntegrator1_DSTATE) * INS_P.Gain_Gain_c -
     INS_P.Gain1_Gain_bn * INS_DWork.DiscreteTimeIntegrator_DSTATE) *
     INS_P.DiscreteTimeIntegrator_gainv_bm;
   if (INS_P.Constant_Value_fn > 0.0F) {
@@ -3009,7 +3033,7 @@ void INS_step(void)
   }
 
   /* Gain: '<S74>/Gain' */
-  rtb_Switch_k_idx_1 *= INS_P.Gain_Gain_o;
+  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_GAIN;
 
   /* Saturate: '<S74>/Saturation' */
   if (rtb_Switch_k_idx_1 > INS_P.Saturation_UpperSat_k) {
@@ -3040,7 +3064,7 @@ void INS_step(void)
   }
 
   /* Gain: '<S74>/Gain' */
-  rtb_Switch_k_idx_1 *= INS_P.Gain_Gain_o;
+  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_GAIN;
 
   /* Saturate: '<S74>/Saturation' */
   if (rtb_Switch_k_idx_1 > INS_P.Saturation_UpperSat_k) {
@@ -3071,7 +3095,7 @@ void INS_step(void)
   }
 
   /* Gain: '<S74>/Gain' */
-  rtb_Switch_k_idx_1 *= INS_P.Gain_Gain_o;
+  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_GAIN;
 
   /* Saturate: '<S74>/Saturation' */
   if (rtb_Switch_k_idx_1 > INS_P.Saturation_UpperSat_k) {
@@ -3284,8 +3308,7 @@ void INS_step(void)
    */
   rtb_DiscreteTimeIntegrator_dl = ((INS_DWork.Delay_8_DSTATE_l[1] *
     rtb_Gauss_to_uT[0] + INS_DWork.Delay_8_DSTATE_l[4] * rtb_Gauss_to_uT[1]) +
-    INS_DWork.Delay_8_DSTATE_l[7] * rtb_Gauss_to_uT[2]) *
-    INS_P.mag_correct_gain_Gain;
+    INS_DWork.Delay_8_DSTATE_l[7] * rtb_Gauss_to_uT[2]) * -INS_PARAM.MAG_GAIN;
 
   /* Sum: '<S68>/Sum' incorporates:
    *  Delay: '<S57>/Delay'
@@ -3297,13 +3320,13 @@ void INS_step(void)
    *  Sum: '<S72>/Sum'
    */
   rtb_dec_rad = (rtb_dec_rad * rtb_Add_n / rtb_DiscreteTimeIntegrator_g *
-                 INS_P.Gain_Gain_ok[0] + rtb_Gain_gz_idx_0) + (rtb_Delay_h ?
+                 INS_P.Gain_Gain_o[0] + rtb_Gain_gz_idx_0) + (rtb_Delay_h ?
     INS_DWork.Delay_8_DSTATE_l[2] * rtb_DiscreteTimeIntegrator_dl : 0.0F);
   rtb_Abs_idx_0 = (rtb_Abs_idx_0 * rtb_Add_n / rtb_DiscreteTimeIntegrator_g *
-                   INS_P.Gain_Gain_ok[1] + rtb_Gain_gz_idx_1) + (rtb_Delay_h ?
+                   INS_P.Gain_Gain_o[1] + rtb_Gain_gz_idx_1) + (rtb_Delay_h ?
     INS_DWork.Delay_8_DSTATE_l[5] * rtb_DiscreteTimeIntegrator_dl : 0.0F);
   rtb_Add_n = (rtb_DiscreteTimeIntegrator_m * rtb_Add_n /
-               rtb_DiscreteTimeIntegrator_g * INS_P.Gain_Gain_ok[2] +
+               rtb_DiscreteTimeIntegrator_g * INS_P.Gain_Gain_o[2] +
                (rtb_Compare_aa ? rtb_Switch_k_idx_1 : 0.0F)) + (rtb_Delay_h ?
     INS_DWork.Delay_8_DSTATE_l[8] * rtb_DiscreteTimeIntegrator_dl : 0.0F);
 
@@ -3367,10 +3390,11 @@ void INS_step(void)
   /* Gain: '<S69>/Gain1' incorporates:
    *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator1'
    */
-  rtb_dec_rad = INS_P.Gain1_Gain_j * INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0];
-  rtb_Abs_idx_0 = INS_P.Gain1_Gain_j *
+  rtb_dec_rad = INS_PARAM.BIAS_G_GAIN *
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0];
+  rtb_Abs_idx_0 = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1];
-  rtb_DiscreteTimeIntegrator_g = INS_P.Gain1_Gain_j *
+  rtb_DiscreteTimeIntegrator_g = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2];
 
   /* DiscreteIntegrator: '<S95>/Discrete-Time Integrator' incorporates:
@@ -4763,13 +4787,15 @@ void INS_step(void)
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
       rtb_Switch_er[0] = ((rtb_dec_rad + rtb_Abs_idx_0) -
-                          INS_DWork.x_delay_DSTATE_k[0U]) * INS_P.Gain3_Gain_j;
-      rtb_Switch_er[2] = INS_P.Gain_Gain_o0 * rtb_Gain_g;
-      rtb_Switch_er[4] = INS_P.Gain2_Gain_g * rtb_Gain_g;
+                          INS_DWork.x_delay_DSTATE_k[0U]) *
+        INS_PARAM.GPS_POS_GAIN;
+      rtb_Switch_er[2] = INS_PARAM.GPS_VEL_GAIN * rtb_Gain_g;
+      rtb_Switch_er[4] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_Gain_g;
       rtb_Switch_er[1] = ((rtb_Product1 + rtb_DiscreteTimeIntegrator_g) -
-                          INS_DWork.x_delay1_DSTATE[0U]) * INS_P.Gain3_Gain_j;
-      rtb_Switch_er[3] = INS_P.Gain_Gain_o0 * rtb_Gain1_k;
-      rtb_Switch_er[5] = INS_P.Gain2_Gain_g * rtb_Gain1_k;
+                          INS_DWork.x_delay1_DSTATE[0U]) *
+        INS_PARAM.GPS_POS_GAIN;
+      rtb_Switch_er[3] = INS_PARAM.GPS_VEL_GAIN * rtb_Gain1_k;
+      rtb_Switch_er[5] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_Gain1_k;
     } else {
       for (rtb_Saturation1_idx_0 = 0; rtb_Saturation1_idx_0 < 6;
            rtb_Saturation1_idx_0++) {
@@ -5105,9 +5131,9 @@ void INS_step(void)
       }
 
       /* End of Saturate: '<S205>/Saturation' */
-      rtb_dec_rad = INS_P.Gain2_Gain_a * rtb_Sum2_m;
-      rtb_Abs_idx_0 = INS_P.Gain1_Gain_o * rtb_Sum2_m;
-      rtb_DiscreteTimeIntegrator_g = INS_P.Gain_Gain_b * rtb_Sum2_m;
+      rtb_dec_rad = INS_PARAM.BARO_H_GAIN * rtb_Sum2_m;
+      rtb_Abs_idx_0 = -INS_PARAM.BARO_VZ_GAIN * rtb_Sum2_m;
+      rtb_DiscreteTimeIntegrator_g = INS_PARAM.BARO_BIAS_AZ_GAIN * rtb_Sum2_m;
     } else {
       rtb_dec_rad = INS_DWork.Delay_DSTATE_dr[0];
       rtb_Abs_idx_0 = INS_DWork.Delay_DSTATE_dr[1];
@@ -5318,10 +5344,10 @@ void INS_step(void)
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
       rtb_VectorConcatenate[0] = ((rtb_Sum2_m + rtb_DiscreteTimeIntegrator_dl) -
-        INS_DWork.h_delay_DSTATE[0U]) * INS_P.Gain1_Gain_ml;
-      rtb_VectorConcatenate[1] = INS_P.Gain_Gain_c *
+        INS_DWork.h_delay_DSTATE[0U]) * INS_PARAM.GPS_POS_GAIN;
+      rtb_VectorConcatenate[1] = INS_PARAM.GPS_VEL_GAIN *
         rtb_DiscreteTimeIntegrator_m;
-      rtb_VectorConcatenate[2] = INS_P.Gain2_Gain_k *
+      rtb_VectorConcatenate[2] = -INS_PARAM.GPS_BIAS_A_GAIN *
         rtb_DiscreteTimeIntegrator_m;
     } else {
       rtb_VectorConcatenate[0] = INS_DWork.Memory_PreviousInput_e[0];
@@ -5920,7 +5946,7 @@ void INS_step(void)
    */
   INS_Y.INS_Out.status = (((rtb_Delay_d + mul_u32_loSR(INS_P.Gain1_Gain_ap,
     INS_P.Constant_Value_lm, 30U)) + (rtb_MathFunction1 > INS_P.Constant_Value_h
-    ? (uint32_T)INS_P.Gain2_Gain_ha >> 5 : 0U)) + (rtb_LogicalOperator_i ?
+    ? (uint32_T)INS_P.Gain2_Gain_h >> 5 : 0U)) + (rtb_LogicalOperator_i ?
     (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) + (fmaxf(rtb_Product2, rtb_Sum2_by)
     > INS_P.Constant_Value_j ? (uint32_T)INS_P.Gain4_Gain_p >> 3 : 0U);
 

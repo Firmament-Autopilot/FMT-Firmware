@@ -34,6 +34,105 @@ static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
 static uint16_t mission_data_size = sizeof(data_bus.seq) / sizeof(data_bus.seq[0]);
 
+static int mission_data_echo(void* param)
+{
+    Mission_Data_Bus mission_data;
+    int i;
+
+    mcn_copy_from_hub((McnHub*)param, &mission_data);
+
+    printf("timestamp:%u\n", mission_data.timestamp);
+    printf("valid items: %d\n", mission_data.valid_items);
+
+    printf("seq: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.seq[i]);
+    }
+    printf("]\n");
+
+    printf("command: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.command[i]);
+    }
+    printf("]\n");
+
+    printf("frame: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.frame[i]);
+    }
+    printf("]\n");
+
+    printf("current: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.current[i]);
+    }
+    printf("]\n");
+
+    printf("autocontinue: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.autocontinue[i]);
+    }
+    printf("]\n");
+
+    printf("mission_type: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.mission_type[i]);
+    }
+    printf("]\n");
+
+    printf("mission_type: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.mission_type[i]);
+    }
+    printf("]\n");
+
+    printf("param1: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%.3f,", mission_data.param1[i]);
+    }
+    printf("]\n");
+
+    printf("param2: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%.3f,", mission_data.param2[i]);
+    }
+    printf("]\n");
+
+    printf("param3: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%.3f,", mission_data.param3[i]);
+    }
+    printf("]\n");
+
+    printf("param4: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%.3f,", mission_data.param4[i]);
+    }
+    printf("]\n");
+
+    printf("x: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.x[i]);
+    }
+    printf("]\n");
+
+    printf("y: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%d,", mission_data.y[i]);
+    }
+    printf("]\n");
+
+    printf("z: [");
+    for (i = 0; i < mission_data.valid_items; i++) {
+        printf("%.3f,", mission_data.z[i]);
+    }
+    printf("]\n");
+
+    printf("------------------------------------------\n");
+
+    return 0;
+}
+
 uint16_t get_mission_count(void)
 {
     return mission_count;
@@ -262,7 +361,7 @@ fmt_err_t mission_data_collect(void)
 
 fmt_err_t mission_data_init(void)
 {
-    FMT_TRY(mcn_advertise(MCN_HUB(mission_data), NULL));
+    FMT_TRY(mcn_advertise(MCN_HUB(mission_data), mission_data_echo));
 
     fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
     if (fms_out_nod == NULL) {

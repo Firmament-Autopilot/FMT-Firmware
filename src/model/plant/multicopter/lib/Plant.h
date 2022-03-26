@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.752
+ * Model version                  : 1.757
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:43:31 2022
+ * C/C++ source code generated on : Tue Mar 22 16:06:12 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,8 +45,8 @@ typedef struct {
 typedef struct {
   real_T Delay_DSTATE[225];            /* '<S82>/Delay' */
   real_T DiscreteFIRFilter_states[3];  /* '<S87>/Discrete FIR Filter' */
-  real_T Delay1_DSTATE[3];             /* '<S25>/Delay1' */
-  real_T Delay_DSTATE_a[3];            /* '<S25>/Delay' */
+  real_T Delay1_DSTATE[3];             /* '<S21>/Delay1' */
+  real_T Delay_DSTATE_a[3];            /* '<S21>/Delay' */
   real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S112>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_DSTAT_c[3];/* '<S101>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator_DSTATE[4];/* '<S107>/Discrete-Time Integrator' */
@@ -57,8 +57,8 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_DSTATE_e[3];/* '<S40>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator_DSTATE_f[3];/* '<S41>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S41>/Discrete-Time Integrator1' */
-  real32_T Rotor_Delay_states[4];      /* '<S12>/Rotor_Delay' */
-  uint32_T Delay_DSTATE_c;             /* '<S23>/Delay' */
+  real32_T Rotor_Delay_states[4];      /* '<S8>/Rotor_Delay' */
+  uint32_T Delay_DSTATE_c;             /* '<S19>/Delay' */
   uint32_T Memory1_PreviousInput;      /* '<S65>/Memory1' */
   uint32_T RandomSource_SEED_DWORK[3]; /* '<S125>/Random Source' */
   uint32_T RandomSource_STATE_DWORK[6];/* '<S125>/Random Source' */
@@ -84,15 +84,15 @@ typedef struct {
   const real_T Sum;                    /* '<S89>/Sum' */
   const real_T ff;                     /* '<S89>/Multiply3' */
   const real_T Sum4;                   /* '<S89>/Sum4' */
-  const real_T Subtract1;              /* '<S31>/Subtract1' */
-  const real_T Product1;               /* '<S31>/Product1' */
+  const real_T Subtract1;              /* '<S27>/Subtract1' */
+  const real_T Product1;               /* '<S27>/Product1' */
   const real32_T Add[9];               /* '<S124>/Add' */
   const real32_T VectorConcatenate3[3];/* '<S123>/Vector Concatenate3' */
   const real32_T VectorConcatenate3_a[3];/* '<S122>/Vector Concatenate3' */
   const real32_T Add_m[9];             /* '<S102>/Add' */
   const real32_T Add_g[9];             /* '<S113>/Add' */
   const real32_T quat0[4];             /* '<S40>/quat0' */
-  const real32_T VectorConcatenate3_e[3];/* '<S11>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3_e[3];/* '<S34>/Vector Concatenate3' */
   const uint8_T DataTypeConversion;    /* '<S77>/Data Type Conversion' */
   const uint8_T DataTypeConversion1;   /* '<S77>/Data Type Conversion1' */
 } ConstB_Plant_T;
@@ -105,7 +105,7 @@ typedef struct {
   real_T Gain4_Gain[3];
 
   /* Computed Parameter: X_Frame_CM_Value
-   * Referenced by: '<S19>/X_Frame_CM'
+   * Referenced by: '<S15>/X_Frame_CM'
    */
   real32_T X_Frame_CM_Value[12];
 
@@ -113,22 +113,22 @@ typedef struct {
    * Referenced by:
    *   '<Root>/Constant'
    *   '<S41>/Constant'
-   *   '<S12>/Rotor_Delay'
-   *   '<S13>/Constant'
-   *   '<S13>/Constant1'
+   *   '<S8>/Rotor_Delay'
+   *   '<S9>/Constant'
+   *   '<S9>/Constant1'
    *   '<S35>/Constant'
    *   '<S37>/Constant'
-   *   '<S15>/Saturation1'
+   *   '<S11>/Saturation1'
    *   '<S49>/Constant'
    *   '<S49>/Constant1'
    *   '<S49>/Constant2'
    *   '<S49>/Constant3'
    *   '<S79>/Saturation'
    *   '<S82>/Delay1'
-   *   '<S11>/Constant1'
-   *   '<S11>/Constant2'
-   *   '<S11>/Constant3'
-   *   '<S11>/Constant4'
+   *   '<S34>/Constant1'
+   *   '<S34>/Constant2'
+   *   '<S34>/Constant3'
+   *   '<S34>/Constant4'
    *   '<S74>/Limit  altitude  to Stratosphere'
    *   '<S74>/Limit  altitude  to troposhere'
    *   '<S75>/Constant3'
@@ -148,7 +148,7 @@ typedef struct {
    *   '<S123>/Constant3'
    *   '<S123>/Constant4'
    */
-  real32_T pooled15;
+  real32_T pooled14;
 
   /* Computed Parameter: Inertia_Matrix_Value
    * Referenced by: '<S40>/Inertia_Matrix'
@@ -265,7 +265,7 @@ extern const ConstP_Plant_T Plant_ConstP;
  */
 extern struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT;/* Variable: PLANT_EXPORT
                                                    * Referenced by:
-                                                   *   '<S23>/dt'
+                                                   *   '<S19>/dt'
                                                    *   '<S65>/dt'
                                                    */
 
@@ -285,7 +285,7 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * Block '<S74>/a' : Unused code path elimination
  * Block '<S74>/gamma*R' : Unused code path elimination
  * Block '<S74>/rho0' : Unused code path elimination
- * Block '<S23>/Data Type Conversion2' : Eliminate redundant data type conversion
+ * Block '<S19>/Data Type Conversion2' : Eliminate redundant data type conversion
  * Block '<S36>/Gain3' : Eliminated nontunable gain of 1
  * Block '<S36>/Reshape' : Reshape block reduction
  * Block '<S37>/Reshape1' : Reshape block reduction
@@ -331,35 +331,35 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S3>'   : 'Plant/Environment'
  * '<S4>'   : 'Plant/Kinematic_Equation'
  * '<S5>'   : 'Plant/Sensor_Model'
- * '<S6>'   : 'Plant/Actuators/Aerodynamic'
- * '<S7>'   : 'Plant/Actuators/Bus_Selection'
- * '<S8>'   : 'Plant/Actuators/Motors'
- * '<S9>'   : 'Plant/Actuators/Aerodynamic/Air_Drag'
- * '<S10>'  : 'Plant/Actuators/Aerodynamic/Air_Drag/Psi To DCM'
- * '<S11>'  : 'Plant/Actuators/Aerodynamic/Air_Drag/Psi To DCM/Rotation Matrix Z'
- * '<S12>'  : 'Plant/Actuators/Motors/ESCs'
- * '<S13>'  : 'Plant/Actuators/Motors/Force'
- * '<S14>'  : 'Plant/Actuators/Motors/Torque'
- * '<S15>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed'
- * '<S16>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed/Compare To Constant'
- * '<S17>'  : 'Plant/Actuators/Motors/Force/Rotor_Thrust'
- * '<S18>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque'
- * '<S19>'  : 'Plant/Actuators/Motors/Torque/Rotor_Torque'
- * '<S20>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product'
- * '<S21>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem'
- * '<S22>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem1'
- * '<S23>'  : 'Plant/Bus_Constructor/Counter'
- * '<S24>'  : 'Plant/Bus_Constructor/Quaternion To DCM'
- * '<S25>'  : 'Plant/Bus_Constructor/WGS84'
- * '<S26>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize'
- * '<S27>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_1'
- * '<S28>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_2'
- * '<S29>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_3'
- * '<S30>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
- * '<S31>'  : 'Plant/Bus_Constructor/WGS84/WGS84_Derivative'
- * '<S32>'  : 'Plant/Bus_Constructor/WGS84/Zero_Value_Exclusion'
- * '<S33>'  : 'Plant/Environment/Gravity'
- * '<S34>'  : 'Plant/Environment/Ground_Model'
+ * '<S6>'   : 'Plant/Actuators/Bus_Selection'
+ * '<S7>'   : 'Plant/Actuators/Motors'
+ * '<S8>'   : 'Plant/Actuators/Motors/ESCs'
+ * '<S9>'   : 'Plant/Actuators/Motors/Force'
+ * '<S10>'  : 'Plant/Actuators/Motors/Torque'
+ * '<S11>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed'
+ * '<S12>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed/Compare To Constant'
+ * '<S13>'  : 'Plant/Actuators/Motors/Force/Rotor_Thrust'
+ * '<S14>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque'
+ * '<S15>'  : 'Plant/Actuators/Motors/Torque/Rotor_Torque'
+ * '<S16>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product'
+ * '<S17>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem'
+ * '<S18>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem1'
+ * '<S19>'  : 'Plant/Bus_Constructor/Counter'
+ * '<S20>'  : 'Plant/Bus_Constructor/Quaternion To DCM'
+ * '<S21>'  : 'Plant/Bus_Constructor/WGS84'
+ * '<S22>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize'
+ * '<S23>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_1'
+ * '<S24>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_2'
+ * '<S25>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_3'
+ * '<S26>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S27>'  : 'Plant/Bus_Constructor/WGS84/WGS84_Derivative'
+ * '<S28>'  : 'Plant/Bus_Constructor/WGS84/Zero_Value_Exclusion'
+ * '<S29>'  : 'Plant/Environment/Aerodynamic'
+ * '<S30>'  : 'Plant/Environment/Gravity'
+ * '<S31>'  : 'Plant/Environment/Ground_Model'
+ * '<S32>'  : 'Plant/Environment/Aerodynamic/Air_Drag'
+ * '<S33>'  : 'Plant/Environment/Aerodynamic/Air_Drag/Psi To DCM'
+ * '<S34>'  : 'Plant/Environment/Aerodynamic/Air_Drag/Psi To DCM/Rotation Matrix Z'
  * '<S35>'  : 'Plant/Environment/Ground_Model/Compare To Zero'
  * '<S36>'  : 'Plant/Environment/Ground_Model/Ground_Force'
  * '<S37>'  : 'Plant/Environment/Ground_Model/Ground_Torque'

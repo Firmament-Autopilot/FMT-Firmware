@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3588
+ * Model version                  : 1.3614
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:44:36 2022
+ * C/C++ source code generated on : Sat Mar 26 08:48:40 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -180,6 +180,33 @@ typedef struct {
   uint32_T period;
   int8_T model_info[16];
 } struct_TYt7YeNdxIDXfczXumtXXB;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_m8WuITzinGYaB71fNVUvOC_
+#define DEFINED_TYPEDEF_FOR_struct_m8WuITzinGYaB71fNVUvOC_
+
+typedef struct {
+  real32_T GPS_HOR_Q_BIAS;
+  real32_T GPS_HOR_Q_SCALE;
+  real32_T GPS_VER_Q_BIAS;
+  real32_T GPS_VER_Q_SCALE;
+  real32_T GPS_VEL_Q_BIAS;
+  real32_T GPS_VEL_Q_SCALE;
+  real32_T ATT_GAIN;
+  real32_T HEADING_GAIN;
+  real32_T MAG_GAIN;
+  real32_T BIAS_G_GAIN;
+  real32_T GPS_POS_GAIN;
+  real32_T GPS_VEL_GAIN;
+  real32_T GPS_BIAS_A_GAIN;
+  uint32_T GPS_POS_DELAY;
+  uint32_T GPS_VEL_DELAY;
+  real32_T BARO_H_GAIN;
+  real32_T BARO_VZ_GAIN;
+  real32_T BARO_BIAS_AZ_GAIN;
+  uint32_T BARO_H_DELAY;
+} struct_m8WuITzinGYaB71fNVUvOC;
 
 #endif
 
@@ -970,9 +997,6 @@ struct Parameters_INS_T_ {
   real32_T DeadZone2_End;              /* Computed Parameter: DeadZone2_End
                                         * Referenced by: '<S74>/Dead Zone2'
                                         */
-  real32_T Gain_Gain_o;                /* Computed Parameter: Gain_Gain_o
-                                        * Referenced by: '<S74>/Gain'
-                                        */
   real32_T Saturation_UpperSat_k;      /* Computed Parameter: Saturation_UpperSat_k
                                         * Referenced by: '<S74>/Saturation'
                                         */
@@ -997,7 +1021,7 @@ struct Parameters_INS_T_ {
   real32_T Constant1_Value_n;          /* Computed Parameter: Constant1_Value_n
                                         * Referenced by: '<S80>/Constant1'
                                         */
-  real32_T Gain_Gain_ok[3];            /* Computed Parameter: Gain_Gain_ok
+  real32_T Gain_Gain_o[3];             /* Expression: [INS_PARAM.ATT_GAIN;INS_PARAM.ATT_GAIN;0]
                                         * Referenced by: '<S75>/Gain'
                                         */
   real32_T DiscreteTimeIntegrator_gainva_n;/* Computed Parameter: DiscreteTimeIntegrator_gainva_n
@@ -1024,18 +1048,12 @@ struct Parameters_INS_T_ {
   real32_T Relay1_YOff;                /* Computed Parameter: Relay1_YOff
                                         * Referenced by: '<S71>/Relay1'
                                         */
-  real32_T mag_correct_gain_Gain;      /* Computed Parameter: mag_correct_gain_Gain
-                                        * Referenced by: '<S71>/mag_correct_gain'
-                                        */
   real32_T Constant_Value_no;          /* Computed Parameter: Constant_Value_no
                                         * Referenced by: '<S95>/Constant'
                                         */
   real32_T DiscreteTimeIntegrator1_gainv_j;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_j
                                             * Referenced by: '<S95>/Discrete-Time Integrator1'
                                             */
-  real32_T Gain1_Gain_j;               /* Computed Parameter: Gain1_Gain_j
-                                        * Referenced by: '<S69>/Gain1'
-                                        */
   real32_T Saturation2_UpperSat;       /* Computed Parameter: Saturation2_UpperSat
                                         * Referenced by: '<S69>/Saturation2'
                                         */
@@ -1234,15 +1252,6 @@ struct Parameters_INS_T_ {
   real32_T Relay_YOff_f;               /* Computed Parameter: Relay_YOff_f
                                         * Referenced by: '<S114>/Relay'
                                         */
-  real32_T Gain3_Gain_j;               /* Computed Parameter: Gain3_Gain_j
-                                        * Referenced by: '<S184>/Gain3'
-                                        */
-  real32_T Gain_Gain_o0;               /* Computed Parameter: Gain_Gain_o0
-                                        * Referenced by: '<S184>/Gain'
-                                        */
-  real32_T Gain2_Gain_g;               /* Computed Parameter: Gain2_Gain_g
-                                        * Referenced by: '<S184>/Gain2'
-                                        */
   real32_T X_Next_Y0;                  /* Computed Parameter: X_Next_Y0
                                         * Referenced by: '<S181>/X_Next'
                                         */
@@ -1270,15 +1279,6 @@ struct Parameters_INS_T_ {
   real32_T Saturation_LowerSat_c;      /* Computed Parameter: Saturation_LowerSat_c
                                         * Referenced by: '<S205>/Saturation'
                                         */
-  real32_T Gain2_Gain_a;               /* Computed Parameter: Gain2_Gain_a
-                                        * Referenced by: '<S205>/Gain2'
-                                        */
-  real32_T Gain1_Gain_o;               /* Computed Parameter: Gain1_Gain_o
-                                        * Referenced by: '<S205>/Gain1'
-                                        */
-  real32_T Gain_Gain_b;                /* Computed Parameter: Gain_Gain_b
-                                        * Referenced by: '<S205>/Gain'
-                                        */
   real32_T X_Next_Y0_m;                /* Computed Parameter: X_Next_Y0_m
                                         * Referenced by: '<S202>/X_Next'
                                         */
@@ -1296,15 +1296,6 @@ struct Parameters_INS_T_ {
                                         */
   real32_T Saturation_LowerSat_e;      /* Computed Parameter: Saturation_LowerSat_e
                                         * Referenced by: '<S202>/Saturation'
-                                        */
-  real32_T Gain1_Gain_ml;              /* Computed Parameter: Gain1_Gain_ml
-                                        * Referenced by: '<S214>/Gain1'
-                                        */
-  real32_T Gain_Gain_c;                /* Computed Parameter: Gain_Gain_c
-                                        * Referenced by: '<S214>/Gain'
-                                        */
-  real32_T Gain2_Gain_k;               /* Computed Parameter: Gain2_Gain_k
-                                        * Referenced by: '<S214>/Gain2'
                                         */
   real32_T X_Next_Y0_i;                /* Computed Parameter: X_Next_Y0_i
                                         * Referenced by: '<S211>/X_Next'
@@ -1468,23 +1459,11 @@ struct Parameters_INS_T_ {
   real32_T a_Value;                    /* Computed Parameter: a_Value
                                         * Referenced by: '<S287>/a'
                                         */
-  real32_T Constant1_Value_g;          /* Computed Parameter: Constant1_Value_g
-                                        * Referenced by: '<S307>/Constant1'
-                                        */
-  real32_T Gain2_Gain_p;               /* Computed Parameter: Gain2_Gain_p
-                                        * Referenced by: '<S307>/Gain2'
-                                        */
   real32_T Saturation1_UpperSat_m;     /* Computed Parameter: Saturation1_UpperSat_m
                                         * Referenced by: '<S307>/Saturation1'
                                         */
   real32_T Saturation1_LowerSat_d;     /* Computed Parameter: Saturation1_LowerSat_d
                                         * Referenced by: '<S307>/Saturation1'
-                                        */
-  real32_T Constant1_Value_gm;         /* Computed Parameter: Constant1_Value_gm
-                                        * Referenced by: '<S309>/Constant1'
-                                        */
-  real32_T Gain2_Gain_h;               /* Computed Parameter: Gain2_Gain_h
-                                        * Referenced by: '<S309>/Gain2'
                                         */
   real32_T Saturation1_UpperSat_f;     /* Computed Parameter: Saturation1_UpperSat_f
                                         * Referenced by: '<S309>/Saturation1'
@@ -1494,12 +1473,6 @@ struct Parameters_INS_T_ {
                                         */
   real32_T Constant_Value_k;           /* Computed Parameter: Constant_Value_k
                                         * Referenced by: '<S316>/Constant'
-                                        */
-  real32_T Constant7_Value;            /* Computed Parameter: Constant7_Value
-                                        * Referenced by: '<S308>/Constant7'
-                                        */
-  real32_T Gain3_Gain_l;               /* Computed Parameter: Gain3_Gain_l
-                                        * Referenced by: '<S308>/Gain3'
                                         */
   real32_T DiscreteTimeIntegrator1_gainv_e;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_e
                                             * Referenced by: '<S316>/Discrete-Time Integrator1'
@@ -1549,7 +1522,7 @@ struct Parameters_INS_T_ {
   real32_T Gain_Gain_gg;               /* Computed Parameter: Gain_Gain_gg
                                         * Referenced by: '<S328>/Gain'
                                         */
-  real32_T Gain_Gain_bo;               /* Computed Parameter: Gain_Gain_bo
+  real32_T Gain_Gain_b;                /* Computed Parameter: Gain_Gain_b
                                         * Referenced by: '<S336>/Gain'
                                         */
   real32_T Constant3_Value_f;          /* Computed Parameter: Constant3_Value_f
@@ -1558,7 +1531,7 @@ struct Parameters_INS_T_ {
   real32_T Gauss_to_uT_Gain;           /* Computed Parameter: Gauss_to_uT_Gain
                                         * Referenced by: '<S286>/Gauss_to_uT'
                                         */
-  real32_T Gain1_Gain_od;              /* Computed Parameter: Gain1_Gain_od
+  real32_T Gain1_Gain_o;               /* Computed Parameter: Gain1_Gain_o
                                         * Referenced by: '<S331>/Gain1'
                                         */
   real32_T Constant2_Value_h;          /* Computed Parameter: Constant2_Value_h
@@ -1600,7 +1573,7 @@ struct Parameters_INS_T_ {
   real32_T DiscreteTimeIntegrator1_gainv_m;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_m
                                             * Referenced by: '<S333>/Discrete-Time Integrator1'
                                             */
-  real32_T Gain_Gain_cw;               /* Computed Parameter: Gain_Gain_cw
+  real32_T Gain_Gain_c;                /* Computed Parameter: Gain_Gain_c
                                         * Referenced by: '<S333>/Gain'
                                         */
   real32_T Gain1_Gain_bn;              /* Computed Parameter: Gain1_Gain_bn
@@ -1687,31 +1660,31 @@ struct Parameters_INS_T_ {
   uint32_T Constant_Value_mo;          /* Computed Parameter: Constant_Value_mo
                                         * Referenced by: '<S125>/Constant'
                                         */
-  uint32_T x_delay_DelayLength;        /* Expression: 150/INS_EXPORT.period
+  uint32_T x_delay_DelayLength;        /* Expression: INS_PARAM.GPS_POS_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S185>/x_delay'
                                         */
-  uint32_T x_delay1_DelayLength;       /* Expression: 150/INS_EXPORT.period
+  uint32_T x_delay1_DelayLength;       /* Expression: INS_PARAM.GPS_POS_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S185>/x_delay1'
                                         */
-  uint32_T vn_delay_DelayLength;       /* Expression: 100/INS_EXPORT.period
+  uint32_T vn_delay_DelayLength;       /* Expression: INS_PARAM.GPS_VEL_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S185>/vn_delay'
                                         */
-  uint32_T vn_delay1_DelayLength;      /* Expression: 100/INS_EXPORT.period
+  uint32_T vn_delay1_DelayLength;      /* Expression: INS_PARAM.GPS_VEL_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S185>/vn_delay1'
                                         */
   uint32_T Delay_DelayLength_fx;       /* Computed Parameter: Delay_DelayLength_fx
                                         * Referenced by: '<S204>/Delay'
                                         */
-  uint32_T x_delay_DelayLength_m;      /* Expression: 10/INS_EXPORT_VALUE.period
+  uint32_T x_delay_DelayLength_m;      /* Expression: INS_PARAM.BARO_H_DELAY/INS_EXPORT_VALUE.period
                                         * Referenced by: '<S206>/x_delay'
                                         */
   uint32_T Delay_DelayLength_d;        /* Computed Parameter: Delay_DelayLength_d
                                         * Referenced by: '<S208>/Delay'
                                         */
-  uint32_T h_delay_DelayLength;        /* Expression: 150/INS_EXPORT.period
+  uint32_T h_delay_DelayLength;        /* Expression: INS_PARAM.GPS_POS_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S215>/h_delay'
                                         */
-  uint32_T vd_delay_DelayLength;       /* Expression: 100/INS_EXPORT.period
+  uint32_T vd_delay_DelayLength;       /* Expression: INS_PARAM.GPS_VEL_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S215>/vd_delay'
                                         */
   uint32_T Delay_DelayLength_ly;       /* Computed Parameter: Delay_DelayLength_ly
@@ -1936,7 +1909,7 @@ struct Parameters_INS_T_ {
   uint8_T Gain3_Gain_f;                /* Computed Parameter: Gain3_Gain_f
                                         * Referenced by: '<S10>/Gain3'
                                         */
-  uint8_T Gain2_Gain_ha;               /* Computed Parameter: Gain2_Gain_ha
+  uint8_T Gain2_Gain_h;                /* Computed Parameter: Gain2_Gain_h
                                         * Referenced by: '<S10>/Gain2'
                                         */
 };
@@ -1975,6 +1948,27 @@ extern const INS_Out_Bus INS_rtZINS_Out_Bus;/* INS_Out_Bus ground */
  * these parameters and exports their symbols.
  *
  */
+extern struct_m8WuITzinGYaB71fNVUvOC INS_PARAM;/* Variable: INS_PARAM
+                                                * Referenced by:
+                                                *   '<S307>/Constant1'
+                                                *   '<S307>/Gain2'
+                                                *   '<S308>/Constant7'
+                                                *   '<S308>/Gain3'
+                                                *   '<S309>/Constant1'
+                                                *   '<S309>/Gain2'
+                                                *   '<S69>/Gain1'
+                                                *   '<S71>/mag_correct_gain'
+                                                *   '<S184>/Gain'
+                                                *   '<S184>/Gain2'
+                                                *   '<S184>/Gain3'
+                                                *   '<S74>/Gain'
+                                                *   '<S205>/Gain'
+                                                *   '<S205>/Gain1'
+                                                *   '<S205>/Gain2'
+                                                *   '<S214>/Gain'
+                                                *   '<S214>/Gain1'
+                                                *   '<S214>/Gain2'
+                                                */
 extern struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT;/* Variable: INS_EXPORT
                                                  * Referenced by:
                                                  *   '<S4>/Constant'

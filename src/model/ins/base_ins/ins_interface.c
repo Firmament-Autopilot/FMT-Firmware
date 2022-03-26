@@ -21,6 +21,8 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
+#define BIT(u, n)   (u & (1 << n))
+
 /* INS input bus */
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
@@ -31,6 +33,30 @@ MCN_DECLARE(sensor_optflow);
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
+
+/* define parameters */
+static param_t __param_list[] = {
+    PARAM_FLOAT(GPS_HOR_Q_BIAS, 3),
+    PARAM_FLOAT(GPS_HOR_Q_SCALE, 0.4),
+    PARAM_FLOAT(GPS_VER_Q_BIAS, 6),
+    PARAM_FLOAT(GPS_VER_Q_SCALE, 0.25),
+    PARAM_FLOAT(GPS_VEL_Q_BIAS, 0.8),
+    PARAM_FLOAT(GPS_VEL_Q_SCALE, 2),
+    PARAM_FLOAT(ATT_GAIN, 0.2),
+    PARAM_FLOAT(HEADING_GAIN, 0.05),
+    PARAM_FLOAT(MAG_GAIN, 0.2),
+    PARAM_FLOAT(BIAS_G_GAIN, 0.25),
+    PARAM_FLOAT(GPS_POS_GAIN, 0),
+    PARAM_FLOAT(GPS_VEL_GAIN, 2),
+    PARAM_FLOAT(GPS_BIAS_A_GAIN, 1),
+    PARAM_UINT32(GPS_POS_DELAY, 150),
+    PARAM_UINT32(GPS_VEL_DELAY, 100),
+    PARAM_FLOAT(BARO_H_GAIN, 2),
+    PARAM_FLOAT(BARO_VZ_GAIN, 1),
+    PARAM_FLOAT(BARO_BIAS_AZ_GAIN, 0.2),
+    PARAM_UINT32(BARO_H_DELAY, 10),
+};
+PARAM_GROUP_DEFINE(INS, __param_list);
 
 /* define log data */
 static mlog_elem_t IMU_Elems[] = {
@@ -177,7 +203,20 @@ static int ins_output_echo(void* param)
 
     mcn_copy_from_hub((McnHub*)param, &ins_out);
 
-    console_printf("euler angle(deg) %.2f %.2f %.2f\n", RAF2DEG(ins_out.phi), RAF2DEG(ins_out.theta), RAF2DEG(ins_out.psi));
+    printf("timestamp:%u\n", ins_out.timestamp);
+    printf("att: %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
+    printf("rate: %.2f %.2f %.2f\n", ins_out.p, ins_out.q, ins_out.r);
+    printf("accel: %.2f %.2f %.2f\n", ins_out.ax, ins_out.ay, ins_out.az);
+    printf("vel: %.2f %.2f %.2f\n", ins_out.vn, ins_out.ve, ins_out.vd);
+    printf("xyh, h_AGL: %.2f %.2f %.2f, %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);
+    printf("LLA: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt);
+    printf("LLA0: %lf %lf %f\n", ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
+    printf("standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
+        BIT(ins_out.flag, 1) > 0, BIT(ins_out.flag, 2) > 0, BIT(ins_out.flag, 3) > 0, BIT(ins_out.flag, 4) > 0,
+        BIT(ins_out.flag, 5) > 0, BIT(ins_out.flag, 6) > 0, BIT(ins_out.flag, 7) > 0, BIT(ins_out.flag, 8) > 0);
+    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0,
+        BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+    printf("------------------------------------------\n");
 
     return 0;
 }
@@ -191,6 +230,29 @@ static void mlog_start_cb(void)
     gps_data_updated = 1;
     rf_data_updated = 1;
     optflow_data_updated = 1;
+}
+
+static void init_parameter(void)
+{
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_HOR_Q_BIAS), &INS_PARAM.GPS_HOR_Q_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_HOR_Q_SCALE), &INS_PARAM.GPS_HOR_Q_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VER_Q_BIAS), &INS_PARAM.GPS_VER_Q_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VER_Q_SCALE), &INS_PARAM.GPS_VER_Q_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_Q_BIAS), &INS_PARAM.GPS_VEL_Q_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_Q_SCALE), &INS_PARAM.GPS_VEL_Q_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ATT_GAIN), &INS_PARAM.ATT_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, HEADING_GAIN), &INS_PARAM.HEADING_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, MAG_GAIN), &INS_PARAM.MAG_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BIAS_G_GAIN), &INS_PARAM.BIAS_G_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_GAIN), &INS_PARAM.GPS_POS_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_GAIN), &INS_PARAM.GPS_VEL_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_BIAS_A_GAIN), &INS_PARAM.GPS_BIAS_A_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_DELAY), &INS_PARAM.GPS_POS_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_DELAY), &INS_PARAM.GPS_VEL_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_GAIN), &INS_PARAM.BARO_H_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_VZ_GAIN), &INS_PARAM.BARO_VZ_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_BIAS_AZ_GAIN), &INS_PARAM.BARO_BIAS_AZ_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_DELAY), &INS_PARAM.BARO_H_DELAY));
 }
 
 void ins_interface_step(uint32_t timestamp)
@@ -351,4 +413,6 @@ void ins_interface_init(void)
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     INS_init();
+
+    init_parameter();
 }

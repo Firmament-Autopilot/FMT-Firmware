@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.752
+ * Model version                  : 1.757
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:43:31 2022
+ * C/C++ source code generated on : Tue Mar 22 16:06:12 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -21,8 +21,8 @@ const ConstB_Plant_T Plant_ConstB = {
   1.9966471893352524,                  /* '<S89>/Sum' */
   0.0066943799901413165,               /* '<S89>/Multiply3' */
   0.99330562000985867,                 /* '<S89>/Sum4' */
-  1.9966471868221032,                  /* '<S31>/Subtract1' */
-  0.00669438499958795,                 /* '<S31>/Product1' */
+  1.9966471868221032,                  /* '<S27>/Subtract1' */
+  0.00669438499958795,                 /* '<S27>/Product1' */
 
   { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S124>/Add' */
 
@@ -36,7 +36,7 @@ const ConstB_Plant_T Plant_ConstB = {
 
   { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S40>/quat0' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S11>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S34>/Vector Concatenate3' */
   3U,                                  /* '<S77>/Data Type Conversion' */
   11U                                  /* '<S77>/Data Type Conversion1' */
 };
@@ -49,7 +49,7 @@ const ConstP_Plant_T Plant_ConstP = {
   { 20.0, 20.0, 15.0 },
 
   /* Computed Parameter: X_Frame_CM_Value
-   * Referenced by: '<S19>/X_Frame_CM'
+   * Referenced by: '<S15>/X_Frame_CM'
    */
   { -1.971237E-6F, 1.971237E-6F, 1.982E-7F, 1.971237E-6F, -1.971237E-6F,
     1.982E-7F, 1.971237E-6F, 1.971237E-6F, -1.982E-7F, -1.971237E-6F,
@@ -59,22 +59,22 @@ const ConstP_Plant_T Plant_ConstP = {
    * Referenced by:
    *   '<Root>/Constant'
    *   '<S41>/Constant'
-   *   '<S12>/Rotor_Delay'
-   *   '<S13>/Constant'
-   *   '<S13>/Constant1'
+   *   '<S8>/Rotor_Delay'
+   *   '<S9>/Constant'
+   *   '<S9>/Constant1'
    *   '<S35>/Constant'
    *   '<S37>/Constant'
-   *   '<S15>/Saturation1'
+   *   '<S11>/Saturation1'
    *   '<S49>/Constant'
    *   '<S49>/Constant1'
    *   '<S49>/Constant2'
    *   '<S49>/Constant3'
    *   '<S79>/Saturation'
    *   '<S82>/Delay1'
-   *   '<S11>/Constant1'
-   *   '<S11>/Constant2'
-   *   '<S11>/Constant3'
-   *   '<S11>/Constant4'
+   *   '<S34>/Constant1'
+   *   '<S34>/Constant2'
+   *   '<S34>/Constant3'
+   *   '<S34>/Constant4'
    *   '<S74>/Limit  altitude  to Stratosphere'
    *   '<S74>/Limit  altitude  to troposhere'
    *   '<S75>/Constant3'
