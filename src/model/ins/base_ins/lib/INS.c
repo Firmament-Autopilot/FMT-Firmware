@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3609
+ * Model version                  : 1.3614
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Mar 23 16:02:05 2022
+ * C/C++ source code generated on : Sat Mar 26 08:48:40 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -96,7 +96,7 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
 } ;                                    /* INS_Out_Bus ground */
 
 /* Exported block parameters */
-struct_6GXMgmFOdlGHK6DeN0v4mB INS_PARAM = {
+struct_m8WuITzinGYaB71fNVUvOC INS_PARAM = {
   3.0F,
   0.4F,
   6.0F,
@@ -3033,7 +3033,7 @@ void INS_step(void)
   }
 
   /* Gain: '<S74>/Gain' */
-  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_CORR_GAIN;
+  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_GAIN;
 
   /* Saturate: '<S74>/Saturation' */
   if (rtb_Switch_k_idx_1 > INS_P.Saturation_UpperSat_k) {
@@ -3064,7 +3064,7 @@ void INS_step(void)
   }
 
   /* Gain: '<S74>/Gain' */
-  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_CORR_GAIN;
+  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_GAIN;
 
   /* Saturate: '<S74>/Saturation' */
   if (rtb_Switch_k_idx_1 > INS_P.Saturation_UpperSat_k) {
@@ -3095,7 +3095,7 @@ void INS_step(void)
   }
 
   /* Gain: '<S74>/Gain' */
-  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_CORR_GAIN;
+  rtb_Switch_k_idx_1 *= INS_PARAM.HEADING_GAIN;
 
   /* Saturate: '<S74>/Saturation' */
   if (rtb_Switch_k_idx_1 > INS_P.Saturation_UpperSat_k) {
@@ -3308,8 +3308,7 @@ void INS_step(void)
    */
   rtb_DiscreteTimeIntegrator_dl = ((INS_DWork.Delay_8_DSTATE_l[1] *
     rtb_Gauss_to_uT[0] + INS_DWork.Delay_8_DSTATE_l[4] * rtb_Gauss_to_uT[1]) +
-    INS_DWork.Delay_8_DSTATE_l[7] * rtb_Gauss_to_uT[2]) *
-    -INS_PARAM.MAG_CORR_GAIN;
+    INS_DWork.Delay_8_DSTATE_l[7] * rtb_Gauss_to_uT[2]) * -INS_PARAM.MAG_GAIN;
 
   /* Sum: '<S68>/Sum' incorporates:
    *  Delay: '<S57>/Delay'
@@ -3391,11 +3390,11 @@ void INS_step(void)
   /* Gain: '<S69>/Gain1' incorporates:
    *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator1'
    */
-  rtb_dec_rad = INS_PARAM.BIAS_G_CORR_GAIN *
+  rtb_dec_rad = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0];
-  rtb_Abs_idx_0 = INS_PARAM.BIAS_G_CORR_GAIN *
+  rtb_Abs_idx_0 = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1];
-  rtb_DiscreteTimeIntegrator_g = INS_PARAM.BIAS_G_CORR_GAIN *
+  rtb_DiscreteTimeIntegrator_g = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2];
 
   /* DiscreteIntegrator: '<S95>/Discrete-Time Integrator' incorporates:
@@ -4789,14 +4788,14 @@ void INS_step(void)
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
       rtb_Switch_er[0] = ((rtb_dec_rad + rtb_Abs_idx_0) -
                           INS_DWork.x_delay_DSTATE_k[0U]) *
-        INS_PARAM.GPS_POS_CORR_GAIN;
-      rtb_Switch_er[2] = INS_PARAM.GPS_VEL_CORR_GAIN * rtb_Gain_g;
-      rtb_Switch_er[4] = -INS_PARAM.GPS_BIAS_A_CORR_GAIN * rtb_Gain_g;
+        INS_PARAM.GPS_POS_GAIN;
+      rtb_Switch_er[2] = INS_PARAM.GPS_VEL_GAIN * rtb_Gain_g;
+      rtb_Switch_er[4] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_Gain_g;
       rtb_Switch_er[1] = ((rtb_Product1 + rtb_DiscreteTimeIntegrator_g) -
                           INS_DWork.x_delay1_DSTATE[0U]) *
-        INS_PARAM.GPS_POS_CORR_GAIN;
-      rtb_Switch_er[3] = INS_PARAM.GPS_VEL_CORR_GAIN * rtb_Gain1_k;
-      rtb_Switch_er[5] = -INS_PARAM.GPS_BIAS_A_CORR_GAIN * rtb_Gain1_k;
+        INS_PARAM.GPS_POS_GAIN;
+      rtb_Switch_er[3] = INS_PARAM.GPS_VEL_GAIN * rtb_Gain1_k;
+      rtb_Switch_er[5] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_Gain1_k;
     } else {
       for (rtb_Saturation1_idx_0 = 0; rtb_Saturation1_idx_0 < 6;
            rtb_Saturation1_idx_0++) {
@@ -5132,10 +5131,9 @@ void INS_step(void)
       }
 
       /* End of Saturate: '<S205>/Saturation' */
-      rtb_dec_rad = INS_PARAM.BARO_H_CORR_GAIN * rtb_Sum2_m;
-      rtb_Abs_idx_0 = -INS_PARAM.BARO_VZ_CORR_GAIN * rtb_Sum2_m;
-      rtb_DiscreteTimeIntegrator_g = INS_PARAM.BARO_BIAS_AZ_CORR_GAIN *
-        rtb_Sum2_m;
+      rtb_dec_rad = INS_PARAM.BARO_H_GAIN * rtb_Sum2_m;
+      rtb_Abs_idx_0 = -INS_PARAM.BARO_VZ_GAIN * rtb_Sum2_m;
+      rtb_DiscreteTimeIntegrator_g = INS_PARAM.BARO_BIAS_AZ_GAIN * rtb_Sum2_m;
     } else {
       rtb_dec_rad = INS_DWork.Delay_DSTATE_dr[0];
       rtb_Abs_idx_0 = INS_DWork.Delay_DSTATE_dr[1];
@@ -5346,10 +5344,10 @@ void INS_step(void)
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
       rtb_VectorConcatenate[0] = ((rtb_Sum2_m + rtb_DiscreteTimeIntegrator_dl) -
-        INS_DWork.h_delay_DSTATE[0U]) * INS_PARAM.GPS_POS_CORR_GAIN;
-      rtb_VectorConcatenate[1] = INS_PARAM.GPS_VEL_CORR_GAIN *
+        INS_DWork.h_delay_DSTATE[0U]) * INS_PARAM.GPS_POS_GAIN;
+      rtb_VectorConcatenate[1] = INS_PARAM.GPS_VEL_GAIN *
         rtb_DiscreteTimeIntegrator_m;
-      rtb_VectorConcatenate[2] = -INS_PARAM.GPS_BIAS_A_CORR_GAIN *
+      rtb_VectorConcatenate[2] = -INS_PARAM.GPS_BIAS_A_GAIN *
         rtb_DiscreteTimeIntegrator_m;
     } else {
       rtb_VectorConcatenate[0] = INS_DWork.Memory_PreviousInput_e[0];

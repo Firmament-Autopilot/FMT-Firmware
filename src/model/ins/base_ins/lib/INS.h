@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3609
+ * Model version                  : 1.3614
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Mar 23 16:02:05 2022
+ * C/C++ source code generated on : Sat Mar 26 08:48:40 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -183,8 +183,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_6GXMgmFOdlGHK6DeN0v4mB_
-#define DEFINED_TYPEDEF_FOR_struct_6GXMgmFOdlGHK6DeN0v4mB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_m8WuITzinGYaB71fNVUvOC_
+#define DEFINED_TYPEDEF_FOR_struct_m8WuITzinGYaB71fNVUvOC_
 
 typedef struct {
   real32_T GPS_HOR_Q_BIAS;
@@ -193,20 +193,20 @@ typedef struct {
   real32_T GPS_VER_Q_SCALE;
   real32_T GPS_VEL_Q_BIAS;
   real32_T GPS_VEL_Q_SCALE;
-  real32_T ATT_CORR_GAIN;
-  real32_T HEADING_CORR_GAIN;
-  real32_T MAG_CORR_GAIN;
-  real32_T BIAS_G_CORR_GAIN;
-  real32_T GPS_POS_CORR_GAIN;
-  real32_T GPS_VEL_CORR_GAIN;
-  real32_T GPS_BIAS_A_CORR_GAIN;
+  real32_T ATT_GAIN;
+  real32_T HEADING_GAIN;
+  real32_T MAG_GAIN;
+  real32_T BIAS_G_GAIN;
+  real32_T GPS_POS_GAIN;
+  real32_T GPS_VEL_GAIN;
+  real32_T GPS_BIAS_A_GAIN;
   uint32_T GPS_POS_DELAY;
   uint32_T GPS_VEL_DELAY;
-  real32_T BARO_H_CORR_GAIN;
-  real32_T BARO_VZ_CORR_GAIN;
-  real32_T BARO_BIAS_AZ_CORR_GAIN;
+  real32_T BARO_H_GAIN;
+  real32_T BARO_VZ_GAIN;
+  real32_T BARO_BIAS_AZ_GAIN;
   uint32_T BARO_H_DELAY;
-} struct_6GXMgmFOdlGHK6DeN0v4mB;
+} struct_m8WuITzinGYaB71fNVUvOC;
 
 #endif
 
@@ -1021,7 +1021,7 @@ struct Parameters_INS_T_ {
   real32_T Constant1_Value_n;          /* Computed Parameter: Constant1_Value_n
                                         * Referenced by: '<S80>/Constant1'
                                         */
-  real32_T Gain_Gain_o[3];             /* Expression: [INS_PARAM.ATT_CORR_GAIN;INS_PARAM.ATT_CORR_GAIN;0]
+  real32_T Gain_Gain_o[3];             /* Expression: [INS_PARAM.ATT_GAIN;INS_PARAM.ATT_GAIN;0]
                                         * Referenced by: '<S75>/Gain'
                                         */
   real32_T DiscreteTimeIntegrator_gainva_n;/* Computed Parameter: DiscreteTimeIntegrator_gainva_n
@@ -1948,7 +1948,7 @@ extern const INS_Out_Bus INS_rtZINS_Out_Bus;/* INS_Out_Bus ground */
  * these parameters and exports their symbols.
  *
  */
-extern struct_6GXMgmFOdlGHK6DeN0v4mB INS_PARAM;/* Variable: INS_PARAM
+extern struct_m8WuITzinGYaB71fNVUvOC INS_PARAM;/* Variable: INS_PARAM
                                                 * Referenced by:
                                                 *   '<S307>/Constant1'
                                                 *   '<S307>/Gain2'
