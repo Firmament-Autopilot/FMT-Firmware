@@ -184,28 +184,28 @@ static void update_pilot_cmd_status(void)
 
         if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1) {
             switch (pilot_cmd.cmd_1) {
-            case CMD_PreArm:
+            case FMS_Cmd_PreArm:
                 LOG_I("[FMS Cmd] PreArm");
                 break;
-            case CMD_Arm:
+            case FMS_Cmd_Arm:
                 LOG_I("[FMS Cmd] Arm");
                 break;
-            case CMD_Disarm:
+            case FMS_Cmd_Disarm:
                 LOG_I("[FMS Cmd] Disarm");
                 break;
-            case CMD_Takeoff:
+            case FMS_Cmd_Takeoff:
                 LOG_I("[FMS Cmd] Takeoff");
                 break;
-            case CMD_Land:
+            case FMS_Cmd_Land:
                 LOG_I("[FMS Cmd] Land");
                 break;
-            case CMD_Return:
+            case FMS_Cmd_Return:
                 LOG_I("[FMS Cmd] Return");
                 break;
-            case CMD_Pause:
+            case FMS_Cmd_Pause:
                 LOG_I("[FMS Cmd] Pause");
                 break;
-            case CMD_Continue:
+            case FMS_Cmd_Continue:
                 LOG_I("[FMS Cmd] Continue");
                 break;
             default:

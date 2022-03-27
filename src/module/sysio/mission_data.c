@@ -262,7 +262,7 @@ fmt_err_t mission_data_collect(void)
     if (mcn_poll(pilot_cmd_nod)) {
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &pilot_cmd);
 
-        if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1 && pilot_cmd.cmd_1 == CMD_PreArm) {
+        if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1 && pilot_cmd.cmd_1 == FMS_Cmd_PreArm) {
             /* reset mission data before armed */
             FMT_TRY(mission_data_reset());
         }
@@ -273,7 +273,7 @@ fmt_err_t mission_data_collect(void)
     if (mcn_poll(gcs_cmd_nod)) {
         mcn_copy(MCN_HUB(gcs_cmd), gcs_cmd_nod, &gcs_cmd);
 
-        if (gcs_cmd.cmd_1 != old_gcs_cmd.cmd_1 && gcs_cmd.cmd_1 == CMD_PreArm) {
+        if (gcs_cmd.cmd_1 != old_gcs_cmd.cmd_1 && gcs_cmd.cmd_1 == FMS_Cmd_PreArm) {
             /* reset mission data before armed */
             FMT_TRY(mission_data_reset());
         }

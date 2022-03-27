@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1679
+ * Model version                  : 1.1685
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 16:04:04 2022
+ * C/C++ source code generated on : Sun Mar 27 17:06:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -107,14 +107,14 @@ typedef struct {
   Commander_In_Bus Cmd_In;             /* '<Root>/FMS State Machine' */
   Pilot_Cmd_Bus BusConversion_InsertedFor_FMS_f;
   Pilot_Cmd_Bus pilot_cmd;             /* '<Root>/FMS State Machine' */
+  real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
   real_T lla[3];                       /* '<Root>/FMS State Machine' */
   real_T llo[2];                       /* '<Root>/FMS State Machine' */
   real_T href;                         /* '<Root>/FMS State Machine' */
   real_T psio;                         /* '<Root>/FMS State Machine' */
-  real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
   real32_T xy_R[2];                    /* '<Root>/FMS State Machine' */
-  real32_T Reshape[3];                 /* '<S326>/Reshape' */
   real32_T DataTypeConversion[3];      /* '<S325>/Data Type Conversion' */
+  real32_T Reshape[3];                 /* '<S326>/Reshape' */
   real32_T Merge[2];                   /* '<S93>/Merge' */
   real32_T Merge_k;                    /* '<S69>/Merge' */
   real32_T Merge_d;                    /* '<S80>/Merge' */
@@ -129,11 +129,11 @@ typedef struct {
   real32_T Merge_mv[2];                /* '<S287>/Merge' */
   real32_T Merge_mu;                   /* '<S277>/Merge' */
   VehicleState state;                  /* '<Root>/FMS State Machine' */
-  PilotMode target_mode;               /* '<Root>/Mode Degrade' */
+  PilotMode target_mode;               /* '<Root>/SafeMode' */
   FMS_Cmd Switch1;                     /* '<S8>/Switch1' */
   uint8_T wp_consume;                  /* '<Root>/FMS State Machine' */
   uint8_T wp_index;                    /* '<Root>/FMS State Machine' */
-  boolean_T LogicalOperator1;          /* '<S6>/Logical Operator1' */
+  boolean_T LogicalOperator1;          /* '<S5>/Logical Operator1' */
   boolean_T Compare;                   /* '<S338>/Compare' */
 } B_FMS_T;
 
@@ -142,8 +142,8 @@ typedef struct {
   real_T prep_takeoff;                 /* '<Root>/FMS State Machine' */
   real_T llo[2];                       /* '<Root>/FMS State Machine' */
   real_T prep_mission_takeoff;         /* '<Root>/FMS State Machine' */
-  Msg_FMS_Cmd Msg_FMS_Cmd_m[11];       /* '<Root>/FMS State Machine' */
-  Queue_FMS_Cmd Queue_FMS_Cmd_p;       /* '<Root>/FMS State Machine' */
+  Msg_FMS_Cmd Msg_FMS_Cmd_a[11];       /* '<Root>/FMS State Machine' */
+  Queue_FMS_Cmd Queue_FMS_Cmd_d;       /* '<Root>/FMS State Machine' */
   void* M_msgInterface;                /* '<Root>/FMS State Machine' */
   void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
@@ -178,12 +178,12 @@ typedef struct {
   int32_T sfEvent;                     /* '<Root>/FMS State Machine' */
   int32_T chartAbsoluteTimeCounter;    /* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_1; /* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_p;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_l;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_2; /* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_1_g;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_a;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_2_d;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_h;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_2; /* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_k;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_e;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_2_c;/* '<Root>/FMS State Machine' */
   int32_T M_qId;                       /* '<Root>/FMS State Machine' */
   uint32_T mission_timestamp_prev;     /* '<Root>/FMS State Machine' */
   uint32_T mission_timestamp_start;    /* '<Root>/FMS State Machine' */
@@ -218,8 +218,8 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_g; /* '<S277>/Switch Case' */
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S340>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S341>/Discrete-Time Integrator5' */
-  uint8_T is_active_c3_FMS;            /* '<Root>/Mode Degrade' */
-  uint8_T is_c3_FMS;                   /* '<Root>/Mode Degrade' */
+  uint8_T is_active_c3_FMS;            /* '<Root>/SafeMode' */
+  uint8_T is_c3_FMS;                   /* '<Root>/SafeMode' */
   uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
   uint8_T is_Command_Listener;         /* '<Root>/FMS State Machine' */
   uint8_T is_active_Command_Listener;  /* '<Root>/FMS State Machine' */
@@ -248,12 +248,12 @@ typedef struct {
   boolean_T br;                        /* '<Root>/FMS State Machine' */
   boolean_T M_isValid;                 /* '<Root>/FMS State Machine' */
   boolean_T condWasTrueAtLastTimeStep_1;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_g;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_n;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_c;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_e;/* '<Root>/FMS State Machine' */
   boolean_T condWasTrueAtLastTimeStep_2;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_i;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_gz;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_2_l;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_a;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_p;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_2_h;/* '<Root>/FMS State Machine' */
   DW_MoveControl_FMS_d_T MoveControl_k1;/* '<S93>/Move Control' */
   DW_HoldControl_FMS_l_T HoldControl_at;/* '<S93>/Hold Control' */
   DW_MotionState_FMS_g_T sf_MotionState_j;/* '<S81>/Motion State' */
@@ -472,7 +472,7 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_uudoY3KKhhekMiesgAnP2G FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_zsCQBAH3ZqfSCqN88JHcFH FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<S326>/Constant'
                                                 *   '<S130>/L1'
@@ -651,8 +651,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S2>'   : 'FMS/FMS Commander'
  * '<S3>'   : 'FMS/FMS Input'
  * '<S4>'   : 'FMS/FMS State Machine'
- * '<S5>'   : 'FMS/Mode Degrade'
- * '<S6>'   : 'FMS/Onground Check'
+ * '<S5>'   : 'FMS/Onground Check'
+ * '<S6>'   : 'FMS/SafeMode'
  * '<S7>'   : 'FMS/Command Process/Check Valid'
  * '<S8>'   : 'FMS/Command Process/Command Routing'
  * '<S9>'   : 'FMS/Command Process/Mode Routing'

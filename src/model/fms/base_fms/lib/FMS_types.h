@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1679
+ * Model version                  : 1.1685
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 16:04:04 2022
+ * C/C++ source code generated on : Sun Mar 27 17:06:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -173,16 +173,17 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Cmd_
 #define DEFINED_TYPEDEF_FOR_FMS_Cmd_
 
+/* enumeration of FMS command */
 typedef enum {
-  CMD_None = 0,                        /* Default value */
-  CMD_PreArm = 1000,
-  CMD_Arm,
-  CMD_Disarm,
-  CMD_Takeoff,
-  CMD_Land,
-  CMD_Return,
-  CMD_Pause,
-  CMD_Continue
+  FMS_Cmd_None = 0,                    /* Default value */
+  FMS_Cmd_PreArm = 1000,
+  FMS_Cmd_Arm,
+  FMS_Cmd_Disarm,
+  FMS_Cmd_Takeoff,
+  FMS_Cmd_Land,
+  FMS_Cmd_Return,
+  FMS_Cmd_Pause,
+  FMS_Cmd_Continue
 } FMS_Cmd;
 
 #endif
@@ -372,8 +373,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_uudoY3KKhhekMiesgAnP2G_
-#define DEFINED_TYPEDEF_FOR_struct_uudoY3KKhhekMiesgAnP2G_
+#ifndef DEFINED_TYPEDEF_FOR_struct_zsCQBAH3ZqfSCqN88JHcFH_
+#define DEFINED_TYPEDEF_FOR_struct_zsCQBAH3ZqfSCqN88JHcFH_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -388,9 +389,9 @@ typedef struct {
   real32_T YAW_RATE_LIM;
   real32_T ROLL_PITCH_LIM;
   real32_T L1;
-  real32_T TAKEOFF_H;
   real32_T CRUISE_SPEED;
-} struct_uudoY3KKhhekMiesgAnP2G;
+  real32_T TAKEOFF_H;
+} struct_zsCQBAH3ZqfSCqN88JHcFH;
 
 #endif
 

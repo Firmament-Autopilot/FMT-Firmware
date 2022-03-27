@@ -52,28 +52,28 @@ fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
     uint32_t new_cmd = cmd;
 
     switch (cmd) {
-    case CMD_PreArm:
+    case FMS_Cmd_PreArm:
         LOG_I("recv PreArm command.");
         break;
-    case CMD_Arm:
+    case FMS_Cmd_Arm:
         LOG_I("recv Arm command.");
         break;
-    case CMD_Disarm:
+    case FMS_Cmd_Disarm:
         LOG_I("recv Disarm command.");
         break;
-    case CMD_Takeoff:
+    case FMS_Cmd_Takeoff:
         LOG_I("recv Takeoff command.");
         break;
-    case CMD_Land:
+    case FMS_Cmd_Land:
         LOG_I("recv Land command.");
         break;
-    case CMD_Return:
+    case FMS_Cmd_Return:
         LOG_I("recv Return command.");
         break;
-    case CMD_Pause:
+    case FMS_Cmd_Pause:
         LOG_I("recv Pause command.");
         break;
-    case CMD_Continue:
+    case FMS_Cmd_Continue:
         LOG_I("recv Continue command.");
         break;
     default:
@@ -123,12 +123,12 @@ fmt_err_t gcs_set_mode(PilotMode mode)
 
     if ((fms_out.mode == PilotMode_Mission || fms_out.mode == PilotMode_Offboard)
         && fms_out.mode == mode && fms_out.state == VehicleState_Hold) {
-        /* When vehicle is in auto mode (mission,offboard), reset the mode would trigger CMD_Continue.
+        /* When vehicle is in auto mode (mission,offboard), reset the mode would trigger FMS_Cmd_Continue.
            e.g, When mission is paused, the vehicle would enter hold mode (state = VehicleState_Hold), 
            however, the mode is still PilotMode_Mission, so the mode would not change when user try
-           to set mode to Mission and continue. Therefore, we send CMD_Continue instead to continue
+           to set mode to Mission and continue. Therefore, we send FMS_Cmd_Continue instead to continue
            the mission mode. */
-        gcs_set_cmd(CMD_Continue);
+        gcs_set_cmd(FMS_Cmd_Continue);
     } else {
         /* For normal case, we just set the new mode. */
         ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
