@@ -208,7 +208,7 @@ static int ins_output_echo(void* param)
     printf("rate: %.2f %.2f %.2f\n", ins_out.p, ins_out.q, ins_out.r);
     printf("accel: %.2f %.2f %.2f\n", ins_out.ax, ins_out.ay, ins_out.az);
     printf("vel: %.2f %.2f %.2f\n", ins_out.vn, ins_out.ve, ins_out.vd);
-    printf("xyh, h_AGL: %.2f %.2f %.2f, %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);
+    printf("xyh: %.2f %.2f %.2f, h_AGL: %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);
     printf("LLA: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt);
     printf("LLA0: %lf %lf %f\n", ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
     printf("standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
