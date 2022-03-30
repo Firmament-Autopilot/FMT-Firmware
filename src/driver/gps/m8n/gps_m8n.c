@@ -519,7 +519,7 @@ static void gps_probe_entry(void* parameter)
     }
 
     if (i >= CONFIGURE_RETRY_MAX) {
-        console_printf("GPS configuration fail!\n");
+        printf("GPS configuration fail! Please check if GPS module has connected.");
     }
 
     rt_free(parameter);
