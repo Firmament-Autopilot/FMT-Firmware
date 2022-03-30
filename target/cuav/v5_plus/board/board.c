@@ -42,6 +42,7 @@
 #include "drv_usbd_cdc.h"
 #include "led.h"
 
+#include "default_config.h"
 #include "module/console/console_config.h"
 #include "module/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
@@ -72,29 +73,6 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
-
-static char* default_conf = STRING(
-target = "CUAV V5+"\n
-[console]\n
-	[[console.devices]]\n
-	type = "serial"\n
-	name = "serial0"\n
-	baudrate = 57600\n
-	auto-switch = true\n
-	[[console.devices]]\n
-	type = "mavlink"\n
-	name = "mav_console"\n
-	auto-switch = true\n
-[mavproxy]\n
-	[[mavproxy.devices]]\n
-	type = "serial"\n
-	name = "serial1"\n
-	baudrate = 57600\n
-    [[mavproxy.devices]]\n
-	type = "usb"\n
-	name = "usbd0"\n
-    auto-switch = true
-);
 
 static toml_table_t* __toml_root_tab = NULL;
 

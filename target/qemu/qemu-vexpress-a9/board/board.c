@@ -25,6 +25,7 @@
 #include "drv_usart.h"
 #include <drivers/mmcsd_core.h>
 
+#include "default_config.h"
 #include "module/console/console_config.h"
 #include "module/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
@@ -36,9 +37,9 @@
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
 #include "module/sysio/gcs_cmd.h"
+#include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
-#include "module/sysio/mission_data.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
@@ -61,25 +62,6 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
-
-static char* default_conf = STRING(
-target = "QEMU vexpress-a9"\n
-[console]\n
-	[[console.devices]]\n
-	type = "serial"\n
-	name = "serial0"\n
-	baudrate = 57600\n
-	auto-switch = true\n
-	[[console.devices]]\n
-	type = "mavlink"\n
-	name = "mav_console"\n
-	auto-switch = true\n
-[mavproxy]\n
-	[[mavproxy.devices]]\n
-	type = "serial"\n
-	name = "serial1"\n
-	baudrate = 115200
-);
 
 static toml_table_t* __toml_root_tab = NULL;
 

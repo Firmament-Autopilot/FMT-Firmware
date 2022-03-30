@@ -26,6 +26,7 @@
 #include <utest.h>
 #endif
 
+#include "default_config.h"
 #include "driver/gps_m8n.h"
 #include "driver/l3gd20h.h"
 #include "driver/lsm303d.h"
@@ -54,9 +55,9 @@
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
 #include "module/sysio/gcs_cmd.h"
+#include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
-#include "module/sysio/mission_data.h"
 #include "module/system/statistic.h"
 #include "module/system/systime.h"
 #include "module/task_manager/task_manager.h"
@@ -75,29 +76,6 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
-
-static char* default_conf = STRING(
-target = "Pixhawk FMUv2"\n
-[console]\n
-	[[console.devices]]\n
-	type = "serial"\n
-	name = "serial0"\n
-	baudrate = 57600\n
-	auto-switch = true\n
-	[[console.devices]]\n
-	type = "mavlink"\n
-	name = "mav_console"\n
-	auto-switch = true\n
-[mavproxy]\n
-	[[mavproxy.devices]]\n
-	type = "serial"\n
-	name = "serial1"\n
-	baudrate = 57600\n
-    [[mavproxy.devices]]\n
-	type = "usb"\n
-	name = "usbd0"\n
-    auto-switch = true
-);
 
 static toml_table_t* _toml_root_tab = NULL;
 
