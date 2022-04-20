@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1685
+ * Model version                  : 1.1691
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar 27 17:06:05 2022
+ * C/C++ source code generated on : Wed Apr 20 08:42:43 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -142,8 +142,8 @@ typedef struct {
   real_T prep_takeoff;                 /* '<Root>/FMS State Machine' */
   real_T llo[2];                       /* '<Root>/FMS State Machine' */
   real_T prep_mission_takeoff;         /* '<Root>/FMS State Machine' */
-  Msg_FMS_Cmd Msg_FMS_Cmd_a[11];       /* '<Root>/FMS State Machine' */
-  Queue_FMS_Cmd Queue_FMS_Cmd_d;       /* '<Root>/FMS State Machine' */
+  Msg_FMS_Cmd Msg_FMS_Cmd_c[11];       /* '<Root>/FMS State Machine' */
+  Queue_FMS_Cmd Queue_FMS_Cmd_p;       /* '<Root>/FMS State Machine' */
   void* M_msgInterface;                /* '<Root>/FMS State Machine' */
   void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
@@ -178,12 +178,12 @@ typedef struct {
   int32_T sfEvent;                     /* '<Root>/FMS State Machine' */
   int32_T chartAbsoluteTimeCounter;    /* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_1; /* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_g;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_h;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_2; /* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_j;/* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_1_k;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_e;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_2_c;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_2; /* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_c;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_1_n;/* '<Root>/FMS State Machine' */
+  int32_T durationLastReferenceTick_2_a;/* '<Root>/FMS State Machine' */
   int32_T M_qId;                       /* '<Root>/FMS State Machine' */
   uint32_T mission_timestamp_prev;     /* '<Root>/FMS State Machine' */
   uint32_T mission_timestamp_start;    /* '<Root>/FMS State Machine' */
@@ -248,12 +248,12 @@ typedef struct {
   boolean_T br;                        /* '<Root>/FMS State Machine' */
   boolean_T M_isValid;                 /* '<Root>/FMS State Machine' */
   boolean_T condWasTrueAtLastTimeStep_1;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_c;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_e;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_d;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_k;/* '<Root>/FMS State Machine' */
   boolean_T condWasTrueAtLastTimeStep_2;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_a;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_p;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_2_h;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_d0;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_1_h;/* '<Root>/FMS State Machine' */
+  boolean_T condWasTrueAtLastTimeStep_2_g;/* '<Root>/FMS State Machine' */
   DW_MoveControl_FMS_d_T MoveControl_k1;/* '<S93>/Move Control' */
   DW_HoldControl_FMS_l_T HoldControl_at;/* '<S93>/Hold Control' */
   DW_MotionState_FMS_g_T sf_MotionState_j;/* '<S81>/Motion State' */

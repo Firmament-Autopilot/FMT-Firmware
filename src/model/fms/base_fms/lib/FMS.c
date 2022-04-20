@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1685
+ * Model version                  : 1.1691
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar 27 17:06:05 2022
+ * C/C++ source code generated on : Wed Apr 20 08:42:43 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -55,7 +55,7 @@
 #define FMS_IN_Check                   ((uint8_T)1U)
 #define FMS_IN_Disarm                  ((uint8_T)2U)
 #define FMS_IN_Disarming               ((uint8_T)1U)
-#define FMS_IN_Hold_b                  ((uint8_T)1U)
+#define FMS_IN_Hold_h                  ((uint8_T)1U)
 #define FMS_IN_Idle                    ((uint8_T)3U)
 #define FMS_IN_InValidManualMode       ((uint8_T)1U)
 #define FMS_IN_InvalidArmMode          ((uint8_T)3U)
@@ -65,19 +65,19 @@
 #define FMS_IN_Listen                  ((uint8_T)2U)
 #define FMS_IN_Loiter                  ((uint8_T)3U)
 #define FMS_IN_Manual                  ((uint8_T)4U)
-#define FMS_IN_Manual_d                ((uint8_T)2U)
+#define FMS_IN_Manual_g                ((uint8_T)2U)
 #define FMS_IN_Mission                 ((uint8_T)2U)
 #define FMS_IN_NextWP                  ((uint8_T)4U)
 #define FMS_IN_Offboard                ((uint8_T)3U)
 #define FMS_IN_Position                ((uint8_T)4U)
 #define FMS_IN_Return                  ((uint8_T)3U)
-#define FMS_IN_Return_n                ((uint8_T)5U)
+#define FMS_IN_Return_h                ((uint8_T)5U)
 #define FMS_IN_Send                    ((uint8_T)3U)
 #define FMS_IN_Stabilize               ((uint8_T)5U)
 #define FMS_IN_Standby                 ((uint8_T)3U)
 #define FMS_IN_SubMode                 ((uint8_T)5U)
 #define FMS_IN_Takeoff                 ((uint8_T)4U)
-#define FMS_IN_Takeoff_l               ((uint8_T)6U)
+#define FMS_IN_Takeoff_d               ((uint8_T)6U)
 #define FMS_IN_Waypoint                ((uint8_T)7U)
 #define FMS_event_DisarmEvent          (0)
 
@@ -246,7 +246,7 @@ struct_zsCQBAH3ZqfSCqN88JHcFH FMS_PARAM = {
 struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT = {
   4U,
 
-  { 66, 97, 115, 101, 32, 70, 77, 83, 32, 118, 48, 46, 51, 46, 50, 0 }
+  { 66, 97, 115, 101, 32, 70, 77, 83, 32, 118, 48, 46, 51, 46, 51, 0 }
 } ;                                    /* Variable: FMS_EXPORT
                                         * Referenced by:
                                         *   '<S7>/Constant1'
@@ -1982,7 +1982,7 @@ int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn)
 /* Function for Chart: '<Root>/FMS State Machine' */
 static void FMS_sf_msg_send_M(void)
 {
-  FMS_emplace(&FMS_DW.Queue_FMS_Cmd_d, &FMS_DW.M_msgReservedData);
+  FMS_emplace(&FMS_DW.Queue_FMS_Cmd_p, &FMS_DW.M_msgReservedData);
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
@@ -2083,8 +2083,8 @@ static boolean_T FMS_sf_msg_pop_M(void)
   if (FMS_DW.M_isValid) {
     isPresent = true;
   } else {
-    FMS_DW.M_msgHandle = FMS_pop(&FMS_DW.Queue_FMS_Cmd_d, &FMS_DW.Msg_FMS_Cmd_a
-      [0]) != 0 ? (void *)&FMS_DW.Msg_FMS_Cmd_a[0] : NULL;
+    FMS_DW.M_msgHandle = FMS_pop(&FMS_DW.Queue_FMS_Cmd_p, &FMS_DW.Msg_FMS_Cmd_c
+      [0]) != 0 ? (void *)&FMS_DW.Msg_FMS_Cmd_c[0] : NULL;
     if (FMS_DW.M_msgHandle != NULL) {
       FMS_DW.M_msgDataPtr = &((Msg_FMS_Cmd *)FMS_DW.M_msgHandle)->fData;
       isPresent = true;
@@ -2253,7 +2253,7 @@ static void FMS_enter_internal_Arm(void)
   } else if (tmp == 1.0) {
     FMS_DW.is_Arm = FMS_IN_Manual;
     if (FMS_B.target_mode == PilotMode_Manual) {
-      FMS_DW.is_Manual = FMS_IN_Manual_d;
+      FMS_DW.is_Manual = FMS_IN_Manual_g;
       FMS_B.state = VehicleState_Manual;
     } else {
       FMS_DW.is_Manual = FMS_IN_InValidManualMode;
@@ -2361,7 +2361,7 @@ static void FMS_SubMode(void)
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Manual;
       if (FMS_B.target_mode == PilotMode_Manual) {
-        FMS_DW.is_Manual = FMS_IN_Manual_d;
+        FMS_DW.is_Manual = FMS_IN_Manual_g;
         FMS_B.state = VehicleState_Manual;
       } else {
         FMS_DW.is_Manual = FMS_IN_InValidManualMode;
@@ -2378,11 +2378,11 @@ static void FMS_SubMode(void)
     }
 
     if (b_sf_internal_predicateOutput) {
-      FMS_DW.is_SubMode = FMS_IN_Hold_b;
+      FMS_DW.is_SubMode = FMS_IN_Hold_h;
       FMS_B.state = VehicleState_Hold;
     } else {
       switch (FMS_DW.is_SubMode) {
-       case FMS_IN_Hold_b:
+       case FMS_IN_Hold_h:
         if (FMS_sf_msg_pop_M()) {
           b_sf_internal_predicateOutput = ((FMS_DW.M_msgReservedData ==
             FMS_Cmd_Continue) && (FMS_B.target_mode != PilotMode_None));
@@ -2398,14 +2398,14 @@ static void FMS_SubMode(void)
         break;
 
        case FMS_IN_Land:
-        if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_c))
+        if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_d))
         {
-          FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+          FMS_DW.durationLastReferenceTick_1_j = FMS_DW.chartAbsoluteTimeCounter;
         }
 
-        FMS_DW.condWasTrueAtLastTimeStep_1_c = FMS_B.LogicalOperator1;
+        FMS_DW.condWasTrueAtLastTimeStep_1_d = FMS_B.LogicalOperator1;
         if (FMS_DW.chartAbsoluteTimeCounter -
-            FMS_DW.durationLastReferenceTick_1_g >= 500) {
+            FMS_DW.durationLastReferenceTick_1_j >= 500) {
           FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
           FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
           FMS_DW.is_Vehicle = FMS_IN_Disarm;
@@ -2438,15 +2438,15 @@ static void FMS_SubMode(void)
         if (y < 0.5F) {
           FMS_B.Cmd_In.sp_land[0] = FMS_DW.home[0];
           FMS_B.Cmd_In.sp_land[1] = FMS_DW.home[1];
-          FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+          FMS_DW.durationLastReferenceTick_1_j = FMS_DW.chartAbsoluteTimeCounter;
           FMS_DW.is_SubMode = FMS_IN_Land;
           FMS_B.state = VehicleState_Land;
-          FMS_DW.condWasTrueAtLastTimeStep_1_c = FMS_B.LogicalOperator1;
+          FMS_DW.condWasTrueAtLastTimeStep_1_d = FMS_B.LogicalOperator1;
         }
         break;
 
        case FMS_IN_Takeoff:
-        if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R - FMS_DW.home[2] >=
+        if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R >=
             FMS_B.Cmd_In.sp_takeoff[2]) {
           if (FMS_B.target_mode != PilotMode_None) {
             tmp = FMS_getArmMode(FMS_B.target_mode);
@@ -2517,7 +2517,7 @@ static void FMS_SubMode(void)
               FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
               FMS_DW.is_Arm = FMS_IN_Manual;
               if (FMS_B.target_mode == PilotMode_Manual) {
-                FMS_DW.is_Manual = FMS_IN_Manual_d;
+                FMS_DW.is_Manual = FMS_IN_Manual_g;
                 FMS_B.state = VehicleState_Manual;
               } else {
                 FMS_DW.is_Manual = FMS_IN_InValidManualMode;
@@ -2527,7 +2527,7 @@ static void FMS_SubMode(void)
               FMS_DW.is_Arm = FMS_IN_InvalidArmMode;
             }
           } else {
-            FMS_DW.is_SubMode = FMS_IN_Hold_b;
+            FMS_DW.is_SubMode = FMS_IN_Hold_h;
             FMS_B.state = VehicleState_Hold;
           }
         }
@@ -2561,12 +2561,12 @@ static void FMS_Arm(void)
   boolean_T tmp_1;
   real_T tmp_2;
   tmp_1 = !FMS_B.LogicalOperator1;
-  if (tmp_1 || (!FMS_DW.condWasTrueAtLastTimeStep_1_a)) {
-    FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
+  if (tmp_1 || (!FMS_DW.condWasTrueAtLastTimeStep_1_d0)) {
+    FMS_DW.durationLastReferenceTick_1_c = FMS_DW.chartAbsoluteTimeCounter;
   }
 
-  FMS_DW.condWasTrueAtLastTimeStep_1_a = FMS_B.LogicalOperator1;
-  if ((FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_1_k >=
+  FMS_DW.condWasTrueAtLastTimeStep_1_d0 = FMS_B.LogicalOperator1;
+  if ((FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_1_c >=
        500) && (FMS_B.target_mode != PilotMode_Mission)) {
     FMS_exit_internal_Arm();
     FMS_DW.is_Vehicle = FMS_IN_Disarm;
@@ -2641,7 +2641,7 @@ static void FMS_Arm(void)
       FMS_exit_internal_Arm();
       FMS_DW.is_Arm = FMS_IN_Manual;
       if (FMS_B.target_mode == PilotMode_Manual) {
-        FMS_DW.is_Manual = FMS_IN_Manual_d;
+        FMS_DW.is_Manual = FMS_IN_Manual_g;
         FMS_B.state = VehicleState_Manual;
       } else {
         FMS_DW.is_Manual = FMS_IN_InValidManualMode;
@@ -2666,10 +2666,10 @@ static void FMS_Arm(void)
       FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
       FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
       FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-      FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.durationLastReferenceTick_1_j = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_SubMode = FMS_IN_Land;
       FMS_B.state = VehicleState_Land;
-      FMS_DW.condWasTrueAtLastTimeStep_1_c = FMS_B.LogicalOperator1;
+      FMS_DW.condWasTrueAtLastTimeStep_1_d = FMS_B.LogicalOperator1;
     } else {
       if (FMS_sf_msg_pop_M()) {
         c_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
@@ -2720,7 +2720,7 @@ static void FMS_Arm(void)
               FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
             FMS_DW.stick_val[3] =
               FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-            FMS_DW.is_SubMode = FMS_IN_Hold_b;
+            FMS_DW.is_SubMode = FMS_IN_Hold_h;
             FMS_B.state = VehicleState_Hold;
           } else {
             switch (FMS_DW.is_Auto) {
@@ -2796,7 +2796,7 @@ static void FMS_Arm(void)
 
                  case FMS_IN_NextWP:
                   if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Takeoff) {
-                    FMS_DW.is_Mission = FMS_IN_Takeoff_l;
+                    FMS_DW.is_Mission = FMS_IN_Takeoff_d;
                     FMS_B.Cmd_In.cur_waypoint[0] =
                       FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
                     FMS_B.Cmd_In.cur_waypoint[1] =
@@ -2809,7 +2809,8 @@ static void FMS_Arm(void)
                       1] * 1.0E-7;
                     FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[FMS_B.wp_index -
                       1] * 1.0E-7;
-                    FMS_B.lla[2] = -FMS_U.Mission_Data.z[FMS_B.wp_index - 1];
+                    FMS_B.lla[2] = -(FMS_U.Mission_Data.z[FMS_B.wp_index - 1] +
+                                     FMS_DW.home[2]);
                     FMS_B.llo[0] = FMS_DW.llo[0];
                     FMS_B.llo[1] = FMS_DW.llo[1];
                     FMS_B.href = 0.0;
@@ -2833,7 +2834,8 @@ static void FMS_Arm(void)
                       1] * 1.0E-7;
                     FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[FMS_B.wp_index -
                       1] * 1.0E-7;
-                    FMS_B.lla[2] = -FMS_U.Mission_Data.z[FMS_B.wp_index - 1];
+                    FMS_B.lla[2] = -(FMS_U.Mission_Data.z[FMS_B.wp_index - 1] +
+                                     FMS_DW.home[2]);
                     FMS_B.llo[0] = FMS_DW.llo[0];
                     FMS_B.llo[1] = FMS_DW.llo[1];
                     FMS_B.href = 0.0;
@@ -2860,7 +2862,7 @@ static void FMS_Arm(void)
                     FMS_B.state = VehicleState_Land;
                     FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
                   } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Return) {
-                    FMS_DW.is_Mission = FMS_IN_Return_n;
+                    FMS_DW.is_Mission = FMS_IN_Return_h;
                     FMS_B.Cmd_In.sp_return[0] = FMS_DW.home[0];
                     FMS_B.Cmd_In.sp_return[1] = FMS_DW.home[1];
                     FMS_B.state = VehicleState_Return;
@@ -2872,7 +2874,7 @@ static void FMS_Arm(void)
                   }
                   break;
 
-                 case FMS_IN_Return_n:
+                 case FMS_IN_Return_h:
                   tmp[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R -
                     FMS_B.Cmd_In.sp_return[0];
                   tmp[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R -
@@ -2890,9 +2892,9 @@ static void FMS_Arm(void)
                   }
                   break;
 
-                 case FMS_IN_Takeoff_l:
-                  if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R - FMS_DW.home[2]
-                      >= FMS_B.Cmd_In.sp_takeoff[2]) {
+                 case FMS_IN_Takeoff_d:
+                  if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R >=
+                      FMS_B.Cmd_In.sp_takeoff[2]) {
                     FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_takeoff[0];
                     FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_takeoff[1];
                     FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_takeoff[2];
@@ -3044,11 +3046,11 @@ static void FMS_Vehicle(void)
       FMS_DW.prep_takeoff = 0.0;
       sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
       if ((!sf_internal_predicateOutput) ||
-          (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-        FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+        FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
       }
 
-      FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+      FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
       FMS_DW.prep_mission_takeoff = 0.0;
       sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
       if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
@@ -3098,12 +3100,12 @@ static void FMS_Vehicle(void)
           FMS_DW.prep_takeoff = 1.0;
           sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
           if ((!sf_internal_predicateOutput) ||
-              (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-            FMS_DW.durationLastReferenceTick_1_h =
+              (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+            FMS_DW.durationLastReferenceTick_1_k =
               FMS_DW.chartAbsoluteTimeCounter;
           }
 
-          FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+          FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
           guard1 = true;
         }
       }
@@ -3118,13 +3120,13 @@ static void FMS_Vehicle(void)
       } else {
         sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
         if ((!sf_internal_predicateOutput) ||
-            (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-          FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+            (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+          FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
         }
 
-        FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+        FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
         if (FMS_DW.chartAbsoluteTimeCounter -
-            FMS_DW.durationLastReferenceTick_1_h >= 500) {
+            FMS_DW.durationLastReferenceTick_1_k >= 500) {
           guard3 = true;
         } else {
           if (FMS_sf_msg_pop_M()) {
@@ -3141,12 +3143,12 @@ static void FMS_Vehicle(void)
             FMS_DW.prep_takeoff = 0.0;
             sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
             if ((!sf_internal_predicateOutput) ||
-                (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-              FMS_DW.durationLastReferenceTick_1_h =
+                (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+              FMS_DW.durationLastReferenceTick_1_k =
                 FMS_DW.chartAbsoluteTimeCounter;
             }
 
-            FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+            FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
             FMS_DW.prep_mission_takeoff = 0.0;
             sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
             if ((!sf_internal_predicateOutput) ||
@@ -3193,14 +3195,15 @@ static void FMS_Vehicle(void)
       FMS_B.Cmd_In.sp_takeoff[0] = FMS_B.Reshape[0];
       FMS_B.Cmd_In.sp_takeoff[1] = FMS_B.Reshape[1];
       FMS_B.Cmd_In.sp_takeoff[2] = FMS_B.Reshape[2];
+      FMS_B.Cmd_In.sp_takeoff[2] += FMS_DW.home[2];
       FMS_DW.prep_takeoff = 0.0;
       sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
       if ((!sf_internal_predicateOutput) ||
-          (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-        FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+        FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
       }
 
-      FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+      FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
       FMS_DW.prep_mission_takeoff = 0.0;
       sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
       if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
@@ -3209,9 +3212,9 @@ static void FMS_Vehicle(void)
       }
 
       FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
-      FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.durationLastReferenceTick_1_c = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Arm;
-      FMS_DW.condWasTrueAtLastTimeStep_1_a = FMS_B.LogicalOperator1;
+      FMS_DW.condWasTrueAtLastTimeStep_1_d0 = FMS_B.LogicalOperator1;
       FMS_DW.is_Arm = FMS_IN_SubMode;
       FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
       FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
@@ -3225,11 +3228,11 @@ static void FMS_Vehicle(void)
       FMS_DW.prep_takeoff = 0.0;
       sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
       if ((!sf_internal_predicateOutput) ||
-          (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-        FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+        FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
       }
 
-      FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+      FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
       FMS_DW.prep_mission_takeoff = 0.0;
       sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
       if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
@@ -3238,17 +3241,17 @@ static void FMS_Vehicle(void)
       }
 
       FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
-      FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.durationLastReferenceTick_1_c = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Arm;
-      FMS_DW.condWasTrueAtLastTimeStep_1_a = FMS_B.LogicalOperator1;
+      FMS_DW.condWasTrueAtLastTimeStep_1_d0 = FMS_B.LogicalOperator1;
       FMS_enter_internal_Arm();
     }
 
     if (guard1) {
       FMS_DW.condWasTrueAtLastTimeStep_2 = false;
       FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-      FMS_DW.condWasTrueAtLastTimeStep_1_e = false;
-      FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.condWasTrueAtLastTimeStep_1_k = false;
+      FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Standby;
       FMS_DW.temporalCounter_i1 = 0U;
       guard4 = false;
@@ -3260,7 +3263,7 @@ static void FMS_Vehicle(void)
           FMS_DW.condWasTrueAtLastTimeStep_2 = (FMS_DW.prep_mission_takeoff ==
             1.0);
           FMS_DW.prep_takeoff = 0.0;
-          FMS_DW.condWasTrueAtLastTimeStep_1_e = (FMS_DW.prep_takeoff == 1.0);
+          FMS_DW.condWasTrueAtLastTimeStep_1_k = (FMS_DW.prep_takeoff == 1.0);
           guard4 = true;
         } else {
           b_previousEvent = FMS_DW.sfEvent;
@@ -3288,11 +3291,11 @@ static void FMS_Vehicle(void)
       if (FMS_DW.is_Vehicle == FMS_IN_Standby) {
         sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
         if ((!sf_internal_predicateOutput) ||
-            (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-          FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+            (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+          FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
         }
 
-        FMS_DW.condWasTrueAtLastTimeStep_1_e = sf_internal_predicateOutput;
+        FMS_DW.condWasTrueAtLastTimeStep_1_k = sf_internal_predicateOutput;
         sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
         if ((!sf_internal_predicateOutput) ||
             (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
@@ -3325,11 +3328,11 @@ static void FMS_c11_FMS(void)
     FMS_DW.is_active_Command_Listener = 1U;
     FMS_DW.is_Command_Listener = FMS_IN_Listen;
     FMS_DW.is_active_Combo_Stick = 1U;
-    FMS_DW.durationLastReferenceTick_2_c = FMS_DW.chartAbsoluteTimeCounter;
-    FMS_DW.durationLastReferenceTick_1_e = FMS_DW.chartAbsoluteTimeCounter;
+    FMS_DW.durationLastReferenceTick_2_a = FMS_DW.chartAbsoluteTimeCounter;
+    FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
     FMS_DW.is_Combo_Stick = FMS_IN_Idle;
-    FMS_DW.condWasTrueAtLastTimeStep_1_p = FMS_DW.br;
-    FMS_DW.condWasTrueAtLastTimeStep_2_h = FMS_DW.bl;
+    FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_DW.br;
+    FMS_DW.condWasTrueAtLastTimeStep_2_g = FMS_DW.bl;
     FMS_DW.is_active_Vehicle = 1U;
     FMS_DW.is_Vehicle = FMS_IN_Disarm;
     FMS_B.state = VehicleState_Disarm;
@@ -3368,11 +3371,11 @@ static void FMS_c11_FMS(void)
         if (!FMS_BottomRight(FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw,
                              FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle))
         {
-          FMS_DW.durationLastReferenceTick_2_c = FMS_DW.chartAbsoluteTimeCounter;
-          FMS_DW.durationLastReferenceTick_1_e = FMS_DW.chartAbsoluteTimeCounter;
+          FMS_DW.durationLastReferenceTick_2_a = FMS_DW.chartAbsoluteTimeCounter;
+          FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
           FMS_DW.is_Combo_Stick = FMS_IN_Idle;
-          FMS_DW.condWasTrueAtLastTimeStep_1_p = FMS_DW.br;
-          FMS_DW.condWasTrueAtLastTimeStep_2_h = FMS_DW.bl;
+          FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_DW.br;
+          FMS_DW.condWasTrueAtLastTimeStep_2_g = FMS_DW.bl;
         }
         break;
 
@@ -3380,34 +3383,34 @@ static void FMS_c11_FMS(void)
         if (!FMS_BottomLeft(FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw,
                             FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle))
         {
-          FMS_DW.durationLastReferenceTick_2_c = FMS_DW.chartAbsoluteTimeCounter;
-          FMS_DW.durationLastReferenceTick_1_e = FMS_DW.chartAbsoluteTimeCounter;
+          FMS_DW.durationLastReferenceTick_2_a = FMS_DW.chartAbsoluteTimeCounter;
+          FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
           FMS_DW.is_Combo_Stick = FMS_IN_Idle;
-          FMS_DW.condWasTrueAtLastTimeStep_1_p = FMS_DW.br;
-          FMS_DW.condWasTrueAtLastTimeStep_2_h = FMS_DW.bl;
+          FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_DW.br;
+          FMS_DW.condWasTrueAtLastTimeStep_2_g = FMS_DW.bl;
         }
         break;
 
        case FMS_IN_Idle:
-        if ((!FMS_DW.br) || (!FMS_DW.condWasTrueAtLastTimeStep_1_p)) {
-          FMS_DW.durationLastReferenceTick_1_e = FMS_DW.chartAbsoluteTimeCounter;
+        if ((!FMS_DW.br) || (!FMS_DW.condWasTrueAtLastTimeStep_1_h)) {
+          FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
         }
 
-        FMS_DW.condWasTrueAtLastTimeStep_1_p = FMS_DW.br;
+        FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_DW.br;
         if (FMS_DW.chartAbsoluteTimeCounter -
-            FMS_DW.durationLastReferenceTick_1_e > 375) {
+            FMS_DW.durationLastReferenceTick_1_n > 375) {
           FMS_DW.is_Combo_Stick = FMS_IN_Arm;
           FMS_DW.M_msgReservedData = FMS_Cmd_PreArm;
           FMS_sf_msg_send_M();
         } else {
-          if ((!FMS_DW.bl) || (!FMS_DW.condWasTrueAtLastTimeStep_2_h)) {
-            FMS_DW.durationLastReferenceTick_2_c =
+          if ((!FMS_DW.bl) || (!FMS_DW.condWasTrueAtLastTimeStep_2_g)) {
+            FMS_DW.durationLastReferenceTick_2_a =
               FMS_DW.chartAbsoluteTimeCounter;
           }
 
-          FMS_DW.condWasTrueAtLastTimeStep_2_h = FMS_DW.bl;
+          FMS_DW.condWasTrueAtLastTimeStep_2_g = FMS_DW.bl;
           if (FMS_DW.chartAbsoluteTimeCounter -
-              FMS_DW.durationLastReferenceTick_2_c > 375) {
+              FMS_DW.durationLastReferenceTick_2_a > 375) {
             FMS_DW.is_Combo_Stick = FMS_IN_Disarm;
             b_previousEvent = FMS_DW.sfEvent;
             FMS_DW.sfEvent = FMS_event_DisarmEvent;
@@ -3420,21 +3423,21 @@ static void FMS_c11_FMS(void)
             FMS_DW.bl = FMS_BottomLeft
               (FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw,
                FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle);
-            if ((!FMS_DW.bl) || (!FMS_DW.condWasTrueAtLastTimeStep_2_h)) {
-              FMS_DW.durationLastReferenceTick_2_c =
+            if ((!FMS_DW.bl) || (!FMS_DW.condWasTrueAtLastTimeStep_2_g)) {
+              FMS_DW.durationLastReferenceTick_2_a =
                 FMS_DW.chartAbsoluteTimeCounter;
             }
 
-            FMS_DW.condWasTrueAtLastTimeStep_2_h = FMS_DW.bl;
+            FMS_DW.condWasTrueAtLastTimeStep_2_g = FMS_DW.bl;
             FMS_DW.br = FMS_BottomRight
               (FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw,
                FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle);
-            if ((!FMS_DW.br) || (!FMS_DW.condWasTrueAtLastTimeStep_1_p)) {
-              FMS_DW.durationLastReferenceTick_1_e =
+            if ((!FMS_DW.br) || (!FMS_DW.condWasTrueAtLastTimeStep_1_h)) {
+              FMS_DW.durationLastReferenceTick_1_n =
                 FMS_DW.chartAbsoluteTimeCounter;
             }
 
-            FMS_DW.condWasTrueAtLastTimeStep_1_p = FMS_DW.br;
+            FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_DW.br;
           }
         }
         break;
@@ -3488,8 +3491,8 @@ void FMS_initQueue(Queue_FMS_Cmd *q, QueuePolicy_T policy, int32_T capacity,
 /* Function for Chart: '<Root>/FMS State Machine' */
 static void initialize_msg_local_queues_for(void)
 {
-  FMS_initQueue((Queue_FMS_Cmd *)&FMS_DW.Queue_FMS_Cmd_d, MSG_FIFO_QUEUE, 10,
-                (Msg_FMS_Cmd *)&FMS_DW.Msg_FMS_Cmd_a[1]);
+  FMS_initQueue((Queue_FMS_Cmd *)&FMS_DW.Queue_FMS_Cmd_p, MSG_FIFO_QUEUE, 10,
+                (Msg_FMS_Cmd *)&FMS_DW.Msg_FMS_Cmd_c[1]);
 }
 
 /* Model step function */
@@ -3971,38 +3974,38 @@ void FMS_step(void)
   }
 
   FMS_DW.condWasTrueAtLastTimeStep_1 = FMS_B.LogicalOperator1;
-  if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_c)) {
-    FMS_DW.durationLastReferenceTick_1_g = FMS_DW.chartAbsoluteTimeCounter;
+  if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_d)) {
+    FMS_DW.durationLastReferenceTick_1_j = FMS_DW.chartAbsoluteTimeCounter;
   }
 
-  FMS_DW.condWasTrueAtLastTimeStep_1_c = FMS_B.LogicalOperator1;
+  FMS_DW.condWasTrueAtLastTimeStep_1_d = FMS_B.LogicalOperator1;
   rtb_LogicalOperator_at = (FMS_DW.prep_takeoff == 1.0);
-  if ((!rtb_LogicalOperator_at) || (!FMS_DW.condWasTrueAtLastTimeStep_1_e)) {
-    FMS_DW.durationLastReferenceTick_1_h = FMS_DW.chartAbsoluteTimeCounter;
+  if ((!rtb_LogicalOperator_at) || (!FMS_DW.condWasTrueAtLastTimeStep_1_k)) {
+    FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
   }
 
-  FMS_DW.condWasTrueAtLastTimeStep_1_e = rtb_LogicalOperator_at;
+  FMS_DW.condWasTrueAtLastTimeStep_1_k = rtb_LogicalOperator_at;
   rtb_LogicalOperator_at = (FMS_DW.prep_mission_takeoff == 1.0);
   if ((!rtb_LogicalOperator_at) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
     FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
   }
 
   FMS_DW.condWasTrueAtLastTimeStep_2 = rtb_LogicalOperator_at;
-  if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_a)) {
-    FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
+  if ((!FMS_B.LogicalOperator1) || (!FMS_DW.condWasTrueAtLastTimeStep_1_d0)) {
+    FMS_DW.durationLastReferenceTick_1_c = FMS_DW.chartAbsoluteTimeCounter;
   }
 
-  FMS_DW.condWasTrueAtLastTimeStep_1_a = FMS_B.LogicalOperator1;
-  if ((!FMS_DW.br) || (!FMS_DW.condWasTrueAtLastTimeStep_1_p)) {
-    FMS_DW.durationLastReferenceTick_1_e = FMS_DW.chartAbsoluteTimeCounter;
+  FMS_DW.condWasTrueAtLastTimeStep_1_d0 = FMS_B.LogicalOperator1;
+  if ((!FMS_DW.br) || (!FMS_DW.condWasTrueAtLastTimeStep_1_h)) {
+    FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
   }
 
-  FMS_DW.condWasTrueAtLastTimeStep_1_p = FMS_DW.br;
-  if ((!FMS_DW.bl) || (!FMS_DW.condWasTrueAtLastTimeStep_2_h)) {
-    FMS_DW.durationLastReferenceTick_2_c = FMS_DW.chartAbsoluteTimeCounter;
+  FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_DW.br;
+  if ((!FMS_DW.bl) || (!FMS_DW.condWasTrueAtLastTimeStep_2_g)) {
+    FMS_DW.durationLastReferenceTick_2_a = FMS_DW.chartAbsoluteTimeCounter;
   }
 
-  FMS_DW.condWasTrueAtLastTimeStep_2_h = FMS_DW.bl;
+  FMS_DW.condWasTrueAtLastTimeStep_2_g = FMS_DW.bl;
   if (FMS_DW.temporalCounter_i1 < 4095U) {
     FMS_DW.temporalCounter_i1++;
   }
