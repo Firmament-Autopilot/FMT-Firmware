@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1691
+ * Model version                  : 1.1722
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Apr 20 08:42:43 2022
+ * C/C++ source code generated on : Tue Apr 26 07:59:10 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -363,18 +363,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
-#define DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
-
-typedef struct {
-  uint32_T period;
-  int8_T model_info[16];
-} struct_TYt7YeNdxIDXfczXumtXXB;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_struct_zsCQBAH3ZqfSCqN88JHcFH_
-#define DEFINED_TYPEDEF_FOR_struct_zsCQBAH3ZqfSCqN88JHcFH_
+#ifndef DEFINED_TYPEDEF_FOR_struct_z8TbXuqo9JNiexfZo6b1iC_
+#define DEFINED_TYPEDEF_FOR_struct_z8TbXuqo9JNiexfZo6b1iC_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -391,7 +381,18 @@ typedef struct {
   real32_T L1;
   real32_T CRUISE_SPEED;
   real32_T TAKEOFF_H;
-} struct_zsCQBAH3ZqfSCqN88JHcFH;
+  real32_T ACCEPT_R;
+} struct_z8TbXuqo9JNiexfZo6b1iC;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
+#define DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
+
+typedef struct {
+  uint32_T period;
+  int8_T model_info[16];
+} struct_TYt7YeNdxIDXfczXumtXXB;
 
 #endif
 
