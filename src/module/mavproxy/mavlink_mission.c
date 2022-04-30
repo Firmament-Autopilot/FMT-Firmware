@@ -208,6 +208,8 @@ static void handle_message_mission_item(mavlink_message_t* msg)
         /* load new mission data */
         if (load_mission_data(MISSION_FILE) == FMT_EOK) {
             LOG_I("mission data reloaded.");
+            /* reset mission data when reloaded */
+            mission_reset();
         } else {
             LOG_E("mission data reloaded fail.");
         }

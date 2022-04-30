@@ -147,7 +147,7 @@ struct mission_item* get_mission_item(uint16_t seq)
     return &mission_data[seq];
 }
 
-fmt_err_t mission_data_reset(void)
+fmt_err_t mission_reset(void)
 {
     /* reset current sequence number */
     cur_seq = 0;
@@ -254,38 +254,20 @@ void dump_mission_data(void)
 
 fmt_err_t mission_data_collect(void)
 {
-    static Pilot_Cmd_Bus old_pilot_cmd;
-    static GCS_Cmd_Bus old_gcs_cmd;
-    Pilot_Cmd_Bus pilot_cmd;
-    GCS_Cmd_Bus gcs_cmd;
-
-    if (mcn_poll(pilot_cmd_nod)) {
-        mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &pilot_cmd);
-
-        if (pilot_cmd.cmd_1 != old_pilot_cmd.cmd_1 && pilot_cmd.cmd_1 == FMS_Cmd_PreArm) {
-            /* reset mission data before armed */
-            FMT_TRY(mission_data_reset());
-        }
-
-        old_pilot_cmd = pilot_cmd;
-    }
-
-    if (mcn_poll(gcs_cmd_nod)) {
-        mcn_copy(MCN_HUB(gcs_cmd), gcs_cmd_nod, &gcs_cmd);
-
-        if (gcs_cmd.cmd_1 != old_gcs_cmd.cmd_1 && gcs_cmd.cmd_1 == FMS_Cmd_PreArm) {
-            /* reset mission data before armed */
-            FMT_TRY(mission_data_reset());
-        }
-
-        old_gcs_cmd = gcs_cmd;
-    }
+    static FMS_Out_Bus old_fms_out = { .status = VehicleStatus_Disarm };
 
     if (mcn_poll(fms_out_nod)) {
         FMS_Out_Bus fms_out;
         uint16_t i;
 
         FMT_TRY(mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out));
+
+        if (fms_out.status != old_fms_out.status) {
+            old_fms_out.status = fms_out.status;
+            if (fms_out.status == VehicleStatus_Disarm) {
+                mission_reset();
+            }
+        }
 
         if (fms_out.mode == PilotMode_Mission) {
             /* check if there are comsumed waypoints */
@@ -379,6 +361,7 @@ fmt_err_t mission_data_init(void)
     }
 
     FMT_TRY(load_mission_data(MISSION_FILE));
+    FMT_TRY(mission_reset());
 
     return FMT_EOK;
 }
