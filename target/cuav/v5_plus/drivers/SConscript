@@ -2,6 +2,6 @@ import os
 from building import *
 
 # reuse drivers of pixhawk fmuv5
-objs = SConscript('../../../../pixhawk/fmu-v5/drivers/SConscript')
+objs = SConscript('../../../../pixhawk/fmu-v5/drivers/SConscript', variant_dir='driver')
 
 Return('objs')
