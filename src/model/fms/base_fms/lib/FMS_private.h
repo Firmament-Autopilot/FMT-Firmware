@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1722
+ * Model version                  : 1.1749
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Apr 26 07:59:10 2022
+ * C/C++ source code generated on : Sun May  1 21:25:09 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -17,6 +17,7 @@
 #define RTW_HEADER_FMS_private_h_
 #include "rtwtypes.h"
 #include "builtin_typeid_types.h"
+#include "zero_crossing_types.h"
 #include "FMS.h"
 
 extern real_T rt_modd(real_T u0, real_T u1);
