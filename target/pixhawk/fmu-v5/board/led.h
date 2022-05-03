@@ -18,8 +18,8 @@
 
 #include <firmament.h>
 
-#include "driver/ncp5623c.h"
-#include "hal/pin.h"
+#include "driver/rgb_led/ncp5623c.h"
+#include "hal/pin/pin.h"
 
 #ifdef __cplusplus
 extern "C" {

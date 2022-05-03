@@ -17,7 +17,7 @@
 #include <string.h>
 
 #include "module/utils/devmq.h"
-#include "module/work_queue/workqueue_manager.h"
+#include "module/workqueue/workqueue_manager.h"
 
 #define DEVMQ_MAX_HANDLER  10
 #define DEVMQ_MAX_MSG_SIZE 128

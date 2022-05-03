@@ -15,10 +15,10 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "driver/mpu6000.h"
-#include "hal/accel.h"
-#include "hal/gyro.h"
-#include "hal/spi.h"
+#include "driver/imu/mpu6000.h"
+#include "hal/accel/accel.h"
+#include "hal/gyro/gyro.h"
+#include "hal/spi/spi.h"
 #include "module/math/conversion.h"
 
 #define DRV_DBG(...) console_printf(__VA_ARGS__)

@@ -16,7 +16,7 @@
 #include <firmament.h>
 
 #include "drv_usart.h"
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 #include "stm32f7xx_ll_usart.h"
 
 #define UART_ENABLE_IRQ(n)  NVIC_EnableIRQ((n))

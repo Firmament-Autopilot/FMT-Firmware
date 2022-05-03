@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/systick.h"
+#include "hal/systick/systick.h"
 #include "module/system/systime.h"
 
 typedef struct {

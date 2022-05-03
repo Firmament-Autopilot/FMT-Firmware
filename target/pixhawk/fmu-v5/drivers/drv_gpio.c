@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include "drv_gpio.h"
-#include "hal/pin.h"
+#include "hal/pin/pin.h"
 
 #define PIN_NUM(port, no) (((((port)&0xFu) << 4) | ((no)&0xFu)))
 #define PIN_PORT(pin)     ((uint8_t)(((pin) >> 4) & 0xFu))

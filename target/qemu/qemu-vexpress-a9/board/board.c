@@ -27,10 +27,10 @@
 
 #include "default_config.h"
 #include "module/console/console_config.h"
-#include "module/control/control_interface.h"
+#include "model/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
-#include "module/fms/fms_interface.h"
-#include "module/ins/ins_interface.h"
+#include "model/fms/fms_interface.h"
+#include "model/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
@@ -43,9 +43,9 @@
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
-#include "module/work_queue/workqueue_manager.h"
+#include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
-#include "module/plant/plant_interface.h"
+#include "model/plant/plant_interface.h"
 #endif
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)

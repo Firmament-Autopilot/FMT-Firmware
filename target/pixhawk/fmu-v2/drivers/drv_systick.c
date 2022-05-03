@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "hal/systick.h"
+#include "hal/systick/systick.h"
 
 static systick_dev_t _systick_dev;
 rt_uint32_t _ticksPerUs; /* tick count for 1us */

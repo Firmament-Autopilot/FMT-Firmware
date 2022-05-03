@@ -16,7 +16,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "module/work_queue/workqueue_manager.h"
+#include "module/workqueue/workqueue_manager.h"
 
 #define MAX_WQ_SIZE 10
 

@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "hal/systick.h"
+#include "hal/systick/systick.h"
 
 rt_size_t systick_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {

@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/gps.h"
+#include "hal/gps/gps.h"
 
 static rt_err_t hal_gps_init(rt_device_t dev)
 {

@@ -16,7 +16,7 @@
 #include <firmament.h>
 
 #include "drv_usbd_cdc.h"
-#include "hal/usbd_cdc.h"
+#include "hal/usb/usbd_cdc.h"
 #include "module/utils/ringbuffer.h"
 
 #include "stm32f7xx_ll_usb.h"

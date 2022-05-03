@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/accel.h"
-#include "hal/gyro.h"
+#include "hal/accel/accel.h"
+#include "hal/gyro/gyro.h"
 #include "module/sensor/sensor_imu.h"
 
 /**

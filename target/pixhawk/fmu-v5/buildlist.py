@@ -2,12 +2,12 @@
 # Modify this file to control which files/modules should be built
 
 DRIVERS = [
-    'imu/icm20689/*.c',
-    'imu/bmi055/*.c',
-    'mag/ist8310/*.c',
-    'barometer/ms5611/*.c',
-    'gps/m8n/*.c',
-    'rgb_led/ncp5623c/*.c',
+    'imu/icm20689.c',
+    'imu/bmi055.c',
+    'mag/ist8310.c',
+    'barometer/ms5611.c',
+    'gps/gps_m8n.c',
+    'rgb_led/ncp5623c.c',
 ]
 
 DRIVERS_CPPPATH = []

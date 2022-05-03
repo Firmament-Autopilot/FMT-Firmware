@@ -19,7 +19,7 @@
 #include "song_data.h"
 #include "decode.h"
 
-#include "driver/buzzer.h"
+#include "module/buzzer/buzzer.h"
 
 struct buzzer_tune_s {
 	int index;

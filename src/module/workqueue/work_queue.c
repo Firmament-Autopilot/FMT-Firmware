@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "module/work_queue/work_queue.h"
+#include "module/workqueue/work_queue.h"
 
 #define work_lock(_wq)   rt_sem_take(_wq->lock, RT_WAITING_FOREVER)
 #define work_unlock(_wq) rt_sem_release(_wq->lock)

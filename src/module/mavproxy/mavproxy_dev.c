@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 
 static rt_device_t mavproxy_dev = RT_NULL;
 static struct rt_completion tx_cplt, rx_cplt;

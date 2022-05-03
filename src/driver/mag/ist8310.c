@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "driver/ist8310.h"
-#include "hal/i2c.h"
-#include "hal/i2c_dev.h"
-#include "hal/mag.h"
+#include "driver/mag/ist8310.h"
+#include "hal/i2c/i2c.h"
+#include "hal/i2c/i2c_dev.h"
+#include "hal/mag/mag.h"
 
 // #define DRV_DBG(...)                   console_printf(__VA_ARGS__)
 #define DRV_DBG(...)

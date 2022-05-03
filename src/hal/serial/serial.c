@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 #include <firmament.h>
 
 /*

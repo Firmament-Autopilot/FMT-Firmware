@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "driver/ms5611.h"
-#include "hal/barometer.h"
-#include "hal/spi.h"
+#include "driver/barometer/ms5611.h"
+#include "hal/barometer/barometer.h"
+#include "hal/spi/spi.h"
 #include "module/math/conversion.h"
 #include <firmament.h>
 #include <math.h>

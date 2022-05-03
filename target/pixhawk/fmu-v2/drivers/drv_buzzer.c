@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "driver/buzzer.h"
+#include "module/buzzer/buzzer.h"
 
 /* Tone alarm output */
 #define TONE_ALARM_TIMER	2	/* timer 2 */

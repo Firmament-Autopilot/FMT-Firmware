@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "drv_i2c.h"
-#include "hal/i2c.h"
+#include "hal/i2c/i2c.h"
 #include "stm32f7xx_ll_i2c.h"
 
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)

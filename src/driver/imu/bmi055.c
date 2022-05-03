@@ -16,10 +16,10 @@
 #include <firmament.h>
 
 #include "board_device.h"
-#include "driver/bmi055.h"
-#include "hal/accel.h"
-#include "hal/gyro.h"
-#include "hal/spi.h"
+#include "driver/imu/bmi055.h"
+#include "hal/accel/accel.h"
+#include "hal/gyro/gyro.h"
+#include "hal/spi/spi.h"
 
 #define DRV_DBG(...)
 

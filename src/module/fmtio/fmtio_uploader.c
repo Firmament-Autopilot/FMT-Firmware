@@ -15,8 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/fmtio_dev.h"
-#include "hal/serial.h"
+#include "hal/fmtio_dev/fmtio_dev.h"
+#include "hal/serial/serial.h"
 #include "module/file_manager/file_manager.h"
 #include "module/fmtio/fmtio.h"
 

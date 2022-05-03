@@ -14,10 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 #include "module/fmtio/fmtio.h"
-#include "hal/actuator.h"
-#include "hal/fmtio_dev.h"
-#include "hal/rc.h"
-#include "hal/serial.h"
+#include "hal/actuator/actuator.h"
+#include "hal/fmtio_dev/fmtio_dev.h"
+#include "hal/rc/rc.h"
+#include "hal/serial/serial.h"
 
 #define EVENT_FMTIO_RX (1) // 1 << 0
 

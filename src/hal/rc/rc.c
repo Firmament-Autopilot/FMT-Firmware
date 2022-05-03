@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "hal/rc.h"
+#include "hal/rc/rc.h"
 
 static rt_err_t hal_rc_init(struct rt_device* dev)
 {

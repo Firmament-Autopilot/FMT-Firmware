@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
-#include "hal/gyro.h"
-#include "hal/spi.h"
+#include "hal/gyro/gyro.h"
+#include "hal/spi/spi.h"
 
 #define DRV_DBG(...)                   console_printf(__VA_ARGS__)
 

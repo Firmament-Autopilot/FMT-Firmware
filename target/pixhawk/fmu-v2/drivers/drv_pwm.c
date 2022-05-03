@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/actuator.h"
+#include "hal/actuator/actuator.h"
 
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)

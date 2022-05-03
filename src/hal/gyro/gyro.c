@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "hal/gyro.h"
+#include "hal/gyro/gyro.h"
 
 static rt_err_t hal_gyro_init(struct rt_device* dev)
 {

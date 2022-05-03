@@ -23,7 +23,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "drv_usart.h"
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 
 #define UART_DR(base)   __REG32(base + 0x00)
 #define UART_FR(base)   __REG32(base + 0x18)

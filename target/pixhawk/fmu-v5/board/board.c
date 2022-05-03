@@ -25,12 +25,12 @@
 #endif
 
 #include "default_config.h"
-#include "driver/bmi055.h"
-#include "driver/gps_m8n.h"
-#include "driver/icm20689.h"
-#include "driver/ist8310.h"
-#include "driver/ms5611.h"
-#include "driver/ncp5623c.h"
+#include "driver/imu/bmi055.h"
+#include "driver/gps/gps_m8n.h"
+#include "driver/imu/icm20689.h"
+#include "driver/mag/ist8310.h"
+#include "driver/barometer/ms5611.h"
+#include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -42,10 +42,10 @@
 #include "drv_usbd_cdc.h"
 #include "led.h"
 #include "module/console/console_config.h"
-#include "module/control/control_interface.h"
+#include "model/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
-#include "module/fms/fms_interface.h"
-#include "module/ins/ins_interface.h"
+#include "model/fms/fms_interface.h"
+#include "model/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
@@ -59,9 +59,9 @@
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
-#include "module/work_queue/workqueue_manager.h"
+#include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
-#include "module/plant/plant_interface.h"
+#include "model/plant/plant_interface.h"
 #endif
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)

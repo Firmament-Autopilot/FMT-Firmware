@@ -16,18 +16,18 @@
 
 #include <firmament.h>
 
-#include "module/control/control_interface.h"
+#include "model/control/control_interface.h"
 #include "module/file_manager/file_manager.h"
-#include "module/fms/fms_interface.h"
-#include "module/ins/ins_interface.h"
-#include "module/plant/plant_interface.h"
+#include "model/fms/fms_interface.h"
+#include "model/ins/ins_interface.h"
+#include "model/plant/plant_interface.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
-#include "task/task_logger.h"
+#include "task/logger/task_logger.h"
 
 #define EVENT_VEHICLE_UPDATE (1 << 0)
 

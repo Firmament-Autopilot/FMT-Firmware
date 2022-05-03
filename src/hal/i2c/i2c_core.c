@@ -37,9 +37,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/i2c-bit-ops.h"
-#include "hal/i2c.h"
-#include "hal/i2c_dev.h"
+#include "hal/i2c/i2c_bit_ops.h"
+#include "hal/i2c/i2c.h"
+#include "hal/i2c/i2c_dev.h"
 #include <firmament.h>
 
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,

@@ -18,9 +18,9 @@
 #include <string.h>
 
 #include "FMS.h"
-#include "module/fms/fms_interface.h"
+#include "model/fms/fms_interface.h"
 #include "module/ftp/ftp_manager.h"
-#include "module/ins/ins_interface.h"
+#include "model/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/px4_custom_mode.h"
 #include "module/pmu/power_manager.h"

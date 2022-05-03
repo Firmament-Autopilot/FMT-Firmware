@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/actuator.h"
+#include "hal/actuator/actuator.h"
 #include "stm32f7xx_ll_rcc.h"
 #include "stm32f7xx_ll_tim.h"
 

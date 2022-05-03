@@ -16,13 +16,13 @@
 #include <firmament.h>
 
 #include "FMS.h"
-#include "module/fms/fms_interface.h"
-#include "module/ins/ins_interface.h"
+#include "model/fms/fms_interface.h"
+#include "model/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/pmu/power_manager.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
-#include "task/task_logger.h"
+#include "task/logger/task_logger.h"
 
 #undef LOG_TAG
 #define LOG_TAG "StatusTask"

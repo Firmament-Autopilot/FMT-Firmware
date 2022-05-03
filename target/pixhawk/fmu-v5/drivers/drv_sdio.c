@@ -17,7 +17,7 @@
 
 #include "board.h"
 #include "drv_sdio.h"
-#include "hal/sd.h"
+#include "hal/sd/sd.h"
 #include "stm32f7xx_ll_sdmmc.h"
 
 #define SD_TIMEOUT    5000

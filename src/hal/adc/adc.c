@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "hal/adc.h"
+#include "hal/adc/adc.h"
 
 #define ADC_TIMEOUT_MS 5
 

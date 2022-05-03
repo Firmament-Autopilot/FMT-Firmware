@@ -16,7 +16,7 @@
 
 #include <firmament.h>
 
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 #include "module/sensor/sensor_hub.h"
 #include "protocol/msp/msp.h"
 
