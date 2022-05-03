@@ -17,7 +17,7 @@
 #include <firmament.h>
 
 #include "drv_adc.h"
-#include "hal/adc.h"
+#include "hal/adc/adc.h"
 #include "stm32f7xx_ll_adc.h"
 
 #define ADC_CONVERSION_TIMEOUT_MS 2

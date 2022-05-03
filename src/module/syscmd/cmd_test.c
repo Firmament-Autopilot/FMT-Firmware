@@ -19,9 +19,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hal/rc.h"
-#include "hal/serial.h"
-#include "hal/systick.h"
+#include "hal/rc/rc.h"
+#include "hal/serial/serial.h"
+#include "hal/systick/systick.h"
 #include "module/console/console.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/sensor/sensor_hub.h"
@@ -29,8 +29,8 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "module/toml/toml.h"
-#include "module/work_queue/work_queue.h"
-#include "module/work_queue/workqueue_manager.h"
+#include "module/workqueue/work_queue.h"
+#include "module/workqueue/workqueue_manager.h"
 
 #include "module/fmtio/protocol.h"
 

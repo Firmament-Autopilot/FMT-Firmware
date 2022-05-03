@@ -19,7 +19,7 @@
 #include "shell.h"
 
 #include "module/syscmd/syscmd.h"
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 
 extern struct finsh_shell *shell;
 

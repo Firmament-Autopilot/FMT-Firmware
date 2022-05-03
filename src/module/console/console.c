@@ -18,7 +18,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 
 #define CONSOLE_BUFF_SIZE 1024
 

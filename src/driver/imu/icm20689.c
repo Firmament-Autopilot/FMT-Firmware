@@ -16,10 +16,10 @@
 #include <firmament.h>
 
 #include "board_device.h"
-#include "driver/icm20689.h"
-#include "hal/accel.h"
-#include "hal/gyro.h"
-#include "hal/spi.h"
+#include "driver/imu/icm20689.h"
+#include "hal/accel/accel.h"
+#include "hal/gyro/gyro.h"
+#include "hal/spi/spi.h"
 #include "module/math/conversion.h"
 
 #define DRV_DBG(...) printf(__VA_ARGS__)

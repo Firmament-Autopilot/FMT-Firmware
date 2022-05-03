@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "hal/pin.h"
+#include "hal/pin/pin.h"
 #include <firmament.h>
 
 /* STM32F427 GPIO driver */

@@ -42,7 +42,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/spi.h"
+#include "hal/spi/spi.h"
 
 rt_err_t rt_spi_bus_register(struct rt_spi_bus*       bus,
                              const char*              name,

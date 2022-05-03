@@ -18,8 +18,8 @@
 
 #include <firmament.h>
 
-#include "driver/tca62724.h"
-#include "hal/pin.h"
+#include "driver/rgb_led/tca62724.h"
+#include "hal/pin/pin.h"
 
 #ifdef __cplusplus
 extern "C" {

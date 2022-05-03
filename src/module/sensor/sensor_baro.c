@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "module/sensor/sensor_baro.h"
-#include "hal/barometer.h"
+#include "hal/barometer/barometer.h"
 
 /**
  * @brief Check if barometer data is ready to read

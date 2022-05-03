@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/accel.h"
-#include "hal/mag.h"
-#include "hal/spi.h"
+#include "hal/accel/accel.h"
+#include "hal/mag/mag.h"
+#include "hal/spi/spi.h"
 #include <firmament.h>
 
 #define DRV_DBG(...) console_printf(__VA_ARGS__)

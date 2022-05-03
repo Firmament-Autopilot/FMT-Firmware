@@ -16,7 +16,7 @@
 #include <firmament.h>
 
 #include "drv_usbd_cdc.h"
-#include "hal/usbd_cdc.h"
+#include "hal/usb/usbd_cdc.h"
 #include "usb_dcd_int.h"
 #include "usbd_cdc_core_loopback.h"
 #include "usbd_cdc_vcp.h"

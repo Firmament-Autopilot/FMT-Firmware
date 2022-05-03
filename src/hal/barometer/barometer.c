@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "hal/barometer.h"
+#include "hal/barometer/barometer.h"
 
 static rt_err_t hal_baro_init(struct rt_device* dev)
 {

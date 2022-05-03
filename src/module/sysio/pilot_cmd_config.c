@@ -17,7 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "hal/rc.h"
+#include "hal/rc/rc.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/toml/toml.h"
 

@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/usbd_cdc.h"
+#include "hal/usb/usbd_cdc.h"
 #include "module/utils/devmq.h"
 
 #define USBD_WAIT_TIMEOUT 1000

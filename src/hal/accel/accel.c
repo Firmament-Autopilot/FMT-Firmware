@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "hal/accel.h"
+#include "hal/accel/accel.h"
 
 static rt_err_t hal_accel_init(struct rt_device* dev)
 {

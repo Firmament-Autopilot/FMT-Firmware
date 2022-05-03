@@ -18,10 +18,10 @@
 #include <math.h>
 
 #include "module/sensor/sensor_hub.h"
-#include "hal/i2c-bit-ops.h"
-#include "hal/i2c_dev.h"
-#include "hal/i2c.h"
-#include "driver/hmc5883.h"
+#include "hal/i2c/i2c_bit_ops.h"
+#include "hal/i2c/i2c_dev.h"
+#include "hal/i2c/i2c.h"
+#include "driver/mag/hmc5883.h"
 
 #define SALVE_ADDR		0x1E	/* 7 bit address, i2c_bit_send_address() will left shift address by 1 bit */
 

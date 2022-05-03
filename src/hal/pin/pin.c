@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "hal/pin.h"
+#include "hal/pin/pin.h"
 
 static rt_size_t hal_pin_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {

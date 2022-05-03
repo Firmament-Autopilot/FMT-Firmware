@@ -15,8 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/fmtio_dev.h"
-#include "hal/serial.h"
+#include "hal/fmtio_dev/fmtio_dev.h"
+#include "hal/serial/serial.h"
 
 static struct rt_device fmtio_dev;
 static rt_device_t fmtio_dev_t = &fmtio_dev;

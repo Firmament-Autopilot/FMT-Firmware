@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include "drv_spi.h"
-#include "hal/spi.h"
+#include "hal/spi/spi.h"
 
 #define SPI_USE_DMA
 

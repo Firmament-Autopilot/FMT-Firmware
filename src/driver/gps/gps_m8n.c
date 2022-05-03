@@ -15,9 +15,9 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "driver/gps_m8n.h"
-#include "hal/gps.h"
-#include "hal/serial.h"
+#include "driver/gps/gps_m8n.h"
+#include "hal/gps/gps.h"
+#include "hal/serial/serial.h"
 #include "module/sensor/sensor_hub.h"
 #include "protocol/ublox/ublox.h"
 

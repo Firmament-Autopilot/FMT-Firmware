@@ -14,7 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "hal/actuator.h"
+#include "hal/actuator/actuator.h"
 
 static rt_bool_t dev_suspend;
 

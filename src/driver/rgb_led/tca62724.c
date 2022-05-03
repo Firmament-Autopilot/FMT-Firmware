@@ -15,10 +15,10 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "driver/tca62724.h"
-#include "hal/i2c-bit-ops.h"
-#include "hal/i2c_dev.h"
-#include "hal/i2c.h"
+#include "driver/rgb_led/tca62724.h"
+#include "hal/i2c/i2c_bit_ops.h"
+#include "hal/i2c/i2c_dev.h"
+#include "hal/i2c/i2c.h"
 
 #define SALVE_ADDR		0x55	//7 bit addr
 #define DUTY_OUT0		0x81

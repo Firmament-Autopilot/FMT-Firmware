@@ -17,7 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "hal/actuator.h"
+#include "hal/actuator/actuator.h"
 #include "module/sysio/actuator_config.h"
 #include "module/toml/toml.h"
 

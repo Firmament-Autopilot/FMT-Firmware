@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "driver/ncp5623c.h"
-#include "hal/i2c.h"
+#include "driver/rgb_led/ncp5623c.h"
+#include "hal/i2c/i2c.h"
 
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)

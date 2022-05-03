@@ -16,7 +16,7 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 #include "module/mavproxy/mavproxy.h"
 
 #define MAVPROXY_INTERVAL            2

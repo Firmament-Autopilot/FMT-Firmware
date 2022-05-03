@@ -43,7 +43,7 @@
 
 #include <firmament.h>
 
-#include "hal/i2c.h"
+#include "hal/i2c/i2c.h"
 
 #ifdef __cplusplus
 extern "C" {

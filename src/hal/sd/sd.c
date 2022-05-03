@@ -15,7 +15,7 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "hal/sd.h"
+#include "hal/sd/sd.h"
 
 #define SECTOR_SIZE RT_DFS_ELM_MAX_SECTOR_SIZE
 

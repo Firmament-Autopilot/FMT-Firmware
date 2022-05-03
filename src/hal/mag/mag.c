@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include "hal/mag.h"
+#include "hal/mag/mag.h"
 
 static rt_err_t hal_mag_init(struct rt_device* dev)
 {

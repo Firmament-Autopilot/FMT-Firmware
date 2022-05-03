@@ -5,7 +5,7 @@
 
 #include <firmament.h>
 #include <stdio.h>
-#include "hal/serial.h"
+#include "hal/serial/serial.h"
 
 #define STREAM_HISTORY  1
 #define BUFFER_SIZE     UXR_CONFIG_SERIAL_TRANSPORT_MTU * STREAM_HISTORY

@@ -17,10 +17,10 @@
 #include <firmament.h>
 
 #include "module/sensor/sensor_hub.h"
-#include "driver/lidar.h"
-#include "hal/i2c-bit-ops.h"
-#include "hal/i2c_dev.h"
-#include "hal/i2c.h"
+#include "driver/range_finder/lidar.h"
+#include "hal/i2c/i2c_bit_ops.h"
+#include "hal/i2c/i2c_dev.h"
+#include "hal/i2c/i2c.h"
 
 static rt_device_t _i2c_device;
 static struct rt_device _lidar_device;
