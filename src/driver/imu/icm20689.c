@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
+
 #include <firmament.h>
 
 #include "board_device.h"
@@ -21,6 +23,7 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
+#include "module/math/rotation.h"
 
 #define DRV_DBG(...) printf(__VA_ARGS__)
 
@@ -314,7 +317,7 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[2] = gyro_range_scale * gyr_raw[2];
     // change to NED coordinate
     icm20689_rotate_to_ned(gyr);
-
+    
     return RT_EOK;
 }
 
@@ -371,7 +374,6 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     acc[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-
 
     return RT_EOK;
 }

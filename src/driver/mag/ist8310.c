@@ -18,6 +18,8 @@
 #include "hal/i2c/i2c_dev.h"
 #include "hal/mag/mag.h"
 
+#include "module/math/rotation.h"
+
 // #define DRV_DBG(...)                   console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 

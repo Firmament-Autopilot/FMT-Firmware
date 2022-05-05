@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
+
 #include <firmament.h>
 
 #include "board_device.h"
@@ -20,6 +22,8 @@
 #include "hal/accel/accel.h"
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
+
+#include "module/math/rotation.h"
 
 #define DRV_DBG(...)
 
@@ -297,8 +301,6 @@ static rt_err_t gyro_read_rad(float gyr[3])
 
     // change to NED coordinate
     bmi055_rotate_to_ned(gyr);
-
-    return RT_EOK;
 }
 
 static rt_err_t gyroscope_init(void)
@@ -496,6 +498,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
 
     // change to NED coordinate
     bmi055_rotate_to_ned(acc);
+
 
     return RT_EOK;
 }
