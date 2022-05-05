@@ -428,7 +428,7 @@ static rt_err_t _init(void)
     return res;
 }
 
-static void rotate_to_ned(int16_t val[3])
+RT_WEAK void mpu6000_rotate_to_ned(float *data)
 {
     uint16_t temp = val[0];
     val[0] = val[1];

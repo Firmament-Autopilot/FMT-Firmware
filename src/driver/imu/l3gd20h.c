@@ -127,6 +127,15 @@ static rt_device_t spi_device;
 static float _gyro_range_scale;
 // static float _gyro_range_rad_s;
 
+RT_WEAK void l3gd20h_rotate_to_ned(float *data)
+{
+	// TODO, for diffirent pixhawk version, it may has diffirent rotation
+	//rotate the axes to be compatable with boars axes(NED axis)
+	int16_t temp = gyr[0];
+	gyr[0] = gyr[1];
+	gyr[1] = -temp;
+}
+
 
 static rt_err_t _write_reg(rt_uint8_t reg, rt_uint8_t val)
 {
@@ -184,12 +193,6 @@ static rt_err_t l3gd20h_read_raw(int16_t gyr[3])
 	res |= _read_reg(ADDR_OUT_Z_L, &r_val_l);
 	res |= _read_reg(ADDR_OUT_Z_H, &r_val_h);
 	gyr[2] = (int16_t)((r_val_h << 8) | r_val_l);
-
-	// TODO, for diffirent pixhawk version, it may has diffirent rotation
-	//rotate the axes to be compatable with boars axes(NED axis)
-	int16_t temp = gyr[0];
-	gyr[0] = gyr[1];
-	gyr[1] = -temp;
 
 	return res;
 }
@@ -258,6 +261,7 @@ static rt_err_t l3gd20h_gyr_read_dps(float gyr[3])
 	gyr[1] = raw_gyr[1] * _gyro_range_scale;
 	gyr[2] = raw_gyr[2] * _gyro_range_scale;
 
+
 	return RT_EOK;
 }
 
@@ -275,6 +279,8 @@ static rt_err_t l3gd20h_read_rad(float gyr[3])
 	gyr[0] = raw_gyr[0] * _gyro_range_scale * DEG2RAD_FACTOR;
 	gyr[1] = raw_gyr[1] * _gyro_range_scale * DEG2RAD_FACTOR;
 	gyr[2] = raw_gyr[2] * _gyro_range_scale * DEG2RAD_FACTOR;
+	
+	l3gd20h_rotate_to_ned(gyr);
 
 	return RT_EOK;
 }

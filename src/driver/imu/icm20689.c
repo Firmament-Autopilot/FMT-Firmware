@@ -134,7 +134,7 @@ static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t r
     return RT_EOK;
 }
 
-static void rotate_to_ned(int16_t val[3])
+RT_WEAK void icm20689_rotate_to_ned(float val[3])
 {
     uint16_t temp = val[0];
     val[0] = val[1];
@@ -299,8 +299,6 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
     gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     gyr[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(gyr);
 
     return RT_EOK;
 }
@@ -314,6 +312,8 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
+    // change to NED coordinate
+    icm20689_rotate_to_ned(gyr);
 
     return RT_EOK;
 }
@@ -371,8 +371,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     acc[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(acc);
+
 
     return RT_EOK;
 }
@@ -386,6 +385,8 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
+    // change to NED coordinate
+    icm20689_rotate_to_ned(acc);
 
     return RT_EOK;
 }
