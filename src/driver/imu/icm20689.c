@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
+
 #include <firmament.h>
 
 #include "board_device.h"
@@ -21,6 +23,9 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
+#include "module/math/rotation.h"
+
+#ifdef BOARD_USE_ICM20689
 
 #define DRV_DBG(...) printf(__VA_ARGS__)
 
@@ -299,8 +304,6 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
     gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     gyr[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(gyr);
 
     return RT_EOK;
 }
@@ -314,7 +317,8 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
-
+    // change to NED coordinate
+    rotation(ICM20689_ROTATION, &gyr[0], &gyr[1], &gyr[2]);
     return RT_EOK;
 }
 
@@ -371,8 +375,6 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     acc[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(acc);
 
     return RT_EOK;
 }
@@ -386,7 +388,9 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
-
+    // change to NED coordinate
+    rotation(ICM20689_ROTATION, &acc[0], &acc[1], &acc[2]);
+    
     return RT_EOK;
 }
 
@@ -491,3 +495,5 @@ rt_err_t drv_icm20689_init(const char* spi_device_name, const char* gyro_device_
 
     return RT_EOK;
 }
+
+#endif

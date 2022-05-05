@@ -23,6 +23,9 @@
 #include "hal/i2c/i2c.h"
 #include "driver/mag/hmc5883.h"
 
+#ifdef BOARD_USE_HMC5883
+
+
 #define SALVE_ADDR		0x1E	/* 7 bit address, i2c_bit_send_address() will left shift address by 1 bit */
 
 #define ADDR_CONF_A				0x00
@@ -358,3 +361,5 @@ rt_err_t rt_hmc5883_init(char* i2c_device_name)
 
 	return res;
 }
+
+#endif

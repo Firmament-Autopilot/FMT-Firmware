@@ -411,19 +411,28 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
 #else
     /* init onboard sensors */
-    RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
-    RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
-    RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
+
+#ifdef BOARD_USE_ICM20689
+    RT_CHECK(drv_icm20689_init(ICM20689_DEV_NAME, ICM20689_GYRO_NAME, ICM20689_ACC_NAME));
+    FMT_CHECK(register_sensor_imu(ICM20689_GYRO_NAME, ICM20689_ACC_NAME, 0));
+#endif
+#ifdef BOARD_USE_BMI055
+    RT_CHECK(drv_bmi055_init(BMI055_DEV_NAME, BMI055_GYRO_NAME, BMI055_ACC_NAME));
+    FMT_CHECK(register_sensor_imu(BMI055_GYRO_NAME, BMI055_ACC_NAME, 0));
+#endif
+
+#ifdef BOARD_USE_MS5611
+    RT_CHECK(drv_ms5611_init(MS5611_DEV_NAME, MS5611_NAME));
+    FMT_CHECK(register_sensor_barometer(MS5611_NAME));
+#endif
+
+#ifdef BOARD_USE_IST8310
     /* if no gps mag then use onboard mag */
-    if (drv_ist8310_init("i2c1_dev1", "mag0") != FMT_EOK) {
-        RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
-    }
+    RT_CHECK(drv_ist8310_init(IST8310_DEV_NAME, IST8310_NAME));
+    FMT_CHECK(register_sensor_mag(IST8310_NAME, 0));
+#endif
     RT_CHECK(gps_m8n_init("serial3", "gps"));
 
-    /* register sensor to sensor hub */
-    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    FMT_CHECK(register_sensor_mag("mag0", 0));
-    FMT_CHECK(register_sensor_barometer("barometer"));
 #endif
 
     /* init finsh */

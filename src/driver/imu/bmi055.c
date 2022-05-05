@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
+
 #include <firmament.h>
 
 #include "board_device.h"
@@ -20,6 +22,9 @@
 #include "hal/accel/accel.h"
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
+
+#include "module/math/rotation.h"
+#ifdef BOARD_USE_BMI055
 
 #define DRV_DBG(...)
 
@@ -281,7 +286,6 @@ static rt_err_t gyro_set_range(unsigned max_dps)
 static rt_err_t gyro_read_raw(int16_t gyr[3])
 {
     RT_TRY(spi_read_multi_reg8(gyro_spi_dev, BMI055_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
-    rotate_to_ned(gyr);
 
     return RT_EOK;
 }
@@ -295,6 +299,8 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
+
+    rotation(BMI055_ROTATION, &gyr[0], &gyr[1], &gyr[2]);
 
     return RT_EOK;
 }
@@ -479,8 +485,6 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     msblsb = buffer[5] << 8 | buffer[4];
     acc[2] = msblsb >> 4;
 
-    rotate_to_ned(acc);
-
     return RT_EOK;
 }
 
@@ -493,6 +497,8 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
+
+    rotation(BMI055_ROTATION, &acc[0], &acc[1], &acc[2]);
 
     return RT_EOK;
 }
@@ -621,3 +627,6 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
 
     return RT_EOK;
 }
+
+
+#endif

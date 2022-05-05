@@ -18,6 +18,10 @@
 #include "hal/i2c/i2c_dev.h"
 #include "hal/mag/mag.h"
 
+#include "module/math/rotation.h"
+
+#ifdef BOARD_USE_IST8310
+
 // #define DRV_DBG(...)                   console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
@@ -88,7 +92,7 @@ static rt_err_t mag_raw_measure(int16_t mag[3])
     mag[0] = ((int16_t)buffer[1] << 8) | (int16_t)buffer[0];
     mag[1] = ((int16_t)buffer[3] << 8) | (int16_t)buffer[2];
     mag[2] = ((int16_t)buffer[5] << 8) | (int16_t)buffer[4];
-    /* Rotate to NED */
+
     ist8310_user_rotation(mag);
 
     /* start next measurement */
@@ -106,6 +110,9 @@ static rt_err_t mag_measure(float mag[3])
     mag[0] = _range_scale * raw[0];
     mag[1] = _range_scale * raw[1];
     mag[2] = _range_scale * raw[2];
+
+    /* Rotate to NED */
+    rotation(IST8310_ROTATION, &mag[0], &mag[1], &mag[2]);
 
     if (ist8310_user_calibrate != RT_NULL) {
         /* do user defined calibration */
@@ -201,3 +208,4 @@ rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_na
 
     return RT_EOK;
 }
+#endif

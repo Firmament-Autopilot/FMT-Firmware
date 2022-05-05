@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
 #include "driver/barometer/ms5611.h"
 #include "hal/barometer/barometer.h"
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
 #include <firmament.h>
 #include <math.h>
+
+#ifdef BOARD_USE_MS5611
 
 //#define BARO_ENABLE_TIMER_UPDATE
 
@@ -421,3 +424,5 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* sensor_device_
 
     return ret;
 }
+
+#endif
