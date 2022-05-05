@@ -68,7 +68,7 @@ static float _range_scale = IST8310_SCALE_TO_GAUSS;
 RT_WEAK void ist8310_user_calibrate(float data[3]);
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void ist8310_user_rotation(int16_t data[3])
+RT_WEAK void ist8310_rotation_ned(float *data)
 {
     int16_t temp;
 
@@ -77,6 +77,7 @@ RT_WEAK void ist8310_user_rotation(int16_t data[3])
     data[0] = data[1];
     data[1] = temp;
 }
+
 
 static rt_err_t mag_raw_measure(int16_t mag[3])
 {
@@ -88,9 +89,6 @@ static rt_err_t mag_raw_measure(int16_t mag[3])
     mag[0] = ((int16_t)buffer[1] << 8) | (int16_t)buffer[0];
     mag[1] = ((int16_t)buffer[3] << 8) | (int16_t)buffer[2];
     mag[2] = ((int16_t)buffer[5] << 8) | (int16_t)buffer[4];
-    /* Rotate to NED */
-    ist8310_user_rotation(mag);
-
     /* start next measurement */
     // RT_TRY(i2c_write_reg(i2c_dev, REG_CTRL1, CTRL1_ODR_SINGLE));
 
@@ -107,6 +105,8 @@ static rt_err_t mag_measure(float mag[3])
     mag[1] = _range_scale * raw[1];
     mag[2] = _range_scale * raw[2];
 
+    ist8310_rotation_ned(mag);
+    
     if (ist8310_user_calibrate != RT_NULL) {
         /* do user defined calibration */
         ist8310_user_calibrate(mag);

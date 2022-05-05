@@ -195,6 +195,11 @@ static rt_err_t _write_checked_reg(rt_uint8_t reg, rt_uint8_t val)
     return RT_EOK;
 }
 
+RT_WEAK void lsm303d_rotate_to_ned(float *data)
+{
+
+}
+
 static rt_err_t _accel_set_range(uint8_t max_g)
 {
     uint8_t setbits = 0;
@@ -430,6 +435,8 @@ static rt_err_t _mag_measure(float mag[3])
     mag[1] = raw[1] * _mag_range_scale;
     mag[2] = raw[2] * _mag_range_scale;
 
+    lsm303d_rotate_to_ned(mag);
+
     return res;
 }
 
@@ -472,6 +479,8 @@ static rt_err_t _acc_measure(float acc[3])
     acc[1] = raw[1] * _accel_range_scale;
     acc[2] = raw[2] * _accel_range_scale;
 
+    lsm303d_rotate_to_ned(acc);
+    
     return res;
 }
 
