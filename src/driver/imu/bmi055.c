@@ -301,6 +301,8 @@ static rt_err_t gyro_read_rad(float gyr[3])
 
     // change to NED coordinate
     bmi055_rotate_to_ned(gyr);
+
+    return RT_EOK;
 }
 
 static rt_err_t gyroscope_init(void)
