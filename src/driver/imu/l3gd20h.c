@@ -127,6 +127,14 @@ static rt_device_t spi_device;
 static float _gyro_range_scale;
 // static float _gyro_range_rad_s;
 
+RT_WEAK void l3gd20h_rotate_to_ned(float *data)
+{
+	// TODO, for diffirent pixhawk version, it may has diffirent rotation
+	//rotate the axes to be compatable with boars axes(NED axis)
+	float temp = data[0];
+	data[0] = data[1];
+	data[1] = -temp;
+}
 
 static rt_err_t _write_reg(rt_uint8_t reg, rt_uint8_t val)
 {
@@ -275,6 +283,7 @@ static rt_err_t l3gd20h_read_rad(float gyr[3])
 	gyr[0] = raw_gyr[0] * _gyro_range_scale * DEG2RAD_FACTOR;
 	gyr[1] = raw_gyr[1] * _gyro_range_scale * DEG2RAD_FACTOR;
 	gyr[2] = raw_gyr[2] * _gyro_range_scale * DEG2RAD_FACTOR;
+	l3gd20h_rotate_to_ned(gyr);
 
 	return RT_EOK;
 }
