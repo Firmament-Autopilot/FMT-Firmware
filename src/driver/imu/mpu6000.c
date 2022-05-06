@@ -428,9 +428,9 @@ static rt_err_t _init(void)
     return res;
 }
 
-static void rotate_to_ned(int16_t val[3])
+RT_WEAK void mpu6000_rotate_to_ned(float *val)
 {
-    uint16_t temp = val[0];
+    float temp = val[0];
     val[0] = val[1];
     val[1] = -temp;
 }
@@ -444,8 +444,6 @@ static rt_err_t mpu6000_gyr_read_raw(int16_t gyr[3])
     gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     gyr[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(gyr);
 
     return res;
 }
@@ -460,6 +458,8 @@ static rt_err_t mpu6000_gyr_read_rad(float gyr[3])
     gyr[1] = _gyro_range_scale * gyr_raw[1];
     gyr[2] = _gyro_range_scale * gyr_raw[2];
 
+    mpu6000_rotate_to_ned(gyr);
+
     return res;
 }
 
@@ -472,8 +472,6 @@ static rt_err_t mpu6000_acc_read_raw(int16_t acc[3])
     acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
     acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     acc[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-    // change to NED coordinate
-    rotate_to_ned(acc);
 
     return res;
 }
@@ -487,6 +485,8 @@ static rt_err_t mpu6000_acc_read_m_s2(float acc[3])
     acc[0] = _accel_range_scale * acc_raw[0];
     acc[1] = _accel_range_scale * acc_raw[1];
     acc[2] = _accel_range_scale * acc_raw[2];
+
+    mpu6000_rotate_to_ned(acc);
 
     return res;
 }
