@@ -102,6 +102,12 @@ typedef enum {
 static rt_device_t _i2c_device;
 static struct rt_device ext_mag_device;
 
+/* Re-implement this function to define customized rotation */
+RT_WEAK void hmc5883_rotate_to_ned(float *data)
+{
+    /* do nothing */
+}
+
 int _write_reg(uint8_t reg, uint8_t val)
 {
 	uint16_t flags = 0x0000;
@@ -302,6 +308,8 @@ rt_size_t hmc5883_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t si
 			((float*)buffer)[i * 3] = tbuff[0] * mgPerDigit;
 			((float*)buffer)[i * 3 + 1] = tbuff[1] * mgPerDigit;
 			((float*)buffer)[i * 3 + 2] = tbuff[2] * mgPerDigit;
+
+			hmc5883_rotate_to_ned(buffer + i*3);
 		}
 	} else {
 		/* unknow pos */

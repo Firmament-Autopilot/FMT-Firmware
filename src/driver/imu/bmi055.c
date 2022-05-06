@@ -182,6 +182,12 @@ static rt_device_t accel_spi_dev;
 static float gyro_range_scale;
 static float accel_range_scale;
 
+/* Re-implement this function to define customized rotation */
+RT_WEAK void bmi055_rotate_to_ned(float val[3])
+{
+    /* do nothing */
+}
+
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t r_val;
@@ -204,14 +210,6 @@ static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t r
     RT_TRY(__write_checked_reg(spi_device, reg, value));
 
     return RT_EOK;
-}
-
-RT_WEAK void bmi055_rotate_to_ned(float val[3])
-{
-    float temp = val[0];
-    val[0] = val[1];
-    val[1] = temp;
-    val[2] = -val[2];
 }
 
 static rt_err_t gyro_set_sample_rate(uint32_t frequency_hz)

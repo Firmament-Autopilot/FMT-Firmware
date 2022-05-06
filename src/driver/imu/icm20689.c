@@ -110,6 +110,12 @@ static float gyro_range_scale;
 static float accel_range_scale;
 static rt_device_t imu_spi_dev;
 
+/* Re-implement this function to define customized rotation */
+RT_WEAK void icm20689_rotate_to_ned(float *val)
+{
+    /* do nothing */
+}
+
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t r_val;
@@ -134,13 +140,6 @@ static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t r
     return RT_EOK;
 }
 
-RT_WEAK void icm20689_rotate_to_ned(float *val)
-{
-    float temp = val[0];
-    val[0] = val[1];
-    val[1] = temp;
-    val[2] = -val[2];
-}
 static rt_err_t gyro_set_dlpf_filter(uint32_t frequency_hz)
 {
     reg_val_t reg_val;

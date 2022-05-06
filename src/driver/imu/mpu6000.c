@@ -148,6 +148,12 @@ static float _accel_range_scale;
 static float _accel_range_m_s2;
 static rt_device_t spi_device;
 
+/* Re-implement this function to define customized rotation */
+RT_WEAK void mpu6000_rotate_to_ned(float *val)
+{
+    /* do nothing */
+}
+
 static rt_err_t _write_reg(rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t send_buffer[2];
@@ -426,13 +432,6 @@ static rt_err_t _init(void)
     // systime_udelay(1000);
 
     return res;
-}
-
-RT_WEAK void mpu6000_rotate_to_ned(float *val)
-{
-    float temp = val[0];
-    val[0] = val[1];
-    val[1] = -temp;
 }
 
 static rt_err_t mpu6000_gyr_read_raw(int16_t gyr[3])
