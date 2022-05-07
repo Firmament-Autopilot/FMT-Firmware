@@ -32,10 +32,6 @@ extern "C" {
 #define ACCEL_SPI_BUS_TYPE 1
 #define ACCEL_I2C_BUS_TYPE 2
 
-/* accel read pos */
-#define ACCEL_RD_RAW   1
-#define ACCEL_RD_SCALE 2
-
 /* default config for accel sensor */
 #define ACCEL_CONFIG_DEFAULT                                    \
     {                                                           \

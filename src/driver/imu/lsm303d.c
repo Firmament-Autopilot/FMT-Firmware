@@ -156,9 +156,9 @@ float _accel_range_scale = 0.0f;
 float _mag_range_scale = 0.0f;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void lsm303d_rotate_to_ned(float *data)
+RT_WEAK void lsm303d_rotate_to_ned(float* data)
 {
-	/* do nothing */
+    /* do nothing */
 }
 
 static rt_err_t _write_reg(rt_uint8_t reg, rt_uint8_t val)
@@ -540,20 +540,10 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (pos == ACCEL_RD_RAW) {
-        if (_acc_raw_measure(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-
-    } else if (pos == ACCEL_RD_SCALE) {
-        if (_acc_measure(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("accel unknow read pos:%d\n", pos);
+    if (_acc_measure(((float*)data)) != RT_EOK) {
         return 0;
     }
-
+    
     return size;
 }
 
@@ -594,17 +584,7 @@ static rt_size_t mag_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t siz
         return 0;
     }
 
-    if (pos == MAG_RD_RAW) {
-        if (_mag_raw_measure(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-
-    } else if (pos == MAG_RD_SCALE) {
-        if (_mag_measure(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("mag unknow read pos:%d\n", pos);
+    if (_mag_measure(((float*)data)) != RT_EOK) {
         return 0;
     }
 

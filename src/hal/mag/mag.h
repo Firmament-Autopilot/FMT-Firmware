@@ -38,10 +38,6 @@ extern "C" {
 #define MAG_SPI_BUS_TYPE 1
 #define MAG_I2C_BUS_TYPE 2
 
-/* mag read pos */
-#define MAG_RD_RAW   1
-#define MAG_RD_SCALE 2
-
 /* default config for mag sensor */
 #define MAG_CONFIG_DEFAULT                                  \
     {                                                       \

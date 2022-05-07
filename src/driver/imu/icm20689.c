@@ -111,7 +111,7 @@ static float accel_range_scale;
 static rt_device_t imu_spi_dev;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void icm20689_rotate_to_ned(float *val)
+RT_WEAK void icm20689_rotate_to_ned(float* val)
 {
     /* do nothing */
 }
@@ -298,7 +298,6 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
     gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
     gyr[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
 
-
     return RT_EOK;
 }
 
@@ -337,18 +336,11 @@ static rt_err_t gyro_control(gyro_dev_t gyro, int cmd, void* arg)
 
 static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t size)
 {
-    RT_ASSERT(data != NULL);
+    if (data == NULL) {
+        return 0;
+    }
 
-    if (pos == GYRO_RD_RAW) {
-        if (gyro_read_raw(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else if (pos == GYRO_RD_SCALE) {
-        if (gyro_read_rad(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("gyro unknow read pos:%d\n", pos);
+    if (gyro_read_rad(((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -385,7 +377,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[2] = accel_range_scale * acc_raw[2];
     // change to NED coordinate
     icm20689_rotate_to_ned(acc);
-    
+
     return RT_EOK;
 }
 
@@ -409,18 +401,11 @@ static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 
 static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size_t size)
 {
-    RT_ASSERT(data != NULL);
+    if (data == NULL) {
+        return 0;
+    }
 
-    if (pos == ACCEL_RD_RAW) {
-        if (accel_read_raw(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else if (pos == ACCEL_RD_SCALE) {
-        if (accel_read_m_s2(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("accel unknow read pos:%d\n", pos);
+    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
         return 0;
     }
 

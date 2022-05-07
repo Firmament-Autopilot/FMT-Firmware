@@ -149,7 +149,7 @@ static float _accel_range_m_s2;
 static rt_device_t spi_device;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void mpu6000_rotate_to_ned(float *val)
+RT_WEAK void mpu6000_rotate_to_ned(float* val)
 {
     /* do nothing */
 }
@@ -520,16 +520,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (pos == GYRO_RD_RAW) {
-        if (mpu6000_gyr_read_raw(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else if (pos == GYRO_RD_SCALE) {
-        if (mpu6000_gyr_read_rad(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("gyro unknow read pos:%d\n", pos);
+    if (mpu6000_gyr_read_rad(((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -572,16 +563,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (pos == ACCEL_RD_RAW) {
-        if (mpu6000_acc_read_raw(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else if (pos == ACCEL_RD_SCALE) {
-        if (mpu6000_acc_read_m_s2(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("accel unknow read pos:%d\n", pos);
+    if (mpu6000_acc_read_m_s2(((float*)data)) != RT_EOK) {
         return 0;
     }
 

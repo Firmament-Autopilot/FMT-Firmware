@@ -32,10 +32,6 @@ extern "C" {
 #define GYRO_SPI_BUS_TYPE 1
 #define GYRO_I2C_BUS_TYPE 2
 
-/* accel read pos */
-#define GYRO_RD_RAW   1
-#define GYRO_RD_SCALE 2
-
 /* default config for accel sensor */
 #define GYRO_CONFIG_DEFAULT                              \
     {                                                    \

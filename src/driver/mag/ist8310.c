@@ -68,11 +68,10 @@ static float _range_scale = IST8310_SCALE_TO_GAUSS;
 RT_WEAK void ist8310_user_calibrate(float data[3]);
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void ist8310_rotate_to_ned(float *data)
+RT_WEAK void ist8310_rotate_to_ned(float* data)
 {
     /* do nothing */
 }
-
 
 static rt_err_t mag_raw_measure(int16_t mag[3])
 {
@@ -101,7 +100,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[2] = _range_scale * raw[2];
 
     ist8310_rotate_to_ned(mag);
-    
+
     if (ist8310_user_calibrate != RT_NULL) {
         /* do user defined calibration */
         ist8310_user_calibrate(mag);
@@ -154,16 +153,7 @@ static rt_size_t ist8310_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t
         return 0;
     }
 
-    if (pos == MAG_RD_RAW) {
-        if (mag_raw_measure(((int16_t*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else if (pos == MAG_RD_SCALE) {
-        if (mag_measure(((float*)data)) != RT_EOK) {
-            return 0;
-        }
-    } else {
-        DRV_DBG("mag unknow read pos:%d\n", pos);
+    if (mag_measure(((float*)data)) != RT_EOK) {
         return 0;
     }
 

@@ -70,24 +70,6 @@ void sensor_gyr_correct(sensor_imu_t imu_dev, const float src[3], float dst[3])
 }
 
 /**
- * @brief Measure raw gyro data
- * 
- * @param imu_dev IMU sensor device
- * @param buffer Data buffer
- * @return fmt_err_t FMT_EOK for success
- */
-fmt_err_t sensor_gyr_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
-{
-    rt_size_t r_size;
-
-    RT_ASSERT(imu_dev != NULL);
-
-    r_size = rt_device_read(imu_dev->gyr_dev, GYRO_RD_RAW, (void*)buffer, 6);
-
-    return r_size == 6 ? FMT_EOK : FMT_ERROR;
-}
-
-/**
  * @brief Measure scaled gyro data (rad/s)
  * 
  * @param imu_dev IMU sensor device
@@ -100,7 +82,7 @@ fmt_err_t sensor_gyr_measure(sensor_imu_t imu_dev, float buffer[3])
 
     RT_ASSERT(imu_dev != NULL);
 
-    r_size = rt_device_read(imu_dev->gyr_dev, GYRO_RD_SCALE, (void*)buffer, 12);
+    r_size = rt_device_read(imu_dev->gyr_dev, 0, (void*)buffer, 12);
 
     return r_size == 12 ? FMT_EOK : FMT_ERROR;
 }
@@ -158,24 +140,6 @@ void sensor_acc_correct(sensor_imu_t imu_dev, const float src[3], float dst[3])
 }
 
 /**
- * @brief Measure raw accel data
- * 
- * @param imu_dev IMU sensor device
- * @param buffer Data buffer
- * @return fmt_err_t FMT_EOK for success
- */
-fmt_err_t sensor_acc_raw_measure(sensor_imu_t imu_dev, int16_t buffer[3])
-{
-    rt_size_t r_size;
-
-    RT_ASSERT(imu_dev != NULL);
-
-    r_size = rt_device_read(imu_dev->acc_dev, ACCEL_RD_RAW, (void*)buffer, 6);
-
-    return r_size == 6 ? FMT_EOK : FMT_ERROR;
-}
-
-/**
  * @brief Measure scaled accel data (m/s2)
  * 
  * @param imu_dev IMU sensor device
@@ -188,7 +152,7 @@ fmt_err_t sensor_acc_measure(sensor_imu_t imu_dev, float buffer[3])
 
     RT_ASSERT(imu_dev != NULL);
 
-    r_size = rt_device_read(imu_dev->acc_dev, ACCEL_RD_SCALE, (void*)buffer, 12);
+    r_size = rt_device_read(imu_dev->acc_dev, 0, (void*)buffer, 12);
 
     return r_size == 12 ? FMT_EOK : FMT_ERROR;
 }

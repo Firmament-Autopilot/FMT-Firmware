@@ -69,22 +69,6 @@ void sensor_mag_correct(sensor_mag_t mag_dev, const float src[3], float dst[3])
 }
 
 /**
- * @brief Measure raw mag data
- * 
- * @param mag_dev Mag sensor device
- * @param buffer Data buffer
- * @return fmt_err_t FMT_EOK for success
- */
-fmt_err_t sensor_mag_raw_measure(sensor_mag_t mag_dev, int16_t buffer[3])
-{
-    rt_size_t r_byte;
-
-    r_byte = rt_device_read(mag_dev->dev, MAG_RD_RAW, (void*)buffer, 6);
-
-    return r_byte == 6 ? FMT_EOK : FMT_ERROR;
-}
-
-/**
  * @brief Measure scaled mag data (gauss)
  * 
  * @param mag_dev Mag sensor device
@@ -95,7 +79,7 @@ fmt_err_t sensor_mag_measure(sensor_mag_t mag_dev, float buffer[3])
 {
     rt_size_t r_byte;
 
-    r_byte = rt_device_read(mag_dev->dev, MAG_RD_SCALE, (void*)buffer, 12);
+    r_byte = rt_device_read(mag_dev->dev, 0, (void*)buffer, 12);
 
     return r_byte == 12 ? FMT_EOK : FMT_ERROR;
 }
