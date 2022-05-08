@@ -17,7 +17,8 @@
             "armToolchainPath": "${env:RTT_EXEC_PATH}",
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
             "svdFile": "target/pixhawk/fmu-v5/STM32F7x5.svd",
-            "runToMain": true
+            // "runToMain": true,
+            // "runToEntryPoint": "main",
         },
         {
             "name": "CUAV V5+ Debug J-Link",
@@ -48,6 +49,28 @@
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
             "svdFile": "target/pixhawk/fmu-v2/STM32F427.svd",
             "runToMain": true
-        }
+        },
+        {
+            "name": "QEMU Debug gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/qemu/qemu-vexpress-a9/build/fmt_fmu.elf",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "QEMU debug preLaunchTask (linux)",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:RTT_EXEC_PATH}/arm-none-eabi-gdb",
+            "miDebuggerServerAddress": "localhost:1234",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
     ]
 }

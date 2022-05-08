@@ -20,6 +20,9 @@
 #include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#ifdef FMT_USING_PX4_ECL
+#include "model/px4_ecl/interface/px4_ecl_interface.h"
+#endif
 #include "model/plant/plant_interface.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
@@ -76,6 +79,11 @@ void task_vehicle_entry(void* parameter)
                 /* run Plant model */
                 PERIOD_EXECUTE3(plant_step, plant_model_info.period, time_now, plant_interface_step(timestamp););
 #endif
+
+#ifdef FMT_USING_PX4_ECL
+                /* run PX4_ECL model */
+                PERIOD_EXECUTE3(px4_ecl_step, px4_ecl_model_info.period, time_now, px4_ecl_interface_step(timestamp););
+#endif
                 /* run INS model */
                 PERIOD_EXECUTE3(ins_step, ins_model_info.period, time_now, ins_interface_step(timestamp););
                 /* run FMS model */
@@ -100,6 +108,11 @@ fmt_err_t task_vehicle_init(void)
 #if defined(FMT_USING_SIH)
     /* init plant model */
     plant_interface_init();
+#endif
+
+#ifdef FMT_USING_PX4_ECL
+    /* init px4 ecl model */
+    px4_ecl_interface_init();
 #endif
 
     /* init ins model */

@@ -1,6 +1,8 @@
 # Build Lists
 # Modify this file to control which files/modules should be built
 
+from SCons.Script.Main import *
+
 DRIVERS = [
     'imu/icm20689.c',
     'imu/bmi055.c',
@@ -79,6 +81,46 @@ MODELS_CPPPATH = [
     'fms/base_fms/lib',
     'control/base_controller/lib',
 ]
+
+if GetOption('PX4_ECL'):
+    MODELS_PX4_ECL =['px4_ecl/PX4_ECL/airdata/*.cpp',
+                    'px4_ecl/PX4_ECL/AlphaFilter/*.cpp',
+                    'px4_ecl/PX4_ECL/EKF/*.cpp',
+                    'px4_ecl/PX4_ECL/geo/*.cpp',
+                    'px4_ecl/PX4_ECL/geo_lookup/*.cpp',
+                    'px4_ecl/PX4_ECL/mathlib/*.cpp',
+                    'px4_ecl/PX4_ECL/matrix/*.cpp',
+                    'px4_ecl/interface/*.cpp',
+                    'px4_ecl/interface/*.c']
+    MODELS_CPPPATH_PX4_ECL = ['px4_ecl/PX4_ECL',
+                            'px4_ecl/PX4_ECL/airdata',
+                            'px4_ecl/PX4_ECL/AlphaFilter',
+                            'px4_ecl/PX4_ECL/EKF',
+                            'px4_ecl/PX4_ECL/geo',
+                            'px4_ecl/PX4_ECL/geo_lookup',
+                            'px4_ecl/PX4_ECL/mathlib',
+                            'px4_ecl/PX4_ECL/matrix',
+                            'px4_ecl/interface']
+
+if GetOption('clean'):
+    MODELS +=['px4_ecl/PX4_ECL/airdata/*.cpp',
+             'px4_ecl/PX4_ECL/AlphaFilter/*.cpp',
+             'px4_ecl/PX4_ECL/EKF/*.cpp',
+             'px4_ecl/PX4_ECL/geo/*.cpp',
+             'px4_ecl/PX4_ECL/geo_lookup/*.cpp',
+             'px4_ecl/PX4_ECL/mathlib/*.cpp',
+             'px4_ecl/PX4_ECL/matrix/*.cpp',
+             'px4_ecl/interface/*.cpp',
+             'px4_ecl/interface/*.c']
+    MODELS_CPPPATH += ['px4_ecl/PX4_ECL',
+                      'px4_ecl/PX4_ECL/airdata',
+                      'px4_ecl/PX4_ECL/AlphaFilter',
+                      'px4_ecl/PX4_ECL/EKF',
+                      'px4_ecl/PX4_ECL/geo',
+                      'px4_ecl/PX4_ECL/geo_lookup',
+                      'px4_ecl/PX4_ECL/mathlib',
+                      'px4_ecl/PX4_ECL/matrix',
+                      'px4_ecl/interface']
 
 TASKS = [
     'simple/*.c',

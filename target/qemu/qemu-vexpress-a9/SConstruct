@@ -1,5 +1,12 @@
 import os
 import sys
+
+AddOption('--px4_ecl', 
+          action='store_true', 
+          dest='PX4_ECL', 
+          default=False,
+          help="Enabling this parameter compiles the PX4-ECL component.")
+
 import rtconfig
 
 # FMT path
@@ -27,6 +34,9 @@ env = Environment(tools=['mingw'],
 # Add sys execute PATH to env PATH
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
 env['ASCOM'] = env['ASPPCOM']
+
+if GetOption('PX4_ECL'):
+    print('Note : PX4-ECL is used as an alternative navigation algorithm.')
 
 Export('RTT_ROOT')
 Export('rtconfig')

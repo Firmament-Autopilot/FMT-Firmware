@@ -1,5 +1,12 @@
 import os
 import sys
+
+AddOption('--px4_ecl', 
+          action='store_true', 
+          dest='PX4_ECL', 
+          default=False,
+          help="Enabling this parameter compiles the PX4-ECL component.")
+
 import rtconfig
 
 # FMT path
@@ -35,6 +42,9 @@ if rtconfig.PLATFORM == 'iar':
     env.Replace(ARFLAGS=[''])
     env.Replace(
         LINKCOM=['$LINK $SOURCES $LINKFLAGS -o $TARGET --map project.map'])
+
+if GetOption('PX4_ECL'):
+    print('Note : PX4-ECL is used as an alternative navigation algorithm.')
 
 Export('RTT_ROOT')
 Export('rtconfig')

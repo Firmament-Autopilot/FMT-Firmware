@@ -1,4 +1,5 @@
 import os
+from SCons.Script.Main import *
 
 # board options
 BOARD = 'qemu-vexpress-a9'
@@ -50,7 +51,13 @@ if PLATFORM == 'gcc':
     else:
         CFLAGS += ' -O2'
 
-    CXXFLAGS = CFLAGS + ' -Woverloaded-virtual -fno-exceptions -fno-rtti'
+    if GetOption('PX4_ECL'):
+        CFLAGS += ' -DFMT_USING_PX4_ECL'
+        CXXFLAGS = CFLAGS + ' -fno-exceptions -fno-rtti' #-Woverloaded-virtual
+    else:
+        CXXFLAGS = CFLAGS + ' -Woverloaded-virtual -fno-exceptions -fno-rtti'
+
+    # CXXFLAGS = CFLAGS + ' -Woverloaded-virtual -fno-exceptions -fno-rtti'
 
     M_CFLAGS = CFLAGS + ' -mlong-calls -fPIC '
     M_CXXFLAGS = CXXFLAGS + ' -mlong-calls -fPIC'

@@ -1,4 +1,5 @@
 import os
+from SCons.Script.Main import *
 
 # board options
 BOARD = 'pixhawk4'
@@ -9,6 +10,7 @@ CPU = 'cortex-m7'
 CROSS_TOOL = 'gcc'
 # build version: debug or release
 BUILD = 'release'
+# BUILD = 'debug'
 
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')
@@ -58,7 +60,13 @@ if PLATFORM == 'gcc':
     else:
         CFLAGS += ' -O2'
 
-    CXXFLAGS = CFLAGS
+    if GetOption('PX4_ECL'):
+        CFLAGS += ' -DFMT_USING_PX4_ECL'
+        CXXFLAGS = CFLAGS
+    else:
+        CXXFLAGS = CFLAGS
+
+    #CXXFLAGS = CFLAGS
     CFLAGS += ' -std=c99'
     CXXFLAGS += ' -std=c++14'
 

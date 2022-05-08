@@ -28,6 +28,10 @@
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
 
+#ifdef FMT_USING_PX4_ECL
+#include "model/px4_ecl/interface/px4_ecl_interface.h"
+MCN_DECLARE(px4_ecl_output);
+#endif 
 MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
@@ -203,6 +207,106 @@ static bool mavlink_msg_system_time_cb(mavlink_message_t* msg_t)
     return true;
 }
 
+#ifdef FMT_USING_PX4_ECL
+static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
+{
+
+    mavlink_attitude_t attitude;
+    PX4_ECL_Out_Bus px4_ecl_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(px4_ecl_output), &px4_ecl_out) != FMT_EOK) {
+        return false;
+    }
+
+    attitude.roll = px4_ecl_out.phi;
+    attitude.pitch = px4_ecl_out.theta;
+    attitude.yaw = px4_ecl_out.psi;
+    attitude.rollspeed = px4_ecl_out.p;
+    attitude.pitchspeed = px4_ecl_out.q;
+    attitude.yawspeed = px4_ecl_out.r;
+
+    mavlink_msg_attitude_encode(mavlink_system.sysid, mavlink_system.compid,
+        msg_t, &attitude);
+
+    return true;
+}
+
+static bool mavlink_msg_local_pos_cb(mavlink_message_t* msg_t)
+{
+    PX4_ECL_Out_Bus px4_ecl_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(px4_ecl_output), &px4_ecl_out) != FMT_EOK) {
+        return false;
+    }
+    // if((px4_ecl_out.flag & 1<<6) == 0){
+    //     return false;
+    // }
+
+    mavlink_msg_local_position_ned_pack(
+        mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
+        px4_ecl_out.x_R, px4_ecl_out.y_R, -px4_ecl_out.h_R, px4_ecl_out.vn, px4_ecl_out.ve,
+        px4_ecl_out.vd);
+
+    return true;
+}
+
+static bool mavlink_msg_global_pos_cb(mavlink_message_t* msg_t)
+{
+    PX4_ECL_Out_Bus px4_ecl_out;
+    uint16_t hdg;
+
+    if (mcn_copy_from_hub(MCN_HUB(px4_ecl_output), &px4_ecl_out) != FMT_EOK) {
+        return false;
+    }
+
+    hdg = RAD2DEG(px4_ecl_out.psi < 0 ? px4_ecl_out.psi + 2 * PI : px4_ecl_out.psi) * 100;
+
+    mavlink_msg_global_position_int_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
+        RAD2DEG(px4_ecl_out.lat) * 1e7, RAD2DEG(px4_ecl_out.lon) * 1e7, px4_ecl_out.alt * 1e3,
+        px4_ecl_out.h_R * 1e3, px4_ecl_out.vn * 10, px4_ecl_out.ve * 10, px4_ecl_out.vd * 10, hdg);
+
+    return true;
+}
+
+static bool mavlink_msg_vfr_hud_cb(mavlink_message_t* msg_t)
+{
+    PX4_ECL_Out_Bus px4_ecl_out;
+    float groundspeed;
+    int16_t heading;
+
+    if (mcn_copy_from_hub(MCN_HUB(px4_ecl_output), &px4_ecl_out) != FMT_EOK) {
+        return false;
+    }
+
+    groundspeed = sqrtf(px4_ecl_out.vn * px4_ecl_out.vn + px4_ecl_out.ve * px4_ecl_out.ve);
+    heading = RAD2DEG(px4_ecl_out.psi < 0 ? px4_ecl_out.psi + 2 * PI : px4_ecl_out.psi);
+
+    mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t,
+        0, groundspeed, heading, 0, px4_ecl_out.alt, -px4_ecl_out.vd);
+
+    return true;
+}
+
+static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
+{
+    PX4_ECL_Out_Bus px4_ecl_out;
+    baro_data_t baro_report;
+
+    if (mcn_copy_from_hub(MCN_HUB(px4_ecl_output), &px4_ecl_out) != FMT_EOK) {
+        return false;
+    }
+    if (mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_report) != FMT_EOK) {
+        return false;
+    }
+
+    mavlink_msg_altitude_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms() * 1e3,
+        baro_report.altitude_m, baro_report.altitude_m, -px4_ecl_out.h_R, -px4_ecl_out.h_R, px4_ecl_out.h_AGL, 0.0f);
+
+    return true;
+}
+
+#else
+
 static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
 {
     mavlink_attitude_t attitude;
@@ -295,6 +399,8 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
 
     return true;
 }
+
+#endif
 
 static bool mavlink_msg_gps_raw_int_cb(mavlink_message_t* msg_t)
 {

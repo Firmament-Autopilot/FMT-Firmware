@@ -13,4 +13,14 @@ for d in bl.MODELS_CPPPATH:
 
 group = DefineGroup('Model', src, depend=[''], CPPPATH=inc)
 
+if GetOption('PX4_ECL'):
+    src = []
+    for f in bl.MODELS_PX4_ECL:
+        src += Glob(f)
+    inc = []
+    for d in bl.MODELS_CPPPATH_PX4_ECL:
+        inc += [cwd + '/' + d]
+    group = group + DefineGroup('Model_PX4_ECL', src, depend=[''], CPPPATH=inc, 
+                                CPPDEFINES=['ECL_STANDALONE'],CXXFLAGS=['-Wno-overloaded-virtual'])
+
 Return('group')

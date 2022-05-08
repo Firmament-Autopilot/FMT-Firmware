@@ -7,6 +7,12 @@
             "label": "echo",
             "type": "shell",
             "command": "echo ${env:USERNAME}"
+        },
+        {
+            "label": "QEMU debug preLaunchTask (linux)",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/target/qemu/qemu-vexpress-a9/ && sh qemu-dbg.sh",
+            "isBackground": true,
         }
     ]
 }
