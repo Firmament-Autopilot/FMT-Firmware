@@ -119,6 +119,10 @@ fmt_err_t led_init(struct device_pin_mode pin_mode)
 
 fmt_err_t rgb_led_set_color(uint32_t color)
 {
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
+    }
+
     if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
         return FMT_ERROR;
     }
@@ -128,6 +132,10 @@ fmt_err_t rgb_led_set_color(uint32_t color)
 
 fmt_err_t rgb_led_set_bright(uint32_t bright)
 {
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
+    }
+
     if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
         return FMT_ERROR;
     }
