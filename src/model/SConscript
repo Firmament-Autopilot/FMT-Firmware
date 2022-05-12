@@ -11,6 +11,6 @@ inc = []
 for d in bl.MODELS_CPPPATH:
     inc += [cwd + '/' + d]
 
-group = DefineGroup('Model', src, depend=[''], CPPPATH=inc, CPPDEFINES=['ECL_STANDALONE'])
+group = DefineGroup('Model', src, depend=[''], CPPPATH=inc, CPPDEFINES=['ECL_STANDALONE'], CXXFLAGS=['-Wno-overloaded-virtual'])
 
 Return('group')
