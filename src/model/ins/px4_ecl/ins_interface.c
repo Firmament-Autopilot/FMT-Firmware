@@ -471,6 +471,13 @@ void ins_interface_step(uint32_t timestamp)
     /* run INS */
     px4_ecl_step();
 
+    px4_ecl_out_bus.p = ins_handle.imu_report.gyr_B_radDs[0];
+    px4_ecl_out_bus.q = ins_handle.imu_report.gyr_B_radDs[1];
+    px4_ecl_out_bus.r = ins_handle.imu_report.gyr_B_radDs[2];
+    px4_ecl_out_bus.ax = ins_handle.imu_report.acc_B_mDs2[0];
+    px4_ecl_out_bus.ay = ins_handle.imu_report.acc_B_mDs2[1];
+    px4_ecl_out_bus.az = ins_handle.imu_report.acc_B_mDs2[2];
+
     /* publish INS output */
     mcn_publish(MCN_HUB(ins_output), &px4_ecl_out_bus);
 

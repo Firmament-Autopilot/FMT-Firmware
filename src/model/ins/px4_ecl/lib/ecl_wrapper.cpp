@@ -18,6 +18,8 @@
 #include <ecl.h>
 #include <mathlib/mathlib.h>
 
+#include "module/math/quaternion.h"
+
 Ekf* _ekf;
 
 extern "C" {
@@ -256,19 +258,14 @@ void Ekf_set_in_air_status(bool in_air)
 
 void Ekf_IMU_update(bool updated, uint32_t timestamp_ms, uint32_t dt_ms, float gyr_B_radDs[3], float acc_B_mDs2[3], bool clipping[3])
 {
-
     if (updated) {
-
         imuSample imu_sample_new {};
 
         imu_sample_new.time_us = timestamp_ms * 1.0e3f;
-
         imu_sample_new.delta_ang_dt = dt_ms * 1.0e-3f;
         imu_sample_new.delta_ang = Vector3f { gyr_B_radDs } * imu_sample_new.delta_ang_dt;
-
         imu_sample_new.delta_vel_dt = dt_ms * 1.0e-3f;
         imu_sample_new.delta_vel = Vector3f { acc_B_mDs2 } * imu_sample_new.delta_vel_dt;
-
         imu_sample_new.delta_vel_clipping[0] = clipping[0];
         imu_sample_new.delta_vel_clipping[1] = clipping[1];
         imu_sample_new.delta_vel_clipping[2] = clipping[2];
@@ -320,27 +317,15 @@ void Ekf_GPS_update(bool updated, uint32_t timestamp_ms, int32_t lon, int32_t la
         gps_message_new.alt = height;
         gps_message_new.yaw = NAN;
         gps_message_new.yaw_offset = 0;
-        // gps_message_new.fix_type = fixType,
-        gps_message_new.eph = hAcc * 1.0e-3f;
-        gps_message_new.epv = vAcc * 1.0e-3f;
-        gps_message_new.sacc = sAcc * 1.0e-3f;
-        gps_message_new.vel_m_s = sqrt(velN * velN + velE * velE + velD * velD) * 1.0e-3f;
-        gps_message_new.vel_ned = Vector3f { velN * 1.0e-3f, velE * 1.0e-3f, velD * 1.0e-3f };
+        gps_message_new.fix_type = fixType,
+        gps_message_new.eph = hAcc;
+        gps_message_new.epv = vAcc ;
+        gps_message_new.sacc = sAcc;
+        gps_message_new.vel_m_s = vel;
+        gps_message_new.vel_ned = Vector3f { velN, velE, velD};
         gps_message_new.vel_ned_valid = true;
         gps_message_new.nsats = numSV;
-        gps_message_new.pdop = sqrt(hAcc * hAcc + vAcc * vAcc) * 1.0e-3f;
-
-        switch (fixType) {
-        case 0x02:
-            gps_message_new.fix_type = 2;
-            break;
-        case 0x03:
-            gps_message_new.fix_type = 3;
-            break;
-        default:
-            gps_message_new.fix_type = 0;
-            break;
-        }
+        gps_message_new.pdop = sqrt(hAcc * hAcc + vAcc * vAcc);
 
         _ekf->setGpsData(gps_message_new);
     }
@@ -351,11 +336,9 @@ bool Ekf_step(void)
     return _ekf->update();
 }
 
-bool Ekf_get_estimator_quaternion(void)
+void Ekf_get_attitude(void)
 {
-
     if (_ekf->attitude_valid()) {
-
         const Quatf q { _ekf->calculate_quaternion() };
         px4_ecl_out_bus.quat[0] = q(0);
         px4_ecl_out_bus.quat[1] = q(1);
@@ -367,74 +350,87 @@ bool Ekf_get_estimator_quaternion(void)
         px4_ecl_out_bus.theta = euler(1);
         px4_ecl_out_bus.psi = euler(2);
 
-        px4_ecl_out_bus.flag |= 1 << 2;
-        px4_ecl_out_bus.flag |= 1 << 3;
+        const Vector3f gyro_bias { _ekf->getGyroBias() };
+        const imuSample imusample(_ekf->get_imu_sample_delayed());
+        const Vector3f rates { imusample.delta_ang / imusample.delta_ang_dt };
+        px4_ecl_out_bus.p = rates(0) - gyro_bias(0);
+        px4_ecl_out_bus.q = rates(1) - gyro_bias(1);
+        px4_ecl_out_bus.r = rates(2) - gyro_bias(2);
 
-        return true;
+        px4_ecl_out_bus.flag |= (1 << 2) | (1 << 3);
     } else {
-        return false;
+        px4_ecl_out_bus.flag &= ~((1 << 2) | (1 << 3));
     }
 }
 
-void Ekf_get_estimator_angrate(void)
+void Ekf_get_local_position(void)
 {
+    if(_ekf->local_position_is_valid()) {
+        // Position of body origin in local NED frame
+        const Vector3f position = _ekf->getPosition();
+        px4_ecl_out_bus.x_R = position(0);
+        px4_ecl_out_bus.y_R = position(1);
+        px4_ecl_out_bus.h_R = -position(2);
 
-    const Vector3f gyro_bias { _ekf->getGyroBias() };
-    const imuSample imusample(_ekf->get_imu_sample_delayed());
-    const Vector3f rates { imusample.delta_ang / imusample.delta_ang_dt };
-    px4_ecl_out_bus.p = rates(0) - gyro_bias(0);
-    px4_ecl_out_bus.q = rates(1) - gyro_bias(1);
-    px4_ecl_out_bus.r = rates(2) - gyro_bias(2);
-    px4_ecl_out_bus.flag |= (1 << 2 | 1 << 3);
+        // Velocity of body origin in local NED frame (m/s)
+        const Vector3f velocity = _ekf->getVelocity();
+        px4_ecl_out_bus.vn = velocity(0);
+        px4_ecl_out_bus.ve = velocity(1);
+        px4_ecl_out_bus.vd = velocity(2);
+
+        px4_ecl_out_bus.flag |= (1 << 4) | (1 << 6) | (1 << 7);
+    } else {
+        px4_ecl_out_bus.flag &= ~((1 << 4) | (1 << 6) | (1 << 7));
+    }
 }
 
-void Ekf_get_estimator_acc(void)
+void Ekf_get_global_position(void)
 {
+    if(_ekf->global_position_is_valid()) {
+        const Vector3f position = _ekf->getPosition();
+        const map_projection_reference_s ref_pos = _ekf->global_origin();
+        const float ref_alt = _ekf->getEkfGlobalOriginAltitude();
 
-    // get the velocity derivative in earth frame
-    // note : in earth frame not in body frame
+        if(map_projection_reproject(&ref_pos, position(0), position(1), &px4_ecl_out_bus.lat, &px4_ecl_out_bus.lon) == 0) {
+            px4_ecl_out_bus.lat = math::radians(px4_ecl_out_bus.lat);
+            px4_ecl_out_bus.lon = math::radians(px4_ecl_out_bus.lon);
+            px4_ecl_out_bus.alt = -position(2) + ref_alt;
+            px4_ecl_out_bus.lat_0 = ref_pos.lat_rad;
+            px4_ecl_out_bus.lon_0 = ref_pos.lon_rad;
+            px4_ecl_out_bus.alt_0 = ref_alt;
+
+            px4_ecl_out_bus.flag |= 1 << 5;
+        } else {
+            px4_ecl_out_bus.flag &= ~(1 << 5);
+        }
+    } else {
+        px4_ecl_out_bus.flag &= ~(1 << 5);
+    }
+}
+
+void Ekf_get_acc(void)
+{
+    const Quatf q { _ekf->calculate_quaternion() };
     const Vector3f vel_deriv { _ekf->getVelocityDerivative() };
-    px4_ecl_out_bus.ax = vel_deriv(0);
-    px4_ecl_out_bus.ay = vel_deriv(1);
-    px4_ecl_out_bus.az = vel_deriv(2);
+    quaternion quat = {q(0), q(1), q(2), q(3)};
+    float acc_O[3] = {vel_deriv(0), vel_deriv(1),vel_deriv(2)};
+    float acc_B[3];
+
+    quaternion_inv_rotateVector(&quat, acc_O, acc_B);
+
+    px4_ecl_out_bus.ax = acc_B[0];
+    px4_ecl_out_bus.ay = acc_B[1];
+    px4_ecl_out_bus.az = acc_B[2];
 }
 
-void Ekf_get_estimator_vel(void)
+void Ekf_get_TerrainVertPos(void)
 {
-
-    // Vehicle odometry linear velocity
-    // note : local NED earth frame velocity
-    const Vector3f velocity { _ekf->getVelocity() };
-    px4_ecl_out_bus.vn = velocity(0);
-    px4_ecl_out_bus.ve = velocity(1);
-    px4_ecl_out_bus.vd = velocity(2);
-    px4_ecl_out_bus.flag |= 1 << 4;
-}
-
-void Ekf_get_estimator_position(void)
-{
-
-    // Position of body origin in local NED frame
-    const Vector3f position { _ekf->getPosition() };
-    px4_ecl_out_bus.x_R = position(0);
-    px4_ecl_out_bus.y_R = position(1);
-    px4_ecl_out_bus.h_R = position(2);
-    px4_ecl_out_bus.flag |= 1 << 6;
-}
-
-void Ekf_get_estimator_global_position(void)
-{
-
-    const Vector3f position { _ekf->getPosition() };
-    map_projection_reproject(&(_ekf->global_origin()), position(0), position(1), &px4_ecl_out_bus.lat, &px4_ecl_out_bus.lon);
-    px4_ecl_out_bus.alt = -position(2) + _ekf->getEkfGlobalOriginAltitude(); // Altitude AMSL in meters
-    px4_ecl_out_bus.flag |= (1 << 5 | 1 << 7);
-}
-
-void Ekf_get_estimator_TerrainVertPos(void)
-{
-    px4_ecl_out_bus.h_AGL = _ekf->getTerrainVertPos();
-    px4_ecl_out_bus.flag |= 1 << 8;
+    if(_ekf->isTerrainEstimateValid()) {
+        px4_ecl_out_bus.h_AGL = _ekf->getTerrainVertPos();
+        px4_ecl_out_bus.flag |= 1 << 8;
+    } else {
+        px4_ecl_out_bus.flag &= ~(1 << 8);
+    }
 }
 
 }

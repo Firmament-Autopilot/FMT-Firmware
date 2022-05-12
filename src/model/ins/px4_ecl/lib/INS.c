@@ -24,10 +24,10 @@ INS_Params px4_ecl_params = {0};
 
 void px4_ecl_init(void)
 {
-    // 新建 Ekf 类 (Ekf *_ekf)
+    /* create EKF instance */
     Ekf_create();
 
-    //*************************** set params ***************************//
+    /* set EKF parameter */
     Ekf_set_param_ekf2_gyr_noise(px4_ecl_params.ekf2_gyr_noise);
     Ekf_set_param_ekf2_acc_noise(px4_ecl_params.ekf2_acc_noise);
     Ekf_set_param_ekf2_gyr_b_noise(px4_ecl_params.ekf2_gyr_b_noise);
@@ -58,9 +58,8 @@ void px4_ecl_init(void)
     Ekf_set_param_ekf2_drag_noise(px4_ecl_params.ekf2_drag_noise);
     Ekf_set_param_ekf2_mag_check(px4_ecl_params.ekf2_mag_check);
     Ekf_set_param_ekf2_synthetic_mag_z(px4_ecl_params.ekf2_synthetic_mag_z);
-    //*************************** set params ***************************//
 
-    // 设置 ekf gps 最低需求的间隔时间
+    /* set EKF gps minimum required period */
     Ekf_set_min_required_gps_health_time(px4_ecl_params.ekf2_req_gps_h * 1.0e6f);
 
     bool is_fixed_wing = false;
@@ -69,17 +68,17 @@ void px4_ecl_init(void)
 
     Ekf_set_gnd_effect_flag(false);
     Ekf_set_in_air_status(true);
+
+    px4_ecl_out_bus.flag |= 1 << 0;
 }
 
 void px4_ecl_step(void)
 {
     if (Ekf_step()) {
-        Ekf_get_estimator_quaternion();
-        Ekf_get_estimator_angrate();
-        Ekf_get_estimator_acc();
-        Ekf_get_estimator_vel();
-        Ekf_get_estimator_position();
-        Ekf_get_estimator_global_position();
-        Ekf_get_estimator_TerrainVertPos();
+        Ekf_get_attitude();
+        Ekf_get_acc();
+        Ekf_get_local_position();
+        Ekf_get_global_position();
+        Ekf_get_TerrainVertPos();
     }
 }

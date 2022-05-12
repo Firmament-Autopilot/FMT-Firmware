@@ -56,12 +56,10 @@ void Ekf_GPS_update(bool updated, uint32_t timestamp_ms, int32_t lon, int32_t la
 					float hAcc, float vAcc, float velN, float velE,	float velD,	float vel,float cog, 
 					float sAcc, uint8_t fixType, uint8_t numSV);
 bool Ekf_step(void);
-bool Ekf_get_estimator_quaternion(void);
-void Ekf_get_estimator_angrate(void);
-void Ekf_get_estimator_acc(void);
-void Ekf_get_estimator_vel(void);
-void Ekf_get_estimator_position(void);
-void Ekf_get_estimator_global_position(void);
-void Ekf_get_estimator_TerrainVertPos(void);
+void Ekf_get_attitude(void);
+void Ekf_get_acc(void);
+void Ekf_get_local_position(void);
+void Ekf_get_global_position(void);
+void Ekf_get_TerrainVertPos(void);
 
 #endif
