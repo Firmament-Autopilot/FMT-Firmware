@@ -145,7 +145,7 @@ static param_t __param_list[] = {
 
     // measurement source control
     PARAM_INT32(ekf2_aid_mask, MASK_USE_GPS),                                         ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
-    PARAM_INT32(ekf2_hgt_mode, VDIST_SENSOR_BARO),                                    ///< selects the primary source for height data
+    PARAM_INT32(ekf2_hgt_mode, VDIST_SENSOR_GPS),                                    ///< selects the primary source for height data
     PARAM_INT32(ekf2_terr_mask, TERRAIN_FUSE_RANGEFINDER | TERRAIN_FUSE_OPTICALFLOW), ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
 
     // range finder fusion
