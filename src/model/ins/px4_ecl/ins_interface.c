@@ -411,72 +411,102 @@ static void init_parameter(void)
 
 void ins_interface_step(uint32_t timestamp)
 {
+    static uint32_t last_timestamp;
+    static IMU_Bus imu_bus;
+    static MAG_Bus mag_bus;
+    static Barometer_Bus baro_bus;
+    static GPS_uBlox_Bus gps_bus;
+
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_imu0), ins_handle.imu_sub_node_t, &ins_handle.imu_report);
 
-        bool clipping[3] = { false, false, false };
-        uint32_t dt_imu = ins_model_info.period;
+        imu_bus.timestamp = timestamp;
+        imu_bus.gyr_x = ins_handle.imu_report.gyr_B_radDs[0];
+        imu_bus.gyr_y = ins_handle.imu_report.gyr_B_radDs[1];
+        imu_bus.gyr_z = ins_handle.imu_report.gyr_B_radDs[2];
+        imu_bus.acc_x = ins_handle.imu_report.acc_B_mDs2[0];
+        imu_bus.acc_y = ins_handle.imu_report.acc_B_mDs2[1];
+        imu_bus.acc_z = ins_handle.imu_report.acc_B_mDs2[2];
 
-        Ekf_IMU_update(true, timestamp, dt_imu, ins_handle.imu_report.gyr_B_radDs, ins_handle.imu_report.acc_B_mDs2, clipping);
+        bool clipping[3] = { false, false, false };
+        uint32_t dt_imu = (timestamp >= last_timestamp) ? (timestamp - last_timestamp) : (0xFFFFFFFF - last_timestamp + timestamp);
+        last_timestamp = timestamp;
+
+        Ekf_IMU_update(timestamp, dt_imu, ins_handle.imu_report.gyr_B_radDs, ins_handle.imu_report.acc_B_mDs2, clipping);
 
         imu_data_updated = 1;
-    }
 
-    if (mcn_poll(ins_handle.mag_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_mag0), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
+        if (mcn_poll(ins_handle.mag_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_mag0), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
 
-        Ekf_MAG_update(true, timestamp, ins_handle.mag_report.mag_B_gauss);
+            mag_bus.timestamp = timestamp;
+            mag_bus.mag_x = ins_handle.mag_report.mag_B_gauss[0];
+            mag_bus.mag_y = ins_handle.mag_report.mag_B_gauss[1];
+            mag_bus.mag_z = ins_handle.mag_report.mag_B_gauss[2];
 
-        mag_data_updated = 1;
-    }
+            Ekf_MAG_update(timestamp, ins_handle.mag_report.mag_B_gauss);
 
-    if (mcn_poll(ins_handle.baro_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_baro), ins_handle.baro_sub_node_t, &ins_handle.baro_report);
+            mag_data_updated = 1;
+        }
 
-        Ekf_BARO_update(true, timestamp, ins_handle.baro_report.altitude_m);
+        if (mcn_poll(ins_handle.baro_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_baro), ins_handle.baro_sub_node_t, &ins_handle.baro_report);
 
-        baro_data_updated = 1;
-    }
+            baro_bus.timestamp = timestamp;
+            baro_bus.pressure = ins_handle.baro_report.pressure_pa;
+            baro_bus.temperature = ins_handle.baro_report.temperature_deg;
 
-    /* update gps data */
-    if (mcn_poll(ins_handle.gps_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_gps), ins_handle.gps_sub_node_t, &ins_handle.gps_report);
+            Ekf_BARO_update(timestamp, ins_handle.baro_report.altitude_m);
 
-        Ekf_GPS_update(true, timestamp, ins_handle.gps_report.lon, ins_handle.gps_report.lat,
-            ins_handle.gps_report.height, ins_handle.gps_report.hAcc, ins_handle.gps_report.vAcc,
-            ins_handle.gps_report.velN, ins_handle.gps_report.velE, ins_handle.gps_report.velD,
-            ins_handle.gps_report.vel, ins_handle.gps_report.cog, ins_handle.gps_report.sAcc,
-            ins_handle.gps_report.fixType, ins_handle.gps_report.numSV);
+            baro_data_updated = 1;
+        }
 
-        gps_data_updated = 1;
-    }
+        /* update gps data */
+        if (mcn_poll(ins_handle.gps_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_gps), ins_handle.gps_sub_node_t, &ins_handle.gps_report);
 
-    /* update rangefinder data */
-    if (mcn_poll(ins_handle.rf_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
+            gps_bus.timestamp = timestamp;
+            gps_bus.fixType = ins_handle.gps_report.fixType;
+            gps_bus.lat = ins_handle.gps_report.lat;
+            gps_bus.lon = ins_handle.gps_report.lon;
+            gps_bus.height = ins_handle.gps_report.height;
+            gps_bus.velN = (int32_t)(ins_handle.gps_report.velN * 1e3);
+            gps_bus.velE = (int32_t)(ins_handle.gps_report.velE * 1e3);
+            gps_bus.velD = (int32_t)(ins_handle.gps_report.velD * 1e3);
+            gps_bus.hAcc = (uint32_t)(ins_handle.gps_report.hAcc * 1e3);
+            gps_bus.vAcc = (uint32_t)(ins_handle.gps_report.vAcc * 1e3);
+            gps_bus.sAcc = (uint32_t)(ins_handle.gps_report.sAcc * 1e3);
+            gps_bus.numSV = ins_handle.gps_report.numSV;
 
-        // TODO
-        rf_data_updated = 1;
-    }
+            Ekf_GPS_update(timestamp, ins_handle.gps_report.lon, ins_handle.gps_report.lat,
+                ins_handle.gps_report.height, ins_handle.gps_report.hAcc, ins_handle.gps_report.vAcc,
+                ins_handle.gps_report.velN, ins_handle.gps_report.velE, ins_handle.gps_report.velD,
+                ins_handle.gps_report.vel, ins_handle.gps_report.cog, ins_handle.gps_report.sAcc,
+                ins_handle.gps_report.fixType, ins_handle.gps_report.numSV);
 
-    /* update optical flow data */
-    if (mcn_poll(ins_handle.optflow_sub_node_t)) {
-        mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
+            gps_data_updated = 1;
+        }
 
-        // TODO
-        optflow_data_updated = 1;
+        /* update rangefinder data */
+        if (mcn_poll(ins_handle.rf_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
+
+            // TODO
+            rf_data_updated = 1;
+        }
+
+        /* update optical flow data */
+        if (mcn_poll(ins_handle.optflow_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
+
+            // TODO
+            optflow_data_updated = 1;
+        }
     }
 
     /* run INS */
     px4_ecl_step();
-
-    px4_ecl_out_bus.p = ins_handle.imu_report.gyr_B_radDs[0];
-    px4_ecl_out_bus.q = ins_handle.imu_report.gyr_B_radDs[1];
-    px4_ecl_out_bus.r = ins_handle.imu_report.gyr_B_radDs[2];
-    px4_ecl_out_bus.ax = ins_handle.imu_report.acc_B_mDs2[0];
-    px4_ecl_out_bus.ay = ins_handle.imu_report.acc_B_mDs2[1];
-    px4_ecl_out_bus.az = ins_handle.imu_report.acc_B_mDs2[2];
 
     /* publish INS output */
     mcn_publish(MCN_HUB(ins_output), &px4_ecl_out_bus);
@@ -485,25 +515,25 @@ void ins_interface_step(uint32_t timestamp)
     if (imu_data_updated) {
         imu_data_updated = 0;
         /* Log IMU data if IMU updated */
-        // mlog_push_msg((uint8_t*)&INS_U.IMU, IMU_ID, sizeof(INS_U.IMU));
+        mlog_push_msg((uint8_t*)&imu_bus, IMU_ID, sizeof(imu_bus));
     }
 
     if (mag_data_updated) {
         mag_data_updated = 0;
         /* Log Magnetometer data */
-        // mlog_push_msg((uint8_t*)&INS_U.MAG, MAG_ID, sizeof(INS_U.MAG));
+        mlog_push_msg((uint8_t*)&mag_bus, MAG_ID, sizeof(mag_bus));
     }
 
     if (baro_data_updated) {
         baro_data_updated = 0;
         /* Log Barometer data */
-        // mlog_push_msg((uint8_t*)&INS_U.Barometer, Barometer_ID, sizeof(INS_U.Barometer));
+        mlog_push_msg((uint8_t*)&baro_bus, Barometer_ID, sizeof(baro_bus));
     }
 
     if (gps_data_updated) {
         gps_data_updated = 0;
         /* Log GPS data */
-        // mlog_push_msg((uint8_t*)&INS_U.GPS_uBlox, GPS_ID, sizeof(INS_U.GPS_uBlox));
+        mlog_push_msg((uint8_t*)&gps_bus, GPS_ID, sizeof(gps_bus));
     }
 
     if (rf_data_updated) {
@@ -526,7 +556,7 @@ void ins_interface_step(uint32_t timestamp)
     }
 }
 
-static char* model_info = "PX4 EKF";
+static char* model_info = "PX4 EKF v1.0.0";
 void ins_interface_init(void)
 {
     ins_model_info.period = 2;

@@ -80,5 +80,7 @@ void px4_ecl_step(void)
         Ekf_get_local_position();
         Ekf_get_global_position();
         Ekf_get_TerrainVertPos();
+    } else {
+        Ekf_get_attitude();
     }
 }

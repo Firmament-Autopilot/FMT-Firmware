@@ -21,6 +21,7 @@
 #include "module/math/quaternion.h"
 
 Ekf* _ekf;
+imuSample _newest_imu_sample{};
 
 extern "C" {
 
@@ -256,79 +257,67 @@ void Ekf_set_in_air_status(bool in_air)
     _ekf->set_in_air_status(in_air);
 }
 
-void Ekf_IMU_update(bool updated, uint32_t timestamp_ms, uint32_t dt_ms, float gyr_B_radDs[3], float acc_B_mDs2[3], bool clipping[3])
+void Ekf_IMU_update(uint32_t timestamp_ms, uint32_t dt_ms, float gyr_B_radDs[3], float acc_B_mDs2[3], bool clipping[3])
 {
-    if (updated) {
-        imuSample imu_sample_new {};
+    imuSample imu_sample_new {};
 
-        imu_sample_new.time_us = timestamp_ms * 1.0e3f;
-        imu_sample_new.delta_ang_dt = dt_ms * 1.0e-3f;
-        imu_sample_new.delta_ang = Vector3f { gyr_B_radDs } * imu_sample_new.delta_ang_dt;
-        imu_sample_new.delta_vel_dt = dt_ms * 1.0e-3f;
-        imu_sample_new.delta_vel = Vector3f { acc_B_mDs2 } * imu_sample_new.delta_vel_dt;
-        imu_sample_new.delta_vel_clipping[0] = clipping[0];
-        imu_sample_new.delta_vel_clipping[1] = clipping[1];
-        imu_sample_new.delta_vel_clipping[2] = clipping[2];
+    imu_sample_new.time_us = timestamp_ms * 1.0e3f;
+    imu_sample_new.delta_ang_dt = dt_ms * 1.0e-3f;
+    imu_sample_new.delta_ang = Vector3f { gyr_B_radDs } * imu_sample_new.delta_ang_dt;
+    imu_sample_new.delta_vel_dt = dt_ms * 1.0e-3f;
+    imu_sample_new.delta_vel = Vector3f { acc_B_mDs2 } * imu_sample_new.delta_vel_dt;
+    imu_sample_new.delta_vel_clipping[0] = clipping[0];
+    imu_sample_new.delta_vel_clipping[1] = clipping[1];
+    imu_sample_new.delta_vel_clipping[2] = clipping[2];
 
-        _ekf->setIMUData(imu_sample_new);
-    }
+    _ekf->setIMUData(imu_sample_new);
+
+    _newest_imu_sample = imu_sample_new;
 }
 
-void Ekf_MAG_update(bool updated, uint32_t timestamp_ms, float mag_B_gauss[3])
+void Ekf_MAG_update(uint32_t timestamp_ms, float mag_B_gauss[3])
 {
+    magSample mag_sample_new {};
 
-    if (updated) {
+    mag_sample_new.time_us = timestamp_ms * 1.0e3f;
+    mag_sample_new.mag = Vector3f { mag_B_gauss };
 
-        magSample mag_sample_new {};
-
-        mag_sample_new.time_us = timestamp_ms * 1.0e3f;
-        mag_sample_new.mag = Vector3f { mag_B_gauss };
-
-        _ekf->setMagData(mag_sample_new);
-    }
+    _ekf->setMagData(mag_sample_new);
 }
 
-void Ekf_BARO_update(bool updated, uint32_t timestamp_ms, float pressure_alt_meter)
+void Ekf_BARO_update(uint32_t timestamp_ms, float pressure_alt_meter)
 {
+    baroSample baro_sample_new {};
 
-    if (updated) {
+    baro_sample_new.time_us = timestamp_ms * 1.0e3f;
+    baro_sample_new.hgt = pressure_alt_meter;
 
-        baroSample baro_sample_new {};
-
-        baro_sample_new.time_us = timestamp_ms * 1.0e3f;
-        baro_sample_new.hgt = pressure_alt_meter;
-
-        _ekf->setBaroData(baro_sample_new);
-    }
+    _ekf->setBaroData(baro_sample_new);
 }
 
-void Ekf_GPS_update(bool updated, uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t height,
+void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t height,
     float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
     float sAcc, uint8_t fixType, uint8_t numSV)
 {
+    gps_message gps_message_new;
 
-    if (updated) {
+    gps_message_new.time_usec = timestamp_ms * 1.0e3f;
+    gps_message_new.lat = lat;
+    gps_message_new.lon = lon;
+    gps_message_new.alt = height;
+    gps_message_new.yaw = NAN;
+    gps_message_new.yaw_offset = 0;
+    gps_message_new.fix_type = fixType,
+    gps_message_new.eph = hAcc;
+    gps_message_new.epv = vAcc ;
+    gps_message_new.sacc = sAcc;
+    gps_message_new.vel_m_s = vel;
+    gps_message_new.vel_ned = Vector3f { velN, velE, velD};
+    gps_message_new.vel_ned_valid = true;
+    gps_message_new.nsats = numSV;
+    gps_message_new.pdop = sqrt(hAcc * hAcc + vAcc * vAcc);
 
-        gps_message gps_message_new;
-
-        gps_message_new.time_usec = timestamp_ms * 1.0e3f;
-        gps_message_new.lat = lat;
-        gps_message_new.lon = lon;
-        gps_message_new.alt = height;
-        gps_message_new.yaw = NAN;
-        gps_message_new.yaw_offset = 0;
-        gps_message_new.fix_type = fixType,
-        gps_message_new.eph = hAcc;
-        gps_message_new.epv = vAcc ;
-        gps_message_new.sacc = sAcc;
-        gps_message_new.vel_m_s = vel;
-        gps_message_new.vel_ned = Vector3f { velN, velE, velD};
-        gps_message_new.vel_ned_valid = true;
-        gps_message_new.nsats = numSV;
-        gps_message_new.pdop = sqrt(hAcc * hAcc + vAcc * vAcc);
-
-        _ekf->setGpsData(gps_message_new);
-    }
+    _ekf->setGpsData(gps_message_new);
 }
 
 bool Ekf_step(void)
@@ -350,9 +339,9 @@ void Ekf_get_attitude(void)
         px4_ecl_out_bus.theta = euler(1);
         px4_ecl_out_bus.psi = euler(2);
 
-        const Vector3f gyro_bias { _ekf->getGyroBias() };
-        const imuSample imusample(_ekf->get_imu_sample_delayed());
-        const Vector3f rates { imusample.delta_ang / imusample.delta_ang_dt };
+        const Vector3f gyro_bias = _ekf->getGyroBias();
+	    const Vector3f rates(_newest_imu_sample.delta_ang / _newest_imu_sample.delta_ang_dt);
+
         px4_ecl_out_bus.p = rates(0) - gyro_bias(0);
         px4_ecl_out_bus.q = rates(1) - gyro_bias(1);
         px4_ecl_out_bus.r = rates(2) - gyro_bias(2);
@@ -365,19 +354,19 @@ void Ekf_get_attitude(void)
 
 void Ekf_get_local_position(void)
 {
+    // Position of body origin in local NED frame
+    const Vector3f position = _ekf->getPosition();
+    px4_ecl_out_bus.x_R = position(0);
+    px4_ecl_out_bus.y_R = position(1);
+    px4_ecl_out_bus.h_R = -position(2);
+
+    // Velocity of body origin in local NED frame (m/s)
+    const Vector3f velocity = _ekf->getVelocity();
+    px4_ecl_out_bus.vn = velocity(0);
+    px4_ecl_out_bus.ve = velocity(1);
+    px4_ecl_out_bus.vd = velocity(2);
+
     if(_ekf->local_position_is_valid()) {
-        // Position of body origin in local NED frame
-        const Vector3f position = _ekf->getPosition();
-        px4_ecl_out_bus.x_R = position(0);
-        px4_ecl_out_bus.y_R = position(1);
-        px4_ecl_out_bus.h_R = -position(2);
-
-        // Velocity of body origin in local NED frame (m/s)
-        const Vector3f velocity = _ekf->getVelocity();
-        px4_ecl_out_bus.vn = velocity(0);
-        px4_ecl_out_bus.ve = velocity(1);
-        px4_ecl_out_bus.vd = velocity(2);
-
         px4_ecl_out_bus.flag |= (1 << 4) | (1 << 6) | (1 << 7);
     } else {
         px4_ecl_out_bus.flag &= ~((1 << 4) | (1 << 6) | (1 << 7));
@@ -386,23 +375,21 @@ void Ekf_get_local_position(void)
 
 void Ekf_get_global_position(void)
 {
+    const Vector3f position = _ekf->getPosition();
+    const map_projection_reference_s ref_pos = _ekf->global_origin();
+    const float ref_alt = _ekf->getEkfGlobalOriginAltitude();
+
+    map_projection_reproject(&ref_pos, position(0), position(1), &px4_ecl_out_bus.lat, &px4_ecl_out_bus.lon);
+
+    px4_ecl_out_bus.lat = math::radians(px4_ecl_out_bus.lat);
+    px4_ecl_out_bus.lon = math::radians(px4_ecl_out_bus.lon);
+    px4_ecl_out_bus.alt = -position(2) + ref_alt;
+    px4_ecl_out_bus.lat_0 = ref_pos.lat_rad;
+    px4_ecl_out_bus.lon_0 = ref_pos.lon_rad;
+    px4_ecl_out_bus.alt_0 = ref_alt;
+
     if(_ekf->global_position_is_valid()) {
-        const Vector3f position = _ekf->getPosition();
-        const map_projection_reference_s ref_pos = _ekf->global_origin();
-        const float ref_alt = _ekf->getEkfGlobalOriginAltitude();
-
-        if(map_projection_reproject(&ref_pos, position(0), position(1), &px4_ecl_out_bus.lat, &px4_ecl_out_bus.lon) == 0) {
-            px4_ecl_out_bus.lat = math::radians(px4_ecl_out_bus.lat);
-            px4_ecl_out_bus.lon = math::radians(px4_ecl_out_bus.lon);
-            px4_ecl_out_bus.alt = -position(2) + ref_alt;
-            px4_ecl_out_bus.lat_0 = ref_pos.lat_rad;
-            px4_ecl_out_bus.lon_0 = ref_pos.lon_rad;
-            px4_ecl_out_bus.alt_0 = ref_alt;
-
-            px4_ecl_out_bus.flag |= 1 << 5;
-        } else {
-            px4_ecl_out_bus.flag &= ~(1 << 5);
-        }
+        px4_ecl_out_bus.flag |= 1 << 5;
     } else {
         px4_ecl_out_bus.flag &= ~(1 << 5);
     }
@@ -410,10 +397,11 @@ void Ekf_get_global_position(void)
 
 void Ekf_get_acc(void)
 {
+    const Vector3f accel_bias = _ekf->getAccelBias();
     const Quatf q { _ekf->calculate_quaternion() };
     const Vector3f vel_deriv { _ekf->getVelocityDerivative() };
     quaternion quat = {q(0), q(1), q(2), q(3)};
-    float acc_O[3] = {vel_deriv(0), vel_deriv(1),vel_deriv(2)};
+    float acc_O[3] = {vel_deriv(0) - accel_bias(0), vel_deriv(1) - accel_bias(1), vel_deriv(2)- accel_bias(2) - 9.81f};
     float acc_B[3];
 
     quaternion_inv_rotateVector(&quat, acc_O, acc_B);
