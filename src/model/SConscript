@@ -1,16 +1,33 @@
+# from building import *
+# import buildlist as bl
+
+# cwd = GetCurrentDir()
+
+# src = []
+# for f in bl.MODELS:
+#     src += Glob(f)
+
+# inc = []
+# for d in bl.MODELS_CPPPATH:
+#     inc += [cwd + '/' + d]
+
+# group = DefineGroup('Model', src, depend=[''], CPPPATH=inc)
+
+# Return('group')
+
+import os
 from building import *
 import buildlist as bl
 
 cwd = GetCurrentDir()
+objs = []
 
-src = []
-for f in bl.MODELS:
-    src += Glob(f)
+for d in bl.MODELS:
+    path = os.path.join(cwd, d)
+    if os.path.isfile(os.path.join(path, 'SConscript')):
+        objs = objs + SConscript(os.path.join(d, 'SConscript'))
+    else:
+        print('Error: can not find SConscript in ' + path)
+        exit(0)
 
-inc = []
-for d in bl.MODELS_CPPPATH:
-    inc += [cwd + '/' + d]
-
-group = DefineGroup('Model', src, depend=[''], CPPPATH=inc, CPPDEFINES=['ECL_STANDALONE'], CXXFLAGS=['-Wno-overloaded-virtual'])
-
-Return('group')
+Return('objs')

@@ -50,7 +50,7 @@ if PLATFORM == 'gcc':
     else:
         CFLAGS += ' -O2'
 
-    CXXFLAGS = CFLAGS + ' -Woverloaded-virtual -fno-exceptions -fno-rtti'
+    CXXFLAGS = CFLAGS + ' -fno-exceptions -fno-rtti'
 
     M_CFLAGS = CFLAGS + ' -mlong-calls -fPIC '
     M_CXXFLAGS = CXXFLAGS + ' -mlong-calls -fPIC'

@@ -1,0 +1,31 @@
+from building import *
+
+cwd = GetCurrentDir()
+src	= []
+inc = []
+
+src += Glob('*.c')
+src += Glob('lib/*.cpp')
+src += Glob('lib/*.c')
+src += Glob('ecl/airdata/*.cpp')
+src += Glob('ecl/AlphaFilter/*.cpp')
+src += Glob('ecl/EKF/*.cpp')
+src += Glob('ecl/geo/*.cpp')
+src += Glob('ecl/geo_lookup/*.cpp')
+src += Glob('ecl/mathlib/*.cpp')
+src += Glob('ecl/matrix/*.cpp')
+
+inc += [cwd]
+inc += [cwd + '/lib']
+inc += [cwd + '/ecl']
+inc += [cwd + '/ecl/airdata']
+inc += [cwd + '/ecl/AlphaFilter']
+inc += [cwd + '/ecl/EKF']
+inc += [cwd + '/ecl/geo']
+inc += [cwd + '/ecl/geo_lookup']
+inc += [cwd + '/ecl/mathlib']
+inc += [cwd + '/ecl/matrix']
+
+group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE'])
+
+Return('group')

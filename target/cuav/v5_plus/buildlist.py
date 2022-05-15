@@ -62,43 +62,6 @@ MODULES_CPPPATH = [
     'calibration',
 ]
 
-MODELS = [
-    'plant/multicopter/*.c',
-    'plant/multicopter/lib/*.c',
-    # 'ins/base_ins/*.c',
-    # 'ins/base_ins/lib/*.c',
-    'ins/px4_ecl/*.c',
-    'ins/px4_ecl/lib/*.cpp',
-    'ins/px4_ecl/lib/*.c',
-    'ins/px4_ecl/ecl/airdata/*.cpp',
-    'ins/px4_ecl/ecl/AlphaFilter/*.cpp',
-    'ins/px4_ecl/ecl/EKF/*.cpp',
-    'ins/px4_ecl/ecl/geo/*.cpp',
-    'ins/px4_ecl/ecl/geo_lookup/*.cpp',
-    'ins/px4_ecl/ecl/mathlib/*.cpp',
-    'ins/px4_ecl/ecl/matrix/*.cpp',
-    'fms/base_fms/*.c',
-    'fms/base_fms/lib/*.c',
-    'control/base_controller/*.c',
-    'control/base_controller/lib/*.c',
-]
-
-MODELS_CPPPATH = [
-    'plant/multicopter/lib',
-    # 'ins/base_ins/lib',
-    'ins/px4_ecl/lib',
-    'ins/px4_ecl/ecl',
-    'ins/px4_ecl/ecl/airdata',
-    'ins/px4_ecl/ecl/AlphaFilter',
-    'ins/px4_ecl/ecl/EKF',
-    'ins/px4_ecl/ecl/geo',
-    'ins/px4_ecl/ecl/geo_lookup',
-    'ins/px4_ecl/ecl/mathlib',
-    'ins/px4_ecl/ecl/matrix',
-    'fms/base_fms/lib',
-    'control/base_controller/lib',
-]
-
 TASKS = [
     'simple/*.c',
     'comm/*.c',
@@ -109,6 +72,13 @@ TASKS = [
 ]
 
 TASKS_CPPPATH = []
+
+MODELS = [
+    'plant/multicopter',
+    'ins/base_ins',
+    'fms/base_fms',
+    'control/base_controller',
+]
 
 LIBS = [
     'cm_backtrace',
