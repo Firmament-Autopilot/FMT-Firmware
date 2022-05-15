@@ -16,6 +16,7 @@
 #include <ekf.h>
 #include <INS.h>
 #include <ecl.h>
+#include <common.h>
 #include <mathlib/mathlib.h>
 
 #include "module/math/quaternion.h"
@@ -354,6 +355,8 @@ void Ekf_get_attitude(void)
 
 void Ekf_get_local_position(void)
 {
+    const decltype(filter_control_status_u::flags) flags = _ekf->control_status_flags();
+
     // Position of body origin in local NED frame
     const Vector3f position = _ekf->getPosition();
     px4_ecl_out_bus.x_R = position(0);
@@ -366,10 +369,17 @@ void Ekf_get_local_position(void)
     px4_ecl_out_bus.ve = velocity(1);
     px4_ecl_out_bus.vd = velocity(2);
 
-    if(_ekf->local_position_is_valid()) {
-        px4_ecl_out_bus.flag |= (1 << 4) | (1 << 6) | (1 << 7);
+    if (_ekf->local_position_is_valid()) {
+        px4_ecl_out_bus.flag |= (1 << 4) | (1 << 6);
     } else {
-        px4_ecl_out_bus.flag &= ~((1 << 4) | (1 << 6) | (1 << 7));
+        px4_ecl_out_bus.flag &= ~((1 << 4) | (1 << 6));
+    }
+
+    /* check if local height valid */
+    if (flags.gps_hgt || flags.baro_hgt || flags.rng_hgt || flags.ev_hgt) {
+        px4_ecl_out_bus.flag |= 1 << 7;
+    } else {
+        px4_ecl_out_bus.flag &= ~(1 << 7);
     }
 }
 
