@@ -509,6 +509,7 @@ void ins_interface_step(uint32_t timestamp)
 
     /* run INS */
     px4_ecl_step();
+    px4_ecl_out_bus.timestamp = timestamp;
 
     /* publish INS output */
     mcn_publish(MCN_HUB(ins_output), &px4_ecl_out_bus);
