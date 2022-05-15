@@ -416,6 +416,8 @@ void ins_interface_step(uint32_t timestamp)
     static MAG_Bus mag_bus;
     static Barometer_Bus baro_bus;
     static GPS_uBlox_Bus gps_bus;
+    static Rangefinder_Bus rnf_bus;
+    static Optical_Flow_Bus opt_flow_bus;
 
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
@@ -539,13 +541,13 @@ void ins_interface_step(uint32_t timestamp)
     if (rf_data_updated) {
         rf_data_updated = 0;
         /* Log Rangefinder data */
-        // mlog_push_msg((uint8_t*)&ins_handle.rf_report, Rangefinder_ID, sizeof(ins_handle.rf_report));
+        mlog_push_msg((uint8_t*)&rnf_bus, Rangefinder_ID, sizeof(rnf_bus));
     }
 
     if (optflow_data_updated) {
         optflow_data_updated = 0;
         /* Log Optical Flow data */
-        // mlog_push_msg((uint8_t*)&ins_handle.optflow_report, OpticalFlow_ID, sizeof(ins_handle.optflow_report));
+        mlog_push_msg((uint8_t*)&opt_flow_bus, OpticalFlow_ID, sizeof(opt_flow_bus));
     }
 
     /* Log INS output bus data */
