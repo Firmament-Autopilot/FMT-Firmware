@@ -8,7 +8,7 @@ ARCH = 'arm'
 CPU='cortex-a'
 CROSS_TOOL = 'gcc'
 # build version: debug or release
-BUILD = 'debug'
+BUILD = 'release'
 
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')
@@ -35,7 +35,7 @@ if PLATFORM == 'gcc':
     STRIP = PREFIX + 'strip'
 
     DEVICE = ' -march=armv7-a -marm -msoft-float'
-    CFLAGS = DEVICE + ' -Wall -Wno-switch'
+    CFLAGS = DEVICE + ' -Wall -Wno-switch -Wno-maybe-uninitialized -Wno-strict-aliasing'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -D__ASSEMBLY__ -I.'
     LINK_SCRIPT = 'link.lds'
     LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,system_vectors'+\
@@ -50,7 +50,7 @@ if PLATFORM == 'gcc':
     else:
         CFLAGS += ' -O2'
 
-    CXXFLAGS = CFLAGS + ' -Woverloaded-virtual -fno-exceptions -fno-rtti'
+    CXXFLAGS = CFLAGS + ' -fno-exceptions -fno-rtti'
 
     M_CFLAGS = CFLAGS + ' -mlong-calls -fPIC '
     M_CXXFLAGS = CXXFLAGS + ' -mlong-calls -fPIC'

@@ -66,24 +66,6 @@ MODULES_CPPPATH = [
     'buzzer',
 ]
 
-MODELS = [
-    'plant/multicopter/*.c',
-    'plant/multicopter/lib/*.c',
-    'ins/base_ins/*.c',
-    'ins/base_ins/lib/*.c',
-    'fms/base_fms/*.c',
-    'fms/base_fms/lib/*.c',
-    'control/base_controller/*.c',
-    'control/base_controller/lib/*.c',
-]
-
-MODELS_CPPPATH = [
-    'plant/multicopter/lib',
-    'ins/base_ins/lib',
-    'fms/base_fms/lib',
-    'control/base_controller/lib',
-]
-
 TASKS = [
     'vehicle/multicopter/*.c',
     'comm/*.c',
@@ -93,6 +75,13 @@ TASKS = [
 ]
 
 TASKS_CPPPATH = []
+
+MODELS = [
+    'plant/multicopter',
+    'ins/base_ins',
+    'fms/base_fms',
+    'control/base_controller',
+]
 
 LIBS = [
     'cm_backtrace',
