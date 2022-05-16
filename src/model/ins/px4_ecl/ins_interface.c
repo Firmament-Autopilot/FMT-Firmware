@@ -99,30 +99,19 @@ MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    // 影响 1.imu降采样的采样个数 2.ekf滤波器的更新时间 3.间接用于观测时间向ekf更新的中心时间对齐
-    // note：ekf最终的滤波间隔时间不严格等于_param_ekf2_predict_us，取决于降采样判断是否输出
-    // 此次参数在 ECL 库函数中默认为10ms
-    // PARAM_INT32(ekf2_predict_us,10000),   ///< ekf update period PX4_ECL 规定为10ms
-
-    // ekf 预测更新时的输入噪声(imu var) 根据传感器输出
-    // "x(k+1|k) = F · x(k|k) + G · Nk" 中的 Nk
     PARAM_FLOAT(ekf2_gyr_noise, 1.5e-2f), ///< IMU angular rate noise used for covariance prediction (rad/sec)
     PARAM_FLOAT(ekf2_acc_noise, 3.5e-1f), ///< IMU acceleration noise use for covariance prediction (m/sec**2)
 
-    // ekf 过程噪声
-    // ekf 协方差 "P(k+1|k) = F P(k|k) F^T + Q + N_process" 中的 N_process
     PARAM_FLOAT(ekf2_gyr_b_noise, 1.0e-3f), ///< process noise for IMU rate gyro bias prediction (rad/sec**2)
     PARAM_FLOAT(ekf2_acc_b_noise, 1.0e-2f), ///< process noise for IMU accelerometer bias prediction (m/sec**3)
     PARAM_FLOAT(ekf2_mag_e_noise, 1.0e-3f), ///< process noise for earth magnetic field prediction (Gauss/sec)
     PARAM_FLOAT(ekf2_mag_b_noise, 1.0e-4f), ///< process noise for body magnetic field prediction (Gauss/sec)
     PARAM_FLOAT(ekf2_wind_noise, 1.0e-1f),  ///< process noise for wind velocity prediction (m/sec**2)
 
-    // baro 地面效应门限值
     PARAM_FLOAT(ekf2_gnd_eff_dz, 5.0f),  ///< barometric deadzone range for negative innovations (m)
     PARAM_FLOAT(ekf2_gnd_max_hgt, 0.5f), ///< maximum height above the ground level for expected negative baro innovations (m)
 
     // control of magnetometer fusion
-    // S = H · Pk+1|k· H^T + R 中的 R （标准差）
     PARAM_FLOAT(ekf2_head_noise, 3.0e-1f), ///< measurement noise used for simple heading fusion (rad)
     PARAM_FLOAT(ekf2_mag_noise, 5.0e-2f),  ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
     PARAM_FLOAT(ekf2_eas_noise, 1.4f),     ///< measurement noise used for airspeed fusion (m/sec)
@@ -131,16 +120,12 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ekf2_noaid_noise, 10.0f), ///< observation noise for non-aiding position fusion (m)
     PARAM_FLOAT(ekf2_baro_noise, 2.0f),   ///< observation noise for barometric height fusion (m)
 
-    // 当地的磁偏角
     PARAM_FLOAT(ekf2_mag_decl, 0.0f), ///< magnetic declination (degrees)
 
-    // 磁偏角来源
     PARAM_INT32(ekf2_decl_type, MASK_USE_GEO_DECL | MASK_SAVE_GEO_DECL | MASK_FUSE_DECL), ///< bitmask used to control the handling of declination data
 
-    // mag 融合的方式选择
     PARAM_INT32(ekf2_mag_type, MAG_FUSE_TYPE_HEADING), ///< integer used to specify the type of magnetometer fusion used
 
-    // gps 采样数据检查项
     PARAM_INT32(ekf2_gps_check, MASK_GPS_SACC | MASK_GPS_HACC | MASK_GPS_NSATS), ///< bitmask used to control which GPS quality checks are used
 
     // measurement source control
@@ -149,19 +134,16 @@ static param_t __param_list[] = {
     PARAM_INT32(ekf2_terr_mask, TERRAIN_FUSE_RANGEFINDER | TERRAIN_FUSE_OPTICALFLOW), ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
 
     // range finder fusion
-    // range finder R
     PARAM_FLOAT(ekf2_rng_noise, 0.1f), ///< observation noise for range finder measurements (m)
     PARAM_INT32(ekf2_rng_aid, 0),      ///< enables use of a range finder even if primary height source is not range finder
 
     // vision estimate fusion
-    // extern vision R 以及 R 的来源控制
     PARAM_INT32(ekf2_ev_noise_md, VEHICLE_ODOMETRY_COVARIANCE_MATRIX_X_VARIANCE), ///< determine source of vision observation noise
     PARAM_FLOAT(ekf2_evp_noise, 0.1f),                                            ///< default position observation noise for exernal vision measurements (m)
     PARAM_FLOAT(ekf2_evv_noise, 0.1f),                                            ///< default velocity observation noise for exernal vision measurements (m/s)
     PARAM_FLOAT(ekf2_eva_noise, 0.05f),                                           ///< default angular observation noise for exernal vision measurements (rad)
 
     // optical flow fusion
-    // optical flow 根据最好/最差的图像质量 差值计算 R
     PARAM_FLOAT(ekf2_of_n_min, 0.15f), ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
     PARAM_FLOAT(ekf2_of_n_max, 0.5f),  ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
 
@@ -170,16 +152,12 @@ static param_t __param_list[] = {
     PARAM_INT32(ekf2_fuse_beta, 0),   ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
 
     // Multi-rotor drag specific force fusion
-    // drag fusion R
     PARAM_FLOAT(ekf2_drag_noise, 2.5f), ///< observation noise variance for drag specific force measurements (m/sec**2)**2
 
-    // mag 磁场总强度检查过滤
     PARAM_INT32(ekf2_mag_check, 0), ///< Mag field strength check
 
-    // mag 垂直分量是否参与观测
     PARAM_INT32(ekf2_synthetic_mag_z, 0), ///< Enables the use of a synthetic value for the Z axis of the magnetometer calculated from the 3D magnetic field vector at the location of the drone.
 
-    //需求的 GPS health 的最小时间 （s）
     PARAM_FLOAT(ekf2_req_gps_h, 10.0f) ///< Required GPS health time
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
