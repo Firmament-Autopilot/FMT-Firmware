@@ -18,8 +18,8 @@
 
 #include "ecl_wrapper.h"
 
-INS_Out_Bus px4_ecl_out_bus = {0};
-INS_Params px4_ecl_params = {0};
+INS_Out_Bus px4_ecl_out_bus = { 0 };
+INS_Params px4_ecl_params = { 0 };
 
 void px4_ecl_init(void)
 {

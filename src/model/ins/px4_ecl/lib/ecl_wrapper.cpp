@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <ekf.h>
-#include <INS.h>
-#include <ecl.h>
 #include <common.h>
-#include <mathlib/mathlib.h>
+#include <ecl.h>
+#include <ekf.h>
+#include <mathlib.h>
 
+#include "INS.h"
 #include "module/math/quaternion.h"
 
 Ekf* _ekf;
-imuSample _newest_imu_sample{};
+imuSample _newest_imu_sample {};
 
 extern "C" {
 
@@ -310,10 +310,10 @@ void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t hei
     gps_message_new.yaw_offset = 0;
     gps_message_new.fix_type = fixType,
     gps_message_new.eph = hAcc;
-    gps_message_new.epv = vAcc ;
+    gps_message_new.epv = vAcc;
     gps_message_new.sacc = sAcc;
     gps_message_new.vel_m_s = vel;
-    gps_message_new.vel_ned = Vector3f { velN, velE, velD};
+    gps_message_new.vel_ned = Vector3f { velN, velE, velD };
     gps_message_new.vel_ned_valid = true;
     gps_message_new.nsats = numSV;
     gps_message_new.pdop = sqrt(hAcc * hAcc + vAcc * vAcc);
@@ -341,7 +341,7 @@ void Ekf_get_attitude(void)
         px4_ecl_out_bus.psi = euler(2);
 
         const Vector3f gyro_bias = _ekf->getGyroBias();
-	    const Vector3f rates(_newest_imu_sample.delta_ang / _newest_imu_sample.delta_ang_dt);
+        const Vector3f rates(_newest_imu_sample.delta_ang / _newest_imu_sample.delta_ang_dt);
 
         px4_ecl_out_bus.p = rates(0) - gyro_bias(0);
         px4_ecl_out_bus.q = rates(1) - gyro_bias(1);
@@ -398,7 +398,7 @@ void Ekf_get_global_position(void)
     px4_ecl_out_bus.lon_0 = ref_pos.lon_rad;
     px4_ecl_out_bus.alt_0 = ref_alt;
 
-    if(_ekf->global_position_is_valid()) {
+    if (_ekf->global_position_is_valid()) {
         px4_ecl_out_bus.flag |= 1 << 5;
     } else {
         px4_ecl_out_bus.flag &= ~(1 << 5);
@@ -410,8 +410,8 @@ void Ekf_get_acc(void)
     const Vector3f accel_bias = _ekf->getAccelBias();
     const Quatf q { _ekf->calculate_quaternion() };
     const Vector3f vel_deriv { _ekf->getVelocityDerivative() };
-    quaternion quat = {q(0), q(1), q(2), q(3)};
-    float acc_O[3] = {vel_deriv(0) - accel_bias(0), vel_deriv(1) - accel_bias(1), vel_deriv(2)- accel_bias(2) - 9.81f};
+    quaternion quat = { q(0), q(1), q(2), q(3) };
+    float acc_O[3] = { vel_deriv(0) - accel_bias(0), vel_deriv(1) - accel_bias(1), vel_deriv(2) - accel_bias(2) - 9.81f };
     float acc_B[3];
 
     quaternion_inv_rotateVector(&quat, acc_O, acc_B);
@@ -423,12 +423,11 @@ void Ekf_get_acc(void)
 
 void Ekf_get_TerrainVertPos(void)
 {
-    if(_ekf->isTerrainEstimateValid()) {
+    if (_ekf->isTerrainEstimateValid()) {
         px4_ecl_out_bus.h_AGL = _ekf->getTerrainVertPos();
         px4_ecl_out_bus.flag |= 1 << 8;
     } else {
         px4_ecl_out_bus.flag &= ~(1 << 8);
     }
 }
-
 }
