@@ -16,6 +16,8 @@
 
 /* This is the default toml config for the target, which is loaded when there is
  * no sysconfig.toml finded. Please do not format this file. */
+
+// clang-format off
 static char* default_conf = STRING(
 target = "QEMU vexpress-a9"\n
 [console]\n
@@ -34,3 +36,4 @@ target = "QEMU vexpress-a9"\n
     name = "serial1"\n
     baudrate = 115200
 );
+// clang-format on

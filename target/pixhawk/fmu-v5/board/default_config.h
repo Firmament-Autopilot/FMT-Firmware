@@ -16,6 +16,8 @@
 
 /* This is the default toml config for the target, which is loaded when there is
  * no sysconfig.toml finded. Please do not format this file. */
+
+// clang-format off
 static char* default_conf = STRING(
 target = "Pixhawk4 FMUv5"\n
 [console]\n
@@ -38,3 +40,4 @@ target = "Pixhawk4 FMUv5"\n
 	name = "usbd0"\n
     auto-switch = true
 );
+// clang-format on
