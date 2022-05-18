@@ -18,7 +18,7 @@
 #define BOARD_DEVICE_H__
 
 // Device Name
-#define FMTIO_DEVICE_NAME          "serial4"
+#define FMTIO_DEVICE_NAME          "serial5"
 
 #define SPI1_SPEED_HZ 7000000
 
