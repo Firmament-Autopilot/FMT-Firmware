@@ -1,0 +1,17 @@
+import rtconfig
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = []
+src += Glob('Class/CDC/Src/*.c')
+src += Glob('Core/Src/*.c')
+
+path = [cwd + '/Class/CDC/Inc', 
+    cwd + '/Core/Inc']
+
+group = DefineGroup('STM32_USB_Library', src, depend = [''], CPPPATH = path)
+
+Return('group')

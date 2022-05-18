@@ -292,6 +292,28 @@ rt_inline rt_err_t spi_read_multi_reg8(rt_device_t spi_device, uint8_t reg, uint
     return rt_spi_send_then_recv((struct rt_spi_device*)spi_device, (void*)&reg_addr, 1, (void*)buffer, len);
 }
 
+rt_inline rt_err_t spi_read_bank_reg8(rt_device_t spi_device, uint8_t bank_reg, uint8_t bank, uint8_t reg, uint8_t* buffer)
+{
+    spi_write_reg8(spi_device, bank_reg, bank);
+
+    return spi_read_reg8(spi_device, reg, buffer);
+}
+
+rt_inline rt_err_t spi_read_bank_multi_reg8(rt_device_t spi_device, uint8_t bank_reg, uint8_t bank, uint8_t reg, uint8_t* buffer, uint8_t len)
+{
+    spi_write_reg8(spi_device, bank_reg, bank);
+
+    return spi_read_multi_reg8(spi_device, reg, buffer, len);
+}
+
+rt_inline rt_err_t spi_write_bank_reg8(rt_device_t spi_device, uint8_t bank_reg, uint8_t bank, uint8_t reg, uint8_t val)
+{
+    spi_write_reg8(spi_device, bank_reg, bank);
+
+    return spi_write_reg8(spi_device, reg, val);
+}
+
+
 /**
  * This function appends a message to the SPI message list.
  *
