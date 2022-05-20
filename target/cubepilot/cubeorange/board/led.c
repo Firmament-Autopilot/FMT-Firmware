@@ -20,13 +20,58 @@
 #include "module/workqueue/workqueue_manager.h"
 
 static rt_device_t pin_dev;
+
+#ifdef rgb_led
 static rt_device_t rgb_led_dev;
+#endif
 
 static void run_led(void* parameter)
 {
-    LED_TOGGLE(FMU_LED_BLUE_PIN);
+    LED_TOGGLE(FMU_LED_RED_PIN);
 }
 
+fmt_err_t led_set(struct device_pin_status pin_sta)
+{
+    if (pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
+}
+
+fmt_err_t led_toggle(uint32_t pin)
+{
+    struct device_pin_status pin_sta = { .pin = pin };
+
+    if (pin_dev->read(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
+        return FMT_ERROR;
+    }
+
+    pin_sta.status = !pin_sta.status;
+    if (pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
+}
+
+fmt_err_t led_init(struct device_pin_mode pin_mode)
+{
+    if (pin_dev->control(pin_dev, 0, &pin_mode) != RT_EOK) {
+        return FMT_ERROR;
+    }
+
+    return FMT_EOK;
+}
+
+static struct WorkItem led_item = {
+    .name = "led",
+    .period = 1000,
+    .schedule_time = 0,
+    .run = run_led
+};
+
+#ifdef rgb_led
 static void run_rgb_led(void* parameter)
 {
     static int bright = 0;
@@ -60,95 +105,55 @@ static void run_rgb_led(void* parameter)
 
 void vehicle_status_change_cb(uint8_t status)
 {
-    // switch (status) {
-    // case VehicleStatus_Disarm:
-    //     rgb_led_set_color(NCP5623_LED_BLUE);
-    //     break;
-    // case VehicleStatus_Standby:
-    //     rgb_led_set_color(NCP5623_LED_GREEN);
-    //     break;
-    // case VehicleStatus_Arm:
-    //     rgb_led_set_color(NCP5623_LED_GREEN);
-    //     break;
-    // default:
-    //     rgb_led_set_color(NCP5623_LED_RED);
-    //     break;
-    // }
+    switch (status) {
+    case VehicleStatus_Disarm:
+        rgb_led_set_color(NCP5623_LED_BLUE);
+        break;
+    case VehicleStatus_Standby:
+        rgb_led_set_color(NCP5623_LED_GREEN);
+        break;
+    case VehicleStatus_Arm:
+        rgb_led_set_color(NCP5623_LED_GREEN);
+        break;
+    default:
+        rgb_led_set_color(NCP5623_LED_RED);
+        break;
+    }
 }
 
 void vehicle_state_change_cb(uint8_t mode)
 {
-    // if (mode == VehicleState_None) {
-    //     /* unknown mode */
-    //     rgb_led_set_color(NCP5623_LED_RED);
-    // }
-}
-fmt_err_t led_set(struct device_pin_status pin_sta)
-{
-    // if (pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
-    //     return FMT_ERROR;
-    // }
-
-    return FMT_EOK;
-}
-
-fmt_err_t led_toggle(uint32_t pin)
-{
-    // struct device_pin_status pin_sta = { .pin = pin };
-
-    // if (pin_dev->read(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
-    //     return FMT_ERROR;
-    // }
-
-    // pin_sta.status = !pin_sta.status;
-    // if (pin_dev->write(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
-    //     return FMT_ERROR;
-    // }
-
-    return FMT_EOK;
-}
-
-fmt_err_t led_init(struct device_pin_mode pin_mode)
-{
-    // if (pin_dev->control(pin_dev, 0, &pin_mode) != RT_EOK) {
-    //     return FMT_ERROR;
-    // }
-
-    return FMT_EOK;
+    if (mode == VehicleState_None) {
+        /* unknown mode */
+        rgb_led_set_color(NCP5623_LED_RED);
+    }
 }
 
 fmt_err_t rgb_led_set_color(uint32_t color)
 {
-    // if (rgb_led_dev == NULL) {
-    //     return FMT_EEMPTY;
-    // }
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
+    }
 
-    // if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
-    //     return FMT_ERROR;
-    // }
+    if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
+        return FMT_ERROR;
+    }
 
     return FMT_EOK;
 }
 
 fmt_err_t rgb_led_set_bright(uint32_t bright)
 {
-    // if (rgb_led_dev == NULL) {
-    //     return FMT_EEMPTY;
-    // }
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
+    }
 
-    // if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
-    //     return FMT_ERROR;
-    // }
+    if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
+        return FMT_ERROR;
+    }
 
     return FMT_EOK;
 }
-
-static struct WorkItem led_item = {
-    .name = "led",
-    .period = 1000,
-    .schedule_time = 0,
-    .run = run_led
-};
 
 static struct WorkItem rgb_led_item = {
     .name = "rgb_led",
@@ -157,46 +162,45 @@ static struct WorkItem rgb_led_item = {
     .run = run_rgb_led
 };
 
+#endif
+
 fmt_err_t led_control_init(void)
 {
-    // struct device_pin_mode r_pin_mode = { FMU_LED_RED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
-    // struct device_pin_mode g_pin_mode = { FMU_LED_GREEN_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
-    // struct device_pin_mode b_pin_mode = { FMU_LED_BLUE_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+    struct device_pin_mode r_pin_mode = { FMU_LED_RED_PIN, PIN_MODE_OUTPUT, PIN_OUT_TYPE_PP };
 
     // /* configure led pin */
-    // pin_dev = rt_device_find("pin");
-    // RT_ASSERT(pin_dev != NULL);
+    pin_dev = rt_device_find("pin");
+    RT_ASSERT(pin_dev != NULL);
 
-    // RT_CHECK(rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR));
-    // led_init(r_pin_mode);
-    // led_init(g_pin_mode);
-    // led_init(b_pin_mode);
+    RT_CHECK(rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR));
+    led_init(r_pin_mode);
 
-    // LED_ON(FMU_LED_RED_PIN);
-    // LED_ON(FMU_LED_GREEN_PIN);
-    // LED_ON(FMU_LED_BLUE_PIN);
+    LED_ON(FMU_LED_RED_PIN);
 
-    // /* It's possible that ncp5623c is not connected */
-    // if (rt_device_find("ncp5623c") != NULL) {
-    //     /* configure rgd led */
-    //     rgb_led_dev = rt_device_find("ncp5623c");
-    //     RT_ASSERT(rgb_led_dev != NULL);
+    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
+    RT_ASSERT(lp_wq != NULL);
+    FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
 
-    //     RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
-    //     FMT_CHECK(rgb_led_set_color(NCP5623_LED_BLUE));
+#ifdef rgb_led
+    /* It's possible that ncp5623c is not connected */
+    if (rt_device_find("ncp5623c") != NULL) {
+        /* configure rgd led */
+        rgb_led_dev = rt_device_find("ncp5623c");
+        RT_ASSERT(rgb_led_dev != NULL);
 
-    //     sys_msleep(10); /* give some time for rgb led to startup */
-    // }
+        RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
+        FMT_CHECK(rgb_led_set_color(NCP5623_LED_BLUE));
 
-    // WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
-    // WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
-    // RT_ASSERT(lp_wq != NULL && hp_wq != NULL);
+        sys_msleep(10); /* give some time for rgb led to startup */
+    }
 
-    // FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
-    // if (rgb_led_dev != NULL) {
-    //     /* rgb led work in high priority workqueue to try not blocking other i2c user */
-    //     FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
-    // }
+    WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
+    RT_ASSERT(hp_wq != NULL);
+    if (rgb_led_dev != NULL) {
+        /* rgb led work in high priority workqueue to try not blocking other i2c user */
+        FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
+    }
+#endif
 
     return FMT_EOK;
 }

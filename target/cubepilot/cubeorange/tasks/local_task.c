@@ -17,7 +17,7 @@
 
 #include "module/task_manager/task_manager.h"
 
-#include "usbd_cdc_if.h"
+#include "stm32h7xx_ll_gpio.h"
 
 fmt_err_t task_local_init(void)
 {
