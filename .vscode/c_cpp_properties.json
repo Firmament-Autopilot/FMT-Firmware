@@ -10,10 +10,10 @@
                 "UNICODE",
                 "_UNICODE",
                 "USE_STDPERIPH_DRIVER",
-                "STM32F427X",
+                "STM32H753XX",
                 "__VFP_FP__",
                 "ARM_MATH_MATRIX_CHECK",
-                "ARM_MATH_CM4",
+                "ARM_MATH_CM7",
                 "__FPU_PRESENT=1",
                 "__FPU_USED=1"
             ],
