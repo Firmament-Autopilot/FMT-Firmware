@@ -8,6 +8,7 @@ MEMORY
 	/* First 0x8000(32KB) area is reserved for bootloader */
     FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 128KB flash */
 
+    ITCM_RAM  (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
     DTCM1_RAM (rwx) : ORIGIN = 0x20000000, LENGTH =   64K
 	DTCM2_RAM (rwx) : ORIGIN = 0x20010000, LENGTH =   64K
     AXI_SRAM  (rwx) : ORIGIN = 0x24000000, LENGTH =  512k /* 512K sram */
