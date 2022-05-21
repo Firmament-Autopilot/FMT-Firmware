@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'pixhawk4'
+BOARD = 'cubeorange'
 
 # toolchains options
 ARCH = 'arm'

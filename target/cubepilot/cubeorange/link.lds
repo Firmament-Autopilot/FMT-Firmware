@@ -1,13 +1,21 @@
 /*
- * linker script for STM32F765 with GNU ld
+ * linker script for STM32H753VIT6 with GNU ld
  */
 
 /* Program Entry, set to mark it as "used" and avoid gc */
 MEMORY
 {
 	/* First 0x8000(32KB) area is reserved for bootloader */
-    CODE (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 32KB flash */
-    DATA (rw) : ORIGIN = 0x24000000, LENGTH =  512k /* 512K sram */
+    FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 128KB flash */
+
+    DTCM1_RAM (rwx) : ORIGIN = 0x20000000, LENGTH =   64K
+	DTCM2_RAM (rwx) : ORIGIN = 0x20010000, LENGTH =   64K
+    AXI_SRAM  (rwx) : ORIGIN = 0x24000000, LENGTH =  512k /* 512K sram */
+    SRAM1     (rwx) : ORIGIN = 0x30000000, LENGTH =  128K /* D2 domain AHB bus */
+	SRAM2     (rwx) : ORIGIN = 0x30020000, LENGTH =  128K /* D2 domain AHB bus */
+	SRAM3     (rwx) : ORIGIN = 0x30040000, LENGTH =   32K /* D2 domain AHB bus */
+	SRAM4     (rwx) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
+	BKPRAM    (rwx) : ORIGIN = 0x38800000, LENGTH =    4K
 }
 ENTRY(Reset_Handler)
 _system_stack_size = 0x800;
@@ -67,10 +75,10 @@ SECTIONS
         . = ALIGN(4);
 		
 		/* section information for utest */
-		. = ALIGN(4);
-		__rt_utest_tc_tab_start = .;
-		KEEP(*(UtestTcTab))
-		__rt_utest_tc_tab_end = .;
+        . = ALIGN(4);
+        __rt_utest_tc_tab_start = .;
+        KEEP(*(UtestTcTab))
+        __rt_utest_tc_tab_end = .;
         . = ALIGN(4);
 
         /* section information for task. */
@@ -81,11 +89,11 @@ SECTIONS
         . = ALIGN(4);
 
         _etext = .;
-    } > CODE = 0
+    } > FLASH = 0
 
     .ARM.extab : {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
-    } > CODE
+    } > FLASH
 
     /* .ARM.exidx is sorted, so has to go in its own output section.  */
     __exidx_start = .;
@@ -95,7 +103,7 @@ SECTIONS
 
         /* This is used by the startup in order to initialize the .data secion */
         _sidata = .;
-    } > CODE
+    } > FLASH
     __exidx_end = .;
 
     /* .data section which is used for initialized data */
@@ -118,7 +126,7 @@ SECTIONS
         . = ALIGN(4);
         /* This is used by the startup in order to initialize the .data secion */
         _edata = . ;
-    } >DATA
+    } >AXI_SRAM
 
     .stack : 
     {
@@ -126,7 +134,7 @@ SECTIONS
         . = . + _system_stack_size;
         . = ALIGN(4);
         _estack = .;
-    } >DATA
+    } >AXI_SRAM
 
     __bss_start = .;
     .bss :
@@ -144,7 +152,7 @@ SECTIONS
         _ebss = . ;
         
         *(.bss.init)
-    } > DATA
+    } > AXI_SRAM
     __bss_end = .;
 
     _end = .;
