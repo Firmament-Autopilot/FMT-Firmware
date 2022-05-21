@@ -483,10 +483,11 @@ void ins_interface_step(uint32_t timestamp)
             // TODO
             optflow_data_updated = 1;
         }
+
+        /* run INS */
+        px4_ecl_step();
     }
 
-    /* run INS */
-    px4_ecl_step();
     /* update ins output timestamp */
     px4_ecl_out_bus.timestamp = timestamp;
 
