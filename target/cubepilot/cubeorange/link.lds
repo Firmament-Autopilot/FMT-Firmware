@@ -9,8 +9,7 @@ MEMORY
     FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 128KB flash */
 
     ITCM_RAM  (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
-    DTCM1_RAM (rwx) : ORIGIN = 0x20000000, LENGTH =   64K
-	DTCM2_RAM (rwx) : ORIGIN = 0x20010000, LENGTH =   64K
+    DTCM_RAM  (rwx) : ORIGIN = 0x20000000, LENGTH =  128K
     AXI_SRAM  (rwx) : ORIGIN = 0x24000000, LENGTH =  512k /* 512K sram */
     SRAM1     (rwx) : ORIGIN = 0x30000000, LENGTH =  128K /* D2 domain AHB bus */
 	SRAM2     (rwx) : ORIGIN = 0x30020000, LENGTH =  128K /* D2 domain AHB bus */
@@ -127,7 +126,7 @@ SECTIONS
         . = ALIGN(4);
         /* This is used by the startup in order to initialize the .data secion */
         _edata = . ;
-    } >AXI_SRAM
+    } >DTCM_RAM
 
     .stack : 
     {
@@ -135,7 +134,7 @@ SECTIONS
         . = . + _system_stack_size;
         . = ALIGN(4);
         _estack = .;
-    } >AXI_SRAM
+    } >DTCM_RAM
 
     __bss_start = .;
     .bss :
