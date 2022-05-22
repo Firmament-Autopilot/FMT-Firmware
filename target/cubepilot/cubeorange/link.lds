@@ -126,7 +126,7 @@ SECTIONS
         . = ALIGN(4);
         /* This is used by the startup in order to initialize the .data secion */
         _edata = . ;
-    } >DTCM_RAM
+    } > SRAM1
 
     .stack : 
     {
@@ -134,7 +134,7 @@ SECTIONS
         . = . + _system_stack_size;
         . = ALIGN(4);
         _estack = .;
-    } >DTCM_RAM
+    } > SRAM3
 
     __bss_start = .;
     .bss :
@@ -152,7 +152,7 @@ SECTIONS
         _ebss = . ;
         
         *(.bss.init)
-    } > AXI_SRAM
+    } > SRAM2
     __bss_end = .;
 
     _end = .;
