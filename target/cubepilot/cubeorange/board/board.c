@@ -25,12 +25,12 @@
 #endif
 
 #include "default_config.h"
-#include "driver/imu/bmi055.h"
+#include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
+#include "driver/imu/bmi055.h"
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm20948.h"
 #include "driver/mag/ist8310.h"
-#include "driver/barometer/ms5611.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
@@ -42,11 +42,11 @@
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
-#include "module/console/console_config.h"
 #include "model/control/control_interface.h"
-#include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#include "module/console/console_config.h"
+#include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
@@ -65,7 +65,7 @@
 #include "model/plant/plant_interface.h"
 #endif
 
-#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define MATCH(a, b) (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
@@ -287,60 +287,59 @@ void SystemClock_Config(void)
 
     __set_BASEPRI(0);
 
-  LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_4)
-  {
-  }
-  LL_PWR_ConfigSupply(LL_PWR_LDO_SUPPLY);
-  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
-  LL_RCC_HSE_Enable();
+    LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
+    while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4) {
+    }
+    LL_PWR_ConfigSupply(LL_PWR_LDO_SUPPLY);
+    LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
+    LL_RCC_HSE_Enable();
 
-   /* Wait till HSE is ready */
-  while(LL_RCC_HSE_IsReady() != 1)
-  {
+    /* Wait till HSE is ready */
+    while (LL_RCC_HSE_IsReady() != 1) {
+    }
+    LL_RCC_PLL_SetSource(LL_RCC_PLLSOURCE_HSE);
+    LL_RCC_PLL1P_Enable();
+    LL_RCC_PLL1Q_Enable();
+    LL_RCC_PLL1R_Enable();
+    LL_RCC_PLL1_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
+    LL_RCC_PLL1_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
+    LL_RCC_PLL1_SetM(2);
+    LL_RCC_PLL1_SetN(80);
+    LL_RCC_PLL1_SetP(2);
+    LL_RCC_PLL1_SetQ(20);
+    LL_RCC_PLL1_SetR(2);
+    LL_RCC_PLL1_Enable();
 
-  }
-  LL_RCC_PLL_SetSource(LL_RCC_PLLSOURCE_HSE);
-  LL_RCC_PLL1P_Enable();
-  LL_RCC_PLL1Q_Enable();
-  LL_RCC_PLL1R_Enable();
-  LL_RCC_PLL1_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
-  LL_RCC_PLL1_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
-  LL_RCC_PLL1_SetM(2);
-  LL_RCC_PLL1_SetN(80);
-  LL_RCC_PLL1_SetP(2);
-  LL_RCC_PLL1_SetQ(20);
-  LL_RCC_PLL1_SetR(2);
-  LL_RCC_PLL1_Enable();
+    /* Wait till PLL is ready */
+    while (LL_RCC_PLL1_IsReady() != 1) {
+    }
 
-   /* Wait till PLL is ready */
-  while(LL_RCC_PLL1_IsReady() != 1)
-  {
-  }
+    /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
+    LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
 
-   /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
-   LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
+    LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL1);
+    LL_RCC_SetSysPrescaler(LL_RCC_SYSCLK_DIV_1);
+    LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
+    LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
+    LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
+    LL_RCC_SetAPB3Prescaler(LL_RCC_APB3_DIV_2);
+    LL_RCC_SetAPB4Prescaler(LL_RCC_APB4_DIV_2);
+    LL_SetSystemCoreClock(480000000);
 
-  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL1);
-  LL_RCC_SetSysPrescaler(LL_RCC_SYSCLK_DIV_1);
-  LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
-  LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
-  LL_RCC_SetAPB3Prescaler(LL_RCC_APB3_DIV_2);
-  LL_RCC_SetAPB4Prescaler(LL_RCC_APB4_DIV_2);
-  LL_SetSystemCoreClock(480000000);
+    /* Update the time base */
+    if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
+        Error_Handler();
+    }
+    LL_RCC_SetSPIClockSource(LL_RCC_SPI123_CLKSOURCE_PLL1Q);
+    LL_RCC_SetSPIClockSource(LL_RCC_SPI45_CLKSOURCE_PCLK2);
+    LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
+    LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
 
-   /* Update the time base */
-  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  LL_RCC_SetSPIClockSource(LL_RCC_SPI123_CLKSOURCE_PLL1Q);
-  LL_RCC_SetSPIClockSource(LL_RCC_SPI45_CLKSOURCE_PCLK2);
-  LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
-  LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
-  LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
-  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
+    __HAL_RCC_D2SRAM1_CLK_ENABLE();
+    __HAL_RCC_D2SRAM2_CLK_ENABLE();
+    __HAL_RCC_D2SRAM3_CLK_ENABLE();
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
@@ -350,6 +349,7 @@ void bsp_early_initialize(void)
     CPU_CACHE_Enable();
 
     /* init system heap */
+    // rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
 
     /* HAL library initialization */
