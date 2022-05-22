@@ -43,6 +43,8 @@ jobs:
           
       - name: Compile BSP
         run: |
-          scons -C target/pixhawk/fmu-v5 -j4
           scons -C target/pixhawk/fmu-v2 -j4
+          scons -C target/pixhawk/fmu-v5 -j4
+          scons -C target/cuav/v5_plus -j4
+          scons -C target/cubepilot/cubeorange -j4
           scons -C target/qemu/qemu-vexpress-a9 -j4
