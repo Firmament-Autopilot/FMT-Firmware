@@ -39,12 +39,12 @@ void task_local_entry(void* parameter)
     }
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "local",
-    .init = task_local_init,
-    .entry = task_local_entry,
-    .priority = 25,
-    .stack_size = 1024,
-    .param = NULL,
-    .dependency = NULL
-};
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "local",
+//     .init = task_local_init,
+//     .entry = task_local_entry,
+//     .priority = 25,
+//     .stack_size = 1024,
+//     .param = NULL,
+//     .dependency = NULL
+// };
