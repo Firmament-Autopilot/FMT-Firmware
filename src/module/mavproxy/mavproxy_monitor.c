@@ -364,7 +364,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #endif
 
     default: {
-        console_printf("unknown mavlink msg:%d\n", msg->msgid);
+        // console_printf("unknown mavlink msg:%d\n", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }
