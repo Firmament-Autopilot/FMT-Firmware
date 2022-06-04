@@ -31,6 +31,7 @@
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm20948.h"
 #include "driver/mag/ist8310.h"
+#include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
@@ -403,6 +404,8 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    /* fram init */
+    RT_CHECK(drv_ramtron_init("spi2_dev1"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
