@@ -41,10 +41,10 @@
 // #define SPI1_CS5_GPIO_Port GPIOH
 // #define SPI1_CS5_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOH
 
-// #define DRV_USE_SPI2
-// #define SPI2_CS1_Pin       LL_GPIO_PIN_5
-// #define SPI2_CS1_GPIO_Port GPIOF
-// #define SPI2_CS1_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOF
+#define DRV_USE_SPI2
+#define SPI2_CS1_Pin       LL_GPIO_PIN_10
+#define SPI2_CS1_GPIO_Port GPIOD
+#define SPI2_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
 
 #define DRV_USE_SPI4
 #define SPI4_CS1_Pin       LL_GPIO_PIN_4
@@ -89,8 +89,8 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
     LL_SPI_InitTypeDef SPI_InitStruct = { 0 };
     LL_SPI_StructInit(&SPI_InitStruct);
 
-    LL_RCC_ClocksTypeDef rcc_clocks;
-    LL_RCC_GetSystemClocksFreq(&rcc_clocks);
+    LL_PLL_ClocksTypeDef pll_clocks;
+    LL_RCC_GetPLL1ClockFreq(&pll_clocks);
 
     if (configuration->data_width <= 8) {
         SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
@@ -104,41 +104,36 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
     {
         uint32_t stm32_spi_max_clock;
         uint32_t max_hz;
-        uint32_t PCLK;
+        uint32_t PLL_Q_clock;
 
-        if (stm32_spi_bus->SPI == SPI2 || stm32_spi_bus->SPI == SPI3) {
-            PCLK = rcc_clocks.PCLK1_Frequency;
-        } else {
-            PCLK = rcc_clocks.PCLK2_Frequency;
-        }
+        PLL_Q_clock = pll_clocks.PLL_Q_Frequency;
 
         /* stm32h7xx SPI max_clock=PCLK/2 */
-        stm32_spi_max_clock = PCLK / 2;
+        stm32_spi_max_clock = PLL_Q_clock / 2;
         max_hz = configuration->max_hz;
 
         if (max_hz > stm32_spi_max_clock) {
             max_hz = stm32_spi_max_clock;
         }
 
-        SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;
-        // if (max_hz >= PCLK / 2) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV2;
-        // } else if (max_hz >= PCLK / 4) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV4;
-        // } else if (max_hz >= PCLK / 8) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV8;
-        // } else if (max_hz >= PCLK / 16) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV16;
-        // } else if (max_hz >= PCLK / 32) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;
-        // } else if (max_hz >= PCLK / 64) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
-        // } else if (max_hz >= PCLK / 128) {
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;
-        // } else {
-        //     /*  min prescaler 256 */
-        //     SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV256;
-        // }
+        if (max_hz >= PLL_Q_clock / 2) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV2;
+        } else if (max_hz >= PLL_Q_clock / 4) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV4;
+        } else if (max_hz >= PLL_Q_clock / 8) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV8;
+        } else if (max_hz >= PLL_Q_clock / 16) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV16;
+        } else if (max_hz >= PLL_Q_clock / 32) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;
+        } else if (max_hz >= PLL_Q_clock / 64) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
+        } else if (max_hz >= PLL_Q_clock / 128) {
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;
+        } else {
+            /*  min prescaler 256 */
+            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV256;
+        }
     } /* baudrate */
 
     /* CPOL */
@@ -512,25 +507,19 @@ rt_err_t drv_spi_init(void)
 #endif
 
 #ifdef DRV_USE_SPI2
-
-    /* SPI2 configure */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOI);
-    /*  SPI2 GPIO Configuration
-                PI3   ------> SPI2_MOSI
-                PI2   ------> SPI2_MISO
-                PI1   ------> SPI2_SCK */
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
+    /**SPI2 GPIO Configuration
+     PB13   ------> SPI2_SCK
+    PB14   ------> SPI2_MISO
+    PB15   ------> SPI2_MOSI
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_13|LL_GPIO_PIN_14|LL_GPIO_PIN_15;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
-
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
-    LL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
-    LL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
-    LL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* register SPI2 bus */
     ret = stm32_spi_register(SPI2, &stm32_spi2, "spi2");
@@ -538,6 +527,7 @@ rt_err_t drv_spi_init(void)
         return ret;
     }
 
+#ifdef SPI2_CS1_Pin
     /* attach spi_device_1 to spi2 */
     {
         static struct rt_spi_device rt_spi_device_1;
@@ -563,8 +553,9 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-
 #endif
+#endif
+
 #ifdef DRV_USE_SPI4
 
     /* SPI4 configure */
