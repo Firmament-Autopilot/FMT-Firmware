@@ -42,18 +42,18 @@
 // #define SPI1_CS5_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOH
 
 #define DRV_USE_SPI2
-#define SPI2_CS1_Pin       LL_GPIO_PIN_10
+#define SPI2_CS1_Pin LL_GPIO_PIN_10
 #define SPI2_CS1_GPIO_Port GPIOD
-#define SPI2_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
+#define SPI2_CS1_CLOCK LL_AHB4_GRP1_PERIPH_GPIOD
 
 #define DRV_USE_SPI4
-#define SPI4_CS1_Pin       LL_GPIO_PIN_4
+#define SPI4_CS1_Pin LL_GPIO_PIN_4
 #define SPI4_CS1_GPIO_Port GPIOE
-#define SPI4_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOE
+#define SPI4_CS1_CLOCK LL_AHB4_GRP1_PERIPH_GPIOE
 
-#define SPI4_CS2_Pin       LL_GPIO_PIN_14
+#define SPI4_CS2_Pin LL_GPIO_PIN_14
 #define SPI4_CS2_GPIO_Port GPIOF
-#define SPI4_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOC
+#define SPI4_CS2_CLOCK LL_AHB4_GRP1_PERIPH_GPIOC
 
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
@@ -513,7 +513,7 @@ rt_err_t drv_spi_init(void)
     PB14   ------> SPI2_MISO
     PB15   ------> SPI2_MOSI
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_13|LL_GPIO_PIN_14|LL_GPIO_PIN_15;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_13 | LL_GPIO_PIN_14 | LL_GPIO_PIN_15;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
@@ -565,7 +565,7 @@ rt_err_t drv_spi_init(void)
     PE5   ------> SPI4_MISO
     PE6   ------> SPI4_MOSI
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_2|LL_GPIO_PIN_5|LL_GPIO_PIN_6;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_5 | LL_GPIO_PIN_6;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
