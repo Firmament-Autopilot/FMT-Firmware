@@ -289,14 +289,17 @@ void SystemClock_Config(void)
     __set_BASEPRI(0);
 
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
-    while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4) {
+    while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_4)
+    {
     }
     LL_PWR_ConfigSupply(LL_PWR_LDO_SUPPLY);
     LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
     LL_RCC_HSE_Enable();
 
     /* Wait till HSE is ready */
-    while (LL_RCC_HSE_IsReady() != 1) {
+    while(LL_RCC_HSE_IsReady() != 1)
+    {
+
     }
     LL_RCC_PLL_SetSource(LL_RCC_PLLSOURCE_HSE);
     LL_RCC_PLL1P_Enable();
@@ -312,7 +315,8 @@ void SystemClock_Config(void)
     LL_RCC_PLL1_Enable();
 
     /* Wait till PLL is ready */
-    while (LL_RCC_PLL1_IsReady() != 1) {
+    while(LL_RCC_PLL1_IsReady() != 1)
+    {
     }
 
     /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
@@ -328,7 +332,8 @@ void SystemClock_Config(void)
     LL_SetSystemCoreClock(480000000);
 
     /* Update the time base */
-    if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
+    if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+    {
         Error_Handler();
     }
     LL_RCC_SetSPIClockSource(LL_RCC_SPI123_CLKSOURCE_PLL1Q);
