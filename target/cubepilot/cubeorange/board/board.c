@@ -31,6 +31,7 @@
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm20948.h"
 #include "driver/mag/ist8310.h"
+#include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
@@ -197,43 +198,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
  */
 static void EnablePower(void)
 {
-    // LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    // LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
-    // LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);
-
-    // /* init gpio */
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    // /* VDD_3V3_Sensor_EN active high */
-    // LL_GPIO_SetOutputPin(GPIOE, LL_GPIO_PIN_3);
-
-    // /* init gpio */
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-    // /* VDD_5V_RC_EN active high */
-    // LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_5);
-
-    // /* init gpio */
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-    // /* SD_CARD_EN active high */
-    // LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
-
-    // /* Wait some time for power becoming stable */
-    // systime_mdelay(100);
+    /* do nothing */
 }
 
 /*
@@ -403,6 +368,8 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    /* fram init */
+    RT_CHECK(drv_ramtron_init("spi2_dev1"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

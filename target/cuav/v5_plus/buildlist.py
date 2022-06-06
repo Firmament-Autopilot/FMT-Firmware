@@ -8,6 +8,7 @@ DRIVERS = [
     'barometer/ms5611.c',
     'gps/gps_m8n.c',
     'rgb_led/ncp5623c.c',
+    'mtd/ramtron.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -31,6 +32,7 @@ HAL = [
     'rc/*.c',
     'gps/*.c',
     'adc/*.c',
+    'mtd/*.c',
 ]
 
 HAL_CPPPATH = []

@@ -25,11 +25,12 @@
 #endif
 
 #include "board_device.h"
-#include "driver/imu/bmi055.h"
+#include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
+#include "driver/imu/bmi055.h"
 #include "driver/imu/icm20689.h"
 #include "driver/mag/ist8310.h"
-#include "driver/barometer/ms5611.h"
+#include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
@@ -43,11 +44,11 @@
 #include "led.h"
 
 #include "default_config.h"
-#include "module/console/console_config.h"
 #include "model/control/control_interface.h"
-#include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#include "module/console/console_config.h"
+#include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
@@ -66,7 +67,7 @@
 #include "model/plant/plant_interface.h"
 #endif
 
-#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define MATCH(a, b) (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
@@ -389,6 +390,8 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    /* fram init */
+    RT_CHECK(drv_ramtron_init("spi2_dev1"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

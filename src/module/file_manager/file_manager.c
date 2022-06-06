@@ -21,7 +21,7 @@
 #include "module/file_manager/file_manager.h"
 
 #define MAX_LOG_SESSION_NUM 10
-#define LOG_SESSION_FILE    "/log/session_id"
+#define LOG_SESSION_FILE "/log/session_id"
 
 static int cws_id; /* current work session id */
 
@@ -29,6 +29,7 @@ static const char* rfs_folder[] = {
     "/sys",
     "/usr",
     "/log",
+    "/mnt",
     NULL /* NULL indicate the end */
 };
 
@@ -62,7 +63,7 @@ static int read_log_session_id(void)
                 return -1;
             }
         }
-        
+
         id = atoi(id_buffer);
         close(fd);
     }
@@ -137,6 +138,9 @@ static fmt_err_t create_rootfs(void)
     struct stat buf;
     int i = 0;
 
+    /* clear mnt directory */
+    fm_deldir("/mnt");
+
     /* create rootfs folder structure */
     while (1) {
         if (rfs_folder[i] != NULL) {
@@ -187,35 +191,67 @@ fmt_err_t current_log_session(char* path)
  */
 fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
 {
+    struct stat sta;
+
     /* init dfs system */
     if (dfs_init() != 0) {
-        console_printf("dfs init fail!\n");
+        printf("dfs init fail!\n");
         return FMT_ERROR;
     }
     /* init fatfs */
     if (elm_init() != 0) {
-        console_printf("fatfs init fail!\n");
+        printf("fatfs init fail!\n");
         return FMT_ERROR;
     }
 
-    /* mount storage devices */
-    for (int i = 0;; i++) {
+    if (mnt_table[0].device_name == NULL) {
+        /* empty mount table, just return */
+        return FMT_EOK;
+    }
+
+    if (strcmp("/", mnt_table[0].path) == 0) {
+        /* mount root directory */
+        if (dfs_mount(mnt_table[0].device_name,
+                mnt_table[0].path,
+                mnt_table[0].filesystemtype,
+                mnt_table[0].rwflag,
+                mnt_table[0].data)
+            != 0) {
+            printf("Fail to mount %s at %s!\n",
+                mnt_table[0].device_name, mnt_table[0].path);
+        }
+        /* create rootfs */
+        FMT_TRY(create_rootfs());
+    } else {
+        printf("fail, you should mount / first!\n");
+        return FMT_ERROR;
+    }
+
+    /* mount other devices */
+    for (int i = 1;; i++) {
         if (mnt_table[i].device_name == NULL) {
             break;
         }
+        /* if path doesn't exit, create it */
+        if (stat(mnt_table[i].path, &sta) < 0) {
+            if (mkdir(mnt_table[i].path, 0x777) < 0) {
+                printf("fail to create %s, errno:%ld\n", mnt_table[i].path, rt_get_errno());
+                return FMT_ERROR;
+            }
+        }
+
         if (dfs_mount(mnt_table[i].device_name,
                 mnt_table[i].path,
                 mnt_table[i].filesystemtype,
                 mnt_table[i].rwflag,
                 mnt_table[i].data)
-            != 0) {
-            console_printf("Fail to mount %s at %s!\n",
+            < 0) {
+            printf("Fail to mount %s at %s!\n",
                 mnt_table[i].device_name, mnt_table[i].path);
-            return FMT_ERROR;
+            /* delete the failed mount path */
+            fm_deldir(mnt_table[i].path);
         }
     }
-
-    create_rootfs();
 
     return FMT_EOK;
 }
