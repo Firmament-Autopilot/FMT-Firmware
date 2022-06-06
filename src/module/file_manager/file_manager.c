@@ -155,6 +155,7 @@ static fmt_err_t create_rootfs(void)
             break;
         }
     }
+
     /* update and create log session */
     if (update_log_session() == FMT_EOK) {
         if (create_log_session() != FMT_EOK) {
@@ -222,6 +223,7 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
         }
         /* create rootfs */
         FMT_TRY(create_rootfs());
+
     } else {
         printf("fail, you should mount / first!\n");
         return FMT_ERROR;

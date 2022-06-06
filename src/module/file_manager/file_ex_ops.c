@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include <dfs_posix.h>
+#include <firmament.h>
 
 static void __deldir(char* path)
 {
     DIR* dir = opendir(path);
-
     struct dirent* dr = readdir(dir);
 
     while (dr) {
@@ -64,6 +63,12 @@ int fm_fprintf(int fd, const char* fmt, ...)
 int fm_deldir(const char* path)
 {
     char temp_path[100];
+    struct stat buf;
+
+    if (stat(path, &buf) < 0) {
+        /* not existed path */
+        return 0;
+    }
 
     strcpy(temp_path, path);
     __deldir(temp_path);
