@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.757
+ * Model version                  : 1.758
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 16:06:12 2022
+ * C/C++ source code generated on : Mon Jun  6 21:03:48 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,38 +18,38 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Plant_T Plant_ConstB = {
-  1.9966471893352524,                  /* '<S89>/Sum' */
-  0.0066943799901413165,               /* '<S89>/Multiply3' */
-  0.99330562000985867,                 /* '<S89>/Sum4' */
-  1.9966471868221032,                  /* '<S27>/Subtract1' */
-  0.00669438499958795,                 /* '<S27>/Product1' */
+  1.9966471893352524,                  /* '<S90>/Sum' */
+  0.0066943799901413165,               /* '<S90>/Multiply3' */
+  0.99330562000985867,                 /* '<S90>/Sum4' */
+  1.9966471868221032,                  /* '<S28>/Subtract1' */
+  0.00669438499958795,                 /* '<S28>/Product1' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S124>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S125>/Add' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S123>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S124>/Vector Concatenate3' */
 
-  { 0.0F, 1.0F, 0.0F },                /* '<S122>/Vector Concatenate3' */
+  { 0.0F, 1.0F, 0.0F },                /* '<S123>/Vector Concatenate3' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S102>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S103>/Add' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S113>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S114>/Add' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S40>/quat0' */
+  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S41>/quat0' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S34>/Vector Concatenate3' */
-  3U,                                  /* '<S77>/Data Type Conversion' */
-  11U                                  /* '<S77>/Data Type Conversion1' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S35>/Vector Concatenate3' */
+  3U,                                  /* '<S78>/Data Type Conversion' */
+  11U                                  /* '<S78>/Data Type Conversion1' */
 };
 
 /* Constant parameters (default storage) */
 const ConstP_Plant_T Plant_ConstP = {
   /* Expression: gain
-   * Referenced by: '<S96>/Gain4'
+   * Referenced by: '<S97>/Gain4'
    */
   { 20.0, 20.0, 15.0 },
 
   /* Computed Parameter: X_Frame_CM_Value
-   * Referenced by: '<S15>/X_Frame_CM'
+   * Referenced by: '<S16>/X_Frame_CM'
    */
   { -1.971237E-6F, 1.971237E-6F, 1.982E-7F, 1.971237E-6F, -1.971237E-6F,
     1.982E-7F, 1.971237E-6F, 1.971237E-6F, -1.982E-7F, -1.971237E-6F,
@@ -58,78 +58,78 @@ const ConstP_Plant_T Plant_ConstP = {
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<Root>/Constant'
-   *   '<S41>/Constant'
-   *   '<S8>/Rotor_Delay'
+   *   '<S42>/Constant'
    *   '<S9>/Constant'
    *   '<S9>/Constant1'
-   *   '<S35>/Constant'
-   *   '<S37>/Constant'
-   *   '<S11>/Saturation1'
-   *   '<S49>/Constant'
-   *   '<S49>/Constant1'
-   *   '<S49>/Constant2'
-   *   '<S49>/Constant3'
-   *   '<S79>/Saturation'
-   *   '<S82>/Delay1'
-   *   '<S34>/Constant1'
-   *   '<S34>/Constant2'
-   *   '<S34>/Constant3'
-   *   '<S34>/Constant4'
-   *   '<S74>/Limit  altitude  to Stratosphere'
-   *   '<S74>/Limit  altitude  to troposhere'
-   *   '<S75>/Constant3'
-   *   '<S76>/Random Source'
-   *   '<S85>/Random Source'
-   *   '<S85>/Random Source1'
-   *   '<S88>/Discrete FIR Filter'
-   *   '<S103>/Random Source'
-   *   '<S114>/Random Source'
-   *   '<S125>/Random Source'
-   *   '<S122>/Constant'
-   *   '<S122>/Constant2'
-   *   '<S122>/Constant3'
-   *   '<S122>/Constant4'
-   *   '<S123>/Constant1'
+   *   '<S36>/Constant'
+   *   '<S38>/Constant'
+   *   '<S11>/Discrete-Time Integrator'
+   *   '<S12>/Saturation1'
+   *   '<S50>/Constant'
+   *   '<S50>/Constant1'
+   *   '<S50>/Constant2'
+   *   '<S50>/Constant3'
+   *   '<S80>/Saturation'
+   *   '<S83>/Delay1'
+   *   '<S35>/Constant1'
+   *   '<S35>/Constant2'
+   *   '<S35>/Constant3'
+   *   '<S35>/Constant4'
+   *   '<S75>/Limit  altitude  to Stratosphere'
+   *   '<S75>/Limit  altitude  to troposhere'
+   *   '<S76>/Constant3'
+   *   '<S77>/Random Source'
+   *   '<S86>/Random Source'
+   *   '<S86>/Random Source1'
+   *   '<S89>/Discrete FIR Filter'
+   *   '<S104>/Random Source'
+   *   '<S115>/Random Source'
+   *   '<S126>/Random Source'
+   *   '<S123>/Constant'
    *   '<S123>/Constant2'
    *   '<S123>/Constant3'
    *   '<S123>/Constant4'
+   *   '<S124>/Constant1'
+   *   '<S124>/Constant2'
+   *   '<S124>/Constant3'
+   *   '<S124>/Constant4'
    */
   0.0F,
 
   /* Computed Parameter: Inertia_Matrix_Value
-   * Referenced by: '<S40>/Inertia_Matrix'
+   * Referenced by: '<S41>/Inertia_Matrix'
    */
   { 0.016F, 0.0F, 0.0F, 0.0F, 0.016F, 0.0F, 0.0F, 0.0F, 0.0274F },
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S119>/Saturation'
-   *   '<S76>/Random Source'
+   *   '<S120>/Saturation'
+   *   '<S77>/Random Source'
    */
   4.0F,
 
   /* Computed Parameter: RandomSource_VarianceRTP
-   * Referenced by: '<S85>/Random Source'
+   * Referenced by: '<S86>/Random Source'
    */
   { 0.02F, 0.02F, 0.04F },
 
   /* Computed Parameter: RandomSource1_VarianceRTP
-   * Referenced by: '<S85>/Random Source1'
+   * Referenced by: '<S86>/Random Source1'
    */
   { 0.01F, 0.01F, 0.01F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_f
-   * Referenced by: '<S103>/Random Source'
+   * Referenced by: '<S104>/Random Source'
    */
   { 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_b
-   * Referenced by: '<S114>/Random Source'
+   * Referenced by: '<S115>/Random Source'
    */
   { 0.005F, 0.005F, 0.005F },
 
   /* Expression: wmm_declination
-   * Referenced by: '<S120>/Declination_Lookup_Table'
+   * Referenced by: '<S121>/Declination_Lookup_Table'
    */
   { 129.47F, 85.74F, 47.95F, 31.19F, 22.49F, 16.95F, 13.27F, 11.01F, 9.8F, 9.04F,
     8.04F, 6.39F, 4.43F, 2.87F, 1.89F, 0.82F, -2.32F, 117.22F, 77.74F, 46.6F,
@@ -201,7 +201,7 @@ const ConstP_Plant_T Plant_ConstP = {
     1.89F, 0.82F, -2.32F },
 
   /* Expression: wmm_inclination
-   * Referenced by: '<S120>/Inclination_Lookup_Table'
+   * Referenced by: '<S121>/Inclination_Lookup_Table'
    */
   { -78.32F, -80.9F, -77.5F, -71.61F, -64.4F, -55.01F, -42.22F, -25.27F, -5.16F,
     14.71F, 31.05F, 43.37F, 53.09F, 61.88F, 70.58F, 78.83F, 85.96F, -77.55F,
@@ -276,7 +276,7 @@ const ConstP_Plant_T Plant_ConstP = {
     14.71F, 31.05F, 43.37F, 53.09F, 61.88F, 70.58F, 78.83F, 85.96F },
 
   /* Expression: wmm_magnitude
-   * Referenced by: '<S120>/Magnitude_Lookup_Table'
+   * Referenced by: '<S121>/Magnitude_Lookup_Table'
    */
   { 60.6688499F, 63.1136093F, 61.9571686F, 58.5107918F, 53.9825211F, 48.8148804F,
     43.2272797F, 37.9078407F, 34.1241F, 32.8304787F, 33.9999084F, 37.2338F,
@@ -385,7 +385,7 @@ const ConstP_Plant_T Plant_ConstP = {
     42.2268791F, 48.3138885F, 53.9158897F, 57.2580109F, 57.8856F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_a
-   * Referenced by: '<S125>/Random Source'
+   * Referenced by: '<S126>/Random Source'
    */
   { 0.001F, 0.001F, 0.001F }
 };

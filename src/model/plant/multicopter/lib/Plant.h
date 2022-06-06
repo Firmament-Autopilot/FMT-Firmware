@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.757
+ * Model version                  : 1.758
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 16:06:12 2022
+ * C/C++ source code generated on : Mon Jun  6 21:03:48 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -36,169 +36,169 @@
 
 /* Block signals (default storage) */
 typedef struct {
-  GPS_uBlox_Bus RateTransition;        /* '<S77>/Rate Transition' */
-  MAG_Bus RateTransition_b;            /* '<S115>/Rate Transition' */
-  Barometer_Bus RateTransition_m;      /* '<S71>/Rate Transition' */
+  GPS_uBlox_Bus RateTransition;        /* '<S78>/Rate Transition' */
+  MAG_Bus RateTransition_b;            /* '<S116>/Rate Transition' */
+  Barometer_Bus RateTransition_m;      /* '<S72>/Rate Transition' */
 } B_Plant_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real_T Delay_DSTATE[225];            /* '<S82>/Delay' */
-  real_T DiscreteFIRFilter_states[3];  /* '<S87>/Discrete FIR Filter' */
-  real_T Delay1_DSTATE[3];             /* '<S21>/Delay1' */
-  real_T Delay_DSTATE_a[3];            /* '<S21>/Delay' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S112>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_c[3];/* '<S101>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator_DSTATE[4];/* '<S107>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_p[4];/* '<S96>/Discrete-Time Integrator' */
-  real32_T Delay1_DSTATE_a[150];       /* '<S82>/Delay1' */
-  real32_T DiscreteFIRFilter_states_f[3];/* '<S88>/Discrete FIR Filter' */
-  real32_T DiscreteTimeIntegrator_DSTATE_d[4];/* '<S44>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_e[3];/* '<S40>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_f[3];/* '<S41>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S41>/Discrete-Time Integrator1' */
-  real32_T Rotor_Delay_states[4];      /* '<S8>/Rotor_Delay' */
-  uint32_T Delay_DSTATE_c;             /* '<S19>/Delay' */
-  uint32_T Memory1_PreviousInput;      /* '<S65>/Memory1' */
-  uint32_T RandomSource_SEED_DWORK[3]; /* '<S125>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK[6];/* '<S125>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_f[3];/* '<S103>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_k[6];/* '<S103>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_n[3];/* '<S114>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_h[6];/* '<S114>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_m[3];/* '<S85>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_l[6];/* '<S85>/Random Source' */
-  uint32_T RandomSource1_SEED_DWORK[3];/* '<S85>/Random Source1' */
-  uint32_T RandomSource1_STATE_DWORK[6];/* '<S85>/Random Source1' */
-  uint32_T RandomSource_STATE_DWORK_b[2];/* '<S76>/Random Source' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S44>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRe_d;/* '<S40>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRe_k;/* '<S41>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S41>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S112>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_j;/* '<S101>/Discrete-Time Integrator5' */
+  real_T Delay_DSTATE[225];            /* '<S83>/Delay' */
+  real_T DiscreteFIRFilter_states[3];  /* '<S88>/Discrete FIR Filter' */
+  real_T Delay1_DSTATE[3];             /* '<S22>/Delay1' */
+  real_T Delay_DSTATE_a[3];            /* '<S22>/Delay' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S113>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_c[3];/* '<S102>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator_DSTATE[4];/* '<S108>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTATE_p[4];/* '<S97>/Discrete-Time Integrator' */
+  real32_T Delay1_DSTATE_a[150];       /* '<S83>/Delay1' */
+  real32_T DiscreteFIRFilter_states_f[3];/* '<S89>/Discrete FIR Filter' */
+  real32_T DiscreteTimeIntegrator_DSTATE_d[4];/* '<S45>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTATE_e[3];/* '<S41>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTATE_f[3];/* '<S42>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S42>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_n[4];/* '<S11>/Discrete-Time Integrator' */
+  uint32_T Delay_DSTATE_c;             /* '<S20>/Delay' */
+  uint32_T Memory1_PreviousInput;      /* '<S66>/Memory1' */
+  uint32_T RandomSource_SEED_DWORK[3]; /* '<S126>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK[6];/* '<S126>/Random Source' */
+  uint32_T RandomSource_SEED_DWORK_f[3];/* '<S104>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK_k[6];/* '<S104>/Random Source' */
+  uint32_T RandomSource_SEED_DWORK_n[3];/* '<S115>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK_h[6];/* '<S115>/Random Source' */
+  uint32_T RandomSource_SEED_DWORK_m[3];/* '<S86>/Random Source' */
+  uint32_T RandomSource_STATE_DWORK_l[6];/* '<S86>/Random Source' */
+  uint32_T RandomSource1_SEED_DWORK[3];/* '<S86>/Random Source1' */
+  uint32_T RandomSource1_STATE_DWORK[6];/* '<S86>/Random Source1' */
+  uint32_T RandomSource_STATE_DWORK_b[2];/* '<S77>/Random Source' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S45>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator_PrevRe_d;/* '<S41>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator_PrevRe_k;/* '<S42>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S42>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S113>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_j;/* '<S102>/Discrete-Time Integrator5' */
 } DW_Plant_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real_T Sum;                    /* '<S89>/Sum' */
-  const real_T ff;                     /* '<S89>/Multiply3' */
-  const real_T Sum4;                   /* '<S89>/Sum4' */
-  const real_T Subtract1;              /* '<S27>/Subtract1' */
-  const real_T Product1;               /* '<S27>/Product1' */
-  const real32_T Add[9];               /* '<S124>/Add' */
-  const real32_T VectorConcatenate3[3];/* '<S123>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_a[3];/* '<S122>/Vector Concatenate3' */
-  const real32_T Add_m[9];             /* '<S102>/Add' */
-  const real32_T Add_g[9];             /* '<S113>/Add' */
-  const real32_T quat0[4];             /* '<S40>/quat0' */
-  const real32_T VectorConcatenate3_e[3];/* '<S34>/Vector Concatenate3' */
-  const uint8_T DataTypeConversion;    /* '<S77>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1;   /* '<S77>/Data Type Conversion1' */
+  const real_T Sum;                    /* '<S90>/Sum' */
+  const real_T ff;                     /* '<S90>/Multiply3' */
+  const real_T Sum4;                   /* '<S90>/Sum4' */
+  const real_T Subtract1;              /* '<S28>/Subtract1' */
+  const real_T Product1;               /* '<S28>/Product1' */
+  const real32_T Add[9];               /* '<S125>/Add' */
+  const real32_T VectorConcatenate3[3];/* '<S124>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3_a[3];/* '<S123>/Vector Concatenate3' */
+  const real32_T Add_m[9];             /* '<S103>/Add' */
+  const real32_T Add_g[9];             /* '<S114>/Add' */
+  const real32_T quat0[4];             /* '<S41>/quat0' */
+  const real32_T VectorConcatenate3_e[3];/* '<S35>/Vector Concatenate3' */
+  const uint8_T DataTypeConversion;    /* '<S78>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1;   /* '<S78>/Data Type Conversion1' */
 } ConstB_Plant_T;
 
 /* Constant parameters (default storage) */
 typedef struct {
   /* Expression: gain
-   * Referenced by: '<S96>/Gain4'
+   * Referenced by: '<S97>/Gain4'
    */
   real_T Gain4_Gain[3];
 
   /* Computed Parameter: X_Frame_CM_Value
-   * Referenced by: '<S15>/X_Frame_CM'
+   * Referenced by: '<S16>/X_Frame_CM'
    */
   real32_T X_Frame_CM_Value[12];
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<Root>/Constant'
-   *   '<S41>/Constant'
-   *   '<S8>/Rotor_Delay'
+   *   '<S42>/Constant'
    *   '<S9>/Constant'
    *   '<S9>/Constant1'
-   *   '<S35>/Constant'
-   *   '<S37>/Constant'
-   *   '<S11>/Saturation1'
-   *   '<S49>/Constant'
-   *   '<S49>/Constant1'
-   *   '<S49>/Constant2'
-   *   '<S49>/Constant3'
-   *   '<S79>/Saturation'
-   *   '<S82>/Delay1'
-   *   '<S34>/Constant1'
-   *   '<S34>/Constant2'
-   *   '<S34>/Constant3'
-   *   '<S34>/Constant4'
-   *   '<S74>/Limit  altitude  to Stratosphere'
-   *   '<S74>/Limit  altitude  to troposhere'
-   *   '<S75>/Constant3'
-   *   '<S76>/Random Source'
-   *   '<S85>/Random Source'
-   *   '<S85>/Random Source1'
-   *   '<S88>/Discrete FIR Filter'
-   *   '<S103>/Random Source'
-   *   '<S114>/Random Source'
-   *   '<S125>/Random Source'
-   *   '<S122>/Constant'
-   *   '<S122>/Constant2'
-   *   '<S122>/Constant3'
-   *   '<S122>/Constant4'
-   *   '<S123>/Constant1'
+   *   '<S36>/Constant'
+   *   '<S38>/Constant'
+   *   '<S11>/Discrete-Time Integrator'
+   *   '<S12>/Saturation1'
+   *   '<S50>/Constant'
+   *   '<S50>/Constant1'
+   *   '<S50>/Constant2'
+   *   '<S50>/Constant3'
+   *   '<S80>/Saturation'
+   *   '<S83>/Delay1'
+   *   '<S35>/Constant1'
+   *   '<S35>/Constant2'
+   *   '<S35>/Constant3'
+   *   '<S35>/Constant4'
+   *   '<S75>/Limit  altitude  to Stratosphere'
+   *   '<S75>/Limit  altitude  to troposhere'
+   *   '<S76>/Constant3'
+   *   '<S77>/Random Source'
+   *   '<S86>/Random Source'
+   *   '<S86>/Random Source1'
+   *   '<S89>/Discrete FIR Filter'
+   *   '<S104>/Random Source'
+   *   '<S115>/Random Source'
+   *   '<S126>/Random Source'
+   *   '<S123>/Constant'
    *   '<S123>/Constant2'
    *   '<S123>/Constant3'
    *   '<S123>/Constant4'
+   *   '<S124>/Constant1'
+   *   '<S124>/Constant2'
+   *   '<S124>/Constant3'
+   *   '<S124>/Constant4'
    */
   real32_T pooled14;
 
   /* Computed Parameter: Inertia_Matrix_Value
-   * Referenced by: '<S40>/Inertia_Matrix'
+   * Referenced by: '<S41>/Inertia_Matrix'
    */
   real32_T Inertia_Matrix_Value[9];
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S119>/Saturation'
-   *   '<S76>/Random Source'
+   *   '<S120>/Saturation'
+   *   '<S77>/Random Source'
    */
-  real32_T pooled24;
+  real32_T pooled25;
 
   /* Computed Parameter: RandomSource_VarianceRTP
-   * Referenced by: '<S85>/Random Source'
+   * Referenced by: '<S86>/Random Source'
    */
   real32_T RandomSource_VarianceRTP[3];
 
   /* Computed Parameter: RandomSource1_VarianceRTP
-   * Referenced by: '<S85>/Random Source1'
+   * Referenced by: '<S86>/Random Source1'
    */
   real32_T RandomSource1_VarianceRTP[3];
 
   /* Computed Parameter: RandomSource_VarianceRTP_f
-   * Referenced by: '<S103>/Random Source'
+   * Referenced by: '<S104>/Random Source'
    */
   real32_T RandomSource_VarianceRTP_f[3];
 
   /* Computed Parameter: RandomSource_VarianceRTP_b
-   * Referenced by: '<S114>/Random Source'
+   * Referenced by: '<S115>/Random Source'
    */
   real32_T RandomSource_VarianceRTP_b[3];
 
   /* Expression: wmm_declination
-   * Referenced by: '<S120>/Declination_Lookup_Table'
+   * Referenced by: '<S121>/Declination_Lookup_Table'
    */
   real32_T Declination_Lookup_Table_table[629];
 
   /* Expression: wmm_inclination
-   * Referenced by: '<S120>/Inclination_Lookup_Table'
+   * Referenced by: '<S121>/Inclination_Lookup_Table'
    */
   real32_T Inclination_Lookup_Table_table[629];
 
   /* Expression: wmm_magnitude
-   * Referenced by: '<S120>/Magnitude_Lookup_Table'
+   * Referenced by: '<S121>/Magnitude_Lookup_Table'
    */
   real32_T Magnitude_Lookup_Table_table[629];
 
   /* Computed Parameter: RandomSource_VarianceRTP_a
-   * Referenced by: '<S125>/Random Source'
+   * Referenced by: '<S126>/Random Source'
    */
   real32_T RandomSource_VarianceRTP_a[3];
 } ConstP_Plant_T;
@@ -265,8 +265,8 @@ extern const ConstP_Plant_T Plant_ConstP;
  */
 extern struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT;/* Variable: PLANT_EXPORT
                                                    * Referenced by:
-                                                   *   '<S19>/dt'
-                                                   *   '<S65>/dt'
+                                                   *   '<S20>/dt'
+                                                   *   '<S66>/dt'
                                                    */
 
 /* Model entry point functions */
@@ -280,35 +280,35 @@ extern RT_MODEL_Plant_T *const Plant_M;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S74>/Product' : Unused code path elimination
- * Block '<S74>/Product3' : Unused code path elimination
- * Block '<S74>/a' : Unused code path elimination
- * Block '<S74>/gamma*R' : Unused code path elimination
- * Block '<S74>/rho0' : Unused code path elimination
- * Block '<S19>/Data Type Conversion2' : Eliminate redundant data type conversion
- * Block '<S36>/Gain3' : Eliminated nontunable gain of 1
- * Block '<S36>/Reshape' : Reshape block reduction
- * Block '<S37>/Reshape1' : Reshape block reduction
- * Block '<S65>/Data Type Conversion2' : Eliminate redundant data type conversion
- * Block '<S73>/Switch' : Eliminated due to constant selection input
- * Block '<S71>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S77>/Signal Conversion1' : Eliminate redundant signal conversion block
- * Block '<S77>/Signal Conversion3' : Eliminate redundant signal conversion block
- * Block '<S77>/Signal Conversion4' : Eliminate redundant signal conversion block
- * Block '<S77>/Signal Conversion6' : Eliminate redundant signal conversion block
- * Block '<S77>/Signal Conversion7' : Eliminate redundant signal conversion block
- * Block '<S80>/Signal Conversion' : Eliminate redundant signal conversion block
- * Block '<S80>/Signal Conversion1' : Eliminate redundant signal conversion block
- * Block '<S80>/Signal Conversion2' : Eliminate redundant signal conversion block
- * Block '<S83>/Switch' : Eliminated due to constant selection input
- * Block '<S83>/Switch1' : Eliminated due to constant selection input
- * Block '<S96>/Reshape' : Reshape block reduction
- * Block '<S101>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S95>/Switch' : Eliminated due to constant selection input
- * Block '<S107>/Reshape' : Reshape block reduction
- * Block '<S112>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S106>/Switch' : Eliminated due to constant selection input
- * Block '<S119>/Switch' : Eliminated due to constant selection input
+ * Block '<S75>/Product' : Unused code path elimination
+ * Block '<S75>/Product3' : Unused code path elimination
+ * Block '<S75>/a' : Unused code path elimination
+ * Block '<S75>/gamma*R' : Unused code path elimination
+ * Block '<S75>/rho0' : Unused code path elimination
+ * Block '<S20>/Data Type Conversion2' : Eliminate redundant data type conversion
+ * Block '<S37>/Gain3' : Eliminated nontunable gain of 1
+ * Block '<S37>/Reshape' : Reshape block reduction
+ * Block '<S38>/Reshape1' : Reshape block reduction
+ * Block '<S66>/Data Type Conversion2' : Eliminate redundant data type conversion
+ * Block '<S74>/Switch' : Eliminated due to constant selection input
+ * Block '<S72>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S78>/Signal Conversion1' : Eliminate redundant signal conversion block
+ * Block '<S78>/Signal Conversion3' : Eliminate redundant signal conversion block
+ * Block '<S78>/Signal Conversion4' : Eliminate redundant signal conversion block
+ * Block '<S78>/Signal Conversion6' : Eliminate redundant signal conversion block
+ * Block '<S78>/Signal Conversion7' : Eliminate redundant signal conversion block
+ * Block '<S81>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S81>/Signal Conversion1' : Eliminate redundant signal conversion block
+ * Block '<S81>/Signal Conversion2' : Eliminate redundant signal conversion block
+ * Block '<S84>/Switch' : Eliminated due to constant selection input
+ * Block '<S84>/Switch1' : Eliminated due to constant selection input
+ * Block '<S97>/Reshape' : Reshape block reduction
+ * Block '<S102>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S96>/Switch' : Eliminated due to constant selection input
+ * Block '<S108>/Reshape' : Reshape block reduction
+ * Block '<S113>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S107>/Switch' : Eliminated due to constant selection input
+ * Block '<S120>/Switch' : Eliminated due to constant selection input
  */
 
 /*-
@@ -336,121 +336,122 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S8>'   : 'Plant/Actuators/Motors/ESCs'
  * '<S9>'   : 'Plant/Actuators/Motors/Force'
  * '<S10>'  : 'Plant/Actuators/Motors/Torque'
- * '<S11>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed'
- * '<S12>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed/Compare To Constant'
- * '<S13>'  : 'Plant/Actuators/Motors/Force/Rotor_Thrust'
- * '<S14>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque'
- * '<S15>'  : 'Plant/Actuators/Motors/Torque/Rotor_Torque'
- * '<S16>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product'
- * '<S17>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem'
- * '<S18>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem1'
- * '<S19>'  : 'Plant/Bus_Constructor/Counter'
- * '<S20>'  : 'Plant/Bus_Constructor/Quaternion To DCM'
- * '<S21>'  : 'Plant/Bus_Constructor/WGS84'
- * '<S22>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize'
- * '<S23>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_1'
- * '<S24>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_2'
- * '<S25>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_3'
- * '<S26>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
- * '<S27>'  : 'Plant/Bus_Constructor/WGS84/WGS84_Derivative'
- * '<S28>'  : 'Plant/Bus_Constructor/WGS84/Zero_Value_Exclusion'
- * '<S29>'  : 'Plant/Environment/Aerodynamic'
- * '<S30>'  : 'Plant/Environment/Gravity'
- * '<S31>'  : 'Plant/Environment/Ground_Model'
- * '<S32>'  : 'Plant/Environment/Aerodynamic/Air_Drag'
- * '<S33>'  : 'Plant/Environment/Aerodynamic/Air_Drag/Psi To DCM'
- * '<S34>'  : 'Plant/Environment/Aerodynamic/Air_Drag/Psi To DCM/Rotation Matrix Z'
- * '<S35>'  : 'Plant/Environment/Ground_Model/Compare To Zero'
- * '<S36>'  : 'Plant/Environment/Ground_Model/Ground_Force'
- * '<S37>'  : 'Plant/Environment/Ground_Model/Ground_Torque'
- * '<S38>'  : 'Plant/Environment/Ground_Model/Ground_Force/Compare To Constant'
- * '<S39>'  : 'Plant/Environment/Ground_Model/Ground_Force/Compare To Constant1'
- * '<S40>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic'
- * '<S41>'  : 'Plant/Kinematic_Equation/Position_Dynamic'
- * '<S42>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Cross Product'
- * '<S43>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternion To Euler'
- * '<S44>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternuin_Update'
- * '<S45>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Cross Product/Subsystem'
- * '<S46>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Cross Product/Subsystem1'
- * '<S47>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternion To Euler/Quaternion Normalize'
- * '<S48>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternion To Euler/Quaternion Normalize/Quaternion Modulus'
- * '<S49>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternuin_Update/Quaternion_Update_Maxtrix'
- * '<S50>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Cross Product'
- * '<S51>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation'
- * '<S52>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation'
- * '<S53>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Cross Product/Subsystem'
- * '<S54>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Cross Product/Subsystem1'
- * '<S55>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Quaternion Normalize'
- * '<S56>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Subsystem'
- * '<S57>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Subsystem1'
- * '<S58>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Subsystem2'
- * '<S59>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Quaternion Normalize/Quaternion Modulus'
- * '<S60>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/Quaternion Normalize'
- * '<S61>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/v1'
- * '<S62>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/v2'
- * '<S63>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/v3'
- * '<S64>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/Quaternion Normalize/Quaternion Modulus'
- * '<S65>'  : 'Plant/Sensor_Model/Counter'
- * '<S66>'  : 'Plant/Sensor_Model/Sensor_Barometer'
- * '<S67>'  : 'Plant/Sensor_Model/Sensor_GPS'
- * '<S68>'  : 'Plant/Sensor_Model/Sensor_IMU'
- * '<S69>'  : 'Plant/Sensor_Model/Sensor_MAG'
- * '<S70>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer'
- * '<S71>'  : 'Plant/Sensor_Model/Sensor_Barometer/Bus_Constructor'
- * '<S72>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Physical_Model'
- * '<S73>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Sensor_Model'
- * '<S74>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Physical_Model/ISA Atmosphere Model'
- * '<S75>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Sensor_Model/Sensor_Error'
- * '<S76>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Sensor_Model/Sensor_Noise'
- * '<S77>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Constructor'
- * '<S78>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS'
- * '<S79>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Constructor/GroundSpeed'
- * '<S80>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Constructor/WGS84_Position'
- * '<S81>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Bus_Constructor'
- * '<S82>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Physical_Model'
- * '<S83>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model'
- * '<S84>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/Accurancy_Estimate'
- * '<S85>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/Sensor_Error'
- * '<S86>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization'
- * '<S87>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/pos_filter'
- * '<S88>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/vel_filter'
- * '<S89>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization/LAT2FLAT Curve'
- * '<S90>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer'
- * '<S91>'  : 'Plant/Sensor_Model/Sensor_IMU/Bus_Constructor'
- * '<S92>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope'
- * '<S93>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Bus_Constructor'
- * '<S94>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model'
- * '<S95>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model'
- * '<S96>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model'
- * '<S97>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/prop_vel'
- * '<S98>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/specific_force'
- * '<S99>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model/Compare To Constant1'
- * '<S100>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model/vib_frequency'
- * '<S101>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/First Order LPF'
- * '<S102>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Sensor_Error'
- * '<S103>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Sensor_Noise'
- * '<S104>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Bus_Constructor'
- * '<S105>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model'
- * '<S106>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model'
- * '<S107>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model'
- * '<S108>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/prop_vel'
- * '<S109>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/rotation_speed'
- * '<S110>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/Compare To Constant1'
- * '<S111>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/vib_frequency'
- * '<S112>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/First Order LPF'
- * '<S113>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Sensor_Error'
- * '<S114>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Sensor_Noise'
- * '<S115>' : 'Plant/Sensor_Model/Sensor_MAG/Bus_Constructor'
- * '<S116>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer'
- * '<S117>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Bus_Constructor'
- * '<S118>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model'
- * '<S119>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model'
- * '<S120>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/WMM_LUT'
- * '<S121>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/magnetic_field'
- * '<S122>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/magnetic_field/Rotation Matrix Y'
- * '<S123>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/magnetic_field/Rotation Matrix Z'
- * '<S124>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model/Sensor_Error'
- * '<S125>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model/Sensor_Noise'
+ * '<S11>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Delay'
+ * '<S12>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed'
+ * '<S13>'  : 'Plant/Actuators/Motors/ESCs/Rotor_Speed/Compare To Constant'
+ * '<S14>'  : 'Plant/Actuators/Motors/Force/Rotor_Thrust'
+ * '<S15>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque'
+ * '<S16>'  : 'Plant/Actuators/Motors/Torque/Rotor_Torque'
+ * '<S17>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product'
+ * '<S18>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem'
+ * '<S19>'  : 'Plant/Actuators/Motors/Torque/Gyroscopic_Torque/Cross Product/Subsystem1'
+ * '<S20>'  : 'Plant/Bus_Constructor/Counter'
+ * '<S21>'  : 'Plant/Bus_Constructor/Quaternion To DCM'
+ * '<S22>'  : 'Plant/Bus_Constructor/WGS84'
+ * '<S23>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize'
+ * '<S24>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_1'
+ * '<S25>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_2'
+ * '<S26>'  : 'Plant/Bus_Constructor/Quaternion To DCM/column_3'
+ * '<S27>'  : 'Plant/Bus_Constructor/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S28>'  : 'Plant/Bus_Constructor/WGS84/WGS84_Derivative'
+ * '<S29>'  : 'Plant/Bus_Constructor/WGS84/Zero_Value_Exclusion'
+ * '<S30>'  : 'Plant/Environment/Aerodynamic'
+ * '<S31>'  : 'Plant/Environment/Gravity'
+ * '<S32>'  : 'Plant/Environment/Ground_Model'
+ * '<S33>'  : 'Plant/Environment/Aerodynamic/Air_Drag'
+ * '<S34>'  : 'Plant/Environment/Aerodynamic/Air_Drag/Psi To DCM'
+ * '<S35>'  : 'Plant/Environment/Aerodynamic/Air_Drag/Psi To DCM/Rotation Matrix Z'
+ * '<S36>'  : 'Plant/Environment/Ground_Model/Compare To Zero'
+ * '<S37>'  : 'Plant/Environment/Ground_Model/Ground_Force'
+ * '<S38>'  : 'Plant/Environment/Ground_Model/Ground_Torque'
+ * '<S39>'  : 'Plant/Environment/Ground_Model/Ground_Force/Compare To Constant'
+ * '<S40>'  : 'Plant/Environment/Ground_Model/Ground_Force/Compare To Constant1'
+ * '<S41>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic'
+ * '<S42>'  : 'Plant/Kinematic_Equation/Position_Dynamic'
+ * '<S43>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Cross Product'
+ * '<S44>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternion To Euler'
+ * '<S45>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternuin_Update'
+ * '<S46>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Cross Product/Subsystem'
+ * '<S47>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Cross Product/Subsystem1'
+ * '<S48>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternion To Euler/Quaternion Normalize'
+ * '<S49>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternion To Euler/Quaternion Normalize/Quaternion Modulus'
+ * '<S50>'  : 'Plant/Kinematic_Equation/Attitude_Dynamic/Quaternuin_Update/Quaternion_Update_Maxtrix'
+ * '<S51>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Cross Product'
+ * '<S52>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation'
+ * '<S53>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation'
+ * '<S54>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Cross Product/Subsystem'
+ * '<S55>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Cross Product/Subsystem1'
+ * '<S56>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Quaternion Normalize'
+ * '<S57>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Subsystem'
+ * '<S58>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Subsystem1'
+ * '<S59>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Subsystem2'
+ * '<S60>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Inv-Rotation/Quaternion Normalize/Quaternion Modulus'
+ * '<S61>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/Quaternion Normalize'
+ * '<S62>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/v1'
+ * '<S63>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/v2'
+ * '<S64>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/v3'
+ * '<S65>'  : 'Plant/Kinematic_Equation/Position_Dynamic/Quaternion Rotation/Quaternion Normalize/Quaternion Modulus'
+ * '<S66>'  : 'Plant/Sensor_Model/Counter'
+ * '<S67>'  : 'Plant/Sensor_Model/Sensor_Barometer'
+ * '<S68>'  : 'Plant/Sensor_Model/Sensor_GPS'
+ * '<S69>'  : 'Plant/Sensor_Model/Sensor_IMU'
+ * '<S70>'  : 'Plant/Sensor_Model/Sensor_MAG'
+ * '<S71>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer'
+ * '<S72>'  : 'Plant/Sensor_Model/Sensor_Barometer/Bus_Constructor'
+ * '<S73>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Physical_Model'
+ * '<S74>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Sensor_Model'
+ * '<S75>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Physical_Model/ISA Atmosphere Model'
+ * '<S76>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Sensor_Model/Sensor_Error'
+ * '<S77>'  : 'Plant/Sensor_Model/Sensor_Barometer/Barometer/Sensor_Model/Sensor_Noise'
+ * '<S78>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Constructor'
+ * '<S79>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS'
+ * '<S80>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Constructor/GroundSpeed'
+ * '<S81>'  : 'Plant/Sensor_Model/Sensor_GPS/Bus_Constructor/WGS84_Position'
+ * '<S82>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Bus_Constructor'
+ * '<S83>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Physical_Model'
+ * '<S84>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model'
+ * '<S85>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/Accurancy_Estimate'
+ * '<S86>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/Sensor_Error'
+ * '<S87>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization'
+ * '<S88>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/pos_filter'
+ * '<S89>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/vel_filter'
+ * '<S90>'  : 'Plant/Sensor_Model/Sensor_GPS/GPS/Sensor_Model/WGS84_Linearization/LAT2FLAT Curve'
+ * '<S91>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer'
+ * '<S92>'  : 'Plant/Sensor_Model/Sensor_IMU/Bus_Constructor'
+ * '<S93>'  : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope'
+ * '<S94>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Bus_Constructor'
+ * '<S95>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model'
+ * '<S96>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model'
+ * '<S97>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model'
+ * '<S98>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/prop_vel'
+ * '<S99>'  : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/specific_force'
+ * '<S100>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model/Compare To Constant1'
+ * '<S101>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Physical_Model/Vibration_Model/vib_frequency'
+ * '<S102>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/First Order LPF'
+ * '<S103>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Sensor_Error'
+ * '<S104>' : 'Plant/Sensor_Model/Sensor_IMU/Accelerometer/Sensor_Model/Sensor_Noise'
+ * '<S105>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Bus_Constructor'
+ * '<S106>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model'
+ * '<S107>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model'
+ * '<S108>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model'
+ * '<S109>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/prop_vel'
+ * '<S110>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/rotation_speed'
+ * '<S111>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/Compare To Constant1'
+ * '<S112>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Physical_Model/Vibration_Model/vib_frequency'
+ * '<S113>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/First Order LPF'
+ * '<S114>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Sensor_Error'
+ * '<S115>' : 'Plant/Sensor_Model/Sensor_IMU/Gyroscope/Sensor_Model/Sensor_Noise'
+ * '<S116>' : 'Plant/Sensor_Model/Sensor_MAG/Bus_Constructor'
+ * '<S117>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer'
+ * '<S118>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Bus_Constructor'
+ * '<S119>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model'
+ * '<S120>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model'
+ * '<S121>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/WMM_LUT'
+ * '<S122>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/magnetic_field'
+ * '<S123>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/magnetic_field/Rotation Matrix Y'
+ * '<S124>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Physical_Model/magnetic_field/Rotation Matrix Z'
+ * '<S125>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model/Sensor_Error'
+ * '<S126>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model/Sensor_Noise'
  */
 #endif                                 /* RTW_HEADER_Plant_h_ */
 
