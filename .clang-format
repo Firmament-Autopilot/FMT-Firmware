@@ -1,0 +1,44 @@
+---
+# clang-format documentation
+# http://clang.llvm.org/docs/ClangFormat.html
+# http://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
+# Preexisting formats:
+# LLVM
+# Google
+# Chromium
+# Mozilla
+# WebKit
+
+Language:        Cpp
+BasedOnStyle:  WebKit
+
+IndentWidth: 4
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: true
+AlignTrailingComments: true
+BinPackArguments: false
+BinPackParameters: true
+
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: false
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: false
+  AfterStruct:     true
+  AfterUnion:      true
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false
+
+IncludeBlocks: Preserve
+IndentPPDirectives: BeforeHash
+
+MaxEmptyLinesToKeep: 1
+PointerAlignment: Left
+UseTab: Never
+ColumnLimit: 0
+
+...
