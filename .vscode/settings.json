@@ -20,9 +20,4 @@
             "rtthread"
     ],
     "editor.defaultFormatter": "xaver.clang-format",
-    "clang-format.fallbackStyle": "WebKit",
-    "[c]": {
-        "editor.defaultFormatter": "xaver.clang-format"
-    },
-    // "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Webkit, AlignConsecutiveMacros: true, AlignEscapedNe{ BasedOnStyle: Webkit, AlignConsecutiveMacros: true, AlignEscapedNewlines: Left, AlignTrailingComments: true, AllowShortBlocksOnASingleLine: Always, UseTab: Never }wlines: Left, AlignTrailingComments: true, AllowShortBlocksOnASingleLine: Always, UseTab: Never }",
 }
