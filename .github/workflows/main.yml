@@ -25,6 +25,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - uses: lots0logs/gh-action-get-changed-files@2.1.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}      
+
+      - name: clang-format check
+        shell: bash
+        run: |
+          cat ${HOME}/files_modified.json
+          cat ${HOME}/files_added.json
+          clang-format --dry-run --style=file --Werror ${HOME}/files_modified.json ${HOME}/files_added.json
 
       - name: Install Tools
         shell: bash
