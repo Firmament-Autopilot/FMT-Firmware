@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: check format
+name: Check Format
 
 # Controls when the workflow will run
 on:
@@ -43,6 +43,6 @@ jobs:
             fi
           done
           echo ${changed_files}
-          if [-n ${changed_files}]; then
+          if [ -n ${changed_files} ]; then
             clang-format -n --style=file --Werror ${changed_files}
           fi
