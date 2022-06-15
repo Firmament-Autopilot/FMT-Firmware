@@ -35,6 +35,7 @@ jobs:
       - id: files
         uses: jitterbit/get-changed-files@v1
       - run: |
+          clang-format --version
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             if [[ ($changed_file == *.c) || ($changed_file == *.h) ]]
             then
