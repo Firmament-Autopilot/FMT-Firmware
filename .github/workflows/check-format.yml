@@ -43,6 +43,5 @@ jobs:
             fi
           done
           if [ -n "${changed_files}" ]; then
-            echo ${changed_files}
             clang-format-11 -n --style=file --Werror ${changed_files}
           fi

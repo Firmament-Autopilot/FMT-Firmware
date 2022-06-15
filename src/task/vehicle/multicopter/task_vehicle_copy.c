@@ -22,7 +22,7 @@
 #include "model/plant/plant_interface.h"
 #include "module/file_manager/file_manager.h"
 #include "module/sensor/sensor_hub.h"
-    #include "module/sysio/actuator_cmd.h"
+#include "module/sysio/actuator_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
@@ -56,7 +56,7 @@ void task_vehicle_entry(void* parameter)
 
         if (res == RT_EOK) {
             if (recv_set & EVENT_VEHICLE_UPDATE) {
-                    time_now = systime_now_ms();
+                time_now = systime_now_ms();
                 /* record loop start time */
                 if (time_start == 0) {
                     time_start = time_now;

@@ -56,7 +56,7 @@ void task_vehicle_entry(void* parameter)
 
         if (res == RT_EOK) {
             if (recv_set & EVENT_VEHICLE_UPDATE) {
-                    time_now = systime_now_ms();
+                time_now = systime_now_ms();
                 /* record loop start time */
                 if (time_start == 0) {
                     time_start = time_now;
