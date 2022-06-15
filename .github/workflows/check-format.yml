@@ -37,11 +37,11 @@ jobs:
       - run: |
           changed_files=""
           for file in ${{ steps.files.outputs.added_modified }}; do
-            if [[ ($file == *.c) || ($file == *.h) ]]; then
+            if [[ ($file == *.c) || ($file == *.h) || ($file == *.cpp) || ($file == *.hpp) ]]; then
               changed_files="${changed_files} ${file}"
             fi
           done
           if [ -n "${changed_files}" ]; then
             clang-format-11 -n --style=file --Werror ${changed_files}
           fi
-          echo "Checked format files: ${changed_files}."
+          echo "format-checked files: ${changed_files}."
