@@ -44,4 +44,4 @@ jobs:
           if [ -n "${changed_files}" ]; then
             clang-format-11 -n --style=file --Werror ${changed_files}
           fi
-          echo "Checked format files: ${changed_file}."
+          echo "Checked format files: ${changed_files}."

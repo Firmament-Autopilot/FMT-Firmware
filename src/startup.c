@@ -17,7 +17,7 @@
 #include <board.h>
 #include <firmament.h>
 #ifdef FMT_USING_CM_BACKTRACE
-#include <cm_backtrace.h>
+    #include <cm_backtrace.h>
 #endif
 
 #include "module/task_manager/task_manager.h"
@@ -69,8 +69,11 @@ static void rt_init_thread_entry(void* parameter)
 int rt_application_init()
 {
     tid0 = rt_thread_create("init",
-        rt_init_thread_entry, RT_NULL,
-        8192, RT_THREAD_PRIORITY_MAX / 2, 20);
+                            rt_init_thread_entry,
+                            RT_NULL,
+                            8192,
+                            RT_THREAD_PRIORITY_MAX / 2,
+                            20);
 
     if (tid0 != RT_NULL)
         rt_thread_startup(tid0);
