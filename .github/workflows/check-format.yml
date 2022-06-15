@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: FMT-Firmware CI
+name: check format
 
 # Controls when the workflow will run
 on:
@@ -42,26 +42,3 @@ jobs:
               clang-format -n --style=file --Werror ${changed_file}
             fi
           done
-
-      - name: Install Tools
-        shell: bash
-        run: |
-          sudo apt-get -qq update
-          sudo apt-get -qq install scons
-          scons --version
-          
-      - name: Install Arm ToolChains
-        shell: bash
-        run: |
-          wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-linux.tar.bz2
-          sudo tar xjf gcc-arm-none-eabi-7-2018-q2-update-linux.tar.bz2 -C /opt
-          /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc --version
-          echo "RTT_EXEC_PATH=/opt/gcc-arm-none-eabi-7-2018-q2-update/bin" >> $GITHUB_ENV
-          
-      - name: Compile BSP
-        run: |
-          scons -C target/pixhawk/fmu-v2 -j4
-          scons -C target/pixhawk/fmu-v5 -j4
-          scons -C target/cuav/v5_plus -j4
-          scons -C target/cubepilot/cubeorange -j4
-          scons -C target/qemu/qemu-vexpress-a9 -j4

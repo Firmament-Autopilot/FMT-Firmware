@@ -54,7 +54,7 @@ void task_vehicle_entry(void* parameter)
     while (1) {
         res = rt_event_recv(&event_vehicle, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
 
-            if (res == RT_EOK) {
+        if (res == RT_EOK) {
             if (recv_set & EVENT_VEHICLE_UPDATE) {
                 time_now = systime_now_ms();
                 /* record loop start time */
