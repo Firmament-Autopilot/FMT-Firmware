@@ -43,6 +43,6 @@ jobs:
             fi
           done
           echo ${changed_files}
-          if [n ${changed_files}]; then
+          if [-n ${changed_files}]; then
             clang-format -n --style=file --Werror ${changed_files}
           fi
