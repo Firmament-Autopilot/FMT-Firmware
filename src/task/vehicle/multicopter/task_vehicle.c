@@ -17,10 +17,10 @@
 #include <firmament.h>
 
 #include "model/control/control_interface.h"
-#include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "model/plant/plant_interface.h"
+#include "module/file_manager/file_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/gcs_cmd.h"
@@ -52,8 +52,7 @@ void task_vehicle_entry(void* parameter)
     uint32_t wait_set = EVENT_VEHICLE_UPDATE;
 
     while (1) {
-        res = rt_event_recv(&event_vehicle, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            RT_WAITING_FOREVER, &recv_set);
+        res = rt_event_recv(&event_vehicle, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
 
         if (res == RT_EOK) {
             if (recv_set & EVENT_VEHICLE_UPDATE) {
@@ -117,11 +116,7 @@ fmt_err_t task_vehicle_init(void)
     }
 
     /* register timer event */
-    rt_timer_init(&timer_vehicle, "vehicle",
-        timer_vehicle_update,
-        RT_NULL,
-        1,
-        RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    rt_timer_init(&timer_vehicle, "vehicle", timer_vehicle_update, RT_NULL, 1, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     if (rt_timer_start(&timer_vehicle) != RT_EOK) {
         return FMT_ERROR;
     }
