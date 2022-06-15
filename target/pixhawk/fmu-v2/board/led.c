@@ -15,9 +15,9 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include <FMS.h>
 #include "led.h"
 #include "module/workqueue/workqueue_manager.h"
+#include <FMS.h>
 
 static rt_device_t pin_dev;
 static rt_device_t rgb_led_dev;

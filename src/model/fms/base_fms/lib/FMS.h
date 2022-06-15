@@ -14,449 +14,448 @@
  */
 
 #ifndef RTW_HEADER_FMS_h_
-#define RTW_HEADER_FMS_h_
-#include <float.h>
-#include <math.h>
-#include <string.h>
-#include <stddef.h>
-#include <stddef.h>
-#ifndef FMS_COMMON_INCLUDES_
-# define FMS_COMMON_INCLUDES_
-#include "rtwtypes.h"
-#include "zero_crossing_types.h"
-#endif                                 /* FMS_COMMON_INCLUDES_ */
+    #define RTW_HEADER_FMS_h_
+    #include <float.h>
+    #include <math.h>
+    #include <stddef.h>
+    #include <string.h>
+    #ifndef FMS_COMMON_INCLUDES_
+        #define FMS_COMMON_INCLUDES_
+        #include "rtwtypes.h"
+        #include "zero_crossing_types.h"
+    #endif /* FMS_COMMON_INCLUDES_ */
 
-#include "FMS_types.h"
-#include "arm_math.h"
+    #include "FMS_types.h"
+    #include "arm_math.h"
 
-/* Macros for accessing real-time model data structure */
-#ifndef rtmGetErrorStatus
-# define rtmGetErrorStatus(rtm)        ((rtm)->errorStatus)
-#endif
+    /* Macros for accessing real-time model data structure */
+    #ifndef rtmGetErrorStatus
+        #define rtmGetErrorStatus(rtm) ((rtm)->errorStatus)
+    #endif
 
-#ifndef rtmSetErrorStatus
-# define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
-#endif
+    #ifndef rtmSetErrorStatus
+        #define rtmSetErrorStatus(rtm, val) ((rtm)->errorStatus = (val))
+    #endif
 
 /* Block states (default storage) for system '<S281>/Hold Control' */
 typedef struct {
-  real32_T Delay_DSTATE;               /* '<S284>/Delay' */
-  uint8_T icLoad;                      /* '<S284>/Delay' */
+    real32_T Delay_DSTATE; /* '<S284>/Delay' */
+    uint8_T icLoad;        /* '<S284>/Delay' */
 } DW_HoldControl_FMS_T;
 
 /* Block states (default storage) for system '<S281>/Move Control' */
 typedef struct {
-  real32_T Integrator1_DSTATE;         /* '<S288>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S288>/Integrator' */
+    real32_T Integrator1_DSTATE; /* '<S288>/Integrator1' */
+    real32_T Integrator_DSTATE;  /* '<S288>/Integrator' */
 } DW_MoveControl_FMS_T;
 
 /* Block states (default storage) for system '<S282>/Motion Status' */
 typedef struct {
-  uint16_T temporalCounter_i1;         /* '<S282>/Motion Status' */
-  uint8_T is_active_c1_FMS;            /* '<S282>/Motion Status' */
-  uint8_T is_c1_FMS;                   /* '<S282>/Motion Status' */
+    uint16_T temporalCounter_i1; /* '<S282>/Motion Status' */
+    uint8_T is_active_c1_FMS;    /* '<S282>/Motion Status' */
+    uint8_T is_c1_FMS;           /* '<S282>/Motion Status' */
 } DW_MotionStatus_FMS_T;
 
 /* Block states (default storage) for system '<S291>/Hold Control' */
 typedef struct {
-  real32_T Delay_DSTATE[2];            /* '<S294>/Delay' */
-  uint8_T icLoad;                      /* '<S294>/Delay' */
+    real32_T Delay_DSTATE[2]; /* '<S294>/Delay' */
+    uint8_T icLoad;           /* '<S294>/Delay' */
 } DW_HoldControl_FMS_l_T;
 
 /* Block states (default storage) for system '<S291>/Move Control' */
 typedef struct {
-  real32_T Integrator1_DSTATE[2];      /* '<S301>/Integrator1' */
-  real32_T Integrator_DSTATE[2];       /* '<S301>/Integrator' */
+    real32_T Integrator1_DSTATE[2]; /* '<S301>/Integrator1' */
+    real32_T Integrator_DSTATE[2];  /* '<S301>/Integrator' */
 } DW_MoveControl_FMS_d_T;
 
 /* Block states (default storage) for system '<S292>/Motion State' */
 typedef struct {
-  uint16_T temporalCounter_i1;         /* '<S292>/Motion State' */
-  uint8_T is_active_c2_FMS;            /* '<S292>/Motion State' */
-  uint8_T is_c2_FMS;                   /* '<S292>/Motion State' */
+    uint16_T temporalCounter_i1; /* '<S292>/Motion State' */
+    uint8_T is_active_c2_FMS;    /* '<S292>/Motion State' */
+    uint8_T is_c2_FMS;           /* '<S292>/Motion State' */
 } DW_MotionState_FMS_T;
 
 /* Block states (default storage) for system '<S225>/Hold Control' */
 typedef struct {
-  real32_T Delay_DSTATE;               /* '<S228>/Delay' */
-  uint8_T icLoad;                      /* '<S228>/Delay' */
+    real32_T Delay_DSTATE; /* '<S228>/Delay' */
+    uint8_T icLoad;        /* '<S228>/Delay' */
 } DW_HoldControl_FMS_g_T;
 
 /* Block states (default storage) for system '<S225>/Move Control' */
 typedef struct {
-  real32_T Integrator1_DSTATE;         /* '<S234>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S234>/Integrator' */
+    real32_T Integrator1_DSTATE; /* '<S234>/Integrator1' */
+    real32_T Integrator_DSTATE;  /* '<S234>/Integrator' */
 } DW_MoveControl_FMS_c_T;
 
 /* Block states (default storage) for system '<S119>/Motion State' */
 typedef struct {
-  uint8_T is_active_c19_FMS;           /* '<S119>/Motion State' */
-  uint8_T is_c19_FMS;                  /* '<S119>/Motion State' */
-  uint8_T temporalCounter_i1;          /* '<S119>/Motion State' */
+    uint8_T is_active_c19_FMS;  /* '<S119>/Motion State' */
+    uint8_T is_c19_FMS;         /* '<S119>/Motion State' */
+    uint8_T temporalCounter_i1; /* '<S119>/Motion State' */
 } DW_MotionState_FMS_g_T;
 
 /* Block states (default storage) for system '<S38>/Motion Status' */
 typedef struct {
-  uint16_T temporalCounter_i1;         /* '<S38>/Motion Status' */
-  uint8_T is_active_c17_FMS;           /* '<S38>/Motion Status' */
-  uint8_T is_c17_FMS;                  /* '<S38>/Motion Status' */
+    uint16_T temporalCounter_i1; /* '<S38>/Motion Status' */
+    uint8_T is_active_c17_FMS;   /* '<S38>/Motion Status' */
+    uint8_T is_c17_FMS;          /* '<S38>/Motion Status' */
 } DW_MotionStatus_FMS_a_T;
 
 /* Block signals (default storage) */
 typedef struct {
-  INS_Out_Bus BusConversion_InsertedFor_FMSSt;
-  Commander_In_Bus Cmd_In;             /* '<Root>/FMS State Machine' */
-  Pilot_Cmd_Bus BusConversion_InsertedFor_FMS_f;
-  Pilot_Cmd_Bus pilot_cmd;             /* '<Root>/FMS State Machine' */
-  real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
-  real_T lla[3];                       /* '<Root>/FMS State Machine' */
-  real_T llo[2];                       /* '<Root>/FMS State Machine' */
-  real_T href;                         /* '<Root>/FMS State Machine' */
-  real_T psio;                         /* '<Root>/FMS State Machine' */
-  real32_T xy_R[2];                    /* '<Root>/FMS State Machine' */
-  real32_T DataTypeConversion[3];      /* '<S331>/Data Type Conversion' */
-  real32_T Reshape[3];                 /* '<S332>/Reshape' */
-  real32_T Merge[2];                   /* '<S94>/Merge' */
-  real32_T Merge_k;                    /* '<S70>/Merge' */
-  real32_T Merge_d;                    /* '<S81>/Merge' */
-  real32_T Merge_l;                    /* '<S37>/Merge' */
-  real32_T Merge_m;                    /* '<S54>/Merge' */
-  real32_T Merge_j;                    /* '<S118>/Merge' */
-  real32_T Merge_n[2];                 /* '<S176>/Merge' */
-  real32_T Merge_e;                    /* '<S166>/Merge' */
-  real32_T Merge_o[2];                 /* '<S237>/Merge' */
-  real32_T Merge_ey;                   /* '<S215>/Merge' */
-  real32_T Merge_n1;                   /* '<S225>/Merge' */
-  real32_T Merge_mv[2];                /* '<S291>/Merge' */
-  real32_T Merge_mu;                   /* '<S281>/Merge' */
-  VehicleState state;                  /* '<Root>/FMS State Machine' */
-  PilotMode target_mode;               /* '<Root>/SafeMode' */
-  FMS_Cmd Switch1;                     /* '<S7>/Switch1' */
-  uint8_T wp_consume;                  /* '<Root>/FMS State Machine' */
-  uint8_T wp_index;                    /* '<Root>/FMS State Machine' */
-  boolean_T on_ground;                 /* '<S4>/Logical Operator1' */
-  boolean_T Compare;                   /* '<S344>/Compare' */
+    INS_Out_Bus BusConversion_InsertedFor_FMSSt;
+    Commander_In_Bus Cmd_In; /* '<Root>/FMS State Machine' */
+    Pilot_Cmd_Bus BusConversion_InsertedFor_FMS_f;
+    Pilot_Cmd_Bus pilot_cmd;        /* '<Root>/FMS State Machine' */
+    real_T stick_val[4];            /* '<Root>/FMS State Machine' */
+    real_T lla[3];                  /* '<Root>/FMS State Machine' */
+    real_T llo[2];                  /* '<Root>/FMS State Machine' */
+    real_T href;                    /* '<Root>/FMS State Machine' */
+    real_T psio;                    /* '<Root>/FMS State Machine' */
+    real32_T xy_R[2];               /* '<Root>/FMS State Machine' */
+    real32_T DataTypeConversion[3]; /* '<S331>/Data Type Conversion' */
+    real32_T Reshape[3];            /* '<S332>/Reshape' */
+    real32_T Merge[2];              /* '<S94>/Merge' */
+    real32_T Merge_k;               /* '<S70>/Merge' */
+    real32_T Merge_d;               /* '<S81>/Merge' */
+    real32_T Merge_l;               /* '<S37>/Merge' */
+    real32_T Merge_m;               /* '<S54>/Merge' */
+    real32_T Merge_j;               /* '<S118>/Merge' */
+    real32_T Merge_n[2];            /* '<S176>/Merge' */
+    real32_T Merge_e;               /* '<S166>/Merge' */
+    real32_T Merge_o[2];            /* '<S237>/Merge' */
+    real32_T Merge_ey;              /* '<S215>/Merge' */
+    real32_T Merge_n1;              /* '<S225>/Merge' */
+    real32_T Merge_mv[2];           /* '<S291>/Merge' */
+    real32_T Merge_mu;              /* '<S281>/Merge' */
+    VehicleState state;             /* '<Root>/FMS State Machine' */
+    PilotMode target_mode;          /* '<Root>/SafeMode' */
+    FMS_Cmd Switch1;                /* '<S7>/Switch1' */
+    uint8_T wp_consume;             /* '<Root>/FMS State Machine' */
+    uint8_T wp_index;               /* '<Root>/FMS State Machine' */
+    boolean_T on_ground;            /* '<S4>/Logical Operator1' */
+    boolean_T Compare;              /* '<S344>/Compare' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real_T prep_takeoff;                 /* '<Root>/FMS State Machine' */
-  real_T llo[2];                       /* '<Root>/FMS State Machine' */
-  real_T prep_mission_takeoff;         /* '<Root>/FMS State Machine' */
-  Msg_FMS_Cmd Msg_FMS_Cmd_c[11];       /* '<Root>/FMS State Machine' */
-  Queue_FMS_Cmd Queue_FMS_Cmd_p;       /* '<Root>/FMS State Machine' */
-  void* M_msgInterface;                /* '<Root>/FMS State Machine' */
-  void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
-  void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S346>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S347>/Discrete-Time Integrator5' */
-  real32_T Integrator1_DSTATE;         /* '<S50>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S50>/Integrator' */
-  real32_T Integrator1_DSTATE_o;       /* '<S51>/Integrator1' */
-  real32_T Integrator_DSTATE_b;        /* '<S51>/Integrator' */
-  real32_T Integrator1_DSTATE_j;       /* '<S114>/Integrator1' */
-  real32_T Integrator_DSTATE_c;        /* '<S114>/Integrator' */
-  real32_T Integrator1_DSTATE_jt;      /* '<S115>/Integrator1' */
-  real32_T Integrator_DSTATE_cq;       /* '<S115>/Integrator' */
-  real32_T Delay_DSTATE[2];            /* '<S159>/Delay' */
-  real32_T l1_heading;                 /* '<S203>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_h;             /* '<S139>/Delay' */
-  real32_T Integrator1_DSTATE_p;       /* '<S142>/Integrator1' */
-  real32_T Integrator_DSTATE_i;        /* '<S142>/Integrator' */
-  real32_T Delay_DSTATE_e[2];          /* '<S277>/Delay' */
-  real32_T l1_heading_p;               /* '<S318>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_p[2];          /* '<S257>/Delay' */
-  real32_T Delay_DSTATE_a;             /* '<S258>/Delay' */
-  real32_T Integrator1_DSTATE_e;       /* '<S261>/Integrator1' */
-  real32_T Integrator_DSTATE_bs;       /* '<S261>/Integrator' */
-  uint32_T DelayInput1_DSTATE;         /* '<S10>/Delay Input1' */
-  uint32_T DiscreteTimeIntegrator1_DSTATE;/* '<S6>/Discrete-Time Integrator1' */
-  uint32_T DelayInput1_DSTATE_f;       /* '<S15>/Delay Input1' */
-  uint32_T DelayInput1_DSTATE_i;       /* '<S11>/Delay Input1' */
-  uint32_T DelayInput1_DSTATE_p;       /* '<S12>/Delay Input1' */
-  uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S330>/Discrete-Time Integrator' */
-  PilotMode Delay_DSTATE_c;            /* '<S8>/Delay' */
-  real32_T home[3];                    /* '<Root>/FMS State Machine' */
-  real32_T stick_val[4];               /* '<Root>/FMS State Machine' */
-  int32_T sfEvent;                     /* '<Root>/FMS State Machine' */
-  int32_T chartAbsoluteTimeCounter;    /* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1; /* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_j;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_k;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_2; /* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_c;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_1_n;/* '<Root>/FMS State Machine' */
-  int32_T durationLastReferenceTick_2_a;/* '<Root>/FMS State Machine' */
-  int32_T M_qId;                       /* '<Root>/FMS State Machine' */
-  uint32_T mission_timestamp_prev;     /* '<Root>/FMS State Machine' */
-  uint32_T mission_timestamp_start;    /* '<Root>/FMS State Machine' */
-  FMS_Cmd M;                           /* '<Root>/FMS State Machine' */
-  FMS_Cmd save_cmd;                    /* '<Root>/FMS State Machine' */
-  FMS_Cmd cmd_prev;                    /* '<Root>/FMS State Machine' */
-  FMS_Cmd cmd_start;                   /* '<Root>/FMS State Machine' */
-  FMS_Cmd M_msgData;                   /* '<Root>/FMS State Machine' */
-  FMS_Cmd M_msgReservedData;           /* '<Root>/FMS State Machine' */
-  PilotMode mode_prev;                 /* '<Root>/FMS State Machine' */
-  PilotMode mode_start;                /* '<Root>/FMS State Machine' */
-  uint16_T nav_cmd;                    /* '<Root>/FMS State Machine' */
-  uint16_T temporalCounter_i1;         /* '<Root>/FMS State Machine' */
-  uint16_T temporalCounter_i1_i;       /* '<S95>/Motion State' */
-  uint8_T DelayInput1_DSTATE_pe;       /* '<S134>/Delay Input1' */
-  int8_T SwitchCase_ActiveSubsystem;   /* '<S16>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_b; /* '<S18>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_f; /* '<S22>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_l; /* '<S94>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_o; /* '<S70>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_j; /* '<S81>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_m; /* '<S37>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_h; /* '<S54>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_fs;/* '<S118>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_i; /* '<S23>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_a; /* '<S176>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_e; /* '<S166>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_at;/* '<S25>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_p; /* '<S237>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_pp;/* '<S215>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_bn;/* '<S225>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_k; /* '<S291>/Switch Case' */
-  int8_T SwitchCase_ActiveSubsystem_g; /* '<S281>/Switch Case' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S346>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S347>/Discrete-Time Integrator5' */
-  uint8_T is_active_c3_FMS;            /* '<Root>/SafeMode' */
-  uint8_T is_c3_FMS;                   /* '<Root>/SafeMode' */
-  uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
-  uint8_T is_Command_Listener;         /* '<Root>/FMS State Machine' */
-  uint8_T is_active_Command_Listener;  /* '<Root>/FMS State Machine' */
-  uint8_T is_Vehicle;                  /* '<Root>/FMS State Machine' */
-  uint8_T is_active_Vehicle;           /* '<Root>/FMS State Machine' */
-  uint8_T is_Arm;                      /* '<Root>/FMS State Machine' */
-  uint8_T is_SubMode;                  /* '<Root>/FMS State Machine' */
-  uint8_T is_Auto;                     /* '<Root>/FMS State Machine' */
-  uint8_T is_Mission;                  /* '<Root>/FMS State Machine' */
-  uint8_T is_Assist;                   /* '<Root>/FMS State Machine' */
-  uint8_T is_Manual;                   /* '<Root>/FMS State Machine' */
-  uint8_T is_Combo_Stick;              /* '<Root>/FMS State Machine' */
-  uint8_T is_active_Combo_Stick;       /* '<Root>/FMS State Machine' */
-  uint8_T is_active_c16_FMS;           /* '<S95>/Motion State' */
-  uint8_T is_c16_FMS;                  /* '<S95>/Motion State' */
-  uint8_T icLoad;                      /* '<S159>/Delay' */
-  uint8_T icLoad_k;                    /* '<S139>/Delay' */
-  uint8_T Integrator1_IC_LOADING;      /* '<S142>/Integrator1' */
-  uint8_T is_active_c15_FMS;           /* '<S226>/Motion State' */
-  uint8_T is_c15_FMS;                  /* '<S226>/Motion State' */
-  uint8_T temporalCounter_i1_a;        /* '<S226>/Motion State' */
-  uint8_T icLoad_o;                    /* '<S277>/Delay' */
-  uint8_T icLoad_c;                    /* '<S257>/Delay' */
-  uint8_T icLoad_j;                    /* '<S258>/Delay' */
-  uint8_T Integrator1_IC_LOADING_j;    /* '<S261>/Integrator1' */
-  boolean_T valid_cmd;                 /* '<Root>/FMS State Machine' */
-  boolean_T bl;                        /* '<Root>/FMS State Machine' */
-  boolean_T br;                        /* '<Root>/FMS State Machine' */
-  boolean_T M_isValid;                 /* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_d;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_k;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_2;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_d0;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_1_h;/* '<Root>/FMS State Machine' */
-  boolean_T condWasTrueAtLastTimeStep_2_g;/* '<Root>/FMS State Machine' */
-  DW_MoveControl_FMS_d_T MoveControl_k1;/* '<S94>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_at;/* '<S94>/Hold Control' */
-  DW_MotionState_FMS_g_T sf_MotionState_j;/* '<S82>/Motion State' */
-  DW_MoveControl_FMS_c_T MoveControl_mr;/* '<S81>/Move Control' */
-  DW_HoldControl_FMS_g_T HoldControl_e;/* '<S81>/Hold Control' */
-  DW_MotionStatus_FMS_a_T sf_MotionStatus_i;/* '<S71>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl_be; /* '<S70>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl_p;  /* '<S70>/Hold Control' */
-  DW_MotionState_FMS_g_T sf_MotionState_k;/* '<S55>/Motion State' */
-  DW_MoveControl_FMS_c_T MoveControl_cr;/* '<S54>/Move Control' */
-  DW_HoldControl_FMS_g_T HoldControl_o;/* '<S54>/Hold Control' */
-  DW_MotionStatus_FMS_a_T sf_MotionStatus_b;/* '<S38>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl_l;  /* '<S37>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl_k2; /* '<S37>/Hold Control' */
-  DW_MotionState_FMS_g_T sf_MotionState_e;/* '<S119>/Motion State' */
-  DW_MoveControl_FMS_c_T MoveControl_k;/* '<S118>/Move Control' */
-  DW_HoldControl_FMS_g_T HoldControl_h;/* '<S118>/Hold Control' */
-  DW_MotionState_FMS_T sf_MotionState_n;/* '<S177>/Motion State' */
-  DW_MoveControl_FMS_d_T MoveControl_c;/* '<S176>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_d;/* '<S176>/Hold Control' */
-  DW_MotionStatus_FMS_T sf_MotionStatus_jt;/* '<S167>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl_m;  /* '<S166>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl_a;  /* '<S166>/Hold Control' */
-  DW_MotionState_FMS_T sf_MotionState_g;/* '<S238>/Motion State' */
-  DW_MoveControl_FMS_d_T MoveControl_i;/* '<S237>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_f;/* '<S237>/Hold Control' */
-  DW_MoveControl_FMS_c_T MoveControl_b;/* '<S225>/Move Control' */
-  DW_HoldControl_FMS_g_T HoldControl_kq;/* '<S225>/Hold Control' */
-  DW_MotionStatus_FMS_T sf_MotionStatus_j;/* '<S216>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl_n;  /* '<S215>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl_n;  /* '<S215>/Hold Control' */
-  DW_MotionState_FMS_T sf_MotionState; /* '<S292>/Motion State' */
-  DW_MoveControl_FMS_d_T MoveControl_o;/* '<S291>/Move Control' */
-  DW_HoldControl_FMS_l_T HoldControl_k;/* '<S291>/Hold Control' */
-  DW_MotionStatus_FMS_T sf_MotionStatus;/* '<S282>/Motion Status' */
-  DW_MoveControl_FMS_T MoveControl;    /* '<S281>/Move Control' */
-  DW_HoldControl_FMS_T HoldControl;    /* '<S281>/Hold Control' */
+    real_T prep_takeoff;                        /* '<Root>/FMS State Machine' */
+    real_T llo[2];                              /* '<Root>/FMS State Machine' */
+    real_T prep_mission_takeoff;                /* '<Root>/FMS State Machine' */
+    Msg_FMS_Cmd Msg_FMS_Cmd_c[11];              /* '<Root>/FMS State Machine' */
+    Queue_FMS_Cmd Queue_FMS_Cmd_p;              /* '<Root>/FMS State Machine' */
+    void* M_msgInterface;                       /* '<Root>/FMS State Machine' */
+    void* M_msgHandle;                          /* '<Root>/FMS State Machine' */
+    void* M_msgDataPtr;                         /* '<Root>/FMS State Machine' */
+    real32_T DiscreteTimeIntegrator5_DSTATE[3]; /* '<S346>/Discrete-Time Integrator5' */
+    real32_T DiscreteTimeIntegrator5_DSTAT_d;   /* '<S347>/Discrete-Time Integrator5' */
+    real32_T Integrator1_DSTATE;                /* '<S50>/Integrator1' */
+    real32_T Integrator_DSTATE;                 /* '<S50>/Integrator' */
+    real32_T Integrator1_DSTATE_o;              /* '<S51>/Integrator1' */
+    real32_T Integrator_DSTATE_b;               /* '<S51>/Integrator' */
+    real32_T Integrator1_DSTATE_j;              /* '<S114>/Integrator1' */
+    real32_T Integrator_DSTATE_c;               /* '<S114>/Integrator' */
+    real32_T Integrator1_DSTATE_jt;             /* '<S115>/Integrator1' */
+    real32_T Integrator_DSTATE_cq;              /* '<S115>/Integrator' */
+    real32_T Delay_DSTATE[2];                   /* '<S159>/Delay' */
+    real32_T l1_heading;                        /* '<S203>/Discrete-Time Integrator' */
+    real32_T Delay_DSTATE_h;                    /* '<S139>/Delay' */
+    real32_T Integrator1_DSTATE_p;              /* '<S142>/Integrator1' */
+    real32_T Integrator_DSTATE_i;               /* '<S142>/Integrator' */
+    real32_T Delay_DSTATE_e[2];                 /* '<S277>/Delay' */
+    real32_T l1_heading_p;                      /* '<S318>/Discrete-Time Integrator' */
+    real32_T Delay_DSTATE_p[2];                 /* '<S257>/Delay' */
+    real32_T Delay_DSTATE_a;                    /* '<S258>/Delay' */
+    real32_T Integrator1_DSTATE_e;              /* '<S261>/Integrator1' */
+    real32_T Integrator_DSTATE_bs;              /* '<S261>/Integrator' */
+    uint32_T DelayInput1_DSTATE;                /* '<S10>/Delay Input1' */
+    uint32_T DiscreteTimeIntegrator1_DSTATE;    /* '<S6>/Discrete-Time Integrator1' */
+    uint32_T DelayInput1_DSTATE_f;              /* '<S15>/Delay Input1' */
+    uint32_T DelayInput1_DSTATE_i;              /* '<S11>/Delay Input1' */
+    uint32_T DelayInput1_DSTATE_p;              /* '<S12>/Delay Input1' */
+    uint32_T DiscreteTimeIntegrator_DSTATE;     /* '<S330>/Discrete-Time Integrator' */
+    PilotMode Delay_DSTATE_c;                   /* '<S8>/Delay' */
+    real32_T home[3];                           /* '<Root>/FMS State Machine' */
+    real32_T stick_val[4];                      /* '<Root>/FMS State Machine' */
+    int32_T sfEvent;                            /* '<Root>/FMS State Machine' */
+    int32_T chartAbsoluteTimeCounter;           /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_1;        /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_1_j;      /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_1_k;      /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_2;        /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_1_c;      /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_1_n;      /* '<Root>/FMS State Machine' */
+    int32_T durationLastReferenceTick_2_a;      /* '<Root>/FMS State Machine' */
+    int32_T M_qId;                              /* '<Root>/FMS State Machine' */
+    uint32_T mission_timestamp_prev;            /* '<Root>/FMS State Machine' */
+    uint32_T mission_timestamp_start;           /* '<Root>/FMS State Machine' */
+    FMS_Cmd M;                                  /* '<Root>/FMS State Machine' */
+    FMS_Cmd save_cmd;                           /* '<Root>/FMS State Machine' */
+    FMS_Cmd cmd_prev;                           /* '<Root>/FMS State Machine' */
+    FMS_Cmd cmd_start;                          /* '<Root>/FMS State Machine' */
+    FMS_Cmd M_msgData;                          /* '<Root>/FMS State Machine' */
+    FMS_Cmd M_msgReservedData;                  /* '<Root>/FMS State Machine' */
+    PilotMode mode_prev;                        /* '<Root>/FMS State Machine' */
+    PilotMode mode_start;                       /* '<Root>/FMS State Machine' */
+    uint16_T nav_cmd;                           /* '<Root>/FMS State Machine' */
+    uint16_T temporalCounter_i1;                /* '<Root>/FMS State Machine' */
+    uint16_T temporalCounter_i1_i;              /* '<S95>/Motion State' */
+    uint8_T DelayInput1_DSTATE_pe;              /* '<S134>/Delay Input1' */
+    int8_T SwitchCase_ActiveSubsystem;          /* '<S16>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_b;        /* '<S18>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_f;        /* '<S22>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_l;        /* '<S94>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_o;        /* '<S70>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_j;        /* '<S81>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_m;        /* '<S37>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_h;        /* '<S54>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_fs;       /* '<S118>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_i;        /* '<S23>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_a;        /* '<S176>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_e;        /* '<S166>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_at;       /* '<S25>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_p;        /* '<S237>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_pp;       /* '<S215>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_bn;       /* '<S225>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_k;        /* '<S291>/Switch Case' */
+    int8_T SwitchCase_ActiveSubsystem_g;        /* '<S281>/Switch Case' */
+    uint8_T DiscreteTimeIntegrator5_IC_LOAD;    /* '<S346>/Discrete-Time Integrator5' */
+    uint8_T DiscreteTimeIntegrator5_IC_LO_a;    /* '<S347>/Discrete-Time Integrator5' */
+    uint8_T is_active_c3_FMS;                   /* '<Root>/SafeMode' */
+    uint8_T is_c3_FMS;                          /* '<Root>/SafeMode' */
+    uint8_T is_active_c11_FMS;                  /* '<Root>/FMS State Machine' */
+    uint8_T is_Command_Listener;                /* '<Root>/FMS State Machine' */
+    uint8_T is_active_Command_Listener;         /* '<Root>/FMS State Machine' */
+    uint8_T is_Vehicle;                         /* '<Root>/FMS State Machine' */
+    uint8_T is_active_Vehicle;                  /* '<Root>/FMS State Machine' */
+    uint8_T is_Arm;                             /* '<Root>/FMS State Machine' */
+    uint8_T is_SubMode;                         /* '<Root>/FMS State Machine' */
+    uint8_T is_Auto;                            /* '<Root>/FMS State Machine' */
+    uint8_T is_Mission;                         /* '<Root>/FMS State Machine' */
+    uint8_T is_Assist;                          /* '<Root>/FMS State Machine' */
+    uint8_T is_Manual;                          /* '<Root>/FMS State Machine' */
+    uint8_T is_Combo_Stick;                     /* '<Root>/FMS State Machine' */
+    uint8_T is_active_Combo_Stick;              /* '<Root>/FMS State Machine' */
+    uint8_T is_active_c16_FMS;                  /* '<S95>/Motion State' */
+    uint8_T is_c16_FMS;                         /* '<S95>/Motion State' */
+    uint8_T icLoad;                             /* '<S159>/Delay' */
+    uint8_T icLoad_k;                           /* '<S139>/Delay' */
+    uint8_T Integrator1_IC_LOADING;             /* '<S142>/Integrator1' */
+    uint8_T is_active_c15_FMS;                  /* '<S226>/Motion State' */
+    uint8_T is_c15_FMS;                         /* '<S226>/Motion State' */
+    uint8_T temporalCounter_i1_a;               /* '<S226>/Motion State' */
+    uint8_T icLoad_o;                           /* '<S277>/Delay' */
+    uint8_T icLoad_c;                           /* '<S257>/Delay' */
+    uint8_T icLoad_j;                           /* '<S258>/Delay' */
+    uint8_T Integrator1_IC_LOADING_j;           /* '<S261>/Integrator1' */
+    boolean_T valid_cmd;                        /* '<Root>/FMS State Machine' */
+    boolean_T bl;                               /* '<Root>/FMS State Machine' */
+    boolean_T br;                               /* '<Root>/FMS State Machine' */
+    boolean_T M_isValid;                        /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_1;      /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_1_d;    /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_1_k;    /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_2;      /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_1_d0;   /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_1_h;    /* '<Root>/FMS State Machine' */
+    boolean_T condWasTrueAtLastTimeStep_2_g;    /* '<Root>/FMS State Machine' */
+    DW_MoveControl_FMS_d_T MoveControl_k1;      /* '<S94>/Move Control' */
+    DW_HoldControl_FMS_l_T HoldControl_at;      /* '<S94>/Hold Control' */
+    DW_MotionState_FMS_g_T sf_MotionState_j;    /* '<S82>/Motion State' */
+    DW_MoveControl_FMS_c_T MoveControl_mr;      /* '<S81>/Move Control' */
+    DW_HoldControl_FMS_g_T HoldControl_e;       /* '<S81>/Hold Control' */
+    DW_MotionStatus_FMS_a_T sf_MotionStatus_i;  /* '<S71>/Motion Status' */
+    DW_MoveControl_FMS_T MoveControl_be;        /* '<S70>/Move Control' */
+    DW_HoldControl_FMS_T HoldControl_p;         /* '<S70>/Hold Control' */
+    DW_MotionState_FMS_g_T sf_MotionState_k;    /* '<S55>/Motion State' */
+    DW_MoveControl_FMS_c_T MoveControl_cr;      /* '<S54>/Move Control' */
+    DW_HoldControl_FMS_g_T HoldControl_o;       /* '<S54>/Hold Control' */
+    DW_MotionStatus_FMS_a_T sf_MotionStatus_b;  /* '<S38>/Motion Status' */
+    DW_MoveControl_FMS_T MoveControl_l;         /* '<S37>/Move Control' */
+    DW_HoldControl_FMS_T HoldControl_k2;        /* '<S37>/Hold Control' */
+    DW_MotionState_FMS_g_T sf_MotionState_e;    /* '<S119>/Motion State' */
+    DW_MoveControl_FMS_c_T MoveControl_k;       /* '<S118>/Move Control' */
+    DW_HoldControl_FMS_g_T HoldControl_h;       /* '<S118>/Hold Control' */
+    DW_MotionState_FMS_T sf_MotionState_n;      /* '<S177>/Motion State' */
+    DW_MoveControl_FMS_d_T MoveControl_c;       /* '<S176>/Move Control' */
+    DW_HoldControl_FMS_l_T HoldControl_d;       /* '<S176>/Hold Control' */
+    DW_MotionStatus_FMS_T sf_MotionStatus_jt;   /* '<S167>/Motion Status' */
+    DW_MoveControl_FMS_T MoveControl_m;         /* '<S166>/Move Control' */
+    DW_HoldControl_FMS_T HoldControl_a;         /* '<S166>/Hold Control' */
+    DW_MotionState_FMS_T sf_MotionState_g;      /* '<S238>/Motion State' */
+    DW_MoveControl_FMS_d_T MoveControl_i;       /* '<S237>/Move Control' */
+    DW_HoldControl_FMS_l_T HoldControl_f;       /* '<S237>/Hold Control' */
+    DW_MoveControl_FMS_c_T MoveControl_b;       /* '<S225>/Move Control' */
+    DW_HoldControl_FMS_g_T HoldControl_kq;      /* '<S225>/Hold Control' */
+    DW_MotionStatus_FMS_T sf_MotionStatus_j;    /* '<S216>/Motion Status' */
+    DW_MoveControl_FMS_T MoveControl_n;         /* '<S215>/Move Control' */
+    DW_HoldControl_FMS_T HoldControl_n;         /* '<S215>/Hold Control' */
+    DW_MotionState_FMS_T sf_MotionState;        /* '<S292>/Motion State' */
+    DW_MoveControl_FMS_d_T MoveControl_o;       /* '<S291>/Move Control' */
+    DW_HoldControl_FMS_l_T HoldControl_k;       /* '<S291>/Hold Control' */
+    DW_MotionStatus_FMS_T sf_MotionStatus;      /* '<S282>/Motion Status' */
+    DW_MoveControl_FMS_T MoveControl;           /* '<S281>/Move Control' */
+    DW_HoldControl_FMS_T HoldControl;           /* '<S281>/Hold Control' */
 } DW_FMS_T;
 
 /* Zero-crossing (trigger) state */
 typedef struct {
-  ZCSigState Mission_SubSystem_Reset_ZCE;/* '<S131>/Mission_SubSystem' */
+    ZCSigState Mission_SubSystem_Reset_ZCE; /* '<S131>/Mission_SubSystem' */
 } PrevZCX_FMS_T;
 
 /* Invariant block signals for system '<S16>/Disarm' */
 typedef struct {
-  const uint8_T DataTypeConversion;    /* '<S20>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1;   /* '<S20>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion;  /* '<S20>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1; /* '<S20>/Data Type Conversion1' */
 } ConstB_Disarm_FMS_T;
 
 /* Invariant block signals for system '<S281>/Move Control' */
 typedef struct {
-  const real32_T Square;               /* '<S289>/Square' */
-  const real32_T d;                    /* '<S289>/Multiply' */
-  const real32_T Gain4;                /* '<S289>/Gain4' */
+    const real32_T Square; /* '<S289>/Square' */
+    const real32_T d;      /* '<S289>/Multiply' */
+    const real32_T Gain4;  /* '<S289>/Gain4' */
 } ConstB_MoveControl_FMS_T;
 
 /* Invariant block signals for system '<S291>/Hold Control' */
 typedef struct {
-  const real32_T VectorConcatenate3[3];/* '<S298>/Vector Concatenate3' */
+    const real32_T VectorConcatenate3[3]; /* '<S298>/Vector Concatenate3' */
 } ConstB_HoldControl_FMS_k_T;
 
 /* Invariant block signals for system '<S291>/Move Control' */
 typedef struct {
-  const real32_T Square;               /* '<S302>/Square' */
-  const real32_T d;                    /* '<S302>/Multiply' */
-  const real32_T Gain4;                /* '<S302>/Gain4' */
+    const real32_T Square; /* '<S302>/Square' */
+    const real32_T d;      /* '<S302>/Multiply' */
+    const real32_T Gain4;  /* '<S302>/Gain4' */
 } ConstB_MoveControl_FMS_k_T;
 
 /* Invariant block signals for system '<S225>/Move Control' */
 typedef struct {
-  const real32_T Square;               /* '<S235>/Square' */
-  const real32_T d;                    /* '<S235>/Multiply' */
-  const real32_T Gain4;                /* '<S235>/Gain4' */
+    const real32_T Square; /* '<S235>/Square' */
+    const real32_T d;      /* '<S235>/Multiply' */
+    const real32_T Gain4;  /* '<S235>/Gain4' */
 } ConstB_MoveControl_FMS_f_T;
 
 /* Invariant block signals for system '<S3>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 typedef struct {
-  const real_T Sum;                    /* '<S335>/Sum' */
-  const real_T ff;                     /* '<S335>/Multiply3' */
-  const real_T Sum4;                   /* '<S335>/Sum4' */
+    const real_T Sum;  /* '<S335>/Sum' */
+    const real_T ff;   /* '<S335>/Multiply3' */
+    const real_T Sum4; /* '<S335>/Sum4' */
 } ConstB_VehicleArmAutoMissionL_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T Square;               /* '<S52>/Square' */
-  const real32_T d;                    /* '<S52>/Multiply' */
-  const real32_T Gain4;                /* '<S52>/Gain4' */
-  const real32_T Square_d;             /* '<S53>/Square' */
-  const real32_T d_c;                  /* '<S53>/Multiply' */
-  const real32_T Gain4_m;              /* '<S53>/Gain4' */
-  const real32_T Square_m;             /* '<S116>/Square' */
-  const real32_T d_d;                  /* '<S116>/Multiply' */
-  const real32_T Gain4_n;              /* '<S116>/Gain4' */
-  const real32_T Square_n;             /* '<S117>/Square' */
-  const real32_T d_o;                  /* '<S117>/Multiply' */
-  const real32_T Gain4_n3;             /* '<S117>/Gain4' */
-  const real32_T VectorConcatenate3[3];/* '<S206>/Vector Concatenate3' */
-  const real32_T TmpSignalConversionAtMathFu[2];
-  const real32_T MathFunction[2];      /* '<S152>/Math Function' */
-  const real32_T SumofElements;        /* '<S152>/Sum of Elements' */
-  const real32_T MathFunction1;        /* '<S152>/Math Function1' */
-  const real32_T Product[2];           /* '<S152>/Product' */
-  const real32_T Switch[3];            /* '<S152>/Switch' */
-  const real32_T Divide[2];            /* '<S152>/Divide' */
-  const real32_T Square_g;             /* '<S148>/Square' */
-  const real32_T d_j;                  /* '<S148>/Multiply' */
-  const real32_T Gain4_c;              /* '<S148>/Gain4' */
-  const real32_T VectorConcatenate3_k[3];/* '<S321>/Vector Concatenate3' */
-  const real32_T TmpSignalConversionAtMath_a[2];
-  const real32_T MathFunction_n[2];    /* '<S271>/Math Function' */
-  const real32_T SumofElements_p;      /* '<S271>/Sum of Elements' */
-  const real32_T MathFunction1_m;      /* '<S271>/Math Function1' */
-  const real32_T Product_c[2];         /* '<S271>/Product' */
-  const real32_T Switch_h[3];          /* '<S271>/Switch' */
-  const real32_T Divide_d[2];          /* '<S271>/Divide' */
-  const real32_T Square_k;             /* '<S267>/Square' */
-  const real32_T d_l;                  /* '<S267>/Multiply' */
-  const real32_T Gain4_np;             /* '<S267>/Gain4' */
-  const real32_T VectorConcatenate3_f[3];/* '<S254>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_fb[3];/* '<S329>/Vector Concatenate3' */
-  const uint8_T DataTypeConversion;    /* '<S24>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1;   /* '<S24>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion_b;  /* '<S29>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_o; /* '<S29>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2;   /* '<S29>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion1_d; /* '<S28>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_n; /* '<S28>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion3;   /* '<S28>/Data Type Conversion3' */
-  const uint8_T DataTypeConversion_ba; /* '<S30>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_k; /* '<S30>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_o; /* '<S30>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_j;  /* '<S27>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_do;/* '<S27>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_b; /* '<S27>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_l;  /* '<S135>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_b; /* '<S135>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_by;/* '<S135>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_a;  /* '<S132>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_n; /* '<S132>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion_g;  /* '<S207>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_i; /* '<S207>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_j; /* '<S207>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_o;  /* '<S209>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_m; /* '<S209>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_p; /* '<S209>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_c;  /* '<S208>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_h; /* '<S208>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_m; /* '<S208>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion_ld; /* '<S210>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1_dh;/* '<S210>/Data Type Conversion1' */
-  const uint8_T DataTypeConversion2_d; /* '<S210>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion2_h; /* '<S21>/Data Type Conversion2' */
-  const uint8_T DataTypeConversion1_f; /* '<S21>/Data Type Conversion1' */
-  ConstB_VehicleArmAutoMissionL_T VehicleArmAutoMissionLLA2FLAT;/* '<S3>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-  ConstB_Disarm_FMS_T Unknown;         /* '<S18>/Unknown' */
-  ConstB_Disarm_FMS_T Unknown_i;       /* '<S22>/Unknown' */
-  ConstB_MoveControl_FMS_k_T MoveControl_k1;/* '<S94>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_at;/* '<S94>/Hold Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_mr;/* '<S81>/Move Control' */
-  ConstB_MoveControl_FMS_T MoveControl_be;/* '<S70>/Move Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_cr;/* '<S54>/Move Control' */
-  ConstB_MoveControl_FMS_T MoveControl_l;/* '<S37>/Move Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_k;/* '<S118>/Move Control' */
-  ConstB_Disarm_FMS_T Unknown_d;       /* '<S23>/Unknown' */
-  ConstB_MoveControl_FMS_k_T MoveControl_c;/* '<S176>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_d;/* '<S176>/Hold Control' */
-  ConstB_MoveControl_FMS_T MoveControl_m;/* '<S166>/Move Control' */
-  ConstB_Disarm_FMS_T Unknown_g;       /* '<S25>/Unknown' */
-  ConstB_MoveControl_FMS_k_T MoveControl_i;/* '<S237>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_f;/* '<S237>/Hold Control' */
-  ConstB_MoveControl_FMS_f_T MoveControl_b;/* '<S225>/Move Control' */
-  ConstB_MoveControl_FMS_T MoveControl_n;/* '<S215>/Move Control' */
-  ConstB_MoveControl_FMS_k_T MoveControl_o;/* '<S291>/Move Control' */
-  ConstB_HoldControl_FMS_k_T HoldControl_k;/* '<S291>/Hold Control' */
-  ConstB_MoveControl_FMS_T MoveControl;/* '<S281>/Move Control' */
-  ConstB_Disarm_FMS_T Disarm;          /* '<S16>/Disarm' */
+    const real32_T Square;                /* '<S52>/Square' */
+    const real32_T d;                     /* '<S52>/Multiply' */
+    const real32_T Gain4;                 /* '<S52>/Gain4' */
+    const real32_T Square_d;              /* '<S53>/Square' */
+    const real32_T d_c;                   /* '<S53>/Multiply' */
+    const real32_T Gain4_m;               /* '<S53>/Gain4' */
+    const real32_T Square_m;              /* '<S116>/Square' */
+    const real32_T d_d;                   /* '<S116>/Multiply' */
+    const real32_T Gain4_n;               /* '<S116>/Gain4' */
+    const real32_T Square_n;              /* '<S117>/Square' */
+    const real32_T d_o;                   /* '<S117>/Multiply' */
+    const real32_T Gain4_n3;              /* '<S117>/Gain4' */
+    const real32_T VectorConcatenate3[3]; /* '<S206>/Vector Concatenate3' */
+    const real32_T TmpSignalConversionAtMathFu[2];
+    const real32_T MathFunction[2];         /* '<S152>/Math Function' */
+    const real32_T SumofElements;           /* '<S152>/Sum of Elements' */
+    const real32_T MathFunction1;           /* '<S152>/Math Function1' */
+    const real32_T Product[2];              /* '<S152>/Product' */
+    const real32_T Switch[3];               /* '<S152>/Switch' */
+    const real32_T Divide[2];               /* '<S152>/Divide' */
+    const real32_T Square_g;                /* '<S148>/Square' */
+    const real32_T d_j;                     /* '<S148>/Multiply' */
+    const real32_T Gain4_c;                 /* '<S148>/Gain4' */
+    const real32_T VectorConcatenate3_k[3]; /* '<S321>/Vector Concatenate3' */
+    const real32_T TmpSignalConversionAtMath_a[2];
+    const real32_T MathFunction_n[2];                              /* '<S271>/Math Function' */
+    const real32_T SumofElements_p;                                /* '<S271>/Sum of Elements' */
+    const real32_T MathFunction1_m;                                /* '<S271>/Math Function1' */
+    const real32_T Product_c[2];                                   /* '<S271>/Product' */
+    const real32_T Switch_h[3];                                    /* '<S271>/Switch' */
+    const real32_T Divide_d[2];                                    /* '<S271>/Divide' */
+    const real32_T Square_k;                                       /* '<S267>/Square' */
+    const real32_T d_l;                                            /* '<S267>/Multiply' */
+    const real32_T Gain4_np;                                       /* '<S267>/Gain4' */
+    const real32_T VectorConcatenate3_f[3];                        /* '<S254>/Vector Concatenate3' */
+    const real32_T VectorConcatenate3_fb[3];                       /* '<S329>/Vector Concatenate3' */
+    const uint8_T DataTypeConversion;                              /* '<S24>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1;                             /* '<S24>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion_b;                            /* '<S29>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_o;                           /* '<S29>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2;                             /* '<S29>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion1_d;                           /* '<S28>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_n;                           /* '<S28>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion3;                             /* '<S28>/Data Type Conversion3' */
+    const uint8_T DataTypeConversion_ba;                           /* '<S30>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_k;                           /* '<S30>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_o;                           /* '<S30>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion_j;                            /* '<S27>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_do;                          /* '<S27>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_b;                           /* '<S27>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion_l;                            /* '<S135>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_b;                           /* '<S135>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_by;                          /* '<S135>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion_a;                            /* '<S132>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_n;                           /* '<S132>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion_g;                            /* '<S207>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_i;                           /* '<S207>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_j;                           /* '<S207>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion_o;                            /* '<S209>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_m;                           /* '<S209>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_p;                           /* '<S209>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion_c;                            /* '<S208>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_h;                           /* '<S208>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_m;                           /* '<S208>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion_ld;                           /* '<S210>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1_dh;                          /* '<S210>/Data Type Conversion1' */
+    const uint8_T DataTypeConversion2_d;                           /* '<S210>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion2_h;                           /* '<S21>/Data Type Conversion2' */
+    const uint8_T DataTypeConversion1_f;                           /* '<S21>/Data Type Conversion1' */
+    ConstB_VehicleArmAutoMissionL_T VehicleArmAutoMissionLLA2FLAT; /* '<S3>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
+    ConstB_Disarm_FMS_T Unknown;                                   /* '<S18>/Unknown' */
+    ConstB_Disarm_FMS_T Unknown_i;                                 /* '<S22>/Unknown' */
+    ConstB_MoveControl_FMS_k_T MoveControl_k1;                     /* '<S94>/Move Control' */
+    ConstB_HoldControl_FMS_k_T HoldControl_at;                     /* '<S94>/Hold Control' */
+    ConstB_MoveControl_FMS_f_T MoveControl_mr;                     /* '<S81>/Move Control' */
+    ConstB_MoveControl_FMS_T MoveControl_be;                       /* '<S70>/Move Control' */
+    ConstB_MoveControl_FMS_f_T MoveControl_cr;                     /* '<S54>/Move Control' */
+    ConstB_MoveControl_FMS_T MoveControl_l;                        /* '<S37>/Move Control' */
+    ConstB_MoveControl_FMS_f_T MoveControl_k;                      /* '<S118>/Move Control' */
+    ConstB_Disarm_FMS_T Unknown_d;                                 /* '<S23>/Unknown' */
+    ConstB_MoveControl_FMS_k_T MoveControl_c;                      /* '<S176>/Move Control' */
+    ConstB_HoldControl_FMS_k_T HoldControl_d;                      /* '<S176>/Hold Control' */
+    ConstB_MoveControl_FMS_T MoveControl_m;                        /* '<S166>/Move Control' */
+    ConstB_Disarm_FMS_T Unknown_g;                                 /* '<S25>/Unknown' */
+    ConstB_MoveControl_FMS_k_T MoveControl_i;                      /* '<S237>/Move Control' */
+    ConstB_HoldControl_FMS_k_T HoldControl_f;                      /* '<S237>/Hold Control' */
+    ConstB_MoveControl_FMS_f_T MoveControl_b;                      /* '<S225>/Move Control' */
+    ConstB_MoveControl_FMS_T MoveControl_n;                        /* '<S215>/Move Control' */
+    ConstB_MoveControl_FMS_k_T MoveControl_o;                      /* '<S291>/Move Control' */
+    ConstB_HoldControl_FMS_k_T HoldControl_k;                      /* '<S291>/Hold Control' */
+    ConstB_MoveControl_FMS_T MoveControl;                          /* '<S281>/Move Control' */
+    ConstB_Disarm_FMS_T Disarm;                                    /* '<S16>/Disarm' */
 } ConstB_FMS_T;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  Pilot_Cmd_Bus Pilot_Cmd;             /* '<Root>/Pilot_Cmd' */
-  GCS_Cmd_Bus GCS_Cmd;                 /* '<Root>/GCS_Cmd' */
-  Auto_Cmd_Bus Auto_Cmd;               /* '<Root>/Auto_Cmd' */
-  Mission_Data_Bus Mission_Data;       /* '<Root>/Mission_Data' */
-  INS_Out_Bus INS_Out;                 /* '<Root>/INS_Out' */
-  Control_Out_Bus Control_Out;         /* '<Root>/Control_Out' */
+    Pilot_Cmd_Bus Pilot_Cmd;       /* '<Root>/Pilot_Cmd' */
+    GCS_Cmd_Bus GCS_Cmd;           /* '<Root>/GCS_Cmd' */
+    Auto_Cmd_Bus Auto_Cmd;         /* '<Root>/Auto_Cmd' */
+    Mission_Data_Bus Mission_Data; /* '<Root>/Mission_Data' */
+    INS_Out_Bus INS_Out;           /* '<Root>/INS_Out' */
+    Control_Out_Bus Control_Out;   /* '<Root>/Control_Out' */
 } ExtU_FMS_T;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  FMS_Out_Bus FMS_Out;                 /* '<Root>/FMS_Out' */
+    FMS_Out_Bus FMS_Out; /* '<Root>/FMS_Out' */
 } ExtY_FMS_T;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_FMS_T {
-  const char_T *errorStatus;
+    const char_T* errorStatus;
 };
 
 /* Block signals (default storage) */
@@ -472,8 +471,8 @@ extern ExtU_FMS_T FMS_U;
 extern ExtY_FMS_T FMS_Y;
 
 /* External data declarations for dependent source files */
-extern const FMS_Out_Bus FMS_rtZFMS_Out_Bus;/* FMS_Out_Bus ground */
-extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
+extern const FMS_Out_Bus FMS_rtZFMS_Out_Bus; /* FMS_Out_Bus ground */
+extern const ConstB_FMS_T FMS_ConstB;        /* constant block i/o */
 
 /*
  * Exported Global Parameters
@@ -483,7 +482,7 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_z8TbXuqo9JNiexfZo6b1iC FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_z8TbXuqo9JNiexfZo6b1iC FMS_PARAM;  /* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<Root>/ACCEPT_R'
                                                 *   '<S332>/Constant'
@@ -600,7 +599,7 @@ extern struct_z8TbXuqo9JNiexfZo6b1iC FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S185>/Dead Zone'
                                                 *   '<S185>/Gain'
                                                 */
-extern struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT;/* Variable: FMS_EXPORT
+extern struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT; /* Variable: FMS_EXPORT
                                                  * Referenced by:
                                                  *   '<S6>/Constant1'
                                                  *   '<S330>/Constant'
@@ -612,7 +611,7 @@ extern void FMS_step(void);
 extern void FMS_terminate(void);
 
 /* Real-time Model object */
-extern RT_MODEL_FMS_T *const FMS_M;
+extern RT_MODEL_FMS_T* const FMS_M;
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
@@ -1021,7 +1020,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S353>' : 'FMS/Onground Check/Quaternion To DCM/column_3'
  * '<S354>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
  */
-#endif                                 /* RTW_HEADER_FMS_h_ */
+#endif /* RTW_HEADER_FMS_h_ */
 
 /*
  * File trailer for generated code.

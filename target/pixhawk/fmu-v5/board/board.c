@@ -21,7 +21,7 @@
 #include <string.h>
 
 #ifdef FMT_USING_CM_BACKTRACE
-#include <cm_backtrace.h>
+    #include <cm_backtrace.h>
 #endif
 
 #include "default_config.h"
@@ -62,10 +62,10 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
-#include "model/plant/plant_interface.h"
+    #include "model/plant/plant_interface.h"
 #endif
 
-#define MATCH(a, b) (strcmp(a, b) == 0)
+#define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {

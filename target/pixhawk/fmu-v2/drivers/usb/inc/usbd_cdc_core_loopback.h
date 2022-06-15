@@ -28,32 +28,31 @@
 /* Includes ------------------------------------------------------------------*/
 
 #ifndef __USB_CDC_CORE_H_
-#define __USB_CDC_CORE_H_
+    #define __USB_CDC_CORE_H_
 
-#include  "usbd_ioreq.h"
+    #include "usbd_ioreq.h"
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+    /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
 
-/** @defgroup usbd_cdc
+    /** @defgroup usbd_cdc
   * @brief This file is the Header file for USBD_cdc.c
   * @{
   */
 
-
-/** @defgroup usbd_cdc_Exported_Defines
+    /** @defgroup usbd_cdc_Exported_Defines
   * @{
   */
-#define USB_CDC_CONFIG_DESC_SIZ                (67)
-#define USB_CDC_DESC_SIZ                       (67-9)
+    #define USB_CDC_CONFIG_DESC_SIZ (67)
+    #define USB_CDC_DESC_SIZ        (67 - 9)
 
-#define DEVICE_CLASS_CDC                        0x02
-#define DEVICE_SUBCLASS_CDC                     0x00
+    #define DEVICE_CLASS_CDC    0x02
+    #define DEVICE_SUBCLASS_CDC 0x00
 
-#define CDC_DATA_IN_PACKET_SIZE                CDC_DATA_MAX_PACKET_SIZE
+    #define CDC_DATA_IN_PACKET_SIZE CDC_DATA_MAX_PACKET_SIZE
 
-#define CDC_DATA_OUT_PACKET_SIZE               CDC_DATA_MAX_PACKET_SIZE
+    #define CDC_DATA_OUT_PACKET_SIZE CDC_DATA_MAX_PACKET_SIZE
 
 /**
   * @}
@@ -62,15 +61,12 @@
   * @{
   */
 typedef struct _CDC_IF_PROP {
-	uint16_t (*pIf_DataTx)(void);
-	uint16_t (*pIf_DataRx)(uint32_t Len);
-}
-CDC_IF_Prop_TypeDef;
+    uint16_t (*pIf_DataTx)(void);
+    uint16_t (*pIf_DataRx)(uint32_t Len);
+} CDC_IF_Prop_TypeDef;
 /**
   * @}
   */
-
-
 
 /** @defgroup USBD_CORE_Exported_Macros
   * @{
@@ -84,7 +80,7 @@ CDC_IF_Prop_TypeDef;
   * @{
   */
 
-extern USBD_Class_cb_TypeDef  USBD_CDC_cb;
+extern USBD_Class_cb_TypeDef USBD_CDC_cb;
 /**
   * @}
   */
@@ -96,7 +92,7 @@ extern USBD_Class_cb_TypeDef  USBD_CDC_cb;
   * @}
   */
 
-#endif  /* __USB_CDC_CORE_H_ */
+#endif /* __USB_CDC_CORE_H_ */
 /**
   * @}
   */

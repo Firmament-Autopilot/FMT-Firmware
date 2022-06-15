@@ -16,8 +16,7 @@
 #define UXR__CLIENT__CORE__SESSION__STREAM__OUTPUT_RELIABLE_STREAM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/reliable_stream.h>
@@ -30,8 +29,7 @@ struct uxrOutputReliableStream;
 
 typedef void (*OnNewFragment)(struct ucdrBuffer* ub, struct uxrOutputReliableStream* stream);
 
-typedef struct uxrOutputReliableStream
-{
+typedef struct uxrOutputReliableStream {
     uxrReliableStream base;
     uint8_t offset;
 

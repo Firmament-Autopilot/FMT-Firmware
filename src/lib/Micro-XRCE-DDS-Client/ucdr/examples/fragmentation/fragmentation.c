@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <ucdr/microcdr.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
-#include <inttypes.h>
+#include <ucdr/microcdr.h>
 
 #define BUFFER_LENGTH 12
-#define SLOTS 12
-#define STRING_MAX 128
+#define SLOTS         12
+#define STRING_MAX    128
 
 bool on_full_buffer(ucdrBuffer* ub, void* args)
 {
-    uint8_t* buffer =  (uint8_t*) args;
+    uint8_t* buffer = (uint8_t*)args;
 
     // This value correspong with the ub->error, and will be returned by this function to indicates
     // if the serialization must continue or must stop because of an error.
@@ -31,8 +31,7 @@ bool on_full_buffer(ucdrBuffer* ub, void* args)
 
     // Leave the odd slots empty.
     uint32_t next_slot = 2 + (uint32_t)(ub->init - buffer) / BUFFER_LENGTH;
-    if(next_slot < SLOTS)
-    {
+    if (next_slot < SLOTS) {
         // Modify the internal buffer
         ub->init = buffer + BUFFER_LENGTH * next_slot;
         ub->iterator = ub->init;

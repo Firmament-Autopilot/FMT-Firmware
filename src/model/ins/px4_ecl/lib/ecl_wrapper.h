@@ -68,8 +68,8 @@ void Ekf_IMU_update(uint32_t timestamp_ms, uint32_t dt_ms, float gyr_B_radDs[3],
 void Ekf_MAG_update(uint32_t timestamp_ms, float mag_B_gauss[3]);
 void Ekf_BARO_update(uint32_t timestamp_ms, float pressure_alt_meter);
 void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t height,
-    float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
-    float sAcc, uint8_t fixType, uint8_t numSV);
+                    float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
+                    float sAcc, uint8_t fixType, uint8_t numSV);
 bool Ekf_step(void);
 void Ekf_get_attitude(void);
 void Ekf_get_acc(void);

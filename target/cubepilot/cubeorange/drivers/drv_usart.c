@@ -19,12 +19,12 @@
 
 #if USART_ENABLE == 1
 
-#include "drv_usart.h"
-#include "hal/serial/serial.h"
-#include "stm32h7xx_ll_usart.h"
+    #include "drv_usart.h"
+    #include "hal/serial/serial.h"
+    #include "stm32h7xx_ll_usart.h"
 
-#define UART_ENABLE_IRQ(n) NVIC_EnableIRQ((n))
-#define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
+    #define UART_ENABLE_IRQ(n)  NVIC_EnableIRQ((n))
+    #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
 
 /*
     UART2 ==> Serial0 (TELEM1)
@@ -35,37 +35,37 @@
     UART6 ==> Serial5 (FMU/IO)
 */
 
-#define USING_UART2
-#define USING_UART3
-// #define USING_UART4
-#define USING_UART6
-// #define USING_UART7
-#define USING_UART8
+    #define USING_UART2
+    #define USING_UART3
+    // #define USING_UART4
+    #define USING_UART6
+    // #define USING_UART7
+    #define USING_UART8
 
-/* config for serial_configure structure */
-#define SERIAL3_DEFAULT_CONFIG                  \
-    {                                           \
-        BAUD_RATE_9600, /* 9600 bits/s */       \
-            DATA_BITS_8, /* 8 databits */       \
-            STOP_BITS_1, /* 1 stopbit */        \
-            PARITY_NONE, /* No parity  */       \
-            BIT_ORDER_LSB, /* LSB first sent */ \
-            NRZ_NORMAL, /* Normal mode */       \
-            SERIAL_RB_BUFSZ, /* Buffer size */  \
-            0                                   \
-    }
+    /* config for serial_configure structure */
+    #define SERIAL3_DEFAULT_CONFIG                    \
+        {                                             \
+            BAUD_RATE_9600,      /* 9600 bits/s */    \
+                DATA_BITS_8,     /* 8 databits */     \
+                STOP_BITS_1,     /* 1 stopbit */      \
+                PARITY_NONE,     /* No parity  */     \
+                BIT_ORDER_LSB,   /* LSB first sent */ \
+                NRZ_NORMAL,      /* Normal mode */    \
+                SERIAL_RB_BUFSZ, /* Buffer size */    \
+                0                                     \
+        }
 
-#define SERIAL5_DEFAULT_CONFIG                  \
-    {                                           \
-        BAUD_RATE_230400, /* 115200 bits/s */   \
-            DATA_BITS_8, /* 8 databits */       \
-            STOP_BITS_1, /* 1 stopbit */        \
-            PARITY_NONE, /* No parity  */       \
-            BIT_ORDER_LSB, /* LSB first sent */ \
-            NRZ_NORMAL, /* Normal mode */       \
-            1024, /* Buffer size */             \
-            0                                   \
-    }
+    #define SERIAL5_DEFAULT_CONFIG                  \
+        {                                           \
+            BAUD_RATE_230400,  /* 115200 bits/s */  \
+                DATA_BITS_8,   /* 8 databits */     \
+                STOP_BITS_1,   /* 1 stopbit */      \
+                PARITY_NONE,   /* No parity  */     \
+                BIT_ORDER_LSB, /* LSB first sent */ \
+                NRZ_NORMAL,    /* Normal mode */    \
+                1024,          /* Buffer size */    \
+                0                                   \
+        }
 
 /* STM32 uart driver */
 struct stm32_uart {
@@ -217,7 +217,7 @@ static void uart_isr(struct serial_device* serial)
     }
 }
 
-#ifdef USING_UART2
+    #ifdef USING_UART2
 static struct serial_device serial0; // TELEM1
 /* UART2 device driver structure */
 struct stm32_uart uart2 = {
@@ -235,9 +235,9 @@ void USART2_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif // USING_UART2
+    #endif // USING_UART2
 
-#ifdef USING_UART3
+    #ifdef USING_UART3
 static struct serial_device serial1; // TELEM1
 /* UART2 device driver structure */
 struct stm32_uart uart3 = {
@@ -255,9 +255,9 @@ void USART3_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif // USING_UART3
+    #endif // USING_UART3
 
-#ifdef USING_UART4
+    #ifdef USING_UART4
 static struct serial_device serial2; // TELEM
 /* UART2 device driver structure */
 struct stm32_uart uart4 = {
@@ -275,9 +275,9 @@ void UART4_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif // USING_UART4
+    #endif // USING_UART4
 
-#ifdef USING_UART8
+    #ifdef USING_UART8
 static struct serial_device serial3; // TELEM
 /* UART2 device driver structure */
 struct stm32_uart uart8 = {
@@ -295,9 +295,9 @@ void UART8_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif // USING_UART6
+    #endif // USING_UART6
 
-#ifdef USING_UART7
+    #ifdef USING_UART7
 static struct serial_device serial4; // FMU Debug
 
 /* UART7 device driver structure */
@@ -316,9 +316,9 @@ void UART7_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif // USING_UART7
+    #endif // USING_UART7
 
-#ifdef USING_UART6
+    #ifdef USING_UART6
 static struct serial_device serial5; // TELEM3
 
 /* UART6 device driver structure */
@@ -337,39 +337,39 @@ void USART6_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif // USING_UART6
+    #endif // USING_UART6
 
 static void RCC_Configuration(void)
 {
-#ifdef USING_UART2
+    #ifdef USING_UART2
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
-#endif /* USING_UART2 */
+    #endif /* USING_UART2 */
 
-#ifdef USING_UART3
+    #ifdef USING_UART3
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
-#endif /* USING_UART3 */
+    #endif /* USING_UART3 */
 
-#ifdef USING_UART4
+    #ifdef USING_UART4
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART4);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
-#endif /* USING_UART4 */
+    #endif /* USING_UART4 */
 
-#ifdef USING_UART6
+    #ifdef USING_UART6
     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
-#endif /* USING_UART6 */
+    #endif /* USING_UART6 */
 
-#ifdef USING_UART7
+    #ifdef USING_UART7
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART7);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
-#endif /* USING_UART7 */
+    #endif /* USING_UART7 */
 
-#ifdef USING_UART8
+    #ifdef USING_UART8
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART8);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
-#endif /* USING_UART8 */
+    #endif /* USING_UART8 */
 
     /* DMA controller clock enable */
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
@@ -380,7 +380,7 @@ static void GPIO_Configuration(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-#ifdef USING_UART2
+    #ifdef USING_UART2
     /**USART2 GPIO Configuration
     PD5   ------> USART2_TX
     PD6   ------> USART2_RX
@@ -392,9 +392,9 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-#endif /* USING_UART2 */
+    #endif /* USING_UART2 */
 
-#ifdef USING_UART3
+    #ifdef USING_UART3
     /**USART3 GPIO Configuration
     PD8   ------> USART3_TX
     PD9   ------> USART3_RX
@@ -406,9 +406,9 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-#endif /* USING_UART3 */
+    #endif /* USING_UART3 */
 
-#ifdef USING_UART4
+    #ifdef USING_UART4
     /**UART4 GPIO Configuration
     PA0   ------> UART4_TX
     PA1   ------> UART4_RX
@@ -420,9 +420,9 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
     LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-#endif /* USING_UART3 */
+    #endif /* USING_UART3 */
 
-#ifdef USING_UART6
+    #ifdef USING_UART6
     /**USART6 GPIO Configuration
     PC6   ------> USART6_TX
     PC7   ------> USART6_RX
@@ -434,9 +434,9 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-#endif /* USING_UART6 */
+    #endif /* USING_UART6 */
 
-#ifdef USING_UART7
+    #ifdef USING_UART7
     /**UART7 GPIO Configuration
     PE7   ------> UART7_RX
     PE8   ------> UART7_TX
@@ -448,9 +448,9 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-#endif /* USING_UART7 */
+    #endif /* USING_UART7 */
 
-#ifdef USING_UART8
+    #ifdef USING_UART8
     /**UART8 GPIO Configuration
     PE0   ------> UART8_RX
     PE1   ------> UART8_TX
@@ -462,7 +462,7 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-#endif /* USING_UART8 */
+    #endif /* USING_UART8 */
 }
 
 static void NVIC_Configuration(struct stm32_uart* uart)
@@ -787,14 +787,14 @@ rt_err_t drv_usart_init(void)
     RCC_Configuration();
     GPIO_Configuration();
 
-#ifdef USING_UART2
+    #ifdef USING_UART2
     serial0.ops = &_usart_ops;
-#ifdef SERIAL0_DEFAULT_CONFIG
+        #ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
     serial1.config = serial0_config;
-#else
+        #else
     serial0.config = config;
-#endif
+        #endif
 
     NVIC_Configuration(&uart2);
     /* register serial device */
@@ -803,16 +803,16 @@ rt_err_t drv_usart_init(void)
         "serial0",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart2);
-#endif /* USING_UART2 */
+    #endif /* USING_UART2 */
 
-#ifdef USING_UART3
+    #ifdef USING_UART3
     serial1.ops = &_usart_ops;
-#ifdef SERIAL1_DEFAULT_CONFIG
+        #ifdef SERIAL1_DEFAULT_CONFIG
     struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
     serial1.config = serial1_config;
-#else
+        #else
     serial1.config = config;
-#endif
+        #endif
 
     NVIC_Configuration(&uart3);
     /* register serial device */
@@ -821,16 +821,16 @@ rt_err_t drv_usart_init(void)
         "serial1",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart3);
-#endif /* USING_UART3 */
+    #endif /* USING_UART3 */
 
-#ifdef USING_UART4
+    #ifdef USING_UART4
     serial5.ops = &_usart_ops;
-#ifdef SERIAL2_DEFAULT_CONFIG
+        #ifdef SERIAL2_DEFAULT_CONFIG
     struct serial_configure serial2_config = SERIAL2_DEFAULT_CONFIG;
     serial2.config = serial2_config;
-#else
+        #else
     serial2.config = config;
-#endif
+        #endif
 
     NVIC_Configuration(&uart4);
     /* register serial device */
@@ -839,16 +839,16 @@ rt_err_t drv_usart_init(void)
         "serial2",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart4);
-#endif /* USING_UART6 */
+    #endif /* USING_UART6 */
 
-#ifdef USING_UART8
+    #ifdef USING_UART8
     serial3.ops = &_usart_ops;
-#ifdef SERIAL3_DEFAULT_CONFIG
+        #ifdef SERIAL3_DEFAULT_CONFIG
     struct serial_configure serial3_config = SERIAL3_DEFAULT_CONFIG;
     serial3.config = serial3_config;
-#else
+        #else
     serial3.config = config;
-#endif
+        #endif
 
     NVIC_Configuration(&uart8);
     /* register serial device */
@@ -857,16 +857,16 @@ rt_err_t drv_usart_init(void)
         "serial3",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart8);
-#endif /* USING_UART8 */
+    #endif /* USING_UART8 */
 
-#ifdef USING_UART7
+    #ifdef USING_UART7
     serial4.ops = &_usart_ops;
-#ifdef SERIAL4_DEFAULT_CONFIG
+        #ifdef SERIAL4_DEFAULT_CONFIG
     struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
     serial4.config = serial4_config;
-#else
+        #else
     serial4.config = config;
-#endif
+        #endif
     NVIC_Configuration(&uart7);
     /* register serial device */
     rt_err |= hal_serial_register(
@@ -874,16 +874,16 @@ rt_err_t drv_usart_init(void)
         "serial4",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart8);
-#endif /* USING_UART7 */
+    #endif /* USING_UART7 */
 
-#ifdef USING_UART6
+    #ifdef USING_UART6
     serial5.ops = &_usart_ops;
-#ifdef SERIAL5_DEFAULT_CONFIG
+        #ifdef SERIAL5_DEFAULT_CONFIG
     struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
     serial5.config = serial5_config;
-#else
+        #else
     serial5.config = config;
-#endif
+        #endif
     NVIC_Configuration(&uart6);
     /* register serial device */
     rt_err |= hal_serial_register(
@@ -891,7 +891,7 @@ rt_err_t drv_usart_init(void)
         "serial5",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart6);
-#endif /* USING_UART7 */
+    #endif /* USING_UART7 */
 
 #endif
     return RT_EOK;

@@ -294,7 +294,7 @@ void rotation(enum Rotation rotation, float* x, float* y, float* z)
         return;
     }
     case ROTATION_PITCH_7: {
-        const float sin_pitch = 0.1218693434051474899781908334262; // sinF(pitch);
+        const float sin_pitch = 0.1218693434051474899781908334262;  // sinF(pitch);
         const float cos_pitch = 0.99254615164132198312785249072476; // cosF(pitch);
         float tmpx = *x;
         float tmpz = *z;

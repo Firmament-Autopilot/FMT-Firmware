@@ -16,8 +16,7 @@
 #define _SRC_C_CORE_SESSION_SESSION_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/session.h>
@@ -36,4 +35,3 @@ bool uxr_prepare_stream_to_write_submessage(uxrSession* session,
 #endif
 
 #endif // _SRC_C_CORE_SESSION_SESSION_INTERNAL_H_
-

@@ -27,17 +27,17 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USBD_CDC_IF_TEMPLATE_H
-#define __USBD_CDC_IF_TEMPLATE_H
+    #define __USBD_CDC_IF_TEMPLATE_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "usb_conf.h"
-#include "usbd_conf.h"
-#include "usbd_cdc_core.h"
+    /* Includes ------------------------------------------------------------------*/
+    #include "usb_conf.h"
+    #include "usbd_cdc_core.h"
+    #include "usbd_conf.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
-extern CDC_IF_Prop_TypeDef  TEMPLATE_fops;
+extern CDC_IF_Prop_TypeDef TEMPLATE_fops;
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */

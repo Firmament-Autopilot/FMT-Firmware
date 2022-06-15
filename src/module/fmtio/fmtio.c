@@ -386,8 +386,7 @@ void fmtio_loop(void)
 
     while (1) {
         /* wait event happen or timeout */
-        rt_err = rt_event_recv(&fmtio_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            10, &recv_set);
+        rt_err = rt_event_recv(&fmtio_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, 10, &recv_set);
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_FMTIO_RX) {

@@ -37,13 +37,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/i2c/i2c_bit_ops.h"
 #include "hal/i2c/i2c.h"
+#include "hal/i2c/i2c_bit_ops.h"
 #include "hal/i2c/i2c_dev.h"
 #include <firmament.h>
 
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
-    const char* bus_name)
+                                    const char* bus_name)
 {
     rt_err_t res = RT_EOK;
 
@@ -60,9 +60,9 @@ rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
 }
 
 rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
-    const char* name,
-    const char* bus_name,
-    void* user_data)
+                                  const char* name,
+                                  const char* bus_name,
+                                  void* user_data)
 {
     rt_err_t result;
     rt_device_t bus;
@@ -88,18 +88,16 @@ rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
 }
 
 rt_size_t rt_i2c_transfer(struct rt_i2c_bus* bus,
-    rt_uint16_t addr,
-    struct rt_i2c_msg msgs[],
-    rt_uint32_t num)
+                          rt_uint16_t addr,
+                          struct rt_i2c_msg msgs[],
+                          rt_uint32_t num)
 {
     rt_size_t ret;
 
     if (bus->ops->master_xfer) {
 #ifdef RT_I2C_DEBUG
         for (ret = 0; ret < num; ret++) {
-            i2c_dbg("msgs[%d] %c, len=%d%s\n", ret,
-                (msgs[ret].flags & RT_I2C_RD) ? 'R' : 'W',
-                msgs[ret].len);
+            i2c_dbg("msgs[%d] %c, len=%d%s\n", ret, (msgs[ret].flags & RT_I2C_RD) ? 'R' : 'W', msgs[ret].len);
         }
 #endif
         if (!(msgs[0].flags & RT_I2C_ADDR_10BIT)) {
@@ -119,10 +117,10 @@ rt_size_t rt_i2c_transfer(struct rt_i2c_bus* bus,
 }
 
 rt_size_t rt_i2c_master_send(struct rt_i2c_bus* bus,
-    rt_uint16_t addr,
-    rt_uint16_t flags,
-    const rt_uint8_t* buf,
-    rt_uint32_t count)
+                             rt_uint16_t addr,
+                             rt_uint16_t flags,
+                             const rt_uint8_t* buf,
+                             rt_uint32_t count)
 {
     rt_size_t ret;
     struct rt_i2c_msg msg;
@@ -138,10 +136,10 @@ rt_size_t rt_i2c_master_send(struct rt_i2c_bus* bus,
 }
 
 rt_size_t rt_i2c_master_recv(struct rt_i2c_bus* bus,
-    rt_uint16_t addr,
-    rt_uint16_t flags,
-    rt_uint8_t* buf,
-    rt_uint32_t count)
+                             rt_uint16_t addr,
+                             rt_uint16_t flags,
+                             rt_uint8_t* buf,
+                             rt_uint32_t count)
 {
     rt_size_t ret;
     struct rt_i2c_msg msg;

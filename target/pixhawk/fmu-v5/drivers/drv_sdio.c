@@ -201,8 +201,7 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
 
 static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, rt_uint32_t* status)
 {
-    if (rt_event_recv(&sd_dev->event, 0xffffffff,
-            RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, TICKS_FROM_MS(SD_TIMEOUT), status)
+    if (rt_event_recv(&sd_dev->event, 0xffffffff, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, TICKS_FROM_MS(SD_TIMEOUT), status)
         != RT_EOK) {
         /* wait timeout */
         return RT_ETIMEOUT;
@@ -365,6 +364,5 @@ rt_err_t drv_sdio_init(void)
         return RT_ERROR;
     }
 
-    return hal_sd_register(&sd0_dev, "sd0",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE, &hsd1);
+    return hal_sd_register(&sd0_dev, "sd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE, &hsd1);
 }

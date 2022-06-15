@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-#define FMU_LED_BLUE_PIN  43
+#define FMU_LED_BLUE_PIN 43
 
 #define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
 #define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })

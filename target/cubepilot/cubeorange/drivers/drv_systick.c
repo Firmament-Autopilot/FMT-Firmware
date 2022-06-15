@@ -66,7 +66,7 @@ void SysTick_Handler(void)
     rt_interrupt_enter();
 
     hal_systick_isr(systick_dev);
-    
+
 #ifdef USE_HAL_DRIVER
     HAL_IncTick();
 #endif

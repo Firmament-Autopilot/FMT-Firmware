@@ -14,24 +14,29 @@
 
 #include "HelloWorld.h"
 
-#include <uxr/client/client.h>
-#include <string.h> //strcmp
-#include <stdlib.h> //atoi
 #include <stdio.h>
+#include <stdlib.h> //atoi
+#include <string.h> //strcmp
+#include <uxr/client/client.h>
 
-#define STREAM_HISTORY  8
-#define BUFFER_SIZE     UXR_CONFIG_UDP_TRANSPORT_MTU * STREAM_HISTORY
+#define STREAM_HISTORY 8
+#define BUFFER_SIZE    UXR_CONFIG_UDP_TRANSPORT_MTU* STREAM_HISTORY
 
 void on_topic(
-        uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        uxrStreamId stream_id,
-        struct ucdrBuffer* ub,
-        uint16_t length,
-        void* args)
+    uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    uxrStreamId stream_id,
+    struct ucdrBuffer* ub,
+    uint16_t length,
+    void* args)
 {
-    (void) session; (void) object_id; (void) request_id; (void) stream_id; (void) args; (void) length;
+    (void)session;
+    (void)object_id;
+    (void)request_id;
+    (void)stream_id;
+    (void)args;
+    (void)length;
 
     HelloWorld topic;
     HelloWorld_deserialize_topic(ub, &topic);
@@ -42,10 +47,9 @@ void on_topic(
 int main(int args, char** argv)
 {
     // Args
-    if(args < 5 || 0 == strcmp("-h", argv[1]) || 0 == strcmp("--help", argv[1])
-                || 0 != strcmp("--key", argv[1]) || 0 != strcmp("--id", argv[3])
-                || 0 == atoi(argv[2]) || 0 == atoi(argv[4]))
-    {
+    if (args < 5 || 0 == strcmp("-h", argv[1]) || 0 == strcmp("--help", argv[1])
+        || 0 != strcmp("--key", argv[1]) || 0 != strcmp("--id", argv[3])
+        || 0 == atoi(argv[2]) || 0 == atoi(argv[4])) {
         printf("usage: program [-h | --help | --key <number> --id <datareader-number>]\n");
         return 0;
     }
@@ -53,8 +57,7 @@ int main(int args, char** argv)
     // Transport
     uxrUDPTransport transport;
     uxrUDPPlatform udp_platform;
-    if(!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, "127.0.0.1", "2018"))
-    {
+    if (!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, "127.0.0.1", "2018")) {
         printf("Error at create transport.\n");
         return 1;
     }
@@ -63,8 +66,7 @@ int main(int args, char** argv)
     uxrSession session;
     uxr_init_session(&session, &transport.comm, (uint32_t)atoi(argv[2]));
     uxr_set_topic_callback(&session, on_topic, NULL);
-    if(!uxr_create_session(&session))
-    {
+    if (!uxr_create_session(&session)) {
         printf("Error at create session.\n");
         return 1;
     }
@@ -77,7 +79,7 @@ int main(int args, char** argv)
     uxrStreamId reliable_in = uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
 
     // Request topics
-    uxrDeliveryControl delivery_control = {0};
+    uxrDeliveryControl delivery_control = { 0 };
     delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
 
     uxrObjectId datareader_id = uxr_object_id((uint16_t)atoi(argv[4]), UXR_DATAREADER_ID);
@@ -85,8 +87,7 @@ int main(int args, char** argv)
 
     // Read topics
     bool connected = true;
-    while(connected)
-    {
+    while (connected) {
         uint8_t read_data_status;
         connected = uxr_run_session_until_all_status(&session, UXR_TIMEOUT_INF, &read_data_req, &read_data_status, 1);
     }

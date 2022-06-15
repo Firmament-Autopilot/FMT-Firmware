@@ -30,7 +30,9 @@ static int echo_battery_status(void* parameter)
     }
 
     console_printf("voltage:%5d mV, current:%5d mA, remaining:%3u%%\n",
-        bat_status.battery_voltage, bat_status.battery_current, bat_status.battery_remaining);
+                   bat_status.battery_voltage,
+                   bat_status.battery_current,
+                   bat_status.battery_remaining);
 
     return 0;
 }

@@ -19,103 +19,97 @@
 // -------------------------------------------------------------------
 //                    SERIALIZE MACROS
 // -------------------------------------------------------------------
-#define UCDR_SERIALIZE_BYTE_1(TYPE, ENDIAN) \
-    (void)ENDIAN; \
-    if(ucdr_check_final_buffer_behavior(ub, 1)) \
-    { \
-        *ub->iterator = (uint8_t)value; \
-        ub->iterator += 1; \
-        ub->offset += 1; \
-        ub->last_data_size = 1; \
-    } \
+#define UCDR_SERIALIZE_BYTE_1(TYPE, ENDIAN)        \
+    (void)ENDIAN;                                  \
+    if (ucdr_check_final_buffer_behavior(ub, 1)) { \
+        *ub->iterator = (uint8_t)value;            \
+        ub->iterator += 1;                         \
+        ub->offset += 1;                           \
+        ub->last_data_size = 1;                    \
+    }                                              \
     return !ub->error;
 
-#define UCDR_SERIALIZE_BYTE_2_CORE() \
+#define UCDR_SERIALIZE_BYTE_2_CORE()                 \
     const uint8_t* bytes_pointer = (uint8_t*)&value; \
-    *ub->iterator = *(bytes_pointer + 1); \
+    *ub->iterator = *(bytes_pointer + 1);            \
     *(ub->iterator + 1) = *bytes_pointer;
 
-#define UCDR_SERIALIZE_BYTE_4_CORE() \
+#define UCDR_SERIALIZE_BYTE_4_CORE()                 \
     const uint8_t* bytes_pointer = (uint8_t*)&value; \
-    *ub->iterator = *(bytes_pointer + 3); \
-    *(ub->iterator + 1) = *(bytes_pointer + 2); \
-    *(ub->iterator + 2) = *(bytes_pointer + 1); \
+    *ub->iterator = *(bytes_pointer + 3);            \
+    *(ub->iterator + 1) = *(bytes_pointer + 2);      \
+    *(ub->iterator + 2) = *(bytes_pointer + 1);      \
     *(ub->iterator + 3) = *bytes_pointer;
 
-#define UCDR_SERIALIZE_BYTE_8_CORE() \
+#define UCDR_SERIALIZE_BYTE_8_CORE()                 \
     const uint8_t* bytes_pointer = (uint8_t*)&value; \
-    *ub->iterator = *(bytes_pointer + 7); \
-    *(ub->iterator + 1) = *(bytes_pointer + 6); \
-    *(ub->iterator + 2) = *(bytes_pointer + 5); \
-    *(ub->iterator + 3) = *(bytes_pointer + 4); \
-    *(ub->iterator + 4) = *(bytes_pointer + 3); \
-    *(ub->iterator + 5) = *(bytes_pointer + 2); \
-    *(ub->iterator + 6) = *(bytes_pointer + 1); \
+    *ub->iterator = *(bytes_pointer + 7);            \
+    *(ub->iterator + 1) = *(bytes_pointer + 6);      \
+    *(ub->iterator + 2) = *(bytes_pointer + 5);      \
+    *(ub->iterator + 3) = *(bytes_pointer + 4);      \
+    *(ub->iterator + 4) = *(bytes_pointer + 3);      \
+    *(ub->iterator + 5) = *(bytes_pointer + 2);      \
+    *(ub->iterator + 6) = *(bytes_pointer + 1);      \
     *(ub->iterator + 7) = *bytes_pointer;
 
-#define UCDR_SERIALIZE_BYTE_N(TYPE, SIZE, ENDIAN) \
+#define UCDR_SERIALIZE_BYTE_N(TYPE, SIZE, ENDIAN)       \
     size_t alignment = ucdr_buffer_alignment(ub, SIZE); \
-    ub->iterator += alignment; \
-    ub->offset += alignment; \
-    if(ucdr_check_final_buffer_behavior(ub, SIZE)) \
-    { \
-        if(UCDR_MACHINE_ENDIANNESS == ENDIAN) \
-        { \
-            memcpy(ub->iterator, (void*)&value, SIZE); \
-        } \
-        else \
-        { \
-            UCDR_SERIALIZE_BYTE_ ## SIZE ## _CORE() \
-        } \
-        ub->iterator += SIZE; \
-        ub->offset += SIZE; \
-        ub->last_data_size = SIZE; \
-    } \
+    ub->iterator += alignment;                          \
+    ub->offset += alignment;                            \
+    if (ucdr_check_final_buffer_behavior(ub, SIZE)) {   \
+        if (UCDR_MACHINE_ENDIANNESS == ENDIAN) {        \
+            memcpy(ub->iterator, (void*)&value, SIZE);  \
+        } else {                                        \
+            UCDR_SERIALIZE_BYTE_##SIZE##_CORE()         \
+        }                                               \
+        ub->iterator += SIZE;                           \
+        ub->offset += SIZE;                             \
+        ub->last_data_size = SIZE;                      \
+    }                                                   \
     return !ub->error;
 
 #define UCDR_SERIALIZE_BYTE_2(TYPE, ENDIAN) UCDR_SERIALIZE_BYTE_N(TYPE, 2, ENDIAN)
 #define UCDR_SERIALIZE_BYTE_4(TYPE, ENDIAN) UCDR_SERIALIZE_BYTE_N(TYPE, 4, ENDIAN)
 #define UCDR_SERIALIZE_BYTE_8(TYPE, ENDIAN) UCDR_SERIALIZE_BYTE_N(TYPE, 8, ENDIAN)
 
-#define UCDR_BASIC_TYPE_SERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE) \
-    bool ucdr_serialize ## SUFFIX(ucdrBuffer* ub, TYPE value) \
-    { \
-        UCDR_SERIALIZE_BYTE_ ## SIZE(TYPE, ub->endianness) \
-    } \
-    bool ucdr_serialize_endian ## SUFFIX(ucdrBuffer* ub, ucdrEndianness endianness, TYPE value) \
-    { \
-        UCDR_SERIALIZE_BYTE_ ## SIZE(TYPE, endianness) \
+#define UCDR_BASIC_TYPE_SERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE)                              \
+    bool ucdr_serialize##SUFFIX(ucdrBuffer* ub, TYPE value)                                   \
+    {                                                                                         \
+        UCDR_SERIALIZE_BYTE_##SIZE(TYPE, ub->endianness)                                      \
+    }                                                                                         \
+    bool ucdr_serialize_endian##SUFFIX(ucdrBuffer* ub, ucdrEndianness endianness, TYPE value) \
+    {                                                                                         \
+        UCDR_SERIALIZE_BYTE_##SIZE(TYPE, endianness)                                          \
     }
 
 // -------------------------------------------------------------------
 //                    DESERIALIZE MACROS
 // -------------------------------------------------------------------
-#define UCDR_DESERIALIZE_BYTE_1(TYPE, ENDIAN) \
-    (void)ENDIAN; \
-    if(ucdr_check_final_buffer_behavior(ub, 1)) \
-    { \
-        *value = (TYPE)*ub->iterator; \
-        ub->iterator += 1; \
-        ub->offset += 1; \
-        ub->last_data_size = 1; \
-    } \
+#define UCDR_DESERIALIZE_BYTE_1(TYPE, ENDIAN)      \
+    (void)ENDIAN;                                  \
+    if (ucdr_check_final_buffer_behavior(ub, 1)) { \
+        *value = (TYPE)*ub->iterator;              \
+        ub->iterator += 1;                         \
+        ub->offset += 1;                           \
+        ub->last_data_size = 1;                    \
+    }                                              \
     return !ub->error;
 
-#define UCDR_DESERIALIZE_BYTE_2_CORE() \
+#define UCDR_DESERIALIZE_BYTE_2_CORE()        \
     uint8_t* bytes_pointer = (uint8_t*)value; \
-    *bytes_pointer = *(ub->iterator + 1); \
-    *(bytes_pointer + 1) = *ub->iterator ; \
+    *bytes_pointer = *(ub->iterator + 1);     \
+    *(bytes_pointer + 1) = *ub->iterator;
 
-#define UCDR_DESERIALIZE_BYTE_4_CORE() \
-    uint8_t* bytes_pointer = (uint8_t*)value; \
-    *bytes_pointer = *(ub->iterator + 3); \
+#define UCDR_DESERIALIZE_BYTE_4_CORE()          \
+    uint8_t* bytes_pointer = (uint8_t*)value;   \
+    *bytes_pointer = *(ub->iterator + 3);       \
     *(bytes_pointer + 1) = *(ub->iterator + 2); \
     *(bytes_pointer + 2) = *(ub->iterator + 1); \
     *(bytes_pointer + 3) = *ub->iterator;
 
-#define UCDR_DESERIALIZE_BYTE_8_CORE() \
-    uint8_t* bytes_pointer = (uint8_t*)value; \
-    *bytes_pointer = *(ub->iterator + 7); \
+#define UCDR_DESERIALIZE_BYTE_8_CORE()          \
+    uint8_t* bytes_pointer = (uint8_t*)value;   \
+    *bytes_pointer = *(ub->iterator + 7);       \
     *(bytes_pointer + 1) = *(ub->iterator + 6); \
     *(bytes_pointer + 2) = *(ub->iterator + 5); \
     *(bytes_pointer + 3) = *(ub->iterator + 4); \
@@ -124,46 +118,42 @@
     *(bytes_pointer + 6) = *(ub->iterator + 1); \
     *(bytes_pointer + 7) = *ub->iterator;
 
-#define UCDR_DESERIALIZE_BYTE_N(TYPE, SIZE, ENDIAN) \
+#define UCDR_DESERIALIZE_BYTE_N(TYPE, SIZE, ENDIAN)     \
     size_t alignment = ucdr_buffer_alignment(ub, SIZE); \
-    ub->iterator += alignment; \
-    ub->offset += alignment; \
-    if(ucdr_check_final_buffer_behavior(ub, SIZE)) \
-    { \
-        if(UCDR_MACHINE_ENDIANNESS == ENDIAN) \
-        { \
-            memcpy((void*)value, ub->iterator, SIZE); \
-        } \
-        else \
-        { \
-            UCDR_DESERIALIZE_BYTE_ ## SIZE ## _CORE() \
-        } \
-        ub->iterator += SIZE; \
-        ub->offset += SIZE; \
-        ub->last_data_size = SIZE; \
-    } \
+    ub->iterator += alignment;                          \
+    ub->offset += alignment;                            \
+    if (ucdr_check_final_buffer_behavior(ub, SIZE)) {   \
+        if (UCDR_MACHINE_ENDIANNESS == ENDIAN) {        \
+            memcpy((void*)value, ub->iterator, SIZE);   \
+        } else {                                        \
+            UCDR_DESERIALIZE_BYTE_##SIZE##_CORE()       \
+        }                                               \
+        ub->iterator += SIZE;                           \
+        ub->offset += SIZE;                             \
+        ub->last_data_size = SIZE;                      \
+    }                                                   \
     return !ub->error;
 
 #define UCDR_DESERIALIZE_BYTE_2(TYPE, ENDIAN) UCDR_DESERIALIZE_BYTE_N(TYPE, 2, ENDIAN)
 #define UCDR_DESERIALIZE_BYTE_4(TYPE, ENDIAN) UCDR_DESERIALIZE_BYTE_N(TYPE, 4, ENDIAN)
 #define UCDR_DESERIALIZE_BYTE_8(TYPE, ENDIAN) UCDR_DESERIALIZE_BYTE_N(TYPE, 8, ENDIAN)
 
-#define UCDR_BASIC_TYPE_DESERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE) \
-    bool ucdr_deserialize ## SUFFIX(ucdrBuffer* ub, TYPE* value) \
-    { \
-        UCDR_DESERIALIZE_BYTE_ ## SIZE(TYPE, ub->endianness) \
-    } \
-    bool ucdr_deserialize_endian ## SUFFIX(ucdrBuffer* ub, ucdrEndianness endianness, TYPE* value) \
-    { \
-        UCDR_DESERIALIZE_BYTE_ ## SIZE(TYPE, endianness) \
+#define UCDR_BASIC_TYPE_DESERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE)                               \
+    bool ucdr_deserialize##SUFFIX(ucdrBuffer* ub, TYPE* value)                                   \
+    {                                                                                            \
+        UCDR_DESERIALIZE_BYTE_##SIZE(TYPE, ub->endianness)                                       \
+    }                                                                                            \
+    bool ucdr_deserialize_endian##SUFFIX(ucdrBuffer* ub, ucdrEndianness endianness, TYPE* value) \
+    {                                                                                            \
+        UCDR_DESERIALIZE_BYTE_##SIZE(TYPE, endianness)                                           \
     }
 
 // -------------------------------------------------------------------
 //                         DEFINITION MACRO
 // -------------------------------------------------------------------
-#define UCDR_BASIC_TYPE_DEFINITIONS(SUFFIX, TYPE, SIZE) \
+#define UCDR_BASIC_TYPE_DEFINITIONS(SUFFIX, TYPE, SIZE)      \
     UCDR_BASIC_TYPE_SERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE) \
-    UCDR_BASIC_TYPE_DESERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE) \
+    UCDR_BASIC_TYPE_DESERIALIZE_DEFINITION(SUFFIX, TYPE, SIZE)
 
 // -------------------------------------------------------------------
 //              PUBLIC DE-SERIALIZATION IMPLEMENTATIONS

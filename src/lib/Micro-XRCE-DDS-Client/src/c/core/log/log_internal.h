@@ -16,42 +16,44 @@
 #define _SRC_C_CORE_LOG_LOG_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-#define UXR_SEND 1
+#define UXR_SEND       1
 #define UXR_ERROR_SEND ~1
-#define UXR_RECV 2
+#define UXR_RECV       2
 #define UXR_ERROR_RECV ~2
 
 #ifdef UXR_MESSAGE_LOGS
-#define UXR_MESSAGE_LOGS_AVAILABLE 1
+    #define UXR_MESSAGE_LOGS_AVAILABLE 1
 #else
-#define UXR_MESSAGE_LOGS_AVAILABLE 0
+    #define UXR_MESSAGE_LOGS_AVAILABLE 0
 #endif
 
 #ifdef UXR_SERIALIZATION_LOGS
-#define UXR_SERIALIZATION_LOGS_AVAILABLE 1
+    #define UXR_SERIALIZATION_LOGS_AVAILABLE 1
 #else
-#define UXR_SERIALIZATION_LOGS_AVAILABLE 0
+    #define UXR_SERIALIZATION_LOGS_AVAILABLE 0
 #endif
 
 void uxr_print_message(int direction, uint8_t* buffer, size_t size, const uint8_t* client_key);
 void uxr_print_serialization(int direction, const uint8_t* buffer, size_t size);
 
 #if defined(UXR_MESSAGE_LOGS) || defined(UXR_SERIALIZATION_LOGS)
-#define UXR_DEBUG_PRINT_MESSAGE(direction, buffer, size, client_key) \
-    do \
-    { \
-        if (UXR_MESSAGE_LOGS_AVAILABLE) uxr_print_message(direction, buffer, size, client_key); \
-        if (UXR_SERIALIZATION_LOGS_AVAILABLE) uxr_print_serialization(direction, buffer, size); \
-    } while (0)
+    #define UXR_DEBUG_PRINT_MESSAGE(direction, buffer, size, client_key) \
+        do {                                                             \
+            if (UXR_MESSAGE_LOGS_AVAILABLE)                              \
+                uxr_print_message(direction, buffer, size, client_key);  \
+            if (UXR_SERIALIZATION_LOGS_AVAILABLE)                        \
+                uxr_print_serialization(direction, buffer, size);        \
+        } while (0)
 #else
-#define UXR_DEBUG_PRINT_MESSAGE(direction, buffer, size, client_key) do {} while(0)
+    #define UXR_DEBUG_PRINT_MESSAGE(direction, buffer, size, client_key) \
+        do {                                                             \
+        } while (0)
 #endif
 
 #ifdef __cplusplus

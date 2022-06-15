@@ -386,8 +386,7 @@ static void mavproxy_rx_entry(void* param)
 
     while (1) {
         /* wait event happen */
-        rt_err = rt_event_recv(&mav_rx_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            RT_WAITING_FOREVER, &recv_set);
+        rt_err = rt_event_recv(&mav_rx_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
@@ -407,11 +406,13 @@ fmt_err_t mavproxy_monitor_create(void)
     rt_err_t res;
 
     res = rt_thread_init(&thread_mavlink_rx_handle,
-        "mav_rx",
-        mavproxy_rx_entry,
-        RT_NULL,
-        &thread_mavlink_rx_stack[0],
-        sizeof(thread_mavlink_rx_stack), MAVLINK_RX_THREAD_PRIORITY, 5);
+                         "mav_rx",
+                         mavproxy_rx_entry,
+                         RT_NULL,
+                         &thread_mavlink_rx_stack[0],
+                         sizeof(thread_mavlink_rx_stack),
+                         MAVLINK_RX_THREAD_PRIORITY,
+                         5);
 
     if (res != RT_EOK) {
         console_printf("mav rx thread create fail\n");

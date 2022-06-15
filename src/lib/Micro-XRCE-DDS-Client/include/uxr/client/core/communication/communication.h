@@ -16,20 +16,18 @@
 #define _UXR_CLIENT_CORE_COMMUNICATION_COMMUNICATION_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 typedef bool (*send_msg_func)(void* instance, const uint8_t* buf, size_t len);
 typedef bool (*recv_msg_func)(void* instance, uint8_t** buf, size_t* len, int timeout);
 typedef uint8_t (*comm_error_func)(void);
 
-typedef struct uxrCommunication
-{
+typedef struct uxrCommunication {
     void* instance;
     send_msg_func send_msg;
     recv_msg_func recv_msg;

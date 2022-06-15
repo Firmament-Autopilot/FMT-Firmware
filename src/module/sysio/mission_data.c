@@ -227,9 +227,7 @@ fmt_err_t load_mission_data(const char* path)
             * <INDEX> <CURRENT WP> <COORD FRAME> <COMMAND> <PARAM1> <PARAM2> <PARAM3> <PARAM4> 
             * <PARAM5/X/LATITUDE> <PARAM6/Y/LONGITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE> 
             */
-            fscanf(fp, "%hu %hhu %hhu %hu %f %f %f %f %ld %ld %f %hhu", &mdp->seq, &mdp->current, &mdp->frame,
-                &mdp->command, &mdp->param1, &mdp->param2, &mdp->param3, &mdp->param4,
-                &mdp->x, &mdp->y, &mdp->z, &mdp->autocontinue);
+            fscanf(fp, "%hu %hhu %hhu %hu %f %f %f %f %ld %ld %f %hhu", &mdp->seq, &mdp->current, &mdp->frame, &mdp->command, &mdp->param1, &mdp->param2, &mdp->param3, &mdp->param4, &mdp->x, &mdp->y, &mdp->z, &mdp->autocontinue);
 
             mdp++;
             cnt++;
@@ -246,9 +244,7 @@ void dump_mission_data(void)
     struct mission_item* mdp = mission_data;
 
     for (i = 0; i < mission_count; i++, mdp++) {
-        printf("%hu\t%hhu\t%hhu\t%hu\t%f\t%f\t%f\t%f\t%ld\t%ld\t%f\t%hhu\n", mdp->seq, mdp->current, mdp->frame,
-            mdp->command, mdp->param1, mdp->param2, mdp->param3, mdp->param4,
-            mdp->x, mdp->y, mdp->z, mdp->autocontinue);
+        printf("%hu\t%hhu\t%hhu\t%hu\t%f\t%f\t%f\t%f\t%ld\t%ld\t%f\t%hhu\n", mdp->seq, mdp->current, mdp->frame, mdp->command, mdp->param1, mdp->param2, mdp->param3, mdp->param4, mdp->x, mdp->y, mdp->z, mdp->autocontinue);
     }
 }
 

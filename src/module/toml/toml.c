@@ -407,15 +407,14 @@ static int e_bad_key_error(context_t* ctx, int lineno)
 
 static int e_key_exists_error(context_t* ctx, int lineno)
 {
-    snprintf(ctx->errbuf, ctx->errbufsz,
-        "line %d: key exists", lineno);
+    snprintf(ctx->errbuf, ctx->errbufsz, "line %d: key exists", lineno);
     longjmp(ctx->jmp, 1);
     return -1;
 }
 
 static char* norm_lit_str(const char* src, int srclen,
-    int multiline,
-    char* errbuf, int errbufsz)
+                          int multiline,
+                          char* errbuf, int errbufsz)
 {
     char* dst = 0; /* will write to dst[] and return it */
     int max = 0;   /* max size of dst[] */
@@ -465,8 +464,8 @@ static char* norm_lit_str(const char* src, int srclen,
  * Returns NULL if error with errmsg in errbuf.
  */
 static char* norm_basic_str(const char* src, int srclen,
-    int multiline,
-    char* errbuf, int errbufsz)
+                            int multiline,
+                            char* errbuf, int errbufsz)
 {
     char* dst = 0; /* will write to dst[] and return it */
     int max = 0;   /* max size of dst[] */
@@ -665,9 +664,9 @@ static char* normalize_key(context_t* ctx, token_t strtok)
  * 'v'alue, 'a'rray or 't'able depending on the element.
  */
 static int check_key(toml_table_t* tab, const char* key,
-    toml_keyval_t** ret_val,
-    toml_array_t** ret_arr,
-    toml_table_t** ret_tab)
+                     toml_keyval_t** ret_val,
+                     toml_array_t** ret_arr,
+                     toml_table_t** ret_tab)
 {
     int i;
     void* dummy;
@@ -797,9 +796,9 @@ static toml_table_t* create_keytable_in_table(context_t* ctx, toml_table_t* tab,
 /* Create an array in the table.
  */
 static toml_array_t* create_keyarray_in_table(context_t* ctx,
-    toml_table_t* tab,
-    token_t keytok,
-    char kind)
+                                              toml_table_t* tab,
+                                              token_t keytok,
+                                              char kind)
 {
     /* first, normalize the key to be used for lookup. 
 	 * remember to free it if we error out. 
@@ -839,7 +838,7 @@ static toml_array_t* create_keyarray_in_table(context_t* ctx,
 /* Create an array in an array 
  */
 static toml_array_t* create_array_in_array(context_t* ctx,
-    toml_array_t* parent)
+                                           toml_array_t* parent)
 {
     int n = parent->nelem;
     toml_array_t** base;
@@ -860,7 +859,7 @@ static toml_array_t* create_array_in_array(context_t* ctx,
 /* Create a table in an array 
  */
 static toml_table_t* create_table_in_array(context_t* ctx,
-    toml_array_t* parent)
+                                           toml_array_t* parent)
 {
     int n = parent->nelem;
     toml_table_t** base;
@@ -982,8 +981,7 @@ static void parse_array(context_t* ctx, toml_array_t* arr)
                 arr->kind = 'v';
             /* check array kind */
             if (arr->kind != 'v') {
-                e_syntax_error(ctx, ctx->tok.lineno,
-                    "a string array can only contain strings");
+                e_syntax_error(ctx, ctx->tok.lineno, "a string array can only contain strings");
                 return; /* not reached */
             }
 
@@ -1004,8 +1002,7 @@ static void parse_array(context_t* ctx, toml_array_t* arr)
             if (arr->nelem == 1)
                 arr->type = valtype(arr->u.val[0]);
             else if (arr->type != valtype(val)) {
-                e_syntax_error(ctx, ctx->tok.lineno,
-                    "array type mismatch while processing array of values");
+                e_syntax_error(ctx, ctx->tok.lineno, "array type mismatch while processing array of values");
                 return; /* not reached */
             }
 
@@ -1019,8 +1016,7 @@ static void parse_array(context_t* ctx, toml_array_t* arr)
                 arr->kind = 'a';
             /* check array kind */
             if (arr->kind != 'a') {
-                e_syntax_error(ctx, ctx->tok.lineno,
-                    "array type mismatch while processing array of arrays");
+                e_syntax_error(ctx, ctx->tok.lineno, "array type mismatch while processing array of arrays");
                 return; /* not reached */
             }
             parse_array(ctx, create_array_in_array(ctx, arr));
@@ -1033,8 +1029,7 @@ static void parse_array(context_t* ctx, toml_array_t* arr)
                 arr->kind = 't';
             /* check array kind */
             if (arr->kind != 't') {
-                e_syntax_error(ctx, ctx->tok.lineno,
-                    "array type mismatch while processing array of tables");
+                e_syntax_error(ctx, ctx->tok.lineno, "array type mismatch while processing array of tables");
                 return; /* not reached */
             }
             parse_table(ctx, create_table_in_array(ctx, arr));
@@ -1360,8 +1355,8 @@ static void parse_select(context_t* ctx)
 }
 
 toml_table_t* toml_parse(char* conf,
-    char* errbuf,
-    int errbufsz)
+                         char* errbuf,
+                         int errbufsz)
 {
     context_t ctx;
 
@@ -1438,8 +1433,8 @@ toml_table_t* toml_parse(char* conf,
 }
 
 toml_table_t* toml_parse_file(FILE* fp,
-    char* errbuf,
-    int errbufsz)
+                              char* errbuf,
+                              int errbufsz)
 {
     int bufsz = 0;
     char* buf = 0;
@@ -1468,8 +1463,7 @@ toml_table_t* toml_parse_file(FILE* fp,
         errno = 0;
         int n = fread(buf + off, 1, bufsz - off, fp);
         if (ferror(fp)) {
-            snprintf(errbuf, errbufsz, "%s",
-                errno ? strerror(errno) : "Error reading file");
+            snprintf(errbuf, errbufsz, "%s", errno ? strerror(errno) : "Error reading file");
             xfree(buf);
             return 0;
         }
@@ -2230,13 +2224,9 @@ int toml_rtos(toml_raw_t src, char** ret)
     }
 
     if (qchar == '\'') {
-        *ret = norm_lit_str(sp, sq - sp,
-            multiline,
-            0, 0);
+        *ret = norm_lit_str(sp, sq - sp, multiline, 0, 0);
     } else {
-        *ret = norm_basic_str(sp, sq - sp,
-            multiline,
-            0, 0);
+        *ret = norm_basic_str(sp, sq - sp, multiline, 0, 0);
     }
 
     return *ret ? 0 : -1;

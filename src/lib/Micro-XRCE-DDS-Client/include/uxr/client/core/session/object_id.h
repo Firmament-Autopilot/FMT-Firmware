@@ -16,12 +16,11 @@
 #define _UXR_CLIENT_CORE_SESSION_OBJECT_ID_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/visibility.h>
 #include <stdint.h>
+#include <uxr/client/visibility.h>
 
 #define UXR_INVALID_ID     0x00
 #define UXR_PARTICIPANT_ID 0x01
@@ -34,8 +33,7 @@ extern "C"
 #define UXR_REPLIER_ID     0x08
 #define UXR_OTHER_ID       0x0F
 
-typedef struct uxrObjectId
-{
+typedef struct uxrObjectId {
     uint16_t id;
     uint8_t type;
 

@@ -16,17 +16,16 @@
 #define _SRC_C_CORE_SERIALIZATION_XRCE_HEADER_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <ucdr/microcdr.h>
 
 #define CLIENT_KEY_SIZE 4
 
-#define SESSION_ID_WITH_CLIENT_KEY 0x00
+#define SESSION_ID_WITH_CLIENT_KEY    0x00
 #define SESSION_ID_WITHOUT_CLIENT_KEY 0x80
 
 void uxr_serialize_message_header(ucdrBuffer* ub, uint8_t session_id, uint8_t stream_id, uint16_t seq_num, const uint8_t* key);

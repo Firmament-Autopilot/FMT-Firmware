@@ -29,8 +29,7 @@ bool uxr_prepare_best_effort_buffer_to_write(uxrOutputBestEffortStream* stream, 
     size_t current_padding = uxr_submessage_padding(stream->writer);
     size_t future_length = stream->writer + current_padding + size;
     bool available_to_write = future_length <= stream->size;
-    if(available_to_write)
-    {
+    if (available_to_write) {
         ucdr_init_buffer_origin_offset(ub, stream->buffer, (uint32_t)future_length, 0u, (uint32_t)(stream->writer + current_padding));
         stream->writer += size;
     }
@@ -41,8 +40,7 @@ bool uxr_prepare_best_effort_buffer_to_write(uxrOutputBestEffortStream* stream, 
 bool uxr_prepare_best_effort_buffer_to_send(uxrOutputBestEffortStream* stream, uint8_t** buffer, size_t* length, uint16_t* seq_num)
 {
     bool data_to_send = stream->writer > stream->offset;
-    if(data_to_send)
-    {
+    if (data_to_send) {
         stream->last_send = uxr_seq_num_add(stream->last_send, 1);
 
         *seq_num = stream->last_send;
@@ -54,4 +52,3 @@ bool uxr_prepare_best_effort_buffer_to_send(uxrOutputBestEffortStream* stream, u
 
     return data_to_send;
 }
-

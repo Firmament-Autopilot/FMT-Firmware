@@ -29,7 +29,7 @@ static struct rt_event _log_event;
 
 #ifdef ENABLE_ULOG_CONSOLE_BACKEND
 static void ulog_console_backend_output(struct ulog_backend* backend, rt_uint32_t level, const char* tag, rt_bool_t is_raw,
-    const char* log, size_t len)
+                                        const char* log, size_t len)
 {
     console_write(log, len);
 }
@@ -54,7 +54,7 @@ static void ulog_fs_backend_init(struct ulog_backend* backend)
 }
 
 static void ulog_fs_backend_output(struct ulog_backend* backend, rt_uint32_t level, const char* tag, rt_bool_t is_raw,
-    const char* log, size_t len)
+                                   const char* log, size_t len)
 {
     if (_ulog_fd >= 0) {
         write(_ulog_fd, log, len);
@@ -154,8 +154,7 @@ void task_logger_entry(void* parameter)
 
     while (1) {
         /* wait event happen */
-        rt_err = rt_event_recv(&_log_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            20, &recv_set);
+        rt_err = rt_event_recv(&_log_event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, 20, &recv_set);
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MLOG_UPDATE) {

@@ -17,8 +17,8 @@
 #ifndef DRV_GPIO_H__
 #define DRV_GPIO_H__
 
-#include <firmament.h>
 #include "board.h"
+#include <firmament.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,4 +31,3 @@ rt_err_t drv_gpio_init(void);
 #endif
 
 #endif /* __DRV_GPIO_H__ */
-

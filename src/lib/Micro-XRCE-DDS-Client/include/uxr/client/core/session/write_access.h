@@ -16,8 +16,7 @@
 #define UXR_CLIENT_CORE_SESSION_WRITE_ACCESS_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/session.h>
@@ -35,11 +34,11 @@ extern "C"
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 uint16_t uxr_buffer_request(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId requester_id,
-        uint8_t* buffer,
-        size_t len);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId requester_id,
+    uint8_t* buffer,
+    size_t len);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE WRITE_DATA submessage.
@@ -56,12 +55,12 @@ uint16_t uxr_buffer_request(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 uint16_t uxr_buffer_reply(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId replier_id,
-        SampleIdentity* sample_id,
-        uint8_t* buffer,
-        size_t len);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId replier_id,
+    SampleIdentity* sample_id,
+    uint8_t* buffer,
+    size_t len);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE WRITE_DATA submessage.
@@ -76,11 +75,11 @@ uint16_t uxr_buffer_reply(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI bool uxr_prepare_output_stream(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId datawriter_id,
-        struct ucdrBuffer* ub_topic,
-        uint32_t topic_size);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId datawriter_id,
+    struct ucdrBuffer* ub_topic,
+    uint32_t topic_size);
 
 #ifdef __cplusplus
 }

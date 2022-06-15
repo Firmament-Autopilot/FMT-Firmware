@@ -16,18 +16,16 @@
 #define _UXR_CLIENT_CORE_SESSION_STREAM_OUTPUT_BEST_EFFORT_STREAM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/seq_num.h>
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 struct ucdrBuffer;
-typedef struct uxrOutputBestEffortStream
-{
+typedef struct uxrOutputBestEffortStream {
     uint8_t* buffer;
     size_t writer;
     size_t size;

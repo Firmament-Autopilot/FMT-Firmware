@@ -1,5 +1,5 @@
-#include <uxr/client/profile/transport/serial/serial_transport_platform.h>
 #include "serial_protocol_internal.h"
+#include <uxr/client/profile/transport/serial/serial_transport_platform.h>
 #include <uxr/client/util/time.h>
 
 /*******************************************************************************
@@ -30,12 +30,9 @@ static bool send_serial_msg(void* instance, const uint8_t* buf, size_t len)
                                                 len,
                                                 transport->remote_addr,
                                                 &errcode);
-    if ((0 < bytes_written) && (bytes_written == len))
-    {
+    if ((0 < bytes_written) && (bytes_written == len)) {
         rv = true;
-    }
-    else
-    {
+    } else {
         error_code = errcode;
     }
 
@@ -48,8 +45,7 @@ static bool recv_serial_msg(void* instance, uint8_t** buf, size_t* len, int time
     uxrSerialTransport* transport = (uxrSerialTransport*)instance;
 
     size_t bytes_read = 0;
-    do
-    {
+    do {
         int64_t time_init = uxr_millis();
         uint8_t remote_addr;
         uint8_t errcode;
@@ -61,19 +57,15 @@ static bool recv_serial_msg(void* instance, uint8_t** buf, size_t* len, int time
                                          &remote_addr,
                                          timeout,
                                          &errcode);
-        if ((0 < bytes_read) && (remote_addr == transport->remote_addr))
-        {
+        if ((0 < bytes_read) && (remote_addr == transport->remote_addr)) {
             *len = bytes_read;
             *buf = transport->buffer;
             rv = true;
-        }
-        else
-        {
+        } else {
             error_code = errcode;
         }
         timeout -= (int)(uxr_millis() - time_init);
-    }
-    while ((0 == bytes_read) && (0 < timeout));
+    } while ((0 == bytes_read) && (0 < timeout));
 
     return rv;
 }
@@ -93,8 +85,7 @@ bool uxr_init_serial_transport(uxrSerialTransport* transport,
                                uint8_t local_addr)
 {
     bool rv = false;
-    if (uxr_init_serial_platform(platfrom, fd, remote_addr, local_addr))
-    {
+    if (uxr_init_serial_platform(platfrom, fd, remote_addr, local_addr)) {
         /* Setup platform. */
         transport->platform = platfrom;
 

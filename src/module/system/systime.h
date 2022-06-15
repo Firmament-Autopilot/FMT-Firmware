@@ -39,27 +39,27 @@ typedef struct {
 #define TIMETAG(_name) (&__timetag_##_name)
 
 #define PERIOD_EXECUTE(_name, _period, _operation) \
-    DEFINE_TIMETAG(_name, _period);                       \
-    do {                                                  \
-        if (check_timetag(TIMETAG(_name))) {              \
-            _operation                                    \
-        }                                                 \
+    DEFINE_TIMETAG(_name, _period);                \
+    do {                                           \
+        if (check_timetag(TIMETAG(_name))) {       \
+            _operation                             \
+        }                                          \
     } while (0)
 
 #define PERIOD_EXECUTE2(_name, _period, _time_now, _operation) \
-    DEFINE_TIMETAG(_name, _period);                                   \
-    do {                                                              \
-        if (check_timetag2(TIMETAG(_name), _time_now)) {              \
-            _operation                                                \
-        }                                                             \
+    DEFINE_TIMETAG(_name, _period);                            \
+    do {                                                       \
+        if (check_timetag2(TIMETAG(_name), _time_now)) {       \
+            _operation                                         \
+        }                                                      \
     } while (0)
 
-#define PERIOD_EXECUTE3(_name, _period, _time_now, _operation) \
-    DEFINE_TIMETAG(_name, 0);                                         \
-    do {                                                              \
-        if (check_timetag3(TIMETAG(_name), _time_now, _period)) {     \
-            _operation                                                \
-        }                                                             \
+#define PERIOD_EXECUTE3(_name, _period, _time_now, _operation)    \
+    DEFINE_TIMETAG(_name, 0);                                     \
+    do {                                                          \
+        if (check_timetag3(TIMETAG(_name), _time_now, _period)) { \
+            _operation                                            \
+        }                                                         \
     } while (0)
 
 #define WAIT_TIMEOUT(_cond, _timeout_us, _opt)               \

@@ -16,22 +16,19 @@
 #define UXR_CLIENT_CORE_SESSION_READ_ACCESS_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/session.h>
 
-#define UXR_MAX_SAMPLES_UNLIMITED           0xFFFF
-#define UXR_MAX_ELAPSED_TIME_UNLIMITED      0x0000
-#define UXR_MAX_BYTES_PER_SECOND_UNLIMITED  0x0000
-
+#define UXR_MAX_SAMPLES_UNLIMITED          0xFFFF
+#define UXR_MAX_ELAPSED_TIME_UNLIMITED     0x0000
+#define UXR_MAX_BYTES_PER_SECOND_UNLIMITED 0x0000
 
 /**
  * @brief A structure used for controlling the delivery of topic from the Agent to the Client.
  */
-typedef struct uxrDeliveryControl
-{
+typedef struct uxrDeliveryControl {
     /** The maximum number of topics that the Agent shall send to the Client. */
     uint16_t max_samples;
     /** The maximum amount of time in seconds that shall be spent by the Agent delivering the topic. */
@@ -64,11 +61,11 @@ typedef struct uxrDeliveryControl
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_request_data(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId datareader_id,
-        uxrStreamId data_stream_id,
-        const uxrDeliveryControl * const delivery_control);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId datareader_id,
+    uxrStreamId data_stream_id,
+    const uxrDeliveryControl* const delivery_control);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE READ_DATA submessage.
@@ -81,9 +78,9 @@ UXRDLLAPI uint16_t uxr_buffer_request_data(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_cancel_data(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId datareader_id);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId datareader_id);
 
 #ifdef __cplusplus
 }

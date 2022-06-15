@@ -28,13 +28,12 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 
 #ifndef __USB_REQUEST_H_
-#define __USB_REQUEST_H_
+    #define __USB_REQUEST_H_
 
-/* Includes ------------------------------------------------------------------*/
-#include  "usbd_def.h"
-#include  "usbd_core.h"
-#include  "usbd_conf.h"
-
+    /* Includes ------------------------------------------------------------------*/
+    #include "usbd_conf.h"
+    #include "usbd_core.h"
+    #include "usbd_def.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -52,15 +51,12 @@
   * @}
   */
 
-
 /** @defgroup USBD_REQ_Exported_Types
   * @{
   */
 /**
   * @}
   */
-
-
 
 /** @defgroup USBD_REQ_Exported_Macros
   * @{
@@ -80,13 +76,13 @@
   * @{
   */
 
-USBD_Status  USBD_StdDevReq(USB_OTG_CORE_HANDLE*  pdev, USB_SETUP_REQ*  req);
-USBD_Status  USBD_StdItfReq(USB_OTG_CORE_HANDLE*  pdev, USB_SETUP_REQ*  req);
-USBD_Status  USBD_StdEPReq(USB_OTG_CORE_HANDLE*  pdev, USB_SETUP_REQ*  req);
-void USBD_ParseSetupRequest(USB_OTG_CORE_HANDLE*  pdev,
+USBD_Status USBD_StdDevReq(USB_OTG_CORE_HANDLE* pdev, USB_SETUP_REQ* req);
+USBD_Status USBD_StdItfReq(USB_OTG_CORE_HANDLE* pdev, USB_SETUP_REQ* req);
+USBD_Status USBD_StdEPReq(USB_OTG_CORE_HANDLE* pdev, USB_SETUP_REQ* req);
+void USBD_ParseSetupRequest(USB_OTG_CORE_HANDLE* pdev,
                             USB_SETUP_REQ* req);
 
-void USBD_CtlError(USB_OTG_CORE_HANDLE*  pdev,
+void USBD_CtlError(USB_OTG_CORE_HANDLE* pdev,
                    USB_SETUP_REQ* req);
 
 void USBD_GetString(uint8_t* desc, uint8_t* unicode, uint16_t* len);
@@ -103,6 +99,5 @@ void USBD_GetString(uint8_t* desc, uint8_t* unicode, uint16_t* len);
 /**
 * @}
 */
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

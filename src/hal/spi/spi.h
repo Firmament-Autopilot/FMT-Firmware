@@ -135,14 +135,14 @@ rt_err_t rt_spi_device_init(struct rt_spi_device* dev, const char* name);
 
 /* register a SPI bus */
 rt_err_t rt_spi_bus_register(struct rt_spi_bus* bus,
-    const char* name,
-    const struct rt_spi_ops* ops);
+                             const char* name,
+                             const struct rt_spi_ops* ops);
 
 /* attach a device on SPI bus */
 rt_err_t rt_spi_bus_attach_device(struct rt_spi_device* device,
-    const char* name,
-    const char* bus_name,
-    void* user_data);
+                                  const char* name,
+                                  const char* bus_name,
+                                  void* user_data);
 
 /**
  * This function takes SPI bus.
@@ -182,20 +182,20 @@ rt_err_t rt_spi_release(struct rt_spi_device* device);
 
 /* set configuration on SPI device */
 rt_err_t rt_spi_configure(struct rt_spi_device* device,
-    struct rt_spi_configuration* cfg);
+                          struct rt_spi_configuration* cfg);
 
 /* send data then receive data from SPI device */
 rt_err_t rt_spi_send_then_recv(struct rt_spi_device* device,
-    const void* send_buf,
-    rt_size_t send_length,
-    void* recv_buf,
-    rt_size_t recv_length);
+                               const void* send_buf,
+                               rt_size_t send_length,
+                               void* recv_buf,
+                               rt_size_t recv_length);
 
 rt_err_t rt_spi_send_then_send(struct rt_spi_device* device,
-    const void* send_buf1,
-    rt_size_t send_length1,
-    const void* send_buf2,
-    rt_size_t send_length2);
+                               const void* send_buf1,
+                               rt_size_t send_length1,
+                               const void* send_buf2,
+                               rt_size_t send_length2);
 
 /**
  * This function transmits data to SPI device.
@@ -208,9 +208,9 @@ rt_err_t rt_spi_send_then_send(struct rt_spi_device* device,
  * @return the actual length of transmitted.
  */
 rt_size_t rt_spi_transfer(struct rt_spi_device* device,
-    const void* send_buf,
-    void* recv_buf,
-    rt_size_t length);
+                          const void* send_buf,
+                          void* recv_buf,
+                          rt_size_t length);
 
 /**
  * This function transfers a message list to the SPI device.
@@ -222,24 +222,24 @@ rt_size_t rt_spi_transfer(struct rt_spi_device* device,
  *         SPI message which be transmitted failed.
  */
 struct rt_spi_message* rt_spi_transfer_message(struct rt_spi_device* device,
-    struct rt_spi_message* message);
+                                               struct rt_spi_message* message);
 
 rt_inline rt_size_t rt_spi_recv(struct rt_spi_device* device,
-    void* recv_buf,
-    rt_size_t length)
+                                void* recv_buf,
+                                rt_size_t length)
 {
     return rt_spi_transfer(device, RT_NULL, recv_buf, length);
 }
 
 rt_inline rt_size_t rt_spi_send(struct rt_spi_device* device,
-    const void* send_buf,
-    rt_size_t length)
+                                const void* send_buf,
+                                rt_size_t length)
 {
     return rt_spi_transfer(device, send_buf, RT_NULL, length);
 }
 
 rt_inline rt_uint8_t rt_spi_sendrecv8(struct rt_spi_device* device,
-    rt_uint8_t data)
+                                      rt_uint8_t data)
 {
     rt_uint8_t value;
 
@@ -249,7 +249,7 @@ rt_inline rt_uint8_t rt_spi_sendrecv8(struct rt_spi_device* device,
 }
 
 rt_inline rt_uint16_t rt_spi_sendrecv16(struct rt_spi_device* device,
-    rt_uint16_t data)
+                                        rt_uint16_t data)
 {
     rt_uint16_t value;
 
@@ -313,7 +313,6 @@ rt_inline rt_err_t spi_write_bank_reg8(rt_device_t spi_device, uint8_t bank_reg,
     return spi_write_reg8(spi_device, reg, val);
 }
 
-
 /**
  * This function appends a message to the SPI message list.
  *
@@ -321,7 +320,7 @@ rt_inline rt_err_t spi_write_bank_reg8(rt_device_t spi_device, uint8_t bank_reg,
  * @param message the message pointer to be appended to the message list.
  */
 rt_inline void rt_spi_message_append(struct rt_spi_message* list,
-    struct rt_spi_message* message)
+                                     struct rt_spi_message* message)
 {
     RT_ASSERT(list != RT_NULL);
 

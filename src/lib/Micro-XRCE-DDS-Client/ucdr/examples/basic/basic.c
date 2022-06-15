@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <ucdr/microcdr.h>
 #include <stdio.h>
+#include <ucdr/microcdr.h>
 
 #define BUFFER_LENGTH 256
 

@@ -19,16 +19,16 @@
 
 #if SDIO_ENABLE == 1
 
-#include "board.h"
-#include "drv_sdio.h"
-#include "hal/sd/sd.h"
-#include "stm32h7xx_ll_sdmmc.h"
+    #include "board.h"
+    #include "drv_sdio.h"
+    #include "hal/sd/sd.h"
+    #include "stm32h7xx_ll_sdmmc.h"
 
-#define SD_TIMEOUT 5000
-#define EVENT_TX_CPLT 0x00000001
-#define EVENT_RX_CPLT 0x00000002
-#define EVENT_ERROR 0x00000004
-#define EVENT_ABORT 0x00000008
+    #define SD_TIMEOUT    5000
+    #define EVENT_TX_CPLT 0x00000001
+    #define EVENT_RX_CPLT 0x00000002
+    #define EVENT_ERROR   0x00000004
+    #define EVENT_ABORT   0x00000008
 
 /* SDMMC1 */
 static SD_HandleTypeDef hsd1;
@@ -70,18 +70,17 @@ void SDMMC1_IRQHandler(void) { HAL_SD_IRQHandler(&hsd1); }
 
 void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(sdHandle->Instance==SDMMC1)
-  {
-  /* USER CODE BEGIN SDMMC1_MspInit 0 */
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    if (sdHandle->Instance == SDMMC1) {
+        /* USER CODE BEGIN SDMMC1_MspInit 0 */
 
-  /* USER CODE END SDMMC1_MspInit 0 */
-    /* SDMMC1 clock enable */
-    __HAL_RCC_SDMMC1_CLK_ENABLE();
+        /* USER CODE END SDMMC1_MspInit 0 */
+        /* SDMMC1 clock enable */
+        __HAL_RCC_SDMMC1_CLK_ENABLE();
 
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOD_CLK_ENABLE();
-    /**SDMMC1 GPIO Configuration
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+        __HAL_RCC_GPIOD_CLK_ENABLE();
+        /**SDMMC1 GPIO Configuration
     PC8     ------> SDMMC1_D0
     PC9     ------> SDMMC1_D1
     PC10     ------> SDMMC1_D2
@@ -89,41 +88,40 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
     PC12     ------> SDMMC1_CK
     PD2     ------> SDMMC1_CMD
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11
-                          |GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11
+            | GPIO_PIN_12;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
+        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
-    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+        GPIO_InitStruct.Pin = GPIO_PIN_2;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
+        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    /* SDMMC1 interrupt Init */
-    HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
-  /* USER CODE BEGIN SDMMC1_MspInit 1 */
+        /* SDMMC1 interrupt Init */
+        HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
+        HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
+        /* USER CODE BEGIN SDMMC1_MspInit 1 */
 
-  /* USER CODE END SDMMC1_MspInit 1 */
-  }
+        /* USER CODE END SDMMC1_MspInit 1 */
+    }
 }
 
 void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
 {
-  if(sdHandle->Instance==SDMMC1)
-  {
-  /* USER CODE BEGIN SDMMC1_MspDeInit 0 */
+    if (sdHandle->Instance == SDMMC1) {
+        /* USER CODE BEGIN SDMMC1_MspDeInit 0 */
 
-  /* USER CODE END SDMMC1_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_SDMMC1_CLK_DISABLE();
+        /* USER CODE END SDMMC1_MspDeInit 0 */
+        /* Peripheral clock disable */
+        __HAL_RCC_SDMMC1_CLK_DISABLE();
 
-    /**SDMMC1 GPIO Configuration
+        /**SDMMC1 GPIO Configuration
     PC8     ------> SDMMC1_D0
     PC9     ------> SDMMC1_D1
     PC10     ------> SDMMC1_D2
@@ -131,17 +129,16 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
     PC12     ------> SDMMC1_CK
     PD2     ------> SDMMC1_CMD
     */
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11
-                          |GPIO_PIN_12);
+        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12);
 
-    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
+        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
 
-    /* SDMMC1 interrupt Deinit */
-    HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
-  /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
+        /* SDMMC1 interrupt Deinit */
+        HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
+        /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
 
-  /* USER CODE END SDMMC1_MspDeInit 1 */
-  }
+        /* USER CODE END SDMMC1_MspDeInit 1 */
+    }
 }
 
 static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, rt_uint32_t* status)

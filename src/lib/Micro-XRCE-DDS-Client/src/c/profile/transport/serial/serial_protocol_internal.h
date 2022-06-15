@@ -15,17 +15,16 @@
 #ifndef _SRC_C_PROFILE_TRANSPORT_SERIAL_SERIAL_PROTOCOL_INTERNAL_H_
 #define _SRC_C_PROFILE_TRANSPORT_SERIAL_SERIAL_PROTOCOL_INTERNAL_H_
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/profile/transport/serial/serial_protocol.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <uxr/client/profile/transport/serial/serial_protocol.h>
 
 #define UXR_FRAMING_BEGIN_FLAG 0x7E
-#define UXR_FRAMING_ESC_FLAG 0x7D
-#define UXR_FRAMING_XOR_FLAG 0x20
+#define UXR_FRAMING_ESC_FLAG   0x7D
+#define UXR_FRAMING_XOR_FLAG   0x20
 
 void uxr_init_serial_io(uxrSerialIO* serial_io, uint8_t local_addr);
 

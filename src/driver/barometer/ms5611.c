@@ -326,11 +326,7 @@ static rt_err_t baro_config(baro_dev_t baro, const struct baro_configure* cfg)
 
 #ifdef BARO_ENABLE_TIMER_UPDATE
     /* register a soft timer to periodically trigger conversion/read command */
-    rt_timer_init(&_timer_ms5611, "ms5611",
-        _ms5611_StateMchine,
-        &baro->config.osr,
-        CONV_TIME_INTERVAL[baro->config.osr],
-        RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+    rt_timer_init(&_timer_ms5611, "ms5611", _ms5611_StateMchine, &baro->config.osr, CONV_TIME_INTERVAL[baro->config.osr], RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 
     if (rt_timer_start(&_timer_ms5611) != RT_EOK) {
         DRV_DBG("ms5611 timer start fail\n");

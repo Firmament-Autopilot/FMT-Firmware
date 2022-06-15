@@ -19,8 +19,8 @@
 
 #include "FMS.h"
 #include "model/fms/fms_interface.h"
-#include "module/ftp/ftp_manager.h"
 #include "model/ins/ins_interface.h"
+#include "module/ftp/ftp_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/px4_custom_mode.h"
 #include "module/pmu/power_manager.h"
@@ -134,8 +134,7 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
         heartbeat.custom_mode = get_custom_mode(fms_out);
     }
 
-    mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid,
-        msg_t, &heartbeat);
+    mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &heartbeat);
 
     return true;
 }
@@ -161,8 +160,7 @@ static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t)
         }
     }
 
-    mavlink_msg_extended_sys_state_encode(mavlink_system.sysid, mavlink_system.compid,
-        msg_t, &ext_sys_state);
+    mavlink_msg_extended_sys_state_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &ext_sys_state);
 
     return true;
 }
@@ -184,8 +182,7 @@ static bool mavlink_msg_sys_status_cb(mavlink_message_t* msg_t)
     sys_status.current_battery = -1;
     sys_status.battery_remaining = -1;
 
-    mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid,
-        msg_t, &sys_status);
+    mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &sys_status);
 
     return true;
 }
@@ -197,8 +194,7 @@ static bool mavlink_msg_system_time_cb(mavlink_message_t* msg_t)
     system_time.time_unix_usec = systime_now_us();
     system_time.time_boot_ms = systime_now_ms();
 
-    mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid,
-        msg_t, &system_time);
+    mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &system_time);
 
     return true;
 }
@@ -219,8 +215,7 @@ static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
     attitude.pitchspeed = ins_out.q;
     attitude.yawspeed = ins_out.r;
 
-    mavlink_msg_attitude_encode(mavlink_system.sysid, mavlink_system.compid,
-        msg_t, &attitude);
+    mavlink_msg_attitude_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &attitude);
 
     return true;
 }
@@ -234,9 +229,7 @@ static bool mavlink_msg_local_pos_cb(mavlink_message_t* msg_t)
     }
 
     mavlink_msg_local_position_ned_pack(
-        mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
-        ins_out.x_R, ins_out.y_R, -ins_out.h_R, ins_out.vn, ins_out.ve,
-        ins_out.vd);
+        mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(), ins_out.x_R, ins_out.y_R, -ins_out.h_R, ins_out.vn, ins_out.ve, ins_out.vd);
 
     return true;
 }
@@ -252,9 +245,7 @@ static bool mavlink_msg_global_pos_cb(mavlink_message_t* msg_t)
 
     hdg = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 100;
 
-    mavlink_msg_global_position_int_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(),
-        RAD2DEG(ins_out.lat) * 1e7, RAD2DEG(ins_out.lon) * 1e7, ins_out.alt * 1e3,
-        ins_out.h_R * 1e3, ins_out.vn * 10, ins_out.ve * 10, ins_out.vd * 10, hdg);
+    mavlink_msg_global_position_int_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms(), RAD2DEG(ins_out.lat) * 1e7, RAD2DEG(ins_out.lon) * 1e7, ins_out.alt * 1e3, ins_out.h_R * 1e3, ins_out.vn * 10, ins_out.ve * 10, ins_out.vd * 10, hdg);
 
     return true;
 }
@@ -272,8 +263,7 @@ static bool mavlink_msg_vfr_hud_cb(mavlink_message_t* msg_t)
     groundspeed = sqrtf(ins_out.vn * ins_out.vn + ins_out.ve * ins_out.ve);
     heading = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi);
 
-    mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t,
-        0, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);
+    mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, 0, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);
 
     return true;
 }
@@ -290,8 +280,7 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
         return false;
     }
 
-    mavlink_msg_altitude_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms() * 1e3,
-        baro_report.altitude_m, baro_report.altitude_m, ins_out.h_R, ins_out.h_R, ins_out.h_AGL, 0.0f);
+    mavlink_msg_altitude_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, systime_now_ms() * 1e3, baro_report.altitude_m, baro_report.altitude_m, ins_out.h_R, ins_out.h_R, ins_out.h_AGL, 0.0f);
 
     return true;
 }
@@ -373,38 +362,27 @@ void task_comm_entry(void* parameter)
     mavlink_system = mavproxy_get_system();
 
     /* register periodical mavlink msg */
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_HEARTBEAT, 1000,
-        mavlink_msg_heartbeat_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_HEARTBEAT, 1000, mavlink_msg_heartbeat_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000,
-        mavlink_msg_sys_status_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000, mavlink_msg_sys_status_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYSTEM_TIME, 1000,
-        mavlink_msg_system_time_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYSTEM_TIME, 1000, mavlink_msg_system_time_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1000,
-        mavlink_msg_extended_sys_state_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1000, mavlink_msg_extended_sys_state_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100,
-        mavlink_msg_attitude_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100, mavlink_msg_attitude_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 100,
-        mavlink_msg_local_pos_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 100, mavlink_msg_local_pos_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 100,
-        mavlink_msg_global_pos_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 100, mavlink_msg_global_pos_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_VFR_HUD, 200,
-        mavlink_msg_vfr_hud_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_VFR_HUD, 200, mavlink_msg_vfr_hud_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100,
-        mavlink_msg_altitude_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100, mavlink_msg_altitude_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100,
-        mavlink_msg_gps_raw_int_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100, mavlink_msg_gps_raw_int_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_RC_CHANNELS, 100,
-        mavlink_msg_rc_channels_cb, true);
+    mavproxy_register_period_msg(MAVLINK_MSG_ID_RC_CHANNELS, 100, mavlink_msg_rc_channels_cb, true);
 
     /* execute mavproxy main loop */
     mavproxy_loop();

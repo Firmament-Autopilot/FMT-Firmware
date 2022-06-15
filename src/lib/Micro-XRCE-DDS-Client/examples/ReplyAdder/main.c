@@ -14,13 +14,13 @@
 
 #include <uxr/client/client.h>
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define STREAM_HISTORY  8
-#define BUFFER_SIZE     UXR_CONFIG_UDP_TRANSPORT_MTU * STREAM_HISTORY
+#define STREAM_HISTORY 8
+#define BUFFER_SIZE    UXR_CONFIG_UDP_TRANSPORT_MTU* STREAM_HISTORY
 
 static uxrStreamId reliable_out;
 static uxrStreamId reliable_in;
@@ -29,17 +29,17 @@ static uxrObjectId participant_id;
 static uxrObjectId replier_id;
 
 void on_request(
-        uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        SampleIdentity* sample_id,
-        ucdrBuffer* ub,
-        uint16_t length,
-        void* args)
+    uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    SampleIdentity* sample_id,
+    ucdrBuffer* ub,
+    uint16_t length,
+    void* args)
 {
-    (void) object_id;
-    (void) request_id;
-    (void) length;
+    (void)object_id;
+    (void)request_id;
+    (void)length;
 
     uint32_t rhs;
     uint32_t lhs;
@@ -48,7 +48,7 @@ void on_request(
 
     printf("Request received: (%d + %d)\n", rhs, lhs);
 
-    uint8_t reply_buffer[8] = {0};
+    uint8_t reply_buffer[8] = { 0 };
     ucdrBuffer reply_ub;
     ucdr_init_buffer(&reply_ub, reply_buffer, sizeof(reply_buffer));
     ucdr_serialize_uint64_t(&reply_ub, rhs + lhs);
@@ -64,8 +64,7 @@ void on_request(
 
 int main(int args, char** argv)
 {
-    if(3 > args || 0 == atoi(argv[2]))
-    {
+    if (3 > args || 0 == atoi(argv[2])) {
         printf("usage: program [-h | --help] | ip port [key]\n");
         return 0;
     }
@@ -77,8 +76,7 @@ int main(int args, char** argv)
     // Transport
     uxrUDPTransport transport;
     uxrUDPPlatform udp_platform;
-    if (!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, ip, port))
-    {
+    if (!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, ip, port)) {
         printf("Error at init transport.\n");
         return 1;
     }
@@ -87,8 +85,7 @@ int main(int args, char** argv)
     uxrSession session;
     uxr_init_session(&session, &transport.comm, key);
     uxr_set_request_callback(&session, on_request, 0);
-    if (!uxr_create_session(&session))
-    {
+    if (!uxr_create_session(&session)) {
         printf("Error at init session.\n");
         return 1;
     }
@@ -103,42 +100,40 @@ int main(int args, char** argv)
     // Create entities
     participant_id = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
     const char* participant_xml = "<dds>"
-                                      "<participant>"
-                                          "<rtps>"
-                                              "<name>default_xrce_participant</name>"
-                                          "</rtps>"
-                                      "</participant>"
+                                  "<participant>"
+                                  "<rtps>"
+                                  "<name>default_xrce_participant</name>"
+                                  "</rtps>"
+                                  "</participant>"
                                   "</dds>";
     uint16_t participant_req = uxr_buffer_create_participant_xml(&session, reliable_out, participant_id, 0, participant_xml, UXR_REPLACE);
 
     replier_id = uxr_object_id(0x01, UXR_REPLIER_ID);
     const char* replier_xml = "<dds>"
-                                "<replier profile_name=\"my_requester\""
-                                         "service_name=\"service_name\""
-                                         "request_type=\"request_type\""
-                                         "reply_type=\"reply_type\">"
-                                "</replier>"
-                                "</dds>";
+                              "<replier profile_name=\"my_requester\""
+                              "service_name=\"service_name\""
+                              "request_type=\"request_type\""
+                              "reply_type=\"reply_type\">"
+                              "</replier>"
+                              "</dds>";
     uint16_t replier_req = uxr_buffer_create_replier_xml(&session, reliable_out, replier_id, participant_id, replier_xml, UXR_REPLACE);
 
     // Send create entities message and wait its status
     uint8_t status[2];
-    uint16_t requests[2] = {participant_req, replier_req};
-    if(!uxr_run_session_until_all_status(&session, 1000, requests, status, 2))
-    {
+    uint16_t requests[2] = { participant_req, replier_req };
+    if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 2)) {
         printf("Error at create entities: participant: %i requester: %i\n", status[0], status[1]);
         return 1;
     }
 
     // Request  requests
-    uxrDeliveryControl delivery_control = {0};
+    uxrDeliveryControl delivery_control = { 0 };
     delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
     uint16_t read_data_req = uxr_buffer_request_data(&session, reliable_out, replier_id, reliable_in, &delivery_control);
 
     // Read request
     bool connected = true;
-    while (connected)
-    {
+    while (connected) {
         uint8_t read_data_status;
         connected = uxr_run_session_until_all_status(&session, UXR_TIMEOUT_INF, &read_data_req, &read_data_status, 1);
     }

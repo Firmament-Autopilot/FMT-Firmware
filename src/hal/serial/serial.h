@@ -49,11 +49,11 @@ extern "C" {
 #define STOP_BITS_4 3
 
 #ifdef _WIN32
-#include <windows.h>
+    #include <windows.h>
 #else
-#define PARITY_NONE 0
-#define PARITY_ODD  1
-#define PARITY_EVEN 2
+    #define PARITY_NONE 0
+    #define PARITY_ODD  1
+    #define PARITY_EVEN 2
 #endif
 
 #define BIT_ORDER_LSB 0
@@ -63,7 +63,7 @@ extern "C" {
 #define NRZ_INVERTED 1 /* Non Return to Zero : inverted mode */
 
 #ifndef SERIAL_RB_BUFSZ
-#define SERIAL_RB_BUFSZ 256
+    #define SERIAL_RB_BUFSZ 256
 #endif
 
 /* serial isr event */

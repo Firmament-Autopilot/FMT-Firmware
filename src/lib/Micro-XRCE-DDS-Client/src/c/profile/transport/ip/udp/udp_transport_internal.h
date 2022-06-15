@@ -16,33 +16,32 @@
 #define SRC_C_PROFILE_TRANSPORT_UDP_UDP_TRANSPORT_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/profile/transport/ip/udp/udp_transport.h>
 
 bool uxr_init_udp_platform(
-        struct uxrUDPPlatform* platform,
-        uxrIpProtocol ip_protocol,
-        const char* ip,
-        const char* port);
+    struct uxrUDPPlatform* platform,
+    uxrIpProtocol ip_protocol,
+    const char* ip,
+    const char* port);
 
 bool uxr_close_udp_platform(
-        struct uxrUDPPlatform* platform);
+    struct uxrUDPPlatform* platform);
 
 size_t uxr_write_udp_data_platform(
-        struct uxrUDPPlatform* platform,
-        const uint8_t* buf,
-        size_t len,
-        uint8_t* errcode);
+    struct uxrUDPPlatform* platform,
+    const uint8_t* buf,
+    size_t len,
+    uint8_t* errcode);
 
 size_t uxr_read_udp_data_platform(
-        struct uxrUDPPlatform* platform,
-        uint8_t* buf,
-        size_t len,
-        int timeout,
-        uint8_t* errcode);
+    struct uxrUDPPlatform* platform,
+    uint8_t* buf,
+    size_t len,
+    int timeout,
+    uint8_t* errcode);
 
 #ifdef __cplusplus
 }

@@ -21,7 +21,7 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
-#define BIT(u, n)   (u & (1 << n))
+#define BIT(u, n) (u & (1 << n))
 
 /* INS input bus */
 MCN_DECLARE(sensor_imu0);
@@ -212,10 +212,15 @@ static int ins_output_echo(void* param)
     printf("LLA: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt);
     printf("LLA0: %lf %lf %f\n", ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
     printf("standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
-        BIT(ins_out.flag, 1) > 0, BIT(ins_out.flag, 2) > 0, BIT(ins_out.flag, 3) > 0, BIT(ins_out.flag, 4) > 0,
-        BIT(ins_out.flag, 5) > 0, BIT(ins_out.flag, 6) > 0, BIT(ins_out.flag, 7) > 0, BIT(ins_out.flag, 8) > 0);
-    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0,
-        BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+           BIT(ins_out.flag, 1) > 0,
+           BIT(ins_out.flag, 2) > 0,
+           BIT(ins_out.flag, 3) > 0,
+           BIT(ins_out.flag, 4) > 0,
+           BIT(ins_out.flag, 5) > 0,
+           BIT(ins_out.flag, 6) > 0,
+           BIT(ins_out.flag, 7) > 0,
+           BIT(ins_out.flag, 8) > 0);
+    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0, BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
     printf("------------------------------------------\n");
 
     return 0;

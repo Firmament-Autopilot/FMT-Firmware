@@ -14,87 +14,87 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include "hal/barometer/barometer.h"
+#include <firmament.h>
 
 static rt_err_t hal_baro_init(struct rt_device* dev)
 {
-	rt_err_t ret = RT_EOK;
-	baro_dev_t baro;
+    rt_err_t ret = RT_EOK;
+    baro_dev_t baro;
 
-	RT_ASSERT(dev != RT_NULL);
-	baro = (baro_dev_t)dev;
+    RT_ASSERT(dev != RT_NULL);
+    baro = (baro_dev_t)dev;
 
-	/* apply configuration */
-	if(baro->ops->baro_config) {
-		ret = baro->ops->baro_config(baro, &baro->config);
-	}
+    /* apply configuration */
+    if (baro->ops->baro_config) {
+        ret = baro->ops->baro_config(baro, &baro->config);
+    }
 
-	return ret;
+    return ret;
 }
 
 static rt_size_t hal_baro_read(struct rt_device* dev,
-                               rt_off_t          pos,
-                               void*             buffer,
-                               rt_size_t         size)
+                               rt_off_t pos,
+                               void* buffer,
+                               rt_size_t size)
 {
-	rt_size_t rb = 0;
-	baro_dev_t baro;
+    rt_size_t rb = 0;
+    baro_dev_t baro;
 
-	RT_ASSERT(dev != RT_NULL);
-	RT_ASSERT(buffer != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(buffer != RT_NULL);
 
-	baro = (baro_dev_t)dev;
+    baro = (baro_dev_t)dev;
 
-	if(pos == BARO_RD_REPORT && baro->ops->baro_read) {
-		rb = baro->ops->baro_read(baro, buffer);
-	}
+    if (pos == BARO_RD_REPORT && baro->ops->baro_read) {
+        rb = baro->ops->baro_read(baro, buffer);
+    }
 
-	return rb;
+    return rb;
 }
 
-static rt_err_t hal_baro_control(struct rt_device*  dev,
-                                 int               cmd,
-                                 void*             args)
+static rt_err_t hal_baro_control(struct rt_device* dev,
+                                 int cmd,
+                                 void* args)
 {
-	rt_err_t ret = RT_EOK;
-	baro_dev_t baro;
+    rt_err_t ret = RT_EOK;
+    baro_dev_t baro;
 
-	RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
 
-	baro = (baro_dev_t)dev;
+    baro = (baro_dev_t)dev;
 
-	if(baro->ops->baro_control) {
-		ret = baro->ops->baro_control(baro, cmd, args);
-	}
+    if (baro->ops->baro_control) {
+        ret = baro->ops->baro_control(baro, cmd, args);
+    }
 
-	return ret;
+    return ret;
 }
 
 rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, void* data)
 {
-	rt_err_t ret;
-	struct rt_device* device;
+    rt_err_t ret;
+    struct rt_device* device;
 
-	RT_ASSERT(baro != RT_NULL);
+    RT_ASSERT(baro != RT_NULL);
 
-	device = &(baro->parent);
+    device = &(baro->parent);
 
-	device->type        = RT_Device_Class_SPIDevice;
-	device->ref_count   = 0;
-	device->rx_indicate = RT_NULL;
-	device->tx_complete = RT_NULL;
+    device->type = RT_Device_Class_SPIDevice;
+    device->ref_count = 0;
+    device->rx_indicate = RT_NULL;
+    device->tx_complete = RT_NULL;
 
-	device->init        = hal_baro_init;
-	device->open        = RT_NULL;
-	device->close       = RT_NULL;
-	device->read        = hal_baro_read;
-	device->write       = RT_NULL;
-	device->control     = hal_baro_control;
-	device->user_data   = data;
+    device->init = hal_baro_init;
+    device->open = RT_NULL;
+    device->close = RT_NULL;
+    device->read = hal_baro_read;
+    device->write = RT_NULL;
+    device->control = hal_baro_control;
+    device->user_data = data;
 
-	/* register a character device */
-	ret = rt_device_register(device, name, flag);
+    /* register a character device */
+    ret = rt_device_register(device, name, flag);
 
-	return ret;
+    return ret;
 }

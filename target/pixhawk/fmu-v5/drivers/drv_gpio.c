@@ -25,32 +25,32 @@
 #define PIN_STPIN(pin)  ((uint16_t)(1u << PIN_NO(pin)))
 
 #if defined(GPIOZ)
-#define __STM32_PORT_MAX 12u
+    #define __STM32_PORT_MAX 12u
 #elif defined(GPIOK)
-#define __STM32_PORT_MAX 11u
+    #define __STM32_PORT_MAX 11u
 #elif defined(GPIOJ)
-#define __STM32_PORT_MAX 10u
+    #define __STM32_PORT_MAX 10u
 #elif defined(GPIOI)
-#define __STM32_PORT_MAX 9u
+    #define __STM32_PORT_MAX 9u
 #elif defined(GPIOH)
-#define __STM32_PORT_MAX 8u
+    #define __STM32_PORT_MAX 8u
 #elif defined(GPIOG)
-#define __STM32_PORT_MAX 7u
+    #define __STM32_PORT_MAX 7u
 #elif defined(GPIOF)
-#define __STM32_PORT_MAX 6u
+    #define __STM32_PORT_MAX 6u
 #elif defined(GPIOE)
-#define __STM32_PORT_MAX 5u
+    #define __STM32_PORT_MAX 5u
 #elif defined(GPIOD)
-#define __STM32_PORT_MAX 4u
+    #define __STM32_PORT_MAX 4u
 #elif defined(GPIOC)
-#define __STM32_PORT_MAX 3u
+    #define __STM32_PORT_MAX 3u
 #elif defined(GPIOB)
-#define __STM32_PORT_MAX 2u
+    #define __STM32_PORT_MAX 2u
 #elif defined(GPIOA)
-#define __STM32_PORT_MAX 1u
+    #define __STM32_PORT_MAX 1u
 #else
-#define __STM32_PORT_MAX 0u
-#error Unsupported STM32 GPIO peripheral.
+    #define __STM32_PORT_MAX 0u
+    #error Unsupported STM32 GPIO peripheral.
 #endif
 
 #define PIN_STPORT_MAX __STM32_PORT_MAX

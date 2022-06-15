@@ -21,7 +21,7 @@
 #include "module/file_manager/file_manager.h"
 
 #define MAX_LOG_SESSION_NUM 10
-#define LOG_SESSION_FILE "/log/session_id"
+#define LOG_SESSION_FILE    "/log/session_id"
 
 static int cws_id; /* current work session id */
 
@@ -213,13 +213,14 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
     if (strcmp("/", mnt_table[0].path) == 0) {
         /* mount root directory */
         if (dfs_mount(mnt_table[0].device_name,
-                mnt_table[0].path,
-                mnt_table[0].filesystemtype,
-                mnt_table[0].rwflag,
-                mnt_table[0].data)
+                      mnt_table[0].path,
+                      mnt_table[0].filesystemtype,
+                      mnt_table[0].rwflag,
+                      mnt_table[0].data)
             != 0) {
             printf("Fail to mount %s at %s!\n",
-                mnt_table[0].device_name, mnt_table[0].path);
+                   mnt_table[0].device_name,
+                   mnt_table[0].path);
         }
         /* create rootfs */
         FMT_TRY(create_rootfs());
@@ -243,13 +244,14 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
         }
 
         if (dfs_mount(mnt_table[i].device_name,
-                mnt_table[i].path,
-                mnt_table[i].filesystemtype,
-                mnt_table[i].rwflag,
-                mnt_table[i].data)
+                      mnt_table[i].path,
+                      mnt_table[i].filesystemtype,
+                      mnt_table[i].rwflag,
+                      mnt_table[i].data)
             < 0) {
             printf("Fail to mount %s at %s!\n",
-                mnt_table[i].device_name, mnt_table[i].path);
+                   mnt_table[i].device_name,
+                   mnt_table[i].path);
             /* delete the failed mount path */
             fm_deldir(mnt_table[i].path);
         }

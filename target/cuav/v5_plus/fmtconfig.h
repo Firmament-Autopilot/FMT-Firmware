@@ -40,8 +40,8 @@
 /* ULog */
 #define FMT_USING_ULOG
 #ifdef FMT_USING_ULOG
-// #define ENABLE_ULOG_FS_BACKEND
-#define ENABLE_ULOG_CONSOLE_BACKEND
+    // #define ENABLE_ULOG_FS_BACKEND
+    #define ENABLE_ULOG_CONSOLE_BACKEND
 #endif
 
 /* Cortex-M Backtrace */

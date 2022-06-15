@@ -32,15 +32,14 @@ void drv_usbd_cdc_connect_cb(void);
 void drv_usbd_cdc_disconnect_cb(void);
 
 USBD_Usr_cb_TypeDef USR_cb = {
-	USBD_USR_Init,
-	USBD_USR_DeviceReset,
-	USBD_USR_DeviceConfigured,
-	USBD_USR_DeviceSuspended,
-	USBD_USR_DeviceResumed,
+    USBD_USR_Init,
+    USBD_USR_DeviceReset,
+    USBD_USR_DeviceConfigured,
+    USBD_USR_DeviceSuspended,
+    USBD_USR_DeviceResumed,
 
-
-	USBD_USR_DeviceConnected,
-	USBD_USR_DeviceDisconnected,
+    USBD_USR_DeviceConnected,
+    USBD_USR_DeviceDisconnected,
 };
 
 extern void cdc_connected_status_change(uint8_t connected);
@@ -57,15 +56,12 @@ extern void cdc_connected_status_change(uint8_t connected);
 * @}
 */
 
-
-
 /** @defgroup USBD_USR_Private_FunctionPrototypes
 * @{
 */
 /**
 * @}
 */
-
 
 /** @defgroup USBD_USR_Private_Functions
 * @{
@@ -79,7 +75,7 @@ extern void cdc_connected_status_change(uint8_t connected);
 */
 void USBD_USR_Init(void)
 {
-	//printf("USBD_USR_Init\n");
+    //printf("USBD_USR_Init\n");
 }
 
 /**
@@ -90,19 +86,18 @@ void USBD_USR_Init(void)
 */
 void USBD_USR_DeviceReset(uint8_t speed)
 {
-	switch(speed) {
-		case USB_OTG_SPEED_HIGH:
-			//printf("USB Device Library v1.2.0 [HS]\n");
-			break;
+    switch (speed) {
+    case USB_OTG_SPEED_HIGH:
+        //printf("USB Device Library v1.2.0 [HS]\n");
+        break;
 
-		case USB_OTG_SPEED_FULL:
-			//printf("USB Device Library v1.2.0 [FS]\n");
-			break;
-// default:
-//	 printf("USB Device Library v1.2.0 [??]\n");
-	}
+    case USB_OTG_SPEED_FULL:
+        //printf("USB Device Library v1.2.0 [FS]\n");
+        break;
+        // default:
+        //	 printf("USB Device Library v1.2.0 [??]\n");
+    }
 }
-
 
 /**
 * @brief  USBD_USR_DeviceConfigured
@@ -112,7 +107,7 @@ void USBD_USR_DeviceReset(uint8_t speed)
 */
 void USBD_USR_DeviceConfigured(void)
 {
-	//printf("> VCP Interface configured.\n");
+    //printf("> VCP Interface configured.\n");
 }
 
 /**
@@ -123,10 +118,9 @@ void USBD_USR_DeviceConfigured(void)
 */
 void USBD_USR_DeviceSuspended(void)
 {
-	//printf("> USB Device in Suspend Mode.\n");
-	/* Users can do their application actions here for the USB-Reset */
+    //printf("> USB Device in Suspend Mode.\n");
+    /* Users can do their application actions here for the USB-Reset */
 }
-
 
 /**
 * @brief  USBD_USR_DeviceResumed
@@ -136,8 +130,8 @@ void USBD_USR_DeviceSuspended(void)
 */
 void USBD_USR_DeviceResumed(void)
 {
-	//printf("> USB Device in Idle Mode.\n");
-	/* Users can do their application actions here for the USB-Reset */
+    //printf("> USB Device in Idle Mode.\n");
+    /* Users can do their application actions here for the USB-Reset */
 }
 
 /**
@@ -150,7 +144,6 @@ void USBD_USR_DeviceConnected(void)
 {
     drv_usbd_cdc_connect_cb();
 }
-
 
 /**
 * @brief  USBD_USR_DeviceDisonnected

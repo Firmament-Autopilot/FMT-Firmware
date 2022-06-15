@@ -43,54 +43,53 @@
 
 #ifdef ECL_STANDALONE
 
-#ifndef M_PI_F
-#define M_PI_F 3.14159265358979323846f
-#endif
+    #ifndef M_PI_F
+        #define M_PI_F 3.14159265358979323846f
+    #endif
 
-#ifndef M_PI_2_F
-#define M_PI_2_F (M_PI / 2.0f)
-#endif
+    #ifndef M_PI_2_F
+        #define M_PI_2_F (M_PI / 2.0f)
+    #endif
 
-#ifndef M_PI
-#define M_PI 3.141592653589793238462643383280
-#endif
+    #ifndef M_PI
+        #define M_PI 3.141592653589793238462643383280
+    #endif
 
-namespace math
-{
+namespace math {
 template <typename Type>
 static constexpr Type min(Type val1, Type val2)
 {
-	return (val1 < val2) ? val1 : val2;
+    return (val1 < val2) ? val1 : val2;
 }
 
 template <typename Type>
 static constexpr Type max(Type val1, Type val2)
 {
-	return (val1 > val2) ? val1 : val2;
+    return (val1 > val2) ? val1 : val2;
 }
 
 template <typename Type>
 static constexpr Type constrain(Type val, Type min, Type max)
 {
-	return (val < min) ? min : ((val > max) ? max : val);
+    return (val < min) ? min : ((val > max) ? max : val);
 }
 
 template <typename Type>
 static constexpr Type radians(Type degrees)
 {
-	return (degrees / Type(180)) * Type(M_PI);
+    return (degrees / Type(180)) * Type(M_PI);
 }
 
 template <typename Type>
 static constexpr Type degrees(Type radians)
 {
-	return (radians * Type(180)) / Type(M_PI);
+    return (radians * Type(180)) / Type(M_PI);
 }
 
-}  // namespace math
+} // namespace math
 #else
 
-#include <mathlib/mathlib.h>
+    #include <mathlib/mathlib.h>
 
-#endif  // ECL_STANDALONE
-#endif  // MATHLIB_H
+#endif // ECL_STANDALONE
+#endif // MATHLIB_H

@@ -16,8 +16,7 @@
 #define _UXR_CLIENT_CORE_SESSION_STREAM_SEQ_NUM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <stdint.h>

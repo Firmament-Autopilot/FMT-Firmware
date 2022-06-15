@@ -16,52 +16,49 @@
 #define _SRC_C_CORE_SESSION_SUBMESSAGE_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/visibility.h>
-#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <uxr/client/visibility.h>
 
 #define SUBHEADER_SIZE 4
 
 struct ucdrBuffer;
 
-typedef enum SubmessageId
-{
-    SUBMESSAGE_ID_CREATE_CLIENT     = 0,
-    SUBMESSAGE_ID_CREATE            = 1,
-    SUBMESSAGE_ID_GET_INFO          = 2,
-    SUBMESSAGE_ID_DELETE            = 3,
-    SUBMESSAGE_ID_STATUS_AGENT      = 4,
-    SUBMESSAGE_ID_STATUS            = 5,
-    SUBMESSAGE_ID_INFO              = 6,
-    SUBMESSAGE_ID_WRITE_DATA        = 7,
-    SUBMESSAGE_ID_READ_DATA         = 8,
-    SUBMESSAGE_ID_DATA              = 9,
-    SUBMESSAGE_ID_ACKNACK           = 10,
-    SUBMESSAGE_ID_HEARTBEAT         = 11,
-    SUBMESSAGE_ID_RESET             = 12,
-    SUBMESSAGE_ID_FRAGMENT          = 13,
-    SUBMESSAGE_ID_TIMESTAMP         = 14,
-    SUBMESSAGE_ID_TIMESTAMP_REPLY   = 15
+typedef enum SubmessageId {
+    SUBMESSAGE_ID_CREATE_CLIENT = 0,
+    SUBMESSAGE_ID_CREATE = 1,
+    SUBMESSAGE_ID_GET_INFO = 2,
+    SUBMESSAGE_ID_DELETE = 3,
+    SUBMESSAGE_ID_STATUS_AGENT = 4,
+    SUBMESSAGE_ID_STATUS = 5,
+    SUBMESSAGE_ID_INFO = 6,
+    SUBMESSAGE_ID_WRITE_DATA = 7,
+    SUBMESSAGE_ID_READ_DATA = 8,
+    SUBMESSAGE_ID_DATA = 9,
+    SUBMESSAGE_ID_ACKNACK = 10,
+    SUBMESSAGE_ID_HEARTBEAT = 11,
+    SUBMESSAGE_ID_RESET = 12,
+    SUBMESSAGE_ID_FRAGMENT = 13,
+    SUBMESSAGE_ID_TIMESTAMP = 14,
+    SUBMESSAGE_ID_TIMESTAMP_REPLY = 15
 #ifdef PERFORMANCE_TESTING
     ,
-    SUBMESSAGE_ID_PERFORMANCE   = 14
+    SUBMESSAGE_ID_PERFORMANCE = 14
 #endif
 
 } SubmessageId;
 
-typedef enum SubmessageFlags
-{
-    FLAG_ENDIANNESS  =           0x01,
-    FLAG_LAST_FRAGMENT =         0x01 << 1,
-    FLAG_FORMAT_DATA =           0x00,
-    FLAG_FORMAT_SAMPLE =         0x02,
-    FLAG_FORMAT_DATA_SEQ =       0x08,
-    FLAG_FORMAT_SAMPLE_SEQ =     0x0A,
+typedef enum SubmessageFlags {
+    FLAG_ENDIANNESS = 0x01,
+    FLAG_LAST_FRAGMENT = 0x01 << 1,
+    FLAG_FORMAT_DATA = 0x00,
+    FLAG_FORMAT_SAMPLE = 0x02,
+    FLAG_FORMAT_DATA_SEQ = 0x08,
+    FLAG_FORMAT_SAMPLE_SEQ = 0x0A,
     FLAG_FORMAT_PACKED_SAMPLES = 0x0E
 
 } SubmessageFlags;

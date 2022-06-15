@@ -74,8 +74,9 @@ static void list_topic(void)
 {
     uint32_t max_len = name_maxlen("Topic") + 2;
 
-    rt_kprintf("%-*.s    #SUB   Freq(Hz)   Echo   Suspend\n", max_len - 2, "Topic"); syscmd_putc('-', max_len);
-    printf(           " ------ ---------- ------ ---------\n");
+    rt_kprintf("%-*.s    #SUB   Freq(Hz)   Echo   Suspend\n", max_len - 2, "Topic");
+    syscmd_putc('-', max_len);
+    printf(" ------ ---------- ------ ---------\n");
 
     McnList_t ite = mcn_get_list();
     for (McnHub_t hub = mcn_iterate(&ite); hub != NULL; hub = mcn_iterate(&ite)) {

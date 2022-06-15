@@ -1,8 +1,8 @@
-#include "stream_storage_internal.h"
 #include "input_best_effort_stream_internal.h"
 #include "input_reliable_stream_internal.h"
 #include "output_best_effort_stream_internal.h"
 #include "output_reliable_stream_internal.h"
+#include "stream_storage_internal.h"
 
 //==================================================================
 //                             PUBLIC
@@ -17,23 +17,19 @@ void uxr_init_stream_storage(uxrStreamStorage* storage)
 
 void uxr_reset_stream_storage(uxrStreamStorage* storage)
 {
-    for(unsigned i = 0; i < storage->output_best_effort_size; ++i)
-    {
+    for (unsigned i = 0; i < storage->output_best_effort_size; ++i) {
         uxr_reset_output_best_effort_stream(&storage->output_best_effort[i]);
     }
 
-    for(unsigned i = 0; i < storage->input_best_effort_size; ++i)
-    {
+    for (unsigned i = 0; i < storage->input_best_effort_size; ++i) {
         uxr_reset_input_best_effort_stream(&storage->input_best_effort[i]);
     }
 
-    for(unsigned i = 0; i < storage->output_reliable_size; ++i)
-    {
+    for (unsigned i = 0; i < storage->output_reliable_size; ++i) {
         uxr_reset_output_reliable_stream(&storage->output_reliable[i]);
     }
 
-    for(unsigned i = 0; i < storage->input_reliable_size; ++i)
-    {
+    for (unsigned i = 0; i < storage->input_reliable_size; ++i) {
         uxr_reset_input_reliable_stream(&storage->input_reliable[i]);
     }
 }
@@ -76,8 +72,7 @@ uxrStreamId uxr_add_input_reliable_buffer(uxrStreamStorage* storage, uint8_t* bu
 
 uxrOutputBestEffortStream* uxr_get_output_best_effort_stream(uxrStreamStorage* storage, uint8_t index)
 {
-    if(index < storage->output_best_effort_size)
-    {
+    if (index < storage->output_best_effort_size) {
         return &storage->output_best_effort[index];
     }
     return NULL;
@@ -85,8 +80,7 @@ uxrOutputBestEffortStream* uxr_get_output_best_effort_stream(uxrStreamStorage* s
 
 uxrOutputReliableStream* uxr_get_output_reliable_stream(uxrStreamStorage* storage, uint8_t index)
 {
-    if(index < storage->output_reliable_size)
-    {
+    if (index < storage->output_reliable_size) {
         return &storage->output_reliable[index];
     }
     return NULL;
@@ -94,8 +88,7 @@ uxrOutputReliableStream* uxr_get_output_reliable_stream(uxrStreamStorage* storag
 
 uxrInputBestEffortStream* uxr_get_input_best_effort_stream(uxrStreamStorage* storage, uint8_t index)
 {
-    if(index < storage->input_best_effort_size)
-    {
+    if (index < storage->input_best_effort_size) {
         return &storage->input_best_effort[index];
     }
     return NULL;
@@ -103,8 +96,7 @@ uxrInputBestEffortStream* uxr_get_input_best_effort_stream(uxrStreamStorage* sto
 
 uxrInputReliableStream* uxr_get_input_reliable_stream(uxrStreamStorage* storage, uint8_t index)
 {
-    if(index < storage->input_reliable_size)
-    {
+    if (index < storage->input_reliable_size) {
         return &storage->input_reliable[index];
     }
     return NULL;
@@ -113,8 +105,7 @@ uxrInputReliableStream* uxr_get_input_reliable_stream(uxrStreamStorage* storage,
 bool uxr_output_streams_confirmed(const uxrStreamStorage* storage)
 {
     bool up_to_date = true;
-    for(unsigned i = 0; i < storage->output_reliable_size && up_to_date; ++i)
-    {
+    for (unsigned i = 0; i < storage->output_reliable_size && up_to_date; ++i) {
         up_to_date = uxr_is_output_up_to_date(&storage->output_reliable[i]);
     }
     return up_to_date;

@@ -1,13 +1,13 @@
-#include <uxr/client/profile/transport/serial/serial_transport_posix.h>
 #include <uxr/client/profile/transport/serial/serial_transport_platform.h>
+#include <uxr/client/profile/transport/serial/serial_transport_posix.h>
 
-#include <unistd.h>
 #include <errno.h>
+#include <unistd.h>
 
 bool uxr_init_serial_platform(struct uxrSerialPlatform* platform, int fd, uint8_t remote_addr, uint8_t local_addr)
 {
-    (void) remote_addr;
-    (void) local_addr;
+    (void)remote_addr;
+    (void)local_addr;
 
     /* Poll setup. */
     platform->poll_fd.fd = fd;
@@ -26,13 +26,10 @@ size_t uxr_write_serial_data_platform(uxrSerialPlatform* platform, uint8_t* buf,
     size_t rv = 0;
 
     ssize_t bytes_written = write(platform->poll_fd.fd, (void*)buf, (size_t)len);
-    if (-1 != bytes_written)
-    {
+    if (-1 != bytes_written) {
         rv = (size_t)bytes_written;
         *errcode = 0;
-    }
-    else
-    {
+    } else {
         *errcode = 1;
     }
     return rv;
@@ -43,23 +40,16 @@ size_t uxr_read_serial_data_platform(uxrSerialPlatform* platform, uint8_t* buf, 
     size_t rv = 0;
 
     int poll_rv = poll(&platform->poll_fd, 1, timeout);
-    if (0 < poll_rv)
-    {
+    if (0 < poll_rv) {
         ssize_t bytes_read = read(platform->poll_fd.fd, buf, len);
-        if (-1 != bytes_read)
-        {
+        if (-1 != bytes_read) {
             rv = (size_t)bytes_read;
             *errcode = 0;
-        }
-        else
-        {
+        } else {
             *errcode = 1;
         }
-    }
-    else
-    {
+    } else {
         *errcode = (0 == poll_rv) ? 0 : 1;
     }
     return rv;
 }
-

@@ -3,31 +3,31 @@
 #include "hal/mtd/mtd.h"
 #include "hal/spi/spi.h"
 
-#define RAMTRON_WREN 0x06 /* Write Enable */
-#define RAMTRON_WRDI 0x04 /* Write Disable */
-#define RAMTRON_RDSR 0x05 /* Read Status Register */
-#define RAMTRON_WRSR 0x01 /* Write Status Register */
-#define RAMTRON_READ 0x03 /* Read Data Bytes */
+#define RAMTRON_WREN  0x06 /* Write Enable */
+#define RAMTRON_WRDI  0x04 /* Write Disable */
+#define RAMTRON_RDSR  0x05 /* Read Status Register */
+#define RAMTRON_WRSR  0x01 /* Write Status Register */
+#define RAMTRON_READ  0x03 /* Read Data Bytes */
 #define RAMTRON_FSTRD 0x0b /* Fast Read Memory Data */
 #define RAMTRON_WRITE 0x02 /* Write */
 #define RAMTRON_SLEEP 0xb9 /* Enter Sleep Mode */
-#define RAMTRON_RDID 0x9f /* Read Device ID */
-#define RAMTRON_SN 0xc3 /* Read S/N */
+#define RAMTRON_RDID  0x9f /* Read Device ID */
+#define RAMTRON_SN    0xc3 /* Read S/N */
 
 /* Status register bit definitions */
-#define RAMTRON_SR_WIP (1 << 0) /* Bit 0: Write in progress bit */
-#define RAMTRON_SR_WEL (1 << 1) /* Bit 1: Write enable latch bit */
-#define RAMTRON_SR_BP_SHIFT (2) /* Bits 2-4: Block protect bits */
-#define RAMTRON_SR_BP_MASK (7 << RAMTRON_SR_BP_SHIFT)
-#define RAMTRON_SR_BP_NONE (0 << RAMTRON_SR_BP_SHIFT) /* Unprotected */
+#define RAMTRON_SR_WIP          (1 << 0) /* Bit 0: Write in progress bit */
+#define RAMTRON_SR_WEL          (1 << 1) /* Bit 1: Write enable latch bit */
+#define RAMTRON_SR_BP_SHIFT     (2)      /* Bits 2-4: Block protect bits */
+#define RAMTRON_SR_BP_MASK      (7 << RAMTRON_SR_BP_SHIFT)
+#define RAMTRON_SR_BP_NONE      (0 << RAMTRON_SR_BP_SHIFT) /* Unprotected */
 #define RAMTRON_SR_BP_UPPER64th (1 << RAMTRON_SR_BP_SHIFT) /* Upper 64th */
 #define RAMTRON_SR_BP_UPPER32nd (2 << RAMTRON_SR_BP_SHIFT) /* Upper 32nd */
 #define RAMTRON_SR_BP_UPPER16th (3 << RAMTRON_SR_BP_SHIFT) /* Upper 16th */
-#define RAMTRON_SR_BP_UPPER8th (4 << RAMTRON_SR_BP_SHIFT) /* Upper 8th */
-#define RAMTRON_SR_BP_UPPERQTR (5 << RAMTRON_SR_BP_SHIFT) /* Upper quarter */
+#define RAMTRON_SR_BP_UPPER8th  (4 << RAMTRON_SR_BP_SHIFT) /* Upper 8th */
+#define RAMTRON_SR_BP_UPPERQTR  (5 << RAMTRON_SR_BP_SHIFT) /* Upper quarter */
 #define RAMTRON_SR_BP_UPPERHALF (6 << RAMTRON_SR_BP_SHIFT) /* Upper half */
-#define RAMTRON_SR_BP_ALL (7 << RAMTRON_SR_BP_SHIFT) /* All sectors */
-#define RAMTRON_SR_SRWD (1 << 7) /* Bit 7: Status register write protect */
+#define RAMTRON_SR_BP_ALL       (7 << RAMTRON_SR_BP_SHIFT) /* All sectors */
+#define RAMTRON_SR_SRWD         (1 << 7)                   /* Bit 7: Status register write protect */
 
 static rt_device_t ramtron_spi_dev;
 static struct mtd_device ramtron_dev;
@@ -231,6 +231,5 @@ rt_err_t drv_ramtron_init(const char* spi_device_name)
     RT_TRY(ramtron_read_devinfo());
 
     ramtron_dev.ops = &dev_ops;
-    return hal_mtd_register(&ramtron_dev, "mtdblk0",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE, RT_NULL);
+    return hal_mtd_register(&ramtron_dev, "mtdblk0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE, RT_NULL);
 }

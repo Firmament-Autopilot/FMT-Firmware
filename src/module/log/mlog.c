@@ -17,12 +17,12 @@
 #include <string.h>
 
 #include "model/control/control_interface.h"
-#include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#include "module/file_manager/file_manager.h"
 #include "module/utils/list.h"
 #ifdef FMT_USING_SIH
-#include "model/plant/plant_interface.h"
+    #include "model/plant/plant_interface.h"
 #endif
 
 #define TAG "MLog"
@@ -189,8 +189,7 @@ char* mlog_get_file_name(void)
 void mlog_show_statistic(void)
 {
     for (int i = 0; i < __mlog_bus_num; i++) {
-        printf("%-20s id:%-3d record:%-8ld lost:%-5ld\n", __mlog_table[i].name, i,
-            mlog_handle.stats[i].total_msg, mlog_handle.stats[i].lost_msg);
+        printf("%-20s id:%-3d record:%-8ld lost:%-5ld\n", __mlog_table[i].name, i, mlog_handle.stats[i].total_msg, mlog_handle.stats[i].lost_msg);
     }
 }
 
@@ -415,11 +414,9 @@ fmt_err_t mlog_start(char* file_name)
 
     /* write model information */
 #ifdef FMT_USING_SIH
-    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s\n%s", ins_model_info.info, fms_model_info.info,
-        control_model_info.info, plant_model_info.info);
+    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s\n%s", ins_model_info.info, fms_model_info.info, control_model_info.info, plant_model_info.info);
 #else
-    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s", ins_model_info.info, fms_model_info.info,
-        control_model_info.info);
+    sprintf(mlog_handle.header.model_info, "%s\n%s\n%s", ins_model_info.info, fms_model_info.info, control_model_info.info);
 #endif
     WRITE_PAYLOAD(mlog_handle.header.model_info, MLOG_MODEL_INFO_SIZE);
 
@@ -576,8 +573,7 @@ void mlog_async_output(void)
 
         ulog_i(TAG, "stop logging:%s", mlog_handle.file_name);
         for (uint8_t i = 0; i < __mlog_bus_num; i++) {
-            ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", __mlog_table[i].name, i,
-                mlog_handle.stats[i].total_msg, mlog_handle.stats[i].lost_msg);
+            ulog_i(TAG, "%-20s id:%-3d record:%-8d lost:%-5d", __mlog_table[i].name, i, mlog_handle.stats[i].total_msg, mlog_handle.stats[i].lost_msg);
         }
     }
 }

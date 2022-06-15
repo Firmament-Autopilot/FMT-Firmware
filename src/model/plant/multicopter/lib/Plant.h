@@ -14,102 +14,102 @@
  */
 
 #ifndef RTW_HEADER_Plant_h_
-#define RTW_HEADER_Plant_h_
-#include <math.h>
-#include <string.h>
-#ifndef Plant_COMMON_INCLUDES_
-# define Plant_COMMON_INCLUDES_
-#include "rtwtypes.h"
-#endif                                 /* Plant_COMMON_INCLUDES_ */
+    #define RTW_HEADER_Plant_h_
+    #include <math.h>
+    #include <string.h>
+    #ifndef Plant_COMMON_INCLUDES_
+        #define Plant_COMMON_INCLUDES_
+        #include "rtwtypes.h"
+    #endif /* Plant_COMMON_INCLUDES_ */
 
-#include "Plant_types.h"
-#include "arm_math.h"
+    #include "Plant_types.h"
+    #include "arm_math.h"
 
-/* Macros for accessing real-time model data structure */
-#ifndef rtmGetErrorStatus
-# define rtmGetErrorStatus(rtm)        ((rtm)->errorStatus)
-#endif
+    /* Macros for accessing real-time model data structure */
+    #ifndef rtmGetErrorStatus
+        #define rtmGetErrorStatus(rtm) ((rtm)->errorStatus)
+    #endif
 
-#ifndef rtmSetErrorStatus
-# define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
-#endif
+    #ifndef rtmSetErrorStatus
+        #define rtmSetErrorStatus(rtm, val) ((rtm)->errorStatus = (val))
+    #endif
 
 /* Block signals (default storage) */
 typedef struct {
-  GPS_uBlox_Bus RateTransition;        /* '<S78>/Rate Transition' */
-  MAG_Bus RateTransition_b;            /* '<S116>/Rate Transition' */
-  Barometer_Bus RateTransition_m;      /* '<S72>/Rate Transition' */
+    GPS_uBlox_Bus RateTransition;   /* '<S78>/Rate Transition' */
+    MAG_Bus RateTransition_b;       /* '<S116>/Rate Transition' */
+    Barometer_Bus RateTransition_m; /* '<S72>/Rate Transition' */
 } B_Plant_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real_T Delay_DSTATE[225];            /* '<S83>/Delay' */
-  real_T DiscreteFIRFilter_states[3];  /* '<S88>/Discrete FIR Filter' */
-  real_T Delay1_DSTATE[3];             /* '<S22>/Delay1' */
-  real_T Delay_DSTATE_a[3];            /* '<S22>/Delay' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S113>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_c[3];/* '<S102>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator_DSTATE[4];/* '<S108>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_p[4];/* '<S97>/Discrete-Time Integrator' */
-  real32_T Delay1_DSTATE_a[150];       /* '<S83>/Delay1' */
-  real32_T DiscreteFIRFilter_states_f[3];/* '<S89>/Discrete FIR Filter' */
-  real32_T DiscreteTimeIntegrator_DSTATE_d[4];/* '<S45>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_e[3];/* '<S41>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_f[3];/* '<S42>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S42>/Discrete-Time Integrator1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_n[4];/* '<S11>/Discrete-Time Integrator' */
-  uint32_T Delay_DSTATE_c;             /* '<S20>/Delay' */
-  uint32_T Memory1_PreviousInput;      /* '<S66>/Memory1' */
-  uint32_T RandomSource_SEED_DWORK[3]; /* '<S126>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK[6];/* '<S126>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_f[3];/* '<S104>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_k[6];/* '<S104>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_n[3];/* '<S115>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_h[6];/* '<S115>/Random Source' */
-  uint32_T RandomSource_SEED_DWORK_m[3];/* '<S86>/Random Source' */
-  uint32_T RandomSource_STATE_DWORK_l[6];/* '<S86>/Random Source' */
-  uint32_T RandomSource1_SEED_DWORK[3];/* '<S86>/Random Source1' */
-  uint32_T RandomSource1_STATE_DWORK[6];/* '<S86>/Random Source1' */
-  uint32_T RandomSource_STATE_DWORK_b[2];/* '<S77>/Random Source' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S45>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRe_d;/* '<S41>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRe_k;/* '<S42>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S42>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S113>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_j;/* '<S102>/Discrete-Time Integrator5' */
+    real_T Delay_DSTATE[225];                    /* '<S83>/Delay' */
+    real_T DiscreteFIRFilter_states[3];          /* '<S88>/Discrete FIR Filter' */
+    real_T Delay1_DSTATE[3];                     /* '<S22>/Delay1' */
+    real_T Delay_DSTATE_a[3];                    /* '<S22>/Delay' */
+    real32_T DiscreteTimeIntegrator5_DSTATE[3];  /* '<S113>/Discrete-Time Integrator5' */
+    real32_T DiscreteTimeIntegrator5_DSTAT_c[3]; /* '<S102>/Discrete-Time Integrator5' */
+    real32_T DiscreteTimeIntegrator_DSTATE[4];   /* '<S108>/Discrete-Time Integrator' */
+    real32_T DiscreteTimeIntegrator_DSTATE_p[4]; /* '<S97>/Discrete-Time Integrator' */
+    real32_T Delay1_DSTATE_a[150];               /* '<S83>/Delay1' */
+    real32_T DiscreteFIRFilter_states_f[3];      /* '<S89>/Discrete FIR Filter' */
+    real32_T DiscreteTimeIntegrator_DSTATE_d[4]; /* '<S45>/Discrete-Time Integrator' */
+    real32_T DiscreteTimeIntegrator_DSTATE_e[3]; /* '<S41>/Discrete-Time Integrator' */
+    real32_T DiscreteTimeIntegrator_DSTATE_f[3]; /* '<S42>/Discrete-Time Integrator' */
+    real32_T DiscreteTimeIntegrator1_DSTATE[3];  /* '<S42>/Discrete-Time Integrator1' */
+    real32_T DiscreteTimeIntegrator_DSTATE_n[4]; /* '<S11>/Discrete-Time Integrator' */
+    uint32_T Delay_DSTATE_c;                     /* '<S20>/Delay' */
+    uint32_T Memory1_PreviousInput;              /* '<S66>/Memory1' */
+    uint32_T RandomSource_SEED_DWORK[3];         /* '<S126>/Random Source' */
+    uint32_T RandomSource_STATE_DWORK[6];        /* '<S126>/Random Source' */
+    uint32_T RandomSource_SEED_DWORK_f[3];       /* '<S104>/Random Source' */
+    uint32_T RandomSource_STATE_DWORK_k[6];      /* '<S104>/Random Source' */
+    uint32_T RandomSource_SEED_DWORK_n[3];       /* '<S115>/Random Source' */
+    uint32_T RandomSource_STATE_DWORK_h[6];      /* '<S115>/Random Source' */
+    uint32_T RandomSource_SEED_DWORK_m[3];       /* '<S86>/Random Source' */
+    uint32_T RandomSource_STATE_DWORK_l[6];      /* '<S86>/Random Source' */
+    uint32_T RandomSource1_SEED_DWORK[3];        /* '<S86>/Random Source1' */
+    uint32_T RandomSource1_STATE_DWORK[6];       /* '<S86>/Random Source1' */
+    uint32_T RandomSource_STATE_DWORK_b[2];      /* '<S77>/Random Source' */
+    int8_T DiscreteTimeIntegrator_PrevRese;      /* '<S45>/Discrete-Time Integrator' */
+    int8_T DiscreteTimeIntegrator_PrevRe_d;      /* '<S41>/Discrete-Time Integrator' */
+    int8_T DiscreteTimeIntegrator_PrevRe_k;      /* '<S42>/Discrete-Time Integrator' */
+    int8_T DiscreteTimeIntegrator1_PrevRes;      /* '<S42>/Discrete-Time Integrator1' */
+    uint8_T DiscreteTimeIntegrator5_IC_LOAD;     /* '<S113>/Discrete-Time Integrator5' */
+    uint8_T DiscreteTimeIntegrator5_IC_LO_j;     /* '<S102>/Discrete-Time Integrator5' */
 } DW_Plant_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real_T Sum;                    /* '<S90>/Sum' */
-  const real_T ff;                     /* '<S90>/Multiply3' */
-  const real_T Sum4;                   /* '<S90>/Sum4' */
-  const real_T Subtract1;              /* '<S28>/Subtract1' */
-  const real_T Product1;               /* '<S28>/Product1' */
-  const real32_T Add[9];               /* '<S125>/Add' */
-  const real32_T VectorConcatenate3[3];/* '<S124>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_a[3];/* '<S123>/Vector Concatenate3' */
-  const real32_T Add_m[9];             /* '<S103>/Add' */
-  const real32_T Add_g[9];             /* '<S114>/Add' */
-  const real32_T quat0[4];             /* '<S41>/quat0' */
-  const real32_T VectorConcatenate3_e[3];/* '<S35>/Vector Concatenate3' */
-  const uint8_T DataTypeConversion;    /* '<S78>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1;   /* '<S78>/Data Type Conversion1' */
+    const real_T Sum;                       /* '<S90>/Sum' */
+    const real_T ff;                        /* '<S90>/Multiply3' */
+    const real_T Sum4;                      /* '<S90>/Sum4' */
+    const real_T Subtract1;                 /* '<S28>/Subtract1' */
+    const real_T Product1;                  /* '<S28>/Product1' */
+    const real32_T Add[9];                  /* '<S125>/Add' */
+    const real32_T VectorConcatenate3[3];   /* '<S124>/Vector Concatenate3' */
+    const real32_T VectorConcatenate3_a[3]; /* '<S123>/Vector Concatenate3' */
+    const real32_T Add_m[9];                /* '<S103>/Add' */
+    const real32_T Add_g[9];                /* '<S114>/Add' */
+    const real32_T quat0[4];                /* '<S41>/quat0' */
+    const real32_T VectorConcatenate3_e[3]; /* '<S35>/Vector Concatenate3' */
+    const uint8_T DataTypeConversion;       /* '<S78>/Data Type Conversion' */
+    const uint8_T DataTypeConversion1;      /* '<S78>/Data Type Conversion1' */
 } ConstB_Plant_T;
 
 /* Constant parameters (default storage) */
 typedef struct {
-  /* Expression: gain
+    /* Expression: gain
    * Referenced by: '<S97>/Gain4'
    */
-  real_T Gain4_Gain[3];
+    real_T Gain4_Gain[3];
 
-  /* Computed Parameter: X_Frame_CM_Value
+    /* Computed Parameter: X_Frame_CM_Value
    * Referenced by: '<S16>/X_Frame_CM'
    */
-  real32_T X_Frame_CM_Value[12];
+    real32_T X_Frame_CM_Value[12];
 
-  /* Pooled Parameter (Mixed Expressions)
+    /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<Root>/Constant'
    *   '<S42>/Constant'
@@ -148,90 +148,90 @@ typedef struct {
    *   '<S124>/Constant3'
    *   '<S124>/Constant4'
    */
-  real32_T pooled14;
+    real32_T pooled14;
 
-  /* Computed Parameter: Inertia_Matrix_Value
+    /* Computed Parameter: Inertia_Matrix_Value
    * Referenced by: '<S41>/Inertia_Matrix'
    */
-  real32_T Inertia_Matrix_Value[9];
+    real32_T Inertia_Matrix_Value[9];
 
-  /* Pooled Parameter (Mixed Expressions)
+    /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S120>/Saturation'
    *   '<S77>/Random Source'
    */
-  real32_T pooled25;
+    real32_T pooled25;
 
-  /* Computed Parameter: RandomSource_VarianceRTP
+    /* Computed Parameter: RandomSource_VarianceRTP
    * Referenced by: '<S86>/Random Source'
    */
-  real32_T RandomSource_VarianceRTP[3];
+    real32_T RandomSource_VarianceRTP[3];
 
-  /* Computed Parameter: RandomSource1_VarianceRTP
+    /* Computed Parameter: RandomSource1_VarianceRTP
    * Referenced by: '<S86>/Random Source1'
    */
-  real32_T RandomSource1_VarianceRTP[3];
+    real32_T RandomSource1_VarianceRTP[3];
 
-  /* Computed Parameter: RandomSource_VarianceRTP_f
+    /* Computed Parameter: RandomSource_VarianceRTP_f
    * Referenced by: '<S104>/Random Source'
    */
-  real32_T RandomSource_VarianceRTP_f[3];
+    real32_T RandomSource_VarianceRTP_f[3];
 
-  /* Computed Parameter: RandomSource_VarianceRTP_b
+    /* Computed Parameter: RandomSource_VarianceRTP_b
    * Referenced by: '<S115>/Random Source'
    */
-  real32_T RandomSource_VarianceRTP_b[3];
+    real32_T RandomSource_VarianceRTP_b[3];
 
-  /* Expression: wmm_declination
+    /* Expression: wmm_declination
    * Referenced by: '<S121>/Declination_Lookup_Table'
    */
-  real32_T Declination_Lookup_Table_table[629];
+    real32_T Declination_Lookup_Table_table[629];
 
-  /* Expression: wmm_inclination
+    /* Expression: wmm_inclination
    * Referenced by: '<S121>/Inclination_Lookup_Table'
    */
-  real32_T Inclination_Lookup_Table_table[629];
+    real32_T Inclination_Lookup_Table_table[629];
 
-  /* Expression: wmm_magnitude
+    /* Expression: wmm_magnitude
    * Referenced by: '<S121>/Magnitude_Lookup_Table'
    */
-  real32_T Magnitude_Lookup_Table_table[629];
+    real32_T Magnitude_Lookup_Table_table[629];
 
-  /* Computed Parameter: RandomSource_VarianceRTP_a
+    /* Computed Parameter: RandomSource_VarianceRTP_a
    * Referenced by: '<S126>/Random Source'
    */
-  real32_T RandomSource_VarianceRTP_a[3];
+    real32_T RandomSource_VarianceRTP_a[3];
 } ConstP_Plant_T;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  Control_Out_Bus Control_Out;         /* '<Root>/Control_Out' */
+    Control_Out_Bus Control_Out; /* '<Root>/Control_Out' */
 } ExtU_Plant_T;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  Plant_States_Bus Plant_States;       /* '<Root>/Plant_States' */
-  Extended_States_Bus Extended_States; /* '<Root>/Extended_States' */
-  IMU_Bus IMU;                         /* '<Root>/IMU' */
-  MAG_Bus MAG;                         /* '<Root>/MAG' */
-  Barometer_Bus Barometer;             /* '<Root>/Barometer' */
-  GPS_uBlox_Bus GPS;                   /* '<Root>/GPS' */
+    Plant_States_Bus Plant_States;       /* '<Root>/Plant_States' */
+    Extended_States_Bus Extended_States; /* '<Root>/Extended_States' */
+    IMU_Bus IMU;                         /* '<Root>/IMU' */
+    MAG_Bus MAG;                         /* '<Root>/MAG' */
+    Barometer_Bus Barometer;             /* '<Root>/Barometer' */
+    GPS_uBlox_Bus GPS;                   /* '<Root>/GPS' */
 } ExtY_Plant_T;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_Plant_T {
-  const char_T *errorStatus;
+    const char_T* errorStatus;
 
-  /*
+    /*
    * Timing:
    * The following substructure contains information regarding
    * the timing information for the model.
    */
-  struct {
     struct {
-      uint8_T TID[3];
-    } TaskCounters;
-  } Timing;
+        struct {
+            uint8_T TID[3];
+        } TaskCounters;
+    } Timing;
 };
 
 /* Block signals (default storage) */
@@ -247,10 +247,10 @@ extern ExtU_Plant_T Plant_U;
 extern ExtY_Plant_T Plant_Y;
 
 /* External data declarations for dependent source files */
-extern const Control_Out_Bus Plant_rtZControl_Out_Bus;/* Control_Out_Bus ground */
-extern const Plant_States_Bus Plant_rtZPlant_States_Bus;/* Plant_States_Bus ground */
-extern const Extended_States_Bus Plant_rtZExtended_States_Bus;/* Extended_States_Bus ground */
-extern const ConstB_Plant_T Plant_ConstB;/* constant block i/o */
+extern const Control_Out_Bus Plant_rtZControl_Out_Bus;         /* Control_Out_Bus ground */
+extern const Plant_States_Bus Plant_rtZPlant_States_Bus;       /* Plant_States_Bus ground */
+extern const Extended_States_Bus Plant_rtZExtended_States_Bus; /* Extended_States_Bus ground */
+extern const ConstB_Plant_T Plant_ConstB;                      /* constant block i/o */
 
 /* Constant parameters (default storage) */
 extern const ConstP_Plant_T Plant_ConstP;
@@ -263,7 +263,7 @@ extern const ConstP_Plant_T Plant_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT;/* Variable: PLANT_EXPORT
+extern struct_zjTVXoT1Wcig2PfNqPD1gB PLANT_EXPORT; /* Variable: PLANT_EXPORT
                                                    * Referenced by:
                                                    *   '<S20>/dt'
                                                    *   '<S66>/dt'
@@ -275,7 +275,7 @@ extern void Plant_step(void);
 extern void Plant_terminate(void);
 
 /* Real-time Model object */
-extern RT_MODEL_Plant_T *const Plant_M;
+extern RT_MODEL_Plant_T* const Plant_M;
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
@@ -453,7 +453,7 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S125>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model/Sensor_Error'
  * '<S126>' : 'Plant/Sensor_Model/Sensor_MAG/Magnetometer/Sensor_Model/Sensor_Noise'
  */
-#endif                                 /* RTW_HEADER_Plant_h_ */
+#endif /* RTW_HEADER_Plant_h_ */
 
 /*
  * File trailer for generated code.

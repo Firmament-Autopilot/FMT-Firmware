@@ -29,9 +29,9 @@
 #include <stdio.h>
 
 #ifdef __cplusplus
-#define TOML_EXTERN extern "C"
+    #define TOML_EXTERN extern "C"
 #else
-#define TOML_EXTERN extern
+    #define TOML_EXTERN extern
 #endif
 
 typedef struct toml_table_t toml_table_t;
@@ -44,16 +44,16 @@ typedef const char* toml_raw_t;
  * Caller must toml_free(the-return-value) after use.
  */
 TOML_EXTERN toml_table_t* toml_parse_file(FILE* fp,
-    char* errbuf,
-    int errbufsz);
+                                          char* errbuf,
+                                          int errbufsz);
 
 /* Parse a string containing the full config. 
  * Return a table on success, or 0 otherwise.
  * Caller must toml_free(the-return-value) after use.
  */
 TOML_EXTERN toml_table_t* toml_parse(char* conf, /* NUL terminated, please. */
-    char* errbuf,
-    int errbufsz);
+                                     char* errbuf,
+                                     int errbufsz);
 
 /* Free the table returned by toml_parse() or toml_parse_file(). */
 TOML_EXTERN void toml_free(toml_table_t* tab);
@@ -64,9 +64,9 @@ TOML_EXTERN const char* toml_key_in(const toml_table_t* tab, int keyidx);
 /* Lookup table by key. Return the element or 0 if not found. */
 TOML_EXTERN toml_raw_t toml_raw_in(const toml_table_t* tab, const char* key);
 TOML_EXTERN toml_array_t* toml_array_in(const toml_table_t* tab,
-    const char* key);
+                                        const char* key);
 TOML_EXTERN toml_table_t* toml_table_in(const toml_table_t* tab,
-    const char* key);
+                                        const char* key);
 
 /* Return the array kind: 't'able, 'a'rray, 'v'alue */
 TOML_EXTERN char toml_array_kind(const toml_array_t* arr);

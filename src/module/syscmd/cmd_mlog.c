@@ -16,9 +16,9 @@
 
 #include <firmament.h>
 
+#include "module/file_manager/file_manager.h"
 #include "module/syscmd/syscmd.h"
 #include "task/logger/task_logger.h"
-#include "module/file_manager/file_manager.h"
 
 static void _show_mlog_status(void)
 {
@@ -59,7 +59,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
         logger_stop_mlog();
     } else if (strcmp(argv[1], "status") == 0) {
         _show_mlog_status();
-    }else if (strcmp(argv[1], "ws") == 0) {
+    } else if (strcmp(argv[1], "ws") == 0) {
         char path[100];
         current_log_session(path);
         console_printf("working log session: %s\n", path);
@@ -74,4 +74,4 @@ int cmd_mlog(int argc, char** argv)
 {
     return syscmd_process(argc, argv, handle_cmd);
 }
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_mlog, __cmd_mlog, start/stop mlog);
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_mlog, __cmd_mlog, start / stop mlog);
