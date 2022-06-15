@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: build
+name: build bsp
 
 # Controls when the workflow will run
 on:
