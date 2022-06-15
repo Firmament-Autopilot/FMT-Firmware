@@ -29,9 +29,8 @@ bool ucdr_check_buffer_available_for(ucdrBuffer* ub, size_t bytes)
 
 bool ucdr_check_final_buffer_behavior(ucdrBuffer* ub, size_t data_size)
 {
-    if(!ub->error && ub->iterator + data_size > ub->final)
-    {
-        ub->error = (NULL != ub->on_full_buffer) ? ub->on_full_buffer(ub, ub ->args) : true;
+    if (!ub->error && ub->iterator + data_size > ub->final) {
+        ub->error = (NULL != ub->on_full_buffer) ? ub->on_full_buffer(ub, ub->args) : true;
     }
 
     return !ub->error;
@@ -39,15 +38,14 @@ bool ucdr_check_final_buffer_behavior(ucdrBuffer* ub, size_t data_size)
 
 size_t ucdr_next_remaining_size(ucdrBuffer* ub, size_t bytes, size_t data_size)
 {
-    (void) data_size;
+    (void)data_size;
     size_t remaining = ucdr_buffer_remaining(ub);
     return (bytes <= remaining) ? bytes : remaining;
 }
 
 size_t ucdr_check_final_buffer_behavior_array(ucdrBuffer* ub, size_t bytes, size_t data_size)
 {
-    if(!ub->error && ub->iterator + data_size > ub->final && bytes > 0)
-    {
+    if (!ub->error && ub->iterator + data_size > ub->final && bytes > 0) {
         ub->error = (NULL != ub->on_full_buffer) ? ub->on_full_buffer(ub, ub->args) : true;
     }
 
@@ -64,39 +62,39 @@ void ucdr_set_on_full_buffer_callback(ucdrBuffer* ub, OnFullBuffer on_full_buffe
 //                       PUBLIC IMPLEMENTATION
 // -------------------------------------------------------------------
 void ucdr_init_buffer(
-        ucdrBuffer* ub,
-        uint8_t* data,
-        size_t size)
+    ucdrBuffer* ub,
+    uint8_t* data,
+    size_t size)
 {
     ucdr_init_buffer_origin(ub, data, size, 0u);
 }
 
 void ucdr_init_buffer_origin(
-        ucdrBuffer* ub,
-        uint8_t* data,
-        size_t size,
-        size_t origin)
+    ucdrBuffer* ub,
+    uint8_t* data,
+    size_t size,
+    size_t origin)
 {
     ucdr_init_buffer_origin_offset(ub, data, size, origin, 0u);
 }
 
 void ucdr_init_buffer_origin_offset(
-        ucdrBuffer* ub,
-        uint8_t* data,
-        size_t size,
-        size_t origin,
-        size_t offset)
+    ucdrBuffer* ub,
+    uint8_t* data,
+    size_t size,
+    size_t origin,
+    size_t offset)
 {
     ucdr_init_buffer_origin_offset_endian(ub, data, size, origin, offset, UCDR_MACHINE_ENDIANNESS);
 }
 
 void ucdr_init_buffer_origin_offset_endian(
-        ucdrBuffer* ub,
-        uint8_t* data,
-        size_t size,
-        size_t origin,
-        size_t offset,
-        ucdrEndianness endianness)
+    ucdrBuffer* ub,
+    uint8_t* data,
+    size_t size,
+    size_t origin,
+    size_t offset,
+    ucdrEndianness endianness)
 {
     ub->init = data;
     ub->final = ub->init + size;
@@ -109,7 +107,6 @@ void ucdr_init_buffer_origin_offset_endian(
     ub->on_full_buffer = NULL;
     ub->args = NULL;
 }
-
 
 void ucdr_copy_buffer(ucdrBuffer* ub_dest, const ucdrBuffer* ub_source)
 {
@@ -136,8 +133,7 @@ void ucdr_align_to(ucdrBuffer* ub, size_t size)
 
     // TODO (julibert): rethink.
     ub->iterator += alignment;
-    if(ub->iterator > ub->final)
-    {
+    if (ub->iterator > ub->final) {
         ub->iterator = ub->final;
     }
     ub->last_data_size = (uint8_t)size;
@@ -157,17 +153,13 @@ size_t ucdr_buffer_alignment(const ucdrBuffer* ub, size_t data_size)
 
 void ucdr_advance_buffer(ucdrBuffer* ub, size_t size)
 {
-    if (ucdr_check_buffer_available_for(ub, size))
-    {
+    if (ucdr_check_buffer_available_for(ub, size)) {
         ub->iterator += size;
         ub->offset += size;
-    }
-    else
-    {
+    } else {
         size_t remaining_size = size;
         size_t serialization_size;
-        while(0 < (serialization_size = ucdr_check_final_buffer_behavior_array(ub, remaining_size, 1)))
-        {
+        while (0 < (serialization_size = ucdr_check_final_buffer_behavior_array(ub, remaining_size, 1))) {
             remaining_size -= serialization_size;
             ub->iterator += serialization_size;
             ub->offset += serialization_size;

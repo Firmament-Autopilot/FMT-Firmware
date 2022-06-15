@@ -450,11 +450,7 @@ fmt_err_t mcn_publish(McnHub_t hub, const void* data)
  */
 fmt_err_t mcn_init(void)
 {
-    rt_timer_init(&timer_mcn_freq_est, "mcn_freq_est",
-        mcn_freq_est_entry,
-        NULL,
-        1000,
-        RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+    rt_timer_init(&timer_mcn_freq_est, "mcn_freq_est", mcn_freq_est_entry, NULL, 1000, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 
     if (rt_timer_start(&timer_mcn_freq_est) != RT_EOK) {
         return FMT_ERROR;

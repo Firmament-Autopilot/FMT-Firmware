@@ -245,11 +245,11 @@ WorkQueue_t workqueue_create(const char* name, uint8_t size, uint16_t stack_size
     }
 
     work_queue->thread = rt_thread_create(name,
-        workqueue_executor,
-        work_queue,
-        stack_size,
-        priority,
-        10);
+                                          workqueue_executor,
+                                          work_queue,
+                                          stack_size,
+                                          priority,
+                                          10);
 
     if (work_queue->thread == NULL) {
         goto error_exit;

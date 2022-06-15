@@ -148,8 +148,7 @@ rt_err_t drv_usb_cdc_init(void)
     rt_err_t err;
     usbd_dev.ops = &usbd_ops;
 
-    err = hal_usbd_cdc_register(&usbd_dev, "usbd0",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, RT_NULL);
+    err = hal_usbd_cdc_register(&usbd_dev, "usbd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, RT_NULL);
     if (err != RT_EOK) {
         return err;
     }
@@ -157,13 +156,13 @@ rt_err_t drv_usb_cdc_init(void)
     /* init usbd after devmq has been registered */
     USBD_Init(&USB_OTG_dev,
 #ifdef USE_USB_OTG_HS
-        USB_OTG_HS_CORE_ID,
+              USB_OTG_HS_CORE_ID,
 #else
-        USB_OTG_FS_CORE_ID,
+              USB_OTG_FS_CORE_ID,
 #endif
-        &USR_desc,
-        &USBD_CDC_cb,
-        &USR_cb);
+              &USR_desc,
+              &USBD_CDC_cb,
+              &USR_cb);
 
     return RT_EOK;
 }

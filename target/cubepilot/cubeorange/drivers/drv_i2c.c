@@ -17,15 +17,15 @@
 
 #if I2C_ENABLE == 1
 
-#include "hal/i2c.h"
-#include "stm32h7xx_ll_i2c.h"
+    #include "hal/i2c.h"
+    #include "stm32h7xx_ll_i2c.h"
 
-// #define DRV_DBG(...) console_printf(__VA_ARGS__)
-#define DRV_DBG(...)
+    // #define DRV_DBG(...) console_printf(__VA_ARGS__)
+    #define DRV_DBG(...)
 
-/* We want to ensure the real-time performace, so the i2c timeout here is
+    /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-#define I2C_TIMEOUT_US (1000)
+    #define I2C_TIMEOUT_US (1000)
 
 struct stm32_i2c_bus {
     struct rt_i2c_bus parent;
@@ -285,8 +285,7 @@ static rt_size_t i2c_master_transfer(
 
         if (msg->flags & RT_I2C_RD) {
             /* start/restart read operation */
-            LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
-                LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_READ);
+            LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len, LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_READ);
 
             while (nbytes--) {
                 /* wait data received */
@@ -305,8 +304,7 @@ static rt_size_t i2c_master_transfer(
             }
         } else {
             /* start/restart write operation */
-            LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len,
-                LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
+            LL_I2C_HandleTransfer(stm32_i2c->I2C, slave_addr, LL_I2C_ADDRESSING_MODE_7BIT, msg->len, LL_I2C_MODE_SOFTEND, LL_I2C_GENERATE_START_WRITE);
 
             while (nbytes--) {
                 if (wait_TXIS_flag_until_timeout(stm32_i2c->I2C, 0, I2C_TIMEOUT_US) != FMT_EOK) {
@@ -364,13 +362,13 @@ static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 
 /* i2c device instances */
 static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-    .flags = 0 };
+                                          .flags = 0 };
 
 static struct rt_i2c_device i2c1_dev2 = { .slave_addr = NCP5623C_ADDRESS, /* 7 bit address */
-    .flags = 0 };
+                                          .flags = 0 };
 
 static struct rt_i2c_device i2c3_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-    .flags = 0 };
+                                          .flags = 0 };
 
 #endif
 

@@ -21,13 +21,13 @@
 
 #define DRV_USE_SPI1
 
-#define SPI1_CS1_Pin LL_GPIO_PIN_2
+#define SPI1_CS1_Pin       LL_GPIO_PIN_2
 #define SPI1_CS1_GPIO_Port GPIOC
-#define SPI1_CS1_CLOCK LL_AHB4_GRP1_PERIPH_GPIOC
+#define SPI1_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOC
 
-#define SPI1_CS2_Pin LL_GPIO_PIN_7
+#define SPI1_CS2_Pin       LL_GPIO_PIN_7
 #define SPI1_CS2_GPIO_Port GPIOD
-#define SPI1_CS2_CLOCK LL_AHB4_GRP1_PERIPH_GPIOD
+#define SPI1_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
 
 // #define SPI1_CS3_Pin LL_GPIO_PIN_5
 // #define SPI1_CS3_GPIO_Port GPIOC
@@ -42,18 +42,18 @@
 // #define SPI1_CS5_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOH
 
 #define DRV_USE_SPI2
-#define SPI2_CS1_Pin LL_GPIO_PIN_10
+#define SPI2_CS1_Pin       LL_GPIO_PIN_10
 #define SPI2_CS1_GPIO_Port GPIOD
-#define SPI2_CS1_CLOCK LL_AHB4_GRP1_PERIPH_GPIOD
+#define SPI2_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
 
 #define DRV_USE_SPI4
-#define SPI4_CS1_Pin LL_GPIO_PIN_4
+#define SPI4_CS1_Pin       LL_GPIO_PIN_4
 #define SPI4_CS1_GPIO_Port GPIOE
-#define SPI4_CS1_CLOCK LL_AHB4_GRP1_PERIPH_GPIOE
+#define SPI4_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOE
 
-#define SPI4_CS2_Pin LL_GPIO_PIN_14
+#define SPI4_CS2_Pin       LL_GPIO_PIN_14
 #define SPI4_CS2_GPIO_Port GPIOF
-#define SPI4_CS2_CLOCK LL_AHB4_GRP1_PERIPH_GPIOC
+#define SPI4_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOC
 
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
@@ -193,7 +193,7 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
     }
 
 #ifdef SPI_USE_DMA
-#error Not support SPI DMA.
+    #error Not support SPI DMA.
 #endif
 
     {
@@ -291,9 +291,9 @@ static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32
 
         /* Peripheral clock enable */
         LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
-#ifdef SPI_USE_DMA
+    #ifdef SPI_USE_DMA
 
-#endif
+    #endif
 #else
         return RT_ENOSYS;
 #endif
@@ -303,9 +303,9 @@ static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32
 
         /* Peripheral clock enable */
         LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
-#ifdef SPI_USE_DMA
+    #ifdef SPI_USE_DMA
 
-#endif
+    #endif
 #else
         return RT_ENOSYS;
 #endif
@@ -368,7 +368,7 @@ rt_err_t drv_spi_init(void)
         return ret;
     }
 
-#ifdef SPI1_CS1_Pin
+    #ifdef SPI1_CS1_Pin
     /* attach spi_device_1 to spi1 */
     {
         static struct rt_spi_device rt_spi_device_1;
@@ -394,8 +394,8 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
-#ifdef SPI1_CS2_Pin
+    #endif
+    #ifdef SPI1_CS2_Pin
 
     /* attach spi_device_2 to spi1 */
     {
@@ -422,8 +422,8 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
-#ifdef SPI1_CS3_Pin
+    #endif
+    #ifdef SPI1_CS3_Pin
     /* attach spi_device_3 to spi1 */
     {
         static struct rt_spi_device rt_spi_device_3;
@@ -449,8 +449,8 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
-#ifdef SPI1_CS4_Pin
+    #endif
+    #ifdef SPI1_CS4_Pin
     /* attach spi_device_4 to spi1 */
     {
         static struct rt_spi_device rt_spi_device_4;
@@ -476,8 +476,8 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
-#ifdef SPI1_CS5_Pin
+    #endif
+    #ifdef SPI1_CS5_Pin
     /* attach spi_device_5 to spi1 */
     {
         static struct rt_spi_device rt_spi_device_5;
@@ -503,7 +503,7 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
+    #endif
 #endif
 
 #ifdef DRV_USE_SPI2
@@ -527,7 +527,7 @@ rt_err_t drv_spi_init(void)
         return ret;
     }
 
-#ifdef SPI2_CS1_Pin
+    #ifdef SPI2_CS1_Pin
     /* attach spi_device_1 to spi2 */
     {
         static struct rt_spi_device rt_spi_device_1;
@@ -553,7 +553,7 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
+    #endif
 #endif
 
 #ifdef DRV_USE_SPI4
@@ -578,7 +578,7 @@ rt_err_t drv_spi_init(void)
     if (ret != RT_EOK) {
         return ret;
     }
-#ifdef SPI4_CS1_Pin
+    #ifdef SPI4_CS1_Pin
 
     /* attach spi_device_1 to spi4 */
     {
@@ -605,8 +605,8 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
-#ifdef SPI4_CS2_Pin
+    #endif
+    #ifdef SPI4_CS2_Pin
     /* attach spi_device_2 to spi4 */
     {
         static struct rt_spi_device rt_spi_device_2;
@@ -632,7 +632,7 @@ rt_err_t drv_spi_init(void)
             return ret;
         }
     }
-#endif
+    #endif
 #endif
 
     return RT_EOK;

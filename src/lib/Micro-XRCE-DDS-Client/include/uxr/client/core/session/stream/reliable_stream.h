@@ -16,16 +16,14 @@
 #define UXR__CLIENT__CORE__SESSION__STREAM__RELIABLE_STREAM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-typedef struct uxrReliableStream
-{
-    uint8_t * buffer;
+typedef struct uxrReliableStream {
+    uint8_t* buffer;
     size_t size;
     uint16_t history;
 

@@ -22,7 +22,7 @@
 /* HIL simulation */
 // #define FMT_USING_HIL
 /* SIH simulation */
-// #define FMT_USING_SIH 
+// #define FMT_USING_SIH
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
@@ -40,8 +40,8 @@
 /* ULog */
 #define FMT_USING_ULOG
 #ifdef FMT_USING_ULOG
-// #define ENABLE_ULOG_FS_BACKEND
-#define ENABLE_ULOG_CONSOLE_BACKEND
+    // #define ENABLE_ULOG_FS_BACKEND
+    #define ENABLE_ULOG_CONSOLE_BACKEND
 #endif
 
 /* Cortex-M Backtrace */
@@ -49,7 +49,6 @@
 
 /* Unit Test */
 // #define FMT_USING_UNIT_TEST
-
 
 // #define FMT_RECORD_CALIBRATION_DATA
 

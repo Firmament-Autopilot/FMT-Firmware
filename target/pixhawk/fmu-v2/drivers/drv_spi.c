@@ -41,9 +41,9 @@ struct stm32_spi_cs {
 #ifdef SPI_USE_DMA
 static uint8_t dummy = 0xFF;
 static void DMA_RxConfiguration(struct stm32_spi_bus* stm32_spi_bus,
-    const void* send_addr,
-    void* recv_addr,
-    rt_size_t size)
+                                const void* send_addr,
+                                void* recv_addr,
+                                rt_size_t size)
 {
     DMA_InitTypeDef DMA_InitStructure;
 
@@ -127,7 +127,7 @@ static void DMA_RxConfiguration(struct stm32_spi_bus* stm32_spi_bus,
 #endif
 
 static rt_err_t configure(struct rt_spi_device* device,
-    struct rt_spi_configuration* configuration)
+                          struct rt_spi_configuration* configuration)
 {
     struct stm32_spi_bus* stm32_spi_bus = (struct stm32_spi_bus*)device->bus;
     SPI_InitTypeDef SPI_InitStructure;
@@ -244,7 +244,7 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
             SPI_I2S_DMACmd(SPI, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, ENABLE);
 
             while (DMA_GetFlagStatus(stm32_spi_bus->DMA_Stream_RX, stm32_spi_bus->DMA_Channel_RX_FLAG_TC) == RESET
-                || DMA_GetFlagStatus(stm32_spi_bus->DMA_Stream_TX, stm32_spi_bus->DMA_Channel_TX_FLAG_TC) == RESET)
+                   || DMA_GetFlagStatus(stm32_spi_bus->DMA_Stream_TX, stm32_spi_bus->DMA_Channel_TX_FLAG_TC) == RESET)
                 ;
 
             SPI_I2S_DMACmd(SPI, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
@@ -335,8 +335,8 @@ static struct rt_spi_ops stm32_spi_ops = {
  *
  */
 static rt_err_t stm32_spi_register(SPI_TypeDef* SPI,
-    struct stm32_spi_bus* stm32_spi,
-    const char* spi_bus_name)
+                                   struct stm32_spi_bus* stm32_spi,
+                                   const char* spi_bus_name)
 {
     if (SPI == SPI1) {
         stm32_spi->SPI = SPI1;

@@ -16,16 +16,14 @@
 #define UXR_CLIENT_PROFILE_TRANSPORT_IP_TCP_TCPTRANSPORTPOSIX_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <poll.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
-typedef struct uxrTCPPlatform
-{
+typedef struct uxrTCPPlatform {
     struct pollfd poll_fd;
 
 } uxrTCPPlatform;

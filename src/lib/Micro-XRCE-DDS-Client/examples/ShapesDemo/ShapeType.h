@@ -23,19 +23,17 @@
 #define _ShapeType_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /*!
  * @brief This struct represents the structure ShapeType defined by the user in the IDL file.
  * @ingroup SHAPETYPE
  */
-typedef struct ShapeType
-{
+typedef struct ShapeType {
     char color[255];
 
     int32_t x;
@@ -48,7 +46,6 @@ struct ucdrBuffer;
 bool ShapeType_serialize_topic(struct ucdrBuffer* writer, const ShapeType* topic);
 bool ShapeType_deserialize_topic(struct ucdrBuffer* reader, ShapeType* topic);
 uint32_t ShapeType_size_of_topic(const ShapeType* topic, uint32_t size);
-
 
 #ifdef __cplusplus
 }

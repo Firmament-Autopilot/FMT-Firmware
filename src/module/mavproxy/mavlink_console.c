@@ -16,8 +16,8 @@
 
 #include <firmament.h>
 
-#include "module/utils/ringbuffer.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/utils/ringbuffer.h"
 
 #define MAV_CONSOLE_DEVICE_NAME    "mav_console"
 #define MAV_CONSOLE_RX_BUFFER_SIZE 128
@@ -144,9 +144,9 @@ static rt_err_t _close(struct rt_device* dev)
 }
 
 static rt_size_t _read(struct rt_device* dev,
-    rt_off_t pos,
-    void* buffer,
-    rt_size_t size)
+                       rt_off_t pos,
+                       void* buffer,
+                       rt_size_t size)
 {
     uint16_t len;
 
@@ -165,9 +165,9 @@ static rt_size_t _read(struct rt_device* dev,
 }
 
 static rt_size_t _write(struct rt_device* dev,
-    rt_off_t pos,
-    const void* buffer,
-    rt_size_t size)
+                        rt_off_t pos,
+                        const void* buffer,
+                        rt_size_t size)
 {
     rt_size_t len;
     rt_size_t left;
@@ -229,8 +229,8 @@ static rt_size_t _write(struct rt_device* dev,
 }
 
 static rt_err_t _control(struct rt_device* dev,
-    int cmd,
-    void* args)
+                         int cmd,
+                         void* args)
 {
     RT_ASSERT(dev != RT_NULL);
 
@@ -311,11 +311,7 @@ rt_err_t mavlink_console_init(void)
     }
 
     /* register timer event */
-    rt_timer_init(&timer_mav_console, "mav_console",
-        mav_console_timeout,
-        RT_NULL,
-        50,
-        RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_HARD_TIMER);
+    rt_timer_init(&timer_mav_console, "mav_console", mav_console_timeout, RT_NULL, 50, RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_HARD_TIMER);
 
     /* open flag doesn't matter, since open function will not check open flag */
     return rt_device_register(device, MAV_CONSOLE_DEVICE_NAME, RT_DEVICE_FLAG_RDWR);

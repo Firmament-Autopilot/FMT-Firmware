@@ -23,19 +23,17 @@
 #define _Time_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /*!
  * @brief This struct represents the structure Time defined by the user in the IDL file.
  * @ingroup TIME
  */
-typedef struct Time
-{
+typedef struct Time {
     int32_t sec;
     uint32_t nanosec;
 } Time;
@@ -45,7 +43,6 @@ struct ucdrBuffer;
 bool Time_serialize_topic(struct ucdrBuffer* writer, const Time* topic);
 bool Time_deserialize_topic(struct ucdrBuffer* reader, Time* topic);
 uint32_t Time_size_of_topic(const Time* topic, uint32_t size);
-
 
 #ifdef __cplusplus
 }

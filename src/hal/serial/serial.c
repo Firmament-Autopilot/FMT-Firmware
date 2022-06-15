@@ -280,10 +280,8 @@ rt_inline int _serial_dma_rx(struct serial_device* serial, rt_uint8_t* data, int
     if (rx_fifo->get_index + recv_len < serial->config.bufsz)
         rt_memcpy(data, rx_fifo->buffer + rx_fifo->get_index, recv_len);
     else {
-        rt_memcpy(data, rx_fifo->buffer + rx_fifo->get_index,
-            serial->config.bufsz - rx_fifo->get_index);
-        rt_memcpy(data + serial->config.bufsz - rx_fifo->get_index, rx_fifo->buffer,
-            recv_len + rx_fifo->get_index - serial->config.bufsz);
+        rt_memcpy(data, rx_fifo->buffer + rx_fifo->get_index, serial->config.bufsz - rx_fifo->get_index);
+        rt_memcpy(data + serial->config.bufsz - rx_fifo->get_index, rx_fifo->buffer, recv_len + rx_fifo->get_index - serial->config.bufsz);
     }
 
     _dma_recv_update_get_index(serial, recv_len);
@@ -534,9 +532,9 @@ static rt_err_t hal_serial_close(struct rt_device* dev)
 }
 
 static rt_size_t hal_serial_read(struct rt_device* dev,
-    rt_off_t pos,
-    void* buffer,
-    rt_size_t size)
+                                 rt_off_t pos,
+                                 void* buffer,
+                                 rt_size_t size)
 {
     struct serial_device* serial;
 
@@ -557,9 +555,9 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
 }
 
 static rt_size_t hal_serial_write(struct rt_device* dev,
-    rt_off_t pos,
-    const void* buffer,
-    rt_size_t size)
+                                  rt_off_t pos,
+                                  const void* buffer,
+                                  rt_size_t size)
 {
     struct serial_device* serial;
 
@@ -578,8 +576,8 @@ static rt_size_t hal_serial_write(struct rt_device* dev,
 }
 
 static rt_err_t hal_serial_control(struct rt_device* dev,
-    int cmd,
-    void* args)
+                                   int cmd,
+                                   void* args)
 {
     rt_err_t ret = RT_EOK;
     struct serial_device* serial;
@@ -634,9 +632,9 @@ static rt_err_t hal_serial_control(struct rt_device* dev,
  * serial register
  */
 rt_err_t hal_serial_register(struct serial_device* serial,
-    const char* name,
-    rt_uint32_t flag,
-    void* data)
+                             const char* name,
+                             rt_uint32_t flag,
+                             void* data)
 {
     rt_err_t ret;
     struct rt_device* device;

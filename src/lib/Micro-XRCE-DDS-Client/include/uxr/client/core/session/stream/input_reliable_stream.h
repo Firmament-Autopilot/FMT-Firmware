@@ -16,8 +16,7 @@
 #define UXR__CLIENT__CORE__SESSION__STREAM__INPUT_RELIABLE_STREAM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/reliable_stream.h>
@@ -27,8 +26,7 @@ extern "C"
 
 struct ucdrBuffer;
 
-typedef enum FragmentationInfo
-{
+typedef enum FragmentationInfo {
     NO_FRAGMENTED,
     INTERMEDIATE_FRAGMENT,
     LAST_FRAGMENT
@@ -37,8 +35,7 @@ typedef enum FragmentationInfo
 
 typedef FragmentationInfo (*OnGetFragmentationInfo)(uint8_t* buffer);
 
-typedef struct uxrInputReliableStream
-{
+typedef struct uxrInputReliableStream {
     uxrReliableStream base;
 
     uxrSeqNum last_handled;

@@ -16,15 +16,14 @@
 #define _SRC_C_CORE_SESSION_STREAM_OUTPUT_BEST_EFFORT_STREAM_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/output_best_effort_stream.h>
 #include <uxr/client/core/session/stream/seq_num.h>
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 void uxr_init_output_best_effort_stream(uxrOutputBestEffortStream* stream, uint8_t* buffer, size_t size, uint8_t offset);
 void uxr_reset_output_best_effort_stream(uxrOutputBestEffortStream* stream);

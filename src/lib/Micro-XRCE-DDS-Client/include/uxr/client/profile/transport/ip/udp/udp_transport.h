@@ -16,19 +16,17 @@
 #define UXR_CLIENT_UDP_TRANSPORT_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/profile/transport/ip/ip.h>
-#include <uxr/client/core/communication/communication.h>
 #include <uxr/client/config.h>
+#include <uxr/client/core/communication/communication.h>
+#include <uxr/client/profile/transport/ip/ip.h>
 #include <uxr/client/visibility.h>
 
 struct uxrUDPPlatform;
 
-typedef struct uxrUDPTransport
-{
+typedef struct uxrUDPTransport {
     uint8_t buffer[UXR_CONFIG_UDP_TRANSPORT_MTU];
     uxrCommunication comm;
     struct uxrUDPPlatform* platform;
@@ -46,11 +44,11 @@ typedef struct uxrUDPTransport
  * @return `true` in case of successful initialization. `false` in other case.
  */
 UXRDLLAPI bool uxr_init_udp_transport(
-        uxrUDPTransport* transport,
-        struct uxrUDPPlatform* platform,
-        uxrIpProtocol ip_protocol,
-        const char* ip,
-        const char* port);
+    uxrUDPTransport* transport,
+    struct uxrUDPPlatform* platform,
+    uxrIpProtocol ip_protocol,
+    const char* ip,
+    const char* port);
 
 /**
  * @brief Closes a UDP transport.
@@ -58,8 +56,7 @@ UXRDLLAPI bool uxr_init_udp_transport(
  * @return `true` in case of successful closing. `false` in other case.
  */
 UXRDLLAPI bool uxr_close_udp_transport(
-        uxrUDPTransport* transport);
-
+    uxrUDPTransport* transport);
 
 #ifdef __cplusplus
 }

@@ -21,21 +21,21 @@
 
 #include "Header.h"
 
-#include <ucdr/microcdr.h>
 #include <string.h>
+#include <ucdr/microcdr.h>
 
 bool Header_serialize_topic(ucdrBuffer* writer, const Header* topic)
 {
-    (void) Time_serialize_topic(writer, &topic->stamp);
-    (void) ucdr_serialize_string(writer, topic->frame_id);
+    (void)Time_serialize_topic(writer, &topic->stamp);
+    (void)ucdr_serialize_string(writer, topic->frame_id);
 
     return !writer->error;
 }
 
 bool Header_deserialize_topic(ucdrBuffer* reader, Header* topic)
 {
-    (void) Time_deserialize_topic(reader, &topic->stamp);
-    (void) ucdr_deserialize_string(reader, topic->frame_id, 255);
+    (void)Time_deserialize_topic(reader, &topic->stamp);
+    (void)ucdr_deserialize_string(reader, topic->frame_id, 255);
 
     return !reader->error;
 }

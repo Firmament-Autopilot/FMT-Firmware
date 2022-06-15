@@ -319,7 +319,7 @@ static rt_err_t _init(void)
 
     /* do not set low cut-off frequency here, let higher layer to filter the signal properly */
     res |= _write_checked_reg(ADDR_CTRL_REG1,
-        REG1_POWER_NORMAL | REG1_Z_ENABLE | REG1_Y_ENABLE | REG1_X_ENABLE | RATE_760HZ_LP_100HZ);
+                              REG1_POWER_NORMAL | REG1_Z_ENABLE | REG1_Y_ENABLE | REG1_X_ENABLE | RATE_760HZ_LP_100HZ);
     res |= _write_checked_reg(ADDR_CTRL_REG2, 0x00);             /* disable high-pass filters */
     res |= _write_checked_reg(ADDR_CTRL_REG3, REG3_DRDY_ENABLE); /* DRDY enable on INT2*/
     res |= _write_checked_reg(ADDR_CTRL_REG4, REG4_BDU);

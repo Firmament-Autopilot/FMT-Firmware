@@ -16,17 +16,15 @@
 #define UXR_CLIENT_TCP_TRANSPORT_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/profile/transport/ip/ip.h>
-#include <uxr/client/core/communication/communication.h>
 #include <uxr/client/config.h>
+#include <uxr/client/core/communication/communication.h>
+#include <uxr/client/profile/transport/ip/ip.h>
 #include <uxr/client/visibility.h>
 
-typedef enum uxrTCPInputBufferState
-{
+typedef enum uxrTCPInputBufferState {
     UXR_TCP_BUFFER_EMPTY,
     UXR_TCP_SIZE_INCOMPLETE,
     UXR_TCP_SIZE_READ,
@@ -35,8 +33,7 @@ typedef enum uxrTCPInputBufferState
 
 } uxrTCPInputBufferState;
 
-typedef struct uxrTCPInputBuffer
-{
+typedef struct uxrTCPInputBuffer {
     uint8_t buffer[UXR_CONFIG_TCP_TRANSPORT_MTU];
     size_t position;
     uxrTCPInputBufferState state;
@@ -46,8 +43,7 @@ typedef struct uxrTCPInputBuffer
 
 struct uxrTCPPlatform;
 
-typedef struct uxrTCPTransport
-{
+typedef struct uxrTCPTransport {
     uxrTCPInputBuffer input_buffer;
     uxrCommunication comm;
     struct uxrTCPPlatform* platform;
@@ -65,11 +61,11 @@ typedef struct uxrTCPTransport
  * @return `true` in case of successful initialization. `false` in other case.
  */
 UXRDLLAPI bool uxr_init_tcp_transport(
-        uxrTCPTransport* transport,
-        struct uxrTCPPlatform* platform,
-        uxrIpProtocol ip_protocol,
-        const char* ip,
-        const char* port);
+    uxrTCPTransport* transport,
+    struct uxrTCPPlatform* platform,
+    uxrIpProtocol ip_protocol,
+    const char* ip,
+    const char* port);
 
 /**
  * @brief Closes a TCP transport.
@@ -77,7 +73,7 @@ UXRDLLAPI bool uxr_init_tcp_transport(
  * @return `true` in case of successful closing. `false` in other case.
  */
 UXRDLLAPI bool uxr_close_tcp_transport(
-        uxrTCPTransport* transport);
+    uxrTCPTransport* transport);
 
 #ifdef __cplusplus
 }

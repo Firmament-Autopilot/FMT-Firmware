@@ -6,10 +6,10 @@
  */
 
 #ifndef CALIBRATION_TYPES_H
-#define CALIBRATION_TYPES_H
+    #define CALIBRATION_TYPES_H
 
-/* Include Files */
-#include "rtwtypes.h"
+    /* Include Files */
+    #include "rtwtypes.h"
 #endif
 
 /*

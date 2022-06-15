@@ -16,14 +16,12 @@
 #define UXR_CLIENT_TCP_TRANSPORT_WINDOWS_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <winsock2.h>
 
-typedef struct uxrTCPPlatform
-{
+typedef struct uxrTCPPlatform {
     WSAPOLLFD poll_fd;
 
 } uxrTCPPlatform;

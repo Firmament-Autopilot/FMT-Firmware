@@ -34,9 +34,9 @@ struct mission_item {
     float param2;         /*<  PARAM2, see MAV_CMD enum*/
     float param3;         /*<  PARAM3, see MAV_CMD enum*/
     float param4;         /*<  PARAM4, see MAV_CMD enum*/
-    int32_t x;       /*<  PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7*/
-    int32_t y;       /*<  PARAM6 / y position: local: y position in meters * 1e4, global: longitude in degrees *10^7*/
-    float z;         /*<  PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.*/
+    int32_t x;            /*<  PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7*/
+    int32_t y;            /*<  PARAM6 / y position: local: y position in meters * 1e4, global: longitude in degrees *10^7*/
+    float z;              /*<  PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.*/
 };
 
 fmt_err_t mission_data_init(void);

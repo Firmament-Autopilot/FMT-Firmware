@@ -17,8 +17,8 @@
 #ifndef DRV_USART_H__
 #define DRV_USART_H__
 
-#include <firmament.h>
 #include "board.h"
+#include <firmament.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,4 +31,3 @@ rt_err_t drv_usart_init(void);
 #endif
 
 #endif /* DRV_USART_H__ */
-

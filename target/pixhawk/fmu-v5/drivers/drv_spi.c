@@ -79,7 +79,7 @@ struct stm32_spi_cs {
  * @return rt_err_t RT_EOK for success
  */
 static rt_err_t configure(struct rt_spi_device* device,
-    struct rt_spi_configuration* configuration)
+                          struct rt_spi_configuration* configuration)
 {
     struct stm32_spi_bus* stm32_spi_bus = (struct stm32_spi_bus*)device->bus;
 
@@ -194,7 +194,7 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
     }
 
 #ifdef SPI_USE_DMA
-#error Not support SPI DMA.
+    #error Not support SPI DMA.
 #endif
 
     {
@@ -280,8 +280,8 @@ static struct rt_spi_ops stm32_spi_ops = {
  * \return rt_err_t RT_EOK for success
  */
 static rt_err_t stm32_spi_register(SPI_TypeDef* SPI,
-    struct stm32_spi_bus* stm32_spi,
-    const char* spi_bus_name)
+                                   struct stm32_spi_bus* stm32_spi,
+                                   const char* spi_bus_name)
 {
     if (SPI == SPI1) {
         stm32_spi->SPI = SPI1;

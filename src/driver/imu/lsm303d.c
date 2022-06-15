@@ -490,7 +490,7 @@ static rt_err_t _init(void)
     /* enable accel*/
     //res |= _write_checked_reg(ADDR_CTRL_REG0, 0x00);	//disable FIFO
     res |= _write_checked_reg(ADDR_CTRL_REG1,
-        REG1_X_ENABLE_A | REG1_Y_ENABLE_A | REG1_Z_ENABLE_A | REG1_BDU_UPDATE | REG1_RATE_800HZ_A);
+                              REG1_X_ENABLE_A | REG1_Y_ENABLE_A | REG1_Z_ENABLE_A | REG1_BDU_UPDATE | REG1_RATE_800HZ_A);
 
     /* enable mag */
     res |= _write_checked_reg(ADDR_CTRL_REG7, REG7_CONT_MODE_M);
@@ -543,7 +543,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
     if (_acc_measure(((float*)data)) != RT_EOK) {
         return 0;
     }
-    
+
     return size;
 }
 

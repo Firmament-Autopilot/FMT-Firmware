@@ -90,8 +90,12 @@ static int echo_sensor_imu(void* param)
     }
 
     console_printf("gyr:%f %f %f acc:%f %f %f\n",
-        imu_report.gyr_B_radDs[0], imu_report.gyr_B_radDs[1], imu_report.gyr_B_radDs[2],
-        imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2]);
+                   imu_report.gyr_B_radDs[0],
+                   imu_report.gyr_B_radDs[1],
+                   imu_report.gyr_B_radDs[2],
+                   imu_report.acc_B_mDs2[0],
+                   imu_report.acc_B_mDs2[1],
+                   imu_report.acc_B_mDs2[2]);
 
     return 0;
 }
@@ -108,7 +112,9 @@ static int echo_sensor_mag(void* param)
     }
 
     console_printf("mag:%f %f %f\n",
-        mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2]);
+                   mag_report.mag_B_gauss[0],
+                   mag_report.mag_B_gauss[1],
+                   mag_report.mag_B_gauss[2]);
 
     return 0;
 }
@@ -125,8 +131,10 @@ static int echo_sensor_baro(void* param)
     }
 
     console_printf("timestamp:%d pressure:%d temperature:%f altitude:%f\n",
-        baro_report.timestamp_ms, baro_report.pressure_pa, baro_report.temperature_deg,
-        baro_report.altitude_m);
+                   baro_report.timestamp_ms,
+                   baro_report.pressure_pa,
+                   baro_report.temperature_deg,
+                   baro_report.altitude_m);
 
     return 0;
 }
@@ -142,8 +150,7 @@ static int echo_sensor_gps(void* param)
         return -1;
     }
 
-    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f\n", gps_report.lon, gps_report.lat,
-        gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.vAcc, gps_report.sAcc);
+    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f\n", gps_report.lon, gps_report.lat, gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.vAcc, gps_report.sAcc);
 
     return 0;
 }
@@ -173,9 +180,7 @@ static void imu_rotation_init(uint8_t id)
 
     if (id == 0) {
         float val_acc0_scale[] = {
-            PARAM_GET_FLOAT(CALIB, ACC0_XXSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE),
-            PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE),
-            PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_ZZSCALE)
+            PARAM_GET_FLOAT(CALIB, ACC0_XXSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_ZZSCALE)
         };
         /* calculate rotation matrix */
         MatSetVal(&acc_scale, val_acc0_scale);
@@ -185,9 +190,7 @@ static void imu_rotation_init(uint8_t id)
         sensor_acc_set_rotation(imu_dev[id], acc_rot.buffer);
     } else if (id == 1) {
         float val_acc1_scale[] = {
-            PARAM_GET_FLOAT(CALIB, ACC1_XXSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE),
-            PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE),
-            PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_ZZSCALE)
+            PARAM_GET_FLOAT(CALIB, ACC1_XXSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_ZZSCALE)
         };
         /* calculate rotation matrix */
         MatSetVal(&acc_scale, val_acc1_scale);
@@ -228,9 +231,7 @@ static void mag_rotation_init(uint8_t id)
 
     if (id == 0) {
         float val_mag0_scale[] = {
-            PARAM_GET_FLOAT(CALIB, MAG0_XXSCALE), PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE),
-            PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG0_YYSCALE), PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE),
-            PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE), PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE), PARAM_GET_FLOAT(CALIB, MAG0_ZZSCALE)
+            PARAM_GET_FLOAT(CALIB, MAG0_XXSCALE), PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE), PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG0_YYSCALE), PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE), PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE), PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE), PARAM_GET_FLOAT(CALIB, MAG0_ZZSCALE)
         };
         /* Calculate rotation matrix */
         MatSetVal(&mag_scale, val_mag0_scale);
@@ -239,9 +240,7 @@ static void mag_rotation_init(uint8_t id)
         sensor_mag_set_rotation(mag_dev[id], mag_rot.buffer);
     } else if (id == 1) {
         float val_mag1_scale[] = {
-            PARAM_GET_FLOAT(CALIB, MAG1_XXSCALE), PARAM_GET_FLOAT(CALIB, MAG1_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG1_XZSCALE),
-            PARAM_GET_FLOAT(CALIB, MAG1_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG1_YYSCALE), PARAM_GET_FLOAT(CALIB, MAG1_YZSCALE),
-            PARAM_GET_FLOAT(CALIB, MAG1_XZSCALE), PARAM_GET_FLOAT(CALIB, MAG1_YZSCALE), PARAM_GET_FLOAT(CALIB, MAG1_ZZSCALE)
+            PARAM_GET_FLOAT(CALIB, MAG1_XXSCALE), PARAM_GET_FLOAT(CALIB, MAG1_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG1_XZSCALE), PARAM_GET_FLOAT(CALIB, MAG1_XYSCALE), PARAM_GET_FLOAT(CALIB, MAG1_YYSCALE), PARAM_GET_FLOAT(CALIB, MAG1_YZSCALE), PARAM_GET_FLOAT(CALIB, MAG1_XZSCALE), PARAM_GET_FLOAT(CALIB, MAG1_YZSCALE), PARAM_GET_FLOAT(CALIB, MAG1_ZZSCALE)
         };
         /* Calculate rotation matrix */
         MatSetVal(&mag_scale, val_mag1_scale);
@@ -353,7 +352,7 @@ fmt_err_t advertise_sensor_imu(uint8_t id)
         return FMT_EINVAL;
     }
 
-    return FMT_EOK;    
+    return FMT_EOK;
 }
 
 /**

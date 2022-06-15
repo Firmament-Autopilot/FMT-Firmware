@@ -3,52 +3,55 @@
 
 #define MAVLINK_MSG_ID_COMPONENT_INFORMATION 395
 
-
 typedef struct __mavlink_component_information_t {
- uint32_t time_boot_ms; /*< [ms] Timestamp (time since system boot).*/
- uint32_t metadata_type; /*<  The type of metadata being requested.*/
- uint32_t metadata_uid; /*<  Unique uid for this metadata which a gcs can use for created cached metadata and understanding whether it's cache it up to date or whether it needs to download new data.*/
- uint32_t translation_uid; /*<  Unique uid for the translation file associated with the metadata.*/
- char metadata_uri[70]; /*<  Component definition URI. If prefix mavlinkftp:// file is downloaded from vehicle over mavlink ftp protocol. If prefix http[s]:// file is downloaded over internet. Files are json format. They can end in .gz to indicate file is in gzip format.*/
- char translation_uri[70]; /*<  The translations for strings within the metadata file. If null the either do not exist or may be included in the metadata file itself. The translations specified here supercede any which may be in the metadata file itself. The uri format is the same as component_metadata_uri . Files are in Json Translation spec format. Empty string indicates no tranlsation file.*/
+    uint32_t time_boot_ms;    /*< [ms] Timestamp (time since system boot).*/
+    uint32_t metadata_type;   /*<  The type of metadata being requested.*/
+    uint32_t metadata_uid;    /*<  Unique uid for this metadata which a gcs can use for created cached metadata and understanding whether it's cache it up to date or whether it needs to download new data.*/
+    uint32_t translation_uid; /*<  Unique uid for the translation file associated with the metadata.*/
+    char metadata_uri[70];    /*<  Component definition URI. If prefix mavlinkftp:// file is downloaded from vehicle over mavlink ftp protocol. If prefix http[s]:// file is downloaded over internet. Files are json format. They can end in .gz to indicate file is in gzip format.*/
+    char translation_uri[70]; /*<  The translations for strings within the metadata file. If null the either do not exist or may be included in the metadata file itself. The translations specified here supercede any which may be in the metadata file itself. The uri format is the same as component_metadata_uri . Files are in Json Translation spec format. Empty string indicates no tranlsation file.*/
 } mavlink_component_information_t;
 
-#define MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN 156
+#define MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN     156
 #define MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN 156
-#define MAVLINK_MSG_ID_395_LEN 156
-#define MAVLINK_MSG_ID_395_MIN_LEN 156
+#define MAVLINK_MSG_ID_395_LEN                       156
+#define MAVLINK_MSG_ID_395_MIN_LEN                   156
 
 #define MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC 163
-#define MAVLINK_MSG_ID_395_CRC 163
+#define MAVLINK_MSG_ID_395_CRC                   163
 
-#define MAVLINK_MSG_COMPONENT_INFORMATION_FIELD_METADATA_URI_LEN 70
+#define MAVLINK_MSG_COMPONENT_INFORMATION_FIELD_METADATA_URI_LEN    70
 #define MAVLINK_MSG_COMPONENT_INFORMATION_FIELD_TRANSLATION_URI_LEN 70
 
 #if MAVLINK_COMMAND_24BIT
-#define MAVLINK_MESSAGE_INFO_COMPONENT_INFORMATION { \
-    395, \
-    "COMPONENT_INFORMATION", \
-    6, \
-    {  { "time_boot_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_component_information_t, time_boot_ms) }, \
-         { "metadata_type", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_component_information_t, metadata_type) }, \
-         { "metadata_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_component_information_t, metadata_uid) }, \
-         { "metadata_uri", NULL, MAVLINK_TYPE_CHAR, 70, 16, offsetof(mavlink_component_information_t, metadata_uri) }, \
-         { "translation_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_component_information_t, translation_uid) }, \
-         { "translation_uri", NULL, MAVLINK_TYPE_CHAR, 70, 86, offsetof(mavlink_component_information_t, translation_uri) }, \
-         } \
-}
+    #define MAVLINK_MESSAGE_INFO_COMPONENT_INFORMATION                                                                                     \
+        {                                                                                                                                  \
+            395,                                                                                                                           \
+                "COMPONENT_INFORMATION",                                                                                                   \
+                6,                                                                                                                         \
+            {                                                                                                                              \
+                { "time_boot_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_component_information_t, time_boot_ms) },            \
+                    { "metadata_type", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_component_information_t, metadata_type) },      \
+                    { "metadata_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_component_information_t, metadata_uid) },        \
+                    { "metadata_uri", NULL, MAVLINK_TYPE_CHAR, 70, 16, offsetof(mavlink_component_information_t, metadata_uri) },          \
+                    { "translation_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_component_information_t, translation_uid) }, \
+                    { "translation_uri", NULL, MAVLINK_TYPE_CHAR, 70, 86, offsetof(mavlink_component_information_t, translation_uri) },    \
+            }                                                                                                                              \
+        }
 #else
-#define MAVLINK_MESSAGE_INFO_COMPONENT_INFORMATION { \
-    "COMPONENT_INFORMATION", \
-    6, \
-    {  { "time_boot_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_component_information_t, time_boot_ms) }, \
-         { "metadata_type", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_component_information_t, metadata_type) }, \
-         { "metadata_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_component_information_t, metadata_uid) }, \
-         { "metadata_uri", NULL, MAVLINK_TYPE_CHAR, 70, 16, offsetof(mavlink_component_information_t, metadata_uri) }, \
-         { "translation_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_component_information_t, translation_uid) }, \
-         { "translation_uri", NULL, MAVLINK_TYPE_CHAR, 70, 86, offsetof(mavlink_component_information_t, translation_uri) }, \
-         } \
-}
+    #define MAVLINK_MESSAGE_INFO_COMPONENT_INFORMATION                                                                                     \
+        {                                                                                                                                  \
+            "COMPONENT_INFORMATION",                                                                                                       \
+                6,                                                                                                                         \
+            {                                                                                                                              \
+                { "time_boot_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_component_information_t, time_boot_ms) },            \
+                    { "metadata_type", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_component_information_t, metadata_type) },      \
+                    { "metadata_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_component_information_t, metadata_uid) },        \
+                    { "metadata_uri", NULL, MAVLINK_TYPE_CHAR, 70, 16, offsetof(mavlink_component_information_t, metadata_uri) },          \
+                    { "translation_uid", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_component_information_t, translation_uid) }, \
+                    { "translation_uri", NULL, MAVLINK_TYPE_CHAR, 70, 86, offsetof(mavlink_component_information_t, translation_uri) },    \
+            }                                                                                                                              \
+        }
 #endif
 
 /**
@@ -66,7 +69,7 @@ typedef struct __mavlink_component_information_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_component_information_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char *metadata_uri, uint32_t translation_uid, const char *translation_uri)
+                                                              uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char* metadata_uri, uint32_t translation_uid, const char* translation_uri)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN];
@@ -76,16 +79,16 @@ static inline uint16_t mavlink_msg_component_information_pack(uint8_t system_id,
     _mav_put_uint32_t(buf, 12, translation_uid);
     _mav_put_char_array(buf, 16, metadata_uri, 70);
     _mav_put_char_array(buf, 86, translation_uri, 70);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
 #else
     mavlink_component_information_t packet;
     packet.time_boot_ms = time_boot_ms;
     packet.metadata_type = metadata_type;
     packet.metadata_uid = metadata_uid;
     packet.translation_uid = translation_uid;
-    mav_array_memcpy(packet.metadata_uri, metadata_uri, sizeof(char)*70);
-    mav_array_memcpy(packet.translation_uri, translation_uri, sizeof(char)*70);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
+    mav_array_memcpy(packet.metadata_uri, metadata_uri, sizeof(char) * 70);
+    mav_array_memcpy(packet.translation_uri, translation_uri, sizeof(char) * 70);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
 #endif
 
     msg->msgid = MAVLINK_MSG_ID_COMPONENT_INFORMATION;
@@ -107,8 +110,8 @@ static inline uint16_t mavlink_msg_component_information_pack(uint8_t system_id,
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_component_information_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-                               mavlink_message_t* msg,
-                                   uint32_t time_boot_ms,uint32_t metadata_type,uint32_t metadata_uid,const char *metadata_uri,uint32_t translation_uid,const char *translation_uri)
+                                                                   mavlink_message_t* msg,
+                                                                   uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char* metadata_uri, uint32_t translation_uid, const char* translation_uri)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN];
@@ -118,16 +121,16 @@ static inline uint16_t mavlink_msg_component_information_pack_chan(uint8_t syste
     _mav_put_uint32_t(buf, 12, translation_uid);
     _mav_put_char_array(buf, 16, metadata_uri, 70);
     _mav_put_char_array(buf, 86, translation_uri, 70);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
 #else
     mavlink_component_information_t packet;
     packet.time_boot_ms = time_boot_ms;
     packet.metadata_type = metadata_type;
     packet.metadata_uid = metadata_uid;
     packet.translation_uid = translation_uid;
-    mav_array_memcpy(packet.metadata_uri, metadata_uri, sizeof(char)*70);
-    mav_array_memcpy(packet.translation_uri, translation_uri, sizeof(char)*70);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
+    mav_array_memcpy(packet.metadata_uri, metadata_uri, sizeof(char) * 70);
+    mav_array_memcpy(packet.translation_uri, translation_uri, sizeof(char) * 70);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
 #endif
 
     msg->msgid = MAVLINK_MSG_ID_COMPONENT_INFORMATION;
@@ -174,9 +177,9 @@ static inline uint16_t mavlink_msg_component_information_encode_chan(uint8_t sys
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_component_information_send(mavlink_channel_t chan, uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char *metadata_uri, uint32_t translation_uid, const char *translation_uri)
+static inline void mavlink_msg_component_information_send(mavlink_channel_t chan, uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char* metadata_uri, uint32_t translation_uid, const char* translation_uri)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN];
     _mav_put_uint32_t(buf, 0, time_boot_ms);
     _mav_put_uint32_t(buf, 4, metadata_type);
@@ -185,16 +188,16 @@ static inline void mavlink_msg_component_information_send(mavlink_channel_t chan
     _mav_put_char_array(buf, 16, metadata_uri, 70);
     _mav_put_char_array(buf, 86, translation_uri, 70);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, buf, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
-#else
+    #else
     mavlink_component_information_t packet;
     packet.time_boot_ms = time_boot_ms;
     packet.metadata_type = metadata_type;
     packet.metadata_uid = metadata_uid;
     packet.translation_uid = translation_uid;
-    mav_array_memcpy(packet.metadata_uri, metadata_uri, sizeof(char)*70);
-    mav_array_memcpy(packet.translation_uri, translation_uri, sizeof(char)*70);
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, (const char *)&packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
-#endif
+    mav_array_memcpy(packet.metadata_uri, metadata_uri, sizeof(char) * 70);
+    mav_array_memcpy(packet.translation_uri, translation_uri, sizeof(char) * 70);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, (const char*)&packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
+    #endif
 }
 
 /**
@@ -204,14 +207,14 @@ static inline void mavlink_msg_component_information_send(mavlink_channel_t chan
  */
 static inline void mavlink_msg_component_information_send_struct(mavlink_channel_t chan, const mavlink_component_information_t* component_information)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     mavlink_msg_component_information_send(chan, component_information->time_boot_ms, component_information->metadata_type, component_information->metadata_uid, component_information->metadata_uri, component_information->translation_uid, component_information->translation_uri);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, (const char *)component_information, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
-#endif
+    #else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, (const char*)component_information, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
+    #endif
 }
 
-#if MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN <= MAVLINK_MAX_PAYLOAD_LEN
+    #if MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
   This varient of _send() can be used to save stack space by re-using
   memory from the receive buffer.  The caller provides a
@@ -219,10 +222,10 @@ static inline void mavlink_msg_component_information_send_struct(mavlink_channel
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_component_information_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char *metadata_uri, uint32_t translation_uid, const char *translation_uri)
+static inline void mavlink_msg_component_information_send_buf(mavlink_message_t* msgbuf, mavlink_channel_t chan, uint32_t time_boot_ms, uint32_t metadata_type, uint32_t metadata_uid, const char* metadata_uri, uint32_t translation_uid, const char* translation_uri)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    char *buf = (char *)msgbuf;
+        #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char* buf = (char*)msgbuf;
     _mav_put_uint32_t(buf, 0, time_boot_ms);
     _mav_put_uint32_t(buf, 4, metadata_type);
     _mav_put_uint32_t(buf, 8, metadata_uid);
@@ -230,23 +233,22 @@ static inline void mavlink_msg_component_information_send_buf(mavlink_message_t 
     _mav_put_char_array(buf, 16, metadata_uri, 70);
     _mav_put_char_array(buf, 86, translation_uri, 70);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, buf, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
-#else
-    mavlink_component_information_t *packet = (mavlink_component_information_t *)msgbuf;
+        #else
+    mavlink_component_information_t* packet = (mavlink_component_information_t*)msgbuf;
     packet->time_boot_ms = time_boot_ms;
     packet->metadata_type = metadata_type;
     packet->metadata_uid = metadata_uid;
     packet->translation_uid = translation_uid;
-    mav_array_memcpy(packet->metadata_uri, metadata_uri, sizeof(char)*70);
-    mav_array_memcpy(packet->translation_uri, translation_uri, sizeof(char)*70);
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, (const char *)packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
-#endif
+    mav_array_memcpy(packet->metadata_uri, metadata_uri, sizeof(char) * 70);
+    mav_array_memcpy(packet->translation_uri, translation_uri, sizeof(char) * 70);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_COMPONENT_INFORMATION, (const char*)packet, MAVLINK_MSG_ID_COMPONENT_INFORMATION_MIN_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN, MAVLINK_MSG_ID_COMPONENT_INFORMATION_CRC);
+        #endif
 }
-#endif
+    #endif
 
 #endif
 
 // MESSAGE COMPONENT_INFORMATION UNPACKING
-
 
 /**
  * @brief Get field time_boot_ms from component_information message
@@ -255,7 +257,7 @@ static inline void mavlink_msg_component_information_send_buf(mavlink_message_t 
  */
 static inline uint32_t mavlink_msg_component_information_get_time_boot_ms(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  0);
+    return _MAV_RETURN_uint32_t(msg, 0);
 }
 
 /**
@@ -265,7 +267,7 @@ static inline uint32_t mavlink_msg_component_information_get_time_boot_ms(const 
  */
 static inline uint32_t mavlink_msg_component_information_get_metadata_type(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  4);
+    return _MAV_RETURN_uint32_t(msg, 4);
 }
 
 /**
@@ -275,7 +277,7 @@ static inline uint32_t mavlink_msg_component_information_get_metadata_type(const
  */
 static inline uint32_t mavlink_msg_component_information_get_metadata_uid(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  8);
+    return _MAV_RETURN_uint32_t(msg, 8);
 }
 
 /**
@@ -283,9 +285,9 @@ static inline uint32_t mavlink_msg_component_information_get_metadata_uid(const 
  *
  * @return  Component definition URI. If prefix mavlinkftp:// file is downloaded from vehicle over mavlink ftp protocol. If prefix http[s]:// file is downloaded over internet. Files are json format. They can end in .gz to indicate file is in gzip format.
  */
-static inline uint16_t mavlink_msg_component_information_get_metadata_uri(const mavlink_message_t* msg, char *metadata_uri)
+static inline uint16_t mavlink_msg_component_information_get_metadata_uri(const mavlink_message_t* msg, char* metadata_uri)
 {
-    return _MAV_RETURN_char_array(msg, metadata_uri, 70,  16);
+    return _MAV_RETURN_char_array(msg, metadata_uri, 70, 16);
 }
 
 /**
@@ -295,7 +297,7 @@ static inline uint16_t mavlink_msg_component_information_get_metadata_uri(const 
  */
 static inline uint32_t mavlink_msg_component_information_get_translation_uid(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  12);
+    return _MAV_RETURN_uint32_t(msg, 12);
 }
 
 /**
@@ -303,9 +305,9 @@ static inline uint32_t mavlink_msg_component_information_get_translation_uid(con
  *
  * @return  The translations for strings within the metadata file. If null the either do not exist or may be included in the metadata file itself. The translations specified here supercede any which may be in the metadata file itself. The uri format is the same as component_metadata_uri . Files are in Json Translation spec format. Empty string indicates no tranlsation file.
  */
-static inline uint16_t mavlink_msg_component_information_get_translation_uri(const mavlink_message_t* msg, char *translation_uri)
+static inline uint16_t mavlink_msg_component_information_get_translation_uri(const mavlink_message_t* msg, char* translation_uri)
 {
-    return _MAV_RETURN_char_array(msg, translation_uri, 70,  86);
+    return _MAV_RETURN_char_array(msg, translation_uri, 70, 86);
 }
 
 /**
@@ -324,8 +326,8 @@ static inline void mavlink_msg_component_information_decode(const mavlink_messag
     mavlink_msg_component_information_get_metadata_uri(msg, component_information->metadata_uri);
     mavlink_msg_component_information_get_translation_uri(msg, component_information->translation_uri);
 #else
-        uint8_t len = msg->len < MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN? msg->len : MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN;
-        memset(component_information, 0, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
+    uint8_t len = msg->len < MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN ? msg->len : MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN;
+    memset(component_information, 0, MAVLINK_MSG_ID_COMPONENT_INFORMATION_LEN);
     memcpy(component_information, _MAV_PAYLOAD(msg), len);
 #endif
 }

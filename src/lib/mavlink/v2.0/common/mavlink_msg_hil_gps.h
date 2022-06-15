@@ -3,75 +3,76 @@
 
 #define MAVLINK_MSG_ID_HIL_GPS 113
 
-
 typedef struct __mavlink_hil_gps_t {
- uint64_t time_usec; /*< [us] Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.*/
- int32_t lat; /*< [degE7] Latitude (WGS84)*/
- int32_t lon; /*< [degE7] Longitude (WGS84)*/
- int32_t alt; /*< [mm] Altitude (MSL). Positive for up.*/
- uint16_t eph; /*< [cm] GPS HDOP horizontal dilution of position. If unknown, set to: 65535*/
- uint16_t epv; /*< [cm] GPS VDOP vertical dilution of position. If unknown, set to: 65535*/
- uint16_t vel; /*< [cm/s] GPS ground speed. If unknown, set to: 65535*/
- int16_t vn; /*< [cm/s] GPS velocity in north direction in earth-fixed NED frame*/
- int16_t ve; /*< [cm/s] GPS velocity in east direction in earth-fixed NED frame*/
- int16_t vd; /*< [cm/s] GPS velocity in down direction in earth-fixed NED frame*/
- uint16_t cog; /*< [cdeg] Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set to: 65535*/
- uint8_t fix_type; /*<  0-1: no fix, 2: 2D fix, 3: 3D fix. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix.*/
- uint8_t satellites_visible; /*<  Number of satellites visible. If unknown, set to 255*/
- uint8_t id; /*<  GPS ID (zero indexed). Used for multiple GPS inputs*/
+    uint64_t time_usec;         /*< [us] Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.*/
+    int32_t lat;                /*< [degE7] Latitude (WGS84)*/
+    int32_t lon;                /*< [degE7] Longitude (WGS84)*/
+    int32_t alt;                /*< [mm] Altitude (MSL). Positive for up.*/
+    uint16_t eph;               /*< [cm] GPS HDOP horizontal dilution of position. If unknown, set to: 65535*/
+    uint16_t epv;               /*< [cm] GPS VDOP vertical dilution of position. If unknown, set to: 65535*/
+    uint16_t vel;               /*< [cm/s] GPS ground speed. If unknown, set to: 65535*/
+    int16_t vn;                 /*< [cm/s] GPS velocity in north direction in earth-fixed NED frame*/
+    int16_t ve;                 /*< [cm/s] GPS velocity in east direction in earth-fixed NED frame*/
+    int16_t vd;                 /*< [cm/s] GPS velocity in down direction in earth-fixed NED frame*/
+    uint16_t cog;               /*< [cdeg] Course over ground (NOT heading, but direction of movement), 0.0..359.99 degrees. If unknown, set to: 65535*/
+    uint8_t fix_type;           /*<  0-1: no fix, 2: 2D fix, 3: 3D fix. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix.*/
+    uint8_t satellites_visible; /*<  Number of satellites visible. If unknown, set to 255*/
+    uint8_t id;                 /*<  GPS ID (zero indexed). Used for multiple GPS inputs*/
 } mavlink_hil_gps_t;
 
-#define MAVLINK_MSG_ID_HIL_GPS_LEN 37
+#define MAVLINK_MSG_ID_HIL_GPS_LEN     37
 #define MAVLINK_MSG_ID_HIL_GPS_MIN_LEN 36
-#define MAVLINK_MSG_ID_113_LEN 37
-#define MAVLINK_MSG_ID_113_MIN_LEN 36
+#define MAVLINK_MSG_ID_113_LEN         37
+#define MAVLINK_MSG_ID_113_MIN_LEN     36
 
 #define MAVLINK_MSG_ID_HIL_GPS_CRC 124
-#define MAVLINK_MSG_ID_113_CRC 124
-
-
+#define MAVLINK_MSG_ID_113_CRC     124
 
 #if MAVLINK_COMMAND_24BIT
-#define MAVLINK_MESSAGE_INFO_HIL_GPS { \
-    113, \
-    "HIL_GPS", \
-    14, \
-    {  { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_hil_gps_t, time_usec) }, \
-         { "fix_type", NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(mavlink_hil_gps_t, fix_type) }, \
-         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_hil_gps_t, lat) }, \
-         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_hil_gps_t, lon) }, \
-         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_hil_gps_t, alt) }, \
-         { "eph", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_hil_gps_t, eph) }, \
-         { "epv", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_hil_gps_t, epv) }, \
-         { "vel", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_hil_gps_t, vel) }, \
-         { "vn", NULL, MAVLINK_TYPE_INT16_T, 0, 26, offsetof(mavlink_hil_gps_t, vn) }, \
-         { "ve", NULL, MAVLINK_TYPE_INT16_T, 0, 28, offsetof(mavlink_hil_gps_t, ve) }, \
-         { "vd", NULL, MAVLINK_TYPE_INT16_T, 0, 30, offsetof(mavlink_hil_gps_t, vd) }, \
-         { "cog", NULL, MAVLINK_TYPE_UINT16_T, 0, 32, offsetof(mavlink_hil_gps_t, cog) }, \
-         { "satellites_visible", NULL, MAVLINK_TYPE_UINT8_T, 0, 35, offsetof(mavlink_hil_gps_t, satellites_visible) }, \
-         { "id", NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(mavlink_hil_gps_t, id) }, \
-         } \
-}
+    #define MAVLINK_MESSAGE_INFO_HIL_GPS                                                                                          \
+        {                                                                                                                         \
+            113,                                                                                                                  \
+                "HIL_GPS",                                                                                                        \
+                14,                                                                                                               \
+            {                                                                                                                     \
+                { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_hil_gps_t, time_usec) },                       \
+                    { "fix_type", NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(mavlink_hil_gps_t, fix_type) },                     \
+                    { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_hil_gps_t, lat) },                                \
+                    { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_hil_gps_t, lon) },                               \
+                    { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_hil_gps_t, alt) },                               \
+                    { "eph", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_hil_gps_t, eph) },                              \
+                    { "epv", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_hil_gps_t, epv) },                              \
+                    { "vel", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_hil_gps_t, vel) },                              \
+                    { "vn", NULL, MAVLINK_TYPE_INT16_T, 0, 26, offsetof(mavlink_hil_gps_t, vn) },                                 \
+                    { "ve", NULL, MAVLINK_TYPE_INT16_T, 0, 28, offsetof(mavlink_hil_gps_t, ve) },                                 \
+                    { "vd", NULL, MAVLINK_TYPE_INT16_T, 0, 30, offsetof(mavlink_hil_gps_t, vd) },                                 \
+                    { "cog", NULL, MAVLINK_TYPE_UINT16_T, 0, 32, offsetof(mavlink_hil_gps_t, cog) },                              \
+                    { "satellites_visible", NULL, MAVLINK_TYPE_UINT8_T, 0, 35, offsetof(mavlink_hil_gps_t, satellites_visible) }, \
+                    { "id", NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(mavlink_hil_gps_t, id) },                                 \
+            }                                                                                                                     \
+        }
 #else
-#define MAVLINK_MESSAGE_INFO_HIL_GPS { \
-    "HIL_GPS", \
-    14, \
-    {  { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_hil_gps_t, time_usec) }, \
-         { "fix_type", NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(mavlink_hil_gps_t, fix_type) }, \
-         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_hil_gps_t, lat) }, \
-         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_hil_gps_t, lon) }, \
-         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_hil_gps_t, alt) }, \
-         { "eph", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_hil_gps_t, eph) }, \
-         { "epv", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_hil_gps_t, epv) }, \
-         { "vel", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_hil_gps_t, vel) }, \
-         { "vn", NULL, MAVLINK_TYPE_INT16_T, 0, 26, offsetof(mavlink_hil_gps_t, vn) }, \
-         { "ve", NULL, MAVLINK_TYPE_INT16_T, 0, 28, offsetof(mavlink_hil_gps_t, ve) }, \
-         { "vd", NULL, MAVLINK_TYPE_INT16_T, 0, 30, offsetof(mavlink_hil_gps_t, vd) }, \
-         { "cog", NULL, MAVLINK_TYPE_UINT16_T, 0, 32, offsetof(mavlink_hil_gps_t, cog) }, \
-         { "satellites_visible", NULL, MAVLINK_TYPE_UINT8_T, 0, 35, offsetof(mavlink_hil_gps_t, satellites_visible) }, \
-         { "id", NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(mavlink_hil_gps_t, id) }, \
-         } \
-}
+    #define MAVLINK_MESSAGE_INFO_HIL_GPS                                                                                          \
+        {                                                                                                                         \
+            "HIL_GPS",                                                                                                            \
+                14,                                                                                                               \
+            {                                                                                                                     \
+                { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_hil_gps_t, time_usec) },                       \
+                    { "fix_type", NULL, MAVLINK_TYPE_UINT8_T, 0, 34, offsetof(mavlink_hil_gps_t, fix_type) },                     \
+                    { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_hil_gps_t, lat) },                                \
+                    { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_hil_gps_t, lon) },                               \
+                    { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_hil_gps_t, alt) },                               \
+                    { "eph", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_hil_gps_t, eph) },                              \
+                    { "epv", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_hil_gps_t, epv) },                              \
+                    { "vel", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_hil_gps_t, vel) },                              \
+                    { "vn", NULL, MAVLINK_TYPE_INT16_T, 0, 26, offsetof(mavlink_hil_gps_t, vn) },                                 \
+                    { "ve", NULL, MAVLINK_TYPE_INT16_T, 0, 28, offsetof(mavlink_hil_gps_t, ve) },                                 \
+                    { "vd", NULL, MAVLINK_TYPE_INT16_T, 0, 30, offsetof(mavlink_hil_gps_t, vd) },                                 \
+                    { "cog", NULL, MAVLINK_TYPE_UINT16_T, 0, 32, offsetof(mavlink_hil_gps_t, cog) },                              \
+                    { "satellites_visible", NULL, MAVLINK_TYPE_UINT8_T, 0, 35, offsetof(mavlink_hil_gps_t, satellites_visible) }, \
+                    { "id", NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(mavlink_hil_gps_t, id) },                                 \
+            }                                                                                                                     \
+        }
 #endif
 
 /**
@@ -97,7 +98,7 @@ typedef struct __mavlink_hil_gps_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_hil_gps_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint64_t time_usec, uint8_t fix_type, int32_t lat, int32_t lon, int32_t alt, uint16_t eph, uint16_t epv, uint16_t vel, int16_t vn, int16_t ve, int16_t vd, uint16_t cog, uint8_t satellites_visible, uint8_t id)
+                                                uint64_t time_usec, uint8_t fix_type, int32_t lat, int32_t lon, int32_t alt, uint16_t eph, uint16_t epv, uint16_t vel, int16_t vn, int16_t ve, int16_t vd, uint16_t cog, uint8_t satellites_visible, uint8_t id)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HIL_GPS_LEN];
@@ -116,7 +117,7 @@ static inline uint16_t mavlink_msg_hil_gps_pack(uint8_t system_id, uint8_t compo
     _mav_put_uint8_t(buf, 35, satellites_visible);
     _mav_put_uint8_t(buf, 36, id);
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HIL_GPS_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HIL_GPS_LEN);
 #else
     mavlink_hil_gps_t packet;
     packet.time_usec = time_usec;
@@ -134,7 +135,7 @@ static inline uint16_t mavlink_msg_hil_gps_pack(uint8_t system_id, uint8_t compo
     packet.satellites_visible = satellites_visible;
     packet.id = id;
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HIL_GPS_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HIL_GPS_LEN);
 #endif
 
     msg->msgid = MAVLINK_MSG_ID_HIL_GPS;
@@ -164,8 +165,8 @@ static inline uint16_t mavlink_msg_hil_gps_pack(uint8_t system_id, uint8_t compo
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_hil_gps_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-                               mavlink_message_t* msg,
-                                   uint64_t time_usec,uint8_t fix_type,int32_t lat,int32_t lon,int32_t alt,uint16_t eph,uint16_t epv,uint16_t vel,int16_t vn,int16_t ve,int16_t vd,uint16_t cog,uint8_t satellites_visible,uint8_t id)
+                                                     mavlink_message_t* msg,
+                                                     uint64_t time_usec, uint8_t fix_type, int32_t lat, int32_t lon, int32_t alt, uint16_t eph, uint16_t epv, uint16_t vel, int16_t vn, int16_t ve, int16_t vd, uint16_t cog, uint8_t satellites_visible, uint8_t id)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HIL_GPS_LEN];
@@ -184,7 +185,7 @@ static inline uint16_t mavlink_msg_hil_gps_pack_chan(uint8_t system_id, uint8_t 
     _mav_put_uint8_t(buf, 35, satellites_visible);
     _mav_put_uint8_t(buf, 36, id);
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HIL_GPS_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HIL_GPS_LEN);
 #else
     mavlink_hil_gps_t packet;
     packet.time_usec = time_usec;
@@ -202,7 +203,7 @@ static inline uint16_t mavlink_msg_hil_gps_pack_chan(uint8_t system_id, uint8_t 
     packet.satellites_visible = satellites_visible;
     packet.id = id;
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HIL_GPS_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HIL_GPS_LEN);
 #endif
 
     msg->msgid = MAVLINK_MSG_ID_HIL_GPS;
@@ -259,7 +260,7 @@ static inline uint16_t mavlink_msg_hil_gps_encode_chan(uint8_t system_id, uint8_
 
 static inline void mavlink_msg_hil_gps_send(mavlink_channel_t chan, uint64_t time_usec, uint8_t fix_type, int32_t lat, int32_t lon, int32_t alt, uint16_t eph, uint16_t epv, uint16_t vel, int16_t vn, int16_t ve, int16_t vd, uint16_t cog, uint8_t satellites_visible, uint8_t id)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HIL_GPS_LEN];
     _mav_put_uint64_t(buf, 0, time_usec);
     _mav_put_int32_t(buf, 8, lat);
@@ -277,7 +278,7 @@ static inline void mavlink_msg_hil_gps_send(mavlink_channel_t chan, uint64_t tim
     _mav_put_uint8_t(buf, 36, id);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, buf, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
-#else
+    #else
     mavlink_hil_gps_t packet;
     packet.time_usec = time_usec;
     packet.lat = lat;
@@ -294,8 +295,8 @@ static inline void mavlink_msg_hil_gps_send(mavlink_channel_t chan, uint64_t tim
     packet.satellites_visible = satellites_visible;
     packet.id = id;
 
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, (const char *)&packet, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
-#endif
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, (const char*)&packet, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
+    #endif
 }
 
 /**
@@ -305,14 +306,14 @@ static inline void mavlink_msg_hil_gps_send(mavlink_channel_t chan, uint64_t tim
  */
 static inline void mavlink_msg_hil_gps_send_struct(mavlink_channel_t chan, const mavlink_hil_gps_t* hil_gps)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     mavlink_msg_hil_gps_send(chan, hil_gps->time_usec, hil_gps->fix_type, hil_gps->lat, hil_gps->lon, hil_gps->alt, hil_gps->eph, hil_gps->epv, hil_gps->vel, hil_gps->vn, hil_gps->ve, hil_gps->vd, hil_gps->cog, hil_gps->satellites_visible, hil_gps->id);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, (const char *)hil_gps, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
-#endif
+    #else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, (const char*)hil_gps, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
+    #endif
 }
 
-#if MAVLINK_MSG_ID_HIL_GPS_LEN <= MAVLINK_MAX_PAYLOAD_LEN
+    #if MAVLINK_MSG_ID_HIL_GPS_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
   This varient of _send() can be used to save stack space by re-using
   memory from the receive buffer.  The caller provides a
@@ -320,10 +321,10 @@ static inline void mavlink_msg_hil_gps_send_struct(mavlink_channel_t chan, const
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_hil_gps_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint64_t time_usec, uint8_t fix_type, int32_t lat, int32_t lon, int32_t alt, uint16_t eph, uint16_t epv, uint16_t vel, int16_t vn, int16_t ve, int16_t vd, uint16_t cog, uint8_t satellites_visible, uint8_t id)
+static inline void mavlink_msg_hil_gps_send_buf(mavlink_message_t* msgbuf, mavlink_channel_t chan, uint64_t time_usec, uint8_t fix_type, int32_t lat, int32_t lon, int32_t alt, uint16_t eph, uint16_t epv, uint16_t vel, int16_t vn, int16_t ve, int16_t vd, uint16_t cog, uint8_t satellites_visible, uint8_t id)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    char *buf = (char *)msgbuf;
+        #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char* buf = (char*)msgbuf;
     _mav_put_uint64_t(buf, 0, time_usec);
     _mav_put_int32_t(buf, 8, lat);
     _mav_put_int32_t(buf, 12, lon);
@@ -340,8 +341,8 @@ static inline void mavlink_msg_hil_gps_send_buf(mavlink_message_t *msgbuf, mavli
     _mav_put_uint8_t(buf, 36, id);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, buf, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
-#else
-    mavlink_hil_gps_t *packet = (mavlink_hil_gps_t *)msgbuf;
+        #else
+    mavlink_hil_gps_t* packet = (mavlink_hil_gps_t*)msgbuf;
     packet->time_usec = time_usec;
     packet->lat = lat;
     packet->lon = lon;
@@ -357,15 +358,14 @@ static inline void mavlink_msg_hil_gps_send_buf(mavlink_message_t *msgbuf, mavli
     packet->satellites_visible = satellites_visible;
     packet->id = id;
 
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, (const char *)packet, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
-#endif
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HIL_GPS, (const char*)packet, MAVLINK_MSG_ID_HIL_GPS_MIN_LEN, MAVLINK_MSG_ID_HIL_GPS_LEN, MAVLINK_MSG_ID_HIL_GPS_CRC);
+        #endif
 }
-#endif
+    #endif
 
 #endif
 
 // MESSAGE HIL_GPS UNPACKING
-
 
 /**
  * @brief Get field time_usec from hil_gps message
@@ -374,7 +374,7 @@ static inline void mavlink_msg_hil_gps_send_buf(mavlink_message_t *msgbuf, mavli
  */
 static inline uint64_t mavlink_msg_hil_gps_get_time_usec(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint64_t(msg,  0);
+    return _MAV_RETURN_uint64_t(msg, 0);
 }
 
 /**
@@ -384,7 +384,7 @@ static inline uint64_t mavlink_msg_hil_gps_get_time_usec(const mavlink_message_t
  */
 static inline uint8_t mavlink_msg_hil_gps_get_fix_type(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  34);
+    return _MAV_RETURN_uint8_t(msg, 34);
 }
 
 /**
@@ -394,7 +394,7 @@ static inline uint8_t mavlink_msg_hil_gps_get_fix_type(const mavlink_message_t* 
  */
 static inline int32_t mavlink_msg_hil_gps_get_lat(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  8);
+    return _MAV_RETURN_int32_t(msg, 8);
 }
 
 /**
@@ -404,7 +404,7 @@ static inline int32_t mavlink_msg_hil_gps_get_lat(const mavlink_message_t* msg)
  */
 static inline int32_t mavlink_msg_hil_gps_get_lon(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  12);
+    return _MAV_RETURN_int32_t(msg, 12);
 }
 
 /**
@@ -414,7 +414,7 @@ static inline int32_t mavlink_msg_hil_gps_get_lon(const mavlink_message_t* msg)
  */
 static inline int32_t mavlink_msg_hil_gps_get_alt(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  16);
+    return _MAV_RETURN_int32_t(msg, 16);
 }
 
 /**
@@ -424,7 +424,7 @@ static inline int32_t mavlink_msg_hil_gps_get_alt(const mavlink_message_t* msg)
  */
 static inline uint16_t mavlink_msg_hil_gps_get_eph(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  20);
+    return _MAV_RETURN_uint16_t(msg, 20);
 }
 
 /**
@@ -434,7 +434,7 @@ static inline uint16_t mavlink_msg_hil_gps_get_eph(const mavlink_message_t* msg)
  */
 static inline uint16_t mavlink_msg_hil_gps_get_epv(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  22);
+    return _MAV_RETURN_uint16_t(msg, 22);
 }
 
 /**
@@ -444,7 +444,7 @@ static inline uint16_t mavlink_msg_hil_gps_get_epv(const mavlink_message_t* msg)
  */
 static inline uint16_t mavlink_msg_hil_gps_get_vel(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  24);
+    return _MAV_RETURN_uint16_t(msg, 24);
 }
 
 /**
@@ -454,7 +454,7 @@ static inline uint16_t mavlink_msg_hil_gps_get_vel(const mavlink_message_t* msg)
  */
 static inline int16_t mavlink_msg_hil_gps_get_vn(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int16_t(msg,  26);
+    return _MAV_RETURN_int16_t(msg, 26);
 }
 
 /**
@@ -464,7 +464,7 @@ static inline int16_t mavlink_msg_hil_gps_get_vn(const mavlink_message_t* msg)
  */
 static inline int16_t mavlink_msg_hil_gps_get_ve(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int16_t(msg,  28);
+    return _MAV_RETURN_int16_t(msg, 28);
 }
 
 /**
@@ -474,7 +474,7 @@ static inline int16_t mavlink_msg_hil_gps_get_ve(const mavlink_message_t* msg)
  */
 static inline int16_t mavlink_msg_hil_gps_get_vd(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int16_t(msg,  30);
+    return _MAV_RETURN_int16_t(msg, 30);
 }
 
 /**
@@ -484,7 +484,7 @@ static inline int16_t mavlink_msg_hil_gps_get_vd(const mavlink_message_t* msg)
  */
 static inline uint16_t mavlink_msg_hil_gps_get_cog(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  32);
+    return _MAV_RETURN_uint16_t(msg, 32);
 }
 
 /**
@@ -494,7 +494,7 @@ static inline uint16_t mavlink_msg_hil_gps_get_cog(const mavlink_message_t* msg)
  */
 static inline uint8_t mavlink_msg_hil_gps_get_satellites_visible(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  35);
+    return _MAV_RETURN_uint8_t(msg, 35);
 }
 
 /**
@@ -504,7 +504,7 @@ static inline uint8_t mavlink_msg_hil_gps_get_satellites_visible(const mavlink_m
  */
 static inline uint8_t mavlink_msg_hil_gps_get_id(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  36);
+    return _MAV_RETURN_uint8_t(msg, 36);
 }
 
 /**
@@ -531,8 +531,8 @@ static inline void mavlink_msg_hil_gps_decode(const mavlink_message_t* msg, mavl
     hil_gps->satellites_visible = mavlink_msg_hil_gps_get_satellites_visible(msg);
     hil_gps->id = mavlink_msg_hil_gps_get_id(msg);
 #else
-        uint8_t len = msg->len < MAVLINK_MSG_ID_HIL_GPS_LEN? msg->len : MAVLINK_MSG_ID_HIL_GPS_LEN;
-        memset(hil_gps, 0, MAVLINK_MSG_ID_HIL_GPS_LEN);
+    uint8_t len = msg->len < MAVLINK_MSG_ID_HIL_GPS_LEN ? msg->len : MAVLINK_MSG_ID_HIL_GPS_LEN;
+    memset(hil_gps, 0, MAVLINK_MSG_ID_HIL_GPS_LEN);
     memcpy(hil_gps, _MAV_PAYLOAD(msg), len);
 #endif
 }

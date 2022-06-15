@@ -29,4 +29,3 @@ rt_err_t pmw3901_l0x_drv_init(const char* serial_dev_name);
 #endif
 
 #endif
-

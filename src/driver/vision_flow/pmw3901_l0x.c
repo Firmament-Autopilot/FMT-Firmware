@@ -55,8 +55,7 @@ static int sensor_opt_flow_echo(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%-8d vx:%.2f vy:%.2f valid:%d\n", optflow_report.timestamp_ms,
-        optflow_report.vx_mPs, optflow_report.vy_mPs, optflow_report.valid);
+    console_printf("timestamp:%-8d vx:%.2f vy:%.2f valid:%d\n", optflow_report.timestamp_ms, optflow_report.vx_mPs, optflow_report.vy_mPs, optflow_report.valid);
 
     return 0;
 }

@@ -32,15 +32,15 @@
 #include "module/console/console.h"
 
 /* print line, must config by user */
-#define cmb_println(...)               console_println(__VA_ARGS__)/* e.g., printf(__VA_ARGS__);printf("\r\n") */
+#define cmb_println(...) console_println(__VA_ARGS__) /* e.g., printf(__VA_ARGS__);printf("\r\n") */
 /* enable bare metal(no OS) platform */
 /* #define CMB_USING_BARE_METAL_PLATFORM */
 /* enable OS platform */
 #define CMB_USING_OS_PLATFORM
 /* OS platform type, must config when CMB_USING_OS_PLATFORM is enable */
-#define CMB_OS_PLATFORM_TYPE           CMB_OS_PLATFORM_RTT
+#define CMB_OS_PLATFORM_TYPE CMB_OS_PLATFORM_RTT
 /* cpu platform type, must config by user */
-#define CMB_CPU_PLATFORM_TYPE          CMB_CPU_ARM_CORTEX_M4
+#define CMB_CPU_PLATFORM_TYPE CMB_CPU_ARM_CORTEX_M4
 /* enable dump stack information */
 /* #define CMB_USING_DUMP_STACK_INFO */
 /* language of print information */

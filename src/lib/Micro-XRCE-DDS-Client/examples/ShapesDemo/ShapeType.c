@@ -21,31 +21,31 @@
 
 #include "ShapeType.h"
 
-#include <ucdr/microcdr.h>
 #include <string.h>
+#include <ucdr/microcdr.h>
 
 bool ShapeType_serialize_topic(ucdrBuffer* writer, const ShapeType* topic)
 {
-    (void) ucdr_serialize_string(writer, topic->color);
+    (void)ucdr_serialize_string(writer, topic->color);
 
-    (void) ucdr_serialize_int32_t(writer, topic->x);
+    (void)ucdr_serialize_int32_t(writer, topic->x);
 
-    (void) ucdr_serialize_int32_t(writer, topic->y);
+    (void)ucdr_serialize_int32_t(writer, topic->y);
 
-    (void) ucdr_serialize_int32_t(writer, topic->shapesize);
+    (void)ucdr_serialize_int32_t(writer, topic->shapesize);
 
     return !writer->error;
 }
 
 bool ShapeType_deserialize_topic(ucdrBuffer* reader, ShapeType* topic)
 {
-    (void) ucdr_deserialize_string(reader, topic->color, 255);
+    (void)ucdr_deserialize_string(reader, topic->color, 255);
 
-    (void) ucdr_deserialize_int32_t(reader, &topic->x);
+    (void)ucdr_deserialize_int32_t(reader, &topic->x);
 
-    (void) ucdr_deserialize_int32_t(reader, &topic->y);
+    (void)ucdr_deserialize_int32_t(reader, &topic->y);
 
-    (void) ucdr_deserialize_int32_t(reader, &topic->shapesize);
+    (void)ucdr_deserialize_int32_t(reader, &topic->shapesize);
 
     return !reader->error;
 }

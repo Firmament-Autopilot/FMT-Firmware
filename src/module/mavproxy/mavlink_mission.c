@@ -192,10 +192,7 @@ static void handle_message_mission_item(mavlink_message_t* msg)
      * <PARAM5/X/LATITUDE> <PARAM6/Y/LONGITUDE> <PARAM7/Z/ALTITUDE> <AUTOCONTINUE> 
      */
     // fm_fprintf(wp_fd, "%d\t%u\t%u\t%u\t%f\t%f\t%f\t%f\t%d\t%d\t%f\t%d\n",
-    fm_fprintf(wp_fd, "%hu\t%hhu\t%hhu\t%hu\t%f\t%f\t%f\t%f\t%ld\t%ld\t%f\t%hhu\n",
-        mission_item_int.seq, mission_item_int.current, mission_item_int.frame, mission_item_int.command,
-        mission_item_int.param1, mission_item_int.param2, mission_item_int.param3, mission_item_int.param4,
-        mission_item_int.x, mission_item_int.y, mission_item_int.z, mission_item_int.autocontinue);
+    fm_fprintf(wp_fd, "%hu\t%hhu\t%hhu\t%hu\t%f\t%f\t%f\t%f\t%ld\t%ld\t%f\t%hhu\n", mission_item_int.seq, mission_item_int.current, mission_item_int.frame, mission_item_int.command, mission_item_int.param1, mission_item_int.param2, mission_item_int.param3, mission_item_int.param4, mission_item_int.x, mission_item_int.y, mission_item_int.z, mission_item_int.autocontinue);
 
     /* check if we received all mission items */
     if (wp_seq + 1 >= wp_cnt) {

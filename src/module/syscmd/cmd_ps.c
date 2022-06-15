@@ -205,25 +205,25 @@ static int list_thread(void)
                         ptr--;
 
                     printf(" 0x%08x 0x%08x    %02d%%   0x%08x %03d   %.2f%%\n",
-                        ((rt_ubase_t)thread->sp - (rt_ubase_t)thread->stack_addr),
-                        thread->stack_size,
-                        ((rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr) * 100 / thread->stack_size,
-                        thread->remaining_tick,
-                        thread->error,
-                        stats!= NULL ? stats->cpu_usage : -1.0f);
+                           ((rt_ubase_t)thread->sp - (rt_ubase_t)thread->stack_addr),
+                           thread->stack_size,
+                           ((rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr) * 100 / thread->stack_size,
+                           thread->remaining_tick,
+                           thread->error,
+                           stats != NULL ? stats->cpu_usage : -1.0f);
 #else
                     ptr = (rt_uint8_t*)thread->stack_addr;
                     while (*ptr == '#')
                         ptr++;
 
                     printf(" 0x%08x 0x%08x    %02d%%   0x%08x %03d   %.2f%%\n",
-                        thread->stack_size + ((rt_ubase_t)thread->stack_addr - (rt_ubase_t)thread->sp),
-                        thread->stack_size,
-                        (thread->stack_size - ((rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr)) * 100
-                            / thread->stack_size,
-                        thread->remaining_tick,
-                        thread->error,
-                        stats!= NULL ? stats->cpu_usage : -1.0f);
+                           thread->stack_size + ((rt_ubase_t)thread->stack_addr - (rt_ubase_t)thread->sp),
+                           thread->stack_size,
+                           (thread->stack_size - ((rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr)) * 100
+                               / thread->stack_size,
+                           thread->remaining_tick,
+                           thread->error,
+                           stats != NULL ? stats->cpu_usage : -1.0f);
 #endif
                 }
             }

@@ -59,11 +59,11 @@ struct rt_i2c_bit_ops {
     void (*udelay)(rt_uint32_t us);
 
     rt_uint32_t delay_us; /* scl and sda line delay */
-    rt_uint32_t timeout; /* in tick */
+    rt_uint32_t timeout;  /* in tick */
 };
 
 rt_err_t rt_i2c_soft_bus_register(struct rt_i2c_bus* bus,
-    const char* bus_name);
+                                  const char* bus_name);
 
 #ifdef __cplusplus
 }

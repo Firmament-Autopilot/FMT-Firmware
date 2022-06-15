@@ -25,66 +25,66 @@
 #define BIT(u, n) (u & (1 << n))
 
 // Bit locations for mag_declination_source
-#define MASK_USE_GEO_DECL (1 << 0) ///< set to true to use the declination from the geo library when the GPS position becomes available, set to false to always use the EKF2_MAG_DECL value
+#define MASK_USE_GEO_DECL  (1 << 0) ///< set to true to use the declination from the geo library when the GPS position becomes available, set to false to always use the EKF2_MAG_DECL value
 #define MASK_SAVE_GEO_DECL (1 << 1) ///< set to true to set the EKF2_MAG_DECL parameter to the value returned by the geo library
-#define MASK_FUSE_DECL (1 << 2) ///< set to true if the declination is always fused as an observation to constrain drift when 3-axis fusion is performed
+#define MASK_FUSE_DECL     (1 << 2) ///< set to true if the declination is always fused as an observation to constrain drift when 3-axis fusion is performed
 
 // Integer definitions for mag_fusion_type
-#define MAG_FUSE_TYPE_AUTO 0 ///< The selection of either heading or 3D magnetometer fusion will be automatic
+#define MAG_FUSE_TYPE_AUTO    0 ///< The selection of either heading or 3D magnetometer fusion will be automatic
 #define MAG_FUSE_TYPE_HEADING 1 ///< Simple yaw angle fusion will always be used. This is less accurate, but less affected by earth field distortions. It should not be used for pitch angles outside the range from -60 to +60 deg
-#define MAG_FUSE_TYPE_3D 2 ///< Magnetometer 3-axis fusion will always be used. This is more accurate, but more affected by localised earth field distortions
-#define MAG_FUSE_TYPE_UNUSED 3 ///< Not implemented
-#define MAG_FUSE_TYPE_INDOOR 4 ///< The same as option 0, but magnetometer or yaw fusion will not be used unless earth frame external aiding (GPS or External Vision) is being used. This prevents inconsistent magnetic fields associated with indoor operation degrading state estimates.
-#define MAG_FUSE_TYPE_NONE 5 ///< Do not use magnetometer under any circumstance. Other sources of yaw may be used if selected via the EKF2_AID_MASK parameter.
+#define MAG_FUSE_TYPE_3D      2 ///< Magnetometer 3-axis fusion will always be used. This is more accurate, but more affected by localised earth field distortions
+#define MAG_FUSE_TYPE_UNUSED  3 ///< Not implemented
+#define MAG_FUSE_TYPE_INDOOR  4 ///< The same as option 0, but magnetometer or yaw fusion will not be used unless earth frame external aiding (GPS or External Vision) is being used. This prevents inconsistent magnetic fields associated with indoor operation degrading state estimates.
+#define MAG_FUSE_TYPE_NONE    5 ///< Do not use magnetometer under any circumstance. Other sources of yaw may be used if selected via the EKF2_AID_MASK parameter.
 
 // GPS pre-flight check bit locations
-#define MASK_GPS_NSATS (1 << 0)
-#define MASK_GPS_PDOP (1 << 1)
-#define MASK_GPS_HACC (1 << 2)
-#define MASK_GPS_VACC (1 << 3)
-#define MASK_GPS_SACC (1 << 4)
+#define MASK_GPS_NSATS  (1 << 0)
+#define MASK_GPS_PDOP   (1 << 1)
+#define MASK_GPS_HACC   (1 << 2)
+#define MASK_GPS_VACC   (1 << 3)
+#define MASK_GPS_SACC   (1 << 4)
 #define MASK_GPS_HDRIFT (1 << 5)
 #define MASK_GPS_VDRIFT (1 << 6)
-#define MASK_GPS_HSPD (1 << 7)
-#define MASK_GPS_VSPD (1 << 8)
+#define MASK_GPS_HSPD   (1 << 7)
+#define MASK_GPS_VSPD   (1 << 8)
 
 // Bit locations for fusion_mode
-#define MASK_USE_GPS (1 << 0) ///< set to true to use GPS data
-#define MASK_USE_OF (1 << 1) ///< set to true to use optical flow data
+#define MASK_USE_GPS          (1 << 0) ///< set to true to use GPS data
+#define MASK_USE_OF           (1 << 1) ///< set to true to use optical flow data
 #define MASK_INHIBIT_ACC_BIAS (1 << 2) ///< set to true to inhibit estimation of accelerometer delta velocity bias
-#define MASK_USE_EVPOS (1 << 3) ///< set to true to use external vision position data
-#define MASK_USE_EVYAW (1 << 4) ///< set to true to use external vision quaternion data for yaw
-#define MASK_USE_DRAG (1 << 5) ///< set to true to use the multi-rotor drag model to estimate wind
-#define MASK_ROTATE_EV (1 << 6) ///< set to true to if the EV observations are in a non NED reference frame and need to be rotated before being used
-#define MASK_USE_GPSYAW (1 << 7) ///< set to true to use GPS yaw data if available
-#define MASK_USE_EVVEL (1 << 8) ///< set to true to use external vision velocity data
+#define MASK_USE_EVPOS        (1 << 3) ///< set to true to use external vision position data
+#define MASK_USE_EVYAW        (1 << 4) ///< set to true to use external vision quaternion data for yaw
+#define MASK_USE_DRAG         (1 << 5) ///< set to true to use the multi-rotor drag model to estimate wind
+#define MASK_ROTATE_EV        (1 << 6) ///< set to true to if the EV observations are in a non NED reference frame and need to be rotated before being used
+#define MASK_USE_GPSYAW       (1 << 7) ///< set to true to use GPS yaw data if available
+#define MASK_USE_EVVEL        (1 << 8) ///< set to true to use external vision velocity data
 
 // Integer definitions for vdist_sensor_type
-#define VDIST_SENSOR_BARO 0 ///< Use baro height
-#define VDIST_SENSOR_GPS 1 ///< Use GPS height
+#define VDIST_SENSOR_BARO  0 ///< Use baro height
+#define VDIST_SENSOR_GPS   1 ///< Use GPS height
 #define VDIST_SENSOR_RANGE 2 ///< Use range finder height
-#define VDIST_SENSOR_EV 3 ///< Use external vision
+#define VDIST_SENSOR_EV    3 ///< Use external vision
 
 #define TERRAIN_FUSE_RANGEFINDER (1 << 0)
 #define TERRAIN_FUSE_OPTICALFLOW (1 << 1)
 
 // Integer determine source of vision observation noise
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_X_VARIANCE 0
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_Y_VARIANCE 6
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_Z_VARIANCE 11
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_ROLL_VARIANCE 15
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_PITCH_VARIANCE 18
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_YAW_VARIANCE 20
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_VX_VARIANCE 0
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_VY_VARIANCE 6
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_VZ_VARIANCE 11
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_ROLLRATE_VARIANCE 15
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_X_VARIANCE         0
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_Y_VARIANCE         6
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_Z_VARIANCE         11
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_ROLL_VARIANCE      15
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_PITCH_VARIANCE     18
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_YAW_VARIANCE       20
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_VX_VARIANCE        0
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_VY_VARIANCE        6
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_VZ_VARIANCE        11
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_ROLLRATE_VARIANCE  15
 #define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_PITCHRATE_VARIANCE 18
-#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_YAWRATE_VARIANCE 20
-#define VEHICLE_ODOMETRY_LOCAL_FRAME_NED 0
-#define VEHICLE_ODOMETRY_LOCAL_FRAME_FRD 1
-#define VEHICLE_ODOMETRY_LOCAL_FRAME_OTHER 2
-#define VEHICLE_ODOMETRY_BODY_FRAME_FRD 3
+#define VEHICLE_ODOMETRY_COVARIANCE_MATRIX_YAWRATE_VARIANCE   20
+#define VEHICLE_ODOMETRY_LOCAL_FRAME_NED                      0
+#define VEHICLE_ODOMETRY_LOCAL_FRAME_FRD                      1
+#define VEHICLE_ODOMETRY_LOCAL_FRAME_OTHER                    2
+#define VEHICLE_ODOMETRY_BODY_FRAME_FRD                       3
 
 /* INS input bus */
 MCN_DECLARE(sensor_imu0);
@@ -106,19 +106,19 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ekf2_acc_b_noise, 1.0e-2f), ///< process noise for IMU accelerometer bias prediction (m/sec**3)
     PARAM_FLOAT(ekf2_mag_e_noise, 1.0e-3f), ///< process noise for earth magnetic field prediction (Gauss/sec)
     PARAM_FLOAT(ekf2_mag_b_noise, 1.0e-4f), ///< process noise for body magnetic field prediction (Gauss/sec)
-    PARAM_FLOAT(ekf2_wind_noise, 1.0e-1f), ///< process noise for wind velocity prediction (m/sec**2)
+    PARAM_FLOAT(ekf2_wind_noise, 1.0e-1f),  ///< process noise for wind velocity prediction (m/sec**2)
 
-    PARAM_FLOAT(ekf2_gnd_eff_dz, 5.0f), ///< barometric deadzone range for negative innovations (m)
+    PARAM_FLOAT(ekf2_gnd_eff_dz, 5.0f),  ///< barometric deadzone range for negative innovations (m)
     PARAM_FLOAT(ekf2_gnd_max_hgt, 0.5f), ///< maximum height above the ground level for expected negative baro innovations (m)
 
     // control of magnetometer fusion
     PARAM_FLOAT(ekf2_head_noise, 3.0e-1f), ///< measurement noise used for simple heading fusion (rad)
-    PARAM_FLOAT(ekf2_mag_noise, 5.0e-2f), ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
-    PARAM_FLOAT(ekf2_eas_noise, 1.4f), ///< measurement noise used for airspeed fusion (m/sec)
-    PARAM_FLOAT(ekf2_beta_noise, 0.3f), ///< synthetic sideslip noise (rad)
+    PARAM_FLOAT(ekf2_mag_noise, 5.0e-2f),  ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
+    PARAM_FLOAT(ekf2_eas_noise, 1.4f),     ///< measurement noise used for airspeed fusion (m/sec)
+    PARAM_FLOAT(ekf2_beta_noise, 0.3f),    ///< synthetic sideslip noise (rad)
 
     PARAM_FLOAT(ekf2_noaid_noise, 10.0f), ///< observation noise for non-aiding position fusion (m)
-    PARAM_FLOAT(ekf2_baro_noise, 2.0f), ///< observation noise for barometric height fusion (m)
+    PARAM_FLOAT(ekf2_baro_noise, 2.0f),   ///< observation noise for barometric height fusion (m)
 
     PARAM_FLOAT(ekf2_mag_decl, 0.0f), ///< magnetic declination (degrees)
 
@@ -129,27 +129,27 @@ static param_t __param_list[] = {
     PARAM_INT32(ekf2_gps_check, MASK_GPS_SACC | MASK_GPS_HACC | MASK_GPS_NSATS), ///< bitmask used to control which GPS quality checks are used
 
     // measurement source control
-    PARAM_INT32(ekf2_aid_mask, MASK_USE_GPS), ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
-    PARAM_INT32(ekf2_hgt_mode, VDIST_SENSOR_GPS), ///< selects the primary source for height data
+    PARAM_INT32(ekf2_aid_mask, MASK_USE_GPS),                                         ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
+    PARAM_INT32(ekf2_hgt_mode, VDIST_SENSOR_GPS),                                     ///< selects the primary source for height data
     PARAM_INT32(ekf2_terr_mask, TERRAIN_FUSE_RANGEFINDER | TERRAIN_FUSE_OPTICALFLOW), ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
 
     // range finder fusion
     PARAM_FLOAT(ekf2_rng_noise, 0.1f), ///< observation noise for range finder measurements (m)
-    PARAM_INT32(ekf2_rng_aid, 0), ///< enables use of a range finder even if primary height source is not range finder
+    PARAM_INT32(ekf2_rng_aid, 0),      ///< enables use of a range finder even if primary height source is not range finder
 
     // vision estimate fusion
     PARAM_INT32(ekf2_ev_noise_md, VEHICLE_ODOMETRY_COVARIANCE_MATRIX_X_VARIANCE), ///< determine source of vision observation noise
-    PARAM_FLOAT(ekf2_evp_noise, 0.1f), ///< default position observation noise for exernal vision measurements (m)
-    PARAM_FLOAT(ekf2_evv_noise, 0.1f), ///< default velocity observation noise for exernal vision measurements (m/s)
-    PARAM_FLOAT(ekf2_eva_noise, 0.05f), ///< default angular observation noise for exernal vision measurements (rad)
+    PARAM_FLOAT(ekf2_evp_noise, 0.1f),                                            ///< default position observation noise for exernal vision measurements (m)
+    PARAM_FLOAT(ekf2_evv_noise, 0.1f),                                            ///< default velocity observation noise for exernal vision measurements (m/s)
+    PARAM_FLOAT(ekf2_eva_noise, 0.05f),                                           ///< default angular observation noise for exernal vision measurements (rad)
 
     // optical flow fusion
     PARAM_FLOAT(ekf2_of_n_min, 0.15f), ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
-    PARAM_FLOAT(ekf2_of_n_max, 0.5f), ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
+    PARAM_FLOAT(ekf2_of_n_max, 0.5f),  ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
 
     // control of airspeed and sideslip fusion
     PARAM_FLOAT(ekf2_arsp_thr, 2.0f), ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
-    PARAM_INT32(ekf2_fuse_beta, 0), ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
+    PARAM_INT32(ekf2_fuse_beta, 0),   ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
 
     // Multi-rotor drag specific force fusion
     PARAM_FLOAT(ekf2_drag_noise, 2.5f), ///< observation noise variance for drag specific force measurements (m/sec**2)**2
@@ -318,10 +318,15 @@ static int ins_output_echo(void* param)
     printf("LLA: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt);
     printf("LLA0: %lf %lf %f\n", ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
     printf("standstill:%d att:%d heading:%d vel:%d LLA:%d xy:%d h:%d h_AGL:%d\n",
-        BIT(ins_out.flag, 1) > 0, BIT(ins_out.flag, 2) > 0, BIT(ins_out.flag, 3) > 0, BIT(ins_out.flag, 4) > 0,
-        BIT(ins_out.flag, 5) > 0, BIT(ins_out.flag, 6) > 0, BIT(ins_out.flag, 7) > 0, BIT(ins_out.flag, 8) > 0);
-    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0,
-        BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+           BIT(ins_out.flag, 1) > 0,
+           BIT(ins_out.flag, 2) > 0,
+           BIT(ins_out.flag, 3) > 0,
+           BIT(ins_out.flag, 4) > 0,
+           BIT(ins_out.flag, 5) > 0,
+           BIT(ins_out.flag, 6) > 0,
+           BIT(ins_out.flag, 7) > 0,
+           BIT(ins_out.flag, 8) > 0);
+    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0, BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
     printf("------------------------------------------\n");
 
     return 0;
@@ -348,43 +353,43 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_acc_b_noise), &px4_ecl_params.ekf2_acc_b_noise)); ///< process noise for IMU accelerometer bias prediction (m/sec**3)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_e_noise), &px4_ecl_params.ekf2_mag_e_noise)); ///< process noise for earth magnetic field prediction (Gauss/sec)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_b_noise), &px4_ecl_params.ekf2_mag_b_noise)); ///< process noise for body magnetic field prediction (Gauss/sec)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_wind_noise), &px4_ecl_params.ekf2_wind_noise)); ///< process noise for wind velocity prediction (m/sec**2)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_wind_noise), &px4_ecl_params.ekf2_wind_noise));   ///< process noise for wind velocity prediction (m/sec**2)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_noaid_noise), &px4_ecl_params.ekf2_noaid_noise)); ///< observation noise for non-aiding position fusion (m)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_baro_noise), &px4_ecl_params.ekf2_baro_noise)); ///< observation noise for barometric height fusion (m)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_gnd_eff_dz), &px4_ecl_params.ekf2_gnd_eff_dz)); ///< barometric deadzone range for negative innovations (m)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_baro_noise), &px4_ecl_params.ekf2_baro_noise));   ///< observation noise for barometric height fusion (m)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_gnd_eff_dz), &px4_ecl_params.ekf2_gnd_eff_dz));   ///< barometric deadzone range for negative innovations (m)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_gnd_max_hgt), &px4_ecl_params.ekf2_gnd_max_hgt)); ///< maximum height above the ground level for expected negative baro innovations (m)
     // control of magnetometer fusion
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_head_noise), &px4_ecl_params.ekf2_head_noise)); ///< measurement noise used for simple heading fusion (rad)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_noise), &px4_ecl_params.ekf2_mag_noise)); ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_eas_noise), &px4_ecl_params.ekf2_eas_noise)); ///< measurement noise used for airspeed fusion (m/sec)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_noise), &px4_ecl_params.ekf2_mag_noise));   ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_eas_noise), &px4_ecl_params.ekf2_eas_noise));   ///< measurement noise used for airspeed fusion (m/sec)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_beta_noise), &px4_ecl_params.ekf2_beta_noise)); ///< synthetic sideslip noise (rad)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_decl), &px4_ecl_params.ekf2_mag_decl)); ///< magnetic declination (degrees)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_decl_type), &px4_ecl_params.ekf2_decl_type)); ///< bitmask used to control the handling of declination data
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_type), &px4_ecl_params.ekf2_mag_type)); ///< integer used to specify the type of magnetometer fusion used
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_gps_check), &px4_ecl_params.ekf2_gps_check)); ///< bitmask used to control which GPS quality checks are used
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_decl), &px4_ecl_params.ekf2_mag_decl));     ///< magnetic declination (degrees)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_decl_type), &px4_ecl_params.ekf2_decl_type));   ///< bitmask used to control the handling of declination data
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_type), &px4_ecl_params.ekf2_mag_type));     ///< integer used to specify the type of magnetometer fusion used
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_gps_check), &px4_ecl_params.ekf2_gps_check));   ///< bitmask used to control which GPS quality checks are used
     // measurement source control
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_aid_mask), &px4_ecl_params.ekf2_aid_mask)); ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_hgt_mode), &px4_ecl_params.ekf2_hgt_mode)); ///< selects the primary source for height data
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_aid_mask), &px4_ecl_params.ekf2_aid_mask));   ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_hgt_mode), &px4_ecl_params.ekf2_hgt_mode));   ///< selects the primary source for height data
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_terr_mask), &px4_ecl_params.ekf2_terr_mask)); ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
     // range finder fusion
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_rng_noise), &px4_ecl_params.ekf2_rng_noise)); ///< observation noise for range finder measurements (m)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_rng_aid), &px4_ecl_params.ekf2_rng_aid)); ///< enables use of a range finder even if primary height source is not range finder
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_rng_aid), &px4_ecl_params.ekf2_rng_aid));     ///< enables use of a range finder even if primary height source is not range finder
     // vision estimate fusion
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_ev_noise_md), &px4_ecl_params.ekf2_ev_noise_md)); ///< determine source of vision observation noise
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_evp_noise), &px4_ecl_params.ekf2_evp_noise)); ///< default position observation noise for exernal vision measurements (m)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_evv_noise), &px4_ecl_params.ekf2_evv_noise)); ///< default velocity observation noise for exernal vision measurements (m/s)
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_eva_noise), &px4_ecl_params.ekf2_eva_noise)); ///< default angular observation noise for exernal vision measurements (rad)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_evp_noise), &px4_ecl_params.ekf2_evp_noise));     ///< default position observation noise for exernal vision measurements (m)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_evv_noise), &px4_ecl_params.ekf2_evv_noise));     ///< default velocity observation noise for exernal vision measurements (m/s)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_eva_noise), &px4_ecl_params.ekf2_eva_noise));     ///< default angular observation noise for exernal vision measurements (rad)
     // optical flow fusion
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_of_n_min), &px4_ecl_params.ekf2_of_n_min)); ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_of_n_max), &px4_ecl_params.ekf2_of_n_max)); ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
     // control of airspeed and sideslip fusion
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_arsp_thr), &px4_ecl_params.ekf2_arsp_thr)); ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_arsp_thr), &px4_ecl_params.ekf2_arsp_thr));   ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_fuse_beta), &px4_ecl_params.ekf2_fuse_beta)); ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
     // Multi-rotor drag specific force fusion
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_drag_noise), &px4_ecl_params.ekf2_drag_noise)); ///< observation noise variance for drag specific force measurements (m/sec**2)**2
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_check), &px4_ecl_params.ekf2_mag_check)); ///< Mag field strength check
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_drag_noise), &px4_ecl_params.ekf2_drag_noise));           ///< observation noise variance for drag specific force measurements (m/sec**2)**2
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_mag_check), &px4_ecl_params.ekf2_mag_check));             ///< Mag field strength check
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_synthetic_mag_z), &px4_ecl_params.ekf2_synthetic_mag_z)); ///< Enables the use of a synthetic value for the Z axis of the magnetometer calculated from the 3D magnetic field vector at the location of the drone.
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_req_gps_h), &px4_ecl_params.ekf2_req_gps_h)); ///< Required GPS health time
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, ekf2_req_gps_h), &px4_ecl_params.ekf2_req_gps_h));             ///< Required GPS health time
 }
 
 void ins_interface_step(uint32_t timestamp)
@@ -459,11 +464,7 @@ void ins_interface_step(uint32_t timestamp)
             gps_bus.sAcc = (uint32_t)(ins_handle.gps_report.sAcc * 1e3);
             gps_bus.numSV = ins_handle.gps_report.numSV;
 
-            Ekf_GPS_update(timestamp, ins_handle.gps_report.lon, ins_handle.gps_report.lat,
-                ins_handle.gps_report.height, ins_handle.gps_report.hAcc, ins_handle.gps_report.vAcc,
-                ins_handle.gps_report.velN, ins_handle.gps_report.velE, ins_handle.gps_report.velD,
-                ins_handle.gps_report.vel, ins_handle.gps_report.cog, ins_handle.gps_report.sAcc,
-                ins_handle.gps_report.fixType, ins_handle.gps_report.numSV);
+            Ekf_GPS_update(timestamp, ins_handle.gps_report.lon, ins_handle.gps_report.lat, ins_handle.gps_report.height, ins_handle.gps_report.hAcc, ins_handle.gps_report.vAcc, ins_handle.gps_report.velN, ins_handle.gps_report.velE, ins_handle.gps_report.velD, ins_handle.gps_report.vel, ins_handle.gps_report.cog, ins_handle.gps_report.sAcc, ins_handle.gps_report.fixType, ins_handle.gps_report.numSV);
 
             gps_data_updated = 1;
         }

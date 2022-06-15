@@ -17,13 +17,13 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "model/ins/ins_interface.h"
 #include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
-#include "model/ins/ins_interface.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/sensor/sensor_imu.h"
 #include "module/sensor/sensor_mag.h"
-#include "module/sensor/sensor_hub.h"
 
 #define TAG "MAVCMD"
 
@@ -372,9 +372,7 @@ static void accel_calibration(void)
             }
 #endif
 
-            ellipsoid_fit_step(imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2],
-                mavcmd_calib_acc.v, mavcmd_calib_acc.P, 0.001,
-                mavcmd_calib_acc.next_v, mavcmd_calib_acc.next_P);
+            ellipsoid_fit_step(imu_report.acc_B_mDs2[0], imu_report.acc_B_mDs2[1], imu_report.acc_B_mDs2[2], mavcmd_calib_acc.v, mavcmd_calib_acc.P, 0.001, mavcmd_calib_acc.next_v, mavcmd_calib_acc.next_P);
 
             for (uint8_t i = 0; i < 9; i++) {
                 mavcmd_calib_acc.v[i] = mavcmd_calib_acc.next_v[i];
@@ -592,9 +590,7 @@ static void mag_calibration(void)
             }
 #endif
 
-            ellipsoid_fit_step(mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2],
-                mavcmd_calib_mag.v, mavcmd_calib_mag.P, 0.001,
-                mavcmd_calib_mag.next_v, mavcmd_calib_mag.next_P);
+            ellipsoid_fit_step(mag_report.mag_B_gauss[0], mag_report.mag_B_gauss[1], mag_report.mag_B_gauss[2], mavcmd_calib_mag.v, mavcmd_calib_mag.P, 0.001, mavcmd_calib_mag.next_v, mavcmd_calib_mag.next_P);
 
             for (uint8_t i = 0; i < 9; i++) {
                 mavcmd_calib_mag.v[i] = mavcmd_calib_mag.next_v[i];

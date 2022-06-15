@@ -17,8 +17,7 @@ void uxr_reset_input_best_effort_stream(uxrInputBestEffortStream* stream)
 bool uxr_receive_best_effort_message(uxrInputBestEffortStream* stream, uxrSeqNum seq_num)
 {
     bool available_to_read = (0 > uxr_seq_num_cmp(stream->last_handled, seq_num));
-    if(available_to_read)
-    {
+    if (available_to_read) {
         stream->last_handled = seq_num;
     }
 

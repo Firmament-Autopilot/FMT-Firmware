@@ -84,8 +84,7 @@ static int control_out_echo(void* param)
 {
     Control_Out_Bus control_out;
     if (mcn_copy_from_hub((McnHub*)param, &control_out) == FMT_EOK) {
-        console_printf("timestamp:%d actuator: %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0],
-            control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3]);
+        console_printf("timestamp:%d actuator: %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0], control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3]);
     }
     return 0;
 }

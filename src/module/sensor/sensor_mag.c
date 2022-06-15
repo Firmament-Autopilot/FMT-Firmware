@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/mag/mag.h"
 #include "module/sensor/sensor_mag.h"
+#include "hal/mag/mag.h"
 
 /**
  * @brief Set mag rotation matrix

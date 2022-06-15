@@ -16,8 +16,7 @@
 #define UXR_CLIENT_CORE_SESSION_CREATE_ENTITIES_XML_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/common_create_entities.h>
@@ -39,12 +38,12 @@ extern "C"
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_participant_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uint16_t domain,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uint16_t domain,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Topic payload.
@@ -63,12 +62,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_participant_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_topic_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId participant_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId participant_id,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Subscriber payload.
@@ -87,12 +86,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_topic_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_publisher_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId participant_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId participant_id,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Subscriber payload.
@@ -111,12 +110,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_publisher_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_subscriber_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId participant_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId participant_id,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE DataWriter payload.
@@ -135,12 +134,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_subscriber_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_datawriter_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId publisher_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId publisher_id,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE DataReader payload.
@@ -159,12 +158,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_datawriter_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_datareader_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId subscriber_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId subscriber_id,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Requester payload.
@@ -184,12 +183,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_datareader_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_requester_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId participant_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId participant_id,
+    const char* xml,
+    uint8_t mode);
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Replier payload.
@@ -209,12 +208,12 @@ UXRDLLAPI uint16_t uxr_buffer_create_requester_xml(
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_create_replier_xml(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id,
-        uxrObjectId participant_id,
-        const char* xml,
-        uint8_t mode);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id,
+    uxrObjectId participant_id,
+    const char* xml,
+    uint8_t mode);
 
 #ifdef __cplusplus
 }

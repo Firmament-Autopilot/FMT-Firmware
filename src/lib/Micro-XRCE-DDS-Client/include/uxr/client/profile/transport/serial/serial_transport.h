@@ -16,19 +16,17 @@
 #define UXR_CLIENT_SERIAL_TRANSPORT_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
+#include <uxr/client/config.h>
 #include <uxr/client/core/communication/communication.h>
 #include <uxr/client/profile/transport/serial/serial_protocol.h>
-#include <uxr/client/config.h>
 #include <uxr/client/visibility.h>
 
 struct uxrSerialPlatform;
 
-typedef struct uxrSerialTransport
-{
+typedef struct uxrSerialTransport {
     uint8_t buffer[UXR_CONFIG_SERIAL_TRANSPORT_MTU];
     uxrSerialIO serial_io;
     uint8_t remote_addr;
@@ -36,7 +34,6 @@ typedef struct uxrSerialTransport
     struct uxrSerialPlatform* platform;
 
 } uxrSerialTransport;
-
 
 /**
  * @brief Initializes a UDP transport.
@@ -51,11 +48,11 @@ typedef struct uxrSerialTransport
  * @return `true` in case of successful initialization. `false` in other case.
  */
 UXRDLLAPI bool uxr_init_serial_transport(
-        uxrSerialTransport* transport,
-        struct uxrSerialPlatform* platform,
-        const int fd,
-        uint8_t remote_addr,
-        uint8_t local_addr);
+    uxrSerialTransport* transport,
+    struct uxrSerialPlatform* platform,
+    const int fd,
+    uint8_t remote_addr,
+    uint8_t local_addr);
 
 /**
  * @brief Closes a Serial transport.

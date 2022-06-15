@@ -2,15 +2,13 @@
 #define UXR_CLIENT_PROFILE_TRANSPORT_SERIAL_EXTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // Place here your includes
 #include <firmament.h>
 
-typedef struct uxrSerialPlatform
-{
+typedef struct uxrSerialPlatform {
     // Place here your platform data
     rt_device_t dev;
 } uxrSerialPlatform;

@@ -3,85 +3,88 @@
 
 #define MAVLINK_MSG_ID_AIS_VESSEL 301
 
-
 typedef struct __mavlink_ais_vessel_t {
- uint32_t MMSI; /*<  Mobile Marine Service Identifier, 9 decimal digits*/
- int32_t lat; /*< [degE7] Latitude*/
- int32_t lon; /*< [degE7] Longitude*/
- uint16_t COG; /*< [cdeg] Course over ground*/
- uint16_t heading; /*< [cdeg] True heading*/
- uint16_t velocity; /*< [cm/s] Speed over ground*/
- uint16_t dimension_bow; /*< [m] Distance from lat/lon location to bow*/
- uint16_t dimension_stern; /*< [m] Distance from lat/lon location to stern*/
- uint16_t tslc; /*< [s] Time since last communication in seconds*/
- uint16_t flags; /*<  Bitmask to indicate various statuses including valid data fields*/
- int8_t turn_rate; /*< [cdeg/s] Turn rate*/
- uint8_t navigational_status; /*<  Navigational status*/
- uint8_t type; /*<  Type of vessels*/
- uint8_t dimension_port; /*< [m] Distance from lat/lon location to port side*/
- uint8_t dimension_starboard; /*< [m] Distance from lat/lon location to starboard side*/
- char callsign[7]; /*<  The vessel callsign*/
- char name[20]; /*<  The vessel name*/
+    uint32_t MMSI;               /*<  Mobile Marine Service Identifier, 9 decimal digits*/
+    int32_t lat;                 /*< [degE7] Latitude*/
+    int32_t lon;                 /*< [degE7] Longitude*/
+    uint16_t COG;                /*< [cdeg] Course over ground*/
+    uint16_t heading;            /*< [cdeg] True heading*/
+    uint16_t velocity;           /*< [cm/s] Speed over ground*/
+    uint16_t dimension_bow;      /*< [m] Distance from lat/lon location to bow*/
+    uint16_t dimension_stern;    /*< [m] Distance from lat/lon location to stern*/
+    uint16_t tslc;               /*< [s] Time since last communication in seconds*/
+    uint16_t flags;              /*<  Bitmask to indicate various statuses including valid data fields*/
+    int8_t turn_rate;            /*< [cdeg/s] Turn rate*/
+    uint8_t navigational_status; /*<  Navigational status*/
+    uint8_t type;                /*<  Type of vessels*/
+    uint8_t dimension_port;      /*< [m] Distance from lat/lon location to port side*/
+    uint8_t dimension_starboard; /*< [m] Distance from lat/lon location to starboard side*/
+    char callsign[7];            /*<  The vessel callsign*/
+    char name[20];               /*<  The vessel name*/
 } mavlink_ais_vessel_t;
 
-#define MAVLINK_MSG_ID_AIS_VESSEL_LEN 58
+#define MAVLINK_MSG_ID_AIS_VESSEL_LEN     58
 #define MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN 58
-#define MAVLINK_MSG_ID_301_LEN 58
-#define MAVLINK_MSG_ID_301_MIN_LEN 58
+#define MAVLINK_MSG_ID_301_LEN            58
+#define MAVLINK_MSG_ID_301_MIN_LEN        58
 
 #define MAVLINK_MSG_ID_AIS_VESSEL_CRC 243
-#define MAVLINK_MSG_ID_301_CRC 243
+#define MAVLINK_MSG_ID_301_CRC        243
 
 #define MAVLINK_MSG_AIS_VESSEL_FIELD_CALLSIGN_LEN 7
-#define MAVLINK_MSG_AIS_VESSEL_FIELD_NAME_LEN 20
+#define MAVLINK_MSG_AIS_VESSEL_FIELD_NAME_LEN     20
 
 #if MAVLINK_COMMAND_24BIT
-#define MAVLINK_MESSAGE_INFO_AIS_VESSEL { \
-    301, \
-    "AIS_VESSEL", \
-    17, \
-    {  { "MMSI", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_ais_vessel_t, MMSI) }, \
-         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_ais_vessel_t, lat) }, \
-         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_ais_vessel_t, lon) }, \
-         { "COG", NULL, MAVLINK_TYPE_UINT16_T, 0, 12, offsetof(mavlink_ais_vessel_t, COG) }, \
-         { "heading", NULL, MAVLINK_TYPE_UINT16_T, 0, 14, offsetof(mavlink_ais_vessel_t, heading) }, \
-         { "velocity", NULL, MAVLINK_TYPE_UINT16_T, 0, 16, offsetof(mavlink_ais_vessel_t, velocity) }, \
-         { "turn_rate", NULL, MAVLINK_TYPE_INT8_T, 0, 26, offsetof(mavlink_ais_vessel_t, turn_rate) }, \
-         { "navigational_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 27, offsetof(mavlink_ais_vessel_t, navigational_status) }, \
-         { "type", NULL, MAVLINK_TYPE_UINT8_T, 0, 28, offsetof(mavlink_ais_vessel_t, type) }, \
-         { "dimension_bow", NULL, MAVLINK_TYPE_UINT16_T, 0, 18, offsetof(mavlink_ais_vessel_t, dimension_bow) }, \
-         { "dimension_stern", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_ais_vessel_t, dimension_stern) }, \
-         { "dimension_port", NULL, MAVLINK_TYPE_UINT8_T, 0, 29, offsetof(mavlink_ais_vessel_t, dimension_port) }, \
-         { "dimension_starboard", NULL, MAVLINK_TYPE_UINT8_T, 0, 30, offsetof(mavlink_ais_vessel_t, dimension_starboard) }, \
-         { "callsign", NULL, MAVLINK_TYPE_CHAR, 7, 31, offsetof(mavlink_ais_vessel_t, callsign) }, \
-         { "name", NULL, MAVLINK_TYPE_CHAR, 20, 38, offsetof(mavlink_ais_vessel_t, name) }, \
-         { "tslc", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_ais_vessel_t, tslc) }, \
-         { "flags", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_ais_vessel_t, flags) }, \
-         } \
-}
+    #define MAVLINK_MESSAGE_INFO_AIS_VESSEL                                                                                            \
+        {                                                                                                                              \
+            301,                                                                                                                       \
+                "AIS_VESSEL",                                                                                                          \
+                17,                                                                                                                    \
+            {                                                                                                                          \
+                { "MMSI", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_ais_vessel_t, MMSI) },                                   \
+                    { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_ais_vessel_t, lat) },                                  \
+                    { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_ais_vessel_t, lon) },                                  \
+                    { "COG", NULL, MAVLINK_TYPE_UINT16_T, 0, 12, offsetof(mavlink_ais_vessel_t, COG) },                                \
+                    { "heading", NULL, MAVLINK_TYPE_UINT16_T, 0, 14, offsetof(mavlink_ais_vessel_t, heading) },                        \
+                    { "velocity", NULL, MAVLINK_TYPE_UINT16_T, 0, 16, offsetof(mavlink_ais_vessel_t, velocity) },                      \
+                    { "turn_rate", NULL, MAVLINK_TYPE_INT8_T, 0, 26, offsetof(mavlink_ais_vessel_t, turn_rate) },                      \
+                    { "navigational_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 27, offsetof(mavlink_ais_vessel_t, navigational_status) }, \
+                    { "type", NULL, MAVLINK_TYPE_UINT8_T, 0, 28, offsetof(mavlink_ais_vessel_t, type) },                               \
+                    { "dimension_bow", NULL, MAVLINK_TYPE_UINT16_T, 0, 18, offsetof(mavlink_ais_vessel_t, dimension_bow) },            \
+                    { "dimension_stern", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_ais_vessel_t, dimension_stern) },        \
+                    { "dimension_port", NULL, MAVLINK_TYPE_UINT8_T, 0, 29, offsetof(mavlink_ais_vessel_t, dimension_port) },           \
+                    { "dimension_starboard", NULL, MAVLINK_TYPE_UINT8_T, 0, 30, offsetof(mavlink_ais_vessel_t, dimension_starboard) }, \
+                    { "callsign", NULL, MAVLINK_TYPE_CHAR, 7, 31, offsetof(mavlink_ais_vessel_t, callsign) },                          \
+                    { "name", NULL, MAVLINK_TYPE_CHAR, 20, 38, offsetof(mavlink_ais_vessel_t, name) },                                 \
+                    { "tslc", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_ais_vessel_t, tslc) },                              \
+                    { "flags", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_ais_vessel_t, flags) },                            \
+            }                                                                                                                          \
+        }
 #else
-#define MAVLINK_MESSAGE_INFO_AIS_VESSEL { \
-    "AIS_VESSEL", \
-    17, \
-    {  { "MMSI", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_ais_vessel_t, MMSI) }, \
-         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_ais_vessel_t, lat) }, \
-         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_ais_vessel_t, lon) }, \
-         { "COG", NULL, MAVLINK_TYPE_UINT16_T, 0, 12, offsetof(mavlink_ais_vessel_t, COG) }, \
-         { "heading", NULL, MAVLINK_TYPE_UINT16_T, 0, 14, offsetof(mavlink_ais_vessel_t, heading) }, \
-         { "velocity", NULL, MAVLINK_TYPE_UINT16_T, 0, 16, offsetof(mavlink_ais_vessel_t, velocity) }, \
-         { "turn_rate", NULL, MAVLINK_TYPE_INT8_T, 0, 26, offsetof(mavlink_ais_vessel_t, turn_rate) }, \
-         { "navigational_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 27, offsetof(mavlink_ais_vessel_t, navigational_status) }, \
-         { "type", NULL, MAVLINK_TYPE_UINT8_T, 0, 28, offsetof(mavlink_ais_vessel_t, type) }, \
-         { "dimension_bow", NULL, MAVLINK_TYPE_UINT16_T, 0, 18, offsetof(mavlink_ais_vessel_t, dimension_bow) }, \
-         { "dimension_stern", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_ais_vessel_t, dimension_stern) }, \
-         { "dimension_port", NULL, MAVLINK_TYPE_UINT8_T, 0, 29, offsetof(mavlink_ais_vessel_t, dimension_port) }, \
-         { "dimension_starboard", NULL, MAVLINK_TYPE_UINT8_T, 0, 30, offsetof(mavlink_ais_vessel_t, dimension_starboard) }, \
-         { "callsign", NULL, MAVLINK_TYPE_CHAR, 7, 31, offsetof(mavlink_ais_vessel_t, callsign) }, \
-         { "name", NULL, MAVLINK_TYPE_CHAR, 20, 38, offsetof(mavlink_ais_vessel_t, name) }, \
-         { "tslc", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_ais_vessel_t, tslc) }, \
-         { "flags", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_ais_vessel_t, flags) }, \
-         } \
-}
+    #define MAVLINK_MESSAGE_INFO_AIS_VESSEL                                                                                            \
+        {                                                                                                                              \
+            "AIS_VESSEL",                                                                                                              \
+                17,                                                                                                                    \
+            {                                                                                                                          \
+                { "MMSI", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_ais_vessel_t, MMSI) },                                   \
+                    { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_ais_vessel_t, lat) },                                  \
+                    { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_ais_vessel_t, lon) },                                  \
+                    { "COG", NULL, MAVLINK_TYPE_UINT16_T, 0, 12, offsetof(mavlink_ais_vessel_t, COG) },                                \
+                    { "heading", NULL, MAVLINK_TYPE_UINT16_T, 0, 14, offsetof(mavlink_ais_vessel_t, heading) },                        \
+                    { "velocity", NULL, MAVLINK_TYPE_UINT16_T, 0, 16, offsetof(mavlink_ais_vessel_t, velocity) },                      \
+                    { "turn_rate", NULL, MAVLINK_TYPE_INT8_T, 0, 26, offsetof(mavlink_ais_vessel_t, turn_rate) },                      \
+                    { "navigational_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 27, offsetof(mavlink_ais_vessel_t, navigational_status) }, \
+                    { "type", NULL, MAVLINK_TYPE_UINT8_T, 0, 28, offsetof(mavlink_ais_vessel_t, type) },                               \
+                    { "dimension_bow", NULL, MAVLINK_TYPE_UINT16_T, 0, 18, offsetof(mavlink_ais_vessel_t, dimension_bow) },            \
+                    { "dimension_stern", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_ais_vessel_t, dimension_stern) },        \
+                    { "dimension_port", NULL, MAVLINK_TYPE_UINT8_T, 0, 29, offsetof(mavlink_ais_vessel_t, dimension_port) },           \
+                    { "dimension_starboard", NULL, MAVLINK_TYPE_UINT8_T, 0, 30, offsetof(mavlink_ais_vessel_t, dimension_starboard) }, \
+                    { "callsign", NULL, MAVLINK_TYPE_CHAR, 7, 31, offsetof(mavlink_ais_vessel_t, callsign) },                          \
+                    { "name", NULL, MAVLINK_TYPE_CHAR, 20, 38, offsetof(mavlink_ais_vessel_t, name) },                                 \
+                    { "tslc", NULL, MAVLINK_TYPE_UINT16_T, 0, 22, offsetof(mavlink_ais_vessel_t, tslc) },                              \
+                    { "flags", NULL, MAVLINK_TYPE_UINT16_T, 0, 24, offsetof(mavlink_ais_vessel_t, flags) },                            \
+            }                                                                                                                          \
+        }
 #endif
 
 /**
@@ -110,7 +113,7 @@ typedef struct __mavlink_ais_vessel_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_ais_vessel_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char *callsign, const char *name, uint16_t tslc, uint16_t flags)
+                                                   uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char* callsign, const char* name, uint16_t tslc, uint16_t flags)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_AIS_VESSEL_LEN];
@@ -131,7 +134,7 @@ static inline uint16_t mavlink_msg_ais_vessel_pack(uint8_t system_id, uint8_t co
     _mav_put_uint8_t(buf, 30, dimension_starboard);
     _mav_put_char_array(buf, 31, callsign, 7);
     _mav_put_char_array(buf, 38, name, 20);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
 #else
     mavlink_ais_vessel_t packet;
     packet.MMSI = MMSI;
@@ -149,9 +152,9 @@ static inline uint16_t mavlink_msg_ais_vessel_pack(uint8_t system_id, uint8_t co
     packet.type = type;
     packet.dimension_port = dimension_port;
     packet.dimension_starboard = dimension_starboard;
-    mav_array_memcpy(packet.callsign, callsign, sizeof(char)*7);
-    mav_array_memcpy(packet.name, name, sizeof(char)*20);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
+    mav_array_memcpy(packet.callsign, callsign, sizeof(char) * 7);
+    mav_array_memcpy(packet.name, name, sizeof(char) * 20);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
 #endif
 
     msg->msgid = MAVLINK_MSG_ID_AIS_VESSEL;
@@ -184,8 +187,8 @@ static inline uint16_t mavlink_msg_ais_vessel_pack(uint8_t system_id, uint8_t co
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_ais_vessel_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-                               mavlink_message_t* msg,
-                                   uint32_t MMSI,int32_t lat,int32_t lon,uint16_t COG,uint16_t heading,uint16_t velocity,int8_t turn_rate,uint8_t navigational_status,uint8_t type,uint16_t dimension_bow,uint16_t dimension_stern,uint8_t dimension_port,uint8_t dimension_starboard,const char *callsign,const char *name,uint16_t tslc,uint16_t flags)
+                                                        mavlink_message_t* msg,
+                                                        uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char* callsign, const char* name, uint16_t tslc, uint16_t flags)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_AIS_VESSEL_LEN];
@@ -206,7 +209,7 @@ static inline uint16_t mavlink_msg_ais_vessel_pack_chan(uint8_t system_id, uint8
     _mav_put_uint8_t(buf, 30, dimension_starboard);
     _mav_put_char_array(buf, 31, callsign, 7);
     _mav_put_char_array(buf, 38, name, 20);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
 #else
     mavlink_ais_vessel_t packet;
     packet.MMSI = MMSI;
@@ -224,9 +227,9 @@ static inline uint16_t mavlink_msg_ais_vessel_pack_chan(uint8_t system_id, uint8
     packet.type = type;
     packet.dimension_port = dimension_port;
     packet.dimension_starboard = dimension_starboard;
-    mav_array_memcpy(packet.callsign, callsign, sizeof(char)*7);
-    mav_array_memcpy(packet.name, name, sizeof(char)*20);
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
+    mav_array_memcpy(packet.callsign, callsign, sizeof(char) * 7);
+    mav_array_memcpy(packet.name, name, sizeof(char) * 20);
+    memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
 #endif
 
     msg->msgid = MAVLINK_MSG_ID_AIS_VESSEL;
@@ -284,9 +287,9 @@ static inline uint16_t mavlink_msg_ais_vessel_encode_chan(uint8_t system_id, uin
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_ais_vessel_send(mavlink_channel_t chan, uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char *callsign, const char *name, uint16_t tslc, uint16_t flags)
+static inline void mavlink_msg_ais_vessel_send(mavlink_channel_t chan, uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char* callsign, const char* name, uint16_t tslc, uint16_t flags)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_AIS_VESSEL_LEN];
     _mav_put_uint32_t(buf, 0, MMSI);
     _mav_put_int32_t(buf, 4, lat);
@@ -306,7 +309,7 @@ static inline void mavlink_msg_ais_vessel_send(mavlink_channel_t chan, uint32_t 
     _mav_put_char_array(buf, 31, callsign, 7);
     _mav_put_char_array(buf, 38, name, 20);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, buf, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
-#else
+    #else
     mavlink_ais_vessel_t packet;
     packet.MMSI = MMSI;
     packet.lat = lat;
@@ -323,10 +326,10 @@ static inline void mavlink_msg_ais_vessel_send(mavlink_channel_t chan, uint32_t 
     packet.type = type;
     packet.dimension_port = dimension_port;
     packet.dimension_starboard = dimension_starboard;
-    mav_array_memcpy(packet.callsign, callsign, sizeof(char)*7);
-    mav_array_memcpy(packet.name, name, sizeof(char)*20);
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, (const char *)&packet, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
-#endif
+    mav_array_memcpy(packet.callsign, callsign, sizeof(char) * 7);
+    mav_array_memcpy(packet.name, name, sizeof(char) * 20);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, (const char*)&packet, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
+    #endif
 }
 
 /**
@@ -336,14 +339,14 @@ static inline void mavlink_msg_ais_vessel_send(mavlink_channel_t chan, uint32_t 
  */
 static inline void mavlink_msg_ais_vessel_send_struct(mavlink_channel_t chan, const mavlink_ais_vessel_t* ais_vessel)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     mavlink_msg_ais_vessel_send(chan, ais_vessel->MMSI, ais_vessel->lat, ais_vessel->lon, ais_vessel->COG, ais_vessel->heading, ais_vessel->velocity, ais_vessel->turn_rate, ais_vessel->navigational_status, ais_vessel->type, ais_vessel->dimension_bow, ais_vessel->dimension_stern, ais_vessel->dimension_port, ais_vessel->dimension_starboard, ais_vessel->callsign, ais_vessel->name, ais_vessel->tslc, ais_vessel->flags);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, (const char *)ais_vessel, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
-#endif
+    #else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, (const char*)ais_vessel, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
+    #endif
 }
 
-#if MAVLINK_MSG_ID_AIS_VESSEL_LEN <= MAVLINK_MAX_PAYLOAD_LEN
+    #if MAVLINK_MSG_ID_AIS_VESSEL_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
   This varient of _send() can be used to save stack space by re-using
   memory from the receive buffer.  The caller provides a
@@ -351,10 +354,10 @@ static inline void mavlink_msg_ais_vessel_send_struct(mavlink_channel_t chan, co
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_ais_vessel_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char *callsign, const char *name, uint16_t tslc, uint16_t flags)
+static inline void mavlink_msg_ais_vessel_send_buf(mavlink_message_t* msgbuf, mavlink_channel_t chan, uint32_t MMSI, int32_t lat, int32_t lon, uint16_t COG, uint16_t heading, uint16_t velocity, int8_t turn_rate, uint8_t navigational_status, uint8_t type, uint16_t dimension_bow, uint16_t dimension_stern, uint8_t dimension_port, uint8_t dimension_starboard, const char* callsign, const char* name, uint16_t tslc, uint16_t flags)
 {
-#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    char *buf = (char *)msgbuf;
+        #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char* buf = (char*)msgbuf;
     _mav_put_uint32_t(buf, 0, MMSI);
     _mav_put_int32_t(buf, 4, lat);
     _mav_put_int32_t(buf, 8, lon);
@@ -373,8 +376,8 @@ static inline void mavlink_msg_ais_vessel_send_buf(mavlink_message_t *msgbuf, ma
     _mav_put_char_array(buf, 31, callsign, 7);
     _mav_put_char_array(buf, 38, name, 20);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, buf, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
-#else
-    mavlink_ais_vessel_t *packet = (mavlink_ais_vessel_t *)msgbuf;
+        #else
+    mavlink_ais_vessel_t* packet = (mavlink_ais_vessel_t*)msgbuf;
     packet->MMSI = MMSI;
     packet->lat = lat;
     packet->lon = lon;
@@ -390,17 +393,16 @@ static inline void mavlink_msg_ais_vessel_send_buf(mavlink_message_t *msgbuf, ma
     packet->type = type;
     packet->dimension_port = dimension_port;
     packet->dimension_starboard = dimension_starboard;
-    mav_array_memcpy(packet->callsign, callsign, sizeof(char)*7);
-    mav_array_memcpy(packet->name, name, sizeof(char)*20);
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, (const char *)packet, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
-#endif
+    mav_array_memcpy(packet->callsign, callsign, sizeof(char) * 7);
+    mav_array_memcpy(packet->name, name, sizeof(char) * 20);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_AIS_VESSEL, (const char*)packet, MAVLINK_MSG_ID_AIS_VESSEL_MIN_LEN, MAVLINK_MSG_ID_AIS_VESSEL_LEN, MAVLINK_MSG_ID_AIS_VESSEL_CRC);
+        #endif
 }
-#endif
+    #endif
 
 #endif
 
 // MESSAGE AIS_VESSEL UNPACKING
-
 
 /**
  * @brief Get field MMSI from ais_vessel message
@@ -409,7 +411,7 @@ static inline void mavlink_msg_ais_vessel_send_buf(mavlink_message_t *msgbuf, ma
  */
 static inline uint32_t mavlink_msg_ais_vessel_get_MMSI(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  0);
+    return _MAV_RETURN_uint32_t(msg, 0);
 }
 
 /**
@@ -419,7 +421,7 @@ static inline uint32_t mavlink_msg_ais_vessel_get_MMSI(const mavlink_message_t* 
  */
 static inline int32_t mavlink_msg_ais_vessel_get_lat(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  4);
+    return _MAV_RETURN_int32_t(msg, 4);
 }
 
 /**
@@ -429,7 +431,7 @@ static inline int32_t mavlink_msg_ais_vessel_get_lat(const mavlink_message_t* ms
  */
 static inline int32_t mavlink_msg_ais_vessel_get_lon(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  8);
+    return _MAV_RETURN_int32_t(msg, 8);
 }
 
 /**
@@ -439,7 +441,7 @@ static inline int32_t mavlink_msg_ais_vessel_get_lon(const mavlink_message_t* ms
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_COG(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  12);
+    return _MAV_RETURN_uint16_t(msg, 12);
 }
 
 /**
@@ -449,7 +451,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_COG(const mavlink_message_t* m
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_heading(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  14);
+    return _MAV_RETURN_uint16_t(msg, 14);
 }
 
 /**
@@ -459,7 +461,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_heading(const mavlink_message_
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_velocity(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  16);
+    return _MAV_RETURN_uint16_t(msg, 16);
 }
 
 /**
@@ -469,7 +471,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_velocity(const mavlink_message
  */
 static inline int8_t mavlink_msg_ais_vessel_get_turn_rate(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int8_t(msg,  26);
+    return _MAV_RETURN_int8_t(msg, 26);
 }
 
 /**
@@ -479,7 +481,7 @@ static inline int8_t mavlink_msg_ais_vessel_get_turn_rate(const mavlink_message_
  */
 static inline uint8_t mavlink_msg_ais_vessel_get_navigational_status(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  27);
+    return _MAV_RETURN_uint8_t(msg, 27);
 }
 
 /**
@@ -489,7 +491,7 @@ static inline uint8_t mavlink_msg_ais_vessel_get_navigational_status(const mavli
  */
 static inline uint8_t mavlink_msg_ais_vessel_get_type(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  28);
+    return _MAV_RETURN_uint8_t(msg, 28);
 }
 
 /**
@@ -499,7 +501,7 @@ static inline uint8_t mavlink_msg_ais_vessel_get_type(const mavlink_message_t* m
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_dimension_bow(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  18);
+    return _MAV_RETURN_uint16_t(msg, 18);
 }
 
 /**
@@ -509,7 +511,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_dimension_bow(const mavlink_me
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_dimension_stern(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  20);
+    return _MAV_RETURN_uint16_t(msg, 20);
 }
 
 /**
@@ -519,7 +521,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_dimension_stern(const mavlink_
  */
 static inline uint8_t mavlink_msg_ais_vessel_get_dimension_port(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  29);
+    return _MAV_RETURN_uint8_t(msg, 29);
 }
 
 /**
@@ -529,7 +531,7 @@ static inline uint8_t mavlink_msg_ais_vessel_get_dimension_port(const mavlink_me
  */
 static inline uint8_t mavlink_msg_ais_vessel_get_dimension_starboard(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  30);
+    return _MAV_RETURN_uint8_t(msg, 30);
 }
 
 /**
@@ -537,9 +539,9 @@ static inline uint8_t mavlink_msg_ais_vessel_get_dimension_starboard(const mavli
  *
  * @return  The vessel callsign
  */
-static inline uint16_t mavlink_msg_ais_vessel_get_callsign(const mavlink_message_t* msg, char *callsign)
+static inline uint16_t mavlink_msg_ais_vessel_get_callsign(const mavlink_message_t* msg, char* callsign)
 {
-    return _MAV_RETURN_char_array(msg, callsign, 7,  31);
+    return _MAV_RETURN_char_array(msg, callsign, 7, 31);
 }
 
 /**
@@ -547,9 +549,9 @@ static inline uint16_t mavlink_msg_ais_vessel_get_callsign(const mavlink_message
  *
  * @return  The vessel name
  */
-static inline uint16_t mavlink_msg_ais_vessel_get_name(const mavlink_message_t* msg, char *name)
+static inline uint16_t mavlink_msg_ais_vessel_get_name(const mavlink_message_t* msg, char* name)
 {
-    return _MAV_RETURN_char_array(msg, name, 20,  38);
+    return _MAV_RETURN_char_array(msg, name, 20, 38);
 }
 
 /**
@@ -559,7 +561,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_name(const mavlink_message_t* 
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_tslc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  22);
+    return _MAV_RETURN_uint16_t(msg, 22);
 }
 
 /**
@@ -569,7 +571,7 @@ static inline uint16_t mavlink_msg_ais_vessel_get_tslc(const mavlink_message_t* 
  */
 static inline uint16_t mavlink_msg_ais_vessel_get_flags(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint16_t(msg,  24);
+    return _MAV_RETURN_uint16_t(msg, 24);
 }
 
 /**
@@ -599,8 +601,8 @@ static inline void mavlink_msg_ais_vessel_decode(const mavlink_message_t* msg, m
     mavlink_msg_ais_vessel_get_callsign(msg, ais_vessel->callsign);
     mavlink_msg_ais_vessel_get_name(msg, ais_vessel->name);
 #else
-        uint8_t len = msg->len < MAVLINK_MSG_ID_AIS_VESSEL_LEN? msg->len : MAVLINK_MSG_ID_AIS_VESSEL_LEN;
-        memset(ais_vessel, 0, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
+    uint8_t len = msg->len < MAVLINK_MSG_ID_AIS_VESSEL_LEN ? msg->len : MAVLINK_MSG_ID_AIS_VESSEL_LEN;
+    memset(ais_vessel, 0, MAVLINK_MSG_ID_AIS_VESSEL_LEN);
     memcpy(ais_vessel, _MAV_PAYLOAD(msg), len);
 #endif
 }

@@ -23,20 +23,18 @@
 #define _Header_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
-#include <stdbool.h>
 #include "Time.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 /*!
  * @brief This struct represents the structure Header defined by the user in the IDL file.
  * @ingroup HEADER
  */
-typedef struct Header
-{
+typedef struct Header {
     Time stamp;
     char frame_id[255];
 
@@ -47,7 +45,6 @@ struct ucdrBuffer;
 bool Header_serialize_topic(struct ucdrBuffer* writer, const Header* topic);
 bool Header_deserialize_topic(struct ucdrBuffer* reader, Header* topic);
 uint32_t Header_size_of_topic(const Header* topic, uint32_t size);
-
 
 #ifdef __cplusplus
 }

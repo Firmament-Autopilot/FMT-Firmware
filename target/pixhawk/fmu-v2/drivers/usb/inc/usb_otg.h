@@ -27,8 +27,7 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USB_OTG__
-#define __USB_OTG__
-
+    #define __USB_OTG__
 
 /** @addtogroup USB_OTG_DRIVER
   * @{
@@ -39,11 +38,9 @@
   * @{
   */
 
-
 /** @defgroup USB_OTG_Exported_Defines
   * @{
   */
-
 
 //void USB_OTG_InitiateSRP(void);
 //void USB_OTG_InitiateHNP(uint8_t state , uint8_t mode);
@@ -54,14 +51,12 @@
   * @}
   */
 
-
 /** @defgroup USB_OTG_Exported_Types
   * @{
   */
 /**
   * @}
   */
-
 
 /** @defgroup USB_OTG_Exported_Macros
   * @{
@@ -84,9 +79,7 @@
   * @}
   */
 
-
 #endif //__USB_OTG__
-
 
 /**
   * @}
@@ -96,4 +89,3 @@
   * @}
   */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

@@ -16,12 +16,11 @@
 #define UXR_CLIENT_CORE_SESSION_STREAM_STREAM_ID_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/visibility.h>
 #include <stdint.h>
+#include <uxr/client/visibility.h>
 
 /**
  * The enum that identifies the kind of stream.
@@ -37,8 +36,7 @@ extern "C"
  * and 128 reliable streams (id 0x80 - 0xFF),
  * for each direction: output (Client to Agent) and input (Agent to Client).
  */
-typedef enum uxrStreamType
-{
+typedef enum uxrStreamType {
     /** Identifies a none stream. */
     UXR_NONE_STREAM,
     /** Identifies a best-effort stream. */
@@ -52,8 +50,7 @@ typedef enum uxrStreamType
  * The enum that identifies the direction of a stream.
  * There are two different directions: output (Client to Agent) and input (Agent to Client).
  */
-typedef enum uxrStreamDirection
-{
+typedef enum uxrStreamDirection {
     /** Indicates the input direction of the stream. */
     UXR_INPUT_STREAM,
     /** Indicates the output direction of the stream. */
@@ -61,8 +58,7 @@ typedef enum uxrStreamDirection
 
 } uxrStreamDirection;
 
-typedef struct uxrStreamId
-{
+typedef struct uxrStreamId {
     uint8_t raw;
     uint8_t index;
     uint8_t type;
@@ -80,9 +76,9 @@ typedef struct uxrStreamId
  * @return A identifier of a stream.
  */
 UXRDLLAPI uxrStreamId uxr_stream_id(
-        uint8_t index,
-        uxrStreamType type,
-        uxrStreamDirection direction);
+    uint8_t index,
+    uxrStreamType type,
+    uxrStreamDirection direction);
 
 /**
  * @brief Creates a stream identifier.
@@ -95,8 +91,8 @@ UXRDLLAPI uxrStreamId uxr_stream_id(
  * @return A identifier of a stream.
  */
 UXRDLLAPI uxrStreamId uxr_stream_id_from_raw(
-        uint8_t stream_id_raw,
-        uxrStreamDirection direction);
+    uint8_t stream_id_raw,
+    uxrStreamDirection direction);
 
 #ifdef __cplusplus
 }

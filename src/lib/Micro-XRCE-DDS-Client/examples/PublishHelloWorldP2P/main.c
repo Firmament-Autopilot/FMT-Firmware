@@ -14,21 +14,20 @@
 
 #include "HelloWorld.h"
 
-#include <uxr/client/client.h>
 #include <ucdr/microcdr.h>
+#include <uxr/client/client.h>
 
-#include <stdio.h> //printf
-#include <string.h> //strcmp
+#include <stdio.h>  //printf
 #include <stdlib.h> //atoi
+#include <string.h> //strcmp
 
-#define STREAM_HISTORY  8
-#define BUFFER_SIZE     UXR_CONFIG_UDP_TRANSPORT_MTU * STREAM_HISTORY
+#define STREAM_HISTORY 8
+#define BUFFER_SIZE    UXR_CONFIG_UDP_TRANSPORT_MTU* STREAM_HISTORY
 
 int main(int args, char** argv)
 {
     // CLI
-    if(3 > args || 0 == atoi(argv[2]))
-    {
+    if (3 > args || 0 == atoi(argv[2])) {
         printf("usage: program [-h | --help] | ip port [<max_topics>]\n");
         return 0;
     }
@@ -40,8 +39,7 @@ int main(int args, char** argv)
     // Transport
     uxrUDPTransport transport;
     uxrUDPPlatform udp_platform;
-    if(!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, ip, port))
-    {
+    if (!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, ip, port)) {
         printf("Error at create transport.\n");
         return 1;
     }
@@ -49,8 +47,7 @@ int main(int args, char** argv)
     // Session
     uxrSession session;
     uxr_init_session(&session, &transport.comm, 0xAAAABBBB);
-    if(!uxr_create_session(&session))
-    {
+    if (!uxr_create_session(&session)) {
         printf("Error at create session.\n");
         return 1;
     }
@@ -81,9 +78,8 @@ int main(int args, char** argv)
 
     // Send create entities message and wait its status
     uint8_t status[4];
-    uint16_t requests[4] = {participant_req, topic_req, publisher_req, datawriter_req};
-    if(!uxr_run_session_until_all_status(&session, 1000, requests, status, 4))
-    {
+    uint16_t requests[4] = { participant_req, topic_req, publisher_req, datawriter_req };
+    if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 4)) {
         printf("Error at create entities: participant: %i topic: %i publisher: %i darawriter: %i\n", status[0], status[1], status[2], status[3]);
         return 1;
     }
@@ -91,9 +87,8 @@ int main(int args, char** argv)
     // Write topics
     bool connected = true;
     uint32_t count = 0;
-    while(connected && count < max_topics)
-    {
-        HelloWorld topic = {++count, "Hello DDS world!"};
+    while (connected && count < max_topics) {
+        HelloWorld topic = { ++count, "Hello DDS world!" };
 
         ucdrBuffer ub;
         uint32_t topic_size = HelloWorld_size_of_topic(&topic, 0);

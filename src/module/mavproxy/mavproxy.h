@@ -20,11 +20,11 @@
 #include <mavlink.h>
 
 #include "module/mavproxy/mavlink_console.h"
+#include "module/mavproxy/mavlink_mission.h"
 #include "module/mavproxy/mavlink_param.h"
 #include "module/mavproxy/mavlink_status.h"
 #include "module/mavproxy/mavproxy_cmd.h"
 #include "module/mavproxy/mavproxy_dev.h"
-#include "module/mavproxy/mavlink_mission.h"
 
 #ifdef __cplusplus
 extern "C" {

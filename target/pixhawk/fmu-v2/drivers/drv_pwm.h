@@ -45,5 +45,3 @@ rt_err_t drv_pwm_init(void);
 #endif
 
 #endif
-
-

@@ -126,7 +126,7 @@ static void dump_period_msg(void)
  * @return FMT Errors
  */
 fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
-    msg_pack_cb_t msg_pack_cb, bool auto_start)
+                                       msg_pack_cb_t msg_pack_cb, bool auto_start)
 {
     MAV_PeriodMsg msg;
 
@@ -259,9 +259,7 @@ void mavproxy_loop(void)
 
     while (1) {
         /* wait event occur */
-        res = rt_event_recv(&mav_handle.event, wait_set,
-            RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            RT_WAITING_FOREVER, &recv_set);
+        res = rt_event_recv(&mav_handle.event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
 
         if (res == RT_EOK) {
             /* switch mavproxy channel if needed */
@@ -270,7 +268,8 @@ void mavproxy_loop(void)
                     mav_handle.chan = mav_handle.new_chan;
                 } else {
                     console_printf("mavproxy switch channel fail! current chan:%d new chan:%d\n",
-                        mav_handle.chan, mav_handle.new_chan);
+                                   mav_handle.chan,
+                                   mav_handle.new_chan);
                     mav_handle.new_chan = mav_handle.chan;
                 }
             }
@@ -325,8 +324,7 @@ fmt_err_t mavproxy_init(void)
     register_param_modify_callback(on_param_modify);
 
     /* register timer event to periodly wakeup itself */
-    rt_timer_init(&mav_handle.timer, "mavproxy", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL,
-        RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    rt_timer_init(&mav_handle.timer, "mavproxy", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     rt_timer_start(&mav_handle.timer);
 
     return FMT_EOK;

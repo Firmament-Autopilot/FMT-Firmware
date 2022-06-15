@@ -6,10 +6,10 @@
  */
 
 #ifndef RTGETINF_H
-#define RTGETINF_H
-#include <stddef.h>
-#include "rtwtypes.h"
-#include "rt_nonfinite.h"
+    #define RTGETINF_H
+    #include "rt_nonfinite.h"
+    #include "rtwtypes.h"
+    #include <stddef.h>
 
 extern real_T rtGetInf_(void);
 extern real32_T rtGetInfF_(void);
