@@ -1,5 +1,6 @@
 # Build Lists
 # Modify this file to control which files/modules should be built
+from kconfig import INS_SRC
 
 DRIVERS = [
     'imu/icm20689.c',
@@ -77,7 +78,8 @@ TASKS_CPPPATH = []
 
 MODELS = [
     'plant/multicopter',
-    'ins/base_ins',
+    # 'ins/base_ins',
+    INS_SRC,
     'fms/base_fms',
     'control/base_controller',
 ]
