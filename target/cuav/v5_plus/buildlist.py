@@ -10,6 +10,7 @@ DRIVERS = [
     'rgb_led/ncp5623c.c',
     'mtd/ramtron.c',
     'vision_flow/pmw3901_fl04.c',
+    'airspeed/ms4525.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -34,6 +35,7 @@ HAL = [
     'gps/*.c',
     'adc/*.c',
     'mtd/*.c',
+    'airspeed/*.c',
 ]
 
 HAL_CPPPATH = []
