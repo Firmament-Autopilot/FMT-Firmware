@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef DRV_I2C_H__
-#define DRV_I2C_H__
+#ifndef MS4525_H__
+#define MS4525_H__
 
-#include <firmament.h>
+#include <rtthread.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* i2c slave device 7-bits addresses */
-#define IST8310_ADDRESS  0x0E
-#define NCP5623C_ADDRESS 0x39
-#define MS4525_ADDRESS   0x28
-
-rt_err_t drv_i2c_init(void);
+rt_err_t drv_ms4525_init(const char* i2c_device_name, const char* device_name);
 
 #ifdef __cplusplus
 }

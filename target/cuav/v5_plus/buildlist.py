@@ -9,6 +9,7 @@ DRIVERS = [
     'gps/gps_m8n.c',
     'rgb_led/ncp5623c.c',
     'mtd/ramtron.c',
+    'airspeed/ms4525.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -33,6 +34,7 @@ HAL = [
     'gps/*.c',
     'adc/*.c',
     'mtd/*.c',
+    'airspeed/*.c',
 ]
 
 HAL_CPPPATH = []
