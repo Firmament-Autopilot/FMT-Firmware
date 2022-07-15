@@ -76,6 +76,10 @@ fmt_err_t send_actuator_cmd(void)
 {
     fmt_err_t err = FMT_EOK;
     int i, j;
+    bool has_poll_control_out = false;
+    bool has_poll_rc_channels = false;
+    Control_Out_Bus control_out;
+    int16_t rc_channel[16];
 
     DEFINE_TIMETAG(actuator_intv, 2);
 
@@ -85,46 +89,52 @@ fmt_err_t send_actuator_cmd(void)
 
     for (i = 0; i < mapping_num; i++) {
         if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
-            if (mcn_poll(_control_out_nod)) {
-                rt_size_t size = mapping_list[i].map_size;
-                Control_Out_Bus control_out;
-                uint16_t chan_sel = 0;
-                uint16_t chan_val[16];
+            rt_size_t size = mapping_list[i].map_size;
+            uint16_t chan_sel = 0;
+            uint16_t chan_val[16];
 
+            if (has_poll_control_out == false) {
+                if (mcn_poll(_control_out_nod) == false) {
+                    return FMT_ERROR;
+                }
                 mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
+                has_poll_control_out = true;
+            }
 
-                for (j = 0; j < mapping_list[i].map_size; j++) {
-                    /* set channel select according to to mapping */
-                    chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
-                    /* set channel value according to from mapping */
-                    chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
-                }
+            for (j = 0; j < mapping_list[i].map_size; j++) {
+                /* set channel select according to to mapping */
+                chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
+                /* set channel value according to from mapping */
+                chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
+            }
 
-                /* write actuator command */
-                if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
-                    err = FMT_ERROR;
-                }
+            /* write actuator command */
+            if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
+                err = FMT_ERROR;
             }
         } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
-            if (mcn_poll(_rc_channels_nod)) {
-                rt_size_t size = mapping_list[i].map_size;
-                int16_t rc_channel[16];
-                uint16_t chan_val[16];
-                uint16_t chan_sel = 0;
+            rt_size_t size = mapping_list[i].map_size;
+            uint16_t chan_val[16];
+            uint16_t chan_sel = 0;
 
+            if (has_poll_rc_channels == false) {
+                if (mcn_poll(_rc_channels_nod) == 0) {
+                    return FMT_ERROR;
+                }
                 mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
+                has_poll_rc_channels = true;
+            }
 
-                for (j = 0; j < mapping_list[i].map_size; j++) {
-                    /* set channel select according to to mapping */
-                    chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
-                    /* set channel value according to from mapping */
-                    chan_val[j] = rc_channel[mapping_list[i].from_map[j] - 1];
-                }
+            for (j = 0; j < mapping_list[i].map_size; j++) {
+                /* set channel select according to to mapping */
+                chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
+                /* set channel value according to from mapping */
+                chan_val[j] = rc_channel[mapping_list[i].from_map[j] - 1];
+            }
 
-                /* write actuator command */
-                if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
-                    err = FMT_ERROR;
-                }
+            /* write actuator command */
+            if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
+                err = FMT_ERROR;
             }
         } else {
             continue;
