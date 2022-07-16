@@ -78,5 +78,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(LEVEL_XOFF, 0.0),
     PARAM_FLOAT(LEVEL_YOFF, 0.0),
     PARAM_FLOAT(LEVEL_ZOFF, 0.0),
+    /* Airspeed Calibration */
+    PARAM_FLOAT(DIFF_PRESS_OFFSET, 0.0),
 };
 PARAM_GROUP_DEFINE(CALIB, __param_list);

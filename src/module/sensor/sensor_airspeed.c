@@ -16,6 +16,8 @@
 #include "module/sensor/sensor_airspeed.h"
 #include "hal/airspeed/airspeed.h"
 
+static float diff_press_offset;
+
 /**
  * @brief Measure airspeed data
  * 
@@ -26,12 +28,15 @@
 fmt_err_t sensor_airspeed_measure(sensor_airspeed_t airspeed_dev, airspeed_data_t* airspeed_report)
 {
     rt_size_t r_size;
+    float diff_pressure_pa;
 
     RT_ASSERT(airspeed_dev != NULL);
 
     airspeed_report->timestamp_ms = systime_now_ms();
-    
-    r_size = rt_device_read(airspeed_dev->dev, 0, &airspeed_report->diff_pressure_pa, 8);
+
+    r_size = rt_device_read(airspeed_dev->dev, 0, &diff_pressure_pa, 8);
+
+    airspeed_report->diff_pressure_pa = diff_pressure_pa - diff_press_offset;
 
     return r_size == 8 ? FMT_EOK : FMT_ERROR;
 }
@@ -53,6 +58,8 @@ sensor_airspeed_t sensor_airspeed_init(const char* airspeed_dev_name)
 
     /* open device */
     RT_CHECK(rt_device_open(airspeed_dev->dev, RT_DEVICE_OFLAG_RDWR));
+
+    FMT_CHECK(param_link_variable(PARAM_GET(CALIB, DIFF_PRESS_OFFSET), &diff_press_offset));
 
     return airspeed_dev;
 }
