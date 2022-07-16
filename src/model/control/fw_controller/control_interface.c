@@ -32,10 +32,10 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 /* define parameters */
 static param_t __param_list[] = {
     PARAM_FLOAT(ROLL_P, 5),
-    PARAM_FLOAT(PITCH_P, 5),
+    PARAM_FLOAT(PITCH_P, 7),
     PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 6),
     PARAM_FLOAT(ROLL_RATE_P, 0.1),
-    PARAM_FLOAT(PITCH_RATE_P, 0.1),
+    PARAM_FLOAT(PITCH_RATE_P, 0.2),
     PARAM_FLOAT(YAW_RATE_P, 0.15),
     PARAM_FLOAT(ROLL_RATE_I, 0.1),
     PARAM_FLOAT(PITCH_RATE_I, 0.1),
@@ -49,9 +49,21 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_FF, 0.2),
     PARAM_FLOAT(FW_FF_LIMIT, 0.3),
     PARAM_FLOAT(FW_PI_LIMIT, 0.7),
-    PARAM_FLOAT(FW_ROLL_EFFC, 1),
-    PARAM_FLOAT(FW_PITCH_EFFC, 1),
+    PARAM_FLOAT(FW_ROLL_EFFC, -1),
+    PARAM_FLOAT(FW_PITCH_EFFC, -1),
     PARAM_FLOAT(FW_YAW_EFFC, 1),
+
+    PARAM_FLOAT(FW_TECS_PITCH_FF,0.05),
+    PARAM_FLOAT(FW_TECS_THOR_FF,0.5),
+    PARAM_FLOAT(FW_TECS_PITCH_P,0.1),
+    PARAM_FLOAT(FW_TECS_THOR_P,0.1),
+    PARAM_FLOAT(FW_TECS_PITCH_I,0.05),
+    PARAM_FLOAT(FW_TECS_THOR_I,0.05),
+    PARAM_FLOAT(FW_TECS_PITCH_D,0.01),
+    PARAM_FLOAT(FW_TECS_THOR_D,0.01),
+    PARAM_FLOAT(FW_TECS_RATIO,1),
+    PARAM_FLOAT(FW_L1_ROLL_P,0.1),
+
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
@@ -73,7 +85,7 @@ static int control_out_echo(void* param)
 {
     Control_Out_Bus control_out;
     if (mcn_copy_from_hub((McnHub*)param, &control_out) == FMT_EOK) {
-        console_printf("timestamp:%d actuator: %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0], control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3]);
+        console_printf("timestamp:%d actuator: %d %d %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0], control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3], control_out.actuator_cmd[4], control_out.actuator_cmd[5]);
     }
     return 0;
 }
