@@ -1,6 +1,6 @@
 /*!
-    \file    cdc_acm_core.h
-    \brief   the header file of cdc acm driver
+    \file    usb_msc.h
+    \brief   definitions for the USB MSC class
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
 */
@@ -32,43 +32,37 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef __CDC_ACM_CORE_H
-#define __CDC_ACM_CORE_H
+#ifndef __USB_MSC_H
+#define __USB_MSC_H
 
-#include "usb_cdc.h"
-#include "usbd_enum.h"
+#include "usb_ch9_std.h"
 
-// #define USB_CDC_RX_LEN 64
+/* mass storage device class code */
+#define USB_CLASS_MSC                     0x08U
 
-#define USB_TX_DATA_SIZE 2048
-#define USB_RX_DATA_SIZE 2048
+/* mass storage subclass code */
+#define USB_MSC_SUBCLASS_RBC              0x01U
+#define USB_MSC_SUBCLASS_ATAPI            0x02U
+#define USB_MSC_SUBCLASS_UFI              0x04U
+#define USB_MSC_SUBCLASS_SCSI             0x06U
+#define USB_MSC_SUBCLASS_LOCKABLE         0x07U
+#define USB_MSC_SUBCLASS_IEEE1667         0x08U
 
-typedef struct {
-    // uint8_t data[USB_CDC_RX_LEN];
-    uint8_t tx_buffer[USB_TX_DATA_SIZE];
-    uint8_t rx_buffer[USB_RX_DATA_SIZE];
-    uint8_t cmd[USB_CDC_CMD_PACKET_SIZE];
+/* mass storage interface class control protocol codes */
+#define USB_MSC_PROTOCOL_CBI              0x00U
+#define USB_MSC_PROTOCOL_CBI_ALT          0x01U
+#define USB_MSC_PROTOCOL_BBB              0x50U
 
-    // uint8_t packet_sent;
-    // uint8_t packet_receive;
+/* mass storage request codes */
+#define USB_MSC_REQ_CODES_ADSC            0x00U
+#define USB_MSC_REQ_CODES_GET             0xFCU
+#define USB_MSC_REQ_CODES_PUT             0xFDU
+#define USB_MSC_REQ_CODES_GML             0xFEU
+#define USB_MSC_REQ_CODES_BOMSR           0xFFU
 
-    uint32_t tx_length;
-    uint32_t rx_length;
+#define BBB_GET_MAX_LUN                   0xFEU
+#define BBB_RESET                         0xFFU
 
-    // uint32_t receive_length;
+#define SCSI_CMD_LENGTH                   16U
 
-    acm_line line_coding;
-} usb_cdc_handler;
-
-extern usb_desc cdc_desc;
-extern usb_class_core cdc_class;
-
-/* function declarations */
-/* check CDC ACM is ready for data transfer */
-uint8_t cdc_acm_check_ready(usb_dev* udev);
-/* send CDC ACM data */
-void cdc_acm_data_send(usb_dev* udev);
-/* receive CDC ACM data */
-void cdc_acm_data_receive(usb_dev* udev);
-
-#endif /* __CDC_ACM_CORE_H */
+#endif /* __USB_MSC_H */

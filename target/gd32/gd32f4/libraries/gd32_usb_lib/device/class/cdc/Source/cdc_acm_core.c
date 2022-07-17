@@ -34,6 +34,9 @@ OF SUCH DAMAGE.
 
 #include "cdc_acm_core.h"
 
+void drv_usbd_cdc_receive(uint8_t* buffer, uint32_t size);
+void drv_usbd_cdc_transmist_complete(uint8_t* buffer, uint32_t size);
+
 #define USBD_VID                          0x28E9U
 #define USBD_PID                          0x018AU
 
@@ -285,13 +288,13 @@ usb_class_core cdc_class =
 */
 uint8_t cdc_acm_check_ready(usb_dev *udev)
 {
-    if (udev->dev.class_data[CDC_COM_INTERFACE] != NULL) {
-        usb_cdc_handler *cdc = (usb_cdc_handler *)udev->dev.class_data[CDC_COM_INTERFACE];
+    // if (udev->dev.class_data[CDC_COM_INTERFACE] != NULL) {
+    //     usb_cdc_handler *cdc = (usb_cdc_handler *)udev->dev.class_data[CDC_COM_INTERFACE];
 
-        if ((1U == cdc->packet_receive) && (1U == cdc->packet_sent)) {
-            return 0U;
-        }
-    }
+    //     if ((1U == cdc->packet_receive) && (1U == cdc->packet_sent)) {
+    //         return 0U;
+    //     }
+    // }
 
     return 1U;
 }
@@ -306,12 +309,12 @@ void cdc_acm_data_send (usb_dev *udev)
 {
     usb_cdc_handler *cdc = (usb_cdc_handler *)udev->dev.class_data[CDC_COM_INTERFACE];
 
-    if (0U != cdc->receive_length) {
-        cdc->packet_sent = 0U;
+    if (0U != cdc->tx_length) {
+        // cdc->packet_sent = 0U;
 
-        usbd_ep_send (udev, CDC_DATA_IN_EP, (uint8_t*)(cdc->data), cdc->receive_length);
+        usbd_ep_send (udev, CDC_DATA_IN_EP, (uint8_t*)(cdc->tx_buffer), cdc->tx_length);
 
-        cdc->receive_length = 0U;
+        cdc->tx_length = 0U;
     }
 }
 
@@ -325,10 +328,10 @@ void cdc_acm_data_receive (usb_dev *udev)
 {
     usb_cdc_handler *cdc = (usb_cdc_handler *)udev->dev.class_data[CDC_COM_INTERFACE];
 
-    cdc->packet_receive = 0U;
-    cdc->packet_sent = 0U;
+    // cdc->packet_receive = 0U;
+    // cdc->packet_sent = 0U;
 
-    usbd_ep_recev(udev, CDC_DATA_OUT_EP, (uint8_t*)(cdc->data), USB_CDC_DATA_PACKET_SIZE);
+    usbd_ep_recev(udev, CDC_DATA_OUT_EP, (uint8_t*)(cdc->rx_buffer), USB_CDC_DATA_PACKET_SIZE);
 }
 
 /*!
@@ -352,9 +355,11 @@ static uint8_t cdc_acm_init (usb_dev *udev, uint8_t config_index)
     usbd_ep_setup (udev, &(cdc_config_desc.cdc_cmd_endpoint));
 
     /* initialize CDC handler structure */
-    cdc_handler.packet_receive = 1U;
-    cdc_handler.packet_sent = 1U;
-    cdc_handler.receive_length = 0U;
+    // cdc_handler.packet_receive = 1U;
+    // cdc_handler.packet_sent = 1U;
+    // cdc_handler.receive_length = 0U;
+    cdc_handler.tx_length = 0U;
+    cdc_handler.rx_length = 0U;
 
     cdc_handler.line_coding = (acm_line){
         .dwDTERate   = 115200,
@@ -474,7 +479,9 @@ static uint8_t cdc_acm_in (usb_dev *udev, uint8_t ep_num)
     if ((0U == transc->xfer_len % transc->max_len) && (0U != transc->xfer_len)) {
         usbd_ep_send (udev, ep_num, NULL, 0U);
     } else {
-        cdc->packet_sent = 1U;
+        // cdc->packet_sent = 1U;
+        /* notify usbd driver that we have sent something */
+        drv_usbd_cdc_transmist_complete(cdc->tx_buffer, transc->xfer_len);
     }
 
     return USBD_OK;
@@ -507,8 +514,12 @@ static uint8_t cdc_acm_out (usb_dev *udev, uint8_t ep_num)
             udev->dev.class_core->alter_set = NO_CMD;
         }
     } else {
-        cdc->packet_receive = 1U;
-        cdc->receive_length = ((usb_core_driver *)udev)->dev.transc_out[ep_num].xfer_count;
+        // cdc->packet_receive = 1U;
+        // cdc->receive_length = ((usb_core_driver *)udev)->dev.transc_out[ep_num].xfer_count;
+
+        cdc->rx_length = ((usb_core_driver *)udev)->dev.transc_out[ep_num].xfer_count;
+        /* notify usbd driver that we received something */
+        drv_usbd_cdc_receive(cdc->rx_buffer, cdc->rx_length);
     }
 
     return USBD_OK;

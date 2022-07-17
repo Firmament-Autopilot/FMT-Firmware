@@ -1,6 +1,6 @@
 /*!
-    \file    cdc_acm_core.h
-    \brief   the header file of cdc acm driver
+    \file    usb_hid.h
+    \brief   definitions for the USB HID class
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
 */
@@ -32,43 +32,52 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef __CDC_ACM_CORE_H
-#define __CDC_ACM_CORE_H
+#ifndef __USB_HID_H
+#define __USB_HID_H
 
-#include "usb_cdc.h"
-#include "usbd_enum.h"
+#include "usb_ch9_std.h"
 
-// #define USB_CDC_RX_LEN 64
+#define USB_HID_CLASS               0x03U
 
-#define USB_TX_DATA_SIZE 2048
-#define USB_RX_DATA_SIZE 2048
+#define USB_DESCTYPE_HID            0x21U
+#define USB_DESCTYPE_REPORT         0x22U
 
-typedef struct {
-    // uint8_t data[USB_CDC_RX_LEN];
-    uint8_t tx_buffer[USB_TX_DATA_SIZE];
-    uint8_t rx_buffer[USB_RX_DATA_SIZE];
-    uint8_t cmd[USB_CDC_CMD_PACKET_SIZE];
+/* HID subclass code */
+#define USB_HID_SUBCLASS_BOOT_ITF   0x01U
 
-    // uint8_t packet_sent;
-    // uint8_t packet_receive;
+/* HID protocol codes */
+#define USB_HID_PROTOCOL_KEYBOARD   0x01U
+#define USB_HID_PROTOCOL_MOUSE      0x02U
 
-    uint32_t tx_length;
-    uint32_t rx_length;
+#define GET_REPORT                  0x01U
+#define GET_IDLE                    0x02U
+#define GET_PROTOCOL                0x03U
+#define SET_REPORT                  0x09U
+#define SET_IDLE                    0x0AU
+#define SET_PROTOCOL                0x0BU
 
-    // uint32_t receive_length;
+#pragma pack(1)
 
-    acm_line line_coding;
-} usb_cdc_handler;
+typedef struct
+{
+    usb_desc_header header;     /*!< regular descriptor header containing the descriptor's type and length */
 
-extern usb_desc cdc_desc;
-extern usb_class_core cdc_class;
+    uint16_t bcdHID;            /*!< BCD encoded version that the HID descriptor and device complies to */
+    uint8_t  bCountryCode;      /*!< country code of the localized device, or zero if universal */
+    uint8_t  bNumDescriptors;   /*!< total number of HID report descriptors for the interface */
+    uint8_t  bDescriptorType;   /*!< type of HID report */
+    uint16_t wDescriptorLength; /*!< length of the associated HID report descriptor, in bytes */
+} usb_desc_hid;
 
-/* function declarations */
-/* check CDC ACM is ready for data transfer */
-uint8_t cdc_acm_check_ready(usb_dev* udev);
-/* send CDC ACM data */
-void cdc_acm_data_send(usb_dev* udev);
-/* receive CDC ACM data */
-void cdc_acm_data_receive(usb_dev* udev);
+#pragma pack()
 
-#endif /* __CDC_ACM_CORE_H */
+typedef struct
+{
+    usb_desc_config         config;
+    usb_desc_itf            hid_itf;
+    usb_desc_hid            hid_vendor;
+    usb_desc_ep             hid_epin;
+    usb_desc_ep             hid_epout;
+}usb_hid_desc_config_set;
+
+#endif /* __USB_HID_H */
