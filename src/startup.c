@@ -134,12 +134,3 @@ int main(void)
 
     return 0;
 }
-
-/* Add -eentry to arm-none-eabi-gcc argument */
-int entry(void)
-{
-    /* startup RT-Thread RTOS */
-    rtthread_startup();
-
-    return 0;
-}
