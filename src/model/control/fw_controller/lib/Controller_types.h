@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.939
+ * Model version                  : 1.966
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 16 23:30:46 2022
+ * C/C++ source code generated on : Sun Jul 17 14:37:52 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -135,8 +135,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_PV3SQCFgY9osXK4X1JOmc_
-#define DEFINED_TYPEDEF_FOR_struct_PV3SQCFgY9osXK4X1JOmc_
+#ifndef DEFINED_TYPEDEF_FOR_struct_M8LEl4uNQE6bF6Ay89SKzG_
+#define DEFINED_TYPEDEF_FOR_struct_M8LEl4uNQE6bF6Ay89SKzG_
 
 typedef struct {
   real32_T ROLL_P;
@@ -159,7 +159,22 @@ typedef struct {
   real32_T FW_ROLL_EFFC;
   real32_T FW_PITCH_EFFC;
   real32_T FW_YAW_EFFC;
-} struct_PV3SQCFgY9osXK4X1JOmc;
+  real32_T FW_TC_REVERSE;
+  real32_T FW_TS_REVERSE;
+  real32_T FW_TECS_PITCH_F;
+  real32_T FW_TECS_THOR_FF;
+  real32_T FW_TECS_PITCH_P;
+  real32_T FW_TECS_THOR_P;
+  real32_T FW_TECS_PITCH_I;
+  real32_T FW_TECS_THOR_I;
+  real32_T FW_TECS_PITCH_D;
+  real32_T FW_TECS_THOR_D;
+  real32_T FW_TECS_RATIO;
+  real32_T FW_TECS_SWITCH;
+  real32_T FW_TECS_VERR_K;
+  real32_T FW_TECS_ANG_K;
+  real32_T FW_L1_ROLL_P;
+} struct_M8LEl4uNQE6bF6Ay89SKzG;
 
 #endif
 

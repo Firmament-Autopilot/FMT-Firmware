@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1772
+ * Model version                  : 1.1779
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 16 23:29:46 2022
+ * C/C++ source code generated on : Sun Jul 17 14:34:43 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -60,10 +60,6 @@ extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
   rtu_P3_g, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
 extern void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T
   *localC);
-extern void FMS_MoveControl_m_Init(DW_MoveControl_FMS_g_T *localDW);
-extern void FMS_MoveControl_j_Reset(DW_MoveControl_FMS_g_T *localDW);
-extern void FMS_MoveControl_l(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
-  const ConstB_MoveControl_FMS_p_T *localC, DW_MoveControl_FMS_g_T *localDW);
 extern void FMS_MotionStatus_o_Init(DW_MotionStatus_FMS_a_T *localDW);
 extern void FMS_MotionStatus_n_Reset(DW_MotionStatus_FMS_a_T *localDW);
 extern void FMS_MotionStatus_b(boolean_T rtu_motion_req, real32_T rtu_speed,
