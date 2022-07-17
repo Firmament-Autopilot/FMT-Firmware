@@ -23,6 +23,7 @@
 #include "default_config.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
+#include "drv_usbd_cdc.h"
 #include "module/file_manager/file_manager.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
@@ -351,6 +352,9 @@ void bsp_initialize(void)
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
+
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
@@ -369,14 +373,6 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
-
-    rt_device_t dev = rt_device_find("serial0");
-    char ch;
-    while(1) {
-        if(rt_device_read(dev, 0, &ch, 1) > 0) {
-            printf("%c", ch);
-        }
-    }
 }
 
 /**

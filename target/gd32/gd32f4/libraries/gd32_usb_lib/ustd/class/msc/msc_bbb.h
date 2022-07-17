@@ -1,6 +1,6 @@
 /*!
-    \file    cdc_acm_core.h
-    \brief   the header file of cdc acm driver
+    \file    msc_bbb.h
+    \brief   definitions for the USB MSC BBB(bulk/bulk/bulk) protocol
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
 */
@@ -32,43 +32,38 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef __CDC_ACM_CORE_H
-#define __CDC_ACM_CORE_H
+#ifndef __MSC_BBB_H
+#define __MSC_BBB_H
 
-#include "usb_cdc.h"
-#include "usbd_enum.h"
+#include "usb_ch9_std.h"
 
-// #define USB_CDC_RX_LEN 64
-
-#define USB_TX_DATA_SIZE 2048
-#define USB_RX_DATA_SIZE 2048
+#define BBB_CBW_SIGNATURE                 0x43425355U
+#define BBB_CSW_SIGNATURE                 0x53425355U
+#define BBB_CBW_LENGTH                    31U
+#define BBB_CSW_LENGTH                    13U
 
 typedef struct {
-    // uint8_t data[USB_CDC_RX_LEN];
-    uint8_t tx_buffer[USB_TX_DATA_SIZE];
-    uint8_t rx_buffer[USB_RX_DATA_SIZE];
-    uint8_t cmd[USB_CDC_CMD_PACKET_SIZE];
+    uint32_t dCBWSignature;
+    uint32_t dCBWTag;
+    uint32_t dCBWDataTransferLength;
+    uint8_t  bmCBWFlags;
+    uint8_t  bCBWLUN;
+    uint8_t  bCBWCBLength;
+    uint8_t  CBWCB[16];
+}msc_bbb_cbw;
 
-    // uint8_t packet_sent;
-    // uint8_t packet_receive;
+typedef struct {
+    uint32_t dCSWSignature;
+    uint32_t dCSWTag;
+    uint32_t dCSWDataResidue;
+    uint8_t  bCSWStatus;
+}msc_bbb_csw;
 
-    uint32_t tx_length;
-    uint32_t rx_length;
+/* CSW command status */
+enum msc_csw_status {
+    CSW_CMD_PASSED = 0,
+    CSW_CMD_FAILED,
+    CSW_PHASE_ERROR
+};
 
-    // uint32_t receive_length;
-
-    acm_line line_coding;
-} usb_cdc_handler;
-
-extern usb_desc cdc_desc;
-extern usb_class_core cdc_class;
-
-/* function declarations */
-/* check CDC ACM is ready for data transfer */
-uint8_t cdc_acm_check_ready(usb_dev* udev);
-/* send CDC ACM data */
-void cdc_acm_data_send(usb_dev* udev);
-/* receive CDC ACM data */
-void cdc_acm_data_receive(usb_dev* udev);
-
-#endif /* __CDC_ACM_CORE_H */
+#endif /* __MSC_BBB_H */

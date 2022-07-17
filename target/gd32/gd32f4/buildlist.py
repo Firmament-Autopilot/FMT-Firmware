@@ -18,7 +18,7 @@ HAL = [
     'serial/*.c',
     'systick/*.c',
     # 'sd/*.c',
-    # 'usb/usbd_cdc.c',
+    'usb/usbd_cdc.c',
     # 'spi/spi_core.c',
     # 'spi/spi_dev.c',
     # 'i2c/*.c',
@@ -38,7 +38,7 @@ HAL = [
 HAL_CPPPATH = []
 
 MODULES = [
-#     'calibration/*.c',
+    'calibration/*.c',
     'console/*.c',
     'system/*.c',
 #     'ipc/*.c',
@@ -47,8 +47,8 @@ MODULES = [
 #     'ftp/*.c',
 #     "log/*.c",
 #     "param/*.c",
-#     'utils/*.c',
-#     'mavproxy/*.c',
+    'utils/*.c',
+    'mavproxy/*.c',
 #     'sensor/*.c',
 #     'sysio/*.c',
     'toml/*.c',
@@ -61,7 +61,7 @@ MODULES = [
 ]
 
 MODULES_CPPPATH = [
-    # 'calibration',
+    'calibration',
 ]
 
 TASKS = [
@@ -77,12 +77,12 @@ TASKS_CPPPATH = []
 
 MODELS = [
     # 'plant/multicopter',
-    # 'ins/base_ins',
-    # 'fms/base_fms',
-    # 'control/base_controller',
+    'ins/template_ins',
+    'fms/template_fms',
+    'control/template_controller',
 ]
 
 LIBS = [
     # 'cm_backtrace',
-    # 'mavlink',
+    'mavlink',
 ]
