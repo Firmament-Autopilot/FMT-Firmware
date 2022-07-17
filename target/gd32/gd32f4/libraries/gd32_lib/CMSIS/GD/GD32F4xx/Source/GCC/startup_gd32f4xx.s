@@ -104,6 +104,7 @@ g_pfnVectors:
     .word     CAN1_TX_IRQHandler                // 79:CAN1 TX
     .word     CAN1_RX0_IRQHandler               // 80:CAN1 RX0
     .word     CAN1_RX1_IRQHandler               // 81:CAN1 RX1
+    .word     CAN1_EWMC_IRQHandler              // 82:CAN1 EWMC
     .word     USBFS_IRQHandler                  // 83:USBFS
     .word     DMA1_Channel5_IRQHandler          // 84:DMA1 Channel5
     .word     DMA1_Channel6_IRQHandler          // 85:DMA1 Channel6
@@ -161,7 +162,7 @@ loop_fill_bss:
 
 startup_enter:
     bl SystemInit
-    bl entry
+    bl main
 
     /* Exception Handlers */
     .weak   NMI_Handler
