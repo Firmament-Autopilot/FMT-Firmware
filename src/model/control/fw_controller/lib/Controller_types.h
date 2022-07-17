@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.937
+ * Model version                  : 1.939
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul  6 20:31:41 2022
+ * C/C++ source code generated on : Sat Jul 16 23:30:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -98,7 +98,7 @@ typedef struct {
   real32_T vn;
   real32_T ve;
   real32_T vd;
-  real32_T reserved;
+  real32_T airspeed;
   real_T lat;
   real_T lon;
   real_T alt;
@@ -109,7 +109,6 @@ typedef struct {
   real32_T y_R;
   real32_T h_R;
   real32_T h_AGL;
-  real32_T airspeed;
   uint32_T flag;
   uint32_T status;
 } INS_Out_Bus;
