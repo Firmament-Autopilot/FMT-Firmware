@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3620
+ * Model version                  : 1.3625
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul  6 20:01:13 2022
+ * C/C++ source code generated on : Sat Jul 16 23:28:27 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -167,7 +167,7 @@ typedef struct {
   real32_T vn;
   real32_T ve;
   real32_T vd;
-  real32_T reserved;
+  real32_T airspeed;
   real_T lat;
   real_T lon;
   real_T alt;
@@ -178,7 +178,6 @@ typedef struct {
   real32_T y_R;
   real32_T h_R;
   real32_T h_AGL;
-  real32_T airspeed;
   uint32_T flag;
   uint32_T status;
 } INS_Out_Bus;
@@ -910,9 +909,6 @@ struct Parameters_INS_T_ {
                                         */
   real32_T Constant_Value_j;           /* Computed Parameter: Constant_Value_j
                                         * Referenced by: '<S54>/Constant'
-                                        */
-  real32_T Constant_Value_d;           /* Computed Parameter: Constant_Value_d
-                                        * Referenced by: '<S7>/Constant'
                                         */
   real32_T Constant_Value_c;           /* Computed Parameter: Constant_Value_c
                                         * Referenced by: '<S64>/Constant'
@@ -1895,7 +1891,7 @@ struct Parameters_INS_T_ {
   boolean_T Constant_Value_nm;         /* Computed Parameter: Constant_Value_nm
                                         * Referenced by: '<S265>/Constant'
                                         */
-  boolean_T Constant_Value_dc;         /* Computed Parameter: Constant_Value_dc
+  boolean_T Constant_Value_d;          /* Computed Parameter: Constant_Value_d
                                         * Referenced by: '<S270>/Constant'
                                         */
   boolean_T Constant_Value_ej0;        /* Computed Parameter: Constant_Value_ej0

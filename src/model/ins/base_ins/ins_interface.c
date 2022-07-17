@@ -156,7 +156,7 @@ mlog_elem_t INS_Out_Elems[] = {
     MLOG_ELEMENT(vn, MLOG_FLOAT),
     MLOG_ELEMENT(ve, MLOG_FLOAT),
     MLOG_ELEMENT(vd, MLOG_FLOAT),
-    MLOG_ELEMENT(reserved, MLOG_FLOAT),
+    MLOG_ELEMENT(airspeed, MLOG_FLOAT),
     MLOG_ELEMENT(lat, MLOG_DOUBLE),
     MLOG_ELEMENT(lon, MLOG_DOUBLE),
     MLOG_ELEMENT(alt, MLOG_DOUBLE),
@@ -167,7 +167,6 @@ mlog_elem_t INS_Out_Elems[] = {
     MLOG_ELEMENT(y_R, MLOG_FLOAT),
     MLOG_ELEMENT(h_R, MLOG_FLOAT),
     MLOG_ELEMENT(h_AGL, MLOG_FLOAT),
-    MLOG_ELEMENT(airspeed, MLOG_FLOAT),
     MLOG_ELEMENT(flag, MLOG_UINT32),
     MLOG_ELEMENT(status, MLOG_UINT32),
 };

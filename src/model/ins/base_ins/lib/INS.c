@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3620
+ * Model version                  : 1.3625
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul  6 20:01:13 2022
+ * C/C++ source code generated on : Sat Jul 16 23:28:27 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -80,7 +80,7 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
   0.0F,                                /* vn */
   0.0F,                                /* ve */
   0.0F,                                /* vd */
-  0.0F,                                /* reserved */
+  0.0F,                                /* airspeed */
   0.0,                                 /* lat */
   0.0,                                 /* lon */
   0.0,                                 /* alt */
@@ -91,7 +91,6 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
   0.0F,                                /* y_R */
   0.0F,                                /* h_R */
   0.0F,                                /* h_AGL */
-  0.0F,                                /* airspeed */
   0U,                                  /* flag */
   0U                                   /* status */
 } ;                                    /* INS_Out_Bus ground */
@@ -582,7 +581,6 @@ Parameters_INS_T INS_P = {
   1.0F,
   0.0F,
   1.0E+6F,
-  0.0F,
   0.0F,
   0.0F,
   0.0F,
@@ -4354,7 +4352,7 @@ void INS_step(void)
    */
   rtb_Compare_b2 = (((int32_T)rtb_Compare_aa > (int32_T)
                      INS_P.CompareToConstant2_const_j) > (int32_T)
-                    INS_P.Constant_Value_dc);
+                    INS_P.Constant_Value_d);
 
   /* RelationalOperator: '<S277>/Compare' incorporates:
    *  Constant: '<S275>/Constant'
@@ -5439,10 +5437,9 @@ void INS_step(void)
   }
 
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-  /* BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0' incorporates:
+  /* Outport: '<Root>/INS_Out' incorporates:
    *  DataTypeConversion: '<S175>/Data Type Conversion2'
    *  DataTypeConversion: '<S176>/Data Type Conversion'
-   *  Outport: '<Root>/INS_Out'
    *  Product: '<S175>/Multiply'
    *  Product: '<S177>/Divide'
    *  Product: '<S178>/Product'
@@ -5467,11 +5464,10 @@ void INS_step(void)
   }
 
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-  /* BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0' incorporates:
+  /* Outport: '<Root>/INS_Out' incorporates:
    *  DataTypeConversion: '<S175>/Data Type Conversion2'
    *  DataTypeConversion: '<S176>/Data Type Conversion'
    *  DataTypeConversion: '<S176>/Data Type Conversion1'
-   *  Outport: '<Root>/INS_Out'
    *  Product: '<S175>/Multiply'
    *  Product: '<S177>/Divide'
    *  Product: '<S178>/Product'
@@ -5509,8 +5505,7 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<Root>/Bus_Constructor' */
   /* Outputs for Atomic SubSystem: '<S1>/Counter' */
-  /* BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0' incorporates:
-   *  Outport: '<Root>/INS_Out'
+  /* Outport: '<Root>/INS_Out' incorporates:
    *  UnitDelay: '<S4>/Output'
    */
   INS_Y.INS_Out.timestamp = INS_DWork.Output_DSTATE;
@@ -5773,20 +5768,7 @@ void INS_step(void)
     }
   }
 
-  /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
-  /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
-  /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
-  /* Gain: '<S8>/Gain10' incorporates:
-   *  SignalConversion: '<S59>/TmpSignal ConversionAtSignal Conversion1Inport1'
-   */
-  rtb_DiscreteTimeIntegrator_dl = fmodf(floorf(INS_P.Gain10_Gain * rtb_Gain3),
-    4.2949673E+9F);
-
-  /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
-  /* End of Outputs for SubSystem: '<S55>/AHRS' */
-  /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
-
-  /* Sum: '<S8>/Sum2' incorporates:
+  /* Sum: '<S8>/Sum4' incorporates:
    *  Constant: '<S18>/Constant'
    *  Constant: '<S23>/Constant'
    *  Constant: '<S28>/Constant'
@@ -5794,7 +5776,6 @@ void INS_step(void)
    *  Constant: '<S38>/Constant'
    *  Constant: '<S43>/Constant'
    *  Constant: '<S48>/Constant'
-   *  Constant: '<S8>/Constant'
    *  Delay: '<S11>/Delay'
    *  Delay: '<S12>/Delay'
    *  Delay: '<S13>/Delay'
@@ -5810,14 +5791,12 @@ void INS_step(void)
    *  DiscreteIntegrator: '<S16>/Discrete-Time Integrator'
    *  DiscreteIntegrator: '<S17>/Discrete-Time Integrator'
    *  Gain: '<S8>/Gain1'
-   *  Gain: '<S8>/Gain10'
    *  Gain: '<S8>/Gain11'
    *  Gain: '<S8>/Gain12'
    *  Gain: '<S8>/Gain13'
    *  Gain: '<S8>/Gain2'
    *  Gain: '<S8>/Gain4'
    *  Gain: '<S8>/Gain5'
-   *  Gain: '<S8>/Gain9'
    *  Logic: '<S11>/Logical Operator'
    *  Logic: '<S12>/Logical Operator'
    *  Logic: '<S13>/Logical Operator'
@@ -5840,24 +5819,19 @@ void INS_step(void)
    *  RelationalOperator: '<S43>/Compare'
    *  RelationalOperator: '<S48>/Compare'
    */
-  INS_Y.INS_Out.flag = ((((((((((uint32_T)
-    (INS_DWork.DiscreteTimeIntegrator_DSTAT_hi < INS_P.valid_check5_time_out ?
-     (int32_T)INS_DWork.Delay_DSTATE_cx : 0) * INS_P.Gain11_Gain) >> 13) +
-    (rtb_DiscreteTimeIntegrator_dl < 0.0F ? (uint32_T)-(int32_T)(uint32_T)
-     -rtb_DiscreteTimeIntegrator_dl : (uint32_T)rtb_DiscreteTimeIntegrator_dl))
-    + mul_u32_loSR(INS_P.Gain9_Gain, INS_P.Constant_Value_pt, 31U)) +
-    (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_b3 <
-                 INS_P.valid_check8_time_out ? (int32_T)
-                 INS_DWork.Delay_DSTATE_l0 : 0) * INS_P.Gain12_Gain) >> 12)) +
-    (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_ca <
-                 INS_P.valid_check1_time_out ? (int32_T)
-                 INS_DWork.Delay_DSTATE_cn : 0) * INS_P.Gain13_Gain) >> 11)) +
-    (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_bo <
-                 INS_P.valid_check2_time_out ? (int32_T)
-                 INS_DWork.Delay_DSTATE_bn : 0) * INS_P.Gain1_Gain_kq) >> 10)) +
-    (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_e <
-                 INS_P.valid_check3_time_out ? (int32_T)INS_DWork.Delay_DSTATE_p
-                 : 0) * INS_P.Gain2_Gain_o5) >> 9)) + (((uint32_T)
+  rtb_Sum1 = ((((((((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_hi <
+    INS_P.valid_check5_time_out ? (int32_T)INS_DWork.Delay_DSTATE_cx : 0) *
+                    INS_P.Gain11_Gain) >> 13) + (((uint32_T)
+    (INS_DWork.DiscreteTimeIntegrator_DSTAT_b3 < INS_P.valid_check8_time_out ?
+     (int32_T)INS_DWork.Delay_DSTATE_l0 : 0) * INS_P.Gain12_Gain) >> 12)) +
+                 (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_ca <
+    INS_P.valid_check1_time_out ? (int32_T)INS_DWork.Delay_DSTATE_cn : 0) *
+                   INS_P.Gain13_Gain) >> 11)) + (((uint32_T)
+    (INS_DWork.DiscreteTimeIntegrator_DSTAT_bo < INS_P.valid_check2_time_out ?
+     (int32_T)INS_DWork.Delay_DSTATE_bn : 0) * INS_P.Gain1_Gain_kq) >> 10)) +
+               (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_e <
+    INS_P.valid_check3_time_out ? (int32_T)INS_DWork.Delay_DSTATE_p : 0) *
+                 INS_P.Gain2_Gain_o5) >> 9)) + (((uint32_T)
     (INS_DWork.DiscreteTimeIntegrator_DSTAT_kg < INS_P.valid_check4_time_out ?
      (int32_T)INS_DWork.Delay_DSTATE_db : 0) * INS_P.Gain4_Gain_a) >> 8)) +
     (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_a <
@@ -5933,25 +5907,6 @@ void INS_step(void)
   rtb_Delay_n = (((int32_T)rtb_Delay_n > (int32_T)
                   INS_P.CompareToConstant2_const_i1) > (int32_T)
                  INS_P.Constant_Value_ao);
-
-  /* Sum: '<S10>/Sum' incorporates:
-   *  Constant: '<S10>/Constant'
-   *  Constant: '<S53>/Constant'
-   *  Constant: '<S54>/Constant'
-   *  DataTypeConversion: '<S10>/Data Type Conversion'
-   *  Gain: '<S10>/Gain1'
-   *  Gain: '<S10>/Gain2'
-   *  Gain: '<S10>/Gain3'
-   *  Gain: '<S10>/Gain4'
-   *  MinMax: '<S10>/Max'
-   *  RelationalOperator: '<S53>/Compare'
-   *  RelationalOperator: '<S54>/Compare'
-   */
-  INS_Y.INS_Out.status = (((rtb_Delay_d + mul_u32_loSR(INS_P.Gain1_Gain_ap,
-    INS_P.Constant_Value_lm, 30U)) + (rtb_MathFunction1 > INS_P.Constant_Value_h
-    ? (uint32_T)INS_P.Gain2_Gain_h >> 5 : 0U)) + (rtb_LogicalOperator_i ?
-    (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) + (fmaxf(rtb_Product2, rtb_Sum2_by)
-    > INS_P.Constant_Value_j ? (uint32_T)INS_P.Gain4_Gain_p >> 3 : 0U);
 
   /* Update for DiscreteIntegrator: '<S12>/Discrete-Time Integrator' incorporates:
    *  Constant: '<S12>/Constant'
@@ -6184,12 +6139,11 @@ void INS_step(void)
   /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
   /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
   /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
-  /* BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0' incorporates:
+  /* Outport: '<Root>/INS_Out' incorporates:
    *  Constant: '<S64>/Constant'
    *  Constant: '<S64>/Constant2'
    *  Math: '<S64>/Square'
    *  Math: '<S64>/Square1'
-   *  Outport: '<Root>/INS_Out'
    *  Product: '<S64>/Multiply'
    *  Product: '<S64>/Multiply1'
    *  Product: '<S64>/Multiply2'
@@ -6235,23 +6189,18 @@ void INS_step(void)
     }
   }
 
-  /* BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0' incorporates:
-   *  Constant: '<S171>/Constant1'
+  /* Outport: '<Root>/INS_Out' incorporates:
+   *  BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0'
    *  Constant: '<S64>/Constant'
    *  Constant: '<S64>/Constant1'
-   *  Constant: '<S7>/Constant'
    *  Inport: '<Root>/IMU'
    *  Math: '<S64>/Square1'
    *  Math: '<S64>/Square2'
-   *  Outport: '<Root>/INS_Out'
    *  Product: '<S64>/Multiply10'
    *  Product: '<S64>/Multiply7'
    *  Product: '<S64>/Multiply8'
    *  Product: '<S64>/Multiply9'
    *  Product: '<S65>/Divide'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy1Inport1'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy2Inport1'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy3Inport1'
    *  SignalConversion: '<S320>/TmpSignal ConversionAtBus Selector1Outport1'
    *  SignalConversion: '<S320>/TmpSignal ConversionAtBus Selector1Outport2'
    *  SignalConversion: '<S320>/TmpSignal ConversionAtBus Selector1Outport3'
@@ -6297,7 +6246,42 @@ void INS_step(void)
 
   /* End of Outputs for SubSystem: '<S1>/Translation_Output' */
   /* End of Outputs for SubSystem: '<Root>/Bus_Constructor' */
-  INS_Y.INS_Out.reserved = INS_P.Constant_Value_d;
+
+  /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+  /* Outputs for Atomic SubSystem: '<S3>/AirSpeed_Process' */
+  /* Signum: '<S288>/Sign' incorporates:
+   *  Inport: '<Root>/AirSpeed'
+   */
+  if (INS_U.AirSpeed.diff_pressure < 0.0F) {
+    rtb_DiscreteTimeIntegrator_dl = -1.0F;
+  } else if (INS_U.AirSpeed.diff_pressure > 0.0F) {
+    rtb_DiscreteTimeIntegrator_dl = 1.0F;
+  } else {
+    rtb_DiscreteTimeIntegrator_dl = INS_U.AirSpeed.diff_pressure;
+  }
+
+  /* End of Signum: '<S288>/Sign' */
+
+  /* Outport: '<Root>/INS_Out' incorporates:
+   *  Abs: '<S288>/Abs'
+   *  Constant: '<S171>/Constant1'
+   *  Constant: '<S288>/AirDensity_15C'
+   *  Gain: '<S288>/Gain'
+   *  Inport: '<Root>/AirSpeed'
+   *  Product: '<S288>/Divide'
+   *  Product: '<S288>/Multiply'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy1Inport1'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy2Inport1'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy3Inport1'
+   *  SignalConversion: '<S7>/Signal Copy'
+   *  Sqrt: '<S288>/Sqrt'
+   */
+  INS_Y.INS_Out.airspeed = sqrtf(INS_P.Gain_Gain_jo * fabsf
+    (INS_U.AirSpeed.diff_pressure) / INS_P.AirDensity_15C_Value) *
+    rtb_DiscreteTimeIntegrator_dl;
+
+  /* End of Outputs for SubSystem: '<S3>/AirSpeed_Process' */
+  /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
   /* Outputs for Atomic SubSystem: '<S56>/CF' */
@@ -6316,39 +6300,52 @@ void INS_step(void)
   INS_Y.INS_Out.h_AGL = INS_P.Constant1_Value_f;
 
   /* End of Outputs for SubSystem: '<S1>/Translation_Output' */
+
+  /* Outputs for Atomic SubSystem: '<S1>/Status_Output' */
+  /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
+  /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
+  /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
+  /* Gain: '<S8>/Gain10' incorporates:
+   *  SignalConversion: '<S59>/TmpSignal ConversionAtSignal Conversion1Inport1'
+   */
+  rtb_DiscreteTimeIntegrator_dl = fmodf(floorf(INS_P.Gain10_Gain * rtb_Gain3),
+    4.2949673E+9F);
+
+  /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
+  /* End of Outputs for SubSystem: '<S55>/AHRS' */
+  /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
+
+  /* Outport: '<Root>/INS_Out' incorporates:
+   *  Constant: '<S10>/Constant'
+   *  Constant: '<S53>/Constant'
+   *  Constant: '<S54>/Constant'
+   *  Constant: '<S8>/Constant'
+   *  DataTypeConversion: '<S10>/Data Type Conversion'
+   *  Gain: '<S10>/Gain1'
+   *  Gain: '<S10>/Gain2'
+   *  Gain: '<S10>/Gain3'
+   *  Gain: '<S10>/Gain4'
+   *  Gain: '<S8>/Gain10'
+   *  Gain: '<S8>/Gain9'
+   *  MinMax: '<S10>/Max'
+   *  RelationalOperator: '<S53>/Compare'
+   *  RelationalOperator: '<S54>/Compare'
+   *  Sum: '<S10>/Sum'
+   *  Sum: '<S8>/Sum2'
+   *  Sum: '<S8>/Sum3'
+   */
+  INS_Y.INS_Out.flag = ((rtb_DiscreteTimeIntegrator_dl < 0.0F ? (uint32_T)
+    -(int32_T)(uint32_T)-rtb_DiscreteTimeIntegrator_dl : (uint32_T)
+    rtb_DiscreteTimeIntegrator_dl) + mul_u32_loSR(INS_P.Gain9_Gain,
+    INS_P.Constant_Value_pt, 31U)) + rtb_Sum1;
+  INS_Y.INS_Out.status = (((rtb_Delay_d + mul_u32_loSR(INS_P.Gain1_Gain_ap,
+    INS_P.Constant_Value_lm, 30U)) + (rtb_MathFunction1 > INS_P.Constant_Value_h
+    ? (uint32_T)INS_P.Gain2_Gain_h >> 5 : 0U)) + (rtb_LogicalOperator_i ?
+    (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) + (fmaxf(rtb_Product2, rtb_Sum2_by)
+    > INS_P.Constant_Value_j ? (uint32_T)INS_P.Gain4_Gain_p >> 3 : 0U);
+
+  /* End of Outputs for SubSystem: '<S1>/Status_Output' */
   /* End of Outputs for SubSystem: '<Root>/Bus_Constructor' */
-
-  /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
-  /* Outputs for Atomic SubSystem: '<S3>/AirSpeed_Process' */
-  /* Signum: '<S288>/Sign' incorporates:
-   *  Inport: '<Root>/AirSpeed'
-   */
-  if (INS_U.AirSpeed.diff_pressure < 0.0F) {
-    rtb_DiscreteTimeIntegrator_dl = -1.0F;
-  } else if (INS_U.AirSpeed.diff_pressure > 0.0F) {
-    rtb_DiscreteTimeIntegrator_dl = 1.0F;
-  } else {
-    rtb_DiscreteTimeIntegrator_dl = INS_U.AirSpeed.diff_pressure;
-  }
-
-  /* End of Signum: '<S288>/Sign' */
-
-  /* BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0' incorporates:
-   *  Abs: '<S288>/Abs'
-   *  Constant: '<S288>/AirDensity_15C'
-   *  Gain: '<S288>/Gain'
-   *  Inport: '<Root>/AirSpeed'
-   *  Outport: '<Root>/INS_Out'
-   *  Product: '<S288>/Divide'
-   *  Product: '<S288>/Multiply'
-   *  Sqrt: '<S288>/Sqrt'
-   */
-  INS_Y.INS_Out.airspeed = sqrtf(INS_P.Gain_Gain_jo * fabsf
-    (INS_U.AirSpeed.diff_pressure) / INS_P.AirDensity_15C_Value) *
-    rtb_DiscreteTimeIntegrator_dl;
-
-  /* End of Outputs for SubSystem: '<S3>/AirSpeed_Process' */
-  /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
   /* Update for Delay: '<Root>/Delay' incorporates:
    *  SignalConversion: '<S59>/BusConversion_InsertedFor_Rotation_Data_at_inport_0'
