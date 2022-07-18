@@ -28,15 +28,15 @@ static float diff_press_offset;
 fmt_err_t sensor_airspeed_measure(sensor_airspeed_t airspeed_dev, airspeed_data_t* airspeed_report)
 {
     rt_size_t r_size;
-    float diff_pressure_pa;
+    float report[2];
 
     RT_ASSERT(airspeed_dev != NULL);
 
+    r_size = rt_device_read(airspeed_dev->dev, 0, report, 8);
+
     airspeed_report->timestamp_ms = systime_now_ms();
-
-    r_size = rt_device_read(airspeed_dev->dev, 0, &diff_pressure_pa, 8);
-
-    airspeed_report->diff_pressure_pa = diff_pressure_pa - diff_press_offset;
+    airspeed_report->diff_pressure_pa = report[0] - diff_press_offset;
+    airspeed_report->temperature_deg = report[1];
 
     return r_size == 8 ? FMT_EOK : FMT_ERROR;
 }
