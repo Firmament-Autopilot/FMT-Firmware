@@ -33,6 +33,7 @@
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
 #include "driver/rgb_led/tca62724.h"
+#include "driver/vision_flow/pmw3901_fl04.h"
 #include "driver/vision_flow/pmw3901_l0x.h"
 #include "drv_gpio.h"
 #include "drv_i2c_soft.h"
@@ -322,7 +323,10 @@ void bsp_initialize(void)
     RT_CHECK(lsm303d_drv_init("spi1_dev1", "mag0", "accel1"));
     /* init barometer */
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
-    RT_CHECK(pmw3901_l0x_drv_init("serial3"));
+
+    // RT_CHECK(pmw3901_l0x_drv_init("serial3"));
+    RT_CHECK(pmw3901_fl04_drv_init("serial3"));
+
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 
@@ -330,6 +334,8 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
 
     /* init finsh */

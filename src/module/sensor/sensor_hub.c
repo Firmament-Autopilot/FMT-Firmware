@@ -155,6 +155,32 @@ static int echo_sensor_gps(void* param)
     return 0;
 }
 
+static int echo_sensor_optflow(void* param)
+{
+    optflow_data_t optflow_report;
+
+    if (mcn_copy_from_hub((McnHub*)param, &optflow_report) != FMT_EOK) {
+        return -1;
+    }
+
+    console_printf("timestsamp:%u vx:%.2f vy:%.2f quality:%d\n", optflow_report.timestamp_ms, optflow_report.vx_mPs, optflow_report.vy_mPs, optflow_report.quality);
+
+    return 0;
+}
+
+static int echo_sensor_rangefinder(void* param)
+{
+    rf_data_t rf_report;
+
+    if (mcn_copy_from_hub((McnHub*)param, &rf_report) != FMT_EOK) {
+        return -1;
+    }
+
+    console_printf("timestamp:%u distance:%.2f\n", rf_report.timestamp_ms, rf_report.distance_m);
+
+    return 0;
+}
+
 static void imu_rotation_init(uint8_t id)
 {
     Mat level_rot;
@@ -409,6 +435,44 @@ fmt_err_t advertise_sensor_gps(uint8_t id)
     switch (id) {
     case 0:
         FMT_TRY(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Advertise sensor optical flow topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_optflow(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_optflow), echo_sensor_optflow));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Advertise sensor range finder topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_rangefinder(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_rangefinder), echo_sensor_rangefinder));
         break;
     default:
         return FMT_EINVAL;
