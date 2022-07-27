@@ -223,7 +223,14 @@ static int ins_output_echo(void* param)
            BIT(ins_out.flag, 6) > 0,
            BIT(ins_out.flag, 7) > 0,
            BIT(ins_out.flag, 8) > 0);
-    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0, BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+    printf("sensor status, imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d\n",
+           BIT(ins_out.status, 0) > 0,
+           BIT(ins_out.status, 1) > 0,
+           BIT(ins_out.status, 2) > 0,
+           BIT(ins_out.status, 3) > 0,
+           BIT(ins_out.status, 4) > 0,
+           BIT(ins_out.status, 5) > 0,
+           BIT(ins_out.status, 6) > 0);
     printf("------------------------------------------\n");
 
     return 0;
