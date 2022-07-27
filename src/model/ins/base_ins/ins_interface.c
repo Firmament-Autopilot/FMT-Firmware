@@ -46,7 +46,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(HEADING_GAIN, 0.05),
     PARAM_FLOAT(MAG_GAIN, 0.2),
     PARAM_FLOAT(BIAS_G_GAIN, 0.25),
-    PARAM_FLOAT(GPS_POS_GAIN, 0.05),
+    PARAM_FLOAT(GPS_POS_GAIN, 0),
     PARAM_FLOAT(GPS_ALT_GAIN, 0),
     PARAM_FLOAT(GPS_VEL_GAIN, 2),
     PARAM_FLOAT(GPS_BIAS_A_GAIN, 1),
@@ -122,7 +122,7 @@ MLOG_BUS_DEFINE(GPS_uBlox, GPS_uBlox_Elems);
 
 mlog_elem_t Rangefinder_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
-    MLOG_ELEMENT(distance_m, MLOG_FLOAT),
+    MLOG_ELEMENT(distance, MLOG_FLOAT),
 };
 MLOG_BUS_DEFINE(Rangefinder, Rangefinder_Elems);
 
@@ -130,7 +130,9 @@ mlog_elem_t Optflow_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
     MLOG_ELEMENT(vx, MLOG_FLOAT),
     MLOG_ELEMENT(vy, MLOG_FLOAT),
-    MLOG_ELEMENT(valid, MLOG_UINT32),
+    MLOG_ELEMENT(quality, MLOG_UINT8),
+    MLOG_ELEMENT(reserved1, MLOG_UINT8),
+    MLOG_ELEMENT(reserved2, MLOG_UINT16),
 };
 MLOG_BUS_DEFINE(OpticalFlow, Optflow_Elems);
 
@@ -324,7 +326,9 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.rf_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
-        // TODO
+        INS_U.Rangefinder.distance = ins_handle.rf_report.distance_m;
+        INS_U.Rangefinder.timestamp = timestamp;
+
         rf_data_updated = 1;
     }
 
@@ -332,7 +336,11 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.optflow_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
-        // TODO
+        INS_U.Optical_Flow.vx = ins_handle.optflow_report.vx_mPs;
+        INS_U.Optical_Flow.vy = ins_handle.optflow_report.vy_mPs;
+        INS_U.Optical_Flow.quality = ins_handle.optflow_report.quality;
+        INS_U.Optical_Flow.timestamp = timestamp;
+
         optflow_data_updated = 1;
     }
 
@@ -370,13 +378,13 @@ void ins_interface_step(uint32_t timestamp)
     if (rf_data_updated) {
         rf_data_updated = 0;
         /* Log Rangefinder data */
-        mlog_push_msg((uint8_t*)&ins_handle.rf_report, Rangefinder_ID, sizeof(ins_handle.rf_report));
+        mlog_push_msg((uint8_t*)&INS_U.Rangefinder, Rangefinder_ID, sizeof(INS_U.Rangefinder));
     }
 
     if (optflow_data_updated) {
         optflow_data_updated = 0;
         /* Log Optical Flow data */
-        mlog_push_msg((uint8_t*)&ins_handle.optflow_report, OpticalFlow_ID, sizeof(ins_handle.optflow_report));
+        mlog_push_msg((uint8_t*)&INS_U.Optical_Flow, OpticalFlow_ID, sizeof(INS_U.Optical_Flow));
     }
 
     /* Log INS output bus data */
