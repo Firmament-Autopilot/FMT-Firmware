@@ -50,14 +50,14 @@
             "runToMain": true
         },
         {
-            "name": "GD32 Debug J-Link",
+            "name": "GD32F450 Debug J-Link",
             "type": "cortex-debug",
             "request": "launch",
             "cwd": "${workspaceRoot}",
-            "executable": "target/gd32/gd32f4/build/gd32f4.elf",
+            "executable": "target/gd32/gd32f450/build/gd32f4.elf",
             "serverpath": "${env:JLINK_SERVER}",
             "servertype": "jlink",
-            "device": "GD32F450VE",
+            "device": "GD32F450VI",
             "interface": "swd",
             "armToolchainPath": "${env:RTT_EXEC_PATH}",
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.

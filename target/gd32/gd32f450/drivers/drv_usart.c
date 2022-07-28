@@ -62,6 +62,7 @@ static void uart_isr(struct serial_device* serial)
     struct gd32_uart* uart = (struct gd32_uart*)serial->parent.user_data;
 
     /* UART in mode Receiver -------------------------------------------------*/
+
     if ((usart_interrupt_flag_get(uart->uart_periph, USART_INT_FLAG_RBNE) != RESET) && (usart_flag_get(uart->uart_periph, USART_FLAG_RBNE) != RESET)) {
         /* high-level ISR routine */
         hal_serial_isr(serial, SERIAL_EVENT_RX_IND);
@@ -234,57 +235,6 @@ rt_err_t drv_usart_init(void)
     rt_err_t rt_err = RT_EOK;
     struct serial_configure config = SERIAL_DEFAULT_CONFIG;
 
-#ifdef USING_UART1
-    serial3.ops = &__usart_ops;
-    #ifdef SERIAL3_DEFAULT_CONFIG
-    struct serial_configure serial3_config = SERIAL3_DEFAULT_CONFIG;
-    serial3.config = serial3_config;
-    #else
-    serial3.config = config;
-    #endif
-
-    NVIC_Configuration(&uart1);
-    /* register serial device */
-    rt_err |= hal_serial_register(&serial3,
-                                  "serial3",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-                                  &uart1);
-#endif /* USING_UART1 */
-
-#ifdef USING_UART2
-    serial1.ops = &__usart_ops;
-    #ifdef SERIAL1_DEFAULT_CONFIG
-    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
-    serial1.config = serial1_config;
-    #else
-    serial1.config = config;
-    #endif
-
-    NVIC_Configuration(&uart2);
-    /* register serial device */
-    rt_err |= hal_serial_register(&serial1,
-                                  "serial1",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
-                                  &uart2);
-#endif /* USING_UART2 */
-
-#ifdef USING_UART3
-    serial2.ops = &__usart_ops;
-    #ifdef SERIAL2_DEFAULT_CONFIG
-    struct serial_configure serial2_config = SERIAL2_DEFAULT_CONFIG;
-    serial2.config = serial2_config;
-    #else
-    serial2.config = config;
-    #endif
-
-    NVIC_Configuration(&uart3);
-    /* register serial device */
-    rt_err |= hal_serial_register(&serial2,
-                                  "serial2",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-                                  &uart3);
-#endif /* USING_UART3 */
-
 #ifdef USING_UART6
     serial0.ops = &__usart_ops;
     #ifdef SERIAL4_DEFAULT_CONFIG
@@ -301,39 +251,6 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart6);
 #endif /* USING_UART6 */
-
-#ifdef USING_UART7
-    serial0.ops = &__usart_ops;
-    #ifdef SERIAL0_DEFAULT_CONFIG
-    struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
-    serial0.config = serial0_config;
-    #else
-    serial0.config = config;
-    #endif
-
-    /* register serial device */
-    rt_err |= hal_serial_register(&serial0,
-                                  "serial0",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
-                                  &uart7);
-#endif /* USING_UART7 */
-
-#ifdef USING_UART8
-    serial5.ops = &__usart_ops;
-    #ifdef SERIAL5_DEFAULT_CONFIG
-    struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
-    serial5.config = serial5_config;
-    #else
-    serial5.config = config;
-    #endif
-
-    NVIC_Configuration(&uart8);
-    /* register serial device */
-    rt_err |= hal_serial_register(&serial5,
-                                  "serial5",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-                                  &uart8);
-#endif /* USING_UART8 */
 
     return rt_err;
 }

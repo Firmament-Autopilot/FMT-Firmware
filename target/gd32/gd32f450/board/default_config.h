@@ -19,7 +19,7 @@
 
 // clang-format off
 static char* default_conf = STRING(
-target = "GD32F4"\n
+target = "GD32F450"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n

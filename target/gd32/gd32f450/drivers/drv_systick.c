@@ -67,10 +67,6 @@ void SysTick_Handler(void)
 
     hal_systick_isr(systick_dev);
 
-#ifdef USE_HAL_DRIVER
-    HAL_IncTick();
-#endif
-
     rt_tick_increase();
 
     /* leave interrupt */
