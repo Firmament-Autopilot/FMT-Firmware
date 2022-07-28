@@ -43,6 +43,7 @@ MODULES = [
     'system/*.c',
 #     'ipc/*.c',
     # 'syscmd/*.c',
+    'syscmd/cmd_ps.c',
     'file_manager/*.c',
 #     'ftp/*.c',
 #     "log/*.c",

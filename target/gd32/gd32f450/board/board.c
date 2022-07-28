@@ -331,19 +331,20 @@ void bsp_early_initialize(void)
     /* System clock initialization */
     // SystemClock_Config();
 
-    // /* usart driver init */
+    /* usart driver init */
     RT_CHECK(drv_usart_init());
 
-    // /* init console to enable console output */
+    /* init console to enable console output */
     FMT_CHECK(console_init());
-
-    printf("Hello GD32\n");
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
     /* system time module init */
     FMT_CHECK(systime_init());
+
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
