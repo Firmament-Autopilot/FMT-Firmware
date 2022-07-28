@@ -40,9 +40,26 @@ struct gd32_uart {
     uint16_t rx_pin;             //Todo: 4bits
 };
 
+#define USING_UART0
 #define USING_UART6
 
 static struct serial_device serial0;
+static struct serial_device serial1;
+
+static struct gd32_uart uart0 = {
+    .uart_periph = USART0,
+    .irqn = USART0_IRQn,
+    .per_clk = RCU_USART0,
+    .tx_gpio_clk = RCU_GPIOA,
+    .rx_gpio_clk = RCU_GPIOA,
+    .tx_port = GPIOA,
+    .tx_af = GPIO_AF_7,
+    .tx_pin = GPIO_PIN_9,
+    .rx_port = GPIOA,
+    .rx_af = GPIO_AF_7,
+    .rx_pin = GPIO_PIN_10,
+};
+
 static struct gd32_uart uart6 = {
     .uart_periph = UART6,
     .irqn = UART6_IRQn,
@@ -71,12 +88,22 @@ static void uart_isr(struct serial_device* serial)
     }
 }
 
-void UART6_IRQHandler(void)
+void USART0_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
     /* uart isr routine */
     uart_isr(&serial0);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void UART6_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial1);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -235,11 +262,11 @@ rt_err_t drv_usart_init(void)
     rt_err_t rt_err = RT_EOK;
     struct serial_configure config = SERIAL_DEFAULT_CONFIG;
 
-#ifdef USING_UART6
+#ifdef USING_UART0
     serial0.ops = &__usart_ops;
     #ifdef SERIAL4_DEFAULT_CONFIG
-    struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
-    serial0.config = serial4_config;
+    struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
+    serial0.config = serial0_config;
     #else
     serial0.config = config;
     #endif
@@ -248,6 +275,23 @@ rt_err_t drv_usart_init(void)
     /* register serial device */
     rt_err |= hal_serial_register(&serial0,
                                   "serial0",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart0);
+#endif /* USING_UART0 */
+
+#ifdef USING_UART6
+    serial1.ops = &__usart_ops;
+    #ifdef SERIAL4_DEFAULT_CONFIG
+    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
+    serial1.config = serial1_config;
+    #else
+    serial1.config = config;
+    #endif
+
+    // NVIC_Configuration(&uart6);
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial1,
+                                  "serial1",
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart6);
 #endif /* USING_UART6 */
