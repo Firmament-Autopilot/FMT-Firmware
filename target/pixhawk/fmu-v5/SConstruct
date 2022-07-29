@@ -1,6 +1,7 @@
 import os
 import sys
 import rtconfig
+import kconfig
 
 # FMT path
 FMU_ROOT = os.path.normpath(os.getcwd() + '/../../..')

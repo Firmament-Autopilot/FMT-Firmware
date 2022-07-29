@@ -9,6 +9,7 @@ CPU = 'cortex-m7'
 CROSS_TOOL = 'gcc'
 # build version: debug or release
 BUILD = 'release'
+from kconfig import BUILD
 
 if os.getenv('RTT_CC'):
     CROSS_TOOL = os.getenv('RTT_CC')

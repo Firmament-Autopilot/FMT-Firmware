@@ -5,6 +5,7 @@
 
 /* FMT config file */
 #include <fmtconfig.h>
+#include <autoconfig.h>
 
 /* RT_NAME_MAX*/
 #define RT_NAME_MAX	   20	//change log: change from 8 to 20

@@ -1,0 +1,37 @@
+choice
+    prompt "FMT simulation mode"
+    default FMT_USING_MODE_DEFAULT
+    config FMT_USING_MODE_DEFAULT
+        bool "default mode"
+        help 
+            default mode
+    config FMT_USING_HIL
+        bool "Hardware-in-the-Loop (HITL or HIL)"
+        help
+            Hardware-in-the-Loop (HITL or HIL) is a simulation mode in which normal FMT firmware is run on real flight controller hardware.     
+    config FMT_USING_SIH
+        bool "Simulation-In-Hardware (SIH)"
+        help 
+            Simulation-In-Hardware (SIH) is an alternative to Hardware-In-The-Loop simulation (HITL).
+endchoice
+
+choice
+    prompt "INS MODE"
+    default FMT_USING_BASE_INS
+    config FMT_USING_BASE_INS
+        bool "fmt using base ins for navigation"
+    config FMT_USING_PX4_ECL
+        bool "fmt using px4 ecl for navigation"
+endchoice
+
+config FMT_COMPILE_DEBUG 
+    bool "compile in debug mode"
+    default n
+    help 
+        compile in the firmware without any optimize
+
+config FMT_USING_CHECKED
+    bool "FMT_USING_CHECKED"
+    default y
+    help 
+        no information
