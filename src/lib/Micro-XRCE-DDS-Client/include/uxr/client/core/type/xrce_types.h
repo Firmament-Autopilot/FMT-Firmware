@@ -16,18 +16,17 @@
 #define UXR_CLIENT_CORE_TYPE_XRCETYPES_H_
 
 #ifdef __cplusplus
-extern "C"
-{
-#define INLINE_STRUCT(x) (x)
+extern "C" {
+    #define INLINE_STRUCT(x) (x)
 #else
-#define INLINE_STRUCT(x)  x
+    #define INLINE_STRUCT(x) x
 #endif
 
 #include <uxr/client/defines.h>
 
-#include <ucdr/microcdr.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <ucdr/microcdr.h>
 
 // TODO (julibert): move this configuration to CMake flags.
 #define UXR_STRING_SIZE_MAX                512
@@ -41,99 +40,128 @@ extern "C"
 #define UXR_TRANSPORT_LOCATOR_SEQUENCE_MAX 4
 #define UXR_PROPERTY_SEQUENCE_MAX          1
 
-typedef struct Time_t
-{
+typedef struct Time_t {
     int32_t seconds;
     uint32_t nanoseconds;
 
 } Time_t;
 
-typedef struct BinarySequence_t
-{
+typedef struct BinarySequence_t {
     uint32_t size;
     uint8_t data[UXR_BINARY_SEQUENCE_MAX];
 
 } BinarySequence_t;
 
-typedef struct StringSequence_t
-{
+typedef struct StringSequence_t {
     uint32_t size;
     char* data[UXR_STRING_SEQUENCE_MAX];
 
 } StringSequence_t;
 
-typedef struct ClientKey
-{
+typedef struct ClientKey {
     uint8_t data[4];
 
 } ClientKey;
 
-
-#define DDS_XRCE_CLIENT_INVALID COMPOUND_LITERAL(ClientKey){{0x00, 0x00, 0x00, 0x00}}
+#define DDS_XRCE_CLIENT_INVALID    \
+    COMPOUND_LITERAL(ClientKey)    \
+    {                              \
+        {                          \
+            0x00, 0x00, 0x00, 0x00 \
+        }                          \
+    }
 
 typedef uint8_t ObjectKind;
-#define DDS_XRCE_OBJK_INVALID 0x00
+#define DDS_XRCE_OBJK_INVALID     0x00
 #define DDS_XRCE_OBJK_PARTICIPANT 0x01
-#define DDS_XRCE_OBJK_TOPIC 0x02
-#define DDS_XRCE_OBJK_PUBLISHER 0x03
-#define DDS_XRCE_OBJK_SUBSCRIBER 0x04
-#define DDS_XRCE_OBJK_DATAWRITER 0x05
-#define DDS_XRCE_OBJK_DATAREADER 0x06
-#define DDS_XRCE_OBJK_REQUESTER 0x07
-#define DDS_XRCE_OBJK_REPLIER 0x08
-#define DDS_XRCE_OBJK_TYPE 0x0A
-#define DDS_XRCE_OBJK_QOSPROFILE 0x0B
+#define DDS_XRCE_OBJK_TOPIC       0x02
+#define DDS_XRCE_OBJK_PUBLISHER   0x03
+#define DDS_XRCE_OBJK_SUBSCRIBER  0x04
+#define DDS_XRCE_OBJK_DATAWRITER  0x05
+#define DDS_XRCE_OBJK_DATAREADER  0x06
+#define DDS_XRCE_OBJK_REQUESTER   0x07
+#define DDS_XRCE_OBJK_REPLIER     0x08
+#define DDS_XRCE_OBJK_TYPE        0x0A
+#define DDS_XRCE_OBJK_QOSPROFILE  0x0B
 #define DDS_XRCE_OBJK_APPLICATION 0x0C
-#define DDS_XRCE_OBJK_AGENT 0x0D
-#define DDS_XRCE_OBJK_CLIENT 0x0E
-#define DDS_XRCE_OBJK_OTHER 0x0F
+#define DDS_XRCE_OBJK_AGENT       0x0D
+#define DDS_XRCE_OBJK_CLIENT      0x0E
+#define DDS_XRCE_OBJK_OTHER       0x0F
 
-
-typedef struct ObjectId
-{
+typedef struct ObjectId {
     uint8_t data[2];
 
 } ObjectId;
 
-
-typedef struct ObjectPrefix
-{
+typedef struct ObjectPrefix {
     uint8_t data[2];
 
 } ObjectPrefix;
-#define DDS_XRCE_OBJECTID_INVALID COMPOUND_LITERAL(ObjectId){{0x00, 0x00}}
-#define DDS_XRCE_OBJECTID_AGENT COMPOUND_LITERAL(ObjectId){{0xFF, 0xFD}}
-#define DDS_XRCE_OBJECTID_CLIENT COMPOUND_LITERAL(ObjectId){{0xFF, 0xFE}}
-#define DDS_XRCE_OBJECTID_SESSION COMPOUND_LITERAL(ObjectId){{0xFF, 0xFF}}
+#define DDS_XRCE_OBJECTID_INVALID \
+    COMPOUND_LITERAL(ObjectId)    \
+    {                             \
+        {                         \
+            0x00, 0x00            \
+        }                         \
+    }
+#define DDS_XRCE_OBJECTID_AGENT \
+    COMPOUND_LITERAL(ObjectId)  \
+    {                           \
+        {                       \
+            0xFF, 0xFD          \
+        }                       \
+    }
+#define DDS_XRCE_OBJECTID_CLIENT \
+    COMPOUND_LITERAL(ObjectId)   \
+    {                            \
+        {                        \
+            0xFF, 0xFE           \
+        }                        \
+    }
+#define DDS_XRCE_OBJECTID_SESSION \
+    COMPOUND_LITERAL(ObjectId)    \
+    {                             \
+        {                         \
+            0xFF, 0xFF            \
+        }                         \
+    }
 
-
-typedef struct XrceCookie
-{
+typedef struct XrceCookie {
     uint8_t data[4];
 
 } XrceCookie;
-#define DDS_XRCE_XRCE_COOKIE COMPOUND_LITERAL(XrceCookie){{0x58, 0x52, 0x43, 0x45}}
+#define DDS_XRCE_XRCE_COOKIE       \
+    COMPOUND_LITERAL(XrceCookie)   \
+    {                              \
+        {                          \
+            0x58, 0x52, 0x43, 0x45 \
+        }                          \
+    }
 
-
-typedef struct XrceVersion
-{
+typedef struct XrceVersion {
     uint8_t data[2];
 
 } XrceVersion;
 #define DDS_XRCE_XRCE_VERSION_MAJOR 0x01
 #define DDS_XRCE_XRCE_VERSION_MINOR 0x00
-#define DDS_XRCE_XRCE_VERSION COMPOUND_LITERAL(XrceVersion){{DDS_XRCE_XRCE_VERSION_MAJOR, DDS_XRCE_XRCE_VERSION_MINOR}}
+#define DDS_XRCE_XRCE_VERSION                                        \
+    COMPOUND_LITERAL(XrceVersion)                                    \
+    {                                                                \
+        {                                                            \
+            DDS_XRCE_XRCE_VERSION_MAJOR, DDS_XRCE_XRCE_VERSION_MINOR \
+        }                                                            \
+    }
 
-
-typedef struct XrceVendorId
-{
+typedef struct XrceVendorId {
     uint8_t data[2];
 
 } XrceVendorId;
-#define DDS_XRCE_XRCE_VENDOR_INVALID {0x00, 0x00}
+#define DDS_XRCE_XRCE_VENDOR_INVALID \
+    {                                \
+        0x00, 0x00                   \
+    }
 
-typedef enum TransportLocatorFormat
-{
+typedef enum TransportLocatorFormat {
     ADDRESS_FORMAT_SMALL = 0,
     ADDRESS_FORMAT_MEDIUM = 1,
     ADDRESS_FORMAT_LARGE = 2,
@@ -141,40 +169,30 @@ typedef enum TransportLocatorFormat
 
 } TransportLocatorFormat;
 
-
-typedef struct TransportLocatorSmall
-{
+typedef struct TransportLocatorSmall {
     uint8_t address[2];
     uint8_t locator_port;
 
 } TransportLocatorSmall;
 
-
-typedef struct TransportLocatorMedium
-{
+typedef struct TransportLocatorMedium {
     uint8_t address[4];
     uint16_t locator_port;
 
 } TransportLocatorMedium;
 
-
-typedef struct TransportLocatorLarge
-{
+typedef struct TransportLocatorLarge {
     uint8_t address[16];
     uint32_t locator_port;
 
 } TransportLocatorLarge;
 
-
-typedef struct TransportLocatorString
-{
+typedef struct TransportLocatorString {
     char* value;
 
 } TransportLocatorString;
 
-
-typedef union TransportLocatorU
-{
+typedef union TransportLocatorU {
     TransportLocatorSmall small_locator;
     TransportLocatorMedium medium_locator;
     TransportLocatorLarge large_locator;
@@ -182,41 +200,31 @@ typedef union TransportLocatorU
 
 } TransportLocatorU;
 
-
-typedef struct TransportLocator
-{
+typedef struct TransportLocator {
     uint8_t format;
     TransportLocatorU _;
 
 } TransportLocator;
 
-
-typedef struct TransportLocatorSeq
-{
+typedef struct TransportLocatorSeq {
     uint32_t size;
     TransportLocator data[UXR_TRANSPORT_LOCATOR_SEQUENCE_MAX];
 
 } TransportLocatorSeq;
 
-
-typedef struct Property
-{
+typedef struct Property {
     char* name;
     char* value;
 
 } Property;
 
-
-typedef struct PropertySeq
-{
+typedef struct PropertySeq {
     uint32_t size;
     Property data[UXR_PROPERTY_SEQUENCE_MAX];
 
 } PropertySeq;
 
-
-typedef struct CLIENT_Representation
-{
+typedef struct CLIENT_Representation {
     XrceCookie xrce_cookie;
     XrceVersion xrce_version;
     XrceVendorId xrce_vendor_id;
@@ -228,9 +236,7 @@ typedef struct CLIENT_Representation
 
 } CLIENT_Representation;
 
-
-typedef struct AGENT_Representation
-{
+typedef struct AGENT_Representation {
     XrceCookie xrce_cookie;
     XrceVersion xrce_version;
     XrceVendorId xrce_vendor_id;
@@ -240,176 +246,132 @@ typedef struct AGENT_Representation
 } AGENT_Representation;
 
 typedef uint8_t RepresentationFormat;
-#define DDS_XRCE_REPRESENTATION_BY_REFERENCE 0x01
+#define DDS_XRCE_REPRESENTATION_BY_REFERENCE  0x01
 #define DDS_XRCE_REPRESENTATION_AS_XML_STRING 0x02
-#define DDS_XRCE_REPRESENTATION_IN_BINARY 0x03
-#define DDS_XRCE_REFERENCE_MAX_LEN 128
+#define DDS_XRCE_REPRESENTATION_IN_BINARY     0x03
+#define DDS_XRCE_REFERENCE_MAX_LEN            128
 
-
-typedef union OBJK_Representation3FormatsU
-{
+typedef union OBJK_Representation3FormatsU {
     char* object_reference;
     char* xml_string_represenatation;
     BinarySequence_t binary_representation;
 
 } OBJK_Representation3FormatsU;
 
-
-typedef struct OBJK_Representation3Formats
-{
+typedef struct OBJK_Representation3Formats {
     uint8_t format;
     OBJK_Representation3FormatsU _;
 
 } OBJK_Representation3Formats;
 
-
-typedef union OBJK_RepresentationRefAndXMLFormatsU
-{
+typedef union OBJK_RepresentationRefAndXMLFormatsU {
     char* object_name;
     char* xml_string_represenatation;
 
 } OBJK_RepresentationRefAndXMLFormatsU;
 
-
-typedef struct OBJK_RepresentationRefAndXMLFormats
-{
+typedef struct OBJK_RepresentationRefAndXMLFormats {
     uint8_t format;
     OBJK_RepresentationRefAndXMLFormatsU _;
 
 } OBJK_RepresentationRefAndXMLFormats;
 
-
-typedef union OBJK_RepresentationBinAndXMLFormatsU
-{
+typedef union OBJK_RepresentationBinAndXMLFormatsU {
     BinarySequence_t binary_representation;
     char* string_represenatation;
 
 } OBJK_RepresentationBinAndXMLFormatsU;
 
-
-typedef struct OBJK_RepresentationBinAndXMLFormats
-{
+typedef struct OBJK_RepresentationBinAndXMLFormats {
     uint8_t format;
     OBJK_RepresentationBinAndXMLFormatsU _;
 
 } OBJK_RepresentationBinAndXMLFormats;
 
-
-typedef struct OBJK_RepresentationRefAndXML_Base
-{
+typedef struct OBJK_RepresentationRefAndXML_Base {
     OBJK_RepresentationRefAndXMLFormats representation;
 
 } OBJK_RepresentationRefAndXML_Base;
 
-
-typedef struct OBJK_RepresentationBinAndXML_Base
-{
+typedef struct OBJK_RepresentationBinAndXML_Base {
     OBJK_RepresentationBinAndXMLFormats representation;
 
 } OBJK_RepresentationBinAndXML_Base;
 
-
-typedef struct OBJK_Representation3_Base
-{
+typedef struct OBJK_Representation3_Base {
     OBJK_Representation3Formats representation;
 
 } OBJK_Representation3_Base;
 
-
-typedef struct OBJK_QOSPROFILE_Representation
-{
+typedef struct OBJK_QOSPROFILE_Representation {
     OBJK_RepresentationRefAndXML_Base base;
 
 } OBJK_QOSPROFILE_Representation;
 
-
-typedef struct OBJK_TYPE_Representation
-{
+typedef struct OBJK_TYPE_Representation {
     OBJK_RepresentationRefAndXML_Base base;
 
 } OBJK_TYPE_Representation;
 
-
-typedef struct OBJK_DOMAIN_Representation
-{
+typedef struct OBJK_DOMAIN_Representation {
     OBJK_RepresentationRefAndXML_Base base;
 
 } OBJK_DOMAIN_Representation;
 
-
-typedef struct OBJK_APPLICATION_Representation
-{
+typedef struct OBJK_APPLICATION_Representation {
     OBJK_RepresentationRefAndXML_Base base;
 
 } OBJK_APPLICATION_Representation;
 
-
-typedef struct OBJK_PUBLISHER_Representation
-{
+typedef struct OBJK_PUBLISHER_Representation {
     OBJK_RepresentationBinAndXML_Base base;
     ObjectId participant_id;
 
 } OBJK_PUBLISHER_Representation;
 
-
-typedef struct OBJK_SUBSCRIBER_Representation
-{
+typedef struct OBJK_SUBSCRIBER_Representation {
     OBJK_RepresentationBinAndXML_Base base;
     ObjectId participant_id;
 
 } OBJK_SUBSCRIBER_Representation;
 
-
-typedef struct DATAWRITER_Representation
-{
+typedef struct DATAWRITER_Representation {
     OBJK_Representation3_Base base;
     ObjectId publisher_id;
 
 } DATAWRITER_Representation;
 
-
-typedef struct DATAREADER_Representation
-{
+typedef struct DATAREADER_Representation {
     OBJK_Representation3_Base base;
     ObjectId subscriber_id;
 
 } DATAREADER_Representation;
 
-
-typedef struct OBJK_PARTICIPANT_Representation
-{
+typedef struct OBJK_PARTICIPANT_Representation {
     OBJK_Representation3_Base base;
     int16_t domain_id;
 
 } OBJK_PARTICIPANT_Representation;
 
-
-typedef struct OBJK_TOPIC_Representation
-{
+typedef struct OBJK_TOPIC_Representation {
     OBJK_Representation3_Base base;
     ObjectId participant_id;
 
 } OBJK_TOPIC_Representation;
 
-
-typedef struct OBJK_REQUESTER_Representation
-{
+typedef struct OBJK_REQUESTER_Representation {
     OBJK_Representation3_Base base;
     ObjectId participant_id;
 
 } OBJK_REQUESTER_Representation;
 
-
-typedef struct OBJK_REPLIER_Representation
-{
+typedef struct OBJK_REPLIER_Representation {
     OBJK_Representation3_Base base;
     ObjectId participant_id;
 
 } OBJK_REPLIER_Representation;
 
-
-typedef struct OBJK_DomainParticipant_Binary
-{
+typedef struct OBJK_DomainParticipant_Binary {
     bool optional_domain_reference;
     char* domain_reference;
     bool optional_qos_profile_reference;
@@ -417,9 +379,7 @@ typedef struct OBJK_DomainParticipant_Binary
 
 } OBJK_DomainParticipant_Binary;
 
-
-typedef struct OBJK_Topic_Binary
-{
+typedef struct OBJK_Topic_Binary {
     char* topic_name;
     bool optional_type_reference;
     char* type_reference;
@@ -428,9 +388,7 @@ typedef struct OBJK_Topic_Binary
 
 } OBJK_Topic_Binary;
 
-
-typedef struct OBJK_Publisher_Binary_Qos
-{
+typedef struct OBJK_Publisher_Binary_Qos {
     bool optional_partitions;
     StringSequence_t partitions;
     bool optional_group_data;
@@ -438,9 +396,7 @@ typedef struct OBJK_Publisher_Binary_Qos
 
 } OBJK_Publisher_Binary_Qos;
 
-
-typedef struct OBJK_Publisher_Binary
-{
+typedef struct OBJK_Publisher_Binary {
     bool optional_publisher_name;
     char* publisher_name;
     bool optional_qos;
@@ -448,9 +404,7 @@ typedef struct OBJK_Publisher_Binary
 
 } OBJK_Publisher_Binary;
 
-
-typedef struct OBJK_Subscriber_Binary_Qos
-{
+typedef struct OBJK_Subscriber_Binary_Qos {
     bool optional_partitions;
     StringSequence_t partitions;
     bool optional_group_data;
@@ -458,9 +412,7 @@ typedef struct OBJK_Subscriber_Binary_Qos
 
 } OBJK_Subscriber_Binary_Qos;
 
-
-typedef struct OBJK_Subscriber_Binary
-{
+typedef struct OBJK_Subscriber_Binary {
     bool optional_subscriber_name;
     char* subscriber_name;
     bool optional_qos;
@@ -468,9 +420,7 @@ typedef struct OBJK_Subscriber_Binary
 
 } OBJK_Subscriber_Binary;
 
-
-typedef enum EndpointQosFlags
-{
+typedef enum EndpointQosFlags {
     is_reliabel = 0x01 << 0,
     is_history_keep_last = 0x01 << 1,
     is_ownership_exclusive = 0x01 << 2,
@@ -480,9 +430,7 @@ typedef enum EndpointQosFlags
 
 } EndpointQosFlags;
 
-
-typedef struct OBJK_Endpoint_QosBinary
-{
+typedef struct OBJK_Endpoint_QosBinary {
     uint16_t qos_flags;
     bool optional_history_depth;
     uint16_t history_depth;
@@ -495,18 +443,14 @@ typedef struct OBJK_Endpoint_QosBinary
 
 } OBJK_Endpoint_QosBinary;
 
-
-typedef struct OBJK_DataWriter_Binary_Qos
-{
+typedef struct OBJK_DataWriter_Binary_Qos {
     OBJK_Endpoint_QosBinary base;
     bool optional_ownership_strength;
     uint64_t ownership_strength;
 
 } OBJK_DataWriter_Binary_Qos;
 
-
-typedef struct OBJK_DataReader_Binary_Qos
-{
+typedef struct OBJK_DataReader_Binary_Qos {
     OBJK_Endpoint_QosBinary base;
     bool optional_timebasedfilter_msec;
     uint64_t timebasedfilter_msec;
@@ -515,27 +459,21 @@ typedef struct OBJK_DataReader_Binary_Qos
 
 } OBJK_DataReader_Binary_Qos;
 
-
-typedef struct OBJK_DataReader_Binary
-{
+typedef struct OBJK_DataReader_Binary {
     char* topic_name;
     bool optional_qos;
     OBJK_DataReader_Binary_Qos qos;
 
 } OBJK_DataReader_Binary;
 
-
-typedef struct OBJK_DataWriter_Binary
-{
+typedef struct OBJK_DataWriter_Binary {
     char* topic_name;
     bool optional_qos;
     OBJK_DataWriter_Binary_Qos qos;
 
 } OBJK_DataWriter_Binary;
 
-
-typedef union ObjectVariantU
-{
+typedef union ObjectVariantU {
     AGENT_Representation agent;
     CLIENT_Representation client;
     OBJK_APPLICATION_Representation application;
@@ -552,40 +490,30 @@ typedef union ObjectVariantU
 
 } ObjectVariantU;
 
-
-typedef struct ObjectVariant
-{
+typedef struct ObjectVariant {
     uint8_t kind;
     ObjectVariantU _;
 
 } ObjectVariant;
 
-
-typedef struct CreationMode
-{
+typedef struct CreationMode {
     bool reuse;
     bool replace;
 
 } CreationMode;
 
-
-typedef struct RequestId
-{
+typedef struct RequestId {
     uint8_t data[2];
 
 } RequestId;
 
-
-typedef struct ResultStatus
-{
+typedef struct ResultStatus {
     uint8_t status;
     uint8_t implementation_status;
 
 } ResultStatus;
 
-
-typedef struct BaseObjectRequest
-{
+typedef struct BaseObjectRequest {
     RequestId request_id;
     ObjectId object_id;
 
@@ -593,56 +521,43 @@ typedef struct BaseObjectRequest
 
 typedef BaseObjectRequest RelatedObjectRequest;
 
-typedef enum InfoMask
-{
+typedef enum InfoMask {
     INFO_CONFIGURATION = 0x01 << 0,
     INFO_ACTIVITY = 0x01 << 1
 
 } InfoMask;
 
-
-typedef struct AGENT_ActivityInfo
-{
+typedef struct AGENT_ActivityInfo {
     int16_t availibility;
     TransportLocatorSeq address_seq;
 
 } AGENT_ActivityInfo;
 
-
-typedef struct DATAREADER_ActivityInfo
-{
+typedef struct DATAREADER_ActivityInfo {
     int16_t highest_acked_num;
 
 } DATAREADER_ActivityInfo;
 
-
-typedef struct DATAWRITER_ActivityInfo
-{
+typedef struct DATAWRITER_ActivityInfo {
     int16_t stream_seq_num;
     uint64_t sample_seq_num;
 
 } DATAWRITER_ActivityInfo;
 
-
-typedef union ActivityInfoVariantU
-{
+typedef union ActivityInfoVariantU {
     AGENT_ActivityInfo agent;
     DATAWRITER_ActivityInfo data_writer;
     DATAREADER_ActivityInfo data_reader;
 
 } ActivityInfoVariantU;
 
-
-typedef struct ActivityInfoVariant
-{
+typedef struct ActivityInfoVariant {
     uint8_t kind;
     ActivityInfoVariantU _;
 
 } ActivityInfoVariant;
 
-
-typedef struct ObjectInfo
-{
+typedef struct ObjectInfo {
     bool optional_config;
     ObjectVariant config;
     bool optional_activity;
@@ -650,17 +565,13 @@ typedef struct ObjectInfo
 
 } ObjectInfo;
 
-
-typedef struct BaseObjectReply
-{
+typedef struct BaseObjectReply {
     BaseObjectRequest related_request;
     ResultStatus result;
 
 } BaseObjectReply;
 
-
-typedef enum DataFormat
-{
+typedef enum DataFormat {
     FORMAT_DATA = 0x00,
     FORMAT_SAMPLE = 0x02,
     FORMAT_DATA_SEQ = 0x08,
@@ -670,9 +581,7 @@ typedef enum DataFormat
 
 } DataFormat;
 
-
-typedef struct DataDeliveryControl
-{
+typedef struct DataDeliveryControl {
     uint16_t max_samples;
     uint16_t max_elapsed_time;
     uint16_t max_bytes_per_seconds;
@@ -680,9 +589,7 @@ typedef struct DataDeliveryControl
 
 } DataDeliveryControl;
 
-
-typedef struct ReadSpecification
-{
+typedef struct ReadSpecification {
     uint8_t preferred_stream_id;
     uint8_t data_format;
     bool optional_content_filter_expression;
@@ -692,9 +599,7 @@ typedef struct ReadSpecification
 
 } ReadSpecification;
 
-
-typedef enum SampleInfoFlags
-{
+typedef enum SampleInfoFlags {
     INSTANCE_STATE_UNREGISTERD = 0x01 << 0,
     INSTANCE_STATE_DISPOSED = 0x01 << 1,
     VIEW_STATE_NEW = 0x01 << 2,
@@ -702,9 +607,7 @@ typedef enum SampleInfoFlags
 
 } SampleInfoFlags;
 
-
-typedef enum SampleInfoFormat
-{
+typedef enum SampleInfoFormat {
     FORMAT_EMPTY = 0x00,
     FORMAT_SEQNUM = 0x01,
     FORMAT_TIMESTAMP = 0x02,
@@ -712,34 +615,26 @@ typedef enum SampleInfoFormat
 
 } SampleInfoFormat;
 
-
-typedef struct SeqNumberAndTimestamp
-{
+typedef struct SeqNumberAndTimestamp {
     uint32_t sequence_number;
     uint32_t session_time_offset;
 
 } SeqNumberAndTimestamp;
 
-
-typedef union SampleInfoDetailU
-{
+typedef union SampleInfoDetailU {
     uint32_t sequence_number;
     uint32_t session_time_offset;
     SeqNumberAndTimestamp seqnum_n_timestamp;
 
 } SampleInfoDetailU;
 
-
-typedef struct SampleInfoDetail
-{
+typedef struct SampleInfoDetail {
     uint32_t format;
     SampleInfoDetailU _;
 
 } SampleInfoDetail;
 
-
-typedef struct SampleInfo
-{
+typedef struct SampleInfo {
     uint8_t state;
     SampleInfoDetail detail;
 
@@ -747,82 +642,62 @@ typedef struct SampleInfo
 
 typedef uint16_t DeciSecond;
 
-
-typedef struct SampleInfoDelta
-{
+typedef struct SampleInfoDelta {
     uint8_t state;
     uint8_t seq_number_delta;
     uint16_t timestamp_delta;
 
 } SampleInfoDelta;
 
-
-typedef struct SampleData
-{
+typedef struct SampleData {
     uint32_t size;
     uint8_t data[UXR_SAMPLE_DATA_SIZE_MAX];
 
 } SampleData;
 
-
-typedef struct SampleDataSeq
-{
+typedef struct SampleDataSeq {
     uint32_t size;
     SampleData data[UXR_SAMPLE_DATA_SEQUENCE_MAX];
 
 } SampleDataSeq;
 
-
-typedef struct Sample
-{
+typedef struct Sample {
     SampleInfo info;
     SampleData data;
 
 } Sample;
 
-
-typedef struct SampleSeq
-{
+typedef struct SampleSeq {
     uint32_t size;
     Sample data[UXR_SAMPLE_SEQUENCE_MAX];
 
 } SampleSeq;
 
-
-typedef struct SampleDelta
-{
+typedef struct SampleDelta {
     SampleInfoDelta info_delta;
     SampleData data;
 
 } SampleDelta;
 
-
-typedef struct SampleDeltaSequence
-{
+typedef struct SampleDeltaSequence {
     uint32_t size;
     SampleDelta data[UXR_SAMPLE_DELTA_SEQUENCE_MAX];
 
 } SampleDeltaSequence;
 
-
-typedef struct PackedSamples
-{
+typedef struct PackedSamples {
     SampleInfo info_base;
     SampleDeltaSequence sample_delta_seq;
 
 } PackedSamples;
 
-
-typedef struct SamplePackedSeq
-{
+typedef struct SamplePackedSeq {
     uint32_t size;
     PackedSamples data[UXR_PACKED_SAMPLES_SEQUENCE_MAX];
 
 } SamplePackedSeq;
 
-
-typedef union DataRepresentationU
-{
+typedef union DataRepresentationU {
     SampleData data;
     Sample sample;
     SampleDataSeq data_seq;
@@ -831,221 +706,172 @@ typedef union DataRepresentationU
 
 } DataRepresentationU;
 
-
-typedef struct DataRepresentation
-{
+typedef struct DataRepresentation {
     uint8_t format;
     DataRepresentationU _;
 
 } DataRepresentation;
 
-
-typedef struct CREATE_CLIENT_Payload
-{
+typedef struct CREATE_CLIENT_Payload {
     CLIENT_Representation client_representation;
 
 } CREATE_CLIENT_Payload;
 
-
-typedef struct CREATE_Payload
-{
+typedef struct CREATE_Payload {
     BaseObjectRequest base;
     ObjectVariant object_representation;
 
 } CREATE_Payload;
 
-
-typedef struct GET_INFO_Payload
-{
+typedef struct GET_INFO_Payload {
     BaseObjectRequest base;
     uint32_t info_mask;
 
 } GET_INFO_Payload;
 
-
-typedef struct DELETE_Payload
-{
+typedef struct DELETE_Payload {
     BaseObjectRequest base;
 
 } DELETE_Payload;
 
-
-typedef struct STATUS_AGENT_Payload
-{
+typedef struct STATUS_AGENT_Payload {
     ResultStatus result;
     AGENT_Representation agent_info;
 
 } STATUS_AGENT_Payload;
 
-
-typedef struct STATUS_Payload
-{
+typedef struct STATUS_Payload {
     BaseObjectReply base;
 
 } STATUS_Payload;
 
-
-typedef struct INFO_Payload
-{
+typedef struct INFO_Payload {
     BaseObjectReply base;
     ObjectInfo object_info;
 
 } INFO_Payload;
 
-
-typedef struct READ_DATA_Payload
-{
+typedef struct READ_DATA_Payload {
     BaseObjectRequest base;
     ReadSpecification read_specification;
 
 } READ_DATA_Payload;
 
-
-typedef struct WRITE_DATA_Payload_Data
-{
+typedef struct WRITE_DATA_Payload_Data {
     BaseObjectRequest base;
 
 } WRITE_DATA_Payload_Data;
 
-
-typedef struct WRITE_DATA_Payload_Sample
-{
+typedef struct WRITE_DATA_Payload_Sample {
     BaseObjectRequest base;
     Sample sample;
 
 } WRITE_DATA_Payload_Sample;
 
-
-typedef struct WRITE_DATA_Payload_DataSeq
-{
+typedef struct WRITE_DATA_Payload_DataSeq {
     BaseObjectRequest base;
     SampleDataSeq data_seq;
 
 } WRITE_DATA_Payload_DataSeq;
 
-
-typedef struct WRITE_DATA_Payload_SampleSeq
-{
+typedef struct WRITE_DATA_Payload_SampleSeq {
     BaseObjectRequest base;
     SampleSeq sample_seq;
 
 } WRITE_DATA_Payload_SampleSeq;
 
-
-typedef struct WRITE_DATA_Payload_PackedSamples
-{
+typedef struct WRITE_DATA_Payload_PackedSamples {
     BaseObjectRequest base;
     PackedSamples packed_samples;
 
 } WRITE_DATA_Payload_PackedSamples;
 
-
-typedef struct DATA_Payload_Data
-{
+typedef struct DATA_Payload_Data {
     BaseObjectRequest base;
 
 } DATA_Payload_Data;
 
-
-typedef struct DATA_Payload_Sample
-{
+typedef struct DATA_Payload_Sample {
     BaseObjectRequest base;
     Sample sample;
 
 } DATA_Payload_Sample;
 
-
-typedef struct DATA_Payload_DataSeq
-{
+typedef struct DATA_Payload_DataSeq {
     BaseObjectRequest base;
     SampleDataSeq data_seq;
 
 } DATA_Payload_DataSeq;
 
-
-typedef struct DATA_Payload_SampleSeq
-{
+typedef struct DATA_Payload_SampleSeq {
     BaseObjectRequest base;
     SampleSeq sample_seq;
 
 } DATA_Payload_SampleSeq;
 
-
-typedef struct DATA_Payload_PackedSamples
-{
+typedef struct DATA_Payload_PackedSamples {
     BaseObjectRequest base;
     PackedSamples packed_samples;
 
 } DATA_Payload_PackedSamples;
 
-
-typedef struct ACKNACK_Payload
-{
+typedef struct ACKNACK_Payload {
     uint16_t first_unacked_seq_num;
     uint8_t nack_bitmap[2];
     uint8_t stream_id;
 
 } ACKNACK_Payload;
 
-typedef struct HEARTBEAT_Payload
-{
+typedef struct HEARTBEAT_Payload {
     uint16_t first_unacked_seq_nr;
     uint16_t last_unacked_seq_nr;
     uint8_t stream_id;
 
 } HEARTBEAT_Payload;
 
-typedef struct TIMESTAMP_Payload
-{
+typedef struct TIMESTAMP_Payload {
     Time_t transmit_timestamp;
 
 } TIMESTAMP_Payload;
 
-typedef struct TIMESTAMP_REPLY_Payload
-{
+typedef struct TIMESTAMP_REPLY_Payload {
     Time_t transmit_timestamp;
     Time_t receive_timestamp;
     Time_t originate_timestamp;
 
 } TIMESTAMP_REPLY_Payload;
 
-typedef struct GuidPrefix
-{
+typedef struct GuidPrefix {
     uint8_t data[12];
 
 } GuidPrefix_t;
 
-typedef struct EntityId_t
-{
+typedef struct EntityId_t {
     uint8_t entityKey[3];
     uint8_t entityKind;
 
 } EntityId_t;
 
-typedef struct GUID_t
-{
+typedef struct GUID_t {
     GuidPrefix_t guidPrefix;
     EntityId_t entityId;
 
 } GUID_t;
 
-typedef struct SequenceNumber_t
-{
+typedef struct SequenceNumber_t {
     int32_t high;
     uint32_t low;
 
 } SequenceNumber_t;
 
-typedef struct SampleIdentity
-{
+typedef struct SampleIdentity {
     GUID_t writer_guid;
     SequenceNumber_t sequence_number;
 
 } SampleIdentity;
 
 #ifdef PERFORMANCE_TESTING
-typedef struct PERFORMANCE_Payload
-{
+typedef struct PERFORMANCE_Payload {
     uint32_t epoch_time_lsb;
     uint32_t epoch_time_msb;
     uint8_t* buf;

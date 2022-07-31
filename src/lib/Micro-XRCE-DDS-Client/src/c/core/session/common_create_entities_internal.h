@@ -16,8 +16,7 @@
 #define _SRC_C_CORE_SESSION_COMMON_CREATE_ENTITIES_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/common_create_entities.h>
@@ -25,8 +24,8 @@ extern "C"
 struct CREATE_Payload;
 
 uint16_t uxr_common_create_entity(uxrSession* session, uxrStreamId stream_id,
-                              uxrObjectId object_id, uint16_t xml_ref_size, uint8_t mode,
-                              struct CREATE_Payload* payload);
+                                  uxrObjectId object_id, uint16_t xml_ref_size, uint8_t mode,
+                                  struct CREATE_Payload* payload);
 
 #ifdef __cplusplus
 }

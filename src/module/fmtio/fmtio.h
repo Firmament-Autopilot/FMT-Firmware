@@ -16,8 +16,8 @@
 #ifndef FMTIO_H__
 #define FMTIO_H__
 
-#include <firmament.h>
 #include "module/fmtio/protocol.h"
+#include <firmament.h>
 
 #ifdef __cplusplus
 extern "C" {

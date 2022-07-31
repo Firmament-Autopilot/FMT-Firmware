@@ -14,30 +14,34 @@
 
 #include "HelloWorld.h"
 
-#include <uxr/client/client.h>
 #include <ucdr/microcdr.h>
+#include <uxr/client/client.h>
 
-#include <stdio.h> //printf
-#include <string.h> //strcmp
+#include <stdio.h>  //printf
 #include <stdlib.h> //atoi
+#include <string.h> //strcmp
 
-#define STREAM_HISTORY  8
-#define BUFFER_SIZE     UXR_CONFIG_UDP_TRANSPORT_MTU * STREAM_HISTORY
+#define STREAM_HISTORY 8
+#define BUFFER_SIZE    UXR_CONFIG_UDP_TRANSPORT_MTU* STREAM_HISTORY
 
 void on_topic(
-        uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        uxrStreamId stream_id,
-        struct ucdrBuffer* ub,
-        uint16_t length,
-        void* args)
+    uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    uxrStreamId stream_id,
+    struct ucdrBuffer* ub,
+    uint16_t length,
+    void* args)
 {
-    (void) session; (void) object_id; (void) request_id; (void) stream_id; (void) length;
+    (void)session;
+    (void)object_id;
+    (void)request_id;
+    (void)stream_id;
+    (void)length;
 
     HelloWorld topic;
     HelloWorld_deserialize_topic(ub, &topic);
-    
+
     char key[20];
     snprintf(key, 20, "0x%X%X%X%X", session->info.key[0], session->info.key[1], session->info.key[2], session->info.key[3]);
     printf("Session %s: %s (%i)\n", key, topic.message, topic.index);
@@ -46,8 +50,7 @@ void on_topic(
 int main(int args, char** argv)
 {
     // CLI
-    if(3 > args || 0 == atoi(argv[2]))
-    {
+    if (3 > args || 0 == atoi(argv[2])) {
         printf("usage: program [-h | --help] | ip port [<max_topics>]\n");
         return 0;
     }
@@ -60,8 +63,7 @@ int main(int args, char** argv)
     // Transport
     uxrUDPTransport transport_1;
     uxrUDPPlatform udp_platform_1;
-    if(!uxr_init_udp_transport(&transport_1, &udp_platform_1, UXR_IPv4, ip, port))
-    {
+    if (!uxr_init_udp_transport(&transport_1, &udp_platform_1, UXR_IPv4, ip, port)) {
         printf("Error at create transport.\n");
         return 1;
     }
@@ -70,8 +72,7 @@ int main(int args, char** argv)
     uxrSession session_1;
     uxr_init_session(&session_1, &transport_1.comm, 0x11111111);
     uxr_set_topic_callback(&session_1, on_topic, NULL);
-    if(!uxr_create_session(&session_1))
-    {
+    if (!uxr_create_session(&session_1)) {
         printf("Error at create session 1.\n");
         return 1;
     }
@@ -86,21 +87,21 @@ int main(int args, char** argv)
     // Create entities
     uxrObjectId participant_id_1 = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
     const char* participant_xml_1 = "<dds>"
-                                      "<participant>"
-                                          "<rtps>"
-                                              "<name>default_xrce_participant_1</name>"
-                                          "</rtps>"
-                                      "</participant>"
-                                  "</dds>";
+                                    "<participant>"
+                                    "<rtps>"
+                                    "<name>default_xrce_participant_1</name>"
+                                    "</rtps>"
+                                    "</participant>"
+                                    "</dds>";
     uint16_t participant_req_1 = uxr_buffer_create_participant_xml(&session_1, reliable_out_1, participant_id_1, 0, participant_xml_1, UXR_REPLACE);
 
     uxrObjectId topic_id_1 = uxr_object_id(0x01, UXR_TOPIC_ID);
     const char* topic_xml_1 = "<dds>"
-                                "<topic>"
-                                    "<name>HelloWorldTopic</name>"
-                                    "<dataType>HelloWorld</dataType>"
-                                "</topic>"
-                            "</dds>";
+                              "<topic>"
+                              "<name>HelloWorldTopic</name>"
+                              "<dataType>HelloWorld</dataType>"
+                              "</topic>"
+                              "</dds>";
     uint16_t topic_req_1 = uxr_buffer_create_topic_xml(&session_1, reliable_out_1, topic_id_1, participant_id_1, topic_xml_1, UXR_REPLACE);
 
     uxrObjectId publisher_id_1 = uxr_object_id(0x01, UXR_PUBLISHER_ID);
@@ -109,14 +110,14 @@ int main(int args, char** argv)
 
     uxrObjectId datawriter_id_1 = uxr_object_id(0x01, UXR_DATAWRITER_ID);
     const char* datawriter_xml_1 = "<dds>"
-                                     "<data_writer>"
-                                         "<topic>"
-                                             "<kind>NO_KEY</kind>"
-                                             "<name>HelloWorldTopic_1_to_2</name>"
-                                             "<dataType>HelloWorld</dataType>"
-                                         "</topic>"
-                                     "</data_writer>"
-                                 "</dds>";
+                                   "<data_writer>"
+                                   "<topic>"
+                                   "<kind>NO_KEY</kind>"
+                                   "<name>HelloWorldTopic_1_to_2</name>"
+                                   "<dataType>HelloWorld</dataType>"
+                                   "</topic>"
+                                   "</data_writer>"
+                                   "</dds>";
     uint16_t datawriter_req_1 = uxr_buffer_create_datawriter_xml(&session_1, reliable_out_1, datawriter_id_1, publisher_id_1, datawriter_xml_1, UXR_REPLACE);
 
     uxrObjectId subscriber_id_1 = uxr_object_id(0x01, UXR_SUBSCRIBER_ID);
@@ -125,21 +126,20 @@ int main(int args, char** argv)
 
     uxrObjectId datareader_id_1 = uxr_object_id(0x01, UXR_DATAREADER_ID);
     const char* datareader_xml_1 = "<dds>"
-                                     "<data_reader>"
-                                         "<topic>"
-                                             "<kind>NO_KEY</kind>"
-                                             "<name>HelloWorldTopic_2_to_1</name>"
-                                             "<dataType>HelloWorld</dataType>"
-                                         "</topic>"
-                                     "</data_reader>"
-                                 "</dds>";
+                                   "<data_reader>"
+                                   "<topic>"
+                                   "<kind>NO_KEY</kind>"
+                                   "<name>HelloWorldTopic_2_to_1</name>"
+                                   "<dataType>HelloWorld</dataType>"
+                                   "</topic>"
+                                   "</data_reader>"
+                                   "</dds>";
     uint16_t datareader_req_1 = uxr_buffer_create_datareader_xml(&session_1, reliable_out_1, datareader_id_1, subscriber_id_1, datareader_xml_1, UXR_REPLACE);
 
     // Send create entities message and wait its status
     uint8_t status_1[6];
-    uint16_t requests_1[6] = {participant_req_1, topic_req_1, publisher_req_1, datawriter_req_1, subscriber_req_1, datareader_req_1};
-    if(!uxr_run_session_until_all_status(&session_1, 1000, requests_1, status_1, 6))
-    {
+    uint16_t requests_1[6] = { participant_req_1, topic_req_1, publisher_req_1, datawriter_req_1, subscriber_req_1, datareader_req_1 };
+    if (!uxr_run_session_until_all_status(&session_1, 1000, requests_1, status_1, 6)) {
         printf("Error at create entities session 1\n");
         return 1;
     }
@@ -148,8 +148,7 @@ int main(int args, char** argv)
     // Transport
     uxrUDPTransport transport_2;
     uxrUDPPlatform udp_platform_2;
-    if(!uxr_init_udp_transport(&transport_2, &udp_platform_2, UXR_IPv4, ip, port))
-    {
+    if (!uxr_init_udp_transport(&transport_2, &udp_platform_2, UXR_IPv4, ip, port)) {
         printf("Error at create transport.\n");
         return 1;
     }
@@ -158,8 +157,7 @@ int main(int args, char** argv)
     uxrSession session_2;
     uxr_init_session(&session_2, &transport_2.comm, 0x22222222);
     uxr_set_topic_callback(&session_2, on_topic, NULL);
-    if(!uxr_create_session(&session_2))
-    {
+    if (!uxr_create_session(&session_2)) {
         printf("Error at create session 2.\n");
         return 1;
     }
@@ -174,21 +172,21 @@ int main(int args, char** argv)
     // Create entities
     uxrObjectId participant_id_2 = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
     const char* participant_xml_2 = "<dds>"
-                                      "<participant>"
-                                          "<rtps>"
-                                              "<name>default_xrce_participant_2</name>"
-                                          "</rtps>"
-                                      "</participant>"
-                                  "</dds>";
+                                    "<participant>"
+                                    "<rtps>"
+                                    "<name>default_xrce_participant_2</name>"
+                                    "</rtps>"
+                                    "</participant>"
+                                    "</dds>";
     uint16_t participant_req_2 = uxr_buffer_create_participant_xml(&session_2, reliable_out_2, participant_id_2, 0, participant_xml_2, UXR_REPLACE);
 
     uxrObjectId topic_id_2 = uxr_object_id(0x01, UXR_TOPIC_ID);
     const char* topic_xml_2 = "<dds>"
-                                "<topic>"
-                                    "<name>HelloWorldTopic</name>"
-                                    "<dataType>HelloWorld</dataType>"
-                                "</topic>"
-                            "</dds>";
+                              "<topic>"
+                              "<name>HelloWorldTopic</name>"
+                              "<dataType>HelloWorld</dataType>"
+                              "</topic>"
+                              "</dds>";
     uint16_t topic_req_2 = uxr_buffer_create_topic_xml(&session_2, reliable_out_2, topic_id_2, participant_id_2, topic_xml_2, UXR_REPLACE);
 
     uxrObjectId publisher_id_2 = uxr_object_id(0x01, UXR_PUBLISHER_ID);
@@ -197,14 +195,14 @@ int main(int args, char** argv)
 
     uxrObjectId datawriter_id_2 = uxr_object_id(0x01, UXR_DATAWRITER_ID);
     const char* datawriter_xml_2 = "<dds>"
-                                     "<data_writer>"
-                                         "<topic>"
-                                             "<kind>NO_KEY</kind>"
-                                             "<name>HelloWorldTopic_2_to_1</name>"
-                                             "<dataType>HelloWorld</dataType>"
-                                         "</topic>"
-                                     "</data_writer>"
-                                 "</dds>";
+                                   "<data_writer>"
+                                   "<topic>"
+                                   "<kind>NO_KEY</kind>"
+                                   "<name>HelloWorldTopic_2_to_1</name>"
+                                   "<dataType>HelloWorld</dataType>"
+                                   "</topic>"
+                                   "</data_writer>"
+                                   "</dds>";
     uint16_t datawriter_req_2 = uxr_buffer_create_datawriter_xml(&session_2, reliable_out_2, datawriter_id_2, publisher_id_2, datawriter_xml_2, UXR_REPLACE);
 
     uxrObjectId subscriber_id_2 = uxr_object_id(0x01, UXR_SUBSCRIBER_ID);
@@ -213,28 +211,26 @@ int main(int args, char** argv)
 
     uxrObjectId datareader_id_2 = uxr_object_id(0x01, UXR_DATAREADER_ID);
     const char* datareader_xml_2 = "<dds>"
-                                     "<data_reader>"
-                                         "<topic>"
-                                             "<kind>NO_KEY</kind>"
-                                             "<name>HelloWorldTopic_1_to_2</name>"
-                                             "<dataType>HelloWorld</dataType>"
-                                         "</topic>"
-                                     "</data_reader>"
-                                 "</dds>";
+                                   "<data_reader>"
+                                   "<topic>"
+                                   "<kind>NO_KEY</kind>"
+                                   "<name>HelloWorldTopic_1_to_2</name>"
+                                   "<dataType>HelloWorld</dataType>"
+                                   "</topic>"
+                                   "</data_reader>"
+                                   "</dds>";
     uint16_t datareader_req_2 = uxr_buffer_create_datareader_xml(&session_2, reliable_out_2, datareader_id_2, subscriber_id_2, datareader_xml_2, UXR_REPLACE);
 
     // Send create entities message and wait its status
     uint8_t status_2[6];
-    uint16_t requests_2[6] = {participant_req_2, topic_req_2, publisher_req_2, datawriter_req_2, subscriber_req_2, datareader_req_2};
-    if(!uxr_run_session_until_all_status(&session_2, 1000, requests_2, status_2, 6))
-    {
+    uint16_t requests_2[6] = { participant_req_2, topic_req_2, publisher_req_2, datawriter_req_2, subscriber_req_2, datareader_req_2 };
+    if (!uxr_run_session_until_all_status(&session_2, 1000, requests_2, status_2, 6)) {
         printf("Error at create entities session 2\n");
         return 1;
-    }  
-
+    }
 
     // Request topics of both sessions
-    uxrDeliveryControl delivery_control = {0};
+    uxrDeliveryControl delivery_control = { 0 };
     delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
     uint16_t read_data_req_1 = uxr_buffer_request_data(&session_1, reliable_out_1, datareader_id_1, reliable_in_1, &delivery_control);
     uint16_t read_data_req_2 = uxr_buffer_request_data(&session_2, reliable_out_2, datareader_id_2, reliable_in_2, &delivery_control);
@@ -242,17 +238,16 @@ int main(int args, char** argv)
     // Write topics
     uint32_t count = 0;
     bool connected = true;
-    while(connected)
-    {   
+    while (connected) {
         // Session 1 publication
-        HelloWorld topic_1 = {count, "Publisher 1 says hello"};
+        HelloWorld topic_1 = { count, "Publisher 1 says hello" };
         ucdrBuffer ub_1;
         uint32_t topic_size_1 = HelloWorld_size_of_topic(&topic_1, 0);
         uxr_prepare_output_stream(&session_1, reliable_out_1, datawriter_id_1, &ub_1, topic_size_1);
         HelloWorld_serialize_topic(&ub_1, &topic_1);
 
         // Session 2 publication
-        HelloWorld topic_2 = {count, "Publisher 2 says hello"};
+        HelloWorld topic_2 = { count, "Publisher 2 says hello" };
         ucdrBuffer ub_2;
         uint32_t topic_size_2 = HelloWorld_size_of_topic(&topic_2, 0);
         uxr_prepare_output_stream(&session_2, reliable_out_2, datawriter_id_2, &ub_2, topic_size_2);

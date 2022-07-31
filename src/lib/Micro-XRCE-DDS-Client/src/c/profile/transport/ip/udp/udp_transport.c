@@ -22,12 +22,9 @@ static bool send_udp_msg(void* instance, const uint8_t* buf, size_t len)
 
     uint8_t errcode;
     size_t bytes_sent = uxr_write_udp_data_platform(transport->platform, buf, len, &errcode);
-    if (0 < bytes_sent)
-    {
+    if (0 < bytes_sent) {
         rv = (bytes_sent == len);
-    }
-    else
-    {
+    } else {
         error_code = errcode;
     }
     return rv;
@@ -44,14 +41,11 @@ static bool recv_udp_msg(void* instance, uint8_t** buf, size_t* len, int timeout
                                                        sizeof(transport->buffer),
                                                        timeout,
                                                        &errcode);
-    if (0 < bytes_received)
-    {
+    if (0 < bytes_received) {
         *buf = transport->buffer;
         *len = bytes_received;
         rv = true;
-    }
-    else
-    {
+    } else {
         error_code = errcode;
     }
     return rv;
@@ -66,16 +60,15 @@ static uint8_t get_udp_error(void)
  * Public function definitions.
  *******************************************************************************/
 bool uxr_init_udp_transport(
-        uxrUDPTransport* transport,
-        struct uxrUDPPlatform* platform,
-        uxrIpProtocol ip_protocol,
-        const char* ip,
-        const char* port)
+    uxrUDPTransport* transport,
+    struct uxrUDPPlatform* platform,
+    uxrIpProtocol ip_protocol,
+    const char* ip,
+    const char* port)
 {
     bool rv = false;
 
-    if (uxr_init_udp_platform(platform, ip_protocol, ip, port))
-    {
+    if (uxr_init_udp_platform(platform, ip_protocol, ip, port)) {
         /* Setup platform. */
         transport->platform = platform;
 

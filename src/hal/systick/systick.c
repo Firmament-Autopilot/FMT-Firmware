@@ -14,72 +14,73 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include "hal/systick/systick.h"
+#include <firmament.h>
 
 rt_size_t systick_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
-	RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
 
-	systick_dev_t systick = (systick_dev_t)dev;;
+    systick_dev_t systick = (systick_dev_t)dev;
+    ;
 
-	if(pos == SYSTICK_RD_TIME_US) {
-		*(uint32_t*)buffer = systick->ops->systick_read(systick);
-		return sizeof(uint32_t);
-	}
+    if (pos == SYSTICK_RD_TIME_US) {
+        *(uint32_t*)buffer = systick->ops->systick_read(systick);
+        return sizeof(uint32_t);
+    }
 
-	return 0;
+    return 0;
 }
 
 static rt_err_t systick_control(rt_device_t dev, int cmd, void* args)
 {
-	systick_dev_t systick;
+    systick_dev_t systick;
 
-	RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(dev != RT_NULL);
 
-	systick = (systick_dev_t)dev;
+    systick = (systick_dev_t)dev;
 
-	if(cmd == SYSTICK_CMD_SET_FREQUENCY) {
-		if(systick->ops->systick_configure) {
-			struct systick_configure config;
-			config.tick_freq = *(rt_uint16_t*)args;
+    if (cmd == SYSTICK_CMD_SET_FREQUENCY) {
+        if (systick->ops->systick_configure) {
+            struct systick_configure config;
+            config.tick_freq = *(rt_uint16_t*)args;
 
-			systick->ops->systick_configure(systick, &config);
-		}
-	}
+            systick->ops->systick_configure(systick, &config);
+        }
+    }
 
-	return RT_EOK;
+    return RT_EOK;
 }
 
 void hal_systick_isr(systick_dev_t systick)
 {
-	if(systick->systick_isr_cb) {
-		systick->systick_isr_cb();
-	}
+    if (systick->systick_isr_cb) {
+        systick->systick_isr_cb();
+    }
 }
 
 rt_err_t hal_systick_register(systick_dev_t systick, const char* name, rt_uint32_t flag, void* data)
 {
-	struct rt_device* device;
+    struct rt_device* device;
 
-	RT_ASSERT(systick != RT_NULL);
+    RT_ASSERT(systick != RT_NULL);
 
-	device = &(systick->parent);
+    device = &(systick->parent);
 
-	device->type        = RT_Device_Class_Timer;
-	device->ref_count   = 0;
-	device->rx_indicate = RT_NULL;
-	device->tx_complete = RT_NULL;
+    device->type = RT_Device_Class_Timer;
+    device->ref_count = 0;
+    device->rx_indicate = RT_NULL;
+    device->tx_complete = RT_NULL;
 
-	device->init        = RT_NULL;
-	device->open        = RT_NULL;
-	device->close       = RT_NULL;
-	device->read        = systick_read;
-	device->write       = RT_NULL;
-	device->control     = systick_control;
+    device->init = RT_NULL;
+    device->open = RT_NULL;
+    device->close = RT_NULL;
+    device->read = systick_read;
+    device->write = RT_NULL;
+    device->control = systick_control;
 
-	device->user_data   = data;
+    device->user_data = data;
 
-	/* register pin device */
-	return rt_device_register(device, name, flag);
+    /* register pin device */
+    return rt_device_register(device, name, flag);
 }

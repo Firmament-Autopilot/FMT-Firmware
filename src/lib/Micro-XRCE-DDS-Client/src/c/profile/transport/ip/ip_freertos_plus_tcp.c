@@ -12,59 +12,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <uxr/client/profile/transport/ip/ip.h>
 #include <uxr/client/config.h>
+#include <uxr/client/profile/transport/ip/ip.h>
 
 #include "FreeRTOS.h"
 #include "FreeRTOS_Sockets.h"
 
 bool uxr_ip_to_locator(
-        char const * ip,
-        uint16_t port,
-        uxrIpProtocol ip_protocol,
-        TransportLocator * locator)
+    char const* ip,
+    uint16_t port,
+    uxrIpProtocol ip_protocol,
+    TransportLocator* locator)
 {
     bool result = false;
-    switch (ip_protocol)
-    {
-        case UXR_IPv4:
-            locator->format = ADDRESS_FORMAT_MEDIUM;
-            locator->_.medium_locator.locator_port = port;
-            uint32_t addr = FreeRTOS_inet_addr(ip);
-            memcpy(&locator->_.medium_locator.address, &addr, sizeof(locator->_.medium_locator.address));
-            result = locator->_.medium_locator.address != 0;
-            break;
-        case UXR_IPv6:
-            break;
-        default:
-            break;
+    switch (ip_protocol) {
+    case UXR_IPv4:
+        locator->format = ADDRESS_FORMAT_MEDIUM;
+        locator->_.medium_locator.locator_port = port;
+        uint32_t addr = FreeRTOS_inet_addr(ip);
+        memcpy(&locator->_.medium_locator.address, &addr, sizeof(locator->_.medium_locator.address));
+        result = locator->_.medium_locator.address != 0;
+        break;
+    case UXR_IPv6:
+        break;
+    default:
+        break;
     }
     return result;
 }
 
 bool uxr_locator_to_ip(
-        TransportLocator const * locator,
-        char * ip,
-        size_t size,
-        uint16_t * port,
-        uxrIpProtocol * ip_protocol)
+    TransportLocator const* locator,
+    char* ip,
+    size_t size,
+    uint16_t* port,
+    uxrIpProtocol* ip_protocol)
 {
     bool result = false;
     (void)size;
-    switch (locator->format)
-    {
-        case ADDRESS_FORMAT_MEDIUM:
-            *port = locator->_.medium_locator.locator_port;
-            *ip_protocol = UXR_IPv4;
-            uint32_t addr;
-            memcpy(&addr, &locator->_.medium_locator.address, sizeof(locator->_.medium_locator.address));
-            FreeRTOS_inet_ntoa(addr, ip);
-            result = true;
-            break;
-        case ADDRESS_FORMAT_LARGE:
-            break;
-        default:
-            break;
+    switch (locator->format) {
+    case ADDRESS_FORMAT_MEDIUM:
+        *port = locator->_.medium_locator.locator_port;
+        *ip_protocol = UXR_IPv4;
+        uint32_t addr;
+        memcpy(&addr, &locator->_.medium_locator.address, sizeof(locator->_.medium_locator.address));
+        FreeRTOS_inet_ntoa(addr, ip);
+        result = true;
+        break;
+    case ADDRESS_FORMAT_LARGE:
+        break;
+    default:
+        break;
     }
     return result;
 }

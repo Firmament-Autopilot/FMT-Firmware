@@ -25,11 +25,11 @@ extern "C" {
 
 typedef struct
 {
-	float A[4];
-	float B[4];
-	float X[4];
-	float Y[4];
-}Butter3;
+    float A[4];
+    float B[4];
+    float X[4];
+    float Y[4];
+} Butter3;
 
 /* butter lpf filter */
 Butter3* butter3_filter_create(float b[4], float a[4]);

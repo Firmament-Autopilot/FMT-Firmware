@@ -12,63 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <uxr/client/client.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <uxr/client/client.h>
 
 #define MAX_AGENTS 10
 
 bool on_agent_found(const TransportLocator* locator, void* args)
 {
-    (void) args;
-    switch (locator->format)
-    {
-        case ADDRESS_FORMAT_MEDIUM:
-        {
-            char ip[16];
-            uint16_t port;
-            uxrIpProtocol ip_protocol;
-            uxr_locator_to_ip(locator, ip, sizeof(ip), &port, &ip_protocol);
-            printf("Agent found => ip: %s, port: %d\n", ip, port);
-            break;
-        }
-        case ADDRESS_FORMAT_LARGE:
-        {
-            char ip[46];
-            uint16_t port;
-            uxrIpProtocol ip_protocol;
-            uxr_locator_to_ip(locator, ip, sizeof(ip), &port, &ip_protocol);
-            printf("Agent found => ip: %s, port: %d\n", ip, port);
-            break;
-        }
-        default:
-            break;
+    (void)args;
+    switch (locator->format) {
+    case ADDRESS_FORMAT_MEDIUM: {
+        char ip[16];
+        uint16_t port;
+        uxrIpProtocol ip_protocol;
+        uxr_locator_to_ip(locator, ip, sizeof(ip), &port, &ip_protocol);
+        printf("Agent found => ip: %s, port: %d\n", ip, port);
+        break;
+    }
+    case ADDRESS_FORMAT_LARGE: {
+        char ip[46];
+        uint16_t port;
+        uxrIpProtocol ip_protocol;
+        uxr_locator_to_ip(locator, ip, sizeof(ip), &port, &ip_protocol);
+        printf("Agent found => ip: %s, port: %d\n", ip, port);
+        break;
+    }
+    default:
+        break;
     }
     return false;
 }
 
 int main(int args, char** argv)
 {
-    if(args < 1 || (args >= 2 && (0 == strcmp("-h", argv[1]) ||
-                                 0 == strcmp("--help", argv[1]) ||
-                                 0 == args % 2 ||
-                                 MAX_AGENTS * 2 < args + 2)))
-    {
+    if (args < 1 || (args >= 2 && (0 == strcmp("-h", argv[1]) || 0 == strcmp("--help", argv[1]) || 0 == args % 2 || MAX_AGENTS * 2 < args + 2))) {
         printf("usage: program [ -h | --help | [<ip> <port> ...] ]\n");
         return 0;
     }
 
-    if (args == 1)
-    {
+    if (args == 1) {
         uxr_discovery_agents_default(10, 1000, on_agent_found, NULL);
-    }
-    else
-    {
+    } else {
         size_t size = 0;
         TransportLocator agent_list[MAX_AGENTS];
-        for(int i = 1; i < args; i += 2, size++)
-        {
+        for (int i = 1; i < args; i += 2, size++) {
             uxr_ip_to_locator(argv[i], (uint16_t)atoi(argv[i + 1]), UXR_IPv4, &agent_list[i++]);
         }
 
@@ -77,4 +66,3 @@ int main(int args, char** argv)
 
     return 0;
 }
-

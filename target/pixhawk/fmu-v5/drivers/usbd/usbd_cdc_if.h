@@ -21,38 +21,38 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USBD_CDC_IF_H__
-#define __USBD_CDC_IF_H__
+    #define __USBD_CDC_IF_H__
 
-#ifdef __cplusplus
- extern "C" {
-#endif
+    #ifdef __cplusplus
+extern "C" {
+    #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc_dev.h"
+    /* Includes ------------------------------------------------------------------*/
+    #include "usbd_cdc_dev.h"
 
-/* USER CODE BEGIN INCLUDE */
+    /* USER CODE BEGIN INCLUDE */
 
-/* USER CODE END INCLUDE */
+    /* USER CODE END INCLUDE */
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+    /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @brief For Usb device.
   * @{
   */
 
-/** @defgroup USBD_CDC_IF USBD_CDC_IF
+    /** @defgroup USBD_CDC_IF USBD_CDC_IF
   * @brief Usb VCP device module
   * @{
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Defines USBD_CDC_IF_Exported_Defines
+    /** @defgroup USBD_CDC_IF_Exported_Defines USBD_CDC_IF_Exported_Defines
   * @brief Defines.
   * @{
   */
-/* USER CODE BEGIN EXPORTED_DEFINES */
-/* Define size for the receive and transmit buffer over CDC */
-/* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  2048
-#define APP_TX_DATA_SIZE  2048
+    /* USER CODE BEGIN EXPORTED_DEFINES */
+    /* Define size for the receive and transmit buffer over CDC */
+    /* It's up to user to redefine and/or remove those define */
+    #define APP_RX_DATA_SIZE 2048
+    #define APP_TX_DATA_SIZE 2048
 
 /* USER CODE END EXPORTED_DEFINES */
 
@@ -125,9 +125,9 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
   * @}
   */
 
-#ifdef __cplusplus
+    #ifdef __cplusplus
 }
-#endif
+    #endif
 
 #endif /* __USBD_CDC_IF_H__ */
 

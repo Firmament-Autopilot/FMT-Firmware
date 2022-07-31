@@ -16,12 +16,10 @@
 #define UXR_CLIENT_PROFILE_TRANSPORT_IP_UDP_UDPTRANSPORTPOSIXNOPOLL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-typedef struct uxrUDPPlatform
-{
+typedef struct uxrUDPPlatform {
     int fd;
 } uxrUDPPlatform;
 

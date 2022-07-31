@@ -16,12 +16,11 @@
 #define UXR_CLIENT_UTIL_TIME_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/visibility.h>
 #include <stdint.h>
+#include <uxr/client/visibility.h>
 
 UXRDLLAPI int64_t uxr_millis(void);
 

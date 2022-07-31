@@ -21,6 +21,6 @@ uxrObjectId uxr_object_id_from_raw(const uint8_t* raw)
 
 void uxr_object_id_to_raw(uxrObjectId object_id, uint8_t* raw)
 {
-    raw[0] = (uint8_t) (object_id.id >> 4);
-    raw[1] = (uint8_t)((((uint8_t) (object_id.id)) << 4) + (object_id.type & 0x0F));
+    raw[0] = (uint8_t)(object_id.id >> 4);
+    raw[1] = (uint8_t)((((uint8_t)(object_id.id)) << 4) + (object_id.type & 0x0F));
 }

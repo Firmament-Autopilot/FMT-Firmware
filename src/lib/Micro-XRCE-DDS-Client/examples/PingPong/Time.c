@@ -21,23 +21,23 @@
 
 #include "Time.h"
 
-#include <ucdr/microcdr.h>
 #include <string.h>
+#include <ucdr/microcdr.h>
 
 bool Time_serialize_topic(ucdrBuffer* writer, const Time* topic)
 {
-    (void) ucdr_serialize_int32_t(writer, topic->sec);
+    (void)ucdr_serialize_int32_t(writer, topic->sec);
 
-    (void) ucdr_serialize_uint32_t(writer, topic->nanosec);
+    (void)ucdr_serialize_uint32_t(writer, topic->nanosec);
 
     return !writer->error;
 }
 
 bool Time_deserialize_topic(ucdrBuffer* reader, Time* topic)
 {
-    (void) ucdr_deserialize_int32_t(reader, &topic->sec);
+    (void)ucdr_deserialize_int32_t(reader, &topic->sec);
 
-    (void) ucdr_deserialize_uint32_t(reader, &topic->nanosec);
+    (void)ucdr_deserialize_uint32_t(reader, &topic->nanosec);
 
     return !reader->error;
 }

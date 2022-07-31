@@ -81,15 +81,25 @@ static void print_raw(const char* s)
             millisec[0] = 0;
         if (ts.year && ts.hour) {
             console_printf("%04d-%02d-%02dT%02d:%02d:%02d%s%s",
-                *ts.year, *ts.month, *ts.day, *ts.hour, *ts.minute, *ts.second,
-                millisec,
-                (ts.z ? ts.z : ""));
+                           *ts.year,
+                           *ts.month,
+                           *ts.day,
+                           *ts.hour,
+                           *ts.minute,
+                           *ts.second,
+                           millisec,
+                           (ts.z ? ts.z : ""));
         } else if (ts.year) {
             console_printf("%04d-%02d-%02d",
-                *ts.year, *ts.month, *ts.day);
+                           *ts.year,
+                           *ts.month,
+                           *ts.day);
         } else if (ts.hour) {
             console_printf("%02d:%02d:%02d%s",
-                *ts.hour, *ts.minute, *ts.second, millisec);
+                           *ts.hour,
+                           *ts.minute,
+                           *ts.second,
+                           millisec);
         }
     } else {
         console_printf("unknown type");

@@ -16,19 +16,17 @@
 #define _UXR_CLIENT_CORE_SESSION_STREAM_STREAM_STORAGE_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/core/session/stream/output_best_effort_stream.h>
-#include <uxr/client/core/session/stream/output_reliable_stream.h>
+#include <uxr/client/config.h>
 #include <uxr/client/core/session/stream/input_best_effort_stream.h>
 #include <uxr/client/core/session/stream/input_reliable_stream.h>
+#include <uxr/client/core/session/stream/output_best_effort_stream.h>
+#include <uxr/client/core/session/stream/output_reliable_stream.h>
 #include <uxr/client/core/session/stream/stream_id.h>
-#include <uxr/client/config.h>
 
-typedef struct uxrStreamStorage
-{
+typedef struct uxrStreamStorage {
     uxrOutputBestEffortStream output_best_effort[UXR_CONFIG_MAX_OUTPUT_BEST_EFFORT_STREAMS];
     uint8_t output_best_effort_size;
     uxrOutputReliableStream output_reliable[UXR_CONFIG_MAX_OUTPUT_RELIABLE_STREAMS];

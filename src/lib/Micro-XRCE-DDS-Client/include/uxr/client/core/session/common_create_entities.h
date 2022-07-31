@@ -16,8 +16,7 @@
 #define UXR_CLIENT_CORE_SESSION_COMMON_CREATE_ENTITIES_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/session.h>
@@ -33,9 +32,9 @@ extern "C"
  *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
  */
 UXRDLLAPI uint16_t uxr_buffer_delete_entity(
-        uxrSession* session,
-        uxrStreamId stream_id,
-        uxrObjectId object_id);
+    uxrSession* session,
+    uxrStreamId stream_id,
+    uxrObjectId object_id);
 
 #ifdef __cplusplus
 }

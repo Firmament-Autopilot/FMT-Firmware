@@ -23,19 +23,17 @@
 #define _HelloWorld_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /*!
  * @brief This struct represents the structure HelloWorld defined by the user in the IDL file.
  * @ingroup HELLOWORLD
  */
-typedef struct HelloWorld
-{
+typedef struct HelloWorld {
     uint32_t index;
     char message[255];
 
@@ -46,7 +44,6 @@ struct ucdrBuffer;
 bool HelloWorld_serialize_topic(struct ucdrBuffer* writer, const HelloWorld* topic);
 bool HelloWorld_deserialize_topic(struct ucdrBuffer* reader, HelloWorld* topic);
 uint32_t HelloWorld_size_of_topic(const HelloWorld* topic, uint32_t size);
-
 
 #ifdef __cplusplus
 }

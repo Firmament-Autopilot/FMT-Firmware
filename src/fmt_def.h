@@ -39,29 +39,29 @@ typedef int bool;
 #endif
 
 #ifndef true
-#define true (1U)
+    #define true (1U)
 #endif
 
 #ifndef false
-#define false (0U)
+    #define false (0U)
 #endif
 
 // Macro to define packed structures
 #ifdef __GNUC__
-#define __PACKED__(__Declaration__) __Declaration__ __attribute__((packed))
+    #define __PACKED__(__Declaration__) __Declaration__ __attribute__((packed))
 #else
-#define __PACKED__(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
+    #define __PACKED__(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
 #endif
 
 #ifndef PI
-#define PI 3.14159265358979f
+    #define PI 3.14159265358979f
 #endif
 
 #ifndef STRING
-#define STRING(...) #__VA_ARGS__
+    #define STRING(...) #__VA_ARGS__
 #endif
 
-#define RT_TRY(__exp)  \
+#define RT_TRY(__exp)           \
     do {                        \
         rt_err_t err = (__exp); \
         if (err != RT_EOK) {    \
@@ -69,7 +69,7 @@ typedef int bool;
         }                       \
     } while (false)
 
-#define FMT_TRY(__exp)  \
+#define FMT_TRY(__exp)           \
     do {                         \
         fmt_err_t err = (__exp); \
         if (err != FMT_EOK) {    \

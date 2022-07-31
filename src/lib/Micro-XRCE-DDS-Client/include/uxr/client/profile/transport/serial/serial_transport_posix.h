@@ -16,14 +16,12 @@
 #define UXR_CLIENT_PROFILE_TRANSPORT_SERIAL_SERIALTRANSPORTPOSIX_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <poll.h>
 
-typedef struct uxrSerialPlatform
-{
+typedef struct uxrSerialPlatform {
     struct pollfd poll_fd;
 
 } uxrSerialPlatform;

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include <FMS.h>
+#include <firmament.h>
 
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));

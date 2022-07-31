@@ -16,12 +16,11 @@
 #define _SRC_C_CORE_SERIALIZATION_SUBHEADER_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <ucdr/microcdr.h>
 
 void uxr_serialize_submessage_header(ucdrBuffer* buffer, uint8_t id, uint8_t flags, uint16_t length);

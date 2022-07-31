@@ -18,11 +18,11 @@
 
 #if ADC_ENABLE == 1
 
-#include "drv_adc.h"
-#include "hal/adc.h"
-#include "stm32f7xx_ll_adc.h"
+    #include "drv_adc.h"
+    #include "hal/adc.h"
+    #include "stm32f7xx_ll_adc.h"
 
-#define ADC_CONVERSION_TIMEOUT_MS 2
+    #define ADC_CONVERSION_TIMEOUT_MS 2
 
 struct stm32_adc {
     ADC_TypeDef* adc_handle;

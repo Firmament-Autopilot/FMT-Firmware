@@ -16,36 +16,35 @@
 #define SRC_C_PROFILE_TRANSPORT_TCP_TCP_TRANSPORT_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/profile/transport/ip/tcp/tcp_transport.h>
 
 bool uxr_init_tcp_platform(
-        struct uxrTCPPlatform* platform,
-        uxrIpProtocol ip_protocol,
-        const char* ip,
-        const char* port);
+    struct uxrTCPPlatform* platform,
+    uxrIpProtocol ip_protocol,
+    const char* ip,
+    const char* port);
 
 bool uxr_close_tcp_platform(
-        struct uxrTCPPlatform* platform);
+    struct uxrTCPPlatform* platform);
 
 size_t uxr_write_tcp_data_platform(
-        struct uxrTCPPlatform* platform,
-        const uint8_t* buf,
-        size_t len,
-        uint8_t* errcode);
+    struct uxrTCPPlatform* platform,
+    const uint8_t* buf,
+    size_t len,
+    uint8_t* errcode);
 
 size_t uxr_read_tcp_data_platform(
-        struct uxrTCPPlatform* platform,
-        uint8_t* buf,
-        size_t len,
-        int timeout,
-        uint8_t* errcode);
+    struct uxrTCPPlatform* platform,
+    uint8_t* buf,
+    size_t len,
+    int timeout,
+    uint8_t* errcode);
 
 void uxr_disconnect_tcp_platform(
-        struct uxrTCPPlatform* platform);
+    struct uxrTCPPlatform* platform);
 
 #ifdef __cplusplus
 }

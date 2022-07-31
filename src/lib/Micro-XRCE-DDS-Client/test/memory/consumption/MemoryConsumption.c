@@ -14,31 +14,30 @@
 
 #include <uxr/client/client.h>
 //#include <uxr/client/core/serialization/xrce_protocol.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <fcntl.h>
-#include <unistd.h>
-#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#define STREAM_HISTORY  2
-#define BUFFER_SIZE     UXR_CONFIG_SERIAL_TRANSPORT_MTU * STREAM_HISTORY
+#define STREAM_HISTORY 2
+#define BUFFER_SIZE    UXR_CONFIG_SERIAL_TRANSPORT_MTU* STREAM_HISTORY
 
 void on_topic(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer* ub, void* args)
 {
-    (void) session;
-    (void) object_id;
-    (void) request_id;
-    (void) stream_id;
-    (void) ub;
-    (void) args;
+    (void)session;
+    (void)object_id;
+    (void)request_id;
+    (void)stream_id;
+    (void)ub;
+    (void)args;
 }
 
 int main()
 {
     // Open file descriptor and alloc memory.
-    if (0 < mkfifo("/tmp/serial_fifo", S_IRWXU | S_IRWXG | S_IRWXO))
-    {
+    if (0 < mkfifo("/tmp/serial_fifo", S_IRWXU | S_IRWXG | S_IRWXO)) {
         unlink("/tmp/serial_fifo");
         return 1;
     }
@@ -46,9 +45,9 @@ int main()
     int* memory_flag = malloc(sizeof(int));
 
     // Transport.
-    uxrSerialTransport transport = {0};
-    uxrSerialPlatform platform = {0};
-    (void) uxr_init_serial_transport(&transport, &platform, fd, 0, 1);
+    uxrSerialTransport transport = { 0 };
+    uxrSerialPlatform platform = { 0 };
+    (void)uxr_init_serial_transport(&transport, &platform, fd, 0, 1);
 
     // Session.
     uxrSession session;
@@ -56,10 +55,10 @@ int main()
     uxr_set_topic_callback(&session, on_topic, NULL);
 
     // Streams
-    uint8_t output_reliable_stream_buffer[BUFFER_SIZE] = {0};
+    uint8_t output_reliable_stream_buffer[BUFFER_SIZE] = { 0 };
     uxrStreamId reliable_out = uxr_create_output_reliable_stream(&session, output_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
 
-    uint8_t input_reliable_stream_buffer[BUFFER_SIZE] = {0};
+    uint8_t input_reliable_stream_buffer[BUFFER_SIZE] = { 0 };
     uxrStreamId reliable_in = uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
 
     // Create entities.
@@ -88,13 +87,13 @@ int main()
     uint16_t datareader_req = uxr_buffer_create_datareader_xml(&session, reliable_out, datareader_id, subscriber_id, datareader_xml, UXR_REPLACE);
 
     uint8_t status[6];
-    uint16_t request[6] = {participant_req, topic_req, publisher_req, datawriter_req, subscriber_req, datareader_req};
-    (void) uxr_run_session_until_all_status(&session, 0, request, status, 6);
+    uint16_t request[6] = { participant_req, topic_req, publisher_req, datawriter_req, subscriber_req, datareader_req };
+    (void)uxr_run_session_until_all_status(&session, 0, request, status, 6);
 
     // Request topics
-    uxrDeliveryControl delivery_control = {0};
+    uxrDeliveryControl delivery_control = { 0 };
     delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
-    (void) uxr_buffer_request_data(&session, reliable_out, datareader_id, reliable_in, &delivery_control);
+    (void)uxr_buffer_request_data(&session, reliable_out, datareader_id, reliable_in, &delivery_control);
 
     // Delete resources.
     uxr_delete_session(&session);

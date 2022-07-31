@@ -1,6 +1,6 @@
+#include <firmament.h>
 #include <uxr/client/profile/transport/serial/serial_transport_external.h>
 #include <uxr/client/profile/transport/serial/serial_transport_platform.h>
-#include <firmament.h>
 
 // Place here your includes
 

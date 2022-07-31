@@ -16,20 +16,18 @@
 #define _UXR_CLIENT_SERIAL_TRANSPORT_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/visibility.h>
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 struct SerialProperties;
 
-typedef struct SerialTransport
-{
+typedef struct SerialTransport {
     intmax_t (*send_data)(struct SerialTransport* transport, char* buf, size_t len);
     intmax_t (*recv_data)(struct SerialTransport* transport, char** buf, size_t* len);
     struct SerialProperties* properties;
@@ -42,4 +40,3 @@ UXRDLLAPI bool uxr_init_uart_transport(SerialTransport* transport, const char* d
 #endif
 
 #endif //_UXR_CLIENT_SERIAL_TRANSPORT_H_
-

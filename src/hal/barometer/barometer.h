@@ -34,7 +34,7 @@ extern "C" {
 
 /* baro command */
 #define BARO_CMD_CHECK_READY 0x20
-#define BARO_CMD_UPDATE       0x21
+#define BARO_CMD_UPDATE      0x21
 
 /* default config for accel sensor */
 #define BARO_CONFIG_DEFAULT             \

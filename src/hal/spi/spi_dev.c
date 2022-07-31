@@ -62,9 +62,9 @@ rt_err_t rt_spi_bus_init(struct rt_spi_bus* bus, const char* name)
 
 /* SPI Dev device interface, compatible with RT-Thread 0.3.x/1.0.x */
 static rt_size_t spi_bus_read(rt_device_t dev,
-    rt_off_t pos,
-    void* buffer,
-    rt_size_t size)
+                              rt_off_t pos,
+                              void* buffer,
+                              rt_size_t size)
 {
     struct rt_spi_device* device;
 
@@ -76,9 +76,9 @@ static rt_size_t spi_bus_read(rt_device_t dev,
 }
 
 static rt_size_t spi_bus_write(rt_device_t dev,
-    rt_off_t pos,
-    const void* buffer,
-    rt_size_t size)
+                               rt_off_t pos,
+                               const void* buffer,
+                               rt_size_t size)
 {
     struct rt_spi_device* device;
 
@@ -90,8 +90,8 @@ static rt_size_t spi_bus_write(rt_device_t dev,
 }
 
 static rt_err_t spi_bus_control(rt_device_t dev,
-    int cmd,
-    void* args)
+                                int cmd,
+                                void* args)
 {
     switch (cmd) {
     case 0: /* set device */

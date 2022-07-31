@@ -93,8 +93,7 @@ rt_err_t drv_usb_cdc_init(void)
     rt_err_t err;
     usbd_dev.ops = &usbd_ops;
 
-    err = hal_usbd_cdc_register(&usbd_dev, "usbd0",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, RT_NULL);
+    err = hal_usbd_cdc_register(&usbd_dev, "usbd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, RT_NULL);
     if (err != RT_EOK) {
         return err;
     }

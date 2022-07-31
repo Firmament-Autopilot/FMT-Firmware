@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef _UXR_CLIENT_VISIBILITY_H_
 #define _UXR_CLIENT_VISIBILITY_H_
 
 #if defined(_WIN32)
-#if defined(microxrcedds_client_SHARED)
-#if defined(microxrcedds_client_EXPORTS)
-#define UXRDLLAPI __declspec( dllexport )
+    #if defined(microxrcedds_client_SHARED)
+        #if defined(microxrcedds_client_EXPORTS)
+            #define UXRDLLAPI __declspec(dllexport)
+        #else
+            #define UXRDLLAPI __declspec(dllimport)
+        #endif // micro_xrce_client_dds_EXPORTS
+    #else
+        #define UXRDLLAPI
+    #endif // BUILDING_SHARED_LIBS
 #else
-#define UXRDLLAPI __declspec( dllimport )
-#endif // micro_xrce_client_dds_EXPORTS
-#else
-#define UXRDLLAPI
-#endif // BUILDING_SHARED_LIBS
-#else
-#define UXRDLLAPI
+    #define UXRDLLAPI
 #endif // _WIN32
 
 #endif // _UXR_CLIENT_VISIBILITY_H_

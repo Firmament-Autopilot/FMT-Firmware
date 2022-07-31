@@ -2,17 +2,17 @@
 
 #ifndef MAVLINK_NO_CONVERSION_HELPERS
 
-/* enable math defines on Windows */
-#ifdef _MSC_VER
-#ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES
-#endif
-#endif
-#include <math.h>
+    /* enable math defines on Windows */
+    #ifdef _MSC_VER
+        #ifndef _USE_MATH_DEFINES
+            #define _USE_MATH_DEFINES
+        #endif
+    #endif
+    #include <math.h>
 
-#ifndef M_PI_2
-    #define M_PI_2 ((float)asin(1))
-#endif
+    #ifndef M_PI_2
+        #define M_PI_2 ((float)asin(1))
+    #endif
 
 /**
  * @file mavlink_conversions.h
@@ -28,7 +28,6 @@
  * @author James Goppert
  * @author Thomas Gubler <thomasgubler@gmail.com>
  */
-
 
 /**
  * Converts a quaternion to a rotation matrix
@@ -57,7 +56,6 @@ MAVLINK_HELPER void mavlink_quaternion_to_dcm(const float quaternion[4], float d
     dcm[2][2] = aSq - bSq - cSq + dSq;
 }
 
-
 /**
  * Converts a rotation matrix to euler angles
  *
@@ -74,12 +72,13 @@ MAVLINK_HELPER void mavlink_dcm_to_euler(const float dcm[3][3], float* roll, flo
     if (fabsf(theta - (float)M_PI_2) < 1.0e-3f) {
         phi = 0.0f;
         psi = (atan2f(dcm[1][2] - dcm[0][1],
-                dcm[0][2] + dcm[1][1]) + phi);
+                      dcm[0][2] + dcm[1][1])
+               + phi);
 
     } else if (fabsf(theta + (float)M_PI_2) < 1.0e-3f) {
         phi = 0.0f;
         psi = atan2f(dcm[1][2] - dcm[0][1],
-                  dcm[0][2] + dcm[1][1] - phi);
+                     dcm[0][2] + dcm[1][1] - phi);
 
     } else {
         phi = atan2f(dcm[2][1], dcm[2][2]);
@@ -90,7 +89,6 @@ MAVLINK_HELPER void mavlink_dcm_to_euler(const float dcm[3][3], float* roll, flo
     *pitch = theta;
     *yaw = psi;
 }
-
 
 /**
  * Converts a quaternion to euler angles
@@ -106,7 +104,6 @@ MAVLINK_HELPER void mavlink_quaternion_to_euler(const float quaternion[4], float
     mavlink_quaternion_to_dcm(quaternion, dcm);
     mavlink_dcm_to_euler((const float(*)[3])dcm, roll, pitch, yaw);
 }
-
 
 /**
  * Converts euler angles to a quaternion
@@ -124,16 +121,11 @@ MAVLINK_HELPER void mavlink_euler_to_quaternion(float roll, float pitch, float y
     float sinTheta_2 = sinf(pitch / 2);
     float cosPsi_2 = cosf(yaw / 2);
     float sinPsi_2 = sinf(yaw / 2);
-    quaternion[0] = (cosPhi_2 * cosTheta_2 * cosPsi_2 +
-            sinPhi_2 * sinTheta_2 * sinPsi_2);
-    quaternion[1] = (sinPhi_2 * cosTheta_2 * cosPsi_2 -
-            cosPhi_2 * sinTheta_2 * sinPsi_2);
-    quaternion[2] = (cosPhi_2 * sinTheta_2 * cosPsi_2 +
-            sinPhi_2 * cosTheta_2 * sinPsi_2);
-    quaternion[3] = (cosPhi_2 * cosTheta_2 * sinPsi_2 -
-            sinPhi_2 * sinTheta_2 * cosPsi_2);
+    quaternion[0] = (cosPhi_2 * cosTheta_2 * cosPsi_2 + sinPhi_2 * sinTheta_2 * sinPsi_2);
+    quaternion[1] = (sinPhi_2 * cosTheta_2 * cosPsi_2 - cosPhi_2 * sinTheta_2 * sinPsi_2);
+    quaternion[2] = (cosPhi_2 * sinTheta_2 * cosPsi_2 + sinPhi_2 * cosTheta_2 * sinPsi_2);
+    quaternion[3] = (cosPhi_2 * cosTheta_2 * sinPsi_2 - sinPhi_2 * sinTheta_2 * cosPsi_2);
 }
-
 
 /**
  * Converts a rotation matrix to a quaternion
@@ -168,8 +160,7 @@ MAVLINK_HELPER void mavlink_dcm_to_quaternion(const float dcm[3][3], float quate
         int dcm_j = (dcm_i + 1) % 3;
         int dcm_k = (dcm_i + 2) % 3;
 
-        float s = sqrtf((dcm[dcm_i][dcm_i] - dcm[dcm_j][dcm_j] -
-                    dcm[dcm_k][dcm_k]) + 1.0f);
+        float s = sqrtf((dcm[dcm_i][dcm_i] - dcm[dcm_j][dcm_j] - dcm[dcm_k][dcm_k]) + 1.0f);
         quaternion[dcm_i + 1] = s * 0.5f;
         s = 0.5f / s;
         quaternion[dcm_j + 1] = (dcm[dcm_i][dcm_j] + dcm[dcm_j][dcm_i]) * s;
@@ -177,7 +168,6 @@ MAVLINK_HELPER void mavlink_dcm_to_quaternion(const float dcm[3][3], float quate
         quaternion[0] = (dcm[dcm_k][dcm_j] - dcm[dcm_j][dcm_k]) * s;
     }
 }
-
 
 /**
  * Converts euler angles to a rotation matrix

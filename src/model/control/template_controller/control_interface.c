@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include <Controller.h>
+#include <firmament.h>
 
 /* controller output topic */
 MCN_DEFINE(control_output, sizeof(Control_Out_Bus));

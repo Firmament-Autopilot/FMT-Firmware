@@ -42,7 +42,10 @@ static int gcs_cmd_echo(void* parameter)
     }
 
     printf("timestamp:%u mode:%u cmd1:%u cmd2:%u\n",
-        gcs_cmd.timestamp, gcs_cmd.mode, gcs_cmd.cmd_1, gcs_cmd.cmd_2);
+           gcs_cmd.timestamp,
+           gcs_cmd.mode,
+           gcs_cmd.cmd_1,
+           gcs_cmd.cmd_2);
 
     return 0;
 }

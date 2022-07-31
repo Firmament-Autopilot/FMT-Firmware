@@ -39,14 +39,14 @@
  * limitations under the License.
  *****************************************************************************/
 #include "hal/i2c/i2c_dev.h"
-#include "hal/i2c/i2c_bit_ops.h"
 #include "hal/i2c/i2c.h"
+#include "hal/i2c/i2c_bit_ops.h"
 #include <firmament.h>
 
 static rt_size_t i2c_bus_read(rt_device_t dev,
-    rt_off_t pos,
-    void* buffer,
-    rt_size_t count)
+                              rt_off_t pos,
+                              void* buffer,
+                              rt_size_t count)
 {
     rt_uint16_t addr;
     rt_uint16_t flags;
@@ -64,9 +64,9 @@ static rt_size_t i2c_bus_read(rt_device_t dev,
 }
 
 static rt_size_t i2c_bus_write(rt_device_t dev,
-    rt_off_t pos,
-    const void* buffer,
-    rt_size_t count)
+                               rt_off_t pos,
+                               const void* buffer,
+                               rt_size_t count)
 {
     rt_uint16_t addr;
     rt_uint16_t flags;
@@ -84,8 +84,8 @@ static rt_size_t i2c_bus_write(rt_device_t dev,
 }
 
 static rt_err_t i2c_bus_control(rt_device_t dev,
-    int cmd,
-    void* args)
+                                int cmd,
+                                void* args)
 {
     rt_err_t ret;
     struct rt_i2c_priv_data* priv_data;
@@ -161,7 +161,7 @@ rt_err_t rt_i2c_device_init(struct rt_i2c_device* dev, const char* name)
     device->init = RT_NULL;
     device->open = RT_NULL;
     device->close = RT_NULL;
-    device->read = RT_NULL;     /* TODO: add i2c device opts */
+    device->read = RT_NULL; /* TODO: add i2c device opts */
     device->write = RT_NULL;
     device->control = RT_NULL;
 

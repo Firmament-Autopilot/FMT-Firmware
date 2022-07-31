@@ -16,15 +16,14 @@
 #define _SRC_C_CORE_SESSION_STREAM_OUTPUT_RELIABLE_STREAM_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/output_reliable_stream.h>
 #include <uxr/client/core/session/stream/seq_num.h>
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #define HEARTBEAT_PAYLOAD_SIZE 5
 
@@ -35,7 +34,7 @@ bool uxr_prepare_next_reliable_buffer_to_send(uxrOutputReliableStream* stream, u
 
 bool uxr_update_output_stream_heartbeat_timestamp(uxrOutputReliableStream* stream, int64_t current_timestamp);
 uxrSeqNum uxr_begin_output_nack_buffer_it(const uxrOutputReliableStream* stream);
-bool uxr_next_reliable_nack_buffer_to_send(uxrOutputReliableStream* stream, uint8_t** buffer, size_t *length, uxrSeqNum* seq_num_it);
+bool uxr_next_reliable_nack_buffer_to_send(uxrOutputReliableStream* stream, uint8_t** buffer, size_t* length, uxrSeqNum* seq_num_it);
 void uxr_process_acknack(uxrOutputReliableStream* stream, uint16_t bitmap, uxrSeqNum first_unacked_seq_num);
 
 bool uxr_is_output_up_to_date(const uxrOutputReliableStream* stream);

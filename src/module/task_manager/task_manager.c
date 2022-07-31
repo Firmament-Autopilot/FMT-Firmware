@@ -140,8 +140,11 @@ void task_start(void)
             continue;
 
         rt_thread_t tid = rt_thread_create(task_table[i].name,
-            task_table[i].entry, task_table[i].param,
-            task_table[i].stack_size, task_table[i].priority, 1);
+                                           task_table[i].entry,
+                                           task_table[i].param,
+                                           task_table[i].stack_size,
+                                           task_table[i].priority,
+                                           1);
         RT_ASSERT(tid != NULL);
 
         RT_CHECK(rt_thread_startup(tid));

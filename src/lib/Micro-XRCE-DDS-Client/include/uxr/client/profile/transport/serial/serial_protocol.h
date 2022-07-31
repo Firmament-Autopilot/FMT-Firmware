@@ -15,18 +15,16 @@
 #ifndef _UXR_CLIENT_PROFILE_TRANSPORT_SERIAL_SERIAL_PROTOCOL_INTERNAL_H_
 #define _UXR_CLIENT_PROFILE_TRANSPORT_SERIAL_SERIAL_PROTOCOL_INTERNAL_H_
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <stdint.h>
 
 #define UXR_FRAMING_BEGIN_FLAG 0x7E
-#define UXR_FRAMING_ESC_FLAG 0x7D
-#define UXR_FRAMING_XOR_FLAG 0x20
+#define UXR_FRAMING_ESC_FLAG   0x7D
+#define UXR_FRAMING_XOR_FLAG   0x20
 
-typedef enum uxrSerialInputState
-{
+typedef enum uxrSerialInputState {
     UXR_SERIAL_UNINITIALIZED,
     UXR_SERIAL_READING_SRC_ADDR,
     UXR_SERIAL_READING_DST_ADDR,
@@ -38,8 +36,7 @@ typedef enum uxrSerialInputState
 
 } uxrSerialInputState;
 
-typedef struct uxrSerialIO
-{
+typedef struct uxrSerialIO {
     uxrSerialInputState state;
     uint8_t local_addr;
     uint8_t rb[42];

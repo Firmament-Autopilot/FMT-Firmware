@@ -38,6 +38,9 @@ Current supported hardware:
 - [Pixhawk4 (FMUv5)](https://docs.px4.io/master/en/flight_controller/pixhawk4.html)
 - [CUAV V5+](https://store.cuav.net/shop/v5-autopilot/)
 - QEMU vexpress-a9
+  
+The drone hardware equipped with FMT:
+- [Amovlab F200](https://item.taobao.com/item.htm?spm=a230r.1.14.22.65553d8dunv9QL&id=676605798722&ns=1&abbucket=14#detail)
 
 ## Documentation
 [User Guide](https://firmament-autopilot.github.io/FMT-DOCS/)

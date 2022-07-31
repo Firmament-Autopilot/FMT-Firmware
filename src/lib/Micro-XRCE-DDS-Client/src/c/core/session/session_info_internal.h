@@ -16,12 +16,11 @@
 #define _SRC_C_CORE_SESSION_SESSION_INFO_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/core/session/session_info.h>
 #include "../serialization/xrce_header_internal.h"
+#include <uxr/client/core/session/session_info.h>
 
 #define CREATE_CLIENT_PAYLOAD_SIZE 16
 #define DELETE_CLIENT_PAYLOAD_SIZE 4
@@ -53,4 +52,3 @@ void uxr_parse_base_object_request(const struct BaseObjectRequest* base, uxrObje
 #endif
 
 #endif // _SRC_C_CORE_SESSION_SESSION_INFO_INTERNAL_H_
-

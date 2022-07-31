@@ -17,8 +17,8 @@
 #ifndef FILE_MANAGER_H__
 #define FILE_MANAGER_H__
 
-#include <firmament.h>
 #include <dfs_posix.h>
+#include <firmament.h>
 
 #ifdef __cplusplus
 extern "C" {

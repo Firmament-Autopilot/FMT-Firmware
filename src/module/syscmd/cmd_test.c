@@ -36,7 +36,6 @@
 
 #include "module/syscmd/optparse.h"
 
-
 int cmd_test(int argc, char** argv)
 {
     return 0;

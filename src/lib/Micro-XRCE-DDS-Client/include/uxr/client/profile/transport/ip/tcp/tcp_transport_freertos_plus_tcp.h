@@ -16,17 +16,15 @@
 #define _UXR_CLIENT_TCP_TRANSPORT_FREERTOS_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include "FreeRTOS.h"
-#include "list.h"
 #include "FreeRTOS_IP.h"
 #include "FreeRTOS_Sockets.h"
+#include "list.h"
 
-typedef struct uxrTCPPlatform
-{
+typedef struct uxrTCPPlatform {
     struct freertos_sockaddr remote_addr;
     SocketSet_t poll_fd;
     Socket_t fd;

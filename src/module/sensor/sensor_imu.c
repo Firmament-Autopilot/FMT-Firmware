@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include "module/sensor/sensor_imu.h"
 #include "hal/accel/accel.h"
 #include "hal/gyro/gyro.h"
-#include "module/sensor/sensor_imu.h"
 
 /**
  * @brief Set gyro rotation matrix

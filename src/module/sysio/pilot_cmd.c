@@ -61,8 +61,13 @@ static int echo_pilot_cmd(void* parameter)
         return -1;
 
     console_printf("stick_yaw:%.2f stick_throttle:%.2f stick_roll:%.2f stick_pitch:%.2f mode:%u cmd:[%u %u]\n",
-        pilot_cmd.stick_yaw, pilot_cmd.stick_throttle, pilot_cmd.stick_roll, pilot_cmd.stick_pitch, pilot_cmd.mode,
-        pilot_cmd.cmd_1, pilot_cmd.cmd_2);
+                   pilot_cmd.stick_yaw,
+                   pilot_cmd.stick_throttle,
+                   pilot_cmd.stick_roll,
+                   pilot_cmd.stick_pitch,
+                   pilot_cmd.mode,
+                   pilot_cmd.cmd_1,
+                   pilot_cmd.cmd_2);
 
     return 0;
 }

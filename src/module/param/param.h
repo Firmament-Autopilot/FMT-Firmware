@@ -24,11 +24,11 @@ extern "C" {
 #endif
 
 #if defined(FMT_USING_HIL)
-#define PARAM_FILE_NAME "/sys/hil_param.xml"
+    #define PARAM_FILE_NAME "/sys/hil_param.xml"
 #elif defined(FMT_USING_SIH)
-#define PARAM_FILE_NAME "/sys/sih_param.xml"
+    #define PARAM_FILE_NAME "/sys/sih_param.xml"
 #else
-#define PARAM_FILE_NAME "/sys/param.xml"
+    #define PARAM_FILE_NAME "/sys/param.xml"
 #endif
 
 /********************** Parameter Data Structure **********************/

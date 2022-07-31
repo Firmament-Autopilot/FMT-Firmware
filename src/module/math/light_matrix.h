@@ -23,14 +23,14 @@
 extern "C" {
 #endif
 
-#define MAT_TYPE		float
-#define MAT_MALLOC      rt_malloc
-#define MAT_FREE        rt_free
-#define MAT_PRINTF      console_printf
+#define MAT_TYPE   float
+#define MAT_MALLOC rt_malloc
+#define MAT_FREE   rt_free
+#define MAT_PRINTF console_printf
 
-typedef struct  {
-	int row, col;
-	MAT_TYPE** element;
+typedef struct {
+    int row, col;
+    MAT_TYPE** element;
     MAT_TYPE* buffer;
 } Mat;
 

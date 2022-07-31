@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Check Format
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: jitterbit/get-changed-files@v1
+        with:
+          # Format of the steps output context.
+          # Can be 'space-delimited', 'csv', or 'json'.
+          # Default: 'space-delimited'
+          format: 'space-delimited'
+
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+      - run: |
+          changed_files=""
+          for file in ${{ steps.files.outputs.added_modified }}; do
+            if [[ ($file == *.c) || ($file == *.h) || ($file == *.cpp) || ($file == *.hpp) ]]; then
+              changed_files="${changed_files} ${file}"
+            fi
+          done
+          if [ -n "${changed_files}" ]; then
+            clang-format-11 -n --style=file --Werror ${changed_files}
+          fi
+          echo "format-checked files: ${changed_files}."

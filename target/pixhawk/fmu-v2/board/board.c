@@ -20,20 +20,20 @@
 #include <shell.h>
 #include <string.h>
 #ifdef FMT_USING_CM_BACKTRACE
-#include <cm_backtrace.h>
+    #include <cm_backtrace.h>
 #endif
 #ifdef FMT_USING_UNIT_TEST
-#include <utest.h>
+    #include <utest.h>
 #endif
 
 #include "default_config.h"
+#include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
 #include "driver/imu/l3gd20h.h"
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
-#include "driver/barometer/ms5611.h"
-#include "driver/vision_flow/pmw3901_l0x.h"
 #include "driver/rgb_led/tca62724.h"
+#include "driver/vision_flow/pmw3901_l0x.h"
 #include "drv_gpio.h"
 #include "drv_i2c_soft.h"
 #include "drv_pwm.h"
@@ -44,11 +44,11 @@
 #include "drv_usbd_cdc.h"
 #include "hal/fmtio_dev/fmtio_dev.h"
 #include "led.h"
-#include "module/console/console_config.h"
 #include "model/control/control_interface.h"
-#include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#include "module/console/console_config.h"
+#include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
@@ -65,7 +65,7 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
-#include "model/plant/plant_interface.h"
+    #include "model/plant/plant_interface.h"
 #endif
 #include "protocol/msp/msp.h"
 

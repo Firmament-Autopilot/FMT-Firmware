@@ -16,8 +16,7 @@
 #define _SRC_C_PROFILE_TRANSPORT_SERIAL_SERIAL_TRANSPORT_PLATFORM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/profile/transport/serial/serial_transport.h>

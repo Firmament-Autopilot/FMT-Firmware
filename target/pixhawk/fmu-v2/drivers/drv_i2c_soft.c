@@ -17,8 +17,8 @@
 #include <firmament.h>
 
 #include "drv_i2c_soft.h"
-#include "hal/i2c/i2c_bit_ops.h"
 #include "hal/i2c/i2c.h"
+#include "hal/i2c/i2c_bit_ops.h"
 #include "hal/pin/pin.h"
 
 #define BSP_I2C1_SDA_PORT GPIOB

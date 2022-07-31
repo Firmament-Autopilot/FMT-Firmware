@@ -24,16 +24,16 @@ extern "C" {
 #endif
 
 typedef struct {
-	float roll;
-	float pitch;
-	float yaw;
+    float roll;
+    float pitch;
+    float yaw;
 } Euler;
 
-typedef  struct {
-	float w;
-	float x;
-	float y;
-	float z;
+typedef struct {
+    float w;
+    float x;
+    float y;
+    float z;
 } quaternion;
 
 //static inline void quaternion_loadIdentity(quaternion * q);
@@ -52,8 +52,8 @@ void quaternion_conjugate(const quaternion* q, quaternion* res);
 
 static inline void quaternion_load_init_attitude(quaternion* q)
 {
-	q->w = 1;
-	q->x = q->y = q->z = 0;
+    q->w = 1;
+    q->x = q->y = q->z = 0;
 }
 
 #ifdef __cplusplus

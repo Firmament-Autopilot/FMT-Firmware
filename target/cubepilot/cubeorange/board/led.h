@@ -28,7 +28,7 @@ extern "C" {
 #define __STM32_PORT(port)  GPIO##port##_BASE
 #define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
 
-#define FMU_LED_RED_PIN   GET_PIN(E, 12)
+#define FMU_LED_RED_PIN GET_PIN(E, 12)
 
 #define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
 #define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })

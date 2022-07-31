@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "udp_transport_datagram_internal.h"
 #include "FreeRTOS.h"
 #include "FreeRTOS_Sockets.h"
+#include "udp_transport_datagram_internal.h"
 
-#include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
 {
@@ -27,12 +27,10 @@ bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
 
     transport->fd = FreeRTOS_socket(FREERTOS_AF_INET, FREERTOS_SOCK_DGRAM, FREERTOS_IPPROTO_UDP);
 
-    if (FREERTOS_INVALID_SOCKET != transport->fd)
-    {
+    if (FREERTOS_INVALID_SOCKET != transport->fd) {
         transport->poll_fd = FreeRTOS_CreateSocketSet();
 
-        if (NULL != transport->poll_fd)
-        {
+        if (NULL != transport->poll_fd) {
             /* FreeRTOS_FD_SET() is a void function. */
             FreeRTOS_FD_SET(transport->fd, transport->poll_fd, eSELECT_READ);
             rv = true;
@@ -45,7 +43,7 @@ bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
 bool uxr_close_udp_transport_datagram(uxrUDPTransportDatagram* transport)
 {
     /* FreeRTOS_closesocket() always returns 0. */
-    (void) FreeRTOS_closesocket(transport->fd);
+    (void)FreeRTOS_closesocket(transport->fd);
 
     return true;
 }
@@ -56,17 +54,14 @@ bool uxr_udp_send_datagram_to(uxrUDPTransportDatagram* transport, const uint8_t*
 
     struct freertos_sockaddr remote_addr;
     memcpy(&remote_addr.sin_addr, &locator->_.medium_locator.address, sizeof(locator->_.medium_locator.address));
-    if (0 != remote_addr.sin_addr)
-    {
+    if (0 != remote_addr.sin_addr) {
         remote_addr.sin_family = FREERTOS_AF_INET;
         remote_addr.sin_port = FreeRTOS_htons(locator->_.medium_locator.locator_port);
 
-        int32_t bytes_sent = FreeRTOS_sendto(transport->fd, (void*)buf, len, 0,
-                                             (struct freertos_sockaddr*)&remote_addr, sizeof(remote_addr));
+        int32_t bytes_sent = FreeRTOS_sendto(transport->fd, (void*)buf, len, 0, (struct freertos_sockaddr*)&remote_addr, sizeof(remote_addr));
 
         /* FreeRTOS_sendto() returns 0 if an error or timeout occurred. */
-        if (0 >= bytes_sent)
-        {
+        if (0 >= bytes_sent) {
             rv = false;
         }
     }
@@ -79,18 +74,14 @@ bool uxr_udp_recv_datagram(uxrUDPTransportDatagram* transport, uint8_t** buf, si
     bool rv = false;
 
     BaseType_t poll_rv = FreeRTOS_select(transport->poll_fd, pdMS_TO_TICKS(timeout));
-    if (0 < poll_rv)
-    {
+    if (0 < poll_rv) {
         int32_t bytes_received = FreeRTOS_recvfrom(transport->fd, (void*)transport->buffer, sizeof(transport->buffer), 0, NULL, NULL);
-        if (0 < bytes_received)
-        {
+        if (0 < bytes_received) {
             *len = (size_t)bytes_received;
             *buf = transport->buffer;
             rv = true;
         }
-    }
-    else if (0 == poll_rv)
-    {
+    } else if (0 == poll_rv) {
         errno = ETIME;
     }
 

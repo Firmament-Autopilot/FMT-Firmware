@@ -40,50 +40,50 @@
 
 #if defined(__PX4_POSIX) || defined(__PX4_NUTTX)
 
-#include <drivers/drv_hrt.h>
-#include <px4_log.h>
+    #include <drivers/drv_hrt.h>
+    #include <px4_log.h>
 
-#define ecl_absolute_time hrt_absolute_time
-#define ecl_elapsed_time hrt_elapsed_time
+    #define ecl_absolute_time hrt_absolute_time
+    #define ecl_elapsed_time  hrt_elapsed_time
 using ecl_abstime = hrt_abstime;
 
-#if defined(__PX4_NUTTX)
-#  define ECL_INFO PX4_DEBUG
-#  define ECL_WARN PX4_DEBUG
-#  define ECL_ERR  PX4_DEBUG
-#else
-#  define ECL_INFO PX4_INFO
-#  define ECL_WARN PX4_WARN
-#  define ECL_ERR  PX4_ERR
-#endif
+    #if defined(__PX4_NUTTX)
+        #define ECL_INFO PX4_DEBUG
+        #define ECL_WARN PX4_DEBUG
+        #define ECL_ERR  PX4_DEBUG
+    #else
+        #define ECL_INFO PX4_INFO
+        #define ECL_WARN PX4_WARN
+        #define ECL_ERR  PX4_ERR
+    #endif
 
 #elif defined(__PAPARAZZI)
 
-#include "std.h"
+    #include "std.h"
 
-#define ecl_absolute_time() (0)
-#define ecl_elapsed_time(t) (*t * 0UL) // TODO: add simple time functions
+    #define ecl_absolute_time() (0)
+    #define ecl_elapsed_time(t) (*t * 0UL) // TODO: add simple time functions
 
 using ecl_abstime = uint64_t;
 
-#define ECL_INFO(...)
-#define ECL_WARN(...)
-#define ECL_ERR(...)
+    #define ECL_INFO(...)
+    #define ECL_WARN(...)
+    #define ECL_ERR(...)
 
 #else
 
-#include <cstdio>
-#include <cstdint>
-#include <firmament.h>
+    #include <cstdint>
+    #include <cstdio>
+    #include <firmament.h>
 
-#define ecl_absolute_time() (0)
-#define ecl_elapsed_time(t) (*t * 0UL) // TODO: add simple time functions
+    #define ecl_absolute_time() (0)
+    #define ecl_elapsed_time(t) (*t * 0UL) // TODO: add simple time functions
 
 using ecl_abstime = uint64_t;
 
-#define ECL_INFO(X, ...) //printf(X "\n", ##__VA_ARGS__)
-#define ECL_WARN(X, ...) //printf(stderr, X "\n", ##__VA_ARGS__)
-#define ECL_ERR(X, ...)  //printf(stderr, X "\n", ##__VA_ARGS__)
+    #define ECL_INFO(X, ...) //printf(X "\n", ##__VA_ARGS__)
+    #define ECL_WARN(X, ...) //printf(stderr, X "\n", ##__VA_ARGS__)
+    #define ECL_ERR(X, ...)  //printf(stderr, X "\n", ##__VA_ARGS__)
 
 #endif /* PX4_POSIX || PX4_NUTTX */
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include <INS.h>
+#include <firmament.h>
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -32,6 +32,6 @@ void ins_interface_init(void)
     /* Fill in the modle information */
     ins_model_info.period = 10;
     ins_model_info.info = "Template INS";
-    
+
     /* Add your code here */
 }

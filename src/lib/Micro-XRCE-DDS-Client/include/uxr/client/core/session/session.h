@@ -16,67 +16,65 @@
 #define UXR_CLIENT_CORE_SESSION_SESSION_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/session_info.h>
 #include <uxr/client/core/session/stream/stream_storage.h>
 #include <uxr/client/core/type/xrce_types.h>
 
-#define UXR_TIMEOUT_INF       -1
+#define UXR_TIMEOUT_INF -1
 
 struct uxrSession;
 struct uxrCommunication;
 
-typedef void (*uxrOnStatusFunc) (
-        struct uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        uint8_t status,
-        void* args);
+typedef void (*uxrOnStatusFunc)(
+    struct uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    uint8_t status,
+    void* args);
 
-typedef void (*uxrOnTopicFunc) (
-        struct uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        uxrStreamId stream_id,
-        struct ucdrBuffer* ub,
-        uint16_t length,
-        void* args);
+typedef void (*uxrOnTopicFunc)(
+    struct uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    uxrStreamId stream_id,
+    struct ucdrBuffer* ub,
+    uint16_t length,
+    void* args);
 
-typedef void (*uxrOnTimeFunc) (
-        struct uxrSession* session,
-        int64_t current_timestamp,
-        int64_t transmit_timestamp,
-        int64_t received_timestamp,
-        int64_t originate_timestamp,
-        void* args);
+typedef void (*uxrOnTimeFunc)(
+    struct uxrSession* session,
+    int64_t current_timestamp,
+    int64_t transmit_timestamp,
+    int64_t received_timestamp,
+    int64_t originate_timestamp,
+    void* args);
 
-typedef void (*uxrOnRequestFunc) (
-        struct uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        SampleIdentity* sample_id,
-        struct ucdrBuffer* ub,
-        uint16_t length,
-        void* args);
+typedef void (*uxrOnRequestFunc)(
+    struct uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    SampleIdentity* sample_id,
+    struct ucdrBuffer* ub,
+    uint16_t length,
+    void* args);
 
-typedef void (*uxrOnReplyFunc) (
-        struct uxrSession* session,
-        uxrObjectId object_id,
-        uint16_t request_id,
-        uint16_t reply_id,
-        struct ucdrBuffer* ub,
-        uint16_t length,
-        void* args);
+typedef void (*uxrOnReplyFunc)(
+    struct uxrSession* session,
+    uxrObjectId object_id,
+    uint16_t request_id,
+    uint16_t reply_id,
+    struct ucdrBuffer* ub,
+    uint16_t length,
+    void* args);
 
 #ifdef PERFORMANCE_TESTING
-typedef void (*uxrOnPerformanceFunc) (struct uxrSession* session, struct ucdrBuffer* mb, void* args);
+typedef void (*uxrOnPerformanceFunc)(struct uxrSession* session, struct ucdrBuffer* mb, void* args);
 #endif
 
-typedef struct uxrSession
-{
+typedef struct uxrSession {
     uxrSessionInfo info;
     uxrStreamStorage streams;
     struct uxrCommunication* comm;
@@ -119,9 +117,9 @@ typedef struct uxrSession
  *                  All Client connected to an Agent shall have different key.
  */
 UXRDLLAPI void uxr_init_session(
-        uxrSession* session,
-        struct uxrCommunication* comm,
-        uint32_t key);
+    uxrSession* session,
+    struct uxrCommunication* comm,
+    uint32_t key);
 
 /**
  * @brief Sets the status callback.
@@ -131,9 +129,9 @@ UXRDLLAPI void uxr_init_session(
  * @param args              User pointer data. The args will be provided to the `on_status_func` callback.
  */
 UXRDLLAPI void uxr_set_status_callback(
-        uxrSession* session,
-        uxrOnStatusFunc on_status_func,
-        void* args);
+    uxrSession* session,
+    uxrOnStatusFunc on_status_func,
+    void* args);
 
 /**
  * @brief Sets the topic callback.
@@ -144,9 +142,9 @@ UXRDLLAPI void uxr_set_status_callback(
  * @param args              User pointer data. The args will be provided to the `on_topic_func` callback.
  */
 UXRDLLAPI void uxr_set_topic_callback(
-        uxrSession* session,
-        uxrOnTopicFunc on_topic_func,
-        void* args);
+    uxrSession* session,
+    uxrOnTopicFunc on_topic_func,
+    void* args);
 
 /**
  * @brief Sets the time synchronization callback.
@@ -157,9 +155,9 @@ UXRDLLAPI void uxr_set_topic_callback(
  * @param args          A user pointer data. The args will be provided to the `on_time_func` callback.
  */
 UXRDLLAPI void uxr_set_time_callback(
-        uxrSession* session,
-        uxrOnTimeFunc on_time_func,
-        void* args);
+    uxrSession* session,
+    uxrOnTimeFunc on_time_func,
+    void* args);
 
 /**
  * @brief Sets the request callback.
@@ -171,9 +169,9 @@ UXRDLLAPI void uxr_set_time_callback(
  * @param args                  User pointer data. The args will be provided to the `on_request_func` callback.
  */
 UXRDLLAPI void uxr_set_request_callback(
-        uxrSession* session,
-        uxrOnRequestFunc on_request_func,
-        void* args);
+    uxrSession* session,
+    uxrOnRequestFunc on_request_func,
+    void* args);
 
 /**
  * @brief Sets the reply callback.
@@ -186,9 +184,9 @@ UXRDLLAPI void uxr_set_request_callback(
  * @return UXRDLLAPI uxr_set_reply_callback 
  */
 UXRDLLAPI void uxr_set_reply_callback(
-        uxrSession* session,
-        uxrOnReplyFunc on_reply_func,
-        void* args);
+    uxrSession* session,
+    uxrOnReplyFunc on_reply_func,
+    void* args);
 
 #ifdef PERFORMANCE_TESTING
 UXRDLLAPI void uxr_set_performance_callback(uxrSession* session, uxrOnPerformanceFunc on_performance_func, void* args);
@@ -230,9 +228,9 @@ UXRDLLAPI bool uxr_delete_session(uxrSession* session);
  * @return  A uxrStreamId which could by used for managing the stream.
  */
 UXRDLLAPI uxrStreamId uxr_create_output_best_effort_stream(
-        uxrSession* session,
-        uint8_t* buffer,
-        size_t size);
+    uxrSession* session,
+    uint8_t* buffer,
+    size_t size);
 
 /**
  * @brief Creates and initializes an output reliable stream.
@@ -247,10 +245,10 @@ UXRDLLAPI uxrStreamId uxr_create_output_best_effort_stream(
  * @return  A uxrStreamId which could by used for managing the stream.
  */
 UXRDLLAPI uxrStreamId uxr_create_output_reliable_stream(
-        uxrSession* session,
-        uint8_t* buffer,
-        size_t size,
-        uint16_t history);
+    uxrSession* session,
+    uint8_t* buffer,
+    size_t size,
+    uint16_t history);
 
 /**
  * @brief Creates and initializes an input best-effort stream.
@@ -274,10 +272,10 @@ UXRDLLAPI uxrStreamId uxr_create_input_best_effort_stream(uxrSession* session);
  * @return  A uxrStreamId which could by used for managing the stream.
  */
 UXRDLLAPI uxrStreamId uxr_create_input_reliable_stream(
-        uxrSession* session,
-        uint8_t* buffer,
-        size_t size,
-        uint16_t history);
+    uxrSession* session,
+    uint8_t* buffer,
+    size_t size,
+    uint16_t history);
 
 /**
  * @brief Flashes all the output streams seding the data through the transport.
@@ -297,8 +295,8 @@ UXRDLLAPI void uxr_flash_output_streams(uxrSession* session);
  * @return  `true` in case of the Agent confirms the reception of all the output messages. `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_time(
-        uxrSession* session,
-        int time);
+    uxrSession* session,
+    int time);
 
 /**
  * @brief  Keeps communication between the Client and the Agent.
@@ -311,8 +309,8 @@ UXRDLLAPI bool uxr_run_session_time(
  * @return  `true` in case of the Agent confirms the reception of all the output messages. `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_timeout(
-        uxrSession* session,
-        int timeout);
+    uxrSession* session,
+    int timeout);
 
 /**
  * @brief  Keeps communication between the Client and the Agent.
@@ -326,8 +324,8 @@ UXRDLLAPI bool uxr_run_session_timeout(
  * @return  `true` in case of a data message is received before the timeout. `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_until_data(
-        uxrSession* session,
-        int timeout);
+    uxrSession* session,
+    int timeout);
 
 /**
  * @brief  Keeps communication between the Client and the Agent.
@@ -341,8 +339,8 @@ UXRDLLAPI bool uxr_run_session_until_data(
  * @return  `true` if a message is received. `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_until_timeout(
-        uxrSession* session,
-        int timeout);
+    uxrSession* session,
+    int timeout);
 
 /**
  * @brief  Keeps communication between the Client and the Agent.
@@ -356,8 +354,8 @@ UXRDLLAPI bool uxr_run_session_until_timeout(
  * @return  `true` if all output reliable streams confirm the delivery of their messages. `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_until_confirm_delivery(
-        uxrSession* session,
-        int timeout);
+    uxrSession* session,
+    int timeout);
 
 /**
  * @brief  Keeps communication between the Client and the Agent.
@@ -375,11 +373,11 @@ UXRDLLAPI bool uxr_run_session_until_confirm_delivery(
  * @return  `true` if all status are received. `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_until_all_status(
-        uxrSession* session,
-        int timeout,
-        const uint16_t* request_list,
-        uint8_t* status_list,
-        size_t list_size);
+    uxrSession* session,
+    int timeout,
+    const uint16_t* request_list,
+    uint8_t* status_list,
+    size_t list_size);
 
 /**
  * @brief  Keeps communication between the Client and the Agent.
@@ -398,11 +396,11 @@ UXRDLLAPI bool uxr_run_session_until_all_status(
  *          `false` in other case.
  */
 UXRDLLAPI bool uxr_run_session_until_one_status(
-        uxrSession* session,
-        int timeout,
-        const uint16_t* request_list,
-        uint8_t* status_list,
-        size_t list_size);
+    uxrSession* session,
+    int timeout,
+    const uint16_t* request_list,
+    uint8_t* status_list,
+    size_t list_size);
 
 /**
  * @brief Synchronizes the session time using by default the NTP protocol.
@@ -411,8 +409,8 @@ UXRDLLAPI bool uxr_run_session_until_one_status(
  * @return  `true` in case of successful synchronization. `false` in other case.
  */
 UXRDLLAPI bool uxr_sync_session(
-        uxrSession* session,
-        int time);
+    uxrSession* session,
+    int time);
 
 /**
  * @brief Returns the epoch time in milliseconds taking into account the offset computed during the time synchronization.

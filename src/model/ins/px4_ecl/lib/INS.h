@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_IMU_Bus_
-#define DEFINED_TYPEDEF_FOR_IMU_Bus_
+    #define DEFINED_TYPEDEF_FOR_IMU_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -38,7 +38,7 @@ typedef struct {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_MAG_Bus_
-#define DEFINED_TYPEDEF_FOR_MAG_Bus_
+    #define DEFINED_TYPEDEF_FOR_MAG_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -50,7 +50,7 @@ typedef struct {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_Barometer_Bus_
-#define DEFINED_TYPEDEF_FOR_Barometer_Bus_
+    #define DEFINED_TYPEDEF_FOR_Barometer_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -61,7 +61,7 @@ typedef struct {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_GPS_uBlox_Bus_
-#define DEFINED_TYPEDEF_FOR_GPS_uBlox_Bus_
+    #define DEFINED_TYPEDEF_FOR_GPS_uBlox_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -99,7 +99,7 @@ typedef struct {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_Rangefinder_Bus_
-#define DEFINED_TYPEDEF_FOR_Rangefinder_Bus_
+    #define DEFINED_TYPEDEF_FOR_Rangefinder_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -109,7 +109,7 @@ typedef struct {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_Optical_Flow_Bus_
-#define DEFINED_TYPEDEF_FOR_Optical_Flow_Bus_
+    #define DEFINED_TYPEDEF_FOR_Optical_Flow_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -121,7 +121,7 @@ typedef struct {
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_INS_Out_Bus_
-#define DEFINED_TYPEDEF_FOR_INS_Out_Bus_
+    #define DEFINED_TYPEDEF_FOR_INS_Out_Bus_
 
 typedef struct {
     uint32_t timestamp;
@@ -156,42 +156,42 @@ typedef struct {
 #endif
 
 typedef struct {
-    float ekf2_gyr_noise; ///< IMU angular rate noise used for covariance prediction (rad/sec)
-    float ekf2_acc_noise; ///< IMU acceleration noise use for covariance prediction (m/sec**2)
-    float ekf2_gyr_b_noise; ///< process noise for IMU rate gyro bias prediction (rad/sec**2)
-    float ekf2_acc_b_noise; ///< process noise for IMU accelerometer bias prediction (m/sec**3)
-    float ekf2_mag_e_noise; ///< process noise for earth magnetic field prediction (Gauss/sec)
-    float ekf2_mag_b_noise; ///< process noise for body magnetic field prediction (Gauss/sec)
-    float ekf2_wind_noise; ///< process noise for wind velocity prediction (m/sec**2)
-    float ekf2_noaid_noise; ///< observation noise for non-aiding position fusion (m)
-    float ekf2_baro_noise; ///< observation noise for barometric height fusion (m)
-    float ekf2_gnd_eff_dz; ///< barometric deadzone range for negative innovations (m)
-    float ekf2_gnd_max_hgt; ///< maximum height above the ground level for expected negative baro innovations (m)
-    float ekf2_head_noise; ///< measurement noise used for simple heading fusion (rad)
-    float ekf2_mag_noise; ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
-    float ekf2_eas_noise; ///< measurement noise used for airspeed fusion (m/sec)
-    float ekf2_beta_noise; ///< synthetic sideslip noise (rad)
-    float ekf2_mag_decl; ///< magnetic declination (degrees)
-    int32_t ekf2_decl_type; ///< bitmask used to control the handling of declination data
-    int32_t ekf2_mag_type; ///< integer used to specify the type of magnetometer fusion used
-    int32_t ekf2_gps_check; ///< bitmask used to control which GPS quality checks are used
-    int32_t ekf2_aid_mask; ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
-    int32_t ekf2_hgt_mode; ///< selects the primary source for height data
-    int32_t ekf2_terr_mask; ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
-    float ekf2_rng_noise; ///< observation noise for range finder measurements (m)
-    int32_t ekf2_rng_aid; ///< enables use of a range finder even if primary height source is not range finder
-    int32_t ekf2_ev_noise_md; ///< determine source of vision observation noise
-    float ekf2_evp_noise; ///< default position observation noise for exernal vision measurements (m)
-    float ekf2_evv_noise; ///< default velocity observation noise for exernal vision measurements (m/s)
-    float ekf2_eva_noise; ///< default angular observation noise for exernal vision measurements (rad)
-    float ekf2_of_n_min; ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
-    float ekf2_of_n_max; ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
-    float ekf2_arsp_thr; ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
-    int32_t ekf2_fuse_beta; ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
-    float ekf2_drag_noise; ///< observation noise variance for drag specific force measurements (m/sec**2)**2
-    int32_t ekf2_mag_check; ///< Mag field strength check
+    float ekf2_gyr_noise;         ///< IMU angular rate noise used for covariance prediction (rad/sec)
+    float ekf2_acc_noise;         ///< IMU acceleration noise use for covariance prediction (m/sec**2)
+    float ekf2_gyr_b_noise;       ///< process noise for IMU rate gyro bias prediction (rad/sec**2)
+    float ekf2_acc_b_noise;       ///< process noise for IMU accelerometer bias prediction (m/sec**3)
+    float ekf2_mag_e_noise;       ///< process noise for earth magnetic field prediction (Gauss/sec)
+    float ekf2_mag_b_noise;       ///< process noise for body magnetic field prediction (Gauss/sec)
+    float ekf2_wind_noise;        ///< process noise for wind velocity prediction (m/sec**2)
+    float ekf2_noaid_noise;       ///< observation noise for non-aiding position fusion (m)
+    float ekf2_baro_noise;        ///< observation noise for barometric height fusion (m)
+    float ekf2_gnd_eff_dz;        ///< barometric deadzone range for negative innovations (m)
+    float ekf2_gnd_max_hgt;       ///< maximum height above the ground level for expected negative baro innovations (m)
+    float ekf2_head_noise;        ///< measurement noise used for simple heading fusion (rad)
+    float ekf2_mag_noise;         ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
+    float ekf2_eas_noise;         ///< measurement noise used for airspeed fusion (m/sec)
+    float ekf2_beta_noise;        ///< synthetic sideslip noise (rad)
+    float ekf2_mag_decl;          ///< magnetic declination (degrees)
+    int32_t ekf2_decl_type;       ///< bitmask used to control the handling of declination data
+    int32_t ekf2_mag_type;        ///< integer used to specify the type of magnetometer fusion used
+    int32_t ekf2_gps_check;       ///< bitmask used to control which GPS quality checks are used
+    int32_t ekf2_aid_mask;        ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
+    int32_t ekf2_hgt_mode;        ///< selects the primary source for height data
+    int32_t ekf2_terr_mask;       ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
+    float ekf2_rng_noise;         ///< observation noise for range finder measurements (m)
+    int32_t ekf2_rng_aid;         ///< enables use of a range finder even if primary height source is not range finder
+    int32_t ekf2_ev_noise_md;     ///< determine source of vision observation noise
+    float ekf2_evp_noise;         ///< default position observation noise for exernal vision measurements (m)
+    float ekf2_evv_noise;         ///< default velocity observation noise for exernal vision measurements (m/s)
+    float ekf2_eva_noise;         ///< default angular observation noise for exernal vision measurements (rad)
+    float ekf2_of_n_min;          ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
+    float ekf2_of_n_max;          ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
+    float ekf2_arsp_thr;          ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
+    int32_t ekf2_fuse_beta;       ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
+    float ekf2_drag_noise;        ///< observation noise variance for drag specific force measurements (m/sec**2)**2
+    int32_t ekf2_mag_check;       ///< Mag field strength check
     int32_t ekf2_synthetic_mag_z; ///< Enables the use of a synthetic value for the Z axis of the magnetometer calculated from the 3D magnetic field vector at the location of the drone.
-    float ekf2_req_gps_h; ///< Required GPS health time
+    float ekf2_req_gps_h;         ///< Required GPS health time
 } INS_Params;
 
 extern INS_Out_Bus px4_ecl_out_bus;

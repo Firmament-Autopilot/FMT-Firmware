@@ -16,19 +16,18 @@
 #define UXR_CLIENT_PROFILE_DISCOVERY_DISCOVERY_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/config.h>
-#include <uxr/client/visibility.h>
 #include <uxr/client/core/type/xrce_types.h>
+#include <uxr/client/visibility.h>
 
-#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
-typedef bool (*uxrOnAgentFound) (const TransportLocator* locator, void* args);
+typedef bool (*uxrOnAgentFound)(const TransportLocator* locator, void* args);
 
 /**
  * @brief Discovers Agents within the network using UDP/IP multicast with address "239.255.0.2" and port 7400.
@@ -38,10 +37,10 @@ typedef bool (*uxrOnAgentFound) (const TransportLocator* locator, void* args);
  * @param args          The user argument provided to the callback function.
  */
 UXRDLLAPI void uxr_discovery_agents_default(
-        uint32_t attempts,
-        int period,
-        uxrOnAgentFound on_agent_func,
-        void* args);
+    uint32_t attempts,
+    int period,
+    uxrOnAgentFound on_agent_func,
+    void* args);
 
 /**
  * @brief Discovers Agents within the network using UDP/IP unicast with the address and port set by the user.
@@ -53,12 +52,12 @@ UXRDLLAPI void uxr_discovery_agents_default(
  * @param agent_list_size   The size of the address list.
  */
 UXRDLLAPI void uxr_discovery_agents(
-        uint32_t attempts,
-        int period,
-        uxrOnAgentFound on_agent_func,
-        void* args,
-        const TransportLocator* agent_list,
-        size_t agent_list_size);
+    uint32_t attempts,
+    int period,
+    uxrOnAgentFound on_agent_func,
+    void* args,
+    const TransportLocator* agent_list,
+    size_t agent_list_size);
 
 #ifdef __cplusplus
 }

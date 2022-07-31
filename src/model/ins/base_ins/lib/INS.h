@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3614
+ * Model version                  : 1.3622
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Mar 26 08:48:40 2022
+ * C/C++ source code generated on : Fri Jul 22 08:03:27 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -183,8 +183,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_m8WuITzinGYaB71fNVUvOC_
-#define DEFINED_TYPEDEF_FOR_struct_m8WuITzinGYaB71fNVUvOC_
+#ifndef DEFINED_TYPEDEF_FOR_struct_DI9CzCUQRlRSEdatWDYqcB_
+#define DEFINED_TYPEDEF_FOR_struct_DI9CzCUQRlRSEdatWDYqcB_
 
 typedef struct {
   real32_T GPS_HOR_Q_BIAS;
@@ -198,6 +198,7 @@ typedef struct {
   real32_T MAG_GAIN;
   real32_T BIAS_G_GAIN;
   real32_T GPS_POS_GAIN;
+  real32_T GPS_ALT_GAIN;
   real32_T GPS_VEL_GAIN;
   real32_T GPS_BIAS_A_GAIN;
   uint32_T GPS_POS_DELAY;
@@ -206,7 +207,7 @@ typedef struct {
   real32_T BARO_VZ_GAIN;
   real32_T BARO_BIAS_AZ_GAIN;
   uint32_T BARO_H_DELAY;
-} struct_m8WuITzinGYaB71fNVUvOC;
+} struct_DI9CzCUQRlRSEdatWDYqcB;
 
 #endif
 
@@ -316,17 +317,17 @@ typedef struct {
   real32_T Memory_PreviousInput_d[2];  /* '<S188>/Memory' */
   real32_T Memory_PreviousInput_h[6];  /* '<S183>/Memory' */
   boolean_T DelayInput1_DSTATE_o;      /* '<S245>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_hg;     /* '<S269>/Delay Input1' */
   boolean_T Delay_DSTATE_k;            /* '<S260>/Delay' */
   boolean_T DelayInput1_DSTATE_j;      /* '<S246>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_p;      /* '<S281>/Delay Input1' */
   boolean_T Delay_DSTATE_k4;           /* '<S272>/Delay' */
   boolean_T DelayInput1_DSTATE_dp;     /* '<S253>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_ch;     /* '<S276>/Delay Input1' */
   boolean_T Delay_DSTATE_c;            /* '<S271>/Delay' */
   boolean_T DelayInput1_DSTATE_m;      /* '<S255>/Delay Input1' */
-  boolean_T Delay_DSTATE_ng;           /* '<S259>/Delay' */
   boolean_T DelayInput1_DSTATE_k;      /* '<S264>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_hg;     /* '<S269>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_ch;     /* '<S276>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_p;      /* '<S281>/Delay Input1' */
+  boolean_T Delay_DSTATE_ng;           /* '<S259>/Delay' */
   boolean_T DelayInput1_DSTATE_ib;     /* '<S219>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_f;      /* '<S210>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_gn;     /* '<S190>/Delay Input1' */
@@ -616,27 +617,27 @@ struct Parameters_INS_T_ {
   boolean_T CompareToConstant1_const_i;/* Mask Parameter: CompareToConstant1_const_i
                                         * Referenced by: '<S267>/Constant'
                                         */
+  boolean_T CompareToConstant2_const_j;/* Mask Parameter: CompareToConstant2_const_j
+                                        * Referenced by: '<S268>/Constant'
+                                        */
   boolean_T CompareToConstant1_const_a;/* Mask Parameter: CompareToConstant1_const_a
                                         * Referenced by: '<S279>/Constant'
+                                        */
+  boolean_T CompareToConstant2_const_d;/* Mask Parameter: CompareToConstant2_const_d
+                                        * Referenced by: '<S280>/Constant'
                                         */
   boolean_T CompareToConstant1_const_h;/* Mask Parameter: CompareToConstant1_const_h
                                         * Referenced by: '<S274>/Constant'
                                         */
+  boolean_T CompareToConstant2_const_dj;/* Mask Parameter: CompareToConstant2_const_dj
+                                         * Referenced by: '<S275>/Constant'
+                                         */
   boolean_T CompareToConstant1_const_hh;/* Mask Parameter: CompareToConstant1_const_hh
                                          * Referenced by: '<S262>/Constant'
                                          */
   boolean_T CompareToConstant2_const_a;/* Mask Parameter: CompareToConstant2_const_a
                                         * Referenced by: '<S263>/Constant'
                                         */
-  boolean_T CompareToConstant2_const_j;/* Mask Parameter: CompareToConstant2_const_j
-                                        * Referenced by: '<S268>/Constant'
-                                        */
-  boolean_T CompareToConstant2_const_d;/* Mask Parameter: CompareToConstant2_const_d
-                                        * Referenced by: '<S275>/Constant'
-                                        */
-  boolean_T CompareToConstant2_const_d2;/* Mask Parameter: CompareToConstant2_const_d2
-                                         * Referenced by: '<S280>/Constant'
-                                         */
   boolean_T DetectRisePositive_vinit;  /* Mask Parameter: DetectRisePositive_vinit
                                         * Referenced by: '<S21>/Delay Input1'
                                         */
@@ -679,27 +680,27 @@ struct Parameters_INS_T_ {
   boolean_T DetectRisePositive_vinit_me;/* Mask Parameter: DetectRisePositive_vinit_me
                                          * Referenced by: '<S245>/Delay Input1'
                                          */
-  boolean_T DetectRisePositive1_vinit_h;/* Mask Parameter: DetectRisePositive1_vinit_h
-                                         * Referenced by: '<S246>/Delay Input1'
-                                         */
-  boolean_T DetectRisePositive3_vinit; /* Mask Parameter: DetectRisePositive3_vinit
-                                        * Referenced by: '<S253>/Delay Input1'
-                                        */
-  boolean_T DetectRisePositive3_vinit_h;/* Mask Parameter: DetectRisePositive3_vinit_h
-                                         * Referenced by: '<S255>/Delay Input1'
-                                         */
-  boolean_T DetectRisePositive_vinit_d;/* Mask Parameter: DetectRisePositive_vinit_d
-                                        * Referenced by: '<S264>/Delay Input1'
-                                        */
   boolean_T DetectRisePositive_vinit_o;/* Mask Parameter: DetectRisePositive_vinit_o
                                         * Referenced by: '<S269>/Delay Input1'
                                         */
-  boolean_T DetectRisePositive_vinit_dn;/* Mask Parameter: DetectRisePositive_vinit_dn
-                                         * Referenced by: '<S276>/Delay Input1'
+  boolean_T DetectRisePositive1_vinit_h;/* Mask Parameter: DetectRisePositive1_vinit_h
+                                         * Referenced by: '<S246>/Delay Input1'
                                          */
   boolean_T DetectRisePositive_vinit_h;/* Mask Parameter: DetectRisePositive_vinit_h
                                         * Referenced by: '<S281>/Delay Input1'
                                         */
+  boolean_T DetectRisePositive3_vinit; /* Mask Parameter: DetectRisePositive3_vinit
+                                        * Referenced by: '<S253>/Delay Input1'
+                                        */
+  boolean_T DetectRisePositive_vinit_d;/* Mask Parameter: DetectRisePositive_vinit_d
+                                        * Referenced by: '<S276>/Delay Input1'
+                                        */
+  boolean_T DetectRisePositive3_vinit_h;/* Mask Parameter: DetectRisePositive3_vinit_h
+                                         * Referenced by: '<S255>/Delay Input1'
+                                         */
+  boolean_T DetectRisePositive_vinit_di;/* Mask Parameter: DetectRisePositive_vinit_di
+                                         * Referenced by: '<S264>/Delay Input1'
+                                         */
   uint8_T CompareToConstant1_const_n;  /* Mask Parameter: CompareToConstant1_const_n
                                         * Referenced by: '<S311>/Constant'
                                         */
@@ -1861,29 +1862,29 @@ struct Parameters_INS_T_ {
   boolean_T Constant_Value_pf;         /* Computed Parameter: Constant_Value_pf
                                         * Referenced by: '<S235>/Constant'
                                         */
+  boolean_T Constant_Value_dc;         /* Computed Parameter: Constant_Value_dc
+                                        * Referenced by: '<S270>/Constant'
+                                        */
   boolean_T Delay_InitialCondition_in; /* Computed Parameter: Delay_InitialCondition_in
                                         * Referenced by: '<S260>/Delay'
+                                        */
+  boolean_T Constant_Value_jo;         /* Computed Parameter: Constant_Value_jo
+                                        * Referenced by: '<S282>/Constant'
                                         */
   boolean_T Delay_InitialCondition_ns; /* Computed Parameter: Delay_InitialCondition_ns
                                         * Referenced by: '<S272>/Delay'
                                         */
+  boolean_T Constant_Value_ej0;        /* Computed Parameter: Constant_Value_ej0
+                                        * Referenced by: '<S277>/Constant'
+                                        */
   boolean_T Delay_InitialCondition_d;  /* Computed Parameter: Delay_InitialCondition_d
                                         * Referenced by: '<S271>/Delay'
-                                        */
-  boolean_T Delay_InitialCondition_k;  /* Computed Parameter: Delay_InitialCondition_k
-                                        * Referenced by: '<S259>/Delay'
                                         */
   boolean_T Constant_Value_nm;         /* Computed Parameter: Constant_Value_nm
                                         * Referenced by: '<S265>/Constant'
                                         */
-  boolean_T Constant_Value_dc;         /* Computed Parameter: Constant_Value_dc
-                                        * Referenced by: '<S270>/Constant'
-                                        */
-  boolean_T Constant_Value_ej0;        /* Computed Parameter: Constant_Value_ej0
-                                        * Referenced by: '<S277>/Constant'
-                                        */
-  boolean_T Constant_Value_jo;         /* Computed Parameter: Constant_Value_jo
-                                        * Referenced by: '<S282>/Constant'
+  boolean_T Delay_InitialCondition_k;  /* Computed Parameter: Delay_InitialCondition_k
+                                        * Referenced by: '<S259>/Delay'
                                         */
   int8_T Saturation_UpperSat_gx;       /* Computed Parameter: Saturation_UpperSat_gx
                                         * Referenced by: '<S233>/Saturation'
@@ -1948,7 +1949,7 @@ extern const INS_Out_Bus INS_rtZINS_Out_Bus;/* INS_Out_Bus ground */
  * these parameters and exports their symbols.
  *
  */
-extern struct_m8WuITzinGYaB71fNVUvOC INS_PARAM;/* Variable: INS_PARAM
+extern struct_DI9CzCUQRlRSEdatWDYqcB INS_PARAM;/* Variable: INS_PARAM
                                                 * Referenced by:
                                                 *   '<S307>/Constant1'
                                                 *   '<S307>/Gain2'

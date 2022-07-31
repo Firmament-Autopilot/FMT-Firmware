@@ -16,17 +16,15 @@
 #define _UXR_CLIENT_CORE_SESSION_STREAM_INPUT_BEST_EFFORT_STREAM_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/seq_num.h>
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-typedef struct uxrInputBestEffortStream
-{
+typedef struct uxrInputBestEffortStream {
     uxrSeqNum last_handled;
 
 } uxrInputBestEffortStream;

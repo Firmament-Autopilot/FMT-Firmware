@@ -16,8 +16,7 @@
 #define _SRC_C_CORE_SESSION_INPUT_STREAM_RELIABLE_STREAM_INTERNAL_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <uxr/client/core/session/stream/input_reliable_stream.h>
@@ -26,7 +25,7 @@ extern "C"
 #include <stdbool.h>
 #include <stddef.h>
 
-#define ACKNACK_PAYLOAD_SIZE  5
+#define ACKNACK_PAYLOAD_SIZE 5
 
 struct ucdrBuffer;
 

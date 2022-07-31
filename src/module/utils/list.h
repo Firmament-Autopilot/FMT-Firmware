@@ -64,8 +64,8 @@ static inline void INIT_LIST_HEAD(struct list_head* list)
  * the prev/next entries already!
  */
 static inline void __list_add(struct list_head* new,
-    struct list_head* prev,
-    struct list_head* next)
+                              struct list_head* prev,
+                              struct list_head* next)
 {
     next->prev = new;
     new->next = next;
@@ -136,7 +136,7 @@ static inline void list_del(struct list_head* entry)
  * @head: the head of the list
  */
 static inline int list_is_first(const struct list_head* list,
-    const struct list_head* head)
+                                const struct list_head* head)
 {
     return list->prev == head;
 }
@@ -147,7 +147,7 @@ static inline int list_is_first(const struct list_head* list,
  * @head: the head of the list
  */
 static inline int list_is_last(const struct list_head* list,
-    const struct list_head* head)
+                               const struct list_head* head)
 {
     return list->next == head;
 }

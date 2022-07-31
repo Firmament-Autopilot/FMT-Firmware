@@ -18,28 +18,27 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Controller_T Controller_ConstB = {
-  0.0F,                                /* '<S55>/Constant' */
+    0.0F, /* '<S55>/Constant' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S39>/Vector Concatenate3' */
-  0.0F,                                /* '<S42>/Constant' */
-  19.1986F,                            /* '<S30>/Gain' */
+    { 0.0F, 0.0F, 1.0F }, /* '<S39>/Vector Concatenate3' */
+    0.0F,                 /* '<S42>/Constant' */
+    19.1986F,             /* '<S30>/Gain' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S20>/Constant' */
-  0.00250000018F,                      /* '<S40>/Square' */
-  0.14709F,                            /* '<S40>/Multiply' */
-  -58.836F,                            /* '<S40>/Gain4' */
-  0.00250000018F,                      /* '<S53>/Square' */
-  0.196120009F,                        /* '<S53>/Multiply' */
-  -78.448F                             /* '<S53>/Gain4' */
+    { 0.0F, 0.0F, 0.0F }, /* '<S20>/Constant' */
+    0.00250000018F,       /* '<S40>/Square' */
+    0.14709F,             /* '<S40>/Multiply' */
+    -58.836F,             /* '<S40>/Gain4' */
+    0.00250000018F,       /* '<S53>/Square' */
+    0.196120009F,         /* '<S53>/Multiply' */
+    -78.448F              /* '<S53>/Gain4' */
 };
 
 /* Constant parameters (default storage) */
 const ConstP_Controller_T Controller_ConstP = {
-  /* Computed Parameter: X_Frame_Effective_Matrix_Value
+    /* Computed Parameter: X_Frame_Effective_Matrix_Value
    * Referenced by: '<S6>/X_Frame_Effective_Matrix'
    */
-  { -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F, -1.0F, -1.0F
-  }
+    { -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F, -1.0F, -1.0F }
 };
 
 /*

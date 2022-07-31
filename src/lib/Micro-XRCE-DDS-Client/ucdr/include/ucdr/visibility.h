@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef _MICROCDR_VISIBILITY_H_
 #define _MICROCDR_VISIBILITY_H_
 
 #if defined(_WIN32)
-#if defined(microcdr_SHARED)
-#if defined(microcdr_EXPORTS)
-#define UCDRDLLAPI __declspec( dllexport )
+    #if defined(microcdr_SHARED)
+        #if defined(microcdr_EXPORTS)
+            #define UCDRDLLAPI __declspec(dllexport)
+        #else
+            #define UCDRDLLAPI __declspec(dllimport)
+        #endif // microcdr_EXPORTS
+    #else
+        #define UCDRDLLAPI
+    #endif // BUILDING_SHARED_LIBS
 #else
-#define UCDRDLLAPI __declspec( dllimport )
-#endif // microcdr_EXPORTS
-#else
-#define UCDRDLLAPI
-#endif // BUILDING_SHARED_LIBS
-#else
-#define UCDRDLLAPI
+    #define UCDRDLLAPI
 #endif // _WIN32
 
 #endif // _MICROCDR_VISIBILITY_H_

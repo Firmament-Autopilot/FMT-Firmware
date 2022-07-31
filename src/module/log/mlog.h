@@ -19,15 +19,17 @@
 
 #include <firmament.h>
 
+#include "module/param/param.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Macro to define packed structures */
 #ifdef __GNUC__
-#define LOGPACKED(__Declaration__) __Declaration__ __attribute__((packed))
+    #define LOGPACKED(__Declaration__) __Declaration__ __attribute__((packed))
 #else
-#define LOGPACKED(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
+    #define LOGPACKED(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
 #endif
 
 #define MLOG_VERSION 1

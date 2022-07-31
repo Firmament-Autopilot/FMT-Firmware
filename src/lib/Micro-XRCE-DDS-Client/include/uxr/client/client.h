@@ -18,14 +18,14 @@
 #include <uxr/client/config.h>
 
 #ifdef UCLIENT_PROFILE_DISCOVERY
-#include <uxr/client/profile/discovery/discovery.h>
+    #include <uxr/client/profile/discovery/discovery.h>
 #endif //UCLIENT_PROFILE_DISCOVERY
 
-#include <uxr/client/core/session/session.h>
-#include <uxr/client/core/session/write_access.h>
-#include <uxr/client/core/session/read_access.h>
 #include <uxr/client/core/session/create_entities_ref.h>
 #include <uxr/client/core/session/create_entities_xml.h>
+#include <uxr/client/core/session/read_access.h>
+#include <uxr/client/core/session/session.h>
+#include <uxr/client/core/session/write_access.h>
 
 #include <uxr/client/transport.h>
 

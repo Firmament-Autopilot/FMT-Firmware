@@ -16,40 +16,38 @@
 #define _UXR_CLIENT_CORE_SESSION_SESSION_INFO_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-#include <uxr/client/core/session/stream/seq_num.h>
-#include <uxr/client/core/session/object_id.h>
 #include <stdbool.h>
+#include <uxr/client/core/session/object_id.h>
+#include <uxr/client/core/session/stream/seq_num.h>
 
-#define UXR_STATUS_OK                     0x00
-#define UXR_STATUS_OK_MATCHED             0x01
-#define UXR_STATUS_ERR_DDS_ERROR          0x80
-#define UXR_STATUS_ERR_MISMATCH           0x81
-#define UXR_STATUS_ERR_ALREADY_EXISTS     0x82
-#define UXR_STATUS_ERR_DENIED             0x83
-#define UXR_STATUS_ERR_UNKNOWN_REFERENCE  0x84
-#define UXR_STATUS_ERR_INVALID_DATA       0x85
-#define UXR_STATUS_ERR_INCOMPATIBLE       0x86
-#define UXR_STATUS_ERR_RESOURCES          0x87
-#define UXR_STATUS_NONE                   0xFF //Never sent or received. It is used for managing an unknown status
+#define UXR_STATUS_OK                    0x00
+#define UXR_STATUS_OK_MATCHED            0x01
+#define UXR_STATUS_ERR_DDS_ERROR         0x80
+#define UXR_STATUS_ERR_MISMATCH          0x81
+#define UXR_STATUS_ERR_ALREADY_EXISTS    0x82
+#define UXR_STATUS_ERR_DENIED            0x83
+#define UXR_STATUS_ERR_UNKNOWN_REFERENCE 0x84
+#define UXR_STATUS_ERR_INVALID_DATA      0x85
+#define UXR_STATUS_ERR_INCOMPATIBLE      0x86
+#define UXR_STATUS_ERR_RESOURCES         0x87
+#define UXR_STATUS_NONE                  0xFF //Never sent or received. It is used for managing an unknown status
 
-#define UXR_REUSE            0x01 << 1
-#define UXR_REPLACE          0x01 << 2
+#define UXR_REUSE   0x01 << 1
+#define UXR_REPLACE 0x01 << 2
 #ifdef PERFORMANCE_TESTING
-#define UXR_ECHO             0x01 << 7
+    #define UXR_ECHO 0x01 << 7
 #endif
 
 #define UXR_INVALID_REQUEST_ID 0
 
-#define UXR_REQUEST_NONE     0x00
-#define UXR_REQUEST_LOGIN    0x01
-#define UXR_REQUEST_LOGOUT   0x02
+#define UXR_REQUEST_NONE   0x00
+#define UXR_REQUEST_LOGIN  0x01
+#define UXR_REQUEST_LOGOUT 0x02
 
-typedef struct uxrSessionInfo
-{
+typedef struct uxrSessionInfo {
     uint8_t id;
     uint8_t key[4];
     uint8_t last_requested_status;

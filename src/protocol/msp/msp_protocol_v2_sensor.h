@@ -21,10 +21,10 @@
 extern "C" {
 #endif
 
-#define MSP2_IS_SENSOR_MESSAGE(x)   ((x) >= 0x1F00 && (x) <= 0x1FFF)
+#define MSP2_IS_SENSOR_MESSAGE(x) ((x) >= 0x1F00 && (x) <= 0x1FFF)
 
-#define MSP2_SENSOR_RANGEFINDER     0x1F01
-#define MSP2_SENSOR_OPTIC_FLOW      0x1F02
+#define MSP2_SENSOR_RANGEFINDER 0x1F01
+#define MSP2_SENSOR_OPTIC_FLOW  0x1F02
 
 #ifdef __cplusplus
 }

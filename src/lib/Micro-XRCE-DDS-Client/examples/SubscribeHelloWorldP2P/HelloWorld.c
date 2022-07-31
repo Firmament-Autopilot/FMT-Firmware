@@ -21,23 +21,23 @@
 
 #include "HelloWorld.h"
 
-#include <ucdr/microcdr.h>
 #include <string.h>
+#include <ucdr/microcdr.h>
 
 bool HelloWorld_serialize_topic(ucdrBuffer* writer, const HelloWorld* topic)
 {
-    (void) ucdr_serialize_uint32_t(writer, topic->index);
+    (void)ucdr_serialize_uint32_t(writer, topic->index);
 
-    (void) ucdr_serialize_string(writer, topic->message);
+    (void)ucdr_serialize_string(writer, topic->message);
 
     return !writer->error;
 }
 
 bool HelloWorld_deserialize_topic(ucdrBuffer* reader, HelloWorld* topic)
 {
-    (void) ucdr_deserialize_uint32_t(reader, &topic->index);
+    (void)ucdr_deserialize_uint32_t(reader, &topic->index);
 
-    (void) ucdr_deserialize_string(reader, topic->message, 255);
+    (void)ucdr_deserialize_string(reader, topic->message, 255);
 
     return !reader->error;
 }

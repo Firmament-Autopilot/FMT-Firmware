@@ -269,7 +269,7 @@ static void msp_server_main(void* args)
         if (mspPorts[i] != NULL) {
             if (rt_device_open(mspPorts[i]->dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
                 console_printf("MSP server fail to open device %s\n", mspPorts[i]->dev->parent.name);
-                return ;
+                return;
             }
         } else {
             /* NULL indicates the end */
@@ -281,8 +281,7 @@ static void msp_server_main(void* args)
 
     while (1) {
         /* wait event occur */
-        res = rt_event_recv(&event_msp, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
-            10, &recv_set);
+        res = rt_event_recv(&event_msp, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, 10, &recv_set);
 
         if ((res == RT_EOK && (recv_set & EVENT_MSP_UPDATE)) || res == -RT_ETIMEOUT) {
             /* handle msp ports data */

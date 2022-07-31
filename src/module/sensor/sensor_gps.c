@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "hal/gps/gps.h"
 #include "module/sensor/sensor_gps.h"
+#include "hal/gps/gps.h"
 
 /**
  * @brief Check if gps data is ready to read

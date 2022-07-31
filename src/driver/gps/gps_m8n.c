@@ -547,8 +547,7 @@ rt_err_t gps_m8n_init(const char* serial_device_name, const char* gps_device_nam
     FMT_CHECK(init_ubx_decoder(&ubx_decoder, serial_device, ubx_rx_handle));
 
     /* create a thread to probe the gps connection */
-    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, str_buffer,
-        4096, RT_THREAD_PRIORITY_MAX - 2, 5);
+    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, str_buffer, 4096, RT_THREAD_PRIORITY_MAX - 2, 5);
     RT_ASSERT(tid != NULL);
 
     RT_CHECK(rt_thread_startup(tid));
