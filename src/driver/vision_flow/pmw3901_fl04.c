@@ -153,8 +153,6 @@ static void thread_entry(void* args)
     rt_uint32_t wait_set = EVENT_FL04_UPDATE;
     uint8_t c;
 
-    printf("entry\n");
-
     /* open device */
     if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
         printf("fl04 fail to open device!\n");
