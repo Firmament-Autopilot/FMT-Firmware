@@ -32,6 +32,7 @@
 #include "driver/mag/ist8310.h"
 #include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
+#include "driver/vision_flow/pmw3901_fl04.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -419,6 +420,7 @@ void bsp_initialize(void)
     if (drv_ist8310_init("i2c1_dev1", "mag0") != FMT_EOK) {
         RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
     }
+    RT_CHECK(pmw3901_fl04_drv_init("serial6"));
     RT_CHECK(gps_m8n_init("serial3", "gps"));
 
     /* register sensor to sensor hub */
