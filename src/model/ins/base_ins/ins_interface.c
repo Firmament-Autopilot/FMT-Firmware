@@ -46,16 +46,23 @@ static param_t __param_list[] = {
     PARAM_FLOAT(HEADING_GAIN, 0.05),
     PARAM_FLOAT(MAG_GAIN, 0.2),
     PARAM_FLOAT(BIAS_G_GAIN, 0.25),
-    PARAM_FLOAT(GPS_POS_GAIN, 0.05),
+    PARAM_FLOAT(GPS_POS_GAIN, 0),
     PARAM_FLOAT(GPS_ALT_GAIN, 0),
     PARAM_FLOAT(GPS_VEL_GAIN, 2),
     PARAM_FLOAT(GPS_BIAS_A_GAIN, 1),
     PARAM_UINT32(GPS_POS_DELAY, 150),
     PARAM_UINT32(GPS_VEL_DELAY, 100),
+    PARAM_FLOAT(OPF_VEL_GAIN, 2),
+    PARAM_FLOAT(OPF_BIAS_A_GAIN, 1),
+    PARAM_UINT32(OPF_VEL_DELAY, 5),
     PARAM_FLOAT(BARO_H_GAIN, 2),
     PARAM_FLOAT(BARO_VZ_GAIN, 1),
     PARAM_FLOAT(BARO_BIAS_AZ_GAIN, 0.2),
     PARAM_UINT32(BARO_H_DELAY, 10),
+    PARAM_FLOAT(RF_H_GAIN, 2),
+    PARAM_FLOAT(RF_VZ_GAIN, 1),
+    PARAM_FLOAT(RF_BIAS_AZ_GAIN, 0.2),
+    PARAM_UINT32(RF_H_DELAY, 5),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 
@@ -122,7 +129,7 @@ MLOG_BUS_DEFINE(GPS_uBlox, GPS_uBlox_Elems);
 
 mlog_elem_t Rangefinder_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
-    MLOG_ELEMENT(distance_m, MLOG_FLOAT),
+    MLOG_ELEMENT(distance, MLOG_FLOAT),
 };
 MLOG_BUS_DEFINE(Rangefinder, Rangefinder_Elems);
 
@@ -130,7 +137,9 @@ mlog_elem_t Optflow_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
     MLOG_ELEMENT(vx, MLOG_FLOAT),
     MLOG_ELEMENT(vy, MLOG_FLOAT),
-    MLOG_ELEMENT(valid, MLOG_UINT32),
+    MLOG_ELEMENT(quality, MLOG_UINT8),
+    MLOG_ELEMENT(reserved1, MLOG_UINT8),
+    MLOG_ELEMENT(reserved2, MLOG_UINT16),
 };
 MLOG_BUS_DEFINE(OpticalFlow, Optflow_Elems);
 
@@ -221,7 +230,14 @@ static int ins_output_echo(void* param)
            BIT(ins_out.flag, 6) > 0,
            BIT(ins_out.flag, 7) > 0,
            BIT(ins_out.flag, 8) > 0);
-    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0, BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+    printf("sensor status, imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d\n",
+           BIT(ins_out.status, 0) > 0,
+           BIT(ins_out.status, 1) > 0,
+           BIT(ins_out.status, 2) > 0,
+           BIT(ins_out.status, 3) > 0,
+           BIT(ins_out.status, 4) > 0,
+           BIT(ins_out.status, 5) > 0,
+           BIT(ins_out.status, 6) > 0);
     printf("------------------------------------------\n");
 
     return 0;
@@ -255,10 +271,17 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_BIAS_A_GAIN), &INS_PARAM.GPS_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_DELAY), &INS_PARAM.GPS_POS_DELAY));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_DELAY), &INS_PARAM.GPS_VEL_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_VEL_GAIN), &INS_PARAM.OPF_VEL_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_BIAS_A_GAIN), &INS_PARAM.OPF_BIAS_A_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_VEL_DELAY), &INS_PARAM.OPF_VEL_DELAY));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_GAIN), &INS_PARAM.BARO_H_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_VZ_GAIN), &INS_PARAM.BARO_VZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_BIAS_AZ_GAIN), &INS_PARAM.BARO_BIAS_AZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_DELAY), &INS_PARAM.BARO_H_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_H_GAIN), &INS_PARAM.RF_H_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_VZ_GAIN), &INS_PARAM.RF_VZ_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_BIAS_AZ_GAIN), &INS_PARAM.RF_BIAS_AZ_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_H_DELAY), &INS_PARAM.RF_H_DELAY));
 }
 
 void ins_interface_step(uint32_t timestamp)
@@ -324,7 +347,9 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.rf_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
-        // TODO
+        INS_U.Rangefinder.distance = ins_handle.rf_report.distance_m;
+        INS_U.Rangefinder.timestamp = timestamp;
+
         rf_data_updated = 1;
     }
 
@@ -332,7 +357,11 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.optflow_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
-        // TODO
+        INS_U.Optical_Flow.vx = ins_handle.optflow_report.vx_mPs;
+        INS_U.Optical_Flow.vy = ins_handle.optflow_report.vy_mPs;
+        INS_U.Optical_Flow.quality = ins_handle.optflow_report.quality;
+        INS_U.Optical_Flow.timestamp = timestamp;
+
         optflow_data_updated = 1;
     }
 
@@ -370,13 +399,13 @@ void ins_interface_step(uint32_t timestamp)
     if (rf_data_updated) {
         rf_data_updated = 0;
         /* Log Rangefinder data */
-        mlog_push_msg((uint8_t*)&ins_handle.rf_report, Rangefinder_ID, sizeof(ins_handle.rf_report));
+        mlog_push_msg((uint8_t*)&INS_U.Rangefinder, Rangefinder_ID, sizeof(INS_U.Rangefinder));
     }
 
     if (optflow_data_updated) {
         optflow_data_updated = 0;
         /* Log Optical Flow data */
-        mlog_push_msg((uint8_t*)&ins_handle.optflow_report, OpticalFlow_ID, sizeof(ins_handle.optflow_report));
+        mlog_push_msg((uint8_t*)&INS_U.Optical_Flow, OpticalFlow_ID, sizeof(INS_U.Optical_Flow));
     }
 
     /* Log INS output bus data */

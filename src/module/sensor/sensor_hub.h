@@ -112,7 +112,7 @@ typedef struct {
     uint32_t timestamp_ms;
     float vx_mPs;
     float vy_mPs;
-    uint32_t valid;
+    uint8_t quality;
 } optflow_data_t;
 
 typedef struct {
@@ -125,6 +125,8 @@ fmt_err_t advertise_sensor_imu(uint8_t id);
 fmt_err_t advertise_sensor_mag(uint8_t id);
 fmt_err_t advertise_sensor_baro(uint8_t id);
 fmt_err_t advertise_sensor_gps(uint8_t id);
+fmt_err_t advertise_sensor_optflow(uint8_t id);
+fmt_err_t advertise_sensor_rangefinder(uint8_t id);
 fmt_err_t register_sensor_imu(const char* gyr_dev_name, const char* acc_dev_name, uint8_t id);
 fmt_err_t register_sensor_mag(const char* dev_name, uint8_t id);
 fmt_err_t register_sensor_barometer(const char* dev_name);
