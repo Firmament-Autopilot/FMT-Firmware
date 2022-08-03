@@ -44,21 +44,20 @@ static param_t __param_list[] = {
     PARAM_FLOAT(PITCH_DZ, 0.1),
     PARAM_FLOAT(XY_P, 0.95),
     PARAM_FLOAT(Z_P, 1),
-    PARAM_FLOAT(VEL_XY_LIM, 5.0),
     PARAM_FLOAT(VEL_Z_LIM, 2.5),
     PARAM_FLOAT(YAW_P, 2.5),
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6),
-    PARAM_FLOAT(L1, 10.0),
-    PARAM_FLOAT(CRUISE_SPEED, 5.0),
+    PARAM_FLOAT(L1, 20.0),
+    PARAM_FLOAT(CRUISE_SPEED, 13.0),
     PARAM_FLOAT(TAKEOFF_H, 1.5),
     PARAM_FLOAT(ACCEPT_R, 0.5),
 
     PARAM_FLOAT(Y_P, 0.95),
-    PARAM_FLOAT(VEL_Y_LIM, 5),
-    PARAM_FLOAT(ROLL_LIM, PI / 6),
-    PARAM_FLOAT(PITCH_LIM, PI / 6),
-    PARAM_FLOAT(FW_AIRSPD_MAX, 20),
+    PARAM_FLOAT(ACC_Y_LIM, 5),
+    PARAM_FLOAT(ROLL_LIM, PI / 4),
+    PARAM_FLOAT(PITCH_LIM, PI / 4),
+    PARAM_FLOAT(FW_AIRSPD_MAX, 30),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -114,6 +113,9 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(u_cmd, MLOG_FLOAT),
     MLOG_ELEMENT(v_cmd, MLOG_FLOAT),
     MLOG_ELEMENT(w_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(ax_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(ay_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(az_cmd, MLOG_FLOAT),
     MLOG_ELEMENT(throttle_cmd, MLOG_UINT32),
     MLOG_ELEMENT_VEC(actuator_cmd, MLOG_UINT16, 16),
     MLOG_ELEMENT(status, MLOG_UINT8),
@@ -201,6 +203,7 @@ static int fms_output_echo(void* param)
     printf("rate cmd: %.2f %.2f %.2f\n", fms_out.p_cmd, fms_out.q_cmd, fms_out.r_cmd);
     printf("att cmd: %.2f %.2f %.2f\n", fms_out.phi_cmd, fms_out.theta_cmd, fms_out.psi_rate_cmd);
     printf("vel cmd: %.2f %.2f %.2f\n", fms_out.u_cmd, fms_out.v_cmd, fms_out.w_cmd);
+    printf("acc cmd: %.2f %.2f %.2f\n", fms_out.ax_cmd, fms_out.ay_cmd, fms_out.az_cmd);
     printf("throttle cmd: %.2f\n", fms_out.throttle_cmd);
     printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
     printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
@@ -226,7 +229,6 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, PITCH_DZ), &FMS_PARAM.PITCH_DZ));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, XY_P), &FMS_PARAM.XY_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, Z_P), &FMS_PARAM.Z_P));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_XY_LIM), &FMS_PARAM.VEL_XY_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_Z_LIM), &FMS_PARAM.VEL_Z_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_P), &FMS_PARAM.YAW_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_RATE_LIM), &FMS_PARAM.YAW_RATE_LIM));
@@ -237,7 +239,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
 
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, Y_P), &FMS_PARAM.Y_P));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_Y_LIM), &FMS_PARAM.VEL_Y_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC_Y_LIM), &FMS_PARAM.ACC_Y_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_LIM), &FMS_PARAM.ROLL_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, PITCH_LIM), &FMS_PARAM.PITCH_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_AIRSPD_MAX), &FMS_PARAM.FW_AIRSPD_MAX));

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1779
+ * Model version                  : 1.1863
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Jul 17 14:34:43 2022
+ * C/C++ source code generated on : Wed Aug  3 14:36:12 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -237,6 +237,9 @@ typedef struct {
 
   /* velocity z command in control frame */
   real32_T w_cmd;
+  real32_T ax_cmd;
+  real32_T ay_cmd;
+  real32_T az_cmd;
 
   /* throttle command */
   uint32_T throttle_cmd;
@@ -363,8 +366,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_MAdQlsLl3QGNtHbmATxiyG_
-#define DEFINED_TYPEDEF_FOR_struct_MAdQlsLl3QGNtHbmATxiyG_
+#ifndef DEFINED_TYPEDEF_FOR_struct_iFzoGS6ezHkwxeSA09xa0B_
+#define DEFINED_TYPEDEF_FOR_struct_iFzoGS6ezHkwxeSA09xa0B_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -373,7 +376,6 @@ typedef struct {
   real32_T PITCH_DZ;
   real32_T XY_P;
   real32_T Z_P;
-  real32_T VEL_XY_LIM;
   real32_T VEL_Z_LIM;
   real32_T YAW_P;
   real32_T YAW_RATE_LIM;
@@ -383,13 +385,14 @@ typedef struct {
   real32_T TAKEOFF_H;
   real32_T ACCEPT_R;
   real32_T Y_P;
-  real32_T VEL_Y_LIM;
+  real32_T ACC_Y_LIM;
   real32_T ROLL_LIM;
   real32_T PITCH_LIM;
   real32_T FW_AIRSPD_MAX;
   real32_T DISARM_OUT[16];
   real32_T STANDBY_OUT[16];
-} struct_MAdQlsLl3QGNtHbmATxiyG;
+  real32_T VEL_XY_LIM;
+} struct_iFzoGS6ezHkwxeSA09xa0B;
 
 #endif
 

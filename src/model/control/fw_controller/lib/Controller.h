@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.966
+ * Model version                  : 1.1048
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Jul 17 14:37:52 2022
+ * C/C++ source code generated on : Wed Aug  3 14:37:23 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -53,7 +53,6 @@ typedef struct {
 /* Invariant block signals (default storage) */
 typedef struct {
   const real32_T Zero;                 /* '<S39>/Zero' */
-  const real32_T VectorConcatenate3[3];/* '<S43>/Vector Concatenate3' */
   const real32_T Zero1;                /* '<S36>/Zero1' */
   const real32_T Constant[3];          /* '<S16>/Constant' */
 } ConstB_Controller_T;
@@ -95,24 +94,25 @@ extern const ConstB_Controller_T Controller_ConstB;/* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_M8LEl4uNQE6bF6Ay89SKzG CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_RieDKeHZ6guPn5kqC0ritH CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S5>/Saturation'
                                                     *   '<S7>/pitch_ff'
                                                     *   '<S7>/ratio'
                                                     *   '<S7>/ratio2'
                                                     *   '<S7>/thorttle_ff'
-                                                    *   '<S8>/Gain'
+                                                    *   '<S7>/ucmd2thor'
+                                                    *   '<S7>/wcmd2thor'
                                                     *   '<S10>/FF'
                                                     *   '<S10>/FF_limit'
                                                     *   '<S10>/PI_limit'
                                                     *   '<S28>/Gain3'
                                                     *   '<S30>/P_control'
                                                     *   '<S31>/P_control'
-                                                    *   '<S44>/Constant1'
-                                                    *   '<S44>/Constant12'
-                                                    *   '<S44>/Constant2'
-                                                    *   '<S44>/Constant7'
+                                                    *   '<S41>/Constant1'
+                                                    *   '<S41>/Constant12'
+                                                    *   '<S41>/Constant2'
+                                                    *   '<S41>/Constant7'
                                                     *   '<S14>/trim_speed'
                                                     *   '<S15>/trim_speed'
                                                     *   '<S32>/Constant'
@@ -208,13 +208,10 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S38>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control'
  * '<S39>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/I_control'
  * '<S40>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
- * '<S41>'  : 'Controller/Controller/Velocity_Control/Subsystem'
- * '<S42>'  : 'Controller/Controller/Velocity_Control/Subsystem/Psi To DCM'
- * '<S43>'  : 'Controller/Controller/Velocity_Control/Subsystem/Psi To DCM/Rotation Matrix Z'
- * '<S44>'  : 'Controller/Controller/mixer/Effective_Matrix'
- * '<S45>'  : 'Controller/Controller/mixer/Signal_Select'
- * '<S46>'  : 'Controller/Controller/mixer/throttle_mapping'
- * '<S47>'  : 'Controller/Controller/mixer/Signal_Select/Compare To Constant'
+ * '<S41>'  : 'Controller/Controller/mixer/Effective_Matrix'
+ * '<S42>'  : 'Controller/Controller/mixer/Signal_Select'
+ * '<S43>'  : 'Controller/Controller/mixer/throttle_mapping'
+ * '<S44>'  : 'Controller/Controller/mixer/Signal_Select/Compare To Constant'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 
