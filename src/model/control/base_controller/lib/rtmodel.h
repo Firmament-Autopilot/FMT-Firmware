@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.877
+ * Model version                  : 1.885
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Mar 22 09:47:46 2022
+ * C/C++ source code generated on : Wed Jul 27 16:05:44 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -14,14 +14,14 @@
  */
 
 #ifndef RTW_HEADER_rtmodel_h_
-    #define RTW_HEADER_rtmodel_h_
-    #include "Controller.h"
+#define RTW_HEADER_rtmodel_h_
+#include "Controller.h"
 
-    /* Macros generated for backwards compatibility  */
-    #ifndef rtmGetStopRequested
-        #define rtmGetStopRequested(rtm) ((void*)0)
-    #endif
-#endif /* RTW_HEADER_rtmodel_h_ */
+/* Macros generated for backwards compatibility  */
+#ifndef rtmGetStopRequested
+# define rtmGetStopRequested(rtm)      ((void*) 0)
+#endif
+#endif                                 /* RTW_HEADER_rtmodel_h_ */
 
 /*
  * File trailer for generated code.
