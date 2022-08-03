@@ -81,8 +81,8 @@ TASKS_CPPPATH = []
 MODELS = [
     'plant/multicopter',
     'ins/base_ins',
-    'fms/fw_fms',
-    'control/fw_controller',
+    'fms/base_fms',
+    'control/base_controller',
 ]
 
 LIBS = [
