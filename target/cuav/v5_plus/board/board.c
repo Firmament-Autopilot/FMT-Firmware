@@ -25,6 +25,7 @@
 #endif
 
 #include "board_device.h"
+#include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
 #include "driver/imu/bmi055.h"
@@ -420,7 +421,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
     RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
     /* if no gps mag then use onboard mag */
-    if (drv_ist8310_init("i2c1_dev1", "mag0") != FMT_EOK) {
+    if (drv_ist8310_init("i2c1_dev1", "mag0") != RT_EOK) {
         RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
     }
     RT_CHECK(pmw3901_fl04_drv_init("serial6"));
@@ -432,6 +433,12 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
+
+    if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
+        FMT_CHECK(register_sensor_airspeed("airspeed"));
+    } else {
+        printf("ms4525 driver init fail!\n");
+    }
 #endif
 
     /* init finsh */

@@ -72,6 +72,11 @@ struct sensor_gps {
 };
 typedef struct sensor_gps* sensor_gps_t;
 
+struct sensor_airspeed {
+    rt_device_t dev;
+};
+typedef struct sensor_airspeed* sensor_airspeed_t;
+
 typedef struct {
     uint32_t timestamp_ms;
     float gyr_B_radDs[3];
@@ -120,16 +125,24 @@ typedef struct {
     float distance_m; // negative value indicate invalid
 } rf_data_t;
 
+typedef struct {
+    uint32_t timestamp_ms;
+    float diff_pressure_pa;
+    float temperature_deg;
+} airspeed_data_t;
+
 void sensor_collect(void);
 fmt_err_t advertise_sensor_imu(uint8_t id);
 fmt_err_t advertise_sensor_mag(uint8_t id);
 fmt_err_t advertise_sensor_baro(uint8_t id);
+fmt_err_t advertise_sensor_airspeed(uint8_t id);
 fmt_err_t advertise_sensor_gps(uint8_t id);
 fmt_err_t advertise_sensor_optflow(uint8_t id);
 fmt_err_t advertise_sensor_rangefinder(uint8_t id);
 fmt_err_t register_sensor_imu(const char* gyr_dev_name, const char* acc_dev_name, uint8_t id);
 fmt_err_t register_sensor_mag(const char* dev_name, uint8_t id);
 fmt_err_t register_sensor_barometer(const char* dev_name);
+fmt_err_t register_sensor_airspeed(const char* dev_name);
 fmt_err_t register_sensor_gps(const char* dev_name);
 
 #ifdef __cplusplus
