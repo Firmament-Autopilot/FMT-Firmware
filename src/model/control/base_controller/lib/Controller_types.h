@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.885
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul 27 16:05:44 2022
+ * C/C++ source code generated on : Fri Aug  5 21:44:24 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -48,6 +48,9 @@ typedef struct {
 
   /* velocity z command in control frame */
   real32_T w_cmd;
+  real32_T ax_cmd;
+  real32_T ay_cmd;
+  real32_T az_cmd;
 
   /* throttle command */
   uint32_T throttle_cmd;
@@ -98,7 +101,7 @@ typedef struct {
   real32_T vn;
   real32_T ve;
   real32_T vd;
-  real32_T reserved;
+  real32_T airspeed;
   real_T lat;
   real_T lon;
   real_T alt;

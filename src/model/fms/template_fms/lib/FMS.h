@@ -57,7 +57,7 @@ typedef struct {
     float vn;
     float ve;
     float vd;
-    float reserved;
+    float airspeed;
     double lon;
     double lat;
     double alt;
@@ -95,6 +95,9 @@ typedef struct {
     float u_cmd;
     float v_cmd;
     float w_cmd;
+    float ax_cmd;
+    float ay_cmd;
+    float az_cmd;
     uint32_t throttle_cmd;
     uint16_t actuator_cmd[16];
     uint8_t state;
