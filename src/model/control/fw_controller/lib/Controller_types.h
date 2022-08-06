@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1048
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  3 14:37:23 2022
+ * C/C++ source code generated on : Sat Aug  6 09:41:19 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -20,24 +20,25 @@
 #define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 
 typedef struct {
+  /* fms output timestamp */
   uint32_T timestamp;
 
-  /* rate x command in body frame */
+  /* roll rate command in body frame */
   real32_T p_cmd;
 
-  /* rate y command in body frame */
+  /* pitch rate command in body frame */
   real32_T q_cmd;
 
-  /* rate z command in body frame */
+  /* yaw rate command in body frame */
   real32_T r_cmd;
 
-  /* roll command */
+  /* roll command in body frame */
   real32_T phi_cmd;
 
-  /* pitch command */
+  /* pitch command in body frame */
   real32_T theta_cmd;
 
-  /* yaw rate command */
+  /* yaw rate command in body frame */
   real32_T psi_rate_cmd;
 
   /* velocity x command in control frame */
@@ -48,37 +49,89 @@ typedef struct {
 
   /* velocity z command in control frame */
   real32_T w_cmd;
+
+  /* acceleration x command in control frame */
   real32_T ax_cmd;
+
+  /* acceleration y command in control frame */
   real32_T ay_cmd;
+
+  /* acceleration z command in control frame */
   real32_T az_cmd;
 
   /* throttle command */
   uint32_T throttle_cmd;
 
-  /* actuator command, e.g, pwm command for motors */
+  /* actuator command */
   uint16_T actuator_cmd[16];
 
-  /* enum of VehicleStatus */
+  /* enum VehicleStatus
+
+     vehicle status:
+     0: None
+     1: Disarm
+     2: Standby
+     3: Arm */
   uint8_T status;
 
-  /* enum of VehicleState */
+  /* enum VehicleState
+
+     vehicle state:
+     0: None
+     1: Disarm
+     2: Standby
+     3: Offboard
+     4: Mission
+     5: InvalidAutoMode
+     6: Hold
+     7: Acro
+     8: Stabilize
+     9: Altitude
+     10: Position
+     11: InvalidAssistMode
+     12: Manual
+     13: InvalidManualMode
+     14: InvalidArmMode
+     15: Land
+     16: Return
+     17: Takeoff */
   uint8_T state;
+
+  /* enum ControlMode
+
+     control mode:
+     0: None
+     1: Manual
+     2: Acro
+     3: Stabilize
+     4: ALTCTL
+     5: POSCTL */
   uint8_T ctrl_mode;
+
+  /* enum PilotMode
+
+     pilot mode:
+     0: None
+     1: Manual
+     2: Acro
+     3: Stabilize
+     4: Altitude
+     5: Position
+     6: Mission
+     7: Offboard */
+  uint8_T mode;
 
   /* reset the controller */
   uint8_T reset;
 
-  /* enum of PilotMode */
-  uint8_T mode;
+  /* consumed waypoints */
+  uint8_T wp_consume;
+
+  /* current waypoint */
+  uint8_T wp_current;
 
   /* enum of PilotMode */
   uint8_T reserved1;
-
-  /* enum of PilotMode */
-  uint8_T wp_consume;
-
-  /* enum of PilotMode */
-  uint8_T wp_current;
 } FMS_Out_Bus;
 
 #endif
