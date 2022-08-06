@@ -207,7 +207,7 @@ static int fms_output_echo(void* param)
     printf("throttle cmd: %.2f\n", fms_out.throttle_cmd);
     printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
     printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
-    printf("reset:%d mode:%s\n", fms_out.reset, fms_mode[fms_out.mode]);
+    printf("mode:%s reset:%d\n", fms_mode[fms_out.mode], fms_out.reset);
     printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
     printf("------------------------------------------\n");
 
