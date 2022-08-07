@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "default_config.h"
+#include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
@@ -32,6 +33,7 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
+    { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -350,6 +352,8 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* init storage devices */
+    RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

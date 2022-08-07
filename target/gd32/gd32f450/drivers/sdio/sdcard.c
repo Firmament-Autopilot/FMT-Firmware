@@ -113,7 +113,7 @@ OF SUCH DAMAGE.
 
 uint32_t sd_scr[2] = {0, 0};                                          /* content of SCR register */
 
-static sdio_card_type_enum cardtype = SDIO_STD_CAPACITY_SD_CARD_V1_1; /* SD card type */
+static sdio_card_type_enum cardtype = SDIO_STD_CAPACITY_SD_CARD_V2_0; /* SD card type */
 static uint32_t sd_csd[4] = {0, 0, 0, 0};                             /* content of CSD register */
 static uint32_t sd_cid[4] = {0, 0, 0, 0};                             /* content of CID register */
 static uint16_t sd_rca = 0;                                           /* RCA of SD card */

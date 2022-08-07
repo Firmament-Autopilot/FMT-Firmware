@@ -17,7 +17,7 @@ HAL = [
     # 'pin/*.c',
     'serial/*.c',
     'systick/*.c',
-    # 'sd/*.c',
+    'sd/*.c',
     'usb/usbd_cdc.c',
     # 'spi/spi_core.c',
     # 'spi/spi_dev.c',
