@@ -282,30 +282,28 @@ void pmu_to_deepsleepmode(uint32_t ldo, uint32_t lowdrive, uint8_t deepsleepmode
 
 /*!
     \brief      pmu work in standby mode
-    \param[in]  standbymodecmd:
-      \arg        WFI_CMD: use WFI command
-      \arg        WFE_CMD: use WFE command
+    \param[in]  none
     \param[out] none
     \retval     none
 */
-void pmu_to_standbymode(uint8_t standbymodecmd)
+void pmu_to_standbymode(void)
 {
-    /* set sleepdeep bit of Cortex-M4 system control register */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-
     /* set stbmod bit */
     PMU_CTL |= PMU_CTL_STBMOD;
 
     /* reset wakeup flag */
     PMU_CTL |= PMU_CTL_WURST;
 
-    /* select WFI or WFE command to enter standby mode */
-    if(WFI_CMD == standbymodecmd) {
-        __WFI();
-    } else {
-        __WFE();
-        __WFE();
-    }
+    /* set sleepdeep bit of Cortex-M4 system control register */
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+
+    REG32(0xE000E010U) &= 0x00010004U;
+    REG32(0xE000E180U)  = 0XFFFFFFF7U;
+    REG32(0xE000E184U)  = 0XFFFFFDFFU;
+    REG32(0xE000E188U)  = 0xFFFFFFFFU;
+
+    /* select WFI command to enter standby mode */
+    __WFI();
 }
 
 /*!

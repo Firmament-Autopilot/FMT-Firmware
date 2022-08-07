@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -96,11 +97,6 @@ uint32_t usbh_isr (usb_core_driver *udev)
 
         if (intr & GINTF_HPIF) {
             retval |= usbh_int_port (udev);
-        }
-
-        if (intr & GINTF_WKUPIF) {
-            /* clear interrupt */
-            udev->regs.gr->GINTF = GINTF_WKUPIF;
         }
 
         if (intr & GINTF_DISCIF) {
@@ -405,10 +401,9 @@ static uint32_t usbh_int_pipe_in (usb_core_driver *udev, uint32_t pp_num)
 #endif /* __ICCARM */
 static uint32_t usbh_int_pipe_out (usb_core_driver *udev, uint32_t pp_num)
 {
+    usbh_host *uhost = udev->host.data;
     usb_pr *pp_reg = udev->regs.pr[pp_num];
-
     usb_pipe *pp = &udev->host.pipe[pp_num];
-
     uint32_t intr_pp = pp_reg->HCHINTF & pp_reg->HCHINTEN;
 
     if (intr_pp & HCHINTF_ACK) {
@@ -442,14 +437,19 @@ static uint32_t usbh_int_pipe_out (usb_core_driver *udev, uint32_t pp_num)
         pp->err_count++;
         usb_pp_halt (udev, (uint8_t)pp_num, HCHINTF_USBER, PIPE_TRACERR);
     } else if (intr_pp & HCHINTF_NYET) {
-        if (0U == udev->host.pipe[pp_num].do_ping) {
-            if (1U == udev->host.pipe[pp_num].supp_ping) {
-                udev->host.pipe[pp_num].do_ping = 1;
+        if (CTL_STATUS_OUT != uhost->control.ctl_state) {
+            if (0U == udev->host.pipe[pp_num].do_ping) {
+                if (1U == udev->host.pipe[pp_num].supp_ping) {
+                    udev->host.pipe[pp_num].do_ping = 1;
+                }
             }
+
+            usb_pp_halt (udev, (uint8_t)pp_num, HCHINTF_NYET, PIPE_NYET);
+        } else {
+            usb_pp_halt (udev, (uint8_t)pp_num, HCHINTF_NYET, PIPE_XF);
         }
 
         pp->err_count = 0U;
-        usb_pp_halt (udev, (uint8_t)pp_num, HCHINTF_NYET, PIPE_NYET);
     } else if (intr_pp & HCHINTF_CH) {
         udev->regs.pr[pp_num]->HCHINTEN &= ~HCHINTEN_CHIE;
 

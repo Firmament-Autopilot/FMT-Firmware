@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -121,4 +122,4 @@ usb_status usb_pipe_ping (usb_core_driver *udev, uint8_t pipe_num);
 /* stop the USB host and clean up FIFO */
 void usb_host_stop (usb_core_driver *udev);
 
-#endif  /* __DRV_USB_HOST_H */
+#endif /* __DRV_USB_HOST_H */

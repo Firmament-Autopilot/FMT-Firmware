@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -77,10 +78,6 @@ OF SUCH DAMAGE.
 /* bit detach capable = bit 3 in bmAttributes field */
 #define DFU_DETACH_MASK               (uint8_t)(0x10U)
 
-#define USB_SERIAL_STR_LEN            0x06U
-
-#define USB_DFU_CONFIG_DESC_SIZE      27U
-
 #define DFU_DESC_TYPE                 0x21U
 
 /* DFU device state defines */
@@ -139,7 +136,7 @@ typedef struct
     uint8_t bmAttributes;                 /*!< DFU attributes */
     uint16_t wDetachTimeOut;              /*!< time, in milliseconds, that the device will wait after receipt of the DFU_DETACH request. If */ 
     uint16_t wTransferSize;               /*!< maximum number of bytes that the device can accept per control-write transaction */
-    uint16_t bcdDFUVersion;               /*!< numeric expression identifying the version of the DFU Specification release. */
+    uint16_t bcdDFUVersion;               /*!< numeric expression identifying the version of the DFU specification release. */
 } usb_desc_dfu_func;
 
 #pragma pack()
@@ -148,10 +145,13 @@ typedef struct
 typedef struct
 {
     usb_desc_config           config;
-    usb_desc_itf              dfu_itf;
+    usb_desc_itf              dfu_itf0;
+    usb_desc_itf              dfu_itf1;
+    usb_desc_itf              dfu_itf2;
     usb_desc_dfu_func         dfu_func;
 } usb_dfu_desc_config_set;
 
+/* USB DFU handler structure */
 typedef struct
 {
     uint8_t bStatus;
@@ -174,4 +174,4 @@ typedef void (*app_func) (void);
 extern usb_desc dfu_desc;
 extern usb_class_core dfu_class;
 
-#endif  /* DFU_CORE_H */
+#endif /* DFU_CORE_H */

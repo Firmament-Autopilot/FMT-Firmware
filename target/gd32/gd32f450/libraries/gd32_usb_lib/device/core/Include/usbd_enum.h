@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -58,11 +59,7 @@ enum _str_index
     STR_IDX_SERIAL                = 0x3U,  /* serial string index */
     STR_IDX_CONFIG                = 0x4U,  /* configuration string index */
     STR_IDX_ITF                   = 0x5U,  /* interface string index */
-#ifndef WINUSB_EXEMPT_DRIVER
-    STR_IDX_MAX                   = 0x6U,  /* string maximum index */
-#else
     STR_IDX_MAX                   = 0xEFU, /* string maximum index */
-#endif /* WINUSB_EXEMPT_DRIVER */
 };
 
 typedef enum _usb_pwrsta {

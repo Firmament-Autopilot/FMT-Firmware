@@ -1932,10 +1932,10 @@ void timer_output_value_selection_config(uint32_t timer_periph, uint16_t outsel)
       \arg        TIMER_FLAG_CMT: channel control update flag,TIMERx(x=0,7)
       \arg        TIMER_FLAG_TRG: trigger flag,TIMERx(x=0,7,8,11)
       \arg        TIMER_FLAG_BRK: break flag,TIMERx(x=0,7)
-      \arg        TIMER_FLAG_CH0OF: channel 0 overcapture flag,TIMERx(x=0..4,7..11)
-      \arg        TIMER_FLAG_CH1OF: channel 1 overcapture flag,TIMERx(x=0..4,7,8,11)
-      \arg        TIMER_FLAG_CH2OF: channel 2 overcapture flag,TIMERx(x=0..4,7)
-      \arg        TIMER_FLAG_CH3OF: channel 3 overcapture flag,TIMERx(x=0..4,7)
+      \arg        TIMER_FLAG_CH0O: channel 0 overcapture flag,TIMERx(x=0..4,7..11)
+      \arg        TIMER_FLAG_CH1O: channel 1 overcapture flag,TIMERx(x=0..4,7,8,11)
+      \arg        TIMER_FLAG_CH2O: channel 2 overcapture flag,TIMERx(x=0..4,7)
+      \arg        TIMER_FLAG_CH3O: channel 3 overcapture flag,TIMERx(x=0..4,7)
     \param[out] none
     \retval     FlagStatus: SET or RESET
 */
@@ -1961,10 +1961,10 @@ FlagStatus timer_flag_get(uint32_t timer_periph, uint32_t flag)
       \arg        TIMER_FLAG_CMT: channel control update flag,TIMERx(x=0,7)
       \arg        TIMER_FLAG_TRG: trigger flag,TIMERx(x=0,7,8,11)
       \arg        TIMER_FLAG_BRK: break flag,TIMERx(x=0,7)
-      \arg        TIMER_FLAG_CH0OF: channel 0 overcapture flag,TIMERx(x=0..4,7..11)
-      \arg        TIMER_FLAG_CH1OF: channel 1 overcapture flag,TIMERx(x=0..4,7,8,11)
-      \arg        TIMER_FLAG_CH2OF: channel 2 overcapture flag,TIMERx(x=0..4,7)
-      \arg        TIMER_FLAG_CH3OF: channel 3 overcapture flag,TIMERx(x=0..4,7)
+      \arg        TIMER_FLAG_CH0O: channel 0 overcapture flag,TIMERx(x=0..4,7..11)
+      \arg        TIMER_FLAG_CH1O: channel 1 overcapture flag,TIMERx(x=0..4,7,8,11)
+      \arg        TIMER_FLAG_CH2O: channel 2 overcapture flag,TIMERx(x=0..4,7)
+      \arg        TIMER_FLAG_CH3O: channel 3 overcapture flag,TIMERx(x=0..4,7)
     \param[out] none
     \retval     none
 */

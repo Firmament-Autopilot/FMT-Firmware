@@ -398,13 +398,11 @@ OF SUCH DAMAGE.
 
 /* RCU_PLLI2S */
 #define RCU_PLLI2S_PLLI2SN              BITS(6,14)                /*!< the PLLI2S VCO clock multi factor */
-#define RCU_PLLI2S_PLLI2SQ              BITS(24,27)               /*!< the PLLI2S Q output frequency division factor from PLLI2S VCO clock */
 #define RCU_PLLI2S_PLLI2SR              BITS(28,30)               /*!< the PLLI2S R output frequency division factor from PLLI2S VCO clock */
 
 /* RCU_PLLSAI */
 #define RCU_PLLSAI_PLLSAIN              BITS(6,14)                /*!< the PLLSAI VCO clock multi factor */
 #define RCU_PLLSAI_PLLSAIP              BITS(16,17)               /*!< the PLLSAI P output frequency division factor from PLLSAI VCO clock */
-#define RCU_PLLSAI_PLLSAIQ              BITS(24,27)               /*!< the PLLSAI Q output frequency division factor from PLLSAI VCO clock */
 #define RCU_PLLSAI_PLLSAIR              BITS(28,30)               /*!< the PLLSAI R output frequency division factor from PLLSAI VCO clock */
 
 /* RCU_CFG1 */
@@ -1076,6 +1074,7 @@ typedef enum
 
 
 /* function declarations */
+/* peripherals clock configure functions */
 /* deinitialize the RCU */
 void rcu_deinit(void);
 /* enable the peripherals clock */
@@ -1095,6 +1094,7 @@ void rcu_bkp_reset_enable(void);
 /* disable the BKP reset */
 void rcu_bkp_reset_disable(void);
 
+/* system and peripherals clock source, system reset configure functions */
 /* configure the system clock source */
 void rcu_system_clock_source_config(uint32_t ck_sys);
 /* get the system clock source */
@@ -1130,20 +1130,7 @@ void rcu_timer_clock_prescaler_config(uint32_t timer_clock_prescaler);
 /* configure the TLI clock division selection */
 void rcu_tli_clock_div_config(uint32_t pllsai_r_div);
 
-
-/* get the clock stabilization and periphral reset flags */
-FlagStatus rcu_flag_get(rcu_flag_enum flag);
-/* clear the reset flag */
-void rcu_all_reset_flag_clear(void);
-/* get the clock stabilization interrupt and ckm flags */
-FlagStatus rcu_interrupt_flag_get(rcu_int_flag_enum int_flag);
-/* clear the interrupt flags */
-void rcu_interrupt_flag_clear(rcu_int_flag_clear_enum int_flag);
-/* enable the stabilization interrupt */
-void rcu_interrupt_enable(rcu_int_enum interrupt);
-/* disable the stabilization interrupt */
-void rcu_interrupt_disable(rcu_int_enum interrupt);
-
+/* LXTAL, IRC8M, PLL and other oscillator configure functions */
 /* configure the LXTAL drive capability */
 void rcu_lxtal_drive_capability_config(uint32_t lxtal_dricap);
 /* wait for oscillator stabilization flags is SET or oscillator startup is timeout */
@@ -1156,11 +1143,6 @@ void rcu_osci_off(rcu_osci_type_enum osci);
 void rcu_osci_bypass_mode_enable(rcu_osci_type_enum osci);
 /* disable the oscillator bypass mode, HXTALEN or LXTALEN must be reset before it */
 void rcu_osci_bypass_mode_disable(rcu_osci_type_enum osci);
-/* enable the HXTAL clock monitor */
-void rcu_hxtal_clock_monitor_enable(void);
-/* disable the HXTAL clock monitor */
-void rcu_hxtal_clock_monitor_disable(void);
-
 /* set the IRC16M adjust value */
 void rcu_irc16m_adjust_value_set(uint32_t irc16m_adjval);
 /* configure the spread spectrum modulation for the main PLL clock */
@@ -1168,13 +1150,34 @@ void rcu_spread_spectrum_config(uint32_t spread_spectrum_type, uint32_t modstep,
 /* enable the spread spectrum modulation for the main PLL clock */
 void rcu_spread_spectrum_enable(void);
 /* disable the spread spectrum modulation for the main PLL clock */
-void rcu_spread_spectrum_disable(void);          
+void rcu_spread_spectrum_disable(void);
+
+/* clock monitor configure functions */
+/* enable the HXTAL clock monitor */
+void rcu_hxtal_clock_monitor_enable(void);
+/* disable the HXTAL clock monitor */
+void rcu_hxtal_clock_monitor_disable(void);
+
+/* voltage configure and clock frequency get functions */
 /* unlock the voltage key */
 void rcu_voltage_key_unlock(void);
 /* set the deep sleep mode voltage */
 void rcu_deepsleep_voltage_set(uint32_t dsvol);
-
 /* get the system clock, bus and peripheral clock frequency */
 uint32_t rcu_clock_freq_get(rcu_clock_freq_enum clock);
+
+/* flag & interrupt functions */
+/* get the clock stabilization and periphral reset flags */
+FlagStatus rcu_flag_get(rcu_flag_enum flag);
+/* clear the reset flag */
+void rcu_all_reset_flag_clear(void);
+/* get the clock stabilization interrupt and ckm flags */
+FlagStatus rcu_interrupt_flag_get(rcu_int_flag_enum int_flag);
+/* clear the interrupt flags */
+void rcu_interrupt_flag_clear(rcu_int_flag_clear_enum int_flag);
+/* enable the stabilization interrupt */
+void rcu_interrupt_enable(rcu_int_enum interrupt);
+/* disable the stabilization interrupt */
+void rcu_interrupt_disable(rcu_int_enum interrupt);
 
 #endif /* GD32F4XX_RCU_H */

@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -79,6 +80,6 @@ typedef struct
     usb_desc_hid            hid_vendor;
     usb_desc_ep             hid_epin;
     usb_desc_ep             hid_epout;
-}usb_hid_desc_config_set;
+} usb_hid_desc_config_set;
 
 #endif /* __USB_HID_H */

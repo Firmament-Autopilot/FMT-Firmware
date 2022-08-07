@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -63,7 +64,8 @@ usb_class_core msc_class =
 /* USB standard device descriptor */
 __ALIGN_BEGIN const usb_desc_dev msc_dev_desc __ALIGN_END =
 {
-    .header = {
+    .header = 
+    {
         .bLength           = USB_DEV_DESC_LEN, 
         .bDescriptorType   = USB_DESCTYPE_DEV
     },
@@ -86,7 +88,8 @@ __ALIGN_BEGIN const usb_desc_config_set msc_config_desc __ALIGN_END =
 {
     .config = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_config), 
             .bDescriptorType = USB_DESCTYPE_CONFIG
         },
@@ -100,7 +103,8 @@ __ALIGN_BEGIN const usb_desc_config_set msc_config_desc __ALIGN_END =
 
     .msc_itf = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_itf), 
             .bDescriptorType = USB_DESCTYPE_ITF
         },
@@ -115,7 +119,8 @@ __ALIGN_BEGIN const usb_desc_config_set msc_config_desc __ALIGN_END =
 
     .msc_epin = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_ep), 
             .bDescriptorType = USB_DESCTYPE_EP
         },
@@ -127,7 +132,8 @@ __ALIGN_BEGIN const usb_desc_config_set msc_config_desc __ALIGN_END =
 
     .msc_epout = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_ep), 
             .bDescriptorType = USB_DESCTYPE_EP
         },
@@ -143,7 +149,8 @@ __ALIGN_BEGIN const usb_desc_config_set other_speed_msc_config_desc __ALIGN_END 
 {
     .config = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_config), 
             .bDescriptorType = USB_DESCTYPE_OTHER_SPD_CONFIG
         },
@@ -157,7 +164,8 @@ __ALIGN_BEGIN const usb_desc_config_set other_speed_msc_config_desc __ALIGN_END 
 
     .msc_itf = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_itf), 
             .bDescriptorType = USB_DESCTYPE_ITF
         },
@@ -172,7 +180,8 @@ __ALIGN_BEGIN const usb_desc_config_set other_speed_msc_config_desc __ALIGN_END 
 
     .msc_epin = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_ep), 
             .bDescriptorType = USB_DESCTYPE_EP
         },
@@ -184,7 +193,8 @@ __ALIGN_BEGIN const usb_desc_config_set other_speed_msc_config_desc __ALIGN_END 
 
     .msc_epout = 
     {
-        .header = {
+        .header = 
+        {
             .bLength         = sizeof(usb_desc_ep), 
             .bDescriptorType = USB_DESCTYPE_EP
         },
@@ -213,43 +223,43 @@ __ALIGN_BEGIN const uint8_t usbd_qualifier_desc[10] __ALIGN_END =
 static __ALIGN_BEGIN const usb_desc_LANGID usbd_language_id_desc __ALIGN_END = 
 {
     .header = 
-     {
-         .bLength            = sizeof(usb_desc_LANGID), 
-         .bDescriptorType    = USB_DESCTYPE_STR
-     },
+    {
+        .bLength            = sizeof(usb_desc_LANGID), 
+        .bDescriptorType    = USB_DESCTYPE_STR
+    },
     .wLANGID                 = ENG_LANGID
 };
 
 /* USB manufacture string */
 static __ALIGN_BEGIN const usb_desc_str manufacturer_string __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = USB_STRING_LEN(10U), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     },
+    .header =
+    {
+        .bLength         = USB_STRING_LEN(10U),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    },
     .unicode_string = {'G', 'i', 'g', 'a', 'D', 'e', 'v', 'i', 'c', 'e'}
 };
 
 /* USB product string */
 static __ALIGN_BEGIN const usb_desc_str product_string __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = USB_STRING_LEN(12U), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     },
+    .header =
+    {
+        .bLength         = USB_STRING_LEN(12U),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    },
     .unicode_string = {'G', 'D', '3', '2', '-', 'U', 'S', 'B', '_', 'M', 'S', 'C'}
 };
 
 /* USBD serial string */
 static __ALIGN_BEGIN usb_desc_str serial_string __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = USB_STRING_LEN(12U), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     }
+    .header =
+    {
+        .bLength         = USB_STRING_LEN(12U),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    }
 };
 
 /* USB string descriptor */
@@ -290,10 +300,10 @@ static uint8_t msc_core_init (usb_dev *udev, uint8_t config_index)
 
     udev->dev.class_data[USBD_MSC_INTERFACE] = (void *)&msc_handler;
 
-    /* configure MSC TX endpoint */
+    /* configure MSC Tx endpoint */
     usbd_ep_setup (udev, &(msc_config_desc.msc_epin));
 
-    /* configure MSC RX endpoint */
+    /* configure MSC Rx endpoint */
     usbd_ep_setup (udev, &(msc_config_desc.msc_epout));
 
     /* initialize the BBB layer */
@@ -342,7 +352,7 @@ static uint8_t msc_core_req (usb_dev *udev, usb_req *req)
             transc->xfer_buf = &usbd_msc_maxlun;
             transc->remain_len = 1U;
         } else {
-            return USBD_FAIL; 
+            return USBD_FAIL;
         }
         break;
 
@@ -352,7 +362,7 @@ static uint8_t msc_core_req (usb_dev *udev, usb_req *req)
              (0x80U != (req->bmRequestType & 0x80U))) {
             msc_bbb_reset(udev);
         } else {
-            return USBD_FAIL; 
+            return USBD_FAIL;
         }
         break;
 
@@ -376,7 +386,7 @@ static uint8_t msc_core_req (usb_dev *udev, usb_req *req)
 */
 static uint8_t msc_core_in (usb_dev *udev, uint8_t ep_num)
 {
-    msc_bbb_data_in(udev, ep_num);
+    msc_bbb_data_in (udev, ep_num);
 
     return USBD_OK;
 }

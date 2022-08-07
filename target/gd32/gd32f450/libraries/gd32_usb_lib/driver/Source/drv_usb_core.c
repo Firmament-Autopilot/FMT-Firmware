@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -78,8 +79,14 @@ usb_status usb_basic_init (usb_core_basic *usb_basic,
 #ifdef USB_HS_INTERNAL_DMA_ENABLED
         usb_basic->transfer_mode = USB_USE_DMA;
 #endif /* USB_HS_INTERNAL_DMA_ENABLED */
+
+#ifdef USB_HS_CORE
+        /* configure the SOF output and the low power support */
+        usb_basic->sof_enable = USBHS_SOF_OUTPUT;
+        usb_basic->low_power = USBHS_LOW_POWER;
+#endif /* USB_HS_CORE */
         break;
-    
+
     case USB_CORE_ENUM_FS:
         usb_basic->base_reg = (uint32_t)USBFS_REG_BASE;
 
@@ -91,14 +98,17 @@ usb_status usb_basic_init (usb_core_basic *usb_basic,
 
         /* USBFS core use embedded physical layer */
         usb_basic->phy_itf = USB_EMBEDDED_PHY;
+
+#ifdef USB_FS_CORE
+        /* configure the SOF output and the low power support */
+        usb_basic->sof_enable = USBFS_SOF_OUTPUT;
+        usb_basic->low_power = USBFS_LOW_POWER;
+#endif /* USB_FS_CORE */
         break;
 
     default:
         return USB_FAIL;
     }
-
-    usb_basic->sof_enable = USB_SOF_OUTPUT;
-    usb_basic->low_power = USB_LOW_POWER;
 
     /* assign main registers address */
     *usb_regs = (usb_core_regs) {
@@ -196,7 +206,7 @@ usb_status usb_core_init (usb_core_basic usb_basic, usb_core_regs *usb_regs)
     usb_regs->gr->GINTF = 0xBFFFFFFFU;
 
     usb_regs->gr->GINTEN = GINTEN_WKUPIE | GINTEN_SPIE | \
-                                     GINTEN_OTGIE | GINTEN_SESIE | GINTEN_CIDPSCIE;
+                           GINTEN_OTGIE | GINTEN_SESIE | GINTEN_CIDPSCIE;
 
 #endif /* USE_OTG_MODE */
 
@@ -204,10 +214,10 @@ usb_status usb_core_init (usb_core_basic usb_basic, usb_core_regs *usb_regs)
 }
 
 /*!
-    \brief      write a packet into the TX FIFO associated with the endpoint
+    \brief      write a packet into the Tx FIFO associated with the endpoint
     \param[in]  usb_regs: pointer to USB core registers
     \param[in]  src_buf: pointer to source buffer
-    \param[in]  fifo_num: FIFO number which is in (0..3)
+    \param[in]  fifo_num: FIFO number which is in (0..3 or 0..5)
     \param[in]  byte_count: packet byte count
     \param[out] none
     \retval     operation status
@@ -254,9 +264,9 @@ void *usb_rxfifo_read (usb_core_regs *usb_regs, uint8_t *dest_buf, uint16_t byte
 }
 
 /*!
-    \brief      flush a TX FIFO or all TX FIFOs
+    \brief      flush a Tx FIFO or all Tx FIFOs
     \param[in]  usb_regs: pointer to USB core registers
-    \param[in]  fifo_num: FIFO number which is in (0..3)
+    \param[in]  fifo_num: FIFO number which is in (0..3 or 0..5)
     \param[out] none
     \retval     operation status
 */
@@ -264,7 +274,7 @@ usb_status usb_txfifo_flush (usb_core_regs *usb_regs, uint8_t fifo_num)
 {
     usb_regs->gr->GRSTCTL = ((uint32_t)fifo_num << 6U) | GRSTCTL_TXFF;
 
-    /* wait for TX FIFO flush bit is set */
+    /* wait for Tx FIFO flush bit is set */
     while (usb_regs->gr->GRSTCTL & GRSTCTL_TXFF) {
         /* no operation */
     }
@@ -285,7 +295,7 @@ usb_status usb_rxfifo_flush (usb_core_regs *usb_regs)
 {
     usb_regs->gr->GRSTCTL = GRSTCTL_RXFF;
 
-    /* wait for RX FIFO flush bit is set */
+    /* wait for Rx FIFO flush bit is set */
     while (usb_regs->gr->GRSTCTL & GRSTCTL_RXFF) {
         /* no operation */
     }
@@ -310,7 +320,7 @@ void usb_set_txfifo(usb_core_regs *usb_regs, uint8_t fifo, uint16_t size)
 
     tx_offset = usb_regs->gr->GRFLEN;
 
-    if (fifo == 0U) {
+    if(0U == fifo) {
         usb_regs->gr->DIEP0TFLEN_HNPTFLEN = ((uint32_t)size << 16) | tx_offset;
     } else {
         tx_offset += (usb_regs->gr->DIEP0TFLEN_HNPTFLEN) >> 16;

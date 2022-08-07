@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -51,14 +52,14 @@ typedef struct {
     uint8_t  bCBWLUN;
     uint8_t  bCBWCBLength;
     uint8_t  CBWCB[16];
-}msc_bbb_cbw;
+} msc_bbb_cbw;
 
 typedef struct {
     uint32_t dCSWSignature;
     uint32_t dCSWTag;
     uint32_t dCSWDataResidue;
     uint8_t  bCSWStatus;
-}msc_bbb_csw;
+} msc_bbb_csw;
 
 /* CSW command status */
 enum msc_csw_status {

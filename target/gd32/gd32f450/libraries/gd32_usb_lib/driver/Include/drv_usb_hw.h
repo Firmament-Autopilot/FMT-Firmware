@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -53,20 +54,11 @@ void usb_udelay (const uint32_t usec);
 void usb_mdelay (const uint32_t msec);
 /* configures system clock after wakeup from STOP mode */
 void system_clk_config_stop(void);
-
-/* configure the CTC peripheral */
-#ifdef USE_IRC48M
-    void ctc_config(void);
-#endif /* USE_IRC48M */
-
 #ifdef USE_HOST_MODE
-    void systick_config(void);
-
-    /* configure USB VBus */
-    void usb_vbus_config (void);
-
-    /* drive USB VBus */
-    void usb_vbus_drive (uint8_t State);
+/* configure USB VBus */
+void usb_vbus_config (void);
+/* drive USB VBus */
+void usb_vbus_drive (uint8_t State);
 #endif /* USE_HOST_MODE */
 
 #endif /* __DRV_USB_HW_H */

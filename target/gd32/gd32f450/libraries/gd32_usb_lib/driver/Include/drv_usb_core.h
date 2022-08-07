@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -337,13 +338,13 @@ __STATIC_INLINE void usb_globalint_disable(usb_core_regs *usb_regs)
 usb_status usb_basic_init (usb_core_basic *usb_basic, usb_core_regs *usb_regs, usb_core_enum usb_core);
 /* initializes the USB controller registers and prepares the core device mode or host mode operation */
 usb_status usb_core_init (usb_core_basic usb_basic, usb_core_regs *usb_regs);
-/* write a packet into the TX FIFO associated with the endpoint */
+/* write a packet into the Tx FIFO associated with the endpoint */
 usb_status usb_txfifo_write (usb_core_regs *usb_regs, uint8_t *src_buf, uint8_t  fifo_num, uint16_t byte_count);
-/* read a packet from the RX FIFO associated with the endpoint */
+/* read a packet from the Rx FIFO associated with the endpoint */
 void *usb_rxfifo_read (usb_core_regs *usb_regs, uint8_t *dest_buf, uint16_t byte_count);
-/* flush a TX FIFO or all TX FIFOs */
+/* flush a Tx FIFO or all Tx FIFOs */
 usb_status usb_txfifo_flush (usb_core_regs *usb_regs, uint8_t fifo_num);
-/* flush the entire RX FIFO */
+/* flush the entire Rx FIFO */
 usb_status usb_rxfifo_flush (usb_core_regs *usb_regs);
 /* set endpoint or channel TX FIFO size */
 void usb_set_txfifo(usb_core_regs *usb_regs, uint8_t fifo, uint16_t size);

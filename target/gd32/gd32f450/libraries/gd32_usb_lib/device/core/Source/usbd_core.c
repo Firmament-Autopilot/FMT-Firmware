@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -77,7 +78,7 @@ void usbd_init (usb_core_driver *udev, usb_core_enum core, usb_desc *desc, usb_c
 
 #ifndef USE_OTG_MODE
     usb_curmode_set(&udev->regs, DEVICE_MODE);
-#endif
+#endif /* USE_OTG_MODE */
 
     /* initializes device mode */
     (void)usb_devcore_init (udev);

@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -34,7 +35,6 @@ OF SUCH DAMAGE.
 */
 
 #include "dfu_mem.h"
-#include "flash_if.h"
 #include "drv_usb_hw.h"
 #include "usbd_transc.h"
 
@@ -48,14 +48,18 @@ extern struct {
 } prog;
 
 dfu_mem_prop* mem_tab[MAX_USED_MEMORY_MEDIA] = {
-    &dfu_flash_cb
+    &dfu_inter_flash_cb,
+    &dfu_nor_flash_cb,
+    &dfu_nand_flash_cb,
 };
 
 /* The list of memory interface string descriptor pointers. This list
    can be updated whenever a memory has to be added or removed */
 const uint8_t* USBD_DFU_StringDesc[MAX_USED_MEMORY_MEDIA] = 
 {
-    (const uint8_t *)FLASH_IF_STRING
+    (const uint8_t *)INTER_FLASH_IF_STR,
+    (const uint8_t *)NOR_FLASH_IF_STR,
+    (const uint8_t *)NAND_FLASH_IF_STR
 };
 
 static uint8_t dfu_mem_checkaddr (uint32_t addr);
@@ -146,9 +150,8 @@ uint8_t dfu_mem_write (uint8_t *buf, uint32_t addr, uint32_t len)
         return MEM_FAIL;
     }
 
-    if ((addr & MAL_MASK_OB) == OB_RDPT) {
+    if ((addr & MAL_MASK_OB) == OB_RDPT0) {
         option_byte_write(addr, buf);
-
         NVIC_SystemReset();
 
         return MEM_OK;
@@ -178,7 +181,7 @@ uint8_t* dfu_mem_read (uint8_t *buf, uint32_t addr, uint32_t len)
 {
     uint32_t mem_index = 0U;
 
-    if (OB_RDPT != addr) {
+    if ((OB_RDPT0 != addr) && (OB_RDPT1 != addr)) {
         mem_index = dfu_mem_checkaddr(addr);
     }
 

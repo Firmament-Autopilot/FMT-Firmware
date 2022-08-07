@@ -86,7 +86,7 @@ void rcu_deinit(void)
     \brief    enable the peripherals clock
     \param[in]  periph: RCU peripherals, refer to rcu_periph_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_GPIOx (x=A,B,C,D,E,F,G,H,I): GPIO ports clock
+      \arg        RCU_GPIOx (x = A, B, C, D, E, F, G, H, I): GPIO ports clock
       \arg        RCU_CRC: CRC clock
       \arg        RCU_BKPSRAM: BKPSRAM clock
       \arg        RCU_TCMSRAM: TCMSRAM clock
@@ -102,17 +102,17 @@ void rcu_deinit(void)
       \arg        RCU_TRNG: TRNG clock
       \arg        RCU_USBFS: USBFS clock
       \arg        RCU_EXMC: EXMC clock
-      \arg        RCU_TIMERx (x=0,1,2,3,4,5,6,7,8,9,10,11,12,13): TIMER clock
+      \arg        RCU_TIMERx (x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13): TIMER clock
       \arg        RCU_WWDGT: WWDGT clock
-      \arg        RCU_SPIx (x=0,1,2,3,4,5): SPI clock
-      \arg        RCU_USARTx (x=0,1,2,5): USART clock
-      \arg        RCU_UARTx (x=3,4,6,7): UART clock
-      \arg        RCU_I2Cx (x=0,1,2): I2C clock
-      \arg        RCU_CANx (x=0,1): CAN clock
+      \arg        RCU_SPIx (x = 0, 1, 2, 3, 4, 5): SPI clock
+      \arg        RCU_USARTx (x = 0, 1, 2, 5): USART clock
+      \arg        RCU_UARTx (x = 3, 4, 6, 7): UART clock
+      \arg        RCU_I2Cx (x = 0, 1, 2): I2C clock
+      \arg        RCU_CANx (x = 0, 1): CAN clock
       \arg        RCU_PMU: PMU clock
       \arg        RCU_DAC: DAC clock
       \arg        RCU_RTC: RTC clock
-      \arg        RCU_ADCx (x=0,1,2): ADC clock
+      \arg        RCU_ADCx (x = 0, 1, 2): ADC clock
       \arg        RCU_SDIO: SDIO clock
       \arg        RCU_SYSCFG: SYSCFG clock
       \arg        RCU_TLI: TLI clock
@@ -130,7 +130,7 @@ void rcu_periph_clock_enable(rcu_periph_enum periph)
     \brief    disable the peripherals clock
     \param[in]  periph: RCU peripherals, refer to rcu_periph_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_GPIOx (x=A,B,C,D,E,F,G,H,I): GPIO ports clock
+      \arg        RCU_GPIOx (x = A, B, C, D, E, F, G, H, I): GPIO ports clock
       \arg        RCU_CRC: CRC clock
       \arg        RCU_BKPSRAM: BKPSRAM clock
       \arg        RCU_TCMSRAM: TCMSRAM clock
@@ -146,17 +146,17 @@ void rcu_periph_clock_enable(rcu_periph_enum periph)
       \arg        RCU_TRNG: TRNG clock
       \arg        RCU_USBFS: USBFS clock
       \arg        RCU_EXMC: EXMC clock
-      \arg        RCU_TIMERx (x=0,1,2,3,4,5,6,7,8,9,10,11,12,13): TIMER clock
+      \arg        RCU_TIMERx (x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13): TIMER clock
       \arg        RCU_WWDGT: WWDGT clock
-      \arg        RCU_SPIx (x=0,1,2,3,4,5): SPI clock
-      \arg        RCU_USARTx (x=0,1,2,5): USART clock
-      \arg        RCU_UARTx (x=3,4,6,7): UART clock
-      \arg        RCU_I2Cx (x=0,1,2): I2C clock
-      \arg        RCU_CANx (x=0,1): CAN clock
+      \arg        RCU_SPIx (x = 0, 1, 2, 3, 4, 5): SPI clock
+      \arg        RCU_USARTx (x = 0, 1, 2, 5): USART clock
+      \arg        RCU_UARTx (x = 3, 4, 6, 7): UART clock
+      \arg        RCU_I2Cx (x = 0, 1, 2): I2C clock
+      \arg        RCU_CANx (x = 0, 1): CAN clock
       \arg        RCU_PMU: PMU clock
       \arg        RCU_DAC: DAC clock
       \arg        RCU_RTC: RTC clock
-      \arg        RCU_ADCx (x=0,1,2): ADC clock
+      \arg        RCU_ADCx (x = 0, 1, 2): ADC clock
       \arg        RCU_SDIO: SDIO clock
       \arg        RCU_SYSCFG: SYSCFG clock
       \arg        RCU_TLI: TLI clock
@@ -174,7 +174,7 @@ void rcu_periph_clock_disable(rcu_periph_enum periph)
     \brief    enable the peripherals clock when sleep mode
     \param[in]  periph: RCU peripherals, refer to rcu_periph_sleep_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_GPIOx_SLP (x=A,B,C,D,E,F,G,H,I): GPIO ports clock
+      \arg        RCU_GPIOx_SLP (x = A, B, C, D, E, F, G, H, I): GPIO ports clock
       \arg        RCU_CRC_SLP: CRC clock
       \arg        RCU_FMC_SLP: FMC clock
       \arg        RCU_SRAM0_SLP: SRAM0 clock
@@ -193,17 +193,17 @@ void rcu_periph_clock_disable(rcu_periph_enum periph)
       \arg        RCU_TRNG_SLP: TRNG clock
       \arg        RCU_USBFS_SLP: USBFS clock
       \arg        RCU_EXMC_SLP: EXMC clock
-      \arg        RCU_TIMERx_SLP (x=0,1,2,3,4,5,6,7,8,9,10,11,12,13): TIMER clock
+      \arg        RCU_TIMERx_SLP (x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13): TIMER clock
       \arg        RCU_WWDGT_SLP: WWDGT clock
-      \arg        RCU_SPIx_SLP (x=0,1,2,3,4,5): SPI clock
-      \arg        RCU_USARTx_SLP (x=0,1,2,5): USART clock
-      \arg        RCU_UARTx_SLP (x=3,4,6,7): UART clock
-      \arg        RCU_I2Cx_SLP (x=0,1,2): I2C clock
-      \arg        RCU_CANx_SLP (x=0,1): CAN clock
+      \arg        RCU_SPIx_SLP (x = 0, 1, 2, 3, 4, 5): SPI clock
+      \arg        RCU_USARTx_SLP (x = 0, 1, 2, 5): USART clock
+      \arg        RCU_UARTx_SLP (x = 3, 4, 6, 7): UART clock
+      \arg        RCU_I2Cx_SLP (x = 0, 1, 2): I2C clock
+      \arg        RCU_CANx_SLP (x = 0, 1): CAN clock
       \arg        RCU_PMU_SLP: PMU clock
       \arg        RCU_DAC_SLP: DAC clock
       \arg        RCU_RTC_SLP: RTC clock
-      \arg        RCU_ADCx_SLP (x=0,1,2): ADC clock
+      \arg        RCU_ADCx_SLP (x = 0, 1, 2): ADC clock
       \arg        RCU_SDIO_SLP: SDIO clock
       \arg        RCU_SYSCFG_SLP: SYSCFG clock
       \arg        RCU_TLI_SLP: TLI clock
@@ -221,7 +221,7 @@ void rcu_periph_clock_sleep_enable(rcu_periph_sleep_enum periph)
     \brief    disable the peripherals clock when sleep mode
     \param[in]  periph: RCU peripherals, refer to rcu_periph_sleep_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_GPIOx_SLP (x=A,B,C,D,E,F,G,H,I): GPIO ports clock
+      \arg        RCU_GPIOx_SLP (x = A, B, C, D, E, F, G, H, I): GPIO ports clock
       \arg        RCU_CRC_SLP: CRC clock
       \arg        RCU_FMC_SLP: FMC clock
       \arg        RCU_SRAM0_SLP: SRAM0 clock
@@ -240,17 +240,17 @@ void rcu_periph_clock_sleep_enable(rcu_periph_sleep_enum periph)
       \arg        RCU_TRNG_SLP: TRNG clock
       \arg        RCU_USBFS_SLP: USBFS clock
       \arg        RCU_EXMC_SLP: EXMC clock
-      \arg        RCU_TIMERx_SLP (x=0,1,2,3,4,5,6,7,8,9,10,11,12,13): TIMER clock
+      \arg        RCU_TIMERx_SLP (x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13): TIMER clock
       \arg        RCU_WWDGT_SLP: WWDGT clock
-      \arg        RCU_SPIx_SLP (x=0,1,2,3,4,5): SPI clock
-      \arg        RCU_USARTx_SLP (x=0,1,2,5): USART clock
-      \arg        RCU_UARTx_SLP (x=3,4,6,7): UART clock
-      \arg        RCU_I2Cx_SLP (x=0,1,2): I2C clock
-      \arg        RCU_CANx_SLP (x=0,1): CAN clock
+      \arg        RCU_SPIx_SLP (x = 0, 1, 2, 3, 4, 5): SPI clock
+      \arg        RCU_USARTx_SLP (x = 0, 1, 2, 5): USART clock
+      \arg        RCU_UARTx_SLP (x = 3, 4, 6, 7): UART clock
+      \arg        RCU_I2Cx_SLP (x = 0, 1, 2): I2C clock
+      \arg        RCU_CANx_SLP (x = 0, 1): CAN clock
       \arg        RCU_PMU_SLP: PMU clock
       \arg        RCU_DAC_SLP: DAC clock
       \arg        RCU_RTC_SLP: RTC clock
-      \arg        RCU_ADCx_SLP (x=0,1,2): ADC clock
+      \arg        RCU_ADCx_SLP (x = 0, 1, 2): ADC clock
       \arg        RCU_SDIO_SLP: SDIO clock
       \arg        RCU_SYSCFG_SLP: SYSCFG clock
       \arg        RCU_TLI_SLP: TLI clock
@@ -268,7 +268,7 @@ void rcu_periph_clock_sleep_disable(rcu_periph_sleep_enum periph)
     \brief    reset the peripherals
     \param[in]  periph_reset: RCU peripherals reset, refer to rcu_periph_reset_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_GPIOxRST (x=A,B,C,D,E,F,G,H,I): reset GPIO ports
+      \arg        RCU_GPIOxRST (x = A, B, C, D, E, F, G, H, I): reset GPIO ports
       \arg        RCU_CRCRST: reset CRC
       \arg        RCU_DMAxRST (x=0,1): reset DMA
       \arg        RCU_IPARST: reset IPA
@@ -278,16 +278,16 @@ void rcu_periph_clock_sleep_disable(rcu_periph_sleep_enum periph)
       \arg        RCU_TRNGRST: reset TRNG
       \arg        RCU_USBFSRST: reset USBFS
       \arg        RCU_EXMCRST: reset EXMC
-      \arg        RCU_TIMERxRST (x=0,1,2,3,4,5,6,7,8,9,10,11,12,13): reset TIMER
+      \arg        RCU_TIMERxRST (x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13): reset TIMER
       \arg        RCU_WWDGTRST: reset WWDGT
-      \arg        RCU_SPIxRST (x=0,1,2,3,4,5): reset SPI
-      \arg        RCU_USARTxRST (x=0,1,2,5): reset USART
-      \arg        RCU_UARTxRST (x=3,4,6,7): reset UART
-      \arg        RCU_I2CxRST (x=0,1,2): reset I2C
-      \arg        RCU_CANxRST (x=0,1): reset CAN
+      \arg        RCU_SPIxRST (x = 0, 1, 2, 3, 4, 5): reset SPI
+      \arg        RCU_USARTxRST (x = 0, 1, 2, 5): reset USART
+      \arg        RCU_UARTxRST (x = 3, 4, 6, 7): reset UART
+      \arg        RCU_I2CxRST (x = 0, 1, 2): reset I2C
+      \arg        RCU_CANxRST (x = 0, 1): reset CAN
       \arg        RCU_PMURST: reset PMU
       \arg        RCU_DACRST: reset DAC
-      \arg        RCU_ADCRST (x=0,1,2): reset ADC
+      \arg        RCU_ADCRST (x = 0, 1, 2): reset ADC
       \arg        RCU_SDIORST: reset SDIO
       \arg        RCU_SYSCFGRST: reset SYSCFG
       \arg        RCU_TLIRST: reset TLI
@@ -305,7 +305,7 @@ void rcu_periph_reset_enable(rcu_periph_reset_enum periph_reset)
     \brief    disable reset the peripheral
     \param[in]  periph_reset: RCU peripherals reset, refer to rcu_periph_reset_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_GPIOxRST (x=A,B,C,D,E,F,G,H,I): reset GPIO ports
+      \arg        RCU_GPIOxRST (x = A, B, C, D, E, F, G, H, I): reset GPIO ports
       \arg        RCU_CRCRST: reset CRC
       \arg        RCU_DMAxRST (x=0,1): reset DMA
       \arg        RCU_IPARST: reset IPA
@@ -315,16 +315,16 @@ void rcu_periph_reset_enable(rcu_periph_reset_enum periph_reset)
       \arg        RCU_TRNGRST: reset TRNG
       \arg        RCU_USBFSRST: reset USBFS
       \arg        RCU_EXMCRST: reset EXMC
-      \arg        RCU_TIMERxRST (x=0,1,2,3,4,5,6,7,8,9,10,11,12,13): reset TIMER
+      \arg        RCU_TIMERxRST (x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13): reset TIMER
       \arg        RCU_WWDGTRST: reset WWDGT
-      \arg        RCU_SPIxRST (x=0,1,2,3,4,5): reset SPI
-      \arg        RCU_USARTxRST (x=0,1,2,5): reset USART
-      \arg        RCU_UARTxRST (x=3,4,6,7): reset UART
-      \arg        RCU_I2CxRST (x=0,1,2): reset I2C
-      \arg        RCU_CANxRST (x=0,1): reset CAN
+      \arg        RCU_SPIxRST (x = 0, 1, 2, 3, 4, 5): reset SPI
+      \arg        RCU_USARTxRST (x = 0, 1, 2, 5): reset USART
+      \arg        RCU_UARTxRST (x = 3, 4, 6, 7): reset UART
+      \arg        RCU_I2CxRST (x = 0, 1, 2): reset I2C
+      \arg        RCU_CANxRST (x = 0, 1): reset CAN
       \arg        RCU_PMURST: reset PMU
       \arg        RCU_DACRST: reset DAC
-      \arg        RCU_ADCRST (x=0,1,2): reset ADC
+      \arg        RCU_ADCRST (x = 0, 1, 2): reset ADC
       \arg        RCU_SDIORST: reset SDIO
       \arg        RCU_SYSCFGRST: reset SYSCFG
       \arg        RCU_TLIRST: reset TLI
@@ -398,7 +398,7 @@ uint32_t rcu_system_clock_source_get(void)
     \brief    configure the AHB clock prescaler selection
     \param[in]  ck_ahb: AHB clock prescaler selection
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_AHB_CKSYS_DIVx, x=1, 2, 4, 8, 16, 64, 128, 256, 512
+      \arg        RCU_AHB_CKSYS_DIVx (x = 1, 2, 4, 8, 16, 64, 128, 256, 512): select CK_SYS / x as CK_AHB
     \param[out] none
     \retval     none
 */
@@ -417,10 +417,10 @@ void rcu_ahb_clock_config(uint32_t ck_ahb)
     \param[in]  ck_apb1: APB1 clock prescaler selection
                 only one parameter can be selected which is shown as below:
       \arg        RCU_APB1_CKAHB_DIV1: select CK_AHB as CK_APB1
-      \arg        RCU_APB1_CKAHB_DIV2: select CK_AHB/2 as CK_APB1
-      \arg        RCU_APB1_CKAHB_DIV4: select CK_AHB/4 as CK_APB1
-      \arg        RCU_APB1_CKAHB_DIV8: select CK_AHB/8 as CK_APB1
-      \arg        RCU_APB1_CKAHB_DIV16: select CK_AHB/16 as CK_APB1
+      \arg        RCU_APB1_CKAHB_DIV2: select CK_AHB / 2 as CK_APB1
+      \arg        RCU_APB1_CKAHB_DIV4: select CK_AHB / 4 as CK_APB1
+      \arg        RCU_APB1_CKAHB_DIV8: select CK_AHB / 8 as CK_APB1
+      \arg        RCU_APB1_CKAHB_DIV16: select CK_AHB / 16 as CK_APB1
     \param[out] none
     \retval     none
 */
@@ -439,10 +439,10 @@ void rcu_apb1_clock_config(uint32_t ck_apb1)
     \param[in]  ck_apb2: APB2 clock prescaler selection
                 only one parameter can be selected which is shown as below:
       \arg        RCU_APB2_CKAHB_DIV1: select CK_AHB as CK_APB2
-      \arg        RCU_APB2_CKAHB_DIV2: select CK_AHB/2 as CK_APB2
-      \arg        RCU_APB2_CKAHB_DIV4: select CK_AHB/4 as CK_APB2
-      \arg        RCU_APB2_CKAHB_DIV8: select CK_AHB/8 as CK_APB2
-      \arg        RCU_APB2_CKAHB_DIV16: select CK_AHB/16 as CK_APB2
+      \arg        RCU_APB2_CKAHB_DIV2: select CK_AHB / 2 as CK_APB2
+      \arg        RCU_APB2_CKAHB_DIV4: select CK_AHB / 4 as CK_APB2
+      \arg        RCU_APB2_CKAHB_DIV8: select CK_AHB / 8 as CK_APB2
+      \arg        RCU_APB2_CKAHB_DIV16: select CK_AHB / 16 as CK_APB2
     \param[out] none
     \retval     none
 */
@@ -465,7 +465,7 @@ void rcu_apb2_clock_config(uint32_t ck_apb2)
       \arg        RCU_CKOUT0SRC_HXTAL: HXTAL selected
       \arg        RCU_CKOUT0SRC_PLLP: PLLP selected
     \param[in]  ckout0_div: CK_OUT0 divider
-      \arg        RCU_CKOUT0_DIVx(x=1,2,3,4,5): CK_OUT0 is divided by x
+      \arg        RCU_CKOUT0_DIVx(x = 1, 2, 3, 4, 5): CK_OUT0 is divided by x
     \param[out] none
     \retval     none
 */
@@ -488,7 +488,7 @@ void rcu_ckout0_config(uint32_t ckout0_src, uint32_t ckout0_div)
       \arg        RCU_CKOUT1SRC_HXTAL: HXTAL selected
       \arg        RCU_CKOUT1SRC_PLLP: PLLP selected
     \param[in]  ckout1_div: CK_OUT1 divider
-      \arg        RCU_CKOUT1_DIVx(x=1,2,3,4,5): CK_OUT1 is divided by x
+      \arg        RCU_CKOUT1_DIVx(x = 1, 2, 3, 4, 5): CK_OUT1 is divided by x
     \param[out] none
     \retval     none
 */
@@ -604,7 +604,7 @@ ErrStatus rcu_pllsai_config(uint32_t pllsai_n, uint32_t pllsai_p, uint32_t pllsa
       \arg        RCU_RTCSRC_NONE: no clock selected
       \arg        RCU_RTCSRC_LXTAL: CK_LXTAL selected as RTC source clock
       \arg        RCU_RTCSRC_IRC32K: CK_IRC32K selected as RTC source clock
-      \arg        RCU_RTCSRC_HXTAL_DIV_RTCDIV: CK_HXTAL/RTCDIV selected as RTC source clock
+      \arg        RCU_RTCSRC_HXTAL_DIV_RTCDIV: CK_HXTAL / RTCDIV selected as RTC source clock
     \param[out] none
     \retval     none
 */
@@ -623,7 +623,7 @@ void rcu_rtc_clock_config(uint32_t rtc_clock_source)
     \param[in]  rtc_div: RTC clock frequency division
                 only one parameter can be selected which is shown as below:
       \arg        RCU_RTC_HXTAL_NONE: no clock for RTC
-      \arg        RCU_RTC_HXTAL_DIVx: RTCDIV clock select CK_HXTAL/x, x = 2....31
+      \arg        RCU_RTC_HXTAL_DIVx: RTCDIV clock select CK_HXTAL / x, x = 2....31
     \param[out] none
     \retval     none
 */
@@ -736,137 +736,6 @@ void rcu_tli_clock_div_config(uint32_t pllsai_r_div)
     /* reset the PLLSAIRDIV bit and set according to pllsai_r_div */
     reg &= ~RCU_CFG1_PLLSAIRDIV;
     RCU_CFG1 = (reg | pllsai_r_div);
-}
-
-/*!
-    \brief    get the clock stabilization and periphral reset flags
-    \param[in]  flag: the clock stabilization and periphral reset flags, refer to rcu_flag_enum
-                only one parameter can be selected which is shown as below:
-      \arg        RCU_FLAG_IRC16MSTB: IRC16M stabilization flag
-      \arg        RCU_FLAG_HXTALSTB: HXTAL stabilization flag
-      \arg        RCU_FLAG_PLLSTB: PLL stabilization flag
-      \arg        RCU_FLAG_PLLI2SSTB: PLLI2S stabilization flag
-      \arg        RCU_FLAG_PLLSAISTB: PLLSAI stabilization flag
-      \arg        RCU_FLAG_LXTALSTB: LXTAL stabilization flag
-      \arg        RCU_FLAG_IRC32KSTB: IRC32K stabilization flag
-      \arg        RCU_FLAG_IRC48MSTB: IRC48M stabilization flag
-      \arg        RCU_FLAG_BORRST: BOR reset flags
-      \arg        RCU_FLAG_EPRST: external PIN reset flag
-      \arg        RCU_FLAG_PORRST: Power reset flag
-      \arg        RCU_FLAG_SWRST: software reset flag
-      \arg        RCU_FLAG_FWDGTRST: free watchdog timer reset flag
-      \arg        RCU_FLAG_WWDGTRST: window watchdog timer reset flag
-      \arg        RCU_FLAG_LPRST: low-power reset flag
-    \param[out] none
-    \retval     none
-*/
-FlagStatus rcu_flag_get(rcu_flag_enum flag)
-{
-    /* get the rcu flag */
-    if(RESET != (RCU_REG_VAL(flag) & BIT(RCU_BIT_POS(flag)))) {
-        return SET;
-    } else {
-        return RESET;
-    }
-}
-
-/*!
-    \brief    clear all the reset flag
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rcu_all_reset_flag_clear(void)
-{
-    RCU_RSTSCK |= RCU_RSTSCK_RSTFC;
-}
-
-/*!
-    \brief    get the clock stabilization interrupt and ckm flags
-    \param[in]  int_flag: interrupt and ckm flags, refer to rcu_int_flag_enum
-                only one parameter can be selected which is shown as below:
-      \arg        RCU_INT_FLAG_IRC32KSTB: IRC32K stabilization interrupt flag
-      \arg        RCU_INT_FLAG_LXTALSTB: LXTAL stabilization interrupt flag
-      \arg        RCU_INT_FLAG_IRC16MSTB: IRC16M stabilization interrupt flag
-      \arg        RCU_INT_FLAG_HXTALSTB: HXTAL stabilization interrupt flag
-      \arg        RCU_INT_FLAG_PLLSTB: PLL stabilization interrupt flag
-      \arg        RCU_INT_FLAG_PLLI2SSTB: PLLI2S stabilization interrupt flag
-      \arg        RCU_INT_FLAG_PLLSAISTB: PLLSAI stabilization interrupt flag
-      \arg        RCU_INT_FLAG_CKM: HXTAL clock stuck interrupt flag
-      \arg        RCU_INT_FLAG_IRC48MSTB: IRC48M stabilization interrupt flag
-    \param[out] none
-    \retval     FlagStatus: SET or RESET
-*/
-FlagStatus rcu_interrupt_flag_get(rcu_int_flag_enum int_flag)
-{
-    /* get the rcu interrupt flag */
-    if(RESET != (RCU_REG_VAL(int_flag) & BIT(RCU_BIT_POS(int_flag)))) {
-        return SET;
-    } else {
-        return RESET;
-    }
-}
-
-/*!
-    \brief    clear the interrupt flags
-    \param[in]  int_flag: clock stabilization and stuck interrupt flags clear, refer to rcu_int_flag_clear_enum
-                only one parameter can be selected which is shown as below:
-      \arg        RCU_INT_FLAG_IRC32KSTB_CLR: IRC32K stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_LXTALSTB_CLR: LXTAL stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_IRC16MSTB_CLR: IRC16M stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_HXTALSTB_CLR: HXTAL stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_PLLSTB_CLR: PLL stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_PLLI2SSTB_CLR: PLLI2S stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_PLLSAISTB_CLR: PLLSAI stabilization interrupt flag clear
-      \arg        RCU_INT_FLAG_CKM_CLR: clock stuck interrupt flag clear
-      \arg        RCU_INT_FLAG_IRC48MSTB_CLR: IRC48M stabilization interrupt flag clear
-    \param[out] none
-    \retval     none
-*/
-void rcu_interrupt_flag_clear(rcu_int_flag_clear_enum int_flag)
-{
-    RCU_REG_VAL(int_flag) |= BIT(RCU_BIT_POS(int_flag));
-}
-
-/*!
-    \brief    enable the stabilization interrupt
-    \param[in]  interrupt: clock stabilization interrupt, refer to rcu_int_enum
-                Only one parameter can be selected which is shown as below:
-      \arg        RCU_INT_IRC32KSTB: IRC32K stabilization interrupt enable
-      \arg        RCU_INT_LXTALSTB: LXTAL stabilization interrupt enable
-      \arg        RCU_INT_IRC16MSTB: IRC16M stabilization interrupt enable
-      \arg        RCU_INT_HXTALSTB: HXTAL stabilization interrupt enable
-      \arg        RCU_INT_PLLSTB: PLL stabilization interrupt enable
-      \arg        RCU_INT_PLLI2SSTB: PLLI2S stabilization interrupt enable
-      \arg        RCU_INT_PLLSAISTB: PLLSAI stabilization interrupt enable
-      \arg        RCU_INT_IRC48MSTB: IRC48M stabilization interrupt enable
-    \param[out] none
-    \retval     none
-*/
-void rcu_interrupt_enable(rcu_int_enum interrupt)
-{
-    RCU_REG_VAL(interrupt) |= BIT(RCU_BIT_POS(interrupt));
-}
-
-
-/*!
-    \brief    disable the stabilization interrupt
-    \param[in]  interrupt: clock stabilization interrupt, refer to rcu_int_enum
-                only one parameter can be selected which is shown as below:
-      \arg        RCU_INT_IRC32KSTB: IRC32K stabilization interrupt disable
-      \arg        RCU_INT_LXTALSTB: LXTAL stabilization interrupt disable
-      \arg        RCU_INT_IRC16MSTB: IRC16M stabilization interrupt disable
-      \arg        RCU_INT_HXTALSTB: HXTAL stabilization interrupt disable
-      \arg        RCU_INT_PLLSTB: PLL stabilization interrupt disable
-      \arg        RCU_INT_PLLI2SSTB: PLLI2S stabilization interrupt disable
-      \arg        RCU_INT_PLLSAISTB: PLLSAI stabilization interrupt disable
-      \arg        RCU_INT_IRC48MSTB: IRC48M stabilization interrupt disable
-    \param[out] none
-    \retval     none
-*/
-void rcu_interrupt_disable(rcu_int_enum interrupt)
-{
-    RCU_REG_VAL(interrupt) &= ~BIT(RCU_BIT_POS(interrupt));
 }
 
 /*!
@@ -1133,29 +1002,6 @@ void rcu_osci_bypass_mode_disable(rcu_osci_type_enum osci)
 }
 
 /*!
-    \brief    enable the HXTAL clock monitor
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-
-void rcu_hxtal_clock_monitor_enable(void)
-{
-    RCU_CTL |= RCU_CTL_CKMEN;
-}
-
-/*!
-    \brief    disable the HXTAL clock monitor
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rcu_hxtal_clock_monitor_disable(void)
-{
-    RCU_CTL &= ~RCU_CTL_CKMEN;
-}
-
-/*!
     \brief    set the IRC16M adjust value
     \param[in]  irc16m_adjval: IRC16M adjust value, must be between 0 and 0x1F
       \arg        0x00 - 0x1F
@@ -1170,34 +1016,6 @@ void rcu_irc16m_adjust_value_set(uint32_t irc16m_adjval)
     /* reset the IRC16MADJ bits and set according to irc16m_adjval */
     reg &= ~RCU_CTL_IRC16MADJ;
     RCU_CTL = (reg | ((irc16m_adjval & RCU_IRC16M_ADJUST_MASK) << RCU_IRC16M_ADJUST_OFFSET));
-}
-
-/*!
-    \brief    unlock the voltage key
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rcu_voltage_key_unlock(void)
-{
-    RCU_VKEY = RCU_VKEY_UNLOCK;
-}
-
-/*!
-    \brief    deep-sleep mode voltage select
-    \param[in]  dsvol: deep sleep mode voltage
-                only one parameter can be selected which is shown as below:
-      \arg        RCU_DEEPSLEEP_V_0: the core voltage is default value
-      \arg        RCU_DEEPSLEEP_V_1: the core voltage is (default value-0.1)V(customers are not recommended to use it)
-      \arg        RCU_DEEPSLEEP_V_2: the core voltage is (default value-0.2)V(customers are not recommended to use it)
-      \arg        RCU_DEEPSLEEP_V_3: the core voltage is (default value-0.3)V(customers are not recommended to use it)
-    \param[out] none
-    \retval     none
-*/
-void rcu_deepsleep_voltage_set(uint32_t dsvol)
-{
-    dsvol &= RCU_DSV_DSLPVS;
-    RCU_DSV = dsvol;
 }
 
 /*!
@@ -1242,6 +1060,57 @@ void rcu_spread_spectrum_enable(void)
 void rcu_spread_spectrum_disable(void)
 {
     RCU_PLLSSCTL &= ~RCU_PLLSSCTL_SSCGON;
+}
+
+/*!
+    \brief    enable the HXTAL clock monitor
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+
+void rcu_hxtal_clock_monitor_enable(void)
+{
+    RCU_CTL |= RCU_CTL_CKMEN;
+}
+
+/*!
+    \brief    disable the HXTAL clock monitor
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_hxtal_clock_monitor_disable(void)
+{
+    RCU_CTL &= ~RCU_CTL_CKMEN;
+}
+
+/*!
+    \brief    unlock the voltage key
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_voltage_key_unlock(void)
+{
+    RCU_VKEY = RCU_VKEY_UNLOCK;
+}
+
+/*!
+    \brief    deep-sleep mode voltage select
+    \param[in]  dsvol: deep sleep mode voltage
+                only one parameter can be selected which is shown as below:
+      \arg        RCU_DEEPSLEEP_V_0: the core voltage is default value
+      \arg        RCU_DEEPSLEEP_V_1: the core voltage is (default value-0.1)V(customers are not recommended to use it)
+      \arg        RCU_DEEPSLEEP_V_2: the core voltage is (default value-0.2)V(customers are not recommended to use it)
+      \arg        RCU_DEEPSLEEP_V_3: the core voltage is (default value-0.3)V(customers are not recommended to use it)
+    \param[out] none
+    \retval     none
+*/
+void rcu_deepsleep_voltage_set(uint32_t dsvol)
+{
+    dsvol &= RCU_DSV_DSLPVS;
+    RCU_DSV = dsvol;
 }
 
 /*!
@@ -1329,4 +1198,135 @@ uint32_t rcu_clock_freq_get(rcu_clock_freq_enum clock)
         break;
     }
     return ck_freq;
+}
+
+/*!
+    \brief    get the clock stabilization and periphral reset flags
+    \param[in]  flag: the clock stabilization and periphral reset flags, refer to rcu_flag_enum
+                only one parameter can be selected which is shown as below:
+      \arg        RCU_FLAG_IRC16MSTB: IRC16M stabilization flag
+      \arg        RCU_FLAG_HXTALSTB: HXTAL stabilization flag
+      \arg        RCU_FLAG_PLLSTB: PLL stabilization flag
+      \arg        RCU_FLAG_PLLI2SSTB: PLLI2S stabilization flag
+      \arg        RCU_FLAG_PLLSAISTB: PLLSAI stabilization flag
+      \arg        RCU_FLAG_LXTALSTB: LXTAL stabilization flag
+      \arg        RCU_FLAG_IRC32KSTB: IRC32K stabilization flag
+      \arg        RCU_FLAG_IRC48MSTB: IRC48M stabilization flag
+      \arg        RCU_FLAG_BORRST: BOR reset flags
+      \arg        RCU_FLAG_EPRST: external PIN reset flag
+      \arg        RCU_FLAG_PORRST: Power reset flag
+      \arg        RCU_FLAG_SWRST: software reset flag
+      \arg        RCU_FLAG_FWDGTRST: free watchdog timer reset flag
+      \arg        RCU_FLAG_WWDGTRST: window watchdog timer reset flag
+      \arg        RCU_FLAG_LPRST: low-power reset flag
+    \param[out] none
+    \retval     none
+*/
+FlagStatus rcu_flag_get(rcu_flag_enum flag)
+{
+    /* get the rcu flag */
+    if(RESET != (RCU_REG_VAL(flag) & BIT(RCU_BIT_POS(flag)))) {
+        return SET;
+    } else {
+        return RESET;
+    }
+}
+
+/*!
+    \brief    clear all the reset flag
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_all_reset_flag_clear(void)
+{
+    RCU_RSTSCK |= RCU_RSTSCK_RSTFC;
+}
+
+/*!
+    \brief    get the clock stabilization interrupt and ckm flags
+    \param[in]  int_flag: interrupt and ckm flags, refer to rcu_int_flag_enum
+                only one parameter can be selected which is shown as below:
+      \arg        RCU_INT_FLAG_IRC32KSTB: IRC32K stabilization interrupt flag
+      \arg        RCU_INT_FLAG_LXTALSTB: LXTAL stabilization interrupt flag
+      \arg        RCU_INT_FLAG_IRC16MSTB: IRC16M stabilization interrupt flag
+      \arg        RCU_INT_FLAG_HXTALSTB: HXTAL stabilization interrupt flag
+      \arg        RCU_INT_FLAG_PLLSTB: PLL stabilization interrupt flag
+      \arg        RCU_INT_FLAG_PLLI2SSTB: PLLI2S stabilization interrupt flag
+      \arg        RCU_INT_FLAG_PLLSAISTB: PLLSAI stabilization interrupt flag
+      \arg        RCU_INT_FLAG_CKM: HXTAL clock stuck interrupt flag
+      \arg        RCU_INT_FLAG_IRC48MSTB: IRC48M stabilization interrupt flag
+    \param[out] none
+    \retval     FlagStatus: SET or RESET
+*/
+FlagStatus rcu_interrupt_flag_get(rcu_int_flag_enum int_flag)
+{
+    /* get the rcu interrupt flag */
+    if(RESET != (RCU_REG_VAL(int_flag) & BIT(RCU_BIT_POS(int_flag)))) {
+        return SET;
+    } else {
+        return RESET;
+    }
+}
+
+/*!
+    \brief    clear the interrupt flags
+    \param[in]  int_flag: clock stabilization and stuck interrupt flags clear, refer to rcu_int_flag_clear_enum
+                only one parameter can be selected which is shown as below:
+      \arg        RCU_INT_FLAG_IRC32KSTB_CLR: IRC32K stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_LXTALSTB_CLR: LXTAL stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_IRC16MSTB_CLR: IRC16M stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_HXTALSTB_CLR: HXTAL stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_PLLSTB_CLR: PLL stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_PLLI2SSTB_CLR: PLLI2S stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_PLLSAISTB_CLR: PLLSAI stabilization interrupt flag clear
+      \arg        RCU_INT_FLAG_CKM_CLR: clock stuck interrupt flag clear
+      \arg        RCU_INT_FLAG_IRC48MSTB_CLR: IRC48M stabilization interrupt flag clear
+    \param[out] none
+    \retval     none
+*/
+void rcu_interrupt_flag_clear(rcu_int_flag_clear_enum int_flag)
+{
+    RCU_REG_VAL(int_flag) |= BIT(RCU_BIT_POS(int_flag));
+}
+
+/*!
+    \brief    enable the stabilization interrupt
+    \param[in]  interrupt: clock stabilization interrupt, refer to rcu_int_enum
+                Only one parameter can be selected which is shown as below:
+      \arg        RCU_INT_IRC32KSTB: IRC32K stabilization interrupt enable
+      \arg        RCU_INT_LXTALSTB: LXTAL stabilization interrupt enable
+      \arg        RCU_INT_IRC16MSTB: IRC16M stabilization interrupt enable
+      \arg        RCU_INT_HXTALSTB: HXTAL stabilization interrupt enable
+      \arg        RCU_INT_PLLSTB: PLL stabilization interrupt enable
+      \arg        RCU_INT_PLLI2SSTB: PLLI2S stabilization interrupt enable
+      \arg        RCU_INT_PLLSAISTB: PLLSAI stabilization interrupt enable
+      \arg        RCU_INT_IRC48MSTB: IRC48M stabilization interrupt enable
+    \param[out] none
+    \retval     none
+*/
+void rcu_interrupt_enable(rcu_int_enum interrupt)
+{
+    RCU_REG_VAL(interrupt) |= BIT(RCU_BIT_POS(interrupt));
+}
+
+
+/*!
+    \brief    disable the stabilization interrupt
+    \param[in]  interrupt: clock stabilization interrupt, refer to rcu_int_enum
+                only one parameter can be selected which is shown as below:
+      \arg        RCU_INT_IRC32KSTB: IRC32K stabilization interrupt disable
+      \arg        RCU_INT_LXTALSTB: LXTAL stabilization interrupt disable
+      \arg        RCU_INT_IRC16MSTB: IRC16M stabilization interrupt disable
+      \arg        RCU_INT_HXTALSTB: HXTAL stabilization interrupt disable
+      \arg        RCU_INT_PLLSTB: PLL stabilization interrupt disable
+      \arg        RCU_INT_PLLI2SSTB: PLLI2S stabilization interrupt disable
+      \arg        RCU_INT_PLLSAISTB: PLLSAI stabilization interrupt disable
+      \arg        RCU_INT_IRC48MSTB: IRC48M stabilization interrupt disable
+    \param[out] none
+    \retval     none
+*/
+void rcu_interrupt_disable(rcu_int_enum interrupt)
+{
+    RCU_REG_VAL(interrupt) &= ~BIT(RCU_BIT_POS(interrupt));
 }

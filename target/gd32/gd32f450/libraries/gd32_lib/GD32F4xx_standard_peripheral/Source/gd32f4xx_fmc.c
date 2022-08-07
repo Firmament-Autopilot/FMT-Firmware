@@ -39,7 +39,7 @@ OF SUCH DAMAGE.
 #include "gd32f4xx_fmc.h"
 
 /*!
-    \brief    set the wait state counter value
+    \brief    set the FMC wait state counter
     \param[in]  wscnt: wait state counter value
                 only one parameter can be selected which is shown as below:
       \arg        WS_WSCNT_0: FMC 0 wait
@@ -122,7 +122,7 @@ fmc_state_enum fmc_page_erase(uint32_t page_addr)
     fmc_state = fmc_ready_wait(FMC_TIMEOUT_COUNT);
 
     if(FMC_READY == fmc_state) {
-        /* unlock  */
+        /* unlock page erase operation */
         FMC_PEKEY = UNLOCK_PE_KEY;
 
         /* start page erase */
@@ -145,7 +145,7 @@ fmc_state_enum fmc_page_erase(uint32_t page_addr)
 #endif
 
 /*!
-    \brief    erase sector
+    \brief    FMC erase sector
     \param[in]  fmc_sector: select the sector to erase
                 only one parameter can be selected which is shown as below:
       \arg        CTL_SECTOR_NUMBER_0: sector 0
@@ -212,7 +212,7 @@ fmc_state_enum fmc_sector_erase(uint32_t fmc_sector)
 }
 
 /*!
-    \brief    erase whole chip
+    \brief    FMC erase whole chip
     \param[in]  none
     \param[out] none
     \retval     state of FMC
@@ -248,7 +248,7 @@ fmc_state_enum fmc_mass_erase(void)
 }
 
 /*!
-    \brief    erase all FMC sectors in bank0
+    \brief    FMC erase whole bank0
     \param[in]  none
     \param[out] none
     \retval     state of FMC
@@ -284,7 +284,7 @@ fmc_state_enum fmc_bank0_erase(void)
 }
 
 /*!
-    \brief    erase all FMC sectors in bank1
+    \brief    FMC erase whole bank1
     \param[in]  none
     \param[out] none
     \retval     state of FMC
@@ -796,7 +796,7 @@ uint16_t ob_write_protection1_get(void)
 }
 
 /*!
-    \brief    get the FMC D-bus read protection protection
+    \brief    get the FMC erase/program protection and D-bus read protection option bytes value
     \param[in]  none
     \param[out] none
     \retval     the FMC erase/program protection and D-bus read protection option bytes value
@@ -812,7 +812,7 @@ uint16_t ob_drp0_get(void)
 }
 
 /*!
-    \brief    get the FMC D-bus read protection protection
+    \brief    get the FMC erase/program protection and D-bus read protection option bytes value
     \param[in]  none
     \param[out] none
     \retval     the FMC erase/program protection and D-bus read protection option bytes value
@@ -828,7 +828,7 @@ uint16_t ob_drp1_get(void)
 }
 
 /*!
-    \brief    get the FMC option byte security protection
+    \brief    get option byte security protection code value
     \param[in]  none
     \param[out] none
     \retval     FlagStatus: SET or RESET

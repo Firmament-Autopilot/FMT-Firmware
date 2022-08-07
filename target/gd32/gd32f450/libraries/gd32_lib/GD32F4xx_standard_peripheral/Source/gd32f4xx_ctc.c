@@ -137,26 +137,11 @@ void ctc_refsource_polarity_config(uint32_t polarity)
 }
 
 /*!
-    \brief    select USBFS or USBHS SOF signal
-    \param[in]  usbsof:
-      \arg        CTC_USBSOFSEL_USBHS: USBHS SOF signal is selected
-      \arg        CTC_USBSOFSEL_USBFS: USBFS SOF signal is selected
-    \param[out] none
-    \retval     none
-*/
-void ctc_usbsof_signal_select(uint32_t usbsof)
-{
-    CTC_CTL1 &= (uint32_t)(~CTC_CTL1_USBSOFSEL);
-    CTC_CTL1 |= (uint32_t)usbsof;
-}
-
-/*!
     \brief    select reference signal source
     \param[in]  refs:
                 only one parameter can be selected which is shown as below:
       \arg        CTC_REFSOURCE_GPIO: GPIO is selected
       \arg        CTC_REFSOURCE_LXTAL: LXTAL is selected
-      \arg        CTC_REFSOURCE_USBSOF: USBSOF is selected
     \param[out] none
     \retval     none
 */

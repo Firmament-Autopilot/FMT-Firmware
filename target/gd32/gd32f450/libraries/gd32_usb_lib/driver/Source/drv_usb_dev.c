@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -99,7 +100,7 @@ usb_status usb_devcore_init (usb_core_driver *udev)
         /* set Rx FIFO size */
         usb_set_rxfifo(&udev->regs, RX_FIFO_FS_SIZE);
 
-        /* set endpoint 0 to 3's TX FIFO length and RAM address */
+        /* set endpoint 0 to 3's Tx FIFO length and RAM address */
         for (i = 0U; i < USBFS_MAX_EP_COUNT; i++) {
             usb_set_txfifo(&udev->regs, i, USBFS_TX_FIFO_SIZE[i]);
         }
@@ -126,10 +127,10 @@ usb_status usb_devcore_init (usb_core_driver *udev)
 
     /* make sure all FIFOs are flushed */
 
-    /* flush all TX FIFOs */
+    /* flush all Tx FIFOs */
     (void)usb_txfifo_flush (&udev->regs, 0x10U);
 
-    /* flush entire RX FIFO */
+    /* flush entire Rx FIFO */
     (void)usb_rxfifo_flush (&udev->regs);
 
     /* clear all pending device interrupts */
@@ -230,7 +231,6 @@ usb_status usb_transc0_active (usb_core_driver *udev, usb_transc *transc)
     }
 
     /* endpoint 0 is activated after USB clock is enabled */
-
     *reg_addr &= ~(DEPCTL_MPL | DEPCTL_EPTYPE | DIEPCTL_TXFNUM);
 
     /* set endpoint 0 maximum packet length */
@@ -396,7 +396,7 @@ usb_status usb_transc_inxfer (usb_core_driver *udev, usb_transc *transc)
 
     if ((uint8_t)USB_USE_FIFO == udev->bp.transfer_mode) {
         if (transc->ep_type != (uint8_t)USB_EPTYPE_ISOC) {
-            /* enable the TX FIFO empty interrupt for this endpoint */
+            /* enable the Tx FIFO empty interrupt for this endpoint */
             if (transc->xfer_len > 0U) {
                 udev->regs.dr->DIEPFEINTEN |= 1U << ep_num;
             }
@@ -630,7 +630,7 @@ void usb_dev_suspend (usb_core_driver *udev)
         *udev->regs.PWRCLKCTL |= PWRCLKCTL_SHCLK;
 
         /* enter DEEP_SLEEP mode with LDO in low power mode */
-        pmu_to_deepsleepmode(PMU_LDO_LOWPOWER,PMU_LOWDRIVER_DISABLE,WFI_CMD);
+        pmu_to_deepsleepmode (PMU_LDO_LOWPOWER,PMU_LOWDRIVER_DISABLE,WFI_CMD);
     }
 }
 

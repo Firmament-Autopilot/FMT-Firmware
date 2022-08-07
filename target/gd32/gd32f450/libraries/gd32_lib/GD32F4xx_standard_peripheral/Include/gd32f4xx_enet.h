@@ -124,7 +124,7 @@ OF SUCH DAMAGE.
 #define ENET_MAC_HLH                     REG32((ENET) + 0x0008U)                  /*!< ethernet MAC hash list high register */
 #define ENET_MAC_HLL                     REG32((ENET) + 0x000CU)                  /*!< ethernet MAC hash list low register */
 #define ENET_MAC_PHY_CTL                 REG32((ENET) + 0x0010U)                  /*!< ethernet MAC PHY control register */
-#define ENET_MAC_PHY_DATA                REG32((ENET) + 0x0014U)                  /*!< ethernet MAC MII data register */
+#define ENET_MAC_PHY_DATA                REG32((ENET) + 0x0014U)                  /*!< ethernet MAC PHY data register */
 #define ENET_MAC_FCTL                    REG32((ENET) + 0x0018U)                  /*!< ethernet MAC flow control register */
 #define ENET_MAC_VLT                     REG32((ENET) + 0x001CU)                  /*!< ethernet MAC VLAN tag register */
 #define ENET_MAC_RWFF                    REG32((ENET) + 0x0028U)                  /*!< ethernet MAC remote wakeup frame filter register */
@@ -1113,7 +1113,7 @@ typedef struct
 #define ENET_MDC_HCLK_DIV62                       MAC_PHY_CTL_CLR(1)                            /*!< HCLK:100-150 MHz; MDC clock= HCLK/62 */
 #define ENET_MDC_HCLK_DIV16                       MAC_PHY_CTL_CLR(2)                            /*!< HCLK:20-35 MHz; MDC clock= HCLK/16 */
 #define ENET_MDC_HCLK_DIV26                       MAC_PHY_CTL_CLR(3)                            /*!< HCLK:35-60 MHz; MDC clock= HCLK/26 */
-#define ENET_MDC_HCLK_DIV102                      MAC_PHY_CTL_CLR(4)                            /*!< HCLK:150-200 MHz; MDC clock= HCLK/102 */
+#define ENET_MDC_HCLK_DIV102                      MAC_PHY_CTL_CLR(4)                            /*!< HCLK:150-240 MHz; MDC clock= HCLK/102 */
 
 #define MAC_PHY_CTL_PR(regval)                    (BITS(6,10) & ((uint32_t)(regval) << 6))      /*!< write value to ENET_MAC_PHY_CTL_PR bit field */
 

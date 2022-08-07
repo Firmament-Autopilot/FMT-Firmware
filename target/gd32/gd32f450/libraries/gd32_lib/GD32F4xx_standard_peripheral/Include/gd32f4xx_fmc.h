@@ -12,27 +12,27 @@
 /*
     Copyright (c) 2022, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -126,17 +126,16 @@ OF SUCH DAMAGE.
 
 /* constants definitions */
 /* fmc state */
-typedef enum
-{
-    FMC_READY,                                                    /*!< the operation has been completed */
+typedef enum {
+    FMC_READY = 0,                                                /*!< the operation has been completed */
     FMC_BUSY,                                                     /*!< the operation is in progress */
     FMC_RDDERR,                                                   /*!< read D-bus protection error */
     FMC_PGSERR,                                                   /*!< program sequence error */
     FMC_PGMERR,                                                   /*!< program size not match error */
     FMC_WPERR,                                                    /*!< erase/program protection error */
     FMC_OPERR,                                                    /*!< operation error */
-    FMC_TOERR,                                                    /*!< timeout error */
-}fmc_state_enum;
+    FMC_TOERR                                                     /*!< timeout error */
+} fmc_state_enum;
 
 /* unlock key */
 #define UNLOCK_KEY0                ((uint32_t)0x45670123U)        /*!< unlock key 0 */
@@ -181,7 +180,7 @@ typedef enum
 #define OB_BB_DISABLE              OBCTL0_BB(0)                   /*!< boot from bank0 */
 #define OB_BB_ENABLE               OBCTL0_BB(1)                   /*!< boot from bank1 or bank0 if bank1 is void */
 
-/* option byte software/hardware free watch dog timer */  
+/* option byte software/hardware free watch dog timer */
 #define OBCTL0_NWDG_HW(regval)     (BIT(5) & ((uint32_t)(regval))<< 5)
 #define OB_FWDGT_SW                OBCTL0_NWDG_HW(1)              /*!< software free watchdog */
 #define OB_FWDGT_HW                OBCTL0_NWDG_HW(0)              /*!< hardware free watchdog */
@@ -255,12 +254,12 @@ typedef enum
 #define OB_DRP_23_27               ((uint32_t)0x08000000U)        /*!< D-bus read protection protection of sector 23~27 */
 #define OB_DRP_ALL                 ((uint32_t)0x0FFF0FFFU)        /*!< D-bus read protection protection of all sectors */
 
-/* double banks or single bank selection when flash size is 1M bytes */  
+/* double banks or single bank selection when flash size is 1M bytes */
 #define OBCTL0_DBS(regval)         (BIT(30) & ((uint32_t)(regval) << 30U))
 #define OB_DBS_DISABLE             OBCTL0_DBS(0)                  /*!< single bank when flash size is 1M bytes */
 #define OB_DBS_ENABLE              OBCTL0_DBS(1)                  /*!< double bank when flash size is 1M bytes */
 
-/* option bytes D-bus read protection mode */  
+/* option bytes D-bus read protection mode */
 #define OBCTL0_DRP(regval)         (BIT(31) & ((uint32_t)(regval) << 31U))
 #define OB_DRP_DISABLE             OBCTL0_DRP(0)                  /*!< the WPx bits used as erase/program protection of each sector */
 #define OB_DRP_ENABLE              OBCTL0_DRP(1)                  /*!< the WPx bits used as erase/program protection and D-bus read protection of each sector */
@@ -297,7 +296,7 @@ typedef enum
 #define CTL_SECTOR_NUMBER_23       CTL_SN(27)                     /*!< sector 23  */
 
 
-/* FMC program size */ 
+/* FMC program size */
 #define CTL_PSZ(regval)            (BITS(8,9) & ((uint32_t)(regval))<< 8U)
 #define CTL_PSZ_BYTE               CTL_PSZ(0)                     /*!< FMC program by byte access */
 #define CTL_PSZ_HALF_WORD          CTL_PSZ(1)                     /*!< FMC program by half-word access */
@@ -372,15 +371,15 @@ ErrStatus ob_write_protection_disable(uint32_t ob_wp);
 void ob_drp_enable(uint32_t ob_drp);
 /* disable erase/program protection and D-bus read protection */
 void ob_drp_disable(void);
-/* set the option byte security protection level */
+/* configure security protection level */
 void ob_security_protection_config(uint8_t ob_spc);
-/* write the FMC option byte user */
+/* program the FMC user option byte */
 void ob_user_write(uint32_t ob_fwdgt, uint32_t ob_deepsleep, uint32_t ob_stdby);
-/* option byte BOR threshold value */
+/* program the option byte BOR threshold value */
 void ob_user_bor_threshold(uint32_t ob_bor_th);
 /* configure the boot mode */
 void ob_boot_mode_config(uint32_t boot_mode);
-/* get the FMC option byte user */
+/* get the FMC user option byte */
 uint8_t ob_user_get(void);
 /* get the FMC option byte write protection */
 uint16_t ob_write_protection0_get(void);
@@ -392,7 +391,7 @@ uint16_t ob_drp0_get(void);
 uint16_t ob_drp1_get(void);
 /* get option byte security protection code value */
 FlagStatus ob_spc_get(void);
-/* get the FMC threshold value */
+/* get the FMC option byte BOR threshold value */
 uint8_t ob_user_bor_threshold_get(void);
 
 /* FMC interrupts and flags management functions */
@@ -408,9 +407,9 @@ void fmc_interrupt_disable(uint32_t fmc_int);
 FlagStatus fmc_interrupt_flag_get(uint32_t fmc_int_flag);
 /* clear the FMC interrupt flag */
 void fmc_interrupt_flag_clear(uint32_t fmc_int_flag);
-/* return the FMC state */
+/* get the FMC state */
 fmc_state_enum fmc_state_get(void);
-/* check FMC ready or not */
+/* check whether FMC is ready or not */
 fmc_state_enum fmc_ready_wait(uint32_t timeout);
 
 #endif /* GD32F4XX_FMC_H */

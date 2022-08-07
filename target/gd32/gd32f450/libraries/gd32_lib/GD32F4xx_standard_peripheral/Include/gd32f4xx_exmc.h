@@ -6,6 +6,7 @@
     \version 2018-12-12, V2.0.0, firmware for GD32F4xx
     \version 2020-09-30, V2.1.0, firmware for GD32F4xx
     \version 2022-03-09, V3.0.0, firmware for GD32F4xx
+    \version 2022-06-08, V3.0.1, firmware for GD32F4xx
 */
 
 /*
@@ -208,7 +209,7 @@ OF SUCH DAMAGE.
 /* EXMC_SDARI */
 #define EXMC_SDARI_REC                      BIT(0)                        /*!< refresh error flag clear */
 #define EXMC_SDARI_ARINTV                   BITS(1,13)                    /*!< auto-refresh interval */
-#define EXMC_SDARI_REIE                     BIT(14)                       /*!< interrupt refresh error enable */
+#define EXMC_SDARI_REIE                     BIT(14)                       /*!< refresh error interrupt enable */
 
 /* EXMC_SDSTAT */
 #define EXMC_SDSDAT_REIF                    BIT(0)                        /*!< refresh error interrupt flag */
@@ -330,7 +331,7 @@ typedef struct
 {
     uint32_t sdram_device;                                              /*!< device of SDRAM */
     uint32_t pipeline_read_delay;                                       /*!< the delay for reading data after CAS latency in HCLK clock cycles */
-    uint32_t brust_read_switch;                                         /*!< enable or disable the burst read */
+    uint32_t burst_read_switch;                                         /*!< enable or disable the burst read */
     uint32_t sdclock_config;                                            /*!< the SDCLK memory clock for both SDRAM banks */
     uint32_t write_protection;                                          /*!< enable or disable SDRAM bank write protection function */
     uint32_t cas_latency;                                               /*!< configure the SDRAM CAS latency */
@@ -718,7 +719,7 @@ void exmc_norsram_disable(uint32_t exmc_norsram_region);
 /* NAND */
 /* deinitialize EXMC NAND bank */
 void exmc_nand_deinit(uint32_t exmc_nand_bank);
-/* initialize exmc_norsram_parameter_struct with the default values */
+/* initialize exmc_nand_parameter_struct with the default values */
 void exmc_nand_struct_para_init(exmc_nand_parameter_struct* exmc_nand_init_struct);
 /* initialize EXMC NAND bank */
 void exmc_nand_init(exmc_nand_parameter_struct* exmc_nand_init_struct);
@@ -744,6 +745,8 @@ void exmc_sdram_deinit(uint32_t exmc_sdram_device);
 void exmc_sdram_struct_para_init(exmc_sdram_parameter_struct* exmc_sdram_init_struct);
 /* initialize EXMC SDRAM device */
 void exmc_sdram_init(exmc_sdram_parameter_struct* exmc_sdram_init_struct);
+/* initialize exmc_sdram_command_parameter_struct with the default values */
+void exmc_sdram_struct_command_para_init(exmc_sdram_command_parameter_struct *exmc_sdram_command_init_struct);
 /* SQPIPSRAM */
 /* deinitialize EXMC SQPIPSRAM */
 void exmc_sqpipsram_deinit(void);
@@ -774,7 +777,7 @@ void exmc_sdram_command_config(exmc_sdram_command_parameter_struct* exmc_sdram_c
 void exmc_sdram_refresh_count_set(uint32_t exmc_count);
 /* set the number of successive auto-refresh command */
 void exmc_sdram_autorefresh_number_set(uint32_t exmc_number);
-/* config the write protection function */
+/* configure the write protection function */
 void exmc_sdram_write_protection_config(uint32_t exmc_sdram_device, ControlStatus newvalue);
 /* get the status of SDRAM device0 or device1 */
 uint32_t exmc_sdram_bankstatus_get(uint32_t exmc_sdram_device);

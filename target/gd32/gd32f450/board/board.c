@@ -33,7 +33,7 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    { "sd0", "/", "elm", 0, NULL },
+    // { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 

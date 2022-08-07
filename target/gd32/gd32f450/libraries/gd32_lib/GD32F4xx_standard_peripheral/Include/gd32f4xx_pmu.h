@@ -183,7 +183,7 @@ void pmu_to_sleepmode(uint8_t sleepmodecmd);
 /* PMU work in deepsleep mode */
 void pmu_to_deepsleepmode(uint32_t ldo, uint32_t lowdrive, uint8_t deepsleepmodecmd);
 /* PMU work in standby mode */
-void pmu_to_standbymode(uint8_t standbymodecmd);
+void pmu_to_standbymode(void);
 /* enable PMU wakeup pin */
 void pmu_wakeup_pin_enable(void);
 /* disable PMU wakeup pin */

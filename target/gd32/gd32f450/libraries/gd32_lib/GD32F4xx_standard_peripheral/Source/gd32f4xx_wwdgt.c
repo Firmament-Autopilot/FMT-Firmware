@@ -37,11 +37,6 @@ OF SUCH DAMAGE.
 
 #include "gd32f4xx_wwdgt.h"
 
-/* write value to WWDGT_CTL_CNT bit field */
-#define CTL_CNT(regval)             (BITS(0,6) & ((uint32_t)(regval) << 0))
-/* write value to WWDGT_CFG_WIN bit field */
-#define CFG_WIN(regval)             (BITS(0,6) & ((uint32_t)(regval) << 0))
-
 /*!
     \brief    reset the window watchdog timer configuration
     \param[in]  none
@@ -73,12 +68,7 @@ void wwdgt_enable(void)
 */
 void wwdgt_counter_update(uint16_t counter_value)
 {
-    uint32_t reg = 0U;
-    
-    reg = (WWDGT_CTL & (~WWDGT_CTL_CNT));
-    reg |= CTL_CNT(counter_value);
-    
-    WWDGT_CTL = reg;
+    WWDGT_CTL = (uint32_t)(CTL_CNT(counter_value));
 }
 
 /*!
@@ -96,19 +86,9 @@ void wwdgt_counter_update(uint16_t counter_value)
 */
 void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler)
 {
-    uint32_t reg_cfg = 0U, reg_ctl = 0U;
-
-    /* clear WIN and PSC bits, clear CNT bit */
-    reg_cfg = (WWDGT_CFG &(~(WWDGT_CFG_WIN|WWDGT_CFG_PSC)));
-    reg_ctl = (WWDGT_CTL &(~WWDGT_CTL_CNT));
-  
     /* configure WIN and PSC bits, configure CNT bit */
-    reg_cfg |= CFG_WIN(window);
-    reg_cfg |= prescaler;
-    reg_ctl |= CTL_CNT(counter);
-    
-    WWDGT_CTL = reg_ctl;
-    WWDGT_CFG = reg_cfg;
+    WWDGT_CTL = (uint32_t)(CTL_CNT(counter));
+    WWDGT_CFG = (uint32_t)(CFG_WIN(window) | prescaler);
 }
 
 /*!
@@ -134,7 +114,7 @@ FlagStatus wwdgt_flag_get(void)
 */
 void wwdgt_flag_clear(void)
 {
-    WWDGT_STAT &= (~WWDGT_STAT_EWIF);
+    WWDGT_STAT = (uint32_t)(RESET);
 }
 
 /*!

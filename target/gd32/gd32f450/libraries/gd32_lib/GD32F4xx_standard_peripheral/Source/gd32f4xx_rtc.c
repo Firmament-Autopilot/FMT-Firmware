@@ -295,7 +295,7 @@ void rtc_current_time_get(rtc_parameter_struct *rtc_initpara_struct)
     rtc_initpara_struct->second = (uint8_t)GET_TIME_SC(temp_tr);
     rtc_initpara_struct->factor_asyn = (uint16_t)GET_PSC_FACTOR_A(temp_pscr);
     rtc_initpara_struct->factor_syn = (uint16_t)GET_PSC_FACTOR_S(temp_pscr);
-    rtc_initpara_struct->am_pm = (uint32_t)(temp_pscr & RTC_TIME_PM);
+    rtc_initpara_struct->am_pm = (uint32_t)(temp_tr & RTC_TIME_PM);
     rtc_initpara_struct->display_format = (uint32_t)(temp_ctlr & RTC_CTL_CS);
 }
 

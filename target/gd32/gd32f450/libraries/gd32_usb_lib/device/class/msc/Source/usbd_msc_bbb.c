@@ -5,6 +5,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -39,11 +40,11 @@ OF SUCH DAMAGE.
 
 /* local function prototypes ('static') */
 static void msc_bbb_cbw_decode (usb_core_driver *udev);
-static void msc_bbb_data_send (usb_core_driver *udev, uint8_t *pbuf, uint32_t Len);
-static void msc_bbb_abort (usb_core_driver *udev);
+static void msc_bbb_data_send  (usb_core_driver *udev, uint8_t *pbuf, uint32_t Len);
+static void msc_bbb_abort      (usb_core_driver *udev);
 
 /*!
-    \brief      initialize the bbb process
+    \brief      initialize the BBB process
     \param[in]  udev: pointer to USB device instance
     \param[out] none
     \retval     none
@@ -62,10 +63,10 @@ void msc_bbb_init (usb_core_driver *udev)
         usbd_mem_fops->mem_init(lun_num);
     }
 
-    /* flush the RX FIFO */
+    /* flush the Rx FIFO */
     usbd_fifo_flush (udev, MSC_OUT_EP);
 
-    /* flush the TX FIFO */
+    /* flush the Tx FIFO */
     usbd_fifo_flush (udev, MSC_IN_EP);
 
     /* prepare endpoint to receive the first BBB CBW */
@@ -189,14 +190,14 @@ void msc_bbb_clrfeature (usb_core_driver *udev, uint8_t ep_num)
 {
     usbd_msc_handler *msc = (usbd_msc_handler *)udev->dev.class_data[USBD_MSC_INTERFACE];
 
-    if (msc->bbb_status == BBB_STATUS_ERROR)/* bad CBW signature */ {
+    if (msc->bbb_status == BBB_STATUS_ERROR) { /* bad CBW signature */ 
         usbd_ep_stall(udev, MSC_IN_EP);
 
         msc->bbb_status = BBB_STATUS_NORMAL;
     } else if(((ep_num & 0x80U) == 0x80U) && (msc->bbb_status != BBB_STATUS_RECOVERY)) {
         msc_bbb_csw_send (udev, CSW_CMD_FAILED);
     } else {
-    
+
     }
 }
 
@@ -213,11 +214,11 @@ static void msc_bbb_cbw_decode (usb_core_driver *udev)
     msc->bbb_csw.dCSWTag = msc->bbb_cbw.dCBWTag;
     msc->bbb_csw.dCSWDataResidue = msc->bbb_cbw.dCBWDataTransferLength;
 
-    if ((BBB_CBW_LENGTH != usbd_rxcount_get (udev, MSC_OUT_EP)) ||
-            (BBB_CBW_SIGNATURE != msc->bbb_cbw.dCBWSignature)||
-                (msc->bbb_cbw.bCBWLUN > 1U) || 
-                    (msc->bbb_cbw.bCBWCBLength < 1U) || 
-                        (msc->bbb_cbw.bCBWCBLength > 16U)) {
+    if((BBB_CBW_LENGTH != usbd_rxcount_get(udev, MSC_OUT_EP)) ||
+            (BBB_CBW_SIGNATURE != msc->bbb_cbw.dCBWSignature) ||
+            (msc->bbb_cbw.bCBWLUN > 1U) ||
+            (msc->bbb_cbw.bCBWCBLength < 1U) ||
+            (msc->bbb_cbw.bCBWCBLength > 16U)) {
         /* illegal command handler */
         scsi_sense_code (udev, msc->bbb_cbw.bCBWLUN, ILLEGAL_REQUEST, INVALID_CDB);
 
@@ -235,10 +236,10 @@ static void msc_bbb_cbw_decode (usb_core_driver *udev)
             } else if (0U == msc->bbb_datalen) {
                 msc_bbb_csw_send (udev, CSW_CMD_PASSED);
             } else {
-            
+
             }
         } else {
-        
+
         }
     }
 }
@@ -275,8 +276,8 @@ static void msc_bbb_abort (usb_core_driver *udev)
     usbd_msc_handler *msc = (usbd_msc_handler *)udev->dev.class_data[USBD_MSC_INTERFACE];
 
     if ((0U == msc->bbb_cbw.bmCBWFlags) && 
-         (0U != msc->bbb_cbw.dCBWDataTransferLength) &&
-          (BBB_STATUS_NORMAL == msc->bbb_status)) {
+        (0U != msc->bbb_cbw.dCBWDataTransferLength) &&
+        (BBB_STATUS_NORMAL == msc->bbb_status)) {
         usbd_ep_stall(udev, MSC_OUT_EP);
     }
 

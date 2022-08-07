@@ -200,16 +200,16 @@ ErrStatus can_init(uint32_t can_periph, can_parameter_struct *can_parameter_init
             CAN_CTL(can_periph) &= ~CAN_CTL_AWU;
         }
         /* automatic retransmission mode disable */
-        if(DISABLE == can_parameter_init->auto_retrans) {
-            CAN_CTL(can_periph) |= CAN_CTL_ARD;
-        } else {
+        if(ENABLE == can_parameter_init->auto_retrans) {
             CAN_CTL(can_periph) &= ~CAN_CTL_ARD;
+        } else {
+            CAN_CTL(can_periph) |= CAN_CTL_ARD;
         }
         /* receive FIFO overwrite mode disable */
-        if(DISABLE == can_parameter_init->rec_fifo_overwrite) {
-            CAN_CTL(can_periph) |= CAN_CTL_RFOD;
-        } else {
+        if(ENABLE == can_parameter_init->rec_fifo_overwrite) {
             CAN_CTL(can_periph) &= ~CAN_CTL_RFOD;
+        } else {
+            CAN_CTL(can_periph) |= CAN_CTL_RFOD;
         }
         /* transmit FIFO order */
         if(ENABLE == can_parameter_init->trans_fifo_order) {

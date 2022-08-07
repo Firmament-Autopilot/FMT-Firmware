@@ -38,7 +38,7 @@ OF SUCH DAMAGE.
 #include "gd32f4xx_trng.h"
 
 /*!
-    \brief    deinitialize the TRNG
+    \brief      reset TRNG
     \param[in]  none
     \param[out] none
     \retval     none
@@ -50,7 +50,7 @@ void trng_deinit(void)
 }
 
 /*!
-    \brief    enable the TRNG interface
+    \brief      enable TRNG 
     \param[in]  none
     \param[out] none
     \retval     none
@@ -61,7 +61,7 @@ void trng_enable(void)
 }
 
 /*!
-    \brief    disable the TRNG interface
+    \brief      disable TRNG 
     \param[in]  none
     \param[out] none
     \retval     none
@@ -72,10 +72,10 @@ void trng_disable(void)
 }
 
 /*!
-    \brief    get the true random data
+    \brief      get the true random data
     \param[in]  none
     \param[out] none
-    \retval     the generated random data
+    \retval     uint32_t: 0x0-0xFFFFFFFF
 */
 uint32_t trng_get_true_random_data(void)
 {
@@ -83,34 +83,34 @@ uint32_t trng_get_true_random_data(void)
 }
 
 /*!
-    \brief    enable the TRNG interrupt
+    \brief      enable TRNG interrupt
     \param[in]  none
     \param[out] none
     \retval     none
 */
 void trng_interrupt_enable(void)
 {
-    TRNG_CTL |= TRNG_CTL_IE;
+    TRNG_CTL |= TRNG_CTL_TRNGIE;
 }
 
 /*!
-    \brief    disable the TRNG interrupt
+    \brief      disable TRNG interrupt
     \param[in]  none
     \param[out] none
     \retval     none
 */
 void trng_interrupt_disable(void)
 {
-    TRNG_CTL &= ~TRNG_CTL_IE;
+    TRNG_CTL &= ~TRNG_CTL_TRNGIE;
 }
 
 /*!
-    \brief    get the trng status flags
-    \param[in]  flag: trng status flag, refer to trng_flag_enum
+    \brief      get TRNG flag status
+    \param[in]  flag: TRNG flag
                 only one parameter can be selected which is shown as below:
-      \arg        TRNG_FLAG_DRDY: Random Data ready status
-      \arg        TRNG_FLAG_CECS: Clock error current status
-      \arg        TRNG_FLAG_SECS: Seed error current status
+      \arg        TRNG_FLAG_DRDY: random Data ready status
+      \arg        TRNG_FLAG_CECS: clock error current status
+      \arg        TRNG_FLAG_SECS: seed error current status
     \param[out] none
     \retval     FlagStatus: SET or RESET
 */
@@ -124,11 +124,11 @@ FlagStatus trng_flag_get(trng_flag_enum flag)
 }
 
 /*!
-    \brief    get the trng interrupt flags
-    \param[in]  int_flag: trng interrupt flag, refer to trng_int_flag_enum
+    \brief      get TRNG interrupt flag status
+    \param[in]  int_flag: TRNG interrupt flag
                 only one parameter can be selected which is shown as below:
       \arg        TRNG_INT_FLAG_CEIF: clock error interrupt flag
-      \arg        TRNG_INT_FLAG_SEIF: Seed error interrupt flag
+      \arg        TRNG_INT_FLAG_SEIF: seed error interrupt flag
     \param[out] none
     \retval     FlagStatus: SET or RESET
 */
@@ -142,11 +142,11 @@ FlagStatus trng_interrupt_flag_get(trng_int_flag_enum int_flag)
 }
 
 /*!
-    \brief    clear the trng interrupt flags
-    \param[in]  int_flag: trng interrupt flag, refer to trng_int_flag_enum
+    \brief      clear TRNG interrupt flag status
+    \param[in]  int_flag: TRNG interrupt flag
                 only one parameter can be selected which is shown as below:
       \arg        TRNG_INT_FLAG_CEIF: clock error interrupt flag
-      \arg        TRNG_INT_FLAG_SEIF: Seed error interrupt flag
+      \arg        TRNG_INT_FLAG_SEIF: seed error interrupt flag
     \param[out] none
     \retval     none
 */

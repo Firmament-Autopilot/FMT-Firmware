@@ -37,11 +37,6 @@ OF SUCH DAMAGE.
 
 #include "gd32f4xx_fwdgt.h"
 
-/* write value to FWDGT_CTL_CMD bit field */
-#define CTL_CMD(regval)             (BITS(0,15) & ((uint32_t)(regval) << 0))
-/* write value to FWDGT_RLD_RLD bit field */
-#define RLD_RLD(regval)             (BITS(0,11) & ((uint32_t)(regval) << 0))
-
 /*!
     \brief    enable write access to FWDGT_PSC and FWDGT_RLD
     \param[in]  none
@@ -73,6 +68,71 @@ void fwdgt_write_disable(void)
 void fwdgt_enable(void)
 {
     FWDGT_CTL = FWDGT_KEY_ENABLE;
+}
+
+/*!
+    \brief      configure the free watchdog timer counter prescaler value
+    \param[in]  prescaler_value: specify prescaler value
+                only one parameter can be selected which is shown as below:
+      \arg        FWDGT_PSC_DIV4: FWDGT prescaler set to 4
+      \arg        FWDGT_PSC_DIV8: FWDGT prescaler set to 8
+      \arg        FWDGT_PSC_DIV16: FWDGT prescaler set to 16
+      \arg        FWDGT_PSC_DIV32: FWDGT prescaler set to 32
+      \arg        FWDGT_PSC_DIV64: FWDGT prescaler set to 64
+      \arg        FWDGT_PSC_DIV128: FWDGT prescaler set to 128
+      \arg        FWDGT_PSC_DIV256: FWDGT prescaler set to 256
+    \param[out] none
+    \retval     ErrStatus: ERROR or SUCCESS
+*/
+ErrStatus fwdgt_prescaler_value_config(uint16_t prescaler_value)
+{
+    uint32_t timeout = FWDGT_PSC_TIMEOUT;
+    uint32_t flag_status = RESET;
+  
+    /* enable write access to FWDGT_PSC */
+    FWDGT_CTL = FWDGT_WRITEACCESS_ENABLE;
+  
+    /* wait until the PUD flag to be reset */
+    do{
+        flag_status = FWDGT_STAT & FWDGT_STAT_PUD;
+    }while((--timeout > 0U) && ((uint32_t)RESET != flag_status));
+    
+    if ((uint32_t)RESET != flag_status){
+        return ERROR;
+    }
+    
+    /* configure FWDGT */
+    FWDGT_PSC = (uint32_t)prescaler_value; 
+
+    return SUCCESS;
+}
+
+/*!
+    \brief      configure the free watchdog timer counter reload value
+    \param[in]  reload_value: specify reload value(0x0000 - 0x0FFF)
+    \param[out] none
+    \retval     ErrStatus: ERROR or SUCCESS
+*/
+ErrStatus fwdgt_reload_value_config(uint16_t reload_value)
+{
+    uint32_t timeout = FWDGT_RLD_TIMEOUT;
+    uint32_t flag_status = RESET;
+  
+    /* enable write access to FWDGT_RLD */
+    FWDGT_CTL = FWDGT_WRITEACCESS_ENABLE;
+  
+    /* wait until the RUD flag to be reset */
+    do{
+        flag_status = FWDGT_STAT & FWDGT_STAT_RUD;
+    }while((--timeout > 0U) && ((uint32_t)RESET != flag_status));
+   
+    if ((uint32_t)RESET != flag_status){
+        return ERROR;
+    }
+    
+    FWDGT_RLD = RLD_RLD(reload_value);
+
+    return SUCCESS;
 }
 
 /*!

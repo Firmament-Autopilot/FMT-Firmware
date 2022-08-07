@@ -4,6 +4,7 @@
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
     \version 2022-03-09, V3.1.0, firmware for GD32F4xx
+    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
@@ -66,11 +67,11 @@ __ALIGN_BEGIN const usb_cdc_desc_config_set cdc_config_desc __ALIGN_END =
 {
     .config = 
     {
-        .header = 
-         {
-             .bLength         = sizeof(usb_desc_config), 
-             .bDescriptorType = USB_DESCTYPE_CONFIG,
-         },
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_config),
+            .bDescriptorType = USB_DESCTYPE_CONFIG,
+        },
         .wTotalLength         = USB_CDC_ACM_CONFIG_DESC_SIZE,
         .bNumInterfaces       = 0x02U,
         .bConfigurationValue  = 0x01U,
@@ -81,11 +82,11 @@ __ALIGN_BEGIN const usb_cdc_desc_config_set cdc_config_desc __ALIGN_END =
 
     .cmd_itf = 
     {
-        .header = 
-         {
-             .bLength         = sizeof(usb_desc_itf), 
-             .bDescriptorType = USB_DESCTYPE_ITF 
-         },
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_itf),
+            .bDescriptorType = USB_DESCTYPE_ITF
+        },
         .bInterfaceNumber     = 0x00U,
         .bAlternateSetting    = 0x00U,
         .bNumEndpoints        = 0x01U,
@@ -95,72 +96,72 @@ __ALIGN_BEGIN const usb_cdc_desc_config_set cdc_config_desc __ALIGN_END =
         .iInterface           = 0x00U
     },
 
-    .cdc_header = 
+    .cdc_header =
     {
         .header =
-         {
-            .bLength         = sizeof(usb_desc_header_func), 
+        {
+            .bLength         = sizeof(usb_desc_header_func),
             .bDescriptorType = USB_DESCTYPE_CS_INTERFACE
-         },
+        },
         .bDescriptorSubtype  = 0x00U,
         .bcdCDC              = 0x0110U
     },
 
-    .cdc_call_managment = 
+    .cdc_call_managment =
     {
-        .header = 
-         {
-            .bLength         = sizeof(usb_desc_call_managment_func), 
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_call_managment_func),
             .bDescriptorType = USB_DESCTYPE_CS_INTERFACE
-         },
+        },
         .bDescriptorSubtype  = 0x01U,
         .bmCapabilities      = 0x00U,
         .bDataInterface      = 0x01U
     },
 
-    .cdc_acm = 
+    .cdc_acm =
     {
-        .header = 
-         {
-            .bLength         = sizeof(usb_desc_acm_func), 
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_acm_func),
             .bDescriptorType = USB_DESCTYPE_CS_INTERFACE
-         },
+        },
         .bDescriptorSubtype  = 0x02U,
         .bmCapabilities      = 0x02U,
     },
 
-    .cdc_union = 
+    .cdc_union =
     {
-        .header = 
-         {
-            .bLength         = sizeof(usb_desc_union_func), 
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_union_func),
             .bDescriptorType = USB_DESCTYPE_CS_INTERFACE
-         },
+        },
         .bDescriptorSubtype  = 0x06U,
         .bMasterInterface    = 0x00U,
         .bSlaveInterface0    = 0x01U,
     },
 
-    .cdc_cmd_endpoint = 
+    .cdc_cmd_endpoint =
     {
-        .header = 
-         {
-            .bLength         = sizeof(usb_desc_ep), 
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_ep),
             .bDescriptorType = USB_DESCTYPE_EP,
-         },
+        },
         .bEndpointAddress    = CDC_CMD_EP,
         .bmAttributes        = USB_EP_ATTR_INT,
         .wMaxPacketSize      = USB_CDC_CMD_PACKET_SIZE,
         .bInterval           = 0x0AU
     },
 
-    .cdc_data_interface = 
+    .cdc_data_interface =
     {
-        .header = 
-         {
-            .bLength         = sizeof(usb_desc_itf), 
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_itf),
             .bDescriptorType = USB_DESCTYPE_ITF,
-         },
+        },
         .bInterfaceNumber    = 0x01U,
         .bAlternateSetting   = 0x00U,
         .bNumEndpoints       = 0x02U,
@@ -170,26 +171,26 @@ __ALIGN_BEGIN const usb_cdc_desc_config_set cdc_config_desc __ALIGN_END =
         .iInterface          = 0x00U
     },
 
-    .cdc_out_endpoint = 
+    .cdc_out_endpoint =
     {
-        .header = 
-         {
-             .bLength         = sizeof(usb_desc_ep), 
-             .bDescriptorType = USB_DESCTYPE_EP, 
-         },
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_ep),
+            .bDescriptorType = USB_DESCTYPE_EP,
+        },
         .bEndpointAddress     = CDC_DATA_OUT_EP,
         .bmAttributes         = USB_EP_ATTR_BULK,
         .wMaxPacketSize       = USB_CDC_DATA_PACKET_SIZE,
         .bInterval            = 0x00U
     },
 
-    .cdc_in_endpoint = 
+    .cdc_in_endpoint =
     {
-        .header = 
-         {
-             .bLength         = sizeof(usb_desc_ep), 
-             .bDescriptorType = USB_DESCTYPE_EP 
-         },
+        .header =
+        {
+            .bLength         = sizeof(usb_desc_ep),
+            .bDescriptorType = USB_DESCTYPE_EP
+        },
         .bEndpointAddress     = CDC_DATA_IN_EP,
         .bmAttributes         = USB_EP_ATTR_BULK,
         .wMaxPacketSize       = USB_CDC_DATA_PACKET_SIZE,
@@ -200,69 +201,69 @@ __ALIGN_BEGIN const usb_cdc_desc_config_set cdc_config_desc __ALIGN_END =
 /* USB language ID Descriptor */
 static __ALIGN_BEGIN const usb_desc_LANGID usbd_language_id_desc __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = sizeof(usb_desc_LANGID), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     },
+    .header =
+    {
+        .bLength         = sizeof(usb_desc_LANGID),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    },
     .wLANGID              = ENG_LANGID
 };
 
 /* USB manufacture string */
 static __ALIGN_BEGIN const usb_desc_str manufacturer_string __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = USB_STRING_LEN(10), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     },
+    .header =
+    {
+        .bLength         = USB_STRING_LEN(10),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    },
     .unicode_string = {'G', 'i', 'g', 'a', 'D', 'e', 'v', 'i', 'c', 'e'}
 };
 
 /* USB product string */
 static __ALIGN_BEGIN const usb_desc_str product_string __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = USB_STRING_LEN(12), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     },
+    .header =
+    {
+        .bLength         = USB_STRING_LEN(12),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    },
     .unicode_string = {'G', 'D', '3', '2', '-', 'C', 'D', 'C', '_', 'A', 'C', 'M'}
 };
 
 /* USBD serial string */
 static __ALIGN_BEGIN usb_desc_str serial_string __ALIGN_END = 
 {
-    .header = 
-     {
-         .bLength         = USB_STRING_LEN(12), 
-         .bDescriptorType = USB_DESCTYPE_STR,
-     }
+    .header =
+    {
+        .bLength         = USB_STRING_LEN(12),
+        .bDescriptorType = USB_DESCTYPE_STR,
+    }
 };
 
 /* USB string descriptor set */
 void *const usbd_cdc_strings[] = 
 {
-    [STR_IDX_LANGID]  = (uint8_t *)&usbd_language_id_desc,
-    [STR_IDX_MFC]     = (uint8_t *)&manufacturer_string,
-    [STR_IDX_PRODUCT] = (uint8_t *)&product_string,
-    [STR_IDX_SERIAL]  = (uint8_t *)&serial_string
+    [STR_IDX_LANGID]  = (uint8_t *) &usbd_language_id_desc,
+    [STR_IDX_MFC]     = (uint8_t *) &manufacturer_string,
+    [STR_IDX_PRODUCT] = (uint8_t *) &product_string,
+    [STR_IDX_SERIAL]  = (uint8_t *) &serial_string
 };
 
 usb_desc cdc_desc = 
 {
-    .dev_desc    = (uint8_t *)&cdc_dev_desc,
-    .config_desc = (uint8_t *)&cdc_config_desc,
+    .dev_desc    = (uint8_t *) &cdc_dev_desc,
+    .config_desc = (uint8_t *) &cdc_config_desc,
     .strings     = usbd_cdc_strings
 };
 
 /* local function prototypes ('static') */
-static uint8_t cdc_acm_init   (usb_dev *udev, uint8_t config_index);
-static uint8_t cdc_acm_deinit (usb_dev *udev, uint8_t config_index);
-static uint8_t cdc_acm_req    (usb_dev *udev, usb_req *req);
-static uint8_t cdc_ctlx_out   (usb_dev *udev);
-static uint8_t cdc_acm_in     (usb_dev *udev, uint8_t ep_num);
-static uint8_t cdc_acm_out    (usb_dev *udev, uint8_t ep_num);
+static uint8_t cdc_acm_init     (usb_dev *udev, uint8_t config_index);
+static uint8_t cdc_acm_deinit   (usb_dev *udev, uint8_t config_index);
+static uint8_t cdc_acm_req      (usb_dev *udev, usb_req *req);
+static uint8_t cdc_acm_ctlx_out (usb_dev *udev);
+static uint8_t cdc_acm_in       (usb_dev *udev, uint8_t ep_num);
+static uint8_t cdc_acm_out      (usb_dev *udev, uint8_t ep_num);
 
 /* USB CDC device class callbacks structure */
 usb_class_core cdc_class =
@@ -273,7 +274,7 @@ usb_class_core cdc_class =
     .init      = cdc_acm_init,
     .deinit    = cdc_acm_deinit,
     .req_proc  = cdc_acm_req,
-    .ctlx_out  = cdc_ctlx_out,
+    .ctlx_out  = cdc_acm_ctlx_out,
     .data_in   = cdc_acm_in,
     .data_out  = cdc_acm_out
 };
@@ -329,7 +330,7 @@ void cdc_acm_data_receive (usb_dev *udev)
     cdc->packet_receive = 0U;
     cdc->packet_sent = 0U;
 
-    usbd_ep_recev(udev, CDC_DATA_OUT_EP, (uint8_t*)(cdc->data), USB_CDC_DATA_PACKET_SIZE);
+    usbd_ep_recev (udev, CDC_DATA_OUT_EP, (uint8_t*)(cdc->data), USB_CDC_DATA_PACKET_SIZE);
 }
 
 /*!
@@ -343,13 +344,13 @@ static uint8_t cdc_acm_init (usb_dev *udev, uint8_t config_index)
 {
     static __ALIGN_BEGIN usb_cdc_handler cdc_handler __ALIGN_END;
 
-    /* initialize the data TX endpoint */
+    /* initialize the data Tx endpoint */
     usbd_ep_setup (udev, &(cdc_config_desc.cdc_in_endpoint));
 
-    /* initialize the data RX endpoint */
+    /* initialize the data Rx endpoint */
     usbd_ep_setup (udev, &(cdc_config_desc.cdc_out_endpoint));
 
-    /* initialize the command TX endpoint */
+    /* initialize the command Tx endpoint */
     usbd_ep_setup (udev, &(cdc_config_desc.cdc_cmd_endpoint));
 
     /* initialize CDC handler structure */
@@ -378,11 +379,11 @@ static uint8_t cdc_acm_init (usb_dev *udev, uint8_t config_index)
 */
 static uint8_t cdc_acm_deinit (usb_dev *udev, uint8_t config_index)
 {
-    /* deinitialize the data TX/RX endpoint */
+    /* deinitialize the data Tx/Rx endpoint */
     usbd_ep_clear (udev, CDC_DATA_IN_EP);
     usbd_ep_clear (udev, CDC_DATA_OUT_EP);
 
-    /* deinitialize the command TX endpoint */
+    /* deinitialize the command Tx endpoint */
     usbd_ep_clear (udev, CDC_CMD_EP);
 
     return USBD_OK;
@@ -463,7 +464,13 @@ static uint8_t cdc_acm_req (usb_dev *udev, usb_req *req)
     return USBD_OK;
 }
 
-static uint8_t cdc_ctlx_out (usb_dev *udev)
+/*!
+    \brief      command data received on control endpoint
+    \param[in]  udev: pointer to USB device instance
+    \param[out] none
+    \retval     USB device operation status
+*/
+static uint8_t cdc_acm_ctlx_out (usb_dev *udev)
 {
     usb_cdc_handler *cdc = (usb_cdc_handler *)udev->dev.class_data[CDC_COM_INTERFACE];
 
@@ -485,7 +492,7 @@ static uint8_t cdc_ctlx_out (usb_dev *udev)
 }
 
 /*!
-    \brief      handle CDC ACM data
+    \brief      handle CDC ACM data in
     \param[in]  udev: pointer to USB device instance
     \param[in]  ep_num: endpoint identifier
     \param[out] none
@@ -507,7 +514,7 @@ static uint8_t cdc_acm_in (usb_dev *udev, uint8_t ep_num)
 }
 
 /*!
-    \brief      handle CDC ACM data
+    \brief      handle CDC ACM data out
     \param[in]  udev: pointer to USB device instance
     \param[in]  ep_num: endpoint identifier
     \param[out] none
