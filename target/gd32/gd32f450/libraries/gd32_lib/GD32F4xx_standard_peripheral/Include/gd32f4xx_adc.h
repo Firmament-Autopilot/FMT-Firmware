@@ -1,36 +1,37 @@
 /*!
     \file    gd32f4xx_adc.h
     \brief   definitions for the ADC
-
+    
     \version 2016-08-15, V1.0.0, firmware for GD32F4xx
     \version 2018-12-12, V2.0.0, firmware for GD32F4xx
     \version 2020-09-30, V2.1.0, firmware for GD32F4xx
+    \version 2022-03-09, V3.0.0, firmware for GD32F4xx
 */
 
 /*
-    Copyright (c) 2020, GigaDevice Semiconductor Inc.
+    Copyright (c) 2022, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification,
+    Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this
+    1. Redistributions of source code must retain the above copyright notice, this 
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
+    2. Redistributions in binary form must reproduce the above copyright notice, 
+       this list of conditions and the following disclaimer in the documentation 
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors
-       may be used to endorse or promote products derived from this software without
+    3. Neither the name of the copyright holder nor the names of its contributors 
+       may be used to endorse or promote products derived from this software without 
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 OF SUCH DAMAGE.
 */
 
@@ -93,7 +94,7 @@ OF SUCH DAMAGE.
 #define ADC_CTL0_IWDEN                  BIT(22)                          /*!< analog watchdog enable on inserted channels */
 #define ADC_CTL0_RWDEN                  BIT(23)                          /*!< analog watchdog enable on regular channels */
 #define ADC_CTL0_DRES                   BITS(24,25)                      /*!< ADC data resolution */
-#define ADC_CTL0_ROVFIE                 BIT(26)                          /*!< interrupt enable for ROVF */
+#define ADC_CTL0_ROVFIE                 BIT(26)                          /*!< interrupt enable for ROVF */ 
 
 /* ADC_CTL1 */
 #define ADC_CTL1_ADCON                  BIT(0)                           /*!< ADC converter on */
@@ -189,7 +190,7 @@ OF SUCH DAMAGE.
 #define CTL0_DISNUM(regval)             (BITS(13,15) & ((uint32_t)(regval) << 13))   /*!< write value to ADC_CTL0_DISNUM bit field */
 
 /* ADC special function definitions */
-#define ADC_SCAN_MODE                   ADC_CTL0_SM                  /*!< scan mode */
+#define ADC_SCAN_MODE                   ADC_CTL0_SM                   /*!< scan mode */
 #define ADC_INSERTED_CHANNEL_AUTO       ADC_CTL0_ICA                  /*!< inserted channel group convert automatically */
 #define ADC_CONTINUOUS_MODE             ADC_CTL1_CTN                  /*!< continuous mode */
 
@@ -198,14 +199,14 @@ OF SUCH DAMAGE.
 #define ADC_TEMP_VREF_CHANNEL_SWITCH    ADC_SYNCCTL_TSVREN                  /*!< Vref and Vtemp channel */
 
 /* ADC synchronization mode */
-#define SYNCCTL_SYNCM(regval)              (BITS(0,4) & ((uint32_t)(regval)))   /*!< write value to ADC_CTL0_SYNCM bit field */
-#define ADC_SYNC_MODE_INDEPENDENT                           SYNCCTL_SYNCM(0)    /*!< ADC synchronization mode disabled.All the ADCs work independently */
-#define ADC_DAUL_REGULAL_PARALLEL_INSERTED_PARALLEL         SYNCCTL_SYNCM(1)    /*!< ADC0 and ADC1 work in combined regular parallel & inserted parallel mode. ADC2 works independently */
-#define ADC_DAUL_REGULAL_PARALLEL_INSERTED_ROTATION         SYNCCTL_SYNCM(2)    /*!< ADC0 and ADC1 work in combined regular parallel & trigger rotation mode. ADC2 works independently */
-#define ADC_DAUL_INSERTED_PARALLEL                          SYNCCTL_SYNCM(5)    /*!< ADC0 and ADC1 work in inserted parallel mode. ADC2 works independently */
-#define ADC_DAUL_REGULAL_PARALLEL                           SYNCCTL_SYNCM(6)    /*!< ADC0 and ADC1 work in regular parallel mode. ADC2 works independently */
-#define ADC_DAUL_REGULAL_FOLLOW_UP                          SYNCCTL_SYNCM(7)    /*!< ADC0 and ADC1 work in follow-up mode. ADC2 works independently */
-#define ADC_DAUL_INSERTED_TRRIGGER_ROTATION                 SYNCCTL_SYNCM(9)    /*!< ADC0 and ADC1 work in trigger rotation mode. ADC2 works independently */
+#define SYNCCTL_SYNCM(regval)              (BITS(0,4) & ((uint32_t)(regval)))    /*!< write value to ADC_CTL0_SYNCM bit field */
+#define ADC_SYNC_MODE_INDEPENDENT                           SYNCCTL_SYNCM(0)     /*!< ADC synchronization mode disabled.All the ADCs work independently */
+#define ADC_DAUL_REGULAL_PARALLEL_INSERTED_PARALLEL         SYNCCTL_SYNCM(1)     /*!< ADC0 and ADC1 work in combined regular parallel & inserted parallel mode. ADC2 works independently */
+#define ADC_DAUL_REGULAL_PARALLEL_INSERTED_ROTATION         SYNCCTL_SYNCM(2)     /*!< ADC0 and ADC1 work in combined regular parallel & trigger rotation mode. ADC2 works independently */
+#define ADC_DAUL_INSERTED_PARALLEL                          SYNCCTL_SYNCM(5)     /*!< ADC0 and ADC1 work in inserted parallel mode. ADC2 works independently */
+#define ADC_DAUL_REGULAL_PARALLEL                           SYNCCTL_SYNCM(6)     /*!< ADC0 and ADC1 work in regular parallel mode. ADC2 works independently */
+#define ADC_DAUL_REGULAL_FOLLOW_UP                          SYNCCTL_SYNCM(7)     /*!< ADC0 and ADC1 work in follow-up mode. ADC2 works independently */
+#define ADC_DAUL_INSERTED_TRRIGGER_ROTATION                 SYNCCTL_SYNCM(9)     /*!< ADC0 and ADC1 work in trigger rotation mode. ADC2 works independently */
 #define ADC_ALL_REGULAL_PARALLEL_INSERTED_PARALLEL          SYNCCTL_SYNCM(17)    /*!< all ADCs work in combined regular parallel & inserted parallel mode */
 #define ADC_ALL_REGULAL_PARALLEL_INSERTED_ROTATION          SYNCCTL_SYNCM(18)    /*!< all ADCs work in combined regular parallel & trigger rotation mode */
 #define ADC_ALL_INSERTED_PARALLEL                           SYNCCTL_SYNCM(21)    /*!< all ADCs work in inserted parallel mode */
@@ -215,7 +216,7 @@ OF SUCH DAMAGE.
 
 /* ADC data alignment */
 #define ADC_DATAALIGN_RIGHT             ((uint32_t)0x00000000U)                  /*!< LSB alignment */
-#define ADC_DATAALIGN_LEFT              ADC_CTL1_DAL                  /*!< MSB alignment */
+#define ADC_DATAALIGN_LEFT              ADC_CTL1_DAL                             /*!< MSB alignment */
 
 /* external trigger mode for regular and inserted  channel */
 #define EXTERNAL_TRIGGER_DISABLE        ((uint32_t)0x00000000U)           /*!< external trigger disable */
@@ -356,16 +357,16 @@ OF SUCH DAMAGE.
 #define ADC_CHANNEL_18                  ((uint8_t)0x12U)                  /*!< ADC channel 18 */
 
 /* ADC interrupt flag */
-#define ADC_INT_WDE                     ADC_CTL0_WDEIE                     /*!< analog watchdog event interrupt */
-#define ADC_INT_EOC                     ADC_CTL0_EOCIE                     /*!< end of group conversion interrupt */
-#define ADC_INT_EOIC                    ADC_CTL0_EOICIE                    /*!< end of inserted group conversion interrupt */
-#define ADC_INT_ROVF                    ADC_CTL0_ROVFIE                    /*!< regular data register overflow */
+#define ADC_INT_WDE                     ADC_CTL0_WDEIE                    /*!< analog watchdog event interrupt */
+#define ADC_INT_EOC                     ADC_CTL0_EOCIE                    /*!< end of group conversion interrupt */
+#define ADC_INT_EOIC                    ADC_CTL0_EOICIE                   /*!< end of inserted group conversion interrupt */
+#define ADC_INT_ROVF                    ADC_CTL0_ROVFIE                   /*!< regular data register overflow */
 
 /* ADC interrupt flag */
-#define ADC_INT_FLAG_WDE                ADC_STAT_WDE                     /*!< analog watchdog event interrupt */
-#define ADC_INT_FLAG_EOC                ADC_STAT_EOC                     /*!< end of group conversion interrupt */
-#define ADC_INT_FLAG_EOIC               ADC_STAT_EOIC                    /*!< end of inserted group conversion interrupt */
-#define ADC_INT_FLAG_ROVF               ADC_STAT_ROVF                    /*!< regular data register overflow */
+#define ADC_INT_FLAG_WDE                ADC_STAT_WDE                      /*!< analog watchdog event interrupt */
+#define ADC_INT_FLAG_EOC                ADC_STAT_EOC                      /*!< end of group conversion interrupt */
+#define ADC_INT_FLAG_EOIC               ADC_STAT_EOIC                     /*!< end of inserted group conversion interrupt */
+#define ADC_INT_FLAG_ROVF               ADC_STAT_ROVF                     /*!< regular data register overflow */
 
 /* configure the ADC clock for all the ADCs */
 #define SYNCCTL_ADCCK(regval)           (BITS(16,18) & ((uint32_t)(regval) << 16))

@@ -17,9 +17,9 @@
 
 #include "module/task_manager/task_manager.h"
 
-#include "cdc_acm_core.h"
+// #include "cdc_acm_core.h"
 
-extern usb_core_driver cdc_acm;
+// extern usb_core_driver cdc_acm;
 
 fmt_err_t task_local_init(void)
 {

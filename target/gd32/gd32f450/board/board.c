@@ -23,7 +23,7 @@
 #include "default_config.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
-#include "drv_usbd_cdc.h"
+// #include "drv_usbd_cdc.h"
 #include "module/file_manager/file_manager.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
@@ -354,7 +354,7 @@ void bsp_initialize(void)
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init usbd_cdc */
-    RT_CHECK(drv_usb_cdc_init());
+    // RT_CHECK(drv_usb_cdc_init());
 
     /* init finsh */
     finsh_system_init();

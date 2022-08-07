@@ -5,10 +5,11 @@
     \version 2016-08-15, V1.0.0, firmware for GD32F4xx
     \version 2018-12-12, V2.0.0, firmware for GD32F4xx
     \version 2020-09-30, V2.1.0, firmware for GD32F4xx
+    \version 2022-03-09, V3.0.0, firmware for GD32F4xx
 */
 
 /*
-    Copyright (c) 2020, GigaDevice Semiconductor Inc.
+    Copyright (c) 2022, GigaDevice Semiconductor Inc.
 
     Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -146,8 +147,7 @@ OF SUCH DAMAGE.
 
 /* constants definitions */
 /* SPI and I2S parameter struct definitions */
-typedef struct
-{
+typedef struct {
     uint32_t device_mode;                                                       /*!< SPI master or slave */
     uint32_t trans_mode;                                                        /*!< SPI transtype */
     uint32_t frame_size;                                                        /*!< SPI frame size */
@@ -155,7 +155,7 @@ typedef struct
     uint32_t endian;                                                            /*!< SPI big endian or little endian */
     uint32_t clock_polarity_phase;                                              /*!< SPI clock phase and polarity */
     uint32_t prescale;                                                          /*!< SPI prescale factor */
-}spi_parameter_struct;
+} spi_parameter_struct;
 
 /* SPI mode definitions */
 #define SPI_MASTER                      (SPI_CTL0_MSTMOD | SPI_CTL0_SWNSS)      /*!< SPI as master */
@@ -283,19 +283,19 @@ typedef struct
 /* initialization functions */
 /* deinitialize SPI and I2S */
 void spi_i2s_deinit(uint32_t spi_periph);
-/* initialize the parameters of SPI struct with the default values */
-void spi_struct_para_init(spi_parameter_struct* spi_struct);
+/* initialize the parameters of SPI struct with default values */
+void spi_struct_para_init(spi_parameter_struct *spi_struct);
 /* initialize SPI parameter */
-void spi_init(uint32_t spi_periph,spi_parameter_struct* spi_struct);
+void spi_init(uint32_t spi_periph, spi_parameter_struct *spi_struct);
 /* enable SPI */
 void spi_enable(uint32_t spi_periph);
 /* disable SPI */
 void spi_disable(uint32_t spi_periph);
 
 /* initialize I2S parameter */
-void i2s_init(uint32_t spi_periph,uint32_t i2s_mode,uint32_t i2s_standard,uint32_t i2s_ckpl);
+void i2s_init(uint32_t spi_periph, uint32_t i2s_mode, uint32_t i2s_standard, uint32_t i2s_ckpl);
 /* configure I2S prescale */
-void i2s_psc_config(uint32_t spi_periph,uint32_t i2s_audiosample,uint32_t i2s_frameformat,uint32_t i2s_mckout);
+void i2s_psc_config(uint32_t spi_periph, uint32_t i2s_audiosample, uint32_t i2s_frameformat, uint32_t i2s_mckout);
 /* enable I2S */
 void i2s_enable(uint32_t spi_periph);
 /* disable I2S */
@@ -312,24 +312,24 @@ void spi_nss_internal_high(uint32_t spi_periph);
 void spi_nss_internal_low(uint32_t spi_periph);
 
 /* SPI DMA functions */
-/* enable SPI DMA */
-void spi_dma_enable(uint32_t spi_periph,uint8_t spi_dma);
-/* disable SPI DMA */
-void spi_dma_disable(uint32_t spi_periph,uint8_t spi_dma);
+/* enable SPI DMA send or receive */
+void spi_dma_enable(uint32_t spi_periph, uint8_t spi_dma);
+/* diable SPI DMA send or receive */
+void spi_dma_disable(uint32_t spi_periph, uint8_t spi_dma);
 
 /* SPI/I2S transfer configure functions */
 /* configure SPI/I2S data frame format */
-void spi_i2s_data_frame_format_config(uint32_t spi_periph,uint16_t frame_format);
+void spi_i2s_data_frame_format_config(uint32_t spi_periph, uint16_t frame_format);
 /* SPI transmit data */
-void spi_i2s_data_transmit(uint32_t spi_periph,uint16_t data);
+void spi_i2s_data_transmit(uint32_t spi_periph, uint16_t data);
 /* SPI receive data */
 uint16_t spi_i2s_data_receive(uint32_t spi_periph);
 /* configure SPI bidirectional transfer direction  */
-void spi_bidirectional_transfer_config(uint32_t spi_periph,uint32_t transfer_direction);
+void spi_bidirectional_transfer_config(uint32_t spi_periph, uint32_t transfer_direction);
 
 /* SPI CRC functions */
 /* set SPI CRC polynomial */
-void spi_crc_polynomial_set(uint32_t spi_periph,uint16_t crc_poly);
+void spi_crc_polynomial_set(uint32_t spi_periph, uint16_t crc_poly);
 /* get SPI CRC polynomial */
 uint16_t spi_crc_polynomial_get(uint32_t spi_periph);
 /* turn on SPI CRC function */
@@ -339,7 +339,7 @@ void spi_crc_off(uint32_t spi_periph);
 /* SPI next data is CRC value */
 void spi_crc_next(uint32_t spi_periph);
 /* get SPI CRC send value or receive value */
-uint16_t spi_crc_get(uint32_t spi_periph,uint8_t spi_crc);
+uint16_t spi_crc_get(uint32_t spi_periph, uint8_t spi_crc);
 
 /* SPI TI mode functions */
 /* enable SPI TI mode */
@@ -348,7 +348,7 @@ void spi_ti_mode_enable(uint32_t spi_periph);
 void spi_ti_mode_disable(uint32_t spi_periph);
 
 /* configure i2s full duplex mode */
-void i2s_full_duplex_mode_config(uint32_t i2s_add_periph,uint32_t i2s_mode,uint32_t i2s_standard,uint32_t i2s_ckpl,uint32_t i2s_frameformat);
+void i2s_full_duplex_mode_config(uint32_t i2s_add_periph, uint32_t i2s_mode, uint32_t i2s_standard, uint32_t i2s_ckpl, uint32_t i2s_frameformat);
 
 /* quad wire SPI functions */
 /* enable quad wire SPI */
@@ -359,20 +359,20 @@ void qspi_disable(uint32_t spi_periph);
 void qspi_write_enable(uint32_t spi_periph);
 /* enable quad wire SPI read */
 void qspi_read_enable(uint32_t spi_periph);
-/* enable quad wire SPI_IO2 and SPI_IO3 pin output */
+/* enable SPI_IO2 and SPI_IO3 pin output */
 void qspi_io23_output_enable(uint32_t spi_periph);
-/* disable quad wire SPI_IO2 and SPI_IO3 pin output */
+/* disable SPI_IO2 and SPI_IO3 pin output */
 void qspi_io23_output_disable(uint32_t spi_periph);
 
 /* flag & interrupt functions */
-/* enable SPI interrupt */
-void spi_i2s_interrupt_enable(uint32_t spi_periph,uint8_t spi_i2s_int);
-/* disable SPI interrupt */
-void spi_i2s_interrupt_disable(uint32_t spi_periph,uint8_t spi_i2s_int);
+/* enable SPI and I2S interrupt */
+void spi_i2s_interrupt_enable(uint32_t spi_periph, uint8_t spi_i2s_int);
+/* disable SPI and I2S interrupt */
+void spi_i2s_interrupt_disable(uint32_t spi_periph, uint8_t spi_i2s_int);
 /* get SPI and I2S interrupt status*/
-FlagStatus spi_i2s_interrupt_flag_get(uint32_t spi_periph,uint8_t spi_i2s_int);
+FlagStatus spi_i2s_interrupt_flag_get(uint32_t spi_periph, uint8_t spi_i2s_int);
 /* get SPI and I2S flag status */
-FlagStatus spi_i2s_flag_get(uint32_t spi_periph,uint32_t spi_i2s_flag);
+FlagStatus spi_i2s_flag_get(uint32_t spi_periph, uint32_t spi_i2s_flag);
 /* clear SPI CRC error flag status */
 void spi_crc_error_clear(uint32_t spi_periph);
 

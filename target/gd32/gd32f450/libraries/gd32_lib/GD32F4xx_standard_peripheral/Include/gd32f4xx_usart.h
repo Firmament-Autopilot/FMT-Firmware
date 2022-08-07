@@ -5,10 +5,11 @@
     \version 2016-08-15, V1.0.0, firmware for GD32F4xx
     \version 2018-12-12, V2.0.0, firmware for GD32F4xx
     \version 2020-09-30, V2.1.0, firmware for GD32F4xx
+    \version 2022-03-09, V3.0.0, firmware for GD32F4xx
 */
 
 /*
-    Copyright (c) 2020, GigaDevice Semiconductor Inc.
+    Copyright (c) 2022, GigaDevice Semiconductor Inc.
 
     Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -173,8 +174,7 @@ OF SUCH DAMAGE.
 #define USART_CHC_REG_OFFSET                0xC0U        /*!< CHC register offset */
 
 /* USART flags */
-typedef enum
-{
+typedef enum {
     /* flags in STAT0 register */
     USART_FLAG_CTS = USART_REGIDX_BIT(USART_STAT0_REG_OFFSET, 9U),      /*!< CTS change flag */
     USART_FLAG_LBD = USART_REGIDX_BIT(USART_STAT0_REG_OFFSET, 8U),      /*!< LIN break detected flag */
@@ -192,11 +192,10 @@ typedef enum
     USART_FLAG_RT = USART_REGIDX_BIT(USART_STAT1_REG_OFFSET, 11U),      /*!< receiver timeout flag */
     /* flags in CHC register */
     USART_FLAG_EPERR = USART_REGIDX_BIT(USART_CHC_REG_OFFSET, 8U),      /*!< early parity error flag */
-}usart_flag_enum;
+} usart_flag_enum;
 
 /* USART interrupt flags */
-typedef enum
-{
+typedef enum {
     /* interrupt flags in CTL0 register */
     USART_INT_FLAG_PERR = USART_REGIDX_BIT2(USART_CTL0_REG_OFFSET, 8U, USART_STAT0_REG_OFFSET, 0U),       /*!< parity error interrupt and flag */
     USART_INT_FLAG_TBE = USART_REGIDX_BIT2(USART_CTL0_REG_OFFSET, 7U, USART_STAT0_REG_OFFSET, 7U),        /*!< transmitter buffer empty interrupt and flag */
@@ -214,11 +213,10 @@ typedef enum
     /* interrupt flags in CTL3 register */
     USART_INT_FLAG_EB = USART_REGIDX_BIT2(USART_CTL3_REG_OFFSET, 5U, USART_STAT1_REG_OFFSET, 12U),        /*!< interrupt enable bit of end of block event and flag */
     USART_INT_FLAG_RT = USART_REGIDX_BIT2(USART_CTL3_REG_OFFSET, 4U, USART_STAT1_REG_OFFSET, 11U),        /*!< interrupt enable bit of receive timeout event and flag */
-}usart_interrupt_flag_enum;
+} usart_interrupt_flag_enum;
 
 /* USART interrupt flags */
-typedef enum
-{
+typedef enum {
     /* interrupt in CTL0 register */
     USART_INT_PERR = USART_REGIDX_BIT(USART_CTL0_REG_OFFSET, 8U),      /*!< parity error interrupt */
     USART_INT_TBE = USART_REGIDX_BIT(USART_CTL0_REG_OFFSET, 7U),       /*!< transmitter buffer empty interrupt */
@@ -233,11 +231,10 @@ typedef enum
     /* interrupt in CTL3 register */
     USART_INT_EB = USART_REGIDX_BIT(USART_CTL3_REG_OFFSET, 5U),        /*!< interrupt enable bit of end of block event */
     USART_INT_RT = USART_REGIDX_BIT(USART_CTL3_REG_OFFSET, 4U),        /*!< interrupt enable bit of receive timeout event */
-}usart_interrupt_enum;
+} usart_interrupt_enum;
 
 /* USART invert configure */
-typedef enum
-{
+typedef enum {
     /* data bit level inversion */
     USART_DINV_ENABLE,                             /*!< data bit level inversion */
     USART_DINV_DISABLE,                            /*!< data bit level not inversion */
@@ -247,7 +244,7 @@ typedef enum
     /* RX pin level inversion */
     USART_RXPIN_ENABLE,                            /*!< RX pin level inversion */
     USART_RXPIN_DISABLE,                           /*!< RX pin level not inversion */
-}usart_invert_enum;
+} usart_invert_enum;
 
 /* USART receiver configure */
 #define CTL0_REN(regval)              (BIT(2) & ((uint32_t)(regval) << 2))

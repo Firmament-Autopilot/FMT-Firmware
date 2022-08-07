@@ -5,32 +5,34 @@
     \version 2016-08-15, V1.0.0, firmware for GD32F4xx
     \version 2018-12-12, V2.0.0, firmware for GD32F4xx
     \version 2020-09-30, V2.1.0, firmware for GD32F4xx
+    \version 2020-12-20, V2.1.1, firmware for GD32F4xx
+    \version 2022-03-09, V3.0.0, firmware for GD32F4xx
 */
 
 /*
-    Copyright (c) 2020, GigaDevice Semiconductor Inc.
+    Copyright (c) 2022, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification,
+    Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this
+    1. Redistributions of source code must retain the above copyright notice, this 
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
+    2. Redistributions in binary form must reproduce the above copyright notice, 
+       this list of conditions and the following disclaimer in the documentation 
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors
-       may be used to endorse or promote products derived from this software without
+    3. Neither the name of the copyright holder nor the names of its contributors 
+       may be used to endorse or promote products derived from this software without 
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 OF SUCH DAMAGE.
 */
 
@@ -45,15 +47,17 @@ OF SUCH DAMAGE.
 #define OB                         OB_BASE                        /*!< option byte base address */
 
 /* registers definitions */
-#define FMC_WS                     REG32((FMC) + 0x0000U)           /*!< FMC wait state register */
-#define FMC_KEY                    REG32((FMC) + 0x0004U)           /*!< FMC unlock key register */
-#define FMC_OBKEY                  REG32((FMC) + 0x0008U)           /*!< FMC option byte unlock key register */
-#define FMC_STAT                   REG32((FMC) + 0x000CU)           /*!< FMC status register */
-#define FMC_CTL                    REG32((FMC) + 0x0010U)           /*!< FMC control register */
-#define FMC_OBCTL0                 REG32((FMC) + 0x0014U)           /*!< FMC option byte control register 0 */
-#define FMC_OBCTL1                 REG32((FMC) + 0x0018U)           /*!< FMC option byte control register 1 */
-#define FMC_WSEN                   REG32((FMC) + 0x00FCU)           /*!< FMC wait state enable register */
-#define FMC_PID                    REG32((FMC) + 0x0100U)           /*!< FMC product ID register */
+#define FMC_WS                     REG32((FMC) + 0x00000000U)     /*!< FMC wait state register */
+#define FMC_KEY                    REG32((FMC) + 0x00000004U)     /*!< FMC unlock key register */
+#define FMC_OBKEY                  REG32((FMC) + 0x00000008U)     /*!< FMC option byte unlock key register */
+#define FMC_STAT                   REG32((FMC) + 0x0000000CU)     /*!< FMC status register */
+#define FMC_CTL                    REG32((FMC) + 0x00000010U)     /*!< FMC control register */
+#define FMC_OBCTL0                 REG32((FMC) + 0x00000014U)     /*!< FMC option byte control register 0 */
+#define FMC_OBCTL1                 REG32((FMC) + 0x00000018U)     /*!< FMC option byte control register 1 */
+#define FMC_PECFG                  REG32((FMC) + 0x00000020U)     /*!< FMC page erase configuration register */
+#define FMC_PEKEY                  REG32((FMC) + 0x00000024U)     /*!< FMC unlock page erase key register */
+#define FMC_WSEN                   REG32((FMC) + 0x000000FCU)     /*!< FMC wait state enable register */
+#define FMC_PID                    REG32((FMC) + 0x00000100U)     /*!< FMC product ID register */
 
 #define OB_WP1                     REG32((OB) + 0x00000008U)      /*!< option byte write protection 1 */
 #define OB_USER                    REG32((OB) + 0x00010000U)      /*!< option byte user value*/
@@ -107,6 +111,13 @@ OF SUCH DAMAGE.
 /* FMC_OBCTL1 */
 #define FMC_OBCTL1_WP1             BITS(16,27)                    /*!< erase/program protection of each sector when DRP is 0 */
 
+/* FMC_PECFG */
+#define FMC_PE_EN                  BIT(31)                        /*!< the enable bit of page erase function */
+#define FMC_PE_ADDR                BITS(0,28)                     /*!< page erase address */
+
+/* FMC_PEKEY */
+#define FMC_PE_KEY                 BITS(0,31)                     /*!< FMC_PECFG unlock key value */
+
 /* FMC_WSEN */
 #define FMC_WSEN_WSEN              BIT(0)                         /*!< FMC wait state enable bit */
 
@@ -124,12 +135,13 @@ typedef enum
     FMC_PGMERR,                                                   /*!< program size not match error */
     FMC_WPERR,                                                    /*!< erase/program protection error */
     FMC_OPERR,                                                    /*!< operation error */
-    FMC_PGERR,                                                    /*!< program error */
+    FMC_TOERR,                                                    /*!< timeout error */
 }fmc_state_enum;
 
 /* unlock key */
 #define UNLOCK_KEY0                ((uint32_t)0x45670123U)        /*!< unlock key 0 */
 #define UNLOCK_KEY1                ((uint32_t)0xCDEF89ABU)        /*!< unlock key 1 */
+#define UNLOCK_PE_KEY              ((uint32_t)0xA9B8C7D6U)        /*!< unlock page erase function key */
 
 #define OB_UNLOCK_KEY0             ((uint32_t)0x08192A3BU)        /*!< ob unlock key 0 */
 #define OB_UNLOCK_KEY1             ((uint32_t)0x4C5D6E7FU)        /*!< ob unlock key 1 */
@@ -169,7 +181,7 @@ typedef enum
 #define OB_BB_DISABLE              OBCTL0_BB(0)                   /*!< boot from bank0 */
 #define OB_BB_ENABLE               OBCTL0_BB(1)                   /*!< boot from bank1 or bank0 if bank1 is void */
 
-/* option byte software/hardware free watch dog timer */
+/* option byte software/hardware free watch dog timer */  
 #define OBCTL0_NWDG_HW(regval)     (BIT(5) & ((uint32_t)(regval))<< 5)
 #define OB_FWDGT_SW                OBCTL0_NWDG_HW(1)              /*!< software free watchdog */
 #define OB_FWDGT_HW                OBCTL0_NWDG_HW(0)              /*!< hardware free watchdog */
@@ -241,14 +253,15 @@ typedef enum
 #define OB_DRP_21                  ((uint32_t)0x02000000U)        /*!< D-bus read protection protection of sector 21 */
 #define OB_DRP_22                  ((uint32_t)0x04000000U)        /*!< D-bus read protection protection of sector 22 */
 #define OB_DRP_23_27               ((uint32_t)0x08000000U)        /*!< D-bus read protection protection of sector 23~27 */
+#define OB_DRP_ALL                 ((uint32_t)0x0FFF0FFFU)        /*!< D-bus read protection protection of all sectors */
 
-/* double banks or single bank selection when flash size is 1M bytes */
-#define OBCTL0_DBS(regval)         (BIT(30) & ((uint32_t)(regval)<<30))
+/* double banks or single bank selection when flash size is 1M bytes */  
+#define OBCTL0_DBS(regval)         (BIT(30) & ((uint32_t)(regval) << 30U))
 #define OB_DBS_DISABLE             OBCTL0_DBS(0)                  /*!< single bank when flash size is 1M bytes */
 #define OB_DBS_ENABLE              OBCTL0_DBS(1)                  /*!< double bank when flash size is 1M bytes */
 
-/* option bytes D-bus read protection mode */
-#define OBCTL0_DRP(regval)         (BIT(31) & ((uint32_t)(regval)<<31))
+/* option bytes D-bus read protection mode */  
+#define OBCTL0_DRP(regval)         (BIT(31) & ((uint32_t)(regval) << 31U))
 #define OB_DRP_DISABLE             OBCTL0_DRP(0)                  /*!< the WPx bits used as erase/program protection of each sector */
 #define OB_DRP_ENABLE              OBCTL0_DRP(1)                  /*!< the WPx bits used as erase/program protection and D-bus read protection of each sector */
 
@@ -284,24 +297,36 @@ typedef enum
 #define CTL_SECTOR_NUMBER_23       CTL_SN(27)                     /*!< sector 23  */
 
 
-/* FMC program size */
-#define CTL_PSZ(regval)            (BITS(8,9) & ((uint32_t)(regval))<< 8)
+/* FMC program size */ 
+#define CTL_PSZ(regval)            (BITS(8,9) & ((uint32_t)(regval))<< 8U)
 #define CTL_PSZ_BYTE               CTL_PSZ(0)                     /*!< FMC program by byte access */
 #define CTL_PSZ_HALF_WORD          CTL_PSZ(1)                     /*!< FMC program by half-word access */
 #define CTL_PSZ_WORD               CTL_PSZ(2)                     /*!< FMC program by word access */
 
 /* FMC interrupt enable */
-#define FMC_INT_END              ((uint32_t)0x01000000U)        /*!< enable FMC end of program interrupt */
-#define FMC_INT_ERR              ((uint32_t)0x02000000U)        /*!< enable FMC error interrupt */
+#define FMC_INT_END                ((uint32_t)0x01000000U)        /*!< enable FMC end of program interrupt */
+#define FMC_INT_ERR                ((uint32_t)0x02000000U)        /*!< enable FMC error interrupt */
 
 /* FMC flags */
-#define FMC_FLAG_END               ((uint32_t)0x00000001U)        /*!< FMC end of operation flag bit */
-#define FMC_FLAG_OPERR             ((uint32_t)0x00000002U)        /*!< FMC operation error flag bit */
-#define FMC_FLAG_WPERR             ((uint32_t)0x00000010U)        /*!< FMC erase/program protection error flag bit */
-#define FMC_FLAG_PGMERR            ((uint32_t)0x00000040U)        /*!< FMC program size not match error flag bit */
-#define FMC_FLAG_PGSERR            ((uint32_t)0x00000080U)        /*!< FMC program sequence error flag bit */
-#define FMC_FLAG_RDDERR            ((uint32_t)0x00000100U)        /*!< FMC read D-bus protection error flag bit */
-#define FMC_FLAG_BUSY              ((uint32_t)0x00010000U)        /*!< FMC busy flag */
+#define FMC_FLAG_END               FMC_STAT_END                   /*!< FMC end of operation flag bit */
+#define FMC_FLAG_OPERR             FMC_STAT_OPERR                 /*!< FMC operation error flag bit */
+#define FMC_FLAG_WPERR             FMC_STAT_WPERR                 /*!< FMC erase/program protection error flag bit */
+#define FMC_FLAG_PGMERR            FMC_STAT_PGMERR                /*!< FMC program size not match error flag bit */
+#define FMC_FLAG_PGSERR            FMC_STAT_PGSERR                /*!< FMC program sequence error flag bit */
+#define FMC_FLAG_RDDERR            FMC_STAT_RDDERR                /*!< FMC read D-bus protection error flag bit */
+#define FMC_FLAG_BUSY              FMC_STAT_BUSY                  /*!< FMC busy flag */
+
+/* FMC interrupt flags */
+#define FMC_INT_FLAG_END           FMC_STAT_END                   /*!< FMC end of operation interrupt flag */
+#define FMC_INT_FLAG_OPERR         FMC_STAT_OPERR                 /*!< FMC operation error interrupt flag */
+#define FMC_INT_FLAG_WPERR         FMC_STAT_WPERR                 /*!< FMC erase/program protection error interrupt flag */
+#define FMC_INT_FLAG_PGMERR        FMC_STAT_PGMERR                /*!< FMC program size not match error interrupt flag */
+#define FMC_INT_FLAG_PGSERR        FMC_STAT_PGSERR                /*!< FMC program sequence error interrupt flag */
+#define FMC_INT_FLAG_RDDERR        FMC_STAT_RDDERR                /*!< FMC read D-bus protection error interrupt flag */
+
+
+/* FMC time out */
+#define FMC_TIMEOUT_COUNT          ((uint32_t)0x4FFFFFFFU)        /*!< count to judge of FMC timeout */
 
 /* function declarations */
 /* FMC main memory programming functions */
@@ -311,6 +336,10 @@ void fmc_wscnt_set(uint32_t wscnt);
 void fmc_unlock(void);
 /* lock the main FMC operation */
 void fmc_lock(void);
+#if defined (GD32F425) || defined (GD32F427) || defined (GD32F470)
+/* FMC erase page */
+fmc_state_enum fmc_page_erase(uint32_t page_addr);
+#endif
 /* FMC erase sector */
 fmc_state_enum fmc_sector_erase(uint32_t fmc_sector);
 /* FMC erase whole chip */
@@ -336,13 +365,13 @@ void ob_start(void);
 /* erase option byte */
 void ob_erase(void);
 /* enable write protect */
-void ob_write_protection_enable(uint32_t ob_wp);
+ErrStatus ob_write_protection_enable(uint32_t ob_wp);
 /* disable write protect */
-void ob_write_protection_disable(uint32_t ob_wp);
+ErrStatus ob_write_protection_disable(uint32_t ob_wp);
 /* enable erase/program protection and D-bus read protection */
 void ob_drp_enable(uint32_t ob_drp);
 /* disable erase/program protection and D-bus read protection */
-void ob_drp_disable(uint32_t ob_drp);
+void ob_drp_disable(void);
 /* set the option byte security protection level */
 void ob_security_protection_config(uint8_t ob_spc);
 /* write the FMC option byte user */
@@ -367,17 +396,21 @@ FlagStatus ob_spc_get(void);
 uint8_t ob_user_bor_threshold_get(void);
 
 /* FMC interrupts and flags management functions */
-/* enable FMC interrupt */
-void fmc_interrupt_enable(uint32_t fmc_int);
-/* disable FMC interrupt */
-void fmc_interrupt_disable(uint32_t fmc_int);
 /* get flag set or reset */
 FlagStatus fmc_flag_get(uint32_t fmc_flag);
 /* clear the FMC pending flag */
 void fmc_flag_clear(uint32_t fmc_flag);
+/* enable FMC interrupt */
+void fmc_interrupt_enable(uint32_t fmc_int);
+/* disable FMC interrupt */
+void fmc_interrupt_disable(uint32_t fmc_int);
+/* get FMC interrupt flag set or reset */
+FlagStatus fmc_interrupt_flag_get(uint32_t fmc_int_flag);
+/* clear the FMC interrupt flag */
+void fmc_interrupt_flag_clear(uint32_t fmc_int_flag);
 /* return the FMC state */
 fmc_state_enum fmc_state_get(void);
 /* check FMC ready or not */
-fmc_state_enum fmc_ready_wait(void);
+fmc_state_enum fmc_ready_wait(uint32_t timeout);
 
 #endif /* GD32F4XX_FMC_H */

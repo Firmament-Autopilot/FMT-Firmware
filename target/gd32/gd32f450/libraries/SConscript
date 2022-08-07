@@ -4,6 +4,6 @@ import os
 from building import *
 		
 objs = SConscript('gd32_lib/SConscript')
-objs += SConscript('gd32_usb_lib/SConscript')
+# objs += SConscript('gd32_usb_lib/SConscript')
 
 Return('objs')
