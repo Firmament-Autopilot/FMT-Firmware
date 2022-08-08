@@ -32,5 +32,8 @@ void fms_interface_init(void)
     fms_model_info.period = 10;
     fms_model_info.info = "Template FMS";
 
+    /* advertise fms_output topic */
+    mcn_advertise(MCN_HUB(fms_output), NULL);
+
     /* Add your code here */
 }
