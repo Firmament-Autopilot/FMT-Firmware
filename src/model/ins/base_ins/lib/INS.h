@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3707
+ * Model version                  : 1.3708
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  4 09:43:09 2022
+ * C/C++ source code generated on : Mon Aug  8 13:01:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1643,6 +1643,12 @@ struct Parameters_INS_T_ {
   real32_T Gain_Gain_ozb;              /* Computed Parameter: Gain_Gain_ozb
                                         * Referenced by: '<S331>/Gain'
                                         */
+  real32_T Saturation1_UpperSat_i;     /* Computed Parameter: Saturation1_UpperSat_i
+                                        * Referenced by: '<S324>/Saturation1'
+                                        */
+  real32_T Saturation1_LowerSat_n;     /* Computed Parameter: Saturation1_LowerSat_n
+                                        * Referenced by: '<S324>/Saturation1'
+                                        */
   real32_T h_R_m_Y0;                   /* Computed Parameter: h_R_m_Y0
                                         * Referenced by: '<S335>/h_R_m'
                                         */
@@ -2192,7 +2198,7 @@ struct Parameters_INS_T_ {
   int8_T Constant_Value_lc;            /* Computed Parameter: Constant_Value_lc
                                         * Referenced by: '<S266>/Constant'
                                         */
-  int8_T Saturation1_UpperSat_i;       /* Computed Parameter: Saturation1_UpperSat_i
+  int8_T Saturation1_UpperSat_ig;      /* Computed Parameter: Saturation1_UpperSat_ig
                                         * Referenced by: '<S259>/Saturation1'
                                         */
   int8_T Saturation1_LowerSat_g;       /* Computed Parameter: Saturation1_LowerSat_g

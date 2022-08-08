@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1048
+ * Model version                  : 1.1052
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug  6 09:41:19 2022
+ * C/C++ source code generated on : Mon Aug  8 13:04:06 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -28,7 +28,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 struct_RieDKeHZ6guPn5kqC0ritH CONTROL_PARAM = {
   7.0F,
   7.0F,
-  1.04719758F,
+  1.04719806F,
   0.1F,
   0.2F,
   0.15F,
@@ -37,8 +37,8 @@ struct_RieDKeHZ6guPn5kqC0ritH CONTROL_PARAM = {
   0.2F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F,
+  1.57079601F,
+  3.14159298F,
   13.0F,
   0.2F,
   0.3F,
@@ -48,7 +48,7 @@ struct_RieDKeHZ6guPn5kqC0ritH CONTROL_PARAM = {
   1.0F,
   0.1F,
   0.1F,
-  0.1F,
+  0.2F,
   0.1F,
   0.1F,
   0.1F,
@@ -56,13 +56,13 @@ struct_RieDKeHZ6guPn5kqC0ritH CONTROL_PARAM = {
   0.0F,
   1.0F,
   2.0F,
-  1.0F,
+  2.0F,
   1.0F,
   1.0F,
   1.0F,
   1.0F,
   0.2F,
-  0.2F
+  0.1F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S5>/Saturation'
@@ -146,6 +146,7 @@ void Controller_step(void)
   real32_T rtb_Add2;
   int32_T i;
   real32_T rtb_Multiply_d_idx_1;
+  real32_T tmp;
 
   /* Switch: '<S34>/Switch' incorporates:
    *  Constant: '<S34>/Constant'
@@ -388,15 +389,15 @@ void Controller_step(void)
    *  Inport: '<Root>/FMS_Out'
    */
   if (Controller_U.FMS_Out.reset > 0) {
-    rtb_Cos1 = 0.0F;
+    tmp = 0.0F;
   } else {
-    rtb_Cos1 = rtb_u_l;
+    tmp = rtb_u_l;
   }
 
   /* End of Switch: '<S37>/Switch' */
 
   /* Gain: '<S35>/Gain' */
-  rtb_Multiply4 = CONTROL_PARAM.FW_TECS_PITCH_D * rtb_Cos1;
+  rtb_Multiply4 = CONTROL_PARAM.FW_TECS_PITCH_D * tmp;
 
   /* Saturate: '<S30>/Saturation1' */
   if (rtb_Multiply4 > 0.3F) {
@@ -456,10 +457,22 @@ void Controller_step(void)
   rtb_Multiply_d_idx_1 = (rtb_Add1 - Controller_U.INS_Out.theta) *
     CONTROL_PARAM.PITCH_P;
 
+  /* Saturate: '<S19>/Saturation1' incorporates:
+   *  Inport: '<Root>/INS_Out'
+   */
+  if (Controller_U.INS_Out.airspeed > 999.0F) {
+    tmp = 999.0F;
+  } else if (Controller_U.INS_Out.airspeed < 0.1F) {
+    tmp = 0.1F;
+  } else {
+    tmp = Controller_U.INS_Out.airspeed;
+  }
+
+  /* End of Saturate: '<S19>/Saturation1' */
+
   /* Sum: '<S19>/Sum' incorporates:
    *  Constant: '<S24>/Constant'
    *  Inport: '<Root>/FMS_Out'
-   *  Inport: '<Root>/INS_Out'
    *  Product: '<S24>/Divide'
    *  Product: '<S24>/Multiply'
    *  Product: '<S24>/Multiply1'
@@ -467,7 +480,7 @@ void Controller_step(void)
    *  Trigonometry: '<S24>/Tan'
    */
   rtb_Sum = tanf(Controller_U.FMS_Out.phi_cmd) * arm_cos_f32
-    (Controller_U.FMS_Out.theta_cmd) * (9.81F / Controller_U.INS_Out.airspeed) +
+    (Controller_U.FMS_Out.theta_cmd) * (9.81F / tmp) +
     Controller_U.FMS_Out.psi_rate_cmd;
 
   /* Switch: '<S20>/Switch' incorporates:
@@ -534,8 +547,8 @@ void Controller_step(void)
   /* Sum: '<S10>/Minus2' incorporates:
    *  Inport: '<Root>/INS_Out'
    */
-  rtb_Multiply4 = rtb_Add_a - Controller_U.INS_Out.p;
-  rtb_Multiply_d_idx_1 = rtb_Add1 - Controller_U.INS_Out.q;
+  rtb_Multiply_d_idx_1 = rtb_Add_a - Controller_U.INS_Out.p;
+  rtb_Multiply4 = rtb_Add1 - Controller_U.INS_Out.q;
   rtb_Sum = rtb_Add2 - Controller_U.INS_Out.r;
 
   /* DiscreteIntegrator: '<S16>/Discrete-Time Integrator' incorporates:
@@ -752,14 +765,14 @@ void Controller_step(void)
           /* Switch: '<S40>/Switch' incorporates:
            *  Gain: '<S40>/Gain1'
            */
-          rtb_Cos1 = 0.0F;
+          tmp = 0.0F;
         } else {
           /* Switch: '<S40>/Switch' */
-          rtb_Cos1 = rtb_Gain;
+          tmp = rtb_Gain;
         }
 
         /* Gain: '<S38>/Gain' */
-        rtb_Cos1 *= CONTROL_PARAM.FW_TECS_THOR_D;
+        rtb_Cos1 = CONTROL_PARAM.FW_TECS_THOR_D * tmp;
 
         /* Saturate: '<S31>/Saturation1' */
         if (rtb_Cos1 > 0.3F) {
@@ -801,16 +814,16 @@ void Controller_step(void)
          *  Sum: '<S43>/Sum'
          */
         if (rtb_Cos1 + 0.5F > 1.0F) {
-          rtb_Switch = 1.0F;
+          rtb_Cos1 = 1.0F;
         } else if (rtb_Cos1 + 0.5F < 0.0F) {
-          rtb_Switch = 0.0F;
+          rtb_Cos1 = 0.0F;
         } else {
-          rtb_Switch = rtb_Cos1 + 0.5F;
+          rtb_Cos1 += 0.5F;
         }
 
         /* End of Saturate: '<S43>/Saturation' */
-        rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F *
-          rtb_Switch), 4.2949673E+9F) + 1000U);
+        rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * rtb_Cos1),
+          4.2949673E+9F) + 1000U);
       }
 
       /* End of Switch: '<S42>/Switch' */
@@ -830,7 +843,7 @@ void Controller_step(void)
        *  Saturate: '<S10>/FF_limit'
        *  Sum: '<S13>/Add1'
        */
-      rtb_Cos1 = (CONTROL_PARAM.ROLL_RATE_P * rtb_Multiply4 +
+      rtb_Cos1 = (CONTROL_PARAM.ROLL_RATE_P * rtb_Multiply_d_idx_1 +
                   Controller_DW.DiscreteTimeIntegrator_DSTATE[0]) * rtb_Cos;
 
       /* Saturate: '<S10>/FF_limit' */
@@ -871,7 +884,7 @@ void Controller_step(void)
        *  Saturate: '<S10>/FF_limit'
        *  Sum: '<S13>/Add1'
        */
-      rtb_Add1 = (CONTROL_PARAM.PITCH_RATE_P * rtb_Multiply_d_idx_1 +
+      rtb_Add1 = (CONTROL_PARAM.PITCH_RATE_P * rtb_Multiply4 +
                   Controller_DW.DiscreteTimeIntegrator_DSTATE[1]) * rtb_Cos;
 
       /* Saturate: '<S10>/FF_limit' */
@@ -1057,7 +1070,7 @@ void Controller_step(void)
    *  Product: '<S16>/Multiply'
    */
   Controller_DW.DiscreteTimeIntegrator_DSTATE[0] += CONTROL_PARAM.ROLL_RATE_I *
-    rtb_Multiply4 * 0.002F;
+    rtb_Multiply_d_idx_1 * 0.002F;
   if (Controller_DW.DiscreteTimeIntegrator_DSTATE[0] >= CONTROL_PARAM.RATE_I_MAX)
   {
     Controller_DW.DiscreteTimeIntegrator_DSTATE[0] = CONTROL_PARAM.RATE_I_MAX;
@@ -1069,7 +1082,7 @@ void Controller_step(void)
   }
 
   Controller_DW.DiscreteTimeIntegrator_DSTATE[1] += CONTROL_PARAM.PITCH_RATE_I *
-    rtb_Multiply_d_idx_1 * 0.002F;
+    rtb_Multiply4 * 0.002F;
   if (Controller_DW.DiscreteTimeIntegrator_DSTATE[1] >= CONTROL_PARAM.RATE_I_MAX)
   {
     Controller_DW.DiscreteTimeIntegrator_DSTATE[1] = CONTROL_PARAM.RATE_I_MAX;
