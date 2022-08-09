@@ -27,7 +27,6 @@ extern "C" {
 
 // Board Information
 #define TARGET_NAME  "QEMU vexpress-a9"
-#define VEHICLE_TYPE "Quadcopter"
 
 #if defined(__CC_ARM)
 extern int Image$$RW_IRAM1$$ZI$$Limit;

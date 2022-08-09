@@ -25,7 +25,6 @@ extern "C" {
 
 // Board Information
 #define TARGET_NAME  "Pixhawk FMUv2"
-#define VEHICLE_TYPE "Quadcopter"
 
 // Interupt Vector Offset
 #define INT_VECTOR_OFFSET 0x4000
