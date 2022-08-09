@@ -18,6 +18,8 @@
 #include "hal/sd/sd.h"
 #include "sdcard.h"
 
+#include <string.h>
+
 static struct sd_device sd0_dev;
 static sd_card_info_struct sd_cardinfo; /* information of SD card */
 
@@ -56,13 +58,12 @@ static rt_err_t init(sd_dev_t sd)
     status = sd_cardstatus_get(&cardstate);
     if (cardstate & 0x02000000) {
         printf("\r\n the card is locked!");
-        while (1) {
-        }
+        return RT_ERROR;
     }
     if ((SD_OK == status) && (!(cardstate & 0x02000000))) {
         /* set bus mode */
         status = sd_bus_mode_config(SDIO_BUSMODE_4BIT);
-        //        status = sd_bus_mode_config(SDIO_BUSMODE_1BIT);
+        // status = sd_bus_mode_config(SDIO_BUSMODE_1BIT);
     }
     if (SD_OK == status) {
         /* set data transfer mode */
@@ -77,6 +78,20 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
 {
     rt_err_t err = RT_EOK;
 
+    if (count == 0) {
+        return RT_EOK;
+    }
+
+    if (count > 1) {
+        if (sd_multiblocks_write((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize, count) != SD_OK) {
+            return RT_ERROR;
+        }
+    } else {
+        if (sd_block_write((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize) != SD_OK) {
+            return RT_ERROR;
+        }
+    }
+
     return err;
 }
 
@@ -84,11 +99,49 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
 {
     rt_err_t err = RT_EOK;
 
+    if (count == 0) {
+        return RT_EOK;
+    }
+
+    if (count > 1) {
+        if (sd_multiblocks_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize, count) != SD_OK) {
+            return RT_ERROR;
+        }
+    } else {
+        if (sd_block_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize) != SD_OK) {
+            return RT_ERROR;
+        }
+    }
+
     return err;
 }
 
 static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
 {
+    switch (cmd) {
+    case RT_DEVICE_CTRL_BLK_GETGEOME: {
+        struct rt_device_blk_geometry geometry;
+
+        geometry.bytes_per_sector = sd_cardinfo.card_blocksize;
+        geometry.block_size = sd_cardinfo.card_blocksize;
+        geometry.sector_count = sd_cardinfo.card_capacity / sd_cardinfo.card_blocksize;
+        *(struct rt_device_blk_geometry*)arg = geometry;
+    } break;
+    case RT_DEVICE_CTRL_BLK_SYNC: {
+        //TODO
+    } break;
+    case RT_DEVICE_CTRL_BLK_ERASE: {
+        // uint32_t* tbl = (uint32_t*)arg;
+        // HAL_SD_Erase(sd_handle, tbl[0], tbl[1]);
+
+        /* sd card is not needed to erase */
+        return RT_ERROR;
+    } break;
+    default: {
+        console_printf("unknown sd control cmd:%d\n", cmd);
+    } break;
+    }
+
     return RT_EOK;
 }
 

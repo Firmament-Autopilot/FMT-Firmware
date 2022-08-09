@@ -25,15 +25,18 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
+#include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
+#include "module/utils/devmq.h"
+#include "module/workqueue/workqueue_manager.h"
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    // { "sd0", "/", "elm", 0, NULL },
+    { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -352,10 +355,22 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* start recording boot log */
+    FMT_CHECK(boot_log_init());
+
+    /* init uMCN */
+    FMT_CHECK(mcn_init());
+
+    /* create workqueue */
+    FMT_CHECK(workqueue_manager_init());
+
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
+
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
     /* init usbd_cdc */
     // RT_CHECK(drv_usb_cdc_init());
@@ -376,8 +391,14 @@ void bsp_post_initialize(void)
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
+
     /* show system information */
     bsp_show_information();
+
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**
