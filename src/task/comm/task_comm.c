@@ -263,7 +263,7 @@ static bool mavlink_msg_vfr_hud_cb(mavlink_message_t* msg_t)
     groundspeed = sqrtf(ins_out.vn * ins_out.vn + ins_out.ve * ins_out.ve);
     heading = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi);
 
-    mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, 0, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);
+    mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, ins_out.airspeed, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);
 
     return true;
 }
