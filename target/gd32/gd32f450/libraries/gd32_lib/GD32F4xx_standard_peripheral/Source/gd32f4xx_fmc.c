@@ -601,6 +601,9 @@ void ob_drp_enable(uint32_t ob_drp)
     uint32_t wp0_state = FMC_OBCTL0 & FMC_OBCTL0_WP0;
     uint32_t wp1_state = FMC_OBCTL1 & FMC_OBCTL1_WP1;
 
+    (void)wp0_state;
+    (void)wp1_state;
+
     /* wait for the FMC ready */
     fmc_state = fmc_ready_wait(FMC_TIMEOUT_COUNT);
 

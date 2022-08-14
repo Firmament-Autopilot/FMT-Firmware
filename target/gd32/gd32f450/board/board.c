@@ -21,12 +21,15 @@
 #include <string.h>
 
 #include "default_config.h"
+#include "drv_pwm.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/sysio/actuator_cmd.h"
+#include "module/sysio/actuator_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
@@ -135,13 +138,13 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
             /* handle all sub tables */
             if (0 != (sub_tab = toml_table_in(root_tab, key))) {
                 if (MATCH(key, "console")) {
-                    // err = console_toml_config(sub_tab);
+                    err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
                     // err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     // err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
-                    // err = actuator_toml_config(sub_tab);
+                    err = actuator_toml_config(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -348,6 +351,9 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -390,6 +396,11 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(default_conf);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
+    /* init actuator */
+    FMT_CHECK(actuator_init());
+#endif
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());

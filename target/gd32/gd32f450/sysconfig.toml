@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "GD32F4"
+target = "GD32F450"
 
 # Console Configuration
 [console]
@@ -9,11 +9,6 @@ target = "GD32F4"
     type = "serial"
     name = "serial0"
     baudrate = 57600
-    auto-switch = true
-
-    [[console.devices]]
-    type = "mavlink"
-    name = "mav_console"
     auto-switch = true
 
 # Mavproxy Device Configuration
@@ -67,11 +62,6 @@ target = "GD32F4"
     [[actuator.devices]]
     protocol = "pwm"
     name = "main_out"
-    freq = 400                  # pwm frequency in Hz
-
-    [[actuator.devices]]
-    protocol = "pwm"
-    name = "aux_out"
     freq = 400                  # pwm frequency in Hz
 
     [[actuator.mappings]]

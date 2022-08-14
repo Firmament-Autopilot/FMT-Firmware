@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef DRV_PWM_H__
+#define DRV_PWM_H__
 
-#ifndef FMT_BSP_HEADER_H__
-#define FMT_BSP_HEADER_H__
+#include <firmament.h>
 
-#include <arm_math.h>
-/* stm32 peripheral library */
-#include <gd32f4xx.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_pwm_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
