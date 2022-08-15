@@ -60,10 +60,16 @@ static rt_err_t ms4525_init(void)
 {
     uint8_t val[4];
 
-    /* try to read ms4525 data and check status */
-    RT_TRY(ms4525_collect(val));
+    for (uint8_t i = 0; i < 5; i++) {
+        /* try to read ms4525 data and check status */
+        if (ms4525_collect(val) == RT_EOK) {
+            return RT_EOK;
+        }
+        systime_mdelay(5);
+    }
 
-    return RT_EOK;
+    /* exceed maximum try times, return error */
+    return RT_ERROR;
 }
 
 rt_size_t ms4525_read(airspeed_dev_t dev, rt_off_t pos, void* data, rt_size_t size)
