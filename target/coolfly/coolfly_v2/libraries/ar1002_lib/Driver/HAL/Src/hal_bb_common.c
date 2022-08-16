@@ -163,7 +163,7 @@ HAL_RET_T HAL_BB_ComSendMsg(ENUM_BB_COM_SESSION_ID e_sessionId,
 
     if (BB_COM_SESSION_0 == e_sessionId)
     {
-        DLOG_Error("session 0 can not be used");
+        // DLOG_Error("session 0 can not be used");
 
 
         return HAL_BB_ERR_SESSION_SEND;

@@ -226,7 +226,7 @@ void BB_handle_misc_cmds(STRU_WIRELESS_CONFIG_CHANGE* pcmd)
 
         case MISC_READ_BB_REG: {
             volatile uint8_t v = BB_ReadReg((ENUM_REG_PAGES)value, (uint8_t)value1);
-            DLOG_Info("BB read PAGE=0x%02x addr=0x%02x value=0x%02x", value, value1, v);
+            // DLOG_Info("BB read PAGE=0x%02x addr=0x%02x value=0x%02x", value, value1, v);
             break;
         }
 
@@ -264,7 +264,7 @@ static void BB_GetRcIdVtIdFromFlash(uint8_t* pu8_rcid, uint8_t* pu8_vtid)
         memcpy((void*)context.chipid, (void*)(pst_nv->st_nvDataUpd.u8_nvChipId), RC_ID_SIZE);
 
         if (pst_nv->st_nvMng.u8_nvVld != TRUE) {
-            DLOG_Warning("rcid null");
+            // DLOG_Warning("rcid null");
         }
 
         /*if(BB_SKY_MODE == context.en_bbmode)
@@ -272,7 +272,7 @@ static void BB_GetRcIdVtIdFromFlash(uint8_t* pu8_rcid, uint8_t* pu8_vtid)
             memcpy((void *)pu8_rcid, (void *)context.chipid, RC_ID_SIZE);
         }*/
 
-        DLOG_Critical("rc: 0x%x 0x%x 0x%x 0x%x 0x%x vt: 0x%x 0x%x", pu8_rcid[0], pu8_rcid[1], pu8_rcid[2], pu8_rcid[3], pu8_rcid[4], pu8_vtid[0], pu8_vtid[1]);
+        // DLOG_Critical("rc: 0x%x 0x%x 0x%x 0x%x 0x%x vt: 0x%x 0x%x", pu8_rcid[0], pu8_rcid[1], pu8_rcid[2], pu8_rcid[3], pu8_rcid[4], pu8_vtid[0], pu8_vtid[1]);
     }
 }
 
@@ -500,7 +500,7 @@ int BB_Session0SendMsg(uint8_t id, uint8_t* data_buf, uint16_t len)
     // uint8_t  i = 0;
 
     if (len + 3 > sizeof(data)) {
-        DLOG_Error("size flow");
+        // DLOG_Error("size flow");
     }
 
     data[0] = 0xa5;

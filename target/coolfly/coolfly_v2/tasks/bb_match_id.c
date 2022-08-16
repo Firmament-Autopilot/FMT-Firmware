@@ -33,16 +33,16 @@ void BB_skyRcIdEventHandler(void *p)
 
     if(pstru_status->pid == BB_GET_RCID)
     {
-        DLOG_Critical("Get rcid: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x,rssi_a %d, rssi_b %d", pstru_status->rcid[0], pstru_status->rcid[1], 
-                                                                       pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4],
-                                                                       pstru_status->agc1,pstru_status->agc2);
+        // DLOG_Critical("Get rcid: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x,rssi_a %d, rssi_b %d", pstru_status->rcid[0], pstru_status->rcid[1], 
+        //                                                                pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4],
+        //                                                                pstru_status->agc1,pstru_status->agc2);
     }
 
     if (pstru_status->pid == BB_SKY_SEARCHING_STATES_CHAGE)
     {
         if (SKY_WAIT_VT_ID_MSG == pstru_status->e_sky_searchState)
         {
-            DLOG_Warning("search id: SKY_WAIT_VT_ID_MSG");
+            // DLOG_Warning("search id: SKY_WAIT_VT_ID_MSG");
         }
         else if (SKY_WAIT_RC_ID_MATCH == pstru_status->e_sky_searchState)
         {
@@ -54,15 +54,15 @@ void BB_skyRcIdEventHandler(void *p)
             {
                 vt_id_timer_start_flag = 1;
                 HAL_TIMER_Start(GET_VT_ID_TIMER);
-                DLOG_Warning("got vtid: %dus timer start",GET_VT_ID_TIMEOUT);
+                // DLOG_Warning("got vtid: %dus timer start",GET_VT_ID_TIMEOUT);
             }
             //DLOG_Warning("search id: SKY_WAIT_RC_ID_MATCH");
         }
         else if (SKY_RC_SEARCH_END == pstru_status->e_sky_searchState)
         {
-            DLOG_Warning("search id: SKY_RC_SEARCH_END rc id: %x %x %x %x %x; vt id: %x %x", 
-                          pstru_status->rcid[0], pstru_status->rcid[1], pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4],
-                          pstru_status->vtid[0], pstru_status->vtid[1]);
+            // DLOG_Warning("search id: SKY_RC_SEARCH_END rc id: %x %x %x %x %x; vt id: %x %x", 
+            //               pstru_status->rcid[0], pstru_status->rcid[1], pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4],
+            //               pstru_status->vtid[0], pstru_status->vtid[1]);
 
             if (flag_searchIdTimerStart)
             {
@@ -80,7 +80,7 @@ void TIMHAL_IRQSearchIdHandler(uint32_t u32_vectorNum)
 {
     if (timeout_loop ++ > 6)
     {
-        DLOG_Warning("search time out %d us", SEARCH_ID_TIMEOUT*timeout_loop);
+        // DLOG_Warning("search time out %d us", SEARCH_ID_TIMEOUT*timeout_loop);
         HAL_TIMER_Stop(SEARCH_ID_TIMER);
         flag_searchIdTimerStart = 0;
         HAL_BB_StopSearchRcId();
@@ -114,7 +114,7 @@ void BB_Sky_SearchIdHandler(void *p)
     }
     else
     {
-        DLOG_Critical("HAL_TIMER_RegisterTimer fail");
+        // DLOG_Critical("HAL_TIMER_RegisterTimer fail");
     }
 
     if(vt_id_timer_start_flag)
@@ -130,7 +130,7 @@ void BB_Sky_SearchIdHandler(void *p)
     }
     else
     {
-        DLOG_Critical("HAL_TIMER_RegisterTimer fail1");
+        // DLOG_Critical("HAL_TIMER_RegisterTimer fail1");
     }
     
     timeout_loop = 0;
@@ -143,7 +143,7 @@ void BB_Sky_SearchIdHandler(void *p)
     HAL_BB_SearchRcId(1);
 
     set_link_led_status_searchid();
-    DLOG_Critical("search id enter");
+    // DLOG_Critical("search id enter");
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -271,7 +271,7 @@ void add_dev_info(uint8_t *pid, uint8_t rssi_a, uint8_t rssi_b)
 
     if(st_DevInfoList.index >= MAX_SEARCH_DEV_ID_NUM)
     {
-        DLOG_Critical("over max %d support search dev num",MAX_SEARCH_DEV_ID_NUM);
+        // DLOG_Critical("over max %d support search dev num",MAX_SEARCH_DEV_ID_NUM);
         bIsOverMaxSupportDevNum = true;
     }
 

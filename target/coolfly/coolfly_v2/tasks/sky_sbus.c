@@ -111,39 +111,39 @@ rt_err_t register_ar_rc(void)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-void debug_sbus(void)
-{
-    static uint64_t t_last;
-    uint64_t t = HAL_GetSysUsTick();
+// void debug_sbus(void)
+// {
+//     static uint64_t t_last;
+//     uint64_t t = HAL_GetSysUsTick();
 
-    // this task is 20hz = 50ms;
-    if (t - t_last < 1000000) {
-        return;
-    }
+//     // this task is 20hz = 50ms;
+//     if (t - t_last < 1000000) {
+//         return;
+//     }
 
-    t_last = t;
+//     t_last = t;
 
-    DLOG_Critical("---------sky_rc----------");
-    DLOG_Critical("%d %d %d %d %d %d %d %d",
-                  rc_data.rc_chan_val[0],
-                  rc_data.rc_chan_val[1],
-                  rc_data.rc_chan_val[2],
-                  rc_data.rc_chan_val[3],
-                  rc_data.rc_chan_val[4],
-                  rc_data.rc_chan_val[5],
-                  rc_data.rc_chan_val[6],
-                  rc_data.rc_chan_val[7]);
+//     DLOG_Critical("---------sky_rc----------");
+//     DLOG_Critical("%d %d %d %d %d %d %d %d",
+//                   rc_data.rc_chan_val[0],
+//                   rc_data.rc_chan_val[1],
+//                   rc_data.rc_chan_val[2],
+//                   rc_data.rc_chan_val[3],
+//                   rc_data.rc_chan_val[4],
+//                   rc_data.rc_chan_val[5],
+//                   rc_data.rc_chan_val[6],
+//                   rc_data.rc_chan_val[7]);
 
-    DLOG_Critical("%d %d %d %d %d %d %d %d",
-                  rc_data.rc_chan_val[8],
-                  rc_data.rc_chan_val[9],
-                  rc_data.rc_chan_val[10],
-                  rc_data.rc_chan_val[11],
-                  rc_data.rc_chan_val[12],
-                  rc_data.rc_chan_val[13],
-                  rc_data.rc_chan_val[14],
-                  rc_data.rc_chan_val[15]);
-}
+//     DLOG_Critical("%d %d %d %d %d %d %d %d",
+//                   rc_data.rc_chan_val[8],
+//                   rc_data.rc_chan_val[9],
+//                   rc_data.rc_chan_val[10],
+//                   rc_data.rc_chan_val[11],
+//                   rc_data.rc_chan_val[12],
+//                   rc_data.rc_chan_val[13],
+//                   rc_data.rc_chan_val[14],
+//                   rc_data.rc_chan_val[15]);
+// }
 
 static void cf_sbus_parse(void) // just for test
 {
@@ -200,14 +200,14 @@ void sky_bb_spi_irq_handler(void* p)
     ret = HAL_BB_ComReceiveMsg(BB_COM_SESSION_SPI, buffer, BB_READ_MAX_LEN, &cnt);
 
     if (ret != HAL_OK && cnt != 0) {
-        DLOG_Error("failed read bbcom %02lx, %ld", ret, cnt);
+        // DLOG_Error("failed read bbcom %02lx, %ld", ret, cnt);
         return;
     }
 
     if (cnt > 0 && cnt <= BB_READ_MAX_LEN) {
 
         if (cnt != 25) {
-            DLOG_Error("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8], buffer[9]);
+            // DLOG_Error("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8], buffer[9]);
         }
 
         for (i = 0; i < 25; i++) {
@@ -218,7 +218,7 @@ void sky_bb_spi_irq_handler(void* p)
         cf_sbus_parse();
 
     } else {
-        DLOG_Info("bb read %ld", cnt);
+        // DLOG_Info("bb read %ld", cnt);
     }
 }
 
@@ -230,7 +230,7 @@ static void run_sbus_init(void* parameter)
     ret = HAL_BB_SpiDataTransInit(25);
 
     if (ret != HAL_OK) {
-        DLOG_Error("BB SPI init failed");
+        // DLOG_Error("BB SPI init failed");
     }
 
     //register BaseBand rt-uart session, will malloc a special session to rt-uart function
@@ -240,7 +240,7 @@ static void run_sbus_init(void* parameter)
                                     sky_bb_spi_irq_handler);
 
     if (ret != HAL_OK) {
-        DLOG_Error("BB ComRegister failed");
+        // DLOG_Error("BB ComRegister failed");
     }
 }
 

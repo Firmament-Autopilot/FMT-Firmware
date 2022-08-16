@@ -297,7 +297,7 @@ int8_t UPGRADE_CheckUpgradeRemoteFile(const uint8_t *fileName)
     MD5Final(&md5, md5_value);  
     if (0 != memcmp(md5_value, u8Amd5Sum, MD5_SIZE))
     {
-        DLOG_Info("file checksum .........fail\n");
+        DLOG_Info("file checksum ..fail\n");
         for(i=0;i<MD5_SIZE;i++)
         {
             DLOG_Error(" md5 %02x %02x",md5_value[i], u8Amd5Sum[i]);
@@ -306,7 +306,7 @@ int8_t UPGRADE_CheckUpgradeRemoteFile(const uint8_t *fileName)
     }
     else
     {
-        DLOG_Critical("file checksum .........ok\n");
+        DLOG_Critical("file checksum .ok\n");
         return 0;
     }
     f_close(&MyFile);

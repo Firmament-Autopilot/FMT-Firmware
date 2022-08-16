@@ -19,7 +19,7 @@ extern "C"
 #endif
 
 
-#include "dma.h"
+// #include "dma.h"
 #include "quad_spi_ctrl.h"
 #include "efuse.h"
 #include "i2c_ll.h"

@@ -558,7 +558,7 @@ void UART_IntrSrvc(uint32_t u32_vectorNum)
                         (s_pfun_uartUserHandlerTbl[u8_uartCh])(bb_com_rx_buf+1, bb_com_rx_buf[0]);
                     }
                     bb_aes_off_uart_dummy_cnt = bb_com_rx_buf[bb_com_rx_buf[0]+1];
-                    DLOG_Info("%d %d",bb_com_rx_buf[0],bb_aes_off_uart_dummy_cnt);
+                    // DLOG_Info("%d %d",bb_com_rx_buf[0],bb_aes_off_uart_dummy_cnt);
                 }
                 else
 				{
@@ -572,7 +572,7 @@ void UART_IntrSrvc(uint32_t u32_vectorNum)
                         DLOG_Error("%d",bb_aes_off_uart_max_len);
                     }
                     //if(bb_com_rx_buf[0]>10)
-                    DLOG_Info(">%d %d %d",bb_com_rx_buf[0],u8_uartRxLen,bb_aes_off_uart_dummy_cnt);
+                    // DLOG_Info(">%d %d %d",bb_com_rx_buf[0],u8_uartRxLen,bb_aes_off_uart_dummy_cnt);
                 }
                 bb_com_rx_len = 0;
             }

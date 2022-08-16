@@ -26,7 +26,7 @@ HAL_RET_T HAL_NV_enterintoUpgrade(void)
 {
 	while (-1 == COMMON_driverMutexGet(MUTEX_NOR_FLASH, 0))
 	{
-		DLOG_Critical("enter into upgrading");
+		// DLOG_Critical("enter into upgrading");
 		HAL_Delay(100);
 	}
 
@@ -43,7 +43,7 @@ HAL_RET_T HAL_NORFLASH_Init(void)
 {
     if ( -1 == COMMON_driverMutexGet(MUTEX_NOR_FLASH, 0) )
     {
-        DLOG_Critical("fail");
+        // DLOG_Critical("fail");
         return HAL_OCCUPIED;
     }
 
@@ -59,7 +59,7 @@ HAL_RET_T HAL_NORFLASH_Erase(ENUM_HAL_NORFLASH_EraseIndex e_index, uint32_t u32_
 {
     if ( -1 == COMMON_driverMutexGet(MUTEX_NOR_FLASH, 0) )
     {
-        DLOG_Critical("fail, not inited");
+        // DLOG_Critical("fail, not inited");
         return HAL_NOT_INITED;
     }
 
@@ -96,7 +96,7 @@ HAL_RET_T HAL_NORFLASH_WriteByteBuffer(uint32_t u32_startAddr, uint8_t* pu8_data
 {
     if ( -1 == COMMON_driverMutexGet(MUTEX_NOR_FLASH, 0) )
     {
-        DLOG_Critical("fail, not inited");
+        // DLOG_Critical("fail, not inited");
         return HAL_NOT_INITED;
     }
 
@@ -118,7 +118,7 @@ HAL_RET_T HAL_NORFLASH_ReadByteBuffer(uint32_t u32_startAddr,uint8_t* pu8_dataBu
 {
     if ( -1 == COMMON_driverMutexGet(MUTEX_NOR_FLASH, 0) )
     {
-        DLOG_Critical("fail, not inited");
+        // DLOG_Critical("fail, not inited");
         return HAL_NOT_INITED;
     }
     COMMON_driverMutexSet(MUTEX_NOR_FLASH, 0);

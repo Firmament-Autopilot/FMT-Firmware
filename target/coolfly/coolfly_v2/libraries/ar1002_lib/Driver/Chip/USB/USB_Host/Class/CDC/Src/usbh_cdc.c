@@ -558,7 +558,7 @@ void USBH_CDC_RecvData(USBH_HandleTypeDef *phost)
 
         if (length > 0)
         {
-            DLOG_Info("RX %d", length);
+            // DLOG_Info("RX %d", length);
             USBH_CDC_ReceiveCallback(phost, length);
         }
         else

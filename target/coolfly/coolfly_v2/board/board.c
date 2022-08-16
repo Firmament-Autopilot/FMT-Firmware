@@ -114,24 +114,24 @@ static void bsp_show_information(void)
 {
     char buffer[50];
 
-    console_println("            :1tfffffffffffffffffffffffffffffffffffti,              ");
-    console_println("        .1fffffffffffffffffffffffffffffffffffffffffffft;           ");
-    console_println("      :tfffffffffffffffffffffffffffffffffffffffffffffffff1         ");
-    console_println("    .tffffffffffti:::itffffffffffffffffffffffffffffffffffff;       ");
-    console_println("   ,fffffffft,           ,tfffffffffffffffffffffffffffffffff1      ");
-    console_println("  ,ffffffft.    ,itfti,    .1ffffffffffffffffffff1   ;fffffffi     ");
-    console_println("  tffffffi   .1fffffffff1.   .tfffffffffffffffffff:   ,fffffff:    ");
-    console_println(" ,fffffff.  .tfft,   ,tffft,   1ffffffffffi    ifff1   :fffffft    ");
-    console_println(" ;ffffff1   ifft      .ffffff1;:fffffffff;      ;fff.  .fffffff.   ");
-    console_println(" ;ffffff1   ;fff.     ,ffLffffff1 ,itffffi      ifff.  .fffffff.   ");
-    console_println(" ,fffffff,   1fffi:,:1fffffffffffi   .1ffft;,,;tfff:   iffffff1    ");
-    console_println("  1fffffft    ;ffffffffffffffffffft.   .1ffffffff1.   ;fffffff,    ");
-    console_println("  .tfffffff;  :ffffffffffffffffffffft.    .,::,.    .1fffffff;     ");
-    console_println("   .tffffffffffffffffffffffffffffffffft;          ;tffffffff;      ");
-    console_println("     ;fffffffffffffffffffffffffffffffffffffttttffffffffffft.       ");
-    console_println("       ifffffffffffffffffffffffffffffffffffffffffffffffff,         ");
-    console_println("         ,tfffffffffffffffffffffffffffffffffffffffffff;            ");
-    console_println("             .itfffffffffffffffffffffffffffffffft1:                ");
+    // console_println("            :1tfffffffffffffffffffffffffffffffffffti,              ");
+    // console_println("        .1fffffffffffffffffffffffffffffffffffffffffffft;           ");
+    // console_println("      :tfffffffffffffffffffffffffffffffffffffffffffffffff1         ");
+    // console_println("    .tffffffffffti:::itffffffffffffffffffffffffffffffffffff;       ");
+    // console_println("   ,fffffffft,           ,tfffffffffffffffffffffffffffffffff1      ");
+    // console_println("  ,ffffffft.    ,itfti,    .1ffffffffffffffffffff1   ;fffffffi     ");
+    // console_println("  tffffffi   .1fffffffff1.   .tfffffffffffffffffff:   ,fffffff:    ");
+    // console_println(" ,fffffff.  .tfft,   ,tffft,   1ffffffffffi    ifff1   :fffffft    ");
+    // console_println(" ;ffffff1   ifft      .ffffff1;:fffffffff;      ;fff.  .fffffff.   ");
+    // console_println(" ;ffffff1   ;fff.     ,ffLffffff1 ,itffffi      ifff.  .fffffff.   ");
+    // console_println(" ,fffffff,   1fffi:,:1fffffffffffi   .1ffft;,,;tfff:   iffffff1    ");
+    // console_println("  1fffffft    ;ffffffffffffffffffft.   .1ffffffff1.   ;fffffff,    ");
+    // console_println("  .tfffffff;  :ffffffffffffffffffffft.    .,::,.    .1fffffff;     ");
+    // console_println("   .tffffffffffffffffffffffffffffffffft;          ;tffffffff;      ");
+    // console_println("     ;fffffffffffffffffffffffffffffffffffffttttffffffffffft.       ");
+    // console_println("       ifffffffffffffffffffffffffffffffffffffffffffffffff,         ");
+    // console_println("         ,tfffffffffffffffffffffffffffffffffffffffffff;            ");
+    // console_println("             .itfffffffffffffffffffffffffffffffft1:                ");
 
     sprintf(buffer, "FMT FW %s", FMT_VERSION);
     banner_item("Firmware", buffer, '.', ITEM_LENGTH);
@@ -358,8 +358,8 @@ void bsp_early_initialize(void)
     /* init console to enable console output */
     FMT_CHECK(console_init());
 
-    console_println("------------------FMT Firmware---------------------");
-    console_println("---------Build time: %s %s----------", __DATE__, __TIME__);
+    // console_println("------------------FMT Firmware---------------------");
+    console_println("Build time: %s %s", __DATE__, __TIME__);
 
     DLOG_Init(NULL, NULL, DLOG_SERVER_PROCESSOR);
     DLOG_Process(NULL);
