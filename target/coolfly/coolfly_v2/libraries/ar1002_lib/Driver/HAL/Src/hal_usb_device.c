@@ -359,13 +359,13 @@ HAL_RET_T HAL_USB_SendData(uint8_t *buff, uint32_t data_len, uint8_t portId, uin
 
     if ((ep != HID_EPIN_CTRL_ADDR)&&(ep != HID_CUSTOMER_IN_ADDR))
     {
-        DLOG_Critical("error ep = %02x", ep);
+        // DLOG_Critical("error ep = %02x", ep);
         return HAL_USB_ERR_ENDPOINT;
     }
 
     if ((data_len <= 3) || (data_len & 0x03) || (data_len > 512))
     {
-        DLOG_Critical("error size = %d", data_len);
+        // DLOG_Critical("error size = %d", data_len);
         return HAL_USB_ERR_DATA_SIZE;
     }
 

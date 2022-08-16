@@ -25,13 +25,13 @@ static uint32_t session_cnt_tx[BB_COM_SESSION_SPI];
 static uint32_t session_event_cnt[BB_COM_SESSION_SPI];
 #define DATA_CHECK_SUM_SIZE (2)
 
-void session_cnt_debug_print(void)
-{
-    int i;
-    //DLOG_Error("event %d",session_event_cnt);
-    for(i=0;i<BB_COM_SESSION_SPI;i++)
-        DLOG_Error("s%d ecnt %ld tx %ld rx %ld",i,session_event_cnt[i],session_cnt_tx[i],session_cnt_rx[i]);
-}
+// void session_cnt_debug_print(void)
+// {
+//     int i;
+//     //DLOG_Error("event %d",session_event_cnt);
+//     for(i=0;i<BB_COM_SESSION_SPI;i++)
+//         DLOG_Error("s%d ecnt %ld tx %ld rx %ld",i,session_event_cnt[i],session_cnt_tx[i],session_cnt_rx[i]);
+// }
 static void BB_ComLockAccquire(void)
 {
     lock_type * lock_p = (lock_type*)SRAM_MODULE_LOCK_BB_UART_MUTEX_FLAG;
@@ -109,7 +109,7 @@ static void BB_ComWriteSessionRxBuffer(STRU_BBComRxFIFO *pstBBComRxFIFO)
 
         if (wr_pos == rd_pos)
         {
-            DLOG_Warning("FIFO is full!");
+            // DLOG_Warning("FIFO is full!");
         }
 
         g_BBComSessionArray[session_id].rx_buf->header.rx_buf_wr_pos = wr_pos;
@@ -302,7 +302,7 @@ uint32_t BB_ComPacketDataAnalyze(uint8_t *u8_uartRxBuf, uint8_t u8_uartRxLen, ST
                         }
                         else
                         {
-                            DLOG_Info("checksum fail");
+                            // DLOG_Info("checksum fail");
                         }
                     }
 
@@ -498,7 +498,7 @@ void BB_ComClearTxbuffer(ENUM_BB_COM_SESSION_ID session_id){
 
     if (CPUINFO_GetLocalCpuId() != g_BBComSessionArray[session_id].rx_buf->header.cpu_id)
     {
-        DLOG_Error("cpu id not match");
+        // DLOG_Error("cpu id not match");
 
         return ;
     }
@@ -506,7 +506,7 @@ void BB_ComClearTxbuffer(ENUM_BB_COM_SESSION_ID session_id){
     if ((session_id >= BB_COM_SESSION_MAX)||
         (g_BBComSessionArray[session_id].rx_buf->header.in_use == 0))
     {
-        DLOG_Error("not in use: %d", session_id);
+        // DLOG_Error("not in use: %d", session_id);
 
         return ;
     }
@@ -521,7 +521,7 @@ uint32_t BB_ComGetFreeLength(ENUM_BB_COM_SESSION_ID session_id)
 
     if (CPUINFO_GetLocalCpuId() != g_BBComSessionArray[session_id].rx_buf->header.cpu_id)
     {
-        DLOG_Error("cpu id not match");
+        // DLOG_Error("cpu id not match");
 
         return 0;
     }
@@ -529,7 +529,7 @@ uint32_t BB_ComGetFreeLength(ENUM_BB_COM_SESSION_ID session_id)
     if ((session_id >= BB_COM_SESSION_MAX)||
         (g_BBComSessionArray[session_id].rx_buf->header.in_use == 0))
     {
-        DLOG_Error("not in use: %d", session_id);
+        // DLOG_Error("not in use: %d", session_id);
 
         return 0;
     }
@@ -558,16 +558,16 @@ uint8_t BB_ComSendMsg(ENUM_BB_COM_SESSION_ID session_id,
 
     if (data_buf == NULL)
     {
-        DLOG_Critical("data_buf == NULL ");
+        // DLOG_Critical("data_buf == NULL ");
         return 0;
     }
 
     if (CPUINFO_GetLocalCpuId() != g_BBComSessionArray[session_id].rx_buf->header.cpu_id)
     {
-        DLOG_Error("cpu id not match: session id: %d, local cpu: %d, session cpu: %d",
-                    session_id,
-                    CPUINFO_GetLocalCpuId(),
-                    g_BBComSessionArray[session_id].rx_buf->header.cpu_id);
+        // DLOG_Error("cpu id not match: session id: %d, local cpu: %d, session cpu: %d",
+        //             session_id,
+        //             CPUINFO_GetLocalCpuId(),
+        //             g_BBComSessionArray[session_id].rx_buf->header.cpu_id);
 
         return 0;
     }
@@ -575,7 +575,7 @@ uint8_t BB_ComSendMsg(ENUM_BB_COM_SESSION_ID session_id,
     if ((session_id >= BB_COM_SESSION_MAX)||
         (g_BBComSessionArray[session_id].rx_buf->header.in_use == 0))
     {
-        DLOG_Error("not in use: %d", session_id);
+        // DLOG_Error("not in use: %d", session_id);
         return 0;
     }
 
@@ -739,7 +739,7 @@ uint16_t BB_ComGetMsgFromTXQueue(ENUM_BB_COM_SESSION_PRIORITY session_priority)
     write_pos       = pst_txQueue->tx_queue_header.tx_buf_wr_pos;
     max_size        = pst_txQueue->tx_queue_header.tx_buff_max_size;
 
-    DLOG_Error("write_pos = %ld ", write_pos);
+    // DLOG_Error("write_pos = %ld ", write_pos);
 
     current_length  = BB_ComGetTxQueueCurrentLength(pst_txQueue);
 
@@ -760,7 +760,7 @@ uint16_t BB_ComGetMsgFromTXQueue(ENUM_BB_COM_SESSION_PRIORITY session_priority)
 
     if (i >= 1)
     {
-        DLOG_Error("have invalid data");
+        // DLOG_Error("have invalid data");
     }
 
     read_pos += i;
@@ -773,7 +773,7 @@ uint16_t BB_ComGetMsgFromTXQueue(ENUM_BB_COM_SESSION_PRIORITY session_priority)
     if (i >= (current_length-8))
     {
         read_size = 0;
-        DLOG_Error("no header found");
+        // DLOG_Error("no header found");
     }
     else
     {
@@ -839,7 +839,7 @@ void BB_ComFlushTXQueue(ENUM_BB_COM_SESSION_PRIORITY session_priority, ENUM_BB_C
 
     pst_txQueue->tx_queue_header.tx_buf_rd_pos = 0;
     pst_txQueue->tx_queue_header.tx_buf_wr_pos = 0;
-	DLOG_Warning("now is to clear the txqueue ");
+	// DLOG_Warning("now is to clear the txqueue ");
     //BB_ComLockRelease();
 }
 
@@ -1010,8 +1010,8 @@ void BB_ComCycleSendMsg(ENUM_BB_COM_TYPE e_bbComType,
         if (uart_send_size != 0)
         {
             uart_putdata(BBCOM_UART_INDEX,  (const char*)uart_send_buff, uart_send_size);
-			if(uart_send_size >0)
-            DLOG_Info("1 %ld %d %ld",uart_max_tx_size,uart_send_size,SysTicks_GetTickCount());
+			// if(uart_send_size >0)
+            // DLOG_Info("1 %ld %d %ld",uart_max_tx_size,uart_send_size,SysTicks_GetTickCount());
         }
         
     }
@@ -1081,8 +1081,8 @@ void BB_ComCycleSendMsg(ENUM_BB_COM_TYPE e_bbComType,
             BB_SPI_WriteByte(PAGE2, spi_com_start_addr, fill++);
             spi_com_start_addr--;
         }
-		if(spi_send_size >0)
-        DLOG_Info("2 %ld %d %ld",spi_max_tx_size,spi_send_size,SysTicks_GetTickCount());
+		// if(spi_send_size >0)
+        //     DLOG_Info("2 %ld %d %ld",spi_max_tx_size,spi_send_size,SysTicks_GetTickCount());
     }
 
     return;

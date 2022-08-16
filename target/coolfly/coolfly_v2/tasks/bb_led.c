@@ -124,7 +124,7 @@ void bb_led_status_EventHandler(void *p)
         }       
         else        
         {            
-            DLOG_Info("not got signal");     
+            // DLOG_Info("not got signal");     
         }    
     }
 }
@@ -139,7 +139,7 @@ static void run_bb_led(void* parameter)
     
     if(HAL_BB_GetDeviceInfo(&pstDeviceInfo) != HAL_OK)
     {
-        DLOG_Critical("failed");
+        // DLOG_Critical("failed");
         return;
     }
 

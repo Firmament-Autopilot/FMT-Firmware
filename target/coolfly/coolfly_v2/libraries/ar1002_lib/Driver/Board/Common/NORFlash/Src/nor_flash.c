@@ -59,8 +59,8 @@ static const struct spi_flash_info * NOR_FLASH_ReadId(void)
         }
     }
 
-    DLOG_Error("SF: unrecognized JEDEC id bytes: %02x, %02x, %02x",
-                  id[0], id[1], id[2]);
+    // DLOG_Error("SF: unrecognized JEDEC id bytes: %02x, %02x, %02x",
+    //               id[0], id[1], id[2]);
 
     return NULL;
 }
@@ -211,7 +211,7 @@ uint8_t NOR_FLASH_WP_Enable(struct spi_flash flash_status, uint8_t enable_flag, 
             break;
 
         default:
-            DLOG_Error("Not support Manufacturer id:%d", flash_status.id[0]);
+            // DLOG_Error("Not support Manufacturer id:%d", flash_status.id[0]);
             return 1;
     }
 
@@ -302,31 +302,31 @@ void NOR_FLASH_Init(void)
                 HAL_GPIO_SetPin(WP_CTRL_GPIO_NUM, 0);
 
                 MPU_QuadspiProtectDisable();
-                DLOG_Critical("WP register no match reset all WP register! S1_REG:%lx,S2_REG:%lx",s1_tmp,s2_tmp);
+                // DLOG_Critical("WP register no match reset all WP register! S1_REG:%lx,S2_REG:%lx",s1_tmp,s2_tmp);
             }
             
             if(0 == NOR_FLASH_WP_Enable(g_norflash, 1, g_norflash.protect_start, 0))
             {
-                DLOG_Critical("*********************************************");
-                DLOG_Critical("WP Enable");
-                DLOG_Critical("Flash JEDEC ID:0x%02x 0x%02x 0x%02x, Name:%s",
-                              g_norflash.id[0], g_norflash.id[1], g_norflash.id[2], g_norflash.name);
-                DLOG_Critical("Protect Zone:0x%02lx - 0x%02lx", g_norflash.protect_start, g_norflash.protect_end);
-                DLOG_Critical("S1 MAP:0x%02x, S2 MAP:0x%02x", g_norflash.s1_map, g_norflash.s2_map);
-                DLOG_Critical("WP MAP:0x%02x, WP MAP:0x%02x", g_norflash.s1_wp_map, g_norflash.s2_wp_map);
-                DLOG_Critical("*********************************************");
+                // DLOG_Critical("*********************************************");
+                // DLOG_Critical("WP Enable");
+                // DLOG_Critical("Flash JEDEC ID:0x%02x 0x%02x 0x%02x, Name:%s",
+                //               g_norflash.id[0], g_norflash.id[1], g_norflash.id[2], g_norflash.name);
+                // DLOG_Critical("Protect Zone:0x%02lx - 0x%02lx", g_norflash.protect_start, g_norflash.protect_end);
+                // DLOG_Critical("S1 MAP:0x%02x, S2 MAP:0x%02x", g_norflash.s1_map, g_norflash.s2_map);
+                // DLOG_Critical("WP MAP:0x%02x, WP MAP:0x%02x", g_norflash.s1_wp_map, g_norflash.s2_wp_map);
+                // DLOG_Critical("*********************************************");
             }
             else
             {
                 NOR_FLASH_SetFlashDisableFlag(1);
-                DLOG_Critical("WP Enable fail");
+                // DLOG_Critical("WP Enable fail");
             }
         }
     }
     else
     {
         NOR_FLASH_SetFlashDisableFlag(1);
-        DLOG_Error("Can't Protect the flash");
+        // DLOG_Error("Can't Protect the flash");
     }
 
     MPU_QuadspiProtectEnable();
@@ -338,7 +338,7 @@ static int8_t NOR_FLASH_Assert(uint32_t flash_start_addr, uint32_t size)
 {
     if (flash_start_addr < BOOT_INFO_OFFSET && BOOT_UPGRADE_CLOSE == u8_Boot_Upgrade_Flag)
     {
-        DLOG_Error("flash protect sector");
+        // DLOG_Error("flash protect sector");
         return FALSE;
     }
     /*else if ((flash_start_addr < APP_ADDR_OFFSET) && (flash_start_addr > (BOOT_ADDR1-FLASH_BASE_ADDR)))
@@ -348,7 +348,7 @@ static int8_t NOR_FLASH_Assert(uint32_t flash_start_addr, uint32_t size)
     }*/
     else if(g_norflash.name != NULL && (flash_start_addr + size >= g_norflash.size))
     {
-        DLOG_Error("flash address out of flash size");
+        // DLOG_Error("flash address out of flash size");
         return FALSE;
     }
     return TRUE;
@@ -389,7 +389,7 @@ uint8_t NOR_FLASH_EraseSector(uint32_t flash_start_addr)
     }
     if ((flash_start_addr % sector_size) != 0)
     {
-        DLOG_Error("The w25q128 sector erase address is not sector aligned!");
+        // DLOG_Error("The w25q128 sector erase address is not sector aligned!");
         return FALSE;
     }
 
@@ -410,7 +410,7 @@ uint8_t NOR_FLASH_EraseBlock(uint32_t flash_start_addr)
     }
     if ((flash_start_addr % sector_size) != 0)
     {
-        DLOG_Error("The w25q128 block erase address is not block aligned!");
+        // DLOG_Error("The w25q128 block erase address is not block aligned!");
         return FALSE;
     }
 

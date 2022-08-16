@@ -22,7 +22,7 @@ static int cmd_help(void)
 {
     uint32_t i=0;
 
-    DLOG_Critical("Please use the commands like:");
+    // DLOG_Critical("Please use the commands like:");
     while(NULL != g_cmdArray[i].func)
     {
         DLOG_Critical("%s %s", g_cmdArray[i].fname, g_cmdArray[i].help);

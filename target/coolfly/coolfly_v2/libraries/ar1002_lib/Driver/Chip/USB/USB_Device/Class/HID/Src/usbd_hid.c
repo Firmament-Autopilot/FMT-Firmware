@@ -620,7 +620,7 @@ static uint8_t  USBD_HID_Init (USBD_HandleTypeDef *pdev,
 
     if(Check_USB_Is_Apple_By_ID(pdev->id))
     {
-        DLOG_Critical("Connected to Apple dev, Set EPOUT_VIDEO_ADDR & EPOUT_CTRL_ADDR Bulk Transfer mode!");
+        // DLOG_Critical("Connected to Apple dev, Set EPOUT_VIDEO_ADDR & EPOUT_CTRL_ADDR Bulk Transfer mode!");
         USBD_LL_OpenEP(pdev,
                 HID_EPOUT_VIDEO_ADDR,
                 USBD_EP_TYPE_BULK,

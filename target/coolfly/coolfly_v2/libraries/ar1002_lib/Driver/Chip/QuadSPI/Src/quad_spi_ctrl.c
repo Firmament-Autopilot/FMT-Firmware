@@ -58,7 +58,7 @@ uint8_t QUAD_SPI_UpdateInstruct(ENUM_QUAD_SPI_INSTR_ID instr_id, uint32_t cmd_h,
 {
     if (instr_id > QUAD_SPI_INSTR_UNKNOWN)
     {
-        DLOG_Info("Quad SPI instruct ID to be updated is not right!");
+        // DLOG_Info("Quad SPI instruct ID to be updated is not right!");
         return FALSE;
     }
 
@@ -74,7 +74,7 @@ uint8_t QUAD_SPI_ReadInstruct(ENUM_QUAD_SPI_INSTR_ID instr_id, uint32_t * cmd_h,
 {
     if (instr_id > QUAD_SPI_INSTR_UNKNOWN)
     {
-        DLOG_Info("Quad SPI instruct ID to be updated is not right!");
+        // DLOG_Info("Quad SPI instruct ID to be updated is not right!");
         return FALSE;
     }
 
@@ -342,7 +342,7 @@ uint8_t QUAD_SPI_SetSpeed(ENUM_QUAD_SPI_SPEED speed)
         break;
     default:
         ret = FALSE;
-        DLOG_Warning("The quad spi speed is not supported!\n");
+        // DLOG_Warning("The quad spi speed is not supported!\n");
         break;
      }
 

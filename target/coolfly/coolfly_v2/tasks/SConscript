@@ -8,15 +8,13 @@ src = Glob('*.c')
 
 
 
-path += [cwd + '/xc7027']
-
 src += Glob('xc7027/xc7027.c')
 
 # if GetDepend(['RT_USING_CPLUSPLUS']):
 #     src += Glob('*.cpp')
 
 inc = [cwd] 
-inc += [path]
+inc += [cwd + '/xc7027']
 
 
 group = DefineGroup('LocalTask', src, depend = [''], CPPPATH = inc)

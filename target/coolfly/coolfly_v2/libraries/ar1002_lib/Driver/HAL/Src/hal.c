@@ -14,7 +14,7 @@ History:
 #include "drv_systick.h"
 #include "hal_ret_type.h"
 #include "hal.h"
-#include "dma.h"
+// #include "dma.h"
 #include "debuglog.h"
 #include "image_struct.h"
 #include "quad_spi_ctrl.h"

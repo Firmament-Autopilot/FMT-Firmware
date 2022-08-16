@@ -42,12 +42,12 @@ static void bb_com3_irq_handler(void* p)
 
     ret = HAL_BB_ComReceiveMsg(BB_COM_SESSION_3, buffer, BB_READ_MAX_LEN, &cnt);
     if (ret != HAL_OK) {
-        DLOG_Error("failed read bbcom");
+        // DLOG_Error("failed read bbcom");
         return;
     }
 
     if (get_link_led_status() != LINK_LOCK && cnt > 0) {
-        DLOG_Warning("uart not lock, drop %ld", cnt);
+        // DLOG_Warning("uart not lock, drop %ld", cnt);
         return;
     }
 
