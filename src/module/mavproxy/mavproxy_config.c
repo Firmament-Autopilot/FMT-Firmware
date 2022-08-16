@@ -95,6 +95,8 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
             }
         } else if (DEVICE_TYPE_IS(idx, usb)) {
             /* do nothing */
+        } else if (DEVICE_TYPE_IS(idx, bb_com)) {
+            /* do nothing */
         } else {
             TOML_DBG_E("unknown device type: %s\n", DEVICE_LIST[idx].type);
             err = FMT_ERROR;
@@ -148,8 +150,22 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
                 TOML_DBG_E("unknown config key: %s\n", key);
                 continue;
             }
+        } else if (DEVICE_TYPE_IS(idx, bb_com)) {
+            DEVICE_NUM = idx + 1;
+            if (MATCH(key, "auto-switch")) {
+                rt_device_t ret = rt_device_find(DEVICE_LIST[idx].name);
+                if (ret != RT_NULL) {
+                    fmt_err_t ret = mavproxy_set_channel(idx);
+                    if (ret != RT_EOK) {
+                        TOML_DBG_W("mavproxy_set_channel = %d failed!!! \n", idx);
+                    }
+                }
+            } else {
+                TOML_DBG_E("unknown config key: %s \n", key);
+                continue;
+            }
         } else {
-            TOML_DBG_W("unknown device type:%s\n", DEVICE_LIST[idx].type);
+            TOML_DBG_W("unknown device type:%s \n", DEVICE_LIST[idx].type);
             continue;
         }
     }
@@ -231,6 +247,7 @@ fmt_err_t mavproxy_switch_channel(uint8_t chan)
             rt_device_close(old_device);
         }
     } else {
+        TOML_DBG_E("mavproxy_set_device failed \n");
         return FMT_ERROR;
     }
 

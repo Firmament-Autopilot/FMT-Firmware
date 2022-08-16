@@ -175,6 +175,7 @@ static fmt_err_t actuator_parse_devices(const toml_array_t* array)
     fmt_err_t err = FMT_EOK;
     uint32_t idx = 0;
 
+
     for (i = 0; 0 != (curtab = toml_table_at(array, i)); i++) {
         err = actuator_parse_device(curtab, idx);
 
@@ -217,10 +218,10 @@ static fmt_err_t actuator_parse_mapping(const toml_table_t* curtab, int idx)
         return FMT_ERROR;
     }
 
-    if (toml_array_nelem(mapping_array) != 2) {
-        TOML_DBG_E("illegal chan-map array length: %d\n", toml_array_nelem(mapping_array));
-        return FMT_ERROR;
-    }
+    // if (toml_array_nelem(mapping_array) != 2) {
+    //     TOML_DBG_E("illegal chan-map array length: %d\n", toml_array_nelem(mapping_array));
+    //     return FMT_ERROR;
+    // }
 
     arr = toml_array_at(mapping_array, 0);
     actuator_mappings_list[idx].map_size = toml_array_nelem(arr);
@@ -233,19 +234,19 @@ static fmt_err_t actuator_parse_mapping(const toml_table_t* curtab, int idx)
         }
     }
 
-    arr = toml_array_at(mapping_array, 1);
-    if (toml_array_nelem(arr) != actuator_mappings_list[idx].map_size) {
-        TOML_DBG_E("illegal array length:%d %d\n", toml_array_nelem(arr), actuator_mappings_list[idx].map_size);
-        return FMT_ERROR;
-    }
-    for (i = 0; i < actuator_mappings_list[idx].map_size; i++) {
-        if (toml_int_at(arr, i, &ival) == 0) {
-            actuator_mappings_list[idx].to_map[i] = (uint16_t)ival;
-        } else {
-            TOML_DBG_E("fail to parse mapping value\n");
-            return FMT_ERROR;
-        }
-    }
+    // arr = toml_array_at(mapping_array, 1);
+    // if (toml_array_nelem(arr) != actuator_mappings_list[idx].map_size) {
+    //     TOML_DBG_E("illegal array length:%d %d\n", toml_array_nelem(arr), actuator_mappings_list[idx].map_size);
+    //     return FMT_ERROR;
+    // }
+    // for (i = 0; i < actuator_mappings_list[idx].map_size; i++) {
+    //     if (toml_int_at(arr, i, &ival) == 0) {
+    //         actuator_mappings_list[idx].to_map[i] = (uint16_t)ival;
+    //     } else {
+    //         TOML_DBG_E("fail to parse mapping value\n");
+    //         return FMT_ERROR;
+    //     }
+    // }
 
     return err;
 }

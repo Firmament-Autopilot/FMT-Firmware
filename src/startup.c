@@ -38,7 +38,7 @@ void assert_failed(uint8_t* file, uint32_t line)
 
 static void assert_hook(const char* ex, const char* func, rt_size_t line)
 {
-    printf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
+    printf("(%s) assertion failed at function:%s, line number:%ld \n", ex, func, line);
 
 #ifdef FMT_USING_CHECKED
     assert_failed((uint8_t*)func, (uint32_t)line);

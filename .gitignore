@@ -28,3 +28,4 @@ build
 *.orig
 cconfig.h
 .cortex-debug*
+.vscode/*
