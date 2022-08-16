@@ -231,6 +231,7 @@ static rt_err_t measure(baro_report_t* report)
     report->pressure_Pa = c00 + Praw_sc * (c10 + Praw_sc * (c20 + Praw_sc * c30)) + Traw_sc * c01 + Traw_sc * Praw_sc * (c11 + Praw_sc * c21);
     report->temperature_deg = 0.5f * c0 + Traw_sc * c1;
     report->altitude_m = 44330.0f * (1.0f - powf(report->pressure_Pa / 101325.0f, 1.0f / 5.255f));
+
     report->timestamp_ms = systime_now_ms();
 
     return RT_EOK;
@@ -276,6 +277,7 @@ static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
         DEFINE_TIMETAG(baro_interval, 10);
         *(uint8_t*)arg = check_timetag(TIMETAG(baro_interval));
     } break;
+
     default:
         break;
     }
@@ -285,6 +287,7 @@ static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
 
 static rt_size_t baro_read(baro_dev_t baro, baro_report_t* report)
 {
+
     rt_size_t size = 0;
 
     if (measure(report) == RT_EOK) {

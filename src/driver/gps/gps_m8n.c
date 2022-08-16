@@ -21,12 +21,12 @@
 #include "module/sensor/sensor_hub.h"
 #include "protocol/ublox/ublox.h"
 
-#define CONFIGURE_RETRY_MAX 5
+#define CONFIGURE_RETRY_MAX 100
 #define M_DEG_TO_RAD_F      0.01745329251994f
 #define M_RAD_TO_DEG_F      57.2957795130823f
 
-// #define DRV_DBG(...) console_printf(__VA_ARGS__)
-#define DRV_DBG(...)
+#define DRV_DBG(...) console_printf(__VA_ARGS__)
+// #define DRV_DBG(...)
 
 static rt_device_t serial_device;
 static struct gps_device gps_device;
@@ -299,7 +299,8 @@ static rt_err_t set_baudrate(rt_device_t dev, uint32_t baudrate)
 
 static rt_err_t probe(uint32_t* gps_baudrate)
 {
-    uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200, 230400, 460800 };
+    // uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200, 230400, 460800 };
+    uint32_t baudrates[] = { 115200 };
     uint32_t baudrate;
     uint8_t i;
 

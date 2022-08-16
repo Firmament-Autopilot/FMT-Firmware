@@ -427,7 +427,7 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
         if (MATCH(rcDevInfo.type, "rc")) {
             pilot_cmd_rc_dev_config rc_default_config = {
                 .protocol = 1, // sbus
-                .channel_num = 6,
+                .channel_num = 16,
                 .sample_time = 0.05, // 20Hz
                 .range = { 1000, 2000 }
             };
@@ -474,7 +474,7 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
                 }
             }
             rt_free(strval);
-        } else if (MATCH(key, "channel-num")) {
+        } else if (MATCH(key, "channel-num")) {            
             int64_t ival;
             if (toml_int_in(curtab, key, &ival) == 0) {
                 config->channel_num = (uint16_t)ival;
@@ -505,6 +505,10 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
                         break;
                     }
                 }
+            }
+            else
+            {
+                TOML_DBG_W("config key error : %s\n", key);
             }
         } else {
             TOML_DBG_W("Unknown config key: %s\n", key);

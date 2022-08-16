@@ -261,6 +261,7 @@ fmt_err_t mavproxy_switch_channel(uint8_t chan)
             rt_device_close(old_device);
         }
     } else {
+        TOML_DBG_E("mavproxy_set_device failed \n");
         return FMT_ERROR;
     }
 
