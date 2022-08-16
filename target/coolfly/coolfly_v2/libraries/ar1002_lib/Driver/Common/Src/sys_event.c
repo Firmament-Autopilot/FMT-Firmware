@@ -478,7 +478,7 @@ static uint8_t notifySysEvent(uint32_t event_id, void* parameter)
         STRU_NotifiedSysEvent_Node** ppLastNode  = &g_notifiedSysEventList_tail;
 
         STRU_NotifiedSysEvent_Node* pNewNode = (STRU_NotifiedSysEvent_Node*)malloc_safe(sizeof(STRU_NotifiedSysEvent_Node));
-
+  
         if (pNewNode != NULL)
         {
             // Add the new node to the tail, unmask the inter core bit.
@@ -505,7 +505,7 @@ static uint8_t notifySysEvent(uint32_t event_id, void* parameter)
         }
         else
         {
-            DLOG_Info("Malloc Fail");
+            DLOG_Info("Malloc Fail g_notifiedSysEventList = %p ", g_notifiedSysEventList);
             retval = FALSE;
         }
     }
@@ -537,7 +537,9 @@ static uint8_t notifySysEvent(uint32_t event_id, void* parameter)
  */
 void SYS_EVENT_Notify_From_ISR(uint32_t event_id, void* parameter)
 {
+    rt_base_t level = rt_hw_interrupt_disable();
     notifySysEvent(event_id, parameter);
+    rt_hw_interrupt_enable(level);
 }
 
 

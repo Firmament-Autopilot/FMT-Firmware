@@ -17,6 +17,7 @@
 
 #include "local_task.h"
 
+#include <firmament.h>
 
 void InterCore_CopyConfigureFormFlashToSRAM(void);
 
@@ -64,7 +65,10 @@ void InterCore_IRQ0_CALL(void)
     {
         msg = 0;
         memset(buf, 0, sizeof(buf));
+
+        rt_base_t level = rt_hw_interrupt_disable();
         InterCore_GetMsg(&msg, buf, sizeof(buf));
+        rt_hw_interrupt_enable(level);
 
         // Message process
         if (msg != 0)
@@ -84,9 +88,8 @@ void InterCore_IRQ0_CALL(void)
 
 static void InterCore_IRQ0Handler(uint32_t u32_vectorNum)
 {
-    InterCore_ResetIRQ0();
-    
     intercore_irq0_callback();
+    InterCore_ResetIRQ0();
 }
 
 
