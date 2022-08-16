@@ -90,12 +90,14 @@ void intercore_irq0_callback(void)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void run_sys_event(void* parameter)
 {
+    SYS_EVENT_DumpAllListNodes();
+    SYS_EVENT_MallocFreeCntCheck();
     SYS_EVENT_Process();
 }
 
 static struct WorkItem sys_event_item = {
     .name = "sys_event",
-    .period = 1,
+    .period = 10,
     .schedule_time = 0,
     .run = run_sys_event
 };
