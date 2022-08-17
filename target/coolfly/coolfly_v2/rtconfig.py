@@ -67,7 +67,7 @@ if PLATFORM == 'gcc':
     CFLAGS += ' -std=c99'
     CXXFLAGS += ' -std=c++14'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_coolfly_v2.bin\n' + SIZE + ' $TARGET \n'
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_coolfly_v2.bin\n' + SIZE + ' $TARGET -A\n'
 
 
 

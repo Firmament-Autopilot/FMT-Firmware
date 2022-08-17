@@ -42,6 +42,7 @@ static void MPU_SRAMRegionConfigEnable(void)
     MPU_RegionConfigEnable(WDT0_1_MPU_REGION_NUMBER, WDT0_1_MPU_REGION_ST_ADDR, WDT0_1_MPU_REGION_ATTR);
     MPU_RegionConfigEnable(WDT2_MPU_REGION_NUMBER, WDT2_MPU_REGION_ST_ADDR, WDT2_MPU_REGION_ATTR);
     MPU_RegionConfigEnable(FALSH_MEMORY_MPU_REGION_NUMBER, FALSH_MEMORY_MPU_REGION_ST_ADDR, FALSH_MEMORY_MPU_REGION_ATTR);
+    MPU_RegionConfigEnable(IDTCM1_MPU_REGION_NUMBER, IDTCM1_MPU_REGION_ST_ADDR, IDTCM1_MPU_REGION_ATTR);
 }
 
 static void MPU_PeripheraleRgionConfigEnable(void)
@@ -62,7 +63,7 @@ int32_t MPU_SetUp(void)
     MPU_SRAMRegionConfigEnable();
     MPU_PeripheraleRgionConfigEnable();   
     //MPU_RegionConfigDisable(6);
-    MPU_RegionConfigDisable(7);
+    // MPU_RegionConfigDisable(7);
     
     MPU_ControlEnable();
 
@@ -81,7 +82,7 @@ int32_t MPU_QuadspiProtectEnable(void)
 
     MPU_SRAMRegionConfigEnable();
     MPU_PeripheraleRgionConfigEnable();  
-    MPU_RegionConfigDisable(7);
+    // MPU_RegionConfigDisable(7);
 
     MPU_ControlEnable();
 
@@ -101,7 +102,7 @@ int32_t MPU_QuadspiProtectDisable(void)
 
     MPU_SRAMRegionConfigEnable();
     MPU_RegionConfigDisable(QUAD_SPI_MPU_REGION_NUMBER);
-    MPU_RegionConfigDisable(7);
+    // MPU_RegionConfigDisable(7);
 
     MPU_ControlEnable();
 

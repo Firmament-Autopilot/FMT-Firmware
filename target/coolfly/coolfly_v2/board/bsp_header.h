@@ -17,21 +17,7 @@
 #ifndef FMT_BSP_HEADER_H__
 #define FMT_BSP_HEADER_H__
 
-/* stm32 peripheral library */
-// #include <artosyn.h>
-
 /* FPU Library */
 #include <arm_math.h>
-
-// #include "stm32f7xx_hal.h"
-// #include "stm32f7xx_ll_rcc.h"
-// #include "stm32f7xx_ll_bus.h"
-// #include "stm32f7xx_ll_system.h"
-// #include "stm32f7xx_ll_exti.h"
-// #include "stm32f7xx_ll_cortex.h"
-// #include "stm32f7xx_ll_utils.h"
-// #include "stm32f7xx_ll_pwr.h"
-// #include "stm32f7xx_ll_dma.h"
-// #include "stm32f7xx_ll_gpio.h"
 
 #endif

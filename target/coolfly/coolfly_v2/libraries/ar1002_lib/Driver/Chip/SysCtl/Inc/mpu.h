@@ -98,7 +98,13 @@
                                                          (1  << 19) | \
                                                          (MPU_DEFS_RASR_SIZE_512B) | \
                                                          (MPU_RASR_ENABLE_Msk)
-
+                                                         
+#define IDTCM1_MPU_REGION_NUMBER                         7
+#define IDTCM1_MPU_REGION_ST_ADDR                        0x44100000
+#define IDTCM1_MPU_REGION_ATTR                          (MPU_DEFS_RASE_AP_FULL_ACCESS) | \
+                                                        (1  << 19) | \
+                                                        (MPU_DEFS_RASR_SIZE_1MB) | \
+                                                        (MPU_RASR_ENABLE_Msk)
 
 
 int32_t MPU_QuadspiProtectDisable(void);

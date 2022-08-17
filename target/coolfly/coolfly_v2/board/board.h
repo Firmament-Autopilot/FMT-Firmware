@@ -30,35 +30,35 @@ extern "C" {
 #define VEHICLE_TYPE "Quadcopter"
 
 // Internal SRAM memory size[Kbytes]
-#define SYSTEM_TOTAL_MEM_SIZE (0x40000) // 256K
+#define SYSTEM_TOTAL_MEM_SIZE (0x60000) // 384K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
 #ifdef __ICCARM__
 // Use *.icf ram symbal, to avoid hardcode.
 extern char __ICFEDIT_region_RAM_end__;
-#define SYSTEM_FREE_MEM_END &__ICFEDIT_region_RAM_end__
+    #define SYSTEM_FREE_MEM_END &__ICFEDIT_region_RAM_end__
 #elif defined(__CC_ARM) || defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
 /* the size of heap is defined in startup.s, the address can be found in .map file */
 extern int __heap_base;
 extern int __heap_limit;
-#define SYSTEM_FREE_MEM_BEGIN (&__heap_base)
-#define SYSTEM_FREE_MEM_END   (&__heap_limit)
+    #define SYSTEM_FREE_MEM_BEGIN (&__heap_base)
+    #define SYSTEM_FREE_MEM_END   (&__heap_limit)
 #else
 extern int __bss_end;
-#define SYSTEM_FREE_MEM_BEGIN (&__bss_end)
-#define SYSTEM_FREE_MEM_END   (0x20000000 + SYSTEM_TOTAL_MEM_SIZE)
+    #define SYSTEM_FREE_MEM_BEGIN (&__bss_end)
+    #define SYSTEM_FREE_MEM_END   (0x20000000 + SYSTEM_TOTAL_MEM_SIZE)
 #endif
 
 #ifndef NVIC_PRIORITYGROUP_0
-#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
-                                                                 4 bits for subpriority */
-#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
-                                                                 3 bits for subpriority */
-#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
-                                                                 2 bits for subpriority */
-#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
-                                                                 1 bit  for subpriority */
-#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
-                                                                 0 bit  for subpriority */
+    #define NVIC_PRIORITYGROUP_0 ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority, \
+                                                             4 bits for subpriority */
+    #define NVIC_PRIORITYGROUP_1 ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority, \
+                                                             3 bits for subpriority */
+    #define NVIC_PRIORITYGROUP_2 ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority, \
+                                                             2 bits for subpriority */
+    #define NVIC_PRIORITYGROUP_3 ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority, \
+                                                             1 bit  for subpriority */
+    #define NVIC_PRIORITYGROUP_4 ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority, \
+                                                             0 bit  for subpriority */
 #endif
 
 void rt_hw_board_init(void);
@@ -68,6 +68,9 @@ void bsp_post_initialize(void);
 void board_show_version(void);
 
 void Error_Handler(void);
+
+#define _EXT_ITCM1 __attribute__((section(".cf_ext_itcm1")))
+#define _EXT_ITCM2 __attribute__((section(".cf_dtcm0_ekf2")))
 
 #ifdef __cplusplus
 }
