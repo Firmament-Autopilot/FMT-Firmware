@@ -505,7 +505,7 @@ static uint8_t notifySysEvent(uint32_t event_id, void* parameter)
         }
         else
         {
-            DLOG_Info("Malloc Fail g_notifiedSysEventList = %p ", g_notifiedSysEventList);
+            // DLOG_Info("Malloc Fail g_notifiedSysEventList = %p ", g_notifiedSysEventList);
             retval = FALSE;
         }
     }

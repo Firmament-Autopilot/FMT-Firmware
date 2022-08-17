@@ -7,18 +7,16 @@ MEMORY
 {
     itcm0 (rwx) 	  		: ORIGIN = 0x00000000, LENGTH = 512K
 
-	dtcm0 (rwx) 	  		: ORIGIN = 0x20000000, LENGTH = 256K
-	dtcm0_ekf2 (rwx) 		: ORIGIN = 0x20040000, LENGTH = 256K
+	dtcm0 (rwx) 	  		: ORIGIN = 0x20000000, LENGTH = 384K
+	dtcm0_ekf2 (rwx) 		: ORIGIN = 0x20060000, LENGTH = 128K
+	itcm1 (rwx) 	  		: ORIGIN = 0x44100000, LENGTH = 256K
+	dtcm1 (rwx) 	  		: ORIGIN = 0x44180000, LENGTH = 256K
 
-	/* itcm1 (rwx) 	  		: ORIGIN = 0x44100000, LENGTH = 256K
-	dtcm1 (rwx) 	  		: ORIGIN = 0x44180000, LENGTH = 256K */
 
 	lma_itcm0 (rwx) 	  	: ORIGIN = 0x00000000, LENGTH = 512K
-    lma_dtcm0_ekf2 (rwx) 	: ORIGIN = 0x00080000, LENGTH = 256K 
-    
-	/* lma_itcm1 (rwx) 	  	: ORIGIN = 0x000C0000, LENGTH = 256K
-	lma_dtcm1 (rwx) 	  	: ORIGIN = 0x00100000, LENGTH = 256K */
-
+	lma_dtcm0_ekf2 (rwx) 	: ORIGIN = 0x00080000, LENGTH = 128K
+	lma_itcm1 (rwx) 	  	: ORIGIN = 0x000A0000, LENGTH = 256K
+	lma_dtcm1 (rwx) 	  	: ORIGIN = 0x000E0000, LENGTH = 256K
 }
 
 ENTRY(Reset_Handler)
@@ -83,7 +81,7 @@ SECTIONS
         __rt_utest_tc_tab_end = .;
         . = ALIGN(4);
 
-        /* section information for task. */
+                /* section information for task. */
         . = ALIGN(4);
         __fmt_task_start = .;
         KEEP(*(TaskTab))
@@ -95,15 +93,33 @@ SECTIONS
 
     .dtcm0_ekf2 :
     {
+        . = ALIGN(4);
         *(.cf_dtcm0_ekf2*)
         . = ALIGN(4);
 
-        
-        *(.rodata)                      /* read-only data (constants) */
-        *(.rodata*)
-        . = ALIGN(4);
+        /* . = ALIGN(4); */
 
     } > dtcm0_ekf2 AT > lma_dtcm0_ekf2
+
+	.itcm_ext1 :
+    {   
+        . = ALIGN(4);
+        *(.cf_ext_itcm1*)
+        . = ALIGN(4);
+    
+
+    
+
+    } > itcm1 AT > lma_itcm1
+
+	.itcm_ext2 :
+    {
+        . = ALIGN(4);
+		/* *(.rodata .rodata.*) */
+        *(.rodata) 
+        *(.rodata*)
+        . = ALIGN(4);
+    } > dtcm1 AT > lma_dtcm1
 
 
     .ARM.extab : {

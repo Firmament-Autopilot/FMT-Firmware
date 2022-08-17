@@ -86,6 +86,6 @@ MODELS = [
 ]
 
 LIBS = [
-    # 'cm_backtrace',
+    'cm_backtrace',
     'mavlink',
 ]
