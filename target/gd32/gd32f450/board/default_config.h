@@ -26,10 +26,6 @@ target = "GD32F450"\n
 	name = "serial0"\n
 	baudrate = 57600\n
 	auto-switch = true\n
-	[[console.devices]]\n
-	type = "mavlink"\n
-	name = "mav_console"\n
-	auto-switch = true\n
 [mavproxy]\n
 	[[mavproxy.devices]]\n
 	type = "serial"\n
@@ -38,6 +34,41 @@ target = "GD32F450"\n
     [[mavproxy.devices]]\n
 	type = "usb"\n
 	name = "usbd0"\n
-    auto-switch = true
+    auto-switch = true\n
+[pilot-cmd]\n
+    stick-channel = [4,3,1,2]\n
+    [pilot-cmd.device]\n
+    type = "rc"\n
+    name = "rc"\n
+    protocol = "ppm"\n
+    channel-num = 6\n
+    sample-time = 0.05\n
+    range = [1000,2000]\n
+    [[pilot-cmd.mode]]\n
+    mode = 5\n
+    channel = 5\n
+    range = [1000,1200]\n
+    [[pilot-cmd.mode]]\n
+    mode = 4\n
+    channel = 5\n
+    range = [1400,1600]\n
+    [[pilot-cmd.mode]]\n
+    mode = 3\n
+    channel = 5\n
+    range = [1800,2000]\n
+    [[pilot-cmd.command]]\n
+    type = 1\n
+    cmd = 1002\n
+    channel = 6\n
+    range = [1800,2000]\n
+[actuator]\n
+    [[actuator.devices]]\n
+    protocol = "pwm"\n
+    name = "main_out"\n
+    freq = 400\n
+    [[actuator.mappings]]\n
+    from = "control_out"\n
+    to = "main_out"\n
+    chan-map = [[1,2,3,4],[1,2,3,4]]
 );
 // clang-format on

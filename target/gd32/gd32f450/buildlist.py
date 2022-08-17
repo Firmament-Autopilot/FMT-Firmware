@@ -28,7 +28,7 @@ HAL = [
     # 'barometer/*.c',
     # 'fmtio_dev/*.c',
     'actuator/*.c',
-    # 'rc/*.c',
+    'rc/*.c',
     # 'gps/*.c',
     # 'adc/*.c',
     # 'mtd/*.c',

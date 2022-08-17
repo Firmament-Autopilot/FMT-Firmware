@@ -37,28 +37,37 @@ static rt_err_t hal_rc_init(struct rt_device* dev)
 
 static rt_size_t hal_rc_read(struct rt_device* dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
-    rt_size_t rb = 0;
     rc_dev_t rc;
     uint16_t read_mask = (uint16_t)pos;
+    uint16_t channel_mask;
     int16_t* rc_channel = (int16_t*)buffer;
+    rt_size_t rb = 0;
+    uint8_t n = 0;
 
     RT_ASSERT(dev != RT_NULL);
 
     rc = (rc_dev_t)dev;
 
+    /* apply channel mask */
+    channel_mask = (1 << rc->config.channel_num) - 1;
+    read_mask &= channel_mask;
+
     if (rc->ops->rc_read && buffer) {
-        rc->ops->rc_read(rc, read_mask, buffer);
-        rb = size;
+        rb = rc->ops->rc_read(rc, read_mask, buffer);
     }
 
-    /* saturate read value */
     for (int i = 0; i < rc->config.channel_num; i++) {
         if (read_mask & (1 << i)) {
+            /* saturate read value */
             if (rc_channel[i] > rc->config.rc_max_value) {
                 rc_channel[i] = rc->config.rc_max_value;
             }
             if (rc_channel[i] < rc->config.rc_min_value) {
                 rc_channel[i] = rc->config.rc_min_value;
+            }
+            /* check if we have saturated all value */
+            if (++n >= rb / 2) {
+                break;
             }
         }
     }

@@ -30,7 +30,7 @@
 #define FMT_MAVLINK_COMP_ID 1
 
 /* Send out pilot cmd via mavlink */
-#define FMT_OUTPUT_PILOT_CMD
+// #define FMT_OUTPUT_PILOT_CMD
 
 /* MLog */
 #define MLOG_BUFFER_SIZE         80 * 1024

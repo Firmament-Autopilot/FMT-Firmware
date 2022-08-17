@@ -224,6 +224,7 @@ static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
 static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan_val)
 {
     uint16_t* index = chan_val;
+    uint16_t rb = 0;
 
     if (!rc_updated)
         return 0;
@@ -231,12 +232,13 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
     for (uint8_t i = 0; i < FMTIO_RC_CHANNEL_NUM; i++) {
         if (chan_mask & (1 << i)) {
             *(index++) = rc_data.rc_chan_val[i];
+            rb += 2;
         }
     }
 
     rc_updated = 0;
 
-    return chan_mask;
+    return rb;
 }
 
 static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)

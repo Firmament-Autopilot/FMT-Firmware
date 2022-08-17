@@ -22,6 +22,7 @@
 
 #include "default_config.h"
 #include "drv_pwm.h"
+#include "drv_rc.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
@@ -30,6 +31,8 @@
 #include "module/file_manager/file_manager.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/pilot_cmd.h"
+#include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
@@ -142,7 +145,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "mavproxy")) {
                     // err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
-                    // err = pilot_cmd_toml_config(sub_tab);
+                    err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
                     err = actuator_toml_config(sub_tab);
                 } else {
@@ -354,6 +357,8 @@ void bsp_early_initialize(void)
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
+    RT_CHECK(drv_rc_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -396,6 +401,9 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(default_conf);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
 #if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */
