@@ -633,7 +633,7 @@ HAL_RET_T NV_DataWrite(uint32_t uAddr, uint8_t *wData, uint32_t wLen)
 
     if (-1 == COMMON_driverMutexGet(MUTEX_NOR_FLASH, 0))
     {
-        // DLOG_Critical("fail, MUTEX_NOR_FLASH = %d", 0);
+        DLOG_Critical("fail, MUTEX_NOR_FLASH = %d", 0);
         return HAL_OCCUPIED;
     }
 

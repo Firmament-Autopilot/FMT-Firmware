@@ -22,6 +22,7 @@
 #include "bb_match_id.h"
 #include "ar1002_hal.h"
 #include "board_device.h"
+#include "board.h"
 
 #include "local_task.h"
 #include "bb_led.h"
@@ -34,11 +35,13 @@
 //--------------------------------------
 static void sys_event_start(void);
 
+_EXT_DTCM1
 fmt_err_t task_local_init(void)
 {
     return FMT_EOK;
 }
 
+_EXT_DTCM1
 void task_local_entry(void* parameter)
 {
 

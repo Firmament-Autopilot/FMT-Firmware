@@ -4,7 +4,7 @@
 #define CAMERA_LENS_FU
 
 
-const uint16_t XC7027_1080P_30FPS_SET_AHEAD[] = {
+_EXT_DTCM1_ROD const uint16_t XC7027_1080P_30FPS_SET_AHEAD[] = {
 // xc7027 setting_1920x1080
 
 	0xfffd, 0x80,
@@ -3638,7 +3638,7 @@ const uint16_t XC7027_1080P_30FPS_SET_AHEAD[] = {
 
 };
 
-const uint16_t SC2310_1080P_30FPS_SET_AHEAD[] = {
+_EXT_DTCM1_ROD const uint16_t SC2310_1080P_30FPS_SET_AHEAD[] = {
 // sc2310_1920x1080_SET
 
 	0x0100, 0x00,
@@ -3906,8 +3906,6 @@ const uint16_t SC2310_1080P_30FPS_SET_AHEAD[] = {
 
 	0x0100, 0x01,
 	0x3221, 0x66 //反转
-
-
 };
 
 #endif

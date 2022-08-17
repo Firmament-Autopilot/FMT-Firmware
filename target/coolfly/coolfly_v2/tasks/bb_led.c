@@ -23,13 +23,14 @@
 #include "bb_match_id.h"
 #include "ar1002_hal.h"
 #include "board_device.h"
+#include "board.h"
 
 #include "bb_led.h"
-
 
 LINK_LED_STATUS _link_led_status;
 
 
+_EXT_DTCM1 
 static void link_led_fasttoggle(void)
 {
     static uint8_t toggle_flag = 0;
@@ -46,6 +47,7 @@ static void link_led_fasttoggle(void)
     }
 }
 
+_EXT_DTCM1 
 static void link_led_slowtoggle(void)
 {
     static uint8_t cnt = 0;
@@ -56,11 +58,13 @@ static void link_led_slowtoggle(void)
     }
 }
 
+_EXT_DTCM1 
 static void link_led_on(void)
 {
     HAL_GPIO_SetPin(LINK_LED_GPIO, HAL_GPIO_PIN_RESET);
 }
 
+_EXT_DTCM1 
 static void link_led_off(void)
 {
     HAL_GPIO_SetPin(LINK_LED_GPIO, HAL_GPIO_PIN_SET);
@@ -68,26 +72,31 @@ static void link_led_off(void)
 
 /////////////////////////////////////////////////////
 
+_EXT_DTCM1 
 void set_link_led_status_searchid(void)
 {
     _link_led_status = LINK_SEARCH_ID;
 }
 
+_EXT_DTCM1 
 void set_link_led_status_lock(void)
 {
     _link_led_status = LINK_LOCK;
 }
 
+_EXT_DTCM1 
 void set_link_led_status_unlock(void)
 {
     _link_led_status = LINK_UNLOCK;
 }
 
+_EXT_DTCM1 
 void set_link_led_status_notmatch(void)
 {
     _link_led_status = LINK_ID_NO_MATCH;
 }
 
+_EXT_DTCM1 
 LINK_LED_STATUS get_link_led_status(void)
 {
     return _link_led_status;
@@ -95,6 +104,7 @@ LINK_LED_STATUS get_link_led_status(void)
 
 /////////////////////////////////////////////////////
 
+_EXT_DTCM1 
 void bb_led_status_EventHandler(void *p)
 {
     STRU_SysEvent_DEV_BB_STATUS *pstru_status = (STRU_SysEvent_DEV_BB_STATUS *)p;
@@ -124,13 +134,14 @@ void bb_led_status_EventHandler(void *p)
         }       
         else        
         {            
-            // DLOG_Info("not got signal");     
+            DLOG_Info("not got signal");     
         }    
     }
 }
 
 /////////////////////////////////////////////////////
 
+_EXT_DTCM1 
 static void run_bb_led(void* parameter)
 {
     ////////////////////////////////
@@ -139,7 +150,7 @@ static void run_bb_led(void* parameter)
     
     if(HAL_BB_GetDeviceInfo(&pstDeviceInfo) != HAL_OK)
     {
-        // DLOG_Critical("failed");
+        DLOG_Critical("failed");
         return;
     }
 
@@ -169,6 +180,7 @@ static void run_bb_led(void* parameter)
 }
 
 
+_EXT_DTCM1_BSS 
 static struct WorkItem bb_led_item = {
     .name = "bb_led",
     .period = 50,
@@ -176,6 +188,7 @@ static struct WorkItem bb_led_item = {
     .run = run_bb_led
 };
 
+_EXT_DTCM1 
 void bb_led_start(void)
 {
     SYS_EVENT_RegisterHandler(SYS_EVENT_ID_BB_EVENT, bb_led_status_EventHandler);

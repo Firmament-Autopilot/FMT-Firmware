@@ -310,7 +310,7 @@ uint8_t I2C_LL_IOCtl(STRU_I2C_Controller* ptr_i2cController, ENUM_I2C_CMD_ID en_
             }
             else
             {
-                // DLOG_Warning("Error: Write data in slave I2C mode!");
+                DLOG_Warning("Error: Write data in slave I2C mode!");
                 return FALSE;
             }
             break;
@@ -321,7 +321,7 @@ uint8_t I2C_LL_IOCtl(STRU_I2C_Controller* ptr_i2cController, ENUM_I2C_CMD_ID en_
             }
             else
             {
-                // DLOG_Warning("Error: Read data in slave I2C mode!");
+                DLOG_Warning("Error: Read data in slave I2C mode!");
                 return FALSE;
             }
             break;
@@ -353,7 +353,7 @@ uint8_t I2C_LL_IOCtl(STRU_I2C_Controller* ptr_i2cController, ENUM_I2C_CMD_ID en_
             }
             else
             {
-                // DLOG_Warning("Error: Read TX fifo length in slave I2C mode!");
+                DLOG_Warning("Error: Read TX fifo length in slave I2C mode!");
                 return FALSE;
             }
             break;
@@ -365,7 +365,7 @@ uint8_t I2C_LL_IOCtl(STRU_I2C_Controller* ptr_i2cController, ENUM_I2C_CMD_ID en_
             }
             else
             {
-                // DLOG_Warning("Error: Read RX fifo length in slave I2C mode!");
+                DLOG_Warning("Error: Read RX fifo length in slave I2C mode!");
                 return FALSE;
             }
             break;
@@ -377,7 +377,7 @@ uint8_t I2C_LL_IOCtl(STRU_I2C_Controller* ptr_i2cController, ENUM_I2C_CMD_ID en_
             }
             else
             {
-                // DLOG_Warning("Error: Read data in slave I2C mode!");
+                DLOG_Warning("Error: Read data in slave I2C mode!");
                 return FALSE;
             }
             break;

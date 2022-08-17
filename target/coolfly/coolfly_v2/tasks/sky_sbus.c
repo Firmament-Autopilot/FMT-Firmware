@@ -230,7 +230,7 @@ static void run_sbus_init(void* parameter)
     ret = HAL_BB_SpiDataTransInit(25);
 
     if (ret != HAL_OK) {
-        // DLOG_Error("BB SPI init failed");
+        DLOG_Error("BB SPI init failed");
     }
 
     //register BaseBand rt-uart session, will malloc a special session to rt-uart function
@@ -240,7 +240,7 @@ static void run_sbus_init(void* parameter)
                                     sky_bb_spi_irq_handler);
 
     if (ret != HAL_OK) {
-        // DLOG_Error("BB ComRegister failed");
+        DLOG_Error("BB ComRegister failed");
     }
 }
 

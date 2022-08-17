@@ -19,14 +19,15 @@
 #define DVP_RST_CTRL    	HAL_GPIO_NUM65
 #define XC7027_I2C			HAL_I2C_COMPONENT_0
 
+_EXT_DTCM1_BSS 
 static volatile int is_Inited = 0;
 
-void Reg_Write32(uint32_t regAddr, uint32_t regData);
-void Reg_Write32_Mask(uint32_t regAddr, uint32_t regData, uint32_t regDataMask);
-uint32_t Reg_Read32(uint32_t regAddr);
+// void Reg_Write32(uint32_t regAddr, uint32_t regData);
+// void Reg_Write32_Mask(uint32_t regAddr, uint32_t regData, uint32_t regDataMask);
+// uint32_t Reg_Read32(uint32_t regAddr);
 
 
-
+_EXT_DTCM1 
 void XC7027_Reset(void)
 {
 	HAL_GPIO_OutPut(DVP_RST_CTRL);
@@ -37,6 +38,7 @@ void XC7027_Reset(void)
 }
 
 
+_EXT_DTCM1 
 void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 {
 	uint32_t iRevalue = 0;
@@ -98,7 +100,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 				break;
 
 			} else {
-				// DLOG_Critical("Step 0: ISP %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
+				DLOG_Critical("Step 0: ISP %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
 
 				if (iI2cRevalue == HAL_BUSY) {
 					sys_msleep(4);
@@ -109,7 +111,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 					}
 
 				} else {
-					// DLOG_Critical("Step 1: ISP %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
+					DLOG_Critical("Step 1: ISP %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
 					iRevalue = 3;
 					break;
 				}
@@ -117,7 +119,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 		}
 
 		if (iRevalue != 0) {
-			// DLOG_Critical("iRevalue != 0, Loop Breaking...");
+			DLOG_Critical("iRevalue != 0, Loop Breaking...");
 			break;
 		}
 
@@ -132,7 +134,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 			if (iRetry >= 3) {
 				iRetry = 0;
 				i += 2;
-				// DLOG_Critical("Step 2: ISP %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, piISPRegister[i], iRdBuf, iI2cRevalue);
+				DLOG_Critical("Step 2: ISP %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, piISPRegister[i], iRdBuf, iI2cRevalue);
 			}
 
 			sys_msleep(4);
@@ -159,7 +161,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 					break;
 
 				} else {
-					// DLOG_Critical("Step 3: ISP %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
+					DLOG_Critical("Step 3: ISP %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
 
 					if (iI2cRevalue == HAL_BUSY) {
 						sys_msleep(4);
@@ -186,7 +188,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 				if (iRetry >= 3) {
 					iRetry = 0;
 					i += 2;
-					// DLOG_Critical("Step 4: ISP %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, BYPASS_ON[i], iRdBuf, iI2cRevalue);
+					DLOG_Critical("Step 4: ISP %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, BYPASS_ON[i], iRdBuf, iI2cRevalue);
 				}
 
 				sys_msleep(4);
@@ -214,7 +216,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 					break;
 
 				} else {
-					// DLOG_Critical("Sensor %ust Addr%04X=%02X,err=%08X\r\n", i, piSensorRegister[i], iWrBuf[2], iI2cRevalue);
+					DLOG_Critical("Sensor %ust Addr%04X=%02X,err=%08X\r\n", i, piSensorRegister[i], iWrBuf[2], iI2cRevalue);
 
 					if (iI2cRevalue == HAL_BUSY) {
 						sys_msleep(4);
@@ -241,7 +243,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 				if (iRetry >= 3) {
 					iRetry = 0;
 					i += 2;
-					// DLOG_Critical("Sensor %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, piSensorRegister[i], iRdBuf, iI2cRevalue);
+					DLOG_Critical("Sensor %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, piSensorRegister[i], iRdBuf, iI2cRevalue);
 				}
 
 				sys_msleep(4);
@@ -277,7 +279,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 					break;
 
 				} else {
-					// DLOG_Critical("ISP-DeBp %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
+					DLOG_Critical("ISP-DeBp %ust Addr%04X=%02X,err=%08X\r\n", i, piISPRegister[i], iWrBuf[2], iI2cRevalue);
 
 					if (iI2cRevalue == HAL_BUSY) {
 						sys_msleep(4);
@@ -304,7 +306,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 				if (iRetry >= 3) {
 					iRetry = 0;
 					i += 2;
-					// DLOG_Critical("ISP-DeBP %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, BYPASS_OFF[i], iRdBuf, iI2cRevalue);
+					DLOG_Critical("ISP-DeBP %ust Addr%04X,%02X!=iWrBuf[2],err=%08X\r\n", i, BYPASS_OFF[i], iRdBuf, iI2cRevalue);
 				}
 
 				sys_msleep(4);
@@ -317,6 +319,7 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
 	}
 }
 
+_EXT_DTCM1 
 int XC7027_ENC_Config()
 {
 	uint8_t miDVPChannel = XC7027_DVP_CHANNEL;
@@ -398,6 +401,7 @@ int XC7027_ENC_Config()
 }
 
 
+_EXT_DTCM1 
 void XC7027_SENSOR_LoopCallBack(void)
 {
 	uint8_t miDVPChannel = XC7027_DVP_CHANNEL;
@@ -491,8 +495,7 @@ void XC7027_SENSOR_LoopCallBack(void)
 }
 
 
-void XC7027_config_first(ENUM_XC7027_MODE SensorFormat);
-
+_EXT_DTCM1 
 static void init()
 {
 	// DLOG_Critical("xc7082 init");
@@ -515,17 +518,17 @@ static void init()
 		HAL_RET_T ret =  HAL_I2C_MasterReadData(XC7027_I2C, 0x001B, reg1, 2, &value1, 1, 1000);
 
 		if (ret != HAL_OK) {
-			// DLOG_Critical("ret =%08x !", ret);
+			DLOG_Critical("ret =%08x !", ret);
 		}
 
 		uint8_t reg2[2] = {0xFF, 0xFC};
 		ret = HAL_I2C_MasterReadData(XC7027_I2C, 0x001B, reg2, 2, &value2, 1, 1000);
 
 		if (ret != HAL_OK) {
-			// DLOG_Critical("ret =%08x !", ret);
+			DLOG_Critical("ret =%08x !", ret);
 		}
 
-		// DLOG_Critical("value1 =%02x value2 = %02x !", value1, value2);
+		DLOG_Critical("value1 =%02x value2 = %02x !", value1, value2);
 
 		// read WHO_AM_I value
 		if ((value1 == 0x71) && (value2 == 0x60)) {
@@ -558,6 +561,7 @@ static void init()
 
 
 
+_EXT_DTCM1 
 void xc7027_re_init(void)
 {
 	is_Inited = 0;
@@ -565,7 +569,8 @@ void xc7027_re_init(void)
 
 
 
-static void run_xc7027(void const *argument)
+_EXT_DTCM1 
+static void run_xc7027(void* parameter)
 {
 	if (!is_Inited) {
 		XC7027_Reset();
@@ -580,6 +585,7 @@ static void run_xc7027(void const *argument)
 /////////////////////////////////////////////////////
 
 
+_EXT_DTCM1_BSS 
 static struct WorkItem xc7027_item = {
     .name = "xc7027",
     .period = 300,
@@ -587,6 +593,7 @@ static struct WorkItem xc7027_item = {
     .run = run_xc7027
 };
 
+_EXT_DTCM1 
 void xc7027_start(void)
 {
     WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
