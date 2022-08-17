@@ -61,6 +61,18 @@ void px4_ecl_init(void)
     /* set EKF gps minimum required period */
     Ekf_set_min_required_gps_health_time(px4_ecl_params.ekf2_req_gps_h * 1.0e6f);
 
+    /* 
+	 * The first time running Ekf_IMU_update() will trigger Ekf::init(uint64_t timestamp) 
+	 * which causing some initialization options to fail. So run it once when FMT initializes PX4-EKF.
+    */
+    extern fmt_model_info_t ins_model_info;
+    uint32_t timestamp_ms = systime_now_ms();
+	uint32_t dt_ms = ins_model_info.period;
+	float gyr_B_radDs[3] = {0, 0, 0};
+	float acc_B_mDs2[3] = {0, 0, -9.8}; 
+	bool clipping[3] = {false, false, false};
+    Ekf_IMU_update(timestamp_ms, dt_ms, gyr_B_radDs, acc_B_mDs2, clipping);
+
     bool is_fixed_wing = false;
     Ekf_set_fuse_beta_flag(is_fixed_wing && (px4_ecl_params.ekf2_fuse_beta == 1));
     Ekf_set_is_fixed_wing(is_fixed_wing);
