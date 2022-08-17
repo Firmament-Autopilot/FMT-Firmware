@@ -2,21 +2,21 @@
 #define __SPCD_CAMERA_CONFIG_SET_H__
 
 //旁路ISP，操作Sensor
-const uint16_t BYPASS_ON[6] = {
+_EXT_DTCM1_ROD const uint16_t BYPASS_ON[6] = {
 	0xfffd, 0x80,
 	0xfffe, 0x50,
 	0x004d, 0x01
 };
 
 //去旁路ISP，操作ISP
-const uint16_t BYPASS_OFF[6] = {
+_EXT_DTCM1_ROD const uint16_t BYPASS_OFF[6] = {
 	0xfffd, 0x80,
 	0xfffe, 0x50,
 	0x004d, 0x00
 };
 
 //亮度，3对为1组
-const uint16_t CONFIG_BRIGHTNESS[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_BRIGHTNESS[] = {
 	//-3
 	0xfffe, 0x14,
 	0x006c, 0x01,
@@ -55,28 +55,28 @@ const uint16_t CONFIG_SPECIAL_EFFECTS_NORMAL[] = {
 	0x1702, 0x60
 };
 //饱和度（黑白特效）
-const uint16_t CONFIG_SPECIAL_EFFECTS_BLACK_AND_WHITE[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_SPECIAL_EFFECTS_BLACK_AND_WHITE[] = {
 	0xfffe, 0x30,
 	0x1700, 0x81,
 	0x1701, 0x58,
 	0x1702, 0x60
 };
 //饱和度（浅绿特效）
-const uint16_t CONFIG_SPECIAL_EFFECTS_SHALLOW_GREEN[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_SPECIAL_EFFECTS_SHALLOW_GREEN[] = {
 	0xfffe, 0x30,
 	0x1700, 0x4b,
 	0x1701, 0xa0,
 	0x1702, 0x40
 };
 //饱和度（复古特效）
-const uint16_t CONFIG_SPECIAL_EFFECTS_RETRO[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_SPECIAL_EFFECTS_RETRO[] = {
 	0xfffe, 0x30,
 	0x1700, 0x4b,
 	0x1701, 0x40,
 	0x1702, 0xa0
 };
 //饱和度（负片特效）
-const uint16_t CONFIG_SPECIAL_EFFECTS_NEGATIVE[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_SPECIAL_EFFECTS_NEGATIVE[] = {
 	0xfffe, 0x30,
 	0x1700, 0x10,
 	0x1701, 0x58,
@@ -84,7 +84,7 @@ const uint16_t CONFIG_SPECIAL_EFFECTS_NEGATIVE[] = {
 };
 
 //对比度，3对为1组
-const uint16_t CONFIG_CONTRAST_RATIO[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_CONTRAST_RATIO[] = {
 	//-2
 	0xfffe, 0x30,
 	0x1700, 0x09,
@@ -108,7 +108,7 @@ const uint16_t CONFIG_CONTRAST_RATIO[] = {
 };
 
 //白平衡，AUTO
-const uint16_t CONFIG_WHITE_BALANCE_AUTO[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_WHITE_BALANCE_AUTO[] = {
 	0xfffe, 0x14,
 	0x0027, 0x01,
 	0xfffe, 0x30,
@@ -120,7 +120,7 @@ const uint16_t CONFIG_WHITE_BALANCE_AUTO[] = {
 	0x072d, 0x10
 };
 //白平衡，5000K
-const uint16_t CONFIG_WHITE_BALANCE_5000K[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_WHITE_BALANCE_5000K[] = {
 	0xfffe, 0x14,
 	0x0027, 0x00,
 	0xfffe, 0x30,
@@ -132,7 +132,7 @@ const uint16_t CONFIG_WHITE_BALANCE_5000K[] = {
 	0x072d, 0x30
 };
 //白平衡，6500K
-const uint16_t CONFIG_WHITE_BALANCE_6500K[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_WHITE_BALANCE_6500K[] = {
 	0xfffe, 0x14,
 	0x0027, 0x00,
 	0xfffe, 0x30,
@@ -144,7 +144,7 @@ const uint16_t CONFIG_WHITE_BALANCE_6500K[] = {
 	0x072d, 0x10
 };
 //白平衡，7500K
-const uint16_t CONFIG_WHITE_BALANCE_7500K[] = {
+_EXT_DTCM1_ROD const uint16_t CONFIG_WHITE_BALANCE_7500K[] = {
 	0xfffe, 0x14,
 	0x0027, 0x01,
 	0xfffe, 0x30,

@@ -80,7 +80,7 @@ static int handle_set_bb_id(int argc, char** argv, int optc, optv_t* optv)
 
     HAL_BB_SaveRcId(idArr, vtidArr);
 
-    // DLOG_Critical("id:0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",idArr[0], idArr[1], idArr[2], idArr[3], idArr[4], vtidArr[0], vtidArr[1]);
+    DLOG_Critical("id:0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",idArr[0], idArr[1], idArr[2], idArr[3], idArr[4], vtidArr[0], vtidArr[1]);
 
 	return 0;
 }
@@ -108,7 +108,7 @@ static int handle_set_chip_id(int argc, char** argv, int optc, optv_t* optv)
 
     HAL_NV_SaveChipId(idArr);
 
-    // DLOG_Critical("chip id:0x%x 0x%x 0x%x 0x%x 0x%x",idArr[0], idArr[1], idArr[2], idArr[3], idArr[4]);
+    DLOG_Critical("chip id:0x%x 0x%x 0x%x 0x%x 0x%x",idArr[0], idArr[1], idArr[2], idArr[3], idArr[4]);
 
 	return 0;
 }

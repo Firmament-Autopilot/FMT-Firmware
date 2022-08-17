@@ -30,11 +30,11 @@ int8_t EFUSE_EfuseInit(uint32_t u32_key0, uint32_t u32_key1)
     do
     {
         u32_data = EFUSE_GetEfuseCtrstatus(3);
-        // DLOG_Critical("Efuse ready %ld",u32_data);
+        DLOG_Critical("Efuse ready %ld",u32_data);
         HAL_Delay(1);
     }while(!u32_data);
 
-    // DLOG_Critical("key0 %lx key1 %lx", u32_key0, u32_key1);
+    DLOG_Critical("key0 %lx key1 %lx", u32_key0, u32_key1);
 
     Reg_Write32(EFUSE_EFUSEDATA0, u32_key0);
     Reg_Write32(EFUSE_EFUSEDATA1, u32_key1);
@@ -45,18 +45,18 @@ int8_t EFUSE_EfuseInit(uint32_t u32_key0, uint32_t u32_key1)
     do
     {
         u32_data = EFUSE_GetEfuseCtrstatus(4);
-        // DLOG_Critical("wait Efuse%ld", u32_data);
+        DLOG_Critical("wait Efuse%ld", u32_data);
         HAL_Delay(1);
     }while(!u32_data);
 
     u32_data = EFUSE_GetEfuseCtrstatus(5);
     if (1 == u32_data)
     {
-        // DLOG_Critical("Efuse success");
+        DLOG_Critical("Efuse success");
     }
     else
     {
-        // DLOG_Error("Efuse error");
+        DLOG_Error("Efuse error");
     }
     return u32_data;
 }
@@ -80,7 +80,7 @@ int32_t EFUSE_GetEfuseEnable(void)
     }while(!u32_data);
 
     u32_data = *(((uint32_t *) EFUSE_EFUSEDATA2));
-    // DLOG_Info("efuse data2 value %lx", u32_data);
+    DLOG_Info("efuse data2 value %lx", u32_data);
     return ((u32_data >> 1) & 0x01);
 }
 
@@ -88,7 +88,7 @@ void EFUSE_CtrFlashWriteEfuse(uint8_t u8_state)
 {
     MPU_QuadspiProtectDisable();
     uint8_t state = Reg_Read32(EFUSE_EFUSWRITEEBALE);
-    // DLOG_Info("flash write efuse  %x", state);       
+    DLOG_Info("flash write efuse  %x", state);       
    
     if (u8_state)
     {
@@ -101,7 +101,7 @@ void EFUSE_CtrFlashWriteEfuse(uint8_t u8_state)
 
     Reg_Write32(EFUSE_EFUSWRITEEBALE, state);
     state = Reg_Read32(EFUSE_EFUSWRITEEBALE);
-    // DLOG_Info("flash write efuse  %x", state); 
+    DLOG_Info("flash write efuse  %x", state); 
 
     MPU_QuadspiProtectEnable();
 

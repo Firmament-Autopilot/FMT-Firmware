@@ -177,7 +177,7 @@ uint8_t InterCore_SendMsg(INTER_CORE_CPU_ID dst, INTER_CORE_MSG_ID msg, uint8_t*
     // Check whether the right section is found
     if (0 == found)
     {
-        // DLOG_Warning("SRAM inter CPU share memory buffer is full!");
+        DLOG_Warning("SRAM inter CPU share memory buffer is full!");
         return 0;
     }
 

@@ -1,10 +1,10 @@
 #ifndef __SPCD_CAMERA_SWITCH_H__
 #define __SPCD_CAMERA_SWITCH_H__
 
-const uint16_t XC7023_1080P_TO_720P[] = {
+_EXT_DTCM1_ROD const uint16_t XC7023_1080P_TO_720P[] = {
 	0xfffe, 0x26,
 	0x8010, 0x08,
-	0xfffe, 0x50, //·ÖÒ³
+	0xfffe, 0x50, //ï¿½ï¿½Ò³
 	0x0030, 0x05, //PLL
 	0x0031, 0x06,
 	0x0032, 0x13,
@@ -25,11 +25,11 @@ const uint16_t XC7023_1080P_TO_720P[] = {
 	0x8010, 0x0d
 };
 
-const uint16_t XC7023_720P_TO_1080P[] = {
+_EXT_DTCM1_ROD const uint16_t XC7023_720P_TO_1080P[] = {
 	0xfffe, 0x26,
 	0x8010, 0x08,
 
-	0xfffe, 0x50, //·ÖÒ³
+	0xfffe, 0x50, //ï¿½ï¿½Ò³
 	0x0030, 0x09, //PLL
 	0x0031, 0x02,
 	0x0032, 0x0c,

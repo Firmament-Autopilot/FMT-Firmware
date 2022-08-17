@@ -104,20 +104,22 @@ SECTIONS
 	.itcm_ext1 :
     {   
         . = ALIGN(4);
+        *(.rodata) 
+        *(.rodata*)
+        . = ALIGN(4);
+        
+        . = ALIGN(4);
         *(.cf_ext_itcm1*)
         . = ALIGN(4);
-    
-
-    
 
     } > itcm1 AT > lma_itcm1
 
-	.itcm_ext2 :
+	.dtcm_ext1 :
     {
         . = ALIGN(4);
-		/* *(.rodata .rodata.*) */
-        *(.rodata) 
-        *(.rodata*)
+        *(.dtcm1*)
+        *(.dtcm1_rodata*)
+        *(.dtcm1_bss*)
         . = ALIGN(4);
     } > dtcm1 AT > lma_dtcm1
 
@@ -223,21 +225,3 @@ SECTIONS
     .debug_varnames  0 : { *(.debug_varnames) }
 }
 
-
-	/* .dtcm0_ekf2 :
-    {
-        *(.cf_dtcm0_ekf2*)
-        . = ALIGN(4);
-    } > dtcm0_ekf2 AT > lma_dtcm0_ekf2
-
-	.itcm_ext1 :
-    {
-        *(.cf_ext_itcm1*)
-        . = ALIGN(4);
-    } > itcm1 AT > lma_itcm1
-
-	.itcm_ext2 :
-    {
-		*(.rodata .rodata.*)
-        . = ALIGN(4);
-    } > dtcm1 AT > lma_dtcm1 */
