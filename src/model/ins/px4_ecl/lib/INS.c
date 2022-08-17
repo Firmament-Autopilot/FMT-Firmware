@@ -67,10 +67,10 @@ void px4_ecl_init(void)
     */
     extern fmt_model_info_t ins_model_info;
     uint32_t timestamp_ms = systime_now_ms();
-	uint32_t dt_ms = ins_model_info.period;
-	float gyr_B_radDs[3] = {0, 0, 0};
-	float acc_B_mDs2[3] = {0, 0, -9.8}; 
-	bool clipping[3] = {false, false, false};
+    uint32_t dt_ms = ins_model_info.period;
+    float gyr_B_radDs[3] = { 0, 0, 0 };
+    float acc_B_mDs2[3] = { 0, 0, -9.8 };
+    bool clipping[3] = { false, false, false };
     Ekf_IMU_update(timestamp_ms, dt_ms, gyr_B_radDs, acc_B_mDs2, clipping);
 
     bool is_fixed_wing = false;

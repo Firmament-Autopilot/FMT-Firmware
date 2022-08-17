@@ -138,7 +138,7 @@ typedef struct {
     float vn;
     float ve;
     float vd;
-    float reserved;
+    float airspeed;
     double lat;
     double lon;
     double alt;
