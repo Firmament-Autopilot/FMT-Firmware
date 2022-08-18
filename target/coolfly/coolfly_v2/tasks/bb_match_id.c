@@ -68,7 +68,7 @@ _EXT_DTCM1 void BB_skyRcIdEventHandler(void* p)
 uint8_t timeout_loop = 0;
 _EXT_DTCM1 void TIMHAL_IRQSearchIdHandler(uint32_t u32_vectorNum)
 {
-    if (timeout_loop++ > 6) {
+    if (timeout_loop++ > 3) {
         DLOG_Warning("search time out %d us", SEARCH_ID_TIMEOUT*timeout_loop);
         HAL_TIMER_Stop(SEARCH_ID_TIMER);
         flag_searchIdTimerStart = 0;

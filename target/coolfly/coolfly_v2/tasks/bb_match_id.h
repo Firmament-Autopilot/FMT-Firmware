@@ -20,8 +20,7 @@ extern "C" {
 #define SEARCH_ID_TIMEOUT (10 * 1000 * 1000) //10 second
 
 #define EXTERN_SEARCH_ID_PIN (HAL_GPIO_NUM39)
-#define KEY_LONG_PRESS       (1000)
-#define READ_INTERVAL        (200)
+
 #define GET_VT_ID_TIMER      (HAL_TIMER_NUM17)
 #define GET_VT_ID_TIMEOUT    (10 * 1000 * 1000) //10 second
 

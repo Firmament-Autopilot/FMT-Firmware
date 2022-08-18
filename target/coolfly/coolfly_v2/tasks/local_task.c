@@ -97,7 +97,7 @@ void intercore_irq0_callback(void)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void run_sys_event(void* parameter)
 {
-    // SYS_EVENT_DumpAllListNodes();
+    SYS_EVENT_DumpAllListNodes();
     // SYS_EVENT_MallocFreeCntCheck();
     SYS_EVENT_Process();
 }
