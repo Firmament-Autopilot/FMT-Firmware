@@ -470,7 +470,7 @@ void bsp_initialize(void)
 #endif
 
     FMT_CHECK(register_ar_rc());
-    // FMT_CHECK(register_bb_com());
+    FMT_CHECK(register_bb_com());
 
 
 #endif

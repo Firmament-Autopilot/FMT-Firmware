@@ -198,10 +198,10 @@ void bb_led_start(void)
 {
     SYS_EVENT_RegisterHandler(SYS_EVENT_ID_BB_EVENT, bb_led_status_EventHandler);
 
-    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
+    WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
     
-    RT_ASSERT(lp_wq != NULL);
+    RT_ASSERT(hp_wq != NULL);
 
-    FMT_CHECK(workqueue_schedule_work(lp_wq, &bb_led_item));
+    FMT_CHECK(workqueue_schedule_work(hp_wq, &bb_led_item));
 }
 

@@ -81,7 +81,8 @@ void Error_Handler(void);
 // #define _EXT_DTCM1_BSS  
 
 
-// #define  DEVICE_ON_BOARD
+#define  DEVICE_ON_BOARD
+
 #ifdef __cplusplus
 }
 #endif
