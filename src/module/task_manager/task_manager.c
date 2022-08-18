@@ -136,20 +136,18 @@ void task_init(void)
 void task_start(void)
 {
     for (uint32_t i = 0; i < task_num; i++) {
-        console_printf("i = %d \r\n",i);
         if (task_status[i] != TASK_OK)
             continue;
-        console_printf("i = %d task_table[i].name = %s \r\n", i, task_table[i].name);
+
         rt_thread_t tid = rt_thread_create(task_table[i].name,
                                            task_table[i].entry,
                                            task_table[i].param,
                                            task_table[i].stack_size,
                                            task_table[i].priority,
                                            1);
-        console_printf("over i = %d task_table[i].name = %s \r\n", i, task_table[i].name);                                
+
         RT_ASSERT(tid != NULL);
-        console_printf("over2 i = %d task_table[i].name = %s \r\n", i, task_table[i].name);                                
+
         RT_CHECK(rt_thread_startup(tid));
-        console_printf("over3 i = %d task_table[i].name = %s \r\n", i, task_table[i].name);                                
     }
 }

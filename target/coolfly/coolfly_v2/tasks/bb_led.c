@@ -107,7 +107,6 @@ LINK_LED_STATUS get_link_led_status(void)
 _EXT_DTCM1 
 void bb_led_status_EventHandler(void *p)
 {
-    DLOG_Critical("_link_led_status = %d ",_link_led_status);
     STRU_SysEvent_DEV_BB_STATUS *pstru_status = (STRU_SysEvent_DEV_BB_STATUS *)p;
 
     if (pstru_status->pid == BB_LOCK_STATUS)
