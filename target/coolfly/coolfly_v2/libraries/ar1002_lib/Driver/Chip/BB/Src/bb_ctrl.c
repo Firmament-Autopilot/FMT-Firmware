@@ -103,13 +103,9 @@ STRU_DT_HEAD g_dtLen[] = {
     { 0, 0, 1, 1, DT_NUM_GRD_RC_CHPATTEN },
 };
 
-static uint8_t u8_session0RecvBuf[256] = { 0 };
-static uint16_t u16_session0DataSize = 0;
-
-
 STRU_PURE_VT_INFO vt_info = { 0, 0, AUTO };
 uint8_t wake_up_flag = 0;
-static STRU_AGC2LNA stru_agc2lna;
+
 
 #define RF_8003X
 
@@ -192,57 +188,6 @@ static void BB_SendRmoteEvent(void* p)
     BB_Session0SendMsg(DT_NUM_REMOTE_EVENT, (uint8_t*)p, SYS_EVENT_HANDLER_PARAMETER_LENGTH);
 }
 
-void BB_handle_misc_cmds(STRU_WIRELESS_CONFIG_CHANGE* pcmd)
-{
-    uint8_t class = pcmd->u8_configClass;
-    uint8_t item = pcmd->u8_configItem;
-
-    uint8_t value = (uint8_t)(pcmd->u32_configValue);
-    uint8_t value1 = (uint8_t)(pcmd->u32_configValue >> 8);
-    uint8_t value2 = (uint8_t)(pcmd->u32_configValue >> 16);
-    uint8_t value3 = (uint8_t)(pcmd->u32_configValue >> 24);
-
-    if (class == WIRELESS_MISC) {
-        switch (item) {
-        case MISC_READ_RF_REG: {
-            uint8_t v;
-            BB_SPI_curPageWriteByte(0x01, (value == 0) ? 0x01 : 0x03); //value2==0: write RF8003-0
-                                                                       //value2==1: write RF8003-1
-            RF_SPI_ReadReg((value1 << 8) | value2, &v);
-            BB_SPI_curPageWriteByte(0x01, 0x02);
-            //DLOG_Info("RF read %d addrH=0x%0.2x addrL:%0.2x out:0x%0.2x", value, value1, value2, v);
-            break;
-        }
-
-        case MISC_WRITE_RF_REG: {
-            BB_SPI_curPageWriteByte(0x01, (value == 0) ? 0x01 : 0x03); //value2==0: write RF8003-0
-                                                                       //value2==1: write RF8003-1
-            RF_SPI_WriteReg((value1 << 8) | value2, value3);
-            BB_SPI_curPageWriteByte(0x01, 0x02);
-
-            //DLOG_Info("RF write %d addr=0x%0.2x value=0x%0.2x", value, (value1 << 8) | value2, value3);
-            break;
-        }
-
-        case MISC_READ_BB_REG: {
-            volatile uint8_t v = BB_ReadReg((ENUM_REG_PAGES)value, (uint8_t)value1);
-            DLOG_Info("BB read PAGE=0x%02x addr=0x%02x value=0x%02x", value, value1, v);
-            break;
-        }
-
-        case MISC_WRITE_BB_REG: {
-            BB_WriteReg((ENUM_REG_PAGES)value, (uint8_t)value1, (uint8_t)value2);
-            //DLOG_Info("BB write PAGE=0x%0.2x addr=0x%0.2x value=0x%0.2x", value, value1, value2);
-            break;
-        }
-
-        case MICS_IT_ONLY_MODE: {
-            BB_WriteReg(PAGE2, 0x02, 0x06);
-            break;
-        }
-        }
-    }
-}
 
 static void BB_GetRcIdVtIdFromFlash(uint8_t* pu8_rcid, uint8_t* pu8_vtid)
 {

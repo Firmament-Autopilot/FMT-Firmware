@@ -107,6 +107,7 @@ LINK_LED_STATUS get_link_led_status(void)
 _EXT_DTCM1 
 void bb_led_status_EventHandler(void *p)
 {
+    DLOG_Critical("_link_led_status = %d ",_link_led_status);
     STRU_SysEvent_DEV_BB_STATUS *pstru_status = (STRU_SysEvent_DEV_BB_STATUS *)p;
 
     if (pstru_status->pid == BB_LOCK_STATUS)
@@ -144,21 +145,24 @@ void bb_led_status_EventHandler(void *p)
 _EXT_DTCM1 
 static void run_bb_led(void* parameter)
 {
-    ////////////////////////////////
-    STRU_DEVICE_INFO p;
-    STRU_DEVICE_INFO       *pstDeviceInfo =(STRU_DEVICE_INFO*) &p;
+    // ////////////////////////////////
+    // STRU_DEVICE_INFO p;
+    // STRU_DEVICE_INFO       *pstDeviceInfo =(STRU_DEVICE_INFO*) &p;
     
-    if(HAL_BB_GetDeviceInfo(&pstDeviceInfo) != HAL_OK)
-    {
-        DLOG_Critical("failed");
-        return;
-    }
+    // DLOG_Critical("_link_led_status = %d ",_link_led_status);
+    // if(HAL_BB_GetDeviceInfo(&pstDeviceInfo) != HAL_OK)
+    // {
+    //     DLOG_Critical("failed");
+    //     return;
+    // }
 
-    if(pstDeviceInfo->inSearching) //0,un search, 1 , searching
-    {
-        link_led_fasttoggle();
-        return;
-    }
+
+
+    // if(pstDeviceInfo->inSearching) //0,un search, 1 , searching
+    // {
+    //     link_led_fasttoggle();
+    //     return;
+    // }
 
     // link_status = _link_led_status;
     if(_link_led_status == LINK_UNLOCK)
@@ -177,6 +181,8 @@ static void run_bb_led(void* parameter)
     {
         link_led_slowtoggle();
     }
+
+    // DLOG_Critical("_link_led_status = %d ",_link_led_status);
 }
 
 

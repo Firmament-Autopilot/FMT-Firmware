@@ -568,7 +568,7 @@ typedef struct
     uint8_t     cnt;
 } STRU_DELAY_CNT;
 
-#define MAX(a,b) (((a) > (b)) ?  (a) :  (b) )
+// #define MAX(a,b) (((a) > (b)) ?  (a) :  (b) )
 
 void BB_uart10_spi_sel(uint32_t sel_dat);
 

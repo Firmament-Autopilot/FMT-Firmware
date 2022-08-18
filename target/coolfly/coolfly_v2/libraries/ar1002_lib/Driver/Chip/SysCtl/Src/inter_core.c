@@ -58,7 +58,7 @@ void InterCore_IRQ0_CALL(void)
 {
     INTER_CORE_MSG_ID msg = 0; 
     uint8_t buf[INTER_CORE_MSG_SHARE_MEMORY_DATA_LENGTH];
-    
+    console_printf("1------------");
     // Get all the messages in the SRAM buffer
     uint8_t mem_cnt = INTER_CORE_MSG_SHARE_MEMORY_NUMBER; // Max count to avoid the endless loop risk
     while(mem_cnt--)
@@ -66,10 +66,12 @@ void InterCore_IRQ0_CALL(void)
         msg = 0;
         memset(buf, 0, sizeof(buf));
 
+        console_printf("2------------\r\n");
         rt_base_t level = rt_hw_interrupt_disable();
         InterCore_GetMsg(&msg, buf, sizeof(buf));
         rt_hw_interrupt_enable(level);
 
+        console_printf("3------------msg = %d \r\n");    
         // Message process
         if (msg != 0)
         {
@@ -78,18 +80,20 @@ void InterCore_IRQ0_CALL(void)
 
             // Notify the message as a system event to the local CPU
             SYS_EVENT_Notify_From_ISR(event, (void*)buf);
+            console_printf("4------------\r\n");
         }
         else
         {
             break;
         }
+        console_printf("5------------ \r\n");
     }
 }
 
 static void InterCore_IRQ0Handler(uint32_t u32_vectorNum)
 {
-    intercore_irq0_callback();
     InterCore_ResetIRQ0();
+    intercore_irq0_callback();
 }
 
 
@@ -161,7 +165,7 @@ uint8_t InterCore_SendMsg(INTER_CORE_CPU_ID dst, INTER_CORE_MSG_ID msg, uint8_t*
     for(i = start_idx ; i < end_idx; i++)
     {
         //Lock((uint32_t*)(&(msgPtr[i].lock)));
-        uint32_t dataAccessed = (msgPtr[i].cpu0DataAccessed | msgPtr[i].cpu1DataAccessed | msgPtr[i].cpu2DataAccessed);
+         uint32_t dataAccessed = (msgPtr[i].cpu0DataAccessed | msgPtr[i].cpu1DataAccessed | msgPtr[i].cpu2DataAccessed);
         if(dataAccessed == msgPtr[i].enDstCpuID)
         {
             found = 1;
