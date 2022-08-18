@@ -514,10 +514,9 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
-    console_println("bsp_show_information\r\n");
+    
     /* dump boot log to file */
     boot_log_dump();
-    console_println("boot_log_dump\r\n");
 }
 
 /**

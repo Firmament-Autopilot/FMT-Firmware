@@ -519,7 +519,7 @@ static uint8_t notifySysEvent(uint32_t event_id, void* parameter)
     if (event_id & SYS_EVENT_INTER_CORE_MASK)
     {
         INTER_CORE_CPU_ID dst = 0;
-        dst |= ((INTER_CORE_CPU0_ID | INTER_CORE_CPU1_ID | INTER_CORE_CPU2_ID) & (~(1 << CPUINFO_GetLocalCpuId())));
+        dst |= ((INTER_CORE_CPU0_ID | INTER_CORE_CPU2_ID) & (~(1 << CPUINFO_GetLocalCpuId())));
         // Inter-Core message send
         retval = InterCore_SendMsg(dst, event_id & ~SYS_EVENT_INTER_CORE_MASK, parameter, SYS_EVENT_HANDLER_PARAMETER_LENGTH);
      }
