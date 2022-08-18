@@ -76,7 +76,12 @@ void Error_Handler(void);
 #define _EXT_DTCM1_ROD  __attribute__((section(".dtcm1_rodata")))
 #define _EXT_DTCM1_BSS  __attribute__((section(".dtcm1_bss")))
 
+// #define _EXT_DTCM1      
+// #define _EXT_DTCM1_ROD  
+// #define _EXT_DTCM1_BSS  
 
+
+// #define  DEVICE_ON_BOARD
 #ifdef __cplusplus
 }
 #endif

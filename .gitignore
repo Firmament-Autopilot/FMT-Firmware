@@ -29,3 +29,8 @@ build
 cconfig.h
 .cortex-debug*
 .vscode/*
+!chuanyun_bin/ar8020_skycpu1.bin
+!chuanyun_bin/ar8020_skycpu2.bin
+!chuanyun_bin/ar8020_skycpu2.bin.elf
+!chuanyun_bin/cfgdata.bin
+!chuanyun_bin/chuanyun_bootloader-2022-08-19.bin
