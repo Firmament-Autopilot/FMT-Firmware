@@ -113,6 +113,15 @@ static rt_device_t imu_spi_dev;
 /* Re-implement this function to define customized rotation */
 RT_WEAK void icm20600_rotate_to_ned(float* val)
 {
+    float tmp;
+    float *x = val;
+    float *y = val +1;
+    // float *z = *(val +2);
+
+    tmp = *x; 
+    *x = *y; 
+    *y = -tmp;
+    
     /* do nothing */
 }
 

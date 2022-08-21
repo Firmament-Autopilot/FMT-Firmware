@@ -27,7 +27,8 @@ extern "C" {
 
 // Board Information
 #define TARGET_NAME  "COOLFLY_S1"
-#define VEHICLE_TYPE "Quadcopter"
+
+
 
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (0x60000) // 384K

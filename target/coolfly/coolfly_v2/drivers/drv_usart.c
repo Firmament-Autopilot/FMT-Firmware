@@ -757,7 +757,7 @@ static char* number(char* str, long num, int base, int size, int precision,
     return str;
 }
 
-int vsprintf(char* buf, const char* fmt, va_list args)
+int boot_vsprintf(char* buf, const char* fmt, va_list args)
 {
     int len;
     unsigned long num;
@@ -953,7 +953,7 @@ int BOOT_Printf(const char* fmt, ...)
     int printed;
 
     va_start(args, fmt);
-    printed = vsprintf(printf_buf, fmt, args);
+    printed = boot_vsprintf(printf_buf, fmt, args);
     va_end(args);
 
     boot_uart_puts(0, printf_buf);
