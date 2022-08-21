@@ -24,6 +24,8 @@
 /* SIG simulation */
 // #define FMT_USING_SIH
 
+#define VEHICLE_TYPE "Quadcopter"
+
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
 #define FMT_MAVLINK_SYS_ID  1
