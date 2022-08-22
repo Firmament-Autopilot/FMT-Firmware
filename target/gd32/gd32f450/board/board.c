@@ -24,6 +24,7 @@
 #include "drv_pwm.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
+#include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
@@ -354,9 +355,13 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
+
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
+    /* init remote controller driver */
     RT_CHECK(drv_rc_init());
 
     /* system statistic module */
