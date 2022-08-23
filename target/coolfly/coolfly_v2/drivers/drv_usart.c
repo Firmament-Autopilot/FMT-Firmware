@@ -360,8 +360,19 @@ static void uart_isr(struct serial_device* serial)
         /* Handle incoming, receive bytes (with or without timeout) */
         case UART_IIR_INTID_CTI:
         case UART_IIR_INTID_RDA: {
-            hal_serial_isr(serial, SERIAL_EVENT_RX_IND);
-            // BOOT_Printf("hal_serial_isr out\r\n");
+
+            struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
+            if (rx_fifo != RT_NULL) {
+                hal_serial_isr(serial, SERIAL_EVENT_RX_IND);
+            } else {
+                while (1) {
+                    int ch = usart_getc(serial);
+
+                    if (ch == -1)
+                        break;
+                }
+            }
+
             break;
         }
 

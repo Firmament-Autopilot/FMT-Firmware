@@ -21,7 +21,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "protocol/ublox/ublox.h"
 
-#define CONFIGURE_RETRY_MAX 100
+#define CONFIGURE_RETRY_MAX 5
 #define M_DEG_TO_RAD_F      0.01745329251994f
 #define M_RAD_TO_DEG_F      57.2957795130823f
 
@@ -340,7 +340,7 @@ static rt_err_t probe(uint32_t* gps_baudrate)
     }
 
     if (i >= sizeof(baudrates) / sizeof(baudrates[0])) {
-        DRV_DBG("gps connection and/or baudrate detection failed\r\n");
+        // DRV_DBG("gps connection and/or baudrate detection failed\r\n");
         return RT_ERROR;
     }
 
