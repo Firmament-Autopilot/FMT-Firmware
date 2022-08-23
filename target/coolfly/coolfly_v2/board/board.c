@@ -458,14 +458,17 @@ void bsp_initialize(void)
     if (drv_mmc5983ma_init("i2c2_dev2", "mag0") != FMT_EOK) {
         console_println("!!!!!!mmc5983ma i2c2_dev2 faild~!!!!");
     } else {
-        console_println("mmc5983ma i2c2_dev2~");
+        FMT_CHECK(register_sensor_mag("mag0", 0));
     }
 
-    RT_CHECK(gps_m8n_init("serial1", "gps"));
+    if (gps_m8n_init("serial1", "gps") != FMT_EOK) {
+        console_println("gps serial1 faild~!!!!");
+    } 
+
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    FMT_CHECK(register_sensor_mag("mag0", 0));
+
     FMT_CHECK(register_sensor_barometer("barometer"));
 #endif
 
