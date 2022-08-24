@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "default_config.h"
+#include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
@@ -357,6 +358,9 @@ void bsp_early_initialize(void)
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
+
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());

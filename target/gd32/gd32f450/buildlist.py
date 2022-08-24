@@ -20,7 +20,7 @@ HAL = [
     'sd/*.c',
     'usb/usbd_cdc.c',
     'spi/*.c',
-    # 'i2c/*.c',
+    'i2c/*.c',
     # 'gyro/*.c',
     # 'accel/*.c',
     # 'mag/*.c',
