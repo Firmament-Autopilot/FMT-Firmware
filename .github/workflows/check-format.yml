@@ -41,7 +41,7 @@ jobs:
               changed_files="${changed_files} ${file}"
             fi
 
-            if [$file == .github/*]; then
+            if [$file == */workflows/*]; then
               echo "yes"
             else
               echo "no"
