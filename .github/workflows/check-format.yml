@@ -46,6 +46,7 @@ jobs:
             else
               echo "no"
             fi
+            echo "file is $file"
             
           done
           if [ -n "${changed_files}" ]; then
