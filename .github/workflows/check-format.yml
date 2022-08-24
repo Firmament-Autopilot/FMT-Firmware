@@ -40,6 +40,13 @@ jobs:
             if [[ ($file == *.c) || ($file == *.h) || ($file == *.cpp) || ($file == *.hpp) ]]; then
               changed_files="${changed_files} ${file}"
             fi
+
+            if [$file == .github/*]; then
+              echo "yes"
+            else
+              echo "no"
+            fi
+            
           done
           if [ -n "${changed_files}" ]; then
             clang-format-11 -n --style=file --Werror ${changed_files}
