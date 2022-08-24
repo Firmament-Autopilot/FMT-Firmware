@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3708
+ * Model version                  : 1.3716
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug  8 13:01:28 2022
+ * C/C++ source code generated on : Wed Aug 24 09:51:59 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -248,8 +248,8 @@ typedef struct {
 typedef struct {
   real_T DataTypeConversion;           /* '<S349>/Data Type Conversion' */
   real_T DataTypeConversion1;          /* '<S349>/Data Type Conversion1' */
-  real_T Multiply2;                    /* '<S363>/Multiply2' */
-  real_T Rm;                           /* '<S363>/Product3' */
+  real_T Multiply2;                    /* '<S365>/Multiply2' */
+  real_T Rm;                           /* '<S365>/Product3' */
   real32_T Divide;                     /* '<S335>/Divide' */
   real32_T Merge;                      /* '<S245>/Merge' */
   real32_T Merge_e;                    /* '<S246>/Merge' */
@@ -275,11 +275,13 @@ typedef struct {
   real32_T Delay_2_DSTATE;             /* '<Root>/Delay' */
   real32_T Delay_3_DSTATE;             /* '<Root>/Delay' */
   real32_T Delay_8_DSTATE[9];          /* '<Root>/Delay' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[2];/* '<S392>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S380>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S380>/Discrete-Time Integrator1' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_m;/* '<S362>/Discrete-Time Integrator1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_l;/* '<S362>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[2];/* '<S394>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S382>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S382>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_g;/* '<S362>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_m;/* '<S363>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_k;/* '<S362>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTATE_l;/* '<S363>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_d;             /* '<S335>/Delay' */
   real32_T Delay_4_DSTATE;             /* '<S56>/Delay' */
   real32_T Delay_5_DSTATE;             /* '<S56>/Delay' */
@@ -290,7 +292,7 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_DSTATE_c;/* '<S299>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S286>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator_DSTATE_h;/* '<S298>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator_DSTATE_k;/* '<S300>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator_DSTAT_k3;/* '<S300>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_b[3];          /* '<S242>/Delay' */
   real32_T Delay_DSTATE_l[6];          /* '<S200>/Delay' */
   real32_T h_delay_DSTATE[3];          /* '<S235>/h_delay' */
@@ -328,15 +330,15 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_DSTAT_kg;/* '<S14>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator_DSTATE_a;/* '<S16>/Discrete-Time Integrator' */
   int32_T UnitDelay_DSTATE;            /* '<S358>/Unit Delay' */
-  uint32_T DelayInput1_DSTATE;         /* '<S402>/Delay Input1' */
-  uint32_T DiscreteTimeIntegrator_DSTAT_e3;/* '<S398>/Discrete-Time Integrator' */
-  uint32_T DiscreteTimeIntegrator_DSTAT_cv;/* '<S399>/Discrete-Time Integrator' */
-  uint32_T DelayInput1_DSTATE_k;       /* '<S394>/Delay Input1' */
-  uint32_T DiscreteTimeIntegrator_DSTATE_g;/* '<S391>/Discrete-Time Integrator' */
-  uint32_T DelayInput1_DSTATE_n;       /* '<S387>/Delay Input1' */
-  uint32_T DiscreteTimeIntegrator_DSTAT_lg;/* '<S373>/Discrete-Time Integrator' */
-  uint32_T DelayInput1_DSTATE_h;       /* '<S367>/Delay Input1' */
-  uint32_T DiscreteTimeIntegrator_DSTAT_lp;/* '<S365>/Discrete-Time Integrator' */
+  uint32_T DelayInput1_DSTATE;         /* '<S404>/Delay Input1' */
+  uint32_T DiscreteTimeIntegrator_DSTAT_e3;/* '<S400>/Discrete-Time Integrator' */
+  uint32_T DiscreteTimeIntegrator_DSTAT_cv;/* '<S401>/Discrete-Time Integrator' */
+  uint32_T DelayInput1_DSTATE_k;       /* '<S396>/Delay Input1' */
+  uint32_T DiscreteTimeIntegrator_DSTATE_g;/* '<S393>/Discrete-Time Integrator' */
+  uint32_T DelayInput1_DSTATE_n;       /* '<S389>/Delay Input1' */
+  uint32_T DiscreteTimeIntegrator_DSTAT_lg;/* '<S375>/Discrete-Time Integrator' */
+  uint32_T DelayInput1_DSTATE_h;       /* '<S369>/Delay Input1' */
+  uint32_T DiscreteTimeIntegrator_DSTAT_lp;/* '<S367>/Discrete-Time Integrator' */
   uint32_T DelayInput1_DSTATE_i;       /* '<S361>/Delay Input1' */
   uint32_T DiscreteTimeIntegrator_DSTATE_i;/* '<S352>/Discrete-Time Integrator' */
   uint32_T DelayInput1_DSTATE_g;       /* '<S338>/Delay Input1' */
@@ -359,11 +361,11 @@ typedef struct {
   real32_T Memory_PreviousInput_n[6];  /* '<S196>/Memory' */
   real32_T Memory_PreviousInput_d[2];  /* '<S191>/Memory' */
   real32_T Memory_PreviousInput_h[6];  /* '<S186>/Memory' */
-  uint8_T Delay_DSTATE_j;              /* '<S403>/Delay' */
-  uint8_T Delay_DSTATE_fp;             /* '<S388>/Delay' */
-  uint8_T Delay_DSTATE_bw;             /* '<S368>/Delay' */
+  uint8_T Delay_DSTATE_j;              /* '<S405>/Delay' */
+  uint8_T Delay_DSTATE_fp;             /* '<S390>/Delay' */
+  uint8_T Delay_DSTATE_bw;             /* '<S370>/Delay' */
   uint8_T Delay_DSTATE_i1;             /* '<S342>/Delay' */
-  boolean_T Delay_DSTATE_c;            /* '<S395>/Delay' */
+  boolean_T Delay_DSTATE_c;            /* '<S397>/Delay' */
   boolean_T DelayInput1_DSTATE_o;      /* '<S280>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_hg;     /* '<S296>/Delay Input1' */
   boolean_T Delay_DSTATE_k;            /* '<S287>/Delay' */
@@ -399,11 +401,13 @@ typedef struct {
   boolean_T DelayInput1_DSTATE_ng;     /* '<S41>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_dql;    /* '<S46>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_fq;     /* '<S51>/Delay Input1' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S399>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRe_k;/* '<S380>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S380>/Discrete-Time Integrator1' */
-  int8_T DiscreteTimeIntegrator1_PrevR_j;/* '<S362>/Discrete-Time Integrator1' */
-  int8_T DiscreteTimeIntegrator_PrevRe_j;/* '<S362>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S401>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator_PrevRe_k;/* '<S382>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S382>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator1_PrevR_l;/* '<S362>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator1_PrevR_j;/* '<S363>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevRe_a;/* '<S362>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator_PrevRe_j;/* '<S363>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevRe_h;/* '<S272>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevR_d;/* '<S272>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevR_ky;/* '<S287>/Discrete-Time Integrator' */
@@ -422,12 +426,13 @@ typedef struct {
   int8_T DiscreteTimeIntegrator_PrevRe_m;/* '<S15>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevR_dj;/* '<S17>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevR_h1;/* '<S11>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRe_a;/* '<S13>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator_PrevR_as;/* '<S13>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevRe_o;/* '<S14>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevR_ar;/* '<S16>/Discrete-Time Integrator' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S392>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S380>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LO_e;/* '<S362>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S394>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S382>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_j;/* '<S362>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_e;/* '<S363>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_k;/* '<S272>/Discrete-Time Integrator1' */
   uint8_T icLoad;                      /* '<S235>/h_delay' */
   uint8_T icLoad_o;                    /* '<S226>/h_delay' */
@@ -446,10 +451,9 @@ typedef struct {
   uint8_T DiscreteTimeIntegrator1_IC_LO_i;/* '<S88>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_l;/* '<S95>/Discrete-Time Integrator1' */
   uint8_T Integrator1_IC_LOADING;      /* '<S91>/Integrator1' */
-  boolean_T Relay_Mode;                /* '<S391>/Relay' */
+  boolean_T Relay_Mode;                /* '<S393>/Relay' */
   boolean_T Relay_Mode_n;              /* '<S274>/Relay' */
   boolean_T Relay1_Mode;               /* '<S274>/Relay1' */
-  boolean_T Relay2_Mode;               /* '<S274>/Relay2' */
   boolean_T Relay_Mode_n5;             /* '<S114>/Relay' */
   boolean_T Relay_Mode_nf;             /* '<S92>/Relay' */
   boolean_T Relay1_Mode_l;             /* '<S71>/Relay1' */
@@ -508,23 +512,23 @@ typedef struct rtP_Baro_Velocity_INS_T_ rtP_Baro_Velocity_INS_T;
 struct Parameters_INS_T_ {
   struct_Gsh1YUlqR57cYRpVuxG74E INS_CONST;/* Variable: INS_CONST
                                            * Referenced by:
-                                           *   '<S376>/Declination_Lookup_Table'
-                                           *   '<S376>/Inclination_Lookup_Table'
-                                           *   '<S376>/Magnitude_Lookup_Table'
+                                           *   '<S378>/Declination_Lookup_Table'
+                                           *   '<S378>/Inclination_Lookup_Table'
+                                           *   '<S378>/Magnitude_Lookup_Table'
                                            *   '<S69>/Constant'
                                            *   '<S243>/Constant1'
                                            */
   real_T WMM_LUT_resolution;           /* Mask Parameter: WMM_LUT_resolution
-                                        * Referenced by: '<S376>/rad_to_index'
+                                        * Referenced by: '<S378>/rad_to_index'
                                         */
   int32_T valid_samples_const;         /* Mask Parameter: valid_samples_const
                                         * Referenced by: '<S359>/Constant'
                                         */
   real32_T Sensor_Valid_acc_max;       /* Mask Parameter: Sensor_Valid_acc_max
-                                        * Referenced by: '<S369>/Upper Limit'
+                                        * Referenced by: '<S371>/Upper Limit'
                                         */
   real32_T Sensor_Valid_acc_min;       /* Mask Parameter: Sensor_Valid_acc_min
-                                        * Referenced by: '<S369>/Lower Limit'
+                                        * Referenced by: '<S371>/Lower Limit'
                                         */
   real32_T CompareToConstant_const;    /* Mask Parameter: CompareToConstant_const
                                         * Referenced by: '<S94>/Constant'
@@ -539,22 +543,22 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S241>/Constant'
                                         */
   real32_T Sensor_Valid_gyr_max;       /* Mask Parameter: Sensor_Valid_gyr_max
-                                        * Referenced by: '<S370>/Upper Limit'
+                                        * Referenced by: '<S372>/Upper Limit'
                                         */
   real32_T Sensor_Valid_gyr_min;       /* Mask Parameter: Sensor_Valid_gyr_min
-                                        * Referenced by: '<S370>/Lower Limit'
+                                        * Referenced by: '<S372>/Lower Limit'
                                         */
   real32_T IntervalTest_lowlimit;      /* Mask Parameter: IntervalTest_lowlimit
                                         * Referenced by: '<S118>/Lower Limit'
                                         */
   real32_T Sensor_Valid_mag_max;       /* Mask Parameter: Sensor_Valid_mag_max
-                                        * Referenced by: '<S389>/Upper Limit'
+                                        * Referenced by: '<S391>/Upper Limit'
                                         */
   real32_T Sensor_Valid_mag_min;       /* Mask Parameter: Sensor_Valid_mag_min
-                                        * Referenced by: '<S389>/Lower Limit'
+                                        * Referenced by: '<S391>/Lower Limit'
                                         */
   real32_T Sensor_Valid_max_alt;       /* Mask Parameter: Sensor_Valid_max_alt
-                                        * Referenced by: '<S404>/Upper Limit'
+                                        * Referenced by: '<S406>/Upper Limit'
                                         */
   real32_T Sensor_Valid_max_pressure;  /* Mask Parameter: Sensor_Valid_max_pressure
                                         * Referenced by: '<S343>/Upper Limit'
@@ -564,11 +568,11 @@ struct Parameters_INS_T_ {
                                         */
   real32_T Sensor_Valid_max_vel;       /* Mask Parameter: Sensor_Valid_max_vel
                                         * Referenced by:
-                                        *   '<S396>/Upper Limit'
-                                        *   '<S397>/Upper Limit'
+                                        *   '<S398>/Upper Limit'
+                                        *   '<S399>/Upper Limit'
                                         */
   real32_T Sensor_Valid_min_alt;       /* Mask Parameter: Sensor_Valid_min_alt
-                                        * Referenced by: '<S404>/Lower Limit'
+                                        * Referenced by: '<S406>/Lower Limit'
                                         */
   real32_T Sensor_Valid_min_pressure;  /* Mask Parameter: Sensor_Valid_min_pressure
                                         * Referenced by: '<S343>/Lower Limit'
@@ -578,8 +582,8 @@ struct Parameters_INS_T_ {
                                         */
   real32_T Sensor_Valid_min_vel;       /* Mask Parameter: Sensor_Valid_min_vel
                                         * Referenced by:
-                                        *   '<S396>/Lower Limit'
-                                        *   '<S397>/Lower Limit'
+                                        *   '<S398>/Lower Limit'
+                                        *   '<S399>/Lower Limit'
                                         */
   real32_T valid_check2_time_out;      /* Mask Parameter: valid_check2_time_out
                                         * Referenced by: '<S23>/Constant'
@@ -633,7 +637,7 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S356>/Constant'
                                         */
   uint32_T CompareToConstant_const_m;  /* Mask Parameter: CompareToConstant_const_m
-                                        * Referenced by: '<S405>/Constant'
+                                        * Referenced by: '<S407>/Constant'
                                         */
   uint32_T IntervalTest3_lowlimit;     /* Mask Parameter: IntervalTest3_lowlimit
                                         * Referenced by: '<S339>/Lower Limit'
@@ -642,16 +646,16 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S340>/Constant'
                                         */
   uint32_T Sensor_Valid_timeout_a;     /* Mask Parameter: Sensor_Valid_timeout_a
-                                        * Referenced by: '<S366>/Constant'
+                                        * Referenced by: '<S368>/Constant'
                                         */
   uint32_T Sensor_Valid_timeout_b;     /* Mask Parameter: Sensor_Valid_timeout_b
-                                        * Referenced by: '<S386>/Constant'
+                                        * Referenced by: '<S388>/Constant'
                                         */
   uint32_T Sensor_Valid_timeout_ai;    /* Mask Parameter: Sensor_Valid_timeout_ai
-                                        * Referenced by: '<S393>/Constant'
+                                        * Referenced by: '<S395>/Constant'
                                         */
   uint32_T Sensor_Valid_timeout_p;     /* Mask Parameter: Sensor_Valid_timeout_p
-                                        * Referenced by: '<S401>/Constant'
+                                        * Referenced by: '<S403>/Constant'
                                         */
   uint32_T IntervalTest3_uplimit;      /* Mask Parameter: IntervalTest3_uplimit
                                         * Referenced by: '<S339>/Upper Limit'
@@ -681,16 +685,16 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S361>/Delay Input1'
                                         */
   uint32_T DetectChange_vinit_md;      /* Mask Parameter: DetectChange_vinit_md
-                                        * Referenced by: '<S367>/Delay Input1'
+                                        * Referenced by: '<S369>/Delay Input1'
                                         */
   uint32_T DetectChange_vinit_lp;      /* Mask Parameter: DetectChange_vinit_lp
-                                        * Referenced by: '<S387>/Delay Input1'
+                                        * Referenced by: '<S389>/Delay Input1'
                                         */
   uint32_T DetectChange_vinit_j;       /* Mask Parameter: DetectChange_vinit_j
-                                        * Referenced by: '<S394>/Delay Input1'
+                                        * Referenced by: '<S396>/Delay Input1'
                                         */
   uint32_T DetectChange_vinit_c;       /* Mask Parameter: DetectChange_vinit_c
-                                        * Referenced by: '<S402>/Delay Input1'
+                                        * Referenced by: '<S404>/Delay Input1'
                                         */
   boolean_T CompareToConstant1_const_m;/* Mask Parameter: CompareToConstant1_const_m
                                         * Referenced by: '<S24>/Constant'
@@ -846,10 +850,10 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S350>/Constant'
                                         */
   uint8_T Sensor_Valid_q_high;         /* Mask Parameter: Sensor_Valid_q_high
-                                        * Referenced by: '<S391>/Relay'
+                                        * Referenced by: '<S393>/Relay'
                                         */
   uint8_T Sensor_Valid_q_low;          /* Mask Parameter: Sensor_Valid_q_low
-                                        * Referenced by: '<S391>/Relay'
+                                        * Referenced by: '<S393>/Relay'
                                         */
   real_T Saturation_UpperSat;          /* Expression: 10e7
                                         * Referenced by: '<S179>/Saturation'
@@ -885,19 +889,19 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S349>/dz_dh'
                                         */
   real_T Constant_Value_n;             /* Expression: 1
-                                        * Referenced by: '<S363>/Constant'
+                                        * Referenced by: '<S365>/Constant'
                                         */
   real_T Constant1_Value;              /* Expression: 1
-                                        * Referenced by: '<S363>/Constant1'
+                                        * Referenced by: '<S365>/Constant1'
                                         */
   real_T Constant2_Value;              /* Expression: 2
-                                        * Referenced by: '<S363>/Constant2'
+                                        * Referenced by: '<S365>/Constant2'
                                         */
   real_T R_Value;                      /* Expression: 6378137
-                                        * Referenced by: '<S363>/R'
+                                        * Referenced by: '<S365>/R'
                                         */
   real_T f_Value;                      /* Expression: 1/298.257223563
-                                        * Referenced by: '<S363>/f'
+                                        * Referenced by: '<S365>/f'
                                         */
   int32_T UnitDelay_InitialCondition;  /* Computed Parameter: UnitDelay_InitialCondition
                                         * Referenced by: '<S358>/Unit Delay'
@@ -909,13 +913,13 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S358>/Saturation'
                                         */
   int32_T offset_Value[2];             /* Computed Parameter: offset_Value
-                                        * Referenced by: '<S376>/offset'
+                                        * Referenced by: '<S378>/offset'
                                         */
   int32_T Saturation1_UpperSat[2];     /* Computed Parameter: Saturation1_UpperSat
-                                        * Referenced by: '<S376>/Saturation1'
+                                        * Referenced by: '<S378>/Saturation1'
                                         */
   int32_T Saturation1_LowerSat;        /* Computed Parameter: Saturation1_LowerSat
-                                        * Referenced by: '<S376>/Saturation1'
+                                        * Referenced by: '<S378>/Saturation1'
                                         */
   int32_T Gain_Gain;                   /* Computed Parameter: Gain_Gain
                                         * Referenced by: '<S347>/Gain'
@@ -1535,18 +1539,6 @@ struct Parameters_INS_T_ {
   real32_T Relay1_YOff_a;              /* Computed Parameter: Relay1_YOff_a
                                         * Referenced by: '<S274>/Relay1'
                                         */
-  real32_T Relay2_OnVal;               /* Computed Parameter: Relay2_OnVal
-                                        * Referenced by: '<S274>/Relay2'
-                                        */
-  real32_T Relay2_OffVal;              /* Computed Parameter: Relay2_OffVal
-                                        * Referenced by: '<S274>/Relay2'
-                                        */
-  real32_T Relay2_YOn;                 /* Computed Parameter: Relay2_YOn
-                                        * Referenced by: '<S274>/Relay2'
-                                        */
-  real32_T Relay2_YOff;                /* Computed Parameter: Relay2_YOff
-                                        * Referenced by: '<S274>/Relay2'
-                                        */
   real32_T Constant_Value_oi;          /* Computed Parameter: Constant_Value_oi
                                         * Referenced by: '<S272>/Constant'
                                         */
@@ -1670,131 +1662,143 @@ struct Parameters_INS_T_ {
   real32_T a_Value;                    /* Computed Parameter: a_Value
                                         * Referenced by: '<S332>/a'
                                         */
+  real32_T Constant_Value_n5;          /* Computed Parameter: Constant_Value_n5
+                                        * Referenced by: '<S362>/Constant'
+                                        */
   real32_T Saturation1_UpperSat_m;     /* Computed Parameter: Saturation1_UpperSat_m
                                         * Referenced by: '<S353>/Saturation1'
                                         */
   real32_T Saturation1_LowerSat_d;     /* Computed Parameter: Saturation1_LowerSat_d
                                         * Referenced by: '<S353>/Saturation1'
                                         */
-  real32_T Saturation1_UpperSat_f;     /* Computed Parameter: Saturation1_UpperSat_f
-                                        * Referenced by: '<S355>/Saturation1'
-                                        */
-  real32_T Saturation1_LowerSat_o;     /* Computed Parameter: Saturation1_LowerSat_o
-                                        * Referenced by: '<S355>/Saturation1'
-                                        */
-  real32_T Constant_Value_k;           /* Computed Parameter: Constant_Value_k
-                                        * Referenced by: '<S362>/Constant'
-                                        */
-  real32_T DiscreteTimeIntegrator1_gainv_e;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_e
+  real32_T DiscreteTimeIntegrator1_gainv_b;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_b
                                             * Referenced by: '<S362>/Discrete-Time Integrator1'
                                             */
+  real32_T Constant_Value_k;           /* Computed Parameter: Constant_Value_k
+                                        * Referenced by: '<S363>/Constant'
+                                        */
   real32_T Saturation_UpperSat_l;      /* Computed Parameter: Saturation_UpperSat_l
                                         * Referenced by: '<S354>/Saturation'
                                         */
   real32_T Saturation_LowerSat_ku;     /* Computed Parameter: Saturation_LowerSat_ku
                                         * Referenced by: '<S354>/Saturation'
                                         */
-  real32_T DiscreteTimeIntegrator_gainv_mf;/* Computed Parameter: DiscreteTimeIntegrator_gainv_mf
+  real32_T DiscreteTimeIntegrator1_gainv_e;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_e
+                                            * Referenced by: '<S363>/Discrete-Time Integrator1'
+                                            */
+  real32_T DiscreteTimeIntegrator_gainva_g;/* Computed Parameter: DiscreteTimeIntegrator_gainva_g
                                             * Referenced by: '<S362>/Discrete-Time Integrator'
                                             */
-  real32_T DiscreteTimeIntegrator_IC_f;/* Computed Parameter: DiscreteTimeIntegrator_IC_f
+  real32_T DiscreteTimeIntegrator_IC_d;/* Computed Parameter: DiscreteTimeIntegrator_IC_d
                                         * Referenced by: '<S362>/Discrete-Time Integrator'
                                         */
-  real32_T Gain_Gain_gh;               /* Computed Parameter: Gain_Gain_gh
+  real32_T Gain_Gain_j2;               /* Computed Parameter: Gain_Gain_j2
                                         * Referenced by: '<S362>/Gain'
                                         */
-  real32_T Gain1_Gain_cj;              /* Computed Parameter: Gain1_Gain_cj
+  real32_T Gain1_Gain_kf;              /* Computed Parameter: Gain1_Gain_kf
                                         * Referenced by: '<S362>/Gain1'
                                         */
+  real32_T DiscreteTimeIntegrator_gainv_mf;/* Computed Parameter: DiscreteTimeIntegrator_gainv_mf
+                                            * Referenced by: '<S363>/Discrete-Time Integrator'
+                                            */
+  real32_T DiscreteTimeIntegrator_IC_f;/* Computed Parameter: DiscreteTimeIntegrator_IC_f
+                                        * Referenced by: '<S363>/Discrete-Time Integrator'
+                                        */
+  real32_T Gain_Gain_gh;               /* Computed Parameter: Gain_Gain_gh
+                                        * Referenced by: '<S363>/Gain'
+                                        */
+  real32_T Gain1_Gain_cj;              /* Computed Parameter: Gain1_Gain_cj
+                                        * Referenced by: '<S363>/Gain1'
+                                        */
   real32_T default_mag_quality_Value;  /* Computed Parameter: default_mag_quality_Value
-                                        * Referenced by: '<S374>/default_mag_quality'
+                                        * Referenced by: '<S376>/default_mag_quality'
                                         */
   real32_T Constant_Value_hy;          /* Computed Parameter: Constant_Value_hy
-                                        * Referenced by: '<S384>/Constant'
+                                        * Referenced by: '<S386>/Constant'
                                         */
   real32_T Switch_Threshold_b;         /* Computed Parameter: Switch_Threshold_b
-                                        * Referenced by: '<S384>/Switch'
+                                        * Referenced by: '<S386>/Switch'
                                         */
   real32_T Constant1_Value_l1;         /* Computed Parameter: Constant1_Value_l1
-                                        * Referenced by: '<S385>/Constant1'
+                                        * Referenced by: '<S387>/Constant1'
                                         */
   real32_T Constant_Value_a1;          /* Computed Parameter: Constant_Value_a1
-                                        * Referenced by: '<S383>/Constant'
+                                        * Referenced by: '<S385>/Constant'
                                         */
   real32_T Constant1_Value_i;          /* Computed Parameter: Constant1_Value_i
-                                        * Referenced by: '<S383>/Constant1'
+                                        * Referenced by: '<S385>/Constant1'
                                         */
   real32_T Constant2_Value_mb;         /* Computed Parameter: Constant2_Value_mb
-                                        * Referenced by: '<S383>/Constant2'
+                                        * Referenced by: '<S385>/Constant2'
                                         */
   real32_T Constant4_Value_c;          /* Computed Parameter: Constant4_Value_c
-                                        * Referenced by: '<S383>/Constant4'
+                                        * Referenced by: '<S385>/Constant4'
                                         */
   real32_T Gain_Gain_gg;               /* Computed Parameter: Gain_Gain_gg
-                                        * Referenced by: '<S375>/Gain'
+                                        * Referenced by: '<S377>/Gain'
                                         */
   real32_T Gain_Gain_bo;               /* Computed Parameter: Gain_Gain_bo
-                                        * Referenced by: '<S383>/Gain'
+                                        * Referenced by: '<S385>/Gain'
                                         */
   real32_T Constant3_Value_f;          /* Computed Parameter: Constant3_Value_f
-                                        * Referenced by: '<S383>/Constant3'
+                                        * Referenced by: '<S385>/Constant3'
                                         */
   real32_T Gauss_to_uT_Gain;           /* Computed Parameter: Gauss_to_uT_Gain
                                         * Referenced by: '<S328>/Gauss_to_uT'
                                         */
   real32_T Gain1_Gain_o;               /* Computed Parameter: Gain1_Gain_o
-                                        * Referenced by: '<S378>/Gain1'
-                                        */
-  real32_T Constant2_Value_h;          /* Computed Parameter: Constant2_Value_h
-                                        * Referenced by: '<S378>/Constant2'
-                                        */
-  real32_T gain_Gain_g;                /* Computed Parameter: gain_Gain_g
-                                        * Referenced by: '<S378>/gain'
-                                        */
-  real32_T Saturation_UpperSat_g;      /* Computed Parameter: Saturation_UpperSat_g
-                                        * Referenced by: '<S378>/Saturation'
-                                        */
-  real32_T Saturation_LowerSat_a;      /* Computed Parameter: Saturation_LowerSat_a
-                                        * Referenced by: '<S378>/Saturation'
-                                        */
-  real32_T Nominal_Magnitude_Value;    /* Computed Parameter: Nominal_Magnitude_Value
-                                        * Referenced by: '<S379>/Nominal_Magnitude'
-                                        */
-  real32_T Constant1_Value_c;          /* Computed Parameter: Constant1_Value_c
-                                        * Referenced by: '<S379>/Constant1'
-                                        */
-  real32_T gain_Gain_m;                /* Computed Parameter: gain_Gain_m
-                                        * Referenced by: '<S379>/gain'
-                                        */
-  real32_T Saturation_UpperSat_gv;     /* Computed Parameter: Saturation_UpperSat_gv
-                                        * Referenced by: '<S379>/Saturation'
-                                        */
-  real32_T Saturation_LowerSat_p;      /* Computed Parameter: Saturation_LowerSat_p
-                                        * Referenced by: '<S379>/Saturation'
-                                        */
-  real32_T Constant_Value_fn;          /* Computed Parameter: Constant_Value_fn
-                                        * Referenced by: '<S380>/Constant'
-                                        */
-  real32_T DiscreteTimeIntegrator_gainv_bm;/* Computed Parameter: DiscreteTimeIntegrator_gainv_bm
-                                            * Referenced by: '<S380>/Discrete-Time Integrator'
-                                            */
-  real32_T DiscreteTimeIntegrator_IC_mb;/* Computed Parameter: DiscreteTimeIntegrator_IC_mb
-                                         * Referenced by: '<S380>/Discrete-Time Integrator'
-                                         */
-  real32_T DiscreteTimeIntegrator1_gainv_m;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_m
-                                            * Referenced by: '<S380>/Discrete-Time Integrator1'
-                                            */
-  real32_T Gain_Gain_c;                /* Computed Parameter: Gain_Gain_c
-                                        * Referenced by: '<S380>/Gain'
-                                        */
-  real32_T Gain1_Gain_bn;              /* Computed Parameter: Gain1_Gain_bn
                                         * Referenced by: '<S380>/Gain1'
                                         */
+  real32_T Constant2_Value_h;          /* Computed Parameter: Constant2_Value_h
+                                        * Referenced by: '<S380>/Constant2'
+                                        */
+  real32_T gain_Gain_g;                /* Computed Parameter: gain_Gain_g
+                                        * Referenced by: '<S380>/gain'
+                                        */
+  real32_T Saturation_UpperSat_g;      /* Computed Parameter: Saturation_UpperSat_g
+                                        * Referenced by: '<S380>/Saturation'
+                                        */
+  real32_T Saturation_LowerSat_a;      /* Computed Parameter: Saturation_LowerSat_a
+                                        * Referenced by: '<S380>/Saturation'
+                                        */
+  real32_T Nominal_Magnitude_Value;    /* Computed Parameter: Nominal_Magnitude_Value
+                                        * Referenced by: '<S381>/Nominal_Magnitude'
+                                        */
+  real32_T Constant1_Value_c;          /* Computed Parameter: Constant1_Value_c
+                                        * Referenced by: '<S381>/Constant1'
+                                        */
+  real32_T gain_Gain_m;                /* Computed Parameter: gain_Gain_m
+                                        * Referenced by: '<S381>/gain'
+                                        */
+  real32_T Saturation_UpperSat_gv;     /* Computed Parameter: Saturation_UpperSat_gv
+                                        * Referenced by: '<S381>/Saturation'
+                                        */
+  real32_T Saturation_LowerSat_p;      /* Computed Parameter: Saturation_LowerSat_p
+                                        * Referenced by: '<S381>/Saturation'
+                                        */
+  real32_T Constant_Value_fn;          /* Computed Parameter: Constant_Value_fn
+                                        * Referenced by: '<S382>/Constant'
+                                        */
+  real32_T DiscreteTimeIntegrator_gainv_bm;/* Computed Parameter: DiscreteTimeIntegrator_gainv_bm
+                                            * Referenced by: '<S382>/Discrete-Time Integrator'
+                                            */
+  real32_T DiscreteTimeIntegrator_IC_mb;/* Computed Parameter: DiscreteTimeIntegrator_IC_mb
+                                         * Referenced by: '<S382>/Discrete-Time Integrator'
+                                         */
+  real32_T DiscreteTimeIntegrator1_gainv_m;/* Computed Parameter: DiscreteTimeIntegrator1_gainv_m
+                                            * Referenced by: '<S382>/Discrete-Time Integrator1'
+                                            */
+  real32_T Gain_Gain_c;                /* Computed Parameter: Gain_Gain_c
+                                        * Referenced by: '<S382>/Gain'
+                                        */
+  real32_T Gain1_Gain_bn;              /* Computed Parameter: Gain1_Gain_bn
+                                        * Referenced by: '<S382>/Gain1'
+                                        */
   real32_T DiscreteTimeIntegrator5_gainv_c;/* Computed Parameter: DiscreteTimeIntegrator5_gainv_c
-                                            * Referenced by: '<S392>/Discrete-Time Integrator5'
+                                            * Referenced by: '<S394>/Discrete-Time Integrator5'
                                             */
   real32_T Gain_Gain_ca;               /* Computed Parameter: Gain_Gain_ca
-                                        * Referenced by: '<S392>/Gain'
+                                        * Referenced by: '<S394>/Gain'
                                         */
   real32_T Delay_2_InitialCondition;   /* Computed Parameter: Delay_2_InitialCondition
                                         * Referenced by: '<Root>/Delay'
@@ -1813,9 +1817,6 @@ struct Parameters_INS_T_ {
                                         */
   uint32_T Gain1_Gain_po;              /* Computed Parameter: Gain1_Gain_po
                                         * Referenced by: '<S353>/Gain1'
-                                        */
-  uint32_T Gain1_Gain_e;               /* Computed Parameter: Gain1_Gain_e
-                                        * Referenced by: '<S355>/Gain1'
                                         */
   uint32_T Gain5_Gain;                 /* Computed Parameter: Gain5_Gain
                                         * Referenced by: '<S354>/Gain5'
@@ -2001,37 +2002,37 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S352>/Discrete-Time Integrator'
                                         */
   uint32_T DiscreteTimeIntegrator_IC_ba;/* Computed Parameter: DiscreteTimeIntegrator_IC_ba
-                                         * Referenced by: '<S365>/Discrete-Time Integrator'
+                                         * Referenced by: '<S367>/Discrete-Time Integrator'
                                          */
   uint32_T Delay_DelayLength_d3;       /* Computed Parameter: Delay_DelayLength_d3
-                                        * Referenced by: '<S368>/Delay'
+                                        * Referenced by: '<S370>/Delay'
                                         */
   uint32_T DiscreteTimeIntegrator_IC_k;/* Computed Parameter: DiscreteTimeIntegrator_IC_k
-                                        * Referenced by: '<S373>/Discrete-Time Integrator'
+                                        * Referenced by: '<S375>/Discrete-Time Integrator'
                                         */
   uint32_T Delay_DelayLength_b;        /* Computed Parameter: Delay_DelayLength_b
-                                        * Referenced by: '<S388>/Delay'
+                                        * Referenced by: '<S390>/Delay'
                                         */
   uint32_T DiscreteTimeIntegrator_IC_n;/* Computed Parameter: DiscreteTimeIntegrator_IC_n
-                                        * Referenced by: '<S391>/Discrete-Time Integrator'
+                                        * Referenced by: '<S393>/Discrete-Time Integrator'
                                         */
   uint32_T Delay_DelayLength_b4;       /* Computed Parameter: Delay_DelayLength_b4
-                                        * Referenced by: '<S395>/Delay'
+                                        * Referenced by: '<S397>/Delay'
                                         */
   uint32_T DiscreteTimeIntegrator_IC_f4;/* Computed Parameter: DiscreteTimeIntegrator_IC_f4
-                                         * Referenced by: '<S398>/Discrete-Time Integrator'
+                                         * Referenced by: '<S400>/Discrete-Time Integrator'
                                          */
   uint32_T Delay_DelayLength_ca;       /* Computed Parameter: Delay_DelayLength_ca
-                                        * Referenced by: '<S403>/Delay'
+                                        * Referenced by: '<S405>/Delay'
                                         */
   uint32_T DiscreteTimeIntegrator_IC_n1;/* Computed Parameter: DiscreteTimeIntegrator_IC_n1
-                                         * Referenced by: '<S399>/Discrete-Time Integrator'
+                                         * Referenced by: '<S401>/Discrete-Time Integrator'
                                          */
   uint32_T DiscreteTimeIntegrator_UpperS_l;/* Computed Parameter: DiscreteTimeIntegrator_UpperS_l
-                                            * Referenced by: '<S399>/Discrete-Time Integrator'
+                                            * Referenced by: '<S401>/Discrete-Time Integrator'
                                             */
   uint32_T DiscreteTimeIntegrator_Lower_bq;/* Computed Parameter: DiscreteTimeIntegrator_Lower_bq
-                                            * Referenced by: '<S399>/Discrete-Time Integrator'
+                                            * Referenced by: '<S401>/Discrete-Time Integrator'
                                             */
   uint32_T Delay_2_DelayLength;        /* Computed Parameter: Delay_2_DelayLength
                                         * Referenced by: '<Root>/Delay'
@@ -2169,10 +2170,10 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S315>/Constant'
                                         */
   boolean_T Delay_InitialCondition_f;  /* Computed Parameter: Delay_InitialCondition_f
-                                        * Referenced by: '<S395>/Delay'
+                                        * Referenced by: '<S397>/Delay'
                                         */
   boolean_T Constant_Value_pa;         /* Computed Parameter: Constant_Value_pa
-                                        * Referenced by: '<S406>/Constant'
+                                        * Referenced by: '<S408>/Constant'
                                         */
   int8_T Constant_Value_ej5;           /* Computed Parameter: Constant_Value_ej5
                                         * Referenced by: '<S260>/Constant'
@@ -2229,31 +2230,31 @@ struct Parameters_INS_T_ {
                                         * Referenced by: '<S342>/Delay'
                                         */
   uint8_T Constant1_Value_no;          /* Computed Parameter: Constant1_Value_no
-                                        * Referenced by: '<S368>/Constant1'
+                                        * Referenced by: '<S370>/Constant1'
                                         */
   uint8_T Delay_InitialCondition_ja;   /* Computed Parameter: Delay_InitialCondition_ja
-                                        * Referenced by: '<S368>/Delay'
+                                        * Referenced by: '<S370>/Delay'
                                         */
   uint8_T Constant1_Value_ev;          /* Computed Parameter: Constant1_Value_ev
-                                        * Referenced by: '<S388>/Constant1'
+                                        * Referenced by: '<S390>/Constant1'
                                         */
   uint8_T Delay_InitialCondition_jy;   /* Computed Parameter: Delay_InitialCondition_jy
-                                        * Referenced by: '<S388>/Delay'
+                                        * Referenced by: '<S390>/Delay'
                                         */
   uint8_T Constant1_Value_o0;          /* Computed Parameter: Constant1_Value_o0
-                                        * Referenced by: '<S395>/Constant1'
+                                        * Referenced by: '<S397>/Constant1'
                                         */
   uint8_T Relay_OnVal_f;               /* Computed Parameter: Relay_OnVal_f
-                                        * Referenced by: '<S391>/Relay'
+                                        * Referenced by: '<S393>/Relay'
                                         */
   uint8_T Relay_OffVal_k;              /* Computed Parameter: Relay_OffVal_k
-                                        * Referenced by: '<S391>/Relay'
+                                        * Referenced by: '<S393>/Relay'
                                         */
   uint8_T Constant1_Value_h;           /* Computed Parameter: Constant1_Value_h
-                                        * Referenced by: '<S403>/Constant1'
+                                        * Referenced by: '<S405>/Constant1'
                                         */
   uint8_T Delay_InitialCondition_ny;   /* Computed Parameter: Delay_InitialCondition_ny
-                                        * Referenced by: '<S403>/Delay'
+                                        * Referenced by: '<S405>/Delay'
                                         */
   rtP_Baro_Velocity_INS_T Rf_Velocity; /* '<S246>/Rf_Velocity' */
   rtP_Baro_Velocity_INS_T Baro_Velocity;/* '<S246>/Baro_Velocity' */
@@ -2299,8 +2300,6 @@ extern struct_tF4zDkO7m7jeFfXSvhWnpB INS_PARAM;/* Variable: INS_PARAM
                                                 *   '<S353>/Gain2'
                                                 *   '<S354>/Constant7'
                                                 *   '<S354>/Gain3'
-                                                *   '<S355>/Constant1'
-                                                *   '<S355>/Gain2'
                                                 *   '<S69>/Gain1'
                                                 *   '<S71>/mag_correct_gain'
                                                 *   '<S74>/Gain'
@@ -2323,10 +2322,10 @@ extern struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT;/* Variable: INS_EXPORT
                                                  * Referenced by:
                                                  *   '<S4>/Constant'
                                                  *   '<S334>/Constant'
-                                                 *   '<S365>/Constant'
-                                                 *   '<S373>/Constant'
-                                                 *   '<S391>/Constant'
-                                                 *   '<S398>/Constant'
+                                                 *   '<S367>/Constant'
+                                                 *   '<S375>/Constant'
+                                                 *   '<S393>/Constant'
+                                                 *   '<S400>/Constant'
                                                  *   '<S11>/Constant'
                                                  *   '<S12>/Constant'
                                                  *   '<S13>/Constant'
@@ -2725,51 +2724,53 @@ extern RT_MODEL_INS_T *const INS_M;
  * '<S359>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/GPS_Status/Ready/valid_samples'
  * '<S360>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/check_timeout/Compare To Constant4'
  * '<S361>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/check_timeout/Detect Change'
- * '<S362>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/speed_acc/Second Order LPF'
- * '<S363>' : 'INS/Sensor_PreProcess/GPS_PreProcess/WGS84_Model/LAT2FLAT Curve'
- * '<S364>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Data_Select'
- * '<S365>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid'
- * '<S366>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Compare To Constant4'
- * '<S367>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Detect Change'
- * '<S368>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Ever_Valid'
- * '<S369>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Interval Test1'
- * '<S370>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Interval Test3'
- * '<S371>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Bus_Select'
- * '<S372>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process'
- * '<S373>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid'
- * '<S374>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate'
- * '<S375>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation'
- * '<S376>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_LUT'
- * '<S377>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality'
- * '<S378>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Inclination_Quality_Estimate'
- * '<S379>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Intensity_Quality_Estimate'
- * '<S380>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Second Order LPF'
- * '<S381>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Inclination_Quality_Estimate/Vector Modulus'
- * '<S382>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Intensity_Quality_Estimate/Vector Modulus'
- * '<S383>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation/Rotation Matrix Z'
- * '<S384>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation/Vector Normalize'
- * '<S385>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation/safe_divide'
- * '<S386>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Compare To Constant4'
- * '<S387>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Detect Change'
- * '<S388>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Ever_Valid'
- * '<S389>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Interval Test1'
- * '<S390>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Height_Compensation'
- * '<S391>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid'
- * '<S392>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Height_Compensation/First Order LPF'
- * '<S393>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Compare To Constant4'
- * '<S394>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Detect Change'
- * '<S395>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Ever_Valid'
- * '<S396>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Interval Test1'
- * '<S397>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Interval Test2'
- * '<S398>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid'
- * '<S399>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Subsystem'
- * '<S400>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Tilt_Compensation'
- * '<S401>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Compare To Constant4'
- * '<S402>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Detect Change'
- * '<S403>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Ever_Valid'
- * '<S404>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Interval Test1'
- * '<S405>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Subsystem/Compare To Constant'
- * '<S406>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Subsystem/Compare To Zero'
+ * '<S362>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/horizontal_quality/Second Order LPF'
+ * '<S363>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/speed_acc/Second Order LPF'
+ * '<S364>' : 'INS/Sensor_PreProcess/GPS_PreProcess/Status_Quality/vertical_quality/Second Order LPF'
+ * '<S365>' : 'INS/Sensor_PreProcess/GPS_PreProcess/WGS84_Model/LAT2FLAT Curve'
+ * '<S366>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Data_Select'
+ * '<S367>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid'
+ * '<S368>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Compare To Constant4'
+ * '<S369>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Detect Change'
+ * '<S370>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Ever_Valid'
+ * '<S371>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Interval Test1'
+ * '<S372>' : 'INS/Sensor_PreProcess/IMU_PreProcess/Sensor_Valid/Interval Test3'
+ * '<S373>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Bus_Select'
+ * '<S374>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process'
+ * '<S375>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid'
+ * '<S376>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate'
+ * '<S377>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation'
+ * '<S378>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_LUT'
+ * '<S379>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality'
+ * '<S380>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Inclination_Quality_Estimate'
+ * '<S381>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Intensity_Quality_Estimate'
+ * '<S382>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Second Order LPF'
+ * '<S383>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Inclination_Quality_Estimate/Vector Modulus'
+ * '<S384>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/Mag_Quality_Estimate/Mag_Quality/Intensity_Quality_Estimate/Vector Modulus'
+ * '<S385>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation/Rotation Matrix Z'
+ * '<S386>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation/Vector Normalize'
+ * '<S387>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Mag_Data_Process/WMM_Compensation/safe_divide'
+ * '<S388>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Compare To Constant4'
+ * '<S389>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Detect Change'
+ * '<S390>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Ever_Valid'
+ * '<S391>' : 'INS/Sensor_PreProcess/MAG_PreProcess/Sensor_Valid/Interval Test1'
+ * '<S392>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Height_Compensation'
+ * '<S393>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid'
+ * '<S394>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Height_Compensation/First Order LPF'
+ * '<S395>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Compare To Constant4'
+ * '<S396>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Detect Change'
+ * '<S397>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Ever_Valid'
+ * '<S398>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Interval Test1'
+ * '<S399>' : 'INS/Sensor_PreProcess/OpticalFlow_PreProcess/Sensor_Valid/Interval Test2'
+ * '<S400>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid'
+ * '<S401>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Subsystem'
+ * '<S402>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Tilt_Compensation'
+ * '<S403>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Compare To Constant4'
+ * '<S404>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Detect Change'
+ * '<S405>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Ever_Valid'
+ * '<S406>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Sensor_Valid/Interval Test1'
+ * '<S407>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Subsystem/Compare To Constant'
+ * '<S408>' : 'INS/Sensor_PreProcess/Rangefinder_PreProcess/Subsystem/Compare To Zero'
  */
 #endif                                 /* RTW_HEADER_INS_h_ */
 
