@@ -323,7 +323,7 @@ static void NVIC_Configuration(void)
     SCB->VTOR = (0x10000000 & NVIC_VTOR_MASK);
 #else /* VECT_TAB_FLASH  */
     /* Set the Vector Table base location at 0x08000000 */
-    SCB->VTOR = (0x08000000 & NVIC_VTOR_MASK);
+    SCB->VTOR = (0x08020000 & NVIC_VTOR_MASK);
 #endif
 }
 

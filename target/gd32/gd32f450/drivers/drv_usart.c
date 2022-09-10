@@ -307,7 +307,7 @@ static void _dma_rx_config(struct gd32_uart* uart, rt_uint8_t* buf, rt_size_t si
     usart_dma_receive_config(uart->uart_periph, USART_DENR_ENABLE);
 }
 
-void gd32_uart_gpio_init(struct gd32_uart* uart)
+static void gd32_uart_gpio_init(struct gd32_uart* uart)
 {
     /* enable USART clock */
     rcu_periph_clock_enable(uart->tx_gpio_clk);
@@ -333,7 +333,6 @@ void gd32_uart_gpio_init(struct gd32_uart* uart)
 
     NVIC_SetPriority(uart->irqn, 0);
     NVIC_EnableIRQ(uart->irqn);
-    usart_interrupt_enable(uart->uart_periph, USART_INT_RBNE);
 }
 
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg)

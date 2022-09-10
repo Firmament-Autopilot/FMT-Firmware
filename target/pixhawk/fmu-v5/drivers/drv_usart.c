@@ -834,9 +834,9 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
 
     case RT_DEVICE_CTRL_SET_INT:
         if (ctrl_arg == RT_DEVICE_FLAG_INT_RX) {
-            /* disable rx irq */
+            /* enable rx irq */
             NVIC_EnableIRQ(uart->irq);
-            /* disable interrupt */
+            /* enable interrupt */
             LL_USART_EnableIT_RXNE(uart->uart_device);
         }
         break;
