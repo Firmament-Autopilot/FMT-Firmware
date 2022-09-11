@@ -339,7 +339,8 @@ class uploader(object):
             self.__getSync(False)
         except:
             # if it fails we are on a real Serial Port
-            self.ackWindowedMode = True
+            # self.ackWindowedMode = True
+            pass
 
         self.port.baudrate = self.baudrate_bootloader
 
@@ -853,7 +854,7 @@ def main():
                         # return
 
                     if len(serial_list) > 1:
-                        print('Auto-detected serial ports are:')
+                        # print('Auto-detected serial ports are:')
                         for port in serial_list:
                             # print(" {:}".format(port))
                             pass
@@ -879,7 +880,7 @@ def main():
                     #     "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
                 else:
                     serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                    "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                    "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*", "*USB0*"])
 
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
@@ -889,7 +890,7 @@ def main():
                 #     print('Auto-detected serial ports are:')
                 #     for port in serial_list:
                 #         print(" {:}".format(port))
-                # print('Using port {:}'.format(serial_list[0]))
+                print('Using port {:}'.format(serial_list[0]))
                 args.port = serial_list[0].device
 
 

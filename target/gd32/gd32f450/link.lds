@@ -5,8 +5,8 @@
 /* Program Entry, set to mark it as "used" and avoid gc */
 MEMORY
 {
-	/* First 0x20000(128KB) area is reserved for bootloader */
-    CODE (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 128KB flash */
+	/* First 0x8000(32KB) area is reserved for bootloader */
+    CODE (rx) : ORIGIN = 0x08008000, LENGTH = 2016K /* 2048KB - 32KB flash */
     DATA (rw) : ORIGIN = 0x20000000, LENGTH =  448k /* (192+256)K sram */
 }
 ENTRY(Reset_Handler)
