@@ -6,7 +6,7 @@
 MEMORY
 {
 	/* First 0x8000(32KB) area is reserved for bootloader */
-    CODE (rx) : ORIGIN = 0x08008000, LENGTH = 2016K /* 2048KB - 32KB flash */
+    CODE (rx) : ORIGIN = 0x08000000, LENGTH = 2016K /* 2048KB - 32KB flash */
     DATA (rw) : ORIGIN = 0x20000000, LENGTH =  448k /* (192+256)K sram */
 }
 ENTRY(Reset_Handler)
