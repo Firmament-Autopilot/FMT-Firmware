@@ -28,7 +28,7 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
-// #include "drv_usbd_cdc.h"
+#include "drv_usbd_cdc.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/sysio/actuator_cmd.h"
@@ -393,7 +393,7 @@ void bsp_initialize(void)
     FMT_CHECK(param_init());
 
     /* init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
     /* init finsh */
     finsh_system_init();

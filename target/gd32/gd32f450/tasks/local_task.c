@@ -30,14 +30,14 @@ void task_local_entry(void* parameter)
 {
     printf("Hello FMT! This is a local demo task.\n");
 
-    // rt_device_t dev = rt_device_find("usbd0");
+    rt_device_t dev = rt_device_find("usbd0");
     // char c;
     uint8_t buff[10];
     rt_size_t rb;
 
     // rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
 
-    rt_device_t dev = rt_device_find("serial1");
+    // rt_device_t dev = rt_device_find("serial1");
 
     rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
 

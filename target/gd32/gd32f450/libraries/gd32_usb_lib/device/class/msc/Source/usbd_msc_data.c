@@ -1,6 +1,6 @@
 /*!
-    \file    usbd_transc.h
-    \brief   USB transaction core functions prototype
+    \file    usbd_msc_data.c
+    \brief   USB MSC vital inquiry pages and sense data
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
 */
@@ -32,25 +32,42 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef __USBD_TRANSC_H
-#define __USBD_TRANSC_H
+#include "usbd_msc_data.h"
 
-#include "usbd_core.h"
+/* USB mass storage page 0 inquiry data */
+const uint8_t msc_page00_inquiry_data[] =
+{
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    (INQUIRY_PAGE00_LENGTH - 4U),
+    0x80U,
+    0x83U,
+};
 
-/* function declarations */
-/* USB send data in the control transaction */
-usbd_status usbd_ctl_send (usb_core_driver *udev);
-/* USB receive data in control transaction */
-usbd_status usbd_ctl_recev (usb_core_driver *udev);
-/* USB send control transaction status */
-usbd_status usbd_ctl_status_send (usb_core_driver *udev);
-/* USB control receive status */
-usbd_status usbd_ctl_status_recev (usb_core_driver *udev);
-/* USB setup stage processing */
-uint8_t usbd_setup_transc (usb_core_driver *udev);
-/* data out stage processing */
-uint8_t usbd_out_transc (usb_core_driver *udev, uint8_t ep_num);
-/* data in stage processing */
-uint8_t usbd_in_transc (usb_core_driver *udev, uint8_t ep_num);
+/* USB mass storage sense 6 data */
+const uint8_t msc_mode_sense6_data[] =
+{
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U
+};
 
-#endif /* __USBD_TRANSC_H */
+/* USB mass storage sense 10 data */
+const uint8_t msc_mode_sense10_data[] =
+{
+    0x00U,
+    0x06U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U,
+    0x00U
+};

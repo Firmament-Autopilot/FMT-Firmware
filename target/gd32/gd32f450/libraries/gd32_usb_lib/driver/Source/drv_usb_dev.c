@@ -3,34 +3,32 @@
     \brief   USB device mode low level driver
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
-    \version 2022-03-09, V3.1.0, firmware for GD32F4xx
-    \version 2022-06-30, V3.2.0, firmware for GD32F4xx
 */
 
 /*
-    Copyright (c) 2022, GigaDevice Semiconductor Inc.
+    Copyright (c) 2020, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -49,7 +47,7 @@ static const uint8_t EP0_MAXLEN[4] = {
 #ifdef USB_FS_CORE
 
 /* USB endpoint Tx FIFO size */
-static uint16_t USBFS_TX_FIFO_SIZE[USBFS_MAX_EP_COUNT] = 
+static uint16_t USBFS_TX_FIFO_SIZE[USBFS_MAX_EP_COUNT] =
 {
     (uint16_t)TX0_FIFO_FS_SIZE,
     (uint16_t)TX1_FIFO_FS_SIZE,
@@ -61,7 +59,7 @@ static uint16_t USBFS_TX_FIFO_SIZE[USBFS_MAX_EP_COUNT] =
 
 #ifdef USB_HS_CORE
 
-uint16_t USBHS_TX_FIFO_SIZE[USBHS_MAX_EP_COUNT] = 
+uint16_t USBHS_TX_FIFO_SIZE[USBHS_MAX_EP_COUNT] =
 {
     (uint16_t)TX0_FIFO_HS_SIZE,
     (uint16_t)TX1_FIFO_HS_SIZE,
@@ -100,7 +98,7 @@ usb_status usb_devcore_init (usb_core_driver *udev)
         /* set Rx FIFO size */
         usb_set_rxfifo(&udev->regs, RX_FIFO_FS_SIZE);
 
-        /* set endpoint 0 to 3's Tx FIFO length and RAM address */
+        /* set endpoint 0 to 3's TX FIFO length and RAM address */
         for (i = 0U; i < USBFS_MAX_EP_COUNT; i++) {
             usb_set_txfifo(&udev->regs, i, USBFS_TX_FIFO_SIZE[i]);
         }
@@ -127,10 +125,10 @@ usb_status usb_devcore_init (usb_core_driver *udev)
 
     /* make sure all FIFOs are flushed */
 
-    /* flush all Tx FIFOs */
+    /* flush all TX FIFOs */
     (void)usb_txfifo_flush (&udev->regs, 0x10U);
 
-    /* flush entire Rx FIFO */
+    /* flush entire RX FIFO */
     (void)usb_rxfifo_flush (&udev->regs);
 
     /* clear all pending device interrupts */
@@ -231,6 +229,7 @@ usb_status usb_transc0_active (usb_core_driver *udev, usb_transc *transc)
     }
 
     /* endpoint 0 is activated after USB clock is enabled */
+
     *reg_addr &= ~(DEPCTL_MPL | DEPCTL_EPTYPE | DIEPCTL_TXFNUM);
 
     /* set endpoint 0 maximum packet length */
@@ -395,8 +394,10 @@ usb_status usb_transc_inxfer (usb_core_driver *udev, usb_transc *transc)
     udev->regs.er_in[ep_num]->DIEPCTL = epctl;
 
     if ((uint8_t)USB_USE_FIFO == udev->bp.transfer_mode) {
+        udev->regs.er_in[ep_num]->DIEPCTL = epctl;
+
         if (transc->ep_type != (uint8_t)USB_EPTYPE_ISOC) {
-            /* enable the Tx FIFO empty interrupt for this endpoint */
+            /* enable the TX FIFO empty interrupt for this endpoint */
             if (transc->xfer_len > 0U) {
                 udev->regs.dr->DIEPFEINTEN |= 1U << ep_num;
             }
@@ -630,7 +631,7 @@ void usb_dev_suspend (usb_core_driver *udev)
         *udev->regs.PWRCLKCTL |= PWRCLKCTL_SHCLK;
 
         /* enter DEEP_SLEEP mode with LDO in low power mode */
-        pmu_to_deepsleepmode (PMU_LDO_LOWPOWER,PMU_LOWDRIVER_DISABLE,WFI_CMD);
+        pmu_to_deepsleepmode(PMU_LDO_LOWPOWER, PMU_LOWDRIVER_DISABLE, WFI_CMD);
     }
 }
 

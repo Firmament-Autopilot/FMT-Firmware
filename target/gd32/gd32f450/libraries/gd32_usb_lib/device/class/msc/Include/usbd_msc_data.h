@@ -1,6 +1,6 @@
 /*!
-    \file    usbd_transc.h
-    \brief   USB transaction core functions prototype
+    \file    usbd_msc_data.h
+    \brief   the header file of the usbd_msc_data.c file
 
     \version 2020-08-01, V3.0.0, firmware for GD32F4xx
 */
@@ -32,25 +32,18 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef __USBD_TRANSC_H
-#define __USBD_TRANSC_H
+#ifndef __USBD_MSC_DATA_H
+#define __USBD_MSC_DATA_H
 
-#include "usbd_core.h"
+#include "usbd_conf.h"
 
-/* function declarations */
-/* USB send data in the control transaction */
-usbd_status usbd_ctl_send (usb_core_driver *udev);
-/* USB receive data in control transaction */
-usbd_status usbd_ctl_recev (usb_core_driver *udev);
-/* USB send control transaction status */
-usbd_status usbd_ctl_status_send (usb_core_driver *udev);
-/* USB control receive status */
-usbd_status usbd_ctl_status_recev (usb_core_driver *udev);
-/* USB setup stage processing */
-uint8_t usbd_setup_transc (usb_core_driver *udev);
-/* data out stage processing */
-uint8_t usbd_out_transc (usb_core_driver *udev, uint8_t ep_num);
-/* data in stage processing */
-uint8_t usbd_in_transc (usb_core_driver *udev, uint8_t ep_num);
+#define MODE_SENSE6_LENGTH                 8U
+#define MODE_SENSE10_LENGTH                8U
+#define INQUIRY_PAGE00_LENGTH              96U
+#define FORMAT_CAPACITIES_LENGTH           20U
 
-#endif /* __USBD_TRANSC_H */
+extern const uint8_t msc_page00_inquiry_data[];
+extern const uint8_t msc_mode_sense6_data[];
+extern const uint8_t msc_mode_sense10_data[];
+
+#endif /* __USBD_MSC_DATA_H */
