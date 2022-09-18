@@ -81,6 +81,9 @@ void usbd_isr (usb_core_driver *udev)
         /* suspend interrupt */
         if (intr & GINTF_SP) {
             (void)usbd_int_suspend (udev);
+            
+            void drv_usbd_cdc_disconnect_cb(void);
+            drv_usbd_cdc_disconnect_cb();
         }
 
         /* wakeup interrupt */

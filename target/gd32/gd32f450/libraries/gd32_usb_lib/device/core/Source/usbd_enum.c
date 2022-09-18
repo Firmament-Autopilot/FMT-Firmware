@@ -677,6 +677,13 @@ static usb_reqsta _usb_std_setconfiguration (usb_core_driver *udev, usb_req *req
         }
     }
 
+    // void cdc_acm_data_receive(usb_dev* udev);
+    // if(config){
+    //     cdc_acm_data_receive(udev);
+    // }
+    void drv_usbd_cdc_connect_cb(void);
+    drv_usbd_cdc_connect_cb();
+
     return status;
 }
 
