@@ -98,8 +98,6 @@ void drv_usbd_cdc_connect_cb(void)
 {
     hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_CONNECT);
 
-    printf("connect\n");
-
     /* endpoint prepare to receive data */
     cdc_acm_data_receive(&cdc_acm);
 }
@@ -107,8 +105,6 @@ void drv_usbd_cdc_connect_cb(void)
 void drv_usbd_cdc_disconnect_cb(void)
 {
     hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_DISCONNECT);
-
-    printf("disconnect\n");
 }
 
 void drv_usbd_cdc_receive(uint8_t* buffer, uint32_t size)
@@ -187,7 +183,7 @@ rt_err_t drv_usb_cdc_init(void)
               &cdc_desc,
               &cdc_class);
 
-    err = hal_usbd_cdc_register(&usbd_dev, "usbd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, RT_NULL);
+    err = hal_usbd_cdc_register(&usbd_dev, "usbd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX, RT_NULL);
     if (err != RT_EOK) {
         return err;
     }

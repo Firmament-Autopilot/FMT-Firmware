@@ -30,16 +30,16 @@ void task_local_entry(void* parameter)
 {
     printf("Hello FMT! This is a local demo task.\n");
 
-    rt_device_t dev = rt_device_find("usbd0");
+    // rt_device_t dev = rt_device_find("usbd0");
     // char c;
-    uint8_t buff[10];
-    rt_size_t rb;
+    // uint8_t buff[10];
+    // rt_size_t rb;
 
     // rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
 
     // rt_device_t dev = rt_device_find("serial1");
 
-    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
+    // rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
 
     /* main loop */
     while (1) {
@@ -51,10 +51,10 @@ void task_local_entry(void* parameter)
         //     }
         // }
 
-        rb = rt_device_read(dev, 0, buff, 10);
-        if (rb) {
-            rt_device_write(dev, 0, buff, rb);
-        }
+        // rb = rt_device_read(dev, 0, buff, 10);
+        // if (rb) {
+        //     rt_device_write(dev, 0, buff, rb);
+        // }
 
         sys_msleep(1);
     }

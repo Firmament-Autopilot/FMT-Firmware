@@ -51,20 +51,20 @@ MODULES = [
     'syscmd/cmd_act.c',
     # 'syscmd/cmd_mlog.c',
     'file_manager/*.c',
-#     'ftp/*.c',
+    'ftp/*.c',
     "log/*.c",
     "param/*.c",
     'utils/*.c',
     'mavproxy/*.c',
-#     'sensor/*.c',
+    'sensor/*.c',
     'sysio/*.c',
     'toml/*.c',
     'workqueue/*.c',
     'math/*.c',
-#     'filter/*.c',
+    'filter/*.c',
 #     'fmtio/*.c',
     'task_manager/*.c',
-#     'pmu/*.c',
+    'pmu/*.c',
 ]
 
 MODULES_CPPPATH = [
@@ -73,7 +73,7 @@ MODULES_CPPPATH = [
 
 TASKS = [
     # 'simple/*.c',
-    # 'comm/*.c',
+    'comm/*.c',
     # 'logger/*.c',
     # 'fmtio/*.c',
     # 'status/*.c',

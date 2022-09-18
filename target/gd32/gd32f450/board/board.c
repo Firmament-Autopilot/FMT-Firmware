@@ -31,6 +31,8 @@
 #include "drv_usbd_cdc.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/mavproxy_config.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
 #include "module/sysio/pilot_cmd.h"
@@ -145,7 +147,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 if (MATCH(key, "console")) {
                     err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
-                    // err = mavproxy_toml_config(sub_tab);
+                    err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
