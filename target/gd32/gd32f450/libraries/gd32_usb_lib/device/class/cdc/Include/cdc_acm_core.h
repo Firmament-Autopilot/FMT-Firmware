@@ -64,8 +64,6 @@ extern usb_desc cdc_desc;
 extern usb_class_core cdc_class;
 
 /* function declarations */
-/* check CDC ACM is ready for data transfer */
-uint8_t cdc_acm_check_ready(usb_dev* udev);
 /* send CDC ACM data */
 void cdc_acm_data_send(usb_dev* udev);
 /* receive CDC ACM data */

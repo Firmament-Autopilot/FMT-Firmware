@@ -22,10 +22,6 @@
 #include "cdc_acm_core.h"
 #include "drv_usbd_int.h"
 
-#ifndef USE_USB_FS
-    #define USE_USB_FS
-#endif
-
 static struct usbd_cdc_dev usbd_dev;
 usb_core_driver cdc_acm;
 
@@ -123,10 +119,8 @@ void drv_usbd_cdc_receive(uint8_t* buffer, uint32_t size)
     }
 
     (void)ringbuffer_put(usbd_dev.rx_rb, buffer, size);
-    hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_RX);
 
-    /* prepare out endpoint to receive next packet */
-    cdc_acm_data_receive(&cdc_acm);
+    hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_RX);
 }
 
 void drv_usbd_cdc_transmist_complete(uint8_t* buffer, uint32_t size)
