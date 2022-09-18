@@ -208,8 +208,7 @@ void cdc_acm_data_send(usb_dev* udev)
     usb_cdc_handler* cdc = (usb_cdc_handler*)udev->dev.class_data[CDC_COM_INTERFACE];
 
     if (0U != cdc->tx_length) {
-        // cdc->packet_sent = 0U;
-
+        
         usbd_ep_send(udev, CDC_DATA_IN_EP, (uint8_t*)(cdc->tx_buffer), cdc->tx_length);
 
         cdc->tx_length = 0U;

@@ -38,25 +38,15 @@ OF SUCH DAMAGE.
 #include "usb_cdc.h"
 #include "usbd_enum.h"
 
-// #define USB_CDC_RX_LEN 64
-
 #define USB_TX_DATA_SIZE 2048
-#define USB_RX_DATA_SIZE 2048
+#define USB_RX_DATA_SIZE USB_CDC_DATA_PACKET_SIZE
 
 typedef struct {
-    // uint8_t data[USB_CDC_RX_LEN];
     uint8_t tx_buffer[USB_TX_DATA_SIZE];
     uint8_t rx_buffer[USB_RX_DATA_SIZE];
     uint8_t cmd[USB_CDC_CMD_PACKET_SIZE];
-
-    // uint8_t packet_sent;
-    // uint8_t packet_receive;
-
     uint32_t tx_length;
     uint32_t rx_length;
-
-    // uint32_t receive_length;
-
     acm_line line_coding;
 } usb_cdc_handler;
 
