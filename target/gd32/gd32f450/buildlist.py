@@ -72,21 +72,19 @@ MODULES_CPPPATH = [
 ]
 
 TASKS = [
-    # 'simple/*.c',
     'comm/*.c',
-    # 'logger/*.c',
-    # 'fmtio/*.c',
-    # 'status/*.c',
-    # 'vehicle/multicopter/*.c',
+    'logger/*.c',
+    'status/*.c',
+    'vehicle/multicopter/*.c',
 ]
 
 TASKS_CPPPATH = []
 
 MODELS = [
-    # 'plant/multicopter',
-    'ins/template_ins',
-    'fms/template_fms',
-    'control/template_controller',
+    'plant/multicopter',
+    'ins/base_ins',
+    'fms/base_fms',
+    'control/base_controller',
 ]
 
 LIBS = [
