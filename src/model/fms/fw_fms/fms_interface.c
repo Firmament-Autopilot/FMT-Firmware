@@ -48,10 +48,11 @@ static param_t __param_list[] = {
     PARAM_FLOAT(YAW_P, 2.5),
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6),
-    PARAM_FLOAT(L1, 20.0),
+    PARAM_FLOAT(L1, 15.0),
     PARAM_FLOAT(CRUISE_SPEED, 13.0),
     PARAM_FLOAT(TAKEOFF_H, 1.5),
-    PARAM_FLOAT(ACCEPT_R, 0.5),
+    PARAM_FLOAT(ACCEPT_R, 15),
+    PARAM_FLOAT(LOITER_R, 50),
 
     PARAM_FLOAT(Y_P, 0.95),
     PARAM_FLOAT(ACC_Y_LIM, 5),
@@ -237,6 +238,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_H), &FMS_PARAM.TAKEOFF_H));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOITER_R), &FMS_PARAM.LOITER_R));
 
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, Y_P), &FMS_PARAM.Y_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC_Y_LIM), &FMS_PARAM.ACC_Y_LIM));

@@ -33,7 +33,7 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 static param_t __param_list[] = {
     PARAM_FLOAT(ROLL_P, 7),
     PARAM_FLOAT(PITCH_P, 7),
-    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 3),
+    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 4),
     PARAM_FLOAT(ROLL_RATE_P, 0.1),
     PARAM_FLOAT(PITCH_RATE_P, 0.2),
     PARAM_FLOAT(YAW_RATE_P, 0.15),

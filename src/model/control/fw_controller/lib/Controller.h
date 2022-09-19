@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1058
+ * Model version                  : 1.1060
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug 15 13:51:34 2022
+ * C/C++ source code generated on : Mon Sep 19 20:17:32 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -96,7 +96,6 @@ extern const ConstB_Controller_T Controller_ConstB;/* constant block i/o */
  */
 extern struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
-                                                    *   '<S5>/Saturation'
                                                     *   '<S7>/Gain'
                                                     *   '<S7>/Gain1'
                                                     *   '<S7>/balabnce_ratio2'
@@ -107,6 +106,7 @@ extern struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S7>/ucmd2thor'
                                                     *   '<S7>/wcmd2pitch'
                                                     *   '<S7>/wcmd2thor'
+                                                    *   '<S8>/Saturation'
                                                     *   '<S10>/FF'
                                                     *   '<S10>/FF_limit'
                                                     *   '<S10>/PI_limit'
@@ -118,6 +118,7 @@ extern struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S43>/Constant7'
                                                     *   '<S14>/trim_speed'
                                                     *   '<S15>/trim_speed'
+                                                    *   '<S20>/Saturation'
                                                     *   '<S33>/Constant'
                                                     *   '<S34>/Constant'
                                                     *   '<S36>/Gain'
