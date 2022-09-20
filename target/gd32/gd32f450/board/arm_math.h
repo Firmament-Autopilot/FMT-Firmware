@@ -7,7 +7,7 @@
 // #define arm_cos_f32 cos
 // #define arm_sin_f32 sin
 
-#define arm_cos_f32 
-#define arm_sin_f32 
+// #define arm_cos_f32 
+// #define arm_sin_f32 
 
 #endif

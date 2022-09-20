@@ -36,19 +36,11 @@
 
 #include "module/syscmd/optparse.h"
 
-static uint8_t tx_buffer[] = "Test DMA Usart!\r\n";
+// static uint8_t tx_buffer[] = "Test DMA Usart!\r\n";
 
 int cmd_test(int argc, char** argv)
 {
-    rt_device_t dev = rt_device_find("serial1");
-
-    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
-
-    for (int i = 0; i < 20; i++) {
-        rt_device_write(dev, 0, tx_buffer, sizeof(tx_buffer));
-    }
-
-    rt_device_close(dev);
+    printf("cos:%f sin:%f\n", arm_cos_f32(PI/6), arm_sin_f32(PI/6));
 
     return 0;
 }

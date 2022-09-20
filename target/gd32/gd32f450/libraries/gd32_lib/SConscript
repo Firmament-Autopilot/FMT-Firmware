@@ -15,6 +15,12 @@ if rtconfig.CROSS_TOOL == 'gcc':
 
 src += Glob('CMSIS/GD/GD32F4xx/Source/system_gd32f4xx.c')
 
+#add for DSP library
+src += Glob('CMSIS/DSP_Lib/Source/FastMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP_Lib/Source/BasicMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP_Lib/Source/MatrixFunctions/*f32.c')
+src += Glob('CMSIS/DSP_Lib/Source/SupportFunctions/*f32.c')
+
 path = [cwd + '/GD32F4xx_standard_peripheral/Include', 
     cwd + '/CMSIS',
     cwd + '/CMSIS/GD/GD32F4xx/Include']
