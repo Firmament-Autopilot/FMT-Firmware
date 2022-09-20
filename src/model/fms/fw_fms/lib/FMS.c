@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1935
+ * Model version                  : 1.1936
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 19 20:11:46 2022
+ * C/C++ source code generated on : Mon Sep 19 22:34:32 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -109,17 +109,17 @@ struct_E1qbCEGvnS3XtzDqfoNznD FMS_PARAM = {
   1.0F,
   2.5F,
   2.5F,
-  1.04719806F,
-  0.7F,
+  1.04719758F,
+  0.52359879F,
   15.0F,
   13.0F,
   1.5F,
   15.0F,
   50.0F,
   0.95F,
-  8.0F,
-  0.7F,
-  0.7F,
+  5.0F,
+  0.785398185F,
+  0.785398185F,
   30.0F,
 
   { 1000.0F, 1000.0F, 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F,
@@ -5830,29 +5830,58 @@ void FMS_step(void)
         /* BusAssignment: '<S141>/Bus Assignment' incorporates:
          *  BusAssignment: '<S18>/Bus Assignment'
          *  Constant: '<S141>/Constant3'
-         *  Constant: '<S147>/L1'
-         *  Delay: '<S146>/Delay'
-         *  Gain: '<S146>/Gain2'
-         *  Gain: '<S148>/Gain'
-         *  Gain: '<S155>/Gain'
-         *  Inport: '<Root>/INS_Out'
-         *  Math: '<S155>/Square'
          *  Outport: '<Root>/FMS_Out'
-         *  Product: '<S155>/Divide'
-         *  Product: '<S155>/Multiply1'
-         *  SignalConversion: '<S16>/Signal Copy1'
-         *  Sqrt: '<S157>/Sqrt'
-         *  Sum: '<S146>/Sum'
-         *  Trigonometry: '<S155>/Sin'
          */
         FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion_g;
         FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_i;
         FMS_Y.FMS_Out.ctrl_mode = FMS_ConstB.DataTypeConversion2_j;
         FMS_Y.FMS_Out.u_cmd = 15.0F;
-        FMS_Y.FMS_Out.ay_cmd = 2.0F * (rtb_Subtract3_idx_1 * rtb_Subtract3_idx_1)
+
+        /* Product: '<S155>/Divide' incorporates:
+         *  Constant: '<S147>/L1'
+         *  Gain: '<S155>/Gain'
+         *  Math: '<S155>/Square'
+         *  Product: '<S155>/Multiply1'
+         *  Sqrt: '<S157>/Sqrt'
+         *  Trigonometry: '<S155>/Sin'
+         */
+        rtb_Subtract3_idx_0 = 2.0F * (rtb_Subtract3_idx_1 * rtb_Subtract3_idx_1)
           * arm_sin_f32(rtb_Subtract3_idx_0) / FMS_PARAM.L1;
 
+        /* Saturate: '<S150>/Saturation' */
+        if (rtb_Subtract3_idx_0 > 9.81F) {
+          /* BusAssignment: '<S141>/Bus Assignment' incorporates:
+           *  BusAssignment: '<S18>/Bus Assignment'
+           *  Outport: '<Root>/FMS_Out'
+           */
+          FMS_Y.FMS_Out.ay_cmd = 9.81F;
+        } else if (rtb_Subtract3_idx_0 < -9.81F) {
+          /* BusAssignment: '<S141>/Bus Assignment' incorporates:
+           *  BusAssignment: '<S18>/Bus Assignment'
+           *  Outport: '<Root>/FMS_Out'
+           */
+          FMS_Y.FMS_Out.ay_cmd = -9.81F;
+        } else {
+          /* BusAssignment: '<S141>/Bus Assignment' incorporates:
+           *  BusAssignment: '<S18>/Bus Assignment'
+           *  Outport: '<Root>/FMS_Out'
+           */
+          FMS_Y.FMS_Out.ay_cmd = rtb_Subtract3_idx_0;
+        }
+
+        /* End of Saturate: '<S150>/Saturation' */
+
         /* Outputs for Atomic SubSystem: '<S2>/FMS_Input' */
+        /* BusAssignment: '<S141>/Bus Assignment' incorporates:
+         *  BusAssignment: '<S18>/Bus Assignment'
+         *  Delay: '<S146>/Delay'
+         *  Gain: '<S146>/Gain2'
+         *  Gain: '<S148>/Gain'
+         *  Inport: '<Root>/INS_Out'
+         *  Outport: '<Root>/FMS_Out'
+         *  SignalConversion: '<S16>/Signal Copy1'
+         *  Sum: '<S146>/Sum'
+         */
         FMS_Y.FMS_Out.w_cmd = (FMS_DW.Delay_DSTATE - (-FMS_U.INS_Out.h_R)) *
           FMS_PARAM.Z_P;
 
