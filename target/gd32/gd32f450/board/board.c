@@ -237,6 +237,8 @@ void SystemClock_Config(void)
 
 static void NVIC_Configuration(void)
 {
+    extern const int _stext;
+
     /* NVIC Configuration */
 #define NVIC_VTOR_MASK 0x3FFFFF80
 #ifdef VECT_TAB_RAM
@@ -244,7 +246,7 @@ static void NVIC_Configuration(void)
     SCB->VTOR = (0x10000000 & NVIC_VTOR_MASK);
 #else /* VECT_TAB_FLASH  */
     /* Set the Vector Table base location at 0x08000000 */
-    SCB->VTOR = (0x08000000 & NVIC_VTOR_MASK);
+    SCB->VTOR = ((uint32_t)&_stext & NVIC_VTOR_MASK);
 #endif
 }
 
@@ -291,8 +293,6 @@ void bsp_early_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
-
-    printf("FPU:%d", __FPU_USED);
 }
 
 /* this function will be called after rtos start, which is in thread context */
