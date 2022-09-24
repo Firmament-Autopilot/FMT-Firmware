@@ -36,8 +36,12 @@
 
 #include "module/syscmd/optparse.h"
 
+// static uint8_t tx_buffer[] = "Test DMA Usart!\r\n";
+
 int cmd_test(int argc, char** argv)
 {
+    printf("cos:%f sin:%f\n", arm_cos_f32(PI/6), arm_sin_f32(PI/6));
+
     return 0;
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);

@@ -24,9 +24,9 @@
 // #define DBG_ENABLE
 
 #ifdef DBG_ENABLE
-    #define DBG(...) ulog_d(TAG, __VA_ARGS__)
+    #define FTP_DBG(...) ulog_d(TAG, __VA_ARGS__)
 #else
-    #define DBG(...)
+    #define FTP_DBG(...)
 #endif
 
 #define MAX_DIR_PATH_LEN 268
@@ -54,10 +54,10 @@ static uint8_t _request_list(FTP_Msg_Payload* payload)
     uint8_t error = kErrNone;
     uint16_t size = 0;
 
-    DBG("list %s, offset:%d", payload->data, payload->offset);
+    FTP_DBG("list %s, offset:%d", payload->data, payload->offset);
 
     if (payload->size > MAX_DIR_PATH_LEN) {
-        DBG("path of root dir is too long:%d\n", payload->size);
+        FTP_DBG("path of root dir is too long:%d\n", payload->size);
         return kErrEOF;
     }
 
@@ -68,7 +68,7 @@ static uint8_t _request_list(FTP_Msg_Payload* payload)
     dir = opendir(cur_path);
 
     if (dir == NULL) {
-        DBG("dir open fail");
+        FTP_DBG("dir open fail");
         return kErrEOF;
     }
 
@@ -153,7 +153,7 @@ static uint8_t _request_list(FTP_Msg_Payload* payload)
     payload->size = size;
     closedir(dir);
 
-    DBG("err code:%d, size:%d", error, payload->size);
+    FTP_DBG("err code:%d, size:%d", error, payload->size);
 
     return error;
 }
@@ -163,7 +163,7 @@ static uint8_t _request_open(FTP_Msg_Payload* payload, int oflag)
     char file_name[MAX_DIR_PATH_LEN + 1];
     struct stat fno;
 
-    DBG("open file:%s, oflag:%x", payload->data, oflag);
+    FTP_DBG("open file:%s, oflag:%x", payload->data, oflag);
 
     if (_stream_session.fd >= 0 && _stream_session.complete) {
         close(_stream_session.fd);
@@ -172,7 +172,7 @@ static uint8_t _request_open(FTP_Msg_Payload* payload, int oflag)
     }
 
     if (_stream_session.fd >= 0) {
-        DBG("no available session\n");
+        FTP_DBG("no available session\n");
         return kErrNoSessionsAvailable;
     }
 
@@ -180,7 +180,7 @@ static uint8_t _request_open(FTP_Msg_Payload* payload, int oflag)
     file_name[payload->size] = '\0';
 
     if (stat(file_name, &fno) < 0 && !(oflag & O_CREAT)) {
-        DBG("no file existed\n");
+        FTP_DBG("no file existed\n");
         _errno = rt_get_errno();
         return kErrFailErrno;
     }
@@ -189,7 +189,7 @@ static uint8_t _request_open(FTP_Msg_Payload* payload, int oflag)
 
     if (_fd < 0) {
         _errno = rt_get_errno();
-        DBG("open fail:%d", _errno);
+        FTP_DBG("open fail:%d", _errno);
         return kErrFailErrno;
     }
 
@@ -200,7 +200,7 @@ static uint8_t _request_open(FTP_Msg_Payload* payload, int oflag)
     _stream_session.fd = _fd;
     _stream_session.file_size = fno.st_size;
 
-    DBG("open success, fd:%d", _stream_session.fd);
+    FTP_DBG("open success, fd:%d", _stream_session.fd);
 
     return kErrNone;
 }
@@ -208,7 +208,7 @@ static uint8_t _request_open(FTP_Msg_Payload* payload, int oflag)
 static uint8_t _request_burst(FTP_Msg_Payload* payload, uint8_t target_system, uint8_t target_component)
 {
     if (payload->session != 0 || _stream_session.fd < 0) {
-        DBG("no valid session:%d fd:%d\n", payload->session, _stream_session.fd);
+        FTP_DBG("no valid session:%d fd:%d\n", payload->session, _stream_session.fd);
         return kErrInvalidSession;
     }
 
@@ -220,7 +220,7 @@ static uint8_t _request_burst(FTP_Msg_Payload* payload, uint8_t target_system, u
 
     mavproxy_cmd_set(MAVCMD_STREAM_SESSION, &_stream_session);
 
-    DBG("burst read, session seq:%d offset:%d sys_id:%d comp_id:%d", _stream_session.stream_seq_number, _stream_session.stream_offset, _stream_session.stream_target_system_id, _stream_session.stream_target_component_id);
+    FTP_DBG("burst read, session seq:%d offset:%d sys_id:%d comp_id:%d", _stream_session.stream_seq_number, _stream_session.stream_offset, _stream_session.stream_target_system_id, _stream_session.stream_target_component_id);
 
     return kErrNone;
 }
@@ -231,16 +231,16 @@ static uint8_t _request_read(FTP_Msg_Payload* payload)
     // UINT br;
     int br;
 
-    DBG("read %s, offset:%d fd:%d", payload->data, payload->offset, _stream_session.fd);
+    FTP_DBG("read %s, offset:%d fd:%d", payload->data, payload->offset, _stream_session.fd);
 
     if (payload->session != 0 || _stream_session.fd < 0) {
-        DBG("no valid session:%d fd:%d", payload->session, _stream_session.fd);
+        FTP_DBG("no valid session:%d fd:%d", payload->session, _stream_session.fd);
         return kErrInvalidSession;
     }
 
     if (payload->offset >= _stream_session.file_size) {
         /* request past EOF */
-        DBG("request past EOF offset:%d file size:%d", payload->offset, _stream_session.file_size);
+        FTP_DBG("request past EOF offset:%d file size:%d", payload->offset, _stream_session.file_size);
         return kErrEOF;
     }
 
@@ -266,7 +266,7 @@ static uint8_t _request_read(FTP_Msg_Payload* payload)
         return kErrEOF;
     }
 
-    DBG("read complete");
+    FTP_DBG("read complete");
     return kErrNone;
 }
 
@@ -349,7 +349,7 @@ fmt_err_t ftp_process_request(uint8_t* payload, uint8_t target_system, uint8_t t
     uint8_t err_code;
     FTP_Msg_Payload* ftp_payload = (FTP_Msg_Payload*)payload;
 
-    DBG("session:%d opcode:%d seq:%d size:%d", ftp_payload->session, ftp_payload->opcode, ftp_payload->seq_number, ftp_payload->size);
+    FTP_DBG("session:%d opcode:%d seq:%d size:%d", ftp_payload->session, ftp_payload->opcode, ftp_payload->seq_number, ftp_payload->size);
 
     switch (ftp_payload->opcode) {
     case kCmdTerminateSession: {
@@ -428,10 +428,10 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
     mavlink_system_t system;
     int br;
 
-    DBG("send stream, seq:%d offset:%d fd:%d", stream_session->stream_seq_number, stream_session->stream_offset, stream_session->fd);
+    FTP_DBG("send stream, seq:%d offset:%d fd:%d", stream_session->stream_seq_number, stream_session->stream_offset, stream_session->fd);
 
     if (stream_session->fd < 0) {
-        DBG("no valid session");
+        FTP_DBG("no valid session");
         return FMT_ERROR;
     }
 
@@ -452,7 +452,7 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
 
         err_code = kErrEOF;
 
-        DBG("stream session complete");
+        FTP_DBG("stream session complete");
         goto Out;
     }
 
@@ -469,7 +469,7 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
         err_no = rt_get_errno();
         err_code = kErrFailErrno;
 
-        DBG("seek fail:%d, offset:%d cur_offset:%d", err_no, ftp_msg_t->offset, off);
+        FTP_DBG("seek fail:%d, offset:%d cur_offset:%d", err_no, ftp_msg_t->offset, off);
         goto Out;
     }
 
@@ -488,7 +488,7 @@ fmt_err_t ftp_stream_send(StreamSession* stream_session)
         err_code = kErrFailErrno;
         err_no = rt_get_errno();
 
-        DBG("read fail:%d, len:%d br:%d", err_no, len_to_read, br);
+        FTP_DBG("read fail:%d, len:%d br:%d", err_no, len_to_read, br);
         goto Out;
     }
 
@@ -504,19 +504,19 @@ Out:
             ftp_msg_t->burst_complete = 1;
         }
 
-        DBG("RspAck, size:%d offset:%d complete:%d", ftp_msg_t->size, stream_session->stream_offset, ftp_msg_t->burst_complete);
+        FTP_DBG("RspAck, size:%d offset:%d complete:%d", ftp_msg_t->size, stream_session->stream_offset, ftp_msg_t->burst_complete);
     } else {
         ftp_msg_t->opcode = kRspNak;
         ftp_msg_t->size = 1;
         ftp_msg_t->data[0] = err_code;
 
-        DBG("err code:%d", ftp_msg_t->data[0]);
+        FTP_DBG("err code:%d", ftp_msg_t->data[0]);
 
         if (err_code == kErrFailErrno) {
             ftp_msg_t->size = 2;
             ftp_msg_t->data[1] = err_no;
 
-            DBG("err no:%d", ftp_msg_t->data[1]);
+            FTP_DBG("err no:%d", ftp_msg_t->data[1]);
         }
     }
 
