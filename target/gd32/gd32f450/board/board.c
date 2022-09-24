@@ -179,40 +179,6 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 }
 
 /**
- * @brief Enable on-board device power supply
- * 
- */
-static void EnablePower(void)
-{
-}
-
-/*
-* When enabling the D-cache there is cache coherency issue. 
-* This matter crops up when multiple masters (CPU, DMAs...) 
-* share the memory. If the CPU writes something to an area 
-* that has a write-back cache attribute (example SRAM), the 
-* write result is not seen on the SRAM as the access is 
-* buffered, and then if the DMA reads the same memory area 
-* to perform a data transfer, the values read do not match 
-* the intended data. The issue occurs for DMA read as well.
-* Currently not all drivers can ensure the data coherency 
-* when D-Cache enabled, so disable it by default.
-*/
-/**
-  * @brief  CPU L1-Cache enable.
-  * @param  None
-  * @retval None
-  */
-static void CPU_CACHE_Enable(void)
-{
-    /* Enable I-Cache */
-    // SCB_EnableICache();
-
-    /* Enable D-Cache */
-    // SCB_EnableDCache();
-}
-
-/**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
@@ -225,14 +191,6 @@ void Error_Handler(void)
     while (1) {
     }
     /* USER CODE END Error_Handler_Debug */
-}
-
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
 }
 
 static void NVIC_Configuration(void)
@@ -253,19 +211,10 @@ static void NVIC_Configuration(void)
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
-    /* Enable CPU L1-cache */
-    // CPU_CACHE_Enable();
-
     NVIC_Configuration();
 
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
-
-    /* HAL library initialization */
-    // HAL_Init();
-
-    /* System clock initialization */
-    // SystemClock_Config();
 
     /* usart driver init */
     RT_CHECK(drv_usart_init());
