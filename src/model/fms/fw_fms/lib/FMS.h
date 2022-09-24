@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1936
+ * Model version                  : 1.1949
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 19 22:34:32 2022
+ * C/C++ source code generated on : Fri Sep 23 21:23:23 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -91,7 +91,6 @@ typedef struct {
   real32_T start_vel_DSTATE[2];        /* '<S79>/start_vel' */
   real32_T start_wp_DSTATE[2];         /* '<S79>/start_wp' */
   real32_T start_vel_DSTATE_g[2];      /* '<S151>/start_vel' */
-  real32_T start_wp_DSTATE_d[2];       /* '<S151>/start_wp' */
   real32_T Delay_DSTATE;               /* '<S146>/Delay' */
   real32_T Delay_DSTATE_e[2];          /* '<S191>/Delay' */
   real32_T l1_heading;                 /* '<S232>/Discrete-Time Integrator' */
@@ -169,7 +168,6 @@ typedef struct {
   uint8_T icLoad;                      /* '<S79>/start_vel' */
   uint8_T icLoad_c;                    /* '<S79>/start_wp' */
   uint8_T icLoad_n;                    /* '<S151>/start_vel' */
-  uint8_T icLoad_m;                    /* '<S151>/start_wp' */
   uint8_T icLoad_b;                    /* '<S146>/Delay' */
   uint8_T icLoad_o;                    /* '<S191>/Delay' */
   uint8_T icLoad_cg;                   /* '<S171>/Delay' */
