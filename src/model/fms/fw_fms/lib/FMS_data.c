@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1949
+ * Model version                  : 1.1959
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Sep 23 21:23:23 2022
+ * C/C++ source code generated on : Wed Sep 28 12:43:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,40 +18,15 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  1.9966471893352524,                  /* '<S249>/Sum' */
-  0.0066943799901413165,               /* '<S249>/Multiply3' */
-  0.99330562000985867,                 /* '<S249>/Sum4' */
+  1.9966471893352524,                  /* '<S204>/Sum' */
+  0.0066943799901413165,               /* '<S204>/Multiply3' */
+  0.99330562000985867,                 /* '<S204>/Sum4' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S99>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S235>/Vector Concatenate3' */
-
-  { 0.0F, 1.0F },                      /* synthesized block */
-
-  { 0.0F, 1.0F },                      /* '<S185>/Math Function' */
-  1.0F,                                /* '<S185>/Sum of Elements' */
-  1.0F,                                /* '<S185>/Math Function1' */
-
-  { 0.0F, 0.0F },                      /* '<S185>/Product' */
-
-  { 0.0F, 1.0F, 1.0F },                /* '<S185>/Switch' */
-
-  { 0.0F, 1.0F },                      /* '<S185>/Divide' */
-  0.616850317F,                        /* '<S181>/Square' */
-  0.645964146F,                        /* '<S181>/Multiply' */
-  -1.04719758F,                        /* '<S181>/Gain4' */
-  0.00250000018F,                      /* '<S216>/Square' */
-  0.14709F,                            /* '<S216>/Multiply' */
-  -58.836F,                            /* '<S216>/Gain4' */
-
-  { 0.0F, 0.0F, 1.0F },                /* '<S212>/Vector Concatenate3' */
-  0.00250000018F,                      /* '<S203>/Square' */
-  0.196120009F,                        /* '<S203>/Multiply' */
-  -78.448F,                            /* '<S203>/Gain4' */
-
   { 0.0F, 0.0F, 1.0F },                /* '<S168>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S243>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S198>/Vector Concatenate3' */
   3U,                                  /* '<S23>/Data Type Conversion' */
   12U,                                 /* '<S23>/Data Type Conversion1' */
   1U,                                  /* '<S23>/Data Type Conversion2' */

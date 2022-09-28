@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1060
+ * Model version                  : 1.1064
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 19 20:17:32 2022
+ * C/C++ source code generated on : Wed Sep 28 12:34:17 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM = {
+struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
   7.0F,
   7.0F,
   0.785398185F,
@@ -46,6 +46,7 @@ struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM = {
   -1.0F,
   -1.0F,
   1.0F,
+  0.052359879F,
   0.1F,
   0.1F,
   0.1F,
@@ -87,7 +88,6 @@ struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM = {
                                         *   '<S43>/Constant7'
                                         *   '<S14>/trim_speed'
                                         *   '<S15>/trim_speed'
-                                        *   '<S20>/Saturation'
                                         *   '<S33>/Constant'
                                         *   '<S34>/Constant'
                                         *   '<S36>/Gain'
@@ -102,6 +102,8 @@ struct_qui5HcVoaluYsjjPe9smBE CONTROL_PARAM = {
                                         *   '<S17>/gain1'
                                         *   '<S17>/gain2'
                                         *   '<S17>/gain3'
+                                        *   '<S21>/Pitch Offset'
+                                        *   '<S21>/Saturation'
                                         *   '<S22>/Constant1'
                                         *   '<S22>/Constant2'
                                         */
@@ -110,7 +112,7 @@ struct_ny3PY9hontv4J5WqwlFzJB CONTROL_EXPORT = {
   2U,
 
   { 70, 87, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32, 118, 48, 46,
-    48, 46, 49, 0 }
+    48, 46, 50, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S4>/Constant'
                                         */
@@ -484,7 +486,10 @@ void Controller_step(void)
 
   /* End of Switch: '<S20>/Switch1' */
 
-  /* Saturate: '<S20>/Saturation' */
+  /* Bias: '<S21>/Pitch Offset' */
+  rtb_Multiply4 += CONTROL_PARAM.FW_PITCH_OFFSET;
+
+  /* Saturate: '<S21>/Saturation' */
   if (rtb_Multiply4 > CONTROL_PARAM.ROLL_PITCH_CMD_LIM) {
     rtb_Multiply4 = CONTROL_PARAM.ROLL_PITCH_CMD_LIM;
   } else {
@@ -515,7 +520,7 @@ void Controller_step(void)
     (Controller_U.FMS_Out.theta_cmd) * (9.81F / Controller_U.INS_Out.airspeed) +
     Controller_U.FMS_Out.psi_rate_cmd;
 
-  /* Saturate: '<S20>/Saturation' */
+  /* Saturate: '<S21>/Saturation' */
   if (rtb_Cos1 > CONTROL_PARAM.ROLL_PITCH_CMD_LIM) {
     rtb_Cos1 = CONTROL_PARAM.ROLL_PITCH_CMD_LIM;
   } else {
