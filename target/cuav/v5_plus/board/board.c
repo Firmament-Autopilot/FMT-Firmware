@@ -434,10 +434,10 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
 
-    if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
+    /* airspeed sensor is only used in fixwing vehicle type */
+    if (strcmp(VEHICLE_TYPE, "Fixwing") == 0) {
+        FMT_CHECK(drv_ms4525_init("i2c2_dev1", "airspeed"));
         FMT_CHECK(register_sensor_airspeed("airspeed"));
-    } else {
-        printf("ms4525 driver init fail!\n");
     }
 #endif
 
