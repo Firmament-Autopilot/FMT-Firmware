@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1959
+ * Model version                  : 1.1963
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Sep 28 12:43:05 2022
+ * C/C++ source code generated on : Fri Oct  7 17:22:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -28,11 +28,11 @@ extern int32_T FMS_pop(Queue_FMS_Cmd *q, Msg_FMS_Cmd *elementOut);
 extern void FMS_initQueue(Queue_FMS_Cmd *q, QueuePolicy_T policy, int32_T
   capacity, Msg_FMS_Cmd *qPool);
 extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
-  rtu_P3_b, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
+  rtu_P3_i, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
 extern void FMS_OutRegionRegWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
-  real32_T rtu_P3, real32_T rtu_P3_g, real32_T rty_P[2]);
+  real32_T rtu_P3, real32_T rtu_P3_l, real32_T rty_P[2]);
 extern void FMS_SearchL1RefWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
-  real32_T rtu_P3, real32_T rtu_P3_k, real32_T rtu_L1, real32_T rty_P[2],
+  real32_T rtu_P3, real32_T rtu_P3_f, real32_T rtu_L1, real32_T rty_P[2],
   real32_T *rty_u);
 extern void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T
   *localC);
@@ -46,6 +46,9 @@ extern void FMS_MotionStatus_Init(DW_MotionStatus_FMS_T *localDW);
 extern void FMS_MotionStatus_Reset(DW_MotionStatus_FMS_T *localDW);
 extern void FMS_MotionStatus(boolean_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionStatus_FMS_T *localDW);
+extern void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const
+  real_T rtu_llo[2], real_T rtu_href, real_T rtu_psio, real32_T rty_pos[3],
+  const ConstB_VehicleArmAutoMissionL_T *localC);
 
 #endif                                 /* RTW_HEADER_FMS_private_h_ */
 
