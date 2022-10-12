@@ -129,6 +129,7 @@ TASK_EXPORT __fmt_task_desc = {
     .init = task_vehicle_init,
     .entry = task_vehicle_entry,
     .priority = VEHICLE_THREAD_PRIORITY,
+    .auto_start = true,
     .stack_size = 10240,
     .param = NULL,
     .dependency = NULL

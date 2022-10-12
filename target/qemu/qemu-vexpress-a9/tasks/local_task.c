@@ -36,6 +36,7 @@ TASK_EXPORT __fmt_task_desc = {
     .init = task_local_init,
     .entry = task_local_entry,
     .priority = 25,
+    .auto_start = true,
     .stack_size = 1024,
     .param = NULL,
     .dependency = NULL

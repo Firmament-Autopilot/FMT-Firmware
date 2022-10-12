@@ -98,7 +98,7 @@ static void banner_item(const char* name, const char* content, char pad, uint32_
     console_printf("%s\n", content);
 }
 
-#define ITEM_LENGTH 42
+#define BANNER_ITEM_LEN 42
 static void bsp_show_information(void)
 {
     char buffer[50];
@@ -110,18 +110,18 @@ static void bsp_show_information(void)
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
     sprintf(buffer, "FMT FW %s", FMT_VERSION);
-    banner_item("Firmware", buffer, '.', ITEM_LENGTH);
+    banner_item("Firmware", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    banner_item("Kernel", buffer, '.', ITEM_LENGTH);
+    banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    banner_item("RAM", buffer, '.', ITEM_LENGTH);
-    banner_item("Target", TARGET_NAME, '.', ITEM_LENGTH);
-    banner_item("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
-    banner_item("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
-    banner_item("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
-    banner_item("Control Model", control_model_info.info, '.', ITEM_LENGTH);
+    banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
+    banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", VEHICLE_TYPE, '.', BANNER_ITEM_LEN);
+    banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
 #ifdef FMT_USING_SIH
-    banner_item("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
+    banner_item("Plant Model", plant_model_info.info, '.', BANNER_ITEM_LEN);
 #endif
 
     console_println("Task Initialize:");
@@ -129,7 +129,7 @@ static void bsp_show_information(void)
     for (uint32_t i = 0; i < get_task_num(); i++) {
         sprintf(buffer, "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
-        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
 }
 
