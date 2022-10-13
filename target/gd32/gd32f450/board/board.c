@@ -40,6 +40,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
@@ -319,6 +320,9 @@ void bsp_post_initialize(void)
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
+
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
     /* init mission data */
     FMT_CHECK(mission_data_init());
