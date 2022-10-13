@@ -48,8 +48,8 @@ typedef struct fmt_task_desc* fmt_task_desc_t;
 
 #define TASK_EXPORT RT_USED static const struct fmt_task_desc SECTION("TaskTab")
 
-void task_init(void);
-void task_start(void);
+void task_manager_init(void);
+void task_manager_start(void);
 uint8_t get_task_status(const char* name);
 int32_t get_task_id(const char* name);
 uint32_t get_task_num(void);

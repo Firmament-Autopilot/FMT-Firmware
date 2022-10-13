@@ -82,7 +82,7 @@ int32_t get_task_id(const char* name)
  * @brief Initialize tasks
  *
  */
-void task_init(void)
+void task_manager_init(void)
 {
     extern const int __fmt_task_start;
     extern const int __fmt_task_end;
@@ -161,18 +161,16 @@ void task_init(void)
 }
 
 /**
- * @brief Start all tasks
+ * @brief Start all tasks with auto_start = true
  *
  */
-void task_start(void)
+void task_manager_start(void)
 {
     for (uint32_t i = 0; i < task_num; i++) {
-        if (task_status[i] != TASK_READY || task_table[i].auto_start == false)
-            continue;
-
-        RT_CHECK(rt_thread_startup(task_tid[i]));
-
-        task_status[i] = TASK_RUNNING;
+        if (task_status[i] == TASK_READY && task_table[i].auto_start == true) {
+            RT_CHECK(rt_thread_startup(task_tid[i]));
+            task_status[i] = TASK_RUNNING;
+        }
     }
 }
 
