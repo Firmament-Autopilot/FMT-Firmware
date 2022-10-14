@@ -32,7 +32,8 @@ static uint16_t cur_seq;
 static McnNode_t fms_out_nod;
 static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
-static uint16_t mission_data_size = sizeof(data_bus.seq) / sizeof(data_bus.seq[0]);
+static uint8_t loop_mission;
+const static uint16_t mission_data_size = sizeof(data_bus.seq) / sizeof(data_bus.seq[0]);
 
 static int mission_data_echo(void* param)
 {
@@ -133,6 +134,17 @@ static int mission_data_echo(void* param)
     return 0;
 }
 
+inline static uint16_t increase_seq(uint16_t seq)
+{
+    seq++;
+
+    if (loop_mission) {
+        seq = seq % mission_count;
+    }
+
+    return seq;
+}
+
 uint16_t get_mission_count(void)
 {
     return mission_count;
@@ -153,9 +165,30 @@ fmt_err_t mission_reset(void)
     cur_seq = 0;
 
     data_bus.timestamp = systime_now_ms();
-    data_bus.valid_items = (mission_count > mission_data_size) ? mission_data_size : mission_count;
+
+    if (loop_mission) {
+        data_bus.valid_items = (mission_count > 0) ? mission_data_size : 0;
+    } else {
+        data_bus.valid_items = (mission_count > mission_data_size) ? mission_data_size : mission_count;
+    }
 
     for (uint16_t i = 0; i < data_bus.valid_items; i++) {
+
+        /* skip some command which is not waypoint */
+        if (loop_mission) {
+            /* skip some command which is not waypoint */
+            if (loop_mission) {
+                while (mission_data[cur_seq].command != MAV_CMD_NAV_WAYPOINT) {
+                    if (mission_data[cur_seq].command == MAV_CMD_NAV_TAKEOFF && i == 0) {
+                        /* allow the first takeoff command */
+                        break;
+                    }
+                    /* increase current sequence */
+                    cur_seq = increase_seq(cur_seq);
+                }
+            }
+        }
+
         data_bus.seq[i] = mission_data[cur_seq].seq;
         data_bus.command[i] = mission_data[cur_seq].command;
         data_bus.frame[i] = mission_data[cur_seq].frame;
@@ -169,8 +202,9 @@ fmt_err_t mission_reset(void)
         data_bus.x[i] = mission_data[cur_seq].x;
         data_bus.y[i] = mission_data[cur_seq].y;
         data_bus.z[i] = mission_data[cur_seq].z;
-        /* increment current sequence */
-        cur_seq += 1;
+
+        /* increase current sequence */
+        cur_seq = increase_seq(cur_seq);
     }
     /* publish the initial mission data */
     FMT_TRY(mcn_publish(MCN_HUB(mission_data), &data_bus));
@@ -250,6 +284,7 @@ void dump_mission_data(void)
 
 fmt_err_t mission_data_collect(void)
 {
+    /* The default vehicle status is Disarm */
     static FMS_Out_Bus old_fms_out = { .status = VehicleStatus_Disarm };
 
     if (mcn_poll(fms_out_nod)) {
@@ -261,6 +296,7 @@ fmt_err_t mission_data_collect(void)
         if (fms_out.status != old_fms_out.status) {
             old_fms_out.status = fms_out.status;
             if (fms_out.status == VehicleStatus_Disarm) {
+                /* if the vehicle disarmed, reset mission */
                 mission_reset();
             }
         }
@@ -297,17 +333,26 @@ fmt_err_t mission_data_collect(void)
                         /* mission completed */
                         data_bus.valid_items = 0;
                     }
-                } else {
+                } else { /* data_bus.valid_items == mission_data_size */
                     /* add new mission item */
                     uint16_t num_to_add = fms_out.wp_consume;
                     uint16_t start = data_bus.valid_items - fms_out.wp_consume;
 
                     /* if there aren't enough data, only left data added */
-                    if (num_to_add > (mission_count - cur_seq)) {
+                    if (!loop_mission && num_to_add > (mission_count - cur_seq)) {
                         num_to_add = mission_count - cur_seq;
                     }
 
                     for (i = start; i < start + num_to_add; i++) {
+
+                        /* skip some command which is not waypoint */
+                        if (loop_mission) {
+                            while (mission_data[cur_seq].command != MAV_CMD_NAV_WAYPOINT) {
+                                /* increase current sequence */
+                                cur_seq = increase_seq(cur_seq);
+                            }
+                        }
+
                         data_bus.seq[i] = mission_data[cur_seq].seq;
                         data_bus.command[i] = mission_data[cur_seq].command;
                         data_bus.frame[i] = mission_data[cur_seq].frame;
@@ -321,8 +366,9 @@ fmt_err_t mission_data_collect(void)
                         data_bus.x[i] = mission_data[cur_seq].x;
                         data_bus.y[i] = mission_data[cur_seq].y;
                         data_bus.z[i] = mission_data[cur_seq].z;
-                        /* increment current sequence */
-                        cur_seq += 1;
+
+                        /* increase current sequence */
+                        cur_seq = increase_seq(cur_seq);
                     }
 
                     data_bus.valid_items = start + num_to_add;
@@ -355,6 +401,9 @@ fmt_err_t mission_data_init(void)
     if (gcs_cmd_nod == NULL) {
         return FMT_ERROR;
     }
+
+    /* loop_mission will only be updated when system reboot */
+    loop_mission = PARAM_GET_UINT8(SYSTEM, LOOP_MISSION);
 
     FMT_TRY(load_mission_data(MISSION_FILE));
     FMT_TRY(mission_reset());

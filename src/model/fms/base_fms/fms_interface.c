@@ -26,11 +26,10 @@
 // FMS input topic
 MCN_DECLARE(pilot_cmd);
 MCN_DECLARE(gcs_cmd);
+MCN_DECLARE(auto_cmd);
 MCN_DECLARE(mission_data);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(control_output);
-
-MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
 
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
@@ -77,6 +76,34 @@ static mlog_elem_t GCS_Cmd_Elems[] = {
 };
 MLOG_BUS_DEFINE(GCS_Cmd, GCS_Cmd_Elems);
 
+static mlog_elem_t Auto_Cmd_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(p_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(q_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(r_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(phi_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(theta_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(psi_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(psi_rate_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(x_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(y_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(z_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(lat_cmd, MLOG_INT32),
+    MLOG_ELEMENT(lon_cmd, MLOG_INT32),
+    MLOG_ELEMENT(alt_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(u_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(v_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(w_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(ax_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(ay_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(az_cmd, MLOG_FLOAT),
+    MLOG_ELEMENT(throttle_cmd, MLOG_UINT16),
+    MLOG_ELEMENT(frame, MLOG_UINT8),
+    MLOG_ELEMENT(reserved, MLOG_UINT8),
+    MLOG_ELEMENT(cmd_mask, MLOG_UINT32),
+};
+MLOG_BUS_DEFINE(Auto_Cmd, Auto_Cmd_Elems);
+
 static mlog_elem_t Mission_Data_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
     MLOG_ELEMENT(valid_items, MLOG_UINT16),
@@ -111,8 +138,9 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(ax_cmd, MLOG_FLOAT),
     MLOG_ELEMENT(ay_cmd, MLOG_FLOAT),
     MLOG_ELEMENT(az_cmd, MLOG_FLOAT),
-    MLOG_ELEMENT(throttle_cmd, MLOG_UINT32),
     MLOG_ELEMENT_VEC(actuator_cmd, MLOG_UINT16, 16),
+    MLOG_ELEMENT(throttle_cmd, MLOG_UINT16),
+    MLOG_ELEMENT(cmd_mask, MLOG_UINT16),
     MLOG_ELEMENT(status, MLOG_UINT8),
     MLOG_ELEMENT(state, MLOG_UINT8),
     MLOG_ELEMENT(ctrl_mode, MLOG_UINT8),
@@ -120,21 +148,24 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(reset, MLOG_UINT8),
     MLOG_ELEMENT(wp_consume, MLOG_UINT8),
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
-    MLOG_ELEMENT(reserved1, MLOG_UINT8),
+    MLOG_ELEMENT(reserved, MLOG_UINT8),
 };
 MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
 
 static McnNode_t pilot_cmd_nod;
 static McnNode_t gcs_cmd_nod;
+static McnNode_t auto_cmd_nod;
 static McnNode_t mission_data_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
 static uint8_t pilot_cmd_updated = 1;
 static uint8_t gcs_cmd_updated = 1;
+static uint8_t auto_cmd_updated = 1;
 static uint8_t mission_data_updated = 1;
 
 static int Pilot_Cmd_ID;
 static int GCS_Cmd_ID;
+static int Auto_Cmd_ID;
 static int Mission_Data_ID;
 static int FMS_Out_ID;
 
@@ -250,6 +281,13 @@ void fms_interface_step(uint32_t timestamp)
         gcs_cmd_updated = 1;
     }
 
+    if (mcn_poll(auto_cmd_nod)) {
+        mcn_copy(MCN_HUB(auto_cmd), auto_cmd_nod, &FMS_U.Auto_Cmd);
+
+        FMS_U.Auto_Cmd.timestamp = timestamp;
+        auto_cmd_updated = 1;
+    }
+
     if (mcn_poll(mission_data_nod)) {
         mcn_copy(MCN_HUB(mission_data), mission_data_nod, &FMS_U.Mission_Data);
 
@@ -281,6 +319,12 @@ void fms_interface_step(uint32_t timestamp)
         mlog_push_msg((uint8_t*)&FMS_U.GCS_Cmd, GCS_Cmd_ID, sizeof(GCS_Cmd_Bus));
     }
 
+    if (auto_cmd_updated) {
+        auto_cmd_updated = 0;
+        /* Log gcs command */
+        mlog_push_msg((uint8_t*)&FMS_U.Auto_Cmd, Auto_Cmd_ID, sizeof(Auto_Cmd_Bus));
+    }
+
     if (mission_data_updated) {
         mission_data_updated = 0;
         /* Log mission data */
@@ -304,16 +348,19 @@ void fms_interface_init(void)
 
     pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
     gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
+    auto_cmd_nod = mcn_subscribe(MCN_HUB(auto_cmd), NULL, NULL);
     mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL, NULL);
     ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
     Pilot_Cmd_ID = mlog_get_bus_id("Pilot_Cmd");
     GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
+    Auto_Cmd_ID = mlog_get_bus_id("Auto_Cmd");
     Mission_Data_ID = mlog_get_bus_id("Mission_Data");
     FMS_Out_ID = mlog_get_bus_id("FMS_Out");
     FMT_ASSERT(Pilot_Cmd_ID >= 0);
     FMT_ASSERT(GCS_Cmd_ID >= 0);
+    FMT_ASSERT(Auto_Cmd_ID >= 0);
     FMT_ASSERT(Mission_Data_ID >= 0);
     FMT_ASSERT(FMS_Out_ID >= 0);
 

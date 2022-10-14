@@ -21,6 +21,10 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
+#ifdef BIT
+    #undef BIT
+#endif
+
 #define BIT(u, n) (u & (1 << n))
 
 /* INS input bus */

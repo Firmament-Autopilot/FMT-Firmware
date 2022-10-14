@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1058
+ * Model version                  : 1.1064
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug 15 13:51:34 2022
+ * C/C++ source code generated on : Wed Sep 28 12:34:17 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -191,8 +191,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_qui5HcVoaluYsjjPe9smBE_
-#define DEFINED_TYPEDEF_FOR_struct_qui5HcVoaluYsjjPe9smBE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_S6LqEv2YQIg4UXtSkgNiZ_
+#define DEFINED_TYPEDEF_FOR_struct_S6LqEv2YQIg4UXtSkgNiZ_
 
 typedef struct {
   real32_T ROLL_P;
@@ -215,6 +215,7 @@ typedef struct {
   real32_T FW_ROLL_EFFC;
   real32_T FW_PITCH_EFFC;
   real32_T FW_YAW_EFFC;
+  real32_T FW_PITCH_OFFSET;
   real32_T FW_TECS_PITCH_F;
   real32_T FW_TECS_THOR_FF;
   real32_T FW_TECS_PITCH_P;
@@ -232,7 +233,7 @@ typedef struct {
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
-} struct_qui5HcVoaluYsjjPe9smBE;
+} struct_S6LqEv2YQIg4UXtSkgNiZ;
 
 #endif
 

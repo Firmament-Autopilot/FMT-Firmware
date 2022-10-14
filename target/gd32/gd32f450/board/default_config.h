@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
-#include "module/task_manager/task_manager.h"
+/* This is the default toml config for the target, which is loaded when there is
+ * no sysconfig.toml finded. Please do not format this file. */
 
-fmt_err_t task_local_init(void)
-{
-    return FMT_EOK;
-}
-
-void task_local_entry(void* parameter)
-{
-    printf("Hello FMT!\n");
-
-    while (1) {
-        sys_msleep(1000);
-    }
-}
-
-TASK_EXPORT __fmt_task_desc = {
-    .name = "local",
-    .init = task_local_init,
-    .entry = task_local_entry,
-    .priority = 25,
-    .stack_size = 1024,
-    .param = NULL,
-    .dependency = NULL
-};
+// clang-format off
+static char* default_conf = STRING(
+target = "GD32F450"\n
+[console]\n
+	[[console.devices]]\n
+	type = "serial"\n
+	name = "serial0"\n
+	baudrate = 57600\n
+	auto-switch = true\n
+	[[console.devices]]\n
+	type = "mavlink"\n
+	name = "mav_console"\n
+	auto-switch = true\n
+[mavproxy]\n
+	[[mavproxy.devices]]\n
+	type = "serial"\n
+	name = "serial1"\n
+	baudrate = 57600\n
+    [[mavproxy.devices]]\n
+	type = "usb"\n
+	name = "usbd0"\n
+    auto-switch = true
+);
+// clang-format on

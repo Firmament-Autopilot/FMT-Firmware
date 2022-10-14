@@ -393,6 +393,7 @@ TASK_EXPORT __fmt_task_desc = {
     .init = task_comm_init,
     .entry = task_comm_entry,
     .priority = COMM_THREAD_PRIORITY,
+    .auto_start = true,
     .stack_size = 8192,
     .param = NULL,
     .dependency = NULL

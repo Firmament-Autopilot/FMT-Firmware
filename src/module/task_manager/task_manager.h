@@ -27,8 +27,11 @@ typedef void (*task_entry_t)(void* param);
 
 enum {
     TASK_IDLE = 0,
-    TASK_OK,
-    TASK_FAIL
+    TASK_FAIL,
+    TASK_READY,
+    TASK_RUNNING,
+    TASK_SUSPEND,
+    TASK_ZOMBIE,
 };
 
 struct fmt_task_desc {
@@ -36,6 +39,7 @@ struct fmt_task_desc {
     task_init_t init;
     task_entry_t entry;
     uint8_t priority;
+    uint8_t auto_start;
     uint32_t stack_size;
     void* param;
     char** dependency;
@@ -44,11 +48,17 @@ typedef struct fmt_task_desc* fmt_task_desc_t;
 
 #define TASK_EXPORT RT_USED static const struct fmt_task_desc SECTION("TaskTab")
 
-void task_init(void);
-void task_start(void);
+void task_manager_init(void);
+void task_manager_start(void);
 uint8_t get_task_status(const char* name);
+int32_t get_task_id(const char* name);
 uint32_t get_task_num(void);
 fmt_task_desc_t get_task_table(void);
+
+fmt_err_t start_task(uint32_t task_id);
+fmt_err_t suspend_task(uint32_t task_id);
+fmt_err_t resume_task(uint32_t task_id);
+fmt_err_t kill_task(uint32_t task_id);
 
 #ifdef __cplusplus
 }

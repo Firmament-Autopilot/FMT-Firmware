@@ -26,5 +26,8 @@ static param_t __param_list[] = {
 	2: from boot until disarm
 	3: from boot until shutdown  */
     PARAM_INT32(MLOG_MODE, 0),
+    /* Endless mission mode, when mission complete, 
+	it will start from the first mission data again */
+    PARAM_UINT8(LOOP_MISSION, 0),
 };
 PARAM_GROUP_DEFINE(SYSTEM, __param_list);
