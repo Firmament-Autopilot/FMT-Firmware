@@ -24,8 +24,13 @@ extern "C" {
 #endif
 
 enum {
+    // NED (North-East-Down) Global (WGS84) coordinate frame
     FRAME_GLOBAL_NED = 0,
+    // FRD (Front-Right-Down) Local coordinate frame with origin fixed relative to earth.
+    // The forward axis is aligned to the front of the vehicle when offboard entered
     FRAME_LOCAL_FRD,
+    // FRD (Front-Right-Down) Local coordinate frame with an origin that travels with vehicle.
+    // The forward axis is aligned to the front of the vehicle
     FRAME_BODY_FRD,
 };
 
