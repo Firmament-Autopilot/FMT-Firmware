@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1856
+ * Model version                  : 1.1871
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Oct 13 21:27:46 2022
+ * C/C++ source code generated on : Fri Oct 14 08:38:55 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -107,9 +107,9 @@ typedef struct {
   uint16_T throttle_cmd;
 
   /* Coordinate Frame:
-     1:FRAME_BODY_NED
-     2:FRAME_LOCAL_NED
-     3:FRAME_GLOBAL */
+     0:FRAME_GLOBAL_NED
+     1:FRAME_LOCAL_FRD
+     2:FRAME_BODY_FRD */
   uint8_T frame;
   uint8_T reserved;
 
@@ -453,11 +453,12 @@ typedef enum {
 #define DEFINED_TYPEDEF_FOR_Commander_In_Bus_
 
 typedef struct {
-  real32_T sp_takeoff[3];
-  real32_T sp_land[2];
-  real32_T sp_return[2];
   real32_T sp_waypoint[3];
   real32_T cur_waypoint[3];
+
+  /* The psi value when offboard mode entered,
+     which is used for FRAME_LOCAL_FRD */
+  real32_T offboard_psi_0;
 } Commander_In_Bus;
 
 #endif

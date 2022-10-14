@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1856
+ * Model version                  : 1.1871
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Oct 13 21:27:46 2022
+ * C/C++ source code generated on : Fri Oct 14 08:38:55 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -105,9 +105,9 @@ typedef struct {
 /* Block signals (default storage) */
 typedef struct {
   INS_Out_Bus BusConversion_InsertedFor_FMSSt;
-  Commander_In_Bus Cmd_In;             /* '<Root>/FMS State Machine' */
   Pilot_Cmd_Bus BusConversion_InsertedFor_FMS_f;
   Pilot_Cmd_Bus pilot_cmd;             /* '<Root>/FMS State Machine' */
+  Commander_In_Bus Cmd_In;             /* '<Root>/FMS State Machine' */
   real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
   real_T lla[3];                       /* '<Root>/FMS State Machine' */
   real_T llo[2];                       /* '<Root>/FMS State Machine' */
@@ -164,9 +164,6 @@ typedef struct {
   real32_T Delay_DSTATE_h;             /* '<S144>/Delay' */
   real32_T Integrator1_DSTATE_p;       /* '<S147>/Integrator1' */
   real32_T Integrator_DSTATE_i;        /* '<S147>/Integrator' */
-  real32_T Delay_DSTATE_k;             /* '<S282>/Delay' */
-  real32_T Delay_DSTATE_g;             /* '<S219>/Delay' */
-  real32_T Delay_DSTATE_b;             /* '<S295>/Delay' */
   real32_T Delay_DSTATE_e[2];          /* '<S371>/Delay' */
   real32_T l1_heading_p;               /* '<S412>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_p[2];          /* '<S351>/Delay' */
@@ -250,15 +247,12 @@ typedef struct {
   uint8_T icLoad;                      /* '<S164>/Delay' */
   uint8_T icLoad_k;                    /* '<S144>/Delay' */
   uint8_T Integrator1_IC_LOADING;      /* '<S147>/Integrator1' */
-  uint8_T icLoad_kp;                   /* '<S282>/Delay' */
-  uint8_T icLoad_f;                    /* '<S219>/Delay' */
-  uint8_T icLoad_j;                    /* '<S295>/Delay' */
   uint8_T is_active_c15_FMS;           /* '<S320>/Motion State' */
   uint8_T is_c15_FMS;                  /* '<S320>/Motion State' */
   uint8_T temporalCounter_i1_a;        /* '<S320>/Motion State' */
   uint8_T icLoad_o;                    /* '<S371>/Delay' */
   uint8_T icLoad_c;                    /* '<S351>/Delay' */
-  uint8_T icLoad_jh;                   /* '<S352>/Delay' */
+  uint8_T icLoad_j;                    /* '<S352>/Delay' */
   uint8_T Integrator1_IC_LOADING_j;    /* '<S355>/Integrator1' */
   boolean_T valid_cmd;                 /* '<Root>/FMS State Machine' */
   boolean_T bl;                        /* '<Root>/FMS State Machine' */
@@ -687,7 +681,6 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S143>/Reshape' : Reshape block reduction
  * Block '<S143>/Reshape1' : Reshape block reduction
  * Block '<S143>/Reshape2' : Reshape block reduction
- * Block '<S302>/Reshape' : Reshape block reduction
  * Block '<S369>/Reshape' : Reshape block reduction
  * Block '<S351>/Reshape' : Reshape block reduction
  * Block '<S351>/Reshape1' : Reshape block reduction
