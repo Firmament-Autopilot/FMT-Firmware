@@ -202,11 +202,14 @@ fmt_err_t start_task(uint32_t task_id)
 /**
  * @brief Suspend a given task
  * 
- * @param task_id task id
- * @return fmt_err_t FMT_EOK for success
+ * @param task_id Task id
+ * @param timeout Wait up to timeout in ms
+ * @return fmt_err_t 
  */
-fmt_err_t suspend_task(uint32_t task_id)
+fmt_err_t suspend_task(uint32_t task_id, uint32_t timeout)
 {
+    uint32_t start = systime_now_ms();
+
     if (task_id >= task_num) {
         return FMT_EINVAL;
     }
@@ -217,9 +220,11 @@ fmt_err_t suspend_task(uint32_t task_id)
     }
 
     if (task_tid[task_id] != NULL) {
-        if (rt_thread_suspend(task_tid[task_id]) == RT_EOK) {
-            task_status[task_id] = TASK_SUSPEND;
-            return FMT_EOK;
+        while (systime_now_ms() - start < timeout) {
+            if (rt_thread_suspend(task_tid[task_id]) == RT_EOK) {
+                task_status[task_id] = TASK_SUSPEND;
+                return FMT_EOK;
+            }
         }
     }
 

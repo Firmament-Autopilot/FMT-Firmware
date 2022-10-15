@@ -56,7 +56,7 @@ uint32_t get_task_num(void);
 fmt_task_desc_t get_task_table(void);
 
 fmt_err_t start_task(uint32_t task_id);
-fmt_err_t suspend_task(uint32_t task_id);
+fmt_err_t suspend_task(uint32_t task_id, uint32_t timeout);
 fmt_err_t resume_task(uint32_t task_id);
 fmt_err_t kill_task(uint32_t task_id);
 

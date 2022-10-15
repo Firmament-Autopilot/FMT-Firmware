@@ -165,7 +165,7 @@ static int _suspend(struct optparse options)
         return EXIT_FAILURE;
     }
 
-    if (suspend_task(task_id) != FMT_EOK) {
+    if (suspend_task(task_id, 1000) != FMT_EOK) {
         printf("fail to suspend task!\n");
         return EXIT_FAILURE;
     }
