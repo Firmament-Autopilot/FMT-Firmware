@@ -19,7 +19,7 @@ extern "C" {
 #define ULOG_OUTPUT_LVL LOG_LVL_DBG
 
 /* define async buffer size */
-#define ULOG_ASYNC_OUTPUT_BUF_SIZE 1280
+#define ULOG_ASYNC_OUTPUT_BUF_SIZE 2048
 
 /* logger level, the number is compatible for syslog */
 #define LOG_LVL_ASSERT  0
