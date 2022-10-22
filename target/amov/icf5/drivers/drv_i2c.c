@@ -16,7 +16,7 @@
 #include "drv_i2c.h"
 #include "hal/i2c/i2c.h"
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...) printf(__VA_ARGS__)
 // #define DRV_DBG(...)
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
@@ -62,7 +62,7 @@ static fmt_err_t wait_flag_until_timeout(uint32_t i2c_periph, i2c_flag_enum flag
     uint64_t time_start = systime_now_us();
 
     while (i2c_flag_get(i2c_periph, flag) == status) {
-        if ((systime_now_us() - time_start) > timeout_us) {
+        if ((systime_now_us() - time_start) >= timeout_us) {
             return FMT_ETIMEOUT;
         }
     }
@@ -157,6 +157,10 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
             i2c_handle_transfer(gd32_i2c->i2c_periph, slave_addr, (msg->flags & RT_I2C_ADDR_10BIT) != 0, nbytes == 1, I2C_RECEIVER);
 
             while (nbytes--) {
+                if (nbytes == 0) {
+                    /* send a NACK for the last data byte, this should be done before last byte is received */
+                    i2c_ack_config(gd32_i2c->i2c_periph, I2C_ACK_DISABLE);
+                }
                 /* wait data received */
                 if (wait_flag_until_timeout(gd32_i2c->i2c_periph, I2C_FLAG_RBNE, RESET, I2C_TIMEOUT_US) != FMT_EOK) {
                     DRV_DBG("I2C wait RBNE timeout\n");
@@ -164,17 +168,6 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
                 }
                 /* receive data */
                 *(msg->buf++) = i2c_data_receive(gd32_i2c->i2c_periph);
-
-                if (nbytes == 1) {
-                    /* send a NACK for the last data byte */
-                    i2c_ack_config(gd32_i2c->i2c_periph, I2C_ACK_DISABLE);
-                }
-            }
-
-            /* wait transmit complete */
-            if (wait_flag_until_timeout(gd32_i2c->i2c_periph, I2C_FLAG_BTC, RESET, I2C_TIMEOUT_US) != FMT_EOK) {
-                DRV_DBG("I2C wait BTC timeout\n");
-                goto _stop;
             }
         } else {
             /* start/restart write operation */
