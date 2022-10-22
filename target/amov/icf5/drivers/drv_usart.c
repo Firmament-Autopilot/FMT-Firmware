@@ -26,8 +26,8 @@
 #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
 
 #define USING_UART0
+#define USING_UART1
 #define USING_UART2
-#define USING_UART3
 #define USING_UART6
 
 /* GD32 uart driver */
@@ -184,12 +184,12 @@ void UART6_IRQHandler(void)
 }
 #endif /* USING_UART6 */
 
-#ifdef USING_UART2
+#ifdef USING_UART1
 static struct serial_device serial1;
-static struct gd32_uart uart2 = {
-    .uart_periph = USART2,
-    .irqn = USART2_IRQn,
-    .per_clk = RCU_USART2,
+static struct gd32_uart uart1 = {
+    .uart_periph = USART1,
+    .irqn = USART1_IRQn,
+    .per_clk = RCU_USART1,
     .tx_gpio_clk = RCU_GPIOD,
     .rx_gpio_clk = RCU_GPIOD,
     .tx_port = GPIOD,
@@ -198,6 +198,49 @@ static struct gd32_uart uart2 = {
     .rx_port = GPIOD,
     .rx_af = GPIO_AF_7,
     .rx_pin = GPIO_PIN_6,
+};
+
+void USART1_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial1);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+// void DMA0_Channel3_IRQHandler(void)
+// {
+//     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF)) {
+//         dma_tx_done_isr(&serial1);
+//         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF);
+//     }
+// }
+
+// void DMA0_Channel1_IRQHandler(void)
+// {
+//     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF)) {
+//         dma_rx_done_isr(&serial1);
+//         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF);
+//     }
+// }
+#endif /* USING_UART2 */
+
+#ifdef USING_UART2
+static struct serial_device serial2;
+static struct gd32_uart uart2 = {
+    .uart_periph = USART2,
+    .irqn = USART2_IRQn,
+    .per_clk = RCU_USART2,
+    .tx_gpio_clk = RCU_GPIOD,
+    .rx_gpio_clk = RCU_GPIOD,
+    .tx_port = GPIOD,
+    .tx_af = GPIO_AF_7,
+    .tx_pin = GPIO_PIN_8,
+    .rx_port = GPIOD,
+    .rx_af = GPIO_AF_7,
+    .rx_pin = GPIO_PIN_9,
     .dma = {
         .dma_periph = DMA0,
         .clock = RCU_DMA0,
@@ -214,7 +257,7 @@ void USART2_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
     /* uart isr routine */
-    uart_isr(&serial1);
+    uart_isr(&serial2);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -222,7 +265,7 @@ void USART2_IRQHandler(void)
 void DMA0_Channel3_IRQHandler(void)
 {
     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF)) {
-        dma_tx_done_isr(&serial1);
+        dma_tx_done_isr(&serial2);
         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF);
     }
 }
@@ -230,63 +273,11 @@ void DMA0_Channel3_IRQHandler(void)
 void DMA0_Channel1_IRQHandler(void)
 {
     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF)) {
-        dma_rx_done_isr(&serial1);
+        dma_rx_done_isr(&serial2);
         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF);
     }
 }
 #endif /* USING_UART2 */
-
-#ifdef USING_UART3
-static struct serial_device serial2;
-static struct gd32_uart uart3 = {
-    .uart_periph = UART3,
-    .irqn = UART3_IRQn,
-    .per_clk = RCU_UART3,
-    .tx_gpio_clk = RCU_GPIOD,
-    .rx_gpio_clk = RCU_GPIOD,
-    .tx_port = GPIOD,
-    .tx_af = GPIO_AF_8,
-    .tx_pin = GPIO_PIN_8,
-    .rx_port = GPIOD,
-    .rx_af = GPIO_AF_8,
-    .rx_pin = GPIO_PIN_9,
-    .dma = {
-        .dma_periph = DMA0,
-        .clock = RCU_DMA0,
-        .rx_ch = DMA_CH2,
-        .rx_irq = DMA0_Channel2_IRQn,
-        .tx_ch = DMA_CH4,
-        .tx_irq = DMA0_Channel4_IRQn,
-        .sub_periph = DMA_SUBPERI4,
-    }
-};
-
-void USRT3_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-    /* uart isr routine */
-    uart_isr(&serial2);
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA0_Channel4_IRQHandler(void)
-{
-    if (dma_interrupt_flag_get(uart3.dma.dma_periph, uart3.dma.tx_ch, DMA_INT_FLAG_FTF)) {
-        dma_tx_done_isr(&serial2);
-        dma_interrupt_flag_clear(uart3.dma.dma_periph, uart3.dma.tx_ch, DMA_INT_FLAG_FTF);
-    }
-}
-
-void DMA0_Channel2_IRQHandler(void)
-{
-    if (dma_interrupt_flag_get(uart3.dma.dma_periph, uart3.dma.rx_ch, DMA_INT_FLAG_FTF)) {
-        dma_rx_done_isr(&serial2);
-        dma_interrupt_flag_clear(uart3.dma.dma_periph, uart3.dma.rx_ch, DMA_INT_FLAG_FTF);
-    }
-}
-#endif /* USING_UART3 */
 
 #ifdef USING_UART0
 static struct serial_device serial3;
@@ -595,7 +586,7 @@ rt_err_t drv_usart_init(void)
                                   &uart6);
 #endif /* USING_UART6 */
 
-#ifdef USING_UART2
+#ifdef USING_UART1
     serial1.ops = &__usart_ops;
     #ifdef SERIAL1_DEFAULT_CONFIG
     struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
@@ -607,11 +598,11 @@ rt_err_t drv_usart_init(void)
     /* register serial device */
     rt_err |= hal_serial_register(&serial1,
                                   "serial1",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-                                  &uart2);
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart1);
 #endif /* USING_UART2 */
 
-#ifdef USING_UART3
+#ifdef USING_UART2
     serial2.ops = &__usart_ops;
     #ifdef SERIAL2_DEFAULT_CONFIG
     struct serial_configure serial2_config = SERIAL2_DEFAULT_CONFIG;
@@ -624,8 +615,8 @@ rt_err_t drv_usart_init(void)
     rt_err |= hal_serial_register(&serial2,
                                   "serial2",
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-                                  &uart3);
-#endif /* USING_UART3 */
+                                  &uart2);
+#endif /* USING_UART2 */
 
 #ifdef USING_UART0
     serial3.ops = &__usart_ops;
