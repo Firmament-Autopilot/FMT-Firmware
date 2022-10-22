@@ -294,14 +294,14 @@ static struct gd32_uart uart0 = {
     .uart_periph = USART0,
     .irqn = USART0_IRQn,
     .per_clk = RCU_USART0,
-    .tx_gpio_clk = RCU_GPIOA,
-    .rx_gpio_clk = RCU_GPIOA,
-    .tx_port = GPIOA,
+    .tx_gpio_clk = RCU_GPIOB,
+    .rx_gpio_clk = RCU_GPIOB,
+    .tx_port = GPIOB,
     .tx_af = GPIO_AF_7,
-    .tx_pin = GPIO_PIN_9,
-    .rx_port = GPIOA,
+    .tx_pin = GPIO_PIN_6,
+    .rx_port = GPIOB,
     .rx_af = GPIO_AF_7,
-    .rx_pin = GPIO_PIN_10,
+    .rx_pin = GPIO_PIN_7,
 };
 
 void USART0_IRQHandler(void)
