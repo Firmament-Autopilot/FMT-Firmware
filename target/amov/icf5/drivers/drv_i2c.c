@@ -36,21 +36,21 @@ static void i2c_hw_init(void)
     rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_I2C0);
 
-    /* connect PB6 to I2C0_SCL */
-    gpio_af_set(GPIOB, GPIO_AF_4, GPIO_PIN_6);
-    /* connect PB7 to I2C0_SDA */
-    gpio_af_set(GPIOB, GPIO_AF_4, GPIO_PIN_7);
+    /* connect PB8 to I2C0_SCL */
+    gpio_af_set(GPIOB, GPIO_AF_4, GPIO_PIN_8);
+    /* connect PB9 to I2C0_SDA */
+    gpio_af_set(GPIOB, GPIO_AF_4, GPIO_PIN_9);
 
-    /* configure I2C0 GPIO */
-    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_6);
-    gpio_output_options_set(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_6);
-    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_7);
-    gpio_output_options_set(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_7);
+    /* configure I2C0 GPIO. SCL/SDA have external pull-up */
+    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_8);
+    gpio_output_options_set(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_8);
+    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_9);
+    gpio_output_options_set(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
 
     /* configure I2C clock */
     i2c_clock_config(I2C0, 100000, I2C_DTCY_2);
     /* configure I2C address */
-    i2c_mode_addr_config(I2C0, I2C_I2CMODE_ENABLE, I2C_ADDFORMAT_7BITS, 0);
+    i2c_mode_addr_config(I2C0, I2C_I2CMODE_ENABLE, I2C_ADDFORMAT_7BITS, 0x00);
     /* enable I2C0 */
     i2c_enable(I2C0);
     /* enable acknowledge */
@@ -129,6 +129,7 @@ static rt_err_t i2c_handle_transfer(uint32_t i2c_periph, rt_uint16_t slave_addr,
         DRV_DBG("I2C wait ADDSEND timeout\n");
         return RT_ERROR;
     }
+
     /* clear ADDSEND bit */
     i2c_flag_clear(i2c_periph, I2C_FLAG_ADDSEND);
 
@@ -140,6 +141,7 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
     struct rt_i2c_msg* msg;
     uint32_t msg_idx = 0;
     struct gd32_i2c_bus* gd32_i2c = (struct gd32_i2c_bus*)bus;
+    uint64_t start_us;
 
     if (wait_flag_until_timeout(gd32_i2c->i2c_periph, I2C_FLAG_I2CBSY, SET, I2C_TIMEOUT_US) != FMT_EOK) {
         DRV_DBG("I2C wait BUSY timeout\n");
@@ -151,7 +153,7 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
         uint16_t nbytes = msg->len;
 
         if (msg->flags & RT_I2C_RD) {
-            /* start/restart write operation */
+            /* start/restart read operation */
             i2c_handle_transfer(gd32_i2c->i2c_periph, slave_addr, (msg->flags & RT_I2C_ADDR_10BIT) != 0, nbytes == 1, I2C_RECEIVER);
 
             while (nbytes--) {
@@ -171,7 +173,7 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
 
             /* wait transmit complete */
             if (wait_flag_until_timeout(gd32_i2c->i2c_periph, I2C_FLAG_BTC, RESET, I2C_TIMEOUT_US) != FMT_EOK) {
-                DRV_DBG("I2C wait TBE timeout\n");
+                DRV_DBG("I2C wait BTC timeout\n");
                 goto _stop;
             }
         } else {
@@ -190,7 +192,7 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
 
             /* wait transmit complete */
             if (wait_flag_until_timeout(gd32_i2c->i2c_periph, I2C_FLAG_BTC, RESET, I2C_TIMEOUT_US) != FMT_EOK) {
-                DRV_DBG("I2C wait TBE timeout\n");
+                DRV_DBG("I2C wait BTC timeout\n");
                 goto _stop;
             }
         }
@@ -201,9 +203,12 @@ _stop:
     i2c_stop_on_bus(gd32_i2c->i2c_periph);
 
     /* wait until stop flag is set */
-    uint64_t timeout = 0;
-    while ((I2C_CTL0(gd32_i2c->i2c_periph) & I2C_CTL0_STOP) && (timeout < I2C_TIMEOUT_US)) {
-        timeout++;
+    start_us = systime_now_us();
+    while (I2C_CTL0(gd32_i2c->i2c_periph) & I2C_CTL0_STOP) {
+        if ((systime_now_us() - start_us) >= I2C_TIMEOUT_US) {
+            DRV_DBG("I2C wait stop timeout\n");
+            break;
+        }
     }
 
     i2c_ack_config(gd32_i2c->i2c_periph, I2C_ACK_ENABLE);
@@ -225,7 +230,7 @@ static struct gd32_i2c_bus gd32_i2c0 = {
 
 /* i2c device instances */
 static struct rt_i2c_device i2c0_dev0 = {
-    .slave_addr = 0xff, /* 7 bit address */
+    .slave_addr = 0x45, /* 7 bit address */
     .flags = 0
 };
 
