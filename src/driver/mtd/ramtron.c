@@ -85,6 +85,10 @@ static rt_err_t ramtron_read_devinfo(void)
         /* 1024 kilobits */
         bulk_size = 1024 * 1024 / 8;
         break;
+    case 0x05:
+        /* 2048 kilobits */
+        bulk_size = 2048 * 1024 / 8;
+        break;
     default:
         /* unknown density */
         return RT_EINVAL;
@@ -102,11 +106,16 @@ static rt_err_t ramtron_read_devinfo(void)
 rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
 {
     uint8_t code = RAMTRON_READ;
-    uint16_t addr = sector * geometry.bytes_per_sector;
+    uint32_t addr = sector * geometry.bytes_per_sector;
     struct rt_spi_message message1, message2, message3;
 
     /* send MSB first */
-    Msb2Lsb((uint8_t*)&addr, 2);
+    // Msb2Lsb((uint8_t*)&addr, 3);
+
+    uint8_t addr_buf[3];
+    addr_buf[0] = (uint8_t)(addr >> 16);
+    addr_buf[1] = (uint8_t)(addr >> 8);
+    addr_buf[2] = (uint8_t)(addr >> 0);
 
     /* send op-code */
     message1.send_buf = &code;
@@ -116,9 +125,9 @@ rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_
     message1.cs_release = 0;
     message1.next = &message2;
     /* send address */
-    message2.send_buf = &addr;
+    message2.send_buf = &addr_buf;
     message2.recv_buf = RT_NULL;
-    message2.length = 2;
+    message2.length = 3;
     message2.cs_take = 0;
     message2.cs_release = 0;
     message2.next = &message3;
@@ -138,11 +147,16 @@ rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_
 rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
 {
     uint8_t code = RAMTRON_WRITE;
-    uint16_t addr = sector * geometry.bytes_per_sector;
+    uint32_t addr = sector * geometry.bytes_per_sector;
     struct rt_spi_message message1, message2, message3;
 
     /* send MSB first */
-    Msb2Lsb((uint8_t*)&addr, 2);
+    // Msb2Lsb((uint8_t*)&addr, 2);
+
+    uint8_t addr_buf[3];
+    addr_buf[0] = (uint8_t)(addr >> 16);
+    addr_buf[1] = (uint8_t)(addr >> 8);
+    addr_buf[2] = (uint8_t)(addr >> 0);
 
     /* write enable */
     ramtron_wren();
@@ -155,9 +169,9 @@ rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sect
     message1.cs_release = 0;
     message1.next = &message2;
     /* send address */
-    message2.send_buf = &addr;
+    message2.send_buf = &addr_buf;
     message2.recv_buf = RT_NULL;
-    message2.length = 2;
+    message2.length = 3;
     message2.cs_take = 0;
     message2.cs_release = 0;
     message2.next = &message3;
