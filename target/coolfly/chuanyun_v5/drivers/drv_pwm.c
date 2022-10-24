@@ -26,15 +26,17 @@
 #define PWM_FREQ_250HZ (250)
 #define PWM_FREQ_400HZ (400)
 
-#define MAX_PWM_OUT_CHAN      10            // AUX Out has 10 pwm channel
+// #define MAX_PWM_OUT_CHAN      10            // AUX Out has 10 pwm channel
+#define MAX_PWM_OUT_CHAN      8            // AUX Out has 10 pwm channel
 #define PWM_DEFAULT_FREQUENCY PWM_FREQ_400HZ // pwm default frequqncy
 
 
 uint32_t g_pwm_high_level[MAX_PWM_OUT_CHAN]; // high level of the pwm wave
 uint32_t g_pwm_freq[MAX_PWM_OUT_CHAN];   // high level of the pwm wave
+// ENUM_HAL_PWM_NUM g_pwm_map[MAX_PWM_OUT_CHAN] = {    HAL_PWM_NUM0, HAL_PWM_NUM1, HAL_PWM_NUM2, HAL_PWM_NUM3, HAL_PWM_NUM4,
+//                                                     HAL_PWM_NUM5, HAL_PWM_NUM6, HAL_PWM_NUM7, HAL_PWM_NUM8, HAL_PWM_NUM9 };
 ENUM_HAL_PWM_NUM g_pwm_map[MAX_PWM_OUT_CHAN] = {    HAL_PWM_NUM0, HAL_PWM_NUM1, HAL_PWM_NUM2, HAL_PWM_NUM3, HAL_PWM_NUM4,
-                                                    HAL_PWM_NUM5, HAL_PWM_NUM6, HAL_PWM_NUM7, HAL_PWM_NUM8, HAL_PWM_NUM9 };
-
+                                                    HAL_PWM_NUM5, HAL_PWM_NUM6, HAL_PWM_NUM7};
 
 void pwm_gpio_init(void)
 {

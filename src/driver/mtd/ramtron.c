@@ -63,6 +63,7 @@ static rt_err_t ramtron_read_devinfo(void)
     /* JEDEC assigned Ramtron C2h in bank 7 */
     if (id[6] != 0xC2) {
         printf("INVALID ramtron ID!\n");
+        printf("id[6] = %02x \n", id[6]);
         return RT_EINVAL;
     }
 
