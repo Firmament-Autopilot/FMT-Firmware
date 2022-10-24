@@ -18,9 +18,13 @@
 #define BOARD_DEVICE_H__
 
 
-#define  VIDEO_RED_LED_GPIO       HAL_GPIO_NUM61
-#define  LINK_LED_GPIO            HAL_GPIO_NUM69
-#define  LNA_BYPASS_GPIO          HAL_GPIO_NUM75
+#define  WD_DONE_GPIO           HAL_GPIO_NUM74
+#define  VIDEO_LED_GPIO         HAL_GPIO_NUM55
+#define  LINK_LED_GPIO          HAL_GPIO_NUM54
+
+#define  RGB_R_GPIO             HAL_GPIO_NUM66
+#define  RGB_G_GPIO             HAL_GPIO_NUM62
+#define  RGB_B_GPIO             HAL_GPIO_NUM58
 
 
 #define SPI1_SPEED_HZ 7000000

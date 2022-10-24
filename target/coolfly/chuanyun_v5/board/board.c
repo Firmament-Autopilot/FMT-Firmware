@@ -26,7 +26,7 @@
 
 #include "board_device.h"
 #include "driver/barometer/spl06.h"
-// #include "driver/barometer/ms5611.h"
+#include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
 // #include "driver/imu/bmi055.h"
 // #include "driver/imu/icm20689.h"
@@ -306,39 +306,24 @@ void bsp_early_initialize(void)
     // /* Enable CPU L1-cache */
     // CPU_CACHE_Enable();
 
-    HAL_GPIO_OutPut(HAL_GPIO_NUM74); // wd_done
-    HAL_GPIO_SetPin(HAL_GPIO_NUM74, HAL_GPIO_PIN_SET);
+    HAL_GPIO_OutPut(WD_DONE_GPIO); // wd_done
+    HAL_GPIO_SetPin(WD_DONE_GPIO, HAL_GPIO_PIN_SET);
 
-    HAL_GPIO_InPut(HAL_GPIO_NUM75); // LNA
+    HAL_GPIO_OutPut(LINK_LED_GPIO); // blue led close
+    HAL_GPIO_SetPin(LINK_LED_GPIO, HAL_GPIO_PIN_SET);
 
-    HAL_GPIO_OutPut(HAL_GPIO_NUM69); // blue led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM69, HAL_GPIO_PIN_SET);
+    HAL_GPIO_OutPut(VIDEO_LED_GPIO); // red led close
+    HAL_GPIO_SetPin(VIDEO_LED_GPIO, HAL_GPIO_PIN_SET);
 
-    HAL_GPIO_OutPut(HAL_GPIO_NUM61); // red led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_SET);
+    HAL_GPIO_OutPut(RGB_R_GPIO); // rgb1 R led close
+    HAL_GPIO_SetPin(RGB_R_GPIO, HAL_GPIO_PIN_RESET);
 
-    HAL_GPIO_OutPut(HAL_GPIO_NUM97); // rgb1 R led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM97, HAL_GPIO_PIN_RESET);
+    HAL_GPIO_OutPut(RGB_G_GPIO); // rgb1 G led close
+    HAL_GPIO_SetPin(RGB_G_GPIO, HAL_GPIO_PIN_RESET);
 
-    HAL_GPIO_OutPut(HAL_GPIO_NUM98); // rgb1 G led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM98, HAL_GPIO_PIN_RESET);
+    HAL_GPIO_OutPut(RGB_B_GPIO); // rgb1 B led close
+    HAL_GPIO_SetPin(RGB_B_GPIO, HAL_GPIO_PIN_RESET);
 
-    HAL_GPIO_OutPut(HAL_GPIO_NUM99); // rgb1 B led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM99, HAL_GPIO_PIN_RESET);
-
-    HAL_GPIO_OutPut(HAL_GPIO_NUM100); // rgb2 R led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM100, HAL_GPIO_PIN_RESET);
-
-    HAL_GPIO_OutPut(HAL_GPIO_NUM101); // rgb2 G led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM101, HAL_GPIO_PIN_RESET);
-
-    HAL_GPIO_OutPut(HAL_GPIO_NUM102); // rgb2 B led close
-    HAL_GPIO_SetPin(HAL_GPIO_NUM102, HAL_GPIO_PIN_RESET);
-
-    // HAL_GPIO_OutPut(HAL_GPIO_NUM103);     //
-    // HAL_GPIO_SetPin(HAL_GPIO_NUM103, HAL_GPIO_PIN_SET);
-    // HAL_GPIO_OutPut(HAL_GPIO_NUM104);     //
-    // HAL_GPIO_SetPin(HAL_GPIO_NUM104, HAL_GPIO_PIN_SET);
 
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
@@ -412,7 +397,7 @@ void bsp_initialize(void)
 
 #ifdef DEVICE_ON_BOARD
     /* fram init */
-    RT_CHECK(drv_ramtron_init("spi0_dev1"));
+    RT_CHECK(drv_ramtron_init("spi6_dev1"));
 #endif
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
@@ -442,8 +427,8 @@ void bsp_initialize(void)
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
-    // RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
-    RT_CHECK(drv_spl06_init("spi5_dev1", "barometer"));
+    RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
+    // RT_CHECK(drv_spl06_init("spi3_dev1", "barometer"));
     /* if no gps mag then use onboard mag */
 
     // if (drv_ist8310_init("i2c2_dev1", "mag0") != FMT_EOK) {
@@ -485,7 +470,7 @@ void bsp_initialize(void)
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
-    cm_backtrace_init("fmt_coolfly-s1", TARGET_NAME, FMT_VERSION);
+    cm_backtrace_init("fmt_chuanyun_v5", TARGET_NAME, FMT_VERSION);
 
 #endif
 }

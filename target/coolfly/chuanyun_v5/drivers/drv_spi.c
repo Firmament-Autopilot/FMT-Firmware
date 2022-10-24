@@ -17,10 +17,15 @@
 #include "hal/spi/spi.h"
 #include "ar1002_hal.h"
 
-#define SPI0_CS1_Pin       HAL_GPIO_NUM70
+
+
 #define SPI2_CS1_Pin       HAL_GPIO_NUM72
 
-#define SPI5_CS1_Pin       HAL_GPIO_NUM50
+
+#define SPI3_CS1_Pin       HAL_GPIO_NUM73
+#define SPI3_CS2_Pin       HAL_GPIO_NUM100  
+
+#define SPI6_CS1_Pin       HAL_GPIO_NUM46
 
 
 struct ar1002_spi_bus {
@@ -136,19 +141,7 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
     struct ar1002_spi_bus* ar1002_spi,
     const char* spi_bus_name)
 {   
-    if (SPI == SPI_0) {
-        ar1002_spi->SPI = SPI_0;
-
-        /* SPI2 configure */
-    	STRU_HAL_SPI_INIT st_spiInitInfo = {
-    		.u16_halSpiBaudr = 9,
-    		.e_halSpiPolarity = HAL_SPI_POLARITY_HIGH,
-    		.e_halSpiPhase = HAL_SPI_PHASE_2EDGE,
-    	};
-
-    	HAL_SPI_MasterInit(SPI_0, &st_spiInitInfo);
-
-    } else if (SPI == SPI_2) {
+    if (SPI == SPI_2) {
         ar1002_spi->SPI = SPI_2;
 
         /* SPI2 configure */
@@ -160,9 +153,8 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
 
     	HAL_SPI_MasterInit(SPI_2, &st_spiInitInfo);
 
-    } else if (SPI == SPI_5) {
-
-        ar1002_spi->SPI = SPI_5;
+    } else if (SPI == SPI_3) {
+        ar1002_spi->SPI = SPI_3;
 
         /* SPI2 configure */
     	STRU_HAL_SPI_INIT st_spiInitInfo = {
@@ -171,7 +163,20 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
     		.e_halSpiPhase = HAL_SPI_PHASE_2EDGE,
     	};
 
-    	HAL_SPI_MasterInit(SPI_5, &st_spiInitInfo);
+    	HAL_SPI_MasterInit(SPI_3, &st_spiInitInfo);
+
+    } else if (SPI == SPI_6) {
+
+        ar1002_spi->SPI = SPI_6;
+
+        /* SPI2 configure */
+    	STRU_HAL_SPI_INIT st_spiInitInfo = {
+    		.u16_halSpiBaudr = 9,
+    		.e_halSpiPolarity = HAL_SPI_POLARITY_HIGH,
+    		.e_halSpiPhase = HAL_SPI_PHASE_2EDGE,
+    	};
+
+    	HAL_SPI_MasterInit(SPI_6, &st_spiInitInfo);
 
     } else {
         return RT_ENOSYS;
@@ -189,28 +194,6 @@ rt_err_t drv_spi_init(void)
     rt_err_t ret;
 
 
-    /* register SPI bus */
-    static struct ar1002_spi_bus ar1002_spi0;
-
-    /* register SPI0 bus */
-    ret = ar1002_spi_register(SPI_0, &ar1002_spi0, "spi0");
-    if (ret != RT_EOK) {
-        return ret;
-    }
-
-    /* attach spi_device_1 to spi0 */
-    {
-        static struct rt_spi_device rt_spi_device_1;
-        static struct ar1002_spi_cs ar1002_spi_cs_1;
-        ar1002_spi_cs_1.GPIO_Pin = SPI0_CS1_Pin;
-
-        HAL_GPIO_OutPut(ar1002_spi_cs_1.GPIO_Pin);
-        HAL_GPIO_SetPin(ar1002_spi_cs_1.GPIO_Pin, HAL_GPIO_PIN_SET);
-        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi0_dev1", "spi0", (void*)&ar1002_spi_cs_1);
-        if (ret != RT_EOK) {
-            return ret;
-        }
-    }
 
     /* register SPI bus */
     static struct ar1002_spi_bus ar1002_spi2;
@@ -238,24 +221,63 @@ rt_err_t drv_spi_init(void)
     }
 
     /* register SPI bus */
-    static struct ar1002_spi_bus ar1002_spi5;
+    static struct ar1002_spi_bus ar1002_spi3;
 
-    /* register SPI5 bus */
-    ret = ar1002_spi_register(SPI_5, &ar1002_spi5, "spi5");
+    /* register SPI3 bus */
+    ret = ar1002_spi_register(SPI_3, &ar1002_spi3, "spi3");
     if (ret != RT_EOK) {
         return ret;
     }
 
-    /* attach spi_device_1 to spi5 */
+    /* attach spi_device_1 to spi3 */
     {
         static struct rt_spi_device rt_spi_device_1;
         static struct ar1002_spi_cs ar1002_spi_cs_1;
-        ar1002_spi_cs_1.GPIO_Pin = SPI5_CS1_Pin;
+        ar1002_spi_cs_1.GPIO_Pin = SPI3_CS1_Pin;
+
+        HAL_GPIO_OutPut(ar1002_spi_cs_1.GPIO_Pin);
+        HAL_GPIO_SetPin(ar1002_spi_cs_1.GPIO_Pin, HAL_GPIO_PIN_SET);
+        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi3_dev1", "spi3", (void*)&ar1002_spi_cs_1);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+
+
+    /* attach spi_device_2 to spi3 */
+    {
+        static struct rt_spi_device rt_spi_device_2;
+        static struct ar1002_spi_cs ar1002_spi_cs_2;
+        ar1002_spi_cs_2.GPIO_Pin = SPI3_CS2_Pin;
+
+        HAL_GPIO_OutPut(ar1002_spi_cs_2.GPIO_Pin);
+        HAL_GPIO_SetPin(ar1002_spi_cs_2.GPIO_Pin, HAL_GPIO_PIN_SET);
+        ret = rt_spi_bus_attach_device(&rt_spi_device_2, "spi3_dev2", "spi3", (void*)&ar1002_spi_cs_2);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+
+
+    /* register SPI bus */
+    static struct ar1002_spi_bus ar1002_spi6;
+
+    /* register SPI6 bus */
+    ret = ar1002_spi_register(SPI_6, &ar1002_spi6, "spi6");
+    if (ret != RT_EOK) {
+        return ret;
+    }
+
+    /* attach spi_device_1 to spi6 */
+    {
+        static struct rt_spi_device rt_spi_device_1;
+        static struct ar1002_spi_cs ar1002_spi_cs_1;
+        ar1002_spi_cs_1.GPIO_Pin = SPI6_CS1_Pin;
 
         HAL_GPIO_OutPut(ar1002_spi_cs_1.GPIO_Pin);
         HAL_GPIO_SetPin(ar1002_spi_cs_1.GPIO_Pin, HAL_GPIO_PIN_SET);
         
-        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi5_dev1", "spi5", (void*)&ar1002_spi_cs_1);
+        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi6_dev1", "spi6", (void*)&ar1002_spi_cs_1);
         if (ret != RT_EOK) {
             return ret;
         }

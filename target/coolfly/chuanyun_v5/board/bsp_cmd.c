@@ -26,7 +26,7 @@
 static int handle_reboot_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
 	printf("rebooting...\n");
-	printf(" coolfly will reboot, goodbye !~ \n");
+	printf("chuanyun will reboot, goodbye !~ \n");
 
 	sys_msleep(10);
 
@@ -49,7 +49,7 @@ static int handle_reset_fct(int argc, char** argv, int optc, optv_t* optv)
 {
 
 	FCT_Reset();
-    FCT_SaveToFlashTest();
+    // FCT_SaveToFlashTest();
     
     printf("fct reset finish~ \r\n");
 	return 0;

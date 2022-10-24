@@ -27,9 +27,10 @@ extern "C" {
 #endif
 
 
-#define FMU_LED_RED_PIN   HAL_GPIO_NUM97
-#define FMU_LED_GREEN_PIN HAL_GPIO_NUM98
-#define FMU_LED_BLUE_PIN  HAL_GPIO_NUM99
+#define FMU_LED_RED_PIN   HAL_GPIO_NUM66
+#define FMU_LED_GREEN_PIN HAL_GPIO_NUM62
+#define FMU_LED_BLUE_PIN  HAL_GPIO_NUM58
+        
 
 #define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
 #define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
