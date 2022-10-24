@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "COOLFLY_S1"
+target = "CHUANYUN_V5"
 
 # Console Configuration
 [console]

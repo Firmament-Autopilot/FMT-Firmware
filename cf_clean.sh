@@ -1,2 +1,2 @@
-cd target/coolfly/coolfly_v2/
+cd target/coolfly/chuanyun_v5/
 scons -c
