@@ -43,6 +43,7 @@ MODULES = [
     'syscmd/cmd_param.c',
     'syscmd/cmd_ps.c',
     'syscmd/cmd_test.c',
+    'syscmd/cmd_task.c',
 ]
 
 MODULES_CPPPATH = [

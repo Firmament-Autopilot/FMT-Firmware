@@ -248,7 +248,10 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 
 fmt_err_t pilot_cmd_collect(void)
 {
+    static uint32_t last_timestamp;
+    uint32_t time_now = systime_now_ms();
     uint8_t update = 0;
+    rc_dev_t rc = (rc_dev_t)rcDev;
 
     if (rcDev == NULL) {
         /* no rc device */
@@ -257,7 +260,7 @@ fmt_err_t pilot_cmd_collect(void)
 
     FMT_TRY(rt_device_control(rcDev, RC_CMD_CHECK_UPDATE, &update));
 
-    if (update) {
+    if (update && ((time_now - last_timestamp) >= rc->config.sample_time * 1000)) {
         if (rt_device_read(rcDev, rc_read_mask, rcChannel, rc_chan_num * sizeof(uint16_t))) {
 
             pilot_cmd_bus.timestamp = systime_now_ms();
@@ -279,6 +282,8 @@ fmt_err_t pilot_cmd_collect(void)
             /* send out pilot_cmd via mavlink */
             mavlink_send_pilot_cmd();
 #endif
+
+            last_timestamp = time_now;
         }
     }
 

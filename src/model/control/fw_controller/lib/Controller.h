@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1052
+ * Model version                  : 1.1064
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug  8 13:04:06 2022
+ * C/C++ source code generated on : Wed Sep 28 12:34:17 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,23 +37,23 @@
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T _DSTATE;                    /* '<S39>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S40>/Discrete-Time Integrator1' */
-  real32_T _DSTATE_n;                  /* '<S36>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_o;/* '<S37>/Discrete-Time Integrator1' */
+  real32_T _DSTATE;                    /* '<S40>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S41>/Discrete-Time Integrator1' */
+  real32_T _DSTATE_n;                  /* '<S37>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_o;/* '<S38>/Discrete-Time Integrator1' */
   real32_T DiscreteTimeIntegrator_DSTATE[3];/* '<S16>/Discrete-Time Integrator' */
   uint32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S4>/Discrete-Time Integrator' */
-  int8_T _PrevResetState;              /* '<S39>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S40>/Discrete-Time Integrator1' */
-  int8_T _PrevResetState_c;            /* '<S36>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevR_b;/* '<S37>/Discrete-Time Integrator1' */
+  int8_T _PrevResetState;              /* '<S40>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S41>/Discrete-Time Integrator1' */
+  int8_T _PrevResetState_c;            /* '<S37>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevR_b;/* '<S38>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S16>/Discrete-Time Integrator' */
 } DW_Controller_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T Zero;                 /* '<S39>/Zero' */
-  const real32_T Zero1;                /* '<S36>/Zero1' */
+  const real32_T Zero;                 /* '<S40>/Zero' */
+  const real32_T Zero1;                /* '<S37>/Zero1' */
   const real32_T Constant[3];          /* '<S16>/Constant' */
 } ConstB_Controller_T;
 
@@ -94,45 +94,49 @@ extern const ConstB_Controller_T Controller_ConstB;/* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_RieDKeHZ6guPn5kqC0ritH CONTROL_PARAM;/* Variable: CONTROL_PARAM
-                                                    * Referenced by:
-                                                    *   '<S5>/Saturation'
-                                                    *   '<S7>/pitch_ff'
-                                                    *   '<S7>/ratio'
-                                                    *   '<S7>/ratio2'
-                                                    *   '<S7>/thorttle_ff'
-                                                    *   '<S7>/ucmd2thor'
-                                                    *   '<S7>/wcmd2thor'
-                                                    *   '<S10>/FF'
-                                                    *   '<S10>/FF_limit'
-                                                    *   '<S10>/PI_limit'
-                                                    *   '<S28>/Gain3'
-                                                    *   '<S30>/P_control'
-                                                    *   '<S31>/P_control'
-                                                    *   '<S41>/Constant1'
-                                                    *   '<S41>/Constant12'
-                                                    *   '<S41>/Constant2'
-                                                    *   '<S41>/Constant7'
-                                                    *   '<S14>/trim_speed'
-                                                    *   '<S15>/trim_speed'
-                                                    *   '<S32>/Constant'
-                                                    *   '<S33>/Constant'
-                                                    *   '<S34>/Constant'
-                                                    *   '<S34>/Gain1'
-                                                    *   '<S35>/Gain'
-                                                    *   '<S36>/Gain3'
-                                                    *   '<S38>/Gain'
-                                                    *   '<S39>/Gain'
-                                                    *   '<S16>/gain1'
-                                                    *   '<S16>/gain2'
-                                                    *   '<S16>/gain3'
-                                                    *   '<S16>/Discrete-Time Integrator'
-                                                    *   '<S17>/gain1'
-                                                    *   '<S17>/gain2'
-                                                    *   '<S17>/gain3'
-                                                    *   '<S22>/Constant1'
-                                                    *   '<S22>/Constant2'
-                                                    */
+extern struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM;/* Variable: CONTROL_PARAM
+                                                   * Referenced by:
+                                                   *   '<S7>/Gain'
+                                                   *   '<S7>/Gain1'
+                                                   *   '<S7>/balabnce_ratio2'
+                                                   *   '<S7>/balance_ratio'
+                                                   *   '<S7>/pitch_ff'
+                                                   *   '<S7>/thorttle_ff'
+                                                   *   '<S7>/ucmd2pitch'
+                                                   *   '<S7>/ucmd2thor'
+                                                   *   '<S7>/wcmd2pitch'
+                                                   *   '<S7>/wcmd2thor'
+                                                   *   '<S8>/Saturation'
+                                                   *   '<S10>/FF'
+                                                   *   '<S10>/FF_limit'
+                                                   *   '<S10>/PI_limit'
+                                                   *   '<S30>/P_control'
+                                                   *   '<S31>/P_control'
+                                                   *   '<S43>/Constant1'
+                                                   *   '<S43>/Constant12'
+                                                   *   '<S43>/Constant2'
+                                                   *   '<S43>/Constant7'
+                                                   *   '<S14>/trim_speed'
+                                                   *   '<S15>/trim_speed'
+                                                   *   '<S33>/Constant'
+                                                   *   '<S34>/Constant'
+                                                   *   '<S36>/Gain'
+                                                   *   '<S37>/Gain3'
+                                                   *   '<S39>/Gain'
+                                                   *   '<S40>/Gain'
+                                                   *   '<S42>/Constant'
+                                                   *   '<S16>/gain1'
+                                                   *   '<S16>/gain2'
+                                                   *   '<S16>/gain3'
+                                                   *   '<S16>/Discrete-Time Integrator'
+                                                   *   '<S17>/gain1'
+                                                   *   '<S17>/gain2'
+                                                   *   '<S17>/gain3'
+                                                   *   '<S21>/Pitch Offset'
+                                                   *   '<S21>/Saturation'
+                                                   *   '<S22>/Constant1'
+                                                   *   '<S22>/Constant2'
+                                                   */
 extern struct_ny3PY9hontv4J5WqwlFzJB CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S4>/Constant'
                                                      */
@@ -151,6 +155,7 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * Block '<S4>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S11>/Reshape' : Reshape block reduction
  * Block '<S20>/Logical Operator1' : Eliminated due to no operation
+ * Block '<S29>/Logical Operator' : Eliminated due to no operation
  */
 
 /*-
@@ -195,23 +200,25 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S25>'  : 'Controller/Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant'
  * '<S26>'  : 'Controller/Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant1'
  * '<S27>'  : 'Controller/Controller/Signal_Select/Compare To Constant'
- * '<S28>'  : 'Controller/Controller/TECS_Core/Subsystem'
- * '<S29>'  : 'Controller/Controller/TECS_Core/Subsystem1'
+ * '<S28>'  : 'Controller/Controller/TECS_Core/path_angle_control'
+ * '<S29>'  : 'Controller/Controller/TECS_Core/phi_cmd'
  * '<S30>'  : 'Controller/Controller/TECS_Core/pitch_pid_out'
  * '<S31>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out'
- * '<S32>'  : 'Controller/Controller/TECS_Core/Subsystem/speed_ax_out'
- * '<S33>'  : 'Controller/Controller/TECS_Core/Subsystem1/Subsystem'
- * '<S34>'  : 'Controller/Controller/TECS_Core/Subsystem1/Subsystem1'
- * '<S35>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control'
- * '<S36>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/I_control'
- * '<S37>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control/DT Filter'
- * '<S38>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control'
- * '<S39>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/I_control'
- * '<S40>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
- * '<S41>'  : 'Controller/Controller/mixer/Effective_Matrix'
- * '<S42>'  : 'Controller/Controller/mixer/Signal_Select'
- * '<S43>'  : 'Controller/Controller/mixer/throttle_mapping'
- * '<S44>'  : 'Controller/Controller/mixer/Signal_Select/Compare To Constant'
+ * '<S32>'  : 'Controller/Controller/TECS_Core/velocity_control'
+ * '<S33>'  : 'Controller/Controller/TECS_Core/path_angle_control/Subsystem'
+ * '<S34>'  : 'Controller/Controller/TECS_Core/path_angle_control/Subsystem1'
+ * '<S35>'  : 'Controller/Controller/TECS_Core/phi_cmd/Compare To Constant'
+ * '<S36>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control'
+ * '<S37>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/I_control'
+ * '<S38>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control/DT Filter'
+ * '<S39>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control'
+ * '<S40>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/I_control'
+ * '<S41>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
+ * '<S42>'  : 'Controller/Controller/TECS_Core/velocity_control/speed_ax_out'
+ * '<S43>'  : 'Controller/Controller/mixer/Effective_Matrix'
+ * '<S44>'  : 'Controller/Controller/mixer/Signal_Select'
+ * '<S45>'  : 'Controller/Controller/mixer/throttle_mapping'
+ * '<S46>'  : 'Controller/Controller/mixer/Signal_Select/Compare To Constant'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

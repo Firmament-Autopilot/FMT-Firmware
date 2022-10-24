@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1863
+ * Model version                  : 1.1968
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Aug  6 09:40:09 2022
+ * C/C++ source code generated on : Fri Oct 14 08:47:05 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -80,9 +80,16 @@ typedef struct {
 
   /* pitch command */
   real32_T theta_cmd;
+  real32_T psi_cmd;
 
   /* yaw rate command */
   real32_T psi_rate_cmd;
+  real32_T x_cmd;
+  real32_T y_cmd;
+  real32_T z_cmd;
+  int32_T lat_cmd;
+  int32_T lon_cmd;
+  real32_T alt_cmd;
 
   /* velocity x command in control frame */
   real32_T u_cmd;
@@ -92,9 +99,42 @@ typedef struct {
 
   /* velocity z command in control frame */
   real32_T w_cmd;
+  real32_T ax_cmd;
+  real32_T ay_cmd;
+  real32_T az_cmd;
 
   /* throttle command */
-  uint32_T throttle_cmd;
+  uint16_T throttle_cmd;
+
+  /* Coordinate Frame:
+     0:FRAME_GLOBAL_NED
+     1:FRAME_LOCAL_FRD
+     2:FRAME_BODY_FRD */
+  uint8_T frame;
+  uint8_T reserved;
+
+  /* Type mask for auto command:
+     1: p_cmd valid
+     2: q_cmd valid
+     3: r_cmd valid
+     4: phi_cmd valid
+     5: theta_cmd valid
+     6: psi__cmd_valid
+     7: psi_rate_cmd_valid
+     8: x_cmd valid
+     9: y_cmd valid
+     10: z_cmd valid
+     11: lat_cmd valid
+     12: lon_cmd valid
+     13: alt_cmd valid
+     14: u_cmd valid
+     15: v_cmd valid
+     16: w_cmd valid
+     17: ax_cmd valid
+     18: ay_cmd valid
+     19: ax_cmd valid
+     20: throttle_cmd valid */
+  uint32_T cmd_mask;
 } Auto_Cmd_Bus;
 
 #endif
@@ -248,11 +288,27 @@ typedef struct {
   /* acceleration z command in control frame */
   real32_T az_cmd;
 
-  /* throttle command */
-  uint32_T throttle_cmd;
-
   /* actuator command */
   uint16_T actuator_cmd[16];
+
+  /* throttle command */
+  uint16_T throttle_cmd;
+
+  /* Type mask for offboard mode:
+     1: p_cmd valid
+     2: q_cmd valid
+     3: r_cmd valid
+     4: phi_cmd valid
+     5: theta_cmd valid
+     6: psi_rate_cmd_valid
+     7: u_cmd valid
+     8: v_cmd valid
+     9: w_cmd valid
+     10: ax_cmd valid
+     11: ay_cmd valid
+     12: ax_cmd valid
+     13: throttle_cmd valid */
+  uint16_T cmd_mask;
 
   /* enum VehicleStatus
 
@@ -320,7 +376,7 @@ typedef struct {
   uint8_T wp_current;
 
   /* enum of PilotMode */
-  uint8_T reserved1;
+  uint8_T reserved;
 } FMS_Out_Bus;
 
 #endif
@@ -362,7 +418,8 @@ typedef enum {
   ControlMode_Acro,
   ControlMode_Stabilize,
   ControlMode_ALTCTL,
-  ControlMode_POSCTL
+  ControlMode_POSCTL,
+  ControlMode_Offboard
 } ControlMode;
 
 #endif
@@ -396,11 +453,12 @@ typedef enum {
 #define DEFINED_TYPEDEF_FOR_Commander_In_Bus_
 
 typedef struct {
-  real32_T sp_takeoff[3];
-  real32_T sp_land[2];
-  real32_T sp_return[2];
   real32_T sp_waypoint[3];
   real32_T cur_waypoint[3];
+
+  /* The psi value when offboard mode entered,
+     which is used for FRAME_LOCAL_FRD */
+  real32_T offboard_psi_0;
 } Commander_In_Bus;
 
 #endif
@@ -419,8 +477,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_iFzoGS6ezHkwxeSA09xa0B_
-#define DEFINED_TYPEDEF_FOR_struct_iFzoGS6ezHkwxeSA09xa0B_
+#ifndef DEFINED_TYPEDEF_FOR_struct_E1qbCEGvnS3XtzDqfoNznD_
+#define DEFINED_TYPEDEF_FOR_struct_E1qbCEGvnS3XtzDqfoNznD_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -437,6 +495,7 @@ typedef struct {
   real32_T CRUISE_SPEED;
   real32_T TAKEOFF_H;
   real32_T ACCEPT_R;
+  real32_T LOITER_R;
   real32_T Y_P;
   real32_T ACC_Y_LIM;
   real32_T ROLL_LIM;
@@ -445,7 +504,7 @@ typedef struct {
   real32_T DISARM_OUT[16];
   real32_T STANDBY_OUT[16];
   real32_T VEL_XY_LIM;
-} struct_iFzoGS6ezHkwxeSA09xa0B;
+} struct_E1qbCEGvnS3XtzDqfoNznD;
 
 #endif
 

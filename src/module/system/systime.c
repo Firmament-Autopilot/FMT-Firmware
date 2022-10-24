@@ -45,7 +45,7 @@ uint8_t check_timetag(TimeTag* timetag)
 {
     uint32_t now = systime_now_ms();
 
-    if (now - timetag->tag >= timetag->period) {
+    if (timetag->period > 0 && now - timetag->tag >= timetag->period) {
         timetag->tag = now;
         return 1;
     }
@@ -61,7 +61,7 @@ uint8_t check_timetag(TimeTag* timetag)
  */
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now)
 {
-    if (now - timetag->tag >= timetag->period) {
+    if (timetag->period && now - timetag->tag >= timetag->period) {
         timetag->tag = now;
         return 1;
     }
@@ -78,7 +78,7 @@ uint8_t check_timetag2(TimeTag* timetag, uint32_t now)
  */
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
 {
-    if (now - timetag->tag >= period) {
+    if (period > 0 && now - timetag->tag >= period) {
         timetag->tag = now;
         return 1;
     }
