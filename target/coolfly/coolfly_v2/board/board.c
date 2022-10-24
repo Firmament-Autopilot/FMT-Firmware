@@ -82,7 +82,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
 #ifdef DEVICE_ON_BOARD
-    // { "mtdblk0", "/", "elm", 0, NULL },
+    { "mtdblk0", "/", "elm", 0, NULL },
 #endif
     { NULL } /* NULL indicate the end */
 };
@@ -427,8 +427,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_adc_init());
 
     /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
-    drv_ncp5623c_init("i2c3_dev1");
-    // console_println("drv_ncp5623c_init i2c3_dev1~");
+    // drv_ncp5623c_init("i2c3_dev1");
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

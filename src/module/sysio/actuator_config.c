@@ -218,10 +218,10 @@ static fmt_err_t actuator_parse_mapping(const toml_table_t* curtab, int idx)
         return FMT_ERROR;
     }
 
-    // if (toml_array_nelem(mapping_array) != 2) {
-    //     TOML_DBG_E("illegal chan-map array length: %d\n", toml_array_nelem(mapping_array));
-    //     return FMT_ERROR;
-    // }
+    if (toml_array_nelem(mapping_array) != 2) {
+        TOML_DBG_E("illegal chan-map array length: %d\n", toml_array_nelem(mapping_array));
+        return FMT_ERROR;
+    }
 
     arr = toml_array_at(mapping_array, 0);
     actuator_mappings_list[idx].map_size = toml_array_nelem(arr);
@@ -234,19 +234,19 @@ static fmt_err_t actuator_parse_mapping(const toml_table_t* curtab, int idx)
         }
     }
 
-    // arr = toml_array_at(mapping_array, 1);
-    // if (toml_array_nelem(arr) != actuator_mappings_list[idx].map_size) {
-    //     TOML_DBG_E("illegal array length:%d %d\n", toml_array_nelem(arr), actuator_mappings_list[idx].map_size);
-    //     return FMT_ERROR;
-    // }
-    // for (i = 0; i < actuator_mappings_list[idx].map_size; i++) {
-    //     if (toml_int_at(arr, i, &ival) == 0) {
-    //         actuator_mappings_list[idx].to_map[i] = (uint16_t)ival;
-    //     } else {
-    //         TOML_DBG_E("fail to parse mapping value\n");
-    //         return FMT_ERROR;
-    //     }
-    // }
+    arr = toml_array_at(mapping_array, 1);
+    if (toml_array_nelem(arr) != actuator_mappings_list[idx].map_size) {
+        TOML_DBG_E("illegal array length:%d %d\n", toml_array_nelem(arr), actuator_mappings_list[idx].map_size);
+        return FMT_ERROR;
+    }
+    for (i = 0; i < actuator_mappings_list[idx].map_size; i++) {
+        if (toml_int_at(arr, i, &ival) == 0) {
+            actuator_mappings_list[idx].to_map[i] = (uint16_t)ival;
+        } else {
+            TOML_DBG_E("fail to parse mapping value\n");
+            return FMT_ERROR;
+        }
+    }
 
     return err;
 }
@@ -350,6 +350,7 @@ fmt_err_t actuator_toml_config(toml_table_t* table)
             if (toml_array_table_in(table, key, &arr) == 0) {
                 err = actuator_parse_mappings(arr);
                 if (err != FMT_EOK) {
+                    TOML_DBG_E("actuator_parse_mappings error\n");    
                     return err;
                 }
             } else {
@@ -383,5 +384,6 @@ fmt_err_t actuator_toml_config(toml_table_t* table)
         }
     }
 
+    show_actuator_config();
     return FMT_EOK;
 }

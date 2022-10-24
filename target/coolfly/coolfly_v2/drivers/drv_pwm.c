@@ -27,7 +27,7 @@
 #define PWM_FREQ_400HZ (400)
 
 #define MAX_PWM_OUT_CHAN      10            // AUX Out has 10 pwm channel
-#define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
+#define PWM_DEFAULT_FREQUENCY PWM_FREQ_400HZ // pwm default frequqncy
 
 
 uint32_t g_pwm_high_level[MAX_PWM_OUT_CHAN]; // high level of the pwm wave
@@ -168,7 +168,7 @@ static struct actuator_device act_dev = {
     .config = {
         .protocol = ACT_PROTOCOL_PWM,
         .chan_num = MAX_PWM_OUT_CHAN,
-        .pwm_config = { .pwm_freq = PWM_FREQ_50HZ },
+        .pwm_config = { .pwm_freq = PWM_FREQ_400HZ },
         .dshot_config = {0}
         },
     .ops = &__act_ops
