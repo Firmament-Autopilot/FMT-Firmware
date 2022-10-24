@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'COOLFLY_S1'
+BOARD = 'CHUANYUN_V5'
 
 # toolchains options
 ARCH = 'arm'
@@ -52,7 +52,7 @@ if PLATFORM == 'gcc':
         ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
-        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_coolfly_v2.map,-cref,-u,Reset_Handler -T link.lds'
+        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_chuanyun_v5.map,-cref,-u,Reset_Handler -T link.lds'
                     
     CPATH = ''
     LPATH = ''
@@ -67,7 +67,7 @@ if PLATFORM == 'gcc':
     CFLAGS += ' -std=c99'
     CXXFLAGS += ' -std=c++14'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_coolfly_v2.bin\n' + SIZE + ' $TARGET -A\n'
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_chuanyun_v5.bin\n' + SIZE + ' $TARGET -A\n'
 
 
 
