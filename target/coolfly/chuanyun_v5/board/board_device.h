@@ -26,8 +26,9 @@
 #define  RGB_G_GPIO             HAL_GPIO_NUM62
 #define  RGB_B_GPIO             HAL_GPIO_NUM58
 
+#define  SENSOR_POWER_GPIO      HAL_GPIO_NUM70
 
-#define SPI1_SPEED_HZ 7000000
+#define SPI1_SPEED_HZ 9000000
 
 
 #endif

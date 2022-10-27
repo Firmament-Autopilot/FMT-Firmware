@@ -50,7 +50,7 @@ void task_local_entry(void* parameter)
     bb_led_start();
     bb_match_id_start();
 
-    // xc7027_start();
+    xc7027_start();
 
     while (1) {
         DLOG_Process(NULL);
@@ -63,10 +63,12 @@ TASK_EXPORT __fmt_task_desc = {
     .init = task_local_init,
     .entry = task_local_entry,
     .priority = 25,
+    .auto_start = true,
     .stack_size = 1024,
     .param = NULL,
     .dependency = NULL
 };
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 

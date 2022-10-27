@@ -586,7 +586,6 @@ static rt_err_t accel_read_m_s2(float acc[3])
 
 static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cfg)
 {
-
     RT_ASSERT(cfg != NULL);
 
     RT_TRY(accel_set_range(cfg->acc_range_g));

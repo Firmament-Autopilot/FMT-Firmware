@@ -16,7 +16,7 @@
 #include "module/workqueue/workqueue_manager.h"
 
 #define XC7027_DVP_CHANNEL 1
-#define DVP_RST_CTRL       HAL_GPIO_NUM65
+#define DVP_RST_CTRL       HAL_GPIO_NUM103
 #define XC7027_I2C         HAL_I2C_COMPONENT_0
 
 _EXT_DTCM1_BSS
@@ -523,7 +523,7 @@ static void init()
             DLOG_Critical("ret =%08x !", ret);
         }
 
-        DLOG_Critical("value1 =%02x value2 = %02x !", value1, value2);
+        // DLOG_Critical("value1 =%02x value2 = %02x !", value1, value2);
 
         // read WHO_AM_I value
         if ((value1 == 0x71) && (value2 == 0x60)) {
@@ -535,6 +535,7 @@ static void init()
     }
 
     if (!tries) {
+        // sys_msleep(5000);
         DLOG_Critical("can't find xc7082 !");
         return;
     }
@@ -558,16 +559,19 @@ _EXT_DTCM1
 void xc7027_re_init(void)
 {
     is_Inited = 0;
+    // init();
 }
 
 _EXT_DTCM1
 static void run_xc7027(void* parameter)
 {
     if (!is_Inited) {
+        
         XC7027_Reset();
         init();
-
+        is_Inited = 1;  // just set once.
     } else {
+        
         XC7027_SENSOR_LoopCallBack();
     }
 }
@@ -585,9 +589,15 @@ static struct WorkItem xc7027_item = {
 _EXT_DTCM1
 void xc7027_start(void)
 {
+
+
+
+
+
     WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
 
     RT_ASSERT(lp_wq != NULL);
 
     FMT_CHECK(workqueue_schedule_work(lp_wq, &xc7027_item));
+    
 }
