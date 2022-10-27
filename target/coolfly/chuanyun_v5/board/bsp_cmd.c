@@ -49,7 +49,7 @@ static int handle_reset_fct(int argc, char** argv, int optc, optv_t* optv)
 {
 
 	FCT_Reset();
-    // FCT_SaveToFlashTest();
+    FCT_SaveToFlashTest();
     
     printf("fct reset finish~ \r\n");
 	return 0;

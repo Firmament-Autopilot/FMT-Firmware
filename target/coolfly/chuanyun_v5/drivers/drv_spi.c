@@ -18,14 +18,38 @@
 #include "ar1002_hal.h"
 
 
+#define SPI0_CS1_Pin       HAL_GPIO_NUM70
+#define SPI0_SCK_Pin       HAL_GPIO_NUM66
+#define SPI0_MOSI_Pin      HAL_GPIO_NUM62
+#define SPI0_MISO_Pin      HAL_GPIO_NUM58
+
+
+#define SPI1_CS1_Pin       HAL_GPIO_NUM71
+#define SPI1_SCK_Pin       HAL_GPIO_NUM67
+#define SPI1_MOSI_Pin      HAL_GPIO_NUM63
+#define SPI1_MISO_Pin      HAL_GPIO_NUM59
+
 
 #define SPI2_CS1_Pin       HAL_GPIO_NUM72
+#define SPI2_CS2_Pin       HAL_GPIO_NUM101
+#define SPI2_CS3_Pin       HAL_GPIO_NUM102
+#define SPI2_SCK_Pin       HAL_GPIO_NUM68
+#define SPI2_MOSI_Pin      HAL_GPIO_NUM64
+#define SPI2_MISO_Pin      HAL_GPIO_NUM60
 
 
 #define SPI3_CS1_Pin       HAL_GPIO_NUM73
 #define SPI3_CS2_Pin       HAL_GPIO_NUM100  
+#define SPI3_SCK_Pin       HAL_GPIO_NUM69
+#define SPI3_MOSI_Pin      HAL_GPIO_NUM65
+#define SPI3_MISO_Pin      HAL_GPIO_NUM61
+
 
 #define SPI6_CS1_Pin       HAL_GPIO_NUM46
+#define SPI6_SCK_Pin       HAL_GPIO_NUM47
+#define SPI6_MOSI_Pin      HAL_GPIO_NUM48
+#define SPI6_MISO_Pin      HAL_GPIO_NUM49
+
 
 
 struct ar1002_spi_bus {
@@ -191,13 +215,51 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
  */
 rt_err_t drv_spi_init(void)
 {
+
+
+    /* init SPI gpio */
+    // HAL_GPIO_SetMode(SPI0_CS1_Pin, HAL_GPIO_PIN_MODE0);
+
+    HAL_GPIO_OutPut(SPI0_CS1_Pin); 
+    HAL_GPIO_SetPin(SPI0_CS1_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_SetMode(SPI0_SCK_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI0_MOSI_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI0_MISO_Pin, HAL_GPIO_PIN_MODE0);
+
+    HAL_GPIO_OutPut(SPI1_CS1_Pin); 
+    HAL_GPIO_SetPin(SPI1_CS1_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_SetMode(SPI1_SCK_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI1_MOSI_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI1_MISO_Pin, HAL_GPIO_PIN_MODE0);
+    
+    HAL_GPIO_OutPut(SPI2_CS1_Pin); 
+    HAL_GPIO_SetPin(SPI2_CS1_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_OutPut(SPI2_CS2_Pin); 
+    HAL_GPIO_SetPin(SPI2_CS2_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_OutPut(SPI2_CS3_Pin); 
+    HAL_GPIO_SetPin(SPI2_CS3_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_SetMode(SPI2_SCK_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI2_MOSI_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI2_MISO_Pin, HAL_GPIO_PIN_MODE0);
+
+    HAL_GPIO_OutPut(SPI3_CS1_Pin); 
+    HAL_GPIO_SetPin(SPI3_CS1_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_OutPut(SPI3_CS2_Pin); 
+    HAL_GPIO_SetPin(SPI3_CS2_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_SetMode(SPI3_SCK_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI3_MOSI_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI3_MISO_Pin, HAL_GPIO_PIN_MODE0);
+
+    HAL_GPIO_OutPut(SPI6_CS1_Pin); 
+    HAL_GPIO_SetPin(SPI6_CS1_Pin, HAL_GPIO_PIN_SET);
+    HAL_GPIO_SetMode(SPI6_SCK_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI6_MOSI_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(SPI6_MISO_Pin, HAL_GPIO_PIN_MODE0);
+
     rt_err_t ret;
-
-
 
     /* register SPI bus */
     static struct ar1002_spi_bus ar1002_spi2;
-
 
     /* register SPI2 bus */
     ret = ar1002_spi_register(SPI_2, &ar1002_spi2, "spi2");
@@ -215,6 +277,36 @@ rt_err_t drv_spi_init(void)
         HAL_GPIO_SetPin(ar1002_spi_cs_1.GPIO_Pin, HAL_GPIO_PIN_SET);
         
         ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi2_dev1", "spi2", (void*)&ar1002_spi_cs_1);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+
+    /* attach spi_device_2 to spi2 */
+    {
+        static struct rt_spi_device rt_spi_device_2;
+        static struct ar1002_spi_cs ar1002_spi_cs_2;
+        ar1002_spi_cs_2.GPIO_Pin = SPI2_CS2_Pin;
+
+        HAL_GPIO_OutPut(ar1002_spi_cs_2.GPIO_Pin);
+        HAL_GPIO_SetPin(ar1002_spi_cs_2.GPIO_Pin, HAL_GPIO_PIN_SET);
+        
+        ret = rt_spi_bus_attach_device(&rt_spi_device_2, "spi2_dev2", "spi2", (void*)&ar1002_spi_cs_2);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+
+    /* attach spi_device_3 to spi2 */
+    {
+        static struct rt_spi_device rt_spi_device_3;
+        static struct ar1002_spi_cs ar1002_spi_cs_3;
+        ar1002_spi_cs_3.GPIO_Pin = SPI2_CS3_Pin;
+
+        HAL_GPIO_OutPut(ar1002_spi_cs_3.GPIO_Pin);
+        HAL_GPIO_SetPin(ar1002_spi_cs_3.GPIO_Pin, HAL_GPIO_PIN_SET);
+        
+        ret = rt_spi_bus_attach_device(&rt_spi_device_3, "spi2_dev3", "spi2", (void*)&ar1002_spi_cs_3);
         if (ret != RT_EOK) {
             return ret;
         }

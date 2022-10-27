@@ -29,6 +29,7 @@
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
 // #include "driver/imu/bmi055.h"
+#include "driver/imu/bmi088.h"
 // #include "driver/imu/icm20689.h"
 #include "driver/imu/icm20600.h"
 // #include "driver/mag/ist8310.h"
@@ -287,18 +288,18 @@ void cf_delay_ms(uint32_t num)
     }
 }
 
-void test_led(void)
-{
-    // test_led
-    HAL_GPIO_OutPut(HAL_GPIO_NUM61);
-    uint8_t i = 5;
-    while (i--) {
-        HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_SET);
-        cf_delay_ms(1000);
-        HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_RESET);
-        cf_delay_ms(1000);
-    }
-}
+// void test_led(void)
+// {
+//     // test_led
+//     HAL_GPIO_OutPut(HAL_GPIO_NUM61);
+//     uint8_t i = 5;
+//     while (i--) {
+//         HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_SET);
+//         cf_delay_ms(1000);
+//         HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_RESET);
+//         cf_delay_ms(1000);
+//     }
+// }
 
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
@@ -324,6 +325,9 @@ void bsp_early_initialize(void)
     HAL_GPIO_OutPut(RGB_B_GPIO); // rgb1 B led close
     HAL_GPIO_SetPin(RGB_B_GPIO, HAL_GPIO_PIN_RESET);
 
+    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); // 
+    HAL_GPIO_SetPin(SENSOR_POWER_GPIO, HAL_GPIO_PIN_SET);
+    
 
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
@@ -427,8 +431,9 @@ void bsp_initialize(void)
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
+    // RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro1", "accel1"));
     RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
-    // RT_CHECK(drv_spl06_init("spi3_dev1", "barometer"));
+    // RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
     /* if no gps mag then use onboard mag */
 
     // if (drv_ist8310_init("i2c2_dev1", "mag0") != FMT_EOK) {
