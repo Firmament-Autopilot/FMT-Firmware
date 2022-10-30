@@ -31,47 +31,67 @@ static sd_card_info_struct sd_cardinfo; /* information of SD card */
 */
 void SDIO_IRQHandler(void)
 {
-    sd_interrupts_process();
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    sd_error_enum sd_err = sd_interrupts_process();
+    if (sd_err != SD_OK) {
+        printf("sd isr error:%d\n", sd_err);
+    }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
 }
 
 static void nvic_config(void)
 {
     nvic_priority_group_set(NVIC_PRIGROUP_PRE1_SUB3);
-    nvic_irq_enable(SDIO_IRQn, 0, 0);
+    nvic_irq_enable(SDIO_IRQn, 0, 1);
 }
 
 static rt_err_t init(sd_dev_t sd)
 {
-    sd_error_enum status = SD_OK;
+    // sd_error_enum status = SD_OK;
     uint32_t cardstate = 0;
 
     nvic_config();
 
-    status = sd_init();
+    if (sd_init() != SD_OK) {
+        goto error;
+    }
 
-    if (SD_OK == status) {
-        status = sd_card_information_get(&sd_cardinfo);
+    if (sd_card_information_get(&sd_cardinfo) != SD_OK) {
+        goto error;
     }
-    if (SD_OK == status) {
-        status = sd_card_select_deselect(sd_cardinfo.card_rca);
+
+    if (sd_card_select_deselect(sd_cardinfo.card_rca) != SD_OK) {
+        goto error;
     }
-    status = sd_cardstatus_get(&cardstate);
+
+    if (sd_cardstatus_get(&cardstate) != SD_OK) {
+        goto error;
+    }
+
     if (cardstate & 0x02000000) {
-        printf("\r\n the card is locked!");
-        return RT_ERROR;
-    }
-    if ((SD_OK == status) && (!(cardstate & 0x02000000))) {
-        /* set bus mode */
-        status = sd_bus_mode_config(SDIO_BUSMODE_4BIT);
-        // status = sd_bus_mode_config(SDIO_BUSMODE_1BIT);
-    }
-    if (SD_OK == status) {
-        /* set data transfer mode */
-        status = sd_transfer_mode_config(SD_DMA_MODE);
-        // status = sd_transfer_mode_config(SD_POLLING_MODE);
+        printf("the card is locked!\n");
+        goto error;
     }
 
-    return status == SD_OK ? RT_EOK : RT_ERROR;
+    if (sd_bus_mode_config(SDIO_BUSMODE_4BIT) != SD_OK) {
+        goto error;
+    }
+
+    if (sd_transfer_mode_config(SD_POLLING_MODE) != SD_OK) {
+        goto error;
+    }
+
+    /* enable sdio hardware clock control to avoid SD_RX_OVERRUN_ERROR */
+    sdio_hardware_clock_enable();
+
+    return RT_EOK;
+
+error:
+    return RT_ERROR;
 }
 
 static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
@@ -108,7 +128,8 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
             return RT_ERROR;
         }
     } else {
-        if (sd_block_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize) != SD_OK) {
+        sd_error_enum sd_err = sd_block_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize);
+        if (sd_err != SD_OK) {
             return RT_ERROR;
         }
     }
