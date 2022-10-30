@@ -24,6 +24,10 @@
 #define DRV_DBG(...)
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 
+#ifdef BIT
+    #undef BIT
+#endif
+
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
     (reg_val_t) { .setbits = (_setbits), .clearbits = (_clearbits) }
@@ -348,7 +352,6 @@ static rt_err_t accel_set_bwp_odr(uint16_t frequency_hz)
 static rt_err_t accel_set_range(uint32_t max_g)
 {
     uint8_t reg_val;
-    float lsb_per_g;
 
     if (max_g == 0) {
         max_g = 24;
@@ -370,7 +373,6 @@ static rt_err_t accel_set_range(uint32_t max_g)
         return RT_EINVAL;
     }
 
-    uint8_t rd_buf[2];
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_RANGE, reg_val));
     return RT_EOK;
 }
@@ -509,11 +511,12 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi088_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
+rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi_device_name,
+                         const char* gyro_device_name, const char* accel_device_name)
 {
     /* Initialize gyroscope */
 
-    gyro_spi_dev = rt_device_find(spi_device_name);
+    gyro_spi_dev = rt_device_find(gyro_spi_device_name);
     RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {
@@ -536,7 +539,7 @@ rt_err_t drv_bmi088_init(const char* spi_device_name, const char* gyro_device_na
 
     /* Initialize accelerometer */
 
-    accel_spi_dev = rt_device_find("spi2_dev3");
+    accel_spi_dev = rt_device_find(accel_spi_device_name);
     RT_ASSERT(accel_spi_dev != NULL);
 
     /* config spi */

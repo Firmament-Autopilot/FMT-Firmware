@@ -17,14 +17,14 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define VEHICLE_TYPE "Quadcopter"
+#define VEHICLE_TYPE "Template"
 
 // #define FMT_USING_CHECKED
 
 /* HIL simulation */
 // #define FMT_USING_HIL
 /* SIH simulation */
-#define FMT_USING_SIH
+// #define FMT_USING_SIH
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2

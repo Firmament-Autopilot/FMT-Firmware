@@ -29,6 +29,8 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "driver/imu/bmi088.h"
+#include "driver/mag/bmm150.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -236,10 +238,10 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_i2c_init());
 
     /* pwm driver init */
-    RT_CHECK(drv_pwm_init());
+    // RT_CHECK(drv_pwm_init());
 
     /* init remote controller driver */
-    RT_CHECK(drv_rc_init());
+    // RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -275,6 +277,9 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
 #else
     /* init onboard sensors */
+    RT_CHECK(drv_bmi088_init("spi0_dev1", "spi0_dev0", "gyro0", "accel0"));
+    RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
+
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
     // RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
@@ -316,10 +321,10 @@ void bsp_post_initialize(void)
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
     /* init rc */
-    FMT_CHECK(pilot_cmd_init());
+    // FMT_CHECK(pilot_cmd_init());
 
     /* init gcs */
-    FMT_CHECK(gcs_cmd_init());
+    // FMT_CHECK(gcs_cmd_init());
 
     /* init auto command */
     FMT_CHECK(auto_cmd_init());

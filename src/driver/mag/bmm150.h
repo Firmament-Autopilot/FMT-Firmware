@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef BOARD_DEVICE_H__
-#define BOARD_DEVICE_H__
+#ifndef BMM150_H__
+#define BMM150_H__
 
-// Device Name
-#define FMTIO_DEVICE_NAME "serial5"
+#include <rtthread.h>
 
-#define SPI0_SPEED_HZ 7000000
-#define SPI1_SPEED_HZ 7000000
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_bmm150_init(const char* spi_device_name, const char* mag_device_name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
