@@ -357,6 +357,22 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi0_dev3, "spi0_dev3", "spi0", (void*)&spi0_cs3));
     }
 
+    /* attach spi_device_4 (ICM42688 IMU) to spi0 */
+    {
+        static struct rt_spi_device rt_spi0_dev4;
+        static struct gd32_spi_cs spi0_cs4 = { .gpio_periph = GPIOE, .pin = GPIO_PIN_12 };
+
+        /* enable cs pin clock */
+        rcu_periph_clock_enable(RCU_GPIOE);
+        /* configure cs pin gpio */
+        gpio_mode_set(GPIOE, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_12);
+        gpio_output_options_set(GPIOE, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_12);
+        /* set CS pin by default */
+        gpio_bit_set(spi0_cs4.gpio_periph, spi0_cs4.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi0_dev4, "spi0_dev4", "spi0", (void*)&spi0_cs4));
+    }
+
     /* register SPI0 bus */
     RT_TRY(gd32_spi_register(SPI1, &gd32_spi1, "spi1"));
 

@@ -39,7 +39,6 @@
 #include "hal/i2c/i2c.h"
 #include "hal/spi/spi.h"
 
-#include "sdcard.h"
 #include <string.h>
 
 // static uint8_t tx_buffer[] = "Test DMA Usart!\r\n";
@@ -83,43 +82,6 @@ int cmd_test(int argc, char** argv)
     // RT_CHECK(i2c_read_reg(test_dev, 0x0A, &id));
 
     // printf("id:%x\n", id);
-
-    uint8_t buffer[512];
-    sd_error_enum sd_err;
-    int count = 1;
-
-    if(argc > 1) {
-        count = atoi(argv[1]);
-    }
-
-    memset(buffer, 0x3f, 512);
-    sd_err = sd_block_write((uint32_t*)buffer, 200 * 512, 512);
-    if (sd_err != SD_OK) {
-        printf("sd_block write fail:%d\n", sd_err);
-        return 0;
-    }
-
-    for (int i = 0; i < count; i++) {
-        memset(buffer, 0, 512);
-
-        sd_err = sd_block_read((uint32_t*)buffer, 200 * 512, 512);
-        if (sd_err != SD_OK) {
-            printf("sd_block read fail:%d\n", sd_err);
-            return 0;
-        }
-
-        for (int j = 0; j < 512; j++) {
-            if (buffer[j] != 0x3f) {
-                printf("check error:\n");
-                for (int k = 0; k < 512; k++) {
-                    printf("%x,", buffer[k]);
-                }
-                printf("\n");
-                return 0;
-            }
-        }
-    }
-    printf("check ok\n");
 
     return 0;
 }

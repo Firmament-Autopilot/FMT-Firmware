@@ -21,6 +21,9 @@
 #include <string.h>
 
 #include "default_config.h"
+#include "driver/imu/bmi088.h"
+#include "driver/imu/icm42688.h"
+#include "driver/mag/bmm150.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
@@ -29,8 +32,6 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
-#include "driver/imu/bmi088.h"
-#include "driver/mag/bmm150.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -279,6 +280,7 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi0_dev1", "spi0_dev0", "gyro0", "accel0"));
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
+    RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1"));
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
@@ -324,7 +326,7 @@ void bsp_post_initialize(void)
     // FMT_CHECK(pilot_cmd_init());
 
     /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    FMT_CHECK(gcs_cmd_init());
 
     /* init auto command */
     FMT_CHECK(auto_cmd_init());

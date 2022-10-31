@@ -13,31 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef ICM42688_H__
+#define ICM42688_H__
 
-/* This is the default toml config for the target, which is loaded when there is
- * no sysconfig.toml finded. Please do not format this file. */
+#include <rtthread.h>
 
-// clang-format off
-static char* default_conf = STRING(
-target = "Amov ICF5"\n
-[console]\n
-	[[console.devices]]\n
-	type = "serial"\n
-	name = "serial0"\n
-	baudrate = 57600\n
-	auto-switch = true\n
-	[[console.devices]]\n
-	type = "mavlink"\n
-	name = "mav_console"\n
-	auto-switch = true\n
-[mavproxy]\n
-	[[mavproxy.devices]]\n
-	type = "serial"\n
-	name = "serial1"\n
-	baudrate = 57600\n
-    [[mavproxy.devices]]\n
-	type = "usb"\n
-	name = "usbd0"\n
-    auto-switch = true
-);
-// clang-format on
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_icm42688_init(const char* spi_dev_name, const char* gyro_dev_name, const char* accel_dev_name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

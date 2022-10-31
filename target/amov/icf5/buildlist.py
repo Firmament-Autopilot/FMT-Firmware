@@ -3,8 +3,8 @@
 from building import *
 
 DRIVERS = [
-    # 'imu/icm20689.c',
     'imu/bmi088.c',
+    'imu/icm42688.c',
     'mag/bmm150.c',
     # 'barometer/ms5611.c',
     # 'gps/gps_m8n.c',
