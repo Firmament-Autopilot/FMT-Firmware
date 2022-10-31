@@ -18,10 +18,11 @@
 #include "hal/sd/sd.h"
 #include "sdcard.h"
 
-#include <string.h>
+#define SD_WAIT_TIMEOUT 10
 
 static struct sd_device sd0_dev;
 static sd_card_info_struct sd_cardinfo; /* information of SD card */
+static struct rt_mutex sd_lock;
 
 /*!
     \brief      this function handles SDIO interrupt request
@@ -43,18 +44,12 @@ void SDIO_IRQHandler(void)
     rt_interrupt_leave();
 }
 
-static void nvic_config(void)
-{
-    nvic_priority_group_set(NVIC_PRIGROUP_PRE1_SUB3);
-    nvic_irq_enable(SDIO_IRQn, 0, 1);
-}
-
 static rt_err_t init(sd_dev_t sd)
 {
-    // sd_error_enum status = SD_OK;
     uint32_t cardstate = 0;
 
-    nvic_config();
+    nvic_priority_group_set(NVIC_PRIGROUP_PRE1_SUB3);
+    nvic_irq_enable(SDIO_IRQn, 0, 1);
 
     if (sd_init() != SD_OK) {
         goto error;
@@ -102,15 +97,19 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
         return RT_EOK;
     }
 
+    RT_TRY(rt_mutex_take(&sd_lock, TICKS_FROM_MS(SD_WAIT_TIMEOUT)));
+
     if (count > 1) {
         if (sd_multiblocks_write((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize, count) != SD_OK) {
-            return RT_ERROR;
+            err = RT_ERROR;
         }
     } else {
         if (sd_block_write((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize) != SD_OK) {
-            return RT_ERROR;
+            err = RT_ERROR;
         }
     }
+
+    RT_TRY(rt_mutex_release(&sd_lock));
 
     return err;
 }
@@ -123,16 +122,19 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
         return RT_EOK;
     }
 
+    RT_TRY(rt_mutex_take(&sd_lock, TICKS_FROM_MS(SD_WAIT_TIMEOUT)));
+
     if (count > 1) {
         if (sd_multiblocks_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize, count) != SD_OK) {
-            return RT_ERROR;
+            err = RT_ERROR;
         }
     } else {
-        sd_error_enum sd_err = sd_block_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize);
-        if (sd_err != SD_OK) {
-            return RT_ERROR;
+        if (sd_block_read((uint32_t*)buffer, sector * sd_cardinfo.card_blocksize, sd_cardinfo.card_blocksize) != SD_OK) {
+            err = RT_ERROR;
         }
     }
+
+    RT_TRY(rt_mutex_release(&sd_lock));
 
     return err;
 }
@@ -152,9 +154,6 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
         //TODO
     } break;
     case RT_DEVICE_CTRL_BLK_ERASE: {
-        // uint32_t* tbl = (uint32_t*)arg;
-        // HAL_SD_Erase(sd_handle, tbl[0], tbl[1]);
-
         /* sd card is not needed to erase */
         return RT_ERROR;
     } break;
@@ -176,6 +175,8 @@ const static struct sd_ops dev_ops = {
 rt_err_t drv_sdio_init(void)
 {
     sd0_dev.ops = &dev_ops;
+
+    RT_TRY(rt_mutex_init(&sd_lock, "sd_lock", RT_IPC_FLAG_PRIO));
 
     return hal_sd_register(&sd0_dev, "sd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE, &sd_cardinfo);
 }
