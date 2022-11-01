@@ -373,7 +373,7 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi0_dev4, "spi0_dev4", "spi0", (void*)&spi0_cs4));
     }
 
-    /* register SPI0 bus */
+    /* register SPI1 bus */
     RT_TRY(gd32_spi_register(SPI1, &gd32_spi1, "spi1"));
 
     /* attach spi_device_0 (SPI1 FRAM) to spi1 */
