@@ -33,5 +33,8 @@ void control_interface_init(void)
     control_model_info.period = 10;
     control_model_info.info = "Template Controller";
 
+    /* advertise control_output topic */
+    mcn_advertise(MCN_HUB(control_output), NULL);
+
     /* Add your code here */
 }

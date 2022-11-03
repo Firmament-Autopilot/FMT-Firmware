@@ -33,7 +33,7 @@
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
 #include "driver/rgb_led/tca62724.h"
-#include "driver/vision_flow/pmw3901_l0x.h"
+#include "driver/vision_flow/pmw3901_xx.h"
 #include "drv_gpio.h"
 #include "drv_i2c_soft.h"
 #include "drv_pwm.h"
@@ -54,6 +54,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
@@ -104,7 +105,7 @@ static void banner_item(const char* name, const char* content, char pad, uint32_
     console_printf("%s\n", content);
 }
 
-#define ITEM_LENGTH 42
+#define BANNER_ITEM_LEN 42
 static void bsp_show_information(void)
 {
     char buffer[50];
@@ -116,18 +117,18 @@ static void bsp_show_information(void)
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
     sprintf(buffer, "FMT FW %s", FMT_VERSION);
-    banner_item("Firmware", buffer, '.', ITEM_LENGTH);
+    banner_item("Firmware", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    banner_item("Kernel", buffer, '.', ITEM_LENGTH);
+    banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    banner_item("RAM", buffer, '.', ITEM_LENGTH);
-    banner_item("Target", TARGET_NAME, '.', ITEM_LENGTH);
-    banner_item("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
-    banner_item("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
-    banner_item("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
-    banner_item("Control Model", control_model_info.info, '.', ITEM_LENGTH);
+    banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
+    banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", VEHICLE_TYPE, '.', BANNER_ITEM_LEN);
+    banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
 #ifdef FMT_USING_SIH
-    banner_item("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
+    banner_item("Plant Model", plant_model_info.info, '.', BANNER_ITEM_LEN);
 #endif
 
     console_println("Task Initialize:");
@@ -135,7 +136,7 @@ static void bsp_show_information(void)
     for (uint32_t i = 0; i < get_task_num(); i++) {
         sprintf(buffer, "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
-        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
 }
 
@@ -322,7 +323,8 @@ void bsp_initialize(void)
     RT_CHECK(lsm303d_drv_init("spi1_dev1", "mag0", "accel1"));
     /* init barometer */
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
-    RT_CHECK(pmw3901_l0x_drv_init("serial3"));
+    /* init optical flow module (a mini tf included) */
+    RT_CHECK(pmw3901_xx_drv_init("serial3"));
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 
@@ -330,6 +332,8 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
 
     /* init finsh */
@@ -362,6 +366,9 @@ void bsp_post_initialize(void)
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
+
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
     /* init mission data */
     FMT_CHECK(mission_data_init());

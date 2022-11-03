@@ -33,5 +33,8 @@ void ins_interface_init(void)
     ins_model_info.period = 10;
     ins_model_info.info = "Template INS";
 
+    /* advertise ins_output topic */
+    mcn_advertise(MCN_HUB(ins_output), NULL);
+
     /* Add your code here */
 }

@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-brightgreen" alt="GitHub license" /></a>
-  <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/actions/workflows/main.yml"><img src="https://img.shields.io/github/workflow/status/Firmament-Autopilot/FMT-Firmware/FMT-Firmware%20CI/master" alt="build status"></a>
+  <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/actions/workflows/build.yml"><img src="https://img.shields.io/github/workflow/status/Firmament-Autopilot/FMT-Firmware/FMT-Firmware%20CI/master" alt="build status"></a>
   <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/releases"><img src="https://img.shields.io/github/v/release/Firmament-Autopilot/FMT-Firmware" alt="release version" /></a>
 </p>
 
@@ -38,6 +38,9 @@ Current supported hardware:
 - [Pixhawk4 (FMUv5)](https://docs.px4.io/master/en/flight_controller/pixhawk4.html)
 - [CUAV V5+](https://store.cuav.net/shop/v5-autopilot/)
 - QEMU vexpress-a9
+  
+The drone hardware equipped with FMT:
+- [Amovlab F200](https://item.taobao.com/item.htm?spm=a230r.1.14.22.65553d8dunv9QL&id=676605798722&ns=1&abbucket=14#detail)
 
 ## Documentation
 [User Guide](https://firmament-autopilot.github.io/FMT-DOCS/)

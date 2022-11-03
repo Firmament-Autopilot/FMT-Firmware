@@ -18,6 +18,7 @@
 #define PLANT_H__
 
 #include <firmament.h>
+#include "rtwtypes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,8 +28,8 @@ extern "C" {
     #define DEFINED_TYPEDEF_FOR_Control_Out_Bus_
 
 typedef struct {
-    uint32_t timestamp;
-    uint16_t actuator_cmd[16];
+    uint32_T timestamp;
+    uint16_T actuator_cmd[16];
 } Control_Out_Bus;
 
 #endif
@@ -37,28 +38,28 @@ typedef struct {
     #define DEFINED_TYPEDEF_FOR_Plant_States_Bus_
 
 typedef struct {
-    uint32_t timestamp;
-    float phi;
-    float theta;
-    float psi;
-    float rot_x_B;
-    float rot_y_B;
-    float rot_z_B;
-    float acc_x_O;
-    float acc_y_O;
-    float acc_z_O;
-    float vel_x_O;
-    float vel_y_O;
-    float vel_z_O;
-    float x_R;
-    float y_R;
-    float h_R;
-    double lon;
-    double lat;
-    double alt;
-    double lon_ref;
-    double lat_ref;
-    double alt_ref;
+    uint32_T timestamp;
+    real32_T phi;
+    real32_T theta;
+    real32_T psi;
+    real32_T rot_x_B;
+    real32_T rot_y_B;
+    real32_T rot_z_B;
+    real32_T acc_x_O;
+    real32_T acc_y_O;
+    real32_T acc_z_O;
+    real32_T vel_x_O;
+    real32_T vel_y_O;
+    real32_T vel_z_O;
+    real32_T x_R;
+    real32_T y_R;
+    real32_T h_R;
+    real_T lat;
+    real_T lon;
+    real_T alt;
+    real_T lat_0;
+    real_T lon_0;
+    real_T alt_0;
 } Plant_States_Bus;
 
 #endif
@@ -67,11 +68,11 @@ typedef struct {
     #define DEFINED_TYPEDEF_FOR_Extended_States_Bus_
 
 typedef struct {
-    float temprature;
-    float prop_vel[8];
-    float quat[4];
-    float M_BO[9];
-    float M_OB[9];
+    real32_T temprature;
+    real32_T prop_vel[8];
+    real32_T quat[4];
+    real32_T M_BO[9];
+    real32_T M_OB[9];
 } Extended_States_Bus;
 
 #endif
@@ -80,9 +81,9 @@ typedef struct {
     #define DEFINED_TYPEDEF_FOR_Barometer_Bus_
 
 typedef struct {
-    uint32_t timestamp;
-    float pressure;
-    float temperature;
+    uint32_T timestamp;
+    real32_T pressure;
+    real32_T temperature;
 } Barometer_Bus;
 
 #endif
@@ -91,36 +92,36 @@ typedef struct {
     #define DEFINED_TYPEDEF_FOR_GPS_uBlox_Bus_
 
 typedef struct {
-    uint32_t timestamp;
-    uint32_t iTOW;
-    uint16_t year;
-    uint8_t month;
-    uint8_t day;
-    uint8_t hour;
-    uint8_t min;
-    uint8_t sec;
-    uint8_t valid;
-    uint32_t tAcc;
-    int32_t nano;
-    uint8_t fixType;
-    uint8_t flags;
-    uint8_t reserved1;
-    uint8_t numSV;
-    int32_t lon;
-    int32_t lat;
-    int32_t height;
-    int32_t hMSL;
-    uint32_t hAcc;
-    uint32_t vAcc;
-    int32_t velN;
-    int32_t velE;
-    int32_t velD;
-    int32_t gSpeed;
-    int32_t heading;
-    uint32_t sAcc;
-    uint32_t headingAcc;
-    uint16_t pDOP;
-    uint16_t reserved2;
+    uint32_T timestamp;
+    uint32_T iTOW;
+    uint16_T year;
+    uint8_T month;
+    uint8_T day;
+    uint8_T hour;
+    uint8_T min;
+    uint8_T sec;
+    uint8_T valid;
+    uint32_T tAcc;
+    int32_T nano;
+    uint8_T fixType;
+    uint8_T flags;
+    uint8_T reserved1;
+    uint8_T numSV;
+    int32_T lon;
+    int32_T lat;
+    int32_T height;
+    int32_T hMSL;
+    uint32_T hAcc;
+    uint32_T vAcc;
+    int32_T velN;
+    int32_T velE;
+    int32_T velD;
+    int32_T gSpeed;
+    int32_T heading;
+    uint32_T sAcc;
+    uint32_T headingAcc;
+    uint16_T pDOP;
+    uint16_T reserved2;
 } GPS_uBlox_Bus;
 
 #endif
@@ -129,13 +130,13 @@ typedef struct {
     #define DEFINED_TYPEDEF_FOR_IMU_Bus_
 
 typedef struct {
-    uint32_t timestamp;
-    float gyr_x;
-    float gyr_y;
-    float gyr_z;
-    float acc_x;
-    float acc_y;
-    float acc_z;
+    uint32_T timestamp;
+    real32_T gyr_x;
+    real32_T gyr_y;
+    real32_T gyr_z;
+    real32_T acc_x;
+    real32_T acc_y;
+    real32_T acc_z;
 } IMU_Bus;
 
 #endif
@@ -144,10 +145,10 @@ typedef struct {
     #define DEFINED_TYPEDEF_FOR_MAG_Bus_
 
 typedef struct {
-    uint32_t timestamp;
-    float mag_x;
-    float mag_y;
-    float mag_z;
+    uint32_T timestamp;
+    real32_T mag_x;
+    real32_T mag_y;
+    real32_T mag_z;
 } MAG_Bus;
 
 #endif

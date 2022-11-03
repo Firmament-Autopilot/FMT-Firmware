@@ -25,9 +25,9 @@
 
 #define GET_GAP(x, y) x > y ? (x - y) : (0xFFFF - y + x)
 
-//we just need accuracy of 0.01ms
-#define ENCODER_FREQ 100000
-static uint32_t Scale_US = 1000000 / ENCODER_FREQ;
+//capture accuracy is 0.001ms
+#define ENCODER_FREQ 1000000
+static float Scale_US = 1000000.0f / ENCODER_FREQ;
 static uint8_t _ppm_send_freq = 20; /* default is 20Hz */
 static uint8_t _ppm_recv = 0;
 static uint8_t _ppm_sending = 0;
@@ -41,7 +41,7 @@ void ppm_status_machine(uint16_t IC_Val)
 
     gap = GET_GAP(IC_Val, ppm_param.last_ic);
 
-    if (gap > 90 && gap < 210) {
+    if (gap > ENCODER_FREQ / 1000 * 0.9f && gap < ENCODER_FREQ / 1000 * 2.1f) {
         /* valid ppm signal should between 1ms(100) to 2ms(200) */
         if (ppm_param.chan_id < MAX_PPM_CHANNEL) {
             temp_val[ppm_param.chan_id] = gap;

@@ -35,6 +35,7 @@ TASK_EXPORT __fmt_task_desc = {
     .init = task_fmtio_init,
     .entry = task_fmtio_entry,
     .priority = FMTIO_THREAD_PRIORITY,
+    .auto_start = true,
     .stack_size = 2048,
     .param = NULL,
     .dependency = NULL

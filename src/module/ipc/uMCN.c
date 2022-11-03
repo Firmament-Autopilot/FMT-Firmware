@@ -223,6 +223,9 @@ fmt_err_t mcn_copy_from_hub(McnHub_t hub, void* buffer)
  */
 fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
 {
+    void* pdata;
+    void* next;
+
     MCN_ASSERT(hub != NULL);
 
     if (hub->pdata != NULL) {
@@ -230,15 +233,21 @@ fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
         return FMT_ENOTHANDLE;
     }
 
-    MCN_ENTER_CRITICAL;
-    hub->pdata = MCN_MALLOC(hub->obj_size);
-    hub->echo = echo;
+    pdata = MCN_MALLOC(hub->obj_size);
+    if (pdata == NULL) {
+        return FMT_ENOMEM;
+    }
+    memset(pdata, 0, hub->obj_size);
 
-    if (hub->pdata == NULL) {
+    next = MCN_MALLOC(sizeof(McnList));
+    if (next == NULL) {
+        MCN_FREE(pdata);
         return FMT_ENOMEM;
     }
 
-    memset(hub->pdata, 0, hub->obj_size);
+    MCN_ENTER_CRITICAL;
+    hub->pdata = pdata;
+    hub->echo = echo;
 
     /* update Mcn List */
     McnList_t cp = &__mcn_list;
@@ -249,11 +258,7 @@ fmt_err_t mcn_advertise(McnHub_t hub, int (*echo)(void* parameter))
     }
 
     if (cp->hub != NULL) {
-        cp->next = (McnList_t)MCN_MALLOC(sizeof(McnList));
-
-        if (cp->next == NULL)
-            return FMT_ENOMEM;
-
+        cp->next = (McnList_t)next;
         cp = cp->next;
     }
 
@@ -282,14 +287,14 @@ McnNode_t mcn_subscribe(McnHub_t hub, MCN_EVENT_HANDLE event, void (*pub_cb)(voi
     MCN_ASSERT(hub != NULL);
 
     if (hub->link_num >= MCN_MAX_LINK_NUM) {
-        console_printf("mcn link num is already full!\n");
+        printf("mcn link num is already full!\n");
         return NULL;
     }
 
     McnNode_t node = (McnNode_t)MCN_MALLOC(sizeof(McnNode));
 
     if (node == NULL) {
-        console_printf("mcn create node fail!\n");
+        printf("mcn create node fail!\n");
         return NULL;
     }
 
@@ -373,11 +378,12 @@ fmt_err_t mcn_unsubscribe(McnHub_t hub, McnNode_t node)
         }
     }
 
+    hub->link_num--;
+    MCN_EXIT_CRITICAL;
+
     /* free current node */
     MCN_FREE(cur_node);
     // cur_node = NULL;
-    hub->link_num--;
-    MCN_EXIT_CRITICAL;
 
     return FMT_EOK;
 }

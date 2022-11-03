@@ -38,7 +38,7 @@ void assert_failed(uint8_t* file, uint32_t line)
 
 static void assert_hook(const char* ex, const char* func, rt_size_t line)
 {
-    printf("(%s) assertion failed at function:%s, line number:%d \n", ex, func, line);
+    printf("(%s) assertion failed at function:%s, line number:%ld \n", ex, func, line);
 
 #ifdef FMT_USING_CHECKED
     assert_failed((uint8_t*)func, (uint32_t)line);
@@ -57,13 +57,13 @@ static void rt_init_thread_entry(void* parameter)
     bsp_initialize();
 
     /* task initialization */
-    task_init();
+    task_manager_init();
 
     /* bsp post initialization */
     bsp_post_initialize();
 
     /* start task */
-    task_start();
+    task_manager_start();
 }
 
 int rt_application_init()

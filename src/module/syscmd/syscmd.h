@@ -18,6 +18,7 @@
 #define SYSCMD_H__
 
 #include <firmament.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {

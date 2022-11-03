@@ -25,7 +25,6 @@ extern "C" {
 
 // Board Information
 #define TARGET_NAME  "Pixhawk4 FMUv5"
-#define VEHICLE_TYPE "Quadcopter"
 
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (0x80000) // 512K

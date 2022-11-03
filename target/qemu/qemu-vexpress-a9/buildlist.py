@@ -1,5 +1,6 @@
 # Build Lists
 # Modify this file to control which files/modules should be built
+from building import *
 
 DRIVERS = [
 ]
@@ -42,6 +43,7 @@ MODULES = [
     'syscmd/cmd_param.c',
     'syscmd/cmd_ps.c',
     'syscmd/cmd_test.c',
+    'syscmd/cmd_task.c',
 ]
 
 MODULES_CPPPATH = [
@@ -57,12 +59,23 @@ TASKS = [
 
 TASKS_CPPPATH = []
 
-MODELS = [
-    'plant/multicopter',
-    'ins/base_ins',
-    'fms/base_fms',
-    'control/base_controller',
-]
+vehicle_type = GetConfigValue('VEHICLE_TYPE')
+if vehicle_type == '"Quadcopter"':
+    MODELS = [
+        'plant/multicopter',
+        'ins/base_ins',
+        'fms/base_fms',
+        'control/base_controller',
+    ]
+elif vehicle_type == '"Template"':
+    MODELS = [
+        'plant/template_plant',
+        'ins/template_ins',
+        'fms/template_fms',
+        'control/template_controller',
+    ]
+else:
+    raise Exception("Wrong VEHICLE_TYPE %s defined" % vehicle_type)
 
 LIBS = [
     'mavlink',

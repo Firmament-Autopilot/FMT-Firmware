@@ -35,7 +35,7 @@
 #define USING_UART1
 #define USING_UART2
 #define USING_UART3
-// #define USING_UART4
+#define USING_UART4
 // #define USING_UART5
 // #define USING_UART6  /* disable USART6, as it conflicts with io sbus input */
 #define USING_UART7
@@ -56,7 +56,7 @@
 
 #define SERIAL5_DEFAULT_CONFIG                  \
     {                                           \
-        BAUD_RATE_230400,  /* 115200 bits/s */  \
+        BAUD_RATE_230400,  /* 230400 bits/s */  \
             DATA_BITS_8,   /* 8 databits */     \
             STOP_BITS_1,   /* 1 stopbit */      \
             PARITY_NONE,   /* No parity  */     \
@@ -64,6 +64,18 @@
             NRZ_NORMAL,    /* Normal mode */    \
             1024,          /* Buffer size */    \
             0                                   \
+    }
+
+#define SERIAL6_DEFAULT_CONFIG                    \
+    {                                             \
+        BAUD_RATE_115200,    /* 115200 bits/s */  \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
     }
 
 /* STM32 uart driver */
@@ -362,6 +374,25 @@ void DMA1_Stream3_IRQHandler(void)
 }
 #endif // USING_UART3
 
+#ifdef USING_UART4
+static struct serial_device serial6; // UART4
+/* UART2 device driver structure */
+static struct stm32_uart uart4 = {
+    .uart_device = UART4,
+    .irq = UART4_IRQn,
+};
+
+void UART4_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial6);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART4
+
 #ifdef USING_UART6
 static struct serial_device serial4; // TELEM3
 
@@ -482,6 +513,11 @@ static void RCC_Configuration(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
 #endif /* USING_UART3 */
 
+#ifdef USING_UART4
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART4);
+#endif /* USING_UART4 */
+
 #ifdef USING_UART6
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);
     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
@@ -541,6 +577,16 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif /* USING_UART3 */
+
+#ifdef USING_UART4
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+#endif /* USING_UART4 */
 
 #ifdef USING_UART6
     GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
@@ -788,9 +834,9 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
 
     case RT_DEVICE_CTRL_SET_INT:
         if (ctrl_arg == RT_DEVICE_FLAG_INT_RX) {
-            /* disable rx irq */
+            /* enable rx irq */
             NVIC_EnableIRQ(uart->irq);
-            /* disable interrupt */
+            /* enable interrupt */
             LL_USART_EnableIT_RXNE(uart->uart_device);
         }
         break;
@@ -943,6 +989,23 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
                                   &uart3);
 #endif /* USING_UART3 */
+
+#ifdef USING_UART4
+    serial6.ops = &_usart_ops;
+    #ifdef SERIAL6_DEFAULT_CONFIG
+    struct serial_configure serial6_config = SERIAL6_DEFAULT_CONFIG;
+    serial6.config = serial6_config;
+    #else
+    serial6.config = config;
+    #endif
+
+    NVIC_Configuration(&uart4);
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial6,
+                                  "serial6",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart4);
+#endif /* USING_UART4 */
 
 #ifdef USING_UART6
     serial4.ops = &_usart_ops;

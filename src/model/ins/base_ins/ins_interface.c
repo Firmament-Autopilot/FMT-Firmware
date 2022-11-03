@@ -21,6 +21,10 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
+#ifdef BIT
+    #undef BIT
+#endif
+
 #define BIT(u, n) (u & (1 << n))
 
 /* INS input bus */
@@ -30,31 +34,40 @@ MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(sensor_optflow);
+MCN_DECLARE(sensor_airspeed);
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(GPS_HOR_Q_BIAS, 3),
+    PARAM_FLOAT(GPS_HOR_Q_BIAS, 2.5),
     PARAM_FLOAT(GPS_HOR_Q_SCALE, 0.4),
-    PARAM_FLOAT(GPS_VER_Q_BIAS, 6),
+    PARAM_FLOAT(GPS_VER_Q_BIAS, 4.5),
     PARAM_FLOAT(GPS_VER_Q_SCALE, 0.25),
-    PARAM_FLOAT(GPS_VEL_Q_BIAS, 0.8),
-    PARAM_FLOAT(GPS_VEL_Q_SCALE, 2),
+    PARAM_FLOAT(GPS_VEL_Q_BIAS, 1),
+    PARAM_FLOAT(GPS_VEL_Q_SCALE, 1),
     PARAM_FLOAT(ATT_GAIN, 0.2),
     PARAM_FLOAT(HEADING_GAIN, 0.05),
     PARAM_FLOAT(MAG_GAIN, 0.2),
     PARAM_FLOAT(BIAS_G_GAIN, 0.25),
     PARAM_FLOAT(GPS_POS_GAIN, 0),
+    PARAM_FLOAT(GPS_ALT_GAIN, 0),
     PARAM_FLOAT(GPS_VEL_GAIN, 2),
     PARAM_FLOAT(GPS_BIAS_A_GAIN, 1),
     PARAM_UINT32(GPS_POS_DELAY, 150),
     PARAM_UINT32(GPS_VEL_DELAY, 100),
+    PARAM_FLOAT(OPF_VEL_GAIN, 2),
+    PARAM_FLOAT(OPF_BIAS_A_GAIN, 1),
+    PARAM_UINT32(OPF_VEL_DELAY, 5),
     PARAM_FLOAT(BARO_H_GAIN, 2),
     PARAM_FLOAT(BARO_VZ_GAIN, 1),
     PARAM_FLOAT(BARO_BIAS_AZ_GAIN, 0.2),
     PARAM_UINT32(BARO_H_DELAY, 10),
+    PARAM_FLOAT(RF_H_GAIN, 2),
+    PARAM_FLOAT(RF_VZ_GAIN, 1),
+    PARAM_FLOAT(RF_BIAS_AZ_GAIN, 0.2),
+    PARAM_UINT32(RF_H_DELAY, 5),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 
@@ -121,7 +134,7 @@ MLOG_BUS_DEFINE(GPS_uBlox, GPS_uBlox_Elems);
 
 mlog_elem_t Rangefinder_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
-    MLOG_ELEMENT(distance_m, MLOG_FLOAT),
+    MLOG_ELEMENT(distance, MLOG_FLOAT),
 };
 MLOG_BUS_DEFINE(Rangefinder, Rangefinder_Elems);
 
@@ -129,9 +142,18 @@ mlog_elem_t Optflow_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
     MLOG_ELEMENT(vx, MLOG_FLOAT),
     MLOG_ELEMENT(vy, MLOG_FLOAT),
-    MLOG_ELEMENT(valid, MLOG_UINT32),
+    MLOG_ELEMENT(quality, MLOG_UINT8),
+    MLOG_ELEMENT(reserved1, MLOG_UINT8),
+    MLOG_ELEMENT(reserved2, MLOG_UINT16),
 };
 MLOG_BUS_DEFINE(OpticalFlow, Optflow_Elems);
+
+mlog_elem_t Airspeed_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(diff_pressure, MLOG_FLOAT),
+    MLOG_ELEMENT(temperature, MLOG_FLOAT),
+};
+MLOG_BUS_DEFINE(AirSpeed, Airspeed_Elems);
 
 mlog_elem_t INS_Out_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
@@ -148,7 +170,7 @@ mlog_elem_t INS_Out_Elems[] = {
     MLOG_ELEMENT(vn, MLOG_FLOAT),
     MLOG_ELEMENT(ve, MLOG_FLOAT),
     MLOG_ELEMENT(vd, MLOG_FLOAT),
-    MLOG_ELEMENT(reserved, MLOG_FLOAT),
+    MLOG_ELEMENT(airspeed, MLOG_FLOAT),
     MLOG_ELEMENT(lat, MLOG_DOUBLE),
     MLOG_ELEMENT(lon, MLOG_DOUBLE),
     MLOG_ELEMENT(alt, MLOG_DOUBLE),
@@ -171,6 +193,7 @@ static struct INS_Handler {
     McnNode_t gps_sub_node_t;
     McnNode_t rf_sub_node_t;
     McnNode_t optflow_sub_node_t;
+    McnNode_t airspeed_sub_node_t;
 
     imu_data_t imu_report;
     mag_data_t mag_report;
@@ -178,6 +201,7 @@ static struct INS_Handler {
     gps_data_t gps_report;
     rf_data_t rf_report;
     optflow_data_t optflow_report;
+    airspeed_data_t airspeed_report;
 } ins_handle;
 
 static uint8_t imu_data_updated;
@@ -186,6 +210,7 @@ static uint8_t baro_data_updated;
 static uint8_t gps_data_updated;
 static uint8_t rf_data_updated;
 static uint8_t optflow_data_updated;
+static uint8_t airspeed_data_updated;
 
 static int IMU_ID;
 static int MAG_ID;
@@ -193,6 +218,7 @@ static int Barometer_ID;
 static int GPS_ID;
 static int Rangefinder_ID;
 static int OpticalFlow_ID;
+static int AirSpeed_ID;
 static int INS_Out_ID;
 
 fmt_model_info_t ins_model_info;
@@ -207,7 +233,7 @@ static int ins_output_echo(void* param)
     printf("att: %.2f %.2f %.2f\n", RAD2DEG(ins_out.phi), RAD2DEG(ins_out.theta), RAD2DEG(ins_out.psi));
     printf("rate: %.2f %.2f %.2f\n", ins_out.p, ins_out.q, ins_out.r);
     printf("accel: %.2f %.2f %.2f\n", ins_out.ax, ins_out.ay, ins_out.az);
-    printf("vel: %.2f %.2f %.2f\n", ins_out.vn, ins_out.ve, ins_out.vd);
+    printf("vel: %.2f %.2f %.2f airspeed:%.2f\n", ins_out.vn, ins_out.ve, ins_out.vd, ins_out.airspeed);
     printf("xyh: %.2f %.2f %.2f, h_AGL: %.2f\n", ins_out.x_R, ins_out.y_R, ins_out.h_R, ins_out.h_AGL);
     printf("LLA: %lf %lf %f\n", ins_out.lat, ins_out.lon, ins_out.alt);
     printf("LLA0: %lf %lf %f\n", ins_out.lat_0, ins_out.lon_0, ins_out.alt_0);
@@ -220,7 +246,14 @@ static int ins_output_echo(void* param)
            BIT(ins_out.flag, 6) > 0,
            BIT(ins_out.flag, 7) > 0,
            BIT(ins_out.flag, 8) > 0);
-    printf("sensor valid, imu1:%d imu2:%d mag:%d baro:%d gps:%d\n", BIT(ins_out.status, 0) > 0, BIT(ins_out.status, 1) > 0, BIT(ins_out.status, 2) > 0, BIT(ins_out.status, 3) > 0, BIT(ins_out.status, 4) > 0);
+    printf("sensor status, imu1:%d imu2:%d mag:%d baro:%d gps:%d rf:%d optflow:%d\n",
+           BIT(ins_out.status, 0) > 0,
+           BIT(ins_out.status, 1) > 0,
+           BIT(ins_out.status, 2) > 0,
+           BIT(ins_out.status, 3) > 0,
+           BIT(ins_out.status, 4) > 0,
+           BIT(ins_out.status, 5) > 0,
+           BIT(ins_out.status, 6) > 0);
     printf("------------------------------------------\n");
 
     return 0;
@@ -235,6 +268,7 @@ static void mlog_start_cb(void)
     gps_data_updated = 1;
     rf_data_updated = 1;
     optflow_data_updated = 1;
+    airspeed_data_updated = 1;
 }
 
 static void init_parameter(void)
@@ -254,10 +288,17 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_BIAS_A_GAIN), &INS_PARAM.GPS_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_DELAY), &INS_PARAM.GPS_POS_DELAY));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_DELAY), &INS_PARAM.GPS_VEL_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_VEL_GAIN), &INS_PARAM.OPF_VEL_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_BIAS_A_GAIN), &INS_PARAM.OPF_BIAS_A_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_VEL_DELAY), &INS_PARAM.OPF_VEL_DELAY));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_GAIN), &INS_PARAM.BARO_H_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_VZ_GAIN), &INS_PARAM.BARO_VZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_BIAS_AZ_GAIN), &INS_PARAM.BARO_BIAS_AZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BARO_H_DELAY), &INS_PARAM.BARO_H_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_H_GAIN), &INS_PARAM.RF_H_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_VZ_GAIN), &INS_PARAM.RF_VZ_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_BIAS_AZ_GAIN), &INS_PARAM.RF_BIAS_AZ_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_H_DELAY), &INS_PARAM.RF_H_DELAY));
 }
 
 void ins_interface_step(uint32_t timestamp)
@@ -323,7 +364,9 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.rf_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
-        // TODO
+        INS_U.Rangefinder.distance = ins_handle.rf_report.distance_m;
+        INS_U.Rangefinder.timestamp = timestamp;
+
         rf_data_updated = 1;
     }
 
@@ -331,8 +374,23 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.optflow_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
-        // TODO
+        INS_U.Optical_Flow.vx = ins_handle.optflow_report.vx_mPs;
+        INS_U.Optical_Flow.vy = ins_handle.optflow_report.vy_mPs;
+        INS_U.Optical_Flow.quality = ins_handle.optflow_report.quality;
+        INS_U.Optical_Flow.timestamp = timestamp;
+
         optflow_data_updated = 1;
+    }
+
+    /* update airspeed data */
+    if (mcn_poll(ins_handle.airspeed_sub_node_t)) {
+        mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.airspeed_sub_node_t, &ins_handle.airspeed_report);
+
+        INS_U.AirSpeed.diff_pressure = ins_handle.airspeed_report.diff_pressure_pa;
+        INS_U.AirSpeed.temperature = ins_handle.airspeed_report.temperature_deg;
+        INS_U.AirSpeed.timestamp = timestamp;
+
+        airspeed_data_updated = 1;
     }
 
     /* run INS */
@@ -369,13 +427,19 @@ void ins_interface_step(uint32_t timestamp)
     if (rf_data_updated) {
         rf_data_updated = 0;
         /* Log Rangefinder data */
-        mlog_push_msg((uint8_t*)&ins_handle.rf_report, Rangefinder_ID, sizeof(ins_handle.rf_report));
+        mlog_push_msg((uint8_t*)&INS_U.Rangefinder, Rangefinder_ID, sizeof(INS_U.Rangefinder));
     }
 
     if (optflow_data_updated) {
         optflow_data_updated = 0;
         /* Log Optical Flow data */
-        mlog_push_msg((uint8_t*)&ins_handle.optflow_report, OpticalFlow_ID, sizeof(ins_handle.optflow_report));
+        mlog_push_msg((uint8_t*)&INS_U.Optical_Flow, OpticalFlow_ID, sizeof(INS_U.Optical_Flow));
+    }
+
+    if (airspeed_data_updated) {
+        airspeed_data_updated = 0;
+        /* Log AirSpeed data */
+        mlog_push_msg((uint8_t*)&ins_handle.airspeed_report, AirSpeed_ID, sizeof(INS_U.AirSpeed));
     }
 
     /* Log INS output bus data */
@@ -399,6 +463,7 @@ void ins_interface_init(void)
     ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
+    ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
 
     IMU_ID = mlog_get_bus_id("IMU");
     MAG_ID = mlog_get_bus_id("MAG");
@@ -406,6 +471,7 @@ void ins_interface_init(void)
     GPS_ID = mlog_get_bus_id("GPS_uBlox");
     Rangefinder_ID = mlog_get_bus_id("Rangefinder");
     OpticalFlow_ID = mlog_get_bus_id("OpticalFlow");
+    AirSpeed_ID = mlog_get_bus_id("AirSpeed");
     INS_Out_ID = mlog_get_bus_id("INS_Out");
     FMT_ASSERT(IMU_ID >= 0);
     FMT_ASSERT(MAG_ID >= 0);
@@ -413,6 +479,7 @@ void ins_interface_init(void)
     FMT_ASSERT(GPS_ID >= 0);
     FMT_ASSERT(Rangefinder_ID >= 0);
     FMT_ASSERT(OpticalFlow_ID >= 0);
+    FMT_ASSERT(AirSpeed_ID >= 0);
     FMT_ASSERT(INS_Out_ID >= 0);
 
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);

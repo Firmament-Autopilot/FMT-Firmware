@@ -19,6 +19,7 @@
 
 #include "module/filter/butter.h"
 #include "module/math/light_matrix.h"
+#include "module/sensor/sensor_airspeed.h"
 #include "module/sensor/sensor_baro.h"
 #include "module/sensor/sensor_gps.h"
 #include "module/sensor/sensor_hub.h"
@@ -42,6 +43,8 @@ MCN_DEFINE(sensor_mag1, sizeof(mag_data_t));
 
 MCN_DEFINE(sensor_baro, sizeof(baro_data_t));
 
+MCN_DEFINE(sensor_airspeed, sizeof(airspeed_data_t));
+
 MCN_DEFINE(sensor_gps, sizeof(gps_data_t));
 
 MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
@@ -52,6 +55,7 @@ static sensor_imu_t imu_dev[MAX_IMU_DEV_NUM] = { NULL };
 static sensor_mag_t mag_dev[MAX_MAG_DEV_NUM] = { NULL };
 static sensor_baro_t baro_dev = NULL;
 static sensor_gps_t gps_dev = NULL;
+static sensor_airspeed_t airspeed_dev = NULL;
 
 static Butter3* butter3_gyr[MAX_IMU_DEV_NUM][3];
 static Butter3* butter3_acc[MAX_IMU_DEV_NUM][3];
@@ -130,11 +134,30 @@ static int echo_sensor_baro(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%d pressure:%d temperature:%f altitude:%f\n",
+    console_printf("timestamp:%u pressure:%d temperature:%f altitude:%f\n",
                    baro_report.timestamp_ms,
                    baro_report.pressure_pa,
                    baro_report.temperature_deg,
                    baro_report.altitude_m);
+
+    return 0;
+}
+
+static int echo_sensor_airspeed(void* param)
+{
+    fmt_err_t err;
+    airspeed_data_t airspeed_report;
+
+    err = mcn_copy_from_hub((McnHub*)param, &airspeed_report);
+
+    if (err != FMT_EOK) {
+        return -1;
+    }
+
+    console_printf("timestamp:%u diff_pressure:%f temperature:%f\n",
+                   airspeed_report.timestamp_ms,
+                   airspeed_report.diff_pressure_pa,
+                   airspeed_report.temperature_deg);
 
     return 0;
 }
@@ -151,6 +174,32 @@ static int echo_sensor_gps(void* param)
     }
 
     console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f\n", gps_report.lon, gps_report.lat, gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.vAcc, gps_report.sAcc);
+
+    return 0;
+}
+
+static int echo_sensor_optflow(void* param)
+{
+    optflow_data_t optflow_report;
+
+    if (mcn_copy_from_hub((McnHub*)param, &optflow_report) != FMT_EOK) {
+        return -1;
+    }
+
+    console_printf("timestsamp:%u vx:%.2f vy:%.2f quality:%d\n", optflow_report.timestamp_ms, optflow_report.vx_mPs, optflow_report.vy_mPs, optflow_report.quality);
+
+    return 0;
+}
+
+static int echo_sensor_rangefinder(void* param)
+{
+    rf_data_t rf_report;
+
+    if (mcn_copy_from_hub((McnHub*)param, &rf_report) != FMT_EOK) {
+        return -1;
+    }
+
+    console_printf("timestamp:%u distance:%.2f\n", rf_report.timestamp_ms, rf_report.distance_m);
 
     return 0;
 }
@@ -399,6 +448,25 @@ fmt_err_t advertise_sensor_baro(uint8_t id)
 }
 
 /**
+ * @brief Advertise sensor airspeed topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_airspeed(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_airspeed), echo_sensor_airspeed));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
  * @brief Advertise sensor gps topic
  * 
  * @param id sensor topic
@@ -409,6 +477,44 @@ fmt_err_t advertise_sensor_gps(uint8_t id)
     switch (id) {
     case 0:
         FMT_TRY(mcn_advertise(MCN_HUB(sensor_gps), echo_sensor_gps));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Advertise sensor optical flow topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_optflow(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_optflow), echo_sensor_optflow));
+        break;
+    default:
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Advertise sensor range finder topic
+ * 
+ * @param id sensor topic
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t advertise_sensor_rangefinder(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        FMT_TRY(mcn_advertise(MCN_HUB(sensor_rangefinder), echo_sensor_rangefinder));
         break;
     default:
         return FMT_EINVAL;
@@ -514,6 +620,22 @@ fmt_err_t register_sensor_rangefinder(const char* dev_name)
     //TODO
     FMT_TRY(mcn_advertise(MCN_HUB(sensor_rangefinder), NULL));
     return FMT_EOK;
+}
+
+/**
+ * @brief Register airspeed sensor
+ * 
+ * @param dev_name Airspeed device name
+ * @return fmt_err_t FMT_EOK for success
+ */
+fmt_err_t register_sensor_airspeed(const char* dev_name)
+{
+    airspeed_dev = sensor_airspeed_init(dev_name);
+    if (airspeed_dev == NULL) {
+        return FMT_ERROR;
+    }
+
+    return advertise_sensor_airspeed(0);
 }
 
 /**
@@ -656,6 +778,21 @@ void sensor_collect(void)
             sensor_gps_read(gps_dev, &gps_data);
             /* publish gps data */
             mcn_publish(MCN_HUB(sensor_gps), &gps_data);
+        }
+    }
+
+    /*
+     * Collect airspeed data
+     */
+    airspeed_data_t airspeed_data;
+    DEFINE_TIMETAG(airspeed_interval, 5);
+
+    if (check_timetag(TIMETAG(airspeed_interval))) {
+        if (airspeed_dev != NULL) {
+            if (sensor_airspeed_measure(airspeed_dev, &airspeed_data) == FMT_EOK) {
+                /* publish barometer data */
+                mcn_publish(MCN_HUB(sensor_airspeed), &airspeed_data);
+            }
         }
     }
 }

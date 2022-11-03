@@ -26,16 +26,17 @@
 #include <drivers/mmcsd_core.h>
 
 #include "default_config.h"
-#include "module/console/console_config.h"
 #include "model/control/control_interface.h"
-#include "module/file_manager/file_manager.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#include "module/console/console_config.h"
+#include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
+#include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
@@ -45,7 +46,7 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
-#include "model/plant/plant_interface.h"
+    #include "model/plant/plant_interface.h"
 #endif
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
@@ -89,7 +90,7 @@ static void banner_item(const char* name, const char* content, char pad, uint32_
     console_printf("%s\n", content);
 }
 
-#define ITEM_LENGTH 42
+#define BANNER_ITEM_LEN 42
 static void bsp_show_information(void)
 {
     char buffer[50];
@@ -101,18 +102,18 @@ static void bsp_show_information(void)
     console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
 
     sprintf(buffer, "FMT FW %s", FMT_VERSION);
-    banner_item("Firmware", buffer, '.', ITEM_LENGTH);
+    banner_item("Firmware", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
-    banner_item("Kernel", buffer, '.', ITEM_LENGTH);
+    banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
-    banner_item("RAM", buffer, '.', ITEM_LENGTH);
-    banner_item("Target", TARGET_NAME, '.', ITEM_LENGTH);
-    banner_item("Vehicle", VEHICLE_TYPE, '.', ITEM_LENGTH);
-    banner_item("INS Model", ins_model_info.info, '.', ITEM_LENGTH);
-    banner_item("FMS Model", fms_model_info.info, '.', ITEM_LENGTH);
-    banner_item("Control Model", control_model_info.info, '.', ITEM_LENGTH);
+    banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
+    banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", VEHICLE_TYPE, '.', BANNER_ITEM_LEN);
+    banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
 #ifdef FMT_USING_SIH
-    banner_item("Plant Model", plant_model_info.info, '.', ITEM_LENGTH);
+    banner_item("Plant Model", plant_model_info.info, '.', BANNER_ITEM_LEN);
 #endif
 
     console_println("Task Initialize:");
@@ -120,7 +121,7 @@ static void bsp_show_information(void)
     for (uint32_t i = 0; i < get_task_num(); i++) {
         sprintf(buffer, "  %s", task_tab[i].name);
         /* task status must be okay to reach here */
-        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_OK ? "OK" : "Fail", '.', ITEM_LENGTH);
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
 }
 
@@ -244,7 +245,7 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_baro(0));
     FMT_CHECK(advertise_sensor_gps(0));
 #else
-#error QEMU only support SIH or HIL mode
+    #error QEMU only support SIH or HIL mode
 #endif
 
     /* init finsh */
@@ -265,6 +266,9 @@ void bsp_post_initialize(void)
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
+
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
     /* init mission data */
     FMT_CHECK(mission_data_init());
