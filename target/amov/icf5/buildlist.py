@@ -15,7 +15,7 @@ DRIVERS = [
 DRIVERS_CPPPATH = []
 
 HAL = [
-    # 'pin/*.c',
+    'pin/*.c',
     'serial/*.c',
     'systick/*.c',
     'sd/*.c',
@@ -29,7 +29,7 @@ HAL = [
     # 'fmtio_dev/*.c',
     'actuator/*.c',
     'rc/*.c',
-    # 'gps/*.c',
+    'gps/*.c',
     # 'adc/*.c',
     # 'mtd/*.c',
 ]
