@@ -534,7 +534,7 @@ sd_error_enum sd_block_read(uint32_t* preadbuffer, uint32_t readaddr, uint16_t b
         }
 
         /* read left data in fifo */
-        for (uint32_t i = 0; i < sdio_fifo_counter_get(); i++) {
+        while (RESET != sdio_flag_get(SDIO_FLAG_RXDTVAL) && sdio_fifo_counter_get() > 0) {
             *ptempbuff = sdio_data_read();
             ++ptempbuff;
             ++count;
@@ -548,11 +548,7 @@ sd_error_enum sd_block_read(uint32_t* preadbuffer, uint32_t readaddr, uint16_t b
             ++offset;
         }
 
-        if (count < 128) {
-            rt_memcpy(preadbuffer, tempbuff, 512);
-        } else {
-            rt_memcpy(preadbuffer, tempbuff + offset, 512);
-        }
+        rt_memcpy(preadbuffer, tempbuff + offset, 512);
 
         /* clear the SDIO_INTC flags */
         sdio_flag_clear(SDIO_MASK_INTC_FLAGS);
