@@ -392,7 +392,7 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev0, "spi1_dev0", "spi1", (void*)&spi1_cs0));
     }
 
-    /* attach spi_device_1 (SPI1 external cs1) to spi1 */
+    /* attach spi_device_1 (ICM20948 IMU) to spi1 */
     {
         static struct rt_spi_device rt_spi1_dev1;
         static struct gd32_spi_cs spi1_cs1 = { .gpio_periph = GPIOE, .pin = GPIO_PIN_2 };
@@ -408,7 +408,7 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev1, "spi1_dev1", "spi1", (void*)&spi1_cs1));
     }
 
-    /* attach spi_device_2 (SPI1 external cs2) to spi1 */
+    /* attach spi_device_2 (MS5611 Barometer) to spi1 */
     {
         static struct rt_spi_device rt_spi1_dev2;
         static struct gd32_spi_cs spi1_cs2 = { .gpio_periph = GPIOE, .pin = GPIO_PIN_3 };
