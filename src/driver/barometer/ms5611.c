@@ -20,8 +20,6 @@
 #include <firmament.h>
 #include <math.h>
 
-//#define BARO_ENABLE_TIMER_UPDATE
-
 #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define POW2(_x)     ((_x) * (_x))
 
@@ -40,6 +38,14 @@
 #define ADDR_PROM_C6    0xAC
 #define ADDR_PROM_CRC   0xAE
 
+#define BARO_OSR_256  0
+#define BARO_OSR_512  1
+#define BARO_OSR_1024 2
+#define BARO_OSR_2048 3
+#define BARO_OSR_4096 4
+
+static uint16_t baro_default_osr = BARO_OSR_2048;
+
 static uint8_t CMD_CONVERT_D1_ADDR[5] = {
     0x40, // OSR=256
     0x42, // OSR=512
@@ -56,7 +62,6 @@ static uint8_t CMD_CONVERT_D2_ADDR[5] = {
     0x58  // OSR=4096
 };
 
-#ifdef BARO_ENABLE_TIMER_UPDATE
 static uint8_t CONV_TIME_INTERVAL[5] = {
     1, // OSR=256
     2, // OSR=512
@@ -64,7 +69,6 @@ static uint8_t CONV_TIME_INTERVAL[5] = {
     5, // OSR=2048
     10 // OSR=4096
 };
-#endif
 
 typedef struct {
     uint16_t factory_data;
@@ -92,9 +96,7 @@ static ms5611_prom_t _prom;
 static uint8_t _ms5611_state;
 static baro_report_t _baro_report;
 static uint8_t _updated = 0;
-#ifdef BARO_ENABLE_TIMER_UPDATE
 static struct rt_timer _timer_ms5611;
-#endif
 
 static rt_err_t _write_cmd(rt_uint8_t cmd)
 {
@@ -192,9 +194,6 @@ static rt_err_t _collect_report(baro_report_t* report)
     int32_t _temp;
     int32_t _pressure;
 
-    report->raw_pressure = _raw_pressure;
-    report->raw_temperature = _raw_temperature;
-
     _dT = _raw_temperature - ((int32_t)_prom.c5 << 8);
     _temp = 2000 + (int32_t)(((int64_t)_dT * _prom.c6) >> 23);
 
@@ -254,6 +253,50 @@ static rt_err_t _collect_report(baro_report_t* report)
     return RT_EOK;
 }
 
+static void _ms5611_StateMchine(void* parameter)
+{
+    switch (_ms5611_state) {
+
+    case S_CONV_1: {
+        if (_write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
+            _ms5611_state = S_CONV_2;
+        }
+    } break;
+
+    case S_CONV_2: {
+        _ms5611_state = S_CONV_1;
+
+        /* read raw pressure */
+        if (_read_adc(&_raw_pressure) == RT_EOK) {
+            /* trigger D2 conversion immediately */
+            if (_write_cmd(CMD_CONVERT_D2_ADDR[baro_default_osr]) == RT_EOK) {
+                _ms5611_state = S_COLLECT_REPORT;
+            }
+        }
+    } break;
+
+    case S_COLLECT_REPORT: {
+        _ms5611_state = S_CONV_1;
+
+        /* read raw temperature */
+        if (_read_adc(&_raw_temperature) == RT_EOK) {
+            if (_collect_report(&_baro_report) == RT_EOK) {
+                /* trigger D1 conversion immediately */
+                if (_write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
+                    _ms5611_state = S_CONV_2;
+                }
+
+                /* set updated flag, baro report is ready */
+                _updated = 1;
+            }
+        }
+    } break;
+
+    default:
+        break;
+    }
+}
+
 static rt_err_t _init(void)
 {
     rt_err_t ret = RT_EOK;
@@ -269,75 +312,19 @@ static rt_err_t _init(void)
     /* load prom */
     ret |= _load_prom();
 
-    _raw_temperature = _raw_pressure = 0;
-
-    return ret;
-}
-
-static void _ms5611_StateMchine(void* parameter)
-{
-    rt_uint16_t osr = *(rt_uint16_t*)parameter;
-
-    switch (_ms5611_state) {
-
-    case S_CONV_1: {
-        if (_write_cmd(CMD_CONVERT_D1_ADDR[osr]) == RT_EOK) {
-            _ms5611_state = S_CONV_2;
-        }
-    } break;
-
-    case S_CONV_2: {
-        _ms5611_state = S_CONV_1;
-
-        /* read raw pressure */
-        if (_read_adc(&_raw_pressure) == RT_EOK) {
-            /* trigger D2 conversion immediately */
-            if (_write_cmd(CMD_CONVERT_D2_ADDR[osr]) == RT_EOK) {
-                _ms5611_state = S_COLLECT_REPORT;
-            }
-        }
-    } break;
-
-    case S_COLLECT_REPORT: {
-        _ms5611_state = S_CONV_1;
-
-        /* read raw temperature */
-        if (_read_adc(&_raw_temperature) == RT_EOK) {
-            if (_collect_report(&_baro_report) == RT_EOK) {
-                /* trigger D1 conversion immediately */
-                if (_write_cmd(CMD_CONVERT_D1_ADDR[osr]) == RT_EOK) {
-                    _ms5611_state = S_CONV_2;
-                }
-
-                /* set updated flag, baro report is ready */
-                _updated = 1;
-            }
-        }
-    } break;
-
-    default:
-        break;
-    }
-}
-
-static rt_err_t baro_config(baro_dev_t baro, const struct baro_configure* cfg)
-{
-    baro->config = *cfg;
-
-#ifdef BARO_ENABLE_TIMER_UPDATE
     /* register a soft timer to periodically trigger conversion/read command */
-    rt_timer_init(&_timer_ms5611, "ms5611", _ms5611_StateMchine, &baro->config.osr, CONV_TIME_INTERVAL[baro->config.osr], RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+    rt_timer_init(&_timer_ms5611, "ms5611", _ms5611_StateMchine, NULL, CONV_TIME_INTERVAL[baro_default_osr], RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 
     if (rt_timer_start(&_timer_ms5611) != RT_EOK) {
         DRV_DBG("ms5611 timer start fail\n");
         return RT_ERROR;
     }
-#endif
 
+    _raw_temperature = _raw_pressure = 0;
     _updated = 0;
     _ms5611_state = S_CONV_1;
 
-    return RT_EOK;
+    return ret;
 }
 
 static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
@@ -345,14 +332,6 @@ static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
     switch (cmd) {
     case BARO_CMD_CHECK_READY: {
         *(uint8_t*)arg = _updated;
-    } break;
-
-    case BARO_CMD_UPDATE: {
-#ifndef BARO_ENABLE_TIMER_UPDATE
-        _ms5611_StateMchine(&baro->config.osr);
-#else
-        return RT_EEMPTY;
-#endif
     } break;
 
     default:
@@ -376,7 +355,6 @@ static rt_size_t baro_read(baro_dev_t baro, baro_report_t* report)
 }
 
 static struct baro_ops _baro_ops = {
-    baro_config,
     baro_control,
     baro_read
 };
@@ -385,8 +363,7 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* sensor_device_
 {
     rt_err_t ret = RT_EOK;
     static struct baro_device baro_device = {
-        .ops = &_baro_ops,
-        .config = BARO_CONFIG_DEFAULT
+        .ops = &_baro_ops
     };
 
     spi_device = rt_device_find(spi_device_name);

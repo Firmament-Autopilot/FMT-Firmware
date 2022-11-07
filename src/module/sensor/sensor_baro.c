@@ -32,20 +32,6 @@ uint8_t sensor_baro_check_ready(sensor_baro_t baro_dev)
 }
 
 /**
- * @brief Trigger barometer measure/conversion process
- * 
- * @param baro_dev Barometer sensor device
- * @return fmt_err_t FMT_EOK for success
- */
-fmt_err_t sensor_baro_update(sensor_baro_t baro_dev)
-{
-    if (rt_device_control(baro_dev->dev, BARO_CMD_UPDATE, NULL) != RT_EOK) {
-        return FMT_ERROR;
-    }
-    return FMT_EOK;
-}
-
-/**
  * @brief Read barometer data
  * 
  * @param baro_dev Barometer sensor device
