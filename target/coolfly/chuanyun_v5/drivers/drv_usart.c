@@ -622,7 +622,7 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart1);
 
-    // GPS
+
     serial4.ops = &_usart_ops;
 
     struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;

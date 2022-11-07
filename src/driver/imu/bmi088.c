@@ -31,8 +31,7 @@
 // #define BMI088_ACC_I2C_ADDR2        0x19                 //SDO is high(VCC)
 // #define BMI088_ACC_DEFAULT_ADDRESS  BMI088_ACC_I2C_ADDR2 //in the LPC54102 SPM-S
 
-#define BMI088_ACC_BGW_CHIPID_VALUE 0x03
-// #define BMI088_ACC_BGW_CHIPID_VALUE 0x1E
+#define BMI088_ACC_BGW_CHIPID_VALUE 0x1E
 #define BMI088_ACC_BGW_CHIPID       0x00
 
 #define BMI088_ACC_ERR_REG          0x02
@@ -385,20 +384,16 @@ static rt_err_t accelerometer_init(void)
     /* init spi bus */
     RT_TRY(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    console_println("A1---------------");
-
     spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id);
     if (accel_id != BMI088_ACC_BGW_CHIPID_VALUE) {
         DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id);
         return RT_ERROR;
     }
 
-    console_println("A2---------------");
     /* soft reset */
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_SOFTRESET, 0xB6));
     systime_udelay(5000);
 
-    console_println("A3---------------");
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CTRL, 0x04));
     systime_udelay(55000);
 
