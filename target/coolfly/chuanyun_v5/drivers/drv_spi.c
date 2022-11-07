@@ -170,7 +170,7 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
 
         /* SPI2 configure */
     	STRU_HAL_SPI_INIT st_spiInitInfo = {
-    		.u16_halSpiBaudr = 9,
+    		.u16_halSpiBaudr = 10,
     		.e_halSpiPolarity = HAL_SPI_POLARITY_HIGH,
     		.e_halSpiPhase = HAL_SPI_PHASE_2EDGE,
     	};
@@ -180,7 +180,7 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
     } else if (SPI == SPI_3) {
         ar1002_spi->SPI = SPI_3;
 
-        /* SPI2 configure */
+        /* SPI3 configure */
     	STRU_HAL_SPI_INIT st_spiInitInfo = {
     		.u16_halSpiBaudr = 9,
     		.e_halSpiPolarity = HAL_SPI_POLARITY_HIGH,
@@ -193,7 +193,7 @@ static rt_err_t ar1002_spi_register(ENUM_SPI_COMPONENT SPI,
 
         ar1002_spi->SPI = SPI_6;
 
-        /* SPI2 configure */
+        /* SPI6 configure */
     	STRU_HAL_SPI_INIT st_spiInitInfo = {
     		.u16_halSpiBaudr = 9,
     		.e_halSpiPolarity = HAL_SPI_POLARITY_HIGH,

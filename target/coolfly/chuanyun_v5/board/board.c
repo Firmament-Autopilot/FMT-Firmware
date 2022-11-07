@@ -307,8 +307,13 @@ void bsp_early_initialize(void)
     // /* Enable CPU L1-cache */
     // CPU_CACHE_Enable();
 
+
     HAL_GPIO_OutPut(WD_DONE_GPIO); // wd_done
     HAL_GPIO_SetPin(WD_DONE_GPIO, HAL_GPIO_PIN_SET);
+
+    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); // 
+    HAL_GPIO_SetPin(SENSOR_POWER_GPIO, HAL_GPIO_PIN_RESET);
+
 
     HAL_GPIO_OutPut(LINK_LED_GPIO); // blue led close
     HAL_GPIO_SetPin(LINK_LED_GPIO, HAL_GPIO_PIN_SET);
@@ -325,9 +330,7 @@ void bsp_early_initialize(void)
     HAL_GPIO_OutPut(RGB_B_GPIO); // rgb1 B led close
     HAL_GPIO_SetPin(RGB_B_GPIO, HAL_GPIO_PIN_RESET);
 
-    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); // 
     HAL_GPIO_SetPin(SENSOR_POWER_GPIO, HAL_GPIO_PIN_SET);
-    
 
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
@@ -404,7 +407,20 @@ void bsp_initialize(void)
     RT_CHECK(drv_ramtron_init("spi6_dev1"));
 #endif
     /* init file system */
-    FMT_CHECK(file_manager_init(mnt_table));
+    // FMT_CHECK(file_manager_init(mnt_table));
+    if(FMT_EOK != file_manager_init(mnt_table))
+    {
+        // int result = 0;
+        // char *type = "elm"; /* use the default file system type as 'fatfs' */
+        // char *mtdfs = "mtdblk0";
+        // result = dfs_mkfs(type, mtdfs);
+        // if (result != RT_EOK)
+        // {
+        //     console_println("mkfs failed, result=%d\n", result);
+        // }
+
+        console_println("=================> mtd first used => pleaserun:  mkfs mtdblk0 ");
+    }
 
     /* init parameter system */
     FMT_CHECK(param_init());
@@ -427,11 +443,11 @@ void bsp_initialize(void)
 
 #ifdef DEVICE_ON_BOARD
     /* init onboard sensors */
-    RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
+    // RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
-    // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
-    // RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro1", "accel1"));
+    // RT_CHECK(drv_bmi055_init("spi2_dev2", "gyro0", "accel0"));
+    RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro0", "accel0"));
     RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
     // RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
     /* if no gps mag then use onboard mag */
@@ -462,7 +478,7 @@ void bsp_initialize(void)
 #endif
 
     FMT_CHECK(register_ar_rc());
-    FMT_CHECK(register_bb_com());
+    // FMT_CHECK(register_bb_com());
 
 
 #endif
