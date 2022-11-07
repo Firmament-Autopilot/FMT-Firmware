@@ -199,7 +199,8 @@ static rt_err_t config_temprature(uint8_t rate, uint8_t prc)
         return RT_EINVAL;
     }
 
-    RT_TRY(spi_write_reg8(baro_spi_dev, SPL06_TMP_CFG, rate | prc));
+    /* we need set TMP_EXT to use external sensor */
+    RT_TRY(spi_write_reg8(baro_spi_dev, SPL06_TMP_CFG, BIT(7) | rate | prc));
 
     if (prc > TMP_PRC_8) {
         /* must set P_SHIFT when oversampling rate is > 8 */
