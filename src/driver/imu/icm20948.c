@@ -373,12 +373,13 @@ static rt_err_t _register_read_aux(uint8_t reg, uint8_t* data)
     return RT_EOK;
 }
 
-struct __PACKED sample_regs {
-    uint8_t st1;
-    int16_t val[3];
-    uint8_t tmps;
-    uint8_t st2;
-};
+__PACKED__(
+    struct sample_regs {
+        uint8_t st1;
+        int16_t val[3];
+        uint8_t tmps;
+        uint8_t st2;
+    });
 
 /**
  * @brief 
