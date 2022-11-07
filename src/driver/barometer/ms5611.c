@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
+#include <math.h>
+
 #include "driver/barometer/ms5611.h"
 #include "hal/barometer/barometer.h"
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
-#include <firmament.h>
-#include <math.h>
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...) printf(__VA_ARGS__)
 #define POW2(_x)     ((_x) * (_x))
 
 /* SPI protocol address bits */
@@ -98,7 +99,7 @@ static baro_report_t _baro_report;
 static uint8_t _updated = 0;
 static struct rt_timer _timer_ms5611;
 
-static rt_err_t _write_cmd(rt_uint8_t cmd)
+static rt_err_t write_cmd(rt_uint8_t cmd)
 {
     rt_uint8_t send_buffer;
     rt_size_t w_byte;
@@ -109,7 +110,7 @@ static rt_err_t _write_cmd(rt_uint8_t cmd)
     return w_byte == sizeof(send_buffer) ? RT_EOK : RT_ERROR;
 }
 
-static rt_err_t _read_adc(uint32_t* buff)
+static rt_err_t read_adc(uint32_t* buff)
 {
     rt_uint8_t send_val;
     rt_err_t res;
@@ -123,7 +124,7 @@ static rt_err_t _read_adc(uint32_t* buff)
     return res;
 }
 
-static rt_err_t _read_prom_reg(rt_uint8_t cmd, uint16_t* buff)
+static rt_err_t read_prom_reg(rt_uint8_t cmd, uint16_t* buff)
 {
     rt_uint8_t send_val;
     rt_err_t res;
@@ -137,7 +138,7 @@ static rt_err_t _read_prom_reg(rt_uint8_t cmd, uint16_t* buff)
     return res;
 }
 
-static rt_bool_t _crc_check(uint16_t* n_prom)
+static rt_bool_t crc_check(uint16_t* n_prom)
 {
     int16_t cnt;
     uint16_t n_rem;
@@ -179,16 +180,16 @@ static rt_bool_t _crc_check(uint16_t* n_prom)
     return (0x000F & crc_read) == (n_rem ^ 0x00);
 }
 
-static rt_err_t _load_prom(void)
+static rt_err_t load_prom(void)
 {
     for (uint8_t i = 0; i < 8; i++) {
-        _read_prom_reg(ADDR_PROM_SETUP + (i << 1), ((uint16_t*)&_prom) + i);
+        RT_TRY(read_prom_reg(ADDR_PROM_SETUP + (i << 1), ((uint16_t*)&_prom) + i));
     }
 
-    return _crc_check((uint16_t*)&_prom) ? RT_EOK : RT_ERROR;
+    return crc_check((uint16_t*)&_prom) ? RT_EOK : RT_ERROR;
 }
 
-static rt_err_t _collect_report(baro_report_t* report)
+static rt_err_t collect_data(baro_report_t* report)
 {
     int32_t _dT;
     int32_t _temp;
@@ -253,12 +254,12 @@ static rt_err_t _collect_report(baro_report_t* report)
     return RT_EOK;
 }
 
-static void _ms5611_StateMchine(void* parameter)
+static void ms5611_dsm(void* parameter)
 {
     switch (_ms5611_state) {
 
     case S_CONV_1: {
-        if (_write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
+        if (write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
             _ms5611_state = S_CONV_2;
         }
     } break;
@@ -267,9 +268,9 @@ static void _ms5611_StateMchine(void* parameter)
         _ms5611_state = S_CONV_1;
 
         /* read raw pressure */
-        if (_read_adc(&_raw_pressure) == RT_EOK) {
+        if (read_adc(&_raw_pressure) == RT_EOK) {
             /* trigger D2 conversion immediately */
-            if (_write_cmd(CMD_CONVERT_D2_ADDR[baro_default_osr]) == RT_EOK) {
+            if (write_cmd(CMD_CONVERT_D2_ADDR[baro_default_osr]) == RT_EOK) {
                 _ms5611_state = S_COLLECT_REPORT;
             }
         }
@@ -279,10 +280,10 @@ static void _ms5611_StateMchine(void* parameter)
         _ms5611_state = S_CONV_1;
 
         /* read raw temperature */
-        if (_read_adc(&_raw_temperature) == RT_EOK) {
-            if (_collect_report(&_baro_report) == RT_EOK) {
+        if (read_adc(&_raw_temperature) == RT_EOK) {
+            if (collect_data(&_baro_report) == RT_EOK) {
                 /* trigger D1 conversion immediately */
-                if (_write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
+                if (write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
                     _ms5611_state = S_CONV_2;
                 }
 
@@ -297,34 +298,29 @@ static void _ms5611_StateMchine(void* parameter)
     }
 }
 
-static rt_err_t _init(void)
+static rt_err_t lowlevel_init(void)
 {
-    rt_err_t ret = RT_EOK;
-
-    ret |= rt_device_open(spi_device, RT_DEVICE_OFLAG_RDWR);
+    RT_TRY(rt_device_open(spi_device, RT_DEVICE_OFLAG_RDWR));
 
     /* reset first */
-    ret |= _write_cmd(ADDR_RESET_CMD);
+    RT_TRY(write_cmd(ADDR_RESET_CMD));
 
     /* device need 2.8ms reload time */
     systime_mdelay(10);
 
     /* load prom */
-    ret |= _load_prom();
+    RT_TRY(load_prom());
 
     /* register a soft timer to periodically trigger conversion/read command */
-    rt_timer_init(&_timer_ms5611, "ms5611", _ms5611_StateMchine, NULL, CONV_TIME_INTERVAL[baro_default_osr], RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+    rt_timer_init(&_timer_ms5611, "ms5611", ms5611_dsm, NULL, CONV_TIME_INTERVAL[baro_default_osr], RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 
-    if (rt_timer_start(&_timer_ms5611) != RT_EOK) {
-        DRV_DBG("ms5611 timer start fail\n");
-        return RT_ERROR;
-    }
+    RT_TRY(rt_timer_start(&_timer_ms5611));
 
     _raw_temperature = _raw_pressure = 0;
     _updated = 0;
     _ms5611_state = S_CONV_1;
 
-    return ret;
+    return RT_EOK;
 }
 
 static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
@@ -359,18 +355,14 @@ static struct baro_ops _baro_ops = {
     baro_read
 };
 
-rt_err_t drv_ms5611_init(const char* spi_device_name, const char* sensor_device_name)
+rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_name)
 {
-    rt_err_t ret = RT_EOK;
     static struct baro_device baro_device = {
         .ops = &_baro_ops
     };
 
     spi_device = rt_device_find(spi_device_name);
-
-    if (spi_device == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(spi_device != NULL);
 
     /* config spi */
     {
@@ -384,13 +376,13 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* sensor_device_
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
-        ret |= rt_spi_configure(spi_device_t, &cfg);
+        RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
 
     /* driver internal init */
-    ret |= _init();
+    RT_TRY(lowlevel_init());
 
-    ret |= hal_baro_register(&baro_device, sensor_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL);
+    RT_TRY(hal_baro_register(&baro_device, baro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
-    return ret;
+    return RT_EOK;
 }
