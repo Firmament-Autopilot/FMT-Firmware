@@ -158,30 +158,6 @@ void SYS_ClearResouce(void)
 *         3. Call the function HAL_SYS_CTL_Init to do system controller init.
 */
 
-// void delay_ms(uint32_t num)
-// {
-//     volatile uint32_t i;
-
-//     for (i = 0; i < (num * 1000); i++)
-//     {
-//         ;
-//     }
-// }
-
-// void test_led(void)
-// {
-//     // test_led
-//     HAL_GPIO_OutPut(HAL_GPIO_NUM61);  
-//     uint8_t i = 5;
-//     while(i--)
-//     {
-//         HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_SET);
-//         delay_ms(1000);
-//         HAL_GPIO_SetPin(HAL_GPIO_NUM61, HAL_GPIO_PIN_RESET);
-//         delay_ms(1000);
-//     }
-// }
-
 HAL_RET_T HAL_SYS_CTL_Init(STRU_HAL_SYS_CTL_CONFIG *pst_usrHalSysCtlCfg)
 {
     // uint16_t u16_pllClk = 0;
@@ -243,23 +219,9 @@ HAL_RET_T HAL_SYS_CTL_Init(STRU_HAL_SYS_CTL_CONFIG *pst_usrHalSysCtlCfg)
     HAL_SYS_CTL_FpuEnable(pst_halSysCtlCfg->u8_fpuEnable);
 
 
-    // // Default system tick: 1ms.
-    // HAL_NVIC_SetPriority(HAL_NVIC_SYSTICK_VECTOR_NUM, INTR_NVIC_PRIORITY_SYSTICK, 0);
-
-    // PLLCTRL_GetCoreClk(&u16_pllClk, CPUINFO_GetLocalCpuId());
-    // u32_tickCnt = ((uint32_t)u16_pllClk) * 1000 * 1000 / pst_halSysCtlCfg->u16_sysTickIntervalUs;
-    // HAL_SYS_CTL_SysTickInit(u32_tickCnt);
-
-    // // Delay to PLL stable
-    // SysTicks_DelayMS(10);
-
     CPUINFO_ICacheEnable(pst_halSysCtlCfg->u8_icacheEnable);
     CPUINFO_DCacheEnable(pst_halSysCtlCfg->u8_dcacheEnable);
     
-   
-    
-    // cpp_run_init_array();
-
     return HAL_OK;
 }
 
