@@ -46,6 +46,7 @@ fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
         mavlink_hil_actuator_controls_t hil_actuator_ctrl;
         mavlink_message_t msg;
         mavlink_system_t mav_sys;
+        uint8_t val_index = 0;
 
         /* send command by mavlink */
         mav_sys = mavproxy_get_system();
@@ -56,7 +57,7 @@ fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
         for (int i = 0; i < 16; i++) {
             if (chan_mask & (1 << i)) {
                 /* map to -1~1 */
-                hil_actuator_ctrl.controls[i] = (float)chan_val[0] * 0.002f - 3.0f;
+                hil_actuator_ctrl.controls[i] = (float)chan_val[val_index++] * 0.002f - 3.0f;
             } else {
                 hil_actuator_ctrl.controls[i] = 0.0f;
             }
