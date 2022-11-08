@@ -1,0 +1,80 @@
+# FMT System Configuration File
+
+# The target should match with BSP's target name
+target = "CHUANYUN_F2S"
+
+# Console Configuration
+[console]
+    [[console.devices]]
+    type = "serial"
+    name = "serial0"
+    baudrate = 460800
+    auto-switch = true
+
+    [[console.devices]]
+    type = "mavlink"
+    name = "mav_console"
+    auto-switch = true
+
+# # Mavproxy Device Configuration
+# [mavproxy]
+#     [[mavproxy.devices]]
+#     type = "serial"
+#     name = "serial1"
+#     baudrate = 57600
+
+#     [[mavproxy.devices]]
+#     type = "usb"
+#     name = "usbd0"
+#     auto-switch = true
+
+# Pilot CMD Configuration
+[pilot-cmd]
+    # channel mapping for [yaw, throttle, roll, pitch]
+    stick-channel = [4,3,1,2]
+
+[pilot-cmd.device]
+    type = "rc"
+    name = "rc"
+    protocol = "sbus"           # sbus or ppm
+    channel-num = 16             # max supported channel: sbus:16, ppm:8
+    sample-time = 0.05          # sample time in second (-1 for inherit)
+    range = [1000,2000]
+
+    [[pilot-cmd.mode]]
+    mode = 5                    # Position mode
+    channel = 5
+    range = [1000,1200]
+
+    [[pilot-cmd.mode]]
+    mode = 4                    # Altitude mode
+    channel = 5
+    range = [1400,1600]
+
+    [[pilot-cmd.mode]]
+    mode = 3                    # Stabilize mode
+    channel = 5
+    range = [1800,2000]
+
+    [[pilot-cmd.command]]
+    type = 1                    # 1:event | 2:status
+    cmd = 1002                  # FMS_Cmd_Disarm
+    channel = 6
+    range = [1800,2000]
+
+# Actuator Configuration
+[actuator]
+    [[actuator.devices]]
+    protocol = "pwm"
+    name = "main_out"
+    freq = 400                  # pwm frequency in Hz
+
+    [[actuator.devices]]
+    protocol = "pwm"
+    name = "aux_out"
+    freq = 400                  # pwm frequency in Hz
+
+    [[actuator.mappings]]
+    from = "control_out"
+    to = "main_out"
+    chan-map = [[1,2,3,4],[1,2,3,4]]
