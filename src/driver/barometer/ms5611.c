@@ -20,6 +20,7 @@
 #include "hal/barometer/barometer.h"
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
+#include "module/workqueue/workqueue_manager.h"
 
 #define DRV_DBG(...) printf(__VA_ARGS__)
 #define POW2(_x)     ((_x) * (_x))
@@ -45,7 +46,7 @@
 #define BARO_OSR_2048 3
 #define BARO_OSR_4096 4
 
-static uint16_t baro_default_osr = BARO_OSR_2048;
+#define DEFAULT_OSR BARO_OSR_2048
 
 static uint8_t CMD_CONVERT_D1_ADDR[5] = {
     0x40, // OSR=256
@@ -97,7 +98,6 @@ static ms5611_prom_t _prom;
 static uint8_t _ms5611_state;
 static baro_report_t _baro_report;
 static uint8_t _updated = 0;
-static struct rt_timer _timer_ms5611;
 
 static rt_err_t write_cmd(rt_uint8_t cmd)
 {
@@ -254,12 +254,12 @@ static rt_err_t collect_data(baro_report_t* report)
     return RT_EOK;
 }
 
-static void ms5611_dsm(void* parameter)
+static void ms5611_measure(void* parameter)
 {
     switch (_ms5611_state) {
 
     case S_CONV_1: {
-        if (write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
+        if (write_cmd(CMD_CONVERT_D1_ADDR[DEFAULT_OSR]) == RT_EOK) {
             _ms5611_state = S_CONV_2;
         }
     } break;
@@ -270,7 +270,7 @@ static void ms5611_dsm(void* parameter)
         /* read raw pressure */
         if (read_adc(&_raw_pressure) == RT_EOK) {
             /* trigger D2 conversion immediately */
-            if (write_cmd(CMD_CONVERT_D2_ADDR[baro_default_osr]) == RT_EOK) {
+            if (write_cmd(CMD_CONVERT_D2_ADDR[DEFAULT_OSR]) == RT_EOK) {
                 _ms5611_state = S_COLLECT_REPORT;
             }
         }
@@ -283,7 +283,7 @@ static void ms5611_dsm(void* parameter)
         if (read_adc(&_raw_temperature) == RT_EOK) {
             if (collect_data(&_baro_report) == RT_EOK) {
                 /* trigger D1 conversion immediately */
-                if (write_cmd(CMD_CONVERT_D1_ADDR[baro_default_osr]) == RT_EOK) {
+                if (write_cmd(CMD_CONVERT_D1_ADDR[DEFAULT_OSR]) == RT_EOK) {
                     _ms5611_state = S_CONV_2;
                 }
 
@@ -310,11 +310,6 @@ static rt_err_t lowlevel_init(void)
 
     /* load prom */
     RT_TRY(load_prom());
-
-    /* register a soft timer to periodically trigger conversion/read command */
-    rt_timer_init(&_timer_ms5611, "ms5611", ms5611_dsm, NULL, CONV_TIME_INTERVAL[baro_default_osr], RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
-
-    RT_TRY(rt_timer_start(&_timer_ms5611));
 
     _raw_temperature = _raw_pressure = 0;
     _updated = 0;
@@ -355,6 +350,13 @@ static struct baro_ops _baro_ops = {
     baro_read
 };
 
+static struct WorkItem ms5611_work = {
+    .name = "ms5611",
+    .period = 0,
+    .schedule_time = 0,
+    .run = ms5611_measure
+};
+
 rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_name)
 {
     static struct baro_device baro_device = {
@@ -381,6 +383,13 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_na
 
     /* driver internal init */
     RT_TRY(lowlevel_init());
+
+    /* find high-priority workqueue */
+    WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
+    /* set period based on osr */
+    ms5611_work.period = CONV_TIME_INTERVAL[DEFAULT_OSR];
+    /* schedule the work */
+    FMT_CHECK(workqueue_schedule_work(hp_wq, &ms5611_work));
 
     RT_TRY(hal_baro_register(&baro_device, baro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
