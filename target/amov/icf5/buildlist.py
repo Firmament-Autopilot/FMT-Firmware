@@ -9,7 +9,7 @@ DRIVERS = [
     'barometer/spl06.c',
     # 'gps/gps_m8n.c',
     # 'rgb_led/ncp5623c.c',
-    # 'mtd/ramtron.c',
+    'mtd/w25q16.c',
 ]
 
 DRIVERS_CPPPATH = []

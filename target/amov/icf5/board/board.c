@@ -25,6 +25,7 @@
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
+#include "driver/mtd/w25q16.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
@@ -283,6 +284,8 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
     RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
+
+    drv_w25q16_init("spi1_dev0", "w25q16");
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
