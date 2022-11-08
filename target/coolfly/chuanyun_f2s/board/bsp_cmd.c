@@ -61,11 +61,7 @@ int cmd_reset_fct(int argc, char** argv)
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_reset_fct, __cmd_reset_fct, reset the RF factory setting);
 
-////////////////////////////////////////////////////////////////////////////
 // set_bb_id
-static int handle_set_bb_id(int argc, char** argv, int optc, optv_t* optv)
-{
-
     uint8_t idArr[5];
     uint8_t vtidArr[2];
 

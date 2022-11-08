@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "CHUANYUN_V5"
+target = "CHUANYUN_F2S"
 
 # Console Configuration
 [console]

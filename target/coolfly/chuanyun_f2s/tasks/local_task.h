@@ -10,7 +10,6 @@ extern "C"
 #include <firmament.h>
 
 
-
 void intercore_irq0_callback(void);
 
 #ifdef __cplusplus

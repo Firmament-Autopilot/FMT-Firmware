@@ -488,7 +488,6 @@ void bsp_initialize(void)
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());
-
 #endif
 
     /* init finsh */
@@ -539,7 +538,6 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
-
     /* dump boot log to file */
     boot_log_dump();
 }
