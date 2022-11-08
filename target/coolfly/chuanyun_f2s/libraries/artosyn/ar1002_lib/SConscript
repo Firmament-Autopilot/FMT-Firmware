@@ -21,7 +21,6 @@ if rtconfig.CROSS_TOOL == 'gcc':
 # elif rtconfig.CROSS_TOOL == 'iar':
 #     src = src + ['CMSIS/Device/ST/STM32F7xx/Source/Templates/iar/startup_stm32f765xx.s']
 
-
 # board
 path += [cwd + '/Driver/Board']
 path += [cwd + '/Driver/Board/Common/NORFlash/Inc']
