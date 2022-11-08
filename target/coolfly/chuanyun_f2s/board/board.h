@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 // Board Information
-#define TARGET_NAME  "CHUANYUN_V5"
+#define TARGET_NAME  "CHUANYUN_F2S"
 
 
 

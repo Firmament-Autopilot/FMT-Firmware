@@ -17,7 +17,7 @@
 /* This is the default toml config for the target, which is loaded when there is
  * no sysconfig.toml finded. Please do not format this file. */
 static char* default_conf = STRING(
-target = "CHUANYUN_V5"\n
+target = "CHUANYUN_F2S"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n

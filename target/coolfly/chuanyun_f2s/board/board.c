@@ -491,7 +491,7 @@ void bsp_initialize(void)
 
 #ifdef FMT_USING_CM_BACKTRACE
     /* cortex-m backtrace */
-    cm_backtrace_init("fmt_chuanyun_v5", TARGET_NAME, FMT_VERSION);
+    cm_backtrace_init("fmt_chuanyun_f2s", TARGET_NAME, FMT_VERSION);
 
 #endif
 }

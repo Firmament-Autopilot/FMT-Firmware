@@ -25,7 +25,7 @@ if rtconfig.CROSS_TOOL == 'gcc':
 # board
 path += [cwd + '/Driver/Board']
 path += [cwd + '/Driver/Board/Common/NORFlash/Inc']
-path += [cwd + '/Driver/Board/CHUANYUN_V5/Inc']
+path += [cwd + '/Driver/Board/Chuanyun/Inc']
 
 
 src += Glob('Driver/Board/Common/NORFlash/Src/nor_flash.c')
