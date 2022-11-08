@@ -22,7 +22,7 @@ function dec2hex()
 {
     printf "%x" $1
 }
-outputtxt=FMT_chuanyun_sky.bin
+outputtxt=fmt_chuangyun_f2s_pkg.bin
 
 outputtmp=apptmp.bin
 outcfgbin=cfgdata.bin
