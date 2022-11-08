@@ -58,11 +58,11 @@ static rt_err_t configure(struct rt_spi_device* device,
         uint32_t PCLK;
 
         if (gd32_spi_bus->spi_periph == SPI1 || gd32_spi_bus->spi_periph == SPI2) {
-            /* PCLK1 50MHz max. we assume the max frequency used */
-            PCLK = 50000000;
+            /* PCLK1 60MHz max. */
+            PCLK = rcu_clock_freq_get(CK_APB1);
         } else {
-            /* PCLK2 100MHz max. we assume the max frequency used */
-            PCLK = 100000000;
+            /* PCLK2 120MHz max. */
+            PCLK = rcu_clock_freq_get(CK_APB2);
         }
 
         max_hz = configuration->max_hz;
