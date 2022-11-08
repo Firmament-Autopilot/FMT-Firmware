@@ -102,10 +102,10 @@
 #define BMI088_GYRO_RATE_1000 REG_VAL(BIT(1), BIT(3) | BIT(2) | BIT(0))
 #define BMI088_GYRO_RATE_2000 REG_VAL(BIT(0), BIT(3) | BIT(2) | BIT(1))
 
-#define BMI088_ACCEL_RANGE_3_G  REG_VAL(0, BIT(1) | BIT(0))
-#define BMI088_ACCEL_RANGE_6_G  REG_VAL(BIT(0), BIT(1))
-#define BMI088_ACCEL_RANGE_12_G REG_VAL(BIT(1), BIT(0))
-#define BMI088_ACCEL_RANGE_24_G REG_VAL(BIT(1) | BIT(0), 0)
+#define BMI088_ACCEL_RANGE_3_G  0x00
+#define BMI088_ACCEL_RANGE_6_G  0x01
+#define BMI088_ACCEL_RANGE_12_G 0x02
+#define BMI088_ACCEL_RANGE_24_G 0x03
 
 #define BMI088_ACCEL_BW_12_5    0xA5
 #define BMI088_ACCEL_BW_25      0xA6
@@ -143,7 +143,7 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
 
     RT_TRY(spi_write_reg8(spi_device, reg, val));
     RT_TRY(spi_read_reg8(spi_device, reg, &r_val));
-
+    
     return (r_val == val) ? RT_EOK : RT_ERROR;
 }
 
@@ -342,18 +342,18 @@ static rt_err_t accel_set_bwp_odr(uint16_t frequency_hz)
         return -EINVAL;
     }
 
-    spi_write_reg8(accel_spi_dev, BMI088_ACC_CONF, reg_val);
+    RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_CONF, reg_val));
 
     return RT_EOK;
 }
 
 static rt_err_t accel_set_range(uint32_t max_g)
 {
-    reg_val_t reg_val;
+    uint8_t reg_val;
     float lsb_per_g;
 
     if (max_g == 0) {
-        max_g = 16;
+        max_g = 24;
     }
 
     if (max_g <= 3) {
@@ -372,41 +372,42 @@ static rt_err_t accel_set_range(uint32_t max_g)
         return RT_EINVAL;
     }
 
-    RT_TRY(__modify_reg(accel_spi_dev, BMI088_ACC_RANGE, reg_val));
-
+    uint8_t rd_buf[2];
+    RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_RANGE, reg_val));
     return RT_EOK;
 }
 
 static rt_err_t accelerometer_init(void)
 {
-    uint8_t accel_id;
+    uint8_t accel_id[2];
 
     /* init spi bus */
     RT_TRY(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id);
-    if (accel_id != BMI088_ACC_BGW_CHIPID_VALUE) {
-        DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id);
+    RT_TRY(spi_read_multi_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, accel_id, 2));
+    if (accel_id[1] != BMI088_ACC_BGW_CHIPID_VALUE) {
+        DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id[1]);
         return RT_ERROR;
     }
-
+    
     /* soft reset */
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_SOFTRESET, 0xB6));
     systime_udelay(5000);
 
+    /* read the reset reg to fix the bug */
+    uint8_t rd_buf[2];
+    RT_TRY(spi_read_multi_reg8(accel_spi_dev, BMI088_ACC_SOFTRESET, rd_buf, 2));
+
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CTRL, 0x04));
     systime_udelay(55000);
 
-    console_println("A4---------------");
+    
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CONF, 0x00));
     systime_udelay(5000);
-    console_println("A5---------------");
 
-    RT_TRY(accel_set_range(3));          /* 3g */
-    console_println("A6---------------");
+    RT_TRY(accel_set_range(24));          /* 3g */
     RT_TRY(accel_set_bwp_odr(1600)); /* 1600Hz BW */
 
-    console_println("A7---------------");
     systime_udelay(1000);
 
     return RT_EOK;
@@ -414,16 +415,16 @@ static rt_err_t accelerometer_init(void)
 
 static rt_err_t accel_read_raw(int16_t acc[3])
 {
-    uint8_t buffer[6];
+    uint8_t buffer[7];
     int16_t msblsb;
 
-    RT_TRY(spi_read_multi_reg8(accel_spi_dev, BMI088_ACCD_X_LSB, buffer, 6));
+    RT_TRY(spi_read_multi_reg8(accel_spi_dev, BMI088_ACCD_X_LSB, buffer, 7));
 
-    msblsb = buffer[1] << 8 | buffer[0];
+    msblsb = buffer[2] << 8 | buffer[1];
     acc[0] = msblsb;
-    msblsb = buffer[3] << 8 | buffer[2];
+    msblsb = buffer[4] << 8 | buffer[3];
     acc[1] = msblsb;
-    msblsb = buffer[5] << 8 | buffer[4];
+    msblsb = buffer[6] << 8 | buffer[5];
     acc[2] = msblsb;
 
     return RT_EOK;
@@ -447,6 +448,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
 
 static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cfg)
 {
+
     RT_ASSERT(cfg != NULL);
 
     RT_TRY(accel_set_range(cfg->acc_range_g));
@@ -456,6 +458,7 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
     RT_TRY(accel_set_bwp_odr(cfg->dlpf_freq_hz));
 
     accel->config = *cfg;
+
 
     return RT_EOK;
 }
@@ -537,11 +540,9 @@ rt_err_t drv_bmi088_init(const char* spi_device_name, const char* gyro_device_na
 
     /* Initialize accelerometer */
 
-    console_println("1---------------");
-
     accel_spi_dev = rt_device_find("spi2_dev3");
     RT_ASSERT(accel_spi_dev != NULL);
-    console_println("1.5---------------");
+
     /* config spi */
     {
         struct rt_spi_configuration cfg;
@@ -557,17 +558,11 @@ rt_err_t drv_bmi088_init(const char* spi_device_name, const char* gyro_device_na
         RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
 
-    console_println("2---------------");
-
     /* accelerometer low-level init */
     RT_TRY(accelerometer_init());
 
-    console_println("3---------------");
-
     /* register accel hal device */
     RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
-
-    console_println("4---------------");
 
     return RT_EOK;
 }
