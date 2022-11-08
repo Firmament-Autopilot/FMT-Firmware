@@ -8,7 +8,7 @@ DRIVERS = [
     'imu/bmi088.c',
     # 'mag/ist8310.c',
     'mag/mmc5983ma.c',
-    'barometer/ms5611.c',
+    # 'barometer/ms5611.c',
     'barometer/spl06.c',
     'gps/gps_m8n.c',
     'rgb_led/ncp5623c.c',
