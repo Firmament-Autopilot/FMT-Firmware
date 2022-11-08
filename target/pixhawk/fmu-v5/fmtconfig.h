@@ -28,8 +28,6 @@
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
-#define FMT_MAVLINK_SYS_ID  1
-#define FMT_MAVLINK_COMP_ID 1
 
 /* Send out pilot cmd via mavlink */
 #define FMT_OUTPUT_PILOT_CMD

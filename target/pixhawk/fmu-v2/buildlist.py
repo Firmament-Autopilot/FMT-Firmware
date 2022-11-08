@@ -9,7 +9,7 @@ DRIVERS = [
     'mag/hmc5883.c',
     'barometer/ms5611.c',
     'gps/gps_m8n.c',
-    'vision_flow/pmw3901_fl04.c',
+    'vision_flow/pmw3901_xx.c',
     'rgb_led/tca62724.c',
 ]
 

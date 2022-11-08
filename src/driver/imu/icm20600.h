@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,40 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef ICM20600_H__
+#define ICM20600_H__
 
-#ifndef FMTCONFIG_H__
-#define FMTCONFIG_H__
+#include <rtthread.h>
 
-#define VEHICLE_TYPE "Quadcopter"
-
-#define FMT_USING_CHECKED
-
-/* HIL simulation */
-// #define FMT_USING_HIL
-/* SIH simulation */
-#define FMT_USING_SIH
-
-/* Mavlink */
-#define FMT_USING_MAVLINK_V2
-
-/* Send out pilot cmd via mavlink */
-#define FMT_OUTPUT_PILOT_CMD
-
-/* MLog */
-#define MLOG_BUFFER_SIZE         80 * 1024
-#define MLOG_SECTOR_SIZE         4096
-#define MLOG_MAX_SECTOR_TO_WRITE 5
-
-/* ULog */
-#define FMT_USING_ULOG
-#ifdef FMT_USING_ULOG
-// #define ENABLE_ULOG_FS_BACKEND
-#define ENABLE_ULOG_CONSOLE_BACKEND
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-/* Unit Test */
-// #define FMT_USING_UNIT_TEST
+rt_err_t drv_icm20600_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name);
 
-// #define FMT_RECORD_CALIBRATION_DATA
+#ifdef __cplusplus
+}
+#endif
 
 #endif
