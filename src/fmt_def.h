@@ -61,22 +61,22 @@ typedef int bool;
     #define STRING(...) #__VA_ARGS__
 #endif
 
-#define RT_TRY(__exp)                                                                       \
-    do {                                                                                    \
-        rt_err_t err = (__exp);                                                             \
-        if (err != RT_EOK) {                                                                \
-            printf("RT_TRY failed at file:%s, line:%u, err:%d\n", __FILE__, __LINE__, err); \
-            return err;                                                                     \
-        }                                                                                   \
+#define RT_TRY(__exp)                                                                               \
+    do {                                                                                            \
+        rt_err_t err = (__exp);                                                                     \
+        if (err != RT_EOK) {                                                                        \
+            printf("RT_TRY failed at function:%s, line:%u, err:%d\n", __FUNCTION__, __LINE__, err); \
+            return err;                                                                             \
+        }                                                                                           \
     } while (false)
 
-#define FMT_TRY(__exp)                                                                       \
-    do {                                                                                     \
-        fmt_err_t err = (__exp);                                                             \
-        if (err != FMT_EOK) {                                                                \
-            printf("FMT_TRY failed at file:%s, line:%u, err:%d\n", __FILE__, __LINE__, err); \
-            return err;                                                                      \
-        }                                                                                    \
+#define FMT_TRY(__exp)                                                                               \
+    do {                                                                                             \
+        fmt_err_t err = (__exp);                                                                     \
+        if (err != FMT_EOK) {                                                                        \
+            printf("FMT_TRY failed at function:%s, line:%u, err:%d\n", __FUNCTION__, __LINE__, err); \
+            return err;                                                                              \
+        }                                                                                            \
     } while (false)
 
 #define OS_ENTER_CRITICAL rt_enter_critical()
