@@ -295,8 +295,8 @@ static rt_size_t baro_read(baro_dev_t baro, baro_report_t* report)
 }
 
 static struct baro_ops _baro_ops = {
-    baro_control,
-    baro_read
+    .baro_control = baro_control,
+    .baro_read = baro_read
 };
 
 rt_err_t drv_spl06_init(const char* spi_device_name, const char* baro_device_name)
