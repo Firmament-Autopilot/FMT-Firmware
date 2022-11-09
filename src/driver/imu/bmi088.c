@@ -21,7 +21,8 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...) 
+#define DRV_DBG(...)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
 
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
@@ -34,61 +35,59 @@
 #define BMI088_ACC_BGW_CHIPID_VALUE 0x1E
 #define BMI088_ACC_BGW_CHIPID       0x00
 
-#define BMI088_ACC_ERR_REG          0x02
-#define BMI088_ACC_STATUS           0x03
+#define BMI088_ACC_ERR_REG 0x02
+#define BMI088_ACC_STATUS  0x03
 
-#define BMI088_ACCD_X_LSB           0x12
-#define BMI088_ACCD_X_MSB           0x13
-#define BMI088_ACCD_Y_LSB           0x14
-#define BMI088_ACCD_Y_MSB           0x15
-#define BMI088_ACCD_Z_LSB           0x16
-#define BMI088_ACCD_Z_MSB           0x17
-#define BMI088_SENSORTIME_0         0x18
-#define BMI088_SENSORTIME_1         0x19
-#define BMI088_SENSORTIME_2         0x1A
+#define BMI088_ACCD_X_LSB   0x12
+#define BMI088_ACCD_X_MSB   0x13
+#define BMI088_ACCD_Y_LSB   0x14
+#define BMI088_ACCD_Y_MSB   0x15
+#define BMI088_ACCD_Z_LSB   0x16
+#define BMI088_ACCD_Z_MSB   0x17
+#define BMI088_SENSORTIME_0 0x18
+#define BMI088_SENSORTIME_1 0x19
+#define BMI088_SENSORTIME_2 0x1A
 
-#define BMI088_INT_STAT_1           0x1D
+#define BMI088_INT_STAT_1 0x1D
 
-#define BMI088_INT_TEMP_MSB         0x22
-#define BMI088_INT_TEMP_LSB         0x23
+#define BMI088_INT_TEMP_MSB 0x22
+#define BMI088_INT_TEMP_LSB 0x23
 
+#define BMI088_ACC_CONF  0x40
+#define BMI088_ACC_RANGE 0x41
 
-#define BMI088_ACC_CONF             0x40
-#define BMI088_ACC_RANGE            0x41
-
-#define BMI088_ACC_PWR_CONF         0x7C
-#define BMI088_ACC_PWR_CTRL         0x7D
-#define BMI088_ACC_SOFTRESET        0x7E
+#define BMI088_ACC_PWR_CONF  0x7C
+#define BMI088_ACC_PWR_CTRL  0x7D
+#define BMI088_ACC_SOFTRESET 0x7E
 
 // #define BMI088_GYRO_I2C_ADDR1        0x68 //SDO is low(GND)
 // #define BMI088_GYRO_I2C_ADDR2        0x69 //SDO is high(VCC)
 // #define BMI088_GYRO_DEFAULT_ADDRESS  BMI088_GYRO_I2C_ADDR2
 
+#define BMI088_GRRO_CHIP_ID 0x0F
+#define BMI088_CHIP_ID_ADDR 0x00
 
-#define BMI088_GRRO_CHIP_ID          0x0F
-#define BMI088_CHIP_ID_ADDR          0x00
+#define BMI088_RATE_X_LSB_ADDR 0x02
+#define BMI088_RATE_X_MSB_ADDR 0x03
+#define BMI088_RATE_Y_LSB_ADDR 0x04
+#define BMI088_RATE_Y_MSB_ADDR 0x05
+#define BMI088_RATE_Z_LSB_ADDR 0x06
+#define BMI088_RATE_Z_MSB_ADDR 0x07
 
-#define BMI088_RATE_X_LSB_ADDR       0x02
-#define BMI088_RATE_X_MSB_ADDR       0x03
-#define BMI088_RATE_Y_LSB_ADDR       0x04
-#define BMI088_RATE_Y_MSB_ADDR       0x05
-#define BMI088_RATE_Z_LSB_ADDR       0x06
-#define BMI088_RATE_Z_MSB_ADDR       0x07
+#define BMI088_INTR_STAT1_ADDR 0x0A
 
-#define BMI088_INTR_STAT1_ADDR       0x0A
+#define BMI088_RANGE_ADDR 0x0F
 
-#define BMI088_RANGE_ADDR            0x0F
+#define BMI088_BW_ADDR 0x10
 
-#define BMI088_BW_ADDR               0x10
+#define BMI088_MODE_LPM1_ADDR 0x11
 
-#define BMI088_MODE_LPM1_ADDR        0x11
+#define BMI088_BGW_SOFT_RST_ADDR 0x14
 
-#define BMI088_BGW_SOFT_RST_ADDR     0x14
+#define BMI088_INTR_ENABLE0_ADDR 0x15
+#define BMI088_INTR_ENABLE1_ADDR 0x16
 
-#define BMI088_INTR_ENABLE0_ADDR     0x15
-#define BMI088_INTR_ENABLE1_ADDR     0x16
-
-#define BMI088_SELECTF_TEST_ADDR     0x3C
+#define BMI088_SELECTF_TEST_ADDR 0x3C
 
 #define BMI088_GYRO_RANGE_2000_DPS REG_VAL(0, BIT(2) | BIT(1) | BIT(0))
 #define BMI088_GYRO_RANGE_1000_DPS REG_VAL(BIT(0), BIT(2) | BIT(1))
@@ -107,14 +106,14 @@
 #define BMI088_ACCEL_RANGE_12_G 0x02
 #define BMI088_ACCEL_RANGE_24_G 0x03
 
-#define BMI088_ACCEL_BW_12_5    0xA5
-#define BMI088_ACCEL_BW_25      0xA6
-#define BMI088_ACCEL_BW_50      0xA7
-#define BMI088_ACCEL_BW_100     0xA8
-#define BMI088_ACCEL_BW_200     0xA9
-#define BMI088_ACCEL_BW_400     0xAA
-#define BMI088_ACCEL_BW_800     0xAB
-#define BMI088_ACCEL_BW_1600    0xAC
+#define BMI088_ACCEL_BW_12_5 0xA5
+#define BMI088_ACCEL_BW_25   0xA6
+#define BMI088_ACCEL_BW_50   0xA7
+#define BMI088_ACCEL_BW_100  0xA8
+#define BMI088_ACCEL_BW_200  0xA9
+#define BMI088_ACCEL_BW_400  0xAA
+#define BMI088_ACCEL_BW_800  0xAB
+#define BMI088_ACCEL_BW_1600 0xAC
 
 #define DIR_READ     0x80
 #define DIR_WRITE    0x00
@@ -143,7 +142,7 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
 
     RT_TRY(spi_write_reg8(spi_device, reg, val));
     RT_TRY(spi_read_reg8(spi_device, reg, &r_val));
-    
+
     return (r_val == val) ? RT_EOK : RT_ERROR;
 }
 
@@ -261,7 +260,7 @@ static rt_err_t gyroscope_init(void)
 
     /* soft reset */
     RT_TRY(spi_write_reg8(gyro_spi_dev, BMI088_BGW_SOFT_RST_ADDR, 0xB6));
-    systime_udelay(35000);  // > 30ms delay
+    systime_udelay(35000); // > 30ms delay
 
     RT_TRY(gyro_set_range(2000));       /* 2000dps */
     RT_TRY(gyro_set_sample_rate(1000)); /* OSR 1000KHz, Filter BW: 116Hz */
@@ -316,7 +315,6 @@ static rt_err_t accel_set_sample_rate(uint32_t frequency_hz)
 {
     return RT_EOK;
 }
-
 
 static rt_err_t accel_set_bwp_odr(uint16_t frequency_hz)
 {
@@ -389,7 +387,7 @@ static rt_err_t accelerometer_init(void)
         DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id[1]);
         return RT_ERROR;
     }
-    
+
     /* soft reset */
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_SOFTRESET, 0xB6));
     systime_udelay(5000);
@@ -401,11 +399,10 @@ static rt_err_t accelerometer_init(void)
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CTRL, 0x04));
     systime_udelay(55000);
 
-    
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CONF, 0x00));
     systime_udelay(5000);
 
-    RT_TRY(accel_set_range(24));          /* 3g */
+    RT_TRY(accel_set_range(24));     /* 3g */
     RT_TRY(accel_set_bwp_odr(1600)); /* 1600Hz BW */
 
     systime_udelay(1000);
@@ -459,7 +456,6 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
 
     accel->config = *cfg;
 
-
     return RT_EOK;
 }
 
@@ -490,15 +486,15 @@ const static struct accel_ops __accel_ops = {
 #define GYRO_CONFIG                                   \
     {                                                 \
         1000,                   /* 1K sample rate */  \
-        92,                     /* 256Hz bandwidth */ \
-        GYRO_RANGE_2000DPS,     /* +-2000 deg/s */    \
+            92,                 /* 256Hz bandwidth */ \
+            GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
     }
 
-#define ACCEL_CONFIG                               \
-    {                                              \
-        1000,                /* 1K sample rate */  \
-        1600,                                      \
-        24,                  /* +-24g */           \
+#define ACCEL_CONFIG               \
+    {                              \
+        1000, /* 1K sample rate */ \
+            1600,                  \
+            24, /* +-24g */        \
     }
 
 static struct gyro_device gyro_dev = {
