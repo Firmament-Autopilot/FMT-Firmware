@@ -119,8 +119,6 @@ FINSH_FUNCTION_EXPORT_ALIAS(cmd_set_chip_id, __cmd_set_chip_id, set<chip id1 ~5>
 ////////////////////////////////////////////////////////////////////////////
 // swtich_mavlink
 
-
-
 static void sw_mav_show_usage(void)
 {
     COMMAND_USAGE("sw_mav", "[options]");
@@ -136,16 +134,14 @@ static int sw_mav_channel(const char* dev)
     fmt_err_t ret = RT_ERROR;
 
     rt_device_t set_dev = rt_device_find(dev);
-    
+
     if (set_dev != RT_NULL) {
         ret = __switch_mavlink_to_device(set_dev);
         if (ret != RT_EOK) {
             DLOG_Critical("mavproxy_set_channel %s failed!!! \n", dev);
         }
-    }
-    else
-    {
-        DLOG_Critical(" can't find the %s \n" , dev);
+    } else {
+        DLOG_Critical(" can't find the %s \n", dev);
     }
     return ret;
 }
@@ -181,4 +177,3 @@ int cmd_sw_mav(int argc, char** argv)
     return syscmd_process(argc, argv, handle_sw_mav_cmd);
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_sw_mav, __cmd_sw_mav, swtich mavlink channel);
-
