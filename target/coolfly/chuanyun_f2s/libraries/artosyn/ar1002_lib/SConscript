@@ -1,0 +1,191 @@
+import rtconfig
+Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+
+
+# The set of source files associated with this SConscript file.
+path = []
+src = []
+
+
+
+#add for startup script 
+if rtconfig.CROSS_TOOL == 'gcc':
+     src = src + ['startup/ar1002_cpu0_start.s']
+# elif rtconfig.CROSS_TOOL == 'keil':
+#      src = src + ['CMSIS/Device/ST/STM32F7xx/Source/Templates/arm/startup_stm32f765xx.s']
+# elif rtconfig.CROSS_TOOL == 'iar':
+#     src = src + ['CMSIS/Device/ST/STM32F7xx/Source/Templates/iar/startup_stm32f765xx.s']
+
+# board
+path += [cwd + '/Driver/Board']
+path += [cwd + '/Driver/Board/Common/NORFlash/Inc']
+path += [cwd + '/Driver/Board/Chuanyun/Inc']
+
+
+src += Glob('Driver/Board/Common/NORFlash/Src/nor_flash.c')
+src += Glob('Driver/Board/Common/NORFlash/Src/norflash_WPTable.c')
+
+
+
+# chip 
+path += [cwd + '/Driver/Chip/']
+path += [cwd + '/Driver/Chip/BB/Inc']
+path += [cwd + '/Driver/Chip/DMA/Inc']
+path += [cwd + '/Driver/Chip/EFUSE/Inc']
+path += [cwd + '/Driver/Chip/I2C/Inc']
+path += [cwd + '/Driver/Chip/QuadSPI/Inc']
+path += [cwd + '/Driver/Chip/SPI/Inc']
+path += [cwd + '/Driver/Chip/SRAM/Inc']
+path += [cwd + '/Driver/Chip/SysCtl/Inc']
+path += [cwd + '/Driver/Chip/UART/Inc']
+
+
+
+src += Glob('Driver/Chip/DMA/Src/dma.c')
+src += Glob('Driver/Chip/QuadSPI/Src/quad_spi_ctrl.c')
+src += Glob('Driver/Chip/EFUSE/Src/efuse.c')
+src += Glob('Driver/Chip/I2C/Src/i2c.c')
+src += Glob('Driver/Chip/I2C/Src/i2c_ll.c')
+src += Glob('Driver/Chip/SysCtl/Src/flashbin_copy.c')
+src += Glob('Driver/Chip/SysCtl/Src/mpu.c')
+src += Glob('Driver/Chip/SysCtl/Src/rtc.c')
+src += Glob('Driver/Chip/SysCtl/Src/gpio.c')
+src += Glob('Driver/Chip/SysCtl/Src/inter_core.c')
+src += Glob('Driver/Chip/SysCtl/Src/systicks.c')
+src += Glob('Driver/Chip/SysCtl/Src/cpu_info.c')
+src += Glob('Driver/Chip/SysCtl/Src/timer.c')
+src += Glob('Driver/Chip/SysCtl/Src/reg_rw.c')
+src += Glob('Driver/Chip/SysCtl/Src/fpu.c')
+src += Glob('Driver/Chip/SysCtl/Src/pll_ctrl.c')
+src += Glob('Driver/Chip/SysCtl/Src/interrupt.c')
+src += Glob('Driver/Chip/UART/Src/serial.c')
+src += Glob('Driver/Chip/SRAM/Src/sram_sky.c')
+src += Glob('Driver/Chip/SPI/Src/spi.c')
+src += Glob('Driver/Chip/BB/Src/bb_spi.c')
+src += Glob('Driver/Chip/BB/Src/bb_ctrl.c')
+src += Glob('Driver/Chip/BB/Src/bb_uart_com.c')
+
+
+
+# Common
+
+path += [cwd + '/Driver/Common/Inc']
+
+src += Glob('Driver/Common/Src/cfg_parser.c')
+src += Glob('Driver/Common/Src/cmd_line.c')
+src += Glob('Driver/Common/Src/debuglog.c')
+src += Glob('Driver/Common/Src/driver_buffer.c')
+src += Glob('Driver/Common/Src/driver_module_init.c')
+src += Glob('Driver/Common/Src/driver_mutex_ctrl.c')
+src += Glob('Driver/Common/Src/driver_mutex_init.c')
+src += Glob('Driver/Common/Src/log10.c')
+src += Glob('Driver/Common/Src/md5.c')
+src += Glob('Driver/Common/Src/memory_itcm.c')
+src += Glob('Driver/Common/Src/nosys.c')
+src += Glob('Driver/Common/Src/sys_event.c')
+
+# Configure
+
+path += [cwd + '/Driver/Configure/Inc']
+
+# HAL
+
+path += [cwd + '/Driver/HAL/Inc']
+
+src += Glob('Driver/HAL/Src/hal_adc.c')
+src += Glob('Driver/HAL/Src/hal_bb_common.c')
+src += Glob('Driver/HAL/Src/hal_bb_debug.c')
+src += Glob('Driver/HAL/Src/hal.c')
+src += Glob('Driver/HAL/Src/hal_dma.c')
+src += Glob('Driver/HAL/Src/hal_dvp.c')
+src += Glob('Driver/HAL/Src/hal_gpio.c')
+src += Glob('Driver/HAL/Src/hal_hdmi_rx.c')
+src += Glob('Driver/HAL/Src/hal_i2c.c')
+src += Glob('Driver/HAL/Src/hal_norflash.c')
+src += Glob('Driver/HAL/Src/hal_nv.c')
+src += Glob('Driver/HAL/Src/hal_nvic.c')
+src += Glob('Driver/HAL/Src/hal_pwm.c')
+src += Glob('Driver/HAL/Src/hal_spi.c')
+src += Glob('Driver/HAL/Src/hal_sram_sky.c')
+src += Glob('Driver/HAL/Src/hal_sys_ctl.c')
+src += Glob('Driver/HAL/Src/hal_timer.c')
+src += Glob('Driver/HAL/Src/hal_uart.c')
+
+
+# Utility
+path += [cwd + '/Driver/Utility/Inc']
+
+src += Glob('Driver/Utility/Src/encrypt.c')
+src += Glob('Driver/Utility/Src/factory_load.c')
+src += Glob('Driver/Utility/Src/factory_save.c')
+src += Glob('Driver/Utility/Src/image.c')
+src += Glob('Driver/Utility/Src/upgrade.c')
+src += Glob('Driver/Utility/Src/wireless_interface.c')
+
+#add for DSP library
+
+path += [cwd + '/CMSIS/DSP/Include']
+
+src += Glob('CMSIS/DSP/Source/CommonTables/*.c')
+src += Glob('CMSIS/DSP/Source/FastMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP/Source/BasicMathFunctions/*f32.c')
+# src += Glob('CMSIS/DSP/Source/MatrixFunctions/*f32.c')
+# src += Glob('CMSIS/DSP/Source/SupportFunctions/*f32.c')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# defines = Split('''
+#     HSE_VALUE="16000000"
+#     HSE_STARTUP_TIMEOUT="100"
+#     LSE_STARTUP_TIMEOUT="5000"
+#     LSE_VALUE="32768"
+#     EXTERNAL_CLOCK_VALUE="12288000"
+#     HSI_VALUE="16000000"
+#     LSI_VALUE="32000"
+#     VDD_VALUE="3300"
+#     PREFETCH_ENABLE="0"
+#     ART_ACCLERATOR_ENABLE="0"
+# ''')
+
+# defines = Split('''
+#     HSE_VALUE="16000000"
+#     HSE_STARTUP_TIMEOUT="100"
+#     LSE_STARTUP_TIMEOUT="5000"
+#     LSE_VALUE="32768"
+#     EXTERNAL_CLOCK_VALUE="12288000"
+#     HSI_VALUE="16000000"
+#     LSI_VALUE="32000"
+# ''')
+
+group = DefineGroup('AR1002_StdPeriph', src, depend = [''], CPPPATH = path)
+
+Return('group')
+
+
+
+
