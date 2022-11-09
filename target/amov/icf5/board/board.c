@@ -21,9 +21,10 @@
 #include <string.h>
 
 #include "default_config.h"
-#include "driver/barometer/spl06.h"
 #include "driver/barometer/ms5611.h"
+#include "driver/barometer/spl06.h"
 #include "driver/imu/bmi088.h"
+#include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mtd/w25q16.h"
@@ -287,6 +288,8 @@ void bsp_initialize(void)
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
 
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer"));
+
+    drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
 
     drv_w25q16_init("spi1_dev0", "w25q16");
 

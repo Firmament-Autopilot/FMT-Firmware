@@ -85,6 +85,10 @@ static rt_err_t configure(struct rt_spi_device* device,
             /*  min prescaler 256 */
             spi_init_struct.prescale = SPI_PSC_256;
         }
+
+        if(gd32_spi_bus->spi_periph == SPI1) {
+            spi_init_struct.prescale = SPI_PSC_256;
+        }
     } /* baudrate */
 
     /* CPOL */

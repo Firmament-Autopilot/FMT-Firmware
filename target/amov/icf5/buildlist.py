@@ -5,6 +5,7 @@ from building import *
 DRIVERS = [
     'imu/bmi088.c',
     'imu/icm42688.c',
+    'imu/icm20948.c',
     'mag/bmm150.c',
     'barometer/spl06.c',
     'barometer/ms5611.c',
