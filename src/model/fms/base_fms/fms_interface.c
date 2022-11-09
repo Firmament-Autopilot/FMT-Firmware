@@ -158,10 +158,10 @@ static McnNode_t auto_cmd_nod;
 static McnNode_t mission_data_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
-static uint8_t pilot_cmd_updated = 1;
-static uint8_t gcs_cmd_updated = 1;
-static uint8_t auto_cmd_updated = 1;
-static uint8_t mission_data_updated = 1;
+static uint8_t pilot_cmd_updated;
+static uint8_t gcs_cmd_updated;
+static uint8_t auto_cmd_updated;
+static uint8_t mission_data_updated;
 
 static int Pilot_Cmd_ID;
 static int GCS_Cmd_ID;
@@ -243,6 +243,7 @@ static void mlog_start_cb(void)
 {
     pilot_cmd_updated = 1;
     gcs_cmd_updated = 1;
+    auto_cmd_updated = 1;
     mission_data_updated = 1;
 }
 

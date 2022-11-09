@@ -17,22 +17,6 @@
 #include "hal/barometer/barometer.h"
 #include <firmament.h>
 
-static rt_err_t hal_baro_init(struct rt_device* dev)
-{
-    rt_err_t ret = RT_EOK;
-    baro_dev_t baro;
-
-    RT_ASSERT(dev != RT_NULL);
-    baro = (baro_dev_t)dev;
-
-    /* apply configuration */
-    if (baro->ops->baro_config) {
-        ret = baro->ops->baro_config(baro, &baro->config);
-    }
-
-    return ret;
-}
-
 static rt_size_t hal_baro_read(struct rt_device* dev,
                                rt_off_t pos,
                                void* buffer,
@@ -85,7 +69,7 @@ rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, 
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
 
-    device->init = hal_baro_init;
+    device->init = RT_NULL;
     device->open = RT_NULL;
     device->close = RT_NULL;
     device->read = hal_baro_read;
