@@ -108,7 +108,6 @@ static rt_err_t configure(struct rt_spi_device* device,
         if (configuration->mode & RT_SPI_CPHA) {
             spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_2EDGE;
         } else {
-            // SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
             spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;
         }
     }
