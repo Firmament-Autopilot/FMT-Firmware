@@ -242,6 +242,9 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
         /* SPI0 configure */
         rcu_periph_clock_enable(RCU_GPIOA);
         rcu_periph_clock_enable(RCU_GPIOB);
+        /* Peripheral clock enable */
+        rcu_periph_clock_enable(RCU_SPI0);
+
         /*  SPI0 GPIO Configuration
         PA5 ------> SPI0_SCK
         PA6 ------> SPI0_MISO
@@ -253,9 +256,6 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
         gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_5);
         gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_5);
 
-        /* Peripheral clock enable */
-        rcu_periph_clock_enable(RCU_SPI0);
-
 #ifdef SPI_USE_DMA
         //TODO
 #endif
@@ -264,6 +264,9 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
 
         /* SPI0 configure */
         rcu_periph_clock_enable(RCU_GPIOB);
+        /* Peripheral clock enable */
+        rcu_periph_clock_enable(RCU_SPI1);
+
         /*  SPI0 GPIO Configuration
         PB10 ------> SPI0_SCK
         PB14 ------> SPI0_MISO
@@ -271,9 +274,6 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
         gpio_af_set(GPIOB, GPIO_AF_5, GPIO_PIN_10 | GPIO_PIN_14 | GPIO_PIN_15);
         gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_10 | GPIO_PIN_14 | GPIO_PIN_15);
         gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10 | GPIO_PIN_14 | GPIO_PIN_15);
-
-        /* Peripheral clock enable */
-        rcu_periph_clock_enable(RCU_SPI1);
 
 #ifdef SPI_USE_DMA
         //TODO
