@@ -85,10 +85,6 @@ static rt_err_t configure(struct rt_spi_device* device,
             /*  min prescaler 256 */
             spi_init_struct.prescale = SPI_PSC_256;
         }
-
-        if(gd32_spi_bus->spi_periph == SPI1) {
-            spi_init_struct.prescale = SPI_PSC_256;
-        }
     } /* baudrate */
 
     /* CPOL */
@@ -383,13 +379,13 @@ rt_err_t drv_spi_init(void)
     /* attach spi_device_0 (SPI1 FRAM) to spi1 */
     {
         static struct rt_spi_device rt_spi1_dev0;
-        static struct gd32_spi_cs spi1_cs0 = { .gpio_periph = GPIOB, .pin = GPIO_PIN_10 };
+        static struct gd32_spi_cs spi1_cs0 = { .gpio_periph = GPIOD, .pin = GPIO_PIN_10 };
 
         /* enable cs pin clock */
-        rcu_periph_clock_enable(RCU_GPIOB);
+        rcu_periph_clock_enable(RCU_GPIOD);
         /* configure cs pin gpio */
-        gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_10);
-        gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
+        gpio_mode_set(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_10);
+        gpio_output_options_set(GPIOD, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
         /* set CS pin by default */
         gpio_bit_set(spi1_cs0.gpio_periph, spi1_cs0.pin);
 
