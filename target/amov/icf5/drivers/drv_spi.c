@@ -112,6 +112,10 @@ static rt_err_t configure(struct rt_spi_device* device,
         spi_init_struct.endian = SPI_ENDIAN_LSB;
     }
 
+    /* first disable spi */
+    spi_disable(gd32_spi_bus->spi_periph);
+    spi_i2s_deinit(gd32_spi_bus->spi_periph);
+
     /* configure SPI parameter */
     spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
     spi_init_struct.device_mode = SPI_MASTER;
