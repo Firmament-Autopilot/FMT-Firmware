@@ -21,6 +21,7 @@
 struct gd32_spi_bus {
     struct rt_spi_bus parent;
     uint32_t spi_periph;
+    struct rt_spi_configuration bus_config;
 #ifdef SPI_USE_DMA
     //TODO
 #endif
@@ -43,6 +44,13 @@ static rt_err_t configure(struct rt_spi_device* device,
 {
     struct gd32_spi_bus* gd32_spi_bus = (struct gd32_spi_bus*)device->bus;
     spi_parameter_struct spi_init_struct;
+
+    if (gd32_spi_bus->bus_config.mode == configuration->mode
+        && gd32_spi_bus->bus_config.data_width == configuration->data_width
+        && gd32_spi_bus->bus_config.max_hz == configuration->max_hz) {
+        /* same configuration, do not need re-configure */
+        return RT_EOK;
+    }
 
     if (configuration->data_width <= 8) {
         spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT;
@@ -115,14 +123,15 @@ static rt_err_t configure(struct rt_spi_device* device,
     /* first disable spi */
     spi_disable(gd32_spi_bus->spi_periph);
     spi_i2s_deinit(gd32_spi_bus->spi_periph);
-
     /* configure SPI parameter */
     spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
     spi_init_struct.device_mode = SPI_MASTER;
     spi_init_struct.nss = SPI_NSS_SOFT;
     spi_init(gd32_spi_bus->spi_periph, &spi_init_struct);
-
+    /* enable SPI */
     spi_enable(gd32_spi_bus->spi_periph);
+    /* update SPI bus configuration */
+    gd32_spi_bus->bus_config = *configuration;
 
     return RT_EOK;
 }
