@@ -254,8 +254,14 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
             mavlink_param_set_t param_set;
             mavlink_msg_param_set_decode(msg, &param_set);
 
+            if (param_set.param_type != MAV_PARAM_TYPE_REAL32) {
+                ulog_w(TAG, "Unsupported parameter type:%d\n", param_set.param_type);
+                break;
+            }
+
             if (mavlink_param_set(param_set.param_id, param_set.param_value) != FMT_EOK) {
-                ulog_w(TAG, "set unknown parameter:%s\n", param_set.param_id);
+                ulog_w(TAG, "Patameter set failed! Unknown parameter:%s\n", param_set.param_id);
+                break;
             }
         }
     } break;
@@ -364,7 +370,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 #endif
 
     default: {
-        // console_printf("unknown mavlink msg:%d\n", msg->msgid);
+        // printf("unknown mavlink msg:%d\n", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }
