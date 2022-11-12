@@ -22,7 +22,7 @@
 #include "module/sysio/actuator_config.h"
 
 MCN_DECLARE(control_output);
-MCN_DECLARE(rc_channels);
+MCN_DECLARE(rc_trim_channels);
 
 enum {
     ACTUATOR_FROM_CONTROL_OUT,
@@ -111,7 +111,7 @@ fmt_err_t send_actuator_cmd(void)
                 if (mcn_poll(_rc_channels_nod) == 0) {
                     return FMT_ERROR;
                 }
-                mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
+                mcn_copy(MCN_HUB(rc_trim_channels), _rc_channels_nod, &rc_channel);
                 has_poll_rc_channels = true;
             }
 
@@ -151,7 +151,7 @@ fmt_err_t actuator_init(void)
         return FMT_ERROR;
     }
 
-    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_channels), NULL, NULL);
+    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_trim_channels), NULL, NULL);
     if (_rc_channels_nod == NULL) {
         return FMT_ERROR;
     }
