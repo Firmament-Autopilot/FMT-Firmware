@@ -291,7 +291,7 @@ static int rc_calib(struct optparse options)
         param_set_val(param_get_by_index(start_idx + pilot_cmd_get_stick_chan(STICK_ROLL) * 4 + 1), &rc_roll_min);
         param_set_val(param_get_by_index(start_idx + pilot_cmd_get_stick_chan(STICK_ROLL) * 4 + 3), &rc_roll_trim);
 
-        printf("RC parameter updated! Note that you need enter \"param save\" to save parameters.\n")
+        printf("RC parameter updated! Note that you need enter \"param save\" to save parameters.\n");
     }
 
     return EXIT_SUCCESS;
