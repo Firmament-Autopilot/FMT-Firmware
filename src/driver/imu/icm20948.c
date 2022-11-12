@@ -282,7 +282,7 @@
 
 static float gyro_range_scale;
 static float accel_range_scale;
-static rt_device_t imu_spi_dev;
+static rt_device_t spi_dev;
 
 RT_WEAK void icm20948_rotate_to_ned(float* data)
 {
@@ -294,7 +294,7 @@ RT_WEAK void ak09916_rotate_to_ned(float* data)
 
 static rt_err_t _register_read_multi(uint16_t reg, uint8_t* buffer, uint8_t len)
 {
-    return spi_read_bank_multi_reg8(imu_spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), buffer, len);
+    return spi_read_bank_multi_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), buffer, len);
 }
 
 /**
@@ -305,7 +305,7 @@ static rt_err_t _register_read_multi(uint16_t reg, uint8_t* buffer, uint8_t len)
  */
 static rt_err_t _register_read(uint16_t reg, uint8_t* data)
 {
-    spi_read_bank_reg8(imu_spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), data);
+    spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), data);
     return RT_EOK;
 }
 
@@ -320,9 +320,9 @@ static rt_err_t _register_write(uint16_t reg, uint8_t val)
 {
     uint8_t res = 0;
 
-    spi_write_bank_reg8(imu_spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), val);
+    spi_write_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), val);
 
-    spi_read_bank_reg8(imu_spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), &res);
+    spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), &res);
 
     if (res != val) {
         // RT_ASSERT(RT_EOK);
@@ -587,36 +587,32 @@ static bool _data_ready()
     return status != 0;
 }
 
-static rt_err_t imu_init(void)
+static rt_err_t lowlevel_init(void)
 {
     uint8_t chip_id;
+    uint8_t last_stat_user_ctrl;
 
     /* open spi device */
-    RT_TRY(rt_device_open(imu_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_TRY(rt_device_open(spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    RT_TRY(spi_read_bank_reg8(imu_spi_dev, INV2REG_BANK_SEL, GET_BANK(INV2REG_WHO_AM_I), GET_REG(INV2REG_WHO_AM_I), &chip_id));
+    RT_TRY(spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(INV2REG_WHO_AM_I), GET_REG(INV2REG_WHO_AM_I), &chip_id));
     if (chip_id != WHO_AM_I) {
         DRV_DBG("ICM20948 unmatched chip id:0x%x\n", chip_id);
         return FMT_ERROR;
     }
-    DRV_DBG("ICM20948 chip id:0x%x\r\n", chip_id);
 
-    uint8_t _last_stat_user_ctrl;
+    _register_read(INV2REG_USER_CTRL, &last_stat_user_ctrl);
 
-    _register_read(INV2REG_USER_CTRL, &_last_stat_user_ctrl);
-
-    DRV_DBG("_last_stat_user_ctrl=0x%x\r\n", _last_stat_user_ctrl);
-
-    // Chip reset
+    /* Chip reset */
     uint8_t tries;
     for (tries = 0; tries < 5; tries++) {
 
         /* First disable the master I2C to avoid hanging the slaves on the
          * aulixiliar I2C bus - it will be enabled again if the AuxiliaryBus
          * is used */
-        if (_last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN) {
-            _last_stat_user_ctrl &= ~BIT_USER_CTRL_I2C_MST_EN;
-            RT_TRY(_register_write(INV2REG_USER_CTRL, _last_stat_user_ctrl));
+        if (last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN) {
+            last_stat_user_ctrl &= ~BIT_USER_CTRL_I2C_MST_EN;
+            RT_TRY(_register_write(INV2REG_USER_CTRL, last_stat_user_ctrl));
 
             systime_udelay(1000);
         }
@@ -627,8 +623,8 @@ static rt_err_t imu_init(void)
 
         /* Disable I2C bus if SPI selected (Recommended in Datasheet to be
          * done just after the device is reset) */
-        _last_stat_user_ctrl |= BIT_USER_CTRL_I2C_IF_DIS;
-        _register_write(INV2REG_USER_CTRL, _last_stat_user_ctrl);
+        last_stat_user_ctrl |= BIT_USER_CTRL_I2C_IF_DIS;
+        _register_write(INV2REG_USER_CTRL, last_stat_user_ctrl);
 
         // Wake up device and select Auto clock. Note that the
         // Invensense starts up in sleep mode, and it can take some time
@@ -664,9 +660,9 @@ static rt_err_t imu_init(void)
     //////////////////////////////////////////////////////////////////////////
 
     /* Enable the I2C master to slaves on the auxiliary I2C bus*/
-    if (!(_last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN)) {
-        _last_stat_user_ctrl |= BIT_USER_CTRL_I2C_MST_EN;
-        _register_write(INV2REG_USER_CTRL, _last_stat_user_ctrl);
+    if (!(last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN)) {
+        last_stat_user_ctrl |= BIT_USER_CTRL_I2C_MST_EN;
+        _register_write(INV2REG_USER_CTRL, last_stat_user_ctrl);
     }
 
     // _register_write(INV2REG_INT_PIN_CFG, 0x30); // INT Pin / Bypass Enable Configuration
@@ -878,17 +874,17 @@ static struct mag_device mag_dev = {
 
 rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, const char* mag_device_name)
 {
-    imu_spi_dev = rt_device_find(spi_device_name);
-    RT_ASSERT(imu_spi_dev != NULL);
+    spi_dev = rt_device_find(spi_device_name);
+    RT_ASSERT(spi_dev != NULL);
 
     /* config spi */
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz = SPI1_SPEED_HZ;
+        cfg.max_hz = 7000000;                  /* Max SPI speed: 7MHz */
 
-        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)imu_spi_dev;
+        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_dev;
 
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
@@ -897,14 +893,12 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
     }
 
     /* driver low-level init */
-    RT_TRY(imu_init());
+    RT_TRY(lowlevel_init());
 
     /* register gyro hal device */
     RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
-
     /* register accel hal device */
     RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
-
     /* register mag hal device */
     RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 

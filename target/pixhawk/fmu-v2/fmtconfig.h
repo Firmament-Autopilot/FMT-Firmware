@@ -52,4 +52,6 @@
 
 // #define FMT_RECORD_CALIBRATION_DATA
 
+// #define FMT_USING_SYS_DEBUG
+
 #endif
