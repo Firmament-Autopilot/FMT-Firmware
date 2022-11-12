@@ -24,13 +24,6 @@
 /* channel index start from 0 */
 #define CHAN_IDX(_stick_idx) (stickMapping[_stick_idx] - 1)
 
-enum {
-    STICK_YAW = 0,
-    STICK_THRO = 1,
-    STICK_ROLL = 2,
-    STICK_PITCH = 3,
-};
-
 uint8_t modeNum = 0;
 uint8_t eventCmdNum = 0;
 uint8_t statusCmdNum = 0;
@@ -377,6 +370,11 @@ fmt_err_t pilot_cmd_map_stick(
     stickMapping[STICK_PITCH] = pitch_chan;
 
     return FMT_EOK;
+}
+
+uint8_t pilot_cmd_get_stick_chan(stick_enum stick)
+{
+    return CHAN_IDX(stick);
 }
 
 fmt_err_t pilot_cmd_init(void)
