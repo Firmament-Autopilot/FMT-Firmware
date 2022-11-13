@@ -21,9 +21,10 @@
 #include <string.h>
 
 #include "default_config.h"
-#include "driver/barometer/spl06.h"
 #include "driver/barometer/ms5611.h"
+#include "driver/barometer/spl06.h"
 #include "driver/imu/bmi088.h"
+#include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mtd/w25q16.h"
@@ -286,9 +287,24 @@ void bsp_initialize(void)
     RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
 
-    RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer"));
+    // spi_parameter_struct spi_init_struct;
+    // spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
+    // spi_init_struct.device_mode = SPI_MASTER;
+    // spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT;
+    // spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_2EDGE;
+    // spi_init_struct.nss = SPI_NSS_SOFT;
+    // spi_init_struct.prescale = SPI_PSC_256;
+    // spi_init_struct.endian = SPI_ENDIAN_MSB;
+    // spi_init(SPI1, &spi_init_struct);
+
+    // spi_enable(SPI1);
+    // while (1) {
+    //     spi_i2s_data_transmit(SPI1, 0x99);
+    // }
 
     drv_w25q16_init("spi1_dev0", "w25q16");
+    RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
+    drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));

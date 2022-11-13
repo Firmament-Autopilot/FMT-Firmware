@@ -112,6 +112,10 @@ static rt_err_t write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uin
     rt_uint8_t r_val;
 
     RT_TRY(spi_write_reg8(spi_device, reg, val));
+
+    /* if read immediately after write would result in read failed value, so insert a delay here */
+    systime_udelay(100);
+
     RT_TRY(spi_read_reg8(spi_device, reg, &r_val));
 
     return (r_val == val) ? RT_EOK : RT_ERROR;

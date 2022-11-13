@@ -21,6 +21,7 @@
 struct gd32_spi_bus {
     struct rt_spi_bus parent;
     uint32_t spi_periph;
+    struct rt_spi_configuration bus_config;
 #ifdef SPI_USE_DMA
     //TODO
 #endif
@@ -43,6 +44,13 @@ static rt_err_t configure(struct rt_spi_device* device,
 {
     struct gd32_spi_bus* gd32_spi_bus = (struct gd32_spi_bus*)device->bus;
     spi_parameter_struct spi_init_struct;
+
+    if (gd32_spi_bus->bus_config.mode == configuration->mode
+        && gd32_spi_bus->bus_config.data_width == configuration->data_width
+        && gd32_spi_bus->bus_config.max_hz == configuration->max_hz) {
+        /* same configuration, do not need re-configure */
+        return RT_EOK;
+    }
 
     if (configuration->data_width <= 8) {
         spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT;
@@ -100,7 +108,6 @@ static rt_err_t configure(struct rt_spi_device* device,
         if (configuration->mode & RT_SPI_CPHA) {
             spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_2EDGE;
         } else {
-            // SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
             spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;
         }
     }
@@ -112,13 +119,18 @@ static rt_err_t configure(struct rt_spi_device* device,
         spi_init_struct.endian = SPI_ENDIAN_LSB;
     }
 
+    /* first disable spi */
+    spi_disable(gd32_spi_bus->spi_periph);
+    spi_i2s_deinit(gd32_spi_bus->spi_periph);
     /* configure SPI parameter */
     spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
     spi_init_struct.device_mode = SPI_MASTER;
     spi_init_struct.nss = SPI_NSS_SOFT;
     spi_init(gd32_spi_bus->spi_periph, &spi_init_struct);
-
+    /* enable SPI */
     spi_enable(gd32_spi_bus->spi_periph);
+    /* update SPI bus configuration */
+    gd32_spi_bus->bus_config = *configuration;
 
     return RT_EOK;
 }
@@ -238,6 +250,9 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
         /* SPI0 configure */
         rcu_periph_clock_enable(RCU_GPIOA);
         rcu_periph_clock_enable(RCU_GPIOB);
+        /* Peripheral clock enable */
+        rcu_periph_clock_enable(RCU_SPI0);
+
         /*  SPI0 GPIO Configuration
         PA5 ------> SPI0_SCK
         PA6 ------> SPI0_MISO
@@ -249,9 +264,6 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
         gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_5);
         gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_5);
 
-        /* Peripheral clock enable */
-        rcu_periph_clock_enable(RCU_SPI0);
-
 #ifdef SPI_USE_DMA
         //TODO
 #endif
@@ -260,6 +272,9 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
 
         /* SPI0 configure */
         rcu_periph_clock_enable(RCU_GPIOB);
+        /* Peripheral clock enable */
+        rcu_periph_clock_enable(RCU_SPI1);
+
         /*  SPI0 GPIO Configuration
         PB10 ------> SPI0_SCK
         PB14 ------> SPI0_MISO
@@ -267,9 +282,6 @@ static rt_err_t gd32_spi_register(uint32_t spi_periph,
         gpio_af_set(GPIOB, GPIO_AF_5, GPIO_PIN_10 | GPIO_PIN_14 | GPIO_PIN_15);
         gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_10 | GPIO_PIN_14 | GPIO_PIN_15);
         gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10 | GPIO_PIN_14 | GPIO_PIN_15);
-
-        /* Peripheral clock enable */
-        rcu_periph_clock_enable(RCU_SPI1);
 
 #ifdef SPI_USE_DMA
         //TODO
@@ -379,13 +391,13 @@ rt_err_t drv_spi_init(void)
     /* attach spi_device_0 (SPI1 FRAM) to spi1 */
     {
         static struct rt_spi_device rt_spi1_dev0;
-        static struct gd32_spi_cs spi1_cs0 = { .gpio_periph = GPIOB, .pin = GPIO_PIN_10 };
+        static struct gd32_spi_cs spi1_cs0 = { .gpio_periph = GPIOD, .pin = GPIO_PIN_10 };
 
         /* enable cs pin clock */
-        rcu_periph_clock_enable(RCU_GPIOB);
+        rcu_periph_clock_enable(RCU_GPIOD);
         /* configure cs pin gpio */
-        gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_10);
-        gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
+        gpio_mode_set(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_10);
+        gpio_output_options_set(GPIOD, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
         /* set CS pin by default */
         gpio_bit_set(spi1_cs0.gpio_periph, spi1_cs0.pin);
 
