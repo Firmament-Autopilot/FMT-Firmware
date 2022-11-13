@@ -38,7 +38,7 @@ if PLATFORM == 'gcc':
     CFLAGS = DEVICE + ' -Wall -Wno-switch -Wno-maybe-uninitialized -Wno-strict-aliasing'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -D__ASSEMBLY__ -I.'
     LINK_SCRIPT = 'link.lds'
-    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_fmu.map,-cref,-u,system_vectors'+\
+    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_' + BOARD + '.map,-cref,-u,system_vectors'+\
                       ' -T %s' % LINK_SCRIPT
 
     CPATH = ''
@@ -58,5 +58,5 @@ if PLATFORM == 'gcc':
                                     ' -shared -fPIC -nostartfiles -nostdlib -static-libgcc'
     M_POST_ACTION = STRIP + ' -R .hash $TARGET\n' + SIZE + ' $TARGET \n'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_fmu.bin\n' +\
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_' + BOARD + '.bin\n' +\
                   SIZE + ' $TARGET \n'

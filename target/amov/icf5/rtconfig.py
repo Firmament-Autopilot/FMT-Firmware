@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'gd32f4'
+BOARD = 'amov-icf5'
 
 # toolchains options
 ARCH = 'arm'
@@ -44,7 +44,7 @@ if PLATFORM == 'gcc':
     CFLAGS = DEVICE + ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch -DUSE_STDPERIPH_DRIVER -DGD32F470 -D__VFP_FP__ -DARM_MATH_CM4 -D__FPU_PRESENT="1" -D__FPU_USED="1"'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
-        ' -nostartfiles -Wl,--gc-sections,-Map=build/gd32f4.map,-cref,-u,Reset_Handler -T link.lds'
+        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_' + BOARD + '.map,-cref,-u,Reset_Handler -T link.lds'
 
     CPATH = ''
     LPATH = ''
@@ -59,5 +59,5 @@ if PLATFORM == 'gcc':
     CFLAGS += ' -std=c99'
     CXXFLAGS += ' -std=c++14'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET build/gd32f4.bin\n' + SIZE + ' $TARGET \n'
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_' + BOARD + '.bin\n' + SIZE + ' $TARGET \n'
     

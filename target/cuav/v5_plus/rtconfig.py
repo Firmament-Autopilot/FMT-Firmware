@@ -47,7 +47,7 @@ if PLATFORM == 'gcc':
         ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
-        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_cuav-v5+.map,-cref,-u,Reset_Handler -T link.lds'
+        ' -nostartfiles -Wl,--gc-sections,-Map=build/fmt_' + BOARD + '.map,-cref,-u,Reset_Handler -T link.lds'
 
     CPATH = ''
     LPATH = ''
@@ -62,4 +62,4 @@ if PLATFORM == 'gcc':
     CFLAGS += ' -std=c99'
     CXXFLAGS += ' -std=c++14'
 
-    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_cuav-v5+.bin\n' + SIZE + ' $TARGET \n'
+    POST_ACTION = OBJCPY + ' -O binary $TARGET build/fmt_' + BOARD + '.bin\n' + SIZE + ' $TARGET \n'
