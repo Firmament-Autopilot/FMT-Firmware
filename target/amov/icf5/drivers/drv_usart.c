@@ -29,6 +29,7 @@
 #define USING_UART1
 #define USING_UART2
 #define USING_UART6
+#define USING_UART7
 
 /* GD32 uart driver */
 // Todo: compress uart info
@@ -305,6 +306,42 @@ void USART0_IRQHandler(void)
     rt_interrupt_leave();
 }
 #endif /* USING_UART0 */
+
+#ifdef USING_UART7
+static struct serial_device serial4;
+static struct gd32_uart uart7 = {
+    .uart_periph = UART7,
+    .irqn = UART7_IRQn,
+    .per_clk = RCU_UART7,
+    .tx_gpio_clk = RCU_GPIOE,
+    .rx_gpio_clk = RCU_GPIOE,
+    .tx_port = GPIOE,
+    .tx_af = GPIO_AF_8,
+    .tx_pin = GPIO_PIN_1,
+    .rx_port = GPIOE,
+    .rx_af = GPIO_AF_8,
+    .rx_pin = GPIO_PIN_0,
+    // .dma = {
+    //     .dma_periph = DMA0,
+    //     .clock = RCU_DMA0,
+    //     .rx_ch = DMA_CH1,
+    //     .rx_irq = DMA0_Channel1_IRQn,
+    //     .tx_ch = DMA_CH3,
+    //     .tx_irq = DMA0_Channel3_IRQn,
+    //     .sub_periph = DMA_SUBPERI4,
+    // }
+};
+
+void UART7_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial4);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif /* USING_UART7 */
 
 static void _dma_transmit(struct gd32_uart* uart, rt_uint8_t* buf, rt_size_t size)
 {
@@ -633,6 +670,22 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart0);
 #endif /* USING_UART0 */
+
+#ifdef USING_UART7
+    serial4.ops = &__usart_ops;
+    #ifdef SERIAL4_DEFAULT_CONFIG
+    struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
+    serial4.config = serial4_config;
+    #else
+    serial4.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial4,
+                                  "serial4",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart7);
+#endif /* USING_UART7 */
 
     return rt_err;
 }

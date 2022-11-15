@@ -23,6 +23,7 @@
 #include "default_config.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
+#include "driver/gps/gps_m8n.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688.h"
@@ -286,6 +287,8 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
     RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
+
+    RT_CHECK(gps_m8n_init("serial4", "gps"));
 
     // spi_parameter_struct spi_init_struct;
     // spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
