@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef BMI088_H__
-#define BMI088_H__
+#include <firmament.h>
 
-#include <rtthread.h>
+#include "module/math/rotation.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
+{
+    (void)dev_id;
+    float tmp;
 
-rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi_device_name,
-                         const char* gyro_device_name, const char* accel_device_name, uint32_t dev_id);
-
-#ifdef __cplusplus
+    tmp = data[0];
+    data[0] = -data[1];
+    data[1] = tmp;
 }
-#endif
-
-#endif

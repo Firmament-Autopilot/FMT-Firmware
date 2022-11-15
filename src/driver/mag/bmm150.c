@@ -107,6 +107,20 @@ static uint8_t _dig_xy1;   /**< trim xy1 data */
 static int8_t _dig_xy2;    /**< trim xy2 data */
 static uint16_t _dig_xyz1; /**< trim xyz1 data */
 
+/* Re-implement this function to define customized rotation */
+RT_WEAK void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
+{
+    /* do nothing */
+    (void)data;
+    (void)dev_id;
+
+    float tmp;
+    tmp = data[0];
+    data[0] = data[1];
+    data[1] = tmp;
+    data[2] = -data[2];
+}
+
 static rt_err_t write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
 {
     rt_uint8_t r_val;
@@ -241,6 +255,9 @@ static rt_err_t mag_measure(float mag[3])
     mag[0] = x * 0.01f;
     mag[1] = y * 0.01f;
     mag[2] = z * 0.01f;
+
+    /* rotate to ned */
+    bmm150_rotate_to_ned(mag, 0);
 
 exit:
     /* trigger the next measurement */
