@@ -17,10 +17,10 @@
 
 #include "ar1002_chip.h"
 #include "ar1002_hal.h"
-#include "module/syscmd/syscmd.h"
+#include "factory.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/syscmd/optparse.h"
-#include "factory.h"
+#include "module/syscmd/syscmd.h"
 
 ////////////////////////////////////////////////////////////////////////////
 // reboot
@@ -118,6 +118,26 @@ FINSH_FUNCTION_EXPORT_ALIAS(cmd_set_chip_id, __cmd_set_chip_id, set<chip id1 ~5>
 
 ////////////////////////////////////////////////////////////////////////////
 // swtich_mavlink
+
+#include "module/mavproxy/mavproxy.h"
+
+/* coolfly use to switch mavlink channle */
+fmt_err_t __switch_mavlink_to_device(rt_device_t dev)
+{
+    fmt_err_t ret = RT_ERROR;
+
+    mavproxy_device_info* list = get_device_list();
+
+    for (int idx = 0; idx < get_device_num(); idx++) {
+        if (rt_device_find(list->name) == dev) {
+            ret = mavproxy_set_channel(idx);
+            break;
+        }
+        list++;
+    }
+
+    return ret;
+}
 
 static void sw_mav_show_usage(void)
 {
