@@ -35,19 +35,14 @@
 static mavproxy_device_info mavproxy_device_list[MAVPROXY_MAX_DEVICE_NUM] = { 0 };
 static uint8_t mavproxy_device_num = 0;
 
-/* coolfly use to switch mavlink channle */
-fmt_err_t __switch_mavlink_to_device(rt_device_t dev)
+int get_device_num(void)
 {
-    fmt_err_t ret = RT_ERROR;
+    return DEVICE_NUM;
+}
 
-    for (int idx = 0; idx < DEVICE_NUM; idx++) {
-        if (rt_device_find(DEVICE_LIST[idx].name) == dev) {
-            ret = mavproxy_set_channel(idx);
-            break;
-        }
-    }
-
-    return ret;
+mavproxy_device_info* get_device_list(void)
+{
+    return DEVICE_LIST;
 }
 
 static void __handle_device_msg(rt_device_t dev, void* msg)
