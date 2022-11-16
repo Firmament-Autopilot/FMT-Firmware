@@ -25,8 +25,8 @@
 #endif
 
 #include "board_device.h"
-#include "driver/barometer/spl06.h"
 #include "driver/barometer/ms5611.h"
+#include "driver/barometer/spl06.h"
 #include "driver/gps/gps_m8n.h"
 // #include "driver/imu/bmi055.h"
 #include "driver/imu/bmi088.h"
@@ -117,7 +117,7 @@ static void bsp_show_information(void)
 {
     char buffer[50];
 
-    // 
+    //
     console_println("            :1tfffffffffffffffffffffffffffffffffffti,              ");
     console_println("        .1fffffffffffffffffffffffffffffffffffffffffffft;           ");
     console_println("      :tfffffffffffffffffffffffffffffffffffffffffffffffff1         ");
@@ -307,13 +307,11 @@ void bsp_early_initialize(void)
     // /* Enable CPU L1-cache */
     // CPU_CACHE_Enable();
 
-
     HAL_GPIO_OutPut(WD_DONE_GPIO); // wd_done
     HAL_GPIO_SetPin(WD_DONE_GPIO, HAL_GPIO_PIN_SET);
 
-    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); // 
+    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); //
     HAL_GPIO_SetPin(SENSOR_POWER_GPIO, HAL_GPIO_PIN_RESET);
-
 
     HAL_GPIO_OutPut(LINK_LED_GPIO); // blue led close
     HAL_GPIO_SetPin(LINK_LED_GPIO, HAL_GPIO_PIN_SET);
@@ -408,8 +406,7 @@ void bsp_initialize(void)
 #endif
     /* init file system */
     // FMT_CHECK(file_manager_init(mnt_table));
-    if(FMT_EOK != file_manager_init(mnt_table))
-    {
+    if (FMT_EOK != file_manager_init(mnt_table)) {
         // int result = 0;
         // char *type = "elm"; /* use the default file system type as 'fatfs' */
         // char *mtdfs = "mtdblk0";
@@ -441,13 +438,13 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
 #else
 
-#ifdef DEVICE_ON_BOARD
+    #ifdef DEVICE_ON_BOARD
     /* init onboard sensors */
-    // RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
+    RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi2_dev2", "gyro0", "accel0"));
-    RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro0", "accel0"));
+    // RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro0", "accel0"));
     // RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
     RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
     /* if no gps mag then use onboard mag */
@@ -468,18 +465,16 @@ void bsp_initialize(void)
 
     if (gps_m8n_init("serial1", "gps") != FMT_EOK) {
         console_println("gps serial1 faild~!!!!");
-    } 
-
+    }
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-#endif
+    #endif
 
     FMT_CHECK(register_ar_rc());
-    // FMT_CHECK(register_bb_com());
-
+    FMT_CHECK(register_bb_com());
 
 #endif
 
@@ -531,7 +526,7 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
-    
+
     /* dump boot log to file */
     boot_log_dump();
 }

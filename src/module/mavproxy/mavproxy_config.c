@@ -35,6 +35,16 @@
 static mavproxy_device_info mavproxy_device_list[MAVPROXY_MAX_DEVICE_NUM] = { 0 };
 static uint8_t mavproxy_device_num = 0;
 
+int get_device_num(void)
+{
+    return DEVICE_NUM;
+}
+
+mavproxy_device_info* get_device_list(void)
+{
+    return DEVICE_LIST;
+}
+
 static void __handle_device_msg(rt_device_t dev, void* msg)
 {
     device_status status = *((device_status*)msg);
@@ -151,19 +161,23 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab, int idx)
                 continue;
             }
         } else if (DEVICE_TYPE_IS(idx, bb_com)) {
-            // DEVICE_NUM = idx + 1;
-            // if (MATCH(key, "auto-switch")) {
-            //     rt_device_t ret = rt_device_find(DEVICE_LIST[idx].name);
-            //     if (ret != RT_NULL) {
-            //         fmt_err_t ret = mavproxy_set_channel(idx);
-            //         if (ret != RT_EOK) {
-            //             TOML_DBG_W("mavproxy_set_channel = %d failed!!! \n", idx);
-            //         }
-            //     }
-            // } else {
-            //     TOML_DBG_E("unknown config key: %s \n", key);
-            //     continue;
-            // }
+            DEVICE_NUM = idx + 1; /* the DEVICE_NUM has not set here, so add 1 for temp */
+            if (MATCH(key, "auto-switch")) {
+                rt_device_t ret = rt_device_find(DEVICE_LIST[idx].name);
+                if (ret != RT_NULL) {
+                    fmt_err_t ret = mavproxy_set_channel(idx);
+                    if (ret != RT_EOK) {
+                        TOML_DBG_W("mavproxy_set_channel = %d failed!!! \n", idx);
+                    } else {
+                        TOML_DBG_E("mavproxy_set_channel bb_com  \n");
+                    }
+                } else {
+                    TOML_DBG_E("can't find bb_com  \n");
+                }
+            } else {
+                TOML_DBG_E("unknown config key: %s \n", key);
+                continue;
+            }
         } else {
             TOML_DBG_W("unknown device type:%s \n", DEVICE_LIST[idx].type);
             continue;
@@ -247,7 +261,6 @@ fmt_err_t mavproxy_switch_channel(uint8_t chan)
             rt_device_close(old_device);
         }
     } else {
-        TOML_DBG_E("mavproxy_set_device failed \n");
         return FMT_ERROR;
     }
 
