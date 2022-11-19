@@ -95,6 +95,32 @@ struct ar_uart {
 /* Default config for serial_configure structure */
 #define SERIAL4_DEFAULT_CONFIG                    \
     {                                             \
+        BAUD_RATE_115200,    /* 57600 bits/s */   \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
+    }
+
+/* Default config for serial_configure structure */
+#define SERIAL5_DEFAULT_CONFIG                    \
+    {                                             \
+        BAUD_RATE_115200,    /* 57600 bits/s */   \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
+    }
+
+/* Default config for serial_configure structure */
+#define SERIAL7_DEFAULT_CONFIG                    \
+    {                                             \
         BAUD_RATE_460800,    /* 57600 bits/s */   \
             DATA_BITS_8,     /* 8 databits */     \
             STOP_BITS_1,     /* 1 stopbit */      \
@@ -114,7 +140,9 @@ static void uart_isr(struct serial_device* serial);
 // #ifdef USING_UART7
 static struct serial_device serial0; // FMU Debug
 static struct serial_device serial1; // GPS
-static struct serial_device serial4; // MAVLINK
+static struct serial_device serial4; // dis
+static struct serial_device serial5; // flow
+static struct serial_device serial7; // MAVLINK
 
 /* UART0 device driver structure */
 struct ar_uart uart0 = {
@@ -132,6 +160,18 @@ struct ar_uart uart1 = {
 struct ar_uart uart4 = {
     .uart_device = UART4_BASE,
     .irq = UART_INTR4_VECTOR_NUM,
+    .dma = { 0 },
+};
+
+struct ar_uart uart5 = {
+    .uart_device = UART5_BASE,
+    .irq = UART_INTR5_VECTOR_NUM,
+    .dma = { 0 },
+};
+
+struct ar_uart uart7 = {
+    .uart_device = UART7_BASE,
+    .irq = UART_INTR7_VECTOR_NUM,
     .dma = { 0 },
 };
 
@@ -161,6 +201,26 @@ void UART4_IRQHandler(void)
     rt_interrupt_enter();
     /* uart isr routine */
     uart_isr(&serial4);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void UART5_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial5);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void UART7_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial7);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -319,30 +379,12 @@ static void uart_isr(struct serial_device* serial)
 {
     struct ar_uart* uart = (struct ar_uart*)serial->parent.user_data;
 
-    // uint32_t uartbase;
-    // if(uart->uart_device.uartbase == UART0_BASE)
-    // {
-    //     uartbase = 0;
-    // }
-    // else if(uart->uart_device.uartbase == UART1_BASE)
-    // {
-    //     uartbase = 1;
-    // }
-    // else
-    // {
-    //     uartbase = 11;
-    // }
-
-    // BOOT_Printf("uart%d: \r\n",uartbase);
-
     uint32_t status;
     int passes;
 
     for (passes = 0; passes < 256; passes++) {
 
         status = up_serialin(&uart->uart_device, AR_UART_IIR_OFFSET);
-
-        // BOOT_Printf("status1 = 0x%08x \r\n", status);
 
         if ((status & UART_IIR_INTID_MASK) == UART_IIR_INTID_NIP) //
         {
@@ -354,7 +396,6 @@ static void uart_isr(struct serial_device* serial)
             // return;
         }
 
-        // BOOT_Printf("status2 = 0x%08x \r\n", status);
         /* Handle the interrupt by its interrupt ID field */
         switch (status & UART_IIR_INTID_MASK) {
         /* Handle incoming, receive bytes (with or without timeout) */
@@ -389,7 +430,6 @@ static void uart_isr(struct serial_device* serial)
             /* Read the modem status register (MSR) to clear */
 
             status = up_serialin(&uart->uart_device, AR_UART_MSR_OFFSET);
-            // BOOT_Printf("MSR: %02x\n", status);
             break;
         }
 
@@ -399,20 +439,17 @@ static void uart_isr(struct serial_device* serial)
             /* Read the line status register (LSR) to clear */
 
             status = up_serialin(&uart->uart_device, AR_UART_LSR_OFFSET);
-            // BOOT_Printf("LSR: %02x\n", status);
             break;
         }
 
         case UART_IIR_INTID_BUSY: {
             status = up_serialin(&uart->uart_device, AR_UART_USR_OFFSET);
-            // BOOT_Printf("ERROR: UART_IIR_INTID_BUSY: %02x\n", status);
             break;
         }
 
             /* There should be no other values */
 
         default: {
-            // _err("ERROR: Unexpected IIR: %02x\n", status);
             break;
         }
         }
@@ -448,39 +485,19 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
     uart = (struct ar_uart*)serial->parent.user_data;
 
-    // uint32_t uartbase;
-    // if(uart->uart_device.uartbase == UART0_BASE)
-    // {
-    //     uartbase = 0;
-    // }
-    // else if(uart->uart_device.uartbase == UART1_BASE)
-    // {
-    //     uartbase = 1;
-    // }
-    // else
-    // {
-    //     uartbase = 11;
-    // }
-
-    // BOOT_Printf("uart%d: baud = %ld \r\n",uartbase, uart->uart_device.baud);
-
     uart->uart_device.baud = cfg->baud_rate;
-    // BOOT_Printf("uart%d: baud = %ld \r\n",uartbase, uart->uart_device.baud);
 
     if (cfg->data_bits == DATA_BITS_8) {
         uart->uart_device.bits = 8;
     } else if (cfg->data_bits == DATA_BITS_9) {
         ;
     }
-    // BOOT_Printf("uart%d: data_bits = %ld \r\n", uartbase, uart->uart_device.bits);
 
     if (cfg->stop_bits == STOP_BITS_1) {
         uart->uart_device.stopbits2 = 0;
     } else if (cfg->stop_bits == STOP_BITS_2) {
         uart->uart_device.stopbits2 = 1;
     }
-
-    // BOOT_Printf("uart%d: data_bits2 = %ld \r\n", uartbase, uart->uart_device.stopbits2);
 
     if (cfg->parity == PARITY_NONE) {
         uart->uart_device.parity = 0;
@@ -490,12 +507,9 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
         uart->uart_device.parity = 2;
     }
 
-    // BOOT_Printf("uart%d: parity = %ld \r\n", uartbase, uart->uart_device.parity);
-
     /* USART need be disabled first in order to configure it */
     up_setup(&uart->uart_device);
 
-    // BOOT_Printf("uart%d : usart_configure success \r\n",uartbase);
     return RT_EOK;
 }
 
@@ -506,8 +520,6 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
 
     RT_ASSERT(serial != RT_NULL);
     uart = (struct ar_uart*)serial->parent.user_data;
-
-    // BOOT_Printf("uart%d: cmd =%ld \r\n" , uartbase, cmd);
 
     switch (cmd) {
     case RT_DEVICE_CTRL_CLR_INT:
@@ -622,7 +634,7 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart1);
 
-
+    // dist
     serial4.ops = &_usart_ops;
 
     struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
@@ -635,6 +647,34 @@ rt_err_t drv_usart_init(void)
                                   "serial4",
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart4);
+
+    // flow
+    serial5.ops = &_usart_ops;
+
+    struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
+    serial5.config = serial5_config;
+
+    NVIC_Configuration(&uart5);
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial5,
+                                  "serial5",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart5);
+
+    // mavlink
+    serial7.ops = &_usart_ops;
+
+    struct serial_configure serial7_config = SERIAL7_DEFAULT_CONFIG;
+    serial5.config = serial7_config;
+
+    NVIC_Configuration(&uart7);
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial7,
+                                  "serial7",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart7);
 
     return rt_err;
 }

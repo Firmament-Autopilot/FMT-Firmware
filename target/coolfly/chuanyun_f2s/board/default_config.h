@@ -59,7 +59,7 @@ target = "CHUANYUN_F2S"\n
 [mavproxy]\n
 	[[mavproxy.devices]]\n
 	type = "serial"\n
-	name = "serial4"\n
+	name = "serial7"\n
 	baudrate = 460800\n
 	[[mavproxy.devices]]\n
 	type = "bb_com"\n
