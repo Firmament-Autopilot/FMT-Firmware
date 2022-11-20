@@ -110,10 +110,10 @@ rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_
     uint32_t addr = sector * geometry.bytes_per_sector;
     struct rt_spi_message message1, message2, message3;
 
-    uint8_t add_length = (geometry.sector_count < 512) ? 2 : 3;
+    uint8_t addr_length = (geometry.sector_count < 512) ? 2 : 3;
 
     /* send MSB first */
-    Msb2Lsb((uint8_t*)&addr, add_length);
+    Msb2Lsb((uint8_t*)&addr, addr_length);
 
     /* send op-code */
     message1.send_buf = &code;
@@ -125,7 +125,7 @@ rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_
     /* send address */
     message2.send_buf = &addr;
     message2.recv_buf = RT_NULL;
-    message2.length = add_length;
+    message2.length = addr_length;
     message2.cs_take = 0;
     message2.cs_release = 0;
     message2.next = &message3;
@@ -148,11 +148,11 @@ rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sect
     uint32_t addr = sector * geometry.bytes_per_sector;
     struct rt_spi_message message1, message2, message3;
 
-    uint8_t add_length = (geometry.sector_count < 512) ? 2 : 3;
+    uint8_t addr_length = (geometry.sector_count < 512) ? 2 : 3;
 
     /* send MSB first */
 
-    Msb2Lsb((uint8_t*)&addr, add_length);
+    Msb2Lsb((uint8_t*)&addr, addr_length);
 
     /* write enable */
     ramtron_wren();
@@ -168,7 +168,7 @@ rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sect
     message2.send_buf = &addr;
     message2.recv_buf = RT_NULL;
 
-    message2.length = add_length;
+    message2.length = addr_length;
 
     message2.cs_take = 0;
     message2.cs_release = 0;

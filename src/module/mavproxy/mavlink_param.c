@@ -26,8 +26,8 @@ static mav_param_list_t mavlink_param = {
     MAVLINK_PARAM_DEFINE(SYS_AUTOSTART, 4001),
     MAVLINK_PARAM_DEFINE(SYS_AUTOCONFIG, 0),
     MAVLINK_PARAM_DEFINE(SYS_PARAM_VER, 0.2),
-    MAVLINK_PARAM_DEFINE(MAV_SYS_ID, FMT_MAVLINK_SYS_ID),
-    MAVLINK_PARAM_DEFINE(MAV_COMP_ID, FMT_MAVLINK_COMP_ID),
+    MAVLINK_PARAM_DEFINE(MAV_SYS_ID, 0),
+    MAVLINK_PARAM_DEFINE(MAV_COMP_ID, 0),
 #ifdef FMT_USING_MAVLINK_V2
     MAVLINK_PARAM_DEFINE(MAV_PROTO_VER, 2), /* Mavlink Version */
 #else
@@ -424,6 +424,13 @@ fmt_err_t mavlink_param_set(const char* name, float val)
 {
     fmt_err_t err;
     param_t* param;
+    int8_t i8val;
+    uint8_t u8val;
+    int16_t i16val;
+    uint16_t u16val;
+    int32_t i32val;
+    uint32_t u32val;
+    float fval;
     double lfval;
 
     param = param_get_by_name(name);
@@ -434,16 +441,35 @@ fmt_err_t mavlink_param_set(const char* name, float val)
 
     switch (param->type) {
     case PARAM_TYPE_INT8:
+        i8val = (int8_t)val;
+        err = param_set_val(param, &i8val);
+        break;
     case PARAM_TYPE_UINT8:
+        u8val = (uint8_t)val;
+        err = param_set_val(param, &u8val);
+        break;
     case PARAM_TYPE_INT16:
+        i16val = (int16_t)val;
+        err = param_set_val(param, &i16val);
+        break;
     case PARAM_TYPE_UINT16:
+        u16val = (uint16_t)val;
+        err = param_set_val(param, &u16val);
+        break;
     case PARAM_TYPE_INT32:
+        i32val = (int32_t)val;
+        err = param_set_val(param, &i32val);
+        break;
     case PARAM_TYPE_UINT32:
+        u32val = (uint32_t)val;
+        err = param_set_val(param, &u32val);
+        break;
     case PARAM_TYPE_FLOAT:
-        err = param_set_val(param, &val);
+        fval = val;
+        err = param_set_val(param, &fval);
         break;
     case PARAM_TYPE_DOUBLE:
-        lfval = val;
+        lfval = (double)val;
         err = param_set_val(param, &lfval);
         break;
     default:

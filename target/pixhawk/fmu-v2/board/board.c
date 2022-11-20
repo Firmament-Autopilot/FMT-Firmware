@@ -33,8 +33,7 @@
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
 #include "driver/rgb_led/tca62724.h"
-#include "driver/vision_flow/pmw3901_fl04.h"
-#include "driver/vision_flow/pmw3901_l0x.h"
+#include "driver/vision_flow/pmw3901_xx.h"
 #include "drv_gpio.h"
 #include "drv_i2c_soft.h"
 #include "drv_pwm.h"
@@ -325,7 +324,7 @@ void bsp_initialize(void)
     /* init barometer */
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
     /* init optical flow module (a mini tf included) */
-    RT_CHECK(pmw3901_fl04_drv_init("serial3"));
+    RT_CHECK(pmw3901_xx_drv_init("serial3"));
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 
@@ -374,10 +373,8 @@ void bsp_post_initialize(void)
     /* init mission data */
     FMT_CHECK(mission_data_init());
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */
     FMT_CHECK(actuator_init());
-#endif
 
     /* start msp server */
     FMT_CHECK(msp_server_start());

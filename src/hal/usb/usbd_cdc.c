@@ -26,8 +26,6 @@ static rt_err_t hal_usbd_cdc_init(rt_device_t device)
     usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
     rt_err_t err = RT_EOK;
 
-    rt_completion_init(&usbd->tx_cplt);
-
     usbd->rx_rb = ringbuffer_create(USBD_RX_FIFO_SIZE);
     if (usbd->rx_rb == NULL) {
         return FMT_ENOMEM;
@@ -147,6 +145,8 @@ rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t usbd, const char* name, rt_uint16_
     if (devmq_create(dev, sizeof(device_status), 5) != FMT_EOK) {
         return FMT_ERROR;
     }
+
+    rt_completion_init(&usbd->tx_cplt);
 
     return FMT_EOK;
 }

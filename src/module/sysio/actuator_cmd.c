@@ -22,7 +22,7 @@
 #include "module/sysio/actuator_config.h"
 
 MCN_DECLARE(control_output);
-MCN_DECLARE(rc_channels);
+MCN_DECLARE(rc_trim_channels);
 
 enum {
     ACTUATOR_FROM_CONTROL_OUT,
@@ -37,33 +37,32 @@ static rt_device_t* to_dev;
 static uint8_t mapping_num;
 static actuator_mapping* mapping_list;
 
-fmt_err_t send_hil_actuator_cmd(void)
+fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
 {
     fmt_err_t err = FMT_EOK;
     DEFINE_TIMETAG(hil_actuator_tt, 20);
 
-    if (_control_out_nod == NULL) {
-        _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
-    }
-
-    if (mcn_poll(_control_out_nod) && check_timetag(TIMETAG(hil_actuator_tt))) {
-        Control_Out_Bus control_out;
+    if (check_timetag(TIMETAG(hil_actuator_tt))) {
         mavlink_hil_actuator_controls_t hil_actuator_ctrl;
         mavlink_message_t msg;
         mavlink_system_t mav_sys;
-
-        mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
+        uint8_t val_index = 0;
 
         /* send command by mavlink */
         mav_sys = mavproxy_get_system();
 
         hil_actuator_ctrl.time_usec = systime_now_us();
         hil_actuator_ctrl.mode = MAV_MODE_FLAG_SAFETY_ARMED;
-        /* map to -1~1 */
-        hil_actuator_ctrl.controls[0] = (float)control_out.actuator_cmd[0] * 0.002f - 3.0f;
-        hil_actuator_ctrl.controls[1] = (float)control_out.actuator_cmd[1] * 0.002f - 3.0f;
-        hil_actuator_ctrl.controls[2] = (float)control_out.actuator_cmd[2] * 0.002f - 3.0f;
-        hil_actuator_ctrl.controls[3] = (float)control_out.actuator_cmd[3] * 0.002f - 3.0f;
+        hil_actuator_ctrl.flags = 0;
+        for (int i = 0; i < 16; i++) {
+            if (chan_mask & (1 << i)) {
+                /* map to -1~1 */
+                hil_actuator_ctrl.controls[i] = (float)chan_val[val_index++] * 0.002f - 3.0f;
+            } else {
+                hil_actuator_ctrl.controls[i] = 0.0f;
+            }
+        }
+        /* encode hil msg */
         mavlink_msg_hil_actuator_controls_encode(mav_sys.sysid, mav_sys.compid, &msg, &hil_actuator_ctrl);
         /* async mode to avoid block the task when usb is not connected */
         err = mavproxy_send_immediate_msg(&msg, false);
@@ -88,11 +87,11 @@ fmt_err_t send_actuator_cmd(void)
     }
 
     for (i = 0; i < mapping_num; i++) {
-        if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
-            rt_size_t size = mapping_list[i].map_size;
-            uint16_t chan_sel = 0;
-            uint16_t chan_val[16];
+        rt_size_t size = mapping_list[i].map_size;
+        uint16_t chan_sel = 0;
+        uint16_t chan_val[16];
 
+        if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
             if (has_poll_control_out == false) {
                 if (mcn_poll(_control_out_nod) == false) {
                     return FMT_ERROR;
@@ -107,38 +106,39 @@ fmt_err_t send_actuator_cmd(void)
                 /* set channel value according to from mapping */
                 chan_val[j] = control_out.actuator_cmd[mapping_list[i].from_map[j] - 1];
             }
-
-            /* write actuator command */
-            if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
-                err = FMT_ERROR;
-            }
         } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
-            rt_size_t size = mapping_list[i].map_size;
-            uint16_t chan_val[16];
-            uint16_t chan_sel = 0;
-
             if (has_poll_rc_channels == false) {
                 if (mcn_poll(_rc_channels_nod) == 0) {
                     return FMT_ERROR;
                 }
-                mcn_copy(MCN_HUB(rc_channels), _rc_channels_nod, &rc_channel);
+                mcn_copy(MCN_HUB(rc_trim_channels), _rc_channels_nod, &rc_channel);
                 has_poll_rc_channels = true;
             }
 
             for (j = 0; j < mapping_list[i].map_size; j++) {
-                /* set channel select according to to mapping */
+                /* set channel select according to mapping */
                 chan_sel |= 1 << (mapping_list[i].to_map[j] - 1);
                 /* set channel value according to from mapping */
                 chan_val[j] = rc_channel[mapping_list[i].from_map[j] - 1];
             }
-
-            /* write actuator command */
-            if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
-                err = FMT_ERROR;
-            }
         } else {
+            /* to avoid warning */
+            (void)size;
+            (void)chan_sel;
+            (void)chan_val;
             continue;
         }
+
+#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
+        /* write actuator command */
+        if (rt_device_write(to_dev[i], chan_sel, chan_val, size) != size) {
+            err = FMT_ERROR;
+        }
+#endif
+
+#if defined(FMT_USING_HIL)
+        send_hil_actuator_cmd(chan_sel, chan_val);
+#endif
     }
 
     return err;
@@ -151,7 +151,7 @@ fmt_err_t actuator_init(void)
         return FMT_ERROR;
     }
 
-    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_channels), NULL, NULL);
+    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_trim_channels), NULL, NULL);
     if (_rc_channels_nod == NULL) {
         return FMT_ERROR;
     }

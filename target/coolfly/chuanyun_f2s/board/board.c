@@ -39,6 +39,7 @@
 #include "driver/rgb_led/ncp5623c.h"
 // #include "driver/vision_flow/lc307.h"
 #include "driver/vision_flow/pmw3901_fl04.h"
+
 #include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -119,8 +120,8 @@ static void banner_item(const char* name, const char* content, char pad, uint32_
 static void bsp_show_information(void)
 {
     char buffer[50];
-
-    //
+    
+    // 
     console_println("            :1tfffffffffffffffffffffffffffffffffffti,              ");
     console_println("        .1fffffffffffffffffffffffffffffffffffffffffffft;           ");
     console_println("      :tfffffffffffffffffffffffffffffffffffffffffffffffff1         ");
@@ -304,6 +305,18 @@ void cf_delay_ms(uint32_t num)
 //     }
 // }
 
+
+#define MAX_WQ_SIZE 10
+extern WorkQueue_t wq_list[MAX_WQ_SIZE];
+
+fmt_err_t chuanyun_workqueue_manager_init(void)
+{
+    wq_list[2] = workqueue_create("wq:sysevent_work", 5, 2048, 1);
+    RT_ASSERT(wq_list[2] != NULL);
+
+    return FMT_EOK;
+}
+
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
@@ -313,7 +326,7 @@ void bsp_early_initialize(void)
     HAL_GPIO_OutPut(WD_DONE_GPIO); // wd_done
     HAL_GPIO_SetPin(WD_DONE_GPIO, HAL_GPIO_PIN_SET);
 
-    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); //
+    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); // 
     HAL_GPIO_SetPin(SENSOR_POWER_GPIO, HAL_GPIO_PIN_RESET);
 
     HAL_GPIO_OutPut(LINK_LED_GPIO); // blue led close
@@ -398,6 +411,7 @@ void bsp_initialize(void)
 
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
+    FMT_CHECK(chuanyun_workqueue_manager_init());
 
     /* init storage devices */
     // RT_CHECK(drv_sdio_init());
@@ -409,7 +423,9 @@ void bsp_initialize(void)
 #endif
     /* init file system */
     // FMT_CHECK(file_manager_init(mnt_table));
-    if (FMT_EOK != file_manager_init(mnt_table)) {
+
+    if(FMT_EOK != file_manager_init(mnt_table))
+    {
         // int result = 0;
         // char *type = "elm"; /* use the default file system type as 'fatfs' */
         // char *mtdfs = "mtdblk0";
@@ -450,6 +466,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro0", "accel0"));
     // RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
     RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
+
     /* if no gps mag then use onboard mag */
 
     // if (drv_ist8310_init("i2c2_dev1", "mag0") != FMT_EOK) {
@@ -459,6 +476,7 @@ void bsp_initialize(void)
     // {
     //     console_println("drv_ist8310_init i2c2_dev1~");
     // }
+
 
     if (drv_mmc5983ma_init("i2c2_dev2", "mag0") != FMT_EOK) {
         console_println("!!!!!!mmc5983ma i2c2_dev2 faild~!!!!");
@@ -500,15 +518,16 @@ void bsp_initialize(void)
         FMT_CHECK(advertise_sensor_optflow(0));
     }
 
+
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-
     #endif
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());
+
 
 #endif
 

@@ -1,0 +1,23 @@
+import rtconfig
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = []
+src += Glob('device/class/cdc/Source/*.c')
+src += Glob('device/core/Source/*.c')
+src += Glob('driver/Source/drv_usb_core.c')
+src += Glob('driver/Source/drv_usb_dev.c')
+src += Glob('driver/Source/drv_usbd_int.c')
+
+path = [cwd + '/device/class/cdc/Include', 
+    cwd + '/device/core/Include',
+    cwd + '/driver/Include',
+    cwd + '/ustd/class/cdc',
+    cwd + '/ustd/common']
+
+group = DefineGroup('GD32_USB_Library', src, depend = [''], CPPPATH = path, CPPDEFINES=['USE_USB_FS'])
+
+Return('group')

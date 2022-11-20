@@ -121,6 +121,7 @@ struct ar_uart {
 /* Default config for serial_configure structure */
 #define SERIAL7_DEFAULT_CONFIG                    \
     {                                             \
+
         BAUD_RATE_460800,    /* 57600 bits/s */   \
             DATA_BITS_8,     /* 8 databits */     \
             STOP_BITS_1,     /* 1 stopbit */      \
@@ -140,6 +141,7 @@ static void uart_isr(struct serial_device* serial);
 // #ifdef USING_UART7
 static struct serial_device serial0; // FMU Debug
 static struct serial_device serial1; // GPS
+
 static struct serial_device serial4; // dis
 static struct serial_device serial5; // flow
 static struct serial_device serial7; // MAVLINK
@@ -603,7 +605,6 @@ static const struct usart_ops _usart_ops = {
 };
 
 
-
 #define UART5_TX_Pin      HAL_GPIO_NUM115
 #define UART5_RX_Pin      HAL_GPIO_NUM108
 
@@ -612,7 +613,6 @@ rt_err_t drv_usart_init(void)
 
     HAL_GPIO_SetMode(UART5_TX_Pin, HAL_GPIO_PIN_MODE0);
     HAL_GPIO_SetMode(UART5_RX_Pin, HAL_GPIO_PIN_MODE0);
-
 
     rt_err_t rt_err = RT_EOK;
 
@@ -644,7 +644,6 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart1);
 
-    // dist
     serial4.ops = &_usart_ops;
 
     struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
@@ -685,6 +684,7 @@ rt_err_t drv_usart_init(void)
                                   "serial7",
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart7);
+
 
     return rt_err;
 }

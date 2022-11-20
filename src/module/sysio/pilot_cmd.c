@@ -24,13 +24,6 @@
 /* channel index start from 0 */
 #define CHAN_IDX(_stick_idx) (stickMapping[_stick_idx] - 1)
 
-enum {
-    STICK_YAW = 0,
-    STICK_THRO = 1,
-    STICK_ROLL = 2,
-    STICK_PITCH = 3,
-};
-
 uint8_t modeNum = 0;
 uint8_t eventCmdNum = 0;
 uint8_t statusCmdNum = 0;
@@ -41,14 +34,16 @@ pilot_status_cmd_t* pilotStatusCmds = NULL;
 static rt_device_t rcDev;
 static uint8_t stickMapping[4];
 static int16_t rcChannel[16];
+static int16_t rcTrimChannel[16];
 
 static uint16_t rc_read_mask = RC_MASK_1_6;
 static uint8_t rc_chan_num;
 static Pilot_Cmd_Bus pilot_cmd_bus;
 
 /* Define uMCN topic */
-MCN_DEFINE(pilot_cmd, sizeof(Pilot_Cmd_Bus));
-MCN_DEFINE(rc_channels, sizeof(rcChannel));
+MCN_DEFINE(pilot_cmd, sizeof(Pilot_Cmd_Bus));        /* FMS pilot command topic */
+MCN_DEFINE(rc_channels, sizeof(rcChannel));          /* RC raw channels value topic */
+MCN_DEFINE(rc_trim_channels, sizeof(rcTrimChannel)); /* RC calibrated channels value topic */
 
 static int echo_pilot_cmd(void* parameter)
 {
@@ -115,6 +110,35 @@ static void mavlink_send_pilot_cmd(void)
     mavproxy_send_immediate_msg(&msg, false);
 }
 #endif
+
+static void rc_channels_trim(const int16_t raw_chan_val[], int16_t trim_chan_val[])
+{
+    float rc_max, rc_min, rc_rev, rc_trim;
+    float p;
+    int32_t start_idx = param_get_index(PARAM_GET(RC, RC1_MAX));
+    if (start_idx < 0) {
+        /* Fail to find RC1_MAX parameter */
+        return;
+    }
+
+    for (uint8_t i = 0; i < 16; i++) {
+        rc_max = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4));
+        rc_min = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 1));
+        rc_rev = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 2));
+        rc_trim = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 3));
+
+        if (raw_chan_val[i] > rc_trim) {
+            p = (float)(raw_chan_val[i] - rc_trim) / (rc_max - rc_trim);
+        } else {
+            p = (float)(raw_chan_val[i] - rc_trim) / (rc_trim - rc_min);
+        }
+
+        /* saturate proportion and apply reverse */
+        p = constrain_float(p, -1.0f, 1.0f) * rc_rev;
+        /* calculate calibrated rc channel value, with range of [1000, 2000] */
+        trim_chan_val[i] = p * 500 + 1500;
+    }
+}
 
 static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
 {
@@ -268,13 +292,17 @@ fmt_err_t pilot_cmd_collect(void)
             /* publish rc_channel topic */
             mcn_publish(MCN_HUB(rc_channels), rcChannel);
 
-            /* stick value mapping */
-            stick_mapping(&pilot_cmd_bus, rcChannel);
-            /* pilot mode switch */
-            mode_switch(&pilot_cmd_bus, rcChannel);
-            /* generate pilot command */
-            generate_cmd(&pilot_cmd_bus, rcChannel);
+            /* calibrate rc channels value */
+            rc_channels_trim(rcChannel, rcTrimChannel);
+            /* publish rc_trim_channel topic */
+            mcn_publish(MCN_HUB(rc_trim_channels), rcTrimChannel);
 
+            /* stick value mapping */
+            stick_mapping(&pilot_cmd_bus, rcTrimChannel);
+            /* pilot mode switch */
+            mode_switch(&pilot_cmd_bus, rcTrimChannel);
+            /* generate pilot command */
+            generate_cmd(&pilot_cmd_bus, rcTrimChannel);
             /* publish pilot_cmd topic */
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd_bus);
 
@@ -344,11 +372,17 @@ fmt_err_t pilot_cmd_map_stick(
     return FMT_EOK;
 }
 
+uint8_t pilot_cmd_get_stick_chan(stick_enum stick)
+{
+    return CHAN_IDX(stick);
+}
+
 fmt_err_t pilot_cmd_init(void)
 {
     /* advertise pilot command topic */
     FMT_CHECK(mcn_advertise(MCN_HUB(pilot_cmd), echo_pilot_cmd));
     FMT_CHECK(mcn_advertise(MCN_HUB(rc_channels), echo_rc_channels));
+    FMT_CHECK(mcn_advertise(MCN_HUB(rc_trim_channels), echo_rc_channels));
 
     return FMT_EOK;
 }

@@ -82,13 +82,8 @@ void task_vehicle_entry(void* parameter)
                 /* run Controller model */
                 PERIOD_EXECUTE3(control_step, control_model_info.period, time_now, control_interface_step(timestamp););
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
+                /* send actuator command */
                 send_actuator_cmd();
-#endif
-
-#if defined(FMT_USING_HIL)
-                send_hil_actuator_cmd();
-#endif
             }
         }
     }

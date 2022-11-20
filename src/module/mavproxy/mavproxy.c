@@ -64,8 +64,8 @@ typedef struct {
 
 static mavproxy_handler mav_handle = {
     .system = {
-        .sysid = FMT_MAVLINK_SYS_ID,
-        .compid = FMT_MAVLINK_COMP_ID },
+        .sysid = 0,
+        .compid = 0 },
     .imm_mq = { .head = 0, .tail = 0 },
     .period_mq = { .size = 0, .index = 0 },
     .chan = MAVPROXY_UNSET_CHAN,
@@ -301,6 +301,10 @@ void mavproxy_loop(void)
  */
 fmt_err_t mavproxy_init(void)
 {
+    /* get mavlink system and component ID */
+    mav_handle.system.sysid = PARAM_GET_UINT8(SYSTEM, MAV_SYS_ID);
+    mav_handle.system.compid = PARAM_GET_UINT8(SYSTEM, MAV_COMP_ID);
+
     /* init mavproxy device */
     mavproxy_dev_init();
 

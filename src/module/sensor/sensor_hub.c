@@ -134,7 +134,7 @@ static int echo_sensor_baro(void* param)
         return -1;
     }
 
-    console_printf("timestamp:%u pressure:%d temperature:%f altitude:%f\n",
+    console_printf("timestamp:%u pressure:%.2f temperature:%.2f altitude:%.2f\n",
                    baro_report.timestamp_ms,
                    baro_report.pressure_pa,
                    baro_report.temperature_deg,
@@ -752,17 +752,11 @@ void sensor_collect(void)
      * Collect barometer data
      */
     baro_data_t baro_data;
-    DEFINE_TIMETAG(baro_interval, 5);
-
-    if (check_timetag(TIMETAG(baro_interval))) {
-        if (baro_dev != NULL) {
-            /* Update barometer state */
-            sensor_baro_update(baro_dev);
-            if (sensor_baro_check_ready(baro_dev)) {
-                if (sensor_baro_read(baro_dev, &baro_data) == FMT_EOK) {
-                    /* publish barometer data */
-                    mcn_publish(MCN_HUB(sensor_baro), &baro_data);
-                }
+    if (baro_dev != NULL) {
+        if (sensor_baro_check_ready(baro_dev)) {
+            if (sensor_baro_read(baro_dev, &baro_data) == FMT_EOK) {
+                /* publish barometer data */
+                mcn_publish(MCN_HUB(sensor_baro), &baro_data);
             }
         }
     }
@@ -771,7 +765,6 @@ void sensor_collect(void)
      * Collect gps data
      */
     gps_data_t gps_data;
-
     if (gps_dev != NULL) {
         if (sensor_gps_check_ready(gps_dev)) {
             /* read gps data */

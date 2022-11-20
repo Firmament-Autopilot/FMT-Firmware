@@ -7,10 +7,6 @@ extern "C"
 {
 #endif
 
-
-
-
-
 void intercore_irq0_callback(void);
 
 #ifdef __cplusplus

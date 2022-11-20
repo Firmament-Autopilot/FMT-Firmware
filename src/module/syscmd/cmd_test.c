@@ -36,11 +36,52 @@
 
 #include "module/syscmd/optparse.h"
 
+#include "hal/i2c/i2c.h"
+#include "hal/spi/spi.h"
+
+#include <string.h>
+
 // static uint8_t tx_buffer[] = "Test DMA Usart!\r\n";
+// static rt_device_t test_dev;
 
 int cmd_test(int argc, char** argv)
 {
-    printf("cos:%f sin:%f\n", arm_cos_f32(PI/6), arm_sin_f32(PI/6));
+    // printf("cos:%f sin:%f\n", arm_cos_f32(PI/6), arm_sin_f32(PI/6));
+
+    // test_dev = rt_device_find("spi1_dev1");
+    // RT_ASSERT(test_dev != NULL);
+    // /* config spi */
+    // {
+    //     struct rt_spi_configuration cfg;
+    //     cfg.data_width = 8;
+    //     cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
+    //     cfg.max_hz = 7000000;
+
+    //     struct rt_spi_device* spi_device_t = (struct rt_spi_device*)test_dev;
+    //     spi_device_t->config.data_width = cfg.data_width;
+    //     spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
+    //     spi_device_t->config.max_hz = cfg.max_hz;
+
+    //     RT_TRY(rt_spi_configure(spi_device_t, &cfg));
+    // }
+
+    // uint8_t id;
+
+    // /* init spi bus */
+    // RT_TRY(rt_device_open(test_dev, RT_DEVICE_OFLAG_RDWR));
+
+    // RT_TRY(spi_read_reg8(test_dev, 0x0A, &id));
+
+    // printf("id:%x\n", id);
+
+    // uint8_t id;
+    // test_dev = rt_device_find("i2c0_dev0");
+
+    // RT_CHECK(rt_device_open(test_dev, RT_DEVICE_OFLAG_RDWR));
+
+    // RT_CHECK(i2c_read_reg(test_dev, 0x0A, &id));
+
+    // printf("id:%x\n", id);
 
     return 0;
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@
 extern "C" {
 #endif
 
-rt_err_t drv_bmi088_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name);
+rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi_device_name,
+                         const char* gyro_device_name, const char* accel_device_name);
 
 #ifdef __cplusplus
 }
