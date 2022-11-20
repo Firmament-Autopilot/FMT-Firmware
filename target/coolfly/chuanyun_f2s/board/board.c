@@ -35,6 +35,7 @@
 // #include "driver/mag/ist8310.h"
 #include "driver/mag/mmc5983ma.h"
 #include "driver/range_finder/tfmini_s.h"
+#include "driver/vision_flow/lc307.h"
 #include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
@@ -476,11 +477,18 @@ void bsp_initialize(void)
         FMT_CHECK(advertise_sensor_rangefinder(0));
     }
 
+    if (lc307_drv_init("serial5") != FMT_EOK) {
+        console_println("!!!!!!lc307 serial5 faild~!!!!");
+    }
+    else
+    {
+        FMT_CHECK(advertise_sensor_optflow(0));
+    }
+
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-    
     
     #endif
 

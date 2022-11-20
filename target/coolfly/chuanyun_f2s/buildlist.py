@@ -14,6 +14,7 @@ DRIVERS = [
     'rgb_led/ncp5623c.c',
     'mtd/ramtron.c',
     'vision_flow/pmw3901_fl04.c',
+    'vision_flow/lc307.c',
     'range_finder/tfmini_s.c',
     'airspeed/ms4525.c',
 ]
