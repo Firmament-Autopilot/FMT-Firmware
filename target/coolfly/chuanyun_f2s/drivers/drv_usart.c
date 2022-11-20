@@ -108,7 +108,7 @@ struct ar_uart {
 /* Default config for serial_configure structure */
 #define SERIAL5_DEFAULT_CONFIG                    \
     {                                             \
-        BAUD_RATE_19200,    /* 57600 bits/s */   \
+        BAUD_RATE_115200,    /* 57600 bits/s */   \
             DATA_BITS_8,     /* 8 databits */     \
             STOP_BITS_1,     /* 1 stopbit */      \
             PARITY_NONE,     /* No parity  */     \
@@ -602,8 +602,18 @@ static const struct usart_ops _usart_ops = {
     NULL
 };
 
+
+
+#define UART5_TX_Pin      HAL_GPIO_NUM115
+#define UART5_RX_Pin      HAL_GPIO_NUM108
+
 rt_err_t drv_usart_init(void)
 {
+
+    HAL_GPIO_SetMode(UART5_TX_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(UART5_RX_Pin, HAL_GPIO_PIN_MODE0);
+
+
     rt_err_t rt_err = RT_EOK;
 
     // DEBUG
@@ -666,7 +676,7 @@ rt_err_t drv_usart_init(void)
     serial7.ops = &_usart_ops;
 
     struct serial_configure serial7_config = SERIAL7_DEFAULT_CONFIG;
-    serial5.config = serial7_config;
+    serial7.config = serial7_config;
 
     NVIC_Configuration(&uart7);
 
