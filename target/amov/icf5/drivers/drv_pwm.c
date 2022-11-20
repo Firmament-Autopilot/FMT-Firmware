@@ -25,62 +25,107 @@
 #define PWM_FREQ_250HZ (250)
 #define PWM_FREQ_400HZ (400)
 
-#define MAX_PWM_OUT_CHAN      4             // AUX Out has 8 pwm channel
-#define TIMER_FREQUENCY       5000000       // Timer frequency: 5M
+#define MAX_PWM_OUT_CHAN      10            // Main Out has 10 pwm channel
+#define TIMER_FREQUENCY       2500000       // Timer frequency: 2.5M
 #define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
 #define VAL_TO_DC(_val)       ((float)(_val * __pwm_freq) / 1000000.0f)
 #define DC_TO_VAL(_dc)        (1000000.0f / __pwm_freq * _dc)
 
 #define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = TIMER_FREQUENCY/(PWM_ARR+1)
 
+static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg);
+static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg);
+static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
+static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
+
+const static struct actuator_ops __act_ops = {
+    .dev_config = pwm_config,
+    .dev_control = pwm_control,
+    .dev_read = pwm_read,
+    .dev_write = pwm_write
+};
+
+static struct actuator_device act_dev = {
+    .chan_mask = 0x3FF,
+    .range = { 1000, 2000 },
+    .config = {
+        .protocol = ACT_PROTOCOL_PWM,
+        .chan_num = MAX_PWM_OUT_CHAN,
+        .pwm_config = { .pwm_freq = 50 },
+        .dshot_config = { 0 } },
+    .ops = &__act_ops
+};
+
 static uint32_t __pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float __pwm_dc[MAX_PWM_OUT_CHAN];
 
-void pwm_gpio_init(void)
+static void pwm_gpio_init(void)
 {
+    rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
+    rcu_periph_clock_enable(RCU_GPIOD);
+    rcu_periph_clock_enable(RCU_GPIOE);
 
-    /* Configure PB3 PB10 PB11(TIMER1 CH1 CH2 CH3) as alternate function */
+    /* Configure PE9 PE11 PE13 PE14 (TIMER0 CH0 CH1 CH2 CH3) as alternate function */
+    gpio_mode_set(GPIOE, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_9 | GPIO_PIN_11 | GPIO_PIN_13 | GPIO_PIN_14);
+    gpio_output_options_set(GPIOE, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9 | GPIO_PIN_11 | GPIO_PIN_13 | GPIO_PIN_14);
+
+    gpio_af_set(GPIOE, GPIO_AF_1, GPIO_PIN_9 | GPIO_PIN_11 | GPIO_PIN_13 | GPIO_PIN_14);
+
+    /* Configure PA15 PB3 PA3 (TIMER1 CH0 CH1 CH3) as alternate function */
+    gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_3 | GPIO_PIN_15);
+    gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_3 | GPIO_PIN_15);
+
     gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_3);
     gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_3);
 
-    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_10);
-    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
-
-    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_11);
-    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_11);
-
+    gpio_af_set(GPIOA, GPIO_AF_1, GPIO_PIN_3 | GPIO_PIN_15);
     gpio_af_set(GPIOB, GPIO_AF_1, GPIO_PIN_3);
-    gpio_af_set(GPIOB, GPIO_AF_1, GPIO_PIN_10);
-    gpio_af_set(GPIOB, GPIO_AF_1, GPIO_PIN_11);
+
+    /* Configure PD13 PD14 PD15 (TIMER3 CH1 CH2 CH3) as alternate function */
+    gpio_mode_set(GPIOD, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
+    gpio_output_options_set(GPIOD, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
+
+    gpio_af_set(GPIOD, GPIO_AF_2, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
 }
 
-void pwm_timer_init(void)
+static void pwm_timer_init(void)
 {
-    /* Configured by system_clock_200m_8m_hxtal(), AHB = SYSCLK, APB1 = AHB/4, APB2 = AHB/2 */
+    /* Configured by system_clock_240m_8m_hxtal(), AHB = SYSCLK, APB1 = AHB/4, APB2 = AHB/2 */
     timer_oc_parameter_struct timer_ocintpara;
+    uint16_t timer_psc;
     timer_parameter_struct timer_initpara;
-    uint32_t APB1_2_PrescalerValue;
 
-    /* TIMER1 configuration */
+    /* TIMER clock configuration */
+    rcu_periph_clock_enable(RCU_TIMER0);
     rcu_periph_clock_enable(RCU_TIMER1);
+    rcu_periph_clock_enable(RCU_TIMER3);
 
-    /* When TIMERSEL is set, the TIMER clock is equal to CK_AHB(CK_TIMERx = CK_AHB). */
+    /* When TIMERSEL is set, the TIMER clock is equal to CK_AHB(CK_TIMERx = CK_AHB) if APB1 = AHB/4, APB2 = AHB/2s. */
     rcu_timer_clock_prescaler_config(RCU_TIMER_PSC_MUL4);
 
-    /* APB1_2_PrescalerValue = SystemCoreClock / TARGET_TIMER_CLK */
-    APB1_2_PrescalerValue = SystemCoreClock / TIMER_FREQUENCY - 1;
-
-    timer_deinit(TIMER1);
-    timer_initpara.prescaler = APB1_2_PrescalerValue;
+    /* Timer_PSC = CK_AHB / TARGET_TIMER_CK */
+    timer_psc = rcu_clock_freq_get(CK_AHB) / TIMER_FREQUENCY - 1;
+    /* Timer init parameter */
+    timer_initpara.prescaler = timer_psc;
     timer_initpara.alignedmode = TIMER_COUNTER_EDGE;
     timer_initpara.counterdirection = TIMER_COUNTER_UP;
     timer_initpara.period = PWM_ARR(__pwm_freq) - 1;
     timer_initpara.clockdivision = TIMER_CKDIV_DIV1;
     timer_initpara.repetitioncounter = 0;
-    timer_init(TIMER1, &timer_initpara);
 
-    /* CH1,CH2 and CH3 configuration in PWM mode */
+    /* Timer deinit */
+    timer_deinit(TIMER0);
+    timer_deinit(TIMER1);
+    timer_deinit(TIMER3);
+    /* Timer0 must enable primary output to enable pwm output */
+    timer_primary_output_config(TIMER0, ENABLE);
+    /* Timer init */
+    timer_init(TIMER0, &timer_initpara);
+    timer_init(TIMER1, &timer_initpara);
+    timer_init(TIMER3, &timer_initpara);
+
+    /* Timer channel configuration in PWM mode */
     timer_ocintpara.ocpolarity = TIMER_OC_POLARITY_HIGH;
     timer_ocintpara.outputstate = TIMER_CCX_ENABLE;
     timer_ocintpara.ocnpolarity = TIMER_OCN_POLARITY_HIGH;
@@ -88,23 +133,46 @@ void pwm_timer_init(void)
     timer_ocintpara.ocidlestate = TIMER_OC_IDLE_STATE_LOW;
     timer_ocintpara.ocnidlestate = TIMER_OCN_IDLE_STATE_LOW;
 
-    timer_channel_output_config(TIMER1, TIMER_CH_1, &timer_ocintpara);
-    timer_channel_output_config(TIMER1, TIMER_CH_2, &timer_ocintpara);
-    timer_channel_output_config(TIMER1, TIMER_CH_3, &timer_ocintpara);
+    /* Timer0 channel configure */
+    timer_channel_output_config(TIMER0, TIMER_CH_0, &timer_ocintpara);
+    timer_channel_output_config(TIMER0, TIMER_CH_1, &timer_ocintpara);
+    timer_channel_output_config(TIMER0, TIMER_CH_2, &timer_ocintpara);
+    timer_channel_output_config(TIMER0, TIMER_CH_3, &timer_ocintpara);
+    timer_channel_output_mode_config(TIMER0, TIMER_CH_0, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER0, TIMER_CH_0, TIMER_OC_SHADOW_DISABLE);
+    timer_channel_output_mode_config(TIMER0, TIMER_CH_1, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER0, TIMER_CH_1, TIMER_OC_SHADOW_DISABLE);
+    timer_channel_output_mode_config(TIMER0, TIMER_CH_2, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER0, TIMER_CH_2, TIMER_OC_SHADOW_DISABLE);
+    timer_channel_output_mode_config(TIMER0, TIMER_CH_3, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER0, TIMER_CH_3, TIMER_OC_SHADOW_DISABLE);
 
+    /* Timer1 channel configure */
+    timer_channel_output_config(TIMER1, TIMER_CH_0, &timer_ocintpara);
+    timer_channel_output_config(TIMER1, TIMER_CH_1, &timer_ocintpara);
+    timer_channel_output_config(TIMER1, TIMER_CH_3, &timer_ocintpara);
+    timer_channel_output_mode_config(TIMER1, TIMER_CH_0, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER1, TIMER_CH_0, TIMER_OC_SHADOW_DISABLE);
     timer_channel_output_mode_config(TIMER1, TIMER_CH_1, TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(TIMER1, TIMER_CH_1, TIMER_OC_SHADOW_DISABLE);
-
-    /* CH2 configuration in PWM mode1,duty cycle 50% */
-    timer_channel_output_mode_config(TIMER1, TIMER_CH_2, TIMER_OC_MODE_PWM0);
-    timer_channel_output_shadow_config(TIMER1, TIMER_CH_2, TIMER_OC_SHADOW_DISABLE);
-
-    /* CH3 configuration in PWM mode1,duty cycle 75% */
     timer_channel_output_mode_config(TIMER1, TIMER_CH_3, TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(TIMER1, TIMER_CH_3, TIMER_OC_SHADOW_DISABLE);
 
+    /* Timer3 channel configure */
+    timer_channel_output_config(TIMER3, TIMER_CH_1, &timer_ocintpara);
+    timer_channel_output_config(TIMER3, TIMER_CH_2, &timer_ocintpara);
+    timer_channel_output_config(TIMER3, TIMER_CH_3, &timer_ocintpara);
+    timer_channel_output_mode_config(TIMER3, TIMER_CH_1, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER3, TIMER_CH_1, TIMER_OC_SHADOW_DISABLE);
+    timer_channel_output_mode_config(TIMER3, TIMER_CH_2, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER3, TIMER_CH_2, TIMER_OC_SHADOW_DISABLE);
+    timer_channel_output_mode_config(TIMER3, TIMER_CH_3, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER3, TIMER_CH_3, TIMER_OC_SHADOW_DISABLE);
+
     /* auto-reload preload enable */
+    timer_auto_reload_shadow_enable(TIMER0);
     timer_auto_reload_shadow_enable(TIMER1);
+    timer_auto_reload_shadow_enable(TIMER3);
 }
 
 rt_inline void __read_pwm(uint8_t chan_id, float* dc)
@@ -116,25 +184,43 @@ rt_inline void __write_pwm(uint8_t chan_id, float dc)
 {
     switch (chan_id) {
     case 0:
-        timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_0, PWM_ARR(__pwm_freq) * dc - 1);
+        timer_channel_output_pulse_value_config(TIMER0, TIMER_CH_3, PWM_ARR(__pwm_freq) * dc - 1);
         break;
     case 1:
-        timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_1, PWM_ARR(__pwm_freq) * dc - 1);
+        timer_channel_output_pulse_value_config(TIMER0, TIMER_CH_2, PWM_ARR(__pwm_freq) * dc - 1);
         break;
     case 2:
-        timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_2, PWM_ARR(__pwm_freq) * dc - 1);
+        timer_channel_output_pulse_value_config(TIMER0, TIMER_CH_1, PWM_ARR(__pwm_freq) * dc - 1);
         break;
     case 3:
+        timer_channel_output_pulse_value_config(TIMER0, TIMER_CH_0, PWM_ARR(__pwm_freq) * dc - 1);
+        break;
+    case 4:
+        timer_channel_output_pulse_value_config(TIMER3, TIMER_CH_1, PWM_ARR(__pwm_freq) * dc - 1);
+        break;
+    case 5:
+        timer_channel_output_pulse_value_config(TIMER3, TIMER_CH_2, PWM_ARR(__pwm_freq) * dc - 1);
+        break;
+    case 6:
         timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_3, PWM_ARR(__pwm_freq) * dc - 1);
         break;
-    default:
+    case 7:
+        timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_0, PWM_ARR(__pwm_freq) * dc - 1);
         break;
+    case 8:
+        timer_channel_output_pulse_value_config(TIMER3, TIMER_CH_3, PWM_ARR(__pwm_freq) * dc - 1);
+        break;
+    case 9:
+        timer_channel_output_pulse_value_config(TIMER1, TIMER_CH_1, PWM_ARR(__pwm_freq) * dc - 1);
+        break;
+    default:
+        return;
     }
 
     __pwm_dc[chan_id] = dc;
 }
 
-rt_err_t __set_pwm_frequency(uint16_t freq)
+static rt_err_t __set_pwm_frequency(uint16_t freq)
 {
     if (freq < PWM_FREQ_50HZ || freq > PWM_FREQ_400HZ) {
         /* invalid frequency */
@@ -143,7 +229,9 @@ rt_err_t __set_pwm_frequency(uint16_t freq)
 
     __pwm_freq = freq;
 
+    timer_autoreload_value_config(TIMER0, PWM_ARR(__pwm_freq) - 1);
     timer_autoreload_value_config(TIMER1, PWM_ARR(__pwm_freq) - 1);
+    timer_autoreload_value_config(TIMER3, PWM_ARR(__pwm_freq) - 1);
 
     /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
@@ -153,7 +241,7 @@ rt_err_t __set_pwm_frequency(uint16_t freq)
     return RT_EOK;
 }
 
-rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
     DRV_DBG("aux out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
@@ -166,7 +254,7 @@ rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
     return RT_EOK;
 }
 
-rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
+static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
 
@@ -174,15 +262,19 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
     case ACT_CMD_CHANNEL_ENABLE:
         /* set to lowest pwm before open */
         for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
-            __write_pwm(i, VAL_TO_DC(1000));
+            __write_pwm(i, VAL_TO_DC(act_dev.range[0]));
         }
 
         /* auto-reload preload enable */
+        timer_enable(TIMER0);
         timer_enable(TIMER1);
+        timer_enable(TIMER3);
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         /* auto-reload preload disable */
+        timer_disable(TIMER0);
         timer_disable(TIMER1);
+        timer_disable(TIMER3);
         break;
     case ACT_CMD_SET_PROTOCOL:
         /* TODO: Support dshot */
@@ -196,7 +288,7 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
     return ret;
 }
 
-rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
     float dc;
@@ -212,7 +304,7 @@ rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_v
     return size;
 }
 
-rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
@@ -233,36 +325,13 @@ rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t*
     return size;
 }
 
-const static struct actuator_ops __act_ops = {
-    .dev_config = pwm_config,
-    .dev_control = pwm_control,
-    .dev_read = pwm_read,
-    .dev_write = pwm_write
-};
-
-//TODO modify channel mask
-static struct actuator_device act_dev = {
-    .chan_mask = 0xFF,
-    .range = { 1000, 2000 },
-    .config = {
-        .protocol = ACT_PROTOCOL_PWM,
-        .chan_num = MAX_PWM_OUT_CHAN,
-        .pwm_config = { .pwm_freq = 50 },
-        .dshot_config = { 0 } },
-    .ops = &__act_ops
-};
-
 rt_err_t drv_pwm_init(void)
 {
-    rt_err_t ret = RT_EOK;
-
     /* init pwm gpio pin */
     pwm_gpio_init();
     /* init pwm timer, pwm output mode */
     pwm_timer_init();
 
     /* register actuator hal device */
-    ret = hal_actuator_register(&act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL);
-
-    return ret;
+    return hal_actuator_register(&act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL);
 }
