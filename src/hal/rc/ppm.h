@@ -23,7 +23,6 @@
 extern "C" {
 #endif
 
-#define PPM_DECODER_FREQUENCY 100000 // 100K frequency, where has the 0.01ms accurancy
 #define MAX_PPM_CHANNEL       10
 
 typedef struct {
@@ -32,6 +31,7 @@ typedef struct {
     uint16_t last_ic;
     uint16_t ppm_recvd;
     uint16_t ppm_reading;
+    uint32_t freq_hz;
     uint16_t ppm_val[MAX_PPM_CHANNEL]; /* ppm raw value in microseconds */
 } ppm_decoder_t;
 
@@ -56,7 +56,7 @@ rt_inline void ppm_clear_recvd(ppm_decoder_t* decoder)
 }
 
 void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val);
-rt_err_t ppm_decoder_init(ppm_decoder_t* decoder);
+rt_err_t ppm_decoder_init(ppm_decoder_t* decoder, uint32_t freq_hz);
 
 #ifdef __cplusplus
 }

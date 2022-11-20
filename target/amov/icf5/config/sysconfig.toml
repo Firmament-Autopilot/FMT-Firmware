@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "GD32F450"
+target = "Amov-ICF5"
 
 # Console Configuration
 [console]
@@ -31,7 +31,7 @@ target = "GD32F450"
     [pilot-cmd.device]
     type = "rc"
     name = "rc"
-    protocol = "sbus"           # sbus or ppm
+    protocol = "ppm"           # sbus or ppm
     channel-num = 6             # max supported channel: sbus:16, ppm:8
     sample-time = 0.05          # sample time in second (-1 for inherit)
     range = [1000,2000]

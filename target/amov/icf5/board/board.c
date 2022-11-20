@@ -247,7 +247,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_pwm_init());
 
     /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
+    RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -350,7 +350,7 @@ void bsp_post_initialize(void)
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
     /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    FMT_CHECK(pilot_cmd_init());
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
