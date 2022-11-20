@@ -39,7 +39,8 @@ typedef struct {
 fmt_err_t mavproxy_toml_config(toml_table_t* table);
 fmt_err_t mavproxy_get_devinfo(rt_device_t dev, mavproxy_device_info* info);
 
-fmt_err_t __switch_mavlink_to_device(rt_device_t dev);
+int get_device_num(void);
+mavproxy_device_info* get_device_list(void);
 
 #ifdef __cplusplus
 }
