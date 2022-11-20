@@ -120,8 +120,8 @@ static void banner_item(const char* name, const char* content, char pad, uint32_
 static void bsp_show_information(void)
 {
     char buffer[50];
-    
-    // 
+
+    //
     console_println("            :1tfffffffffffffffffffffffffffffffffffti,              ");
     console_println("        .1fffffffffffffffffffffffffffffffffffffffffffft;           ");
     console_println("      :tfffffffffffffffffffffffffffffffffffffffffffffffff1         ");
@@ -305,7 +305,6 @@ void cf_delay_ms(uint32_t num)
 //     }
 // }
 
-
 #define MAX_WQ_SIZE 10
 extern WorkQueue_t wq_list[MAX_WQ_SIZE];
 
@@ -326,7 +325,7 @@ void bsp_early_initialize(void)
     HAL_GPIO_OutPut(WD_DONE_GPIO); // wd_done
     HAL_GPIO_SetPin(WD_DONE_GPIO, HAL_GPIO_PIN_SET);
 
-    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); // 
+    HAL_GPIO_OutPut(SENSOR_POWER_GPIO); //
     HAL_GPIO_SetPin(SENSOR_POWER_GPIO, HAL_GPIO_PIN_RESET);
 
     HAL_GPIO_OutPut(LINK_LED_GPIO); // blue led close
@@ -424,8 +423,7 @@ void bsp_initialize(void)
     /* init file system */
     // FMT_CHECK(file_manager_init(mnt_table));
 
-    if(FMT_EOK != file_manager_init(mnt_table))
-    {
+    if (FMT_EOK != file_manager_init(mnt_table)) {
         // int result = 0;
         // char *type = "elm"; /* use the default file system type as 'fatfs' */
         // char *mtdfs = "mtdblk0";
@@ -457,18 +455,16 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
 #else
 
-    #ifdef DEVICE_ON_BOARD
     /* init onboard sensors */
     // RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
-
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi2_dev2", "gyro0", "accel0"));
-    RT_CHECK(drv_bmi088_init("spi2_dev2", "gyro0", "accel0"));
+
+    RT_CHECK(drv_bmi088_init("spi2_dev2", "spi2_dev3", "gyro0", "accel0"));
     // RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
     RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
 
     /* if no gps mag then use onboard mag */
-
     // if (drv_ist8310_init("i2c2_dev1", "mag0") != FMT_EOK) {
     //     console_println("!!!!!!drv_ist8310_init i2c2_dev1 faild~!!!!");
     // }
@@ -476,7 +472,6 @@ void bsp_initialize(void)
     // {
     //     console_println("drv_ist8310_init i2c2_dev1~");
     // }
-
 
     if (drv_mmc5983ma_init("i2c2_dev2", "mag0") != FMT_EOK) {
         console_println("!!!!!!mmc5983ma i2c2_dev2 faild~!!!!");
@@ -518,18 +513,14 @@ void bsp_initialize(void)
         FMT_CHECK(advertise_sensor_optflow(0));
     }
 
-
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-    #endif
+#endif
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());
-
-
-#endif
 
     /* init finsh */
     finsh_system_init();
