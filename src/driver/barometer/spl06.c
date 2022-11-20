@@ -276,6 +276,7 @@ static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
         DEFINE_TIMETAG(baro_interval, 10);
         *(uint8_t*)arg = check_timetag(TIMETAG(baro_interval));
     } break;
+
     default:
         break;
     }

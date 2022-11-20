@@ -256,14 +256,8 @@ g_pfnVectors:
 .weak      UART3_IRQHandler
 .thumb_set UART3_IRQHandler,IRQHandler_19
 
-.weak      UART5_IRQHandler
-.thumb_set UART5_IRQHandler,IRQHandler_21
-
 .weak      UART6_IRQHandler
 .thumb_set UART6_IRQHandler,IRQHandler_22
-
-.weak      UART7_IRQHandler
-.thumb_set UART7_IRQHandler,IRQHandler_23
 
 .weak      UART8_IRQHandler
 .thumb_set UART8_IRQHandler,IRQHandler_24

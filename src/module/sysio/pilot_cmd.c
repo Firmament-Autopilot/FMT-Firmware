@@ -171,7 +171,7 @@ static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
                 in_range = false;
                 break;
             }
-
+            
             val = rc_channel[pilotModes[i].channel[j] - 1];
             if (val < pilotModes[i].range[j * 2] || val > pilotModes[i].range[j * 2 + 1]) {
                 /* channel value out of range */

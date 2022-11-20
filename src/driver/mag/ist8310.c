@@ -58,8 +58,8 @@
 #define IST8310_CONFIG_DEFAULT                              \
     {                                                       \
         100,                /* 100hz sample rate */         \
-            50,             /* 16 times average */          \
-            MAG_RANGE_16GA, /* xy +-16guess, z +-25guess */ \
+        50,             /* 16 times average */          \
+        MAG_RANGE_16GA, /* xy +-16guess, z +-25guess */ \
     }
 
 static rt_device_t i2c_dev;

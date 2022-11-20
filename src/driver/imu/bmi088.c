@@ -119,6 +119,7 @@
 #define BMI088_ACCEL_BW_800  0xAB
 #define BMI088_ACCEL_BW_1600 0xAC
 
+
 #define BMI088_ACCEL_RATE_12_5 REG_VAL(BIT(0) | BIT(2), BIT(1) | BIT(3))
 #define BMI088_ACCEL_RATE_25   REG_VAL(BIT(1) | BIT(2), BIT(0) | BIT(3))
 #define BMI088_ACCEL_RATE_50   REG_VAL(BIT(0) | BIT(1) | BIT(2), BIT(3))
@@ -159,6 +160,7 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
     rt_uint8_t r_val;
 
     RT_TRY(spi_write_reg8(spi_device, reg, val));
+
     /* In case of read operations of the accelerometer part, the requested data is not sent 
     immediately, but instead first a dummy byte is sent, and after this dummy byte the actual 
     reqested register content is transmitted. */
@@ -171,6 +173,7 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
 static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t reg_val)
 {
     uint8_t value;
+
 
     /* In case of read operations of the accelerometer part, the requested data is not sent 
     immediately, but instead first a dummy byte is sent, and after this dummy byte the actual 
@@ -564,7 +567,6 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     acc[0] = buffer[2] << 8 | buffer[1];
     acc[1] = buffer[4] << 8 | buffer[3];
     acc[2] = buffer[6] << 8 | buffer[5];
-
     return RT_EOK;
 }
 
@@ -636,6 +638,7 @@ const static struct accel_ops __accel_ops = {
         1600,    /* 1K sample rate */         \
             145, /* OSR4 145Hz cutoff freq */ \
             12,  /* +-12g */                  \
+
     }
 
 static struct gyro_device gyro_dev = {
@@ -654,14 +657,15 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
                          const char* gyro_device_name, const char* accel_device_name)
 {
     /* Initialize gyroscope */
-
     gyro_spi_dev = rt_device_find(gyro_spi_device_name);
+
     RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
+
         cfg.max_hz = 7000000;
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)gyro_spi_dev;
@@ -679,6 +683,7 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
     /* Initialize accelerometer */
 
     accel_spi_dev = rt_device_find(accel_spi_device_name);
+
     RT_ASSERT(accel_spi_dev != NULL);
 
     /* config spi */
@@ -698,6 +703,7 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
 
     /* accelerometer low-level init */
     RT_TRY(accelerometer_init());
+
     /* register accel hal device */
     RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
