@@ -6,7 +6,7 @@ cwd     = GetCurrentDir()
 src	= []
 
 if GetDepend(['FMT_USING_MAVLINK_V2']):
-    CPPPATH = [cwd + '/v2.0', cwd + '/v2.0/fmt_mavlink']
+    CPPPATH = [cwd + '/v2.0', cwd + '/v2.0/fmt']
 else:
     CPPPATH = [cwd + '/v1.0', cwd + '/v1.0/common']
 
