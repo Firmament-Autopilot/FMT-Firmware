@@ -19,10 +19,9 @@
 
 #include "hal/rc/ppm.h"
 
+/* 16-bit timer */
 #define GET_GAP(x, y) (x > y ? (x - y) : (0xFFFF - y + x))
 
-// static uint8_t ppm_reading;
-// static uint8_t ppm_recvd;
 static float scale_us;
 
 void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
@@ -67,15 +66,6 @@ void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
     /* update last capture value */
     decoder->last_ic = ic_val;
 }
-
-// uint8_t ppm_read(uint16_t val[MAX_PPM_CHANNEL])
-// {
-//     ppm_reading = 1;
-//     memcpy(val, decoder->ppm_val, decoder->total_chan * 2);
-//     ppm_reading = 0;
-
-//     return decoder->total_chan;
-// }
 
 rt_err_t ppm_decoder_init(ppm_decoder_t* decoder, uint32_t freq_hz)
 {
