@@ -18,6 +18,7 @@
 
 #include "hal/rc/ppm.h"
 #include "hal/rc/rc.h"
+#include "hal/rc/sbus.h"
 
 /* capture accuracy is 0.001ms */
 #define PPM_DECODER_FREQUENCY 1000000
@@ -33,9 +34,15 @@
     }
 
 static ppm_decoder_t ppm_decoder;
+static uint16_t rc_values[16];
+static uint16_t rc_count;
+bool sbus_failsafe, sbus_frame_drop;
 
 void TIMER0_BRK_TIMER8_IRQHandler(void)
 {
+    /* enter interrupt */
+    rt_interrupt_enter();
+
     if (SET == timer_interrupt_flag_get(TIMER8, TIMER_INT_CH1)) {
         /* clear channel 0 interrupt bit */
         timer_interrupt_flag_clear(TIMER8, TIMER_INT_CH1);
@@ -43,6 +50,38 @@ void TIMER0_BRK_TIMER8_IRQHandler(void)
         uint32_t ic_val = timer_channel_capture_value_register_read(TIMER8, TIMER_CH_1) + 1;
         ppm_update(&ppm_decoder, ic_val);
     }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void USART5_IRQHandler(void)
+{
+    uint8_t ch;
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    static uint32_t cnt = 0;
+    cnt++;
+    if (cnt >= 2000) {
+        cnt = 0;
+        printf("USART5 isr ");
+    }
+
+    if ((usart_interrupt_flag_get(USART5, USART_INT_FLAG_RBNE) != RESET)) {
+        while (usart_flag_get(USART5, USART_FLAG_RBNE) != RESET) {
+            ch = (uint8_t)usart_data_receive(USART5);
+            sbus_input(&ch, 1);
+        }
+
+        sbus_update(rc_values, &rc_count, &sbus_failsafe, &sbus_frame_drop, 16);
+
+        /* Clear RXNE interrupt flag */
+        usart_flag_clear(USART5, USART_FLAG_RBNE);
+    }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
 }
 
 static rt_err_t ppm_lowlevel_init(void)
@@ -101,6 +140,42 @@ static rt_err_t ppm_lowlevel_init(void)
 
     /* TIMER8 counter enable */
     timer_enable(TIMER8);
+
+    return RT_EOK;
+}
+
+static rt_err_t sbus_lowlevel_init(void)
+{
+    /* initialize gpio */
+
+    /* enable gpio clock */
+    rcu_periph_clock_enable(RCU_GPIOC);
+    rcu_periph_clock_enable(RCU_USART5);
+
+    /* connect port to USARTx_Rx */
+    gpio_af_set(GPIOC, GPIO_AF_8, GPIO_PIN_7);
+    /* configure USART Rx as alternate function push-pull */
+    gpio_mode_set(GPIOC, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_7);
+    gpio_output_options_set(GPIOC, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_7);
+
+    /* config usart */
+
+    /* 100000bps, even parity, two stop bits */
+    usart_baudrate_set(USART5, 100000);
+    usart_word_length_set(USART5, USART_WL_8BIT);
+    usart_stop_bit_set(USART5, USART_STB_2BIT);
+    usart_parity_config(USART5, USART_PM_EVEN);
+    usart_receive_config(USART5, USART_RECEIVE_ENABLE);
+    usart_transmit_config(USART5, USART_TRANSMIT_ENABLE); //TODO, need sbus output?
+    usart_enable(USART5);
+
+    // NVIC_SetPriority(USART5_IRQn, 0);
+    // /* enable rx irq */
+    // NVIC_EnableIRQ(USART5_IRQn);
+    /* initialize isr */
+    nvic_irq_enable(USART5_IRQn, 1, 1);
+    /* enable interrupt */
+    usart_interrupt_enable(USART5, USART_INT_RBNE);
 
     return RT_EOK;
 }
@@ -172,9 +247,11 @@ rt_err_t drv_rc_init(void)
 {
     /* init ppm driver */
     RT_TRY(ppm_lowlevel_init());
-
     /* init ppm decoder */
     RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
+
+    RT_TRY(sbus_lowlevel_init());
+    RT_TRY(sbus_decoder_init());
 
     RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, &ppm_decoder));
 
