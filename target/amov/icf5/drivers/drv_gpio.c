@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 #include "drv_gpio.h"
 #include "hal/pin/pin.h"
 
-// #define PIN_NUM(port, no) (((((port)&0xFu) << 4) | ((no)&0xFu)))
 #define PIN_PORT(pin) ((uint8_t)(((pin) >> 4) & 0xFu))
 #define PIN_NO(pin)   ((uint8_t)((pin)&0xFu))
 
@@ -57,37 +56,6 @@
 
 static struct pin_device pin_device;
 
-// static rt_base_t stm32_pin_get(const char* name)
-// {
-//     rt_base_t pin = 0;
-//     int hw_port_num, hw_pin_num = 0;
-//     int i, name_len;
-
-//     name_len = rt_strlen(name);
-
-//     if ((name_len < 4) || (name_len >= 6)) {
-//         return -RT_EINVAL;
-//     }
-//     if ((name[0] != 'P') || (name[2] != '.')) {
-//         return -RT_EINVAL;
-//     }
-
-//     if ((name[1] >= 'A') && (name[1] <= 'Z')) {
-//         hw_port_num = (int)(name[1] - 'A');
-//     } else {
-//         return -RT_EINVAL;
-//     }
-
-//     for (i = 3; i < name_len; i++) {
-//         hw_pin_num *= 10;
-//         hw_pin_num += name[i] - '0';
-//     }
-
-//     pin = PIN_NUM(hw_port_num, hw_pin_num);
-
-//     return pin;
-// }
-
 static void gd32_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
 {
     uint32_t gpio_port;
@@ -97,7 +65,7 @@ static void gd32_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
         gpio_port = PIN_STPORT(pin);
         gpio_pin = PIN_STPIN(pin);
 
-        if (value == GPIO_PIN_RESET) {
+        if (value == 0) {
             gpio_bit_reset(gpio_port, gpio_pin);
         } else {
             gpio_bit_set(gpio_port, gpio_pin);
@@ -123,59 +91,35 @@ static int gd32_pin_read(rt_device_t dev, rt_base_t pin)
 
 static void gd32_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
 {
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    uint32_t gpio_port = PIN_STPORT(pin);
+    uint32_t gpio_pin = PIN_STPIN(pin);
 
     if (PIN_PORT(pin) >= PIN_STPORT_MAX) {
         return;
     }
 
-    GPIO_InitStruct.Pin = PIN_STPIN(pin);
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-
-    uint32_t gpio_port = PIN_STPORT(pin);
-    uint32_t gpio_pin = PIN_STPIN(pin);
-
     if (otype == PIN_OUT_TYPE_PP) {
-        // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
         gpio_output_options_set(gpio_port, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, gpio_pin);
     } else if (otype == PIN_OUT_TYPE_OD) {
-        // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
         gpio_output_options_set(gpio_port, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, gpio_pin);
     }
 
     if (mode == PIN_MODE_OUTPUT) {
-        /* output setting */
-        // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-
+        /* output setting: not pull */
         gpio_mode_set(gpio_port, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, gpio_pin);
     } else if (mode == PIN_MODE_INPUT) {
         /* input setting: not pull. */
-        // GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
-        // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-
         gpio_mode_set(gpio_port, GPIO_MODE_INPUT, GPIO_PUPD_NONE, gpio_pin);
     } else if (mode == PIN_MODE_INPUT_PULLUP) {
-        /* input setting: pull up. */
-        // GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
-        // GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-
+        /* output setting: pull up. */
         gpio_mode_set(gpio_port, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, gpio_pin);
     } else if (mode == PIN_MODE_INPUT_PULLDOWN) {
-        /* input setting: pull down. */
-        // GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
-        // GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
-
+        /* output setting: pull down. */
         gpio_mode_set(gpio_port, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN, gpio_pin);
     } else {
         /* unsurpoted mode */
         return;
     }
-
-    // LL_GPIO_Init(PIN_STPORT(pin), &GPIO_InitStruct);
 }
 
 const static struct pin_ops pin_ops = {

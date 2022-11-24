@@ -29,6 +29,7 @@
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mtd/w25q16.h"
+#include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
@@ -37,6 +38,7 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "led.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -237,6 +239,9 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
@@ -371,6 +376,9 @@ void bsp_post_initialize(void)
 
     /* initialize power management unit */
     // FMT_CHECK(pmu_init());
+
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     /* show system information */
     bsp_show_information();
