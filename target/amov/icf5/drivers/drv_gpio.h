@@ -14,45 +14,19 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef FMTCONFIG_H__
-#define FMTCONFIG_H__
+#ifndef DRV_GPIO_H__
+#define DRV_GPIO_H__
 
-#define VEHICLE_TYPE "Quadcopter"
+#include <firmament.h>
 
-#define FMT_USING_CHECKED
-
-/* HIL simulation */
-// #define FMT_USING_HIL
-/* SIH simulation */
-// #define FMT_USING_SIH
-
-/* Mavlink */
-#define FMT_USING_MAVLINK_V2
-
-/* Send out pilot cmd via mavlink */
-#define FMT_OUTPUT_PILOT_CMD
-
-/* MLog */
-#define MLOG_BUFFER_SIZE         128 * 1024
-#define MLOG_SECTOR_SIZE         4096
-#define MLOG_MAX_SECTOR_TO_WRITE 5
-
-/* ULog */
-#define FMT_USING_ULOG
-#ifdef FMT_USING_ULOG
-    // #define ENABLE_ULOG_FS_BACKEND
-    #define ENABLE_ULOG_CONSOLE_BACKEND
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-/* Cortex-M Backtrace */
-#define FMT_USING_CM_BACKTRACE
+rt_err_t drv_gpio_init(void);
 
-/* Unit Test */
-// #define FMT_USING_UNIT_TEST
-
-// #define FMT_RECORD_CALIBRATION_DATA
-
-/* Use external states */
-// #define FMT_USING_EXTERNAL_STATE
-
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* __DRV_GPIO_H__ */
