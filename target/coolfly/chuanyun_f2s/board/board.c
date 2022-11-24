@@ -582,3 +582,28 @@ void rt_hw_board_init()
 {
     bsp_early_initialize();
 }
+
+/* Re-implement this function to define customized rotation */
+void icm20600_rotate_to_ned(float* val)
+{
+    float tmp;
+    float* x = val;
+    float* y = val + 1;
+    // float *z = *(val +2);
+
+    tmp = *x;
+    *x = *y;
+    *y = -tmp;
+
+    /* do nothing */
+}
+
+/* Re-implement this function to define customized rotation */
+void bmi088_rotate_to_ned(float val[3])
+{
+    /* do nothing */
+    float* x = val;
+    float* y = val + 1;
+    *x = -*x;
+    *y = -*y;
+}
