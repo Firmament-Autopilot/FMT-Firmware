@@ -378,6 +378,8 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         mavlink_fmt_external_state_t ext_state;
 
         mavlink_msg_fmt_external_state_decode(msg, &ext_state);
+
+        ext_state.timestamp = systime_now_ms();
         /* publish external state */
         mcn_publish(MCN_HUB(mav_ext_state), &ext_state);
     } break;
