@@ -83,6 +83,10 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
 
     rc = (rc_dev_t)dev;
 
+    if (rc->ops->rc_control == RT_NULL) {
+        return RT_ENOSYS;
+    }
+
     switch (cmd) {
     case RT_DEVICE_CTRL_CONFIG:
         if (args) {
@@ -97,11 +101,40 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
         }
         break;
 
-    default:
-        if (rc->ops->rc_control) {
+    case RC_CMD_CHECK_UPDATE:
+        if (rc->config.protocol == RC_PROTOCOL_AUTO) {
+            /* if auto protocol, we will check the valid protocol (sbus/ppm) then switch to it.
+               it's only allowed to switch once while powered-on */
+            uint8_t updated = 0;
+
+            /* Check sbus availability */
+            if (updated == 0) {
+                rc->config.protocol = RC_PROTOCOL_SBUS;
+                rc->ops->rc_control(rc, RC_CMD_CHECK_UPDATE, &updated);
+            }
+
+            /* Check ppm availability */
+            if (updated == 0) {
+                rc->config.protocol = RC_PROTOCOL_PPM;
+                rc->ops->rc_control(rc, RC_CMD_CHECK_UPDATE, &updated);
+            }
+
+            if (updated == 0) {
+                /* not protocol availbale, change to auto and try next time */
+                rc->config.protocol = RC_PROTOCOL_AUTO;
+            }
+
+            *(uint8_t*)args = updated;
+        } else if (rc->config.protocol == RC_PROTOCOL_SBUS || rc->config.protocol == RC_PROTOCOL_PPM) {
             return rc->ops->rc_control(rc, cmd, args);
+        } else {
+            *(uint8_t*)args = 0;
+            return RT_EINVAL;
         }
         break;
+
+    default:
+        return rc->ops->rc_control(rc, cmd, args);
     }
 
     return RT_EOK;

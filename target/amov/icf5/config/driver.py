@@ -8,7 +8,7 @@ DRIVERS = [
     'barometer/spl06.c',
     'barometer/ms5611.c',
     'gps/gps_m8n.c',
-    # 'rgb_led/ncp5623c.c',
+    'rgb_led/aw2023.c',
     'mtd/w25q16.c',
 ]
 

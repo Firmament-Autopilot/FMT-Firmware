@@ -26,6 +26,7 @@ extern "C" {
 #define MAX_SBUS_RC_CHANNEL_NUM 16
 #define MAX_PPM_RC_CHANNEL_NUM  8
 
+#define RC_PROTOCOL_AUTO 0
 #define RC_PROTOCOL_SBUS 1
 #define RC_PROTOCOL_PPM  2
 

@@ -30,7 +30,7 @@
 /* default config for rc device */
 #define RC_CONFIG_DEFAULT                      \
     {                                          \
-        RC_PROTOCOL_SBUS, /* sbus */           \
+        RC_PROTOCOL_AUTO, /* auto */           \
             6,            /* 6 channel */      \
             0.05f,        /* sample time */    \
             1000,         /* minimal 1000us */ \
@@ -232,7 +232,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
             }
         }
         ppm_data_clear(&ppm_decoder);
-        
+
         ppm_unlock(&ppm_decoder);
     }
 

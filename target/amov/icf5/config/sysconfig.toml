@@ -31,8 +31,8 @@ target = "Amov-ICF5"
     [pilot-cmd.device]
     type = "rc"
     name = "rc"
-    protocol = "ppm"           # sbus or ppm
-    channel-num = 6             # max supported channel: sbus:16, ppm:8
+    protocol = "auto"           # auto/sbus/ppm
+    channel-num = 8             # max supported channel: sbus:16, ppm:8
     sample-time = 0.05          # sample time in second (-1 for inherit)
     range = [1000,2000]
 

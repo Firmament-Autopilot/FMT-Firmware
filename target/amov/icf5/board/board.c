@@ -29,6 +29,7 @@
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mtd/w25q16.h"
+#include "driver/rgb_led/aw2023.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -280,6 +281,8 @@ void bsp_initialize(void)
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
+
+    RT_CHECK(drv_aw2023_init("i2c0_dev0"));
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

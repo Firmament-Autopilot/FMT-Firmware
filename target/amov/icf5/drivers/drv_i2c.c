@@ -223,7 +223,7 @@ static struct gd32_i2c_bus gd32_i2c0 = {
 
 /* i2c device instances */
 static struct rt_i2c_device i2c0_dev0 = {
-    .slave_addr = 0x45, /* 7 bit address */
+    .slave_addr = 0x45, /* AW2023 7 bit address */
     .flags = 0
 };
 
