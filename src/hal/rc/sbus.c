@@ -427,7 +427,6 @@ bool sbus_update(sbus_decoder_t* decoder)
 	 * a complete frame.
 	 */
     uint8_t buf[SBUS_FRAME_SIZE * 2];
-    bool sbus_decoded = false;
 
     // ret = sbus_read(&buf[0], SBUS_FRAME_SIZE);
 
@@ -441,12 +440,10 @@ bool sbus_update(sbus_decoder_t* decoder)
     /*
 	 * Try to decode something with what we got
 	 */
-    if (sbus_parse(decoder, buf, ret)) {
+    bool sbus_updated = sbus_parse(decoder, buf, ret);
+    decoder->sbus_data_ready = sbus_updated && !decoder->sbus_failsafe && !decoder->sbus_frame_drop;
 
-        sbus_decoded = true;
-    }
-
-    return sbus_decoded;
+    return decoder->sbus_data_ready;
 }
 
 uint32_t sbus_input(sbus_decoder_t* decoder, const uint8_t* values, uint32_t size)

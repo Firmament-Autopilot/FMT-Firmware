@@ -20,6 +20,10 @@
 #include "hal/rc/rc.h"
 #include "hal/rc/sbus.h"
 
+#ifndef min //mod by prife
+    #define min(x, y) (x < y ? x : y)
+#endif
+
 /* capture accuracy is 0.001ms */
 #define PPM_DECODER_FREQUENCY 1000000
 
@@ -35,12 +39,6 @@
 
 static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
-// static uint16_t rc_values[16];
-// static uint16_t rc_count;
-// bool sbus_failsafe, sbus_frame_drop;
-
-// static uint8_t sbus_reading;
-// static uint8_t sbus_data_ready;
 
 void TIMER0_BRK_TIMER8_IRQHandler(void)
 {
@@ -72,10 +70,8 @@ void USART5_IRQHandler(void)
         }
 
         /* if it's reading sbus data, we just parse it later */
-        if (!sbus_decoder.sbus_lock) {
-            bool sbus_updated = sbus_update(&sbus_decoder);
-
-            sbus_decoder.sbus_data_ready = sbus_updated && !sbus_decoder.sbus_failsafe && !sbus_decoder.sbus_frame_drop;
+        if (!sbus_islock(&sbus_decoder)) {
+            sbus_update(&sbus_decoder);
         }
 
         /* Clear RXNE interrupt flag */
@@ -171,9 +167,6 @@ static rt_err_t sbus_lowlevel_init(void)
     usart_transmit_config(USART5, USART_TRANSMIT_ENABLE); //TODO, need sbus output?
     usart_enable(USART5);
 
-    // NVIC_SetPriority(USART5_IRQn, 0);
-    // /* enable rx irq */
-    // NVIC_EnableIRQ(USART5_IRQn);
     /* initialize isr */
     nvic_irq_enable(USART5_IRQn, 1, 1);
     /* enable interrupt */
@@ -184,15 +177,14 @@ static rt_err_t sbus_lowlevel_init(void)
 
 static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
 {
-    ppm_decoder_t* decoder = (ppm_decoder_t*)rc->parent.user_data;
-
     switch (cmd) {
     case RC_CMD_CHECK_UPDATE: {
         uint8_t updated = 0;
+
         if (rc->config.protocol == RC_PROTOCOL_SBUS) {
-            updated = sbus_decoder.sbus_data_ready;
+            updated = sbus_data_ready(&sbus_decoder);
         } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
-            updated = ppm_get_recvd(decoder);
+            updated = ppm_data_ready(&ppm_decoder);
         }
 
         *(uint8_t*)arg = updated;
@@ -208,33 +200,40 @@ static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
 static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan_val)
 {
     uint16_t* index = chan_val;
-    ppm_decoder_t* decoder = (ppm_decoder_t*)rc->parent.user_data;
     rt_uint16_t rb = 0;
 
     if (rc->config.protocol == RC_PROTOCOL_SBUS) {
-        sbus_decoder.sbus_lock = 1;
-        for (uint8_t i = 0; i < 10; i++) {
-            *(index++) = sbus_decoder.sbus_val[i];
-            rb += 2;
-        }
-        sbus_decoder.sbus_data_ready = 0;
-        sbus_decoder.sbus_lock = 0;
-    } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
-        if (ppm_get_recvd(decoder) == 0) {
+        if (sbus_data_ready(&sbus_decoder) == 0) {
             /* no data received, just return */
             return 0;
         }
 
-        ppm_lock(decoder);
-        for (uint8_t i = 0; i < decoder->total_chan; i++) {
+        sbus_lock(&sbus_decoder);
+
+        for (uint8_t i = 0; i < min(rc->config.channel_num, sbus_decoder.rc_count); i++) {
+            *(index++) = sbus_decoder.sbus_val[i];
+            rb += 2;
+        }
+        sbus_data_clear(&sbus_decoder);
+
+        sbus_unlock(&sbus_decoder);
+    } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
+        if (ppm_data_ready(&ppm_decoder) == 0) {
+            /* no data received, just return */
+            return 0;
+        }
+
+        ppm_lock(&ppm_decoder);
+
+        for (uint8_t i = 0; i < min(rc->config.channel_num, ppm_decoder.total_chan); i++) {
             if (chan_mask & (1 << i)) {
-                *(index++) = decoder->ppm_val[i];
+                *(index++) = ppm_decoder.ppm_val[i];
                 rb += 2;
             }
         }
-        ppm_unlock(decoder);
-
-        ppm_clear_recvd(decoder);
+        ppm_data_clear(&ppm_decoder);
+        
+        ppm_unlock(&ppm_decoder);
     }
 
     return rb;
@@ -261,7 +260,7 @@ rt_err_t drv_rc_init(void)
     RT_TRY(sbus_lowlevel_init());
     RT_TRY(sbus_decoder_init(&sbus_decoder));
 
-    RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, &ppm_decoder));
+    RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, NULL));
 
     return RT_EOK;
 }

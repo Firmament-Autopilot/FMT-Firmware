@@ -45,12 +45,12 @@ rt_inline void ppm_unlock(ppm_decoder_t* decoder)
     decoder->ppm_reading = 0;
 }
 
-rt_inline uint16_t ppm_get_recvd(ppm_decoder_t* decoder)
+rt_inline uint16_t ppm_data_ready(ppm_decoder_t* decoder)
 {
     return decoder->ppm_recvd;
 }
 
-rt_inline void ppm_clear_recvd(ppm_decoder_t* decoder)
+rt_inline void ppm_data_clear(ppm_decoder_t* decoder)
 {
     decoder->ppm_recvd = 0;
 }

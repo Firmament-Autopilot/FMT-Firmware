@@ -37,7 +37,7 @@ typedef enum {
     SBUS_DECODE_STATE_SBUS2_GPS = 0x14,
     SBUS_DECODE_STATE_SBUS2_DATA1 = 0x24,
     SBUS_DECODE_STATE_SBUS2_DATA2 = 0x34
-}SBUS_DECODE_STATE;
+} SBUS_DECODE_STATE;
 
 typedef struct {
     uint16_t rc_count;
@@ -48,8 +48,7 @@ typedef struct {
     uint32_t partial_frame_count;
     uint32_t last_rx_time;
     uint32_t last_frame_time;
-    // uint8_t sbus_reading;
-    uint8_t sbus_data_ready;
+    bool sbus_data_ready;
     uint8_t sbus_lock;
     SBUS_DECODE_STATE sbus_decode_state;
     ringbuffer* sbus_rb;
@@ -60,6 +59,31 @@ typedef struct {
 rt_err_t sbus_decoder_init(sbus_decoder_t* decoder);
 uint32_t sbus_input(sbus_decoder_t* decoder, const uint8_t* values, uint32_t size);
 bool sbus_update(sbus_decoder_t* decoder);
+
+rt_inline void sbus_lock(sbus_decoder_t* decoder)
+{
+    decoder->sbus_lock = 1;
+}
+
+rt_inline void sbus_unlock(sbus_decoder_t* decoder)
+{
+    decoder->sbus_lock = 0;
+}
+
+rt_inline uint8_t sbus_islock(sbus_decoder_t* decoder)
+{
+    return decoder->sbus_lock;
+}
+
+rt_inline uint8_t sbus_data_ready(sbus_decoder_t* decoder)
+{
+    return decoder->sbus_data_ready;
+}
+
+rt_inline void sbus_data_clear(sbus_decoder_t* decoder)
+{
+    decoder->sbus_data_ready = 0;
+}
 
 #ifdef __cplusplus
 }

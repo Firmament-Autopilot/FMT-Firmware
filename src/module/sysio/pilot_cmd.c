@@ -36,7 +36,7 @@ static uint8_t stickMapping[4];
 static int16_t rcChannel[16];
 static int16_t rcTrimChannel[16];
 
-static uint16_t rc_read_mask = RC_MASK_1_6;
+static uint16_t rc_read_mask;
 static uint8_t rc_chan_num;
 static Pilot_Cmd_Bus pilot_cmd_bus;
 
