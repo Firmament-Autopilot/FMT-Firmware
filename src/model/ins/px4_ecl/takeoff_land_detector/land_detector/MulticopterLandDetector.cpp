@@ -312,4 +312,15 @@ void MulticopterLandDetector::_set_hysteresis_factor(const int factor)
 	_freefall_hysteresis.set_hysteresis_time_from(false, FREEFALL_TRIGGER_TIME_US);
 }
 
+void set_hover_thrust_estimate_last_valid(float hover_thrust, bool valid, hrt_abstime timeStamp){
+
+	if (_params.useHoverThrustEstimate) {
+		if (valid) {
+			_params.hoverThrottle = hover_thrust;
+			_hover_thrust_estimate_last_valid = timeStamp;
+		}
+	}
+		
+}
+
 } // namespace land_detector

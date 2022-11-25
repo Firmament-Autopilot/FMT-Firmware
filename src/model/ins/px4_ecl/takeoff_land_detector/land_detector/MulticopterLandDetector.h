@@ -61,6 +61,11 @@ public:
 	MulticopterLandDetector();
 	~MulticopterLandDetector() override = default;
 
+	void set_actuator_controls_throttle(float actuator_controls_throttle){	_actuator_controls_throttle = actuator_controls_throttle;};
+	void set_flag_control_climb_rate_enabled(bool enabled){	_flag_control_climb_rate_enabled = enabled; };
+	void set_hover_thrust_estimate_last_valid(float hover_thrust, hrt_abstime timeStamp);
+	void set_takeoff_state(uint8_t takeoff_state){	_takeoff_state = takeoff_state;	};
+
 protected:
 	void _update_params() override;
 	void _update_topics() override;
