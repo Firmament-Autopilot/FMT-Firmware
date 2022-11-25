@@ -67,6 +67,29 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_status.h>
 
+#ifdef __cplusplus
+struct __EXPORT vehicle_local_position_s {
+#else
+struct vehicle_local_position_s {
+#endif
+
+	uint64_t timestamp;
+	float vx;
+	float vy;
+	float vz;
+	bool v_xy_valid;
+	bool v_z_valid;
+	bool dist_bottom_valid;
+	uint8_t dist_bottom_sensor_bitfield;
+
+#ifdef __cplusplus
+	static constexpr uint8_t DIST_BOTTOM_SENSOR_NONE = 0;
+	static constexpr uint8_t DIST_BOTTOM_SENSOR_RANGE = 1;
+	static constexpr uint8_t DIST_BOTTOM_SENSOR_FLOW = 2;
+
+#endif
+};
+
 using namespace time_literals;
 
 namespace land_detector
@@ -96,6 +119,18 @@ public:
 	void start();
 
 	static int task_spawn(int argc, char *argv[]);
+
+	void set_armed(bool armed)	{ _armed = armed;	};
+	void set_acceleration(matrix::Vector3f acceleration)	{	_acceleration = acceleration;	};
+	void set_angular_velocity(matrix::Vector3f angularRate, hrt_abstime timeStampUs);
+	void set_vehicle_local_position(hrt_abstime timestamp,
+									float vx,
+									float vy,
+									float vz,
+									bool v_xy_valid,
+									bool v_z_valid,
+									bool dist_bottom_valid,
+									uint8_t dist_bottom_sensor_bitfield);
 
 protected:
 

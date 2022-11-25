@@ -73,7 +73,7 @@ void LandDetector::start()
 	_vehicle_local_position_sub.registerCallback();
 }
 
-void LandDetector::Run()
+void LandDetector::Step()
 {
 	// push backup schedule
 	ScheduleDelayed(50_ms);
@@ -254,6 +254,38 @@ void LandDetector::UpdateVehicleAtRest()
 	}
 
 	_at_rest = (hrt_elapsed_time(&_time_last_move_detect_us) > 1_s);
+}
+
+void set_angular_velocity(matrix::Vector3f angularRate, hrt_abstime timeStampUs){
+
+	_angular_velocity = angularRate;
+
+	static constexpr float GYRO_NORM_MAX = math::radians(3.f); // 3 degrees/second
+
+	if (_angular_velocity.norm() > GYRO_NORM_MAX) {
+		_time_last_move_detect_us = timeStampUs;
+	}
+
+}
+
+void set_vehicle_local_position(uint64_t timestamp,
+								float vx,
+								float vy,
+								float vz,
+								bool v_xy_valid,
+								bool v_z_valid,
+								bool dist_bottom_valid,
+								uint8_t dist_bottom_sensor_bitfield){
+	
+	_vehicle_local_position.timestamp = timestamp;
+	_vehicle_local_position.vx = vx;
+	_vehicle_local_position.vy = vy;
+	_vehicle_local_position.vz = vz;
+	_vehicle_local_position.v_xy_valid = v_xy_valid;
+	_vehicle_local_position.v_z_valid = v_z_valid;
+	_vehicle_local_position.dist_bottom_valid = dist_bottom_valid;
+	_vehicle_local_position.dist_bottom_sensor_bitfield = dist_bottom_sensor_bitfield;
+	
 }
 
 } // namespace land_detector
