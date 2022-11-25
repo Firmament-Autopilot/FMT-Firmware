@@ -11,6 +11,11 @@ target = "Amov-ICF5"
     baudrate = 57600
     auto-switch = true
 
+    [[console.devices]]
+    type = "mavlink"
+    name = "mav_console"
+    auto-switch = true
+
 # Mavproxy Device Configuration
 [mavproxy]
     [[mavproxy.devices]]
