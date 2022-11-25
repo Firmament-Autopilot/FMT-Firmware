@@ -61,12 +61,10 @@ target = "CHUANYUN_F2S"\n
 	type = "serial"\n
 	name = "serial4"\n
 	baudrate = 460800\n
-#if  0
 	[[mavproxy.devices]]\n
 	type = "bb_com"\n
 	name = "bb_com3"\n
 	auto-switch = true\n
-#endif
 [actuator]\n
     [[actuator.devices]]\n
     protocol = "pwm"\n

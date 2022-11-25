@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef TFMINI_S_H__
+#define TFMINI_S_H__
 
-#ifndef MAVPROXY_CONFIG_H__
-#define MAVPROXY_CONFIG_H__
-
-#include <firmament.h>
-
-#include "module/toml/toml.h"
+#include <rtthread.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct {
-    uint32_t baudrate;
-} mavproxy_serial_dev_config;
-
-typedef struct {
-    char* type;
-    char* name;
-    void* config;
-} mavproxy_device_info;
-
-/* toml configuration */
-fmt_err_t mavproxy_toml_config(toml_table_t* table);
-fmt_err_t mavproxy_get_devinfo(rt_device_t dev, mavproxy_device_info* info);
-
-int get_device_num(void);
-mavproxy_device_info* get_device_list(void);
+rt_err_t tfmini_s_drv_init(const char* uart_dev_name);
 
 #ifdef __cplusplus
 }
