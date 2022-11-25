@@ -34,9 +34,13 @@
     }
 
 static ppm_decoder_t ppm_decoder;
-static uint16_t rc_values[16];
-static uint16_t rc_count;
-bool sbus_failsafe, sbus_frame_drop;
+static sbus_decoder_t sbus_decoder;
+// static uint16_t rc_values[16];
+// static uint16_t rc_count;
+// bool sbus_failsafe, sbus_frame_drop;
+
+// static uint8_t sbus_reading;
+// static uint8_t sbus_data_ready;
 
 void TIMER0_BRK_TIMER8_IRQHandler(void)
 {
@@ -61,20 +65,18 @@ void USART5_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    static uint32_t cnt = 0;
-    cnt++;
-    if (cnt >= 2000) {
-        cnt = 0;
-        printf("USART5 isr ");
-    }
-
     if ((usart_interrupt_flag_get(USART5, USART_INT_FLAG_RBNE) != RESET)) {
         while (usart_flag_get(USART5, USART_FLAG_RBNE) != RESET) {
             ch = (uint8_t)usart_data_receive(USART5);
-            sbus_input(&ch, 1);
+            sbus_input(&sbus_decoder, &ch, 1);
         }
 
-        sbus_update(rc_values, &rc_count, &sbus_failsafe, &sbus_frame_drop, 16);
+        /* if it's reading sbus data, we just parse it later */
+        if (!sbus_decoder.sbus_lock) {
+            bool sbus_updated = sbus_update(&sbus_decoder);
+
+            sbus_decoder.sbus_data_ready = sbus_updated && !sbus_decoder.sbus_failsafe && !sbus_decoder.sbus_frame_drop;
+        }
 
         /* Clear RXNE interrupt flag */
         usart_flag_clear(USART5, USART_FLAG_RBNE);
@@ -188,7 +190,7 @@ static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
     case RC_CMD_CHECK_UPDATE: {
         uint8_t updated = 0;
         if (rc->config.protocol == RC_PROTOCOL_SBUS) {
-
+            updated = sbus_decoder.sbus_data_ready;
         } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
             updated = ppm_get_recvd(decoder);
         }
@@ -210,7 +212,13 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
     rt_uint16_t rb = 0;
 
     if (rc->config.protocol == RC_PROTOCOL_SBUS) {
-
+        sbus_decoder.sbus_lock = 1;
+        for (uint8_t i = 0; i < 10; i++) {
+            *(index++) = sbus_decoder.sbus_val[i];
+            rb += 2;
+        }
+        sbus_decoder.sbus_data_ready = 0;
+        sbus_decoder.sbus_lock = 0;
     } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
         if (ppm_get_recvd(decoder) == 0) {
             /* no data received, just return */
@@ -251,7 +259,7 @@ rt_err_t drv_rc_init(void)
     RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
 
     RT_TRY(sbus_lowlevel_init());
-    RT_TRY(sbus_decoder_init());
+    RT_TRY(sbus_decoder_init(&sbus_decoder));
 
     RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, &ppm_decoder));
 

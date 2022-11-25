@@ -28,6 +28,17 @@ extern "C" {
 #define MAX_SBUS_CHANNEL 16
 #define SBUS_FRAME_SIZE  25
 
+typedef enum {
+    SBUS_DECODE_STATE_DESYNC = 0xFFF,
+    SBUS_DECODE_STATE_SBUS_START = 0x2FF,
+    SBUS_DECODE_STATE_SBUS1_SYNC = 0x00,
+    SBUS_DECODE_STATE_SBUS2_SYNC = 0x1FF,
+    SBUS_DECODE_STATE_SBUS2_RX_VOLTAGE = 0x04,
+    SBUS_DECODE_STATE_SBUS2_GPS = 0x14,
+    SBUS_DECODE_STATE_SBUS2_DATA1 = 0x24,
+    SBUS_DECODE_STATE_SBUS2_DATA2 = 0x34
+}SBUS_DECODE_STATE;
+
 typedef struct {
     uint16_t rc_count;
     uint16_t max_channels;
@@ -35,17 +46,20 @@ typedef struct {
     bool sbus_frame_drop;
     uint32_t sbus_frame_drops;
     uint32_t partial_frame_count;
-    uint64_t last_rx_time;
-    uint64_t last_frame_time;
+    uint32_t last_rx_time;
+    uint32_t last_frame_time;
+    // uint8_t sbus_reading;
+    uint8_t sbus_data_ready;
+    uint8_t sbus_lock;
+    SBUS_DECODE_STATE sbus_decode_state;
     ringbuffer* sbus_rb;
     uint8_t sbus_frame[SBUS_FRAME_SIZE + (SBUS_FRAME_SIZE / 2)];
     uint16_t sbus_val[MAX_SBUS_CHANNEL];
 } sbus_decoder_t;
 
-rt_err_t sbus_decoder_init(void);
-uint32_t sbus_input(const uint8_t* values, uint32_t size);
-bool sbus_update(uint16_t* values, uint16_t* num_values, bool* sbus_failsafe,
-                 bool* sbus_frame_drop, uint16_t max_channels);
+rt_err_t sbus_decoder_init(sbus_decoder_t* decoder);
+uint32_t sbus_input(sbus_decoder_t* decoder, const uint8_t* values, uint32_t size);
+bool sbus_update(sbus_decoder_t* decoder);
 
 #ifdef __cplusplus
 }
