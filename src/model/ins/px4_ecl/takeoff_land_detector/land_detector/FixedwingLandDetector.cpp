@@ -116,4 +116,21 @@ bool FixedwingLandDetector::_get_landed_state()
 	return landDetected;
 }
 
+void set_airspeed(float airspeed_m_s, bool valid, uint64_t nowTime, uint64_t timeStamp){
+
+	airspeed_validated_s airspeed_validated{};
+	_airspeed_validated_sub.copy(&airspeed_validated);
+
+	bool airspeed_invalid = false;
+
+	// set _airspeed_filtered to 0 if airspeed data is invalid
+	if ((!valid) || (nowTime - timeStamp > 1_s)) {
+		_airspeed_filtered = 0.0f;
+		airspeed_invalid = true;
+
+	} else {
+		_airspeed_filtered = 0.95f * _airspeed_filtered + 0.05f * airspeed_m_s;
+	}
+}
+
 } // namespace land_detector

@@ -49,6 +49,20 @@
 
 using namespace time_literals;
 
+#ifdef __cplusplus
+struct __EXPORT airspeed_validated_s {
+#else
+struct airspeed_validated_s {
+#endif
+
+	uint64_t timestamp;
+	float true_airspeed_m_s;
+
+#ifdef __cplusplus
+
+#endif
+};
+
 namespace land_detector
 {
 
@@ -62,6 +76,7 @@ protected:
 
 	bool _get_landed_state() override;
 	void _set_hysteresis_factor(const int factor) override {};
+	void set_airspeed(float airspeed_m_s, bool valid, uint64_t nowTime, uint64_t timeStamp);
 
 private:
 
