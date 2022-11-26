@@ -91,7 +91,7 @@ typedef struct {
 typedef struct {
     uint32_t timestamp_ms;
     float temperature_deg;
-    int32_t pressure_pa;
+    float pressure_pa;
     float altitude_m;
 } baro_data_t;
 

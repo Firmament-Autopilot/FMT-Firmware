@@ -439,7 +439,7 @@ void ins_interface_step(uint32_t timestamp)
     if (airspeed_data_updated) {
         airspeed_data_updated = 0;
         /* Log AirSpeed data */
-        mlog_push_msg((uint8_t*)&ins_handle.airspeed_report, AirSpeed_ID, sizeof(INS_U.AirSpeed));
+        mlog_push_msg((uint8_t*)&INS_U.AirSpeed, AirSpeed_ID, sizeof(INS_U.AirSpeed));
     }
 
     /* Log INS output bus data */

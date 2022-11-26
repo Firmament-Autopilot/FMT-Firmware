@@ -1,5 +1,5 @@
 # from building import *
-# import buildlist as bl
+# import BuildLists as bl
 
 # cwd = GetCurrentDir()
 
@@ -17,7 +17,7 @@
 
 import os
 from building import *
-import buildlist as bl
+import BuildLists as bl
 
 cwd = GetCurrentDir()
 objs = []

@@ -1,0 +1,30 @@
+import rtconfig
+Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = []
+src += Glob('GD32F4xx_standard_peripheral/Source/*.c')
+
+#add for startup script 
+if rtconfig.CROSS_TOOL == 'gcc':
+     src = src + ['CMSIS/GD/GD32F4xx/Source/GCC/startup_gd32f4xx.s']
+
+src += Glob('CMSIS/GD/GD32F4xx/Source/system_gd32f4xx.c')
+
+#add for DSP library
+src += Glob('CMSIS/DSP_Lib/Source/FastMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP_Lib/Source/BasicMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP_Lib/Source/MatrixFunctions/*f32.c')
+src += Glob('CMSIS/DSP_Lib/Source/SupportFunctions/*f32.c')
+
+path = [cwd + '/GD32F4xx_standard_peripheral/Include', 
+    cwd + '/CMSIS',
+    cwd + '/CMSIS/GD/GD32F4xx/Include']
+
+group = DefineGroup('GD32_StdPeriph', src, depend = [''], CPPPATH = path)
+
+Return('group')

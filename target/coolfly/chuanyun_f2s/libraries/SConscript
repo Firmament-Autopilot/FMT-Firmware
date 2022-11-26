@@ -1,0 +1,8 @@
+# for module compiling
+import os
+from building import *
+
+# reuse libraries 
+objs = SConscript('artosyn/SConscript', variant_dir='libraries')
+
+Return('objs')

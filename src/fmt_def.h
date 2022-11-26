@@ -61,20 +61,28 @@ typedef int bool;
     #define STRING(...) #__VA_ARGS__
 #endif
 
-#define RT_TRY(__exp)           \
-    do {                        \
-        rt_err_t err = (__exp); \
-        if (err != RT_EOK) {    \
-            return err;         \
-        }                       \
+#ifdef FMT_USING_SYS_DEBUG
+    #define SYS_DBG(...) printf(__VA_ARGS__)
+#else
+    #define SYS_DBG(...)
+#endif
+
+#define RT_TRY(__exp)                                                                                \
+    do {                                                                                             \
+        rt_err_t err = (__exp);                                                                      \
+        if (err != RT_EOK) {                                                                         \
+            SYS_DBG("RT_TRY failed at function:%s, line:%u, err:%d\n", __FUNCTION__, __LINE__, err); \
+            return err;                                                                              \
+        }                                                                                            \
     } while (false)
 
-#define FMT_TRY(__exp)           \
-    do {                         \
-        fmt_err_t err = (__exp); \
-        if (err != FMT_EOK) {    \
-            return err;          \
-        }                        \
+#define FMT_TRY(__exp)                                                                                \
+    do {                                                                                              \
+        fmt_err_t err = (__exp);                                                                      \
+        if (err != FMT_EOK) {                                                                         \
+            SYS_DBG("FMT_TRY failed at function:%s, line:%u, err:%d\n", __FUNCTION__, __LINE__, err); \
+            return err;                                                                               \
+        }                                                                                             \
     } while (false)
 
 #define OS_ENTER_CRITICAL rt_enter_critical()

@@ -17,6 +17,8 @@
 #ifndef FIRMAMENT_H__
 #define FIRMAMENT_H__
 
+// clang-format off
+
 /* Standard C Library */
 #include <stdlib.h>
 /* RT-Thread */
@@ -24,10 +26,12 @@
 #include <rthw.h>
 #include <rtthread.h>
 /* System */
-#include <fmt_def.h>
 #include <fmtconfig.h>
+#include <fmt_def.h>
 #include <module/module_common.h>
 /* BSP */
 #include <bsp_header.h>
+
+// clang-format on
 
 #endif

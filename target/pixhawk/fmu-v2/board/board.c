@@ -373,10 +373,8 @@ void bsp_post_initialize(void)
     /* init mission data */
     FMT_CHECK(mission_data_init());
 
-#if defined(FMT_HIL_WITH_ACTUATOR) || (!defined(FMT_USING_HIL) && !defined(FMT_USING_SIH))
     /* init actuator */
     FMT_CHECK(actuator_init());
-#endif
 
     /* start msp server */
     FMT_CHECK(msp_server_start());

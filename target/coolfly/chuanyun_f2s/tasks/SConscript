@@ -1,0 +1,22 @@
+import os
+from building import *
+Import('RTT_ROOT')
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+
+
+
+src += Glob('xc7027/xc7027.c')
+
+# if GetDepend(['RT_USING_CPLUSPLUS']):
+#     src += Glob('*.cpp')
+
+inc = [cwd] 
+inc += [cwd + '/xc7027']
+
+
+group = DefineGroup('LocalTask', src, depend = [''], CPPPATH = inc)
+
+Return('group')
