@@ -68,6 +68,51 @@
 #include <uORB/topics/vehicle_status.h>
 
 #ifdef __cplusplus
+struct __EXPORT actuator_armed_s {
+#else
+struct actuator_armed_s {
+#endif
+
+	uint64_t timeStampUs;
+	bool armed;
+	bool updated;
+
+#ifdef __cplusplus
+
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT vehicle_acceleration_s {
+#else
+struct vehicle_acceleration_s {
+#endif
+
+	uint64_t timeStampUs;
+	matrix::Vector3f acceleration;
+	bool updated;
+
+#ifdef __cplusplus
+
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT vehicle_angular_velocity_s {
+#else
+struct vehicle_angular_velocity_s {
+#endif
+
+	uint64_t timeStampUs_sample;
+	matrix::Vector3f vehicle_angular_velocity;
+	bool updated;
+
+#ifdef __cplusplus
+
+#endif
+};
+
+#ifdef __cplusplus
 struct __EXPORT vehicle_local_position_s {
 #else
 struct vehicle_local_position_s {
@@ -81,11 +126,44 @@ struct vehicle_local_position_s {
 	bool v_z_valid;
 	bool dist_bottom_valid;
 	uint8_t dist_bottom_sensor_bitfield;
+	bool updated;
 
 #ifdef __cplusplus
 	static constexpr uint8_t DIST_BOTTOM_SENSOR_NONE = 0;
 	static constexpr uint8_t DIST_BOTTOM_SENSOR_RANGE = 1;
 	static constexpr uint8_t DIST_BOTTOM_SENSOR_FLOW = 2;
+
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT sensor_selection_s {
+#else
+struct sensor_selection_s {
+#endif
+
+	uint64_t timeStampUs;
+	uint32_t accel_device_id;
+	uint32_t gyro_device_id;
+	bool updated;
+
+#ifdef __cplusplus
+
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT vehicle_imu_status_s {
+#else
+struct vehicle_imu_status_s {
+#endif
+
+	uint64_t timestamp;
+	float accel_vibration_metric;
+	float gyro_vibration_metric;
+	bool updated;
+
+#ifdef __cplusplus
 
 #endif
 };
@@ -120,9 +198,22 @@ public:
 
 	static int task_spawn(int argc, char *argv[]);
 
-	void set_armed(bool armed)	{ _armed = armed;	};
-	void set_acceleration(matrix::Vector3f acceleration)	{	_acceleration = acceleration;	};
-	void set_angular_velocity(matrix::Vector3f angularRate, hrt_abstime timeStampUs);
+	// c/c++ interface for usr
+	void set_armed(bool armed, uint64_t timeStampUs, bool updated){
+		_actuator_armed.timeStampUs = timeStampUs;
+		_actuator_armed.armed 		= armed;	
+		_actuator_armed.updated 	= updated
+	};
+	void set_acceleration(matrix::Vector3f acceleration, uint64_t timeStampUs, bool updated){
+		_vehicle_acceleration.timeStampUs 	= timeStampUs;
+		_vehicle_acceleration.acceleration 	= acceleration;
+		_vehicle_acceleration.updated 		= updated;	
+	};
+	void set_angular_velocity(matrix::Vector3f angularVelocity, hrt_abstime timeStampUs_sample, bool updated){
+		_vehicle_angular_velocity.timeStampUs_sample 		= timeStampUs_sample;
+		_vehicle_angular_velocity.vehicle_angular_velocity 	= angularVelocity;
+		_vehicle_angular_velocity.updated 					= updated;
+	};
 	void set_vehicle_local_position(hrt_abstime timestamp,
 									float vx,
 									float vy,
@@ -130,7 +221,30 @@ public:
 									bool v_xy_valid,
 									bool v_z_valid,
 									bool dist_bottom_valid,
-									uint8_t dist_bottom_sensor_bitfield);
+									uint8_t dist_bottom_sensor_bitfield,
+									bool updated){
+		_vehicle_local_position.timestamp 						= timestamp;
+		_vehicle_local_position.vx 								= vx;
+		_vehicle_local_position.vy 								= vy;
+		_vehicle_local_position.vz 								= vz;
+		_vehicle_local_position.v_xy_valid 						= v_xy_valid;
+		_vehicle_local_position.v_z_valid 						= v_z_valid;
+		_vehicle_local_position.dist_bottom_valid 				= dist_bottom_valid;
+		_vehicle_local_position.dist_bottom_sensor_bitfield 	= dist_bottom_sensor_bitfield;
+		_vehicle_local_position.updated 						= updated;
+	};
+	void set_sensor_selection(uint32_t accel_device_id, uint32_t gyro_device_id, uint64_t timeStampUs, bool updated){
+		_sensor_selection.timeStampUs 		= timeStampUs;
+		_sensor_selection.accel_device_id 	= accel_device_id;
+		_sensor_selection.gyro_device_id 	= gyro_device_id;
+		_sensor_selection.updated 			= updated;
+	};
+	void set_imu_status(float accel_vibration_metric, float gyro_vibration_metric, uint64_t timeStampUs, bool updated){
+		_imu_status.accel_vibration_metric 	= accel_vibration_metric;
+		_imu_status.gyro_vibration_metric 	= gyro_vibration_metric;
+		_imu_status.timeStampUs 			= timeStampUs;
+		_imu_status.updated 				= updated;
+	};
 
 protected:
 
@@ -183,8 +297,13 @@ protected:
 	systemlib::Hysteresis _ground_contact_hysteresis{true};
 	systemlib::Hysteresis _ground_effect_hysteresis{false};
 
-	vehicle_local_position_s _vehicle_local_position{};
-	vehicle_status_s         _vehicle_status{};
+	vehicle_local_position_s 	_vehicle_local_position{};
+	vehicle_status_s         	_vehicle_status{};
+	actuator_armed_s 			_actuator_armed{};
+	sensor_selection_s 			_sensor_selection{};
+	vehicle_acceleration_s 		_vehicle_acceleration{};
+	vehicle_angular_velocity_s 	_vehicle_angular_velocity{};
+	vehicle_imu_status_s 		_imu_status;
 
 	matrix::Vector3f _acceleration{};
 	matrix::Vector3f _angular_velocity{};

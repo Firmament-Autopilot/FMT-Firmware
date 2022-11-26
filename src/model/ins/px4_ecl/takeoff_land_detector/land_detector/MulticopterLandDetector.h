@@ -50,6 +50,77 @@
 
 #include "LandDetector.h"
 
+#ifdef __cplusplus
+struct __EXPORT actuator_controls_s {
+#else
+struct actuator_controls_s {
+#endif
+
+	uint64_t timeStampUs;
+	float throttle;
+	bool updated;
+
+#ifdef __cplusplus
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT vehicle_control_mode_s {
+#else
+struct vehicle_control_mode_s {
+#endif
+
+	uint64_t timeStampUs;
+	bool flag_multicopter_position_control_enabled;
+	bool updated;
+
+#ifdef __cplusplus
+
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT hover_thrust_estimate_s {
+#else
+struct hover_thrust_estimate_s {
+#endif
+
+	uint64_t timeStampUs;
+	float hover_thrust;
+	bool updated;
+
+#ifdef __cplusplus
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT takeoff_status_s {
+#else
+struct takeoff_status_s {
+#endif
+
+	uint64_t timeStampUs;
+	uint8_t takeoff_state;
+	bool updated;
+
+#ifdef __cplusplus
+#endif
+};
+
+#ifdef __cplusplus
+struct __EXPORT trajectory_setpoint_s {
+#else
+struct trajectory_setpoint_s {
+#endif
+
+	uint64_t timeStampUs;
+	float velocity_z;
+	bool updated;
+
+#ifdef __cplusplus
+#endif
+};
+
 using namespace time_literals;
 
 namespace land_detector
@@ -61,10 +132,32 @@ public:
 	MulticopterLandDetector();
 	~MulticopterLandDetector() override = default;
 
-	void set_actuator_controls_throttle(float actuator_controls_throttle){	_actuator_controls_throttle = actuator_controls_throttle;};
-	void set_flag_control_climb_rate_enabled(bool enabled){	_flag_control_climb_rate_enabled = enabled; };
-	void set_hover_thrust_estimate_last_valid(float hover_thrust, hrt_abstime timeStamp);
-	void set_takeoff_state(uint8_t takeoff_state){	_takeoff_state = takeoff_state;	};
+	void set_actuator_controls_throttle(float throttle, uint64_t timeStampUs, updated){
+		_actuator_controls.throttle 	= throttle;
+		_actuator_controls.timeStampUs 	= timeStampUs;
+		_actuator_controls.updated 		= updated;
+
+	};
+	void set_flag_control_climb_rate_enabled(bool flag_multicopter_position_control_enabled, uint64_t timeStampUs, bool updated){
+		_vehicle_control_mode.flag_multicopter_position_control_enabled = flag_multicopter_position_control_enabled;
+		_vehicle_control_mode.timeStampUs 								= timeStampUs;
+		_vehicle_control_mode.updated 									= updated;
+	};
+	void set_hover_thrust_estimate_last_valid(float hover_thrust, uint64_t timeStampUs, bool updated){
+		_hte.hover_thrust 	= hover_thrust;
+		_hte.timeStampUs 	= timeStampUs;
+		_hte.updated 		= updated;
+	};
+	void set_takeoff_state(uint8_t takeoff_state, uint64_t timeStampUs, bool updated){
+		_takeoff_status.takeoff_state 	= takeoff_state;
+		_takeoff_status.timeStampUs 	= timeStampUs;
+		_takeoff_status.updated 		= updated;
+	};
+	void set_trajectory_setpoint(float velocity_z, uint64_t timeStampUs, bool updated){
+		_trajectory_setpoint.velocity_z 	= velocity_z;
+		_trajectory_setpoint.timeStampUs 	= timeStampUs;
+		_trajectory_setpoint.updated 		= updated;
+	}
 
 protected:
 	void _update_params() override;
@@ -83,6 +176,13 @@ protected:
 	bool _get_close_to_ground_or_skipped_check() override { return _close_to_ground_or_skipped_check; }
 
 	void _set_hysteresis_factor(const int factor) override;
+
+	actuator_controls_s 	_actuator_controls;
+	vehicle_control_mode_s 	_vehicle_control_mode;
+	hover_thrust_estimate_s _hte;
+	takeoff_status_s 		_takeoff_status;
+	trajectory_setpoint_s	_trajectory_setpoint;
+
 private:
 	bool _is_close_to_ground();
 

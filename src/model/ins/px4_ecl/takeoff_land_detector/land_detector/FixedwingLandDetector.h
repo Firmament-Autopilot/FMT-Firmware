@@ -55,8 +55,10 @@ struct __EXPORT airspeed_validated_s {
 struct airspeed_validated_s {
 #endif
 
-	uint64_t timestamp;
+	uint64_t timeStampUs;
+	uint64_t nowTimeUs;
 	float true_airspeed_m_s;
+	bool updated;
 
 #ifdef __cplusplus
 
@@ -72,11 +74,20 @@ public:
 	FixedwingLandDetector();
 	~FixedwingLandDetector() override = default;
 
+	void set_airspeed_validated(float true_airspeed_m_s, uint64_t timeStampUs, uint64_t nowTimeUs, bool updated){
+		_airspeed_validated.true_airspeed_m_s 	= true_airspeed_m_s;
+		_airspeed_validated.timeStampUs 		= timeStampUs;
+		_airspeed_validated.nowTimeUs 			= nowTimeUs;
+		_airspeed_validated.updated 			= updated;
+	}
+
 protected:
 
 	bool _get_landed_state() override;
 	void _set_hysteresis_factor(const int factor) override {};
 	void set_airspeed(float airspeed_m_s, bool valid, uint64_t nowTime, uint64_t timeStamp);
+
+	airspeed_validated_s _airspeed_validated{};
 
 private:
 
