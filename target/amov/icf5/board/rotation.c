@@ -26,3 +26,16 @@ void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
     data[0] = data[1];
     data[1] = -tmp;
 }
+
+void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
+{
+    /* do nothing */
+    (void)data;
+    (void)dev_id;
+
+    float tmp;
+    tmp = data[0];
+    data[0] = data[1];
+    data[1] = tmp;
+    data[2] = -data[2];
+}

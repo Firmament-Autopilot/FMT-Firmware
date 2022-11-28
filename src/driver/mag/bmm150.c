@@ -113,12 +113,6 @@ RT_WEAK void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
     /* do nothing */
     (void)data;
     (void)dev_id;
-
-    float tmp;
-    tmp = data[0];
-    data[0] = data[1];
-    data[1] = tmp;
-    data[2] = -data[2];
 }
 
 static rt_err_t write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
