@@ -156,7 +156,30 @@ public:
 		_trajectory_setpoint.velocity_z 	= velocity_z;
 		_trajectory_setpoint.timeStampUs 	= timeStampUs;
 		_trajectory_setpoint.updated 		= updated;
-	}
+	};
+	void set_mc_params(	float _param_lndmc_minThrottle,
+						float _param_lndmc_hoverThrottle,
+						float _param_lndmc_minManThrottle,
+						bool  _param_lndmc_useHoverThrustEstimate,
+						float _param_lndmc_landSpeed,
+						float _param_lndmc_crawlSpeed,
+						float _param_lndmc_trig_time,
+						float _param_lndmc_rot_max,
+						float _param_lndmc_xy_vel_max,
+						float _param_lndmc_z_vel_max,
+						float _param_lndmc_alt_gnd_effect){
+		_mc_params._param_lndmc_minThrottle 			= _param_lndmc_minThrottle;
+		_mc_params._param_lndmc_hoverThrottle 			= _param_lndmc_hoverThrottle;
+		_mc_params._param_lndmc_minManThrottle 			= _param_lndmc_minManThrottle;
+		_mc_params._param_lndmc_useHoverThrustEstimate 	= _param_lndmc_useHoverThrustEstimate;
+		_mc_params._param_lndmc_landSpeed 				= _param_lndmc_landSpeed;
+		_mc_params._param_lndmc_crawlSpeed 				= _param_lndmc_crawlSpeed;
+		_mc_params._param_lndmc_trig_time 				= _param_lndmc_trig_time;
+		_mc_params._param_lndmc_rot_max 				= _param_lndmc_rot_max;
+		_mc_params._param_lndmc_xy_vel_max 				= _param_lndmc_xy_vel_max;
+		_mc_params._param_lndmc_z_vel_max 				= _param_lndmc_z_vel_max;
+		_mc_params._param_lndmc_alt_gnd_effect 			= _param_lndmc_alt_gnd_effect;
+	};
 
 protected:
 	void _update_params() override;
@@ -201,13 +224,18 @@ private:
 	} _paramHandle{};
 
 	struct {
-		float minThrottle;
-		float hoverThrottle;
-		float minManThrottle;
-		bool useHoverThrustEstimate;
-		float landSpeed;
-		float crawlSpeed;
-	} _params{};
+		float _param_lndmc_minThrottle;
+		float _param_lndmc_hoverThrottle;
+		float _param_lndmc_minManThrottle;
+		bool  _param_lndmc_useHoverThrustEstimate;
+		float _param_lndmc_landSpeed;
+		float _param_lndmc_crawlSpeed;
+		float _param_lndmc_trig_time,
+		float _param_lndmc_rot_max,
+		float _param_lndmc_xy_vel_max,
+		float _param_lndmc_z_vel_max,
+		float _param_lndmc_alt_gnd_effect
+	} _mc_params{};
 
 	uORB::Subscription _actuator_controls_sub{ORB_ID(actuator_controls_0)};
 	uORB::Subscription _hover_thrust_estimate_sub{ORB_ID(hover_thrust_estimate)};

@@ -247,12 +247,10 @@ public:
 	};
 
 	// c/c++ interface(params) for usr
-	void set_params(void){
-
-	}
-
-	void save_params(void){
-		
+	void set_params(float _param_total_flight_time_high,
+					float _param_total_flight_time_low){
+		_params._param_total_flight_time_high 	= _param_total_flight_time_high;
+		_params._param_total_flight_time_low 	= _param_total_flight_time_low;
 	}
 
 protected:
@@ -356,6 +354,11 @@ private:
 		(ParamInt<px4::params::LND_FLIGHT_T_HI>) _param_total_flight_time_high,
 		(ParamInt<px4::params::LND_FLIGHT_T_LO>) _param_total_flight_time_low
 	);
+
+	struct {
+		float _param_total_flight_time_high;
+		float _param_total_flight_time_low;
+	}_params;
 };
 
 } // namespace land_detector

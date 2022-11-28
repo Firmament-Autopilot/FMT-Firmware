@@ -81,6 +81,16 @@ public:
 		_airspeed_validated.updated 			= updated;
 	}
 
+	void set_fw_params(	float _param_lndfw_xyaccel_max,
+						float _param_lndfw_airspd,
+						float _param_lndfw_vel_xy_max,
+						float _param_lndfw_vel_z_max){
+		_fw_params._param_lndfw_xyaccel_max = _param_lndfw_xyaccel_max;
+		_fw_params._param_lndfw_airspd 		= _param_lndfw_airspd;
+		_fw_params._param_lndfw_vel_xy_max 	= _param_lndfw_vel_xy_max;
+		_fw_params._param_lndfw_vel_z_max 	= _param_lndfw_vel_z_max;
+	}
+
 protected:
 
 	bool _get_landed_state() override;
@@ -109,6 +119,13 @@ private:
 		(ParamFloat<px4::params::LNDFW_VEL_XY_MAX>) _param_lndfw_vel_xy_max,
 		(ParamFloat<px4::params::LNDFW_VEL_Z_MAX>)  _param_lndfw_vel_z_max
 	);
+
+	struct{
+		float _param_lndfw_xyaccel_max,
+		float _param_lndfw_airspd,
+		float _param_lndfw_vel_xy_max,
+		float _param_lndfw_vel_z_max
+	}_fw_params{};
 };
 
 } // namespace land_detector
