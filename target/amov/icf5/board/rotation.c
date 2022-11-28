@@ -23,6 +23,6 @@ void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
     float tmp;
 
     tmp = data[0];
-    data[0] = -data[1];
-    data[1] = tmp;
+    data[0] = data[1];
+    data[1] = -tmp;
 }
