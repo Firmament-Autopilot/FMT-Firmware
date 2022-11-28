@@ -276,7 +276,12 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
     return RT_EOK;
 }
 
-const static struct sd_ops dev_ops = { .init = init, .write_disk = write_disk, .read_disk = read_disk, .io_control = io_control };
+const static struct sd_ops dev_ops = {
+    .init = init,
+    .write_disk = write_disk,
+    .read_disk = read_disk,
+    .io_control = io_control
+};
 
 #endif
 rt_err_t drv_sdio_init(void)

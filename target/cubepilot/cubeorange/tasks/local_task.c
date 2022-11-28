@@ -19,33 +19,50 @@
 
 #include "stm32h7xx_ll_gpio.h"
 
+rt_device_t fdcan_dev;
+
 fmt_err_t task_local_init(void)
 {
+
     return FMT_EOK;
 }
 
-char** str = (char*[]) { "Hello", "C++", "World", NULL };
+// char** str = (char*[]) { "Hello", "C++", "World", NULL };
 
 void task_local_entry(void* parameter)
 {
     printf("Hello FMT! This is a local demo task.\n");
 
-    for (int i = 0; str[i] != NULL; i++) {
-        printf("%s\n", str[i]);
+    // for (int i = 0; str[i] != NULL; i++) {
+    //     printf("%s\n", str[i]);
+    // }
+
+    fdcan_dev = rt_device_find("fdcan1");
+    if (fdcan_dev == RT_NULL)
+        return FMT_ERROR;
+
+    if ((fdcan_dev->write) == NULL) {
+        printf("fdcan_dev->write == NULL\n");
+        return FMT_ERROR;
     }
+    rt_device_open(fdcan_dev, RT_DEVICE_OFLAG_RDWR);
 
     while (1) {
+        rt_size_t ret = rt_device_write(fdcan_dev, 0, "sss", 3);
+
+        printf("ret=%d\r\n", ret);
+
         sys_msleep(1000);
     }
 }
 
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "local",
-//     .init = task_local_init,
-//     .entry = task_local_entry,
-//     .priority = 25,
-//     .auto_start = true,
-//     .stack_size = 1024,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+TASK_EXPORT __fmt_task_desc = {
+    .name = "local",
+    .init = task_local_init,
+    .entry = task_local_entry,
+    .priority = 25,
+    .auto_start = true,
+    .stack_size = 1024,
+    .param = NULL,
+    .dependency = NULL
+};
