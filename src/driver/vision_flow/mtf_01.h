@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef PMW3901_L0X_H__
-#define PMW3901_L0X_H__
+#ifndef MTF_01_XX_H__
+#define MTF_01_XX_H__
 
 #include <rtthread.h>
 
@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-rt_err_t pmw3901_fl04_drv_init(const char* uart_dev_name);
+rt_err_t mtf_01_drv_init(const char* uart_dev_name);
 
 #ifdef __cplusplus
 }
