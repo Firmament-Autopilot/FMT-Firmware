@@ -158,7 +158,7 @@ bool MulticopterLandDetector::_get_freefall_state()
 
 bool MulticopterLandDetector::_get_ground_contact_state()
 {
-	const hrt_abstime time_now_us = hrt_absolute_time();
+	const uint64_t time_now_us = hrt_absolute_time();
 
 	const bool lpos_available = ((time_now_us - _vehicle_local_position.timestamp) < 1_s);
 
@@ -244,7 +244,7 @@ bool MulticopterLandDetector::_get_ground_contact_state()
 
 bool MulticopterLandDetector::_get_maybe_landed_state()
 {
-	hrt_abstime now = hrt_absolute_time();
+	uint64_t now = hrt_absolute_time();
 
 	float minimum_thrust_threshold{0.f};
 

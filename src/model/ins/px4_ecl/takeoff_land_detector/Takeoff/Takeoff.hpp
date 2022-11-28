@@ -76,7 +76,7 @@ public:
 	 * Has to be called also when not flying altitude controlled to skip the takeoff and not do it in flight when switching mode.
 	 */
 	void updateTakeoffState(const bool armed, const bool landed, const bool want_takeoff,
-				const float takeoff_desired_vz, const bool skip_takeoff, const hrt_abstime &now_us);
+				const float takeoff_desired_vz, const bool skip_takeoff, const uint64_t &now_us);
 
 	/**
 	 * Update and return the velocity constraint ramp value during takeoff.

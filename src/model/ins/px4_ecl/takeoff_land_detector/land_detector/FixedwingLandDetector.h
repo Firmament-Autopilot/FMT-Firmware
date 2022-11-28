@@ -92,8 +92,8 @@ protected:
 private:
 
 	/** Time in us that landing conditions have to hold before triggering a land. */
-	static constexpr hrt_abstime LANDED_TRIGGER_TIME_US = 2_s;
-	static constexpr hrt_abstime FLYING_TRIGGER_TIME_US = 0_us;
+	static constexpr uint64_t LANDED_TRIGGER_TIME_US = 2_s;
+	static constexpr uint64_t FLYING_TRIGGER_TIME_US = 0_us;
 
 	uORB::Subscription _airspeed_validated_sub{ORB_ID(airspeed_validated)};
 

@@ -134,7 +134,7 @@ void LandDetector::Step()
 		_set_hysteresis_factor(1);
 	}
 
-	const hrt_abstime now_us = hrt_absolute_time();
+	const uint64_t now_us = hrt_absolute_time();
 
 	_freefall_hysteresis.set_state_and_update(_get_freefall_state(), now_us);
 	_ground_contact_hysteresis.set_state_and_update(_get_ground_contact_state(), now_us);

@@ -198,7 +198,7 @@ public:
 
 	static int task_spawn(int argc, char *argv[]);
 
-	// c/c++ interface for usr
+	// c/c++ interface(uorb) for usr
 	void set_armed(bool armed, uint64_t timeStampUs, bool updated){
 		_actuator_armed.timeStampUs = timeStampUs;
 		_actuator_armed.armed 		= armed;	
@@ -209,12 +209,12 @@ public:
 		_vehicle_acceleration.acceleration 	= acceleration;
 		_vehicle_acceleration.updated 		= updated;	
 	};
-	void set_angular_velocity(matrix::Vector3f angularVelocity, hrt_abstime timeStampUs_sample, bool updated){
+	void set_angular_velocity(matrix::Vector3f angularVelocity, uint64_t timeStampUs_sample, bool updated){
 		_vehicle_angular_velocity.timeStampUs_sample 		= timeStampUs_sample;
 		_vehicle_angular_velocity.vehicle_angular_velocity 	= angularVelocity;
 		_vehicle_angular_velocity.updated 					= updated;
 	};
-	void set_vehicle_local_position(hrt_abstime timestamp,
+	void set_vehicle_local_position(uint64_t timestamp,
 									float vx,
 									float vy,
 									float vz,
@@ -245,6 +245,15 @@ public:
 		_imu_status.timeStampUs 			= timeStampUs;
 		_imu_status.updated 				= updated;
 	};
+
+	// c/c++ interface(params) for usr
+	void set_params(void){
+
+	}
+
+	void save_params(void){
+		
+	}
 
 protected:
 
@@ -318,10 +327,10 @@ private:
 	void UpdateVehicleAtRest();
 
 	vehicle_land_detected_s _land_detected{};
-	hrt_abstime _takeoff_time{0};
-	hrt_abstime _total_flight_time{0};	///< total vehicle flight time in microseconds
+	uint64_t _takeoff_time{0};
+	uint64_t _total_flight_time{0};	///< total vehicle flight time in microseconds
 
-	hrt_abstime _time_last_move_detect_us{0};	// timestamp of last movement detection event in microseconds
+	uint64_t _time_last_move_detect_us{0};	// timestamp of last movement detection event in microseconds
 
 	perf_counter_t _cycle_perf{perf_alloc(PC_ELAPSED, MODULE_NAME": cycle")};
 

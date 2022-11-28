@@ -43,7 +43,7 @@ namespace systemlib
 {
 
 void
-Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+Hysteresis::set_hysteresis_time_from(const bool from_state, const uint64_t new_hysteresis_time_us)
 {
 	if (from_state) {
 		_time_from_true_us = new_hysteresis_time_us;
@@ -54,7 +54,7 @@ Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime ne
 }
 
 void
-Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+Hysteresis::set_state_and_update(const bool new_state, const uint64_t &now_us)
 {
 	if (new_state != _state) {
 		if (new_state != _requested_state) {
@@ -70,7 +70,7 @@ Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us
 }
 
 void
-Hysteresis::update(const hrt_abstime &now_us)
+Hysteresis::update(const uint64_t &now_us)
 {
 	if (_requested_state != _state) {
 

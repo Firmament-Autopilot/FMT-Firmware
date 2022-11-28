@@ -136,7 +136,6 @@ public:
 		_actuator_controls.throttle 	= throttle;
 		_actuator_controls.timeStampUs 	= timeStampUs;
 		_actuator_controls.updated 		= updated;
-
 	};
 	void set_flag_control_climb_rate_enabled(bool flag_multicopter_position_control_enabled, uint64_t timeStampUs, bool updated){
 		_vehicle_control_mode.flag_multicopter_position_control_enabled = flag_multicopter_position_control_enabled;
@@ -187,7 +186,7 @@ private:
 	bool _is_close_to_ground();
 
 	/** Time in us that freefall has to hold before triggering freefall */
-	static constexpr hrt_abstime FREEFALL_TRIGGER_TIME_US = 300_ms;
+	static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300_ms;
 
 	/** Distance above ground below which entering ground contact state is possible when distance to ground is available. */
 	static constexpr float DIST_FROM_GROUND_THRESHOLD = 1.0f;
@@ -217,7 +216,7 @@ private:
 	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
 	uORB::Subscription _takeoff_status_sub{ORB_ID(takeoff_status)};
 
-	hrt_abstime _hover_thrust_estimate_last_valid{0};
+	uint64_t _hover_thrust_estimate_last_valid{0};
 	bool _hover_thrust_estimate_valid{false};
 
 	bool _flag_control_climb_rate_enabled{false};
