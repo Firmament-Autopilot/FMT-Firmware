@@ -22,18 +22,20 @@
 extern "C" {
 #endif
 
-// #define NCP5623_CMD_SET_COLOR  0x01
-// #define NCP5623_CMD_SET_BRIGHT 0x02
+#define AW2023_CMD_SET_COLOR       0x01
+#define AW2023_CMD_SET_BRIGHT      0x02
+#define AW2023_CMD_SET_MANUAL_MODE 0x03
+#define AW2023_CMD_SET_PATERN_MODE 0x04
 
-// enum {
-//     NCP5623_LED_RED = 0,
-//     NCP5623_LED_GREEN,
-//     NCP5623_LED_BLUE,
-//     NCP5623_LED_YELLOW,
-//     NCP5623_LED_PURPLE,
-//     NCP5623_LED_CYAN,
-//     NCP5623_LED_WHITE,
-// };
+enum {
+    AW2023_LED_RED = 0,
+    AW2023_LED_GREEN,
+    AW2023_LED_BLUE,
+    AW2023_LED_YELLOW,
+    AW2023_LED_PURPLE,
+    AW2023_LED_CYAN,
+    AW2023_LED_WHITE,
+};
 
 rt_err_t drv_aw2023_init(const char* i2c_dev_name);
 

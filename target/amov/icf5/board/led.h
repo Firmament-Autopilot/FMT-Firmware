@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,24 @@
 extern "C" {
 #endif
 
-#define __GD32_PORT(port)  GPIO##port
+#define __GD32_PORT(port)   GPIO##port
 #define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__GD32_PORT(PORTx) - (rt_base_t)GPIO_BASE) / (0x0400UL))) + PIN)
 
-#define FMU_MCU_LED_PIN       GET_PIN(B, 4)
+#define FMU_MCU_LED_PIN GET_PIN(B, 4)
 
 #define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
 #define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
 #define LED_TOGGLE(_pin) led_toggle(_pin)
 
+#define RGB_LED_MANUAL_MODE  0
+#define RGB_LED_PATERN_MODE 1
+
 fmt_err_t led_control_init(void);
 fmt_err_t led_init(struct device_pin_mode pin_mode);
 fmt_err_t led_set(struct device_pin_status pin_sta);
 fmt_err_t led_toggle(uint32_t pin);
-// fmt_err_t rgb_led_set_color(uint32_t color);
-// fmt_err_t rgb_led_set_bright(uint32_t bright);
+fmt_err_t rgb_led_set_color(uint32_t color);
+fmt_err_t rgb_led_set_bright(uint32_t bright);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,6 +142,8 @@
 #define AW2023_T0_8_3s            BIT(4) | BIT(5) | BIT(6) | BIT(7)
 #define AW2023_REPEAT_TIMES(time) (time & 0x0F)
 
+#define LED_CURRENT 0x0F /**< full current */
+
 #ifndef BIT
     #define BIT(_idx) (1 << _idx)
 #endif
@@ -153,6 +155,11 @@ typedef struct {
     uint8_t clearbits;
 } reg_val_t;
 
+static uint8_t r;
+static uint8_t g;
+static uint8_t b;
+static uint16_t brightness;
+static uint8_t mode; //manual mode by default
 static rt_device_t i2c_dev;
 
 static rt_err_t i2c_write_checked_reg(rt_device_t i2c_dev, uint8_t reg, uint8_t val)
@@ -174,9 +181,6 @@ static rt_err_t i2c_modify_reg(rt_device_t i2c_dev, uint8_t reg, reg_val_t reg_v
 {
     uint8_t value;
 
-    /* In case of read operations of the accelerometer part, the requested data is not sent 
-    immediately, but instead first a dummy byte is sent, and after this dummy byte the actual 
-    reqested register content is transmitted. */
     RT_TRY(i2c_read_reg(i2c_dev, reg, &value));
 
     value &= ~reg_val.clearbits;
@@ -201,8 +205,82 @@ static rt_err_t probe(void)
     return RT_EOK;
 }
 
+static rt_err_t aw2023_control(rt_device_t dev, int cmd, void* args)
+{
+    uint8_t color;
+
+    switch (cmd) {
+    case AW2023_CMD_SET_COLOR:
+        color = (uint32_t)args;
+        if (color == AW2023_LED_RED) {
+            r = LED_CURRENT;
+            g = 0;
+            b = 0;
+        } else if (color == AW2023_LED_GREEN) {
+            r = 0;
+            g = LED_CURRENT;
+            b = 0;
+        } else if (color == AW2023_LED_BLUE) {
+            r = 0;
+            g = 0;
+            b = LED_CURRENT;
+        } else if (color == AW2023_LED_YELLOW) {
+            r = LED_CURRENT;
+            g = LED_CURRENT;
+            b = 0;
+        } else if (color == AW2023_LED_PURPLE) {
+            r = LED_CURRENT;
+            g = 0;
+            b = LED_CURRENT;
+        } else if (color == AW2023_LED_CYAN) {
+            r = 0;
+            g = LED_CURRENT;
+            b = LED_CURRENT;
+        } else if (color == AW2023_LED_WHITE) {
+            r = LED_CURRENT;
+            g = LED_CURRENT;
+            b = LED_CURRENT;
+        } else {
+            /* unknown color, just close rgd leds */
+            r = 0;
+            g = 0;
+            b = 0;
+        }
+        /* in sync mode, the led's current is controlled indivisualy */
+        RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, AW2023_LED_SYNC_MODE | mode | AW2023_LED_CURRENT(b)));
+        RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG1, mode | AW2023_LED_CURRENT(g)));
+        RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG2, mode | AW2023_LED_CURRENT(r)));
+        break;
+
+    case AW2023_CMD_SET_BRIGHT:
+        brightness = (uint32_t)args & 0xFF;
+        /* in sync mode, the pwm0 is applyed for all leds */
+        RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_PWM0, AW2023_PWM_DIMMING(brightness)));
+        break;
+
+    case AW2023_CMD_SET_MANUAL_MODE:
+        mode = 0;
+        /* in sync mode we only need set led0 mode for all leds */
+        RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, AW2023_LED_SYNC_MODE | mode | AW2023_LED_CURRENT(b)));
+        break;
+
+    case AW2023_CMD_SET_PATERN_MODE:
+        mode = AW2023_LED_PATERN_MODE;
+        /* in sync mode we only need set led0 mode for all leds */
+        RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, AW2023_LED_SYNC_MODE | mode | AW2023_LED_CURRENT(b)));
+        break;
+
+    default:
+        return RT_EINVAL;
+    }
+
+    return RT_EOK;
+}
+
 rt_err_t drv_aw2023_init(const char* i2c_dev_name)
 {
+    static struct rt_device aw2023_dev;
+
     i2c_dev = rt_device_find(i2c_dev_name);
     RT_ASSERT(i2c_dev != NULL);
 
@@ -212,47 +290,37 @@ rt_err_t drv_aw2023_init(const char* i2c_dev_name)
 
     /* reset the chip */
     RT_TRY(i2c_write_reg(i2c_dev, AW2023_REG_RSTR, AW2023_CHIP_RESER));
-    systime_mdelay(5);
-
+    systime_mdelay(2);
     /* let device enters active state */
     RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_GCR1, AW2023_CHIP_EN));
-    systime_mdelay(5);
+    systime_mdelay(2);
 
-    uint8_t reg_val;
-    RT_TRY(i2c_read_reg(i2c_dev, AW2023_REG_PATST, &reg_val));
-    printf("PATST1:%x\n", reg_val);
-
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCTR, 0x00));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, 0x00));
-
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_GCR2, AW2023_IMAX_15mA));
-    
-
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, AW2023_LED_SYNC_MODE | AW2023_LED_CURRENT(15)));
-
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_PWM0, AW2023_PWM_DIMMING(255)));
-
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED0T0, AW2023_T1_2_1s | AW2023_T2_2_1s));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED0T1, AW2023_T3_2_1s | AW2023_T4_2_1s));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED0T2, AW2023_T0_2_1s | AW2023_REPEAT_TIMES(0)));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED1T0, AW2023_T1_2_1s | AW2023_T2_2_1s));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED1T1, AW2023_T3_2_1s | AW2023_T4_2_1s));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED1T2, AW2023_T0_2_1s | AW2023_REPEAT_TIMES(0)));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED2T0, AW2023_T1_2_1s | AW2023_T2_2_1s));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED2T1, AW2023_T3_2_1s | AW2023_T4_2_1s));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED2T2, AW2023_T0_2_1s | AW2023_REPEAT_TIMES(0)));
-
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, AW2023_LED_CURRENT(15) | AW2023_LED_PATERN_MODE));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG1, AW2023_LED_CURRENT(7) | AW2023_LED_PATERN_MODE));
-    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG2, AW2023_LED_CURRENT(0) | AW2023_LED_PATERN_MODE));
-
+    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_GCR2, AW2023_IMAX_10mA));
+    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCFG0, AW2023_LED_SYNC_MODE));
+    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_PWM0, AW2023_PWM_DIMMING(brightness)));
+    /* default patern time */
+    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED0T0, AW2023_T1_0_77s | AW2023_T2_0_26s));
+    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED0T1, AW2023_T3_0_77s | AW2023_T4_0_13s));
+    RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LED0T2, AW2023_T0_0_13s | AW2023_REPEAT_TIMES(0)));
+    /* enable all LEDs */
     RT_TRY(i2c_write_checked_reg(i2c_dev, AW2023_REG_LCTR, AW2023_FREQ_250Hz | AW2023_LED0_EN | AW2023_LED1_EN | AW2023_LED2_EN));
 
+    /* give some time for rgb led to startup */
     systime_mdelay(10);
 
-    // uint8_t reg_val;
-    RT_TRY(i2c_read_reg(i2c_dev, AW2023_REG_PATST, &reg_val));
-    printf("PATST2:%x\n", reg_val);
+    aw2023_dev.type = RT_Device_Class_Miscellaneous;
+    aw2023_dev.rx_indicate = RT_NULL;
+    aw2023_dev.tx_complete = RT_NULL;
+    aw2023_dev.user_data = RT_NULL;
+
+    aw2023_dev.init = RT_NULL;
+    aw2023_dev.open = RT_NULL;
+    aw2023_dev.close = RT_NULL;
+    aw2023_dev.read = RT_NULL;
+    aw2023_dev.write = RT_NULL;
+    aw2023_dev.control = aw2023_control;
+
+    RT_CHECK(rt_device_register(&aw2023_dev, "aw2023", RT_DEVICE_OFLAG_RDWR));
 
     return RT_EOK;
 }
