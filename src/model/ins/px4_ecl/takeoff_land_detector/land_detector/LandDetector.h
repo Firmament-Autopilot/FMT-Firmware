@@ -44,6 +44,7 @@
 
 #include <float.h>
 #include <math.h>
+#include "matrix/math.hpp"
 #include "hysteresis/hysteresis.h"
 
 constexpr uint64_t operator "" _s(unsigned long long seconds)

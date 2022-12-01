@@ -144,6 +144,8 @@ void LandDetector::step()
 
 void LandDetector::UpdateVehicleAtRest()
 {
+	_imu_status.timeStampUs = _nowUs;
+
 	// Accel high frequency vibe = filtered length of (acceleration - acceleration_prev)
 	_imu_status.accel_vibration_metric = 0.99f * _status.accel_vibration_metric
 					 + 0.01f * Vector3f(_acceleration - _acceleration_prev).norm();
