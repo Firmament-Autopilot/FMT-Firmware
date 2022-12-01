@@ -117,7 +117,6 @@ fmt_err_t mavproxy_set_device(const char* dev_name)
 
         /* if device support DMA, then use it */
         if (new_dev->flag & RT_DEVICE_FLAG_DMA_RX) {
-
             flag |= RT_DEVICE_FLAG_DMA_RX;
         } else {
             flag |= RT_DEVICE_FLAG_INT_RX;
