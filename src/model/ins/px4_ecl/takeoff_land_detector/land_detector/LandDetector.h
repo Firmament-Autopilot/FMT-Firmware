@@ -93,7 +93,7 @@ struct imu_status_s{
 };
 
 struct vehicle_land_detected_s {
-	uint64_t timestamp;
+	uint64_t timeStampUs;
 	bool freefall;
 	bool ground_contact;
 	bool maybe_landed;
@@ -188,7 +188,9 @@ protected:
 	Hysteresis _ground_effect_hysteresis{false};
 
 	matrix::Vector3f _acceleration{};
+	matrix::Vector3f _acceleration_prev{};
 	matrix::Vector3f _angular_velocity{};
+	matrix::Vector3f _angular_velocity_prev{};
 
 	bool _armed{false};
 	bool _previous_armed_state{false};	///< stores the previous actuator_armed.armed state
@@ -203,7 +205,7 @@ protected:
 	parameters_ld_mc_s			_params_mc{};
 
 private:
-	void Run() override;
+	void step() override;
 
 	void UpdateVehicleAtRest();
 

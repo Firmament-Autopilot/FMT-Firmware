@@ -62,7 +62,7 @@ LandDetector::~LandDetector()
 {
 }
 
-void LandDetector::Run()
+void LandDetector::step()
 {
 	_angular_velocity = _gyroRate.angular_velocity;
 
@@ -74,8 +74,9 @@ void LandDetector::Run()
 
 	_update_topics();
 
-	// Increase land detection time if not close to ground
 	_dist_bottom_is_observable = _vehicle_local_position.dist_bottom_valid;
+	
+	// Increase land detection time if not close to ground
 	if (!_dist_bottom_is_observable) {
 		_set_hysteresis_factor(3);
 
@@ -100,7 +101,7 @@ void LandDetector::Run()
 	const bool at_rest = landDetected && _at_rest;
 
 	// publish at 1 Hz, very first time, or when the result has changed
-	if (((_nowUs - _land_detected.timestamp) >= 1_s) ||
+	if (((_nowUs - _land_detected.timeStampUs) >= 1_s) ||
 	    (_land_detected.landed != landDetected) ||
 	    (_land_detected.freefall != freefallDetected) ||
 	    (_land_detected.maybe_landed != maybe_landedDetected) ||
@@ -125,7 +126,7 @@ void LandDetector::Run()
 		_land_detected.rotational_movement = _get_rotational_movement();
 		_land_detected.close_to_ground_or_skipped_check = _get_close_to_ground_or_skipped_check();
 		_land_detected.at_rest = at_rest;
-		_land_detected.timestamp = _nowUs;
+		_land_detected.timeStampUs = _nowUs;
 		_land_detected.updated = true;
 	}else{
 		_land_detected.updated = false;
@@ -143,6 +144,15 @@ void LandDetector::Run()
 
 void LandDetector::UpdateVehicleAtRest()
 {
+	// Accel high frequency vibe = filtered length of (acceleration - acceleration_prev)
+	_imu_status.accel_vibration_metric = 0.99f * _status.accel_vibration_metric
+					 + 0.01f * Vector3f(_acceleration - _acceleration_prev).norm();
+	_acceleration_prev = _acceleration;
+
+	// Gyro high frequency vibe = filtered length of (angular_velocity - angular_velocity_prev)
+	_imu_status.gyro_vibration_metric = 0.99f * _status.gyro_vibration_metric
+					+ 0.01f * Vector3f(_angular_velocity - _angular_velocity_prev).norm();
+	_angular_velocity_prev = _angular_velocity;
 
 	static constexpr float GYRO_VIBE_METRIC_MAX = 0.02f; // gyro_vibration_metric * dt * 4.0e4f > is_moving_scaler)
 	static constexpr float ACCEL_VIBE_METRIC_MAX = 1.2f; // accel_vibration_metric * dt * 2.1e2f > is_moving_scaler
