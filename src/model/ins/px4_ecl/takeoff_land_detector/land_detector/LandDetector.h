@@ -63,23 +63,23 @@ constexpr uint64_t operator "" _us(unsigned long long microseconds)
 }
 
 struct parameters_ld_mc_s{
-	float	trig_time;
-	float	rot_max;
-	float	xy_vel_max;
-	float	z_vel_max;
-	float	alt_gnd_effect;
-	bool	useHoverThrustEstimate;
-	float	hoverThrottle;
-	float	minThrottle;
-	float 	crawlSpeed;
-	float	landSpeed;
+	float	trig_time{1.0f};			//	@unit s
+	float	rot_max{20.0f};				// 	@unit deg/s
+	float	xy_vel_max{1.5f};			//	@unit m/s
+	float	z_vel_max{0.25f};			//	@unit m/s
+	float	alt_gnd_effect{2.0f};		//	@unit m
+	bool	useHoverThrustEstimate{false};	
+	float	hoverThrottle{0.5f};		//	@unit norm
+	float	minThrottle{0.12f};			//	@unit norm
+	float 	crawlSpeed{0.3f};			//	@unit m/s
+	float	landSpeed{0.7f};			//	@unit m/s
 };
 
 struct parameters_ld_fw_s{
-	float  	xyaccel_max;
-	float 	airspd;
-	float	vel_xy_max;
-	float	vel_z_max;
+	float  	xyaccel_max{8.0f};			//	@unit m/s^2
+	float 	airspd{6.00f};				//	@unit m/s
+	float	vel_xy_max{5.0f};			//	@unit m/s
+	float	vel_z_max{2.0f};			//	@unit m/s
 };
 
 struct gyroRate_s{
@@ -134,7 +134,7 @@ public:
 	uint64_t*					return_nowUs(void)						(return &_nowUs;);
 	matrix::Vector3f* 			return_acceleration(void)				{return &_acceleration;};
 	gyroRate_s*					return_gyroRate(void)					{return &_gyroRate;};
-	imu_status_s*				return_imu_status(void)					{return &_imu_status;};
+	// imu_status_s*				return_imu_status(void)					{return &_imu_status;};
 	vehicle_land_detected_s*	return_vehicle_land_detected_pub(void)	{return &_land_detected;};
 
 protected:
