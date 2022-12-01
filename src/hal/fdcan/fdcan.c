@@ -52,10 +52,7 @@ static rt_size_t hal_fdcan_read(rt_device_t dev,
 /*
  * can register
  */
-rt_err_t rt_hw_can_register(struct fdcan_device* fdcan,
-                            const char* name,
-                            rt_uint32_t flag,
-                            void* data)
+rt_err_t rt_hw_can_register(struct fdcan_device* fdcan, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
 

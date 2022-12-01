@@ -20,4 +20,7 @@
             "rtthread"
     ],
     "editor.defaultFormatter": "xaver.clang-format",
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
 }

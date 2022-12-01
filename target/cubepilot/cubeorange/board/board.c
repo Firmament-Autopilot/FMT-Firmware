@@ -282,20 +282,6 @@ void SystemClock_Config(void)
     while (LL_RCC_PLL1_IsReady() != 1) {
     }
 
-    LL_RCC_PLL2Q_Enable();
-    LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_2_4);
-    LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
-    LL_RCC_PLL2_SetM(12);
-    LL_RCC_PLL2_SetN(120);
-    LL_RCC_PLL2_SetP(6);
-    LL_RCC_PLL2_SetQ(6);
-    LL_RCC_PLL2_SetR(6);
-    LL_RCC_PLL2_Enable();
-
-    /* Wait till PLL is ready */
-    while (LL_RCC_PLL2_IsReady() != 1) {
-    }
-
     /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
     LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
 
@@ -317,7 +303,7 @@ void SystemClock_Config(void)
     LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
-    LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL2Q);
+    LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL1Q);
     LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
 
     __HAL_RCC_D2SRAM1_CLK_ENABLE();

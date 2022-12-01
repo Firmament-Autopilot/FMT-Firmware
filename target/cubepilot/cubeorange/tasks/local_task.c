@@ -17,6 +17,7 @@
 
 #include "module/task_manager/task_manager.h"
 
+#include "drivers/drv_fdcan.h"
 #include "stm32h7xx_ll_gpio.h"
 
 rt_device_t fdcan_dev;
@@ -28,7 +29,7 @@ fmt_err_t task_local_init(void)
 }
 
 // char** str = (char*[]) { "Hello", "C++", "World", NULL };
-
+uint8_t buffer[12];
 void task_local_entry(void* parameter)
 {
     printf("Hello FMT! This is a local demo task.\n");
@@ -37,22 +38,24 @@ void task_local_entry(void* parameter)
     //     printf("%s\n", str[i]);
     // }
 
-    fdcan_dev = rt_device_find("fdcan1");
-    if (fdcan_dev == RT_NULL)
-        return FMT_ERROR;
+    // fdcan_dev = rt_device_find("fdcan1");
+    // if (fdcan_dev == RT_NULL)
+    //     return FMT_ERROR;
 
-    if ((fdcan_dev->write) == NULL) {
-        printf("fdcan_dev->write == NULL\n");
-        return FMT_ERROR;
-    }
-    rt_device_open(fdcan_dev, RT_DEVICE_OFLAG_RDWR);
+    // if ((fdcan_dev->write) == NULL) {
+    //     printf("fdcan_dev->write == NULL\n");
+    //     return FMT_ERROR;
+    // }
+    // rt_device_open(fdcan_dev, RT_DEVICE_OFLAG_RDWR);
 
     while (1) {
-        rt_size_t ret = rt_device_write(fdcan_dev, 0, "sss", 3);
+        // rt_size_t ret = rt_device_write(fdcan_dev, 0, "sdfgdsss", 8);
+        rt_size_t ret = fdcan_send();
+        printf("fdcan_send:ret=%d\r\n", ret);
+        rt_size_t num = fdcan_recv(buffer);
+        printf("buffer %d :%s\n", num, buffer);
 
-        printf("ret=%d\r\n", ret);
-
-        sys_msleep(1000);
+        sys_msleep(500);
     }
 }
 
