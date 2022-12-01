@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef W25Q16_H__
-#define W25Q16_H__
+#ifndef W25QXX_H__
+#define W25QXX_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-rt_err_t drv_w25q16_init(const char* spi_device_name, const char* mtd_device_name);
+rt_err_t drv_w25qxx_init(const char* spi_device_name, const char* mtd_device_name);
 
 #ifdef __cplusplus
 }

@@ -42,7 +42,7 @@ static void test(void)
     printf("id:%x\n", id);
 }
 
-rt_err_t drv_w25q16_init(const char* spi_device_name, const char* mtd_device_name)
+rt_err_t drv_w25qxx_init(const char* spi_device_name, const char* mtd_device_name)
 {
     mtd_spi_dev = rt_device_find(spi_device_name);
     RT_ASSERT(mtd_spi_dev != NULL);

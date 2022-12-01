@@ -28,7 +28,7 @@
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
-#include "driver/mtd/w25q16.h"
+#include "driver/mtd/w25qxx.h"
 #include "driver/rgb_led/aw2023.h"
 #include "drv_buzzer.h"
 #include "drv_gpio.h"
@@ -317,7 +317,7 @@ void bsp_initialize(void)
     //     spi_i2s_data_transmit(SPI1, 0x99);
     // }
 
-    drv_w25q16_init("spi1_dev0", "w25q16");
+    drv_w25qxx_init("spi1_dev0", "w25q16");
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
     drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
 
