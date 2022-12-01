@@ -30,6 +30,7 @@
 #include "driver/mag/bmm150.h"
 #include "driver/mtd/w25q16.h"
 #include "driver/rgb_led/aw2023.h"
+#include "drv_buzzer.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -251,6 +252,9 @@ void bsp_early_initialize(void)
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
+
+    /* buzzer(pwm) driver init */
+    RT_CHECK(drv_buzzer_init());
 
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
