@@ -199,6 +199,15 @@ static struct gd32_uart uart1 = {
     .rx_port = GPIOD,
     .rx_af = GPIO_AF_7,
     .rx_pin = GPIO_PIN_6,
+    .dma = {
+        .dma_periph = DMA0,
+        .clock = RCU_DMA0,
+        .rx_ch = DMA_CH5,
+        .rx_irq = DMA0_Channel5_IRQn,
+        .tx_ch = DMA_CH6,
+        .tx_irq = DMA0_Channel6_IRQn,
+        .sub_periph = DMA_SUBPERI4,
+    }
 };
 
 void USART1_IRQHandler(void)
@@ -211,22 +220,22 @@ void USART1_IRQHandler(void)
     rt_interrupt_leave();
 }
 
-// void DMA0_Channel3_IRQHandler(void)
-// {
-//     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF)) {
-//         dma_tx_done_isr(&serial1);
-//         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF);
-//     }
-// }
+void DMA0_Channel6_IRQHandler(void)
+{
+    if (dma_interrupt_flag_get(uart1.dma.dma_periph, uart1.dma.tx_ch, DMA_INT_FLAG_FTF)) {
+        dma_tx_done_isr(&serial1);
+        dma_interrupt_flag_clear(uart1.dma.dma_periph, uart1.dma.tx_ch, DMA_INT_FLAG_FTF);
+    }
+}
 
-// void DMA0_Channel1_IRQHandler(void)
-// {
-//     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF)) {
-//         dma_rx_done_isr(&serial1);
-//         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF);
-//     }
-// }
-#endif /* USING_UART2 */
+void DMA0_Channel5_IRQHandler(void)
+{
+    if (dma_interrupt_flag_get(uart1.dma.dma_periph, uart1.dma.rx_ch, DMA_INT_FLAG_FTF)) {
+        dma_rx_done_isr(&serial1);
+        dma_interrupt_flag_clear(uart1.dma.dma_periph, uart1.dma.rx_ch, DMA_INT_FLAG_FTF);
+    }
+}
+#endif /* USING_UART1 */
 
 #ifdef USING_UART2
 static struct serial_device serial2;
@@ -635,7 +644,7 @@ rt_err_t drv_usart_init(void)
     /* register serial device */
     rt_err |= hal_serial_register(&serial1,
                                   "serial1",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
                                   &uart1);
 #endif /* USING_UART2 */
 
