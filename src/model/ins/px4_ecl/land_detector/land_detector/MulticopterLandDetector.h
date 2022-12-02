@@ -101,8 +101,6 @@ private:
 	uint64_t _hover_thrust_estimate_last_valid{0};
 	bool _hover_thrust_estimate_valid{false};
 
-	uint8_t _takeoff_state{takeoff_status_s::TAKEOFF_STATE_DISARMED};
-
 	Hysteresis _minimum_thrust_8s_hysteresis{false};
 
 	bool _in_descend{false};		///< vehicle is commanded to desend
