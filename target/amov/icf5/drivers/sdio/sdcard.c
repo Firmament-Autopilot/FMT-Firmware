@@ -1778,15 +1778,15 @@ sd_error_enum sd_card_information_get(sd_card_info_struct* pcardinfo)
         /* card is SDHC card, CSD version 2.0 */
         /* CSD byte 7 */
         tempbyte = (uint8_t)(sd_csd[1] & SD_MASK_0_7BITS);
-        pcardinfo->card_csd.c_size = (uint32_t)((uint32_t)(tempbyte & 0x3F) << 16);
+        pcardinfo->card_csd.c_size = (uint64_t)((uint32_t)(tempbyte & 0x3F) << 16);
 
         /* CSD byte 8 */
         tempbyte = (uint8_t)((sd_csd[2] & SD_MASK_24_31BITS) >> 24);
-        pcardinfo->card_csd.c_size |= (uint32_t)((uint32_t)tempbyte << 8);
+        pcardinfo->card_csd.c_size |= (uint64_t)((uint32_t)tempbyte << 8);
 
         /* CSD byte 9 */
         tempbyte = (uint8_t)((sd_csd[2] & SD_MASK_16_23BITS) >> 16);
-        pcardinfo->card_csd.c_size |= (uint32_t)tempbyte;
+        pcardinfo->card_csd.c_size |= (uint64_t)tempbyte;
 
         /* calculate the card block size and capacity */
         pcardinfo->card_blocksize = 512;
