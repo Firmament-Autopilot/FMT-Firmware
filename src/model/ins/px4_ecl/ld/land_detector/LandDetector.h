@@ -44,6 +44,7 @@
 
 #include <float.h>
 #include <math.h>
+
 #include "matrix/math.hpp"
 #include "hysteresis/hysteresis.h"
 
