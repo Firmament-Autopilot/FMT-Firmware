@@ -38,6 +38,7 @@ OF SUCH DAMAGE.
 #include "sdcard.h"
 #include "gd32f4xx_dma.h"
 #include "gd32f4xx_sdio.h"
+#include "module/system/systime.h"
 #include <rtthread.h>
 #include <stddef.h>
 
@@ -280,6 +281,10 @@ sd_error_enum sd_power_on(void)
     sdio_power_state_set(SDIO_POWER_ON);
     /* enable SDIO_CLK clock output */
     sdio_clock_enable();
+
+    /* 1ms: required power up waiting time before starting the SD initialization
+       sequence */
+    systime_mdelay(2);
 
     /* send CMD0(GO_IDLE_STATE) to reset the card */
     sdio_command_response_config(SD_CMD_GO_IDLE_STATE, (uint32_t)0x0, SDIO_RESPONSETYPE_NO);
