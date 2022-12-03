@@ -6,11 +6,20 @@
 #define DRV_USE_FDCAN1
 #define DRV_USE_FDCAN2
 
+#define FDCAN_TIMEOUT        5000
+#define EVENT_FDCAN1_RX_CPLT 0x00000001
+#define EVENT_FDCAN2_RX_CPLT 0x00000010
+
 #ifdef DRV_USE_FDCAN1
+
 FDCAN_HandleTypeDef hfdcan1;
+
 FDCAN_FilterTypeDef FDCAN1_RXFilter;
+
 FDCAN_RxHeaderTypeDef FDCAN1_RxHeader;
+
 FDCAN_TxHeaderTypeDef FDCAN1_TxHeader;
+
 #endif
 
 #ifdef DRV_USE_FDCAN2
@@ -171,6 +180,16 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* fdcanHandle)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+static rt_err_t fdacn_wait_complete(fdcan_dev_t fdcan_dev, rt_uint32_t* status)
+{
+    if (rt_event_recv(&fdcan_dev->event, 0xffffffff, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, TICKS_FROM_MS(FDCAN_TIMEOUT), status) != RT_EOK) {
+        /* wait timeout */
+        return RT_ETIMEOUT;
+    }
+
+    return RT_EOK;
+}
+
 static rt_err_t fdcan_baud_rate_configure(FDCAN_HandleTypeDef* fdcanHandle, rt_int32_t baud)
 {
     //时钟频率40M / (1 + TSG1 + TSG2) = CAN波特率
@@ -225,11 +244,27 @@ static int fdcan_sendmsg(struct fdcan_device* fdcan_dev, const void* buf, rt_uin
 
 static int fdcan_recvmsg(struct fdcan_device* fdcan_dev, void* buf, rt_uint32_t* boxno)
 {
+    rt_uint32_t status;
+    rt_err_t err = RT_EOK;
+
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
     RT_ASSERT(stm32_fdcan_x != RT_NULL);
 
-    if (HAL_FDCAN_GetRxMessage(stm32_fdcan_x->fdcan_handler, FDCAN_RX_FIFO0, stm32_fdcan_x->fdcan_rxheader, buf) != HAL_OK)
-        return 0; //接收数据
+    fdacn_wait_complete(fdcan_dev, &status);
+
+    if ((err == RT_EOK) && (status & EVENT_FDCAN1_RX_CPLT)) {
+        uint32_t start = systime_now_ms();
+        uint32_t now;
+
+        while (HAL_FDCAN_GetRxMessage(stm32_fdcan_x->fdcan_handler, FDCAN_RX_FIFO0, stm32_fdcan_x->fdcan_rxheader, buf) != HAL_OK) {
+            now = systime_now_ms();
+            if (now - start > FDCAN_TIMEOUT) {
+                err = RT_ETIMEOUT;
+                break;
+            }
+            sys_msleep(1);
+        }
+    }
 
     *boxno = stm32_fdcan_x->fdcan_rxheader->Identifier;
 
@@ -290,17 +325,17 @@ static rt_err_t fdcan_init(void)
     hfdcan1.Init.AutoRetransmission = DISABLE;
     hfdcan1.Init.TransmitPause = DISABLE;
     hfdcan1.Init.ProtocolException = DISABLE;
-    hfdcan1.Init.NominalPrescaler = 8;
+    hfdcan1.Init.NominalPrescaler = 4;
     hfdcan1.Init.NominalSyncJumpWidth = 8;
     hfdcan1.Init.NominalTimeSeg1 = 8;
     hfdcan1.Init.NominalTimeSeg2 = 3;
-    hfdcan1.Init.DataPrescaler = 8;
+    hfdcan1.Init.DataPrescaler = 4;
     hfdcan1.Init.DataSyncJumpWidth = 8;
     hfdcan1.Init.DataTimeSeg1 = 8;
     hfdcan1.Init.DataTimeSeg2 = 3;
     hfdcan1.Init.MessageRAMOffset = 0;
-    hfdcan1.Init.StdFiltersNbr = 1;
-    hfdcan1.Init.ExtFiltersNbr = 0;
+    hfdcan1.Init.StdFiltersNbr = 0;
+    hfdcan1.Init.ExtFiltersNbr = 1;
     hfdcan1.Init.RxFifo0ElmtsNbr = 16;
     hfdcan1.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
     hfdcan1.Init.RxFifo1ElmtsNbr = 0;
@@ -317,7 +352,7 @@ static rt_err_t fdcan_init(void)
         // return RT_ERROR;
     }
 
-    FDCAN1_RXFilter.IdType = FDCAN_STANDARD_ID;                       //标准ID
+    FDCAN1_RXFilter.IdType = FDCAN_EXTENDED_ID;                       //标准ID
     FDCAN1_RXFilter.FilterIndex = 0;                                  //滤波器索引
     FDCAN1_RXFilter.FilterType = FDCAN_FILTER_MASK;                   //滤波器类型
     FDCAN1_RXFilter.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;           //过滤器0关联到FIFO0
@@ -345,11 +380,11 @@ static rt_err_t fdcan_init(void)
     hfdcan2.Init.AutoRetransmission = DISABLE;
     hfdcan2.Init.TransmitPause = DISABLE;
     hfdcan2.Init.ProtocolException = DISABLE;
-    hfdcan2.Init.NominalPrescaler = 8;
+    hfdcan2.Init.NominalPrescaler = 4;
     hfdcan2.Init.NominalSyncJumpWidth = 8;
     hfdcan2.Init.NominalTimeSeg1 = 8;
     hfdcan2.Init.NominalTimeSeg2 = 3;
-    hfdcan2.Init.DataPrescaler = 8;
+    hfdcan2.Init.DataPrescaler = 4;
     hfdcan2.Init.DataSyncJumpWidth = 8;
     hfdcan2.Init.DataTimeSeg1 = 8;
     hfdcan2.Init.DataTimeSeg2 = 3;
@@ -404,6 +439,11 @@ rt_err_t drv_fdcan_init(void)
     fdcan_dev1.ops = &_fdcan_ops;
     fdcan_dev1.config = config;
 
+    if (rt_event_init(&fdcan_dev1.event, "fdcan1", RT_IPC_FLAG_FIFO) != RT_EOK) {
+        console_printf("fail to init fdcan1 event\n");
+        return RT_ERROR;
+    }
+
     rt_hw_can_register(&fdcan_dev1, "fdcan1", 0, &stm32_fdcan1);
 
 #endif
@@ -422,13 +462,19 @@ uint8_t buffer[12];
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
 {
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
-        /* Retrieve Rx messages from RX FIFO0 */
-        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &FDCAN1_RxHeader, buffer) != HAL_OK) {
-            Error_Handler();
-        }
         if (hfdcan == &hfdcan1) {
-            printf("buffer %d :%s\n", FDCAN1_RxHeader.DataLength >> 16, buffer);
+            rt_event_send(&fdcan_dev1.event, EVENT_FDCAN1_RX_CPLT);
         }
+
+        // /* Retrieve Rx messages from RX FIFO0 */
+        // if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &FDCAN1_RxHeader, buffer) != HAL_OK) {
+        //     Error_Handler();
+        // }
+        // if (hfdcan == &hfdcan1) {
+        //     printf("buffer %d :\n", FDCAN1_RxHeader.DataLength >> 16);
+        //     for (uint8_t i = 0; i < 8; i++)
+        //         printf("buffer[%d] = 0x%x\n", i, buffer[i]);
+        // }
     }
 }
 

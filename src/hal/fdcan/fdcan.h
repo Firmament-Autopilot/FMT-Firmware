@@ -36,8 +36,7 @@ struct fdcan_device {
 
     struct fdcan_configure config;
 
-    void* can_rx;
-    void* can_tx;
+    struct rt_event event;
 };
 typedef struct fdcan_device* fdcan_dev_t;
 

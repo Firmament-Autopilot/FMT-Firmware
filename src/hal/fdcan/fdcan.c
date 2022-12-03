@@ -44,9 +44,7 @@ static rt_size_t hal_fdcan_read(rt_device_t dev,
 
     fdcan_dev = (fdcan_dev_t)dev;
 
-    fdcan_dev->ops->recvmsg(fdcan_dev, buffer, &count);
-
-    return count;
+    return fdcan_dev->ops->recvmsg(fdcan_dev, buffer, &count);
 }
 
 /*
@@ -64,9 +62,6 @@ rt_err_t rt_hw_can_register(struct fdcan_device* fdcan, const char* name, rt_uin
     device->type = RT_Device_Class_CAN;
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
-
-    fdcan->can_rx = RT_NULL;
-    fdcan->can_tx = RT_NULL;
 
 #ifdef RT_USING_DEVICE_OPS
     device->ops = &fdcan_device_ops;
