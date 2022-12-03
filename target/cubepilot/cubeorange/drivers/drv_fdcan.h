@@ -10,9 +10,6 @@ extern "C" {
 
 rt_err_t drv_fdcan_init(void);
 
-int fdcan_send(void);
-uint8_t fdcan_recv(uint8_t* buf);
-
 #ifdef __cplusplus
 }
 #endif

@@ -61,24 +61,24 @@ void HAL_SD_AbortCallback(SD_HandleTypeDef* hsd)
 }
 
 /**
-  * @brief This function handles SDMMC1 global interrupt.
-  */
+ * @brief This function handles SDMMC1 global interrupt.
+ */
 void SDMMC1_IRQHandler(void)
 {
     HAL_SD_IRQHandler(&hsd1);
 }
 
 /**
-  * @brief This function handles DMA2 stream3 global interrupt.
-  */
+ * @brief This function handles DMA2 stream3 global interrupt.
+ */
 void DMA2_Stream3_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_sdmmc1_tx);
 }
 
 /**
-  * @brief This function handles DMA2 stream6 global interrupt.
-  */
+ * @brief This function handles DMA2 stream6 global interrupt.
+ */
 void DMA2_Stream6_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(&hdma_sdmmc1_rx);
@@ -328,7 +328,7 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
         *(struct rt_device_blk_geometry*)arg = geometry;
     } break;
     case RT_DEVICE_CTRL_BLK_SYNC: {
-        //TODO, improve it?
+        // TODO, improve it?
         if (HAL_SD_GetCardState(sd_handle) != HAL_SD_CARD_TRANSFER) {
             return RT_ERROR;
         }
