@@ -8,6 +8,7 @@
 #include "uavcan.equipment.gnss.Auxiliary.h"
 #include "uavcan.equipment.gnss.Fix.h"
 #include "uavcan.equipment.gnss.Fix2.h"
+#include "uavcan.equipment.indication.LightsCommand.h"
 #include "uavcan.protocol.GetNodeInfo.h"
 #include "uavcan.protocol.NodeStatus.h"
 #include "uavcan.protocol.dynamic_node_id.Allocation.h"
@@ -38,10 +39,7 @@
 
 uint8_t PreferredNodeID = HAL_CAN_DEFAULT_NODE_ID;
 
-#define UAVCAN_NODE_ID_ALLOCATION_RANDOM_TIMEOUT_RANGE_USEC 400000UL
-#define UAVCAN_NODE_ID_ALLOCATION_REQUEST_DELAY_OFFSET_USEC 600000UL
-static uint64_t g_send_next_node_id_allocation_request_at; ///< When the next node ID allocation request should be sent
-static uint8_t g_node_id_allocation_unique_id_offset;      ///< Depends on the stage of the next request
+#define SALVE_NODE_ID 100
 
 static struct dronecan_protocol_t {
     CanardInstance canard;
@@ -73,7 +71,7 @@ static void onTransferReceived(CanardInstance* ins,
     if (transfer->transfer_type == CanardTransferTypeBroadcast) {
         switch (transfer->data_type_id) {
         case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
-            dronecan_dynamic_allocation_id(ins, transfer, PreferredNodeID, 100);
+            dronecan_dynamic_allocation_id(ins, transfer, PreferredNodeID, SALVE_NODE_ID);
 
         default:
             break;
@@ -97,12 +95,12 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
 
             return true;
         case UAVCAN_PROTOCOL_NODESTATUS_ID:
-            printf("UAVCAN_PROTOCOL_NODESTATUS_ID\n");
+            printf("UAVCAN_PROTOCOL_NODESTATUS_ID,source_node_id=%d\n", source_node_id);
             *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
             return true;
 
         case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-            printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
+            // printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
             return true;
 
@@ -112,20 +110,25 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
             return true;
 
         case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
-            printf("UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID\n");
+            // printf("UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID\n");
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_AUXILIARY_SIGNATURE;
             return true;
 
         case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
-            printf("UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID\n");
+            // printf("UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID\n");
             *out_data_type_signature = UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_SIGNATURE;
             return true;
 
         default:
             break;
         }
-    } else if (transfer_type == CanardTransferTypeRequest) {
-        printf("CanardTransferTypeRequest\n");
+    } else if (transfer_type == CanardTransferTypeResponse) {
+        switch (data_type_id) {
+        case UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_ID:
+            printf("UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_ID\n");
+            *out_data_type_signature = UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_SIGNATURE;
+            return true;
+        }
     }
     return false;
 }
@@ -164,6 +167,27 @@ void processTxRxOnce(int32_t timeout_msec)
     } else {
         ; // Timeout - nothing to do
     }
+}
+
+void setRGB(uint8_t red, uint8_t green, uint8_t blue)
+{
+    struct uavcan_equipment_indication_LightsCommand LightsCommand_msg;
+    uint8_t buffer[UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_MAX_SIZE];
+
+    LightsCommand_msg.commands.len = 1;
+    LightsCommand_msg.commands.data[0].color.red = red >> 3;
+    LightsCommand_msg.commands.data[0].color.green = (green << 1) >> 3;
+    LightsCommand_msg.commands.data[0].color.blue = blue >> 3;
+
+    uint16_t total_size = uavcan_equipment_indication_LightsCommand_encode(&LightsCommand_msg, buffer);
+
+    int16_t resp_res = canardBroadcast(&dronecan.canard,
+                                       UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_SIGNATURE,
+                                       UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_ID,
+                                       &PreferredNodeID,
+                                       CANARD_TRANSFER_PRIORITY_MEDIUM,
+                                       buffer,
+                                       (uint16_t)total_size);
 }
 
 fmt_err_t dronecan_init(void)

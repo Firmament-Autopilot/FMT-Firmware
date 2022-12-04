@@ -10,6 +10,8 @@ void task_dronecan_entry(void* parameter)
     uint32_t time_now;
     uint32_t timestamp;
 
+    static uint16_t cnt;
+
     while (1) {
         time_now = systime_now_ms();
 
@@ -20,6 +22,17 @@ void task_dronecan_entry(void* parameter)
         timestamp = time_now - time_start;
 
         processTxRxOnce(timestamp);
+
+        if ((cnt % 75) == 0) {
+            setRGB(200, 0, 0);
+            printf("process1HzTasks\n");
+        } else if ((cnt % 50) == 0) {
+            setRGB(0, 200, 0);
+        } else if ((cnt % 25) == 0) {
+            setRGB(0, 0, 200);
+        }
+        cnt++;
+
         sys_msleep(10);
     }
 }
@@ -38,7 +51,7 @@ TASK_EXPORT __fmt_task_desc = {
     .entry = task_dronecan_entry,
     .priority = VEHICLE_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 1024 * 8,
+    .stack_size = 1024 * 10,
     .param = NULL,
     .dependency = NULL
 };
