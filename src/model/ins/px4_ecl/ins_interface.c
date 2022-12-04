@@ -293,6 +293,7 @@ static uint8_t baro_data_updated;
 static uint8_t gps_data_updated;
 static uint8_t rf_data_updated;
 static uint8_t optflow_data_updated;
+static uint8_t airspeed_data_updated;
 
 static int IMU_ID;
 static int MAG_ID;
@@ -494,16 +495,15 @@ void ins_interface_step(uint32_t timestamp)
         }
 
         /* update airspeed data */
-        if (mcn_poll(ins_handle.optflow_sub_node_t)) {
-            mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.optflow_sub_node_t, &ins_handle.airspeed_report);
+        if (mcn_poll(ins_handle.airspeed_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.airspeed_sub_node_t, &ins_handle.airspeed_report);
 
-            // airspeed_bus.timestamp = timestamp;
-            // airspeed_bus.temperature = ins_handle.airspeed_report.temperature_deg;
-            // airspeed_bus.diff_pressure = ins_handle.airspeed_report.diff_pressure_pa;
+            airspeed_bus.timestamp = timestamp;
+            airspeed_bus.true_airspeed = ins_handle.airspeed_report.temperature_deg;
 
-            Ekf_AIRSPEED_update(timestamp, 0, 1);
+            Ekf_AIRSPEED_update(timestamp, airspeed_bus.true_airspeed, 1);
 
-            optflow_data_updated = 1;
+            airspeed_data_updated = 1;
         }
 
         /* run INS */
