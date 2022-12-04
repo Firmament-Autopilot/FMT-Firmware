@@ -26,6 +26,9 @@ void px4_ecl_init(void)
     /* create EKF instance */
     Ekf_create();
 
+    /* creat land detector instance*/
+    ld_creat();
+
     /* set EKF parameter */
     Ekf_set_param_ekf2_gyr_noise(px4_ecl_params.ekf2_gyr_noise);
     Ekf_set_param_ekf2_acc_noise(px4_ecl_params.ekf2_acc_noise);

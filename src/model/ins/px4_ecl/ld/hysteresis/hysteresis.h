@@ -41,8 +41,7 @@
 
 #pragma once
 
-namespace land_detector
-{
+#include <stdint.h>
 
 class Hysteresis
 {
@@ -74,4 +73,3 @@ private:
 	bool _requested_state;
 };
 
-} // namespace land_detector

@@ -70,12 +70,9 @@
 using matrix::Vector2f;
 using matrix::Vector3f;
 
-namespace land_detector
-{
-
 MulticopterLandDetector::MulticopterLandDetector()
 {
-	_minimum_thrust_8s_hysteresis.set_hysteresis_time_from(false, 8_s);
+	_minimum_thrust_8s_hysteresis.set_hysteresis_time_from(false, 8000000);
 }
 
 void MulticopterLandDetector::_update_topics()
@@ -108,7 +105,7 @@ bool MulticopterLandDetector::_get_ground_contact_state()
 {
 	const uint64_t time_now_us = _nowUs;
 
-	const bool lpos_available = ((time_now_us - _vehicle_local_position.timestamp) < 1_s);
+	const bool lpos_available = ((time_now_us - _vehicle_local_position.timeStampUs) < 1000000);
 
 	if (lpos_available && _vehicle_local_position.v_z_valid) {
 		// Check if we are moving vertically.
@@ -145,7 +142,7 @@ bool MulticopterLandDetector::_get_ground_contact_state()
 		_below_gnd_effect_hgt = false;
 	}
 
-	const bool hover_thrust_estimate_valid = ((time_now_us - _hover_thrust_estimate_last_valid) < 1_s);
+	const bool hover_thrust_estimate_valid = ((time_now_us - _hover_thrust_estimate_last_valid) < 1000000);
 
 	if (!_in_descend || hover_thrust_estimate_valid) {
 		// continue using valid hover thrust if it became invalid during descent
@@ -212,7 +209,7 @@ bool MulticopterLandDetector::_get_maybe_landed_state()
 	_rotational_movement = _angular_velocity.xy().norm() > max_rotation_threshold;
 
 	// If vertical velocity is available: ground contact, no thrust, no movement -> landed
-	const bool local_position_updated = (now - _vehicle_local_position.timeStampUs) < 1_s;
+	const bool local_position_updated = (now - _vehicle_local_position.timeStampUs) < 1000000;
 	const bool vertical_velocity_valid = _vehicle_local_position.v_z_valid;
 	const bool vertical_estimate = local_position_updated && vertical_velocity_valid;
 
@@ -245,10 +242,8 @@ bool MulticopterLandDetector::_is_close_to_ground()
 
 void MulticopterLandDetector::_set_hysteresis_factor(const int factor)
 {
-	_ground_contact_hysteresis.set_hysteresis_time_from(false, _params_mc.trig_time * 1_s / 3 * factor);
-	_landed_hysteresis.set_hysteresis_time_from(false, _params_mc.trig_time * 1_s / 3 * factor);
-	_maybe_landed_hysteresis.set_hysteresis_time_from(false, _params_mc.trig_time * 1_s / 3 * factor);
+	_ground_contact_hysteresis.set_hysteresis_time_from(false, _params_mc.trig_time * 1000000 / 3 * factor);
+	_landed_hysteresis.set_hysteresis_time_from(false, _params_mc.trig_time * 1000000 / 3 * factor);
+	_maybe_landed_hysteresis.set_hysteresis_time_from(false, _params_mc.trig_time * 1000000 / 3 * factor);
 	_freefall_hysteresis.set_hysteresis_time_from(false, FREEFALL_TRIGGER_TIME_US);
 }
-
-} // namespace land_detector

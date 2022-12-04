@@ -43,21 +43,20 @@
 #pragma once
 
 #include <matrix/math.hpp>
-#include "FixedwingLandDetector.h"
+#include "land_detector/LandDetector.h"
 
 struct  airspeed_validated_s {
 	uint64_t 	timeStampUs;
 	float 		true_airspeed_m_s;
 };
 
-namespace land_detector
-{
-
-class FixedwingLandDetector final : public LandDetector
+class FixedwingLandDetector : public LandDetector
 {
 public:
 	FixedwingLandDetector();
 	~FixedwingLandDetector() override = default;
+
+	airspeed_validated_s* return_airspeed_validated(void){return &_airspeed_validated;};
 
 protected:
 
@@ -69,8 +68,8 @@ protected:
 private:
 
 	/** Time in us that landing conditions have to hold before triggering a land. */
-	static constexpr uint64_t LANDED_TRIGGER_TIME_US = 2_s;
-	static constexpr uint64_t FLYING_TRIGGER_TIME_US = 0_us;
+	static constexpr uint64_t LANDED_TRIGGER_TIME_US = 2000000;
+	static constexpr uint64_t FLYING_TRIGGER_TIME_US = 0;
 
 	float _airspeed_filtered{0.0f};
 	float _velocity_xy_filtered{0.0f};
@@ -78,4 +77,3 @@ private:
 	float _xy_accel_filtered{0.0f};
 };
 
-} // namespace land_detector

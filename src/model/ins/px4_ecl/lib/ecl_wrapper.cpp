@@ -19,7 +19,11 @@
 #include <mathlib.h>
 
 #include "INS.h"
+#include "fmtconfig.h"
 #include "module/math/quaternion.h"
+#include "land_detector/LandDetector.h"
+#include "land_detector/MulticopterLandDetector.h"
+#include "land_detector/FixedwingLandDetector.h"
 
 Ekf* _ekf;
 imuSample _newest_imu_sample {};
@@ -430,4 +434,83 @@ void Ekf_get_TerrainVertPos(void)
         px4_ecl_out_bus.flag &= ~(1 << 8);
     }
 }
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+MulticopterLandDetector*    _ld;
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+FixedwingLandDetector*      _ld;
+#endif
+
+void ld_creat(void){
+#ifdef VEHICLE_TYPE_QUADCOPTER
+    _ld = new MulticopterLandDetector;
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+    _ld = new FixedwingLandDetector;
+#endif
+}
+
+void ld_set_time(uint64_t nowUs){
+    _ld->set_nowUs(nowUs);
+}
+
+void ld_set_acceleration(float acc_B_mDs2[3]){
+    _ld->set_acceleration(Vector3f{acc_B_mDs2});
+}
+
+void ld_set_gyroRate(uint64_t timeStampUs, float gyr_B_radDs[3])
+{
+    gyroRate_s* gyroRate = _ld->return_gyroRate();
+    gyroRate->timeStampUs = timeStampUs;
+    gyroRate->angular_velocity = Vector3f{gyr_B_radDs};
+}
+
+void ld_set_dist_bottom_is_observable(bool bottonDistObservable){
+    _ld->set_dist_bottom_is_observable(bottonDistObservable);
+}
+
+void ld_set_vehicle_local_position(	uint64_t timeStampUs, float vx, float vy, float vz,
+	                                float dist_bottom, bool v_xy_valid, bool v_z_valid,
+	                                bool dist_bottom_valid){
+    vehicle_local_position_s* vehicle_local_position = _ld->return_vehicle_local_position();
+    vehicle_local_position->timeStampUs = timeStampUs;
+    vehicle_local_position->vx = vx;
+    vehicle_local_position->vy = vy;
+    vehicle_local_position->vz = vz;
+    vehicle_local_position->dist_bottom = dist_bottom;
+    vehicle_local_position->v_xy_valid = v_xy_valid;
+    vehicle_local_position->v_z_valid = v_z_valid;
+    vehicle_local_position->dist_bottom_valid = dist_bottom_valid;
+}
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+void ld_set_actuator_controls_throttle(float throttle){
+    _ld->set_actuator_controls_throttle(throttle);
+}
+
+void ld_set_flag_control_climb_rate_enabled(bool enable){
+    _ld->set_flag_control_climb_rate_enabled(enable);
+}
+
+void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid){
+    hover_thrust_estimate_s* hover_thrust_estimate = _ld->return_hover_thrust_estimate();
+    hover_thrust_estimate->timeStampUs = nowUs;
+    hover_thrust_estimate->hover_thrust = hover_thrust;
+    hover_thrust_estimate->valid = valid;
+}
+#endif
+
+#ifdef VEHICLE_TYPE_FIXWING
+void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s){
+    airspeed_validated_s* airspeed_validated = _ld->return_airspeed_validated();
+    airspeed_validated->timeStampUs = timeStampUs;
+    airspeed_validated->true_airspeed_m_s = true_airspeed_m_s;
+}
+#endif
+
+void ld_step(void){
+    _ld->update();
+}
+
 }

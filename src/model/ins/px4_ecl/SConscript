@@ -14,6 +14,8 @@ src += Glob('ecl/geo/*.cpp')
 src += Glob('ecl/geo_lookup/*.cpp')
 src += Glob('ecl/mathlib/*.cpp')
 src += Glob('ecl/matrix/*.cpp')
+src += Glob('ld/hysteresis/*.cpp')
+src += Glob('ld/land_detector/*.cpp')
 
 inc += [cwd]
 inc += [cwd + '/lib']
@@ -25,7 +27,16 @@ inc += [cwd + '/ecl/geo']
 inc += [cwd + '/ecl/geo_lookup']
 inc += [cwd + '/ecl/mathlib']
 inc += [cwd + '/ecl/matrix']
+inc += [cwd + '/ld']
+inc += [cwd + '/ld/hysteresis']
+inc += [cwd + '/ld/land_detector']
 
-group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE'])
+vehicle_type = GetConfigValue('VEHICLE_TYPE')
+
+if vehicle_type == '"Quadcopter"':
+    group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE', 'VEHICLE_TYPE_QUADCOPTER'])
+    
+if vehicle_type == '"Fixwing"':
+    group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE', 'VEHICLE_TYPE_FIXWING'])
 
 Return('group')

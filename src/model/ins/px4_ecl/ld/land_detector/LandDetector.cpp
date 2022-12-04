@@ -38,10 +38,7 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "LandDetector.h"
-
-namespace land_detector
-{
+#include "land_detector/LandDetector.h"
 
 LandDetector::LandDetector()
 {
@@ -62,7 +59,7 @@ LandDetector::~LandDetector()
 {
 }
 
-void LandDetector::step()
+void LandDetector::update()
 {
 	_angular_velocity = _gyroRate.angular_velocity;
 
@@ -101,7 +98,7 @@ void LandDetector::step()
 	const bool at_rest = landDetected && _at_rest;
 
 	// publish at 1 Hz, very first time, or when the result has changed
-	if (((_nowUs - _land_detected.timeStampUs) >= 1_s) ||
+	if (((_nowUs - _land_detected.timeStampUs) >= 1000000) ||
 	    (_land_detected.landed != landDetected) ||
 	    (_land_detected.freefall != freefallDetected) ||
 	    (_land_detected.maybe_landed != maybe_landedDetected) ||
@@ -147,12 +144,12 @@ void LandDetector::UpdateVehicleAtRest()
 	_imu_status.timeStampUs = _nowUs;
 
 	// Accel high frequency vibe = filtered length of (acceleration - acceleration_prev)
-	_imu_status.accel_vibration_metric = 0.99f * _status.accel_vibration_metric
+	_imu_status.accel_vibration_metric = 0.99f * _imu_status.accel_vibration_metric
 					 + 0.01f * Vector3f(_acceleration - _acceleration_prev).norm();
 	_acceleration_prev = _acceleration;
 
 	// Gyro high frequency vibe = filtered length of (angular_velocity - angular_velocity_prev)
-	_imu_status.gyro_vibration_metric = 0.99f * _status.gyro_vibration_metric
+	_imu_status.gyro_vibration_metric = 0.99f * _imu_status.gyro_vibration_metric
 					+ 0.01f * Vector3f(_angular_velocity - _angular_velocity_prev).norm();
 	_angular_velocity_prev = _angular_velocity;
 
@@ -165,7 +162,5 @@ void LandDetector::UpdateVehicleAtRest()
 		_time_last_move_detect_us = _imu_status.timeStampUs;
 	}
 
-	_at_rest = (_nowUs - _time_last_move_detect_us > 1_s);
+	_at_rest = (_nowUs - _time_last_move_detect_us > 1000000);
 }
-
-} // namespace land_detector

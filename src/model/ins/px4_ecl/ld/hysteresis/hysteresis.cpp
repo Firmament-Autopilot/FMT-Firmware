@@ -39,9 +39,6 @@
 
 #include "hysteresis.h"
 
-namespace land_detector
-{
-
 void
 Hysteresis::set_hysteresis_time_from(const bool from_state, const uint64_t new_hysteresis_time_us)
 {
@@ -89,4 +86,3 @@ Hysteresis::update(const uint64_t &now_us)
 	}
 }
 
-} // namespace land_detector

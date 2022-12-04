@@ -42,7 +42,8 @@
 
 #pragma once
 
-#include "LandDetector.h"
+#include "land_detector/LandDetector.h"
+#include "hysteresis/hysteresis.h"
 
 
 struct hover_thrust_estimate_s {
@@ -51,19 +52,15 @@ struct hover_thrust_estimate_s {
 	bool valid;
 };
 
-namespace land_detector
-{
-
 class MulticopterLandDetector : public LandDetector
 {
 public:
 	MulticopterLandDetector();
 	~MulticopterLandDetector() override = default;
 
-	float* 						return_actuator_controls_throttle(void)			{return &_actuator_controls_throttle;}; 
-	bool*						return_flag_control_climb_rate_enabled(void)	{return &_flag_control_climb_rate_enabled;};
-	hover_thrust_estimate_s		return_hover_thrust_estimate(void)				{return &_hover_thrust_estimate;}; 
-	bool*						return_flag_control_climb_rate_enabled(void)	{return &_flag_control_climb_rate_enabled;};
+	void set_actuator_controls_throttle(float actuator_controls_throttle){_actuator_controls_throttle = _actuator_controls_throttle;}; 
+	void set_flag_control_climb_rate_enabled(bool flag_control_climb_rate_enabled){_flag_control_climb_rate_enabled = _flag_control_climb_rate_enabled;};
+	hover_thrust_estimate_s* return_hover_thrust_estimate(void){return &_hover_thrust_estimate;}; 
 
 protected:
 	void _update_params() override;
@@ -93,7 +90,7 @@ private:
 	bool _is_close_to_ground();
 
 	/** Time in us that freefall has to hold before triggering freefall */
-	static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300_ms;
+	static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300000;
 
 	/** Distance above ground below which entering ground contact state is possible when distance to ground is available. */
 	static constexpr float DIST_FROM_GROUND_THRESHOLD = 1.0f;
@@ -111,5 +108,3 @@ private:
 	bool _close_to_ground_or_skipped_check{false};
 	bool _below_gnd_effect_hgt{false};	///< vehicle height above ground is below height where ground effect occurs
 };
-
-} // namespace land_detector

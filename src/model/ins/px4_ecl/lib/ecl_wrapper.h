@@ -77,4 +77,26 @@ void Ekf_get_local_position(void);
 void Ekf_get_global_position(void);
 void Ekf_get_TerrainVertPos(void);
 
+// land detector
+void ld_creat(void);
+void ld_set_time(uint64_t nowUs);
+void ld_set_acceleration(float acc_B_mDs2[3]);
+void ld_set_gyroRate(uint64_t timeStampUs, float gyr_B_radDs[3]);
+void ld_set_dist_bottom_is_observable(bool bottonDistObservable);
+void ld_set_vehicle_local_position(	uint64_t timeStampUs, float vx, float vy, float vz,
+	                                float dist_bottom, bool v_xy_valid, bool v_z_valid,
+	                                bool dist_bottom_valid);
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+void ld_set_actuator_controls_throttle(float throttle);
+void ld_set_flag_control_climb_rate_enabled(bool enable);
+void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid);
+#endif
+
+#ifdef VEHICLE_TYPE_FIXWING
+void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s);
+#endif
+
+void ld_step(void );
+
 #endif

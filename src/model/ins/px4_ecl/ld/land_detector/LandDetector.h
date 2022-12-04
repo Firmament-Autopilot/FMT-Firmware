@@ -45,23 +45,15 @@
 #include <float.h>
 #include <math.h>
 
+#include "mathlib/mathlib.h"
 #include "matrix/math.hpp"
 #include "hysteresis/hysteresis.h"
 
-constexpr uint64_t operator "" _s(unsigned long long seconds)
-{
-	return uint64_t(seconds * 1000000ULL);
-}
+// #include "land_detector/MulticopterLandDetector.h"
+// #include "land_detector/FixedwingLandDetector.h"
 
-constexpr uint64_t operator "" _ms(unsigned long long milliseconds)
-{
-	return uint64_t(milliseconds * 1000ULL);
-}
-
-constexpr uint64_t operator "" _us(unsigned long long microseconds)
-{
-	return uint64_t(microseconds);
-}
+using matrix::Vector2f;
+using matrix::Vector3f;
 
 struct parameters_ld_mc_s{
 	float	trig_time{1.0f};			//	@unit s
@@ -72,6 +64,7 @@ struct parameters_ld_mc_s{
 	bool	useHoverThrustEstimate{false};	
 	float	hoverThrottle{0.5f};		//	@unit norm
 	float	minThrottle{0.12f};			//	@unit norm
+	float	minManThrottle{0.08f};		//	@unit norm
 	float 	crawlSpeed{0.3f};			//	@unit m/s
 	float	landSpeed{0.7f};			//	@unit m/s
 };
@@ -116,13 +109,11 @@ struct vehicle_local_position_s {
 	float vx;
 	float vy;
 	float vz;
+	float dist_bottom;
 	bool v_xy_valid;
 	bool v_z_valid;
 	bool dist_bottom_valid;
 };
-
-namespace land_detector
-{
 
 class LandDetector
 {
@@ -130,13 +121,15 @@ public:
 	LandDetector();
 	virtual ~LandDetector();
 
-	bool* 						return_armed(void)						{return &_armed;};
-	bool*						return_dist_bottom_is_observable(void)	{return &_dist_bottom_is_observable;};
-	uint64_t*					return_nowUs(void)						(return &_nowUs;);
-	matrix::Vector3f* 			return_acceleration(void)				{return &_acceleration;};
-	gyroRate_s*					return_gyroRate(void)					{return &_gyroRate;};
-	// imu_status_s*				return_imu_status(void)					{return &_imu_status;};
-	vehicle_land_detected_s*	return_vehicle_land_detected_pub(void)	{return &_land_detected;};
+	void update();
+
+	void set_armed(bool armed){_armed = armed;};
+	void set_dist_bottom_is_observable(bool observable){_dist_bottom_is_observable = observable;};
+	void set_nowUs(uint64_t nowUs){_nowUs = nowUs;};
+	void set_acceleration(matrix::Vector3f acceleration){_acceleration = acceleration;};
+	vehicle_local_position_s* return_vehicle_local_position(void){return &_vehicle_local_position;};
+	gyroRate_s*	return_gyroRate(void){return &_gyroRate;};
+	vehicle_land_detected_s* return_vehicle_land_detected_pub(void)	{return &_land_detected;};
 
 protected:
 
@@ -207,18 +200,12 @@ protected:
 	parameters_ld_mc_s			_params_mc{};
 
 private:
-	void step() override;
 
 	void UpdateVehicleAtRest();
 
 	uint64_t _takeoff_time{0};
 	uint64_t _total_flight_time{0};	///< total vehicle flight time in microseconds
-
 	uint64_t _time_last_move_detect_us{0};	// timestamp of last movement detection event in microseconds
-
 	uint32_t _device_id_gyro{0};
-
 	bool _at_rest{true};
 };
-
-} // namespace land_detector
