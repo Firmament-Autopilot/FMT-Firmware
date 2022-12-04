@@ -19,6 +19,12 @@ extern "C" {
         FDCAN_BAUD_RATE_1000K, /* 1000 kBit/sec */ \
     }
 
+typedef struct {
+    uint32_t id;
+    uint8_t data[8];
+    uint8_t len;
+} fdcan_msg, *fdcan_msg_t;
+
 struct fdcan_configure {
     rt_uint32_t baud_rate;
 
@@ -29,7 +35,7 @@ struct fdcan_configure {
     // rt_uint32_t elmt_size; //传输元素大小
 };
 
-struct fdcan_device {
+typedef struct {
     struct rt_device parent;
 
     const struct fdcan_ops* ops;
@@ -37,22 +43,21 @@ struct fdcan_device {
     struct fdcan_configure config;
 
     struct rt_event event;
-};
-typedef struct fdcan_device* fdcan_dev_t;
+} fdcan_device, *fdcan_dev_t;
 
 /**
  * uart operators
  */
 struct fdcan_ops {
-    rt_err_t (*configure)(struct fdcan_device* can, struct fdcan_configure* cfg);
-    rt_err_t (*control)(struct fdcan_device* can, int cmd, void* arg);
-    int (*sendmsg)(struct fdcan_device* can, const void* buf, rt_uint32_t boxno);
-    int (*recvmsg)(struct fdcan_device* can, void* buf, rt_uint32_t* boxno);
+    rt_err_t (*configure)(fdcan_dev_t can, struct fdcan_configure* cfg);
+    rt_err_t (*control)(fdcan_dev_t can, int cmd, void* arg);
+    int (*sendmsg)(fdcan_dev_t can, const void* buf);
+    int (*recvmsg)(fdcan_dev_t can, void* buf);
 };
 
-rt_err_t rt_hw_can_register(struct fdcan_device* fdcan, const char* name, rt_uint32_t flag, void* data);
+rt_err_t rt_hw_can_register(fdcan_dev_t fdcan, const char* name, rt_uint32_t flag, void* data);
 
-void rt_hw_can_isr(struct fdcan_device* fdcan, int event);
+void rt_hw_can_isr(fdcan_dev_t fdcan, int event);
 
 #ifdef __cplusplus
 }

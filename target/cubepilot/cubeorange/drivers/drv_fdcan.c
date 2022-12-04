@@ -40,7 +40,7 @@ struct stm32_fdcan {
     IRQn_Type irq;
 };
 
-static struct fdcan_device fdcan_dev1;
+static fdcan_device fdcan_dev1;
 struct stm32_fdcan stm32_fdcan1 = {
     .fdcan_handler = &hfdcan1,
     .fdcan_filter = &FDCAN1_RXFilter,
@@ -52,7 +52,7 @@ struct stm32_fdcan stm32_fdcan1 = {
 };
 
 #ifdef DRV_USE_FDCAN2
-static struct fdcan_device fdcan_dev2;
+static fdcan_device fdcan_dev2;
 struct stm32_fdcan stm32_fdcan2 = {
     .fdcan_handler = &hfdcan2,
     .fdcan_filter = &FDCAN2_RXFilter,
@@ -220,32 +220,37 @@ static rt_err_t fdcan_baud_rate_configure(FDCAN_HandleTypeDef* fdcanHandle, rt_i
     return RT_EOK;
 }
 
-static int fdcan_sendmsg(struct fdcan_device* fdcan_dev, const void* buf, rt_uint32_t boxno)
+static int fdcan_sendmsg(fdcan_dev_t fdcan_dev, const void* buf)
 {
-    static char* strr = "12345678";
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
     RT_ASSERT(stm32_fdcan_x != RT_NULL);
 
-    stm32_fdcan_x->fdcan_txheader->Identifier = 0x12;                       // 32位ID
-    stm32_fdcan_x->fdcan_txheader->IdType = FDCAN_STANDARD_ID;              //标准ID
+    fdcan_msg_t msg_t = (fdcan_msg_t)buf;
+
+    stm32_fdcan_x->fdcan_txheader->Identifier = msg_t->id;                  // 32位ID
+    stm32_fdcan_x->fdcan_txheader->IdType = FDCAN_EXTENDED_ID;              //标准ID
     stm32_fdcan_x->fdcan_txheader->TxFrameType = FDCAN_DATA_FRAME;          //数据帧
-    stm32_fdcan_x->fdcan_txheader->DataLength = FDCAN_DLC_BYTES_8;          //数据长度
+    stm32_fdcan_x->fdcan_txheader->DataLength = msg_t->len << 16;           //数据长度
     stm32_fdcan_x->fdcan_txheader->BitRateSwitch = FDCAN_BRS_OFF;           //关闭速率切换
     stm32_fdcan_x->fdcan_txheader->FDFormat = FDCAN_CLASSIC_CAN;            //传统的CAN模式
     stm32_fdcan_x->fdcan_txheader->TxEventFifoControl = FDCAN_NO_TX_EVENTS; //无发送事件
     stm32_fdcan_x->fdcan_txheader->ErrorStateIndicator = FDCAN_ESI_ACTIVE;
     stm32_fdcan_x->fdcan_txheader->MessageMarker = 0;
 
-    if (HAL_FDCAN_AddMessageToTxFifoQ(stm32_fdcan_x->fdcan_handler, stm32_fdcan_x->fdcan_txheader, (uint8_t*)strr) != HAL_OK)
-        return 100; //发送
+    if (HAL_FDCAN_AddMessageToTxFifoQ(stm32_fdcan_x->fdcan_handler,
+                                      stm32_fdcan_x->fdcan_txheader,
+                                      (uint8_t*)msg_t->data)
+        != HAL_OK)
+        return -1; //发送
 
-    return 1;
+    return msg_t->len;
 }
 
-static int fdcan_recvmsg(struct fdcan_device* fdcan_dev, void* buf, rt_uint32_t* boxno)
+static int fdcan_recvmsg(fdcan_dev_t fdcan_dev, void* buf)
 {
     rt_uint32_t status;
     rt_err_t err = RT_EOK;
+    fdcan_msg_t msg_t = (fdcan_msg_t)buf;
 
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
     RT_ASSERT(stm32_fdcan_x != RT_NULL);
@@ -256,7 +261,11 @@ static int fdcan_recvmsg(struct fdcan_device* fdcan_dev, void* buf, rt_uint32_t*
         uint32_t start = systime_now_ms();
         uint32_t now;
 
-        while (HAL_FDCAN_GetRxMessage(stm32_fdcan_x->fdcan_handler, FDCAN_RX_FIFO0, stm32_fdcan_x->fdcan_rxheader, buf) != HAL_OK) {
+        while (HAL_FDCAN_GetRxMessage(stm32_fdcan_x->fdcan_handler,
+                                      FDCAN_RX_FIFO0,
+                                      stm32_fdcan_x->fdcan_rxheader,
+                                      msg_t->data)
+               != HAL_OK) {
             now = systime_now_ms();
             if (now - start > FDCAN_TIMEOUT) {
                 err = RT_ETIMEOUT;
@@ -266,35 +275,36 @@ static int fdcan_recvmsg(struct fdcan_device* fdcan_dev, void* buf, rt_uint32_t*
         }
     }
 
-    *boxno = stm32_fdcan_x->fdcan_rxheader->Identifier;
+    msg_t->id = stm32_fdcan_x->fdcan_rxheader->Identifier;
+    msg_t->len = stm32_fdcan_x->fdcan_rxheader->DataLength >> 16;
 
-    return stm32_fdcan_x->fdcan_rxheader->DataLength >> 16;
+    return msg_t->len;
 }
 
-static rt_err_t fdcan_filter_start(FDCAN_HandleTypeDef* fdcanHandle, FDCAN_FilterTypeDef* filter)
-{
-    filter->IdType = FDCAN_STANDARD_ID;                        //标准ID
-    filter->FilterIndex = 0;                                   //滤波器索引
-    filter->FilterType = FDCAN_FILTER_MASK;                    //滤波器类型
-    filter->FilterConfig = FDCAN_FILTER_TO_RXFIFO0;            //过滤器0关联到FIFO0
-    filter->FilterID1 = 0x0000;                                // 32位ID
-    filter->FilterID2 = 0x0000;                                //如果FDCAN配置为传统模式的话，这里是32位掩码
-    if (HAL_FDCAN_ConfigFilter(fdcanHandle, filter) != HAL_OK) //滤波器初始化
-    {
-        Error_Handler();
-    }
+// static rt_err_t fdcan_filter_start(FDCAN_HandleTypeDef* fdcanHandle, FDCAN_FilterTypeDef* filter)
+// {
+//     filter->IdType = FDCAN_EXTENDED_ID;                        //标准ID
+//     filter->FilterIndex = 0;                                   //滤波器索引
+//     filter->FilterType = FDCAN_FILTER_MASK;                    //滤波器类型
+//     filter->FilterConfig = FDCAN_FILTER_TO_RXFIFO0;            //过滤器0关联到FIFO0
+//     filter->FilterID1 = 0x0000;                                // 32位ID
+//     filter->FilterID2 = 0x0000;                                //如果FDCAN配置为传统模式的话，这里是32位掩码
+//     if (HAL_FDCAN_ConfigFilter(fdcanHandle, filter) != HAL_OK) //滤波器初始化
+//     {
+//         Error_Handler();
+//     }
 
-    /* Configure global filter on both FDCAN instances:
-    Filter all remote frames with STD and EXT ID
-    Reject non matching frames with STD ID and EXT ID */
-    if (HAL_FDCAN_ConfigGlobalFilter(fdcanHandle, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK) {
-        Error_Handler();
-    }
+//     /* Configure global filter on both FDCAN instances:
+//     Filter all remote frames with STD and EXT ID
+//     Reject non matching frames with STD ID and EXT ID */
+//     if (HAL_FDCAN_ConfigGlobalFilter(fdcanHandle, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK) {
+//         Error_Handler();
+//     }
 
-    return RT_EOK;
-}
+//     return RT_EOK;
+// }
 
-static rt_err_t fdcan_configure(struct fdcan_device* fdcan_dev, struct fdcan_configure* cfg)
+static rt_err_t fdcan_configure(fdcan_dev_t fdcan_dev, struct fdcan_configure* cfg)
 {
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
 

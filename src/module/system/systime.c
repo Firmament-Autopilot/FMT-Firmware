@@ -28,7 +28,7 @@ static rt_device_t systick_dev;
 
 /**
  * @brief Systick ISR callback
- * 
+ *
  */
 static void systick_isr_cb(void)
 {
@@ -37,7 +37,7 @@ static void systick_isr_cb(void)
 
 /**
  * @brief Check if the period of time has elapsed
- * 
+ *
  * @param timetag Time tag which stores the period and time information
  * @return uint8_t 1 indicates true
  */
@@ -54,7 +54,7 @@ uint8_t check_timetag(TimeTag* timetag)
 
 /**
  * @brief Check if the period of time has elapsed with specified time now
- * 
+ *
  * @param timetag Time tag which stores the period and time information
  * @param now Time now in ms
  * @return uint8_t uint8_t 1 indicates true
@@ -70,7 +70,7 @@ uint8_t check_timetag2(TimeTag* timetag, uint32_t now)
 
 /**
  * @brief Check if the period of time has elapsed with specified time now and period
- * 
+ *
  * @param timetag Time tag which stores the period and time information
  * @param now Time now in ms
  * @param period Period in ms
@@ -87,7 +87,7 @@ uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
 
 /**
  * @brief Get current systime in us
- * 
+ *
  * @return uint64_t systime in us
  */
 uint64_t systime_now_us(void)
@@ -108,7 +108,7 @@ uint64_t systime_now_us(void)
 
 /**
  * @brief Get current systime in ms
- * 
+ *
  * @return uint32_t systime in ms
  */
 uint32_t systime_now_ms(void)
@@ -120,7 +120,7 @@ uint32_t systime_now_ms(void)
 
 /**
  * @brief Delay for us
- * 
+ *
  * @param time_us Delay time in us
  */
 void systime_udelay(uint32_t time_us)
@@ -133,7 +133,7 @@ void systime_udelay(uint32_t time_us)
 
 /**
  * @brief Delay for ms
- * 
+ *
  * @param time_ms Delay time in ms
  */
 inline void systime_mdelay(uint32_t time_ms)
@@ -145,7 +145,7 @@ inline void systime_mdelay(uint32_t time_ms)
  * @brief Sleep for ms
  * @note In thread context it will suspend the thread for specific milliseconds,
  *       otherwise it will just do normal delay.
- * 
+ *
  * @param time_ms Sleep time in ms
  */
 void systime_msleep(uint32_t time_ms)
@@ -159,7 +159,7 @@ void systime_msleep(uint32_t time_ms)
 
 /**
  * @brief Initialize systime module
- * 
+ *
  * @return fmt_err_t FMT_EOK indicates success
  */
 fmt_err_t systime_init(void)

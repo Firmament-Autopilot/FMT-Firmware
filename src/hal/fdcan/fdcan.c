@@ -17,7 +17,10 @@ static rt_err_t hal_fdcan_init(struct rt_device* dev)
     return result;
 }
 
-static rt_size_t hal_fdcan_write(rt_device_t dev, rt_off_t pos, const void* buffer, rt_size_t size)
+static rt_size_t hal_fdcan_write(rt_device_t dev,
+                                 rt_off_t pos,
+                                 const void* buffer,
+                                 rt_size_t size)
 {
     fdcan_dev_t fdcan_dev;
 
@@ -28,7 +31,7 @@ static rt_size_t hal_fdcan_write(rt_device_t dev, rt_off_t pos, const void* buff
     if (size == 0)
         return 0;
 
-    return fdcan_dev->ops->sendmsg(fdcan_dev, buffer, size);
+    return fdcan_dev->ops->sendmsg(fdcan_dev, buffer);
 }
 
 static rt_size_t hal_fdcan_read(rt_device_t dev,
@@ -36,7 +39,6 @@ static rt_size_t hal_fdcan_read(rt_device_t dev,
                                 void* buffer,
                                 rt_size_t size)
 {
-    uint32_t count;
 
     fdcan_dev_t fdcan_dev;
 
@@ -44,13 +46,16 @@ static rt_size_t hal_fdcan_read(rt_device_t dev,
 
     fdcan_dev = (fdcan_dev_t)dev;
 
-    return fdcan_dev->ops->recvmsg(fdcan_dev, buffer, &count);
+    return fdcan_dev->ops->recvmsg(fdcan_dev, buffer);
 }
 
 /*
  * can register
  */
-rt_err_t rt_hw_can_register(struct fdcan_device* fdcan, const char* name, rt_uint32_t flag, void* data)
+rt_err_t rt_hw_can_register(fdcan_device* fdcan,
+                            const char* name,
+                            rt_uint32_t flag,
+                            void* data)
 {
     rt_err_t ret;
 
