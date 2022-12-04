@@ -93,6 +93,7 @@ MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(sensor_optflow);
+MCN_DECLARE(sensor_airspeed);
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -275,6 +276,7 @@ static struct INS_Handler {
     McnNode_t gps_sub_node_t;
     McnNode_t rf_sub_node_t;
     McnNode_t optflow_sub_node_t;
+    McnNode_t airspeed_sub_node_t;
 
     imu_data_t imu_report;
     mag_data_t mag_report;
@@ -282,6 +284,7 @@ static struct INS_Handler {
     gps_data_t gps_report;
     rf_data_t rf_report;
     optflow_data_t optflow_report;
+    airspeed_data_t airspeed_report;
 } ins_handle;
 
 static uint8_t imu_data_updated;
@@ -401,6 +404,7 @@ void ins_interface_step(uint32_t timestamp)
     static GPS_uBlox_Bus gps_bus;
     static Rangefinder_Bus rnf_bus;
     static Optical_Flow_Bus opt_flow_bus;
+    static AirSpeed_Bus airspeed_bus;
 
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
@@ -472,16 +476,33 @@ void ins_interface_step(uint32_t timestamp)
         /* update rangefinder data */
         if (mcn_poll(ins_handle.rf_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
+            
+            rnf_bus.timestamp = timestamp;
+            rnf_bus.distance_m = ins_handle.rf_report.distance_m;
 
-            // TODO
+            Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);
+
             rf_data_updated = 1;
         }
 
         /* update optical flow data */
-        if (mcn_poll(ins_handle.optflow_sub_node_t)) {
+        if (mcn_poll(ins_handle.airspeed_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
             // TODO
+            optflow_data_updated = 1;
+        }
+
+        /* update airspeed data */
+        if (mcn_poll(ins_handle.optflow_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.optflow_sub_node_t, &ins_handle.airspeed_report);
+
+            // airspeed_bus.timestamp = timestamp;
+            // airspeed_bus.temperature = ins_handle.airspeed_report.temperature_deg;
+            // airspeed_bus.diff_pressure = ins_handle.airspeed_report.diff_pressure_pa;
+
+            Ekf_AIRSPEED_update(timestamp, 0, 1);
+
             optflow_data_updated = 1;
         }
 
@@ -553,6 +574,7 @@ void ins_interface_init(void)
     ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
+    ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
 
     IMU_ID = mlog_get_bus_id("IMU");
     MAG_ID = mlog_get_bus_id("MAG");

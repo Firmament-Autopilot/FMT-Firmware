@@ -325,6 +325,28 @@ void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t hei
     _ekf->setGpsData(gps_message_new);
 }
 
+void Ekf_RANGEFINDER_update(uint32_t timestamp_ms, float rng, int8_t quality)
+{
+    rangeSample rangeSample_new;
+
+    rangeSample_new.time_us = timestamp_ms * 1.0e3f;
+    rangeSample_new.rng = rng;
+    rangeSample_new.quality = quality;      // default 100
+
+    _ekf->setRangeData(rangeSample_new);
+}
+
+void Ekf_AIRSPEED_update(uint32_t timestamp_ms, float true_airspeed, float eas2tas)
+{
+    airspeedSample airspeedSample_new;
+
+    airspeedSample_new.time_us = timestamp_ms * 1.0e3f;
+    airspeedSample_new.true_airspeed = true_airspeed;
+    airspeedSample_new.eas2tas = eas2tas;
+    
+    _ekf->setAirspeedData(airspeedSample_new);
+}
+
 bool Ekf_step(void)
 {
     return _ekf->update();

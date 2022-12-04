@@ -70,6 +70,8 @@ void Ekf_BARO_update(uint32_t timestamp_ms, float pressure_alt_meter);
 void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t height,
                     float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
                     float sAcc, uint8_t fixType, uint8_t numSV);
+void Ekf_RANGEFINDER_update(uint32_t timestamp_ms, float rng, int8_t quality);
+void Ekf_AIRSPEED_update(uint32_t timestamp_ms, float true_airspeed, float eas2tas);
 bool Ekf_step(void);
 void Ekf_get_attitude(void);
 void Ekf_get_acc(void);
