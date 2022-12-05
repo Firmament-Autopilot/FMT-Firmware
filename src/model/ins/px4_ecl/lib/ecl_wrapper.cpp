@@ -22,8 +22,13 @@
 #include "fmtconfig.h"
 #include "module/math/quaternion.h"
 #include "land_detector/LandDetector.h"
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
 #include "land_detector/MulticopterLandDetector.h"
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
 #include "land_detector/FixedwingLandDetector.h"
+#endif
 
 Ekf* _ekf;
 imuSample _newest_imu_sample {};
@@ -474,27 +479,25 @@ void ld_creat(void){
 }
 
 void ld_set_time(uint64_t nowUs){
-    _ld->set_nowUs(nowUs);
+    *(_ld->return_nowUs()) = nowUs;
 }
 
-void ld_set_acceleration(float acc_B_mDs2[3]){
-    _ld->set_acceleration(Vector3f{acc_B_mDs2});
+void ld_set_armed(bool armed){
+    *(_ld->return_armed()) = armed;
 }
 
-void ld_set_gyroRate(uint64_t timeStampUs, float gyr_B_radDs[3])
-{
-    gyroRate_s* gyroRate = _ld->return_gyroRate();
-    gyroRate->timeStampUs = timeStampUs;
-    gyroRate->angular_velocity = Vector3f{gyr_B_radDs};
+void ld_set_IMU_data(Vector3f gyroRate, Vector3f acceleration){
+    *(_ld->return_acceleration()) = acceleration;
+    *(_ld->return_angular_velocity()) = gyroRate;
 }
 
-void ld_set_dist_bottom_is_observable(bool bottonDistObservable){
-    _ld->set_dist_bottom_is_observable(bottonDistObservable);
+void ld_set_dist_bottom_is_observable(bool observable){
+    *(_ld->return_dist_bottom_is_observable()) = observable;
 }
 
 void ld_set_vehicle_local_position(	uint64_t timeStampUs, float vx, float vy, float vz,
 	                                float dist_bottom, bool v_xy_valid, bool v_z_valid,
-	                                bool dist_bottom_valid){
+	                                bool dist_bottom_valid, uint8_t dist_bottom_sensor_bitfield){
     vehicle_local_position_s* vehicle_local_position = _ld->return_vehicle_local_position();
     vehicle_local_position->timeStampUs = timeStampUs;
     vehicle_local_position->vx = vx;
@@ -504,15 +507,24 @@ void ld_set_vehicle_local_position(	uint64_t timeStampUs, float vx, float vy, fl
     vehicle_local_position->v_xy_valid = v_xy_valid;
     vehicle_local_position->v_z_valid = v_z_valid;
     vehicle_local_position->dist_bottom_valid = dist_bottom_valid;
+    vehicle_local_position->dist_bottom_sensor_bitfield = dist_bottom_sensor_bitfield;
+}
+
+void ld_set_vehicle_imu_status(uint64_t timeStampUs){
+    vehicle_imu_status_s* _imu_status{};
+    _imu_status = _ld->return_vehicle_imu_status();
+    _imu_status->timeStampUs = timeStampUs;
+    _imu_status->gyro_vibration_metric = (_ekf->getImuVibrationMetrics())(1);
+    _imu_status->accel_vibration_metric = (_ekf->getImuVibrationMetrics())(2);
 }
 
 #ifdef VEHICLE_TYPE_QUADCOPTER
 void ld_set_actuator_controls_throttle(float throttle){
-    _ld->set_actuator_controls_throttle(throttle);
+    *(_ld->return_actuator_controls_throttle()) = throttle;
 }
 
 void ld_set_flag_control_climb_rate_enabled(bool enable){
-    _ld->set_flag_control_climb_rate_enabled(enable);
+    *(_ld->return_flag_control_climb_rate_enabled()) = enable;
 }
 
 void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid){
@@ -532,7 +544,13 @@ void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s){
 #endif
 
 void ld_step(void){
-    _ld->update();
+
+    
+#ifdef VEHICLE_TYPE_QUADCOPTER
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+#endif
+    _ld->Update();
 }
 
 }

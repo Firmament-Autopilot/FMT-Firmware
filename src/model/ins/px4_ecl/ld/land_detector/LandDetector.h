@@ -44,11 +44,31 @@
 
 #include <float.h>
 #include <math.h>
+#include <stdint.h>
 
+#include "matrix/math.hpp"
+#include "mathlib/mathlib.h"
 #include "hysteresis/hysteresis.h"
+// #include "FixedwingLandDetector.h"
+// #include "MulticopterLandDetector.h"
 
 using matrix::Vector2f;
 using matrix::Vector3f;
+
+constexpr uint64_t operator "" _s(unsigned long long seconds)
+{
+	return uint64_t(seconds * 1000000ULL);
+}
+
+constexpr uint64_t operator "" _ms(unsigned long long milliseconds)
+{
+	return uint64_t(milliseconds * 1000ULL);
+}
+
+constexpr uint64_t operator "" _us(unsigned long long microseconds)
+{
+	return uint64_t(microseconds);
+}
 
 struct parameters_ld_mc_s{
 	float	trig_time{1.0f};			//	@unit s
@@ -122,13 +142,16 @@ public:
 	LandDetector();
 	virtual ~LandDetector();
 
-	void Update() override;
+	void Update();
 
 	bool* 						return_armed(void){return &_armed;};
+	uint64_t*					return_nowUs(void){return &_nowUs;};
 	matrix::Vector3f* 			return_acceleration(void){return &_acceleration;};
-	matrix::Vector3f* 			return_angular_velocity(void){return &_angular_velocity};
+	matrix::Vector3f* 			return_angular_velocity(void){return &_angular_velocity;};
 	vehicle_local_position_s* 	return_vehicle_local_position(void){return &_vehicle_local_position;};
-	vehicle_land_detected_s*	return_vehicle_land_detected(void){return &_vehicle_land_detected;};
+	bool*						return_dist_bottom_is_observable(void){return &_dist_bottom_is_observable;};
+	vehicle_imu_status_s*		return_vehicle_imu_status(void){return &_imu_status;};
+	vehicle_land_detected_s*	return_vehicle_land_detected(void){return &_land_detected;};
 
 protected:
 
@@ -194,6 +217,8 @@ protected:
 
 	parameters_ld_mc_s _param_mc{};
 	parameters_ld_fw_s _param_fw{};
+
+	vehicle_imu_status_s _imu_status{};
 
 private:
 

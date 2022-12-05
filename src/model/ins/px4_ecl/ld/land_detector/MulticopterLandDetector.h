@@ -67,8 +67,9 @@ public:
 
 	float* 	return_actuator_controls_throttle(void){return &_actuator_controls_throttle;};
 	bool* 	return_flag_control_climb_rate_enabled(void){return &_flag_control_climb_rate_enabled;};
-	uint8_t	return_takeoff_state(void){return &_takeoff_state;}; 
+	uint8_t*return_takeoff_state(void){return &_takeoff_state;}; 
 	float*  return_trajectory_vz(void){return &_trajectory_vz;};
+	hover_thrust_estimate_s* return_hover_thrust_estimate(void){return &_hover_thrust_estimate;};
 
 protected:
 	void _update_params() override;
@@ -106,7 +107,7 @@ private:
 
 	uint8_t _takeoff_state{takeoff_status_s::TAKEOFF_STATE_DISARMED};
 
-	systemlib::Hysteresis _minimum_thrust_8s_hysteresis{false};
+	Hysteresis _minimum_thrust_8s_hysteresis{false};
 
 	bool _in_descend{false};		///< vehicle is commanded to desend
 	bool _horizontal_movement{false};	///< vehicle is moving horizontally
