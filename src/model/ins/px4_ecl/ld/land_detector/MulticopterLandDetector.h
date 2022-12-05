@@ -42,14 +42,21 @@
 
 #pragma once
 
-#include "land_detector/LandDetector.h"
-#include "hysteresis/hysteresis.h"
-
+#include "LandDetector.h"
 
 struct hover_thrust_estimate_s {
-	uint64_t timeStampUs;
-	float hover_thrust;
-	bool valid;
+	uint64_t 	timeStampUs;
+	float 		hover_thrust;
+	bool 		valid;
+};
+
+struct takeoff_status_s {
+	static constexpr uint8_t TAKEOFF_STATE_UNINITIALIZED = 0;
+	static constexpr uint8_t TAKEOFF_STATE_DISARMED = 1;
+	static constexpr uint8_t TAKEOFF_STATE_SPOOLUP = 2;
+	static constexpr uint8_t TAKEOFF_STATE_READY_FOR_TAKEOFF = 3;
+	static constexpr uint8_t TAKEOFF_STATE_RAMPUP = 4;
+	static constexpr uint8_t TAKEOFF_STATE_FLIGHT = 5;
 };
 
 class MulticopterLandDetector : public LandDetector
@@ -58,9 +65,10 @@ public:
 	MulticopterLandDetector();
 	~MulticopterLandDetector() override = default;
 
-	void set_actuator_controls_throttle(float actuator_controls_throttle){_actuator_controls_throttle = _actuator_controls_throttle;}; 
-	void set_flag_control_climb_rate_enabled(bool flag_control_climb_rate_enabled){_flag_control_climb_rate_enabled = _flag_control_climb_rate_enabled;};
-	hover_thrust_estimate_s* return_hover_thrust_estimate(void){return &_hover_thrust_estimate;}; 
+	float* 	return_actuator_controls_throttle(void){return &_actuator_controls_throttle;};
+	bool* 	return_flag_control_climb_rate_enabled(void){return &_flag_control_climb_rate_enabled;};
+	uint8_t	return_takeoff_state(void){return &_takeoff_state;}; 
+	float*  return_trajectory_vz(void){return &_trajectory_vz;};
 
 protected:
 	void _update_params() override;
@@ -79,18 +87,11 @@ protected:
 	bool _get_close_to_ground_or_skipped_check() override { return _close_to_ground_or_skipped_check; }
 
 	void _set_hysteresis_factor(const int factor) override;
-
-	float _actuator_controls_throttle{0.f};
-	float _trajectory_setpoint_velocity_z;
-	bool _flag_control_climb_rate_enabled{false};
-
-	hover_thrust_estimate_s _hover_thrust_estimate{};
-
 private:
 	bool _is_close_to_ground();
 
 	/** Time in us that freefall has to hold before triggering freefall */
-	static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300000;
+	static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300_ms;
 
 	/** Distance above ground below which entering ground contact state is possible when distance to ground is available. */
 	static constexpr float DIST_FROM_GROUND_THRESHOLD = 1.0f;
@@ -98,7 +99,14 @@ private:
 	uint64_t _hover_thrust_estimate_last_valid{0};
 	bool _hover_thrust_estimate_valid{false};
 
-	Hysteresis _minimum_thrust_8s_hysteresis{false};
+	bool _flag_control_climb_rate_enabled{false};
+	bool _hover_thrust_initialized{false};
+
+	float _actuator_controls_throttle{0.f};
+
+	uint8_t _takeoff_state{takeoff_status_s::TAKEOFF_STATE_DISARMED};
+
+	systemlib::Hysteresis _minimum_thrust_8s_hysteresis{false};
 
 	bool _in_descend{false};		///< vehicle is commanded to desend
 	bool _horizontal_movement{false};	///< vehicle is moving horizontally
@@ -107,4 +115,7 @@ private:
 	bool _has_low_throttle{false};
 	bool _close_to_ground_or_skipped_check{false};
 	bool _below_gnd_effect_hgt{false};	///< vehicle height above ground is below height where ground effect occurs
+
+	hover_thrust_estimate_s _hover_thrust_estimate{};
+	float _trajectory_vz{0.0f};
 };

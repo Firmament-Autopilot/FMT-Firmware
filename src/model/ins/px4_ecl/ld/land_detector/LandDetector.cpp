@@ -38,9 +38,9 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "land_detector/LandDetector.h"
+#include "LandDetector.h"
 
-LandDetector::LandDetector()
+LandDetector::LandDetector() 
 {
 	_land_detected.ground_contact = true;
 	_land_detected.maybe_landed = true;
@@ -59,22 +59,24 @@ LandDetector::~LandDetector()
 {
 }
 
-void LandDetector::update()
+void LandDetector::Update()
 {
-	_angular_velocity = _gyroRate.angular_velocity;
-
 	static constexpr float GYRO_NORM_MAX = math::radians(3.f); // 3 degrees/second
 
 	if (_angular_velocity.norm() > GYRO_NORM_MAX) {
-		_time_last_move_detect_us = _gyroRate.timeStampUs;
+		_time_last_move_detect_us = vehicle_angular_velocity.timestamp_sample;
 	}
 
 	_update_topics();
 
-	_dist_bottom_is_observable = _vehicle_local_position.dist_bottom_valid;
-	
-	// Increase land detection time if not close to ground
 	if (!_dist_bottom_is_observable) {
+		// we consider the distance to the ground observable if the system is using a range sensor
+		_dist_bottom_is_observable = _vehicle_local_position.dist_bottom_sensor_bitfield &
+					     vehicle_local_position_s::DIST_BOTTOM_SENSOR_RANGE;
+	}
+
+	// Increase land detection time if not close to ground
+	if (_dist_bottom_is_observable && !_vehicle_local_position.dist_bottom_valid) {
 		_set_hysteresis_factor(3);
 
 	} else {
@@ -98,7 +100,7 @@ void LandDetector::update()
 	const bool at_rest = landDetected && _at_rest;
 
 	// publish at 1 Hz, very first time, or when the result has changed
-	if (((_nowUs - _land_detected.timeStampUs) >= 1000000) ||
+	if ((_nowUs - _land_detected.timestamp >= 1_s) ||
 	    (_land_detected.landed != landDetected) ||
 	    (_land_detected.freefall != freefallDetected) ||
 	    (_land_detected.maybe_landed != maybe_landedDetected) ||
@@ -123,10 +125,8 @@ void LandDetector::update()
 		_land_detected.rotational_movement = _get_rotational_movement();
 		_land_detected.close_to_ground_or_skipped_check = _get_close_to_ground_or_skipped_check();
 		_land_detected.at_rest = at_rest;
-		_land_detected.timeStampUs = _nowUs;
-		_land_detected.updated = true;
-	}else{
-		_land_detected.updated = false;
+		_land_detected.timestamp = hrt_absolute_time();
+		_vehicle_land_detected_pub.publish(_land_detected);
 	}
 
 	// set the flight time when disarming (not necessarily when landed, because all param changes should
@@ -141,18 +141,6 @@ void LandDetector::update()
 
 void LandDetector::UpdateVehicleAtRest()
 {
-	_imu_status.timeStampUs = _nowUs;
-
-	// Accel high frequency vibe = filtered length of (acceleration - acceleration_prev)
-	_imu_status.accel_vibration_metric = 0.99f * _imu_status.accel_vibration_metric
-					 + 0.01f * Vector3f(_acceleration - _acceleration_prev).norm();
-	_acceleration_prev = _acceleration;
-
-	// Gyro high frequency vibe = filtered length of (angular_velocity - angular_velocity_prev)
-	_imu_status.gyro_vibration_metric = 0.99f * _imu_status.gyro_vibration_metric
-					+ 0.01f * Vector3f(_angular_velocity - _angular_velocity_prev).norm();
-	_angular_velocity_prev = _angular_velocity;
-
 	static constexpr float GYRO_VIBE_METRIC_MAX = 0.02f; // gyro_vibration_metric * dt * 4.0e4f > is_moving_scaler)
 	static constexpr float ACCEL_VIBE_METRIC_MAX = 1.2f; // accel_vibration_metric * dt * 2.1e2f > is_moving_scaler
 
@@ -162,5 +150,5 @@ void LandDetector::UpdateVehicleAtRest()
 		_time_last_move_detect_us = _imu_status.timeStampUs;
 	}
 
-	_at_rest = (_nowUs - _time_last_move_detect_us > 1000000);
+	_at_rest = (hrt_elapsed_time(&_time_last_move_detect_us) > 1_s);
 }

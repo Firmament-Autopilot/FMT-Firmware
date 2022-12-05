@@ -478,12 +478,15 @@ void ins_interface_step(uint32_t timestamp)
         if (mcn_poll(ins_handle.rf_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
             
-            rnf_bus.timestamp = timestamp;
-            rnf_bus.distance_m = ins_handle.rf_report.distance_m;
-
-            Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);
-
-            rf_data_updated = 1;
+            if(ins_handle.rf_report.distance_m > 0){
+                rnf_bus.timestamp = timestamp;
+                rnf_bus.distance_m = ins_handle.rf_report.distance_m;
+                Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);
+                rf_data_updated = 1;
+            }else{
+                Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 0);
+                rf_data_updated = 0;
+            }  
         }
 
         /* update optical flow data */

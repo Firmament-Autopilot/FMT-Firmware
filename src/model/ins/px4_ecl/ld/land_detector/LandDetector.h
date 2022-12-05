@@ -45,12 +45,7 @@
 #include <float.h>
 #include <math.h>
 
-#include "mathlib/mathlib.h"
-#include "matrix/math.hpp"
 #include "hysteresis/hysteresis.h"
-
-// #include "land_detector/MulticopterLandDetector.h"
-// #include "land_detector/FixedwingLandDetector.h"
 
 using matrix::Vector2f;
 using matrix::Vector3f;
@@ -74,11 +69,6 @@ struct parameters_ld_fw_s{
 	float 	airspd{6.00f};				//	@unit m/s
 	float	vel_xy_max{5.0f};			//	@unit m/s
 	float	vel_z_max{2.0f};			//	@unit m/s
-};
-
-struct gyroRate_s{
-	matrix::Vector3f 	angular_velocity;
-	uint64_t 			timeStampUs;
 };
 
 struct imu_status_s{
@@ -113,23 +103,32 @@ struct vehicle_local_position_s {
 	bool v_xy_valid;
 	bool v_z_valid;
 	bool dist_bottom_valid;
+	uint8_t dist_bottom_sensor_bitfield;
+
+	static constexpr uint8_t DIST_BOTTOM_SENSOR_NONE =  0;
+	static constexpr uint8_t DIST_BOTTOM_SENSOR_RANGE = 1;
+	static constexpr uint8_t DIST_BOTTOM_SENSOR_FLOW =  2;
 };
 
-class LandDetector
+struct vehicle_imu_status_s {
+	uint64_t timeStampUs;
+	float accel_vibration_metric;
+	float gyro_vibration_metric;
+};
+
+class LandDetector 
 {
 public:
 	LandDetector();
 	virtual ~LandDetector();
 
-	void update();
+	void Update() override;
 
-	void set_armed(bool armed){_armed = armed;};
-	void set_dist_bottom_is_observable(bool observable){_dist_bottom_is_observable = observable;};
-	void set_nowUs(uint64_t nowUs){_nowUs = nowUs;};
-	void set_acceleration(matrix::Vector3f acceleration){_acceleration = acceleration;};
-	vehicle_local_position_s* return_vehicle_local_position(void){return &_vehicle_local_position;};
-	gyroRate_s*	return_gyroRate(void){return &_gyroRate;};
-	vehicle_land_detected_s* return_vehicle_land_detected_pub(void)	{return &_land_detected;};
+	bool* 						return_armed(void){return &_armed;};
+	matrix::Vector3f* 			return_acceleration(void){return &_acceleration;};
+	matrix::Vector3f* 			return_angular_velocity(void){return &_angular_velocity};
+	vehicle_local_position_s* 	return_vehicle_local_position(void){return &_vehicle_local_position;};
+	vehicle_land_detected_s*	return_vehicle_land_detected(void){return &_vehicle_land_detected;};
 
 protected:
 
@@ -182,30 +181,32 @@ protected:
 	Hysteresis _ground_contact_hysteresis{true};
 	Hysteresis _ground_effect_hysteresis{false};
 
+	vehicle_local_position_s _vehicle_local_position{};
+
 	matrix::Vector3f _acceleration{};
-	matrix::Vector3f _acceleration_prev{};
 	matrix::Vector3f _angular_velocity{};
-	matrix::Vector3f _angular_velocity_prev{};
 
 	bool _armed{false};
 	bool _previous_armed_state{false};	///< stores the previous actuator_armed.armed state
 	bool _dist_bottom_is_observable{false};
 
-	uint64_t 					_nowUs;
-	gyroRate_s 					_gyroRate{};
-	imu_status_s 				_imu_status{};
-	vehicle_land_detected_s 	_land_detected{};
-	vehicle_local_position_s 	_vehicle_local_position{};
-	parameters_ld_fw_s			_params_fw{};
-	parameters_ld_mc_s			_params_mc{};
+	uint64_t _nowUs;
+
+	parameters_ld_mc_s _param_mc{};
+	parameters_ld_fw_s _param_fw{};
 
 private:
 
 	void UpdateVehicleAtRest();
 
+	vehicle_land_detected_s _land_detected{};
 	uint64_t _takeoff_time{0};
 	uint64_t _total_flight_time{0};	///< total vehicle flight time in microseconds
+
 	uint64_t _time_last_move_detect_us{0};	// timestamp of last movement detection event in microseconds
+
 	uint32_t _device_id_gyro{0};
+
 	bool _at_rest{true};
+
 };
