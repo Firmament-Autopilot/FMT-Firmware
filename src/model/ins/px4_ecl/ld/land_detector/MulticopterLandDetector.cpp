@@ -78,9 +78,9 @@ MulticopterLandDetector::MulticopterLandDetector()
 void MulticopterLandDetector::_update_topics()
 {
 	if (_param_mc.useHoverThrustEstimate) {
-		if (_hoverThrustEstimate.valid) {
-			_param_mc.hoverThrottle = _hoverThrustEstimate.hover_thrust;
-			_hover_thrust_estimate_last_valid = _hoverThrustEstimate.timeStampUs;
+		if (_hover_thrust_estimate.valid) {
+			_param_mc.hoverThrottle = _hover_thrust_estimate.hover_thrust;
+			_hover_thrust_estimate_last_valid = _hover_thrust_estimate.timeStampUs;
 		}
 	}
 }
@@ -146,8 +146,8 @@ bool MulticopterLandDetector::_get_ground_contact_state()
 		_horizontal_movement = false; // not known
 	}
 
-	if (lpos_available && _vehicle_local_position.dist_bottom_valid && _param_mc.alt_gnd_effect.get() > 0) {
-		_below_gnd_effect_hgt = _vehicle_local_position.dist_bottom < _param_mc.alt_gnd_effect.get();
+	if (lpos_available && _vehicle_local_position.dist_bottom_valid && _param_mc.alt_gnd_effect > 0) {
+		_below_gnd_effect_hgt = _vehicle_local_position.dist_bottom < _param_mc.alt_gnd_effect;
 
 	} else {
 		_below_gnd_effect_hgt = false;
@@ -258,10 +258,8 @@ bool MulticopterLandDetector::_is_close_to_ground()
 
 void MulticopterLandDetector::_set_hysteresis_factor(const int factor)
 {
-	_ground_contact_hysteresis.set_hysteresis_time_from(false, _param_lndmc_trig_time.get() * 1_s / 3 * factor);
-	_landed_hysteresis.set_hysteresis_time_from(false, _param_lndmc_trig_time.get() * 1_s / 3 * factor);
-	_maybe_landed_hysteresis.set_hysteresis_time_from(false, _param_lndmc_trig_time.get() * 1_s / 3 * factor);
+	_ground_contact_hysteresis.set_hysteresis_time_from(false, _param_mc.trig_time * 1_s / 3 * factor);
+	_landed_hysteresis.set_hysteresis_time_from(false, _param_mc.trig_time * 1_s / 3 * factor);
+	_maybe_landed_hysteresis.set_hysteresis_time_from(false, _param_mc.trig_time * 1_s / 3 * factor);
 	_freefall_hysteresis.set_hysteresis_time_from(false, FREEFALL_TRIGGER_TIME_US);
 }
-
-} // namespace land_detector

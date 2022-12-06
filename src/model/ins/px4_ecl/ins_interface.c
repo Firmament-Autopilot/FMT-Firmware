@@ -425,6 +425,13 @@ void ins_interface_step(uint32_t timestamp)
 
         Ekf_IMU_update(timestamp, dt_imu, ins_handle.imu_report.gyr_B_radDs, ins_handle.imu_report.acc_B_mDs2, clipping);
 
+        float acc[3];
+        acc[0] = ins_handle.imu_report.acc_B_mDs2[0];
+        acc[1] = ins_handle.imu_report.acc_B_mDs2[1];
+        acc[2] = ins_handle.imu_report.acc_B_mDs2[2] + 9.806650162F;
+        ld_set_IMU_data(ins_handle.imu_report.gyr_B_radDs, acc);
+        ld_set_time((uint64_t)timestamp);
+
         imu_data_updated = 1;
 
         if (mcn_poll(ins_handle.mag_sub_node_t)) {
@@ -478,7 +485,7 @@ void ins_interface_step(uint32_t timestamp)
         if (mcn_poll(ins_handle.rf_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
             
-            if(ins_handle.rf_report.distance_m > 0){
+            if(ins_handle.rf_report.distance_m >= 0){
                 rnf_bus.timestamp = timestamp;
                 rnf_bus.distance_m = ins_handle.rf_report.distance_m;
                 Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);

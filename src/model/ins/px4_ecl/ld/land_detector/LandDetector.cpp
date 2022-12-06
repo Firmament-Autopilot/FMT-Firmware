@@ -64,7 +64,7 @@ void LandDetector::Update()
 	static constexpr float GYRO_NORM_MAX = math::radians(3.f); // 3 degrees/second
 
 	if (_angular_velocity.norm() > GYRO_NORM_MAX) {
-		_time_last_move_detect_us = vehicle_angular_velocity.timestamp_sample;
+		_time_last_move_detect_us = _nowUs;	//_angular_velocity.timeStampUs;
 	}
 
 	_update_topics();
@@ -100,7 +100,7 @@ void LandDetector::Update()
 	const bool at_rest = landDetected && _at_rest;
 
 	// publish at 1 Hz, very first time, or when the result has changed
-	if ((_nowUs - _land_detected.timestamp >= 1_s) ||
+	if ((_nowUs - _land_detected.timeStampUs >= 1_s) ||
 	    (_land_detected.landed != landDetected) ||
 	    (_land_detected.freefall != freefallDetected) ||
 	    (_land_detected.maybe_landed != maybe_landedDetected) ||
@@ -125,14 +125,13 @@ void LandDetector::Update()
 		_land_detected.rotational_movement = _get_rotational_movement();
 		_land_detected.close_to_ground_or_skipped_check = _get_close_to_ground_or_skipped_check();
 		_land_detected.at_rest = at_rest;
-		_land_detected.timestamp = hrt_absolute_time();
-		_vehicle_land_detected_pub.publish(_land_detected);
+		_land_detected.timeStampUs = _nowUs;
+		_land_detected.updated = true;
 	}
 
 	// set the flight time when disarming (not necessarily when landed, because all param changes should
 	// happen on the same event and it's better to set/save params while not in armed state)
 	if (_takeoff_time != 0 && !_armed && _previous_armed_state) {
-		_total_flight_time += _nowUs - _takeoff_time;
 		_takeoff_time = 0;
 	}
 
@@ -141,14 +140,13 @@ void LandDetector::Update()
 
 void LandDetector::UpdateVehicleAtRest()
 {
-	static constexpr float GYRO_VIBE_METRIC_MAX = 0.02f; // gyro_vibration_metric * dt * 4.0e4f > is_moving_scaler)
-	static constexpr float ACCEL_VIBE_METRIC_MAX = 1.2f; // accel_vibration_metric * dt * 2.1e2f > is_moving_scaler
+	static constexpr float IS_MOVING_SCALER = 1.0f;
 
-	if ((_imu_status.gyro_vibration_metric > GYRO_VIBE_METRIC_MAX)
-		|| (_imu_status.accel_vibration_metric > ACCEL_VIBE_METRIC_MAX)) {
+	if ((_imu_status.gyro_vibration_metric * 4.0E4f > IS_MOVING_SCALER)
+		|| (_imu_status.accel_vibration_metric * 2.1E2f > IS_MOVING_SCALER)) {
 
 		_time_last_move_detect_us = _imu_status.timeStampUs;
 	}
 
-	_at_rest = (hrt_elapsed_time(&_time_last_move_detect_us) > 1_s);
+	_at_rest = (_nowUs - _time_last_move_detect_us > 1_s);
 }
