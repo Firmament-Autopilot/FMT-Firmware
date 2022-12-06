@@ -486,33 +486,20 @@ void ld_set_armed(bool armed){
     *(_ld->return_armed()) = armed;
 }
 
-<<<<<<< HEAD
 void ld_set_IMU_data(float gyroRate[3], float acceleration[3]){
     *(_ld->return_acceleration()) = Vector3f{acceleration};
     *(_ld->return_angular_velocity()) = Vector3f{gyroRate};
-=======
-void ld_set_IMU_data(Vector3f gyroRate, Vector3f acceleration){
-    *(_ld->return_acceleration()) = acceleration;
-    *(_ld->return_angular_velocity()) = gyroRate;
->>>>>>> 670bf51972f8efc995b8f5ac60d7f6862bc6554c
 }
 
 void ld_set_dist_bottom_is_observable(bool observable){
     *(_ld->return_dist_bottom_is_observable()) = observable;
 }
 
-<<<<<<< HEAD
 void ld_set_vehicle_local_position(uint64_t timeStampUs){
     
-=======
-void ld_set_vehicle_local_position(	uint64_t timeStampUs, float vx, float vy, float vz,
-	                                float dist_bottom, bool v_xy_valid, bool v_z_valid,
-	                                bool dist_bottom_valid, uint8_t dist_bottom_sensor_bitfield){
->>>>>>> 670bf51972f8efc995b8f5ac60d7f6862bc6554c
     vehicle_local_position_s* vehicle_local_position = _ld->return_vehicle_local_position();
 
     vehicle_local_position->timeStampUs = timeStampUs;
-<<<<<<< HEAD
 
     // Velocity of body origin in local NED frame (m/s)
 	const Vector3f velocity{_ekf->getVelocity()};
@@ -528,16 +515,6 @@ void ld_set_vehicle_local_position(	uint64_t timeStampUs, float vx, float vy, fl
 	vehicle_local_position->dist_bottom = math::max(_ekf->getTerrainVertPos() - _ekf->getPosition()(2), _ekf->getParamHandle()->rng_gnd_clearance);
 	vehicle_local_position->dist_bottom_valid = _ekf->isTerrainEstimateValid();
 	vehicle_local_position->dist_bottom_sensor_bitfield = _ekf->getTerrainEstimateSensorBitfield();
-=======
-    vehicle_local_position->vx = vx;
-    vehicle_local_position->vy = vy;
-    vehicle_local_position->vz = vz;
-    vehicle_local_position->dist_bottom = dist_bottom;
-    vehicle_local_position->v_xy_valid = v_xy_valid;
-    vehicle_local_position->v_z_valid = v_z_valid;
-    vehicle_local_position->dist_bottom_valid = dist_bottom_valid;
-    vehicle_local_position->dist_bottom_sensor_bitfield = dist_bottom_sensor_bitfield;
->>>>>>> 670bf51972f8efc995b8f5ac60d7f6862bc6554c
 }
 
 void ld_set_vehicle_imu_status(uint64_t timeStampUs){
@@ -575,7 +552,6 @@ void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s){
 
 void ld_step(void){
 
-<<<<<<< HEAD
     uint64_t nowUs = systime_now_us();
     ld_set_time(nowUs);
     ld_set_vehicle_local_position(nowUs);
@@ -583,10 +559,6 @@ void ld_step(void){
 
 #ifdef VEHICLE_TYPE_QUADCOPTER
     // TODO
-=======
-    
-#ifdef VEHICLE_TYPE_QUADCOPTER
->>>>>>> 670bf51972f8efc995b8f5ac60d7f6862bc6554c
 #endif
 #ifdef VEHICLE_TYPE_FIXWING
 #endif
