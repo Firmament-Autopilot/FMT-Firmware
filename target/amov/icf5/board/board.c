@@ -70,6 +70,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -277,6 +278,7 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_w25qxx_init("spi1_dev0", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
@@ -317,7 +319,6 @@ void bsp_initialize(void)
     //     spi_i2s_data_transmit(SPI1, 0x99);
     // }
 
-    RT_CHECK(drv_w25qxx_init("spi1_dev0", "w25q16"));
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
     drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
 
