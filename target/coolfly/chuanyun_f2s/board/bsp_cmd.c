@@ -61,23 +61,26 @@ int cmd_reset_fct(int argc, char** argv)
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_reset_fct, __cmd_reset_fct, reset the RF factory setting);
 
 // set_bb_id
-uint8_t idArr[5];
-uint8_t vtidArr[2];
+static int handle_set_bb_id(int argc, char** argv, int optc, optv_t* optv)
+{
 
-idArr[0] = (uint8_t)(strtoul(argv[1], NULL, 0));
-idArr[1] = (uint8_t)(strtoul(argv[2], NULL, 0));
-idArr[2] = (uint8_t)(strtoul(argv[3], NULL, 0));
-idArr[3] = (uint8_t)(strtoul(argv[4], NULL, 0));
-idArr[4] = (uint8_t)(strtoul(argv[5], NULL, 0));
+    uint8_t idArr[5];
+    uint8_t vtidArr[2];
 
-vtidArr[0] = (uint8_t)(strtoul(argv[6], NULL, 0));
-vtidArr[1] = (uint8_t)(strtoul(argv[7], NULL, 0));
+    idArr[0] = (uint8_t)(strtoul(argv[1], NULL, 0));
+    idArr[1] = (uint8_t)(strtoul(argv[2], NULL, 0));
+    idArr[2] = (uint8_t)(strtoul(argv[3], NULL, 0));
+    idArr[3] = (uint8_t)(strtoul(argv[4], NULL, 0));
+    idArr[4] = (uint8_t)(strtoul(argv[5], NULL, 0));
 
-HAL_BB_SaveRcId(idArr, vtidArr);
+    vtidArr[0] = (uint8_t)(strtoul(argv[6], NULL, 0));
+    vtidArr[1] = (uint8_t)(strtoul(argv[7], NULL, 0));
 
-DLOG_Critical("id:0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x", idArr[0], idArr[1], idArr[2], idArr[3], idArr[4], vtidArr[0], vtidArr[1]);
+    HAL_BB_SaveRcId(idArr, vtidArr);
 
-return 0;
+    DLOG_Critical("id:0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x", idArr[0], idArr[1], idArr[2], idArr[3], idArr[4], vtidArr[0], vtidArr[1]);
+
+    return 0;
 }
 
 int cmd_set_bb_id(int argc, char** argv)
