@@ -86,9 +86,7 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-#ifdef DEVICE_ON_BOARD
     { "mtdblk0", "/", "elm", 0, NULL },
-#endif
     { NULL } /* NULL indicate the end */
 };
 
@@ -416,23 +414,13 @@ void bsp_initialize(void)
     // RT_CHECK(drv_sdio_init());
     // console_println("drv_sdio_init~");
 
-#ifdef DEVICE_ON_BOARD
     /* fram init */
-    RT_CHECK(drv_ramtron_init("spi6_dev1"));
-#endif
+    if (FMT_EOK != drv_ramtron_init("spi6_dev1")) {
+        console_println("=================> can't find the ramtron on spi6_dev1");
+    }
+
     /* init file system */
-    // FMT_CHECK(file_manager_init(mnt_table));
-
     if (FMT_EOK != file_manager_init(mnt_table)) {
-        // int result = 0;
-        // char *type = "elm"; /* use the default file system type as 'fatfs' */
-        // char *mtdfs = "mtdblk0";
-        // result = dfs_mkfs(type, mtdfs);
-        // if (result != RT_EOK)
-        // {
-        //     console_println("mkfs failed, result=%d\n", result);
-        // }
-
         console_println("=================> mtd first used => pleaserun:  mkfs mtdblk0 ");
     }
 
