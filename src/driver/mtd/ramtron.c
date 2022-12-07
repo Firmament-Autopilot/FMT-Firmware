@@ -123,7 +123,7 @@ rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_
     message1.cs_release = 0;
     message1.next = &message2;
     /* send address */
-    message2.send_buf = &addr;
+    message2.send_buf = &addr_buf;
     message2.recv_buf = RT_NULL;
     message2.length = addr_length;
     message2.cs_take = 0;
@@ -151,7 +151,6 @@ rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sect
     uint8_t addr_length = (geometry.sector_count < 512) ? 2 : 3;
 
     /* send MSB first */
-
     Msb2Lsb((uint8_t*)&addr, addr_length);
 
     /* write enable */
@@ -165,11 +164,9 @@ rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sect
     message1.cs_release = 0;
     message1.next = &message2;
     /* send address */
-    message2.send_buf = &addr;
+    message2.send_buf = &addr_buf;
     message2.recv_buf = RT_NULL;
-
     message2.length = addr_length;
-
     message2.cs_take = 0;
     message2.cs_release = 0;
     message2.next = &message3;

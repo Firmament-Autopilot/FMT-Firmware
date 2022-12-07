@@ -1,4 +1,5 @@
 /*****************************************************************************
+
 Copyright (c) 2022, Firmament Autopilot Team. All rights reserved.
 
 Author: J Zou: jiachi.zou@gmail.com
@@ -37,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 rt_err_t drv_spl06_init(const char* spi_device_name, const char* baro_device_name);
 

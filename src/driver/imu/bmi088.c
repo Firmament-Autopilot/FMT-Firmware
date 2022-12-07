@@ -164,7 +164,7 @@ static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_u
     reqested register content is transmitted. */
     RT_TRY(spi_read_reg8(spi_device, reg, &r_val));
     RT_TRY(spi_read_reg8(spi_device, reg, &r_val));
-
+    
     return (r_val == val) ? RT_EOK : RT_ERROR;
 }
 
@@ -516,7 +516,7 @@ static rt_err_t accel_set_range(uint32_t max_g)
 
 static rt_err_t accelerometer_init(void)
 {
-    uint8_t accel_id;
+    uint8_t accel_id[2];
 
     /* init spi bus */
     RT_TRY(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
@@ -530,7 +530,7 @@ static rt_err_t accelerometer_init(void)
         DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id[1]);
         return RT_ERROR;
     }
-
+    
     /* soft reset */
     RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_SOFTRESET, 0xB6));
     systime_udelay(2000);
@@ -596,6 +596,7 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
     RT_TRY(accel_set_bwp_odr(cfg->dlpf_freq_hz));
 
     accel->config = *cfg;
+
 
     return RT_EOK;
 }

@@ -117,6 +117,7 @@ static rt_err_t mag_raw_measure(float* raw)
     raw[1] = ((float)data18bit[1] - MMC5983_18BIT_OFFSET) / MMC5983_18BIT_SENSITIVITY;
     raw[2] = ((float)data18bit[2] - MMC5983_18BIT_OFFSET) / MMC5983_18BIT_SENSITIVITY;
 
+
     return RT_EOK;
 }
 
@@ -147,8 +148,8 @@ static rt_err_t probe(void)
     while (tries) {
 
         RT_TRY(i2c_read_reg(i2c_dev, MMC5983_REG_STATUS, &value));
-
         /* Check OTP Read status */
+
         if ((value & MMC5983_OTP_READ_DONE) != MMC5983_OTP_READ_DONE) {
             console_printf("MMC5983 no done!!!");
             sys_msleep(10);
@@ -171,13 +172,13 @@ static rt_err_t probe(void)
 
 static rt_err_t mmc5983ma_init(void)
 {
-
     /* check if device connected */
     RT_TRY(probe());
 
     /*Work mode setting*/
     /* Write reg 0x0A */
     /* Set BW<1:0> = bandwith
+
 		BW1	BW0	Measurement Time	Bandwidth
 		0	0		8ms				100Hz
 		0	1		4ms				200Hz
@@ -185,7 +186,6 @@ static rt_err_t mmc5983ma_init(void)
 		1	1		0.5ms			800Hz
 	*/
     RT_CHECK(i2c_write_reg(i2c_dev, MMC5983_REG_CTRL1, MMC5983_CMD_BW00));
-
     /* Write reg 0x09 */
     /* Set Auto_SR_en bit '1', Enable the function of automatic set/reset */
     RT_CHECK(i2c_write_reg(i2c_dev, MMC5983_REG_CTRL0, MMC5983_CMD_AUTO_SR_EN));
@@ -193,6 +193,8 @@ static rt_err_t mmc5983ma_init(void)
     /* Write reg 0x0B */
     /* Set Cmmm_en bit '1', Enable the continuous mode */
     /* Set CM_Freq<2:0> = sampling_rate
+
+
 				001				1 Hz
 				010				10 Hz
 				011				20 Hz

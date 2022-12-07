@@ -28,11 +28,10 @@
 #include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
 #include "driver/gps/gps_m8n.h"
-// #include "driver/imu/bmi055.h"
+#include "driver/imu/bmi055.h"
 #include "driver/imu/bmi088.h"
-// #include "driver/imu/icm20689.h"
 #include "driver/imu/icm20600.h"
-// #include "driver/mag/ist8310.h"
+#include "driver/mag/ist8310.h"
 #include "driver/mag/mmc5983ma.h"
 #include "driver/mtd/ramtron.h"
 #include "driver/range_finder/tfmini_s.h"
@@ -446,6 +445,7 @@ void bsp_initialize(void)
     /* init onboard sensors */
     // RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
+
     // RT_CHECK(drv_bmi055_init("spi2_dev2", "gyro0", "accel0"));
 
     RT_CHECK(drv_bmi088_init("spi2_dev2", "spi2_dev3", "gyro0", "accel0"));
@@ -505,7 +505,7 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-#endif
+    #endif
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());
@@ -558,7 +558,6 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
-
     /* dump boot log to file */
     boot_log_dump();
 }
