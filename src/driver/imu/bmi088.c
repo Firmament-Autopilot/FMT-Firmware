@@ -21,8 +21,8 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...)
-// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+// #define DRV_DBG(...)
+#define DRV_DBG(...) console_printf(__VA_ARGS__)
 
 #ifdef BIT
     #undef BIT
@@ -516,7 +516,7 @@ static rt_err_t accel_set_range(uint32_t max_g)
 
 static rt_err_t accelerometer_init(void)
 {
-    uint8_t accel_id[2];
+    uint8_t accel_id;
 
     /* init spi bus */
     RT_TRY(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
@@ -527,7 +527,7 @@ static rt_err_t accelerometer_init(void)
     /* read accel id */
     RT_TRY(spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
     if (accel_id != BMI088_ACC_BGW_CHIPID_VALUE) {
-        DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id[1]);
+        DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id);
         return RT_ERROR;
     }
     
