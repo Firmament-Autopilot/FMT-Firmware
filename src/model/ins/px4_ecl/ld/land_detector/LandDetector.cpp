@@ -59,7 +59,7 @@ LandDetector::~LandDetector()
 {
 }
 
-void LandDetector::Update()
+void LandDetector::update()
 {
 	static constexpr float GYRO_NORM_MAX = math::radians(3.f); // 3 degrees/second
 

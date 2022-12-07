@@ -142,7 +142,7 @@ public:
 	LandDetector();
 	virtual ~LandDetector();
 
-	void Update();
+	void update();
 
 	bool* 						return_armed(void){return &_armed;};
 	uint64_t*					return_nowUs(void){return &_nowUs;};

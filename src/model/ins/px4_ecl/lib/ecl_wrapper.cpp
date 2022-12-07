@@ -534,6 +534,14 @@ void ld_set_flag_control_climb_rate_enabled(bool enable){
     *(_ld->return_flag_control_climb_rate_enabled()) = enable;
 }
 
+void ld_set_trajectory_vz(float vz){
+    *(_ld->return_trajectory_vz()) = vz;
+}
+
+void ld_set_takeoff_state(uint8_t takeoff_state){
+    *(_ld->return_takeoff_state()) = takeoff_state;
+}
+
 void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid){
     hover_thrust_estimate_s* hover_thrust_estimate = _ld->return_hover_thrust_estimate();
     hover_thrust_estimate->timeStampUs = nowUs;
@@ -557,12 +565,7 @@ void ld_step(void){
     ld_set_vehicle_local_position(nowUs);
     ld_set_vehicle_imu_status(nowUs);
 
-#ifdef VEHICLE_TYPE_QUADCOPTER
-    // TODO
-#endif
-#ifdef VEHICLE_TYPE_FIXWING
-#endif
-    _ld->Update();
+    _ld->update();
 }
 
 }

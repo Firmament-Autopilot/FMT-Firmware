@@ -21,6 +21,7 @@
 #include "module/log/mlog.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
+#include "Controller_types.h"
 
 #define BIT(u, n) (u & (1 << n))
 
@@ -94,6 +95,9 @@ MCN_DECLARE(sensor_gps);
 MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(sensor_optflow);
 MCN_DECLARE(sensor_airspeed);
+
+/* FMS input bus */
+MCN_DECLARE(fms_output);
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -287,6 +291,11 @@ static struct INS_Handler {
     airspeed_data_t airspeed_report;
 } ins_handle;
 
+static struct FMS_Handler {
+    McnNode_t fms_sub_node_t;
+    FMS_Out_Bus fms_report;
+} fms_handle;
+
 static uint8_t imu_data_updated;
 static uint8_t mag_data_updated;
 static uint8_t baro_data_updated;
@@ -429,8 +438,7 @@ void ins_interface_step(uint32_t timestamp)
         acc[0] = ins_handle.imu_report.acc_B_mDs2[0];
         acc[1] = ins_handle.imu_report.acc_B_mDs2[1];
         acc[2] = ins_handle.imu_report.acc_B_mDs2[2] + 9.806650162F;
-        ld_set_IMU_data(ins_handle.imu_report.gyr_B_radDs, acc);
-        ld_set_time((uint64_t)timestamp);
+        ld_set_IMU_data(ins_handle.imu_report.gyr_B_radDs, acc);;
 
         imu_data_updated = 1;
 
@@ -516,6 +524,38 @@ void ins_interface_step(uint32_t timestamp)
             airspeed_data_updated = 1;
         }
 
+        /* update armed data for land detector */
+        if (mcn_poll(fms_handle.fms_sub_node_t)) {
+            mcn_copy(MCN_HUB(fms_output), fms_handle.fms_sub_node_t, &fms_handle.fms_report);
+
+            switch(fms_handle.fms_report.status){
+                case 0:
+                    break;
+                case 1:
+                    ld_set_armed(false);
+                    ld_set_takeoff_state(1);    // takeoff_status_s::TAKEOFF_STATE_DISARMED
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    ld_set_armed(true);
+                    break;
+            }
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+            float thr;
+            thr = ((float)fms_handle.fms_report.throttle_cmd - 1000.0f) / 1000.0f;
+            ld_set_actuator_controls_throttle(thr);
+            ld_set_flag_control_climb_rate_enabled(true);
+            ld_set_trajectory_vz(fms_handle.fms_report.w_cmd);
+            if(fms_handle.fms_report.state == 17){
+                ld_set_takeoff_state(4);    // takeoff_status_s::TAKEOFF_STATE_RAMPUP
+            }else{
+
+            }
+#endif
+        }
+
         /* run INS */
         px4_ecl_step();
     }
@@ -585,6 +625,8 @@ void ins_interface_init(void)
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
     ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
+
+    fms_handle.fms_sub_node_t = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
 
     IMU_ID = mlog_get_bus_id("IMU");
     MAG_ID = mlog_get_bus_id("MAG");
