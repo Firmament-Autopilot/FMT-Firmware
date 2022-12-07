@@ -175,7 +175,6 @@ static fmt_err_t actuator_parse_devices(const toml_array_t* array)
     fmt_err_t err = FMT_EOK;
     uint32_t idx = 0;
 
-
     for (i = 0; 0 != (curtab = toml_table_at(array, i)); i++) {
         err = actuator_parse_device(curtab, idx);
 
@@ -350,7 +349,6 @@ fmt_err_t actuator_toml_config(toml_table_t* table)
             if (toml_array_table_in(table, key, &arr) == 0) {
                 err = actuator_parse_mappings(arr);
                 if (err != FMT_EOK) {
-                    TOML_DBG_E("actuator_parse_mappings error\n");    
                     return err;
                 }
             } else {
@@ -384,6 +382,5 @@ fmt_err_t actuator_toml_config(toml_table_t* table)
         }
     }
 
-    show_actuator_config();
     return FMT_EOK;
 }

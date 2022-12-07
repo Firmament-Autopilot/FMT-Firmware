@@ -314,7 +314,7 @@ void hal_serial_isr(struct serial_device* serial, int event)
 
         while (1) {
             ch = serial->ops->getc(serial);
-            
+
             if (ch == -1)
                 break;
 

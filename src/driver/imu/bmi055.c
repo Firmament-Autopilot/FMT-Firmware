@@ -581,7 +581,7 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
 
     /* Initialize accelerometer */
 
-    accel_spi_dev = rt_device_find("spi2_dev3");
+    accel_spi_dev = rt_device_find("spi1_dev4");
     RT_ASSERT(accel_spi_dev != NULL);
     /* config spi */
     {

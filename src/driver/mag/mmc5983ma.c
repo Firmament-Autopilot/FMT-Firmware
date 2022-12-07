@@ -117,7 +117,6 @@ static rt_err_t mag_raw_measure(float* raw)
     raw[1] = ((float)data18bit[1] - MMC5983_18BIT_OFFSET) / MMC5983_18BIT_SENSITIVITY;
     raw[2] = ((float)data18bit[2] - MMC5983_18BIT_OFFSET) / MMC5983_18BIT_SENSITIVITY;
 
-
     return RT_EOK;
 }
 

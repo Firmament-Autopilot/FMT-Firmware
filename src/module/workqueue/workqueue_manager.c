@@ -43,8 +43,5 @@ fmt_err_t workqueue_manager_init(void)
     wq_list[1] = workqueue_create("wq:hp_work", 20, 10240, 6);
     RT_ASSERT(wq_list[1] != NULL);
 
-    wq_list[2] = workqueue_create("wq:sysevent_work", 5, 2048, 1);
-    RT_ASSERT(wq_list[2] != NULL);
-
     return FMT_EOK;
 }

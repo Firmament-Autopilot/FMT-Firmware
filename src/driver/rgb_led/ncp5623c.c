@@ -16,7 +16,7 @@
 #include "driver/rgb_led/ncp5623c.h"
 #include "hal/i2c/i2c.h"
 
-// #define DRV_DBG(...) console_println(__VA_ARGS__)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
 #define NCP5623_LED_OFF     0x00 /**< off */
@@ -70,7 +70,7 @@ static void send_led_bright(void)
 
     rt_size_t ret = rt_i2c_transfer(i2c_device->bus, i2c_device->slave_addr, &msgs, 1);
     if (ret != 1) {
-        PERIOD_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail!  ret:%d\n", ret););
+        PERIOD_EXECUTE(dbg, 1000, DRV_DBG("set led bright fail! IC1 ISR:0x%x ret:%d\n", I2C1->ISR, ret););
     }
 }
 

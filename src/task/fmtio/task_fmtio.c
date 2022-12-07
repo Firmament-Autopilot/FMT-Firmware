@@ -30,7 +30,6 @@ void task_fmtio_entry(void* parameter)
     fmtio_loop();
 }
 
-
 TASK_EXPORT __fmt_task_desc = {
     .name = "fmtio",
     .init = task_fmtio_init,
@@ -41,4 +40,3 @@ TASK_EXPORT __fmt_task_desc = {
     .param = NULL,
     .dependency = NULL
 };
-

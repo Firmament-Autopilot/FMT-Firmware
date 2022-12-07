@@ -191,7 +191,6 @@ fmt_err_t start_task(uint32_t task_id)
         return FMT_ENOSYS;
     }
 
-
     if (rt_thread_startup(task_tid[task_id]) != RT_EOK) {
         return FMT_ERROR;
     }

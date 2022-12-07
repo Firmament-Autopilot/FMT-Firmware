@@ -74,4 +74,4 @@ int cmd_fmtio(int argc, char** argv)
 {
     return syscmd_process(argc, argv, handle_cmd);
 }
-// FINSH_FUNCTION_EXPORT_ALIAS(cmd_fmtio, __cmd_fmtio, FMT IO commands);
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_fmtio, __cmd_fmtio, FMT IO commands);
