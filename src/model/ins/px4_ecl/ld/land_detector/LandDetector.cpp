@@ -95,6 +95,12 @@ void LandDetector::update()
 	const bool landDetected = _landed_hysteresis.get_state();
 	const bool in_ground_effect = _ground_effect_hysteresis.get_state();
 
+	if(landDetected == true){
+		int test;
+		test = 0;
+		test = 1;
+	}
+
 	UpdateVehicleAtRest();
 
 	const bool at_rest = landDetected && _at_rest;

@@ -517,10 +517,12 @@ void ins_interface_step(uint32_t timestamp)
             mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.airspeed_sub_node_t, &ins_handle.airspeed_report);
 
             airspeed_bus.timestamp = timestamp;
-            airspeed_bus.true_airspeed = ins_handle.airspeed_report.temperature_deg;
+            airspeed_bus.true_airspeed = 2 * sqrt(ins_handle.airspeed_report.temperature_deg) / 1.29f;
 
             Ekf_AIRSPEED_update(timestamp, airspeed_bus.true_airspeed, 1);
-
+#ifdef VEHICLE_TYPE_FIXWING
+            ld_set_airspeed_validated((uint64_t)timestamp, airspeed_bus.true_airspeed);
+#endif
             airspeed_data_updated = 1;
         }
 
@@ -529,13 +531,11 @@ void ins_interface_step(uint32_t timestamp)
             mcn_copy(MCN_HUB(fms_output), fms_handle.fms_sub_node_t, &fms_handle.fms_report);
 
             switch(fms_handle.fms_report.status){
-                case 0:
-                    break;
                 case 1:
                     ld_set_armed(false);
-                    ld_set_takeoff_state(1);    // takeoff_status_s::TAKEOFF_STATE_DISARMED
                     break;
                 case 2:
+                    ld_set_armed(true);                   
                     break;
                 case 3:
                     ld_set_armed(true);
@@ -543,21 +543,26 @@ void ins_interface_step(uint32_t timestamp)
             }
 
 #ifdef VEHICLE_TYPE_QUADCOPTER
+
             float thr;
             thr = ((float)fms_handle.fms_report.throttle_cmd - 1000.0f) / 1000.0f;
             ld_set_actuator_controls_throttle(thr);
-            ld_set_flag_control_climb_rate_enabled(true);
-            ld_set_trajectory_vz(fms_handle.fms_report.w_cmd);
-            if(fms_handle.fms_report.state == 17){
-                ld_set_takeoff_state(4);    // takeoff_status_s::TAKEOFF_STATE_RAMPUP
-            }else{
 
-            }
+            ld_set_trajectory_vz(fms_handle.fms_report.w_cmd);
+
+            if(fms_handle.fms_report.state == 15)   ld_set_flag_control_climb_rate_enabled(true);
+            else ld_set_flag_control_climb_rate_enabled(false);
+
+            if(fms_handle.fms_report.state >= 4)  ld_set_takeoff_state(3);  
+
 #endif
         }
 
         /* run INS */
         px4_ecl_step();
+
+        /* run land detector*/
+        ld_step();
     }
 
     /* update ins output timestamp */
