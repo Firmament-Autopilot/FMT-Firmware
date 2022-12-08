@@ -29,6 +29,7 @@ extern "C" {
 /* Thread Prority */
 #define VEHICLE_THREAD_PRIORITY    3
 #define FMTIO_THREAD_PRIORITY      4
+#define DRONECAN_THREAD_PRIORITY   5
 #define LOGGER_THREAD_PRIORITY     10
 #define MAVLINK_RX_THREAD_PRIORITY 11
 #define COMM_THREAD_PRIORITY       12
