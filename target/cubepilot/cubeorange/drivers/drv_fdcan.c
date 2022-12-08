@@ -1,6 +1,6 @@
 #include "drv_fdcan.h"
 #include "board.h"
-#include "hal/fdcan/fdcan.h"
+#include "hal/can/can.h"
 #include "stm32h7xx_hal_fdcan.h"
 
 #define DRV_USE_FDCAN1
@@ -40,7 +40,7 @@ struct stm32_fdcan {
     IRQn_Type irq;
 };
 
-static fdcan_device fdcan_dev1;
+static can_device fdcan_dev1;
 struct stm32_fdcan stm32_fdcan1 = {
     .fdcan_handler = &hfdcan1,
     .fdcan_filter = &FDCAN1_RXFilter,
@@ -52,7 +52,7 @@ struct stm32_fdcan stm32_fdcan1 = {
 };
 
 #ifdef DRV_USE_FDCAN2
-static fdcan_device fdcan_dev2;
+static can_device fdcan_dev2;
 struct stm32_fdcan stm32_fdcan2 = {
     .fdcan_handler = &hfdcan2,
     .fdcan_filter = &FDCAN2_RXFilter,
@@ -180,7 +180,7 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* fdcanHandle)
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-static rt_err_t fdacn_wait_complete(fdcan_dev_t fdcan_dev, rt_uint32_t* status)
+static rt_err_t fdacn_wait_complete(can_dev_t fdcan_dev, rt_uint32_t* status)
 {
     if (rt_event_recv(&fdcan_dev->event, 0xffffffff, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, TICKS_FROM_MS(FDCAN_TIMEOUT), status) != RT_EOK) {
         /* wait timeout */
@@ -193,7 +193,7 @@ static rt_err_t fdacn_wait_complete(fdcan_dev_t fdcan_dev, rt_uint32_t* status)
 static rt_err_t fdcan_baud_rate_configure(FDCAN_HandleTypeDef* fdcanHandle, rt_int32_t baud)
 {
     //时钟频率40M / (1 + TSG1 + TSG2) = CAN波特率
-    if (baud == FDCAN_BAUD_RATE_1000K) {
+    if (baud == CAN_BAUD_RATE_1000K) {
         fdcanHandle->Init.NominalPrescaler = 4;
         fdcanHandle->Init.NominalSyncJumpWidth = 1;
         fdcanHandle->Init.NominalTimeSeg1 = 6;
@@ -203,7 +203,7 @@ static rt_err_t fdcan_baud_rate_configure(FDCAN_HandleTypeDef* fdcanHandle, rt_i
         fdcanHandle->Init.DataSyncJumpWidth = 1;
         fdcanHandle->Init.DataTimeSeg1 = 6;
         fdcanHandle->Init.DataTimeSeg2 = 4;
-    } else if (baud == FDCAN_BAUD_RATE_500K) {
+    } else if (baud == CAN_BAUD_RATE_500K) {
         fdcanHandle->Init.NominalPrescaler = 4;
         fdcanHandle->Init.NominalSyncJumpWidth = 1;
         fdcanHandle->Init.NominalTimeSeg1 = 12;
@@ -220,12 +220,12 @@ static rt_err_t fdcan_baud_rate_configure(FDCAN_HandleTypeDef* fdcanHandle, rt_i
     return RT_EOK;
 }
 
-static int fdcan_sendmsg(fdcan_dev_t fdcan_dev, const void* buf)
+static int fdcan_sendmsg(can_dev_t fdcan_dev, const void* buf)
 {
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
     RT_ASSERT(stm32_fdcan_x != RT_NULL);
 
-    fdcan_msg_t msg_t = (fdcan_msg_t)buf;
+    can_msg_t msg_t = (can_msg_t)buf;
 
     stm32_fdcan_x->fdcan_txheader->Identifier = msg_t->id;                  // 32位ID
     stm32_fdcan_x->fdcan_txheader->IdType = FDCAN_EXTENDED_ID;              //标准ID
@@ -246,11 +246,11 @@ static int fdcan_sendmsg(fdcan_dev_t fdcan_dev, const void* buf)
     return msg_t->len;
 }
 
-static int fdcan_recvmsg(fdcan_dev_t fdcan_dev, void* buf)
+static int fdcan_recvmsg(can_dev_t fdcan_dev, void* buf)
 {
     rt_uint32_t status;
     rt_err_t err = RT_EOK;
-    fdcan_msg_t msg_t = (fdcan_msg_t)buf;
+    can_msg_t msg_t = (can_msg_t)buf;
 
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
     RT_ASSERT(stm32_fdcan_x != RT_NULL);
@@ -281,30 +281,7 @@ static int fdcan_recvmsg(fdcan_dev_t fdcan_dev, void* buf)
     return msg_t->len;
 }
 
-// static rt_err_t fdcan_filter_start(FDCAN_HandleTypeDef* fdcanHandle, FDCAN_FilterTypeDef* filter)
-// {
-//     filter->IdType = FDCAN_EXTENDED_ID;                        //标准ID
-//     filter->FilterIndex = 0;                                   //滤波器索引
-//     filter->FilterType = FDCAN_FILTER_MASK;                    //滤波器类型
-//     filter->FilterConfig = FDCAN_FILTER_TO_RXFIFO0;            //过滤器0关联到FIFO0
-//     filter->FilterID1 = 0x0000;                                // 32位ID
-//     filter->FilterID2 = 0x0000;                                //如果FDCAN配置为传统模式的话，这里是32位掩码
-//     if (HAL_FDCAN_ConfigFilter(fdcanHandle, filter) != HAL_OK) //滤波器初始化
-//     {
-//         Error_Handler();
-//     }
-
-//     /* Configure global filter on both FDCAN instances:
-//     Filter all remote frames with STD and EXT ID
-//     Reject non matching frames with STD ID and EXT ID */
-//     if (HAL_FDCAN_ConfigGlobalFilter(fdcanHandle, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK) {
-//         Error_Handler();
-//     }
-
-//     return RT_EOK;
-// }
-
-static rt_err_t fdcan_configure(fdcan_dev_t fdcan_dev, struct fdcan_configure* cfg)
+static rt_err_t fdcan_configure(can_dev_t fdcan_dev, struct can_configure* cfg)
 {
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
 
@@ -317,7 +294,7 @@ static rt_err_t fdcan_configure(fdcan_dev_t fdcan_dev, struct fdcan_configure* c
     return RT_EOK;
 }
 
-static const struct fdcan_ops _fdcan_ops = {
+static const struct can_ops _fdcan_ops = {
     .configure = fdcan_configure,
     .sendmsg = fdcan_sendmsg,
     .recvmsg = fdcan_recvmsg,
@@ -443,7 +420,7 @@ rt_err_t drv_fdcan_init(void)
 {
     RT_CHECK(fdcan_init());
 
-    struct fdcan_configure config = FDCAN_DEFAULT_CONFIG;
+    struct can_configure config = CAN_DEFAULT_CONFIG;
 
 #ifdef DRV_USE_FDCAN1
     fdcan_dev1.ops = &_fdcan_ops;
@@ -454,7 +431,7 @@ rt_err_t drv_fdcan_init(void)
         return RT_ERROR;
     }
 
-    rt_hw_can_register(&fdcan_dev1, "fdcan1", 0, &stm32_fdcan1);
+    hw_can_register(&fdcan_dev1, "fdcan1", 0, &stm32_fdcan1);
 
 #endif
 
@@ -462,7 +439,7 @@ rt_err_t drv_fdcan_init(void)
     fdcan_dev2.ops = &_fdcan_ops;
     fdcan_dev2.config = config;
 
-    rt_hw_can_register(&fdcan_dev2, "fdcan2", 0, &stm32_fdcan2);
+    hw_can_register(&fdcan_dev2, "fdcan2", 0, &stm32_fdcan2);
 #endif
 
     return RT_EOK;

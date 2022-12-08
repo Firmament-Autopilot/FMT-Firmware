@@ -3,7 +3,7 @@
 
 #include "canard.h"
 #include "dronecan.h"
-#include "hal/fdcan/fdcan.h"
+#include "hal/can/can.h"
 #include <firmament.h>
 
 int16_t dronecanTransmit(rt_device_t dronecan_dev, const CanardCANFrame* frame);
