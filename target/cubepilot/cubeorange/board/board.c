@@ -34,6 +34,7 @@
 #include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "drv_adc.h"
+#include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -63,6 +64,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
@@ -195,7 +197,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 
 /**
  * @brief Enable on-board device power supply
- * 
+ *
  */
 static void EnablePower(void)
 {
@@ -203,22 +205,22 @@ static void EnablePower(void)
 }
 
 /*
-* When enabling the D-cache there is cache coherency issue. 
-* This matter crops up when multiple masters (CPU, DMAs...) 
-* share the memory. If the CPU writes something to an area 
-* that has a write-back cache attribute (example SRAM), the 
-* write result is not seen on the SRAM as the access is 
-* buffered, and then if the DMA reads the same memory area 
-* to perform a data transfer, the values read do not match 
-* the intended data. The issue occurs for DMA read as well.
-* Currently not all drivers can ensure the data coherency 
-* when D-Cache enabled, so disable it by default.
-*/
+ * When enabling the D-cache there is cache coherency issue.
+ * This matter crops up when multiple masters (CPU, DMAs...)
+ * share the memory. If the CPU writes something to an area
+ * that has a write-back cache attribute (example SRAM), the
+ * write result is not seen on the SRAM as the access is
+ * buffered, and then if the DMA reads the same memory area
+ * to perform a data transfer, the values read do not match
+ * the intended data. The issue occurs for DMA read as well.
+ * Currently not all drivers can ensure the data coherency
+ * when D-Cache enabled, so disable it by default.
+ */
 /**
-  * @brief  CPU L1-Cache enable.
-  * @param  None
-  * @retval None
-  */
+ * @brief  CPU L1-Cache enable.
+ * @param  None
+ * @retval None
+ */
 static void CPU_CACHE_Enable(void)
 {
     /* Enable I-Cache */
@@ -229,9 +231,9 @@ static void CPU_CACHE_Enable(void)
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
     console_printf("Enter Error_Handler\n");
@@ -244,9 +246,9 @@ void Error_Handler(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
     HAL_RCC_DeInit();
@@ -301,6 +303,7 @@ void SystemClock_Config(void)
     LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
+    LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL1Q);
     LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
 
     __HAL_RCC_D2SRAM1_CLK_ENABLE();
@@ -369,8 +372,13 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+
+    /* fdcan driver init */
+    RT_CHECK(drv_fdcan_init());
+
     /* fram init */
     RT_CHECK(drv_ramtron_init("spi2_dev1"));
+
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

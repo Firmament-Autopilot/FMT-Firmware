@@ -424,7 +424,7 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
     serial = (struct serial_device*)dev;
 
     /*dbg_log(DBG_LOG, "open serial device: 0x%08x with open flag: 0x%04x\n",
-	    dev, oflag);*/
+            dev, oflag);*/
 
     /* check device flag with the open flag */
     if ((oflag & RT_DEVICE_FLAG_INT_RX) && !(dev->flag & RT_DEVICE_FLAG_INT_RX))

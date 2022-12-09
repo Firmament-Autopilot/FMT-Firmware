@@ -1,0 +1,15 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = GetCurrentDir()
+
+src = Glob('libcanard/*.c')
+src += Glob('dsdl/src/*.c')
+
+CPPPATH = [cwd + '/libcanard', cwd + '/dsdl/include']
+
+
+group = DefineGroup('dronecan', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

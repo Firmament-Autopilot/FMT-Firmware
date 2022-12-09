@@ -49,7 +49,7 @@ static rt_size_t hal_sd_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_siz
     RT_ASSERT(dev != RT_NULL);
     sd = (sd_dev_t)dev;
 
-    /* check if the buffer address is 4B allignment since DMA is configured to transfer word, 
+    /* check if the buffer address is 4B allignment since DMA is configured to transfer word,
     make sure the buffer is 4B allignment to improve the transfer speed */
     if ((uint32_t)buffer & 0x03) {
         for (i = 0; i < count; i++) {
@@ -89,7 +89,7 @@ static rt_size_t hal_sd_write(rt_device_t dev, rt_off_t pos, const void* buffer,
     RT_ASSERT(dev != RT_NULL);
     sd = (sd_dev_t)dev;
 
-    /* check if the buffer address is 4B allignment since DMA is configured to transfer word, 
+    /* check if the buffer address is 4B allignment since DMA is configured to transfer word,
     make sure the buffer is 4B allignment to improve the transfer speed */
     if ((uint32_t)buffer & 0x03) {
         for (i = 0; i < count; i++) {
