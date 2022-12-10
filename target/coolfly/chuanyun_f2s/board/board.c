@@ -34,7 +34,11 @@
 #include "driver/mag/ist8310.h"
 #include "driver/mag/mmc5983ma.h"
 #include "driver/mtd/ramtron.h"
+#include "driver/range_finder/tfmini_s.h"
 #include "driver/rgb_led/ncp5623c.h"
+// #include "driver/vision_flow/lc307.h"
+#include "driver/vision_flow/pmw3901_fl04.h"
+
 #include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -81,9 +85,7 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-#ifdef DEVICE_ON_BOARD
     { "mtdblk0", "/", "elm", 0, NULL },
-#endif
     { NULL } /* NULL indicate the end */
 };
 
@@ -411,23 +413,14 @@ void bsp_initialize(void)
     // RT_CHECK(drv_sdio_init());
     // console_println("drv_sdio_init~");
 
-#ifdef DEVICE_ON_BOARD
     /* fram init */
-    RT_CHECK(drv_ramtron_init("spi6_dev1"));
-#endif
-    /* init file system */
-    // FMT_CHECK(file_manager_init(mnt_table));
-    if (FMT_EOK != file_manager_init(mnt_table)) {
-        // int result = 0;
-        // char *type = "elm"; /* use the default file system type as 'fatfs' */
-        // char *mtdfs = "mtdblk0";
-        // result = dfs_mkfs(type, mtdfs);
-        // if (result != RT_EOK)
-        // {
-        //     console_println("mkfs failed, result=%d\n", result);
-        // }
+    if (FMT_EOK != drv_ramtron_init("spi6_dev1")) {
+        console_println("=================> can't find the ramtron on spi6_dev1");
+    }
 
-        console_println("=================> mtd first used => please run:  mkfs mtdblk0 ");
+    /* init file system */
+    if (FMT_EOK != file_manager_init(mnt_table)) {
+        console_println("=================> mtd first used => pleaserun:  mkfs mtdblk0 ");
     }
 
     /* init parameter system */
@@ -449,19 +442,17 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
 #else
 
-    #ifdef DEVICE_ON_BOARD
     /* init onboard sensors */
     // RT_CHECK(drv_icm20600_init("spi2_dev1", "gyro0", "accel0"));
-
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
 
     // RT_CHECK(drv_bmi055_init("spi2_dev2", "gyro0", "accel0"));
-    // RT_CHECK(drv_bmi055_init("spi2_dev2","spi2_dev3","gyro0","accel0"));
+
     RT_CHECK(drv_bmi088_init("spi2_dev2", "spi2_dev3", "gyro0", "accel0"));
     // RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
     RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
-    /* if no gps mag then use onboard mag */
 
+    /* if no gps mag then use onboard mag */
     // if (drv_ist8310_init("i2c2_dev1", "mag0") != FMT_EOK) {
     //     console_println("!!!!!!drv_ist8310_init i2c2_dev1 faild~!!!!");
     // }
@@ -480,6 +471,36 @@ void bsp_initialize(void)
         console_println("gps serial1 faild~!!!!");
     }
 
+    // if (tfmini_s_drv_init("serial4") != FMT_EOK) {
+    //     console_println("!!!!!!tfmini_s serial4 faild~!!!!");
+    // } else {
+    //     FMT_CHECK(advertise_sensor_rangefinder(0));
+    // }
+
+    // if (lc307_drv_init("serial5") != FMT_EOK) {
+    //     console_println("!!!!!!lc307 serial5 faild~!!!!");
+    // }
+    // else
+    // {
+    //     FMT_CHECK(advertise_sensor_optflow(0));
+    // }
+
+    // if (pmw3901_xx_drv_init("serial4") != FMT_EOK) {
+    //     console_println("!!!!!!pmw3901_xx serial4 faild~!!!!");
+    // } else {
+    //     // console_println("======> pmw3901_xx serial4 success !!!!");
+    //     FMT_CHECK(advertise_sensor_rangefinder(0));
+    //     FMT_CHECK(advertise_sensor_optflow(0));
+    // }
+
+    if (pmw3901_fl04_drv_init("serial5") != FMT_EOK) {
+        console_println("!!!!!!pmw3901_fl04 serial5 faild~!!!!");
+    } else {
+        // console_println("======> pmw3901_xx serial4 success !!!!");
+        FMT_CHECK(advertise_sensor_rangefinder(0));
+        FMT_CHECK(advertise_sensor_optflow(0));
+    }
+
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
@@ -488,8 +509,6 @@ void bsp_initialize(void)
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());
-
-#endif
 
     /* init finsh */
     finsh_system_init();
@@ -539,7 +558,6 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
-
     /* dump boot log to file */
     boot_log_dump();
 }
@@ -550,4 +568,29 @@ void bsp_post_initialize(void)
 void rt_hw_board_init()
 {
     bsp_early_initialize();
+}
+
+/* Re-implement this function to define customized rotation */
+void icm20600_rotate_to_ned(float* val)
+{
+    float tmp;
+    float* x = val;
+    float* y = val + 1;
+    // float *z = *(val +2);
+
+    tmp = *x;
+    *x = *y;
+    *y = -tmp;
+
+    /* do nothing */
+}
+
+/* Re-implement this function to define customized rotation */
+void bmi088_rotate_to_ned(float val[3])
+{
+    /* do nothing */
+    float* x = val;
+    float* y = val + 1;
+    *x = -*x;
+    *y = -*y;
 }

@@ -28,7 +28,6 @@ target = "CHUANYUN_F2S"\n
 	type = "mavlink"\n
 	name = "mav_console"\n
 	auto-switch = true\n
-#ifdef DEVICE_ON_BOARD
 [pilot-cmd]\n
     stick-channel = [4,3,2,1]\n
 	[pilot-cmd.device]\n
@@ -53,13 +52,12 @@ target = "CHUANYUN_F2S"\n
 	[[pilot-cmd.command]]\n
 	type = 1\n
 	cmd = 1002\n
-	channel = 6\n
+	channel = 9\n
 	range = [1800,2000]\n
-#endif
 [mavproxy]\n
 	[[mavproxy.devices]]\n
 	type = "serial"\n
-	name = "serial4"\n
+	name = "serial7"\n
 	baudrate = 460800\n
 	[[mavproxy.devices]]\n
 	type = "bb_com"\n

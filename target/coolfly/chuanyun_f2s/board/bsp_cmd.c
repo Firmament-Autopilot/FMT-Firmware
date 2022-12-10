@@ -47,7 +47,6 @@ FINSH_FUNCTION_EXPORT_ALIAS(cmd_reboot, __cmd_reboot, reboot the system);
 // reset_fct
 static int handle_reset_fct(int argc, char** argv, int optc, optv_t* optv)
 {
-
     FCT_Reset();
     FCT_SaveToFlashTest();
 
@@ -61,7 +60,6 @@ int cmd_reset_fct(int argc, char** argv)
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_reset_fct, __cmd_reset_fct, reset the RF factory setting);
 
-////////////////////////////////////////////////////////////////////////////
 // set_bb_id
 static int handle_set_bb_id(int argc, char** argv, int optc, optv_t* optv)
 {
@@ -95,7 +93,6 @@ FINSH_FUNCTION_EXPORT_ALIAS(cmd_set_bb_id, __cmd_set_bb_id, set basebase rc id<r
 // set_chip_id
 static int handle_set_chip_id(int argc, char** argv, int optc, optv_t* optv)
 {
-
     uint8_t idArr[5];
 
     idArr[0] = (uint8_t)(strtoul(argv[0], NULL, 0));

@@ -527,7 +527,7 @@ static rt_err_t accelerometer_init(void)
     /* read accel id */
     RT_TRY(spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
     if (accel_id != BMI088_ACC_BGW_CHIPID_VALUE) {
-        DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id[1]);
+        DRV_DBG("Warning: not found BMI088 accel id: %02x\n", accel_id);
         return RT_ERROR;
     }
 
