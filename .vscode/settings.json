@@ -20,5 +20,7 @@
             "rtthread"
     ],
     "editor.defaultFormatter": "xaver.clang-format",
-    "cmake.sourceDirectory": "${workspaceFolder}/rtos/rt-thread/components/net/lwip-2.1.2",
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
 }

@@ -81,13 +81,13 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
         /**SDMMC1 GPIO Configuration
-    PC8     ------> SDMMC1_D0
-    PC9     ------> SDMMC1_D1
-    PC10     ------> SDMMC1_D2
-    PC11     ------> SDMMC1_D3
-    PC12     ------> SDMMC1_CK
-    PD2     ------> SDMMC1_CMD
-    */
+        PC8     ------> SDMMC1_D0
+        PC9     ------> SDMMC1_D1
+        PC10    ------> SDMMC1_D2
+        PC11    ------> SDMMC1_D3
+        PC12    ------> SDMMC1_CK
+        PD2     ------> SDMMC1_CMD
+        */
         GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11
             | GPIO_PIN_12;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -276,7 +276,12 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
     return RT_EOK;
 }
 
-const static struct sd_ops dev_ops = { .init = init, .write_disk = write_disk, .read_disk = read_disk, .io_control = io_control };
+const static struct sd_ops dev_ops = {
+    .init = init,
+    .write_disk = write_disk,
+    .read_disk = read_disk,
+    .io_control = io_control
+};
 
 #endif
 rt_err_t drv_sdio_init(void)
