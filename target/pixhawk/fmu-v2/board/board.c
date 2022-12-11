@@ -329,7 +329,7 @@ void bsp_initialize(void)
     /* init barometer */
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
     /* init optical flow module (a mini tf included) */
-    RT_CHECK(mtf_01_drv_init("serial3"));
+    RT_CHECK(drv_mtf_01_init("serial3"));
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 

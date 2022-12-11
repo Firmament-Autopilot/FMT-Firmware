@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-rt_err_t mtf_01_drv_init(const char* uart_dev_name);
+rt_err_t drv_mtf_01_init(const char* uart_dev_name);
 
 #ifdef __cplusplus
 }

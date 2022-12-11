@@ -30,6 +30,7 @@
 #include "driver/mag/bmm150.h"
 #include "driver/mtd/w25qxx.h"
 #include "driver/rgb_led/aw2023.h"
+#include "driver/vision_flow/mtf_01.h"
 #include "drv_buzzer.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -321,6 +322,7 @@ void bsp_initialize(void)
 
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
     drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
+    drv_mtf_01_init("serial3");
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
@@ -336,8 +338,8 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
-    // FMT_CHECK(advertise_sensor_optflow(0));
-    // FMT_CHECK(advertise_sensor_rangefinder(0));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 
     // if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
     //     FMT_CHECK(register_sensor_airspeed("airspeed"));

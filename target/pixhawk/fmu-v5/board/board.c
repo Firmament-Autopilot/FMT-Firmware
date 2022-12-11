@@ -421,7 +421,7 @@ void bsp_initialize(void)
     if (drv_ist8310_init("i2c1_dev1", "mag0") != FMT_EOK) {
         RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
     }
-    RT_CHECK(mtf_01_drv_init("serial6"));
+    RT_CHECK(drv_mtf_01_init("serial6"));
     RT_CHECK(gps_m8n_init("serial3", "gps"));
 
     /* register sensor to sensor hub */
