@@ -304,6 +304,9 @@ void bsp_initialize(void)
     /* init usb device */
     RT_CHECK(drv_usb_cdc_init());
 
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
+
     /* init other devices */
     RT_CHECK(tca62724_drv_init("i2c2"));
 
@@ -385,6 +388,9 @@ void bsp_post_initialize(void)
     /* init led control */
     FMT_CHECK(led_control_init());
 
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
+ 
     /* show system information */
     bsp_show_information();
 
