@@ -55,6 +55,8 @@ void ADC_IRQHandler(void)
     }
 }
 
+//about voltage_k_  ref : https://blog.csdn.net/killhu/article/details/126440993?ops_request_misc=&request_id=&biz_id=102&utm_term=px4%E5%88%86%E5%8E%8B&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-4-126440993.142
+
 static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt)
 {
     const float voltage_k_ = 0.09868;//the Partial pressure ratio of power measure
@@ -129,7 +131,7 @@ static rt_err_t adc_hw_init(void)
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 		
 	// 配置 IO
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3;//current adc in PA2 of fmu and voltage adc in PA3
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2|GPIO_Pin_3;//current adc in PA2 of fmu and voltage adc in PA3
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;	    
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ; //不上拉不下拉
 	GPIO_Init(GPIOA, &GPIO_InitStructure);		
