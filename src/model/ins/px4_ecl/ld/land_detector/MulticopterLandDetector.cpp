@@ -201,8 +201,8 @@ bool MulticopterLandDetector::_get_maybe_landed_state()
 	float minimum_thrust_threshold{0.f};
 
 	if (_flag_control_climb_rate_enabled) {
-		// 10% of throttle range between min and hover
-		minimum_thrust_threshold = _param_mc.minThrottle + (_param_mc.hoverThrottle - _param_mc.minThrottle) * 0.1f;
+		// 20% of throttle range between min and hover
+		minimum_thrust_threshold = _param_mc.minThrottle + (_param_mc.hoverThrottle - _param_mc.minThrottle) * 0.2f;
 
 	} else {
 		minimum_thrust_threshold = (_param_mc.minManThrottle + 0.01f);

@@ -438,11 +438,10 @@ void Ekf_get_global_position(void)
 
 void Ekf_get_acc(void)
 {
-    const Vector3f accel_bias = _ekf->getAccelBias();
     const Quatf q { _ekf->calculate_quaternion() };
     const Vector3f vel_deriv { _ekf->getVelocityDerivative() };
     quaternion quat = { q(0), q(1), q(2), q(3) };
-    float acc_O[3] = { vel_deriv(0) - accel_bias(0), vel_deriv(1) - accel_bias(1), vel_deriv(2) - accel_bias(2) - 9.81f };
+    float acc_O[3] = { vel_deriv(0), vel_deriv(1), vel_deriv(2) - 9.81f };
     float acc_B[3];
 
     quaternion_inv_rotateVector(&quat, acc_O, acc_B);
@@ -523,6 +522,14 @@ void ld_set_vehicle_imu_status(uint64_t timeStampUs){
     _imu_status->timeStampUs = timeStampUs;
     _imu_status->gyro_vibration_metric = (_ekf->getImuVibrationMetrics())(1);
     _imu_status->accel_vibration_metric = (_ekf->getImuVibrationMetrics())(2);
+}
+
+bool ld_get_landed_state(void){
+    return _ld->return_vehicle_land_detected()->landed;
+}
+
+bool ld_get_gnd_effect(void){
+    return _ld->return_vehicle_land_detected()->in_ground_effect;
 }
 
 #ifdef VEHICLE_TYPE_QUADCOPTER

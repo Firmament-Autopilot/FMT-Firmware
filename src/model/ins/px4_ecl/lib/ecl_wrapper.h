@@ -87,6 +87,8 @@ void ld_set_IMU_data(float gyroRate[3], float acceleration[3]);
 void ld_set_dist_bottom_is_observable(bool observable);
 void ld_set_vehicle_local_position(void);
 void ld_set_vehicle_imu_status(uint64_t timeStampUs);
+bool ld_get_landed_state(void);
+bool ld_get_gnd_effect(void);
 
 #ifdef VEHICLE_TYPE_QUADCOPTER
 void ld_set_actuator_controls_throttle(float throttle);
