@@ -558,12 +558,12 @@ void ins_interface_step(uint32_t timestamp)
                     ld_set_takeoff_state(1); 
                     break;
                 case 2: // Standby
-                    ld_set_flag_control_climb_rate_enabled(false);
+                    ld_set_flag_control_climb_rate_enabled(true);
                     ld_set_takeoff_state(2);                 
                     break;
                 case 3: // Offboard
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(0); 
+                    ld_set_flag_control_climb_rate_enabled(true);
+                    ld_set_takeoff_state(5); 
                     break;
                 case 4: // Mission
                     ld_set_flag_control_climb_rate_enabled(true);
@@ -598,7 +598,7 @@ void ins_interface_step(uint32_t timestamp)
                     ld_set_takeoff_state(0);                
                     break;
                 case 12: // Manual
-                    ld_set_flag_control_climb_rate_enabled(false);
+                    ld_set_flag_control_climb_rate_enabled(true);
                     ld_set_takeoff_state(5); 
                     break;
                 case 13: // InvalidManualMode

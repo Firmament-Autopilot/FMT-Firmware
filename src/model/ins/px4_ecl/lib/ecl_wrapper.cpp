@@ -525,7 +525,13 @@ void ld_set_vehicle_imu_status(uint64_t timeStampUs){
 }
 
 bool ld_get_landed_state(void){
-    return _ld->return_vehicle_land_detected()->landed;
+    if(_ld->return_vehicle_land_detected()->landed){
+        px4_ecl_out_bus.flag |= 1<<1;
+        return true;
+    }else{
+        px4_ecl_out_bus.flag &= ~(1<<1);
+        return false;
+    }
 }
 
 bool ld_get_gnd_effect(void){

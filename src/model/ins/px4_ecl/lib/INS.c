@@ -87,7 +87,7 @@ void px4_ecl_init(void)
     Ekf_set_fuse_beta_flag(is_fixed_wing && (px4_ecl_params.ekf2_fuse_beta == 1));
     Ekf_set_is_fixed_wing(is_fixed_wing);
 
-    Ekf_set_gnd_effect_flag(true);
+    Ekf_set_gnd_effect_flag(false);
     Ekf_set_in_air_status(false);
 
     px4_ecl_out_bus.flag |= 1 << 0;
@@ -97,11 +97,6 @@ void px4_ecl_step(void)
 {
     Ekf_set_gnd_effect_flag(ld_get_gnd_effect());
     Ekf_set_in_air_status(!ld_get_landed_state());
-
-    if(ld_get_landed_state()){
-
-        // Ekf_setEkfGlobalOrigin(const double latitude, const double longitude, const float altitude)
-    }
 
     if (Ekf_step()) {
         Ekf_get_attitude();
