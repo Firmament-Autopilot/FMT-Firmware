@@ -844,8 +844,8 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                    serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
+                        "*STMicroelectronics Virtual COM Port*", "*FMT*"])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
@@ -875,13 +875,11 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
-                    # serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                    #     "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                    serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
+                        "*STMicroelectronics Virtual COM Port*", "*FMT*"])
                 else:
-                    serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                    "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*", "*USB0*"])
+                    serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
+                        "*STMicroelectronics Virtual COM Port*", "*FMT*"])
 
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
