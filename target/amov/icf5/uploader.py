@@ -805,7 +805,7 @@ def main():
         '''try to auto-detect serial ports on unix'''
         import glob
         # glist = glob.glob('/dev/ttyS*') + glob.glob('/dev/ttyUSB*') + glob.glob('/dev/ttyACM*') + glob.glob('/dev/serial/by-id/*')
-        glist = glob.glob('/dev/ttyACM*')
+        glist = glob.glob('/dev/ttyUSB*') + glob.glob('/dev/ttyACM*')
         ret = []
         others = []
         # try preferred ones first
@@ -917,7 +917,6 @@ def main():
                     if "linux" in _platform:
                         # Linux, don't open Mac OS and Win ports
                         if "COM" not in port and "tty.usb" not in port:
-                            print("run uploader in linux")
                             up = uploader(port, args.baud_bootloader, baud_flightstack)
                     elif "darwin" in _platform:
                         # OS X, don't open Windows and Linux ports
