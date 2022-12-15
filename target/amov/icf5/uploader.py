@@ -873,7 +873,7 @@ def main():
         while True:
             if sys.platform == "darwin":
                 args.port = "/dev/tty.usbmodem1"
-            else:
+            elif args.port == None:
                 if os.name == 'nt':
                     serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
                         "*STMicroelectronics Virtual COM Port*", "*FMT*"])
@@ -891,6 +891,8 @@ def main():
                 #         print(" {:}".format(port))
                 print('Using port {:}'.format(serial_list[0]))
                 args.port = serial_list[0].device
+            # else:
+            #     print('Using specified port ', args.port)
 
 
             portlist = []
