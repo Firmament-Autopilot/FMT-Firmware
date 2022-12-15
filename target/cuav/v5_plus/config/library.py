@@ -3,5 +3,4 @@
 LIBS = [
     'cm_backtrace',
     'mavlink',   
-    'canard',
 ]
