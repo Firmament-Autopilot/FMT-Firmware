@@ -29,6 +29,19 @@
 #define USING_UART1
 #define USING_UART2
 #define USING_UART6
+#define USING_UART7
+
+#define SERIAL3_DEFAULT_CONFIG                    \
+    {                                             \
+        BAUD_RATE_115200,    /* 115200 bits/s */  \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
+    }
 
 /* GD32 uart driver */
 // Todo: compress uart info
@@ -198,6 +211,15 @@ static struct gd32_uart uart1 = {
     .rx_port = GPIOD,
     .rx_af = GPIO_AF_7,
     .rx_pin = GPIO_PIN_6,
+    .dma = {
+        .dma_periph = DMA0,
+        .clock = RCU_DMA0,
+        .rx_ch = DMA_CH5,
+        .rx_irq = DMA0_Channel5_IRQn,
+        .tx_ch = DMA_CH6,
+        .tx_irq = DMA0_Channel6_IRQn,
+        .sub_periph = DMA_SUBPERI4,
+    }
 };
 
 void USART1_IRQHandler(void)
@@ -210,22 +232,30 @@ void USART1_IRQHandler(void)
     rt_interrupt_leave();
 }
 
-// void DMA0_Channel3_IRQHandler(void)
-// {
-//     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF)) {
-//         dma_tx_done_isr(&serial1);
-//         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF);
-//     }
-// }
+void DMA0_Channel6_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    if (dma_interrupt_flag_get(uart1.dma.dma_periph, uart1.dma.tx_ch, DMA_INT_FLAG_FTF)) {
+        dma_tx_done_isr(&serial1);
+        dma_interrupt_flag_clear(uart1.dma.dma_periph, uart1.dma.tx_ch, DMA_INT_FLAG_FTF);
+    }
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
 
-// void DMA0_Channel1_IRQHandler(void)
-// {
-//     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF)) {
-//         dma_rx_done_isr(&serial1);
-//         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF);
-//     }
-// }
-#endif /* USING_UART2 */
+void DMA0_Channel5_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    if (dma_interrupt_flag_get(uart1.dma.dma_periph, uart1.dma.rx_ch, DMA_INT_FLAG_FTF)) {
+        dma_rx_done_isr(&serial1);
+        dma_interrupt_flag_clear(uart1.dma.dma_periph, uart1.dma.rx_ch, DMA_INT_FLAG_FTF);
+    }
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif /* USING_UART1 */
 
 #ifdef USING_UART2
 static struct serial_device serial2;
@@ -264,18 +294,26 @@ void USART2_IRQHandler(void)
 
 void DMA0_Channel3_IRQHandler(void)
 {
+    /* enter interrupt */
+    rt_interrupt_enter();
     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF)) {
         dma_tx_done_isr(&serial2);
         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.tx_ch, DMA_INT_FLAG_FTF);
     }
+    /* leave interrupt */
+    rt_interrupt_leave();
 }
 
 void DMA0_Channel1_IRQHandler(void)
 {
+    /* enter interrupt */
+    rt_interrupt_enter();
     if (dma_interrupt_flag_get(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF)) {
         dma_rx_done_isr(&serial2);
         dma_interrupt_flag_clear(uart2.dma.dma_periph, uart2.dma.rx_ch, DMA_INT_FLAG_FTF);
     }
+    /* leave interrupt */
+    rt_interrupt_leave();
 }
 #endif /* USING_UART2 */
 
@@ -305,6 +343,42 @@ void USART0_IRQHandler(void)
     rt_interrupt_leave();
 }
 #endif /* USING_UART0 */
+
+#ifdef USING_UART7
+static struct serial_device serial4;
+static struct gd32_uart uart7 = {
+    .uart_periph = UART7,
+    .irqn = UART7_IRQn,
+    .per_clk = RCU_UART7,
+    .tx_gpio_clk = RCU_GPIOE,
+    .rx_gpio_clk = RCU_GPIOE,
+    .tx_port = GPIOE,
+    .tx_af = GPIO_AF_8,
+    .tx_pin = GPIO_PIN_1,
+    .rx_port = GPIOE,
+    .rx_af = GPIO_AF_8,
+    .rx_pin = GPIO_PIN_0,
+    // .dma = {
+    //     .dma_periph = DMA0,
+    //     .clock = RCU_DMA0,
+    //     .rx_ch = DMA_CH1,
+    //     .rx_irq = DMA0_Channel1_IRQn,
+    //     .tx_ch = DMA_CH3,
+    //     .tx_irq = DMA0_Channel3_IRQn,
+    //     .sub_periph = DMA_SUBPERI4,
+    // }
+};
+
+void UART7_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial4);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif /* USING_UART7 */
 
 static void _dma_transmit(struct gd32_uart* uart, rt_uint8_t* buf, rt_size_t size)
 {
@@ -337,10 +411,10 @@ static void _dma_tx_config(struct gd32_uart* uart)
     dma_init_struct.periph_addr = (uint32_t)&USART_DATA(uart->uart_periph);
     dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
     dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
+    dma_init_struct.circular_mode = DMA_CIRCULAR_MODE_DISABLE;
     dma_single_data_mode_init(uart->dma.dma_periph, uart->dma.tx_ch, &dma_init_struct);
 
     /* configure DMA mode */
-    dma_circulation_disable(uart->dma.dma_periph, uart->dma.tx_ch);
     dma_channel_subperipheral_select(uart->dma.dma_periph, uart->dma.tx_ch, uart->dma.sub_periph);
     /* USART DMA enable for transmission */
     usart_dma_transmit_config(uart->uart_periph, USART_DENT_ENABLE);
@@ -366,11 +440,11 @@ static void _dma_rx_config(struct gd32_uart* uart, rt_uint8_t* buf, rt_size_t si
     dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
     dma_init_struct.periph_memory_width = DMA_PERIPH_WIDTH_8BIT;
     dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
+    dma_init_struct.circular_mode = DMA_CIRCULAR_MODE_ENABLE;
     dma_single_data_mode_init(uart->dma.dma_periph, uart->dma.rx_ch, &dma_init_struct);
-    /* configure DMA mode */
-    dma_circulation_disable(uart->dma.dma_periph, uart->dma.rx_ch);
-    dma_channel_subperipheral_select(uart->dma.dma_periph, uart->dma.rx_ch, uart->dma.sub_periph);
 
+    /* configure DMA mode */
+    dma_channel_subperipheral_select(uart->dma.dma_periph, uart->dma.rx_ch, uart->dma.sub_periph);
     /* enable DMA channel transfer complete interrupt */
     dma_interrupt_enable(uart->dma.dma_periph, uart->dma.rx_ch, DMA_CHXCTL_FTFIE);
     /* enable DMA channel */
@@ -598,7 +672,7 @@ rt_err_t drv_usart_init(void)
     /* register serial device */
     rt_err |= hal_serial_register(&serial1,
                                   "serial1",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
                                   &uart1);
 #endif /* USING_UART2 */
 
@@ -633,6 +707,22 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart0);
 #endif /* USING_UART0 */
+
+#ifdef USING_UART7
+    serial4.ops = &__usart_ops;
+    #ifdef SERIAL4_DEFAULT_CONFIG
+    struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
+    serial4.config = serial4_config;
+    #else
+    serial4.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial4,
+                                  "serial4",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart7);
+#endif /* USING_UART7 */
 
     return rt_err;
 }

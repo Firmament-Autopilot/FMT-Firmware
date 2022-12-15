@@ -113,11 +113,19 @@ fmt_err_t mavproxy_set_device(const char* dev_name)
     }
 
     if (new_dev != mavproxy_dev) {
-        rt_uint16_t flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX;
-        if (new_dev->flag & (RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX)) {
-            /* if device support DMA, then use it */
-            flag = RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX;
+        rt_uint16_t flag = RT_DEVICE_OFLAG_RDWR;
+
+        /* if device support DMA, then use it */
+        if (new_dev->flag & RT_DEVICE_FLAG_DMA_RX) {
+            flag |= RT_DEVICE_FLAG_DMA_RX;
+        } else {
+            flag |= RT_DEVICE_FLAG_INT_RX;
         }
+
+        if (new_dev->flag & RT_DEVICE_FLAG_DMA_TX) {
+            flag |= RT_DEVICE_FLAG_DMA_TX;
+        }
+
         rt_err_t err = rt_device_open(new_dev, flag);
         if (err != RT_EOK) {
             return FMT_ERROR;

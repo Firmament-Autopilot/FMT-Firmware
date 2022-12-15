@@ -33,8 +33,8 @@
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
 #include "driver/rgb_led/tca62724.h"
-#include "driver/vision_flow/pmw3901_xx.h"
-#include"drv_adc.h"
+#include "driver/vision_flow/mtf_01.h"
+#include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c_soft.h"
 #include "drv_pwm.h"
@@ -48,11 +48,11 @@
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
-#include"module/pmu/power_manager.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
+#include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
@@ -329,7 +329,7 @@ void bsp_initialize(void)
     /* init barometer */
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
     /* init optical flow module (a mini tf included) */
-    RT_CHECK(pmw3901_xx_drv_init("serial3"));
+    RT_CHECK(drv_mtf_01_init("serial3"));
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 
@@ -392,7 +392,7 @@ void bsp_post_initialize(void)
 
     /* initialize power management unit */
     FMT_CHECK(pmu_init());
- 
+
     /* show system information */
     bsp_show_information();
 

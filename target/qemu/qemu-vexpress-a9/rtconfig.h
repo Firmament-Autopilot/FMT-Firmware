@@ -102,7 +102,7 @@
 #define RT_DFS_ELM_USE_LFN			3
 #define RT_DFS_ELM_MAX_LFN			255
 /* Maximum sector size to be handled. */
-#define RT_DFS_ELM_MAX_SECTOR_SIZE  512
+#define RT_DFS_ELM_MAX_SECTOR_SIZE  4096
 
 /* Using ROM file system */
 // #define RT_USING_DFS_ROMFS

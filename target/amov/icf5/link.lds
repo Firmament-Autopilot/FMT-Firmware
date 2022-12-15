@@ -5,8 +5,11 @@
 /* Program Entry, set to mark it as "used" and avoid gc */
 MEMORY
 {
-	/* First 0x8000(32KB) area is reserved for bootloader */
-    CODE (rx) : ORIGIN = 0x08000000, LENGTH = 1024K /* 2048KB - 32KB flash */
+	/* First 0x10000(64KB) area is reserved for bootloader */
+    /* GD32VG flash has 768KB code area and 256KB data area. The data area execution
+       time is much slower than code area, therefore better to keep code in code
+       within code area and some static data in data area. */
+    CODE (rx) : ORIGIN = 0x08010000, LENGTH =  960K /* 1024KB - 64KB flash */
     DATA (rw) : ORIGIN = 0x20000000, LENGTH =  448k /* (192+256)K sram */
 }
 ENTRY(Reset_Handler)

@@ -23,11 +23,16 @@
 #include "default_config.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
+#include "driver/gps/gps_m8n.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688.h"
 #include "driver/mag/bmm150.h"
-#include "driver/mtd/w25q16.h"
+#include "driver/mtd/w25qxx.h"
+#include "driver/rgb_led/aw2023.h"
+#include "driver/vision_flow/mtf_01.h"
+#include "drv_buzzer.h"
+#include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
@@ -36,6 +41,7 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "led.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -65,6 +71,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -236,6 +243,9 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
@@ -243,10 +253,13 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_i2c_init());
 
     /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
+    RT_CHECK(drv_pwm_init());
+
+    /* buzzer(pwm) driver init */
+    RT_CHECK(drv_buzzer_init());
 
     /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
+    RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -266,6 +279,7 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_w25qxx_init("spi1_dev0", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
@@ -275,6 +289,8 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
+    RT_CHECK(drv_aw2023_init("i2c0_dev0"));
+
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
     FMT_CHECK(advertise_sensor_mag(0));
@@ -282,10 +298,12 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
 #else
     /* init onboard sensors */
-    RT_CHECK(drv_bmi088_init("spi0_dev1", "spi0_dev0", "gyro0", "accel0"));
+    RT_CHECK(drv_bmi088_init("spi0_dev1", "spi0_dev0", "gyro0", "accel0", 0));
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
     RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
+
+    RT_CHECK(gps_m8n_init("serial4", "gps"));
 
     // spi_parameter_struct spi_init_struct;
     // spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
@@ -302,9 +320,9 @@ void bsp_initialize(void)
     //     spi_i2s_data_transmit(SPI1, 0x99);
     // }
 
-    drv_w25q16_init("spi1_dev0", "w25q16");
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
     drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
+    drv_mtf_01_init("serial3");
 
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
@@ -320,8 +338,8 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
-    // FMT_CHECK(advertise_sensor_optflow(0));
-    // FMT_CHECK(advertise_sensor_rangefinder(0));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 
     // if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
     //     FMT_CHECK(register_sensor_airspeed("airspeed"));
@@ -347,7 +365,7 @@ void bsp_post_initialize(void)
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
     /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    FMT_CHECK(pilot_cmd_init());
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
@@ -368,6 +386,9 @@ void bsp_post_initialize(void)
 
     /* initialize power management unit */
     // FMT_CHECK(pmu_init());
+
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     /* show system information */
     bsp_show_information();

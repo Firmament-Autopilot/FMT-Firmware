@@ -52,4 +52,7 @@
 
 // #define FMT_RECORD_CALIBRATION_DATA
 
+/* Use external states */
+// #define FMT_USING_EXTERNAL_STATE
+
 #endif

@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi_device_name,
-                         const char* gyro_device_name, const char* accel_device_name);
+                         const char* gyro_device_name, const char* accel_device_name, uint32_t dev_id);
 
 #ifdef __cplusplus
 }

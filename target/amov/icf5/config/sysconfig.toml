@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "GD32F450"
+target = "Amov-ICF5"
 
 # Console Configuration
 [console]
@@ -9,6 +9,11 @@ target = "GD32F450"
     type = "serial"
     name = "serial0"
     baudrate = 57600
+    auto-switch = true
+
+    [[console.devices]]
+    type = "mavlink"
+    name = "mav_console"
     auto-switch = true
 
 # Mavproxy Device Configuration
@@ -31,8 +36,8 @@ target = "GD32F450"
     [pilot-cmd.device]
     type = "rc"
     name = "rc"
-    protocol = "sbus"           # sbus or ppm
-    channel-num = 6             # max supported channel: sbus:16, ppm:8
+    protocol = "auto"           # auto/sbus/ppm
+    channel-num = 8             # max supported channel: sbus:16, ppm:8
     sample-time = 0.05          # sample time in second (-1 for inherit)
     range = [1000,2000]
 

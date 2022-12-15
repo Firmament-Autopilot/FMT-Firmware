@@ -38,6 +38,7 @@ OF SUCH DAMAGE.
 #include "sdcard.h"
 #include "gd32f4xx_dma.h"
 #include "gd32f4xx_sdio.h"
+#include "module/system/systime.h"
 #include <rtthread.h>
 #include <stddef.h>
 
@@ -280,6 +281,10 @@ sd_error_enum sd_power_on(void)
     sdio_power_state_set(SDIO_POWER_ON);
     /* enable SDIO_CLK clock output */
     sdio_clock_enable();
+
+    /* 1ms: required power up waiting time before starting the SD initialization
+       sequence */
+    systime_mdelay(2);
 
     /* send CMD0(GO_IDLE_STATE) to reset the card */
     sdio_command_response_config(SD_CMD_GO_IDLE_STATE, (uint32_t)0x0, SDIO_RESPONSETYPE_NO);
@@ -1778,15 +1783,15 @@ sd_error_enum sd_card_information_get(sd_card_info_struct* pcardinfo)
         /* card is SDHC card, CSD version 2.0 */
         /* CSD byte 7 */
         tempbyte = (uint8_t)(sd_csd[1] & SD_MASK_0_7BITS);
-        pcardinfo->card_csd.c_size = (uint32_t)((uint32_t)(tempbyte & 0x3F) << 16);
+        pcardinfo->card_csd.c_size = (uint64_t)((uint32_t)(tempbyte & 0x3F) << 16);
 
         /* CSD byte 8 */
         tempbyte = (uint8_t)((sd_csd[2] & SD_MASK_24_31BITS) >> 24);
-        pcardinfo->card_csd.c_size |= (uint32_t)((uint32_t)tempbyte << 8);
+        pcardinfo->card_csd.c_size |= (uint64_t)((uint32_t)tempbyte << 8);
 
         /* CSD byte 9 */
         tempbyte = (uint8_t)((sd_csd[2] & SD_MASK_16_23BITS) >> 16);
-        pcardinfo->card_csd.c_size |= (uint32_t)tempbyte;
+        pcardinfo->card_csd.c_size |= (uint64_t)tempbyte;
 
         /* calculate the card block size and capacity */
         pcardinfo->card_blocksize = 512;

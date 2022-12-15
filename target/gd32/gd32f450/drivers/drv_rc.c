@@ -114,7 +114,7 @@ static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
         if (rc->config.protocol == RC_PROTOCOL_SBUS) {
 
         } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
-            updated = ppm_get_recvd(decoder);
+            updated = ppm_data_ready(decoder);
         }
 
         *(uint8_t*)arg = updated;
@@ -136,7 +136,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
     if (rc->config.protocol == RC_PROTOCOL_SBUS) {
 
     } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
-        if (ppm_get_recvd(decoder) == 0) {
+        if (ppm_data_ready(decoder) == 0) {
             /* no data received, just return */
             return 0;
         }
@@ -150,7 +150,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
         }
         ppm_unlock(decoder);
 
-        ppm_clear_recvd(decoder);
+        ppm_data_clear(decoder);
     }
 
     return rb;

@@ -17,7 +17,7 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define VEHICLE_TYPE "Template"
+#define VEHICLE_TYPE "Quadcopter"
 
 // #define FMT_USING_CHECKED
 

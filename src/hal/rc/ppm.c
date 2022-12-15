@@ -19,11 +19,10 @@
 
 #include "hal/rc/ppm.h"
 
+/* 16-bit timer */
 #define GET_GAP(x, y) (x > y ? (x - y) : (0xFFFF - y + x))
 
-// static uint8_t ppm_reading;
-// static uint8_t ppm_recvd;
-static float scale_us = 1000000.0f / PPM_DECODER_FREQUENCY;
+static float scale_us;
 
 void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
 {
@@ -32,8 +31,8 @@ void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
 
     gap = GET_GAP(ic_val, decoder->last_ic);
 
-    if (gap > 90 && gap < 210) {
-        /* valid ppm signal should between 1ms(100) to 2ms(200) */
+    if (gap > decoder->freq_hz / 1000 * 0.9f && gap < decoder->freq_hz / 1000 * 2.1f) {
+        /* valid ppm signal should between 1ms to 2ms */
         if (decoder->chan_id < MAX_PPM_CHANNEL) {
             temp_val[decoder->chan_id] = gap;
             decoder->chan_id++;
@@ -68,24 +67,18 @@ void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
     decoder->last_ic = ic_val;
 }
 
-// uint8_t ppm_read(uint16_t val[MAX_PPM_CHANNEL])
-// {
-//     ppm_reading = 1;
-//     memcpy(val, decoder->ppm_val, decoder->total_chan * 2);
-//     ppm_reading = 0;
-
-//     return decoder->total_chan;
-// }
-
-rt_err_t ppm_decoder_init(ppm_decoder_t* decoder)
+rt_err_t ppm_decoder_init(ppm_decoder_t* decoder, uint32_t freq_hz)
 {
     decoder->chan_id = 0;
     decoder->total_chan = 0;
     decoder->last_ic = 0;
     decoder->ppm_recvd = 0;
     decoder->ppm_reading = 0;
+    decoder->freq_hz = freq_hz;
 
     memset(decoder->ppm_val, 0, sizeof(decoder->ppm_val));
+
+    scale_us = 1000000.0f / freq_hz;
 
     return RT_EOK;
 }

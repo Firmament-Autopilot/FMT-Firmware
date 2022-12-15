@@ -12,12 +12,11 @@ HAL = [
     'accel/*.c',
     'mag/*.c',
     'barometer/*.c',
-    # 'fmtio_dev/*.c',
     'actuator/*.c',
     'rc/*.c',
     'gps/*.c',
-    # 'adc/*.c',
-    # 'mtd/*.c',
+    'adc/*.c',
+    'mtd/*.c',
 ]
 
 HAL_CPPPATH = []

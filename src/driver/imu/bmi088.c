@@ -149,9 +149,11 @@ static float accel_range_scale;
 static float sample_rate;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void bmi088_rotate_to_ned(float val[3])
+RT_WEAK void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
 {
     /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
@@ -269,9 +271,6 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
 
-    // change to NED coordinate
-    bmi088_rotate_to_ned(gyr);
-
     return RT_EOK;
 }
 
@@ -328,9 +327,12 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (gyro_read_rad(((float*)data)) != RT_EOK) {
+    if (gyro_read_rad((float*)data) != RT_EOK) {
         return 0;
     }
+
+    // change to NED coordinate
+    bmi088_rotate_to_ned((float*)data, (uint32_t)gyro->parent.user_data);
 
     return size;
 }
@@ -578,9 +580,6 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
 
-    // change to NED coordinate
-    bmi088_rotate_to_ned(acc);
-
     return RT_EOK;
 }
 
@@ -614,6 +613,9 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
     if (accel_read_m_s2(((float*)data)) != RT_EOK) {
         return 0;
     }
+
+    // change to NED coordinate
+    bmi088_rotate_to_ned((float*)data, (uint32_t)accel->parent.user_data);
 
     return size;
 }
@@ -651,7 +653,7 @@ static struct accel_device accel_dev = {
 };
 
 rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi_device_name,
-                         const char* gyro_device_name, const char* accel_device_name)
+                         const char* gyro_device_name, const char* accel_device_name, uint32_t dev_id)
 {
     /* Initialize gyroscope */
 
@@ -674,7 +676,7 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
     /* gyroscope low-level init */
     RT_TRY(gyroscope_init());
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_id));
 
     /* Initialize accelerometer */
 
@@ -699,7 +701,7 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
     /* accelerometer low-level init */
     RT_TRY(accelerometer_init());
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_id));
 
     return RT_EOK;
 }

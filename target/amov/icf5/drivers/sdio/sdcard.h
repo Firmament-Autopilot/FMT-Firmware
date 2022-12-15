@@ -133,7 +133,7 @@ typedef struct {
     __IO uint8_t write_blk_misalign;      /* write block misalignment */
     __IO uint8_t read_blk_misalign;       /* read block misalignment */
     __IO uint8_t dsp_imp;                 /* DSR implemented */
-    __IO uint32_t c_size;                 /* device size, 12 bits in CSD version 1.0, 22 bits in CSD version 2.0 */
+    __IO uint64_t c_size;                 /* device size, 12 bits in CSD version 1.0, 22 bits in CSD version 2.0 */
     __IO uint8_t vdd_r_curr_min;          /* max. read current @VDD min, CSD version 1.0 */
     __IO uint8_t vdd_r_curr_max;          /* max. read current @VDD max, CSD version 1.0 */
     __IO uint8_t vdd_w_curr_min;          /* max. write current @VDD min, CSD version 1.0 */
@@ -159,7 +159,7 @@ typedef struct {
     sd_cid_struct card_cid;               /* CID register */
     sd_csd_struct card_csd;               /* CSD register */
     sdio_card_type_enum card_type;        /* card tpye */
-    uint32_t card_capacity;               /* card capacity */
+    uint64_t card_capacity;               /* card capacity */
     uint32_t card_blocksize;              /* card block size */
     uint16_t card_rca;                    /* card relative card address */
 } sd_card_info_struct;

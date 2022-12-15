@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef W25Q16_H__
-#define W25Q16_H__
+#include <firmament.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "module/math/rotation.h"
 
-rt_err_t drv_w25q16_init(const char* spi_device_name, const char* mtd_device_name);
+void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
+{
+    (void)dev_id;
+    float tmp;
 
-#ifdef __cplusplus
+    tmp = data[0];
+    data[0] = data[1];
+    data[1] = -tmp;
 }
-#endif
 
-#endif
+void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
+{
+    /* do nothing */
+    (void)data;
+    (void)dev_id;
+
+    float tmp;
+    tmp = data[0];
+    data[0] = data[1];
+    data[1] = tmp;
+    data[2] = -data[2];
+}

@@ -21,7 +21,7 @@
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-#define I2C_TIMEOUT_US (1000)
+#define I2C_TIMEOUT_US (10000)
 
 struct gd32_i2c_bus {
     struct rt_i2c_bus parent;
@@ -48,7 +48,7 @@ static void i2c_hw_init(void)
     gpio_output_options_set(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
 
     /* configure I2C clock */
-    i2c_clock_config(I2C0, 100000, I2C_DTCY_2);
+    i2c_clock_config(I2C0, 400000, I2C_DTCY_2);
     /* configure I2C address */
     i2c_mode_addr_config(I2C0, I2C_I2CMODE_ENABLE, I2C_ADDFORMAT_7BITS, 0x00);
     /* enable I2C0 */
@@ -223,7 +223,7 @@ static struct gd32_i2c_bus gd32_i2c0 = {
 
 /* i2c device instances */
 static struct rt_i2c_device i2c0_dev0 = {
-    .slave_addr = 0x45, /* 7 bit address */
+    .slave_addr = 0x45, /* AW2023 7 bit address */
     .flags = 0
 };
 

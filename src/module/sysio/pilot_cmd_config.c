@@ -426,7 +426,7 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
     if (toml_string_in(curtab, "type", &rcDevInfo.type) == 0) {
         if (MATCH(rcDevInfo.type, "rc")) {
             pilot_cmd_rc_dev_config rc_default_config = {
-                .protocol = 1, // sbus
+                .protocol = RC_PROTOCOL_AUTO,
                 .channel_num = 6,
                 .sample_time = 0.05, // 20Hz
                 .range = { 1000, 2000 }
@@ -464,10 +464,12 @@ static fmt_err_t pilot_cmd_parse_device(const toml_table_t* curtab)
         if (MATCH(key, "protocol")) {
             char* strval;
             if (toml_string_in(curtab, "protocol", &strval) == 0) {
-                if (MATCH(strval, "sbus")) {
-                    config->protocol = 1;
+                if (MATCH(strval, "auto")) {
+                    config->protocol = RC_PROTOCOL_AUTO;
+                } else if (MATCH(strval, "sbus")) {
+                    config->protocol = RC_PROTOCOL_SBUS;
                 } else if (MATCH(strval, "ppm")) {
-                    config->protocol = 2;
+                    config->protocol = RC_PROTOCOL_PPM;
                 } else {
                     TOML_DBG_W("unknown rc protocol:%s\n", strval);
                     rt_free(strval);

@@ -24,6 +24,7 @@ extern "C" {
 struct mtd_device {
     struct rt_device parent;
     const struct mtd_ops* ops;
+    struct rt_device_blk_geometry blk_geometry;
 };
 typedef struct mtd_device* mtd_dev_t;
 

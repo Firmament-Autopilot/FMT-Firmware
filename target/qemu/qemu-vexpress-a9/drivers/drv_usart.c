@@ -160,6 +160,18 @@ static const struct usart_ops _usart_ops = {
     NULL
 };
 
+#define SERIAL1_DEFAULT_CONFIG                     \
+    {                                             \
+        BAUD_RATE_921600,     /* 57600 bits/s */   \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
+    }
+
 rt_err_t drv_usart_init(void)
 {
     rt_err_t rt_err = RT_EOK;
@@ -187,8 +199,8 @@ rt_err_t drv_usart_init(void)
 
 #ifdef USING_UART1
     serial1.ops = &_usart_ops;
-#ifdef SERIAL0_DEFAULT_CONFIG
-    struct serial_configure serial1_config = SERIAL0_DEFAULT_CONFIG;
+#ifdef SERIAL1_DEFAULT_CONFIG
+    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
     serial1.config = serial1_config;
 #else
     serial1.config = config;

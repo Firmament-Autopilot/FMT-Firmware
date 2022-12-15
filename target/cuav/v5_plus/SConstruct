@@ -15,7 +15,7 @@ except:
     print(RTT_ROOT)
     exit(-1)
 
-TARGET = 'build/fmt_cuav-v5+.' + rtconfig.TARGET_EXT
+TARGET = 'build/fmt_' + rtconfig.BOARD + '.' + rtconfig.TARGET_EXT
 
 env = Environment(tools=['mingw'],
                   AS=rtconfig.AS, ASFLAGS=rtconfig.AFLAGS,
