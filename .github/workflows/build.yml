@@ -43,6 +43,7 @@ jobs:
           
       - name: Compile BSP
         run: |
+          scons -C target/amov/icf5 -j4
           scons -C target/pixhawk/fmu-v2 -j4
           scons -C target/pixhawk/fmu-v5 -j4
           scons -C target/cuav/v5_plus -j4
