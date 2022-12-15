@@ -303,36 +303,12 @@ void bsp_initialize(void)
     RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
 
-    RT_CHECK(gps_m8n_init("serial4", "gps"));
-
-    // spi_parameter_struct spi_init_struct;
-    // spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
-    // spi_init_struct.device_mode = SPI_MASTER;
-    // spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT;
-    // spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_2EDGE;
-    // spi_init_struct.nss = SPI_NSS_SOFT;
-    // spi_init_struct.prescale = SPI_PSC_256;
-    // spi_init_struct.endian = SPI_ENDIAN_MSB;
-    // spi_init(SPI1, &spi_init_struct);
-
-    // spi_enable(SPI1);
-    // while (1) {
-    //     spi_i2s_data_transmit(SPI1, 0x99);
-    // }
-
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
+
     drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
     drv_mtf_01_init("serial3");
 
-    // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
-    // RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
-    // RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
-    // /* if no gps mag then use onboard mag */
-    // if (drv_ist8310_init("i2c1_dev1", "mag0") != RT_EOK) {
-    //     RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
-    // }
-    // RT_CHECK(pmw3901_fl04_drv_init("serial6"));
-    // RT_CHECK(gps_m8n_init("serial3", "gps"));
+    RT_CHECK(gps_m8n_init("serial4", "gps"));
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
@@ -340,12 +316,6 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
-
-    // if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
-    //     FMT_CHECK(register_sensor_airspeed("airspeed"));
-    // } else {
-    //     printf("ms4525 driver init fail!\n");
-    // }
 #endif
 
     /* init finsh */
