@@ -32,6 +32,11 @@ jobs:
           # Default: 'space-delimited'
           format: 'space-delimited'
 
+      - name: Install Tools
+        shell: bash
+        run: |
+          sudo apt-get install clang-format-11
+
       - id: files
         uses: jitterbit/get-changed-files@v1
       - run: |
