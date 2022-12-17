@@ -17,9 +17,9 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define VEHICLE_TYPE "Template"
+#define VEHICLE_TYPE "Quadcopter"
 
-#define FMT_USING_CHECKED
+// #define FMT_USING_CHECKED
 
 /* HIL simulation */
 // #define FMT_USING_HIL
@@ -33,7 +33,7 @@
 #define FMT_OUTPUT_PILOT_CMD
 
 /* MLog */
-#define MLOG_BUFFER_SIZE         80 * 1024
+#define MLOG_BUFFER_SIZE         128 * 1024
 #define MLOG_SECTOR_SIZE         4096
 #define MLOG_MAX_SECTOR_TO_WRITE 5
 
@@ -44,9 +44,15 @@
     #define ENABLE_ULOG_CONSOLE_BACKEND
 #endif
 
+/* Cortex-M Backtrace */
+// #define FMT_USING_CM_BACKTRACE
+
 /* Unit Test */
 // #define FMT_USING_UNIT_TEST
 
 // #define FMT_RECORD_CALIBRATION_DATA
+
+/* Use external states */
+// #define FMT_USING_EXTERNAL_STATE
 
 #endif

@@ -20,30 +20,9 @@
 #include <shell.h>
 #include <string.h>
 
-#ifdef FMT_USING_CM_BACKTRACE
-    #include <cm_backtrace.h>
-#endif
-
 #include "board_device.h"
-#include "driver/airspeed/ms4525.h"
-#include "driver/barometer/ms5611.h"
-#include "driver/gps/gps_m8n.h"
-#include "driver/imu/bmi055.h"
-#include "driver/imu/icm20689.h"
-#include "driver/mag/ist8310.h"
-#include "driver/mtd/ramtron.h"
-#include "driver/rgb_led/ncp5623c.h"
-#include "driver/vision_flow/mtf_01.h"
-// #include "drv_adc.h"
-// #include "drv_gpio.h"
-// #include "drv_i2c.h"
-// #include "drv_pwm.h"
-// #include "drv_sdio.h"
-// #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
-// #include "drv_usbd_cdc.h"
-// #include "led.h"
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -51,21 +30,8 @@
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
-// #include "module/mavproxy/mavproxy_config.h"
-// #include "module/param/param.h"
-// #include "module/pmu/power_manager.h"
-// #include "module/sensor/sensor_hub.h"
-// #include "module/sysio/actuator_cmd.h"
-// #include "module/sysio/actuator_config.h"
-// #include "module/sysio/auto_cmd.h"
-// #include "module/sysio/gcs_cmd.h"
-// #include "module/sysio/mission_data.h"
-// #include "module/sysio/pilot_cmd.h"
-// #include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
-// #include "module/utils/devmq.h"
-// #include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
@@ -171,17 +137,6 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
         for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
             /* handle all sub tables */
             if (0 != (sub_tab = toml_table_in(root_tab, key))) {
-                // if (MATCH(key, "console")) {
-                //     err = console_toml_config(sub_tab);
-                // } else if (MATCH(key, "mavproxy")) {
-                //     err = mavproxy_toml_config(sub_tab);
-                // } else if (MATCH(key, "pilot-cmd")) {
-                //     err = pilot_cmd_toml_config(sub_tab);
-                // } else if (MATCH(key, "actuator")) {
-                //     err = actuator_toml_config(sub_tab);
-                // } else {
-                //     console_printf("unknown table: %s\n", key);
-                // }
                 if (err != FMT_EOK) {
                     console_printf("fail to parse %s\n", key);
                 }
@@ -360,18 +315,6 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
-    /* gpio driver init */
-    // RT_CHECK(drv_gpio_init());
-
-    // /* spi driver init */
-    // RT_CHECK(drv_spi_init());
-
-    // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
-
-    // /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
-
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -382,74 +325,13 @@ void bsp_initialize(void)
     /* enable on-board power supply */
     EnablePower();
 
-    // /* start recording boot log */
-    // FMT_CHECK(boot_log_init());
-
-    // /* init uMCN */
-    // FMT_CHECK(mcn_init());
-
-    // /* create workqueue */
-    // FMT_CHECK(workqueue_manager_init());
-
-    // /* init storage devices */
-    // RT_CHECK(drv_sdio_init());
-    // /* fram init */
-    // RT_CHECK(drv_ramtron_init("spi2_dev1"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
-
-    // /* init parameter system */
-    // FMT_CHECK(param_init());
-
-    // /* init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());
-
-    // /* adc driver init */
-    // RT_CHECK(drv_adc_init());
-
-    // /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
-    // drv_ncp5623c_init("i2c1_dev2");
-
-// #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
-//     FMT_CHECK(advertise_sensor_imu(0));
-//     FMT_CHECK(advertise_sensor_mag(0));
-//     FMT_CHECK(advertise_sensor_baro(0));
-//     FMT_CHECK(advertise_sensor_gps(0));
-// #else
-//     /* init onboard sensors */
-//     RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro0", "accel0"));
-//     RT_CHECK(drv_bmi055_init("spi1_dev3", "gyro1", "accel1"));
-//     RT_CHECK(drv_ms5611_init("spi4_dev1", "barometer"));
-//     /* if no gps mag then use onboard mag */
-//     if (drv_ist8310_init("i2c1_dev1", "mag0") != RT_EOK) {
-//         RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
-//     }
-//     RT_CHECK(drv_mtf_01_init("serial6"));
-//     RT_CHECK(gps_m8n_init("serial3", "gps"));
-
-//     /* register sensor to sensor hub */
-//     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-//     FMT_CHECK(register_sensor_mag("mag0", 0));
-//     FMT_CHECK(register_sensor_barometer("barometer"));
-//     FMT_CHECK(advertise_sensor_optflow(0));
-//     FMT_CHECK(advertise_sensor_rangefinder(0));
-
-//     /* airspeed sensor is only used in fixwing vehicle type */
-//     if (strcmp(VEHICLE_TYPE, "Fixwing") == 0) {
-//         FMT_CHECK(drv_ms4525_init("i2c2_dev1", "airspeed"));
-//         FMT_CHECK(register_sensor_airspeed("airspeed"));
-//     }
-// #endif
 
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
-
-#ifdef FMT_USING_CM_BACKTRACE
-    /* cortex-m backtrace */
-    cm_backtrace_init("fmt_fmu-v5", TARGET_NAME, FMT_VERSION);
-#endif
 }
 
 void bsp_post_initialize(void)
@@ -462,35 +344,8 @@ void bsp_post_initialize(void)
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
-    /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
-
-    // /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
-
-    // /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
-
-    // /* init mission data */
-    // FMT_CHECK(mission_data_init());
-
-    // /* init actuator */
-    // FMT_CHECK(actuator_init());
-
-    // /* start device message queue work */
-    // FMT_CHECK(devmq_start_work());
-
-    // /* initialize led */
-    // FMT_CHECK(led_control_init());
-
-    // /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
-
     /* show system information */
     bsp_show_information();
-
-    /* dump boot log to file */
-    // boot_log_dump();
 }
 
 /**
