@@ -21,14 +21,13 @@
 
 #define CPU_USAGE_CALC_INTERVAL 1000
 
-static uint64_t prev_schedule_time = 0;
-static uint64_t prev_usage_cal_time = 0;
+static uint64_t prev_schedule_time;
+static uint64_t prev_usage_cal_time;
+static rt_thread_t idle_thread;
 
-static void thread_idle_hook(void)
+static void calculate_cpu_usage(void)
 {
     uint64_t time_now;
-
-    OS_ENTER_CRITICAL;
 
     time_now = systime_now_us();
     /* time_now could less than prev_usage_cal_time, this is because systick isr
@@ -55,8 +54,6 @@ static void thread_idle_hook(void)
         /* update previous cpu usage calculate time */
         prev_usage_cal_time = time_now;
     }
-
-    OS_EXIT_CRITICAL;
 }
 
 static void scheduler_hook(rt_thread_t from, rt_thread_t to)
@@ -79,6 +76,11 @@ static void scheduler_hook(rt_thread_t from, rt_thread_t to)
 
     /* update previous schedule time */
     prev_schedule_time = time_now;
+
+    if (to == idle_thread) {
+        /* if switch to idle thread, then we calculate the cpu usage */
+        calculate_cpu_usage();
+    }
 }
 
 static void thread_inited_hook(rt_thread_t thread)
@@ -126,7 +128,8 @@ fmt_err_t sys_stat_init(void)
     rt_thread_inited_sethook(thread_inited_hook);
     rt_thread_deleted_sethook(thread_deleted_hook);
     rt_scheduler_sethook(scheduler_hook);
-    rt_thread_idle_sethook(thread_idle_hook);
+
+    idle_thread = rt_thread_idle_gethandler();
 
     return FMT_EOK;
 }
