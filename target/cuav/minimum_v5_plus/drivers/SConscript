@@ -4,10 +4,10 @@ Import('RTT_ROOT')
 
 cwd = GetCurrentDir()
 
-src = Glob('*.c')
+src = Glob('../../../../pixhawk/fmu-v5/drivers/drv_systick.c')
+src += Glob('../../../../pixhawk/fmu-v5/drivers/drv_usart.c')
 
-
-inc = [cwd]
+inc = ['../../../../pixhawk/fmu-v5/drivers']
 
 group = DefineGroup('PeripheralDriver', src, depend = [''], CPPPATH = inc)
 
