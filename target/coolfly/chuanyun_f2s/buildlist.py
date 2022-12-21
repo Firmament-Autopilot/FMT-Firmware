@@ -14,9 +14,10 @@ DRIVERS = [
     'rgb_led/ncp5623c.c',
     'mtd/ramtron.c',
     'vision_flow/pmw3901_fl04.c',
-    'vision_flow/lc307.c',
+    # 'vision_flow/lc307.c',
     'range_finder/tfmini_s.c',
     'airspeed/ms4525.c',
+    'tfcard/spi_tfcard.c',
 ]
 
 DRIVERS_CPPPATH = []
@@ -29,6 +30,7 @@ HAL = [
     'usb/usbd_cdc.c',
     'spi/spi_core.c',
     'spi/spi_dev.c',
+    'spi/spi_msd.c',
     'i2c/*.c',
     'gyro/*.c',
     'accel/*.c',
