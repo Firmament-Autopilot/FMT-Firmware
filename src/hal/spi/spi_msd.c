@@ -16,7 +16,7 @@
 #include "spi_msd.h"
 #include <string.h>
 
-#define MSD_TRACE
+// #define MSD_TRACE
 
 #ifdef MSD_TRACE
     #define MSD_DEBUG(...)                      \
