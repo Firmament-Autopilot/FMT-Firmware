@@ -36,6 +36,7 @@
 #include "driver/mtd/ramtron.h"
 #include "driver/range_finder/tfmini_s.h"
 #include "driver/rgb_led/ncp5623c.h"
+#include "driver/tfcard/spi_tfcard.h"
 // #include "driver/vision_flow/lc307.h"
 #include "driver/vision_flow/pmw3901_fl04.h"
 
@@ -85,7 +86,8 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    { "mtdblk0", "/", "elm", 0, NULL },
+    // { "mtdblk0", "/", "elm", 0, NULL },
+    { "tfcard", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -418,6 +420,10 @@ void bsp_initialize(void)
         console_println("=================> can't find the ramtron on spi6_dev1");
     }
 
+    if (FMT_EOK != drv_spi_tfcard_init("spi1_dev1", "tfcard")) {
+        console_println("tfcard init failed!");
+    }
+
     /* init file system */
     if (FMT_EOK != file_manager_init(mnt_table)) {
         console_println("=================> mtd first used => pleaserun:  mkfs mtdblk0 ");
@@ -505,7 +511,7 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-    #endif
+#endif
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());

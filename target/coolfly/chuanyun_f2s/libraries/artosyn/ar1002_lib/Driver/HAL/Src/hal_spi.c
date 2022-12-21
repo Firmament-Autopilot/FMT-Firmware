@@ -31,42 +31,38 @@ History:
 * @note   None.
 *       
 */
-HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent, 
-                             STRU_HAL_SPI_INIT *pst_spiInitInfo)
+HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent,
+                             STRU_HAL_SPI_INIT* pst_spiInitInfo)
 {
     // uint16_t u16_spiDivision;
     uint8_t u8_spiVecNum;
     // init default value.
-    STRU_SPI_InitTypes st_spiInit = 
-    {
-        .ctrl0   = SPI_CTRL0_DEF_VALUE, //EEPROM Read
-        .clk_Mhz = 0x09,
+    STRU_SPI_InitTypes st_spiInit = {
+        .ctrl0 = SPI_CTRL0_DEF_VALUE, //EEPROM Read
+        .clk_hz = (9 * 1000000),
         .Tx_Fthr = SPI_TXFTLR_DEF_VALUE,
         .Rx_Ftlr = SPI_RXFTLR_DEF_VALUE,
-        .SER     = SPI_SSIENR_DEF_VALUE
+        .SER = SPI_SSIENR_DEF_VALUE
     };
-   
-    if (e_spiComponent > HAL_SPI_COMPONENT_7)
-    {
+
+    if (e_spiComponent > HAL_SPI_COMPONENT_7) {
         return HAL_SPI_ERR_INIT;
     }
 
-    if (NULL == pst_spiInitInfo)
-    {
+    if (NULL == pst_spiInitInfo) {
         return HAL_SPI_ERR_INIT;
     }
 
-    if ( -1 == COMMON_driverMutexGet(MUTEX_SPI, e_spiComponent) )
-    {
+    if (-1 == COMMON_driverMutexGet(MUTEX_SPI, e_spiComponent)) {
         DLOG_Error("fail, e_spiComponent = %d", e_spiComponent);
         return HAL_OCCUPIED;
     }
     COMMON_driverMutexSet(MUTEX_SPI, (uint32_t)e_spiComponent);
     COMMON_driverInitSet(INITED_SPI, (uint32_t)e_spiComponent);
     // BAUDR
-    st_spiInit.clk_Mhz = pst_spiInitInfo->u16_halSpiBaudr;
-    
-    // SCPOL 
+    st_spiInit.clk_hz = pst_spiInitInfo->u32_halSpiBaudr_Hz;
+
+    // SCPOL
     st_spiInit.ctrl0 &= (~0x80);
     st_spiInit.ctrl0 |= (((uint16_t)(pst_spiInitInfo->e_halSpiPolarity)) << 7) & 0x80;
 
@@ -75,12 +71,9 @@ HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent,
     st_spiInit.ctrl0 |= (((uint16_t)(pst_spiInitInfo->e_halSpiPhase)) << 6) & 0x40;
 
     //connect spi interrupt service function
-    if (HAL_SPI_COMPONENT_7 == e_spiComponent)
-    {
+    if (HAL_SPI_COMPONENT_7 == e_spiComponent) {
         u8_spiVecNum = VIDEO_SPI_INTR_BB_VECTOR_NUM;
-    }
-    else
-    {
+    } else {
         u8_spiVecNum = e_spiComponent + HAL_NVIC_SSI_INTR_N0_VECTOR_NUM;
     }
     HAL_NVIC_SetPriority(u8_spiVecNum, INTR_NVIC_PRIORITY_SPI_DEFAULT, 0);
@@ -111,53 +104,45 @@ HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent,
 * @note   the SPI controller must work in master mode.
 *
 */
-HAL_RET_T HAL_SPI_MasterWriteRead(ENUM_HAL_SPI_COMPONENT e_spiComponent, 
-                                  uint8_t *pu8_wrData,
+HAL_RET_T HAL_SPI_MasterWriteRead(ENUM_HAL_SPI_COMPONENT e_spiComponent,
+                                  uint8_t* pu8_wrData,
                                   uint32_t u32_wrSize,
-                                  uint8_t *pu8_rdData,
+                                  uint8_t* pu8_rdData,
                                   uint32_t u32_rdSize,
                                   uint32_t u32_timeOut)
 
 {
     uint32_t start;
-    
-    if (e_spiComponent > HAL_SPI_COMPONENT_7)
-    {
+
+    if (e_spiComponent > HAL_SPI_COMPONENT_7) {
         return HAL_SPI_ERR_COMPONENT;
     }
-    if ((u32_wrSize > 0) && (NULL == pu8_wrData))
-    {
+    if ((u32_wrSize > 0) && (NULL == pu8_wrData)) {
         return HAL_SPI_ERR_WRITE_DATA;
     }
-    if ((u32_rdSize > 0) && (NULL == pu8_rdData))
-    {
+    if ((u32_rdSize > 0) && (NULL == pu8_rdData)) {
         return HAL_SPI_ERR_READ_DATA;
     }
 
-    if ( -1 == COMMON_driverInitGet(INITED_SPI, e_spiComponent) )
-    {
+    if (-1 == COMMON_driverInitGet(INITED_SPI, e_spiComponent)) {
         DLOG_Error("fail, e_spiComponent = %d", e_spiComponent);
         return HAL_NOT_INITED;
     }
 
-    if (SPI_GetBusyStatus(e_spiComponent))
-    {
+    if (SPI_GetBusyStatus(e_spiComponent)) {
         return HAL_BUSY;
     }
-        
-    SPI_write_read((ENUM_SPI_COMPONENT)(e_spiComponent),
-                    pu8_wrData,
-                    u32_wrSize,
-                    pu8_rdData,
-                    u32_rdSize);
 
-    if (0 != u32_timeOut)
-    {
+    SPI_write_read((ENUM_SPI_COMPONENT)(e_spiComponent),
+                   pu8_wrData,
+                   u32_wrSize,
+                   pu8_rdData,
+                   u32_rdSize);
+
+    if (0 != u32_timeOut) {
         start = SysTicks_GetTickCount();
-        while (SPI_GetBusyStatus(e_spiComponent))
-        {
-           if ((SysTicks_GetDiff(start, SysTicks_GetTickCount())) >= u32_timeOut)
-            {
+        while (SPI_GetBusyStatus(e_spiComponent)) {
+            if ((SysTicks_GetDiff(start, SysTicks_GetTickCount())) >= u32_timeOut) {
                 SPI_DisEnableInt(e_spiComponent, SPI_IMR_MASK);
                 return HAL_TIME_OUT;
             }
@@ -165,8 +150,6 @@ HAL_RET_T HAL_SPI_MasterWriteRead(ENUM_HAL_SPI_COMPONENT e_spiComponent,
             SysTicks_DelayUS(5);
         }
     }
-    
+
     return HAL_OK;
 }
-
-
