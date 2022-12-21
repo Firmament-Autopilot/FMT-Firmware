@@ -14,6 +14,8 @@ DRIVERS = [
     'mtd/ramtron.c',
     'vision_flow/pmw3901_fl04.c',
     'airspeed/ms4525.c',
+    'tfcard/spi_tfcard.c',
+    
 ]
 
 DRIVERS_CPPPATH = []
