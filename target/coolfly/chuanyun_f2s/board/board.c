@@ -36,7 +36,7 @@
 #include "driver/mtd/ramtron.h"
 // #include "driver/range_finder/tfmini_s.h"
 #include "driver/rgb_led/ncp5623c.h"
-#include "driver/tfcard/spi_tfcard.h"
+#include "driver/mtd/spi_tfcard.h"
 // #include "driver/vision_flow/lc307.h"
 #include "driver/vision_flow/pmw3901_fl04.h"
 
