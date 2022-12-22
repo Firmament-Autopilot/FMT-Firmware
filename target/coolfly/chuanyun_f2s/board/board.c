@@ -448,7 +448,7 @@ void bsp_initialize(void)
 
     // RT_CHECK(drv_bmi055_init("spi2_dev2", "gyro0", "accel0"));
 
-    RT_CHECK(drv_bmi088_init("spi2_dev2", "spi2_dev3", "gyro0", "accel0"));
+    RT_CHECK(drv_bmi088_init("spi2_dev2", "spi2_dev3", "gyro0", "accel0", 0));
     // RT_CHECK(drv_ms5611_init("spi3_dev1", "barometer"));
     RT_CHECK(drv_spl06_init("spi3_dev2", "barometer"));
 
