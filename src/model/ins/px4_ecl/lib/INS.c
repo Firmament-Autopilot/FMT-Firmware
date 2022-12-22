@@ -64,10 +64,10 @@ void px4_ecl_init(void)
     /* set EKF gps minimum required period */
     Ekf_set_min_required_gps_health_time(px4_ecl_params.ekf2_req_gps_h * 1.0e6f);
 
-    /* 
-	 * The first time running Ekf_IMU_update() will trigger Ekf::init(uint64_t timestamp) 
-	 * which causing some initialization options to fail. So run it once when FMT initializes PX4-EKF.
-    */
+    /*
+     * The first time running Ekf_IMU_update() will trigger Ekf::init(uint64_t timestamp)
+     * which causing some initialization options to fail. So run it once when FMT initializes PX4-EKF.
+     */
     extern fmt_model_info_t ins_model_info;
     uint32_t timestamp_ms = systime_now_ms();
     uint32_t dt_ms = ins_model_info.period;
@@ -83,7 +83,7 @@ void px4_ecl_init(void)
 #ifdef VEHICLE_TYPE_FIXWING
     bool is_fixed_wing = true;
 #endif
-    
+
     Ekf_set_fuse_beta_flag(is_fixed_wing && (px4_ecl_params.ekf2_fuse_beta == 1));
     Ekf_set_is_fixed_wing(is_fixed_wing);
 
@@ -107,7 +107,7 @@ void px4_ecl_step(void)
 
         /* run land detector*/
         ld_step();
-        
+
     } else {
         Ekf_get_attitude();
     }

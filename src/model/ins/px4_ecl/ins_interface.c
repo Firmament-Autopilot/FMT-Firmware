@@ -17,11 +17,11 @@
 #include <INS.h>
 #include <firmament.h>
 
+#include "Controller_types.h"
 #include "ecl_wrapper.h"
 #include "module/log/mlog.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
-#include "Controller_types.h"
 
 #define BIT(u, n) (u & (1 << n))
 
@@ -446,7 +446,7 @@ void ins_interface_step(uint32_t timestamp)
         acc[0] = ins_handle.imu_report.acc_B_mDs2[0];
         acc[1] = ins_handle.imu_report.acc_B_mDs2[1];
         acc[2] = ins_handle.imu_report.acc_B_mDs2[2] + 9.806650162F;
-        ld_set_IMU_data(ins_handle.imu_report.gyr_B_radDs, acc);;
+        ld_set_IMU_data(ins_handle.imu_report.gyr_B_radDs, acc);
 
         imu_data_updated = 1;
 
@@ -500,16 +500,16 @@ void ins_interface_step(uint32_t timestamp)
         /* update rangefinder data */
         if (mcn_poll(ins_handle.rf_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
-            
-            if(ins_handle.rf_report.distance_m >= 0){
+
+            if (ins_handle.rf_report.distance_m >= 0) {
                 rnf_bus.timestamp = timestamp;
                 rnf_bus.distance_m = ins_handle.rf_report.distance_m;
                 Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);
                 rf_data_updated = 1;
-            }else{
+            } else {
                 Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 0);
                 rf_data_updated = 0;
-            }  
+            }
         }
 
         /* update optical flow data */
@@ -537,90 +537,90 @@ void ins_interface_step(uint32_t timestamp)
         if (mcn_poll(fms_handle.fms_sub_node_t)) {
             mcn_copy(MCN_HUB(fms_output), fms_handle.fms_sub_node_t, &fms_handle.fms_report);
 
-            switch(fms_handle.fms_report.status){
-                case 1:
-                    ld_set_armed(false);
-                    break;
-                case 2:
-                    ld_set_armed(true);                   
-                    break;
-                case 3:
-                    ld_set_armed(true);
-                    break;
+            switch (fms_handle.fms_report.status) {
+            case 1:
+                ld_set_armed(false);
+                break;
+            case 2:
+                ld_set_armed(true);
+                break;
+            case 3:
+                ld_set_armed(true);
+                break;
             }
 
 #ifdef VEHICLE_TYPE_QUADCOPTER
             ld_set_trajectory_vz(fms_handle.fms_report.w_cmd);
 
-            switch(fms_handle.fms_report.state){
-                case 1: // Disarm
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(1); 
-                    break;
-                case 2: // Standby
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(2);                 
-                    break;
-                case 3: // Offboard
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 4: // Mission
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 5: // InvalidAutoMode
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(0);               
-                    break;
-                case 6: // Hold
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 7: // Acro
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 8: // Stabilize
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5);                
-                    break;
-                case 9: // Altitude
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 10: // Position
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 11: // InvalidAssistMode  
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(0);                
-                    break;
-                case 12: // Manual
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 13: // InvalidManualMode
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(0); 
-                    break;
-                case 14:  // InvalidArmMode 
-                    ld_set_flag_control_climb_rate_enabled(false);
-                    ld_set_takeoff_state(0);                
-                    break;
-                case 15: // Land
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 16: // Return
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(5); 
-                    break;
-                case 17: // Takeoff
-                    ld_set_flag_control_climb_rate_enabled(true);
-                    ld_set_takeoff_state(4); 
-                    break;
+            switch (fms_handle.fms_report.state) {
+            case 1: // Disarm
+                ld_set_flag_control_climb_rate_enabled(false);
+                ld_set_takeoff_state(1);
+                break;
+            case 2: // Standby
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(2);
+                break;
+            case 3: // Offboard
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 4: // Mission
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 5: // InvalidAutoMode
+                ld_set_flag_control_climb_rate_enabled(false);
+                ld_set_takeoff_state(0);
+                break;
+            case 6: // Hold
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 7: // Acro
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 8: // Stabilize
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 9: // Altitude
+                ld_set_flag_control_climb_rate_enabled(false);
+                ld_set_takeoff_state(5);
+                break;
+            case 10: // Position
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 11: // InvalidAssistMode
+                ld_set_flag_control_climb_rate_enabled(false);
+                ld_set_takeoff_state(0);
+                break;
+            case 12: // Manual
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 13: // InvalidManualMode
+                ld_set_flag_control_climb_rate_enabled(false);
+                ld_set_takeoff_state(0);
+                break;
+            case 14: // InvalidArmMode
+                ld_set_flag_control_climb_rate_enabled(false);
+                ld_set_takeoff_state(0);
+                break;
+            case 15: // Land
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 16: // Return
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(5);
+                break;
+            case 17: // Takeoff
+                ld_set_flag_control_climb_rate_enabled(true);
+                ld_set_takeoff_state(4);
+                break;
             }
 #endif
         }
@@ -628,23 +628,23 @@ void ins_interface_step(uint32_t timestamp)
 #ifdef VEHICLE_TYPE_QUADCOPTER
         if (mcn_poll(control_handle.control_sub_node_t)) {
             mcn_copy(MCN_HUB(control_output), control_handle.control_sub_node_t, &control_handle.control_report);
-            
-            uint64_t actuator_count = 0; 
+
+            uint64_t actuator_count = 0;
             float thr = 0;
-            for(int i=0; i<16; i++){
-                if(control_handle.control_report.actuator_cmd[i] != 0){
-                    thr += ((float)control_handle.control_report.actuator_cmd[i] -1000.0f) / 1000.0f;
+            for (int i = 0; i < 16; i++) {
+                if (control_handle.control_report.actuator_cmd[i] != 0) {
+                    thr += ((float)control_handle.control_report.actuator_cmd[i] - 1000.0f) / 1000.0f;
                     actuator_count += 1;
                 }
             }
-            if(actuator_count > 0)  thr /= actuator_count;
+            if (actuator_count > 0)
+                thr /= actuator_count;
 
             ld_set_actuator_controls_throttle(thr);
         }
 #endif
         /* run INS */
         px4_ecl_step();
-        
     }
 
     /* update ins output timestamp */

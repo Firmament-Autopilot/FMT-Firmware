@@ -45,78 +45,78 @@
 #include "LandDetector.h"
 
 struct hover_thrust_estimate_s {
-	uint64_t 	timeStampUs;
-	float 		hover_thrust;
-	bool 		valid;
+    uint64_t timeStampUs;
+    float hover_thrust;
+    bool valid;
 };
 
 struct takeoff_status_s {
-	static constexpr uint8_t TAKEOFF_STATE_UNINITIALIZED = 0;
-	static constexpr uint8_t TAKEOFF_STATE_DISARMED = 1;
-	static constexpr uint8_t TAKEOFF_STATE_SPOOLUP = 2;
-	static constexpr uint8_t TAKEOFF_STATE_READY_FOR_TAKEOFF = 3;
-	static constexpr uint8_t TAKEOFF_STATE_RAMPUP = 4;
-	static constexpr uint8_t TAKEOFF_STATE_FLIGHT = 5;
+    static constexpr uint8_t TAKEOFF_STATE_UNINITIALIZED = 0;
+    static constexpr uint8_t TAKEOFF_STATE_DISARMED = 1;
+    static constexpr uint8_t TAKEOFF_STATE_SPOOLUP = 2;
+    static constexpr uint8_t TAKEOFF_STATE_READY_FOR_TAKEOFF = 3;
+    static constexpr uint8_t TAKEOFF_STATE_RAMPUP = 4;
+    static constexpr uint8_t TAKEOFF_STATE_FLIGHT = 5;
 };
 
-class MulticopterLandDetector : public LandDetector
-{
+class MulticopterLandDetector : public LandDetector {
 public:
-	MulticopterLandDetector();
-	~MulticopterLandDetector() override = default;
+    MulticopterLandDetector();
+    ~MulticopterLandDetector() override = default;
 
-	float* 	return_actuator_controls_throttle(void){return &_actuator_controls_throttle;};
-	bool* 	return_flag_control_climb_rate_enabled(void){return &_flag_control_climb_rate_enabled;};
-	uint8_t*return_takeoff_state(void){return &_takeoff_state;}; 
-	float*  return_trajectory_vz(void){return &_trajectory_vz;};
-	hover_thrust_estimate_s* return_hover_thrust_estimate(void){return &_hover_thrust_estimate;};
+    float* return_actuator_controls_throttle(void) { return &_actuator_controls_throttle; };
+    bool* return_flag_control_climb_rate_enabled(void) { return &_flag_control_climb_rate_enabled; };
+    uint8_t* return_takeoff_state(void) { return &_takeoff_state; };
+    float* return_trajectory_vz(void) { return &_trajectory_vz; };
+    hover_thrust_estimate_s* return_hover_thrust_estimate(void) { return &_hover_thrust_estimate; };
 
 protected:
-	void _update_params() override;
-	void _update_topics() override;
+    void _update_params() override;
+    void _update_topics() override;
 
-	bool _get_landed_state() override;
-	bool _get_ground_contact_state() override;
-	bool _get_maybe_landed_state() override;
-	bool _get_freefall_state() override;
-	bool _get_ground_effect_state() override;
-	bool _get_in_descend() override { return _in_descend; }
-	bool _get_has_low_throttle() override { return _has_low_throttle; }
-	bool _get_horizontal_movement() override { return _horizontal_movement; }
-	bool _get_vertical_movement() override { return _vertical_movement; }
-	bool _get_rotational_movement() override { return _rotational_movement; }
-	bool _get_close_to_ground_or_skipped_check() override { return _close_to_ground_or_skipped_check; }
+    bool _get_landed_state() override;
+    bool _get_ground_contact_state() override;
+    bool _get_maybe_landed_state() override;
+    bool _get_freefall_state() override;
+    bool _get_ground_effect_state() override;
+    bool _get_in_descend() override { return _in_descend; }
+    bool _get_has_low_throttle() override { return _has_low_throttle; }
+    bool _get_horizontal_movement() override { return _horizontal_movement; }
+    bool _get_vertical_movement() override { return _vertical_movement; }
+    bool _get_rotational_movement() override { return _rotational_movement; }
+    bool _get_close_to_ground_or_skipped_check() override { return _close_to_ground_or_skipped_check; }
 
-	void _set_hysteresis_factor(const int factor) override;
+    void _set_hysteresis_factor(const int factor) override;
+
 private:
-	bool _is_close_to_ground();
+    bool _is_close_to_ground();
 
-	/** Time in us that freefall has to hold before triggering freefall */
-	static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300_ms;
+    /** Time in us that freefall has to hold before triggering freefall */
+    static constexpr uint64_t FREEFALL_TRIGGER_TIME_US = 300_ms;
 
-	/** Distance above ground below which entering ground contact state is possible when distance to ground is available. */
-	static constexpr float DIST_FROM_GROUND_THRESHOLD = 1.0f;
+    /** Distance above ground below which entering ground contact state is possible when distance to ground is available. */
+    static constexpr float DIST_FROM_GROUND_THRESHOLD = 1.0f;
 
-	uint64_t _hover_thrust_estimate_last_valid{0};
-	bool _hover_thrust_estimate_valid{false};
+    uint64_t _hover_thrust_estimate_last_valid { 0 };
+    bool _hover_thrust_estimate_valid { false };
 
-	bool _flag_control_climb_rate_enabled{false};
-	bool _hover_thrust_initialized{false};
+    bool _flag_control_climb_rate_enabled { false };
+    bool _hover_thrust_initialized { false };
 
-	float _actuator_controls_throttle{0.f};
+    float _actuator_controls_throttle { 0.f };
 
-	uint8_t _takeoff_state{takeoff_status_s::TAKEOFF_STATE_DISARMED};
+    uint8_t _takeoff_state { takeoff_status_s::TAKEOFF_STATE_DISARMED };
 
-	Hysteresis _minimum_thrust_8s_hysteresis{false};
+    Hysteresis _minimum_thrust_8s_hysteresis { false };
 
-	bool _in_descend{false};		///< vehicle is commanded to desend
-	bool _horizontal_movement{false};	///< vehicle is moving horizontally
-	bool _vertical_movement{false};
-	bool _rotational_movement{false};
-	bool _has_low_throttle{false};
-	bool _close_to_ground_or_skipped_check{false};
-	bool _below_gnd_effect_hgt{false};	///< vehicle height above ground is below height where ground effect occurs
+    bool _in_descend { false };          ///< vehicle is commanded to desend
+    bool _horizontal_movement { false }; ///< vehicle is moving horizontally
+    bool _vertical_movement { false };
+    bool _rotational_movement { false };
+    bool _has_low_throttle { false };
+    bool _close_to_ground_or_skipped_check { false };
+    bool _below_gnd_effect_hgt { false }; ///< vehicle height above ground is below height where ground effect occurs
 
-	hover_thrust_estimate_s _hover_thrust_estimate{};
-	float _trajectory_vz{0.0f};
+    hover_thrust_estimate_s _hover_thrust_estimate {};
+    float _trajectory_vz { 0.0f };
 };

@@ -40,19 +40,19 @@
 
 #include "LandDetector.h"
 
-LandDetector::LandDetector() 
+LandDetector::LandDetector()
 {
-	_land_detected.ground_contact = true;
-	_land_detected.maybe_landed = true;
-	_land_detected.landed = true;
-	_land_detected.in_ground_effect = true;
-	_land_detected.in_descend = false;
-	_land_detected.has_low_throttle = false;
-	_land_detected.vertical_movement = false;
-	_land_detected.horizontal_movement = false;
-	_land_detected.rotational_movement = false;
-	_land_detected.close_to_ground_or_skipped_check = true;
-	_land_detected.at_rest = true;
+    _land_detected.ground_contact = true;
+    _land_detected.maybe_landed = true;
+    _land_detected.landed = true;
+    _land_detected.in_ground_effect = true;
+    _land_detected.in_descend = false;
+    _land_detected.has_low_throttle = false;
+    _land_detected.vertical_movement = false;
+    _land_detected.horizontal_movement = false;
+    _land_detected.rotational_movement = false;
+    _land_detected.close_to_ground_or_skipped_check = true;
+    _land_detected.at_rest = true;
 }
 
 LandDetector::~LandDetector()
@@ -61,92 +61,85 @@ LandDetector::~LandDetector()
 
 void LandDetector::update()
 {
-	static constexpr float GYRO_NORM_MAX = math::radians(3.f); // 3 degrees/second
+    static constexpr float GYRO_NORM_MAX = math::radians(3.f); // 3 degrees/second
 
-	if (_angular_velocity.norm() > GYRO_NORM_MAX) {
-		_time_last_move_detect_us = _nowUs;	//_angular_velocity.timeStampUs;
-	}
+    if (_angular_velocity.norm() > GYRO_NORM_MAX) {
+        _time_last_move_detect_us = _nowUs; //_angular_velocity.timeStampUs;
+    }
 
-	_update_topics();
+    _update_topics();
 
-	if (!_dist_bottom_is_observable) {
-		// we consider the distance to the ground observable if the system is using a range sensor
-		_dist_bottom_is_observable = _vehicle_local_position.dist_bottom_sensor_bitfield &
-					     vehicle_local_position_s::DIST_BOTTOM_SENSOR_RANGE;
-	}
+    if (!_dist_bottom_is_observable) {
+        // we consider the distance to the ground observable if the system is using a range sensor
+        _dist_bottom_is_observable = _vehicle_local_position.dist_bottom_sensor_bitfield & vehicle_local_position_s::DIST_BOTTOM_SENSOR_RANGE;
+    }
 
-	// Increase land detection time if not close to ground
-	if (_dist_bottom_is_observable && !_vehicle_local_position.dist_bottom_valid) {
-		_set_hysteresis_factor(3);
+    // Increase land detection time if not close to ground
+    if (_dist_bottom_is_observable && !_vehicle_local_position.dist_bottom_valid) {
+        _set_hysteresis_factor(3);
 
-	} else {
-		_set_hysteresis_factor(1);
-	}
+    } else {
+        _set_hysteresis_factor(1);
+    }
 
-	_freefall_hysteresis.set_state_and_update(_get_freefall_state(), _nowUs);
-	_ground_contact_hysteresis.set_state_and_update(_get_ground_contact_state(), _nowUs);
-	_maybe_landed_hysteresis.set_state_and_update(_get_maybe_landed_state(), _nowUs);
-	_landed_hysteresis.set_state_and_update(_get_landed_state(), _nowUs);
-	_ground_effect_hysteresis.set_state_and_update(_get_ground_effect_state(), _nowUs);
+    _freefall_hysteresis.set_state_and_update(_get_freefall_state(), _nowUs);
+    _ground_contact_hysteresis.set_state_and_update(_get_ground_contact_state(), _nowUs);
+    _maybe_landed_hysteresis.set_state_and_update(_get_maybe_landed_state(), _nowUs);
+    _landed_hysteresis.set_state_and_update(_get_landed_state(), _nowUs);
+    _ground_effect_hysteresis.set_state_and_update(_get_ground_effect_state(), _nowUs);
 
-	const bool freefallDetected = _freefall_hysteresis.get_state();
-	const bool ground_contactDetected = _ground_contact_hysteresis.get_state();
-	const bool maybe_landedDetected = _maybe_landed_hysteresis.get_state();
-	const bool landDetected = _landed_hysteresis.get_state();
-	const bool in_ground_effect = _ground_effect_hysteresis.get_state();
+    const bool freefallDetected = _freefall_hysteresis.get_state();
+    const bool ground_contactDetected = _ground_contact_hysteresis.get_state();
+    const bool maybe_landedDetected = _maybe_landed_hysteresis.get_state();
+    const bool landDetected = _landed_hysteresis.get_state();
+    const bool in_ground_effect = _ground_effect_hysteresis.get_state();
 
-	UpdateVehicleAtRest();
+    UpdateVehicleAtRest();
 
-	const bool at_rest = landDetected && _at_rest;
+    const bool at_rest = landDetected && _at_rest;
 
-	// publish at 1 Hz, very first time, or when the result has changed
-	if ((_nowUs - _land_detected.timeStampUs >= 1_s) ||
-	    (_land_detected.landed != landDetected) ||
-	    (_land_detected.freefall != freefallDetected) ||
-	    (_land_detected.maybe_landed != maybe_landedDetected) ||
-	    (_land_detected.ground_contact != ground_contactDetected) ||
-	    (_land_detected.in_ground_effect != in_ground_effect) ||
-	    (_land_detected.at_rest != at_rest)) {
+    // publish at 1 Hz, very first time, or when the result has changed
+    if ((_nowUs - _land_detected.timeStampUs >= 1_s) || (_land_detected.landed != landDetected) || (_land_detected.freefall != freefallDetected) || (_land_detected.maybe_landed != maybe_landedDetected) || (_land_detected.ground_contact != ground_contactDetected) || (_land_detected.in_ground_effect != in_ground_effect) || (_land_detected.at_rest != at_rest)) {
 
-		if (!landDetected && _land_detected.landed && _takeoff_time == 0) { /* only set take off time once, until disarming */
-			// We did take off
-			_takeoff_time = _nowUs;
-		}
+        if (!landDetected && _land_detected.landed && _takeoff_time == 0) { /* only set take off time once, until disarming */
+            // We did take off
+            _takeoff_time = _nowUs;
+        }
 
-		_land_detected.landed = landDetected;
-		_land_detected.freefall = freefallDetected;
-		_land_detected.maybe_landed = maybe_landedDetected;
-		_land_detected.ground_contact = ground_contactDetected;
-		_land_detected.in_ground_effect = in_ground_effect;
-		_land_detected.in_descend = _get_in_descend();
-		_land_detected.has_low_throttle = _get_has_low_throttle();
-		_land_detected.horizontal_movement = _get_horizontal_movement();
-		_land_detected.vertical_movement = _get_vertical_movement();
-		_land_detected.rotational_movement = _get_rotational_movement();
-		_land_detected.close_to_ground_or_skipped_check = _get_close_to_ground_or_skipped_check();
-		_land_detected.at_rest = at_rest;
-		_land_detected.timeStampUs = _nowUs;
-		_land_detected.updated = true;
-	}
+        _land_detected.landed = landDetected;
+        _land_detected.freefall = freefallDetected;
+        _land_detected.maybe_landed = maybe_landedDetected;
+        _land_detected.ground_contact = ground_contactDetected;
+        _land_detected.in_ground_effect = in_ground_effect;
+        _land_detected.in_descend = _get_in_descend();
+        _land_detected.has_low_throttle = _get_has_low_throttle();
+        _land_detected.horizontal_movement = _get_horizontal_movement();
+        _land_detected.vertical_movement = _get_vertical_movement();
+        _land_detected.rotational_movement = _get_rotational_movement();
+        _land_detected.close_to_ground_or_skipped_check = _get_close_to_ground_or_skipped_check();
+        _land_detected.at_rest = at_rest;
+        _land_detected.timeStampUs = _nowUs;
+        _land_detected.updated = true;
+    }
 
-	// set the flight time when disarming (not necessarily when landed, because all param changes should
-	// happen on the same event and it's better to set/save params while not in armed state)
-	if (_takeoff_time != 0 && !_armed && _previous_armed_state) {
-		_takeoff_time = 0;
-	}
+    // set the flight time when disarming (not necessarily when landed, because all param changes should
+    // happen on the same event and it's better to set/save params while not in armed state)
+    if (_takeoff_time != 0 && !_armed && _previous_armed_state) {
+        _takeoff_time = 0;
+    }
 
-	_previous_armed_state = _armed;
+    _previous_armed_state = _armed;
 }
 
 void LandDetector::UpdateVehicleAtRest()
 {
-	static constexpr float IS_MOVING_SCALER = 1.0f;
+    static constexpr float IS_MOVING_SCALER = 1.0f;
 
-	if ((_imu_status.gyro_vibration_metric * 4.0E4f > IS_MOVING_SCALER)
-		|| (_imu_status.accel_vibration_metric * 2.1E2f > IS_MOVING_SCALER)) {
+    if ((_imu_status.gyro_vibration_metric * 4.0E4f > IS_MOVING_SCALER)
+        || (_imu_status.accel_vibration_metric * 2.1E2f > IS_MOVING_SCALER)) {
 
-		_time_last_move_detect_us = _imu_status.timeStampUs;
-	}
+        _time_last_move_detect_us = _imu_status.timeStampUs;
+    }
 
-	_at_rest = (_nowUs - _time_last_move_detect_us > 1_s);
+    _at_rest = (_nowUs - _time_last_move_detect_us > 1_s);
 }

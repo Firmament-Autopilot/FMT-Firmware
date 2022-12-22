@@ -42,39 +42,34 @@
 
 #pragma once
 
-#include <matrix/math.hpp>
 #include "LandDetector.h"
+#include <matrix/math.hpp>
 
-struct airspeed_validated_s{
-	uint64_t 	timeStampUs;
-	float		true_airspeed_m_s;
+struct airspeed_validated_s {
+    uint64_t timeStampUs;
+    float true_airspeed_m_s;
 };
 
-class FixedwingLandDetector final : public LandDetector
-{
+class FixedwingLandDetector final : public LandDetector {
 public:
-	FixedwingLandDetector();
-	~FixedwingLandDetector() override = default;
+    FixedwingLandDetector();
+    ~FixedwingLandDetector() override = default;
 
-	airspeed_validated_s* return_airspeed_validated(void){return &_airspeed_validated;}; 
+    airspeed_validated_s* return_airspeed_validated(void) { return &_airspeed_validated; };
 
 protected:
-
-	bool _get_landed_state() override;
-	void _set_hysteresis_factor(const int factor) override {};
+    bool _get_landed_state() override;
+    void _set_hysteresis_factor(const int factor) override {};
 
 private:
+    /** Time in us that landing conditions have to hold before triggering a land. */
+    static constexpr uint64_t LANDED_TRIGGER_TIME_US = 2_s;
+    static constexpr uint64_t FLYING_TRIGGER_TIME_US = 0_us;
 
-	/** Time in us that landing conditions have to hold before triggering a land. */
-	static constexpr uint64_t LANDED_TRIGGER_TIME_US = 2_s;
-	static constexpr uint64_t FLYING_TRIGGER_TIME_US = 0_us;
+    float _airspeed_filtered { 0.0f };
+    float _velocity_xy_filtered { 0.0f };
+    float _velocity_z_filtered { 0.0f };
+    float _xy_accel_filtered { 0.0f };
 
-	float _airspeed_filtered{0.0f};
-	float _velocity_xy_filtered{0.0f};
-	float _velocity_z_filtered{0.0f};
-	float _xy_accel_filtered{0.0f};
-
-	airspeed_validated_s _airspeed_validated{};
-
+    airspeed_validated_s _airspeed_validated {};
 };
-
