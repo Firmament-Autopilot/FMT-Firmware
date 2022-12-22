@@ -14,8 +14,8 @@ src += Glob('ecl/geo/*.cpp')
 src += Glob('ecl/geo_lookup/*.cpp')
 src += Glob('ecl/mathlib/*.cpp')
 src += Glob('ecl/matrix/*.cpp')
-src += Glob('ld/hysteresis/*.cpp')
-src += Glob('ld/land_detector/*.cpp')
+src += Glob('lib/hysteresis/*.cpp')
+src += Glob('lib/land_detector/*.cpp')
 
 inc += [cwd]
 inc += [cwd + '/lib']
@@ -27,9 +27,8 @@ inc += [cwd + '/ecl/geo']
 inc += [cwd + '/ecl/geo_lookup']
 inc += [cwd + '/ecl/mathlib']
 inc += [cwd + '/ecl/matrix']
-inc += [cwd + '/ld']
-inc += [cwd + '/ld/hysteresis']
-inc += [cwd + '/ld/land_detector']
+inc += [cwd + '/lib/hysteresis']
+inc += [cwd + '/lib/land_detector']
 
 vehicle_type = GetConfigValue('VEHICLE_TYPE')
 
