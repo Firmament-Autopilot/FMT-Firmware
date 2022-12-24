@@ -17,9 +17,9 @@
 
 #include "hal/sd/sd.h"
 
-#define SECTOR_SIZE RT_DFS_ELM_MAX_SECTOR_SIZE
+#define SECTOR_SIZE 512
 
-/* local sector buffer */
+/* local sector buffer, 4B alignment */
 static uint32_t sector_buffer[SECTOR_SIZE / 4];
 
 static rt_err_t hal_sd_init(rt_device_t dev)
