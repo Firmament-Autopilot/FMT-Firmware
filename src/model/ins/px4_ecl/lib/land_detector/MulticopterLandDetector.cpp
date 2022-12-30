@@ -145,7 +145,7 @@ bool MulticopterLandDetector::_get_ground_contact_state()
         _horizontal_movement = false; // not known
     }
 
-    if (lpos_available && _vehicle_local_position.dist_bottom_valid && _param_mc.alt_gnd_effect > 0) {
+    if (lpos_available && _param_mc.alt_gnd_effect > 0) {
         _below_gnd_effect_hgt = _vehicle_local_position.dist_bottom < _param_mc.alt_gnd_effect;
 
     } else {
@@ -170,7 +170,7 @@ bool MulticopterLandDetector::_get_ground_contact_state()
     if (_flag_control_climb_rate_enabled) {
 
         // Setpoints can be NAN
-        _in_descend = (_trajectory_vz >= 1.1f * _param_mc.z_vel_max);
+        _in_descend = (_trajectory_vz >= 1.5f * _vehicle_local_position.vz);
 
         // ground contact requires commanded descent until landed
         if (!_maybe_landed_hysteresis.get_state() && !_landed_hysteresis.get_state()) {
@@ -235,7 +235,7 @@ bool MulticopterLandDetector::_get_landed_state()
 
 bool MulticopterLandDetector::_get_ground_effect_state()
 {
-    return (_in_descend && !_horizontal_movement) || (_below_gnd_effect_hgt && _takeoff_state == takeoff_status_s::TAKEOFF_STATE_FLIGHT) || _takeoff_state == takeoff_status_s::TAKEOFF_STATE_RAMPUP;
+    return (_actuator_controls_throttle > 0.1f && !_horizontal_movement && _below_gnd_effect_hgt);
 }
 
 bool MulticopterLandDetector::_is_close_to_ground()

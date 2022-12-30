@@ -120,6 +120,8 @@ void LandDetector::update()
         _land_detected.at_rest = at_rest;
         _land_detected.timeStampUs = _nowUs;
         _land_detected.updated = true;
+    }else{
+        _land_detected.updated = false;
     }
 
     // set the flight time when disarming (not necessarily when landed, because all param changes should

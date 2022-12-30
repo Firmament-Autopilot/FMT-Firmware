@@ -547,6 +547,11 @@ bool ld_get_gnd_effect(void)
     return _ld->return_vehicle_land_detected()->in_ground_effect;
 }
 
+bool ld_IsUpdated(void)
+{
+    return _ld->return_vehicle_land_detected()->updated;
+}
+
 #ifdef VEHICLE_TYPE_QUADCOPTER
 void ld_set_actuator_controls_throttle(float throttle)
 {
@@ -561,11 +566,6 @@ void ld_set_flag_control_climb_rate_enabled(bool enable)
 void ld_set_trajectory_vz(float vz)
 {
     *(_ld->return_trajectory_vz()) = vz;
-}
-
-void ld_set_takeoff_state(uint8_t takeoff_state)
-{
-    *(_ld->return_takeoff_state()) = takeoff_state;
 }
 
 void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid)

@@ -66,7 +66,6 @@ public:
 
     float* return_actuator_controls_throttle(void) { return &_actuator_controls_throttle; };
     bool* return_flag_control_climb_rate_enabled(void) { return &_flag_control_climb_rate_enabled; };
-    uint8_t* return_takeoff_state(void) { return &_takeoff_state; };
     float* return_trajectory_vz(void) { return &_trajectory_vz; };
     hover_thrust_estimate_s* return_hover_thrust_estimate(void) { return &_hover_thrust_estimate; };
 

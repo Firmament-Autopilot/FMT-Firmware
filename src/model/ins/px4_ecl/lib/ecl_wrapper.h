@@ -89,13 +89,13 @@ void ld_set_vehicle_local_position(void);
 void ld_set_vehicle_imu_status(uint64_t timeStampUs);
 bool ld_get_landed_state(void);
 bool ld_get_gnd_effect(void);
+bool ld_IsUpdated(void);
 
 #ifdef VEHICLE_TYPE_QUADCOPTER
 void ld_set_actuator_controls_throttle(float throttle);
 void ld_set_flag_control_climb_rate_enabled(bool enable);
 void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid);
 void ld_set_trajectory_vz(float vz);
-void ld_set_takeoff_state(uint8_t takeoff_state);
 #endif
 #ifdef VEHICLE_TYPE_FIXWING
 void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s);

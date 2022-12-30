@@ -95,8 +95,10 @@ void px4_ecl_init(void)
 
 void px4_ecl_step(void)
 {
-    Ekf_set_gnd_effect_flag(ld_get_gnd_effect());
-    Ekf_set_in_air_status(!ld_get_landed_state());
+    if(ld_IsUpdated()){
+        Ekf_set_gnd_effect_flag(ld_get_gnd_effect());
+        Ekf_set_in_air_status(!ld_get_landed_state());
+    }
 
     if (Ekf_step()) {
         Ekf_get_attitude();
