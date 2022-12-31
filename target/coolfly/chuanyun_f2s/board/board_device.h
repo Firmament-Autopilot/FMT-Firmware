@@ -17,18 +17,20 @@
 #ifndef BOARD_DEVICE_H__
 #define BOARD_DEVICE_H__
 
+// #define BOARD_F2S
 
-#define  WD_DONE_GPIO           HAL_GPIO_NUM74
-#define  VIDEO_LED_GPIO         HAL_GPIO_NUM55
-#define  LINK_LED_GPIO          HAL_GPIO_NUM54
+#define BOARD_JM_250
 
-#define  RGB_R_GPIO             HAL_GPIO_NUM66
-#define  RGB_G_GPIO             HAL_GPIO_NUM62
-#define  RGB_B_GPIO             HAL_GPIO_NUM58
+#define WD_DONE_GPIO   HAL_GPIO_NUM74
+#define VIDEO_LED_GPIO HAL_GPIO_NUM55
+#define LINK_LED_GPIO  HAL_GPIO_NUM54
 
-#define  SENSOR_POWER_GPIO      HAL_GPIO_NUM70
+#define RGB_R_GPIO HAL_GPIO_NUM66
+#define RGB_G_GPIO HAL_GPIO_NUM62
+#define RGB_B_GPIO HAL_GPIO_NUM58
+
+#define SENSOR_POWER_GPIO HAL_GPIO_NUM70
 
 #define SPI1_SPEED_HZ 9000000
-
 
 #endif

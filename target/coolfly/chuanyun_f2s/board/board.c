@@ -35,8 +35,8 @@
 #include "driver/mag/mmc5983ma.h"
 #include "driver/mtd/ramtron.h"
 // #include "driver/range_finder/tfmini_s.h"
-#include "driver/rgb_led/ncp5623c.h"
 #include "driver/mtd/spi_tfcard.h"
+#include "driver/rgb_led/ncp5623c.h"
 // #include "driver/vision_flow/lc307.h"
 #include "driver/vision_flow/pmw3901_fl04.h"
 
@@ -50,6 +50,7 @@
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
 #include "led.h"
+#include "tone_alarm.h"
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -558,6 +559,8 @@ void bsp_post_initialize(void)
 
     /* initialize led */
     FMT_CHECK(led_control_init());
+
+    tone_alarm_init();
 
     /* initialize power management unit */
     FMT_CHECK(pmu_init());
