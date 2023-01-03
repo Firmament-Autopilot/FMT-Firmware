@@ -509,7 +509,7 @@ void ins_interface_step(uint32_t timestamp)
         }
 
         /* update optical flow data */
-        if (mcn_poll(ins_handle.airspeed_sub_node_t)) {
+        if (mcn_poll(ins_handle.optflow_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
             // TODO
