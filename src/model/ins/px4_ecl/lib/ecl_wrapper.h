@@ -70,11 +70,37 @@ void Ekf_BARO_update(uint32_t timestamp_ms, float pressure_alt_meter);
 void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t height,
                     float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
                     float sAcc, uint8_t fixType, uint8_t numSV);
+void Ekf_RANGEFINDER_update(uint32_t timestamp_ms, float rng, int8_t quality);
+void Ekf_AIRSPEED_update(uint32_t timestamp_ms, float true_airspeed, float eas2tas);
 bool Ekf_step(void);
 void Ekf_get_attitude(void);
 void Ekf_get_acc(void);
 void Ekf_get_local_position(void);
 void Ekf_get_global_position(void);
 void Ekf_get_TerrainVertPos(void);
+
+// land detector
+void ld_creat(void);
+void ld_set_time(uint64_t nowUs);
+void ld_set_armed(bool armed);
+void ld_set_IMU_data(float gyroRate[3], float acceleration[3]);
+void ld_set_dist_bottom_is_observable(bool observable);
+void ld_set_vehicle_local_position(void);
+void ld_set_vehicle_imu_status(uint64_t timeStampUs);
+bool ld_get_landed_state(void);
+bool ld_get_gnd_effect(void);
+bool ld_IsUpdated(void);
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+void ld_set_actuator_controls_throttle(float throttle);
+void ld_set_flag_control_climb_rate_enabled(bool enable);
+void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid);
+void ld_set_trajectory_vz(float vz);
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s);
+#endif
+
+void ld_step(void);
 
 #endif

@@ -26,6 +26,9 @@ void px4_ecl_init(void)
     /* create EKF instance */
     Ekf_create();
 
+    /* creat land detector instance*/
+    ld_creat();
+
     /* set EKF parameter */
     Ekf_set_param_ekf2_gyr_noise(px4_ecl_params.ekf2_gyr_noise);
     Ekf_set_param_ekf2_acc_noise(px4_ecl_params.ekf2_acc_noise);
@@ -61,36 +64,52 @@ void px4_ecl_init(void)
     /* set EKF gps minimum required period */
     Ekf_set_min_required_gps_health_time(px4_ecl_params.ekf2_req_gps_h * 1.0e6f);
 
-    /* 
-	 * The first time running Ekf_IMU_update() will trigger Ekf::init(uint64_t timestamp) 
-	 * which causing some initialization options to fail. So run it once when FMT initializes PX4-EKF.
-    */
+    /*
+     * The first time running Ekf_IMU_update() will trigger Ekf::init(uint64_t timestamp)
+     * which causing some initialization options to fail. So run it once when FMT initializes PX4-EKF.
+     */
     extern fmt_model_info_t ins_model_info;
     uint32_t timestamp_ms = systime_now_ms();
     uint32_t dt_ms = ins_model_info.period;
     float gyr_B_radDs[3] = { 0, 0, 0 };
-    float acc_B_mDs2[3] = { 0, 0, -9.8 };
+    float acc_B_mDs2[3] = { 0, 0, -9.80665f };
     bool clipping[3] = { false, false, false };
     Ekf_IMU_update(timestamp_ms, dt_ms, gyr_B_radDs, acc_B_mDs2, clipping);
 
+#ifdef VEHICLE_TYPE_QUADCOPTER
     bool is_fixed_wing = false;
+#endif
+
+#ifdef VEHICLE_TYPE_FIXWING
+    bool is_fixed_wing = true;
+#endif
+
     Ekf_set_fuse_beta_flag(is_fixed_wing && (px4_ecl_params.ekf2_fuse_beta == 1));
     Ekf_set_is_fixed_wing(is_fixed_wing);
 
     Ekf_set_gnd_effect_flag(false);
-    Ekf_set_in_air_status(true);
+    Ekf_set_in_air_status(false);
 
     px4_ecl_out_bus.flag |= 1 << 0;
 }
 
 void px4_ecl_step(void)
 {
+    if(ld_IsUpdated()){
+        Ekf_set_gnd_effect_flag(ld_get_gnd_effect());
+        Ekf_set_in_air_status(!ld_get_landed_state());
+    }
+
     if (Ekf_step()) {
         Ekf_get_attitude();
         Ekf_get_acc();
         Ekf_get_local_position();
         Ekf_get_global_position();
         Ekf_get_TerrainVertPos();
+
+        /* run land detector*/
+        ld_step();
+
     } else {
         Ekf_get_attitude();
     }

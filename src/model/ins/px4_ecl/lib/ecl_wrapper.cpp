@@ -19,7 +19,16 @@
 #include <mathlib.h>
 
 #include "INS.h"
+#include "fmtconfig.h"
+#include "land_detector/LandDetector.h"
 #include "module/math/quaternion.h"
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+    #include "land_detector/MulticopterLandDetector.h"
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+    #include "land_detector/FixedwingLandDetector.h"
+#endif
 
 Ekf* _ekf;
 imuSample _newest_imu_sample {};
@@ -297,8 +306,8 @@ void Ekf_BARO_update(uint32_t timestamp_ms, float pressure_alt_meter)
 }
 
 void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t height,
-    float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
-    float sAcc, uint8_t fixType, uint8_t numSV)
+                    float hAcc, float vAcc, float velN, float velE, float velD, float vel, float cog,
+                    float sAcc, uint8_t fixType, uint8_t numSV)
 {
     gps_message gps_message_new;
 
@@ -319,6 +328,28 @@ void Ekf_GPS_update(uint32_t timestamp_ms, int32_t lon, int32_t lat, int32_t hei
     gps_message_new.pdop = sqrt(hAcc * hAcc + vAcc * vAcc);
 
     _ekf->setGpsData(gps_message_new);
+}
+
+void Ekf_RANGEFINDER_update(uint32_t timestamp_ms, float rng, int8_t quality)
+{
+    rangeSample rangeSample_new;
+
+    rangeSample_new.time_us = timestamp_ms * 1.0e3f;
+    rangeSample_new.rng = rng;
+    rangeSample_new.quality = quality; // default 100
+
+    _ekf->setRangeData(rangeSample_new);
+}
+
+void Ekf_AIRSPEED_update(uint32_t timestamp_ms, float true_airspeed, float eas2tas)
+{
+    airspeedSample airspeedSample_new;
+
+    airspeedSample_new.time_us = timestamp_ms * 1.0e3f;
+    airspeedSample_new.true_airspeed = true_airspeed;
+    airspeedSample_new.eas2tas = eas2tas;
+
+    _ekf->setAirspeedData(airspeedSample_new);
 }
 
 bool Ekf_step(void)
@@ -407,11 +438,10 @@ void Ekf_get_global_position(void)
 
 void Ekf_get_acc(void)
 {
-    const Vector3f accel_bias = _ekf->getAccelBias();
     const Quatf q { _ekf->calculate_quaternion() };
     const Vector3f vel_deriv { _ekf->getVelocityDerivative() };
     quaternion quat = { q(0), q(1), q(2), q(3) };
-    float acc_O[3] = { vel_deriv(0) - accel_bias(0), vel_deriv(1) - accel_bias(1), vel_deriv(2) - accel_bias(2) - 9.81f };
+    float acc_O[3] = { vel_deriv(0), vel_deriv(1), vel_deriv(2) - 9.81f };
     float acc_B[3];
 
     quaternion_inv_rotateVector(&quat, acc_O, acc_B);
@@ -429,5 +459,141 @@ void Ekf_get_TerrainVertPos(void)
     } else {
         px4_ecl_out_bus.flag &= ~(1 << 8);
     }
+}
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+MulticopterLandDetector* _ld;
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+FixedwingLandDetector* _ld;
+#endif
+
+void ld_creat(void)
+{
+#ifdef VEHICLE_TYPE_QUADCOPTER
+    _ld = new MulticopterLandDetector;
+#endif
+#ifdef VEHICLE_TYPE_FIXWING
+    _ld = new FixedwingLandDetector;
+#endif
+}
+
+void ld_set_time(uint64_t nowUs)
+{
+    *(_ld->return_nowUs()) = nowUs;
+}
+
+void ld_set_armed(bool armed)
+{
+    *(_ld->return_armed()) = armed;
+}
+
+void ld_set_IMU_data(float gyroRate[3], float acceleration[3])
+{
+    *(_ld->return_acceleration()) = Vector3f { acceleration };
+    *(_ld->return_angular_velocity()) = Vector3f { gyroRate };
+}
+
+void ld_set_dist_bottom_is_observable(bool observable)
+{
+    *(_ld->return_dist_bottom_is_observable()) = observable;
+}
+
+void ld_set_vehicle_local_position(uint64_t timeStampUs)
+{
+
+    vehicle_local_position_s* vehicle_local_position = _ld->return_vehicle_local_position();
+
+    vehicle_local_position->timeStampUs = timeStampUs;
+
+    // Velocity of body origin in local NED frame (m/s)
+    const Vector3f velocity { _ekf->getVelocity() };
+    vehicle_local_position->vx = velocity(0);
+    vehicle_local_position->vy = velocity(1);
+    vehicle_local_position->vz = velocity(2);
+
+    vehicle_local_position->v_xy_valid = _ekf->local_position_is_valid();
+    vehicle_local_position->v_z_valid = _ekf->local_position_is_valid();
+
+    // Distance to bottom surface (ground) in meters
+    // constrain the distance to ground to _rng_gnd_clearance
+    vehicle_local_position->dist_bottom = math::max(_ekf->getTerrainVertPos() - _ekf->getPosition()(2), _ekf->getParamHandle()->rng_gnd_clearance);
+    vehicle_local_position->dist_bottom_valid = _ekf->isTerrainEstimateValid();
+    vehicle_local_position->dist_bottom_sensor_bitfield = _ekf->getTerrainEstimateSensorBitfield();
+}
+
+void ld_set_vehicle_imu_status(uint64_t timeStampUs)
+{
+    vehicle_imu_status_s* _imu_status {};
+    _imu_status = _ld->return_vehicle_imu_status();
+    _imu_status->timeStampUs = timeStampUs;
+    _imu_status->gyro_vibration_metric = (_ekf->getImuVibrationMetrics())(1);
+    _imu_status->accel_vibration_metric = (_ekf->getImuVibrationMetrics())(2);
+}
+
+bool ld_get_landed_state(void)
+{
+    if (_ld->return_vehicle_land_detected()->landed) {
+        px4_ecl_out_bus.flag |= 1 << 1;
+        return true;
+    } else {
+        px4_ecl_out_bus.flag &= ~(1 << 1);
+        return false;
+    }
+}
+
+bool ld_get_gnd_effect(void)
+{
+    return _ld->return_vehicle_land_detected()->in_ground_effect;
+}
+
+bool ld_IsUpdated(void)
+{
+    return _ld->return_vehicle_land_detected()->updated;
+}
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+void ld_set_actuator_controls_throttle(float throttle)
+{
+    *(_ld->return_actuator_controls_throttle()) = throttle;
+}
+
+void ld_set_flag_control_climb_rate_enabled(bool enable)
+{
+    *(_ld->return_flag_control_climb_rate_enabled()) = enable;
+}
+
+void ld_set_trajectory_vz(float vz)
+{
+    *(_ld->return_trajectory_vz()) = vz;
+}
+
+void ld_set_hover_thrust_estimate(uint64_t nowUs, float hover_thrust, bool valid)
+{
+    hover_thrust_estimate_s* hover_thrust_estimate = _ld->return_hover_thrust_estimate();
+    hover_thrust_estimate->timeStampUs = nowUs;
+    hover_thrust_estimate->hover_thrust = hover_thrust;
+    hover_thrust_estimate->valid = valid;
+}
+#endif
+
+#ifdef VEHICLE_TYPE_FIXWING
+void ld_set_airspeed_validated(uint64_t timeStampUs, float true_airspeed_m_s)
+{
+    airspeed_validated_s* airspeed_validated = _ld->return_airspeed_validated();
+    airspeed_validated->timeStampUs = timeStampUs;
+    airspeed_validated->true_airspeed_m_s = true_airspeed_m_s;
+}
+#endif
+
+void ld_step(void)
+{
+
+    uint64_t nowUs = systime_now_us();
+    ld_set_time(nowUs);
+    ld_set_vehicle_local_position(nowUs);
+    ld_set_vehicle_imu_status(nowUs);
+
+    _ld->update();
 }
 }

@@ -17,6 +17,7 @@
 #include <INS.h>
 #include <firmament.h>
 
+#include "Controller_types.h"
 #include "ecl_wrapper.h"
 #include "module/log/mlog.h"
 #include "module/param/param.h"
@@ -93,6 +94,13 @@ MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(sensor_optflow);
+MCN_DECLARE(sensor_airspeed);
+
+/* FMS input bus */
+MCN_DECLARE(fms_output);
+
+/* Control input bus*/
+MCN_DECLARE(control_output);
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -275,6 +283,7 @@ static struct INS_Handler {
     McnNode_t gps_sub_node_t;
     McnNode_t rf_sub_node_t;
     McnNode_t optflow_sub_node_t;
+    McnNode_t airspeed_sub_node_t;
 
     imu_data_t imu_report;
     mag_data_t mag_report;
@@ -282,7 +291,18 @@ static struct INS_Handler {
     gps_data_t gps_report;
     rf_data_t rf_report;
     optflow_data_t optflow_report;
+    airspeed_data_t airspeed_report;
 } ins_handle;
+
+static struct FMS_Handler {
+    McnNode_t fms_sub_node_t;
+    FMS_Out_Bus fms_report;
+} fms_handle;
+
+static struct Control_Handler {
+    McnNode_t control_sub_node_t;
+    Control_Out_Bus control_report;
+} control_handle;
 
 static uint8_t imu_data_updated;
 static uint8_t mag_data_updated;
@@ -290,6 +310,7 @@ static uint8_t baro_data_updated;
 static uint8_t gps_data_updated;
 static uint8_t rf_data_updated;
 static uint8_t optflow_data_updated;
+static uint8_t airspeed_data_updated;
 
 static int IMU_ID;
 static int MAG_ID;
@@ -401,6 +422,7 @@ void ins_interface_step(uint32_t timestamp)
     static GPS_uBlox_Bus gps_bus;
     static Rangefinder_Bus rnf_bus;
     static Optical_Flow_Bus opt_flow_bus;
+    static AirSpeed_Bus airspeed_bus;
 
     /* get sensor data */
     if (mcn_poll(ins_handle.imu_sub_node_t)) {
@@ -419,6 +441,8 @@ void ins_interface_step(uint32_t timestamp)
         last_timestamp = timestamp;
 
         Ekf_IMU_update(timestamp, dt_imu, ins_handle.imu_report.gyr_B_radDs, ins_handle.imu_report.acc_B_mDs2, clipping);
+
+        ld_set_IMU_data(ins_handle.imu_report.gyr_B_radDs, ins_handle.imu_report.acc_B_mDs2);
 
         imu_data_updated = 1;
 
@@ -473,7 +497,15 @@ void ins_interface_step(uint32_t timestamp)
         if (mcn_poll(ins_handle.rf_sub_node_t)) {
             mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
-            // TODO
+            rnf_bus.timestamp = timestamp;
+            rnf_bus.distance_m = ins_handle.rf_report.distance_m;
+            
+            if (ins_handle.rf_report.distance_m >= 0) {
+                Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);
+            } else {
+                Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 0);
+            }
+
             rf_data_updated = 1;
         }
 
@@ -485,6 +517,59 @@ void ins_interface_step(uint32_t timestamp)
             optflow_data_updated = 1;
         }
 
+        /* update airspeed data */
+        if (mcn_poll(ins_handle.airspeed_sub_node_t)) {
+            mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.airspeed_sub_node_t, &ins_handle.airspeed_report);
+
+            airspeed_bus.timestamp = timestamp;
+            airspeed_bus.true_airspeed = 2 * sqrt(ins_handle.airspeed_report.temperature_deg) / 1.29f;
+
+            Ekf_AIRSPEED_update(timestamp, airspeed_bus.true_airspeed, 1);
+#ifdef VEHICLE_TYPE_FIXWING
+            ld_set_airspeed_validated((uint64_t)timestamp, airspeed_bus.true_airspeed);
+#endif
+            airspeed_data_updated = 1;
+        }
+
+        if (mcn_poll(fms_handle.fms_sub_node_t)) {
+            mcn_copy(MCN_HUB(fms_output), fms_handle.fms_sub_node_t, &fms_handle.fms_report);
+
+            switch (fms_handle.fms_report.status) {
+            case 1:
+                ld_set_armed(false);
+                break;
+            case 2:
+                ld_set_armed(true);
+                break;
+            case 3:
+                ld_set_armed(true);
+                break;
+            }
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+            ld_set_trajectory_vz(fms_handle.fms_report.w_cmd);
+            ld_set_flag_control_climb_rate_enabled(true);
+#endif
+        }
+
+#ifdef VEHICLE_TYPE_QUADCOPTER
+        if (mcn_poll(control_handle.control_sub_node_t)) {
+            mcn_copy(MCN_HUB(control_output), control_handle.control_sub_node_t, &control_handle.control_report);
+
+            uint64_t actuator_count = 0;
+            float thr = 0;
+            for (int i = 0; i < 16; i++) {
+                if (control_handle.control_report.actuator_cmd[i] != 0) {
+                    thr += ((float)control_handle.control_report.actuator_cmd[i] - 1000.0f) / 1000.0f;
+                    actuator_count += 1;
+                }
+            }
+            if (actuator_count > 0)
+                thr /= actuator_count;
+
+            ld_set_actuator_controls_throttle(thr);
+        }
+#endif
         /* run INS */
         px4_ecl_step();
     }
@@ -553,6 +638,10 @@ void ins_interface_init(void)
     ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
+    ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
+
+    fms_handle.fms_sub_node_t = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    control_handle.control_sub_node_t = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
     IMU_ID = mlog_get_bus_id("IMU");
     MAG_ID = mlog_get_bus_id("MAG");

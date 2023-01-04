@@ -120,6 +120,16 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_AirSpeed_Bus_
+    #define DEFINED_TYPEDEF_FOR_AirSpeed_Bus_
+
+typedef struct {
+    uint32_t timestamp;
+    float true_airspeed;
+} AirSpeed_Bus;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_INS_Out_Bus_
     #define DEFINED_TYPEDEF_FOR_INS_Out_Bus_
 
