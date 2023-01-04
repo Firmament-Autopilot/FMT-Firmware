@@ -25,16 +25,17 @@
 #endif
 
 #include "board_device.h"
-#include "driver/barometer/ms5611.h"
+// #include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
 #include "driver/gps/gps_m8n.h"
-#include "driver/imu/bmi055.h"
+// #include "driver/imu/bmi055.h"
 #include "driver/imu/bmi088.h"
-#include "driver/imu/icm20600.h"
-#include "driver/mag/ist8310.h"
+// #include "driver/imu/icm20600.h"
+// #include "driver/mag/ist8310.h"
 #include "driver/mag/mmc5983ma.h"
 #include "driver/mtd/ramtron.h"
-#include "driver/range_finder/tfmini_s.h"
+// #include "driver/range_finder/tfmini_s.h"
+#include "driver/mtd/spi_tfcard.h"
 #include "driver/rgb_led/ncp5623c.h"
 // #include "driver/vision_flow/lc307.h"
 #include "driver/vision_flow/pmw3901_fl04.h"
@@ -49,6 +50,7 @@
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
 #include "led.h"
+#include "tone_alarm.h"
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -85,7 +87,8 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    { "mtdblk0", "/", "elm", 0, NULL },
+    // { "mtdblk0", "/", "elm", 0, NULL },
+    { "tfcard", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -418,6 +421,10 @@ void bsp_initialize(void)
         console_println("=================> can't find the ramtron on spi6_dev1");
     }
 
+    if (FMT_EOK != drv_spi_tfcard_init("spi1_dev1", "tfcard")) {
+        console_println("tfcard init failed!");
+    }
+
     /* init file system */
     if (FMT_EOK != file_manager_init(mnt_table)) {
         console_println("=================> mtd first used => pleaserun:  mkfs mtdblk0 ");
@@ -505,7 +512,7 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 
     FMT_CHECK(register_sensor_barometer("barometer"));
-    #endif
+#endif
 
     FMT_CHECK(register_ar_rc());
     FMT_CHECK(register_bb_com());
@@ -552,6 +559,8 @@ void bsp_post_initialize(void)
 
     /* initialize led */
     FMT_CHECK(led_control_init());
+
+    tone_alarm_init();
 
     /* initialize power management unit */
     FMT_CHECK(pmu_init());

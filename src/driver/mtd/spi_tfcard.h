@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef SPI_TFCARD_H__
+#define SPI_TFCARD_H__
 
-#ifndef BOARD_DEVICE_H__
-#define BOARD_DEVICE_H__
+#include <rtthread.h>
 
-// #define BOARD_F2S
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define BOARD_JM_250
+rt_err_t drv_spi_tfcard_init(const char* tfcard_device_name, const char* spi_device_name);
 
-#define WD_DONE_GPIO   HAL_GPIO_NUM74
-#define VIDEO_LED_GPIO HAL_GPIO_NUM55
-#define LINK_LED_GPIO  HAL_GPIO_NUM54
-
-#define RGB_R_GPIO HAL_GPIO_NUM66
-#define RGB_G_GPIO HAL_GPIO_NUM62
-#define RGB_B_GPIO HAL_GPIO_NUM58
-
-#define SENSOR_POWER_GPIO HAL_GPIO_NUM70
-
-#define SPI1_SPEED_HZ 9000000
+#ifdef __cplusplus
+}
+#endif
 
 #endif

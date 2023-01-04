@@ -13,8 +13,7 @@ History:
 #define __HAL_SPI_H__
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #include <stdint.h>
@@ -22,8 +21,8 @@ extern "C"
 #include "hal_ret_type.h"
 #include "spi.h"
 
-typedef enum
-{
+
+typedef enum {
     HAL_SPI_COMPONENT_0 = 0,
     HAL_SPI_COMPONENT_1,
     HAL_SPI_COMPONENT_2,
@@ -34,30 +33,27 @@ typedef enum
     HAL_SPI_COMPONENT_7,
 } ENUM_HAL_SPI_COMPONENT;
 
-
 // Serial Clock Polarity
-typedef enum
-{
+typedef enum {
     HAL_SPI_POLARITY_LOW = 0, // Inactive state of serial clock is low
-    HAL_SPI_POLARITY_HIGH // Inactive state of serial clock is high
+    HAL_SPI_POLARITY_HIGH     // Inactive state of serial clock is high
 } ENUM_HAL_SPI_POLARITY;
 
 // Serial Clock Phase
-typedef enum
-{
+typedef enum {
     // data are captured on the first edge of the serial clock
     HAL_SPI_PHASE_1EDGE = 0,
- 
+
     // data are captured on the second edge of the serial clock
-    HAL_SPI_PHASE_2EDGE 
+    HAL_SPI_PHASE_2EDGE
 } ENUM_HAL_SPI_PHASE;
 
 // spi init info
 typedef struct
 {
-    uint16_t                   u16_halSpiBaudr; // range 1~50 Mhz
-    ENUM_HAL_SPI_POLARITY      e_halSpiPolarity;
-    ENUM_HAL_SPI_PHASE         e_halSpiPhase;
+    uint32_t u32_halSpiBaudr_Hz; // range 1~50 Mhz
+    ENUM_HAL_SPI_POLARITY e_halSpiPolarity;
+    ENUM_HAL_SPI_PHASE e_halSpiPhase;
 } STRU_HAL_SPI_INIT;
 
 /**
@@ -73,8 +69,8 @@ typedef struct
 * @note   None.
 *       
 */
-HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent, 
-                             STRU_HAL_SPI_INIT *pst_spiInitInfo);
+HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent,
+                             STRU_HAL_SPI_INIT* pst_spiInitInfo);
 
 /**
 * @brief  The SPI data write function which can be used to send out SPI data 
@@ -96,17 +92,15 @@ HAL_RET_T HAL_SPI_MasterInit(ENUM_HAL_SPI_COMPONENT e_spiComponent,
 * @note   the SPI controller must work in master mode.
 *
 */
-HAL_RET_T HAL_SPI_MasterWriteRead(ENUM_HAL_SPI_COMPONENT e_spiComponent, 
-                                  uint8_t *pu8_wrData,
+HAL_RET_T HAL_SPI_MasterWriteRead(ENUM_HAL_SPI_COMPONENT e_spiComponent,
+                                  uint8_t* pu8_wrData,
                                   uint32_t u32_wrSize,
-                                  uint8_t *pu8_rdData,
+                                  uint8_t* pu8_rdData,
                                   uint32_t u32_rdSize,
                                   uint32_t u32_timeOut);
-
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
