@@ -28,5 +28,5 @@ rt_err_t drv_spi_tfcard_init(const char* spi_device_name, const char* tfcard_dev
     /* init spi bus */
     RT_TRY(rt_device_open(tfcard_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    return msd_init(tfcard_device_name, spi_device_name);
+    return hal_spi_msd_register(tfcard_device_name, spi_device_name);
 }

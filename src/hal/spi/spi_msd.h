@@ -119,6 +119,6 @@ struct msd_device {
     uint32_t max_clock;                     /**< MAX SPI clock */
 };
 
-extern rt_err_t msd_init(const char* sd_device_name, const char* spi_device_name);
+extern rt_err_t hal_spi_msd_register(const char* sd_device_name, const char* spi_device_name);
 
 #endif // SPI_MSD_H_INCLUDED

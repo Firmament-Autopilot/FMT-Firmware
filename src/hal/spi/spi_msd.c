@@ -1431,7 +1431,7 @@ static rt_err_t rt_msd_control(rt_device_t dev, int cmd, void* args)
     return RT_EOK;
 }
 
-rt_err_t msd_init(const char* sd_device_name, const char* spi_device_name)
+rt_err_t hal_spi_msd_register(const char* sd_device_name, const char* spi_device_name)
 {
     rt_err_t result = RT_EOK;
     struct rt_spi_device* spi_device;
