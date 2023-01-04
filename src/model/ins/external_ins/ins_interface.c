@@ -32,6 +32,40 @@ static McnNode_t ext_state_node;
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
+
+mlog_elem_t INS_Out_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(phi, MLOG_FLOAT),
+    MLOG_ELEMENT(theta, MLOG_FLOAT),
+    MLOG_ELEMENT(psi, MLOG_FLOAT),
+    MLOG_ELEMENT_VEC(quat, MLOG_FLOAT, 4),
+    MLOG_ELEMENT(p, MLOG_FLOAT),
+    MLOG_ELEMENT(q, MLOG_FLOAT),
+    MLOG_ELEMENT(r, MLOG_FLOAT),
+    MLOG_ELEMENT(ax, MLOG_FLOAT),
+    MLOG_ELEMENT(ay, MLOG_FLOAT),
+    MLOG_ELEMENT(az, MLOG_FLOAT),
+    MLOG_ELEMENT(vn, MLOG_FLOAT),
+    MLOG_ELEMENT(ve, MLOG_FLOAT),
+    MLOG_ELEMENT(vd, MLOG_FLOAT),
+    MLOG_ELEMENT(airspeed, MLOG_FLOAT),
+    MLOG_ELEMENT(lat, MLOG_DOUBLE),
+    MLOG_ELEMENT(lon, MLOG_DOUBLE),
+    MLOG_ELEMENT(alt, MLOG_DOUBLE),
+    MLOG_ELEMENT(lat_0, MLOG_DOUBLE),
+    MLOG_ELEMENT(lon_0, MLOG_DOUBLE),
+    MLOG_ELEMENT(alt_0, MLOG_DOUBLE),
+    MLOG_ELEMENT(x_R, MLOG_FLOAT),
+    MLOG_ELEMENT(y_R, MLOG_FLOAT),
+    MLOG_ELEMENT(h_R, MLOG_FLOAT),
+    MLOG_ELEMENT(h_AGL, MLOG_FLOAT),
+    MLOG_ELEMENT(flag, MLOG_UINT32),
+    MLOG_ELEMENT(status, MLOG_UINT32),
+};
+MLOG_BUS_DEFINE(INS_Out, INS_Out_Elems);
+
+static int INS_Out_ID;
+
 /* Model information */
 fmt_model_info_t ins_model_info;
 
@@ -108,8 +142,8 @@ void ins_interface_step(void)
         ins_out.ve = mav_ext_state.vel[1];
         ins_out.vd = mav_ext_state.vel[2];
 
-        ins_out.lon = (double)mav_ext_state.lla[0] * 1e-7;
-        ins_out.lat = (double)mav_ext_state.lla[1] * 1e-7;
+        ins_out.lat = DEG2RAD((double)mav_ext_state.lla[0]) * 1e-7;
+        ins_out.lon = DEG2RAD((double)mav_ext_state.lla[1]) * 1e-7;
         ins_out.alt = (double)mav_ext_state.lla[2] * 1e-3;
 
         ins_out.x_R = mav_ext_state.pos[0];
@@ -121,6 +155,13 @@ void ins_interface_step(void)
 
         /* publish INS output */
         mcn_publish(MCN_HUB(ins_output), &ins_out);
+
+        /* Log INS output bus data */
+        DEFINE_TIMETAG(ins_output, 100);
+        if (check_timetag(TIMETAG(ins_output))) {
+            /* Log INS out data */
+            mlog_push_msg((uint8_t*)&ins_out, INS_Out_ID, sizeof(ins_out));
+        }
     }
 #endif
 }
@@ -140,5 +181,8 @@ void ins_interface_init(void)
     if (ext_state_node == NULL) {
         printf("External_INS fail to subscribe mav_ext_state topic!\n");
     }
+
+    INS_Out_ID = mlog_get_bus_id("INS_Out");
+    FMT_ASSERT(INS_Out_ID >= 0);
 #endif
 }
