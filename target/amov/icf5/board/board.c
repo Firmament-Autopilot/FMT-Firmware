@@ -256,7 +256,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_pwm_init());
 
     /* buzzer(pwm) driver init */
-    RT_CHECK(drv_buzzer_init());
+    // RT_CHECK(drv_buzzer_init());
 
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
