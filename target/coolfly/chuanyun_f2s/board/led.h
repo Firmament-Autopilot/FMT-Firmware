@@ -26,15 +26,16 @@
 extern "C" {
 #endif
 
-
 #define FMU_LED_RED_PIN   HAL_GPIO_NUM66
 #define FMU_LED_GREEN_PIN HAL_GPIO_NUM62
 #define FMU_LED_BLUE_PIN  HAL_GPIO_NUM58
-        
 
 #define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
 #define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
 #define LED_TOGGLE(_pin) led_toggle(_pin)
+
+#define RGB_LED_MANUAL_MODE 0
+#define RGB_LED_PATERN_MODE 1
 
 fmt_err_t led_control_init(void);
 fmt_err_t led_init(struct device_pin_mode pin_mode);
