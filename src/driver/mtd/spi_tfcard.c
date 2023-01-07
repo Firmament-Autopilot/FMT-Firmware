@@ -1,7 +1,7 @@
 #include <firmament.h>
 
 #include "hal/spi/spi.h"
-#include "hal/spi/spi_msd.h"
+#include "hal/spi_msd/spi_msd.h"
 
 static rt_device_t tfcard_spi_dev;
 

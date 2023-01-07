@@ -8,7 +8,7 @@ HAL = [
     'usb/usbd_cdc.c',
     'spi/spi_core.c',
     'spi/spi_dev.c',
-    'spi/spi_msd.c',
+    'spi_msd/spi_msd.c',
     'i2c/*.c',
     'gyro/*.c',
     'accel/*.c',

@@ -159,7 +159,7 @@ static rt_err_t _send_cmd(
     device->bus->ops->xfer(device, &message);
 
     for (i = CARD_NCR; i < (CARD_NCR_MAX + 1); i++) {
-        uint8_t send = DUMMY;
+        // uint8_t send = DUMMY;
 
         /* initial message */
         message.send_buf = RT_NULL;
@@ -240,6 +240,7 @@ static rt_err_t _wait_token(struct rt_spi_device* device, uint8_t token)
     struct rt_spi_message message;
     rt_tick_t tick_start;
     uint8_t send, recv;
+    (void)send;
 
     tick_start = rt_tick_get();
 
@@ -271,6 +272,7 @@ static rt_err_t _wait_ready(struct rt_spi_device* device)
     struct rt_spi_message message;
     rt_tick_t tick_start;
     uint8_t send, recv;
+    (void)send;
 
     tick_start = rt_tick_get();
 
