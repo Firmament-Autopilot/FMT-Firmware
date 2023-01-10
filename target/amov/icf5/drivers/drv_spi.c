@@ -436,5 +436,37 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev2, "spi1_dev2", "spi1", (void*)&spi1_cs2));
     }
 
+    /* attach spi_device_3 (SPI1 CS1) to spi1 */
+    {
+        static struct rt_spi_device rt_spi1_dev3;
+        static struct gd32_spi_cs spi1_cs3 = { .gpio_periph = GPIOC, .pin = GPIO_PIN_13 };
+
+        /* enable cs pin clock */
+        rcu_periph_clock_enable(RCU_GPIOC);
+        /* configure cs pin gpio */
+        gpio_mode_set(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_13);
+        gpio_output_options_set(GPIOC, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13);
+        /* set CS pin by default */
+        gpio_bit_set(spi1_cs3.gpio_periph, spi1_cs3.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev3, "spi1_dev3", "spi1", (void*)&spi1_cs3));
+    }
+
+    /* attach spi_device_4 (SPI1 CS2) to spi1 */
+    {
+        static struct rt_spi_device rt_spi1_dev4;
+        static struct gd32_spi_cs spi1_cs4 = { .gpio_periph = GPIOE, .pin = GPIO_PIN_10 };
+
+        /* enable cs pin clock */
+        rcu_periph_clock_enable(RCU_GPIOE);
+        /* configure cs pin gpio */
+        gpio_mode_set(GPIOE, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_PIN_10);
+        gpio_output_options_set(GPIOE, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
+        /* set CS pin by default */
+        gpio_bit_set(spi1_cs4.gpio_periph, spi1_cs4.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev4, "spi1_dev4", "spi1", (void*)&spi1_cs4));
+    }
+
     return RT_EOK;
 }
