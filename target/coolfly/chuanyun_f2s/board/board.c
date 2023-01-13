@@ -36,7 +36,8 @@
 #include "driver/mtd/ramtron.h"
 // #include "driver/range_finder/tfmini_s.h"
 #include "driver/mtd/spi_tfcard.h"
-#include "driver/rgb_led/ncp5623c.h"
+#include "driver/rgb_led/aw2023.h"
+// #include "driver/rgb_led/ncp5623c.h"
 // #include "driver/vision_flow/lc307.h"
 #include "driver/vision_flow/pmw3901_fl04.h"
 
@@ -441,6 +442,8 @@ void bsp_initialize(void)
 
     /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
     // drv_ncp5623c_init("i2c3_dev1");
+
+    RT_CHECK(drv_aw2023_init("i2c3_dev2"));
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
