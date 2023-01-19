@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 #include <firmament.h>
 
 #include "FMS.h"
+#include "driver/rgb_led/aw2023.h"
 #include "led.h"
 #include "module/workqueue/workqueue_manager.h"
 
@@ -29,51 +30,51 @@ static void run_led(void* parameter)
     LED_TOGGLE(FMU_LED_BLUE_PIN);
 }
 
-static void run_rgb_led(void* parameter)
-{
-    static int bright = 0;
-    static int inc = 0;
-    static int max_bright = 16;
-    static int min_bright = 0;
-    DEFINE_TIMETAG(rgb_led, 0);
+// static void run_rgb_led(void* parameter)
+// {
+//     static int bright = 0;
+//     static int inc = 0;
+//     static int max_bright = 16;
+//     static int min_bright = 0;
+//     DEFINE_TIMETAG(rgb_led, 0);
 
-    if (bright <= min_bright) {
-        TIMETAG(rgb_led)->period = 150;
-    } else {
-        if (bright >= max_bright) {
-            TIMETAG(rgb_led)->period = 250;
-        } else {
-            TIMETAG(rgb_led)->period = 50;
-        }
-    }
+//     if (bright <= min_bright) {
+//         TIMETAG(rgb_led)->period = 150;
+//     } else {
+//         if (bright >= max_bright) {
+//             TIMETAG(rgb_led)->period = 250;
+//         } else {
+//             TIMETAG(rgb_led)->period = 50;
+//         }
+//     }
 
-    if (check_timetag(TIMETAG(rgb_led))) {
-        /* breath light control */
-        if (bright <= min_bright)
-            inc = 1;
+//     if (check_timetag(TIMETAG(rgb_led))) {
+//         /* breath light control */
+//         if (bright <= min_bright)
+//             inc = 1;
 
-        if (bright >= max_bright)
-            inc = -1;
+//         if (bright >= max_bright)
+//             inc = -1;
 
-        bright += inc;
-        rgb_led_set_bright(bright);
-    }
-}
+//         bright += inc;
+//         rgb_led_set_bright(bright);
+//     }
+// }
 
 void vehicle_status_change_cb(uint8_t status)
 {
     switch (status) {
     case VehicleStatus_Disarm:
-        rgb_led_set_color(NCP5623_LED_BLUE);
+        rgb_led_set_color(AW2023_LED_BLUE);
         break;
     case VehicleStatus_Standby:
-        rgb_led_set_color(NCP5623_LED_GREEN);
+        rgb_led_set_color(AW2023_LED_GREEN);
         break;
     case VehicleStatus_Arm:
-        rgb_led_set_color(NCP5623_LED_GREEN);
+        rgb_led_set_color(AW2023_LED_GREEN);
         break;
     default:
-        rgb_led_set_color(NCP5623_LED_RED);
+        rgb_led_set_color(AW2023_LED_RED);
         break;
     }
 }
@@ -82,9 +83,10 @@ void vehicle_state_change_cb(uint8_t mode)
 {
     if (mode == VehicleState_None) {
         /* unknown mode */
-        rgb_led_set_color(NCP5623_LED_RED);
+        rgb_led_set_color(AW2023_LED_RED);
     }
 }
+
 fmt_err_t led_set(struct device_pin_status pin_sta)
 {
     gpio_status[pin_sta.pin] = pin_sta.status;
@@ -98,7 +100,7 @@ fmt_err_t led_set(struct device_pin_status pin_sta)
 fmt_err_t led_toggle(uint32_t pin)
 {
     struct device_pin_status pin_sta = { .pin = pin };
-    
+
     // if (pin_dev->read(pin_dev, 0, (void*)&pin_sta, sizeof(&pin_sta)) != sizeof(&pin_sta)) {
     //     return FMT_ERROR;
     // }
@@ -132,7 +134,7 @@ fmt_err_t rgb_led_set_color(uint32_t color)
         return FMT_EEMPTY;
     }
 
-    if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
+    if (rt_device_control(rgb_led_dev, AW2023_CMD_SET_COLOR, (void*)color) != RT_EOK) {
         return FMT_ERROR;
     }
 
@@ -140,14 +142,34 @@ fmt_err_t rgb_led_set_color(uint32_t color)
 }
 
 fmt_err_t rgb_led_set_bright(uint32_t bright)
-
 {
     if (rgb_led_dev == NULL) {
         return FMT_EEMPTY;
     }
-    
-    if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
+
+    if (rt_device_control(rgb_led_dev, AW2023_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
         return FMT_ERROR;
+    }
+
+    return FMT_EOK;
+}
+
+fmt_err_t rgb_led_set_mode(uint8_t mode)
+{
+    if (rgb_led_dev == NULL) {
+        return FMT_EEMPTY;
+    }
+
+    if (mode == RGB_LED_MANUAL_MODE) {
+        if (rt_device_control(rgb_led_dev, AW2023_CMD_SET_MANUAL_MODE, NULL) != RT_EOK) {
+            return FMT_ERROR;
+        }
+    } else if (mode == RGB_LED_PATERN_MODE) {
+        if (rt_device_control(rgb_led_dev, AW2023_CMD_SET_PATERN_MODE, NULL) != RT_EOK) {
+            return FMT_ERROR;
+        }
+    } else {
+        return FMT_EINVAL;
     }
 
     return FMT_EOK;
@@ -160,12 +182,12 @@ static struct WorkItem led_item = {
     .run = run_led
 };
 
-static struct WorkItem rgb_led_item = {
-    .name = "rgb_led",
-    .period = 10,
-    .schedule_time = 0,
-    .run = run_rgb_led
-};
+// static struct WorkItem rgb_led_item = {
+//     .name = "rgb_led",
+//     .period = 3000,
+//     .schedule_time = 0,
+//     .run = run_rgb_led
+// };
 
 fmt_err_t led_control_init(void)
 {
@@ -186,27 +208,23 @@ fmt_err_t led_control_init(void)
     LED_ON(FMU_LED_GREEN_PIN);
     LED_ON(FMU_LED_BLUE_PIN);
 
-    /* It's possible that ncp5623c is not connected */
-    if (rt_device_find("ncp5623c") != NULL) {
-        /* configure rgd led */
-        rgb_led_dev = rt_device_find("ncp5623c");
-        RT_ASSERT(rgb_led_dev != NULL);
+    rgb_led_dev = rt_device_find("aw2023");
+    RT_ASSERT(pin_dev != NULL);
 
-        RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
-        FMT_CHECK(rgb_led_set_color(NCP5623_LED_BLUE));
+    RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
 
-        sys_msleep(10); /* give some time for rgb led to startup */
-    }
+    /* set rgb led initial color */
+    FMT_TRY(rgb_led_set_mode(RGB_LED_PATERN_MODE));
+    FMT_TRY(rgb_led_set_color(AW2023_LED_BLUE));
+    FMT_TRY(rgb_led_set_bright(0xFF));
 
     WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
     WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
     RT_ASSERT(lp_wq != NULL && hp_wq != NULL);
 
     FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
-    if (rgb_led_dev != NULL) {
-        /* rgb led work in high priority workqueue to try not blocking other i2c user */
-        FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
-    }
+    /* rgb led work in high priority workqueue to try not blocking other i2c user */
+    // FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
 
     return FMT_EOK;
 }

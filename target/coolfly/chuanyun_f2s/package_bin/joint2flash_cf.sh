@@ -29,7 +29,7 @@ outcfgbin=cfgdata.bin
 
 outputtmp_head=app_head_tmp.bin
 
-skycpu0=fmt_chuanyun_f2s.bin
+skycpu0=fmt_chuanyun-f2s.bin
 skycpu1=ar8020_skycpu1.bin
 skycpu2=ar8020_skycpu2.bin
 

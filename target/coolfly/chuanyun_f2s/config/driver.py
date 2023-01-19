@@ -11,6 +11,7 @@ DRIVERS = [
     'barometer/spl06.c',
     'gps/gps_m8n.c',
     # 'rgb_led/ncp5623c.c',
+    'rgb_led/aw2023.c',
     'mtd/ramtron.c',
     'vision_flow/pmw3901_fl04.c',
     'airspeed/ms4525.c',
