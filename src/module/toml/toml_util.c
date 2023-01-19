@@ -249,7 +249,7 @@ toml_table_t* toml_parse_config_file(const char* file)
     toml_table_t* root_tab;
 
     if (!fp) {
-        console_printf("TOML: fail to open file: %s\n", file);
+        console_printf("TOML: No config file: %s, use default configuration.\n", file);
         return NULL;
     }
 
