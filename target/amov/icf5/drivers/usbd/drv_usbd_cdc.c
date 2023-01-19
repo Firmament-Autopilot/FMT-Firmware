@@ -101,14 +101,14 @@ void drv_usbd_cdc_connect_cb(void)
     /* endpoint prepare to receive data */
     cdc_acm_data_receive(&cdc_acm);
 
-    printf("usb connect\n");
+    // printf("usb connect\n");
 }
 
 void drv_usbd_cdc_disconnect_cb(void)
 {
     hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_DISCONNECT);
 
-    printf("usb disconnect\n");
+    // printf("usb disconnect\n");
 }
 
 void drv_usbd_cdc_receive(uint8_t* buffer, uint32_t size)
