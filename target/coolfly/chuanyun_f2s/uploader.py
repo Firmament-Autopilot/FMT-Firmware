@@ -729,7 +729,7 @@ def main():
                         help="Comma-separated list of serial port(s) to which the FMU may be attached")
     parser.add_argument('--baud-bootloader', action="store", type=int, default=115200,
                         help="Baud rate of the serial port (default is 115200) when communicating with bootloader, only required for true serial ports.")
-    parser.add_argument('--baud-flightstack', action="store", default="115200",
+    parser.add_argument('--baud-flightstack', action="store", default="57600",
                         help="Comma-separated list of baud rate of the serial port (default is 57600) when communicating with flight stack (Mavlink or NSH), only required for true serial ports.")
     parser.add_argument('--force', action='store_true', default=False,
                         help='Override board type check, or silicon errata checks and continue loading')
