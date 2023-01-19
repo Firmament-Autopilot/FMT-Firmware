@@ -170,7 +170,7 @@
 #define CHECKSUM_GEN_UDP                0
 
 /* USING utest */
-#define RT_USING_UTEST
+// #define RT_USING_UTEST
 #define UTEST_THR_STACK_SIZE 4096
 #define UTEST_THR_PRIORITY 20
 
