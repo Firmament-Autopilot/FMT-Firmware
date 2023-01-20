@@ -1,0 +1,12 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+
+inc = [cwd]
+
+group = DefineGroup('PeripheralDriver', src, depend = [''], CPPPATH = inc)
+
+Return('group')

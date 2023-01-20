@@ -1,0 +1,8 @@
+# for module compiling
+Import('rtconfig')
+import os
+from building import *
+		
+objs = SConscript('../../../../../pixhawk/fmu-v5/libraries/stm32_lib/SConscript', variant_dir='libraries')
+
+Return('objs')
