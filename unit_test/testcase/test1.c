@@ -42,4 +42,4 @@ static void testcase(void)
     UTEST_UNIT_RUN(test_unit_1);
     UTEST_UNIT_RUN(test_unit_2);
 }
-UTEST_TC_EXPORT(testcase, "unit_test.sample.test1", testcase_init, testcase_cleanup, 1000);
+UTEST_TC_EXPORT(testcase, "utest.sample.test1", testcase_init, testcase_cleanup, 1000);

@@ -7,6 +7,6 @@ src    += Glob('testcase/*.c')
 
 CPPPATH = [cwd]
 
-group   = DefineGroup('utest', src, depend = ['RT_USING_UTEST','FMT_USING_UNIT_TEST'], CPPPATH = CPPPATH)
+group   = DefineGroup('utest', src, depend = ['FMT_USING_UNIT_TEST'], CPPPATH = CPPPATH)
 
 Return('group')

@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
+#ifndef DRV_SYSTICK_H__
+#define DRV_SYSTICK_H__
+
+#include "board.h"
 #include <firmament.h>
 
-#include <utest.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-static void test_unit(void)
-{
-    int a = 1;
-    int b = 1;
-    char* str1 = "test";
-    char* str2 = "test";
+rt_err_t drv_systick_init(void);
 
-    uassert_int_equal(a, b);
-    uassert_str_equal(str1, str2);
+#ifdef __cplusplus
 }
+#endif
 
-static rt_err_t testcase_init(void)
-{
-    return RT_EOK;
-}
-
-static rt_err_t testcase_cleanup(void)
-{
-    return RT_EOK;
-}
-
-static void testcase(void)
-{
-    UTEST_UNIT_RUN(test_unit);
-}
-UTEST_TC_EXPORT(testcase, "utest.sample.test2", testcase_init, testcase_cleanup, 1000);
+#endif
