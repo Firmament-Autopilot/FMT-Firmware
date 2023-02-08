@@ -319,7 +319,7 @@ static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_ui
 
 /**
  * @brief Send command to io processor
- * 
+ *
  * @param code command code
  * @param data command data
  * @param len data length
@@ -349,7 +349,7 @@ fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len)
 
 /**
  * @brief Suspend fmtio communication
- * 
+ *
  * @param suspend 1: suspend 0: resume
  */
 void fmtio_suspend_comm(uint8_t suspend)
@@ -364,7 +364,7 @@ void fmtio_suspend_comm(uint8_t suspend)
 
 /**
  * @brief Get fmtio device
- * 
+ *
  * @return rt_device_t fmtio handler
  */
 rt_device_t fmtio_get_device(void)
@@ -374,7 +374,7 @@ rt_device_t fmtio_get_device(void)
 
 /**
  * @brief FMTIO main loop
- * 
+ *
  */
 void fmtio_loop(void)
 {
@@ -404,7 +404,7 @@ void fmtio_loop(void)
 
 /**
  * @brief Initialize fmtio module
- * 
+ *
  * @param dev_name io device name
  * @return fmt_err_t FMT_EOK for success
  */
