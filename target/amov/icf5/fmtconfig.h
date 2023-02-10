@@ -48,10 +48,10 @@
 // #define FMT_USING_CM_BACKTRACE
 
 /* Unit Test */
-#define FMT_USING_UNIT_TEST
+// #define FMT_USING_UNIT_TEST
 
 // #define FMT_RECORD_CALIBRATION_DATA
 
-#define FMT_USING_SYS_DEBUG
+// #define FMT_USING_SYS_DEBUG
 
 #endif
