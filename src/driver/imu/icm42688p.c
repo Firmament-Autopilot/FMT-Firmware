@@ -15,7 +15,6 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "board_device.h"
 #include "hal/accel/accel.h"
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
