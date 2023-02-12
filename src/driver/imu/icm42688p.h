@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef ICM42688_H__
-#define ICM42688_H__
+#ifndef ICM42688P_H__
+#define ICM42688P_H__
 
 #include <rtthread.h>
 
@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-rt_err_t drv_icm42688_init(const char* spi_dev_name, const char* gyro_dev_name, const char* accel_dev_name);
+rt_err_t drv_icm42688_init(const char* spi_dev_name, const char* gyro_dev_name, const char* accel_dev_name, uint32_t dev_id);
 
 #ifdef __cplusplus
 }
