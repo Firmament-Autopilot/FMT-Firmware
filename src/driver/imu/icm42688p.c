@@ -345,10 +345,11 @@ static rt_err_t low_level_init(void)
 
     /* select bank0 */
     RT_TRY(spi_write_reg8(spi_dev, REG_REG_BANK_SEL, 0));
-    /* temperature disabled sensor, gyro and accel work in low noise (LN) mode */
-    RT_TRY(spi_write_reg8(spi_dev, REG_PWR_MGMT0, 0x2F));
+    /* temperature sensor enabled (note that if it's disabled there will be a bias for gyro), 
+       gyro and accel work in low noise (LN) mode */
+    RT_TRY(spi_write_reg8(spi_dev, REG_PWR_MGMT0, 0x0F));
     /* gyro need 30ms startup time */
-    systime_mdelay(35);
+    systime_mdelay(30);
     /* gyro config */
     RT_TRY(gyro_set_range(2000));
     RT_TRY(gyro_set_sample_rate(1000));
