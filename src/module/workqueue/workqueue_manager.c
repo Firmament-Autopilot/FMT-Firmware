@@ -37,10 +37,10 @@ WorkQueue_t workqueue_find(const char* name)
 
 fmt_err_t workqueue_manager_init(void)
 {
-    wq_list[0] = workqueue_create("wq:lp_work", 20, 10240, 19);
+    wq_list[0] = workqueue_create("wq:lp_work", 20, 5 * 1024, 19);
     RT_ASSERT(wq_list[0] != NULL);
 
-    wq_list[1] = workqueue_create("wq:hp_work", 20, 10240, 6);
+    wq_list[1] = workqueue_create("wq:hp_work", 20, 5 * 1024, 6);
     RT_ASSERT(wq_list[1] != NULL);
 
     return FMT_EOK;
