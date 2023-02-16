@@ -302,19 +302,17 @@ void bsp_initialize(void)
 #else
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi0_dev1", "spi0_dev0", "gyro0", "accel0", 0));
+    // RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1", 0));
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
 
-    // RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1", 0));
-    // RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer2"));
-
-    drv_icm20948_init("spi1_dev1", "gyro2", "accel2", "mag2");
     drv_mtf_01_init("serial3");
 
     RT_CHECK(gps_m8n_init("serial4", "gps"));
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    // FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
