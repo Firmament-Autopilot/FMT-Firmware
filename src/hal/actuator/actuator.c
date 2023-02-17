@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2016-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2016-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,19 @@
 
 #include "hal/actuator/actuator.h"
 
-static rt_bool_t dev_suspend;
-
 static rt_err_t hal_actuator_init(struct rt_device* dev)
 {
-    RT_ASSERT(dev != RT_NULL);
-
     actuator_dev_t act = (actuator_dev_t)dev;
 
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
+
+    act->suspend = RT_FALSE;
+
     /* apply default configuration */
-    if (act->ops->dev_config) {
-        return act->ops->dev_config(act, &act->config);
+    if (act->ops->act_config) {
+        return act->ops->act_config(act, &act->config);
     }
 
     return RT_EOK;
@@ -34,22 +36,24 @@ static rt_err_t hal_actuator_init(struct rt_device* dev)
 
 static rt_err_t hal_actuator_control(struct rt_device* dev, int cmd, void* args)
 {
-    RT_ASSERT(dev != RT_NULL);
-
     actuator_dev_t act = (actuator_dev_t)dev;
+
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     switch (cmd) {
     case RT_DEVICE_CTRL_SUSPEND:
-        dev_suspend = RT_TRUE;
+        act->suspend = RT_TRUE;
         break;
 
     case RT_DEVICE_CTRL_RESUME:
-        dev_suspend = RT_FALSE;
+        act->suspend = RT_FALSE;
         break;
 
     default:
-        if (act->ops->dev_control) {
-            return act->ops->dev_control(act, cmd, args);
+        if (act->ops->act_control) {
+            return act->ops->act_control(act, cmd, args);
         }
     }
 
@@ -68,10 +72,12 @@ static rt_err_t hal_actuator_close(rt_device_t dev)
 
 static rt_size_t hal_actuator_read(struct rt_device* dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
-    RT_ASSERT(dev != RT_NULL);
-
     actuator_dev_t act = (actuator_dev_t)dev;
     rt_size_t rb = 0;
+
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     if (buffer == NULL || pos == 0) {
         return 0;
@@ -80,8 +86,8 @@ static rt_size_t hal_actuator_read(struct rt_device* dev, rt_off_t pos, void* bu
     /* apply channel mask */
     pos = pos & act->chan_mask;
 
-    if (act->ops->dev_read) {
-        rb = act->ops->dev_read(act, pos, buffer, size);
+    if (act->ops->act_read) {
+        rb = act->ops->act_read(act, pos, buffer, size);
     }
 
     return rb;
@@ -89,15 +95,17 @@ static rt_size_t hal_actuator_read(struct rt_device* dev, rt_off_t pos, void* bu
 
 static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* buffer, rt_size_t size)
 {
-    RT_ASSERT(dev != RT_NULL);
-
     actuator_dev_t act = (actuator_dev_t)dev;
     rt_size_t wb = 0;
     uint16_t chan_val[16];
     uint8_t index = 0;
     uint16_t* val_ptr = (uint16_t*)buffer;
 
-    if (dev_suspend == RT_TRUE || buffer == NULL || pos == 0) {
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
+
+    if (act->suspend == RT_TRUE || buffer == NULL || pos == 0) {
         return 0;
     }
 
@@ -111,13 +119,22 @@ static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* b
         }
     }
 
-    if (act->ops->dev_write) {
-        wb = act->ops->dev_write(act, pos, chan_val, size);
+    if (act->ops->act_write) {
+        wb = act->ops->act_write(act, pos, chan_val, size);
     }
 
     return wb;
 }
 
+/**
+ * @brief register an actuator device
+ * 
+ * @param dev actuator device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_actuator_register(actuator_dev_t dev, const char* name, rt_uint32_t flag, void* data)
 {
     RT_ASSERT(dev != RT_NULL);
@@ -139,6 +156,6 @@ rt_err_t hal_actuator_register(actuator_dev_t dev, const char* name, rt_uint32_t
     device->control = hal_actuator_control;
     device->user_data = data;
 
-    /* register device */
+    /* register device to system */
     return rt_device_register(device, name, flag);
 }

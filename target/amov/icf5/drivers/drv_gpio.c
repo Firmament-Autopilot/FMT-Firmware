@@ -56,7 +56,7 @@
 
 static struct pin_device pin_device;
 
-static void gd32_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
+static void gd32_pin_write(pin_dev_t dev, rt_base_t pin, rt_base_t value)
 {
     uint32_t gpio_port;
     uint32_t gpio_pin;
@@ -73,7 +73,7 @@ static void gd32_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
     }
 }
 
-static int gd32_pin_read(rt_device_t dev, rt_base_t pin)
+static int gd32_pin_read(pin_dev_t dev, rt_base_t pin)
 {
     uint32_t gpio_port;
     uint32_t gpio_pin;
@@ -89,7 +89,7 @@ static int gd32_pin_read(rt_device_t dev, rt_base_t pin)
     return value;
 }
 
-static void gd32_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
+static void gd32_pin_mode(pin_dev_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
 {
     uint32_t gpio_port = PIN_STPORT(pin);
     uint32_t gpio_pin = PIN_STPIN(pin);

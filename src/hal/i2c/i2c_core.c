@@ -40,7 +40,7 @@
 #include "hal/i2c/i2c.h"
 #include "hal/i2c/i2c_bit_ops.h"
 #include "hal/i2c/i2c_dev.h"
-#include <firmament.h>
+// #include <firmament.h>
 
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
                                     const char* bus_name)
@@ -84,7 +84,7 @@ rt_err_t rt_i2c_bus_attach_device(struct rt_i2c_device* device,
     }
 
     /* not found the host bus */
-    return -RT_ERROR;
+    return RT_ERROR;
 }
 
 rt_size_t rt_i2c_transfer(struct rt_i2c_bus* bus,
@@ -93,6 +93,10 @@ rt_size_t rt_i2c_transfer(struct rt_i2c_bus* bus,
                           rt_uint32_t num)
 {
     rt_size_t ret;
+
+    if (bus == RT_NULL) {
+        return 0;
+    }
 
     if (bus->ops->master_xfer) {
 #ifdef RT_I2C_DEBUG
@@ -124,7 +128,10 @@ rt_size_t rt_i2c_master_send(struct rt_i2c_bus* bus,
 {
     rt_size_t ret;
     struct rt_i2c_msg msg;
-    RT_ASSERT(bus != RT_NULL);
+
+    if (bus == RT_NULL) {
+        return 0;
+    }
 
     msg.flags = flags & RT_I2C_ADDR_10BIT;
     msg.len = count;
@@ -143,7 +150,10 @@ rt_size_t rt_i2c_master_recv(struct rt_i2c_bus* bus,
 {
     rt_size_t ret;
     struct rt_i2c_msg msg;
-    RT_ASSERT(bus != RT_NULL);
+
+    if (bus == RT_NULL) {
+        return 0;
+    }
 
     msg.flags = flags & RT_I2C_ADDR_10BIT;
     msg.flags |= RT_I2C_RD;

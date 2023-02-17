@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/sd/sd.h"
 #include "sdcard.h"
@@ -89,7 +88,7 @@ error:
     return RT_ERROR;
 }
 
-static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
+static rt_err_t sd_write(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
 {
     rt_err_t err = RT_EOK;
 
@@ -114,7 +113,7 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
     return err;
 }
 
-static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
+static rt_err_t sd_read(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count)
 {
     rt_err_t err = RT_EOK;
 
@@ -139,7 +138,7 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
     return err;
 }
 
-static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
+static rt_err_t sd_control(sd_dev_t sd, int cmd, void* arg)
 {
     switch (cmd) {
     case RT_DEVICE_CTRL_BLK_GETGEOME: {
@@ -166,10 +165,10 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
 }
 
 const static struct sd_ops dev_ops = {
-    .init = init,
-    .write_disk = write_disk,
-    .read_disk = read_disk,
-    .io_control = io_control
+    .sd_init = init,
+    .sd_write = sd_write,
+    .sd_read = sd_read,
+    .sd_control = sd_control
 };
 
 rt_err_t drv_sdio_init(void)

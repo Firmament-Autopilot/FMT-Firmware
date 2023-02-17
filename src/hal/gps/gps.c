@@ -22,7 +22,9 @@ static rt_err_t hal_gps_init(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     gps_dev = (gps_dev_t)dev;
 
@@ -38,7 +40,9 @@ static rt_err_t hal_gps_open(rt_device_t dev, rt_uint16_t oflag)
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     gps_dev = (gps_dev_t)dev;
 
@@ -54,7 +58,9 @@ static rt_err_t hal_gps_close(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     gps_dev = (gps_dev_t)dev;
 
@@ -73,8 +79,9 @@ static rt_size_t hal_gps_read(struct rt_device* dev,
     rt_size_t rb = 0;
     gps_dev_t gps_dev;
 
-    RT_ASSERT(dev != RT_NULL);
-    RT_ASSERT(buffer != RT_NULL);
+    if (dev == NULL || buffer == NULL) {
+        return RT_EEMPTY;
+    }
 
     gps_dev = (gps_dev_t)dev;
 
@@ -92,7 +99,9 @@ static rt_err_t hal_gps_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     gps_dev = (gps_dev_t)dev;
 
@@ -103,6 +112,15 @@ static rt_err_t hal_gps_control(struct rt_device* dev,
     return ret;
 }
 
+/**
+ * @brief register a gps device
+ * 
+ * @param gps_dev gps device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_gps_register(gps_dev_t gps_dev, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -125,7 +143,7 @@ rt_err_t hal_gps_register(gps_dev_t gps_dev, const char* name, rt_uint32_t flag,
     device->control = hal_gps_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
-
 #include "hal/rc/rc.h"
 
 static rt_err_t hal_rc_init(struct rt_device* dev)
@@ -23,13 +21,15 @@ static rt_err_t hal_rc_init(struct rt_device* dev)
     rt_err_t ret = RT_EOK;
     rc_dev_t rc;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
 
     rc = (rc_dev_t)dev;
 
     /* apply configuration */
-    if (rc->ops->rc_configure) {
-        ret = rc->ops->rc_configure(rc, &rc->config);
+    if (rc->ops->rc_config) {
+        ret = rc->ops->rc_config(rc, &rc->config);
     }
 
     return ret;
@@ -44,7 +44,9 @@ static rt_size_t hal_rc_read(struct rt_device* dev, rt_off_t pos, void* buffer, 
     rt_size_t rb = 0;
     uint8_t n = 0;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
 
     rc = (rc_dev_t)dev;
 
@@ -79,7 +81,9 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
 {
     rc_dev_t rc;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
 
     rc = (rc_dev_t)dev;
 
@@ -95,8 +99,8 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
             rc->config = *pconfig;
 
             /* if device is opened before, re-configure it */
-            if (rc->parent.flag & RT_DEVICE_FLAG_ACTIVATED && rc->ops->rc_configure) {
-                rc->ops->rc_configure(rc, pconfig);
+            if (rc->parent.flag & RT_DEVICE_FLAG_ACTIVATED && rc->ops->rc_config) {
+                rc->ops->rc_config(rc, pconfig);
             }
         }
         break;
@@ -140,6 +144,13 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
     return RT_EOK;
 }
 
+/**
+ * @brief indicate rc has data received
+ * 
+ * @param rc rc device
+ * @param size size of received data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_rc_rx_ind(rc_dev_t rc, rt_size_t size)
 {
     rt_device_t device = &(rc->parent);
@@ -151,6 +162,15 @@ rt_err_t hal_rc_rx_ind(rc_dev_t rc, rt_size_t size)
     return RT_EOK;
 }
 
+/**
+ * @brief register a rc device
+ * 
+ * @param rc rc device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_rc_register(rc_dev_t rc, const char* name, rt_uint32_t flag, void* data)
 {
     struct rt_device* device;

@@ -61,7 +61,6 @@ struct device_pin_status {
     uint16_t status;
 };
 
-// new structure
 struct rt_pin_irq_hdr {
     rt_int16_t pin;
     rt_uint16_t mode;
@@ -71,10 +70,9 @@ struct rt_pin_irq_hdr {
 
 /* gpio driver opeations */
 struct pin_ops {
-    void (*pin_mode)(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype);
-    void (*pin_write)(rt_device_t dev, rt_base_t pin, rt_base_t value);
-    int (*pin_read)(rt_device_t dev, rt_base_t pin);
-
+    void (*pin_mode)(pin_dev_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype);
+    void (*pin_write)(pin_dev_t dev, rt_base_t pin, rt_base_t value);
+    int (*pin_read)(pin_dev_t dev, rt_base_t pin);
     /* TODO: add GPIO interrupt */
 };
 

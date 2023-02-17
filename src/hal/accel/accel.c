@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,19 @@
  *****************************************************************************/
 
 #include "hal/accel/accel.h"
-#include <firmament.h>
 
 static rt_err_t hal_accel_init(struct rt_device* dev)
 {
     rt_err_t ret = RT_EOK;
     accel_dev_t accel;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
+
     accel = (accel_dev_t)dev;
 
-    /* apply configuration */
+    /* invoke driver configu function */
     if (accel->ops->accel_config) {
         ret = accel->ops->accel_config(accel, &accel->config);
     }
@@ -41,10 +43,13 @@ static rt_size_t hal_accel_read(struct rt_device* dev,
     rt_size_t rb = 0;
     accel_dev_t accel;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     accel = (accel_dev_t)dev;
 
+    /* invoke driver read function to read data */
     if (accel->ops->accel_read && size) {
         rb = accel->ops->accel_read(accel, pos, buffer, size);
     }
@@ -59,10 +64,13 @@ static rt_err_t hal_accel_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     accel_dev_t accel;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     accel = (accel_dev_t)dev;
 
+    /* invoke driver control function to handle command */
     if (accel->ops->accel_control) {
         ret = accel->ops->accel_control(accel, cmd, args);
     }
@@ -70,6 +78,15 @@ static rt_err_t hal_accel_control(struct rt_device* dev,
     return ret;
 }
 
+/**
+ * @brief register an accel device
+ * 
+ * @param accel accel device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_accel_register(accel_dev_t accel, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -92,7 +109,7 @@ rt_err_t hal_accel_register(accel_dev_t accel, const char* name, rt_uint32_t fla
     device->control = hal_accel_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

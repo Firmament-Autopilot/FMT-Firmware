@@ -240,7 +240,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
 }
 
 const static struct rc_ops rc_ops = {
-    .rc_configure = NULL,
+    .rc_config = NULL,
     .rc_control = rc_control,
     .rc_read = rc_read,
 };

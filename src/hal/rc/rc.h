@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,11 +59,11 @@ extern "C" {
 #define RC_CMD_CHECK_UPDATE 0x20
 
 struct rc_configure {
-    rt_uint16_t protocol;
-    rt_uint16_t channel_num;
-    float sample_time;
-    rt_int16_t rc_min_value;
-    rt_int16_t rc_max_value;
+    rt_uint16_t protocol;    /* rc protocol: auto/sbus/ppm */
+    rt_uint16_t channel_num; /* rc channel number */
+    float sample_time;       /*rc sample time*/
+    rt_int16_t rc_min_value; /*rc channel min value*/
+    rt_int16_t rc_max_value; /*rc channel max value*/
 };
 
 struct rc_device {
@@ -74,9 +74,26 @@ struct rc_device {
 typedef struct rc_device* rc_dev_t;
 
 struct rc_ops {
-    rt_err_t (*rc_configure)(rc_dev_t rc, struct rc_configure* cfg);
-    rt_err_t (*rc_control)(rc_dev_t rc, int cmd, void* arg);
-    rt_uint16_t (*rc_read)(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan_val);
+    /**
+     * @brief rc configuration function (optional)
+     * @param dev rc device
+     * @param cfg rc configuration
+    */
+    rt_err_t (*rc_config)(rc_dev_t dev, struct rc_configure* cfg);
+    /**
+     * @brief rc control function (optional)
+     * @param dev rc device
+     * @param cmd operation command
+     * @param arg command argument (optional)
+    */
+    rt_err_t (*rc_control)(rc_dev_t dev, int cmd, void* arg);
+    /**
+     * @brief rc read function
+     * @param dev rc device
+     * @param chan_mask selected channel to read with bit mask
+     * @param chan_val selected channel read buffer
+     */
+    rt_uint16_t (*rc_read)(rc_dev_t dev, rt_uint16_t chan_mask, rt_uint16_t* chan_val);
 };
 
 rt_err_t hal_rc_register(rc_dev_t rc, const char* name, rt_uint32_t flag, void* data);

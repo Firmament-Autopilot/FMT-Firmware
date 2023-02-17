@@ -25,12 +25,14 @@ static rt_size_t hal_airspeed_read(struct rt_device* dev,
     rt_size_t rb = 0;
     airspeed_dev_t airspeed;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     airspeed = (airspeed_dev_t)dev;
 
-    if (airspeed->ops->dev_read && size) {
-        rb = airspeed->ops->dev_read(airspeed, pos, buffer, size);
+    if (airspeed->ops->airspeed_read && size) {
+        rb = airspeed->ops->airspeed_read(airspeed, pos, buffer, size);
     }
 
     return rb;
@@ -43,12 +45,14 @@ static rt_err_t hal_airspeed_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     airspeed_dev_t airspeed;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     airspeed = (airspeed_dev_t)dev;
 
-    if (airspeed->ops->dev_control) {
-        ret = airspeed->ops->dev_control(airspeed, cmd, args);
+    if (airspeed->ops->airspeed_control) {
+        ret = airspeed->ops->airspeed_control(airspeed, cmd, args);
     }
 
     return ret;

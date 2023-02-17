@@ -277,10 +277,10 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
 }
 
 const static struct sd_ops dev_ops = {
-    .init = init,
-    .write_disk = write_disk,
-    .read_disk = read_disk,
-    .io_control = io_control
+    .sd_init = init,
+    .sd_write = write_disk,
+    .sd_read = read_disk,
+    .sd_control = io_control
 };
 
 #endif

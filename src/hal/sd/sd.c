@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/sd/sd.h"
 
@@ -27,12 +26,15 @@ static rt_err_t hal_sd_init(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     sd_dev_t sd;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
+
     sd = (sd_dev_t)dev;
 
     /* init low-level device */
-    if (sd->ops->init) {
-        ret = sd->ops->init(sd);
+    if (sd->ops->sd_init) {
+        ret = sd->ops->sd_init(sd);
     }
 
     return ret;
@@ -46,7 +48,10 @@ static rt_size_t hal_sd_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_siz
     sd_dev_t sd;
     int i;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
+
     sd = (sd_dev_t)dev;
 
     /* check if the buffer address is 4B allignment since DMA is configured to transfer word,
@@ -54,7 +59,7 @@ static rt_size_t hal_sd_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_siz
     if ((uint32_t)buffer & 0x03) {
         for (i = 0; i < count; i++) {
             /* read 1 sector */
-            if (sd->ops->read_disk(sd, (rt_uint8_t*)sector_buffer, sector + i, 1) != RT_EOK) {
+            if (sd->ops->sd_read(sd, (rt_uint8_t*)sector_buffer, sector + i, 1) != RT_EOK) {
                 if (dev->rx_indicate) {
                     dev->rx_indicate(dev, i);
                 }
@@ -66,7 +71,7 @@ static rt_size_t hal_sd_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_siz
         }
     } else {
         /* read multi sectors */
-        if (sd->ops->read_disk(sd, rp, sector, count) != RT_EOK) {
+        if (sd->ops->sd_read(sd, rp, sector, count) != RT_EOK) {
             return 0;
         }
     }
@@ -86,7 +91,10 @@ static rt_size_t hal_sd_write(rt_device_t dev, rt_off_t pos, const void* buffer,
     sd_dev_t sd;
     int i;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
+
     sd = (sd_dev_t)dev;
 
     /* check if the buffer address is 4B allignment since DMA is configured to transfer word,
@@ -97,13 +105,13 @@ static rt_size_t hal_sd_write(rt_device_t dev, rt_off_t pos, const void* buffer,
             rt_memcpy(sector_buffer, wp, SECTOR_SIZE);
             wp += SECTOR_SIZE;
             /* write 1 sector */
-            if (sd->ops->write_disk(sd, (uint8_t*)sector_buffer, sector + i, 1) != RT_EOK) {
+            if (sd->ops->sd_write(sd, (uint8_t*)sector_buffer, sector + i, 1) != RT_EOK) {
                 return i;
             }
         }
     } else {
         /* write multi sectors */
-        if (sd->ops->write_disk(sd, wp, sector, count) != RT_EOK) {
+        if (sd->ops->sd_write(sd, wp, sector, count) != RT_EOK) {
             return 0;
         }
     }
@@ -121,13 +129,16 @@ rt_err_t hal_sd_control(rt_device_t dev, int cmd, void* args)
     rt_err_t ret = RT_EOK;
     sd_dev_t sd;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        return RT_EEMPTY;
+    }
+
     sd = (sd_dev_t)dev;
 
     switch (cmd) {
     default:
-        if (sd->ops->io_control) {
-            ret = sd->ops->io_control(sd, cmd, args);
+        if (sd->ops->sd_control) {
+            ret = sd->ops->sd_control(sd, cmd, args);
         }
         break;
     }
@@ -135,6 +146,15 @@ rt_err_t hal_sd_control(rt_device_t dev, int cmd, void* args)
     return ret;
 }
 
+/**
+ * @brief register a sd device
+ * 
+ * @param sd sd device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_sd_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -156,7 +176,7 @@ rt_err_t hal_sd_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* 
     device->control = hal_sd_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

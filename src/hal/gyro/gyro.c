@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
  *****************************************************************************/
 
 #include "hal/gyro/gyro.h"
-#include <firmament.h>
 
 static rt_err_t hal_gyro_init(struct rt_device* dev)
 {
     rt_err_t ret = RT_EOK;
     gyro_dev_t gyro;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
+
     gyro = (gyro_dev_t)dev;
 
     /* apply configuration */
@@ -41,7 +43,9 @@ static rt_size_t hal_gyro_read(struct rt_device* dev,
     rt_size_t rb = 0;
     gyro_dev_t gyro;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     gyro = (gyro_dev_t)dev;
 
@@ -59,7 +63,9 @@ static rt_err_t hal_gyro_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     gyro_dev_t gyro;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == NULL) {
+        return RT_EEMPTY;
+    }
 
     gyro = (gyro_dev_t)dev;
 
@@ -70,6 +76,15 @@ static rt_err_t hal_gyro_control(struct rt_device* dev,
     return ret;
 }
 
+/**
+ * @brief register a gyro device
+ * 
+ * @param gyro gyro device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_gyro_register(gyro_dev_t gyro, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -92,7 +107,7 @@ rt_err_t hal_gyro_register(gyro_dev_t gyro, const char* name, rt_uint32_t flag, 
     device->control = hal_gyro_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;
