@@ -21,9 +21,7 @@ static rt_err_t hal_accel_init(struct rt_device* dev)
     rt_err_t ret = RT_EOK;
     accel_dev_t accel;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     accel = (accel_dev_t)dev;
 
@@ -43,9 +41,7 @@ static rt_size_t hal_accel_read(struct rt_device* dev,
     rt_size_t rb = 0;
     accel_dev_t accel;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     accel = (accel_dev_t)dev;
 
@@ -64,9 +60,7 @@ static rt_err_t hal_accel_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     accel_dev_t accel;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     accel = (accel_dev_t)dev;
 

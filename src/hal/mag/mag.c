@@ -21,9 +21,7 @@ static rt_err_t hal_mag_init(struct rt_device* dev)
     rt_err_t ret = RT_EOK;
     mag_dev_t mag;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     mag = (mag_dev_t)dev;
 
@@ -43,9 +41,7 @@ static rt_size_t hal_mag_read(struct rt_device* dev,
     rt_size_t rb = 0;
     mag_dev_t mag;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     mag = (mag_dev_t)dev;
 
@@ -63,9 +59,7 @@ static rt_err_t hal_mag_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     mag_dev_t mag;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     mag = (mag_dev_t)dev;
 

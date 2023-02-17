@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ static rt_size_t hal_pin_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_si
     struct device_pin_status* status;
     pin_dev_t pin = (struct pin_device*)dev;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     status = (struct device_pin_status*)buffer;
 
@@ -39,9 +37,7 @@ static rt_size_t hal_pin_write(rt_device_t dev, rt_off_t pos, const void* buffer
     struct device_pin_status* status;
     pin_dev_t pin = (struct pin_device*)dev;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     status = (struct device_pin_status*)buffer;
 
@@ -58,9 +54,7 @@ static rt_err_t hal_pin_control(rt_device_t dev, int cmd, void* args)
     struct device_pin_mode* mode;
     pin_dev_t pin = (struct pin_device*)dev;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     mode = (struct device_pin_mode*)args;
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/gps/gps.h"
 
@@ -22,9 +21,7 @@ static rt_err_t hal_gps_init(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gps_dev = (gps_dev_t)dev;
 
@@ -40,9 +37,7 @@ static rt_err_t hal_gps_open(rt_device_t dev, rt_uint16_t oflag)
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gps_dev = (gps_dev_t)dev;
 
@@ -58,9 +53,7 @@ static rt_err_t hal_gps_close(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gps_dev = (gps_dev_t)dev;
 
@@ -79,9 +72,8 @@ static rt_size_t hal_gps_read(struct rt_device* dev,
     rt_size_t rb = 0;
     gps_dev_t gps_dev;
 
-    if (dev == NULL || buffer == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(buffer != RT_NULL);
 
     gps_dev = (gps_dev_t)dev;
 
@@ -99,9 +91,7 @@ static rt_err_t hal_gps_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     gps_dev_t gps_dev;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gps_dev = (gps_dev_t)dev;
 

@@ -18,9 +18,7 @@
 
 rt_size_t systick_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
-    if (dev == RT_NULL) {
-        return 0;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     systick_dev_t systick = (systick_dev_t)dev;
 
@@ -36,9 +34,7 @@ static rt_err_t systick_control(rt_device_t dev, int cmd, void* args)
 {
     systick_dev_t systick;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     systick = (systick_dev_t)dev;
 

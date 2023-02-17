@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2023 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ static rt_err_t hal_gyro_init(struct rt_device* dev)
     rt_err_t ret = RT_EOK;
     gyro_dev_t gyro;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gyro = (gyro_dev_t)dev;
 
@@ -43,9 +41,7 @@ static rt_size_t hal_gyro_read(struct rt_device* dev,
     rt_size_t rb = 0;
     gyro_dev_t gyro;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gyro = (gyro_dev_t)dev;
 
@@ -63,9 +59,7 @@ static rt_err_t hal_gyro_control(struct rt_device* dev,
     rt_err_t ret = RT_EOK;
     gyro_dev_t gyro;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     gyro = (gyro_dev_t)dev;
 

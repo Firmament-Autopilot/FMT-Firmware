@@ -26,9 +26,7 @@ static rt_err_t hal_sd_init(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     sd_dev_t sd;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     sd = (sd_dev_t)dev;
 
@@ -48,9 +46,7 @@ static rt_size_t hal_sd_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_siz
     sd_dev_t sd;
     int i;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     sd = (sd_dev_t)dev;
 
@@ -91,9 +87,7 @@ static rt_size_t hal_sd_write(rt_device_t dev, rt_off_t pos, const void* buffer,
     sd_dev_t sd;
     int i;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     sd = (sd_dev_t)dev;
 
@@ -129,9 +123,7 @@ rt_err_t hal_sd_control(rt_device_t dev, int cmd, void* args)
     rt_err_t ret = RT_EOK;
     sd_dev_t sd;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     sd = (sd_dev_t)dev;
 

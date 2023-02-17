@@ -20,9 +20,7 @@ static rt_err_t hal_actuator_init(struct rt_device* dev)
 {
     actuator_dev_t act = (actuator_dev_t)dev;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     act->suspend = RT_FALSE;
 
@@ -38,9 +36,7 @@ static rt_err_t hal_actuator_control(struct rt_device* dev, int cmd, void* args)
 {
     actuator_dev_t act = (actuator_dev_t)dev;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     switch (cmd) {
     case RT_DEVICE_CTRL_SUSPEND:
@@ -75,11 +71,10 @@ static rt_size_t hal_actuator_read(struct rt_device* dev, rt_off_t pos, void* bu
     actuator_dev_t act = (actuator_dev_t)dev;
     rt_size_t rb = 0;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(buffer != RT_NULL);
 
-    if (buffer == NULL || pos == 0) {
+    if (pos == 0) {
         return 0;
     }
 
@@ -101,11 +96,10 @@ static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* b
     uint8_t index = 0;
     uint16_t* val_ptr = (uint16_t*)buffer;
 
-    if (dev == NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
+    RT_ASSERT(buffer != RT_NULL);
 
-    if (act->suspend == RT_TRUE || buffer == NULL || pos == 0) {
+    if (act->suspend == RT_TRUE || pos == 0) {
         return 0;
     }
 

@@ -21,9 +21,7 @@ static rt_err_t hal_rc_init(struct rt_device* dev)
     rt_err_t ret = RT_EOK;
     rc_dev_t rc;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     rc = (rc_dev_t)dev;
 
@@ -44,9 +42,7 @@ static rt_size_t hal_rc_read(struct rt_device* dev, rt_off_t pos, void* buffer, 
     rt_size_t rb = 0;
     uint8_t n = 0;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     rc = (rc_dev_t)dev;
 
@@ -81,9 +77,7 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
 {
     rc_dev_t rc;
 
-    if (dev == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     rc = (rc_dev_t)dev;
 
