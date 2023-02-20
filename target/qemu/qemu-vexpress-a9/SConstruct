@@ -17,12 +17,22 @@ except:
 
 TARGET = 'build/fmt_' + rtconfig.BOARD + '.' + rtconfig.TARGET_EXT
 
+# ===== Add option to SCons =====
+AddOption('--vehicle',
+                dest = 'vehicle',
+                type = 'string',
+                default = 'Quadcopter',
+                help = 'set vehicle type')
+
 env = Environment(tools=['mingw'],
                   AS=rtconfig.AS, ASFLAGS=rtconfig.AFLAGS,
                   CC=rtconfig.CC, CFLAGS=rtconfig.CFLAGS,
                   AR=rtconfig.AR, ARFLAGS='-rc',
                   CXX=rtconfig.CXX, CXXFLAGS=rtconfig.CXXFLAGS,
                   LINK=rtconfig.LINK, LINKFLAGS=rtconfig.LFLAGS)
+
+# set VEHICLE_TYPE macro for low-level usage
+env.Append(CPPDEFINES = [('VEHICLE_TYPE', GetOption('vehicle'))])
 
 # Add sys execute PATH to env PATH
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)

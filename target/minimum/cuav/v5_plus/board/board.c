@@ -24,7 +24,6 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 
-#include "default_config.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -42,8 +41,6 @@
 static const struct dfs_mount_tbl mnt_table[] = {
     { NULL } /* NULL indicate the end */
 };
-
-static toml_table_t* __toml_root_tab = NULL;
 
 static void banner_item(const char* name, const char* content, char pad, uint32_t len)
 {
@@ -85,7 +82,7 @@ static void bsp_show_information(void)
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
     banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
-    banner_item("Vehicle", VEHICLE_TYPE, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
     banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
     banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
     banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
@@ -100,54 +97,6 @@ static void bsp_show_information(void)
         /* task status must be okay to reach here */
         banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
-}
-
-static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
-{
-    fmt_err_t err = FMT_EOK;
-    toml_table_t* sub_tab;
-    const char* key;
-    const char* raw;
-    char* target;
-    int i;
-
-    if (root_tab == NULL) {
-        return FMT_ERROR;
-    }
-
-    /* target should be defined and match with bsp */
-    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
-        if (toml_rtos(raw, &target) != 0) {
-            console_printf("Error: fail to parse type value\n");
-            err = FMT_ERROR;
-        }
-        if (!MATCH(target, TARGET_NAME)) {
-            /* check if target match */
-            console_printf("Error: target name doesn't match\n");
-            err = FMT_ERROR;
-        }
-        rt_free(target);
-    } else {
-        console_printf("Error: can not find target key\n");
-        err = FMT_ERROR;
-    }
-
-    if (err == FMT_EOK) {
-        /* traverse all sub-table */
-        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
-            /* handle all sub tables */
-            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
-                if (err != FMT_EOK) {
-                    console_printf("fail to parse %s\n", key);
-                }
-            }
-        }
-    }
-
-    /* free toml root table */
-    toml_free(root_tab);
-
-    return err;
 }
 
 /**
@@ -336,14 +285,6 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    /* toml system configure */
-    __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    if (!__toml_root_tab) {
-        /* use default system configuration */
-        __toml_root_tab = toml_parse_config_string(default_conf);
-    }
-    FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
-
     /* show system information */
     bsp_show_information();
 }

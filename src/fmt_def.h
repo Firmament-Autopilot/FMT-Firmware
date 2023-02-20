@@ -59,7 +59,9 @@ typedef int bool;
 #endif
 
 #ifndef STRING
-    #define STRING(...) #__VA_ARGS__
+    #define STR_EXPAND(x) #x
+    #define STR(x)        STR_EXPAND(x)
+    #define STRING(...)   #__VA_ARGS__
 #endif
 
 #ifdef FMT_USING_SYS_DEBUG

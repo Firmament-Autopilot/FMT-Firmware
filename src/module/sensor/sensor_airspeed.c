@@ -49,12 +49,18 @@ fmt_err_t sensor_airspeed_measure(sensor_airspeed_t airspeed_dev, airspeed_data_
  */
 sensor_airspeed_t sensor_airspeed_init(const char* airspeed_dev_name)
 {
-    sensor_airspeed_t airspeed_dev = (sensor_airspeed_t)rt_malloc(sizeof(struct sensor_airspeed));
-    RT_ASSERT(airspeed_dev != NULL);
+    rt_device_t dev = rt_device_find(airspeed_dev_name);
 
-    /* find airspeed device */
-    airspeed_dev->dev = rt_device_find(airspeed_dev_name);
-    RT_ASSERT(airspeed_dev->dev != NULL);
+    if (dev == NULL) {
+        /* do not find airspeed device */
+        return NULL;
+    }
+
+    sensor_airspeed_t airspeed_dev = (sensor_airspeed_t)rt_malloc(sizeof(struct sensor_airspeed));
+    FMT_ASSERT(airspeed_dev != NULL);
+
+    /* set airspeed device */
+    airspeed_dev->dev = dev;
 
     /* open device */
     RT_CHECK(rt_device_open(airspeed_dev->dev, RT_DEVICE_OFLAG_RDWR));
