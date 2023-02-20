@@ -17,6 +17,7 @@ HAL = [
     'gps/*.c',
     'adc/*.c',
     'mtd/*.c',
+    'airspeed/*.c',
 ]
 
 HAL_CPPPATH = []
