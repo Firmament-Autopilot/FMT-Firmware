@@ -39,10 +39,10 @@ static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t*
 static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
 
 const static struct actuator_ops __act_ops = {
-    .dev_config = pwm_config,
-    .dev_control = pwm_control,
-    .dev_read = pwm_read,
-    .dev_write = pwm_write
+    .act_config = pwm_config,
+    .act_control = pwm_control,
+    .act_read = pwm_read,
+    .act_write = pwm_write
 };
 
 static struct actuator_device act_dev = {

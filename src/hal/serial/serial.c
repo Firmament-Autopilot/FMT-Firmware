@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  *****************************************************************************/
 
 #include "hal/serial/serial.h"
-#include <firmament.h>
 
 /*
  * Serial poll routines
@@ -299,100 +298,6 @@ rt_inline int _serial_dma_tx(struct serial_device* serial, const rt_uint8_t* dat
     return length;
 }
 
-/* ISR for serial interrupt */
-void hal_serial_isr(struct serial_device* serial, int event)
-{
-    switch (event & 0xff) {
-    case SERIAL_EVENT_RX_IND: {
-        int ch = -1;
-        rt_base_t level;
-        struct serial_rx_fifo* rx_fifo;
-
-        /* interrupt mode receive */
-        rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
-        RT_ASSERT(rx_fifo != RT_NULL);
-
-        while (1) {
-            ch = serial->ops->getc(serial);
-
-            if (ch == -1)
-                break;
-
-            /* disable interrupt */
-            level = rt_hw_interrupt_disable();
-
-            rx_fifo->buffer[rx_fifo->put_index] = ch;
-            rx_fifo->put_index += 1;
-
-            if (rx_fifo->put_index >= serial->config.bufsz)
-                rx_fifo->put_index = 0;
-
-            /* if the next position is read index, discard this 'read char' */
-            if (rx_fifo->put_index == rx_fifo->get_index) {
-                rx_fifo->get_index += 1;
-                rx_fifo->is_full = RT_TRUE;
-
-                if (rx_fifo->get_index >= serial->config.bufsz)
-                    rx_fifo->get_index = 0;
-            }
-
-            /* enable interrupt */
-            rt_hw_interrupt_enable(level);
-        }
-
-        /* invoke callback */
-        if (serial->parent.rx_indicate != RT_NULL) {
-            rt_size_t rx_length;
-
-            /* get rx length */
-            level = rt_hw_interrupt_disable();
-            rx_length = (rx_fifo->put_index >= rx_fifo->get_index) ? (rx_fifo->put_index - rx_fifo->get_index) : (serial->config.bufsz - (rx_fifo->get_index - rx_fifo->put_index));
-            rt_hw_interrupt_enable(level);
-
-            if (rx_length) {
-                serial->parent.rx_indicate(&serial->parent, rx_length);
-            }
-        }
-
-        break;
-    }
-
-    case SERIAL_EVENT_TX_DMADONE: {
-
-        /* invoke callback */
-        if (serial->parent.tx_complete != RT_NULL) {
-            serial->parent.tx_complete(&serial->parent, (void*)RT_NULL);
-        }
-
-        break;
-    }
-
-    case SERIAL_EVENT_RX_DMADONE: {
-        int length;
-        rt_base_t level;
-
-        /* get DMA rx length */
-        length = (event & (~0xff)) >> 8;
-
-        /* disable interrupt */
-        level = rt_hw_interrupt_disable();
-        /* update fifo put index */
-        _dma_recv_update_put_index(serial, length);
-        /* calculate received total length in fifo */
-        length = _dma_calc_recved_len(serial);
-        /* enable interrupt */
-        rt_hw_interrupt_enable(level);
-
-        /* invoke callback */
-        if (serial->parent.rx_indicate != RT_NULL) {
-            serial->parent.rx_indicate(&(serial->parent), length);
-        }
-
-        break;
-    }
-    }
-}
-
 /* RT-Thread Device Interface */
 /*
  * This function initializes serial device.
@@ -628,8 +533,113 @@ static rt_err_t hal_serial_control(struct rt_device* dev,
     return ret;
 }
 
-/*
- * serial register
+/**
+ * @brief serial isr handler
+ * 
+ * @param serial serial device
+ * @param event serial isr event
+ */
+void hal_serial_isr(struct serial_device* serial, int event)
+{
+    switch (event & 0xff) {
+    case SERIAL_EVENT_RX_IND: {
+        int ch = -1;
+        rt_base_t level;
+        struct serial_rx_fifo* rx_fifo;
+
+        /* interrupt mode receive */
+        rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
+        RT_ASSERT(rx_fifo != RT_NULL);
+
+        while (1) {
+            ch = serial->ops->getc(serial);
+
+            if (ch == -1)
+                break;
+
+            /* disable interrupt */
+            level = rt_hw_interrupt_disable();
+
+            rx_fifo->buffer[rx_fifo->put_index] = ch;
+            rx_fifo->put_index += 1;
+
+            if (rx_fifo->put_index >= serial->config.bufsz)
+                rx_fifo->put_index = 0;
+
+            /* if the next position is read index, discard this 'read char' */
+            if (rx_fifo->put_index == rx_fifo->get_index) {
+                rx_fifo->get_index += 1;
+                rx_fifo->is_full = RT_TRUE;
+
+                if (rx_fifo->get_index >= serial->config.bufsz)
+                    rx_fifo->get_index = 0;
+            }
+
+            /* enable interrupt */
+            rt_hw_interrupt_enable(level);
+        }
+
+        /* invoke callback */
+        if (serial->parent.rx_indicate != RT_NULL) {
+            rt_size_t rx_length;
+
+            /* get rx length */
+            level = rt_hw_interrupt_disable();
+            rx_length = (rx_fifo->put_index >= rx_fifo->get_index) ? (rx_fifo->put_index - rx_fifo->get_index) : (serial->config.bufsz - (rx_fifo->get_index - rx_fifo->put_index));
+            rt_hw_interrupt_enable(level);
+
+            if (rx_length) {
+                serial->parent.rx_indicate(&serial->parent, rx_length);
+            }
+        }
+
+        break;
+    }
+
+    case SERIAL_EVENT_TX_DMADONE: {
+
+        /* invoke callback */
+        if (serial->parent.tx_complete != RT_NULL) {
+            serial->parent.tx_complete(&serial->parent, (void*)RT_NULL);
+        }
+
+        break;
+    }
+
+    case SERIAL_EVENT_RX_DMADONE: {
+        int length;
+        rt_base_t level;
+
+        /* get DMA rx length */
+        length = (event & (~0xff)) >> 8;
+
+        /* disable interrupt */
+        level = rt_hw_interrupt_disable();
+        /* update fifo put index */
+        _dma_recv_update_put_index(serial, length);
+        /* calculate received total length in fifo */
+        length = _dma_calc_recved_len(serial);
+        /* enable interrupt */
+        rt_hw_interrupt_enable(level);
+
+        /* invoke callback */
+        if (serial->parent.rx_indicate != RT_NULL) {
+            serial->parent.rx_indicate(&(serial->parent), length);
+        }
+
+        break;
+    }
+    }
+}
+
+/**
+ * @brief register a serial device
+ * 
+ * @param serial serial device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
  */
 rt_err_t hal_serial_register(struct serial_device* serial,
                              const char* name,
@@ -647,19 +657,15 @@ rt_err_t hal_serial_register(struct serial_device* serial,
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
 
-#ifdef RT_USING_DEVICE_OPS
-    device->ops = &serial_ops;
-#else
     device->init = hal_serial_init;
     device->open = hal_serial_open;
     device->close = hal_serial_close;
     device->read = hal_serial_read;
     device->write = hal_serial_write;
     device->control = hal_serial_control;
-#endif
     device->user_data = data;
 
-    /* register a character device */
+    /* register character to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

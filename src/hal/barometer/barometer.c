@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  *****************************************************************************/
 
 #include "hal/barometer/barometer.h"
-#include <firmament.h>
 
 static rt_size_t hal_baro_read(struct rt_device* dev,
                                rt_off_t pos,
@@ -55,6 +54,15 @@ static rt_err_t hal_baro_control(struct rt_device* dev,
     return ret;
 }
 
+/**
+ * @brief register a barometer device
+ * 
+ * @param baro barometer device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -77,7 +85,7 @@ rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, 
     device->control = hal_baro_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

@@ -20,7 +20,7 @@
 
 static struct pin_device pin_device;
 
-static void ar1002_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
+static void ar1002_pin_write(pin_dev_t dev, rt_base_t pin, rt_base_t value)
 {
     if (value == PIN_LOW) {
         HAL_GPIO_SetPin(pin, HAL_GPIO_PIN_RESET);
@@ -29,9 +29,8 @@ static void ar1002_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
     }
 }
 
-static int ar1002_pin_read(rt_device_t dev, rt_base_t pin)
+static int ar1002_pin_read(pin_dev_t dev, rt_base_t pin)
 {
-\
     int value = PIN_LOW;
 
     HAL_GPIO_GetPin(pin, (uint32_t *)&value);
@@ -39,7 +38,7 @@ static int ar1002_pin_read(rt_device_t dev, rt_base_t pin)
     return value;
 }
 
-static void ar1002_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
+static void ar1002_pin_mode(pin_dev_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
 {
     if (mode == PIN_MODE_OUTPUT) {
         HAL_GPIO_OutPut(pin); 

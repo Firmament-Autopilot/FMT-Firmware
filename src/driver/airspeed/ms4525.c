@@ -120,8 +120,8 @@ rt_size_t ms4525_read(airspeed_dev_t dev, rt_off_t pos, void* data, rt_size_t si
 }
 
 const static struct airspeed_ops __airspeed_ops = {
-    .dev_control = RT_NULL,
-    .dev_read = ms4525_read
+    .airspeed_control = RT_NULL,
+    .airspeed_read = ms4525_read
 };
 
 rt_err_t drv_ms4525_init(const char* i2c_device_name, const char* device_name)

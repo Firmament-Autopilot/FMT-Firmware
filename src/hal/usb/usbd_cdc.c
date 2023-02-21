@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/usb/usbd_cdc.h"
 #include "module/utils/devmq.h"
@@ -21,10 +20,12 @@
 #define USBD_WAIT_TIMEOUT 1000
 #define USBD_RX_FIFO_SIZE 2048
 
-static rt_err_t hal_usbd_cdc_init(rt_device_t device)
+static rt_err_t hal_usbd_cdc_init(rt_device_t dev)
 {
-    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)dev;
     rt_err_t err = RT_EOK;
+
+    RT_ASSERT(dev != RT_NULL);
 
     usbd->rx_rb = ringbuffer_create(USBD_RX_FIFO_SIZE);
     if (usbd->rx_rb == NULL) {
@@ -42,19 +43,23 @@ static rt_err_t hal_usbd_cdc_init(rt_device_t device)
     return err;
 }
 
-static rt_err_t hal_usbd_cdc_open(rt_device_t device, rt_uint16_t oflag)
+static rt_err_t hal_usbd_cdc_open(rt_device_t dev, rt_uint16_t oflag)
 {
-    if ((device->flag & oflag) != oflag) {
+    RT_ASSERT(dev != RT_NULL);
+
+    if ((dev->flag & oflag) != oflag) {
         return RT_EIO;
     }
 
     return RT_EOK;
 }
 
-static rt_size_t hal_usbd_cdc_read(rt_device_t device, rt_off_t pos, void* buffer, rt_size_t size)
+static rt_size_t hal_usbd_cdc_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
-    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)dev;
     rt_size_t rb = 0;
+
+    RT_ASSERT(dev != RT_NULL);
 
     if (usbd->ops->dev_read) {
         rb = usbd->ops->dev_read(usbd, pos, buffer, size);
@@ -63,10 +68,12 @@ static rt_size_t hal_usbd_cdc_read(rt_device_t device, rt_off_t pos, void* buffe
     return rb;
 }
 
-static rt_size_t hal_usbd_cdc_write(rt_device_t device, rt_off_t pos, const void* buffer, rt_size_t size)
+static rt_size_t hal_usbd_cdc_write(rt_device_t dev, rt_off_t pos, const void* buffer, rt_size_t size)
 {
-    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)device;
+    usbd_cdc_dev_t usbd = (usbd_cdc_dev_t)dev;
     rt_size_t wb = 0;
+
+    RT_ASSERT(dev != RT_NULL);
 
     if (usbd->status != USBD_STATUS_CONNECT) {
         return 0;
@@ -87,9 +94,16 @@ static rt_size_t hal_usbd_cdc_write(rt_device_t device, rt_off_t pos, const void
     return wb;
 }
 
+/**
+ * @brief notify the usbd status
+ * 
+ * @param usbd 
+ * @param status 
+ */
 void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
 {
     device_status dev_sta;
+
     switch (status) {
     case USBD_STATUS_DISCONNECT:
         usbd->status = USBD_STATUS_DISCONNECT;
@@ -119,6 +133,15 @@ void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
     }
 }
 
+/**
+ * @brief register a usbd_cdc device
+ * 
+ * @param usbd usbd cdc device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t usbd, const char* name, rt_uint16_t flag, void* data)
 {
     rt_device_t dev = &usbd->parent;

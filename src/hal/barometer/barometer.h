@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,19 @@ typedef struct baro_device* baro_dev_t;
 
 /* baro driver opeations */
 struct baro_ops {
-    rt_err_t (*baro_control)(baro_dev_t baro, int cmd, void* arg);
-    rt_size_t (*baro_read)(baro_dev_t baro, baro_report_t* report);
+    /**
+     * @brief baro meter control function (optional)
+     * @param dev barometer device
+     * @param cmd operation command
+     * @param arg command arguments
+     */
+    rt_err_t (*baro_control)(baro_dev_t dev, int cmd, void* arg);
+    /**
+     * @brief read barometer report
+     * @param dev barometer device
+     * @param report barometer report buffer
+     */
+    rt_size_t (*baro_read)(baro_dev_t dev, baro_report_t* report);
 };
 
 rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, void* data);

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  *****************************************************************************/
 
 #include "hal/systick/systick.h"
-#include <firmament.h>
 
 rt_size_t systick_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
     RT_ASSERT(dev != RT_NULL);
 
     systick_dev_t systick = (systick_dev_t)dev;
-    ;
 
     if (pos == SYSTICK_RD_TIME_US) {
         *(uint32_t*)buffer = systick->ops->systick_read(systick);
@@ -52,6 +50,11 @@ static rt_err_t systick_control(rt_device_t dev, int cmd, void* args)
     return RT_EOK;
 }
 
+/**
+ * @brief systick isr handler
+ * 
+ * @param systick systick device
+ */
 void hal_systick_isr(systick_dev_t systick)
 {
     if (systick->systick_isr_cb) {
@@ -59,6 +62,15 @@ void hal_systick_isr(systick_dev_t systick)
     }
 }
 
+/**
+ * @brief register a systick device
+ * 
+ * @param systick systick device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_systick_register(systick_dev_t systick, const char* name, rt_uint32_t flag, void* data)
 {
     struct rt_device* device;
@@ -81,6 +93,6 @@ rt_err_t hal_systick_register(systick_dev_t systick, const char* name, rt_uint32
 
     device->user_data = data;
 
-    /* register pin device */
+    /* register device to system */
     return rt_device_register(device, name, flag);
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include <string.h>
 
 #include "hal/rc/ppm.h"
@@ -22,8 +21,12 @@
 /* 16-bit timer */
 #define GET_GAP(x, y) (x > y ? (x - y) : (0xFFFF - y + x))
 
-static float scale_us;
-
+/**
+ * @brief update ppm decoder status
+ * 
+ * @param decoder ppm decoder
+ * @param ic_val input capture value
+ */
 void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
 {
     static uint16_t temp_val[MAX_PPM_CHANNEL];
@@ -48,7 +51,7 @@ void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
         if (decoder->total_chan && decoder->chan_id == decoder->total_chan && !decoder->ppm_reading) {
             /* reveived all channel data */
             for (uint8_t i = 0; i < decoder->total_chan; i++) {
-                decoder->ppm_val[i] = scale_us * temp_val[i];
+                decoder->ppm_val[i] = decoder->scale_us * temp_val[i];
 
                 if (decoder->ppm_val[i] < 1000) {
                     decoder->ppm_val[i] = 1000;
@@ -67,6 +70,13 @@ void ppm_update(ppm_decoder_t* decoder, uint32_t ic_val)
     decoder->last_ic = ic_val;
 }
 
+/**
+ * @brief initialize ppm decoder
+ * 
+ * @param decoder ppm decoder
+ * @param freq_hz decoder timer frequency in Hz
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t ppm_decoder_init(ppm_decoder_t* decoder, uint32_t freq_hz)
 {
     decoder->chan_id = 0;
@@ -75,10 +85,9 @@ rt_err_t ppm_decoder_init(ppm_decoder_t* decoder, uint32_t freq_hz)
     decoder->ppm_recvd = 0;
     decoder->ppm_reading = 0;
     decoder->freq_hz = freq_hz;
+    decoder->scale_us = 1000000.0f / freq_hz;
 
     memset(decoder->ppm_val, 0, sizeof(decoder->ppm_val));
-
-    scale_us = 1000000.0f / freq_hz;
 
     return RT_EOK;
 }

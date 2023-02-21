@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,17 @@ struct systick_device {
 typedef struct systick_device* systick_dev_t;
 
 struct systick_ops {
-    rt_err_t (*systick_configure)(systick_dev_t systick, struct systick_configure* cfg);
-    rt_uint32_t (*systick_read)(systick_dev_t systick);
+    /**
+     * @brief systick configuration
+     * @param dev systick device
+     * @param config systick configuration
+     */
+    rt_err_t (*systick_configure)(systick_dev_t dev, struct systick_configure* config);
+    /**
+     * @brief read systick value in us
+     * @param dev systick device
+     */
+    rt_uint32_t (*systick_read)(systick_dev_t dev);
 };
 
 rt_err_t hal_systick_register(systick_dev_t systick, const char* name, rt_uint32_t flag, void* data);

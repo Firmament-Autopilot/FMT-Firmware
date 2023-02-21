@@ -56,10 +56,6 @@ typedef struct {
     uint16_t sbus_val[MAX_SBUS_CHANNEL];
 } sbus_decoder_t;
 
-rt_err_t sbus_decoder_init(sbus_decoder_t* decoder);
-uint32_t sbus_input(sbus_decoder_t* decoder, const uint8_t* values, uint32_t size);
-bool sbus_update(sbus_decoder_t* decoder);
-
 rt_inline void sbus_lock(sbus_decoder_t* decoder)
 {
     decoder->sbus_lock = 1;
@@ -84,6 +80,10 @@ rt_inline void sbus_data_clear(sbus_decoder_t* decoder)
 {
     decoder->sbus_data_ready = 0;
 }
+
+rt_err_t sbus_decoder_init(sbus_decoder_t* decoder);
+uint32_t sbus_input(sbus_decoder_t* decoder, const uint8_t* values, uint32_t size);
+bool sbus_update(sbus_decoder_t* decoder);
 
 #ifdef __cplusplus
 }

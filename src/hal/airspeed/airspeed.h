@@ -36,8 +36,21 @@ typedef struct airspeed_device* airspeed_dev_t;
 
 /* airspeed driver opeations */
 struct airspeed_ops {
-    rt_err_t (*dev_control)(airspeed_dev_t dev, int cmd, void* arg);
-    rt_size_t (*dev_read)(airspeed_dev_t dev, rt_off_t pos, void* data, rt_size_t size);
+    /**
+     * @brief airspeed control function (optional)
+     * @param dev airspeed device
+     * @param cmd operation command
+     * @param arg command arguments
+     */
+    rt_err_t (*airspeed_control)(airspeed_dev_t dev, int cmd, void* arg);
+    /**
+     * @brief airspeed read function
+     * @param dev airspeed device
+     * @param pos read position
+     * @param data read data buffer
+     * @param size read data size
+     */
+    rt_size_t (*airspeed_read)(airspeed_dev_t dev, rt_off_t pos, void* data, rt_size_t size);
 };
 
 rt_err_t hal_airspeed_register(airspeed_dev_t dev, const char* name, rt_uint32_t flag, void* data);

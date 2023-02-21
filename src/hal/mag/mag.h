@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,14 +42,14 @@ extern "C" {
 #define MAG_CONFIG_DEFAULT                                  \
     {                                                       \
         100,               /* 100hz sample rate */          \
-            50,            /* 260Hz internal lpf for mag */ \
+            100,           /* 100Hz internal lpf for mag */ \
             MAG_RANGE_8GA, /* +-8guess */                   \
     }
 
 struct mag_configure {
-    rt_uint32_t sample_rate_hz;
-    rt_uint16_t dlpf_freq_hz;
-    rt_uint32_t mag_range_ga;
+    rt_uint32_t sample_rate_hz; /* sample rate in Hz */
+    rt_uint16_t dlpf_freq_hz;   /* internal low-pass filter cur-off freq in Hz */
+    rt_uint32_t mag_range_ga;   /* mag measure range in gauss */
 };
 
 struct mag_device {
@@ -62,9 +62,27 @@ typedef struct mag_device* mag_dev_t;
 
 /* mag driver opeations */
 struct mag_ops {
-    rt_err_t (*mag_config)(mag_dev_t mag, const struct mag_configure* cfg);
-    rt_err_t (*mag_control)(mag_dev_t mag, int cmd, void* arg);
-    rt_size_t (*mag_read)(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t size);
+    /**
+     * @brief mag configuration function (optional)
+     * @param dev mag device
+     * @param cfg mag configuration
+    */
+    rt_err_t (*mag_config)(mag_dev_t dev, const struct mag_configure* cfg);
+    /**
+     * @brief mag control function (optional)
+     * @param dev mag device
+     * @param cmd operation command
+     * @param arg command argument (optional)
+    */
+    rt_err_t (*mag_control)(mag_dev_t dev, int cmd, void* arg);
+    /**
+     * @brief mag read data function
+     * @param dev mag device
+     * @param pos read pos, sent by upper layer. can be used to identify the data type to read, e.g, raw data or scaled data
+     * @param data read data buffer. normally it's a pointer to float[3]
+     * @param size read data size
+    */
+    rt_size_t (*mag_read)(mag_dev_t dev, rt_off_t pos, void* data, rt_size_t size);
 };
 
 rt_err_t hal_mag_register(mag_dev_t mag, const char* name, rt_uint32_t flag, void* data);
