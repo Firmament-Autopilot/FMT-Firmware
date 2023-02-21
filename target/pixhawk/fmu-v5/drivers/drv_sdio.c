@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
-#include "board.h"
 #include "drv_sdio.h"
+#include "board.h"
 #include "hal/sd/sd.h"
 #include "stm32f7xx_ll_sdmmc.h"
+
 
 #define SD_TIMEOUT    5000
 #define EVENT_TX_CPLT 0x00000001
@@ -349,10 +349,10 @@ static rt_err_t io_control(sd_dev_t sd, int cmd, void* arg)
 }
 
 const static struct sd_ops dev_ops = {
-    .init = init,
-    .write_disk = write_disk,
-    .read_disk = read_disk,
-    .io_control = io_control
+    .sd_init = init,
+    .sd_write = write_disk,
+    .sd_read = read_disk,
+    .sd_control = io_control
 };
 
 rt_err_t drv_sdio_init(void)

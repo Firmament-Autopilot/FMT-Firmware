@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/gps/gps.h"
 
@@ -103,6 +102,15 @@ static rt_err_t hal_gps_control(struct rt_device* dev,
     return ret;
 }
 
+/**
+ * @brief register a gps device
+ * 
+ * @param gps_dev gps device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_gps_register(gps_dev_t gps_dev, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -125,7 +133,7 @@ rt_err_t hal_gps_register(gps_dev_t gps_dev, const char* name, rt_uint32_t flag,
     device->control = hal_gps_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

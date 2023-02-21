@@ -67,9 +67,9 @@ extern "C" {
 #define RT_SPI_MASTER (0 << 3) /* SPI master device */
 #define RT_SPI_SLAVE  (1 << 3) /* SPI slave device */
 
-#define RT_SPI_MODE_0 (0 | 0)                     /* CPOL = 0, CPHA = 0 */
-#define RT_SPI_MODE_1 (0 | RT_SPI_CPHA)           /* CPOL = 0, CPHA = 1 */
-#define RT_SPI_MODE_2 (RT_SPI_CPOL | 0)           /* CPOL = 1, CPHA = 0 */
+#define RT_SPI_MODE_0 (0 | 0) /* CPOL = 0, CPHA = 0 */
+#define RT_SPI_MODE_1 (0 | RT_SPI_CPHA) /* CPOL = 0, CPHA = 1 */
+#define RT_SPI_MODE_2 (RT_SPI_CPOL | 0) /* CPOL = 1, CPHA = 0 */
 #define RT_SPI_MODE_3 (RT_SPI_CPOL | RT_SPI_CPHA) /* CPOL = 1, CPHA = 1 */
 
 #define RT_SPI_MODE_MASK (RT_SPI_CPHA | RT_SPI_CPOL | RT_SPI_MSB)
@@ -113,11 +113,21 @@ struct rt_spi_bus {
 };
 
 /**
- * SPI operators
+ * SPI driver operators
  */
 struct rt_spi_ops {
-    rt_err_t (*configure)(struct rt_spi_device* device, struct rt_spi_configuration* configuration);
-    rt_uint32_t (*xfer)(struct rt_spi_device* device, struct rt_spi_message* message);
+    /**
+     * @brief spi configuration function
+     * @param dev spi device
+     * @param config spi configuration
+     */
+    rt_err_t (*configure)(struct rt_spi_device* dev, struct rt_spi_configuration* config);
+    /**
+     * @brief spi transfer function
+     * @param dev spi device
+     * @param message spi messages to transfer
+     */
+    rt_uint32_t (*xfer)(struct rt_spi_device* dev, struct rt_spi_message* message);
 };
 
 /**

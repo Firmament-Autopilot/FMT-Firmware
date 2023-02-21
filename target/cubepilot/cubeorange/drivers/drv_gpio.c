@@ -88,7 +88,7 @@ static rt_base_t stm32_pin_get(const char* name)
     return pin;
 }
 
-static void stm32_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
+static void stm32_pin_write(pin_dev_t dev, rt_base_t pin, rt_base_t value)
 {
     GPIO_TypeDef* gpio_port;
     uint16_t gpio_pin;
@@ -105,7 +105,7 @@ static void stm32_pin_write(rt_device_t dev, rt_base_t pin, rt_base_t value)
     }
 }
 
-static int stm32_pin_read(rt_device_t dev, rt_base_t pin)
+static int stm32_pin_read(pin_dev_t dev, rt_base_t pin)
 {
     GPIO_TypeDef* gpio_port;
     uint16_t gpio_pin;
@@ -121,7 +121,7 @@ static int stm32_pin_read(rt_device_t dev, rt_base_t pin)
     return value;
 }
 
-static void stm32_pin_mode(rt_device_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
+static void stm32_pin_mode(pin_dev_t dev, rt_base_t pin, rt_base_t mode, rt_base_t otype)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 

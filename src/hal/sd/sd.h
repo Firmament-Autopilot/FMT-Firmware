@@ -32,10 +32,34 @@ typedef struct sd_device* sd_dev_t;
 
 /* sd driver opeations */
 struct sd_ops {
-    rt_err_t (*init)(sd_dev_t sd);
-    rt_err_t (*write_disk)(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
-    rt_err_t (*read_disk)(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
-    rt_err_t (*io_control)(sd_dev_t sd, int cmd, void* arg);
+    /**
+     * @brief initialize sd card
+     * @param dev sd device
+     */
+    rt_err_t (*sd_init)(sd_dev_t dev);
+    /**
+     * @brief write data to sd
+     * @param dev sd device
+     * @param buffer write buffer
+     * @param sector sector to write
+     * @param count sector count to write
+     */
+    rt_err_t (*sd_write)(sd_dev_t dev, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
+    /**
+     * @brief read data from sd
+     * @param dev sd device
+     * @param buffer read buffer
+     * @param sector sector to read
+     * @param count sector count to read
+     */
+    rt_err_t (*sd_read)(sd_dev_t dev, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
+    /**
+     * @brief sd control function (optional)
+     * @param dev sd device
+     * @param cmd operation command
+     * @param arg command argument (optional)
+    */
+    rt_err_t (*sd_control)(sd_dev_t dev, int cmd, void* arg);
 };
 
 rt_err_t hal_sd_register(sd_dev_t sd, const char* name, rt_uint32_t flag, void* data);

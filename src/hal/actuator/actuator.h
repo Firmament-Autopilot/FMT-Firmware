@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2016-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2016-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,26 +42,52 @@ struct dshot_drv_configure {
 };
 
 struct actuator_configure {
-    rt_uint8_t protocol;
-    rt_uint16_t chan_num;
-    struct pwm_drv_configure pwm_config;
-    struct dshot_drv_configure dshot_config;
+    rt_uint8_t protocol;                     /* actuator protocol: pwm or dshot */
+    rt_uint16_t chan_num;                    /* actuator channel number */
+    struct pwm_drv_configure pwm_config;     /* pwm configuration */
+    struct dshot_drv_configure dshot_config; /* dshot configuration */
 };
 
 struct actuator_device {
     struct rt_device parent;
     const struct actuator_ops* ops;
     struct actuator_configure config;
-    rt_uint16_t chan_mask;
-    rt_uint16_t range[2]; /* [min, max] value */
+    rt_uint16_t chan_mask; /* channel mask */
+    rt_uint16_t range[2];  /* [min, max] value */
+    rt_bool_t suspend;     /* suspend device */
 };
 typedef struct actuator_device* actuator_dev_t;
 
 struct actuator_ops {
-    rt_err_t (*dev_config)(actuator_dev_t dev, const struct actuator_configure* cfg);
-    rt_err_t (*dev_control)(actuator_dev_t dev, int cmd, void* arg);
-    rt_size_t (*dev_read)(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
-    rt_size_t (*dev_write)(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
+    /**
+     * @brief actuator config function (optional)
+     * @param dev actuator device
+     * @param cfg actuator configuration
+     */
+    rt_err_t (*act_config)(actuator_dev_t dev, const struct actuator_configure* cfg);
+    /**
+     * @brief actuator control function (optional)
+     * @param dev actuator device
+     * @param cnd operation command
+     * @param arg command arguments
+     */
+    rt_err_t (*act_control)(actuator_dev_t dev, int cmd, void* arg);
+    /**
+     * @brief actuator read function (optional)
+     * @param dev actuator device
+     * @param chan_sel selected channel to read with bit mask
+     * @param chan_val selected channel read buffer
+     * @param size read size
+     */
+    rt_size_t (*act_read)(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
+    /**
+     * @brief actuator write function
+     * @param dev actuator device
+     * @param chan_sel selected channel to write with bit mask
+     * @param chan_val selected channel write buffer
+     * @param size write size
+     */
+    rt_size_t (*act_write)(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
 };
 
 rt_err_t hal_actuator_register(actuator_dev_t dev, const char* name, rt_uint32_t flag, void* data);

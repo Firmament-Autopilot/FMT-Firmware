@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-/* g[s] read pos */
+/* gps read pos */
 #define GPS_READ_REPORT 0
 
 /* gps command */
@@ -77,8 +77,19 @@ typedef struct gps_device* gps_dev_t;
 
 /* gps driver opeations */
 struct gps_ops {
-    rt_err_t (*gps_control)(gps_dev_t gps_dev, int cmd, void* arg);
-    rt_size_t (*gps_read)(gps_dev_t gps_dev, gps_report_t* report);
+    /**
+     * @brief gps control function (optional)
+     * @param dev gps device
+     * @param cmd operation command
+     * @param arg command argument
+    */
+    rt_err_t (*gps_control)(gps_dev_t dev, int cmd, void* arg);
+    /**
+     * @brief gps read function
+     * @param dev gps device
+     * @param report gps report buffer
+    */
+    rt_size_t (*gps_read)(gps_dev_t dev, gps_report_t* report);
 };
 
 rt_err_t hal_gps_register(gps_dev_t gps_dev, const char* name, rt_uint32_t flag, void* data);

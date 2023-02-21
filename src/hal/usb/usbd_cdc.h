@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,36 @@ struct usbd_cdc_dev {
 };
 typedef struct usbd_cdc_dev* usbd_cdc_dev_t;
 
+/* usb driver operations */
 struct usbd_cdc_ops {
-    rt_err_t (*dev_init)(usbd_cdc_dev_t usbd);
-    rt_size_t (*dev_read)(usbd_cdc_dev_t usbd, rt_off_t pos, void* buf, rt_size_t size);
-    rt_size_t (*dev_write)(usbd_cdc_dev_t usbd, rt_off_t pos, const void* buf, rt_size_t size);
-    rt_err_t (*dev_control)(usbd_cdc_dev_t usbd, int cmd, void* arg);
+    /**
+     * @brief usb initialize
+     * @param dev usb device
+     */
+    rt_err_t (*dev_init)(usbd_cdc_dev_t dev);
+    /**
+     * @brief usb read function
+     * @param dev usb device
+     * @param pos read position
+     * @param buf read buffer
+     * @param size read size
+     */
+    rt_size_t (*dev_read)(usbd_cdc_dev_t dev, rt_off_t pos, void* buf, rt_size_t size);
+    /**
+     * @brief usb write function
+     * @param dev usb device
+     * @param pos write position
+     * @param buf write buffer
+     * @param size write size
+     */
+    rt_size_t (*dev_write)(usbd_cdc_dev_t dev, rt_off_t pos, const void* buf, rt_size_t size);
+    /**
+     * @brief usb control function (optional)
+     * @param dev usb device
+     * @param cmd operation command
+     * @param arg command argument
+     */
+    rt_err_t (*dev_control)(usbd_cdc_dev_t dev, int cmd, void* arg);
 };
 
 rt_err_t hal_usbd_cdc_register(usbd_cdc_dev_t usbd, const char* name, rt_uint16_t flag, void* data);

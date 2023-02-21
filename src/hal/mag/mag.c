@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  *****************************************************************************/
 
 #include "hal/mag/mag.h"
-#include <firmament.h>
 
 static rt_err_t hal_mag_init(struct rt_device* dev)
 {
@@ -23,6 +22,7 @@ static rt_err_t hal_mag_init(struct rt_device* dev)
     mag_dev_t mag;
 
     RT_ASSERT(dev != RT_NULL);
+
     mag = (mag_dev_t)dev;
 
     /* apply configuration */
@@ -70,6 +70,15 @@ static rt_err_t hal_mag_control(struct rt_device* dev,
     return ret;
 }
 
+/**
+ * @brief register a mag device
+ * 
+ * @param mag mag device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_mag_register(mag_dev_t mag, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -92,7 +101,7 @@ rt_err_t hal_mag_register(mag_dev_t mag, const char* name, rt_uint32_t flag, voi
     device->control = hal_mag_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

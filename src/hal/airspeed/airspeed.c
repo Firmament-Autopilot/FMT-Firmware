@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/airspeed/airspeed.h"
 
@@ -29,8 +28,8 @@ static rt_size_t hal_airspeed_read(struct rt_device* dev,
 
     airspeed = (airspeed_dev_t)dev;
 
-    if (airspeed->ops->dev_read && size) {
-        rb = airspeed->ops->dev_read(airspeed, pos, buffer, size);
+    if (airspeed->ops->airspeed_read && size) {
+        rb = airspeed->ops->airspeed_read(airspeed, pos, buffer, size);
     }
 
     return rb;
@@ -47,13 +46,22 @@ static rt_err_t hal_airspeed_control(struct rt_device* dev,
 
     airspeed = (airspeed_dev_t)dev;
 
-    if (airspeed->ops->dev_control) {
-        ret = airspeed->ops->dev_control(airspeed, cmd, args);
+    if (airspeed->ops->airspeed_control) {
+        ret = airspeed->ops->airspeed_control(airspeed, cmd, args);
     }
 
     return ret;
 }
 
+/**
+ * @brief register an airspeed device
+ * 
+ * @param dev airspeed device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_airspeed_register(airspeed_dev_t dev, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -76,7 +84,7 @@ rt_err_t hal_airspeed_register(airspeed_dev_t dev, const char* name, rt_uint32_t
     device->control = hal_airspeed_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;

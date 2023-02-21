@@ -64,16 +64,35 @@ struct rt_i2c_bus;
 struct rt_i2c_device;
 
 struct rt_i2c_bus_device_ops {
+    /**
+     * @brief i2c master transfer function
+     * @param bus i2c bus
+     * @param slave_addr i2c 7-bit/10-bit address
+     * @param msgs i2c messages to transfer
+     * @param num number of i2c messages
+     */
     rt_size_t (*master_xfer)(struct rt_i2c_bus* bus,
                              rt_uint16_t slave_addr,
                              struct rt_i2c_msg msgs[],
                              rt_uint32_t num);
+    /**
+     * @brief i2c slave transfer function
+     * @param bus i2c bus
+     * @param msgs i2c messages to transfer
+     * @param num number of i2c messages
+     */
     rt_size_t (*slave_xfer)(struct rt_i2c_bus* bus,
                             struct rt_i2c_msg msgs[],
                             rt_uint32_t num);
+    /**
+     * @brief i2c control function (optional)
+     * @param bus i2c bus
+     * @param cmd operation command
+     * @param arg command arguments
+     */
     rt_err_t (*i2c_bus_control)(struct rt_i2c_bus* bus,
-                                rt_uint32_t,
-                                rt_uint32_t);
+                                int cmd,
+                                void* arg);
 };
 
 /*for i2c bus driver*/
@@ -96,7 +115,7 @@ struct rt_i2c_device {
 };
 
 #define i2c_dbg(fmt, ...)
-// #define i2c_dbg(fmt, ...) console_printf(fmt, ##__VA_ARGS__)
+// #define i2c_dbg(fmt, ...) printf(fmt, ##__VA_ARGS__)
 
 rt_err_t rt_i2c_bus_device_register(struct rt_i2c_bus* bus,
                                     const char* bus_name);

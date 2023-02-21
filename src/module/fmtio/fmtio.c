@@ -73,10 +73,10 @@ static struct rc_device rc_dev = {
 };
 
 const static struct actuator_ops _act_ops = {
-    .dev_config = pwm_config,
-    .dev_control = pwm_control,
-    .dev_read = pwm_read,
-    .dev_write = pwm_write
+    .act_config = pwm_config,
+    .act_control = pwm_control,
+    .act_read = pwm_read,
+    .act_write = pwm_write
 };
 
 static struct actuator_device act_dev = {

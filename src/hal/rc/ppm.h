@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-#define MAX_PPM_CHANNEL       10
+#define MAX_PPM_CHANNEL 10
 
 typedef struct {
     uint8_t chan_id;
@@ -32,6 +32,7 @@ typedef struct {
     uint16_t ppm_recvd;
     uint16_t ppm_reading;
     uint32_t freq_hz;
+    float scale_us;
     uint16_t ppm_val[MAX_PPM_CHANNEL]; /* ppm raw value in microseconds */
 } ppm_decoder_t;
 

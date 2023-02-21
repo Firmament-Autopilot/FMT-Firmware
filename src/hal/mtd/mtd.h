@@ -17,6 +17,8 @@
 #ifndef MTD_H__
 #define MTD_H__
 
+#include <firmament.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30,11 +32,41 @@ typedef struct mtd_device* mtd_dev_t;
 
 /* mtd (media technology device) driver opeations */
 struct mtd_ops {
-    rt_err_t (*init)(mtd_dev_t mtd);
-    rt_err_t (*read)(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
-    rt_err_t (*write)(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
-    rt_err_t (*erase)(mtd_dev_t mtd, rt_uint32_t sector, rt_uint32_t count);
-    rt_err_t (*control)(mtd_dev_t mtd, int cmd, void* arg);
+    /**
+     * @brief mtd init function
+     * @param dev mtd device
+     */
+    rt_err_t (*init)(mtd_dev_t dev);
+    /**
+     * @brief mtd read function
+     * @param dev mtd device
+     * @param buffer read buffer
+     * @param sector sector to read
+     * @param count sector count to read
+     */
+    rt_err_t (*read)(mtd_dev_t dev, rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
+    /**
+     * @brief mtd write function
+     * @param dev mtd device
+     * @param buffer write buffer
+     * @param sector sector to write
+     * @param count sector count to write
+     */
+    rt_err_t (*write)(mtd_dev_t dev, const rt_uint8_t* buffer, rt_uint32_t sector, rt_uint32_t count);
+    /**
+     * @brief mtd erase function (optional)
+     * @param dev mtd device
+     * @param sector sector to erase
+     * @param count sector count to erase
+     */
+    rt_err_t (*erase)(mtd_dev_t dev, rt_uint32_t sector, rt_uint32_t count);
+    /**
+     * @brief mtd control function (optional)
+     * @param dev mtd device
+     * @param cmd operation command
+     * @param arg command argument (optional)
+    */
+    rt_err_t (*control)(mtd_dev_t dev, int cmd, void* arg);
 };
 
 rt_err_t hal_mtd_register(mtd_dev_t mtd, const char* name, rt_uint32_t flag, void* data);

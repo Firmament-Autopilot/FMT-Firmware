@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,11 +152,38 @@ typedef struct serial_device* serial_dev_t;
  * uart operators
  */
 struct usart_ops {
-    rt_err_t (*configure)(struct serial_device* serial, struct serial_configure* cfg);
-    rt_err_t (*control)(struct serial_device* serial, int cmd, void* arg);
-    int (*putc)(struct serial_device* serial, char c);
-    int (*getc)(struct serial_device* serial);
-    rt_size_t (*dma_transmit)(struct serial_device* serial, rt_uint8_t* buf, rt_size_t size, int direction);
+    /**
+     * @brief uart configure function
+     * @param dev uart device
+     * @param cfg uart configuration
+     */
+    rt_err_t (*configure)(struct serial_device* dev, struct serial_configure* cfg);
+    /**
+     * @brief uart control function (optional)
+     * @param dev uart device
+     * @param cmd operation command
+     * @param arg command argument
+    */
+    rt_err_t (*control)(struct serial_device* dev, int cmd, void* arg);
+    /**
+     * @brief write a character to uart
+     * @param dev uart device
+     * @param c character to write
+    */
+    int (*putc)(struct serial_device* dev, char c);
+    /**
+     * @brief read a character from uart
+     * @param dev uart device
+    */
+    int (*getc)(struct serial_device* dev);
+    /**
+     * @brief transfer function with uart using DMA (read/write)
+     * @param dev uart device
+     * @param buf data buffer
+     * @param size data size
+     * @param direction SERIAL_DMA_TX or SERIAL_DMA_RX
+    */
+    rt_size_t (*dma_transmit)(struct serial_device* dev, rt_uint8_t* buf, rt_size_t size, int direction);
 };
 
 void hal_serial_isr(struct serial_device* serial, int event);

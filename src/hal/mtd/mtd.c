@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
 #include "hal/mtd/mtd.h"
 
@@ -22,9 +21,7 @@ static rt_err_t hal_mtd_init(rt_device_t dev)
     rt_err_t ret = RT_EOK;
     mtd_dev_t mtd = (mtd_dev_t)dev;
 
-    if (mtd == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     /* init low-level device, init can be NULL */
     if (mtd->ops->init) {
@@ -40,7 +37,9 @@ static rt_size_t hal_mtd_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_si
     rt_uint32_t count = size;
     mtd_dev_t mtd = (mtd_dev_t)dev;
 
-    if (mtd == RT_NULL || mtd->ops->read == RT_NULL) {
+    RT_ASSERT(dev != RT_NULL);
+
+    if (mtd->ops->read == RT_NULL) {
         return 0;
     }
 
@@ -61,8 +60,10 @@ static rt_size_t hal_mtd_write(rt_device_t dev, rt_off_t pos, const void* buffer
     rt_uint32_t count = size;
     mtd_dev_t mtd = (mtd_dev_t)dev;
 
+    RT_ASSERT(dev != RT_NULL);
+
     /* earase ops can be NULL as some device doesn't need erase before write */
-    if (mtd == RT_NULL || mtd->ops->write == RT_NULL) {
+    if (mtd->ops->write == RT_NULL) {
         return 0;
     }
 
@@ -89,9 +90,7 @@ rt_err_t hal_mtd_control(rt_device_t dev, int cmd, void* args)
     rt_err_t ret = RT_EOK;
     mtd_dev_t mtd = (mtd_dev_t)dev;
 
-    if (mtd == RT_NULL) {
-        return RT_EEMPTY;
-    }
+    RT_ASSERT(dev != RT_NULL);
 
     switch (cmd) {
     default:
@@ -105,6 +104,15 @@ rt_err_t hal_mtd_control(rt_device_t dev, int cmd, void* args)
     return ret;
 }
 
+/**
+ * @brief register a mtd device
+ * 
+ * @param mtd mtd device
+ * @param name device name
+ * @param flag device flag
+ * @param data device data
+ * @return rt_err_t RT_EOK for success
+ */
 rt_err_t hal_mtd_register(mtd_dev_t mtd, const char* name, rt_uint32_t flag, void* data)
 {
     rt_err_t ret;
@@ -126,7 +134,7 @@ rt_err_t hal_mtd_register(mtd_dev_t mtd, const char* name, rt_uint32_t flag, voi
     device->control = hal_mtd_control;
     device->user_data = data;
 
-    /* register a character device */
+    /* register device to system */
     ret = rt_device_register(device, name, flag);
 
     return ret;
