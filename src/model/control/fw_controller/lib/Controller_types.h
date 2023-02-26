@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1064
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Sep 28 12:34:17 2022
+ * C/C++ source code generated on : Sun Feb 26 11:19:34 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -59,11 +59,27 @@ typedef struct {
   /* acceleration z command in control frame */
   real32_T az_cmd;
 
-  /* throttle command */
-  uint32_T throttle_cmd;
-
   /* actuator command */
   uint16_T actuator_cmd[16];
+
+  /* throttle command */
+  uint16_T throttle_cmd;
+
+  /* Type mask for offboard mode:
+     1: p_cmd valid
+     2: q_cmd valid
+     3: r_cmd valid
+     4: phi_cmd valid
+     5: theta_cmd valid
+     6: psi_rate_cmd_valid
+     7: u_cmd valid
+     8: v_cmd valid
+     9: w_cmd valid
+     10: ax_cmd valid
+     11: ay_cmd valid
+     12: ax_cmd valid
+     13: throttle_cmd valid */
+  uint16_T cmd_mask;
 
   /* enum VehicleStatus
 
@@ -131,7 +147,7 @@ typedef struct {
   uint8_T wp_current;
 
   /* enum of PilotMode */
-  uint8_T reserved1;
+  uint8_T reserved;
 } FMS_Out_Bus;
 
 #endif
