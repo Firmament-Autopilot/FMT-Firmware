@@ -646,7 +646,7 @@ rt_err_t drv_usart_init(void)
 
 #ifdef USING_UART6
     serial0.ops = &__usart_ops;
-    #ifdef SERIAL1_DEFAULT_CONFIG
+    #ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
     serial0.config = serial0_config;
     #else
