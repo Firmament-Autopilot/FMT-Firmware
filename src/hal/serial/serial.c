@@ -219,6 +219,9 @@ static void _dma_recv_update_put_index(struct serial_device* serial, rt_size_t l
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
+    if(rx_fifo == RT_NULL){
+        printf("dev:%s  ", serial->parent.parent.name);
+    }
     RT_ASSERT(rx_fifo != RT_NULL);
 
     if (rx_fifo->get_index <= rx_fifo->put_index) {
