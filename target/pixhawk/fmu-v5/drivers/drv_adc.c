@@ -59,6 +59,7 @@ void ADC_IRQHandler(void)
 static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt)
 {
     uint32_t adc_channel;
+    uint16_t adcData;
     struct stm32_adc* adc = (struct stm32_adc*)adc_dev->parent.user_data;
 
     if (adc->adc_handle != ADC1) {
@@ -112,9 +113,9 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
         return RT_ERROR;
     }
 
-    uint16_t adcData = LL_ADC_REG_ReadConversionData12(adc->adc_handle);
+    adcData = LL_ADC_REG_ReadConversionData12(adc->adc_handle);
     *mVolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(3300, adcData, LL_ADC_RESOLUTION_12B);
-    *mVolt*=18;
+
     return RT_EOK;
 }
 
