@@ -465,6 +465,8 @@ static void _close_usart(struct serial_device* serial)
     if (serial->parent.open_flag & RT_DEVICE_FLAG_DMA_RX) {
         /* disable DMA channel transfer complete interrupt */
         dma_interrupt_disable(uart->dma.dma_periph, uart->dma.rx_ch, DMA_CHXCTL_FTFIE);
+        /* disable rx idle interrupt */
+        usart_interrupt_disable(uart->uart_periph, USART_INT_IDLE);
         /* disable DMA channel */
         dma_channel_disable(uart->dma.dma_periph, uart->dma.rx_ch);
         /* USART DMA disable for reception */
