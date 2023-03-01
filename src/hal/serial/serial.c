@@ -16,6 +16,8 @@
 
 #include "hal/serial/serial.h"
 
+#define HAL_DBG(...) printf(__VA_ARGS__)
+
 /*
  * Serial poll routines
  */
@@ -25,7 +27,6 @@ rt_inline int _serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, in
     int size;
     int rx_length;
 
-    RT_ASSERT(serial != RT_NULL);
     size = length;
 
     while (length) {
@@ -55,7 +56,6 @@ rt_inline int _serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, in
 rt_inline int _serial_poll_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
 {
     int size;
-    RT_ASSERT(serial != RT_NULL);
 
     size = length;
 
@@ -87,14 +87,13 @@ rt_inline int _serial_poll_tx(struct serial_device* serial, const rt_uint8_t* da
  */
 rt_inline int _serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
-    int size;
-    struct serial_rx_fifo* rx_fifo;
+    int size = length;
+    struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
-    RT_ASSERT(serial != RT_NULL);
-    size = length;
-
-    rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
-    RT_ASSERT(rx_fifo != RT_NULL);
+    if (rx_fifo == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return 0;
+    }
 
     /* read from software FIFO */
     while (length) {
@@ -135,18 +134,17 @@ rt_inline int _serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int
 
 rt_inline int _serial_int_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
 {
-    int size;
-    struct serial_tx_fifo* tx;
+    int size = length;
+    struct serial_tx_fifo* tx_fifo = (struct serial_tx_fifo*)serial->serial_tx;
 
-    RT_ASSERT(serial != RT_NULL);
-
-    size = length;
-    tx = (struct serial_tx_fifo*)serial->serial_tx;
-    RT_ASSERT(tx != RT_NULL);
+    if (tx_fifo == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return 0;
+    }
 
     while (length) {
         if (serial->ops->putc(serial, *(char*)data) == -1) {
-            rt_completion_wait(&(tx->completion), RT_WAITING_FOREVER);
+            rt_completion_wait(&(tx_fifo->completion), RT_WAITING_FOREVER);
             continue;
         }
 
@@ -161,7 +159,10 @@ static rt_size_t _serial_fifo_calc_recved_len(struct serial_device* serial)
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
-    RT_ASSERT(rx_fifo != RT_NULL);
+    if (rx_fifo == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return 0;
+    }
 
     if (rx_fifo->put_index == rx_fifo->get_index) {
         return (rx_fifo->is_full == RT_FALSE ? 0 : serial->config.bufsz);
@@ -196,8 +197,15 @@ static void _dma_recv_update_get_index(struct serial_device* serial, rt_size_t l
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
-    RT_ASSERT(rx_fifo != RT_NULL);
-    RT_ASSERT(len <= _dma_calc_recved_len(serial));
+    if (rx_fifo == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    if (len > _dma_calc_recved_len(serial)) {
+        HAL_DBG("length:%d exceeds the maxium received length\n", len);
+        return;
+    }
 
     if (rx_fifo->is_full && len != 0)
         rx_fifo->is_full = RT_FALSE;
@@ -219,7 +227,10 @@ static void _dma_recv_update_put_index(struct serial_device* serial, rt_size_t l
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
-    RT_ASSERT(rx_fifo != RT_NULL);
+    if (rx_fifo == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return;
+    }
 
     if (rx_fifo->get_index <= rx_fifo->put_index) {
         rx_fifo->put_index += len;
@@ -261,12 +272,15 @@ static void _dma_recv_update_put_index(struct serial_device* serial, rt_size_t l
 rt_inline int _serial_dma_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
     rt_base_t level;
+    struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
-    RT_ASSERT((serial != RT_NULL) && (data != RT_NULL));
+    if (rx_fifo == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return 0;
+    }
 
     level = rt_hw_interrupt_disable();
 
-    struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
     rt_size_t recv_len = 0, fifo_recved_len = _dma_calc_recved_len(serial);
 
     RT_ASSERT(rx_fifo != RT_NULL);
@@ -307,7 +321,11 @@ static rt_err_t hal_serial_init(struct rt_device* dev)
     rt_err_t result = RT_EOK;
     struct serial_device* serial;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return RT_EINVAL;
+    }
+
     serial = (struct serial_device*)dev;
 
     /* initialize rx/tx */
@@ -325,7 +343,11 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
 {
     struct serial_device* serial;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return RT_EINVAL;
+    }
+
     serial = (struct serial_device*)dev;
 
     /*dbg_log(DBG_LOG, "open serial device: 0x%08x with open flag: 0x%04x\n",
@@ -387,7 +409,11 @@ static rt_err_t hal_serial_close(struct rt_device* dev)
 {
     struct serial_device* serial;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (dev == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return RT_EINVAL;
+    }
+
     serial = (struct serial_device*)dev;
 
     /* this device has more reference count */
@@ -443,7 +469,14 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
 {
     struct serial_device* serial;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (size == 0) {
+        return 0;
+    }
+
+    if ((dev == RT_NULL) || (buffer == RT_NULL)) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return 0;
+    }
 
     if (size == 0)
         return 0;
@@ -466,10 +499,14 @@ static rt_size_t hal_serial_write(struct rt_device* dev,
 {
     struct serial_device* serial;
 
-    RT_ASSERT(dev != RT_NULL);
-
-    if (size == 0)
+    if (size == 0) {
         return 0;
+    }
+
+    if ((dev == RT_NULL) || (buffer == RT_NULL)) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return 0;
+    }
 
     serial = (struct serial_device*)dev;
 
@@ -541,6 +578,11 @@ static rt_err_t hal_serial_control(struct rt_device* dev,
  */
 void hal_serial_isr(struct serial_device* serial, int event)
 {
+    if (serial == RT_NULL) {
+        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
     switch (event & 0xff) {
     case SERIAL_EVENT_RX_IND: {
         int ch = -1;
