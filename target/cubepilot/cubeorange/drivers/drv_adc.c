@@ -274,7 +274,7 @@ rt_err_t drv_adc_init(void)
 
     adc1.ops = &_adc_ops;
 
-    return hal_adc_register(&adc1, "adc1", RT_DEVICE_FLAG_RDONLY, &stm_adc1);
+    return hal_adc_register(&adc1, "adc0", RT_DEVICE_FLAG_RDONLY, &stm_adc1);
 #else
     return RT_EOK;
 #endif

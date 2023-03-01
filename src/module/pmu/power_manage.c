@@ -56,8 +56,12 @@ fmt_err_t pmu_poll_battery_status(void)
         return FMT_ERROR;
     }
     bat0_status.battery_current = value; /* millicurrent */
-
     bat0_status.battery_remaining = 0;
+
+    /* publish battery 0 status */
+    if (mcn_publish(MCN_HUB(bat0_status), &bat0_status) != FMT_EOK) {
+        return FMT_ERROR;
+    }
 
     if (rt_device_read(adc_dev, 2, &value, sizeof(value)) != sizeof(value)) {
         return FMT_ERROR;
@@ -68,13 +72,9 @@ fmt_err_t pmu_poll_battery_status(void)
         return FMT_ERROR;
     }
     bat1_status.battery_current = value; /* millicurrent */
-
     bat1_status.battery_remaining = 0;
 
-    if (mcn_publish(MCN_HUB(bat0_status), &bat0_status) != FMT_EOK) {
-        return FMT_ERROR;
-    }
-
+    /* publish battery 1 status */
     if (mcn_publish(MCN_HUB(bat1_status), &bat1_status) != FMT_EOK) {
         return FMT_ERROR;
     }
@@ -87,7 +87,7 @@ fmt_err_t pmu_init(void)
     FMT_CHECK(mcn_advertise(MCN_HUB(bat0_status), echo_battery_status));
     FMT_CHECK(mcn_advertise(MCN_HUB(bat1_status), echo_battery_status));
 
-    adc_dev = rt_device_find("adc1");
+    adc_dev = rt_device_find("adc0");
     RT_ASSERT(adc_dev != NULL);
 
     RT_CHECK(rt_device_open(adc_dev, RT_DEVICE_FLAG_RDONLY));

@@ -32,6 +32,7 @@
 #include "driver/mtd/w25qxx.h"
 #include "driver/rgb_led/aw2023.h"
 #include "driver/vision_flow/mtf_01.h"
+#include "drv_adc.h"
 #include "drv_buzzer.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -63,6 +64,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
@@ -293,6 +295,9 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
+
     RT_CHECK(drv_aw2023_init("i2c0_dev0"));
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
@@ -366,7 +371,7 @@ void bsp_post_initialize(void)
     FMT_CHECK(devmq_start_work());
 
     /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    FMT_CHECK(pmu_init());
 
     /* init led control */
     FMT_CHECK(led_control_init());
