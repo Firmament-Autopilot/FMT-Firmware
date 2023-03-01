@@ -33,5 +33,8 @@ static param_t __param_list[] = {
     /* Endless mission mode, when mission complete, 
 	it will start from the first mission data again */
     PARAM_UINT8(LOOP_MISSION, 0),
+    /* Battery Voltage Divider */
+    PARAM_FLOAT(BAT1_V_DIV, 18.0),
+    PARAM_FLOAT(BAT2_V_DIV, 18.0),
 };
 PARAM_GROUP_DEFINE(SYSTEM, __param_list);

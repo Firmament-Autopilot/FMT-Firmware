@@ -453,6 +453,38 @@ static void _dma_rx_config(struct gd32_uart* uart, rt_uint8_t* buf, rt_size_t si
     usart_dma_receive_config(uart->uart_periph, USART_DENR_ENABLE);
 }
 
+static void _close_usart(struct serial_device* serial)
+{
+    struct gd32_uart* uart = (struct gd32_uart*)serial->parent.user_data;
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_INT_RX) {
+        /* disable interrupt */
+        usart_interrupt_disable(uart->uart_periph, USART_INT_RBNE);
+    }
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_DMA_RX) {
+        /* disable DMA channel transfer complete interrupt */
+        dma_interrupt_disable(uart->dma.dma_periph, uart->dma.rx_ch, DMA_CHXCTL_FTFIE);
+        /* disable rx idle interrupt */
+        usart_interrupt_disable(uart->uart_periph, USART_INT_IDLE);
+        /* disable DMA channel */
+        dma_channel_disable(uart->dma.dma_periph, uart->dma.rx_ch);
+        /* USART DMA disable for reception */
+        usart_dma_receive_config(uart->uart_periph, USART_DENR_DISABLE);
+    }
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_DMA_TX) {
+        /* disable DMA channel transfer complete interrupt */
+        dma_interrupt_disable(uart->dma.dma_periph, uart->dma.tx_ch, DMA_CHXCTL_FTFIE);
+        /* disable DMA channel */
+        dma_channel_disable(uart->dma.dma_periph, uart->dma.tx_ch);
+        /* USART DMA disable for transmission */
+        usart_dma_receive_config(uart->uart_periph, USART_DENT_ENABLE);
+    }
+    /* reset last recv index */
+    uart->dma.last_recv_index = 0;
+}
+
 static void gd32_uart_gpio_init(struct gd32_uart* uart)
 {
     /* enable USART clock */
@@ -583,6 +615,10 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
         }
         break;
 
+    case RT_DEVICE_CTRL_SUSPEND:
+        _close_usart(serial);
+        break;
+
     default:
         break;
     }
@@ -646,7 +682,7 @@ rt_err_t drv_usart_init(void)
 
 #ifdef USING_UART6
     serial0.ops = &__usart_ops;
-    #ifdef SERIAL1_DEFAULT_CONFIG
+    #ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
     serial0.config = serial0_config;
     #else
