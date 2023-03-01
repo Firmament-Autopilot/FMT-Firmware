@@ -23,6 +23,9 @@
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
 
+#ifdef BIT
+    #undef BIT
+#endif
 #define BIT(u, n) (u & (1 << n))
 
 // Bit locations for mag_declination_source
@@ -499,7 +502,7 @@ void ins_interface_step(uint32_t timestamp)
 
             rnf_bus.timestamp = timestamp;
             rnf_bus.distance_m = ins_handle.rf_report.distance_m;
-            
+
             if (ins_handle.rf_report.distance_m >= 0) {
                 Ekf_RANGEFINDER_update(timestamp, ins_handle.rf_report.distance_m, 100);
             } else {

@@ -30,12 +30,12 @@ inc += [cwd + '/ecl/matrix']
 inc += [cwd + '/lib/hysteresis']
 inc += [cwd + '/lib/land_detector']
 
-vehicle_type = GetConfigValue('VEHICLE_TYPE')
+vehicle_type = GetOption('vehicle')
 
-if vehicle_type == '"Quadcopter"':
+if vehicle_type == 'Quadcopter':
     group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE', 'VEHICLE_TYPE_QUADCOPTER'])
     
-if vehicle_type == '"Fixwing"':
+if vehicle_type == 'Fixwing':
     group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE', 'VEHICLE_TYPE_FIXWING'])
 
 Return('group')
