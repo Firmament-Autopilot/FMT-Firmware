@@ -45,8 +45,8 @@ static rt_err_t adc_hw_init(void)
     adc_clock_config(ADC_ADCCK_PCLK2_DIV8);
 
     /* config the GPIO as analog mode. PC0: BAT_VOL PC3：BAT_CURRENT */
-    gpio_mode_set(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO_PIN_0);
-    gpio_mode_set(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO_PIN_3);
+    gpio_mode_set(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_PULLDOWN, GPIO_PIN_0);
+    gpio_mode_set(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_PULLDOWN, GPIO_PIN_3);
 
     /* reset ADC */
     adc_deinit();
@@ -110,7 +110,7 @@ static rt_err_t measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt)
     }
 
     /* ADC routine channel config */
-    adc_regular_channel_config(ADC0, 0U, adc_channel, ADC_SAMPLETIME_15);
+    adc_regular_channel_config(ADC0, 0U, adc_channel, ADC_SAMPLETIME_3);
     /* ADC software trigger enable */
     adc_software_trigger_enable(ADC0, ADC_REGULAR_CHANNEL);
 
