@@ -1,18 +1,117 @@
-Scons building system userguid
+AMOV ICF5 Flight Controller
 ============================
 
-# Scons building system install
-- [**Scons installation guide **](https://www.rt-thread.org/document/site/rtthread-development-guide/rtthread-manual-doc/zh/1chapters/10-chapter_scons/)
+ICF5 is a professional open-source autopilot hardware created by FMT teams and AMOVLAB. ICF5 is equipped with the latest FMT stable firmware and can be applied to various robotics application scenarios.
 
-# announcements
-we using arm-none-eabi- toolchain, don't using linux version gcc toolchain. The project use the newlib of the GCC toolchain.
+FMT is a next-generation open source autopilot system which supports Model-based-design (MBD). Use MATLAB/Simulink to quickly build algorithm models graphically, and one-click to generate C/C++ code which can be easily deployed to ICF5. Using FMT can greatly improves the development  efficiency and make R&D much easier. ICF is an ideal platform for algorithm and prototype verification.
 
-# building
-starry_fmu build dirctory in starry_fmu/Project/stm32f40x. Before building, we first change current work dir to stm32f40x.
-building step
-- cd starry_fmu/Project/stm32f40x
-- scons -j4
+<img src="https://qiniu.md.amovlab.com/img/m/202303/20230304/0949205159518958801485824.jpg" width="40%">
 
-When finished, you will get starry_fmu.bin and starry_fmu.px4. starry_fmu.px4 is firmware in px4 format.
+## Wiki
+
+https://wiki.amovlab.com/public/icf5-wiki/
+
+## Buy It
+https://item.taobao.com/item.htm?spm=a230r.1.14.60.284211f8srcCoe&id=705459383848&ns=1&abbucket=12#detail
+
+## Build
+
+Build firmware for quadcopter
+
+```
+cd FMT-Firmware/taget/amov/icf5
+scons -j4
+```
+
+> -jN allows N jobs at once which makes your build process quicker.
+
+For other vehicle, such as fixwing, using
+
+```
+scons -j4 --vehicle=Fixwing
+```
+
+## Download
+
+Currently there are two ways to download firmware to hardware.
+
+1. **Donwload Script**: Enter `python3 uploader.py` in the icf5 directory. Then connect your hardware via usb.
+
+```
+PS D:\ws\FMT\FMT-Firmware\target\amov\icf5> python .\uploader.py
+waiting for the bootloader...
+Error: no serial connection found
+wait for connect fmt-fmu...
+Error: no serial connection found
+wait for connect fmt-fmu...
+
+Found board id: 50,0 bootloader version: 5 on COM7
+sn: 000000000000000000000000
+chip: 22020419
+family: b'GD32F4[5|7]x'
+revision: b'?'
+flash: 1015808 bytes
+Windowed mode: False
+
+Erase  : [====================] 100.0%
+Program: [====================] 100.0%
+Verify : [====================] 100.0%
+Rebooting. Elapsed Time 9.687
+```
+
+> If the `"ModuleNotFoundError: No module named 'serial'"` error occurs, indicating that the **pyserial** component is missing, enter `pip3 install pyserial` to install.
+
+2. **J-Link**: If you have a JLink, you can connect it to ICF5 debug port download the firmware. For more information, please check the [Debug](https://firmament-autopilot.github.io/FMT-DOCS/#/introduction/debug) section.
+
+> Be careful do not override the bootloader!
+
+When system is up and running, the system banner is output via serial0 or you can view it by entering `boot_log` in QGC Mavlink Console.
+
+```
+-----------FMT Bootloader v1.x-----------
+Board Type:         50
+Board Revision:     0
+Board Flash Size:   1015808
+App Load Address:   0x8010000
+
+   _____                               __
+  / __(_)_____ _  ___ ___ _  ___ ___  / /_
+ / _// / __/  ' \/ _ `/  ' \/ -_) _ \/ __/
+/_/ /_/_/ /_/_/_/\_,_/_/_/_/\__/_//_/\__/
+Firmware.....................FMT FW v0.3.0
+Kernel....................RT-Thread v4.0.3
+RAM.................................448 KB
+Target...........................Amov-ICF5
+Vehicle.........................Quadcopter
+INS Model..................Base INS v0.3.1
+FMS Model..................Base FMS v0.4.0
+Control Model.......Base Controller v0.2.4
+Task Initialize:
+  local.................................OK
+  offboard..............................OK
+  comm..................................OK
+  logger................................OK
+  status................................OK
+  vehicle...............................OK
+```
 
 
+
+## Port Mapping
+
+|  UART   | Device  | Port |
+|  ----   | ------  | ---- |
+|  UART6 | serial0 | DEBUG |
+|  USART1 | serial1 | TELEM1 |
+|  USART2 | serial2 | TELEM2 |
+|  USART0  | serial3 | UART |
+|  UART7 | serial4 | GPS |
+
+|  SPI   | Device  | Port |
+|  ----   | ------  | ---- |
+|  SPI1 | spi1_dev3 | SPI CS1 |
+|  SPI1 | spi1_dev4 | SPI CS2 |
+
+|  I2C   | Device  | Port |
+|  ----   | ------  | ---- |
+|  I2C0 | / | I2C |
