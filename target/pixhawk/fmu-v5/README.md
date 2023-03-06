@@ -3,7 +3,7 @@ Pixhawk4 Flight Controller
 
 *Pixhawk 4*® is an advanced autopilot designed and made in collaboration with Holybro® and the PX4 team. It is suitable for academic and commercial developers.
 
-<img src="https://tse4-mm.cn.bing.net/th/id/OIP-C.TdVj2xYg1mjgMnlnN-01GgHaEK?pid=ImgDet&rs=1" width="60%">
+<div align=center><img src="https://tse4-mm.cn.bing.net/th/id/OIP-C.TdVj2xYg1mjgMnlnN-01GgHaEK?pid=ImgDet&rs=1" width="50%"></div>
 
 ## Feature
 

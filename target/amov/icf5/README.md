@@ -5,7 +5,7 @@ ICF5 is a professional open-source autopilot hardware created by FMT teams and A
 
 FMT is a next-generation open source autopilot system which supports Model-based-design (MBD). Use MATLAB/Simulink to quickly build algorithm models graphically, and one-click to generate C/C++ code which can be easily deployed to ICF5. Using FMT can greatly improves the development  efficiency and make R&D much easier. ICF is an ideal platform for algorithm and prototype verification.
 
-<img src="https://qiniu.md.amovlab.com/img/m/202303/20230304/0949205159518958801485824.jpg" width="40%">
+<div align=center><img src="https://qiniu.md.amovlab.com/img/m/202303/20230304/0949205159518958801485824.jpg" width="30%"></div>
 
 ## Feature
 
