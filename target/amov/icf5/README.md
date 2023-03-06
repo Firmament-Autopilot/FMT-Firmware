@@ -7,11 +7,39 @@ FMT is a next-generation open source autopilot system which supports Model-based
 
 <img src="https://qiniu.md.amovlab.com/img/m/202303/20230304/0949205159518958801485824.jpg" width="40%">
 
+## Feature
+
+- FMU Processor: rate_est_B_radPs
+  - 32 Bit Arm® Cortex®-M4, 240MHz, 1MB memory, 512KB RAM
+- On-board sensors:
+  - IMU: BMI088/ICM-42688-P/ICM-20948
+  - Magnetometer: BMM150/ICM-20948
+  - Barometer: SPL06-001/MS5611
+- Interfaces:
+  - 10 PWM outputs
+  - Dedicated R/C input for PPM and SBUS
+  - 1 GPS integrated with safety switch and buzzer interface
+  - 5 general purpose serial ports
+  - 3 I2C ports
+  - 1 SPI buses
+  - 1 CAN Buses
+  - 1 ETH
+  - 1 Type-C USB
+- Power System:
+  - Power module output: 4.9~5.5V
+  - USB Power Input: 4.75~5.25V
+  - Servo Rail Input: 0~36V
+- Weight and Dimensions:
+  - Weight: 39.3g
+  - Dimensions: 70x36x18.5mm
+- Other Characteristics:
+  - Operating temperature: -20 ~ 85°c
+
 ## Wiki
 
 https://wiki.amovlab.com/public/icf5-wiki/
 
-## Buy It
+## Where to Buy
 https://item.taobao.com/item.htm?spm=a230r.1.14.60.284211f8srcCoe&id=705459383848&ns=1&abbucket=12#detail
 
 ## Build
@@ -33,7 +61,7 @@ scons -j4 --vehicle=Fixwing
 
 ## Download
 
-Currently there are two ways to download firmware to hardware.
+Currently there are 2 ways to download firmware to hardware.
 
 1. **Donwload Script**: Enter `python3 uploader.py` in the icf5 directory. Then connect your hardware via usb.
 
@@ -61,7 +89,7 @@ Rebooting. Elapsed Time 9.687
 
 > If the `"ModuleNotFoundError: No module named 'serial'"` error occurs, indicating that the **pyserial** component is missing, enter `pip3 install pyserial` to install.
 
-2. **J-Link**: If you have a JLink, you can connect it to ICF5 debug port download the firmware. For more information, please check the [Debug](https://firmament-autopilot.github.io/FMT-DOCS/#/introduction/debug) section.
+2. **J-Link**: If you have a JLink, you can connect it to board debug port download the firmware. For more information, please check the [Debug](https://firmament-autopilot.github.io/FMT-DOCS/#/introduction/debug) section.
 
 > Be careful do not override the bootloader!
 
