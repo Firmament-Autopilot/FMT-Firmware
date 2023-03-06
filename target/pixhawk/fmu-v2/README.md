@@ -3,7 +3,7 @@ Pixhawk2.4.6 Flight Controller
 
 The *3DR Pixhawk® 1* autopilot is a popular general purpose flight controller based on the [Pixhawk-project (opens new window)](https://pixhawk.org/)**FMUv2** open hardware design (it combines the functionality of the PX4FMU + PX4IO).
 
-![Pixhawk Image](https://docs.px4.io/main/assets/img/hardware-pixhawk.06e032bf.png)
+<div align=center><img src="https://docs.px4.io/main/assets/img/hardware-pixhawk.06e032bf.png" width="60%"></div>
 
 ## Feature
 
