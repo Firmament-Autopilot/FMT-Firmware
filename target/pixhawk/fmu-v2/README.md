@@ -152,7 +152,7 @@ msh /usr>fmtio upload /usr/fmt_io.bin
 [316275] I/Uploader: CRC check ok, received: 8a27ed4f, expected: 8a27ed4f
 ```
 
-> For the first time to download the io firmware, you need connect GPS module and hold the safety button to power up, which would lead io processor to stay in bootloader.
+> For the first time to download the io firmware, you need click the io reset button on the side after entering fmtio command to let io processor reboot and enter bootloader.
 
 ## Port Mapping
 
