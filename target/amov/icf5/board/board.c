@@ -305,6 +305,7 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_mag(0));
     FMT_CHECK(advertise_sensor_baro(0));
     FMT_CHECK(advertise_sensor_gps(0));
+    FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi0_dev1", "spi0_dev0", "gyro0", "accel0", 0));
