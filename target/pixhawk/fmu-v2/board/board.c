@@ -27,13 +27,15 @@
 #endif
 
 #include "default_config.h"
+#include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
 #include "driver/imu/l3gd20h.h"
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
 #include "driver/rgb_led/tca62724.h"
-#include "driver/vision_flow/pmw3901_xx.h"
+#include "driver/vision_flow/mtf_01.h"
+#include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c_soft.h"
 #include "drv_pwm.h"
@@ -51,6 +53,7 @@
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
+#include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/actuator_config.h"
@@ -123,7 +126,7 @@ static void bsp_show_information(void)
     sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
     banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
     banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
-    banner_item("Vehicle", VEHICLE_TYPE, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
     banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
     banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
     banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
@@ -304,6 +307,9 @@ void bsp_initialize(void)
     /* init usb device */
     RT_CHECK(drv_usb_cdc_init());
 
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
+
     /* init other devices */
     RT_CHECK(tca62724_drv_init("i2c2"));
 
@@ -324,7 +330,7 @@ void bsp_initialize(void)
     /* init barometer */
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
     /* init optical flow module (a mini tf included) */
-    RT_CHECK(pmw3901_xx_drv_init("serial3"));
+    RT_CHECK(drv_mtf_01_init("serial3"));
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 
@@ -334,6 +340,11 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
+
+    if(strcmp(STR(VEHICLE_TYPE),"Fixwing")==0){
+        RT_CHECK(drv_ms4525_init("i2c1","airspeed"));
+        FMT_CHECK(register_sensor_airspeed("airspeed"));
+    }
 #endif
 
     /* init finsh */
@@ -384,6 +395,9 @@ void bsp_post_initialize(void)
 
     /* init led control */
     FMT_CHECK(led_control_init());
+
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
