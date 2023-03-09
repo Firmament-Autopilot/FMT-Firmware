@@ -27,6 +27,7 @@
 #endif
 
 #include "default_config.h"
+#include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_m8n.h"
 #include "driver/imu/l3gd20h.h"
@@ -339,6 +340,10 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
+    if(strcmp(STR(VEHICLE_TYPE),"Fixwing")==0){
+        RT_CHECK(drv_ms4525_init("i2c1_dev1","airspeed"));
+        FMT_CHECK(register_sensor_airspeed("airspeed"));
+    }
 #endif
 
     /* init finsh */

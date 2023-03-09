@@ -186,6 +186,12 @@ struct rt_i2c_bit_ops stm32_i2c2_bit_ops = {
     I2C_TIMEOUT_TICKS
 };
 
+/* i2c device instances */
+static struct rt_i2c_device i2c1_dev1={
+    .slave_addr=MS4525_ADDRESS,/* 7 bit address */
+    .flags=0
+};
+
 rt_err_t drv_i2c_soft_init(void)
 {
     stm32_i2c1_bit_ops.data = &i2c1_dev;
@@ -201,6 +207,9 @@ rt_err_t drv_i2c_soft_init(void)
 
     stm32_i2c_pin_init(&i2c2_dev);
     rt_i2c_soft_bus_register(&i2c2_dev, "i2c2");
+
+    /*attach i2c devices*/
+    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1,"i2c1_dev1","i2c1",RT_NULL));
 
     return RT_EOK;
 }

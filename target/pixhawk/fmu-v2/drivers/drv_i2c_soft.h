@@ -23,6 +23,8 @@
 extern "C" {
 #endif
 
+/* i2c slave device 7-bits addresses */
+#define MS4525_ADDRESS   0x28
 rt_err_t drv_i2c_soft_init(void);
 
 #ifdef __cplusplus
