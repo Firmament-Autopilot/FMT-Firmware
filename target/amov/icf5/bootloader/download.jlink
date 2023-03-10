@@ -1,0 +1,5 @@
+r 
+h
+erase 0x08000000，0x8000
+loadbin ./fmt_bl_icf5.bin 0x08000000
+qc
