@@ -9,7 +9,7 @@ FMT is a next-generation open source autopilot system which supports Model-based
 
 ## Feature
 
-- FMU Processor: rate_est_B_radPs
+- FMU Processor: 
   - 32 Bit Arm® Cortex®-M4, 240MHz, 1MB memory, 512KB RAM
 - On-board sensors:
   - IMU: BMI088/ICM-42688-P/ICM-20948
