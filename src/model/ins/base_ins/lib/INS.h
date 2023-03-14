@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3716
+ * Model version                  : 1.3736
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Mar  8 12:08:25 2023
+ * C/C++ source code generated on : Mon Mar 13 16:39:01 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -296,7 +296,6 @@ typedef struct {
   real32_T Delay_DSTATE_b[3];          /* '<S242>/Delay' */
   real32_T Delay_DSTATE_l[6];          /* '<S200>/Delay' */
   real32_T h_delay_DSTATE[3];          /* '<S235>/h_delay' */
-  real32_T Delay_DSTATE_o;             /* '<S240>/Delay' */
   real32_T h_delay_DSTATE_l[75];       /* '<S226>/h_delay' */
   real32_T vd_delay_DSTATE[50];        /* '<S226>/vd_delay' */
   real32_T Delay_DSTATE_dr[3];         /* '<S215>/Delay' */
@@ -539,9 +538,6 @@ struct Parameters_INS_T_ {
   real32_T CompareToConstant1_const;   /* Mask Parameter: CompareToConstant1_const
                                         * Referenced by: '<S116>/Constant'
                                         */
-  real32_T CompareToConstant_const_n;  /* Mask Parameter: CompareToConstant_const_n
-                                        * Referenced by: '<S241>/Constant'
-                                        */
   real32_T Sensor_Valid_gyr_max;       /* Mask Parameter: Sensor_Valid_gyr_max
                                         * Referenced by: '<S372>/Upper Limit'
                                         */
@@ -627,7 +623,7 @@ struct Parameters_INS_T_ {
   uint32_T valid_samples_const_k;      /* Mask Parameter: valid_samples_const_k
                                         * Referenced by: '<S126>/Constant'
                                         */
-  uint32_T CompareToConstant_const_nb; /* Mask Parameter: CompareToConstant_const_nb
+  uint32_T CompareToConstant_const_n;  /* Mask Parameter: CompareToConstant_const_n
                                         * Referenced by: '<S337>/Constant'
                                         */
   uint32_T CompareToConstant4_const;   /* Mask Parameter: CompareToConstant4_const
@@ -1467,12 +1463,6 @@ struct Parameters_INS_T_ {
   real32_T rf_bias_Y0;                 /* Computed Parameter: rf_bias_Y0
                                         * Referenced by: '<S231>/rf_bias'
                                         */
-  real32_T Delay_InitialCondition_mg;  /* Computed Parameter: Delay_InitialCondition_mg
-                                        * Referenced by: '<S240>/Delay'
-                                        */
-  real32_T udT_Gain;                   /* Computed Parameter: udT_Gain
-                                        * Referenced by: '<S240>/1//dT'
-                                        */
   real32_T Memory_InitialCondition_o5; /* Computed Parameter: Memory_InitialCondition_o5
                                         * Referenced by: '<S237>/Memory'
                                         */
@@ -1920,9 +1910,6 @@ struct Parameters_INS_T_ {
   uint32_T h_delay_DelayLength_c;      /* Expression: INS_PARAM.RF_H_DELAY/INS_EXPORT.period
                                         * Referenced by: '<S235>/h_delay'
                                         */
-  uint32_T Delay_DelayLength_e;        /* Computed Parameter: Delay_DelayLength_e
-                                        * Referenced by: '<S240>/Delay'
-                                        */
   uint32_T Delay_DelayLength_p;        /* Computed Parameter: Delay_DelayLength_p
                                         * Referenced by: '<S242>/Delay'
                                         */
@@ -1983,7 +1970,7 @@ struct Parameters_INS_T_ {
   uint32_T DiscreteTimeIntegrator_IC_iu;/* Computed Parameter: DiscreteTimeIntegrator_IC_iu
                                          * Referenced by: '<S334>/Discrete-Time Integrator'
                                          */
-  uint32_T Delay_DelayLength_ew;       /* Computed Parameter: Delay_DelayLength_ew
+  uint32_T Delay_DelayLength_e;        /* Computed Parameter: Delay_DelayLength_e
                                         * Referenced by: '<S342>/Delay'
                                         */
   uint32_T Delay_DelayLength_dn;       /* Computed Parameter: Delay_DelayLength_dn

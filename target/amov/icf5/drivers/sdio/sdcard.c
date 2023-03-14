@@ -284,7 +284,7 @@ sd_error_enum sd_power_on(void)
 
     /* 1ms: required power up waiting time before starting the SD initialization
        sequence */
-    systime_mdelay(2);
+    systime_mdelay(5);
 
     /* send CMD0(GO_IDLE_STATE) to reset the card */
     sdio_command_response_config(SD_CMD_GO_IDLE_STATE, (uint32_t)0x0, SDIO_RESPONSETYPE_NO);
