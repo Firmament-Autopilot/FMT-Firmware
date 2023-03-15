@@ -18,7 +18,7 @@ The system is mainly composed of two parts.
 ## Download
 
 ```
-git clone https://github.com/Firmament-Autopilot/FMT-Firmware.git --recursive --shallow-submodulesCopy to clipboardErrorCopied
+git clone https://github.com/Firmament-Autopilot/FMT-Firmware.git --recursive --shallow-submodules
 ```
 
 > Note that FMT-Firmware contains submodules, use *--recursive* to download submodule as well.
