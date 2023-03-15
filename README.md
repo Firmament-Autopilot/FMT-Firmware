@@ -15,7 +15,16 @@ The system is mainly composed of two parts.
 - [FMT-Firmware](https://github.com/Firmament-Autopilot/FMT-Firmware): A stable and high performance embedded system designed with C/C++.
 - [FMT-Model](https://github.com/Firmament-Autopilot/FMT-Model): A simulation framework with algorithm libraries designed with MATLAB/Simulink.
 
+## Download
+
+```
+git clone https://github.com/Firmament-Autopilot/FMT-Firmware.git --recursive --shallow-submodulesCopy to clipboardErrorCopied
+```
+
+> Note that FMT-Firmware contains submodules, use *--recursive* to download submodule as well.
+
 ## Feature
+
 - High development efficency achieved with model-based deisign and debug easier.
 - A stable and high performance embedded system designed with C/C++.
 - A powerful simulation framework with various algorithm library designed with MATLAB/Simulink.
@@ -39,6 +48,7 @@ Current supported hardware:
 - [HEX Cubeorange](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cubepilot/cubeorange)
 - [QEMU vexpress-a9](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/qemu/qemu-vexpress-a9)
   
+
 The drone hardware equipped with FMT:
 - [Amovlab F200](https://item.taobao.com/item.htm?spm=a230r.1.14.22.65553d8dunv9QL&id=676605798722&ns=1&abbucket=14#detail)
 
