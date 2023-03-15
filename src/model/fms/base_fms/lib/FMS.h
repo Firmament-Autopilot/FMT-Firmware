@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1871
+ * Model version                  : 1.1879
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:23:10 2023
+ * C/C++ source code generated on : Wed Mar 15 15:42:30 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -149,8 +149,9 @@ typedef struct {
   void* M_msgInterface;                /* '<Root>/FMS State Machine' */
   void* M_msgHandle;                   /* '<Root>/FMS State Machine' */
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
-  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S440>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S439>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S441>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_k;/* '<S440>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE;         /* '<S55>/Integrator1' */
   real32_T Integrator_DSTATE;          /* '<S55>/Integrator' */
   real32_T Integrator1_DSTATE_o;       /* '<S56>/Integrator1' */
@@ -224,8 +225,9 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_bn;/* '<S319>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_k; /* '<S385>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_g; /* '<S375>/Switch Case' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S440>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S439>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S441>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_g;/* '<S440>/Discrete-Time Integrator5' */
   uint8_T is_active_c3_FMS;            /* '<Root>/SafeMode' */
   uint8_T is_c3_FMS;                   /* '<Root>/SafeMode' */
   uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
@@ -692,6 +694,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S22>/Signal Copy5' : Eliminate redundant signal conversion block
  * Block '<S22>/Signal Copy6' : Eliminate redundant signal conversion block
  * Block '<S425>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S439>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S440>/Data Type Conversion' : Eliminate redundant data type conversion
  */
 
@@ -1148,8 +1151,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S436>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
  * '<S437>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
  * '<S438>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
- * '<S439>' : 'FMS/Onground Check/Compare To Constant'
- * '<S440>' : 'FMS/Onground Check/First Order LPF'
+ * '<S439>' : 'FMS/Onground Check/First Order LPF'
+ * '<S440>' : 'FMS/Onground Check/First Order LPF1'
  * '<S441>' : 'FMS/Onground Check/First Order LPF2'
  * '<S442>' : 'FMS/Onground Check/Interval Test'
  * '<S443>' : 'FMS/Onground Check/Quaternion To DCM'
