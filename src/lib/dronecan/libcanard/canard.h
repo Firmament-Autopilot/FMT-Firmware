@@ -27,14 +27,15 @@
 #ifndef CANARD_H
 #define CANARD_H
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
 #include <assert.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
 
 /// Build configuration header. Use it to provide your overrides.
 #if defined(CANARD_ENABLE_CUSTOM_BUILD_CONFIG) && CANARD_ENABLE_CUSTOM_BUILD_CONFIG
-# include "canard_build_config.h"
+    #include "canard_build_config.h"
 #endif
 
 #ifdef __cplusplus
@@ -42,101 +43,97 @@ extern "C" {
 #endif
 
 /// Libcanard version. API will be backwards compatible within the same major version.
-#define CANARD_VERSION_MAJOR                        0
-#define CANARD_VERSION_MINOR                        2
-
+#define CANARD_VERSION_MAJOR 0
+#define CANARD_VERSION_MINOR 2
 
 #ifndef CANARD_ENABLE_CANFD
-#define CANARD_ENABLE_CANFD                         0
+    #define CANARD_ENABLE_CANFD 0
 #endif
-
 
 #ifndef CANARD_ENABLE_TAO_OPTION
-#if CANARD_ENABLE_CANFD
-#define CANARD_ENABLE_TAO_OPTION                    1
-#else
-#define CANARD_ENABLE_TAO_OPTION                    0
-#endif
+    #if CANARD_ENABLE_CANFD
+        #define CANARD_ENABLE_TAO_OPTION 1
+    #else
+        #define CANARD_ENABLE_TAO_OPTION 0
+    #endif
 #endif
 
 /// By default this macro resolves to the standard assert(). The user can redefine this if necessary.
 #ifndef CANARD_ASSERT
-# define CANARD_ASSERT(x)   assert(x)
+    #define CANARD_ASSERT(x) assert(x)
 #endif
 
-#define CANARD_GLUE(a, b)           CANARD_GLUE_IMPL_(a, b)
-#define CANARD_GLUE_IMPL_(a, b)     a##b
+#define CANARD_GLUE(a, b)       CANARD_GLUE_IMPL_(a, b)
+#define CANARD_GLUE_IMPL_(a, b) a##b
 
 /// By default this macro expands to static_assert if supported by the language (C11, C++11, or newer).
 /// The user can redefine this if necessary.
 #ifndef CANARD_STATIC_ASSERT
-# if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)) ||\
-     (defined(__cplusplus) && (__cplusplus >= 201103L))
-#  define CANARD_STATIC_ASSERT(...) static_assert(__VA_ARGS__)
-# else
-#  define CANARD_STATIC_ASSERT(x, ...) typedef char CANARD_GLUE(_static_assertion_, __LINE__)[(x) ? 1 : -1]
-# endif
+    #if (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)) || (defined(__cplusplus) && (__cplusplus >= 201103L))
+        #define CANARD_STATIC_ASSERT(...) static_assert(__VA_ARGS__)
+    #else
+        #define CANARD_STATIC_ASSERT(x, ...) typedef char CANARD_GLUE(_static_assertion_, __LINE__)[(x) ? 1 : -1]
+    #endif
 #endif
 
 /// Error code definitions; inverse of these values may be returned from API calls.
-#define CANARD_OK                                      0
+#define CANARD_OK 0
 // Value 1 is omitted intentionally, since -1 is often used in 3rd party code
-#define CANARD_ERROR_INVALID_ARGUMENT                  2
-#define CANARD_ERROR_OUT_OF_MEMORY                     3
-#define CANARD_ERROR_NODE_ID_NOT_SET                   4
-#define CANARD_ERROR_INTERNAL                          9
-#define CANARD_ERROR_RX_INCOMPATIBLE_PACKET            10
-#define CANARD_ERROR_RX_WRONG_ADDRESS                  11
-#define CANARD_ERROR_RX_NOT_WANTED                     12
-#define CANARD_ERROR_RX_MISSED_START                   13
-#define CANARD_ERROR_RX_WRONG_TOGGLE                   14
-#define CANARD_ERROR_RX_UNEXPECTED_TID                 15
-#define CANARD_ERROR_RX_SHORT_FRAME                    16
-#define CANARD_ERROR_RX_BAD_CRC                        17
+#define CANARD_ERROR_INVALID_ARGUMENT       2
+#define CANARD_ERROR_OUT_OF_MEMORY          3
+#define CANARD_ERROR_NODE_ID_NOT_SET        4
+#define CANARD_ERROR_INTERNAL               9
+#define CANARD_ERROR_RX_INCOMPATIBLE_PACKET 10
+#define CANARD_ERROR_RX_WRONG_ADDRESS       11
+#define CANARD_ERROR_RX_NOT_WANTED          12
+#define CANARD_ERROR_RX_MISSED_START        13
+#define CANARD_ERROR_RX_WRONG_TOGGLE        14
+#define CANARD_ERROR_RX_UNEXPECTED_TID      15
+#define CANARD_ERROR_RX_SHORT_FRAME         16
+#define CANARD_ERROR_RX_BAD_CRC             17
 
 /// The size of a memory block in bytes.
 #if CANARD_ENABLE_CANFD
-#define CANARD_MEM_BLOCK_SIZE                       128U
+    #define CANARD_MEM_BLOCK_SIZE 128U
 #else
-#define CANARD_MEM_BLOCK_SIZE                       32U
+    #define CANARD_MEM_BLOCK_SIZE 32U
 #endif
 
-#define CANARD_CAN_FRAME_MAX_DATA_LEN               8U
+#define CANARD_CAN_FRAME_MAX_DATA_LEN 8U
 #if CANARD_ENABLE_CANFD
-#define CANARD_CANFD_FRAME_MAX_DATA_LEN             64U
+    #define CANARD_CANFD_FRAME_MAX_DATA_LEN 64U
 #endif
 
 /// Node ID values. Refer to the specification for more info.
-#define CANARD_BROADCAST_NODE_ID                    0
-#define CANARD_MIN_NODE_ID                          1
-#define CANARD_MAX_NODE_ID                          127
+#define CANARD_BROADCAST_NODE_ID 0
+#define CANARD_MIN_NODE_ID       1
+#define CANARD_MAX_NODE_ID       127
 
 /// Refer to the type CanardRxTransfer
-#define CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE      (CANARD_MEM_BLOCK_SIZE - offsetof(CanardRxState, buffer_head))
+#define CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE (CANARD_MEM_BLOCK_SIZE - offsetof(CanardRxState, buffer_head))
 
 /// Refer to the type CanardBufferBlock
-#define CANARD_BUFFER_BLOCK_DATA_SIZE               (CANARD_MEM_BLOCK_SIZE - offsetof(CanardBufferBlock, data))
+#define CANARD_BUFFER_BLOCK_DATA_SIZE (CANARD_MEM_BLOCK_SIZE - offsetof(CanardBufferBlock, data))
 
 /// Refer to canardCleanupStaleTransfers() for details.
-#define CANARD_RECOMMENDED_STALE_TRANSFER_CLEANUP_INTERVAL_USEC     1000000U
+#define CANARD_RECOMMENDED_STALE_TRANSFER_CLEANUP_INTERVAL_USEC 1000000U
 
 /// Transfer priority definitions
-#define CANARD_TRANSFER_PRIORITY_HIGHEST            0
-#define CANARD_TRANSFER_PRIORITY_HIGH               8
-#define CANARD_TRANSFER_PRIORITY_MEDIUM             16
-#define CANARD_TRANSFER_PRIORITY_LOW                24
-#define CANARD_TRANSFER_PRIORITY_LOWEST             31
+#define CANARD_TRANSFER_PRIORITY_HIGHEST 0
+#define CANARD_TRANSFER_PRIORITY_HIGH    8
+#define CANARD_TRANSFER_PRIORITY_MEDIUM  16
+#define CANARD_TRANSFER_PRIORITY_LOW     24
+#define CANARD_TRANSFER_PRIORITY_LOWEST  31
 
 /// Related to CanardCANFrame
-#define CANARD_CAN_EXT_ID_MASK                      0x1FFFFFFFU
-#define CANARD_CAN_STD_ID_MASK                      0x000007FFU
-#define CANARD_CAN_FRAME_EFF                        (1UL << 31U)         ///< Extended frame format
-#define CANARD_CAN_FRAME_RTR                        (1UL << 30U)         ///< Remote transmission (not used by UAVCAN)
-#define CANARD_CAN_FRAME_ERR                        (1UL << 29U)         ///< Error frame (not used by UAVCAN)
+#define CANARD_CAN_EXT_ID_MASK 0x1FFFFFFFU
+#define CANARD_CAN_STD_ID_MASK 0x000007FFU
+#define CANARD_CAN_FRAME_EFF   (1UL << 31U) ///< Extended frame format
+#define CANARD_CAN_FRAME_RTR   (1UL << 30U) ///< Remote transmission (not used by UAVCAN)
+#define CANARD_CAN_FRAME_ERR   (1UL << 29U) ///< Error frame (not used by UAVCAN)
 
-#define CANARD_TRANSFER_PAYLOAD_LEN_BITS            10U
-#define CANARD_MAX_TRANSFER_PAYLOAD_LEN             ((1U << CANARD_TRANSFER_PAYLOAD_LEN_BITS) - 1U)
-
+#define CANARD_TRANSFER_PAYLOAD_LEN_BITS 10U
+#define CANARD_MAX_TRANSFER_PAYLOAD_LEN  ((1U << CANARD_TRANSFER_PAYLOAD_LEN_BITS) - 1U)
 
 /**
  * This data type holds a standard CAN 2.0B data frame with 29-bit ID.
@@ -164,18 +161,16 @@ typedef struct
 /**
  * Transfer types are defined by the UAVCAN specification.
  */
-typedef enum
-{
-    CanardTransferTypeResponse  = 0,
-    CanardTransferTypeRequest   = 1,
+typedef enum {
+    CanardTransferTypeResponse = 0,
+    CanardTransferTypeRequest = 1,
     CanardTransferTypeBroadcast = 2
 } CanardTransferType;
 
 /**
  * Types of service transfers. These are not applicable to message transfers.
  */
-typedef enum
-{
+typedef enum {
     CanardResponse,
     CanardRequest
 } CanardRequestResponse;
@@ -197,11 +192,11 @@ typedef struct CanardTxQueueItem CanardTxQueueItem;
  * specification for more details about data type signatures. Signature for any data type can be obtained in many
  * ways; for example, using the command line tool distributed with Libcanard (see the repository).
  */
-typedef bool (* CanardShouldAcceptTransfer)(const CanardInstance* ins,          ///< Library instance
-                                            uint64_t* out_data_type_signature,  ///< Must be set by the application!
-                                            uint16_t data_type_id,              ///< Refer to the specification
-                                            CanardTransferType transfer_type,   ///< Refer to CanardTransferType
-                                            uint8_t source_node_id);            ///< Source node ID or Broadcast (0)
+typedef bool (*CanardShouldAcceptTransfer)(const CanardInstance* ins,         ///< Library instance
+                                           uint64_t* out_data_type_signature, ///< Must be set by the application!
+                                           uint16_t data_type_id,             ///< Refer to the specification
+                                           CanardTransferType transfer_type,  ///< Refer to CanardTransferType
+                                           uint8_t source_node_id);           ///< Source node ID or Broadcast (0)
 
 /**
  * This function will be invoked by the library every time a transfer is successfully received.
@@ -209,15 +204,14 @@ typedef bool (* CanardShouldAcceptTransfer)(const CanardInstance* ins,          
  * to call canardReleaseRxTransferPayload() first, so that the memory that was used for the block
  * buffer can be released and re-used by the TX queue.
  */
-typedef void (* CanardOnTransferReception)(CanardInstance* ins,                 ///< Library instance
-                                           CanardRxTransfer* transfer);         ///< Ptr to temporary transfer object
+typedef void (*CanardOnTransferReception)(CanardInstance* ins,         ///< Library instance
+                                          CanardRxTransfer* transfer); ///< Ptr to temporary transfer object
 
 /**
  * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
  * A memory block used in the memory block allocator.
  */
-typedef union CanardPoolAllocatorBlock_u
-{
+typedef union CanardPoolAllocatorBlock_u {
     char bytes[CANARD_MEM_BLOCK_SIZE];
     union CanardPoolAllocatorBlock_u* next;
 } CanardPoolAllocatorBlock;
@@ -228,9 +222,9 @@ typedef union CanardPoolAllocatorBlock_u
  */
 typedef struct
 {
-    uint16_t capacity_blocks;               ///< Pool capacity in number of blocks
-    uint16_t current_usage_blocks;          ///< Number of blocks that are currently allocated by the library
-    uint16_t peak_usage_blocks;             ///< Maximum number of blocks used since initialization
+    uint16_t capacity_blocks;      ///< Pool capacity in number of blocks
+    uint16_t current_usage_blocks; ///< Number of blocks that are currently allocated by the library
+    uint16_t peak_usage_blocks;    ///< Maximum number of blocks used since initialization
 } CanardPoolAllocatorStatistics;
 
 /**
@@ -246,8 +240,7 @@ typedef struct
  * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
  * Buffer block for received data.
  */
-typedef struct CanardBufferBlock
-{
+typedef struct CanardBufferBlock {
     struct CanardBufferBlock* next;
     uint8_t data[];
 } CanardBufferBlock;
@@ -255,8 +248,7 @@ typedef struct CanardBufferBlock
 /**
  * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
  */
-struct CanardRxState
-{
+struct CanardRxState {
     struct CanardRxState* next;
 
     CanardBufferBlock* buffer_blocks;
@@ -267,9 +259,9 @@ struct CanardRxState
 
     // We're using plain 'unsigned' here, because C99 doesn't permit explicit field type specification
     unsigned calculated_crc : 16;
-    unsigned payload_len    : CANARD_TRANSFER_PAYLOAD_LEN_BITS;
-    unsigned transfer_id    : 5;
-    unsigned next_toggle    : 1;    // 16+10+5+1 = 32, aligned.
+    unsigned payload_len : CANARD_TRANSFER_PAYLOAD_LEN_BITS;
+    unsigned transfer_id : 5;
+    unsigned next_toggle : 1; // 16+10+5+1 = 32, aligned.
 
     uint16_t payload_crc;
 
@@ -282,22 +274,21 @@ CANARD_STATIC_ASSERT(CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE >= 4, "Invalid memor
  * This is the core structure that keeps all of the states and allocated resources of the library instance.
  * The application should never access any of the fields directly! Instead, API functions should be used.
  */
-struct CanardInstance
-{
-    uint8_t node_id;                                ///< Local node ID; may be zero if the node is anonymous
+struct CanardInstance {
+    uint8_t node_id; ///< Local node ID; may be zero if the node is anonymous
 
-    CanardShouldAcceptTransfer should_accept;       ///< Function to decide whether the application wants this transfer
-    CanardOnTransferReception on_reception;         ///< Function the library calls after RX transfer is complete
+    CanardShouldAcceptTransfer should_accept; ///< Function to decide whether the application wants this transfer
+    CanardOnTransferReception on_reception;   ///< Function the library calls after RX transfer is complete
 
-    CanardPoolAllocator allocator;                  ///< Pool allocator
+    CanardPoolAllocator allocator; ///< Pool allocator
 
-    CanardRxState* rx_states;                       ///< RX transfer states
-    CanardTxQueueItem* tx_queue;                    ///< TX frames awaiting transmission
+    CanardRxState* rx_states;    ///< RX transfer states
+    CanardTxQueueItem* tx_queue; ///< TX frames awaiting transmission
 
-    void* user_reference;                           ///< User pointer that can link this instance with other objects
+    void* user_reference; ///< User pointer that can link this instance with other objects
 
 #if CANARD_ENABLE_TAO_OPTION
-    bool tao_disabled;                              ///< True if TAO is disabled
+    bool tao_disabled; ///< True if TAO is disabled
 #endif
 };
 
@@ -306,8 +297,7 @@ struct CanardInstance
  * An instance of it is passed to the application via callback when the library receives a new transfer.
  * Pointers to the structure and all its fields are invalidated after the callback returns.
  */
-struct CanardRxTransfer
-{
+struct CanardRxTransfer {
     /**
      * Timestamp at which the first frame of this transfer was received.
      */
@@ -331,30 +321,30 @@ struct CanardRxTransfer
      * In simple cases it should be possible to get data directly from the head and/or tail pointers.
      * Otherwise it is advised to use canardDecodeScalar().
      */
-    const uint8_t* payload_head;            ///< Always valid, i.e. not NULL.
-                                            ///< For multi frame transfers, the maximum size is defined in the constant
-                                            ///< CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE.
-                                            ///< For single-frame transfers, the size is defined in the
-                                            ///< field payload_len.
-    CanardBufferBlock* payload_middle;      ///< May be NULL if the buffer was not needed. Always NULL for single-frame
-                                            ///< transfers.
-    const uint8_t* payload_tail;            ///< Last bytes of multi-frame transfers. Always NULL for single-frame
-                                            ///< transfers.
-    uint16_t payload_len;                   ///< Effective length of the payload in bytes.
+    const uint8_t* payload_head;       ///< Always valid, i.e. not NULL.
+                                       ///< For multi frame transfers, the maximum size is defined in the constant
+                                       ///< CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE.
+                                       ///< For single-frame transfers, the size is defined in the
+                                       ///< field payload_len.
+    CanardBufferBlock* payload_middle; ///< May be NULL if the buffer was not needed. Always NULL for single-frame
+                                       ///< transfers.
+    const uint8_t* payload_tail;       ///< Last bytes of multi-frame transfers. Always NULL for single-frame
+                                       ///< transfers.
+    uint16_t payload_len;              ///< Effective length of the payload in bytes.
 
     /**
      * These fields identify the transfer for the application.
      */
-    uint16_t data_type_id;                  ///< 0 to 255 for services, 0 to 65535 for messages
-    uint8_t transfer_type;                  ///< See CanardTransferType
-    uint8_t transfer_id;                    ///< 0 to 31
-    uint8_t priority;                       ///< 0 to 31
-    uint8_t source_node_id;                 ///< 1 to 127, or 0 if the source is anonymous
+    uint16_t data_type_id;  ///< 0 to 255 for services, 0 to 65535 for messages
+    uint8_t transfer_type;  ///< See CanardTransferType
+    uint8_t transfer_id;    ///< 0 to 31
+    uint8_t priority;       ///< 0 to 31
+    uint8_t source_node_id; ///< 1 to 127, or 0 if the source is anonymous
 #if CANARD_ENABLE_TAO_OPTION
     bool tao;
 #endif
 #if CANARD_ENABLE_CANFD
-    bool canfd;                             ///< frame canfd
+    bool canfd; ///< frame canfd
 #endif
 };
 
@@ -366,12 +356,12 @@ struct CanardRxTransfer
  * recommended way to detect the required pool size is to measure the peak pool usage after a stress-test. Refer to
  * the function canardGetPoolAllocatorStatistics().
  */
-void canardInit(CanardInstance* out_ins,                    ///< Uninitialized library instance
-                void* mem_arena,                            ///< Raw memory chunk used for dynamic allocation
-                size_t mem_arena_size,                      ///< Size of the above, in bytes
-                CanardOnTransferReception on_reception,     ///< Callback, see CanardOnTransferReception
-                CanardShouldAcceptTransfer should_accept,   ///< Callback, see CanardShouldAcceptTransfer
-                void* user_reference);                      ///< Optional pointer for user's convenience, can be NULL
+void canardInit(CanardInstance* out_ins,                  ///< Uninitialized library instance
+                void* mem_arena,                          ///< Raw memory chunk used for dynamic allocation
+                size_t mem_arena_size,                    ///< Size of the above, in bytes
+                CanardOnTransferReception on_reception,   ///< Callback, see CanardOnTransferReception
+                CanardShouldAcceptTransfer should_accept, ///< Callback, see CanardShouldAcceptTransfer
+                void* user_reference);                    ///< Optional pointer for user's convenience, can be NULL
 
 /**
  * Returns the value of the user pointer.
@@ -413,18 +403,18 @@ void canardForgetLocalNodeID(CanardInstance* ins);
  *
  * Returns the number of frames enqueued, or negative error code.
  */
-int16_t canardBroadcast(CanardInstance* ins,            ///< Library instance
-                        uint64_t data_type_signature,   ///< See above
-                        uint16_t data_type_id,          ///< Refer to the specification
-                        uint8_t* inout_transfer_id,     ///< Pointer to a persistent variable containing the transfer ID
-                        uint8_t priority,               ///< Refer to definitions CANARD_TRANSFER_PRIORITY_*
-                        const void* payload,            ///< Transfer payload
-                        uint16_t payload_len            ///< Length of the above, in bytes
+int16_t canardBroadcast(CanardInstance* ins,          ///< Library instance
+                        uint64_t data_type_signature, ///< See above
+                        uint16_t data_type_id,        ///< Refer to the specification
+                        uint8_t* inout_transfer_id,   ///< Pointer to a persistent variable containing the transfer ID
+                        uint8_t priority,             ///< Refer to definitions CANARD_TRANSFER_PRIORITY_*
+                        const void* payload,          ///< Transfer payload
+                        uint16_t payload_len          ///< Length of the above, in bytes
 #if CANARD_ENABLE_CANFD
-                        ,bool canfd                      ///< Is the frame canfd
+                        ,
+                        bool canfd ///< Is the frame canfd
 #endif
-                        );
-
+);
 
 /**
  * Sends a request or a response transfer.
@@ -443,19 +433,20 @@ int16_t canardBroadcast(CanardInstance* ins,            ///< Library instance
  *
  * Returns the number of frames enqueued, or negative error code.
  */
-int16_t canardRequestOrRespond(CanardInstance* ins,             ///< Library instance
-                               uint8_t destination_node_id,     ///< Node ID of the server/client
-                               uint64_t data_type_signature,    ///< See above
-                               uint8_t data_type_id,            ///< Refer to the specification
-                               uint8_t* inout_transfer_id,      ///< Pointer to a persistent variable with transfer ID
-                               uint8_t priority,                ///< Refer to definitions CANARD_TRANSFER_PRIORITY_*
-                               CanardRequestResponse kind,      ///< Refer to CanardRequestResponse
-                               const void* payload,             ///< Transfer payload
-                               uint16_t payload_len             ///< Length of the above, in bytes
+int16_t canardRequestOrRespond(CanardInstance* ins,          ///< Library instance
+                               uint8_t destination_node_id,  ///< Node ID of the server/client
+                               uint64_t data_type_signature, ///< See above
+                               uint8_t data_type_id,         ///< Refer to the specification
+                               uint8_t* inout_transfer_id,   ///< Pointer to a persistent variable with transfer ID
+                               uint8_t priority,             ///< Refer to definitions CANARD_TRANSFER_PRIORITY_*
+                               CanardRequestResponse kind,   ///< Refer to CanardRequestResponse
+                               const void* payload,          ///< Transfer payload
+                               uint16_t payload_len          ///< Length of the above, in bytes
 #if CANARD_ENABLE_CANFD
-                                ,bool canfd                     ///< Is the frame canfd
+                               ,
+                               bool canfd ///< Is the frame canfd
 #endif
-                            );
+);
 
 /**
  * Returns a pointer to the top priority frame in the TX queue.
@@ -518,11 +509,11 @@ void canardCleanupStaleTransfers(CanardInstance* ins,
  *  | [33, 64]   | false           | uint64_t                                 |
  *  | [33, 64]   | true            | int64_t, or 64-bit float                 |
  */
-int16_t canardDecodeScalar(const CanardRxTransfer* transfer,    ///< The RX transfer where the data will be copied from
-                           uint32_t bit_offset,                 ///< Offset, in bits, from the beginning of the transfer
-                           uint8_t bit_length,                  ///< Length of the value, in bits; see the table
-                           bool value_is_signed,                ///< True if the value can be negative; see the table
-                           void* out_value);                    ///< Pointer to the output storage; see the table
+int16_t canardDecodeScalar(const CanardRxTransfer* transfer, ///< The RX transfer where the data will be copied from
+                           uint32_t bit_offset,              ///< Offset, in bits, from the beginning of the transfer
+                           uint8_t bit_length,               ///< Length of the value, in bits; see the table
+                           bool value_is_signed,             ///< True if the value can be negative; see the table
+                           void* out_value);                 ///< Pointer to the output storage; see the table
 
 /**
  * This function can be used to encode values for later transmission in a UAVCAN transfer. It encodes a scalar value -
@@ -544,10 +535,10 @@ int16_t canardDecodeScalar(const CanardRxTransfer* transfer,    ///< The RX tran
  *  | [17, 32]   | uint32_t, int32_t, or 32-bit float       |
  *  | [33, 64]   | uint64_t, int64_t, or 64-bit float       |
  */
-void canardEncodeScalar(void* destination,      ///< Destination buffer where the result will be stored
-                        uint32_t bit_offset,    ///< Offset, in bits, from the beginning of the destination buffer
-                        uint8_t bit_length,     ///< Length of the value, in bits; see the table
-                        const void* value);     ///< Pointer to the value; see the table
+void canardEncodeScalar(void* destination,   ///< Destination buffer where the result will be stored
+                        uint32_t bit_offset, ///< Offset, in bits, from the beginning of the destination buffer
+                        uint8_t bit_length,  ///< Length of the value, in bits; see the table
+                        const void* value);  ///< Pointer to the value; see the table
 
 /**
  * This function can be invoked by the application to release pool blocks that are used
