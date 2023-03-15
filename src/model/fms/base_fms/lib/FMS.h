@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1879
+ * Model version                  : 1.1881
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Mar 15 15:42:30 2023
+ * C/C++ source code generated on : Wed Mar 15 17:59:28 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -171,6 +171,7 @@ typedef struct {
   real32_T Delay_DSTATE_a;             /* '<S352>/Delay' */
   real32_T Integrator1_DSTATE_e;       /* '<S355>/Integrator1' */
   real32_T Integrator_DSTATE_bs;       /* '<S355>/Integrator' */
+  real32_T cur_waypoint_DSTATE[3];     /* '<S422>/cur_waypoint' */
   uint32_T DelayInput1_DSTATE;         /* '<S15>/Delay Input1' */
   uint32_T DiscreteTimeIntegrator1_DSTATE;/* '<S11>/Discrete-Time Integrator1' */
   uint32_T DelayInput1_DSTATE_f;       /* '<S20>/Delay Input1' */
@@ -256,6 +257,7 @@ typedef struct {
   uint8_T icLoad_c;                    /* '<S351>/Delay' */
   uint8_T icLoad_j;                    /* '<S352>/Delay' */
   uint8_T Integrator1_IC_LOADING_j;    /* '<S355>/Integrator1' */
+  uint8_T icLoad_j1;                   /* '<S422>/cur_waypoint' */
   boolean_T valid_cmd;                 /* '<Root>/FMS State Machine' */
   boolean_T bl;                        /* '<Root>/FMS State Machine' */
   boolean_T br;                        /* '<Root>/FMS State Machine' */
