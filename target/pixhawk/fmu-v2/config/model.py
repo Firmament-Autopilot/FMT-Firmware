@@ -12,7 +12,7 @@ if vehicle_type == 'Quadcopter':
     ]
 elif vehicle_type=='Fixwing':
     MODELS=[
-    'plant/template_plant',
+    'plant/fixwing',
     'ins/base_ins',
     'fms/fw_fms',
     'control/fw_controller',
