@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1978
+ * Model version                  : 1.1984
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:33:01 2023
+ * C/C++ source code generated on : Thu Mar 16 09:31:06 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -90,7 +90,6 @@ typedef struct {
   real32_T start_wp_DSTATE[2];         /* '<S79>/start_wp' */
   real32_T start_vel_DSTATE_g[2];      /* '<S151>/start_vel' */
   real32_T Delay_DSTATE;               /* '<S146>/Delay' */
-  real32_T Delay_DSTATE_a[2];          /* '<S170>/Delay' */
   uint32_T DiscreteTimeIntegrator_DSTATE;/* '<S208>/Discrete-Time Integrator' */
   uint32_T DelayInput1_DSTATE;         /* '<S9>/Delay Input1' */
   uint32_T DiscreteTimeIntegrator1_DSTATE;/* '<S5>/Discrete-Time Integrator1' */
@@ -152,7 +151,6 @@ typedef struct {
   uint8_T icLoad_c;                    /* '<S79>/start_wp' */
   uint8_T icLoad_n;                    /* '<S151>/start_vel' */
   uint8_T icLoad_b;                    /* '<S146>/Delay' */
-  uint8_T icLoad_f;                    /* '<S170>/Delay' */
   boolean_T valid_cmd;                 /* '<Root>/FMS State Machine' */
   boolean_T bl;                        /* '<Root>/FMS State Machine' */
   boolean_T br;                        /* '<Root>/FMS State Machine' */
@@ -277,7 +275,7 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_E1qbCEGvnS3XtzDqfoNznD FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_l1HpI40xbomqAeio9GydsH FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<Root>/ACCEPT_R'
                                                 *   '<S210>/Constant'
