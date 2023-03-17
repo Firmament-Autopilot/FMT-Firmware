@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1984
+ * Model version                  : 1.1986
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Mar 16 09:31:06 2023
+ * C/C++ source code generated on : Fri Mar 17 19:50:22 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -101,14 +101,13 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
-struct_l1HpI40xbomqAeio9GydsH FMS_PARAM = {
+struct_E1qbCEGvnS3XtzDqfoNznD FMS_PARAM = {
   0.15F,
   0.15F,
   0.1F,
   0.1F,
   0.95F,
   1.0F,
-  5.0F,
   2.5F,
   2.5F,
   1.04719758F,
@@ -128,7 +127,8 @@ struct_l1HpI40xbomqAeio9GydsH FMS_PARAM = {
     0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
 
   { 1000.0F, 1000.0F, 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F }
+    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+  5.0F
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<Root>/ACCEPT_R'
@@ -1543,7 +1543,7 @@ static void FMS_Arm(void)
                     FMS_B.Cmd_In.sp_waypoint[0] = FMS_DW.home[0];
                     FMS_B.Cmd_In.sp_waypoint[1] = FMS_DW.home[1];
                     FMS_B.Cmd_In.sp_waypoint[2] =
-                      FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+                      FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
                     FMS_B.state = VehicleState_Return;
                   } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Waypoint) {
                     FMS_DW.is_Mission = FMS_IN_Waypoint;
