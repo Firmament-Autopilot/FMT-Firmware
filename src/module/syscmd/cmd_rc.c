@@ -58,7 +58,7 @@ static fmt_err_t get_stick_corner_value(stick_enum stick, int16_t low, int16_t u
 {
     int16_t rc_val[16];
     uint16_t hold_cnt = 0;
-    uint16_t wait_cnt = MCN_HUB(rc_channels)->freq > 0 ? 1000 / MCN_HUB(rc_channels)->freq : 40;
+    uint16_t wait_cnt = MCN_HUB(rc_channels)->freq > 5.0f ? MCN_HUB(rc_channels)->freq : 5;
 
     /* first make sure the stick is hold in the expected area */
     while (hold_cnt < wait_cnt) {
