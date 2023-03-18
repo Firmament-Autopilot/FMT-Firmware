@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-brightgreen" alt="GitHub license" /></a>
-  <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/actions/workflows/build.yml"><img src="https://img.shields.io/github/workflow/status/Firmament-Autopilot/FMT-Firmware/FMT-Firmware%20CI/master" alt="build status"></a>
+  <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/Firmament-Autopilot/FMT-Firmware/build.yml" alt="build status"></a>
   <a href="https://github.com/Firmament-Autopilot/FMT-Firmware/releases"><img src="https://img.shields.io/github/v/release/Firmament-Autopilot/FMT-Firmware" alt="release version" /></a>
 </p>
 
