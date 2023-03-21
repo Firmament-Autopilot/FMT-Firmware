@@ -13,27 +13,30 @@ void task_dronecan_entry(void* parameter)
     static uint16_t cnt;
 
     while (1) {
-        time_now = systime_now_ms();
+        // time_now = systime_now_ms();
 
-        /* record loop start time */
-        if (time_start == 0) {
-            time_start = time_now;
-        }
-        timestamp = time_now - time_start;
+        // /* record loop start time */
+        // if (time_start == 0) {
+        //     time_start = time_now;
+        // }
+        // timestamp = time_now - time_start;
 
         processTxRxOnce(timestamp);
 
-        if ((cnt % 75) == 0) {
-            setRGB(200, 0, 0);
-            printf("process1HzTasks\n");
-        } else if ((cnt % 50) == 0) {
-            setRGB(0, 200, 0);
-        } else if ((cnt % 25) == 0) {
-            setRGB(0, 0, 200);
+        // if ((cnt % 75) == 0) {
+        //     setRGB(200, 0, 0);
+        // } else if ((cnt % 50) == 0) {
+        //     setRGB(0, 200, 0);
+        // } else if ((cnt % 25) == 0) {
+        //     setRGB(0, 0, 200);
+        // }
+
+        if ((cnt % 10) == 0) {
+            process1HzTasks(systime_now_us());
         }
         cnt++;
 
-        sys_msleep(10);
+        systime_mdelay(100);
     }
 }
 
@@ -46,12 +49,12 @@ fmt_err_t task_dronecan_init(void)
 }
 
 TASK_EXPORT __fmt_task_desc = {
-    .name = "droencan",
+    .name = "dronecan",
     .init = task_dronecan_init,
     .entry = task_dronecan_entry,
     .priority = DRONECAN_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 1024 * 10,
+    .stack_size = 2048 * 10,
     .param = NULL,
     .dependency = NULL
 };

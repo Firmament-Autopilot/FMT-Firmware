@@ -95,6 +95,9 @@ CANARD_INTERNAL int16_t enqueueTxFrames(CanardInstance* ins,
                                         uint16_t crc,
                                         const uint8_t* payload,
                                         uint16_t payload_len
+#if CANARD_MULTI_IFACE
+                                        ,uint8_t iface_mask
+#endif
 #if CANARD_ENABLE_CANFD
                                         ,bool canfd
 #endif
