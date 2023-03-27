@@ -54,7 +54,9 @@ static param_t __param_list[] = {
     PARAM_FLOAT(TAKEOFF_H, 10.0),
     PARAM_FLOAT(ACCEPT_R, 55),
     PARAM_FLOAT(LOITER_R, 50),
-
+    PARAM_FLOAT(MANUAL_ROLL_REV, 1.0),
+    PARAM_FLOAT(MANUAL_PITCH_REV, 1.0),
+    PARAM_FLOAT(MANUAL_YAW_REV, 1.0),
     PARAM_FLOAT(Y_P, 0.95),
     PARAM_FLOAT(ACC_Y_LIM, 8),
     PARAM_FLOAT(ROLL_LIM, PI / 4),
@@ -273,7 +275,9 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_H), &FMS_PARAM.TAKEOFF_H));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOITER_R), &FMS_PARAM.LOITER_R));
-
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MANUAL_ROLL_REV), &FMS_PARAM.MANUAL_ROLL_REV));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MANUAL_PITCH_REV), &FMS_PARAM.MANUAL_PITCH_REV));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MANUAL_YAW_REV), &FMS_PARAM.MANUAL_YAW_REV));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, Y_P), &FMS_PARAM.Y_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC_Y_LIM), &FMS_PARAM.ACC_Y_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_LIM), &FMS_PARAM.ROLL_LIM));
