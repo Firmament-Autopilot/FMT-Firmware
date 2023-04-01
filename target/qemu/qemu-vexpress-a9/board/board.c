@@ -20,10 +20,12 @@
 #include <shell.h>
 #include <string.h>
 
+#include "drv_pwm.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include <drivers/mmcsd_core.h>
+
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -206,6 +208,8 @@ void bsp_early_initialize(void)
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
+
+    RT_CHECK(drv_pwm_init());
 
     /* system time module init */
     FMT_CHECK(systime_init());

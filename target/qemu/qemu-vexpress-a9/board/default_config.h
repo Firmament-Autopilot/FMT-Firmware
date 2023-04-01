@@ -34,6 +34,16 @@ target = "QEMU vexpress-a9"\n
     [[mavproxy.devices]]\n
     type = "serial"\n
     name = "serial1"\n
-    baudrate = 115200
+    baudrate = 115200\n
+[actuator]\n
+    [[actuator.devices]]\n
+    protocol = "pwm"\n
+    name = "null_out"\n
+    freq = 400\n
+
+    [[actuator.mappings]]\n
+    from = "control_out"\n
+    to = "null_out"\n
+    chan-map = [[1,2,3,4],[1,2,3,4]]
 );
 // clang-format on
