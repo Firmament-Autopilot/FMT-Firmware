@@ -27,9 +27,7 @@
 
 #define EVENT_MAV_RX (1 << 0)
 
-#ifdef FMT_USING_EXTERNAL_STATE
 MCN_DEFINE(mav_ext_state, sizeof(mavlink_fmt_external_state_t));
-#endif
 
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
@@ -373,7 +371,6 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
     } break;
 #endif
 
-#ifdef FMT_USING_EXTERNAL_STATE
     case MAVLINK_MSG_ID_FMT_EXTERNAL_STATE: {
         mavlink_fmt_external_state_t ext_state;
 
@@ -383,7 +380,6 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
         /* publish external state */
         mcn_publish(MCN_HUB(mav_ext_state), &ext_state);
     } break;
-#endif
 
     default: {
         // printf("unknown mavlink msg:%d\n", msg->msgid);
@@ -446,9 +442,7 @@ fmt_err_t mavproxy_monitor_create(void)
         return FMT_ERROR;
     }
 
-#ifdef FMT_USING_EXTERNAL_STATE
     mcn_advertise(MCN_HUB(mav_ext_state), NULL);
-#endif
 
     /* set mavproxy device rx indicator */
     mavproxy_dev_set_rx_indicate(mavproxy_rx_ind);

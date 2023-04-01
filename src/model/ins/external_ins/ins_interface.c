@@ -25,10 +25,8 @@
 
 #define BIT(u, n) (u & (1 << n))
 
-#ifdef FMT_USING_EXTERNAL_STATE
 MCN_DECLARE(mav_ext_state);
 static McnNode_t ext_state_node;
-#endif
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -107,8 +105,6 @@ static int ins_output_echo(void* param)
 
 void ins_interface_step(void)
 {
-    /* Add your code here */
-#ifdef FMT_USING_EXTERNAL_STATE
     if (mcn_poll(ext_state_node)) {
         mavlink_fmt_external_state_t mav_ext_state;
         Euler euler;
@@ -163,7 +159,6 @@ void ins_interface_step(void)
             mlog_push_msg((uint8_t*)&ins_out, INS_Out_ID, sizeof(ins_out));
         }
     }
-#endif
 }
 
 void ins_interface_init(void)
@@ -175,8 +170,6 @@ void ins_interface_init(void)
     /* advertise ins_output topic */
     mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
 
-/* Add your code here */
-#ifdef FMT_USING_EXTERNAL_STATE
     ext_state_node = mcn_subscribe(MCN_HUB(mav_ext_state), NULL, NULL);
     if (ext_state_node == NULL) {
         printf("External_INS fail to subscribe mav_ext_state topic!\n");
@@ -184,5 +177,4 @@ void ins_interface_init(void)
 
     INS_Out_ID = mlog_get_bus_id("INS_Out");
     FMT_ASSERT(INS_Out_ID >= 0);
-#endif
 }
