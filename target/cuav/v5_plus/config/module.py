@@ -21,7 +21,7 @@ MODULES = [
     'fmtio/*.c',
     'task_manager/*.c',
     'pmu/*.c',
-
+    'obc/*.c',
 ]
 
 MODULES_CPPPATH = [

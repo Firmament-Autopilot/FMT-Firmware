@@ -16,18 +16,17 @@
 #include <firmament.h>
 #include <string.h>
 
-#include "hal/serial/serial.h"
-#include "module/mavproxy/mavproxy.h"
+#include "module/obc/mavobc.h"
+#include "module/obc/mavobc_dev.h"
 
-#define MAVPROXY_INTERVAL            2
-#define MAVPROXY_BUFFER_SIZE         1024
+#define MAVOBC_INTERVAL              2
+#define MAVOBC_BUFFER_SIZE           1024
 #define MAX_PERIOD_MSG_QUEUE_SIZE    20
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 10
-#define MAVPROXY_UNSET_CHAN          0xFF
+#define MAVOBC_UNSET_CHAN            0xFF
 
-fmt_err_t mavproxy_monitor_create(void);
-fmt_err_t mavproxy_switch_channel(uint8_t chan);
-uint8_t mavproxy_get_channel_num(void);
+fmt_err_t mavobc_switch_channel(uint8_t chan);
+uint8_t mavobc_get_channel_num(void);
 
 typedef struct {
     uint8_t msgid;
@@ -59,34 +58,28 @@ typedef struct {
     uint8_t chan;
     uint8_t new_chan;
     uint8_t* tx_buffer;
-} mavproxy_handler;
+} mavobc_handler;
 
-static mavproxy_handler mav_handle = {
+static mavobc_handler mav_handle = {
     .system = {
         .sysid = 0,
         .compid = 0 },
     .imm_mq = { .head = 0, .tail = 0 },
     .period_mq = { .size = 0, .index = 0 },
-    .chan = MAVPROXY_UNSET_CHAN,
-    .new_chan = MAVPROXY_UNSET_CHAN,
+    .chan = MAVOBC_UNSET_CHAN,
+    .new_chan = MAVOBC_UNSET_CHAN,
     .tx_buffer = NULL
 };
 
-static void on_param_modify(param_t* param)
+static void mavobc_timer_update(void* parameter)
 {
-    /* parameter modified, send new value to GCS */
-    mavlink_param_send(param);
-}
-
-static void mavproxy_timer_update(void* parameter)
-{
-    rt_event_send(&mav_handle.event, EVENT_MAVPROXY_UPDATE);
+    rt_event_send(&mav_handle.event, EVENT_MAVOBC_UPDATE);
 }
 
 static void dump_immediate_msg(void)
 {
     while (mav_handle.imm_mq.head != mav_handle.imm_mq.tail) {
-        if (mavproxy_send_immediate_msg(&mav_handle.imm_mq.queue[mav_handle.imm_mq.tail], true) == FMT_EOK) {
+        if (mavobc_send_immediate_msg(&mav_handle.imm_mq.queue[mav_handle.imm_mq.tail], true) == FMT_EOK) {
             OS_ENTER_CRITICAL;
             mav_handle.imm_mq.tail = (mav_handle.imm_mq.tail + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
             OS_EXIT_CRITICAL;
@@ -101,14 +94,14 @@ static void dump_period_msg(void)
         mav_period_msg* msg_t = &mav_handle.period_mq.queue[mav_handle.period_mq.index];
         mav_handle.period_mq.index = (mav_handle.period_mq.index + 1) % mav_handle.period_mq.size;
 
-        // find next msg to send
+        /* find next msg to send */
         if (now - msg_t->time_stamp >= msg_t->period && msg_t->enable && msg_t->msg_pack_cb) {
             msg_t->time_stamp = now;
-            // pack msg
+            /* pack msg */
             mavlink_message_t msg;
             if (msg_t->msg_pack_cb(&msg) == true) {
-                // send out msg
-                mavproxy_send_immediate_msg(&msg, true);
+                /* send out msg */
+                mavobc_send_immediate_msg(&msg, true);
             }
         }
     }
@@ -124,8 +117,8 @@ static void dump_period_msg(void)
  * 
  * @return FMT Errors
  */
-fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
-                                       msg_pack_cb_t msg_pack_cb, bool auto_start)
+fmt_err_t mavobc_register_period_msg(uint8_t msgid, uint16_t period_ms,
+                                     msg_pack_cb_t msg_pack_cb, bool auto_start)
 {
     mav_period_msg msg;
 
@@ -134,7 +127,7 @@ fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
     msg.period = period_ms;
     msg.msg_pack_cb = msg_pack_cb;
     /* Add offset for each msg to stagger sending time */
-    msg.time_stamp = systime_now_ms() + mav_handle.period_mq.size * MAVPROXY_INTERVAL;
+    msg.time_stamp = systime_now_ms() + mav_handle.period_mq.size * MAVOBC_INTERVAL;
 
     if (mav_handle.period_mq.size < MAX_PERIOD_MSG_QUEUE_SIZE) {
         OS_ENTER_CRITICAL;
@@ -142,21 +135,21 @@ fmt_err_t mavproxy_register_period_msg(uint8_t msgid, uint16_t period_ms,
         OS_EXIT_CRITICAL;
         return FMT_EOK;
     } else {
-        console_printf("mavproxy period msg queue is full\n");
+        printf("mavobc period msg queue is full\n");
         return FMT_EFULL;
     }
 }
 
 /**
- * Send a mavlink message via the mavproxy device
+ * Send a mavlink message via the mavobc device
  * 
  * @param msg mavlink message
- * @param sync  true: wait until the mavproxy device is available and send message
+ * @param sync  true: wait until the mavobc device is available and send message
  *              false: push the message into a queue and return directly
  * 
  * @return FMT Errors
  */
-fmt_err_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
+fmt_err_t mavobc_send_immediate_msg(const mavlink_message_t* msg, bool sync)
 {
     /* if sync flag set, send out msg immediately */
     if (sync) {
@@ -167,7 +160,7 @@ fmt_err_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
         rt_sem_take(mav_handle.tx_lock, RT_WAITING_FOREVER);
 
         len = mavlink_msg_to_send_buffer(mav_handle.tx_buffer, msg);
-        size = mavproxy_dev_write(mav_handle.tx_buffer, len, RT_WAITING_FOREVER);
+        size = mavobc_dev_write(mav_handle.tx_buffer, len, RT_WAITING_FOREVER);
 
         rt_sem_release(mav_handle.tx_lock);
 
@@ -186,24 +179,10 @@ fmt_err_t mavproxy_send_immediate_msg(const mavlink_message_t* msg, bool sync)
     mav_handle.imm_mq.head = (mav_handle.imm_mq.head + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
     OS_EXIT_CRITICAL;
 
-    /* wakeup mavproxy to send out temporary msg immediately */
-    rt_event_send(&mav_handle.event, EVENT_MAVPROXY_UPDATE);
+    /* wakeup mavobc to send out temporary msg immediately */
+    rt_event_send(&mav_handle.event, EVENT_MAVOBC_UPDATE);
 
     return FMT_EOK;
-}
-
-/**
- * Send a event to mavproxy
- * 
- * @brief the event will be handled in mavproxy main loop
- * 
- * @param event_set event set
- * 
- * @return FMT Errors
- */
-fmt_err_t mavproxy_send_event(uint32_t event_set)
-{
-    return rt_event_send(&mav_handle.event, event_set);
 }
 
 /**
@@ -211,21 +190,21 @@ fmt_err_t mavproxy_send_event(uint32_t event_set)
  * 
  * @return mavlink system
  */
-mavlink_system_t mavproxy_get_system(void)
+mavlink_system_t mavobc_get_system(void)
 {
     return mav_handle.system;
 }
 
 /**
- * Set mavproxy channel.
+ * Set mavobc channel.
  * 
- * @param chan channel of mavproxy device
+ * @param chan channel of mavobc device
  * 
  * @return FMT Errors
  */
-fmt_err_t mavproxy_set_channel(uint8_t chan)
+fmt_err_t mavobc_set_channel(uint8_t chan)
 {
-    if (chan >= mavproxy_get_channel_num()) {
+    if (chan >= mavobc_get_channel_num()) {
         return FMT_EINVAL;
     }
     OS_ENTER_CRITICAL;
@@ -236,22 +215,22 @@ fmt_err_t mavproxy_set_channel(uint8_t chan)
 }
 
 /**
- * Main loop of mavproxy.
+ * Main loop of mavlink onboard computer.
  * @note this function should be called in a thread
  */
-void mavproxy_loop(void)
+void mavobc_loop(void)
 {
     rt_err_t res;
     rt_uint32_t recv_set = 0;
-    rt_uint32_t wait_set = EVENT_MAVPROXY_UPDATE | EVENT_MAVCONSOLE_TIMEOUT | EVENT_SEND_ALL_PARAM;
+    rt_uint32_t wait_set = EVENT_MAVOBC_UPDATE;
 
-    /* create mavproxy monitor to handle received mavlink msgs */
-    mavproxy_monitor_create();
+    /* create mavobc monitor to handle received mavlink msgs */
+    mavobc_monitor_create();
 
-    /* Set mavproxy new channel to 0 if not set. Here we need critical section
+    /* Set mavobc new channel to 0 if not set. Here we need critical section
        since the new channel can possible be set in usb ISR. */
     OS_ENTER_CRITICAL;
-    if (mavproxy_get_channel_num() > 0 && mav_handle.new_chan == MAVPROXY_UNSET_CHAN) {
+    if (mavobc_get_channel_num() > 0 && mav_handle.new_chan == MAVOBC_UNSET_CHAN) {
         mav_handle.new_chan = 0;
     }
     OS_EXIT_CRITICAL;
@@ -261,73 +240,57 @@ void mavproxy_loop(void)
         res = rt_event_recv(&mav_handle.event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
 
         if (res == RT_EOK) {
-            /* switch mavproxy channel if needed */
+            /* switch mavobc channel if needed */
             if (mav_handle.chan != mav_handle.new_chan) {
-                if (mavproxy_switch_channel(mav_handle.new_chan) == FMT_EOK) {
+                if (mavobc_switch_channel(mav_handle.new_chan) == FMT_EOK) {
                     mav_handle.chan = mav_handle.new_chan;
                 } else {
-                    console_printf("mavproxy switch channel fail! current chan:%d new chan:%d\n",
-                                   mav_handle.chan,
-                                   mav_handle.new_chan);
+                    printf("mavobc switch channel fail! current chan:%d new chan:%d\n",
+                           mav_handle.chan,
+                           mav_handle.new_chan);
                     mav_handle.new_chan = mav_handle.chan;
                 }
             }
 
-            if (recv_set & EVENT_SEND_ALL_PARAM) {
-                mavlink_param_sendall();
-            }
-
-            if (recv_set & EVENT_MAVCONSOLE_TIMEOUT) {
-                mavlink_console_handle_timeout();
-            }
-
-            if (recv_set & EVENT_MAVPROXY_UPDATE) {
+            if (recv_set & EVENT_MAVOBC_UPDATE) {
                 /* send out immediate msg */
                 dump_immediate_msg();
                 /* send out periodical msg */
                 dump_period_msg();
-                /* handle mavlink command */
-                mavproxy_cmd_exec();
             }
         }
     }
 }
 
 /**
- * Initialize the mavproxy module.
+ * Initialize the mavlink onboard computer module.
  * 
  * @return FMT Errors
  */
-fmt_err_t mavproxy_init(void)
+fmt_err_t mavobc_init(void)
 {
     /* get mavlink system and component ID */
     mav_handle.system.sysid = PARAM_GET_UINT8(SYSTEM, MAV_SYS_ID);
     mav_handle.system.compid = PARAM_GET_UINT8(SYSTEM, MAV_COMP_ID);
 
-    /* init mavproxy device */
-    mavproxy_dev_init();
-
-    /* init mavlink console */
-    mavlink_console_init();
+    /* init mavobc device */
+    mavobc_dev_init();
 
     /* create tx lock */
-    mav_handle.tx_lock = rt_sem_create("mav_tx_lock", 1, RT_IPC_FLAG_FIFO);
+    mav_handle.tx_lock = rt_sem_create("mavobc_tx_lock", 1, RT_IPC_FLAG_FIFO);
 
     /* malloc buffer space */
-    mav_handle.tx_buffer = (uint8_t*)rt_malloc(MAVPROXY_BUFFER_SIZE);
+    mav_handle.tx_buffer = (uint8_t*)rt_malloc(MAVOBC_BUFFER_SIZE);
     if (mav_handle.tx_buffer == NULL) {
-        console_printf("fail to malloc for mavproxy tx buffer\n");
+        printf("fail to malloc for mavobc tx buffer\n");
         return FMT_ENOMEM;
     }
 
     /* create event */
-    rt_event_init(&mav_handle.event, "mavproxy", RT_IPC_FLAG_FIFO);
-
-    /* register parameter modify callback */
-    register_param_modify_callback(on_param_modify);
+    rt_event_init(&mav_handle.event, "mavobc", RT_IPC_FLAG_FIFO);
 
     /* register timer event to periodly wakeup itself */
-    rt_timer_init(&mav_handle.timer, "mavproxy", mavproxy_timer_update, RT_NULL, MAVPROXY_INTERVAL, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    rt_timer_init(&mav_handle.timer, "mavobc", mavobc_timer_update, RT_NULL, MAVOBC_INTERVAL, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
     rt_timer_start(&mav_handle.timer);
 
     return FMT_EOK;
