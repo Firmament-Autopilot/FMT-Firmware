@@ -4,6 +4,7 @@ TASKS = [
     'comm/*.c',
     'logger/*.c',
     'status/*.c',
+    'obc/*.c',
     'vehicle/multicopter/*.c',
 ]
 
