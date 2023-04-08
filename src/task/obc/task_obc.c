@@ -269,10 +269,56 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
         }
         break;
 
+    case MAVLINK_MSG_ID_SET_ATTITUDE_TARGET:
+        if (system.sysid == mavlink_msg_set_attitude_target_get_target_system(msg)) {
+            Auto_Cmd_Bus auto_cmd = { 0 };
+            mavlink_set_attitude_target_t attitude_target;
+
+            mavlink_msg_set_attitude_target_decode(msg, &attitude_target);
+
+            auto_cmd.timestamp = systime_now_ms();
+            /* att command won't use frame variable, so doesn't matter */
+            auto_cmd.frame = FRAME_BODY_FRD;
+
+            if (!(attitude_target.type_mask & 1)) {
+                auto_cmd.p_cmd = attitude_target.body_roll_rate;
+                auto_cmd.cmd_mask |= P_CMD_VALID;
+            }
+
+            if (!(attitude_target.type_mask & 2)) {
+                auto_cmd.q_cmd = attitude_target.body_pitch_rate;
+                auto_cmd.cmd_mask |= Q_CMD_VALID;
+            }
+
+            if (!(attitude_target.type_mask & 4)) {
+                auto_cmd.r_cmd = attitude_target.body_yaw_rate;
+                auto_cmd.cmd_mask |= R_CMD_VALID;
+            }
+
+            if (!(attitude_target.type_mask & 64)) {
+                auto_cmd.throttle_cmd = attitude_target.thrust * 1000.0f + 1000.0f;
+                auto_cmd.cmd_mask |= THROTTLE_CMD_VALID;
+            }
+
+            if (!(attitude_target.type_mask & 128)) {
+                Euler e;
+                quaternion_toEuler((quaternion*)attitude_target.q, &e);
+
+                auto_cmd.phi_cmd = e.roll;
+                auto_cmd.theta_cmd = e.pitch;
+                auto_cmd.psi_cmd = e.yaw;
+                auto_cmd.cmd_mask |= PHI_CMD_VALID | THETA_CMD_VALID | PSI_CMD_VALID;
+            }
+
+            /* publish auto command */
+            mcn_publish(MCN_HUB(auto_cmd), &auto_cmd);
+        }
+        break;
+
     case MAVLINK_MSG_ID_SET_POSITION_TARGET_LOCAL_NED:
         if (system.sysid == mavlink_msg_set_position_target_local_ned_get_target_system(msg)) {
-            mavlink_set_position_target_local_ned_t pos_target_local_ned;
             Auto_Cmd_Bus auto_cmd = { 0 };
+            mavlink_set_position_target_local_ned_t pos_target_local_ned;
 
             mavlink_msg_set_position_target_local_ned_decode(msg, &pos_target_local_ned);
 
@@ -345,8 +391,8 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
 
     case MAVLINK_MSG_ID_SET_POSITION_TARGET_GLOBAL_INT:
         if (system.sysid == mavlink_msg_set_position_target_global_int_get_target_system(msg)) {
-            mavlink_set_position_target_global_int_t pos_target_global_int;
             Auto_Cmd_Bus auto_cmd = { 0 };
+            mavlink_set_position_target_global_int_t pos_target_global_int;
 
             mavlink_msg_set_position_target_global_int_decode(msg, &pos_target_global_int);
 
@@ -447,7 +493,7 @@ void task_obc_entry(void* parameter)
 }
 
 TASK_EXPORT __fmt_task_desc = {
-    .name = "obc",
+    .name = "mavobc",
     .init = task_obc_init,
     .entry = task_obc_entry,
     .priority = 14,
