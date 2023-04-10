@@ -35,7 +35,7 @@ void mavobc_loop(void);
 mavlink_system_t mavobc_get_system(void);
 fmt_err_t mavobc_set_channel(uint8_t chan);
 fmt_err_t mavobc_send_immediate_msg(const mavlink_message_t* msg, bool sync);
-fmt_err_t mavobc_register_period_msg(uint8_t msgid, uint16_t period_ms, msg_pack_cb_t msg_pack_cb, bool auto_start);
+fmt_err_t mavobc_register_period_msg(uint8_t msgid, uint16_t period_ms, msg_pack_cb_t msg_pack_cb, bool start);
 
 #ifdef __cplusplus
 }

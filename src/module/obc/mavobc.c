@@ -118,17 +118,28 @@ static void dump_period_msg(void)
  * @return FMT Errors
  */
 fmt_err_t mavobc_register_period_msg(uint8_t msgid, uint16_t period_ms,
-                                     msg_pack_cb_t msg_pack_cb, bool auto_start)
+                                     msg_pack_cb_t msg_pack_cb, bool start)
 {
     mav_period_msg msg;
 
     msg.msgid = msgid;
-    msg.enable = (auto_start == true) ? 1 : 0;
+    msg.enable = (start == true) ? 1 : 0;
     msg.period = period_ms;
     msg.msg_pack_cb = msg_pack_cb;
     /* Add offset for each msg to stagger sending time */
     msg.time_stamp = systime_now_ms() + mav_handle.period_mq.size * MAVOBC_INTERVAL;
 
+    /* check if the message is already registered, if so, just update it. */
+    for (uint16_t i = 0; i < mav_handle.period_mq.size; i++) {
+        if (mav_handle.period_mq.queue[i].msgid == msgid) {
+            OS_ENTER_CRITICAL;
+            mav_handle.period_mq.queue[i] = msg;
+            OS_EXIT_CRITICAL;
+            return FMT_EOK;
+        }
+    }
+
+    /* push message to period queue */
     if (mav_handle.period_mq.size < MAX_PERIOD_MSG_QUEUE_SIZE) {
         OS_ENTER_CRITICAL;
         mav_handle.period_mq.queue[mav_handle.period_mq.size++] = msg;

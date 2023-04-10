@@ -461,8 +461,18 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
         }
         break;
 
+    case MAVLINK_MSG_ID_REQUEST_DATA_STREAM:
+        if (system.sysid == mavlink_msg_request_data_stream_get_target_system(msg)) {
+            mavlink_request_data_stream_t req_data_stream;
+
+            mavlink_msg_request_data_stream_decode(msg, &req_data_stream);
+
+            printf("id:%d freq:%d Hz\n", req_data_stream.req_stream_id, req_data_stream.req_message_rate);
+        }
+        break;
+
     default:
-        // printf("mavobc unknown mavlink msg:%d\n", msg->msgid);
+        printf("mavobc unknown mavlink msg:%d\n", msg->msgid);
         break;
     }
 }
