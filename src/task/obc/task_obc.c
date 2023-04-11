@@ -19,15 +19,37 @@
 #include "FMS.h"
 #include "module/mavproxy/px4_custom_mode.h"
 #include "module/obc/mavobc.h"
+#include "module/sensor/sensor_hub.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/task_manager/task_manager.h"
 
+#undef LOG_TAG
+#define LOG_TAG "OBCTask"
+
 MCN_DECLARE(fms_output);
 MCN_DECLARE(auto_cmd);
+MCN_DECLARE(sensor_imu0);
+MCN_DECLARE(sensor_mag0);
+MCN_DECLARE(sensor_baro);
+MCN_DECLARE(sensor_airspeed);
+
+typedef struct
+{
+    uint8_t msgid;
+    msg_pack_cb_t msg_pack_cb;
+} msg_pack_cb_table;
 
 static mavlink_system_t mavlink_system;
 static McnNode_t fms_out_nod;
+
+static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_highres_imu_cb(mavlink_message_t* msg_t);
+
+static msg_pack_cb_table cb_table[] = {
+    { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_cb },
+    { MAVLINK_MSG_ID_HIGHRES_IMU, mavlink_msg_highres_imu_cb },
+};
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 {
@@ -130,6 +152,49 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
     return true;
 }
 
+static bool mavlink_msg_highres_imu_cb(mavlink_message_t* msg_t)
+{
+    mavlink_highres_imu_t highres_imu;
+    imu_data_t imu_data;
+    mag_data_t mag_data;
+    baro_data_t baro_data;
+    airspeed_data_t airspeed_data;
+
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK) {
+        return false;
+    }
+
+    if (mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK) {
+        return false;
+    }
+
+    if (mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data) != FMT_EOK) {
+        return false;
+    }
+
+    /* there could be no airspeed data, so don't check return value. */
+    mcn_copy_from_hub(MCN_HUB(sensor_airspeed), &airspeed_data);
+
+    highres_imu.time_usec = systime_now_us();
+    highres_imu.xacc = imu_data.acc_B_mDs2[0];
+    highres_imu.yacc = imu_data.acc_B_mDs2[1];
+    highres_imu.zacc = imu_data.acc_B_mDs2[2];
+    highres_imu.xgyro = imu_data.gyr_B_radDs[0];
+    highres_imu.ygyro = imu_data.gyr_B_radDs[1];
+    highres_imu.zgyro = imu_data.gyr_B_radDs[2];
+    highres_imu.xmag = mag_data.mag_B_gauss[0];
+    highres_imu.ymag = mag_data.mag_B_gauss[1];
+    highres_imu.zmag = mag_data.mag_B_gauss[2];
+    highres_imu.abs_pressure = baro_data.pressure_pa * 1000;           /* Pa to mPa */
+    highres_imu.diff_pressure = airspeed_data.diff_pressure_pa * 1000; /* Pa to mPa */
+    highres_imu.pressure_alt = baro_data.altitude_m;
+    highres_imu.temperature = baro_data.temperature_deg;
+
+    mavlink_msg_highres_imu_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &highres_imu);
+
+    return true;
+}
+
 static void acknowledge(uint16_t command, uint8_t result)
 {
     mavlink_system_t mav_sys = mavobc_get_system();
@@ -193,12 +258,12 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
 
-    case MAV_CMD_SET_MESSAGE_INTERVAL:
-        printf("set msg interval id:%d interval:%d\n", (int)command->param1, (int)command->param2);
-        break;
+        // case MAV_CMD_SET_MESSAGE_INTERVAL:
+        //     printf("set msg interval id:%d interval:%d\n", (int)command->param1, (int)command->param2);
+        //     break;
 
     default:
-        printf("mavobc unhandled command long:%d\n", command->command);
+        // printf("mavobc unhandled command long:%d\n", command->command);
         break;
     }
 }
@@ -248,7 +313,7 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
                             gcs_set_mode(PilotMode_Mission);
                             break;
                         default:
-                            printf("mavobc unsupported auto mode: %d", custom_sub_mode);
+                            LOG_W("Unsupported auto mode: %d", custom_sub_mode);
                             break;
                         }
                     }
@@ -331,7 +396,7 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
             } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_FRD) {
                 auto_cmd.frame = FRAME_BODY_FRD;
             } else {
-                printf("unsuppurted SET_POSITION_TARGET_LOCAL_NED frame:%d\n", pos_target_local_ned.coordinate_frame);
+                LOG_W("Unsupported SET_POSITION_TARGET_LOCAL_NED frame:%d\n", pos_target_local_ned.coordinate_frame);
                 break;
             }
 
@@ -401,7 +466,7 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
             if (pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_INT) {
                 auto_cmd.frame = FRAME_GLOBAL_NED;
             } else {
-                printf("unsuppurted SET_POSITION_TARGET_GLOBAL_INT frame:%d\n", pos_target_global_int.coordinate_frame);
+                LOG_W("Unsupported SET_POSITION_TARGET_GLOBAL_INT frame:%d\n", pos_target_global_int.coordinate_frame);
                 break;
             }
 
@@ -464,15 +529,29 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
     case MAVLINK_MSG_ID_REQUEST_DATA_STREAM:
         if (system.sysid == mavlink_msg_request_data_stream_get_target_system(msg)) {
             mavlink_request_data_stream_t req_data_stream;
+            uint16_t i;
 
             mavlink_msg_request_data_stream_decode(msg, &req_data_stream);
 
-            printf("id:%d freq:%d Hz\n", req_data_stream.req_stream_id, req_data_stream.req_message_rate);
+            for (i = 0; i < sizeof(cb_table) / sizeof(msg_pack_cb_table); i++) {
+                if (req_data_stream.req_stream_id == cb_table[i].msgid) {
+                    if (mavobc_register_period_msg(cb_table[i].msgid, 1000.0f / req_data_stream.req_message_rate, cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
+                        LOG_I("Message %d registered with frequency %d Hz, start:%d\n", req_data_stream.req_stream_id, req_data_stream.req_message_rate, req_data_stream.start_stop);
+                    } else {
+                        LOG_E("Message %d registered failed\n", req_data_stream.req_stream_id);
+                    }
+                    break;
+                }
+            }
+
+            if (i == sizeof(cb_table) / sizeof(msg_pack_cb_table)) {
+                LOG_E("Message %d registered failed, can not find msg in loopup table.\n", req_data_stream.req_stream_id);
+            }
         }
         break;
 
     default:
-        printf("mavobc unknown mavlink msg:%d\n", msg->msgid);
+        // printf("mavobc unknown mavlink msg:%d\n", msg->msgid);
         break;
     }
 }
