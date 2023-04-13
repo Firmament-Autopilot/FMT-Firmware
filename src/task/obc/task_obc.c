@@ -17,6 +17,7 @@
 #include <firmament.h>
 
 #include "FMS.h"
+#include "INS.h"
 #include "module/mavproxy/px4_custom_mode.h"
 #include "module/obc/mavobc.h"
 #include "module/sensor/sensor_hub.h"
@@ -28,6 +29,7 @@
 #define LOG_TAG "OBCTask"
 
 MCN_DECLARE(fms_output);
+MCN_DECLARE(ins_output);
 MCN_DECLARE(auto_cmd);
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
@@ -41,14 +43,19 @@ typedef struct
 } msg_pack_cb_table;
 
 static mavlink_system_t mavlink_system;
-static McnNode_t fms_out_nod;
 
 static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_highres_imu_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_local_position_ned_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t);
 
 static msg_pack_cb_table cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_cb },
     { MAVLINK_MSG_ID_HIGHRES_IMU, mavlink_msg_highres_imu_cb },
+    { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_cb },
+    { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_cb },
+    { MAVLINK_MSG_ID_ALTITUDE, mavlink_msg_altitude_cb },
 };
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
@@ -136,16 +143,16 @@ static bool mavlink_msg_heartbeat_cb(mavlink_message_t* msg_t)
     heartbeat.custom_mode = 0;
     heartbeat.system_status = MAV_STATE_STANDBY;
 
-    if (mcn_poll(fms_out_nod)) {
-        mcn_copy(MCN_HUB(fms_output), fms_out_nod, &fms_out);
-
-        if (fms_out.status == VehicleStatus_Arm || fms_out.status == VehicleStatus_Standby) {
-            heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
-            heartbeat.system_status = MAV_STATE_ACTIVE;
-        }
-        /* map fms mode to px4 ctrl mode */
-        heartbeat.custom_mode = get_custom_mode(fms_out);
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+        return false;
     }
+
+    if (fms_out.status == VehicleStatus_Arm || fms_out.status == VehicleStatus_Standby) {
+        heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
+        heartbeat.system_status = MAV_STATE_ACTIVE;
+    }
+    /* map fms mode to px4 ctrl mode */
+    heartbeat.custom_mode = get_custom_mode(fms_out);
 
     mavlink_msg_heartbeat_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &heartbeat);
 
@@ -191,6 +198,72 @@ static bool mavlink_msg_highres_imu_cb(mavlink_message_t* msg_t)
     highres_imu.temperature = baro_data.temperature_deg;
 
     mavlink_msg_highres_imu_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &highres_imu);
+
+    return true;
+}
+
+static bool mavlink_msg_local_position_ned_cb(mavlink_message_t* msg_t)
+{
+    mavlink_local_position_ned_t local_position_ned;
+    INS_Out_Bus ins_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    local_position_ned.time_boot_ms = systime_now_ms();
+    local_position_ned.x = ins_out.x_R;
+    local_position_ned.y = ins_out.y_R;
+    local_position_ned.z = -ins_out.h_R;
+    local_position_ned.vx = ins_out.vn;
+    local_position_ned.vy = ins_out.ve;
+    local_position_ned.vz = ins_out.vd;
+
+    mavlink_msg_local_position_ned_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &local_position_ned);
+
+    return true;
+}
+
+static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t)
+{
+    mavlink_attitude_t attitude;
+    INS_Out_Bus ins_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    attitude.time_boot_ms = systime_now_ms();
+    attitude.roll = ins_out.phi;
+    attitude.pitch = ins_out.theta;
+    attitude.yaw = ins_out.psi;
+    attitude.rollspeed = ins_out.p;
+    attitude.pitchspeed = ins_out.q;
+    attitude.yawspeed = ins_out.r;
+
+    mavlink_msg_attitude_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &attitude);
+
+    return true;
+}
+
+static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
+{
+    mavlink_altitude_t altitude;
+    INS_Out_Bus ins_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    altitude.time_usec = systime_now_us();
+    altitude.altitude_monotonic = 0.0f;
+    altitude.altitude_amsl = ins_out.alt;
+    altitude.altitude_local = ins_out.h_R;
+    altitude.altitude_relative = ins_out.h_R; /* TODO, need home alt to calculate it */
+    altitude.altitude_terrain = ins_out.h_AGL;
+    altitude.bottom_clearance = 0.0f;
+
+    mavlink_msg_altitude_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &altitude);
 
     return true;
 }
@@ -561,9 +634,6 @@ fmt_err_t task_obc_init(void)
     fmt_err_t err;
 
     err = mavobc_init();
-
-    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
-    FMT_ASSERT(fms_out_nod != NULL);
 
     return err;
 }
