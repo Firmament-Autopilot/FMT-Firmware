@@ -15,6 +15,7 @@
  *****************************************************************************/
 
 #include <firmament.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "module/syscmd/optparse.h"
@@ -73,40 +74,70 @@ static void show_load_usage(void)
     SHELL_OPTION("-h, --help", "Show help.");
 }
 
+static void show_restore_usage(void)
+{
+    COMMAND_USAGE("param list", "[options] [group1][group2]...");
+
+    PRINT_STRING("\noptions:\n");
+    SHELL_OPTION("-h, --help", "Show help.");
+    SHELL_OPTION("-a, --all", "List all parameters");
+}
+
 static void disp_param(param_t* p)
 {
     if (p == NULL)
         return;
 
-    console_printf("%25s: ", p->name);
+    if (p->type == PARAM_TYPE_FLOAT || p->type == PARAM_TYPE_DOUBLE) {
+        char val_str[128];
+        char dval_str[128];
+
+        if (p->type == PARAM_TYPE_FLOAT) {
+            sprintf(val_str, "%f", p->val.f);
+            sprintf(dval_str, "%f", p->dval.f);
+        } else {
+            sprintf(val_str, "%lf", p->val.lf);
+            sprintf(dval_str, "%lf", p->dval.lf);
+        }
+
+        if (strcmp(val_str, dval_str) != 0) {
+            printf("[*]%25s: ", p->name);
+        } else {
+            printf("   %25s: ", p->name);
+        }
+    } else if (p->val.i32 != p->dval.i32) {
+        printf("[*]%25s: ", p->name);
+    } else {
+        printf("   %25s: ", p->name);
+    }
 
     switch (p->type) {
     case PARAM_TYPE_INT8:
-        console_printf("%d\n", p->val.i8);
+        printf("%d\n", p->val.i8);
         break;
     case PARAM_TYPE_UINT8:
-        console_printf("%u\n", p->val.u8);
+        printf("%u\n", p->val.u8);
         break;
     case PARAM_TYPE_INT16:
-        console_printf("%d\n", p->val.i16);
+        printf("%d\n", p->val.i16);
         break;
     case PARAM_TYPE_UINT16:
-        console_printf("%u\n", p->val.u16);
+        printf("%u\n", p->val.u16);
         break;
     case PARAM_TYPE_INT32:
-        console_printf("%d\n", p->val.i32);
+        printf("%ld\n", p->val.i32);
         break;
     case PARAM_TYPE_UINT32:
-        console_printf("%u\n", p->val.u32);
+        printf("%lu\n", p->val.u32);
         break;
     case PARAM_TYPE_FLOAT:
-        console_printf("%f\n", p->val.f);
+        printf("%f\n", p->val.f);
         break;
     case PARAM_TYPE_DOUBLE:
-        console_printf("%lf\n", p->val.lf);
+        printf("%lf\n", p->val.lf);
         break;
     default:
-        console_printf("unknow param type:%d\n", p->type);
+        printf("unknow param type:%d\n", p->type);
         break;
     }
 }
@@ -349,6 +380,107 @@ static int load(struct optparse options)
     return EXIT_SUCCESS;
 }
 
+static void restore_param(param_t* p)
+{
+    p->val = p->dval;
+}
+
+static void restore_group(param_group_t* gp)
+{
+    param_t* p;
+
+    if (gp == NULL)
+        return;
+
+    p = gp->param_list;
+
+    for (int i = 0; i < gp->param_num; i++) {
+        restore_param(p++);
+    }
+}
+
+static void restore_groups(void)
+{
+    param_group_t* gp = param_get_table();
+
+    for (int i = 0; i < param_get_group_count(); i++) {
+        restore_group(param_find_group(gp->name));
+        gp++;
+    }
+}
+
+static int restore(int argc, struct optparse options)
+{
+    int option;
+    int all = 0;
+    int group = 0;
+    struct optparse_long longopts[] = {
+        { "help", 'h', OPTPARSE_NONE },
+        { "all", 'a', OPTPARSE_NONE },
+        { "group", 'g', OPTPARSE_NONE },
+        { NULL } /* Don't remove this line */
+    };
+
+    while ((option = optparse_long(&options, longopts, NULL)) != -1) {
+        switch (option) {
+        case 'h':
+            show_restore_usage();
+            return EXIT_SUCCESS;
+        case 'a':
+            all = 1;
+            break;
+        case 'g':
+            group = 1;
+            break;
+        case '?':
+            printf("%s: %s\n", "param restore", options.errmsg);
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (all) {
+        /* restore all parameters */
+        restore_groups();
+    } else {
+        int arg_c = argc - options.optind;
+
+        if (group) {
+            for (int i = 0; i < arg_c; i++) {
+                char* group_name = optparse_arg(&options);
+                restore_group(param_find_group(group_name));
+            }
+        } else {
+            if (arg_c == 1) {
+                char* param_name = optparse_arg(&options);
+
+                param_t* param = param_get_by_name(param_name);
+                if (param != NULL) {
+                    restore_param(param);
+                } else {
+                    printf("fail to find parameter: %s\n", param_name);
+                    return EXIT_FAILURE;
+                }
+            } else if (arg_c == 2) {
+                char* group_name = optparse_arg(&options);
+                char* param_name = optparse_arg(&options);
+
+                param_t* param = param_get_by_full_name(group_name, param_name);
+                if (param != NULL) {
+                    restore_param(param);
+                } else {
+                    printf("fail to find parameter: %s.%s\n", group_name, param_name);
+                    return EXIT_FAILURE;
+                }
+            } else {
+                show_restore_usage();
+                return EXIT_FAILURE;
+            }
+        }
+    }
+
+    return EXIT_SUCCESS;
+}
+
 int cmd_param(int argc, char** argv)
 {
     char* arg;
@@ -369,6 +501,8 @@ int cmd_param(int argc, char** argv)
             res = save(options);
         } else if (STRING_COMPARE(arg, "load")) {
             res = load(options);
+        } else if (STRING_COMPARE(arg, "restore")) {
+            res = restore(argc, options);
         } else {
             show_usage();
         }
