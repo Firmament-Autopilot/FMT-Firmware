@@ -11,6 +11,7 @@ from __future__ import print_function
 import sys, select
 # import termios
 import msvcrt
+import signal
 print("msvcrt")
 from timeit import default_timer as timer
 # import fcntl
@@ -174,7 +175,10 @@ def main():
                 # if  sys.stdin.isatty(): 
                 #     break   
                 # ch = sys.stdin.read(1)
-                ch = str(msvcrt.getch(),encoding='utf-8')
+                # ch = str(msvcrt.getch(),encoding='utf-8')
+                ch = msvcrt.getch()
+                if ord(ch)<127:
+                    ch = str(ch,encoding='utf-8')
                 # provide a simple shell with command history
                 # if ch == '\n':
                 # if ch == '\r\n':
@@ -198,16 +202,17 @@ def main():
                         cur_line = cur_line[:-1]
                         sys.stdout.write(ch)
                 # elif ord(ch) == 27:
-                elif ch == '\x00':
+                # elif ch == '\x00' or ch == '\xe0':
+                elif ord(ch) == 0 or ord(ch) == 224:
                     # ch = sys.stdin.read(1) # skip one
-                    ch = msvcrt.getch() 
-                    if ch == 'H': # arrow up
+                    ch = msvcrt.getch()
+                    if ch == b'H': # arrow up
                         if cur_history_index > 0:
                             cur_history_index -= 1
-                    elif ch == 'P': # arrow down
+                    elif ch == b'P': # arrow down
                         if cur_history_index < len(command_history):
                             cur_history_index += 1
-                    elif ch == 'O':
+                    elif ch == b'O':
                         _run_loop = False
                         sys.exit(0)
                     # TODO: else: support line editing
@@ -223,6 +228,8 @@ def main():
                     if ch != '\r' and ch != '\n':
                         cur_line += str(ch)
                         sys.stdout.write(str(ch))
+                else:
+                    print(ch)        
                 sys.stdout.flush()
 
 
@@ -246,6 +253,18 @@ def main():
         pass
 
 
+
+def exit(signum,frame):
+    print("exit")
+    exit()
+
+
+
 if __name__ == '__main__':
-    main()
+    signal.signal(signal.SIGINT,exit)
+    signal.signal(signal.SIGTERM,exit)
+    try:
+        main()
+    except :
+        sys.exit()
 
