@@ -76,11 +76,12 @@ static void show_load_usage(void)
 
 static void show_restore_usage(void)
 {
-    COMMAND_USAGE("param list", "[options] [group1][group2]...");
+    COMMAND_USAGE("param restore", "[options] [group] [parameter]");
 
     PRINT_STRING("\noptions:\n");
     SHELL_OPTION("-h, --help", "Show help.");
-    SHELL_OPTION("-a, --all", "List all parameters");
+    SHELL_OPTION("-a, --all", "Restore all parameters");
+    SHELL_OPTION("-g, --group", "Restore groups");
 }
 
 static void disp_param(param_t* p)
@@ -92,6 +93,7 @@ static void disp_param(param_t* p)
         char val_str[128];
         char dval_str[128];
 
+        /* fprintf is only saved to 6 decimal places, so we need compare string value for float/double */
         if (p->type == PARAM_TYPE_FLOAT) {
             sprintf(val_str, "%f", p->val.f);
             sprintf(dval_str, "%f", p->dval.f);
