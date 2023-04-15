@@ -174,7 +174,7 @@ def main():
                 # if  sys.stdin.isatty(): 
                 #     break   
                 # ch = sys.stdin.read(1)
-                ch = msvcrt.getch()  
+                ch = str(msvcrt.getch(),encoding='utf-8')
                 # provide a simple shell with command history
                 # if ch == '\n':
                 # if ch == '\r\n':
@@ -221,8 +221,8 @@ def main():
 
                 elif ord(ch) > 3:
                     if ch != '\r' and ch != '\n':
-                        cur_line += ch
-                        sys.stdout.write(ch)
+                        cur_line += str(ch)
+                        sys.stdout.write(str(ch))
                 sys.stdout.flush()
 
 
