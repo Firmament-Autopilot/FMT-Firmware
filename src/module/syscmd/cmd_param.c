@@ -31,6 +31,7 @@ static void show_usage(void)
     SHELL_COMMAND("get", "Get parameter.");
     SHELL_COMMAND("save", "Save parameters to file.");
     SHELL_COMMAND("load", "Load parameters from file.");
+    SHELL_COMMAND("restore", "Restore parameters value to default.");
 }
 
 static void show_list_usage(void)
@@ -40,6 +41,8 @@ static void show_list_usage(void)
     PRINT_STRING("\noptions:\n");
     SHELL_OPTION("-h, --help", "Show help.");
     SHELL_OPTION("-a, --all", "List all parameters");
+    SHELL_OPTION("-c, --change", "List changed parameters");
+    SHELL_OPTION("-d, --default", "List parameters default value");
 }
 
 static void show_set_usage(void)
@@ -77,6 +80,9 @@ static void show_load_usage(void)
 static void show_restore_usage(void)
 {
     COMMAND_USAGE("param restore", "[options] [group] [parameter]");
+    COMMAND_USAGE("param restore", "-a");
+    COMMAND_USAGE("param restore", "-g <group1> [group2]");
+    COMMAND_USAGE("param restore", "[group] <parameter>");
 
     PRINT_STRING("\noptions:\n");
     SHELL_OPTION("-h, --help", "Show help.");
@@ -84,8 +90,10 @@ static void show_restore_usage(void)
     SHELL_OPTION("-g, --group", "Restore groups");
 }
 
-static void disp_param(param_t* p)
+static void disp_param(param_t* p, int only_change, int show_default)
 {
+    int has_changed = 0;
+
     if (p == NULL)
         return;
 
@@ -104,39 +112,79 @@ static void disp_param(param_t* p)
 
         if (strcmp(val_str, dval_str) != 0) {
             printf("[*]%25s: ", p->name);
+            has_changed = 1;
         } else {
+            if (only_change) {
+                return;
+            }
             printf("   %25s: ", p->name);
         }
     } else if (p->val.i32 != p->dval.i32) {
         printf("[*]%25s: ", p->name);
+        has_changed = 1;
     } else {
+        if (only_change) {
+            return;
+        }
         printf("   %25s: ", p->name);
     }
 
     switch (p->type) {
     case PARAM_TYPE_INT8:
-        printf("%d\n", p->val.i8);
+        if (show_default && has_changed) {
+            printf("%d [%d]\n", p->val.i8, p->dval.i8);
+        } else {
+            printf("%d\n", p->val.i8);
+        }
         break;
     case PARAM_TYPE_UINT8:
-        printf("%u\n", p->val.u8);
+        if (show_default && has_changed) {
+            printf("%u [%u]\n", p->val.u8, p->dval.u8);
+        } else {
+            printf("%u\n", p->val.u8);
+        }
         break;
     case PARAM_TYPE_INT16:
-        printf("%d\n", p->val.i16);
+        if (show_default && has_changed) {
+            printf("%d [%d]\n", p->val.i16, p->dval.i16);
+        } else {
+            printf("%d\n", p->val.i16);
+        }
         break;
     case PARAM_TYPE_UINT16:
-        printf("%u\n", p->val.u16);
+        if (show_default && has_changed) {
+            printf("%u [%u]\n", p->val.u16, p->dval.u16);
+        } else {
+            printf("%u\n", p->val.u16);
+        }
         break;
     case PARAM_TYPE_INT32:
-        printf("%ld\n", p->val.i32);
+        if (show_default && has_changed) {
+            printf("%ld [%ld]\n", p->val.i32, p->dval.i32);
+        } else {
+            printf("%ld\n", p->val.i32);
+        }
         break;
     case PARAM_TYPE_UINT32:
-        printf("%lu\n", p->val.u32);
+        if (show_default && has_changed) {
+            printf("%lu [%lu]\n", p->val.u32, p->dval.u32);
+        } else {
+            printf("%lu\n", p->val.u32);
+        }
         break;
     case PARAM_TYPE_FLOAT:
-        printf("%f\n", p->val.f);
+        if (show_default && has_changed) {
+            printf("%f [%f]\n", p->val.f, p->dval.f);
+        } else {
+            printf("%f\n", p->val.f);
+        }
         break;
     case PARAM_TYPE_DOUBLE:
-        printf("%lf\n", p->val.lf);
+        if (show_default && has_changed) {
+            printf("%lf [%lf]\n", p->val.lf, p->dval.lf);
+        } else {
+            printf("%lf\n", p->val.lf);
+        }
         break;
     default:
         printf("unknow param type:%d\n", p->type);
@@ -144,7 +192,7 @@ static void disp_param(param_t* p)
     }
 }
 
-static void list_group(param_group_t* gp)
+static void list_group(param_group_t* gp, int only_change, int show_default)
 {
     param_t* p;
 
@@ -155,7 +203,7 @@ static void list_group(param_group_t* gp)
     p = gp->param_list;
 
     for (int i = 0; i < gp->param_num; i++) {
-        disp_param(p++);
+        disp_param(p++, only_change, show_default);
     }
 }
 
@@ -172,12 +220,12 @@ static void list_groups(void)
     }
 }
 
-static void list_all(void)
+static void list_all(int only_change, int show_default)
 {
     param_group_t* gp = param_get_table();
 
     for (int i = 0; i < param_get_group_count(); i++) {
-        list_group(gp++);
+        list_group(gp++, only_change, show_default);
     }
 }
 
@@ -186,9 +234,13 @@ static int list(int argc, struct optparse options)
     char* arg;
     int option;
     int all = 0;
+    int only_change = 0;
+    int show_default = 0;
     struct optparse_long longopts[] = {
         { "help", 'h', OPTPARSE_NONE },
         { "all", 'a', OPTPARSE_NONE },
+        { "change", 'c', OPTPARSE_NONE },
+        { "default", 'd', OPTPARSE_NONE },
         { NULL } /* Don't remove this line */
     };
 
@@ -200,6 +252,12 @@ static int list(int argc, struct optparse options)
         case 'a':
             all = 1;
             break;
+        case 'c':
+            only_change = 1;
+            break;
+        case 'd':
+            show_default = 1;
+            break;
         case '?':
             printf("%s: %s\n", "param list", options.errmsg);
             return EXIT_FAILURE;
@@ -208,12 +266,12 @@ static int list(int argc, struct optparse options)
 
     if (all) {
         /* list all parameters */
-        list_all();
+        list_all(only_change, show_default);
     } else {
         if (argc - options.optind > 0) {
             while ((arg = optparse_arg(&options))) {
                 /* list group parameters */
-                list_group(param_find_group(arg));
+                list_group(param_find_group(arg), only_change, show_default);
             }
         } else {
             /* list all groups */
@@ -296,7 +354,7 @@ static int get(int argc, struct optparse options)
 
         param_t* param = param_get_by_name(param_name);
         if (param != NULL) {
-            disp_param(param);
+            disp_param(param, 0, 0);
         } else {
             printf("fail to find parameter: %s\n", param_name);
             return EXIT_FAILURE;
@@ -307,7 +365,7 @@ static int get(int argc, struct optparse options)
 
         param_t* param = param_get_by_full_name(group_name, param_name);
         if (param != NULL) {
-            disp_param(param);
+            disp_param(param, 0, 0);
         } else {
             printf("fail to find parameter: %s.%s\n", group_name, param_name);
             return EXIT_FAILURE;
