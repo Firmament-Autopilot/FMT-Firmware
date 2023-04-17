@@ -89,7 +89,7 @@
 /* Using Device file system */
 #define RT_USING_DFS
 /* the max number of mounted filesystem */
-#define DFS_FILESYSTEMS_MAX			2
+#define DFS_FILESYSTEMS_MAX			4
 /* the max number of opened files 		*/
 #define DFS_FD_MAX					20
 
@@ -106,7 +106,7 @@
 #define RT_DFS_ELM_MAX_SECTOR_SIZE  4096
 
 /* Using ROM file system */
-// #define RT_USING_DFS_ROMFS
+#define RT_USING_DFS_ROMFS
 
 /* C standard library */
 #define RT_USING_LIBC
