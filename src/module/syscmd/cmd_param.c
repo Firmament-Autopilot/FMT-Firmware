@@ -15,7 +15,6 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "module/syscmd/optparse.h"
@@ -97,35 +96,25 @@ static void disp_param(param_t* p, int only_change, int show_default)
     if (p == NULL)
         return;
 
-    if (p->type == PARAM_TYPE_FLOAT || p->type == PARAM_TYPE_DOUBLE) {
-        char val_str[128];
-        char dval_str[128];
-
-        /* fprintf is only saved to 6 decimal places, so we need compare string value for float/double */
-        if (p->type == PARAM_TYPE_FLOAT) {
-            sprintf(val_str, "%f", p->val.f);
-            sprintf(dval_str, "%f", p->dval.f);
-        } else {
-            sprintf(val_str, "%lf", p->val.lf);
-            sprintf(dval_str, "%lf", p->dval.lf);
-        }
-
-        if (strcmp(val_str, dval_str) != 0) {
-            printf("[*]%25s: ", p->name);
+    if (p->type == PARAM_TYPE_FLOAT) {
+        /* fprintf is only saved to 6 decimal places */
+        if (fabs(p->val.f - p->dval.f) > 0.999999 * 1e-6) {
             has_changed = 1;
-        } else {
-            if (only_change) {
-                return;
-            }
-            printf("   %25s: ", p->name);
+        }
+    } else if (p->type == PARAM_TYPE_DOUBLE) {
+        if (fabs(p->val.lf - p->dval.lf) > 0.999999 * 1e-6) {
+            has_changed = 1;
         }
     } else if (p->val.i32 != p->dval.i32) {
-        printf("[*]%25s: ", p->name);
         has_changed = 1;
+    }
+
+    if (has_changed) {
+        printf("[*]%25s: ", p->name);
+    } else if (only_change) {
+        /* only show changed parameter, just return */
+        return;
     } else {
-        if (only_change) {
-            return;
-        }
         printf("   %25s: ", p->name);
     }
 
