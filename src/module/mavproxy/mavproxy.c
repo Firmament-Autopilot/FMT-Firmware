@@ -19,7 +19,7 @@
 #include "hal/serial/serial.h"
 #include "module/mavproxy/mavproxy.h"
 
-#define MAVPROXY_INTERVAL            2
+#define MAVPROXY_INTERVAL            1
 #define MAVPROXY_BUFFER_SIZE         1024
 #define MAX_PERIOD_MSG_QUEUE_SIZE    20
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 10
