@@ -37,6 +37,7 @@
 #include "drv_buzzer.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
+#include "drv_i2c_soft.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
@@ -66,6 +67,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -264,6 +266,7 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
+    // RT_CHECK(drv_i2c_soft_init());
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
