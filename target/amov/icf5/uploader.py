@@ -935,7 +935,7 @@ def main():
                     time.sleep(0.05)
                     if test_once:
                         print("Not found fmt_fmu,please connect fmt_fmu!")
-                        time.sleep(2)
+                        time.sleep(1)
                     # and loop to the next port
                     continue
 
