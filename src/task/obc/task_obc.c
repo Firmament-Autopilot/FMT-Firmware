@@ -34,6 +34,7 @@ MCN_DECLARE(auto_cmd);
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
+MCN_DECLARE(sensor_rangefinder);
 MCN_DECLARE(sensor_airspeed);
 
 typedef struct
@@ -49,13 +50,19 @@ static bool mavlink_msg_highres_imu_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_local_position_ned_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_attitude_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_distance_sensor_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_gps_global_origin_cb(mavlink_message_t* msg_t);
 
-static msg_pack_cb_table cb_table[] = {
+static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_cb },
     { MAVLINK_MSG_ID_HIGHRES_IMU, mavlink_msg_highres_imu_cb },
     { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_cb },
     { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_cb },
     { MAVLINK_MSG_ID_ALTITUDE, mavlink_msg_altitude_cb },
+    { MAVLINK_MSG_ID_DISTANCE_SENSOR, mavlink_msg_distance_sensor_cb },
+    { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_cb },
+    { MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN, mavlink_msg_gps_global_origin_cb },
 };
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
@@ -264,6 +271,69 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
     altitude.bottom_clearance = 0.0f;
 
     mavlink_msg_altitude_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &altitude);
+
+    return true;
+}
+
+static bool mavlink_msg_distance_sensor_cb(mavlink_message_t* msg_t)
+{
+    mavlink_distance_sensor_t distance_sensor = { 0 };
+    rf_data_t rf_data;
+
+    if (mcn_copy_from_hub(MCN_HUB(sensor_rangefinder), &rf_data) != FMT_EOK) {
+        return false;
+    }
+
+    distance_sensor.time_boot_ms = systime_now_ms();
+    distance_sensor.current_distance = rf_data.distance_m > 0.0f ? rf_data.distance_m * 100 : 0;
+    distance_sensor.signal_quality = rf_data.distance_m > 0.0f ? 100 : 0;
+
+    mavlink_msg_distance_sensor_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &distance_sensor);
+
+    return true;
+}
+
+static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t)
+{
+    mavlink_extended_sys_state_t ext_sys_state = { 0 };
+    FMS_Out_Bus fms_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+        return false;
+    }
+
+    if (fms_out.status == VehicleStatus_Disarm || fms_out.status == VehicleStatus_Standby) {
+        ext_sys_state.landed_state = MAV_LANDED_STATE_ON_GROUND;
+    } else {
+        if (fms_out.state == VehicleState_Takeoff) {
+            ext_sys_state.landed_state = MAV_LANDED_STATE_TAKEOFF;
+        } else if (fms_out.state == VehicleState_Land) {
+            ext_sys_state.landed_state = MAV_LANDED_STATE_LANDING;
+        } else {
+            ext_sys_state.landed_state = MAV_LANDED_STATE_IN_AIR;
+        }
+    }
+
+    mavlink_msg_extended_sys_state_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &ext_sys_state);
+
+    return true;
+}
+
+static bool mavlink_msg_gps_global_origin_cb(mavlink_message_t* msg_t)
+{
+    mavlink_gps_global_origin_t gps_global_origin = { 0 };
+    INS_Out_Bus ins_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    gps_global_origin.time_usec = systime_now_us();
+    gps_global_origin.latitude = RAD2DEG(ins_out.lat_0) * 1e7;
+    gps_global_origin.longitude = RAD2DEG(ins_out.lon_0) * 1e7;
+    gps_global_origin.altitude = ins_out.alt_0 * 1e3;
+
+    mavlink_msg_gps_global_origin_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &gps_global_origin);
 
     return true;
 }
@@ -606,9 +676,9 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
 
             mavlink_msg_request_data_stream_decode(msg, &req_data_stream);
 
-            for (i = 0; i < sizeof(cb_table) / sizeof(msg_pack_cb_table); i++) {
-                if (req_data_stream.req_stream_id == cb_table[i].msgid) {
-                    if (mavobc_register_period_msg(cb_table[i].msgid, 1000.0f / req_data_stream.req_message_rate, cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
+            for (i = 0; i < sizeof(mav_msg_cb_table) / sizeof(msg_pack_cb_table); i++) {
+                if (req_data_stream.req_stream_id == mav_msg_cb_table[i].msgid) {
+                    if (mavobc_register_period_msg(mav_msg_cb_table[i].msgid, 1000.0f / req_data_stream.req_message_rate, mav_msg_cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
                         LOG_I("Message %d registered with frequency %d Hz, start:%d\n", req_data_stream.req_stream_id, req_data_stream.req_message_rate, req_data_stream.start_stop);
                     } else {
                         LOG_E("Message %d registered failed\n", req_data_stream.req_stream_id);
@@ -617,7 +687,7 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
                 }
             }
 
-            if (i == sizeof(cb_table) / sizeof(msg_pack_cb_table)) {
+            if (i == sizeof(mav_msg_cb_table) / sizeof(msg_pack_cb_table)) {
                 LOG_E("Message %d registered failed, can not find msg in loopup table.\n", req_data_stream.req_stream_id);
             }
         }
