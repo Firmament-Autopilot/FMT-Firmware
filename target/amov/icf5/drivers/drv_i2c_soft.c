@@ -91,10 +91,10 @@ rt_inline void gd32_udelay(rt_uint32_t us)
 static rt_err_t gd32_i2c_pin_init(struct rt_i2c_bus* i2c_bus)
 {
     if (i2c_bus == &i2c0_dev) {
-        gpio_output_options_set(BSP_I2C0_SCL_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, BSP_I2C0_SCL_PIN);
+        gpio_output_options_set(BSP_I2C0_SCL_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, BSP_I2C0_SCL_PIN);
         gpio_mode_set(BSP_I2C0_SCL_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BSP_I2C0_SCL_PIN);
 
-        gpio_output_options_set(BSP_I2C0_SDA_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, BSP_I2C0_SDA_PIN);
+        gpio_output_options_set(BSP_I2C0_SDA_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, BSP_I2C0_SDA_PIN);
         gpio_mode_set(BSP_I2C0_SDA_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BSP_I2C0_SDA_PIN);
     } else {
         return RT_EINVAL;
