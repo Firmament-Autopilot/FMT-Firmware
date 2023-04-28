@@ -20,7 +20,7 @@ int cmd_run_init(void)
 {
     char cmd[512];
     console_println("start run /init.sh\n");
-    int  fd = open("/init.sh", O_RDONLY, 0);
+    int  fd = open("/rom/init.sh", O_RDONLY, 0);
     if (fd >= 0)
     {
         int size = read(fd,cmd,sizeof(cmd));

@@ -379,6 +379,7 @@ void bsp_post_initialize(void)
 
     dfs_romfs_init();
     mnt_init();
+    cmd_run_init();
 
     /* show system information */
     bsp_show_information();
