@@ -377,6 +377,9 @@ void bsp_post_initialize(void)
     /* init led control */
     FMT_CHECK(led_control_init());
 
+    dfs_romfs_init();
+    mnt_init();
+
     /* show system information */
     bsp_show_information();
 
