@@ -108,7 +108,7 @@ static int8_t _dig_xy2;    /**< trim xy2 data */
 static uint16_t _dig_xyz1; /**< trim xyz1 data */
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
+RT_WEAK void bmm150_rotate_to_frd(float* data, uint32_t dev_id)
 {
     /* do nothing */
     (void)data;
@@ -251,7 +251,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[2] = z * 0.01f;
 
     /* rotate to ned */
-    bmm150_rotate_to_ned(mag, 0);
+    bmm150_rotate_to_frd(mag, 0);
 
 exit:
     /* trigger the next measurement */

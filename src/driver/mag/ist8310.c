@@ -68,7 +68,7 @@ static float _range_scale = IST8310_SCALE_TO_GAUSS;
 RT_WEAK void ist8310_user_calibrate(float data[3]);
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void ist8310_rotate_to_ned(float* data)
+RT_WEAK void ist8310_rotate_to_frd(float* data)
 {
     /* do nothing */
 }
@@ -99,7 +99,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[1] = _range_scale * raw[1];
     mag[2] = _range_scale * raw[2];
 
-    ist8310_rotate_to_ned(mag);
+    ist8310_rotate_to_frd(mag);
 
     if (ist8310_user_calibrate != RT_NULL) {
         /* do user defined calibration */

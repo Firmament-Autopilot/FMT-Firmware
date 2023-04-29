@@ -94,7 +94,7 @@ static rt_device_t i2c_dev;
 RT_WEAK void mmc5983ma_user_calibrate(float data[3]);
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void mmc5983ma_rotate_to_ned(float* data)
+RT_WEAK void mmc5983ma_rotate_to_frd(float* data)
 {
     /* do nothing */
 }
@@ -134,7 +134,7 @@ static rt_err_t mag_measure(float* mag)
     mag[1] = mag_raw[1];
     mag[2] = mag_raw[2];
 
-    mmc5983ma_rotate_to_ned(mag);
+    mmc5983ma_rotate_to_frd(mag);
 
     return RT_EOK;
 }

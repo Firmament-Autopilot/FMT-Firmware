@@ -284,11 +284,11 @@ static float gyro_range_scale;
 static float accel_range_scale;
 static rt_device_t spi_dev;
 
-RT_WEAK void icm20948_rotate_to_ned(float* data)
+RT_WEAK void icm20948_rotate_to_frd(float* data)
 {
 }
 
-RT_WEAK void ak09916_rotate_to_ned(float* data)
+RT_WEAK void ak09916_rotate_to_frd(float* data)
 {
 }
 
@@ -429,7 +429,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[1] = _range_scale * raw[1];
     mag[2] = _range_scale * raw[2];
 
-    ak09916_rotate_to_ned(mag);
+    ak09916_rotate_to_frd(mag);
 
     return RT_EOK;
 }
@@ -720,7 +720,7 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[2] = gyro_range_scale * gyr_raw[2];
 
     // change to NED coordinate
-    icm20948_rotate_to_ned(gyr);
+    icm20948_rotate_to_frd(gyr);
 
     return RT_EOK;
 }
@@ -779,7 +779,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
 
-    icm20948_rotate_to_ned(acc);
+    icm20948_rotate_to_frd(acc);
 
     return RT_EOK;
 }

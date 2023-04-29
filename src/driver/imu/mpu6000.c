@@ -149,7 +149,7 @@ static float _accel_range_m_s2;
 static rt_device_t spi_device;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void mpu6000_rotate_to_ned(float* val)
+RT_WEAK void mpu6000_rotate_to_frd(float* val)
 {
     /* do nothing */
 }
@@ -457,7 +457,7 @@ static rt_err_t mpu6000_gyr_read_rad(float gyr[3])
     gyr[1] = _gyro_range_scale * gyr_raw[1];
     gyr[2] = _gyro_range_scale * gyr_raw[2];
 
-    mpu6000_rotate_to_ned(gyr);
+    mpu6000_rotate_to_frd(gyr);
 
     return res;
 }
@@ -485,7 +485,7 @@ static rt_err_t mpu6000_acc_read_m_s2(float acc[3])
     acc[1] = _accel_range_scale * acc_raw[1];
     acc[2] = _accel_range_scale * acc_raw[2];
 
-    mpu6000_rotate_to_ned(acc);
+    mpu6000_rotate_to_frd(acc);
 
     return res;
 }
