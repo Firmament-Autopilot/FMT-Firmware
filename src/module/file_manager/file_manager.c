@@ -205,6 +205,12 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
         return FMT_ERROR;
     }
 
+    /* init romfs */
+    if (dfs_romfs_init() != 0) {
+        printf("romfs init fail!\n");
+        return FMT_ERROR;
+    }
+
     if (mnt_table[0].device_name == NULL) {
         /* empty mount table, just return */
         return FMT_EOK;
@@ -232,7 +238,7 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
 
     /* mount other devices */
     for (int i = 1;; i++) {
-        if (mnt_table[i].device_name == NULL) {
+        if (mnt_table[i].path == NULL) {
             break;
         }
         /* if path doesn't exit, create it */

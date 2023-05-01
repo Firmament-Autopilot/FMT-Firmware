@@ -17,6 +17,7 @@
 
 #include <board.h>
 #include <board_device.h>
+#include <msh.h>
 #include <shell.h>
 #include <string.h>
 
@@ -75,9 +76,12 @@
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
+extern const struct romfs_dirent romfs_root;
+
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
+    { NULL, "/mnt/romfs", "rom", 0, &romfs_root },
     { NULL } /* NULL indicate the end */
 };
 
@@ -377,12 +381,11 @@ void bsp_post_initialize(void)
     /* init led control */
     FMT_CHECK(led_control_init());
 
-    dfs_romfs_init();
-    mnt_init();
-    cmd_run_init();
-
     /* show system information */
     bsp_show_information();
+
+    /* execute init script */
+    msh_exec_script("/mnt/romfs/init.sh", strlen("/mnt/romfs/init.sh"));
 
     /* dump boot log to file */
     boot_log_dump();
