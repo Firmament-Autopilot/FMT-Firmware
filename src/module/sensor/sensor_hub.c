@@ -19,6 +19,7 @@
 
 #include "module/filter/butter.h"
 #include "module/math/light_matrix.h"
+#include "module/math/rotation.h"
 #include "module/sensor/sensor_airspeed.h"
 #include "module/sensor/sensor_baro.h"
 #include "module/sensor/sensor_gps.h"
@@ -645,6 +646,7 @@ fmt_err_t register_sensor_airspeed(const char* dev_name)
 void sensor_collect(void)
 {
     float temp[3];
+    enum Rotation board_rot = PARAM_GET_UINT8(CALIB, SENS_BOARD_ROT);
 
     /*
      * Collect imu data
@@ -677,6 +679,9 @@ void sensor_collect(void)
                 imu_data.acc_B_mDs2[0] = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[0][0]);
                 imu_data.acc_B_mDs2[1] = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[0][1]);
                 imu_data.acc_B_mDs2[2] = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[0][2]);
+                /* do board rotation */
+                rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
+                rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
                 /* publish calibrated & filtered imu data */
                 mcn_publish(MCN_HUB(sensor_imu0), &imu_data);
             }
@@ -704,6 +709,9 @@ void sensor_collect(void)
                 imu_data.acc_B_mDs2[0] = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[1][0]);
                 imu_data.acc_B_mDs2[1] = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[1][1]);
                 imu_data.acc_B_mDs2[2] = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[1][2]);
+                /* do board rotation */
+                rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
+                rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
                 /* publish calibrated & filtered imu data */
                 mcn_publish(MCN_HUB(sensor_imu1), &imu_data);
             }
@@ -728,6 +736,8 @@ void sensor_collect(void)
                 mag_data.mag_B_gauss[0] = temp[0];
                 mag_data.mag_B_gauss[1] = temp[1];
                 mag_data.mag_B_gauss[2] = temp[2];
+                /* do board rotation */
+                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
                 /* publish calibrated mag data */
                 mcn_publish(MCN_HUB(sensor_mag0), &mag_data);
             }
@@ -742,6 +752,8 @@ void sensor_collect(void)
                 mag_data.mag_B_gauss[0] = temp[0];
                 mag_data.mag_B_gauss[1] = temp[1];
                 mag_data.mag_B_gauss[2] = temp[2];
+                /* do board rotation */
+                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
                 /* publish calibrated mag data */
                 mcn_publish(MCN_HUB(sensor_mag1), &mag_data);
             }

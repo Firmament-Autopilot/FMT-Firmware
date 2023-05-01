@@ -16,6 +16,7 @@
 
 #include <firmament.h>
 
+#include "module/math/rotation.h"
 #include "module/param/param.h"
 
 /* define parameters */
@@ -80,5 +81,10 @@ static param_t __param_list[] = {
     PARAM_FLOAT(LEVEL_ZOFF, 0.0),
     /* Airspeed Calibration */
     PARAM_FLOAT(DIFF_PRESS_OFFSET, 0.0),
+    /* Battery Voltage Divider */
+    PARAM_FLOAT(BAT1_V_DIV, 1.0),
+    PARAM_FLOAT(BAT2_V_DIV, 1.0),
+    /* Board Rotation */
+    PARAM_UINT8(SENS_BOARD_ROT, ROTATION_NONE),
 };
 PARAM_GROUP_DEFINE(CALIB, __param_list);
