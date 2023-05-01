@@ -3,7 +3,7 @@
 #include "dfs_romfs.h"
 
 static const char init_sh_data[] = "\
-ps\
+version\
 ";
 
 static const struct romfs_dirent romfs_data[] = {

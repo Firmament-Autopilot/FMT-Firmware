@@ -17,6 +17,7 @@ MODULES = [
     'syscmd/cmd_task.c',
     'syscmd/cmd_mlog.c',
     'syscmd/cmd_rc.c',
+    'syscmd/cmd_exec.c',
     'file_manager/*.c',
     'ftp/*.c',
     "log/*.c",
