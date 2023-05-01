@@ -18,6 +18,7 @@
 
 #include "dfs_elm.h"
 #include "dfs_fs.h"
+#include "dfs_romfs.h"
 #include "module/file_manager/file_manager.h"
 
 #define MAX_LOG_SESSION_NUM 10
