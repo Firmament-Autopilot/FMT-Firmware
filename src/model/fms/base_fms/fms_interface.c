@@ -234,6 +234,7 @@ static int fms_output_echo(void* param)
     printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
     printf("mode:%s reset:%d\n", fms_mode[fms_out.mode], fms_out.reset);
     printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
+    printf("home: xyz(m) %.2f %.2f %.2f yaw(deg) %.2f\n", fms_out.home[0], fms_out.home[1], fms_out.home[2], RAD2DEG(fms_out.home[3]));
     printf("------------------------------------------\n");
 
     return 0;

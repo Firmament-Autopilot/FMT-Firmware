@@ -373,9 +373,9 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     } break;
     case MAV_CMD_COMPONENT_ARM_DISARM:
         if (command->param1 == 1.0f) {
-            gcs_set_cmd(FMS_Cmd_PreArm);
+            gcs_set_cmd(FMS_Cmd_PreArm, (float[7]) { 0 });
         } else if (command->param1 == 0.0f) {
-            gcs_set_cmd(FMS_Cmd_Disarm);
+            gcs_set_cmd(FMS_Cmd_Disarm, (float[7]) { 0 });
         }
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
@@ -383,20 +383,20 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         break;
 
     case MAV_CMD_NAV_TAKEOFF: {
-        gcs_set_cmd(FMS_Cmd_Takeoff);
+        gcs_set_cmd(FMS_Cmd_Takeoff, (float[7]) { 0 });
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
 
     case MAV_CMD_NAV_LAND: {
-        gcs_set_cmd(FMS_Cmd_Land);
+        gcs_set_cmd(FMS_Cmd_Land, (float[7]) { 0 });
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
 
     case MAV_CMD_DO_REPOSITION: {
         /* When click pause button, GCS will send this command */
-        gcs_set_cmd(FMS_Cmd_Pause);
+        gcs_set_cmd(FMS_Cmd_Pause, (float[7]) { 0 });
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
@@ -441,16 +441,16 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
                     if (custom_sub_mode > 0) {
                         switch (custom_sub_mode) {
                         case PX4_CUSTOM_SUB_MODE_AUTO_RTL:
-                            gcs_set_cmd(FMS_Cmd_Return);
+                            gcs_set_cmd(FMS_Cmd_Return, (float[7]) { 0 });
                             break;
                         case PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF:
-                            gcs_set_cmd(FMS_Cmd_Takeoff);
+                            gcs_set_cmd(FMS_Cmd_Takeoff, (float[7]) { 0 });
                             break;
                         case PX4_CUSTOM_SUB_MODE_AUTO_LAND:
-                            gcs_set_cmd(FMS_Cmd_Land);
+                            gcs_set_cmd(FMS_Cmd_Land, (float[7]) { 0 });
                             break;
                         case PX4_CUSTOM_SUB_MODE_AUTO_LOITER:
-                            gcs_set_cmd(FMS_Cmd_Pause);
+                            gcs_set_cmd(FMS_Cmd_Pause, (float[7]) { 0 });
                             break;
                         case PX4_CUSTOM_SUB_MODE_AUTO_MISSION:
                             gcs_set_mode(PilotMode_Mission);

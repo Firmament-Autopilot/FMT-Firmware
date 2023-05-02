@@ -26,7 +26,9 @@ MCN_DEFINE(gcs_cmd, sizeof(GCS_Cmd_Bus));
 MCN_DECLARE(fms_output);
 
 static uint32_t gcs_cmd_buffer[20];
+static float gcs_cmd_param_buffer[20 * 7];
 static ringbuffer* gcs_cmd_rb;
+static ringbuffer* gcs_cmd_param_rb;
 static PilotMode gcs_mode_buffer[20];
 static ringbuffer* gcs_mode_rb;
 static GCS_Cmd_Bus gcs_cmd;
@@ -50,7 +52,7 @@ static int gcs_cmd_echo(void* parameter)
     return 0;
 }
 
-fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
+fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float param[5])
 {
     uint32_t new_cmd = cmd;
 
@@ -79,12 +81,20 @@ fmt_err_t gcs_set_cmd(FMS_Cmd cmd)
     case FMS_Cmd_Continue:
         LOG_I("recv Continue command.");
         break;
+    case FMS_Cmd_SetHome:
+        LOG_I("recv SetHome command. [x y z yaw] = [%.2f %.2f %.2f %.2f]",
+              param[0],
+              param[1],
+              param[2],
+              param[3]);
+        break;
     default:
         LOG_W("recv Unknown command %d.", cmd);
         return FMT_ENOTHANDLE;
     }
 
     ringbuffer_put(gcs_cmd_rb, (uint8_t*)&new_cmd, sizeof(new_cmd));
+    ringbuffer_put(gcs_cmd_param_rb, (uint8_t*)param, sizeof(gcs_cmd.param));
 
     return FMT_EOK;
 }
@@ -131,7 +141,7 @@ fmt_err_t gcs_set_mode(PilotMode mode)
            however, the mode is still PilotMode_Mission, so the mode would not change when user try
            to set mode to Mission and continue. Therefore, we send FMS_Cmd_Continue instead to continue
            the mission mode. */
-        gcs_set_cmd(FMS_Cmd_Continue);
+        gcs_set_cmd(FMS_Cmd_Continue, (float[7]) { 0 });
     } else {
         /* For normal case, we just set the new mode. */
         ringbuffer_put(gcs_mode_rb, (uint8_t*)&new_mode, sizeof(new_mode));
@@ -158,6 +168,7 @@ fmt_err_t gcs_cmd_collect(void)
             last_cmd_timestamp = time_now;
 
             ringbuffer_get(gcs_cmd_rb, (uint8_t*)&gcs_cmd.cmd_1, sizeof(gcs_cmd.cmd_1));
+            ringbuffer_get(gcs_cmd_param_rb, (uint8_t*)&gcs_cmd.param, sizeof(gcs_cmd.param));
             updated = 1;
         } else {
             if (gcs_cmd.cmd_1 > 0) {
@@ -178,8 +189,10 @@ fmt_err_t gcs_cmd_collect(void)
 fmt_err_t gcs_cmd_init(void)
 {
     gcs_cmd_rb = ringbuffer_static_create(sizeof(gcs_cmd_buffer), (uint8_t*)gcs_cmd_buffer);
+    gcs_cmd_param_rb = ringbuffer_static_create(sizeof(gcs_cmd_param_buffer), (uint8_t*)gcs_cmd_param_buffer);
     gcs_mode_rb = ringbuffer_static_create(sizeof(gcs_mode_buffer), (uint8_t*)gcs_mode_buffer);
     FMT_ASSERT(gcs_cmd_rb != NULL);
+    FMT_ASSERT(gcs_cmd_param_rb != NULL);
     FMT_ASSERT(gcs_mode_rb != NULL);
 
     FMT_TRY(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
