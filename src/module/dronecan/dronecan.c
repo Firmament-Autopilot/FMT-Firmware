@@ -21,7 +21,7 @@
     #if HAL_CANFD_SUPPORTED
         #define HAL_CAN_POOL_SIZE 16000
     #else
-        #define HAL_CAN_POOL_SIZE 512
+        #define HAL_CAN_POOL_SIZE 1024
     #endif
 #endif
 
@@ -43,15 +43,8 @@ uint8_t PreferredNodeID = HAL_CAN_DEFAULT_NODE_ID;
 
 #define SALVE_NODE_ID 125
 
-static struct dronecan_protocol_t {
-    CanardInstance canard;
-    uint8_t canard_memory_pool[HAL_CAN_POOL_SIZE];
-
-    uint32_t send_next_node_id_allocation_request_at_ms; ///< When the next node ID allocation request should be sent
-    uint8_t node_id_allocation_unique_id_offset;         ///< Depends on the stage of the next request
-    uint8_t tx_fail_count;
-    uint8_t dna_interface;
-} dronecan;
+static CanardInstance g_canard;
+static uint8_t g_canard_memory_pool[HAL_CAN_POOL_SIZE];
 
 static rt_device_t fdcan_dev[HAL_MAX_FDCAN_NUM];
 
@@ -111,6 +104,13 @@ static void onTransferReceived(CanardInstance* ins,
                uavcan_protocol_param_GetSetResponse_msg.name.len);
 
         break;
+
+    case UAVCAN_PROTOCOL_NODESTATUS_ID:
+        // printf("onTransferReceived UAVCAN_PROTOCOL_NODESTATUS_ID\n");
+        uavcan_protocol_NodeStatus_decode(transfer, &uavcan_protocol_NodeStatus_msg);
+        printf("mode %d\n", uavcan_protocol_NodeStatus_msg.mode);
+
+        break;
     }
 }
 
@@ -136,14 +136,14 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
             return true;
 
         case UAVCAN_PROTOCOL_NODESTATUS_ID:
-            // printf("UAVCAN_PROTOCOL_NODESTATUS_ID,source_node_id=%d\n", source_node_id);
+            printf("UAVCAN_PROTOCOL_NODESTATUS_ID,source_node_id=%d\n", source_node_id);
             *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
             return true;
 
-            // case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-            //     // printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
-            //     *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
-            //     return true;
+        case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
+            printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
+            *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
+            return true;
 
             // case ARDUPILOT_GNSS_STATUS_ID:
             //     // printf("ARDUPILOT_GNSS_STATUS_ID\n");
@@ -178,23 +178,25 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
 /**
  * Transmits all frames from the TX queue, receives up to one frame.
  */
-void processTxRxOnce(int32_t timeout_msec)
+static void sendCanard(void)
 {
-    for (const CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&dronecan.canard)) != NULL;) {
+    for (const CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&g_canard)) != NULL;) {
         const int16_t tx_res = dronecanTransmit(fdcan_dev[0], txf);
         if (tx_res < 0) // Failure - drop the frame and report
         {
-            canardPopTxQueue(&dronecan.canard);
+            ;
         } else if (tx_res > 0) // Success - just drop the frame
         {
-            canardPopTxQueue(&dronecan.canard);
+            canardPopTxQueue(&g_canard);
         }
     }
+}
 
+static void receiveCanard(void)
+{
     // Receiving
     CanardCANFrame rx_frame;
     uint64_t timestamp = systime_now_us();
-
     int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
 
     if (rx_res < 0) // Failure - report
@@ -202,7 +204,7 @@ void processTxRxOnce(int32_t timeout_msec)
         printf("Receive error %d\n", rx_res);
 
     } else {
-        rx_res = canardHandleRxFrame(&dronecan.canard, &rx_frame, timestamp);
+        rx_res = canardHandleRxFrame(&g_canard, &rx_frame, timestamp);
     }
 }
 
@@ -218,7 +220,7 @@ void setRGB(uint8_t red, uint8_t green, uint8_t blue)
 
     // uint16_t total_size = uavcan_equipment_indication_LightsCommand_encode(&LightsCommand_msg, buffer);
 
-    // int16_t resp_res = canardBroadcast(&dronecan.canard,
+    // int16_t resp_res = canardBroadcast(&g_canard,
     //                                    UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_SIGNATURE,
     //                                    UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_ID,
     //                                    &PreferredNodeID,
@@ -227,87 +229,29 @@ void setRGB(uint8_t red, uint8_t green, uint8_t blue)
     //                                    (uint16_t)total_size);
 }
 
-static uint8_t buffer[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE];
+static uint8_t node_msg_buffer[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE];
 struct uavcan_protocol_NodeStatus NodeStatus_msg;
-
-static uint8_t PARAM_GETSET_REQUEST_buffer[UAVCAN_PROTOCOL_PARAM_GETSET_REQUEST_MAX_SIZE];
-struct uavcan_protocol_param_GetSetRequest GetSetReques_msg;
-void process1HzTasks(uint64_t timestamp_usec)
+static void spinCanard(void)
 {
-    printf("process1HzTasks\n");
+    static uint32_t spin_time = 0;
+    if (systime_now_ms() < spin_time + 1000) {
+        return;
+    } // rate limiting
 
-    /*
-     * Purging transfers that are no longer transmitted. This will occasionally free up some memory.
-     */
-    canardCleanupStaleTransfers(&dronecan.canard, timestamp_usec);
+    spin_time = systime_now_ms();
 
-    /*
-     * Printing the memory usage statistics.
-     */
-    {
-        const CanardPoolAllocatorStatistics stats = canardGetPoolAllocatorStatistics(&dronecan.canard);
-        const uint16_t peak_percent = (uint16_t)(100U * stats.peak_usage_blocks / stats.capacity_blocks);
+    NodeStatus_msg.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
+    NodeStatus_msg.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;
+    NodeStatus_msg.uptime_sec = systime_now_ms() / 1000;
+    uint16_t total_size = uavcan_protocol_NodeStatus_encode(&NodeStatus_msg, node_msg_buffer);
 
-        printf("Memory pool stats: capacity %u blocks, usage %u blocks, peak usage %u blocks (%u%%)\n",
-               stats.capacity_blocks,
-               stats.current_usage_blocks,
-               stats.peak_usage_blocks,
-               peak_percent);
-
-        /*
-         * The recommended way to establish the minimal size of the memory pool is to stress-test the application and
-         * record the worst case memory usage.
-         */
-        if (peak_percent > 70) {
-            printf("WARNING: ENLARGE MEMORY POOL");
-        }
-    }
-
-    /*
-     * Transmitting the node status message periodically.
-     */
-    {
-
-        NodeStatus_msg.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
-        NodeStatus_msg.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;
-
-        uint16_t total_size = uavcan_protocol_NodeStatus_encode(&NodeStatus_msg, buffer);
-
-        const int16_t bc_res = canardBroadcast(&dronecan.canard,
-                                               UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE,
-                                               UAVCAN_PROTOCOL_NODESTATUS_ID,
-                                               &PreferredNodeID,
-                                               CANARD_TRANSFER_PRIORITY_LOW,
-                                               buffer,
-                                               (uint16_t)total_size);
-        if (bc_res <= 0) {
-            printf("Could not broadcast node status; error %d\n", bc_res);
-        }
-    }
-
-    if (flag_alloc) {
-
-        GetSetReques_msg.index = 0;
-        GetSetReques_msg.name.len = strlen("LED_MODE");
-        strcpy((char*)GetSetReques_msg.name.data, "LED_MODE");
-
-        GetSetReques_msg.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY;
-
-        uint16_t total_size = uavcan_protocol_param_GetSetRequest_encode(&GetSetReques_msg, PARAM_GETSET_REQUEST_buffer);
-
-        const int16_t bc_res = canardRequestOrRespond(&dronecan.canard,
-                                                      SALVE_NODE_ID,
-                                                      UAVCAN_PROTOCOL_PARAM_GETSET_REQUEST_SIGNATURE,
-                                                      UAVCAN_PROTOCOL_PARAM_GETSET_REQUEST_ID,
-                                                      &PreferredNodeID,
-                                                      CANARD_TRANSFER_PRIORITY_LOW,
-                                                      CanardRequest,
-                                                      PARAM_GETSET_REQUEST_buffer,
-                                                      (uint16_t)total_size);
-        if (bc_res <= 0) {
-            printf("Could not broadcast node status; error %d\n", bc_res);
-        }
-    }
+    canardBroadcast(&g_canard,
+                    UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE,
+                    UAVCAN_PROTOCOL_NODESTATUS_ID,
+                    &PreferredNodeID,
+                    CANARD_TRANSFER_PRIORITY_LOW,
+                    node_msg_buffer,
+                    (uint16_t)total_size);
 }
 
 fmt_err_t dronecan_init(void)
@@ -322,14 +266,24 @@ fmt_err_t dronecan_init(void)
     // RT_CHECK(rt_device_open(fdcan_dev[1], RT_DEVICE_OFLAG_RDWR));
 
     /////////////////////////////////////////////////////////
-    canardInit(&dronecan.canard,
-               (uint8_t*)dronecan.canard_memory_pool,
-               sizeof(dronecan.canard_memory_pool),
+    canardInit(&g_canard,
+               g_canard_memory_pool,
+               sizeof(g_canard_memory_pool),
                onTransferReceived,
                shouldAcceptTransfer,
                NULL);
 
-    canardSetLocalNodeID(&dronecan.canard, PreferredNodeID);
+    canardSetLocalNodeID(&g_canard, PreferredNodeID);
 
     return FMT_EOK;
+}
+
+void dronecan_loop(void)
+{
+    while (1) {
+        sendCanard();
+        receiveCanard();
+        spinCanard();
+        systime_mdelay(100);
+    }
 }
