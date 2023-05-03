@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1916
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May  2 16:59:34 2023
+ * C/C++ source code generated on : Wed May  3 13:41:52 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -191,6 +191,8 @@ typedef struct {
   real_T lat_0;
   real_T lon_0;
   real_T alt_0;
+  real_T dx_dlat;
+  real_T dy_dlon;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;

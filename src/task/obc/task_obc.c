@@ -53,6 +53,7 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_distance_sensor_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_gps_global_origin_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_home_position_cb(mavlink_message_t* msg_t);
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_cb },
@@ -63,6 +64,7 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_DISTANCE_SENSOR, mavlink_msg_distance_sensor_cb },
     { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_cb },
     { MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN, mavlink_msg_gps_global_origin_cb },
+    { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_cb },
 };
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
@@ -257,8 +259,13 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
 {
     mavlink_altitude_t altitude;
     INS_Out_Bus ins_out;
+    FMS_Out_Bus fms_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
         return false;
     }
 
@@ -266,7 +273,7 @@ static bool mavlink_msg_altitude_cb(mavlink_message_t* msg_t)
     altitude.altitude_monotonic = 0.0f;
     altitude.altitude_amsl = ins_out.alt;
     altitude.altitude_local = ins_out.h_R;
-    altitude.altitude_relative = ins_out.h_R; /* TODO, need home alt to calculate it */
+    altitude.altitude_relative = ins_out.h_R - fms_out.home[2];
     altitude.altitude_terrain = ins_out.h_AGL;
     altitude.bottom_clearance = 0.0f;
 
@@ -338,6 +345,33 @@ static bool mavlink_msg_gps_global_origin_cb(mavlink_message_t* msg_t)
     return true;
 }
 
+static bool mavlink_msg_home_position_cb(mavlink_message_t* msg_t)
+{
+    mavlink_home_position_t home_position = { 0 };
+    INS_Out_Bus ins_out;
+    FMS_Out_Bus fms_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+        return false;
+    }
+
+    home_position.time_usec = systime_now_us();
+    home_position.x = fms_out.home[0];
+    home_position.y = fms_out.home[1];
+    home_position.z = -fms_out.home[2];
+    home_position.latitude = ins_out.dx_dlat > 0.0 ? RAD2DEG(home_position.x / ins_out.dx_dlat) * 1e7 : 0;
+    home_position.longitude = ins_out.dy_dlon > 0.0 ? RAD2DEG(home_position.y / ins_out.dy_dlon) * 1e7 : 0;
+    home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
+
+    mavlink_msg_home_position_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &home_position);
+
+    return true;
+}
+
 static void acknowledge(uint16_t command, uint8_t result)
 {
     mavlink_system_t mav_sys = mavobc_get_system();
@@ -400,10 +434,6 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
     } break;
-
-        // case MAV_CMD_SET_MESSAGE_INTERVAL:
-        //     printf("set msg interval id:%d interval:%d\n", (int)command->param1, (int)command->param2);
-        //     break;
 
     default:
         // printf("mavobc unhandled command long:%d\n", command->command);

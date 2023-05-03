@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.903
+ * Model version                  : 1.904
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:24:45 2023
+ * C/C++ source code generated on : Wed May  3 13:42:39 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1050,28 +1050,12 @@ void Controller_step(void)
     }
 
     /* Switch: '<S54>/Switch' incorporates:
-     *  Constant: '<S57>/Constant'
      *  Logic: '<S54>/Logical Operator'
      *  RelationalOperator: '<S56>/Compare'
-     *  RelationalOperator: '<S57>/Compare'
-     *  Switch: '<S54>/Switch1'
      */
     if ((Controller_U.FMS_Out.ctrl_mode == 1) || (Controller_U.FMS_Out.ctrl_mode
          == 2) || (Controller_U.FMS_Out.ctrl_mode == 3)) {
       rtb_throttle_cmd = Controller_U.FMS_Out.throttle_cmd;
-    } else if (Controller_U.FMS_Out.ctrl_mode == 6) {
-      /* Switch: '<S58>/Switch' incorporates:
-       *  DataTypeConversion: '<S55>/Data Type Conversion'
-       *  S-Function (sfix_bitop): '<S58>/cmd_throttle valid'
-       *  Switch: '<S54>/Switch1'
-       */
-      if ((Controller_U.FMS_Out.cmd_mask & 4096) > 0) {
-        rtb_throttle_cmd = Controller_U.FMS_Out.throttle_cmd;
-      } else {
-        rtb_throttle_cmd = (uint16_T)rtb_DiscreteTimeIntegrator;
-      }
-
-      /* End of Switch: '<S58>/Switch' */
     } else {
       /* Switch: '<S54>/Switch1' incorporates:
        *  DataTypeConversion: '<S55>/Data Type Conversion'

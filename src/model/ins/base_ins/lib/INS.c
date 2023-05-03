@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3765
+ * Model version                  : 1.3768
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Apr 20 11:14:16 2023
+ * C/C++ source code generated on : Wed May  3 13:24:22 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -87,6 +87,8 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
   0.0,                                 /* lat_0 */
   0.0,                                 /* lon_0 */
   0.0,                                 /* alt_0 */
+  0.0,                                 /* dx_dlat */
+  0.0,                                 /* dy_dlon */
   0.0F,                                /* x_R */
   0.0F,                                /* y_R */
   0.0F,                                /* h_R */
@@ -1209,6 +1211,7 @@ void INS_step(void)
   real32_T rtb_MathFunction[3];
   real32_T tmp[6];
   real32_T rtb_MathFunction_m;
+  real_T rtb_Switch4_c_idx_0;
   real_T rtb_Switch4_c_idx_1;
   real32_T rtb_Switch_k_idx_3;
   int32_T rtb_Saturation1_j_idx_0;
@@ -1223,7 +1226,6 @@ void INS_step(void)
   real32_T rtb_Switch_k_idx_0;
   real32_T rtb_Switch_k_idx_1;
   real32_T rtb_Switch_k_idx_2;
-  real_T rtb_Switch1_idx_0;
   real32_T rtb_Memory_m_idx_1;
   int8_T u0;
   uint32_T qY;
@@ -5084,16 +5086,15 @@ void INS_step(void)
    *  UnitDelay: '<S322>/Delay Input1'
    */
   if ((int32_T)rtb_Compare_k2 > (int32_T)INS_DWork.DelayInput1_DSTATE_mw) {
-    rtb_Switch1_idx_0 = INS_B.Rm;
-    rtb_DataTypeConversion1 = INS_B.Multiply2;
-    rtb_DataTypeConversion2 = rtb_Scalefactor1 - INS_DWork.Delay_4_DSTATE /
-      INS_B.Rm;
+    rtb_DataTypeConversion1 = INS_B.Rm;
+    rtb_DataTypeConversion2 = INS_B.Multiply2;
+    rtb_Switch4_c_idx_0 = rtb_Scalefactor1 - INS_DWork.Delay_4_DSTATE / INS_B.Rm;
     rtb_Switch4_c_idx_1 = rtb_Scalefactor2 - INS_DWork.Delay_5_DSTATE /
       INS_B.Multiply2;
   } else {
-    rtb_Switch1_idx_0 = INS_DWork.Delay1_DSTATE_o[0];
-    rtb_DataTypeConversion1 = INS_DWork.Delay1_DSTATE_o[1];
-    rtb_DataTypeConversion2 = INS_DWork.Delay_DSTATE[0];
+    rtb_DataTypeConversion1 = INS_DWork.Delay1_DSTATE_o[0];
+    rtb_DataTypeConversion2 = INS_DWork.Delay1_DSTATE_o[1];
+    rtb_Switch4_c_idx_0 = INS_DWork.Delay_DSTATE[0];
     rtb_Switch4_c_idx_1 = INS_DWork.Delay_DSTATE[1];
   }
 
@@ -5289,16 +5290,16 @@ void INS_step(void)
   INS_DWork.DelayInput1_DSTATE_dp = rtb_Compare_bf;
 
   /* Update for Delay: '<S319>/Delay' */
-  INS_DWork.Delay_DSTATE[0] = rtb_DataTypeConversion2;
+  INS_DWork.Delay_DSTATE[0] = rtb_Switch4_c_idx_0;
 
   /* Update for Delay: '<S319>/Delay1' */
-  INS_DWork.Delay1_DSTATE_o[0] = rtb_Switch1_idx_0;
+  INS_DWork.Delay1_DSTATE_o[0] = rtb_DataTypeConversion1;
 
   /* Update for Delay: '<S319>/Delay' */
   INS_DWork.Delay_DSTATE[1] = rtb_Switch4_c_idx_1;
 
   /* Update for Delay: '<S319>/Delay1' */
-  INS_DWork.Delay1_DSTATE_o[1] = rtb_DataTypeConversion1;
+  INS_DWork.Delay1_DSTATE_o[1] = rtb_DataTypeConversion2;
 
   /* Update for UnitDelay: '<S322>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_mw = rtb_Compare_k2;
@@ -5992,9 +5993,9 @@ void INS_step(void)
      *  Sum: '<S205>/Sum'
      */
     INS_B.DataTypeConversion_n[0] = (real32_T)((rtb_Scalefactor1 -
-      rtb_DataTypeConversion2) * rtb_Switch1_idx_0);
+      rtb_Switch4_c_idx_0) * rtb_DataTypeConversion1);
     INS_B.DataTypeConversion_n[1] = (real32_T)((rtb_Scalefactor2 -
-      rtb_Switch4_c_idx_1) * rtb_DataTypeConversion1);
+      rtb_Switch4_c_idx_1) * rtb_DataTypeConversion2);
 
     /* Reshape: '<S206>/Reshape' incorporates:
      *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy6Inport1'
@@ -6326,10 +6327,10 @@ void INS_step(void)
      *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy4Inport1'
      *  Sum: '<S189>/Sum'
      */
-    rtb_dec_rad = (real32_T)((rtb_Scalefactor1 - rtb_DataTypeConversion2) *
-      rtb_Switch1_idx_0);
-    rtb_Memory_m_idx_1 = (real32_T)((rtb_Scalefactor2 - rtb_Switch4_c_idx_1) *
+    rtb_dec_rad = (real32_T)((rtb_Scalefactor1 - rtb_Switch4_c_idx_0) *
       rtb_DataTypeConversion1);
+    rtb_Memory_m_idx_1 = (real32_T)((rtb_Scalefactor2 - rtb_Switch4_c_idx_1) *
+      rtb_DataTypeConversion2);
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
@@ -6510,12 +6511,12 @@ void INS_step(void)
   /* End of Switch: '<S182>/Switch' */
 
   /* Signum: '<S179>/Sign' */
-  if (rtb_Switch1_idx_0 < 0.0) {
+  if (rtb_DataTypeConversion1 < 0.0) {
     rtb_Scalefactor1 = -1.0;
-  } else if (rtb_Switch1_idx_0 > 0.0) {
+  } else if (rtb_DataTypeConversion1 > 0.0) {
     rtb_Scalefactor1 = 1.0;
   } else {
-    rtb_Scalefactor1 = rtb_Switch1_idx_0;
+    rtb_Scalefactor1 = rtb_DataTypeConversion1;
   }
 
   /* Switch: '<S179>/Switch' incorporates:
@@ -6528,7 +6529,7 @@ void INS_step(void)
   /* Abs: '<S179>/Abs' incorporates:
    *  Signum: '<S179>/Sign'
    */
-  rtb_Scalefactor2 = fabs(rtb_Switch1_idx_0);
+  rtb_Scalefactor2 = fabs(rtb_DataTypeConversion1);
 
   /* Saturate: '<S179>/Saturation' */
   if (rtb_Scalefactor2 > INS_P.Saturation_UpperSat) {
@@ -6550,17 +6551,17 @@ void INS_step(void)
    *  Sum: '<S177>/Sum'
    */
   INS_Y.INS_Out.lat = (rtb_Sum_g0[0] / (rtb_Scalefactor2 * rtb_Scalefactor1) +
-                       rtb_DataTypeConversion2) * (real_T)rtb_Compare_cio;
+                       rtb_Switch4_c_idx_0) * (real_T)rtb_Compare_cio;
 
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
   /* Signum: '<S179>/Sign' */
-  if (rtb_DataTypeConversion1 < 0.0) {
+  if (rtb_DataTypeConversion2 < 0.0) {
     rtb_Scalefactor1 = -1.0;
-  } else if (rtb_DataTypeConversion1 > 0.0) {
+  } else if (rtb_DataTypeConversion2 > 0.0) {
     rtb_Scalefactor1 = 1.0;
   } else {
-    rtb_Scalefactor1 = rtb_DataTypeConversion1;
+    rtb_Scalefactor1 = rtb_DataTypeConversion2;
   }
 
   /* Switch: '<S179>/Switch' incorporates:
@@ -6573,7 +6574,7 @@ void INS_step(void)
   /* Abs: '<S179>/Abs' incorporates:
    *  Signum: '<S179>/Sign'
    */
-  rtb_Scalefactor2 = fabs(rtb_DataTypeConversion1);
+  rtb_Scalefactor2 = fabs(rtb_DataTypeConversion2);
 
   /* Saturate: '<S179>/Saturation' */
   if (rtb_Scalefactor2 > INS_P.Saturation_UpperSat) {
@@ -7373,12 +7374,16 @@ void INS_step(void)
    *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy1Inport1'
    *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy2Inport1'
    *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy3Inport1'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy4Inport1'
+   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy5Inport1'
    *  SignalConversion: '<S7>/Signal Copy'
    *  Sum: '<S173>/Sum'
    */
-  INS_Y.INS_Out.lat_0 = rtb_DataTypeConversion2;
+  INS_Y.INS_Out.lat_0 = rtb_Switch4_c_idx_0;
   INS_Y.INS_Out.lon_0 = rtb_Switch4_c_idx_1;
   INS_Y.INS_Out.alt_0 = rtb_ff;
+  INS_Y.INS_Out.dx_dlat = rtb_DataTypeConversion1;
+  INS_Y.INS_Out.dy_dlon = rtb_DataTypeConversion2;
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
