@@ -363,8 +363,8 @@ static bool mavlink_msg_home_position_cb(mavlink_message_t* msg_t)
     home_position.x = fms_out.home[0];
     home_position.y = fms_out.home[1];
     home_position.z = -fms_out.home[2];
-    home_position.latitude = ins_out.dx_dlat > 0.0 ? RAD2DEG(home_position.x / ins_out.dx_dlat) * 1e7 : 0;
-    home_position.longitude = ins_out.dy_dlon > 0.0 ? RAD2DEG(home_position.y / ins_out.dy_dlon) * 1e7 : 0;
+    home_position.latitude = ins_out.dx_dlat > 0.0 ? RAD2DEG(fms_out.home[0] / ins_out.dx_dlat + ins_out.lat_0) * 1e7 : 0;
+    home_position.longitude = ins_out.dy_dlon > 0.0 ? RAD2DEG(fms_out.home[1] / ins_out.dy_dlon + ins_out.lon_0) * 1e7 : 0;
     home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
 
     mavlink_msg_home_position_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &home_position);
