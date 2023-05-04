@@ -23,7 +23,7 @@ TASK_EXPORT __fmt_task_desc = {
     .entry = task_dronecan_entry,
     .priority = DRONECAN_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 4096 * 10,
+    .stack_size = 2048 * 10,
     .param = NULL,
     .dependency = NULL
 };

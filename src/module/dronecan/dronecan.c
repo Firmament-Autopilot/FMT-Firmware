@@ -11,6 +11,7 @@
 #include "uavcan.equipment.indication.LightsCommand.h"
 #include "uavcan.protocol.GetNodeInfo.h"
 #include "uavcan.protocol.NodeStatus.h"
+#include "uavcan.protocol.debug.KeyValue.h"
 #include "uavcan.protocol.dynamic_node_id.Allocation.h"
 #include "uavcan.protocol.param.GetSet_req.h"
 #include "uavcan.protocol.param.GetSet_res.h"
@@ -102,14 +103,20 @@ static void onTransferReceived(CanardInstance* ins,
                uavcan_protocol_param_GetSetResponse_msg.value.union_tag,
                uavcan_protocol_param_GetSetResponse_msg.value.integer_value,
                uavcan_protocol_param_GetSetResponse_msg.name.len);
-
         break;
 
     case UAVCAN_PROTOCOL_NODESTATUS_ID:
         // printf("onTransferReceived UAVCAN_PROTOCOL_NODESTATUS_ID\n");
         uavcan_protocol_NodeStatus_decode(transfer, &uavcan_protocol_NodeStatus_msg);
-        printf("mode %d\n", uavcan_protocol_NodeStatus_msg.mode);
+        // printf("mode %d\n", uavcan_protocol_NodeStatus_msg.mode);
+        break;
 
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
+        printf("onTransferReceived UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
+        break;
+
+    case UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID:
+        printf("onTransferReceived UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID\n");
         break;
     }
 }
@@ -145,6 +152,11 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
             return true;
 
+        case UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID:
+            printf("UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID\n");
+            *out_data_type_signature = UAVCAN_PROTOCOL_DEBUG_KEYVALUE_SIGNATURE;
+            return true;
+
             // case ARDUPILOT_GNSS_STATUS_ID:
             //     // printf("ARDUPILOT_GNSS_STATUS_ID\n");
             //     *out_data_type_signature = ARDUPILOT_GNSS_STATUS_SIGNATURE;
@@ -175,39 +187,6 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
     return false;
 }
 
-/**
- * Transmits all frames from the TX queue, receives up to one frame.
- */
-static void sendCanard(void)
-{
-    for (const CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&g_canard)) != NULL;) {
-        const int16_t tx_res = dronecanTransmit(fdcan_dev[0], txf);
-        if (tx_res < 0) // Failure - drop the frame and report
-        {
-            ;
-        } else if (tx_res > 0) // Success - just drop the frame
-        {
-            canardPopTxQueue(&g_canard);
-        }
-    }
-}
-
-static void receiveCanard(void)
-{
-    // Receiving
-    CanardCANFrame rx_frame;
-    uint64_t timestamp = systime_now_us();
-    int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
-
-    if (rx_res < 0) // Failure - report
-    {
-        printf("Receive error %d\n", rx_res);
-
-    } else {
-        rx_res = canardHandleRxFrame(&g_canard, &rx_frame, timestamp);
-    }
-}
-
 void setRGB(uint8_t red, uint8_t green, uint8_t blue)
 {
     // struct uavcan_equipment_indication_LightsCommand LightsCommand_msg;
@@ -227,6 +206,39 @@ void setRGB(uint8_t red, uint8_t green, uint8_t blue)
     //                                    CANARD_TRANSFER_PRIORITY_MEDIUM,
     //                                    buffer,
     //                                    (uint16_t)total_size);
+}
+
+/**
+ * Transmits all frames from the TX queue, receives up to one frame.
+ */
+static void sendCanard(void)
+{
+    for (const CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&g_canard)) != NULL;) {
+        const int16_t tx_res = dronecanTransmit(fdcan_dev[0], txf);
+        if (tx_res < 0) // Failure - drop the frame and report
+        {
+            ;
+        } else if (tx_res > 0) // Success - just drop the frame
+        {
+            canardPopTxQueue(&g_canard);
+        }
+    }
+}
+
+CanardCANFrame rx_frame;
+static void receiveCanard(void)
+{
+    // Receiving
+    uint64_t timestamp = systime_now_us();
+    int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
+
+    if (rx_res < 0) // Failure - report
+    {
+        // printf("Receive error %d\n", rx_res);
+
+    } else {
+        rx_res = canardHandleRxFrame(&g_canard, &rx_frame, timestamp);
+    }
 }
 
 static uint8_t node_msg_buffer[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE];
@@ -259,11 +271,7 @@ fmt_err_t dronecan_init(void)
     fdcan_dev[0] = rt_device_find("fdcan1");
     RT_ASSERT(fdcan_dev[0] != NULL);
 
-    // fdcan_dev[1] = rt_device_find("fdcan2");
-    // RT_ASSERT(fdcan_dev[1] != NULL);
-
     RT_CHECK(rt_device_open(fdcan_dev[0], RT_DEVICE_OFLAG_RDWR));
-    // RT_CHECK(rt_device_open(fdcan_dev[1], RT_DEVICE_OFLAG_RDWR));
 
     /////////////////////////////////////////////////////////
     canardInit(&g_canard,
@@ -280,10 +288,12 @@ fmt_err_t dronecan_init(void)
 
 void dronecan_loop(void)
 {
+    systime_mdelay(1000);
+
     while (1) {
-        sendCanard();
+        // sendCanard();
         receiveCanard();
-        spinCanard();
-        systime_mdelay(100);
+        // spinCanard();
+        systime_msleep(50);
     }
 }

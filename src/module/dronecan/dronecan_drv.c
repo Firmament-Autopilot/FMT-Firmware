@@ -21,19 +21,19 @@ int16_t dronecanTransmit(rt_device_t dronecan_dev, const CanardCANFrame* frame)
 
 int16_t dronecanReceive(rt_device_t dronecan_dev, CanardCANFrame* out_frame)
 {
-    can_msg receive_frame;
+    // can_msg receive_frame;
 
-    const ssize_t nbytes = rt_device_read(dronecan_dev, 0, &receive_frame, sizeof(receive_frame));
+    const ssize_t nbytes = rt_device_read(dronecan_dev, 0, out_frame, sizeof(CanardCANFrame));
     if (nbytes < 0) {
         return -RT_ERROR;
     }
 
-    out_frame->id = receive_frame.id; // TODO: Map flags properly
-    out_frame->data_len = receive_frame.len;
-    memcpy(out_frame->data, &receive_frame.data, receive_frame.len);
+    // out_frame->id = receive_frame.id; // TODO: Map flags properly
+    // out_frame->data_len = receive_frame.len;
+    // memcpy(out_frame->data, &receive_frame.data, receive_frame.len);
 
-    if (receive_frame.extid != 0)
-        out_frame->id |= CANARD_CAN_FRAME_EFF;
+    // if (receive_frame.extid != 0)
+    //     out_frame->id |= CANARD_CAN_FRAME_EFF;
 
 
     return RT_EOK;
