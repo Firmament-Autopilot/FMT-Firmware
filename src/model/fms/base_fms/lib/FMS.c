@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1916
+ * Model version                  : 1.1920
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed May  3 13:41:52 2023
+ * C/C++ source code generated on : Thu May  4 16:11:49 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -2445,6 +2445,9 @@ static void FMS_Auto(void)
             FMS_B.state = VehicleState_Takeoff;
           } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Waypoint) {
             FMS_DW.is_Mission = FMS_IN_Waypoint;
+            FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
+            FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
+            FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
 
             /* Inport: '<Root>/Mission_Data' */
             FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[FMS_B.wp_index - 1] *
@@ -2514,9 +2517,6 @@ static void FMS_Auto(void)
          case FMS_IN_Takeoff_d:
           if (FMS_B.BusConversion_InsertedFor_FMSSt.h_R >=
               FMS_B.Cmd_In.sp_waypoint[2]) {
-            FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
-            FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
-            FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
             tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
             if ((uint32_T)tmp_0 > 255U) {
               tmp_0 = 255;
@@ -2548,9 +2548,6 @@ static void FMS_Auto(void)
 
           /* Constant: '<Root>/ACCEPT_R' */
           if (FMS_norm(tmp) <= FMS_PARAM.ACCEPT_R) {
-            FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
-            FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
-            FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
             tmp_0 = (int32_T)(FMS_B.wp_index + 1U);
             if ((uint32_T)tmp_0 > 255U) {
               tmp_0 = 255;
@@ -2694,6 +2691,9 @@ static void FMS_enter_internal_Auto(void)
       57.295779513082323;
     FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
       57.295779513082323;
+    FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+    FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+    FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
     FMS_DW.is_Mission = FMS_IN_NextWP;
 
     /* Inport: '<Root>/Mission_Data' */

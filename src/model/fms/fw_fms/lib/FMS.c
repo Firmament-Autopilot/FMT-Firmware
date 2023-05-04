@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1995
+ * Model version                  : 1.2002
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed May  3 13:51:29 2023
+ * C/C++ source code generated on : Thu May  4 12:14:39 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -114,8 +114,8 @@ struct_LQbHTlAQVN7sVz7acpAn4 FMS_PARAM = {
   1.0F,
   2.5F,
   2.5F,
-  1.04719758F,
-  0.52359879F,
+  1.04719806F,
+  0.523599F,
   30.0F,
   13.0F,
   10.0F,
@@ -126,8 +126,8 @@ struct_LQbHTlAQVN7sVz7acpAn4 FMS_PARAM = {
   1.0F,
   0.95F,
   8.0F,
-  0.785398185F,
-  0.785398185F,
+  0.785398F,
+  0.785398F,
   30.0F,
 
   { 1000.0F, 1000.0F, 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F,
@@ -1140,9 +1140,9 @@ static void FMS_enter_internal_Auto(void)
       57.295779513082323;
     FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
       57.295779513082323;
-    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
+    FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+    FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+    FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
     FMS_DW.is_Mission = FMS_IN_NextWP;
 
     /* Inport: '<Root>/Mission_Data' */
@@ -1549,6 +1549,12 @@ static void FMS_Arm(void)
                     FMS_B.state = VehicleState_Takeoff;
                   } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Return) {
                     FMS_DW.is_Mission = FMS_IN_Return_h;
+                    FMS_B.Cmd_In.cur_waypoint[0] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+                    FMS_B.Cmd_In.cur_waypoint[1] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+                    FMS_B.Cmd_In.cur_waypoint[2] =
+                      FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
                     FMS_B.Cmd_In.sp_waypoint[0] = FMS_DW.home_l[0];
                     FMS_B.Cmd_In.sp_waypoint[1] = FMS_DW.home_l[1];
                     FMS_B.Cmd_In.sp_waypoint[2] =
@@ -1556,6 +1562,9 @@ static void FMS_Arm(void)
                     FMS_B.state = VehicleState_Return;
                   } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Waypoint) {
                     FMS_DW.is_Mission = FMS_IN_Waypoint;
+                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
+                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
+                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
                     lla_tmp = FMS_B.wp_index - 1;
 
                     /* Inport: '<Root>/Mission_Data' */
@@ -1582,6 +1591,9 @@ static void FMS_Arm(void)
                     FMS_B.state = VehicleState_Mission;
                   } else {
                     FMS_DW.is_Mission = FMS_IN_Loiter;
+                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
+                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
+                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
                     FMS_B.state = VehicleState_Hold;
                   }
                   break;
@@ -1594,9 +1606,6 @@ static void FMS_Arm(void)
 
                   /* Constant: '<Root>/ACCEPT_R' */
                   if (FMS_norm(tmp) <= FMS_PARAM.ACCEPT_R) {
-                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
-                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
-                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
                     lla_tmp = (int32_T)(FMS_B.wp_index + 1U);
                     if ((uint32_T)lla_tmp > 255U) {
                       lla_tmp = 255;
@@ -1629,9 +1638,6 @@ static void FMS_Arm(void)
 
                   /* Constant: '<Root>/ACCEPT_R' */
                   if (FMS_norm(tmp) <= FMS_PARAM.ACCEPT_R) {
-                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
-                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
-                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
                     lla_tmp = (int32_T)(FMS_B.wp_index + 1U);
                     if ((uint32_T)lla_tmp > 255U) {
                       lla_tmp = 255;
@@ -1664,9 +1670,6 @@ static void FMS_Arm(void)
 
                   /* Constant: '<Root>/ACCEPT_R' */
                   if (FMS_norm(tmp) <= FMS_PARAM.ACCEPT_R) {
-                    FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.Cmd_In.sp_waypoint[0];
-                    FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.Cmd_In.sp_waypoint[1];
-                    FMS_B.Cmd_In.cur_waypoint[2] = FMS_B.Cmd_In.sp_waypoint[2];
                     lla_tmp = (int32_T)(FMS_B.wp_index + 1U);
                     if ((uint32_T)lla_tmp > 255U) {
                       lla_tmp = 255;
