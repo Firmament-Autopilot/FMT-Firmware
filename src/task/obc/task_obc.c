@@ -57,6 +57,7 @@ static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_gps_global_origin_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_home_position_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_rc_channels_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_sys_time_cb(mavlink_message_t* msg_t);
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_cb },
@@ -69,6 +70,7 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN, mavlink_msg_gps_global_origin_cb },
     { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_cb },
     { MAVLINK_MSG_ID_RC_CHANNELS, mavlink_msg_rc_channels_cb },
+    { MAVLINK_MSG_ID_SYSTEM_TIME, mavlink_msg_sys_time_cb },
 };
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
@@ -393,6 +395,18 @@ static bool mavlink_msg_rc_channels_cb(mavlink_message_t* msg_t)
     rc_channels.rssi = 255; /* TODO. Unknown */
 
     mavlink_msg_rc_channels_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &rc_channels);
+
+    return true;
+}
+
+static bool mavlink_msg_sys_time_cb(mavlink_message_t* msg_t)
+{
+    mavlink_system_time_t system_time;
+
+    system_time.time_unix_usec = systime_now_us();
+    system_time.time_boot_ms = systime_now_ms();
+
+    mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &system_time);
 
     return true;
 }
