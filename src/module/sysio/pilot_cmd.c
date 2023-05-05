@@ -356,6 +356,11 @@ fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num)
     return FMT_EOK;
 }
 
+uint8_t pilot_cmd_get_chan_num(void)
+{
+    return rc_chan_num;
+}
+
 fmt_err_t pilot_cmd_map_stick(
     uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan)
 {

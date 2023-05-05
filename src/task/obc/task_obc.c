@@ -23,6 +23,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
+#include "module/sysio/pilot_cmd.h"
 #include "module/task_manager/task_manager.h"
 
 #undef LOG_TAG
@@ -30,6 +31,7 @@
 
 MCN_DECLARE(fms_output);
 MCN_DECLARE(ins_output);
+MCN_DECLARE(rc_channels);
 MCN_DECLARE(auto_cmd);
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
@@ -54,6 +56,7 @@ static bool mavlink_msg_distance_sensor_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_extended_sys_state_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_gps_global_origin_cb(mavlink_message_t* msg_t);
 static bool mavlink_msg_home_position_cb(mavlink_message_t* msg_t);
+static bool mavlink_msg_rc_channels_cb(mavlink_message_t* msg_t);
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_cb },
@@ -65,6 +68,7 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_cb },
     { MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN, mavlink_msg_gps_global_origin_cb },
     { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_cb },
+    { MAVLINK_MSG_ID_RC_CHANNELS, mavlink_msg_rc_channels_cb },
 };
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
@@ -368,6 +372,27 @@ static bool mavlink_msg_home_position_cb(mavlink_message_t* msg_t)
     home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
 
     mavlink_msg_home_position_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &home_position);
+
+    return true;
+}
+
+static bool mavlink_msg_rc_channels_cb(mavlink_message_t* msg_t)
+{
+    mavlink_rc_channels_t rc_channels = { 0 };
+    int16_t rc_values[16];
+    uint16_t* chan_raw = &rc_channels.chan1_raw;
+
+    if (mcn_copy_from_hub(MCN_HUB(rc_channels), &rc_values) != FMT_EOK) {
+        return false;
+    }
+
+    rc_channels.chancount = pilot_cmd_get_chan_num();
+    for (uint8_t i = 0; i < rc_channels.chancount; i++) {
+        chan_raw[i] = rc_values[i];
+    }
+    rc_channels.rssi = 255; /* TODO. Unknown */
+
+    mavlink_msg_rc_channels_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &rc_channels);
 
     return true;
 }

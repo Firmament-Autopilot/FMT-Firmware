@@ -56,6 +56,7 @@ fmt_err_t pilot_cmd_init(void);
 fmt_err_t pilot_cmd_collect(void);
 fmt_err_t pilot_cmd_set_device(const char* dev_name);
 fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num);
+uint8_t pilot_cmd_get_chan_num(void);
 fmt_err_t pilot_cmd_map_stick(uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan);
 uint8_t pilot_cmd_get_stick_chan(stick_enum stick);
 
