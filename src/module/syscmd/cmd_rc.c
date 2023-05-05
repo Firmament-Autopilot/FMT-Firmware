@@ -144,7 +144,7 @@ static int rc_calib(struct optparse options)
         }
     }
 
-    printf("Before calibrating you should move all your sticks to center.\n");
+    printf("Before calibration you should move all your sticks to center.\n");
     printf("And for safety, please make sure you have disabled all motors!\n");
     console_println("   o-------o        o-------o   ");
     console_println("  /         \\      /         \\  ");
@@ -154,6 +154,7 @@ static int rc_calib(struct optparse options)
     console_println("  \\         /      \\         /  ");
     console_println("   o-------o        o-------o   ");
     printf("Next step (y/n)\n");
+    
     ch = syscmd_getc();
     if (ch != 'y' && ch != 'Y') {
         return EXIT_SUCCESS;
