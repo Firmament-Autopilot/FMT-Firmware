@@ -426,9 +426,10 @@ static void acknowledge(uint16_t command, uint8_t result)
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
+    mavlink_system_t mav_sys = mavobc_get_system();
+
     switch (command->command) {
     case MAV_CMD_REQUEST_PROTOCOL_VERSION: {
-        mavlink_system_t mav_sys = mavobc_get_system();
         mavlink_protocol_version_t protocol_version = { 0 };
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
@@ -472,6 +473,56 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         gcs_set_cmd(FMS_Cmd_Pause, (float[7]) { 0 });
 
         acknowledge(command->command, MAV_RESULT_ACCEPTED);
+    } break;
+
+    case MAV_CMD_GET_HOME_POSITION: {
+        mavlink_home_position_t home_position = { 0 };
+        INS_Out_Bus ins_out;
+        FMS_Out_Bus fms_out;
+
+        if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+            break;
+        }
+
+        if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+            break;
+        }
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+
+        home_position.time_usec = systime_now_us();
+        home_position.x = fms_out.home[0];
+        home_position.y = fms_out.home[1];
+        home_position.z = -fms_out.home[2];
+        home_position.latitude = ins_out.dx_dlat > 0.0 ? RAD2DEG(fms_out.home[0] / ins_out.dx_dlat + ins_out.lat_0) * 1e7 : 0;
+        home_position.longitude = ins_out.dy_dlon > 0.0 ? RAD2DEG(fms_out.home[1] / ins_out.dy_dlon + ins_out.lon_0) * 1e7 : 0;
+        home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
+
+        mavlink_msg_home_position_encode(mav_sys.sysid, mav_sys.compid, msg, &home_position);
+        mavobc_send_immediate_msg(msg, false);
+    } break;
+
+    case MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES: {
+        mavlink_autopilot_version_t autopilot_version = { 0 };
+
+        acknowledge(command->command, MAV_RESULT_ACCEPTED);
+
+        autopilot_version.capabilities = MAV_PROTOCOL_CAPABILITY_MISSION_FLOAT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MISSION_INT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_PARAM_FLOAT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_COMMAND_INT;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_FTP;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_ATTITUDE_TARGET;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_LOCAL_NED;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_SET_ACTUATOR_TARGET;
+        autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MAVLINK2;
+
+        /* cheat OBC that we are using the right px4 version */
+        autopilot_version.flight_sw_version = ((uint8_t)1 << 8 * 3) | ((uint8_t)10 << 8 * 2) | ((uint8_t)0 << 8 * 1);
+        autopilot_version.middleware_sw_version = autopilot_version.flight_sw_version;
+
+        mavlink_msg_autopilot_version_encode(mav_sys.sysid, mav_sys.compid, msg, &autopilot_version);
+        mavobc_send_immediate_msg(msg, true);
     } break;
 
     default:
