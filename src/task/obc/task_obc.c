@@ -639,26 +639,32 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
 
             if (!(pos_target_local_ned.type_mask & POSITION_TARGET_TYPEMASK_VZ_IGNORE)) {
                 auto_cmd.w_cmd = pos_target_local_ned.vz;
+                auto_cmd.cmd_mask |= W_CMD_VALID;
             }
 
             if (!(pos_target_local_ned.type_mask & POSITION_TARGET_TYPEMASK_AX_IGNORE)) {
                 auto_cmd.ax_cmd = pos_target_local_ned.afx;
+                auto_cmd.cmd_mask |= AX_CMD_VALID;
             }
 
             if (!(pos_target_local_ned.type_mask & POSITION_TARGET_TYPEMASK_AY_IGNORE)) {
                 auto_cmd.ay_cmd = pos_target_local_ned.afy;
+                auto_cmd.cmd_mask |= AY_CMD_VALID;
             }
 
             if (!(pos_target_local_ned.type_mask & POSITION_TARGET_TYPEMASK_AZ_IGNORE)) {
                 auto_cmd.az_cmd = pos_target_local_ned.afz;
+                auto_cmd.cmd_mask |= AZ_CMD_VALID;
             }
 
             if (!(pos_target_local_ned.type_mask & POSITION_TARGET_TYPEMASK_YAW_IGNORE)) {
                 auto_cmd.psi_cmd = pos_target_local_ned.yaw;
+                auto_cmd.cmd_mask |= PSI_CMD_VALID;
             }
 
             if (!(pos_target_local_ned.type_mask & POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE)) {
                 auto_cmd.psi_rate_cmd = pos_target_local_ned.yaw_rate;
+                auto_cmd.cmd_mask |= PSI_RATE_CMD_VALID;
             }
 
             /* publish auto command */
@@ -711,26 +717,32 @@ static void handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t syst
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_VZ_IGNORE)) {
                 auto_cmd.w_cmd = pos_target_global_int.vz;
+                auto_cmd.cmd_mask |= W_CMD_VALID;
             }
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AX_IGNORE)) {
                 auto_cmd.ax_cmd = pos_target_global_int.afx;
+                auto_cmd.cmd_mask |= AX_CMD_VALID;
             }
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AY_IGNORE)) {
                 auto_cmd.ay_cmd = pos_target_global_int.afy;
+                auto_cmd.cmd_mask |= AY_CMD_VALID;
             }
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_AZ_IGNORE)) {
                 auto_cmd.az_cmd = pos_target_global_int.afz;
+                auto_cmd.cmd_mask |= AZ_CMD_VALID;
             }
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_YAW_IGNORE)) {
                 auto_cmd.psi_cmd = pos_target_global_int.yaw;
+                auto_cmd.cmd_mask |= PSI_CMD_VALID;
             }
 
             if (!(pos_target_global_int.type_mask & POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE)) {
                 auto_cmd.psi_rate_cmd = pos_target_global_int.yaw_rate;
+                auto_cmd.cmd_mask |= PSI_RATE_CMD_VALID;
             }
 
             /* publish auto command */
