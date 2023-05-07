@@ -22,7 +22,7 @@
     #if HAL_CANFD_SUPPORTED
         #define HAL_CAN_POOL_SIZE 16000
     #else
-        #define HAL_CAN_POOL_SIZE 1024
+        #define HAL_CAN_POOL_SIZE 2048
     #endif
 #endif
 
@@ -69,44 +69,17 @@ struct uavcan_protocol_NodeStatus uavcan_protocol_NodeStatus_msg;
 static void onTransferReceived(CanardInstance* ins,
                                CanardRxTransfer* transfer)
 {
-    if (transfer->transfer_type == CanardTransferTypeBroadcast
-        && transfer->data_type_id == UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID) {
-        printf("UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID\n");
-
-        dronecan_dynamic_allocation_id(ins, transfer, PreferredNodeID, SALVE_NODE_ID);
-        flag_alloc = 1;
-
-        return;
-    }
-
-    // if (transfer->transfer_type == CanardTransferTypeBroadcast) {
-    //     switch (transfer->data_type_id) {
-    //     case UAVCAN_PROTOCOL_NODESTATUS_ID:
-    //         // printf("onTransferReceived UAVCAN_PROTOCOL_NODESTATUS_ID\n");
-    //         uavcan_protocol_NodeStatus_decode(transfer, &uavcan_protocol_NodeStatus_msg);
-    //         printf("mode %d\n", uavcan_protocol_NodeStatus_msg.mode);
-
-    //         break;
-
-    //     case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-    //         printf("onTransferReceived UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
-    //         break;
-    //     }
-    // } else if (transfer->transfer_type == CanardTransferTypeResponse) {
-
-    //     }
-    // }
     switch (transfer->data_type_id) {
     case UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID:
-        uavcan_protocol_param_GetSetResponse_decode(transfer, &uavcan_protocol_param_GetSetResponse_msg);
-        printf("GETSET_RESPONSE_ID tag:%d,value=%d,name=%d\n",
-               uavcan_protocol_param_GetSetResponse_msg.value.union_tag,
-               uavcan_protocol_param_GetSetResponse_msg.value.integer_value,
-               uavcan_protocol_param_GetSetResponse_msg.name.len);
+        // uavcan_protocol_param_GetSetResponse_decode(transfer, &uavcan_protocol_param_GetSetResponse_msg);
+        // printf("GETSET_RESPONSE_ID tag:%d,value=%d,name=%d\n",
+        //        uavcan_protocol_param_GetSetResponse_msg.value.union_tag,
+        //        uavcan_protocol_param_GetSetResponse_msg.value.integer_value,
+        //        uavcan_protocol_param_GetSetResponse_msg.name.len);
         break;
 
     case UAVCAN_PROTOCOL_NODESTATUS_ID:
-        // printf("onTransferReceived UAVCAN_PROTOCOL_NODESTATUS_ID\n");
+        printf("onTransferReceived UAVCAN_PROTOCOL_NODESTATUS_ID\n");
         uavcan_protocol_NodeStatus_decode(transfer, &uavcan_protocol_NodeStatus_msg);
         // printf("mode %d\n", uavcan_protocol_NodeStatus_msg.mode);
         break;
@@ -129,61 +102,28 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
 {
     (void)source_node_id;
 
-    if (transfer_type == CanardTransferTypeBroadcast
-        && data_type_id == UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID) {
+    switch (data_type_id) {
+    case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
+        // printf("UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID\n");
         *out_data_type_signature = UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_SIGNATURE;
+        return true;
+
+    case UAVCAN_PROTOCOL_NODESTATUS_ID:
+        // printf("UAVCAN_PROTOCOL_NODESTATUS_ID,source_node_id=%d\n", source_node_id);
+        *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
+        return true;
+
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
+        // printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
+        *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
+        return true;
+
+    case UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID:
+        // printf("UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID\n");
+        *out_data_type_signature = UAVCAN_PROTOCOL_DEBUG_KEYVALUE_SIGNATURE;
         return true;
     }
 
-    if (transfer_type == CanardTransferTypeBroadcast) {
-        switch (data_type_id) {
-        case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
-            // printf("UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID\n");
-            *out_data_type_signature = UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_SIGNATURE;
-            return true;
-
-        case UAVCAN_PROTOCOL_NODESTATUS_ID:
-            printf("UAVCAN_PROTOCOL_NODESTATUS_ID,source_node_id=%d\n", source_node_id);
-            *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
-            return true;
-
-        case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-            printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
-            *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
-            return true;
-
-        case UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID:
-            printf("UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID\n");
-            *out_data_type_signature = UAVCAN_PROTOCOL_DEBUG_KEYVALUE_SIGNATURE;
-            return true;
-
-            // case ARDUPILOT_GNSS_STATUS_ID:
-            //     // printf("ARDUPILOT_GNSS_STATUS_ID\n");
-            //     *out_data_type_signature = ARDUPILOT_GNSS_STATUS_SIGNATURE;
-            //     return true;
-
-            // case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
-            //     // printf("UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID\n");
-            //     *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_AUXILIARY_SIGNATURE;
-            //     return true;
-
-            // case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
-            //     // printf("UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID\n");
-            //     *out_data_type_signature = UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_SIGNATURE;
-            //     return true;
-
-        default:
-            break;
-        }
-    } else if (transfer_type == CanardTransferTypeResponse) {
-        switch (data_type_id) {
-
-        case UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID:
-            printf("UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID\n");
-            *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_SIGNATURE;
-            return true;
-        }
-    }
     return false;
 }
 
@@ -225,19 +165,20 @@ static void sendCanard(void)
     }
 }
 
-CanardCANFrame rx_frame;
-static void receiveCanard(void)
+void receiveCanard(void)
 {
     // Receiving
     uint64_t timestamp = systime_now_us();
-    int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
 
-    if (rx_res < 0) // Failure - report
-    {
-        // printf("Receive error %d\n", rx_res);
+    CanardCANFrame rx_frame;
 
-    } else {
-        rx_res = canardHandleRxFrame(&g_canard, &rx_frame, timestamp);
+    int16_t rx_res = fdCANReceive(0, &rx_frame);
+
+    // printf("rx_frame=%d\n", rx_frame.data_len);
+
+    // int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
+    if (rx_res > 0) {
+        canardHandleRxFrame(&g_canard, &rx_frame, timestamp);
     }
 }
 
@@ -288,12 +229,4 @@ fmt_err_t dronecan_init(void)
 
 void dronecan_loop(void)
 {
-    systime_mdelay(1000);
-
-    while (1) {
-        // sendCanard();
-        receiveCanard();
-        // spinCanard();
-        systime_msleep(50);
-    }
 }

@@ -5,7 +5,9 @@
  *      Author: Pedro Pereira
  */
 
-#include "drv_fdcan2.h"
+#include "canard_stm32H7.h"
+
+#include <firmament.h>
 
 #include <assert.h>
 
@@ -15,8 +17,8 @@
     #error "Please set FDCAN_NUM_IFACES to either 1 (only FDCAN1) or 2 (FDCAN1 and FDCAN2)." //NOLINT
 #endif
 
-#define CAN_TIMEOUT (REG_SET_TIMEOUT)
-#define SYS_TIMER   (systime_now_ms())
+#define CAN_TIMEOUT REG_SET_TIMEOUT
+#define SYS_TIMER   systime_now_ms()
 
 // By default, this macro resolves to the standard assert(). The user can redefine this if necessary.
 // To disable assertion checks completely, make it expand into `(void)(0)`.
@@ -234,9 +236,9 @@ int16_t fdCANComputeTimings(const uint32_t peripheral_clock_rate, //
     {
         const uint16_t sample_point_permill = (uint16_t)(1000U * (1U + bs1) / (1U + bs1 + bs2)); // NOLINT
 
-        if (sample_point_permill > MaxSamplePointLocationPermill) // Strictly more!
+        if (sample_point_permill > MaxSamplePointLocationPermill)                                // Strictly more!
         {
-            bs1 = (uint8_t)((7 * bs1_bs2_sum - 1) / 8); // Nope, too far; now rounding to zero
+            bs1 = (uint8_t)((7 * bs1_bs2_sum - 1) / 8);                                          // Nope, too far; now rounding to zero
             bs2 = (uint8_t)(bs1_bs2_sum - bs1);
         }
     }
@@ -453,8 +455,15 @@ int16_t fdCANInit(const FdCANTimings timings, //
     if ((iface == can2) && (FDCAN_1->CCCR & FDCAN_CCCR_CSR))
         return -CANARD_ERROR_INVALID_ARGUMENT; // CAN1 must be initialized before initializing CAN2.
 
-    // Validate the rest of the inputs.
-    if ((timings.bit_rate_prescaler < 1U) || (timings.bit_rate_prescaler > 1024U) || (timings.max_resynchronization_jump_width < 1U) || (timings.max_resynchronization_jump_width > 4U) || (timings.bit_segment_1 < 1U) || (timings.bit_segment_1 > 16U) || (timings.bit_segment_2 < 1U) || (timings.bit_segment_2 > 8U)) {
+                                               // Validate the rest of the inputs.
+    if ((timings.bit_rate_prescaler < 1U)
+        || (timings.bit_rate_prescaler > 1024U)
+        || (timings.max_resynchronization_jump_width < 1U)
+        || (timings.max_resynchronization_jump_width > 4U)
+        || (timings.bit_segment_1 < 1U)
+        || (timings.bit_segment_1 > 16U)
+        || (timings.bit_segment_2 < 1U)
+        || (timings.bit_segment_2 > 8U)) {
         return -CANARD_ERROR_INVALID_ARGUMENT; // Invalid timings.
     }
 
@@ -501,13 +510,18 @@ int16_t fdCANInit(const FdCANTimings timings, //
 
     // setup timing register
     // TODO: Do timing calculations for FDCAN
-    canIface_[iface].fdcan_base->NBTP = (((timings.max_resynchronization_jump_width - 1U) << FDCAN_NBTP_NSJW_Pos) | ((timings.bit_segment_1 - 1U) << FDCAN_NBTP_NTSEG1_Pos) | ((timings.bit_segment_2 - 1U) << FDCAN_NBTP_NTSEG2_Pos) | ((timings.bit_rate_prescaler - 1U) << FDCAN_NBTP_NBRP_Pos));
+    canIface_[iface].fdcan_base->NBTP = (((timings.max_resynchronization_jump_width - 1U) << FDCAN_NBTP_NSJW_Pos)
+                                         | ((timings.bit_segment_1 - 1U) << FDCAN_NBTP_NTSEG1_Pos)
+                                         | ((timings.bit_segment_2 - 1U) << FDCAN_NBTP_NTSEG2_Pos)
+                                         | ((timings.bit_rate_prescaler - 1U) << FDCAN_NBTP_NBRP_Pos));
 
-    canIface_[iface].fdcan_base->DBTP = (((timings.bit_segment_1 - 1U) << FDCAN_DBTP_DTSEG1_Pos) | ((timings.bit_segment_2 - 1U) << FDCAN_DBTP_DTSEG2_Pos) | ((timings.bit_rate_prescaler - 1U) << FDCAN_DBTP_DBRP_Pos));
+    canIface_[iface].fdcan_base->DBTP = (((timings.bit_segment_1 - 1U) << FDCAN_DBTP_DTSEG1_Pos)
+                                         | ((timings.bit_segment_2 - 1U) << FDCAN_DBTP_DTSEG2_Pos)
+                                         | ((timings.bit_rate_prescaler - 1U) << FDCAN_DBTP_DBRP_Pos));
     // RX Config
     canIface_[iface].fdcan_base->RXESC = 0; // Set for 8Byte Frames
 
-    // Setup Message RAM
+                                            // Setup Message RAM
     setupMessageRam(iface);
     // Clear all Interrupts
     // canIface_[iface].fdcan_base->IR = 0x3FFFFFFF;
@@ -520,6 +534,7 @@ int16_t fdCANInit(const FdCANTimings timings, //
 int16_t fdCANReceive(const FDCanID iface, //
                      CanardCANFrame* const out_frame)
 {
+
     // If the interface number is invalid, return with an error.
     if (iface >= FDCAN_NUM_IFACES)
         return -CANARD_ERROR_INVALID_ARGUMENT; // Invalid CAN interface number.
@@ -576,6 +591,7 @@ int16_t fdCANReceive(const FDCanID iface, //
             canIface_[iface].fdcan_base->RXF1A = index;
 
         // Reading successful
+
         return 1;
     }
 

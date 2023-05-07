@@ -41,6 +41,7 @@
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
+#include "drv_timer.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"

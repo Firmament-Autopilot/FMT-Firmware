@@ -5,5 +5,6 @@
 fmt_err_t dronecan_init(void);
 
 void dronecan_loop(void);
+void receiveCanard(void);
 
 #endif
