@@ -90,7 +90,7 @@
     *** MDMA functional mode ***
     ====================================
     [..]
-      (#) Configure the SourceInc and DestinationInc of MDMA parameters in the HAL_QSPI_MspInit() function :
+      (#) Configure the SourceInc and DestinationInc of MDMA paramters in the HAL_QSPI_MspInit() function :
          (++) MDMA settings for write operation :
           (+) The DestinationInc should be MDMA_DEST_INC_DISABLE
           (+) The SourceInc must be a value of @ref MDMA_Source_increment_mode (Except the MDMA_SRC_INC_DOUBLEWORD).
@@ -569,8 +569,7 @@ void HAL_QSPI_IRQHandler(QSPI_HandleTypeDef *hqspi)
     {
       if ((hqspi->Instance->CR & QUADSPI_CR_DMAEN) != 0U)
       {
-        /* Disable using MDMA by clearing DMAEN, note that DMAEN bit is "reserved"
-           but no impact on H7 HW and it minimize the cost in the footprint */
+        /* Disable the DMA transfer by clearing the DMAEN bit in the QSPI CR register */
         CLEAR_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
 
         /* Disable the MDMA channel */
@@ -592,8 +591,7 @@ void HAL_QSPI_IRQHandler(QSPI_HandleTypeDef *hqspi)
     {
       if ((hqspi->Instance->CR & QUADSPI_CR_DMAEN) != 0U)
       {
-        /* Disable using MDMA by clearing DMAEN, note that DMAEN bit is "reserved"
-           but no impact on H7 HW and it minimize the cost in the footprint */
+        /* Disable the DMA transfer by clearing the DMAEN bit in the QSPI CR register */
         CLEAR_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
 
         /* Disable the MDMA channel */
@@ -717,8 +715,7 @@ void HAL_QSPI_IRQHandler(QSPI_HandleTypeDef *hqspi)
 
     if ((hqspi->Instance->CR & QUADSPI_CR_DMAEN) != 0U)
     {
-      /* Disable using MDMA by clearing DMAEN, note that DMAEN bit is "reserved"
-         but no impact on H7 HW and it minimize the cost in the footprint */
+      /* Disable the DMA transfer by clearing the DMAEN bit in the QSPI CR register */
       CLEAR_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
 
       /* Disable the MDMA channel */
@@ -1335,8 +1332,7 @@ HAL_StatusTypeDef HAL_QSPI_Transmit_DMA(QSPI_HandleTypeDef *hqspi, uint8_t *pDat
           /* Enable the QSPI transfer error Interrupt */
           __HAL_QSPI_ENABLE_IT(hqspi, QSPI_IT_TE);
 
-          /* Enable using MDMA by setting DMAEN, note that DMAEN bit is "reserved"
-             but no impact on H7 HW and it minimize the cost in the footprint */
+          /* Enable the MDMA transfer by setting the DMAEN bit in the QSPI CR register */
           SET_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
         }
         else
@@ -1450,8 +1446,7 @@ HAL_StatusTypeDef HAL_QSPI_Receive_DMA(QSPI_HandleTypeDef *hqspi, uint8_t *pData
           /* Enable the QSPI transfer error Interrupt */
           __HAL_QSPI_ENABLE_IT(hqspi, QSPI_IT_TE);
 
-          /* Enable using MDMA by setting DMAEN, note that DMAEN bit is "reserved"
-             but no impact on H7 HW and it minimize the cost in the footprint */
+          /* Enable the MDMA transfer by setting the DMAEN bit in the QSPI CR register */
           SET_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
         }
         else
@@ -2165,8 +2160,7 @@ HAL_StatusTypeDef HAL_QSPI_Abort(QSPI_HandleTypeDef *hqspi)
 
     if ((hqspi->Instance->CR & QUADSPI_CR_DMAEN) != 0U)
     {
-      /* Disable using MDMA by clearing DMAEN, note that DMAEN bit is "reserved"
-         but no impact on H7 HW and it minimize the cost in the footprint */
+      /* Disable the DMA transfer by clearing the DMAEN bit in the QSPI CR register */
       CLEAR_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
 
       /* Abort MDMA */
@@ -2227,8 +2221,7 @@ HAL_StatusTypeDef HAL_QSPI_Abort_IT(QSPI_HandleTypeDef *hqspi)
 
     if ((hqspi->Instance->CR & QUADSPI_CR_DMAEN) != 0U)
     {
-      /* Disable using MDMA by clearing DMAEN, note that DMAEN bit is "reserved"
-         but no impact on H7 HW and it minimize the cost in the footprint */
+      /* Disable the DMA transfer by clearing the DMAEN bit in the QSPI CR register */
       CLEAR_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
 
       /* Abort MDMA channel */
@@ -2403,8 +2396,7 @@ static void QSPI_DMAError(MDMA_HandleTypeDef *hmdma)
   hqspi->TxXferCount = 0U;
   hqspi->ErrorCode   |= HAL_QSPI_ERROR_DMA;
 
-  /* Disable using MDMA by clearing DMAEN, note that DMAEN bit is "reserved"
-     but no impact on H7 HW and it minimize the cost in the footprint */
+  /* Disable the MDMA transfer by clearing the DMAEN bit in the QSPI CR register */
   CLEAR_BIT(hqspi->Instance->CR, QUADSPI_CR_DMAEN);
 
   /* Abort the QSPI */

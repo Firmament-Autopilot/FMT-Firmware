@@ -1745,7 +1745,7 @@ static void SWPMI_DMATransmitCplt(DMA_HandleTypeDef *hdma)
     in the SWPMI CR register */
     CLEAR_BIT(hswpmi->Instance->CR, SWPMI_CR_TXDMA);
 
-    /* Init tickstart for timeout management*/
+    /* Init tickstart for timeout managment*/
     tickstart = HAL_GetTick();
 
     /* Wait the TXBEF */

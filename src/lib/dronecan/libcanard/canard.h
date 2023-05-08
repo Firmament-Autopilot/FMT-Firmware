@@ -50,13 +50,6 @@ extern "C" {
 #define CANARD_ENABLE_CANFD                         0
 #endif
 
-#ifndef CANARD_MULTI_IFACE
-#define CANARD_MULTI_IFACE                          0
-#endif
-
-#ifndef CANARD_ENABLE_DEADLINE
-#define CANARD_ENABLE_DEADLINE                      0
-#endif
 
 #ifndef CANARD_ENABLE_TAO_OPTION
 #if CANARD_ENABLE_CANFD
@@ -104,8 +97,6 @@ extern "C" {
 /// The size of a memory block in bytes.
 #if CANARD_ENABLE_CANFD
 #define CANARD_MEM_BLOCK_SIZE                       128U
-#elif CANARD_ENABLE_DEADLINE
-#define CANARD_MEM_BLOCK_SIZE                       40U
 #else
 #define CANARD_MEM_BLOCK_SIZE                       32U
 #endif
@@ -146,32 +137,7 @@ extern "C" {
 #define CANARD_TRANSFER_PAYLOAD_LEN_BITS            10U
 #define CANARD_MAX_TRANSFER_PAYLOAD_LEN             ((1U << CANARD_TRANSFER_PAYLOAD_LEN_BITS) - 1U)
 
-#ifndef CANARD_64_BIT
-#ifdef __WORDSIZE
-#define CANARD_64_BIT (__WORDSIZE == 64)
-#else
-#define CANARD_64_BIT 0
-#endif
-#endif
 
-/*
-  canard_buffer_idx_t is used to avoid pointers in data structures
-  that have to have the same size on both 32 bit and 64 bit
-  platforms. It is an index into mem_arena passed to canardInit
-  treated as a uint8_t array
-
-  A value of CANARD_BUFFER_IDX_NONE means a NULL pointer
- */
-#if CANARD_64_BIT
-typedef uint32_t canard_buffer_idx_t;
-#define CANARD_BUFFER_IDX_NONE 0U
-#else
-typedef void* canard_buffer_idx_t;
-#define CANARD_BUFFER_IDX_NONE NULL
-#endif
-
-
-    
 /**
  * This data type holds a standard CAN 2.0B data frame with 29-bit ID.
  */
@@ -184,19 +150,12 @@ typedef struct
      *  - CANARD_CAN_FRAME_ERR
      */
     uint32_t id;
-#if CANARD_ENABLE_DEADLINE
-    uint64_t deadline_usec;
-#endif
 #if CANARD_ENABLE_CANFD
     uint8_t data[CANARD_CANFD_FRAME_MAX_DATA_LEN];
 #else
     uint8_t data[CANARD_CAN_FRAME_MAX_DATA_LEN];
 #endif
     uint8_t data_len;
-    uint8_t iface_id;
-#if CANARD_MULTI_IFACE
-    uint8_t iface_mask;
-#endif
 #if CANARD_ENABLE_CANFD
     bool canfd;
 #endif
@@ -229,47 +188,6 @@ typedef struct CanardRxTransfer CanardRxTransfer;
 typedef struct CanardRxState CanardRxState;
 typedef struct CanardTxQueueItem CanardTxQueueItem;
 
-/**
- * This struture provides information about encoded dronecan frame that needs
- * to be put on the wire.
- * 
- * In case of broadcast or request pointer to the Transfer ID should point to a persistent variable
- * (e.g. static or heap allocated, not on the stack); it will be updated by the library after every transmission. 
- * The Transfer ID value cannot be shared between transfers that have different descriptors!
- * More on this in the transport layer specification.
- * 
- * For the case of response, the pointer to the Transfer ID is treated as const and generally points to transfer id
- * in CanardRxTransfer structure.
- * 
- */
-typedef struct {
-    CanardTransferType transfer_type; ///< Type of transfer: CanardTransferTypeBroadcast, CanardTransferTypeRequest, CanardTransferTypeResponse
-    uint64_t data_type_signature; ///< Signature of the message/service
-    uint16_t data_type_id; ///< ID of the message/service
-    uint8_t* inout_transfer_id; ///< Transfer ID reference
-    uint8_t priority; ///< Priority of the transfer
-    const uint8_t* payload; ///< Pointer to the payload
-    uint16_t payload_len; ///< Length of the payload
-#if CANARD_ENABLE_CANFD
-    bool canfd; ///< True if CAN FD is enabled
-#endif
-#if CANARD_ENABLE_DEADLINE
-    uint64_t deadline_usec; ///< Deadline in microseconds
-#endif
-#if CANARD_MULTI_IFACE
-    uint8_t iface_mask; ///< Bitmask of interfaces to send the transfer on
-#endif
-#if CANARD_ENABLE_TAO_OPTION
-    bool tao; ///< True if tail array optimization is enabled
-#endif
-} CanardTxTransfer;
-
-struct CanardTxQueueItem
-{
-    CanardTxQueueItem* next;
-    CanardCANFrame frame;
-};
-CANARD_STATIC_ASSERT(sizeof(CanardTxQueueItem) <= CANARD_MEM_BLOCK_SIZE, "Unexpected memory block size");
 /**
  * The application must implement this function and supply a pointer to it to the library during initialization.
  * The library calls this function to determine whether the transfer should be received.
@@ -317,6 +235,15 @@ typedef struct
 
 /**
  * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
+ */
+typedef struct
+{
+    CanardPoolAllocatorBlock* free_list;
+    CanardPoolAllocatorStatistics statistics;
+} CanardPoolAllocator;
+
+/**
+ * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
  * Buffer block for received data.
  */
 typedef struct CanardBufferBlock
@@ -328,21 +255,11 @@ typedef struct CanardBufferBlock
 /**
  * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
  */
-typedef struct
-{
-    CanardPoolAllocatorBlock* free_list;
-    CanardPoolAllocatorStatistics statistics;
-    void *arena;
-} CanardPoolAllocator;
-
-
-/**
- * INTERNAL DEFINITION, DO NOT USE DIRECTLY.
- */
 struct CanardRxState
 {
-    canard_buffer_idx_t next;
-    canard_buffer_idx_t buffer_blocks;
+    struct CanardRxState* next;
+
+    CanardBufferBlock* buffer_blocks;
 
     uint64_t timestamp_usec;
 
@@ -355,11 +272,11 @@ struct CanardRxState
     unsigned next_toggle    : 1;    // 16+10+5+1 = 32, aligned.
 
     uint16_t payload_crc;
-    uint8_t  iface_id;
+
     uint8_t buffer_head[];
 };
-CANARD_STATIC_ASSERT(offsetof(CanardRxState, buffer_head) <= 27, "Invalid memory layout");
-CANARD_STATIC_ASSERT(CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE >= 5, "Invalid memory layout");
+CANARD_STATIC_ASSERT(offsetof(CanardRxState, buffer_head) <= 28, "Invalid memory layout");
+CANARD_STATIC_ASSERT(CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE >= 4, "Invalid memory layout");
 
 /**
  * This is the core structure that keeps all of the states and allocated resources of the library instance.
@@ -482,36 +399,20 @@ uint8_t canardGetLocalNodeID(const CanardInstance* ins);
 void canardForgetLocalNodeID(CanardInstance* ins);
 
 /**
- * Initialise TX transfer object.
- * Should be called at least once before using transfer object to send transmissions.
-*/
-void canardInitTxTransfer(CanardTxTransfer* transfer);
-
-/**
  * Sends a broadcast transfer.
  * If the node is in passive mode, only single frame transfers will be allowed (they will be transmitted as anonymous).
  *
- * For anonymous transfers, maximum data type ID (CanardTxTransfer::data_type_id) is limited to 3 (see specification for details).
+ * For anonymous transfers, maximum data type ID is limited to 3 (see specification for details).
  *
- * Please refer to the specification for more details about data type signatures (CanardTxTransfer::data_type_signature). Signature for 
- * any data type can be obtained in many ways; for example, using the generated code generated using dronecan_dsdlc (see the repository).
+ * Please refer to the specification for more details about data type signatures. Signature for any data type can be
+ * obtained in many ways; for example, using the command line tool distributed with Libcanard (see the repository).
  *
- * Use CanardTxTransfer structure to pass the transfer parameters. The structure is initialized by the
- * canardInitTxTransfer() function.
- * 
- * Pointer to the Transfer ID (CanardTxTransfer::inout_transfer_id) should point to a persistent variable
- * (e.g. static or heap allocated, not on the stack); it will be updated by the library after every transmission. 
- * The Transfer ID value cannot be shared between transfers that have different descriptors!
- * More on this in the transport layer specification.
+ * Pointer to the Transfer ID should point to a persistent variable (e.g. static or heap allocated, not on the stack);
+ * it will be updated by the library after every transmission. The Transfer ID value cannot be shared between
+ * transfers that have different descriptors! More on this in the transport layer specification.
  *
  * Returns the number of frames enqueued, or negative error code.
  */
-
-int16_t canardBroadcastObj(CanardInstance* ins,            ///< Library instance
-                           CanardTxTransfer* transfer      ///< Transfer object
-                          );
-
-// Legacy API, try to avoid using it, as this will not be extended with new features
 int16_t canardBroadcast(CanardInstance* ins,            ///< Library instance
                         uint64_t data_type_signature,   ///< See above
                         uint16_t data_type_id,          ///< Refer to the specification
@@ -519,39 +420,29 @@ int16_t canardBroadcast(CanardInstance* ins,            ///< Library instance
                         uint8_t priority,               ///< Refer to definitions CANARD_TRANSFER_PRIORITY_*
                         const void* payload,            ///< Transfer payload
                         uint16_t payload_len            ///< Length of the above, in bytes
-#if CANARD_ENABLE_DEADLINE
-                        ,uint64_t tx_deadline           ///< Transmission deadline, microseconds
-#endif
-#if CANARD_MULTI_IFACE
-                        ,uint8_t iface_mask               ///< Bitmask of interfaces to transmit on
-#endif
 #if CANARD_ENABLE_CANFD
                         ,bool canfd                      ///< Is the frame canfd
 #endif
                         );
+
+
 /**
  * Sends a request or a response transfer.
  * Fails if the node is in passive mode.
  *
- * Please refer to the specification for more details about data type signatures (CanardTxTransfer::data_type_signature). Signature for 
- * any data type can be obtained in many ways; for example, using the generated code generated using dronecan_dsdlc (see the repository).
+ * Please refer to the specification for more details about data type signatures. Signature for any data type can be
+ * obtained in many ways; for example, using the command line tool distributed with Libcanard (see the repository).
  *
- * Pointer to the Transfer ID (CanardTxTransfer::inout_transfer_id) should point to a persistent variable
- * (e.g. static or heap allocated, not on the stack); it will be updated by the library after every request.
- * The Transfer ID value cannot be shared between requests that have different descriptors!
- * More on this in the transport layer specification.
+ * For Request transfers, the pointer to the Transfer ID should point to a persistent variable (e.g. static or heap
+ * allocated, not on the stack); it will be updated by the library after every request. The Transfer ID value
+ * cannot be shared between requests that have different descriptors! More on this in the transport layer
+ * specification.
  *
- * For Response transfers, the pointer to the Transfer ID(CanardTxTransfer::inout_transfer_id) will be treated as const (i.e. read-only),
- * and normally it should point to the transfer_id field of the structure CanardRxTransfer.
+ * For Response transfers, the pointer to the Transfer ID will be treated as const (i.e. read-only), and normally it
+ * should point to the transfer_id field of the structure CanardRxTransfer.
  *
  * Returns the number of frames enqueued, or negative error code.
  */
-
-int16_t canardRequestOrRespondObj(CanardInstance* ins,             ///< Library instance
-                                  uint8_t destination_node_id,     ///< Node ID of the server/client
-                                  CanardTxTransfer* transfer       ///< Transfer object
-                                );
-// Legacy API, try to avoid using it, as this will not be extended with new features
 int16_t canardRequestOrRespond(CanardInstance* ins,             ///< Library instance
                                uint8_t destination_node_id,     ///< Node ID of the server/client
                                uint64_t data_type_signature,    ///< See above
@@ -561,33 +452,19 @@ int16_t canardRequestOrRespond(CanardInstance* ins,             ///< Library ins
                                CanardRequestResponse kind,      ///< Refer to CanardRequestResponse
                                const void* payload,             ///< Transfer payload
                                uint16_t payload_len             ///< Length of the above, in bytes
-#if CANARD_ENABLE_DEADLINE
-                               ,uint64_t tx_deadline            ///< Transmission deadline, microseconds
-#endif
-#if CANARD_MULTI_IFACE
-                               ,uint8_t iface_mask               ///< Bitmask of interfaces to transmit on
-#endif
 #if CANARD_ENABLE_CANFD
                                 ,bool canfd                     ///< Is the frame canfd
 #endif
                             );
+
 /**
  * Returns a pointer to the top priority frame in the TX queue.
  * Returns NULL if the TX queue is empty.
  * The application will call this function after canardBroadcast() or canardRequestOrRespond() to transmit generated
  * frames over the CAN bus.
  */
-CanardCANFrame* canardPeekTxQueue(const CanardInstance* ins);
+const CanardCANFrame* canardPeekTxQueue(const CanardInstance* ins);
 
-/**
- * Returns the timeout for the frame on top of TX queue.
- * Returns zero if the TX queue is empty.
- * The application will call this function after canardPeekTxQueue() to determine when to call canardPopTxQueue(), if
- * the frame is not transmitted.
- */
-#if CANARD_ENABLE_DEADLINE
-uint64_t canardPeekTxQueueDeadline(const CanardInstance* ins);
-#endif
 /**
  * Removes the top priority frame from the TX queue.
  * The application will call this function after canardPeekTxQueue() once the obtained frame has been processed.
@@ -706,10 +583,12 @@ float canardConvertFloat16ToNativeFloat(uint16_t value);
 /// Abort the build if the current platform is not supported.
 #if CANARD_ENABLE_CANFD
 CANARD_STATIC_ASSERT(((uint32_t)CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE) < 128,
-                     "Please define CANARD_64_BIT=1 for 64 bit builds");
+                     "Platforms where sizeof(void*) > 4 are not supported. "
+                     "On AMD64 use 32-bit mode (e.g. GCC flag -m32).");
 #else
 CANARD_STATIC_ASSERT(((uint32_t)CANARD_MULTIFRAME_RX_PAYLOAD_HEAD_SIZE) < 32,
-                     "Please define CANARD_64_BIT=1 for 64 bit builds");
+                     "Platforms where sizeof(void*) > 4 are not supported. "
+                     "On AMD64 use 32-bit mode (e.g. GCC flag -m32).");
 #endif
 
 #ifdef __cplusplus

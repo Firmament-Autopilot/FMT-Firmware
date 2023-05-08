@@ -177,7 +177,7 @@
 /* SOC Define */
 #define SOC_FAMILY_STM32
 #define SOC_SERIES_STM32H7
-#define SOC_STM32H753VI
+#define SOC_STM32H743VI
 
 /* USING C++ */
 #define RT_USING_CPLUSPLUS

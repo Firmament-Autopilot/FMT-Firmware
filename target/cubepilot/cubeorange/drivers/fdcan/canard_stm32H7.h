@@ -20,6 +20,16 @@ extern "C" {
 
 /*-------------------------------------------User Config Macros-------------------------------------------*/
 
+// Set this build config macro to 1 if using FreeRTOS
+#if !defined(UAVCAN_STM32_FREERTOS)
+    #define UAVCAN_STM32_FREERTOS 0
+#endif
+
+// Set this build config macro to 1 if app not using any OS
+#if !defined(UAVCAN_STM32_BAREMETAL)
+    #define UAVCAN_STM32_BAREMETAL 1
+#endif
+
 // Define number of CAN interfaces to use (1 (only FDCAN1) or 2 (FDCAN1 and FDCAN2))
 #define FDCAN_NUM_IFACES 1
 

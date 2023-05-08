@@ -7,8 +7,6 @@
 
 #include "canard_stm32H7.h"
 
-#include <firmament.h>
-
 #include <assert.h>
 
 // Configure the maximum interface index for the fdCAN hardware available in your MCU.
@@ -17,8 +15,23 @@
     #error "Please set FDCAN_NUM_IFACES to either 1 (only FDCAN1) or 2 (FDCAN1 and FDCAN2)." //NOLINT
 #endif
 
-#define CAN_TIMEOUT REG_SET_TIMEOUT
-#define SYS_TIMER   systime_now_ms()
+// Configure the maximum interface index for the fdCAN hardware available in your MCU.
+// Must be set to either 0 (only FDCAN1) or 1 (FDCAN1 and FDCAN2).
+#if (UAVCAN_STM32_BAREMETAL == 1) == (UAVCAN_STM32_FREERTOS == 1)
+    #error "Please set to 1 UAVCAN_STM32_BAREMETAL or UAVCAN_STM32_FREERTOS." //NOLINT
+#endif
+
+#if UAVCAN_STM32_FREERTOS
+    #include <cmsis_os2.h>
+#endif
+
+#if UAVCAN_STM32_FREERTOS
+    #define CAN_TIMEOUT (REG_SET_TIMEOUT * osKernelGetSysTimerFreq() / 1000000U)
+    #define SYS_TIMER   osKernelGetSysTimerCount()
+#elif UAVCAN_STM32_BAREMETAL
+    #define CAN_TIMEOUT REG_SET_TIMEOUT
+    #define SYS_TIMER   HAL_GetTick()
+#endif
 
 // By default, this macro resolves to the standard assert(). The user can redefine this if necessary.
 // To disable assertion checks completely, make it expand into `(void)(0)`.
@@ -267,6 +280,8 @@ int16_t fdCANComputeTimings(const uint32_t peripheral_clock_rate, //
     return 0;
 }
 
+#include <firmament.h>
+
 int16_t fdCANTransmit(const FDCanID iface,               //
                       const uint64_t current_time,       //
                       const uint64_t deadline,           //
@@ -285,14 +300,21 @@ int16_t fdCANTransmit(const FDCanID iface,               //
     if (frame == NULL)
         return -CANARD_ERROR_INVALID_ARGUMENT;
 
+    printf("frame->data_len=%d\n",frame->data_len);
+
     if (frame->data_len > CANARD_CAN_FRAME_MAX_DATA_LEN)
         return -CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT; // Payload size for classic CAN must be <= 8 bytes.
+
+    printf("2");
 
     if ((frame->data_len > 0U) && (frame->data == NULL))
         return -CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT; // NULL pointer payload with non-zero payload size.
 
+    printf("3");
+
     if (frame->id & CANARD_CAN_FRAME_ERR)
         return -CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT;
+        
 
     // When the frame that should be transmitted is already expired (current_time > deadline), discard it. It would
     // be rejected at reception, and thus causes undue overhead and bus load. When an expired frame is discarded,
@@ -456,14 +478,7 @@ int16_t fdCANInit(const FdCANTimings timings, //
         return -CANARD_ERROR_INVALID_ARGUMENT; // CAN1 must be initialized before initializing CAN2.
 
                                                // Validate the rest of the inputs.
-    if ((timings.bit_rate_prescaler < 1U)
-        || (timings.bit_rate_prescaler > 1024U)
-        || (timings.max_resynchronization_jump_width < 1U)
-        || (timings.max_resynchronization_jump_width > 4U)
-        || (timings.bit_segment_1 < 1U)
-        || (timings.bit_segment_1 > 16U)
-        || (timings.bit_segment_2 < 1U)
-        || (timings.bit_segment_2 > 8U)) {
+    if ((timings.bit_rate_prescaler < 1U) || (timings.bit_rate_prescaler > 1024U) || (timings.max_resynchronization_jump_width < 1U) || (timings.max_resynchronization_jump_width > 4U) || (timings.bit_segment_1 < 1U) || (timings.bit_segment_1 > 16U) || (timings.bit_segment_2 < 1U) || (timings.bit_segment_2 > 8U)) {
         return -CANARD_ERROR_INVALID_ARGUMENT; // Invalid timings.
     }
 
@@ -510,14 +525,9 @@ int16_t fdCANInit(const FdCANTimings timings, //
 
     // setup timing register
     // TODO: Do timing calculations for FDCAN
-    canIface_[iface].fdcan_base->NBTP = (((timings.max_resynchronization_jump_width - 1U) << FDCAN_NBTP_NSJW_Pos)
-                                         | ((timings.bit_segment_1 - 1U) << FDCAN_NBTP_NTSEG1_Pos)
-                                         | ((timings.bit_segment_2 - 1U) << FDCAN_NBTP_NTSEG2_Pos)
-                                         | ((timings.bit_rate_prescaler - 1U) << FDCAN_NBTP_NBRP_Pos));
+    canIface_[iface].fdcan_base->NBTP = (((timings.max_resynchronization_jump_width - 1U) << FDCAN_NBTP_NSJW_Pos) | ((timings.bit_segment_1 - 1U) << FDCAN_NBTP_NTSEG1_Pos) | ((timings.bit_segment_2 - 1U) << FDCAN_NBTP_NTSEG2_Pos) | ((timings.bit_rate_prescaler - 1U) << FDCAN_NBTP_NBRP_Pos));
 
-    canIface_[iface].fdcan_base->DBTP = (((timings.bit_segment_1 - 1U) << FDCAN_DBTP_DTSEG1_Pos)
-                                         | ((timings.bit_segment_2 - 1U) << FDCAN_DBTP_DTSEG2_Pos)
-                                         | ((timings.bit_rate_prescaler - 1U) << FDCAN_DBTP_DBRP_Pos));
+    canIface_[iface].fdcan_base->DBTP = (((timings.bit_segment_1 - 1U) << FDCAN_DBTP_DTSEG1_Pos) | ((timings.bit_segment_2 - 1U) << FDCAN_DBTP_DTSEG2_Pos) | ((timings.bit_rate_prescaler - 1U) << FDCAN_DBTP_DBRP_Pos));
     // RX Config
     canIface_[iface].fdcan_base->RXESC = 0; // Set for 8Byte Frames
 
@@ -534,7 +544,6 @@ int16_t fdCANInit(const FdCANTimings timings, //
 int16_t fdCANReceive(const FDCanID iface, //
                      CanardCANFrame* const out_frame)
 {
-
     // If the interface number is invalid, return with an error.
     if (iface >= FDCAN_NUM_IFACES)
         return -CANARD_ERROR_INVALID_ARGUMENT; // Invalid CAN interface number.
@@ -591,7 +600,6 @@ int16_t fdCANReceive(const FDCanID iface, //
             canIface_[iface].fdcan_base->RXF1A = index;
 
         // Reading successful
-
         return 1;
     }
 

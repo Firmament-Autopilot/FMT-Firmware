@@ -21,13 +21,18 @@ void task_dronecan_entry(void* parameter)
     rt_uint32_t recv_set = 0;
     uint32_t wait_set = EVENT_DRONECAN_UPDATE;
 
+
+
     while (1) {
 
         res = rt_event_recv(&event_dronecan, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
         if (res == RT_EOK) {
             if (recv_set & EVENT_DRONECAN_UPDATE) {
+                spinCanard();
 
-                receiveCanard();
+                sendCanard();
+                // receiveCanard();
+
             }
         }
     }
@@ -43,13 +48,13 @@ fmt_err_t task_dronecan_init(void)
     if (rt_event_init(&event_dronecan, "dronecan", RT_IPC_FLAG_FIFO) != RT_EOK) {
         return FMT_ERROR;
     }
-    drv_timer_init();
+    // drv_timer_init();
 
     /* register timer event */
-    // rt_timer_init(&timer_dronecan, "dronecan", timer_dronecan_update, RT_NULL, 2, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
-    // if (rt_timer_start(&timer_dronecan) != RT_EOK) {
-    //     return FMT_ERROR;
-    // }
+    rt_timer_init(&timer_dronecan, "dronecan", timer_dronecan_update, RT_NULL, 50, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    if (rt_timer_start(&timer_dronecan) != RT_EOK) {
+        return FMT_ERROR;
+    }
 
     return FMT_EOK;
 }
@@ -60,16 +65,16 @@ TASK_EXPORT __fmt_task_desc = {
     .entry = task_dronecan_entry,
     .priority = DRONECAN_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 2048 * 10,
+    .stack_size = 4096 * 10,
     .param = NULL,
     .dependency = NULL
 };
 
-void TIM6_DAC_IRQHandler()
-{
-    if (LL_TIM_IsActiveFlag_UPDATE(TIM6)) {
-        LL_TIM_ClearFlag_UPDATE(TIM6);
+// void TIM6_DAC_IRQHandler()
+// {
+//     if (LL_TIM_IsActiveFlag_UPDATE(TIM6)) {
+//         LL_TIM_ClearFlag_UPDATE(TIM6);
 
-        rt_event_send(&event_dronecan, EVENT_DRONECAN_UPDATE);
-    }
-}
+//         rt_event_send(&event_dronecan, EVENT_DRONECAN_UPDATE);
+//     }
+// }

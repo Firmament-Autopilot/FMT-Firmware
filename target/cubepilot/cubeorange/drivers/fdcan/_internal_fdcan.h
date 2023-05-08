@@ -15,11 +15,10 @@ typedef FDCAN_GlobalTypeDef FdCANType;
 #define FDCAN_1 ((volatile FdCANType*)0x4000A000UL)
 #define FDCAN_2 ((volatile FdCANType*)0x4000A400UL)
 
-#define FDCAN_IDE          (0x40000000UL) // Identifier Extension
-#define FDCAN_STID_MASK    (0x1FFC0000UL) // Standard Identifier Mask
-#define FDCAN_EXID_MASK    (0x1FFFFFFFUL) // Extended Identifier Mask
-#define FDCAN_RTR          (0x20000000UL) // Remote Transmission Request
-#define FDCAN_DLC_MASK     (0x000F0000UL) // Data Length Code
-#define FDCAN_CLOCK        (48000000UL)
-#define FDCAN_TARGET_CLOCK (1000000UL)
-#endif // CANARD_STM32_FDCAN_H
+#define FDCAN_IDE       (0x40000000UL) // Identifier Extension
+#define FDCAN_STID_MASK (0x1FFC0000UL) // Standard Identifier Mask
+#define FDCAN_EXID_MASK (0x1FFFFFFFUL) // Extended Identifier Mask
+#define FDCAN_RTR       (0x20000000UL) // Remote Transmission Request
+#define FDCAN_DLC_MASK  (0x000F0000UL) // Data Length Code
+
+#endif                                 // CANARD_STM32_FDCAN_H

@@ -40,9 +40,8 @@ extern "C" {
 
 /// This macro is needed only for testing and development. Do not redefine this in production.
 #ifndef CANARD_INTERNAL
-# define CANARD_INTERNAL static
+    #define CANARD_INTERNAL static
 #endif
-
 
 CANARD_INTERNAL CanardRxState* traverseRxStates(CanardInstance* ins,
                                                 uint32_t transfer_descriptor);
@@ -53,7 +52,7 @@ CANARD_INTERNAL CanardRxState* createRxState(CanardPoolAllocator* allocator,
 CANARD_INTERNAL CanardRxState* prependRxState(CanardInstance* ins,
                                               uint32_t transfer_descriptor);
 
-CANARD_INTERNAL CanardRxState* findRxState(CanardInstance *ins,
+CANARD_INTERNAL CanardRxState* findRxState(CanardRxState* state,
                                            uint32_t transfer_descriptor);
 
 CANARD_INTERNAL int16_t bufferBlockPushBytes(CanardPoolAllocator* allocator,
@@ -85,14 +84,21 @@ CANARD_INTERNAL void incrementTransferID(uint8_t* transfer_id);
 CANARD_INTERNAL uint64_t releaseStatePayload(CanardInstance* ins,
                                              CanardRxState* rxstate);
 
-CANARD_INTERNAL uint16_t dlcToDataLength(uint16_t dlc);
-CANARD_INTERNAL uint16_t dataLengthToDlc(uint16_t data_length);
+CANARD_INTERNAL uint8_t dlcToDataLength(uint8_t dlc);
+CANARD_INTERNAL uint8_t dataLengthToDlc(uint8_t data_length);
 
 /// Returns the number of frames enqueued
 CANARD_INTERNAL int16_t enqueueTxFrames(CanardInstance* ins,
                                         uint32_t can_id,
+                                        uint8_t* transfer_id,
                                         uint16_t crc,
-                                        CanardTxTransfer* transfer);
+                                        const uint8_t* payload,
+                                        uint16_t payload_len
+#if CANARD_ENABLE_CANFD
+                                        ,
+                                        bool canfd
+#endif
+);
 
 CANARD_INTERNAL void copyBitArray(const uint8_t* src,
                                   uint32_t src_offset,
@@ -134,7 +140,7 @@ CANARD_INTERNAL uint16_t crcAdd(uint16_t crc_val,
  * @param [in] buf_len The number of blocks in buf.
  */
 CANARD_INTERNAL void initPoolAllocator(CanardPoolAllocator* allocator,
-                                       void *buf,
+                                       CanardPoolAllocatorBlock* buf,
                                        uint16_t buf_len);
 
 /**
@@ -148,15 +154,14 @@ CANARD_INTERNAL void* allocateBlock(CanardPoolAllocator* allocator);
 CANARD_INTERNAL void freeBlock(CanardPoolAllocator* allocator,
                                void* p);
 
-CANARD_INTERNAL uint16_t calculateCRC(const CanardTxTransfer* transfer_object);
-
-CANARD_INTERNAL CanardBufferBlock *canardBufferFromIdx(CanardPoolAllocator* allocator, canard_buffer_idx_t idx);
-
-CANARD_INTERNAL canard_buffer_idx_t canardBufferToIdx(CanardPoolAllocator* allocator, const CanardBufferBlock *buf);
-
-CANARD_INTERNAL CanardRxState *canardRxFromIdx(CanardPoolAllocator* allocator, canard_buffer_idx_t idx);
-
-CANARD_INTERNAL canard_buffer_idx_t canardRxToIdx(CanardPoolAllocator* allocator, const CanardRxState *rx);
+CANARD_INTERNAL uint16_t calculateCRC(const void* payload,
+                                      uint16_t payload_len,
+                                      uint64_t data_type_signature
+#if CANARD_ENABLE_CANFD
+                                      ,
+                                      bool canfd
+#endif
+);
 
 #ifdef __cplusplus
 }
