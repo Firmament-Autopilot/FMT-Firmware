@@ -35,16 +35,6 @@
 static mavproxy_device_info mavproxy_device_list[MAVPROXY_CHAN_NUM][MAVPROXY_MAX_DEVICE_NUM];
 static uint8_t mavproxy_device_num[MAVPROXY_CHAN_NUM];
 
-int get_device_num(uint8_t chan)
-{
-    return DEVICE_NUM(chan);
-}
-
-mavproxy_device_info* get_device_list(uint8_t chan)
-{
-    return DEVICE_LIST(chan);
-}
-
 static void __handle_device_msg(rt_device_t dev, void* msg)
 {
     device_status status = *((device_status*)msg);
@@ -64,25 +54,6 @@ static void __handle_device_msg(rt_device_t dev, void* msg)
         }
     }
 }
-
-// static void reset_device_list(void)
-// {
-//     for (int i = 0; i < MAVPROXY_MAX_DEVICE_NUM; i++) {
-//         if (DEVICE_LIST[i].type) {
-//             rt_free(DEVICE_LIST[i].type);
-//         }
-//         if (DEVICE_LIST[i].name) {
-//             rt_free(DEVICE_LIST[i].name);
-//         }
-//         if (DEVICE_LIST[i].config) {
-//             rt_free(DEVICE_LIST[i].config);
-//         }
-//         DEVICE_LIST[i].type = NULL;
-//         DEVICE_LIST[i].name = NULL;
-//         DEVICE_LIST[i].config = NULL;
-//     }
-//     DEVICE_NUM = 0;
-// }
 
 static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
 {
@@ -239,6 +210,11 @@ uint8_t mavproxy_get_dev_num(uint8_t chan)
     return DEVICE_NUM(chan);
 }
 
+mavproxy_device_info* mavproxy_get_dev_list(uint8_t chan)
+{
+    return DEVICE_LIST(chan);
+}
+
 fmt_err_t mavproxy_get_devinfo(uint8_t chan, rt_device_t dev, mavproxy_device_info* info)
 {
     for (int idx = 0; idx < DEVICE_NUM(chan); idx++) {
@@ -300,9 +276,6 @@ fmt_err_t mavproxy_toml_config(toml_table_t* table)
     /* traverse keys in table */
     for (i = 0; 0 != (key = toml_key_in(table, i)); i++) {
         if (MATCH(key, "devices")) {
-            /* we get new device configuration, override original one */
-            // reset_device_list();
-
             if (toml_array_table_in(table, key, &arr) == 0) {
                 err = mavproxy_parse_devices(arr);
                 if (err != FMT_EOK) {

@@ -18,6 +18,7 @@
 
 #include "hal/serial/serial.h"
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/mavproxy_config.h"
 
 #define MAVPROXY_INTERVAL            1
 #define MAVPROXY_BUFFER_SIZE         1024
@@ -26,8 +27,6 @@
 #define MAVPROXY_UNSET_CHAN          0xFF
 
 fmt_err_t mavproxy_monitor_create(void);
-fmt_err_t mavproxy_switch_dev(uint8_t chan, uint8_t idx);
-uint8_t mavproxy_get_dev_num(uint8_t chan);
 
 typedef struct {
     uint8_t msgid;
@@ -62,9 +61,6 @@ typedef struct {
 } mavproxy_handler;
 
 static mavproxy_handler mav_handle = {
-    .system = {
-        .sysid = 0,
-        .compid = 0 },
     .devid = { MAVPROXY_UNSET_CHAN, MAVPROXY_UNSET_CHAN },
     .new_devid = { MAVPROXY_UNSET_CHAN, MAVPROXY_UNSET_CHAN },
 };
@@ -263,12 +259,10 @@ void mavproxy_loop(void)
     /* Set mavproxy new channel to 0 if not set. Here we need critical section
        since the new channel can possible be set in usb ISR. */
     OS_ENTER_CRITICAL;
-    if (mavproxy_get_dev_num(0) > 0 && mav_handle.new_devid[0] == MAVPROXY_UNSET_CHAN) {
-        mav_handle.new_devid[0] = 0;
-    }
-
-    if (mavproxy_get_dev_num(1) > 0 && mav_handle.new_devid[1] == MAVPROXY_UNSET_CHAN) {
-        mav_handle.new_devid[0] = 0;
+    for (uint8_t chan = 0; chan < MAVPROXY_CHAN_NUM; chan++) {
+        if (mavproxy_get_dev_num(chan) > 0 && mav_handle.new_devid[chan] == MAVPROXY_UNSET_CHAN) {
+            mav_handle.new_devid[chan] = 0;
+        }
     }
     OS_EXIT_CRITICAL;
 
@@ -328,21 +322,19 @@ fmt_err_t mavproxy_init(void)
     /* init mavlink console */
     mavlink_console_init();
 
-    /* create tx lock */
-    mav_handle.tx_lock[0] = rt_sem_create("mav0_tx_lock", 1, RT_IPC_FLAG_FIFO);
-    mav_handle.tx_lock[1] = rt_sem_create("mav1_tx_lock", 1, RT_IPC_FLAG_FIFO);
+    for (uint8_t chan = 0; chan < MAVPROXY_CHAN_NUM; chan++) {
+        char sem_name[RT_NAME_MAX];
 
-    /* malloc buffer space */
-    mav_handle.tx_buffer[0] = (uint8_t*)rt_malloc(MAVPROXY_BUFFER_SIZE);
-    if (mav_handle.tx_buffer[0] == NULL) {
-        console_printf("fail to malloc for mavproxy0 tx buffer\n");
-        return FMT_ENOMEM;
-    }
+        sprintf(sem_name, "mav%d_tx_lock", chan);
+        /* create tx lock */
+        mav_handle.tx_lock[chan] = rt_sem_create(sem_name, 1, RT_IPC_FLAG_FIFO);
 
-    mav_handle.tx_buffer[1] = (uint8_t*)rt_malloc(MAVPROXY_BUFFER_SIZE);
-    if (mav_handle.tx_buffer[1] == NULL) {
-        console_printf("fail to malloc for mavproxy1 tx buffer\n");
-        return FMT_ENOMEM;
+        /* malloc buffer space */
+        mav_handle.tx_buffer[chan] = (uint8_t*)rt_malloc(MAVPROXY_BUFFER_SIZE);
+        if (mav_handle.tx_buffer[chan] == NULL) {
+            console_printf("fail to malloc for mavproxy %d tx buffer\n", chan);
+            return FMT_ENOMEM;
+        }
     }
 
     /* create event */

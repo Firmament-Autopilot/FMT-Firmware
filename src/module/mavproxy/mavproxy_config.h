@@ -39,8 +39,9 @@ typedef struct {
 fmt_err_t mavproxy_toml_config(toml_table_t* table);
 fmt_err_t mavproxy_get_devinfo(uint8_t chan, rt_device_t dev, mavproxy_device_info* info);
 
-int get_device_num(uint8_t chan);
-mavproxy_device_info* get_device_list(uint8_t chan);
+fmt_err_t mavproxy_switch_dev(uint8_t chan, uint8_t idx);
+mavproxy_device_info* mavproxy_get_dev_list(uint8_t chan);
+uint8_t mavproxy_get_dev_num(uint8_t chan);
 
 #ifdef __cplusplus
 }
