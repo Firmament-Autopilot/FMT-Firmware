@@ -362,27 +362,27 @@ void task_comm_entry(void* parameter)
     mavlink_system = mavproxy_get_system();
 
     /* register periodical mavlink msg */
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_HEARTBEAT, 1000, mavlink_msg_heartbeat_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1000, mavlink_msg_heartbeat_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYS_STATUS, 1000, mavlink_msg_sys_status_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1000, mavlink_msg_sys_status_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_SYSTEM_TIME, 1000, mavlink_msg_system_time_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_SYSTEM_TIME, 1000, mavlink_msg_system_time_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1000, mavlink_msg_extended_sys_state_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1000, mavlink_msg_extended_sys_state_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_ATTITUDE, 100, mavlink_msg_attitude_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_ATTITUDE, 100, mavlink_msg_attitude_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_LOCAL_POSITION_NED, 100, mavlink_msg_local_pos_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 100, mavlink_msg_local_pos_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 100, mavlink_msg_global_pos_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 100, mavlink_msg_global_pos_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_VFR_HUD, 200, mavlink_msg_vfr_hud_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_VFR_HUD, 200, mavlink_msg_vfr_hud_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_ALTITUDE, 100, mavlink_msg_altitude_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_ALTITUDE, 100, mavlink_msg_altitude_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_GPS_RAW_INT, 100, mavlink_msg_gps_raw_int_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_GPS_RAW_INT, 100, mavlink_msg_gps_raw_int_cb, true);
 
-    mavproxy_register_period_msg(MAVLINK_MSG_ID_RC_CHANNELS, 100, mavlink_msg_rc_channels_cb, true);
+    mavproxy_register_period_msg(MAVDEV_GCS_CHAN, MAVLINK_MSG_ID_RC_CHANNELS, 100, mavlink_msg_rc_channels_cb, true);
 
     /* execute mavproxy main loop */
     mavproxy_loop();

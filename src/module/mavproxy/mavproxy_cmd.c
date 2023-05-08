@@ -222,7 +222,7 @@ static void send_statustext_msg(mav_status_type status, mavlink_message_t* msg)
     memcpy(statustext.text, mavlink_get_status_content(status).string, strlen(mavlink_get_status_content(status).string));
     mavlink_msg_statustext_encode(mavlink_system.sysid, mavlink_system.compid, msg, &statustext);
 
-    mavproxy_send_immediate_msg(msg, true);
+    mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, msg, true);
 }
 
 static void gyr_calibration_init(void)

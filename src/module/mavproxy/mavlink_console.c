@@ -56,7 +56,7 @@ static void send_serial_control_msg(mavlink_serial_control_t* serial_control)
         sync = false;
     }
 
-    mavproxy_send_immediate_msg(&msg, sync);
+    mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, &msg, sync);
 }
 
 void mavlink_console_handle_timeout(void)
@@ -276,7 +276,7 @@ void mavlink_console_process_rx_msg(const mavlink_serial_control_t* serial_contr
 /*
  * mavlink console register
  */
-rt_err_t mavlink_console_init(void)
+rt_err_t mavlink_console_init()
 {
     device = &mavlink_console_dev;
 

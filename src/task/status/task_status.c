@@ -49,7 +49,7 @@ static void send_mission_current(uint16_t seq)
     mavlink_mission_current_t mission_current = { .seq = seq };
 
     mavlink_msg_mission_current_encode(mavsys.sysid, mavsys.compid, &msg, &mission_current);
-    mavproxy_send_immediate_msg(&msg, true);
+    mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, &msg, true);
 }
 
 static void send_home_position(void)
@@ -79,7 +79,7 @@ static void send_home_position(void)
     home_position.time_usec = systime_now_us();
 
     mavlink_msg_home_position_encode(mavsys.sysid, mavsys.compid, &msg, &home_position);
-    mavproxy_send_immediate_msg(&msg, true);
+    mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, &msg, true);
 }
 
 static void update_fms_status(void)

@@ -17,41 +17,79 @@
 
 #include "hal/serial/serial.h"
 
-static rt_device_t mavproxy_dev = RT_NULL;
-static struct rt_completion tx_cplt, rx_cplt;
+#define MAVPROXY_DEV_CHAN_NUM 2
 
-static fmt_err_t (*mav_rx_indicate)(uint32_t size) = NULL;
+struct mavdev {
+    rt_device_t dev;
+    rt_err_t (*tx_done)(rt_device_t dev, void* buffer);
+    rt_err_t (*rx_ind)(rt_device_t dev, rt_size_t size);
+    fmt_err_t (*mav_rx_ind)(uint32_t size);
+    struct rt_completion tx_cplt, rx_cplt;
+};
 
-static rt_err_t mavproxy_dev_tx_done(rt_device_t dev, void* buffer)
+static rt_err_t mavdev_chan0_tx_done(rt_device_t dev, void* buffer);
+static rt_err_t mavdev_chan0_rx_ind(rt_device_t dev, rt_size_t size);
+static rt_err_t mavdev_chan1_tx_done(rt_device_t dev, void* buffer);
+static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size);
+
+static struct mavdev mavdev_list[MAVPROXY_DEV_CHAN_NUM] = {
+    { .tx_done = mavdev_chan0_tx_done, .rx_ind = mavdev_chan0_rx_ind },
+    { .tx_done = mavdev_chan1_tx_done, .rx_ind = mavdev_chan1_rx_ind },
+};
+
+static rt_err_t mavdev_chan0_tx_done(rt_device_t dev, void* buffer)
 {
-    rt_completion_done(&tx_cplt);
+    rt_completion_done(&mavdev_list[0].tx_cplt);
+
     return RT_EOK;
 }
 
-static rt_err_t mavproxy_dev_rx_ind(rt_device_t dev, rt_size_t size)
+static rt_err_t mavdev_chan0_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_completion_done(&rx_cplt);
+    rt_completion_done(&mavdev_list[0].rx_cplt);
 
-    if (mav_rx_indicate) {
-        mav_rx_indicate(size);
+    if (mavdev_list[0].mav_rx_ind) {
+        mavdev_list[0].mav_rx_ind(size);
     }
 
     return RT_EOK;
 }
 
-rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
+static rt_err_t mavdev_chan1_tx_done(rt_device_t dev, void* buffer)
+{
+    rt_completion_done(&mavdev_list[1].tx_cplt);
+
+    return RT_EOK;
+}
+
+static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size)
+{
+    rt_completion_done(&mavdev_list[1].rx_cplt);
+
+    if (mavdev_list[0].mav_rx_ind) {
+        mavdev_list[0].mav_rx_ind(size);
+    }
+
+    return RT_EOK;
+}
+
+rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t size;
 
-    if (mavproxy_dev == NULL) {
+    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
+        return 0;
+    }
+
+    if (mavdev_list[chan].dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
     }
     /* write data to device */
-    size = rt_device_write(mavproxy_dev, 0, buffer, len);
+    size = rt_device_write(mavdev_list[chan].dev, 0, buffer, len);
     if (size > 0) {
         /* wait write complete (synchronized write) */
-        if (rt_completion_wait(&tx_cplt, timeout) != RT_EOK) {
+        if (rt_completion_wait(&mavdev_list[chan].tx_cplt, timeout) != RT_EOK) {
             return 0;
         }
     }
@@ -59,17 +97,21 @@ rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout)
     return size;
 }
 
-rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
+rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t cnt = 0;
 
-    if (mavproxy_dev == NULL) {
+    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
+        return 0;
+    }
+
+    if (mavdev_list[chan].dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
     }
 
     /* try to read data */
-    cnt = rt_device_read(mavproxy_dev, 0, buffer, len);
+    cnt = rt_device_read(mavdev_list[chan].dev, 0, buffer, len);
 
     /* sync mode */
     if (timeout != 0) {
@@ -78,7 +120,7 @@ rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
         while (cnt < len) {
             time_start = systime_now_ms();
             /* wait until something reveived (synchronized read) */
-            if (rt_completion_wait(&rx_cplt, timeout) != RT_EOK) {
+            if (rt_completion_wait(&mavdev_list[chan].rx_cplt, timeout) != RT_EOK) {
                 break;
             }
             if (timeout != RT_WAITING_FOREVER) {
@@ -90,21 +132,31 @@ rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout)
                 }
             }
             /* read rest data */
-            cnt += rt_device_read(mavproxy_dev, 0, (void*)((uint32_t)buffer + cnt), len - cnt);
+            cnt += rt_device_read(mavdev_list[chan].dev, 0, (void*)((uint32_t)buffer + cnt), len - cnt);
         }
     }
 
     return cnt;
 }
 
-void mavproxy_dev_set_rx_indicate(fmt_err_t (*rx_ind)(uint32_t size))
+fmt_err_t mavproxy_dev_set_rx_indicate(uint8_t chan, fmt_err_t (*rx_ind)(uint32_t size))
 {
-    mav_rx_indicate = rx_ind;
+    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
+        return FMT_EINVAL;
+    }
+
+    mavdev_list[chan].mav_rx_ind = rx_ind;
+
+    return FMT_EOK;
 }
 
-fmt_err_t mavproxy_set_device(const char* dev_name)
+fmt_err_t mavproxy_dev_set_device(uint8_t chan, const char* dev_name)
 {
     rt_device_t new_dev;
+
+    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
+        return FMT_EINVAL;
+    }
 
     new_dev = rt_device_find(dev_name);
 
@@ -112,7 +164,7 @@ fmt_err_t mavproxy_set_device(const char* dev_name)
         return FMT_EEMPTY;
     }
 
-    if (new_dev != mavproxy_dev) {
+    if (new_dev != mavdev_list[chan].dev) {
         rt_uint16_t flag = RT_DEVICE_OFLAG_RDWR;
 
         /* if device support DMA, then use it */
@@ -130,25 +182,31 @@ fmt_err_t mavproxy_set_device(const char* dev_name)
         if (err != RT_EOK) {
             return FMT_ERROR;
         }
-        mavproxy_dev = new_dev;
+        mavdev_list[chan].dev = new_dev;
     }
 
     /* set callback functions */
-    rt_device_set_tx_complete(new_dev, mavproxy_dev_tx_done);
-    rt_device_set_rx_indicate(new_dev, mavproxy_dev_rx_ind);
+    rt_device_set_tx_complete(new_dev, mavdev_list[chan].tx_done);
+    rt_device_set_rx_indicate(new_dev, mavdev_list[chan].rx_ind);
 
     return FMT_EOK;
 }
 
-rt_device_t mavproxy_get_device(void)
+rt_device_t mavproxy_dev_get_device(uint8_t chan)
 {
-    return mavproxy_dev;
+    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
+        return NULL;
+    }
+
+    return mavdev_list[chan].dev;
 }
 
 fmt_err_t mavproxy_dev_init(void)
 {
-    rt_completion_init(&tx_cplt);
-    rt_completion_init(&rx_cplt);
+    for (uint8_t chan = 0; chan < MAVPROXY_DEV_CHAN_NUM; chan++) {
+        rt_completion_init(&mavdev_list[chan].tx_cplt);
+        rt_completion_init(&mavdev_list[chan].rx_cplt);
+    }
 
     return FMT_EOK;
 }

@@ -34,7 +34,7 @@ MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 
-static char thread_mavlink_rx_stack[4096];
+static char thread_mavlink_rx_stack[8192];
 static struct rt_thread thread_mavlink_rx_handle;
 static struct rt_event mav_rx_event;
 
@@ -56,7 +56,7 @@ static void acknowledge(uint16_t command, uint8_t result)
     command_ack.result = result;
 
     mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, &msg, &command_ack);
-    mavproxy_send_immediate_msg(&msg, true);
+    mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, &msg, true);
 }
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
@@ -77,7 +77,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         protocol_version.max_version = 200;
 
         mavlink_msg_protocol_version_encode(mav_sys.sysid, mav_sys.compid, msg, &protocol_version);
-        mavproxy_send_immediate_msg(msg, true);
+        mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, msg, true);
     } break;
     case MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES: {
         mavlink_system_t mav_sys = mavproxy_get_system();
@@ -102,7 +102,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         autopilot_version.middleware_sw_version = autopilot_version.flight_sw_version;
 
         mavlink_msg_autopilot_version_encode(mav_sys.sysid, mav_sys.compid, msg, &autopilot_version);
-        mavproxy_send_immediate_msg(msg, true);
+        mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, msg, true);
     } break;
 
     case MAV_CMD_PREFLIGHT_CALIBRATION:
@@ -161,7 +161,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     }
 }
 
-static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t system)
+static fmt_err_t handle_mavlink_msg(uint8_t chan, mavlink_message_t* msg, mavlink_system_t system)
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
@@ -303,7 +303,7 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 
                 mavlink_msg_file_transfer_protocol_encode(system.sysid, system.compid, msg, &ftp_protocol_t);
 
-                if (mavproxy_send_immediate_msg(msg, 0) != FMT_EOK) {
+                if (mavproxy_send_immediate_msg(MAVDEV_GCS_CHAN, msg, 0) != FMT_EOK) {
                     console_printf("ftp msg send err\n");
                     return FMT_ERROR;
                 }
@@ -396,8 +396,8 @@ static fmt_err_t handle_mavlink_msg(mavlink_message_t* msg, mavlink_system_t sys
 
 static void mavproxy_rx_entry(void* param)
 {
-    mavlink_message_t msg;
-    mavlink_status_t mav_status;
+    mavlink_message_t msg[2];
+    mavlink_status_t mav_status[2];
     mavlink_system_t mavlink_system;
     char byte;
     rt_uint32_t recv_set = 0;
@@ -412,10 +412,12 @@ static void mavproxy_rx_entry(void* param)
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
-                while (mavproxy_dev_read(&byte, 1, 0)) {
-                    /* decode mavlink package */
-                    if (mavlink_parse_char(0, byte, &msg, &mav_status) == 1) {
-                        handle_mavlink_msg(&msg, mavlink_system);
+                for (uint8_t chan = 0; chan < MAVPROXY_CHAN_NUM; chan++) {
+                    while (mavproxy_dev_read(chan, &byte, 1, 0)) {
+                        /* decode mavlink package */
+                        if (mavlink_parse_char(0, byte, &msg[chan], &mav_status[chan]) == 1) {
+                            handle_mavlink_msg(chan, &msg[chan], mavlink_system);
+                        }
                     }
                 }
             }
@@ -449,7 +451,9 @@ fmt_err_t mavproxy_monitor_create(void)
     mcn_advertise(MCN_HUB(mav_ext_state), NULL);
 
     /* set mavproxy device rx indicator */
-    mavproxy_dev_set_rx_indicate(mavproxy_rx_ind);
+    mavproxy_dev_set_rx_indicate(0, mavproxy_rx_ind);
+    mavproxy_dev_set_rx_indicate(1, mavproxy_rx_ind);
+
     /* start rx thread */
     rt_thread_startup(&thread_mavlink_rx_handle);
 

@@ -126,7 +126,7 @@ fmt_err_t __switch_mavlink_to_device(rt_device_t dev)
 
     for (int idx = 0; idx < get_device_num(); idx++) {
         if (rt_device_find(list->name) == dev) {
-            ret = mavproxy_set_channel(idx);
+            ret = mavproxy_set_device(idx);
             break;
         }
         list++;
@@ -154,7 +154,7 @@ static int sw_mav_channel(const char* dev)
     if (set_dev != RT_NULL) {
         ret = __switch_mavlink_to_device(set_dev);
         if (ret != RT_EOK) {
-            DLOG_Critical("mavproxy_set_channel %s failed!!! \n", dev);
+            DLOG_Critical("mavproxy_set_device %s failed!!! \n", dev);
         }
     } else {
         DLOG_Critical(" can't find the %s \n", dev);
