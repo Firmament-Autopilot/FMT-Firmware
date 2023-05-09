@@ -25,6 +25,7 @@
 #include "module/mavproxy/mavlink_status.h"
 #include "module/mavproxy/mavproxy_cmd.h"
 #include "module/mavproxy/mavproxy_dev.h"
+#include "module/mavproxy/mavproxy_monitor.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,8 +36,8 @@ extern "C" {
 #define EVENT_SEND_ALL_PARAM     (1 << 2)
 
 #define MAVPROXY_CHAN_NUM 2
-#define MAVDEV_GCS_CHAN   0
-#define MAVDEV_OBC_CHAN   1
+#define MAVPROXY_GCS_CHAN 0
+#define MAVPROXY_OBC_CHAN 1
 
 typedef bool (*msg_pack_cb_t)(mavlink_message_t* msg_t);
 

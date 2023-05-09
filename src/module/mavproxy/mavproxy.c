@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
-#include <string.h>
 
-#include "hal/serial/serial.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
 
@@ -25,8 +23,6 @@
 #define MAX_PERIOD_MSG_QUEUE_SIZE    20
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 10
 #define MAVPROXY_UNSET_CHAN          0xFF
-
-fmt_err_t mavproxy_monitor_create(void);
 
 typedef struct {
     uint8_t msgid;
@@ -254,7 +250,7 @@ void mavproxy_loop(void)
     rt_uint32_t wait_set = EVENT_MAVPROXY_UPDATE | EVENT_MAVCONSOLE_TIMEOUT | EVENT_SEND_ALL_PARAM;
 
     /* create mavproxy monitor to handle received mavlink msgs */
-    mavproxy_monitor_create();
+    FMT_CHECK(mavproxy_monitor_create());
 
     /* Set mavproxy new channel to 0 if not set. Here we need critical section
        since the new channel can possible be set in usb ISR. */
