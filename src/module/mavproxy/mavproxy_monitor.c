@@ -53,10 +53,6 @@ static fmt_err_t handle_mavlink_msg(uint8_t chan, mavlink_message_t* msg, mavlin
     case MAVLINK_MSG_ID_HEARTBEAT:
         /* do nothing */
         break;
-
-    case MAVLINK_MSG_ID_SYSTEM_TIME:
-        /* do nothing */
-        break;
     }
 
     if (chan == 0) {
