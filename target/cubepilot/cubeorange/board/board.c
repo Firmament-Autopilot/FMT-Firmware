@@ -225,7 +225,7 @@ static void EnablePower(void)
 static void CPU_CACHE_Enable(void)
 {
     /* Enable I-Cache */
-    SCB_EnableICache();
+    // SCB_EnableICache();
 
     /* Enable D-Cache */
     // SCB_EnableDCache();

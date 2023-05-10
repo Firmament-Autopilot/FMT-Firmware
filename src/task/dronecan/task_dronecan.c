@@ -19,20 +19,25 @@ void task_dronecan_entry(void* parameter)
 {
     rt_err_t res;
     rt_uint32_t recv_set = 0;
+
+    uint32_t time_now;
+    uint32_t timestamp;
+    static uint32_t time_start = 0;
+
     uint32_t wait_set = EVENT_DRONECAN_UPDATE;
-
-
 
     while (1) {
 
         res = rt_event_recv(&event_dronecan, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
         if (res == RT_EOK) {
             if (recv_set & EVENT_DRONECAN_UPDATE) {
-                spinCanard();
+                time_now = systime_now_ms();
+                /* record loop start time */
+                if (time_start == 0) {
+                    time_start = time_now;
+                }
 
-                sendCanard();
-                // receiveCanard();
-
+                dronecan_loop(time_now);
             }
         }
     }
@@ -51,7 +56,7 @@ fmt_err_t task_dronecan_init(void)
     // drv_timer_init();
 
     /* register timer event */
-    rt_timer_init(&timer_dronecan, "dronecan", timer_dronecan_update, RT_NULL, 50, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    rt_timer_init(&timer_dronecan, "dronecan", timer_dronecan_update, RT_NULL, 1, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     if (rt_timer_start(&timer_dronecan) != RT_EOK) {
         return FMT_ERROR;
     }

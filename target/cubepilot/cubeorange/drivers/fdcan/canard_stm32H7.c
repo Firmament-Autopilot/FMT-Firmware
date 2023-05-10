@@ -280,7 +280,7 @@ int16_t fdCANComputeTimings(const uint32_t peripheral_clock_rate, //
     return 0;
 }
 
-#include <firmament.h>
+// #include <firmament.h>
 
 int16_t fdCANTransmit(const FDCanID iface,               //
                       const uint64_t current_time,       //
@@ -300,17 +300,17 @@ int16_t fdCANTransmit(const FDCanID iface,               //
     if (frame == NULL)
         return -CANARD_ERROR_INVALID_ARGUMENT;
 
-    printf("frame->data_len=%d\n",frame->data_len);
+    // printf("frame->data_len=%d\n",frame->data_len);
 
     if (frame->data_len > CANARD_CAN_FRAME_MAX_DATA_LEN)
         return -CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT; // Payload size for classic CAN must be <= 8 bytes.
 
-    printf("2");
+    // printf("2");
 
     if ((frame->data_len > 0U) && (frame->data == NULL))
         return -CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT; // NULL pointer payload with non-zero payload size.
 
-    printf("3");
+    // printf("3");
 
     if (frame->id & CANARD_CAN_FRAME_ERR)
         return -CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT;
