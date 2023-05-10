@@ -53,7 +53,6 @@
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
-#include "module/obc/mavobc_config.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
@@ -67,7 +66,6 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
-
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -186,8 +184,6 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
-                } else if (MATCH(key, "onboard-computer")) {
-                    err = mavobc_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {

@@ -52,7 +52,6 @@
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
-#include "module/obc/mavobc_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
@@ -177,8 +176,6 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = console_toml_config(sub_tab);
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
-                } else if (MATCH(key, "onboard-computer")) {
-                    err = mavobc_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
                     err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {

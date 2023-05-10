@@ -27,7 +27,7 @@
 #include "module/system/statistic.h"
 
 #undef LOG_TAG
-#define LOG_TAG "GCS Handler"
+#define LOG_TAG "MAVGCS"
 
 fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result);
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t);
@@ -236,7 +236,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_PARAM_REQUEST_LIST: {
         if (this_system.sysid == mavlink_msg_param_request_list_get_target_system(msg)) {
-            mavproxy_send_event(EVENT_SEND_ALL_PARAM);
+            mavproxy_send_event(MAVPROXY_GCS_CHAN, EVENT_SEND_ALL_PARAM);
         }
     } break;
 
@@ -376,7 +376,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     return FMT_EOK;
 }
 
-fmt_err_t gcs_handler_init(void)
+fmt_err_t mavgcs_init(void)
 {
     mcn_advertise(MCN_HUB(mav_ext_state), NULL);
 

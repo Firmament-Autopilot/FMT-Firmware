@@ -34,7 +34,7 @@ static struct rt_timer timer_mav_console;
 
 static void mav_console_timeout(void* parameter)
 {
-    mavproxy_send_event(EVENT_MAVCONSOLE_TIMEOUT);
+    mavproxy_send_event(MAVPROXY_GCS_CHAN, EVENT_MAVCONSOLE_TIMEOUT);
 }
 
 static void send_serial_control_msg(mavlink_serial_control_t* serial_control)

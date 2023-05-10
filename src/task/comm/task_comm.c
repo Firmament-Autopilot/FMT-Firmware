@@ -46,8 +46,8 @@ MCN_DECLARE(auto_cmd);
 
 static mavlink_system_t mavlink_system;
 
-fmt_err_t gcs_handler_init(void);
-fmt_err_t obc_handler_init(void);
+fmt_err_t mavgcs_init(void);
+fmt_err_t mavobc_init(void);
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 {
@@ -503,7 +503,7 @@ fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t re
     return mavproxy_send_immediate_msg(chan, &msg, true);
 }
 
-fmt_err_t task_comm_init(void)
+fmt_err_t task_mavgcs_init(void)
 {
     /* init mavproxy */
     FMT_TRY(mavproxy_init());
@@ -511,27 +511,49 @@ fmt_err_t task_comm_init(void)
     mavlink_system = mavproxy_get_system();
 
     /* init ground control station handler */
-    FMT_TRY(gcs_handler_init());
-
-    /* init onboard computer handler */
-    FMT_TRY(obc_handler_init());
+    FMT_TRY(mavgcs_init());
 
     return FMT_EOK;
 }
 
-void task_comm_entry(void* parameter)
+void task_mavgcs_entry(void* parameter)
 {
     /* execute mavproxy main loop */
-    mavproxy_loop();
+    mavproxy_channel_loop(MAVPROXY_GCS_CHAN);
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "comm",
-    .init = task_comm_init,
-    .entry = task_comm_entry,
-    .priority = COMM_THREAD_PRIORITY,
+fmt_err_t task_mavobc_init(void)
+{
+    /* init onboard computer handler */
+    FMT_TRY(mavobc_init());
+
+    return FMT_EOK;
+}
+
+void task_mavobc_entry(void* parameter)
+{
+    /* execute mavproxy main loop */
+    mavproxy_channel_loop(MAVPROXY_OBC_CHAN);
+}
+
+TASK_EXPORT __fmt_task1_desc = {
+    .name = "mavgcs",
+    .init = task_mavgcs_init,
+    .entry = task_mavgcs_entry,
+    .priority = MAVGCS_THREAD_PRIORITY,
     .auto_start = true,
     .stack_size = 8192,
     .param = NULL,
     .dependency = NULL
+};
+
+TASK_EXPORT __fmt_task2_desc = {
+    .name = "mavobc",
+    .init = task_mavobc_init,
+    .entry = task_mavobc_entry,
+    .priority = MAVOBC_THREAD_PRIORITY,
+    .auto_start = true,
+    .stack_size = 8192,
+    .param = NULL,
+    .dependency = (char*[]) { "mavgcs", NULL }
 };

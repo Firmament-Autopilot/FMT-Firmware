@@ -25,17 +25,12 @@
 #include "module/sysio/pilot_cmd.h"
 
 #undef LOG_TAG
-#define LOG_TAG "OBC Handler"
+#define LOG_TAG "MAVOBC"
 
 MCN_DECLARE(fms_output);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(rc_channels);
 MCN_DECLARE(auto_cmd);
-// MCN_DECLARE(sensor_imu0);
-// MCN_DECLARE(sensor_mag0);
-// MCN_DECLARE(sensor_baro);
-// MCN_DECLARE(sensor_rangefinder);
-// MCN_DECLARE(sensor_airspeed);
 
 typedef struct
 {
@@ -479,7 +474,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     return FMT_EOK;
 }
 
-fmt_err_t obc_handler_init(void)
+fmt_err_t mavobc_init(void)
 {
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1000, mavlink_msg_heartbeat_pack_func, true));

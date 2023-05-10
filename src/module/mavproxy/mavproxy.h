@@ -42,10 +42,11 @@ extern "C" {
 typedef bool (*msg_pack_cb_t)(mavlink_message_t* msg_t);
 
 fmt_err_t mavproxy_init(void);
-void mavproxy_loop(void);
+// void mavproxy_loop(void);
+void mavproxy_channel_loop(uint8_t chan);
 mavlink_system_t mavproxy_get_system(void);
 fmt_err_t mavproxy_set_device(uint8_t chan, uint8_t devid);
-fmt_err_t mavproxy_send_event(uint32_t event_set);
+fmt_err_t mavproxy_send_event(uint8_t chan, uint32_t event_set);
 fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg, bool sync);
 fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t period_ms, msg_pack_cb_t msg_pack_cb, bool start);
 
