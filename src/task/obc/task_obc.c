@@ -853,13 +853,13 @@ void task_obc_entry(void* parameter)
     mavobc_loop();
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "mavobc",
-    .init = task_obc_init,
-    .entry = task_obc_entry,
-    .priority = 14,
-    .auto_start = true,
-    .stack_size = 8192,
-    .param = NULL,
-    .dependency = NULL
-};
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "mavobc",
+//     .init = task_obc_init,
+//     .entry = task_obc_entry,
+//     .priority = 14,
+//     .auto_start = true,
+//     .stack_size = 8192,
+//     .param = NULL,
+//     .dependency = NULL
+// };

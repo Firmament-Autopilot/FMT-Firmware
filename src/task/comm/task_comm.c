@@ -47,6 +47,7 @@ MCN_DECLARE(auto_cmd);
 static mavlink_system_t mavlink_system;
 
 fmt_err_t gcs_handler_init(void);
+fmt_err_t obc_handler_init(void);
 
 static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 {
@@ -511,6 +512,9 @@ fmt_err_t task_comm_init(void)
 
     /* init ground control station handler */
     FMT_TRY(gcs_handler_init());
+
+    /* init onboard computer handler */
+    FMT_TRY(obc_handler_init());
 
     return FMT_EOK;
 }
