@@ -92,6 +92,8 @@ char syscmd_getc(void)
     char ch[SERIAL_RB_BUFSZ];
     // struct finsh_shell* shell = finsh_get_shell();
 
+    syscmd_flush();
+
     if (rt_sem_take(&shell->rx_sem, RT_WAITING_FOREVER) != RT_EOK)
         return -1;
 

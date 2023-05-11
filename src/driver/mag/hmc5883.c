@@ -103,7 +103,7 @@ static rt_device_t _i2c_device;
 static struct rt_device ext_mag_device;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void hmc5883_rotate_to_ned(float* data)
+RT_WEAK void hmc5883_rotate_to_frd(float* data)
 {
     /* do nothing */
 }
@@ -294,7 +294,7 @@ rt_size_t hmc5883_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t si
     ((float*)buffer)[1] = tbuff[1] * mgPerDigit;
     ((float*)buffer)[2] = tbuff[2] * mgPerDigit;
 
-    hmc5883_rotate_to_ned(buffer);
+    hmc5883_rotate_to_frd(buffer);
 
     return size;
 }

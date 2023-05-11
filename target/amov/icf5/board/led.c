@@ -199,18 +199,19 @@ fmt_err_t led_control_init(void)
 
     RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
 
+    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
+    RT_ASSERT(lp_wq != NULL);
+
+    FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
+
+    // WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
+    /* rgb led work in high priority workqueue to try not blocking other i2c user */
+    // FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
+
     /* set rgb led initial color */
     FMT_TRY(rgb_led_set_mode(RGB_LED_PATERN_MODE));
     FMT_TRY(rgb_led_set_color(AW2023_LED_BLUE));
     FMT_TRY(rgb_led_set_bright(0xFF));
-
-    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
-    WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
-    RT_ASSERT(lp_wq != NULL && hp_wq != NULL);
-
-    FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
-    /* rgb led work in high priority workqueue to try not blocking other i2c user */
-    // FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
 
     return FMT_EOK;
 }

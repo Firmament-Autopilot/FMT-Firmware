@@ -156,5 +156,5 @@ fmt_err_t mavlink_send_statustext(int severity, const char* fmt, ...)
 
     mavlink_msg_statustext_encode(mavlink_system.sysid, mavlink_system.compid, &msg, &statustext);
 
-    return mavproxy_send_immediate_msg(&msg, true);
+    return mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
 }

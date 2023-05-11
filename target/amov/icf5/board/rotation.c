@@ -17,7 +17,7 @@
 
 #include "module/math/rotation.h"
 
-void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
+void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
 {
     (void)dev_id;
     float tmp;
@@ -27,7 +27,7 @@ void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
     data[1] = -tmp;
 }
 
-void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
+void bmm150_rotate_to_frd(float* data, uint32_t dev_id)
 {
     (void)dev_id;
 
@@ -38,7 +38,7 @@ void bmm150_rotate_to_ned(float* data, uint32_t dev_id)
     data[2] = -data[2];
 }
 
-void icm42688_rotate_to_ned(float* data, uint32_t dev_id)
+void icm42688_rotate_to_frd(float* data, uint32_t dev_id)
 {
     float tmp;
     (void)dev_id;

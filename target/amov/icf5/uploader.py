@@ -797,7 +797,7 @@ def main():
         if len(ret) > 0:
             return ret
         # now the rest
-        ret.extend(others)
+        # ret.extend(others)
         return ret
         
 
@@ -820,7 +820,7 @@ def main():
                 others.append(SerialPort(d))
         if len(ret) > 0:
             return ret
-        ret.extend(others)
+        # ret.extend(others)
         return ret
 
     class SerialPort(object):
@@ -883,7 +883,7 @@ def main():
 
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
-                    return
+                    continue
 
                 # if len(serial_list) > 1:
                 #     print('Auto-detected serial ports are:')
@@ -935,7 +935,7 @@ def main():
                     time.sleep(0.05)
                     if test_once:
                         print("Not found fmt_fmu,please connect fmt_fmu!")
-                        time.sleep(2)
+                        time.sleep(1)
                     # and loop to the next port
                     continue
 

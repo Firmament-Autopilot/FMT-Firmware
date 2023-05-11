@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.903
+ * Model version                  : 1.908
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:24:45 2023
+ * C/C++ source code generated on : Thu May 11 15:54:14 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,22 +42,22 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.1F,
   5.0F,
   5.0F,
-  0.52359879F,
-  0.1F,
-  0.1F,
+  0.523599F,
+  0.08F,
+  0.08F,
   0.15F,
   0.1F,
   0.1F,
   0.2F,
-  0.003F,
-  0.003F,
+  0.002F,
+  0.002F,
   0.001F,
   -0.1F,
   0.1F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F
+  1.57079601F,
+  3.14159298F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S37>/Saturation'

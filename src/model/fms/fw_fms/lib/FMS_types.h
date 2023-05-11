@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1988
+ * Model version                  : 1.2002
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 27 10:39:39 2023
+ * C/C++ source code generated on : Thu May  4 12:14:39 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -56,6 +56,7 @@ typedef struct {
 
   /* Operation channel 2 */
   uint32_T cmd_2;
+  real32_T param[7];
 } GCS_Cmd_Bus;
 
 #endif
@@ -190,6 +191,8 @@ typedef struct {
   real_T lat_0;
   real_T lon_0;
   real_T alt_0;
+  real_T dx_dlat;
+  real_T dy_dlon;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;
@@ -223,7 +226,8 @@ typedef enum {
   FMS_Cmd_Land,
   FMS_Cmd_Return,
   FMS_Cmd_Pause,
-  FMS_Cmd_Continue
+  FMS_Cmd_Continue,
+  FMS_Cmd_SetHome = 2000
 } FMS_Cmd;
 
 #endif
@@ -377,6 +381,9 @@ typedef struct {
 
   /* enum of PilotMode */
   uint8_T reserved;
+
+  /* home position [x y h yaw], unit [m m m rad] */
+  real32_T home[4];
 } FMS_Out_Bus;
 
 #endif
@@ -477,8 +484,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_4SSwuLvzpCrFyfIpa3meTG_
-#define DEFINED_TYPEDEF_FOR_struct_4SSwuLvzpCrFyfIpa3meTG_
+#ifndef DEFINED_TYPEDEF_FOR_struct_LQbHTlAQVN7sVz7acpAn4_
+#define DEFINED_TYPEDEF_FOR_struct_LQbHTlAQVN7sVz7acpAn4_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -496,6 +503,9 @@ typedef struct {
   real32_T TAKEOFF_H;
   real32_T ACCEPT_R;
   real32_T LOITER_R;
+  real32_T MANUAL_ROLL_REV;
+  real32_T MANUAL_PITCH_REV;
+  real32_T MANUAL_YAW_REV;
   real32_T Y_P;
   real32_T ACC_Y_LIM;
   real32_T ROLL_LIM;
@@ -503,11 +513,7 @@ typedef struct {
   real32_T FW_AIRSPD_MAX;
   real32_T DISARM_OUT[16];
   real32_T STANDBY_OUT[16];
-  real32_T VEL_XY_LIM;
-  real32_T MANUAL_ROLL_REV;
-  real32_T MANUAL_PITCH_REV;
-  real32_T MANUAL_YAW_REV;
-} struct_4SSwuLvzpCrFyfIpa3meTG;
+} struct_LQbHTlAQVN7sVz7acpAn4;
 
 #endif
 

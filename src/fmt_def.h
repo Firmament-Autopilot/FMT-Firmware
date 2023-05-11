@@ -32,8 +32,9 @@ extern "C" {
 #define DRONECAN_THREAD_PRIORITY   5
 #define LOGGER_THREAD_PRIORITY     10
 #define MAVLINK_RX_THREAD_PRIORITY 11
-#define COMM_THREAD_PRIORITY       12
-#define STATUS_THREAD_PRIORITY     13
+#define MAVOBC_THREAD_PRIORITY     12
+#define MAVGCS_THREAD_PRIORITY     13
+#define STATUS_THREAD_PRIORITY     14
 
 #if !defined(bool) && !defined(__cplusplus)
 typedef int bool;

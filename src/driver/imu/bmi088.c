@@ -149,7 +149,7 @@ static float accel_range_scale;
 static float sample_rate;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void bmi088_rotate_to_ned(float* data, uint32_t dev_id)
+RT_WEAK void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
 {
     /* do nothing */
     (void)data;
@@ -332,7 +332,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
     }
 
     // change to NED coordinate
-    bmi088_rotate_to_ned((float*)data, (uint32_t)gyro->parent.user_data);
+    bmi088_rotate_to_frd((float*)data, (uint32_t)gyro->parent.user_data);
 
     return size;
 }
@@ -615,7 +615,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
     }
 
     // change to NED coordinate
-    bmi088_rotate_to_ned((float*)data, (uint32_t)accel->parent.user_data);
+    bmi088_rotate_to_frd((float*)data, (uint32_t)accel->parent.user_data);
 
     return size;
 }

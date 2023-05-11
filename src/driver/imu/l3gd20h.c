@@ -123,7 +123,7 @@ static rt_device_t spi_device;
 static float _gyro_range_scale;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void l3gd20h_rotate_to_ned(float* data)
+RT_WEAK void l3gd20h_rotate_to_frd(float* data)
 {
     /* do nothing */
 }
@@ -252,7 +252,7 @@ static rt_err_t l3gd20h_gyr_read_dps(float gyr[3])
     gyr[1] = raw_gyr[1] * _gyro_range_scale;
     gyr[2] = raw_gyr[2] * _gyro_range_scale;
 
-    l3gd20h_rotate_to_ned(gyr);
+    l3gd20h_rotate_to_frd(gyr);
 
     return RT_EOK;
 }
@@ -272,7 +272,7 @@ static rt_err_t l3gd20h_read_rad(float gyr[3])
     gyr[1] = raw_gyr[1] * _gyro_range_scale * DEG2RAD_FACTOR;
     gyr[2] = raw_gyr[2] * _gyro_range_scale * DEG2RAD_FACTOR;
 
-    l3gd20h_rotate_to_ned(gyr);
+    l3gd20h_rotate_to_frd(gyr);
 
     return RT_EOK;
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef BUZZER_TUNE_H__
-#define BUZZER_TUNE_H__
+#ifndef DRV_I2C_SOFT_H__
+#define DRV_I2C_SOFT_H__
 
 #include <firmament.h>
 
@@ -23,12 +23,9 @@
 extern "C" {
 #endif
 
-#define TUNE_STARTUP  0
-#define TUNE_ERROR    1
-#define TUNE_SD_ERROR 2
-
-int buzzer_tune_init(void);
-int buzzer_tune_play(int tune);
+/* i2c slave device 7-bits addresses */
+#define MS4525_ADDRESS   0x28
+rt_err_t drv_i2c_soft_init(void);
 
 #ifdef __cplusplus
 }

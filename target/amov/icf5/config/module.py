@@ -30,7 +30,6 @@ MODULES = [
     'workqueue/*.c',
     'math/*.c',
     'filter/*.c',
-#     'fmtio/*.c',
     'task_manager/*.c',
     'pmu/*.c',
 ]

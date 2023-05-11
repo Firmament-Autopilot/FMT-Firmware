@@ -17,7 +17,6 @@ MODULES = [
     'syscmd/*.c',
     'system/*.c',
     'utils/*.c',
-    'buzzer/*.c',
     'filter/*.c',
     'toml/*.c',
     'workqueue/*.c',
@@ -27,5 +26,4 @@ MODULES = [
 
 MODULES_CPPPATH = [
     'calibration',
-    'buzzer',
 ]

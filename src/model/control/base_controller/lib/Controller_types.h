@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.903
+ * Model version                  : 1.908
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:24:45 2023
+ * C/C++ source code generated on : Thu May 11 15:54:14 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -148,6 +148,9 @@ typedef struct {
 
   /* enum of PilotMode */
   uint8_T reserved;
+
+  /* home position [x y h yaw], unit [m m m rad] */
+  real32_T home[4];
 } FMS_Out_Bus;
 
 #endif
@@ -177,6 +180,8 @@ typedef struct {
   real_T lat_0;
   real_T lon_0;
   real_T alt_0;
+  real_T dx_dlat;
+  real_T dy_dlon;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;

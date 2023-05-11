@@ -331,7 +331,7 @@ fmt_err_t send_mavparam_by_name(char* name)
 
         if (strcmp(mav_param->name, name) == 0) {
             make_mavparam_msg(&msg, mav_param);
-            mavproxy_send_immediate_msg(&msg, true);
+            mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
             return FMT_EOK;
         }
     }
@@ -349,7 +349,7 @@ fmt_err_t send_mavparam_by_index(int16_t index)
     }
 
     make_mavparam_msg(&msg, mav_param);
-    mavproxy_send_immediate_msg(&msg, true);
+    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
 
     return FMT_EOK;
 }
@@ -488,7 +488,7 @@ fmt_err_t mavlink_param_send(const param_t* param)
     }
 
     make_mavlink_param_msg(&msg, param);
-    mavproxy_send_immediate_msg(&msg, true);
+    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
 
     return FMT_EOK;
 }
@@ -508,7 +508,7 @@ void mavlink_param_sendall(void)
         }
 
         make_mavparam_msg(&msg, mav_param);
-        mavproxy_send_immediate_msg(&msg, true);
+        mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
     }
 
     for (uint32_t i = 0; i < param_get_group_count(); i++) {
@@ -516,7 +516,7 @@ void mavlink_param_sendall(void)
 
         for (uint32_t j = 0; j < gp->param_num; j++) {
             make_mavlink_param_msg(&msg, param);
-            mavproxy_send_immediate_msg(&msg, true);
+            mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
             param++;
         }
 

@@ -72,6 +72,7 @@ typedef struct {
     const uint8_t type;
     void* var;
     param_value_t val;
+    const param_value_t dval;
 } param_t;
 
 typedef struct {
@@ -86,7 +87,8 @@ typedef struct {
         .name = #_name,             \
         .type = PARAM_TYPE_INT8,    \
         .var = NULL,                \
-        .val.i8 = _default          \
+        .val.i8 = _default,         \
+        .dval.i8 = _default         \
     }
 
 #define PARAM_UINT8(_name, _default) \
@@ -94,7 +96,8 @@ typedef struct {
         .name = #_name,              \
         .type = PARAM_TYPE_UINT8,    \
         .var = NULL,                 \
-        .val.u8 = _default           \
+        .val.u8 = _default,          \
+        .dval.u8 = _default          \
     }
 
 #define PARAM_INT16(_name, _default) \
@@ -102,7 +105,8 @@ typedef struct {
         .name = #_name,              \
         .type = PARAM_TYPE_INT16,    \
         .var = NULL,                 \
-        .val.i16 = _default          \
+        .val.i16 = _default,         \
+        .dval.i16 = _default         \
     }
 
 #define PARAM_UINT16(_name, _default) \
@@ -110,7 +114,8 @@ typedef struct {
         .name = #_name,               \
         .type = PARAM_TYPE_UINT16,    \
         .var = NULL,                  \
-        .val.u16 = _default           \
+        .val.u16 = _default,          \
+        .dval.u16 = _default          \
     }
 
 #define PARAM_INT32(_name, _default) \
@@ -118,7 +123,8 @@ typedef struct {
         .name = #_name,              \
         .type = PARAM_TYPE_INT32,    \
         .var = NULL,                 \
-        .val.i32 = _default          \
+        .val.i32 = _default,         \
+        .dval.i32 = _default         \
     }
 
 #define PARAM_UINT32(_name, _default) \
@@ -126,7 +132,8 @@ typedef struct {
         .name = #_name,               \
         .type = PARAM_TYPE_UINT32,    \
         .var = NULL,                  \
-        .val.u32 = _default           \
+        .val.u32 = _default,          \
+        .dval.u32 = _default          \
     }
 
 #define PARAM_FLOAT(_name, _default) \
@@ -134,7 +141,8 @@ typedef struct {
         .name = #_name,              \
         .type = PARAM_TYPE_FLOAT,    \
         .var = NULL,                 \
-        .val.f = _default            \
+        .val.f = _default,           \
+        .dval.f = _default           \
     }
 
 #define PARAM_DOUBLE(_name, _default) \
@@ -142,7 +150,8 @@ typedef struct {
         .name = #_name,               \
         .type = PARAM_TYPE_DOUBLE,    \
         .var = NULL,                  \
-        .val.lf = _default            \
+        .val.lf = _default,           \
+        .dval.lf = _default           \
     }
 
 #define PARAM_GROUP_EXPORT                     RT_USED static const param_group_t SECTION("ParamTab")

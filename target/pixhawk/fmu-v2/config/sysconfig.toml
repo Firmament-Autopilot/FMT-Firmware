@@ -19,14 +19,22 @@ target = "Pixhawk FMUv2"
 # Mavproxy Device Configuration
 [mavproxy]
     [[mavproxy.devices]]
+    chan = 0
     type = "serial"
     name = "serial1"
     baudrate = 57600
 
     [[mavproxy.devices]]
+    chan = 0
     type = "usb"
     name = "usbd0"
     auto-switch = true
+
+    [[mavproxy.devices]]
+    chan = 1
+    type = "serial"
+    name = "serial4"
+    baudrate = 57600
 
 # Pilot CMD Configuration
 [pilot-cmd]

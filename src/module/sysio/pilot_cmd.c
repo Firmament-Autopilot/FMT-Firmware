@@ -107,7 +107,7 @@ static void mavlink_send_pilot_cmd(void)
 
     mavlink_msg_fmt_pilot_cmd_encode(mav_sys.sysid, mav_sys.compid, &msg, &mav_pilot_cmd);
 
-    mavproxy_send_immediate_msg(&msg, false);
+    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
 }
 #endif
 
@@ -354,6 +354,11 @@ fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num)
     rc_chan_num = chan_num;
 
     return FMT_EOK;
+}
+
+uint8_t pilot_cmd_get_chan_num(void)
+{
+    return rc_chan_num;
 }
 
 fmt_err_t pilot_cmd_map_stick(

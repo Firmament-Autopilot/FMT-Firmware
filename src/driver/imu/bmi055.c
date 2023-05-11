@@ -183,7 +183,7 @@ static float gyro_range_scale;
 static float accel_range_scale;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void bmi055_rotate_to_ned(float val[3])
+RT_WEAK void bmi055_rotate_to_frd(float val[3])
 {
     /* do nothing */
 }
@@ -293,7 +293,7 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
     // change to NED coordinate
-    bmi055_rotate_to_ned(gyr);
+    bmi055_rotate_to_frd(gyr);
     return RT_EOK;
 }
 
@@ -484,7 +484,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[2] = accel_range_scale * acc_raw[2];
 
     // change to NED coordinate
-    bmi055_rotate_to_ned(acc);
+    bmi055_rotate_to_frd(acc);
 
     return RT_EOK;
 }

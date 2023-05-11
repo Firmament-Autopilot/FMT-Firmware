@@ -24,11 +24,11 @@ extern "C" {
 #endif
 
 fmt_err_t mavproxy_dev_init(void);
-rt_size_t mavproxy_dev_write(const void* buffer, uint32_t len, int32_t timeout);
-rt_size_t mavproxy_dev_read(void* buffer, uint32_t len, int32_t timeout);
-void mavproxy_dev_set_rx_indicate(fmt_err_t (*rx_ind)(uint32_t size));
-fmt_err_t mavproxy_set_device(const char* dev_name);
-rt_device_t mavproxy_get_device(void);
+rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout);
+rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout);
+void mavproxy_dev_set_rx_indicate(uint8_t chan, fmt_err_t (*rx_ind)(uint32_t size));
+fmt_err_t mavproxy_dev_set_device(uint8_t chan, const char* dev_name);
+rt_device_t mavproxy_dev_get_device(uint8_t chan);
 
 #ifdef __cplusplus
 }

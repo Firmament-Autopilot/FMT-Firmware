@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1988
+ * Model version                  : 1.2002
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 27 10:39:39 2023
+ * C/C++ source code generated on : Thu May  4 12:14:39 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,87 +18,87 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  { 0.0F, 0.0F, 1.0F },                /* '<S99>/Vector Concatenate3' */
-  3U,                                  /* '<S23>/Data Type Conversion' */
-  12U,                                 /* '<S23>/Data Type Conversion1' */
-  1U,                                  /* '<S23>/Data Type Conversion2' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S101>/Vector Concatenate3' */
+  3U,                                  /* '<S25>/Data Type Conversion' */
+  12U,                                 /* '<S25>/Data Type Conversion1' */
+  1U,                                  /* '<S25>/Data Type Conversion2' */
+  3U,                                  /* '<S30>/Data Type Conversion' */
+  10U,                                 /* '<S30>/Data Type Conversion1' */
+  5U,                                  /* '<S30>/Data Type Conversion2' */
+  3U,                                  /* '<S29>/Data Type Conversion1' */
+  9U,                                  /* '<S29>/Data Type Conversion2' */
+  4U,                                  /* '<S29>/Data Type Conversion3' */
+  3U,                                  /* '<S31>/Data Type Conversion' */
+  8U,                                  /* '<S31>/Data Type Conversion1' */
+  3U,                                  /* '<S31>/Data Type Conversion2' */
   3U,                                  /* '<S28>/Data Type Conversion' */
-  10U,                                 /* '<S28>/Data Type Conversion1' */
-  5U,                                  /* '<S28>/Data Type Conversion2' */
-  3U,                                  /* '<S27>/Data Type Conversion1' */
-  9U,                                  /* '<S27>/Data Type Conversion2' */
-  4U,                                  /* '<S27>/Data Type Conversion3' */
-  3U,                                  /* '<S29>/Data Type Conversion' */
-  8U,                                  /* '<S29>/Data Type Conversion1' */
-  3U,                                  /* '<S29>/Data Type Conversion2' */
-  3U,                                  /* '<S26>/Data Type Conversion' */
-  7U,                                  /* '<S26>/Data Type Conversion1' */
-  2U,                                  /* '<S26>/Data Type Conversion2' */
-  3U,                                  /* '<S116>/Data Type Conversion' */
-  4U,                                  /* '<S116>/Data Type Conversion1' */
-  5U,                                  /* '<S116>/Data Type Conversion2' */
-  1U,                                  /* '<S113>/Data Type Conversion' */
-  3U,                                  /* '<S113>/Data Type Conversion1' */
-  3U,                                  /* '<S141>/Data Type Conversion' */
-  6U,                                  /* '<S141>/Data Type Conversion1' */
-  5U,                                  /* '<S141>/Data Type Conversion2' */
+  7U,                                  /* '<S28>/Data Type Conversion1' */
+  2U,                                  /* '<S28>/Data Type Conversion2' */
+  3U,                                  /* '<S118>/Data Type Conversion' */
+  4U,                                  /* '<S118>/Data Type Conversion1' */
+  5U,                                  /* '<S118>/Data Type Conversion2' */
+  1U,                                  /* '<S115>/Data Type Conversion' */
+  3U,                                  /* '<S115>/Data Type Conversion1' */
   3U,                                  /* '<S143>/Data Type Conversion' */
-  16U,                                 /* '<S143>/Data Type Conversion1' */
+  6U,                                  /* '<S143>/Data Type Conversion1' */
   5U,                                  /* '<S143>/Data Type Conversion2' */
-  3U,                                  /* '<S142>/Data Type Conversion' */
-  15U,                                 /* '<S142>/Data Type Conversion1' */
-  5U,                                  /* '<S142>/Data Type Conversion2' */
+  3U,                                  /* '<S145>/Data Type Conversion' */
+  16U,                                 /* '<S145>/Data Type Conversion1' */
+  5U,                                  /* '<S145>/Data Type Conversion2' */
   3U,                                  /* '<S144>/Data Type Conversion' */
-  17U,                                 /* '<S144>/Data Type Conversion1' */
+  15U,                                 /* '<S144>/Data Type Conversion1' */
   5U,                                  /* '<S144>/Data Type Conversion2' */
-  2U,                                  /* '<S20>/Data Type Conversion2' */
-  2U,                                  /* '<S20>/Data Type Conversion1' */
-  1U,                                  /* '<S19>/Data Type Conversion' */
-  1U,                                  /* '<S19>/Data Type Conversion1' */
+  3U,                                  /* '<S146>/Data Type Conversion' */
+  17U,                                 /* '<S146>/Data Type Conversion1' */
+  5U,                                  /* '<S146>/Data Type Conversion2' */
+  2U,                                  /* '<S22>/Data Type Conversion2' */
+  2U,                                  /* '<S22>/Data Type Conversion1' */
+  1U,                                  /* '<S21>/Data Type Conversion' */
+  1U,                                  /* '<S21>/Data Type Conversion1' */
 
   /* Start of '<S3>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   {
-    1.9966471893352524,                /* '<S213>/Sum' */
-    0.0066943799901413165,             /* '<S213>/Multiply3' */
-    0.99330562000985867                /* '<S213>/Sum4' */
+    1.9966471893352524,                /* '<S215>/Sum' */
+    0.0066943799901413165,             /* '<S215>/Multiply3' */
+    0.99330562000985867                /* '<S215>/Sum4' */
   }
   ,
 
   /* End of '<S3>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 
-  /* Start of '<S17>/Unknown' */
+  /* Start of '<S19>/Unknown' */
   {
-    1U,                                /* '<S25>/Data Type Conversion' */
-    1U                                 /* '<S25>/Data Type Conversion1' */
+    1U,                                /* '<S27>/Data Type Conversion' */
+    1U                                 /* '<S27>/Data Type Conversion1' */
   }
   ,
 
-  /* End of '<S17>/Unknown' */
+  /* End of '<S19>/Unknown' */
 
-  /* Start of '<S21>/Unknown' */
+  /* Start of '<S23>/Unknown' */
   {
-    1U,                                /* '<S30>/Data Type Conversion' */
-    1U                                 /* '<S30>/Data Type Conversion1' */
+    1U,                                /* '<S32>/Data Type Conversion' */
+    1U                                 /* '<S32>/Data Type Conversion1' */
   }
   ,
 
-  /* End of '<S21>/Unknown' */
-
-  /* Start of '<S22>/Unknown' */
-  {
-    1U,                                /* '<S114>/Data Type Conversion' */
-    1U                                 /* '<S114>/Data Type Conversion1' */
-  }
-  ,
-
-  /* End of '<S22>/Unknown' */
+  /* End of '<S23>/Unknown' */
 
   /* Start of '<S24>/Unknown' */
   {
-    1U,                                /* '<S145>/Data Type Conversion' */
-    1U                                 /* '<S145>/Data Type Conversion1' */
+    1U,                                /* '<S116>/Data Type Conversion' */
+    1U                                 /* '<S116>/Data Type Conversion1' */
   }
+  ,
+
   /* End of '<S24>/Unknown' */
+
+  /* Start of '<S26>/Unknown' */
+  {
+    1U,                                /* '<S147>/Data Type Conversion' */
+    1U                                 /* '<S147>/Data Type Conversion1' */
+  }
+  /* End of '<S26>/Unknown' */
 };
 
 /*

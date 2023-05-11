@@ -156,7 +156,7 @@ float _accel_range_scale = 0.0f;
 float _mag_range_scale = 0.0f;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void lsm303d_rotate_to_ned(float* data)
+RT_WEAK void lsm303d_rotate_to_frd(float* data)
 {
     /* do nothing */
 }
@@ -434,7 +434,7 @@ static rt_err_t _mag_measure(float mag[3])
     mag[1] = raw[1] * _mag_range_scale;
     mag[2] = raw[2] * _mag_range_scale;
 
-    lsm303d_rotate_to_ned(mag);
+    lsm303d_rotate_to_frd(mag);
 
     return res;
 }

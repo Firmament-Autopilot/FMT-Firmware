@@ -83,6 +83,7 @@ static mlog_elem_t GCS_Cmd_Elems[] = {
     MLOG_ELEMENT(mode, MLOG_UINT32),
     MLOG_ELEMENT(cmd_1, MLOG_UINT32),
     MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(param, MLOG_FLOAT, 7),
 };
 MLOG_BUS_DEFINE(GCS_Cmd, GCS_Cmd_Elems);
 
@@ -159,6 +160,7 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(wp_consume, MLOG_UINT8),
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
     MLOG_ELEMENT(reserved, MLOG_UINT8),
+    MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
 };
 MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
 
@@ -183,7 +185,7 @@ static char* fms_status[] = {
     "None",
     "Disarm",
     "Standby",
-    "Arm"
+    "Arm",
 };
 
 static char* fms_state[] = {
@@ -204,7 +206,7 @@ static char* fms_state[] = {
     "InvalidArmMode",
     "Land",
     "Return",
-    "Takeoff"
+    "Takeoff",
 };
 
 static char* fms_ctrl_mode[] = {
@@ -213,7 +215,8 @@ static char* fms_ctrl_mode[] = {
     "Acro",
     "Stabilize",
     "ALTCTL",
-    "POSCTL"
+    "POSCTL",
+    "Offboard",
 };
 
 static char* fms_mode[] = {
@@ -224,7 +227,7 @@ static char* fms_mode[] = {
     "Altitude",
     "Position",
     "Mission",
-    "Offboard"
+    "Offboard",
 };
 
 fmt_model_info_t fms_model_info;

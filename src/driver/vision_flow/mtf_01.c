@@ -216,7 +216,7 @@ rt_err_t drv_mtf_01_init(const char* uart_dev_name)
 
     RT_ASSERT(dev != NULL);
 
-    thread = rt_thread_create("mtf-01", thread_entry, RT_NULL, 8 * 1024, 7, 1);
+    thread = rt_thread_create("mtf-01", thread_entry, RT_NULL, 2 * 1024, 7, 1);
 
     RT_ASSERT(thread != NULL);
 

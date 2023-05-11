@@ -32,12 +32,12 @@ MCN_DECLARE(sensor_imu0_0);
 MCN_DECLARE(sensor_mag0_0);
 MCN_DECLARE(ins_output);
 
-#define GYR_CALIBRATE_COUNT   500
+#define GYR_CALIBRATE_COUNT   200
 #define ACC_CALIBRATE_COUNT   200
-#define MAG_CALIBRATE_COUNT   300
+#define MAG_CALIBRATE_COUNT   200
 #define LEVEL_CALIBRATE_COUNT 200
 #define ACC_MAX_THRESHOLD     8.8f
-#define ACC_MIN_THRESHOLD     1.0f
+#define ACC_MIN_THRESHOLD     2.0f
 #define GYR_ROTAT_THRESHOLD   1.0f
 #define CALIB_TIME_INTERVAL   20
 
@@ -222,7 +222,7 @@ static void send_statustext_msg(mav_status_type status, mavlink_message_t* msg)
     memcpy(statustext.text, mavlink_get_status_content(status).string, strlen(mavlink_get_status_content(status).string));
     mavlink_msg_statustext_encode(mavlink_system.sysid, mavlink_system.compid, msg, &statustext);
 
-    mavproxy_send_immediate_msg(msg, true);
+    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, msg, true);
 }
 
 static void gyr_calibration_init(void)

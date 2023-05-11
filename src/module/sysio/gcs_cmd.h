@@ -25,7 +25,7 @@ extern "C" {
 
 fmt_err_t gcs_cmd_init(void);
 fmt_err_t gcs_cmd_collect(void);
-fmt_err_t gcs_set_cmd(FMS_Cmd cmd);
+fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float param[5]);
 fmt_err_t gcs_set_mode(PilotMode mode);
 
 #ifdef __cplusplus

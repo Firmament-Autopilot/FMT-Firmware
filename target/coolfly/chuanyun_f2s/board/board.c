@@ -583,7 +583,7 @@ void rt_hw_board_init()
 }
 
 /* Re-implement this function to define customized rotation */
-void icm20600_rotate_to_ned(float* val)
+void icm20600_rotate_to_frd(float* val)
 {
     float tmp;
     float* x = val;
@@ -598,7 +598,7 @@ void icm20600_rotate_to_ned(float* val)
 }
 
 /* Re-implement this function to define customized rotation */
-void bmi088_rotate_to_ned(float val[3])
+void bmi088_rotate_to_frd(float val[3])
 {
     /* do nothing */
     float* x = val;

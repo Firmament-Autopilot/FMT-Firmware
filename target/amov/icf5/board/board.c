@@ -37,6 +37,7 @@
 #include "drv_buzzer.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
+#include "drv_i2c_soft.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
@@ -75,6 +76,7 @@
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
 
 extern const struct romfs_dirent romfs_root;
 
@@ -261,6 +263,7 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
+    // RT_CHECK(drv_i2c_soft_init());
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
@@ -385,7 +388,7 @@ void bsp_post_initialize(void)
     bsp_show_information();
 
     /* execute init script */
-    msh_exec_script("/mnt/romfs/init.sh", strlen("/mnt/romfs/init.sh"));
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
     /* dump boot log to file */
     boot_log_dump();
