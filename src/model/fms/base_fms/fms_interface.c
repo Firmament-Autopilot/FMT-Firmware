@@ -175,7 +175,7 @@ static char* fms_status[] = {
     "None",
     "Disarm",
     "Standby",
-    "Arm"
+    "Arm",
 };
 
 static char* fms_state[] = {
@@ -196,7 +196,7 @@ static char* fms_state[] = {
     "InvalidArmMode",
     "Land",
     "Return",
-    "Takeoff"
+    "Takeoff",
 };
 
 static char* fms_ctrl_mode[] = {
@@ -205,7 +205,8 @@ static char* fms_ctrl_mode[] = {
     "Acro",
     "Stabilize",
     "ALTCTL",
-    "POSCTL"
+    "POSCTL",
+    "Offboard",
 };
 
 static char* fms_mode[] = {
@@ -216,7 +217,7 @@ static char* fms_mode[] = {
     "Altitude",
     "Position",
     "Mission",
-    "Offboard"
+    "Offboard",
 };
 
 fmt_model_info_t fms_model_info;
@@ -231,7 +232,7 @@ static int fms_output_echo(void* param)
     printf("rate cmd: %.2f %.2f %.2f\n", fms_out.p_cmd, fms_out.q_cmd, fms_out.r_cmd);
     printf("att cmd: %.2f %.2f %.2f\n", fms_out.phi_cmd, fms_out.theta_cmd, fms_out.psi_rate_cmd);
     printf("vel cmd: %.2f %.2f %.2f\n", fms_out.u_cmd, fms_out.v_cmd, fms_out.w_cmd);
-    printf("throttle cmd: %.2f\n", fms_out.throttle_cmd);
+    printf("throttle cmd: %u\n", fms_out.throttle_cmd);
     printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
     printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
     printf("mode:%s reset:%d\n", fms_mode[fms_out.mode], fms_out.reset);

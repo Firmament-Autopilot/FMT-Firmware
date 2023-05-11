@@ -185,7 +185,7 @@ static char* fms_status[] = {
     "None",
     "Disarm",
     "Standby",
-    "Arm"
+    "Arm",
 };
 
 static char* fms_state[] = {
@@ -206,7 +206,7 @@ static char* fms_state[] = {
     "InvalidArmMode",
     "Land",
     "Return",
-    "Takeoff"
+    "Takeoff",
 };
 
 static char* fms_ctrl_mode[] = {
@@ -215,7 +215,8 @@ static char* fms_ctrl_mode[] = {
     "Acro",
     "Stabilize",
     "ALTCTL",
-    "POSCTL"
+    "POSCTL",
+    "Offboard",
 };
 
 static char* fms_mode[] = {
@@ -226,7 +227,7 @@ static char* fms_mode[] = {
     "Altitude",
     "Position",
     "Mission",
-    "Offboard"
+    "Offboard",
 };
 
 fmt_model_info_t fms_model_info;

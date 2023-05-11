@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.904
+ * Model version                  : 1.908
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu May  4 16:41:39 2023
+ * C/C++ source code generated on : Thu May 11 15:54:14 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,22 +42,22 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.1F,
   5.0F,
   5.0F,
-  0.52359879F,
-  0.1F,
-  0.1F,
+  0.523599F,
+  0.08F,
+  0.08F,
   0.15F,
   0.1F,
   0.1F,
   0.2F,
-  0.003F,
-  0.003F,
+  0.002F,
+  0.002F,
   0.001F,
   -0.1F,
   0.1F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F
+  1.57079601F,
+  3.14159298F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S37>/Saturation'
@@ -1050,12 +1050,28 @@ void Controller_step(void)
     }
 
     /* Switch: '<S54>/Switch' incorporates:
+     *  Constant: '<S57>/Constant'
      *  Logic: '<S54>/Logical Operator'
      *  RelationalOperator: '<S56>/Compare'
+     *  RelationalOperator: '<S57>/Compare'
+     *  Switch: '<S54>/Switch1'
      */
     if ((Controller_U.FMS_Out.ctrl_mode == 1) || (Controller_U.FMS_Out.ctrl_mode
          == 2) || (Controller_U.FMS_Out.ctrl_mode == 3)) {
       rtb_throttle_cmd = Controller_U.FMS_Out.throttle_cmd;
+    } else if (Controller_U.FMS_Out.ctrl_mode == 6) {
+      /* Switch: '<S58>/Switch' incorporates:
+       *  DataTypeConversion: '<S55>/Data Type Conversion'
+       *  S-Function (sfix_bitop): '<S58>/cmd_throttle valid'
+       *  Switch: '<S54>/Switch1'
+       */
+      if ((Controller_U.FMS_Out.cmd_mask & 4096) > 0) {
+        rtb_throttle_cmd = Controller_U.FMS_Out.throttle_cmd;
+      } else {
+        rtb_throttle_cmd = (uint16_T)rtb_DiscreteTimeIntegrator;
+      }
+
+      /* End of Switch: '<S58>/Switch' */
     } else {
       /* Switch: '<S54>/Switch1' incorporates:
        *  DataTypeConversion: '<S55>/Data Type Conversion'
