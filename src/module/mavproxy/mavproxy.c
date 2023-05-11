@@ -112,20 +112,24 @@ static void dump_period_msg(uint8_t chan)
  * Register to send a mavlink message periodically
  * 
  * @param msgid mavlink message id
- * @param period_ms  message send period in ms
+ * @param msg_rate_hz  message send rate in Hz
  * @param msg_pack_cb callback function to prepare the mavlink message data
  * @param auto_start auto start of sending the message
  * 
  * @return FMT Errors
  */
-fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t period_ms,
+fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg_rate_hz,
                                        msg_pack_cb_t msg_pack_cb, bool start)
 {
     mav_period_msg msg;
 
+    if (chan >= MAVPROXY_CHAN_NUM) {
+        return FMT_EINVAL;
+    }
+
     msg.msgid = msgid;
     msg.enable = (start == true) ? 1 : 0;
-    msg.period = period_ms;
+    msg.period = 1000.0f / msg_rate_hz;
     msg.msg_pack_cb = msg_pack_cb;
     /* Add offset for each msg to stagger sending time */
     msg.time_stamp = systime_now_ms() + mav_handle.period_mq[chan].size * MAVPROXY_INTERVAL;
@@ -163,6 +167,10 @@ fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t per
  */
 fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg, bool sync)
 {
+    if (chan >= MAVPROXY_CHAN_NUM) {
+        return FMT_EINVAL;
+    }
+
     /* if sync flag set, send out msg immediately */
     if (sync) {
         uint16_t len;
@@ -229,14 +237,20 @@ mavlink_system_t mavproxy_get_system(void)
  * Set mavproxy channel.
  * 
  * @param chan channel of mavproxy device
+ * @param devid mavproxy device id
  * 
  * @return FMT Errors
  */
 fmt_err_t mavproxy_set_device(uint8_t chan, uint8_t devid)
 {
+    if (chan >= MAVPROXY_CHAN_NUM) {
+        return FMT_EINVAL;
+    }
+
     if (devid >= mavproxy_get_dev_num(chan)) {
         return FMT_EINVAL;
     }
+
     OS_ENTER_CRITICAL;
     mav_handle.new_devid[chan] = devid;
     OS_EXIT_CRITICAL;

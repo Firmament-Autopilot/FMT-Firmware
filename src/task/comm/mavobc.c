@@ -451,7 +451,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             for (i = 0; i < sizeof(mav_msg_cb_table) / sizeof(msg_pack_cb_table); i++) {
                 if (req_data_stream.req_stream_id == mav_msg_cb_table[i].msgid) {
-                    if (mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, mav_msg_cb_table[i].msgid, 1000.0f / req_data_stream.req_message_rate, mav_msg_cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
+                    if (mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, mav_msg_cb_table[i].msgid, req_data_stream.req_message_rate, mav_msg_cb_table[i].msg_pack_cb, req_data_stream.start_stop) == FMT_EOK) {
                         LOG_I("Message %d registered with frequency %d Hz, start:%d", req_data_stream.req_stream_id, req_data_stream.req_message_rate, req_data_stream.start_stop);
                     } else {
                         LOG_E("Message %d registered failed", req_data_stream.req_stream_id);
@@ -477,7 +477,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 fmt_err_t mavobc_init(void)
 {
     /* register periodical mavlink msg */
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1000, mavlink_msg_heartbeat_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
 
     /* register obc mavlink handler */
     FMT_TRY(mavproxy_monitor_register_handler(MAVPROXY_OBC_CHAN, handle_mavlink_message));

@@ -77,10 +77,6 @@ rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int
 {
     rt_size_t size;
 
-    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
-        return 0;
-    }
-
     if (mavdev_list[chan].dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
@@ -100,10 +96,6 @@ rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int
 rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout)
 {
     rt_size_t cnt = 0;
-
-    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
-        return 0;
-    }
 
     if (mavdev_list[chan].dev == NULL) {
         /* mavproxy device not initialized */
@@ -141,10 +133,6 @@ rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t ti
 
 fmt_err_t mavproxy_dev_set_rx_indicate(uint8_t chan, fmt_err_t (*rx_ind)(uint32_t size))
 {
-    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
-        return FMT_EINVAL;
-    }
-
     mavdev_list[chan].mav_rx_ind = rx_ind;
 
     return FMT_EOK;
@@ -153,10 +141,6 @@ fmt_err_t mavproxy_dev_set_rx_indicate(uint8_t chan, fmt_err_t (*rx_ind)(uint32_
 fmt_err_t mavproxy_dev_set_device(uint8_t chan, const char* dev_name)
 {
     rt_device_t new_dev;
-
-    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
-        return FMT_EINVAL;
-    }
 
     new_dev = rt_device_find(dev_name);
 
@@ -194,10 +178,6 @@ fmt_err_t mavproxy_dev_set_device(uint8_t chan, const char* dev_name)
 
 rt_device_t mavproxy_dev_get_device(uint8_t chan)
 {
-    if (chan >= MAVPROXY_DEV_CHAN_NUM) {
-        return NULL;
-    }
-
     return mavdev_list[chan].dev;
 }
 
