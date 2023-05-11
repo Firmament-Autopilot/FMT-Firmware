@@ -488,7 +488,7 @@ fmt_err_t mavlink_param_send(const param_t* param)
     }
 
     make_mavlink_param_msg(&msg, param);
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
 
     return FMT_EOK;
 }
