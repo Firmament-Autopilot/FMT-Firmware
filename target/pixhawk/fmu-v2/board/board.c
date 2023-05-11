@@ -17,6 +17,7 @@
 
 #include <board.h>
 #include <board_device.h>
+#include <msh.h>
 #include <shell.h>
 #include <string.h>
 #ifdef FMT_USING_CM_BACKTRACE
@@ -75,6 +76,7 @@
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -341,8 +343,8 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
-    if(strcmp(STR(VEHICLE_TYPE),"Fixwing")==0){
-        RT_CHECK(drv_ms4525_init("i2c1_dev1","airspeed"));
+    if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0) {
+        RT_CHECK(drv_ms4525_init("i2c1_dev1", "airspeed"));
         FMT_CHECK(register_sensor_airspeed("airspeed"));
     }
 #endif
@@ -401,6 +403,9 @@ void bsp_post_initialize(void)
 
     /* show system information */
     bsp_show_information();
+
+    /* execute init script */
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
     /* dump boot log to file */
     boot_log_dump();

@@ -76,6 +76,7 @@
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
 
 extern const struct romfs_dirent romfs_root;
 
@@ -387,7 +388,7 @@ void bsp_post_initialize(void)
     bsp_show_information();
 
     /* execute init script */
-    msh_exec_script("/mnt/romfs/init.sh", strlen("/mnt/romfs/init.sh"));
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
     /* dump boot log to file */
     boot_log_dump();

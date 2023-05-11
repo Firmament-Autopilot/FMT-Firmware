@@ -206,11 +206,13 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
         return FMT_ERROR;
     }
 
+#ifdef RT_USING_DFS_ROMFS
     /* init romfs */
     if (dfs_romfs_init() != 0) {
         printf("romfs init fail!\n");
         return FMT_ERROR;
     }
+#endif
 
     if (mnt_table[0].device_name == NULL) {
         /* empty mount table, just return */
