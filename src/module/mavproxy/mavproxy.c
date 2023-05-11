@@ -95,13 +95,13 @@ static void dump_period_msg(uint8_t chan)
         mav_period_msg* msg_t = &mav_handle.period_mq[chan].queue[mav_handle.period_mq[chan].index];
         mav_handle.period_mq[chan].index = (mav_handle.period_mq[chan].index + 1) % mav_handle.period_mq[chan].size;
 
-        // find next msg to send
+        /* find next msg to send */
         if (now - msg_t->time_stamp >= msg_t->period && msg_t->enable && msg_t->msg_pack_cb) {
             msg_t->time_stamp = now;
-            // pack msg
+            /* pack msg */
             mavlink_message_t msg;
             if (msg_t->msg_pack_cb(&msg) == true) {
-                // send out msg
+                /* send out msg */
                 mavproxy_send_immediate_msg(chan, &msg, true);
             }
         }
