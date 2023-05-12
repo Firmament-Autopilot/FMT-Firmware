@@ -41,8 +41,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(YAW_DZ, 0.15),
     PARAM_FLOAT(ROLL_DZ, 0.1),
     PARAM_FLOAT(PITCH_DZ, 0.1),
-    PARAM_FLOAT(XY_P, 0.95),
-    PARAM_FLOAT(Z_P, 1),
+    PARAM_FLOAT(XY_P, 1.2),
+    PARAM_FLOAT(Z_P, 1.5),
     PARAM_FLOAT(VEL_XY_LIM, 5.0),
     PARAM_FLOAT(VEL_Z_LIM, 2.5),
     PARAM_FLOAT(YAW_P, 2.5),
@@ -52,6 +52,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(CRUISE_SPEED, 5.0),
     PARAM_FLOAT(TAKEOFF_H, 1.5),
     PARAM_FLOAT(ACCEPT_R, 0.5),
+    PARAM_FLOAT(ASSIST_LAND_H, 0.3),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -268,6 +269,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_H), &FMS_PARAM.TAKEOFF_H));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ASSIST_LAND_H), &FMS_PARAM.ASSIST_LAND_H));
 }
 
 void fms_interface_step(uint32_t timestamp)

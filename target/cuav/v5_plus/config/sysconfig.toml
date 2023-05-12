@@ -34,7 +34,7 @@ target = "CUAV V5+"
     chan = 1
     type = "serial"
     name = "serial2"
-    baudrate = 57600
+    baudrate = 115200
 
 
 # Pilot CMD Configuration
@@ -53,7 +53,7 @@ target = "CUAV V5+"
     [[pilot-cmd.mode]]
     mode = 5                    # Position mode
     channel = 5
-    range = [1000,1200]
+    range = [1000,1300]
 
     [[pilot-cmd.mode]]
     mode = 4                    # Altitude mode
@@ -63,7 +63,7 @@ target = "CUAV V5+"
     [[pilot-cmd.mode]]
     mode = 3                    # Stabilize mode
     channel = 5
-    range = [1800,2000]
+    range = [1700,2000]
 
     [[pilot-cmd.command]]
     type = 1                    # 1:event | 2:status
