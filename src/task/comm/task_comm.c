@@ -542,7 +542,7 @@ TASK_EXPORT __fmt_task1_desc = {
     .entry = task_mavgcs_entry,
     .priority = MAVGCS_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 4096,
+    .stack_size = 8192,
     .param = NULL,
     .dependency = NULL
 };
