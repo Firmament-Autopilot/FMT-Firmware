@@ -34,6 +34,7 @@ static ringbuffer* gcs_mode_rb;
 static GCS_Cmd_Bus gcs_cmd;
 static McnNode_t fms_out_nod;
 static FMS_Out_Bus fms_out;
+static uint8_t gcs_heartbeat;
 
 static int gcs_cmd_echo(void* parameter)
 {
@@ -50,6 +51,11 @@ static int gcs_cmd_echo(void* parameter)
            gcs_cmd.cmd_2);
 
     return 0;
+}
+
+void gcs_cmd_heartbeat(void)
+{
+    gcs_heartbeat = 1;
 }
 
 fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float param[5])
@@ -176,6 +182,12 @@ fmt_err_t gcs_cmd_collect(void)
                 updated = 1;
             }
         }
+    }
+
+    if (gcs_heartbeat) {
+        gcs_heartbeat = 0;
+        /* if received heartbeat, publish the gcs_cmd, so system knows gcs is online */
+        updated = 1;
     }
 
     if (updated) {

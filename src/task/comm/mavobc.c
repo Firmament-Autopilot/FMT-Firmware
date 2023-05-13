@@ -176,8 +176,13 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
+        gcs_cmd_heartbeat();
+        break;
     case MAVLINK_MSG_ID_SYSTEM_TIME:
     case MAVLINK_MSG_ID_TIMESYNC:
+    /* we do not handle param and mission request, cause obc no need to know that and it's unsafe to change it */
+    case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+    case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
         /* do nothing */
         break;
 

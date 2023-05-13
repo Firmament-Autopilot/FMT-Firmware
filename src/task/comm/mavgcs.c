@@ -150,7 +150,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
-        /* do nothing */
+        gcs_cmd_heartbeat();
         break;
 
     case MAVLINK_MSG_ID_SYSTEM_TIME:
