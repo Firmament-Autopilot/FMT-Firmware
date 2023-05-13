@@ -40,7 +40,7 @@ MCN_DECLARE(ins_output);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(rc_channels);
-MCN_DECLARE(bat0_status);
+MCN_DECLARE(bat_status);
 MCN_DECLARE(fms_output);
 MCN_DECLARE(auto_cmd);
 
@@ -179,9 +179,9 @@ bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_sys_status_t sys_status;
-    struct battery_status bat0_status;
+    struct battery_status bat_status;
 
-    if (mcn_copy_from_hub(MCN_HUB(bat0_status), &bat0_status) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(bat_status), &bat_status) != FMT_EOK) {
         return false;
     }
 
@@ -189,8 +189,8 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
     sys_status.onboard_control_sensors_enabled = 1;
     sys_status.onboard_control_sensors_health = 1;
     sys_status.load = (uint16_t)(get_cpu_usage() * 1e3);
-    sys_status.voltage_battery = bat0_status.battery_voltage;
-    sys_status.current_battery = -1;
+    sys_status.voltage_battery = bat_status.battery_voltage;
+    sys_status.current_battery = bat_status.battery_current;
     sys_status.battery_remaining = -1;
 
     mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &sys_status);

@@ -16,8 +16,7 @@
 
 #include "module/pmu/power_manager.h"
 
-MCN_DEFINE(bat0_status, sizeof(struct battery_status));
-MCN_DEFINE(bat1_status, sizeof(struct battery_status));
+MCN_DEFINE(bat_status, sizeof(struct battery_status));
 
 static rt_device_t adc_dev;
 
@@ -39,8 +38,7 @@ static int echo_battery_status(void* parameter)
 
 fmt_err_t pmu_poll_battery_status(void)
 {
-    struct battery_status bat0_status;
-    struct battery_status bat1_status;
+    struct battery_status bat_status;
     uint32_t value;
 
     if (adc_dev == NULL) {
@@ -50,32 +48,16 @@ fmt_err_t pmu_poll_battery_status(void)
     if (rt_device_read(adc_dev, 0, &value, sizeof(value)) != sizeof(value)) {
         return FMT_ERROR;
     }
-    bat0_status.battery_voltage = value * PARAM_GET_FLOAT(CALIB, BAT1_V_DIV); /* millivolt */
+    bat_status.battery_voltage = value * PARAM_GET_FLOAT(CALIB, BAT_V_DIV); /* millivolt */
 
     if (rt_device_read(adc_dev, 1, &value, sizeof(value)) != sizeof(value)) {
         return FMT_ERROR;
     }
-    bat0_status.battery_current = value; /* millicurrent */
-    bat0_status.battery_remaining = 0;
+    bat_status.battery_current = value; /* millicurrent */
+    bat_status.battery_remaining = 0;
 
     /* publish battery 0 status */
-    if (mcn_publish(MCN_HUB(bat0_status), &bat0_status) != FMT_EOK) {
-        return FMT_ERROR;
-    }
-
-    if (rt_device_read(adc_dev, 2, &value, sizeof(value)) != sizeof(value)) {
-        return FMT_ERROR;
-    }
-    bat1_status.battery_voltage = value * PARAM_GET_FLOAT(SYSTEM, BAT2_V_DIV); /* millivolt */
-
-    if (rt_device_read(adc_dev, 3, &value, sizeof(value)) != sizeof(value)) {
-        return FMT_ERROR;
-    }
-    bat1_status.battery_current = value; /* millicurrent */
-    bat1_status.battery_remaining = 0;
-
-    /* publish battery 1 status */
-    if (mcn_publish(MCN_HUB(bat1_status), &bat1_status) != FMT_EOK) {
+    if (mcn_publish(MCN_HUB(bat_status), &bat_status) != FMT_EOK) {
         return FMT_ERROR;
     }
 
@@ -84,8 +66,7 @@ fmt_err_t pmu_poll_battery_status(void)
 
 fmt_err_t pmu_init(void)
 {
-    FMT_CHECK(mcn_advertise(MCN_HUB(bat0_status), echo_battery_status));
-    FMT_CHECK(mcn_advertise(MCN_HUB(bat1_status), echo_battery_status));
+    FMT_CHECK(mcn_advertise(MCN_HUB(bat_status), echo_battery_status));
 
     adc_dev = rt_device_find("adc0");
     RT_ASSERT(adc_dev != NULL);
