@@ -29,6 +29,11 @@
 #undef LOG_TAG
 #define LOG_TAG "MAVGCS"
 
+MCN_DECLARE(sensor_imu0);
+MCN_DECLARE(sensor_mag0);
+MCN_DECLARE(sensor_baro);
+MCN_DECLARE(sensor_gps);
+
 fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result);
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t);
