@@ -30,6 +30,12 @@
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
 
+#ifdef BIT
+    #undef BIT
+#endif
+
+#define BIT(u, n) (u & (1 << n))
+
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
@@ -43,6 +49,7 @@ MCN_DECLARE(rc_channels);
 MCN_DECLARE(bat_status);
 MCN_DECLARE(fms_output);
 MCN_DECLARE(auto_cmd);
+MCN_DECLARE(bat_status);
 
 static mavlink_system_t mavlink_system;
 
@@ -125,7 +132,7 @@ static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_heartbeat_t heartbeat;
+    mavlink_heartbeat_t heartbeat = { 0 };
     FMS_Out_Bus fms_out;
 
     heartbeat.type = MAV_TYPE_QUADROTOR;
@@ -178,16 +185,67 @@ bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_sys_status_t sys_status;
+    mavlink_sys_status_t sys_status = { 0 };
+    INS_Out_Bus ins_out;
     struct battery_status bat_status;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
 
     if (mcn_copy_from_hub(MCN_HUB(bat_status), &bat_status) != FMT_EOK) {
         return false;
     }
 
-    sys_status.onboard_control_sensors_present = 1;
-    sys_status.onboard_control_sensors_enabled = 1;
-    sys_status.onboard_control_sensors_health = 1;
+    if (BIT(ins_out.status, 0)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_3D_GYRO | MAV_SYS_STATUS_SENSOR_3D_ACCEL;
+    }
+
+    if (BIT(ins_out.status, 1)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_3D_GYRO2 | MAV_SYS_STATUS_SENSOR_3D_ACCEL2;
+    }
+
+    if (BIT(ins_out.status, 2)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_3D_MAG;
+    }
+
+    if (BIT(ins_out.status, 3)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_ABSOLUTE_PRESSURE;
+    }
+
+    if (BIT(ins_out.status, 4)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_GPS;
+    }
+
+    if (BIT(ins_out.status, 5)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_LASER_POSITION;
+    }
+
+    if (BIT(ins_out.status, 6)) {
+        sys_status.onboard_control_sensors_present |= MAV_SYS_STATUS_SENSOR_OPTICAL_FLOW;
+    }
+
+    if (BIT(ins_out.flag, 1)) {
+        sys_status.onboard_control_sensors_enabled |= MAV_SYS_STATUS_SENSOR_ANGULAR_RATE_CONTROL | MAV_SYS_STATUS_SENSOR_ATTITUDE_STABILIZATION;
+    }
+
+    if (BIT(ins_out.flag, 2)) {
+        sys_status.onboard_control_sensors_enabled |= MAV_SYS_STATUS_SENSOR_YAW_POSITION;
+    }
+
+    if (BIT(ins_out.flag, 5)) {
+        sys_status.onboard_control_sensors_enabled |= MAV_SYS_STATUS_SENSOR_XY_POSITION_CONTROL;
+    }
+
+    if (BIT(ins_out.flag, 6)) {
+        sys_status.onboard_control_sensors_enabled |= MAV_SYS_STATUS_SENSOR_Z_ALTITUDE_CONTROL;
+    }
+
+    if (BIT(ins_out.flag, 7)) {
+        sys_status.onboard_control_sensors_enabled |= MAV_SYS_STATUS_TERRAIN;
+    }
+
+    sys_status.onboard_control_sensors_health = sys_status.onboard_control_sensors_enabled;
     sys_status.load = (uint16_t)(get_cpu_usage() * 1e3);
     sys_status.voltage_battery = bat_status.battery_voltage;
     sys_status.current_battery = bat_status.battery_current;
@@ -200,7 +258,7 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_system_time_t system_time;
+    mavlink_system_time_t system_time = { 0 };
 
     system_time.time_unix_usec = systime_now_us();
     system_time.time_boot_ms = systime_now_ms();
@@ -212,7 +270,7 @@ bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_attitude_t attitude;
+    mavlink_attitude_t attitude = { 0 };
     INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
@@ -233,7 +291,7 @@ bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_local_position_ned_t local_position_ned;
+    mavlink_local_position_ned_t local_position_ned = { 0 };
     INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
@@ -255,8 +313,8 @@ bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_global_position_int_pack_func(mavlink_message_t* msg_t)
 {
+    mavlink_global_position_int_t global_position_int = { 0 };
     INS_Out_Bus ins_out;
-    mavlink_global_position_int_t global_position_int;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
@@ -297,7 +355,7 @@ bool mavlink_msg_vfr_hud_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_altitude_t altitude;
+    mavlink_altitude_t altitude = { 0 };
     INS_Out_Bus ins_out;
     FMS_Out_Bus fms_out;
 
@@ -324,9 +382,9 @@ bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t)
 {
+    mavlink_gps_raw_int_t gps_raw_int = { 0 };
     gps_data_t gps_report;
     McnHub* hub = MCN_HUB(sensor_gps);
-    mavlink_gps_raw_int_t gps_raw_int;
 
     if (!hub->published) {
         return false;
@@ -360,9 +418,9 @@ bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t)
 {
+    mavlink_rc_channels_t mavlink_rc_channels = { 0 };
     int16_t rc_channels[16];
     McnHub* hub = MCN_HUB(rc_channels);
-    mavlink_rc_channels_t mavlink_rc_channels;
 
     if (!hub->published) {
         return false;
@@ -384,7 +442,7 @@ bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_highres_imu_t highres_imu;
+    mavlink_highres_imu_t highres_imu = { 0 };
     imu_data_t imu_data;
     mag_data_t mag_data;
     baro_data_t baro_data;

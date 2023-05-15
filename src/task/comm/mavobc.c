@@ -40,6 +40,7 @@ typedef struct
 
 fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result);
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t);
@@ -53,6 +54,7 @@ bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t);
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_pack_func },
+    { MAVLINK_MSG_ID_SYS_STATUS, mavlink_msg_sys_status_pack_func },
     { MAVLINK_MSG_ID_HIGHRES_IMU, mavlink_msg_highres_imu_pack_func },
     { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_pack_func },
     { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_pack_func },
