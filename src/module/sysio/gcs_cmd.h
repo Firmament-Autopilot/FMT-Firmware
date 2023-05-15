@@ -24,6 +24,7 @@ extern "C" {
 #endif
 
 fmt_err_t gcs_cmd_init(void);
+GCS_Cmd_Bus gcs_cmd_get(void);
 fmt_err_t gcs_cmd_collect(void);
 void gcs_cmd_heartbeat(void);
 fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float param[5]);

@@ -58,6 +58,11 @@ void gcs_cmd_heartbeat(void)
     gcs_heartbeat = 1;
 }
 
+GCS_Cmd_Bus gcs_cmd_get(void)
+{
+    return gcs_cmd;
+}
+
 fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float param[5])
 {
     uint32_t new_cmd = cmd;
