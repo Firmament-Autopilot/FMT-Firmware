@@ -33,6 +33,7 @@ MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
+MCN_DECLARE(mission_data);
 
 fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result);
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t);
@@ -262,14 +263,54 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
     } break;
 
-    case MAVLINK_MSG_ID_COMMAND_LONG: {
+    case MAVLINK_MSG_ID_COMMAND_INT:
+        if (this_system.sysid == mavlink_msg_command_long_get_target_system(msg)) {
+            mavlink_command_int_t command;
+            Mission_Data_Bus mission_data = { 0 };
+            mavlink_msg_command_int_decode(msg, &command);
+
+            if (mcn_copy_from_hub(MCN_HUB(mission_data), &mission_data) == FMT_EOK) {
+                /* check if there is no ongoing mission */
+                if (mission_data.valid_items == 0) {
+                    if (command.command == MAV_CMD_DO_REPOSITION) {
+                        mission_data.timestamp = systime_now_ms();
+                        mission_data.valid_items = 1;
+                        mission_data.seq[0] = 0;
+                        mission_data.command[0] = MAV_CMD_NAV_WAYPOINT; /* we treat reposition command as single waypoint */
+                        mission_data.frame[0] = command.frame;
+                        mission_data.current[0] = command.current;
+                        mission_data.autocontinue[0] = command.autocontinue;
+                        mission_data.mission_type[0] = 0;
+                        mission_data.x[0] = command.x;
+                        mission_data.y[0] = command.y;
+                        mission_data.z[0] = command.z;
+
+                        if (mcn_publish(MCN_HUB(mission_data), &mission_data) == FMT_EOK) {
+                            /* now we set mode to mission to execute the reposition command */
+                            gcs_set_mode(PilotMode_Mission);
+                            mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command.command, MAV_RESULT_ACCEPTED);
+                            break;
+                        }
+                    } else {
+                        mavlink_send_statustext(MAV_SEVERITY_INFO, "Unsupported command:%d\n", command.command);
+                        //TODO: Support MAV_CMD_DO_ORBIT
+                    }
+                } else {
+                    mavlink_send_statustext(MAV_SEVERITY_INFO, "Please finish current mission or delete it first");
+                }
+            }
+            mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command.command, MAV_RESULT_DENIED);
+        }
+        break;
+
+    case MAVLINK_MSG_ID_COMMAND_LONG:
         if (this_system.sysid == mavlink_msg_command_long_get_target_system(msg)) {
             mavlink_command_long_t command;
             mavlink_msg_command_long_decode(msg, &command);
 
             handle_mavlink_command(&command, msg);
         }
-    } break;
+        break;
 
     case MAVLINK_MSG_ID_SERIAL_CONTROL: {
         mavlink_serial_control_t serial_control;

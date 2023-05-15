@@ -118,6 +118,8 @@ static void handle_message_mission_clear_all(mavlink_message_t* msg)
 
     if (mission_clear_all.mission_type == MAV_MISSION_TYPE_MISSION) {
         if (clear_mission_data(MISSION_FILE) == FMT_EOK) {
+            /* after cleared, reset the mission data */
+            mission_reset();
             LOG_I("mission data cleared.");
             /* send accepted ack */
             send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
