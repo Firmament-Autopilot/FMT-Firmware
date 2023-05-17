@@ -82,9 +82,17 @@ static int fdcan_sendmsg(can_dev_t fdcan_dev, const void* buf)
     struct stm32_fdcan* stm32_fdcan_x = (struct stm32_fdcan*)fdcan_dev->parent.user_data;
     RT_ASSERT(stm32_fdcan_x != RT_NULL);
 
-    can_msg_t msg_t = (can_msg_t)buf;
+    CanardCANFrame* out_frame = (CanardCANFrame*)buf;
 
-    return msg_t->len;
+    uint64_t deadline = systime_now_us() + 50000000;
+
+    fdCANTransmit(stm32_fdcan_x->canid, systime_now_us(), deadline, out_frame, false);
+
+    systime_udelay(200); // 暂时通过延时防止发送太快丢帧
+
+    // printf("out_frame->data_len=%d\n",out_frame->data_len);
+
+    return out_frame->data_len;
 }
 
 static int fdcan_recvmsg(can_dev_t fdcan_dev, void* buf)
@@ -94,11 +102,7 @@ static int fdcan_recvmsg(can_dev_t fdcan_dev, void* buf)
 
     CanardCANFrame* out_frame = (CanardCANFrame*)buf;
 
-    // printf("data_len1 =%d\n", out_frame->data_len);
-
-    int16_t ret = fdCANReceive(stm32_fdcan_x->canid, out_frame);
-
-    // printf("ret=%d,data_len2 =%d\n", ret, out_frame->data_len);
+    fdCANReceive(stm32_fdcan_x->canid, out_frame);
 
     return out_frame->data_len;
 }

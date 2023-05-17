@@ -75,6 +75,11 @@ struct uavcan_protocol_NodeStatus uavcan_protocol_NodeStatus_msg;
 static void onTransferReceived(CanardInstance* ins,
                                CanardRxTransfer* transfer)
 {
+    if (transfer->data_type_id == UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID
+        && transfer->source_node_id == CANARD_BROADCAST_NODE_ID) {
+        dronecan_dynamic_allocation_id(&g_canard, transfer, PreferredNodeID, SALVE_NODE_ID);
+    }
+
     switch (transfer->data_type_id) {
     case UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID:
         // uavcan_protocol_param_GetSetResponse_decode(transfer, &uavcan_protocol_param_GetSetResponse_msg);
@@ -173,7 +178,7 @@ void makeNodeStatus(uint32_t time_ms)
     NodeStatus_msg.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
     NodeStatus_msg.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;
     NodeStatus_msg.uptime_sec = time_ms / 1000;
-    uint32_t total_size = uavcan_protocol_NodeStatus_encode(&NodeStatus_msg, node_msg_buffer);
+    uint16_t total_size = uavcan_protocol_NodeStatus_encode(&NodeStatus_msg, node_msg_buffer);
 
     static uint8_t transfer_id; // Note that the transfer ID variable MUST BE STATIC (or heap-allocated)!
 
@@ -183,7 +188,7 @@ void makeNodeStatus(uint32_t time_ms)
                     &transfer_id,
                     CANARD_TRANSFER_PRIORITY_MEDIUM,
                     node_msg_buffer,
-                    (int16_t)total_size);
+                    (uint16_t)total_size);
 }
 
 void receiveCanard(void)
@@ -193,11 +198,7 @@ void receiveCanard(void)
 
     CanardCANFrame rx_frame;
 
-    int16_t rx_res = fdCANReceive(0, &rx_frame);
-
-    // printf("rx_frame=%d\n", rx_frame.data_len);
-
-    // int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
+    int16_t rx_res = dronecanReceive(fdcan_dev[0], &rx_frame);
     if (rx_res > 0) {
         canardHandleRxFrame(&g_canard, &rx_frame, timestamp);
     }
@@ -208,29 +209,16 @@ void receiveCanard(void)
  */
 void sendCanard(void)
 {
-
     for (const CanardCANFrame* txf = NULL; (txf = canardPeekTxQueue(&g_canard)) != NULL;) {
+        int16_t tx_res = dronecanTransmit(fdcan_dev[0], txf);
 
-        uint64_t deadline = systime_now_us() + 50000000;
-
-        // printf("txf->data_len=%d\n", txf->data_len);
-
-        const int16_t tx_res = fdCANTransmit(0, systime_now_us(), deadline, txf, true);
-
-        // printf("tx_res=%d\n", tx_res);
-
-        if (tx_res > 0) // Failure - drop the frame and report
-        {
+        if (tx_res > 0) {
             canardPopTxQueue(&g_canard);
-        } else if (tx_res < 0) // Success - just drop the frame
-        {
+        } else {
             canardPopTxQueue(&g_canard);
-        } else // Timeout - just exit and try again later
-        {
-            break;
         }
+        // canardCleanupStaleTransfers(&g_canard, systime_now_us());
     }
-    // canardCleanupStaleTransfers(&g_canard, systime_now_us());
 }
 
 fmt_err_t dronecan_init(void)
@@ -248,14 +236,18 @@ fmt_err_t dronecan_init(void)
                shouldAcceptTransfer,
                NULL);
 
-    canardSetLocalNodeID(&g_canard, 10);
+    canardSetLocalNodeID(&g_canard, PreferredNodeID);
 
     return FMT_EOK;
 }
 
+extern uint8_t dna_send_step;
+uint8_t dna_test_step = 2;
 void dronecan_loop(uint32_t time_ms)
 {
     static uint16_t tick = 0;
+
+    makeDNAUpate(&g_canard, &dna_send_step);
 
     tick++;
     if ((tick % 1000) == 0) {
@@ -270,9 +262,7 @@ void dronecan_loop(uint32_t time_ms)
         makeLightsRGB(100, 100, 0);
     }
 
-    if ((tick % 10) == 0) {
-        sendCanard();
-    }
+    sendCanard();
 
     receiveCanard();
 }

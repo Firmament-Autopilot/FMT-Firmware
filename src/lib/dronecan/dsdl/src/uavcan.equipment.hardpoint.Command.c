@@ -1,8 +1,5 @@
-
-
 #define CANARD_DSDLC_INTERNAL
 #include <uavcan.equipment.hardpoint.Command.h>
-
 #include <string.h>
 
 #ifdef CANARD_DSDLC_TEST_BUILD
@@ -26,6 +23,9 @@ uint32_t uavcan_equipment_hardpoint_Command_encode(struct uavcan_equipment_hardp
     return ((bit_ofs+7)/8);
 }
 
+/*
+  return true if the decode is invalid
+ */
 bool uavcan_equipment_hardpoint_Command_decode(const CanardRxTransfer* transfer, struct uavcan_equipment_hardpoint_Command* msg) {
     uint32_t bit_ofs = 0;
     _uavcan_equipment_hardpoint_Command_decode(transfer, &bit_ofs, msg, 
@@ -36,34 +36,23 @@ bool uavcan_equipment_hardpoint_Command_decode(const CanardRxTransfer* transfer,
 #endif
     );
 
-    return (((bit_ofs+7)/8) != transfer->payload_len);
+    const uint32_t byte_len = (bit_ofs+7U)/8U;
+#if CANARD_ENABLE_TAO_OPTION
+    // if this could be CANFD then the dlc could indicating more bytes than
+    // we actually have
+    if (!transfer->tao) {
+        return byte_len > transfer->payload_len;
+    }
+#endif
+    return byte_len != transfer->payload_len;
 }
 
 #ifdef CANARD_DSDLC_TEST_BUILD
 struct uavcan_equipment_hardpoint_Command sample_uavcan_equipment_hardpoint_Command_msg(void) {
-
     struct uavcan_equipment_hardpoint_Command msg;
 
-
-
-
-
-
     msg.hardpoint_id = (uint8_t)random_bitlen_unsigned_val(8);
-
-
-
-
-
-
-
     msg.command = (uint16_t)random_bitlen_unsigned_val(16);
-
-
-
-
-
     return msg;
-
 }
 #endif
