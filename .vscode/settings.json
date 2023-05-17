@@ -15,12 +15,15 @@
     "cSpell.diagnosticLevel": "Hint",
     "cSpell.showStatus": false,
     "cSpell.words": [
-            "fmt",
-            "esc",
-            "rtthread"
+        "fmt",
+        "esc",
+        "rtthread"
     ],
     "editor.defaultFormatter": "xaver.clang-format",
     "[jsonc]": {
         "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format"
     },
 }

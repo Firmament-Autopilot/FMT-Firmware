@@ -27,7 +27,7 @@ extern "C" {
 #define TARGET_NAME "Cubepilot cubeorange"
 
 // Internal SRAM memory size[Kbytes]
-#define SYSTEM_TOTAL_MEM_SIZE (0x80000) // 512K
+#define SYSTEM_TOTAL_MEM_SIZE (512 * 1024) // 512K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
 #ifdef __ICCARM__
 // Use *.icf ram symbal, to avoid hardcode.
@@ -40,8 +40,8 @@ extern int __heap_limit;
     #define SYSTEM_FREE_MEM_BEGIN (&__heap_base)
     #define SYSTEM_FREE_MEM_END   (&__heap_limit)
 #else
-    // extern int __bss_end;
-    #define SYSTEM_FREE_MEM_BEGIN (0x24000000)
+extern int __bss_end;
+    #define SYSTEM_FREE_MEM_BEGIN (&__bss_end)
     #define SYSTEM_FREE_MEM_END   (0x24000000 + SYSTEM_TOTAL_MEM_SIZE)
 #endif
 

@@ -1,8 +1,5 @@
-
-
 #define CANARD_DSDLC_INTERNAL
 #include <ardupilot.gnss.Status.h>
-
 #include <string.h>
 
 #ifdef CANARD_DSDLC_TEST_BUILD
@@ -26,6 +23,9 @@ uint32_t ardupilot_gnss_Status_encode(struct ardupilot_gnss_Status* msg, uint8_t
     return ((bit_ofs+7)/8);
 }
 
+/*
+  return true if the decode is invalid
+ */
 bool ardupilot_gnss_Status_decode(const CanardRxTransfer* transfer, struct ardupilot_gnss_Status* msg) {
     uint32_t bit_ofs = 0;
     _ardupilot_gnss_Status_decode(transfer, &bit_ofs, msg, 
@@ -36,42 +36,24 @@ bool ardupilot_gnss_Status_decode(const CanardRxTransfer* transfer, struct ardup
 #endif
     );
 
-    return (((bit_ofs+7)/8) != transfer->payload_len);
+    const uint32_t byte_len = (bit_ofs+7U)/8U;
+#if CANARD_ENABLE_TAO_OPTION
+    // if this could be CANFD then the dlc could indicating more bytes than
+    // we actually have
+    if (!transfer->tao) {
+        return byte_len > transfer->payload_len;
+    }
+#endif
+    return byte_len != transfer->payload_len;
 }
 
 #ifdef CANARD_DSDLC_TEST_BUILD
 struct ardupilot_gnss_Status sample_ardupilot_gnss_Status_msg(void) {
-
     struct ardupilot_gnss_Status msg;
 
-
-
-
-
-
     msg.error_codes = (uint32_t)random_bitlen_unsigned_val(32);
-
-
-
-
-
-
-
     msg.healthy = (bool)random_bitlen_unsigned_val(1);
-
-
-
-
-
-
-
     msg.status = (uint32_t)random_bitlen_unsigned_val(23);
-
-
-
-
-
     return msg;
-
 }
 #endif

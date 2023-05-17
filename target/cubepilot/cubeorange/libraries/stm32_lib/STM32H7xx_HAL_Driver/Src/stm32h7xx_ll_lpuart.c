@@ -153,10 +153,8 @@ ErrorStatus LL_LPUART_DeInit(USART_TypeDef *LPUARTx)
 /**
   * @brief  Initialize LPUART registers according to the specified
   *         parameters in LPUART_InitStruct.
-  * @note   As some bits in LPUART configuration registers can only be written when
-  *         the LPUART is disabled (USART_CR1_UE bit =0),
-  *         LPUART Peripheral should be in disabled state prior calling this function.
-  *         Otherwise, ERROR result will be returned.
+  * @note   As some bits in LPUART configuration registers can only be written when the LPUART is disabled (USART_CR1_UE bit =0),
+  *         LPUART Peripheral should be in disabled state prior calling this function. Otherwise, ERROR result will be returned.
   * @note   Baud rate value stored in LPUART_InitStruct BaudRate field, should be valid (different from 0).
   * @param  LPUARTx LPUART Instance
   * @param  LPUART_InitStruct pointer to a @ref LL_LPUART_InitTypeDef structure
@@ -202,8 +200,7 @@ ErrorStatus LL_LPUART_Init(USART_TypeDef *LPUARTx, LL_LPUART_InitTypeDef *LPUART
 
     /*---------------------------- LPUART CR3 Configuration -----------------------
      * Configure LPUARTx CR3 (Hardware Flow Control) with parameters:
-     * - HardwareFlowControl: USART_CR3_RTSE, USART_CR3_CTSE bits according
-     *   to LPUART_InitStruct->HardwareFlowControl value.
+     * - HardwareFlowControl: USART_CR3_RTSE, USART_CR3_CTSE bits according to LPUART_InitStruct->HardwareFlowControl value.
      */
     LL_LPUART_SetHWFlowCtrl(LPUARTx, LPUART_InitStruct->HardwareFlowControl);
 
@@ -274,7 +271,7 @@ void LL_LPUART_StructInit(LL_LPUART_InitTypeDef *LPUART_InitStruct)
   * @}
   */
 
-#endif /* LPUART1 */
+#endif /* defined (LPUART1) */
 
 /**
   * @}

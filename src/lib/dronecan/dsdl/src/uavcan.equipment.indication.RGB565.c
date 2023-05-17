@@ -1,8 +1,5 @@
-
-
 #define CANARD_DSDLC_INTERNAL
 #include <uavcan.equipment.indication.RGB565.h>
-
 #include <string.h>
 
 #ifdef CANARD_DSDLC_TEST_BUILD
@@ -26,6 +23,9 @@ uint32_t uavcan_equipment_indication_RGB565_encode(struct uavcan_equipment_indic
     return ((bit_ofs+7)/8);
 }
 
+/*
+  return true if the decode is invalid
+ */
 bool uavcan_equipment_indication_RGB565_decode(const CanardRxTransfer* transfer, struct uavcan_equipment_indication_RGB565* msg) {
     uint32_t bit_ofs = 0;
     _uavcan_equipment_indication_RGB565_decode(transfer, &bit_ofs, msg, 
@@ -36,42 +36,24 @@ bool uavcan_equipment_indication_RGB565_decode(const CanardRxTransfer* transfer,
 #endif
     );
 
-    return (((bit_ofs+7)/8) != transfer->payload_len);
+    const uint32_t byte_len = (bit_ofs+7U)/8U;
+#if CANARD_ENABLE_TAO_OPTION
+    // if this could be CANFD then the dlc could indicating more bytes than
+    // we actually have
+    if (!transfer->tao) {
+        return byte_len > transfer->payload_len;
+    }
+#endif
+    return byte_len != transfer->payload_len;
 }
 
 #ifdef CANARD_DSDLC_TEST_BUILD
 struct uavcan_equipment_indication_RGB565 sample_uavcan_equipment_indication_RGB565_msg(void) {
-
     struct uavcan_equipment_indication_RGB565 msg;
 
-
-
-
-
-
     msg.red = (uint8_t)random_bitlen_unsigned_val(5);
-
-
-
-
-
-
-
     msg.green = (uint8_t)random_bitlen_unsigned_val(6);
-
-
-
-
-
-
-
     msg.blue = (uint8_t)random_bitlen_unsigned_val(5);
-
-
-
-
-
     return msg;
-
 }
 #endif

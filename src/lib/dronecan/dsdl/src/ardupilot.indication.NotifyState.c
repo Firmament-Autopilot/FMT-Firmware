@@ -1,8 +1,5 @@
-
-
 #define CANARD_DSDLC_INTERNAL
 #include <ardupilot.indication.NotifyState.h>
-
 #include <string.h>
 
 #ifdef CANARD_DSDLC_TEST_BUILD
@@ -26,6 +23,9 @@ uint32_t ardupilot_indication_NotifyState_encode(struct ardupilot_indication_Not
     return ((bit_ofs+7)/8);
 }
 
+/*
+  return true if the decode is invalid
+ */
 bool ardupilot_indication_NotifyState_decode(const CanardRxTransfer* transfer, struct ardupilot_indication_NotifyState* msg) {
     uint32_t bit_ofs = 0;
     _ardupilot_indication_NotifyState_decode(transfer, &bit_ofs, msg, 
@@ -36,51 +36,27 @@ bool ardupilot_indication_NotifyState_decode(const CanardRxTransfer* transfer, s
 #endif
     );
 
-    return (((bit_ofs+7)/8) != transfer->payload_len);
+    const uint32_t byte_len = (bit_ofs+7U)/8U;
+#if CANARD_ENABLE_TAO_OPTION
+    // if this could be CANFD then the dlc could indicating more bytes than
+    // we actually have
+    if (!transfer->tao) {
+        return byte_len > transfer->payload_len;
+    }
+#endif
+    return byte_len != transfer->payload_len;
 }
 
 #ifdef CANARD_DSDLC_TEST_BUILD
 struct ardupilot_indication_NotifyState sample_ardupilot_indication_NotifyState_msg(void) {
-
     struct ardupilot_indication_NotifyState msg;
 
-
-
-
-
-
     msg.aux_data_type = (uint8_t)random_bitlen_unsigned_val(8);
-
-
-
-
-
-
-
     msg.aux_data.len = (uint8_t)random_range_unsigned_val(0, 255);
     for (size_t i=0; i < msg.aux_data.len; i++) {
-
-
-
-
         msg.aux_data.data[i] = (uint8_t)random_bitlen_unsigned_val(8);
-
-
-
     }
-
-
-
-
-
-
     msg.vehicle_state = (uint64_t)random_bitlen_unsigned_val(64);
-
-
-
-
-
     return msg;
-
 }
 #endif

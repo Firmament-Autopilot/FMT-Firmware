@@ -128,11 +128,11 @@ HAL_StatusTypeDef HAL_DACEx_DualStart(DAC_HandleTypeDef *hdac)
   __HAL_DAC_ENABLE(hdac, DAC_CHANNEL_2);
 
   /* Check if software trigger enabled */
-  if ((hdac->Instance->CR & (DAC_CR_TEN1 | DAC_CR_TSEL1)) == DAC_TRIGGER_SOFTWARE)
+  if ((hdac->Instance->CR & (DAC_CR_TEN1 | DAC_CR_TSEL1)) == DAC_CR_TEN1)
   {
     tmp_swtrig |= DAC_SWTRIGR_SWTRIG1;
   }
-  if ((hdac->Instance->CR & (DAC_CR_TEN2 | DAC_CR_TSEL2)) == (DAC_TRIGGER_SOFTWARE << (DAC_CHANNEL_2 & 0x10UL)))
+  if ((hdac->Instance->CR & (DAC_CR_TEN2 | DAC_CR_TSEL2)) == DAC_CR_TEN2)
   {
     tmp_swtrig |= DAC_SWTRIGR_SWTRIG2;
   }
@@ -380,8 +380,7 @@ HAL_StatusTypeDef HAL_DACEx_TriangleWaveGenerate(DAC_HandleTypeDef *hdac, uint32
   hdac->State = HAL_DAC_STATE_BUSY;
 
   /* Enable the triangle wave generation for the selected DAC channel */
-  MODIFY_REG(hdac->Instance->CR, ((DAC_CR_WAVE1) | (DAC_CR_MAMP1)) << (Channel & 0x10UL),
-             (DAC_CR_WAVE1_1 | Amplitude) << (Channel & 0x10UL));
+  MODIFY_REG(hdac->Instance->CR, ((DAC_CR_WAVE1) | (DAC_CR_MAMP1)) << (Channel & 0x10UL), (DAC_CR_WAVE1_1 | Amplitude) << (Channel & 0x10UL));
 
   /* Change DAC state */
   hdac->State = HAL_DAC_STATE_READY;
@@ -430,8 +429,7 @@ HAL_StatusTypeDef HAL_DACEx_NoiseWaveGenerate(DAC_HandleTypeDef *hdac, uint32_t 
   hdac->State = HAL_DAC_STATE_BUSY;
 
   /* Enable the noise wave generation for the selected DAC channel */
-  MODIFY_REG(hdac->Instance->CR, ((DAC_CR_WAVE1) | (DAC_CR_MAMP1)) << (Channel & 0x10UL),
-             (DAC_CR_WAVE1_0 | Amplitude) << (Channel & 0x10UL));
+  MODIFY_REG(hdac->Instance->CR, ((DAC_CR_WAVE1) | (DAC_CR_MAMP1)) << (Channel & 0x10UL), (DAC_CR_WAVE1_0 | Amplitude) << (Channel & 0x10UL));
 
   /* Change DAC state */
   hdac->State = HAL_DAC_STATE_READY;

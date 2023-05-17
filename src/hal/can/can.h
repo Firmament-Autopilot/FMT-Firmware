@@ -23,6 +23,7 @@ typedef struct {
     uint32_t id;
     uint8_t data[8];
     uint8_t len;
+    uint8_t extid;
 } can_msg, *can_msg_t;
 
 struct can_configure {

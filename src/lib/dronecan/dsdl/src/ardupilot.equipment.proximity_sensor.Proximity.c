@@ -1,8 +1,5 @@
-
-
 #define CANARD_DSDLC_INTERNAL
 #include <ardupilot.equipment.proximity_sensor.Proximity.h>
-
 #include <string.h>
 
 #ifdef CANARD_DSDLC_TEST_BUILD
@@ -26,6 +23,9 @@ uint32_t ardupilot_equipment_proximity_sensor_Proximity_encode(struct ardupilot_
     return ((bit_ofs+7)/8);
 }
 
+/*
+  return true if the decode is invalid
+ */
 bool ardupilot_equipment_proximity_sensor_Proximity_decode(const CanardRxTransfer* transfer, struct ardupilot_equipment_proximity_sensor_Proximity* msg) {
     uint32_t bit_ofs = 0;
     _ardupilot_equipment_proximity_sensor_Proximity_decode(transfer, &bit_ofs, msg, 
@@ -36,66 +36,27 @@ bool ardupilot_equipment_proximity_sensor_Proximity_decode(const CanardRxTransfe
 #endif
     );
 
-    return (((bit_ofs+7)/8) != transfer->payload_len);
+    const uint32_t byte_len = (bit_ofs+7U)/8U;
+#if CANARD_ENABLE_TAO_OPTION
+    // if this could be CANFD then the dlc could indicating more bytes than
+    // we actually have
+    if (!transfer->tao) {
+        return byte_len > transfer->payload_len;
+    }
+#endif
+    return byte_len != transfer->payload_len;
 }
 
 #ifdef CANARD_DSDLC_TEST_BUILD
 struct ardupilot_equipment_proximity_sensor_Proximity sample_ardupilot_equipment_proximity_sensor_Proximity_msg(void) {
-
     struct ardupilot_equipment_proximity_sensor_Proximity msg;
 
-
-
-
-
-
     msg.sensor_id = (uint8_t)random_bitlen_unsigned_val(8);
-
-
-
-
-
-
-
     msg.reading_type = (uint8_t)random_bitlen_unsigned_val(3);
-
-
-
-
-
-
-
     msg.flags = (uint8_t)random_bitlen_unsigned_val(5);
-
-
-
-
-
-
-
     msg.yaw = random_float16_val();
-
-
-
-
-
-
-
     msg.pitch = random_float16_val();
-
-
-
-
-
-
-
     msg.distance = random_float16_val();
-
-
-
-
-
     return msg;
-
 }
 #endif

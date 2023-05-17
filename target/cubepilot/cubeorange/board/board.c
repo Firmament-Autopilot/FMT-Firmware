@@ -41,6 +41,7 @@
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
+#include "drv_timer.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
@@ -224,7 +225,7 @@ static void EnablePower(void)
 static void CPU_CACHE_Enable(void)
 {
     /* Enable I-Cache */
-    SCB_EnableICache();
+    // SCB_EnableICache();
 
     /* Enable D-Cache */
     // SCB_EnableDCache();
@@ -253,6 +254,7 @@ void SystemClock_Config(void)
 {
     HAL_RCC_DeInit();
 
+    __set_PRIMASK(0);
     __set_BASEPRI(0);
 
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
@@ -260,6 +262,8 @@ void SystemClock_Config(void)
     }
     LL_PWR_ConfigSupply(LL_PWR_LDO_SUPPLY);
     LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
+    while (LL_PWR_IsActiveFlag_VOS() == 0) {
+    }
     LL_RCC_HSE_Enable();
 
     /* Wait till HSE is ready */
@@ -274,7 +278,7 @@ void SystemClock_Config(void)
     LL_RCC_PLL1_SetM(2);
     LL_RCC_PLL1_SetN(80);
     LL_RCC_PLL1_SetP(2);
-    LL_RCC_PLL1_SetQ(20);
+    LL_RCC_PLL1_SetQ(8);
     LL_RCC_PLL1_SetR(2);
     LL_RCC_PLL1_Enable();
 
@@ -286,6 +290,10 @@ void SystemClock_Config(void)
     LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
 
     LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL1);
+
+    /* Wait till System clock is ready */
+    while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL1) {
+    }
     LL_RCC_SetSysPrescaler(LL_RCC_SYSCLK_DIV_1);
     LL_RCC_SetAHBPrescaler(LL_RCC_AHB_DIV_2);
     LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
@@ -294,17 +302,32 @@ void SystemClock_Config(void)
     LL_RCC_SetAPB4Prescaler(LL_RCC_APB4_DIV_2);
     LL_SetSystemCoreClock(480000000);
 
+    LL_RCC_PLL3Q_Enable();
+    LL_RCC_PLL3_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_1_2);
+    LL_RCC_PLL3_SetVCOOutputRange(LL_RCC_PLLVCORANGE_WIDE);
+    LL_RCC_PLL3_SetM(14);
+    LL_RCC_PLL3_SetN(140);
+    LL_RCC_PLL3_SetP(5);
+    LL_RCC_PLL3_SetQ(5);
+    LL_RCC_PLL3_SetR(2);
+    LL_RCC_PLL3_Enable();
+
+    /* Wait till PLL is ready */
+    while (LL_RCC_PLL3_IsReady() != 1) {
+    }
+
     /* Update the time base */
     if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
         Error_Handler();
     }
+
     LL_RCC_SetSPIClockSource(LL_RCC_SPI123_CLKSOURCE_PLL1Q);
     LL_RCC_SetSPIClockSource(LL_RCC_SPI45_CLKSOURCE_PCLK2);
     LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
     LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
     LL_RCC_SetFDCANClockSource(LL_RCC_FDCAN_CLKSOURCE_PLL1Q);
-    LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL1Q);
+    LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL3Q);
 
     __HAL_RCC_D2SRAM1_CLK_ENABLE();
     __HAL_RCC_D2SRAM2_CLK_ENABLE();

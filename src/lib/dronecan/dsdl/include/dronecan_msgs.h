@@ -22,6 +22,8 @@
 #include "dronecan.remoteid.SelfID.h"
 #include "dronecan.remoteid.System.h"
 #include "dronecan.sensors.hygrometer.Hygrometer.h"
+#include "mppt.OutputEnable.h"
+#include "mppt.Stream.h"
 #include "uavcan.CoarseOrientation.h"
 #include "uavcan.Timestamp.h"
 #include "uavcan.equipment.actuator.ArrayCommand.h"

@@ -304,8 +304,8 @@ __STATIC_INLINE uint32_t LL_IWDG_IsActiveFlag_WVU(IWDG_TypeDef *IWDGx)
 /**
   * @brief  Check if all flags Prescaler, Reload & Window Value Update are reset or not
   * @rmtoll SR           PVU           LL_IWDG_IsReady\n
-  *         SR           RVU           LL_IWDG_IsReady\n
-  *         SR           WVU           LL_IWDG_IsReady
+  *         SR           WVU           LL_IWDG_IsReady\n
+  *         SR           RVU           LL_IWDG_IsReady
   * @param  IWDGx IWDG Instance
   * @retval State of bits (1 or 0).
   */
@@ -317,6 +317,7 @@ __STATIC_INLINE uint32_t LL_IWDG_IsReady(IWDG_TypeDef *IWDGx)
 /**
   * @}
   */
+
 
 /**
   * @}
