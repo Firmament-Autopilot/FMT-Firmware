@@ -6,8 +6,8 @@
 #include "dronecan_drv.h"
 
 #include "uavcan.protocol.dynamic_node_id.Allocation.h"
+#include "uavcan.protocol.dynamic_node_id.server.Entry.h"
 
-void dronecan_dynamic_allocation_id(CanardInstance* ins, CanardRxTransfer* transfer, uint8_t master_id, uint8_t slave_id);
-void makeDNAUpate(CanardInstance* ins, uint8_t* step);
+void dronecan_dynamic_allocation_id(CanardInstance* ins, CanardRxTransfer* transfer);
 
 #endif

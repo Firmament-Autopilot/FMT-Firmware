@@ -18,6 +18,8 @@
 
 #include "canard_stm32H7.h"
 
+#include "driver/gps/gps_dronecan.h"
+
 #define HAL_MAX_FDCAN_NUM 1
 
 #ifndef HAL_CAN_POOL_SIZE
@@ -44,30 +46,10 @@
 
 uint8_t PreferredNodeID = HAL_CAN_DEFAULT_NODE_ID;
 
-#define SALVE_NODE_ID 125
-
-/*
- * Library instance.
- * In simple applications it makes sense to make it static, but it is not necessary.
- */
 static CanardInstance g_canard;            ///< The library instance
 static uint8_t g_canard_memory_pool[2048]; ///< Arena for memory allocation, used by the library
 
 static rt_device_t fdcan_dev[HAL_MAX_FDCAN_NUM];
-
-// static float getRandomFloat(void)
-// {
-//     static bool initialized = false;
-//     if (!initialized) // This is not thread safe, but a race condition here is not harmful.
-//     {
-//         initialized = true;
-//         srand((uint32_t)time(NULL));
-//     }
-//     // coverity[dont_call]
-//     return (float)rand() / (float)RAND_MAX;
-// }
-
-uint8_t flag_alloc = 0;
 
 struct uavcan_protocol_param_GetSetResponse uavcan_protocol_param_GetSetResponse_msg;
 struct uavcan_protocol_NodeStatus uavcan_protocol_NodeStatus_msg;
@@ -77,26 +59,20 @@ static void onTransferReceived(CanardInstance* ins,
 {
     if (transfer->data_type_id == UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID
         && transfer->source_node_id == CANARD_BROADCAST_NODE_ID) {
-        dronecan_dynamic_allocation_id(&g_canard, transfer, PreferredNodeID, SALVE_NODE_ID);
+        dronecan_dynamic_allocation_id(&g_canard, transfer);
     }
 
     switch (transfer->data_type_id) {
-    case UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID:
-        // uavcan_protocol_param_GetSetResponse_decode(transfer, &uavcan_protocol_param_GetSetResponse_msg);
-        // printf("GETSET_RESPONSE_ID tag:%d,value=%d,name=%d\n",
-        //        uavcan_protocol_param_GetSetResponse_msg.value.union_tag,
-        //        uavcan_protocol_param_GetSetResponse_msg.value.integer_value,
-        //        uavcan_protocol_param_GetSetResponse_msg.name.len);
-        break;
-
     case UAVCAN_PROTOCOL_NODESTATUS_ID:
-        // printf("NODESTATUS\n");
         uavcan_protocol_NodeStatus_decode(transfer, &uavcan_protocol_NodeStatus_msg);
-        // printf("mode %d\n", uavcan_protocol_NodeStatus_msg.mode);
         break;
 
     case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-        printf("GNSS_FIX2\n");
+        handle_gnss_Fix2(transfer);
+        break;
+
+    case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
+        handle_gnss_Auxiliary(transfer);
         break;
 
     case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
@@ -119,28 +95,23 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
 
     switch (data_type_id) {
     case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
-        // printf("UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID\n");
         *out_data_type_signature = UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_SIGNATURE;
         return true;
 
     case UAVCAN_PROTOCOL_NODESTATUS_ID:
-        // printf("UAVCAN_PROTOCOL_NODESTATUS_ID,source_node_id=%d\n", source_node_id);
         *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
         return true;
 
     case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-        // printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
         *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
         return true;
 
-    case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
-        // printf("UAVCAN_EQUIPMENT_GNSS_FIX2_ID\n");
-        *out_data_type_signature = UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_SIGNATURE;
+    case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
+        *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_AUXILIARY_SIGNATURE;
         return true;
 
-    case UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID:
-        // printf("UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID\n");
-        *out_data_type_signature = UAVCAN_PROTOCOL_DEBUG_KEYVALUE_SIGNATURE;
+    case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
+        *out_data_type_signature = UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_SIGNATURE;
         return true;
     }
 
@@ -241,13 +212,9 @@ fmt_err_t dronecan_init(void)
     return FMT_EOK;
 }
 
-extern uint8_t dna_send_step;
-uint8_t dna_test_step = 2;
 void dronecan_loop(uint32_t time_ms)
 {
     static uint16_t tick = 0;
-
-    makeDNAUpate(&g_canard, &dna_send_step);
 
     tick++;
     if ((tick % 1000) == 0) {

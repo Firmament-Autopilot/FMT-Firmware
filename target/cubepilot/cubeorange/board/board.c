@@ -26,6 +26,7 @@
 
 #include "default_config.h"
 #include "driver/barometer/ms5611.h"
+#include "driver/gps/gps_dronecan.h"
 #include "driver/gps/gps_m8n.h"
 #include "driver/imu/bmi055.h"
 #include "driver/imu/icm20689.h"
@@ -65,6 +66,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -429,7 +431,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer"));
 
     // // drv_ist8310_init("i2c1_dev1", "mag0");
-    // // RT_CHECK(gps_m8n_init("serial3", "gps"));
+    RT_CHECK(gps_dronecan_init("fdcan1", "gps"));
 
     // // /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
