@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1961
+ * Model version                  : 1.1963
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 19 10:38:30 2023
+ * C/C++ source code generated on : Fri May 19 12:19:29 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -146,7 +146,7 @@ struct_YO5IBtWYxHURAIWIvUaGHE FMS_PARAM = {
   0.5F,
   0.3F,
   120U,
-  0U
+  1U
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<Root>/ACCEPT_R'
@@ -3060,6 +3060,9 @@ static void FMS_Arm(void)
           if (FMS_B.Compare && ((FMS_B.BusConversion_InsertedFor_FMSSt.flag &
                                  221U) != 0U)) {
             FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.durationLastReferenceTick_1_n5 =
+              FMS_DW.chartAbsoluteTimeCounter;
+            FMS_DW.is_Vehicle = FMS_IN_Arm;
             FMS_DW.is_Arm = FMS_IN_SubMode;
             FMS_DW.stick_val[0] =
               FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
@@ -3143,6 +3146,7 @@ static void FMS_Vehicle(void)
   boolean_T guard1 = false;
   boolean_T guard2 = false;
   boolean_T guard3 = false;
+  boolean_T guard4 = false;
   if (FMS_DW.mission_timestamp_prev != FMS_DW.mission_timestamp_start) {
     FMS_B.wp_consume = 0U;
     FMS_B.wp_index = 1U;
@@ -3333,10 +3337,6 @@ static void FMS_Vehicle(void)
       FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
       FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Arm;
-      FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-      FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-      FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
-      FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
       FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
       FMS_DW.is_Arm = FMS_IN_SubMode;
       FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
@@ -3366,10 +3366,6 @@ static void FMS_Vehicle(void)
       FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
       FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Arm;
-      FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-      FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-      FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
-      FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
       FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
       FMS_enter_internal_Arm();
     }
@@ -3381,8 +3377,8 @@ static void FMS_Vehicle(void)
       FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Standby;
       FMS_DW.temporalCounter_i1 = 0U;
+      guard4 = false;
       if (FMS_B.target_mode == PilotMode_Mission) {
-        /* Inport: '<Root>/Mission_Data' */
         if ((FMS_B.wp_index <= FMS_U.Mission_Data.valid_items) &&
             (FMS_U.Mission_Data.command[FMS_B.wp_index - 1] == (int32_T)
              NAV_Cmd_Takeoff)) {
@@ -3391,7 +3387,7 @@ static void FMS_Vehicle(void)
             1.0);
           FMS_DW.prep_takeoff = 0.0;
           FMS_DW.condWasTrueAtLastTimeStep_1_b = (FMS_DW.prep_takeoff == 1.0);
-          FMS_B.state = VehicleState_Standby;
+          guard4 = true;
         } else {
           b_previousEvent = FMS_DW.sfEvent;
           FMS_DW.sfEvent = FMS_event_DisarmEvent;
@@ -3399,13 +3395,20 @@ static void FMS_Vehicle(void)
           /* Chart: '<Root>/FMS State Machine' */
           FMS_c11_FMS();
           FMS_DW.sfEvent = b_previousEvent;
-          if (FMS_DW.is_Vehicle == FMS_IN_Standby) {
-            FMS_B.state = VehicleState_Standby;
+          if (FMS_DW.is_Vehicle != FMS_IN_Standby) {
+          } else {
+            guard4 = true;
           }
         }
-
-        /* End of Inport: '<Root>/Mission_Data' */
       } else {
+        guard4 = true;
+      }
+
+      if (guard4) {
+        FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+        FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+        FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
+        FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
         FMS_B.state = VehicleState_Standby;
       }
 
