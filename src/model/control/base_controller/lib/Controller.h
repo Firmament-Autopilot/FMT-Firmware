@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.908
+ * Model version                  : 1.909
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu May 11 15:54:14 2023
+ * C/C++ source code generated on : Fri May 19 10:20:57 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -121,35 +121,36 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM;/* Variable: CONTROL_PARAM
-                                                    * Referenced by:
-                                                    *   '<S37>/Saturation'
-                                                    *   '<S13>/Saturation'
-                                                    *   '<S13>/Saturation1'
-                                                    *   '<S46>/kd'
-                                                    *   '<S46>/Saturation'
-                                                    *   '<S47>/ki'
-                                                    *   '<S47>/Discrete-Time Integrator'
-                                                    *   '<S48>/kp'
-                                                    *   '<S65>/kd'
-                                                    *   '<S65>/Saturation'
-                                                    *   '<S66>/ki'
-                                                    *   '<S66>/Discrete-Time Integrator'
-                                                    *   '<S67>/kp'
-                                                    *   '<S30>/Constant1'
-                                                    *   '<S30>/Constant2'
-                                                    *   '<S19>/gain1'
-                                                    *   '<S19>/gain2'
-                                                    *   '<S19>/gain3'
-                                                    *   '<S19>/Saturation'
-                                                    *   '<S20>/gain1'
-                                                    *   '<S20>/gain2'
-                                                    *   '<S20>/gain3'
-                                                    *   '<S20>/Discrete-Time Integrator'
-                                                    *   '<S21>/gain1'
-                                                    *   '<S21>/gain2'
-                                                    *   '<S21>/gain3'
-                                                    */
+extern struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM;/* Variable: CONTROL_PARAM
+                                                   * Referenced by:
+                                                   *   '<S55>/hover_throttle'
+                                                   *   '<S37>/Saturation'
+                                                   *   '<S13>/Saturation'
+                                                   *   '<S13>/Saturation1'
+                                                   *   '<S46>/kd'
+                                                   *   '<S46>/Saturation'
+                                                   *   '<S47>/ki'
+                                                   *   '<S47>/Discrete-Time Integrator'
+                                                   *   '<S48>/kp'
+                                                   *   '<S65>/kd'
+                                                   *   '<S65>/Saturation'
+                                                   *   '<S66>/ki'
+                                                   *   '<S66>/Discrete-Time Integrator'
+                                                   *   '<S67>/kp'
+                                                   *   '<S30>/Constant1'
+                                                   *   '<S30>/Constant2'
+                                                   *   '<S19>/gain1'
+                                                   *   '<S19>/gain2'
+                                                   *   '<S19>/gain3'
+                                                   *   '<S19>/Saturation'
+                                                   *   '<S20>/gain1'
+                                                   *   '<S20>/gain2'
+                                                   *   '<S20>/gain3'
+                                                   *   '<S20>/Discrete-Time Integrator'
+                                                   *   '<S21>/gain1'
+                                                   *   '<S21>/gain2'
+                                                   *   '<S21>/gain3'
+                                                   */
 extern struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S4>/Constant'
                                                      */

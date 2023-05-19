@@ -63,6 +63,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(RATE_D_MAX, 0.1),
     PARAM_FLOAT(P_Q_CMD_LIM, PI / 2),
     PARAM_FLOAT(R_CMD_LIM, PI),
+    PARAM_FLOAT(HOVER_THRO, 0.5),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
@@ -123,6 +124,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_D_MAX), &CONTROL_PARAM.RATE_D_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, P_Q_CMD_LIM), &CONTROL_PARAM.P_Q_CMD_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_CMD_LIM), &CONTROL_PARAM.R_CMD_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, HOVER_THRO), &CONTROL_PARAM.HOVER_THRO));
 }
 
 void control_interface_step(uint32_t timestamp)

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.908
+ * Model version                  : 1.909
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu May 11 15:54:14 2023
+ * C/C++ source code generated on : Fri May 19 10:20:57 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
+struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM = {
   1.4F,
   0.2F,
   0.2F,
@@ -42,24 +42,26 @@ struct_Ae52N6uY2eO0jd5TMQiCYB CONTROL_PARAM = {
   0.1F,
   5.0F,
   5.0F,
-  0.523599F,
-  0.08F,
-  0.08F,
+  0.52359879F,
+  0.1F,
+  0.1F,
   0.15F,
   0.1F,
   0.1F,
   0.2F,
-  0.002F,
-  0.002F,
+  0.003F,
+  0.003F,
   0.001F,
   -0.1F,
   0.1F,
   -0.1F,
   0.1F,
-  1.57079601F,
-  3.14159298F
+  1.57079637F,
+  3.14159274F,
+  0.5F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
+                                        *   '<S55>/hover_throttle'
                                         *   '<S37>/Saturation'
                                         *   '<S13>/Saturation'
                                         *   '<S13>/Saturation1'
@@ -291,7 +293,18 @@ void Controller_step(void)
   /* Sum: '<S55>/Sum' incorporates:
    *  Constant: '<S55>/hover_throttle'
    */
-  rtb_Saturation_m += 0.5F;
+  rtb_Saturation_m += CONTROL_PARAM.HOVER_THRO;
+
+  /* Saturate: '<S55>/Saturation' */
+  if (rtb_Saturation_m > 1.0F) {
+    rtb_Saturation_m = 1.0F;
+  } else {
+    if (rtb_Saturation_m < 0.0F) {
+      rtb_Saturation_m = 0.0F;
+    }
+  }
+
+  /* End of Saturate: '<S55>/Saturation' */
 
   /* Sum: '<S55>/Sum1' incorporates:
    *  Constant: '<S55>/Constant1'
