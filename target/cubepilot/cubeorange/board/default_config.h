@@ -19,7 +19,7 @@
 
 // clang-format off
 static char* default_conf = STRING(
-target = "Cubepilot cubeorange"\n
+target = "Cubepilot Cubeorange"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n
