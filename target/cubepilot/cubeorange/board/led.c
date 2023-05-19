@@ -21,9 +21,7 @@
 
 static rt_device_t pin_dev;
 
-#ifdef rgb_led
 static rt_device_t rgb_led_dev;
-#endif
 
 static void run_led(void* parameter)
 {
@@ -71,7 +69,6 @@ static struct WorkItem led_item = {
     .run = run_led
 };
 
-#ifdef rgb_led
 static void run_rgb_led(void* parameter)
 {
     static int bright = 0;
@@ -107,16 +104,16 @@ void vehicle_status_change_cb(uint8_t status)
 {
     switch (status) {
     case VehicleStatus_Disarm:
-        rgb_led_set_color(NCP5623_LED_BLUE);
+        rgb_led_set_color(DRONECAN_LED_BLUE);
         break;
     case VehicleStatus_Standby:
-        rgb_led_set_color(NCP5623_LED_GREEN);
+        rgb_led_set_color(DRONECAN_LED_GREEN);
         break;
     case VehicleStatus_Arm:
-        rgb_led_set_color(NCP5623_LED_GREEN);
+        rgb_led_set_color(DRONECAN_LED_GREEN);
         break;
     default:
-        rgb_led_set_color(NCP5623_LED_RED);
+        rgb_led_set_color(DRONECAN_LED_RED);
         break;
     }
 }
@@ -125,7 +122,7 @@ void vehicle_state_change_cb(uint8_t mode)
 {
     if (mode == VehicleState_None) {
         /* unknown mode */
-        rgb_led_set_color(NCP5623_LED_RED);
+        rgb_led_set_color(DRONECAN_LED_RED);
     }
 }
 
@@ -135,7 +132,7 @@ fmt_err_t rgb_led_set_color(uint32_t color)
         return FMT_EEMPTY;
     }
 
-    if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_COLOR, (void*)color) != RT_EOK) {
+    if (rt_device_control(rgb_led_dev, DRONECAN_CMD_SET_COLOR, (void*)color) != RT_EOK) {
         return FMT_ERROR;
     }
 
@@ -148,7 +145,7 @@ fmt_err_t rgb_led_set_bright(uint32_t bright)
         return FMT_EEMPTY;
     }
 
-    if (rt_device_control(rgb_led_dev, NCP5623_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
+    if (rt_device_control(rgb_led_dev, DRONECAN_CMD_SET_BRIGHT, (void*)bright) != RT_EOK) {
         return FMT_ERROR;
     }
 
@@ -161,8 +158,6 @@ static struct WorkItem rgb_led_item = {
     .schedule_time = 0,
     .run = run_rgb_led
 };
-
-#endif
 
 fmt_err_t led_control_init(void)
 {
@@ -181,15 +176,14 @@ fmt_err_t led_control_init(void)
     RT_ASSERT(lp_wq != NULL);
     FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
 
-#ifdef rgb_led
     /* It's possible that ncp5623c is not connected */
-    if (rt_device_find("ncp5623c") != NULL) {
+    if (rt_device_find("can_rgb") != NULL) {
         /* configure rgd led */
-        rgb_led_dev = rt_device_find("ncp5623c");
+        rgb_led_dev = rt_device_find("can_rgb");
         RT_ASSERT(rgb_led_dev != NULL);
 
         RT_CHECK(rt_device_open(rgb_led_dev, RT_DEVICE_OFLAG_RDWR));
-        FMT_CHECK(rgb_led_set_color(NCP5623_LED_BLUE));
+        FMT_CHECK(rgb_led_set_color(DRONECAN_LED_BLUE));
 
         sys_msleep(10); /* give some time for rgb led to startup */
     }
@@ -200,7 +194,6 @@ fmt_err_t led_control_init(void)
         /* rgb led work in high priority workqueue to try not blocking other i2c user */
         FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
     }
-#endif
 
     return FMT_EOK;
 }

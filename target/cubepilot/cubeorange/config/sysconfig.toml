@@ -33,7 +33,7 @@ target = "Cubepilot Cubeorange"
     [[mavproxy.devices]]
     chan = 1
     type = "serial"
-    name = "serial2"
+    name = "serial3"
     baudrate = 115200
 
 # Pilot CMD Configuration

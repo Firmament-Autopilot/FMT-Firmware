@@ -18,7 +18,7 @@
 
 #include <firmament.h>
 
-#include "driver/rgb_led/ncp5623c.h"
+#include "driver/rgb_led/rgb_dronecan.h"
 #include "hal/pin/pin.h"
 
 #ifdef __cplusplus

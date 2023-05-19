@@ -7,7 +7,8 @@ DRIVERS = [
     'mag/ist8310.c',
     'barometer/ms5611.c',
     'gps/gps_m8n.c',
-    'rgb_led/ncp5623c.c',
+    'gps/gps_dronecan.c',
+    'rgb_led/rgb_dronecan.c',
     'mtd/ramtron.c',
 ]
 
