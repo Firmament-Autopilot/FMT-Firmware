@@ -15,28 +15,26 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#if PWM_ENABLE == 1
+#include "hal/actuator/actuator.h"
+#include "stm32h7xx_ll_rcc.h"
+#include "stm32h7xx_ll_tim.h"
 
-    #include "hal/actuator.h"
-    #include "stm32f7xx_ll_rcc.h"
-    #include "stm32f7xx_ll_tim.h"
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
-    // #define DRV_DBG(...) console_printf(__VA_ARGS__)
-    #define DRV_DBG(...)
+#define PWM_FREQ_50HZ  (50)
+#define PWM_FREQ_125HZ (125)
+#define PWM_FREQ_250HZ (250)
+#define PWM_FREQ_400HZ (400)
 
-    #define PWM_FREQ_50HZ  (50)
-    #define PWM_FREQ_125HZ (125)
-    #define PWM_FREQ_250HZ (250)
-    #define PWM_FREQ_400HZ (400)
+#define MAX_PWM_OUT_CHAN      6             // AUX Out has 6 pwm channel
+#define TIMER_FREQUENCY       3000000       // Timer frequency: 3M
+#define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
+#define VAL_TO_DC(_val)       ((float)(_val * __pwm_freq) / 1000000.0f)
+#define DC_TO_VAL(_dc)        (1000000.0f / __pwm_freq * _dc)
 
-    #define MAX_PWM_OUT_CHAN      8             // AUX Out has 8 pwm channel
-    #define TIMER_FREQUENCY       3000000       // Timer frequency: 3M
-    #define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
-    #define VAL_TO_DC(_val)       ((float)(_val * __pwm_freq) / 1000000.0f)
-    #define DC_TO_VAL(_dc)        (1000000.0f / __pwm_freq * _dc)
-
-    #define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
-    #define PWM_TIMER(id) (id < 4 ? TIM1 : TIM4)
+#define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
+#define PWM_TIMER(id) (id < 4 ? TIM1 : TIM4)
 
 static uint32_t __pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float __pwm_dc[MAX_PWM_OUT_CHAN];
@@ -46,39 +44,14 @@ void pwm_gpio_init(void)
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     /* Timer 1 gpio init */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);
+    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
     /**TIM1 GPIO Configuration
-    PA10     ------> TIM1_CH3
     PE9     ------> TIM1_CH1
     PE11     ------> TIM1_CH2
+    PE13     ------> TIM1_CH3
     PE14     ------> TIM1_CH4
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_10;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
-    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
-    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_11;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
-    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_9 | LL_GPIO_PIN_11 | LL_GPIO_PIN_13 | LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
@@ -87,48 +60,18 @@ void pwm_gpio_init(void)
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
     /* Timer 4 gpio init */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
+    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
     /**TIM4 GPIO Configuration
     PD14     ------> TIM4_CH3
     PD13     ------> TIM4_CH2
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_13 | LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
-    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-    /* Timer12 gpio init */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
-    /**TIM12 GPIO Configuration
-    PH6     ------> TIM12_CH1
-    PH9     ------> TIM12_CH2
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
-    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_9;
-    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 }
 
 void pwm_timer_init(void)
@@ -226,31 +169,6 @@ void pwm_timer_init(void)
     LL_TIM_OC_DisableFast(TIM4, LL_TIM_CHANNEL_CH3);
     LL_TIM_SetTriggerOutput(TIM4, LL_TIM_TRGO_RESET);
     LL_TIM_DisableMasterSlaveMode(TIM4);
-
-    /* Timer 12 initialization */
-
-    /* Peripheral clock enable */
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM12);
-
-    TIM_InitStruct.Prescaler = APB1_PrescalerValue;
-    TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(__pwm_freq) - 1;
-    TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
-    LL_TIM_Init(TIM12, &TIM_InitStruct);
-    LL_TIM_EnableARRPreload(TIM12);
-    LL_TIM_OC_EnablePreload(TIM12, LL_TIM_CHANNEL_CH1);
-    TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_PWM1;
-    TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
-    TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
-    TIM_OC_InitStruct.CompareValue = 0;
-    TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_HIGH;
-    LL_TIM_OC_Init(TIM12, LL_TIM_CHANNEL_CH1, &TIM_OC_InitStruct);
-    LL_TIM_OC_DisableFast(TIM12, LL_TIM_CHANNEL_CH1);
-    LL_TIM_OC_EnablePreload(TIM12, LL_TIM_CHANNEL_CH2);
-    TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
-    TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
-    LL_TIM_OC_Init(TIM12, LL_TIM_CHANNEL_CH2, &TIM_OC_InitStruct);
-    LL_TIM_OC_DisableFast(TIM12, LL_TIM_CHANNEL_CH2);
 }
 
 rt_inline void __read_pwm(uint8_t chan_id, float* dc) { *dc = __pwm_dc[chan_id]; }
@@ -276,12 +194,6 @@ rt_inline void __write_pwm(uint8_t chan_id, float dc)
     case 5:
         LL_TIM_OC_SetCompareCH3(TIM4, PWM_ARR(__pwm_freq) * dc);
         break;
-    case 6:
-        LL_TIM_OC_SetCompareCH1(TIM12, PWM_ARR(__pwm_freq) * dc);
-        break;
-    case 7:
-        LL_TIM_OC_SetCompareCH2(TIM12, PWM_ARR(__pwm_freq) * dc);
-        break;
     default:
         break;
     }
@@ -300,7 +212,6 @@ rt_err_t __set_pwm_frequency(uint16_t freq)
 
     LL_TIM_SetAutoReload(TIM1, PWM_ARR(__pwm_freq) - 1);
     LL_TIM_SetAutoReload(TIM4, PWM_ARR(__pwm_freq) - 1);
-    LL_TIM_SetAutoReload(TIM12, PWM_ARR(__pwm_freq) - 1);
 
     /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
@@ -336,7 +247,6 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
 
         LL_TIM_EnableCounter(TIM1);
         LL_TIM_EnableCounter(TIM4);
-        LL_TIM_EnableCounter(TIM12);
         LL_TIM_EnableAllOutputs(TIM1);
 
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
@@ -345,15 +255,12 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH4);
         LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH2);
 
         DRV_DBG("aux out enabled\n");
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         LL_TIM_DisableCounter(TIM1);
         LL_TIM_DisableCounter(TIM4);
-        LL_TIM_DisableCounter(TIM12);
         LL_TIM_DisableAllOutputs(TIM1);
 
         LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH1);
@@ -362,8 +269,6 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
         LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH4);
         LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_DisableChannel(TIM12, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_DisableChannel(TIM12, LL_TIM_CHANNEL_CH2);
 
         DRV_DBG("aux out disabled\n");
         break;
@@ -427,13 +332,11 @@ static struct actuator_device act_dev = { .chan_mask = 0xFF,
                                                       .pwm_config = { .pwm_freq = 50 },
                                                       .dshot_config = { 0 } },
                                           .ops = &__act_ops };
-#endif
 
 rt_err_t drv_pwm_init(void)
 {
 
     rt_err_t ret = RT_EOK;
-#if PWM_ENABLE == 1
     /* init pwm gpio pin */
     pwm_gpio_init();
     /* init pwm timer, pwm output mode */
@@ -441,6 +344,5 @@ rt_err_t drv_pwm_init(void)
 
     /* register actuator hal device */
     ret = hal_actuator_register(&act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL);
-#endif
     return ret;
 }

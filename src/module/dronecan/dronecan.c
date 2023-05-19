@@ -46,7 +46,7 @@
 
 uint8_t PreferredNodeID = HAL_CAN_DEFAULT_NODE_ID;
 
-static CanardInstance g_canard;            ///< The library instance
+CanardInstance g_canard;                   ///< The library instance
 static uint8_t g_canard_memory_pool[2048]; ///< Arena for memory allocation, used by the library
 
 static rt_device_t fdcan_dev[HAL_MAX_FDCAN_NUM];
@@ -67,20 +67,19 @@ static void onTransferReceived(CanardInstance* ins,
         uavcan_protocol_NodeStatus_decode(transfer, &uavcan_protocol_NodeStatus_msg);
         break;
 
-    case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-        handle_gnss_Fix2(transfer);
-        break;
 
     case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
         handle_gnss_Auxiliary(transfer);
         break;
 
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
+        handle_gnss_Fix2(transfer);
+        break;
+
     case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
-        // printf("MAGNETICFIELDSTRENGTH\n");
         break;
 
     case UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID:
-        // printf("onTransferReceived UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID\n");
         break;
     }
 }
@@ -102,12 +101,13 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
         *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
         return true;
 
-    case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
-        *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
-        return true;
 
     case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
         *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_AUXILIARY_SIGNATURE;
+        return true;
+
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
+        *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
         return true;
 
     case UAVCAN_EQUIPMENT_AHRS_MAGNETICFIELDSTRENGTH_ID:
@@ -116,29 +116,6 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
     }
 
     return false;
-}
-
-void makeLightsRGB(uint8_t red, uint8_t green, uint8_t blue)
-{
-    static struct uavcan_equipment_indication_LightsCommand LightsCommand_msg;
-    static uint8_t buffer[UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_MAX_SIZE];
-
-    LightsCommand_msg.commands.len = 1;
-    LightsCommand_msg.commands.data[0].color.red = red >> 3;
-    LightsCommand_msg.commands.data[0].color.green = (green << 1) >> 3;
-    LightsCommand_msg.commands.data[0].color.blue = blue >> 3;
-
-    uint32_t total_size = uavcan_equipment_indication_LightsCommand_encode(&LightsCommand_msg, buffer);
-
-    static uint8_t transfer_id; // Note that the transfer ID variable MUST BE STATIC (or heap-allocated)!
-
-    canardBroadcast(&g_canard,
-                    UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_SIGNATURE,
-                    UAVCAN_EQUIPMENT_INDICATION_LIGHTSCOMMAND_ID,
-                    &transfer_id,
-                    CANARD_TRANSFER_PRIORITY_MEDIUM,
-                    buffer,
-                    (int16_t)total_size);
 }
 
 void makeNodeStatus(uint32_t time_ms)
@@ -221,13 +198,13 @@ void dronecan_loop(uint32_t time_ms)
         makeNodeStatus(time_ms);
     }
 
-    if ((tick % 300) == 0) {
-        makeLightsRGB(0, 100, 0);
-    } else if ((tick % 200) == 0) {
-        makeLightsRGB(0, 0, 100);
-    } else if ((tick % 100) == 0) {
-        makeLightsRGB(100, 100, 0);
-    }
+    // if ((tick % 300) == 0) {
+    //     makeLightsRGB(0, 100, 0);
+    // } else if ((tick % 200) == 0) {
+    //     makeLightsRGB(0, 0, 100);
+    // } else if ((tick % 100) == 0) {
+    //     makeLightsRGB(100, 100, 0);
+    // }
 
     sendCanard();
 

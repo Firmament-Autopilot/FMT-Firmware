@@ -54,12 +54,12 @@ static void makeThirdDNA(CanardInstance* ins, DroneCANDNA_struct_ptr struct_ptr)
 {
     struct_ptr->dna_msg.first_part_of_unique_id = false;
     struct_ptr->dna_msg.unique_id.len = 16;
-    struct_ptr->dna_msg.node_id = struct_ptr->slave_id;
 
     memcpy(struct_ptr->unique_id + 12, struct_ptr->dna_msg.unique_id.data, 4);
     memcpy(struct_ptr->dna_msg.unique_id.data, struct_ptr->unique_id, 16);
 
     struct_ptr->slave_id = makeSlaveNodeID(struct_ptr->unique_id);
+    struct_ptr->dna_msg.node_id = struct_ptr->slave_id;
     printf("struct_ptr->slave_id=%d\n", struct_ptr->slave_id);
 
     uint16_t len = uavcan_protocol_dynamic_node_id_Allocation_encode(&struct_ptr->dna_msg, struct_ptr->allocation_request);
@@ -115,6 +115,8 @@ static void makeFirstDNA(CanardInstance* ins, DroneCANDNA_struct_ptr struct_ptr)
 
 void makeDNAUpate(CanardInstance* ins, uint8_t step, DroneCANDNA_struct_ptr struct_ptr)
 {
+    static uint8_t cnt = 0;
+
     switch (step) {
     case step1:
         makeFirstDNA(ins, struct_ptr);

@@ -33,7 +33,7 @@
 #include "driver/imu/icm20948.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mtd/ramtron.h"
-#include "driver/rgb_led/ncp5623c.h"
+#include "driver/rgb_led/rgb_dronecan.h"
 #include "drv_adc.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
@@ -50,6 +50,7 @@
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
+#include "module/dronecan/dronecan.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
@@ -66,7 +67,6 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
-
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -401,6 +401,8 @@ void bsp_initialize(void)
     /* fdcan driver init */
     RT_CHECK(drv_fdcan_init());
 
+    RT_CHECK(dronecan_init());
+
     /* fram init */
     RT_CHECK(drv_ramtron_init("spi2_dev1"));
 
@@ -417,7 +419,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_adc_init());
 
     /* ist8310 and ncp5623c are on gps module and possibly it is not connected */
-    // drv_ncp5623c_init("i2c1_dev2");
+    drv_rgb_dronecan_init("fdcan1");
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
@@ -431,7 +433,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer"));
 
     // // drv_ist8310_init("i2c1_dev1", "mag0");
-    RT_CHECK(gps_dronecan_init("fdcan1", "gps"));
+    RT_CHECK(gps_dronecan_init("fdcan1", "can_gps"));
 
     // // /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));

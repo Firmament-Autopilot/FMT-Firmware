@@ -193,6 +193,7 @@ rt_err_t drv_fdcan_init(void)
 
     hw_can_register(&fdcan_dev1, "fdcan1", 0, &stm32_fdcan1);
 
+
 #if FDCAN_NUM_IFACES == 2
     fdcan_dev2.ops = &_fdcan_ops;
     fdcan_dev2.config = config;
