@@ -21,7 +21,7 @@
 #include "dfs_romfs.h"
 #include "module/file_manager/file_manager.h"
 
-#define MAX_LOG_SESSION_NUM 10
+#define MAX_LOG_SESSION_NUM 20
 #define LOG_SESSION_FILE    "/log/session_id"
 
 static int cws_id; /* current work session id */
