@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1960
+ * Model version                  : 1.1961
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed May 17 22:48:46 2023
+ * C/C++ source code generated on : Fri May 19 10:38:30 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -309,6 +309,8 @@ RT_MODEL_FMS_T *const FMS_M = &FMS_M_;
 
 /* Forward declaration for local functions */
 static void FMS_Stabilize(void);
+static void FMS_Acro(void);
+static void FMS_Altitude(void);
 static void FMS_sf_msg_send_M(void);
 static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag);
@@ -321,13 +323,14 @@ static real32_T FMS_norm(const real32_T x[2]);
 static void FMS_exit_internal_Auto(void);
 static void FMS_Auto(void);
 static real_T FMS_getArmMode(PilotMode pilotMode);
+static void FMS_enter_internal_Assist(void);
 static void FMS_enter_internal_Auto(void);
 static void FMS_enter_internal_Arm(void);
 static void FMS_SubMode(void);
 static void FMS_exit_internal_Arm(void);
+static void FMS_Arm(void);
 static real_T FMS_ManualArmEvent(real32_T pilot_cmd_stick_throttle, uint32_T
   pilot_cmd_mode);
-static void FMS_Standby(void);
 static void FMS_Vehicle(void);
 static void FMS_c11_FMS(void);
 static void FMS_sf_msg_discard_M(void);
@@ -2088,6 +2091,107 @@ static void FMS_Stabilize(void)
   /* End of Inport: '<Root>/INS_Out' */
 }
 
+/* Function for Chart: '<Root>/SafeMode' */
+static void FMS_Acro(void)
+{
+  /* Inport: '<Root>/INS_Out' */
+  if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+    FMS_B.target_mode = PilotMode_Acro;
+
+    /* Delay: '<S14>/Delay' */
+    switch (FMS_DW.Delay_DSTATE_c) {
+     case PilotMode_Manual:
+      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+      break;
+
+     case PilotMode_Acro:
+      FMS_DW.is_c3_FMS = FMS_IN_Acro;
+      break;
+
+     case PilotMode_Stabilize:
+      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+      break;
+
+     case PilotMode_Altitude:
+      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+      break;
+
+     case PilotMode_Position:
+      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+      break;
+
+     case PilotMode_Mission:
+      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+      break;
+
+     case PilotMode_Offboard:
+      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
+      break;
+
+     default:
+      FMS_DW.is_c3_FMS = FMS_IN_Other;
+      break;
+    }
+
+    /* End of Delay: '<S14>/Delay' */
+  } else {
+    FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+  }
+
+  /* End of Inport: '<Root>/INS_Out' */
+}
+
+/* Function for Chart: '<Root>/SafeMode' */
+static void FMS_Altitude(void)
+{
+  /* Inport: '<Root>/INS_Out' */
+  if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U))
+  {
+    FMS_B.target_mode = PilotMode_Altitude;
+
+    /* Delay: '<S14>/Delay' */
+    switch (FMS_DW.Delay_DSTATE_c) {
+     case PilotMode_Manual:
+      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+      break;
+
+     case PilotMode_Acro:
+      FMS_DW.is_c3_FMS = FMS_IN_Acro;
+      break;
+
+     case PilotMode_Stabilize:
+      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+      break;
+
+     case PilotMode_Altitude:
+      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+      break;
+
+     case PilotMode_Position:
+      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+      break;
+
+     case PilotMode_Mission:
+      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+      break;
+
+     case PilotMode_Offboard:
+      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
+      break;
+
+     default:
+      FMS_DW.is_c3_FMS = FMS_IN_Other;
+      break;
+    }
+
+    /* End of Delay: '<S14>/Delay' */
+  } else {
+    FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+  }
+
+  /* End of Inport: '<Root>/INS_Out' */
+}
+
 int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn)
 {
   int32_T isEmplaced;
@@ -2585,6 +2689,36 @@ static real_T FMS_getArmMode(PilotMode pilotMode)
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
+static void FMS_enter_internal_Assist(void)
+{
+  switch (FMS_B.target_mode) {
+   case PilotMode_Acro:
+    FMS_DW.is_Assist = FMS_IN_Acro;
+    FMS_B.state = VehicleState_Acro;
+    break;
+
+   case PilotMode_Stabilize:
+    FMS_DW.is_Assist = FMS_IN_Stabilize;
+    FMS_B.state = VehicleState_Stabilize;
+    break;
+
+   case PilotMode_Altitude:
+    FMS_DW.is_Assist = FMS_IN_Altitude;
+    FMS_B.state = VehicleState_Altitude;
+    break;
+
+   case PilotMode_Position:
+    FMS_DW.is_Assist = FMS_IN_Position;
+    FMS_B.state = VehicleState_Position;
+    break;
+
+   default:
+    FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
+    break;
+  }
+}
+
+/* Function for Chart: '<Root>/FMS State Machine' */
 static void FMS_enter_internal_Auto(void)
 {
   uint32_T qY;
@@ -2644,31 +2778,7 @@ static void FMS_enter_internal_Arm(void)
     FMS_enter_internal_Auto();
   } else if (tmp == 2.0) {
     FMS_DW.is_Arm = FMS_IN_Assist;
-    switch (FMS_B.target_mode) {
-     case PilotMode_Acro:
-      FMS_DW.is_Assist = FMS_IN_Acro;
-      FMS_B.state = VehicleState_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_Assist = FMS_IN_Stabilize;
-      FMS_B.state = VehicleState_Stabilize;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_Assist = FMS_IN_Altitude;
-      FMS_B.state = VehicleState_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_Assist = FMS_IN_Position;
-      FMS_B.state = VehicleState_Position;
-      break;
-
-     default:
-      FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-      break;
-    }
+    FMS_enter_internal_Assist();
   } else if (tmp == 1.0) {
     FMS_DW.is_Arm = FMS_IN_Manual;
     if (FMS_B.target_mode == PilotMode_Manual) {
@@ -2719,31 +2829,7 @@ static void FMS_SubMode(void)
     } else if (FMS_getArmMode(FMS_B.target_mode) == 2.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Assist;
-      switch (FMS_B.target_mode) {
-       case PilotMode_Acro:
-        FMS_DW.is_Assist = FMS_IN_Acro;
-        FMS_B.state = VehicleState_Acro;
-        break;
-
-       case PilotMode_Stabilize:
-        FMS_DW.is_Assist = FMS_IN_Stabilize;
-        FMS_B.state = VehicleState_Stabilize;
-        break;
-
-       case PilotMode_Altitude:
-        FMS_DW.is_Assist = FMS_IN_Altitude;
-        FMS_B.state = VehicleState_Altitude;
-        break;
-
-       case PilotMode_Position:
-        FMS_DW.is_Assist = FMS_IN_Position;
-        FMS_B.state = VehicleState_Position;
-        break;
-
-       default:
-        FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-        break;
-      }
+      FMS_enter_internal_Assist();
     } else if (FMS_getArmMode(FMS_B.target_mode) == 1.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Manual;
@@ -2848,31 +2934,7 @@ static void FMS_SubMode(void)
             } else if (tmp == 2.0) {
               FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
               FMS_DW.is_Arm = FMS_IN_Assist;
-              switch (FMS_B.target_mode) {
-               case PilotMode_Acro:
-                FMS_DW.is_Assist = FMS_IN_Acro;
-                FMS_B.state = VehicleState_Acro;
-                break;
-
-               case PilotMode_Stabilize:
-                FMS_DW.is_Assist = FMS_IN_Stabilize;
-                FMS_B.state = VehicleState_Stabilize;
-                break;
-
-               case PilotMode_Altitude:
-                FMS_DW.is_Assist = FMS_IN_Altitude;
-                FMS_B.state = VehicleState_Altitude;
-                break;
-
-               case PilotMode_Position:
-                FMS_DW.is_Assist = FMS_IN_Position;
-                FMS_B.state = VehicleState_Position;
-                break;
-
-               default:
-                FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-                break;
-              }
+              FMS_enter_internal_Assist();
             } else if (tmp == 1.0) {
               FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
               FMS_DW.is_Arm = FMS_IN_Manual;
@@ -2912,6 +2974,142 @@ static void FMS_exit_internal_Arm(void)
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
+static void FMS_Arm(void)
+{
+  boolean_T c_sf_internal_predicateOutput;
+  real_T tmp;
+  if ((!FMS_B.on_ground) || (!FMS_DW.condWasTrueAtLastTimeStep_1_h)) {
+    FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
+  }
+
+  FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
+  if ((FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_1_n5 >=
+       500) && (FMS_B.target_mode != PilotMode_Mission)) {
+    FMS_exit_internal_Arm();
+    FMS_DW.is_Vehicle = FMS_IN_Disarm;
+    FMS_B.state = VehicleState_Disarm;
+  } else if ((FMS_DW.mode_prev != FMS_DW.mode_start) && (FMS_B.target_mode !=
+              PilotMode_None)) {
+    tmp = FMS_getArmMode(FMS_B.target_mode);
+    if (tmp == 3.0) {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_Auto;
+      FMS_enter_internal_Auto();
+    } else if (tmp == 2.0) {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_Assist;
+      FMS_enter_internal_Assist();
+    } else if (tmp == 1.0) {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_Manual;
+      if (FMS_B.target_mode == PilotMode_Manual) {
+        FMS_DW.is_Manual = FMS_IN_Manual_g;
+        FMS_B.state = VehicleState_Manual;
+      } else {
+        FMS_DW.is_Manual = FMS_IN_InValidManualMode;
+      }
+    } else {
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_InvalidArmMode;
+    }
+  } else {
+    if (FMS_sf_msg_pop_M()) {
+      c_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData == FMS_Cmd_Land);
+    } else {
+      c_sf_internal_predicateOutput = false;
+    }
+
+    if (c_sf_internal_predicateOutput) {
+      FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+      FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+      FMS_B.Cmd_In.sp_waypoint[2] = 0.0F;
+      FMS_exit_internal_Arm();
+      FMS_DW.is_Arm = FMS_IN_SubMode;
+      FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+      FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+      FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+      FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+      FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.is_SubMode = FMS_IN_Land;
+      FMS_B.state = VehicleState_Land;
+      FMS_DW.condWasTrueAtLastTimeStep_1_k = FMS_B.on_ground;
+    } else {
+      if (FMS_sf_msg_pop_M()) {
+        c_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
+          FMS_Cmd_Return);
+      } else {
+        c_sf_internal_predicateOutput = false;
+      }
+
+      if (c_sf_internal_predicateOutput) {
+        FMS_B.Cmd_In.sp_waypoint[0] = FMS_DW.home[0];
+        FMS_B.Cmd_In.sp_waypoint[1] = FMS_DW.home[1];
+        FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
+        FMS_exit_internal_Arm();
+        FMS_DW.is_Arm = FMS_IN_SubMode;
+        FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+        FMS_DW.stick_val[1] =
+          FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+        FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+        FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+        FMS_DW.is_SubMode = FMS_IN_Return;
+        FMS_B.state = VehicleState_Return;
+      } else {
+        switch (FMS_DW.is_Arm) {
+         case FMS_IN_Assist:
+          if (FMS_B.Compare && ((FMS_B.BusConversion_InsertedFor_FMSSt.flag &
+                                 221U) != 0U)) {
+            FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Arm = FMS_IN_SubMode;
+            FMS_DW.stick_val[0] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+            FMS_DW.stick_val[1] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+            FMS_DW.stick_val[2] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+            FMS_DW.stick_val[3] =
+              FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+            FMS_DW.is_SubMode = FMS_IN_Hold_h;
+            FMS_B.state = VehicleState_Hold;
+          } else {
+            if (FMS_DW.is_Assist == FMS_IN_InvalidAssistMode) {
+              FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
+              FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+              FMS_DW.is_Vehicle = FMS_IN_Disarm;
+              FMS_B.state = VehicleState_Disarm;
+            }
+          }
+          break;
+
+         case FMS_IN_Auto:
+          FMS_Auto();
+          break;
+
+         case FMS_IN_InvalidArmMode:
+          FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+          FMS_DW.is_Vehicle = FMS_IN_Disarm;
+          FMS_B.state = VehicleState_Disarm;
+          break;
+
+         case FMS_IN_Manual:
+          if (FMS_DW.is_Manual == FMS_IN_InValidManualMode) {
+            FMS_DW.is_Manual = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
+            FMS_DW.is_Vehicle = FMS_IN_Disarm;
+            FMS_B.state = VehicleState_Disarm;
+          }
+          break;
+
+         case FMS_IN_SubMode:
+          FMS_SubMode();
+          break;
+        }
+      }
+    }
+  }
+}
+
+/* Function for Chart: '<Root>/FMS State Machine' */
 static real_T FMS_ManualArmEvent(real32_T pilot_cmd_stick_throttle, uint32_T
   pilot_cmd_mode)
 {
@@ -2938,149 +3136,13 @@ static real_T FMS_ManualArmEvent(real32_T pilot_cmd_stick_throttle, uint32_T
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
-static void FMS_Standby(void)
-{
-  boolean_T condIsTrue;
-  boolean_T guard1 = false;
-  boolean_T guard2 = false;
-  guard1 = false;
-  guard2 = false;
-  if ((FMS_ManualArmEvent(FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle,
-                          FMS_B.BusConversion_InsertedFor_FMS_f.mode) == 1.0) &&
-      (FMS_B.target_mode != PilotMode_None)) {
-    guard1 = true;
-  } else {
-    condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
-      FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_1_b = condIsTrue;
-    if (FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_1_n >=
-        500) {
-      guard2 = true;
-    } else {
-      if (FMS_sf_msg_pop_M()) {
-        condIsTrue = (FMS_DW.M_msgReservedData == FMS_Cmd_Takeoff);
-      } else {
-        condIsTrue = false;
-      }
-
-      if (condIsTrue) {
-        guard2 = true;
-      } else if ((FMS_DW.temporalCounter_i1 >= 2500U) || (FMS_DW.sfEvent ==
-                  FMS_event_DisarmEvent)) {
-        FMS_DW.prep_takeoff = 0.0;
-        condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-        if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
-          FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
-        }
-
-        FMS_DW.condWasTrueAtLastTimeStep_1_b = condIsTrue;
-        FMS_DW.prep_mission_takeoff = 0.0;
-        condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-        if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-          FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-        }
-
-        FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-        FMS_DW.is_Vehicle = FMS_IN_Disarm;
-        FMS_B.state = VehicleState_Disarm;
-      } else {
-        condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-        if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-          FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-        }
-
-        FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-        if (FMS_DW.chartAbsoluteTimeCounter - FMS_DW.durationLastReferenceTick_2
-            >= 500) {
-          guard1 = true;
-        }
-      }
-    }
-  }
-
-  if (guard2) {
-    FMS_B.xy_R[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-    FMS_B.xy_R[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-
-    /* Outputs for Function Call SubSystem: '<S5>/Vehicle.PrepTakeoff' */
-    /* Reshape: '<S453>/Reshape' incorporates:
-     *  Constant: '<S453>/Constant'
-     */
-    FMS_B.Reshape[0] = FMS_B.xy_R[0];
-    FMS_B.Reshape[1] = FMS_B.xy_R[1];
-    FMS_B.Reshape[2] = FMS_PARAM.TAKEOFF_H;
-
-    /* End of Outputs for SubSystem: '<S5>/Vehicle.PrepTakeoff' */
-    FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.Reshape[0];
-    FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.Reshape[1];
-    FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.Reshape[2];
-    FMS_B.Cmd_In.sp_waypoint[2] += FMS_DW.home[2];
-    FMS_DW.prep_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
-      FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_1_b = condIsTrue;
-    FMS_DW.prep_mission_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-      FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-    FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
-    FMS_DW.is_Vehicle = FMS_IN_Arm;
-    FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-    FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-    FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
-    FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
-    FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
-    FMS_DW.is_Arm = FMS_IN_SubMode;
-    FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-    FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-    FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-    FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-    FMS_DW.is_SubMode = FMS_IN_Takeoff;
-    FMS_B.state = VehicleState_Takeoff;
-  }
-
-  if (guard1) {
-    FMS_DW.prep_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
-      FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_1_b = condIsTrue;
-    FMS_DW.prep_mission_takeoff = 0.0;
-    condIsTrue = (FMS_DW.prep_mission_takeoff == 1.0);
-    if ((!condIsTrue) || (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
-      FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
-    }
-
-    FMS_DW.condWasTrueAtLastTimeStep_2 = condIsTrue;
-    FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
-    FMS_DW.is_Vehicle = FMS_IN_Arm;
-    FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-    FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-    FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
-    FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
-    FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
-    FMS_enter_internal_Arm();
-  }
-}
-
-/* Function for Chart: '<Root>/FMS State Machine' */
 static void FMS_Vehicle(void)
 {
   boolean_T sf_internal_predicateOutput;
   int32_T b_previousEvent;
-  real_T tmp;
   boolean_T guard1 = false;
+  boolean_T guard2 = false;
+  boolean_T guard3 = false;
   if (FMS_DW.mission_timestamp_prev != FMS_DW.mission_timestamp_start) {
     FMS_B.wp_consume = 0U;
     FMS_B.wp_index = 1U;
@@ -3128,171 +3190,11 @@ static void FMS_Vehicle(void)
     FMS_B.state = VehicleState_Disarm;
   } else {
     guard1 = false;
+    guard2 = false;
+    guard3 = false;
     switch (FMS_DW.is_Vehicle) {
      case FMS_IN_Arm:
-      if ((!FMS_B.on_ground) || (!FMS_DW.condWasTrueAtLastTimeStep_1_h)) {
-        FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
-      }
-
-      FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
-      if ((FMS_DW.chartAbsoluteTimeCounter -
-           FMS_DW.durationLastReferenceTick_1_n5 >= 500) && (FMS_B.target_mode
-           != PilotMode_Mission)) {
-        FMS_exit_internal_Arm();
-        FMS_DW.is_Vehicle = FMS_IN_Disarm;
-        FMS_B.state = VehicleState_Disarm;
-      } else if ((FMS_DW.mode_prev != FMS_DW.mode_start) && (FMS_B.target_mode
-                  != PilotMode_None)) {
-        tmp = FMS_getArmMode(FMS_B.target_mode);
-        if (tmp == 3.0) {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_Auto;
-          FMS_enter_internal_Auto();
-        } else if (tmp == 2.0) {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_Assist;
-          switch (FMS_B.target_mode) {
-           case PilotMode_Acro:
-            FMS_DW.is_Assist = FMS_IN_Acro;
-            FMS_B.state = VehicleState_Acro;
-            break;
-
-           case PilotMode_Stabilize:
-            FMS_DW.is_Assist = FMS_IN_Stabilize;
-            FMS_B.state = VehicleState_Stabilize;
-            break;
-
-           case PilotMode_Altitude:
-            FMS_DW.is_Assist = FMS_IN_Altitude;
-            FMS_B.state = VehicleState_Altitude;
-            break;
-
-           case PilotMode_Position:
-            FMS_DW.is_Assist = FMS_IN_Position;
-            FMS_B.state = VehicleState_Position;
-            break;
-
-           default:
-            FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-            break;
-          }
-        } else if (tmp == 1.0) {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_Manual;
-          if (FMS_B.target_mode == PilotMode_Manual) {
-            FMS_DW.is_Manual = FMS_IN_Manual_g;
-            FMS_B.state = VehicleState_Manual;
-          } else {
-            FMS_DW.is_Manual = FMS_IN_InValidManualMode;
-          }
-        } else {
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_InvalidArmMode;
-        }
-      } else {
-        if (FMS_sf_msg_pop_M()) {
-          sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
-            FMS_Cmd_Land);
-        } else {
-          sf_internal_predicateOutput = false;
-        }
-
-        if (sf_internal_predicateOutput) {
-          FMS_B.Cmd_In.sp_waypoint[0] =
-            FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
-          FMS_B.Cmd_In.sp_waypoint[1] =
-            FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
-          FMS_B.Cmd_In.sp_waypoint[2] = 0.0F;
-          FMS_exit_internal_Arm();
-          FMS_DW.is_Arm = FMS_IN_SubMode;
-          FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-          FMS_DW.stick_val[1] =
-            FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-          FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-          FMS_DW.stick_val[3] =
-            FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-          FMS_DW.durationLastReferenceTick_1_k = FMS_DW.chartAbsoluteTimeCounter;
-          FMS_DW.is_SubMode = FMS_IN_Land;
-          FMS_B.state = VehicleState_Land;
-          FMS_DW.condWasTrueAtLastTimeStep_1_k = FMS_B.on_ground;
-        } else {
-          if (FMS_sf_msg_pop_M()) {
-            sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
-              FMS_Cmd_Return);
-          } else {
-            sf_internal_predicateOutput = false;
-          }
-
-          if (sf_internal_predicateOutput) {
-            FMS_B.Cmd_In.sp_waypoint[0] = FMS_DW.home[0];
-            FMS_B.Cmd_In.sp_waypoint[1] = FMS_DW.home[1];
-            FMS_B.Cmd_In.sp_waypoint[2] =
-              FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
-            FMS_exit_internal_Arm();
-            FMS_DW.is_Arm = FMS_IN_SubMode;
-            FMS_DW.stick_val[0] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-            FMS_DW.stick_val[1] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-            FMS_DW.stick_val[2] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-            FMS_DW.stick_val[3] =
-              FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-            FMS_DW.is_SubMode = FMS_IN_Return;
-            FMS_B.state = VehicleState_Return;
-          } else {
-            switch (FMS_DW.is_Arm) {
-             case FMS_IN_Assist:
-              if (FMS_B.Compare && ((FMS_B.BusConversion_InsertedFor_FMSSt.flag
-                                     & 221U) != 0U)) {
-                FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Arm = FMS_IN_SubMode;
-                FMS_DW.stick_val[0] =
-                  FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
-                FMS_DW.stick_val[1] =
-                  FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
-                FMS_DW.stick_val[2] =
-                  FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
-                FMS_DW.stick_val[3] =
-                  FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
-                FMS_DW.is_SubMode = FMS_IN_Hold_h;
-                FMS_B.state = VehicleState_Hold;
-              } else {
-                if (FMS_DW.is_Assist == FMS_IN_InvalidAssistMode) {
-                  FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
-                  FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-                  FMS_DW.is_Vehicle = FMS_IN_Disarm;
-                  FMS_B.state = VehicleState_Disarm;
-                }
-              }
-              break;
-
-             case FMS_IN_Auto:
-              FMS_Auto();
-              break;
-
-             case FMS_IN_InvalidArmMode:
-              FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-              FMS_DW.is_Vehicle = FMS_IN_Disarm;
-              FMS_B.state = VehicleState_Disarm;
-              break;
-
-             case FMS_IN_Manual:
-              if (FMS_DW.is_Manual == FMS_IN_InValidManualMode) {
-                FMS_DW.is_Manual = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_h;
-                FMS_DW.is_Vehicle = FMS_IN_Disarm;
-                FMS_B.state = VehicleState_Disarm;
-              }
-              break;
-
-             case FMS_IN_SubMode:
-              FMS_SubMode();
-              break;
-            }
-          }
-        }
-      }
+      FMS_Arm();
       break;
 
      case FMS_IN_Disarm:
@@ -3329,8 +3231,147 @@ static void FMS_Vehicle(void)
       break;
 
      case FMS_IN_Standby:
-      FMS_Standby();
+      if ((FMS_ManualArmEvent
+           (FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle,
+            FMS_B.BusConversion_InsertedFor_FMS_f.mode) == 1.0) &&
+          (FMS_B.target_mode != PilotMode_None)) {
+        guard2 = true;
+      } else {
+        sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+        if ((!sf_internal_predicateOutput) ||
+            (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
+          FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
+        }
+
+        FMS_DW.condWasTrueAtLastTimeStep_1_b = sf_internal_predicateOutput;
+        if (FMS_DW.chartAbsoluteTimeCounter -
+            FMS_DW.durationLastReferenceTick_1_n >= 500) {
+          guard3 = true;
+        } else {
+          if (FMS_sf_msg_pop_M()) {
+            sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
+              FMS_Cmd_Takeoff);
+          } else {
+            sf_internal_predicateOutput = false;
+          }
+
+          if (sf_internal_predicateOutput) {
+            guard3 = true;
+          } else if ((FMS_DW.temporalCounter_i1 >= 2500U) || (FMS_DW.sfEvent ==
+                      FMS_event_DisarmEvent)) {
+            FMS_DW.prep_takeoff = 0.0;
+            sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+            if ((!sf_internal_predicateOutput) ||
+                (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
+              FMS_DW.durationLastReferenceTick_1_n =
+                FMS_DW.chartAbsoluteTimeCounter;
+            }
+
+            FMS_DW.condWasTrueAtLastTimeStep_1_b = sf_internal_predicateOutput;
+            FMS_DW.prep_mission_takeoff = 0.0;
+            sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+            if ((!sf_internal_predicateOutput) ||
+                (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
+              FMS_DW.durationLastReferenceTick_2 =
+                FMS_DW.chartAbsoluteTimeCounter;
+            }
+
+            FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+            FMS_DW.is_Vehicle = FMS_IN_Disarm;
+            FMS_B.state = VehicleState_Disarm;
+          } else {
+            sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+            if ((!sf_internal_predicateOutput) ||
+                (!FMS_DW.condWasTrueAtLastTimeStep_2)) {
+              FMS_DW.durationLastReferenceTick_2 =
+                FMS_DW.chartAbsoluteTimeCounter;
+            }
+
+            FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+            if (FMS_DW.chartAbsoluteTimeCounter -
+                FMS_DW.durationLastReferenceTick_2 >= 500) {
+              guard2 = true;
+            }
+          }
+        }
+      }
       break;
+    }
+
+    if (guard3) {
+      FMS_B.xy_R[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+      FMS_B.xy_R[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+
+      /* Outputs for Function Call SubSystem: '<S5>/Vehicle.PrepTakeoff' */
+      /* Reshape: '<S453>/Reshape' incorporates:
+       *  Constant: '<S453>/Constant'
+       */
+      FMS_B.Reshape[0] = FMS_B.xy_R[0];
+      FMS_B.Reshape[1] = FMS_B.xy_R[1];
+      FMS_B.Reshape[2] = FMS_PARAM.TAKEOFF_H;
+
+      /* End of Outputs for SubSystem: '<S5>/Vehicle.PrepTakeoff' */
+      FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.Reshape[0];
+      FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.Reshape[1];
+      FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.Reshape[2];
+      FMS_B.Cmd_In.sp_waypoint[2] += FMS_DW.home[2];
+      FMS_DW.prep_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) ||
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
+        FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_1_b = sf_internal_predicateOutput;
+      FMS_DW.prep_mission_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
+      {
+        FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+      FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.is_Vehicle = FMS_IN_Arm;
+      FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+      FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+      FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
+      FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
+      FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
+      FMS_DW.is_Arm = FMS_IN_SubMode;
+      FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+      FMS_DW.stick_val[1] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+      FMS_DW.stick_val[2] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+      FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+      FMS_DW.is_SubMode = FMS_IN_Takeoff;
+      FMS_B.state = VehicleState_Takeoff;
+    }
+
+    if (guard2) {
+      FMS_DW.prep_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) ||
+          (!FMS_DW.condWasTrueAtLastTimeStep_1_b)) {
+        FMS_DW.durationLastReferenceTick_1_n = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_1_b = sf_internal_predicateOutput;
+      FMS_DW.prep_mission_takeoff = 0.0;
+      sf_internal_predicateOutput = (FMS_DW.prep_mission_takeoff == 1.0);
+      if ((!sf_internal_predicateOutput) || (!FMS_DW.condWasTrueAtLastTimeStep_2))
+      {
+        FMS_DW.durationLastReferenceTick_2 = FMS_DW.chartAbsoluteTimeCounter;
+      }
+
+      FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
+      FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
+      FMS_DW.is_Vehicle = FMS_IN_Arm;
+      FMS_DW.home[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+      FMS_DW.home[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+      FMS_DW.home[2] = FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
+      FMS_DW.home[3] = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
+      FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
+      FMS_enter_internal_Arm();
     }
 
     if (guard1) {
@@ -3970,86 +4011,11 @@ void FMS_step(void)
   } else {
     switch (FMS_DW.is_c3_FMS) {
      case FMS_IN_Acro:
-      if ((FMS_U.INS_Out.flag & 4U) != 0U) {
-        FMS_B.target_mode = PilotMode_Acro;
-        switch (FMS_DW.Delay_DSTATE_c) {
-         case PilotMode_Manual:
-          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-          break;
-
-         case PilotMode_Acro:
-          FMS_DW.is_c3_FMS = FMS_IN_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-          break;
-
-         case PilotMode_Mission:
-          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-          break;
-
-         case PilotMode_Offboard:
-          FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-          break;
-
-         default:
-          FMS_DW.is_c3_FMS = FMS_IN_Other;
-          break;
-        }
-      } else {
-        FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      }
+      FMS_Acro();
       break;
 
      case FMS_IN_Altitude:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) !=
-           0U)) {
-        FMS_B.target_mode = PilotMode_Altitude;
-        switch (FMS_DW.Delay_DSTATE_c) {
-         case PilotMode_Manual:
-          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-          break;
-
-         case PilotMode_Acro:
-          FMS_DW.is_c3_FMS = FMS_IN_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-          break;
-
-         case PilotMode_Mission:
-          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-          break;
-
-         case PilotMode_Offboard:
-          FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-          break;
-
-         default:
-          FMS_DW.is_c3_FMS = FMS_IN_Other;
-          break;
-        }
-      } else {
-        FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      }
+      FMS_Altitude();
       break;
 
      case FMS_IN_Manual_e:
