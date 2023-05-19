@@ -62,6 +62,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ROLL_LIM, PI / 4),
     PARAM_FLOAT(PITCH_LIM, PI / 4),
     PARAM_FLOAT(FW_AIRSPD_MAX, 30),
+    PARAM_UINT16(LOST_RETURN_TIME, 120),
+    PARAM_UINT8(LOST_RETURN_EN, 1),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -286,6 +288,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_LIM), &FMS_PARAM.ROLL_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, PITCH_LIM), &FMS_PARAM.PITCH_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_AIRSPD_MAX), &FMS_PARAM.FW_AIRSPD_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_TIME), &FMS_PARAM.LOST_RETURN_TIME));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_EN), &FMS_PARAM.LOST_RETURN_EN));
 }
 
 void fms_interface_step(uint32_t timestamp)

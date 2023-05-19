@@ -54,7 +54,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ACCEPT_R, 0.5),
     PARAM_FLOAT(ASSIST_LAND_H, 0.3),
     PARAM_UINT16(LOST_RETURN_TIME, 120),
-    PARAM_UINT8(LOST_RETURN_EN, 0),
+    PARAM_UINT8(LOST_RETURN_EN, 1),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
