@@ -33,5 +33,7 @@ static param_t __param_list[] = {
     /* Endless mission mode, when mission complete, 
 	it will start from the first mission data again */
     PARAM_UINT8(LOOP_MISSION, 0),
+    /* Send obc heartbeat signal to gcs */
+    PARAM_UINT8(OBC_HEARTBEAT, 0),
 };
 PARAM_GROUP_DEFINE(SYSTEM, __param_list);

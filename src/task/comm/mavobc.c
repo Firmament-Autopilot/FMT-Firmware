@@ -178,7 +178,10 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 {
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
-        gcs_cmd_heartbeat();
+        if (PARAM_GET_UINT8(SYSTEM, OBC_HEARTBEAT)) {
+            /* send obc heartbeat to gcs */
+            gcs_cmd_heartbeat();
+        }
         break;
     case MAVLINK_MSG_ID_SYSTEM_TIME:
     case MAVLINK_MSG_ID_TIMESYNC:
