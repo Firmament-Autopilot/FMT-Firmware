@@ -32,7 +32,7 @@ inc += [cwd + '/lib/land_detector']
 
 vehicle_type = GetOption('vehicle')
 
-if vehicle_type == 'Quadcopter':
+if vehicle_type == 'Multicopter':
     group = DefineGroup('PX4_ECL', src, depend = [''], CPPPATH = inc, CPPDEFINES=['ECL_STANDALONE', 'VEHICLE_TYPE_QUADCOPTER'])
     
 if vehicle_type == 'Fixwing':

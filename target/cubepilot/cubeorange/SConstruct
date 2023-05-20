@@ -21,7 +21,7 @@ TARGET = 'build/fmt_' + rtconfig.BOARD + '.' + rtconfig.TARGET_EXT
 AddOption('--vehicle',
                 dest = 'vehicle',
                 type = 'string',
-                default = 'Quadcopter',
+                default = 'Multicopter',
                 help = 'Specify the vehicle type')
 
 AddOption('--airframe', 

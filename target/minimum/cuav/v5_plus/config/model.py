@@ -3,7 +3,7 @@ from building import *
 
 vehicle_type = GetOption('vehicle')
 
-if vehicle_type == 'Quadcopter':
+if vehicle_type == 'Multicopter':
     MODELS = [
         'plant/multicopter',
         'ins/base_ins',
