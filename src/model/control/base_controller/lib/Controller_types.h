@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.940
+ * Model version                  : 1.960
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat May 20 10:48:40 2023
+ * C/C++ source code generated on : Sat May 20 15:38:49 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -43,7 +43,7 @@
 #endif
 
 /* Exactly one variant for '<S2>/Control_Allocation' should be active */
-#if ((AIRFRAME == 3) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) + ((AIRFRAME == 1) ? 1 : 0) != 1
+#if ((AIRFRAME == 6) ? 1 : 0) + ((AIRFRAME == 3) ? 1 : 0) + ((AIRFRAME == 5) ? 1 : 0) + ((AIRFRAME == 4) ? 1 : 0) + ((AIRFRAME == 8) ? 1 : 0) + ((AIRFRAME == 7) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) + ((AIRFRAME == 1) ? 1 : 0) != 1
 #error Exactly one variant for '<S2>/Control_Allocation' should be active
 #endif
 
