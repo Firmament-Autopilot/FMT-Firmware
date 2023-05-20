@@ -31,39 +31,40 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(VEL_XY_P, 1.4),
-    PARAM_FLOAT(VEL_XY_I, 0.2),
-    PARAM_FLOAT(VEL_XY_D, 0.2),
-    PARAM_FLOAT(VEL_Z_P, 0.6),
-    PARAM_FLOAT(VEL_Z_I, 0.1),
-    PARAM_FLOAT(VEL_Z_D, 0.0),
-    PARAM_FLOAT(VEL_XY_I_MIN, -1),
-    PARAM_FLOAT(VEL_XY_I_MAX, 1),
-    PARAM_FLOAT(VEL_XY_D_MIN, -1),
-    PARAM_FLOAT(VEL_XY_D_MAX, 1),
-    PARAM_FLOAT(VEL_Z_I_MIN, -0.15),
-    PARAM_FLOAT(VEL_Z_I_MAX, 0.15),
-    PARAM_FLOAT(VEL_Z_D_MIN, -0.1),
-    PARAM_FLOAT(VEL_Z_D_MAX, 0.1),
-    PARAM_FLOAT(ROLL_P, 5),
-    PARAM_FLOAT(PITCH_P, 5),
-    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 6),
-    PARAM_FLOAT(ROLL_RATE_P, 0.045),
-    PARAM_FLOAT(PITCH_RATE_P, 0.045),
-    PARAM_FLOAT(YAW_RATE_P, 0.15),
-    PARAM_FLOAT(ROLL_RATE_I, 0.1),
-    PARAM_FLOAT(PITCH_RATE_I, 0.1),
-    PARAM_FLOAT(YAW_RATE_I, 0.2),
-    PARAM_FLOAT(ROLL_RATE_D, 0.002),
-    PARAM_FLOAT(PITCH_RATE_D, 0.002),
-    PARAM_FLOAT(YAW_RATE_D, 0.001),
-    PARAM_FLOAT(RATE_I_MIN, -0.1),
-    PARAM_FLOAT(RATE_I_MAX, 0.1),
-    PARAM_FLOAT(RATE_D_MIN, -0.1),
-    PARAM_FLOAT(RATE_D_MAX, 0.1),
-    PARAM_FLOAT(P_Q_CMD_LIM, PI / 2),
-    PARAM_FLOAT(R_CMD_LIM, PI),
-    PARAM_FLOAT(HOVER_THRO, 0.5),
+    PARAM_UINT8(AIRFRAME, AIRFRAME, true),
+    PARAM_FLOAT(VEL_XY_P, 1.4, false),
+    PARAM_FLOAT(VEL_XY_I, 0.2, false),
+    PARAM_FLOAT(VEL_XY_D, 0.2, false),
+    PARAM_FLOAT(VEL_Z_P, 0.6, false),
+    PARAM_FLOAT(VEL_Z_I, 0.1, false),
+    PARAM_FLOAT(VEL_Z_D, 0.0, false),
+    PARAM_FLOAT(VEL_XY_I_MIN, -1, false),
+    PARAM_FLOAT(VEL_XY_I_MAX, 1, false),
+    PARAM_FLOAT(VEL_XY_D_MIN, -1, false),
+    PARAM_FLOAT(VEL_XY_D_MAX, 1, false),
+    PARAM_FLOAT(VEL_Z_I_MIN, -0.15, false),
+    PARAM_FLOAT(VEL_Z_I_MAX, 0.15, false),
+    PARAM_FLOAT(VEL_Z_D_MIN, -0.1, false),
+    PARAM_FLOAT(VEL_Z_D_MAX, 0.1, false),
+    PARAM_FLOAT(ROLL_P, 5, false),
+    PARAM_FLOAT(PITCH_P, 5, false),
+    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 6, false),
+    PARAM_FLOAT(ROLL_RATE_P, 0.045, false),
+    PARAM_FLOAT(PITCH_RATE_P, 0.045, false),
+    PARAM_FLOAT(YAW_RATE_P, 0.15, false),
+    PARAM_FLOAT(ROLL_RATE_I, 0.1, false),
+    PARAM_FLOAT(PITCH_RATE_I, 0.1, false),
+    PARAM_FLOAT(YAW_RATE_I, 0.2, false),
+    PARAM_FLOAT(ROLL_RATE_D, 0.002, false),
+    PARAM_FLOAT(PITCH_RATE_D, 0.002, false),
+    PARAM_FLOAT(YAW_RATE_D, 0.001, false),
+    PARAM_FLOAT(RATE_I_MIN, -0.1, false),
+    PARAM_FLOAT(RATE_I_MAX, 0.1, false),
+    PARAM_FLOAT(RATE_D_MIN, -0.1, false),
+    PARAM_FLOAT(RATE_D_MAX, 0.1, false),
+    PARAM_FLOAT(P_Q_CMD_LIM, PI / 2, false),
+    PARAM_FLOAT(R_CMD_LIM, PI, false),
+    PARAM_FLOAT(HOVER_THRO, 0.5, false),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
@@ -84,9 +85,19 @@ fmt_model_info_t control_model_info;
 static int control_out_echo(void* param)
 {
     Control_Out_Bus control_out;
-    if (mcn_copy_from_hub((McnHub*)param, &control_out) == FMT_EOK) {
-        console_printf("timestamp:%d actuator: %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0], control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3]);
+
+    if (mcn_copy_from_hub((McnHub*)param, &control_out) != FMT_EOK)
+        return -1;
+
+    printf("timestamp:%d actuator:", control_out.timestamp);
+    for (uint8_t i = 0; i < 16; i++) {
+        if (control_out.actuator_cmd[i] > 0) {
+            printf(" %d", control_out.actuator_cmd[i]);
+        } else {
+            break;
+        }
     }
+    printf("\n");
     return 0;
 }
 

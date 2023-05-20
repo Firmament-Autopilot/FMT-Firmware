@@ -31,48 +31,46 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(ROLL_P, 7),
-    PARAM_FLOAT(PITCH_P, 7),
-    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 4),
-    PARAM_FLOAT(ROLL_RATE_P, 0.1),
-    PARAM_FLOAT(PITCH_RATE_P, 0.2),
-    PARAM_FLOAT(YAW_RATE_P, 0.15),
-    PARAM_FLOAT(ROLL_RATE_I, 0.1),
-    PARAM_FLOAT(PITCH_RATE_I, 0.1),
-    PARAM_FLOAT(YAW_RATE_I, 0.2),
-    PARAM_FLOAT(RATE_I_MIN, -0.1),
-    PARAM_FLOAT(RATE_I_MAX, 0.1),
-    PARAM_FLOAT(P_Q_CMD_LIM, PI / 2),
-    PARAM_FLOAT(R_CMD_LIM, PI),
+    PARAM_FLOAT(ROLL_P, 7, false),
+    PARAM_FLOAT(PITCH_P, 7, false),
+    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 4, false),
+    PARAM_FLOAT(ROLL_RATE_P, 0.1, false),
+    PARAM_FLOAT(PITCH_RATE_P, 0.2, false),
+    PARAM_FLOAT(YAW_RATE_P, 0.15, false),
+    PARAM_FLOAT(ROLL_RATE_I, 0.1, false),
+    PARAM_FLOAT(PITCH_RATE_I, 0.1, false),
+    PARAM_FLOAT(YAW_RATE_I, 0.2, false),
+    PARAM_FLOAT(RATE_I_MIN, -0.1, false),
+    PARAM_FLOAT(RATE_I_MAX, 0.1, false),
+    PARAM_FLOAT(P_Q_CMD_LIM, PI / 2, false),
+    PARAM_FLOAT(R_CMD_LIM, PI, false),
 
-    PARAM_FLOAT(FW_AIRSPEED_TRIM, 13),
-    PARAM_FLOAT(FW_FF, 0.2),
-    PARAM_FLOAT(FW_FF_LIMIT, 0.3),
-    PARAM_FLOAT(FW_PI_LIMIT, 1),
-    PARAM_FLOAT(FW_ROLL_EFFC, 1),
-    PARAM_FLOAT(FW_PITCH_EFFC, 1),
-    PARAM_FLOAT(FW_YAW_EFFC, 1),
-    PARAM_FLOAT(FW_PITCH_OFFSET, 3.0f / 180.0f * PI),
+    PARAM_FLOAT(FW_AIRSPEED_TRIM, 13, false),
+    PARAM_FLOAT(FW_FF, 0.2, false),
+    PARAM_FLOAT(FW_FF_LIMIT, 0.3, false),
+    PARAM_FLOAT(FW_PI_LIMIT, 1, false),
+    PARAM_FLOAT(FW_ROLL_EFFC, 1, false),
+    PARAM_FLOAT(FW_PITCH_EFFC, 1, false),
+    PARAM_FLOAT(FW_YAW_EFFC, 1, false),
+    PARAM_FLOAT(FW_PITCH_OFFSET, 3.0f / 180.0f * PI, false),
 
-    PARAM_FLOAT(FW_TECS_PITCH_F, 0.1),
-    PARAM_FLOAT(FW_TECS_THOR_FF, 0.1),
-    PARAM_FLOAT(FW_TECS_PITCH_P, 0.1),
-    PARAM_FLOAT(FW_TECS_THOR_P, 0.1),
-    PARAM_FLOAT(FW_TECS_PITCH_I, 0.1),
-    PARAM_FLOAT(FW_TECS_THOR_I, 0.1),
-    PARAM_FLOAT(FW_TECS_PITCH_D, 0.0),
-    PARAM_FLOAT(FW_TECS_THOR_D, 0.0),
-    PARAM_FLOAT(FW_TECS_RATIO, 1),
-    PARAM_FLOAT(FW_TECS_SWITCH, 2),
-    PARAM_FLOAT(FW_TECS_ANSW, 2),
-    PARAM_FLOAT(FW_TECS_W2T, 1),
-    PARAM_FLOAT(FW_TECS_U2T, 1),
-    // PARAM_FLOAT(FW_TECS_W2P, 1),
-    // PARAM_FLOAT(FW_TECS_U2P, 1),
-    PARAM_FLOAT(FW_TECS_W2P, 2),
-    PARAM_FLOAT(FW_TECS_U2P, 0.1),
-    PARAM_FLOAT(FW_TECS_R2P, 0.1),
-    PARAM_FLOAT(FW_TECS_R2T, 0.1),
+    PARAM_FLOAT(FW_TECS_PITCH_F, 0.1, false),
+    PARAM_FLOAT(FW_TECS_THOR_FF, 0.1, false),
+    PARAM_FLOAT(FW_TECS_PITCH_P, 0.1, false),
+    PARAM_FLOAT(FW_TECS_THOR_P, 0.1, false),
+    PARAM_FLOAT(FW_TECS_PITCH_I, 0.1, false),
+    PARAM_FLOAT(FW_TECS_THOR_I, 0.1, false),
+    PARAM_FLOAT(FW_TECS_PITCH_D, 0.0, false),
+    PARAM_FLOAT(FW_TECS_THOR_D, 0.0, false),
+    PARAM_FLOAT(FW_TECS_RATIO, 1, false),
+    PARAM_FLOAT(FW_TECS_SWITCH, 2, false),
+    PARAM_FLOAT(FW_TECS_ANSW, 2, false),
+    PARAM_FLOAT(FW_TECS_W2T, 1, false),
+    PARAM_FLOAT(FW_TECS_U2T, 1, false),
+    PARAM_FLOAT(FW_TECS_W2P, 2, false),
+    PARAM_FLOAT(FW_TECS_U2P, 0.1, false),
+    PARAM_FLOAT(FW_TECS_R2P, 0.1, false),
+    PARAM_FLOAT(FW_TECS_R2T, 0.1, false),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
@@ -93,9 +91,19 @@ fmt_model_info_t control_model_info;
 static int control_out_echo(void* param)
 {
     Control_Out_Bus control_out;
-    if (mcn_copy_from_hub((McnHub*)param, &control_out) == FMT_EOK) {
-        console_printf("timestamp:%d actuator: %d %d %d %d %d %d\n", control_out.timestamp, control_out.actuator_cmd[0], control_out.actuator_cmd[1], control_out.actuator_cmd[2], control_out.actuator_cmd[3], control_out.actuator_cmd[4], control_out.actuator_cmd[5]);
+
+    if (mcn_copy_from_hub((McnHub*)param, &control_out) != FMT_EOK)
+        return -1;
+
+    printf("timestamp:%d actuator:", control_out.timestamp);
+    for (uint8_t i = 0; i < 16; i++) {
+        if (control_out.actuator_cmd[i] > 0) {
+            printf(" %d", control_out.actuator_cmd[i]);
+        } else {
+            break;
+        }
     }
+    printf("\n");
     return 0;
 }
 

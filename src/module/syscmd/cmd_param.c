@@ -110,13 +110,21 @@ static void disp_param(param_t* p, int only_change, int show_default)
     }
 
     if (has_changed) {
-        printf("[*]%25s: ", p->name);
+        printf("[*]", p->name);
     } else if (only_change) {
         /* only show changed parameter, just return */
         return;
     } else {
-        printf("   %25s: ", p->name);
+        printf("   ", p->name);
     }
+
+    if (p->read_only) {
+        printf("[x]");
+    } else {
+        printf("   ");
+    }
+
+    printf("%25s: ", p->name);
 
     switch (p->type) {
     case PARAM_TYPE_INT8:

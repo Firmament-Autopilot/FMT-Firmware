@@ -22,7 +22,15 @@ AddOption('--vehicle',
                 dest = 'vehicle',
                 type = 'string',
                 default = 'Quadcopter',
-                help = 'set vehicle type')
+                help = 'Specify the vehicle type')
+
+AddOption('--airframe', 
+                dest='airframe', 
+                type='int', 
+                nargs=1, 
+                default = 1, 
+                action='store',
+                help='Specify the airframe value')
 
 env = Environment(tools=['mingw'],
                   AS=rtconfig.AS, ASFLAGS=rtconfig.AFLAGS,
@@ -33,6 +41,7 @@ env = Environment(tools=['mingw'],
 
 # set VEHICLE_TYPE macro for low-level usage
 env.Append(CPPDEFINES = [('VEHICLE_TYPE', GetOption('vehicle'))])
+env.Append(CPPDEFINES = [('AIRFRAME', GetOption('airframe'))])
 
 # Add sys execute PATH to env PATH
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)

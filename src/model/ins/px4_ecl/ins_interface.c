@@ -110,66 +110,66 @@ MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(ekf2_gyr_noise, 1.5e-2f), ///< IMU angular rate noise used for covariance prediction (rad/sec)
-    PARAM_FLOAT(ekf2_acc_noise, 3.5e-1f), ///< IMU acceleration noise use for covariance prediction (m/sec**2)
+    PARAM_FLOAT(ekf2_gyr_noise, 1.5e-2f, false), ///< IMU angular rate noise used for covariance prediction (rad/sec)
+    PARAM_FLOAT(ekf2_acc_noise, 3.5e-1f, false), ///< IMU acceleration noise use for covariance prediction (m/sec**2)
 
-    PARAM_FLOAT(ekf2_gyr_b_noise, 1.0e-3f), ///< process noise for IMU rate gyro bias prediction (rad/sec**2)
-    PARAM_FLOAT(ekf2_acc_b_noise, 1.0e-2f), ///< process noise for IMU accelerometer bias prediction (m/sec**3)
-    PARAM_FLOAT(ekf2_mag_e_noise, 1.0e-3f), ///< process noise for earth magnetic field prediction (Gauss/sec)
-    PARAM_FLOAT(ekf2_mag_b_noise, 1.0e-4f), ///< process noise for body magnetic field prediction (Gauss/sec)
-    PARAM_FLOAT(ekf2_wind_noise, 1.0e-1f),  ///< process noise for wind velocity prediction (m/sec**2)
+    PARAM_FLOAT(ekf2_gyr_b_noise, 1.0e-3f, false), ///< process noise for IMU rate gyro bias prediction (rad/sec**2)
+    PARAM_FLOAT(ekf2_acc_b_noise, 1.0e-2f, false), ///< process noise for IMU accelerometer bias prediction (m/sec**3)
+    PARAM_FLOAT(ekf2_mag_e_noise, 1.0e-3f, false), ///< process noise for earth magnetic field prediction (Gauss/sec)
+    PARAM_FLOAT(ekf2_mag_b_noise, 1.0e-4f, false), ///< process noise for body magnetic field prediction (Gauss/sec)
+    PARAM_FLOAT(ekf2_wind_noise, 1.0e-1f, false),  ///< process noise for wind velocity prediction (m/sec**2)
 
-    PARAM_FLOAT(ekf2_gnd_eff_dz, 5.0f),  ///< barometric deadzone range for negative innovations (m)
-    PARAM_FLOAT(ekf2_gnd_max_hgt, 0.5f), ///< maximum height above the ground level for expected negative baro innovations (m)
+    PARAM_FLOAT(ekf2_gnd_eff_dz, 5.0f, false),  ///< barometric deadzone range for negative innovations (m)
+    PARAM_FLOAT(ekf2_gnd_max_hgt, 0.5f, false), ///< maximum height above the ground level for expected negative baro innovations (m)
 
     // control of magnetometer fusion
-    PARAM_FLOAT(ekf2_head_noise, 3.0e-1f), ///< measurement noise used for simple heading fusion (rad)
-    PARAM_FLOAT(ekf2_mag_noise, 5.0e-2f),  ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
-    PARAM_FLOAT(ekf2_eas_noise, 1.4f),     ///< measurement noise used for airspeed fusion (m/sec)
-    PARAM_FLOAT(ekf2_beta_noise, 0.3f),    ///< synthetic sideslip noise (rad)
+    PARAM_FLOAT(ekf2_head_noise, 3.0e-1f, false), ///< measurement noise used for simple heading fusion (rad)
+    PARAM_FLOAT(ekf2_mag_noise, 5.0e-2f, false),  ///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
+    PARAM_FLOAT(ekf2_eas_noise, 1.4f, false),     ///< measurement noise used for airspeed fusion (m/sec)
+    PARAM_FLOAT(ekf2_beta_noise, 0.3f, false),    ///< synthetic sideslip noise (rad)
 
-    PARAM_FLOAT(ekf2_noaid_noise, 10.0f), ///< observation noise for non-aiding position fusion (m)
-    PARAM_FLOAT(ekf2_baro_noise, 2.0f),   ///< observation noise for barometric height fusion (m)
+    PARAM_FLOAT(ekf2_noaid_noise, 10.0f, false), ///< observation noise for non-aiding position fusion (m)
+    PARAM_FLOAT(ekf2_baro_noise, 2.0f, false),   ///< observation noise for barometric height fusion (m)
 
-    PARAM_FLOAT(ekf2_mag_decl, 0.0f), ///< magnetic declination (degrees)
+    PARAM_FLOAT(ekf2_mag_decl, 0.0f, false), ///< magnetic declination (degrees)
 
-    PARAM_INT32(ekf2_decl_type, MASK_USE_GEO_DECL | MASK_SAVE_GEO_DECL | MASK_FUSE_DECL), ///< bitmask used to control the handling of declination data
+    PARAM_INT32(ekf2_decl_type, MASK_USE_GEO_DECL | MASK_SAVE_GEO_DECL | MASK_FUSE_DECL, false), ///< bitmask used to control the handling of declination data
 
-    PARAM_INT32(ekf2_mag_type, MAG_FUSE_TYPE_HEADING), ///< integer used to specify the type of magnetometer fusion used
+    PARAM_INT32(ekf2_mag_type, MAG_FUSE_TYPE_HEADING, false), ///< integer used to specify the type of magnetometer fusion used
 
-    PARAM_INT32(ekf2_gps_check, MASK_GPS_SACC | MASK_GPS_HACC | MASK_GPS_NSATS), ///< bitmask used to control which GPS quality checks are used
+    PARAM_INT32(ekf2_gps_check, MASK_GPS_SACC | MASK_GPS_HACC | MASK_GPS_NSATS, false), ///< bitmask used to control which GPS quality checks are used
 
     // measurement source control
-    PARAM_INT32(ekf2_aid_mask, MASK_USE_GPS),                                         ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
-    PARAM_INT32(ekf2_hgt_mode, VDIST_SENSOR_GPS),                                     ///< selects the primary source for height data
-    PARAM_INT32(ekf2_terr_mask, TERRAIN_FUSE_RANGEFINDER | TERRAIN_FUSE_OPTICALFLOW), ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
+    PARAM_INT32(ekf2_aid_mask, MASK_USE_GPS, false),                                         ///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
+    PARAM_INT32(ekf2_hgt_mode, VDIST_SENSOR_GPS, false),                                     ///< selects the primary source for height data
+    PARAM_INT32(ekf2_terr_mask, TERRAIN_FUSE_RANGEFINDER | TERRAIN_FUSE_OPTICALFLOW, false), ///< bitmasked integer that selects which of range finder and optical flow aiding sources will be used for terrain estimation
 
     // range finder fusion
-    PARAM_FLOAT(ekf2_rng_noise, 0.1f), ///< observation noise for range finder measurements (m)
-    PARAM_INT32(ekf2_rng_aid, 0),      ///< enables use of a range finder even if primary height source is not range finder
+    PARAM_FLOAT(ekf2_rng_noise, 0.1f, false), ///< observation noise for range finder measurements (m)
+    PARAM_INT32(ekf2_rng_aid, 0, false),      ///< enables use of a range finder even if primary height source is not range finder
 
     // vision estimate fusion
-    PARAM_INT32(ekf2_ev_noise_md, VEHICLE_ODOMETRY_COVARIANCE_MATRIX_X_VARIANCE), ///< determine source of vision observation noise
-    PARAM_FLOAT(ekf2_evp_noise, 0.1f),                                            ///< default position observation noise for exernal vision measurements (m)
-    PARAM_FLOAT(ekf2_evv_noise, 0.1f),                                            ///< default velocity observation noise for exernal vision measurements (m/s)
-    PARAM_FLOAT(ekf2_eva_noise, 0.05f),                                           ///< default angular observation noise for exernal vision measurements (rad)
+    PARAM_INT32(ekf2_ev_noise_md, VEHICLE_ODOMETRY_COVARIANCE_MATRIX_X_VARIANCE, false), ///< determine source of vision observation noise
+    PARAM_FLOAT(ekf2_evp_noise, 0.1f, false),                                            ///< default position observation noise for exernal vision measurements (m)
+    PARAM_FLOAT(ekf2_evv_noise, 0.1f, false),                                            ///< default velocity observation noise for exernal vision measurements (m/s)
+    PARAM_FLOAT(ekf2_eva_noise, 0.05f, false),                                           ///< default angular observation noise for exernal vision measurements (rad)
 
     // optical flow fusion
-    PARAM_FLOAT(ekf2_of_n_min, 0.15f), ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
-    PARAM_FLOAT(ekf2_of_n_max, 0.5f),  ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
+    PARAM_FLOAT(ekf2_of_n_min, 0.15f, false), ///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
+    PARAM_FLOAT(ekf2_of_n_max, 0.5f, false),  ///< worst quality observation noise for optical flow LOS rate measurements (rad/sec)
 
     // control of airspeed and sideslip fusion
-    PARAM_FLOAT(ekf2_arsp_thr, 2.0f), ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
-    PARAM_INT32(ekf2_fuse_beta, 0),   ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
+    PARAM_FLOAT(ekf2_arsp_thr, 2.0f, false), ///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
+    PARAM_INT32(ekf2_fuse_beta, 0, false),   ///< Controls synthetic sideslip fusion, 0 disables, 1 enables
 
     // Multi-rotor drag specific force fusion
-    PARAM_FLOAT(ekf2_drag_noise, 2.5f), ///< observation noise variance for drag specific force measurements (m/sec**2)**2
+    PARAM_FLOAT(ekf2_drag_noise, 2.5f, false), ///< observation noise variance for drag specific force measurements (m/sec**2)**2
 
-    PARAM_INT32(ekf2_mag_check, 0), ///< Mag field strength check
+    PARAM_INT32(ekf2_mag_check, 0, false), ///< Mag field strength check
 
-    PARAM_INT32(ekf2_synthetic_mag_z, 0), ///< Enables the use of a synthetic value for the Z axis of the magnetometer calculated from the 3D magnetic field vector at the location of the drone.
+    PARAM_INT32(ekf2_synthetic_mag_z, 0, false), ///< Enables the use of a synthetic value for the Z axis of the magnetometer calculated from the 3D magnetic field vector at the location of the drone.
 
-    PARAM_FLOAT(ekf2_req_gps_h, 10.0f) ///< Required GPS health time
+    PARAM_FLOAT(ekf2_req_gps_h, 10.0f, false) ///< Required GPS health time
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 
