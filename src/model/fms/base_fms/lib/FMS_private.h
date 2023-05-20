@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1963
+ * Model version                  : 1.1965
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 19 12:19:29 2023
+ * C/C++ source code generated on : Sat May 20 09:23:14 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -75,8 +75,6 @@ extern int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn);
 extern int32_T FMS_pop(Queue_FMS_Cmd *q, Msg_FMS_Cmd *elementOut);
 extern void FMS_initQueue(Queue_FMS_Cmd *q, QueuePolicy_T policy, int32_T
   capacity, Msg_FMS_Cmd *qPool);
-extern void FMS_Disarm(FMS_Out_Bus *rty_FMS_Out, const ConstB_Disarm_FMS_T
-  *localC);
 extern void FMS_HoldControl_Init(DW_HoldControl_FMS_T *localDW);
 extern void FMS_HoldControl_Reset(DW_HoldControl_FMS_T *localDW);
 extern void FMS_HoldControl(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
@@ -116,6 +114,8 @@ extern void FMS_MoveControl_l_Reset(DW_MoveControl_FMS_c_T *localDW);
 extern void FMS_MoveControl_b(real32_T rtu_FMS_In, real32_T
   *rty_psi_rate_cmd_radPs, const ConstB_MoveControl_FMS_f_T *localC,
   DW_MoveControl_FMS_c_T *localDW);
+extern void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T
+  *localC);
 extern void FMS_MotionState_l_Init(DW_MotionState_FMS_g_T *localDW);
 extern void FMS_MotionState_j_Reset(DW_MotionState_FMS_g_T *localDW);
 extern void FMS_MotionState_e(boolean_T rtu_motion_req, real32_T rtu_speed,

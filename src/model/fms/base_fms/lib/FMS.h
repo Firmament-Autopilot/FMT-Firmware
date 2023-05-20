@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1963
+ * Model version                  : 1.1965
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 19 12:19:29 2023
+ * C/C++ source code generated on : Sat May 20 09:23:14 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -320,12 +320,6 @@ typedef struct {
   ZCSigState SetHome_Trig_ZCE;         /* '<S13>/SetHome' */
 } PrevZCX_FMS_T;
 
-/* Invariant block signals for system '<S28>/Disarm' */
-typedef struct {
-  const uint8_T DataTypeConversion;    /* '<S32>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1;   /* '<S32>/Data Type Conversion1' */
-} ConstB_Disarm_FMS_T;
-
 /* Invariant block signals for system '<S402>/Move Control' */
 typedef struct {
   const real32_T Square;               /* '<S410>/Square' */
@@ -351,6 +345,12 @@ typedef struct {
   const real32_T d;                    /* '<S355>/Multiply' */
   const real32_T Gain4;                /* '<S355>/Gain4' */
 } ConstB_MoveControl_FMS_f_T;
+
+/* Invariant block signals for system '<S37>/Unknown' */
+typedef struct {
+  const uint8_T DataTypeConversion;    /* '<S331>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1;   /* '<S331>/Data Type Conversion1' */
+} ConstB_Unknown_FMS_T;
 
 /* Invariant block signals for system '<S5>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 typedef struct {
@@ -445,19 +445,21 @@ typedef struct {
   const uint8_T DataTypeConversion2_d; /* '<S330>/Data Type Conversion2' */
   const uint8_T DataTypeConversion2_h; /* '<S33>/Data Type Conversion2' */
   const uint8_T DataTypeConversion1_f; /* '<S33>/Data Type Conversion1' */
+  const uint8_T DataTypeConversion_m;  /* '<S32>/Data Type Conversion' */
+  const uint8_T DataTypeConversion1_a; /* '<S32>/Data Type Conversion1' */
   ConstB_VehicleArmAutoMissionL_T VehicleArmAutoMissionLLA2FLAT;/* '<S5>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-  ConstB_Disarm_FMS_T Unknown;         /* '<S30>/Unknown' */
-  ConstB_Disarm_FMS_T Unknown_i;       /* '<S34>/Unknown' */
+  ConstB_Unknown_FMS_T Unknown;        /* '<S30>/Unknown' */
+  ConstB_Unknown_FMS_T Unknown_i;      /* '<S34>/Unknown' */
   ConstB_MoveControl_FMS_k_T MoveControl_k1;/* '<S110>/Move Control' */
   ConstB_HoldControl_FMS_k_T HoldControl_at;/* '<S110>/Hold Control' */
   ConstB_MoveControl_FMS_f_T MoveControl_mr;/* '<S97>/Move Control' */
   ConstB_MoveControl_FMS_f_T MoveControl_cr;/* '<S66>/Move Control' */
   ConstB_MoveControl_FMS_f_T MoveControl_k;/* '<S134>/Move Control' */
-  ConstB_Disarm_FMS_T Unknown_d;       /* '<S35>/Unknown' */
+  ConstB_Unknown_FMS_T Unknown_d;      /* '<S35>/Unknown' */
   ConstB_MoveControl_FMS_k_T MoveControl_c;/* '<S192>/Move Control' */
   ConstB_HoldControl_FMS_k_T HoldControl_d;/* '<S192>/Hold Control' */
   ConstB_MoveControl_FMS_T MoveControl_m;/* '<S182>/Move Control' */
-  ConstB_Disarm_FMS_T Unknown_g;       /* '<S37>/Unknown' */
+  ConstB_Unknown_FMS_T Unknown_g;      /* '<S37>/Unknown' */
   ConstB_MoveControl_FMS_k_T MoveControl_i;/* '<S357>/Move Control' */
   ConstB_HoldControl_FMS_k_T HoldControl_f;/* '<S357>/Hold Control' */
   ConstB_MoveControl_FMS_f_T MoveControl_b;/* '<S345>/Move Control' */
@@ -465,7 +467,6 @@ typedef struct {
   ConstB_MoveControl_FMS_k_T MoveControl_o;/* '<S412>/Move Control' */
   ConstB_HoldControl_FMS_k_T HoldControl_k;/* '<S412>/Hold Control' */
   ConstB_MoveControl_FMS_T MoveControl;/* '<S402>/Move Control' */
-  ConstB_Disarm_FMS_T Disarm;          /* '<S28>/Disarm' */
 } ConstB_FMS_T;
 
 /* Constant parameters (default storage) */
