@@ -251,12 +251,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             mavlink_param_set_t param_set;
             mavlink_msg_param_set_decode(msg, &param_set);
 
-            if (param_set.param_type != MAV_PARAM_TYPE_REAL32) {
-                LOG_W("unsupported parameter type:%d", param_set.param_type);
-                break;
-            }
-
-            if (mavlink_param_set(param_set.param_id, param_set.param_value) != FMT_EOK) {
+            if (mavlink_param_set(param_set.param_id, param_set.param_value, param_set.param_type) != FMT_EOK) {
                 LOG_W("patameter set failed! Unknown parameter:%s", param_set.param_id);
                 break;
             }
