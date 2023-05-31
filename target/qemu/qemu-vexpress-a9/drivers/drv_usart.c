@@ -50,14 +50,15 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
 static struct serial_device serial0;
 static struct serial_device serial1;
+static struct serial_device serial2;
 
 #define USING_UART0
 #define USING_UART1
+#define USING_UART2
 
 #ifdef USING_UART0
 /* UART device driver structure */
-static struct hw_uart_device _uart0_device =
-{
+static struct hw_uart_device _uart0_device = {
     REALVIEW_UART0_BASE,
     IRQ_PBA8_UART0,
 };
@@ -65,10 +66,17 @@ static struct hw_uart_device _uart0_device =
 
 #ifdef USING_UART1
 /* UART1 device driver structure */
-static struct hw_uart_device _uart1_device =
-{
+static struct hw_uart_device _uart1_device = {
     REALVIEW_UART1_BASE,
     IRQ_PBA8_UART1,
+};
+#endif
+
+#ifdef USING_UART2
+/* UART2 device driver structure */
+static struct hw_uart_device _uart2_device = {
+    REALVIEW_UART2_BASE,
+    IRQ_PBA8_UART2,
 };
 #endif
 
@@ -160,9 +168,21 @@ static const struct usart_ops _usart_ops = {
     NULL
 };
 
-#define SERIAL1_DEFAULT_CONFIG                     \
+#define SERIAL1_DEFAULT_CONFIG                    \
     {                                             \
-        BAUD_RATE_921600,     /* 57600 bits/s */   \
+        BAUD_RATE_921600,    /* 57600 bits/s */   \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
+    }
+
+#define SERIAL2_DEFAULT_CONFIG                    \
+    {                                             \
+        BAUD_RATE_115200,    /* 57600 bits/s */   \
             DATA_BITS_8,     /* 8 databits */     \
             STOP_BITS_1,     /* 1 stopbit */      \
             PARITY_NONE,     /* No parity  */     \
@@ -179,18 +199,18 @@ rt_err_t drv_usart_init(void)
 
 #ifdef USING_UART0
     serial0.ops = &_usart_ops;
-#ifdef SERIAL0_DEFAULT_CONFIG
+    #ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
     serial0.config = serial0_config;
-#else
+    #else
     serial0.config = config;
-#endif
+    #endif
 
     /* register serial device */
     rt_err |= hal_serial_register(&serial0,
-        "serial0",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
-        &_uart0_device);
+                                  "serial0",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &_uart0_device);
 
     rt_hw_interrupt_install(_uart0_device.irqno, rt_hw_uart_isr, &serial0, "uart0");
     /* enable Rx and Tx of UART */
@@ -199,23 +219,43 @@ rt_err_t drv_usart_init(void)
 
 #ifdef USING_UART1
     serial1.ops = &_usart_ops;
-#ifdef SERIAL1_DEFAULT_CONFIG
+    #ifdef SERIAL1_DEFAULT_CONFIG
     struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
     serial1.config = serial1_config;
-#else
+    #else
     serial1.config = config;
-#endif
+    #endif
 
     /* register serial device */
     rt_err |= hal_serial_register(&serial1,
-        "serial1",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
-        &_uart1_device);
+                                  "serial1",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &_uart1_device);
 
     rt_hw_interrupt_install(_uart1_device.irqno, rt_hw_uart_isr, &serial1, "uart1");
     /* enable Rx and Tx of UART */
     UART_CR(_uart1_device.hw_base) = (1 << 0) | (1 << 8) | (1 << 9);
 #endif /* USING_UART1 */
+
+#ifdef USING_UART2
+    serial2.ops = &_usart_ops;
+    #ifdef SERIAL2_DEFAULT_CONFIG
+    struct serial_configure serial2_config = SERIAL2_DEFAULT_CONFIG;
+    serial2.config = serial2_config;
+    #else
+    serial2.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial2,
+                                  "serial2",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &_uart2_device);
+
+    rt_hw_interrupt_install(_uart2_device.irqno, rt_hw_uart_isr, &serial2, "uart2");
+    /* enable Rx and Tx of UART */
+    UART_CR(_uart2_device.hw_base) = (1 << 0) | (1 << 8) | (1 << 9);
+#endif /* USING_UART2 */
 
     return rt_err;
 }
