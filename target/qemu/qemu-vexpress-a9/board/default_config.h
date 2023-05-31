@@ -36,6 +36,11 @@ target = "QEMU vexpress-a9"\n
     type = "serial"\n
     name = "serial1"\n
     baudrate = 115200\n
+    [[mavproxy.devices]]\n
+    chan = 1\n
+    type = "serial"\n
+    name = "serial2"\n
+    baudrate = 115200\n
 [actuator]\n
     [[actuator.devices]]\n
     protocol = "pwm"\n
