@@ -50,7 +50,7 @@ Current supported hardware:
   
 
 The drone hardware equipped with FMT:
-- [Amovlab F200](https://item.taobao.com/item.htm?spm=a230r.1.14.22.65553d8dunv9QL&id=676605798722&ns=1&abbucket=14#detail)
+- [Amovlab MFP450]([https://item.taobao.com/item.htm?spm=a230r.1.14.22.65553d8dunv9QL&id=676605798722&ns=1&abbucket=14#detail](https://item.taobao.com/item.htm?spm=a1z10.5-c-s.w4002-22617251051.15.4b224df8j1oIGP&id=713417934359))
 
 ## Documentation
 [User Guide](https://firmament-autopilot.github.io/FMT-DOCS/)
