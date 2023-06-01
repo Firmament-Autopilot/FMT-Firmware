@@ -143,3 +143,7 @@ Task Initialize:
 |  I2C   | Device  | Port |
 |  ----   | ------  | ---- |
 |  I2C0 | / | I2C |
+
+## Maintainer
+Josh Zou
+zoujiachi666@163.com
