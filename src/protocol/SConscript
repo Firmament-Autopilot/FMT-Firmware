@@ -1,13 +1,16 @@
 from building import *
+import BuildLists as bl
 
 cwd = GetCurrentDir()
 
-src = Glob('*.c')
-src += Glob('msp/*.c')
-src += Glob('ublox/*.c')
+src = []
+for f in bl.PROTOCOL:
+    src += Glob(f)
 
-CPPPATH = [cwd]
+inc = []
+for d in bl.PROTOCOL_CPPPATH:
+    inc += [cwd + '/' + d]
 
-group = DefineGroup('PROTOCOL', src, depend = [''], CPPPATH = CPPPATH)
+group = DefineGroup('PROTOCOL', src, depend = [''], CPPPATH = inc)
 
 Return('group')
