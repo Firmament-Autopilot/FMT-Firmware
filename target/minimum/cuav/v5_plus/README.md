@@ -165,3 +165,7 @@ msh /usr>fmtio upload /usr/fmt_io.bin
 | USART3 | serial2 | TELEM2       |
 | USART1 | serial3 | GPS          |
 | UART4 | serial4 | UART       |
+
+## Maintainer
+Josh Zou
+zoujiachi666@163.com
