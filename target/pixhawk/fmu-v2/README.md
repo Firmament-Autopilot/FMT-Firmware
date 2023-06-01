@@ -163,3 +163,7 @@ msh /usr>fmtio upload /usr/fmt_io.bin
 | UART4  | serial2 | GPS      |
 | UART8  | serial3 | SERIAL 4 |
 | UART8  | serial4 | SERIAL 5 |
+
+## Maintainer
+Josh Zou
+zoujiachi666@163.com
