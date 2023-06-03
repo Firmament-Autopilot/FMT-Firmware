@@ -1,7 +1,7 @@
 # Modify this file to decide which protocol are compiled
 
 PROTOCOL = [
-    # 'msp/*.c',
+    'msp/*.c',
     'ublox/*.c',
 ]
 
