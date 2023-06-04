@@ -25,13 +25,14 @@
 
 #ifdef FMT_USING_SIH
 
-// sensor topics to publish
+/* Plant output bus */
+MCN_DEFINE(plant_states, sizeof(Plant_States_Bus));
+/* sensor topics to publish */
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
-
-// plant model input
+/* plant model input */
 MCN_DECLARE(control_output);
 
 /* define log data */
@@ -70,6 +71,24 @@ static uint32_t gps_timestamp = 0xFFFF;
 static int Plant_States_ID;
 
 fmt_model_info_t plant_model_info;
+
+static int plant_states_echo(void* param)
+{
+    Plant_States_Bus plant_states;
+
+    mcn_copy_from_hub((McnHub*)param, &plant_states);
+
+    printf("timestamp:%u\n", plant_states.timestamp);
+    printf("att: %.2f %.2f %.2f\n", RAD2DEG(plant_states.phi), RAD2DEG(plant_states.theta), RAD2DEG(plant_states.psi));
+    printf("rate: %.2f %.2f %.2f\n", plant_states.rot_x_B, plant_states.rot_y_B, plant_states.rot_z_B);
+    printf("accel: %.2f %.2f %.2f\n", plant_states.acc_x_O, plant_states.acc_y_O, plant_states.acc_y_O);
+    printf("vel: %.2f %.2f %.2f\n", plant_states.vel_x_O, plant_states.vel_y_O, plant_states.vel_z_O);
+    printf("xyh: %.2f %.2f %.2f\n", plant_states.x_R, plant_states.y_R, plant_states.h_R);
+    printf("LLA: %lf %lf %f LLA0: %lf %lf %f\n", plant_states.lat, plant_states.lon, plant_states.alt, plant_states.lat_0, plant_states.lon_0, plant_states.alt_0);
+    printf("------------------------------------------\n");
+
+    return 0;
+}
 
 static void publish_sensor_data(uint32_t timestamp)
 {
@@ -167,6 +186,9 @@ void plant_interface_step(uint32_t timestamp)
     /* run plant model */
     Plant_step();
 
+    /* publish plant output */
+    mcn_publish(MCN_HUB(plant_states), &Plant_Y.Plant_States);
+
     /* Log Plant output bus data */
     DEFINE_TIMETAG(plant_output, 100);
     if (check_timetag(TIMETAG(plant_output))) {
@@ -182,6 +204,8 @@ void plant_interface_init(void)
 {
     plant_model_info.period = PLANT_EXPORT.period;
     plant_model_info.info = (char*)PLANT_EXPORT.model_info;
+
+    mcn_advertise(MCN_HUB(plant_states), plant_states_echo);
 
     control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 

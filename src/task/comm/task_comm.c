@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include "FMS.h"
+#include "Plant.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "module/ftp/ftp_manager.h"
@@ -50,6 +51,9 @@ MCN_DECLARE(bat_status);
 MCN_DECLARE(fms_output);
 MCN_DECLARE(auto_cmd);
 MCN_DECLARE(bat_status);
+#ifdef FMT_USING_SIH
+MCN_DECLARE(plant_states);
+#endif
 
 static mavlink_system_t mavlink_system;
 
@@ -543,6 +547,43 @@ bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
     home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
 
     mavlink_msg_home_position_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &home_position);
+
+    return true;
+}
+
+bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_hil_state_t hil_state = { 0 };
+
+#if defined(FMT_USING_SIH)
+    Plant_States_Bus plant_states;
+
+    if (mcn_copy_from_hub(MCN_HUB(plant_states), &plant_states) != FMT_EOK) {
+        return false;
+    }
+
+    hil_state.time_usec = systime_now_us();
+    hil_state.roll = plant_states.phi;
+    hil_state.pitch = plant_states.theta;
+    hil_state.yaw = plant_states.psi;
+    hil_state.rollspeed = plant_states.rot_x_B;
+    hil_state.pitchspeed = plant_states.rot_y_B;
+    hil_state.yawspeed = plant_states.rot_z_B;
+    hil_state.xacc = plant_states.acc_x_O / 9.80665f * 1000;
+    hil_state.yacc = plant_states.acc_y_O / 9.80665f * 1000;
+    hil_state.zacc = plant_states.acc_z_O / 9.80665f * 1000;
+    hil_state.vx = plant_states.vel_x_O * 100;
+    hil_state.vy = plant_states.vel_y_O * 100;
+    hil_state.vz = plant_states.vel_z_O * 100;
+    /* we don't send LLA, and send xyh in mm instead */
+    hil_state.lat = plant_states.x_R * 1000;
+    hil_state.lon = plant_states.y_R * 1000;
+    hil_state.alt = plant_states.h_R * 1000;
+#elif defined(FMT_USING_HIL)
+
+#endif
+
+    mavlink_msg_hil_state_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &hil_state);
 
     return true;
 }
