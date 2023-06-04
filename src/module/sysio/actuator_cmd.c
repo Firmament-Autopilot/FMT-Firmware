@@ -79,6 +79,7 @@ fmt_err_t send_actuator_cmd(void)
     bool has_poll_rc_channels = false;
     Control_Out_Bus control_out;
     int16_t rc_channel[16];
+    uint16_t chan_val[16] = { 0 };
 
     DEFINE_TIMETAG(actuator_intv, 2);
 
@@ -89,7 +90,6 @@ fmt_err_t send_actuator_cmd(void)
     for (i = 0; i < mapping_num; i++) {
         rt_size_t size = mapping_list[i].map_size;
         uint16_t chan_sel = 0;
-        uint16_t chan_val[16];
 
         if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
             if (has_poll_control_out == false) {
@@ -136,7 +136,7 @@ fmt_err_t send_actuator_cmd(void)
         }
 #endif
 
-#if defined(FMT_USING_HIL)
+#if defined(FMT_USING_HIL) || defined(FMT_USING_SIH)
         send_hil_actuator_cmd(chan_sel, chan_val);
 #endif
     }
