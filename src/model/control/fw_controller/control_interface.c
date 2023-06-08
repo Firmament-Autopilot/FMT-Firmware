@@ -56,8 +56,8 @@ static param_t __param_list[] = {
 
     PARAM_FLOAT(FW_TECS_PITCH_F, 0.1, false),
     PARAM_FLOAT(FW_TECS_THOR_FF, 0.1, false),
-    PARAM_FLOAT(FW_TECS_PITCH_P, 0.1, false),
-    PARAM_FLOAT(FW_TECS_THOR_P, 0.1, false),
+    PARAM_FLOAT(FW_TECS_PITCH_P, 0.2, false),
+    PARAM_FLOAT(FW_TECS_THOR_P, 0.2, false),
     PARAM_FLOAT(FW_TECS_PITCH_I, 0.1, false),
     PARAM_FLOAT(FW_TECS_THOR_I, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_D, 0.0, false),
@@ -69,8 +69,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_TECS_U2T, 1, false),
     PARAM_FLOAT(FW_TECS_W2P, 2, false),
     PARAM_FLOAT(FW_TECS_U2P, 0.1, false),
-    PARAM_FLOAT(FW_TECS_R2P, 0.1, false),
-    PARAM_FLOAT(FW_TECS_R2T, 0.1, false),
+    PARAM_FLOAT(FW_TECS_R2P, 0.2, false),
+    PARAM_FLOAT(FW_TECS_R2T, 0.2, false),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
