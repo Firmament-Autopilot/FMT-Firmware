@@ -34,7 +34,7 @@ static param_t __param_list[] = {
     PARAM_UINT8(AIRFRAME, AIRFRAME, true),
     PARAM_FLOAT(VEL_XY_P, 1.4, false),
     PARAM_FLOAT(VEL_XY_I, 0.2, false),
-    PARAM_FLOAT(VEL_XY_D, 0.2, false),
+    PARAM_FLOAT(VEL_XY_D, 0.05, false),
     PARAM_FLOAT(VEL_Z_P, 0.5, false),
     PARAM_FLOAT(VEL_Z_I, 0.12, false),
     PARAM_FLOAT(VEL_Z_D, 0.0, false),

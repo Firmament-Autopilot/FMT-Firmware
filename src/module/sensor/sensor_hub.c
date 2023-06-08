@@ -358,19 +358,23 @@ static void imu_filter_init(uint8_t id)
     RT_ASSERT(id < MAX_IMU_DEV_NUM);
 
     /* 30Hz cut-off frequency, 1000Hz sampling frequency */
-    float B[4] = { 0.0007, 0.0021, 0.0021, 0.0007 };
-    float A[4] = { 1.0, -2.6236, 2.3147, -0.6855 };
+    float B1[4] = { 0.0007, 0.0021, 0.0021, 0.0007 };
+    float A1[4] = { 1.0, -2.6236, 2.3147, -0.6855 };
 
-    butter3_gyr[id][0] = butter3_filter_create(B, A);
-    butter3_gyr[id][1] = butter3_filter_create(B, A);
-    butter3_gyr[id][2] = butter3_filter_create(B, A);
+    /* 15Hz cut-off frequency, 1000Hz sampling frequency */
+    float B2[4] = { 0.0000954, 0.0002863, 0.0002863, 0.0000954 };
+    float A2[4] = { 1.0000, -2.8116, 2.6405, -0.8281 };
+
+    butter3_gyr[id][0] = butter3_filter_create(B1, A1);
+    butter3_gyr[id][1] = butter3_filter_create(B1, A1);
+    butter3_gyr[id][2] = butter3_filter_create(B1, A1);
     RT_ASSERT(butter3_gyr[id][0] != NULL);
     RT_ASSERT(butter3_gyr[id][1] != NULL);
     RT_ASSERT(butter3_gyr[id][2] != NULL);
 
-    butter3_acc[id][0] = butter3_filter_create(B, A);
-    butter3_acc[id][1] = butter3_filter_create(B, A);
-    butter3_acc[id][2] = butter3_filter_create(B, A);
+    butter3_acc[id][0] = butter3_filter_create(B2, A2);
+    butter3_acc[id][1] = butter3_filter_create(B2, A2);
+    butter3_acc[id][2] = butter3_filter_create(B2, A2);
     RT_ASSERT(butter3_acc[id][0] != NULL);
     RT_ASSERT(butter3_acc[id][1] != NULL);
     RT_ASSERT(butter3_acc[id][2] != NULL);

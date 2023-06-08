@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2009
+ * Model version                  : 1.2012
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 19 12:10:17 2023
+ * C/C++ source code generated on : Thu Jun  8 09:54:12 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -162,6 +162,7 @@ struct_pHUcrB3OCb7AonS2mUrMZG FMS_PARAM = {
                                         *   '<S108>/Gain1'
                                         *   '<S123>/Constant4'
                                         *   '<S153>/Gain2'
+                                        *   '<S153>/Saturation1'
                                         *   '<S154>/L1'
                                         *   '<S154>/R'
                                         *   '<S171>/Gain'
@@ -4552,20 +4553,40 @@ void FMS_step(void)
         /* End of Saturate: '<S157>/Saturation' */
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* BusAssignment: '<S148>/Bus Assignment' incorporates:
-         *  BusAssignment: '<S25>/Bus Assignment'
+        /* Gain: '<S153>/Gain2' incorporates:
          *  Delay: '<S153>/Delay'
-         *  Gain: '<S153>/Gain2'
          *  Gain: '<S155>/Gain'
          *  Inport: '<Root>/INS_Out'
-         *  Outport: '<Root>/FMS_Out'
          *  SignalConversion: '<S23>/Signal Copy1'
          *  Sum: '<S153>/Sum'
          */
-        FMS_Y.FMS_Out.w_cmd = (FMS_DW.Delay_DSTATE - (-FMS_U.INS_Out.h_R)) *
+        rtb_Saturation_bu = (FMS_DW.Delay_DSTATE - (-FMS_U.INS_Out.h_R)) *
           FMS_PARAM.Z_P;
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
+
+        /* Saturate: '<S153>/Saturation1' */
+        if (rtb_Saturation_bu > FMS_PARAM.VEL_Z_LIM) {
+          /* BusAssignment: '<S148>/Bus Assignment' incorporates:
+           *  BusAssignment: '<S25>/Bus Assignment'
+           *  Outport: '<Root>/FMS_Out'
+           */
+          FMS_Y.FMS_Out.w_cmd = FMS_PARAM.VEL_Z_LIM;
+        } else if (rtb_Saturation_bu < -FMS_PARAM.VEL_Z_LIM) {
+          /* BusAssignment: '<S148>/Bus Assignment' incorporates:
+           *  BusAssignment: '<S25>/Bus Assignment'
+           *  Outport: '<Root>/FMS_Out'
+           */
+          FMS_Y.FMS_Out.w_cmd = -FMS_PARAM.VEL_Z_LIM;
+        } else {
+          /* BusAssignment: '<S148>/Bus Assignment' incorporates:
+           *  BusAssignment: '<S25>/Bus Assignment'
+           *  Outport: '<Root>/FMS_Out'
+           */
+          FMS_Y.FMS_Out.w_cmd = rtb_Saturation_bu;
+        }
+
+        /* End of Saturate: '<S153>/Saturation1' */
 
         /* Update for Delay: '<S158>/start_vel' */
         FMS_DW.icLoad_n = 0U;

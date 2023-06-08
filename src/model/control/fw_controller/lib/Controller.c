@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1065
+ * Model version                  : 1.1066
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu May  4 12:27:06 2023
+ * C/C++ source code generated on : Thu Jun  8 09:52:25 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -28,7 +28,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
   7.0F,
   7.0F,
-  0.785398F,
+  0.785398185F,
   0.1F,
   0.2F,
   0.15F,
@@ -37,8 +37,8 @@ struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
   0.2F,
   -0.1F,
   0.1F,
-  1.57079601F,
-  3.14159298F,
+  1.57079637F,
+  3.14159274F,
   13.0F,
   0.2F,
   0.3F,
@@ -46,7 +46,7 @@ struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
   1.0F,
   1.0F,
   1.0F,
-  0.05236F,
+  0.052359879F,
   0.1F,
   0.1F,
   0.1F,
@@ -135,6 +135,7 @@ void Controller_step(void)
 {
   real32_T rtb_Cos1;
   real32_T rtb_Multiply4;
+  real32_T rtb_Abs;
   real32_T rtb_DiscreteTimeIntegrator1_l;
   real32_T rtb_Switch;
   real32_T rtb_Vdotg;
@@ -143,7 +144,6 @@ void Controller_step(void)
   real32_T rtb_Gain_h;
   real32_T rtb_Sum_p;
   real32_T rtb_Cos;
-  real32_T rtb_phi_cmd;
   real32_T rtb_Saturation_b;
   real32_T rtb_MatrixConcatenate[12];
   uint16_T rtb_throttle_cmd;
@@ -177,12 +177,15 @@ void Controller_step(void)
    *  RelationalOperator: '<S35>/Compare'
    */
   if (Controller_U.FMS_Out.ctrl_mode == 4) {
-    rtb_phi_cmd = Controller_U.FMS_Out.phi_cmd;
+    rtb_Multiply4 = Controller_U.FMS_Out.phi_cmd;
   } else {
-    rtb_phi_cmd = rtb_Cos1;
+    rtb_Multiply4 = rtb_Cos1;
   }
 
   /* End of Switch: '<S29>/Switch' */
+
+  /* Abs: '<S7>/Abs' */
+  rtb_Abs = fabsf(rtb_Multiply4);
 
   /* Switch: '<S34>/Switch' incorporates:
    *  Constant: '<S34>/Constant'
@@ -480,8 +483,7 @@ void Controller_step(void)
                       rtb_Vdotg) * CONTROL_PARAM.FW_TECS_PITCH_F +
                      ((CONTROL_PARAM.FW_TECS_PITCH_P *
                        rtb_DiscreteTimeIntegrator1_l + Controller_DW._DSTATE_n)
-                      + rtb_Multiply4)) + CONTROL_PARAM.FW_TECS_R2P *
-      rtb_phi_cmd;
+                      + rtb_Multiply4)) + CONTROL_PARAM.FW_TECS_R2P * rtb_Abs;
   }
 
   /* End of Switch: '<S20>/Switch1' */
@@ -839,7 +841,7 @@ void Controller_step(void)
                            Controller_DW._DSTATE) + rtb_Multiply4) +
                          (CONTROL_PARAM.FW_TECS_RATIO * rtb_Vdotg + rtb_Switch) *
                          CONTROL_PARAM.FW_TECS_THOR_FF) +
-          CONTROL_PARAM.FW_TECS_R2T * rtb_phi_cmd;
+          CONTROL_PARAM.FW_TECS_R2T * rtb_Abs;
 
         /* Saturate: '<S9>/Saturation2' */
         if (rtb_Multiply4 > 1.0F) {
@@ -857,16 +859,16 @@ void Controller_step(void)
          *  Sum: '<S45>/Sum'
          */
         if (rtb_Multiply4 + 0.5F > 1.0F) {
-          rtb_phi_cmd = 1.0F;
+          rtb_Abs = 1.0F;
         } else if (rtb_Multiply4 + 0.5F < 0.0F) {
-          rtb_phi_cmd = 0.0F;
+          rtb_Abs = 0.0F;
         } else {
-          rtb_phi_cmd = rtb_Multiply4 + 0.5F;
+          rtb_Abs = rtb_Multiply4 + 0.5F;
         }
 
         /* End of Saturate: '<S45>/Saturation' */
-        rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F *
-          rtb_phi_cmd), 4.2949673E+9F) + 1000U);
+        rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * rtb_Abs),
+          4.2949673E+9F) + 1000U);
       }
 
       /* End of Switch: '<S44>/Switch' */
@@ -874,7 +876,7 @@ void Controller_step(void)
       /* Product: '<S10>/Multiply1' incorporates:
        *  Gain: '<S10>/FF'
        */
-      rtb_phi_cmd = CONTROL_PARAM.FW_FF * rtb_Add * rtb_Saturation_b;
+      rtb_Abs = CONTROL_PARAM.FW_FF * rtb_Add * rtb_Saturation_b;
       rtb_Switch = CONTROL_PARAM.FW_FF * rtb_Add1 * rtb_Saturation_b;
       rtb_Vdotg = CONTROL_PARAM.FW_FF * rtb_Add2 * rtb_Saturation_b;
 
@@ -890,11 +892,11 @@ void Controller_step(void)
                        Controller_DW.DiscreteTimeIntegrator_DSTATE[0]) * rtb_Cos;
 
       /* Saturate: '<S10>/FF_limit' */
-      if (rtb_phi_cmd > CONTROL_PARAM.FW_FF_LIMIT) {
-        rtb_phi_cmd = CONTROL_PARAM.FW_FF_LIMIT;
+      if (rtb_Abs > CONTROL_PARAM.FW_FF_LIMIT) {
+        rtb_Abs = CONTROL_PARAM.FW_FF_LIMIT;
       } else {
-        if (rtb_phi_cmd < -CONTROL_PARAM.FW_FF_LIMIT) {
-          rtb_phi_cmd = -CONTROL_PARAM.FW_FF_LIMIT;
+        if (rtb_Abs < -CONTROL_PARAM.FW_FF_LIMIT) {
+          rtb_Abs = -CONTROL_PARAM.FW_FF_LIMIT;
         }
       }
 
@@ -910,7 +912,7 @@ void Controller_step(void)
       /* Saturate: '<S9>/Saturation1' incorporates:
        *  Sum: '<S10>/Add'
        */
-      rtb_Multiply4 += rtb_phi_cmd;
+      rtb_Multiply4 += rtb_Abs;
       if (rtb_Multiply4 > 1.0F) {
         rtb_Multiply4 = 1.0F;
       } else {
@@ -927,8 +929,8 @@ void Controller_step(void)
        *  Saturate: '<S10>/FF_limit'
        *  Sum: '<S13>/Add1'
        */
-      rtb_phi_cmd = (CONTROL_PARAM.PITCH_RATE_P * rtb_Multiply_d_idx_1 +
-                     Controller_DW.DiscreteTimeIntegrator_DSTATE[1]) * rtb_Cos;
+      rtb_Abs = (CONTROL_PARAM.PITCH_RATE_P * rtb_Multiply_d_idx_1 +
+                 Controller_DW.DiscreteTimeIntegrator_DSTATE[1]) * rtb_Cos;
 
       /* Saturate: '<S10>/FF_limit' */
       if (rtb_Switch > CONTROL_PARAM.FW_FF_LIMIT) {
@@ -940,23 +942,23 @@ void Controller_step(void)
       }
 
       /* Saturate: '<S10>/PI_limit' */
-      if (rtb_phi_cmd > CONTROL_PARAM.FW_PI_LIMIT) {
-        rtb_phi_cmd = CONTROL_PARAM.FW_PI_LIMIT;
+      if (rtb_Abs > CONTROL_PARAM.FW_PI_LIMIT) {
+        rtb_Abs = CONTROL_PARAM.FW_PI_LIMIT;
       } else {
-        if (rtb_phi_cmd < -CONTROL_PARAM.FW_PI_LIMIT) {
-          rtb_phi_cmd = -CONTROL_PARAM.FW_PI_LIMIT;
+        if (rtb_Abs < -CONTROL_PARAM.FW_PI_LIMIT) {
+          rtb_Abs = -CONTROL_PARAM.FW_PI_LIMIT;
         }
       }
 
       /* Saturate: '<S9>/Saturation1' incorporates:
        *  Sum: '<S10>/Add'
        */
-      rtb_phi_cmd += rtb_Switch;
-      if (rtb_phi_cmd > 1.0F) {
-        rtb_phi_cmd = 1.0F;
+      rtb_Abs += rtb_Switch;
+      if (rtb_Abs > 1.0F) {
+        rtb_Abs = 1.0F;
       } else {
-        if (rtb_phi_cmd < -1.0F) {
-          rtb_phi_cmd = -1.0F;
+        if (rtb_Abs < -1.0F) {
+          rtb_Abs = -1.0F;
         }
       }
 
@@ -1013,7 +1015,7 @@ void Controller_step(void)
          *  Product: '<S9>/Multiply'
          */
         rtb_Vdotg = 500.0F * (rtb_MatrixConcatenate[i + 8] * rtb_Switch +
-                              (rtb_MatrixConcatenate[i + 4] * rtb_phi_cmd +
+                              (rtb_MatrixConcatenate[i + 4] * rtb_Abs +
           rtb_MatrixConcatenate[i] * rtb_Multiply4)) + 1500.0F;
         if (rtb_Vdotg > 2000.0F) {
           rtb_Vdotg = 2000.0F;
