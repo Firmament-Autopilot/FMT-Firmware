@@ -844,14 +844,14 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
-                        "*STMicroelectronics Virtual COM Port*", "*FMT*"])
+                    serial_list = auto_detect_serial(preferred_list=["*GD32 Virtual Com Port*",
+                        "*STMicroelectronics Virtual COM Port*", "*FMT*", "/dev/ttyACM*", "/dev/ttyUSB*"])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
                         print("wait for connect fmt-fmu...")
                         time.sleep(2)
-                        continue
+                        break
                         # return
 
                     if len(serial_list) > 1:
@@ -866,7 +866,6 @@ def main():
                     # print the error
                     print("\nERROR: %s" % ex.args)
 
-
     # Spin waiting for a device to show up
     try:
         test_once = False
@@ -875,14 +874,15 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             elif args.port == None:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
+                    serial_list = auto_detect_serial(preferred_list=["*GD32 Virtual Com Port*",
                         "*STMicroelectronics Virtual COM Port*", "*FMT*"])
                 else:
-                    serial_list = auto_detect_serial(preferred_list=['*GD32 Virtual Com Port*',
-                        "*STMicroelectronics Virtual COM Port*", "*FMT*"])
+                    serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
 
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
+                    print("wait for connect fmt-fmu...")
+                    time.sleep(2)
                     continue
 
                 # if len(serial_list) > 1:
