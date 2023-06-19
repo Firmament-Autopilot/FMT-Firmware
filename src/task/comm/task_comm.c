@@ -22,10 +22,12 @@
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "module/ftp/ftp_manager.h"
+#include "module/math/quaternion.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/px4_custom_mode.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
@@ -293,6 +295,29 @@ bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t)
     return true;
 }
 
+bool mavlink_msg_attitude_quaternion_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_attitude_quaternion_t att_quat = { 0 };
+    INS_Out_Bus ins_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    att_quat.time_boot_ms = systime_now_us();
+    att_quat.q1 = ins_out.quat[0];
+    att_quat.q2 = ins_out.quat[1];
+    att_quat.q3 = ins_out.quat[2];
+    att_quat.q4 = ins_out.quat[3];
+    att_quat.rollspeed = ins_out.p;
+    att_quat.pitchspeed = ins_out.q;
+    att_quat.yawspeed = ins_out.r;
+
+    mavlink_msg_attitude_quaternion_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &att_quat);
+
+    return true;
+}
+
 bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_local_position_ned_t local_position_ned = { 0 };
@@ -388,24 +413,19 @@ bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_gps_raw_int_t gps_raw_int = { 0 };
     gps_data_t gps_report;
-    McnHub* hub = MCN_HUB(sensor_gps);
 
-    if (!hub->published) {
+    if (mcn_copy_from_hub(MCN_HUB(sensor_gps), &gps_report) != FMT_EOK) {
         return false;
     }
 
-    if (mcn_copy_from_hub(hub, &gps_report) != FMT_EOK) {
-        return false;
-    }
-
-    gps_raw_int.time_usec = gps_report.timestamp_ms * 1e3;
+    gps_raw_int.time_usec = systime_now_us();
     gps_raw_int.lat = gps_report.lat;
     gps_raw_int.lon = gps_report.lon;
     gps_raw_int.alt = gps_report.height;
     gps_raw_int.eph = gps_report.hAcc * 1e3;
     gps_raw_int.epv = gps_report.vAcc * 1e3;
     gps_raw_int.vel = gps_report.vel * 1e2;
-    gps_raw_int.cog = gps_report.cog * 1e2;
+    gps_raw_int.cog = RAD2DEG(gps_report.cog + PI) * 1e2;
     gps_raw_int.fix_type = gps_report.fixType;
     gps_raw_int.satellites_visible = gps_report.numSV;
     gps_raw_int.alt_ellipsoid = gps_report.height;
@@ -547,6 +567,147 @@ bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
     home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
 
     mavlink_msg_home_position_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &home_position);
+
+    return true;
+}
+
+bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_attitude_target_t att_target = { 0 };
+    Auto_Cmd_Bus auto_cmd;
+
+    if (mcn_copy_from_hub(MCN_HUB(auto_cmd), &auto_cmd) != FMT_EOK) {
+        return false;
+    }
+
+    att_target.time_boot_ms = systime_now_ms();
+
+    if ((auto_cmd.cmd_mask & PHI_CMD_VALID) && (auto_cmd.cmd_mask & THETA_CMD_VALID) && (auto_cmd.cmd_mask & PSI_CMD_VALID)) {
+        Euler euler;
+
+        euler.roll = auto_cmd.phi_cmd;
+        euler.pitch = auto_cmd.phi_cmd;
+        euler.yaw = auto_cmd.psi_cmd;
+        quaternion_fromEuler(euler, (quaternion*)att_target.q);
+    } else {
+        att_target.type_mask |= 128;
+    }
+
+    if (auto_cmd.cmd_mask & P_CMD_VALID) {
+        att_target.body_roll_rate = auto_cmd.p_cmd;
+    } else {
+        att_target.type_mask |= 1;
+    }
+
+    if (auto_cmd.cmd_mask & Q_CMD_VALID) {
+        att_target.body_pitch_rate = auto_cmd.q_cmd;
+    } else {
+        att_target.type_mask |= 2;
+    }
+
+    if (auto_cmd.cmd_mask & R_CMD_VALID) {
+        att_target.body_yaw_rate = auto_cmd.r_cmd;
+    } else {
+        att_target.type_mask |= 3;
+    }
+
+    if (auto_cmd.cmd_mask & THROTTLE_CMD_VALID) {
+        att_target.thrust = (float)(auto_cmd.throttle_cmd - 1000) / 1000.0f;
+    } else {
+        att_target.type_mask |= 64;
+    }
+
+    mavlink_msg_attitude_target_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &att_target);
+
+    return true;
+}
+
+bool mavlink_msg_position_target_local_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_position_target_local_ned_t pos_target_local = { 0 };
+    Auto_Cmd_Bus auto_cmd;
+
+    if (mcn_copy_from_hub(MCN_HUB(auto_cmd), &auto_cmd) != FMT_EOK) {
+        return false;
+    }
+
+    pos_target_local.time_boot_ms = systime_now_ms();
+
+    if (auto_cmd.cmd_mask & X_CMD_VALID) {
+        pos_target_local.x = auto_cmd.x_cmd;
+    } else {
+        pos_target_local.type_mask |= 1;
+    }
+
+    if (auto_cmd.cmd_mask & Y_CMD_VALID) {
+        pos_target_local.y = auto_cmd.y_cmd;
+    } else {
+        pos_target_local.type_mask |= 2;
+    }
+
+    if (auto_cmd.cmd_mask & Z_CMD_VALID) {
+        pos_target_local.z = auto_cmd.z_cmd;
+    } else {
+        pos_target_local.type_mask |= 4;
+    }
+
+    if (auto_cmd.cmd_mask & U_CMD_VALID) {
+        pos_target_local.vx = auto_cmd.u_cmd;
+    } else {
+        pos_target_local.type_mask |= 8;
+    }
+
+    if (auto_cmd.cmd_mask & V_CMD_VALID) {
+        pos_target_local.vy = auto_cmd.v_cmd;
+    } else {
+        pos_target_local.type_mask |= 16;
+    }
+
+    if (auto_cmd.cmd_mask & W_CMD_VALID) {
+        pos_target_local.vz = auto_cmd.w_cmd;
+    } else {
+        pos_target_local.type_mask |= 32;
+    }
+
+    if (auto_cmd.cmd_mask & AX_CMD_VALID) {
+        pos_target_local.afx = auto_cmd.ax_cmd;
+    } else {
+        pos_target_local.type_mask |= 64;
+    }
+
+    if (auto_cmd.cmd_mask & AY_CMD_VALID) {
+        pos_target_local.afy = auto_cmd.ay_cmd;
+    } else {
+        pos_target_local.type_mask |= 128;
+    }
+
+    if (auto_cmd.cmd_mask & AZ_CMD_VALID) {
+        pos_target_local.afz = auto_cmd.az_cmd;
+    } else {
+        pos_target_local.type_mask |= 256;
+    }
+
+    if (auto_cmd.cmd_mask & PSI_CMD_VALID) {
+        pos_target_local.yaw = auto_cmd.psi_cmd;
+    } else {
+        pos_target_local.type_mask |= 1024;
+    }
+
+    if (auto_cmd.cmd_mask & PSI_RATE_CMD_VALID) {
+        pos_target_local.yaw_rate = auto_cmd.psi_rate_cmd;
+    } else {
+        pos_target_local.type_mask |= 2048;
+    }
+
+    if (auto_cmd.frame == FRAME_GLOBAL_NED) {
+        pos_target_local.coordinate_frame = MAV_FRAME_LOCAL_NED;
+    } else if (auto_cmd.frame == FRAME_LOCAL_FRD) {
+        pos_target_local.coordinate_frame = MAV_FRAME_LOCAL_FRD;
+    } else if (auto_cmd.frame == FRAME_BODY_FRD) {
+        pos_target_local.coordinate_frame = MAV_FRAME_BODY_FRD;
+    }
+
+    mavlink_msg_position_target_local_ned_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &pos_target_local);
 
     return true;
 }

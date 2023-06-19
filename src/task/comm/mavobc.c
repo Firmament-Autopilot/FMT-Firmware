@@ -44,6 +44,7 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_attitude_quaternion_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_distance_sensor_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t);
@@ -51,20 +52,29 @@ bool mavlink_msg_gps_global_origin_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_global_position_int_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_position_target_local_pack_func(mavlink_message_t* msg_t);
 
 static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_HEARTBEAT, mavlink_msg_heartbeat_pack_func },
     { MAVLINK_MSG_ID_SYS_STATUS, mavlink_msg_sys_status_pack_func },
-    { MAVLINK_MSG_ID_HIGHRES_IMU, mavlink_msg_highres_imu_pack_func },
-    { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_pack_func },
-    { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_pack_func },
-    { MAVLINK_MSG_ID_ALTITUDE, mavlink_msg_altitude_pack_func },
-    { MAVLINK_MSG_ID_DISTANCE_SENSOR, mavlink_msg_distance_sensor_pack_func },
-    { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_pack_func },
-    { MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN, mavlink_msg_gps_global_origin_pack_func },
-    { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_pack_func },
-    { MAVLINK_MSG_ID_RC_CHANNELS, mavlink_msg_rc_channels_pack_func },
     { MAVLINK_MSG_ID_SYSTEM_TIME, mavlink_msg_system_time_pack_func },
+    { MAVLINK_MSG_ID_GPS_RAW_INT, mavlink_msg_gps_raw_int_pack_func },
+    { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_pack_func },
+    { MAVLINK_MSG_ID_ATTITUDE_QUATERNION, mavlink_msg_attitude_quaternion_pack_func },
+    { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_pack_func },
+    { MAVLINK_MSG_ID_GLOBAL_POSITION_INT, mavlink_msg_global_position_int_pack_func },
+    { MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN, mavlink_msg_gps_global_origin_pack_func },
+    { MAVLINK_MSG_ID_RC_CHANNELS, mavlink_msg_rc_channels_pack_func },
+    { MAVLINK_MSG_ID_ATTITUDE_TARGET, mavlink_msg_attitude_target_pack_func },
+    { MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED, mavlink_msg_position_target_local_pack_func },
+    { MAVLINK_MSG_ID_HIGHRES_IMU, mavlink_msg_highres_imu_pack_func },
+    { MAVLINK_MSG_ID_DISTANCE_SENSOR, mavlink_msg_distance_sensor_pack_func },
+    { MAVLINK_MSG_ID_ALTITUDE, mavlink_msg_altitude_pack_func },
+    { MAVLINK_MSG_ID_HOME_POSITION, mavlink_msg_home_position_pack_func },
+    { MAVLINK_MSG_ID_EXTENDED_SYS_STATE, mavlink_msg_extended_sys_state_pack_func },
 };
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
