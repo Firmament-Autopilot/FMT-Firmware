@@ -8,3 +8,6 @@
 [submodule "src/lib/dronecan/dsdlc"]
 	path = src/lib/dronecan/dsdlc
 	url = https://github.com/dronecan/dronecan_dsdlc.git
+[submodule "src/lib/dronecan/libcanard"]
+	path = src/lib/dronecan/libcanard
+	url = https://github.com/dronecan/libcanard.git
