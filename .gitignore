@@ -28,3 +28,5 @@ build
 *.orig
 cconfig.h
 .cortex-debug*
+
+src/lib/dronecan/dsdlc_generated/*
