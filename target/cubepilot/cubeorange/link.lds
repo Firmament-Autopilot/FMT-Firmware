@@ -8,14 +8,12 @@ MEMORY
 	/* First 0x8000(32KB) area is reserved for bootloader */
     FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 128KB flash */
 
-    ITCM_RAM  (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
-    DTCM_RAM  (rwx) : ORIGIN = 0x20000000, LENGTH =  128K
-    AXI_SRAM  (rwx) : ORIGIN = 0x24000000, LENGTH =  512k /* 512K sram */
-    SRAM1     (rwx) : ORIGIN = 0x30000000, LENGTH =  128K /* D2 domain AHB bus */
-	SRAM2     (rwx) : ORIGIN = 0x30020000, LENGTH =  128K /* D2 domain AHB bus */
-	SRAM3     (rwx) : ORIGIN = 0x30040000, LENGTH =   32K /* D2 domain AHB bus */
-	SRAM4     (rwx) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
-	BKPRAM    (rwx) : ORIGIN = 0x38800000, LENGTH =    4K
+    ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
+    DTCM_RAM    (rwx) : ORIGIN = 0x20000000, LENGTH =  128K
+    SRAMD1      (rwx) : ORIGIN = 0x24000000, LENGTH =  512k /* D1 512K sram */
+    SRAMD2      (rwx) : ORIGIN = 0x30000000, LENGTH =  288K /* D2 domain AHB bus */
+	SRAMD3      (rwx) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
+	BKPRAM      (rwx) : ORIGIN = 0x38800000, LENGTH =    4K
 }
 ENTRY(Reset_Handler)
 _system_stack_size = 0x800;
@@ -126,7 +124,7 @@ SECTIONS
         . = ALIGN(4);
         /* This is used by the startup in order to initialize the .data secion */
         _edata = . ;
-    } > AXI_SRAM
+    } > SRAMD2
 
     .stack : 
     {
@@ -134,7 +132,7 @@ SECTIONS
         . = . + _system_stack_size;
         . = ALIGN(4);
         _estack = .;
-    } > AXI_SRAM
+    } > SRAMD3
 
     __bss_start = .;
     .bss :
@@ -152,7 +150,7 @@ SECTIONS
         _ebss = . ;
         
         *(.bss.init)
-    } > AXI_SRAM
+    } > SRAMD2
     __bss_end = .;
 
     _end = .;
