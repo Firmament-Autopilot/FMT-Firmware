@@ -5,9 +5,9 @@ from building import *
 cwd     = GetCurrentDir()
 
 src = Glob('libcanard/*.c')
-src += Glob('dsdl/src/*.c')
+src += Glob('dsdlc_generated/src/*.c')
 
-CPPPATH = [cwd + '/libcanard', cwd + '/dsdl/include']
+CPPPATH = [cwd + '/libcanard', cwd + '/dsdlc_generated/include']
 
 
 group = DefineGroup('dronecan', src, depend = [''], CPPPATH = CPPPATH)
