@@ -32,6 +32,9 @@ jobs:
           sudo apt-get -qq update
           sudo apt-get -qq install scons
           scons --version
+          pip install empy
+          pip install pexpect
+          pip install dronecan
           
       - name: Install Arm ToolChains
         shell: bash
