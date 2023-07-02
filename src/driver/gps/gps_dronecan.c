@@ -127,6 +127,9 @@ void handle_gnss_Fix2(CanardRxTransfer* transfer)
 
     dronecan_got_posllh = true;
     dronecan_got_velned = true;
+
+    // printf("handle_gnss_Fix2!\n");
+
 }
 
 struct uavcan_equipment_gnss_Auxiliary gnss_Auxiliary_msg;
@@ -140,6 +143,8 @@ void handle_gnss_Auxiliary(CanardRxTransfer* transfer)
     gps_report.hdop = (float)gnss_Auxiliary_msg.hdop;
     gps_report.ndop = (float)gnss_Auxiliary_msg.ndop;
     gps_report.edop = (float)gnss_Auxiliary_msg.edop;
+
+    // printf("handle_gnss_Auxiliary!\n");
 }
 
 static void gps_probe_entry(void* parameter)
@@ -152,14 +157,14 @@ static void gps_probe_entry(void* parameter)
             hal_gps_register(&gps_device, "can_gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
             register_sensor_gps((char*)parameter);
 
-            printf("GPS configuration Success!");
+            printf("GPS configuration Success!\n");
 
             break;
         }
     }
 
     if (i >= CONFIGURE_RETRY_MAX) {
-        printf("GPS configuration fail! Please check if GPS module has connected.");
+        printf("GPS configuration fail! Please check if GPS module has connected.\n");
     }
 
     rt_free(parameter);
