@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /* Firmament version information */
-#define FMT_VERSION "v0.5.3"
+#define FMT_VERSION "v0.5.4"
 
 /* Thread Prority */
 #define VEHICLE_THREAD_PRIORITY    3
