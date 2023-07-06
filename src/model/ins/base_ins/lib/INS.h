@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3768
+ * Model version                  : 1.3769
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed May  3 13:24:22 2023
+ * C/C++ source code generated on : Thu Jul  6 11:13:14 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -151,6 +151,22 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_Ext_Att_Pos_Bus_
+#define DEFINED_TYPEDEF_FOR_Ext_Att_Pos_Bus_
+
+typedef struct {
+  uint32_T timestamp;
+  uint32_T field_valid;
+  real32_T x;
+  real32_T y;
+  real32_T z;
+  real32_T phi;
+  real32_T theta;
+  real32_T psi;
+} Ext_Att_Pos_Bus;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_INS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_INS_Out_Bus_
 
@@ -198,8 +214,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_tZUqv5syYxXBNQH3Hn7yjE_
-#define DEFINED_TYPEDEF_FOR_struct_tZUqv5syYxXBNQH3Hn7yjE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_N0aLNKt1LtybJ2cOAFPzYC_
+#define DEFINED_TYPEDEF_FOR_struct_N0aLNKt1LtybJ2cOAFPzYC_
 
 typedef struct {
   real32_T GPS_HOR_Q_BIAS;
@@ -230,7 +246,10 @@ typedef struct {
   real32_T RF_VZ_GAIN;
   real32_T RF_BIAS_AZ_GAIN;
   uint32_T RF_H_DELAY;
-} struct_tZUqv5syYxXBNQH3Hn7yjE;
+  real32_T EXTPOS_POS_GAIN;
+  real32_T EXTPOS_VEL_GAIN;
+  real32_T EXTPOS_BIAS_A_GAIN;
+} struct_N0aLNKt1LtybJ2cOAFPzYC;
 
 #endif
 
@@ -493,6 +512,7 @@ typedef struct {
   Rangefinder_Bus Rangefinder;         /* '<Root>/Rangefinder' */
   Optical_Flow_Bus Optical_Flow;       /* '<Root>/Optical_Flow' */
   AirSpeed_Bus AirSpeed;               /* '<Root>/AirSpeed' */
+  Ext_Att_Pos_Bus Ext_Att_Pos;         /* '<Root>/Ext_Att_Pos' */
 } ExternalInputs_INS_T;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -2287,7 +2307,7 @@ extern const INS_Out_Bus INS_rtZINS_Out_Bus;/* INS_Out_Bus ground */
  * these parameters and exports their symbols.
  *
  */
-extern struct_tZUqv5syYxXBNQH3Hn7yjE INS_PARAM;/* Variable: INS_PARAM
+extern struct_N0aLNKt1LtybJ2cOAFPzYC INS_PARAM;/* Variable: INS_PARAM
                                                 * Referenced by:
                                                 *   '<S353>/Constant1'
                                                 *   '<S353>/Gain2'

@@ -32,6 +32,7 @@ MCN_DECLARE(fms_output);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(rc_channels);
 MCN_DECLARE(auto_cmd);
+MCN_DECLARE(external_att_pos);
 
 typedef struct
 {
@@ -469,6 +470,26 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             }
         }
         break;
+
+    case MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE: {
+        /* TODO: don't know why this msg doesn't have get_target_system() */
+        mavlink_vision_position_estimate_t vision_pos_est;
+        Ext_Att_Pos_Bus ext_att_pos_report = { 0 };
+
+        mavlink_msg_vision_position_estimate_decode(msg, &vision_pos_est);
+
+        ext_att_pos_report.timestamp = systime_now_ms();
+        ext_att_pos_report.field_valid = 0;
+        ext_att_pos_report.x = vision_pos_est.x;
+        ext_att_pos_report.y = vision_pos_est.y;
+        ext_att_pos_report.z = vision_pos_est.z;
+        ext_att_pos_report.phi = vision_pos_est.roll;
+        ext_att_pos_report.theta = vision_pos_est.pitch;
+        ext_att_pos_report.psi = vision_pos_est.yaw;
+
+        /* publish external position */
+        mcn_publish(MCN_HUB(external_att_pos), &ext_att_pos_report);
+    } break;
 
     default:
         LOG_W("unsupported mavlink msg:%d", msg->msgid);
