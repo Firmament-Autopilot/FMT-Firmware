@@ -505,6 +505,9 @@ fmt_err_t mavobc_init(void)
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
 
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_ATTITUDE_QUATERNION, 200, mavlink_msg_attitude_quaternion_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_SCALED_IMU, 200, mavlink_msg_scaled_imu_pack_func, true));
+
     /* register obc mavlink handler */
     FMT_TRY(mavproxy_monitor_register_handler(MAVPROXY_OBC_CHAN, handle_mavlink_message));
 
