@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1965
+ * Model version                  : 1.1971
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat May 20 09:23:14 2023
+ * C/C++ source code generated on : Sat Jul  8 09:55:29 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -89,7 +89,10 @@ const ConstB_FMS_T FMS_ConstB = {
 
   { 0.0F, 0.0F, 1.0F },                /* '<S375>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S450>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S452>/Vector Concatenate3' */
+  0.09F,                               /* '<S448>/Square' */
+  0.88254F,                            /* '<S448>/Multiply' */
+  -9.806F,                             /* '<S448>/Gain4' */
   1U,                                  /* '<S36>/Data Type Conversion' */
   12U,                                 /* '<S36>/Data Type Conversion1' */
   3U,                                  /* '<S41>/Data Type Conversion' */
@@ -129,9 +132,9 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S5>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   {
-    1.9966471893352524,                /* '<S456>/Sum' */
-    0.0066943799901413165,             /* '<S456>/Multiply3' */
-    0.99330562000985867                /* '<S456>/Sum4' */
+    1.9966471893352524,                /* '<S458>/Sum' */
+    0.0066943799901413165,             /* '<S458>/Multiply3' */
+    0.99330562000985867                /* '<S458>/Sum4' */
   }
   ,
 
