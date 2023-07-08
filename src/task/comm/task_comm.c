@@ -622,6 +622,36 @@ bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t)
     return true;
 }
 
+bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_scaled_imu_t scaled_imu = { 0 };
+    imu_data_t imu_data;
+    mag_data_t mag_data;
+
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK) {
+        return false;
+    }
+
+    if (mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK) {
+        return false;
+    }
+
+    scaled_imu.time_boot_ms = systime_now_ms();
+    scaled_imu.xacc = imu_data.acc_B_mDs2[0] * 1000 / 9.806;
+    scaled_imu.yacc = imu_data.acc_B_mDs2[1] * 1000 / 9.806;
+    scaled_imu.zacc = imu_data.acc_B_mDs2[2] * 1000 / 9.806;
+    scaled_imu.xgyro = imu_data.gyr_B_radDs[0] * 1000;
+    scaled_imu.ygyro = imu_data.gyr_B_radDs[1] * 1000;
+    scaled_imu.zgyro = imu_data.gyr_B_radDs[2] * 1000;
+    scaled_imu.xmag = mag_data.mag_B_gauss[0] * 1000;
+    scaled_imu.ymag = mag_data.mag_B_gauss[1] * 1000;
+    scaled_imu.zmag = mag_data.mag_B_gauss[2] * 1000;
+
+    mavlink_msg_scaled_imu_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &scaled_imu);
+
+    return true;
+}
+
 bool mavlink_msg_position_target_local_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_position_target_local_ned_t pos_target_local = { 0 };
