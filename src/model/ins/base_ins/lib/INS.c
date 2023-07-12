@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.3769
+ * Model version                  : 1.3859
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul  6 11:13:14 2023
+ * C/C++ source code generated on : Wed Jul 12 12:27:23 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,7 +110,7 @@ struct_N0aLNKt1LtybJ2cOAFPzYC INS_PARAM = {
   0.2F,
   0U,
   0.25F,
-  0.05F,
+  0.0F,
   0.0F,
   2.0F,
   1.0F,
@@ -118,42 +118,48 @@ struct_N0aLNKt1LtybJ2cOAFPzYC INS_PARAM = {
   100U,
   2.0F,
   1.0F,
-  5U,
-  2.0F,
-  1.0F,
-  0.2F,
   10U,
   2.0F,
   1.0F,
   0.2F,
-  5U,
+  10U,
+  3.0F,
+  5.0F,
+  0.2F,
+  10U,
   5.0F,
   2.0F,
   0.2F
 } ;                                    /* Variable: INS_PARAM
                                         * Referenced by:
-                                        *   '<S353>/Constant1'
-                                        *   '<S353>/Gain2'
-                                        *   '<S354>/Constant7'
-                                        *   '<S354>/Gain3'
+                                        *   '<S398>/Constant1'
+                                        *   '<S398>/Gain2'
+                                        *   '<S399>/Constant7'
+                                        *   '<S399>/Gain3'
                                         *   '<S69>/Gain1'
-                                        *   '<S71>/Constant'
-                                        *   '<S71>/mag_correct_gain'
-                                        *   '<S74>/Gain'
-                                        *   '<S187>/Gain'
-                                        *   '<S187>/Gain2'
-                                        *   '<S187>/Gain3'
-                                        *   '<S197>/Gain'
-                                        *   '<S197>/Gain2'
-                                        *   '<S216>/Gain'
-                                        *   '<S216>/Gain1'
-                                        *   '<S216>/Gain2'
-                                        *   '<S225>/Gain'
-                                        *   '<S225>/Gain1'
-                                        *   '<S225>/Gain2'
-                                        *   '<S234>/Gain'
-                                        *   '<S234>/Gain1'
-                                        *   '<S234>/Gain2'
+                                        *   '<S72>/Constant'
+                                        *   '<S72>/mag_correct_gain'
+                                        *   '<S75>/Gain'
+                                        *   '<S194>/Gain'
+                                        *   '<S194>/Gain2'
+                                        *   '<S194>/Gain3'
+                                        *   '<S203>/Gain'
+                                        *   '<S203>/Gain2'
+                                        *   '<S203>/Gain3'
+                                        *   '<S213>/Gain'
+                                        *   '<S213>/Gain2'
+                                        *   '<S233>/Gain'
+                                        *   '<S233>/Gain1'
+                                        *   '<S233>/Gain2'
+                                        *   '<S242>/Gain'
+                                        *   '<S242>/Gain1'
+                                        *   '<S242>/Gain2'
+                                        *   '<S251>/Gain'
+                                        *   '<S251>/Gain1'
+                                        *   '<S251>/Gain2'
+                                        *   '<S260>/Gain'
+                                        *   '<S260>/Gain1'
+                                        *   '<S260>/Gain2'
                                         */
 
 struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT = {
@@ -163,11 +169,12 @@ struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT = {
 } ;                                    /* Variable: INS_EXPORT
                                         * Referenced by:
                                         *   '<S4>/Constant'
-                                        *   '<S334>/Constant'
                                         *   '<S367>/Constant'
-                                        *   '<S375>/Constant'
-                                        *   '<S393>/Constant'
-                                        *   '<S400>/Constant'
+                                        *   '<S380>/Constant'
+                                        *   '<S412>/Constant'
+                                        *   '<S420>/Constant'
+                                        *   '<S438>/Constant'
+                                        *   '<S445>/Constant'
                                         *   '<S11>/Constant'
                                         *   '<S12>/Constant'
                                         *   '<S13>/Constant'
@@ -175,12 +182,12 @@ struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT = {
                                         *   '<S15>/Constant'
                                         *   '<S16>/Constant'
                                         *   '<S17>/Constant'
-                                        *   '<S352>/Constant'
-                                        *   '<S286>/Constant'
-                                        *   '<S287>/Constant'
-                                        *   '<S298>/Constant'
-                                        *   '<S299>/Constant'
-                                        *   '<S300>/Constant'
+                                        *   '<S397>/Constant'
+                                        *   '<S318>/Constant'
+                                        *   '<S319>/Constant'
+                                        *   '<S330>/Constant'
+                                        *   '<S331>/Constant'
+                                        *   '<S332>/Constant'
                                         */
 
 /* Block parameters (default storage) */
@@ -453,6 +460,7 @@ Parameters_INS_T INS_P = {
   1000,
   98.055F,
   -98.055F,
+  3.14159274F,
   1.0F,
   0.01F,
   0.2F,
@@ -482,6 +490,9 @@ Parameters_INS_T INS_P = {
   1000.0F,
   100.0F,
   10.3055F,
+  1U,
+  2U,
+  8U,
   50U,
   200U,
   500U,
@@ -489,6 +500,7 @@ Parameters_INS_T INS_P = {
   20U,
   1U,
   200U,
+  500U,
   100U,
   1000U,
   100U,
@@ -506,6 +518,12 @@ Parameters_INS_T INS_P = {
   0U,
   0U,
   0U,
+  0U,
+  0U,
+  0U,
+  0,
+  0,
+  0,
   0,
   0,
   0,
@@ -559,6 +577,7 @@ Parameters_INS_T INS_P = {
   2U,
   90U,
   50U,
+  0U,
   1.0E+8,
   1.0E-6,
   1.0,
@@ -634,7 +653,9 @@ Parameters_INS_T INS_P = {
   0.0F,
   0.0F,
   -1.0F,
+  0.0F,
   1.0F,
+  0.0F,
   1.0F,
   0.0F,
   0.002F,
@@ -642,6 +663,7 @@ Parameters_INS_T INS_P = {
   0.002F,
   20.0F,
   100.0F,
+  6.28318548F,
   0.0F,
   0.002F,
   0.2F,
@@ -669,6 +691,9 @@ Parameters_INS_T INS_P = {
   0.0F,
   3947.8418F,
   88.8442383F,
+  0.0F,
+
+  { 0.0F, 0.0F, 1.0F },
   0.3F,
   0.2F,
   1.0F,
@@ -698,6 +723,7 @@ Parameters_INS_T INS_P = {
   2.0F,
   0.0F,
   0.0F,
+  0.0F,
   1.0F,
   0.5F,
   2.0F,
@@ -725,8 +751,11 @@ Parameters_INS_T INS_P = {
   1.0F,
   1.0F,
   1.0F,
+  0.0F,
   1.0F,
+  0.0F,
   1.0F,
+  0.0F,
   1.0F,
 
   { 1.0F, 0.0F, 0.0F, 0.0F },
@@ -748,6 +777,10 @@ Parameters_INS_T INS_P = {
   0.0F,
   1.0F,
   0.0F,
+  0.0F,
+  0.0F,
+  0.002F,
+  0.0F,
 
   { 0.0F, 0.0F },
   0.0F,
@@ -768,6 +801,12 @@ Parameters_INS_T INS_P = {
   0.002F,
   0.5F,
   -0.5F,
+  1.0F,
+  -1.0F,
+  0.0F,
+  0.0F,
+  0.0F,
+  0.002F,
   0.0F,
   0.0F,
   0.0F,
@@ -840,6 +879,15 @@ Parameters_INS_T INS_P = {
   0.1902612F,
   288.15F,
   -0.0065F,
+  -1.0F,
+  0.0F,
+  -1.0F,
+  1.0F,
+  0.0F,
+  0.0F,
+  0.0F,
+  0.0F,
+  -1.0F,
   0.0F,
   1.0F,
   0.0F,
@@ -857,6 +905,7 @@ Parameters_INS_T INS_P = {
   39.4784164F,
   8.88442421F,
   0.5F,
+  0.0F,
   1.0F,
   0.0F,
   1.0F,
@@ -889,6 +938,7 @@ Parameters_INS_T INS_P = {
   0.0F,
   0.0F,
   0.0F,
+  0.0F,
   2147483648U,
   2147483648U,
   2199023256U,
@@ -903,6 +953,8 @@ Parameters_INS_T INS_P = {
   1U,
   1U,
   0U,
+  1U,
+  1U,
   1U,
   1U,
   1U,
@@ -914,18 +966,24 @@ Parameters_INS_T INS_P = {
   1U,
   0U,
   0U,
+  5U,
+  5U,
+  1U,
   75U,
   75U,
   50U,
   50U,
-  3U,
-  3U,
+  5U,
+  5U,
+  1U,
+  5U,
+  1U,
   1U,
   5U,
   1U,
   75U,
   50U,
-  3U,
+  5U,
   1U,
   1U,
   1U,
@@ -951,6 +1009,11 @@ Parameters_INS_T INS_P = {
   0U,
   10000U,
   0U,
+  1U,
+  1U,
+  0U,
+  1U,
+  1U,
   0U,
   0U,
   1U,
@@ -963,6 +1026,8 @@ Parameters_INS_T INS_P = {
   0U,
   9999U,
   0U,
+  1U,
+  1U,
   1U,
   1U,
   1U,
@@ -1011,6 +1076,11 @@ Parameters_INS_T INS_P = {
   0,
   0,
   0,
+  0,
+  0,
+  1,
+  0,
+  0,
   1,
   0,
   0,
@@ -1019,6 +1089,10 @@ Parameters_INS_T INS_P = {
   0,
   0,
   1,
+  0,
+  0,
+  1,
+  0,
   0,
   0,
   128U,
@@ -1027,6 +1101,12 @@ Parameters_INS_T INS_P = {
   128U,
   128U,
   1U,
+  0U,
+  1U,
+  1U,
+  1U,
+  0U,
+  0U,
   0U,
   1U,
   0U,
@@ -1038,19 +1118,19 @@ Parameters_INS_T INS_P = {
   1U,
   0U,
 
-  /* Start of '<S246>/Rf_Velocity' */
+  /* Start of '<S272>/Rf_Velocity' */
   {
     0.0F
   }
   ,
 
-  /* End of '<S246>/Rf_Velocity' */
+  /* End of '<S272>/Rf_Velocity' */
 
-  /* Start of '<S246>/Baro_Velocity' */
+  /* Start of '<S272>/Baro_Velocity' */
   {
     0.0F
   }
-  /* End of '<S246>/Baro_Velocity' */
+  /* End of '<S272>/Baro_Velocity' */
 };
 
 /* Block signals (default storage) */
@@ -1120,23 +1200,23 @@ static uint32_T mul_u32_loSR(uint32_T a, uint32_T b, uint32_T aShift)
 
 /*
  * Output and update for enable system:
- *    '<S246>/Baro_Velocity'
- *    '<S246>/Rf_Velocity'
+ *    '<S272>/Baro_Velocity'
+ *    '<S272>/Rf_Velocity'
  */
 static void INS_Baro_Velocity(boolean_T rtu_TF_Data, real32_T *rty_vel_D_mPs,
   rtP_Baro_Velocity_INS_T *localP)
 {
-  /* Outputs for Enabled SubSystem: '<S246>/Baro_Velocity' incorporates:
-   *  EnablePort: '<S250>/Enable'
+  /* Outputs for Enabled SubSystem: '<S272>/Baro_Velocity' incorporates:
+   *  EnablePort: '<S276>/Enable'
    */
   if (rtu_TF_Data) {
-    /* SignalConversion: '<S250>/OutportBuffer_InsertedFor_vel_D_mPs_at_inport_0' incorporates:
-     *  Constant: '<S250>/Constant'
+    /* SignalConversion: '<S276>/OutportBuffer_InsertedFor_vel_D_mPs_at_inport_0' incorporates:
+     *  Constant: '<S276>/Constant'
      */
     *rty_vel_D_mPs = localP->Constant_Value;
   }
 
-  /* End of Outputs for SubSystem: '<S246>/Baro_Velocity' */
+  /* End of Outputs for SubSystem: '<S272>/Baro_Velocity' */
 }
 
 /* Model step function */
@@ -1145,66 +1225,72 @@ void INS_step(void)
   real32_T rtb_DiscreteTimeIntegrator_g;
   real32_T rtb_DiscreteTimeIntegrator_b;
   real32_T rtb_Divide1;
-  boolean_T rtb_Delay_c;
   boolean_T rtb_WGS84_pos_valid;
   boolean_T rtb_FixPtRelationalOperator_cn;
   uint8_T rtb_Switch_pt;
   uint32_T rtb_Sum1;
-  uint8_T rtb_Compare;
+  boolean_T rtb_FixPtRelationalOperator_nc;
+  uint8_T rtb_Switch_ox;
+  boolean_T rtb_LogicalOperator2_g;
+  uint8_T rtb_Switch_bx;
+  real32_T rtb_M_OC[9];
+  boolean_T rtb_LogicalOperator3;
+  boolean_T rtb_LogicalOperator5;
   boolean_T rtb_Compare_c5;
   boolean_T rtb_Compare_cio;
   real32_T rtb_Gain2_a;
   real_T rtb_Scalefactor1;
   real_T rtb_Scalefactor2;
   real_T rtb_Scalefactor3;
-  real32_T rtb_Product_d4;
+  real32_T rtb_Product_n;
   real32_T rtb_Saturation_a;
   real32_T rtb_Product2;
   real32_T rtb_VectorConcatenate1[3];
-  real32_T rtb_Gain_d[3];
+  real32_T rtb_Gain_o4[3];
   boolean_T rtb_Compare_ai;
+  boolean_T rtb_Switch_ol;
   real32_T rtb_Square_le[3];
   boolean_T rtb_Compare_o;
   boolean_T rtb_Compare_jx;
-  boolean_T rtb_LogicalOperator2_f;
   int8_T rtb_DataTypeConversion1_m;
   int8_T rtb_DataTypeConversion_b;
-  boolean_T rtb_Compare_ko;
-  boolean_T rtb_Compare_jv;
+  int8_T rtb_DataTypeConversion2_h;
+  boolean_T rtb_Compare_og;
+  boolean_T rtb_Compare_nw;
   real32_T rtb_Sum2_m;
+  real32_T rtb_Multiply_hs[3];
   boolean_T rtb_Compare_nt;
   boolean_T rtb_Compare_i5;
   boolean_T rtb_LogicalOperator1_cc;
-  uint16_T rtb_Multiply_mf;
+  uint16_T rtb_Multiply_jy;
   boolean_T rtb_Compare_ce;
-  boolean_T rtb_FixPtRelationalOperator_kp;
+  boolean_T rtb_FixPtRelationalOperator_p;
   boolean_T rtb_Compare_od;
   boolean_T rtb_LogicalOperator1_ao;
-  uint16_T rtb_Multiply_ni;
+  uint16_T rtb_Multiply_o;
   boolean_T rtb_Compare_d;
-  boolean_T rtb_FixPtRelationalOperator_fe;
+  boolean_T rtb_FixPtRelationalOperator_fr;
   boolean_T rtb_Compare_fc;
   boolean_T rtb_Compare_g;
   boolean_T rtb_LogicalOperator1_ng;
-  uint16_T rtb_Multiply_nm;
+  uint16_T rtb_Multiply_cb;
   boolean_T rtb_Compare_j;
   boolean_T rtb_Compare_eh1;
   boolean_T rtb_LogicalOperator1_nd;
-  boolean_T rtb_Compare_b;
-  boolean_T rtb_Compare_cm;
+  boolean_T rtb_Compare_d3;
+  boolean_T rtb_Compare_a2;
   boolean_T rtb_LogicalOperator1_f1;
-  uint16_T rtb_Multiply_lk;
-  boolean_T rtb_Compare_bf;
-  boolean_T rtb_Compare_k2;
+  uint16_T rtb_Multiply_gs;
+  boolean_T rtb_Compare_e0;
+  boolean_T rtb_Compare_cj;
   real_T rtb_DataTypeConversion2;
-  real32_T rtb_Switch_f[6];
+  real32_T rtb_Switch_nv[6];
   real_T rtb_DataTypeConversion1;
-  real32_T rtb_DiscreteTimeIntegrator_m;
   uint32_T rtb_Sum1_o;
   real32_T rtb_Sum2_by;
   real_T rtb_ff;
-  real32_T rtb_Gain_cv[3];
-  real32_T rtb_M_OC[9];
+  real32_T rtb_Gain_fc[3];
+  real32_T rtb_Multiply2;
   real32_T rtb_VectorConcatenate_er[9];
   real32_T rtb_Sum_g0[6];
   real32_T rtb_VectorConcatenate_h[9];
@@ -1212,23 +1298,23 @@ void INS_step(void)
   real32_T rtb_MathFunction1;
   real32_T rtb_Gauss_to_uT[3];
   real32_T rtb_MathFunction[3];
+  real32_T rtb_M_OC_0[9];
   real32_T tmp[6];
-  real32_T rtb_MathFunction_m;
   real_T rtb_Switch4_c_idx_0;
   real_T rtb_Switch4_c_idx_1;
-  real32_T rtb_Switch_k_idx_3;
+  real32_T rtb_Switch_kj_idx_3;
   int32_T rtb_Saturation1_j_idx_0;
   int32_T rtb_Saturation1_j_idx_1;
-  real32_T rtb_Abs_idx_0;
+  real32_T rtb_Abs_h_idx_0;
   real32_T rtb_Sum_gn_idx_1;
   real32_T rtb_Sum_gn_idx_2;
   real32_T rtb_Sum_gn_idx_0;
   real32_T rtb_MathFunction_e_idx_2;
   real32_T rtb_Sum_p_idx_0;
   real32_T rtb_Sum_p_idx_1;
-  real32_T rtb_Switch_k_idx_0;
-  real32_T rtb_Switch_k_idx_1;
-  real32_T rtb_Switch_k_idx_2;
+  real32_T rtb_Switch_kj_idx_0;
+  real32_T rtb_Switch_kj_idx_1;
+  real32_T rtb_Switch_kj_idx_2;
   real32_T rtb_Memory_m_idx_1;
   int8_T u0;
   uint32_T qY;
@@ -1241,19 +1327,20 @@ void INS_step(void)
   real32_T rtb_M_OC_tmp_3;
   real32_T rtb_M_OC_tmp_4;
   real32_T rtb_M_OC_tmp_5;
+  real32_T rtb_M_OC_tmp_6;
 
   /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
   /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
-  /* Product: '<S332>/Divide' incorporates:
-   *  Constant: '<S332>/p1'
-   *  Gain: '<S332>/Gain1'
+  /* Product: '<S365>/Divide' incorporates:
+   *  Constant: '<S365>/p1'
+   *  Gain: '<S365>/Gain1'
    *  Inport: '<Root>/Barometer'
    */
   rtb_DiscreteTimeIntegrator_g = INS_P.Gain1_Gain_a * INS_U.Barometer.pressure /
     INS_P.p1_Value;
 
-  /* Math: '<S332>/Power' incorporates:
-   *  Constant: '<S332>/aR_g'
+  /* Math: '<S365>/Power' incorporates:
+   *  Constant: '<S365>/aR_g'
    */
   if ((rtb_DiscreteTimeIntegrator_g < 0.0F) && (INS_P.aR_g_Value > floorf
        (INS_P.aR_g_Value))) {
@@ -1264,24 +1351,24 @@ void INS_step(void)
       INS_P.aR_g_Value);
   }
 
-  /* End of Math: '<S332>/Power' */
+  /* End of Math: '<S365>/Power' */
 
-  /* Product: '<S332>/Divide1' incorporates:
-   *  Constant: '<S332>/T1'
-   *  Constant: '<S332>/a'
-   *  Product: '<S332>/Multiply'
-   *  Sum: '<S332>/Subtract'
+  /* Product: '<S365>/Divide1' incorporates:
+   *  Constant: '<S365>/T1'
+   *  Constant: '<S365>/a'
+   *  Product: '<S365>/Multiply'
+   *  Sum: '<S365>/Subtract'
    */
   rtb_Divide1 = (rtb_DiscreteTimeIntegrator_g * INS_P.T1_Value - INS_P.T1_Value)
     / INS_P.a_Value;
 
-  /* DiscreteIntegrator: '<S334>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S342>/Constant1'
-   *  Delay: '<S342>/Delay'
+  /* DiscreteIntegrator: '<S367>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S375>/Constant1'
+   *  Delay: '<S375>/Delay'
    *  Inport: '<Root>/Barometer'
-   *  RelationalOperator: '<S341>/FixPt Relational Operator'
-   *  Switch: '<S342>/Switch'
-   *  UnitDelay: '<S341>/Delay Input1'
+   *  RelationalOperator: '<S374>/FixPt Relational Operator'
+   *  Switch: '<S375>/Switch'
+   *  UnitDelay: '<S374>/Delay Input1'
    */
   if (INS_U.Barometer.timestamp != INS_DWork.DelayInput1_DSTATE_c) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_nm =
@@ -1291,22 +1378,22 @@ void INS_step(void)
     rtb_Switch_pt = INS_DWork.Delay_DSTATE_i1;
   }
 
-  /* Logic: '<S334>/Logical Operator1' incorporates:
-   *  Constant: '<S340>/Constant'
-   *  Constant: '<S343>/Lower Limit'
-   *  Constant: '<S343>/Upper Limit'
-   *  Constant: '<S344>/Lower Limit'
-   *  Constant: '<S344>/Upper Limit'
-   *  DiscreteIntegrator: '<S334>/Discrete-Time Integrator'
+  /* Logic: '<S367>/Logical Operator1' incorporates:
+   *  Constant: '<S373>/Constant'
+   *  Constant: '<S376>/Lower Limit'
+   *  Constant: '<S376>/Upper Limit'
+   *  Constant: '<S377>/Lower Limit'
+   *  Constant: '<S377>/Upper Limit'
+   *  DiscreteIntegrator: '<S367>/Discrete-Time Integrator'
    *  Inport: '<Root>/Barometer'
-   *  Logic: '<S334>/Logical Operator'
-   *  Logic: '<S343>/AND'
-   *  Logic: '<S344>/AND'
-   *  RelationalOperator: '<S340>/Compare'
-   *  RelationalOperator: '<S343>/Lower Test'
-   *  RelationalOperator: '<S343>/Upper Test'
-   *  RelationalOperator: '<S344>/Lower Test'
-   *  RelationalOperator: '<S344>/Upper Test'
+   *  Logic: '<S367>/Logical Operator'
+   *  Logic: '<S376>/AND'
+   *  Logic: '<S377>/AND'
+   *  RelationalOperator: '<S373>/Compare'
+   *  RelationalOperator: '<S376>/Lower Test'
+   *  RelationalOperator: '<S376>/Upper Test'
+   *  RelationalOperator: '<S377>/Lower Test'
+   *  RelationalOperator: '<S377>/Upper Test'
    */
   rtb_WGS84_pos_valid = ((INS_P.Sensor_Valid_min_pressure <
     INS_U.Barometer.pressure) && (INS_U.Barometer.pressure <
@@ -1315,17 +1402,17 @@ void INS_step(void)
     INS_P.Sensor_Valid_max_temp)) && (INS_DWork.DiscreteTimeIntegrator_DSTAT_nm <
     INS_P.Sensor_Valid_timeout) && (rtb_Switch_pt != 0));
 
-  /* Sum: '<S336>/Sum1' incorporates:
+  /* Sum: '<S369>/Sum1' incorporates:
    *  Inport: '<Root>/Barometer'
-   *  Logic: '<S336>/Logical Operator5'
-   *  RelationalOperator: '<S338>/FixPt Relational Operator'
-   *  UnitDelay: '<S338>/Delay Input1'
+   *  Logic: '<S369>/Logical Operator5'
+   *  RelationalOperator: '<S371>/FixPt Relational Operator'
+   *  UnitDelay: '<S371>/Delay Input1'
    */
   rtb_Saturation1_j_idx_0 = ((INS_U.Barometer.timestamp !=
     INS_DWork.DelayInput1_DSTATE_g) && rtb_WGS84_pos_valid);
 
-  /* Saturate: '<S336>/Saturation' incorporates:
-   *  Delay: '<S336>/Delay'
+  /* Saturate: '<S369>/Saturation' incorporates:
+   *  Delay: '<S369>/Delay'
    */
   if (INS_DWork.Delay_DSTATE_f > INS_P.Saturation_UpperSat_f) {
     rtb_Sum1 = INS_P.Saturation_UpperSat_f;
@@ -1335,59 +1422,59 @@ void INS_step(void)
     rtb_Sum1 = INS_DWork.Delay_DSTATE_f;
   }
 
-  /* End of Saturate: '<S336>/Saturation' */
+  /* End of Saturate: '<S369>/Saturation' */
 
-  /* Sum: '<S336>/Sum1' */
+  /* Sum: '<S369>/Sum1' */
   rtb_Sum1 += rtb_Saturation1_j_idx_0;
   if (rtb_Sum1 < (uint32_T)rtb_Saturation1_j_idx_0) {
     rtb_Sum1 = MAX_uint32_T;
   }
 
-  /* Logic: '<S333>/Logical Operator' incorporates:
-   *  Constant: '<S337>/Constant'
-   *  RelationalOperator: '<S337>/Compare'
-   *  Sum: '<S336>/Sum1'
+  /* Logic: '<S366>/Logical Operator' incorporates:
+   *  Constant: '<S370>/Constant'
+   *  RelationalOperator: '<S370>/Compare'
+   *  Sum: '<S369>/Sum1'
    */
-  rtb_FixPtRelationalOperator_cn = ((rtb_Sum1 > INS_P.CompareToConstant_const_n)
+  rtb_FixPtRelationalOperator_cn = ((rtb_Sum1 > INS_P.CompareToConstant_const_nb)
     && rtb_WGS84_pos_valid);
 
-  /* Outputs for Enabled SubSystem: '<S333>/Reference_Height' incorporates:
-   *  EnablePort: '<S335>/Enable'
+  /* Outputs for Enabled SubSystem: '<S366>/Reference_Height' incorporates:
+   *  EnablePort: '<S368>/Enable'
    */
-  /* Logic: '<S339>/AND' incorporates:
-   *  Constant: '<S339>/Lower Limit'
-   *  Constant: '<S339>/Upper Limit'
-   *  RelationalOperator: '<S339>/Lower Test'
-   *  RelationalOperator: '<S339>/Upper Test'
-   *  Sum: '<S336>/Sum1'
+  /* Logic: '<S372>/AND' incorporates:
+   *  Constant: '<S372>/Lower Limit'
+   *  Constant: '<S372>/Upper Limit'
+   *  RelationalOperator: '<S372>/Lower Test'
+   *  RelationalOperator: '<S372>/Upper Test'
+   *  Sum: '<S369>/Sum1'
    */
   if ((INS_P.IntervalTest3_lowlimit < rtb_Sum1) && (rtb_Sum1 <
        INS_P.IntervalTest3_uplimit)) {
     if (!INS_DWork.Reference_Height_MODE) {
-      /* InitializeConditions for Delay: '<S335>/Delay' */
+      /* InitializeConditions for Delay: '<S368>/Delay' */
       INS_DWork.Delay_DSTATE_d = INS_P.Delay_InitialCondition_p;
 
-      /* InitializeConditions for Delay: '<S335>/Delay1' */
+      /* InitializeConditions for Delay: '<S368>/Delay1' */
       INS_DWork.Delay1_DSTATE_i = INS_P.Delay1_InitialCondition_k;
       INS_DWork.Reference_Height_MODE = true;
     }
 
-    /* Sum: '<S335>/Sum2' incorporates:
-     *  Delay: '<S335>/Delay'
+    /* Sum: '<S368>/Sum2' incorporates:
+     *  Delay: '<S368>/Delay'
      */
     rtb_Sum2_by = rtb_Divide1 + INS_DWork.Delay_DSTATE_d;
 
-    /* Sum: '<S335>/Sum1' incorporates:
-     *  Constant: '<S335>/Constant1'
-     *  Delay: '<S335>/Delay1'
+    /* Sum: '<S368>/Sum1' incorporates:
+     *  Constant: '<S368>/Constant1'
+     *  Delay: '<S368>/Delay1'
      */
     rtb_Sum1_o = INS_P.Constant1_Value_f + INS_DWork.Delay1_DSTATE_i;
     if (rtb_Sum1_o < INS_P.Constant1_Value_f) {
       rtb_Sum1_o = MAX_uint32_T;
     }
 
-    /* Saturate: '<S335>/Saturation1' incorporates:
-     *  Sum: '<S335>/Sum1'
+    /* Saturate: '<S368>/Saturation1' incorporates:
+     *  Sum: '<S368>/Sum1'
      */
     if (rtb_Sum1_o > INS_P.Saturation1_UpperSat_n) {
       qY = INS_P.Saturation1_UpperSat_n;
@@ -1397,16 +1484,16 @@ void INS_step(void)
       qY = rtb_Sum1_o;
     }
 
-    /* End of Saturate: '<S335>/Saturation1' */
+    /* End of Saturate: '<S368>/Saturation1' */
 
-    /* Product: '<S335>/Divide' */
+    /* Product: '<S368>/Divide' */
     INS_B.Divide = rtb_Sum2_by / (real32_T)qY;
 
-    /* Update for Delay: '<S335>/Delay' */
+    /* Update for Delay: '<S368>/Delay' */
     INS_DWork.Delay_DSTATE_d = rtb_Sum2_by;
 
-    /* Update for Delay: '<S335>/Delay1' incorporates:
-     *  Sum: '<S335>/Sum1'
+    /* Update for Delay: '<S368>/Delay1' incorporates:
+     *  Sum: '<S368>/Sum1'
      */
     INS_DWork.Delay1_DSTATE_i = rtb_Sum1_o;
   } else {
@@ -1415,153 +1502,352 @@ void INS_step(void)
     }
   }
 
-  /* End of Logic: '<S339>/AND' */
-  /* End of Outputs for SubSystem: '<S333>/Reference_Height' */
+  /* End of Logic: '<S372>/AND' */
+  /* End of Outputs for SubSystem: '<S366>/Reference_Height' */
 
-  /* Switch: '<S333>/Switch' */
+  /* Switch: '<S366>/Switch' */
   if (rtb_FixPtRelationalOperator_cn) {
     rtb_Sum2_by = INS_B.Divide;
   } else {
     rtb_Sum2_by = rtb_Divide1;
   }
 
-  /* End of Switch: '<S333>/Switch' */
+  /* End of Switch: '<S366>/Switch' */
 
-  /* Sum: '<S333>/Sum2' */
+  /* Sum: '<S366>/Sum2' */
   rtb_Sum2_m = rtb_Divide1 - rtb_Sum2_by;
 
-  /* Update for UnitDelay: '<S338>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S371>/Delay Input1' incorporates:
    *  Inport: '<Root>/Barometer'
    */
   INS_DWork.DelayInput1_DSTATE_g = INS_U.Barometer.timestamp;
 
-  /* Update for UnitDelay: '<S341>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S374>/Delay Input1' incorporates:
    *  Inport: '<Root>/Barometer'
    */
   INS_DWork.DelayInput1_DSTATE_c = INS_U.Barometer.timestamp;
 
-  /* Update for DiscreteIntegrator: '<S334>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S334>/Constant'
+  /* Update for DiscreteIntegrator: '<S367>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S367>/Constant'
    */
-  rtb_Switch_k_idx_1 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_nm +
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_nm +
     (real32_T)INS_EXPORT.period;
-  if (rtb_Switch_k_idx_1 < 4.2949673E+9F) {
-    INS_DWork.DiscreteTimeIntegrator_DSTAT_nm = (uint32_T)rtb_Switch_k_idx_1;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_nm = (uint32_T)rtb_Switch_kj_idx_3;
   } else {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_nm = MAX_uint32_T;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S334>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S367>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S342>/Delay' */
+  /* Update for Delay: '<S375>/Delay' */
   INS_DWork.Delay_DSTATE_i1 = rtb_Switch_pt;
 
-  /* Update for Delay: '<S336>/Delay' incorporates:
-   *  Sum: '<S336>/Sum1'
+  /* Update for Delay: '<S369>/Delay' incorporates:
+   *  Sum: '<S369>/Sum1'
    */
   INS_DWork.Delay_DSTATE_f = rtb_Sum1;
 
   /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
 
+  /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+  /* Switch: '<S381>/Switch' incorporates:
+   *  Constant: '<S381>/Constant1'
+   *  Delay: '<Root>/Delay'
+   *  Delay: '<S381>/Delay'
+   */
+  if (INS_DWork.Delay_1_DSTATE) {
+    rtb_Switch_pt = INS_P.Constant1_Value_m;
+  } else {
+    rtb_Switch_pt = INS_DWork.Delay_DSTATE_e;
+  }
+
+  /* End of Switch: '<S381>/Switch' */
+
+  /* DiscreteIntegrator: '<S380>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S389>/Constant1'
+   *  Delay: '<S389>/Delay'
+   *  Inport: '<Root>/External_Pos'
+   *  RelationalOperator: '<S388>/FixPt Relational Operator'
+   *  Switch: '<S389>/Switch'
+   *  UnitDelay: '<S388>/Delay Input1'
+   */
+  if (INS_U.External_Pos.timestamp != INS_DWork.DelayInput1_DSTATE_b) {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_nj =
+      INS_P.DiscreteTimeIntegrator_IC_jj;
+    rtb_Switch_ox = INS_P.Constant1_Value_ns;
+  } else {
+    rtb_Switch_ox = INS_DWork.Delay_DSTATE_g;
+  }
+
+  /* Logic: '<S380>/Logical Operator1' incorporates:
+   *  Constant: '<S387>/Constant'
+   *  DiscreteIntegrator: '<S380>/Discrete-Time Integrator'
+   *  RelationalOperator: '<S387>/Compare'
+   */
+  rtb_WGS84_pos_valid = ((INS_DWork.DiscreteTimeIntegrator_DSTAT_nj <
+    INS_P.Sensor_Valid_timeout_e) && (rtb_Switch_ox != 0));
+
+  /* Logic: '<S380>/Logical Operator2' incorporates:
+   *  Inport: '<Root>/External_Pos'
+   *  S-Function (sfix_bitop): '<S380>/xy valid'
+   */
+  rtb_LogicalOperator2_g = (rtb_WGS84_pos_valid &&
+    ((INS_U.External_Pos.field_valid & INS_P.xyvalid_BitMask) != 0U));
+
+  /* Switch: '<S384>/Switch' incorporates:
+   *  Constant: '<S384>/Constant1'
+   *  Delay: '<S384>/Delay'
+   *  Logic: '<S382>/Logical Operator'
+   */
+  if (rtb_LogicalOperator2_g && (rtb_Switch_pt != 0)) {
+    rtb_Switch_bx = INS_P.Constant1_Value_cs;
+  } else {
+    rtb_Switch_bx = INS_DWork.Delay_DSTATE_gj;
+  }
+
+  /* End of Switch: '<S384>/Switch' */
+
+  /* Switch: '<S382>/Switch' incorporates:
+   *  Delay: '<Root>/Delay'
+   *  Delay: '<S382>/Delay'
+   *  RelationalOperator: '<S383>/FixPt Relational Operator'
+   *  UnitDelay: '<S383>/Delay Input1'
+   */
+  if (rtb_Switch_bx > INS_DWork.DelayInput1_DSTATE_cn) {
+    rtb_Divide1 = INS_DWork.Delay_4_DSTATE;
+  } else {
+    rtb_Divide1 = INS_DWork.Delay_DSTATE_a;
+  }
+
+  /* End of Switch: '<S382>/Switch' */
+
+  /* Gain: '<S385>/Gain' */
+  rtb_DiscreteTimeIntegrator_b = INS_P.Gain_Gain_oy * rtb_Divide1;
+
+  /* Constant: '<S386>/Constant' */
+  rtb_M_OC[8] = INS_P.Constant_Value_es;
+
+  /* Constant: '<S386>/Constant1' */
+  rtb_M_OC[7] = INS_P.Constant1_Value_ok;
+
+  /* Constant: '<S386>/Constant2' */
+  rtb_M_OC[6] = INS_P.Constant2_Value_n;
+
+  /* Constant: '<S386>/Constant3' */
+  rtb_M_OC[2] = INS_P.Constant3_Value_i;
+
+  /* Constant: '<S386>/Constant4' */
+  rtb_M_OC[5] = INS_P.Constant4_Value_b;
+
+  /* Trigonometry: '<S386>/Trigonometric Function2' incorporates:
+   *  Trigonometry: '<S386>/Trigonometric Function'
+   */
+  rtb_M_OC_tmp = arm_sin_f32(rtb_DiscreteTimeIntegrator_b);
+
+  /* Gain: '<S386>/Gain' incorporates:
+   *  Trigonometry: '<S386>/Trigonometric Function2'
+   */
+  rtb_M_OC[3] = INS_P.Gain_Gain_mn * rtb_M_OC_tmp;
+
+  /* Trigonometry: '<S386>/Trigonometric Function' */
+  rtb_M_OC[1] = rtb_M_OC_tmp;
+
+  /* Trigonometry: '<S386>/Trigonometric Function1' incorporates:
+   *  Trigonometry: '<S386>/Trigonometric Function3'
+   */
+  rtb_M_OC_tmp = arm_cos_f32(rtb_DiscreteTimeIntegrator_b);
+  rtb_M_OC[0] = rtb_M_OC_tmp;
+
+  /* Trigonometry: '<S386>/Trigonometric Function3' */
+  rtb_M_OC[4] = rtb_M_OC_tmp;
+
+  /* Math: '<S382>/Transpose' */
+  for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
+       rtb_Saturation1_j_idx_1_0++) {
+    rtb_M_OC_0[3 * rtb_Saturation1_j_idx_1_0] =
+      rtb_M_OC[rtb_Saturation1_j_idx_1_0];
+    rtb_M_OC_0[1 + 3 * rtb_Saturation1_j_idx_1_0] =
+      rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 3];
+    rtb_M_OC_0[2 + 3 * rtb_Saturation1_j_idx_1_0] =
+      rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 6];
+  }
+
+  for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 9;
+       rtb_Saturation1_j_idx_1_0++) {
+    rtb_M_OC[rtb_Saturation1_j_idx_1_0] = rtb_M_OC_0[rtb_Saturation1_j_idx_1_0];
+  }
+
+  /* End of Math: '<S382>/Transpose' */
+
+  /* SignalConversion: '<S379>/TmpSignal ConversionAtMultiplyInport2' incorporates:
+   *  Gain: '<S379>/Gain'
+   *  Inport: '<Root>/External_Pos'
+   */
+  rtb_Switch_kj_idx_3 = INS_P.Gain_Gain_np * INS_U.External_Pos.z;
+
+  /* Product: '<S379>/Multiply' incorporates:
+   *  Inport: '<Root>/External_Pos'
+   *  SignalConversion: '<S379>/TmpSignal ConversionAtMultiplyInport2'
+   */
+  for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
+       rtb_Saturation1_j_idx_1_0++) {
+    rtb_Multiply_hs[rtb_Saturation1_j_idx_1_0] =
+      rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 6] * rtb_Switch_kj_idx_3 +
+      (rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 3] * INS_U.External_Pos.y +
+       rtb_M_OC[rtb_Saturation1_j_idx_1_0] * INS_U.External_Pos.x);
+  }
+
+  /* End of Product: '<S379>/Multiply' */
+
+  /* Logic: '<S380>/Logical Operator3' incorporates:
+   *  Inport: '<Root>/External_Pos'
+   *  S-Function (sfix_bitop): '<S380>/height valid'
+   */
+  rtb_LogicalOperator3 = (rtb_WGS84_pos_valid &&
+    ((INS_U.External_Pos.field_valid & INS_P.heightvalid_BitMask) != 0U));
+
+  /* Logic: '<S380>/Logical Operator5' incorporates:
+   *  Inport: '<Root>/External_Pos'
+   *  S-Function (sfix_bitop): '<S380>/heading valid'
+   */
+  rtb_LogicalOperator5 = (rtb_WGS84_pos_valid &&
+    ((INS_U.External_Pos.field_valid & INS_P.headingvalid_BitMask) != 0U));
+
+  /* Update for Delay: '<S381>/Delay' */
+  INS_DWork.Delay_DSTATE_e = rtb_Switch_pt;
+
+  /* Update for Delay: '<S382>/Delay' */
+  INS_DWork.Delay_DSTATE_a = rtb_Divide1;
+
+  /* Update for UnitDelay: '<S383>/Delay Input1' */
+  INS_DWork.DelayInput1_DSTATE_cn = rtb_Switch_bx;
+
+  /* Update for UnitDelay: '<S388>/Delay Input1' incorporates:
+   *  Inport: '<Root>/External_Pos'
+   */
+  INS_DWork.DelayInput1_DSTATE_b = INS_U.External_Pos.timestamp;
+
+  /* Update for DiscreteIntegrator: '<S380>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S380>/Constant'
+   */
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_nj +
+    (real32_T)INS_EXPORT.period;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_nj = (uint32_T)rtb_Switch_kj_idx_3;
+  } else {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_nj = MAX_uint32_T;
+  }
+
+  /* End of Update for DiscreteIntegrator: '<S380>/Discrete-Time Integrator' */
+
+  /* Update for Delay: '<S389>/Delay' */
+  INS_DWork.Delay_DSTATE_g = rtb_Switch_ox;
+
+  /* Update for Delay: '<S384>/Delay' */
+  INS_DWork.Delay_DSTATE_gj = rtb_Switch_bx;
+
+  /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+
   /* Outputs for Atomic SubSystem: '<S3>/GPS_PreProcess' */
-  /* RelationalOperator: '<S359>/Compare' incorporates:
-   *  Constant: '<S359>/Constant'
-   *  UnitDelay: '<S358>/Unit Delay'
+  /* RelationalOperator: '<S404>/Compare' incorporates:
+   *  Constant: '<S404>/Constant'
+   *  UnitDelay: '<S403>/Unit Delay'
    */
   rtb_WGS84_pos_valid = (INS_DWork.UnitDelay_DSTATE >= INS_P.valid_samples_const);
 
-  /* RelationalOperator: '<S357>/Compare' incorporates:
-   *  Constant: '<S357>/Constant'
+  /* RelationalOperator: '<S402>/Compare' incorporates:
+   *  Constant: '<S402>/Constant'
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Switch_pt = (uint8_T)(INS_U.GPS_uBlox.fixType ==
     INS_P.CompareToConstant1_const_n);
 
-  /* DiscreteIntegrator: '<S352>/Discrete-Time Integrator' incorporates:
+  /* DiscreteIntegrator: '<S397>/Discrete-Time Integrator' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
-   *  RelationalOperator: '<S361>/FixPt Relational Operator'
-   *  UnitDelay: '<S361>/Delay Input1'
+   *  RelationalOperator: '<S406>/FixPt Relational Operator'
+   *  UnitDelay: '<S406>/Delay Input1'
    */
   if (INS_U.GPS_uBlox.timestamp != INS_DWork.DelayInput1_DSTATE_i) {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_i =
       INS_P.DiscreteTimeIntegrator_IC_p;
   }
 
-  /* RelationalOperator: '<S360>/Compare' incorporates:
-   *  Constant: '<S360>/Constant'
-   *  DiscreteIntegrator: '<S352>/Discrete-Time Integrator'
+  /* RelationalOperator: '<S405>/Compare' incorporates:
+   *  Constant: '<S405>/Constant'
+   *  DiscreteIntegrator: '<S397>/Discrete-Time Integrator'
    */
-  rtb_Delay_c = (INS_DWork.DiscreteTimeIntegrator_DSTATE_i <
-                 INS_P.CompareToConstant4_const);
+  rtb_FixPtRelationalOperator_nc = (INS_DWork.DiscreteTimeIntegrator_DSTATE_i <
+    INS_P.CompareToConstant4_const);
 
-  /* Sum: '<S351>/Sum1' incorporates:
-   *  Logic: '<S351>/Logical Operator1'
+  /* Sum: '<S396>/Sum1' incorporates:
+   *  Logic: '<S396>/Logical Operator1'
    */
-  rtb_Compare = (uint8_T)((uint32_T)(rtb_WGS84_pos_valid && (rtb_Switch_pt != 0)
-    && rtb_Delay_c) + rtb_WGS84_pos_valid);
+  rtb_Switch_ox = (uint8_T)((uint32_T)(rtb_WGS84_pos_valid && (rtb_Switch_pt !=
+    0) && rtb_FixPtRelationalOperator_nc) + rtb_WGS84_pos_valid);
 
-  /* RelationalOperator: '<S345>/Compare' incorporates:
-   *  Constant: '<S345>/Constant'
+  /* RelationalOperator: '<S390>/Compare' incorporates:
+   *  Constant: '<S390>/Constant'
    */
-  rtb_Compare_c5 = (rtb_Compare > INS_P.CompareToConstant_const_i);
+  rtb_Compare_c5 = (rtb_Switch_ox > INS_P.CompareToConstant_const_i);
 
-  /* RelationalOperator: '<S346>/Compare' incorporates:
-   *  Constant: '<S346>/Constant'
+  /* RelationalOperator: '<S391>/Compare' incorporates:
+   *  Constant: '<S391>/Constant'
    */
-  rtb_Compare_cio = (rtb_Compare == INS_P.CompareToConstant1_const_la);
+  rtb_Compare_cio = (rtb_Switch_ox == INS_P.CompareToConstant1_const_la);
 
-  /* Gain: '<S347>/Gain' incorporates:
+  /* Gain: '<S392>/Gain' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Divide1 = (real32_T)INS_P.Gain_Gain * 9.09494702E-13F * (real32_T)
     INS_U.GPS_uBlox.velN;
 
-  /* Gain: '<S347>/Gain1' incorporates:
+  /* Gain: '<S392>/Gain1' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Sum2_by = (real32_T)INS_P.Gain1_Gain * 9.09494702E-13F * (real32_T)
     INS_U.GPS_uBlox.velE;
 
-  /* Gain: '<S347>/Gain2' incorporates:
+  /* Gain: '<S392>/Gain2' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Gain2_a = (real32_T)INS_P.Gain2_Gain * 9.09494702E-13F * (real32_T)
     INS_U.GPS_uBlox.velD;
 
-  /* Gain: '<S347>/Scalefactor1' incorporates:
+  /* Gain: '<S392>/Scalefactor1' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Scalefactor1 = (real_T)INS_P.Scalefactor1_Gain * 8.6736173798840355E-19 *
     (real_T)INS_U.GPS_uBlox.lat;
 
-  /* Gain: '<S347>/Scalefactor2' incorporates:
+  /* Gain: '<S392>/Scalefactor2' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Scalefactor2 = (real_T)INS_P.Scalefactor2_Gain * 8.6736173798840355E-19 *
     (real_T)INS_U.GPS_uBlox.lon;
 
-  /* Gain: '<S347>/Scalefactor3' incorporates:
+  /* Gain: '<S392>/Scalefactor3' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   rtb_Scalefactor3 = (real_T)INS_P.Scalefactor3_Gain * 9.0949470177292824E-13 *
     (real_T)INS_U.GPS_uBlox.height;
 
-  /* RelationalOperator: '<S350>/Compare' incorporates:
-   *  Constant: '<S350>/Constant'
+  /* RelationalOperator: '<S395>/Compare' incorporates:
+   *  Constant: '<S395>/Constant'
    */
-  rtb_WGS84_pos_valid = (rtb_Compare == INS_P.CompareToConstant2_const_bv);
+  rtb_WGS84_pos_valid = (rtb_Switch_ox == INS_P.CompareToConstant2_const_bv);
 
-  /* Gain: '<S353>/Gain2' incorporates:
-   *  Constant: '<S353>/Constant1'
-   *  Gain: '<S353>/Gain1'
+  /* Gain: '<S398>/Gain2' incorporates:
+   *  Constant: '<S398>/Constant1'
+   *  Gain: '<S398>/Gain1'
    *  Inport: '<Root>/GPS_uBlox'
-   *  Sum: '<S353>/Sum1'
+   *  Sum: '<S398>/Sum1'
    */
   rtb_DiscreteTimeIntegrator_g = (INS_PARAM.GPS_HOR_Q_BIAS - (real32_T)
     INS_P.Gain1_Gain_po * 4.54747351E-13F * (real32_T)INS_U.GPS_uBlox.hAcc) *
     INS_PARAM.GPS_HOR_Q_SCALE;
 
-  /* Saturate: '<S353>/Saturation1' */
+  /* Saturate: '<S398>/Saturation1' */
   if (rtb_DiscreteTimeIntegrator_g > INS_P.Saturation1_UpperSat_m) {
     rtb_DiscreteTimeIntegrator_g = INS_P.Saturation1_UpperSat_m;
   } else {
@@ -1570,10 +1856,10 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S353>/Saturation1' */
+  /* End of Saturate: '<S398>/Saturation1' */
 
-  /* DiscreteIntegrator: '<S362>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S362>/Constant'
+  /* DiscreteIntegrator: '<S407>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S407>/Constant'
    */
   if (INS_DWork.DiscreteTimeIntegrator1_IC_LO_j != 0) {
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_g = rtb_DiscreteTimeIntegrator_g;
@@ -1584,23 +1870,23 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_g = rtb_DiscreteTimeIntegrator_g;
   }
 
-  /* Product: '<S348>/Product' incorporates:
-   *  DiscreteIntegrator: '<S362>/Discrete-Time Integrator1'
+  /* Product: '<S393>/Product' incorporates:
+   *  DiscreteIntegrator: '<S407>/Discrete-Time Integrator1'
    */
-  rtb_Product_d4 = rtb_WGS84_pos_valid ? rtb_Delay_c ?
+  rtb_Product_n = rtb_WGS84_pos_valid ? rtb_FixPtRelationalOperator_nc ?
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_g : 0.0F : 0.0F;
 
-  /* Gain: '<S354>/Gain3' incorporates:
-   *  Constant: '<S354>/Constant7'
-   *  Gain: '<S354>/Gain5'
+  /* Gain: '<S399>/Gain3' incorporates:
+   *  Constant: '<S399>/Constant7'
+   *  Gain: '<S399>/Gain5'
    *  Inport: '<Root>/GPS_uBlox'
-   *  Sum: '<S354>/Sum'
+   *  Sum: '<S399>/Sum'
    */
   rtb_Saturation_a = (INS_PARAM.GPS_VEL_Q_BIAS - (real32_T)INS_P.Gain5_Gain *
                       4.54747351E-13F * (real32_T)INS_U.GPS_uBlox.sAcc) *
     INS_PARAM.GPS_VEL_Q_SCALE;
 
-  /* Saturate: '<S354>/Saturation' */
+  /* Saturate: '<S399>/Saturation' */
   if (rtb_Saturation_a > INS_P.Saturation_UpperSat_l) {
     rtb_Saturation_a = INS_P.Saturation_UpperSat_l;
   } else {
@@ -1609,10 +1895,10 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S354>/Saturation' */
+  /* End of Saturate: '<S399>/Saturation' */
 
-  /* DiscreteIntegrator: '<S363>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S363>/Constant'
+  /* DiscreteIntegrator: '<S408>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S408>/Constant'
    */
   if (INS_DWork.DiscreteTimeIntegrator1_IC_LO_e != 0) {
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_m = rtb_Saturation_a;
@@ -1623,14 +1909,14 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_m = rtb_Saturation_a;
   }
 
-  /* Product: '<S348>/Product2' incorporates:
-   *  DiscreteIntegrator: '<S363>/Discrete-Time Integrator1'
+  /* Product: '<S393>/Product2' incorporates:
+   *  DiscreteIntegrator: '<S408>/Discrete-Time Integrator1'
    */
-  rtb_Product2 = rtb_WGS84_pos_valid ? rtb_Delay_c ?
+  rtb_Product2 = rtb_WGS84_pos_valid ? rtb_FixPtRelationalOperator_nc ?
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_m : 0.0F : 0.0F;
 
-  /* DiscreteIntegrator: '<S362>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S362>/Constant'
+  /* DiscreteIntegrator: '<S407>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S407>/Constant'
    */
   if ((INS_P.Constant_Value_n5 != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator_PrevRe_a != 0)) {
@@ -1638,15 +1924,15 @@ void INS_step(void)
       INS_P.DiscreteTimeIntegrator_IC_d;
   }
 
-  /* Gain: '<S362>/Gain' incorporates:
-   *  DiscreteIntegrator: '<S362>/Discrete-Time Integrator1'
-   *  Sum: '<S362>/Sum'
+  /* Gain: '<S407>/Gain' incorporates:
+   *  DiscreteIntegrator: '<S407>/Discrete-Time Integrator1'
+   *  Sum: '<S407>/Sum'
    */
   rtb_DiscreteTimeIntegrator_g = (rtb_DiscreteTimeIntegrator_g -
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_g) * INS_P.Gain_Gain_j2;
 
-  /* DiscreteIntegrator: '<S363>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S363>/Constant'
+  /* DiscreteIntegrator: '<S408>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S408>/Constant'
    */
   if ((INS_P.Constant_Value_k != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator_PrevRe_j != 0)) {
@@ -1654,62 +1940,62 @@ void INS_step(void)
       INS_P.DiscreteTimeIntegrator_IC_f;
   }
 
-  /* Gain: '<S363>/Gain' incorporates:
-   *  DiscreteIntegrator: '<S363>/Discrete-Time Integrator1'
-   *  Sum: '<S363>/Sum'
+  /* Gain: '<S408>/Gain' incorporates:
+   *  DiscreteIntegrator: '<S408>/Discrete-Time Integrator1'
+   *  Sum: '<S408>/Sum'
    */
   rtb_Saturation_a = (rtb_Saturation_a -
                       INS_DWork.DiscreteTimeIntegrator1_DSTAT_m) *
     INS_P.Gain_Gain_gh;
 
-  /* Outputs for Triggered SubSystem: '<S326>/WGS84_Model' incorporates:
-   *  TriggerPort: '<S349>/Trigger'
+  /* Outputs for Triggered SubSystem: '<S359>/WGS84_Model' incorporates:
+   *  TriggerPort: '<S394>/Trigger'
    */
   if (rtb_Compare_c5 && (INS_PrevZCSigState.WGS84_Model_Trig_ZCE != POS_ZCSIG))
   {
-    /* DataTypeConversion: '<S349>/Data Type Conversion' */
+    /* DataTypeConversion: '<S394>/Data Type Conversion' */
     INS_B.DataTypeConversion = rtb_Scalefactor2;
 
-    /* DataTypeConversion: '<S349>/Data Type Conversion1' */
+    /* DataTypeConversion: '<S394>/Data Type Conversion1' */
     INS_B.DataTypeConversion1 = rtb_Scalefactor1;
 
-    /* Product: '<S365>/Multiply3' incorporates:
-     *  Constant: '<S365>/Constant2'
-     *  Constant: '<S365>/f'
-     *  Sum: '<S365>/Sum'
+    /* Product: '<S410>/Multiply3' incorporates:
+     *  Constant: '<S410>/Constant2'
+     *  Constant: '<S410>/f'
+     *  Sum: '<S410>/Sum'
      */
     rtb_ff = (INS_P.Constant2_Value - INS_P.f_Value) * INS_P.f_Value;
 
-    /* Trigonometry: '<S365>/Sin' */
+    /* Trigonometry: '<S410>/Sin' */
     rtb_DataTypeConversion1 = sin(INS_B.DataTypeConversion1);
 
-    /* Math: '<S365>/Square1' */
+    /* Math: '<S410>/Square1' */
     rtb_DataTypeConversion1 *= rtb_DataTypeConversion1;
 
-    /* Product: '<S365>/Multiply' incorporates:
-     *  Product: '<S365>/Multiply1'
+    /* Product: '<S410>/Multiply' incorporates:
+     *  Product: '<S410>/Multiply1'
      */
     rtb_DataTypeConversion1 *= rtb_ff;
 
-    /* Product: '<S365>/Divide' incorporates:
-     *  Constant: '<S365>/Constant'
-     *  Constant: '<S365>/R'
-     *  Product: '<S365>/Multiply'
-     *  Sqrt: '<S365>/Sqrt'
-     *  Sum: '<S365>/Sum1'
+    /* Product: '<S410>/Divide' incorporates:
+     *  Constant: '<S410>/Constant'
+     *  Constant: '<S410>/R'
+     *  Product: '<S410>/Multiply'
+     *  Sqrt: '<S410>/Sqrt'
+     *  Sum: '<S410>/Sum1'
      */
     rtb_DataTypeConversion2 = INS_P.R_Value / sqrt(INS_P.Constant_Value_n -
       rtb_DataTypeConversion1);
 
-    /* Product: '<S365>/Multiply2' incorporates:
-     *  Trigonometry: '<S365>/Cos'
+    /* Product: '<S410>/Multiply2' incorporates:
+     *  Trigonometry: '<S410>/Cos'
      */
     INS_B.Multiply2 = rtb_DataTypeConversion2 * cos(INS_B.DataTypeConversion1);
 
-    /* Product: '<S365>/Product3' incorporates:
-     *  Constant: '<S365>/Constant1'
-     *  Sum: '<S365>/Sum2'
-     *  Sum: '<S365>/Sum4'
+    /* Product: '<S410>/Product3' incorporates:
+     *  Constant: '<S410>/Constant1'
+     *  Sum: '<S410>/Sum2'
+     *  Sum: '<S410>/Sum4'
      */
     INS_B.Rm = 1.0 / (INS_P.Constant1_Value - rtb_DataTypeConversion1) *
       (INS_P.Constant1_Value - rtb_ff) * rtb_DataTypeConversion2;
@@ -1717,54 +2003,54 @@ void INS_step(void)
 
   INS_PrevZCSigState.WGS84_Model_Trig_ZCE = rtb_Compare_c5;
 
-  /* End of Outputs for SubSystem: '<S326>/WGS84_Model' */
+  /* End of Outputs for SubSystem: '<S359>/WGS84_Model' */
 
-  /* Sum: '<S358>/Sum' incorporates:
-   *  Constant: '<S356>/Constant'
+  /* Sum: '<S403>/Sum' incorporates:
+   *  Constant: '<S401>/Constant'
    *  Inport: '<Root>/GPS_uBlox'
-   *  Logic: '<S351>/Logical Operator'
-   *  RelationalOperator: '<S356>/Compare'
-   *  UnitDelay: '<S358>/Unit Delay'
+   *  Logic: '<S396>/Logical Operator'
+   *  RelationalOperator: '<S401>/Compare'
+   *  UnitDelay: '<S403>/Unit Delay'
    */
   rtb_Saturation1_j_idx_0 = ((INS_U.GPS_uBlox.hAcc <
-    INS_P.CompareToConstant_const_d) && (rtb_Switch_pt != 0) && rtb_Delay_c) +
-    INS_DWork.UnitDelay_DSTATE;
+    INS_P.CompareToConstant_const_d) && (rtb_Switch_pt != 0) &&
+    rtb_FixPtRelationalOperator_nc) + INS_DWork.UnitDelay_DSTATE;
 
-  /* Saturate: '<S358>/Saturation' */
+  /* Saturate: '<S403>/Saturation' */
   if (rtb_Saturation1_j_idx_0 > INS_P.Saturation_UpperSat_a) {
-    /* Update for UnitDelay: '<S358>/Unit Delay' */
+    /* Update for UnitDelay: '<S403>/Unit Delay' */
     INS_DWork.UnitDelay_DSTATE = INS_P.Saturation_UpperSat_a;
   } else if (rtb_Saturation1_j_idx_0 < INS_P.Saturation_LowerSat_f) {
-    /* Update for UnitDelay: '<S358>/Unit Delay' */
+    /* Update for UnitDelay: '<S403>/Unit Delay' */
     INS_DWork.UnitDelay_DSTATE = INS_P.Saturation_LowerSat_f;
   } else {
-    /* Update for UnitDelay: '<S358>/Unit Delay' */
+    /* Update for UnitDelay: '<S403>/Unit Delay' */
     INS_DWork.UnitDelay_DSTATE = rtb_Saturation1_j_idx_0;
   }
 
-  /* End of Saturate: '<S358>/Saturation' */
+  /* End of Saturate: '<S403>/Saturation' */
 
-  /* Update for UnitDelay: '<S361>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S406>/Delay Input1' incorporates:
    *  Inport: '<Root>/GPS_uBlox'
    */
   INS_DWork.DelayInput1_DSTATE_i = INS_U.GPS_uBlox.timestamp;
 
-  /* Update for DiscreteIntegrator: '<S352>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S352>/Constant'
+  /* Update for DiscreteIntegrator: '<S397>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S397>/Constant'
    */
-  rtb_Switch_k_idx_1 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTATE_i +
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTATE_i +
     (real32_T)INS_EXPORT.period;
-  if (rtb_Switch_k_idx_1 < 4.2949673E+9F) {
-    INS_DWork.DiscreteTimeIntegrator_DSTATE_i = (uint32_T)rtb_Switch_k_idx_1;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTATE_i = (uint32_T)rtb_Switch_kj_idx_3;
   } else {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_i = MAX_uint32_T;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S352>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S397>/Discrete-Time Integrator' */
 
-  /* Update for DiscreteIntegrator: '<S362>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S362>/Constant'
-   *  DiscreteIntegrator: '<S362>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S407>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S407>/Constant'
+   *  DiscreteIntegrator: '<S407>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_IC_LO_j = 0U;
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_g +=
@@ -1780,11 +2066,11 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator1_PrevR_l = 2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S362>/Discrete-Time Integrator1' */
+  /* End of Update for DiscreteIntegrator: '<S407>/Discrete-Time Integrator1' */
 
-  /* Update for DiscreteIntegrator: '<S363>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S363>/Constant'
-   *  DiscreteIntegrator: '<S363>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S408>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S408>/Constant'
+   *  DiscreteIntegrator: '<S408>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_IC_LO_e = 0U;
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_m +=
@@ -1800,12 +2086,12 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator1_PrevR_j = 2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S363>/Discrete-Time Integrator1' */
+  /* End of Update for DiscreteIntegrator: '<S408>/Discrete-Time Integrator1' */
 
-  /* Update for DiscreteIntegrator: '<S362>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S362>/Constant'
-   *  Gain: '<S362>/Gain1'
-   *  Sum: '<S362>/Sum2'
+  /* Update for DiscreteIntegrator: '<S407>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S407>/Constant'
+   *  Gain: '<S407>/Gain1'
+   *  Sum: '<S407>/Sum2'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_k += (rtb_DiscreteTimeIntegrator_g -
     INS_P.Gain1_Gain_kf * INS_DWork.DiscreteTimeIntegrator_DSTATE_k) *
@@ -1820,12 +2106,12 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator_PrevRe_a = 2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S362>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S407>/Discrete-Time Integrator' */
 
-  /* Update for DiscreteIntegrator: '<S363>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S363>/Constant'
-   *  Gain: '<S363>/Gain1'
-   *  Sum: '<S363>/Sum2'
+  /* Update for DiscreteIntegrator: '<S408>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S408>/Constant'
+   *  Gain: '<S408>/Gain1'
+   *  Sum: '<S408>/Sum2'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_l += (rtb_Saturation_a -
     INS_P.Gain1_Gain_cj * INS_DWork.DiscreteTimeIntegrator_DSTATE_l) *
@@ -1840,32 +2126,32 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator_PrevRe_j = 2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S363>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S408>/Discrete-Time Integrator' */
   /* End of Outputs for SubSystem: '<S3>/GPS_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S3>/IMU_PreProcess' */
-  /* SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport4' incorporates:
+  /* SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport4' incorporates:
    *  Inport: '<Root>/IMU'
    */
   rtb_VectorConcatenate1[0] = INS_U.IMU.acc_x;
 
-  /* SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport5' incorporates:
+  /* SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport5' incorporates:
    *  Inport: '<Root>/IMU'
    */
   rtb_VectorConcatenate1[1] = INS_U.IMU.acc_y;
 
-  /* SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport6' incorporates:
+  /* SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport6' incorporates:
    *  Inport: '<Root>/IMU'
    */
   rtb_VectorConcatenate1[2] = INS_U.IMU.acc_z;
 
-  /* DiscreteIntegrator: '<S367>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S370>/Constant1'
-   *  Delay: '<S370>/Delay'
+  /* DiscreteIntegrator: '<S412>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S415>/Constant1'
+   *  Delay: '<S415>/Delay'
    *  Inport: '<Root>/IMU'
-   *  RelationalOperator: '<S369>/FixPt Relational Operator'
-   *  Switch: '<S370>/Switch'
-   *  UnitDelay: '<S369>/Delay Input1'
+   *  RelationalOperator: '<S414>/FixPt Relational Operator'
+   *  Switch: '<S415>/Switch'
+   *  UnitDelay: '<S414>/Delay Input1'
    */
   if (INS_U.IMU.timestamp != INS_DWork.DelayInput1_DSTATE_h) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lp =
@@ -1875,96 +2161,93 @@ void INS_step(void)
     rtb_Switch_pt = INS_DWork.Delay_DSTATE_bw;
   }
 
-  /* Logic: '<S367>/Logical Operator4' incorporates:
-   *  Constant: '<S368>/Constant'
-   *  Constant: '<S371>/Lower Limit'
-   *  Constant: '<S371>/Upper Limit'
-   *  Constant: '<S372>/Lower Limit'
-   *  Constant: '<S372>/Upper Limit'
-   *  DiscreteIntegrator: '<S367>/Discrete-Time Integrator'
+  /* Logic: '<S412>/Logical Operator4' incorporates:
+   *  Constant: '<S413>/Constant'
+   *  Constant: '<S416>/Lower Limit'
+   *  Constant: '<S416>/Upper Limit'
+   *  Constant: '<S417>/Lower Limit'
+   *  Constant: '<S417>/Upper Limit'
+   *  DiscreteIntegrator: '<S412>/Discrete-Time Integrator'
    *  Inport: '<Root>/IMU'
-   *  Logic: '<S367>/Logical Operator'
-   *  Logic: '<S367>/Logical Operator1'
-   *  Logic: '<S367>/Logical Operator2'
-   *  Logic: '<S371>/AND'
-   *  Logic: '<S372>/AND'
-   *  RelationalOperator: '<S368>/Compare'
-   *  RelationalOperator: '<S371>/Lower Test'
-   *  RelationalOperator: '<S371>/Upper Test'
-   *  RelationalOperator: '<S372>/Lower Test'
-   *  RelationalOperator: '<S372>/Upper Test'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport1'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport2'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport3'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport4'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport5'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport6'
+   *  Logic: '<S412>/Logical Operator'
+   *  Logic: '<S412>/Logical Operator1'
+   *  Logic: '<S412>/Logical Operator2'
+   *  Logic: '<S416>/AND'
+   *  Logic: '<S417>/AND'
+   *  RelationalOperator: '<S413>/Compare'
+   *  RelationalOperator: '<S416>/Lower Test'
+   *  RelationalOperator: '<S416>/Upper Test'
+   *  RelationalOperator: '<S417>/Lower Test'
+   *  RelationalOperator: '<S417>/Upper Test'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport1'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport2'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport3'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport4'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport5'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport6'
    */
-  rtb_Delay_c = ((INS_P.Sensor_Valid_gyr_min < INS_U.IMU.gyr_x) &&
-                 (INS_U.IMU.gyr_x < INS_P.Sensor_Valid_gyr_max) &&
-                 ((INS_P.Sensor_Valid_gyr_min < INS_U.IMU.gyr_y) &&
-                  (INS_U.IMU.gyr_y < INS_P.Sensor_Valid_gyr_max)) &&
-                 ((INS_P.Sensor_Valid_gyr_min < INS_U.IMU.gyr_z) &&
-                  (INS_U.IMU.gyr_z < INS_P.Sensor_Valid_gyr_max)) &&
-                 ((INS_P.Sensor_Valid_acc_min < INS_U.IMU.acc_x) &&
-                  (INS_U.IMU.acc_x < INS_P.Sensor_Valid_acc_max) &&
-                  ((INS_P.Sensor_Valid_acc_min < INS_U.IMU.acc_y) &&
-                   (INS_U.IMU.acc_y < INS_P.Sensor_Valid_acc_max)) &&
-                  ((INS_P.Sensor_Valid_acc_min < INS_U.IMU.acc_z) &&
-                   (INS_U.IMU.acc_z < INS_P.Sensor_Valid_acc_max))) &&
-                 (INS_DWork.DiscreteTimeIntegrator_DSTAT_lp <
-                  INS_P.Sensor_Valid_timeout_a) && (rtb_Switch_pt != 0));
+  rtb_FixPtRelationalOperator_nc = ((INS_P.Sensor_Valid_gyr_min <
+    INS_U.IMU.gyr_x) && (INS_U.IMU.gyr_x < INS_P.Sensor_Valid_gyr_max) &&
+    ((INS_P.Sensor_Valid_gyr_min < INS_U.IMU.gyr_y) && (INS_U.IMU.gyr_y <
+    INS_P.Sensor_Valid_gyr_max)) && ((INS_P.Sensor_Valid_gyr_min <
+    INS_U.IMU.gyr_z) && (INS_U.IMU.gyr_z < INS_P.Sensor_Valid_gyr_max)) &&
+    ((INS_P.Sensor_Valid_acc_min < INS_U.IMU.acc_x) && (INS_U.IMU.acc_x <
+    INS_P.Sensor_Valid_acc_max) && ((INS_P.Sensor_Valid_acc_min <
+    INS_U.IMU.acc_y) && (INS_U.IMU.acc_y < INS_P.Sensor_Valid_acc_max)) &&
+     ((INS_P.Sensor_Valid_acc_min < INS_U.IMU.acc_z) && (INS_U.IMU.acc_z <
+    INS_P.Sensor_Valid_acc_max))) && (INS_DWork.DiscreteTimeIntegrator_DSTAT_lp <
+    INS_P.Sensor_Valid_timeout_a) && (rtb_Switch_pt != 0));
 
-  /* Update for UnitDelay: '<S369>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S414>/Delay Input1' incorporates:
    *  Inport: '<Root>/IMU'
    */
   INS_DWork.DelayInput1_DSTATE_h = INS_U.IMU.timestamp;
 
-  /* Update for DiscreteIntegrator: '<S367>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S367>/Constant'
+  /* Update for DiscreteIntegrator: '<S412>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S412>/Constant'
    */
-  rtb_Switch_k_idx_1 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_lp +
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_lp +
     (real32_T)INS_EXPORT.period;
-  if (rtb_Switch_k_idx_1 < 4.2949673E+9F) {
-    INS_DWork.DiscreteTimeIntegrator_DSTAT_lp = (uint32_T)rtb_Switch_k_idx_1;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_lp = (uint32_T)rtb_Switch_kj_idx_3;
   } else {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lp = MAX_uint32_T;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S367>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S412>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S370>/Delay' */
+  /* Update for Delay: '<S415>/Delay' */
   INS_DWork.Delay_DSTATE_bw = rtb_Switch_pt;
 
   /* End of Outputs for SubSystem: '<S3>/IMU_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S3>/MAG_PreProcess' */
-  /* Gain: '<S328>/Gauss_to_uT' incorporates:
+  /* Gain: '<S361>/Gauss_to_uT' incorporates:
    *  Inport: '<Root>/MAG'
-   *  SignalConversion: '<S373>/ConcatBufferAtVector Concatenate2In1'
-   *  SignalConversion: '<S373>/ConcatBufferAtVector Concatenate2In2'
-   *  SignalConversion: '<S373>/ConcatBufferAtVector Concatenate2In3'
+   *  SignalConversion: '<S418>/ConcatBufferAtVector Concatenate2In1'
+   *  SignalConversion: '<S418>/ConcatBufferAtVector Concatenate2In2'
+   *  SignalConversion: '<S418>/ConcatBufferAtVector Concatenate2In3'
    */
   rtb_Gauss_to_uT[0] = INS_P.Gauss_to_uT_Gain * INS_U.MAG.mag_x;
   rtb_Gauss_to_uT[1] = INS_P.Gauss_to_uT_Gain * INS_U.MAG.mag_y;
   rtb_Gauss_to_uT[2] = INS_P.Gauss_to_uT_Gain * INS_U.MAG.mag_z;
 
-  /* Gain: '<S378>/rad_to_index' incorporates:
-   *  SignalConversion: '<S378>/TmpSignal ConversionAtrad_to_indexInport1'
+  /* Gain: '<S423>/rad_to_index' incorporates:
+   *  SignalConversion: '<S423>/TmpSignal ConversionAtrad_to_indexInport1'
    */
   rtb_ff = 57.295779513082323 / INS_P.WMM_LUT_resolution;
   rtb_DataTypeConversion1 = fmod(floor(rtb_ff * INS_B.DataTypeConversion1),
     4.294967296E+9);
 
-  /* Sum: '<S378>/Add' incorporates:
-   *  Constant: '<S378>/offset'
-   *  Gain: '<S378>/rad_to_index'
+  /* Sum: '<S423>/Add' incorporates:
+   *  Constant: '<S423>/offset'
+   *  Gain: '<S423>/rad_to_index'
    */
   rtb_Saturation1_j_idx_0 = (rtb_DataTypeConversion1 < 0.0 ? -(int32_T)(uint32_T)
     -rtb_DataTypeConversion1 : (int32_T)(uint32_T)rtb_DataTypeConversion1) +
     INS_P.offset_Value[0];
 
-  /* Saturate: '<S378>/Saturation1' */
+  /* Saturate: '<S423>/Saturation1' */
   if (rtb_Saturation1_j_idx_0 > INS_P.Saturation1_UpperSat[0]) {
     rtb_Saturation1_j_idx_0 = INS_P.Saturation1_UpperSat[0];
   } else {
@@ -1973,21 +2256,21 @@ void INS_step(void)
     }
   }
 
-  /* Gain: '<S378>/rad_to_index' incorporates:
-   *  SignalConversion: '<S378>/TmpSignal ConversionAtrad_to_indexInport1'
+  /* Gain: '<S423>/rad_to_index' incorporates:
+   *  SignalConversion: '<S423>/TmpSignal ConversionAtrad_to_indexInport1'
    */
   rtb_DataTypeConversion1 = fmod(floor(rtb_ff * INS_B.DataTypeConversion),
     4.294967296E+9);
 
-  /* Sum: '<S378>/Add' incorporates:
-   *  Constant: '<S378>/offset'
-   *  Gain: '<S378>/rad_to_index'
+  /* Sum: '<S423>/Add' incorporates:
+   *  Constant: '<S423>/offset'
+   *  Gain: '<S423>/rad_to_index'
    */
   rtb_Saturation1_j_idx_1 = (rtb_DataTypeConversion1 < 0.0 ? -(int32_T)(uint32_T)
     -rtb_DataTypeConversion1 : (int32_T)(uint32_T)rtb_DataTypeConversion1) +
     INS_P.offset_Value[1];
 
-  /* Saturate: '<S378>/Saturation1' */
+  /* Saturate: '<S423>/Saturation1' */
   if (rtb_Saturation1_j_idx_1 > INS_P.Saturation1_UpperSat[1]) {
     rtb_Saturation1_j_idx_1 = INS_P.Saturation1_UpperSat[1];
   } else {
@@ -1996,20 +2279,20 @@ void INS_step(void)
     }
   }
 
-  /* Switch: '<S377>/Switch3' incorporates:
-   *  Constant: '<S385>/Constant'
-   *  Constant: '<S385>/Constant1'
-   *  Constant: '<S385>/Constant2'
-   *  Constant: '<S385>/Constant3'
-   *  Constant: '<S385>/Constant4'
+  /* Switch: '<S422>/Switch3' incorporates:
+   *  Constant: '<S430>/Constant'
+   *  Constant: '<S430>/Constant1'
+   *  Constant: '<S430>/Constant2'
+   *  Constant: '<S430>/Constant3'
+   *  Constant: '<S430>/Constant4'
    *  Delay: '<Root>/Delay'
-   *  Product: '<S377>/Product6'
-   *  Product: '<S377>/Product7'
+   *  Product: '<S422>/Product6'
+   *  Product: '<S422>/Product7'
    */
   if (rtb_Compare_cio) {
-    /* LookupNDDirect: '<S378>/Magnitude_Lookup_Table'
+    /* LookupNDDirect: '<S423>/Magnitude_Lookup_Table'
      *
-     * About '<S378>/Magnitude_Lookup_Table':
+     * About '<S423>/Magnitude_Lookup_Table':
      *  2-dimensional Direct Look-Up returning a Scalar,
      */
     if (rtb_Saturation1_j_idx_1 > 36) {
@@ -2028,11 +2311,11 @@ void INS_step(void)
       rtb_Saturation1_j_idx_0_0 = rtb_Saturation1_j_idx_0;
     }
 
-    /* MinMax: '<S387>/MinMax' incorporates:
-     *  Constant: '<S387>/Constant1'
-     *  LookupNDDirect: '<S378>/Magnitude_Lookup_Table'
+    /* MinMax: '<S432>/MinMax' incorporates:
+     *  Constant: '<S432>/Constant1'
+     *  LookupNDDirect: '<S423>/Magnitude_Lookup_Table'
      *
-     * About '<S378>/Magnitude_Lookup_Table':
+     * About '<S423>/Magnitude_Lookup_Table':
      *  2-dimensional Direct Look-Up returning a Scalar,
      */
     rtb_MathFunction1 = fmaxf(INS_P.Constant1_Value_l1,
@@ -2043,13 +2326,13 @@ void INS_step(void)
     rtb_VectorConcatenate_h[6] = INS_P.Constant2_Value_mb;
     rtb_VectorConcatenate_h[5] = INS_P.Constant4_Value_c;
 
-    /* LookupNDDirect: '<S378>/Declination_Lookup_Table' incorporates:
-     *  Constant: '<S385>/Constant'
-     *  Constant: '<S385>/Constant1'
-     *  Constant: '<S385>/Constant2'
-     *  Constant: '<S385>/Constant4'
+    /* LookupNDDirect: '<S423>/Declination_Lookup_Table' incorporates:
+     *  Constant: '<S430>/Constant'
+     *  Constant: '<S430>/Constant1'
+     *  Constant: '<S430>/Constant2'
+     *  Constant: '<S430>/Constant4'
      *
-     * About '<S378>/Declination_Lookup_Table':
+     * About '<S423>/Declination_Lookup_Table':
      *  2-dimensional Direct Look-Up returning a Scalar,
      */
     if (rtb_Saturation1_j_idx_1 > 36) {
@@ -2068,46 +2351,46 @@ void INS_step(void)
       rtb_Saturation1_j_idx_0_0 = rtb_Saturation1_j_idx_0;
     }
 
-    /* Gain: '<S377>/Gain' incorporates:
-     *  LookupNDDirect: '<S378>/Declination_Lookup_Table'
+    /* Gain: '<S422>/Gain' incorporates:
+     *  LookupNDDirect: '<S423>/Declination_Lookup_Table'
      *
-     * About '<S378>/Declination_Lookup_Table':
+     * About '<S423>/Declination_Lookup_Table':
      *  2-dimensional Direct Look-Up returning a Scalar,
      */
     rtb_dec_rad = INS_P.INS_CONST.wmm_dec[rtb_Saturation1_j_idx_1_0 * 17 +
       rtb_Saturation1_j_idx_0_0] * INS_P.Gain_Gain_gg;
 
-    /* Trigonometry: '<S385>/Trigonometric Function3' incorporates:
-     *  Trigonometry: '<S385>/Trigonometric Function1'
+    /* Trigonometry: '<S430>/Trigonometric Function3' incorporates:
+     *  Trigonometry: '<S430>/Trigonometric Function1'
      */
     rtb_Saturation_a = arm_cos_f32(rtb_dec_rad);
     rtb_VectorConcatenate_h[4] = rtb_Saturation_a;
 
-    /* Trigonometry: '<S385>/Trigonometric Function2' incorporates:
-     *  Trigonometry: '<S385>/Trigonometric Function'
+    /* Trigonometry: '<S430>/Trigonometric Function2' incorporates:
+     *  Trigonometry: '<S430>/Trigonometric Function'
      */
     rtb_dec_rad = arm_sin_f32(rtb_dec_rad);
 
-    /* Gain: '<S385>/Gain' incorporates:
-     *  Trigonometry: '<S385>/Trigonometric Function2'
+    /* Gain: '<S430>/Gain' incorporates:
+     *  Trigonometry: '<S430>/Trigonometric Function2'
      */
     rtb_VectorConcatenate_h[3] = INS_P.Gain_Gain_bo * rtb_dec_rad;
     rtb_VectorConcatenate_h[2] = INS_P.Constant3_Value_f;
 
-    /* Trigonometry: '<S385>/Trigonometric Function' incorporates:
-     *  Constant: '<S385>/Constant3'
+    /* Trigonometry: '<S430>/Trigonometric Function' incorporates:
+     *  Constant: '<S430>/Constant3'
      */
     rtb_VectorConcatenate_h[1] = rtb_dec_rad;
 
-    /* Trigonometry: '<S385>/Trigonometric Function1' */
+    /* Trigonometry: '<S430>/Trigonometric Function1' */
     rtb_VectorConcatenate_h[0] = rtb_Saturation_a;
 
-    /* Product: '<S387>/Divide1' */
+    /* Product: '<S432>/Divide1' */
     rtb_Saturation_a = rtb_Gauss_to_uT[0] / rtb_MathFunction1;
     rtb_dec_rad = rtb_Gauss_to_uT[1] / rtb_MathFunction1;
     rtb_MathFunction1 = rtb_Gauss_to_uT[2] / rtb_MathFunction1;
 
-    /* Product: '<S377>/Product5' incorporates:
+    /* Product: '<S422>/Product5' incorporates:
      *  Delay: '<Root>/Delay'
      */
     for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
@@ -2119,7 +2402,7 @@ void INS_step(void)
         * rtb_Saturation_a);
     }
 
-    /* End of Product: '<S377>/Product5' */
+    /* End of Product: '<S422>/Product5' */
     for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
          rtb_Saturation1_j_idx_1_0++) {
       rtb_MathFunction[rtb_Saturation1_j_idx_1_0] =
@@ -2129,16 +2412,16 @@ void INS_step(void)
         rtb_VectorConcatenate_h[rtb_Saturation1_j_idx_1_0] * rtb_Gauss_to_uT[0]);
     }
   } else {
-    /* Sum: '<S386>/Sum of Elements' incorporates:
-     *  Math: '<S386>/Math Function'
+    /* Sum: '<S431>/Sum of Elements' incorporates:
+     *  Math: '<S431>/Math Function'
      */
     rtb_MathFunction1 = (rtb_Gauss_to_uT[0] * rtb_Gauss_to_uT[0] +
                          rtb_Gauss_to_uT[1] * rtb_Gauss_to_uT[1]) +
       rtb_Gauss_to_uT[2] * rtb_Gauss_to_uT[2];
 
-    /* Math: '<S386>/Math Function1'
+    /* Math: '<S431>/Math Function1'
      *
-     * About '<S386>/Math Function1':
+     * About '<S431>/Math Function1':
      *  Operator: sqrt
      */
     if (rtb_MathFunction1 < 0.0F) {
@@ -2147,51 +2430,53 @@ void INS_step(void)
       rtb_MathFunction1 = sqrtf(rtb_MathFunction1);
     }
 
-    /* End of Math: '<S386>/Math Function1' */
+    /* End of Math: '<S431>/Math Function1' */
 
-    /* Switch: '<S386>/Switch' incorporates:
-     *  Constant: '<S386>/Constant'
-     *  Product: '<S386>/Product'
+    /* Switch: '<S431>/Switch' incorporates:
+     *  Constant: '<S431>/Constant'
+     *  Gain: '<S431>/Gain'
      */
     if (rtb_MathFunction1 > INS_P.Switch_Threshold_b) {
-      rtb_Switch_k_idx_0 = rtb_Gauss_to_uT[0];
-      rtb_Switch_k_idx_1 = rtb_Gauss_to_uT[1];
-      rtb_Switch_k_idx_2 = rtb_Gauss_to_uT[2];
-      rtb_Switch_k_idx_3 = rtb_MathFunction1;
+      rtb_Switch_kj_idx_0 = rtb_Gauss_to_uT[0];
+      rtb_Switch_kj_idx_1 = rtb_Gauss_to_uT[1];
+      rtb_Switch_kj_idx_2 = rtb_Gauss_to_uT[2];
+      rtb_Switch_kj_idx_3 = rtb_MathFunction1;
     } else {
-      rtb_Switch_k_idx_0 = 0.0F;
-      rtb_Switch_k_idx_1 = 0.0F;
-      rtb_Switch_k_idx_2 = 0.0F;
-      rtb_Switch_k_idx_3 = INS_P.Constant_Value_hy;
+      rtb_Switch_kj_idx_0 = INS_P.Gain_Gain_km * rtb_Gauss_to_uT[0];
+      rtb_Switch_kj_idx_1 = INS_P.Gain_Gain_km * rtb_Gauss_to_uT[1];
+      rtb_Switch_kj_idx_2 = INS_P.Gain_Gain_km * rtb_Gauss_to_uT[2];
+      rtb_Switch_kj_idx_3 = INS_P.Constant_Value_hy;
     }
 
-    /* End of Switch: '<S386>/Switch' */
+    /* End of Switch: '<S431>/Switch' */
 
-    /* Product: '<S386>/Divide' */
-    rtb_Switch_k_idx_0 /= rtb_Switch_k_idx_3;
-    rtb_Switch_k_idx_1 /= rtb_Switch_k_idx_3;
-    rtb_Switch_k_idx_2 /= rtb_Switch_k_idx_3;
+    /* Product: '<S431>/Divide' */
+    rtb_Switch_kj_idx_0 /= rtb_Switch_kj_idx_3;
+    rtb_Switch_kj_idx_1 /= rtb_Switch_kj_idx_3;
+    rtb_Switch_kj_idx_2 /= rtb_Switch_kj_idx_3;
     for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
          rtb_Saturation1_j_idx_1_0++) {
       rtb_MathFunction[rtb_Saturation1_j_idx_1_0] =
         INS_DWork.Delay_8_DSTATE[rtb_Saturation1_j_idx_1_0 + 6] *
-        rtb_Switch_k_idx_2 + (INS_DWork.Delay_8_DSTATE[rtb_Saturation1_j_idx_1_0
-        + 3] * rtb_Switch_k_idx_1 +
-        INS_DWork.Delay_8_DSTATE[rtb_Saturation1_j_idx_1_0] * rtb_Switch_k_idx_0);
+        rtb_Switch_kj_idx_2 +
+        (INS_DWork.Delay_8_DSTATE[rtb_Saturation1_j_idx_1_0 + 3] *
+         rtb_Switch_kj_idx_1 +
+         INS_DWork.Delay_8_DSTATE[rtb_Saturation1_j_idx_1_0] *
+         rtb_Switch_kj_idx_0);
     }
   }
 
-  /* End of Switch: '<S377>/Switch3' */
+  /* End of Switch: '<S422>/Switch3' */
 
-  /* Math: '<S384>/Square' incorporates:
-   *  Math: '<S383>/Square'
+  /* Math: '<S429>/Square' incorporates:
+   *  Math: '<S428>/Square'
    */
   rtb_MathFunction1 = rtb_MathFunction[0] * rtb_MathFunction[0];
   rtb_Saturation_a = rtb_MathFunction[1] * rtb_MathFunction[1];
 
-  /* LookupNDDirect: '<S378>/Inclination_Lookup_Table'
+  /* LookupNDDirect: '<S423>/Inclination_Lookup_Table'
    *
-   * About '<S378>/Inclination_Lookup_Table':
+   * About '<S423>/Inclination_Lookup_Table':
    *  2-dimensional Direct Look-Up returning a Scalar,
    */
   if (rtb_Saturation1_j_idx_1 > 36) {
@@ -2210,18 +2495,18 @@ void INS_step(void)
     }
   }
 
-  /* Sum: '<S380>/Sum3' incorporates:
-   *  Abs: '<S380>/Abs1'
-   *  Constant: '<S380>/Constant2'
-   *  Gain: '<S380>/Gain1'
-   *  Gain: '<S380>/gain'
-   *  LookupNDDirect: '<S378>/Inclination_Lookup_Table'
-   *  Sqrt: '<S383>/Sqrt'
-   *  Sum: '<S380>/Subtract'
-   *  Sum: '<S383>/Sum of Elements'
-   *  Trigonometry: '<S380>/Trigonometric Function'
+  /* Sum: '<S425>/Sum3' incorporates:
+   *  Abs: '<S425>/Abs1'
+   *  Constant: '<S425>/Constant2'
+   *  Gain: '<S425>/Gain1'
+   *  Gain: '<S425>/gain'
+   *  LookupNDDirect: '<S423>/Inclination_Lookup_Table'
+   *  Sqrt: '<S428>/Sqrt'
+   *  Sum: '<S425>/Subtract'
+   *  Sum: '<S428>/Sum of Elements'
+   *  Trigonometry: '<S425>/Trigonometric Function'
    *
-   * About '<S378>/Inclination_Lookup_Table':
+   * About '<S423>/Inclination_Lookup_Table':
    *  2-dimensional Direct Look-Up returning a Scalar,
    */
   rtb_DiscreteTimeIntegrator_b = INS_P.Constant2_Value_h - fabsf
@@ -2229,21 +2514,21 @@ void INS_step(void)
      rtb_Saturation1_j_idx_0] * INS_P.Gain1_Gain_o - atan2f(rtb_MathFunction[2],
       sqrtf(rtb_MathFunction1 + rtb_Saturation_a))) * INS_P.gain_Gain_g;
 
-  /* Sum: '<S381>/Sum' incorporates:
-   *  Abs: '<S381>/Abs'
-   *  Constant: '<S381>/Constant1'
-   *  Constant: '<S381>/Nominal_Magnitude'
-   *  Gain: '<S381>/gain'
-   *  Math: '<S384>/Square'
-   *  Sqrt: '<S384>/Sqrt'
-   *  Sum: '<S381>/Subtract'
-   *  Sum: '<S384>/Sum of Elements'
+  /* Sum: '<S426>/Sum' incorporates:
+   *  Abs: '<S426>/Abs'
+   *  Constant: '<S426>/Constant1'
+   *  Constant: '<S426>/Nominal_Magnitude'
+   *  Gain: '<S426>/gain'
+   *  Math: '<S429>/Square'
+   *  Sqrt: '<S429>/Sqrt'
+   *  Sum: '<S426>/Subtract'
+   *  Sum: '<S429>/Sum of Elements'
    */
   rtb_MathFunction1 = INS_P.Constant1_Value_c - fabsf
     (INS_P.Nominal_Magnitude_Value - sqrtf((rtb_MathFunction1 + rtb_Saturation_a)
       + rtb_MathFunction[2] * rtb_MathFunction[2])) * INS_P.gain_Gain_m;
 
-  /* Saturate: '<S380>/Saturation' */
+  /* Saturate: '<S425>/Saturation' */
   if (rtb_DiscreteTimeIntegrator_b > INS_P.Saturation_UpperSat_g) {
     rtb_DiscreteTimeIntegrator_b = INS_P.Saturation_UpperSat_g;
   } else {
@@ -2252,9 +2537,9 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S380>/Saturation' */
+  /* End of Saturate: '<S425>/Saturation' */
 
-  /* Saturate: '<S381>/Saturation' */
+  /* Saturate: '<S426>/Saturation' */
   if (rtb_MathFunction1 > INS_P.Saturation_UpperSat_gv) {
     rtb_MathFunction1 = INS_P.Saturation_UpperSat_gv;
   } else {
@@ -2263,13 +2548,13 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S381>/Saturation' */
+  /* End of Saturate: '<S426>/Saturation' */
 
-  /* MinMax: '<S379>/MinMax' */
+  /* MinMax: '<S424>/MinMax' */
   rtb_Saturation_a = fminf(rtb_DiscreteTimeIntegrator_b, rtb_MathFunction1);
 
-  /* DiscreteIntegrator: '<S382>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S382>/Constant'
+  /* DiscreteIntegrator: '<S427>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S427>/Constant'
    */
   if ((INS_P.Constant_Value_fn != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator_PrevRe_k != 0)) {
@@ -2278,8 +2563,8 @@ void INS_step(void)
 
   rtb_DiscreteTimeIntegrator_b = INS_DWork.DiscreteTimeIntegrator_DSTATE;
 
-  /* DiscreteIntegrator: '<S382>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S382>/Constant'
+  /* DiscreteIntegrator: '<S427>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S427>/Constant'
    */
   if (INS_DWork.DiscreteTimeIntegrator1_IC_LOAD != 0) {
     INS_DWork.DiscreteTimeIntegrator1_DSTATE = rtb_Saturation_a;
@@ -2290,13 +2575,13 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator1_DSTATE = rtb_Saturation_a;
   }
 
-  /* DiscreteIntegrator: '<S375>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S390>/Constant1'
-   *  Delay: '<S390>/Delay'
+  /* DiscreteIntegrator: '<S420>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S435>/Constant1'
+   *  Delay: '<S435>/Delay'
    *  Inport: '<Root>/MAG'
-   *  RelationalOperator: '<S389>/FixPt Relational Operator'
-   *  Switch: '<S390>/Switch'
-   *  UnitDelay: '<S389>/Delay Input1'
+   *  RelationalOperator: '<S434>/FixPt Relational Operator'
+   *  Switch: '<S435>/Switch'
+   *  UnitDelay: '<S434>/Delay Input1'
    */
   if (INS_U.MAG.timestamp != INS_DWork.DelayInput1_DSTATE_n) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lg =
@@ -2306,24 +2591,24 @@ void INS_step(void)
     rtb_Switch_pt = INS_DWork.Delay_DSTATE_fp;
   }
 
-  /* Product: '<S376>/Multiply' incorporates:
-   *  Constant: '<S376>/default_mag_quality'
-   *  Constant: '<S388>/Constant'
-   *  Constant: '<S391>/Lower Limit'
-   *  Constant: '<S391>/Upper Limit'
-   *  DiscreteIntegrator: '<S375>/Discrete-Time Integrator'
-   *  DiscreteIntegrator: '<S382>/Discrete-Time Integrator1'
+  /* Product: '<S421>/Multiply' incorporates:
+   *  Constant: '<S421>/default_mag_quality'
+   *  Constant: '<S433>/Constant'
+   *  Constant: '<S436>/Lower Limit'
+   *  Constant: '<S436>/Upper Limit'
+   *  DiscreteIntegrator: '<S420>/Discrete-Time Integrator'
+   *  DiscreteIntegrator: '<S427>/Discrete-Time Integrator1'
    *  Inport: '<Root>/MAG'
-   *  Logic: '<S375>/Logical Operator1'
-   *  Logic: '<S375>/Logical Operator4'
-   *  Logic: '<S391>/AND'
-   *  RelationalOperator: '<S388>/Compare'
-   *  RelationalOperator: '<S391>/Lower Test'
-   *  RelationalOperator: '<S391>/Upper Test'
-   *  SignalConversion: '<S373>/ConcatBufferAtVector Concatenate2In1'
-   *  SignalConversion: '<S373>/ConcatBufferAtVector Concatenate2In2'
-   *  SignalConversion: '<S373>/ConcatBufferAtVector Concatenate2In3'
-   *  Switch: '<S376>/Switch'
+   *  Logic: '<S420>/Logical Operator1'
+   *  Logic: '<S420>/Logical Operator4'
+   *  Logic: '<S436>/AND'
+   *  RelationalOperator: '<S433>/Compare'
+   *  RelationalOperator: '<S436>/Lower Test'
+   *  RelationalOperator: '<S436>/Upper Test'
+   *  SignalConversion: '<S418>/ConcatBufferAtVector Concatenate2In1'
+   *  SignalConversion: '<S418>/ConcatBufferAtVector Concatenate2In2'
+   *  SignalConversion: '<S418>/ConcatBufferAtVector Concatenate2In3'
+   *  Switch: '<S421>/Switch'
    */
   rtb_MathFunction1 = (INS_P.Sensor_Valid_mag_min < INS_U.MAG.mag_x) &&
     (INS_U.MAG.mag_x < INS_P.Sensor_Valid_mag_max) &&
@@ -2335,9 +2620,9 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator1_DSTATE : INS_P.default_mag_quality_Value :
     0.0F;
 
-  /* Product: '<S377>/Product8' incorporates:
+  /* Product: '<S422>/Product8' incorporates:
    *  Delay: '<Root>/Delay'
-   *  Math: '<S377>/Math Function2'
+   *  Math: '<S422>/Math Function2'
    */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
        rtb_Saturation1_j_idx_1_0++) {
@@ -2348,16 +2633,16 @@ void INS_step(void)
        rtb_Saturation1_j_idx_1_0] * rtb_MathFunction[0]);
   }
 
-  /* End of Product: '<S377>/Product8' */
+  /* End of Product: '<S422>/Product8' */
 
-  /* Update for DiscreteIntegrator: '<S382>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S382>/Constant'
-   *  DiscreteIntegrator: '<S382>/Discrete-Time Integrator1'
-   *  DiscreteIntegrator: '<S382>/Discrete-Time Integrator1'
-   *  Gain: '<S382>/Gain'
-   *  Gain: '<S382>/Gain1'
-   *  Sum: '<S382>/Sum'
-   *  Sum: '<S382>/Sum2'
+  /* Update for DiscreteIntegrator: '<S427>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S427>/Constant'
+   *  DiscreteIntegrator: '<S427>/Discrete-Time Integrator1'
+   *  DiscreteIntegrator: '<S427>/Discrete-Time Integrator1'
+   *  Gain: '<S427>/Gain'
+   *  Gain: '<S427>/Gain1'
+   *  Sum: '<S427>/Sum'
+   *  Sum: '<S427>/Sum2'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE += ((rtb_Saturation_a -
     INS_DWork.DiscreteTimeIntegrator1_DSTATE) * INS_P.Gain_Gain_c -
@@ -2384,73 +2669,73 @@ void INS_step(void)
     }
   }
 
-  /* End of Update for DiscreteIntegrator: '<S382>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S427>/Discrete-Time Integrator' */
 
-  /* Update for DiscreteIntegrator: '<S382>/Discrete-Time Integrator1' */
+  /* Update for DiscreteIntegrator: '<S427>/Discrete-Time Integrator1' */
   INS_DWork.DiscreteTimeIntegrator1_IC_LOAD = 0U;
   INS_DWork.DiscreteTimeIntegrator1_DSTATE +=
     INS_P.DiscreteTimeIntegrator1_gainv_m * rtb_DiscreteTimeIntegrator_b;
 
-  /* Update for UnitDelay: '<S389>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S434>/Delay Input1' incorporates:
    *  Inport: '<Root>/MAG'
    */
   INS_DWork.DelayInput1_DSTATE_n = INS_U.MAG.timestamp;
 
-  /* Update for DiscreteIntegrator: '<S375>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S375>/Constant'
+  /* Update for DiscreteIntegrator: '<S420>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S420>/Constant'
    */
-  rtb_Switch_k_idx_1 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_lg +
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_lg +
     (real32_T)INS_EXPORT.period;
-  if (rtb_Switch_k_idx_1 < 4.2949673E+9F) {
-    INS_DWork.DiscreteTimeIntegrator_DSTAT_lg = (uint32_T)rtb_Switch_k_idx_1;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_lg = (uint32_T)rtb_Switch_kj_idx_3;
   } else {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lg = MAX_uint32_T;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S375>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S420>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S390>/Delay' */
+  /* Update for Delay: '<S435>/Delay' */
   INS_DWork.Delay_DSTATE_fp = rtb_Switch_pt;
 
   /* End of Outputs for SubSystem: '<S3>/MAG_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S3>/Rangefinder_PreProcess' */
-  /* DiscreteIntegrator: '<S400>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S405>/Constant1'
-   *  Delay: '<S405>/Delay'
+  /* DiscreteIntegrator: '<S445>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S450>/Constant1'
+   *  Delay: '<S450>/Delay'
    *  Inport: '<Root>/Rangefinder'
-   *  RelationalOperator: '<S404>/FixPt Relational Operator'
-   *  Switch: '<S405>/Switch'
-   *  UnitDelay: '<S404>/Delay Input1'
+   *  RelationalOperator: '<S449>/FixPt Relational Operator'
+   *  Switch: '<S450>/Switch'
+   *  UnitDelay: '<S449>/Delay Input1'
    */
   if (INS_U.Rangefinder.timestamp != INS_DWork.DelayInput1_DSTATE) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 =
       INS_P.DiscreteTimeIntegrator_IC_f4;
-    rtb_Compare = INS_P.Constant1_Value_h;
+    rtb_Switch_ox = INS_P.Constant1_Value_h;
   } else {
-    rtb_Compare = INS_DWork.Delay_DSTATE_j;
+    rtb_Switch_ox = INS_DWork.Delay_DSTATE_j;
   }
 
-  /* RelationalOperator: '<S408>/Compare' incorporates:
-   *  Constant: '<S403>/Constant'
-   *  Constant: '<S406>/Lower Limit'
-   *  Constant: '<S406>/Upper Limit'
-   *  Constant: '<S408>/Constant'
-   *  DiscreteIntegrator: '<S400>/Discrete-Time Integrator'
+  /* RelationalOperator: '<S453>/Compare' incorporates:
+   *  Constant: '<S448>/Constant'
+   *  Constant: '<S451>/Lower Limit'
+   *  Constant: '<S451>/Upper Limit'
+   *  Constant: '<S453>/Constant'
+   *  DiscreteIntegrator: '<S445>/Discrete-Time Integrator'
    *  Inport: '<Root>/Rangefinder'
-   *  Logic: '<S400>/Logical Operator1'
-   *  Logic: '<S406>/AND'
-   *  RelationalOperator: '<S403>/Compare'
-   *  RelationalOperator: '<S406>/Lower Test'
-   *  RelationalOperator: '<S406>/Upper Test'
+   *  Logic: '<S445>/Logical Operator1'
+   *  Logic: '<S451>/AND'
+   *  RelationalOperator: '<S448>/Compare'
+   *  RelationalOperator: '<S451>/Lower Test'
+   *  RelationalOperator: '<S451>/Upper Test'
    */
   rtb_Compare_ai = (((INS_P.Sensor_Valid_min_alt < INS_U.Rangefinder.distance) &&
                      (INS_U.Rangefinder.distance <= INS_P.Sensor_Valid_max_alt) &&
                      (INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 <
-                      INS_P.Sensor_Valid_timeout_p) && (rtb_Compare != 0)) >
+                      INS_P.Sensor_Valid_timeout_p) && (rtb_Switch_ox != 0)) >
                     (int32_T)INS_P.Constant_Value_pa);
 
-  /* DiscreteIntegrator: '<S401>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S446>/Discrete-Time Integrator' */
   if ((!rtb_Compare_ai) && (INS_DWork.DiscreteTimeIntegrator_PrevRese == 1)) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_cv =
       INS_P.DiscreteTimeIntegrator_IC_n1;
@@ -2468,44 +2753,44 @@ void INS_step(void)
     }
   }
 
-  /* RelationalOperator: '<S407>/Compare' incorporates:
-   *  Constant: '<S407>/Constant'
-   *  DiscreteIntegrator: '<S401>/Discrete-Time Integrator'
+  /* RelationalOperator: '<S452>/Compare' incorporates:
+   *  Constant: '<S452>/Constant'
+   *  DiscreteIntegrator: '<S446>/Discrete-Time Integrator'
    */
   rtb_Compare_c5 = (INS_DWork.DiscreteTimeIntegrator_DSTAT_cv >=
                     INS_P.CompareToConstant_const_m);
 
-  /* Product: '<S402>/Multiply' incorporates:
+  /* Product: '<S447>/Multiply' incorporates:
    *  Delay: '<Root>/Delay'
    *  Inport: '<Root>/Rangefinder'
-   *  Trigonometry: '<S402>/Cos'
-   *  Trigonometry: '<S402>/Cos1'
+   *  Trigonometry: '<S447>/Cos'
+   *  Trigonometry: '<S447>/Cos1'
    */
   rtb_Saturation_a = INS_U.Rangefinder.distance * arm_cos_f32
     (INS_DWork.Delay_2_DSTATE) * arm_cos_f32(INS_DWork.Delay_3_DSTATE);
 
-  /* Update for UnitDelay: '<S404>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S449>/Delay Input1' incorporates:
    *  Inport: '<Root>/Rangefinder'
    */
   INS_DWork.DelayInput1_DSTATE = INS_U.Rangefinder.timestamp;
 
-  /* Update for DiscreteIntegrator: '<S400>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S400>/Constant'
+  /* Update for DiscreteIntegrator: '<S445>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S445>/Constant'
    */
-  rtb_Switch_k_idx_1 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 +
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 +
     (real32_T)INS_EXPORT.period;
-  if (rtb_Switch_k_idx_1 < 4.2949673E+9F) {
-    INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 = (uint32_T)rtb_Switch_k_idx_1;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 = (uint32_T)rtb_Switch_kj_idx_3;
   } else {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 = MAX_uint32_T;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S400>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S445>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S405>/Delay' */
-  INS_DWork.Delay_DSTATE_j = rtb_Compare;
+  /* Update for Delay: '<S450>/Delay' */
+  INS_DWork.Delay_DSTATE_j = rtb_Switch_ox;
 
-  /* Update for DiscreteIntegrator: '<S401>/Discrete-Time Integrator' */
+  /* Update for DiscreteIntegrator: '<S446>/Discrete-Time Integrator' */
   INS_DWork.DiscreteTimeIntegrator_DSTAT_cv += rtb_Compare_ai;
   if (INS_DWork.DiscreteTimeIntegrator_DSTAT_cv >=
       INS_P.DiscreteTimeIntegrator_UpperS_l) {
@@ -2521,11 +2806,11 @@ void INS_step(void)
 
   INS_DWork.DiscreteTimeIntegrator_PrevRese = (int8_T)rtb_Compare_ai;
 
-  /* End of Update for DiscreteIntegrator: '<S401>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S446>/Discrete-Time Integrator' */
   /* End of Outputs for SubSystem: '<S3>/Rangefinder_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S3>/OpticalFlow_PreProcess' */
-  /* DiscreteIntegrator: '<S394>/Discrete-Time Integrator5' incorporates:
+  /* DiscreteIntegrator: '<S439>/Discrete-Time Integrator5' incorporates:
    *  Inport: '<Root>/Optical_Flow'
    */
   if (INS_DWork.DiscreteTimeIntegrator5_IC_LOAD != 0) {
@@ -2533,31 +2818,31 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator5_DSTATE[1] = INS_U.Optical_Flow.vy;
   }
 
-  /* Product: '<S392>/Multiply' incorporates:
-   *  DiscreteIntegrator: '<S394>/Discrete-Time Integrator5'
+  /* Product: '<S437>/Multiply' incorporates:
+   *  DiscreteIntegrator: '<S439>/Discrete-Time Integrator5'
    */
   rtb_dec_rad = rtb_Compare_c5 ? INS_DWork.DiscreteTimeIntegrator5_DSTATE[0] *
     rtb_Saturation_a : 0.0F;
   rtb_Memory_m_idx_1 = rtb_Compare_c5 ?
     INS_DWork.DiscreteTimeIntegrator5_DSTATE[1] * rtb_Saturation_a : 0.0F;
 
-  /* DiscreteIntegrator: '<S393>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S397>/Constant1'
-   *  Delay: '<S397>/Delay'
+  /* DiscreteIntegrator: '<S438>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S442>/Constant1'
+   *  Delay: '<S442>/Delay'
    *  Inport: '<Root>/Optical_Flow'
-   *  RelationalOperator: '<S396>/FixPt Relational Operator'
-   *  Switch: '<S397>/Switch'
-   *  UnitDelay: '<S396>/Delay Input1'
+   *  RelationalOperator: '<S441>/FixPt Relational Operator'
+   *  Switch: '<S442>/Switch'
+   *  UnitDelay: '<S441>/Delay Input1'
    */
   if (INS_U.Optical_Flow.timestamp != INS_DWork.DelayInput1_DSTATE_k) {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_g =
       INS_P.DiscreteTimeIntegrator_IC_n;
-    rtb_WGS84_pos_valid = (INS_P.Constant1_Value_o0 != 0);
+    rtb_Switch_ol = (INS_P.Constant1_Value_o0 != 0);
   } else {
-    rtb_WGS84_pos_valid = INS_DWork.Delay_DSTATE_c;
+    rtb_Switch_ol = INS_DWork.Delay_DSTATE_c;
   }
 
-  /* Relay: '<S393>/Relay' incorporates:
+  /* Relay: '<S438>/Relay' incorporates:
    *  Inport: '<Root>/Optical_Flow'
    */
   if (INS_U.Optical_Flow.quality >= INS_P.Relay_OnVal_f) {
@@ -2574,24 +2859,24 @@ void INS_step(void)
     rtb_Switch_pt = INS_P.Sensor_Valid_q_low;
   }
 
-  /* End of Relay: '<S393>/Relay' */
+  /* End of Relay: '<S438>/Relay' */
 
-  /* Logic: '<S393>/Logical Operator1' incorporates:
-   *  Constant: '<S395>/Constant'
-   *  Constant: '<S398>/Lower Limit'
-   *  Constant: '<S398>/Upper Limit'
-   *  Constant: '<S399>/Lower Limit'
-   *  Constant: '<S399>/Upper Limit'
-   *  DiscreteIntegrator: '<S393>/Discrete-Time Integrator'
+  /* Logic: '<S438>/Logical Operator1' incorporates:
+   *  Constant: '<S440>/Constant'
+   *  Constant: '<S443>/Lower Limit'
+   *  Constant: '<S443>/Upper Limit'
+   *  Constant: '<S444>/Lower Limit'
+   *  Constant: '<S444>/Upper Limit'
+   *  DiscreteIntegrator: '<S438>/Discrete-Time Integrator'
    *  Inport: '<Root>/Optical_Flow'
-   *  Logic: '<S393>/Logical Operator'
-   *  Logic: '<S398>/AND'
-   *  Logic: '<S399>/AND'
-   *  RelationalOperator: '<S395>/Compare'
-   *  RelationalOperator: '<S398>/Lower Test'
-   *  RelationalOperator: '<S398>/Upper Test'
-   *  RelationalOperator: '<S399>/Lower Test'
-   *  RelationalOperator: '<S399>/Upper Test'
+   *  Logic: '<S438>/Logical Operator'
+   *  Logic: '<S443>/AND'
+   *  Logic: '<S444>/AND'
+   *  RelationalOperator: '<S440>/Compare'
+   *  RelationalOperator: '<S443>/Lower Test'
+   *  RelationalOperator: '<S443>/Upper Test'
+   *  RelationalOperator: '<S444>/Lower Test'
+   *  RelationalOperator: '<S444>/Upper Test'
    */
   rtb_Compare_ai = ((INS_P.Sensor_Valid_min_vel < INS_U.Optical_Flow.vx) &&
                     (INS_U.Optical_Flow.vx < INS_P.Sensor_Valid_max_vel) &&
@@ -2599,13 +2884,13 @@ void INS_step(void)
                      (INS_U.Optical_Flow.vy < INS_P.Sensor_Valid_max_vel)) &&
                     (rtb_Switch_pt != 0) &&
                     (INS_DWork.DiscreteTimeIntegrator_DSTATE_g <
-                     INS_P.Sensor_Valid_timeout_ai) && rtb_WGS84_pos_valid &&
+                     INS_P.Sensor_Valid_timeout_ai) && rtb_Switch_ol &&
                     rtb_Compare_c5);
 
-  /* Update for DiscreteIntegrator: '<S394>/Discrete-Time Integrator5' incorporates:
-   *  Gain: '<S394>/Gain'
+  /* Update for DiscreteIntegrator: '<S439>/Discrete-Time Integrator5' incorporates:
+   *  Gain: '<S439>/Gain'
    *  Inport: '<Root>/Optical_Flow'
-   *  Sum: '<S394>/Sum5'
+   *  Sum: '<S439>/Sum5'
    */
   INS_DWork.DiscreteTimeIntegrator5_IC_LOAD = 0U;
   INS_DWork.DiscreteTimeIntegrator5_DSTATE[0] += (INS_U.Optical_Flow.vx -
@@ -2615,26 +2900,26 @@ void INS_step(void)
     INS_DWork.DiscreteTimeIntegrator5_DSTATE[1]) * INS_P.Gain_Gain_ca *
     INS_P.DiscreteTimeIntegrator5_gainv_c;
 
-  /* Update for UnitDelay: '<S396>/Delay Input1' incorporates:
+  /* Update for UnitDelay: '<S441>/Delay Input1' incorporates:
    *  Inport: '<Root>/Optical_Flow'
    */
   INS_DWork.DelayInput1_DSTATE_k = INS_U.Optical_Flow.timestamp;
 
-  /* Update for DiscreteIntegrator: '<S393>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S393>/Constant'
+  /* Update for DiscreteIntegrator: '<S438>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S438>/Constant'
    */
-  rtb_Switch_k_idx_1 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTATE_g +
+  rtb_Switch_kj_idx_3 = (real32_T)INS_DWork.DiscreteTimeIntegrator_DSTATE_g +
     (real32_T)INS_EXPORT.period;
-  if (rtb_Switch_k_idx_1 < 4.2949673E+9F) {
-    INS_DWork.DiscreteTimeIntegrator_DSTATE_g = (uint32_T)rtb_Switch_k_idx_1;
+  if (rtb_Switch_kj_idx_3 < 4.2949673E+9F) {
+    INS_DWork.DiscreteTimeIntegrator_DSTATE_g = (uint32_T)rtb_Switch_kj_idx_3;
   } else {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_g = MAX_uint32_T;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S393>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S438>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S397>/Delay' */
-  INS_DWork.Delay_DSTATE_c = rtb_WGS84_pos_valid;
+  /* Update for Delay: '<S442>/Delay' */
+  INS_DWork.Delay_DSTATE_c = rtb_Switch_ol;
 
   /* End of Outputs for SubSystem: '<S3>/OpticalFlow_PreProcess' */
 
@@ -2643,12 +2928,12 @@ void INS_step(void)
   /* Outputs for Atomic SubSystem: '<S57>/Correct' */
   /* Outputs for Atomic SubSystem: '<S55>/RF_Data_PreProcess' */
   /* Outputs for Atomic SubSystem: '<S3>/IMU_PreProcess' */
-  /* Math: '<S120>/Square' incorporates:
+  /* Math: '<S126>/Square' incorporates:
    *  Inport: '<Root>/IMU'
-   *  Math: '<S96>/Square'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport4'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport5'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport6'
+   *  Math: '<S102>/Square'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport4'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport5'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport6'
    */
   rtb_Square_le[0] = INS_U.IMU.acc_x * INS_U.IMU.acc_x;
   rtb_Square_le[1] = INS_U.IMU.acc_y * INS_U.IMU.acc_y;
@@ -2659,31 +2944,31 @@ void INS_step(void)
   /* End of Outputs for SubSystem: '<S55>/AHRS' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-  /* Sqrt: '<S120>/Sqrt' incorporates:
-   *  Math: '<S120>/Square'
-   *  Sum: '<S120>/Sum of Elements'
+  /* Sqrt: '<S126>/Sqrt' incorporates:
+   *  Math: '<S126>/Square'
+   *  Sum: '<S126>/Sum of Elements'
    */
   rtb_DiscreteTimeIntegrator_g = sqrtf((rtb_Square_le[0] + rtb_Square_le[1]) +
     rtb_Square_le[2]);
 
-  /* Sum: '<S122>/Add' incorporates:
-   *  Constant: '<S115>/Constant'
-   *  Constant: '<S116>/Constant'
-   *  Constant: '<S118>/Lower Limit'
-   *  Constant: '<S118>/Upper Limit'
-   *  DataTypeConversion: '<S122>/Data Type Conversion'
-   *  Delay: '<S122>/Delay'
-   *  Logic: '<S112>/Logical Operator1'
-   *  Logic: '<S118>/AND'
-   *  Math: '<S121>/Square'
-   *  RelationalOperator: '<S115>/Compare'
-   *  RelationalOperator: '<S116>/Compare'
-   *  RelationalOperator: '<S118>/Lower Test'
-   *  RelationalOperator: '<S118>/Upper Test'
-   *  Sqrt: '<S121>/Sqrt'
-   *  Sum: '<S121>/Sum of Elements'
+  /* Sum: '<S128>/Add' incorporates:
+   *  Constant: '<S121>/Constant'
+   *  Constant: '<S122>/Constant'
+   *  Constant: '<S124>/Lower Limit'
+   *  Constant: '<S124>/Upper Limit'
+   *  DataTypeConversion: '<S128>/Data Type Conversion'
+   *  Delay: '<S128>/Delay'
+   *  Logic: '<S118>/Logical Operator1'
+   *  Logic: '<S124>/AND'
+   *  Math: '<S127>/Square'
+   *  RelationalOperator: '<S121>/Compare'
+   *  RelationalOperator: '<S122>/Compare'
+   *  RelationalOperator: '<S124>/Lower Test'
+   *  RelationalOperator: '<S124>/Upper Test'
+   *  Sqrt: '<S127>/Sqrt'
+   *  Sum: '<S127>/Sum of Elements'
    */
-  rtb_Sum1 = (rtb_Delay_c && (rtb_MathFunction1 >=
+  rtb_Sum1 = (rtb_FixPtRelationalOperator_nc && (rtb_MathFunction1 >=
     INS_P.CompareToConstant1_const) && ((INS_P.IntervalTest_lowlimit <=
     rtb_DiscreteTimeIntegrator_g) && (rtb_DiscreteTimeIntegrator_g <=
     INS_P.IntervalTest_uplimit)) && (sqrtf((rtb_Gauss_to_uT[0] *
@@ -2691,7 +2976,7 @@ void INS_step(void)
     rtb_Gauss_to_uT[2] * rtb_Gauss_to_uT[2]) > INS_P.CompareToConstant_const_p))
     + INS_DWork.Delay_DSTATE_i;
 
-  /* Saturate: '<S122>/Saturation' */
+  /* Saturate: '<S128>/Saturation' */
   if (rtb_Sum1 > INS_P.Saturation_UpperSat_k5) {
     rtb_Sum1 = INS_P.Saturation_UpperSat_k5;
   } else {
@@ -2700,26 +2985,26 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S122>/Saturation' */
+  /* End of Saturate: '<S128>/Saturation' */
 
-  /* RelationalOperator: '<S126>/Compare' incorporates:
-   *  Constant: '<S126>/Constant'
+  /* RelationalOperator: '<S132>/Compare' incorporates:
+   *  Constant: '<S132>/Constant'
    */
   rtb_WGS84_pos_valid = (rtb_Sum1 > INS_P.valid_samples_const_k);
 
-  /* RelationalOperator: '<S123>/Compare' incorporates:
-   *  Constant: '<S123>/Constant'
+  /* RelationalOperator: '<S129>/Compare' incorporates:
+   *  Constant: '<S129>/Constant'
    */
   rtb_Compare_o = ((int32_T)rtb_WGS84_pos_valid > (int32_T)
                    INS_P.Constant_Value_af);
 
-  /* Sum: '<S119>/Add' incorporates:
-   *  DataTypeConversion: '<S119>/Data Type Conversion'
-   *  Delay: '<S119>/Delay'
+  /* Sum: '<S125>/Add' incorporates:
+   *  DataTypeConversion: '<S125>/Data Type Conversion'
+   *  Delay: '<S125>/Delay'
    */
   rtb_Sum1_o = rtb_Compare_cio + INS_DWork.Delay_DSTATE_n;
 
-  /* Saturate: '<S119>/Saturation' */
+  /* Saturate: '<S125>/Saturation' */
   if (rtb_Sum1_o > INS_P.Saturation_UpperSat_p) {
     rtb_Sum1_o = INS_P.Saturation_UpperSat_p;
   } else {
@@ -2728,96 +3013,96 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S119>/Saturation' */
+  /* End of Saturate: '<S125>/Saturation' */
 
-  /* RelationalOperator: '<S125>/Compare' incorporates:
-   *  Constant: '<S125>/Constant'
+  /* RelationalOperator: '<S131>/Compare' incorporates:
+   *  Constant: '<S131>/Constant'
    */
   rtb_Compare_jx = (rtb_Sum1_o > INS_P.Constant_Value_m);
 
-  /* Logic: '<S112>/Logical Operator2' incorporates:
-   *  Logic: '<S112>/Logical Operator'
-   *  RelationalOperator: '<S117>/FixPt Relational Operator'
-   *  RelationalOperator: '<S124>/FixPt Relational Operator'
-   *  UnitDelay: '<S117>/Delay Input1'
-   *  UnitDelay: '<S124>/Delay Input1'
+  /* Logic: '<S118>/Logical Operator2' incorporates:
+   *  Logic: '<S118>/Logical Operator'
+   *  RelationalOperator: '<S123>/FixPt Relational Operator'
+   *  RelationalOperator: '<S130>/FixPt Relational Operator'
+   *  UnitDelay: '<S123>/Delay Input1'
+   *  UnitDelay: '<S130>/Delay Input1'
    */
-  rtb_LogicalOperator2_f = (((int32_T)rtb_Compare_o > (int32_T)
-    INS_DWork.DelayInput1_DSTATE_pr) || (rtb_WGS84_pos_valid && ((int32_T)
-    rtb_Compare_jx > (int32_T)INS_DWork.DelayInput1_DSTATE_mm)));
+  rtb_Switch_ol = (((int32_T)rtb_Compare_o > (int32_T)
+                    INS_DWork.DelayInput1_DSTATE_pr) || (rtb_WGS84_pos_valid &&
+    ((int32_T)rtb_Compare_jx > (int32_T)INS_DWork.DelayInput1_DSTATE_mm)));
 
   /* Outputs for Enabled SubSystem: '<S58>/Initial_Attitude' incorporates:
-   *  EnablePort: '<S113>/Enable'
+   *  EnablePort: '<S119>/Enable'
    */
-  if (rtb_LogicalOperator2_f) {
+  if (rtb_Switch_ol) {
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/IMU_PreProcess' */
-    /* Gain: '<S113>/Gain' incorporates:
+    /* Gain: '<S119>/Gain' incorporates:
      *  Inport: '<Root>/IMU'
-     *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport4'
-     *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport5'
-     *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport6'
+     *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport4'
+     *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport5'
+     *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport6'
      */
-    rtb_Gain_cv[0] = INS_P.Gain_Gain_d * INS_U.IMU.acc_x;
-    rtb_Gain_cv[1] = INS_P.Gain_Gain_d * INS_U.IMU.acc_y;
-    rtb_Gain_cv[2] = INS_P.Gain_Gain_d * INS_U.IMU.acc_z;
+    rtb_Gain_fc[0] = INS_P.Gain_Gain_d * INS_U.IMU.acc_x;
+    rtb_Gain_fc[1] = INS_P.Gain_Gain_d * INS_U.IMU.acc_y;
+    rtb_Gain_fc[2] = INS_P.Gain_Gain_d * INS_U.IMU.acc_z;
 
     /* End of Outputs for SubSystem: '<S3>/IMU_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Sum: '<S127>/Sum' incorporates:
-     *  Product: '<S133>/Multiply'
-     *  Product: '<S133>/Multiply1'
-     *  Product: '<S133>/Multiply2'
-     *  Product: '<S134>/Multiply3'
-     *  Product: '<S134>/Multiply4'
-     *  Product: '<S134>/Multiply5'
+    /* Sum: '<S133>/Sum' incorporates:
+     *  Product: '<S139>/Multiply'
+     *  Product: '<S139>/Multiply1'
+     *  Product: '<S139>/Multiply2'
+     *  Product: '<S140>/Multiply3'
+     *  Product: '<S140>/Multiply4'
+     *  Product: '<S140>/Multiply5'
      */
-    rtb_Sum_gn_idx_0 = rtb_Gain_cv[1] * rtb_Gauss_to_uT[2] - rtb_Gain_cv[2] *
+    rtb_Sum_gn_idx_0 = rtb_Gain_fc[1] * rtb_Gauss_to_uT[2] - rtb_Gain_fc[2] *
       rtb_Gauss_to_uT[1];
-    rtb_Sum_gn_idx_1 = rtb_Gain_cv[2] * rtb_Gauss_to_uT[0] - rtb_Gain_cv[0] *
+    rtb_Sum_gn_idx_1 = rtb_Gain_fc[2] * rtb_Gauss_to_uT[0] - rtb_Gain_fc[0] *
       rtb_Gauss_to_uT[2];
-    rtb_Sum_gn_idx_2 = rtb_Gain_cv[0] * rtb_Gauss_to_uT[1] - rtb_Gain_cv[1] *
+    rtb_Sum_gn_idx_2 = rtb_Gain_fc[0] * rtb_Gauss_to_uT[1] - rtb_Gain_fc[1] *
       rtb_Gauss_to_uT[0];
 
-    /* Sum: '<S128>/Sum' incorporates:
-     *  Product: '<S135>/Multiply'
-     *  Product: '<S136>/Multiply3'
+    /* Sum: '<S134>/Sum' incorporates:
+     *  Product: '<S141>/Multiply'
+     *  Product: '<S142>/Multiply3'
      */
-    rtb_Switch_k_idx_2 = rtb_Sum_gn_idx_1 * rtb_Gain_cv[2] - rtb_Sum_gn_idx_2 *
-      rtb_Gain_cv[1];
+    rtb_Switch_kj_idx_2 = rtb_Sum_gn_idx_1 * rtb_Gain_fc[2] - rtb_Sum_gn_idx_2 *
+      rtb_Gain_fc[1];
 
-    /* Math: '<S130>/Math Function' */
-    rtb_Switch_k_idx_0 = rtb_Switch_k_idx_2 * rtb_Switch_k_idx_2;
+    /* Math: '<S136>/Math Function' */
+    rtb_Switch_kj_idx_1 = rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2;
 
-    /* Sum: '<S128>/Sum' incorporates:
-     *  Product: '<S135>/Multiply1'
-     *  Product: '<S136>/Multiply4'
+    /* Sum: '<S134>/Sum' incorporates:
+     *  Product: '<S141>/Multiply1'
+     *  Product: '<S142>/Multiply4'
      */
-    rtb_Sum_p_idx_0 = rtb_Switch_k_idx_2;
-    rtb_Switch_k_idx_2 = rtb_Sum_gn_idx_2 * rtb_Gain_cv[0] - rtb_Sum_gn_idx_0 *
-      rtb_Gain_cv[2];
+    rtb_Sum_p_idx_0 = rtb_Switch_kj_idx_2;
+    rtb_Switch_kj_idx_2 = rtb_Sum_gn_idx_2 * rtb_Gain_fc[0] - rtb_Sum_gn_idx_0 *
+      rtb_Gain_fc[2];
 
-    /* Math: '<S130>/Math Function' */
-    rtb_Switch_k_idx_1 = rtb_Switch_k_idx_2 * rtb_Switch_k_idx_2;
+    /* Math: '<S136>/Math Function' */
+    rtb_Switch_kj_idx_0 = rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2;
 
-    /* Sum: '<S128>/Sum' incorporates:
-     *  Product: '<S135>/Multiply2'
-     *  Product: '<S136>/Multiply5'
+    /* Sum: '<S134>/Sum' incorporates:
+     *  Product: '<S141>/Multiply2'
+     *  Product: '<S142>/Multiply5'
      */
-    rtb_Sum_p_idx_1 = rtb_Switch_k_idx_2;
-    rtb_Switch_k_idx_2 = rtb_Sum_gn_idx_0 * rtb_Gain_cv[1] - rtb_Sum_gn_idx_1 *
-      rtb_Gain_cv[0];
+    rtb_Sum_p_idx_1 = rtb_Switch_kj_idx_2;
+    rtb_Switch_kj_idx_2 = rtb_Sum_gn_idx_0 * rtb_Gain_fc[1] - rtb_Sum_gn_idx_1 *
+      rtb_Gain_fc[0];
 
-    /* Sum: '<S130>/Sum of Elements' incorporates:
-     *  Math: '<S130>/Math Function'
+    /* Sum: '<S136>/Sum of Elements' incorporates:
+     *  Math: '<S136>/Math Function'
      */
-    rtb_DiscreteTimeIntegrator_g = (rtb_Switch_k_idx_0 + rtb_Switch_k_idx_1) +
-      rtb_Switch_k_idx_2 * rtb_Switch_k_idx_2;
+    rtb_DiscreteTimeIntegrator_g = (rtb_Switch_kj_idx_1 + rtb_Switch_kj_idx_0) +
+      rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2;
 
-    /* Math: '<S130>/Math Function1'
+    /* Math: '<S136>/Math Function1'
      *
-     * About '<S130>/Math Function1':
+     * About '<S136>/Math Function1':
      *  Operator: sqrt
      */
     if (rtb_DiscreteTimeIntegrator_g < 0.0F) {
@@ -2826,39 +3111,39 @@ void INS_step(void)
       rtb_DiscreteTimeIntegrator_g = sqrtf(rtb_DiscreteTimeIntegrator_g);
     }
 
-    /* End of Math: '<S130>/Math Function1' */
+    /* End of Math: '<S136>/Math Function1' */
 
-    /* Switch: '<S130>/Switch' incorporates:
-     *  Constant: '<S130>/Constant'
-     *  Product: '<S130>/Product'
+    /* Switch: '<S136>/Switch' incorporates:
+     *  Constant: '<S136>/Constant'
+     *  Gain: '<S136>/Gain'
      */
     if (rtb_DiscreteTimeIntegrator_g > INS_P.Switch_Threshold_a) {
-      rtb_Switch_k_idx_0 = rtb_Sum_p_idx_0;
-      rtb_Switch_k_idx_1 = rtb_Sum_p_idx_1;
-      rtb_Switch_k_idx_3 = rtb_DiscreteTimeIntegrator_g;
+      rtb_Switch_kj_idx_0 = rtb_Sum_p_idx_0;
+      rtb_Switch_kj_idx_1 = rtb_Sum_p_idx_1;
+      rtb_Switch_kj_idx_3 = rtb_DiscreteTimeIntegrator_g;
     } else {
-      rtb_Switch_k_idx_0 = 0.0F;
-      rtb_Switch_k_idx_1 = 0.0F;
-      rtb_Switch_k_idx_2 = 0.0F;
-      rtb_Switch_k_idx_3 = INS_P.Constant_Value_h1;
+      rtb_Switch_kj_idx_0 = INS_P.Gain_Gain_fe * rtb_Sum_p_idx_0;
+      rtb_Switch_kj_idx_1 = INS_P.Gain_Gain_fe * rtb_Sum_p_idx_1;
+      rtb_Switch_kj_idx_2 *= INS_P.Gain_Gain_fe;
+      rtb_Switch_kj_idx_3 = INS_P.Constant_Value_h1;
     }
 
-    /* End of Switch: '<S130>/Switch' */
+    /* End of Switch: '<S136>/Switch' */
 
-    /* Product: '<S130>/Divide' */
-    rtb_VectorConcatenate_h[0] = rtb_Switch_k_idx_0 / rtb_Switch_k_idx_3;
-    rtb_VectorConcatenate_h[1] = rtb_Switch_k_idx_1 / rtb_Switch_k_idx_3;
-    rtb_VectorConcatenate_h[2] = rtb_Switch_k_idx_2 / rtb_Switch_k_idx_3;
+    /* Product: '<S136>/Divide' */
+    rtb_VectorConcatenate_h[0] = rtb_Switch_kj_idx_0 / rtb_Switch_kj_idx_3;
+    rtb_VectorConcatenate_h[1] = rtb_Switch_kj_idx_1 / rtb_Switch_kj_idx_3;
+    rtb_VectorConcatenate_h[2] = rtb_Switch_kj_idx_2 / rtb_Switch_kj_idx_3;
 
-    /* Sum: '<S131>/Sum of Elements' incorporates:
-     *  Math: '<S131>/Math Function'
+    /* Sum: '<S137>/Sum of Elements' incorporates:
+     *  Math: '<S137>/Math Function'
      */
     rtb_DiscreteTimeIntegrator_g = (rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_0 +
       rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_1) + rtb_Sum_gn_idx_2 * rtb_Sum_gn_idx_2;
 
-    /* Math: '<S131>/Math Function1'
+    /* Math: '<S137>/Math Function1'
      *
-     * About '<S131>/Math Function1':
+     * About '<S137>/Math Function1':
      *  Operator: sqrt
      */
     if (rtb_DiscreteTimeIntegrator_g < 0.0F) {
@@ -2867,40 +3152,40 @@ void INS_step(void)
       rtb_DiscreteTimeIntegrator_g = sqrtf(rtb_DiscreteTimeIntegrator_g);
     }
 
-    /* End of Math: '<S131>/Math Function1' */
+    /* End of Math: '<S137>/Math Function1' */
 
-    /* Switch: '<S131>/Switch' incorporates:
-     *  Constant: '<S131>/Constant'
-     *  Product: '<S131>/Product'
+    /* Switch: '<S137>/Switch' incorporates:
+     *  Constant: '<S137>/Constant'
+     *  Gain: '<S137>/Gain'
      */
     if (rtb_DiscreteTimeIntegrator_g > INS_P.Switch_Threshold_f) {
-      rtb_Switch_k_idx_0 = rtb_Sum_gn_idx_0;
-      rtb_Switch_k_idx_1 = rtb_Sum_gn_idx_1;
-      rtb_Switch_k_idx_2 = rtb_Sum_gn_idx_2;
-      rtb_Switch_k_idx_3 = rtb_DiscreteTimeIntegrator_g;
+      rtb_Switch_kj_idx_0 = rtb_Sum_gn_idx_0;
+      rtb_Switch_kj_idx_1 = rtb_Sum_gn_idx_1;
+      rtb_Switch_kj_idx_2 = rtb_Sum_gn_idx_2;
+      rtb_Switch_kj_idx_3 = rtb_DiscreteTimeIntegrator_g;
     } else {
-      rtb_Switch_k_idx_0 = 0.0F;
-      rtb_Switch_k_idx_1 = 0.0F;
-      rtb_Switch_k_idx_2 = 0.0F;
-      rtb_Switch_k_idx_3 = INS_P.Constant_Value_aee;
+      rtb_Switch_kj_idx_0 = INS_P.Gain_Gain_mx * rtb_Sum_gn_idx_0;
+      rtb_Switch_kj_idx_1 = INS_P.Gain_Gain_mx * rtb_Sum_gn_idx_1;
+      rtb_Switch_kj_idx_2 = INS_P.Gain_Gain_mx * rtb_Sum_gn_idx_2;
+      rtb_Switch_kj_idx_3 = INS_P.Constant_Value_aee;
     }
 
-    /* End of Switch: '<S131>/Switch' */
+    /* End of Switch: '<S137>/Switch' */
 
-    /* Product: '<S131>/Divide' */
-    rtb_VectorConcatenate_h[3] = rtb_Switch_k_idx_0 / rtb_Switch_k_idx_3;
-    rtb_VectorConcatenate_h[4] = rtb_Switch_k_idx_1 / rtb_Switch_k_idx_3;
-    rtb_VectorConcatenate_h[5] = rtb_Switch_k_idx_2 / rtb_Switch_k_idx_3;
+    /* Product: '<S137>/Divide' */
+    rtb_VectorConcatenate_h[3] = rtb_Switch_kj_idx_0 / rtb_Switch_kj_idx_3;
+    rtb_VectorConcatenate_h[4] = rtb_Switch_kj_idx_1 / rtb_Switch_kj_idx_3;
+    rtb_VectorConcatenate_h[5] = rtb_Switch_kj_idx_2 / rtb_Switch_kj_idx_3;
 
-    /* Sum: '<S132>/Sum of Elements' incorporates:
-     *  Math: '<S132>/Math Function'
+    /* Sum: '<S138>/Sum of Elements' incorporates:
+     *  Math: '<S138>/Math Function'
      */
-    rtb_DiscreteTimeIntegrator_g = (rtb_Gain_cv[0] * rtb_Gain_cv[0] +
-      rtb_Gain_cv[1] * rtb_Gain_cv[1]) + rtb_Gain_cv[2] * rtb_Gain_cv[2];
+    rtb_DiscreteTimeIntegrator_g = (rtb_Gain_fc[0] * rtb_Gain_fc[0] +
+      rtb_Gain_fc[1] * rtb_Gain_fc[1]) + rtb_Gain_fc[2] * rtb_Gain_fc[2];
 
-    /* Math: '<S132>/Math Function1'
+    /* Math: '<S138>/Math Function1'
      *
-     * About '<S132>/Math Function1':
+     * About '<S138>/Math Function1':
      *  Operator: sqrt
      */
     if (rtb_DiscreteTimeIntegrator_g < 0.0F) {
@@ -2909,59 +3194,59 @@ void INS_step(void)
       rtb_DiscreteTimeIntegrator_g = sqrtf(rtb_DiscreteTimeIntegrator_g);
     }
 
-    /* End of Math: '<S132>/Math Function1' */
+    /* End of Math: '<S138>/Math Function1' */
 
-    /* Switch: '<S132>/Switch' incorporates:
-     *  Constant: '<S132>/Constant'
-     *  Product: '<S132>/Product'
+    /* Switch: '<S138>/Switch' incorporates:
+     *  Constant: '<S138>/Constant'
+     *  Gain: '<S138>/Gain'
      */
     if (rtb_DiscreteTimeIntegrator_g > INS_P.Switch_Threshold_mm) {
-      rtb_Switch_k_idx_0 = rtb_Gain_cv[0];
-      rtb_Switch_k_idx_1 = rtb_Gain_cv[1];
-      rtb_Switch_k_idx_2 = rtb_Gain_cv[2];
-      rtb_Switch_k_idx_3 = rtb_DiscreteTimeIntegrator_g;
+      rtb_Switch_kj_idx_0 = rtb_Gain_fc[0];
+      rtb_Switch_kj_idx_1 = rtb_Gain_fc[1];
+      rtb_Switch_kj_idx_2 = rtb_Gain_fc[2];
+      rtb_Switch_kj_idx_3 = rtb_DiscreteTimeIntegrator_g;
     } else {
-      rtb_Switch_k_idx_0 = 0.0F;
-      rtb_Switch_k_idx_1 = 0.0F;
-      rtb_Switch_k_idx_2 = 0.0F;
-      rtb_Switch_k_idx_3 = INS_P.Constant_Value_hp;
+      rtb_Switch_kj_idx_0 = INS_P.Gain_Gain_h4 * rtb_Gain_fc[0];
+      rtb_Switch_kj_idx_1 = INS_P.Gain_Gain_h4 * rtb_Gain_fc[1];
+      rtb_Switch_kj_idx_2 = INS_P.Gain_Gain_h4 * rtb_Gain_fc[2];
+      rtb_Switch_kj_idx_3 = INS_P.Constant_Value_hp;
     }
 
-    /* End of Switch: '<S132>/Switch' */
+    /* End of Switch: '<S138>/Switch' */
 
-    /* Product: '<S132>/Divide' */
-    rtb_VectorConcatenate_h[6] = rtb_Switch_k_idx_0 / rtb_Switch_k_idx_3;
-    rtb_VectorConcatenate_h[7] = rtb_Switch_k_idx_1 / rtb_Switch_k_idx_3;
-    rtb_VectorConcatenate_h[8] = rtb_Switch_k_idx_2 / rtb_Switch_k_idx_3;
+    /* Product: '<S138>/Divide' */
+    rtb_VectorConcatenate_h[6] = rtb_Switch_kj_idx_0 / rtb_Switch_kj_idx_3;
+    rtb_VectorConcatenate_h[7] = rtb_Switch_kj_idx_1 / rtb_Switch_kj_idx_3;
+    rtb_VectorConcatenate_h[8] = rtb_Switch_kj_idx_2 / rtb_Switch_kj_idx_3;
 
-    /* Sum: '<S137>/Add' */
+    /* Sum: '<S143>/Add' */
     rtb_DiscreteTimeIntegrator_g = (rtb_VectorConcatenate_h[0] +
       rtb_VectorConcatenate_h[4]) + rtb_VectorConcatenate_h[8];
 
-    /* If: '<S129>/If' incorporates:
-     *  If: '<S138>/Find Maximum Diagonal Value'
+    /* If: '<S135>/If' incorporates:
+     *  If: '<S144>/Find Maximum Diagonal Value'
      */
     if (rtb_DiscreteTimeIntegrator_g > 0.0F) {
-      /* Outputs for IfAction SubSystem: '<S129>/Positive Trace' incorporates:
-       *  ActionPort: '<S139>/Action Port'
+      /* Outputs for IfAction SubSystem: '<S135>/Positive Trace' incorporates:
+       *  ActionPort: '<S145>/Action Port'
        */
-      /* Sqrt: '<S139>/sqrt' incorporates:
-       *  Constant: '<S139>/Constant'
-       *  Sum: '<S139>/Sum'
+      /* Sqrt: '<S145>/sqrt' incorporates:
+       *  Constant: '<S145>/Constant'
+       *  Sum: '<S145>/Sum'
        */
       rtb_DiscreteTimeIntegrator_g = sqrtf(rtb_DiscreteTimeIntegrator_g +
         INS_P.Constant_Value_c0);
 
-      /* Gain: '<S139>/Gain' */
+      /* Gain: '<S145>/Gain' */
       INS_B.Merge_l[0] = INS_P.Gain_Gain_eu * rtb_DiscreteTimeIntegrator_g;
 
-      /* Gain: '<S139>/Gain1' */
+      /* Gain: '<S145>/Gain1' */
       rtb_DiscreteTimeIntegrator_g *= INS_P.Gain1_Gain_h;
 
-      /* Product: '<S139>/Product' incorporates:
-       *  Sum: '<S159>/Add'
-       *  Sum: '<S160>/Add'
-       *  Sum: '<S161>/Add'
+      /* Product: '<S145>/Product' incorporates:
+       *  Sum: '<S165>/Add'
+       *  Sum: '<S166>/Add'
+       *  Sum: '<S167>/Add'
        */
       INS_B.Merge_l[1] = (rtb_VectorConcatenate_h[7] - rtb_VectorConcatenate_h[5])
         / rtb_DiscreteTimeIntegrator_g;
@@ -2970,32 +3255,32 @@ void INS_step(void)
       INS_B.Merge_l[3] = (rtb_VectorConcatenate_h[3] - rtb_VectorConcatenate_h[1])
         / rtb_DiscreteTimeIntegrator_g;
 
-      /* End of Outputs for SubSystem: '<S129>/Positive Trace' */
+      /* End of Outputs for SubSystem: '<S135>/Positive Trace' */
     } else {
-      /* Outputs for IfAction SubSystem: '<S129>/Negative Trace' incorporates:
-       *  ActionPort: '<S138>/Action Port'
+      /* Outputs for IfAction SubSystem: '<S135>/Negative Trace' incorporates:
+       *  ActionPort: '<S144>/Action Port'
        */
       if ((rtb_VectorConcatenate_h[4] > rtb_VectorConcatenate_h[0]) &&
           (rtb_VectorConcatenate_h[4] > rtb_VectorConcatenate_h[8])) {
-        /* Outputs for IfAction SubSystem: '<S138>/Maximum Value at DCM(2,2)' incorporates:
-         *  ActionPort: '<S141>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S144>/Maximum Value at DCM(2,2)' incorporates:
+         *  ActionPort: '<S147>/Action Port'
          */
-        /* If: '<S138>/Find Maximum Diagonal Value' incorporates:
-         *  Constant: '<S152>/Constant1'
-         *  Constant: '<S152>/Constant2'
-         *  Constant: '<S153>/Constant'
-         *  Gain: '<S141>/Gain'
-         *  Gain: '<S141>/Gain1'
-         *  Gain: '<S141>/Gain3'
-         *  Gain: '<S141>/Gain4'
-         *  Product: '<S141>/Product'
-         *  Product: '<S152>/Product'
-         *  Sqrt: '<S141>/sqrt'
-         *  Sum: '<S149>/Add'
-         *  Sum: '<S150>/Add'
-         *  Sum: '<S151>/Add'
-         *  Sum: '<S153>/Add'
-         *  Switch: '<S152>/Switch'
+        /* If: '<S144>/Find Maximum Diagonal Value' incorporates:
+         *  Constant: '<S158>/Constant1'
+         *  Constant: '<S158>/Constant2'
+         *  Constant: '<S159>/Constant'
+         *  Gain: '<S147>/Gain'
+         *  Gain: '<S147>/Gain1'
+         *  Gain: '<S147>/Gain3'
+         *  Gain: '<S147>/Gain4'
+         *  Product: '<S147>/Product'
+         *  Product: '<S158>/Product'
+         *  Sqrt: '<S147>/sqrt'
+         *  Sum: '<S155>/Add'
+         *  Sum: '<S156>/Add'
+         *  Sum: '<S157>/Add'
+         *  Sum: '<S159>/Add'
+         *  Switch: '<S158>/Switch'
          */
         rtb_DiscreteTimeIntegrator_g = sqrtf(((rtb_VectorConcatenate_h[4] -
           rtb_VectorConcatenate_h[0]) - rtb_VectorConcatenate_h[8]) +
@@ -3017,32 +3302,32 @@ void INS_step(void)
         INS_B.Merge_l[0] = INS_P.Gain4_Gain * ((rtb_VectorConcatenate_h[2] -
           rtb_VectorConcatenate_h[6]) * rtb_DiscreteTimeIntegrator_g);
 
-        /* End of Outputs for SubSystem: '<S138>/Maximum Value at DCM(2,2)' */
+        /* End of Outputs for SubSystem: '<S144>/Maximum Value at DCM(2,2)' */
       } else if (rtb_VectorConcatenate_h[8] > rtb_VectorConcatenate_h[0]) {
-        /* Outputs for IfAction SubSystem: '<S138>/Maximum Value at DCM(3,3)' incorporates:
-         *  ActionPort: '<S142>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S144>/Maximum Value at DCM(3,3)' incorporates:
+         *  ActionPort: '<S148>/Action Port'
          */
-        /* If: '<S138>/Find Maximum Diagonal Value' incorporates:
-         *  Constant: '<S157>/Constant1'
-         *  Constant: '<S157>/Constant2'
-         *  Constant: '<S158>/Constant'
-         *  Gain: '<S142>/Gain'
-         *  Gain: '<S142>/Gain1'
-         *  Gain: '<S142>/Gain2'
-         *  Gain: '<S142>/Gain3'
-         *  Product: '<S142>/Product'
-         *  Product: '<S157>/Product'
-         *  Sqrt: '<S142>/sqrt'
-         *  Sum: '<S154>/Add'
-         *  Sum: '<S155>/Add'
-         *  Sum: '<S156>/Add'
-         *  Sum: '<S158>/Add'
-         *  Switch: '<S157>/Switch'
+        /* If: '<S144>/Find Maximum Diagonal Value' incorporates:
+         *  Constant: '<S163>/Constant1'
+         *  Constant: '<S163>/Constant2'
+         *  Constant: '<S164>/Constant'
+         *  Gain: '<S148>/Gain'
+         *  Gain: '<S148>/Gain1'
+         *  Gain: '<S148>/Gain2'
+         *  Gain: '<S148>/Gain3'
+         *  Product: '<S148>/Product'
+         *  Product: '<S163>/Product'
+         *  Sqrt: '<S148>/sqrt'
+         *  Sum: '<S160>/Add'
+         *  Sum: '<S161>/Add'
+         *  Sum: '<S162>/Add'
+         *  Sum: '<S164>/Add'
+         *  Switch: '<S163>/Switch'
          */
         rtb_DiscreteTimeIntegrator_g = sqrtf(((rtb_VectorConcatenate_h[8] -
           rtb_VectorConcatenate_h[0]) - rtb_VectorConcatenate_h[4]) +
           INS_P.Constant_Value_f);
-        INS_B.Merge_l[3] = INS_P.Gain_Gain_l * rtb_DiscreteTimeIntegrator_g;
+        INS_B.Merge_l[3] = INS_P.Gain_Gain_lj * rtb_DiscreteTimeIntegrator_g;
         if (rtb_DiscreteTimeIntegrator_g != 0.0F) {
           rtb_Sum_gn_idx_1 = INS_P.Constant1_Value_l;
         } else {
@@ -3059,27 +3344,27 @@ void INS_step(void)
         INS_B.Merge_l[0] = INS_P.Gain3_Gain_e * ((rtb_VectorConcatenate_h[3] -
           rtb_VectorConcatenate_h[1]) * rtb_DiscreteTimeIntegrator_g);
 
-        /* End of Outputs for SubSystem: '<S138>/Maximum Value at DCM(3,3)' */
+        /* End of Outputs for SubSystem: '<S144>/Maximum Value at DCM(3,3)' */
       } else {
-        /* Outputs for IfAction SubSystem: '<S138>/Maximum Value at DCM(1,1)' incorporates:
-         *  ActionPort: '<S140>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S144>/Maximum Value at DCM(1,1)' incorporates:
+         *  ActionPort: '<S146>/Action Port'
          */
-        /* If: '<S138>/Find Maximum Diagonal Value' incorporates:
-         *  Constant: '<S147>/Constant1'
-         *  Constant: '<S147>/Constant2'
-         *  Constant: '<S148>/Constant'
-         *  Gain: '<S140>/Gain'
-         *  Gain: '<S140>/Gain1'
-         *  Gain: '<S140>/Gain2'
-         *  Gain: '<S140>/Gain3'
-         *  Product: '<S140>/Product'
-         *  Product: '<S147>/Product'
-         *  Sqrt: '<S140>/sqrt'
-         *  Sum: '<S144>/Add'
-         *  Sum: '<S145>/Add'
-         *  Sum: '<S146>/Add'
-         *  Sum: '<S148>/Add'
-         *  Switch: '<S147>/Switch'
+        /* If: '<S144>/Find Maximum Diagonal Value' incorporates:
+         *  Constant: '<S153>/Constant1'
+         *  Constant: '<S153>/Constant2'
+         *  Constant: '<S154>/Constant'
+         *  Gain: '<S146>/Gain'
+         *  Gain: '<S146>/Gain1'
+         *  Gain: '<S146>/Gain2'
+         *  Gain: '<S146>/Gain3'
+         *  Product: '<S146>/Product'
+         *  Product: '<S153>/Product'
+         *  Sqrt: '<S146>/sqrt'
+         *  Sum: '<S150>/Add'
+         *  Sum: '<S151>/Add'
+         *  Sum: '<S152>/Add'
+         *  Sum: '<S154>/Add'
+         *  Switch: '<S153>/Switch'
          */
         rtb_DiscreteTimeIntegrator_g = sqrtf(((rtb_VectorConcatenate_h[0] -
           rtb_VectorConcatenate_h[4]) - rtb_VectorConcatenate_h[8]) +
@@ -3101,15 +3386,15 @@ void INS_step(void)
         INS_B.Merge_l[0] = INS_P.Gain3_Gain_ea * ((rtb_VectorConcatenate_h[7] -
           rtb_VectorConcatenate_h[5]) * rtb_DiscreteTimeIntegrator_g);
 
-        /* End of Outputs for SubSystem: '<S138>/Maximum Value at DCM(1,1)' */
+        /* End of Outputs for SubSystem: '<S144>/Maximum Value at DCM(1,1)' */
       }
 
-      /* End of Outputs for SubSystem: '<S129>/Negative Trace' */
+      /* End of Outputs for SubSystem: '<S135>/Negative Trace' */
     }
 
-    /* End of If: '<S129>/If' */
+    /* End of If: '<S135>/If' */
 
-    /* SignalConversion: '<S113>/OutportBufferForquat_0' */
+    /* SignalConversion: '<S119>/OutportBufferForquat_0' */
     INS_B.OutportBufferForquat_0[0] = INS_B.Merge_l[0];
     INS_B.OutportBufferForquat_0[1] = INS_B.Merge_l[1];
     INS_B.OutportBufferForquat_0[2] = INS_B.Merge_l[2];
@@ -3118,10 +3403,10 @@ void INS_step(void)
 
   /* End of Outputs for SubSystem: '<S58>/Initial_Attitude' */
 
-  /* DiscreteIntegrator: '<S165>/Discrete-Time Integrator5' incorporates:
+  /* DiscreteIntegrator: '<S171>/Discrete-Time Integrator5' incorporates:
    *  Inport: '<Root>/IMU'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport1'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport2'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport1'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport2'
    */
   if (INS_DWork.DiscreteTimeIntegrator5_IC_LO_p != 0) {
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
@@ -3135,54 +3420,55 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
   /* Outputs for Atomic SubSystem: '<S3>/IMU_PreProcess' */
-  /* Sum: '<S162>/Subtract' incorporates:
-   *  DiscreteIntegrator: '<S165>/Discrete-Time Integrator5'
+  /* Sum: '<S168>/Subtract' incorporates:
+   *  DiscreteIntegrator: '<S171>/Discrete-Time Integrator5'
    *  Inport: '<Root>/IMU'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport1'
-   *  Sum: '<S165>/Sum5'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport1'
+   *  Sum: '<S171>/Sum5'
    */
-  rtb_Switch_k_idx_2 = INS_U.IMU.gyr_x -
+  rtb_Switch_kj_idx_2 = INS_U.IMU.gyr_x -
     INS_DWork.DiscreteTimeIntegrator5_DSTAT_o[0];
 
   /* End of Outputs for SubSystem: '<S3>/IMU_PreProcess' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-  /* Abs: '<S114>/Abs' */
-  rtb_Abs_idx_0 = fabsf(rtb_Switch_k_idx_2);
+  /* Abs: '<S120>/Abs' */
+  rtb_Abs_h_idx_0 = fabsf(rtb_Switch_kj_idx_2);
 
   /* End of Outputs for SubSystem: '<S55>/RF_Data_PreProcess' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
-  rtb_Sum_gn_idx_1 = rtb_Switch_k_idx_2;
+  rtb_Sum_gn_idx_1 = rtb_Switch_kj_idx_2;
 
   /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
   /* Outputs for Atomic SubSystem: '<S55>/RF_Data_PreProcess' */
   /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
   /* Outputs for Atomic SubSystem: '<S3>/IMU_PreProcess' */
-  /* Sum: '<S162>/Subtract' incorporates:
-   *  DiscreteIntegrator: '<S165>/Discrete-Time Integrator5'
+  /* Sum: '<S168>/Subtract' incorporates:
+   *  DiscreteIntegrator: '<S171>/Discrete-Time Integrator5'
    *  Inport: '<Root>/IMU'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport2'
-   *  Sum: '<S165>/Sum5'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport2'
+   *  Sum: '<S171>/Sum5'
    */
-  rtb_Switch_k_idx_2 = INS_U.IMU.gyr_y -
+  rtb_Switch_kj_idx_2 = INS_U.IMU.gyr_y -
     INS_DWork.DiscreteTimeIntegrator5_DSTAT_o[1];
 
   /* End of Outputs for SubSystem: '<S3>/IMU_PreProcess' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-  /* MinMax: '<S114>/MinMax1' incorporates:
-   *  Abs: '<S114>/Abs'
+  /* MinMax: '<S120>/MinMax1' incorporates:
+   *  Abs: '<S120>/Abs'
    */
-  rtb_DiscreteTimeIntegrator_g = fmaxf(rtb_Abs_idx_0, fabsf(rtb_Switch_k_idx_2));
+  rtb_DiscreteTimeIntegrator_g = fmaxf(rtb_Abs_h_idx_0, fabsf
+    (rtb_Switch_kj_idx_2));
 
-  /* DiscreteIntegrator: '<S163>/Discrete-Time Integrator5' incorporates:
-   *  MinMax: '<S114>/MinMax1'
+  /* DiscreteIntegrator: '<S169>/Discrete-Time Integrator5' incorporates:
+   *  MinMax: '<S120>/MinMax1'
    */
   if (INS_DWork.DiscreteTimeIntegrator5_IC_LO_n != 0) {
     INS_DWork.DiscreteTimeIntegrator5_DSTAT_m = rtb_DiscreteTimeIntegrator_g;
   }
 
-  /* Saturate: '<S114>/Saturation2' */
+  /* Saturate: '<S120>/Saturation2' */
   if (INS_DWork.DiscreteTimeIntegrator5_DSTAT_m > INS_P.Saturation2_UpperSat_i)
   {
     rtb_DiscreteTimeIntegrator_b = INS_P.Saturation2_UpperSat_i;
@@ -3193,15 +3479,15 @@ void INS_step(void)
     rtb_DiscreteTimeIntegrator_b = INS_DWork.DiscreteTimeIntegrator5_DSTAT_m;
   }
 
-  /* End of Saturate: '<S114>/Saturation2' */
+  /* End of Saturate: '<S120>/Saturation2' */
 
-  /* DiscreteIntegrator: '<S164>/Discrete-Time Integrator5' */
+  /* DiscreteIntegrator: '<S170>/Discrete-Time Integrator5' */
   if (INS_DWork.DiscreteTimeIntegrator5_IC_L_ns != 0) {
     INS_DWork.DiscreteTimeIntegrator5_DSTA_ow = rtb_DiscreteTimeIntegrator_b;
   }
 
-  /* Relay: '<S114>/Relay' incorporates:
-   *  DiscreteIntegrator: '<S164>/Discrete-Time Integrator5'
+  /* Relay: '<S120>/Relay' incorporates:
+   *  DiscreteIntegrator: '<S170>/Discrete-Time Integrator5'
    */
   if (INS_DWork.DiscreteTimeIntegrator5_DSTA_ow >= INS_P.Relay_OnVal_g) {
     INS_DWork.Relay_Mode_n5 = true;
@@ -3212,64 +3498,64 @@ void INS_step(void)
   }
 
   if (INS_DWork.Relay_Mode_n5) {
-    rtb_Abs_idx_0 = INS_P.Relay_YOn_k;
+    rtb_Abs_h_idx_0 = INS_P.Relay_YOn_k;
   } else {
-    rtb_Abs_idx_0 = INS_P.Relay_YOff_f;
+    rtb_Abs_h_idx_0 = INS_P.Relay_YOff_f;
   }
 
-  /* End of Relay: '<S114>/Relay' */
+  /* End of Relay: '<S120>/Relay' */
 
-  /* Update for UnitDelay: '<S117>/Delay Input1' */
+  /* Update for UnitDelay: '<S123>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_pr = rtb_Compare_o;
 
-  /* Update for Delay: '<S122>/Delay' */
+  /* Update for Delay: '<S128>/Delay' */
   INS_DWork.Delay_DSTATE_i = rtb_Sum1;
 
-  /* Update for Delay: '<S119>/Delay' */
+  /* Update for Delay: '<S125>/Delay' */
   INS_DWork.Delay_DSTATE_n = rtb_Sum1_o;
 
-  /* Update for UnitDelay: '<S124>/Delay Input1' */
+  /* Update for UnitDelay: '<S130>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_mm = rtb_Compare_jx;
 
-  /* Update for DiscreteIntegrator: '<S165>/Discrete-Time Integrator5' incorporates:
-   *  Gain: '<S165>/Gain'
-   *  Sum: '<S165>/Sum5'
+  /* Update for DiscreteIntegrator: '<S171>/Discrete-Time Integrator5' incorporates:
+   *  Gain: '<S171>/Gain'
+   *  Sum: '<S171>/Sum5'
    */
   INS_DWork.DiscreteTimeIntegrator5_IC_LO_p = 0U;
   INS_DWork.DiscreteTimeIntegrator5_DSTAT_o[0] += INS_P.Gain_Gain_fr *
     rtb_Sum_gn_idx_1 * INS_P.DiscreteTimeIntegrator5_gainval;
   INS_DWork.DiscreteTimeIntegrator5_DSTAT_o[1] += INS_P.Gain_Gain_fr *
-    rtb_Switch_k_idx_2 * INS_P.DiscreteTimeIntegrator5_gainval;
+    rtb_Switch_kj_idx_2 * INS_P.DiscreteTimeIntegrator5_gainval;
 
-  /* Update for DiscreteIntegrator: '<S163>/Discrete-Time Integrator5' incorporates:
-   *  Gain: '<S163>/Gain'
-   *  MinMax: '<S114>/MinMax1'
-   *  Sum: '<S163>/Sum5'
+  /* Update for DiscreteIntegrator: '<S169>/Discrete-Time Integrator5' incorporates:
+   *  Gain: '<S169>/Gain'
+   *  MinMax: '<S120>/MinMax1'
+   *  Sum: '<S169>/Sum5'
    */
   INS_DWork.DiscreteTimeIntegrator5_IC_LO_n = 0U;
   INS_DWork.DiscreteTimeIntegrator5_DSTAT_m += (rtb_DiscreteTimeIntegrator_g -
     INS_DWork.DiscreteTimeIntegrator5_DSTAT_m) * INS_P.Gain_Gain_je *
     INS_P.DiscreteTimeIntegrator5_gainv_n;
 
-  /* Update for DiscreteIntegrator: '<S164>/Discrete-Time Integrator5' incorporates:
-   *  Gain: '<S164>/Gain'
-   *  Sum: '<S164>/Sum5'
+  /* Update for DiscreteIntegrator: '<S170>/Discrete-Time Integrator5' incorporates:
+   *  Gain: '<S170>/Gain'
+   *  Sum: '<S170>/Sum5'
    */
   INS_DWork.DiscreteTimeIntegrator5_IC_L_ns = 0U;
   INS_DWork.DiscreteTimeIntegrator5_DSTA_ow += (rtb_DiscreteTimeIntegrator_b -
-    INS_DWork.DiscreteTimeIntegrator5_DSTA_ow) * INS_P.Gain_Gain_h *
+    INS_DWork.DiscreteTimeIntegrator5_DSTA_ow) * INS_P.Gain_Gain_hy *
     INS_P.DiscreteTimeIntegrator5_gainv_m;
 
   /* End of Outputs for SubSystem: '<S55>/RF_Data_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
   /* Outputs for Atomic SubSystem: '<S57>/Correct' */
-  /* Product: '<S86>/Multiply' incorporates:
+  /* Product: '<S87>/Multiply' incorporates:
    *  Delay: '<S57>/Delay'
    */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
        rtb_Saturation1_j_idx_1_0++) {
-    rtb_Gain_cv[rtb_Saturation1_j_idx_1_0] =
+    rtb_Gain_fc[rtb_Saturation1_j_idx_1_0] =
       INS_DWork.Delay_8_DSTATE_l[rtb_Saturation1_j_idx_1_0 + 6] *
       rtb_VectorConcatenate1[2] +
       (INS_DWork.Delay_8_DSTATE_l[rtb_Saturation1_j_idx_1_0 + 3] *
@@ -3278,29 +3564,29 @@ void INS_step(void)
        rtb_VectorConcatenate1[0]);
   }
 
-  /* End of Product: '<S86>/Multiply' */
+  /* End of Product: '<S87>/Multiply' */
 
-  /* DiscreteIntegrator: '<S88>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S88>/Constant'
+  /* DiscreteIntegrator: '<S89>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S89>/Constant'
    */
   if (INS_DWork.DiscreteTimeIntegrator1_IC_LO_i != 0) {
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0] = rtb_Gain_cv[0];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1] = rtb_Gain_cv[1];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2] = rtb_Gain_cv[2];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0] = rtb_Gain_fc[0];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1] = rtb_Gain_fc[1];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2] = rtb_Gain_fc[2];
   }
 
-  if ((INS_P.Constant_Value_g != 0.0F) ||
+  if ((INS_P.Constant_Value_g3 != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator1_PrevR_p != 0)) {
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0] = rtb_Gain_cv[0];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1] = rtb_Gain_cv[1];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2] = rtb_Gain_cv[2];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0] = rtb_Gain_fc[0];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1] = rtb_Gain_fc[1];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2] = rtb_Gain_fc[2];
   }
 
   rtb_Sum_gn_idx_0 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0];
   rtb_Sum_gn_idx_1 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1];
   rtb_Sum_gn_idx_2 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2];
 
-  /* Relay: '<S92>/Relay' */
+  /* Relay: '<S93>/Relay' */
   if (rtb_Product2 >= INS_P.Relay_OnVal) {
     INS_DWork.Relay_Mode_nf = true;
   } else {
@@ -3310,70 +3596,68 @@ void INS_step(void)
   }
 
   if (INS_DWork.Relay_Mode_nf) {
-    rtb_Switch_k_idx_1 = INS_P.Relay_YOn;
+    rtb_Switch_kj_idx_3 = INS_P.Relay_YOn;
   } else {
-    rtb_Switch_k_idx_1 = INS_P.Relay_YOff;
+    rtb_Switch_kj_idx_3 = INS_P.Relay_YOff;
   }
 
-  /* End of Relay: '<S92>/Relay' */
+  /* End of Relay: '<S93>/Relay' */
 
-  /* Logic: '<S92>/Logical Operator1' */
-  rtb_Compare_o = (rtb_Compare_cio && (rtb_Switch_k_idx_1 != 0.0F));
+  /* Logic: '<S93>/Logical Operator1' */
+  rtb_Compare_o = (rtb_Compare_cio && (rtb_Switch_kj_idx_3 != 0.0F));
 
-  /* Product: '<S86>/Multiply2' incorporates:
-   *  Constant: '<S86>/GPS_Delay'
+  /* Product: '<S87>/Multiply2' incorporates:
+   *  Constant: '<S87>/GPS_Delay'
    */
-  rtb_DiscreteTimeIntegrator_m = rtb_Compare_o ? (real32_T)INS_P.GPS_Delay_Value
-    : 0.0F;
+  rtb_Multiply2 = rtb_Compare_o ? (real32_T)INS_P.GPS_Delay_Value : 0.0F;
 
-  /* Delay: '<S86>/Delay' incorporates:
-   *  DiscreteIntegrator: '<S88>/Discrete-Time Integrator1'
+  /* Delay: '<S87>/Delay' incorporates:
+   *  DiscreteIntegrator: '<S89>/Discrete-Time Integrator1'
    */
-  if (rtb_DiscreteTimeIntegrator_m < 1.0F) {
-    rtb_Switch_k_idx_0 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0];
-    rtb_Switch_k_idx_1 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1];
+  if (rtb_Multiply2 < 1.0F) {
+    rtb_Switch_kj_idx_1 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0];
+    rtb_Switch_kj_idx_0 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1];
     rtb_MathFunction_e_idx_2 = INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2];
   } else {
-    if (rtb_DiscreteTimeIntegrator_m > 200.0F) {
+    if (rtb_Multiply2 > 200.0F) {
       rtb_Saturation1_j_idx_0 = 200;
     } else {
-      rtb_Saturation1_j_idx_0 = (int32_T)fmodf(rtb_DiscreteTimeIntegrator_m,
-        4.2949673E+9F);
+      rtb_Saturation1_j_idx_0 = (int32_T)fmodf(rtb_Multiply2, 4.2949673E+9F);
     }
 
     rtb_Saturation1_j_idx_0 = (int32_T)(200U - rtb_Saturation1_j_idx_0) * 3;
-    rtb_Switch_k_idx_0 = INS_DWork.Delay_DSTATE_lv[rtb_Saturation1_j_idx_0];
-    rtb_Switch_k_idx_1 = INS_DWork.Delay_DSTATE_lv[1 + rtb_Saturation1_j_idx_0];
+    rtb_Switch_kj_idx_1 = INS_DWork.Delay_DSTATE_lv[rtb_Saturation1_j_idx_0];
+    rtb_Switch_kj_idx_0 = INS_DWork.Delay_DSTATE_lv[1 + rtb_Saturation1_j_idx_0];
     rtb_MathFunction_e_idx_2 = INS_DWork.Delay_DSTATE_lv[2 +
       rtb_Saturation1_j_idx_0];
   }
 
-  /* End of Delay: '<S86>/Delay' */
+  /* End of Delay: '<S87>/Delay' */
 
-  /* RelationalOperator: '<S90>/FixPt Relational Operator' incorporates:
-   *  UnitDelay: '<S90>/Delay Input1'
+  /* RelationalOperator: '<S91>/FixPt Relational Operator' incorporates:
+   *  UnitDelay: '<S91>/Delay Input1'
    */
   rtb_WGS84_pos_valid = ((int32_T)rtb_Compare_o > (int32_T)
     INS_DWork.DelayInput1_DSTATE_ff);
 
-  /* Outputs for Enabled SubSystem: '<S87>/GPS_Meas_Acc' incorporates:
-   *  EnablePort: '<S91>/Enable'
+  /* Outputs for Enabled SubSystem: '<S88>/GPS_Meas_Acc' incorporates:
+   *  EnablePort: '<S92>/Enable'
    */
   if (rtb_Compare_o) {
     if (!INS_DWork.GPS_Meas_Acc_MODE) {
-      /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator' */
+      /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator' */
       INS_DWork.Integrator_DSTATE[0] = INS_P.Integrator_IC;
       INS_DWork.Integrator_DSTATE[1] = INS_P.Integrator_IC;
       INS_DWork.Integrator_DSTATE[2] = INS_P.Integrator_IC;
       INS_DWork.Integrator_PrevResetState = 0;
 
-      /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator1' */
+      /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator1' */
       INS_DWork.Integrator1_IC_LOADING = 1U;
       INS_DWork.Integrator1_PrevResetState = 0;
       INS_DWork.GPS_Meas_Acc_MODE = true;
     }
 
-    /* DiscreteIntegrator: '<S91>/Integrator' */
+    /* DiscreteIntegrator: '<S92>/Integrator' */
     if (rtb_WGS84_pos_valid || (INS_DWork.Integrator_PrevResetState != 0)) {
       INS_DWork.Integrator_DSTATE[0] = INS_P.Integrator_IC;
       INS_DWork.Integrator_DSTATE[1] = INS_P.Integrator_IC;
@@ -3384,9 +3668,9 @@ void INS_step(void)
     INS_B.Integrator[1] = INS_DWork.Integrator_DSTATE[1];
     INS_B.Integrator[2] = INS_DWork.Integrator_DSTATE[2];
 
-    /* End of DiscreteIntegrator: '<S91>/Integrator' */
+    /* End of DiscreteIntegrator: '<S92>/Integrator' */
 
-    /* DiscreteIntegrator: '<S91>/Integrator1' */
+    /* DiscreteIntegrator: '<S92>/Integrator1' */
     if (INS_DWork.Integrator1_IC_LOADING != 0) {
       INS_DWork.Integrator1_DSTATE[0] = rtb_Divide1;
       INS_DWork.Integrator1_DSTATE[1] = rtb_Sum2_by;
@@ -3399,57 +3683,57 @@ void INS_step(void)
       INS_DWork.Integrator1_DSTATE[2] = rtb_Gain2_a;
     }
 
-    /* Sum: '<S91>/Sum1' incorporates:
-     *  DiscreteIntegrator: '<S91>/Integrator1'
+    /* Sum: '<S92>/Sum1' incorporates:
+     *  DiscreteIntegrator: '<S92>/Integrator1'
      */
     rtb_Sum_p_idx_0 = rtb_Divide1 - INS_DWork.Integrator1_DSTATE[0];
     rtb_Sum_p_idx_1 = rtb_Sum2_by - INS_DWork.Integrator1_DSTATE[1];
     rtb_DiscreteTimeIntegrator_b = rtb_Gain2_a - INS_DWork.Integrator1_DSTATE[2];
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator' */
+    /* Update for DiscreteIntegrator: '<S92>/Integrator' */
     INS_DWork.Integrator_PrevResetState = (int8_T)rtb_WGS84_pos_valid;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator1' */
+    /* Update for DiscreteIntegrator: '<S92>/Integrator1' */
     INS_DWork.Integrator1_IC_LOADING = 0U;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator' incorporates:
-     *  Gain: '<S91>/gain1'
+    /* Update for DiscreteIntegrator: '<S92>/Integrator' incorporates:
+     *  Gain: '<S92>/gain1'
      */
     INS_DWork.Integrator_DSTATE[0] += INS_P.gain1_Gain * rtb_Sum_p_idx_0 *
       INS_P.Integrator_gainval;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator1' incorporates:
-     *  Gain: '<S91>/gain'
-     *  Gain: '<S91>/gain1'
-     *  Sum: '<S91>/Sum'
+    /* Update for DiscreteIntegrator: '<S92>/Integrator1' incorporates:
+     *  Gain: '<S92>/gain'
+     *  Gain: '<S92>/gain1'
+     *  Sum: '<S92>/Sum'
      */
     INS_DWork.Integrator1_DSTATE[0] += (INS_P.gain_Gain * rtb_Sum_p_idx_0 +
       INS_B.Integrator[0]) * INS_P.Integrator1_gainval;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator' incorporates:
-     *  Gain: '<S91>/gain1'
+    /* Update for DiscreteIntegrator: '<S92>/Integrator' incorporates:
+     *  Gain: '<S92>/gain1'
      */
     INS_DWork.Integrator_DSTATE[1] += INS_P.gain1_Gain * rtb_Sum_p_idx_1 *
       INS_P.Integrator_gainval;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator1' incorporates:
-     *  Gain: '<S91>/gain'
-     *  Gain: '<S91>/gain1'
-     *  Sum: '<S91>/Sum'
+    /* Update for DiscreteIntegrator: '<S92>/Integrator1' incorporates:
+     *  Gain: '<S92>/gain'
+     *  Gain: '<S92>/gain1'
+     *  Sum: '<S92>/Sum'
      */
     INS_DWork.Integrator1_DSTATE[1] += (INS_P.gain_Gain * rtb_Sum_p_idx_1 +
       INS_B.Integrator[1]) * INS_P.Integrator1_gainval;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator' incorporates:
-     *  Gain: '<S91>/gain1'
+    /* Update for DiscreteIntegrator: '<S92>/Integrator' incorporates:
+     *  Gain: '<S92>/gain1'
      */
     INS_DWork.Integrator_DSTATE[2] += INS_P.gain1_Gain *
       rtb_DiscreteTimeIntegrator_b * INS_P.Integrator_gainval;
 
-    /* Update for DiscreteIntegrator: '<S91>/Integrator1' incorporates:
-     *  Gain: '<S91>/gain'
-     *  Gain: '<S91>/gain1'
-     *  Sum: '<S91>/Sum'
+    /* Update for DiscreteIntegrator: '<S92>/Integrator1' incorporates:
+     *  Gain: '<S92>/gain'
+     *  Gain: '<S92>/gain1'
+     *  Sum: '<S92>/Sum'
      */
     INS_DWork.Integrator1_DSTATE[2] += (INS_P.gain_Gain *
       rtb_DiscreteTimeIntegrator_b + INS_B.Integrator[2]) *
@@ -3461,11 +3745,11 @@ void INS_step(void)
     }
   }
 
-  /* End of Outputs for SubSystem: '<S87>/GPS_Meas_Acc' */
+  /* End of Outputs for SubSystem: '<S88>/GPS_Meas_Acc' */
 
-  /* Sum: '<S73>/Sum2' incorporates:
-   *  Constant: '<S73>/gravity'
-   *  Product: '<S73>/Multiply'
+  /* Sum: '<S74>/Sum2' incorporates:
+   *  Constant: '<S74>/gravity'
+   *  Product: '<S74>/Multiply'
    */
   rtb_Sum_p_idx_0 = INS_P.gravity_Value[0] + (rtb_Compare_o ? INS_B.Integrator[0]
     : 0.0F);
@@ -3474,229 +3758,228 @@ void INS_step(void)
   rtb_DiscreteTimeIntegrator_b = INS_P.gravity_Value[2] + (rtb_Compare_o ?
     INS_B.Integrator[2] : 0.0F);
 
-  /* Gain: '<S74>/Gain1' */
-  rtb_DiscreteTimeIntegrator_m = INS_P.Gain1_Gain_l *
-    rtb_DiscreteTimeIntegrator_b;
+  /* Gain: '<S75>/Gain1' */
+  rtb_Multiply2 = INS_P.Gain1_Gain_l * rtb_DiscreteTimeIntegrator_b;
 
-  /* Gain: '<S74>/Gain2' */
+  /* Gain: '<S75>/Gain2' */
   rtb_DiscreteTimeIntegrator_g = INS_P.Gain2_Gain_i * rtb_MathFunction_e_idx_2;
 
-  /* Sum: '<S76>/Sum' incorporates:
-   *  Product: '<S77>/Multiply'
-   *  Product: '<S78>/Multiply3'
+  /* Sum: '<S77>/Sum' incorporates:
+   *  Product: '<S78>/Multiply'
+   *  Product: '<S79>/Multiply3'
    */
-  rtb_MathFunction_m = rtb_Switch_k_idx_1 * rtb_DiscreteTimeIntegrator_m -
+  rtb_M_OC_tmp = rtb_Switch_kj_idx_0 * rtb_Multiply2 -
     rtb_DiscreteTimeIntegrator_g * rtb_Sum_p_idx_1;
 
-  /* DeadZone: '<S74>/Dead Zone2' */
-  if (rtb_MathFunction_m > INS_P.DeadZone2_End) {
-    rtb_MathFunction_m -= INS_P.DeadZone2_End;
-  } else if (rtb_MathFunction_m >= INS_P.DeadZone2_Start) {
-    rtb_MathFunction_m = 0.0F;
+  /* DeadZone: '<S75>/Dead Zone2' */
+  if (rtb_M_OC_tmp > INS_P.DeadZone2_End) {
+    rtb_M_OC_tmp -= INS_P.DeadZone2_End;
+  } else if (rtb_M_OC_tmp >= INS_P.DeadZone2_Start) {
+    rtb_M_OC_tmp = 0.0F;
   } else {
-    rtb_MathFunction_m -= INS_P.DeadZone2_Start;
+    rtb_M_OC_tmp -= INS_P.DeadZone2_Start;
   }
 
-  /* Gain: '<S74>/Gain' */
-  rtb_MathFunction_m *= INS_PARAM.HEADING_GAIN;
+  /* Gain: '<S75>/Gain' */
+  rtb_M_OC_tmp *= INS_PARAM.HEADING_GAIN;
 
-  /* Saturate: '<S74>/Saturation' */
-  if (rtb_MathFunction_m > INS_P.Saturation_UpperSat_k) {
-    rtb_MathFunction_m = INS_P.Saturation_UpperSat_k;
+  /* Saturate: '<S75>/Saturation' */
+  if (rtb_M_OC_tmp > INS_P.Saturation_UpperSat_k) {
+    rtb_M_OC_tmp = INS_P.Saturation_UpperSat_k;
   } else {
-    if (rtb_MathFunction_m < INS_P.Saturation_LowerSat_k) {
-      rtb_MathFunction_m = INS_P.Saturation_LowerSat_k;
+    if (rtb_M_OC_tmp < INS_P.Saturation_LowerSat_k) {
+      rtb_M_OC_tmp = INS_P.Saturation_LowerSat_k;
     }
   }
 
-  /* Product: '<S74>/Multiply' */
-  rtb_Gain_d[0] = rtb_Compare_o ? rtb_MathFunction_m : 0.0F;
+  /* Product: '<S75>/Multiply' */
+  rtb_Gain_o4[0] = rtb_Compare_o ? rtb_M_OC_tmp : 0.0F;
 
-  /* Sum: '<S76>/Sum' incorporates:
-   *  Product: '<S77>/Multiply1'
-   *  Product: '<S78>/Multiply4'
+  /* Sum: '<S77>/Sum' incorporates:
+   *  Product: '<S78>/Multiply1'
+   *  Product: '<S79>/Multiply4'
    */
-  rtb_MathFunction_m = rtb_DiscreteTimeIntegrator_g * rtb_Sum_p_idx_0 -
-    rtb_Switch_k_idx_0 * rtb_DiscreteTimeIntegrator_m;
+  rtb_M_OC_tmp = rtb_DiscreteTimeIntegrator_g * rtb_Sum_p_idx_0 -
+    rtb_Switch_kj_idx_1 * rtb_Multiply2;
 
-  /* DeadZone: '<S74>/Dead Zone2' */
-  if (rtb_MathFunction_m > INS_P.DeadZone2_End) {
-    rtb_MathFunction_m -= INS_P.DeadZone2_End;
-  } else if (rtb_MathFunction_m >= INS_P.DeadZone2_Start) {
-    rtb_MathFunction_m = 0.0F;
+  /* DeadZone: '<S75>/Dead Zone2' */
+  if (rtb_M_OC_tmp > INS_P.DeadZone2_End) {
+    rtb_M_OC_tmp -= INS_P.DeadZone2_End;
+  } else if (rtb_M_OC_tmp >= INS_P.DeadZone2_Start) {
+    rtb_M_OC_tmp = 0.0F;
   } else {
-    rtb_MathFunction_m -= INS_P.DeadZone2_Start;
+    rtb_M_OC_tmp -= INS_P.DeadZone2_Start;
   }
 
-  /* Gain: '<S74>/Gain' */
-  rtb_MathFunction_m *= INS_PARAM.HEADING_GAIN;
+  /* Gain: '<S75>/Gain' */
+  rtb_M_OC_tmp *= INS_PARAM.HEADING_GAIN;
 
-  /* Saturate: '<S74>/Saturation' */
-  if (rtb_MathFunction_m > INS_P.Saturation_UpperSat_k) {
-    rtb_MathFunction_m = INS_P.Saturation_UpperSat_k;
+  /* Saturate: '<S75>/Saturation' */
+  if (rtb_M_OC_tmp > INS_P.Saturation_UpperSat_k) {
+    rtb_M_OC_tmp = INS_P.Saturation_UpperSat_k;
   } else {
-    if (rtb_MathFunction_m < INS_P.Saturation_LowerSat_k) {
-      rtb_MathFunction_m = INS_P.Saturation_LowerSat_k;
+    if (rtb_M_OC_tmp < INS_P.Saturation_LowerSat_k) {
+      rtb_M_OC_tmp = INS_P.Saturation_LowerSat_k;
     }
   }
 
-  /* Product: '<S74>/Multiply' */
-  rtb_Gain_d[1] = rtb_Compare_o ? rtb_MathFunction_m : 0.0F;
+  /* Product: '<S75>/Multiply' */
+  rtb_Gain_o4[1] = rtb_Compare_o ? rtb_M_OC_tmp : 0.0F;
 
-  /* Sum: '<S76>/Sum' incorporates:
-   *  Product: '<S77>/Multiply2'
-   *  Product: '<S78>/Multiply5'
+  /* Sum: '<S77>/Sum' incorporates:
+   *  Product: '<S78>/Multiply2'
+   *  Product: '<S79>/Multiply5'
    */
-  rtb_MathFunction_m = rtb_Switch_k_idx_0 * rtb_Sum_p_idx_1 - rtb_Switch_k_idx_1
-    * rtb_Sum_p_idx_0;
+  rtb_M_OC_tmp = rtb_Switch_kj_idx_1 * rtb_Sum_p_idx_1 - rtb_Switch_kj_idx_0 *
+    rtb_Sum_p_idx_0;
 
-  /* DeadZone: '<S74>/Dead Zone2' */
-  if (rtb_MathFunction_m > INS_P.DeadZone2_End) {
-    rtb_MathFunction_m -= INS_P.DeadZone2_End;
-  } else if (rtb_MathFunction_m >= INS_P.DeadZone2_Start) {
-    rtb_MathFunction_m = 0.0F;
+  /* DeadZone: '<S75>/Dead Zone2' */
+  if (rtb_M_OC_tmp > INS_P.DeadZone2_End) {
+    rtb_M_OC_tmp -= INS_P.DeadZone2_End;
+  } else if (rtb_M_OC_tmp >= INS_P.DeadZone2_Start) {
+    rtb_M_OC_tmp = 0.0F;
   } else {
-    rtb_MathFunction_m -= INS_P.DeadZone2_Start;
+    rtb_M_OC_tmp -= INS_P.DeadZone2_Start;
   }
 
-  /* Gain: '<S74>/Gain' */
-  rtb_MathFunction_m *= INS_PARAM.HEADING_GAIN;
+  /* Gain: '<S75>/Gain' */
+  rtb_M_OC_tmp *= INS_PARAM.HEADING_GAIN;
 
-  /* Saturate: '<S74>/Saturation' */
-  if (rtb_MathFunction_m > INS_P.Saturation_UpperSat_k) {
-    rtb_MathFunction_m = INS_P.Saturation_UpperSat_k;
+  /* Saturate: '<S75>/Saturation' */
+  if (rtb_M_OC_tmp > INS_P.Saturation_UpperSat_k) {
+    rtb_M_OC_tmp = INS_P.Saturation_UpperSat_k;
   } else {
-    if (rtb_MathFunction_m < INS_P.Saturation_LowerSat_k) {
-      rtb_MathFunction_m = INS_P.Saturation_LowerSat_k;
+    if (rtb_M_OC_tmp < INS_P.Saturation_LowerSat_k) {
+      rtb_M_OC_tmp = INS_P.Saturation_LowerSat_k;
     }
   }
-
-  /* Sum: '<S81>/Sum of Elements' incorporates:
-   *  Math: '<S81>/Math Function'
-   */
-  rtb_DiscreteTimeIntegrator_m = (rtb_Switch_k_idx_0 * rtb_Switch_k_idx_0 +
-    rtb_Switch_k_idx_1 * rtb_Switch_k_idx_1) + rtb_MathFunction_e_idx_2 *
-    rtb_MathFunction_e_idx_2;
-
-  /* Math: '<S81>/Math Function1'
-   *
-   * About '<S81>/Math Function1':
-   *  Operator: sqrt
-   */
-  if (rtb_DiscreteTimeIntegrator_m < 0.0F) {
-    rtb_DiscreteTimeIntegrator_m = -sqrtf(fabsf(rtb_DiscreteTimeIntegrator_m));
-  } else {
-    rtb_DiscreteTimeIntegrator_m = sqrtf(rtb_DiscreteTimeIntegrator_m);
-  }
-
-  /* End of Math: '<S81>/Math Function1' */
-
-  /* Switch: '<S81>/Switch' incorporates:
-   *  Constant: '<S81>/Constant'
-   *  Product: '<S81>/Product'
-   */
-  if (rtb_DiscreteTimeIntegrator_m <= INS_P.Switch_Threshold) {
-    rtb_Switch_k_idx_0 = 0.0F;
-    rtb_Switch_k_idx_1 = 0.0F;
-    rtb_MathFunction_e_idx_2 = 0.0F;
-    rtb_DiscreteTimeIntegrator_m = INS_P.Constant_Value_a;
-  }
-
-  /* End of Switch: '<S81>/Switch' */
-
-  /* Product: '<S81>/Divide' */
-  rtb_MathFunction[0] = rtb_Switch_k_idx_0 / rtb_DiscreteTimeIntegrator_m;
-  rtb_MathFunction[1] = rtb_Switch_k_idx_1 / rtb_DiscreteTimeIntegrator_m;
-  rtb_MathFunction[2] = rtb_MathFunction_e_idx_2 / rtb_DiscreteTimeIntegrator_m;
 
   /* Sum: '<S82>/Sum of Elements' incorporates:
    *  Math: '<S82>/Math Function'
    */
-  rtb_DiscreteTimeIntegrator_m = (rtb_Sum_p_idx_0 * rtb_Sum_p_idx_0 +
-    rtb_Sum_p_idx_1 * rtb_Sum_p_idx_1) + rtb_DiscreteTimeIntegrator_b *
-    rtb_DiscreteTimeIntegrator_b;
+  rtb_Multiply2 = (rtb_Switch_kj_idx_1 * rtb_Switch_kj_idx_1 +
+                   rtb_Switch_kj_idx_0 * rtb_Switch_kj_idx_0) +
+    rtb_MathFunction_e_idx_2 * rtb_MathFunction_e_idx_2;
 
   /* Math: '<S82>/Math Function1'
    *
    * About '<S82>/Math Function1':
    *  Operator: sqrt
    */
-  if (rtb_DiscreteTimeIntegrator_m < 0.0F) {
-    rtb_DiscreteTimeIntegrator_m = -sqrtf(fabsf(rtb_DiscreteTimeIntegrator_m));
+  if (rtb_Multiply2 < 0.0F) {
+    rtb_Multiply2 = -sqrtf(fabsf(rtb_Multiply2));
   } else {
-    rtb_DiscreteTimeIntegrator_m = sqrtf(rtb_DiscreteTimeIntegrator_m);
+    rtb_Multiply2 = sqrtf(rtb_Multiply2);
   }
 
   /* End of Math: '<S82>/Math Function1' */
 
   /* Switch: '<S82>/Switch' incorporates:
    *  Constant: '<S82>/Constant'
-   *  Product: '<S82>/Product'
+   *  Gain: '<S82>/Gain'
    */
-  if (rtb_DiscreteTimeIntegrator_m > INS_P.Switch_Threshold_m) {
-    rtb_Switch_k_idx_0 = rtb_Sum_p_idx_0;
-    rtb_Switch_k_idx_1 = rtb_Sum_p_idx_1;
-    rtb_MathFunction_e_idx_2 = rtb_DiscreteTimeIntegrator_b;
-  } else {
-    rtb_Switch_k_idx_0 = 0.0F;
-    rtb_Switch_k_idx_1 = 0.0F;
-    rtb_MathFunction_e_idx_2 = 0.0F;
-    rtb_DiscreteTimeIntegrator_m = INS_P.Constant_Value_jy;
+  if (rtb_Multiply2 <= INS_P.Switch_Threshold) {
+    rtb_Switch_kj_idx_1 *= INS_P.Gain_Gain_l;
+    rtb_Switch_kj_idx_0 *= INS_P.Gain_Gain_l;
+    rtb_MathFunction_e_idx_2 *= INS_P.Gain_Gain_l;
+    rtb_Multiply2 = INS_P.Constant_Value_a;
   }
 
   /* End of Switch: '<S82>/Switch' */
 
   /* Product: '<S82>/Divide' */
-  rtb_Switch_k_idx_0 /= rtb_DiscreteTimeIntegrator_m;
-  rtb_Switch_k_idx_1 /= rtb_DiscreteTimeIntegrator_m;
-  rtb_MathFunction_e_idx_2 /= rtb_DiscreteTimeIntegrator_m;
+  rtb_MathFunction[0] = rtb_Switch_kj_idx_1 / rtb_Multiply2;
+  rtb_MathFunction[1] = rtb_Switch_kj_idx_0 / rtb_Multiply2;
+  rtb_MathFunction[2] = rtb_MathFunction_e_idx_2 / rtb_Multiply2;
 
-  /* Product: '<S83>/Multiply2' */
-  rtb_DiscreteTimeIntegrator_b = rtb_MathFunction[0] * rtb_Switch_k_idx_1;
+  /* Sum: '<S83>/Sum of Elements' incorporates:
+   *  Math: '<S83>/Math Function'
+   */
+  rtb_Multiply2 = (rtb_Sum_p_idx_0 * rtb_Sum_p_idx_0 + rtb_Sum_p_idx_1 *
+                   rtb_Sum_p_idx_1) + rtb_DiscreteTimeIntegrator_b *
+    rtb_DiscreteTimeIntegrator_b;
 
-  /* Product: '<S84>/Multiply4' */
+  /* Math: '<S83>/Math Function1'
+   *
+   * About '<S83>/Math Function1':
+   *  Operator: sqrt
+   */
+  if (rtb_Multiply2 < 0.0F) {
+    rtb_Multiply2 = -sqrtf(fabsf(rtb_Multiply2));
+  } else {
+    rtb_Multiply2 = sqrtf(rtb_Multiply2);
+  }
+
+  /* End of Math: '<S83>/Math Function1' */
+
+  /* Switch: '<S83>/Switch' incorporates:
+   *  Constant: '<S83>/Constant'
+   *  Gain: '<S83>/Gain'
+   */
+  if (rtb_Multiply2 > INS_P.Switch_Threshold_m) {
+    rtb_Switch_kj_idx_1 = rtb_Sum_p_idx_0;
+    rtb_Switch_kj_idx_0 = rtb_Sum_p_idx_1;
+    rtb_MathFunction_e_idx_2 = rtb_DiscreteTimeIntegrator_b;
+  } else {
+    rtb_Switch_kj_idx_1 = INS_P.Gain_Gain_h * rtb_Sum_p_idx_0;
+    rtb_Switch_kj_idx_0 = INS_P.Gain_Gain_h * rtb_Sum_p_idx_1;
+    rtb_MathFunction_e_idx_2 = INS_P.Gain_Gain_h * rtb_DiscreteTimeIntegrator_b;
+    rtb_Multiply2 = INS_P.Constant_Value_jy;
+  }
+
+  /* End of Switch: '<S83>/Switch' */
+
+  /* Product: '<S83>/Divide' */
+  rtb_Switch_kj_idx_1 /= rtb_Multiply2;
+  rtb_Switch_kj_idx_0 /= rtb_Multiply2;
+  rtb_MathFunction_e_idx_2 /= rtb_Multiply2;
+
+  /* Product: '<S84>/Multiply2' */
+  rtb_DiscreteTimeIntegrator_b = rtb_MathFunction[0] * rtb_Switch_kj_idx_0;
+
+  /* Product: '<S85>/Multiply4' */
   rtb_Sum_p_idx_1 = rtb_MathFunction[0] * rtb_MathFunction_e_idx_2;
 
-  /* Product: '<S84>/Multiply5' */
-  rtb_Switch_k_idx_3 = rtb_MathFunction[1] * rtb_Switch_k_idx_0;
+  /* Product: '<S85>/Multiply5' */
+  rtb_Switch_kj_idx_3 = rtb_MathFunction[1] * rtb_Switch_kj_idx_1;
 
-  /* Sum: '<S79>/Sum' incorporates:
-   *  Product: '<S83>/Multiply'
-   *  Product: '<S84>/Multiply3'
+  /* Sum: '<S80>/Sum' incorporates:
+   *  Product: '<S84>/Multiply'
+   *  Product: '<S85>/Multiply3'
    */
-  rtb_Switch_k_idx_2 = rtb_MathFunction[1] * rtb_MathFunction_e_idx_2 -
-    rtb_MathFunction[2] * rtb_Switch_k_idx_1;
+  rtb_Switch_kj_idx_2 = rtb_MathFunction[1] * rtb_MathFunction_e_idx_2 -
+    rtb_MathFunction[2] * rtb_Switch_kj_idx_0;
 
-  /* Math: '<S85>/Square' */
-  rtb_MathFunction[0] = rtb_Switch_k_idx_2 * rtb_Switch_k_idx_2;
+  /* Math: '<S86>/Square' */
+  rtb_MathFunction[0] = rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2;
 
-  /* Sum: '<S79>/Sum' incorporates:
-   *  Product: '<S83>/Multiply1'
+  /* Sum: '<S80>/Sum' incorporates:
+   *  Product: '<S84>/Multiply1'
    */
-  rtb_Sum_p_idx_0 = rtb_Switch_k_idx_2;
-  rtb_Switch_k_idx_2 = rtb_MathFunction[2] * rtb_Switch_k_idx_0 -
+  rtb_Sum_p_idx_0 = rtb_Switch_kj_idx_2;
+  rtb_Switch_kj_idx_2 = rtb_MathFunction[2] * rtb_Switch_kj_idx_1 -
     rtb_Sum_p_idx_1;
 
-  /* Math: '<S85>/Square' */
-  rtb_MathFunction[1] = rtb_Switch_k_idx_2 * rtb_Switch_k_idx_2;
+  /* Math: '<S86>/Square' */
+  rtb_MathFunction[1] = rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2;
 
-  /* Sum: '<S79>/Sum' */
-  rtb_Sum_p_idx_1 = rtb_Switch_k_idx_2;
-  rtb_Switch_k_idx_2 = rtb_DiscreteTimeIntegrator_b - rtb_Switch_k_idx_3;
+  /* Sum: '<S80>/Sum' */
+  rtb_Sum_p_idx_1 = rtb_Switch_kj_idx_2;
+  rtb_Switch_kj_idx_2 = rtb_DiscreteTimeIntegrator_b - rtb_Switch_kj_idx_3;
 
-  /* Sqrt: '<S85>/Sqrt' incorporates:
-   *  Math: '<S85>/Square'
-   *  Sum: '<S85>/Sum of Elements'
+  /* Sqrt: '<S86>/Sqrt' incorporates:
+   *  Math: '<S86>/Square'
+   *  Sum: '<S86>/Sum of Elements'
    */
-  rtb_DiscreteTimeIntegrator_m = sqrtf((rtb_MathFunction[0] + rtb_MathFunction[1])
-    + rtb_Switch_k_idx_2 * rtb_Switch_k_idx_2);
+  rtb_Multiply2 = sqrtf((rtb_MathFunction[0] + rtb_MathFunction[1]) +
+                        rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2);
 
-  /* Product: '<S80>/Divide1' incorporates:
-   *  Constant: '<S80>/max'
+  /* Product: '<S81>/Divide1' incorporates:
+   *  Constant: '<S81>/max'
    */
-  rtb_DiscreteTimeIntegrator_b = rtb_DiscreteTimeIntegrator_m / INS_P.max_Value;
+  rtb_DiscreteTimeIntegrator_b = rtb_Multiply2 / INS_P.max_Value;
 
-  /* Saturate: '<S80>/Saturation' */
+  /* Saturate: '<S81>/Saturation' */
   if (rtb_DiscreteTimeIntegrator_b > INS_P.Saturation_UpperSat_e) {
     rtb_DiscreteTimeIntegrator_b = INS_P.Saturation_UpperSat_e;
   } else {
@@ -3705,25 +3988,32 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S80>/Saturation' */
+  /* End of Saturate: '<S81>/Saturation' */
 
-  /* Product: '<S80>/Divide2' incorporates:
-   *  Constant: '<S80>/max'
-   *  Trigonometry: '<S80>/Trigonometric Function'
+  /* Product: '<S81>/Divide2' incorporates:
+   *  Constant: '<S81>/max'
+   *  Trigonometry: '<S81>/Trigonometric Function'
    */
   rtb_DiscreteTimeIntegrator_g = arm_sin_f32(rtb_DiscreteTimeIntegrator_b) *
     INS_P.max_Value;
 
-  /* MinMax: '<S80>/MinMax' incorporates:
-   *  Constant: '<S80>/Constant1'
+  /* MinMax: '<S81>/MinMax' incorporates:
+   *  Constant: '<S81>/Constant1'
    */
-  rtb_DiscreteTimeIntegrator_b = fmaxf(rtb_DiscreteTimeIntegrator_m,
-    INS_P.Constant1_Value_n);
+  rtb_Multiply2 = fmaxf(rtb_Multiply2, INS_P.Constant1_Value_n);
 
-  /* DiscreteIntegrator: '<S88>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S88>/Constant'
+  /* Product: '<S81>/Divide' */
+  rtb_Switch_kj_idx_1 = rtb_Sum_p_idx_0 * rtb_DiscreteTimeIntegrator_g /
+    rtb_Multiply2;
+  rtb_Switch_kj_idx_0 = rtb_Sum_p_idx_1 * rtb_DiscreteTimeIntegrator_g /
+    rtb_Multiply2;
+  rtb_MathFunction_e_idx_2 = rtb_Switch_kj_idx_2 * rtb_DiscreteTimeIntegrator_g /
+    rtb_Multiply2;
+
+  /* DiscreteIntegrator: '<S89>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S89>/Constant'
    */
-  if ((INS_P.Constant_Value_g != 0.0F) ||
+  if ((INS_P.Constant_Value_g3 != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator_PrevRe_f != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[0] =
       INS_P.DiscreteTimeIntegrator_IC_a;
@@ -3733,19 +4023,91 @@ void INS_step(void)
       INS_P.DiscreteTimeIntegrator_IC_a;
   }
 
-  /* Gain: '<S88>/Gain' incorporates:
-   *  DiscreteIntegrator: '<S88>/Discrete-Time Integrator1'
-   *  Sum: '<S88>/Sum'
+  /* Gain: '<S89>/Gain' incorporates:
+   *  DiscreteIntegrator: '<S89>/Discrete-Time Integrator1'
+   *  Sum: '<S89>/Sum'
    */
-  rtb_Gain_cv[0] = (rtb_Gain_cv[0] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0])
+  rtb_Gain_fc[0] = (rtb_Gain_fc[0] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0])
     * INS_P.Gain_Gain_p;
-  rtb_Gain_cv[1] = (rtb_Gain_cv[1] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1])
+  rtb_Gain_fc[1] = (rtb_Gain_fc[1] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1])
     * INS_P.Gain_Gain_p;
-  rtb_Switch_k_idx_0 = (rtb_Gain_cv[2] -
-                        INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2]) *
-    INS_P.Gain_Gain_p;
+  rtb_Switch_kj_idx_2 = (rtb_Gain_fc[2] -
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2]) * INS_P.Gain_Gain_p;
 
-  /* Relay: '<S71>/Relay1' */
+  /* Switch: '<S94>/Switch' incorporates:
+   *  Delay: '<S57>/Delay'
+   *  Delay: '<S94>/Delay'
+   *  Inport: '<Root>/External_Pos'
+   *  RelationalOperator: '<S97>/FixPt Relational Operator'
+   *  SignalConversion: '<S358>/BusConversion_InsertedFor_ExternalPos_Data_at_inport_0'
+   *  Sum: '<S96>/Sum'
+   *  UnitDelay: '<S97>/Delay Input1'
+   */
+  if ((int32_T)rtb_LogicalOperator5 > (int32_T)INS_DWork.DelayInput1_DSTATE_ii)
+  {
+    /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+    rtb_DiscreteTimeIntegrator_g = INS_DWork.Delay_4_DSTATE_d -
+      INS_U.External_Pos.psi;
+
+    /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+    /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
+  } else {
+    rtb_DiscreteTimeIntegrator_g = INS_DWork.Delay_DSTATE_b3;
+  }
+
+  /* End of Switch: '<S94>/Switch' */
+
+  /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+  /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+  /* Sum: '<S71>/Sum' incorporates:
+   *  Delay: '<S57>/Delay'
+   *  Inport: '<Root>/External_Pos'
+   *  SignalConversion: '<S358>/BusConversion_InsertedFor_ExternalPos_Data_at_inport_0'
+   */
+  rtb_Multiply2 = (rtb_DiscreteTimeIntegrator_g + INS_U.External_Pos.psi) -
+    INS_DWork.Delay_4_DSTATE_d;
+
+  /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+  /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
+
+  /* Abs: '<S95>/Abs' */
+  rtb_DiscreteTimeIntegrator_b = fabsf(rtb_Multiply2);
+
+  /* Switch: '<S95>/Switch' incorporates:
+   *  Constant: '<S95>/Constant'
+   *  Constant: '<S98>/Constant'
+   *  Product: '<S95>/Multiply'
+   *  RelationalOperator: '<S98>/Compare'
+   *  Sum: '<S95>/Subtract'
+   */
+  if (rtb_DiscreteTimeIntegrator_b > INS_P.CompareToConstant_const) {
+    /* Signum: '<S95>/Sign' */
+    if (rtb_Multiply2 < 0.0F) {
+      rtb_Multiply2 = -1.0F;
+    } else {
+      if (rtb_Multiply2 > 0.0F) {
+        rtb_Multiply2 = 1.0F;
+      }
+    }
+
+    /* End of Signum: '<S95>/Sign' */
+    rtb_Multiply2 *= rtb_DiscreteTimeIntegrator_b - INS_P.Constant_Value_g;
+  }
+
+  /* End of Switch: '<S95>/Switch' */
+
+  /* Product: '<S71>/Multiply' incorporates:
+   *  Gain: '<S71>/Gain'
+   */
+  rtb_Sum_p_idx_0 = rtb_LogicalOperator5 ? INS_P.Gain_Gain_m[0] * rtb_Multiply2 :
+    0.0F;
+  rtb_Sum_p_idx_1 = rtb_LogicalOperator5 ? INS_P.Gain_Gain_m[1] * rtb_Multiply2 :
+    0.0F;
+  rtb_DiscreteTimeIntegrator_b = rtb_LogicalOperator5 ? INS_P.Gain_Gain_m[2] *
+    rtb_Multiply2 : 0.0F;
+
+  /* Relay: '<S72>/Relay1' */
   if (rtb_MathFunction1 >= INS_P.Relay1_OnVal_i) {
     INS_DWork.Relay1_Mode_l = true;
   } else {
@@ -3755,112 +4117,109 @@ void INS_step(void)
   }
 
   if (INS_DWork.Relay1_Mode_l) {
-    rtb_Switch_k_idx_1 = INS_P.Relay1_YOn;
+    rtb_Switch_kj_idx_3 = INS_P.Relay1_YOn;
   } else {
-    rtb_Switch_k_idx_1 = INS_P.Relay1_YOff;
+    rtb_Switch_kj_idx_3 = INS_P.Relay1_YOff;
   }
 
-  /* End of Relay: '<S71>/Relay1' */
+  /* End of Relay: '<S72>/Relay1' */
 
-  /* Logic: '<S71>/Logical Operator' incorporates:
-   *  Constant: '<S71>/Constant'
-   *  Logic: '<S71>/Logical Operator1'
+  /* Logic: '<S72>/Logical Operator' incorporates:
+   *  Constant: '<S72>/Constant'
+   *  Logic: '<S72>/Logical Operator1'
+   *  Logic: '<S72>/Logical Operator2'
    */
-  rtb_WGS84_pos_valid = ((rtb_Switch_k_idx_1 != 0.0F) && ((INS_PARAM.MAG_AIR_EN
-    != 0) || (rtb_Abs_idx_0 != 0.0F)));
+  rtb_WGS84_pos_valid = ((rtb_Switch_kj_idx_3 != 0.0F) && (!rtb_LogicalOperator5)
+    && ((INS_PARAM.MAG_AIR_EN != 0) || (rtb_Abs_h_idx_0 != 0.0F)));
 
-  /* Gain: '<S71>/mag_correct_gain' incorporates:
+  /* Gain: '<S72>/mag_correct_gain' incorporates:
    *  Delay: '<S57>/Delay'
-   *  Product: '<S71>/MX Product4'
-   *  Selector: '<S71>/Selector4'
+   *  Product: '<S72>/MX Product4'
+   *  Selector: '<S72>/Selector4'
    */
-  rtb_DiscreteTimeIntegrator_m = ((INS_DWork.Delay_8_DSTATE_l[1] *
-    rtb_Gauss_to_uT[0] + INS_DWork.Delay_8_DSTATE_l[4] * rtb_Gauss_to_uT[1]) +
-    INS_DWork.Delay_8_DSTATE_l[7] * rtb_Gauss_to_uT[2]) * -INS_PARAM.MAG_GAIN;
+  rtb_Multiply2 = ((INS_DWork.Delay_8_DSTATE_l[1] * rtb_Gauss_to_uT[0] +
+                    INS_DWork.Delay_8_DSTATE_l[4] * rtb_Gauss_to_uT[1]) +
+                   INS_DWork.Delay_8_DSTATE_l[7] * rtb_Gauss_to_uT[2]) *
+    -INS_PARAM.MAG_GAIN;
 
   /* Sum: '<S68>/Sum' incorporates:
-   *  Constant: '<S71>/Z axis'
-   *  Gain: '<S75>/Gain'
-   *  Product: '<S71>/MX Product3'
-   *  Product: '<S74>/Multiply'
-   *  Product: '<S80>/Divide'
-   *  Sum: '<S72>/Sum'
+   *  Constant: '<S72>/Z axis'
+   *  Gain: '<S76>/Gain'
+   *  Product: '<S72>/MX Product3'
+   *  Product: '<S75>/Multiply'
+   *  Sum: '<S68>/Sum1'
+   *  Sum: '<S73>/Sum'
    */
-  rtb_Switch_k_idx_1 = (rtb_Sum_p_idx_0 * rtb_DiscreteTimeIntegrator_g /
-                        rtb_DiscreteTimeIntegrator_b * INS_P.Gain_Gain_o[0] +
-                        rtb_Gain_d[0]) + (rtb_WGS84_pos_valid ?
-    INS_P.Zaxis_Value[0] * rtb_DiscreteTimeIntegrator_m : 0.0F);
-  rtb_Switch_k_idx_3 = (rtb_Sum_p_idx_1 * rtb_DiscreteTimeIntegrator_g /
-                        rtb_DiscreteTimeIntegrator_b * INS_P.Gain_Gain_o[1] +
-                        rtb_Gain_d[1]) + (rtb_WGS84_pos_valid ?
-    INS_P.Zaxis_Value[1] * rtb_DiscreteTimeIntegrator_m : 0.0F);
-  rtb_Switch_k_idx_2 = (rtb_Switch_k_idx_2 * rtb_DiscreteTimeIntegrator_g /
-                        rtb_DiscreteTimeIntegrator_b * INS_P.Gain_Gain_o[2] +
-                        (rtb_Compare_o ? rtb_MathFunction_m : 0.0F)) +
-    (rtb_WGS84_pos_valid ? INS_P.Zaxis_Value[2] * rtb_DiscreteTimeIntegrator_m :
-     0.0F);
+  rtb_Switch_kj_idx_1 = (INS_P.Gain_Gain_o[0] * rtb_Switch_kj_idx_1 +
+    rtb_Gain_o4[0]) + ((rtb_WGS84_pos_valid ? INS_P.Zaxis_Value[0] *
+                        rtb_Multiply2 : 0.0F) + rtb_Sum_p_idx_0);
+  rtb_Switch_kj_idx_0 = (INS_P.Gain_Gain_o[1] * rtb_Switch_kj_idx_0 +
+    rtb_Gain_o4[1]) + ((rtb_WGS84_pos_valid ? INS_P.Zaxis_Value[1] *
+                        rtb_Multiply2 : 0.0F) + rtb_Sum_p_idx_1);
+  rtb_Switch_kj_idx_3 = (INS_P.Gain_Gain_o[2] * rtb_MathFunction_e_idx_2 +
+    (rtb_Compare_o ? rtb_M_OC_tmp : 0.0F)) + ((rtb_WGS84_pos_valid ?
+    INS_P.Zaxis_Value[2] * rtb_Multiply2 : 0.0F) + rtb_DiscreteTimeIntegrator_b);
 
-  /* Sum: '<S96>/Sum of Elements' */
-  rtb_DiscreteTimeIntegrator_m = -0.0F;
+  /* Sum: '<S102>/Sum of Elements' */
+  rtb_Multiply2 = -0.0F;
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
        rtb_Saturation1_j_idx_1_0++) {
-    /* Sum: '<S96>/Sum of Elements' incorporates:
-     *  Math: '<S96>/Square'
+    /* Sum: '<S102>/Sum of Elements' incorporates:
+     *  Math: '<S102>/Square'
      */
-    rtb_DiscreteTimeIntegrator_m += rtb_Square_le[rtb_Saturation1_j_idx_1_0];
+    rtb_Multiply2 += rtb_Square_le[rtb_Saturation1_j_idx_1_0];
 
     /* Product: '<S68>/Multiply' incorporates:
      *  Delay: '<S57>/Delay'
      */
     rtb_MathFunction[rtb_Saturation1_j_idx_1_0] =
       INS_DWork.Delay_7_DSTATE[rtb_Saturation1_j_idx_1_0 + 6] *
-      rtb_Switch_k_idx_2 + (INS_DWork.Delay_7_DSTATE[rtb_Saturation1_j_idx_1_0 +
-      3] * rtb_Switch_k_idx_3 +
-      INS_DWork.Delay_7_DSTATE[rtb_Saturation1_j_idx_1_0] * rtb_Switch_k_idx_1);
+      rtb_Switch_kj_idx_3 + (INS_DWork.Delay_7_DSTATE[rtb_Saturation1_j_idx_1_0
+      + 3] * rtb_Switch_kj_idx_0 +
+      INS_DWork.Delay_7_DSTATE[rtb_Saturation1_j_idx_1_0] * rtb_Switch_kj_idx_1);
   }
 
-  /* Sqrt: '<S96>/Sqrt' */
-  rtb_DiscreteTimeIntegrator_m = sqrtf(rtb_DiscreteTimeIntegrator_m);
+  /* Sqrt: '<S102>/Sqrt' */
+  rtb_Multiply2 = sqrtf(rtb_Multiply2);
 
   /* Sum: '<S69>/Subtract' incorporates:
    *  Constant: '<S69>/Constant'
    */
-  rtb_DiscreteTimeIntegrator_m -= INS_P.INS_CONST.g;
+  rtb_Multiply2 -= INS_P.INS_CONST.g;
 
   /* Abs: '<S69>/Abs' */
-  rtb_DiscreteTimeIntegrator_m = fabsf(rtb_DiscreteTimeIntegrator_m);
+  rtb_Multiply2 = fabsf(rtb_Multiply2);
 
-  /* RelationalOperator: '<S94>/Compare' incorporates:
-   *  Constant: '<S94>/Constant'
+  /* RelationalOperator: '<S100>/Compare' incorporates:
+   *  Constant: '<S100>/Constant'
    */
-  rtb_WGS84_pos_valid = (rtb_DiscreteTimeIntegrator_m <=
-    INS_P.CompareToConstant_const);
+  rtb_WGS84_pos_valid = (rtb_Multiply2 <= INS_P.CompareToConstant_const_n);
 
   /* Product: '<S69>/MX Product1' incorporates:
    *  DataTypeConversion: '<S69>/Data Type Conversion'
    */
-  rtb_Gain_d[0] = rtb_MathFunction[0] * (real32_T)rtb_WGS84_pos_valid;
-  rtb_Gain_d[1] = rtb_MathFunction[1] * (real32_T)rtb_WGS84_pos_valid;
-  rtb_Gain_d[2] = rtb_MathFunction[2] * (real32_T)rtb_WGS84_pos_valid;
+  rtb_Gain_o4[0] = rtb_MathFunction[0] * (real32_T)rtb_WGS84_pos_valid;
+  rtb_Gain_o4[1] = rtb_MathFunction[1] * (real32_T)rtb_WGS84_pos_valid;
+  rtb_Gain_o4[2] = rtb_MathFunction[2] * (real32_T)rtb_WGS84_pos_valid;
 
-  /* DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S95>/Constant'
+  /* DiscreteIntegrator: '<S101>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S101>/Constant'
    */
   if (INS_DWork.DiscreteTimeIntegrator1_IC_LO_l != 0) {
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0] = rtb_Gain_d[0];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1] = rtb_Gain_d[1];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2] = rtb_Gain_d[2];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0] = rtb_Gain_o4[0];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1] = rtb_Gain_o4[1];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2] = rtb_Gain_o4[2];
   }
 
   if ((INS_P.Constant_Value_no != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator1_PrevR_o != 0)) {
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0] = rtb_Gain_d[0];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1] = rtb_Gain_d[1];
-    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2] = rtb_Gain_d[2];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0] = rtb_Gain_o4[0];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1] = rtb_Gain_o4[1];
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2] = rtb_Gain_o4[2];
   }
 
   /* Gain: '<S69>/Gain1' incorporates:
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator1'
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator1'
    */
   rtb_Sum_p_idx_0 = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0];
@@ -3869,8 +4228,8 @@ void INS_step(void)
   rtb_DiscreteTimeIntegrator_b = INS_PARAM.BIAS_G_GAIN *
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2];
 
-  /* DiscreteIntegrator: '<S95>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S95>/Constant'
+  /* DiscreteIntegrator: '<S101>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S101>/Constant'
    */
   if ((INS_P.Constant_Value_no != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator_PrevRe_n != 0)) {
@@ -3882,56 +4241,55 @@ void INS_step(void)
       INS_P.DiscreteTimeIntegrator_IC_m;
   }
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S88>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S89>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_IC_LO_i = 0U;
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[0] +=
     INS_P.DiscreteTimeIntegrator1_gainval *
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[0];
 
-  /* Gain: '<S95>/Gain' incorporates:
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator1'
-   *  Sum: '<S95>/Sum'
+  /* Gain: '<S101>/Gain' incorporates:
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator1'
+   *  Sum: '<S101>/Sum'
    */
-  rtb_Gain_d[0] = (rtb_Gain_d[0] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0])
+  rtb_Gain_o4[0] = (rtb_Gain_o4[0] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0])
     * INS_P.Gain_Gain_i;
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S88>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S89>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[1] +=
     INS_P.DiscreteTimeIntegrator1_gainval *
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[1];
 
-  /* Gain: '<S95>/Gain' incorporates:
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator1'
-   *  Sum: '<S95>/Sum'
+  /* Gain: '<S101>/Gain' incorporates:
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator1'
+   *  Sum: '<S101>/Sum'
    */
-  rtb_Gain_d[1] = (rtb_Gain_d[1] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1])
+  rtb_Gain_o4[1] = (rtb_Gain_o4[1] - INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1])
     * INS_P.Gain_Gain_i;
-  rtb_Switch_k_idx_2 = (rtb_Gain_d[2] -
-                        INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2]) *
-    INS_P.Gain_Gain_i;
+  rtb_Switch_kj_idx_0 = (rtb_Gain_o4[2] -
+    INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2]) * INS_P.Gain_Gain_i;
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S88>/Constant'
-   *  DiscreteIntegrator: '<S88>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S89>/Constant'
+   *  DiscreteIntegrator: '<S89>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_o[2] +=
     INS_P.DiscreteTimeIntegrator1_gainval *
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[2];
-  if (INS_P.Constant_Value_g > 0.0F) {
+  if (INS_P.Constant_Value_g3 > 0.0F) {
     INS_DWork.DiscreteTimeIntegrator1_PrevR_p = 1;
-  } else if (INS_P.Constant_Value_g < 0.0F) {
+  } else if (INS_P.Constant_Value_g3 < 0.0F) {
     INS_DWork.DiscreteTimeIntegrator1_PrevR_p = -1;
-  } else if (INS_P.Constant_Value_g == 0.0F) {
+  } else if (INS_P.Constant_Value_g3 == 0.0F) {
     INS_DWork.DiscreteTimeIntegrator1_PrevR_p = 0;
   } else {
     INS_DWork.DiscreteTimeIntegrator1_PrevR_p = 2;
   }
 
-  /* Update for Delay: '<S86>/Delay' */
+  /* Update for Delay: '<S87>/Delay' */
   for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 199;
        rtb_Saturation1_j_idx_0++) {
     rtb_Saturation1_j_idx_1 = (rtb_Saturation1_j_idx_0 + 1) * 3;
@@ -3943,25 +4301,31 @@ void INS_step(void)
       INS_DWork.Delay_DSTATE_lv[rtb_Saturation1_j_idx_1 + 2];
   }
 
-  /* Update for UnitDelay: '<S90>/Delay Input1' */
+  /* Update for UnitDelay: '<S91>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_ff = rtb_Compare_o;
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S88>/Constant'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S89>/Constant'
    */
-  if (INS_P.Constant_Value_g > 0.0F) {
+  if (INS_P.Constant_Value_g3 > 0.0F) {
     INS_DWork.DiscreteTimeIntegrator_PrevRe_f = 1;
-  } else if (INS_P.Constant_Value_g < 0.0F) {
+  } else if (INS_P.Constant_Value_g3 < 0.0F) {
     INS_DWork.DiscreteTimeIntegrator_PrevRe_f = -1;
-  } else if (INS_P.Constant_Value_g == 0.0F) {
+  } else if (INS_P.Constant_Value_g3 == 0.0F) {
     INS_DWork.DiscreteTimeIntegrator_PrevRe_f = 0;
   } else {
     INS_DWork.DiscreteTimeIntegrator_PrevRe_f = 2;
   }
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S95>/Constant'
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator'
+  /* Update for Delay: '<S94>/Delay' */
+  INS_DWork.Delay_DSTATE_b3 = rtb_DiscreteTimeIntegrator_g;
+
+  /* Update for UnitDelay: '<S97>/Delay Input1' */
+  INS_DWork.DelayInput1_DSTATE_ii = rtb_LogicalOperator5;
+
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S101>/Constant'
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_IC_LO_l = 0U;
   if (INS_P.Constant_Value_no > 0.0F) {
@@ -3985,88 +4349,88 @@ void INS_step(void)
     }
   }
 
-  /* Update for Delay: '<S86>/Delay' */
+  /* Update for Delay: '<S87>/Delay' */
   INS_DWork.Delay_DSTATE_lv[597] = rtb_Sum_gn_idx_0;
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' incorporates:
-   *  Gain: '<S88>/Gain1'
-   *  Sum: '<S88>/Sum2'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' incorporates:
+   *  Gain: '<S89>/Gain1'
+   *  Sum: '<S89>/Sum2'
    */
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[0] += (rtb_Gain_cv[0] -
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[0] += (rtb_Gain_fc[0] -
     INS_P.Gain1_Gain_p * INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[0]) *
     INS_P.DiscreteTimeIntegrator_gainva_n;
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[0] +=
     INS_P.DiscreteTimeIntegrator1_gainv_j *
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[0];
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' incorporates:
-   *  Gain: '<S95>/Gain1'
-   *  Sum: '<S95>/Sum2'
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' incorporates:
+   *  Gain: '<S101>/Gain1'
+   *  Sum: '<S101>/Sum2'
    */
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[0] += (rtb_Gain_d[0] -
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[0] += (rtb_Gain_o4[0] -
     INS_P.Gain1_Gain_i * INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[0]) *
     INS_P.DiscreteTimeIntegrator_gainv_kw;
 
-  /* Update for Delay: '<S86>/Delay' */
+  /* Update for Delay: '<S87>/Delay' */
   INS_DWork.Delay_DSTATE_lv[598] = rtb_Sum_gn_idx_1;
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' incorporates:
-   *  Gain: '<S88>/Gain1'
-   *  Sum: '<S88>/Sum2'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' incorporates:
+   *  Gain: '<S89>/Gain1'
+   *  Sum: '<S89>/Sum2'
    */
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[1] += (rtb_Gain_cv[1] -
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[1] += (rtb_Gain_fc[1] -
     INS_P.Gain1_Gain_p * INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[1]) *
     INS_P.DiscreteTimeIntegrator_gainva_n;
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[1] +=
     INS_P.DiscreteTimeIntegrator1_gainv_j *
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[1];
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' incorporates:
-   *  Gain: '<S95>/Gain1'
-   *  Sum: '<S95>/Sum2'
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' incorporates:
+   *  Gain: '<S101>/Gain1'
+   *  Sum: '<S101>/Sum2'
    */
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[1] += (rtb_Gain_d[1] -
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[1] += (rtb_Gain_o4[1] -
     INS_P.Gain1_Gain_i * INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[1]) *
     INS_P.DiscreteTimeIntegrator_gainv_kw;
 
-  /* Update for Delay: '<S86>/Delay' */
+  /* Update for Delay: '<S87>/Delay' */
   INS_DWork.Delay_DSTATE_lv[599] = rtb_Sum_gn_idx_2;
 
-  /* Update for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' incorporates:
-   *  Gain: '<S88>/Gain1'
-   *  Sum: '<S88>/Sum2'
+  /* Update for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' incorporates:
+   *  Gain: '<S89>/Gain1'
+   *  Sum: '<S89>/Sum2'
    */
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[2] += (rtb_Switch_k_idx_0 -
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[2] += (rtb_Switch_kj_idx_2 -
     INS_P.Gain1_Gain_p * INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[2]) *
     INS_P.DiscreteTimeIntegrator_gainva_n;
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S95>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator'
    */
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_b[2] +=
     INS_P.DiscreteTimeIntegrator1_gainv_j *
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[2];
 
-  /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' incorporates:
-   *  Gain: '<S95>/Gain1'
-   *  Sum: '<S95>/Sum2'
+  /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' incorporates:
+   *  Gain: '<S101>/Gain1'
+   *  Sum: '<S101>/Sum2'
    */
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[2] += (rtb_Switch_k_idx_2 -
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[2] += (rtb_Switch_kj_idx_0 -
     INS_P.Gain1_Gain_i * INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[2]) *
     INS_P.DiscreteTimeIntegrator_gainv_kw;
 
   /* End of Outputs for SubSystem: '<S57>/Correct' */
 
   /* Outputs for Atomic SubSystem: '<S57>/Update' */
-  /* DiscreteIntegrator: '<S97>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S103>/Discrete-Time Integrator' */
   if (INS_DWork.DiscreteTimeIntegrator_IC_LOADI != 0) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] = INS_B.OutportBufferForquat_0
       [0];
@@ -4078,8 +4442,7 @@ void INS_step(void)
       [3];
   }
 
-  if (rtb_LogicalOperator2_f || (INS_DWork.DiscreteTimeIntegrator_PrevR_bk != 0))
-  {
+  if (rtb_Switch_ol || (INS_DWork.DiscreteTimeIntegrator_PrevR_bk != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] = INS_B.OutportBufferForquat_0
       [0];
     INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[1] = INS_B.OutportBufferForquat_0
@@ -4090,10 +4453,10 @@ void INS_step(void)
       [3];
   }
 
-  /* Sqrt: '<S106>/Sqrt' incorporates:
-   *  DiscreteIntegrator: '<S97>/Discrete-Time Integrator'
-   *  Math: '<S106>/Square'
-   *  Sum: '<S106>/Sum of Elements'
+  /* Sqrt: '<S112>/Sqrt' incorporates:
+   *  DiscreteIntegrator: '<S103>/Discrete-Time Integrator'
+   *  Math: '<S112>/Square'
+   *  Sum: '<S112>/Sum of Elements'
    */
   rtb_DiscreteTimeIntegrator_g = sqrtf
     (((INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] *
@@ -4105,186 +4468,185 @@ void INS_step(void)
      INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[3] *
      INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[3]);
 
-  /* Product: '<S100>/Divide' incorporates:
-   *  DiscreteIntegrator: '<S97>/Discrete-Time Integrator'
+  /* Product: '<S106>/Divide' incorporates:
+   *  DiscreteIntegrator: '<S103>/Discrete-Time Integrator'
    */
-  rtb_Switch_k_idx_0 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] /
+  rtb_Switch_kj_idx_0 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] /
     rtb_DiscreteTimeIntegrator_g;
-  rtb_Switch_k_idx_1 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[1] /
+  rtb_Switch_kj_idx_1 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[1] /
     rtb_DiscreteTimeIntegrator_g;
-  rtb_Switch_k_idx_2 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[2] /
+  rtb_Switch_kj_idx_2 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[2] /
     rtb_DiscreteTimeIntegrator_g;
-  rtb_Switch_k_idx_3 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[3] /
+  rtb_Switch_kj_idx_3 = INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[3] /
     rtb_DiscreteTimeIntegrator_g;
 
   /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
   /* Outputs for Atomic SubSystem: '<S3>/IMU_PreProcess' */
   /* Sum: '<S61>/Sum2' incorporates:
-   *  DiscreteIntegrator: '<S98>/Discrete-Time Integrator2'
+   *  DiscreteIntegrator: '<S104>/Discrete-Time Integrator2'
    *  Inport: '<Root>/IMU'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport1'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport2'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport3'
-   *  Sum: '<S98>/Sum1'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport1'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport2'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport3'
+   *  Sum: '<S104>/Sum1'
    */
   rtb_MathFunction[0] += INS_DWork.DiscreteTimeIntegrator2_DSTATE[0] +
     INS_U.IMU.gyr_x;
   rtb_MathFunction[1] += INS_DWork.DiscreteTimeIntegrator2_DSTATE[1] +
     INS_U.IMU.gyr_y;
-  rtb_MathFunction_m = (INS_DWork.DiscreteTimeIntegrator2_DSTATE[2] +
-                        INS_U.IMU.gyr_z) + rtb_MathFunction[2];
+  rtb_Multiply2 = (INS_DWork.DiscreteTimeIntegrator2_DSTATE[2] + INS_U.IMU.gyr_z)
+    + rtb_MathFunction[2];
 
   /* End of Outputs for SubSystem: '<S3>/IMU_PreProcess' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
-  /* Sqrt: '<S111>/Sqrt' incorporates:
-   *  Math: '<S111>/Square'
+  /* Sqrt: '<S117>/Sqrt' incorporates:
+   *  Math: '<S117>/Square'
    *  Sqrt: '<S66>/Sqrt'
-   *  Sum: '<S111>/Sum of Elements'
+   *  Sum: '<S117>/Sum of Elements'
    */
-  rtb_DiscreteTimeIntegrator_g = sqrtf(((rtb_Switch_k_idx_0 * rtb_Switch_k_idx_0
-    + rtb_Switch_k_idx_1 * rtb_Switch_k_idx_1) + rtb_Switch_k_idx_2 *
-    rtb_Switch_k_idx_2) + rtb_Switch_k_idx_3 * rtb_Switch_k_idx_3);
+  rtb_DiscreteTimeIntegrator_g = sqrtf(((rtb_Switch_kj_idx_0 *
+    rtb_Switch_kj_idx_0 + rtb_Switch_kj_idx_1 * rtb_Switch_kj_idx_1) +
+    rtb_Switch_kj_idx_2 * rtb_Switch_kj_idx_2) + rtb_Switch_kj_idx_3 *
+    rtb_Switch_kj_idx_3);
 
   /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
 
-  /* Product: '<S107>/Divide' incorporates:
-   *  Sqrt: '<S111>/Sqrt'
+  /* Product: '<S113>/Divide' incorporates:
+   *  Sqrt: '<S117>/Sqrt'
    */
-  rtb_DiscreteTimeIntegrator_m = rtb_Switch_k_idx_0 /
-    rtb_DiscreteTimeIntegrator_g;
-  rtb_Sum_gn_idx_0 = rtb_Switch_k_idx_1 / rtb_DiscreteTimeIntegrator_g;
-  rtb_Sum_gn_idx_1 = rtb_Switch_k_idx_2 / rtb_DiscreteTimeIntegrator_g;
-  rtb_Sum_gn_idx_2 = rtb_Switch_k_idx_3 / rtb_DiscreteTimeIntegrator_g;
+  rtb_Sum_gn_idx_0 = rtb_Switch_kj_idx_0 / rtb_DiscreteTimeIntegrator_g;
+  rtb_Sum_gn_idx_1 = rtb_Switch_kj_idx_1 / rtb_DiscreteTimeIntegrator_g;
+  rtb_Sum_gn_idx_2 = rtb_Switch_kj_idx_2 / rtb_DiscreteTimeIntegrator_g;
+  rtb_MathFunction_e_idx_2 = rtb_Switch_kj_idx_3 / rtb_DiscreteTimeIntegrator_g;
 
-  /* Math: '<S108>/Square' incorporates:
-   *  Math: '<S109>/Square'
-   *  Math: '<S110>/Square'
-   *  Product: '<S107>/Divide'
+  /* Math: '<S114>/Square' incorporates:
+   *  Math: '<S115>/Square'
+   *  Math: '<S116>/Square'
+   *  Product: '<S113>/Divide'
    */
-  rtb_MathFunction_e_idx_2 = rtb_DiscreteTimeIntegrator_m *
-    rtb_DiscreteTimeIntegrator_m;
+  rtb_M_OC_tmp = rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_0;
 
-  /* Math: '<S108>/Square2' incorporates:
-   *  Math: '<S109>/Square2'
-   *  Math: '<S110>/Square2'
-   *  Product: '<S107>/Divide'
+  /* Math: '<S114>/Square2' incorporates:
+   *  Math: '<S115>/Square2'
+   *  Math: '<S116>/Square2'
+   *  Product: '<S113>/Divide'
    */
-  rtb_M_OC_tmp_1 = rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_1;
+  rtb_M_OC_tmp_2 = rtb_Sum_gn_idx_2 * rtb_Sum_gn_idx_2;
 
-  /* Math: '<S108>/Square1' incorporates:
-   *  Math: '<S109>/Square1'
-   *  Math: '<S110>/Square1'
-   *  Product: '<S107>/Divide'
+  /* Math: '<S114>/Square1' incorporates:
+   *  Math: '<S115>/Square1'
+   *  Math: '<S116>/Square1'
+   *  Product: '<S113>/Divide'
    */
-  rtb_M_OC_tmp_2 = rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_0;
+  rtb_M_OC_tmp_3 = rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_1;
 
-  /* Math: '<S108>/Square3' incorporates:
-   *  Math: '<S109>/Square3'
-   *  Math: '<S110>/Square3'
-   *  Product: '<S107>/Divide'
+  /* Math: '<S114>/Square3' incorporates:
+   *  Math: '<S115>/Square3'
+   *  Math: '<S116>/Square3'
+   *  Product: '<S113>/Divide'
    */
-  rtb_M_OC_tmp_3 = rtb_Sum_gn_idx_2 * rtb_Sum_gn_idx_2;
+  rtb_M_OC_tmp_4 = rtb_MathFunction_e_idx_2 * rtb_MathFunction_e_idx_2;
 
-  /* Sum: '<S108>/Subtract' incorporates:
-   *  Math: '<S108>/Square'
-   *  Math: '<S108>/Square1'
-   *  Math: '<S108>/Square2'
-   *  Math: '<S108>/Square3'
-   *  Sum: '<S108>/Add'
-   *  Sum: '<S108>/Add1'
+  /* Sum: '<S114>/Subtract' incorporates:
+   *  Math: '<S114>/Square'
+   *  Math: '<S114>/Square1'
+   *  Math: '<S114>/Square2'
+   *  Math: '<S114>/Square3'
+   *  Sum: '<S114>/Add'
+   *  Sum: '<S114>/Add1'
    */
-  rtb_M_OC[0] = (rtb_MathFunction_e_idx_2 + rtb_M_OC_tmp_2) - (rtb_M_OC_tmp_1 +
-    rtb_M_OC_tmp_3);
+  rtb_M_OC[0] = (rtb_M_OC_tmp + rtb_M_OC_tmp_3) - (rtb_M_OC_tmp_2 +
+    rtb_M_OC_tmp_4);
 
-  /* Product: '<S108>/Multiply' incorporates:
-   *  Product: '<S107>/Divide'
-   *  Product: '<S109>/Multiply'
+  /* Product: '<S114>/Multiply' incorporates:
+   *  Product: '<S113>/Divide'
+   *  Product: '<S115>/Multiply'
    */
-  rtb_M_OC_tmp = rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_1;
+  rtb_M_OC_tmp_0 = rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_2;
 
-  /* Product: '<S108>/Multiply1' incorporates:
-   *  Product: '<S107>/Divide'
-   *  Product: '<S109>/Multiply1'
+  /* Product: '<S114>/Multiply1' incorporates:
+   *  Product: '<S113>/Divide'
+   *  Product: '<S115>/Multiply1'
    */
-  rtb_M_OC_tmp_0 = rtb_DiscreteTimeIntegrator_m * rtb_Sum_gn_idx_2;
+  rtb_M_OC_tmp_1 = rtb_Sum_gn_idx_0 * rtb_MathFunction_e_idx_2;
 
-  /* Gain: '<S108>/Gain' incorporates:
-   *  Product: '<S108>/Multiply'
-   *  Product: '<S108>/Multiply1'
-   *  Sum: '<S108>/Subtract1'
+  /* Gain: '<S114>/Gain' incorporates:
+   *  Product: '<S114>/Multiply'
+   *  Product: '<S114>/Multiply1'
+   *  Sum: '<S114>/Subtract1'
    */
-  rtb_M_OC[1] = (rtb_M_OC_tmp - rtb_M_OC_tmp_0) * INS_P.Gain_Gain_e;
+  rtb_M_OC[1] = (rtb_M_OC_tmp_0 - rtb_M_OC_tmp_1) * INS_P.Gain_Gain_e;
 
-  /* Product: '<S108>/Multiply2' incorporates:
-   *  Product: '<S107>/Divide'
-   *  Product: '<S110>/Multiply'
+  /* Product: '<S114>/Multiply2' incorporates:
+   *  Product: '<S113>/Divide'
+   *  Product: '<S116>/Multiply'
    */
-  rtb_M_OC_tmp_4 = rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_2;
+  rtb_M_OC_tmp_5 = rtb_Sum_gn_idx_1 * rtb_MathFunction_e_idx_2;
 
-  /* Product: '<S108>/Multiply3' incorporates:
-   *  Product: '<S107>/Divide'
-   *  Product: '<S110>/Multiply1'
+  /* Product: '<S114>/Multiply3' incorporates:
+   *  Product: '<S113>/Divide'
+   *  Product: '<S116>/Multiply1'
    */
-  rtb_M_OC_tmp_5 = rtb_DiscreteTimeIntegrator_m * rtb_Sum_gn_idx_1;
+  rtb_M_OC_tmp_6 = rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_2;
 
-  /* Gain: '<S108>/Gain1' incorporates:
-   *  Product: '<S108>/Multiply2'
-   *  Product: '<S108>/Multiply3'
-   *  Sum: '<S108>/Add2'
+  /* Gain: '<S114>/Gain1' incorporates:
+   *  Product: '<S114>/Multiply2'
+   *  Product: '<S114>/Multiply3'
+   *  Sum: '<S114>/Add2'
    */
-  rtb_M_OC[2] = (rtb_M_OC_tmp_4 + rtb_M_OC_tmp_5) * INS_P.Gain1_Gain_pl;
+  rtb_M_OC[2] = (rtb_M_OC_tmp_5 + rtb_M_OC_tmp_6) * INS_P.Gain1_Gain_pl;
 
-  /* Gain: '<S109>/Gain' incorporates:
-   *  Sum: '<S109>/Add3'
+  /* Gain: '<S115>/Gain' incorporates:
+   *  Sum: '<S115>/Add3'
    */
-  rtb_M_OC[3] = (rtb_M_OC_tmp + rtb_M_OC_tmp_0) * INS_P.Gain_Gain_j;
+  rtb_M_OC[3] = (rtb_M_OC_tmp_0 + rtb_M_OC_tmp_1) * INS_P.Gain_Gain_j;
 
-  /* Sum: '<S109>/Subtract' incorporates:
-   *  Sum: '<S109>/Add'
-   *  Sum: '<S109>/Add1'
+  /* Sum: '<S115>/Subtract' incorporates:
+   *  Sum: '<S115>/Add'
+   *  Sum: '<S115>/Add1'
    */
-  rtb_M_OC[4] = (rtb_MathFunction_e_idx_2 + rtb_M_OC_tmp_1) - (rtb_M_OC_tmp_2 +
-    rtb_M_OC_tmp_3);
+  rtb_M_OC[4] = (rtb_M_OC_tmp + rtb_M_OC_tmp_2) - (rtb_M_OC_tmp_3 +
+    rtb_M_OC_tmp_4);
 
-  /* Product: '<S109>/Multiply2' incorporates:
-   *  Product: '<S107>/Divide'
-   *  Product: '<S110>/Multiply2'
+  /* Product: '<S115>/Multiply2' incorporates:
+   *  Product: '<S113>/Divide'
+   *  Product: '<S116>/Multiply2'
    */
-  rtb_M_OC_tmp = rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_2;
+  rtb_M_OC_tmp_0 = rtb_Sum_gn_idx_2 * rtb_MathFunction_e_idx_2;
 
-  /* Product: '<S109>/Multiply3' incorporates:
-   *  Product: '<S107>/Divide'
-   *  Product: '<S110>/Multiply3'
+  /* Product: '<S115>/Multiply3' incorporates:
+   *  Product: '<S113>/Divide'
+   *  Product: '<S116>/Multiply3'
    */
-  rtb_M_OC_tmp_0 = rtb_DiscreteTimeIntegrator_m * rtb_Sum_gn_idx_0;
+  rtb_M_OC_tmp_1 = rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_1;
 
-  /* Gain: '<S109>/Gain1' incorporates:
-   *  Product: '<S109>/Multiply2'
-   *  Product: '<S109>/Multiply3'
-   *  Sum: '<S109>/Subtract1'
+  /* Gain: '<S115>/Gain1' incorporates:
+   *  Product: '<S115>/Multiply2'
+   *  Product: '<S115>/Multiply3'
+   *  Sum: '<S115>/Subtract1'
    */
-  rtb_M_OC[5] = (rtb_M_OC_tmp - rtb_M_OC_tmp_0) * INS_P.Gain1_Gain_b;
+  rtb_M_OC[5] = (rtb_M_OC_tmp_0 - rtb_M_OC_tmp_1) * INS_P.Gain1_Gain_b;
 
-  /* Gain: '<S110>/Gain' incorporates:
-   *  Sum: '<S110>/Subtract2'
+  /* Gain: '<S116>/Gain' incorporates:
+   *  Sum: '<S116>/Subtract2'
    */
-  rtb_M_OC[6] = (rtb_M_OC_tmp_4 - rtb_M_OC_tmp_5) * INS_P.Gain_Gain_oz;
+  rtb_M_OC[6] = (rtb_M_OC_tmp_5 - rtb_M_OC_tmp_6) * INS_P.Gain_Gain_oz;
 
-  /* Gain: '<S110>/Gain1' incorporates:
-   *  Sum: '<S110>/Add2'
+  /* Gain: '<S116>/Gain1' incorporates:
+   *  Sum: '<S116>/Add2'
    */
-  rtb_M_OC[7] = (rtb_M_OC_tmp + rtb_M_OC_tmp_0) * INS_P.Gain1_Gain_f;
+  rtb_M_OC[7] = (rtb_M_OC_tmp_0 + rtb_M_OC_tmp_1) * INS_P.Gain1_Gain_f;
 
-  /* Sum: '<S110>/Subtract' incorporates:
-   *  Sum: '<S110>/Add'
-   *  Sum: '<S110>/Add1'
+  /* Sum: '<S116>/Subtract' incorporates:
+   *  Sum: '<S116>/Add'
+   *  Sum: '<S116>/Add1'
    */
-  rtb_M_OC[8] = (rtb_MathFunction_e_idx_2 + rtb_M_OC_tmp_3) - (rtb_M_OC_tmp_2 +
-    rtb_M_OC_tmp_1);
+  rtb_M_OC[8] = (rtb_M_OC_tmp + rtb_M_OC_tmp_4) - (rtb_M_OC_tmp_3 +
+    rtb_M_OC_tmp_2);
 
-  /* Math: '<S97>/Transpose' */
+  /* Math: '<S103>/Transpose' */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
        rtb_Saturation1_j_idx_1_0++) {
     rtb_VectorConcatenate_h[3 * rtb_Saturation1_j_idx_1_0] =
@@ -4295,55 +4657,53 @@ void INS_step(void)
       rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 6];
   }
 
-  /* End of Math: '<S97>/Transpose' */
+  /* End of Math: '<S103>/Transpose' */
 
-  /* Update for DiscreteIntegrator: '<S97>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S97>/Constant'
-   *  Gain: '<S97>/Gain2'
-   *  Product: '<S102>/Multiply'
-   *  Product: '<S102>/Multiply1'
-   *  Product: '<S102>/Multiply2'
-   *  Product: '<S102>/Multiply3'
-   *  Product: '<S103>/Multiply'
-   *  Product: '<S103>/Multiply1'
-   *  Product: '<S103>/Multiply2'
-   *  Product: '<S103>/Multiply3'
-   *  Product: '<S104>/Multiply'
-   *  Product: '<S104>/Multiply1'
-   *  Product: '<S104>/Multiply2'
-   *  Product: '<S104>/Multiply3'
-   *  Product: '<S105>/Multiply'
-   *  Product: '<S105>/Multiply1'
-   *  Product: '<S105>/Multiply2'
-   *  Product: '<S105>/Multiply3'
-   *  Sum: '<S102>/Add'
-   *  Sum: '<S103>/Add'
-   *  Sum: '<S104>/Add'
-   *  Sum: '<S105>/Add'
+  /* Update for DiscreteIntegrator: '<S103>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S103>/Constant'
+   *  Gain: '<S103>/Gain2'
+   *  Product: '<S108>/Multiply'
+   *  Product: '<S108>/Multiply1'
+   *  Product: '<S108>/Multiply2'
+   *  Product: '<S108>/Multiply3'
+   *  Product: '<S109>/Multiply'
+   *  Product: '<S109>/Multiply1'
+   *  Product: '<S109>/Multiply2'
+   *  Product: '<S109>/Multiply3'
+   *  Product: '<S110>/Multiply'
+   *  Product: '<S110>/Multiply1'
+   *  Product: '<S110>/Multiply2'
+   *  Product: '<S110>/Multiply3'
+   *  Product: '<S111>/Multiply'
+   *  Product: '<S111>/Multiply1'
+   *  Product: '<S111>/Multiply2'
+   *  Product: '<S111>/Multiply3'
+   *  Sum: '<S108>/Add'
+   *  Sum: '<S109>/Add'
+   *  Sum: '<S110>/Add'
+   *  Sum: '<S111>/Add'
    *  Sum: '<S61>/Sum2'
    */
   INS_DWork.DiscreteTimeIntegrator_IC_LOADI = 0U;
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] += (((rtb_Switch_k_idx_0 *
-    INS_P.Constant_Value_p - rtb_Switch_k_idx_1 * rtb_MathFunction[0]) -
-    rtb_Switch_k_idx_2 * rtb_MathFunction[1]) - rtb_Switch_k_idx_3 *
-    rtb_MathFunction_m) * INS_P.Gain2_Gain_i4 *
-    INS_P.DiscreteTimeIntegrator_gainva_j;
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[1] += (((rtb_Switch_k_idx_1 *
-    INS_P.Constant_Value_p + rtb_Switch_k_idx_0 * rtb_MathFunction[0]) +
-    rtb_Switch_k_idx_2 * rtb_MathFunction_m) - rtb_Switch_k_idx_3 *
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[0] += (((rtb_Switch_kj_idx_0 *
+    INS_P.Constant_Value_p - rtb_Switch_kj_idx_1 * rtb_MathFunction[0]) -
+    rtb_Switch_kj_idx_2 * rtb_MathFunction[1]) - rtb_Switch_kj_idx_3 *
+    rtb_Multiply2) * INS_P.Gain2_Gain_i4 * INS_P.DiscreteTimeIntegrator_gainva_j;
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[1] += (((rtb_Switch_kj_idx_1 *
+    INS_P.Constant_Value_p + rtb_Switch_kj_idx_0 * rtb_MathFunction[0]) +
+    rtb_Switch_kj_idx_2 * rtb_Multiply2) - rtb_Switch_kj_idx_3 *
     rtb_MathFunction[1]) * INS_P.Gain2_Gain_i4 *
     INS_P.DiscreteTimeIntegrator_gainva_j;
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[2] += (((rtb_Switch_k_idx_2 *
-    INS_P.Constant_Value_p + rtb_Switch_k_idx_0 * rtb_MathFunction[1]) +
-    rtb_Switch_k_idx_3 * rtb_MathFunction[0]) - rtb_Switch_k_idx_1 *
-    rtb_MathFunction_m) * INS_P.Gain2_Gain_i4 *
-    INS_P.DiscreteTimeIntegrator_gainva_j;
-  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[3] += (((rtb_Switch_k_idx_3 *
-    INS_P.Constant_Value_p + rtb_Switch_k_idx_0 * rtb_MathFunction_m) +
-    rtb_Switch_k_idx_1 * rtb_MathFunction[1]) - rtb_Switch_k_idx_2 *
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[2] += (((rtb_Switch_kj_idx_2 *
+    INS_P.Constant_Value_p + rtb_Switch_kj_idx_0 * rtb_MathFunction[1]) +
+    rtb_Switch_kj_idx_3 * rtb_MathFunction[0]) - rtb_Switch_kj_idx_1 *
+    rtb_Multiply2) * INS_P.Gain2_Gain_i4 * INS_P.DiscreteTimeIntegrator_gainva_j;
+  INS_DWork.DiscreteTimeIntegrator_DSTAT_kk[3] += (((rtb_Switch_kj_idx_3 *
+    INS_P.Constant_Value_p + rtb_Switch_kj_idx_0 * rtb_Multiply2) +
+    rtb_Switch_kj_idx_1 * rtb_MathFunction[1]) - rtb_Switch_kj_idx_2 *
     rtb_MathFunction[0]) * INS_P.Gain2_Gain_i4 *
     INS_P.DiscreteTimeIntegrator_gainva_j;
-  INS_DWork.DiscreteTimeIntegrator_PrevR_bk = (int8_T)rtb_LogicalOperator2_f;
+  INS_DWork.DiscreteTimeIntegrator_PrevR_bk = (int8_T)rtb_Switch_ol;
 
   /* End of Outputs for SubSystem: '<S57>/Update' */
 
@@ -4360,7 +4720,7 @@ void INS_step(void)
   /* End of Outputs for SubSystem: '<S57>/Correct' */
 
   /* Outputs for Atomic SubSystem: '<S57>/Update' */
-  /* Update for DiscreteIntegrator: '<S98>/Discrete-Time Integrator2' */
+  /* Update for DiscreteIntegrator: '<S104>/Discrete-Time Integrator2' */
   INS_DWork.DiscreteTimeIntegrator2_DSTATE[0] +=
     INS_P.DiscreteTimeIntegrator2_gainval * rtb_Sum_p_idx_0;
   if (INS_DWork.DiscreteTimeIntegrator2_DSTATE[0] >=
@@ -4390,7 +4750,7 @@ void INS_step(void)
   /* End of Outputs for SubSystem: '<S57>/Correct' */
 
   /* Outputs for Atomic SubSystem: '<S57>/Update' */
-  /* Update for DiscreteIntegrator: '<S98>/Discrete-Time Integrator2' */
+  /* Update for DiscreteIntegrator: '<S104>/Discrete-Time Integrator2' */
   INS_DWork.DiscreteTimeIntegrator2_DSTATE[1] +=
     INS_P.DiscreteTimeIntegrator2_gainval * rtb_Sum_p_idx_1;
   if (INS_DWork.DiscreteTimeIntegrator2_DSTATE[1] >=
@@ -4420,7 +4780,7 @@ void INS_step(void)
   /* End of Outputs for SubSystem: '<S57>/Correct' */
 
   /* Outputs for Atomic SubSystem: '<S57>/Update' */
-  /* Update for DiscreteIntegrator: '<S98>/Discrete-Time Integrator2' */
+  /* Update for DiscreteIntegrator: '<S104>/Discrete-Time Integrator2' */
   INS_DWork.DiscreteTimeIntegrator2_DSTATE[2] +=
     INS_P.DiscreteTimeIntegrator2_gainval * rtb_DiscreteTimeIntegrator_b;
   if (INS_DWork.DiscreteTimeIntegrator2_DSTATE[2] >=
@@ -4439,11 +4799,10 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
   /* Product: '<S65>/Divide' */
-  rtb_MathFunction_m = rtb_Switch_k_idx_0 / rtb_DiscreteTimeIntegrator_g;
-  rtb_DiscreteTimeIntegrator_m = rtb_Switch_k_idx_1 /
-    rtb_DiscreteTimeIntegrator_g;
-  rtb_Sum_gn_idx_0 = rtb_Switch_k_idx_2 / rtb_DiscreteTimeIntegrator_g;
-  rtb_Sum_gn_idx_1 = rtb_Switch_k_idx_3 / rtb_DiscreteTimeIntegrator_g;
+  rtb_M_OC_tmp = rtb_Switch_kj_idx_0 / rtb_DiscreteTimeIntegrator_g;
+  rtb_Multiply2 = rtb_Switch_kj_idx_1 / rtb_DiscreteTimeIntegrator_g;
+  rtb_Sum_gn_idx_0 = rtb_Switch_kj_idx_2 / rtb_DiscreteTimeIntegrator_g;
+  rtb_Sum_gn_idx_1 = rtb_Switch_kj_idx_3 / rtb_DiscreteTimeIntegrator_g;
 
   /* Math: '<S64>/Square1' incorporates:
    *  Product: '<S65>/Divide'
@@ -4457,8 +4816,8 @@ void INS_step(void)
    *  Product: '<S65>/Divide'
    *  Sum: '<S64>/Subtract'
    */
-  rtb_DiscreteTimeIntegrator_b = (rtb_MathFunction_m * rtb_Sum_gn_idx_0 -
-    rtb_Sum_gn_idx_1 * rtb_DiscreteTimeIntegrator_m) * INS_P.Constant_Value_c;
+  rtb_DiscreteTimeIntegrator_b = (rtb_M_OC_tmp * rtb_Sum_gn_idx_0 -
+    rtb_Sum_gn_idx_1 * rtb_Multiply2) * INS_P.Constant_Value_c;
 
   /* Saturate: '<S64>/Saturation' */
   if (rtb_DiscreteTimeIntegrator_b > INS_P.Saturation_UpperSat_h) {
@@ -4498,10 +4857,10 @@ void INS_step(void)
    *  Sum: '<S64>/Add3'
    *  Sum: '<S64>/Subtract1'
    */
-  rtb_Sum_p_idx_1 = atan2f((rtb_MathFunction_m * rtb_Sum_gn_idx_1 +
-    rtb_DiscreteTimeIntegrator_m * rtb_Sum_gn_idx_0) * INS_P.Constant_Value_c,
-    INS_P.Constant1_Value_o - (rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_1 +
-    rtb_DiscreteTimeIntegrator_g) * INS_P.Constant_Value_c);
+  rtb_Sum_p_idx_1 = atan2f((rtb_M_OC_tmp * rtb_Sum_gn_idx_1 + rtb_Multiply2 *
+    rtb_Sum_gn_idx_0) * INS_P.Constant_Value_c, INS_P.Constant1_Value_o -
+    (rtb_Sum_gn_idx_1 * rtb_Sum_gn_idx_1 + rtb_DiscreteTimeIntegrator_g) *
+    INS_P.Constant_Value_c);
 
   /* Trigonometry: '<S64>/Atan2' incorporates:
    *  Constant: '<S64>/Constant'
@@ -4517,10 +4876,9 @@ void INS_step(void)
    *  Sum: '<S64>/Add1'
    *  Sum: '<S64>/Subtract2'
    */
-  rtb_Sum_gn_idx_0 = atan2f((rtb_MathFunction_m * rtb_DiscreteTimeIntegrator_m +
-    rtb_Sum_gn_idx_0 * rtb_Sum_gn_idx_1) * INS_P.Constant_Value_c,
-    INS_P.Constant2_Value_d - (rtb_DiscreteTimeIntegrator_m *
-    rtb_DiscreteTimeIntegrator_m + rtb_DiscreteTimeIntegrator_g) *
+  rtb_Sum_gn_idx_0 = atan2f((rtb_M_OC_tmp * rtb_Multiply2 + rtb_Sum_gn_idx_0 *
+    rtb_Sum_gn_idx_1) * INS_P.Constant_Value_c, INS_P.Constant2_Value_d -
+    (rtb_Multiply2 * rtb_Multiply2 + rtb_DiscreteTimeIntegrator_g) *
     INS_P.Constant_Value_c);
 
   /* Math: '<S59>/Math Function' */
@@ -4537,7 +4895,7 @@ void INS_step(void)
   /* End of Math: '<S59>/Math Function' */
 
   /* Gain: '<S63>/Gain' */
-  rtb_DiscreteTimeIntegrator_m = INS_P.Gain_Gain_f * rtb_Sum_p_idx_1;
+  rtb_Multiply2 = INS_P.Gain_Gain_f * rtb_Sum_p_idx_1;
 
   /* Constant: '<S67>/Constant' */
   rtb_VectorConcatenate_er[8] = INS_P.Constant_Value_j1;
@@ -4557,7 +4915,7 @@ void INS_step(void)
   /* Trigonometry: '<S67>/Trigonometric Function2' incorporates:
    *  Trigonometry: '<S67>/Trigonometric Function'
    */
-  rtb_DiscreteTimeIntegrator_b = arm_sin_f32(rtb_DiscreteTimeIntegrator_m);
+  rtb_DiscreteTimeIntegrator_b = arm_sin_f32(rtb_Multiply2);
 
   /* Gain: '<S67>/Gain' incorporates:
    *  Trigonometry: '<S67>/Trigonometric Function2'
@@ -4570,7 +4928,7 @@ void INS_step(void)
   /* Trigonometry: '<S67>/Trigonometric Function1' incorporates:
    *  Trigonometry: '<S67>/Trigonometric Function3'
    */
-  rtb_DiscreteTimeIntegrator_b = arm_cos_f32(rtb_DiscreteTimeIntegrator_m);
+  rtb_DiscreteTimeIntegrator_b = arm_cos_f32(rtb_Multiply2);
   rtb_VectorConcatenate_er[0] = rtb_DiscreteTimeIntegrator_b;
 
   /* Trigonometry: '<S67>/Trigonometric Function3' */
@@ -4581,6 +4939,7 @@ void INS_step(void)
   /* Update for Delay: '<S57>/Delay' incorporates:
    *  SignalConversion: '<S59>/BusConversion_InsertedFor_Rotation_Data_at_inport_0'
    */
+  INS_DWork.Delay_4_DSTATE_d = rtb_Sum_p_idx_1;
   for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 9;
        rtb_Saturation1_j_idx_0++) {
     INS_DWork.Delay_7_DSTATE[rtb_Saturation1_j_idx_0] =
@@ -4597,7 +4956,15 @@ void INS_step(void)
   /* End of Outputs for SubSystem: '<S55>/AHRS' */
 
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-  /* Relay: '<S274>/Relay' */
+  /* DataTypeConversion: '<S284>/Data Type Conversion4' incorporates:
+   *  Constant: '<S289>/Constant'
+   *  RelationalOperator: '<S289>/Compare'
+   *  SignalConversion: '<S305>/TmpSignal ConversionAtSignal CopyInport1'
+   */
+  rtb_DataTypeConversion1_m = (int8_T)((int32_T)rtb_LogicalOperator2_g >
+    (int32_T)INS_P.Constant_Value_br);
+
+  /* Relay: '<S306>/Relay' */
   if (rtb_Product2 >= INS_P.Relay_OnVal_l) {
     INS_DWork.Relay_Mode_n = true;
   } else {
@@ -4612,13 +4979,13 @@ void INS_step(void)
     rtb_DiscreteTimeIntegrator_g = INS_P.Relay_YOff_d;
   }
 
-  /* End of Relay: '<S274>/Relay' */
+  /* End of Relay: '<S306>/Relay' */
 
-  /* Relay: '<S274>/Relay1' */
-  if (rtb_Product_d4 >= INS_P.Relay1_OnVal_b) {
+  /* Relay: '<S306>/Relay1' */
+  if (rtb_Product_n >= INS_P.Relay1_OnVal_b) {
     INS_DWork.Relay1_Mode = true;
   } else {
-    if (rtb_Product_d4 <= INS_P.Relay1_OffVal_n) {
+    if (rtb_Product_n <= INS_P.Relay1_OffVal_n) {
       INS_DWork.Relay1_Mode = false;
     }
   }
@@ -4629,29 +4996,43 @@ void INS_step(void)
     rtb_DiscreteTimeIntegrator_b = INS_P.Relay1_YOff_a;
   }
 
-  /* End of Relay: '<S274>/Relay1' */
+  /* End of Relay: '<S306>/Relay1' */
 
-  /* DataTypeConversion: '<S258>/Data Type Conversion2' incorporates:
-   *  Logic: '<S258>/Logical Operator'
-   *  SignalConversion: '<S274>/TmpSignal ConversionAtSignal CopyInport1'
+  /* DataTypeConversion: '<S284>/Data Type Conversion2' incorporates:
+   *  Logic: '<S284>/Logical Operator'
+   *  SignalConversion: '<S306>/TmpSignal ConversionAtSignal CopyInport1'
    */
-  rtb_DataTypeConversion1_m = (int8_T)(rtb_Compare_cio &&
+  rtb_DataTypeConversion_b = (int8_T)(rtb_Compare_cio &&
     (rtb_DiscreteTimeIntegrator_g != 0.0F) && (rtb_DiscreteTimeIntegrator_b !=
     0.0F));
 
-  /* RelationalOperator: '<S260>/Compare' incorporates:
-   *  Constant: '<S260>/Constant'
+  /* Saturate: '<S284>/Saturation1' incorporates:
+   *  Sum: '<S284>/Subtract2'
    */
-  rtb_LogicalOperator2_f = (rtb_DataTypeConversion1_m > INS_P.Constant_Value_ej5);
+  u0 = (int8_T)(rtb_DataTypeConversion_b - rtb_DataTypeConversion1_m);
+  if (u0 > INS_P.Saturation1_UpperSat_d) {
+    u0 = INS_P.Saturation1_UpperSat_d;
+  } else {
+    if (u0 < INS_P.Saturation1_LowerSat_p) {
+      u0 = INS_P.Saturation1_LowerSat_p;
+    }
+  }
 
-  /* Saturate: '<S258>/Saturation' incorporates:
-   *  Constant: '<S262>/Constant'
-   *  RelationalOperator: '<S262>/Compare'
-   *  SignalConversion: '<S275>/TmpSignal ConversionAtSignal CopyInport1'
-   *  Sum: '<S258>/Subtract1'
+  /* End of Saturate: '<S284>/Saturation1' */
+
+  /* RelationalOperator: '<S287>/Compare' incorporates:
+   *  Constant: '<S287>/Constant'
    */
-  u0 = (int8_T)(((int32_T)rtb_Compare_ai > (int32_T)INS_P.Constant_Value_ps) -
-                rtb_DataTypeConversion1_m);
+  rtb_LogicalOperator2_g = (u0 > INS_P.Constant_Value_ej5);
+
+  /* Saturate: '<S284>/Saturation' incorporates:
+   *  Constant: '<S286>/Constant'
+   *  RelationalOperator: '<S286>/Compare'
+   *  SignalConversion: '<S307>/TmpSignal ConversionAtSignal CopyInport1'
+   *  Sum: '<S284>/Subtract1'
+   */
+  u0 = (int8_T)((((int32_T)rtb_Compare_ai > (int32_T)INS_P.Constant_Value_jz) -
+                 rtb_DataTypeConversion1_m) - rtb_DataTypeConversion_b);
   if (u0 > INS_P.Saturation_UpperSat_m) {
     u0 = INS_P.Saturation_UpperSat_m;
   } else {
@@ -4660,38 +5041,66 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S258>/Saturation' */
+  /* End of Saturate: '<S284>/Saturation' */
 
-  /* RelationalOperator: '<S261>/Compare' incorporates:
-   *  Constant: '<S261>/Constant'
+  /* RelationalOperator: '<S288>/Compare' incorporates:
+   *  Constant: '<S288>/Constant'
    */
-  rtb_Compare_o = (u0 > INS_P.Constant_Value_m2k);
+  rtb_LogicalOperator5 = (u0 > INS_P.Constant_Value_m2k);
 
-  /* DataTypeConversion: '<S259>/Data Type Conversion2' incorporates:
-   *  Constant: '<S264>/Constant'
-   *  RelationalOperator: '<S264>/Compare'
-   *  SignalConversion: '<S276>/TmpSignal ConversionAtSignal CopyInport1'
+  /* RelationalOperator: '<S290>/Compare' incorporates:
+   *  Constant: '<S290>/Constant'
    */
-  rtb_DataTypeConversion1_m = (int8_T)((int32_T)rtb_Compare_c5 > (int32_T)
+  rtb_Compare_o = (rtb_DataTypeConversion1_m > INS_P.Constant_Value_bze);
+
+  /* DataTypeConversion: '<S285>/Data Type Conversion3' incorporates:
+   *  Constant: '<S295>/Constant'
+   *  RelationalOperator: '<S295>/Compare'
+   *  SignalConversion: '<S305>/TmpSignal ConversionAtSignal Copy1Inport1'
+   */
+  rtb_DataTypeConversion1_m = (int8_T)((int32_T)rtb_LogicalOperator3 > (int32_T)
+    INS_P.Constant_Value_bz);
+
+  /* DataTypeConversion: '<S285>/Data Type Conversion2' incorporates:
+   *  Constant: '<S292>/Constant'
+   *  RelationalOperator: '<S292>/Compare'
+   *  SignalConversion: '<S308>/TmpSignal ConversionAtSignal CopyInport1'
+   */
+  rtb_DataTypeConversion2_h = (int8_T)((int32_T)rtb_Compare_c5 > (int32_T)
     INS_P.Constant_Value_ha);
 
-  /* RelationalOperator: '<S265>/Compare' incorporates:
-   *  Constant: '<S265>/Constant'
+  /* Saturate: '<S285>/Saturation2' incorporates:
+   *  Sum: '<S285>/Subtract2'
    */
-  rtb_Compare_jx = (rtb_DataTypeConversion1_m > INS_P.Constant_Value_c1);
+  u0 = (int8_T)(rtb_DataTypeConversion2_h - rtb_DataTypeConversion1_m);
+  if (u0 > INS_P.Saturation2_UpperSat_l) {
+    u0 = INS_P.Saturation2_UpperSat_l;
+  } else {
+    if (u0 < INS_P.Saturation2_LowerSat_i) {
+      u0 = INS_P.Saturation2_LowerSat_i;
+    }
+  }
 
-  /* DataTypeConversion: '<S259>/Data Type Conversion' incorporates:
-   *  Logic: '<S259>/Logical Operator'
-   *  SignalConversion: '<S274>/TmpSignal ConversionAtSignal CopyInport1'
+  /* End of Saturate: '<S285>/Saturation2' */
+
+  /* RelationalOperator: '<S293>/Compare' incorporates:
+   *  Constant: '<S293>/Constant'
+   */
+  rtb_LogicalOperator3 = (u0 > INS_P.Constant_Value_c1);
+
+  /* DataTypeConversion: '<S285>/Data Type Conversion' incorporates:
+   *  Logic: '<S285>/Logical Operator'
+   *  SignalConversion: '<S306>/TmpSignal ConversionAtSignal CopyInport1'
    */
   rtb_DataTypeConversion_b = (int8_T)(rtb_Compare_cio &&
     (rtb_DiscreteTimeIntegrator_g != 0.0F) && (rtb_DiscreteTimeIntegrator_b !=
     0.0F));
 
-  /* Saturate: '<S259>/Saturation' incorporates:
-   *  Sum: '<S259>/Subtract1'
+  /* Saturate: '<S285>/Saturation' incorporates:
+   *  Sum: '<S285>/Subtract1'
    */
-  u0 = (int8_T)(rtb_DataTypeConversion_b - rtb_DataTypeConversion1_m);
+  u0 = (int8_T)((rtb_DataTypeConversion_b - rtb_DataTypeConversion1_m) -
+                rtb_DataTypeConversion2_h);
   if (u0 > INS_P.Saturation_UpperSat_gx) {
     u0 = INS_P.Saturation_UpperSat_gx;
   } else {
@@ -4700,22 +5109,22 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S259>/Saturation' */
+  /* End of Saturate: '<S285>/Saturation' */
 
-  /* RelationalOperator: '<S266>/Compare' incorporates:
-   *  Constant: '<S266>/Constant'
+  /* RelationalOperator: '<S294>/Compare' incorporates:
+   *  Constant: '<S294>/Constant'
    */
-  rtb_Compare_ko = (u0 > INS_P.Constant_Value_lc);
+  rtb_Compare_jx = (u0 > INS_P.Constant_Value_lc);
 
-  /* Saturate: '<S259>/Saturation1' incorporates:
-   *  Constant: '<S263>/Constant'
-   *  RelationalOperator: '<S263>/Compare'
-   *  SignalConversion: '<S273>/TmpSignal ConversionAtSignal CopyInport1'
-   *  Sum: '<S259>/Subtract'
+  /* Saturate: '<S285>/Saturation1' incorporates:
+   *  Constant: '<S291>/Constant'
+   *  RelationalOperator: '<S291>/Compare'
+   *  SignalConversion: '<S304>/TmpSignal ConversionAtSignal CopyInport1'
+   *  Sum: '<S285>/Subtract'
    */
-  u0 = (int8_T)((((int32_T)rtb_FixPtRelationalOperator_cn > (int32_T)
-                  INS_P.Constant_Value_pf) - rtb_DataTypeConversion1_m) -
-                rtb_DataTypeConversion_b);
+  u0 = (int8_T)(((((int32_T)rtb_FixPtRelationalOperator_cn > (int32_T)
+                   INS_P.Constant_Value_pf) - rtb_DataTypeConversion1_m) -
+                 rtb_DataTypeConversion2_h) - rtb_DataTypeConversion_b);
   if (u0 > INS_P.Saturation1_UpperSat_ig) {
     u0 = INS_P.Saturation1_UpperSat_ig;
   } else {
@@ -4724,15 +5133,20 @@ void INS_step(void)
     }
   }
 
-  /* End of Saturate: '<S259>/Saturation1' */
+  /* End of Saturate: '<S285>/Saturation1' */
 
-  /* RelationalOperator: '<S267>/Compare' incorporates:
-   *  Constant: '<S267>/Constant'
+  /* RelationalOperator: '<S296>/Compare' incorporates:
+   *  Constant: '<S296>/Constant'
    */
-  rtb_Compare_jv = (u0 > INS_P.Constant_Value_kt);
+  rtb_Compare_og = (u0 > INS_P.Constant_Value_kt);
 
-  /* DiscreteIntegrator: '<S272>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S272>/Constant'
+  /* RelationalOperator: '<S297>/Compare' incorporates:
+   *  Constant: '<S297>/Constant'
+   */
+  rtb_Compare_nw = (rtb_DataTypeConversion1_m > INS_P.Constant_Value_ew);
+
+  /* DiscreteIntegrator: '<S303>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S303>/Constant'
    */
   if ((INS_P.Constant_Value_oi != 0.0F) ||
       (INS_DWork.DiscreteTimeIntegrator_PrevRe_h != 0)) {
@@ -4740,11 +5154,11 @@ void INS_step(void)
       INS_P.DiscreteTimeIntegrator_IC_c;
   }
 
-  rtb_DiscreteTimeIntegrator_m = INS_DWork.DiscreteTimeIntegrator_DSTATE_f;
+  rtb_Multiply2 = INS_DWork.DiscreteTimeIntegrator_DSTATE_f;
 
-  /* DiscreteIntegrator: '<S272>/Discrete-Time Integrator1' incorporates:
-   *  Constant: '<S272>/Constant'
-   *  SignalConversion: '<S268>/TmpSignal ConversionAtSignal Copy1Inport1'
+  /* DiscreteIntegrator: '<S303>/Discrete-Time Integrator1' incorporates:
+   *  Constant: '<S303>/Constant'
+   *  SignalConversion: '<S298>/TmpSignal ConversionAtSignal Copy1Inport1'
    */
   if (INS_DWork.DiscreteTimeIntegrator1_IC_LO_k != 0) {
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_h = rtb_Sum2_m;
@@ -4757,32 +5171,33 @@ void INS_step(void)
 
   rtb_DiscreteTimeIntegrator_g = INS_DWork.DiscreteTimeIntegrator1_DSTAT_h;
 
-  /* Product: '<S270>/Multiply' incorporates:
-   *  Constant: '<S270>/Constant'
-   *  Math: '<S270>/Transpose'
-   *  SignalConversion: '<S270>/TmpSignal ConversionAtMultiplyInport2'
+  /* Product: '<S301>/Multiply' incorporates:
+   *  Constant: '<S301>/Constant'
+   *  Math: '<S301>/Transpose'
+   *  SignalConversion: '<S301>/TmpSignal ConversionAtMultiplyInport2'
    */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 3;
        rtb_Saturation1_j_idx_1_0++) {
-    rtb_Gain_d[rtb_Saturation1_j_idx_1_0] = rtb_VectorConcatenate_er[3 *
+    rtb_Gain_o4[rtb_Saturation1_j_idx_1_0] = rtb_VectorConcatenate_er[3 *
       rtb_Saturation1_j_idx_1_0 + 2] * INS_P.Constant_Value_gd +
       (rtb_VectorConcatenate_er[3 * rtb_Saturation1_j_idx_1_0 + 1] *
        rtb_Memory_m_idx_1 + rtb_VectorConcatenate_er[3 *
        rtb_Saturation1_j_idx_1_0] * rtb_dec_rad);
   }
 
-  /* End of Product: '<S270>/Multiply' */
+  /* End of Product: '<S301>/Multiply' */
 
-  /* Logic: '<S284>/Logical Operator' */
-  rtb_WGS84_pos_valid = (rtb_LogicalOperator2_f || rtb_Compare_o);
+  /* Logic: '<S316>/Logical Operator' */
+  rtb_WGS84_pos_valid = (rtb_LogicalOperator2_g || rtb_LogicalOperator5 ||
+    rtb_Compare_o);
 
-  /* RelationalOperator: '<S294>/Compare' incorporates:
-   *  Constant: '<S294>/Constant'
+  /* RelationalOperator: '<S326>/Compare' incorporates:
+   *  Constant: '<S326>/Constant'
    */
   rtb_Compare_nt = ((int32_T)rtb_WGS84_pos_valid > (int32_T)
                     INS_P.CompareToConstant1_const_i);
 
-  /* DiscreteIntegrator: '<S287>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S319>/Discrete-Time Integrator' */
   if (rtb_Compare_nt || (INS_DWork.DiscreteTimeIntegrator_PrevR_ky != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_b =
       INS_P.DiscreteTimeIntegrator_IC_g;
@@ -4800,53 +5215,54 @@ void INS_step(void)
     }
   }
 
-  /* RelationalOperator: '<S297>/Compare' incorporates:
-   *  Constant: '<S295>/Constant'
-   *  Constant: '<S297>/Constant'
-   *  RelationalOperator: '<S295>/Compare'
+  /* RelationalOperator: '<S329>/Compare' incorporates:
+   *  Constant: '<S327>/Constant'
+   *  Constant: '<S329>/Constant'
+   *  RelationalOperator: '<S327>/Compare'
    */
   rtb_Compare_i5 = (((int32_T)rtb_WGS84_pos_valid > (int32_T)
                      INS_P.CompareToConstant2_const_j) > (int32_T)
                     INS_P.Constant_Value_d);
 
-  /* Logic: '<S287>/Logical Operator1' incorporates:
-   *  Delay: '<S287>/Delay'
-   *  RelationalOperator: '<S296>/FixPt Relational Operator'
-   *  UnitDelay: '<S296>/Delay Input1'
+  /* Logic: '<S319>/Logical Operator1' incorporates:
+   *  Delay: '<S319>/Delay'
+   *  RelationalOperator: '<S328>/FixPt Relational Operator'
+   *  UnitDelay: '<S328>/Delay Input1'
    */
   rtb_LogicalOperator1_cc = (((int32_T)rtb_Compare_i5 > (int32_T)
-    INS_DWork.DelayInput1_DSTATE_hg) || INS_DWork.Delay_DSTATE_k);
+    INS_DWork.DelayInput1_DSTATE_hg) || INS_DWork.Delay_DSTATE_kh);
 
-  /* Product: '<S287>/Multiply' incorporates:
-   *  Constant: '<S293>/Constant'
-   *  DiscreteIntegrator: '<S287>/Discrete-Time Integrator'
-   *  Logic: '<S287>/Logical Operator'
-   *  RelationalOperator: '<S293>/Compare'
+  /* Product: '<S319>/Multiply' incorporates:
+   *  Constant: '<S325>/Constant'
+   *  DiscreteIntegrator: '<S319>/Discrete-Time Integrator'
+   *  Logic: '<S319>/Logical Operator'
+   *  RelationalOperator: '<S325>/Compare'
    */
-  rtb_Multiply_mf = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_b <
+  rtb_Multiply_jy = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_b <
     INS_P.valid_hold1_time_out ? (int32_T)rtb_LogicalOperator1_cc : 0);
 
-  /* RelationalOperator: '<S282>/Compare' incorporates:
-   *  Constant: '<S282>/Constant'
+  /* RelationalOperator: '<S314>/Compare' incorporates:
+   *  Constant: '<S314>/Constant'
    */
-  rtb_Compare_ce = (rtb_Multiply_mf > INS_P.Constant_Value_gn);
+  rtb_Compare_ce = (rtb_Multiply_jy > INS_P.Constant_Value_gn);
 
-  /* RelationalOperator: '<S280>/FixPt Relational Operator' incorporates:
-   *  UnitDelay: '<S280>/Delay Input1'
+  /* RelationalOperator: '<S312>/FixPt Relational Operator' incorporates:
+   *  UnitDelay: '<S312>/Delay Input1'
    */
-  rtb_FixPtRelationalOperator_kp = ((int32_T)rtb_Compare_ce > (int32_T)
+  rtb_FixPtRelationalOperator_p = ((int32_T)rtb_Compare_ce > (int32_T)
     INS_DWork.DelayInput1_DSTATE_o);
 
-  /* Logic: '<S285>/Logical Operator' */
-  rtb_WGS84_pos_valid = (rtb_Compare_ko || rtb_Compare_jv || rtb_Compare_jx);
+  /* Logic: '<S317>/Logical Operator' */
+  rtb_WGS84_pos_valid = (rtb_Compare_jx || rtb_Compare_og || rtb_Compare_nw ||
+    rtb_LogicalOperator3);
 
-  /* RelationalOperator: '<S307>/Compare' incorporates:
-   *  Constant: '<S307>/Constant'
+  /* RelationalOperator: '<S339>/Compare' incorporates:
+   *  Constant: '<S339>/Constant'
    */
   rtb_Compare_od = ((int32_T)rtb_WGS84_pos_valid > (int32_T)
                     INS_P.CompareToConstant1_const_a);
 
-  /* DiscreteIntegrator: '<S299>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S331>/Discrete-Time Integrator' */
   if (rtb_Compare_od || (INS_DWork.DiscreteTimeIntegrator_PrevRe_l != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_c =
       INS_P.DiscreteTimeIntegrator_IC_lb;
@@ -4864,49 +5280,49 @@ void INS_step(void)
     }
   }
 
-  /* RelationalOperator: '<S310>/Compare' incorporates:
-   *  Constant: '<S308>/Constant'
-   *  Constant: '<S310>/Constant'
-   *  RelationalOperator: '<S308>/Compare'
+  /* RelationalOperator: '<S342>/Compare' incorporates:
+   *  Constant: '<S340>/Constant'
+   *  Constant: '<S342>/Constant'
+   *  RelationalOperator: '<S340>/Compare'
    */
   rtb_WGS84_pos_valid = (((int32_T)rtb_WGS84_pos_valid > (int32_T)
     INS_P.CompareToConstant2_const_d) > (int32_T)INS_P.Constant_Value_jo);
 
-  /* Logic: '<S299>/Logical Operator1' incorporates:
-   *  Delay: '<S299>/Delay'
-   *  RelationalOperator: '<S309>/FixPt Relational Operator'
-   *  UnitDelay: '<S309>/Delay Input1'
+  /* Logic: '<S331>/Logical Operator1' incorporates:
+   *  Delay: '<S331>/Delay'
+   *  RelationalOperator: '<S341>/FixPt Relational Operator'
+   *  UnitDelay: '<S341>/Delay Input1'
    */
   rtb_LogicalOperator1_ao = (((int32_T)rtb_WGS84_pos_valid > (int32_T)
     INS_DWork.DelayInput1_DSTATE_p) || INS_DWork.Delay_DSTATE_k4);
 
-  /* Product: '<S299>/Multiply' incorporates:
-   *  Constant: '<S306>/Constant'
-   *  DiscreteIntegrator: '<S299>/Discrete-Time Integrator'
-   *  Logic: '<S299>/Logical Operator'
-   *  RelationalOperator: '<S306>/Compare'
+  /* Product: '<S331>/Multiply' incorporates:
+   *  Constant: '<S338>/Constant'
+   *  DiscreteIntegrator: '<S331>/Discrete-Time Integrator'
+   *  Logic: '<S331>/Logical Operator'
+   *  RelationalOperator: '<S338>/Compare'
    */
-  rtb_Multiply_ni = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_c <
+  rtb_Multiply_o = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_c <
     INS_P.valid_hold1_time_out_m ? (int32_T)rtb_LogicalOperator1_ao : 0);
 
-  /* RelationalOperator: '<S283>/Compare' incorporates:
-   *  Constant: '<S283>/Constant'
+  /* RelationalOperator: '<S315>/Compare' incorporates:
+   *  Constant: '<S315>/Constant'
    */
-  rtb_Compare_d = (rtb_Multiply_ni > INS_P.Constant_Value_bt);
+  rtb_Compare_d = (rtb_Multiply_o > INS_P.Constant_Value_bt);
 
-  /* RelationalOperator: '<S281>/FixPt Relational Operator' incorporates:
-   *  UnitDelay: '<S281>/Delay Input1'
+  /* RelationalOperator: '<S313>/FixPt Relational Operator' incorporates:
+   *  UnitDelay: '<S313>/Delay Input1'
    */
-  rtb_FixPtRelationalOperator_fe = ((int32_T)rtb_Compare_d > (int32_T)
+  rtb_FixPtRelationalOperator_fr = ((int32_T)rtb_Compare_d > (int32_T)
     INS_DWork.DelayInput1_DSTATE_j);
 
-  /* RelationalOperator: '<S289>/Compare' incorporates:
-   *  Constant: '<S289>/Constant'
+  /* RelationalOperator: '<S321>/Compare' incorporates:
+   *  Constant: '<S321>/Constant'
    */
-  rtb_Compare_fc = ((int32_T)rtb_LogicalOperator2_f > (int32_T)
+  rtb_Compare_fc = ((int32_T)rtb_LogicalOperator2_g > (int32_T)
                     INS_P.CompareToConstant1_const_h);
 
-  /* DiscreteIntegrator: '<S286>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S318>/Discrete-Time Integrator' */
   if (rtb_Compare_fc || (INS_DWork.DiscreteTimeIntegrator_PrevRe_d != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_n =
       INS_P.DiscreteTimeIntegrator_IC_b;
@@ -4924,39 +5340,39 @@ void INS_step(void)
     }
   }
 
-  /* RelationalOperator: '<S292>/Compare' incorporates:
-   *  Constant: '<S290>/Constant'
-   *  Constant: '<S292>/Constant'
-   *  RelationalOperator: '<S290>/Compare'
+  /* RelationalOperator: '<S324>/Compare' incorporates:
+   *  Constant: '<S322>/Constant'
+   *  Constant: '<S324>/Constant'
+   *  RelationalOperator: '<S322>/Compare'
    */
-  rtb_Compare_g = (((int32_T)rtb_LogicalOperator2_f > (int32_T)
+  rtb_Compare_g = (((int32_T)rtb_LogicalOperator2_g > (int32_T)
                     INS_P.CompareToConstant2_const_a) > (int32_T)
                    INS_P.Constant_Value_nm);
 
-  /* Logic: '<S286>/Logical Operator1' incorporates:
-   *  Delay: '<S286>/Delay'
-   *  RelationalOperator: '<S291>/FixPt Relational Operator'
-   *  UnitDelay: '<S291>/Delay Input1'
+  /* Logic: '<S318>/Logical Operator1' incorporates:
+   *  Delay: '<S318>/Delay'
+   *  RelationalOperator: '<S323>/FixPt Relational Operator'
+   *  UnitDelay: '<S323>/Delay Input1'
    */
   rtb_LogicalOperator1_ng = (((int32_T)rtb_Compare_g > (int32_T)
     INS_DWork.DelayInput1_DSTATE_kh) || INS_DWork.Delay_DSTATE_ng);
 
-  /* Product: '<S286>/Multiply' incorporates:
-   *  Constant: '<S288>/Constant'
-   *  DiscreteIntegrator: '<S286>/Discrete-Time Integrator'
-   *  Logic: '<S286>/Logical Operator'
-   *  RelationalOperator: '<S288>/Compare'
+  /* Product: '<S318>/Multiply' incorporates:
+   *  Constant: '<S320>/Constant'
+   *  DiscreteIntegrator: '<S318>/Discrete-Time Integrator'
+   *  Logic: '<S318>/Logical Operator'
+   *  RelationalOperator: '<S320>/Compare'
    */
-  rtb_Multiply_nm = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_n <
+  rtb_Multiply_cb = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_n <
     INS_P.valid_hold_time_out ? (int32_T)rtb_LogicalOperator1_ng : 0);
 
-  /* RelationalOperator: '<S302>/Compare' incorporates:
-   *  Constant: '<S302>/Constant'
+  /* RelationalOperator: '<S334>/Compare' incorporates:
+   *  Constant: '<S334>/Constant'
    */
-  rtb_Compare_j = ((int32_T)rtb_Compare_ko > (int32_T)
+  rtb_Compare_j = ((int32_T)rtb_Compare_jx > (int32_T)
                    INS_P.CompareToConstant1_const_hv);
 
-  /* DiscreteIntegrator: '<S298>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S330>/Discrete-Time Integrator' */
   if (rtb_Compare_j || (INS_DWork.DiscreteTimeIntegrator_PrevRe_b != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_h =
       INS_P.DiscreteTimeIntegrator_IC_h;
@@ -4974,31 +5390,31 @@ void INS_step(void)
     }
   }
 
-  /* RelationalOperator: '<S305>/Compare' incorporates:
-   *  Constant: '<S303>/Constant'
-   *  Constant: '<S305>/Constant'
-   *  RelationalOperator: '<S303>/Compare'
+  /* RelationalOperator: '<S337>/Compare' incorporates:
+   *  Constant: '<S335>/Constant'
+   *  Constant: '<S337>/Constant'
+   *  RelationalOperator: '<S335>/Compare'
    */
-  rtb_Compare_eh1 = (((int32_T)rtb_Compare_ko > (int32_T)
+  rtb_Compare_eh1 = (((int32_T)rtb_Compare_jx > (int32_T)
                       INS_P.CompareToConstant2_const_dj) > (int32_T)
                      INS_P.Constant_Value_ej);
 
-  /* Logic: '<S298>/Logical Operator1' incorporates:
-   *  Delay: '<S298>/Delay'
-   *  RelationalOperator: '<S304>/FixPt Relational Operator'
-   *  UnitDelay: '<S304>/Delay Input1'
+  /* Logic: '<S330>/Logical Operator1' incorporates:
+   *  Delay: '<S330>/Delay'
+   *  RelationalOperator: '<S336>/FixPt Relational Operator'
+   *  UnitDelay: '<S336>/Delay Input1'
    */
   rtb_LogicalOperator1_nd = (((int32_T)rtb_Compare_eh1 > (int32_T)
     INS_DWork.DelayInput1_DSTATE_ch) || INS_DWork.Delay_DSTATE_c1);
 
-  /* RelationalOperator: '<S312>/Compare' incorporates:
-   *  Constant: '<S312>/Constant'
+  /* RelationalOperator: '<S344>/Compare' incorporates:
+   *  Constant: '<S344>/Constant'
    */
-  rtb_Compare_b = ((int32_T)rtb_Compare_jx > (int32_T)
-                   INS_P.CompareToConstant1_const_l);
+  rtb_Compare_d3 = ((int32_T)rtb_LogicalOperator3 > (int32_T)
+                    INS_P.CompareToConstant1_const_l);
 
-  /* DiscreteIntegrator: '<S300>/Discrete-Time Integrator' */
-  if (rtb_Compare_b || (INS_DWork.DiscreteTimeIntegrator_PrevR_kt != 0)) {
+  /* DiscreteIntegrator: '<S332>/Discrete-Time Integrator' */
+  if (rtb_Compare_d3 || (INS_DWork.DiscreteTimeIntegrator_PrevR_kt != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_k3 =
       INS_P.DiscreteTimeIntegrator_IC_ms;
   }
@@ -5015,83 +5431,84 @@ void INS_step(void)
     }
   }
 
-  /* RelationalOperator: '<S315>/Compare' incorporates:
-   *  Constant: '<S313>/Constant'
-   *  Constant: '<S315>/Constant'
-   *  RelationalOperator: '<S313>/Compare'
+  /* RelationalOperator: '<S347>/Compare' incorporates:
+   *  Constant: '<S345>/Constant'
+   *  Constant: '<S347>/Constant'
+   *  RelationalOperator: '<S345>/Compare'
    */
-  rtb_Compare_cm = (((int32_T)rtb_Compare_jx > (int32_T)
+  rtb_Compare_a2 = (((int32_T)rtb_LogicalOperator3 > (int32_T)
                      INS_P.CompareToConstant2_const_h) > (int32_T)
                     INS_P.Constant_Value_i);
 
-  /* Logic: '<S300>/Logical Operator1' incorporates:
-   *  Delay: '<S300>/Delay'
-   *  RelationalOperator: '<S314>/FixPt Relational Operator'
-   *  UnitDelay: '<S314>/Delay Input1'
+  /* Logic: '<S332>/Logical Operator1' incorporates:
+   *  Delay: '<S332>/Delay'
+   *  RelationalOperator: '<S346>/FixPt Relational Operator'
+   *  UnitDelay: '<S346>/Delay Input1'
    */
-  rtb_LogicalOperator1_f1 = (((int32_T)rtb_Compare_cm > (int32_T)
+  rtb_LogicalOperator1_f1 = (((int32_T)rtb_Compare_a2 > (int32_T)
     INS_DWork.DelayInput1_DSTATE_jx) || INS_DWork.Delay_DSTATE_n2);
 
-  /* Product: '<S300>/Multiply' incorporates:
-   *  Constant: '<S311>/Constant'
-   *  DiscreteIntegrator: '<S300>/Discrete-Time Integrator'
-   *  Logic: '<S300>/Logical Operator'
-   *  RelationalOperator: '<S311>/Compare'
+  /* Product: '<S332>/Multiply' incorporates:
+   *  Constant: '<S343>/Constant'
+   *  DiscreteIntegrator: '<S332>/Discrete-Time Integrator'
+   *  Logic: '<S332>/Logical Operator'
+   *  RelationalOperator: '<S343>/Compare'
    */
-  rtb_Multiply_lk = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_k3 <
+  rtb_Multiply_gs = (uint16_T)(INS_DWork.DiscreteTimeIntegrator_DSTAT_k3 <
     INS_P.valid_hold2_time_out ? (int32_T)rtb_LogicalOperator1_f1 : 0);
 
-  /* RelationalOperator: '<S321>/Compare' incorporates:
-   *  Constant: '<S301>/Constant'
-   *  Constant: '<S321>/Constant'
-   *  DiscreteIntegrator: '<S298>/Discrete-Time Integrator'
-   *  Logic: '<S298>/Logical Operator'
-   *  Product: '<S298>/Multiply'
-   *  RelationalOperator: '<S301>/Compare'
+  /* RelationalOperator: '<S353>/Compare' incorporates:
+   *  Constant: '<S333>/Constant'
+   *  Constant: '<S353>/Constant'
+   *  DiscreteIntegrator: '<S330>/Discrete-Time Integrator'
+   *  Logic: '<S330>/Logical Operator'
+   *  Product: '<S330>/Multiply'
+   *  RelationalOperator: '<S333>/Compare'
    */
-  rtb_Compare_bf = ((INS_DWork.DiscreteTimeIntegrator_DSTATE_h <
+  rtb_Compare_e0 = ((INS_DWork.DiscreteTimeIntegrator_DSTATE_h <
                      INS_P.valid_hold_time_out_d ? (int32_T)
                      rtb_LogicalOperator1_nd : 0) > INS_P.Constant_Value_m3);
 
-  /* Switch: '<S318>/Switch4' incorporates:
-   *  Delay: '<S318>/Delay1'
+  /* Switch: '<S350>/Switch4' incorporates:
+   *  Delay: '<S350>/Delay1'
    *  Delay: '<S56>/Delay'
-   *  RelationalOperator: '<S320>/FixPt Relational Operator'
-   *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy5Inport1'
-   *  Sum: '<S318>/Sum'
-   *  UnitDelay: '<S320>/Delay Input1'
+   *  RelationalOperator: '<S352>/FixPt Relational Operator'
+   *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy5Inport1'
+   *  Sum: '<S350>/Sum'
+   *  UnitDelay: '<S352>/Delay Input1'
    */
-  if ((int32_T)rtb_Compare_bf > (int32_T)INS_DWork.DelayInput1_DSTATE_dp) {
+  if ((int32_T)rtb_Compare_e0 > (int32_T)INS_DWork.DelayInput1_DSTATE_dp) {
     rtb_ff = rtb_Scalefactor3 - INS_DWork.Delay_6_DSTATE;
   } else {
     rtb_ff = INS_DWork.Delay1_DSTATE;
   }
 
-  /* End of Switch: '<S318>/Switch4' */
+  /* End of Switch: '<S350>/Switch4' */
 
-  /* RelationalOperator: '<S323>/Compare' incorporates:
-   *  Constant: '<S323>/Constant'
+  /* RelationalOperator: '<S355>/Compare' incorporates:
+   *  Constant: '<S355>/Constant'
    */
-  rtb_Compare_k2 = (rtb_Multiply_nm > INS_P.Constant_Value_pti);
+  rtb_Compare_cj = (rtb_Multiply_cb > INS_P.Constant_Value_pti);
 
-  /* Switch: '<S319>/Switch1' incorporates:
-   *  Delay: '<S319>/Delay'
-   *  Delay: '<S319>/Delay1'
+  /* Switch: '<S351>/Switch1' incorporates:
+   *  Delay: '<S351>/Delay'
+   *  Delay: '<S351>/Delay1'
    *  Delay: '<S56>/Delay'
-   *  Product: '<S319>/Divide'
-   *  RelationalOperator: '<S322>/FixPt Relational Operator'
-   *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy1Inport1'
-   *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy3Inport1'
-   *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy4Inport1'
-   *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal CopyInport1'
-   *  Sum: '<S319>/Sum'
-   *  Switch: '<S319>/Switch4'
-   *  UnitDelay: '<S322>/Delay Input1'
+   *  Product: '<S351>/Divide'
+   *  RelationalOperator: '<S354>/FixPt Relational Operator'
+   *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy1Inport1'
+   *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy3Inport1'
+   *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy4Inport1'
+   *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal CopyInport1'
+   *  Sum: '<S351>/Sum'
+   *  Switch: '<S351>/Switch4'
+   *  UnitDelay: '<S354>/Delay Input1'
    */
-  if ((int32_T)rtb_Compare_k2 > (int32_T)INS_DWork.DelayInput1_DSTATE_mw) {
+  if ((int32_T)rtb_Compare_cj > (int32_T)INS_DWork.DelayInput1_DSTATE_mw) {
     rtb_DataTypeConversion1 = INS_B.Rm;
     rtb_DataTypeConversion2 = INS_B.Multiply2;
-    rtb_Switch4_c_idx_0 = rtb_Scalefactor1 - INS_DWork.Delay_4_DSTATE / INS_B.Rm;
+    rtb_Switch4_c_idx_0 = rtb_Scalefactor1 - INS_DWork.Delay_4_DSTATE_k /
+      INS_B.Rm;
     rtb_Switch4_c_idx_1 = rtb_Scalefactor2 - INS_DWork.Delay_5_DSTATE /
       INS_B.Multiply2;
   } else {
@@ -5101,17 +5518,17 @@ void INS_step(void)
     rtb_Switch4_c_idx_1 = INS_DWork.Delay_DSTATE[1];
   }
 
-  /* End of Switch: '<S319>/Switch1' */
+  /* End of Switch: '<S351>/Switch1' */
 
-  /* Update for DiscreteIntegrator: '<S272>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S272>/Constant'
-   *  DiscreteIntegrator: '<S272>/Discrete-Time Integrator1'
-   *  DiscreteIntegrator: '<S272>/Discrete-Time Integrator1'
-   *  Gain: '<S272>/Gain'
-   *  Gain: '<S272>/Gain1'
-   *  SignalConversion: '<S268>/TmpSignal ConversionAtSignal Copy1Inport1'
-   *  Sum: '<S272>/Sum'
-   *  Sum: '<S272>/Sum2'
+  /* Update for DiscreteIntegrator: '<S303>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S303>/Constant'
+   *  DiscreteIntegrator: '<S303>/Discrete-Time Integrator1'
+   *  DiscreteIntegrator: '<S303>/Discrete-Time Integrator1'
+   *  Gain: '<S303>/Gain'
+   *  Gain: '<S303>/Gain1'
+   *  SignalConversion: '<S298>/TmpSignal ConversionAtSignal Copy1Inport1'
+   *  Sum: '<S303>/Sum'
+   *  Sum: '<S303>/Sum2'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_f += ((rtb_Sum2_m -
     INS_DWork.DiscreteTimeIntegrator1_DSTAT_h) * INS_P.Gain_Gain_b -
@@ -5138,18 +5555,18 @@ void INS_step(void)
     }
   }
 
-  /* End of Update for DiscreteIntegrator: '<S272>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S303>/Discrete-Time Integrator' */
 
-  /* Update for DiscreteIntegrator: '<S272>/Discrete-Time Integrator1' */
+  /* Update for DiscreteIntegrator: '<S303>/Discrete-Time Integrator1' */
   INS_DWork.DiscreteTimeIntegrator1_IC_LO_k = 0U;
   INS_DWork.DiscreteTimeIntegrator1_DSTAT_h +=
-    INS_P.DiscreteTimeIntegrator1_gainv_d * rtb_DiscreteTimeIntegrator_m;
+    INS_P.DiscreteTimeIntegrator1_gainv_d * rtb_Multiply2;
 
-  /* Update for UnitDelay: '<S280>/Delay Input1' */
+  /* Update for UnitDelay: '<S312>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_o = rtb_Compare_ce;
 
-  /* Update for DiscreteIntegrator: '<S287>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S287>/Constant'
+  /* Update for DiscreteIntegrator: '<S319>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S319>/Constant'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_b +=
     INS_P.DiscreteTimeIntegrator_gainv_bt * (real32_T)INS_EXPORT.period;
@@ -5167,19 +5584,19 @@ void INS_step(void)
 
   INS_DWork.DiscreteTimeIntegrator_PrevR_ky = (int8_T)rtb_Compare_nt;
 
-  /* End of Update for DiscreteIntegrator: '<S287>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S319>/Discrete-Time Integrator' */
 
-  /* Update for UnitDelay: '<S296>/Delay Input1' */
+  /* Update for UnitDelay: '<S328>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_hg = rtb_Compare_i5;
 
-  /* Update for Delay: '<S287>/Delay' */
-  INS_DWork.Delay_DSTATE_k = rtb_LogicalOperator1_cc;
+  /* Update for Delay: '<S319>/Delay' */
+  INS_DWork.Delay_DSTATE_kh = rtb_LogicalOperator1_cc;
 
-  /* Update for UnitDelay: '<S281>/Delay Input1' */
+  /* Update for UnitDelay: '<S313>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_j = rtb_Compare_d;
 
-  /* Update for DiscreteIntegrator: '<S299>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S299>/Constant'
+  /* Update for DiscreteIntegrator: '<S331>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S331>/Constant'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_c +=
     INS_P.DiscreteTimeIntegrator_gainv_jo * (real32_T)INS_EXPORT.period;
@@ -5197,16 +5614,16 @@ void INS_step(void)
 
   INS_DWork.DiscreteTimeIntegrator_PrevRe_l = (int8_T)rtb_Compare_od;
 
-  /* End of Update for DiscreteIntegrator: '<S299>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S331>/Discrete-Time Integrator' */
 
-  /* Update for UnitDelay: '<S309>/Delay Input1' */
+  /* Update for UnitDelay: '<S341>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_p = rtb_WGS84_pos_valid;
 
-  /* Update for Delay: '<S299>/Delay' */
+  /* Update for Delay: '<S331>/Delay' */
   INS_DWork.Delay_DSTATE_k4 = rtb_LogicalOperator1_ao;
 
-  /* Update for DiscreteIntegrator: '<S286>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S286>/Constant'
+  /* Update for DiscreteIntegrator: '<S318>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S318>/Constant'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_n +=
     INS_P.DiscreteTimeIntegrator_gainv_iy * (real32_T)INS_EXPORT.period;
@@ -5224,16 +5641,16 @@ void INS_step(void)
 
   INS_DWork.DiscreteTimeIntegrator_PrevRe_d = (int8_T)rtb_Compare_fc;
 
-  /* End of Update for DiscreteIntegrator: '<S286>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S318>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S286>/Delay' */
+  /* Update for Delay: '<S318>/Delay' */
   INS_DWork.Delay_DSTATE_ng = rtb_LogicalOperator1_ng;
 
-  /* Update for UnitDelay: '<S291>/Delay Input1' */
+  /* Update for UnitDelay: '<S323>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_kh = rtb_Compare_g;
 
-  /* Update for DiscreteIntegrator: '<S298>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S298>/Constant'
+  /* Update for DiscreteIntegrator: '<S330>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S330>/Constant'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTATE_h +=
     INS_P.DiscreteTimeIntegrator_gainva_a * (real32_T)INS_EXPORT.period;
@@ -5251,16 +5668,16 @@ void INS_step(void)
 
   INS_DWork.DiscreteTimeIntegrator_PrevRe_b = (int8_T)rtb_Compare_j;
 
-  /* End of Update for DiscreteIntegrator: '<S298>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S330>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S298>/Delay' */
+  /* Update for Delay: '<S330>/Delay' */
   INS_DWork.Delay_DSTATE_c1 = rtb_LogicalOperator1_nd;
 
-  /* Update for UnitDelay: '<S304>/Delay Input1' */
+  /* Update for UnitDelay: '<S336>/Delay Input1' */
   INS_DWork.DelayInput1_DSTATE_ch = rtb_Compare_eh1;
 
-  /* Update for DiscreteIntegrator: '<S300>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S300>/Constant'
+  /* Update for DiscreteIntegrator: '<S332>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S332>/Constant'
    */
   INS_DWork.DiscreteTimeIntegrator_DSTAT_k3 +=
     INS_P.DiscreteTimeIntegrator_gainv_jp * (real32_T)INS_EXPORT.period;
@@ -5276,110 +5693,110 @@ void INS_step(void)
     }
   }
 
-  INS_DWork.DiscreteTimeIntegrator_PrevR_kt = (int8_T)rtb_Compare_b;
+  INS_DWork.DiscreteTimeIntegrator_PrevR_kt = (int8_T)rtb_Compare_d3;
 
-  /* End of Update for DiscreteIntegrator: '<S300>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S332>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S300>/Delay' */
+  /* Update for Delay: '<S332>/Delay' */
   INS_DWork.Delay_DSTATE_n2 = rtb_LogicalOperator1_f1;
 
-  /* Update for UnitDelay: '<S314>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_jx = rtb_Compare_cm;
+  /* Update for UnitDelay: '<S346>/Delay Input1' */
+  INS_DWork.DelayInput1_DSTATE_jx = rtb_Compare_a2;
 
-  /* Update for Delay: '<S318>/Delay1' */
+  /* Update for Delay: '<S350>/Delay1' */
   INS_DWork.Delay1_DSTATE = rtb_ff;
 
-  /* Update for UnitDelay: '<S320>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_dp = rtb_Compare_bf;
+  /* Update for UnitDelay: '<S352>/Delay Input1' */
+  INS_DWork.DelayInput1_DSTATE_dp = rtb_Compare_e0;
 
-  /* Update for Delay: '<S319>/Delay' */
+  /* Update for Delay: '<S351>/Delay' */
   INS_DWork.Delay_DSTATE[0] = rtb_Switch4_c_idx_0;
 
-  /* Update for Delay: '<S319>/Delay1' */
+  /* Update for Delay: '<S351>/Delay1' */
   INS_DWork.Delay1_DSTATE_o[0] = rtb_DataTypeConversion1;
 
-  /* Update for Delay: '<S319>/Delay' */
+  /* Update for Delay: '<S351>/Delay' */
   INS_DWork.Delay_DSTATE[1] = rtb_Switch4_c_idx_1;
 
-  /* Update for Delay: '<S319>/Delay1' */
+  /* Update for Delay: '<S351>/Delay1' */
   INS_DWork.Delay1_DSTATE_o[1] = rtb_DataTypeConversion2;
 
-  /* Update for UnitDelay: '<S322>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_mw = rtb_Compare_k2;
+  /* Update for UnitDelay: '<S354>/Delay Input1' */
+  INS_DWork.DelayInput1_DSTATE_mw = rtb_Compare_cj;
 
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<S56>/CF' */
-  /* Outputs for Enabled SubSystem: '<S245>/GPS_Reference_Height' incorporates:
-   *  EnablePort: '<S248>/Enable'
+  /* Outputs for Enabled SubSystem: '<S271>/GPS_Reference_Height' incorporates:
+   *  EnablePort: '<S274>/Enable'
    */
-  if (rtb_Compare_ko) {
+  if (rtb_Compare_jx) {
     /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-    /* DataTypeConversion: '<S248>/Data Type Conversion' incorporates:
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy5Inport1'
-     *  Sum: '<S248>/Sum'
+    /* DataTypeConversion: '<S274>/Data Type Conversion' incorporates:
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy5Inport1'
+     *  Sum: '<S274>/Sum'
      */
     INS_B.Merge = (real32_T)(rtb_Scalefactor3 - rtb_ff);
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
   }
 
-  /* End of Outputs for SubSystem: '<S245>/GPS_Reference_Height' */
+  /* End of Outputs for SubSystem: '<S271>/GPS_Reference_Height' */
 
-  /* Outputs for Enabled SubSystem: '<S246>/GPS_Velocity' incorporates:
-   *  EnablePort: '<S251>/Enable'
+  /* Outputs for Enabled SubSystem: '<S272>/GPS_Velocity' incorporates:
+   *  EnablePort: '<S277>/Enable'
    */
-  /* Outputs for Enabled SubSystem: '<S245>/Baro_Reference_Height' incorporates:
-   *  EnablePort: '<S247>/Enable'
+  /* Outputs for Enabled SubSystem: '<S271>/Baro_Reference_Height' incorporates:
+   *  EnablePort: '<S273>/Enable'
    */
-  if (rtb_Compare_jv) {
+  if (rtb_Compare_og) {
     /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-    /* DataTypeConversion: '<S247>/Data Type Conversion' incorporates:
-     *  SignalConversion: '<S268>/TmpSignal ConversionAtSignal Copy1Inport1'
+    /* DataTypeConversion: '<S273>/Data Type Conversion' incorporates:
+     *  SignalConversion: '<S298>/TmpSignal ConversionAtSignal Copy1Inport1'
      */
     INS_B.Merge = rtb_Sum2_m;
 
-    /* DataTypeConversion: '<S251>/Data Type Conversion' incorporates:
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy8Inport1'
+    /* DataTypeConversion: '<S277>/Data Type Conversion' incorporates:
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy8Inport1'
      */
     INS_B.Merge_e = rtb_Gain2_a;
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
   }
 
-  /* End of Outputs for SubSystem: '<S245>/Baro_Reference_Height' */
-  /* End of Outputs for SubSystem: '<S246>/GPS_Velocity' */
+  /* End of Outputs for SubSystem: '<S271>/Baro_Reference_Height' */
+  /* End of Outputs for SubSystem: '<S272>/GPS_Velocity' */
 
-  /* Outputs for Enabled SubSystem: '<S245>/Rf_Reference_Height' incorporates:
-   *  EnablePort: '<S249>/Enable'
+  /* Outputs for Enabled SubSystem: '<S271>/Rf_Reference_Height' incorporates:
+   *  EnablePort: '<S275>/Enable'
    */
-  if (rtb_Compare_jx) {
+  if (rtb_LogicalOperator3) {
     /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-    /* DataTypeConversion: '<S249>/Data Type Conversion' incorporates:
-     *  SignalConversion: '<S271>/TmpSignal ConversionAtSignal Copy1Inport1'
+    /* DataTypeConversion: '<S275>/Data Type Conversion' incorporates:
+     *  SignalConversion: '<S302>/TmpSignal ConversionAtSignal Copy1Inport1'
      */
     INS_B.Merge = rtb_Saturation_a;
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
   }
 
-  /* End of Outputs for SubSystem: '<S245>/Rf_Reference_Height' */
+  /* End of Outputs for SubSystem: '<S271>/Rf_Reference_Height' */
 
-  /* Outputs for Enabled SubSystem: '<S246>/Baro_Velocity' */
-  INS_Baro_Velocity(rtb_Compare_jv, &INS_B.Merge_e, &INS_P.Baro_Velocity);
+  /* Outputs for Enabled SubSystem: '<S272>/Baro_Velocity' */
+  INS_Baro_Velocity(rtb_Compare_og, &INS_B.Merge_e, &INS_P.Baro_Velocity);
 
-  /* End of Outputs for SubSystem: '<S246>/Baro_Velocity' */
+  /* End of Outputs for SubSystem: '<S272>/Baro_Velocity' */
 
-  /* Outputs for Enabled SubSystem: '<S246>/Rf_Velocity' */
-  INS_Baro_Velocity(rtb_Compare_jv, &INS_B.Merge_e, &INS_P.Rf_Velocity);
+  /* Outputs for Enabled SubSystem: '<S272>/Rf_Velocity' */
+  INS_Baro_Velocity(rtb_Compare_og, &INS_B.Merge_e, &INS_P.Rf_Velocity);
 
-  /* End of Outputs for SubSystem: '<S246>/Rf_Velocity' */
+  /* End of Outputs for SubSystem: '<S272>/Rf_Velocity' */
 
-  /* Switch: '<S242>/Switch' incorporates:
-   *  Constant: '<S244>/Constant'
-   *  Delay: '<S242>/Delay'
+  /* Switch: '<S268>/Switch' incorporates:
+   *  Constant: '<S270>/Constant'
+   *  Delay: '<S268>/Delay'
    */
-  if (rtb_FixPtRelationalOperator_fe) {
+  if (rtb_FixPtRelationalOperator_fr) {
     rtb_MathFunction[0] = INS_B.Merge;
     rtb_MathFunction[1] = INS_B.Merge_e;
     rtb_MathFunction[2] = INS_P.Constant_Value_e;
@@ -5389,9 +5806,9 @@ void INS_step(void)
     rtb_MathFunction[2] = INS_DWork.Delay_DSTATE_b[2];
   }
 
-  /* End of Switch: '<S242>/Switch' */
+  /* End of Switch: '<S268>/Switch' */
 
-  /* Product: '<S243>/Multiply' incorporates:
+  /* Product: '<S269>/Multiply' incorporates:
    *  SignalConversion: '<S59>/BusConversion_InsertedFor_Rotation_Data_at_inport_0'
    *  SignalConversion: '<S59>/TmpSignal ConversionAtSignal ConversionInport1'
    */
@@ -5411,85 +5828,84 @@ void INS_step(void)
     /* End of Outputs for SubSystem: '<S55>/AHRS' */
   }
 
-  /* Sum: '<S243>/Sum' incorporates:
-   *  Constant: '<S243>/Constant'
-   *  Constant: '<S243>/Constant1'
-   *  Gain: '<S243>/Gain'
-   *  Gain: '<S243>/Gain1'
-   *  Product: '<S243>/Multiply'
-   *  Sum: '<S243>/Add'
+  /* Sum: '<S269>/Sum' incorporates:
+   *  Constant: '<S269>/Constant'
+   *  Constant: '<S269>/Constant1'
+   *  Gain: '<S269>/Gain'
+   *  Gain: '<S269>/Gain1'
+   *  Product: '<S269>/Multiply'
+   *  Sum: '<S269>/Add'
    */
   rtb_Gauss_to_uT[0] = INS_P.Gain1_Gain_k * rtb_MathFunction[1] *
-    INS_P.Gain_Gain_m + rtb_MathFunction[0];
+    INS_P.Gain_Gain_mr + rtb_MathFunction[0];
   rtb_Gauss_to_uT[1] = ((rtb_Square_le[2] - rtb_MathFunction[2]) +
-                        INS_P.INS_CONST.g) * INS_P.Gain_Gain_m +
+                        INS_P.INS_CONST.g) * INS_P.Gain_Gain_mr +
     rtb_MathFunction[1];
-  rtb_Gauss_to_uT[2] = INS_P.Gain_Gain_m * INS_P.Constant_Value_nn +
+  rtb_Gauss_to_uT[2] = INS_P.Gain_Gain_mr * INS_P.Constant_Value_nn +
     rtb_MathFunction[2];
 
-  /* Outputs for Enabled SubSystem: '<S210>/Baro_Correct' incorporates:
-   *  EnablePort: '<S213>/Enable'
+  /* Outputs for Enabled SubSystem: '<S226>/Baro_Correct' incorporates:
+   *  EnablePort: '<S230>/Enable'
    */
-  if (rtb_Compare_jv) {
+  if (rtb_Compare_og) {
     if (!INS_DWork.Baro_Correct_MODE) {
-      /* InitializeConditions for UnitDelay: '<S214>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S231>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_lg = INS_P.DetectChange_vinit_m;
 
-      /* InitializeConditions for Delay: '<S215>/Delay' */
+      /* InitializeConditions for Delay: '<S232>/Delay' */
       INS_DWork.Delay_DSTATE_dr[0] = INS_P.Delay_InitialCondition_j;
       INS_DWork.Delay_DSTATE_dr[1] = INS_P.Delay_InitialCondition_j;
       INS_DWork.Delay_DSTATE_dr[2] = INS_P.Delay_InitialCondition_j;
 
-      /* InitializeConditions for Delay: '<S217>/x_delay' */
+      /* InitializeConditions for Delay: '<S234>/x_delay' */
       INS_DWork.icLoad_a = 1U;
 
-      /* InitializeConditions for UnitDelay: '<S221>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S238>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_f = INS_P.DetectIncrease_vinit_c;
 
-      /* InitializeConditions for Delay: '<S219>/Delay' */
+      /* InitializeConditions for Delay: '<S236>/Delay' */
       INS_DWork.Delay_DSTATE_h = INS_P.Delay_InitialCondition_mk;
       INS_DWork.Baro_Correct_MODE = true;
     }
 
-    /* Delay: '<S217>/x_delay' */
-    if (rtb_FixPtRelationalOperator_fe && (INS_PrevZCSigState.x_delay_Reset_ZCE
-         != POS_ZCSIG)) {
+    /* Delay: '<S234>/x_delay' */
+    if (rtb_FixPtRelationalOperator_fr &&
+        (INS_PrevZCSigState.x_delay_Reset_ZCE_l != POS_ZCSIG)) {
       INS_DWork.icLoad_a = 1U;
     }
 
-    INS_PrevZCSigState.x_delay_Reset_ZCE = rtb_FixPtRelationalOperator_fe;
+    INS_PrevZCSigState.x_delay_Reset_ZCE_l = rtb_FixPtRelationalOperator_fr;
     if (INS_DWork.icLoad_a != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
            rtb_Saturation1_j_idx_0++) {
-        INS_DWork.x_delay_DSTATE[rtb_Saturation1_j_idx_0] = rtb_Gauss_to_uT[0];
+        INS_DWork.x_delay_DSTATE_b[rtb_Saturation1_j_idx_0] = rtb_Gauss_to_uT[0];
       }
     }
 
-    /* RelationalOperator: '<S221>/FixPt Relational Operator' incorporates:
-     *  UnitDelay: '<S221>/Delay Input1'
+    /* RelationalOperator: '<S238>/FixPt Relational Operator' incorporates:
+     *  UnitDelay: '<S238>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (1 > (int32_T)INS_DWork.DelayInput1_DSTATE_f);
 
-    /* Switch: '<S219>/Switch' incorporates:
-     *  Delay: '<S219>/Delay'
-     *  Sum: '<S220>/Sum'
+    /* Switch: '<S236>/Switch' incorporates:
+     *  Delay: '<S236>/Delay'
+     *  Sum: '<S237>/Sum'
      */
     if (rtb_WGS84_pos_valid) {
-      rtb_DiscreteTimeIntegrator_m = rtb_Gauss_to_uT[0] -
-        rtb_DiscreteTimeIntegrator_g;
+      rtb_Multiply2 = rtb_Gauss_to_uT[0] - rtb_DiscreteTimeIntegrator_g;
     } else {
-      rtb_DiscreteTimeIntegrator_m = INS_DWork.Delay_DSTATE_h;
+      rtb_Multiply2 = INS_DWork.Delay_DSTATE_h;
     }
 
-    /* End of Switch: '<S219>/Switch' */
+    /* End of Switch: '<S236>/Switch' */
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
-    /* Logic: '<S213>/Logical Operator' incorporates:
+    /* Logic: '<S230>/Logical Operator' incorporates:
      *  Inport: '<Root>/Barometer'
-     *  RelationalOperator: '<S214>/FixPt Relational Operator'
-     *  SignalConversion: '<S325>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
-     *  UnitDelay: '<S214>/Delay Input1'
+     *  RelationalOperator: '<S231>/FixPt Relational Operator'
+     *  SignalConversion: '<S357>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
+     *  UnitDelay: '<S231>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (rtb_WGS84_pos_valid || (INS_U.Barometer.timestamp !=
       INS_DWork.DelayInput1_DSTATE_lg));
@@ -5497,25 +5913,24 @@ void INS_step(void)
     /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Switch: '<S215>/Switch' incorporates:
-     *  Delay: '<S215>/Delay'
-     *  Gain: '<S216>/Gain'
-     *  Gain: '<S216>/Gain1'
-     *  Gain: '<S216>/Gain2'
+    /* Switch: '<S232>/Switch' incorporates:
+     *  Delay: '<S232>/Delay'
+     *  Gain: '<S233>/Gain'
+     *  Gain: '<S233>/Gain1'
+     *  Gain: '<S233>/Gain2'
      */
     if (rtb_WGS84_pos_valid) {
       /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-      /* Sum: '<S213>/Sum' incorporates:
-       *  Delay: '<S217>/x_delay'
-       *  SignalConversion: '<S268>/TmpSignal ConversionAtSignal Copy1Inport1'
-       *  Sum: '<S218>/Sum1'
+      /* Sum: '<S230>/Sum' incorporates:
+       *  Delay: '<S234>/x_delay'
+       *  SignalConversion: '<S298>/TmpSignal ConversionAtSignal Copy1Inport1'
+       *  Sum: '<S235>/Sum1'
        */
-      rtb_Sum2_m = (rtb_Sum2_m + rtb_DiscreteTimeIntegrator_m) -
-        INS_DWork.x_delay_DSTATE[0];
+      rtb_Sum2_m = (rtb_Sum2_m + rtb_Multiply2) - INS_DWork.x_delay_DSTATE_b[0];
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-      /* Saturate: '<S216>/Saturation' */
+      /* Saturate: '<S233>/Saturation' */
       if (rtb_Sum2_m > INS_P.Saturation_UpperSat_b) {
         rtb_Sum2_m = INS_P.Saturation_UpperSat_b;
       } else {
@@ -5524,7 +5939,7 @@ void INS_step(void)
         }
       }
 
-      /* End of Saturate: '<S216>/Saturation' */
+      /* End of Saturate: '<S233>/Saturation' */
       rtb_MathFunction[0] = INS_PARAM.BARO_H_GAIN * rtb_Sum2_m;
       rtb_MathFunction[1] = -INS_PARAM.BARO_VZ_GAIN * rtb_Sum2_m;
       rtb_MathFunction[2] = INS_PARAM.BARO_BIAS_AZ_GAIN * rtb_Sum2_m;
@@ -5534,42 +5949,42 @@ void INS_step(void)
       rtb_MathFunction[2] = INS_DWork.Delay_DSTATE_dr[2];
     }
 
-    /* End of Switch: '<S215>/Switch' */
+    /* End of Switch: '<S232>/Switch' */
 
-    /* Sum: '<S213>/Sum1' incorporates:
-     *  Gain: '<S215>/Gain'
+    /* Sum: '<S230>/Sum1' incorporates:
+     *  Gain: '<S232>/Gain'
      */
     INS_B.Sum1_pu[0] = INS_P.Gain_Gain_pl * rtb_MathFunction[0] +
       rtb_Gauss_to_uT[0];
 
-    /* Update for Delay: '<S215>/Delay' incorporates:
-     *  Gain: '<S215>/Gain'
+    /* Update for Delay: '<S232>/Delay' incorporates:
+     *  Gain: '<S232>/Gain'
      */
     INS_DWork.Delay_DSTATE_dr[0] = rtb_MathFunction[0];
 
-    /* Sum: '<S213>/Sum1' incorporates:
-     *  Gain: '<S215>/Gain'
+    /* Sum: '<S230>/Sum1' incorporates:
+     *  Gain: '<S232>/Gain'
      */
     INS_B.Sum1_pu[1] = INS_P.Gain_Gain_pl * rtb_MathFunction[1] +
       rtb_Gauss_to_uT[1];
 
-    /* Update for Delay: '<S215>/Delay' incorporates:
-     *  Gain: '<S215>/Gain'
+    /* Update for Delay: '<S232>/Delay' incorporates:
+     *  Gain: '<S232>/Gain'
      */
     INS_DWork.Delay_DSTATE_dr[1] = rtb_MathFunction[1];
 
-    /* Sum: '<S213>/Sum1' incorporates:
-     *  Gain: '<S215>/Gain'
+    /* Sum: '<S230>/Sum1' incorporates:
+     *  Gain: '<S232>/Gain'
      */
     INS_B.Sum1_pu[2] = INS_P.Gain_Gain_pl * rtb_MathFunction[2] +
       rtb_Gauss_to_uT[2];
 
-    /* Update for Delay: '<S215>/Delay' incorporates:
-     *  Gain: '<S215>/Gain'
+    /* Update for Delay: '<S232>/Delay' incorporates:
+     *  Gain: '<S232>/Gain'
      */
     INS_DWork.Delay_DSTATE_dr[2] = rtb_MathFunction[2];
 
-    /* Saturate: '<S213>/Saturation' */
+    /* Saturate: '<S230>/Saturation' */
     if (INS_B.Sum1_pu[2] > INS_P.Saturation_UpperSat_as) {
       INS_B.Saturation = INS_P.Saturation_UpperSat_as;
     } else if (INS_B.Sum1_pu[2] < INS_P.Saturation_LowerSat_e) {
@@ -5578,34 +5993,34 @@ void INS_step(void)
       INS_B.Saturation = INS_B.Sum1_pu[2];
     }
 
-    /* End of Saturate: '<S213>/Saturation' */
+    /* End of Saturate: '<S230>/Saturation' */
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
-    /* Update for UnitDelay: '<S214>/Delay Input1' incorporates:
+    /* Update for UnitDelay: '<S231>/Delay Input1' incorporates:
      *  Inport: '<Root>/Barometer'
-     *  SignalConversion: '<S325>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
+     *  SignalConversion: '<S357>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
      */
     INS_DWork.DelayInput1_DSTATE_lg = INS_U.Barometer.timestamp;
 
     /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Update for Delay: '<S217>/x_delay' */
+    /* Update for Delay: '<S234>/x_delay' */
     INS_DWork.icLoad_a = 0U;
-    INS_DWork.x_delay_DSTATE[0] = INS_DWork.x_delay_DSTATE[1];
-    INS_DWork.x_delay_DSTATE[1] = INS_DWork.x_delay_DSTATE[2];
-    INS_DWork.x_delay_DSTATE[2] = INS_DWork.x_delay_DSTATE[3];
-    INS_DWork.x_delay_DSTATE[3] = INS_DWork.x_delay_DSTATE[4];
-    INS_DWork.x_delay_DSTATE[4] = rtb_Gauss_to_uT[0];
+    INS_DWork.x_delay_DSTATE_b[0] = INS_DWork.x_delay_DSTATE_b[1];
+    INS_DWork.x_delay_DSTATE_b[1] = INS_DWork.x_delay_DSTATE_b[2];
+    INS_DWork.x_delay_DSTATE_b[2] = INS_DWork.x_delay_DSTATE_b[3];
+    INS_DWork.x_delay_DSTATE_b[3] = INS_DWork.x_delay_DSTATE_b[4];
+    INS_DWork.x_delay_DSTATE_b[4] = rtb_Gauss_to_uT[0];
 
-    /* Update for UnitDelay: '<S221>/Delay Input1' */
+    /* Update for UnitDelay: '<S238>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_f = true;
 
-    /* Update for Delay: '<S219>/Delay' */
-    INS_DWork.Delay_DSTATE_h = rtb_DiscreteTimeIntegrator_m;
+    /* Update for Delay: '<S236>/Delay' */
+    INS_DWork.Delay_DSTATE_h = rtb_Multiply2;
 
-    /* Switch: '<S210>/Switch' */
+    /* Switch: '<S226>/Switch' */
     rtb_MathFunction[0] = INS_B.Sum1_pu[0];
     rtb_MathFunction[1] = INS_B.Sum1_pu[1];
     rtb_MathFunction[2] = INS_B.Saturation;
@@ -5614,49 +6029,49 @@ void INS_step(void)
       INS_DWork.Baro_Correct_MODE = false;
     }
 
-    /* Switch: '<S210>/Switch' */
+    /* Switch: '<S226>/Switch' */
     rtb_MathFunction[0] = rtb_Gauss_to_uT[0];
     rtb_MathFunction[1] = rtb_Gauss_to_uT[1];
     rtb_MathFunction[2] = rtb_Gauss_to_uT[2];
   }
 
-  /* End of Outputs for SubSystem: '<S210>/Baro_Correct' */
+  /* End of Outputs for SubSystem: '<S226>/Baro_Correct' */
 
-  /* Outputs for Enabled SubSystem: '<S211>/GPS_Correct' incorporates:
-   *  EnablePort: '<S222>/Enable'
+  /* Outputs for Enabled SubSystem: '<S228>/GPS_Correct' incorporates:
+   *  EnablePort: '<S248>/Enable'
    */
-  /* Switch: '<S211>/Switch' */
-  if (rtb_Compare_ko) {
+  /* Switch: '<S228>/Switch' */
+  if (rtb_Compare_jx) {
     if (!INS_DWork.GPS_Correct_MODE) {
-      /* InitializeConditions for UnitDelay: '<S223>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S249>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_d = INS_P.DetectChange_vinit_h;
 
-      /* InitializeConditions for Delay: '<S226>/h_delay' */
+      /* InitializeConditions for Delay: '<S252>/h_delay' */
       INS_DWork.icLoad_o = 1U;
 
-      /* InitializeConditions for Delay: '<S226>/vd_delay' */
+      /* InitializeConditions for Delay: '<S252>/vd_delay' */
       INS_DWork.icLoad_f = 1U;
 
-      /* InitializeConditions for UnitDelay: '<S230>/Delay Input1' */
-      INS_DWork.DelayInput1_DSTATE_ib = INS_P.DetectIncrease_vinit_j;
+      /* InitializeConditions for UnitDelay: '<S256>/Delay Input1' */
+      INS_DWork.DelayInput1_DSTATE_ib = INS_P.DetectIncrease_vinit_ji;
 
-      /* InitializeConditions for Memory: '<S228>/Memory' */
+      /* InitializeConditions for Memory: '<S254>/Memory' */
       INS_DWork.Memory_PreviousInput_b = INS_P.Memory_InitialCondition_p;
 
-      /* InitializeConditions for Memory: '<S224>/Memory' */
+      /* InitializeConditions for Memory: '<S250>/Memory' */
       INS_DWork.Memory_PreviousInput_e[0] = INS_P.Memory_InitialCondition_c;
       INS_DWork.Memory_PreviousInput_e[1] = INS_P.Memory_InitialCondition_c;
       INS_DWork.Memory_PreviousInput_e[2] = INS_P.Memory_InitialCondition_c;
       INS_DWork.GPS_Correct_MODE = true;
     }
 
-    /* Delay: '<S226>/h_delay' */
-    if (rtb_FixPtRelationalOperator_fe &&
+    /* Delay: '<S252>/h_delay' */
+    if (rtb_FixPtRelationalOperator_fr &&
         (INS_PrevZCSigState.h_delay_Reset_ZCE_m != POS_ZCSIG)) {
       INS_DWork.icLoad_o = 1U;
     }
 
-    INS_PrevZCSigState.h_delay_Reset_ZCE_m = rtb_FixPtRelationalOperator_fe;
+    INS_PrevZCSigState.h_delay_Reset_ZCE_m = rtb_FixPtRelationalOperator_fr;
     if (INS_DWork.icLoad_o != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 75;
            rtb_Saturation1_j_idx_0++) {
@@ -5664,13 +6079,13 @@ void INS_step(void)
       }
     }
 
-    /* Delay: '<S226>/vd_delay' */
-    if (rtb_FixPtRelationalOperator_fe && (INS_PrevZCSigState.vd_delay_Reset_ZCE
+    /* Delay: '<S252>/vd_delay' */
+    if (rtb_FixPtRelationalOperator_fr && (INS_PrevZCSigState.vd_delay_Reset_ZCE
          != POS_ZCSIG)) {
       INS_DWork.icLoad_f = 1U;
     }
 
-    INS_PrevZCSigState.vd_delay_Reset_ZCE = rtb_FixPtRelationalOperator_fe;
+    INS_PrevZCSigState.vd_delay_Reset_ZCE = rtb_FixPtRelationalOperator_fr;
     if (INS_DWork.icLoad_f != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 50;
            rtb_Saturation1_j_idx_0++) {
@@ -5679,39 +6094,39 @@ void INS_step(void)
     }
 
     /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-    /* DataTypeConversion: '<S227>/Data Type Conversion' incorporates:
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy5Inport1'
-     *  Sum: '<S227>/Sum'
+    /* DataTypeConversion: '<S253>/Data Type Conversion' incorporates:
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy5Inport1'
+     *  Sum: '<S253>/Sum'
      */
     rtb_Sum2_m = (real32_T)(rtb_Scalefactor3 - rtb_ff);
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-    /* RelationalOperator: '<S230>/FixPt Relational Operator' incorporates:
-     *  UnitDelay: '<S230>/Delay Input1'
+    /* RelationalOperator: '<S256>/FixPt Relational Operator' incorporates:
+     *  UnitDelay: '<S256>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (1 > (int32_T)INS_DWork.DelayInput1_DSTATE_ib);
 
-    /* Switch: '<S228>/Switch' incorporates:
-     *  DataTypeConversion: '<S227>/Data Type Conversion'
-     *  Memory: '<S228>/Memory'
-     *  Sum: '<S229>/Sum'
+    /* Switch: '<S254>/Switch' incorporates:
+     *  DataTypeConversion: '<S253>/Data Type Conversion'
+     *  Memory: '<S254>/Memory'
+     *  Sum: '<S255>/Sum'
      */
     if (rtb_WGS84_pos_valid) {
-      rtb_DiscreteTimeIntegrator_m = rtb_MathFunction[0] - rtb_Sum2_m;
+      rtb_Multiply2 = rtb_MathFunction[0] - rtb_Sum2_m;
     } else {
-      rtb_DiscreteTimeIntegrator_m = INS_DWork.Memory_PreviousInput_b;
+      rtb_Multiply2 = INS_DWork.Memory_PreviousInput_b;
     }
 
-    /* End of Switch: '<S228>/Switch' */
+    /* End of Switch: '<S254>/Switch' */
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
-    /* Logic: '<S222>/Logical Operator' incorporates:
+    /* Logic: '<S248>/Logical Operator' incorporates:
      *  Inport: '<Root>/Barometer'
-     *  RelationalOperator: '<S223>/FixPt Relational Operator'
-     *  SignalConversion: '<S325>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
-     *  UnitDelay: '<S223>/Delay Input1'
+     *  RelationalOperator: '<S249>/FixPt Relational Operator'
+     *  SignalConversion: '<S357>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
+     *  UnitDelay: '<S249>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (rtb_WGS84_pos_valid || (INS_U.Barometer.timestamp !=
       INS_DWork.DelayInput1_DSTATE_d));
@@ -5719,26 +6134,26 @@ void INS_step(void)
     /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Switch: '<S224>/Switch' incorporates:
-     *  DataTypeConversion: '<S227>/Data Type Conversion'
-     *  Delay: '<S226>/h_delay'
-     *  Gain: '<S225>/Gain'
-     *  Gain: '<S225>/Gain1'
-     *  Gain: '<S225>/Gain2'
-     *  Memory: '<S224>/Memory'
-     *  Sum: '<S222>/Sum'
-     *  Sum: '<S227>/Sum1'
+    /* Switch: '<S250>/Switch' incorporates:
+     *  DataTypeConversion: '<S253>/Data Type Conversion'
+     *  Delay: '<S252>/h_delay'
+     *  Gain: '<S251>/Gain'
+     *  Gain: '<S251>/Gain1'
+     *  Gain: '<S251>/Gain2'
+     *  Memory: '<S250>/Memory'
+     *  Sum: '<S248>/Sum'
+     *  Sum: '<S253>/Sum1'
      */
     if (rtb_WGS84_pos_valid) {
       /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-      /* Sum: '<S222>/Sum' incorporates:
-       *  Delay: '<S226>/vd_delay'
-       *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy8Inport1'
+      /* Sum: '<S248>/Sum' incorporates:
+       *  Delay: '<S252>/vd_delay'
+       *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy8Inport1'
        */
       rtb_Memory_m_idx_1 = rtb_Gain2_a - INS_DWork.vd_delay_DSTATE[0U];
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
-      rtb_Gauss_to_uT[0] = ((rtb_Sum2_m + rtb_DiscreteTimeIntegrator_m) -
+      rtb_Gauss_to_uT[0] = ((rtb_Sum2_m + rtb_Multiply2) -
                             INS_DWork.h_delay_DSTATE_l[0U]) *
         INS_PARAM.GPS_ALT_GAIN;
       rtb_Gauss_to_uT[1] = INS_PARAM.GPS_VEL_GAIN * rtb_Memory_m_idx_1;
@@ -5749,10 +6164,10 @@ void INS_step(void)
       rtb_Gauss_to_uT[2] = INS_DWork.Memory_PreviousInput_e[2];
     }
 
-    /* End of Switch: '<S224>/Switch' */
+    /* End of Switch: '<S250>/Switch' */
 
-    /* Sum: '<S222>/Sum1' incorporates:
-     *  Gain: '<S224>/Gain3'
+    /* Sum: '<S248>/Sum1' incorporates:
+     *  Gain: '<S250>/Gain3'
      */
     INS_B.Sum1_p[0] = INS_P.Gain3_Gain_k * rtb_Gauss_to_uT[0] +
       rtb_MathFunction[0];
@@ -5763,16 +6178,16 @@ void INS_step(void)
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
-    /* Update for UnitDelay: '<S223>/Delay Input1' incorporates:
+    /* Update for UnitDelay: '<S249>/Delay Input1' incorporates:
      *  Inport: '<Root>/Barometer'
-     *  SignalConversion: '<S325>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
+     *  SignalConversion: '<S357>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
      */
     INS_DWork.DelayInput1_DSTATE_d = INS_U.Barometer.timestamp;
 
     /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Update for Delay: '<S226>/h_delay' */
+    /* Update for Delay: '<S252>/h_delay' */
     INS_DWork.icLoad_o = 0U;
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 74;
          rtb_Saturation1_j_idx_0++) {
@@ -5782,9 +6197,9 @@ void INS_step(void)
 
     INS_DWork.h_delay_DSTATE_l[74] = rtb_MathFunction[0];
 
-    /* End of Update for Delay: '<S226>/h_delay' */
+    /* End of Update for Delay: '<S252>/h_delay' */
 
-    /* Update for Delay: '<S226>/vd_delay' */
+    /* Update for Delay: '<S252>/vd_delay' */
     INS_DWork.icLoad_f = 0U;
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 49;
          rtb_Saturation1_j_idx_0++) {
@@ -5794,15 +6209,15 @@ void INS_step(void)
 
     INS_DWork.vd_delay_DSTATE[49] = rtb_MathFunction[1];
 
-    /* End of Update for Delay: '<S226>/vd_delay' */
+    /* End of Update for Delay: '<S252>/vd_delay' */
 
-    /* Update for UnitDelay: '<S230>/Delay Input1' */
+    /* Update for UnitDelay: '<S256>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_ib = true;
 
-    /* Update for Memory: '<S228>/Memory' */
-    INS_DWork.Memory_PreviousInput_b = rtb_DiscreteTimeIntegrator_m;
+    /* Update for Memory: '<S254>/Memory' */
+    INS_DWork.Memory_PreviousInput_b = rtb_Multiply2;
 
-    /* Update for Memory: '<S224>/Memory' */
+    /* Update for Memory: '<S250>/Memory' */
     INS_DWork.Memory_PreviousInput_e[0] = rtb_Gauss_to_uT[0];
     INS_DWork.Memory_PreviousInput_e[1] = rtb_Gauss_to_uT[1];
     INS_DWork.Memory_PreviousInput_e[2] = rtb_Gauss_to_uT[2];
@@ -5814,61 +6229,62 @@ void INS_step(void)
     }
   }
 
-  /* End of Outputs for SubSystem: '<S211>/GPS_Correct' */
-  rtb_MathFunction_m = rtb_MathFunction[2];
-  if (rtb_Compare_ko) {
-    rtb_MathFunction_m = INS_B.Sum1_p[2];
+  /* End of Outputs for SubSystem: '<S228>/GPS_Correct' */
+  rtb_M_OC_tmp = rtb_MathFunction[2];
+  if (rtb_Compare_jx) {
+    rtb_M_OC_tmp = INS_B.Sum1_p[2];
   }
 
-  /* End of Switch: '<S211>/Switch' */
+  /* End of Switch: '<S228>/Switch' */
 
-  /* Outputs for Enabled SubSystem: '<S212>/Rangefinder_Correct' incorporates:
-   *  EnablePort: '<S231>/Enable'
+  /* Outputs for Enabled SubSystem: '<S229>/Rangefinder_Correct' incorporates:
+   *  EnablePort: '<S257>/Enable'
    */
-  /* Switch: '<S212>/Switch' */
-  if (rtb_Compare_jx) {
+  /* Switch: '<S229>/Switch' */
+  if (rtb_LogicalOperator3) {
     if (!INS_DWork.Rangefinder_Correct_MODE) {
-      /* InitializeConditions for UnitDelay: '<S232>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S258>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_l = INS_P.DetectChange_vinit_g;
 
-      /* InitializeConditions for Delay: '<S235>/h_delay' */
+      /* InitializeConditions for Delay: '<S261>/h_delay' */
       INS_DWork.icLoad = 1U;
 
-      /* InitializeConditions for UnitDelay: '<S239>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S265>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_d2 = INS_P.DetectIncrease_vinit_g;
 
-      /* InitializeConditions for Memory: '<S237>/Memory' */
+      /* InitializeConditions for Memory: '<S263>/Memory' */
       INS_DWork.Memory_PreviousInput = INS_P.Memory_InitialCondition_o5;
 
-      /* InitializeConditions for Memory: '<S233>/Memory' */
+      /* InitializeConditions for Memory: '<S259>/Memory' */
       INS_DWork.Memory_PreviousInput_f[0] = INS_P.Memory_InitialCondition_h;
       INS_DWork.Memory_PreviousInput_f[1] = INS_P.Memory_InitialCondition_h;
       INS_DWork.Memory_PreviousInput_f[2] = INS_P.Memory_InitialCondition_h;
       INS_DWork.Rangefinder_Correct_MODE = true;
     }
 
-    /* Delay: '<S235>/h_delay' */
-    if (rtb_FixPtRelationalOperator_fe && (INS_PrevZCSigState.h_delay_Reset_ZCE
+    /* Delay: '<S261>/h_delay' */
+    if (rtb_FixPtRelationalOperator_fr && (INS_PrevZCSigState.h_delay_Reset_ZCE
          != POS_ZCSIG)) {
       INS_DWork.icLoad = 1U;
     }
 
-    INS_PrevZCSigState.h_delay_Reset_ZCE = rtb_FixPtRelationalOperator_fe;
+    INS_PrevZCSigState.h_delay_Reset_ZCE = rtb_FixPtRelationalOperator_fr;
     if (INS_DWork.icLoad != 0) {
-      INS_DWork.h_delay_DSTATE[0] = rtb_MathFunction[0];
-      INS_DWork.h_delay_DSTATE[1] = rtb_MathFunction[0];
-      INS_DWork.h_delay_DSTATE[2] = rtb_MathFunction[0];
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.h_delay_DSTATE[rtb_Saturation1_j_idx_0] = rtb_MathFunction[0];
+      }
     }
 
-    /* RelationalOperator: '<S239>/FixPt Relational Operator' incorporates:
-     *  UnitDelay: '<S239>/Delay Input1'
+    /* RelationalOperator: '<S265>/FixPt Relational Operator' incorporates:
+     *  UnitDelay: '<S265>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (1 > (int32_T)INS_DWork.DelayInput1_DSTATE_d2);
 
-    /* Switch: '<S237>/Switch' incorporates:
-     *  Memory: '<S237>/Memory'
-     *  SignalConversion: '<S271>/TmpSignal ConversionAtSignal Copy1Inport1'
-     *  Sum: '<S238>/Sum'
+    /* Switch: '<S263>/Switch' incorporates:
+     *  Memory: '<S263>/Memory'
+     *  SignalConversion: '<S302>/TmpSignal ConversionAtSignal Copy1Inport1'
+     *  Sum: '<S264>/Sum'
      */
     if (rtb_WGS84_pos_valid) {
       /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
@@ -5879,15 +6295,15 @@ void INS_step(void)
       INS_B.rf_height_bias = INS_DWork.Memory_PreviousInput;
     }
 
-    /* End of Switch: '<S237>/Switch' */
+    /* End of Switch: '<S263>/Switch' */
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/Rangefinder_PreProcess' */
-    /* Logic: '<S231>/Logical Operator' incorporates:
+    /* Logic: '<S257>/Logical Operator' incorporates:
      *  Inport: '<Root>/Rangefinder'
-     *  RelationalOperator: '<S232>/FixPt Relational Operator'
-     *  SignalConversion: '<S330>/BusConversion_InsertedFor_Rangefinder_Data_at_inport_0'
-     *  UnitDelay: '<S232>/Delay Input1'
+     *  RelationalOperator: '<S258>/FixPt Relational Operator'
+     *  SignalConversion: '<S363>/BusConversion_InsertedFor_Rangefinder_Data_at_inport_0'
+     *  UnitDelay: '<S258>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (rtb_WGS84_pos_valid || (INS_U.Rangefinder.timestamp
       != INS_DWork.DelayInput1_DSTATE_l));
@@ -5895,25 +6311,25 @@ void INS_step(void)
     /* End of Outputs for SubSystem: '<S3>/Rangefinder_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Switch: '<S233>/Switch' incorporates:
-     *  Gain: '<S234>/Gain'
-     *  Gain: '<S234>/Gain1'
-     *  Gain: '<S234>/Gain2'
-     *  Memory: '<S233>/Memory'
+    /* Switch: '<S259>/Switch' incorporates:
+     *  Gain: '<S260>/Gain'
+     *  Gain: '<S260>/Gain1'
+     *  Gain: '<S260>/Gain2'
+     *  Memory: '<S259>/Memory'
      */
     if (rtb_WGS84_pos_valid) {
       /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-      /* Sum: '<S231>/Sum' incorporates:
-       *  Delay: '<S235>/h_delay'
-       *  SignalConversion: '<S271>/TmpSignal ConversionAtSignal Copy1Inport1'
-       *  Sum: '<S236>/Sum1'
+      /* Sum: '<S257>/Sum' incorporates:
+       *  Delay: '<S261>/h_delay'
+       *  SignalConversion: '<S302>/TmpSignal ConversionAtSignal Copy1Inport1'
+       *  Sum: '<S262>/Sum1'
        */
       rtb_Gain2_a = (rtb_Saturation_a + INS_B.rf_height_bias) -
         INS_DWork.h_delay_DSTATE[0];
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-      /* Saturate: '<S234>/Saturation' */
+      /* Saturate: '<S260>/Saturation' */
       if (rtb_Gain2_a > INS_P.Saturation_UpperSat_i) {
         rtb_Gain2_a = INS_P.Saturation_UpperSat_i;
       } else {
@@ -5922,7 +6338,7 @@ void INS_step(void)
         }
       }
 
-      /* End of Saturate: '<S234>/Saturation' */
+      /* End of Saturate: '<S260>/Saturation' */
       rtb_Gauss_to_uT[0] = INS_PARAM.RF_H_GAIN * rtb_Gain2_a;
       rtb_Gauss_to_uT[1] = -INS_PARAM.RF_VZ_GAIN * rtb_Gain2_a;
       rtb_Gauss_to_uT[2] = INS_PARAM.RF_BIAS_AZ_GAIN * rtb_Gain2_a;
@@ -5932,121 +6348,304 @@ void INS_step(void)
       rtb_Gauss_to_uT[2] = INS_DWork.Memory_PreviousInput_f[2];
     }
 
-    /* End of Switch: '<S233>/Switch' */
+    /* End of Switch: '<S259>/Switch' */
 
-    /* Sum: '<S231>/Sum1' incorporates:
-     *  Gain: '<S233>/Gain3'
+    /* Sum: '<S257>/Sum1' incorporates:
+     *  Gain: '<S259>/Gain3'
      */
     INS_B.Sum1[0] = INS_P.Gain3_Gain_j * rtb_Gauss_to_uT[0] + rtb_MathFunction[0];
     INS_B.Sum1[1] = INS_P.Gain3_Gain_j * rtb_Gauss_to_uT[1] + rtb_MathFunction[1];
-    INS_B.Sum1[2] = INS_P.Gain3_Gain_j * rtb_Gauss_to_uT[2] + rtb_MathFunction_m;
+    INS_B.Sum1[2] = INS_P.Gain3_Gain_j * rtb_Gauss_to_uT[2] + rtb_M_OC_tmp;
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/Rangefinder_PreProcess' */
-    /* Update for UnitDelay: '<S232>/Delay Input1' incorporates:
+    /* Update for UnitDelay: '<S258>/Delay Input1' incorporates:
      *  Inport: '<Root>/Rangefinder'
-     *  SignalConversion: '<S330>/BusConversion_InsertedFor_Rangefinder_Data_at_inport_0'
+     *  SignalConversion: '<S363>/BusConversion_InsertedFor_Rangefinder_Data_at_inport_0'
      */
     INS_DWork.DelayInput1_DSTATE_l = INS_U.Rangefinder.timestamp;
 
     /* End of Outputs for SubSystem: '<S3>/Rangefinder_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Update for Delay: '<S235>/h_delay' */
+    /* Update for Delay: '<S261>/h_delay' */
     INS_DWork.icLoad = 0U;
     INS_DWork.h_delay_DSTATE[0] = INS_DWork.h_delay_DSTATE[1];
     INS_DWork.h_delay_DSTATE[1] = INS_DWork.h_delay_DSTATE[2];
-    INS_DWork.h_delay_DSTATE[2] = rtb_MathFunction[0];
+    INS_DWork.h_delay_DSTATE[2] = INS_DWork.h_delay_DSTATE[3];
+    INS_DWork.h_delay_DSTATE[3] = INS_DWork.h_delay_DSTATE[4];
+    INS_DWork.h_delay_DSTATE[4] = rtb_MathFunction[0];
 
-    /* Update for UnitDelay: '<S239>/Delay Input1' */
+    /* Update for UnitDelay: '<S265>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_d2 = true;
 
-    /* Update for Memory: '<S237>/Memory' */
+    /* Update for Memory: '<S263>/Memory' */
     INS_DWork.Memory_PreviousInput = INS_B.rf_height_bias;
 
-    /* Update for Memory: '<S233>/Memory' */
+    /* Update for Memory: '<S259>/Memory' */
     INS_DWork.Memory_PreviousInput_f[0] = rtb_Gauss_to_uT[0];
     INS_DWork.Memory_PreviousInput_f[1] = rtb_Gauss_to_uT[1];
     INS_DWork.Memory_PreviousInput_f[2] = rtb_Gauss_to_uT[2];
     rtb_MathFunction[0] = INS_B.Sum1[0];
     rtb_MathFunction[1] = INS_B.Sum1[1];
-    rtb_MathFunction_m = INS_B.Sum1[2];
+    rtb_M_OC_tmp = INS_B.Sum1[2];
   } else {
     if (INS_DWork.Rangefinder_Correct_MODE) {
       INS_DWork.Rangefinder_Correct_MODE = false;
     }
   }
 
-  /* End of Switch: '<S212>/Switch' */
-  /* End of Outputs for SubSystem: '<S212>/Rangefinder_Correct' */
+  /* End of Switch: '<S229>/Switch' */
+  /* End of Outputs for SubSystem: '<S229>/Rangefinder_Correct' */
 
-  /* Outputs for Enabled SubSystem: '<S204>/GPS_Vel_Init' incorporates:
-   *  EnablePort: '<S206>/Enable'
+  /* Outputs for Enabled SubSystem: '<S227>/ExternalPos_Correct' incorporates:
+   *  EnablePort: '<S239>/Enable'
    */
-  /* Outputs for Enabled SubSystem: '<S203>/GPS_Pos_Init' incorporates:
-   *  EnablePort: '<S205>/Enable'
+  /* Switch: '<S227>/Switch' */
+  if (rtb_Compare_nw) {
+    if (!INS_DWork.ExternalPos_Correct_MODE) {
+      /* InitializeConditions for UnitDelay: '<S240>/Delay Input1' */
+      INS_DWork.DelayInput1_DSTATE_a = INS_P.DetectChange_vinit_j;
+
+      /* InitializeConditions for Delay: '<S241>/Delay' */
+      INS_DWork.Delay_DSTATE_p[0] = INS_P.Delay_InitialCondition_ms;
+      INS_DWork.Delay_DSTATE_p[1] = INS_P.Delay_InitialCondition_ms;
+      INS_DWork.Delay_DSTATE_p[2] = INS_P.Delay_InitialCondition_ms;
+
+      /* InitializeConditions for Delay: '<S243>/x_delay' */
+      INS_DWork.icLoad_p = 1U;
+
+      /* InitializeConditions for UnitDelay: '<S247>/Delay Input1' */
+      INS_DWork.DelayInput1_DSTATE_a4 = INS_P.DetectIncrease_vinit_j;
+
+      /* InitializeConditions for Delay: '<S245>/Delay' */
+      INS_DWork.Delay_DSTATE_m = INS_P.Delay_InitialCondition_d2;
+      INS_DWork.ExternalPos_Correct_MODE = true;
+    }
+
+    /* Delay: '<S243>/x_delay' */
+    if (rtb_FixPtRelationalOperator_fr && (INS_PrevZCSigState.x_delay_Reset_ZCE
+         != POS_ZCSIG)) {
+      INS_DWork.icLoad_p = 1U;
+    }
+
+    INS_PrevZCSigState.x_delay_Reset_ZCE = rtb_FixPtRelationalOperator_fr;
+    if (INS_DWork.icLoad_p != 0) {
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.x_delay_DSTATE[rtb_Saturation1_j_idx_0] = rtb_MathFunction[0];
+      }
+    }
+
+    /* RelationalOperator: '<S247>/FixPt Relational Operator' incorporates:
+     *  UnitDelay: '<S247>/Delay Input1'
+     */
+    rtb_WGS84_pos_valid = (1 > (int32_T)INS_DWork.DelayInput1_DSTATE_a4);
+
+    /* Switch: '<S245>/Switch' incorporates:
+     *  Delay: '<S245>/Delay'
+     *  SignalConversion: '<S299>/TmpSignal ConversionAtSignal Copy4Inport1'
+     *  Sum: '<S246>/Sum'
+     */
+    if (rtb_WGS84_pos_valid) {
+      /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
+      rtb_Gain2_a = rtb_MathFunction[0] - rtb_Multiply_hs[2];
+
+      /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
+    } else {
+      rtb_Gain2_a = INS_DWork.Delay_DSTATE_m;
+    }
+
+    /* End of Switch: '<S245>/Switch' */
+
+    /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+    /* Logic: '<S239>/Logical Operator' incorporates:
+     *  Inport: '<Root>/External_Pos'
+     *  RelationalOperator: '<S240>/FixPt Relational Operator'
+     *  SignalConversion: '<S358>/TmpSignal ConversionAtSignal CopyInport1'
+     *  UnitDelay: '<S240>/Delay Input1'
+     */
+    rtb_WGS84_pos_valid = (rtb_WGS84_pos_valid || (INS_U.External_Pos.timestamp
+      != INS_DWork.DelayInput1_DSTATE_a));
+
+    /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+    /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
+
+    /* Switch: '<S241>/Switch' incorporates:
+     *  Delay: '<S241>/Delay'
+     *  Gain: '<S242>/Gain'
+     *  Gain: '<S242>/Gain1'
+     *  Gain: '<S242>/Gain2'
+     */
+    if (rtb_WGS84_pos_valid) {
+      /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
+      /* Sum: '<S239>/Sum' incorporates:
+       *  Delay: '<S243>/x_delay'
+       *  SignalConversion: '<S299>/TmpSignal ConversionAtSignal Copy4Inport1'
+       *  Sum: '<S244>/Sum1'
+       */
+      rtb_Sum2_m = (rtb_Multiply_hs[2] + rtb_Gain2_a) -
+        INS_DWork.x_delay_DSTATE[0];
+
+      /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
+
+      /* Saturate: '<S242>/Saturation' */
+      if (rtb_Sum2_m > INS_P.Saturation_UpperSat_hz) {
+        rtb_Sum2_m = INS_P.Saturation_UpperSat_hz;
+      } else {
+        if (rtb_Sum2_m < INS_P.Saturation_LowerSat_n) {
+          rtb_Sum2_m = INS_P.Saturation_LowerSat_n;
+        }
+      }
+
+      /* End of Saturate: '<S242>/Saturation' */
+      rtb_Gauss_to_uT[0] = INS_PARAM.EXTPOS_POS_GAIN * rtb_Sum2_m;
+      rtb_Gauss_to_uT[1] = -INS_PARAM.EXTPOS_VEL_GAIN * rtb_Sum2_m;
+      rtb_Gauss_to_uT[2] = INS_PARAM.EXTPOS_BIAS_A_GAIN * rtb_Sum2_m;
+    } else {
+      rtb_Gauss_to_uT[0] = INS_DWork.Delay_DSTATE_p[0];
+      rtb_Gauss_to_uT[1] = INS_DWork.Delay_DSTATE_p[1];
+      rtb_Gauss_to_uT[2] = INS_DWork.Delay_DSTATE_p[2];
+    }
+
+    /* End of Switch: '<S241>/Switch' */
+
+    /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+    /* Update for UnitDelay: '<S240>/Delay Input1' incorporates:
+     *  Inport: '<Root>/External_Pos'
+     *  SignalConversion: '<S358>/TmpSignal ConversionAtSignal CopyInport1'
+     */
+    INS_DWork.DelayInput1_DSTATE_a = INS_U.External_Pos.timestamp;
+
+    /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+    /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
+
+    /* Sum: '<S239>/Sum1' incorporates:
+     *  Gain: '<S241>/Gain'
+     */
+    INS_B.Sum1_c[0] = INS_P.Gain_Gain_ov * rtb_Gauss_to_uT[0] +
+      rtb_MathFunction[0];
+
+    /* Update for Delay: '<S241>/Delay' incorporates:
+     *  Gain: '<S241>/Gain'
+     */
+    INS_DWork.Delay_DSTATE_p[0] = rtb_Gauss_to_uT[0];
+
+    /* Sum: '<S239>/Sum1' incorporates:
+     *  Gain: '<S241>/Gain'
+     */
+    INS_B.Sum1_c[1] = INS_P.Gain_Gain_ov * rtb_Gauss_to_uT[1] +
+      rtb_MathFunction[1];
+
+    /* Update for Delay: '<S241>/Delay' incorporates:
+     *  Gain: '<S241>/Gain'
+     */
+    INS_DWork.Delay_DSTATE_p[1] = rtb_Gauss_to_uT[1];
+
+    /* Sum: '<S239>/Sum1' incorporates:
+     *  Gain: '<S241>/Gain'
+     */
+    INS_B.Sum1_c[2] = INS_P.Gain_Gain_ov * rtb_Gauss_to_uT[2] + rtb_M_OC_tmp;
+
+    /* Update for Delay: '<S241>/Delay' incorporates:
+     *  Gain: '<S241>/Gain'
+     */
+    INS_DWork.Delay_DSTATE_p[2] = rtb_Gauss_to_uT[2];
+
+    /* Update for Delay: '<S243>/x_delay' */
+    INS_DWork.icLoad_p = 0U;
+    INS_DWork.x_delay_DSTATE[0] = INS_DWork.x_delay_DSTATE[1];
+    INS_DWork.x_delay_DSTATE[1] = INS_DWork.x_delay_DSTATE[2];
+    INS_DWork.x_delay_DSTATE[2] = INS_DWork.x_delay_DSTATE[3];
+    INS_DWork.x_delay_DSTATE[3] = INS_DWork.x_delay_DSTATE[4];
+    INS_DWork.x_delay_DSTATE[4] = rtb_MathFunction[0];
+
+    /* Update for UnitDelay: '<S247>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_a4 = true;
+
+    /* Update for Delay: '<S245>/Delay' */
+    INS_DWork.Delay_DSTATE_m = rtb_Gain2_a;
+    rtb_MathFunction[0] = INS_B.Sum1_c[0];
+    rtb_MathFunction[1] = INS_B.Sum1_c[1];
+    rtb_M_OC_tmp = INS_B.Sum1_c[2];
+  } else {
+    if (INS_DWork.ExternalPos_Correct_MODE) {
+      INS_DWork.ExternalPos_Correct_MODE = false;
+    }
+  }
+
+  /* End of Switch: '<S227>/Switch' */
+  /* End of Outputs for SubSystem: '<S227>/ExternalPos_Correct' */
+
+  /* Outputs for Enabled SubSystem: '<S220>/GPS_Vel_Init' incorporates:
+   *  EnablePort: '<S222>/Enable'
+   */
+  /* Outputs for Enabled SubSystem: '<S219>/GPS_Pos_Init' incorporates:
+   *  EnablePort: '<S221>/Enable'
    */
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-  /* SignalConversion: '<S274>/TmpSignal ConversionAtSignal CopyInport1' */
+  /* SignalConversion: '<S306>/TmpSignal ConversionAtSignal CopyInport1' */
   if (rtb_Compare_cio) {
-    /* DataTypeConversion: '<S205>/Data Type Conversion' incorporates:
-     *  Product: '<S205>/Multiply'
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy3Inport1'
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy4Inport1'
-     *  Sum: '<S205>/Sum'
+    /* DataTypeConversion: '<S221>/Data Type Conversion' incorporates:
+     *  Product: '<S221>/Multiply'
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy3Inport1'
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy4Inport1'
+     *  Sum: '<S221>/Sum'
      */
     INS_B.DataTypeConversion_n[0] = (real32_T)((rtb_Scalefactor1 -
       rtb_Switch4_c_idx_0) * rtb_DataTypeConversion1);
     INS_B.DataTypeConversion_n[1] = (real32_T)((rtb_Scalefactor2 -
       rtb_Switch4_c_idx_1) * rtb_DataTypeConversion2);
 
-    /* Reshape: '<S206>/Reshape' incorporates:
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy6Inport1'
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy7Inport1'
+    /* Reshape: '<S222>/Reshape' incorporates:
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy6Inport1'
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy7Inport1'
      */
     INS_B.Merge_n[0] = rtb_Divide1;
     INS_B.Merge_n[1] = rtb_Sum2_by;
   }
 
-  /* End of Outputs for SubSystem: '<S203>/GPS_Pos_Init' */
-  /* End of Outputs for SubSystem: '<S204>/GPS_Vel_Init' */
+  /* End of Outputs for SubSystem: '<S219>/GPS_Pos_Init' */
+  /* End of Outputs for SubSystem: '<S220>/GPS_Vel_Init' */
 
-  /* Outputs for Enabled SubSystem: '<S204>/OptFlow_Vel_Init' incorporates:
-   *  EnablePort: '<S207>/Enable'
+  /* Outputs for Enabled SubSystem: '<S220>/OptFlow_Vel_Init' incorporates:
+   *  EnablePort: '<S223>/Enable'
    */
-  /* SignalConversion: '<S275>/TmpSignal ConversionAtSignal CopyInport1' */
+  /* SignalConversion: '<S307>/TmpSignal ConversionAtSignal CopyInport1' */
   if (rtb_Compare_ai) {
-    /* Reshape: '<S207>/Reshape' */
-    INS_B.Merge_n[0] = rtb_Gain_d[0];
-    INS_B.Merge_n[1] = rtb_Gain_d[1];
+    /* Reshape: '<S223>/Reshape' */
+    INS_B.Merge_n[0] = rtb_Gain_o4[0];
+    INS_B.Merge_n[1] = rtb_Gain_o4[1];
   }
 
-  /* End of Outputs for SubSystem: '<S204>/OptFlow_Vel_Init' */
+  /* End of Outputs for SubSystem: '<S220>/OptFlow_Vel_Init' */
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-  /* Switch: '<S200>/Switch' incorporates:
-   *  Constant: '<S202>/Constant'
-   *  Delay: '<S200>/Delay'
+  /* Switch: '<S216>/Switch' incorporates:
+   *  Constant: '<S218>/Constant'
+   *  Delay: '<S216>/Delay'
    */
-  if (rtb_FixPtRelationalOperator_kp) {
-    rtb_Switch_f[0] = INS_B.DataTypeConversion_n[0];
-    rtb_Switch_f[2] = INS_B.Merge_n[0];
-    rtb_Switch_f[4] = INS_P.Constant_Value_b[0];
-    rtb_Switch_f[1] = INS_B.DataTypeConversion_n[1];
-    rtb_Switch_f[3] = INS_B.Merge_n[1];
-    rtb_Switch_f[5] = INS_P.Constant_Value_b[1];
+  if (rtb_FixPtRelationalOperator_p) {
+    rtb_Switch_nv[0] = INS_B.DataTypeConversion_n[0];
+    rtb_Switch_nv[2] = INS_B.Merge_n[0];
+    rtb_Switch_nv[4] = INS_P.Constant_Value_b[0];
+    rtb_Switch_nv[1] = INS_B.DataTypeConversion_n[1];
+    rtb_Switch_nv[3] = INS_B.Merge_n[1];
+    rtb_Switch_nv[5] = INS_P.Constant_Value_b[1];
   } else {
-    rtb_Switch_f[0] = INS_DWork.Delay_DSTATE_l[0];
-    rtb_Switch_f[2] = INS_DWork.Delay_DSTATE_l[2];
-    rtb_Switch_f[4] = INS_DWork.Delay_DSTATE_l[4];
-    rtb_Switch_f[1] = INS_DWork.Delay_DSTATE_l[1];
-    rtb_Switch_f[3] = INS_DWork.Delay_DSTATE_l[3];
-    rtb_Switch_f[5] = INS_DWork.Delay_DSTATE_l[5];
+    rtb_Switch_nv[0] = INS_DWork.Delay_DSTATE_l[0];
+    rtb_Switch_nv[2] = INS_DWork.Delay_DSTATE_l[2];
+    rtb_Switch_nv[4] = INS_DWork.Delay_DSTATE_l[4];
+    rtb_Switch_nv[1] = INS_DWork.Delay_DSTATE_l[1];
+    rtb_Switch_nv[3] = INS_DWork.Delay_DSTATE_l[3];
+    rtb_Switch_nv[5] = INS_DWork.Delay_DSTATE_l[5];
   }
 
-  /* End of Switch: '<S200>/Switch' */
+  /* End of Switch: '<S216>/Switch' */
 
-  /* Product: '<S201>/Multiply' incorporates:
+  /* Product: '<S217>/Multiply' incorporates:
    *  SignalConversion: '<S59>/BusConversion_InsertedFor_Rotation_Data_at_inport_0'
    *  SignalConversion: '<S59>/TmpSignal ConversionAtSignal ConversionInport1'
    */
@@ -6066,147 +6665,153 @@ void INS_step(void)
     /* End of Outputs for SubSystem: '<S55>/AHRS' */
   }
 
-  /* Gain: '<S201>/Gain' incorporates:
-   *  Constant: '<S201>/Constant'
-   *  Product: '<S201>/Multiply'
-   *  Sum: '<S201>/Add'
+  /* Gain: '<S217>/Gain' incorporates:
+   *  Constant: '<S217>/Constant'
+   *  Product: '<S217>/Multiply'
+   *  Sum: '<S217>/Add'
    */
-  tmp[0] = INS_P.Gain_Gain_ic * rtb_Switch_f[2];
-  tmp[2] = (rtb_Square_le[0] - rtb_Switch_f[4]) * INS_P.Gain_Gain_ic;
+  tmp[0] = INS_P.Gain_Gain_ic * rtb_Switch_nv[2];
+  tmp[2] = (rtb_Square_le[0] - rtb_Switch_nv[4]) * INS_P.Gain_Gain_ic;
   tmp[4] = INS_P.Gain_Gain_ic * INS_P.Constant_Value_l[0];
-  tmp[1] = INS_P.Gain_Gain_ic * rtb_Switch_f[3];
-  tmp[3] = (rtb_Square_le[1] - rtb_Switch_f[5]) * INS_P.Gain_Gain_ic;
+  tmp[1] = INS_P.Gain_Gain_ic * rtb_Switch_nv[3];
+  tmp[3] = (rtb_Square_le[1] - rtb_Switch_nv[5]) * INS_P.Gain_Gain_ic;
   tmp[5] = INS_P.Gain_Gain_ic * INS_P.Constant_Value_l[1];
 
-  /* Sum: '<S201>/Sum' */
+  /* Sum: '<S217>/Sum' */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 6;
        rtb_Saturation1_j_idx_1_0++) {
     rtb_Sum_g0[rtb_Saturation1_j_idx_1_0] =
-      rtb_Switch_f[rtb_Saturation1_j_idx_1_0] + tmp[rtb_Saturation1_j_idx_1_0];
+      rtb_Switch_nv[rtb_Saturation1_j_idx_1_0] + tmp[rtb_Saturation1_j_idx_1_0];
   }
 
-  /* End of Sum: '<S201>/Sum' */
+  /* End of Sum: '<S217>/Sum' */
 
-  /* Outputs for Enabled SubSystem: '<S183>/OptFlow_Correct' incorporates:
-   *  EnablePort: '<S194>/Enable'
+  /* Outputs for Enabled SubSystem: '<S190>/OptFlow_Correct' incorporates:
+   *  EnablePort: '<S210>/Enable'
    */
-  if (rtb_Compare_o) {
+  if (rtb_LogicalOperator5) {
     if (!INS_DWork.OptFlow_Correct_MODE) {
-      /* InitializeConditions for UnitDelay: '<S195>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S211>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_m = INS_P.DetectChange_vinit_l;
 
-      /* InitializeConditions for Delay: '<S198>/vn_delay' */
+      /* InitializeConditions for Delay: '<S214>/vn_delay' */
       INS_DWork.icLoad_h = 1U;
 
-      /* InitializeConditions for Delay: '<S198>/ve_delay' */
+      /* InitializeConditions for Delay: '<S214>/ve_delay' */
       INS_DWork.icLoad_j = 1U;
 
-      /* InitializeConditions for Memory: '<S196>/Memory' */
+      /* InitializeConditions for Memory: '<S212>/Memory' */
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
            rtb_Saturation1_j_idx_0++) {
         INS_DWork.Memory_PreviousInput_n[rtb_Saturation1_j_idx_0] =
           INS_P.Memory_InitialCondition_i;
       }
 
-      /* End of InitializeConditions for Memory: '<S196>/Memory' */
+      /* End of InitializeConditions for Memory: '<S212>/Memory' */
       INS_DWork.OptFlow_Correct_MODE = true;
     }
 
-    /* Delay: '<S198>/vn_delay' */
-    if (rtb_FixPtRelationalOperator_kp && (INS_PrevZCSigState.vn_delay_Reset_ZCE
+    /* Delay: '<S214>/vn_delay' */
+    if (rtb_FixPtRelationalOperator_p && (INS_PrevZCSigState.vn_delay_Reset_ZCE
          != POS_ZCSIG)) {
       INS_DWork.icLoad_h = 1U;
     }
 
-    INS_PrevZCSigState.vn_delay_Reset_ZCE = rtb_FixPtRelationalOperator_kp;
+    INS_PrevZCSigState.vn_delay_Reset_ZCE = rtb_FixPtRelationalOperator_p;
     if (INS_DWork.icLoad_h != 0) {
-      INS_DWork.vn_delay_DSTATE[0] = rtb_Sum_g0[2];
-      INS_DWork.vn_delay_DSTATE[1] = rtb_Sum_g0[2];
-      INS_DWork.vn_delay_DSTATE[2] = rtb_Sum_g0[2];
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.vn_delay_DSTATE[rtb_Saturation1_j_idx_0] = rtb_Sum_g0[2];
+      }
     }
 
-    /* Delay: '<S198>/ve_delay' */
-    if (rtb_FixPtRelationalOperator_kp && (INS_PrevZCSigState.ve_delay_Reset_ZCE
+    /* Delay: '<S214>/ve_delay' */
+    if (rtb_FixPtRelationalOperator_p && (INS_PrevZCSigState.ve_delay_Reset_ZCE
          != POS_ZCSIG)) {
       INS_DWork.icLoad_j = 1U;
     }
 
-    INS_PrevZCSigState.ve_delay_Reset_ZCE = rtb_FixPtRelationalOperator_kp;
+    INS_PrevZCSigState.ve_delay_Reset_ZCE = rtb_FixPtRelationalOperator_p;
     if (INS_DWork.icLoad_j != 0) {
-      INS_DWork.ve_delay_DSTATE[0] = rtb_Sum_g0[3];
-      INS_DWork.ve_delay_DSTATE[1] = rtb_Sum_g0[3];
-      INS_DWork.ve_delay_DSTATE[2] = rtb_Sum_g0[3];
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.ve_delay_DSTATE[rtb_Saturation1_j_idx_0] = rtb_Sum_g0[3];
+      }
     }
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/OpticalFlow_PreProcess' */
-    /* Switch: '<S196>/Switch' incorporates:
-     *  Constant: '<S197>/Constant'
-     *  Gain: '<S197>/Gain'
-     *  Gain: '<S197>/Gain2'
+    /* Switch: '<S212>/Switch' incorporates:
+     *  Constant: '<S213>/Constant'
+     *  Gain: '<S213>/Gain'
+     *  Gain: '<S213>/Gain2'
      *  Inport: '<Root>/Optical_Flow'
-     *  Memory: '<S196>/Memory'
-     *  RelationalOperator: '<S195>/FixPt Relational Operator'
-     *  SignalConversion: '<S329>/BusConversion_InsertedFor_OpticalFlow_Data_at_inport_0'
-     *  UnitDelay: '<S195>/Delay Input1'
+     *  Memory: '<S212>/Memory'
+     *  RelationalOperator: '<S211>/FixPt Relational Operator'
+     *  SignalConversion: '<S362>/BusConversion_InsertedFor_OpticalFlow_Data_at_inport_0'
+     *  UnitDelay: '<S211>/Delay Input1'
      */
     if (INS_U.Optical_Flow.timestamp != INS_DWork.DelayInput1_DSTATE_m) {
-      /* Sum: '<S194>/Sum' incorporates:
-       *  Delay: '<S198>/ve_delay'
-       *  Delay: '<S198>/vn_delay'
+      /* Sum: '<S210>/Sum' incorporates:
+       *  Delay: '<S214>/ve_delay'
+       *  Delay: '<S214>/vn_delay'
        */
-      rtb_dec_rad = rtb_Gain_d[0] - INS_DWork.vn_delay_DSTATE[0U];
-      rtb_Memory_m_idx_1 = rtb_Gain_d[1] - INS_DWork.ve_delay_DSTATE[0U];
-      rtb_Switch_f[0] = INS_P.Constant_Value_o[0];
-      rtb_Switch_f[2] = INS_PARAM.OPF_VEL_GAIN * rtb_dec_rad;
-      rtb_Switch_f[4] = -INS_PARAM.OPF_BIAS_A_GAIN * rtb_dec_rad;
-      rtb_Switch_f[1] = INS_P.Constant_Value_o[1];
-      rtb_Switch_f[3] = INS_PARAM.OPF_VEL_GAIN * rtb_Memory_m_idx_1;
-      rtb_Switch_f[5] = -INS_PARAM.OPF_BIAS_A_GAIN * rtb_Memory_m_idx_1;
+      rtb_dec_rad = rtb_Gain_o4[0] - INS_DWork.vn_delay_DSTATE[0U];
+      rtb_Memory_m_idx_1 = rtb_Gain_o4[1] - INS_DWork.ve_delay_DSTATE[0U];
+      rtb_Switch_nv[0] = INS_P.Constant_Value_o[0];
+      rtb_Switch_nv[2] = INS_PARAM.OPF_VEL_GAIN * rtb_dec_rad;
+      rtb_Switch_nv[4] = -INS_PARAM.OPF_BIAS_A_GAIN * rtb_dec_rad;
+      rtb_Switch_nv[1] = INS_P.Constant_Value_o[1];
+      rtb_Switch_nv[3] = INS_PARAM.OPF_VEL_GAIN * rtb_Memory_m_idx_1;
+      rtb_Switch_nv[5] = -INS_PARAM.OPF_BIAS_A_GAIN * rtb_Memory_m_idx_1;
     } else {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
            rtb_Saturation1_j_idx_0++) {
-        rtb_Switch_f[rtb_Saturation1_j_idx_0] =
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0] =
           INS_DWork.Memory_PreviousInput_n[rtb_Saturation1_j_idx_0];
       }
     }
 
-    /* End of Switch: '<S196>/Switch' */
+    /* End of Switch: '<S212>/Switch' */
 
-    /* Update for UnitDelay: '<S195>/Delay Input1' incorporates:
+    /* Update for UnitDelay: '<S211>/Delay Input1' incorporates:
      *  Inport: '<Root>/Optical_Flow'
-     *  SignalConversion: '<S329>/BusConversion_InsertedFor_OpticalFlow_Data_at_inport_0'
+     *  SignalConversion: '<S362>/BusConversion_InsertedFor_OpticalFlow_Data_at_inport_0'
      */
     INS_DWork.DelayInput1_DSTATE_m = INS_U.Optical_Flow.timestamp;
 
     /* End of Outputs for SubSystem: '<S3>/OpticalFlow_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Update for Delay: '<S198>/vn_delay' */
+    /* Update for Delay: '<S214>/vn_delay' */
     INS_DWork.icLoad_h = 0U;
     INS_DWork.vn_delay_DSTATE[0] = INS_DWork.vn_delay_DSTATE[1];
     INS_DWork.vn_delay_DSTATE[1] = INS_DWork.vn_delay_DSTATE[2];
-    INS_DWork.vn_delay_DSTATE[2] = rtb_Sum_g0[2];
+    INS_DWork.vn_delay_DSTATE[2] = INS_DWork.vn_delay_DSTATE[3];
+    INS_DWork.vn_delay_DSTATE[3] = INS_DWork.vn_delay_DSTATE[4];
+    INS_DWork.vn_delay_DSTATE[4] = rtb_Sum_g0[2];
 
-    /* Update for Delay: '<S198>/ve_delay' */
+    /* Update for Delay: '<S214>/ve_delay' */
     INS_DWork.icLoad_j = 0U;
     INS_DWork.ve_delay_DSTATE[0] = INS_DWork.ve_delay_DSTATE[1];
     INS_DWork.ve_delay_DSTATE[1] = INS_DWork.ve_delay_DSTATE[2];
-    INS_DWork.ve_delay_DSTATE[2] = rtb_Sum_g0[3];
+    INS_DWork.ve_delay_DSTATE[2] = INS_DWork.ve_delay_DSTATE[3];
+    INS_DWork.ve_delay_DSTATE[3] = INS_DWork.ve_delay_DSTATE[4];
+    INS_DWork.ve_delay_DSTATE[4] = rtb_Sum_g0[3];
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
          rtb_Saturation1_j_idx_0++) {
-      /* Sum: '<S194>/Sum1' incorporates:
-       *  Gain: '<S196>/Gain3'
+      /* Sum: '<S210>/Sum1' incorporates:
+       *  Gain: '<S212>/Gain3'
        */
       INS_B.Sum1_f[rtb_Saturation1_j_idx_0] = INS_P.Gain3_Gain_p *
-        rtb_Switch_f[rtb_Saturation1_j_idx_0] +
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0] +
         rtb_Sum_g0[rtb_Saturation1_j_idx_0];
 
-      /* Update for Memory: '<S196>/Memory' incorporates:
-       *  Gain: '<S196>/Gain3'
+      /* Update for Memory: '<S212>/Memory' incorporates:
+       *  Gain: '<S212>/Gain3'
        */
       INS_DWork.Memory_PreviousInput_n[rtb_Saturation1_j_idx_0] =
-        rtb_Switch_f[rtb_Saturation1_j_idx_0];
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0];
     }
   } else {
     if (INS_DWork.OptFlow_Correct_MODE) {
@@ -6214,66 +6819,66 @@ void INS_step(void)
     }
   }
 
-  /* End of Outputs for SubSystem: '<S183>/OptFlow_Correct' */
+  /* End of Outputs for SubSystem: '<S190>/OptFlow_Correct' */
 
-  /* Switch: '<S183>/Switch' */
+  /* Switch: '<S190>/Switch' */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 6;
        rtb_Saturation1_j_idx_1_0++) {
     rtb_Sum2_m = rtb_Sum_g0[rtb_Saturation1_j_idx_1_0];
-    if (rtb_Compare_o) {
+    if (rtb_LogicalOperator5) {
       rtb_Sum2_m = INS_B.Sum1_f[rtb_Saturation1_j_idx_1_0];
     }
 
     rtb_Sum_g0[rtb_Saturation1_j_idx_1_0] = rtb_Sum2_m;
   }
 
-  /* End of Switch: '<S183>/Switch' */
+  /* End of Switch: '<S190>/Switch' */
 
-  /* Outputs for Enabled SubSystem: '<S182>/GPS_Correct' incorporates:
-   *  EnablePort: '<S184>/Enable'
+  /* Outputs for Enabled SubSystem: '<S189>/GPS_Correct' incorporates:
+   *  EnablePort: '<S200>/Enable'
    */
-  if (rtb_LogicalOperator2_f) {
+  if (rtb_LogicalOperator2_g) {
     if (!INS_DWork.GPS_Correct_MODE_o) {
-      /* InitializeConditions for UnitDelay: '<S185>/Delay Input1' */
-      INS_DWork.DelayInput1_DSTATE_d0 = INS_P.DetectChange_vinit;
+      /* InitializeConditions for UnitDelay: '<S201>/Delay Input1' */
+      INS_DWork.DelayInput1_DSTATE_d0 = INS_P.DetectChange_vinit_i;
 
-      /* InitializeConditions for Delay: '<S188>/x_delay' */
+      /* InitializeConditions for Delay: '<S204>/x_delay' */
       INS_DWork.icLoad_op = 1U;
 
-      /* InitializeConditions for Delay: '<S188>/x_delay1' */
+      /* InitializeConditions for Delay: '<S204>/x_delay1' */
       INS_DWork.icLoad_i = 1U;
 
-      /* InitializeConditions for Delay: '<S188>/vn_delay' */
+      /* InitializeConditions for Delay: '<S204>/vn_delay' */
       INS_DWork.icLoad_m = 1U;
 
-      /* InitializeConditions for Delay: '<S188>/vn_delay1' */
+      /* InitializeConditions for Delay: '<S204>/vn_delay1' */
       INS_DWork.icLoad_jp = 1U;
 
-      /* InitializeConditions for UnitDelay: '<S193>/Delay Input1' */
+      /* InitializeConditions for UnitDelay: '<S209>/Delay Input1' */
       INS_DWork.DelayInput1_DSTATE_gn = INS_P.DetectIncrease_vinit_p;
 
-      /* InitializeConditions for Memory: '<S191>/Memory' */
-      INS_DWork.Memory_PreviousInput_d[0] = INS_P.Memory_InitialCondition[0];
-      INS_DWork.Memory_PreviousInput_d[1] = INS_P.Memory_InitialCondition[1];
+      /* InitializeConditions for Memory: '<S207>/Memory' */
+      INS_DWork.Memory_PreviousInput_d[0] = INS_P.Memory_InitialCondition_l[0];
+      INS_DWork.Memory_PreviousInput_d[1] = INS_P.Memory_InitialCondition_l[1];
 
-      /* InitializeConditions for Memory: '<S186>/Memory' */
+      /* InitializeConditions for Memory: '<S202>/Memory' */
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
            rtb_Saturation1_j_idx_0++) {
         INS_DWork.Memory_PreviousInput_h[rtb_Saturation1_j_idx_0] =
           INS_P.Memory_InitialCondition_o;
       }
 
-      /* End of InitializeConditions for Memory: '<S186>/Memory' */
+      /* End of InitializeConditions for Memory: '<S202>/Memory' */
       INS_DWork.GPS_Correct_MODE_o = true;
     }
 
-    /* Delay: '<S188>/x_delay' */
-    if (rtb_FixPtRelationalOperator_kp &&
-        (INS_PrevZCSigState.x_delay_Reset_ZCE_b != POS_ZCSIG)) {
+    /* Delay: '<S204>/x_delay' */
+    if (rtb_FixPtRelationalOperator_p && (INS_PrevZCSigState.x_delay_Reset_ZCE_b
+         != POS_ZCSIG)) {
       INS_DWork.icLoad_op = 1U;
     }
 
-    INS_PrevZCSigState.x_delay_Reset_ZCE_b = rtb_FixPtRelationalOperator_kp;
+    INS_PrevZCSigState.x_delay_Reset_ZCE_b = rtb_FixPtRelationalOperator_p;
     if (INS_DWork.icLoad_op != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 75;
            rtb_Saturation1_j_idx_0++) {
@@ -6281,13 +6886,13 @@ void INS_step(void)
       }
     }
 
-    /* Delay: '<S188>/x_delay1' */
-    if (rtb_FixPtRelationalOperator_kp && (INS_PrevZCSigState.x_delay1_Reset_ZCE
+    /* Delay: '<S204>/x_delay1' */
+    if (rtb_FixPtRelationalOperator_p && (INS_PrevZCSigState.x_delay1_Reset_ZCE
          != POS_ZCSIG)) {
       INS_DWork.icLoad_i = 1U;
     }
 
-    INS_PrevZCSigState.x_delay1_Reset_ZCE = rtb_FixPtRelationalOperator_kp;
+    INS_PrevZCSigState.x_delay1_Reset_ZCE = rtb_FixPtRelationalOperator_p;
     if (INS_DWork.icLoad_i != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 75;
            rtb_Saturation1_j_idx_0++) {
@@ -6295,13 +6900,13 @@ void INS_step(void)
       }
     }
 
-    /* Delay: '<S188>/vn_delay' */
-    if (rtb_FixPtRelationalOperator_kp &&
+    /* Delay: '<S204>/vn_delay' */
+    if (rtb_FixPtRelationalOperator_p &&
         (INS_PrevZCSigState.vn_delay_Reset_ZCE_p != POS_ZCSIG)) {
       INS_DWork.icLoad_m = 1U;
     }
 
-    INS_PrevZCSigState.vn_delay_Reset_ZCE_p = rtb_FixPtRelationalOperator_kp;
+    INS_PrevZCSigState.vn_delay_Reset_ZCE_p = rtb_FixPtRelationalOperator_p;
     if (INS_DWork.icLoad_m != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 50;
            rtb_Saturation1_j_idx_0++) {
@@ -6309,13 +6914,13 @@ void INS_step(void)
       }
     }
 
-    /* Delay: '<S188>/vn_delay1' */
-    if (rtb_FixPtRelationalOperator_kp &&
-        (INS_PrevZCSigState.vn_delay1_Reset_ZCE != POS_ZCSIG)) {
+    /* Delay: '<S204>/vn_delay1' */
+    if (rtb_FixPtRelationalOperator_p && (INS_PrevZCSigState.vn_delay1_Reset_ZCE
+         != POS_ZCSIG)) {
       INS_DWork.icLoad_jp = 1U;
     }
 
-    INS_PrevZCSigState.vn_delay1_Reset_ZCE = rtb_FixPtRelationalOperator_kp;
+    INS_PrevZCSigState.vn_delay1_Reset_ZCE = rtb_FixPtRelationalOperator_p;
     if (INS_DWork.icLoad_jp != 0) {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 50;
            rtb_Saturation1_j_idx_0++) {
@@ -6324,11 +6929,11 @@ void INS_step(void)
     }
 
     /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-    /* DataTypeConversion: '<S189>/Data Type Conversion' incorporates:
-     *  Product: '<S189>/Multiply'
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy3Inport1'
-     *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy4Inport1'
-     *  Sum: '<S189>/Sum'
+    /* DataTypeConversion: '<S205>/Data Type Conversion' incorporates:
+     *  Product: '<S205>/Multiply'
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy3Inport1'
+     *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy4Inport1'
+     *  Sum: '<S205>/Sum'
      */
     rtb_dec_rad = (real32_T)((rtb_Scalefactor1 - rtb_Switch4_c_idx_0) *
       rtb_DataTypeConversion1);
@@ -6337,15 +6942,15 @@ void INS_step(void)
 
     /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-    /* RelationalOperator: '<S193>/FixPt Relational Operator' incorporates:
-     *  UnitDelay: '<S193>/Delay Input1'
+    /* RelationalOperator: '<S209>/FixPt Relational Operator' incorporates:
+     *  UnitDelay: '<S209>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (1 > (int32_T)INS_DWork.DelayInput1_DSTATE_gn);
 
-    /* Switch: '<S191>/Switch' incorporates:
-     *  DataTypeConversion: '<S189>/Data Type Conversion'
-     *  Memory: '<S191>/Memory'
-     *  Sum: '<S192>/Sum'
+    /* Switch: '<S207>/Switch' incorporates:
+     *  DataTypeConversion: '<S205>/Data Type Conversion'
+     *  Memory: '<S207>/Memory'
+     *  Sum: '<S208>/Sum'
      */
     if (rtb_WGS84_pos_valid) {
       rtb_Sum_gn_idx_1 = rtb_Sum_g0[0] - rtb_dec_rad;
@@ -6355,15 +6960,15 @@ void INS_step(void)
       rtb_DiscreteTimeIntegrator_g = INS_DWork.Memory_PreviousInput_d[1];
     }
 
-    /* End of Switch: '<S191>/Switch' */
+    /* End of Switch: '<S207>/Switch' */
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/GPS_PreProcess' */
-    /* Logic: '<S184>/Logical Operator' incorporates:
+    /* Logic: '<S200>/Logical Operator' incorporates:
      *  Inport: '<Root>/GPS_uBlox'
-     *  RelationalOperator: '<S185>/FixPt Relational Operator'
-     *  SignalConversion: '<S326>/BusConversion_InsertedFor_GPS_Data_at_inport_0'
-     *  UnitDelay: '<S185>/Delay Input1'
+     *  RelationalOperator: '<S201>/FixPt Relational Operator'
+     *  SignalConversion: '<S359>/BusConversion_InsertedFor_GPS_Data_at_inport_0'
+     *  UnitDelay: '<S201>/Delay Input1'
      */
     rtb_WGS84_pos_valid = (rtb_WGS84_pos_valid || (INS_U.GPS_uBlox.timestamp !=
       INS_DWork.DelayInput1_DSTATE_d0));
@@ -6371,149 +6976,356 @@ void INS_step(void)
     /* End of Outputs for SubSystem: '<S3>/GPS_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Switch: '<S186>/Switch' incorporates:
-     *  DataTypeConversion: '<S189>/Data Type Conversion'
-     *  Delay: '<S188>/x_delay'
-     *  Delay: '<S188>/x_delay1'
-     *  Gain: '<S187>/Gain'
-     *  Gain: '<S187>/Gain2'
-     *  Gain: '<S187>/Gain3'
-     *  Memory: '<S186>/Memory'
-     *  Sum: '<S184>/Sum'
-     *  Sum: '<S190>/Sum1'
+    /* Switch: '<S202>/Switch' incorporates:
+     *  DataTypeConversion: '<S205>/Data Type Conversion'
+     *  Delay: '<S204>/x_delay'
+     *  Delay: '<S204>/x_delay1'
+     *  Gain: '<S203>/Gain'
+     *  Gain: '<S203>/Gain2'
+     *  Gain: '<S203>/Gain3'
+     *  Memory: '<S202>/Memory'
+     *  Sum: '<S200>/Sum'
+     *  Sum: '<S206>/Sum1'
      */
     if (rtb_WGS84_pos_valid) {
       /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-      /* Sum: '<S184>/Sum' incorporates:
-       *  Delay: '<S188>/vn_delay'
-       *  Delay: '<S188>/vn_delay1'
-       *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy6Inport1'
-       *  SignalConversion: '<S269>/TmpSignal ConversionAtSignal Copy7Inport1'
+      /* Sum: '<S200>/Sum' incorporates:
+       *  Delay: '<S204>/vn_delay'
+       *  Delay: '<S204>/vn_delay1'
+       *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy6Inport1'
+       *  SignalConversion: '<S300>/TmpSignal ConversionAtSignal Copy7Inport1'
        */
       rtb_MathFunction_e_idx_2 = rtb_Divide1 - INS_DWork.vn_delay_DSTATE_n[0U];
-      rtb_DiscreteTimeIntegrator_m = rtb_Sum2_by - INS_DWork.vn_delay1_DSTATE[0U];
+      rtb_Multiply2 = rtb_Sum2_by - INS_DWork.vn_delay1_DSTATE[0U];
 
       /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
-      rtb_Switch_f[0] = ((rtb_dec_rad + rtb_Sum_gn_idx_1) -
-                         INS_DWork.x_delay_DSTATE_k[0U]) *
+      rtb_Switch_nv[0] = ((rtb_dec_rad + rtb_Sum_gn_idx_1) -
+                          INS_DWork.x_delay_DSTATE_k[0U]) *
         INS_PARAM.GPS_POS_GAIN;
-      rtb_Switch_f[2] = INS_PARAM.GPS_VEL_GAIN * rtb_MathFunction_e_idx_2;
-      rtb_Switch_f[4] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_MathFunction_e_idx_2;
-      rtb_Switch_f[1] = ((rtb_Memory_m_idx_1 + rtb_DiscreteTimeIntegrator_g) -
-                         INS_DWork.x_delay1_DSTATE[0U]) * INS_PARAM.GPS_POS_GAIN;
-      rtb_Switch_f[3] = INS_PARAM.GPS_VEL_GAIN * rtb_DiscreteTimeIntegrator_m;
-      rtb_Switch_f[5] = -INS_PARAM.GPS_BIAS_A_GAIN *
-        rtb_DiscreteTimeIntegrator_m;
+      rtb_Switch_nv[2] = INS_PARAM.GPS_VEL_GAIN * rtb_MathFunction_e_idx_2;
+      rtb_Switch_nv[4] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_MathFunction_e_idx_2;
+      rtb_Switch_nv[1] = ((rtb_Memory_m_idx_1 + rtb_DiscreteTimeIntegrator_g) -
+                          INS_DWork.x_delay1_DSTATE[0U]) *
+        INS_PARAM.GPS_POS_GAIN;
+      rtb_Switch_nv[3] = INS_PARAM.GPS_VEL_GAIN * rtb_Multiply2;
+      rtb_Switch_nv[5] = -INS_PARAM.GPS_BIAS_A_GAIN * rtb_Multiply2;
     } else {
       for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
            rtb_Saturation1_j_idx_0++) {
-        rtb_Switch_f[rtb_Saturation1_j_idx_0] =
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0] =
           INS_DWork.Memory_PreviousInput_h[rtb_Saturation1_j_idx_0];
       }
     }
 
-    /* End of Switch: '<S186>/Switch' */
+    /* End of Switch: '<S202>/Switch' */
 
-    /* Sum: '<S184>/Sum1' incorporates:
-     *  Gain: '<S186>/Gain3'
+    /* Sum: '<S200>/Sum1' incorporates:
+     *  Gain: '<S202>/Gain3'
      */
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
          rtb_Saturation1_j_idx_0++) {
       INS_B.Sum1_o[rtb_Saturation1_j_idx_0] = INS_P.Gain3_Gain_o *
-        rtb_Switch_f[rtb_Saturation1_j_idx_0] +
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0] +
         rtb_Sum_g0[rtb_Saturation1_j_idx_0];
     }
 
-    /* End of Sum: '<S184>/Sum1' */
+    /* End of Sum: '<S200>/Sum1' */
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* Outputs for Atomic SubSystem: '<S3>/GPS_PreProcess' */
-    /* Update for UnitDelay: '<S185>/Delay Input1' incorporates:
+    /* Update for UnitDelay: '<S201>/Delay Input1' incorporates:
      *  Inport: '<Root>/GPS_uBlox'
-     *  SignalConversion: '<S326>/BusConversion_InsertedFor_GPS_Data_at_inport_0'
+     *  SignalConversion: '<S359>/BusConversion_InsertedFor_GPS_Data_at_inport_0'
      */
     INS_DWork.DelayInput1_DSTATE_d0 = INS_U.GPS_uBlox.timestamp;
 
     /* End of Outputs for SubSystem: '<S3>/GPS_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
-    /* Update for Delay: '<S188>/x_delay' */
+    /* Update for Delay: '<S204>/x_delay' */
     INS_DWork.icLoad_op = 0U;
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 74;
          rtb_Saturation1_j_idx_0++) {
       INS_DWork.x_delay_DSTATE_k[rtb_Saturation1_j_idx_0] =
         INS_DWork.x_delay_DSTATE_k[rtb_Saturation1_j_idx_0 + 1];
 
-      /* Update for Delay: '<S188>/x_delay1' */
+      /* Update for Delay: '<S204>/x_delay1' */
       INS_DWork.x_delay1_DSTATE[rtb_Saturation1_j_idx_0] =
         INS_DWork.x_delay1_DSTATE[rtb_Saturation1_j_idx_0 + 1];
     }
 
     INS_DWork.x_delay_DSTATE_k[74] = rtb_Sum_g0[0];
 
-    /* End of Update for Delay: '<S188>/x_delay' */
+    /* End of Update for Delay: '<S204>/x_delay' */
 
-    /* Update for Delay: '<S188>/x_delay1' */
+    /* Update for Delay: '<S204>/x_delay1' */
     INS_DWork.icLoad_i = 0U;
     INS_DWork.x_delay1_DSTATE[74] = rtb_Sum_g0[1];
 
-    /* Update for Delay: '<S188>/vn_delay' */
+    /* Update for Delay: '<S204>/vn_delay' */
     INS_DWork.icLoad_m = 0U;
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 49;
          rtb_Saturation1_j_idx_0++) {
       INS_DWork.vn_delay_DSTATE_n[rtb_Saturation1_j_idx_0] =
         INS_DWork.vn_delay_DSTATE_n[rtb_Saturation1_j_idx_0 + 1];
 
-      /* Update for Delay: '<S188>/vn_delay1' */
+      /* Update for Delay: '<S204>/vn_delay1' */
       INS_DWork.vn_delay1_DSTATE[rtb_Saturation1_j_idx_0] =
         INS_DWork.vn_delay1_DSTATE[rtb_Saturation1_j_idx_0 + 1];
     }
 
     INS_DWork.vn_delay_DSTATE_n[49] = rtb_Sum_g0[2];
 
-    /* End of Update for Delay: '<S188>/vn_delay' */
+    /* End of Update for Delay: '<S204>/vn_delay' */
 
-    /* Update for Delay: '<S188>/vn_delay1' */
+    /* Update for Delay: '<S204>/vn_delay1' */
     INS_DWork.icLoad_jp = 0U;
     INS_DWork.vn_delay1_DSTATE[49] = rtb_Sum_g0[3];
 
-    /* Update for UnitDelay: '<S193>/Delay Input1' */
+    /* Update for UnitDelay: '<S209>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_gn = true;
 
-    /* Update for Memory: '<S191>/Memory' */
+    /* Update for Memory: '<S207>/Memory' */
     INS_DWork.Memory_PreviousInput_d[0] = rtb_Sum_gn_idx_1;
     INS_DWork.Memory_PreviousInput_d[1] = rtb_DiscreteTimeIntegrator_g;
 
-    /* Update for Memory: '<S186>/Memory' */
+    /* Update for Memory: '<S202>/Memory' */
     for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
          rtb_Saturation1_j_idx_0++) {
       INS_DWork.Memory_PreviousInput_h[rtb_Saturation1_j_idx_0] =
-        rtb_Switch_f[rtb_Saturation1_j_idx_0];
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0];
     }
 
-    /* End of Update for Memory: '<S186>/Memory' */
+    /* End of Update for Memory: '<S202>/Memory' */
   } else {
     if (INS_DWork.GPS_Correct_MODE_o) {
       INS_DWork.GPS_Correct_MODE_o = false;
     }
   }
 
-  /* End of Outputs for SubSystem: '<S182>/GPS_Correct' */
+  /* End of Outputs for SubSystem: '<S189>/GPS_Correct' */
 
-  /* Switch: '<S182>/Switch' */
+  /* Switch: '<S189>/Switch' */
   for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 6;
        rtb_Saturation1_j_idx_1_0++) {
     rtb_Sum2_m = rtb_Sum_g0[rtb_Saturation1_j_idx_1_0];
-    if (rtb_LogicalOperator2_f) {
+    if (rtb_LogicalOperator2_g) {
       rtb_Sum2_m = INS_B.Sum1_o[rtb_Saturation1_j_idx_1_0];
     }
 
     rtb_Sum_g0[rtb_Saturation1_j_idx_1_0] = rtb_Sum2_m;
   }
 
-  /* End of Switch: '<S182>/Switch' */
+  /* End of Switch: '<S189>/Switch' */
 
-  /* Signum: '<S179>/Sign' */
+  /* Outputs for Enabled SubSystem: '<S188>/ExternalPos_Correct' incorporates:
+   *  EnablePort: '<S191>/Enable'
+   */
+  if (rtb_Compare_o) {
+    if (!INS_DWork.ExternalPos_Correct_MODE_k) {
+      /* InitializeConditions for UnitDelay: '<S192>/Delay Input1' */
+      INS_DWork.DelayInput1_DSTATE_no = INS_P.DetectChange_vinit;
+
+      /* InitializeConditions for Delay: '<S195>/x_delay' */
+      INS_DWork.icLoad_hw = 1U;
+
+      /* InitializeConditions for Delay: '<S195>/x_delay1' */
+      INS_DWork.icLoad_od = 1U;
+
+      /* InitializeConditions for UnitDelay: '<S199>/Delay Input1' */
+      INS_DWork.DelayInput1_DSTATE_dp5 = INS_P.DetectIncrease_vinit_m;
+
+      /* InitializeConditions for Delay: '<S197>/Delay' */
+      INS_DWork.Delay_DSTATE_k[0] = INS_P.Delay_InitialCondition_e;
+      INS_DWork.Delay_DSTATE_k[1] = INS_P.Delay_InitialCondition_e;
+
+      /* InitializeConditions for Memory: '<S193>/Memory' */
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.Memory_PreviousInput_m[rtb_Saturation1_j_idx_0] =
+          INS_P.Memory_InitialCondition;
+      }
+
+      /* End of InitializeConditions for Memory: '<S193>/Memory' */
+      INS_DWork.ExternalPos_Correct_MODE_k = true;
+    }
+
+    /* Delay: '<S195>/x_delay' */
+    if (rtb_FixPtRelationalOperator_p &&
+        (INS_PrevZCSigState.x_delay_Reset_ZCE_lr != POS_ZCSIG)) {
+      INS_DWork.icLoad_hw = 1U;
+    }
+
+    INS_PrevZCSigState.x_delay_Reset_ZCE_lr = rtb_FixPtRelationalOperator_p;
+    if (INS_DWork.icLoad_hw != 0) {
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.x_delay_DSTATE_l[rtb_Saturation1_j_idx_0] = rtb_Sum_g0[0];
+      }
+    }
+
+    /* Delay: '<S195>/x_delay1' */
+    if (rtb_FixPtRelationalOperator_p &&
+        (INS_PrevZCSigState.x_delay1_Reset_ZCE_b != POS_ZCSIG)) {
+      INS_DWork.icLoad_od = 1U;
+    }
+
+    INS_PrevZCSigState.x_delay1_Reset_ZCE_b = rtb_FixPtRelationalOperator_p;
+    if (INS_DWork.icLoad_od != 0) {
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 5;
+           rtb_Saturation1_j_idx_0++) {
+        INS_DWork.x_delay1_DSTATE_m[rtb_Saturation1_j_idx_0] = rtb_Sum_g0[1];
+      }
+    }
+
+    /* RelationalOperator: '<S199>/FixPt Relational Operator' incorporates:
+     *  UnitDelay: '<S199>/Delay Input1'
+     */
+    rtb_WGS84_pos_valid = (1 > (int32_T)INS_DWork.DelayInput1_DSTATE_dp5);
+
+    /* Switch: '<S197>/Switch' incorporates:
+     *  Delay: '<S197>/Delay'
+     *  SignalConversion: '<S299>/TmpSignal ConversionAtSignal Copy1Inport1'
+     *  SignalConversion: '<S299>/TmpSignal ConversionAtSignal Copy2Inport1'
+     *  Sum: '<S198>/Sum'
+     */
+    if (rtb_WGS84_pos_valid) {
+      /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
+      rtb_dec_rad = rtb_Sum_g0[0] - rtb_Multiply_hs[0];
+      rtb_Memory_m_idx_1 = rtb_Sum_g0[1] - rtb_Multiply_hs[1];
+
+      /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
+    } else {
+      rtb_dec_rad = INS_DWork.Delay_DSTATE_k[0];
+      rtb_Memory_m_idx_1 = INS_DWork.Delay_DSTATE_k[1];
+    }
+
+    /* End of Switch: '<S197>/Switch' */
+
+    /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+    /* Logic: '<S191>/Logical Operator' incorporates:
+     *  Inport: '<Root>/External_Pos'
+     *  RelationalOperator: '<S192>/FixPt Relational Operator'
+     *  SignalConversion: '<S358>/TmpSignal ConversionAtSignal CopyInport1'
+     *  UnitDelay: '<S192>/Delay Input1'
+     */
+    rtb_WGS84_pos_valid = (rtb_WGS84_pos_valid || (INS_U.External_Pos.timestamp
+      != INS_DWork.DelayInput1_DSTATE_no));
+
+    /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+    /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
+
+    /* Switch: '<S193>/Switch' incorporates:
+     *  Gain: '<S194>/Gain'
+     *  Gain: '<S194>/Gain2'
+     *  Gain: '<S194>/Gain3'
+     *  Memory: '<S193>/Memory'
+     */
+    if (rtb_WGS84_pos_valid) {
+      /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
+      /* Sum: '<S191>/Sum' incorporates:
+       *  Delay: '<S195>/x_delay'
+       *  Delay: '<S195>/x_delay1'
+       *  SignalConversion: '<S299>/TmpSignal ConversionAtSignal Copy1Inport1'
+       *  SignalConversion: '<S299>/TmpSignal ConversionAtSignal Copy2Inport1'
+       *  Sum: '<S196>/Sum1'
+       */
+      rtb_Sum_gn_idx_1 = (rtb_Multiply_hs[0] + rtb_dec_rad) -
+        INS_DWork.x_delay_DSTATE_l[0U];
+      rtb_DiscreteTimeIntegrator_g = (rtb_Multiply_hs[1] + rtb_Memory_m_idx_1) -
+        INS_DWork.x_delay1_DSTATE_m[0U];
+
+      /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
+      rtb_Switch_nv[0] = INS_PARAM.EXTPOS_POS_GAIN * rtb_Sum_gn_idx_1;
+      rtb_Switch_nv[2] = INS_PARAM.EXTPOS_VEL_GAIN * rtb_Sum_gn_idx_1;
+      rtb_Switch_nv[4] = -INS_PARAM.EXTPOS_BIAS_A_GAIN * rtb_Sum_gn_idx_1;
+      rtb_Switch_nv[1] = INS_PARAM.EXTPOS_POS_GAIN *
+        rtb_DiscreteTimeIntegrator_g;
+      rtb_Switch_nv[3] = INS_PARAM.EXTPOS_VEL_GAIN *
+        rtb_DiscreteTimeIntegrator_g;
+      rtb_Switch_nv[5] = -INS_PARAM.EXTPOS_BIAS_A_GAIN *
+        rtb_DiscreteTimeIntegrator_g;
+    } else {
+      for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
+           rtb_Saturation1_j_idx_0++) {
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0] =
+          INS_DWork.Memory_PreviousInput_m[rtb_Saturation1_j_idx_0];
+      }
+    }
+
+    /* End of Switch: '<S193>/Switch' */
+
+    /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+    /* Update for UnitDelay: '<S192>/Delay Input1' incorporates:
+     *  Inport: '<Root>/External_Pos'
+     *  SignalConversion: '<S358>/TmpSignal ConversionAtSignal CopyInport1'
+     */
+    INS_DWork.DelayInput1_DSTATE_no = INS_U.External_Pos.timestamp;
+
+    /* End of Outputs for SubSystem: '<S3>/ExternalPos_Process' */
+    /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
+
+    /* Update for Delay: '<S195>/x_delay' */
+    INS_DWork.icLoad_hw = 0U;
+    INS_DWork.x_delay_DSTATE_l[0] = INS_DWork.x_delay_DSTATE_l[1];
+    INS_DWork.x_delay_DSTATE_l[1] = INS_DWork.x_delay_DSTATE_l[2];
+    INS_DWork.x_delay_DSTATE_l[2] = INS_DWork.x_delay_DSTATE_l[3];
+    INS_DWork.x_delay_DSTATE_l[3] = INS_DWork.x_delay_DSTATE_l[4];
+    INS_DWork.x_delay_DSTATE_l[4] = rtb_Sum_g0[0];
+
+    /* Update for Delay: '<S195>/x_delay1' */
+    INS_DWork.icLoad_od = 0U;
+    INS_DWork.x_delay1_DSTATE_m[0] = INS_DWork.x_delay1_DSTATE_m[1];
+    INS_DWork.x_delay1_DSTATE_m[1] = INS_DWork.x_delay1_DSTATE_m[2];
+    INS_DWork.x_delay1_DSTATE_m[2] = INS_DWork.x_delay1_DSTATE_m[3];
+    INS_DWork.x_delay1_DSTATE_m[3] = INS_DWork.x_delay1_DSTATE_m[4];
+    INS_DWork.x_delay1_DSTATE_m[4] = rtb_Sum_g0[1];
+
+    /* Update for UnitDelay: '<S199>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_dp5 = true;
+
+    /* Update for Delay: '<S197>/Delay' */
+    INS_DWork.Delay_DSTATE_k[0] = rtb_dec_rad;
+    INS_DWork.Delay_DSTATE_k[1] = rtb_Memory_m_idx_1;
+    for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
+         rtb_Saturation1_j_idx_0++) {
+      /* Sum: '<S191>/Sum1' incorporates:
+       *  Gain: '<S193>/Gain3'
+       */
+      INS_B.Sum1_b[rtb_Saturation1_j_idx_0] = INS_P.Gain3_Gain_ev *
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0] +
+        rtb_Sum_g0[rtb_Saturation1_j_idx_0];
+
+      /* Update for Memory: '<S193>/Memory' incorporates:
+       *  Gain: '<S193>/Gain3'
+       */
+      INS_DWork.Memory_PreviousInput_m[rtb_Saturation1_j_idx_0] =
+        rtb_Switch_nv[rtb_Saturation1_j_idx_0];
+    }
+  } else {
+    if (INS_DWork.ExternalPos_Correct_MODE_k) {
+      INS_DWork.ExternalPos_Correct_MODE_k = false;
+    }
+  }
+
+  /* End of Outputs for SubSystem: '<S188>/ExternalPos_Correct' */
+
+  /* Switch: '<S188>/Switch' */
+  for (rtb_Saturation1_j_idx_1_0 = 0; rtb_Saturation1_j_idx_1_0 < 6;
+       rtb_Saturation1_j_idx_1_0++) {
+    rtb_Sum2_m = rtb_Sum_g0[rtb_Saturation1_j_idx_1_0];
+    if (rtb_Compare_o) {
+      rtb_Sum2_m = INS_B.Sum1_b[rtb_Saturation1_j_idx_1_0];
+    }
+
+    rtb_Sum_g0[rtb_Saturation1_j_idx_1_0] = rtb_Sum2_m;
+  }
+
+  /* End of Switch: '<S188>/Switch' */
+
+  /* Signum: '<S185>/Sign' */
   if (rtb_DataTypeConversion1 < 0.0) {
     rtb_Scalefactor1 = -1.0;
   } else if (rtb_DataTypeConversion1 > 0.0) {
@@ -6522,19 +7334,19 @@ void INS_step(void)
     rtb_Scalefactor1 = rtb_DataTypeConversion1;
   }
 
-  /* Switch: '<S179>/Switch' incorporates:
-   *  Constant: '<S179>/Constant'
+  /* Switch: '<S185>/Switch' incorporates:
+   *  Constant: '<S185>/Constant'
    */
   if (rtb_Scalefactor1 == 0.0) {
     rtb_Scalefactor1 = INS_P.Constant_Value;
   }
 
-  /* Abs: '<S179>/Abs' incorporates:
-   *  Signum: '<S179>/Sign'
+  /* Abs: '<S185>/Abs' incorporates:
+   *  Signum: '<S185>/Sign'
    */
   rtb_Scalefactor2 = fabs(rtb_DataTypeConversion1);
 
-  /* Saturate: '<S179>/Saturation' */
+  /* Saturate: '<S185>/Saturation' */
   if (rtb_Scalefactor2 > INS_P.Saturation_UpperSat) {
     rtb_Scalefactor2 = INS_P.Saturation_UpperSat;
   } else {
@@ -6545,20 +7357,20 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
   /* Outport: '<Root>/INS_Out' incorporates:
-   *  DataTypeConversion: '<S176>/Data Type Conversion2'
-   *  DataTypeConversion: '<S177>/Data Type Conversion'
-   *  Product: '<S176>/Multiply'
-   *  Product: '<S178>/Divide'
-   *  Product: '<S179>/Product'
-   *  SignalConversion: '<S274>/TmpSignal ConversionAtSignal CopyInport1'
-   *  Sum: '<S177>/Sum'
+   *  DataTypeConversion: '<S182>/Data Type Conversion2'
+   *  DataTypeConversion: '<S183>/Data Type Conversion'
+   *  Product: '<S182>/Multiply'
+   *  Product: '<S184>/Divide'
+   *  Product: '<S185>/Product'
+   *  SignalConversion: '<S306>/TmpSignal ConversionAtSignal CopyInport1'
+   *  Sum: '<S183>/Sum'
    */
   INS_Y.INS_Out.lat = (rtb_Sum_g0[0] / (rtb_Scalefactor2 * rtb_Scalefactor1) +
                        rtb_Switch4_c_idx_0) * (real_T)rtb_Compare_cio;
 
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-  /* Signum: '<S179>/Sign' */
+  /* Signum: '<S185>/Sign' */
   if (rtb_DataTypeConversion2 < 0.0) {
     rtb_Scalefactor1 = -1.0;
   } else if (rtb_DataTypeConversion2 > 0.0) {
@@ -6567,19 +7379,19 @@ void INS_step(void)
     rtb_Scalefactor1 = rtb_DataTypeConversion2;
   }
 
-  /* Switch: '<S179>/Switch' incorporates:
-   *  Constant: '<S179>/Constant'
+  /* Switch: '<S185>/Switch' incorporates:
+   *  Constant: '<S185>/Constant'
    */
   if (rtb_Scalefactor1 == 0.0) {
     rtb_Scalefactor1 = INS_P.Constant_Value;
   }
 
-  /* Abs: '<S179>/Abs' incorporates:
-   *  Signum: '<S179>/Sign'
+  /* Abs: '<S185>/Abs' incorporates:
+   *  Signum: '<S185>/Sign'
    */
   rtb_Scalefactor2 = fabs(rtb_DataTypeConversion2);
 
-  /* Saturate: '<S179>/Saturation' */
+  /* Saturate: '<S185>/Saturation' */
   if (rtb_Scalefactor2 > INS_P.Saturation_UpperSat) {
     rtb_Scalefactor2 = INS_P.Saturation_UpperSat;
   } else {
@@ -6590,14 +7402,14 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
   /* Outport: '<Root>/INS_Out' incorporates:
-   *  DataTypeConversion: '<S176>/Data Type Conversion2'
-   *  DataTypeConversion: '<S177>/Data Type Conversion'
-   *  DataTypeConversion: '<S177>/Data Type Conversion1'
-   *  Product: '<S176>/Multiply'
-   *  Product: '<S178>/Divide'
-   *  Product: '<S179>/Product'
-   *  SignalConversion: '<S274>/TmpSignal ConversionAtSignal CopyInport1'
-   *  Sum: '<S177>/Sum'
+   *  DataTypeConversion: '<S182>/Data Type Conversion2'
+   *  DataTypeConversion: '<S183>/Data Type Conversion'
+   *  DataTypeConversion: '<S183>/Data Type Conversion1'
+   *  Product: '<S182>/Multiply'
+   *  Product: '<S184>/Divide'
+   *  Product: '<S185>/Product'
+   *  SignalConversion: '<S306>/TmpSignal ConversionAtSignal CopyInport1'
+   *  Sum: '<S183>/Sum'
    */
   INS_Y.INS_Out.lon = (rtb_Sum_g0[1] / (rtb_Scalefactor2 * rtb_Scalefactor1) +
                        rtb_Switch4_c_idx_1) * (real_T)rtb_Compare_cio;
@@ -6605,23 +7417,23 @@ void INS_step(void)
 
   /* End of Outputs for SubSystem: '<S56>/TF_Data_PreProcess' */
 
-  /* Update for Delay: '<S242>/Delay' */
+  /* Update for Delay: '<S268>/Delay' */
   INS_DWork.Delay_DSTATE_b[0] = rtb_MathFunction[0];
   INS_DWork.Delay_DSTATE_b[1] = rtb_MathFunction[1];
-  INS_DWork.Delay_DSTATE_b[2] = rtb_MathFunction_m;
+  INS_DWork.Delay_DSTATE_b[2] = rtb_M_OC_tmp;
 
-  /* Update for Delay: '<S200>/Delay' */
+  /* Update for Delay: '<S216>/Delay' */
   for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 6;
        rtb_Saturation1_j_idx_0++) {
     INS_DWork.Delay_DSTATE_l[rtb_Saturation1_j_idx_0] =
       rtb_Sum_g0[rtb_Saturation1_j_idx_0];
   }
 
-  /* End of Update for Delay: '<S200>/Delay' */
+  /* End of Update for Delay: '<S216>/Delay' */
   /* End of Outputs for SubSystem: '<S56>/CF' */
 
   /* Update for Delay: '<S56>/Delay' */
-  INS_DWork.Delay_4_DSTATE = rtb_Sum_g0[0];
+  INS_DWork.Delay_4_DSTATE_k = rtb_Sum_g0[0];
   INS_DWork.Delay_5_DSTATE = rtb_Sum_g0[1];
   INS_DWork.Delay_6_DSTATE = rtb_MathFunction[0];
 
@@ -6653,11 +7465,11 @@ void INS_step(void)
     /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
     /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
     /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
-    rtb_Gain_d[rtb_Saturation1_j_idx_1_0] =
+    rtb_Multiply_hs[rtb_Saturation1_j_idx_1_0] =
       rtb_VectorConcatenate1[rtb_Saturation1_j_idx_1_0] -
       ((rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 3] * rtb_Sum_g0[5] +
         rtb_M_OC[rtb_Saturation1_j_idx_1_0] * rtb_Sum_g0[4]) +
-       rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 6] * rtb_MathFunction_m);
+       rtb_M_OC[rtb_Saturation1_j_idx_1_0 + 6] * rtb_M_OC_tmp);
 
     /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
     /* End of Outputs for SubSystem: '<S55>/AHRS' */
@@ -6673,9 +7485,9 @@ void INS_step(void)
   /* RelationalOperator: '<S24>/Compare' incorporates:
    *  Constant: '<S24>/Constant'
    *  Logic: '<S9>/Logical Operator3'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_cio = ((rtb_Multiply_nm != 0) > (int32_T)
+  rtb_Compare_cio = ((rtb_Multiply_cb != 0) > (int32_T)
                      INS_P.CompareToConstant1_const_m);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
@@ -6701,7 +7513,7 @@ void INS_step(void)
   /* RelationalOperator: '<S39>/Compare' incorporates:
    *  Constant: '<S39>/Constant'
    */
-  rtb_WGS84_pos_valid = ((int32_T)rtb_Delay_c > (int32_T)
+  rtb_WGS84_pos_valid = ((int32_T)rtb_FixPtRelationalOperator_nc > (int32_T)
     INS_P.CompareToConstant1_const_j);
 
   /* DiscreteIntegrator: '<S15>/Discrete-Time Integrator' */
@@ -6732,9 +7544,9 @@ void INS_step(void)
   }
 
   if (INS_DWork.Relay1_Mode_j) {
-    rtb_Compare_o = INS_P.Relay1_YOn_i;
+    rtb_LogicalOperator2_g = INS_P.Relay1_YOn_i;
   } else {
-    rtb_Compare_o = INS_P.Relay1_YOff_k;
+    rtb_LogicalOperator2_g = INS_P.Relay1_YOff_k;
   }
 
   /* End of Relay: '<S9>/Relay1' */
@@ -6742,9 +7554,9 @@ void INS_step(void)
   /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
   /* Outputs for Atomic SubSystem: '<S56>/CF' */
   /* Logic: '<S9>/Logical Operator4' incorporates:
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_od = ((rtb_Multiply_nm != 0) || rtb_Compare_o);
+  rtb_Compare_ce = ((rtb_Multiply_cb != 0) || rtb_LogicalOperator2_g);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
@@ -6752,11 +7564,11 @@ void INS_step(void)
   /* RelationalOperator: '<S49>/Compare' incorporates:
    *  Constant: '<S49>/Constant'
    */
-  rtb_FixPtRelationalOperator_fe = ((int32_T)rtb_Compare_od > (int32_T)
+  rtb_FixPtRelationalOperator_p = ((int32_T)rtb_Compare_ce > (int32_T)
     INS_P.CompareToConstant1_const_g);
 
   /* DiscreteIntegrator: '<S17>/Discrete-Time Integrator' */
-  if (rtb_FixPtRelationalOperator_fe ||
+  if (rtb_FixPtRelationalOperator_p ||
       (INS_DWork.DiscreteTimeIntegrator_PrevR_dj != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_b3 =
       INS_P.DiscreteTimeIntegrator_IC_o;
@@ -6779,16 +7591,16 @@ void INS_step(void)
   /* RelationalOperator: '<S19>/Compare' incorporates:
    *  Constant: '<S19>/Constant'
    *  Logic: '<S9>/Logical Operator2'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_LogicalOperator2_f = ((rtb_Multiply_mf != 0) > (int32_T)
+  rtb_LogicalOperator2_g = ((rtb_Multiply_jy != 0) > (int32_T)
     INS_P.CompareToConstant1_const_e);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
 
   /* DiscreteIntegrator: '<S11>/Discrete-Time Integrator' */
-  if (rtb_LogicalOperator2_f || (INS_DWork.DiscreteTimeIntegrator_PrevR_h1 != 0))
+  if (rtb_LogicalOperator2_g || (INS_DWork.DiscreteTimeIntegrator_PrevR_h1 != 0))
   {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ca =
       INS_P.DiscreteTimeIntegrator_IC_l;
@@ -6811,16 +7623,17 @@ void INS_step(void)
   /* RelationalOperator: '<S29>/Compare' incorporates:
    *  Constant: '<S29>/Constant'
    *  Logic: '<S9>/Logical Operator1'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_o = ((rtb_Multiply_mf != 0) > (int32_T)
-                   INS_P.CompareToConstant1_const_ei);
+  rtb_LogicalOperator5 = ((rtb_Multiply_jy != 0) > (int32_T)
+    INS_P.CompareToConstant1_const_ei);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
 
   /* DiscreteIntegrator: '<S13>/Discrete-Time Integrator' */
-  if (rtb_Compare_o || (INS_DWork.DiscreteTimeIntegrator_PrevR_as != 0)) {
+  if (rtb_LogicalOperator5 || (INS_DWork.DiscreteTimeIntegrator_PrevR_as != 0))
+  {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_e =
       INS_P.DiscreteTimeIntegrator_IC_j;
   }
@@ -6842,16 +7655,16 @@ void INS_step(void)
   /* RelationalOperator: '<S34>/Compare' incorporates:
    *  Constant: '<S34>/Constant'
    *  Logic: '<S9>/Logical Operator'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_jx = ((rtb_Multiply_ni != 0) > (int32_T)
-                    INS_P.CompareToConstant1_const_ec);
+  rtb_Compare_o = ((rtb_Multiply_o != 0) > (int32_T)
+                   INS_P.CompareToConstant1_const_ec);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
 
   /* DiscreteIntegrator: '<S14>/Discrete-Time Integrator' */
-  if (rtb_Compare_jx || (INS_DWork.DiscreteTimeIntegrator_PrevRe_o != 0)) {
+  if (rtb_Compare_o || (INS_DWork.DiscreteTimeIntegrator_PrevRe_o != 0)) {
     INS_DWork.DiscreteTimeIntegrator_DSTAT_kg =
       INS_P.DiscreteTimeIntegrator_IC_ig;
   }
@@ -6873,16 +7686,17 @@ void INS_step(void)
   /* RelationalOperator: '<S44>/Compare' incorporates:
    *  Constant: '<S44>/Constant'
    *  Logic: '<S9>/Logical Operator5'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_ko = ((rtb_Multiply_lk != 0) > (int32_T)
-                    INS_P.CompareToConstant1_const_em);
+  rtb_LogicalOperator3 = ((rtb_Multiply_gs != 0) > (int32_T)
+    INS_P.CompareToConstant1_const_em);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
 
   /* DiscreteIntegrator: '<S16>/Discrete-Time Integrator' */
-  if (rtb_Compare_ko || (INS_DWork.DiscreteTimeIntegrator_PrevR_ar != 0)) {
+  if (rtb_LogicalOperator3 || (INS_DWork.DiscreteTimeIntegrator_PrevR_ar != 0))
+  {
     INS_DWork.DiscreteTimeIntegrator_DSTATE_a =
       INS_P.DiscreteTimeIntegrator_IC_e;
   }
@@ -6961,7 +7775,7 @@ void INS_step(void)
     (INS_DWork.DiscreteTimeIntegrator_DSTAT_bo < INS_P.valid_check2_time_out ?
      (int32_T)INS_DWork.Delay_DSTATE_bn : 0) * INS_P.Gain1_Gain_kq) >> 10)) +
                (((uint32_T)(INS_DWork.DiscreteTimeIntegrator_DSTATE_e <
-    INS_P.valid_check3_time_out ? (int32_T)INS_DWork.Delay_DSTATE_p : 0) *
+    INS_P.valid_check3_time_out ? (int32_T)INS_DWork.Delay_DSTATE_pk : 0) *
                  INS_P.Gain2_Gain_o5) >> 9)) + (((uint32_T)
     (INS_DWork.DiscreteTimeIntegrator_DSTAT_kg < INS_P.valid_check4_time_out ?
      (int32_T)INS_DWork.Delay_DSTATE_db : 0) * INS_P.Gain4_Gain_a) >> 8)) +
@@ -6976,9 +7790,9 @@ void INS_step(void)
    *  Constant: '<S22>/Constant'
    *  Logic: '<S9>/Logical Operator2'
    *  RelationalOperator: '<S20>/Compare'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_jv = (((rtb_Multiply_mf != 0) > (int32_T)
+  rtb_Compare_jx = (((rtb_Multiply_jy != 0) > (int32_T)
                      INS_P.CompareToConstant2_const) > (int32_T)
                     INS_P.Constant_Value_mt);
 
@@ -6987,9 +7801,9 @@ void INS_step(void)
    *  Constant: '<S27>/Constant'
    *  Logic: '<S9>/Logical Operator3'
    *  RelationalOperator: '<S25>/Compare'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_nt = (((rtb_Multiply_nm != 0) > (int32_T)
+  rtb_Compare_og = (((rtb_Multiply_cb != 0) > (int32_T)
                      INS_P.CompareToConstant2_const_c) > (int32_T)
                     INS_P.Constant_Value_m2);
 
@@ -6998,9 +7812,9 @@ void INS_step(void)
    *  Constant: '<S32>/Constant'
    *  Logic: '<S9>/Logical Operator1'
    *  RelationalOperator: '<S30>/Compare'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_Compare_i5 = (((rtb_Multiply_mf != 0) > (int32_T)
+  rtb_Compare_nw = (((rtb_Multiply_jy != 0) > (int32_T)
                      INS_P.CompareToConstant2_const_n) > (int32_T)
                     INS_P.Constant_Value_o2);
 
@@ -7009,10 +7823,11 @@ void INS_step(void)
    *  Constant: '<S37>/Constant'
    *  Logic: '<S9>/Logical Operator'
    *  RelationalOperator: '<S35>/Compare'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_LogicalOperator1_cc = (((rtb_Multiply_ni != 0) > (int32_T)
-    INS_P.CompareToConstant2_const_b) > (int32_T)INS_P.Constant_Value_hk);
+  rtb_Compare_nt = (((rtb_Multiply_o != 0) > (int32_T)
+                     INS_P.CompareToConstant2_const_b) > (int32_T)
+                    INS_P.Constant_Value_hk);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
   /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
@@ -7022,7 +7837,7 @@ void INS_step(void)
    *  Constant: '<S42>/Constant'
    *  RelationalOperator: '<S40>/Compare'
    */
-  rtb_Compare_ce = (((int32_T)rtb_Delay_c > (int32_T)
+  rtb_Compare_i5 = (((int32_T)rtb_FixPtRelationalOperator_nc > (int32_T)
                      INS_P.CompareToConstant2_const_i) > (int32_T)
                     INS_P.Constant_Value_l1);
 
@@ -7033,9 +7848,9 @@ void INS_step(void)
    *  Constant: '<S47>/Constant'
    *  Logic: '<S9>/Logical Operator5'
    *  RelationalOperator: '<S45>/Compare'
-   *  SignalConversion: '<S168>/Signal Copy'
+   *  SignalConversion: '<S174>/Signal Copy'
    */
-  rtb_FixPtRelationalOperator_kp = (((rtb_Multiply_lk != 0) > (int32_T)
+  rtb_LogicalOperator1_cc = (((rtb_Multiply_gs != 0) > (int32_T)
     INS_P.CompareToConstant2_const_l) > (int32_T)INS_P.Constant_Value_m2n);
 
   /* End of Outputs for SubSystem: '<S56>/CF' */
@@ -7046,7 +7861,7 @@ void INS_step(void)
    *  Constant: '<S52>/Constant'
    *  RelationalOperator: '<S50>/Compare'
    */
-  rtb_Compare_od = (((int32_T)rtb_Compare_od > (int32_T)
+  rtb_Compare_ce = (((int32_T)rtb_Compare_ce > (int32_T)
                      INS_P.CompareToConstant2_const_i1) > (int32_T)
                     INS_P.Constant_Value_ao);
 
@@ -7076,7 +7891,7 @@ void INS_step(void)
    *  RelationalOperator: '<S26>/FixPt Relational Operator'
    *  UnitDelay: '<S26>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_bn = (((int32_T)rtb_Compare_nt > (int32_T)
+  INS_DWork.Delay_DSTATE_bn = (((int32_T)rtb_Compare_og > (int32_T)
     INS_DWork.DelayInput1_DSTATE_mu) || INS_DWork.Delay_DSTATE_bn);
 
   /* Update for DiscreteIntegrator: '<S15>/Discrete-Time Integrator' incorporates:
@@ -7105,7 +7920,7 @@ void INS_step(void)
    *  RelationalOperator: '<S41>/FixPt Relational Operator'
    *  UnitDelay: '<S41>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_cx = (((int32_T)rtb_Compare_ce > (int32_T)
+  INS_DWork.Delay_DSTATE_cx = (((int32_T)rtb_Compare_i5 > (int32_T)
     INS_DWork.DelayInput1_DSTATE_ng) || INS_DWork.Delay_DSTATE_cx);
 
   /* Update for DiscreteIntegrator: '<S17>/Discrete-Time Integrator' incorporates:
@@ -7126,7 +7941,7 @@ void INS_step(void)
   }
 
   INS_DWork.DiscreteTimeIntegrator_PrevR_dj = (int8_T)
-    rtb_FixPtRelationalOperator_fe;
+    rtb_FixPtRelationalOperator_p;
 
   /* End of Update for DiscreteIntegrator: '<S17>/Discrete-Time Integrator' */
 
@@ -7135,7 +7950,7 @@ void INS_step(void)
    *  RelationalOperator: '<S51>/FixPt Relational Operator'
    *  UnitDelay: '<S51>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_l0 = (((int32_T)rtb_Compare_od > (int32_T)
+  INS_DWork.Delay_DSTATE_l0 = (((int32_T)rtb_Compare_ce > (int32_T)
     INS_DWork.DelayInput1_DSTATE_fq) || INS_DWork.Delay_DSTATE_l0);
 
   /* Update for DiscreteIntegrator: '<S11>/Discrete-Time Integrator' incorporates:
@@ -7155,7 +7970,7 @@ void INS_step(void)
     }
   }
 
-  INS_DWork.DiscreteTimeIntegrator_PrevR_h1 = (int8_T)rtb_LogicalOperator2_f;
+  INS_DWork.DiscreteTimeIntegrator_PrevR_h1 = (int8_T)rtb_LogicalOperator2_g;
 
   /* End of Update for DiscreteIntegrator: '<S11>/Discrete-Time Integrator' */
 
@@ -7164,7 +7979,7 @@ void INS_step(void)
    *  RelationalOperator: '<S21>/FixPt Relational Operator'
    *  UnitDelay: '<S21>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_cn = (((int32_T)rtb_Compare_jv > (int32_T)
+  INS_DWork.Delay_DSTATE_cn = (((int32_T)rtb_Compare_jx > (int32_T)
     INS_DWork.DelayInput1_DSTATE_dx) || INS_DWork.Delay_DSTATE_cn);
 
   /* Update for DiscreteIntegrator: '<S13>/Discrete-Time Integrator' incorporates:
@@ -7184,7 +7999,7 @@ void INS_step(void)
     }
   }
 
-  INS_DWork.DiscreteTimeIntegrator_PrevR_as = (int8_T)rtb_Compare_o;
+  INS_DWork.DiscreteTimeIntegrator_PrevR_as = (int8_T)rtb_LogicalOperator5;
 
   /* End of Update for DiscreteIntegrator: '<S13>/Discrete-Time Integrator' */
 
@@ -7193,8 +8008,8 @@ void INS_step(void)
    *  RelationalOperator: '<S31>/FixPt Relational Operator'
    *  UnitDelay: '<S31>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_p = (((int32_T)rtb_Compare_i5 > (int32_T)
-    INS_DWork.DelayInput1_DSTATE_dq) || INS_DWork.Delay_DSTATE_p);
+  INS_DWork.Delay_DSTATE_pk = (((int32_T)rtb_Compare_nw > (int32_T)
+    INS_DWork.DelayInput1_DSTATE_dq) || INS_DWork.Delay_DSTATE_pk);
 
   /* Update for DiscreteIntegrator: '<S14>/Discrete-Time Integrator' incorporates:
    *  Constant: '<S14>/Constant'
@@ -7213,7 +8028,7 @@ void INS_step(void)
     }
   }
 
-  INS_DWork.DiscreteTimeIntegrator_PrevRe_o = (int8_T)rtb_Compare_jx;
+  INS_DWork.DiscreteTimeIntegrator_PrevRe_o = (int8_T)rtb_Compare_o;
 
   /* End of Update for DiscreteIntegrator: '<S14>/Discrete-Time Integrator' */
 
@@ -7222,7 +8037,7 @@ void INS_step(void)
    *  RelationalOperator: '<S36>/FixPt Relational Operator'
    *  UnitDelay: '<S36>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_db = (((int32_T)rtb_LogicalOperator1_cc > (int32_T)
+  INS_DWork.Delay_DSTATE_db = (((int32_T)rtb_Compare_nt > (int32_T)
     INS_DWork.DelayInput1_DSTATE_f4) || INS_DWork.Delay_DSTATE_db);
 
   /* Update for DiscreteIntegrator: '<S16>/Discrete-Time Integrator' incorporates:
@@ -7242,7 +8057,7 @@ void INS_step(void)
     }
   }
 
-  INS_DWork.DiscreteTimeIntegrator_PrevR_ar = (int8_T)rtb_Compare_ko;
+  INS_DWork.DiscreteTimeIntegrator_PrevR_ar = (int8_T)rtb_LogicalOperator3;
 
   /* End of Update for DiscreteIntegrator: '<S16>/Discrete-Time Integrator' */
 
@@ -7251,29 +8066,29 @@ void INS_step(void)
    *  RelationalOperator: '<S46>/FixPt Relational Operator'
    *  UnitDelay: '<S46>/Delay Input1'
    */
-  INS_DWork.Delay_DSTATE_ly = (((int32_T)rtb_FixPtRelationalOperator_kp >
-    (int32_T)INS_DWork.DelayInput1_DSTATE_dql) || INS_DWork.Delay_DSTATE_ly);
+  INS_DWork.Delay_DSTATE_ly = (((int32_T)rtb_LogicalOperator1_cc > (int32_T)
+    INS_DWork.DelayInput1_DSTATE_dql) || INS_DWork.Delay_DSTATE_ly);
 
   /* Update for UnitDelay: '<S21>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_dx = rtb_Compare_jv;
+  INS_DWork.DelayInput1_DSTATE_dx = rtb_Compare_jx;
 
   /* Update for UnitDelay: '<S26>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_mu = rtb_Compare_nt;
+  INS_DWork.DelayInput1_DSTATE_mu = rtb_Compare_og;
 
   /* Update for UnitDelay: '<S31>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_dq = rtb_Compare_i5;
+  INS_DWork.DelayInput1_DSTATE_dq = rtb_Compare_nw;
 
   /* Update for UnitDelay: '<S36>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_f4 = rtb_LogicalOperator1_cc;
+  INS_DWork.DelayInput1_DSTATE_f4 = rtb_Compare_nt;
 
   /* Update for UnitDelay: '<S41>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_ng = rtb_Compare_ce;
+  INS_DWork.DelayInput1_DSTATE_ng = rtb_Compare_i5;
 
   /* Update for UnitDelay: '<S46>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_dql = rtb_FixPtRelationalOperator_kp;
+  INS_DWork.DelayInput1_DSTATE_dql = rtb_LogicalOperator1_cc;
 
   /* Update for UnitDelay: '<S51>/Delay Input1' */
-  INS_DWork.DelayInput1_DSTATE_fq = rtb_Compare_od;
+  INS_DWork.DelayInput1_DSTATE_fq = rtb_Compare_ce;
 
   /* End of Outputs for SubSystem: '<S1>/Status_Output' */
 
@@ -7281,9 +8096,9 @@ void INS_step(void)
   /* Outport: '<Root>/INS_Out' incorporates:
    *  BusCreator: '<Root>/BusConversion_InsertedFor_INS_Out_at_inport_0'
    *  Inport: '<Root>/IMU'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport1'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport2'
-   *  SignalConversion: '<S366>/TmpSignal ConversionAtBus Selector1Outport3'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport1'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport2'
+   *  SignalConversion: '<S411>/TmpSignal ConversionAtBus Selector1Outport3'
    *  SignalConversion: '<S59>/BusConversion_InsertedFor_Rotation_Data_at_inport_0'
    *  SignalConversion: '<S5>/Signal Copy'
    *  SignalConversion: '<S7>/Signal Copy'
@@ -7298,10 +8113,10 @@ void INS_step(void)
   /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
   /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
   /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
-  INS_Y.INS_Out.quat[0] = rtb_Switch_k_idx_0;
-  INS_Y.INS_Out.quat[1] = rtb_Switch_k_idx_1;
-  INS_Y.INS_Out.quat[2] = rtb_Switch_k_idx_2;
-  INS_Y.INS_Out.quat[3] = rtb_Switch_k_idx_3;
+  INS_Y.INS_Out.quat[0] = rtb_Switch_kj_idx_0;
+  INS_Y.INS_Out.quat[1] = rtb_Switch_kj_idx_1;
+  INS_Y.INS_Out.quat[2] = rtb_Switch_kj_idx_2;
+  INS_Y.INS_Out.quat[3] = rtb_Switch_kj_idx_3;
 
   /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
   /* End of Outputs for SubSystem: '<S55>/AHRS' */
@@ -7315,9 +8130,9 @@ void INS_step(void)
 
   /* End of Outputs for SubSystem: '<S3>/IMU_PreProcess' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
-  INS_Y.INS_Out.ax = rtb_Gain_d[0];
-  INS_Y.INS_Out.ay = rtb_Gain_d[1];
-  INS_Y.INS_Out.az = rtb_Gain_d[2];
+  INS_Y.INS_Out.ax = rtb_Multiply_hs[0];
+  INS_Y.INS_Out.ay = rtb_Multiply_hs[1];
+  INS_Y.INS_Out.az = rtb_Multiply_hs[2];
 
   /* Outputs for Atomic SubSystem: '<Root>/Bus_Constructor' */
   /* Outputs for Atomic SubSystem: '<S1>/Translation_Output' */
@@ -7330,32 +8145,32 @@ void INS_step(void)
 
   /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
   /* Outputs for Atomic SubSystem: '<S3>/AirSpeed_Process' */
-  /* Signum: '<S331>/Sign' incorporates:
+  /* Signum: '<S364>/Sign' incorporates:
    *  Inport: '<Root>/AirSpeed'
    */
   if (INS_U.AirSpeed.diff_pressure < 0.0F) {
-    rtb_Switch_k_idx_1 = -1.0F;
+    rtb_Switch_kj_idx_3 = -1.0F;
   } else if (INS_U.AirSpeed.diff_pressure > 0.0F) {
-    rtb_Switch_k_idx_1 = 1.0F;
+    rtb_Switch_kj_idx_3 = 1.0F;
   } else {
-    rtb_Switch_k_idx_1 = INS_U.AirSpeed.diff_pressure;
+    rtb_Switch_kj_idx_3 = INS_U.AirSpeed.diff_pressure;
   }
 
-  /* End of Signum: '<S331>/Sign' */
+  /* End of Signum: '<S364>/Sign' */
 
-  /* Product: '<S331>/Multiply' incorporates:
-   *  Abs: '<S331>/Abs'
-   *  Constant: '<S331>/AirDensity_15C'
-   *  Gain: '<S331>/Gain'
+  /* Product: '<S364>/Multiply' incorporates:
+   *  Abs: '<S364>/Abs'
+   *  Constant: '<S364>/AirDensity_15C'
+   *  Gain: '<S364>/Gain'
    *  Inport: '<Root>/AirSpeed'
-   *  Product: '<S331>/Divide'
-   *  Sqrt: '<S331>/Sqrt'
+   *  Product: '<S364>/Divide'
+   *  Sqrt: '<S364>/Sqrt'
    */
   rtb_DiscreteTimeIntegrator_b = sqrtf(INS_P.Gain_Gain_ozb * fabsf
     (INS_U.AirSpeed.diff_pressure) / INS_P.AirDensity_15C_Value) *
-    rtb_Switch_k_idx_1;
+    rtb_Switch_kj_idx_3;
 
-  /* Saturate: '<S324>/Saturation1' */
+  /* Saturate: '<S356>/Saturation1' */
   if (rtb_DiscreteTimeIntegrator_b > INS_P.Saturation1_UpperSat_i) {
     /* Outport: '<Root>/INS_Out' */
     INS_Y.INS_Out.airspeed = INS_P.Saturation1_UpperSat_i;
@@ -7367,20 +8182,20 @@ void INS_step(void)
     INS_Y.INS_Out.airspeed = rtb_DiscreteTimeIntegrator_b;
   }
 
-  /* End of Saturate: '<S324>/Saturation1' */
+  /* End of Saturate: '<S356>/Saturation1' */
   /* End of Outputs for SubSystem: '<S3>/AirSpeed_Process' */
   /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
   /* Outputs for Atomic SubSystem: '<S56>/CF' */
   /* Outport: '<Root>/INS_Out' incorporates:
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy1Inport1'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy2Inport1'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy3Inport1'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy4Inport1'
-   *  SignalConversion: '<S168>/TmpSignal ConversionAtSignal Copy5Inport1'
+   *  SignalConversion: '<S174>/TmpSignal ConversionAtSignal Copy1Inport1'
+   *  SignalConversion: '<S174>/TmpSignal ConversionAtSignal Copy2Inport1'
+   *  SignalConversion: '<S174>/TmpSignal ConversionAtSignal Copy3Inport1'
+   *  SignalConversion: '<S174>/TmpSignal ConversionAtSignal Copy4Inport1'
+   *  SignalConversion: '<S174>/TmpSignal ConversionAtSignal Copy5Inport1'
    *  SignalConversion: '<S7>/Signal Copy'
-   *  Sum: '<S173>/Sum'
+   *  Sum: '<S179>/Sum'
    */
   INS_Y.INS_Out.lat_0 = rtb_Switch4_c_idx_0;
   INS_Y.INS_Out.lon_0 = rtb_Switch4_c_idx_1;
@@ -7413,7 +8228,7 @@ void INS_step(void)
   /* Gain: '<S8>/Gain10' incorporates:
    *  SignalConversion: '<S59>/TmpSignal ConversionAtSignal Conversion1Inport1'
    */
-  rtb_Switch_k_idx_1 = fmodf(floorf(INS_P.Gain10_Gain * rtb_Abs_idx_0),
+  rtb_Switch_kj_idx_3 = fmodf(floorf(INS_P.Gain10_Gain * rtb_Abs_h_idx_0),
     4.2949673E+9F);
 
   /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
@@ -7441,26 +8256,37 @@ void INS_step(void)
    *  Sum: '<S8>/Sum2'
    *  Sum: '<S8>/Sum3'
    */
-  INS_Y.INS_Out.flag = ((rtb_Switch_k_idx_1 < 0.0F ? (uint32_T)-(int32_T)
-    (uint32_T)-rtb_Switch_k_idx_1 : (uint32_T)rtb_Switch_k_idx_1) + mul_u32_loSR
-                        (INS_P.Gain9_Gain, INS_P.Constant_Value_pt, 31U)) +
-    rtb_Sum1;
-  INS_Y.INS_Out.status = (((((rtb_Delay_c + mul_u32_loSR(INS_P.Gain1_Gain_ap,
-    INS_P.Constant_Value_lm, 30U)) + (rtb_MathFunction1 > INS_P.Constant_Value_h
-    ? (uint32_T)INS_P.Gain2_Gain_h >> 5 : 0U)) + (rtb_FixPtRelationalOperator_cn
-    ? (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) + (fmaxf(rtb_Product2,
-    rtb_Product_d4) > INS_P.Constant_Value_j ? (uint32_T)INS_P.Gain4_Gain_p >> 3
-    : 0U)) + (rtb_Compare_c5 ? (uint32_T)INS_P.Gain5_Gain_a >> 2 : 0U)) +
-    (rtb_Compare_ai ? (uint32_T)INS_P.Gain6_Gain >> 1 : 0U);
+  INS_Y.INS_Out.flag = ((rtb_Switch_kj_idx_3 < 0.0F ? (uint32_T)-(int32_T)
+    (uint32_T)-rtb_Switch_kj_idx_3 : (uint32_T)rtb_Switch_kj_idx_3) +
+                        mul_u32_loSR(INS_P.Gain9_Gain, INS_P.Constant_Value_pt,
+    31U)) + rtb_Sum1;
+  INS_Y.INS_Out.status = (((((rtb_FixPtRelationalOperator_nc + mul_u32_loSR
+    (INS_P.Gain1_Gain_ap, INS_P.Constant_Value_lm, 30U)) + (rtb_MathFunction1 >
+    INS_P.Constant_Value_h ? (uint32_T)INS_P.Gain2_Gain_h >> 5 : 0U)) +
+    (rtb_FixPtRelationalOperator_cn ? (uint32_T)INS_P.Gain3_Gain_f >> 4 : 0U)) +
+    (fmaxf(rtb_Product2, rtb_Product_n) > INS_P.Constant_Value_j ? (uint32_T)
+     INS_P.Gain4_Gain_p >> 3 : 0U)) + (rtb_Compare_c5 ? (uint32_T)
+    INS_P.Gain5_Gain_a >> 2 : 0U)) + (rtb_Compare_ai ? (uint32_T)
+    INS_P.Gain6_Gain >> 1 : 0U);
 
   /* End of Outputs for SubSystem: '<S1>/Status_Output' */
   /* End of Outputs for SubSystem: '<Root>/Bus_Constructor' */
 
+  /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
+  /* Outputs for Atomic SubSystem: '<S55>/AHRS' */
+  /* Outputs for Atomic SubSystem: '<S57>/Bus_Constructor' */
   /* Update for Delay: '<Root>/Delay' incorporates:
    *  SignalConversion: '<S59>/BusConversion_InsertedFor_Rotation_Data_at_inport_0'
+   *  SignalConversion: '<S59>/TmpSignal ConversionAtSignal Conversion4Inport1'
    */
+  INS_DWork.Delay_1_DSTATE = rtb_Switch_ol;
+
+  /* End of Outputs for SubSystem: '<S57>/Bus_Constructor' */
+  /* End of Outputs for SubSystem: '<S55>/AHRS' */
+  /* End of Outputs for SubSystem: '<Root>/Data_Fusion' */
   INS_DWork.Delay_2_DSTATE = rtb_Sum_gn_idx_0;
   INS_DWork.Delay_3_DSTATE = rtb_Sum_p_idx_0;
+  INS_DWork.Delay_4_DSTATE = rtb_Sum_p_idx_1;
   for (rtb_Saturation1_j_idx_0 = 0; rtb_Saturation1_j_idx_0 < 9;
        rtb_Saturation1_j_idx_0++) {
     /* Outputs for Atomic SubSystem: '<Root>/Data_Fusion' */
@@ -7501,12 +8327,15 @@ void INS_init(void)
 
   {
     int32_T i;
+    INS_PrevZCSigState.x_delay_Reset_ZCE_lr = POS_ZCSIG;
+    INS_PrevZCSigState.x_delay1_Reset_ZCE_b = POS_ZCSIG;
     INS_PrevZCSigState.x_delay_Reset_ZCE_b = POS_ZCSIG;
     INS_PrevZCSigState.x_delay1_Reset_ZCE = POS_ZCSIG;
     INS_PrevZCSigState.vn_delay_Reset_ZCE_p = POS_ZCSIG;
     INS_PrevZCSigState.vn_delay1_Reset_ZCE = POS_ZCSIG;
     INS_PrevZCSigState.vn_delay_Reset_ZCE = POS_ZCSIG;
     INS_PrevZCSigState.ve_delay_Reset_ZCE = POS_ZCSIG;
+    INS_PrevZCSigState.x_delay_Reset_ZCE_l = POS_ZCSIG;
     INS_PrevZCSigState.x_delay_Reset_ZCE = POS_ZCSIG;
     INS_PrevZCSigState.h_delay_Reset_ZCE_m = POS_ZCSIG;
     INS_PrevZCSigState.vd_delay_Reset_ZCE = POS_ZCSIG;
@@ -7514,131 +8343,158 @@ void INS_init(void)
     INS_PrevZCSigState.WGS84_Model_Trig_ZCE = POS_ZCSIG;
 
     /* InitializeConditions for Delay: '<Root>/Delay' */
+    INS_DWork.Delay_1_DSTATE = INS_P.Delay_1_InitialCondition;
     INS_DWork.Delay_2_DSTATE = INS_P.Delay_2_InitialCondition;
     INS_DWork.Delay_3_DSTATE = INS_P.Delay_3_InitialCondition;
+    INS_DWork.Delay_4_DSTATE = INS_P.Delay_4_InitialCondition_m;
 
     /* SystemInitialize for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
     /* SystemInitialize for Atomic SubSystem: '<S3>/Baro_PreProcess' */
-    /* InitializeConditions for UnitDelay: '<S338>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S371>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_g = INS_P.DetectChange_vinit_d;
 
-    /* InitializeConditions for UnitDelay: '<S341>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S374>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_c = INS_P.DetectChange_vinit_n;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S334>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S367>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_nm =
       INS_P.DiscreteTimeIntegrator_IC_iu;
 
-    /* InitializeConditions for Delay: '<S342>/Delay' */
+    /* InitializeConditions for Delay: '<S375>/Delay' */
     INS_DWork.Delay_DSTATE_i1 = INS_P.Delay_InitialCondition_j0;
 
-    /* InitializeConditions for Delay: '<S336>/Delay' */
+    /* InitializeConditions for Delay: '<S369>/Delay' */
     INS_DWork.Delay_DSTATE_f = INS_P.Delay_InitialCondition_nt;
 
-    /* SystemInitialize for Enabled SubSystem: '<S333>/Reference_Height' */
-    /* InitializeConditions for Delay: '<S335>/Delay' */
+    /* SystemInitialize for Enabled SubSystem: '<S366>/Reference_Height' */
+    /* InitializeConditions for Delay: '<S368>/Delay' */
     INS_DWork.Delay_DSTATE_d = INS_P.Delay_InitialCondition_p;
 
-    /* InitializeConditions for Delay: '<S335>/Delay1' */
+    /* InitializeConditions for Delay: '<S368>/Delay1' */
     INS_DWork.Delay1_DSTATE_i = INS_P.Delay1_InitialCondition_k;
 
-    /* SystemInitialize for Outport: '<S335>/h_R_m' */
+    /* SystemInitialize for Outport: '<S368>/h_R_m' */
     INS_B.Divide = INS_P.h_R_m_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S333>/Reference_Height' */
+    /* End of SystemInitialize for SubSystem: '<S366>/Reference_Height' */
     /* End of SystemInitialize for SubSystem: '<S3>/Baro_PreProcess' */
 
+    /* SystemInitialize for Atomic SubSystem: '<S3>/ExternalPos_Process' */
+    /* InitializeConditions for Delay: '<S381>/Delay' */
+    INS_DWork.Delay_DSTATE_e = INS_P.Delay_InitialCondition_gj;
+
+    /* InitializeConditions for Delay: '<S382>/Delay' */
+    INS_DWork.Delay_DSTATE_a = INS_P.Delay_InitialCondition_gc;
+
+    /* InitializeConditions for UnitDelay: '<S383>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_cn = INS_P.DetectIncrease_vinit_pa;
+
+    /* InitializeConditions for UnitDelay: '<S388>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_b = INS_P.DetectChange_vinit_lj;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S380>/Discrete-Time Integrator' */
+    INS_DWork.DiscreteTimeIntegrator_DSTAT_nj =
+      INS_P.DiscreteTimeIntegrator_IC_jj;
+
+    /* InitializeConditions for Delay: '<S389>/Delay' */
+    INS_DWork.Delay_DSTATE_g = INS_P.Delay_InitialCondition_h;
+
+    /* InitializeConditions for Delay: '<S384>/Delay' */
+    INS_DWork.Delay_DSTATE_gj = INS_P.Delay_InitialCondition_ng;
+
+    /* End of SystemInitialize for SubSystem: '<S3>/ExternalPos_Process' */
+
     /* SystemInitialize for Atomic SubSystem: '<S3>/GPS_PreProcess' */
-    /* InitializeConditions for UnitDelay: '<S358>/Unit Delay' */
+    /* InitializeConditions for UnitDelay: '<S403>/Unit Delay' */
     INS_DWork.UnitDelay_DSTATE = INS_P.UnitDelay_InitialCondition;
 
-    /* InitializeConditions for UnitDelay: '<S361>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S406>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_i = INS_P.DetectChange_vinit_e;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S352>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S397>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_i =
       INS_P.DiscreteTimeIntegrator_IC_p;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S362>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S407>/Discrete-Time Integrator1' */
     INS_DWork.DiscreteTimeIntegrator1_IC_LO_j = 1U;
     INS_DWork.DiscreteTimeIntegrator1_PrevR_l = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S363>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S408>/Discrete-Time Integrator1' */
     INS_DWork.DiscreteTimeIntegrator1_IC_LO_e = 1U;
     INS_DWork.DiscreteTimeIntegrator1_PrevR_j = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S362>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S407>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_k =
       INS_P.DiscreteTimeIntegrator_IC_d;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_a = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S363>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S408>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_l =
       INS_P.DiscreteTimeIntegrator_IC_f;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_j = 0;
 
-    /* SystemInitialize for Triggered SubSystem: '<S326>/WGS84_Model' */
-    /* SystemInitialize for Outport: '<S349>/lon_0_rad' */
+    /* SystemInitialize for Triggered SubSystem: '<S359>/WGS84_Model' */
+    /* SystemInitialize for Outport: '<S394>/lon_0_rad' */
     INS_B.DataTypeConversion = INS_P.lon_0_rad_Y0;
 
-    /* SystemInitialize for Outport: '<S349>/lat_0_rad' */
+    /* SystemInitialize for Outport: '<S394>/lat_0_rad' */
     INS_B.DataTypeConversion1 = INS_P.lat_0_rad_Y0;
 
-    /* SystemInitialize for Outport: '<S349>/dx_dlat' */
+    /* SystemInitialize for Outport: '<S394>/dx_dlat' */
     INS_B.Rm = INS_P.dx_dlat_Y0;
 
-    /* SystemInitialize for Outport: '<S349>/dy_dlon' */
+    /* SystemInitialize for Outport: '<S394>/dy_dlon' */
     INS_B.Multiply2 = INS_P.dy_dlon_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S326>/WGS84_Model' */
+    /* End of SystemInitialize for SubSystem: '<S359>/WGS84_Model' */
     /* End of SystemInitialize for SubSystem: '<S3>/GPS_PreProcess' */
 
     /* SystemInitialize for Atomic SubSystem: '<S3>/IMU_PreProcess' */
-    /* InitializeConditions for UnitDelay: '<S369>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S414>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_h = INS_P.DetectChange_vinit_md;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S367>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S412>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lp =
       INS_P.DiscreteTimeIntegrator_IC_ba;
 
-    /* InitializeConditions for Delay: '<S370>/Delay' */
+    /* InitializeConditions for Delay: '<S415>/Delay' */
     INS_DWork.Delay_DSTATE_bw = INS_P.Delay_InitialCondition_ja;
 
     /* End of SystemInitialize for SubSystem: '<S3>/IMU_PreProcess' */
 
     /* SystemInitialize for Atomic SubSystem: '<S3>/MAG_PreProcess' */
-    /* InitializeConditions for DiscreteIntegrator: '<S382>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S427>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE = INS_P.DiscreteTimeIntegrator_IC_mb;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_k = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S382>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S427>/Discrete-Time Integrator1' */
     INS_DWork.DiscreteTimeIntegrator1_IC_LOAD = 1U;
     INS_DWork.DiscreteTimeIntegrator1_PrevRes = 0;
 
-    /* InitializeConditions for UnitDelay: '<S389>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S434>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_n = INS_P.DetectChange_vinit_lp;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S375>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S420>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lg =
       INS_P.DiscreteTimeIntegrator_IC_k;
 
-    /* InitializeConditions for Delay: '<S390>/Delay' */
+    /* InitializeConditions for Delay: '<S435>/Delay' */
     INS_DWork.Delay_DSTATE_fp = INS_P.Delay_InitialCondition_jy;
 
     /* End of SystemInitialize for SubSystem: '<S3>/MAG_PreProcess' */
 
     /* SystemInitialize for Atomic SubSystem: '<S3>/Rangefinder_PreProcess' */
-    /* InitializeConditions for UnitDelay: '<S404>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S449>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE = INS_P.DetectChange_vinit_c;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S400>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S445>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_e3 =
       INS_P.DiscreteTimeIntegrator_IC_f4;
 
-    /* InitializeConditions for Delay: '<S405>/Delay' */
+    /* InitializeConditions for Delay: '<S450>/Delay' */
     INS_DWork.Delay_DSTATE_j = INS_P.Delay_InitialCondition_ny;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S401>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S446>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_cv =
       INS_P.DiscreteTimeIntegrator_IC_n1;
     INS_DWork.DiscreteTimeIntegrator_PrevRese = 2;
@@ -7646,17 +8502,17 @@ void INS_init(void)
     /* End of SystemInitialize for SubSystem: '<S3>/Rangefinder_PreProcess' */
 
     /* SystemInitialize for Atomic SubSystem: '<S3>/OpticalFlow_PreProcess' */
-    /* InitializeConditions for DiscreteIntegrator: '<S394>/Discrete-Time Integrator5' */
+    /* InitializeConditions for DiscreteIntegrator: '<S439>/Discrete-Time Integrator5' */
     INS_DWork.DiscreteTimeIntegrator5_IC_LOAD = 1U;
 
-    /* InitializeConditions for UnitDelay: '<S396>/Delay Input1' */
-    INS_DWork.DelayInput1_DSTATE_k = INS_P.DetectChange_vinit_j;
+    /* InitializeConditions for UnitDelay: '<S441>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_k = INS_P.DetectChange_vinit_ju;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S393>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S438>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_g =
       INS_P.DiscreteTimeIntegrator_IC_n;
 
-    /* InitializeConditions for Delay: '<S397>/Delay' */
+    /* InitializeConditions for Delay: '<S442>/Delay' */
     INS_DWork.Delay_DSTATE_c = INS_P.Delay_InitialCondition_f;
 
     /* End of SystemInitialize for SubSystem: '<S3>/OpticalFlow_PreProcess' */
@@ -7664,61 +8520,63 @@ void INS_init(void)
 
     /* SystemInitialize for Atomic SubSystem: '<Root>/Data_Fusion' */
     /* InitializeConditions for Delay: '<S56>/Delay' */
-    INS_DWork.Delay_4_DSTATE = INS_P.Delay_4_InitialCondition;
+    INS_DWork.Delay_4_DSTATE_k = INS_P.Delay_4_InitialCondition_h;
     INS_DWork.Delay_5_DSTATE = INS_P.Delay_5_InitialCondition;
     INS_DWork.Delay_6_DSTATE = INS_P.Delay_6_InitialCondition;
 
     /* SystemInitialize for Atomic SubSystem: '<S55>/RF_Data_PreProcess' */
-    /* InitializeConditions for UnitDelay: '<S117>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S123>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_pr = INS_P.DetectRisePositive_vinit_fc;
 
-    /* InitializeConditions for Delay: '<S122>/Delay' */
+    /* InitializeConditions for Delay: '<S128>/Delay' */
     INS_DWork.Delay_DSTATE_i = INS_P.Delay_InitialCondition_n;
 
-    /* InitializeConditions for Delay: '<S119>/Delay' */
+    /* InitializeConditions for Delay: '<S125>/Delay' */
     INS_DWork.Delay_DSTATE_n = INS_P.Delay_InitialCondition_i;
 
-    /* InitializeConditions for UnitDelay: '<S124>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S130>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_mm = INS_P.DetectRisePositive1_vinit;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S165>/Discrete-Time Integrator5' */
+    /* InitializeConditions for DiscreteIntegrator: '<S171>/Discrete-Time Integrator5' */
     INS_DWork.DiscreteTimeIntegrator5_IC_LO_p = 1U;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S163>/Discrete-Time Integrator5' */
+    /* InitializeConditions for DiscreteIntegrator: '<S169>/Discrete-Time Integrator5' */
     INS_DWork.DiscreteTimeIntegrator5_IC_LO_n = 1U;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S164>/Discrete-Time Integrator5' */
+    /* InitializeConditions for DiscreteIntegrator: '<S170>/Discrete-Time Integrator5' */
     INS_DWork.DiscreteTimeIntegrator5_IC_L_ns = 1U;
 
     /* SystemInitialize for Enabled SubSystem: '<S58>/Initial_Attitude' */
-    /* SystemInitialize for Merge: '<S129>/Merge' */
+    /* SystemInitialize for Merge: '<S135>/Merge' */
     INS_B.Merge_l[0] = INS_P.Merge_InitialOutput;
 
-    /* SystemInitialize for Outport: '<S113>/quat_0' */
+    /* SystemInitialize for Outport: '<S119>/quat_0' */
     INS_B.OutportBufferForquat_0[0] = INS_P.quat_0_Y0[0];
 
-    /* SystemInitialize for Merge: '<S129>/Merge' */
+    /* SystemInitialize for Merge: '<S135>/Merge' */
     INS_B.Merge_l[1] = INS_P.Merge_InitialOutput;
 
-    /* SystemInitialize for Outport: '<S113>/quat_0' */
+    /* SystemInitialize for Outport: '<S119>/quat_0' */
     INS_B.OutportBufferForquat_0[1] = INS_P.quat_0_Y0[1];
 
-    /* SystemInitialize for Merge: '<S129>/Merge' */
+    /* SystemInitialize for Merge: '<S135>/Merge' */
     INS_B.Merge_l[2] = INS_P.Merge_InitialOutput;
 
-    /* SystemInitialize for Outport: '<S113>/quat_0' */
+    /* SystemInitialize for Outport: '<S119>/quat_0' */
     INS_B.OutportBufferForquat_0[2] = INS_P.quat_0_Y0[2];
 
-    /* SystemInitialize for Merge: '<S129>/Merge' */
+    /* SystemInitialize for Merge: '<S135>/Merge' */
     INS_B.Merge_l[3] = INS_P.Merge_InitialOutput;
 
-    /* SystemInitialize for Outport: '<S113>/quat_0' */
+    /* SystemInitialize for Outport: '<S119>/quat_0' */
     INS_B.OutportBufferForquat_0[3] = INS_P.quat_0_Y0[3];
 
     /* End of SystemInitialize for SubSystem: '<S58>/Initial_Attitude' */
     /* End of SystemInitialize for SubSystem: '<S55>/RF_Data_PreProcess' */
 
     /* SystemInitialize for Atomic SubSystem: '<S55>/AHRS' */
+    /* InitializeConditions for Delay: '<S57>/Delay' */
+    INS_DWork.Delay_4_DSTATE_d = INS_P.Delay_4_InitialCondition;
     for (i = 0; i < 9; i++) {
       /* InitializeConditions for Delay: '<Root>/Delay' */
       INS_DWork.Delay_8_DSTATE[i] = INS_P.Delay_8_InitialCondition_m;
@@ -7729,121 +8587,127 @@ void INS_init(void)
     }
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Correct' */
-    /* InitializeConditions for DiscreteIntegrator: '<S88>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S89>/Discrete-Time Integrator1' */
     INS_DWork.DiscreteTimeIntegrator1_IC_LO_i = 1U;
     INS_DWork.DiscreteTimeIntegrator1_PrevR_p = 0;
 
-    /* InitializeConditions for Delay: '<S86>/Delay' */
+    /* InitializeConditions for Delay: '<S87>/Delay' */
     for (i = 0; i < 600; i++) {
       INS_DWork.Delay_DSTATE_lv[i] = INS_P.Delay_InitialCondition_m;
     }
 
-    /* End of InitializeConditions for Delay: '<S86>/Delay' */
+    /* End of InitializeConditions for Delay: '<S87>/Delay' */
 
-    /* InitializeConditions for UnitDelay: '<S90>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S91>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_ff = INS_P.DetectIncrease_vinit;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_PrevRe_f = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' */
+    /* InitializeConditions for Delay: '<S94>/Delay' */
+    INS_DWork.Delay_DSTATE_b3 = INS_P.Delay_InitialCondition_d;
+
+    /* InitializeConditions for UnitDelay: '<S97>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_ii = INS_P.DetectIncrease_vinit_i;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S101>/Discrete-Time Integrator1' */
     INS_DWork.DiscreteTimeIntegrator1_IC_LO_l = 1U;
     INS_DWork.DiscreteTimeIntegrator1_PrevR_o = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_PrevRe_n = 0;
 
-    /* SystemInitialize for Enabled SubSystem: '<S87>/GPS_Meas_Acc' */
-    /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator' */
+    /* SystemInitialize for Enabled SubSystem: '<S88>/GPS_Meas_Acc' */
+    /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator' */
     INS_DWork.Integrator_PrevResetState = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator1' */
     INS_DWork.Integrator1_IC_LOADING = 1U;
     INS_DWork.Integrator1_PrevResetState = 0;
 
-    /* End of SystemInitialize for SubSystem: '<S87>/GPS_Meas_Acc' */
+    /* End of SystemInitialize for SubSystem: '<S88>/GPS_Meas_Acc' */
     /* End of SystemInitialize for SubSystem: '<S57>/Correct' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Update' */
-    /* InitializeConditions for DiscreteIntegrator: '<S97>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S103>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_IC_LOADI = 1U;
     INS_DWork.DiscreteTimeIntegrator_PrevR_bk = 0;
 
     /* End of SystemInitialize for SubSystem: '<S57>/Update' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Correct' */
-    /* InitializeConditions for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[0] =
       INS_P.DiscreteTimeIntegrator_IC_a;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[0] =
       INS_P.DiscreteTimeIntegrator_IC_m;
 
-    /* SystemInitialize for Enabled SubSystem: '<S87>/GPS_Meas_Acc' */
-    /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator' */
+    /* SystemInitialize for Enabled SubSystem: '<S88>/GPS_Meas_Acc' */
+    /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator' */
     INS_DWork.Integrator_DSTATE[0] = INS_P.Integrator_IC;
 
-    /* SystemInitialize for Outport: '<S91>/gps_acc_O_mPs2' */
+    /* SystemInitialize for Outport: '<S92>/gps_acc_O_mPs2' */
     INS_B.Integrator[0] = INS_P.gps_acc_O_mPs2_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S87>/GPS_Meas_Acc' */
+    /* End of SystemInitialize for SubSystem: '<S88>/GPS_Meas_Acc' */
     /* End of SystemInitialize for SubSystem: '<S57>/Correct' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Update' */
-    /* InitializeConditions for DiscreteIntegrator: '<S98>/Discrete-Time Integrator2' */
+    /* InitializeConditions for DiscreteIntegrator: '<S104>/Discrete-Time Integrator2' */
     INS_DWork.DiscreteTimeIntegrator2_DSTATE[0] =
       INS_P.DiscreteTimeIntegrator2_IC;
 
     /* End of SystemInitialize for SubSystem: '<S57>/Update' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Correct' */
-    /* InitializeConditions for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[1] =
       INS_P.DiscreteTimeIntegrator_IC_a;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[1] =
       INS_P.DiscreteTimeIntegrator_IC_m;
 
-    /* SystemInitialize for Enabled SubSystem: '<S87>/GPS_Meas_Acc' */
-    /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator' */
+    /* SystemInitialize for Enabled SubSystem: '<S88>/GPS_Meas_Acc' */
+    /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator' */
     INS_DWork.Integrator_DSTATE[1] = INS_P.Integrator_IC;
 
-    /* SystemInitialize for Outport: '<S91>/gps_acc_O_mPs2' */
+    /* SystemInitialize for Outport: '<S92>/gps_acc_O_mPs2' */
     INS_B.Integrator[1] = INS_P.gps_acc_O_mPs2_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S87>/GPS_Meas_Acc' */
+    /* End of SystemInitialize for SubSystem: '<S88>/GPS_Meas_Acc' */
     /* End of SystemInitialize for SubSystem: '<S57>/Correct' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Update' */
-    /* InitializeConditions for DiscreteIntegrator: '<S98>/Discrete-Time Integrator2' */
+    /* InitializeConditions for DiscreteIntegrator: '<S104>/Discrete-Time Integrator2' */
     INS_DWork.DiscreteTimeIntegrator2_DSTATE[1] =
       INS_P.DiscreteTimeIntegrator2_IC;
 
     /* End of SystemInitialize for SubSystem: '<S57>/Update' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Correct' */
-    /* InitializeConditions for DiscreteIntegrator: '<S88>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S89>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_lq[2] =
       INS_P.DiscreteTimeIntegrator_IC_a;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S95>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_ce[2] =
       INS_P.DiscreteTimeIntegrator_IC_m;
 
-    /* SystemInitialize for Enabled SubSystem: '<S87>/GPS_Meas_Acc' */
-    /* InitializeConditions for DiscreteIntegrator: '<S91>/Integrator' */
+    /* SystemInitialize for Enabled SubSystem: '<S88>/GPS_Meas_Acc' */
+    /* InitializeConditions for DiscreteIntegrator: '<S92>/Integrator' */
     INS_DWork.Integrator_DSTATE[2] = INS_P.Integrator_IC;
 
-    /* SystemInitialize for Outport: '<S91>/gps_acc_O_mPs2' */
+    /* SystemInitialize for Outport: '<S92>/gps_acc_O_mPs2' */
     INS_B.Integrator[2] = INS_P.gps_acc_O_mPs2_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S87>/GPS_Meas_Acc' */
+    /* End of SystemInitialize for SubSystem: '<S88>/GPS_Meas_Acc' */
     /* End of SystemInitialize for SubSystem: '<S57>/Correct' */
 
     /* SystemInitialize for Atomic SubSystem: '<S57>/Update' */
-    /* InitializeConditions for DiscreteIntegrator: '<S98>/Discrete-Time Integrator2' */
+    /* InitializeConditions for DiscreteIntegrator: '<S104>/Discrete-Time Integrator2' */
     INS_DWork.DiscreteTimeIntegrator2_DSTATE[2] =
       INS_P.DiscreteTimeIntegrator2_IC;
 
@@ -7851,299 +8715,368 @@ void INS_init(void)
     /* End of SystemInitialize for SubSystem: '<S55>/AHRS' */
 
     /* SystemInitialize for Atomic SubSystem: '<S56>/TF_Data_PreProcess' */
-    /* InitializeConditions for DiscreteIntegrator: '<S272>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S303>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_f =
       INS_P.DiscreteTimeIntegrator_IC_c;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_h = 0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S272>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S303>/Discrete-Time Integrator1' */
     INS_DWork.DiscreteTimeIntegrator1_IC_LO_k = 1U;
     INS_DWork.DiscreteTimeIntegrator1_PrevR_d = 0;
 
-    /* InitializeConditions for UnitDelay: '<S280>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S312>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_o = INS_P.DetectRisePositive_vinit_me;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S287>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S319>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_b =
       INS_P.DiscreteTimeIntegrator_IC_g;
     INS_DWork.DiscreteTimeIntegrator_PrevR_ky = 0;
 
-    /* InitializeConditions for UnitDelay: '<S296>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S328>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_hg = INS_P.DetectRisePositive_vinit_o;
 
-    /* InitializeConditions for Delay: '<S287>/Delay' */
-    INS_DWork.Delay_DSTATE_k = INS_P.Delay_InitialCondition_in;
+    /* InitializeConditions for Delay: '<S319>/Delay' */
+    INS_DWork.Delay_DSTATE_kh = INS_P.Delay_InitialCondition_in;
 
-    /* InitializeConditions for UnitDelay: '<S281>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S313>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_j = INS_P.DetectRisePositive1_vinit_h;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S299>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S331>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_c =
       INS_P.DiscreteTimeIntegrator_IC_lb;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_l = 0;
 
-    /* InitializeConditions for UnitDelay: '<S309>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S341>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_p = INS_P.DetectRisePositive_vinit_h;
 
-    /* InitializeConditions for Delay: '<S299>/Delay' */
+    /* InitializeConditions for Delay: '<S331>/Delay' */
     INS_DWork.Delay_DSTATE_k4 = INS_P.Delay_InitialCondition_ns;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S286>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S318>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_n =
       INS_P.DiscreteTimeIntegrator_IC_b;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_d = 0;
 
-    /* InitializeConditions for Delay: '<S286>/Delay' */
+    /* InitializeConditions for Delay: '<S318>/Delay' */
     INS_DWork.Delay_DSTATE_ng = INS_P.Delay_InitialCondition_k;
 
-    /* InitializeConditions for UnitDelay: '<S291>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S323>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_kh = INS_P.DetectRisePositive_vinit_d;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S298>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S330>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTATE_h =
       INS_P.DiscreteTimeIntegrator_IC_h;
     INS_DWork.DiscreteTimeIntegrator_PrevRe_b = 0;
 
-    /* InitializeConditions for Delay: '<S298>/Delay' */
-    INS_DWork.Delay_DSTATE_c1 = INS_P.Delay_InitialCondition_d;
+    /* InitializeConditions for Delay: '<S330>/Delay' */
+    INS_DWork.Delay_DSTATE_c1 = INS_P.Delay_InitialCondition_dh;
 
-    /* InitializeConditions for UnitDelay: '<S304>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S336>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_ch = INS_P.DetectRisePositive_vinit_dn;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S300>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S332>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_k3 =
       INS_P.DiscreteTimeIntegrator_IC_ms;
     INS_DWork.DiscreteTimeIntegrator_PrevR_kt = 0;
 
-    /* InitializeConditions for Delay: '<S300>/Delay' */
+    /* InitializeConditions for Delay: '<S332>/Delay' */
     INS_DWork.Delay_DSTATE_n2 = INS_P.Delay_InitialCondition_ia;
 
-    /* InitializeConditions for UnitDelay: '<S314>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S346>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_jx = INS_P.DetectRisePositive_vinit_cj;
 
-    /* InitializeConditions for Delay: '<S318>/Delay1' */
+    /* InitializeConditions for Delay: '<S350>/Delay1' */
     INS_DWork.Delay1_DSTATE = INS_P.Delay1_InitialCondition;
 
-    /* InitializeConditions for UnitDelay: '<S320>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S352>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_dp = INS_P.DetectRisePositive3_vinit;
 
-    /* InitializeConditions for Delay: '<S319>/Delay' */
+    /* InitializeConditions for Delay: '<S351>/Delay' */
     INS_DWork.Delay_DSTATE[0] = INS_P.Delay_InitialCondition;
 
-    /* InitializeConditions for Delay: '<S319>/Delay1' */
+    /* InitializeConditions for Delay: '<S351>/Delay1' */
     INS_DWork.Delay1_DSTATE_o[0] = INS_P.Delay1_InitialCondition_e;
 
-    /* InitializeConditions for Delay: '<S319>/Delay' */
+    /* InitializeConditions for Delay: '<S351>/Delay' */
     INS_DWork.Delay_DSTATE[1] = INS_P.Delay_InitialCondition;
 
-    /* InitializeConditions for Delay: '<S319>/Delay1' */
+    /* InitializeConditions for Delay: '<S351>/Delay1' */
     INS_DWork.Delay1_DSTATE_o[1] = INS_P.Delay1_InitialCondition_e;
 
-    /* InitializeConditions for UnitDelay: '<S322>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S354>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_mw = INS_P.DetectRisePositive3_vinit_h;
 
     /* End of SystemInitialize for SubSystem: '<S56>/TF_Data_PreProcess' */
 
     /* SystemInitialize for Atomic SubSystem: '<S56>/CF' */
-    /* InitializeConditions for Delay: '<S242>/Delay' */
+    /* InitializeConditions for Delay: '<S268>/Delay' */
     INS_DWork.Delay_DSTATE_b[0] = INS_P.Delay_InitialCondition_mt;
     INS_DWork.Delay_DSTATE_b[1] = INS_P.Delay_InitialCondition_mt;
     INS_DWork.Delay_DSTATE_b[2] = INS_P.Delay_InitialCondition_mt;
 
-    /* SystemInitialize for Merge: '<S245>/Merge' */
+    /* SystemInitialize for Merge: '<S271>/Merge' */
     INS_B.Merge = INS_P.Merge_InitialOutput_g;
 
-    /* SystemInitialize for Merge: '<S246>/Merge' */
+    /* SystemInitialize for Merge: '<S272>/Merge' */
     INS_B.Merge_e = INS_P.Merge_InitialOutput_d;
 
-    /* SystemInitialize for Enabled SubSystem: '<S210>/Baro_Correct' */
-    /* InitializeConditions for UnitDelay: '<S214>/Delay Input1' */
+    /* SystemInitialize for Enabled SubSystem: '<S226>/Baro_Correct' */
+    /* InitializeConditions for UnitDelay: '<S231>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_lg = INS_P.DetectChange_vinit_m;
 
-    /* InitializeConditions for Delay: '<S215>/Delay' */
+    /* InitializeConditions for Delay: '<S232>/Delay' */
     INS_DWork.Delay_DSTATE_dr[0] = INS_P.Delay_InitialCondition_j;
     INS_DWork.Delay_DSTATE_dr[1] = INS_P.Delay_InitialCondition_j;
     INS_DWork.Delay_DSTATE_dr[2] = INS_P.Delay_InitialCondition_j;
 
-    /* InitializeConditions for Delay: '<S217>/x_delay' */
+    /* InitializeConditions for Delay: '<S234>/x_delay' */
     INS_DWork.icLoad_a = 1U;
 
-    /* InitializeConditions for UnitDelay: '<S221>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S238>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_f = INS_P.DetectIncrease_vinit_c;
 
-    /* InitializeConditions for Delay: '<S219>/Delay' */
+    /* InitializeConditions for Delay: '<S236>/Delay' */
     INS_DWork.Delay_DSTATE_h = INS_P.Delay_InitialCondition_mk;
 
-    /* SystemInitialize for Outport: '<S213>/X_Next' */
+    /* SystemInitialize for Outport: '<S230>/X_Next' */
     INS_B.Sum1_pu[0] = INS_P.X_Next_Y0_m;
     INS_B.Sum1_pu[1] = INS_P.X_Next_Y0_m;
     INS_B.Saturation = INS_P.X_Next_Y0_m;
 
-    /* End of SystemInitialize for SubSystem: '<S210>/Baro_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S226>/Baro_Correct' */
 
-    /* SystemInitialize for Enabled SubSystem: '<S211>/GPS_Correct' */
-    /* InitializeConditions for UnitDelay: '<S223>/Delay Input1' */
+    /* SystemInitialize for Enabled SubSystem: '<S228>/GPS_Correct' */
+    /* InitializeConditions for UnitDelay: '<S249>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_d = INS_P.DetectChange_vinit_h;
 
-    /* InitializeConditions for Delay: '<S226>/h_delay' */
+    /* InitializeConditions for Delay: '<S252>/h_delay' */
     INS_DWork.icLoad_o = 1U;
 
-    /* InitializeConditions for Delay: '<S226>/vd_delay' */
+    /* InitializeConditions for Delay: '<S252>/vd_delay' */
     INS_DWork.icLoad_f = 1U;
 
-    /* InitializeConditions for UnitDelay: '<S230>/Delay Input1' */
-    INS_DWork.DelayInput1_DSTATE_ib = INS_P.DetectIncrease_vinit_j;
+    /* InitializeConditions for UnitDelay: '<S256>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_ib = INS_P.DetectIncrease_vinit_ji;
 
-    /* InitializeConditions for Memory: '<S228>/Memory' */
+    /* InitializeConditions for Memory: '<S254>/Memory' */
     INS_DWork.Memory_PreviousInput_b = INS_P.Memory_InitialCondition_p;
 
-    /* End of SystemInitialize for SubSystem: '<S211>/GPS_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S228>/GPS_Correct' */
 
-    /* SystemInitialize for Enabled SubSystem: '<S212>/Rangefinder_Correct' */
-    /* InitializeConditions for UnitDelay: '<S232>/Delay Input1' */
+    /* SystemInitialize for Enabled SubSystem: '<S229>/Rangefinder_Correct' */
+    /* InitializeConditions for UnitDelay: '<S258>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_l = INS_P.DetectChange_vinit_g;
 
-    /* InitializeConditions for Delay: '<S235>/h_delay' */
+    /* InitializeConditions for Delay: '<S261>/h_delay' */
     INS_DWork.icLoad = 1U;
 
-    /* InitializeConditions for UnitDelay: '<S239>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S265>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_d2 = INS_P.DetectIncrease_vinit_g;
 
-    /* InitializeConditions for Memory: '<S237>/Memory' */
+    /* InitializeConditions for Memory: '<S263>/Memory' */
     INS_DWork.Memory_PreviousInput = INS_P.Memory_InitialCondition_o5;
 
-    /* End of SystemInitialize for SubSystem: '<S212>/Rangefinder_Correct' */
-
-    /* SystemInitialize for Enabled SubSystem: '<S211>/GPS_Correct' */
-    /* InitializeConditions for Memory: '<S224>/Memory' */
-    INS_DWork.Memory_PreviousInput_e[0] = INS_P.Memory_InitialCondition_c;
-
-    /* SystemInitialize for Outport: '<S222>/X_Next' */
-    INS_B.Sum1_p[0] = INS_P.X_Next_Y0_i;
-
-    /* End of SystemInitialize for SubSystem: '<S211>/GPS_Correct' */
-
-    /* SystemInitialize for Enabled SubSystem: '<S212>/Rangefinder_Correct' */
-    /* InitializeConditions for Memory: '<S233>/Memory' */
-    INS_DWork.Memory_PreviousInput_f[0] = INS_P.Memory_InitialCondition_h;
-
-    /* SystemInitialize for Outport: '<S231>/X_Next' */
-    INS_B.Sum1[0] = INS_P.X_Next_Y0_mm;
-
-    /* End of SystemInitialize for SubSystem: '<S212>/Rangefinder_Correct' */
-
-    /* SystemInitialize for Enabled SubSystem: '<S211>/GPS_Correct' */
-    /* InitializeConditions for Memory: '<S224>/Memory' */
-    INS_DWork.Memory_PreviousInput_e[1] = INS_P.Memory_InitialCondition_c;
-
-    /* SystemInitialize for Outport: '<S222>/X_Next' */
-    INS_B.Sum1_p[1] = INS_P.X_Next_Y0_i;
-
-    /* End of SystemInitialize for SubSystem: '<S211>/GPS_Correct' */
-
-    /* SystemInitialize for Enabled SubSystem: '<S212>/Rangefinder_Correct' */
-    /* InitializeConditions for Memory: '<S233>/Memory' */
-    INS_DWork.Memory_PreviousInput_f[1] = INS_P.Memory_InitialCondition_h;
-
-    /* SystemInitialize for Outport: '<S231>/X_Next' */
-    INS_B.Sum1[1] = INS_P.X_Next_Y0_mm;
-
-    /* End of SystemInitialize for SubSystem: '<S212>/Rangefinder_Correct' */
-
-    /* SystemInitialize for Enabled SubSystem: '<S211>/GPS_Correct' */
-    /* InitializeConditions for Memory: '<S224>/Memory' */
-    INS_DWork.Memory_PreviousInput_e[2] = INS_P.Memory_InitialCondition_c;
-
-    /* SystemInitialize for Outport: '<S222>/X_Next' */
-    INS_B.Sum1_p[2] = INS_P.X_Next_Y0_i;
-
-    /* End of SystemInitialize for SubSystem: '<S211>/GPS_Correct' */
-
-    /* SystemInitialize for Enabled SubSystem: '<S212>/Rangefinder_Correct' */
-    /* InitializeConditions for Memory: '<S233>/Memory' */
-    INS_DWork.Memory_PreviousInput_f[2] = INS_P.Memory_InitialCondition_h;
-
-    /* SystemInitialize for Outport: '<S231>/X_Next' */
-    INS_B.Sum1[2] = INS_P.X_Next_Y0_mm;
-
-    /* SystemInitialize for Outport: '<S231>/rf_bias' */
+    /* SystemInitialize for Outport: '<S257>/rf_bias' */
     INS_B.rf_height_bias = INS_P.rf_bias_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S212>/Rangefinder_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S229>/Rangefinder_Correct' */
 
-    /* SystemInitialize for Enabled SubSystem: '<S203>/GPS_Pos_Init' */
-    /* SystemInitialize for Outport: '<S205>/X_0' */
+    /* SystemInitialize for Enabled SubSystem: '<S227>/ExternalPos_Correct' */
+    /* InitializeConditions for UnitDelay: '<S240>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_a = INS_P.DetectChange_vinit_j;
+
+    /* InitializeConditions for Delay: '<S243>/x_delay' */
+    INS_DWork.icLoad_p = 1U;
+
+    /* InitializeConditions for UnitDelay: '<S247>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_a4 = INS_P.DetectIncrease_vinit_j;
+
+    /* InitializeConditions for Delay: '<S245>/Delay' */
+    INS_DWork.Delay_DSTATE_m = INS_P.Delay_InitialCondition_d2;
+
+    /* End of SystemInitialize for SubSystem: '<S227>/ExternalPos_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S228>/GPS_Correct' */
+    /* InitializeConditions for Memory: '<S250>/Memory' */
+    INS_DWork.Memory_PreviousInput_e[0] = INS_P.Memory_InitialCondition_c;
+
+    /* SystemInitialize for Outport: '<S248>/X_Next' */
+    INS_B.Sum1_p[0] = INS_P.X_Next_Y0_i;
+
+    /* End of SystemInitialize for SubSystem: '<S228>/GPS_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S229>/Rangefinder_Correct' */
+    /* InitializeConditions for Memory: '<S259>/Memory' */
+    INS_DWork.Memory_PreviousInput_f[0] = INS_P.Memory_InitialCondition_h;
+
+    /* SystemInitialize for Outport: '<S257>/X_Next' */
+    INS_B.Sum1[0] = INS_P.X_Next_Y0_mm;
+
+    /* End of SystemInitialize for SubSystem: '<S229>/Rangefinder_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S227>/ExternalPos_Correct' */
+    /* InitializeConditions for Delay: '<S241>/Delay' */
+    INS_DWork.Delay_DSTATE_p[0] = INS_P.Delay_InitialCondition_ms;
+
+    /* SystemInitialize for Outport: '<S239>/X_Next' */
+    INS_B.Sum1_c[0] = INS_P.X_Next_Y0_j;
+
+    /* End of SystemInitialize for SubSystem: '<S227>/ExternalPos_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S228>/GPS_Correct' */
+    /* InitializeConditions for Memory: '<S250>/Memory' */
+    INS_DWork.Memory_PreviousInput_e[1] = INS_P.Memory_InitialCondition_c;
+
+    /* SystemInitialize for Outport: '<S248>/X_Next' */
+    INS_B.Sum1_p[1] = INS_P.X_Next_Y0_i;
+
+    /* End of SystemInitialize for SubSystem: '<S228>/GPS_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S229>/Rangefinder_Correct' */
+    /* InitializeConditions for Memory: '<S259>/Memory' */
+    INS_DWork.Memory_PreviousInput_f[1] = INS_P.Memory_InitialCondition_h;
+
+    /* SystemInitialize for Outport: '<S257>/X_Next' */
+    INS_B.Sum1[1] = INS_P.X_Next_Y0_mm;
+
+    /* End of SystemInitialize for SubSystem: '<S229>/Rangefinder_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S227>/ExternalPos_Correct' */
+    /* InitializeConditions for Delay: '<S241>/Delay' */
+    INS_DWork.Delay_DSTATE_p[1] = INS_P.Delay_InitialCondition_ms;
+
+    /* SystemInitialize for Outport: '<S239>/X_Next' */
+    INS_B.Sum1_c[1] = INS_P.X_Next_Y0_j;
+
+    /* End of SystemInitialize for SubSystem: '<S227>/ExternalPos_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S228>/GPS_Correct' */
+    /* InitializeConditions for Memory: '<S250>/Memory' */
+    INS_DWork.Memory_PreviousInput_e[2] = INS_P.Memory_InitialCondition_c;
+
+    /* SystemInitialize for Outport: '<S248>/X_Next' */
+    INS_B.Sum1_p[2] = INS_P.X_Next_Y0_i;
+
+    /* End of SystemInitialize for SubSystem: '<S228>/GPS_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S229>/Rangefinder_Correct' */
+    /* InitializeConditions for Memory: '<S259>/Memory' */
+    INS_DWork.Memory_PreviousInput_f[2] = INS_P.Memory_InitialCondition_h;
+
+    /* SystemInitialize for Outport: '<S257>/X_Next' */
+    INS_B.Sum1[2] = INS_P.X_Next_Y0_mm;
+
+    /* End of SystemInitialize for SubSystem: '<S229>/Rangefinder_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S227>/ExternalPos_Correct' */
+    /* InitializeConditions for Delay: '<S241>/Delay' */
+    INS_DWork.Delay_DSTATE_p[2] = INS_P.Delay_InitialCondition_ms;
+
+    /* SystemInitialize for Outport: '<S239>/X_Next' */
+    INS_B.Sum1_c[2] = INS_P.X_Next_Y0_j;
+
+    /* End of SystemInitialize for SubSystem: '<S227>/ExternalPos_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S219>/GPS_Pos_Init' */
+    /* SystemInitialize for Outport: '<S221>/X_0' */
     INS_B.DataTypeConversion_n[0] = INS_P.X_0_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S203>/GPS_Pos_Init' */
+    /* End of SystemInitialize for SubSystem: '<S219>/GPS_Pos_Init' */
 
-    /* SystemInitialize for Merge: '<S204>/Merge' */
+    /* SystemInitialize for Merge: '<S220>/Merge' */
     INS_B.Merge_n[0] = INS_P.Merge_InitialOutput_c;
 
-    /* SystemInitialize for Enabled SubSystem: '<S203>/GPS_Pos_Init' */
-    /* SystemInitialize for Outport: '<S205>/X_0' */
+    /* SystemInitialize for Enabled SubSystem: '<S219>/GPS_Pos_Init' */
+    /* SystemInitialize for Outport: '<S221>/X_0' */
     INS_B.DataTypeConversion_n[1] = INS_P.X_0_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S203>/GPS_Pos_Init' */
+    /* End of SystemInitialize for SubSystem: '<S219>/GPS_Pos_Init' */
 
-    /* SystemInitialize for Merge: '<S204>/Merge' */
+    /* SystemInitialize for Merge: '<S220>/Merge' */
     INS_B.Merge_n[1] = INS_P.Merge_InitialOutput_c;
 
-    /* SystemInitialize for Enabled SubSystem: '<S183>/OptFlow_Correct' */
-    /* InitializeConditions for UnitDelay: '<S195>/Delay Input1' */
+    /* SystemInitialize for Enabled SubSystem: '<S190>/OptFlow_Correct' */
+    /* InitializeConditions for UnitDelay: '<S211>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_m = INS_P.DetectChange_vinit_l;
 
-    /* InitializeConditions for Delay: '<S198>/vn_delay' */
+    /* InitializeConditions for Delay: '<S214>/vn_delay' */
     INS_DWork.icLoad_h = 1U;
 
-    /* InitializeConditions for Delay: '<S198>/ve_delay' */
+    /* InitializeConditions for Delay: '<S214>/ve_delay' */
     INS_DWork.icLoad_j = 1U;
 
-    /* End of SystemInitialize for SubSystem: '<S183>/OptFlow_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S190>/OptFlow_Correct' */
 
-    /* SystemInitialize for Enabled SubSystem: '<S182>/GPS_Correct' */
-    /* InitializeConditions for UnitDelay: '<S185>/Delay Input1' */
-    INS_DWork.DelayInput1_DSTATE_d0 = INS_P.DetectChange_vinit;
+    /* SystemInitialize for Enabled SubSystem: '<S189>/GPS_Correct' */
+    /* InitializeConditions for UnitDelay: '<S201>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_d0 = INS_P.DetectChange_vinit_i;
 
-    /* InitializeConditions for Delay: '<S188>/x_delay' */
+    /* InitializeConditions for Delay: '<S204>/x_delay' */
     INS_DWork.icLoad_op = 1U;
 
-    /* InitializeConditions for Delay: '<S188>/x_delay1' */
+    /* InitializeConditions for Delay: '<S204>/x_delay1' */
     INS_DWork.icLoad_i = 1U;
 
-    /* InitializeConditions for Delay: '<S188>/vn_delay' */
+    /* InitializeConditions for Delay: '<S204>/vn_delay' */
     INS_DWork.icLoad_m = 1U;
 
-    /* InitializeConditions for Delay: '<S188>/vn_delay1' */
+    /* InitializeConditions for Delay: '<S204>/vn_delay1' */
     INS_DWork.icLoad_jp = 1U;
 
-    /* InitializeConditions for UnitDelay: '<S193>/Delay Input1' */
+    /* InitializeConditions for UnitDelay: '<S209>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_gn = INS_P.DetectIncrease_vinit_p;
 
-    /* InitializeConditions for Memory: '<S191>/Memory' */
-    INS_DWork.Memory_PreviousInput_d[0] = INS_P.Memory_InitialCondition[0];
-    INS_DWork.Memory_PreviousInput_d[1] = INS_P.Memory_InitialCondition[1];
+    /* InitializeConditions for Memory: '<S207>/Memory' */
+    INS_DWork.Memory_PreviousInput_d[0] = INS_P.Memory_InitialCondition_l[0];
+    INS_DWork.Memory_PreviousInput_d[1] = INS_P.Memory_InitialCondition_l[1];
 
-    /* SystemInitialize for Enabled SubSystem: '<S183>/OptFlow_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S189>/GPS_Correct' */
+
+    /* SystemInitialize for Enabled SubSystem: '<S188>/ExternalPos_Correct' */
+    /* InitializeConditions for UnitDelay: '<S192>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_no = INS_P.DetectChange_vinit;
+
+    /* InitializeConditions for Delay: '<S195>/x_delay' */
+    INS_DWork.icLoad_hw = 1U;
+
+    /* InitializeConditions for Delay: '<S195>/x_delay1' */
+    INS_DWork.icLoad_od = 1U;
+
+    /* InitializeConditions for UnitDelay: '<S199>/Delay Input1' */
+    INS_DWork.DelayInput1_DSTATE_dp5 = INS_P.DetectIncrease_vinit_m;
+
+    /* InitializeConditions for Delay: '<S197>/Delay' */
+    INS_DWork.Delay_DSTATE_k[0] = INS_P.Delay_InitialCondition_e;
+    INS_DWork.Delay_DSTATE_k[1] = INS_P.Delay_InitialCondition_e;
+
+    /* SystemInitialize for Enabled SubSystem: '<S189>/GPS_Correct' */
+    /* SystemInitialize for Enabled SubSystem: '<S190>/OptFlow_Correct' */
     for (i = 0; i < 6; i++) {
-      /* InitializeConditions for Delay: '<S200>/Delay' */
+      /* InitializeConditions for Delay: '<S216>/Delay' */
       INS_DWork.Delay_DSTATE_l[i] = INS_P.Delay_InitialCondition_g;
 
-      /* InitializeConditions for Memory: '<S196>/Memory' */
+      /* InitializeConditions for Memory: '<S212>/Memory' */
       INS_DWork.Memory_PreviousInput_n[i] = INS_P.Memory_InitialCondition_i;
 
-      /* SystemInitialize for Outport: '<S194>/X_Next' */
+      /* SystemInitialize for Outport: '<S210>/X_Next' */
       INS_B.Sum1_f[i] = INS_P.X_Next_Y0_k;
 
-      /* InitializeConditions for Memory: '<S186>/Memory' */
+      /* InitializeConditions for Memory: '<S202>/Memory' */
       INS_DWork.Memory_PreviousInput_h[i] = INS_P.Memory_InitialCondition_o;
 
-      /* SystemInitialize for Outport: '<S184>/X_Next' */
-      INS_B.Sum1_o[i] = INS_P.X_Next_Y0;
+      /* SystemInitialize for Outport: '<S200>/X_Next' */
+      INS_B.Sum1_o[i] = INS_P.X_Next_Y0_c;
+
+      /* InitializeConditions for Memory: '<S193>/Memory' */
+      INS_DWork.Memory_PreviousInput_m[i] = INS_P.Memory_InitialCondition;
+
+      /* SystemInitialize for Outport: '<S191>/X_Next' */
+      INS_B.Sum1_b[i] = INS_P.X_Next_Y0;
     }
 
-    /* End of SystemInitialize for SubSystem: '<S183>/OptFlow_Correct' */
-    /* End of SystemInitialize for SubSystem: '<S182>/GPS_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S190>/OptFlow_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S189>/GPS_Correct' */
+    /* End of SystemInitialize for SubSystem: '<S188>/ExternalPos_Correct' */
     /* End of SystemInitialize for SubSystem: '<S56>/CF' */
     /* End of SystemInitialize for SubSystem: '<Root>/Data_Fusion' */
 
@@ -8192,7 +9125,7 @@ void INS_init(void)
     INS_DWork.DiscreteTimeIntegrator_PrevR_as = 0;
 
     /* InitializeConditions for Delay: '<S13>/Delay' */
-    INS_DWork.Delay_DSTATE_p = INS_P.Delay_InitialCondition_cj;
+    INS_DWork.Delay_DSTATE_pk = INS_P.Delay_InitialCondition_cj;
 
     /* InitializeConditions for DiscreteIntegrator: '<S14>/Discrete-Time Integrator' */
     INS_DWork.DiscreteTimeIntegrator_DSTAT_kg =
@@ -8208,7 +9141,7 @@ void INS_init(void)
     INS_DWork.DiscreteTimeIntegrator_PrevR_ar = 0;
 
     /* InitializeConditions for Delay: '<S16>/Delay' */
-    INS_DWork.Delay_DSTATE_ly = INS_P.Delay_InitialCondition_e;
+    INS_DWork.Delay_DSTATE_ly = INS_P.Delay_InitialCondition_em;
 
     /* InitializeConditions for UnitDelay: '<S21>/Delay Input1' */
     INS_DWork.DelayInput1_DSTATE_dx = INS_P.DetectRisePositive_vinit;

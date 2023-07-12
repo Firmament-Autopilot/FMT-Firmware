@@ -37,7 +37,7 @@ MCN_DECLARE(sensor_optflow);
 MCN_DECLARE(sensor_airspeed);
 
 /* External Position */
-MCN_DEFINE(external_att_pos, sizeof(Ext_Att_Pos_Bus));
+MCN_DEFINE(external_pos, sizeof(External_Pos_Bus));
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -159,7 +159,7 @@ mlog_elem_t Airspeed_Elems[] = {
 };
 MLOG_BUS_DEFINE(AirSpeed, Airspeed_Elems);
 
-static mlog_elem_t Ext_Att_Pos_Elems[] = {
+static mlog_elem_t External_Pos_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
     MLOG_ELEMENT(field_valid, MLOG_UINT32),
     MLOG_ELEMENT(x, MLOG_FLOAT),
@@ -169,7 +169,7 @@ static mlog_elem_t Ext_Att_Pos_Elems[] = {
     MLOG_ELEMENT(theta, MLOG_FLOAT),
     MLOG_ELEMENT(psi, MLOG_FLOAT),
 };
-MLOG_BUS_DEFINE(Ext_Att_Pos, Ext_Att_Pos_Elems);
+MLOG_BUS_DEFINE(External_Pos, External_Pos_Elems);
 
 mlog_elem_t INS_Out_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
@@ -212,7 +212,7 @@ static struct INS_Handler {
     McnNode_t rf_sub_node_t;
     McnNode_t optflow_sub_node_t;
     McnNode_t airspeed_sub_node_t;
-    McnNode_t ext_att_pos_sub_node_t;
+    McnNode_t ext_pos_sub_node_t;
 
     imu_data_t imu_report;
     mag_data_t mag_report;
@@ -221,7 +221,7 @@ static struct INS_Handler {
     rf_data_t rf_report;
     optflow_data_t optflow_report;
     airspeed_data_t airspeed_report;
-    Ext_Att_Pos_Bus ext_att_pos_report;
+    External_Pos_Bus ext_pos_report;
 } ins_handle;
 
 static uint8_t imu_data_updated;
@@ -231,7 +231,7 @@ static uint8_t gps_data_updated;
 static uint8_t rf_data_updated;
 static uint8_t optflow_data_updated;
 static uint8_t airspeed_data_updated;
-static uint8_t ext_att_pos_data_updated;
+static uint8_t ext_pos_data_updated;
 
 static int IMU_ID;
 static int MAG_ID;
@@ -240,7 +240,7 @@ static int GPS_ID;
 static int Rangefinder_ID;
 static int OpticalFlow_ID;
 static int AirSpeed_ID;
-static int ExtAttPos_ID;
+static int ExtPos_ID;
 static int INS_Out_ID;
 
 fmt_model_info_t ins_model_info;
@@ -281,9 +281,9 @@ static int ins_output_echo(void* param)
     return 0;
 }
 
-static int external_att_pos_echo(void* param)
+static int external_pos_echo(void* param)
 {
-    Ext_Att_Pos_Bus ext_att_pos;
+    External_Pos_Bus ext_att_pos;
 
     mcn_copy_from_hub((McnHub*)param, &ext_att_pos);
 
@@ -305,7 +305,7 @@ static void mlog_start_cb(void)
     rf_data_updated = 1;
     optflow_data_updated = 1;
     airspeed_data_updated = 1;
-    ext_att_pos_data_updated = 1;
+    ext_pos_data_updated = 1;
 }
 
 static void init_parameter(void)
@@ -432,19 +432,19 @@ void ins_interface_step(uint32_t timestamp)
     }
 
     /* update external attitude/position data */
-    if (mcn_poll(ins_handle.ext_att_pos_sub_node_t)) {
-        mcn_copy(MCN_HUB(external_att_pos), ins_handle.ext_att_pos_sub_node_t, &ins_handle.ext_att_pos_report);
+    if (mcn_poll(ins_handle.ext_pos_sub_node_t)) {
+        mcn_copy(MCN_HUB(external_pos), ins_handle.ext_pos_sub_node_t, &ins_handle.ext_pos_report);
 
-        INS_U.Ext_Att_Pos.timestamp = timestamp;
-        INS_U.Ext_Att_Pos.field_valid = ins_handle.ext_att_pos_report.field_valid;
-        INS_U.Ext_Att_Pos.x = ins_handle.ext_att_pos_report.x;
-        INS_U.Ext_Att_Pos.y = ins_handle.ext_att_pos_report.y;
-        INS_U.Ext_Att_Pos.z = ins_handle.ext_att_pos_report.z;
-        INS_U.Ext_Att_Pos.phi = ins_handle.ext_att_pos_report.phi;
-        INS_U.Ext_Att_Pos.theta = ins_handle.ext_att_pos_report.theta;
-        INS_U.Ext_Att_Pos.psi = ins_handle.ext_att_pos_report.psi;
+        INS_U.External_Pos.timestamp = timestamp;
+        INS_U.External_Pos.field_valid = ins_handle.ext_pos_report.field_valid;
+        INS_U.External_Pos.x = ins_handle.ext_pos_report.x;
+        INS_U.External_Pos.y = ins_handle.ext_pos_report.y;
+        INS_U.External_Pos.z = ins_handle.ext_pos_report.z;
+        INS_U.External_Pos.phi = ins_handle.ext_pos_report.phi;
+        INS_U.External_Pos.theta = ins_handle.ext_pos_report.theta;
+        INS_U.External_Pos.psi = ins_handle.ext_pos_report.psi;
 
-        ext_att_pos_data_updated = 1;
+        ext_pos_data_updated = 1;
     }
 
     /* run INS */
@@ -496,10 +496,10 @@ void ins_interface_step(uint32_t timestamp)
         mlog_push_msg((uint8_t*)&INS_U.AirSpeed, AirSpeed_ID, sizeof(INS_U.AirSpeed));
     }
 
-    if (ext_att_pos_data_updated) {
-        ext_att_pos_data_updated = 0;
+    if (ext_pos_data_updated) {
+        ext_pos_data_updated = 0;
         /* Log External Position data */
-        mlog_push_msg((uint8_t*)&INS_U.Ext_Att_Pos, ExtAttPos_ID, sizeof(INS_U.Ext_Att_Pos));
+        mlog_push_msg((uint8_t*)&INS_U.External_Pos, ExtPos_ID, sizeof(INS_U.External_Pos));
     }
 
     /* Log INS output bus data */
@@ -516,7 +516,7 @@ void ins_interface_init(void)
     ins_model_info.info = (char*)INS_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
-    mcn_advertise(MCN_HUB(external_att_pos), external_att_pos_echo);
+    mcn_advertise(MCN_HUB(external_pos), external_pos_echo);
 
     ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);
     ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag0), NULL, NULL);
@@ -525,7 +525,7 @@ void ins_interface_init(void)
     ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
     ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
     ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
-    ins_handle.ext_att_pos_sub_node_t = mcn_subscribe(MCN_HUB(external_att_pos), NULL, NULL);
+    ins_handle.ext_pos_sub_node_t = mcn_subscribe(MCN_HUB(external_pos), NULL, NULL);
 
     IMU_ID = mlog_get_bus_id("IMU");
     MAG_ID = mlog_get_bus_id("MAG");
@@ -534,7 +534,7 @@ void ins_interface_init(void)
     Rangefinder_ID = mlog_get_bus_id("Rangefinder");
     OpticalFlow_ID = mlog_get_bus_id("OpticalFlow");
     AirSpeed_ID = mlog_get_bus_id("AirSpeed");
-    ExtAttPos_ID = mlog_get_bus_id("Ext_Att_Pos");
+    ExtPos_ID = mlog_get_bus_id("External_Pos");
     INS_Out_ID = mlog_get_bus_id("INS_Out");
     FMT_ASSERT(IMU_ID >= 0);
     FMT_ASSERT(MAG_ID >= 0);
@@ -543,7 +543,7 @@ void ins_interface_init(void)
     FMT_ASSERT(Rangefinder_ID >= 0);
     FMT_ASSERT(OpticalFlow_ID >= 0);
     FMT_ASSERT(AirSpeed_ID >= 0);
-    FMT_ASSERT(ExtAttPos_ID >= 0);
+    FMT_ASSERT(ExtPos_ID >= 0);
     FMT_ASSERT(INS_Out_ID >= 0);
 
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
