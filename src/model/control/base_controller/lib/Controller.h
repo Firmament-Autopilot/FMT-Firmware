@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.960
+ * Model version                  : 1.965
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat May 20 15:38:49 2023
+ * C/C++ source code generated on : Thu Jul 13 09:47:20 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -64,7 +64,6 @@ typedef struct {
   const real32_T Constant;             /* '<S102>/Constant' */
   const real32_T Gain;                 /* '<S87>/Gain' */
   const real32_T Constant_n[3];        /* '<S75>/Constant' */
-  const real32_T Constant_b;           /* '<S116>/Constant' */
   const real32_T Square;               /* '<S100>/Square' */
   const real32_T d;                    /* '<S100>/Multiply' */
   const real32_T Gain4;                /* '<S100>/Gain4' */
@@ -224,6 +223,7 @@ extern struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                    *   '<S103>/kp'
                                                    *   '<S115>/kd'
                                                    *   '<S115>/Saturation'
+                                                   *   '<S116>/Constant'
                                                    *   '<S116>/ki'
                                                    *   '<S116>/Discrete-Time Integrator'
                                                    *   '<S117>/kp'
@@ -284,7 +284,7 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S4>'   : 'Controller/Controller/Control_Allocation'
  * '<S5>'   : 'Controller/Controller/Horizontal_Control'
  * '<S6>'   : 'Controller/Controller/Vertical_Control'
- * '<S7>'   : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x'
+ * '<S7>'   : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x'
  * '<S8>'   : 'Controller/Controller/Control_Allocation/Coxial_Quadcopter_x'
  * '<S9>'   : 'Controller/Controller/Control_Allocation/Hexacopter_+'
  * '<S10>'  : 'Controller/Controller/Control_Allocation/Hexacopter_x'
@@ -292,12 +292,12 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S12>'  : 'Controller/Controller/Control_Allocation/Octocopter_x'
  * '<S13>'  : 'Controller/Controller/Control_Allocation/Quadcopter_+'
  * '<S14>'  : 'Controller/Controller/Control_Allocation/Quadcopter_x'
- * '<S15>'  : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x/Signal_Select'
- * '<S16>'  : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x/actuator_cmd_routing'
- * '<S17>'  : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x/throttle_mapping'
- * '<S18>'  : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x/Signal_Select/Compare To Constant'
- * '<S19>'  : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x/Signal_Select/Compare To Constant1'
- * '<S20>'  : 'Controller/Controller/Control_Allocation/Cox_Hexacopter_x/Signal_Select/Offboard_Signal_Select'
+ * '<S15>'  : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x/Signal_Select'
+ * '<S16>'  : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x/actuator_cmd_routing'
+ * '<S17>'  : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x/throttle_mapping'
+ * '<S18>'  : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x/Signal_Select/Compare To Constant'
+ * '<S19>'  : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x/Signal_Select/Compare To Constant1'
+ * '<S20>'  : 'Controller/Controller/Control_Allocation/Coxial_Hexacopter_x/Signal_Select/Offboard_Signal_Select'
  * '<S21>'  : 'Controller/Controller/Control_Allocation/Coxial_Quadcopter_x/Signal_Select'
  * '<S22>'  : 'Controller/Controller/Control_Allocation/Coxial_Quadcopter_x/actuator_cmd_routing'
  * '<S23>'  : 'Controller/Controller/Control_Allocation/Coxial_Quadcopter_x/throttle_mapping'

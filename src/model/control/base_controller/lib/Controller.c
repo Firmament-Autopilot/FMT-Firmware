@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.960
+ * Model version                  : 1.965
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat May 20 15:38:49 2023
+ * C/C++ source code generated on : Thu Jul 13 09:47:20 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -79,6 +79,7 @@ struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM = {
                                         *   '<S103>/kp'
                                         *   '<S115>/kd'
                                         *   '<S115>/Saturation'
+                                        *   '<S116>/Constant'
                                         *   '<S116>/ki'
                                         *   '<S116>/Discrete-Time Integrator'
                                         *   '<S117>/kp'
@@ -924,11 +925,12 @@ void Controller_step(void)
   rtb_Add3 = -(Controller_DW.Integrator1_DSTATE_p - Controller_U.INS_Out.vd);
 
   /* DiscreteIntegrator: '<S116>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S116>/Constant'
    *  Inport: '<Root>/FMS_Out'
    */
   if ((Controller_U.FMS_Out.reset != 0) ||
       (Controller_DW.DiscreteTimeIntegrator_PrevRe_m != 0)) {
-    Controller_DW.DiscreteTimeIntegrator_DSTATE_m = Controller_ConstB.Constant_b;
+    Controller_DW.DiscreteTimeIntegrator_DSTATE_m = CONTROL_PARAM.VEL_Z_I_MIN;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_m >=
         CONTROL_PARAM.VEL_Z_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_m = CONTROL_PARAM.VEL_Z_I_MAX;
@@ -1055,15 +1057,15 @@ void Controller_step(void)
   /* Outputs for Atomic SubSystem: '<S2>/Control_Allocation' */
 #if AIRFRAME == 6
 
-  /* Output and update for atomic system: '<S4>/Cox_Hexacopter_x' */
+  /* Output and update for atomic system: '<S4>/Coxial_Hexacopter_x' */
   {
     uint16_T rtb_throttle_cmd;
     uint16_T rtb_MultiportSwitch[12];
-    int32_T i_f;
-    real32_T tmp_f;
+    int32_T i_b;
+    real32_T tmp_b;
     real32_T tmp_k;
-    real32_T tmp_nh;
-    real32_T u0_f;
+    real32_T tmp_i;
+    real32_T u0_b;
     uint16_T u0_k;
 
     /* MultiPortSwitch: '<S16>/Multiport Switch' incorporates:
@@ -1071,14 +1073,14 @@ void Controller_step(void)
      */
     switch (Controller_U.FMS_Out.status) {
      case 1:
-      for (i_f = 0; i_f < 12; i_f++) {
-        rtb_MultiportSwitch[i_f] = 1000U;
+      for (i_b = 0; i_b < 12; i_b++) {
+        rtb_MultiportSwitch[i_b] = 1000U;
       }
       break;
 
      case 2:
-      for (i_f = 0; i_f < 12; i_f++) {
-        rtb_MultiportSwitch[i_f] = 1150U;
+      for (i_b = 0; i_b < 12; i_b++) {
+        rtb_MultiportSwitch[i_b] = 1150U;
       }
       break;
 
@@ -1110,31 +1112,31 @@ void Controller_step(void)
         } else {
           if (rtb_Saturation_i > 1.0F) {
             /* Saturate: '<S7>/Saturation2' */
-            u0_f = 1.0F;
+            u0_b = 1.0F;
           } else if (rtb_Saturation_i < -1.0F) {
             /* Saturate: '<S7>/Saturation2' */
-            u0_f = -1.0F;
+            u0_b = -1.0F;
           } else {
             /* Saturate: '<S7>/Saturation2' */
-            u0_f = rtb_Saturation_i;
+            u0_b = rtb_Saturation_i;
           }
 
           /* Sum: '<S17>/Sum' incorporates:
            *  Constant: '<S17>/hover_throttle'
            *  Saturate: '<S7>/Saturation2'
            */
-          u0_f += CONTROL_PARAM.HOVER_THRO;
+          u0_b += CONTROL_PARAM.HOVER_THRO;
 
           /* Saturate: '<S17>/Saturation' */
-          if (u0_f > 1.0F) {
-            u0_f = 1.0F;
+          if (u0_b > 1.0F) {
+            u0_b = 1.0F;
           } else {
-            if (u0_f < 0.0F) {
-              u0_f = 0.0F;
+            if (u0_b < 0.0F) {
+              u0_b = 0.0F;
             }
           }
 
-          rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * u0_f),
+          rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * u0_b),
             4.2949673E+9F) + 1000U);
         }
 
@@ -1142,27 +1144,27 @@ void Controller_step(void)
       } else {
         if (rtb_Saturation_i > 1.0F) {
           /* Saturate: '<S7>/Saturation2' */
-          u0_f = 1.0F;
+          u0_b = 1.0F;
         } else if (rtb_Saturation_i < -1.0F) {
           /* Saturate: '<S7>/Saturation2' */
-          u0_f = -1.0F;
+          u0_b = -1.0F;
         } else {
           /* Saturate: '<S7>/Saturation2' */
-          u0_f = rtb_Saturation_i;
+          u0_b = rtb_Saturation_i;
         }
 
         /* Sum: '<S17>/Sum' incorporates:
          *  Constant: '<S17>/hover_throttle'
          *  Saturate: '<S7>/Saturation2'
          */
-        u0_f += CONTROL_PARAM.HOVER_THRO;
+        u0_b += CONTROL_PARAM.HOVER_THRO;
 
         /* Saturate: '<S17>/Saturation' */
-        if (u0_f > 1.0F) {
-          u0_f = 1.0F;
+        if (u0_b > 1.0F) {
+          u0_b = 1.0F;
         } else {
-          if (u0_f < 0.0F) {
-            u0_f = 0.0F;
+          if (u0_b < 0.0F) {
+            u0_b = 0.0F;
           }
         }
 
@@ -1172,7 +1174,7 @@ void Controller_step(void)
          *  Gain: '<S17>/Gain1'
          *  Sum: '<S17>/Sum1'
          */
-        rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * u0_f),
+        rtb_throttle_cmd = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * u0_b),
           4.2949673E+9F) + 1000U);
       }
 
@@ -1180,11 +1182,11 @@ void Controller_step(void)
 
       /* Saturate: '<S7>/Saturation1' */
       if (rtb_Add_g[0] > 1.0F) {
-        tmp_f = 1.0F;
+        tmp_b = 1.0F;
       } else if (rtb_Add_g[0] < -1.0F) {
-        tmp_f = -1.0F;
+        tmp_b = -1.0F;
       } else {
-        tmp_f = rtb_Add_g[0];
+        tmp_b = rtb_Add_g[0];
       }
 
       if (rtb_Add_g[1] > 1.0F) {
@@ -1196,37 +1198,37 @@ void Controller_step(void)
       }
 
       if (rtb_Add_g[2] > 1.0F) {
-        tmp_nh = 1.0F;
+        tmp_i = 1.0F;
       } else if (rtb_Add_g[2] < -1.0F) {
-        tmp_nh = -1.0F;
+        tmp_i = -1.0F;
       } else {
-        tmp_nh = rtb_Add_g[2];
+        tmp_i = rtb_Add_g[2];
       }
 
       /* End of Saturate: '<S7>/Saturation1' */
 
       /* Product: '<S7>/Multiply' */
-      for (i_f = 0; i_f < 12; i_f++) {
+      for (i_b = 0; i_b < 12; i_b++) {
         /* Saturate: '<S7>/Saturation' incorporates:
          *  Constant: '<S7>/Effective_Matrix'
          *  Gain: '<S7>/Gain'
          *  Sum: '<S7>/Add'
          */
-        u0_f = fmodf(floorf(1000.0F *
-                            (Controller_ConstP.Effective_Matrix_Value[i_f + 24] *
-                             tmp_nh +
-                             (Controller_ConstP.Effective_Matrix_Value[i_f + 12]
+        u0_b = fmodf(floorf(1000.0F *
+                            (Controller_ConstP.Effective_Matrix_Value[i_b + 24] *
+                             tmp_i +
+                             (Controller_ConstP.Effective_Matrix_Value[i_b + 12]
                               * tmp_k +
-                              Controller_ConstP.Effective_Matrix_Value[i_f] *
-                              tmp_f))), 65536.0F);
-        u0_k = (uint16_T)((uint32_T)(u0_f < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_f : (int32_T)(uint16_T)u0_f) + rtb_throttle_cmd);
+                              Controller_ConstP.Effective_Matrix_Value[i_b] *
+                              tmp_b))), 65536.0F);
+        u0_k = (uint16_T)((uint32_T)(u0_b < 0.0F ? (int32_T)(uint16_T)-(int16_T)
+          (uint16_T)-u0_b : (int32_T)(uint16_T)u0_b) + rtb_throttle_cmd);
         if (u0_k > 1900) {
-          rtb_MultiportSwitch[i_f] = 1900U;
+          rtb_MultiportSwitch[i_b] = 1900U;
         } else if (u0_k < 1100) {
-          rtb_MultiportSwitch[i_f] = 1100U;
+          rtb_MultiportSwitch[i_b] = 1100U;
         } else {
-          rtb_MultiportSwitch[i_f] = u0_k;
+          rtb_MultiportSwitch[i_b] = u0_k;
         }
 
         /* End of Saturate: '<S7>/Saturation' */
@@ -1236,8 +1238,8 @@ void Controller_step(void)
       break;
 
      default:
-      for (i_f = 0; i_f < 12; i_f++) {
-        rtb_MultiportSwitch[i_f] = 1000U;
+      for (i_b = 0; i_b < 12; i_b++) {
+        rtb_MultiportSwitch[i_b] = 1000U;
       }
       break;
     }
@@ -1245,8 +1247,8 @@ void Controller_step(void)
     /* End of MultiPortSwitch: '<S16>/Multiport Switch' */
 
     /* Reshape: '<S16>/Reshape' */
-    for (i_f = 0; i_f < 12; i_f++) {
-      rtb_VariantMergeForOutportactua[i_f] = rtb_MultiportSwitch[i_f];
+    for (i_b = 0; i_b < 12; i_b++) {
+      rtb_VariantMergeForOutportactua[i_b] = rtb_MultiportSwitch[i_b];
     }
 
     rtb_VariantMergeForOutportactua[12] = 0U;
@@ -3332,6 +3334,9 @@ void Controller_init(void)
   /* external outputs */
   Controller_Y.Control_Out = Controller_rtZControl_Out_Bus;
 
+  /* Start for Constant: '<S116>/Constant' */
+  Controller_DW.DiscreteTimeIntegrator_DSTATE_m = CONTROL_PARAM.VEL_Z_I_MIN;
+
   /* InitializeConditions for DiscreteIntegrator: '<S102>/Discrete-Time Integrator' */
   Controller_DW.DiscreteTimeIntegrator_DSTATE[0] = Controller_ConstB.Constant;
   if (Controller_DW.DiscreteTimeIntegrator_DSTATE[0] >=
@@ -3415,7 +3420,6 @@ void Controller_init(void)
   Controller_DW.DiscreteTimeIntegrator1_PrevR_i = 0;
 
   /* InitializeConditions for DiscreteIntegrator: '<S116>/Discrete-Time Integrator' */
-  Controller_DW.DiscreteTimeIntegrator_DSTATE_m = Controller_ConstB.Constant_b;
   if (Controller_DW.DiscreteTimeIntegrator_DSTATE_m >= CONTROL_PARAM.VEL_Z_I_MAX)
   {
     Controller_DW.DiscreteTimeIntegrator_DSTATE_m = CONTROL_PARAM.VEL_Z_I_MAX;
