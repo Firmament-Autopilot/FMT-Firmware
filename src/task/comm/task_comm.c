@@ -255,7 +255,7 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
     sys_status.load = (uint16_t)(get_cpu_usage() * 1e3);
     sys_status.voltage_battery = bat_status.battery_voltage;
     sys_status.current_battery = bat_status.battery_current;
-    sys_status.battery_remaining = -1;
+    sys_status.battery_remaining = bat_status.battery_remaining;
 
     mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &sys_status);
 
@@ -763,7 +763,7 @@ fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t re
     return mavproxy_send_immediate_msg(chan, &msg, true);
 }
 
-fmt_err_t task_mavgcs_init(void)
+static fmt_err_t task_mavgcs_init(void)
 {
     /* init mavproxy */
     FMT_TRY(mavproxy_init());
@@ -776,13 +776,13 @@ fmt_err_t task_mavgcs_init(void)
     return FMT_EOK;
 }
 
-void task_mavgcs_entry(void* parameter)
+static void task_mavgcs_entry(void* parameter)
 {
     /* execute mavproxy main loop */
     mavproxy_channel_loop(MAVPROXY_GCS_CHAN);
 }
 
-fmt_err_t task_mavobc_init(void)
+static fmt_err_t task_mavobc_init(void)
 {
     /* init onboard computer handler */
     FMT_TRY(mavobc_init());
@@ -790,7 +790,7 @@ fmt_err_t task_mavobc_init(void)
     return FMT_EOK;
 }
 
-void task_mavobc_entry(void* parameter)
+static void task_mavobc_entry(void* parameter)
 {
     /* execute mavproxy main loop */
     mavproxy_channel_loop(MAVPROXY_OBC_CHAN);

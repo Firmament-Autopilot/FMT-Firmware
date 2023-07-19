@@ -25,6 +25,7 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/system/statistic.h"
+#include "task_comm.h"
 
 #undef LOG_TAG
 #define LOG_TAG "MAVGCS"
@@ -34,20 +35,6 @@ MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(mission_data);
-
-fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result);
-bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_global_position_int_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_vfr_hud_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t);
-bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t);
 
 MCN_DEFINE(mav_ext_state, sizeof(mavlink_fmt_external_state_t));
 
