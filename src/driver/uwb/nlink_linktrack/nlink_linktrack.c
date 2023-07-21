@@ -16,16 +16,57 @@
 
 #include "nlink_linktrack.h"
 #include "hal/serial/serial.h"
+#include "nlink_linktrack_tagframe0.h"
 
 #define EVENT_NLINK_UPDATE (1 << 0)
+#define DATA_SIZE          128
+
+typedef enum {
+    NLINK_START = 0,
+    NLINK_PAYLOAD,
+    NLINK_CS
+} NLINK_State;
 
 static rt_device_t dev;
 static rt_thread_t thread;
 static struct rt_event event;
+static uint8_t frame_data[DATA_SIZE];
 
 static rt_err_t rx_ind_cb(rt_device_t dev, rt_size_t size)
 {
     return rt_event_send(&event, EVENT_NLINK_UPDATE);
+}
+
+static bool parse_package(uint8_t c)
+{
+    static NLINK_State state;
+    static uint8_t recv_len;
+    bool cmplt = false;
+
+    switch (state) {
+    case NLINK_START:
+        if (c == 0x55) {
+            frame_data[recv_len++] = c;
+            state++;
+        }
+        break;
+    case NLINK_PAYLOAD:
+        if (recv_len < DATA_SIZE) {
+            frame_data[recv_len++] = c;
+        }
+
+        if (recv_len >= DATA_SIZE) {
+            recv_len = 0;
+            cmplt = true;
+            state = NLINK_START;
+        }
+        break;
+    default:
+        state = NLINK_START;
+        break;
+    }
+
+    return cmplt;
 }
 
 static void thread_entry(void* args)
@@ -35,20 +76,19 @@ static void thread_entry(void* args)
     rt_uint32_t wait_set = EVENT_NLINK_UPDATE;
     uint8_t c;
 
-    uint16_t cnt = 0;
-
     while (1) {
         /* wait event occur */
         res = rt_event_recv(&event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, 10, &recv_set);
 
         if ((res == RT_EOK && (recv_set & EVENT_NLINK_UPDATE)) || res == -RT_ETIMEOUT) {
             while (rt_device_read(dev, 0, &c, 1) > 0) {
-                if(c == 0x55) {
-                    printf(" [%d]\n", cnt);
-                    cnt = 0;
+                if (parse_package(c) == true) {
+                    if (g_nlt_tagframe0.UnpackData(frame_data, DATA_SIZE)) {
+                        nlt_tagframe0_result_t* result = &g_nlt_tagframe0.result;
+
+                        printf("role:%d id:%d pos:%f %f %f\n", result->role, result->id, result->pos_3d[0], result->pos_3d[1], result->pos_3d[2]);
+                    }
                 }
-                printf("%x ", c);
-                cnt++;
             }
         }
     }
