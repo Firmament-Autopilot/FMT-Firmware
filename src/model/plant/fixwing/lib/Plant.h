@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.70
+ * Model version                  : 1.75
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:31:08 2023
+ * C/C++ source code generated on : Sat Jul 22 10:00:41 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -555,7 +555,7 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S10>'  : 'Plant/Actuators/selector'
  * '<S11>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Actuator Command'
  * '<S12>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Coefficients'
- * '<S13>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments1'
+ * '<S13>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments'
  * '<S14>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Diff Pressure'
  * '<S15>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/nonunit value'
  * '<S16>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Actuator Command/aileron_cmd'
@@ -571,10 +571,10 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * '<S26>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Coefficients/body rate damping/p'
  * '<S27>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Coefficients/body rate damping/q'
  * '<S28>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Coefficients/body rate damping/r'
- * '<S29>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments1/Moments about CG  due to Forces'
- * '<S30>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments1/Moments about CG  due to Forces/Cross Product'
- * '<S31>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments1/Moments about CG  due to Forces/Cross Product/Subsystem'
- * '<S32>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments1/Moments about CG  due to Forces/Cross Product/Subsystem1'
+ * '<S29>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments/Moments about CG  due to Forces'
+ * '<S30>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments/Moments about CG  due to Forces/Cross Product'
+ * '<S31>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments/Moments about CG  due to Forces/Cross Product/Subsystem'
+ * '<S32>'  : 'Plant/Actuators/Aerodynamics Forces and Moments/Aerodynamic Forces and Moments/Moments about CG  due to Forces/Cross Product/Subsystem1'
  * '<S33>'  : 'Plant/Actuators/Propulsion Forces and Moments/ESCs'
  * '<S34>'  : 'Plant/Actuators/Propulsion Forces and Moments/Force'
  * '<S35>'  : 'Plant/Actuators/Propulsion Forces and Moments/ESCs/Rotor_Delay'

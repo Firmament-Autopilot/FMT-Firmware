@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.70
+ * Model version                  : 1.75
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Mar 13 16:31:08 2023
+ * C/C++ source code generated on : Sat Jul 22 10:00:41 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1007,15 +1007,14 @@ void Plant_step(void)
    *  Product: '<S32>/Multiply5'
    *  Sum: '<S30>/Sum'
    */
-  rtb_Sum1_dw_idx_0 = (Plant_ConstB.Sum_k[1] * rtb_Sum_an[2] -
-                       Plant_ConstB.Sum_k[2] * rtb_Sum_an[1]) + 2.3F *
-    rtb_Gain_kz * (real32_T)rtb_Sum_nr[3];
-  rtb_Sum1_dw_idx_1 = (Plant_ConstB.Sum_k[2] * rtb_Sum_an[0] -
-                       Plant_ConstB.Sum_k[0] * rtb_Sum_an[2]) + 0.32F *
-    rtb_Gain_kz * (real32_T)rtb_Sum_nr[4];
-  rtb_MathFunction1_k = (Plant_ConstB.Sum_k[0] * rtb_Sum_an[1] -
-    Plant_ConstB.Sum_k[1] * rtb_Sum_an[0]) + 2.3F * rtb_Gain_kz * (real32_T)
-    rtb_Sum_nr[5];
+  rtb_Sum1_dw_idx_0 = (rtb_Sum_an[1] * Plant_ConstB.Sum_k[2] - rtb_Sum_an[2] *
+                       Plant_ConstB.Sum_k[1]) + 2.3F * rtb_Gain_kz * (real32_T)
+    rtb_Sum_nr[3];
+  rtb_Sum1_dw_idx_1 = (rtb_Sum_an[2] * Plant_ConstB.Sum_k[0] - rtb_Sum_an[0] *
+                       Plant_ConstB.Sum_k[2]) + 0.32F * rtb_Gain_kz * (real32_T)
+    rtb_Sum_nr[4];
+  rtb_MathFunction1_k = (rtb_Sum_an[0] * Plant_ConstB.Sum_k[1] - rtb_Sum_an[1] *
+    Plant_ConstB.Sum_k[0]) + 2.3F * rtb_Gain_kz * (real32_T)rtb_Sum_nr[5];
 
   /* Saturate: '<S33>/Saturation' incorporates:
    *  Inport: '<Root>/Control_Out'
