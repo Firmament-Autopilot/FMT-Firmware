@@ -20,7 +20,6 @@
 #include "nlink_linktrack.h"
 #include "nlink_linktrack_tagframe0.h"
 
-
 #define EVENT_NLINK_UPDATE (1 << 0)
 #define DATA_SIZE          128
 
@@ -96,14 +95,16 @@ static void thread_entry(void* args)
                         external_pos_report.x = result->pos_3d[0];
                         external_pos_report.y = -result->pos_3d[1];
                         external_pos_report.z = -result->pos_3d[2];
-                        external_pos_report.field_valid = 3; /* xy valid */
+
+                        if (result->pos_3d[0] == 1.0f && result->pos_3d[1] == 1.0f && result->pos_3d[2] == 1.0f
+                            && result->vel_3d[0] == 0.0f && result->vel_3d[1] == 0.0f && result->vel_3d[2] == 0.0f) {
+                            external_pos_report.field_valid = 0;
+                        } else {
+                            external_pos_report.field_valid = 3; /* xyz valid */
+                        }
 
                         /* publish external position */
                         mcn_publish(MCN_HUB(external_pos), &external_pos_report);
-
-                        // printf("role:%d id:%d pos:%f %f %f\n", result->role, result->id, result->pos_3d[0], result->pos_3d[1], result->pos_3d[2]);
-                    }else{
-                        printf("parse err\n");
                     }
                 }
             }
@@ -113,12 +114,21 @@ static void thread_entry(void* args)
 
 rt_err_t drv_nlink_linktrack_init(const char* uart_dev_name)
 {
+    rt_uint16_t flag = RT_DEVICE_OFLAG_RDONLY;
+
     dev = rt_device_find(uart_dev_name);
 
     RT_ASSERT(dev != NULL);
 
+    /* if device support DMA, then use it */
+    if (dev->flag & RT_DEVICE_FLAG_DMA_RX) {
+        flag |= RT_DEVICE_FLAG_DMA_RX;
+    } else {
+        flag |= RT_DEVICE_FLAG_INT_RX;
+    }
+
     /* open device */
-    if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
+    if (rt_device_open(dev, flag) != RT_EOK) {
         printf("nlink fail to open device!\n");
         return RT_ERROR;
     }
@@ -126,7 +136,7 @@ rt_err_t drv_nlink_linktrack_init(const char* uart_dev_name)
     /* config baudrate */
     serial_dev_t serial_dev = (serial_dev_t)dev;
     struct serial_configure pconfig = serial_dev->config;
-    pconfig.baud_rate = 230400; /* to high baudrate would cause data lost */
+    pconfig.baud_rate = 230400; /* too high baudrate would cause data lost */
     if (rt_device_control(&serial_dev->parent, RT_DEVICE_CTRL_CONFIG, &pconfig) != RT_EOK) {
         printf("nlink config baudrate failed!\n");
         return RT_ERROR;
