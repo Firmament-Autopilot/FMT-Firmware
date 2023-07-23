@@ -72,6 +72,10 @@ static param_t __param_list[] = {
     PARAM_FLOAT(RF_VZ_GAIN, 5, false),
     PARAM_FLOAT(RF_BIAS_AZ_GAIN, 0.2, false),
     PARAM_UINT32(RF_H_DELAY, 10, false),
+    PARAM_FLOAT(EXTPOS_POS_GAIN, 5.0, false),
+    PARAM_FLOAT(EXTPOS_VEL_GAIN, 2.0, false),
+    PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.2, false),
+    PARAM_UINT32(EXTPOS_POS_DELAY, 50, false),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 
@@ -342,6 +346,10 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_VZ_GAIN), &INS_PARAM.RF_VZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_BIAS_AZ_GAIN), &INS_PARAM.RF_BIAS_AZ_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RF_H_DELAY), &INS_PARAM.RF_H_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_POS_GAIN), &INS_PARAM.EXTPOS_POS_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_VEL_GAIN), &INS_PARAM.EXTPOS_VEL_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_BIAS_A_GAIN), &INS_PARAM.EXTPOS_BIAS_A_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_POS_DELAY), &INS_PARAM.EXTPOS_POS_DELAY));
 }
 
 void ins_interface_step(uint32_t timestamp)
