@@ -72,10 +72,10 @@ static param_t __param_list[] = {
     PARAM_FLOAT(RF_VZ_GAIN, 5, false),
     PARAM_FLOAT(RF_BIAS_AZ_GAIN, 0.2, false),
     PARAM_UINT32(RF_H_DELAY, 10, false),
-    PARAM_FLOAT(EXTPOS_POS_GAIN, 5.0, false),
-    PARAM_FLOAT(EXTPOS_VEL_GAIN, 2.0, false),
+    PARAM_FLOAT(EXTPOS_POS_GAIN, 2.0, false),
+    PARAM_FLOAT(EXTPOS_VEL_GAIN, 1.0, false),
     PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.2, false),
-    PARAM_UINT32(EXTPOS_POS_DELAY, 50, false),
+    PARAM_UINT32(EXTPOS_POS_DELAY, 300, false),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 
