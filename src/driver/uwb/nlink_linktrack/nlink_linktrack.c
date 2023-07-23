@@ -14,12 +14,17 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include "nlink_linktrack.h"
+#include <INS.h>
+
 #include "hal/serial/serial.h"
+#include "nlink_linktrack.h"
 #include "nlink_linktrack_tagframe0.h"
+
 
 #define EVENT_NLINK_UPDATE (1 << 0)
 #define DATA_SIZE          128
+
+MCN_DECLARE(external_pos);
 
 typedef enum {
     NLINK_START = 0,
@@ -85,8 +90,20 @@ static void thread_entry(void* args)
                 if (parse_package(c) == true) {
                     if (g_nlt_tagframe0.UnpackData(frame_data, DATA_SIZE)) {
                         nlt_tagframe0_result_t* result = &g_nlt_tagframe0.result;
+                        External_Pos_Bus external_pos_report = { 0 };
 
-                        printf("role:%d id:%d pos:%f %f %f\n", result->role, result->id, result->pos_3d[0], result->pos_3d[1], result->pos_3d[2]);
+                        external_pos_report.timestamp = systime_now_ms();
+                        external_pos_report.x = result->pos_3d[0];
+                        external_pos_report.y = -result->pos_3d[1];
+                        external_pos_report.z = -result->pos_3d[2];
+                        external_pos_report.field_valid = 3; /* xy valid */
+
+                        /* publish external position */
+                        mcn_publish(MCN_HUB(external_pos), &external_pos_report);
+
+                        // printf("role:%d id:%d pos:%f %f %f\n", result->role, result->id, result->pos_3d[0], result->pos_3d[1], result->pos_3d[2]);
+                    }else{
+                        printf("parse err\n");
                     }
                 }
             }

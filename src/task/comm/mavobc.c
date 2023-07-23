@@ -45,7 +45,7 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_SYS_STATUS, mavlink_msg_sys_status_pack_func },
     { MAVLINK_MSG_ID_SYSTEM_TIME, mavlink_msg_system_time_pack_func },
     { MAVLINK_MSG_ID_GPS_RAW_INT, mavlink_msg_gps_raw_int_pack_func },
-    { MAVLINK_MSG_ID_SCALED_IMU, mavlink_msg_scaled_imu_pack_func};
+    { MAVLINK_MSG_ID_SCALED_IMU, mavlink_msg_scaled_imu_pack_func },
     { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_pack_func },
     { MAVLINK_MSG_ID_ATTITUDE_QUATERNION, mavlink_msg_attitude_quaternion_pack_func },
     { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_pack_func },

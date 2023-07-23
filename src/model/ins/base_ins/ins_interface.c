@@ -290,6 +290,11 @@ static int external_pos_echo(void* param)
     printf("timestamp:%u\n", ext_att_pos.timestamp);
     printf("xyz: %.2f %.2f %.2f\n", ext_att_pos.x, ext_att_pos.y, ext_att_pos.z);
     printf("att: %.2f %.2f %.2f\n", ext_att_pos.phi, ext_att_pos.theta, ext_att_pos.psi);
+    printf("valid xy:%d z:%d phi,theta:%d psi:%d\n",
+           (ext_att_pos.field_valid & 0x01),
+           (ext_att_pos.field_valid & 0x02) > 0,
+           (ext_att_pos.field_valid & 0x04) > 0,
+           (ext_att_pos.field_valid & 0x08) > 0);
     printf("------------------------------------------\n");
 
     return 0;
