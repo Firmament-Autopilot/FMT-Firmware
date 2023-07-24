@@ -323,10 +323,10 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0"));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
 
-    // drv_mtf_01_init("serial3");
-    drv_nlink_linktrack_init("serial3");
+    drv_mtf_01_init("serial3");
+    drv_nlink_linktrack_init("serial4");
 
-    RT_CHECK(gps_m8n_init("serial4", "gps"));
+    // RT_CHECK(gps_m8n_init("serial4", "gps"));
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));

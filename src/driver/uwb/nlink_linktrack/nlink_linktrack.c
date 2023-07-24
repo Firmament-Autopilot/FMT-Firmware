@@ -100,7 +100,7 @@ static void thread_entry(void* args)
                             && result->vel_3d[0] == 0.0f && result->vel_3d[1] == 0.0f && result->vel_3d[2] == 0.0f) {
                             external_pos_report.field_valid = 0;
                         } else {
-                            external_pos_report.field_valid = 3; /* xyz valid */
+                            external_pos_report.field_valid = 1; /* xy valid, uwb z is not stable */
                         }
 
                         /* publish external position */
