@@ -15,6 +15,9 @@ The system is mainly composed of two parts.
 - [FMT-Firmware](https://github.com/Firmament-Autopilot/FMT-Firmware): A stable and high performance embedded system designed with C/C++.
 - [FMT-Model](https://github.com/Firmament-Autopilot/FMT-Model): A simulation framework with algorithm libraries designed with MATLAB/Simulink.
 
+## Documentation
+[User Guide](https://firmament-autopilot.github.io/FMT-DOCS/)
+
 ## Download
 
 ```
@@ -51,9 +54,6 @@ Current supported hardware:
 
 The drone hardware equipped with FMT:
 - [Amovlab MFP450](https://item.taobao.com/item.htm?spm=a1z10.5-c-s.w4002-22617251051.15.4b224df8j1oIGP&id=713417934359)
-
-## Documentation
-[User Guide](https://firmament-autopilot.github.io/FMT-DOCS/)
 
 ## License
 [Apache-2.0](./LICENSE)
