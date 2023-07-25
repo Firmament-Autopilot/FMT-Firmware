@@ -18,6 +18,7 @@ MODULES = [
     'syscmd/cmd_mlog.c',
     'syscmd/cmd_rc.c',
     'syscmd/cmd_exec.c',
+    'syscmd/cmd_delay.c',
     'file_manager/*.c',
     'ftp/*.c',
     "log/*.c",
