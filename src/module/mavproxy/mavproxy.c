@@ -23,6 +23,7 @@
 #define MAX_PERIOD_MSG_QUEUE_SIZE    20
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 10
 #define MAVPROXY_UNSET_CHAN          0xFF
+#define MAX_DUMP_MSG_COUNT           20
 
 typedef struct {
     uint8_t msgid;
@@ -79,11 +80,17 @@ static void mavproxy_chan1_timer_update(void* parameter)
 
 static void dump_immediate_msg(uint8_t chan)
 {
+    uint16_t cnt = 0;
     while (mav_handle.imm_mq[chan].head != mav_handle.imm_mq[chan].tail) {
         if (mavproxy_send_immediate_msg(chan, &mav_handle.imm_mq[chan].queue[mav_handle.imm_mq[chan].tail], true) == FMT_EOK) {
             OS_ENTER_CRITICAL;
             mav_handle.imm_mq[chan].tail = (mav_handle.imm_mq[chan].tail + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
             OS_EXIT_CRITICAL;
+
+            if (++cnt >= MAX_DUMP_MSG_COUNT) {
+                /* To prevent sending data too rapidly and overwhelming the buffer, ensure that this while loop does not overrun. */
+                break;
+            }
         }
     }
 }
