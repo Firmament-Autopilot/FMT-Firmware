@@ -340,7 +340,7 @@ void bsp_initialize(void)
     /* init gps */
     RT_CHECK(gps_m8n_init("serial2", "gps"));
 
-    drv_nlink_linktrack_init("serial4");
+    // drv_nlink_linktrack_init("serial4");
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
