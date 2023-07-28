@@ -232,6 +232,8 @@ static void CPU_CACHE_Enable(void)
 
     /* Enable D-Cache */
     // SCB_EnableDCache();
+
+
 }
 
 /**
@@ -437,8 +439,8 @@ void bsp_initialize(void)
     RT_CHECK(gps_dronecan_init("fdcan1", "can_gps"));
 
     // // /* register sensor to sensor hub */
-    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    FMT_CHECK(register_sensor_mag("mag0", 0));
+    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    // FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
 #endif
 
