@@ -17,8 +17,8 @@ except:
 
 
 # DRONECAN DSDL
-DRONECAN_ROOT = FMU_ROOT + "/src/lib/dronecan"
-os.system("python " + DRONECAN_ROOT + "/dsdlc/dronecan_dsdlc.py -O " + DRONECAN_ROOT + "/dsdlc_generated " + DRONECAN_ROOT + "/dsdl/uavcan " +  DRONECAN_ROOT + "/dsdl/ardupilot")
+# DRONECAN_ROOT = FMU_ROOT + "/src/lib/dronecan"
+# os.system("python " + DRONECAN_ROOT + "/dsdlc/dronecan_dsdlc.py -O " + DRONECAN_ROOT + "/dsdlc_generated " + DRONECAN_ROOT + "/dsdl/uavcan " +  DRONECAN_ROOT + "/dsdl/ardupilot")
 
 
 TARGET = 'build/fmt_' + rtconfig.BOARD + '.' + rtconfig.TARGET_EXT

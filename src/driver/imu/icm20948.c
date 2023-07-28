@@ -211,7 +211,7 @@
 #define INV2REG_I2C_MST_ODR_CONFIG INV2REG(REG_BANK3, 0x00U)
 #define INV2REG_I2C_MST_CTRL       INV2REG(REG_BANK3, 0x01U)
 #define BIT_I2C_MST_P_NSR          0x10
-#define BIT_I2C_MST_CLK_400KHZ     0x0D
+#define BIT_I2C_MST_CLK_400KHZ     0x07
 #define INV2REG_I2C_MST_DELAY_CTRL INV2REG(REG_BANK3, 0x02U)
 #define BIT_I2C_SLV0_DLY_EN        0x01
 #define BIT_I2C_SLV1_DLY_EN        0x02
@@ -332,128 +332,13 @@ static rt_err_t _register_write(uint16_t reg, uint8_t val)
     return RT_EOK;
 }
 
-/**
- * @brief 
- * 
- * @param val 
- */
-static rt_err_t _register_write_aux(uint8_t reg, uint8_t data)
-{
-    /* Ensure the slave read/write is disabled before changing the registers */
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
-
-    _register_write(INV2REG_I2C_SLV0_DO, data);
-
-    _register_write(INV2REG_I2C_SLV0_ADDR, AK09916_I2C_ADDR);
-    _register_write(INV2REG_I2C_SLV0_REG, reg);
-    _register_write(INV2REG_I2C_SLV0_DO, data); //
-
-    return RT_EOK;
-}
-
-/**
- * @brief 
- * 
- * @param reg 
- * @param data 
- * @return rt_err_t 
- */
-static rt_err_t _register_read_aux(uint8_t reg, uint8_t* data)
-{
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
-
-    _register_write(INV2REG_I2C_SLV0_ADDR, AK09916_I2C_ADDR | 0x80);
-    _register_write(INV2REG_I2C_SLV0_REG, reg);
-    _register_write(INV2REG_I2C_SLV0_DO, 0xff); //read
-
-    systime_mdelay(10);
-
-    _register_read(INV2REG_EXT_SLV_SENS_DATA_00, data);
-
-    return RT_EOK;
-}
-
-__PACKED__(
-    struct sample_regs {
-        uint8_t st1;
-        int16_t val[3];
-        uint8_t tmps;
-        uint8_t st2;
-    });
-
-/**
- * @brief 
- * 
- * @param reg 
- * @param data 
- * @return rt_err_t 
- */
-static rt_err_t _register_read_multi_aux(uint8_t reg, uint8_t* data, uint8_t size)
-{
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x80 | size);
-
-    _register_write(INV2REG_I2C_SLV0_ADDR, AK09916_I2C_ADDR | 0x80);
-    _register_write(INV2REG_I2C_SLV0_REG, reg);
-    _register_write(INV2REG_I2C_SLV0_DO, 0xff); // read
-
-    systime_mdelay(5);
-
-    _register_read_multi(INV2REG_EXT_SLV_SENS_DATA_00, data, size);
-
-    return RT_EOK;
-}
-
-static rt_err_t mag_raw_measure(int16_t mag[3])
-{
-    struct sample_regs regs = { 0 };
-
-    RT_TRY(_register_read_multi_aux(REG_ST1, (uint8_t*)&regs, sizeof(regs)));
-
-    /* swap the data */
-    mag[0] = regs.val[0];
-    mag[1] = regs.val[1];
-    mag[2] = regs.val[2];
-
-    return RT_EOK;
-}
-
-const float _range_scale = AK09916_SCALE_TO_GAUSS;
-
-static rt_err_t mag_measure(float mag[3])
-{
-    int16_t raw[3];
-
-    RT_TRY(mag_raw_measure(raw));
-
-    mag[0] = _range_scale * raw[0];
-    mag[1] = _range_scale * raw[1];
-    mag[2] = _range_scale * raw[2];
-
-    ak09916_rotate_to_frd(mag);
-
-    return RT_EOK;
-}
-
-static rt_size_t ak09916_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t size)
-{
-    if (data == RT_NULL) {
-        return 0;
-    }
-
-    if (mag_measure(((float*)data)) != RT_EOK) {
-        return 0;
-    }
-
-    return size;
-}
-
 static rt_err_t gyro_set_dlpf_filter(uint32_t frequency_hz)
 {
     uint8_t reg_val;
 
     _register_read(INV2REG_GYRO_CONFIG_1, &reg_val);
 
-    reg_val &= ~((7 << 3) | 1);
+    reg_val &= ~((7 << 3));
 
     if (frequency_hz <= 9) {
         reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_9HZ << 3));
@@ -472,6 +357,7 @@ static rt_err_t gyro_set_dlpf_filter(uint32_t frequency_hz)
     }
 
     RT_TRY(_register_write(INV2REG_GYRO_CONFIG_1, reg_val));
+    RT_TRY(_register_write(INV2REG_GYRO_SMPLRT_DIV, 0));
 
     return RT_EOK;
 }
@@ -518,7 +404,7 @@ static rt_err_t accel_set_dlpf_filter(uint32_t frequency_hz)
 
     _register_read(INV2REG_ACCEL_CONFIG, &reg_val);
 
-    reg_val &= ~((7 << 3) | 1);
+    reg_val &= ~((7 << 3));
 
     if (frequency_hz <= 8) {
         reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_8HZ << 3));
@@ -535,6 +421,9 @@ static rt_err_t accel_set_dlpf_filter(uint32_t frequency_hz)
     }
 
     RT_TRY(_register_write(INV2REG_ACCEL_CONFIG, reg_val));
+
+    RT_TRY(_register_write(INV2REG_ACCEL_SMPLRT_DIV_1, 0));
+    RT_TRY(_register_write(INV2REG_ACCEL_SMPLRT_DIV_2, 0));
 
     return RT_EOK;
 }
@@ -587,6 +476,197 @@ static bool _data_ready()
     return status != 0;
 }
 
+
+static void _device_reset()
+{
+	_register_write(INV2REG_PWR_MGMT_1, 0x80 | 0x41);
+	sys_msleep(100);
+}
+
+static void _device_wakeup()
+{
+	uint8_t new_val;
+    _register_read_multi(INV2REG_PWR_MGMT_1, &new_val, 1);
+	new_val &= 0xBF;
+
+	_register_write(INV2REG_PWR_MGMT_1, new_val);
+	sys_msleep(100);
+}
+
+static void _clock_source(uint8_t source)
+{
+	uint8_t new_val;
+    _register_read_multi(INV2REG_PWR_MGMT_1, &new_val, 1);
+
+	new_val |= source;
+
+	_register_write(INV2REG_PWR_MGMT_1, new_val);
+}
+
+static void _odr_align_enable()
+{
+	_register_write(INV2REG_ODR_ALIGN_EN, 0x01);
+}
+
+static void _spi_slave_enable()
+{
+	uint8_t new_val;
+    _register_read_multi(INV2REG_USER_CTRL, &new_val, 1);
+	new_val |= 0x10;
+
+	_register_write(INV2REG_USER_CTRL, new_val);
+}
+
+static void _i2c_master_reset()
+{
+    uint8_t new_val;
+    _register_read_multi(INV2REG_USER_CTRL, &new_val, 1);
+	new_val |= 0x02;
+
+	_register_write(INV2REG_USER_CTRL, new_val);
+}
+
+static void _i2c_master_enable()
+{
+    uint8_t new_val;
+    _register_read_multi(INV2REG_USER_CTRL, &new_val, 1);
+	new_val |= 0x20;
+
+	_register_write(INV2REG_USER_CTRL, new_val);
+	sys_msleep(100);
+}
+
+static void _i2c_master_clk_frq(uint8_t config)
+{
+    uint8_t new_val;
+    _register_read_multi(INV2REG_I2C_MST_CTRL, &new_val, 1);
+	new_val |= config;
+
+	_register_write(INV2REG_I2C_MST_CTRL, new_val);
+}
+
+static uint8_t read_single_ak09916_reg(uint8_t reg)
+{
+	_register_write(INV2REG_I2C_SLV0_ADDR, 0x80 | AK09916_I2C_ADDR);
+	_register_write(INV2REG_I2C_SLV0_REG, reg);
+	_register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
+
+	HAL_Delay(1);
+
+    uint8_t new_val;
+    _register_read_multi(INV2REG_EXT_SLV_SENS_DATA_00, &new_val, 1);
+
+	return new_val;
+}
+
+static void write_single_ak09916_reg(uint8_t reg, uint8_t val)
+{
+    _register_write(INV2REG_I2C_SLV0_ADDR, 0x00 | AK09916_I2C_ADDR);
+	_register_write(INV2REG_I2C_SLV0_REG, reg);
+	_register_write(INV2REG_I2C_SLV0_DO, val);
+	_register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
+}
+
+static void read_multiple_ak09916_reg(uint8_t reg, uint8_t len, uint8_t *data)
+{	
+    _register_write(INV2REG_I2C_SLV0_ADDR, 0x80 | AK09916_I2C_ADDR);
+	_register_write(INV2REG_I2C_SLV0_REG, reg);
+	_register_write(INV2REG_I2C_SLV0_CTRL, 0x80 | len);
+
+	HAL_Delay(1);
+
+    _register_read_multi(INV2REG_EXT_SLV_SENS_DATA_00, data, len);
+}
+
+static rt_err_t _ak09916_who_am_i()
+{
+	uint8_t ak09916_id = read_single_ak09916_reg(REG_DEVICE_ID);
+
+	if(ak09916_id == AK09916_Device_ID)
+    {
+        printf("ak09916_id = %x\r\n", ak09916_id);
+		return RT_EOK;
+
+    }
+	else
+		return RT_ERROR;
+}
+
+static void ak09916_soft_reset()
+{
+	write_single_ak09916_reg(REG_CNTL3, 0x01);
+	sys_msleep(100);
+}
+
+static void ak09916_operation_mode_setting(uint8_t mode)
+{
+	write_single_ak09916_reg(REG_CNTL2, mode);
+	sys_msleep(100);
+}
+
+
+__PACKED__(
+    struct sample_regs {
+        uint8_t st1;
+        int16_t val[3];
+        uint8_t tmps;
+        uint8_t st2;
+    });
+
+uint8_t sample_regs_temp[6];
+
+static bool mag_raw_measure(int16_t mag[3])
+{
+    struct sample_regs regs = { 0 };
+
+	uint8_t drdy, hofl;	// data ready, overflow
+
+	drdy = read_single_ak09916_reg(REG_ST1) & 0x01;
+	if(!drdy)	return false;
+
+	read_multiple_ak09916_reg(REG_HXL, 6, sample_regs_temp);
+
+	hofl = read_single_ak09916_reg(REG_ST2) & 0x08;
+	if(hofl)	return false;
+
+	mag[0] = (int16_t)(sample_regs_temp[1] << 8 | sample_regs_temp[0]);
+	mag[1] = (int16_t)(sample_regs_temp[3] << 8 | sample_regs_temp[2]);
+	mag[2] = (int16_t)(sample_regs_temp[5] << 8 | sample_regs_temp[4]);
+
+    return true;
+}
+
+const float _range_scale = AK09916_SCALE_TO_GAUSS;
+
+static rt_err_t mag_measure(float mag[3])
+{
+    int16_t raw[3];
+
+    mag_raw_measure(raw);
+
+    mag[0] = _range_scale * raw[0];
+    mag[1] = _range_scale * raw[1];
+    mag[2] = _range_scale * raw[2];
+
+    ak09916_rotate_to_frd(mag);
+
+    return RT_EOK;
+}
+
+static rt_size_t ak09916_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t size)
+{
+    if (data == RT_NULL) {
+        return 0;
+    }
+
+    if (mag_measure(((float*)data)) != RT_EOK) {
+        return 0;
+    }
+
+    return size;
+}
+
+
 static rt_err_t lowlevel_init(void)
 {
     uint8_t chip_id;
@@ -595,105 +675,42 @@ static rt_err_t lowlevel_init(void)
     /* open spi device */
     RT_TRY(rt_device_open(spi_dev, RT_DEVICE_OFLAG_RDWR));
 
+	_device_reset();
+	_device_wakeup();
+
+	_clock_source(1);
+	_odr_align_enable();
+	
+	_spi_slave_enable();
+
     RT_TRY(spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(INV2REG_WHO_AM_I), GET_REG(INV2REG_WHO_AM_I), &chip_id));
     if (chip_id != WHO_AM_I) {
         DRV_DBG("ICM20948 unmatched chip id:0x%x\n", chip_id);
         return FMT_ERROR;
     }
 
-    _register_read(INV2REG_USER_CTRL, &last_stat_user_ctrl);
-
-    /* Chip reset */
-    uint8_t tries;
-    for (tries = 0; tries < 5; tries++) {
-
-        /* First disable the master I2C to avoid hanging the slaves on the
-         * aulixiliar I2C bus - it will be enabled again if the AuxiliaryBus
-         * is used */
-        if (last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN) {
-            last_stat_user_ctrl &= ~BIT_USER_CTRL_I2C_MST_EN;
-            RT_TRY(_register_write(INV2REG_USER_CTRL, last_stat_user_ctrl));
-
-            systime_udelay(1000);
-        }
-
-        /* reset device */
-        _register_write(INV2REG_PWR_MGMT_1, BIT_PWR_MGMT_1_DEVICE_RESET);
-        systime_udelay(5000);
-
-        /* Disable I2C bus if SPI selected (Recommended in Datasheet to be
-         * done just after the device is reset) */
-        last_stat_user_ctrl |= BIT_USER_CTRL_I2C_IF_DIS;
-        _register_write(INV2REG_USER_CTRL, last_stat_user_ctrl);
-
-        // Wake up device and select Auto clock. Note that the
-        // Invensense starts up in sleep mode, and it can take some time
-        // for it to come out of sleep
-        _register_write(INV2REG_PWR_MGMT_1, BIT_PWR_MGMT_1_CLK_AUTO);
-        systime_udelay(5000);
-
-        // check it has woken up
-        uint8_t ret;
-        _register_read(INV2REG_PWR_MGMT_1, &ret);
-        if (ret == BIT_PWR_MGMT_1_CLK_AUTO) {
-            break;
-        }
-
-        systime_udelay(5000);
-        if (_data_ready()) {
-            break;
-        }
-    }
-    if (tries == 5) {
-        DRV_DBG("Failed to boot Invensense 5 times\r\n");
-        return RT_ERROR;
-    }
-
     accel_set_range(16);
     gyro_set_range(2000);
     gyro_set_dlpf_filter(250);
     accel_set_dlpf_filter(250);
-    DRV_DBG("boot Invensense %d times\r\n", tries);
 
     //////////////////////////////////////////////////////////////////////////
     //                          aux ak09966
     //////////////////////////////////////////////////////////////////////////
 
-    /* Enable the I2C master to slaves on the auxiliary I2C bus*/
-    if (!(last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN)) {
-        last_stat_user_ctrl |= BIT_USER_CTRL_I2C_MST_EN;
-        _register_write(INV2REG_USER_CTRL, last_stat_user_ctrl);
-    }
+    _i2c_master_reset();
+	_i2c_master_enable();
+	_i2c_master_clk_frq(7);
 
-    // _register_write(INV2REG_INT_PIN_CFG, 0x30); // INT Pin / Bypass Enable Configuration
+	RT_TRY(_ak09916_who_am_i());
 
-    /* stop condition between reads; clock at 400kHz */
-    _register_write(INV2REG_I2C_MST_CTRL, BIT_I2C_MST_P_NSR | BIT_I2C_MST_CLK_400KHZ);
-
-    /* I2C_SLV0 _DLY_ enable */
-    _register_write(INV2REG_I2C_MST_DELAY_CTRL, BIT_I2C_SLV0_DLY_EN);
-
-    /*  enable IIC	and EXT_SENS_DATA==1 Byte */
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
-
-    // Initialize magnetometer
-    // Reset AK8963
-    _register_write_aux(REG_CNTL3, 0x01);
-
-    // Read ID
-    uint8_t ak0996_id[2];
-    _register_read_multi_aux(REG_COMPANY_ID, ak0996_id, 2);
-
-    if ((ak0996_id[1] != AK09916_Device_ID) && (ak0996_id[0] != 0x48)) {
-        DRV_DBG("ak09916 id:0x%x, 0x%x\r\n", ak0996_id[0], ak0996_id[1]);
-        return RT_ERROR;
-    }
-    DRV_DBG("ak09916 id:0x%x, 0x%x\r\n", ak0996_id[0], ak0996_id[1]);
-
-    _register_write_aux(REG_CNTL2, 0x08); //Continuous Mode 2
+	ak09916_soft_reset();
+	ak09916_operation_mode_setting(8);
 
     return RT_EOK;
 }
+
+
 
 static rt_err_t gyro_read_raw(int16_t gyr[3])
 {
