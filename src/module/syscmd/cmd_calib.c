@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,10 +101,10 @@ static fmt_err_t get_stick_corner_value(stick_enum stick, int16_t low, int16_t u
 
 static void show_usage(void)
 {
-    COMMAND_USAGE("rc", "<command> [options]");
+    COMMAND_USAGE("calib", "<command> [options]");
 
     PRINT_STRING("\ncommand:\n");
-    SHELL_COMMAND("calib", "Calibrate RC.");
+    SHELL_COMMAND("rc", "Calibrate RC.");
 }
 
 static int rc_calib(struct optparse options)
@@ -298,7 +298,7 @@ static int rc_calib(struct optparse options)
     return EXIT_SUCCESS;
 }
 
-int cmd_rc(int argc, char** argv)
+int cmd_calib(int argc, char** argv)
 {
     char* arg;
     struct optparse options;
@@ -308,7 +308,7 @@ int cmd_rc(int argc, char** argv)
 
     arg = optparse_arg(&options);
     if (arg) {
-        if (STRING_COMPARE(arg, "calib")) {
+        if (STRING_COMPARE(arg, "rc")) {
             res = rc_calib(options);
         } else {
             show_usage();
@@ -321,4 +321,4 @@ int cmd_rc(int argc, char** argv)
 
     return res;
 }
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_rc, __cmd_rc, rc calibration command);
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_calib, __cmd_calib, calibration command);
