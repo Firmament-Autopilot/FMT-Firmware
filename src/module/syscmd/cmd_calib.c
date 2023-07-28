@@ -16,9 +16,12 @@
 
 #include <firmament.h>
 
+#include "module/sensor/sensor_hub.h"
 #include "module/syscmd/optparse.h"
 #include "module/syscmd/syscmd.h"
 #include "module/sysio/pilot_cmd.h"
+
+MCN_DECLARE(sensor_airspeed);
 
 #define IN_RANGE(_x, _low, _up) ((_x) >= (_low) && (_x) <= (_up))
 
@@ -105,6 +108,7 @@ static void show_usage(void)
 
     PRINT_STRING("\ncommand:\n");
     SHELL_COMMAND("rc", "Calibrate RC.");
+    SHELL_COMMAND("airspeed", "Calibrate airspeed.");
 }
 
 static int rc_calib(struct optparse options)
@@ -122,7 +126,7 @@ static int rc_calib(struct optparse options)
     while ((option = optparse_long(&options, longopts, NULL)) != -1) {
         switch (option) {
         case '?':
-            printf("%s: %s\n", "rc calib", options.errmsg);
+            printf("%s: %s\n", "calib rc", options.errmsg);
             return EXIT_FAILURE;
         }
     }
@@ -154,7 +158,7 @@ static int rc_calib(struct optparse options)
     console_println("  \\         /      \\         /  ");
     console_println("   o-------o        o-------o   ");
     printf("Next step (y/n)\n");
-    
+
     ch = syscmd_getc();
     if (ch != 'y' && ch != 'Y') {
         return EXIT_SUCCESS;
@@ -298,6 +302,48 @@ static int rc_calib(struct optparse options)
     return EXIT_SUCCESS;
 }
 
+static int airspeed_calib(struct optparse options)
+{
+    airspeed_data_t airspeed_report;
+    McnNode_t airspeed_sub_node;
+    rt_sem_t event = rt_sem_create("airspeed", 0, RT_IPC_FLAG_FIFO);
+    uint16_t cnt = 0;
+    float diff_pressure_pa = 0.0f;
+    int res = EXIT_SUCCESS;
+
+    airspeed_sub_node = mcn_subscribe(MCN_HUB(sensor_airspeed), event, NULL);
+
+    if (mcn_wait(airspeed_sub_node, TICKS_FROM_MS(100))) {
+        /* If we can read airspeed data, first reset offset */
+        PARAM_SET_FLOAT(CALIB, DIFF_PRESS_OFFSET, 0.0f);
+    }
+
+    while (mcn_wait(airspeed_sub_node, TICKS_FROM_MS(100))) {
+        mcn_copy(MCN_HUB(sensor_airspeed), airspeed_sub_node, &airspeed_report);
+
+        diff_pressure_pa += airspeed_report.diff_pressure_pa;
+        cnt++;
+        if (cnt >= 100) {
+            break;
+        }
+    }
+
+    if (cnt >= 100) {
+        float diff_press_offset = diff_pressure_pa / cnt;
+        PARAM_SET_FLOAT(CALIB, DIFF_PRESS_OFFSET, diff_press_offset);
+        printf("diff pressure offset:%f\n", diff_press_offset);
+        printf("you need enter param save calibration result\n");
+    } else {
+        printf("airspeed read timeout!\n");
+        res = EXIT_FAILURE;
+    }
+
+    mcn_unsubscribe(MCN_HUB(sensor_airspeed), airspeed_sub_node);
+    rt_sem_delete(event);
+
+    return res;
+}
+
 int cmd_calib(int argc, char** argv)
 {
     char* arg;
@@ -310,6 +356,8 @@ int cmd_calib(int argc, char** argv)
     if (arg) {
         if (STRING_COMPARE(arg, "rc")) {
             res = rc_calib(options);
+        } else if (STRING_COMPARE(arg, "airspeed")) {
+            res = airspeed_calib(options);
         } else {
             show_usage();
             res = EXIT_FAILURE;
