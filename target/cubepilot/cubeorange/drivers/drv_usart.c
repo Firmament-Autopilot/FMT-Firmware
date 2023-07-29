@@ -590,7 +590,7 @@ static void _dma_receive(struct stm32_uart* uart)
     _dma_clear_flags(uart->dma.dma_device, uart->dma.rx_stream);
 
     /* enable common interrupts */
-    LL_DMA_EnableIT_TC(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_DMA_EnableIT_TC(uart->dma.dma_device, uart->dma.rx_stream);
 
     LL_USART_EnableIT_IDLE(uart->uart_device);
     /* enable the specified dma stream */
@@ -608,7 +608,7 @@ static void _dma_rx_config(struct stm32_uart* uart, rt_uint8_t* buf, rt_size_t s
     uart->dma.setting_recv_len = size;
 
     LL_DMA_DeInit(uart->dma.dma_device, uart->dma.rx_stream);
-    LL_DMA_SetPeriphRequest(uart->dma.dma_device, uart->dma.rx_stream, uart->dma.tx_request);
+    LL_DMA_SetPeriphRequest(uart->dma.dma_device, uart->dma.rx_stream, uart->dma.rx_request);
     LL_DMA_SetDataTransferDirection(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
     LL_DMA_SetStreamPriorityLevel(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_PRIORITY_HIGH);
     LL_DMA_SetMode(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_MODE_CIRCULAR);
@@ -617,9 +617,13 @@ static void _dma_rx_config(struct stm32_uart* uart, rt_uint8_t* buf, rt_size_t s
     LL_DMA_SetPeriphSize(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_PDATAALIGN_BYTE);
     LL_DMA_SetMemorySize(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_MDATAALIGN_BYTE);
     LL_DMA_DisableFifoMode(uart->dma.dma_device, uart->dma.rx_stream);
+    LL_USART_SetRXFIFOThreshold(uart->uart_device, LL_USART_FIFOTHRESHOLD_1_8);
+
     LL_DMA_SetPeriphAddress(uart->dma.dma_device, uart->dma.rx_stream, LL_USART_DMA_GetRegAddr(uart->uart_device, LL_USART_DMA_REG_DATA_RECEIVE));
-    LL_DMA_SetMemoryAddress(uart->dma.dma_device, uart->dma.rx_stream, (uint32_t)0x00000000U);
-    LL_DMA_SetDataLength(uart->dma.dma_device, uart->dma.rx_stream, 0x00000000U);
+    LL_DMA_SetMemoryAddress(uart->dma.dma_device, uart->dma.rx_stream, (uint32_t)buf);
+    LL_DMA_SetDataLength(uart->dma.dma_device, uart->dma.rx_stream, size);
+    LL_USART_ConfigAsyncMode(uart->uart_device);
+    LL_USART_DisableFIFO(uart->uart_device);
 
     /* start to receive data */
     _dma_receive(uart);
@@ -638,6 +642,9 @@ static void _dma_tx_config(struct stm32_uart* uart)
     LL_DMA_SetPeriphSize(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_PDATAALIGN_BYTE);
     LL_DMA_SetMemorySize(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_MDATAALIGN_BYTE);
     LL_DMA_DisableFifoMode(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_USART_SetTXFIFOThreshold(uart->uart_device, LL_USART_FIFOTHRESHOLD_1_8);
+    LL_USART_ConfigAsyncMode(uart->uart_device);
+    LL_USART_DisableFIFO(uart->uart_device);
 
     LL_DMA_SetPeriphAddress(uart->dma.dma_device, uart->dma.tx_stream, LL_USART_DMA_GetRegAddr(uart->uart_device, LL_USART_DMA_REG_DATA_TRANSMIT));
 
