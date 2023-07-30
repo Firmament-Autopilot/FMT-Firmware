@@ -29,7 +29,7 @@
 #include "driver/gps/gps_dronecan.h"
 #include "driver/gps/gps_m8n.h"
 #include "driver/imu/bmi055.h"
-#include "driver/imu/icm20689.h"
+#include "driver/imu/icm20649.h"
 #include "driver/imu/icm20948.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mtd/ramtron.h"
@@ -432,10 +432,10 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
-    RT_CHECK(drv_icm20948_init("spi4_dev1", "gyro0", "accel0", "mag0"));
+    // RT_CHECK(drv_icm20602_init("spi4_dev1", "gyro0", "accel0"));
+    // RT_CHECK(drv_icm20649_init("spi1_dev1", "gyro0", "accel0"));
+    RT_CHECK(drv_icm20948_init("spi4_dev2", "gyro0", "accel0", "mag0"));
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer"));
-
-    // // drv_ist8310_init("i2c1_dev1", "mag0");
     RT_CHECK(gps_dronecan_init("fdcan1", "can_gps"));
 
     // // /* register sensor to sensor hub */
