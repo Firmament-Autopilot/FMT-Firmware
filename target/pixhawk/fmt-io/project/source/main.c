@@ -25,7 +25,8 @@
 #include "time.h"
 #include "usart.h"
 #include <stdio.h>
-
+#include "board_config.h"
+#include "heat.h"
 int main(void)
 {
     uint8_t ch;
@@ -49,6 +50,10 @@ int main(void)
     led_init();
 #ifdef USE_LIDAR
     lidar_lite_init();
+#endif
+
+#ifdef USE_IMU_HEAT
+    heat_init();
 #endif
 
     led_on(LED_BLUE);

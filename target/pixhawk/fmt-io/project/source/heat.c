@@ -14,35 +14,31 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef  _LED_H_
-#define  _LED_H_
+#include "heat.h"
 
-#include "stm32f10x.h"
-#include "board_config.h"
+void heat_on()
+{
+	GPIO_SetBits(HEAT_PORT, HEAT_PIN);
+}
 
-#ifdef CUBEPILOT
+void heat_off()
+{
+	GPIO_ResetBits(HEAT_PORT, HEAT_PIN);
+}
 
-#define LED_PORT		GPIOB
-#define LED_BLUE_PIN	GPIO_Pin_13
-#define LED_RED_PIN		GPIO_Pin_15
-#define LED_RCC			RCC_APB2Periph_GPIOB
 
-#else 
+void heat_init(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
 
-#define LED_PORT		GPIOB
-#define LED_BLUE_PIN	GPIO_Pin_14
-#define LED_RED_PIN		GPIO_Pin_15
-#define LED_RCC			RCC_APB2Periph_GPIOB
+	/* GPIOD Periph clock enable */
+	RCC_APB2PeriphClockCmd(HEAT_RCC, ENABLE);
 
-#endif
-typedef enum {
-	LED_RED = 0,
-	LED_BLUE
-} LED_Type;
+	/* Configure PD0 and PD2 in output pushpull mode */
+	GPIO_InitStructure.GPIO_Pin = HEAT_PIN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(HEAT_PORT, &GPIO_InitStructure);
 
-void led_on(LED_Type led);
-void led_off(LED_Type led);
-void led_toggle(LED_Type led);
-void led_init(void);
-
-#endif
+	heat_off();
+}
