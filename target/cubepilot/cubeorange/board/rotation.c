@@ -15,6 +15,11 @@
  *****************************************************************************/
 #include "module/math/rotation.h"
 
+void icm20649_rotate_to_frd(float* data)
+{
+    rotation(ROTATION_ROLL_180, data, data + 1, data + 2);
+}
+
 void icm20948_rotate_to_frd(float* data)
 {
     rotation(ROTATION_YAW_90, data, data + 1, data + 2);

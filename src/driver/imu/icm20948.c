@@ -532,24 +532,36 @@ __PACKED__(
         uint8_t hofl;
     });
 
+union ako9916_read
+{
+    uint8_t bits[8];
+    struct ako9916_reg reg;
+};
+
 static rt_err_t ak09916_mag_read(int16_t mag[3])
 {
-    static struct ako9916_reg termp;
+    static union ako9916_read termp;
     uint8_t            drdy, hofl;
 
-    read_multiple_ak09916_reg(MAG_ST1, (uint8_t*)&termp, 8);
+    read_multiple_ak09916_reg(MAG_ST1, (uint8_t*)termp.bits, 8);
 
-    drdy = termp.drdy & 0x01;
-    if (!drdy)
-        return false;
+    // drdy = termp.reg.drdy & 0x01;
+    // if (!drdy){
+    //     printf("mag drdy\r\n");
+    //     return false;
+    // }
 
-    hofl = termp.hofl & 0x08;
-    if (hofl)
-        return false;
+    // read_multiple_ak09916_reg(MAG_HXL, (uint8_t*)(termp.bits+1), 6);
 
-    mag[0] = (int16_t)(termp.raw[1] << 8 | termp.raw[0]);
-    mag[1] = (int16_t)(termp.raw[3] << 8 | termp.raw[2]);
-    mag[2] = (int16_t)(termp.raw[5] << 8 | termp.raw[4]);
+    // hofl = termp.reg.hofl & 0x08;
+    // if (hofl)
+    //     return false;
+
+    mag[0] = (int16_t)( termp.reg.raw[1] << 8 |  termp.reg.raw[0]);
+    mag[1] = (int16_t)( termp.reg.raw[3] << 8 |  termp.reg.raw[2]);
+    mag[2] = (int16_t)( termp.reg.raw[5] << 8 |  termp.reg.raw[4]);
+
+    // printf("mag0=%d\r\n",mag[0]);
 
     return RT_EOK;
 }
@@ -626,7 +638,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
 
 static rt_size_t mag_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t size)
 {
-    if (data == RT_NULL) {
+    if (data == NULL) {
         return 0;
     }
 
@@ -771,7 +783,7 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode       = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz     = 20000000;                   /* Max SPI speed: 7MHz */
+        cfg.max_hz     = 3000000;                   /* Max SPI speed: 7MHz */
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_dev;
 

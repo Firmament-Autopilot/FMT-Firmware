@@ -432,7 +432,6 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
-    // RT_CHECK(drv_icm20602_init("spi4_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_icm20649_init("spi1_dev1", "gyro0", "accel0"));
     RT_CHECK(drv_icm20948_init("spi4_dev2", "gyro0", "accel0", "mag0"));
     RT_CHECK(drv_ms5611_init("spi1_dev2", "barometer"));

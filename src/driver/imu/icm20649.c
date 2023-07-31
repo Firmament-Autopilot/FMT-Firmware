@@ -34,17 +34,17 @@ typedef enum {
 } userbank;
 
 typedef enum {
-    _250dps,
     _500dps,
     _1000dps,
-    _2000dps
+    _2000dps,
+    _4000dps,
 } gyro_full_scale;
 
 typedef enum {
-    _2g,
     _4g,
     _8g,
-    _16g
+    _16g,
+    _30g,
 } accel_full_scale;
 
 typedef struct
@@ -55,7 +55,7 @@ typedef struct
 } axises;
 
 /* ICM-20948 Registers */
-#define ICM20948_ID                0xE1
+#define icm20649_ID                0xE1
 #define REG_BANK_SEL               0x7F
 
 // USER BANK 0
@@ -182,22 +182,6 @@ typedef struct
 #define B3_I2C_SLV4_CTRL           0x15
 #define B3_I2C_SLV4_DO             0x16
 #define B3_I2C_SLV4_DI             0x17
-/* AK09916 Registers */
-#define AK09916_ID                 0x09
-#define MAG_SLAVE_ADDR             0x0C
-#define MAG_WIA2                   0x01
-#define MAG_ST1                    0x10
-#define MAG_HXL                    0x11
-#define MAG_HXH                    0x12
-#define MAG_HYL                    0x13
-#define MAG_HYH                    0x14
-#define MAG_HZL                    0x15
-#define MAG_HZH                    0x16
-#define MAG_ST2                    0x18
-#define MAG_CNTL2                  0x31
-#define MAG_CNTL3                  0x32
-#define MAG_TS1                    0x33
-#define MAG_TS2                    0x34
 
 #define M_PI_F                     3.1415926f
 #define M_ONE_G                    9.80665f
@@ -213,13 +197,10 @@ static float       accel_range_scale;
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 
-RT_WEAK void icm20948_rotate_to_frd(float* data)
+RT_WEAK void icm20649_rotate_to_frd(float* data)
 {
 }
 
-RT_WEAK void ak09916_rotate_to_frd(float* data)
-{
-}
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -228,7 +209,7 @@ rt_inline void select_user_bank(userbank ub)
     spi_write_reg8(spi_dev, REG_BANK_SEL, ub);
 }
 
-static uint8_t read_single_icm20948_reg(userbank ub, uint8_t reg)
+static uint8_t read_single_icm20649_reg(userbank ub, uint8_t reg)
 {
     uint8_t reg_val;
     select_user_bank(ub);
@@ -238,245 +219,198 @@ static uint8_t read_single_icm20948_reg(userbank ub, uint8_t reg)
     return reg_val;
 }
 
-static void write_single_icm20948_reg(userbank ub, uint8_t reg, uint8_t val)
+static void write_single_icm20649_reg(userbank ub, uint8_t reg, uint8_t val)
 {
     select_user_bank(ub);
     spi_write_reg8(spi_dev, reg, val);
 }
 
-static void read_multiple_icm20948_reg(userbank ub, uint8_t reg, uint8_t* buffer, uint8_t len)
+static void read_multiple_icm20649_reg(userbank ub, uint8_t reg, uint8_t* buffer, uint8_t len)
 {
     select_user_bank(ub);
     spi_read_multi_reg8(spi_dev, reg, buffer, len);
 }
 
-static uint8_t read_single_ak09916_reg(uint8_t reg)
-{
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
-
-    sys_msleep(1);
-    return read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
-}
-
-static void write_single_ak09916_reg(uint8_t reg, uint8_t val)
-{
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, MAG_SLAVE_ADDR);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_DO, val);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
-}
-
-static void read_multiple_ak09916_reg(uint8_t reg, uint8_t* buffer, uint8_t len)
-{
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | len);
-
-    sys_msleep(1);
-    read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, buffer, len);
-}
-
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 /* Sub Functions */
-static rt_err_t icm20948_who_am_i()
+static rt_err_t icm20649_who_am_i()
 {
-    uint8_t icm20948_id = read_single_icm20948_reg(ub_0, B0_WHO_AM_I);
+    uint8_t icm20649_id = read_single_icm20649_reg(ub_0, B0_WHO_AM_I);
 
-    if (icm20948_id == ICM20948_ID) {
-        DRV_DBG("ICM20948 right device id:0x%X\n", icm20948_id);
+    if (icm20649_id == icm20649_ID) {
+        DRV_DBG("icm20649 right device id:0x%X\n", icm20649_id);
         return RT_EOK;
 
     } else {
-        DRV_DBG("ICM20948 wrong device id:0x%X\n", icm20948_id);
+        DRV_DBG("icm20649 wrong device id:0x%X\n", icm20649_id);
         return RT_ERROR;
     }
 }
 
-static rt_err_t ak09916_who_am_i()
-{
-    uint8_t ak09916_id = read_single_ak09916_reg(MAG_WIA2);
 
-    if (ak09916_id == AK09916_ID) {
-        DRV_DBG("AK09916 right device id:0x%X\n", ak09916_id);
-        return RT_EOK;
-    } else {
-        DRV_DBG("AK09916 wrong device id:0x%X\n", ak09916_id);
-        return RT_ERROR;
-    }
-}
-
-static void icm20948_device_reset()
+static void icm20649_device_reset()
 {
-    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, 0x80 | 0x41);
+    write_single_icm20649_reg(ub_0, B0_PWR_MGMT_1, 0x80 | 0x41);
     sys_msleep(100);
 }
 
-static void ak09916_soft_reset()
+static void icm20649_wakeup()
 {
-    write_single_ak09916_reg(MAG_CNTL3, 0x01);
-    sys_msleep(100);
-}
-
-static void icm20948_wakeup()
-{
-    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_PWR_MGMT_1);
+    uint8_t new_val = read_single_icm20649_reg(ub_0, B0_PWR_MGMT_1);
     new_val &= 0xBF;
 
-    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, new_val);
+    write_single_icm20649_reg(ub_0, B0_PWR_MGMT_1, new_val);
     sys_msleep(100);
 }
 
-static void icm20948_sleep()
+static void icm20649_sleep()
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_PWR_MGMT_1);
+    uint8_t new_val = read_single_icm20649_reg(ub_0, B0_PWR_MGMT_1);
     new_val |= 0x40;
 
-    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, new_val);
+    write_single_icm20649_reg(ub_0, B0_PWR_MGMT_1, new_val);
     sys_msleep(100);
 }
 
-static void icm20948_spi_slave_enable()
+static void icm20649_spi_slave_enable()
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_USER_CTRL);
+    uint8_t new_val = read_single_icm20649_reg(ub_0, B0_USER_CTRL);
     new_val |= 0x10;
 
-    write_single_icm20948_reg(ub_0, B0_USER_CTRL, new_val);
+    write_single_icm20649_reg(ub_0, B0_USER_CTRL, new_val);
 }
 
-static void icm20948_i2c_master_reset()
+static void icm20649_i2c_master_reset()
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_USER_CTRL);
+    uint8_t new_val = read_single_icm20649_reg(ub_0, B0_USER_CTRL);
     new_val |= 0x02;
 
-    write_single_icm20948_reg(ub_0, B0_USER_CTRL, new_val);
+    write_single_icm20649_reg(ub_0, B0_USER_CTRL, new_val);
 }
 
-static void icm20948_i2c_master_enable()
+static void icm20649_i2c_master_enable()
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_USER_CTRL);
+    uint8_t new_val = read_single_icm20649_reg(ub_0, B0_USER_CTRL);
     new_val |= 0x20;
 
-    write_single_icm20948_reg(ub_0, B0_USER_CTRL, new_val);
+    write_single_icm20649_reg(ub_0, B0_USER_CTRL, new_val);
     sys_msleep(100);
 }
 
-static void icm20948_i2c_master_clk_frq(uint8_t config)
+static void icm20649_i2c_master_clk_frq(uint8_t config)
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_3, B3_I2C_MST_CTRL);
+    uint8_t new_val = read_single_icm20649_reg(ub_3, B3_I2C_MST_CTRL);
     new_val |= config;
 
-    write_single_icm20948_reg(ub_3, B3_I2C_MST_CTRL, new_val);
+    write_single_icm20649_reg(ub_3, B3_I2C_MST_CTRL, new_val);
 }
 
-static void icm20948_clock_source(uint8_t source)
+static void icm20649_clock_source(uint8_t source)
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_PWR_MGMT_1);
+    uint8_t new_val = read_single_icm20649_reg(ub_0, B0_PWR_MGMT_1);
     new_val |= source;
 
-    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, new_val);
+    write_single_icm20649_reg(ub_0, B0_PWR_MGMT_1, new_val);
 }
 
-static void icm20948_odr_align_enable()
+static void icm20649_odr_align_enable()
 {
-    write_single_icm20948_reg(ub_2, B2_ODR_ALIGN_EN, 0x01);
+    write_single_icm20649_reg(ub_2, B2_ODR_ALIGN_EN, 0x01);
 }
 
-static void icm20948_gyro_low_pass_filter(uint8_t config)
+static void icm20649_gyro_low_pass_filter(uint8_t config)
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1);
+    uint8_t new_val = read_single_icm20649_reg(ub_2, B2_GYRO_CONFIG_1);
     new_val |= config << 3;
 
-    write_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
+    write_single_icm20649_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
 }
 
-static void icm20948_accel_low_pass_filter(uint8_t config)
+static void icm20649_accel_low_pass_filter(uint8_t config)
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG);
+    uint8_t new_val = read_single_icm20649_reg(ub_2, B2_ACCEL_CONFIG);
     new_val |= config << 3;
 
-    write_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
+    write_single_icm20649_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
 }
 
-static void icm20948_gyro_sample_rate_divider(uint8_t divider)
+static void icm20649_gyro_sample_rate_divider(uint8_t divider)
 {
-    write_single_icm20948_reg(ub_2, B2_GYRO_SMPLRT_DIV, divider);
+    write_single_icm20649_reg(ub_2, B2_GYRO_SMPLRT_DIV, divider);
 }
 
-static void icm20948_accel_sample_rate_divider(uint16_t divider)
+static void icm20649_accel_sample_rate_divider(uint16_t divider)
 {
     uint8_t divider_1 = (uint8_t)(divider >> 8);
     uint8_t divider_2 = (uint8_t)(0x0F & divider);
 
-    write_single_icm20948_reg(ub_2, B2_ACCEL_SMPLRT_DIV_1, divider_1);
-    write_single_icm20948_reg(ub_2, B2_ACCEL_SMPLRT_DIV_2, divider_2);
+    write_single_icm20649_reg(ub_2, B2_ACCEL_SMPLRT_DIV_1, divider_1);
+    write_single_icm20649_reg(ub_2, B2_ACCEL_SMPLRT_DIV_2, divider_2);
 }
 
-static void icm20948_gyro_full_scale_select(gyro_full_scale full_scale)
+static void icm20649_gyro_full_scale_select(gyro_full_scale full_scale)
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1);
+    uint8_t new_val = read_single_icm20649_reg(ub_2, B2_GYRO_CONFIG_1);
     float   lsb_per_dps;
 
     switch (full_scale) {
-    case _250dps:
-        new_val |= 0x00;
-        lsb_per_dps = 131.0;
-        break;
     case _500dps:
-        new_val |= 0x02;
-        lsb_per_dps = 65.5;
+        new_val |= 0x00;
+        lsb_per_dps = 32768.0f / 500.0f;
         break;
     case _1000dps:
-        new_val |= 0x04;
-        lsb_per_dps = 32.8;
+        new_val |= 0x02;
+        lsb_per_dps = 32768.0f / 1000.0f;
         break;
     case _2000dps:
+        new_val |= 0x04;
+        lsb_per_dps = 32768.0f / 2000.0f;
+    case _4000dps:
         new_val |= 0x06;
-        lsb_per_dps = 16.4;
+        lsb_per_dps = 32768.0f / 4000.0f;
         break;
     }
 
     gyro_range_scale = M_PI_F / 180.0f / lsb_per_dps;
 
-    write_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
+    write_single_icm20649_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
 }
 
-static void icm20948_accel_full_scale_select(accel_full_scale full_scale)
+static void icm20649_accel_full_scale_select(accel_full_scale full_scale)
 {
-    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG);
+    uint8_t new_val = read_single_icm20649_reg(ub_2, B2_ACCEL_CONFIG);
     float   lsb_per_g;
 
     switch (full_scale) {
-    case _2g:
-        new_val |= 0x00;
-        lsb_per_g = 16384;
-        break;
     case _4g:
-        new_val |= 0x02;
-        lsb_per_g = 8192;
+        new_val |= 0x00;
+        lsb_per_g = 32768.0f / 4.0f;
         break;
     case _8g:
-        new_val |= 0x04;
-        lsb_per_g = 4096;
+        new_val |= 0x02;
+        lsb_per_g = 32768.0f / 8.0f;
         break;
     case _16g:
+        new_val |= 0x04;
+        lsb_per_g = 32768.0f / 16.0f;
+        break;
+    case _30g:
         new_val |= 0x06;
-        lsb_per_g = 2048;
+        lsb_per_g = 32768.0f / 30.0f;
         break;
     }
 
     accel_range_scale = (M_ONE_G / lsb_per_g);
 
-    write_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG, new_val);
+    write_single_icm20649_reg(ub_2, B2_ACCEL_CONFIG, new_val);
 }
 
-static rt_err_t icm20948_gyro_read(int16_t gyro[3])
+static rt_err_t icm20649_gyro_read(int16_t gyro[3])
 {
     uint8_t raw[6];
 
-    read_multiple_icm20948_reg(ub_0, B0_GYRO_XOUT_H, raw, 6);
+    read_multiple_icm20649_reg(ub_0, B0_GYRO_XOUT_H, raw, 6);
 
     gyro[0] = (int16_t)(raw[0] << 8 | raw[1]);
     gyro[1] = (int16_t)(raw[2] << 8 | raw[3]);
@@ -485,11 +419,11 @@ static rt_err_t icm20948_gyro_read(int16_t gyro[3])
     return RT_EOK;
 }
 
-static rt_err_t icm20948_accel_read(int16_t acc[3])
+static rt_err_t icm20649_accel_read(int16_t acc[3])
 {
     uint8_t raw[6];
 
-    read_multiple_icm20948_reg(ub_0, B0_ACCEL_XOUT_H, raw, 6);
+    read_multiple_icm20649_reg(ub_0, B0_ACCEL_XOUT_H, raw, 6);
 
     acc[0] = (int16_t)(raw[0] << 8 | raw[1]);
     acc[1] = (int16_t)(raw[2] << 8 | raw[3]);
@@ -527,14 +461,14 @@ static rt_err_t gyro_read_rad(float gyr[3])
 {
     int16_t gyr_raw[3];
 
-    RT_TRY(icm20948_gyro_read(gyr_raw));
+    RT_TRY(icm20649_gyro_read(gyr_raw));
 
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
 
     // change to NED coordinate
-    icm20948_rotate_to_frd(gyr);
+    icm20649_rotate_to_frd(gyr);
 
     return RT_EOK;
 }
@@ -543,13 +477,13 @@ static rt_err_t accel_read_m_s2(float acc[3])
 {
     int16_t acc_raw[3];
 
-    RT_TRY(icm20948_accel_read(acc_raw));
+    RT_TRY(icm20649_accel_read(acc_raw));
 
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
 
-    icm20948_rotate_to_frd(acc);
+    icm20649_rotate_to_frd(acc);
 
     return RT_EOK;
 }
@@ -588,25 +522,25 @@ static rt_err_t lowlevel_init(void)
     /* open spi device */
     RT_TRY(rt_device_open(spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    // icm20948_init
-    RT_TRY(icm20948_who_am_i());
+    // icm20649_init
+    RT_TRY(icm20649_who_am_i());
 
-    icm20948_device_reset();
-    icm20948_wakeup();
+    icm20649_device_reset();
+    icm20649_wakeup();
 
-    icm20948_clock_source(1);
-    icm20948_odr_align_enable();
+    icm20649_clock_source(1);
+    icm20649_odr_align_enable();
 
-    icm20948_spi_slave_enable();
+    icm20649_spi_slave_enable();
 
-    icm20948_gyro_low_pass_filter(0);
-    icm20948_accel_low_pass_filter(0);
+    icm20649_gyro_low_pass_filter(0);
+    icm20649_accel_low_pass_filter(0);
 
-    icm20948_gyro_sample_rate_divider(0);
-    icm20948_accel_sample_rate_divider(0);
+    icm20649_gyro_sample_rate_divider(0);
+    icm20649_accel_sample_rate_divider(0);
 
-    icm20948_gyro_full_scale_select(_2000dps);
-    icm20948_accel_full_scale_select(_16g);
+    icm20649_gyro_full_scale_select(_2000dps);
+    icm20649_accel_full_scale_select(_16g);
 
     return RT_EOK;
 }
