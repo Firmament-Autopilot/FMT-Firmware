@@ -68,7 +68,6 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 
-
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
@@ -336,6 +335,8 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_rangefinder(0));
 
     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0) {
+        // FMT_CHECK(advertise_sensor_airspeed(0));
+        // RT_CHECK(drv_ms4525_init("i2c0_dev1", NULL));
         RT_CHECK(drv_ms4525_init("i2c0_dev1", "airspeed"));
         FMT_CHECK(register_sensor_airspeed("airspeed"));
     }
