@@ -277,13 +277,12 @@ static uint8_t read_single_ak09916_reg(uint8_t reg)
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
-    sys_msleep(1);
     return read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
 }
 
 static void write_single_ak09916_reg(uint8_t reg, uint8_t val)
 {
-    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, MAG_SLAVE_ADDR);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x00 | MAG_SLAVE_ADDR);
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_DO, val);
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
@@ -295,7 +294,6 @@ static void read_multiple_ak09916_reg(uint8_t reg, uint8_t* buffer, uint8_t len)
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
     write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | len);
 
-    sys_msleep(1);
     read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, buffer, len);
 }
 
@@ -318,7 +316,15 @@ static rt_err_t icm20948_who_am_i()
 
 static rt_err_t ak09916_who_am_i()
 {
-    uint8_t ak09916_id = read_single_ak09916_reg(MAG_WIA2);
+    uint8_t ak09916_id;
+
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_WIA2);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
+
+    sys_msleep(2);
+
+    ak09916_id = read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
 
     if (ak09916_id == AK09916_ID) {
         DRV_DBG("AK09916 right device id:0x%X\n", ak09916_id);
@@ -525,45 +531,74 @@ static rt_err_t icm20948_accel_read(int16_t acc[3])
     return RT_EOK;
 }
 
-__PACKED__(
-    struct ako9916_reg {
-        uint8_t drdy; // data ready, overflow
-        uint8_t raw[6];
-        uint8_t hofl;
-    });
-
-union ako9916_read
+static void ak09916_mag_read(int16_t mag[3])
 {
-    uint8_t bits[8];
-    struct ako9916_reg reg;
-};
+    uint8_t         temp[6];
+    uint8_t         drdy;
+    static uint8_t  step = 0;
+    static uint64_t t_start;
 
-static rt_err_t ak09916_mag_read(int16_t mag[3])
-{
-    static union ako9916_read termp;
-    uint8_t            drdy, hofl;
+    switch (step) {
+    case 0:
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_ST1);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
-    read_multiple_ak09916_reg(MAG_ST1, (uint8_t*)termp.bits, 8);
+        step    = 1;
+        t_start = systime_now_us();
+        break;
 
-    // drdy = termp.reg.drdy & 0x01;
-    // if (!drdy){
-    //     printf("mag drdy\r\n");
-    //     return false;
-    // }
+    case 1:
+        if ((systime_now_us() - t_start) > 1000) {
+            drdy = read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
+            if (drdy & 0x01) {
+                t_start = systime_now_us();
+                step    = 2;
+            }
+        }
+        break;
 
-    // read_multiple_ak09916_reg(MAG_HXL, (uint8_t*)(termp.bits+1), 6);
+    case 2:
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_HXL);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | 6);
+        t_start = systime_now_us();
+        step    = 3;
 
-    // hofl = termp.reg.hofl & 0x08;
-    // if (hofl)
-    //     return false;
+        break;
 
-    mag[0] = (int16_t)( termp.reg.raw[1] << 8 |  termp.reg.raw[0]);
-    mag[1] = (int16_t)( termp.reg.raw[3] << 8 |  termp.reg.raw[2]);
-    mag[2] = (int16_t)( termp.reg.raw[5] << 8 |  termp.reg.raw[4]);
+    case 3:
+        if ((systime_now_us() - t_start) > 1000) {
+            read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, temp, 6);
+            mag[0] = (int16_t)(temp[1] << 8 | temp[0]);
+            mag[1] = (int16_t)(temp[3] << 8 | temp[2]);
+            mag[2] = (int16_t)(temp[5] << 8 | temp[4]);
 
-    // printf("mag0=%d\r\n",mag[0]);
+            step = 4;
+        }
+        break;
 
-    return RT_EOK;
+    case 4:
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_ST2);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
+
+        t_start = systime_now_us();
+        step    = 5;
+
+        break;
+
+    case 5:
+        if ((systime_now_us() - t_start) > 1000) {
+            read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
+            step = 0;
+        }
+        break;
+
+    default:
+        step = 0;
+        break;
+    }
 }
 
 //////////////////////////////////////////////
@@ -592,7 +627,7 @@ static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 /////////////////////////////////////////////////////////////////////////////////
 static rt_err_t mag_read_gauss(float mag[3])
 {
-    int16_t raw[3];
+    static int16_t raw[3];
 
     ak09916_mag_read(raw);
 
@@ -689,6 +724,7 @@ static rt_err_t lowlevel_init(void)
     icm20948_device_reset();
     icm20948_wakeup();
 
+    /* Auto select best available clock source PLL if ready, else use internal oscillator */
     icm20948_clock_source(1);
     icm20948_odr_align_enable();
 
@@ -706,12 +742,17 @@ static rt_err_t lowlevel_init(void)
     // ak09916_init
     icm20948_i2c_master_reset();
     icm20948_i2c_master_enable();
+
+    /* Set I2C Master clock frequency */
+    /**< I2C_MST_CLK = 345.6 kHz (for 400 kHz Max)          */
     icm20948_i2c_master_clk_frq(7);
 
     RT_TRY(ak09916_who_am_i());
 
     ak09916_soft_reset();
     ak09916_operation_mode_setting(continuous_measurement_100hz);
+
+    read_single_ak09916_reg(MAG_ST2);
 
     return RT_EOK;
 }
@@ -783,7 +824,7 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
         cfg.mode       = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz     = 3000000;                   /* Max SPI speed: 7MHz */
+        cfg.max_hz     = 8000000;                    /* Max SPI speed: 7MHz */
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_dev;
 
