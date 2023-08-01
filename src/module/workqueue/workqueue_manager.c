@@ -43,5 +43,8 @@ fmt_err_t workqueue_manager_init(void)
     wq_list[1] = workqueue_create("wq:hp_work", 20, 4096, 6);
     RT_ASSERT(wq_list[1] != NULL);
 
+    wq_list[2] = workqueue_create("wq:ak09916", 20, 4096, 5);
+    RT_ASSERT(wq_list[2] != NULL);
+
     return FMT_EOK;
 }

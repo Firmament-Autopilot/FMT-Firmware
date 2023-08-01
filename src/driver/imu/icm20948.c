@@ -531,12 +531,15 @@ static rt_err_t icm20948_accel_read(int16_t acc[3])
     return RT_EOK;
 }
 
-static void ak09916_mag_read(int16_t mag[3])
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+static void probe_ak09916(void* parameter)
 {
-    uint8_t         temp[6];
-    uint8_t         drdy;
+    int16_t*        probe_mag = (int16_t*)parameter;
+    static uint8_t  temp[6];
     static uint8_t  step = 0;
     static uint64_t t_start;
+    static uint8_t  drdy;
 
     switch (step) {
     case 0:
@@ -544,8 +547,8 @@ static void ak09916_mag_read(int16_t mag[3])
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_ST1);
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
-        step    = 1;
         t_start = systime_now_us();
+        step    = 1;
         break;
 
     case 1:
@@ -564,15 +567,14 @@ static void ak09916_mag_read(int16_t mag[3])
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | 6);
         t_start = systime_now_us();
         step    = 3;
-
         break;
 
     case 3:
         if ((systime_now_us() - t_start) > 1000) {
             read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, temp, 6);
-            mag[0] = (int16_t)(temp[1] << 8 | temp[0]);
-            mag[1] = (int16_t)(temp[3] << 8 | temp[2]);
-            mag[2] = (int16_t)(temp[5] << 8 | temp[4]);
+            probe_mag[0] = (int16_t)(temp[1] << 8 | temp[0]);
+            probe_mag[1] = (int16_t)(temp[3] << 8 | temp[2]);
+            probe_mag[2] = (int16_t)(temp[5] << 8 | temp[4]);
 
             step = 4;
         }
@@ -600,6 +602,14 @@ static void ak09916_mag_read(int16_t mag[3])
         break;
     }
 }
+static int16_t         probe_mag[3];
+static struct WorkItem ak09916_item = {
+    .name          = "ak09916",
+    .period        = 1,
+    .schedule_time = 0,
+    .parameter     = (void*)probe_mag,
+    .run           = probe_ak09916,
+};
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -627,13 +637,13 @@ static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 /////////////////////////////////////////////////////////////////////////////////
 static rt_err_t mag_read_gauss(float mag[3])
 {
-    static int16_t raw[3];
+    // static int16_t raw[3];
 
-    ak09916_mag_read(raw);
+    // ak09916_mag_read(raw);
 
-    mag[0] = AK09916_SCALE_TO_GAUSS * raw[0];
-    mag[1] = AK09916_SCALE_TO_GAUSS * raw[1];
-    mag[2] = AK09916_SCALE_TO_GAUSS * raw[2];
+    mag[0] = AK09916_SCALE_TO_GAUSS * probe_mag[0];
+    mag[1] = AK09916_SCALE_TO_GAUSS * probe_mag[1];
+    mag[2] = AK09916_SCALE_TO_GAUSS * probe_mag[2];
 
     ak09916_rotate_to_frd(mag);
 
@@ -836,6 +846,10 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
 
     /* driver low-level init */
     RT_TRY(lowlevel_init());
+
+    WorkQueue_t wq_ak09916 = workqueue_find("wq:ak09916");
+    RT_ASSERT(wq_ak09916 != NULL);
+    FMT_CHECK(workqueue_schedule_work(wq_ak09916, &ak09916_item));
 
     /* register gyro hal device */
     RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
