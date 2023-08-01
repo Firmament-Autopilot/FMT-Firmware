@@ -32,6 +32,7 @@ MCN_DECLARE(fms_output);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(rc_channels);
 MCN_DECLARE(auto_cmd);
+MCN_DECLARE(external_pos);
 
 typedef struct
 {
@@ -44,6 +45,7 @@ static msg_pack_cb_table mav_msg_cb_table[] = {
     { MAVLINK_MSG_ID_SYS_STATUS, mavlink_msg_sys_status_pack_func },
     { MAVLINK_MSG_ID_SYSTEM_TIME, mavlink_msg_system_time_pack_func },
     { MAVLINK_MSG_ID_GPS_RAW_INT, mavlink_msg_gps_raw_int_pack_func },
+    { MAVLINK_MSG_ID_SCALED_IMU, mavlink_msg_scaled_imu_pack_func },
     { MAVLINK_MSG_ID_ATTITUDE, mavlink_msg_attitude_pack_func },
     { MAVLINK_MSG_ID_ATTITUDE_QUATERNION, mavlink_msg_attitude_quaternion_pack_func },
     { MAVLINK_MSG_ID_LOCAL_POSITION_NED, mavlink_msg_local_position_ned_pack_func },
@@ -469,6 +471,26 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             }
         }
         break;
+
+    case MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE: {
+        /* TODO: don't know why this msg doesn't have get_target_system() */
+        mavlink_vision_position_estimate_t vision_pos_est;
+        External_Pos_Bus ext_pos_report = { 0 };
+
+        mavlink_msg_vision_position_estimate_decode(msg, &vision_pos_est);
+
+        ext_pos_report.timestamp = systime_now_ms();
+        ext_pos_report.field_valid = 11;
+        ext_pos_report.x = vision_pos_est.x;
+        ext_pos_report.y = vision_pos_est.y;
+        ext_pos_report.z = vision_pos_est.z;
+        ext_pos_report.phi = vision_pos_est.roll;
+        ext_pos_report.theta = vision_pos_est.pitch;
+        ext_pos_report.psi = vision_pos_est.yaw;
+
+        /* publish external position */
+        mcn_publish(MCN_HUB(external_pos), &ext_pos_report);
+    } break;
 
     default:
         LOG_W("unsupported mavlink msg:%d", msg->msgid);

@@ -12,6 +12,7 @@ DRIVERS = [
     'mtd/w25qxx.c',
     'vision_flow/mtf_01.c',
     'airspeed/ms4525.c',
+    'uwb/nlink_linktrack/*.c',
 ]
 
 DRIVERS_CPPPATH = []

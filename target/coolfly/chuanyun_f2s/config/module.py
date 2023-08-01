@@ -31,7 +31,7 @@ MODULES += [
     'syscmd/cmd_mlog.c',
     'syscmd/cmd_param.c',
     'syscmd/cmd_ps.c',
-    'syscmd/cmd_rc.c',
+    'syscmd/cmd_calib.c',
     'syscmd/cmd_task.c',
     'syscmd/cmd_test.c',
 ]

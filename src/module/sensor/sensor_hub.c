@@ -794,7 +794,7 @@ void sensor_collect(void)
      * Collect airspeed data
      */
     airspeed_data_t airspeed_data;
-    DEFINE_TIMETAG(airspeed_interval, 5);
+    DEFINE_TIMETAG(airspeed_interval, 10);
 
     if (check_timetag(TIMETAG(airspeed_interval))) {
         if (airspeed_dev != NULL) {

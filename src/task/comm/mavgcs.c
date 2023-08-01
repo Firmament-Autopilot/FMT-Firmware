@@ -36,7 +36,7 @@ MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(mission_data);
 
-MCN_DEFINE(mav_ext_state, sizeof(mavlink_fmt_external_state_t));
+MCN_DEFINE(external_state, sizeof(mavlink_fmt_external_state_t));
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
@@ -393,7 +393,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
         ext_state.timestamp = systime_now_ms();
         /* publish external state */
-        mcn_publish(MCN_HUB(mav_ext_state), &ext_state);
+        mcn_publish(MCN_HUB(external_state), &ext_state);
     } break;
 
     default: {
@@ -407,7 +407,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
 fmt_err_t mavgcs_init(void)
 {
-    mcn_advertise(MCN_HUB(mav_ext_state), NULL);
+    mcn_advertise(MCN_HUB(external_state), NULL);
 
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
