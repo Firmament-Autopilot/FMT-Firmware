@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2012
+ * Model version                  : 1.2013
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jun  8 09:54:12 2023
+ * C/C++ source code generated on : Tue Aug  1 22:19:22 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -107,7 +107,7 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
-struct_pHUcrB3OCb7AonS2mUrMZG FMS_PARAM = {
+struct_lsSw80pJwzMfDv47oR1SCF FMS_PARAM = {
   0.15F,
   0.15F,
   0.1F,
@@ -132,21 +132,13 @@ struct_pHUcrB3OCb7AonS2mUrMZG FMS_PARAM = {
   0.785398185F,
   30.0F,
   120U,
-  1U,
-
-  { 1000.0F, 1000.0F, 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
-
-  { 1000.0F, 1000.0F, 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F }
+  1U
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<Root>/ACCEPT_R'
                                         *   '<S2>/Constant1'
                                         *   '<S20>/Constant'
                                         *   '<S217>/Constant'
-                                        *   '<S26>/Constant6'
-                                        *   '<S27>/Constant6'
                                         *   '<S146>/Gain'
                                         *   '<S146>/Gain4'
                                         *   '<S146>/Gain5'
@@ -2289,13 +2281,13 @@ void FMS_step(void)
   real32_T rtb_Divide_h[2];
   real32_T rtb_Switch_fz[3];
   real32_T rtb_Saturation_bu;
+  int32_T rtb_n;
   real32_T rtb_Switch_a[3];
   MotionState rtb_state_g;
   real32_T rtb_VectorConcatenate[9];
   MotionState rtb_state;
   real32_T rtb_P_ia[2];
   real32_T rtb_P_k[2];
-  int32_T i;
   real32_T rtb_VectorConcatenate_0[3];
   real32_T rtb_Switch_b_idx_2;
   real32_T rtb_Switch_b_idx_1;
@@ -2903,28 +2895,17 @@ void FMS_step(void)
      *  BusAssignment: '<S25>/Bus Assignment'
      *  BusAssignment: '<S26>/Bus Assignment'
      *  Constant: '<S26>/Constant'
-     *  SignalConversion: '<S26>/TmpHiddenBufferAtBus AssignmentInport1'
      */
     FMS_Y.FMS_Out = FMS_rtZFMS_Out_Bus;
 
     /* BusAssignment: '<S26>/Bus Assignment' incorporates:
      *  BusAssignment: '<S25>/Bus Assignment'
      *  Constant: '<S26>/Constant2'
-     *  DataTypeConversion: '<S26>/Data Type Conversion2'
      *  Outport: '<Root>/FMS_Out'
      */
     FMS_Y.FMS_Out.reset = 1U;
     FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion_m;
     FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_a;
-    for (i = 0; i < 16; i++) {
-      /* DataTypeConversion: '<S26>/Data Type Conversion2' incorporates:
-       *  Constant: '<S26>/Constant6'
-       */
-      rtb_Saturation_bu = fmodf(floorf(FMS_PARAM.DISARM_OUT[i]), 65536.0F);
-      FMS_Y.FMS_Out.actuator_cmd[i] = (uint16_T)(rtb_Saturation_bu < 0.0F ?
-        (int32_T)(uint16_T)-(int16_T)(uint16_T)-rtb_Saturation_bu : (int32_T)
-        (uint16_T)rtb_Saturation_bu);
-    }
 
     /* End of Outputs for SubSystem: '<S22>/Disarm' */
     break;
@@ -2937,28 +2918,17 @@ void FMS_step(void)
      *  BusAssignment: '<S25>/Bus Assignment'
      *  BusAssignment: '<S27>/Bus Assignment'
      *  Constant: '<S27>/Constant'
-     *  SignalConversion: '<S27>/TmpHiddenBufferAtBus AssignmentInport1'
      */
     FMS_Y.FMS_Out = FMS_rtZFMS_Out_Bus;
 
     /* BusAssignment: '<S27>/Bus Assignment' incorporates:
      *  BusAssignment: '<S25>/Bus Assignment'
      *  Constant: '<S27>/Constant2'
-     *  DataTypeConversion: '<S27>/Data Type Conversion3'
      *  Outport: '<Root>/FMS_Out'
      */
     FMS_Y.FMS_Out.reset = 1U;
     FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion2_h;
     FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_f;
-    for (i = 0; i < 16; i++) {
-      /* DataTypeConversion: '<S27>/Data Type Conversion3' incorporates:
-       *  Constant: '<S27>/Constant6'
-       */
-      rtb_Saturation_bu = fmodf(floorf(FMS_PARAM.STANDBY_OUT[i]), 65536.0F);
-      FMS_Y.FMS_Out.actuator_cmd[i] = (uint16_T)(rtb_Saturation_bu < 0.0F ?
-        (int32_T)(uint16_T)-(int16_T)(uint16_T)-rtb_Saturation_bu : (int32_T)
-        (uint16_T)rtb_Saturation_bu);
-    }
 
     /* End of Outputs for SubSystem: '<S22>/Standby' */
     break;
@@ -4199,7 +4169,7 @@ void FMS_step(void)
         if ((FMS_U.INS_Out.x_R == FMS_B.Cmd_In.cur_waypoint[0]) &&
             (FMS_U.INS_Out.y_R == FMS_B.Cmd_In.cur_waypoint[1]) &&
             (rtb_Saturation_fu == FMS_PARAM.L1)) {
-          i = 0;
+          rtb_n = 0;
         } else {
           rtb_Switch_b_idx_0 = FMS_B.Cmd_In.cur_waypoint[0] - FMS_U.INS_Out.x_R;
           rtb_P_ia[0] = rtb_Switch_b_idx_0 * rtb_Switch_b_idx_0;
@@ -4215,15 +4185,15 @@ void FMS_step(void)
           rtb_Switch_b_idx_0 /= rtb_Saturation_bu;
           rtb_Saturation_bu = rtb_Switch_b_idx_2 * rtb_Switch_b_idx_2;
           if (rtb_Saturation_bu > rtb_Saturation1_bl) {
-            i = 0;
+            rtb_n = 0;
           } else if (rtb_Saturation_bu == rtb_Saturation1_bl) {
-            i = 1;
+            rtb_n = 1;
             rtb_P_k[0] = rtb_Switch_b_idx_2 * rtb_Switch_b_idx_1 +
               FMS_U.INS_Out.x_R;
             rtb_P_k[1] = rtb_Switch_b_idx_2 * rtb_Switch_b_idx_0 +
               FMS_U.INS_Out.y_R;
           } else {
-            i = 2;
+            rtb_n = 2;
             rtb_Saturation_bu = sqrtf(rtb_Saturation1_bl - rtb_Saturation_bu);
             rtb_P_k[0] = (rtb_Switch_b_idx_2 * rtb_Switch_b_idx_1 +
                           FMS_U.INS_Out.x_R) + rtb_Saturation_bu *
@@ -4240,7 +4210,7 @@ void FMS_step(void)
         /* RelationalOperator: '<S159>/Compare' incorporates:
          *  Constant: '<S159>/Constant'
          */
-        rtb_Compare_a4 = (i > 0);
+        rtb_Compare_a4 = (rtb_n > 0);
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
         /* MATLAB Function: '<S156>/OutRegionRegWP' incorporates:
@@ -5757,11 +5727,12 @@ void FMS_step(void)
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S23>/Signal Copy1'
              */
-            for (i = 0; i < 3; i++) {
+            for (rtb_n = 0; rtb_n < 3; rtb_n++) {
               /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-              rtb_VectorConcatenate_0[i] = rtb_VectorConcatenate[i + 6] *
-                FMS_U.INS_Out.vd + (rtb_VectorConcatenate[i + 3] *
-                                    FMS_U.INS_Out.ve + rtb_VectorConcatenate[i] *
+              rtb_VectorConcatenate_0[rtb_n] = rtb_VectorConcatenate[rtb_n + 6] *
+                FMS_U.INS_Out.vd + (rtb_VectorConcatenate[rtb_n + 3] *
+                                    FMS_U.INS_Out.ve +
+                                    rtb_VectorConcatenate[rtb_n] *
                                     FMS_U.INS_Out.vn);
 
               /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
@@ -6688,8 +6659,8 @@ void FMS_step(void)
       FMS_Y.FMS_Out.actuator_cmd[5] = (uint16_T)(rtb_Saturation_bu < 0.0F ?
         (int32_T)(uint16_T)-(int16_T)(uint16_T)-rtb_Saturation_bu : (int32_T)
         (uint16_T)rtb_Saturation_bu);
-      for (i = 0; i < 10; i++) {
-        FMS_Y.FMS_Out.actuator_cmd[i + 6] = 0U;
+      for (rtb_n = 0; rtb_n < 10; rtb_n++) {
+        FMS_Y.FMS_Out.actuator_cmd[rtb_n + 6] = 0U;
       }
 
       /* End of Outputs for SubSystem: '<S24>/Manual' */

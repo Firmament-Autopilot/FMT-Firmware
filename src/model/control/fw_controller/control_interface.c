@@ -31,6 +31,7 @@ MCN_DEFINE(control_output, sizeof(Control_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
+    PARAM_UINT8(AIRFRAME, AIRFRAME, true),
     PARAM_FLOAT(ROLL_P, 7, false),
     PARAM_FLOAT(PITCH_P, 7, false),
     PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 4, false),
