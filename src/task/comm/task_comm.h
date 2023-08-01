@@ -30,6 +30,7 @@ bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_attitude_quaternion_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_global_position_int_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_vfr_hud_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t);

@@ -17,8 +17,22 @@
 
 #include "hal/airspeed/airspeed.h"
 #include "hal/i2c/i2c.h"
+#include "module/sensor/sensor_hub.h"
+
+#define EVENT_MS4525_UPDATE (1 << 0)
+
+MCN_DECLARE(sensor_airspeed);
 
 static rt_device_t i2c_dev;
+static rt_thread_t thread;
+static struct rt_event event;
+static struct rt_timer timer;
+static float diff_press_offset;
+
+static void timer_update(void* parameter)
+{
+    rt_event_send(&event, EVENT_MS4525_UPDATE);
+}
 
 static rt_err_t ms4525_collect(uint8_t* val)
 {
@@ -119,6 +133,30 @@ rt_size_t ms4525_read(airspeed_dev_t dev, rt_off_t pos, void* data, rt_size_t si
     return size;
 }
 
+static void thread_entry(void* args)
+{
+    rt_err_t res;
+    rt_uint32_t recv_set = 0;
+    rt_uint32_t wait_set = EVENT_MS4525_UPDATE;
+    float report[2];
+    airspeed_data_t airspeed_data;
+
+    while (1) {
+        /* wait event occur */
+        res = rt_event_recv(&event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
+
+        if (res == RT_EOK && (recv_set & EVENT_MS4525_UPDATE)) {
+            if (ms4525_read(NULL, 0, report, 8) == 8) {
+                airspeed_data.diff_pressure_pa = report[0] - diff_press_offset;
+                airspeed_data.temperature_deg = report[1];
+                airspeed_data.timestamp_ms = systime_now_ms();
+
+                mcn_publish(MCN_HUB(sensor_airspeed), &airspeed_data);
+            }
+        }
+    }
+}
+
 const static struct airspeed_ops __airspeed_ops = {
     .airspeed_control = RT_NULL,
     .airspeed_read = ms4525_read
@@ -139,7 +177,23 @@ rt_err_t drv_ms4525_init(const char* i2c_device_name, const char* device_name)
 
     RT_TRY(ms4525_init());
 
-    RT_TRY(hal_airspeed_register(&airspeed_dev, device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    if (device_name != NULL) {
+        RT_TRY(hal_airspeed_register(&airspeed_dev, device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    } else {
+        FMT_CHECK(param_link_variable(PARAM_GET(CALIB, DIFF_PRESS_OFFSET), &diff_press_offset));
+
+        RT_CHECK(rt_event_init(&event, "ms4525", RT_IPC_FLAG_FIFO));
+
+        thread = rt_thread_create("ms4525", thread_entry, RT_NULL, 2 * 1024, 7, 1);
+        RT_ASSERT(thread != NULL);
+        RT_CHECK(rt_thread_startup(thread));
+
+        /* register timer event */
+        rt_timer_init(&timer, "ms4525", timer_update, RT_NULL, TICKS_FROM_MS(10), RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+        if (rt_timer_start(&timer) != RT_EOK) {
+            return FMT_ERROR;
+        }
+    }
 
     return RT_EOK;
 }
