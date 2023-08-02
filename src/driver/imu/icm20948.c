@@ -219,6 +219,12 @@ typedef enum {
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
+
+static rt_thread_t thread;
+static struct rt_event event;
+static struct rt_timer timer;
+#define EVENT_AK09916_UPDATE (1 << 0)
+
 static rt_device_t spi_dev;
 
 static float gyro_range_scale;
@@ -236,6 +242,7 @@ RT_WEAK void icm20948_rotate_to_frd(float* data)
 RT_WEAK void ak09916_rotate_to_frd(float* data)
 {
 }
+
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -533,9 +540,8 @@ static rt_err_t icm20948_accel_read(int16_t acc[3])
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-static void probe_ak09916(void* parameter)
+static void probe_ak09916(int16_t* probe_mag)
 {
-    int16_t*        probe_mag = (int16_t*)parameter;
     static uint8_t  temp[6];
     static uint8_t  step = 0;
     static uint64_t t_start;
@@ -602,14 +608,28 @@ static void probe_ak09916(void* parameter)
         break;
     }
 }
-static int16_t         probe_mag[3];
-static struct WorkItem ak09916_item = {
-    .name          = "ak09916",
-    .period        = 1,
-    .schedule_time = 0,
-    .parameter     = (void*)probe_mag,
-    .run           = probe_ak09916,
-};
+
+static void timer_update(void* parameter)
+{
+    rt_event_send(&event, EVENT_AK09916_UPDATE);
+}
+
+static int16_t mag_raw[3];
+static void thread_entry(void* args)
+{
+    rt_err_t res;
+    rt_uint32_t recv_set = 0;
+    rt_uint32_t wait_set = EVENT_AK09916_UPDATE;
+
+    while (1) {
+        /* wait event occur */
+        res = rt_event_recv(&event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
+
+        if (res == RT_EOK && (recv_set & EVENT_AK09916_UPDATE)) {
+            probe_ak09916(mag_raw);
+        }
+    }
+}
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -641,9 +661,9 @@ static rt_err_t mag_read_gauss(float mag[3])
 
     // ak09916_mag_read(raw);
 
-    mag[0] = AK09916_SCALE_TO_GAUSS * probe_mag[0];
-    mag[1] = AK09916_SCALE_TO_GAUSS * probe_mag[1];
-    mag[2] = AK09916_SCALE_TO_GAUSS * probe_mag[2];
+    mag[0] = AK09916_SCALE_TO_GAUSS * mag_raw[0];
+    mag[1] = AK09916_SCALE_TO_GAUSS * mag_raw[1];
+    mag[2] = AK09916_SCALE_TO_GAUSS * mag_raw[2];
 
     ak09916_rotate_to_frd(mag);
 
@@ -847,9 +867,17 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
     /* driver low-level init */
     RT_TRY(lowlevel_init());
 
-    WorkQueue_t wq_ak09916 = workqueue_find("wq:ak09916");
-    RT_ASSERT(wq_ak09916 != NULL);
-    FMT_CHECK(workqueue_schedule_work(wq_ak09916, &ak09916_item));
+    RT_CHECK(rt_event_init(&event, "ak09916", RT_IPC_FLAG_FIFO));
+
+    thread = rt_thread_create("ak09916", thread_entry, RT_NULL, 3 * 1024, 8, 1);
+    RT_ASSERT(thread != NULL);
+    RT_CHECK(rt_thread_startup(thread));
+
+    /* register timer event */
+    rt_timer_init(&timer, "ak09916", timer_update, RT_NULL, TICKS_FROM_MS(2), RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    if (rt_timer_start(&timer) != RT_EOK) {
+        return FMT_ERROR;
+    }
 
     /* register gyro hal device */
     RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
