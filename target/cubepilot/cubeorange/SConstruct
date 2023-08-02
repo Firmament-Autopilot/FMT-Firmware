@@ -1,6 +1,8 @@
 import os
 import sys
 import rtconfig
+import build_dronecan
+import shutil
 
 # FMT path
 FMU_ROOT = os.path.normpath(os.getcwd() + '/../../..')
@@ -15,13 +17,12 @@ except:
     print(RTT_ROOT)
     exit(-1)
 
-
-# DRONECAN DSDL
-# DRONECAN_ROOT = FMU_ROOT + "/src/lib/dronecan"
-# os.system("python " + DRONECAN_ROOT + "/dsdlc/dronecan_dsdlc.py -O " + DRONECAN_ROOT + "/dsdlc_generated " + DRONECAN_ROOT + "/dsdl/uavcan " +  DRONECAN_ROOT + "/dsdl/ardupilot")
-
-
 TARGET = 'build/fmt_' + rtconfig.BOARD + '.' + rtconfig.TARGET_EXT
+
+if GetOption('clean'):
+    build_dronecan.delete_dronecan_dsdl()
+else:
+    build_dronecan.generated_dronecan_dsdl()
 
 # ===== Add option to SCons =====
 AddOption('--vehicle',
