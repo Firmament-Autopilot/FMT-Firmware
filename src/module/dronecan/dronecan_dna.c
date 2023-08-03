@@ -115,8 +115,6 @@ static void makeFirstDNA(CanardInstance* ins, DroneCANDNA_struct_ptr struct_ptr)
 
 void makeDNAUpate(CanardInstance* ins, uint8_t step, DroneCANDNA_struct_ptr struct_ptr)
 {
-    static uint8_t cnt = 0;
-
     switch (step) {
     case step1:
         makeFirstDNA(ins, struct_ptr);

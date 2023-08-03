@@ -21,7 +21,6 @@ void task_dronecan_entry(void* parameter)
     rt_uint32_t recv_set = 0;
 
     uint32_t time_now;
-    uint32_t timestamp;
     static uint32_t time_start = 0;
 
     uint32_t wait_set = EVENT_DRONECAN_UPDATE;
