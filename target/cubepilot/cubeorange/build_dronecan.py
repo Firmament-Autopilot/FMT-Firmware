@@ -22,9 +22,12 @@ def remove_files_by_suffix(root, suffix):
             remove_files_by_suffix(os.path.join(dir_path, dir_name), suffix)
 
 def delete_dronecan_dsdl():
+    if not os.path.exists(DSDLC_GEN_ROOT):
+        return
     remove_files_by_suffix(DSDLC_GEN_ROOT, 'c')
     remove_files_by_suffix(DSDLC_GEN_ROOT, 'h')
     shutil.rmtree(DSDLC_GEN_ROOT)
+
 
 
 def generated_dronecan_dsdl():
