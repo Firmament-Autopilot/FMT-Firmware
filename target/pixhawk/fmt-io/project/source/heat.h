@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "module/math/rotation.h"
 
-void icm20649_rotate_to_frd(float* data)
-{
-    rotation(ROTATION_ROLL_180, data, data + 1, data + 2);
-}
+#ifndef  _HEAT_H_
+#define  _HEAT_H_
 
-void icm20948_rotate_to_frd(float* data)
-{
-    rotation(ROTATION_YAW_90, data, data + 1, data + 2);
-}
+#include "stm32f10x.h"
+#include "board_config.h"
 
-void ak09916_rotate_to_frd(float* data)
-{
-    rotation(ROTATION_ROLL_180_YAW_90, data, data + 1, data + 2);
-}
+#ifdef USE_IMU_HEAT
+
+#ifdef CUBEPILOT
+#define HEAT_PORT		GPIOB
+#define HEAT_PIN		GPIO_Pin_13
+#define HEAT_RCC		RCC_APB2Periph_GPIOB
+#endif
+
+
+void heat_on();
+void heat_off();
+void heat_toggle();
+void heat_init(void);
+
+#endif
+
+#endif

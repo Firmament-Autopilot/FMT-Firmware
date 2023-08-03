@@ -16,10 +16,16 @@ BasedOnStyle:  WebKit
 IndentWidth: 4
 ContinuationIndentWidth: 4
 AlignAfterOpenBracket: Align
-AlignConsecutiveMacros: true
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: true
+  AcrossComments: true
+
 AlignTrailingComments: true
 BinPackArguments: false
 BinPackParameters: true
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true
 
 BraceWrapping:
   AfterClass:      true

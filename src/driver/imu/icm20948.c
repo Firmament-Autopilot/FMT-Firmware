@@ -22,267 +22,218 @@
 #include "hal/mag/mag.h"
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
+#include "module/math/rotation.h"
 #include "module/workqueue/workqueue_manager.h"
 
-#include "module/math/rotation.h"
+/* Typedefs */
+typedef enum {
+    ub_0 = 0 << 4,
+    ub_1 = 1 << 4,
+    ub_2 = 2 << 4,
+    ub_3 = 3 << 4
+} userbank;
 
-#define DRV_DBG(...) printf(__VA_ARGS__)
+typedef enum {
+    _250dps,
+    _500dps,
+    _1000dps,
+    _2000dps
+} gyro_full_scale;
 
-#define WHO_AM_I 0xEA
+typedef enum {
+    _2g,
+    _4g,
+    _8g,
+    _16g
+} accel_full_scale;
 
-#define REG_BANK0 0x00U
-#define REG_BANK1 0x01U
-#define REG_BANK2 0x02U
-#define REG_BANK3 0x03U
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} axises;
 
-#define INV2REG(b, r) ((((uint16_t)b) << 8) | (r))
-#define GET_BANK(r)   ((r) >> 8)
-#define GET_REG(r)    ((r)&0xFFU)
+typedef enum {
+    power_down_mode              = 0,
+    single_measurement_mode      = 1,
+    continuous_measurement_10hz  = 2,
+    continuous_measurement_20hz  = 4,
+    continuous_measurement_50hz  = 6,
+    continuous_measurement_100hz = 8
+} operation_mode;
 
-#define BIT_READ_FLAG   0x80
-#define BIT_I2C_SLVX_EN 0x80
+/* ICM-20948 Registers */
+#define ICM20948_ID                0xEA
+#define REG_BANK_SEL               0x7F
 
-//Register Map
-#define INV2REG_WHO_AM_I            INV2REG(REG_BANK0, 0x00U)
-#define INV2REG_USER_CTRL           INV2REG(REG_BANK0, 0x03U)
-#define BIT_USER_CTRL_I2C_MST_RESET 0x02 // reset I2C Master (only applicable if I2C_MST_EN bit is set)
-#define BIT_USER_CTRL_SRAM_RESET    0x04 // Reset (i.e. clear) FIFO buffer
-#define BIT_USER_CTRL_DMP_RESET     0x08 // Reset DMP
-#define BIT_USER_CTRL_I2C_IF_DIS    0x10 // Disable primary I2C interface and enable hal.spi->interface
-#define BIT_USER_CTRL_I2C_MST_EN    0x20 // Enable MPU to act as the I2C Master to external slave sensors
-#define BIT_USER_CTRL_FIFO_EN       0x40 // Enable FIFO operations
-#define BIT_USER_CTRL_DMP_EN        0x80 // Enable DMP operations
-#define INV2REG_LP_CONFIG           INV2REG(REG_BANK0, 0x05U)
-#define INV2REG_PWR_MGMT_1          INV2REG(REG_BANK0, 0x06U)
-#define BIT_PWR_MGMT_1_CLK_INTERNAL 0x00 // clock set to internal 8Mhz oscillator
-#define BIT_PWR_MGMT_1_CLK_AUTO     0x01 // PLL with X axis gyroscope reference
-#define BIT_PWR_MGMT_1_CLK_STOP     0x07 // Stops the clock and keeps the timing generator in reset
-#define BIT_PWR_MGMT_1_TEMP_DIS     0x08 // disable temperature sensor
-#define BIT_PWR_MGMT_1_SLEEP        0x40 // put sensor into low power sleep mode
-#define BIT_PWR_MGMT_1_DEVICE_RESET 0x80 // reset entire device
-#define INV2REG_PWR_MGMT_2          INV2REG(REG_BANK0, 0x07U)
-#define INV2REG_INT_PIN_CFG         INV2REG(REG_BANK0, 0x0FU)
-#define BIT_BYPASS_EN               0x02
-#define BIT_INT_RD_CLEAR            0x10 // clear the interrupt when any read occurs
-#define BIT_LATCH_INT_EN            0x20 // latch data ready pin
-#define INV2REG_INT_ENABLE          INV2REG(REG_BANK0, 0x10U)
-#define BIT_PLL_RDY_EN              0x04
-#define INV2REG_INT_ENABLE_1        INV2REG(REG_BANK0, 0x11U)
-#define INV2REG_INT_ENABLE_2        INV2REG(REG_BANK0, 0x12U)
-#define INV2REG_INT_ENABLE_3        INV2REG(REG_BANK0, 0x13U)
-#define INV2REG_I2C_MST_STATUS      INV2REG(REG_BANK0, 0x17U)
-#define INV2REG_INT_STATUS          INV2REG(REG_BANK0, 0x19U)
+// USER BANK 0
+#define B0_WHO_AM_I                0x00
+#define B0_USER_CTRL               0x03
+#define B0_LP_CONFIG               0x05
+#define B0_PWR_MGMT_1              0x06
+#define B0_PWR_MGMT_2              0x07
+#define B0_INT_PIN_CFG             0x0F
+#define B0_INT_ENABLE              0x10
+#define B0_INT_ENABLE_1            0x11
+#define B0_INT_ENABLE_2            0x12
+#define B0_INT_ENABLE_3            0x13
+#define B0_I2C_MST_STATUS          0x17
+#define B0_INT_STATUS              0x19
+#define B0_INT_STATUS_1            0x1A
+#define B0_INT_STATUS_2            0x1B
+#define B0_INT_STATUS_3            0x1C
+#define B0_DELAY_TIMEH             0x28
+#define B0_DELAY_TIMEL             0x29
+#define B0_ACCEL_XOUT_H            0x2D
+#define B0_ACCEL_XOUT_L            0x2E
+#define B0_ACCEL_YOUT_H            0x2F
+#define B0_ACCEL_YOUT_L            0x30
+#define B0_ACCEL_ZOUT_H            0x31
+#define B0_ACCEL_ZOUT_L            0x32
+#define B0_GYRO_XOUT_H             0x33
+#define B0_GYRO_XOUT_L             0x34
+#define B0_GYRO_YOUT_H             0x35
+#define B0_GYRO_YOUT_L             0x36
+#define B0_GYRO_ZOUT_H             0x37
+#define B0_GYRO_ZOUT_L             0x38
+#define B0_TEMP_OUT_H              0x39
+#define B0_TEMP_OUT_L              0x3A
+#define B0_EXT_SLV_SENS_DATA_00    0x3B
+#define B0_EXT_SLV_SENS_DATA_01    0x3C
+#define B0_EXT_SLV_SENS_DATA_02    0x3D
+#define B0_EXT_SLV_SENS_DATA_03    0x3E
+#define B0_EXT_SLV_SENS_DATA_04    0x3F
+#define B0_EXT_SLV_SENS_DATA_05    0x40
+#define B0_EXT_SLV_SENS_DATA_06    0x41
+#define B0_EXT_SLV_SENS_DATA_07    0x42
+#define B0_EXT_SLV_SENS_DATA_08    0x43
+#define B0_EXT_SLV_SENS_DATA_09    0x44
+#define B0_EXT_SLV_SENS_DATA_10    0x45
+#define B0_EXT_SLV_SENS_DATA_11    0x46
+#define B0_EXT_SLV_SENS_DATA_12    0x47
+#define B0_EXT_SLV_SENS_DATA_13    0x48
+#define B0_EXT_SLV_SENS_DATA_14    0x49
+#define B0_EXT_SLV_SENS_DATA_15    0x4A
+#define B0_EXT_SLV_SENS_DATA_16    0x4B
+#define B0_EXT_SLV_SENS_DATA_17    0x4C
+#define B0_EXT_SLV_SENS_DATA_18    0x4D
+#define B0_EXT_SLV_SENS_DATA_19    0x4E
+#define B0_EXT_SLV_SENS_DATA_20    0x4F
+#define B0_EXT_SLV_SENS_DATA_21    0x50
+#define B0_EXT_SLV_SENS_DATA_22    0x51
+#define B0_EXT_SLV_SENS_DATA_23    0x52
+#define B0_FIFO_EN_1               0x66
+#define B0_FIFO_EN_2               0x67
+#define B0_FIFO_RST                0x68
+#define B0_FIFO_MODE               0x69
+#define B0_FIFO_COUNTH             0X70
+#define B0_FIFO_COUNTL             0X71
+#define B0_FIFO_R_W                0x72
+#define B0_DATA_RDY_STATUS         0x74
+#define B0_FIFO_CFG                0x76
+// USER BANK 1
+#define B1_SELF_TEST_X_GYRO        0x02
+#define B1_SELF_TEST_Y_GYRO        0x03
+#define B1_SELF_TEST_Z_GYRO        0x04
+#define B1_SELF_TEST_X_ACCEL       0x0E
+#define B1_SELF_TEST_Y_ACCEL       0x0F
+#define B1_SELF_TEST_Z_ACCEL       0x10
+#define B1_XA_OFFS_H               0x14
+#define B1_XA_OFFS_L               0x15
+#define B1_YA_OFFS_H               0x17
+#define B1_YA_OFFS_L               0x18
+#define B1_ZA_OFFS_H               0x1A
+#define B1_ZA_OFFS_L               0x1B
+#define B1_TIMEBASE_CORRECTION_PLL 0x28
+// USER BANK 2
+#define B2_GYRO_SMPLRT_DIV         0x00
+#define B2_GYRO_CONFIG_1           0x01
+#define B2_GYRO_CONFIG_2           0x02
+#define B2_XG_OFFS_USRH            0x03
+#define B2_XG_OFFS_USRL            0x04
+#define B2_YG_OFFS_USRH            0x05
+#define B2_YG_OFFS_USRL            0x06
+#define B2_ZG_OFFS_USRH            0x07
+#define B2_ZG_OFFS_USRL            0x08
+#define B2_ODR_ALIGN_EN            0x09
+#define B2_ACCEL_SMPLRT_DIV_1      0x10
+#define B2_ACCEL_SMPLRT_DIV_2      0x11
+#define B2_ACCEL_INTEL_CTRL        0x12
+#define B2_ACCEL_WOM_THR           0x13
+#define B2_ACCEL_CONFIG            0x14
+#define B2_ACCEL_CONFIG_2          0x15
+#define B2_FSYNC_CONFIG            0x52
+#define B2_TEMP_CONFIG             0x53
+#define B2_MOD_CTRL_USR            0X54
+// USER BANK 3
+#define B3_I2C_MST_ODR_CONFIG      0x00
+#define B3_I2C_MST_CTRL            0x01
+#define B3_I2C_MST_DELAY_CTRL      0x02
+#define B3_I2C_SLV0_ADDR           0x03
+#define B3_I2C_SLV0_REG            0x04
+#define B3_I2C_SLV0_CTRL           0x05
+#define B3_I2C_SLV0_DO             0x06
+#define B3_I2C_SLV1_ADDR           0x07
+#define B3_I2C_SLV1_REG            0x08
+#define B3_I2C_SLV1_CTRL           0x09
+#define B3_I2C_SLV1_DO             0x0A
+#define B3_I2C_SLV2_ADDR           0x0B
+#define B3_I2C_SLV2_REG            0x0C
+#define B3_I2C_SLV2_CTRL           0x0D
+#define B3_I2C_SLV2_DO             0x0E
+#define B3_I2C_SLV3_ADDR           0x0F
+#define B3_I2C_SLV3_REG            0x10
+#define B3_I2C_SLV3_CTRL           0x11
+#define B3_I2C_SLV3_DO             0x12
+#define B3_I2C_SLV4_ADDR           0x13
+#define B3_I2C_SLV4_REG            0x14
+#define B3_I2C_SLV4_CTRL           0x15
+#define B3_I2C_SLV4_DO             0x16
+#define B3_I2C_SLV4_DI             0x17
+/* AK09916 Registers */
+#define AK09916_ID                 0x09
+#define MAG_SLAVE_ADDR             0x0C
+#define MAG_WIA2                   0x01
+#define MAG_ST1                    0x10
+#define MAG_HXL                    0x11
+#define MAG_HXH                    0x12
+#define MAG_HYL                    0x13
+#define MAG_HYH                    0x14
+#define MAG_HZL                    0x15
+#define MAG_HZH                    0x16
+#define MAG_ST2                    0x18
+#define MAG_CNTL2                  0x31
+#define MAG_CNTL3                  0x32
+#define MAG_TS1                    0x33
+#define MAG_TS2                    0x34
 
-#define INV2REG_INT_STATUS_1         INV2REG(REG_BANK0, 0x1AU)
-#define INV2REG_INT_STATUS_2         INV2REG(REG_BANK0, 0x1BU)
-#define INV2REG_INT_STATUS_3         INV2REG(REG_BANK0, 0x1CU)
-#define INV2REG_DELAY_TIMEH          INV2REG(REG_BANK0, 0x28U)
-#define INV2REG_DELAY_TIMEL          INV2REG(REG_BANK0, 0x29U)
-#define INV2REG_ACCEL_XOUT_H         INV2REG(REG_BANK0, 0x2DU)
-#define INV2REG_ACCEL_XOUT_L         INV2REG(REG_BANK0, 0x2EU)
-#define INV2REG_ACCEL_YOUT_H         INV2REG(REG_BANK0, 0x2FU)
-#define INV2REG_ACCEL_YOUT_L         INV2REG(REG_BANK0, 0x30U)
-#define INV2REG_ACCEL_ZOUT_H         INV2REG(REG_BANK0, 0x31U)
-#define INV2REG_ACCEL_ZOUT_L         INV2REG(REG_BANK0, 0x32U)
-#define INV2REG_GYRO_XOUT_H          INV2REG(REG_BANK0, 0x33U)
-#define INV2REG_GYRO_XOUT_L          INV2REG(REG_BANK0, 0x34U)
-#define INV2REG_GYRO_YOUT_H          INV2REG(REG_BANK0, 0x35U)
-#define INV2REG_GYRO_YOUT_L          INV2REG(REG_BANK0, 0x36U)
-#define INV2REG_GYRO_ZOUT_H          INV2REG(REG_BANK0, 0x37U)
-#define INV2REG_GYRO_ZOUT_L          INV2REG(REG_BANK0, 0x38U)
-#define INV2REG_TEMP_OUT_H           INV2REG(REG_BANK0, 0x39U)
-#define INV2REG_TEMP_OUT_L           INV2REG(REG_BANK0, 0x3AU)
-#define INV2REG_EXT_SLV_SENS_DATA_00 INV2REG(REG_BANK0, 0x3BU)
-#define INV2REG_EXT_SLV_SENS_DATA_01 INV2REG(REG_BANK0, 0x3CU)
-#define INV2REG_EXT_SLV_SENS_DATA_02 INV2REG(REG_BANK0, 0x3DU)
-#define INV2REG_EXT_SLV_SENS_DATA_03 INV2REG(REG_BANK0, 0x3EU)
-#define INV2REG_EXT_SLV_SENS_DATA_04 INV2REG(REG_BANK0, 0x3FU)
-#define INV2REG_EXT_SLV_SENS_DATA_05 INV2REG(REG_BANK0, 0x40U)
-#define INV2REG_EXT_SLV_SENS_DATA_06 INV2REG(REG_BANK0, 0x41U)
-#define INV2REG_EXT_SLV_SENS_DATA_07 INV2REG(REG_BANK0, 0x42U)
-#define INV2REG_EXT_SLV_SENS_DATA_08 INV2REG(REG_BANK0, 0x43U)
-#define INV2REG_EXT_SLV_SENS_DATA_09 INV2REG(REG_BANK0, 0x44U)
-#define INV2REG_EXT_SLV_SENS_DATA_10 INV2REG(REG_BANK0, 0x45U)
-#define INV2REG_EXT_SLV_SENS_DATA_11 INV2REG(REG_BANK0, 0x46U)
-#define INV2REG_EXT_SLV_SENS_DATA_12 INV2REG(REG_BANK0, 0x47U)
-#define INV2REG_EXT_SLV_SENS_DATA_13 INV2REG(REG_BANK0, 0x48U)
-#define INV2REG_EXT_SLV_SENS_DATA_14 INV2REG(REG_BANK0, 0x49U)
-#define INV2REG_EXT_SLV_SENS_DATA_15 INV2REG(REG_BANK0, 0x4AU)
-#define INV2REG_EXT_SLV_SENS_DATA_16 INV2REG(REG_BANK0, 0x4BU)
-#define INV2REG_EXT_SLV_SENS_DATA_17 INV2REG(REG_BANK0, 0x4CU)
-#define INV2REG_EXT_SLV_SENS_DATA_18 INV2REG(REG_BANK0, 0x4DU)
-#define INV2REG_EXT_SLV_SENS_DATA_19 INV2REG(REG_BANK0, 0x4EU)
-#define INV2REG_EXT_SLV_SENS_DATA_20 INV2REG(REG_BANK0, 0x4FU)
-#define INV2REG_EXT_SLV_SENS_DATA_21 INV2REG(REG_BANK0, 0x50U)
-#define INV2REG_EXT_SLV_SENS_DATA_22 INV2REG(REG_BANK0, 0x51U)
-#define INV2REG_EXT_SLV_SENS_DATA_23 INV2REG(REG_BANK0, 0x52U)
-#define INV2REG_FIFO_EN_1            INV2REG(REG_BANK0, 0x66U)
-#define BIT_SLV3_FIFO_EN             0x08
-#define BIT_SLV2_FIFO_EN             0x04
-#define BIT_SLV1_FIFO_EN             0x02
-#define BIT_SLV0_FIFI_EN0            0x01
-#define INV2REG_FIFO_EN_2            INV2REG(REG_BANK0, 0x67U)
-#define BIT_ACCEL_FIFO_EN            0x10
-#define BIT_ZG_FIFO_EN               0x08
-#define BIT_YG_FIFO_EN               0x04
-#define BIT_XG_FIFO_EN               0x02
-#define BIT_TEMP_FIFO_EN             0x01
-#define INV2REG_FIFO_RST             INV2REG(REG_BANK0, 0x68U)
-#define INV2REG_FIFO_MODE            INV2REG(REG_BANK0, 0x69U)
-#define INV2REG_FIFO_COUNTH          INV2REG(REG_BANK0, 0x70U)
-#define INV2REG_FIFO_COUNTL          INV2REG(REG_BANK0, 0x71U)
-#define INV2REG_FIFO_R_W             INV2REG(REG_BANK0, 0x72U)
-#define INV2REG_DATA_RDY_STATUS      INV2REG(REG_BANK0, 0x74U)
-#define INV2REG_FIFO_CFG             INV2REG(REG_BANK0, 0x76U)
+#define AK09916_SCALE_TO_uT        0.15f
+#define uT_to_GAUSS                0.01f
+#define AK09916_SCALE_TO_GAUSS     (AK09916_SCALE_TO_uT * uT_to_GAUSS)
 
-#define INV2REG_SELF_TEST_X_GYRO   INV2REG(REG_BANK1, 0x02U)
-#define INV2REG_SELF_TEST_Y_GYRO   INV2REG(REG_BANK1, 0x03U)
-#define INV2REG_SELF_TEST_Z_GYRO   INV2REG(REG_BANK1, 0x04U)
-#define INV2REG_SELF_TEST_X_ACCEL  INV2REG(REG_BANK1, 0x0EU)
-#define INV2REG_SELF_TEST_Y_ACCEL  INV2REG(REG_BANK1, 0x0FU)
-#define INV2REG_SELF_TEST_Z_ACCEL  INV2REG(REG_BANK1, 0x10U)
-#define INV2REG_XA_OFFS_H          INV2REG(REG_BANK1, 0x14U)
-#define INV2REG_XA_OFFS_L          INV2REG(REG_BANK1, 0x15U)
-#define INV2REG_YA_OFFS_H          INV2REG(REG_BANK1, 0x17U)
-#define INV2REG_YA_OFFS_L          INV2REG(REG_BANK1, 0x18U)
-#define INV2REG_ZA_OFFS_H          INV2REG(REG_BANK1, 0x1AU)
-#define INV2REG_ZA_OFFS_L          INV2REG(REG_BANK1, 0x1BU)
-#define INV2REG_TIMEBASE_CORRECTIO INV2REG(REG_BANK1, 0x28U)
+#define M_PI_F                     3.1415926f
+#define M_ONE_G                    9.80665f
 
-#define INV2REG_GYRO_SMPLRT_DIV    INV2REG(REG_BANK2, 0x00U)
-#define INV2REG_GYRO_CONFIG_1      INV2REG(REG_BANK2, 0x01U)
-#define BIT_GYRO_NODLPF_9KHZ       0x00
-#define BIT_GYRO_DLPF_ENABLE       0x01
-#define GYRO_DLPF_CFG_229HZ        0x00
-#define GYRO_DLPF_CFG_188HZ        0x01
-#define GYRO_DLPF_CFG_154HZ        0x02
-#define GYRO_DLPF_CFG_73HZ         0x03
-#define GYRO_DLPF_CFG_35HZ         0x04
-#define GYRO_DLPF_CFG_17HZ         0x05
-#define GYRO_DLPF_CFG_9HZ          0x06
-#define GYRO_DLPF_CFG_376HZ        0x07
-#define GYRO_DLPF_CFG_SHIFT        0x03
-#define BITS_GYRO_FS_250DPS        0x00
-#define BITS_GYRO_FS_500DPS        0x02
-#define BITS_GYRO_FS_1000DPS       0x04
-#define BITS_GYRO_FS_2000DPS       0x06
-#define BITS_GYRO_FS_2000DPS_20649 0x04
-#define BITS_GYRO_FS_MASK          0x06 // only bits 1 and 2 are used for gyro full scale so use this to mask off other bits
-#define INV2REG_GYRO_CONFIG_2      INV2REG(REG_BANK2, 0x02U)
-#define INV2REG_XG_OFFS_USRH       INV2REG(REG_BANK2, 0x03U)
-#define INV2REG_XG_OFFS_USRL       INV2REG(REG_BANK2, 0x04U)
-#define INV2REG_YG_OFFS_USRH       INV2REG(REG_BANK2, 0x05U)
-#define INV2REG_YG_OFFS_USRL       INV2REG(REG_BANK2, 0x06U)
-#define INV2REG_ZG_OFFS_USRH       INV2REG(REG_BANK2, 0x07U)
-#define INV2REG_ZG_OFFS_USRL       INV2REG(REG_BANK2, 0x08U)
-#define INV2REG_ODR_ALIGN_EN       INV2REG(REG_BANK2, 0x09U)
-#define INV2REG_ACCEL_SMPLRT_DIV_1 INV2REG(REG_BANK2, 0x10U)
-#define INV2REG_ACCEL_SMPLRT_DIV_2 INV2REG(REG_BANK2, 0x11U)
-#define INV2REG_ACCEL_INTEL_CTRL   INV2REG(REG_BANK2, 0x12U)
-#define INV2REG_ACCEL_WOM_THR      INV2REG(REG_BANK2, 0x13U)
-#define INV2REG_ACCEL_CONFIG       INV2REG(REG_BANK2, 0x14U)
-#define BIT_ACCEL_NODLPF_4_5KHZ    0x00
-#define BIT_ACCEL_DLPF_ENABLE      0x01
-#define ACCEL_DLPF_CFG_265HZ       0x00
-#define ACCEL_DLPF_CFG_136HZ       0x02
-#define ACCEL_DLPF_CFG_68HZ        0x03
-#define ACCEL_DLPF_CFG_34HZ        0x04
-#define ACCEL_DLPF_CFG_17HZ        0x05
-#define ACCEL_DLPF_CFG_8HZ         0x06
-#define ACCEL_DLPF_CFG_499HZ       0x07
-#define ACCEL_DLPF_CFG_SHIFT       0x03
-#define BITS_ACCEL_FS_2G           0x00
-#define BITS_ACCEL_FS_4G           0x01
-#define BITS_ACCEL_FS_8G           0x02
-#define BITS_ACCEL_FS_16G          0x03
-#define BITS_ACCEL_FS_30G_20649    0x06
-#define BITS_ACCEL_FS_MASK         0x06 // only bits 1 and 2 are used for gyro full scale so use this to mask off other bits
-#define INV2REG_FSYNC_CONFIG       INV2REG(REG_BANK2, 0x52U)
-#define FSYNC_CONFIG_EXT_SYNC_TEMP 0x01
-#define FSYNC_CONFIG_EXT_SYNC_GX   0x02
-#define FSYNC_CONFIG_EXT_SYNC_GY   0x03
-#define FSYNC_CONFIG_EXT_SYNC_GZ   0x04
-#define FSYNC_CONFIG_EXT_SYNC_AX   0x05
-#define FSYNC_CONFIG_EXT_SYNC_AY   0x06
-#define FSYNC_CONFIG_EXT_SYNC_AZ   0x07
-#define INV2REG_TEMP_CONFIG        INV2REG(REG_BANK2, 0x53U)
-#define INV2REG_MOD_CTRL_USR       INV2REG(REG_BANK2, 0x54U)
-
-#define INV2REG_I2C_MST_ODR_CONFIG INV2REG(REG_BANK3, 0x00U)
-#define INV2REG_I2C_MST_CTRL       INV2REG(REG_BANK3, 0x01U)
-#define BIT_I2C_MST_P_NSR          0x10
-#define BIT_I2C_MST_CLK_400KHZ     0x0D
-#define INV2REG_I2C_MST_DELAY_CTRL INV2REG(REG_BANK3, 0x02U)
-#define BIT_I2C_SLV0_DLY_EN        0x01
-#define BIT_I2C_SLV1_DLY_EN        0x02
-#define BIT_I2C_SLV2_DLY_EN        0x04
-#define BIT_I2C_SLV3_DLY_EN        0x08
-#define INV2REG_I2C_SLV0_ADDR      INV2REG(REG_BANK3, 0x03U)
-#define INV2REG_I2C_SLV0_REG       INV2REG(REG_BANK3, 0x04U)
-#define INV2REG_I2C_SLV0_CTRL      INV2REG(REG_BANK3, 0x05U)
-#define INV2REG_I2C_SLV0_DO        INV2REG(REG_BANK3, 0x06U)
-#define INV2REG_I2C_SLV1_ADDR      INV2REG(REG_BANK3, 0x07U)
-#define INV2REG_I2C_SLV1_REG       INV2REG(REG_BANK3, 0x08U)
-#define INV2REG_I2C_SLV1_CTRL      INV2REG(REG_BANK3, 0x09U)
-#define INV2REG_I2C_SLV1_DO        INV2REG(REG_BANK3, 0x0AU)
-#define INV2REG_I2C_SLV2_ADDR      INV2REG(REG_BANK3, 0x0BU)
-#define INV2REG_I2C_SLV2_REG       INV2REG(REG_BANK3, 0x0CU)
-#define INV2REG_I2C_SLV2_CTRL      INV2REG(REG_BANK3, 0x0DU)
-#define INV2REG_I2C_SLV2_DO        INV2REG(REG_BANK3, 0x0EU)
-#define INV2REG_I2C_SLV3_ADDR      INV2REG(REG_BANK3, 0x0FU)
-#define INV2REG_I2C_SLV3_REG       INV2REG(REG_BANK3, 0x10U)
-#define INV2REG_I2C_SLV3_CTRL      INV2REG(REG_BANK3, 0x11U)
-#define INV2REG_I2C_SLV3_DO        INV2REG(REG_BANK3, 0x12U)
-#define INV2REG_I2C_SLV4_ADDR      INV2REG(REG_BANK3, 0x13U)
-#define INV2REG_I2C_SLV4_REG       INV2REG(REG_BANK3, 0x14U)
-#define INV2REG_I2C_SLV4_CTRL      INV2REG(REG_BANK3, 0x15U)
-#define BIT_I2C_SLV4_EN            (1 << 7)
-#define INV2REG_I2C_SLV4_DO        INV2REG(REG_BANK3, 0x16U)
-#define INV2REG_I2C_SLV4_DI        INV2REG(REG_BANK3, 0x17U)
-
-#define INV2REG_BANK_SEL 0x7F
+#define DRV_DBG(...)               printf(__VA_ARGS__)
 
 //////////////////////////////////////////////
-//                  AK09946
-//////////////////////////////////////////////
-#define REG_COMPANY_ID 0x00
-#define REG_DEVICE_ID  0x01
-#define REG_ST1        0x10
-#define REG_HXL        0x11
-#define REG_HXH        0x12
-#define REG_HYL        0x13
-#define REG_HYH        0x14
-#define REG_HZL        0x15
-#define REG_HZH        0x16
-#define REG_TMPS       0x17
-#define REG_ST2        0x18
-#define REG_CNTL1      0x30
-#define REG_CNTL2      0x31
-#define REG_CNTL3      0x32
-
-#define REG_ICM_WHOAMI      0x00
-#define REG_ICM_PWR_MGMT_1  0x06
-#define REG_ICM_INT_PIN_CFG 0x0f
-
-#define ICM_WHOAMI_VAL    0xEA
-#define AK09916_Device_ID 0x09
-
-#define AK09916_I2C_ADDR 0x0C
-
-#define AK09916_SCALE_TO_uT    0.15f
-#define uT_to_GAUSS            0.01f
-#define AK09916_SCALE_TO_GAUSS (AK09916_SCALE_TO_uT * uT_to_GAUSS)
-
 //////////////////////////////////////////////
 
-#define ICM20948_ONE_G 9.80665f
-#define M_PI_F         3.1415926f
+static rt_thread_t thread;
+static struct rt_event event;
+static struct rt_timer timer;
+#define EVENT_AK09916_UPDATE (1 << 0)
 
-//////////////////////////////////////////////
+static rt_device_t spi_dev;
 
 static float gyro_range_scale;
 static float accel_range_scale;
-static rt_device_t spi_dev;
+
+static userbank current_bank = 0;
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 RT_WEAK void icm20948_rotate_to_frd(float* data)
 {
@@ -292,419 +243,429 @@ RT_WEAK void ak09916_rotate_to_frd(float* data)
 {
 }
 
-static rt_err_t _register_read_multi(uint16_t reg, uint8_t* buffer, uint8_t len)
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+static void select_user_bank(userbank ub)
 {
-    return spi_read_bank_multi_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), buffer, len);
+    if (ub == current_bank)
+        return;
+
+    current_bank = ub;
+
+    spi_write_reg8(spi_dev, REG_BANK_SEL, ub);
 }
 
-/**
- * @brief 
- * 
- * @param reg 
- * @return uint8_t 
- */
-static rt_err_t _register_read(uint16_t reg, uint8_t* data)
+static uint8_t read_single_icm20948_reg(userbank ub, uint8_t reg)
 {
-    spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), data);
-    return RT_EOK;
+    uint8_t reg_val;
+    select_user_bank(ub);
+
+    spi_read_reg8(spi_dev, reg, &reg_val);
+
+    return reg_val;
 }
 
-/**
- * @brief 
- * 
- * @param reg 
- * @param val 
- * @return rt_err_t 
- */
-static rt_err_t _register_write(uint16_t reg, uint8_t val)
+static void write_single_icm20948_reg(userbank ub, uint8_t reg, uint8_t val)
 {
-    uint8_t res = 0;
+    select_user_bank(ub);
+    spi_write_reg8(spi_dev, reg, val);
+}
 
-    spi_write_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), val);
+static void read_multiple_icm20948_reg(userbank ub, uint8_t reg, uint8_t* buffer, uint8_t len)
+{
+    select_user_bank(ub);
+    spi_read_multi_reg8(spi_dev, reg, buffer, len);
+}
 
-    spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(reg) << 4, GET_REG(reg), &res);
+static uint8_t read_single_ak09916_reg(uint8_t reg)
+{
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
-    if (res != val) {
-        // RT_ASSERT(RT_EOK);
+    return read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
+}
 
+static void write_single_ak09916_reg(uint8_t reg, uint8_t val)
+{
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x00 | MAG_SLAVE_ADDR);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_DO, val);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
+}
+
+static void read_multiple_ak09916_reg(uint8_t reg, uint8_t* buffer, uint8_t len)
+{
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, reg);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | len);
+
+    read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, buffer, len);
+}
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+/* Sub Functions */
+static rt_err_t icm20948_who_am_i()
+{
+    uint8_t icm20948_id = read_single_icm20948_reg(ub_0, B0_WHO_AM_I);
+
+    if (icm20948_id == ICM20948_ID) {
+        DRV_DBG("ICM20948 right device id:0x%X\n", icm20948_id);
+        return RT_EOK;
+
+    } else {
+        DRV_DBG("ICM20948 wrong device id:0x%X\n", icm20948_id);
         return RT_ERROR;
     }
+}
+
+static rt_err_t ak09916_who_am_i()
+{
+    uint8_t ak09916_id;
+
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_WIA2);
+    write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
+
+    sys_msleep(2);
+
+    ak09916_id = read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
+
+    if (ak09916_id == AK09916_ID) {
+        DRV_DBG("AK09916 right device id:0x%X\n", ak09916_id);
+        return RT_EOK;
+    } else {
+        DRV_DBG("AK09916 wrong device id:0x%X\n", ak09916_id);
+        return RT_ERROR;
+    }
+}
+
+static void icm20948_device_reset()
+{
+    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, 0x80 | 0x41);
+    sys_msleep(100);
+}
+
+static void ak09916_soft_reset()
+{
+    write_single_ak09916_reg(MAG_CNTL3, 0x01);
+    sys_msleep(100);
+}
+
+static void icm20948_wakeup()
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_PWR_MGMT_1);
+    new_val &= 0xBF;
+
+    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, new_val);
+    sys_msleep(100);
+}
+
+static void icm20948_sleep()
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_PWR_MGMT_1);
+    new_val |= 0x40;
+
+    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, new_val);
+    sys_msleep(100);
+}
+
+static void icm20948_spi_slave_enable()
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_USER_CTRL);
+    new_val |= 0x10;
+
+    write_single_icm20948_reg(ub_0, B0_USER_CTRL, new_val);
+}
+
+static void icm20948_i2c_master_reset()
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_USER_CTRL);
+    new_val |= 0x02;
+
+    write_single_icm20948_reg(ub_0, B0_USER_CTRL, new_val);
+}
+
+static void icm20948_i2c_master_enable()
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_USER_CTRL);
+    new_val |= 0x20;
+
+    write_single_icm20948_reg(ub_0, B0_USER_CTRL, new_val);
+    sys_msleep(100);
+}
+
+static void icm20948_i2c_master_clk_frq(uint8_t config)
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_3, B3_I2C_MST_CTRL);
+    new_val |= config;
+
+    write_single_icm20948_reg(ub_3, B3_I2C_MST_CTRL, new_val);
+}
+
+static void icm20948_clock_source(uint8_t source)
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_0, B0_PWR_MGMT_1);
+    new_val |= source;
+
+    write_single_icm20948_reg(ub_0, B0_PWR_MGMT_1, new_val);
+}
+
+static void icm20948_odr_align_enable()
+{
+    write_single_icm20948_reg(ub_2, B2_ODR_ALIGN_EN, 0x01);
+}
+
+static void icm20948_gyro_low_pass_filter(uint8_t config)
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1);
+    new_val |= config << 3;
+
+    write_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
+}
+
+static void icm20948_accel_low_pass_filter(uint8_t config)
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG);
+    new_val |= config << 3;
+
+    write_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
+}
+
+static void icm20948_gyro_sample_rate_divider(uint8_t divider)
+{
+    write_single_icm20948_reg(ub_2, B2_GYRO_SMPLRT_DIV, divider);
+}
+
+static void icm20948_accel_sample_rate_divider(uint16_t divider)
+{
+    uint8_t divider_1 = (uint8_t)(divider >> 8);
+    uint8_t divider_2 = (uint8_t)(0x0F & divider);
+
+    write_single_icm20948_reg(ub_2, B2_ACCEL_SMPLRT_DIV_1, divider_1);
+    write_single_icm20948_reg(ub_2, B2_ACCEL_SMPLRT_DIV_2, divider_2);
+}
+
+static void ak09916_operation_mode_setting(operation_mode mode)
+{
+    write_single_ak09916_reg(MAG_CNTL2, mode);
+    sys_msleep(100);
+}
+
+static void icm20948_gyro_full_scale_select(gyro_full_scale full_scale)
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1);
+    float   lsb_per_dps;
+
+    switch (full_scale) {
+    case _250dps:
+        new_val |= 0x00;
+        lsb_per_dps = 131.0;
+        break;
+    case _500dps:
+        new_val |= 0x02;
+        lsb_per_dps = 65.5;
+        break;
+    case _1000dps:
+        new_val |= 0x04;
+        lsb_per_dps = 32.8;
+        break;
+    case _2000dps:
+        new_val |= 0x06;
+        lsb_per_dps = 16.4;
+        break;
+    }
+
+    gyro_range_scale = M_PI_F / 180.0f / lsb_per_dps;
+
+    write_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1, new_val);
+}
+
+static void icm20948_accel_full_scale_select(accel_full_scale full_scale)
+{
+    uint8_t new_val = read_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG);
+    float   lsb_per_g;
+
+    switch (full_scale) {
+    case _2g:
+        new_val |= 0x00;
+        lsb_per_g = 16384;
+        break;
+    case _4g:
+        new_val |= 0x02;
+        lsb_per_g = 8192;
+        break;
+    case _8g:
+        new_val |= 0x04;
+        lsb_per_g = 4096;
+        break;
+    case _16g:
+        new_val |= 0x06;
+        lsb_per_g = 2048;
+        break;
+    }
+
+    accel_range_scale = (M_ONE_G / lsb_per_g);
+
+    write_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG, new_val);
+}
+
+static rt_err_t icm20948_gyro_read(int16_t gyro[3])
+{
+    uint8_t raw[6];
+
+    read_multiple_icm20948_reg(ub_0, B0_GYRO_XOUT_H, raw, 6);
+
+    gyro[0] = (int16_t)(raw[0] << 8 | raw[1]);
+    gyro[1] = (int16_t)(raw[2] << 8 | raw[3]);
+    gyro[2] = (int16_t)(raw[4] << 8 | raw[5]);
+
     return RT_EOK;
 }
 
-/**
- * @brief 
- * 
- * @param val 
- */
-static rt_err_t _register_write_aux(uint8_t reg, uint8_t data)
+static rt_err_t icm20948_accel_read(int16_t acc[3])
 {
-    /* Ensure the slave read/write is disabled before changing the registers */
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
+    uint8_t raw[6];
 
-    _register_write(INV2REG_I2C_SLV0_DO, data);
+    read_multiple_icm20948_reg(ub_0, B0_ACCEL_XOUT_H, raw, 6);
 
-    _register_write(INV2REG_I2C_SLV0_ADDR, AK09916_I2C_ADDR);
-    _register_write(INV2REG_I2C_SLV0_REG, reg);
-    _register_write(INV2REG_I2C_SLV0_DO, data); //
+    acc[0] = (int16_t)(raw[0] << 8 | raw[1]);
+    acc[1] = (int16_t)(raw[2] << 8 | raw[3]);
+    acc[2] = (int16_t)(raw[4] << 8 | raw[5]);
 
     return RT_EOK;
 }
 
-/**
- * @brief 
- * 
- * @param reg 
- * @param data 
- * @return rt_err_t 
- */
-static rt_err_t _register_read_aux(uint8_t reg, uint8_t* data)
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+static void probe_ak09916(int16_t* probe_mag)
 {
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
+    static uint8_t  temp[6];
+    static uint8_t  step = 0;
+    static uint64_t t_start;
+    static uint8_t  drdy;
 
-    _register_write(INV2REG_I2C_SLV0_ADDR, AK09916_I2C_ADDR | 0x80);
-    _register_write(INV2REG_I2C_SLV0_REG, reg);
-    _register_write(INV2REG_I2C_SLV0_DO, 0xff); //read
+    switch (step) {
+    case 0:
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_ST1);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
-    systime_mdelay(10);
+        t_start = systime_now_us();
+        step    = 1;
+        break;
 
-    _register_read(INV2REG_EXT_SLV_SENS_DATA_00, data);
+    case 1:
+        if ((systime_now_us() - t_start) > 1000) {
+            drdy = read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
+            if (drdy & 0x01) {
+                t_start = systime_now_us();
+                step    = 2;
+            }
+        }
+        break;
 
+    case 2:
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_HXL);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | 6);
+        t_start = systime_now_us();
+        step    = 3;
+        break;
+
+    case 3:
+        if ((systime_now_us() - t_start) > 1000) {
+            read_multiple_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00, temp, 6);
+            probe_mag[0] = (int16_t)(temp[1] << 8 | temp[0]);
+            probe_mag[1] = (int16_t)(temp[3] << 8 | temp[2]);
+            probe_mag[2] = (int16_t)(temp[5] << 8 | temp[4]);
+
+            step = 4;
+        }
+        break;
+
+    case 4:
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_ADDR, 0x80 | MAG_SLAVE_ADDR);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_ST2);
+        write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
+
+        t_start = systime_now_us();
+        step    = 5;
+
+        break;
+
+    case 5:
+        if ((systime_now_us() - t_start) > 1000) {
+            read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
+            step = 0;
+        }
+        break;
+
+    default:
+        step = 0;
+        break;
+    }
+}
+
+static void timer_update(void* parameter)
+{
+    rt_event_send(&event, EVENT_AK09916_UPDATE);
+}
+
+static int16_t mag_raw[3];
+static void thread_entry(void* args)
+{
+    rt_err_t res;
+    rt_uint32_t recv_set = 0;
+    rt_uint32_t wait_set = EVENT_AK09916_UPDATE;
+
+    while (1) {
+        /* wait event occur */
+        res = rt_event_recv(&event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &recv_set);
+
+        if (res == RT_EOK && (recv_set & EVENT_AK09916_UPDATE)) {
+            probe_ak09916(mag_raw);
+        }
+    }
+}
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
+{
     return RT_EOK;
 }
 
-__PACKED__(
-    struct sample_regs {
-        uint8_t st1;
-        int16_t val[3];
-        uint8_t tmps;
-        uint8_t st2;
-    });
-
-/**
- * @brief 
- * 
- * @param reg 
- * @param data 
- * @return rt_err_t 
- */
-static rt_err_t _register_read_multi_aux(uint8_t reg, uint8_t* data, uint8_t size)
+static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cfg)
 {
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x80 | size);
-
-    _register_write(INV2REG_I2C_SLV0_ADDR, AK09916_I2C_ADDR | 0x80);
-    _register_write(INV2REG_I2C_SLV0_REG, reg);
-    _register_write(INV2REG_I2C_SLV0_DO, 0xff); // read
-
-    systime_mdelay(5);
-
-    _register_read_multi(INV2REG_EXT_SLV_SENS_DATA_00, data, size);
-
     return RT_EOK;
 }
 
-static rt_err_t mag_raw_measure(int16_t mag[3])
+static rt_err_t gyro_control(gyro_dev_t gyro, int cmd, void* arg)
 {
-    struct sample_regs regs = { 0 };
-
-    RT_TRY(_register_read_multi_aux(REG_ST1, (uint8_t*)&regs, sizeof(regs)));
-
-    /* swap the data */
-    mag[0] = regs.val[0];
-    mag[1] = regs.val[1];
-    mag[2] = regs.val[2];
-
     return RT_EOK;
 }
 
-const float _range_scale = AK09916_SCALE_TO_GAUSS;
-
-static rt_err_t mag_measure(float mag[3])
+static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 {
-    int16_t raw[3];
+    return RT_EOK;
+}
 
-    RT_TRY(mag_raw_measure(raw));
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+static rt_err_t mag_read_gauss(float mag[3])
+{
+    // static int16_t raw[3];
 
-    mag[0] = _range_scale * raw[0];
-    mag[1] = _range_scale * raw[1];
-    mag[2] = _range_scale * raw[2];
+    // ak09916_mag_read(raw);
+
+    mag[0] = AK09916_SCALE_TO_GAUSS * mag_raw[0];
+    mag[1] = AK09916_SCALE_TO_GAUSS * mag_raw[1];
+    mag[2] = AK09916_SCALE_TO_GAUSS * mag_raw[2];
 
     ak09916_rotate_to_frd(mag);
-
-    return RT_EOK;
-}
-
-static rt_size_t ak09916_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t size)
-{
-    if (data == RT_NULL) {
-        return 0;
-    }
-
-    if (mag_measure(((float*)data)) != RT_EOK) {
-        return 0;
-    }
-
-    return size;
-}
-
-static rt_err_t gyro_set_dlpf_filter(uint32_t frequency_hz)
-{
-    uint8_t reg_val;
-
-    _register_read(INV2REG_GYRO_CONFIG_1, &reg_val);
-
-    reg_val &= ~((7 << 3) | 1);
-
-    if (frequency_hz <= 9) {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_9HZ << 3));
-    } else if (frequency_hz < 17) {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_17HZ << 3));
-    } else if (frequency_hz < 35) {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_35HZ << 3));
-    } else if (frequency_hz < 73) {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_73HZ << 3));
-    } else if (frequency_hz < 154) {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_154HZ << 3));
-    } else if (frequency_hz < 188) {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_188HZ << 3));
-    } else {
-        reg_val |= (BIT_GYRO_DLPF_ENABLE | (GYRO_DLPF_CFG_229HZ << 3));
-    }
-
-    RT_TRY(_register_write(INV2REG_GYRO_CONFIG_1, reg_val));
-
-    return RT_EOK;
-}
-
-static rt_err_t gyro_set_range(uint32_t max_dps)
-{
-    uint8_t reg_val;
-    float lsb_per_dps;
-
-    _register_read(INV2REG_GYRO_CONFIG_1, &reg_val);
-
-    reg_val &= ~(2 << 1);
-
-    if (max_dps == 0) {
-        max_dps = 2000;
-    }
-
-    if (max_dps <= 250) {
-        reg_val |= BITS_GYRO_FS_250DPS << 1;
-        lsb_per_dps = 131;
-    } else if (max_dps <= 500) {
-        reg_val |= BITS_GYRO_FS_500DPS << 1;
-        lsb_per_dps = 65.5;
-    } else if (max_dps <= 1000) {
-        reg_val |= BITS_GYRO_FS_1000DPS << 1;
-        lsb_per_dps = 32.8;
-    } else if (max_dps <= 2000) {
-        reg_val |= BITS_GYRO_FS_2000DPS << 1;
-        lsb_per_dps = 16.4;
-    } else {
-        return RT_EINVAL;
-    }
-
-    RT_TRY(_register_write(INV2REG_GYRO_CONFIG_1, reg_val));
-
-    gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
-
-    return RT_EOK;
-}
-
-static rt_err_t accel_set_dlpf_filter(uint32_t frequency_hz)
-{
-    uint8_t reg_val;
-
-    _register_read(INV2REG_ACCEL_CONFIG, &reg_val);
-
-    reg_val &= ~((7 << 3) | 1);
-
-    if (frequency_hz <= 8) {
-        reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_8HZ << 3));
-    } else if (frequency_hz <= 17) {
-        reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_17HZ << 3));
-    } else if (frequency_hz <= 34) {
-        reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_34HZ << 3));
-    } else if (frequency_hz <= 68) {
-        reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_68HZ << 3));
-    } else if (frequency_hz <= 136) {
-        reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_136HZ << 3));
-    } else {
-        reg_val |= (BIT_ACCEL_DLPF_ENABLE | (ACCEL_DLPF_CFG_265HZ << 3));
-    }
-
-    RT_TRY(_register_write(INV2REG_ACCEL_CONFIG, reg_val));
-
-    return RT_EOK;
-}
-
-static rt_err_t accel_set_range(uint32_t max_g)
-{
-    uint8_t reg_val;
-    float lsb_per_g;
-
-    _register_read(INV2REG_ACCEL_CONFIG, &reg_val);
-    reg_val &= ~(2 << 1);
-
-    if (max_g == 0) {
-        max_g = 16;
-    }
-
-    if (max_g <= 2) {
-        reg_val |= BITS_ACCEL_FS_2G << 1;
-        lsb_per_g = 16384;
-    } else if (max_g <= 4) {
-        reg_val |= BITS_ACCEL_FS_4G << 1;
-        lsb_per_g = 8192;
-    } else if (max_g <= 8) {
-        reg_val |= BITS_ACCEL_FS_8G << 1;
-        lsb_per_g = 4096;
-    } else if (max_g <= 16) {
-        reg_val |= BITS_ACCEL_FS_16G << 1;
-        lsb_per_g = 2048;
-    } else {
-        return RT_EINVAL;
-    }
-
-    RT_TRY(_register_write(INV2REG_ACCEL_CONFIG, reg_val));
-
-    accel_range_scale = (ICM20948_ONE_G / lsb_per_g);
-
-    return RT_EOK;
-}
-
-/*
- * Return true if the Invensense has new data available for reading.
- *
- * We use the data ready pin if it is available.  Otherwise, read the
- * status register.
- */
-static bool _data_ready()
-{
-    uint8_t status;
-    _register_read(INV2REG_INT_STATUS_1, &status);
-    return status != 0;
-}
-
-static rt_err_t lowlevel_init(void)
-{
-    uint8_t chip_id;
-    uint8_t last_stat_user_ctrl;
-
-    /* open spi device */
-    RT_TRY(rt_device_open(spi_dev, RT_DEVICE_OFLAG_RDWR));
-
-    RT_TRY(spi_read_bank_reg8(spi_dev, INV2REG_BANK_SEL, GET_BANK(INV2REG_WHO_AM_I), GET_REG(INV2REG_WHO_AM_I), &chip_id));
-    if (chip_id != WHO_AM_I) {
-        DRV_DBG("ICM20948 unmatched chip id:0x%x\n", chip_id);
-        return FMT_ERROR;
-    }
-
-    _register_read(INV2REG_USER_CTRL, &last_stat_user_ctrl);
-
-    /* Chip reset */
-    uint8_t tries;
-    for (tries = 0; tries < 5; tries++) {
-
-        /* First disable the master I2C to avoid hanging the slaves on the
-         * aulixiliar I2C bus - it will be enabled again if the AuxiliaryBus
-         * is used */
-        if (last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN) {
-            last_stat_user_ctrl &= ~BIT_USER_CTRL_I2C_MST_EN;
-            RT_TRY(_register_write(INV2REG_USER_CTRL, last_stat_user_ctrl));
-
-            systime_udelay(1000);
-        }
-
-        /* reset device */
-        _register_write(INV2REG_PWR_MGMT_1, BIT_PWR_MGMT_1_DEVICE_RESET);
-        systime_udelay(5000);
-
-        /* Disable I2C bus if SPI selected (Recommended in Datasheet to be
-         * done just after the device is reset) */
-        last_stat_user_ctrl |= BIT_USER_CTRL_I2C_IF_DIS;
-        _register_write(INV2REG_USER_CTRL, last_stat_user_ctrl);
-
-        // Wake up device and select Auto clock. Note that the
-        // Invensense starts up in sleep mode, and it can take some time
-        // for it to come out of sleep
-        _register_write(INV2REG_PWR_MGMT_1, BIT_PWR_MGMT_1_CLK_AUTO);
-        systime_udelay(5000);
-
-        // check it has woken up
-        uint8_t ret;
-        _register_read(INV2REG_PWR_MGMT_1, &ret);
-        if (ret == BIT_PWR_MGMT_1_CLK_AUTO) {
-            break;
-        }
-
-        systime_udelay(5000);
-        if (_data_ready()) {
-            break;
-        }
-    }
-    if (tries == 5) {
-        DRV_DBG("Failed to boot Invensense 5 times\r\n");
-        return RT_ERROR;
-    }
-
-    accel_set_range(16);
-    gyro_set_range(2000);
-    gyro_set_dlpf_filter(250);
-    accel_set_dlpf_filter(250);
-    DRV_DBG("boot Invensense %d times\r\n", tries);
-
-    //////////////////////////////////////////////////////////////////////////
-    //                          aux ak09966
-    //////////////////////////////////////////////////////////////////////////
-
-    /* Enable the I2C master to slaves on the auxiliary I2C bus*/
-    if (!(last_stat_user_ctrl & BIT_USER_CTRL_I2C_MST_EN)) {
-        last_stat_user_ctrl |= BIT_USER_CTRL_I2C_MST_EN;
-        _register_write(INV2REG_USER_CTRL, last_stat_user_ctrl);
-    }
-
-    // _register_write(INV2REG_INT_PIN_CFG, 0x30); // INT Pin / Bypass Enable Configuration
-
-    /* stop condition between reads; clock at 400kHz */
-    _register_write(INV2REG_I2C_MST_CTRL, BIT_I2C_MST_P_NSR | BIT_I2C_MST_CLK_400KHZ);
-
-    /* I2C_SLV0 _DLY_ enable */
-    _register_write(INV2REG_I2C_MST_DELAY_CTRL, BIT_I2C_SLV0_DLY_EN);
-
-    /*  enable IIC	and EXT_SENS_DATA==1 Byte */
-    _register_write(INV2REG_I2C_SLV0_CTRL, 0x81);
-
-    // Initialize magnetometer
-    // Reset AK8963
-    _register_write_aux(REG_CNTL3, 0x01);
-
-    // Read ID
-    uint8_t ak0996_id[2];
-    _register_read_multi_aux(REG_COMPANY_ID, ak0996_id, 2);
-
-    if ((ak0996_id[1] != AK09916_Device_ID) && (ak0996_id[0] != 0x48)) {
-        DRV_DBG("ak09916 id:0x%x, 0x%x\r\n", ak0996_id[0], ak0996_id[1]);
-        return RT_ERROR;
-    }
-    DRV_DBG("ak09916 id:0x%x, 0x%x\r\n", ak0996_id[0], ak0996_id[1]);
-
-    _register_write_aux(REG_CNTL2, 0x08); //Continuous Mode 2
-
-    return RT_EOK;
-}
-
-static rt_err_t gyro_read_raw(int16_t gyr[3])
-{
-    uint16_t raw[3];
-
-    _register_read_multi(INV2REG_GYRO_XOUT_H, (uint8_t*)raw, 6);
-
-    // big-endian to little-endian
-    gyr[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
-    gyr[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
-    gyr[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
 
     return RT_EOK;
 }
@@ -713,7 +674,7 @@ static rt_err_t gyro_read_rad(float gyr[3])
 {
     int16_t gyr_raw[3];
 
-    RT_TRY(gyro_read_raw(gyr_raw));
+    RT_TRY(icm20948_gyro_read(gyr_raw));
 
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
@@ -725,22 +686,32 @@ static rt_err_t gyro_read_rad(float gyr[3])
     return RT_EOK;
 }
 
-static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
+static rt_err_t accel_read_m_s2(float acc[3])
 {
-    RT_ASSERT(cfg != NULL);
+    int16_t acc_raw[3];
 
-    RT_TRY(gyro_set_range(cfg->gyro_range_dps));
+    RT_TRY(icm20948_accel_read(acc_raw));
 
-    RT_TRY(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
+    acc[0] = accel_range_scale * acc_raw[0];
+    acc[1] = accel_range_scale * acc_raw[1];
+    acc[2] = accel_range_scale * acc_raw[2];
 
-    gyro->config = *cfg;
+    icm20948_rotate_to_frd(acc);
 
     return RT_EOK;
 }
 
-static rt_err_t gyro_control(gyro_dev_t gyro, int cmd, void* arg)
+static rt_size_t mag_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t size)
 {
-    return RT_EOK;
+    if (data == NULL) {
+        return 0;
+    }
+
+    if (mag_read_gauss(((float*)data)) != RT_EOK) {
+        return 0;
+    }
+
+    return size;
 }
 
 static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t size)
@@ -756,52 +727,6 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
     return size;
 }
 
-static rt_err_t accel_read_raw(int16_t acc[3])
-{
-    int16_t raw[3];
-
-    _register_read_multi(INV2REG_ACCEL_XOUT_H, (rt_uint8_t*)raw, 6);
-    // big-endian to little-endian
-    acc[0] = int16_t_from_bytes((uint8_t*)&raw[0]);
-    acc[1] = int16_t_from_bytes((uint8_t*)&raw[1]);
-    acc[2] = int16_t_from_bytes((uint8_t*)&raw[2]);
-
-    return RT_EOK;
-}
-
-static rt_err_t accel_read_m_s2(float acc[3])
-{
-    int16_t acc_raw[3];
-
-    RT_TRY(accel_read_raw(acc_raw));
-
-    acc[0] = accel_range_scale * acc_raw[0];
-    acc[1] = accel_range_scale * acc_raw[1];
-    acc[2] = accel_range_scale * acc_raw[2];
-
-    icm20948_rotate_to_frd(acc);
-
-    return RT_EOK;
-}
-
-static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cfg)
-{
-    RT_ASSERT(cfg != NULL);
-
-    RT_TRY(accel_set_range(cfg->acc_range_g));
-
-    RT_TRY(accel_set_dlpf_filter(cfg->dlpf_freq_hz));
-
-    accel->config = *cfg;
-
-    return RT_EOK;
-}
-
-static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
-{
-    return RT_EOK;
-}
-
 static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size_t size)
 {
     if (data == NULL) {
@@ -813,6 +738,53 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
     }
 
     return size;
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+static rt_err_t lowlevel_init(void)
+{
+    /* open spi device */
+    RT_TRY(rt_device_open(spi_dev, RT_DEVICE_OFLAG_RDWR));
+
+    // icm20948_init
+    RT_TRY(icm20948_who_am_i());
+
+    icm20948_device_reset();
+    icm20948_wakeup();
+
+    /* Auto select best available clock source PLL if ready, else use internal oscillator */
+    icm20948_clock_source(1);
+    icm20948_odr_align_enable();
+
+    icm20948_spi_slave_enable();
+
+    icm20948_gyro_low_pass_filter(0);
+    icm20948_accel_low_pass_filter(0);
+
+    icm20948_gyro_sample_rate_divider(0);
+    icm20948_accel_sample_rate_divider(0);
+
+    icm20948_gyro_full_scale_select(_2000dps);
+    icm20948_accel_full_scale_select(_16g);
+
+    // ak09916_init
+    icm20948_i2c_master_reset();
+    icm20948_i2c_master_enable();
+
+    /* Set I2C Master clock frequency */
+    /**< I2C_MST_CLK = 345.6 kHz (for 400 kHz Max)          */
+    icm20948_i2c_master_clk_frq(7);
+
+    RT_TRY(ak09916_who_am_i());
+
+    ak09916_soft_reset();
+    ak09916_operation_mode_setting(continuous_measurement_100hz);
+
+    read_single_ak09916_reg(MAG_ST2);
+
+    return RT_EOK;
 }
 
 const static struct gyro_ops _gyro_ops = {
@@ -827,10 +799,10 @@ const static struct accel_ops _accel_ops = {
     accel_read,
 };
 
-const static struct mag_ops __mag_ops = {
+const static struct mag_ops _mag_ops = {
     NULL,
     NULL,
-    ak09916_read,
+    mag_read,
 };
 
 #define GYRO_CONFIGURE                                \
@@ -855,20 +827,20 @@ const static struct mag_ops __mag_ops = {
     }
 
 static struct gyro_device gyro_dev = {
-    .ops = &_gyro_ops,
-    .config = GYRO_CONFIGURE,
+    .ops      = &_gyro_ops,
+    .config   = GYRO_CONFIGURE,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
 static struct accel_device accel_dev = {
-    .ops = &_accel_ops,
-    .config = ACCEL_CONFIGURE,
+    .ops      = &_accel_ops,
+    .config   = ACCEL_CONFIGURE,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
 static struct mag_device mag_dev = {
-    .ops = &__mag_ops,
-    .config = AK09916_CONFIG_DEFAULT,
+    .ops      = &_mag_ops,
+    .config   = AK09916_CONFIG_DEFAULT,
     .bus_type = MAG_SPI_BUS_TYPE
 };
 
@@ -881,19 +853,31 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
-        cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz = 7000000;                  /* Max SPI speed: 7MHz */
+        cfg.mode       = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
+        cfg.max_hz     = 8000000;                    /* Max SPI speed: 7MHz */
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_dev;
 
         spi_device_t->config.data_width = cfg.data_width;
-        spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
-        spi_device_t->config.max_hz = cfg.max_hz;
+        spi_device_t->config.mode       = cfg.mode & RT_SPI_MODE_MASK;
+        spi_device_t->config.max_hz     = cfg.max_hz;
         RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
 
     /* driver low-level init */
     RT_TRY(lowlevel_init());
+
+    RT_CHECK(rt_event_init(&event, "ak09916", RT_IPC_FLAG_FIFO));
+
+    thread = rt_thread_create("ak09916", thread_entry, RT_NULL, 3 * 1024, 8, 1);
+    RT_ASSERT(thread != NULL);
+    RT_CHECK(rt_thread_startup(thread));
+
+    /* register timer event */
+    rt_timer_init(&timer, "ak09916", timer_update, RT_NULL, TICKS_FROM_MS(2), RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
+    if (rt_timer_start(&timer) != RT_EOK) {
+        return FMT_ERROR;
+    }
 
     /* register gyro hal device */
     RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));

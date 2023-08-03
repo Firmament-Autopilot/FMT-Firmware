@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "module/math/rotation.h"
+#ifndef ICM20649_H__
+#define ICM20649_H__
 
-void icm20649_rotate_to_frd(float* data)
-{
-    rotation(ROTATION_ROLL_180, data, data + 1, data + 2);
-}
+#include <rtthread.h>
 
-void icm20948_rotate_to_frd(float* data)
-{
-    rotation(ROTATION_YAW_90, data, data + 1, data + 2);
-}
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void ak09916_rotate_to_frd(float* data)
-{
-    rotation(ROTATION_ROLL_180_YAW_90, data, data + 1, data + 2);
+rt_err_t drv_icm20649_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif

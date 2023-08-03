@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "module/math/rotation.h"
 
-void icm20649_rotate_to_frd(float* data)
+#include "heat.h"
+
+void heat_on()
 {
-    rotation(ROTATION_ROLL_180, data, data + 1, data + 2);
+	GPIO_SetBits(HEAT_PORT, HEAT_PIN);
 }
 
-void icm20948_rotate_to_frd(float* data)
+void heat_off()
 {
-    rotation(ROTATION_YAW_90, data, data + 1, data + 2);
+	GPIO_ResetBits(HEAT_PORT, HEAT_PIN);
 }
 
-void ak09916_rotate_to_frd(float* data)
+
+void heat_init(void)
 {
-    rotation(ROTATION_ROLL_180_YAW_90, data, data + 1, data + 2);
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	/* GPIOD Periph clock enable */
+	RCC_APB2PeriphClockCmd(HEAT_RCC, ENABLE);
+
+	/* Configure PD0 and PD2 in output pushpull mode */
+	GPIO_InitStructure.GPIO_Pin = HEAT_PIN;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(HEAT_PORT, &GPIO_InitStructure);
+
+	heat_off();
 }

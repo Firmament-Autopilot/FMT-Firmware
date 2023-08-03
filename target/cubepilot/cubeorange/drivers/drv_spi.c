@@ -47,13 +47,14 @@
 #define SPI2_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
 
 #define DRV_USE_SPI4
-#define SPI4_CS1_Pin       LL_GPIO_PIN_4
-#define SPI4_CS1_GPIO_Port GPIOE
-#define SPI4_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOE
+#define SPI4_CS1_Pin       LL_GPIO_PIN_13
+#define SPI4_CS1_GPIO_Port GPIOC
+#define SPI4_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOC
 
-#define SPI4_CS2_Pin       LL_GPIO_PIN_14
-#define SPI4_CS2_GPIO_Port GPIOF
-#define SPI4_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOC
+#define SPI4_CS2_Pin       LL_GPIO_PIN_4
+#define SPI4_CS2_GPIO_Port GPIOE
+#define SPI4_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOE
+
 
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
@@ -89,9 +90,6 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
     LL_SPI_InitTypeDef SPI_InitStruct = { 0 };
     LL_SPI_StructInit(&SPI_InitStruct);
 
-    LL_PLL_ClocksTypeDef pll_clocks;
-    LL_RCC_GetPLL1ClockFreq(&pll_clocks);
-
     if (configuration->data_width <= 8) {
         SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
     } else if (configuration->data_width <= 16) {
@@ -102,33 +100,32 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
 
     /* baudrate */
     {
-        uint32_t stm32_spi_max_clock;
-        uint32_t max_hz;
-        uint32_t PLL_Q_clock;
+        uint32_t spi_clock;
+        uint32_t max_hz = configuration->max_hz;
 
-        PLL_Q_clock = pll_clocks.PLL_Q_Frequency;
-
-        /* stm32h7xx SPI max_clock=PCLK/2 */
-        stm32_spi_max_clock = PLL_Q_clock / 2;
-        max_hz = configuration->max_hz;
-
-        if (max_hz > stm32_spi_max_clock) {
-            max_hz = stm32_spi_max_clock;
+        if(stm32_spi_bus->SPI == SPI1 || stm32_spi_bus->SPI == SPI2 || stm32_spi_bus->SPI == SPI3)  {
+            spi_clock = LL_RCC_GetSPIClockFreq(LL_RCC_SPI123_CLKSOURCE);
+        } else if(stm32_spi_bus->SPI == SPI4 || stm32_spi_bus->SPI == SPI5) {
+            spi_clock = LL_RCC_GetSPIClockFreq(LL_RCC_SPI45_CLKSOURCE);
         }
 
-        if (max_hz >= PLL_Q_clock / 2) {
+        if (max_hz > spi_clock) {
+            max_hz = spi_clock;
+        }
+
+        if (max_hz >= spi_clock / 2) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV2;
-        } else if (max_hz >= PLL_Q_clock / 4) {
+        } else if (max_hz >= spi_clock / 4) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV4;
-        } else if (max_hz >= PLL_Q_clock / 8) {
+        } else if (max_hz >= spi_clock / 8) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV8;
-        } else if (max_hz >= PLL_Q_clock / 16) {
+        } else if (max_hz >= spi_clock / 16) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV16;
-        } else if (max_hz >= PLL_Q_clock / 32) {
+        } else if (max_hz >= spi_clock / 32) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;
-        } else if (max_hz >= PLL_Q_clock / 64) {
+        } else if (max_hz >= spi_clock / 64) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
-        } else if (max_hz >= PLL_Q_clock / 128) {
+        } else if (max_hz >= spi_clock / 128) {
             SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;
         } else {
             /*  min prescaler 256 */
@@ -567,7 +564,7 @@ rt_err_t drv_spi_init(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_5 | LL_GPIO_PIN_6;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_5;

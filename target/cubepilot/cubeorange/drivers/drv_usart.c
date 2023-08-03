@@ -73,13 +73,13 @@ struct stm32_uart {
         /* rx dma stream */
         uint32_t rx_stream;
         /* dma channel */
-        uint32_t rx_ch;
+        uint32_t rx_request;
         /* dma rx irq */
         uint8_t rx_irq;
         /* tx dma stream */
         uint32_t tx_stream;
         /* dma channel */
-        uint32_t tx_ch;
+        uint32_t tx_request;
         /* dma tx irq */
         uint8_t tx_irq;
         /* setting receive len */
@@ -97,13 +97,48 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
 static void _dma_clear_flags(DMA_TypeDef* dma, uint32_t stream)
 {
-    static const uint8_t flagBitshiftOffset[8] = { 0U, 6U, 16U, 22U, 0U, 6U, 16U, 22U };
-
-    uint8_t stream_index = flagBitshiftOffset[stream];
-    if (stream < LL_DMA_STREAM_4) {
-        dma->LIFCR = 0x3DU << stream_index;
-    } else {
-        dma->HIFCR = 0x3DU << stream_index;
+    if(stream == LL_DMA_STREAM_0) {
+        LL_DMA_ClearFlag_TC0(dma);
+        LL_DMA_ClearFlag_HT0(dma);
+        LL_DMA_ClearFlag_TE0(dma);
+        LL_DMA_ClearFlag_DME0(dma);
+        LL_DMA_ClearFlag_FE0(dma);
+    } else if(stream == LL_DMA_STREAM_1) {
+        LL_DMA_ClearFlag_TC1(dma);
+        LL_DMA_ClearFlag_HT1(dma);
+        LL_DMA_ClearFlag_TE1(dma);
+        LL_DMA_ClearFlag_DME1(dma);
+        LL_DMA_ClearFlag_FE1(dma);
+    } else if(stream == LL_DMA_STREAM_2) {
+        LL_DMA_ClearFlag_TC2(dma);
+        LL_DMA_ClearFlag_HT2(dma);
+        LL_DMA_ClearFlag_TE2(dma);
+        LL_DMA_ClearFlag_DME2(dma);
+        LL_DMA_ClearFlag_FE2(dma);
+    } else if(stream == LL_DMA_STREAM_3) {
+        LL_DMA_ClearFlag_TC3(dma);
+        LL_DMA_ClearFlag_HT3(dma);
+        LL_DMA_ClearFlag_TE3(dma);
+        LL_DMA_ClearFlag_DME3(dma);
+        LL_DMA_ClearFlag_FE3(dma);
+    } else if(stream == LL_DMA_STREAM_4) {
+        LL_DMA_ClearFlag_TC4(dma);
+        LL_DMA_ClearFlag_HT4(dma);
+        LL_DMA_ClearFlag_TE4(dma);
+        LL_DMA_ClearFlag_DME4(dma);
+        LL_DMA_ClearFlag_FE4(dma);
+    } else if(stream == LL_DMA_STREAM_5) {
+        LL_DMA_ClearFlag_TC5(dma);
+        LL_DMA_ClearFlag_HT5(dma);
+        LL_DMA_ClearFlag_TE5(dma);
+        LL_DMA_ClearFlag_DME5(dma);
+        LL_DMA_ClearFlag_FE5(dma);
+    } else if(stream == LL_DMA_STREAM_6) {
+        LL_DMA_ClearFlag_TC6(dma);
+        LL_DMA_ClearFlag_HT6(dma);
+        LL_DMA_ClearFlag_TE6(dma);
+        LL_DMA_ClearFlag_DME6(dma);
+        LL_DMA_ClearFlag_FE6(dma);
     }
 }
 
@@ -321,7 +356,17 @@ static struct serial_device serial5; // TELEM3
 struct stm32_uart uart6 = {
     .uart_device = USART6,
     .irq = USART6_IRQn,
-    .dma = { 0 },
+    .dma = { 
+        .dma_device = DMA1,
+        .rx_stream = LL_DMA_STREAM_1,
+        .rx_irq = DMA1_Stream1_IRQn,
+        .rx_request = LL_DMAMUX1_REQ_USART6_RX,
+        .tx_stream = LL_DMA_STREAM_0,
+        .tx_irq = DMA1_Stream0_IRQn,
+        .tx_request = LL_DMAMUX1_REQ_USART6_TX,
+        .setting_recv_len = 0,
+        .last_recv_index = 0,
+    },
 };
 
 void USART6_IRQHandler(void)
@@ -330,6 +375,37 @@ void USART6_IRQHandler(void)
     rt_interrupt_enter();
     /* uart isr routine */
     uart_isr(&serial5);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+
+void DMA1_Stream0_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    if (LL_DMA_IsActiveFlag_TC0(DMA1)) {
+        dma_tx_done_isr(&serial5);
+        /* clear the interrupt flag */
+        LL_DMA_ClearFlag_TC0(DMA1);
+    }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
+void DMA1_Stream1_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    if (LL_DMA_IsActiveFlag_TC1(DMA1)) {
+        dma_rx_done_isr(&serial5);
+        /* clear the interrupt flag */
+        LL_DMA_ClearFlag_TC1(DMA1);
+    }
+
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -512,8 +588,10 @@ static void _dma_receive(struct stm32_uart* uart)
 {
     /* all interrupt flags much be cleared before the stream can be re-enabled */
     _dma_clear_flags(uart->dma.dma_device, uart->dma.rx_stream);
+
     /* enable common interrupts */
-    LL_DMA_EnableIT_TC(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_DMA_EnableIT_TC(uart->dma.dma_device, uart->dma.rx_stream);
+
     LL_USART_EnableIT_IDLE(uart->uart_device);
     /* enable the specified dma stream */
     LL_DMA_EnableStream(uart->dma.dma_device, uart->dma.rx_stream);
@@ -526,32 +604,26 @@ static void _dma_receive(struct stm32_uart* uart)
 
 static void _dma_rx_config(struct stm32_uart* uart, rt_uint8_t* buf, rt_size_t size)
 {
-    LL_DMA_InitTypeDef DMA_InitStruct;
-
     /* set expected receive length */
     uart->dma.setting_recv_len = size;
 
-    DMA_InitStruct.PeriphOrM2MSrcAddress = (uint32_t)&uart->uart_device->RDR;
-    DMA_InitStruct.MemoryOrM2MDstAddress = (uint32_t)buf;
-    DMA_InitStruct.Direction = LL_DMA_DIRECTION_PERIPH_TO_MEMORY;
-    DMA_InitStruct.Mode = LL_DMA_MODE_CIRCULAR;
-    DMA_InitStruct.PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
-    DMA_InitStruct.MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
-    DMA_InitStruct.PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
-    DMA_InitStruct.MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
-    DMA_InitStruct.NbData = size;
-    // DMA_InitStruct.Channel = uart->dma.rx_ch;
-    DMA_InitStruct.Priority = LL_DMA_PRIORITY_HIGH;
-    DMA_InitStruct.FIFOMode = LL_DMA_FIFOMODE_DISABLE;
-    DMA_InitStruct.FIFOThreshold = LL_DMA_FIFOTHRESHOLD_1_4;
-    DMA_InitStruct.MemBurst = LL_DMA_MBURST_SINGLE;
-    DMA_InitStruct.PeriphBurst = LL_DMA_PBURST_SINGLE;
-    /* init rx dma */
-    LL_DMA_Init(uart->dma.dma_device, uart->dma.rx_stream, &DMA_InitStruct);
-
-    /* disable double buffer mode */
-    LL_DMA_DisableDoubleBufferMode(uart->dma.dma_device, uart->dma.rx_stream);
+    LL_DMA_DeInit(uart->dma.dma_device, uart->dma.rx_stream);
+    LL_DMA_SetPeriphRequest(uart->dma.dma_device, uart->dma.rx_stream, uart->dma.rx_request);
+    LL_DMA_SetDataTransferDirection(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
+    LL_DMA_SetStreamPriorityLevel(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_PRIORITY_HIGH);
+    LL_DMA_SetMode(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_MODE_CIRCULAR);
+    LL_DMA_SetPeriphIncMode(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_PERIPH_NOINCREMENT);
+    LL_DMA_SetMemoryIncMode(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_MEMORY_INCREMENT);
+    LL_DMA_SetPeriphSize(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_PDATAALIGN_BYTE);
+    LL_DMA_SetMemorySize(uart->dma.dma_device, uart->dma.rx_stream, LL_DMA_MDATAALIGN_BYTE);
     LL_DMA_DisableFifoMode(uart->dma.dma_device, uart->dma.rx_stream);
+    LL_USART_SetRXFIFOThreshold(uart->uart_device, LL_USART_FIFOTHRESHOLD_1_8);
+
+    LL_DMA_SetPeriphAddress(uart->dma.dma_device, uart->dma.rx_stream, LL_USART_DMA_GetRegAddr(uart->uart_device, LL_USART_DMA_REG_DATA_RECEIVE));
+    LL_DMA_SetMemoryAddress(uart->dma.dma_device, uart->dma.rx_stream, (uint32_t)buf);
+    LL_DMA_SetDataLength(uart->dma.dma_device, uart->dma.rx_stream, size);
+    LL_USART_ConfigAsyncMode(uart->uart_device);
+    LL_USART_DisableFIFO(uart->uart_device);
 
     /* start to receive data */
     _dma_receive(uart);
@@ -559,29 +631,25 @@ static void _dma_rx_config(struct stm32_uart* uart, rt_uint8_t* buf, rt_size_t s
 
 static void _dma_tx_config(struct stm32_uart* uart)
 {
-    LL_DMA_InitTypeDef DMA_InitStruct;
-
-    DMA_InitStruct.PeriphOrM2MSrcAddress = (uint32_t)&uart->uart_device->TDR;
-    DMA_InitStruct.MemoryOrM2MDstAddress = 0x00000000U; /* will be configured later */
-    DMA_InitStruct.Direction = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
-    DMA_InitStruct.Mode = LL_DMA_MODE_NORMAL;
-    DMA_InitStruct.PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
-    DMA_InitStruct.MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
-    DMA_InitStruct.PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_BYTE;
-    DMA_InitStruct.MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_BYTE;
-    DMA_InitStruct.NbData = 0x00000000U; /* will be configured later */
-    // DMA_InitStruct.Channel = uart->dma.tx_ch;
-    DMA_InitStruct.Priority = LL_DMA_PRIORITY_HIGH;
-    DMA_InitStruct.FIFOMode = LL_DMA_FIFOMODE_DISABLE;
-    DMA_InitStruct.FIFOThreshold = LL_DMA_FIFOTHRESHOLD_1_4;
-    DMA_InitStruct.MemBurst = LL_DMA_MBURST_SINGLE;
-    DMA_InitStruct.PeriphBurst = LL_DMA_PBURST_SINGLE;
-    /* init tx dma */
-    LL_DMA_Init(uart->dma.dma_device, uart->dma.tx_stream, &DMA_InitStruct);
-
-    /* disable double buffer mode */
-    LL_DMA_DisableDoubleBufferMode(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_DMA_DeInit(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_DMA_DisableStream(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_DMA_SetPeriphRequest(uart->dma.dma_device, uart->dma.tx_stream, uart->dma.tx_request);
+    LL_DMA_SetDataTransferDirection(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
+    LL_DMA_SetStreamPriorityLevel(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_PRIORITY_HIGH);
+    LL_DMA_SetMode(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_MODE_NORMAL);
+    LL_DMA_SetPeriphIncMode(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_PERIPH_NOINCREMENT);
+    LL_DMA_SetMemoryIncMode(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_MEMORY_INCREMENT);
+    LL_DMA_SetPeriphSize(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_PDATAALIGN_BYTE);
+    LL_DMA_SetMemorySize(uart->dma.dma_device, uart->dma.tx_stream, LL_DMA_MDATAALIGN_BYTE);
     LL_DMA_DisableFifoMode(uart->dma.dma_device, uart->dma.tx_stream);
+    LL_USART_SetTXFIFOThreshold(uart->uart_device, LL_USART_FIFOTHRESHOLD_1_8);
+    LL_USART_ConfigAsyncMode(uart->uart_device);
+    LL_USART_DisableFIFO(uart->uart_device);
+
+    LL_DMA_SetPeriphAddress(uart->dma.dma_device, uart->dma.tx_stream, LL_USART_DMA_GetRegAddr(uart->uart_device, LL_USART_DMA_REG_DATA_TRANSMIT));
+
+    LL_DMA_SetMemoryAddress(uart->dma.dma_device, uart->dma.tx_stream, 0x00000000U);
+    LL_DMA_SetDataLength(uart->dma.dma_device, uart->dma.tx_stream, 0x00000000U);
 }
 
 static void _close_usart(struct serial_device* serial)
@@ -878,13 +946,17 @@ rt_err_t drv_usart_init(void)
     #else
     serial5.config = config;
     #endif
+
     NVIC_Configuration(&uart6);
+
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial5,
         "serial5",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
         &uart6);
+
+
 #endif /* USING_UART7 */
 
     return RT_EOK;

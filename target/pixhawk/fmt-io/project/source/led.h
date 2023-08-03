@@ -18,12 +18,23 @@
 #define  _LED_H_
 
 #include "stm32f10x.h"
+#include "board_config.h"
+
+#ifdef CUBEPILOT
+
+#define LED_PORT		GPIOB
+#define LED_BLUE_PIN	GPIO_Pin_13
+#define LED_RED_PIN		GPIO_Pin_15
+#define LED_RCC			RCC_APB2Periph_GPIOB
+
+#else 
 
 #define LED_PORT		GPIOB
 #define LED_BLUE_PIN	GPIO_Pin_14
 #define LED_RED_PIN		GPIO_Pin_15
 #define LED_RCC			RCC_APB2Periph_GPIOB
 
+#endif
 typedef enum {
 	LED_RED = 0,
 	LED_BLUE
