@@ -115,7 +115,9 @@ typedef struct {
     uint32_t timestamp;
     float vx;
     float vy;
-    uint32_t valid;
+    uint8_t quality;
+    uint8_t reserved1;
+    uint16_t reserved2;
 } Optical_Flow_Bus;
 
 #endif
@@ -125,8 +127,25 @@ typedef struct {
 
 typedef struct {
     uint32_t timestamp;
-    float true_airspeed;
+    float diff_pressure;
+    float temperature;
 } AirSpeed_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_External_Pos_Bus_
+#define DEFINED_TYPEDEF_FOR_External_Pos_Bus_
+
+typedef struct {
+  uint32_t timestamp;
+  uint32_t field_valid;
+  float x;
+  float y;
+  float z;
+  float phi;
+  float theta;
+  float psi;
+} External_Pos_Bus;
 
 #endif
 
@@ -155,6 +174,8 @@ typedef struct {
     double lat_0;
     double lon_0;
     double alt_0;
+    double dx_dlat;
+    double dy_dlon;
     float x_R;
     float y_R;
     float h_R;

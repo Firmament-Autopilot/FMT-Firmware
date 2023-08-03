@@ -28,6 +28,8 @@
 #endif
 #define BIT(u, n) (u & (1 << n))
 
+#define SIGN(x) ((x > 0) - (x < 0))
+
 // Bit locations for mag_declination_source
 #define MASK_USE_GEO_DECL  (1 << 0) ///< set to true to use the declination from the geo library when the GPS position becomes available, set to false to always use the EKF2_MAG_DECL value
 #define MASK_SAVE_GEO_DECL (1 << 1) ///< set to true to set the EKF2_MAG_DECL parameter to the value returned by the geo library
@@ -104,6 +106,9 @@ MCN_DECLARE(fms_output);
 
 /* Control input bus*/
 MCN_DECLARE(control_output);
+
+/* External Position */
+MCN_DEFINE(external_pos, sizeof(External_Pos_Bus));
 
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
@@ -525,9 +530,9 @@ void ins_interface_step(uint32_t timestamp)
             mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.airspeed_sub_node_t, &ins_handle.airspeed_report);
 
             airspeed_bus.timestamp = timestamp;
-            airspeed_bus.true_airspeed = 2 * sqrt(ins_handle.airspeed_report.temperature_deg) / 1.29f;
 
-            Ekf_AIRSPEED_update(timestamp, airspeed_bus.true_airspeed, 1);
+            float true_airspeed = sqrtf(fabs(airspeed_bus.diff_pressure) * 2 / 1.225f) * SIGN(airspeed_bus.diff_pressure);
+            Ekf_AIRSPEED_update(timestamp, true_airspeed, 1);
 #ifdef VEHICLE_TYPE_FIXWING
             ld_set_airspeed_validated((uint64_t)timestamp, airspeed_bus.true_airspeed);
 #endif
