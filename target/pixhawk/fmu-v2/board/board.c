@@ -30,7 +30,7 @@
 #include "default_config.h"
 #include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
-#include "driver/gps/gps_m8n.h"
+#include "driver/gps/gps_ubx.h"
 #include "driver/imu/l3gd20h.h"
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"

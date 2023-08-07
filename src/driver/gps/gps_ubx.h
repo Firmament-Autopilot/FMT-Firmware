@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef GPS_M8N_H__
-#define GPS_M8N_H__
+#ifndef GPS_MBX_H__
+#define GPS_MBX_H__
 
 #include <rtthread.h>
 
@@ -29,4 +29,4 @@ rt_err_t gps_m8n_init(const char* serial_device_name, const char* gps_device_nam
 }
 #endif
 
-#endif /* GPS_M8N_H__ */
+#endif /* GPS_UBX_H__ */

@@ -9,7 +9,7 @@ DRIVERS = [
     'mag/mmc5983ma.c',
     # 'barometer/ms5611.c',
     'barometer/spl06.c',
-    'gps/gps_m8n.c',
+    'gps/gps_ubx.c',
     # 'rgb_led/ncp5623c.c',
     'rgb_led/aw2023.c',
     'mtd/ramtron.c',

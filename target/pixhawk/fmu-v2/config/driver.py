@@ -6,7 +6,7 @@ DRIVERS = [
     'imu/mpu6000.c',
     'mag/hmc5883.c',
     'barometer/ms5611.c',
-    'gps/gps_m8n.c',
+    'gps/gps_ubx.c',
     'vision_flow/mtf_01.c',
     'rgb_led/tca62724.c',
     'uwb/nlink_linktrack/*.c',

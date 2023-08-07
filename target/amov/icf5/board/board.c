@@ -25,7 +25,7 @@
 #include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
-#include "driver/gps/gps_m8n.h"
+#include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688p.h"
