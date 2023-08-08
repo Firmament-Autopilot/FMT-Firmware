@@ -338,7 +338,7 @@ void bsp_initialize(void)
     /* init optical flow module (a mini tf included) */
     RT_CHECK(drv_mtf_01_init("serial3"));
     /* init gps */
-    RT_CHECK(gps_m8n_init("serial2", "gps"));
+    RT_CHECK(gps_ubx_init("serial2", "gps"));
 
     // drv_nlink_linktrack_init("serial4");
 

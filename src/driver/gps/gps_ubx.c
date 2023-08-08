@@ -525,7 +525,7 @@ static void gps_probe_entry(void* parameter)
     rt_free(parameter);
 }
 
-rt_err_t gps_m8n_init(const char* serial_device_name, const char* gps_device_name)
+rt_err_t gps_ubx_init(const char* serial_device_name, const char* gps_device_name)
 {
     char* str_buffer;
 
