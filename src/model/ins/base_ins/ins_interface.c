@@ -74,9 +74,9 @@ static param_t __param_list[] = {
     PARAM_FLOAT(RF_BIAS_AZ_GAIN, 0.2, false),
     PARAM_UINT32(RF_H_DELAY, 10, false),
     PARAM_FLOAT(EXTPOS_POS_GAIN, 2.0, false),
-    PARAM_FLOAT(EXTPOS_VEL_GAIN, 1.0, false),
-    PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.2, false),
-    PARAM_UINT32(EXTPOS_POS_DELAY, 300, false),
+    PARAM_FLOAT(EXTPOS_VEL_GAIN, 1.5, false),
+    PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.1, false),
+    PARAM_UINT32(EXTPOS_POS_DELAY, 20, false),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 
@@ -219,13 +219,13 @@ static struct INS_Handler {
     McnNode_t airspeed_sub_node_t;
     McnNode_t ext_pos_sub_node_t;
 
-    imu_data_t imu_report;
-    mag_data_t mag_report;
-    baro_data_t baro_report;
-    gps_data_t gps_report;
-    rf_data_t rf_report;
-    optflow_data_t optflow_report;
-    airspeed_data_t airspeed_report;
+    imu_data_t       imu_report;
+    mag_data_t       mag_report;
+    baro_data_t      baro_report;
+    gps_data_t       gps_report;
+    rf_data_t        rf_report;
+    optflow_data_t   optflow_report;
+    airspeed_data_t  airspeed_report;
     External_Pos_Bus ext_pos_report;
 } ins_handle;
 
@@ -308,14 +308,14 @@ static int external_pos_echo(void* param)
 static void mlog_start_cb(void)
 {
     /* when mlog started, record at least first data even there is no data publiced */
-    imu_data_updated = 1;
-    mag_data_updated = 1;
-    baro_data_updated = 1;
-    gps_data_updated = 1;
-    rf_data_updated = 1;
-    optflow_data_updated = 1;
+    imu_data_updated      = 1;
+    mag_data_updated      = 1;
+    baro_data_updated     = 1;
+    gps_data_updated      = 1;
+    rf_data_updated       = 1;
+    optflow_data_updated  = 1;
     airspeed_data_updated = 1;
-    ext_pos_data_updated = 1;
+    ext_pos_data_updated  = 1;
 }
 
 static void init_parameter(void)
@@ -375,9 +375,9 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.mag_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_mag0), ins_handle.mag_sub_node_t, &ins_handle.mag_report);
 
-        INS_U.MAG.mag_x = ins_handle.mag_report.mag_B_gauss[0];
-        INS_U.MAG.mag_y = ins_handle.mag_report.mag_B_gauss[1];
-        INS_U.MAG.mag_z = ins_handle.mag_report.mag_B_gauss[2];
+        INS_U.MAG.mag_x     = ins_handle.mag_report.mag_B_gauss[0];
+        INS_U.MAG.mag_y     = ins_handle.mag_report.mag_B_gauss[1];
+        INS_U.MAG.mag_z     = ins_handle.mag_report.mag_B_gauss[2];
         INS_U.MAG.timestamp = timestamp;
 
         mag_data_updated = 1;
@@ -386,9 +386,9 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.baro_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_baro), ins_handle.baro_sub_node_t, &ins_handle.baro_report);
 
-        INS_U.Barometer.pressure = (float)ins_handle.baro_report.pressure_pa;
+        INS_U.Barometer.pressure    = (float)ins_handle.baro_report.pressure_pa;
         INS_U.Barometer.temperature = ins_handle.baro_report.temperature_deg;
-        INS_U.Barometer.timestamp = timestamp;
+        INS_U.Barometer.timestamp   = timestamp;
 
         baro_data_updated = 1;
     }
@@ -397,17 +397,17 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.gps_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_gps), ins_handle.gps_sub_node_t, &ins_handle.gps_report);
 
-        INS_U.GPS_uBlox.fixType = ins_handle.gps_report.fixType;
-        INS_U.GPS_uBlox.lat = ins_handle.gps_report.lat;
-        INS_U.GPS_uBlox.lon = ins_handle.gps_report.lon;
-        INS_U.GPS_uBlox.height = ins_handle.gps_report.height;
-        INS_U.GPS_uBlox.velN = (int32_t)(ins_handle.gps_report.velN * 1e3);
-        INS_U.GPS_uBlox.velE = (int32_t)(ins_handle.gps_report.velE * 1e3);
-        INS_U.GPS_uBlox.velD = (int32_t)(ins_handle.gps_report.velD * 1e3);
-        INS_U.GPS_uBlox.hAcc = (uint32_t)(ins_handle.gps_report.hAcc * 1e3);
-        INS_U.GPS_uBlox.vAcc = (uint32_t)(ins_handle.gps_report.vAcc * 1e3);
-        INS_U.GPS_uBlox.sAcc = (uint32_t)(ins_handle.gps_report.sAcc * 1e3);
-        INS_U.GPS_uBlox.numSV = ins_handle.gps_report.numSV;
+        INS_U.GPS_uBlox.fixType   = ins_handle.gps_report.fixType;
+        INS_U.GPS_uBlox.lat       = ins_handle.gps_report.lat;
+        INS_U.GPS_uBlox.lon       = ins_handle.gps_report.lon;
+        INS_U.GPS_uBlox.height    = ins_handle.gps_report.height;
+        INS_U.GPS_uBlox.velN      = (int32_t)(ins_handle.gps_report.velN * 1e3);
+        INS_U.GPS_uBlox.velE      = (int32_t)(ins_handle.gps_report.velE * 1e3);
+        INS_U.GPS_uBlox.velD      = (int32_t)(ins_handle.gps_report.velD * 1e3);
+        INS_U.GPS_uBlox.hAcc      = (uint32_t)(ins_handle.gps_report.hAcc * 1e3);
+        INS_U.GPS_uBlox.vAcc      = (uint32_t)(ins_handle.gps_report.vAcc * 1e3);
+        INS_U.GPS_uBlox.sAcc      = (uint32_t)(ins_handle.gps_report.sAcc * 1e3);
+        INS_U.GPS_uBlox.numSV     = ins_handle.gps_report.numSV;
         INS_U.GPS_uBlox.timestamp = timestamp;
 
         gps_data_updated = 1;
@@ -417,7 +417,7 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.rf_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_rangefinder), ins_handle.rf_sub_node_t, &ins_handle.rf_report);
 
-        INS_U.Rangefinder.distance = ins_handle.rf_report.distance_m;
+        INS_U.Rangefinder.distance  = ins_handle.rf_report.distance_m;
         INS_U.Rangefinder.timestamp = timestamp;
 
         rf_data_updated = 1;
@@ -427,9 +427,9 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.optflow_sub_node_t)) {
         mcn_copy(MCN_HUB(sensor_optflow), ins_handle.optflow_sub_node_t, &ins_handle.optflow_report);
 
-        INS_U.Optical_Flow.vx = ins_handle.optflow_report.vx_mPs;
-        INS_U.Optical_Flow.vy = ins_handle.optflow_report.vy_mPs;
-        INS_U.Optical_Flow.quality = ins_handle.optflow_report.quality;
+        INS_U.Optical_Flow.vx        = ins_handle.optflow_report.vx_mPs;
+        INS_U.Optical_Flow.vy        = ins_handle.optflow_report.vy_mPs;
+        INS_U.Optical_Flow.quality   = ins_handle.optflow_report.quality;
         INS_U.Optical_Flow.timestamp = timestamp;
 
         optflow_data_updated = 1;
@@ -440,8 +440,8 @@ void ins_interface_step(uint32_t timestamp)
         mcn_copy(MCN_HUB(sensor_airspeed), ins_handle.airspeed_sub_node_t, &ins_handle.airspeed_report);
 
         INS_U.AirSpeed.diff_pressure = ins_handle.airspeed_report.diff_pressure_pa;
-        INS_U.AirSpeed.temperature = ins_handle.airspeed_report.temperature_deg;
-        INS_U.AirSpeed.timestamp = timestamp;
+        INS_U.AirSpeed.temperature   = ins_handle.airspeed_report.temperature_deg;
+        INS_U.AirSpeed.timestamp     = timestamp;
 
         airspeed_data_updated = 1;
     }
@@ -450,14 +450,14 @@ void ins_interface_step(uint32_t timestamp)
     if (mcn_poll(ins_handle.ext_pos_sub_node_t)) {
         mcn_copy(MCN_HUB(external_pos), ins_handle.ext_pos_sub_node_t, &ins_handle.ext_pos_report);
 
-        INS_U.External_Pos.timestamp = timestamp;
+        INS_U.External_Pos.timestamp   = timestamp;
         INS_U.External_Pos.field_valid = ins_handle.ext_pos_report.field_valid;
-        INS_U.External_Pos.x = ins_handle.ext_pos_report.x;
-        INS_U.External_Pos.y = ins_handle.ext_pos_report.y;
-        INS_U.External_Pos.z = ins_handle.ext_pos_report.z;
-        INS_U.External_Pos.phi = ins_handle.ext_pos_report.phi;
-        INS_U.External_Pos.theta = ins_handle.ext_pos_report.theta;
-        INS_U.External_Pos.psi = ins_handle.ext_pos_report.psi;
+        INS_U.External_Pos.x           = ins_handle.ext_pos_report.x;
+        INS_U.External_Pos.y           = ins_handle.ext_pos_report.y;
+        INS_U.External_Pos.z           = ins_handle.ext_pos_report.z;
+        INS_U.External_Pos.phi         = ins_handle.ext_pos_report.phi;
+        INS_U.External_Pos.theta       = ins_handle.ext_pos_report.theta;
+        INS_U.External_Pos.psi         = ins_handle.ext_pos_report.psi;
 
         ext_pos_data_updated = 1;
     }
@@ -528,29 +528,29 @@ void ins_interface_step(uint32_t timestamp)
 void ins_interface_init(void)
 {
     ins_model_info.period = INS_EXPORT.period;
-    ins_model_info.info = (char*)INS_EXPORT.model_info;
+    ins_model_info.info   = (char*)INS_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
     mcn_advertise(MCN_HUB(external_pos), external_pos_echo);
 
-    ins_handle.imu_sub_node_t = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);
-    ins_handle.mag_sub_node_t = mcn_subscribe(MCN_HUB(sensor_mag0), NULL, NULL);
-    ins_handle.baro_sub_node_t = mcn_subscribe(MCN_HUB(sensor_baro), NULL, NULL);
-    ins_handle.gps_sub_node_t = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
-    ins_handle.rf_sub_node_t = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
-    ins_handle.optflow_sub_node_t = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
+    ins_handle.imu_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);
+    ins_handle.mag_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_mag0), NULL, NULL);
+    ins_handle.baro_sub_node_t     = mcn_subscribe(MCN_HUB(sensor_baro), NULL, NULL);
+    ins_handle.gps_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
+    ins_handle.rf_sub_node_t       = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
+    ins_handle.optflow_sub_node_t  = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
     ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
-    ins_handle.ext_pos_sub_node_t = mcn_subscribe(MCN_HUB(external_pos), NULL, NULL);
+    ins_handle.ext_pos_sub_node_t  = mcn_subscribe(MCN_HUB(external_pos), NULL, NULL);
 
-    IMU_ID = mlog_get_bus_id("IMU");
-    MAG_ID = mlog_get_bus_id("MAG");
-    Barometer_ID = mlog_get_bus_id("Barometer");
-    GPS_ID = mlog_get_bus_id("GPS_uBlox");
+    IMU_ID         = mlog_get_bus_id("IMU");
+    MAG_ID         = mlog_get_bus_id("MAG");
+    Barometer_ID   = mlog_get_bus_id("Barometer");
+    GPS_ID         = mlog_get_bus_id("GPS_uBlox");
     Rangefinder_ID = mlog_get_bus_id("Rangefinder");
     OpticalFlow_ID = mlog_get_bus_id("OpticalFlow");
-    AirSpeed_ID = mlog_get_bus_id("AirSpeed");
-    ExtPos_ID = mlog_get_bus_id("External_Pos");
-    INS_Out_ID = mlog_get_bus_id("INS_Out");
+    AirSpeed_ID    = mlog_get_bus_id("AirSpeed");
+    ExtPos_ID      = mlog_get_bus_id("External_Pos");
+    INS_Out_ID     = mlog_get_bus_id("INS_Out");
     FMT_ASSERT(IMU_ID >= 0);
     FMT_ASSERT(MAG_ID >= 0);
     FMT_ASSERT(Barometer_ID >= 0);
