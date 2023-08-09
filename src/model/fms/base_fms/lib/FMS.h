@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2000
+ * Model version                  : 1.2007
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul  8 13:53:26 2023
+ * C/C++ source code generated on : Wed Aug  9 09:46:51 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -157,13 +157,13 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S3>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S3>/Discrete-Time Integrator1' */
   real32_T Integrator1_DSTATE;         /* '<S63>/Integrator1' */
-  real32_T Integrator_DSTATE;          /* '<S63>/Integrator' */
   real32_T Integrator1_DSTATE_o;       /* '<S64>/Integrator1' */
-  real32_T Integrator_DSTATE_b;        /* '<S64>/Integrator' */
-  real32_T Integrator1_DSTATE_j;       /* '<S128>/Integrator1' */
+  real32_T Integrator_DSTATE;          /* '<S64>/Integrator' */
+  real32_T Integrator_DSTATE_b;        /* '<S63>/Integrator' */
+  real32_T Integrator1_DSTATE_l;       /* '<S128>/Integrator1' */
+  real32_T Integrator1_DSTATE_h;       /* '<S129>/Integrator1' */
+  real32_T Integrator_DSTATE_a;        /* '<S129>/Integrator' */
   real32_T Integrator_DSTATE_c;        /* '<S128>/Integrator' */
-  real32_T Integrator1_DSTATE_jt;      /* '<S129>/Integrator1' */
-  real32_T Integrator_DSTATE_cq;       /* '<S129>/Integrator' */
   real32_T Delay_DSTATE[2];            /* '<S173>/Delay' */
   real32_T l1_heading;                 /* '<S217>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_h;             /* '<S153>/Delay' */
@@ -369,18 +369,18 @@ typedef struct {
   const real_T deg2rad2;               /* '<S306>/deg2rad2' */
   const real_T SinCos_o1;              /* '<S309>/SinCos' */
   const real_T SinCos_o2;              /* '<S309>/SinCos' */
-  const real32_T Square;               /* '<S65>/Square' */
-  const real32_T d;                    /* '<S65>/Multiply' */
-  const real32_T Gain4;                /* '<S65>/Gain4' */
-  const real32_T Square_d;             /* '<S66>/Square' */
-  const real32_T d_c;                  /* '<S66>/Multiply' */
-  const real32_T Gain4_m;              /* '<S66>/Gain4' */
-  const real32_T Square_m;             /* '<S130>/Square' */
-  const real32_T d_d;                  /* '<S130>/Multiply' */
+  const real32_T Square;               /* '<S66>/Square' */
+  const real32_T d;                    /* '<S66>/Multiply' */
+  const real32_T Gain4;                /* '<S66>/Gain4' */
+  const real32_T Square_g;             /* '<S65>/Square' */
+  const real32_T d_e;                  /* '<S65>/Multiply' */
+  const real32_T Gain4_d;              /* '<S65>/Gain4' */
+  const real32_T Square_i;             /* '<S131>/Square' */
+  const real32_T d_l;                  /* '<S131>/Multiply' */
+  const real32_T Gain4_j;              /* '<S131>/Gain4' */
+  const real32_T Square_d;             /* '<S130>/Square' */
+  const real32_T d_h;                  /* '<S130>/Multiply' */
   const real32_T Gain4_n;              /* '<S130>/Gain4' */
-  const real32_T Square_n;             /* '<S131>/Square' */
-  const real32_T d_o;                  /* '<S131>/Multiply' */
-  const real32_T Gain4_n3;             /* '<S131>/Gain4' */
   const real32_T VectorConcatenate3[3];/* '<S220>/Vector Concatenate3' */
   const real32_T TmpSignalConversionAtMathFu[2];
   const real32_T MathFunction[2];      /* '<S166>/Math Function' */
@@ -389,7 +389,7 @@ typedef struct {
   const real32_T Product[2];           /* '<S166>/Product' */
   const real32_T Switch[3];            /* '<S166>/Switch' */
   const real32_T Divide[2];            /* '<S166>/Divide' */
-  const real32_T Square_g;             /* '<S162>/Square' */
+  const real32_T Square_gd;            /* '<S162>/Square' */
   const real32_T d_j;                  /* '<S162>/Multiply' */
   const real32_T Gain4_c;              /* '<S162>/Gain4' */
   const real32_T VectorConcatenate3_n[3];/* '<S300>/Vector Concatenate3' */
@@ -409,7 +409,7 @@ typedef struct {
   const real32_T Switch_h[3];          /* '<S391>/Switch' */
   const real32_T Divide_d[2];          /* '<S391>/Divide' */
   const real32_T Square_k;             /* '<S387>/Square' */
-  const real32_T d_l;                  /* '<S387>/Multiply' */
+  const real32_T d_le;                 /* '<S387>/Multiply' */
   const real32_T Gain4_np;             /* '<S387>/Gain4' */
   const real32_T VectorConcatenate3_f[3];/* '<S374>/Vector Concatenate3' */
   const real32_T VectorConcatenate3_fb[3];/* '<S451>/Vector Concatenate3' */
@@ -552,6 +552,7 @@ extern struct_BM28lLsAzRuenUNYKA2Ga FMS_PARAM;/* Variable: FMS_PARAM
                                                *   '<S47>/Gain1'
                                                *   '<S123>/Gain'
                                                *   '<S123>/Gain1'
+                                               *   '<S125>/Constant'
                                                *   '<S149>/L1'
                                                *   '<S223>/Saturation'
                                                *   '<S224>/Saturation1'
@@ -722,6 +723,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S29>/Signal Copy4' : Eliminate redundant signal conversion block
  * Block '<S29>/Signal Copy5' : Eliminate redundant signal conversion block
  * Block '<S29>/Signal Copy6' : Eliminate redundant signal conversion block
+ * Block '<S29>/Signal Copy7' : Eliminate redundant signal conversion block
  * Block '<S453>/Signal Conversion' : Eliminate redundant signal conversion block
  * Block '<S467>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S468>/Data Type Conversion' : Eliminate redundant data type conversion
