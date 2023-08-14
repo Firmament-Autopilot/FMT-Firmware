@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.965
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul 13 09:47:20 2023
+ * C/C++ source code generated on : Mon Aug 14 17:14:58 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -55,7 +55,10 @@ typedef struct {
   int8_T DiscreteTimeIntegrator1_PrevR_i;/* '<S77>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRe_m;/* '<S116>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_Prev_iy;/* '<S118>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S104>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S73>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_l;/* '<S77>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_k;/* '<S118>/Discrete-Time Integrator1' */
 } DW_Controller_T;
 
 /* Invariant block signals (default storage) */
@@ -203,44 +206,44 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM;/* Variable: CONTROL_PARAM
-                                                   * Referenced by:
-                                                   *   '<S17>/hover_throttle'
-                                                   *   '<S23>/hover_throttle'
-                                                   *   '<S29>/hover_throttle'
-                                                   *   '<S35>/hover_throttle'
-                                                   *   '<S41>/hover_throttle'
-                                                   *   '<S47>/hover_throttle'
-                                                   *   '<S53>/hover_throttle'
-                                                   *   '<S59>/hover_throttle'
-                                                   *   '<S92>/Saturation'
-                                                   *   '<S68>/Saturation'
-                                                   *   '<S68>/Saturation1'
-                                                   *   '<S101>/kd'
-                                                   *   '<S101>/Saturation'
-                                                   *   '<S102>/ki'
-                                                   *   '<S102>/Discrete-Time Integrator'
-                                                   *   '<S103>/kp'
-                                                   *   '<S115>/kd'
-                                                   *   '<S115>/Saturation'
-                                                   *   '<S116>/Constant'
-                                                   *   '<S116>/ki'
-                                                   *   '<S116>/Discrete-Time Integrator'
-                                                   *   '<S117>/kp'
-                                                   *   '<S85>/Constant1'
-                                                   *   '<S85>/Constant2'
-                                                   *   '<S74>/gain1'
-                                                   *   '<S74>/gain2'
-                                                   *   '<S74>/gain3'
-                                                   *   '<S74>/Saturation'
-                                                   *   '<S75>/gain1'
-                                                   *   '<S75>/gain2'
-                                                   *   '<S75>/gain3'
-                                                   *   '<S75>/Discrete-Time Integrator'
-                                                   *   '<S76>/gain1'
-                                                   *   '<S76>/gain2'
-                                                   *   '<S76>/gain3'
-                                                   */
+extern struct_0aM4lr5NEdP6H9qNoqnrPE CONTROL_PARAM;/* Variable: CONTROL_PARAM
+                                                    * Referenced by:
+                                                    *   '<S17>/hover_throttle'
+                                                    *   '<S23>/hover_throttle'
+                                                    *   '<S29>/hover_throttle'
+                                                    *   '<S35>/hover_throttle'
+                                                    *   '<S41>/hover_throttle'
+                                                    *   '<S47>/hover_throttle'
+                                                    *   '<S53>/hover_throttle'
+                                                    *   '<S59>/hover_throttle'
+                                                    *   '<S92>/Saturation'
+                                                    *   '<S68>/Saturation'
+                                                    *   '<S68>/Saturation1'
+                                                    *   '<S101>/kd'
+                                                    *   '<S101>/Saturation'
+                                                    *   '<S102>/ki'
+                                                    *   '<S102>/Discrete-Time Integrator'
+                                                    *   '<S103>/kp'
+                                                    *   '<S115>/kd'
+                                                    *   '<S115>/Saturation'
+                                                    *   '<S116>/Constant'
+                                                    *   '<S116>/ki'
+                                                    *   '<S116>/Discrete-Time Integrator'
+                                                    *   '<S117>/kp'
+                                                    *   '<S85>/Constant1'
+                                                    *   '<S85>/Constant2'
+                                                    *   '<S74>/gain1'
+                                                    *   '<S74>/gain2'
+                                                    *   '<S74>/gain3'
+                                                    *   '<S74>/Saturation'
+                                                    *   '<S75>/gain1'
+                                                    *   '<S75>/gain2'
+                                                    *   '<S75>/gain3'
+                                                    *   '<S75>/Discrete-Time Integrator'
+                                                    *   '<S76>/gain1'
+                                                    *   '<S76>/gain2'
+                                                    *   '<S76>/gain3'
+                                                    */
 extern struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S3>/Constant'
                                                      */
