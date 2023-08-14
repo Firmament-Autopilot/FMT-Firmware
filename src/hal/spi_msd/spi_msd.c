@@ -430,14 +430,14 @@ static rt_err_t rt_msd_init(rt_device_t dev)
         return RT_EIO;
     }
 
-    /* config spi */
-    {
-        struct rt_spi_configuration cfg;
-        cfg.data_width = 8;
-        cfg.mode = RT_SPI_MODE_0 | RT_SPI_MSB; /* SPI Compatible Modes 0 */
-        cfg.max_hz = 1000 * 400;               /* 400kbit/s */
-        rt_spi_configure(msd->spi_device, &cfg);
-    } /* config spi */
+    // /* config spi */
+    // {
+    //     struct rt_spi_configuration cfg;
+    //     cfg.data_width = 8;
+    //     cfg.mode = RT_SPI_MODE_0 | RT_SPI_MSB; /* SPI Compatible Modes 0 */
+    //     cfg.max_hz = 1000 * 400;               /* 400kbit/s */
+    //     rt_spi_configure(msd->spi_device, &cfg);
+    // } /* config spi */
 
     /* init SD card */
     {
