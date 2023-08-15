@@ -39,27 +39,39 @@ target = "CHUANYUN_F2S"\n
 	range = [1000,2000]\n
 	[[pilot-cmd.mode]]\n
 	mode = 5\n
-	channel = 8\n
+	channel = 6\n
 	range = [1000,1200]\n
 	[[pilot-cmd.mode]]\n
 	mode = 4\n
-	channel = 8\n
+	channel = 6\n
 	range = [1400,1600]\n
 	[[pilot-cmd.mode]]\n
 	mode = 3\n
-	channel = 8\n
+	channel = 6\n
 	range = [1800,2000]\n
 	[[pilot-cmd.command]]\n
 	type = 1\n
 	cmd = 1002\n
-	channel = 9\n
+	channel = 12\n
+	range = [1800,2000]\n
+	[[pilot-cmd.command]]\n
+	type = 1\n
+	cmd = 1003\n
+	channel = 8\n
+	range = [1800,2000]\n	
+	[[pilot-cmd.command]]\n
+	type = 1\n
+	cmd = 1005\n
+	channel = 11\n
 	range = [1800,2000]\n
 [mavproxy]\n
 	[[mavproxy.devices]]\n
+	chan = 1\n
 	type = "serial"\n
 	name = "serial7"\n
 	baudrate = 460800\n
 	[[mavproxy.devices]]\n
+	chan = 0\n
 	type = "bb_com"\n
 	name = "bb_com3"\n
 	auto-switch = true\n
@@ -72,4 +84,8 @@ target = "CHUANYUN_F2S"\n
     from = "control_out"\n
     to = "main_out"\n
     chan-map = [[1,2,3,4],[1,2,3,4]]\n
+    [[actuator.mappings]]\n
+    from = "rc_channels"\n
+    to = "main_out"\n
+    chan-map = [[5,7,8,9],[5,6,7,8]]\n
 );

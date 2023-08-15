@@ -1,7 +1,7 @@
 # Modify this file to decide which module are compiled
 
 MODULES = [
-    'calibration/*.c',
+    # 'calibration/*.c',
     'console/*.c',
     'system/*.c',
     'ipc/*.c',
@@ -32,6 +32,7 @@ MODULES += [
     'syscmd/cmd_param.c',
     'syscmd/cmd_ps.c',
     'syscmd/cmd_calib.c',
+    'syscmd/cmd_rc.c',
     'syscmd/cmd_task.c',
     'syscmd/cmd_test.c',
 ]

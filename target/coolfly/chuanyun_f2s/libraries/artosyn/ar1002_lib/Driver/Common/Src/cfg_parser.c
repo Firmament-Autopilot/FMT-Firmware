@@ -5,6 +5,7 @@
 
 #include "cfg_parser.h"
 #include "debuglog.h"
+#include "drv_usart.h"
 
 /*
  * return 0:  data not valid

@@ -1,7 +1,7 @@
 /*****************************************************************************
 Copyright: 2016-2020, Artosyn. Co., Ltd.
 File name: test_search_id
-Description: 
+Description:
 Author: Artosy Software Team
 Version: 0.0.1
 Date: 2017/12/14
@@ -24,17 +24,15 @@ History:
 #include "bb_led.h"
 
 uint32_t flag_searchIdTimerStart = 0;
-uint8_t vt_id_timer_start_flag = 0;
+uint8_t  vt_id_timer_start_flag  = 0;
 
 _EXT_DTCM1 void BB_skyRcIdEventHandler(void* p)
 {
     STRU_SysEvent_DEV_BB_STATUS* pstru_status = (STRU_SysEvent_DEV_BB_STATUS*)p;
-    uint8_t id[7];
+    uint8_t                      id[7];
 
     if (pstru_status->pid == BB_GET_RCID) {
-        DLOG_Critical("Get rcid: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x,rssi_a %d, rssi_b %d", pstru_status->rcid[0], pstru_status->rcid[1],
-                                                                       pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4],
-                                                                       pstru_status->agc1,pstru_status->agc2);
+        DLOG_Critical("Get rcid: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x,rssi_a %d, rssi_b %d", pstru_status->rcid[0], pstru_status->rcid[1], pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4], pstru_status->agc1, pstru_status->agc2);
     }
 
     if (pstru_status->pid == BB_SKY_SEARCHING_STATES_CHAGE) {
@@ -48,32 +46,37 @@ _EXT_DTCM1 void BB_skyRcIdEventHandler(void* p)
             if (!vt_id_timer_start_flag) {
                 vt_id_timer_start_flag = 1;
                 HAL_TIMER_Start(GET_VT_ID_TIMER);
-                DLOG_Warning("got vtid: %dus timer start",GET_VT_ID_TIMEOUT);
+                DLOG_Warning("got vtid: %dus timer start", GET_VT_ID_TIMEOUT);
             }
             DLOG_Warning("search id: SKY_WAIT_RC_ID_MATCH");
         } else if (SKY_RC_SEARCH_END == pstru_status->e_sky_searchState) {
-             DLOG_Warning("search id: SKY_RC_SEARCH_END rc id: %x %x %x %x %x; vt id: %x %x",
-                           pstru_status->rcid[0], pstru_status->rcid[1], pstru_status->rcid[2], pstru_status->rcid[3], pstru_status->rcid[4],
-                           pstru_status->vtid[0], pstru_status->vtid[1]);
+            DLOG_Warning("search id: SKY_RC_SEARCH_END rc id: %x %x %x %x %x; vt id: %x %x",
+                         pstru_status->rcid[0],
+                         pstru_status->rcid[1],
+                         pstru_status->rcid[2],
+                         pstru_status->rcid[3],
+                         pstru_status->rcid[4],
+                         pstru_status->vtid[0],
+                         pstru_status->vtid[1]);
 
             if (flag_searchIdTimerStart) {
                 HAL_TIMER_Stop(SEARCH_ID_TIMER);
                 flag_searchIdTimerStart = 0;
-                vt_id_timer_start_flag = 0;
+                vt_id_timer_start_flag  = 0;
             }
         }
     }
 }
 
-uint8_t timeout_loop = 0;
+uint8_t         timeout_loop = 0;
 _EXT_DTCM1 void TIMHAL_IRQSearchIdHandler(uint32_t u32_vectorNum)
 {
     if (timeout_loop++ > 3) {
-        DLOG_Warning("search time out %d us", SEARCH_ID_TIMEOUT*timeout_loop);
+        DLOG_Warning("search time out %d us", SEARCH_ID_TIMEOUT * timeout_loop);
         HAL_TIMER_Stop(SEARCH_ID_TIMER);
         flag_searchIdTimerStart = 0;
         HAL_BB_StopSearchRcId();
-        timeout_loop = 0;
+        timeout_loop           = 0;
         vt_id_timer_start_flag = 0;
 
         set_link_led_status_unlock();
@@ -107,7 +110,7 @@ _EXT_DTCM1 void BB_Sky_SearchIdHandler(void* p)
         vt_id_timer_start_flag = 0;
     }
     if (HAL_OK == HAL_TIMER_RegisterTimer(GET_VT_ID_TIMER, GET_VT_ID_TIMEOUT, TIMHAL_IRQGetVtIdHandler)) {
-        //flag_searchIdTimerStart = 1;
+        // flag_searchIdTimerStart = 1;
         HAL_TIMER_Stop(GET_VT_ID_TIMER);
         vt_id_timer_start_flag = 0;
     } else {
@@ -132,12 +135,12 @@ _EXT_DTCM1 void BB_Sky_SearchIdHandler(void* p)
 #define MAX_SEARCH_DEV_ID_NUM (8)
 #define DEV_ID_LEN            (7)
 
-#define MIN(a, b) (((a) > (b)) ? (b) : (a))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b)             (((a) > (b)) ? (b) : (a))
+#define MAX(a, b)             (((a) > (b)) ? (a) : (b))
 
 typedef struct
 {
-    uint8_t id[DEV_ID_LEN]; //head 2 byte vt id, tail 5 byte rc id
+    uint8_t  id[DEV_ID_LEN]; // head 2 byte vt id, tail 5 byte rc id
     uint16_t rssi_a;
     uint16_t rssi_b;
 } STRU_ID_AND_RSSI;
@@ -145,7 +148,7 @@ typedef struct
 typedef struct
 {
     STRU_ID_AND_RSSI dev_info[MAX_SEARCH_DEV_ID_NUM];
-    uint8_t index;
+    uint8_t          index;
 } STRU_DEV_INFO_LIST;
 
 static STRU_DEV_INFO_LIST st_DevInfoList;
@@ -175,13 +178,13 @@ uint8_t find_farthest_dev(void)
     uint8_t i;
     uint8_t rssi, farthest_dev;
 
-    rssi = 0;
+    rssi         = 0;
     farthest_dev = 0;
     for (i = 0; i < MAX_SEARCH_DEV_ID_NUM; i++) {
         uint8_t avg_rssi;
         avg_rssi = (st_DevInfoList.dev_info[i].rssi_a + st_DevInfoList.dev_info[i].rssi_b) / 2;
         if (avg_rssi > rssi) {
-            rssi = avg_rssi;
+            rssi         = avg_rssi;
             farthest_dev = i;
         }
     }
@@ -206,7 +209,7 @@ uint8_t select_nearest_dev(void)
         uint8_t min_rssi;
         min_rssi = MIN(st_DevInfoList.dev_info[i].rssi_a, st_DevInfoList.dev_info[i].rssi_b);
         if (min_rssi < rssi) {
-            rssi = min_rssi;
+            rssi        = min_rssi;
             nearest_dev = i;
         }
     }
@@ -220,7 +223,7 @@ void add_dev_info(uint8_t* pid, uint8_t rssi_a, uint8_t rssi_b)
     uint8_t i, j;
     uint8_t bFind, bIsOverMaxSupportDevNum, cnt;
 
-    bFind = false;
+    bFind                   = false;
     bIsOverMaxSupportDevNum = false;
 
     for (i = 0; i < st_DevInfoList.index; i++) {
@@ -246,7 +249,7 @@ void add_dev_info(uint8_t* pid, uint8_t rssi_a, uint8_t rssi_b)
     }
 
     if (st_DevInfoList.index >= MAX_SEARCH_DEV_ID_NUM) {
-        DLOG_Critical("over max %d support search dev num",MAX_SEARCH_DEV_ID_NUM);
+        DLOG_Critical("over max %d support search dev num", MAX_SEARCH_DEV_ID_NUM);
         bIsOverMaxSupportDevNum = true;
     }
 
@@ -302,7 +305,7 @@ void reset_dev_info(void)
 _EXT_DTCM1
 static void run_bb_match_id(void* parameter)
 {
-    static uint8_t cnt = 0;
+    static uint8_t  cnt = 0;
     static uint32_t pin_value;
 
     HAL_GPIO_GetPin(EXTERN_SEARCH_ID_PIN, &pin_value);
@@ -321,10 +324,10 @@ static void run_bb_match_id(void* parameter)
 
 _EXT_DTCM1_BSS
 static struct WorkItem bb_match_id_item = {
-    .name = "bb_match_id",
-    .period = 200,
+    .name          = "bb_match_id",
+    .period        = 200,
     .schedule_time = 1000,
-    .run = run_bb_match_id
+    .run           = run_bb_match_id
 };
 
 _EXT_DTCM1

@@ -175,16 +175,16 @@ fmt_err_t rgb_led_set_mode(uint8_t mode)
     return FMT_EOK;
 }
 
-static struct WorkItem led_item = {
-    .name = "led",
-    .period = 1000,
-    .schedule_time = 0,
-    .run = run_led
-};
+// static struct WorkItem led_item = {
+//     .name = "led",
+//     .period = 1000,
+//     .schedule_time = 0,
+//     .run = run_led
+// };
 
 // static struct WorkItem rgb_led_item = {
 //     .name = "rgb_led",
-//     .period = 3000,
+//     .period = 10,
 //     .schedule_time = 0,
 //     .run = run_rgb_led
 // };
@@ -222,7 +222,7 @@ fmt_err_t led_control_init(void)
     WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
     RT_ASSERT(lp_wq != NULL && hp_wq != NULL);
 
-    FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
+    // FMT_CHECK(workqueue_schedule_work(lp_wq, &led_item));
     /* rgb led work in high priority workqueue to try not blocking other i2c user */
     // FMT_CHECK(workqueue_schedule_work(hp_wq, &rgb_led_item));
 

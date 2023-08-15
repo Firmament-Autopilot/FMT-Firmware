@@ -43,7 +43,14 @@ path += [cwd + '/Driver/Chip/SPI/Inc']
 path += [cwd + '/Driver/Chip/SRAM/Inc']
 path += [cwd + '/Driver/Chip/SysCtl/Inc']
 path += [cwd + '/Driver/Chip/UART/Inc']
-
+path += [cwd + '/Driver/Chip/USB/USB_Device/Core/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_Device/Class/HID/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_LL_Driver/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_Host/Core/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_Host/Class/MSC/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_Host/Class/UVC/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_Host/Class/CDC/Inc']
+path += [cwd + '/Driver/Chip/USB/USB_Host/Class/MTP/Inc']
 
 
 src += Glob('Driver/Chip/DMA/Src/dma.c')
@@ -69,6 +76,28 @@ src += Glob('Driver/Chip/SPI/Src/spi.c')
 src += Glob('Driver/Chip/BB/Src/bb_spi.c')
 src += Glob('Driver/Chip/BB/Src/bb_ctrl.c')
 src += Glob('Driver/Chip/BB/Src/bb_uart_com.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/MSC/Src/usbh_msc_bot.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/MSC/Src/usbh_msc.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/MSC/Src/usbh_msc_scsi.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/UVC/Src/usbh_uvc.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/CDC/Src/usbh_cdc.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/CDC/Src/r8152.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/MTP/Src/usbh_mtp.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Class/MTP/Src/usbh_mtp_ptp.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Core/Src/usbh_conf.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Core/Src/usbh_ctlreq.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Core/Src/usbh_ioreq.c')
+# src += Glob('Driver/Chip/USB/USB_Host/Core/Src/usbh_pipes.c')
+src += Glob('Driver/Chip/USB/USB_Device/Class/HID/Src/usbd_hid.c')
+src += Glob('Driver/Chip/USB/USB_Device/Class/HID/Src/usbd_hid_desc.c')
+src += Glob('Driver/Chip/USB/USB_Device/Core/Src/usbd_conf.c')
+src += Glob('Driver/Chip/USB/USB_Device/Core/Src/usbd_core.c')
+src += Glob('Driver/Chip/USB/USB_Device/Core/Src/usbd_ctlreq.c')
+src += Glob('Driver/Chip/USB/USB_Device/Core/Src/usbd_ioreq.c')
+src += Glob('Driver/Chip/USB/USB_LL_Driver/Src/stm32f7xx_ll_usb.c')
+src += Glob('Driver/Chip/USB/USB_LL_Driver/Src/stm32f7xx_hal_pcd.c')
+src += Glob('Driver/Chip/USB/USB_LL_Driver/Src/stm32f7xx_hal_pcd_ex.c')
+src += Glob('Driver/Chip/USB/USB_LL_Driver/Src/stm32f7xx_hal_hcd.c')
 
 
 
@@ -115,7 +144,11 @@ src += Glob('Driver/HAL/Src/hal_sram_sky.c')
 src += Glob('Driver/HAL/Src/hal_sys_ctl.c')
 src += Glob('Driver/HAL/Src/hal_timer.c')
 src += Glob('Driver/HAL/Src/hal_uart.c')
+src += Glob('Driver/HAL/Src/hal_usb_device.c')
+src += Glob('Driver/HAL/Src/hal_usb_host.c')
+src += Glob('Driver/HAL/Src/hal_usb_otg.c')
 
+           
 
 # Utility
 path += [cwd + '/Driver/Utility/Inc']

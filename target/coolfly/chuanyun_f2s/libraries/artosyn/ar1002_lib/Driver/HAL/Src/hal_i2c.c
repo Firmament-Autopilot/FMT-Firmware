@@ -297,7 +297,7 @@ HAL_RET_T HAL_I2C_MasterWriteData(ENUM_HAL_I2C_COMPONENT e_i2cComponent,
                  return HAL_TIME_OUT;
             }
 
-            SysTicks_DelayUS(100);
+            SysTicks_DelayUS(1);
         }
     }
     

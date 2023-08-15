@@ -329,34 +329,6 @@ int BB_GetDevInfo(void)
     return 0;
 }
 
-/** 
- * @brief       
- * @param   
- * @retval      
- * @note      
- */
-int BB_SwtichOnOffCh(uint8_t u8_ch, uint8_t u8_data)
-{
-    uint8_t u8_regVal;
-
-    u8_regVal = BB_ReadReg(PAGE1, 0x8D);
-    if ((0 == u8_ch) && (0 == u8_data)) {
-        u8_regVal &= ~(0x40); // channel1
-        BB_WriteReg(PAGE1, 0x8D, u8_regVal);
-    } else if ((0 == u8_ch) && (1 == u8_data)) {
-        u8_regVal |= (0x40); // channel1
-        BB_WriteReg(PAGE1, 0x8D, u8_regVal);
-    } else if ((1 == u8_ch) && (0 == u8_data)) {
-        u8_regVal &= ~(0x80); // channel2
-        BB_WriteReg(PAGE1, 0x8D, u8_regVal);
-    } else if ((1 == u8_ch) && (1 == u8_data)) {
-        u8_regVal |= (0x80); // channel2
-        BB_WriteReg(PAGE1, 0x8D, u8_regVal);
-    } else {
-    }
-
-    return 0;
-}
 
 int BB_GetRcId(uint8_t* pu8_rcId, uint8_t bufsize)
 {

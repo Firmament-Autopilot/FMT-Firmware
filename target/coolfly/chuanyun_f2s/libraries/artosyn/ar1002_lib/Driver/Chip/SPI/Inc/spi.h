@@ -122,11 +122,16 @@ int32_t SPI_write_read(ENUM_SPI_COMPONENT en_id,
                        uint8_t* ptr_wbuf, uint32_t u32_wsize,
                        uint8_t* ptr_rbuf, uint32_t u32_rsize);
 
+int32_t SPI_write_read_dbg(ENUM_SPI_COMPONENT en_id,
+                       uint8_t* ptr_wbuf, uint32_t u32_wsize,
+                       uint8_t* ptr_rbuf, uint32_t u32_rsize);
+
 int32_t CF_SPI_write_read(ENUM_SPI_COMPONENT en_id,
                           uint8_t* ptr_wbuf, uint32_t u32_wsize,
                           uint8_t* ptr_rbuf, uint32_t u32_rsize);
 
 void SPI_IntrSrvc(uint32_t u32_vectorNum);
+void SPI_IntrSrvc_dbg(uint32_t u32_vectorNum);
 
 int SPI_GetBusyStatus(ENUM_SPI_COMPONENT en_id);
 

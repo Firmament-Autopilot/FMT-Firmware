@@ -9,6 +9,7 @@ extern "C"
 
 #include <stdio.h>
 // #include "module/console/console.h"
+#include "module/console/console.h"
 
 #define LOG_LEVEL_CRITICAL 1
 #define LOG_LEVEL_ERROR 2

@@ -52,7 +52,7 @@ int BB_GetDevInfo(void);
  * @retval      
  * @note      
  */
-int BB_SwtichOnOffCh(uint8_t u8_ch, uint8_t u8_data);
+
 
 void BB_grd_notify_rc_skip_freq(uint8_t *u8_rcfrq);
 
@@ -115,7 +115,7 @@ void rc_set_unlock_patten(uint8_t chg_bw);
 void bb_get_rc_channel();
 void bb_update_rc_patten_size();
 void sky_notify_grd_goto_unlock_patten();
-uint8_t dec2bit_index(uint8_t d);
+// uint8_t dec2bit_index(uint8_t d);
 signed char int2char(int data);
 void sky_setRcpatten(uint8_t *msg);
 void GetSweepCh_normalsweep(uint8_t u8_bandidx, uint8_t u8_ch,signed char data,ENUM_BB_MODE mode);
