@@ -24,13 +24,13 @@
 #include <firmament.h>
 
 struct up_dev_s {
-    uint32_t uartbase; /* Base address of UART registers */
-    uint32_t baud;     /* Configured baud */
-    uint32_t ier;      /* Saved IER value */
-    uint8_t irq;       /* IRQ associated with this UART */
-    uint8_t parity;    /* 0=none, 1=odd, 2=even */
-    uint8_t bits;      /* Number of bits (7 or 8) */
-    bool stopbits2;    /* true: Configure with 2 stop bits instead of 1 */
+    uint32_t uartbase;  /* Base address of UART registers */
+    uint32_t baud;      /* Configured baud */
+    uint32_t ier;       /* Saved IER value */
+    uint8_t  irq;       /* IRQ associated with this UART */
+    uint8_t  parity;    /* 0=none, 1=odd, 2=even */
+    uint8_t  bits;      /* Number of bits (7 or 8) */
+    bool     stopbits2; /* true: Configure with 2 stop bits instead of 1 */
 };
 
 typedef struct
@@ -43,7 +43,7 @@ typedef struct
 
 struct ar_uart {
     struct up_dev_s uart_device;
-    IRQn_Type irq;
+    IRQn_Type       irq;
     struct ar_uart_dma {
         /* dma instance */
         DMA_TypeDef* dma_device;
@@ -119,6 +119,19 @@ struct ar_uart {
     }
 
 /* Default config for serial_configure structure */
+#define SERIAL6_DEFAULT_CONFIG                    \
+    {                                             \
+        BAUD_RATE_115200,    /* 57600 bits/s */   \
+            DATA_BITS_8,     /* 8 databits */     \
+            STOP_BITS_1,     /* 1 stopbit */      \
+            PARITY_NONE,     /* No parity  */     \
+            BIT_ORDER_LSB,   /* LSB first sent */ \
+            NRZ_NORMAL,      /* Normal mode */    \
+            SERIAL_RB_BUFSZ, /* Buffer size */    \
+            0                                     \
+    }
+
+/* Default config for serial_configure structure */
 #define SERIAL7_DEFAULT_CONFIG                    \
     {                                             \
         BAUD_RATE_460800,    /* 57600 bits/s */   \
@@ -131,48 +144,55 @@ struct ar_uart {
             0                                     \
     }
 
-static int usart_getc(struct serial_device* serial);
-static int usart_putc(struct serial_device* serial, char c);
+static int      usart_getc(struct serial_device* serial);
+static int      usart_putc(struct serial_device* serial, char c);
 static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg);
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg);
-static void uart_isr(struct serial_device* serial);
+static void     uart_isr(struct serial_device* serial);
 
 // #ifdef USING_UART7
 static struct serial_device serial0; // FMU Debug
 static struct serial_device serial1; // GPS
 static struct serial_device serial4; // dis
 static struct serial_device serial5; // flow
+static struct serial_device serial6; // opt
 static struct serial_device serial7; // MAVLINK
 
 /* UART0 device driver structure */
 struct ar_uart uart0 = {
     .uart_device = UART0_BASE,
-    .irq = UART_INTR0_VECTOR_NUM,
-    .dma = { 0 },
+    .irq         = UART_INTR0_VECTOR_NUM,
+    .dma         = { 0 },
 };
 
 struct ar_uart uart1 = {
     .uart_device = UART1_BASE,
-    .irq = UART_INTR1_VECTOR_NUM,
-    .dma = { 0 },
+    .irq         = UART_INTR1_VECTOR_NUM,
+    .dma         = { 0 },
 };
 
 struct ar_uart uart4 = {
     .uart_device = UART4_BASE,
-    .irq = UART_INTR4_VECTOR_NUM,
-    .dma = { 0 },
+    .irq         = UART_INTR4_VECTOR_NUM,
+    .dma         = { 0 },
 };
 
 struct ar_uart uart5 = {
     .uart_device = UART5_BASE,
-    .irq = UART_INTR5_VECTOR_NUM,
-    .dma = { 0 },
+    .irq         = UART_INTR5_VECTOR_NUM,
+    .dma         = { 0 },
+};
+
+struct ar_uart uart6 = {
+    .uart_device = UART6_BASE,
+    .irq         = UART_INTR6_VECTOR_NUM,
+    .dma         = { 0 },
 };
 
 struct ar_uart uart7 = {
     .uart_device = UART7_BASE,
-    .irq = UART_INTR7_VECTOR_NUM,
-    .dma = { 0 },
+    .irq         = UART_INTR7_VECTOR_NUM,
+    .dma         = { 0 },
 };
 
 void UART0_IRQHandler(void)
@@ -215,6 +235,16 @@ void UART5_IRQHandler(void)
     rt_interrupt_leave();
 }
 
+void UART6_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial6);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+
 void UART7_IRQHandler(void)
 {
     /* enter interrupt */
@@ -243,8 +273,8 @@ static inline void up_serialout(struct up_dev_s* priv, int offset, uint32_t valu
 static int up_setup(struct up_dev_s* dev)
 {
     struct up_dev_s* priv = dev;
-    uint16_t dl;
-    uint32_t lcr;
+    uint16_t         dl;
+    uint32_t         lcr;
     up_serialout(priv, AR_UART_FCR_OFFSET, (UART_FCR_RXRST | UART_FCR_TXRST));
 
     if (priv->uartbase == AR_UART0_BASE) {
@@ -360,10 +390,10 @@ static void up_send(struct up_dev_s* dev, int ch)
 static int up_receive(struct up_dev_s* dev, uint32_t* status)
 {
     struct up_dev_s* priv = dev;
-    uint32_t rbr;
+    uint32_t         rbr;
 
     *status = up_serialin(priv, AR_UART_LSR_OFFSET);
-    rbr = up_serialin(priv, AR_UART_RBR_OFFSET);
+    rbr     = up_serialin(priv, AR_UART_RBR_OFFSET);
 
     return rbr;
 }
@@ -380,7 +410,7 @@ static void uart_isr(struct serial_device* serial)
     struct ar_uart* uart = (struct ar_uart*)serial->parent.user_data;
 
     uint32_t status;
-    int passes;
+    int      passes;
 
     for (passes = 0; passes < 256; passes++) {
 
@@ -389,8 +419,8 @@ static void uart_isr(struct serial_device* serial)
         if ((status & UART_IIR_INTID_MASK) == UART_IIR_INTID_NIP) //
         {
             /* Break out of the loop when there is no longer a
-        * pending interrupt
-        */
+             * pending interrupt
+             */
 
             break;
             // return;
@@ -516,7 +546,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
 {
     struct ar_uart* uart;
-    rt_uint32_t ctrl_arg = (rt_uint32_t)(arg);
+    rt_uint32_t     ctrl_arg = (rt_uint32_t)(arg);
 
     RT_ASSERT(serial != RT_NULL);
     uart = (struct ar_uart*)serial->parent.user_data;
@@ -570,7 +600,7 @@ static int usart_putc(struct serial_device* serial, char c)
 
 static int usart_getc(struct serial_device* serial)
 {
-    int ch = -1;
+    int             ch = -1;
     struct ar_uart* uart;
 
     RT_ASSERT(serial != RT_NULL);
@@ -605,11 +635,17 @@ static const struct usart_ops _usart_ops = {
 #define UART5_TX_Pin HAL_GPIO_NUM115
 #define UART5_RX_Pin HAL_GPIO_NUM108
 
+#define UART6_TX_Pin HAL_GPIO_NUM116
+#define UART6_RX_Pin HAL_GPIO_NUM109
+
 rt_err_t drv_usart_init(void)
 {
 
     HAL_GPIO_SetMode(UART5_TX_Pin, HAL_GPIO_PIN_MODE0);
     HAL_GPIO_SetMode(UART5_RX_Pin, HAL_GPIO_PIN_MODE0);
+
+    HAL_GPIO_SetMode(UART6_TX_Pin, HAL_GPIO_PIN_MODE0);
+    HAL_GPIO_SetMode(UART6_RX_Pin, HAL_GPIO_PIN_MODE0);
 
     rt_err_t rt_err = RT_EOK;
 
@@ -617,7 +653,7 @@ rt_err_t drv_usart_init(void)
     serial0.ops = &_usart_ops;
 
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
-    serial0.config = serial0_config;
+    serial0.config                         = serial0_config;
 
     NVIC_Configuration(&uart0);
 
@@ -631,7 +667,7 @@ rt_err_t drv_usart_init(void)
     serial1.ops = &_usart_ops;
 
     struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
-    serial1.config = serial1_config;
+    serial1.config                         = serial1_config;
 
     NVIC_Configuration(&uart1);
 
@@ -644,7 +680,7 @@ rt_err_t drv_usart_init(void)
     serial4.ops = &_usart_ops;
 
     struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
-    serial4.config = serial4_config;
+    serial4.config                         = serial4_config;
 
     NVIC_Configuration(&uart4);
 
@@ -658,7 +694,7 @@ rt_err_t drv_usart_init(void)
     serial5.ops = &_usart_ops;
 
     struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
-    serial5.config = serial5_config;
+    serial5.config                         = serial5_config;
 
     NVIC_Configuration(&uart5);
 
@@ -668,11 +704,25 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart5);
 
+    //
+    serial6.ops = &_usart_ops;
+
+    struct serial_configure serial6_config = SERIAL6_DEFAULT_CONFIG;
+    serial6.config                         = serial6_config;
+
+    NVIC_Configuration(&uart6);
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial6,
+                                  "serial6",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart6);
+
     // mavlink
     serial7.ops = &_usart_ops;
 
     struct serial_configure serial7_config = SERIAL7_DEFAULT_CONFIG;
-    serial7.config = serial7_config;
+    serial7.config                         = serial7_config;
 
     NVIC_Configuration(&uart7);
 
@@ -689,15 +739,15 @@ rt_err_t drv_usart_init(void)
 
 void ar_uart_init(unsigned char index, unsigned int baud_rate)
 {
-    int devisor;
+    int                 devisor;
     volatile uart_type* uart_regs = (uart_type*)UART0_BASE;
-    uart_regs->IIR_FCR = UART_FCR_ENABLE_FIFO | UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT | UART_FCR_TRIGGER_14;
-    uart_regs->DLH_IER = 0x00000000;
-    uart_regs->LCR = UART_LCR_WLEN8 & ~(UART_LCR_STOP | UART_LCR_PARITY);
+    uart_regs->IIR_FCR            = UART_FCR_ENABLE_FIFO | UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT | UART_FCR_TRIGGER_14;
+    uart_regs->DLH_IER            = 0x00000000;
+    uart_regs->LCR                = UART_LCR_WLEN8 & ~(UART_LCR_STOP | UART_LCR_PARITY);
 
     devisor = 100000000 / (16 * baud_rate);
     uart_regs->LCR |= UART_LCR_DLAB;
-    uart_regs->DLH_IER = (devisor >> 8) & 0x000000ff;
+    uart_regs->DLH_IER     = (devisor >> 8) & 0x000000ff;
     uart_regs->RBR_THR_DLL = devisor & 0x000000ff;
     uart_regs->LCR &= ~UART_LCR_DLAB;
     uart_regs->DLH_IER = 0x1;
@@ -717,13 +767,13 @@ static int skip_atoi(const char** s)
     return i;
 }
 
-#define ZEROPAD 1  /* pad with zero */
-#define SIGN    2  /* unsigned/signed long */
-#define PLUS    4  /* show plus */
-#define SPACE   8  /* space if plus */
-#define LEFT    16 /* left justified */
-#define SMALL   32 /* Must be 32 == 0x20 */
-#define SPECIAL 64 /* 0x */
+#define ZEROPAD           1  /* pad with zero */
+#define SIGN              2  /* unsigned/signed long */
+#define PLUS              4  /* show plus */
+#define SPACE             8  /* space if plus */
+#define LEFT              16 /* left justified */
+#define SMALL             32 /* Must be 32 == 0x20 */
+#define SPECIAL           64 /* 0x */
 
 #define __do_div(n, base) ({ \
 int __res; \
@@ -750,21 +800,21 @@ static char* number(char* str, long num, int base, int size, int precision,
 
     char tmp[66];
     char c, sign, locase;
-    int i;
+    int  i;
 
     /* locase = 0 or 0x20. ORing digits or letters with 'locase'
-	 * produces same digits or (maybe lowercased) letters */
+     * produces same digits or (maybe lowercased) letters */
     locase = (type & SMALL);
     if (type & LEFT)
         type &= ~ZEROPAD;
     if (base < 2 || base > 16)
         return NULL;
-    c = (type & ZEROPAD) ? '0' : ' ';
+    c    = (type & ZEROPAD) ? '0' : ' ';
     sign = 0;
     if (type & SIGN) {
         if (num < 0) {
             sign = '-';
-            num = -num;
+            num  = -num;
             size--;
         } else if (type & PLUS) {
             sign = '+';
@@ -816,17 +866,17 @@ static char* number(char* str, long num, int base, int size, int precision,
 
 int boot_vsprintf(char* buf, const char* fmt, va_list args)
 {
-    int len;
+    int           len;
     unsigned long num;
-    int i, base;
-    char* str;
-    const char* s;
+    int           i, base;
+    char*         str;
+    const char*   s;
 
     int flags; /* flags to number() */
 
     int field_width; /* width of output field */
     int precision;   /* min. # of digits for integers; max
-				   number of chars for from string */
+                                   number of chars for from string */
     int qualifier;   /* 'h', 'l', or 'L' for integer fields */
 
     for (str = buf; *fmt; ++fmt) {
@@ -907,7 +957,7 @@ int boot_vsprintf(char* buf, const char* fmt, va_list args)
             continue;
 
         case 's':
-            s = va_arg(args, char*);
+            s   = va_arg(args, char*);
             len = boot_strnlen(s, precision);
 
             if (!(flags & LEFT))
@@ -935,10 +985,10 @@ int boot_vsprintf(char* buf, const char* fmt, va_list args)
         case 'n':
             if (qualifier == 'l') {
                 long* ip = va_arg(args, long*);
-                *ip = (str - buf);
+                *ip      = (str - buf);
             } else {
                 int* ip = va_arg(args, int*);
-                *ip = (str - buf);
+                *ip     = (str - buf);
             }
             continue;
 
@@ -1005,9 +1055,9 @@ void boot_uart_puts(unsigned char index, const char* s)
 
 int BOOT_Printf(const char* fmt, ...)
 {
-    char printf_buf[1024];
+    char    printf_buf[1024];
     va_list args;
-    int printed;
+    int     printed;
 
     va_start(args, fmt);
     printed = boot_vsprintf(printf_buf, fmt, args);

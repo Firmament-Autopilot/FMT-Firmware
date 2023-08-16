@@ -318,7 +318,7 @@ unsigned int DLOG_Output(unsigned int byte_num)
                     console_write(tmp_buf, strlen(tmp_buf));
              
                     uint8_t c_test[1] = {'\r'};
-                    console_write(c_test, 1);
+                    console_write((char *)c_test, 1);
                     iByte += tmp_buf_index;
                 }
                 else

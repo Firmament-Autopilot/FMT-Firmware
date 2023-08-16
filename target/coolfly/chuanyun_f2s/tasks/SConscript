@@ -9,12 +9,23 @@ src = Glob('*.c')
 
 
 src += Glob('xc7027/xc7027.c')
+src += Glob('mini384/mini384.c')
+
+src += Glob('usb_protocol/usr_protocol.c')
+src += Glob('usb_protocol/usr_usb_task.c')
+src += Glob('usb_protocol/usr_wir_core.c')
+
+src += Glob('calibration/*.c')
+
 
 # if GetDepend(['RT_USING_CPLUSPLUS']):
 #     src += Glob('*.cpp')
 
 inc = [cwd] 
 inc += [cwd + '/xc7027']
+inc += [cwd + '/mini384']
+inc += [cwd + '/usb_protocol']
+inc += [cwd + '/calibration']
 
 
 group = DefineGroup('LocalTask', src, depend = [''], CPPPATH = inc)

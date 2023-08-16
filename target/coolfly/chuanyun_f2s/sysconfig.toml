@@ -16,17 +16,17 @@ target = "CHUANYUN_F2S"
     name = "mav_console"
     auto-switch = true
 
-# # Mavproxy Device Configuration
-# [mavproxy]
-#     [[mavproxy.devices]]
-#     type = "serial"
-#     name = "serial1"
-#     baudrate = 57600
+# Mavproxy Device Configuration
+[mavproxy]
+    [[mavproxy.devices]]
+    type = "serial"
+    name = "serial7"
+    baudrate = 460800
 
-#     [[mavproxy.devices]]
-#     type = "usb"
-#     name = "usbd0"
-#     auto-switch = true
+    [[mavproxy.devices]]
+    type = "bb_com"
+    name = "bb_com3"
+    auto-switch = true
 
 # Pilot CMD Configuration
 [pilot-cmd]
@@ -43,23 +43,23 @@ target = "CHUANYUN_F2S"
 
     [[pilot-cmd.mode]]
     mode = 5                    # Position mode
-    channel = 5
+    channel = 8
     range = [1000,1200]
 
     [[pilot-cmd.mode]]
     mode = 4                    # Altitude mode
-    channel = 5
+    channel = 8
     range = [1400,1600]
 
     [[pilot-cmd.mode]]
     mode = 3                    # Stabilize mode
-    channel = 5
+    channel = 8
     range = [1800,2000]
 
     [[pilot-cmd.command]]
     type = 1                    # 1:event | 2:status
     cmd = 1002                  # FMS_Cmd_Disarm
-    channel = 6
+    channel = 13
     range = [1800,2000]
 
 # Actuator Configuration

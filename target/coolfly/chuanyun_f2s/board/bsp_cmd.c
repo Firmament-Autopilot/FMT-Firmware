@@ -28,9 +28,16 @@
 static int handle_reboot_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
     printf("rebooting...\n");
-    printf("chuanyun will reboot, goodbye !~ \n");
+    printf("chuanyun will reboot in 3 seconds\n");
 
-    sys_msleep(10);
+    sys_msleep(1000);
+    printf("chuanyun will reboot in 2 seconds\n");
+    sys_msleep(1000);
+
+    printf("chuanyun will reboot in 1 seconds\n");
+    sys_msleep(1000);
+
+    printf("goodbye ~~~~~\n");
 
     HAL_GPIO_SetPin(HAL_GPIO_NUM74, HAL_GPIO_PIN_RESET);
 
@@ -48,7 +55,7 @@ FINSH_FUNCTION_EXPORT_ALIAS(cmd_reboot, __cmd_reboot, reboot the system);
 static int handle_reset_fct(int argc, char** argv, int optc, optv_t* optv)
 {
     FCT_Reset();
-    FCT_SaveToFlashTest();
+    // FCT_SaveToFlashTest();
 
     printf("fct reset finish~ \r\n");
     return 0;
@@ -115,81 +122,94 @@ int cmd_set_chip_id(int argc, char** argv)
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_set_chip_id, __cmd_set_chip_id, set<chip id1 ~5>);
 
 ////////////////////////////////////////////////////////////////////////////
-// swtich_mavlink
-
-/* coolfly use to switch mavlink channle */
-fmt_err_t __switch_mavlink_to_device(rt_device_t dev)
+// testlog
+static int handle_testlog_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
-    fmt_err_t ret = RT_ERROR;
 
-    mavproxy_device_info* list = get_device_list();
+    // SYS_EVENT_DumpAllListNodes();
+    SYS_EVENT_MallocFreeCntCheck();
 
-    for (int idx = 0; idx < get_device_num(); idx++) {
-        if (rt_device_find(list->name) == dev) {
-            ret = mavproxy_set_device(idx);
-            break;
-        }
-        list++;
-    }
-
-    return ret;
+    return 0;
 }
 
-static void sw_mav_show_usage(void)
+int cmd_testlog(int argc, char** argv)
 {
-    COMMAND_USAGE("sw_mav", "[options]");
-
-    PRINT_STRING("options:\n");
-    SHELL_COMMAND("serial", "swtich the mavlink to uart4");
-    SHELL_COMMAND("usb", "swtich the mavlink to usb");
-    SHELL_COMMAND("bb_com", "swtich the mavlink to bb_com, use Remote to show the mavlink");
+    return syscmd_process(argc, argv, handle_testlog_cmd);
 }
+FINSH_FUNCTION_EXPORT_ALIAS(cmd_testlog, __cmd_testlog, testlog the system);
+// /* coolfly use to switch mavlink channle */
+// fmt_err_t __switch_mavlink_to_device(rt_device_t dev)
+// {
+//     fmt_err_t ret = RT_ERROR;
 
-static int sw_mav_channel(const char* dev)
-{
-    fmt_err_t ret = RT_ERROR;
+//     mavproxy_device_info* list = get_device_list();
 
-    rt_device_t set_dev = rt_device_find(dev);
+//     for (int idx = 0; idx < get_device_num(); idx++) {
+//         if (rt_device_find(list->name) == dev) {
+//             ret = mavproxy_set_channel(idx);
+//             break;
+//         }
+//         list++;
+//     }
 
-    if (set_dev != RT_NULL) {
-        ret = __switch_mavlink_to_device(set_dev);
-        if (ret != RT_EOK) {
-            DLOG_Critical("mavproxy_set_device %s failed!!! \n", dev);
-        }
-    } else {
-        DLOG_Critical(" can't find the %s \n", dev);
-    }
-    return ret;
-}
+//     return ret;
+// }
 
-static int handle_sw_mav_cmd(int argc, char** argv, int optc, optv_t* optv)
-{
-    char* arg;
-    struct optparse options;
-    int res = EXIT_SUCCESS;
+// static void sw_mav_show_usage(void)
+// {
+//     COMMAND_USAGE("sw_mav", "[options]");
 
-    optparse_init(&options, argv);
+//     PRINT_STRING("options:\n");
+//     SHELL_COMMAND("serial", "swtich the mavlink to uart7");
+//     SHELL_COMMAND("usb", "swtich the mavlink to usb");
+//     SHELL_COMMAND("bb_com", "swtich the mavlink to bb_com, use Remote to show the mavlink");
+// }
 
-    arg = optparse_arg(&options);
-    if (arg) {
-        if (STRING_COMPARE(arg, "serial")) {
-            res = sw_mav_channel("serial4");
-        } else if (STRING_COMPARE(arg, "usb0")) {
-            res = sw_mav_channel("usb");
-        } else if (STRING_COMPARE(arg, "bb_com")) {
-            res = sw_mav_channel("bb_com3");
-        } else {
-            sw_mav_show_usage();
-        }
-    } else {
-        sw_mav_show_usage();
-    }
+// static int sw_mav_channel(const char* dev)
+// {
+//     fmt_err_t ret = RT_ERROR;
 
-    return res;
-}
+//     rt_device_t set_dev = rt_device_find(dev);
 
-int cmd_sw_mav(int argc, char** argv)
-{
-    return syscmd_process(argc, argv, handle_sw_mav_cmd);
-}
-FINSH_FUNCTION_EXPORT_ALIAS(cmd_sw_mav, __cmd_sw_mav, swtich mavlink channel);
+//     if (set_dev != RT_NULL) {
+//         ret = __switch_mavlink_to_device(set_dev);
+//         if (ret != RT_EOK) {
+//             DLOG_Critical("mavproxy_set_channel %s failed!!! \n", dev);
+//         }
+//     } else {
+//         DLOG_Critical(" can't find the %s \n", dev);
+//     }
+//     return ret;
+// }
+
+// static int handle_sw_mav_cmd(int argc, char** argv, int optc, optv_t* optv)
+// {
+//     char* arg;
+//     struct optparse options;
+//     int res = EXIT_SUCCESS;
+
+//     optparse_init(&options, argv);
+
+//     arg = optparse_arg(&options);
+//     if (arg) {
+//         if (STRING_COMPARE(arg, "serial")) {
+//             res = sw_mav_channel("serial7");
+//         } else if (STRING_COMPARE(arg, "usb0")) {
+//             res = sw_mav_channel("usb");
+//         } else if (STRING_COMPARE(arg, "bb_com")) {
+//             res = sw_mav_channel("bb_com3");
+//         } else {
+//             sw_mav_show_usage();
+//         }
+//     } else {
+//         sw_mav_show_usage();
+//     }
+
+//     return res;
+// }
+
+// int cmd_sw_mav(int argc, char** argv)
+// {
+//     return syscmd_process(argc, argv, handle_sw_mav_cmd);
+// }
+// FINSH_FUNCTION_EXPORT_ALIAS(cmd_sw_mav, __cmd_sw_mav, swtich mavlink channel);

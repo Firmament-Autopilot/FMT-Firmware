@@ -1,4 +1,4 @@
-scons
+scons -j4
 cp build/fmt_chuanyun-f2s.bin package_bin/
 cd package_bin/
 ./joint2flash_cf.sh

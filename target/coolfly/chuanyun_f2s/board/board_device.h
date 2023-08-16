@@ -17,20 +17,112 @@
 #ifndef BOARD_DEVICE_H__
 #define BOARD_DEVICE_H__
 
-// #define BOARD_F2S
+// #define BOARD_JM_250
+// #define BOARD_F2S 1
+#define BOARD_LT_V1 1
+// #define BOARD_HK_HELI     1
 
-#define BOARD_JM_250
+#ifdef BOARD_JM_250
+    // #define USED_RAMTRON   1
 
-#define WD_DONE_GPIO   HAL_GPIO_NUM74
-#define VIDEO_LED_GPIO HAL_GPIO_NUM55
-#define LINK_LED_GPIO  HAL_GPIO_NUM54
+    // #define USED_BMI055   1
+    #define USED_BMI088       1
 
-#define RGB_R_GPIO HAL_GPIO_NUM66
-#define RGB_G_GPIO HAL_GPIO_NUM62
-#define RGB_B_GPIO HAL_GPIO_NUM58
+    #define USED_SPL06        1
+    // #define USED_MS5611     1
+    #define USED_RGB          1
 
-#define SENSOR_POWER_GPIO HAL_GPIO_NUM70
+    #define USED_MMC5983MA    1
 
-#define SPI1_SPEED_HZ 9000000
+    #define WD_DONE_GPIO      HAL_GPIO_NUM74
+    #define VIDEO_LED_GPIO    HAL_GPIO_NUM55
+    #define LINK_LED_GPIO     HAL_GPIO_NUM54
 
+    #define RGB_R_GPIO        HAL_GPIO_NUM66
+    #define RGB_G_GPIO        HAL_GPIO_NUM62
+    #define RGB_B_GPIO        HAL_GPIO_NUM58
+
+    #define SENSOR_POWER_GPIO HAL_GPIO_NUM70
+
+    #define SPI1_SPEED_HZ     9000000
+#endif
+
+#ifdef BOARD_F2S
+    // #define USED_RAMTRON   1
+
+    // #define USED_BMI055   1
+    #define USED_BMI088       1
+
+    #define USED_SPL06        1
+    // #define USED_MS5611     1
+    #define USED_RGB          1
+
+    #define USED_MMC5983MA    1
+
+    #define WD_DONE_GPIO      HAL_GPIO_NUM74
+    #define VIDEO_LED_GPIO    HAL_GPIO_NUM55
+    #define LINK_LED_GPIO     HAL_GPIO_NUM54
+
+    #define RGB_R_GPIO        HAL_GPIO_NUM66
+    #define RGB_G_GPIO        HAL_GPIO_NUM62
+    #define RGB_B_GPIO        HAL_GPIO_NUM58
+
+    #define SENSOR_POWER_GPIO HAL_GPIO_NUM70
+
+    #define SPI1_SPEED_HZ     9000000
+#endif
+
+#ifdef BOARD_LT_V1
+    // #define USED_RAMTRON   1
+
+    // #define USED_BMI055   1
+    #define USED_BMI088    1
+
+    // #define USED_SPL06 1
+    #define USED_MS5611    1
+    #define USED_RGB       1
+
+    #define USED_MMC5983MA 1
+
+    // #define USED_IST8310 1
+
+    #define WD_DONE_GPIO   HAL_GPIO_NUM74
+    #define VIDEO_LED_GPIO HAL_GPIO_NUM55
+    #define LINK_LED_GPIO  HAL_GPIO_NUM54
+
+    #define FUM_CTRL_GPIO  HAL_GPIO_NUM88
+
+    // #define RGB_R_GPIO HAL_GPIO_NUM66
+    // #define RGB_G_GPIO HAL_GPIO_NUM62
+    // #define RGB_B_GPIO HAL_GPIO_NUM58
+
+    // #define SENSOR_POWER_GPIO HAL_GPIO_NUM70
+
+    #define SPI1_SPEED_HZ  9000000
+#endif
+
+#ifdef BOARD_HK_HELI
+    // #define USED_RAMTRON   1
+
+    #define USED_BMI055    1
+    // #define USED_BMI088 1
+
+    #define USED_SPL06     1
+    // #define USED_MS5611 1
+    // #define USED_RGB    1
+
+    #define USED_IST8310   1
+
+    #define WD_DONE_GPIO   HAL_GPIO_NUM74
+    #define VIDEO_LED_GPIO HAL_GPIO_NUM55
+    #define LINK_LED_GPIO  HAL_GPIO_NUM54
+
+    // #define RGB_R_GPIO HAL_GPIO_NUM66
+    // #define RGB_G_GPIO HAL_GPIO_NUM62
+    // #define RGB_B_GPIO HAL_GPIO_NUM58
+
+    // #define SENSOR_POWER_GPIO HAL_GPIO_NUM70
+
+    #define SPI1_SPEED_HZ  9000000
+#endif
 #endif

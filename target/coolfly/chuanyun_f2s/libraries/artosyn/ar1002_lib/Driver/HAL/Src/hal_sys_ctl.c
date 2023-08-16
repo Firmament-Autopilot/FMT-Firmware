@@ -24,7 +24,7 @@ History:
 #include "interrupt.h"
 #include "driver_mutex.h"
 #include "bb_uart_com.h"
-#include "nosys.h"
+// #include "nosys.h"
 
 #include  "ar1002_hal.h"
 
@@ -220,7 +220,8 @@ HAL_RET_T HAL_SYS_CTL_Init(STRU_HAL_SYS_CTL_CONFIG *pst_usrHalSysCtlCfg)
 
 
     CPUINFO_ICacheEnable(pst_halSysCtlCfg->u8_icacheEnable);
-    CPUINFO_DCacheEnable(pst_halSysCtlCfg->u8_dcacheEnable);
+    // CPUINFO_DCacheEnable(pst_halSysCtlCfg->u8_dcacheEnable);
+    CPUINFO_DCacheEnable(0);
     
     return HAL_OK;
 }

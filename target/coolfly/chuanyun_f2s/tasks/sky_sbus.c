@@ -28,11 +28,11 @@
 #include "local_task.h"
 #include "sky_sbus.h"
 
-cf_rc_s sky_rc;
+cf_rc_s   sky_rc;
 cf_sbus_s sky_sbus;
 
-static rt_err_t ar_rc_configure(rc_dev_t rc, struct rc_configure* cfg);
-static rt_err_t ar_rc_control(rc_dev_t rc, int cmd, void* arg);
+static rt_err_t    ar_rc_configure(rc_dev_t rc, struct rc_configure* cfg);
+static rt_err_t    ar_rc_control(rc_dev_t rc, int cmd, void* arg);
 static rt_uint16_t ar_rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan_val);
 
 /* default config for rc device */
@@ -53,7 +53,7 @@ const static struct rc_ops _ar_rc_ops = {
 
 static struct rc_device ar_rc_dev = {
     .config = AR_RC_CONFIG_DEFAULT,
-    .ops = &_ar_rc_ops
+    .ops    = &_ar_rc_ops
 };
 
 typedef struct {
@@ -62,7 +62,7 @@ typedef struct {
 } ar_rc_data_t;
 
 static ar_rc_data_t rc_data;
-static uint8_t rc_updated;
+static uint8_t      rc_updated;
 
 static rt_err_t ar_rc_configure(rc_dev_t rc, struct rc_configure* cfg)
 {
@@ -154,16 +154,16 @@ static void cf_sbus_parse(void) // just for test
     }
 
     // parse the sbus
-    ch_sbus[0] = ((uint32_t)sky_sbus.sbus_buff[1] >> 0 | ((uint32_t)sky_sbus.sbus_buff[2] << 8)) & 0x07FF;
-    ch_sbus[1] = ((uint32_t)sky_sbus.sbus_buff[2] >> 3 | ((uint32_t)sky_sbus.sbus_buff[3] << 5)) & 0x07FF;
-    ch_sbus[2] = ((uint32_t)sky_sbus.sbus_buff[3] >> 6 | ((uint32_t)sky_sbus.sbus_buff[4] << 2) | (uint32_t)sky_sbus.sbus_buff[5] << 10) & 0x07FF;
-    ch_sbus[3] = ((uint32_t)sky_sbus.sbus_buff[5] >> 1 | ((uint32_t)sky_sbus.sbus_buff[6] << 7)) & 0x07FF;
-    ch_sbus[4] = ((uint32_t)sky_sbus.sbus_buff[6] >> 4 | ((uint32_t)sky_sbus.sbus_buff[7] << 4)) & 0x07FF;
-    ch_sbus[5] = ((uint32_t)sky_sbus.sbus_buff[7] >> 7 | ((uint32_t)sky_sbus.sbus_buff[8] << 1) | (uint32_t)sky_sbus.sbus_buff[9] << 9) & 0x07FF;
-    ch_sbus[6] = ((uint32_t)sky_sbus.sbus_buff[9] >> 2 | ((uint32_t)sky_sbus.sbus_buff[10] << 6)) & 0x07FF;
-    ch_sbus[7] = ((uint32_t)sky_sbus.sbus_buff[10] >> 5 | ((uint32_t)sky_sbus.sbus_buff[11] << 3)) & 0x07FF;
-    ch_sbus[8] = ((uint32_t)sky_sbus.sbus_buff[12] << 0 | ((uint32_t)sky_sbus.sbus_buff[13] << 8)) & 0x07FF;
-    ch_sbus[9] = ((uint32_t)sky_sbus.sbus_buff[13] >> 3 | ((uint32_t)sky_sbus.sbus_buff[14] << 5)) & 0x07FF;
+    ch_sbus[0]  = ((uint32_t)sky_sbus.sbus_buff[1] >> 0 | ((uint32_t)sky_sbus.sbus_buff[2] << 8)) & 0x07FF;
+    ch_sbus[1]  = ((uint32_t)sky_sbus.sbus_buff[2] >> 3 | ((uint32_t)sky_sbus.sbus_buff[3] << 5)) & 0x07FF;
+    ch_sbus[2]  = ((uint32_t)sky_sbus.sbus_buff[3] >> 6 | ((uint32_t)sky_sbus.sbus_buff[4] << 2) | (uint32_t)sky_sbus.sbus_buff[5] << 10) & 0x07FF;
+    ch_sbus[3]  = ((uint32_t)sky_sbus.sbus_buff[5] >> 1 | ((uint32_t)sky_sbus.sbus_buff[6] << 7)) & 0x07FF;
+    ch_sbus[4]  = ((uint32_t)sky_sbus.sbus_buff[6] >> 4 | ((uint32_t)sky_sbus.sbus_buff[7] << 4)) & 0x07FF;
+    ch_sbus[5]  = ((uint32_t)sky_sbus.sbus_buff[7] >> 7 | ((uint32_t)sky_sbus.sbus_buff[8] << 1) | (uint32_t)sky_sbus.sbus_buff[9] << 9) & 0x07FF;
+    ch_sbus[6]  = ((uint32_t)sky_sbus.sbus_buff[9] >> 2 | ((uint32_t)sky_sbus.sbus_buff[10] << 6)) & 0x07FF;
+    ch_sbus[7]  = ((uint32_t)sky_sbus.sbus_buff[10] >> 5 | ((uint32_t)sky_sbus.sbus_buff[11] << 3)) & 0x07FF;
+    ch_sbus[8]  = ((uint32_t)sky_sbus.sbus_buff[12] << 0 | ((uint32_t)sky_sbus.sbus_buff[13] << 8)) & 0x07FF;
+    ch_sbus[9]  = ((uint32_t)sky_sbus.sbus_buff[13] >> 3 | ((uint32_t)sky_sbus.sbus_buff[14] << 5)) & 0x07FF;
     ch_sbus[10] = ((uint32_t)sky_sbus.sbus_buff[14] >> 6 | ((uint32_t)sky_sbus.sbus_buff[15] << 2) | (uint32_t)sky_sbus.sbus_buff[16] << 10) & 0x07FF;
     ch_sbus[11] = ((uint32_t)sky_sbus.sbus_buff[16] >> 1 | ((uint32_t)sky_sbus.sbus_buff[17] << 7)) & 0x07FF;
     ch_sbus[12] = ((uint32_t)sky_sbus.sbus_buff[17] >> 4 | ((uint32_t)sky_sbus.sbus_buff[18] << 4)) & 0x07FF;
@@ -181,20 +181,20 @@ static void cf_sbus_parse(void) // just for test
 }
 
 /**
-* @brief  read BaseBand data,then Output from Hal uart.
-* @param  data and data len
-* @retval date len
-* @note   This function only called by sky
-*/
+ * @brief  read BaseBand data,then Output from Hal uart.
+ * @param  data and data len
+ * @retval date len
+ * @note   This function only called by sky
+ */
 
 void sky_bb_spi_irq_handler(void* p)
 {
 
 #define BB_READ_MAX_LEN 32
-    uint32_t cnt;
-    uint8_t buffer[BB_READ_MAX_LEN];
+    uint32_t  cnt;
+    uint8_t   buffer[BB_READ_MAX_LEN];
     HAL_RET_T ret;
-    uint8_t i;
+    uint8_t   i;
 
     cnt = 0;
     ret = HAL_BB_ComReceiveMsg(BB_COM_SESSION_SPI, buffer, BB_READ_MAX_LEN, &cnt);
@@ -226,14 +226,14 @@ static void run_sbus_init(void* parameter)
 {
     HAL_RET_T ret;
 
-    //init BaseBand rt-uart function
+    // init BaseBand rt-uart function
     ret = HAL_BB_SpiDataTransInit(25);
 
     if (ret != HAL_OK) {
         DLOG_Error("BB SPI init failed");
     }
 
-    //register BaseBand rt-uart session, will malloc a special session to rt-uart function
+    // register BaseBand rt-uart session, will malloc a special session to rt-uart function
     ret = HAL_BB_ComRegisterSession(BB_COM_SESSION_SPI,
                                     BB_COM_SESSION_PRIORITY_HIGH,
                                     BB_COM_SESSION_DATA_NORMAL,
@@ -245,10 +245,10 @@ static void run_sbus_init(void* parameter)
 }
 
 static struct WorkItem sbus_init_item = {
-    .name = "sbus_init",
-    .period = 0,
+    .name          = "sbus_init",
+    .period        = 0,
     .schedule_time = 3000,
-    .run = run_sbus_init
+    .run           = run_sbus_init
 };
 
 void sbus_start(void)

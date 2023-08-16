@@ -15,25 +15,29 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include "ar1002_hal.h"
+#include "bb_match_id.h"
+#include "board.h"
+#include "board_device.h"
+#include "debuglog.h"
 #include "module/task_manager/task_manager.h"
 #include "module/workqueue/workqueue_manager.h"
-#include "debuglog.h"
 #include "sys_event.h"
-#include "bb_match_id.h"
-#include "ar1002_hal.h"
-#include "board_device.h"
-#include "board.h"
 
-#include "local_task.h"
 #include "bb_led.h"
+#include "local_task.h"
 #include "sky_sbus.h"
 
 #include "inter_core.h"
+#include "mini384.h"
 #include "xc7027.h"
-
+#include "wireless_interface.h"
+#include "usr_usb_task.h"
 
 //--------------------------------------
 static void sys_event_start(void);
+
+_EXT_DTCM1 void wireless_start(void);
 
 _EXT_DTCM1
 fmt_err_t task_local_init(void)
@@ -44,31 +48,36 @@ fmt_err_t task_local_init(void)
 _EXT_DTCM1
 void task_local_entry(void* parameter)
 {
-
+    HAL_USB_Init(HAL_USB_PORT_0, HAL_USB_DR_MODE_DEVICE);
+    HAL_USB_Init(HAL_USB_PORT_1, HAL_USB_DR_MODE_DEVICE);
     sys_event_start();
     sbus_start();
     bb_led_start();
     bb_match_id_start();
 
     xc7027_start();
+    // mini384_start();
+
+    usr_usb0_interface();
+    Wireless_TaskInit(0);
+    wireless_start();
 
     while (1) {
         DLOG_Process(NULL);
-        sys_msleep(10);
+        sys_msleep(100);
     }
 }
 
 TASK_EXPORT __fmt_task_desc = {
-    .name = "local",
-    .init = task_local_init,
-    .entry = task_local_entry,
-    .priority = 25,
+    .name       = "local",
+    .init       = task_local_init,
+    .entry      = task_local_entry,
+    .priority   = 25,
     .auto_start = true,
-    .stack_size = 1024,
-    .param = NULL,
+    .stack_size = 4096,
+    .param      = NULL,
     .dependency = NULL
 };
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,17 +90,20 @@ static void run_intercore_irq0_callback(void* parameter)
 }
 
 static struct WorkItem intercore_irq0_callback_item = {
-    .name = "intercore_irq0_callback",
-    .period = 0,
+    .name          = "intercore_irq0_callback",
+    .period        = 0,
     .schedule_time = 0,
-    .run = run_intercore_irq0_callback
+    .run           = run_intercore_irq0_callback
 };
 
 void intercore_irq0_callback(void)
 {
     WorkQueue_t sysevent_wq = workqueue_find("wq:sysevent_work");
 
-    RT_ASSERT(sysevent_wq != NULL);
+    // bug liuwei for test
+    if (sysevent_wq == NULL) {
+        return;
+    }
 
     FMT_CHECK(workqueue_schedule_work(sysevent_wq, &intercore_irq0_callback_item));
 }
@@ -99,16 +111,26 @@ void intercore_irq0_callback(void)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void run_sys_event(void* parameter)
 {
-    // SYS_EVENT_DumpAllListNodes();
-    // SYS_EVENT_MallocFreeCntCheck();
+
+    static uint32_t old = 0;
+
+    uint32_t now = systime_now_ms();
+
+    if (now - old > 2000) {
+        // SYS_EVENT_DumpAllListNodes();s
+        SYS_EVENT_MallocFreeCntCheck();
+
+        old = now;
+    }
+
     SYS_EVENT_Process();
 }
 
 static struct WorkItem sys_event_item = {
-    .name = "sys_event",
-    .period = 10,
+    .name          = "sys_event",
+    .period        = 10,
     .schedule_time = 0,
-    .run = run_sys_event
+    .run           = run_sys_event
 };
 
 static void sys_event_start(void)
@@ -120,3 +142,31 @@ static void sys_event_start(void)
     FMT_CHECK(workqueue_schedule_work(sysevent_wq, &sys_event_item));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+_EXT_DTCM1
+static void run_wireless(void* parameter)
+{
+    Wireless_MessageProcess();
+}
+
+/////////////////////////////////////////////////////
+
+_EXT_DTCM1_BSS
+static struct WorkItem wireless_item = {
+    .name          = "wireless",
+    .period        = 20,
+    .schedule_time = 0,
+    .run           = run_wireless
+};
+
+_EXT_DTCM1
+void wireless_start(void)
+{
+
+    WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
+
+    RT_ASSERT(lp_wq != NULL);
+
+    FMT_CHECK(workqueue_schedule_work(lp_wq, &wireless_item));
+}

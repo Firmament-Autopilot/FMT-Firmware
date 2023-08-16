@@ -230,8 +230,8 @@ g_pfnVectors:
 .weak      NMI_Handler
 .thumb_set NMI_Handler,Default_Handler
 
-.weak      hardfault_isr
-.thumb_set hardfault_isr,Default_Handler
+; .weak      hardfault_isr
+; .thumb_set hardfault_isr,Default_Handler
 
 
 .weak      default_isr
@@ -255,9 +255,6 @@ g_pfnVectors:
 
 .weak      UART3_IRQHandler
 .thumb_set UART3_IRQHandler,IRQHandler_19
-
-.weak      UART6_IRQHandler
-.thumb_set UART6_IRQHandler,IRQHandler_22
 
 .weak      UART8_IRQHandler
 .thumb_set UART8_IRQHandler,IRQHandler_24

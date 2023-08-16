@@ -26,4 +26,5 @@
     "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
+    "clang-format.executable": "/bin/clang-format-16",
 }
