@@ -27,9 +27,9 @@ extern "C"
 #include "lock.h"
 #include "log10.h"
 #include "md5.h"
-#include "memory.h"
-#include "memory_itcm.h"
-#include "nosys.h"
+// #include "memory.h"
+// #include "memory_itcm.h"
+// #include "nosys.h"
 #include "sys_event.h"
 
 

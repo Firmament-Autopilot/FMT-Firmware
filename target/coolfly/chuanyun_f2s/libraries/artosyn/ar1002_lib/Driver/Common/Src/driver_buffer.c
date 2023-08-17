@@ -9,7 +9,7 @@ int8_t COMMON_getNewBuffer(uint8_t **ppu8_drvBuf, uint8_t *pu8_usrBuf, uint32_t 
 {
     if (NULL == *ppu8_drvBuf)
     {
-        *ppu8_drvBuf = malloc_safe(u32_size);
+        *ppu8_drvBuf = rt_malloc(u32_size);
         if (NULL == *ppu8_drvBuf)
         {
             *pu32_txLenLast = 0;
@@ -28,7 +28,7 @@ int8_t COMMON_getNewBuffer(uint8_t **ppu8_drvBuf, uint8_t *pu8_usrBuf, uint32_t 
             //DLOG_Info("line = %d, u32_size = %d, *txLenLast = %d", __LINE__, u32_size, *txLenLast);
             if ((u32_size > *pu32_txLenLast) || (u32_size < (*pu32_txLenLast/4) && *pu32_txLenLast >= 256))
             {
-                *ppu8_drvBuf = realloc_safe(*ppu8_drvBuf, u32_size);
+                *ppu8_drvBuf = rt_realloc(*ppu8_drvBuf, u32_size);
                 if (NULL == *ppu8_drvBuf)
                 {
                     *pu32_txLenLast = 0;

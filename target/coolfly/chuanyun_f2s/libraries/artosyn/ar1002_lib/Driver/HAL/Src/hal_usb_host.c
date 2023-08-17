@@ -23,7 +23,7 @@ History:
 #include "drv_systick.h"
 #include "hal.h"
 #include "hal_sram_sky.h"
-#include "sram_ground.h"
+// #include "sram_ground.h"
 #include "sram_sky.h"
 #include "dma.h"
 
@@ -265,21 +265,21 @@ void HAL_USB_InitHost(ENUM_HAL_USB_PORT e_usbPort, uint8_t u8_HostMode)
 
     hUSBHost[e_usbPort].u8_HostMode = u8_HostMode;
 
-    USBH_Init(&hUSBHost[e_usbPort], USB_HostAppState, (uint8_t)e_usbPort);
+    // USBH_Init(&hUSBHost[e_usbPort], USB_HostAppState, (uint8_t)e_usbPort);
 
     //support MSC
-    USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_MSC_CLASS);
+    // USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_MSC_CLASS);
 
     //support UVC
-    USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_UVC_CLASS);
+    // USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_UVC_CLASS);
 
     //support CDC
-    USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_CDC_CLASS);
+    // USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_CDC_CLASS);
 
     //support MTP
-    USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_MTP_CLASS);
+    // USBH_RegisterClass(&hUSBHost[e_usbPort], USBH_MTP_CLASS);
 
-    USBH_Start(&hUSBHost[e_usbPort]);
+    // USBH_Start(&hUSBHost[e_usbPort]);
 }
 
 
@@ -866,33 +866,33 @@ HAL_RET_T HAL_USB_CheckNetLineConnect(void)
 
 HAL_RET_T HAL_USB_HostSendCtrl(uint8_t *buff, uint32_t u32_len, uint8_t u8_portId)
 {
-    if(u8_portId >= HAL_USB_PORT_NUM)
-    {
+    // if(u8_portId >= HAL_USB_PORT_NUM)
+    // {
         return HAL_USB_ERR_PORT_INVALID;
-    }
+    // }
 
-    if(hUSBHost[u8_portId].pActiveClass != NULL)
-    {
-        if(0 == strcmp(hUSBHost[u8_portId].pActiveClass->Name, "MTP"))
-        {
-            if(0 == USBH_MTP_Send(buff, u32_len))
-            {
-                return HAL_OK;
-            }
-            else
-            {
-                return HAL_USB_ERR_DEVICE_NOT_CONGIURED;
-            }
-        }
-        else// only mtp now
-        {
-            return HAL_NOT_INITED;
-        }
-    }
-    else
-    {
-        return HAL_NOT_INITED;
-    }
+    // if(hUSBHost[u8_portId].pActiveClass != NULL)
+    // {
+    //     if(0 == strcmp(hUSBHost[u8_portId].pActiveClass->Name, "MTP"))
+    //     {
+    //         // if(0 == USBH_MTP_Send(buff, u32_len))
+    //         // {
+    //         //     return HAL_OK;
+    //         // }
+    //         // else
+    //         // {
+    //         //     return HAL_USB_ERR_DEVICE_NOT_CONGIURED;
+    //         // }
+    //     }
+    //     else// only mtp now
+    //     {
+    //         return HAL_NOT_INITED;
+    //     }
+    // }
+    // else
+    // {
+    //     return HAL_NOT_INITED;
+    // }
 }
 
 

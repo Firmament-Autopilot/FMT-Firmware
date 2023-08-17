@@ -1089,29 +1089,6 @@ void BB_ComCycleSendMsg(ENUM_BB_COM_TYPE e_bbComType,
 }
 
 
-/* only for sky */
-uint16_t BB_UARTComGetBBFIFOGap(void)
-{
-    uint8_t         read_fifo_gap_enable;
-    uint8_t         fifo_gap_high;
-    uint8_t         fifo_gap_low;
-    uint16_t        fifo_gap;
-
-    read_fifo_gap_enable    = BB_ReadReg(PAGE0, 0x0C);
-    read_fifo_gap_enable   |= 0x40;
-    BB_WriteReg(PAGE0, 0x0C, read_fifo_gap_enable);
-
-    fifo_gap_high           = BB_ReadReg(PAGE0, 0xF6);
-
-    fifo_gap_low            = BB_ReadReg(PAGE0, 0xF7);
-
-    fifo_gap                = (fifo_gap_high << 8) + fifo_gap_low;
-
-    fifo_gap                = 2048 - fifo_gap;
-
-    return fifo_gap;
-}
-
 
 uint32_t BB_UART_GetTxFifoMaxSize(ENUM_BB_MODE e_bb_mode)
 {
@@ -1235,43 +1212,43 @@ uint32_t BB_SPIComRecvData(void)
     return 0;
 }
 
-int BB_SpiGrdDataTransChProc(void)
-{
-    uint8_t spi_com_start_addr = SPI_DT_END_ADDR;
-    uint8_t i = 0;
-    uint8_t *pData = NULL;
+// int BB_SpiGrdDataTransChProc(void)
+// {
+//     uint8_t spi_com_start_addr = SPI_DT_END_ADDR;
+//     uint8_t i = 0;
+//     uint8_t *pData = NULL;
 
-    STRU_SPI_DATA_TRANS_FORMAT trans_data;
-    STRU_SPI_DATA_SAVE_FORMAT *pst_spiDSave = (STRU_SPI_DATA_SAVE_FORMAT *)(SRAM_SPI_DATA_TRANS_ST_ADDR);
+//     STRU_SPI_DATA_TRANS_FORMAT trans_data;
+//     STRU_SPI_DATA_SAVE_FORMAT *pst_spiDSave = (STRU_SPI_DATA_SAVE_FORMAT *)(SRAM_SPI_DATA_TRANS_ST_ADDR);
     
-    if(BB_SpiChkDataTransChValid() && \
-        (pst_spiDSave->real_len <= pst_spiDSave->max_len) && 
-        (pst_spiDSave->real_len > 0))
-    {
-        BB_WriteReg(PAGE2, SPI_DT_END_ADDR, 0);
-        if((0 == pst_spiDSave->busy) && (1 == pst_spiDSave->valid))
-        {
-            trans_data.valid = 1;
-            trans_data.len = pst_spiDSave->real_len;
+//     if(BB_SpiChkDataTransChValid() && \
+//         (pst_spiDSave->real_len <= pst_spiDSave->max_len) && 
+//         (pst_spiDSave->real_len > 0))
+//     {
+//         BB_WriteReg(PAGE2, SPI_DT_END_ADDR, 0);
+//         if((0 == pst_spiDSave->busy) && (1 == pst_spiDSave->valid))
+//         {
+//             trans_data.valid = 1;
+//             trans_data.len = pst_spiDSave->real_len;
 
-            pst_spiDSave->busy = 1;
-            memcpy(trans_data.data, pst_spiDSave->data, trans_data.len);
-            pst_spiDSave->busy = 0;
-            pst_spiDSave->valid = 0;
+//             pst_spiDSave->busy = 1;
+//             memcpy(trans_data.data, pst_spiDSave->data, trans_data.len);
+//             pst_spiDSave->busy = 0;
+//             pst_spiDSave->valid = 0;
 
-            pData = (uint8_t *)(&trans_data);
-            for (i = 0; i < (trans_data.len + 1); i++)
-            {
-                BB_SPI_WriteByte(PAGE2, spi_com_start_addr, pData[i]);
-                spi_com_start_addr--;
-            }
+//             pData = (uint8_t *)(&trans_data);
+//             for (i = 0; i < (trans_data.len + 1); i++)
+//             {
+//                 BB_SPI_WriteByte(PAGE2, spi_com_start_addr, pData[i]);
+//                 spi_com_start_addr--;
+//             }
 
-            return 0;
-        }
-    }
+//             return 0;
+//         }
+//     }
 
-    return -1;
-}
+//     return -1;
+// }
 
 uint8_t BB_SpiChkDataTransChValid(void)
 {

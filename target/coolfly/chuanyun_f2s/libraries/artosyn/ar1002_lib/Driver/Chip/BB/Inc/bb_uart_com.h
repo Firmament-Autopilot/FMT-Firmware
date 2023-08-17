@@ -161,14 +161,14 @@ void BB_ComCycleSendMsg(ENUM_BB_COM_TYPE e_bbComType,
                         uint8_t *spi_info);
 uint32_t BB_ComPacketDataAnalyze(uint8_t *u8_uartRxBuf, uint8_t u8_uartRxLen, STRU_BBComRxFIFO *pstBBComRxFIFO);
 uint32_t BB_UARTComRecvDataHandler(uint8_t *u8_uartRxBuf, uint8_t u8_uartRxLen);
-uint16_t BB_UARTComGetBBFIFOGap(void);
+
 uint32_t BB_UART_GetTxFifoMaxSize(ENUM_BB_MODE e_bb_mode);
 uint32_t BB_UARTComRecvDataHandler(uint8_t *u8_uartRxBuf, uint8_t u8_uartRxLen);
 uint32_t BB_SpiDataTransRcv(void);
 uint32_t BB_SPIComRecvData(void);
 void BB_ComClearResource(void);
 uint8_t BB_SpiChkDataTransChValid(void);
-int BB_SpiGrdDataTransChProc(void);
+// int BB_SpiGrdDataTransChProc(void);
 uint32_t BB_ComGetFreeLength(ENUM_BB_COM_SESSION_ID session_id);
 void BB_ComClearTxbuffer(ENUM_BB_COM_SESSION_ID session_id);
 void session_cnt_debug_print(void);

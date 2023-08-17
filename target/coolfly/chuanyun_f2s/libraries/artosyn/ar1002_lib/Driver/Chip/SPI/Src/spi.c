@@ -174,6 +174,62 @@ int32_t SPI_write_read(ENUM_SPI_COMPONENT en_id,
     return 0;
 }
 
+
+int32_t SPI_write_read_dbg(ENUM_SPI_COMPONENT en_id,
+                       uint8_t* ptr_wbuf, uint32_t u32_wsize,
+                       uint8_t* ptr_rbuf, uint32_t u32_rsize)
+{
+    uint32_t i = 0;
+    uint32_t u32_tmpLen = 0;
+    uint32_t flag = 0;
+
+    Reg_Write32((SPI_BaseList[en_id] + SPI_SLAVE_EN), 0);
+
+    s_st_spiIntData[en_id].dfl = 0;//8bit only
+
+    u32_tmpLen = ((u32_wsize < (SPI_TXFLR_MAX)) ? u32_wsize : (SPI_TXFLR_MAX));
+
+    SPI_SetIntData(en_id, ptr_wbuf + u32_tmpLen, u32_wsize - u32_tmpLen, ptr_rbuf, u32_rsize);
+
+    SPI_SetDataFrameSize(en_id, SPI_CTRLR0_DFS_8BIT);
+
+    if ((0 == u32_wsize) || (NULL == ptr_wbuf)) {
+        SPI_SetMode(en_id, SPI_CTRLR0_TMOD_RO);
+        flag = SPI_CTRLR0_TMOD_RO;
+    } else if ((0 == u32_rsize) || (NULL == ptr_rbuf)) {
+        SPI_SetMode(en_id, SPI_CTRLR0_TMOD_TO);
+    } else {
+        SPI_SetMode(en_id, SPI_CTRLR0_TMOD_EE);
+    }
+
+    if (u32_rsize > 0) {
+        SPI_SetReadDataLen(en_id, u32_rsize - 1);
+        if (u32_rsize <= SPI_RXFTLR_DEF_VALUE) {
+            Reg_Write32((SPI_BaseList[en_id] + SPI_RXFTLR), 0);
+        }
+        SPI_EnableInt(en_id, SPI_IMR_RXFIM);
+        if (SPI_CTRLR0_TMOD_RO == flag) {
+            Reg_Write32((SPI_BaseList[en_id] + SPI_DR), 0xFF); //start read.
+        }
+    }
+
+    while (i < u32_tmpLen) {
+        Reg_Write32((SPI_BaseList[en_id] + SPI_DR), ptr_wbuf[i]); //write data
+        i += 1;
+    }
+
+    Reg_Write32((SPI_BaseList[en_id] + SPI_SLAVE_EN), 1);
+    if (0 == Reg_Read32(SPI_BaseList[en_id] + SPI_SLAVE_EN)) {
+        Reg_Write32((SPI_BaseList[en_id] + SPI_SLAVE_EN), 1);
+    }
+
+    if (u32_wsize > (SPI_TXFLR_MAX)) {
+        SPI_EnableInt(en_id, SPI_IMR_TXEIM);
+    }
+
+    return 0;
+}
+
 void SPI_IntrSrvc(uint32_t u32_vectorNum)
 {
     uint8_t u8_spiCh;
@@ -257,6 +313,70 @@ void SPI_IntrSrvc(uint32_t u32_vectorNum)
         SPI_DisEnableInt(u8_spiCh, SPI_IMR_MASK);
     }
 }
+
+void SPI_IntrSrvc_dbg(uint32_t u32_vectorNum)
+{
+    uint8_t u8_spiCh;
+    uint8_t u8_spiIsr;
+    uint8_t u8_cnt = 0;
+    // uint16_t u16_data;
+    uint8_t tmpLen;
+
+    if (VIDEO_SPI_INTR_BB_VECTOR_NUM == u32_vectorNum) {
+        u8_spiCh = 7;
+    } else {
+        u8_spiCh = u32_vectorNum - SSI_INTR_N0_VECTOR_NUM;
+    }
+
+    u8_spiIsr = Reg_Read32(SPI_BaseList[u8_spiCh] + SPI_ISR) & SPI_ISR_MASK;
+
+    u8_cnt = 0;
+    if (u8_spiIsr & SPI_ISR_TXEIS) // TX INT
+    {
+        tmpLen = Reg_Read32(SPI_BaseList[u8_spiCh] + SPI_TXFLR);
+        tmpLen = SPI_TXFLR_MAX - tmpLen;
+        while ((s_st_spiIntData[u8_spiCh].txAlrLen) < (s_st_spiIntData[u8_spiCh].txLen)) {
+                Reg_Write32((SPI_BaseList[u8_spiCh] + SPI_DR),
+                            s_st_spiIntData[u8_spiCh].txBuf[s_st_spiIntData[u8_spiCh].txAlrLen]); //write data
+                s_st_spiIntData[u8_spiCh].txAlrLen += 1;
+            u8_cnt += 1;
+            if (u8_cnt >= tmpLen) {
+                break;
+            }
+        }
+
+        if ((s_st_spiIntData[u8_spiCh].txAlrLen) >= (s_st_spiIntData[u8_spiCh].txLen)) {
+            SPI_DisEnableInt(u8_spiCh, SPI_IMR_TXEIM);
+        }
+    }
+	else if (u8_spiIsr & SPI_ISR_RXFIS) // RX INT
+    {
+        tmpLen = Reg_Read32(SPI_BaseList[u8_spiCh] + SPI_RXFLR);
+        while ((s_st_spiIntData[u8_spiCh].rxAlrLen) < (s_st_spiIntData[u8_spiCh].rxLen)) {
+                s_st_spiIntData[u8_spiCh].rxBuf[s_st_spiIntData[u8_spiCh].rxAlrLen] = Reg_Read32(SPI_BaseList[u8_spiCh] + SPI_DR);
+                s_st_spiIntData[u8_spiCh].rxAlrLen += 1;
+
+            u8_cnt += 1;
+            if (u8_cnt >= tmpLen) {
+                break;
+            }
+        }
+
+        if ((s_st_spiIntData[u8_spiCh].rxAlrLen) >= (s_st_spiIntData[u8_spiCh].rxLen)) {
+            SPI_DisEnableInt(u8_spiCh, SPI_IMR_RXFIM);
+        }
+
+        if (((s_st_spiIntData[u8_spiCh].rxLen) - (s_st_spiIntData[u8_spiCh].rxAlrLen)) <= SPI_RXFTLR_DEF_VALUE) {
+            Reg_Write32((SPI_BaseList[u8_spiCh] + SPI_RXFTLR), 0);
+        }
+    }
+
+    if (u8_spiIsr & (~(SPI_ISR_TXEIS | SPI_ISR_RXFIS))) // some error happpened.
+    {
+        SPI_DisEnableInt(u8_spiCh, SPI_IMR_MASK);
+    }
+}
+
 
 static int32_t SPI_SetIntData(ENUM_SPI_COMPONENT en_id,
                               uint8_t* ptr_wbuf, uint32_t u32_wsize,

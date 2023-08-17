@@ -10,14 +10,22 @@
 
 #include "memory_config.h"
 #include "spcd_camera_config_1080p_30fps_ahead.h"
+#include "spcd_camera_config_720p_30fps_ahead.h"
 #include "spcd_camera_config_set.h"
 #include "xc7027.h"
 
 #include "module/workqueue/workqueue_manager.h"
 
+// #define XC7027_DVP_CHANNEL 0
+// #define DVP_RST_CTRL       HAL_GPIO_NUM99
+// #define XC7027_I2C         HAL_I2C_COMPONENT_1
+
+
 #define XC7027_DVP_CHANNEL 1
 #define DVP_RST_CTRL       HAL_GPIO_NUM103
 #define XC7027_I2C         HAL_I2C_COMPONENT_0
+
+
 
 _EXT_DTCM1_BSS
 static volatile int is_Inited = 0;
@@ -60,20 +68,20 @@ void XC7027_SENSOR_Config(ENUM_XC7027_MODE SensorFormat)
         break;
 
         // case XC7027_MODE_720P_50FPS:
-        // 	HAL_DVP_Init(XC7027_DVP_CHANNEL, XC7027_DVP_CHANNEL, 1280, 720, 50);
-        // 	piISPRegister = XC7027_720P_50FPS_SET_AHEAD;
-        // 	iISPRegisterLenght = sizeof(XC7027_720P_50FPS_SET_AHEAD);
-        // 	piSensorRegister = SC2310_720P_50FPS_SET_AHEAD;
-        // 	iSensorRegisterLenght = sizeof(SC2310_720P_50FPS_SET_AHEAD);
-        // 	break;
+        //     HAL_DVP_Init(XC7027_DVP_CHANNEL, XC7027_DVP_CHANNEL, 1280, 720, 50);
+        //     piISPRegister = XC7027_720P_50FPS_SET_AHEAD;
+        //     iISPRegisterLenght = sizeof(XC7027_720P_50FPS_SET_AHEAD);
+        //     piSensorRegister = SC2310_720P_50FPS_SET_AHEAD;
+        //     iSensorRegisterLenght = sizeof(SC2310_720P_50FPS_SET_AHEAD);
+        //     break;
 
-        // case XC7027_MODE_720P_30FPS:
-        // 	HAL_DVP_Init(XC7027_DVP_CHANNEL, XC7027_DVP_CHANNEL, 1280, 720, 30);
-        // 	piISPRegister = XC7027_720P_30FPS_SET_AHEAD;
-        // 	iISPRegisterLenght = sizeof(XC7027_720P_30FPS_SET_AHEAD);
-        // 	piSensorRegister = SC2310_720P_30FPS_SET_AHEAD;
-        // 	iSensorRegisterLenght = sizeof(SC2310_720P_30FPS_SET_AHEAD);
-        // 	break;
+    case XC7027_MODE_720P_30FPS:
+        HAL_DVP_Init(XC7027_DVP_CHANNEL, XC7027_DVP_CHANNEL, 1280, 720, 30);
+        piISPRegister = XC7027_720P_30FPS_SET_AHEAD;
+        iISPRegisterLenght = sizeof(XC7027_720P_30FPS_SET_AHEAD);
+        piSensorRegister = SC2310_720P_30FPS_SET_AHEAD;
+        iSensorRegisterLenght = sizeof(SC2310_720P_30FPS_SET_AHEAD);
+        break;
 
     default:
         HAL_DVP_Init(XC7027_DVP_CHANNEL, XC7027_DVP_CHANNEL, 1920, 1080, 30);
@@ -544,7 +552,8 @@ static void init()
 
     // DLOG_Critical("xc7082 init success~!");
 
-    XC7027_SENSOR_Config(XC7027_MODE_1080P_30FPS);
+    XC7027_SENSOR_Config(XC7027_MODE_720P_30FPS);
+    // XC7027_SENSOR_Config(XC7027_MODE_1080P_30FPS);
 
     sys_msleep(20);
 
@@ -556,24 +565,18 @@ static void init()
 }
 
 _EXT_DTCM1
-void xc7027_re_init(void)
+int xc7027_init(void)
 {
-    is_Inited = 0;
-    // init();
+    XC7027_Reset();
+    init();
+
+    return 0;
 }
 
 _EXT_DTCM1
 static void run_xc7027(void* parameter)
 {
-    if (!is_Inited) {
-        
-        XC7027_Reset();
-        init();
-        is_Inited = 1;  // just set once.
-    } else {
-        
-        XC7027_SENSOR_LoopCallBack();
-    }
+    XC7027_SENSOR_LoopCallBack();
 }
 
 /////////////////////////////////////////////////////
@@ -590,14 +593,9 @@ _EXT_DTCM1
 void xc7027_start(void)
 {
 
-
-
-
-
     WorkQueue_t lp_wq = workqueue_find("wq:lp_work");
 
     RT_ASSERT(lp_wq != NULL);
 
     FMT_CHECK(workqueue_schedule_work(lp_wq, &xc7027_item));
-    
 }

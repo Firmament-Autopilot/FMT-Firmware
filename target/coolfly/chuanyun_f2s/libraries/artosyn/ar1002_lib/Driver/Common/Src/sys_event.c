@@ -65,7 +65,7 @@ static STRU_RegisteredSysEvent_Node* retrieveRegisteredEventNode(uint32_t event_
     if ((get_node == NULL) && (create_if_no == TRUE))
     {
         // Can not find the event ID in the list, then to create a new node for the event ID.
-        STRU_RegisteredSysEvent_Node* pEventNode = (STRU_RegisteredSysEvent_Node*)malloc_safe(sizeof(STRU_RegisteredSysEvent_Node));
+        STRU_RegisteredSysEvent_Node* pEventNode = (STRU_RegisteredSysEvent_Node*)rt_malloc(sizeof(STRU_RegisteredSysEvent_Node));
 
         if (pEventNode != NULL)
         {
@@ -147,7 +147,7 @@ static uint8_t removeRegisteredSysEventNode(STRU_RegisteredSysEvent_Node* pNode)
 
     rt_hw_interrupt_enable(level);
   
-    free_safe(pNode);
+    rt_free(pNode);
     node_free_cnt ++;
     return TRUE; 
 }
@@ -188,7 +188,7 @@ static uint8_t addSysEventHandlerNode(STRU_RegisteredSysEvent_Node* pEventNode, 
     {
         STRU_RegisteredSysEventHandler_Node** ppFirstNode = &(pEventNode->handler_list);
         STRU_RegisteredSysEventHandler_Node** ppLastNode = &(pEventNode->handler_list_tail);
-        STRU_RegisteredSysEventHandler_Node* pNewNode = (STRU_RegisteredSysEventHandler_Node*)malloc_safe(sizeof(STRU_RegisteredSysEventHandler_Node));
+        STRU_RegisteredSysEventHandler_Node* pNewNode = (STRU_RegisteredSysEventHandler_Node*)rt_malloc(sizeof(STRU_RegisteredSysEventHandler_Node));
 
         if (pNewNode != NULL)
         {
@@ -279,7 +279,7 @@ static uint8_t removeExistedSysEventHandlerNode(STRU_RegisteredSysEvent_Node* pE
     }  
 
     handler_free_cnt ++;
-    free_safe(pNode);  
+    rt_free(pNode);  
     return TRUE;
 }
 
@@ -395,7 +395,7 @@ static uint8_t removeNotifiedSysEventNode(STRU_NotifiedSysEvent_Node* pNode)
 
     rt_hw_interrupt_enable(level);
 
-    free_safe(pNode);  
+    rt_free(pNode);  
 
     msg_free_cnt ++;
 
@@ -477,7 +477,7 @@ static uint8_t notifySysEvent(uint32_t event_id, void* parameter)
         STRU_NotifiedSysEvent_Node** ppFirstNode = &g_notifiedSysEventList;
         STRU_NotifiedSysEvent_Node** ppLastNode  = &g_notifiedSysEventList_tail;
 
-        STRU_NotifiedSysEvent_Node* pNewNode = (STRU_NotifiedSysEvent_Node*)malloc_safe(sizeof(STRU_NotifiedSysEvent_Node));
+        STRU_NotifiedSysEvent_Node* pNewNode = (STRU_NotifiedSysEvent_Node*)rt_malloc(sizeof(STRU_NotifiedSysEvent_Node));
   
         if (pNewNode != NULL)
         {
@@ -664,18 +664,18 @@ uint8_t SYS_EVENT_Process(void)
  **/
 void SYS_EVENT_DumpAllListNodes(void)
 {
-    // STRU_RegisteredSysEvent_Node* rEventNode = g_registeredSysEventList;
-    // while(rEventNode != NULL)
-    // {
-    //     printf("Registered EventNode: event_id 0x%lx\n", rEventNode->event_id);
-    //     STRU_RegisteredSysEventHandler_Node* hNode = rEventNode->handler_list;
-    //     while(hNode != NULL)
-    //     {
-    //         printf("                      handler %p\n", hNode->handler);
-    //         hNode = hNode->next;
-    //     }
-    //     rEventNode = rEventNode->next;
-    // }
+    STRU_RegisteredSysEvent_Node* rEventNode = g_registeredSysEventList;
+    while(rEventNode != NULL)
+    {
+        printf("Registered EventNode: event_id 0x%lx\n", rEventNode->event_id);
+        STRU_RegisteredSysEventHandler_Node* hNode = rEventNode->handler_list;
+        while(hNode != NULL)
+        {
+            printf("                      handler %p\n", hNode->handler);
+            hNode = hNode->next;
+        }
+        rEventNode = rEventNode->next;
+    }
 
     STRU_NotifiedSysEvent_Node* nEventNode = g_notifiedSysEventList;
     while(nEventNode != NULL)
