@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.75
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Jul 22 10:00:41 2023
+ * C/C++ source code generated on : Thu Aug 17 14:57:54 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -72,7 +72,7 @@ const AirSpeed_Bus Plant_rtZAirSpeed_Bus = {
 struct_jgVLU9PsiazymsYzo6u6IH PLANT_EXPORT = {
   2U,
 
-  { 70, 105, 120, 119, 105, 110, 103, 32, 118, 48, 46, 48, 46, 49, 0 }
+  { 70, 105, 120, 119, 105, 110, 103, 32, 118, 49, 46, 48, 46, 48, 0 }
 } ;                                    /* Variable: PLANT_EXPORT
                                         * Referenced by:
                                         *   '<S42>/dt'

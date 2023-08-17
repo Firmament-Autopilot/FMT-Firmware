@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1078
+ * Model version                  : 1.1081
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug  1 22:21:59 2023
+ * C/C++ source code generated on : Thu Aug 17 15:00:16 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -111,8 +111,8 @@ struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
 struct_ny3PY9hontv4J5WqwlFzJB CONTROL_EXPORT = {
   2U,
 
-  { 70, 87, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32, 118, 48, 46,
-    48, 46, 50, 0 }
+  { 70, 87, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32, 118, 49, 46,
+    48, 46, 48, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S3>/Constant'
                                         */
@@ -373,9 +373,13 @@ void Controller_step(void)
   /* DiscreteIntegrator: '<S41>/Discrete-Time Integrator1' incorporates:
    *  Inport: '<Root>/FMS_Out'
    */
+  if (Controller_DW.DiscreteTimeIntegrator1_IC_LOAD != 0) {
+    Controller_DW.DiscreteTimeIntegrator1_DSTATE = rtb_B_err;
+  }
+
   if ((Controller_U.FMS_Out.reset != 0) ||
       (Controller_DW.DiscreteTimeIntegrator1_PrevRes != 0)) {
-    Controller_DW.DiscreteTimeIntegrator1_DSTATE = 0.0F;
+    Controller_DW.DiscreteTimeIntegrator1_DSTATE = rtb_B_err;
   }
 
   /* Gain: '<S41>/Gain' incorporates:
@@ -648,9 +652,13 @@ void Controller_step(void)
   /* DiscreteIntegrator: '<S44>/Discrete-Time Integrator1' incorporates:
    *  Inport: '<Root>/FMS_Out'
    */
+  if (Controller_DW.DiscreteTimeIntegrator1_IC_LO_o != 0) {
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_b = rtb_Vdot_errg;
+  }
+
   if ((Controller_U.FMS_Out.reset != 0) ||
       (Controller_DW.DiscreteTimeIntegrator1_PrevR_m != 0)) {
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_b = 0.0F;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_b = rtb_Vdot_errg;
   }
 
   /* Gain: '<S44>/Gain' incorporates:
@@ -1073,6 +1081,7 @@ void Controller_step(void)
   /* Update for DiscreteIntegrator: '<S41>/Discrete-Time Integrator1' incorporates:
    *  Inport: '<Root>/FMS_Out'
    */
+  Controller_DW.DiscreteTimeIntegrator1_IC_LOAD = 0U;
   Controller_DW.DiscreteTimeIntegrator1_DSTATE += 0.002F * rtb_Gain;
   Controller_DW.DiscreteTimeIntegrator1_PrevRes = (int8_T)
     (Controller_U.FMS_Out.reset > 0);
@@ -1146,6 +1155,7 @@ void Controller_step(void)
   /* Update for DiscreteIntegrator: '<S44>/Discrete-Time Integrator1' incorporates:
    *  Inport: '<Root>/FMS_Out'
    */
+  Controller_DW.DiscreteTimeIntegrator1_IC_LO_o = 0U;
   Controller_DW.DiscreteTimeIntegrator1_DSTAT_b += 0.002F * rtb_Minus;
   Controller_DW.DiscreteTimeIntegrator1_PrevR_m = (int8_T)
     (Controller_U.FMS_Out.reset > 0);
@@ -1189,6 +1199,7 @@ void Controller_init(void)
   /* End of InitializeConditions for DiscreteIntegrator: '<S40>/ ' */
 
   /* InitializeConditions for DiscreteIntegrator: '<S41>/Discrete-Time Integrator1' */
+  Controller_DW.DiscreteTimeIntegrator1_IC_LOAD = 1U;
   Controller_DW.DiscreteTimeIntegrator1_PrevRes = 0;
 
   /* InitializeConditions for DiscreteIntegrator: '<S14>/Discrete-Time Integrator' */
@@ -1244,6 +1255,7 @@ void Controller_init(void)
   /* End of InitializeConditions for DiscreteIntegrator: '<S43>/ ' */
 
   /* InitializeConditions for DiscreteIntegrator: '<S44>/Discrete-Time Integrator1' */
+  Controller_DW.DiscreteTimeIntegrator1_IC_LO_o = 1U;
   Controller_DW.DiscreteTimeIntegrator1_PrevR_m = 0;
 }
 
