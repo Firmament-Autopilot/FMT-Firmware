@@ -53,7 +53,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ATT_GAIN, 0.2, false),
     PARAM_FLOAT(HEADING_GAIN, 0.05, false),
     PARAM_FLOAT(MAG_GAIN, 0.2, false),
-    PARAM_FLOAT(HOVER_MAG_GAIN, 0.3, false),
+    PARAM_FLOAT(HOVER_MAG_GAIN, 0.0, false),
     PARAM_UINT8(MAG_AIR_EN, 0, false),
     PARAM_FLOAT(BIAS_G_GAIN, 0.25, false),
     PARAM_FLOAT(GPS_POS_GAIN, 0, false),
