@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.965
+ * Model version                  : 1.966
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug 14 17:14:58 2023
+ * C/C++ source code generated on : Thu Aug 17 14:44:02 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_0aM4lr5NEdP6H9qNoqnrPE CONTROL_PARAM = {
+struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM = {
   1.4F,
   0.2F,
   0.2F,
@@ -45,14 +45,12 @@ struct_0aM4lr5NEdP6H9qNoqnrPE CONTROL_PARAM = {
   0.52359879F,
   0.1F,
   0.1F,
-  0.1F,
-  0.1F,
   0.15F,
   0.1F,
   0.1F,
   0.2F,
-  0.2F,
-  0.2F,
+  0.003F,
+  0.003F,
   0.001F,
   -0.1F,
   0.1F,
@@ -104,7 +102,7 @@ struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT = {
   2U,
 
   { 66, 97, 115, 101, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32,
-    118, 48, 46, 50, 46, 52, 0 }
+    118, 49, 46, 48, 46, 48, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S3>/Constant'
                                         */
