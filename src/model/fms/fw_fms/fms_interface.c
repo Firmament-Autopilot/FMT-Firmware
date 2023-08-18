@@ -31,7 +31,7 @@ MCN_DECLARE(mission_data);
 MCN_DECLARE(ins_output);
 MCN_DECLARE(control_output);
 
-//MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
+// MCN_DEFINE(auto_cmd, sizeof(Auto_Cmd_Bus));
 
 /* FMS output topic */
 MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
@@ -45,7 +45,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(PITCH_DZ, 0.1, false),
     PARAM_FLOAT(XY_P, 0.95, false),
     PARAM_FLOAT(Z_P, 1, false),
-    PARAM_FLOAT(VEL_Z_LIM, 2.5, false),
+    PARAM_FLOAT(VEL_Z_LIM, 5, false),
     PARAM_FLOAT(YAW_P, 2.5, false),
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3, false),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6, false),
@@ -58,7 +58,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(MANUAL_PITCH_REV, 1.0, false),
     PARAM_FLOAT(MANUAL_YAW_REV, 1.0, false),
     PARAM_FLOAT(Y_P, 0.95, false),
-    PARAM_FLOAT(ACC_Y_LIM, 8, false),
+    PARAM_FLOAT(ACC_Y_LIM, 10, false),
     PARAM_FLOAT(ROLL_LIM, PI / 4, false),
     PARAM_FLOAT(PITCH_LIM, PI / 4, false),
     PARAM_FLOAT(FW_AIRSPD_MAX, 30, false),
@@ -172,10 +172,10 @@ static McnNode_t auto_cmd_nod;
 static McnNode_t mission_data_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
-static uint8_t pilot_cmd_updated = 1;
-static uint8_t gcs_cmd_updated = 1;
-static uint8_t auto_cmd_updated = 1;
-static uint8_t mission_data_updated = 1;
+static uint8_t   pilot_cmd_updated    = 1;
+static uint8_t   gcs_cmd_updated      = 1;
+static uint8_t   auto_cmd_updated     = 1;
+static uint8_t   mission_data_updated = 1;
 
 static int Pilot_Cmd_ID;
 static int GCS_Cmd_ID;
@@ -257,9 +257,9 @@ static int fms_output_echo(void* param)
 
 static void mlog_start_cb(void)
 {
-    pilot_cmd_updated = 1;
-    gcs_cmd_updated = 1;
-    auto_cmd_updated = 1;
+    pilot_cmd_updated    = 1;
+    gcs_cmd_updated      = 1;
+    auto_cmd_updated     = 1;
     mission_data_updated = 1;
 }
 
@@ -298,28 +298,28 @@ void fms_interface_step(uint32_t timestamp)
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &FMS_U.Pilot_Cmd);
 
         FMS_U.Pilot_Cmd.timestamp = timestamp;
-        pilot_cmd_updated = 1;
+        pilot_cmd_updated         = 1;
     }
 
     if (mcn_poll(gcs_cmd_nod)) {
         mcn_copy(MCN_HUB(gcs_cmd), gcs_cmd_nod, &FMS_U.GCS_Cmd);
 
         FMS_U.GCS_Cmd.timestamp = timestamp;
-        gcs_cmd_updated = 1;
+        gcs_cmd_updated         = 1;
     }
 
     if (mcn_poll(auto_cmd_nod)) {
         mcn_copy(MCN_HUB(auto_cmd), auto_cmd_nod, &FMS_U.Auto_Cmd);
 
         FMS_U.Auto_Cmd.timestamp = timestamp;
-        auto_cmd_updated = 1;
+        auto_cmd_updated         = 1;
     }
 
     if (mcn_poll(mission_data_nod)) {
         mcn_copy(MCN_HUB(mission_data), mission_data_nod, &FMS_U.Mission_Data);
 
         FMS_U.Mission_Data.timestamp = timestamp;
-        mission_data_updated = 1;
+        mission_data_updated         = 1;
     }
 
     if (mcn_poll(ins_out_nod)) {
@@ -369,22 +369,22 @@ void fms_interface_step(uint32_t timestamp)
 void fms_interface_init(void)
 {
     fms_model_info.period = FMS_EXPORT.period;
-    fms_model_info.info = (char*)FMS_EXPORT.model_info;
+    fms_model_info.info   = (char*)FMS_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(fms_output), fms_output_echo);
 
-    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
-    gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
-    auto_cmd_nod = mcn_subscribe(MCN_HUB(auto_cmd), NULL, NULL);
+    pilot_cmd_nod    = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    gcs_cmd_nod      = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
+    auto_cmd_nod     = mcn_subscribe(MCN_HUB(auto_cmd), NULL, NULL);
     mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL, NULL);
-    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
-    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+    ins_out_nod      = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    control_out_nod  = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
 
-    Pilot_Cmd_ID = mlog_get_bus_id("Pilot_Cmd");
-    GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
-    Auto_Cmd_ID = mlog_get_bus_id("Auto_Cmd");
+    Pilot_Cmd_ID    = mlog_get_bus_id("Pilot_Cmd");
+    GCS_Cmd_ID      = mlog_get_bus_id("GCS_Cmd");
+    Auto_Cmd_ID     = mlog_get_bus_id("Auto_Cmd");
     Mission_Data_ID = mlog_get_bus_id("Mission_Data");
-    FMS_Out_ID = mlog_get_bus_id("FMS_Out");
+    FMS_Out_ID      = mlog_get_bus_id("FMS_Out");
     FMT_ASSERT(Pilot_Cmd_ID >= 0);
     FMT_ASSERT(GCS_Cmd_ID >= 0);
     FMT_ASSERT(Auto_Cmd_ID >= 0);
