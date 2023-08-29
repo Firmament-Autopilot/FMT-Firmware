@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2014
+ * Model version                  : 1.2015
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 17 14:59:24 2023
+ * C/C++ source code generated on : Tue Aug 29 14:23:53 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -904,53 +904,55 @@ static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
 {
   boolean_T valid;
   valid = false;
-  switch (cmd_in) {
-   case FMS_Cmd_Pause:
-   case FMS_Cmd_Return:
-    if (((ins_flag & 1U) != 0U) && ((ins_flag & 4U) != 0U) && ((ins_flag & 8U)
-         != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) &&
-        ((ins_flag & 128U) != 0U)) {
-      valid = true;
-    }
-    break;
-
-   case FMS_Cmd_PreArm:
-    if (mode_in == PilotMode_Manual) {
-      valid = true;
-    } else if (((ins_flag & 1U) == 0U) || ((ins_flag & 4U) == 0U) || ((ins_flag
-                 & 8U) == 0U)) {
-    } else {
-      switch (mode_in) {
-       case PilotMode_Position:
-       case PilotMode_Mission:
-        if (((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) && ((ins_flag &
-              128U) != 0U)) {
-          valid = true;
-        }
-        break;
-
-       case PilotMode_Altitude:
-        if ((ins_flag & 128U) != 0U) {
-          valid = true;
-        }
-        break;
-
-       case PilotMode_Stabilize:
+  if (!(mode_in == PilotMode_None)) {
+    switch (cmd_in) {
+     case FMS_Cmd_Pause:
+     case FMS_Cmd_Return:
+      if (((ins_flag & 1U) != 0U) && ((ins_flag & 4U) != 0U) && ((ins_flag & 8U)
+           != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) &&
+          ((ins_flag & 128U) != 0U)) {
         valid = true;
-        break;
       }
-    }
-    break;
+      break;
 
-   case FMS_Cmd_Continue:
-    if ((mode_in == PilotMode_Offboard) || (mode_in == PilotMode_Mission)) {
+     case FMS_Cmd_PreArm:
+      if (mode_in == PilotMode_Manual) {
+        valid = true;
+      } else if (((ins_flag & 1U) == 0U) || ((ins_flag & 4U) == 0U) ||
+                 ((ins_flag & 8U) == 0U)) {
+      } else {
+        switch (mode_in) {
+         case PilotMode_Position:
+         case PilotMode_Mission:
+          if (((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) && ((ins_flag
+                & 128U) != 0U)) {
+            valid = true;
+          }
+          break;
+
+         case PilotMode_Altitude:
+          if ((ins_flag & 128U) != 0U) {
+            valid = true;
+          }
+          break;
+
+         case PilotMode_Stabilize:
+          valid = true;
+          break;
+        }
+      }
+      break;
+
+     case FMS_Cmd_Continue:
+      if ((mode_in == PilotMode_Offboard) || (mode_in == PilotMode_Mission)) {
+        valid = true;
+      }
+      break;
+
+     case FMS_Cmd_Disarm:
       valid = true;
+      break;
     }
-    break;
-
-   case FMS_Cmd_Disarm:
-    valid = true;
-    break;
   }
 
   return valid;
@@ -1452,8 +1454,9 @@ static void FMS_Arm(void)
       } else {
         switch (FMS_DW.is_Arm) {
          case FMS_IN_Assist:
-          if (FMS_B.Compare && ((FMS_B.BusConversion_InsertedFor_FMSSt.flag &
-                                 221U) != 0U)) {
+          if (FMS_B.Compare && ((int32_T)
+                                (FMS_B.BusConversion_InsertedFor_FMSSt.flag &
+                                 221U) == 221)) {
             FMS_B.Cmd_In.cur_waypoint[0] =
               FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
             FMS_B.Cmd_In.cur_waypoint[1] =

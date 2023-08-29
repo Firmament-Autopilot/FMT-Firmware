@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2012
+ * Model version                  : 1.2022
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 17 14:42:59 2023
+ * C/C++ source code generated on : Tue Aug 29 14:19:44 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -2236,54 +2236,56 @@ static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
 {
   boolean_T valid;
   valid = false;
-  switch (cmd_in) {
-   case FMS_Cmd_Takeoff:
-   case FMS_Cmd_Land:
-   case FMS_Cmd_Return:
-   case FMS_Cmd_Pause:
-    if (((ins_flag & 1U) != 0U) && ((ins_flag & 4U) != 0U) && ((ins_flag & 8U)
-         != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) &&
-        ((ins_flag & 128U) != 0U)) {
-      valid = true;
-    }
-    break;
-
-   case FMS_Cmd_PreArm:
-    if (((ins_flag & 1U) == 0U) || ((ins_flag & 4U) == 0U) || ((ins_flag & 8U) ==
-         0U)) {
-    } else {
-      switch (mode_in) {
-       case PilotMode_Position:
-       case PilotMode_Mission:
-       case PilotMode_Offboard:
-        if (((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) && ((ins_flag &
-              128U) != 0U)) {
-          valid = true;
-        }
-        break;
-
-       case PilotMode_Altitude:
-        if ((ins_flag & 128U) != 0U) {
-          valid = true;
-        }
-        break;
-
-       case PilotMode_Stabilize:
+  if (!(mode_in == PilotMode_None)) {
+    switch (cmd_in) {
+     case FMS_Cmd_Takeoff:
+     case FMS_Cmd_Land:
+     case FMS_Cmd_Return:
+     case FMS_Cmd_Pause:
+      if (((ins_flag & 1U) != 0U) && ((ins_flag & 4U) != 0U) && ((ins_flag & 8U)
+           != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) &&
+          ((ins_flag & 128U) != 0U)) {
         valid = true;
-        break;
       }
-    }
-    break;
+      break;
 
-   case FMS_Cmd_Continue:
-    if ((mode_in == PilotMode_Offboard) || (mode_in == PilotMode_Mission)) {
+     case FMS_Cmd_PreArm:
+      if (((ins_flag & 1U) == 0U) || ((ins_flag & 4U) == 0U) || ((ins_flag & 8U)
+           == 0U)) {
+      } else {
+        switch (mode_in) {
+         case PilotMode_Position:
+         case PilotMode_Mission:
+         case PilotMode_Offboard:
+          if (((ins_flag & 16U) != 0U) && ((ins_flag & 64U) != 0U) && ((ins_flag
+                & 128U) != 0U)) {
+            valid = true;
+          }
+          break;
+
+         case PilotMode_Altitude:
+          if ((ins_flag & 128U) != 0U) {
+            valid = true;
+          }
+          break;
+
+         case PilotMode_Stabilize:
+          valid = true;
+          break;
+        }
+      }
+      break;
+
+     case FMS_Cmd_Continue:
+      if ((mode_in == PilotMode_Offboard) || (mode_in == PilotMode_Mission)) {
+        valid = true;
+      }
+      break;
+
+     case FMS_Cmd_Disarm:
       valid = true;
+      break;
     }
-    break;
-
-   case FMS_Cmd_Disarm:
-    valid = true;
-    break;
   }
 
   return valid;
@@ -2832,7 +2834,8 @@ static void FMS_SubMode(void)
     FMS_B.pilot_cmd.stick_pitch)) >= 0.1);
 
   /* End of Outputs for SubSystem: '<S5>/Vehicle.StickMoved' */
-  if (FMS_B.Compare_k && (FMS_B.target_mode != PilotMode_None)) {
+  if ((FMS_B.Compare_k || ((FMS_B.BusConversion_InsertedFor_FMSSt.flag & 221U)
+        != 221U)) && (FMS_B.target_mode != PilotMode_None)) {
     if (FMS_getArmMode(FMS_B.target_mode) == 3.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Auto;
@@ -3068,8 +3071,9 @@ static void FMS_Arm(void)
       } else {
         switch (FMS_DW.is_Arm) {
          case FMS_IN_Assist:
-          if (FMS_B.Compare && ((FMS_B.BusConversion_InsertedFor_FMSSt.flag &
-                                 221U) != 0U)) {
+          if (FMS_B.Compare && ((int32_T)
+                                (FMS_B.BusConversion_InsertedFor_FMSSt.flag &
+                                 221U) == 221)) {
             FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
             FMS_DW.durationLastReferenceTick_1_n5 =
               FMS_DW.chartAbsoluteTimeCounter;
