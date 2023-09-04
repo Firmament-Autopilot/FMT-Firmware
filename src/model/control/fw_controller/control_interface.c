@@ -60,6 +60,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_TECS_PITCH_P, 0.4, false),
     PARAM_FLOAT(FW_TECS_THOR_P, 0.2, false),
     PARAM_FLOAT(FW_TECS_PITCH_I, 0.2, false),
+    PARAM_FLOAT(FW_TECS_PITCH_I_LIM, 0.2, false),
     PARAM_FLOAT(FW_TECS_THOR_I, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_D, 0.0, false),
     PARAM_FLOAT(FW_TECS_THOR_D, 0.0, false),
@@ -138,6 +139,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_PITCH_P), &CONTROL_PARAM.FW_TECS_PITCH_P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_THOR_P), &CONTROL_PARAM.FW_TECS_THOR_P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_PITCH_I), &CONTROL_PARAM.FW_TECS_PITCH_I));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_PITCH_I_LIM), &CONTROL_PARAM.FW_TECS_PITCH_I_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_THOR_I), &CONTROL_PARAM.FW_TECS_THOR_I));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_PITCH_D), &CONTROL_PARAM.FW_TECS_PITCH_D));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_THOR_D), &CONTROL_PARAM.FW_TECS_THOR_D));
@@ -177,7 +179,7 @@ void control_interface_step(uint32_t timestamp)
 void control_interface_init(void)
 {
     control_model_info.period = CONTROL_EXPORT.period;
-    control_model_info.info = (char*)CONTROL_EXPORT.model_info;
+    control_model_info.info   = (char*)CONTROL_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(control_output), control_out_echo);
 

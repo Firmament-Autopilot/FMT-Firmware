@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1081
+ * Model version                  : 1.1082
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 17 15:00:16 2023
+ * C/C++ source code generated on : Thu Aug 31 10:16:28 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
+struct_MB1PRNEC9lKcTJkzJ82htE CONTROL_PARAM = {
   7.0F,
   7.0F,
   0.785398185F,
@@ -63,7 +63,8 @@ struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
   2.0F,
   0.1F,
   0.1F,
-  0.1F
+  0.1F,
+  0.2F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S6>/Gain'
@@ -91,6 +92,7 @@ struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM = {
                                         *   '<S36>/Constant'
                                         *   '<S37>/Constant'
                                         *   '<S39>/Gain'
+                                        *   '<S40>/ '
                                         *   '<S40>/Gain3'
                                         *   '<S42>/Gain'
                                         *   '<S43>/Gain'
@@ -353,20 +355,20 @@ void Controller_step(void)
   if ((Controller_U.FMS_Out.reset != 0) || (Controller_DW._PrevResetState != 0))
   {
     Controller_DW._DSTATE = Controller_ConstB.Zero1;
-    if (Controller_DW._DSTATE >= 0.1F) {
-      Controller_DW._DSTATE = 0.1F;
+    if (Controller_DW._DSTATE >= CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+      Controller_DW._DSTATE = CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
     } else {
-      if (Controller_DW._DSTATE <= -0.1F) {
-        Controller_DW._DSTATE = -0.1F;
+      if (Controller_DW._DSTATE <= -CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+        Controller_DW._DSTATE = -CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
       }
     }
   }
 
-  if (Controller_DW._DSTATE >= 0.1F) {
-    Controller_DW._DSTATE = 0.1F;
+  if (Controller_DW._DSTATE >= CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+    Controller_DW._DSTATE = CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
   } else {
-    if (Controller_DW._DSTATE <= -0.1F) {
-      Controller_DW._DSTATE = -0.1F;
+    if (Controller_DW._DSTATE <= -CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+      Controller_DW._DSTATE = -CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
     }
   }
 
@@ -1066,11 +1068,11 @@ void Controller_step(void)
    *  Inport: '<Root>/FMS_Out'
    */
   Controller_DW._DSTATE += CONTROL_PARAM.FW_TECS_PITCH_I * rtb_B_err * 0.002F;
-  if (Controller_DW._DSTATE >= 0.1F) {
-    Controller_DW._DSTATE = 0.1F;
+  if (Controller_DW._DSTATE >= CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+    Controller_DW._DSTATE = CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
   } else {
-    if (Controller_DW._DSTATE <= -0.1F) {
-      Controller_DW._DSTATE = -0.1F;
+    if (Controller_DW._DSTATE <= -CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+      Controller_DW._DSTATE = -CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
     }
   }
 
@@ -1186,11 +1188,11 @@ void Controller_init(void)
 
   /* InitializeConditions for DiscreteIntegrator: '<S40>/ ' */
   Controller_DW._DSTATE = Controller_ConstB.Zero1;
-  if (Controller_DW._DSTATE >= 0.1F) {
-    Controller_DW._DSTATE = 0.1F;
+  if (Controller_DW._DSTATE >= CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+    Controller_DW._DSTATE = CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
   } else {
-    if (Controller_DW._DSTATE <= -0.1F) {
-      Controller_DW._DSTATE = -0.1F;
+    if (Controller_DW._DSTATE <= -CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
+      Controller_DW._DSTATE = -CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
     }
   }
 

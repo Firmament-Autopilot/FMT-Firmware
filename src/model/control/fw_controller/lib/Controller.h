@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1081
+ * Model version                  : 1.1082
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 17 15:00:16 2023
+ * C/C++ source code generated on : Thu Aug 31 10:16:28 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -112,49 +112,50 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_S6LqEv2YQIg4UXtSkgNiZ CONTROL_PARAM;/* Variable: CONTROL_PARAM
-                                                   * Referenced by:
-                                                   *   '<S6>/Gain'
-                                                   *   '<S6>/Gain1'
-                                                   *   '<S6>/balabnce_ratio2'
-                                                   *   '<S6>/balance_ratio'
-                                                   *   '<S6>/pitch_ff'
-                                                   *   '<S6>/thorttle_ff'
-                                                   *   '<S6>/ucmd2pitch'
-                                                   *   '<S6>/ucmd2thor'
-                                                   *   '<S6>/wcmd2pitch'
-                                                   *   '<S6>/wcmd2thor'
-                                                   *   '<S7>/Saturation'
-                                                   *   '<S8>/FF'
-                                                   *   '<S8>/FF_limit'
-                                                   *   '<S8>/PI_limit'
-                                                   *   '<S33>/P_control'
-                                                   *   '<S34>/P_control'
-                                                   *   '<S12>/trim_speed'
-                                                   *   '<S13>/trim_speed'
-                                                   *   '<S26>/Constant1'
-                                                   *   '<S26>/Constant12'
-                                                   *   '<S26>/Constant2'
-                                                   *   '<S26>/Constant7'
-                                                   *   '<S36>/Constant'
-                                                   *   '<S37>/Constant'
-                                                   *   '<S39>/Gain'
-                                                   *   '<S40>/Gain3'
-                                                   *   '<S42>/Gain'
-                                                   *   '<S43>/Gain'
-                                                   *   '<S45>/Constant'
-                                                   *   '<S14>/gain1'
-                                                   *   '<S14>/gain2'
-                                                   *   '<S14>/gain3'
-                                                   *   '<S14>/Discrete-Time Integrator'
-                                                   *   '<S15>/gain1'
-                                                   *   '<S15>/gain2'
-                                                   *   '<S15>/gain3'
-                                                   *   '<S19>/Pitch Offset'
-                                                   *   '<S19>/Saturation'
-                                                   *   '<S20>/Constant1'
-                                                   *   '<S20>/Constant2'
-                                                   */
+extern struct_MB1PRNEC9lKcTJkzJ82htE CONTROL_PARAM;/* Variable: CONTROL_PARAM
+                                                    * Referenced by:
+                                                    *   '<S6>/Gain'
+                                                    *   '<S6>/Gain1'
+                                                    *   '<S6>/balabnce_ratio2'
+                                                    *   '<S6>/balance_ratio'
+                                                    *   '<S6>/pitch_ff'
+                                                    *   '<S6>/thorttle_ff'
+                                                    *   '<S6>/ucmd2pitch'
+                                                    *   '<S6>/ucmd2thor'
+                                                    *   '<S6>/wcmd2pitch'
+                                                    *   '<S6>/wcmd2thor'
+                                                    *   '<S7>/Saturation'
+                                                    *   '<S8>/FF'
+                                                    *   '<S8>/FF_limit'
+                                                    *   '<S8>/PI_limit'
+                                                    *   '<S33>/P_control'
+                                                    *   '<S34>/P_control'
+                                                    *   '<S12>/trim_speed'
+                                                    *   '<S13>/trim_speed'
+                                                    *   '<S26>/Constant1'
+                                                    *   '<S26>/Constant12'
+                                                    *   '<S26>/Constant2'
+                                                    *   '<S26>/Constant7'
+                                                    *   '<S36>/Constant'
+                                                    *   '<S37>/Constant'
+                                                    *   '<S39>/Gain'
+                                                    *   '<S40>/ '
+                                                    *   '<S40>/Gain3'
+                                                    *   '<S42>/Gain'
+                                                    *   '<S43>/Gain'
+                                                    *   '<S45>/Constant'
+                                                    *   '<S14>/gain1'
+                                                    *   '<S14>/gain2'
+                                                    *   '<S14>/gain3'
+                                                    *   '<S14>/Discrete-Time Integrator'
+                                                    *   '<S15>/gain1'
+                                                    *   '<S15>/gain2'
+                                                    *   '<S15>/gain3'
+                                                    *   '<S19>/Pitch Offset'
+                                                    *   '<S19>/Saturation'
+                                                    *   '<S20>/Constant1'
+                                                    *   '<S20>/Constant2'
+                                                    */
 extern struct_ny3PY9hontv4J5WqwlFzJB CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S3>/Constant'
                                                      */
