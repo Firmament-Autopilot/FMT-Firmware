@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.966
+ * Model version                  : 1.968
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 17 14:44:02 2023
+ * C/C++ source code generated on : Sun Sep 10 08:50:03 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -28,36 +28,36 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM = {
   1.4F,
   0.2F,
-  0.2F,
-  0.6F,
-  0.1F,
+  0.05F,
+  0.5F,
+  0.12F,
   0.0F,
   -1.0F,
   1.0F,
   -1.0F,
   1.0F,
-  -0.15F,
-  0.15F,
-  -0.1F,
-  0.1F,
-  5.0F,
-  5.0F,
-  0.52359879F,
-  0.1F,
-  0.1F,
-  0.15F,
-  0.1F,
-  0.1F,
+  -0.2F,
   0.2F,
-  0.003F,
-  0.003F,
-  0.001F,
+  -0.1F,
+  0.1F,
+  7.0F,
+  7.0F,
+  0.523599F,
+  0.03F,
+  0.03F,
+  0.12F,
+  0.05F,
+  0.05F,
+  0.1F,
+  0.0008F,
+  0.0008F,
+  0.0005F,
   -0.1F,
   0.1F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F,
+  1.57079601F,
+  3.14159298F,
   0.5F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
@@ -132,8 +132,8 @@ void Controller_step(void)
   real32_T rtb_Subtract3_i;
   real32_T rtb_DiscreteTimeIntegrator1_j;
   real32_T rtb_DiscreteTimeIntegrator_h;
-  real32_T rtb_Gain_f;
-  real32_T rtb_Gain_hb0;
+  real32_T rtb_Gain_fl;
+  real32_T rtb_Gain_g2;
   real32_T rtb_Add_i;
   int32_T i;
   real32_T rtb_VectorConcatenate_0[3];
@@ -946,7 +946,7 @@ void Controller_step(void)
    *  Inport: '<Root>/INS_Out'
    *  Sum: '<S111>/Sum1'
    */
-  rtb_Gain_f = -(Controller_DW.Integrator1_DSTATE_p - Controller_U.INS_Out.vd);
+  rtb_Gain_fl = -(Controller_DW.Integrator1_DSTATE_p - Controller_U.INS_Out.vd);
 
   /* DiscreteIntegrator: '<S116>/Discrete-Time Integrator' incorporates:
    *  Constant: '<S116>/Constant'
@@ -981,19 +981,19 @@ void Controller_step(void)
    *  Inport: '<Root>/FMS_Out'
    */
   if (Controller_DW.DiscreteTimeIntegrator1_IC_LO_k != 0) {
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_h = rtb_Gain_f;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_h = rtb_Gain_fl;
   }
 
   if ((Controller_U.FMS_Out.reset != 0) ||
       (Controller_DW.DiscreteTimeIntegrator1_Prev_iy != 0)) {
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_h = rtb_Gain_f;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_h = rtb_Gain_fl;
   }
 
   /* Gain: '<S118>/Gain' incorporates:
    *  DiscreteIntegrator: '<S118>/Discrete-Time Integrator1'
    *  Sum: '<S118>/Sum5'
    */
-  rtb_Gain_hb0 = (rtb_Gain_f - Controller_DW.DiscreteTimeIntegrator1_DSTAT_h) *
+  rtb_Gain_g2 = (rtb_Gain_fl - Controller_DW.DiscreteTimeIntegrator1_DSTAT_h) *
     62.831852F;
 
   /* Switch: '<S118>/Switch' incorporates:
@@ -1003,7 +1003,7 @@ void Controller_step(void)
   if (Controller_U.FMS_Out.reset > 0) {
     rtb_Add_i = 0.0F;
   } else {
-    rtb_Add_i = rtb_Gain_hb0;
+    rtb_Add_i = rtb_Gain_g2;
   }
 
   /* End of Switch: '<S118>/Switch' */
@@ -1029,7 +1029,7 @@ void Controller_step(void)
    *  DiscreteIntegrator: '<S116>/Discrete-Time Integrator'
    *  Product: '<S117>/Multiply'
    */
-  rtb_Add_i = (CONTROL_PARAM.VEL_Z_P * rtb_Gain_f +
+  rtb_Add_i = (CONTROL_PARAM.VEL_Z_P * rtb_Gain_fl +
                Controller_DW.DiscreteTimeIntegrator_DSTATE_m) + rtb_Subtract3_i;
 
   /* Product: '<S110>/Multiply' incorporates:
@@ -1248,9 +1248,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value[i_b + 12]
                               * tmp_k +
                               Controller_ConstP.Effective_Matrix_Value[i_b] *
-                              tmp_b))), 65536.0F);
-        u0_k = (uint16_T)((uint32_T)(u0_b < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_b : (int32_T)(uint16_T)u0_b) + rtb_throttle_cmd);
+                              tmp_b)) + (real32_T)rtb_throttle_cmd), 65536.0F);
+        u0_k = (uint16_T)(u0_b < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_b : (int32_T)(uint16_T)u0_b);
         if (u0_k > 1900) {
           rtb_MultiportSwitch[i_b] = 1900U;
         } else if (u0_k < 1100) {
@@ -1452,9 +1452,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_j[i_n + 8]
                               * tmp_d +
                               Controller_ConstP.Effective_Matrix_Value_j[i_n] *
-                              tmp_n))), 65536.0F);
-        u0_d = (uint16_T)((uint32_T)(u0_n < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_n : (int32_T)(uint16_T)u0_n) + rtb_throttle_cmd_b);
+                              tmp_n)) + (real32_T)rtb_throttle_cmd_b), 65536.0F);
+        u0_d = (uint16_T)(u0_n < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_n : (int32_T)(uint16_T)u0_n);
         if (u0_d > 1900) {
           rtb_MultiportSwitch_i[i_n] = 1900U;
         } else if (u0_d < 1100) {
@@ -1652,9 +1652,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_je[i_i +
                               6] * tmp_o +
                               Controller_ConstP.Effective_Matrix_Value_je[i_i] *
-                              tmp_i))), 65536.0F);
-        u0_o = (uint16_T)((uint32_T)(u0_i < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_i : (int32_T)(uint16_T)u0_i) + rtb_throttle_cmd_k);
+                              tmp_i)) + (real32_T)rtb_throttle_cmd_k), 65536.0F);
+        u0_o = (uint16_T)(u0_i < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_i : (int32_T)(uint16_T)u0_i);
         if (u0_o > 1900) {
           rtb_MultiportSwitch_h[i_i] = 1900U;
         } else if (u0_o < 1100) {
@@ -1855,9 +1855,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_f[i_j + 6]
                               * tmp_e +
                               Controller_ConstP.Effective_Matrix_Value_f[i_j] *
-                              tmp_j))), 65536.0F);
-        u0_e = (uint16_T)((uint32_T)(u0_j < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_j : (int32_T)(uint16_T)u0_j) + rtb_throttle_cmd_d);
+                              tmp_j)) + (real32_T)rtb_throttle_cmd_d), 65536.0F);
+        u0_e = (uint16_T)(u0_j < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_j : (int32_T)(uint16_T)u0_j);
         if (u0_e > 1900) {
           rtb_MultiportSwitch_k[i_j] = 1900U;
         } else if (u0_e < 1100) {
@@ -2058,9 +2058,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_m[i_i + 8]
                               * tmp_d +
                               Controller_ConstP.Effective_Matrix_Value_m[i_i] *
-                              tmp_i))), 65536.0F);
-        u0_d = (uint16_T)((uint32_T)(u0_i < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_i : (int32_T)(uint16_T)u0_i) + rtb_throttle_cmd_m);
+                              tmp_i)) + (real32_T)rtb_throttle_cmd_m), 65536.0F);
+        u0_d = (uint16_T)(u0_i < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_i : (int32_T)(uint16_T)u0_i);
         if (u0_d > 1900) {
           rtb_MultiportSwitch_d[i_i] = 1900U;
         } else if (u0_d < 1100) {
@@ -2258,9 +2258,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_k[i_l + 8]
                               * tmp_m +
                               Controller_ConstP.Effective_Matrix_Value_k[i_l] *
-                              tmp_l))), 65536.0F);
-        u0_m = (uint16_T)((uint32_T)(u0_l < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_l : (int32_T)(uint16_T)u0_l) + rtb_throttle_cmd_n);
+                              tmp_l)) + (real32_T)rtb_throttle_cmd_n), 65536.0F);
+        u0_m = (uint16_T)(u0_l < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_l : (int32_T)(uint16_T)u0_l);
         if (u0_m > 1900) {
           rtb_MultiportSwitch_hv[i_l] = 1900U;
         } else if (u0_m < 1100) {
@@ -2460,9 +2460,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_fr[i_m +
                               4] * tmp_n +
                               Controller_ConstP.Effective_Matrix_Value_fr[i_m] *
-                              tmp_m))), 65536.0F);
-        u0_n = (uint16_T)((uint32_T)(u0_m < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_m : (int32_T)(uint16_T)u0_m) + rtb_throttle_cmd_o);
+                              tmp_m)) + (real32_T)rtb_throttle_cmd_o), 65536.0F);
+        u0_n = (uint16_T)(u0_m < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_m : (int32_T)(uint16_T)u0_m);
         if (u0_n > 1900) {
           rtb_MultiportSwitch_o[i_m] = 1900U;
         } else if (u0_n < 1100) {
@@ -2666,9 +2666,9 @@ void Controller_step(void)
                              (Controller_ConstP.Effective_Matrix_Value_h[i_e + 4]
                               * tmp_o +
                               Controller_ConstP.Effective_Matrix_Value_h[i_e] *
-                              tmp_e))), 65536.0F);
-        u0_o = (uint16_T)((uint32_T)(u0_e < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-          (uint16_T)-u0_e : (int32_T)(uint16_T)u0_e) + rtb_throttle_cmd_c);
+                              tmp_e)) + (real32_T)rtb_throttle_cmd_c), 65536.0F);
+        u0_o = (uint16_T)(u0_e < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -u0_e : (int32_T)(uint16_T)u0_e);
         if (u0_o > 1900) {
           rtb_MultiportSwitch_is[i_e] = 1900U;
         } else if (u0_o < 1100) {
@@ -3125,7 +3125,7 @@ void Controller_step(void)
    *  Product: '<S116>/Multiply'
    */
   Controller_DW.DiscreteTimeIntegrator_DSTATE_m += CONTROL_PARAM.VEL_Z_I *
-    rtb_Gain_f * 0.002F;
+    rtb_Gain_fl * 0.002F;
   if (Controller_DW.DiscreteTimeIntegrator_DSTATE_m >= CONTROL_PARAM.VEL_Z_I_MAX)
   {
     Controller_DW.DiscreteTimeIntegrator_DSTATE_m = CONTROL_PARAM.VEL_Z_I_MAX;
@@ -3145,7 +3145,7 @@ void Controller_step(void)
    *  Inport: '<Root>/FMS_Out'
    */
   Controller_DW.DiscreteTimeIntegrator1_IC_LO_k = 0U;
-  Controller_DW.DiscreteTimeIntegrator1_DSTAT_h += 0.002F * rtb_Gain_hb0;
+  Controller_DW.DiscreteTimeIntegrator1_DSTAT_h += 0.002F * rtb_Gain_g2;
   Controller_DW.DiscreteTimeIntegrator1_Prev_iy = (int8_T)
     (Controller_U.FMS_Out.reset > 0);
 
