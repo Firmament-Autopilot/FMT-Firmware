@@ -137,7 +137,7 @@ static rt_err_t ist8310_init(void)
     RT_CHECK(i2c_write_reg(i2c_dev, REG_CTRL3, CTRL3_SAMPLEAVG_16));
 
     /* configure control register 4 */
-    RT_CHECK(i2c_write_reg(i2c_dev, REG_CTRL3, CTRL4_SRPD));
+    RT_CHECK(i2c_write_reg(i2c_dev, REG_CTRL4, CTRL4_SRPD));
 
     /* Trigger one time measurement */
     // RT_CHECK(i2c_write_reg(i2c_dev, REG_CTRL1, CTRL1_ODR_SINGLE));
