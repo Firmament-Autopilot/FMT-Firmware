@@ -35,7 +35,10 @@ jobs:
       - name: Install Tools
         shell: bash
         run: |
-          sudo apt-get install clang-format-11
+          sudo apt-add-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 main"
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo apt update
+          sudo apt install clang-format-16
 
       - id: files
         uses: jitterbit/get-changed-files@v1
@@ -74,6 +77,6 @@ jobs:
           done
 
           if [ -n "${changed_files}" ]; then
-            clang-format-11 -n --style=file --Werror ${changed_files}
+            clang-format-16 -n --style=file --Werror ${changed_files}
           fi
           echo "format-checked files: ${changed_files}."
