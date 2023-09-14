@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.766
+ * Model version                  : 1.797
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 29 12:56:20 2023
+ * C/C++ source code generated on : Thu Sep 14 09:08:42 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -16,6 +16,28 @@
 #ifndef RTW_HEADER_Plant_types_h_
 #define RTW_HEADER_Plant_types_h_
 #include "rtwtypes.h"
+#ifndef DEFINED_TYPEDEF_FOR_Environment_Info_Bus_
+#define DEFINED_TYPEDEF_FOR_Environment_Info_Bus_
+
+/* Collision Information */
+typedef struct {
+  uint32_T timestamp;
+
+  /* Hit point position in NED frame */
+  real32_T hit_position[3];
+
+  /* Hit point normal */
+  real32_T hit_normal[3];
+
+  /* External torque applied at body in body frame */
+  real32_T torque[3];
+
+  /* External force applied at body in body frame. */
+  real32_T force[3];
+} Environment_Info_Bus;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_Control_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_Control_Out_Bus_
 

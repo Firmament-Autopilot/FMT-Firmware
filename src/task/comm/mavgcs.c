@@ -16,6 +16,7 @@
 #include <firmament.h>
 
 #include "FMS.h"
+#include "Plant.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "module/ftp/ftp_manager.h"
@@ -30,13 +31,14 @@
 #undef LOG_TAG
 #define LOG_TAG "MAVGCS"
 
+MCN_DEFINE(environment_info, sizeof(Environment_Info_Bus));
+MCN_DEFINE(external_state, sizeof(mavlink_fmt_external_state_t));
+
 MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(mission_data);
-
-MCN_DEFINE(external_state, sizeof(mavlink_fmt_external_state_t));
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
@@ -398,15 +400,27 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_FMT_ENVIRONMENT_INFO: {
         mavlink_fmt_environment_info_t env_info;
+        Environment_Info_Bus           environment_info = { 0 };
 
         mavlink_msg_fmt_environment_info_decode(msg, &env_info);
-        printf("pos:%.2f %.2f %.2f, normal:%.2f %.2f %.2f\n",
-               env_info.hit_position[0],
-               env_info.hit_position[1],
-               env_info.hit_position[2],
-               env_info.hit_normal[0],
-               env_info.hit_normal[1],
-               env_info.hit_normal[2]);
+
+        environment_info.timestamp       = systime_now_ms();
+        environment_info.hit_position[0] = env_info.hit_position[0];
+        environment_info.hit_position[1] = env_info.hit_position[1];
+        environment_info.hit_position[2] = env_info.hit_position[2];
+        environment_info.hit_normal[0]   = env_info.hit_normal[0];
+        environment_info.hit_normal[1]   = env_info.hit_normal[1];
+        environment_info.hit_normal[2]   = env_info.hit_normal[2];
+
+        mcn_publish(MCN_HUB(environment_info), &environment_info);
+
+        // printf("pos:%.2f %.2f %.2f, normal:%.2f %.2f %.2f\n",
+        //        env_info.hit_position[0],
+        //        env_info.hit_position[1],
+        //        env_info.hit_position[2],
+        //        env_info.hit_normal[0],
+        //        env_info.hit_normal[1],
+        //        env_info.hit_normal[2]);
     } break;
 
     default: {
@@ -421,6 +435,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 fmt_err_t mavgcs_init(void)
 {
     mcn_advertise(MCN_HUB(external_state), NULL);
+    mcn_advertise(MCN_HUB(environment_info), NULL);
 
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
