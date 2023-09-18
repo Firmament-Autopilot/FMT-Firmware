@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.872
+ * Model version                  : 1.962
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Sep 15 08:53:34 2023
+ * C/C++ source code generated on : Sun Sep 17 22:56:54 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -23,11 +23,14 @@
 typedef struct {
   uint32_T timestamp;
 
-  /* Hit point position in NED frame */
-  real32_T hit_position[3];
+  /* Hit point in NED frame */
+  real32_T hit_point[3];
 
   /* Hit point normal */
   real32_T hit_normal[3];
+
+  /* Hit location in NED frame */
+  real32_T hit_location[3];
 
   /* External torque applied at body in body frame */
   real32_T torque[3];

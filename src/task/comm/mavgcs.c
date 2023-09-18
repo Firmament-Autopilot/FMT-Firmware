@@ -405,22 +405,18 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         mavlink_msg_fmt_environment_info_decode(msg, &env_info);
 
         environment_info.timestamp       = systime_now_ms();
-        environment_info.hit_position[0] = env_info.hit_position[0];
-        environment_info.hit_position[1] = env_info.hit_position[1];
-        environment_info.hit_position[2] = env_info.hit_position[2];
+        environment_info.hit_point[0]    = env_info.hit_point[0];
+        environment_info.hit_point[1]    = env_info.hit_point[1];
+        environment_info.hit_point[2]    = env_info.hit_point[2];
         environment_info.hit_normal[0]   = env_info.hit_normal[0];
         environment_info.hit_normal[1]   = env_info.hit_normal[1];
         environment_info.hit_normal[2]   = env_info.hit_normal[2];
+        environment_info.hit_location[0] = env_info.hit_location[0];
+        environment_info.hit_location[1] = env_info.hit_location[1];
+        environment_info.hit_location[2] = env_info.hit_location[2];
+        // TODO: add torque and force
 
         mcn_publish(MCN_HUB(environment_info), &environment_info);
-
-        // printf("pos:%.2f %.2f %.2f, normal:%.2f %.2f %.2f\n",
-        //        env_info.hit_position[0],
-        //        env_info.hit_position[1],
-        //        env_info.hit_position[2],
-        //        env_info.hit_normal[0],
-        //        env_info.hit_normal[1],
-        //        env_info.hit_normal[2]);
     } break;
 
     default: {

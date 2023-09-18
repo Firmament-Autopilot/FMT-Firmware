@@ -170,13 +170,14 @@ static void mavlink_test_fmt_environment_info(uint8_t system_id, uint8_t compone
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_fmt_environment_info_t packet_in = {
-        { 17.0, 18.0, 19.0 },{ 101.0, 102.0, 103.0 }
+        { 17.0, 18.0, 19.0 },{ 101.0, 102.0, 103.0 },{ 185.0, 186.0, 187.0 }
     };
     mavlink_fmt_environment_info_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
         
-        mav_array_memcpy(packet1.hit_position, packet_in.hit_position, sizeof(float)*3);
+        mav_array_memcpy(packet1.hit_point, packet_in.hit_point, sizeof(float)*3);
         mav_array_memcpy(packet1.hit_normal, packet_in.hit_normal, sizeof(float)*3);
+        mav_array_memcpy(packet1.hit_location, packet_in.hit_location, sizeof(float)*3);
         
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
         if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
@@ -190,12 +191,12 @@ static void mavlink_test_fmt_environment_info(uint8_t system_id, uint8_t compone
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fmt_environment_info_pack(system_id, component_id, &msg , packet1.hit_position , packet1.hit_normal );
+    mavlink_msg_fmt_environment_info_pack(system_id, component_id, &msg , packet1.hit_point , packet1.hit_normal , packet1.hit_location );
     mavlink_msg_fmt_environment_info_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fmt_environment_info_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.hit_position , packet1.hit_normal );
+    mavlink_msg_fmt_environment_info_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.hit_point , packet1.hit_normal , packet1.hit_location );
     mavlink_msg_fmt_environment_info_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -208,7 +209,7 @@ static void mavlink_test_fmt_environment_info(uint8_t system_id, uint8_t compone
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fmt_environment_info_send(MAVLINK_COMM_1 , packet1.hit_position , packet1.hit_normal );
+    mavlink_msg_fmt_environment_info_send(MAVLINK_COMM_1 , packet1.hit_point , packet1.hit_normal , packet1.hit_location );
     mavlink_msg_fmt_environment_info_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
