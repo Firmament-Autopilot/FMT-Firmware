@@ -23,11 +23,11 @@
 static void __swap_item(WorkItem_t* a, WorkItem_t* b)
 {
     WorkItem_t temp = *b;
-    *b = *a;
-    *a = temp;
+    *b              = *a;
+    *a              = temp;
 }
 
-void __heapify(WorkItem_t* queue, uint8_t size, int idx)
+static void __heapify(WorkItem_t* queue, uint8_t size, int idx)
 {
     if (size == 1) {
         /* single element in the heap */
@@ -36,8 +36,8 @@ void __heapify(WorkItem_t* queue, uint8_t size, int idx)
 
     /* Find the smallest among root, left child and right child */
     int smallest = idx;
-    int l = 2 * idx + 1;
-    int r = 2 * idx + 2;
+    int l        = 2 * idx + 1;
+    int r        = 2 * idx + 2;
     if (l < size && queue[l]->schedule_time < queue[smallest]->schedule_time)
         smallest = l;
     if (r < size && queue[r]->schedule_time < queue[smallest]->schedule_time)
@@ -50,9 +50,23 @@ void __heapify(WorkItem_t* queue, uint8_t size, int idx)
     }
 }
 
+rt_inline int find_workitem_idx(WorkQueue_t work_queue, WorkItem_t item)
+{
+    int idx = -1;
+
+    for (int i = 0; i < work_queue->size; i++) {
+        if (item == work_queue->queue[i]) {
+            idx = i;
+            break;
+        }
+    }
+
+    return idx;
+}
+
 /**
  * @brief Pop the latest work from workqueue
- * 
+ *
  * @param work_queue The target workqueue
  * @return WorkItem_t The latest work item
  */
@@ -79,7 +93,7 @@ static WorkItem_t workqueue_pop(WorkQueue_t work_queue)
 
 /**
  * @brief Workqueue execution thread
- * 
+ *
  * @param parameter the pointer of workqueue
  */
 static void workqueue_executor(void* parameter)
@@ -87,8 +101,8 @@ static void workqueue_executor(void* parameter)
     RT_ASSERT(parameter != NULL);
 
     WorkQueue_t work_queue = (WorkQueue_t)parameter;
-    WorkItem_t work_item;
-    uint32_t time_now, schedule_time;
+    WorkItem_t  work_item;
+    uint32_t    time_now, schedule_time;
 
     while (1) {
         if (work_queue->size == 0) {
@@ -97,7 +111,7 @@ static void workqueue_executor(void* parameter)
             rt_schedule();
         }
 
-        time_now = systime_now_ms();
+        time_now      = systime_now_ms();
         schedule_time = work_queue->queue[0]->schedule_time;
         if (schedule_time > time_now) {
             sys_msleep(schedule_time - time_now);
@@ -108,8 +122,8 @@ static void workqueue_executor(void* parameter)
         if (work_item != NULL) {
             /* do work */
             work_item->run(work_item->parameter);
-            /* if period is set, push work item back to queue */
-            if (work_item->period > 0) {
+            /* if period is set and no same workitem in queue, push work item back to queue */
+            if (work_item->period > 0 && find_workitem_idx(work_queue, work_item) == -1) {
                 work_item->schedule_time = SCHEDULE_DELAY(work_item->period);
                 workqueue_schedule_work(work_queue, work_item);
             }
@@ -165,7 +179,7 @@ fmt_err_t workqueue_schedule_work(WorkQueue_t work_queue, WorkItem_t item)
 
 /**
  * @brief Cancel a work from workqueue
- * 
+ *
  * @param work_queue The target workqueue
  * @param item The work item to be canceled
  * @return fmt_err_t FMT_EOK on OK
@@ -175,16 +189,11 @@ fmt_err_t workqueue_cancel_work(WorkQueue_t work_queue, WorkItem_t item)
     RT_ASSERT(work_queue != NULL);
     RT_ASSERT(item != NULL);
 
-    int idx = -1;
+    int idx;
 
     work_lock(work_queue);
 
-    for (int i = 0; i < work_queue->size; i++) {
-        if (item == work_queue->queue[i]) {
-            idx = i;
-            break;
-        }
-    }
+    idx = find_workitem_idx(work_queue, item);
 
     if (idx == -1) {
         work_unlock(work_queue);
@@ -205,7 +214,7 @@ fmt_err_t workqueue_cancel_work(WorkQueue_t work_queue, WorkItem_t item)
 
 /**
  * @brief Delete a workqueue
- * 
+ *
  * @param work_queue Workqueue to be deleted
  * @return fmt_err_t FMT_EOK on OK
  */
@@ -227,7 +236,7 @@ fmt_err_t workqueue_delete(WorkQueue_t work_queue)
 
 /**
  * @brief Create a workqueue
- * 
+ *
  * @param name Name of workqueue
  * @param size Size of workqueue
  * @param stack_size Stack size of workqueue thread
@@ -260,7 +269,7 @@ WorkQueue_t workqueue_create(const char* name, uint8_t size, uint16_t stack_size
         goto error_exit;
     }
     work_queue->qsize = size;
-    work_queue->size = 0;
+    work_queue->size  = 0;
 
     work_queue->lock = rt_sem_create(name, 1, RT_IPC_FLAG_FIFO);
     if (work_queue->lock == NULL) {
