@@ -65,8 +65,9 @@ MLOG_BUS_DEFINE(Plant_States, Plant_States_Elems);
 
 static mlog_elem_t Environment_Info_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
-    MLOG_ELEMENT_VEC(hit_position, MLOG_FLOAT, 3),
+    MLOG_ELEMENT_VEC(hit_point, MLOG_FLOAT, 3),
     MLOG_ELEMENT_VEC(hit_normal, MLOG_FLOAT, 3),
+    MLOG_ELEMENT_VEC(hit_location, MLOG_FLOAT, 3),
     MLOG_ELEMENT_VEC(torque, MLOG_FLOAT, 3),
     MLOG_ELEMENT_VEC(force, MLOG_FLOAT, 3),
 };
