@@ -519,6 +519,8 @@ bool mavlink_msg_distance_sensor_pack_func(mavlink_message_t* msg_t)
     distance_sensor.time_boot_ms     = systime_now_ms();
     distance_sensor.current_distance = rf_data.distance_m > 0.0f ? rf_data.distance_m * 100 : 0;
     distance_sensor.signal_quality   = rf_data.distance_m > 0.0f ? 100 : 0;
+    distance_sensor.orientation      = ROTATION_PITCH_270;
+    distance_sensor.quaternion[0]    = 1.0f;
 
     mavlink_msg_distance_sensor_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &distance_sensor);
 
