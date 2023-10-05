@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.962
+ * Model version                  : 1.1160
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Sep 17 22:56:54 2023
+ * C/C++ source code generated on : Thu Oct  5 16:32:16 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,39 +18,39 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Plant_T Plant_ConstB = {
-  1.9966471893352524,                  /* '<S112>/Sum' */
-  0.0066943799901413165,               /* '<S112>/Multiply3' */
-  0.99330562000985867,                 /* '<S112>/Sum4' */
-  1.9966471868221032,                  /* '<S31>/Subtract1' */
-  0.00669438499958795,                 /* '<S31>/Product1' */
+  1.9966471893352524,                  /* '<S114>/Sum' */
+  0.0066943799901413165,               /* '<S114>/Multiply3' */
+  0.99330562000985867,                 /* '<S114>/Sum4' */
+  1.9966471868221032,                  /* '<S29>/Subtract1' */
+  0.00669438499958795,                 /* '<S29>/Product1' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S147>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S149>/Add' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S146>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S148>/Vector Concatenate3' */
 
-  { 0.0F, 1.0F, 0.0F },                /* '<S145>/Vector Concatenate3' */
+  { 0.0F, 1.0F, 0.0F },                /* '<S147>/Vector Concatenate3' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S125>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S127>/Add' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S136>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S138>/Add' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S63>/quat0' */
+  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S65>/quat0' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S42>/Vector Concatenate3' */
-  1.0F,                                /* '<S34>/Add' */
-  3U,                                  /* '<S100>/Data Type Conversion' */
-  16U                                  /* '<S100>/Data Type Conversion1' */
+  1.5F,                                /* '<S46>/Add' */
+  3U,                                  /* '<S102>/Data Type Conversion' */
+  16U                                  /* '<S102>/Data Type Conversion1' */
 };
 
 /* Constant parameters (default storage) */
 const ConstP_Plant_T Plant_ConstP = {
   /* Expression: gain
-   * Referenced by: '<S119>/Gain4'
+   * Referenced by: '<S121>/Gain4'
    */
   { 20.0, 20.0, 15.0 },
 
   /* Computed Parameter: X_Frame_CM_Value
-   * Referenced by: '<S19>/X_Frame_CM'
+   * Referenced by: '<S17>/X_Frame_CM'
    */
   { -1.971237E-6F, 1.971237E-6F, 1.982E-7F, 1.971237E-6F, -1.971237E-6F,
     1.982E-7F, 1.971237E-6F, 1.971237E-6F, -1.982E-7F, -1.971237E-6F,
@@ -58,87 +58,88 @@ const ConstP_Plant_T Plant_ConstP = {
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<Root>/Constant'
-   *   '<S34>/coefficient'
-   *   '<S64>/Constant'
-   *   '<S12>/Constant'
-   *   '<S12>/Constant1'
+   *   '<S5>/Constant'
+   *   '<S32>/Gain'
+   *   '<S33>/Constant'
+   *   '<S66>/Constant'
+   *   '<S10>/Constant'
+   *   '<S10>/Constant1'
    *   '<S43>/Constant'
    *   '<S44>/Constant'
-   *   '<S48>/Switch'
-   *   '<S49>/Switch'
-   *   '<S57>/Constant'
+   *   '<S47>/Switch'
    *   '<S59>/Constant'
-   *   '<S62>/Constant'
-   *   '<S14>/Discrete-Time Integrator'
-   *   '<S15>/Saturation1'
-   *   '<S72>/Constant'
-   *   '<S72>/Constant1'
-   *   '<S72>/Constant2'
-   *   '<S72>/Constant3'
-   *   '<S102>/Saturation'
-   *   '<S105>/Delay1'
+   *   '<S61>/Constant'
+   *   '<S64>/Constant'
+   *   '<S12>/Discrete-Time Integrator'
+   *   '<S13>/Saturation1'
+   *   '<S49>/Switch'
+   *   '<S74>/Constant'
+   *   '<S74>/Constant1'
+   *   '<S74>/Constant2'
+   *   '<S74>/Constant3'
+   *   '<S104>/Saturation'
+   *   '<S107>/Delay1'
    *   '<S42>/Constant1'
    *   '<S42>/Constant2'
    *   '<S42>/Constant3'
    *   '<S42>/Constant4'
-   *   '<S97>/Limit  altitude  to Stratosphere'
-   *   '<S97>/Limit  altitude  to troposhere'
-   *   '<S98>/Constant3'
-   *   '<S99>/Random Source'
-   *   '<S108>/Random Source'
-   *   '<S108>/Random Source1'
-   *   '<S111>/Discrete FIR Filter'
-   *   '<S126>/Random Source'
-   *   '<S137>/Random Source'
-   *   '<S148>/Random Source'
-   *   '<S145>/Constant'
-   *   '<S145>/Constant2'
-   *   '<S145>/Constant3'
-   *   '<S145>/Constant4'
-   *   '<S146>/Constant1'
-   *   '<S146>/Constant2'
-   *   '<S146>/Constant3'
-   *   '<S146>/Constant4'
+   *   '<S99>/Limit  altitude  to Stratosphere'
+   *   '<S99>/Limit  altitude  to troposhere'
+   *   '<S100>/Constant3'
+   *   '<S101>/Random Source'
+   *   '<S110>/Random Source'
+   *   '<S110>/Random Source1'
+   *   '<S113>/Discrete FIR Filter'
+   *   '<S128>/Random Source'
+   *   '<S139>/Random Source'
+   *   '<S150>/Random Source'
+   *   '<S147>/Constant'
+   *   '<S147>/Constant2'
+   *   '<S147>/Constant3'
+   *   '<S147>/Constant4'
+   *   '<S148>/Constant1'
+   *   '<S148>/Constant2'
+   *   '<S148>/Constant3'
+   *   '<S148>/Constant4'
    */
   0.0F,
 
   /* Pooled Parameter (Expression: )
    * Referenced by:
-   *   '<S34>/Inertia_Matrix'
-   *   '<S63>/Inertia_Matrix'
+   *   '<S65>/Inertia_Matrix'
+   *   '<S46>/Inertia_Matrix'
    */
   { 0.016F, 0.0F, 0.0F, 0.0F, 0.016F, 0.0F, 0.0F, 0.0F, 0.0274F },
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S142>/Saturation'
-   *   '<S99>/Random Source'
+   *   '<S144>/Saturation'
+   *   '<S101>/Random Source'
    */
   4.0F,
 
   /* Computed Parameter: RandomSource_VarianceRTP
-   * Referenced by: '<S108>/Random Source'
+   * Referenced by: '<S110>/Random Source'
    */
   { 0.2F, 0.2F, 0.4F },
 
   /* Computed Parameter: RandomSource1_VarianceRTP
-   * Referenced by: '<S108>/Random Source1'
+   * Referenced by: '<S110>/Random Source1'
    */
   { 0.01F, 0.01F, 0.01F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_f
-   * Referenced by: '<S126>/Random Source'
+   * Referenced by: '<S128>/Random Source'
    */
   { 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_b
-   * Referenced by: '<S137>/Random Source'
+   * Referenced by: '<S139>/Random Source'
    */
   { 0.005F, 0.005F, 0.005F },
 
   /* Expression: wmm_declination
-   * Referenced by: '<S143>/Declination_Lookup_Table'
+   * Referenced by: '<S145>/Declination_Lookup_Table'
    */
   { 129.47F, 85.74F, 47.95F, 31.19F, 22.49F, 16.95F, 13.27F, 11.01F, 9.8F, 9.04F,
     8.04F, 6.39F, 4.43F, 2.87F, 1.89F, 0.82F, -2.32F, 117.22F, 77.74F, 46.6F,
@@ -210,7 +211,7 @@ const ConstP_Plant_T Plant_ConstP = {
     1.89F, 0.82F, -2.32F },
 
   /* Expression: wmm_inclination
-   * Referenced by: '<S143>/Inclination_Lookup_Table'
+   * Referenced by: '<S145>/Inclination_Lookup_Table'
    */
   { -78.32F, -80.9F, -77.5F, -71.61F, -64.4F, -55.01F, -42.22F, -25.27F, -5.16F,
     14.71F, 31.05F, 43.37F, 53.09F, 61.88F, 70.58F, 78.83F, 85.96F, -77.55F,
@@ -285,7 +286,7 @@ const ConstP_Plant_T Plant_ConstP = {
     14.71F, 31.05F, 43.37F, 53.09F, 61.88F, 70.58F, 78.83F, 85.96F },
 
   /* Expression: wmm_magnitude
-   * Referenced by: '<S143>/Magnitude_Lookup_Table'
+   * Referenced by: '<S145>/Magnitude_Lookup_Table'
    */
   { 60.6688499F, 63.1136093F, 61.9571686F, 58.5107918F, 53.9825211F, 48.8148804F,
     43.2272797F, 37.9078407F, 34.1241F, 32.8304787F, 33.9999084F, 37.2338F,
@@ -394,7 +395,7 @@ const ConstP_Plant_T Plant_ConstP = {
     42.2268791F, 48.3138885F, 53.9158897F, 57.2580109F, 57.8856F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_a
-   * Referenced by: '<S148>/Random Source'
+   * Referenced by: '<S150>/Random Source'
    */
   { 0.001F, 0.001F, 0.001F }
 };
