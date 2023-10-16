@@ -52,8 +52,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(GPS_VEL_Q_SCALE, 1, false),
     PARAM_FLOAT(ATT_GAIN, 0.2, false),
     PARAM_FLOAT(HEADING_GAIN, 0.05, false),
-    PARAM_FLOAT(MAG_GAIN, 0.2, false),
-    PARAM_FLOAT(HOVER_MAG_GAIN, 0.0, false),
+    PARAM_FLOAT(MAG_GAIN, 0.3, false),
     PARAM_UINT8(MAG_AIR_EN, 0, false),
     PARAM_FLOAT(BIAS_G_GAIN, 0.25, false),
     PARAM_FLOAT(GPS_POS_GAIN, 0, false),
@@ -329,7 +328,6 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, ATT_GAIN), &INS_PARAM.ATT_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, HEADING_GAIN), &INS_PARAM.HEADING_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, MAG_GAIN), &INS_PARAM.MAG_GAIN));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, HOVER_MAG_GAIN), &INS_PARAM.HOVER_MAG_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, MAG_AIR_EN), &INS_PARAM.MAG_AIR_EN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BIAS_G_GAIN), &INS_PARAM.BIAS_G_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_GAIN), &INS_PARAM.GPS_POS_GAIN));
