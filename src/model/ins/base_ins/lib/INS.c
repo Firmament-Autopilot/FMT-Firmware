@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.4011
+ * Model version                  : 1.4019
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Oct 16 10:47:30 2023
+ * C/C++ source code generated on : Tue Oct 17 09:06:35 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -4794,11 +4794,13 @@ void INS_step(void)
 
   /* Switch: '<S107>/Switch' incorporates:
    *  Delay: '<S107>/Delay'
+   *  Logic: '<S107>/Logical Operator'
    *  RelationalOperator: '<S110>/FixPt Relational Operator'
    *  Sum: '<S109>/Sum'
    *  UnitDelay: '<S110>/Delay Input1'
    */
-  if ((int32_T)rtb_Compare_ir > (int32_T)INS_DWork.DelayInput1_DSTATE_d2s) {
+  if (((int32_T)rtb_Compare_ir > (int32_T)INS_DWork.DelayInput1_DSTATE_d2s) ||
+      rtb_LogicalOperator5_i) {
     rtb_mag_valid = rtb_Gain_c_idx_2 - rtb_DiscreteTimeIntegrator_nt;
   } else {
     rtb_mag_valid = INS_DWork.Delay_DSTATE_lt;
