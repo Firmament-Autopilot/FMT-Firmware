@@ -466,26 +466,18 @@ bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_highres_imu_t highres_imu = { 0 };
-    imu_data_t            imu_data;
-    mag_data_t            mag_data;
-    baro_data_t           baro_data;
+    mavlink_highres_imu_t highres_imu   = { 0 };
+    imu_data_t            imu_data      = { 0 };
+    mag_data_t            mag_data      = { 0 };
+    baro_data_t           baro_data     = { 0 };
     airspeed_data_t       airspeed_data = { 0 };
 
-    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK
+        && mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK
+        && mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data) != FMT_EOK
+        && mcn_copy_from_hub(MCN_HUB(sensor_airspeed), &airspeed_data) != FMT_EOK) {
         return false;
     }
-
-    if (mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK) {
-        return false;
-    }
-
-    if (mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data) != FMT_EOK) {
-        return false;
-    }
-
-    /* there could be no airspeed data, so don't check return value. */
-    mcn_copy_from_hub(MCN_HUB(sensor_airspeed), &airspeed_data);
 
     highres_imu.time_usec     = systime_now_us();
     highres_imu.xacc          = imu_data.acc_B_mDs2[0];
@@ -549,14 +541,11 @@ bool mavlink_msg_gps_global_origin_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_home_position_t home_position = { 0 };
-    INS_Out_Bus             ins_out;
-    FMS_Out_Bus             fms_out;
+    INS_Out_Bus             ins_out       = { 0 };
+    FMS_Out_Bus             fms_out       = { 0 };
 
-    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
-        return false;
-    }
-
-    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK
+        && mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
         return false;
     }
 
@@ -627,14 +616,11 @@ bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_scaled_imu_t scaled_imu = { 0 };
-    imu_data_t           imu_data;
-    mag_data_t           mag_data;
+    imu_data_t           imu_data   = { 0 };
+    mag_data_t           mag_data   = { 0 };
 
-    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK) {
-        return false;
-    }
-
-    if (mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK
+        && mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK) {
         return false;
     }
 
