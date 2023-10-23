@@ -387,20 +387,19 @@ bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t)
     mavlink_altitude_t altitude = { 0 };
     INS_Out_Bus        ins_out;
     FMS_Out_Bus        fms_out;
+    fmt_err_t          fms_res;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
-    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
-        return false;
-    }
+    fms_res = mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
 
     altitude.time_usec          = systime_now_us();
     altitude.altitude_monotonic = 0.0f;
     altitude.altitude_amsl      = ins_out.alt;
     altitude.altitude_local     = ins_out.h_R;
-    altitude.altitude_relative  = ins_out.h_R - fms_out.home[2];
+    altitude.altitude_relative  = fms_res == FMT_EOK ? ins_out.h_R - fms_out.home[2] : 0.0f;
     altitude.altitude_terrain   = ins_out.h_AGL;
     altitude.bottom_clearance   = 0.0f;
 
@@ -471,11 +470,17 @@ bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
     mag_data_t            mag_data      = { 0 };
     baro_data_t           baro_data     = { 0 };
     airspeed_data_t       airspeed_data = { 0 };
+    fmt_err_t             imu_res, mag_res, baro_res, airspeed_res;
 
-    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK
-        && mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK
-        && mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data) != FMT_EOK
-        && mcn_copy_from_hub(MCN_HUB(sensor_airspeed), &airspeed_data) != FMT_EOK) {
+    imu_res      = mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data);
+    mag_res      = mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data);
+    baro_res     = mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data);
+    airspeed_res = mcn_copy_from_hub(MCN_HUB(sensor_airspeed), &airspeed_data);
+
+    if (imu_res != FMT_EOK
+        && mag_res != FMT_EOK
+        && baro_res != FMT_EOK
+        && airspeed_res != FMT_EOK) {
         return false;
     }
 
@@ -543,9 +548,12 @@ bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
     mavlink_home_position_t home_position = { 0 };
     INS_Out_Bus             ins_out       = { 0 };
     FMS_Out_Bus             fms_out       = { 0 };
+    fmt_err_t               ins_res, fms_res;
 
-    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK
-        && mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+    ins_res = mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
+    fms_res = mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
+
+    if (ins_res != FMT_EOK && fms_res != FMT_EOK) {
         return false;
     }
 
@@ -618,9 +626,12 @@ bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t)
     mavlink_scaled_imu_t scaled_imu = { 0 };
     imu_data_t           imu_data   = { 0 };
     mag_data_t           mag_data   = { 0 };
+    fmt_err_t            imu_res, mag_res;
 
-    if (mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data) != FMT_EOK
-        && mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data) != FMT_EOK) {
+    imu_res = mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data);
+    mag_res = mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data);
+
+    if (imu_res != FMT_EOK && mag_res != FMT_EOK) {
         return false;
     }
 
