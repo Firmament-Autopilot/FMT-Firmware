@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.77
+ * Model version                  : 1.78
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 29 14:22:28 2023
+ * C/C++ source code generated on : Tue Oct 24 10:11:47 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -417,6 +417,7 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
+  Environment_Info_Bus Environment_Info;/* '<Root>/Environment_Info' */
   Control_Out_Bus Control_Out;         /* '<Root>/Control_Out' */
 } ExtU_Plant_T;
 
@@ -460,7 +461,6 @@ extern ExtU_Plant_T Plant_U;
 extern ExtY_Plant_T Plant_Y;
 
 /* External data declarations for dependent source files */
-extern const Control_Out_Bus Plant_rtZControl_Out_Bus;/* Control_Out_Bus ground */
 extern const Plant_States_Bus Plant_rtZPlant_States_Bus;/* Plant_States_Bus ground */
 extern const Extended_States_Bus Plant_rtZExtended_States_Bus;/* Extended_States_Bus ground */
 extern const AirSpeed_Bus Plant_rtZAirSpeed_Bus;/* AirSpeed_Bus ground */

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.77
+ * Model version                  : 1.78
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 29 14:22:28 2023
+ * C/C++ source code generated on : Tue Oct 24 10:11:47 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -95,9 +95,6 @@ ExtY_Plant_T Plant_Y;
 RT_MODEL_Plant_T Plant_M_;
 RT_MODEL_Plant_T *const Plant_M = &Plant_M_;
 static void rate_scheduler(void);
-const Control_Out_Bus Plant_rtZControl_Out_Bus = { 0U,/* timestamp */
-  { 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U }/* actuator_cmd */
-};
 
 /* Lookup Binary Search Utility BINARYSEARCH_real_T */
 void BINARYSEARCH_real_T(uint32_T *piLeft, uint32_T *piRght, real_T u, const
@@ -3415,7 +3412,7 @@ void Plant_init(void)
                 sizeof(DW_Plant_T));
 
   /* external inputs */
-  Plant_U.Control_Out = Plant_rtZControl_Out_Bus;
+  (void)memset(&Plant_U, 0, sizeof(ExtU_Plant_T));
 
   /* external outputs */
   (void) memset((void *)&Plant_Y, 0,
