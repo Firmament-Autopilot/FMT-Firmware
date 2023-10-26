@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.78
+ * Model version                  : 1.80
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Oct 24 10:11:47 2023
+ * C/C++ source code generated on : Thu Oct 26 08:28:27 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -64,7 +64,7 @@ Verification pane for ERT based targets, which will disable the \
 preprocessor word size checks.
 #endif
 
-extern void rt_mldivide_U1f3x3_U2f3x1_Yf3x1(const real32_T u0[9], const real32_T
+extern void rt_mldivide_U1f3x3_U2f3_Yf3x1(const real32_T u0[9], const real32_T
   u1[3], real32_T y[3]);
 extern void RandSrc_GZ_R(real32_T y[], const real32_T mean[], int32_T meanLen,
   const real32_T xstd[], int32_T xstdLen, uint32_T state[], int32_T nChans,
