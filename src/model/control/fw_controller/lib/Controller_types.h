@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1082
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 31 10:16:28 2023
+ * C/C++ source code generated on : Thu Nov  2 20:49:03 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -212,8 +212,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_MB1PRNEC9lKcTJkzJ82htE_
-#define DEFINED_TYPEDEF_FOR_struct_MB1PRNEC9lKcTJkzJ82htE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_VdEoPQWX2EedVH2abVW5XB_
+#define DEFINED_TYPEDEF_FOR_struct_VdEoPQWX2EedVH2abVW5XB_
 
 typedef struct {
   real32_T ROLL_P;
@@ -242,6 +242,7 @@ typedef struct {
   real32_T FW_TECS_PITCH_P;
   real32_T FW_TECS_THOR_P;
   real32_T FW_TECS_PITCH_I;
+  real32_T FW_TECS_PITCH_I_LIM;
   real32_T FW_TECS_THOR_I;
   real32_T FW_TECS_PITCH_D;
   real32_T FW_TECS_THOR_D;
@@ -254,8 +255,7 @@ typedef struct {
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
-  real32_T FW_TECS_PITCH_I_LIM;
-} struct_MB1PRNEC9lKcTJkzJ82htE;
+} struct_VdEoPQWX2EedVH2abVW5XB;
 
 #endif
 

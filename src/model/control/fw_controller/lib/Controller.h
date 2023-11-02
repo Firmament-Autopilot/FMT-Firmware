@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1082
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 31 10:16:28 2023
+ * C/C++ source code generated on : Thu Nov  2 20:49:03 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -112,7 +112,7 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_MB1PRNEC9lKcTJkzJ82htE CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_VdEoPQWX2EedVH2abVW5XB CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S6>/Gain'
                                                     *   '<S6>/Gain1'

@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1082
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 31 10:16:28 2023
+ * C/C++ source code generated on : Thu Nov  2 20:49:03 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_MB1PRNEC9lKcTJkzJ82htE CONTROL_PARAM = {
+struct_VdEoPQWX2EedVH2abVW5XB CONTROL_PARAM = {
   7.0F,
   7.0F,
   0.785398185F,
@@ -52,6 +52,7 @@ struct_MB1PRNEC9lKcTJkzJ82htE CONTROL_PARAM = {
   0.1F,
   0.1F,
   0.1F,
+  0.2F,
   0.1F,
   0.0F,
   0.0F,
@@ -63,8 +64,7 @@ struct_MB1PRNEC9lKcTJkzJ82htE CONTROL_PARAM = {
   2.0F,
   0.1F,
   0.1F,
-  0.1F,
-  0.2F
+  0.1F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S6>/Gain'
