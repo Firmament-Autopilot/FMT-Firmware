@@ -1,6 +1,6 @@
 ## Download ICF5 bootloader
 
-To download ICF5 bootloader `fmt_bl_icf5.bin`, please make sure you have JLink connected to ICF5 debug port. Then execute the download script.
+To download ICF5 bootloader `fmt_bl_icf5.bin`, please make sure you have JLink connected to ICF5 debug port and has [J-Link Server](https://www.segger.com/downloads/jlink/) installed. Then execute the download script.
 
 - Windows: `./download.bat`
 - Linux, Mac: `./download.sh`
