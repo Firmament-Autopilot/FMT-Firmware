@@ -331,6 +331,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, MAG_AIR_EN), &INS_PARAM.MAG_AIR_EN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, BIAS_G_GAIN), &INS_PARAM.BIAS_G_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_GAIN), &INS_PARAM.GPS_POS_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_ALT_GAIN), &INS_PARAM.GPS_ALT_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_GAIN), &INS_PARAM.GPS_VEL_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_BIAS_A_GAIN), &INS_PARAM.GPS_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_DELAY), &INS_PARAM.GPS_POS_DELAY));
