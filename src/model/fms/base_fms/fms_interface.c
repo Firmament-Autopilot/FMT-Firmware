@@ -51,7 +51,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(L1, 10.0, false),
     PARAM_FLOAT(CRUISE_SPEED, 5.0, false),
     PARAM_FLOAT(CRUISE_ACC, 5.0, false),
-    PARAM_FLOAT(TAKEOFF_H, 1.0, false),
+    PARAM_FLOAT(TAKEOFF_H, 0.5, false),
     PARAM_FLOAT(TAKEOFF_SPEED, 1.0, false),
     PARAM_FLOAT(ACCEPT_R, 0.5, false),
     PARAM_FLOAT(ASSIST_LAND_H, 0.7, false),
