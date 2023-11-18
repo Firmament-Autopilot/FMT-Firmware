@@ -45,7 +45,7 @@ MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
 /* define parameters */
 static param_t __param_list[] = {
     PARAM_FLOAT(GPS_HOR_Q_BIAS, 2.5, false),
-    PARAM_FLOAT(GPS_HOR_Q_SCALE, 0.4, false),
+    PARAM_FLOAT(GPS_HOR_Q_SCALE, 0.5, false),
     PARAM_FLOAT(GPS_VER_Q_BIAS, 4.5, false),
     PARAM_FLOAT(GPS_VER_Q_SCALE, 0.25, false),
     PARAM_FLOAT(GPS_VEL_Q_BIAS, 1, false),
