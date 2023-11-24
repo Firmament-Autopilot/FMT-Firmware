@@ -16,8 +16,6 @@
 
 #include <firmament.h>
 
-#include "hal/i2c/i2c.h"
-#include "hal/i2c/i2c_dev.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/workqueue/workqueue_manager.h"
 
@@ -46,26 +44,26 @@ typedef enum {
 } MTF_01_State;
 
 typedef struct {
-    uint32_t timestamp; // ms
-    uint32_t distance;  // measured distance in mm
-    uint8_t strength;   // lidar signal strength
-    uint8_t precision;  // lidar signal prevision
-    uint8_t dis_status; // lidar staus, 0:invalid 1:valid
-    uint8_t reserved;
-    int16_t vx;      // vision flow vx cm/s at 1m
-    int16_t vy;      // vision flow vy cm/s at 1m
-    uint8_t quality; // vision flow quality
-    uint8_t status;  // vision flow staus, 0:invalid 1:valid
+    uint32_t timestamp;  // ms
+    uint32_t distance;   // measured distance in mm
+    uint8_t  strength;   // lidar signal strength
+    uint8_t  precision;  // lidar signal prevision
+    uint8_t  dis_status; // lidar staus, 0:invalid 1:valid
+    uint8_t  reserved;
+    int16_t  vx;         // vision flow vx cm/s at 1m
+    int16_t  vy;         // vision flow vy cm/s at 1m
+    uint8_t  quality;    // vision flow quality
+    uint8_t  status;     // vision flow staus, 0:invalid 1:valid
     uint16_t reserved2;
 } mtf_01_data;
 
-static rt_device_t dev;
-static rt_thread_t thread;
+static rt_device_t     dev;
+static rt_thread_t     thread;
 static struct rt_event event;
-static mtf_01_data data;
-static uint8_t* pdata = (uint8_t*)&data;
-static optflow_data_t optflow_report;
-static rf_data_t rf_report;
+static mtf_01_data     data;
+static uint8_t*        pdata = (uint8_t*)&data;
+static optflow_data_t  optflow_report;
+static rf_data_t       rf_report;
 
 static void start_thread(void* parameter)
 {
@@ -80,9 +78,9 @@ static rt_err_t rx_ind_cb(rt_device_t dev, rt_size_t size)
 static bool parse_package(uint8_t c)
 {
     static MTF_01_State state;
-    static uint8_t recv_len;
-    static uint8_t cs;
-    bool cmplt = false;
+    static uint8_t      recv_len;
+    static uint8_t      cs;
+    bool                cmplt = false;
 
     switch (state) {
     case MTF_01_START:
@@ -157,10 +155,10 @@ static bool parse_package(uint8_t c)
 
 static void thread_entry(void* args)
 {
-    rt_err_t res;
+    rt_err_t    res;
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_MTF_01_UPDATE;
-    uint8_t c;
+    uint8_t     c;
 
     /* open device */
     if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
@@ -177,7 +175,7 @@ static void thread_entry(void* args)
                 if (parse_package(c) == true) {
                     uint32_t time_now = systime_now_ms();
 
-                    rf_report.timestamp_ms = time_now;
+                    rf_report.timestamp_ms      = time_now;
                     optflow_report.timestamp_ms = time_now;
 
                     if (data.dis_status == 1) {
@@ -190,8 +188,8 @@ static void thread_entry(void* args)
 
                     /* actual optical flow velocity = raw_vel * distance, we just publish raw data,
                            leave it to upper layer to handle it. */
-                    optflow_report.vx_mPs = -data.vy * 0.01f;
-                    optflow_report.vy_mPs = data.vx * 0.01f;
+                    optflow_report.vx_mPs  = -data.vy * 0.01f;
+                    optflow_report.vy_mPs  = data.vx * 0.01f;
                     optflow_report.quality = data.quality * data.status;
 
                     /* publish mtf_01 data */
@@ -204,10 +202,10 @@ static void thread_entry(void* args)
 }
 
 static struct WorkItem work_item = {
-    .name = "mtf-01",
-    .period = 0,
+    .name          = "mtf-01",
+    .period        = 0,
     .schedule_time = 1000,
-    .run = start_thread
+    .run           = start_thread
 };
 
 rt_err_t drv_mtf_01_init(const char* uart_dev_name)
