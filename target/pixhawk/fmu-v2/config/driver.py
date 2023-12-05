@@ -10,6 +10,7 @@ DRIVERS = [
     'vision_flow/mtf_01.c',
     'rgb_led/tca62724.c',
     'uwb/nlink_linktrack/*.c',
+    'airspeed/ms4525.c',
 ]
 
 DRIVERS_CPPPATH = []

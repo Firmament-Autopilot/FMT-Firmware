@@ -18,6 +18,7 @@ HAL = [
     'optical_flow/*.c',
     'spi/*.c',
     'adc/*.c',
+    'airspeed/*.c',
 ]
 
 HAL_CPPPATH = []
