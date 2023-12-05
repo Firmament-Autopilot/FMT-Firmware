@@ -139,7 +139,7 @@ static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_heartbeat_t heartbeat = { 0 };
-    FMS_Out_Bus         fms_out;
+    FMS_Out_Bus         fms_out   = { 0 };
 
     heartbeat.type          = MAV_TYPE_QUADROTOR;
     heartbeat.autopilot     = MAV_AUTOPILOT_PX4;
@@ -147,14 +147,13 @@ bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t)
     heartbeat.custom_mode   = 0;
     heartbeat.system_status = MAV_STATE_STANDBY;
 
-    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
-        return false;
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK) {
+        if (fms_out.status == VehicleStatus_Arm || fms_out.status == VehicleStatus_Standby) {
+            heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
+            heartbeat.system_status = MAV_STATE_ACTIVE;
+        }
     }
 
-    if (fms_out.status == VehicleStatus_Arm || fms_out.status == VehicleStatus_Standby) {
-        heartbeat.base_mode |= MAV_MODE_FLAG_SAFETY_ARMED;
-        heartbeat.system_status = MAV_STATE_ACTIVE;
-    }
     /* map fms mode to px4 ctrl mode */
     heartbeat.custom_mode = get_custom_mode(fms_out);
 

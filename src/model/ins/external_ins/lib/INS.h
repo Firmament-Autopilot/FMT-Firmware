@@ -135,6 +135,22 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_External_Pos_Bus_
+#define DEFINED_TYPEDEF_FOR_External_Pos_Bus_
+
+typedef struct {
+  uint32_T timestamp;
+  uint32_T field_valid;
+  real32_T x;
+  real32_T y;
+  real32_T z;
+  real32_T phi;
+  real32_T theta;
+  real32_T psi;
+} External_Pos_Bus;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_INS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_INS_Out_Bus_
 
@@ -160,6 +176,8 @@ typedef struct {
   real_T lat_0;
   real_T lon_0;
   real_T alt_0;
+  real_T dx_dlat;
+  real_T dy_dlon;
   real32_T x_R;
   real32_T y_R;
   real32_T h_R;
@@ -169,7 +187,6 @@ typedef struct {
 } INS_Out_Bus;
 
 #endif
-
 #ifdef __cplusplus
 }
 #endif

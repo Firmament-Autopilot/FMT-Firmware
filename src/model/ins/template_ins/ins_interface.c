@@ -17,8 +17,11 @@
 #include <INS.h>
 #include <firmament.h>
 
+/* External Position */
+MCN_DEFINE(external_pos, sizeof(External_Pos_Bus));
 /* INS output bus */
 MCN_DEFINE(ins_output, sizeof(INS_Out_Bus));
+
 /* Model information */
 fmt_model_info_t ins_model_info;
 
@@ -35,6 +38,7 @@ void ins_interface_init(void)
 
     /* advertise ins_output topic */
     mcn_advertise(MCN_HUB(ins_output), NULL);
+    mcn_advertise(MCN_HUB(external_pos), NULL);
 
     /* Add your code here */
 }

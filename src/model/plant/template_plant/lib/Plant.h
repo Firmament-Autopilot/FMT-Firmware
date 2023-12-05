@@ -24,6 +24,31 @@
 extern "C" {
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_Environment_Info_Bus_
+#define DEFINED_TYPEDEF_FOR_Environment_Info_Bus_
+
+/* Collision Information */
+typedef struct {
+  uint32_T timestamp;
+
+  /* Hit point in NED frame */
+  real32_T hit_point[3];
+
+  /* Hit point normal */
+  real32_T hit_normal[3];
+
+  /* Hit location in NED frame */
+  real32_T hit_location[3];
+
+  /* External torque applied at body in body frame */
+  real32_T torque[3];
+
+  /* External force applied at body in body frame. */
+  real32_T force[3];
+} Environment_Info_Bus;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_Control_Out_Bus_
     #define DEFINED_TYPEDEF_FOR_Control_Out_Bus_
 
