@@ -52,11 +52,11 @@ MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
 
 MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
 
-static sensor_imu_t imu_dev[MAX_IMU_DEV_NUM] = { NULL };
-static sensor_mag_t mag_dev[MAX_MAG_DEV_NUM] = { NULL };
-static sensor_baro_t baro_dev = NULL;
-static sensor_gps_t gps_dev = NULL;
-static sensor_airspeed_t airspeed_dev = NULL;
+static sensor_imu_t      imu_dev[MAX_IMU_DEV_NUM] = { NULL };
+static sensor_mag_t      mag_dev[MAX_MAG_DEV_NUM] = { NULL };
+static sensor_baro_t     baro_dev                 = NULL;
+static sensor_gps_t      gps_dev                  = NULL;
+static sensor_airspeed_t airspeed_dev             = NULL;
 
 static Butter3* butter3_gyr[MAX_IMU_DEV_NUM][3];
 static Butter3* butter3_acc[MAX_IMU_DEV_NUM][3];
@@ -85,7 +85,7 @@ static void dcm_from_euler(const float rpy[3], float dcm[9])
 
 static int echo_sensor_imu(void* param)
 {
-    fmt_err_t err;
+    fmt_err_t  err;
     imu_data_t imu_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &imu_report);
@@ -107,7 +107,7 @@ static int echo_sensor_imu(void* param)
 
 static int echo_sensor_mag(void* param)
 {
-    fmt_err_t err;
+    fmt_err_t  err;
     mag_data_t mag_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &mag_report);
@@ -126,7 +126,7 @@ static int echo_sensor_mag(void* param)
 
 static int echo_sensor_baro(void* param)
 {
-    fmt_err_t err;
+    fmt_err_t   err;
     baro_data_t baro_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &baro_report);
@@ -146,7 +146,7 @@ static int echo_sensor_baro(void* param)
 
 static int echo_sensor_airspeed(void* param)
 {
-    fmt_err_t err;
+    fmt_err_t       err;
     airspeed_data_t airspeed_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &airspeed_report);
@@ -165,7 +165,7 @@ static int echo_sensor_airspeed(void* param)
 
 static int echo_sensor_gps(void* param)
 {
-    fmt_err_t err;
+    fmt_err_t  err;
     gps_data_t gps_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &gps_report);
@@ -207,9 +207,9 @@ static int echo_sensor_rangefinder(void* param)
 
 static void imu_rotation_init(uint8_t id)
 {
-    Mat level_rot;
-    Mat gyr_rot;
-    Mat acc_rot, acc_scale;
+    Mat   level_rot;
+    Mat   gyr_rot;
+    Mat   acc_rot, acc_scale;
     float val_level_rot[9];
     float level_rpy[] = {
         PARAM_GET_FLOAT(CALIB, LEVEL_XOFF), PARAM_GET_FLOAT(CALIB, LEVEL_YOFF), PARAM_GET_FLOAT(CALIB, LEVEL_ZOFF)
@@ -261,8 +261,8 @@ static void imu_rotation_init(uint8_t id)
 
 static void mag_rotation_init(uint8_t id)
 {
-    Mat level_rot;
-    Mat mag_rot, mag_scale;
+    Mat   level_rot;
+    Mat   mag_rot, mag_scale;
     float val_level_rot[9];
     float level_rpy[] = {
         PARAM_GET_FLOAT(CALIB, LEVEL_XOFF), PARAM_GET_FLOAT(CALIB, LEVEL_YOFF), PARAM_GET_FLOAT(CALIB, LEVEL_ZOFF)
@@ -362,8 +362,8 @@ static void imu_filter_init(uint8_t id)
     float A1[4] = { 1.0, -2.6236, 2.3147, -0.6855 };
 
     /* 15Hz cut-off frequency, 1000Hz sampling frequency */
-    float B2[4] = { 0.0000954, 0.0002863, 0.0002863, 0.0000954 };
-    float A2[4] = { 1.0000, -2.8116, 2.6405, -0.8281 };
+    // float B2[4] = { 0.0000954, 0.0002863, 0.0002863, 0.0000954 };
+    // float A2[4] = { 1.0000, -2.8116, 2.6405, -0.8281 };
 
     butter3_gyr[id][0] = butter3_filter_create(B1, A1);
     butter3_gyr[id][1] = butter3_filter_create(B1, A1);
@@ -372,9 +372,9 @@ static void imu_filter_init(uint8_t id)
     RT_ASSERT(butter3_gyr[id][1] != NULL);
     RT_ASSERT(butter3_gyr[id][2] != NULL);
 
-    butter3_acc[id][0] = butter3_filter_create(B2, A2);
-    butter3_acc[id][1] = butter3_filter_create(B2, A2);
-    butter3_acc[id][2] = butter3_filter_create(B2, A2);
+    butter3_acc[id][0] = butter3_filter_create(B1, A1);
+    butter3_acc[id][1] = butter3_filter_create(B1, A1);
+    butter3_acc[id][2] = butter3_filter_create(B1, A1);
     RT_ASSERT(butter3_acc[id][0] != NULL);
     RT_ASSERT(butter3_acc[id][1] != NULL);
     RT_ASSERT(butter3_acc[id][2] != NULL);
@@ -387,7 +387,7 @@ static void mag_filter_init(uint8_t id)
 
 /**
  * @brief Advertise sensor imu topic
- * 
+ *
  * @param id sensor id
  * @return fmt_err_t FMT_EOK for success
  */
@@ -411,7 +411,7 @@ fmt_err_t advertise_sensor_imu(uint8_t id)
 
 /**
  * @brief Advertise sensor mag topic
- * 
+ *
  * @param id sensor id
  * @return fmt_err_t FMT_EOK for success
  */
@@ -435,7 +435,7 @@ fmt_err_t advertise_sensor_mag(uint8_t id)
 
 /**
  * @brief Advertise sensor barometer topic
- * 
+ *
  * @param id sensor topic
  * @return fmt_err_t FMT_EOK for success
  */
@@ -454,7 +454,7 @@ fmt_err_t advertise_sensor_baro(uint8_t id)
 
 /**
  * @brief Advertise sensor airspeed topic
- * 
+ *
  * @param id sensor topic
  * @return fmt_err_t FMT_EOK for success
  */
@@ -473,7 +473,7 @@ fmt_err_t advertise_sensor_airspeed(uint8_t id)
 
 /**
  * @brief Advertise sensor gps topic
- * 
+ *
  * @param id sensor topic
  * @return fmt_err_t FMT_EOK for success
  */
@@ -492,7 +492,7 @@ fmt_err_t advertise_sensor_gps(uint8_t id)
 
 /**
  * @brief Advertise sensor optical flow topic
- * 
+ *
  * @param id sensor topic
  * @return fmt_err_t FMT_EOK for success
  */
@@ -511,7 +511,7 @@ fmt_err_t advertise_sensor_optflow(uint8_t id)
 
 /**
  * @brief Advertise sensor range finder topic
- * 
+ *
  * @param id sensor topic
  * @return fmt_err_t FMT_EOK for success
  */
@@ -530,7 +530,7 @@ fmt_err_t advertise_sensor_rangefinder(uint8_t id)
 
 /**
  * @brief Register imu sensor
- * 
+ *
  * @param gyr_dev_name Gyroscope device name
  * @param acc_dev_name Accelerometer device name
  * @param id Sensor id to be registered, start from 0
@@ -557,7 +557,7 @@ fmt_err_t register_sensor_imu(const char* gyr_dev_name, const char* acc_dev_name
 
 /**
  * @brief Register magnetometer sensor
- * 
+ *
  * @param dev_name Magnetometer device name
  * @param id Sensor id to be registered, start from 0
  * @return fmt_err_t FMT_EOK for success
@@ -583,7 +583,7 @@ fmt_err_t register_sensor_mag(const char* dev_name, uint8_t id)
 
 /**
  * @brief Register barometer sensor
- * 
+ *
  * @param dev_name Barometer device name
  * @return fmt_err_t FMT_EOK for success
  */
@@ -599,7 +599,7 @@ fmt_err_t register_sensor_barometer(const char* dev_name)
 
 /**
  * @brief Register gps sensor
- * 
+ *
  * @param dev_name GPS device name
  * @return fmt_err_t FMT_EOK for success
  */
@@ -615,21 +615,21 @@ fmt_err_t register_sensor_gps(const char* dev_name)
 
 fmt_err_t register_sensor_optflow(const char* dev_name)
 {
-    //TODO
+    // TODO
     FMT_TRY(mcn_advertise(MCN_HUB(sensor_optflow), NULL));
     return FMT_EOK;
 }
 
 fmt_err_t register_sensor_rangefinder(const char* dev_name)
 {
-    //TODO
+    // TODO
     FMT_TRY(mcn_advertise(MCN_HUB(sensor_rangefinder), NULL));
     return FMT_EOK;
 }
 
 /**
  * @brief Register airspeed sensor
- * 
+ *
  * @param dev_name Airspeed device name
  * @return fmt_err_t FMT_EOK for success
  */
@@ -649,7 +649,7 @@ fmt_err_t register_sensor_airspeed(const char* dev_name)
  */
 void sensor_collect(void)
 {
-    float temp[3];
+    float         temp[3];
     enum Rotation board_rot = PARAM_GET_UINT8(CALIB, SENS_BOARD_ROT);
 
     /*
@@ -680,9 +680,9 @@ void sensor_collect(void)
                 imu_data.gyr_B_radDs[0] = butter3_filter_process(imu_data.gyr_B_radDs[0], butter3_gyr[0][0]);
                 imu_data.gyr_B_radDs[1] = butter3_filter_process(imu_data.gyr_B_radDs[1], butter3_gyr[0][1]);
                 imu_data.gyr_B_radDs[2] = butter3_filter_process(imu_data.gyr_B_radDs[2], butter3_gyr[0][2]);
-                imu_data.acc_B_mDs2[0] = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[0][0]);
-                imu_data.acc_B_mDs2[1] = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[0][1]);
-                imu_data.acc_B_mDs2[2] = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[0][2]);
+                imu_data.acc_B_mDs2[0]  = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[0][0]);
+                imu_data.acc_B_mDs2[1]  = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[0][1]);
+                imu_data.acc_B_mDs2[2]  = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[0][2]);
                 /* do board rotation */
                 rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
                 rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
@@ -710,9 +710,9 @@ void sensor_collect(void)
                 imu_data.gyr_B_radDs[0] = butter3_filter_process(imu_data.gyr_B_radDs[0], butter3_gyr[1][0]);
                 imu_data.gyr_B_radDs[1] = butter3_filter_process(imu_data.gyr_B_radDs[1], butter3_gyr[1][1]);
                 imu_data.gyr_B_radDs[2] = butter3_filter_process(imu_data.gyr_B_radDs[2], butter3_gyr[1][2]);
-                imu_data.acc_B_mDs2[0] = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[1][0]);
-                imu_data.acc_B_mDs2[1] = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[1][1]);
-                imu_data.acc_B_mDs2[2] = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[1][2]);
+                imu_data.acc_B_mDs2[0]  = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[1][0]);
+                imu_data.acc_B_mDs2[1]  = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[1][1]);
+                imu_data.acc_B_mDs2[2]  = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[1][2]);
                 /* do board rotation */
                 rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
                 rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
