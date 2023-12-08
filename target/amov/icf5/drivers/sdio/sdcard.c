@@ -171,6 +171,8 @@ sd_error_enum sd_init(void)
     gpio_config();
     sdio_deinit();
 
+    systime_mdelay(20);
+
     /* configure the clock and work voltage */
     status = sd_power_on();
     if (SD_OK != status) {
@@ -284,7 +286,7 @@ sd_error_enum sd_power_on(void)
 
     /* 1ms: required power up waiting time before starting the SD initialization
        sequence */
-    systime_mdelay(10);
+    systime_mdelay(20);
 
     /* send CMD0(GO_IDLE_STATE) to reset the card */
     sdio_command_response_config(SD_CMD_GO_IDLE_STATE, (uint32_t)0x0, SDIO_RESPONSETYPE_NO);
