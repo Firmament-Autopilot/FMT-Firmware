@@ -40,7 +40,7 @@ static actuator_mapping* mapping_list;
 fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
 {
     fmt_err_t err = FMT_EOK;
-    DEFINE_TIMETAG(hil_actuator_tt, 20);
+    DEFINE_TIMETAG(hil_actuator_tt, 4);
 
     if (check_timetag(TIMETAG(hil_actuator_tt))) {
         mavlink_hil_actuator_controls_t hil_actuator_ctrl;
