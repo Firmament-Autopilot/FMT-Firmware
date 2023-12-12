@@ -29,7 +29,7 @@ static int auto_cmd_echo(void* param)
     mcn_copy_from_hub((McnHub*)param, &auto_cmd);
 
     printf("timestamp:%u frame:%d\n", auto_cmd.timestamp, auto_cmd.frame);
-    
+
     if (auto_cmd.cmd_mask & P_CMD_VALID) {
         printf("p: %.2f\n", auto_cmd.p_cmd);
     }
@@ -52,6 +52,10 @@ static int auto_cmd_echo(void* param)
 
     if (auto_cmd.cmd_mask & PSI_CMD_VALID) {
         printf("psi: %.2f\n", auto_cmd.psi_cmd);
+    }
+
+    if (auto_cmd.cmd_mask & PSI_RATE_CMD_VALID) {
+        printf("psi rate: %.2f\n", auto_cmd.psi_rate_cmd);
     }
 
     if (auto_cmd.cmd_mask & X_CMD_VALID) {
