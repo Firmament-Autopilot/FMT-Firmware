@@ -136,7 +136,7 @@ fmt_err_t send_actuator_cmd(void)
         }
 #endif
 
-#if defined(FMT_USING_HIL) || defined(FMT_USING_SIH)
+#if defined(FMT_USING_HIL)
         send_hil_actuator_cmd(chan_sel, chan_val);
 #endif
     }
