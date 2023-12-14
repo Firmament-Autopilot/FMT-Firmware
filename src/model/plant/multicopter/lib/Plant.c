@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1163
+ * Model version                  : 1.1164
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Nov 29 09:36:41 2023
+ * C/C++ source code generated on : Fri Dec 15 05:11:06 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -2288,12 +2288,12 @@ void Plant_step(void)
    *  Delay: '<S23>/Delay1'
    *  Trigonometry: '<S29>/Trigonometric Function2'
    */
-  Sum2_idx_0 = cos(Plant_DW.Delay1_DSTATE[0]);
+  Sum2_idx_0 = cos(Plant_DW.Delay1_DSTATE_n[0]);
 
   /* Trigonometry: '<S29>/Trigonometric Function' incorporates:
    *  Delay: '<S23>/Delay1'
    */
-  rtb_SumofElements = sin(Plant_DW.Delay1_DSTATE[0]);
+  rtb_SumofElements = sin(Plant_DW.Delay1_DSTATE_n[0]);
 
   /* Sum: '<S29>/Subtract' incorporates:
    *  Constant: '<S29>/c'
@@ -2331,12 +2331,12 @@ void Plant_step(void)
    *  Trigonometry: '<S29>/Trigonometric Function1'
    */
   rtb_SumofElements1 = (1.0 - Sum2_idx_0 * Sum2_idx_0 * Plant_ConstB.Product1) *
-    rtb_SumofElements + Plant_DW.Delay1_DSTATE[2];
+    rtb_SumofElements + Plant_DW.Delay1_DSTATE_n[2];
 
   /* Sum: '<S29>/Add1' incorporates:
    *  Delay: '<S23>/Delay1'
    */
-  rtb_SumofElements += Plant_DW.Delay1_DSTATE[2];
+  rtb_SumofElements += Plant_DW.Delay1_DSTATE_n[2];
 
   /* Product: '<S29>/Product4' */
   rtb_SumofElements *= Sum2_idx_0;
@@ -2389,7 +2389,7 @@ void Plant_step(void)
    *  Product: '<S30>/Product'
    *  Sum: '<S23>/Subtract'
    */
-  Plant_DW.Delay1_DSTATE[0] += 1.0 / (rtb_SumofElements1 * Sum2_idx_0) *
+  Plant_DW.Delay1_DSTATE_n[0] += 1.0 / (rtb_SumofElements1 * Sum2_idx_0) *
     (rtb_Sum_hq[0] - Plant_DW.Delay_DSTATE_a[0]);
 
   /* Update for Delay: '<S23>/Delay' incorporates:
@@ -2437,7 +2437,7 @@ void Plant_step(void)
    *  Product: '<S30>/Product'
    *  Sum: '<S23>/Subtract'
    */
-  Plant_DW.Delay1_DSTATE[1] += 1.0 / (rtb_SumofElements1 * Sum2_idx_0) *
+  Plant_DW.Delay1_DSTATE_n[1] += 1.0 / (rtb_SumofElements1 * Sum2_idx_0) *
     (rtb_Sum_hq[1] - Plant_DW.Delay_DSTATE_a[1]);
 
   /* Update for Delay: '<S23>/Delay' incorporates:
@@ -2453,7 +2453,7 @@ void Plant_step(void)
    *  Product: '<S23>/Divide'
    *  Sum: '<S23>/Subtract'
    */
-  Plant_DW.Delay1_DSTATE[2] += -(rtb_Sum_hq[2] - Plant_DW.Delay_DSTATE_a[2]);
+  Plant_DW.Delay1_DSTATE_n[2] += -(rtb_Sum_hq[2] - Plant_DW.Delay_DSTATE_a[2]);
 
   /* Update for Delay: '<S23>/Delay' incorporates:
    *  DataTypeConversion: '<S23>/Data Type Conversion'
@@ -2468,9 +2468,9 @@ void Plant_step(void)
    *  Delay: '<S21>/Delay'
    *  Delay: '<S23>/Delay1'
    */
-  Plant_Y.Plant_States.lat = Plant_DW.Delay1_DSTATE[0];
-  Plant_Y.Plant_States.lon = Plant_DW.Delay1_DSTATE[1];
-  Plant_Y.Plant_States.alt = Plant_DW.Delay1_DSTATE[2];
+  Plant_Y.Plant_States.lat = Plant_DW.Delay1_DSTATE_n[0];
+  Plant_Y.Plant_States.lon = Plant_DW.Delay1_DSTATE_n[1];
+  Plant_Y.Plant_States.alt = Plant_DW.Delay1_DSTATE_n[2];
   Plant_Y.Plant_States.lat_0 = 0.65673;
   Plant_Y.Plant_States.lon_0 = -2.1361;
   Plant_Y.Plant_States.alt_0 = 4.5;
@@ -2644,13 +2644,18 @@ void Plant_step(void)
   rtb_SumofElements = fmod(floor(sqrtf(rtb_RandomSource[0] * rtb_RandomSource[0]
     + rtb_RandomSource[1] * rtb_RandomSource[1]) * 1000.0), 4.294967296E+9);
 
+  /* DataTypeConversion: '<S102>/Data Type Conversion' incorporates:
+   *  Delay: '<S108>/Delay1'
+   */
+  rtb_Product1 = fmod(floor(Plant_DW.Delay1_DSTATE[0]), 256.0);
+
   /* Gain: '<S102>/Gain4' incorporates:
    *  DiscreteFir: '<S112>/Discrete FIR Filter'
    */
-  rtb_Product1 = fmod(floor((Sum2_idx_2 * 0.5 +
+  rtb_Product1_tmp_idx_2 = fmod(floor((Sum2_idx_2 * 0.5 +
     Plant_DW.DiscreteFIRFilter_states[2] * 0.5) * 1000.0), 4.294967296E+9);
-  i = rtb_Product1 < 0.0 ? -(int32_T)(uint32_T)-rtb_Product1 : (int32_T)
-    (uint32_T)rtb_Product1;
+  i = rtb_Product1_tmp_idx_2 < 0.0 ? -(int32_T)(uint32_T)-rtb_Product1_tmp_idx_2
+    : (int32_T)(uint32_T)rtb_Product1_tmp_idx_2;
 
   /* Gain: '<S102>/Gain5' incorporates:
    *  Math: '<S109>/Math Function2'
@@ -2658,8 +2663,8 @@ void Plant_step(void)
    *  Sqrt: '<S109>/Sqrt2'
    *  Switch: '<S109>/Switch1'
    */
-  rtb_Product1 = fmod(floor(sqrtf(rtb_RandomSource[2] * rtb_RandomSource[2]) *
-    1000.0), 4.294967296E+9);
+  rtb_Product1_tmp_idx_2 = fmod(floor(sqrtf(rtb_RandomSource[2] *
+    rtb_RandomSource[2]) * 1000.0), 4.294967296E+9);
 
   /* BusAssignment: '<S102>/Bus Assignment' incorporates:
    *  Constant: '<S102>/Constant10'
@@ -2673,6 +2678,7 @@ void Plant_step(void)
    *  Constant: '<S102>/Constant7'
    *  Constant: '<S102>/Constant8'
    *  Constant: '<S102>/Constant9'
+   *  DataTypeConversion: '<S102>/Data Type Conversion'
    */
   rtb_BusAssignment_dk.iTOW = 1U;
   rtb_BusAssignment_dk.year = 2020U;
@@ -2684,46 +2690,57 @@ void Plant_step(void)
   rtb_BusAssignment_dk.valid = 1U;
   rtb_BusAssignment_dk.tAcc = 0U;
   rtb_BusAssignment_dk.nano = 0;
-  rtb_BusAssignment_dk.fixType = Plant_ConstB.DataTypeConversion;
+  rtb_BusAssignment_dk.fixType = (uint8_T)(rtb_Product1 < 0.0 ? (int32_T)
+    (uint8_T)-(int8_T)(uint8_T)-rtb_Product1 : (int32_T)(uint8_T)rtb_Product1);
   rtb_BusAssignment_dk.flags = 0U;
   rtb_BusAssignment_dk.reserved1 = 0U;
-  rtb_BusAssignment_dk.numSV = Plant_ConstB.DataTypeConversion1;
+
+  /* DataTypeConversion: '<S102>/Data Type Conversion1' incorporates:
+   *  Delay: '<S108>/Delay'
+   */
+  rtb_Product1 = fmod(floor(Plant_DW.Delay_DSTATE_i[0]), 256.0);
+
+  /* BusAssignment: '<S102>/Bus Assignment' incorporates:
+   *  DataTypeConversion: '<S102>/Data Type Conversion1'
+   */
+  rtb_BusAssignment_dk.numSV = (uint8_T)(rtb_Product1 < 0.0 ? (int32_T)(uint8_T)
+    -(int8_T)(uint8_T)-rtb_Product1 : (int32_T)(uint8_T)rtb_Product1);
 
   /* Gain: '<S102>/Gain' incorporates:
    *  DiscreteFir: '<S112>/Discrete FIR Filter'
    *  Gain: '<S102>/Gain2'
    */
-  rtb_Product1_tmp_idx_2 = fmod(floor((Sum2_idx_0 * 0.5 +
+  rtb_Product1 = fmod(floor((Sum2_idx_0 * 0.5 +
     Plant_DW.DiscreteFIRFilter_states[0] * 0.5) * 57.295779513082323 * 1.0E+7),
-    4.294967296E+9);
+                      4.294967296E+9);
 
   /* BusAssignment: '<S102>/Bus Assignment' incorporates:
    *  Gain: '<S102>/Gain'
    */
-  rtb_BusAssignment_dk.lon = rtb_Product1_tmp_idx_2 < 0.0 ? -(int32_T)(uint32_T)
-    -rtb_Product1_tmp_idx_2 : (int32_T)(uint32_T)rtb_Product1_tmp_idx_2;
+  rtb_BusAssignment_dk.lon = rtb_Product1 < 0.0 ? -(int32_T)(uint32_T)
+    -rtb_Product1 : (int32_T)(uint32_T)rtb_Product1;
 
   /* Gain: '<S102>/Gain1' incorporates:
    *  DiscreteFir: '<S112>/Discrete FIR Filter'
    *  Gain: '<S102>/Gain3'
    */
-  rtb_Product1_tmp_idx_2 = fmod(floor((rtb_SumofElements1 * 0.5 +
+  rtb_Product1 = fmod(floor((rtb_SumofElements1 * 0.5 +
     Plant_DW.DiscreteFIRFilter_states[1] * 0.5) * 57.295779513082323 * 1.0E+7),
-    4.294967296E+9);
+                      4.294967296E+9);
 
   /* BusAssignment: '<S102>/Bus Assignment' incorporates:
    *  Gain: '<S102>/Gain1'
    *  Gain: '<S102>/Gain5'
    *  Gain: '<S102>/Gain6'
    */
-  rtb_BusAssignment_dk.lat = rtb_Product1_tmp_idx_2 < 0.0 ? -(int32_T)(uint32_T)
-    -rtb_Product1_tmp_idx_2 : (int32_T)(uint32_T)rtb_Product1_tmp_idx_2;
+  rtb_BusAssignment_dk.lat = rtb_Product1 < 0.0 ? -(int32_T)(uint32_T)
+    -rtb_Product1 : (int32_T)(uint32_T)rtb_Product1;
   rtb_BusAssignment_dk.height = i;
   rtb_BusAssignment_dk.hMSL = i;
   rtb_BusAssignment_dk.hAcc = rtb_SumofElements < 0.0 ? (uint32_T)-(int32_T)
     (uint32_T)-rtb_SumofElements : (uint32_T)rtb_SumofElements;
-  rtb_BusAssignment_dk.vAcc = rtb_Product1 < 0.0 ? (uint32_T)-(int32_T)(uint32_T)
-    -rtb_Product1 : (uint32_T)rtb_Product1;
+  rtb_BusAssignment_dk.vAcc = rtb_Product1_tmp_idx_2 < 0.0 ? (uint32_T)-(int32_T)
+    (uint32_T)-rtb_Product1_tmp_idx_2 : (uint32_T)rtb_Product1_tmp_idx_2;
 
   /* Gain: '<S102>/Gain7' */
   rtb_Gain_h = fmodf(floorf(1000.0F * rtb_VectorConcatenate_jb[0]),
@@ -2874,6 +2891,23 @@ void Plant_step(void)
 
   /* Update for DiscreteFir: '<S113>/Discrete FIR Filter' */
   Plant_DW.DiscreteFIRFilter_states_f[2] = rtb_Sum_b[2];
+  for (i = 0; i < 249; i++) {
+    /* Update for Delay: '<S108>/Delay1' */
+    Plant_DW.Delay1_DSTATE[i] = Plant_DW.Delay1_DSTATE[i + 1];
+
+    /* Update for Delay: '<S108>/Delay' */
+    Plant_DW.Delay_DSTATE_i[i] = Plant_DW.Delay_DSTATE_i[i + 1];
+  }
+
+  /* Update for Delay: '<S108>/Delay1' incorporates:
+   *  Constant: '<S108>/Constant2'
+   */
+  Plant_DW.Delay1_DSTATE[249] = 3.0;
+
+  /* Update for Delay: '<S108>/Delay' incorporates:
+   *  Constant: '<S108>/Constant1'
+   */
+  Plant_DW.Delay_DSTATE_i[249] = 16.0;
 
   /* End of Outputs for SubSystem: '<S6>/Sensor_GPS' */
 
@@ -3709,9 +3743,9 @@ void Plant_init(void)
 
     /* SystemInitialize for Atomic SubSystem: '<Root>/Bus_Constructor' */
     /* InitializeConditions for Delay: '<S23>/Delay1' */
-    Plant_DW.Delay1_DSTATE[0] = 0.65673;
-    Plant_DW.Delay1_DSTATE[1] = -2.1361;
-    Plant_DW.Delay1_DSTATE[2] = 4.5;
+    Plant_DW.Delay1_DSTATE_n[0] = 0.65673;
+    Plant_DW.Delay1_DSTATE_n[1] = -2.1361;
+    Plant_DW.Delay1_DSTATE_n[2] = 4.5;
 
     /* End of SystemInitialize for SubSystem: '<Root>/Bus_Constructor' */
 

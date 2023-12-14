@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1163
+ * Model version                  : 1.1164
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Nov 29 09:36:41 2023
+ * C/C++ source code generated on : Fri Dec 15 05:11:06 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,9 +37,7 @@ const ConstB_Plant_T Plant_ConstB = {
   { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S65>/quat0' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S42>/Vector Concatenate3' */
-  1.5F,                                /* '<S46>/Add' */
-  3U,                                  /* '<S102>/Data Type Conversion' */
-  16U                                  /* '<S102>/Data Type Conversion1' */
+  1.5F                                 /* '<S46>/Add' */
 };
 
 /* Constant parameters (default storage) */

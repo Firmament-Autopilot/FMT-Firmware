@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2077
+ * Model version                  : 1.2080
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Nov 29 09:57:09 2023
+ * C/C++ source code generated on : Fri Dec 15 05:12:18 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -327,6 +327,7 @@ RT_MODEL_FMS_T *const FMS_M = &FMS_M_;
 static void FMS_Stabilize(void);
 static void FMS_Acro(void);
 static void FMS_Altitude(void);
+static void FMS_Manual(void);
 static void FMS_sf_msg_send_M(void);
 static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag);
@@ -2209,6 +2210,49 @@ static void FMS_Altitude(void)
   /* End of Inport: '<Root>/INS_Out' */
 }
 
+/* Function for Chart: '<Root>/SafeMode' */
+static void FMS_Manual(void)
+{
+  FMS_B.target_mode = PilotMode_Manual;
+
+  /* Delay: '<S14>/Delay' */
+  switch (FMS_DW.Delay_DSTATE_c) {
+   case PilotMode_Manual:
+    FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+    break;
+
+   case PilotMode_Acro:
+    FMS_DW.is_c3_FMS = FMS_IN_Acro;
+    break;
+
+   case PilotMode_Stabilize:
+    FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+    break;
+
+   case PilotMode_Altitude:
+    FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+    break;
+
+   case PilotMode_Position:
+    FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+    break;
+
+   case PilotMode_Mission:
+    FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+    break;
+
+   case PilotMode_Offboard:
+    FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
+    break;
+
+   default:
+    FMS_DW.is_c3_FMS = FMS_IN_Other;
+    break;
+  }
+
+  /* End of Delay: '<S14>/Delay' */
+}
+
 int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn)
 {
   int32_T isEmplaced;
@@ -2841,8 +2885,8 @@ static void FMS_SubMode(void)
     FMS_B.pilot_cmd.stick_pitch)) >= 0.1);
 
   /* End of Outputs for SubSystem: '<S5>/Vehicle.StickMoved' */
-  if ((FMS_B.Compare_k || ((FMS_B.BusConversion_InsertedFor_FMSSt.flag & 221U)
-        != 221U)) && (FMS_B.target_mode != PilotMode_None)) {
+  if ((FMS_B.Compare_k || ((FMS_B.BusConversion_InsertedFor_FMSSt.flag & 212U)
+        != 212U)) && (FMS_B.target_mode != PilotMode_None)) {
     if (FMS_getArmMode(FMS_B.target_mode) == 3.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Auto;
@@ -3080,7 +3124,7 @@ static void FMS_Arm(void)
          case FMS_IN_Assist:
           if (FMS_B.Compare && ((int32_T)
                                 (FMS_B.BusConversion_InsertedFor_FMSSt.flag &
-                                 221U) == 221)) {
+                                 212U) == 212)) {
             FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_h;
             FMS_DW.durationLastReferenceTick_1_n5 =
               FMS_DW.chartAbsoluteTimeCounter;
@@ -4055,45 +4099,13 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Manual_e:
-      FMS_B.target_mode = PilotMode_Manual;
-      switch (FMS_DW.Delay_DSTATE_c) {
-       case PilotMode_Manual:
-        FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-        break;
-
-       case PilotMode_Acro:
-        FMS_DW.is_c3_FMS = FMS_IN_Acro;
-        break;
-
-       case PilotMode_Stabilize:
-        FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-        break;
-
-       case PilotMode_Altitude:
-        FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-        break;
-
-       case PilotMode_Position:
-        FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-        break;
-
-       case PilotMode_Mission:
-        FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-        break;
-
-       case PilotMode_Offboard:
-        FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-        break;
-
-       default:
-        FMS_DW.is_c3_FMS = FMS_IN_Other;
-        break;
-      }
+      FMS_Manual();
       break;
 
      case FMS_IN_Mission_g:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 64U) != 0U)
-          && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 32U) != 0U) && ((FMS_U.INS_Out.flag & 64U)
+           != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
         FMS_B.target_mode = PilotMode_Mission;
         switch (FMS_DW.Delay_DSTATE_c) {
          case PilotMode_Manual:
@@ -4134,8 +4146,9 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Offboard_p:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 64U) != 0U)
-          && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
+           != 0U)) {
         FMS_B.target_mode = PilotMode_Offboard;
         switch (FMS_DW.Delay_DSTATE_c) {
          case PilotMode_Manual:
@@ -4213,8 +4226,9 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Position_f:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 64U) != 0U)
-          && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
+           != 0U)) {
         FMS_B.target_mode = PilotMode_Position;
         switch (FMS_DW.Delay_DSTATE_c) {
          case PilotMode_Manual:

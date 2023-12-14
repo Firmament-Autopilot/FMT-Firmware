@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1163
+ * Model version                  : 1.1164
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Nov 29 09:36:41 2023
+ * C/C++ source code generated on : Fri Dec 15 05:11:06 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,7 +45,9 @@ typedef struct {
 typedef struct {
   real_T Delay_DSTATE[225];            /* '<S107>/Delay' */
   real_T DiscreteFIRFilter_states[3];  /* '<S112>/Discrete FIR Filter' */
-  real_T Delay1_DSTATE[3];             /* '<S23>/Delay1' */
+  real_T Delay1_DSTATE[250];           /* '<S108>/Delay1' */
+  real_T Delay_DSTATE_i[250];          /* '<S108>/Delay' */
+  real_T Delay1_DSTATE_n[3];           /* '<S23>/Delay1' */
   real_T Delay_DSTATE_a[3];            /* '<S23>/Delay' */
   real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S137>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_DSTAT_c[3];/* '<S126>/Discrete-Time Integrator5' */
@@ -95,8 +97,6 @@ typedef struct {
   const real32_T quat0[4];             /* '<S65>/quat0' */
   const real32_T VectorConcatenate3_e[3];/* '<S42>/Vector Concatenate3' */
   const real32_T Add_k;                /* '<S46>/Add' */
-  const uint8_T DataTypeConversion;    /* '<S102>/Data Type Conversion' */
-  const uint8_T DataTypeConversion1;   /* '<S102>/Data Type Conversion1' */
 } ConstB_Plant_T;
 
 /* Constant parameters (default storage) */

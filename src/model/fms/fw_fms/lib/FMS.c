@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2015
+ * Model version                  : 1.2017
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Nov  2 20:51:57 2023
+ * C/C++ source code generated on : Fri Dec 15 05:14:04 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1456,7 +1456,7 @@ static void FMS_Arm(void)
          case FMS_IN_Assist:
           if (FMS_B.Compare && ((int32_T)
                                 (FMS_B.BusConversion_InsertedFor_FMSSt.flag &
-                                 221U) == 221)) {
+                                 212U) == 212)) {
             FMS_B.Cmd_In.cur_waypoint[0] =
               FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
             FMS_B.Cmd_In.cur_waypoint[1] =
@@ -2569,8 +2569,9 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Mission_g:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 64U) != 0U)
-          && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 32U) != 0U) && ((FMS_U.INS_Out.flag & 64U)
+           != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
         FMS_B.target_mode = PilotMode_Mission;
         switch (FMS_DW.Delay_DSTATE_c) {
          case PilotMode_Manual:
@@ -2640,8 +2641,9 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Position_f:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 64U) != 0U)
-          && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
+           != 0U)) {
         FMS_B.target_mode = PilotMode_Position;
         switch (FMS_DW.Delay_DSTATE_c) {
          case PilotMode_Manual:
