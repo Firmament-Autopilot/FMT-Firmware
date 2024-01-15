@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1082
+ * Model version                  : 1.1086
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Nov  2 20:49:03 2023
+ * C/C++ source code generated on : Mon Jan 15 09:50:49 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,37 +37,37 @@
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T _DSTATE;                    /* '<S40>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S41>/Discrete-Time Integrator1' */
+  real32_T _DSTATE;                    /* '<S42>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S43>/Discrete-Time Integrator1' */
   real32_T DiscreteTimeIntegrator_DSTATE[3];/* '<S14>/Discrete-Time Integrator' */
-  real32_T _DSTATE_m;                  /* '<S43>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_b;/* '<S44>/Discrete-Time Integrator1' */
+  real32_T _DSTATE_m;                  /* '<S45>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_b;/* '<S46>/Discrete-Time Integrator1' */
   uint32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S3>/Discrete-Time Integrator' */
-  int8_T _PrevResetState;              /* '<S40>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S41>/Discrete-Time Integrator1' */
+  int8_T _PrevResetState;              /* '<S42>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S43>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S14>/Discrete-Time Integrator' */
-  int8_T _PrevResetState_k;            /* '<S43>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevR_m;/* '<S44>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S41>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LO_o;/* '<S44>/Discrete-Time Integrator1' */
+  int8_T _PrevResetState_k;            /* '<S45>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevR_m;/* '<S46>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S43>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_o;/* '<S46>/Discrete-Time Integrator1' */
 } DW_Controller_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T Zero1;                /* '<S40>/Zero1' */
+  const real32_T Zero1;                /* '<S42>/Zero1' */
   const real32_T Constant[3];          /* '<S14>/Constant' */
-  const real32_T Zero;                 /* '<S43>/Zero' */
+  const real32_T Zero;                 /* '<S45>/Zero' */
 } ConstB_Controller_T;
 
 /* Constant parameters (default storage) */
 typedef struct {
   /* Computed Parameter: Disarm_Value
-   * Referenced by: '<S28>/Disarm'
+   * Referenced by: '<S29>/Disarm'
    */
   uint16_T Disarm_Value[6];
 
   /* Computed Parameter: Standby_Value
-   * Referenced by: '<S28>/Standby'
+   * Referenced by: '<S29>/Standby'
    */
   uint16_T Standby_Value[6];
 } ConstP_Controller_T;
@@ -128,22 +128,22 @@ extern struct_VdEoPQWX2EedVH2abVW5XB CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S8>/FF'
                                                     *   '<S8>/FF_limit'
                                                     *   '<S8>/PI_limit'
-                                                    *   '<S33>/P_control'
-                                                    *   '<S34>/P_control'
+                                                    *   '<S35>/P_control'
+                                                    *   '<S36>/P_control'
                                                     *   '<S12>/trim_speed'
                                                     *   '<S13>/trim_speed'
                                                     *   '<S26>/Constant1'
                                                     *   '<S26>/Constant12'
                                                     *   '<S26>/Constant2'
                                                     *   '<S26>/Constant7'
-                                                    *   '<S36>/Constant'
-                                                    *   '<S37>/Constant'
-                                                    *   '<S39>/Gain'
-                                                    *   '<S40>/ '
-                                                    *   '<S40>/Gain3'
-                                                    *   '<S42>/Gain'
-                                                    *   '<S43>/Gain'
-                                                    *   '<S45>/Constant'
+                                                    *   '<S38>/Constant'
+                                                    *   '<S39>/Constant'
+                                                    *   '<S41>/Gain'
+                                                    *   '<S42>/ '
+                                                    *   '<S42>/Gain3'
+                                                    *   '<S44>/Gain'
+                                                    *   '<S45>/Gain'
+                                                    *   '<S47>/Constant'
                                                     *   '<S14>/gain1'
                                                     *   '<S14>/gain2'
                                                     *   '<S14>/gain3'
@@ -175,7 +175,7 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * Block '<S9>/Reshape' : Reshape block reduction
  * Block '<S18>/Logical Operator1' : Eliminated due to no operation
  * Block '<S25>/Reshape' : Reshape block reduction
- * Block '<S32>/Logical Operator' : Eliminated due to no operation
+ * Block '<S34>/Logical Operator' : Eliminated due to no operation
  */
 
 /*-
@@ -219,25 +219,27 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S24>'  : 'Controller/Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant1'
  * '<S25>'  : 'Controller/Controller/Control_Allocation/Fixwing'
  * '<S26>'  : 'Controller/Controller/Control_Allocation/Fixwing/Effective_Matrix1'
- * '<S27>'  : 'Controller/Controller/Control_Allocation/Fixwing/Signal_Select1'
- * '<S28>'  : 'Controller/Controller/Control_Allocation/Fixwing/actuator_cmd_routing'
- * '<S29>'  : 'Controller/Controller/Control_Allocation/Fixwing/throttle_mapping1'
- * '<S30>'  : 'Controller/Controller/Control_Allocation/Fixwing/Signal_Select1/Compare To Constant'
- * '<S31>'  : 'Controller/Controller/TECS_Core/path_angle_control'
- * '<S32>'  : 'Controller/Controller/TECS_Core/phi_cmd'
- * '<S33>'  : 'Controller/Controller/TECS_Core/pitch_pid_out'
- * '<S34>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out'
- * '<S35>'  : 'Controller/Controller/TECS_Core/velocity_control'
- * '<S36>'  : 'Controller/Controller/TECS_Core/path_angle_control/Subsystem'
- * '<S37>'  : 'Controller/Controller/TECS_Core/path_angle_control/Subsystem1'
- * '<S38>'  : 'Controller/Controller/TECS_Core/phi_cmd/Compare To Constant'
- * '<S39>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control'
- * '<S40>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/I_control'
- * '<S41>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control/DT Filter'
- * '<S42>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control'
- * '<S43>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/I_control'
- * '<S44>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
- * '<S45>'  : 'Controller/Controller/TECS_Core/velocity_control/speed_ax_out'
+ * '<S27>'  : 'Controller/Controller/Control_Allocation/Fixwing/Signal_Select'
+ * '<S28>'  : 'Controller/Controller/Control_Allocation/Fixwing/Signal_Select1'
+ * '<S29>'  : 'Controller/Controller/Control_Allocation/Fixwing/actuator_cmd_routing'
+ * '<S30>'  : 'Controller/Controller/Control_Allocation/Fixwing/throttle_mapping'
+ * '<S31>'  : 'Controller/Controller/Control_Allocation/Fixwing/Signal_Select/Compare To Constant'
+ * '<S32>'  : 'Controller/Controller/Control_Allocation/Fixwing/Signal_Select1/Compare To Constant'
+ * '<S33>'  : 'Controller/Controller/TECS_Core/path_angle_control'
+ * '<S34>'  : 'Controller/Controller/TECS_Core/phi_cmd'
+ * '<S35>'  : 'Controller/Controller/TECS_Core/pitch_pid_out'
+ * '<S36>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out'
+ * '<S37>'  : 'Controller/Controller/TECS_Core/velocity_control'
+ * '<S38>'  : 'Controller/Controller/TECS_Core/path_angle_control/Subsystem'
+ * '<S39>'  : 'Controller/Controller/TECS_Core/path_angle_control/Subsystem1'
+ * '<S40>'  : 'Controller/Controller/TECS_Core/phi_cmd/Compare To Constant'
+ * '<S41>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control'
+ * '<S42>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/I_control'
+ * '<S43>'  : 'Controller/Controller/TECS_Core/pitch_pid_out/D_control/DT Filter'
+ * '<S44>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control'
+ * '<S45>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/I_control'
+ * '<S46>'  : 'Controller/Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
+ * '<S47>'  : 'Controller/Controller/TECS_Core/velocity_control/speed_ax_out'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

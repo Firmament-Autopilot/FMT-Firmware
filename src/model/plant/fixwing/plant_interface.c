@@ -273,6 +273,8 @@ void plant_interface_init(void)
         ulog_e(TAG, "uMCN topic environment_info subscribe fail!\n");
     }
 
+    mlog_register_callback(MLOG_CB_START, mlog_start_cb);
+
     Plant_init();
 }
 

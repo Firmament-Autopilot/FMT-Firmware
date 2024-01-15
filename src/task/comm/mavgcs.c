@@ -205,7 +205,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
         if (this_system.sysid == mavlink_msg_param_request_read_get_target_system(msg)) {
-            mavlink_param_request_read_t request_read;
+            mavlink_param_request_read_t request_read = { 0 };
             mavlink_msg_param_request_read_decode(msg, &request_read);
 
             /* -1 to use the param ID field as identifier */
@@ -238,7 +238,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_PARAM_SET: {
         if (this_system.sysid == mavlink_msg_param_set_get_target_system(msg)) {
-            mavlink_param_set_t param_set;
+            mavlink_param_set_t param_set = { 0 };
             mavlink_msg_param_set_decode(msg, &param_set);
 
             if (mavlink_param_set(param_set.param_id, param_set.param_value, param_set.param_type) != FMT_EOK) {

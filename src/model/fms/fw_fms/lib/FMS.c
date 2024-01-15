@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2017
+ * Model version                  : 1.2019
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Dec 15 05:14:04 2023
+ * C/C++ source code generated on : Mon Jan 15 09:44:41 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -114,10 +114,10 @@ struct_lsSw80pJwzMfDv47oR1SCF FMS_PARAM = {
   0.1F,
   0.95F,
   1.0F,
+  5.0F,
   2.5F,
-  2.5F,
-  1.04719758F,
-  0.52359879F,
+  1.04719806F,
+  0.523599F,
   30.0F,
   13.0F,
   10.0F,
@@ -127,9 +127,9 @@ struct_lsSw80pJwzMfDv47oR1SCF FMS_PARAM = {
   1.0F,
   1.0F,
   0.95F,
-  8.0F,
-  0.785398185F,
-  0.785398185F,
+  10.0F,
+  0.785398F,
+  0.785398F,
   30.0F,
   120U,
   1U
