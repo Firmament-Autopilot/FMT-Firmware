@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2080
+ * Model version                  : 1.2104
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Dec 15 05:12:18 2023
+ * C/C++ source code generated on : Wed Jan 31 09:13:54 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -466,6 +466,9 @@ typedef struct {
   /* The psi value when offboard mode entered,
      which is used for FRAME_LOCAL_FRD */
   real32_T offboard_psi_0;
+
+  /* Set speed for cuise flight */
+  real32_T set_speed;
 } Commander_In_Bus;
 
 #endif
@@ -479,7 +482,8 @@ typedef enum {
   NAV_Cmd_Waypoint = 16,
   NAV_Cmd_Return = 20,
   NAV_Cmd_Land,
-  NAV_Cmd_Takeoff
+  NAV_Cmd_Takeoff,
+  NAV_Cmd_SetSpeed = 178
 } NAV_Cmd;
 
 #endif

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2019
+ * Model version                  : 1.2032
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Jan 15 09:44:41 2024
+ * C/C++ source code generated on : Tue Jan 30 23:01:08 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -39,18 +39,18 @@ const ConstB_FMS_T FMS_ConstB = {
   5U,                                  /* '<S123>/Data Type Conversion2' */
   1U,                                  /* '<S120>/Data Type Conversion' */
   3U,                                  /* '<S120>/Data Type Conversion1' */
-  3U,                                  /* '<S148>/Data Type Conversion' */
-  6U,                                  /* '<S148>/Data Type Conversion1' */
-  5U,                                  /* '<S148>/Data Type Conversion2' */
   3U,                                  /* '<S150>/Data Type Conversion' */
-  16U,                                 /* '<S150>/Data Type Conversion1' */
+  6U,                                  /* '<S150>/Data Type Conversion1' */
   5U,                                  /* '<S150>/Data Type Conversion2' */
-  3U,                                  /* '<S149>/Data Type Conversion' */
-  15U,                                 /* '<S149>/Data Type Conversion1' */
-  5U,                                  /* '<S149>/Data Type Conversion2' */
+  3U,                                  /* '<S152>/Data Type Conversion' */
+  16U,                                 /* '<S152>/Data Type Conversion1' */
+  5U,                                  /* '<S152>/Data Type Conversion2' */
   3U,                                  /* '<S151>/Data Type Conversion' */
-  17U,                                 /* '<S151>/Data Type Conversion1' */
+  15U,                                 /* '<S151>/Data Type Conversion1' */
   5U,                                  /* '<S151>/Data Type Conversion2' */
+  3U,                                  /* '<S153>/Data Type Conversion' */
+  17U,                                 /* '<S153>/Data Type Conversion1' */
+  5U,                                  /* '<S153>/Data Type Conversion2' */
   2U,                                  /* '<S27>/Data Type Conversion2' */
   2U,                                  /* '<S27>/Data Type Conversion1' */
   1U,                                  /* '<S26>/Data Type Conversion' */
@@ -58,9 +58,9 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   {
-    1.9966471893352524,                /* '<S220>/Sum' */
-    0.0066943799901413165,             /* '<S220>/Multiply3' */
-    0.99330562000985867                /* '<S220>/Sum4' */
+    1.9966471893352524,                /* '<S224>/Sum' */
+    0.0066943799901413165,             /* '<S224>/Multiply3' */
+    0.99330562000985867                /* '<S224>/Sum4' */
   }
   ,
 
@@ -95,8 +95,8 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S31>/Unknown' */
   {
-    1U,                                /* '<S152>/Data Type Conversion' */
-    1U                                 /* '<S152>/Data Type Conversion1' */
+    1U,                                /* '<S154>/Data Type Conversion' */
+    1U                                 /* '<S154>/Data Type Conversion1' */
   }
   /* End of '<S31>/Unknown' */
 };
