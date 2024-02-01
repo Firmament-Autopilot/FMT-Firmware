@@ -665,6 +665,9 @@ void sensor_collect(void)
         if (imu_dev[0] != NULL) {
             if (sensor_gyr_measure(imu_dev[0], imu_data.gyr_B_radDs) == FMT_EOK
                 && sensor_acc_measure(imu_dev[0], imu_data.acc_B_mDs2) == FMT_EOK) {
+                /* do board rotation */
+                rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
+                rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
                 /* publish scaled imu data without calibration and filtering */
                 mcn_publish(MCN_HUB(sensor_imu0_0), &imu_data);
                 /* do calibration */
@@ -683,9 +686,6 @@ void sensor_collect(void)
                 imu_data.acc_B_mDs2[0]  = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[0][0]);
                 imu_data.acc_B_mDs2[1]  = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[0][1]);
                 imu_data.acc_B_mDs2[2]  = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[0][2]);
-                /* do board rotation */
-                rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
-                rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
                 /* publish calibrated & filtered imu data */
                 mcn_publish(MCN_HUB(sensor_imu0), &imu_data);
             }
@@ -695,6 +695,9 @@ void sensor_collect(void)
         if (imu_dev[1] != NULL) {
             if (sensor_gyr_measure(imu_dev[1], imu_data.gyr_B_radDs) == FMT_EOK
                 && sensor_acc_measure(imu_dev[1], imu_data.acc_B_mDs2) == FMT_EOK) {
+                /* do board rotation */
+                rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
+                rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
                 /* publish scaled imu data without calibration and filtering */
                 mcn_publish(MCN_HUB(sensor_imu1_0), &imu_data);
                 /* do calibration */
@@ -713,9 +716,6 @@ void sensor_collect(void)
                 imu_data.acc_B_mDs2[0]  = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[1][0]);
                 imu_data.acc_B_mDs2[1]  = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[1][1]);
                 imu_data.acc_B_mDs2[2]  = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[1][2]);
-                /* do board rotation */
-                rotation(board_rot, &imu_data.gyr_B_radDs[0], &imu_data.gyr_B_radDs[1], &imu_data.gyr_B_radDs[2]);
-                rotation(board_rot, &imu_data.acc_B_mDs2[0], &imu_data.acc_B_mDs2[1], &imu_data.acc_B_mDs2[2]);
                 /* publish calibrated & filtered imu data */
                 mcn_publish(MCN_HUB(sensor_imu1), &imu_data);
             }
@@ -734,14 +734,15 @@ void sensor_collect(void)
         /* Collect mag0 data */
         if (mag_dev[0] != NULL) {
             if (sensor_mag_measure(mag_dev[0], mag_data.mag_B_gauss) == FMT_EOK) {
+                /* do board rotation */
+                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
+                /* publish scaled mag data without calibration and filtering */
                 mcn_publish(MCN_HUB(sensor_mag0_0), &mag_data);
                 /* do calibration */
                 sensor_mag_correct(mag_dev[0], mag_data.mag_B_gauss, temp);
                 mag_data.mag_B_gauss[0] = temp[0];
                 mag_data.mag_B_gauss[1] = temp[1];
                 mag_data.mag_B_gauss[2] = temp[2];
-                /* do board rotation */
-                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
                 /* publish calibrated mag data */
                 mcn_publish(MCN_HUB(sensor_mag0), &mag_data);
             }
@@ -750,14 +751,15 @@ void sensor_collect(void)
         /* Collect mag1 data */
         if (mag_dev[1] != NULL) {
             if (sensor_mag_measure(mag_dev[1], mag_data.mag_B_gauss) == FMT_EOK) {
+                /* do board rotation */
+                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
+                /* publish scaled mag data without calibration and filtering */
                 mcn_publish(MCN_HUB(sensor_mag1_0), &mag_data);
                 /* do calibration */
                 sensor_mag_correct(mag_dev[1], mag_data.mag_B_gauss, temp);
                 mag_data.mag_B_gauss[0] = temp[0];
                 mag_data.mag_B_gauss[1] = temp[1];
                 mag_data.mag_B_gauss[2] = temp[2];
-                /* do board rotation */
-                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
                 /* publish calibrated mag data */
                 mcn_publish(MCN_HUB(sensor_mag1), &mag_data);
             }
