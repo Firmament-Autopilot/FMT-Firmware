@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright 2024 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,35 +19,29 @@
 #include "module/sensor/sensor_hub.h"
 #include "module/workqueue/workqueue_manager.h"
 
-#define EVENT_TFMINI_S_UPDATE (1 << 0)
+#define EVENT_TFXX_UPDATE (1 << 0)
 
 MCN_DECLARE(sensor_rangefinder);
 
 typedef enum {
-    TFMINI_S_HEADER1 = 0,
-    TFMINI_S_HEADER2,
-    TFMINI_S_DIST_L,
-    TFMINI_S_DIST_H,
-    TFMINI_S_STRENGTH_L,
-    TFMINI_S_STRENGTH_H,
-    TFMINI_S_TEMP_L,
-    TFMINI_S_TEMP_H,
-    TFMINI_S_CHECKSUM
-} TFMINI_S_State;
+    TFxx_HEADER1 = 0,
+    TFxx_HEADER2,
+    TFxx_DATA,
+    TFxx_CHECKSUM
+} TFXX_State;
 
 typedef struct {
-    uint32_t timestamp;  // ms
-    int16_t distance;    // distance of TFmini_S (0~2000)cm,
-    int16_t strength;    // strength of the singal, 0~65535
-    int16_t temperature; // t = temp/8-256
-    uint8_t tof_status;  // tof status, 0:invalid 1:valid
-} tfmini_s_data;
+    uint32_t timestamp;   // ms
+    int16_t  distance;    // distance of TFmini_S (0~2000)cm,
+    int16_t  strength;    // strength of the singal, 0~65535
+    int16_t  temperature; // t = temp/8-256
+} tfxx_data;
 
-static rt_device_t dev;
-static rt_thread_t thread;
+static rt_device_t     dev;
+static rt_thread_t     thread;
 static struct rt_event event;
-static tfmini_s_data data;
-static rf_data_t rf_report;
+static tfxx_data       data;
+static rf_data_t       rf_report;
 
 static void start_thread(void* parameter)
 {
@@ -56,69 +50,58 @@ static void start_thread(void* parameter)
 
 static rt_err_t rx_ind_cb(rt_device_t dev, rt_size_t size)
 {
-    return rt_event_send(&event, EVENT_TFMINI_S_UPDATE);
+    return rt_event_send(&event, EVENT_TFXX_UPDATE);
 }
 
 static bool parse_package(uint8_t c)
 {
-    static TFMINI_S_State state = TFMINI_S_HEADER1;
-    static uint8_t recv_len = 0;
-    static uint8_t cs;
-    bool cmplt = false;
-    static uint8_t buf[6];
+    static TFXX_State state    = TFxx_HEADER1;
+    static uint8_t    recv_len;
+    static uint8_t    cs;
+    static uint8_t    buf[6];
+    bool              cmplt = false;
 
     // printf("state = %d  c = %02x \r\n", state, c);
 
     switch (state) {
-    case TFMINI_S_HEADER1:
+    case TFxx_HEADER1:
         if (c == 0x59) {
             cs = c;
             state++;
         }
-        recv_len = 0;
         break;
-    case TFMINI_S_HEADER2:
+    case TFxx_HEADER2:
         if (c == 0x59) {
             cs += c;
             state++;
-            rt_memset(buf, 0, 6);
+            recv_len = 0;
         } else {
-            state = TFMINI_S_HEADER1;
+            state = TFxx_HEADER1;
         }
         break;
-    case TFMINI_S_DIST_L:
-    case TFMINI_S_DIST_H:
-    case TFMINI_S_STRENGTH_L:
-    case TFMINI_S_STRENGTH_H:
-    case TFMINI_S_TEMP_L:
-    case TFMINI_S_TEMP_H:
+    case TFxx_DATA:
         buf[recv_len] = c;
         cs += c;
-        state++;
         recv_len++;
+        if (recv_len >= 6) {
+            state++;
+        }
         break;
 
-    case TFMINI_S_CHECKSUM:
+    case TFxx_CHECKSUM:
         if (cs == c) {
-            cmplt = true;
-            data.timestamp = systime_now_ms();
-            data.distance = (buf[1] << 8 | buf[0]);
-            data.strength = (buf[3] << 8 | buf[2]);
+            cmplt            = true;
+            data.timestamp   = systime_now_ms();
+            data.distance    = (buf[1] << 8 | buf[0]);
+            data.strength    = (buf[3] << 8 | buf[2]);
             data.temperature = (buf[5] << 8 | buf[4]);
-
-            if ((data.distance == -1) || (data.distance == -2) || (data.distance == -4)) {
-                data.tof_status = 0;
-            } else {
-                data.tof_status = 1;
-            }
-
         } else {
             printf("wrong cheksum:%x %x\n", cs, c);
         }
-        state = TFMINI_S_HEADER1;
+        state = TFxx_HEADER1;
         break;
     default:
-        state = TFMINI_S_HEADER1;
+        state = TFxx_HEADER1;
         break;
     }
 
@@ -127,10 +110,10 @@ static bool parse_package(uint8_t c)
 
 static void thread_entry(void* args)
 {
-    rt_err_t res;
+    rt_err_t    res;
     rt_uint32_t recv_set = 0;
-    rt_uint32_t wait_set = EVENT_TFMINI_S_UPDATE;
-    uint8_t c;
+    rt_uint32_t wait_set = EVENT_TFXX_UPDATE;
+    uint8_t     c;
 
     /* open device */
     if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
@@ -142,20 +125,28 @@ static void thread_entry(void* args)
         /* wait event occur */
         res = rt_event_recv(&event, wait_set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, 10, &recv_set);
 
-        if ((res == RT_EOK && (recv_set & EVENT_TFMINI_S_UPDATE)) || res == -RT_ETIMEOUT) {
+        if ((res == RT_EOK && (recv_set & EVENT_TFXX_UPDATE)) || res == -RT_ETIMEOUT) {
             while (rt_device_read(dev, 0, &c, 1) > 0) {
                 if (parse_package(c) == true) {
                     uint32_t time_now = systime_now_ms();
 
                     rf_report.timestamp_ms = time_now;
 
-                    if (data.tof_status == 1) {
-                        /* tof_status == 1 means tof valid */
-                        rf_report.distance_m = data.distance * 0.01f;
-                    } else {
+                    if ((data.strength < 100) || (data.strength == 65535) || (data.distance == 0)) {
                         /* negative value indicate range finder invalid */
                         rf_report.distance_m = -1;
+                    } else {
+                        /* cm to meter */
+                        rf_report.distance_m = data.distance * 0.01f;
                     }
+
+                    // if (data.tof_status == 1) {
+                    //     /* tof_status == 1 means tof valid */
+                    //     rf_report.distance_m = data.distance * 0.01f;
+                    // } else {
+                    //     /* negative value indicate range finder invalid */
+                    //     rf_report.distance_m = -1;
+                    // }
 
                     /* publish tfmini_s data */
                     mcn_publish(MCN_HUB(sensor_rangefinder), &rf_report);
@@ -168,23 +159,23 @@ static void thread_entry(void* args)
 }
 
 static struct WorkItem work_item = {
-    .name = "tfmini_s",
-    .period = 0,
+    .name          = "tfxx",
+    .period        = 0,
     .schedule_time = 1000,
-    .run = start_thread
+    .run           = start_thread
 };
 
-rt_err_t tfmini_s_drv_init(const char* uart_dev_name)
+rt_err_t tfxx_drv_init(const char* uart_dev_name)
 {
     dev = rt_device_find(uart_dev_name);
 
     RT_ASSERT(dev != NULL);
 
-    thread = rt_thread_create("tfmini_s", thread_entry, RT_NULL, 4 * 1024, 7, 1);
+    thread = rt_thread_create("tfxx", thread_entry, RT_NULL, 2 * 1024, 7, 1);
 
     RT_ASSERT(thread != NULL);
 
-    RT_CHECK(rt_event_init(&event, "tfmini_s", RT_IPC_FLAG_FIFO));
+    RT_CHECK(rt_event_init(&event, "tfxx", RT_IPC_FLAG_FIFO));
 
     RT_CHECK(rt_device_set_rx_indicate(dev, rx_ind_cb));
 
