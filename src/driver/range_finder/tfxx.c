@@ -14,6 +14,10 @@
  * limitations under the License.
  *****************************************************************************/
 
+/*
+    This driver shoud work for benewake TF serial devices, such as TFmini, TFmini-Plus, etc.
+*/
+
 #include <firmament.h>
 
 #include "module/sensor/sensor_hub.h"
@@ -60,8 +64,6 @@ static bool parse_package(uint8_t c)
     static uint8_t    cs;
     static uint8_t    buf[6];
     bool              cmplt = false;
-
-    // printf("state = %d  c = %02x \r\n", state, c);
 
     switch (state) {
     case TFxx_HEADER1:
@@ -117,7 +119,7 @@ static void thread_entry(void* args)
 
     /* open device */
     if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY | RT_DEVICE_FLAG_INT_RX) != RT_EOK) {
-        printf("tfmini_s fail to open device!\n");
+        printf("tfxx fail to open device!\n");
         return;
     }
 
@@ -140,18 +142,8 @@ static void thread_entry(void* args)
                         rf_report.distance_m = data.distance * 0.01f;
                     }
 
-                    // if (data.tof_status == 1) {
-                    //     /* tof_status == 1 means tof valid */
-                    //     rf_report.distance_m = data.distance * 0.01f;
-                    // } else {
-                    //     /* negative value indicate range finder invalid */
-                    //     rf_report.distance_m = -1;
-                    // }
-
-                    /* publish tfmini_s data */
+                    /* publish range finder data */
                     mcn_publish(MCN_HUB(sensor_rangefinder), &rf_report);
-
-                    // printf("----mcn_publish  sensor_rangefinder~~~~~~ \n");
                 }
             }
         }
