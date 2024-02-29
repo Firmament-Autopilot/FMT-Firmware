@@ -187,7 +187,7 @@ fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg
         rt_sem_take(mav_handle.tx_lock[chan], RT_WAITING_FOREVER);
 
         len = mavlink_msg_to_send_buffer(mav_handle.tx_buffer[chan], msg);
-        size = mavproxy_dev_write(chan, mav_handle.tx_buffer[chan], len, RT_WAITING_FOREVER);
+        size = mavproxy_dev_write(chan, mav_handle.tx_buffer[chan], len, TICKS_FROM_MS(500));
 
         rt_sem_release(mav_handle.tx_lock[chan]);
 
