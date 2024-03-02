@@ -358,23 +358,27 @@ static void imu_filter_init(uint8_t id)
     RT_ASSERT(id < MAX_IMU_DEV_NUM);
 
     /* 30Hz cut-off frequency, 1000Hz sampling frequency */
-    float B1[4] = { 0.0007, 0.0021, 0.0021, 0.0007 };
-    float A1[4] = { 1.0, -2.6236, 2.3147, -0.6855 };
+    float B30[4] = { 0.00069934964990098214, 0.0020980489497029464, 0.0020980489497029464, 0.00069934964990098214 };
+    float A30[4] = { 1.0, -2.6235518066052381, 2.31468258108911, -0.685535977284664 };
 
-    /* 15Hz cut-off frequency, 1000Hz sampling frequency */
-    // float B2[4] = { 0.0000954, 0.0002863, 0.0002863, 0.0000954 };
-    // float A2[4] = { 1.0000, -2.8116, 2.6405, -0.8281 };
+    // /* 25Hz cut-off frequency, 1000Hz sampling frequency */
+    // float B25[4] = { 0.00041654613907576854, 0.0012496384172273056, 0.0012496384172273056, 0.00041654613907576854 };
+    // float A25[4] = { 1.0, -2.6861573965481433, 2.4196551109664726, -0.730165345305723 };
 
-    butter3_gyr[id][0] = butter3_filter_create(B1, A1);
-    butter3_gyr[id][1] = butter3_filter_create(B1, A1);
-    butter3_gyr[id][2] = butter3_filter_create(B1, A1);
+    // /* 20Hz cut-off frequency, 1000Hz sampling frequency */
+    // float B20[4] = { 0.0002196062112253816, 0.00065881863367614479, 0.00065881863367614479, 0.0002196062112253816 };
+    // float A20[4] = { 1.0, -2.7488358092146759, 2.5282312191425591, -0.7776385602380802 };
+
+    butter3_gyr[id][0] = butter3_filter_create(B30, A30);
+    butter3_gyr[id][1] = butter3_filter_create(B30, A30);
+    butter3_gyr[id][2] = butter3_filter_create(B30, A30);
     RT_ASSERT(butter3_gyr[id][0] != NULL);
     RT_ASSERT(butter3_gyr[id][1] != NULL);
     RT_ASSERT(butter3_gyr[id][2] != NULL);
 
-    butter3_acc[id][0] = butter3_filter_create(B1, A1);
-    butter3_acc[id][1] = butter3_filter_create(B1, A1);
-    butter3_acc[id][2] = butter3_filter_create(B1, A1);
+    butter3_acc[id][0] = butter3_filter_create(B30, A30);
+    butter3_acc[id][1] = butter3_filter_create(B30, A30);
+    butter3_acc[id][2] = butter3_filter_create(B30, A30);
     RT_ASSERT(butter3_acc[id][0] != NULL);
     RT_ASSERT(butter3_acc[id][1] != NULL);
     RT_ASSERT(butter3_acc[id][2] != NULL);
