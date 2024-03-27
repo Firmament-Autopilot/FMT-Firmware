@@ -87,7 +87,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     } break;
 
     case MAV_CMD_PREFLIGHT_CALIBRATION:
-        if (command->param1 == 1) {        // calibration gyr
+        if (command->param1 == 1) { // calibration gyr
             mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
             mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
@@ -240,8 +240,10 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         if (this_system.sysid == mavlink_msg_param_set_get_target_system(msg)) {
             mavlink_param_set_t param_set = { 0 };
             mavlink_msg_param_set_decode(msg, &param_set);
-
-            if (mavlink_param_set(param_set.param_id, param_set.param_value, param_set.param_type) != FMT_EOK) {
+            char param_name[MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN + 1] = { 0 };
+            rt_strncpy(param_name, param_set.param_id, MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN);
+            param_name[MAVLINK_MSG_PARAM_SET_FIELD_PARAM_ID_LEN] = 0;
+            if (mavlink_param_set(param_name, param_set.param_value, param_set.param_type) != FMT_EOK) {
                 LOG_W("patameter set failed! Unknown parameter:%s", param_set.param_id);
                 break;
             }
