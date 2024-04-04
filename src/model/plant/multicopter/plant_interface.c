@@ -36,6 +36,21 @@ MCN_DECLARE(sensor_gps);
 MCN_DECLARE(control_output);
 MCN_DECLARE(environment_info);
 
+/* define parameters */
+static param_t __param_list[] = {
+    PARAM_FLOAT(QUAT_W_0, 1.0, false),
+    PARAM_FLOAT(QUAT_X_0, 0.0, false),
+    PARAM_FLOAT(QUAT_Y_0, 0.0, false),
+    PARAM_FLOAT(QUAT_Z_0, 0.0, false),
+    PARAM_FLOAT(POS_X_0, 0.0, false),
+    PARAM_FLOAT(POS_Y_0, 0.0, false),
+    PARAM_FLOAT(POS_Z_0, 0.0, false),
+    PARAM_DOUBLE(LAT_0, 0.65673, false),
+    PARAM_DOUBLE(LON_0, -2.1361, false),
+    PARAM_DOUBLE(ALT_0, 4.5, false),
+};
+PARAM_GROUP_DEFINE(PLANT, __param_list);
+
 /* define log data */
 static mlog_elem_t Plant_States_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
@@ -197,6 +212,16 @@ static void publish_sensor_data(uint32_t timestamp)
     }
 }
 
+static void init_parameter(void)
+{
+    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, POS_X_0), &PLANT_PARAM.POS_X_0));
+    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, POS_Y_0), &PLANT_PARAM.POS_Y_0));
+    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, POS_Z_0), &PLANT_PARAM.POS_Z_0));
+    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, LAT_0), &PLANT_PARAM.LAT_0));
+    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, LON_0), &PLANT_PARAM.LON_0));
+    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, ALT_0), &PLANT_PARAM.ALT_0));
+}
+
 void plant_interface_step(uint32_t timestamp)
 {
     if (mcn_poll(control_out_nod)) {
@@ -261,6 +286,8 @@ void plant_interface_init(void)
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);
 
     Plant_init();
+
+    init_parameter();
 }
 
 #endif
