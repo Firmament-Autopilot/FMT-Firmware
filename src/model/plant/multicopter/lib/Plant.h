@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1171
+ * Model version                  : 1.1186
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Apr  3 13:45:41 2024
+ * C/C++ source code generated on : Fri Apr  5 15:19:00 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -116,7 +116,6 @@ typedef struct {
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S5>/Constant'
    *   '<S32>/Gain'
    *   '<S33>/Constant'
    *   '<S10>/Constant'
@@ -168,14 +167,14 @@ typedef struct {
    *   '<S65>/Inertia_Matrix'
    *   '<S46>/Inertia_Matrix'
    */
-  real32_T pooled22[9];
+  real32_T pooled23[9];
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S148>/Saturation'
    *   '<S105>/Random Source'
    */
-  real32_T pooled27;
+  real32_T pooled29;
 
   /* Computed Parameter: RandomSource_VarianceRTP
    * Referenced by: '<S114>/Random Source'
@@ -280,7 +279,7 @@ extern const ConstP_Plant_T Plant_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_JkhzAW0CfDwKScklXCjM0F PLANT_PARAM;/* Variable: PLANT_PARAM
+extern struct_RbOon0HJYMHgBnPxFCHqoG PLANT_PARAM;/* Variable: PLANT_PARAM
                                                   * Referenced by:
                                                   *   '<S2>/Constant1'
                                                   *   '<S2>/Constant2'
@@ -322,7 +321,6 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * Block '<S103>/rho0' : Unused code path elimination
  * Block '<S21>/Data Type Conversion2' : Eliminate redundant data type conversion
  * Block '<S32>/Gain1' : Eliminated nontunable gain of 1
- * Block '<S60>/Gain3' : Eliminated nontunable gain of 1
  * Block '<S60>/Reshape' : Reshape block reduction
  * Block '<S61>/Reshape1' : Reshape block reduction
  * Block '<S94>/Data Type Conversion2' : Eliminate redundant data type conversion

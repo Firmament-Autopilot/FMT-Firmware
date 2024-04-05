@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1171
+ * Model version                  : 1.1186
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Apr  3 13:45:41 2024
+ * C/C++ source code generated on : Fri Apr  5 15:19:00 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -184,21 +184,21 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_JkhzAW0CfDwKScklXCjM0F_
-#define DEFINED_TYPEDEF_FOR_struct_JkhzAW0CfDwKScklXCjM0F_
+#ifndef DEFINED_TYPEDEF_FOR_struct_RbOon0HJYMHgBnPxFCHqoG_
+#define DEFINED_TYPEDEF_FOR_struct_RbOon0HJYMHgBnPxFCHqoG_
 
 typedef struct {
+  real32_T QUAT_W_0;
+  real32_T QUAT_X_0;
+  real32_T QUAT_Y_0;
+  real32_T QUAT_Z_0;
   real32_T POS_X_0;
   real32_T POS_Y_0;
   real32_T POS_Z_0;
   real_T LAT_0;
   real_T LON_0;
   real_T ALT_0;
-  real32_T QUAT_W_0;
-  real32_T QUAT_X_0;
-  real32_T QUAT_Y_0;
-  real32_T QUAT_Z_0;
-} struct_JkhzAW0CfDwKScklXCjM0F;
+} struct_RbOon0HJYMHgBnPxFCHqoG;
 
 #endif
 
