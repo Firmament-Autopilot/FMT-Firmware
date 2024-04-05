@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.4033
+ * Model version                  : 1.4048
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat Dec  9 21:09:06 2023
+ * C/C++ source code generated on : Thu Apr  4 17:02:54 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -323,24 +323,24 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_DSTAT_k3;/* '<S370>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_b[3];          /* '<S298>/Delay' */
   real32_T Delay_DSTATE_l[6];          /* '<S244>/Delay' */
-  real32_T h_delay_DSTATE[3];          /* '<S290>/h_delay' */
+  real32_T h_delay_DSTATE[500];        /* '<S290>/h_delay' */
   real32_T Delay_DSTATE_f;             /* '<S295>/Delay' */
-  real32_T h_delay_DSTATE_l[75];       /* '<S281>/h_delay' */
-  real32_T vd_delay_DSTATE[50];        /* '<S281>/vd_delay' */
+  real32_T h_delay_DSTATE_l[500];      /* '<S281>/h_delay' */
+  real32_T vd_delay_DSTATE[500];       /* '<S281>/vd_delay' */
   real32_T Delay_DSTATE_p[3];          /* '<S270>/Delay' */
-  real32_T x_delay_DSTATE[25];         /* '<S272>/x_delay' */
+  real32_T x_delay_DSTATE[500];        /* '<S272>/x_delay' */
   real32_T Delay_DSTATE_m;             /* '<S274>/Delay' */
   real32_T Delay_DSTATE_dr[3];         /* '<S261>/Delay' */
-  real32_T x_delay_DSTATE_b[5];        /* '<S263>/x_delay' */
+  real32_T x_delay_DSTATE_b[500];      /* '<S263>/x_delay' */
   real32_T Delay_DSTATE_h;             /* '<S265>/Delay' */
-  real32_T vn_delay_DSTATE[3];         /* '<S242>/vn_delay' */
-  real32_T ve_delay_DSTATE[3];         /* '<S242>/ve_delay' */
-  real32_T x_delay_DSTATE_k[75];       /* '<S232>/x_delay' */
-  real32_T x_delay1_DSTATE[75];        /* '<S232>/x_delay1' */
-  real32_T vn_delay_DSTATE_n[50];      /* '<S232>/vn_delay' */
-  real32_T vn_delay1_DSTATE[50];       /* '<S232>/vn_delay1' */
-  real32_T x_delay_DSTATE_l[25];       /* '<S223>/x_delay' */
-  real32_T x_delay1_DSTATE_m[25];      /* '<S223>/x_delay1' */
+  real32_T vn_delay_DSTATE[500];       /* '<S242>/vn_delay' */
+  real32_T ve_delay_DSTATE[500];       /* '<S242>/ve_delay' */
+  real32_T x_delay_DSTATE_k[500];      /* '<S232>/x_delay' */
+  real32_T x_delay1_DSTATE[100];       /* '<S232>/x_delay1' */
+  real32_T vn_delay_DSTATE_n[500];     /* '<S232>/vn_delay' */
+  real32_T vn_delay1_DSTATE[500];      /* '<S232>/vn_delay1' */
+  real32_T x_delay_DSTATE_l[500];      /* '<S223>/x_delay' */
+  real32_T y_delay_DSTATE[500];        /* '<S223>/y_delay' */
   real32_T Delay_DSTATE_k[2];          /* '<S225>/Delay' */
   real32_T DiscreteTimeIntegrator5_DSTAT_o[2];/* '<S199>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_DSTAT_m;/* '<S197>/Discrete-Time Integrator5' */
@@ -506,7 +506,7 @@ typedef struct {
   uint8_T icLoad_m;                    /* '<S232>/vn_delay' */
   uint8_T icLoad_jp;                   /* '<S232>/vn_delay1' */
   uint8_T icLoad_hw;                   /* '<S223>/x_delay' */
-  uint8_T icLoad_od;                   /* '<S223>/x_delay1' */
+  uint8_T icLoad_od;                   /* '<S223>/y_delay' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_p;/* '<S199>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_n;/* '<S197>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_L_ns;/* '<S198>/Discrete-Time Integrator5' */
@@ -550,7 +550,7 @@ typedef struct {
   ZCSigState vn_delay_Reset_ZCE_p;     /* '<S232>/vn_delay' */
   ZCSigState vn_delay1_Reset_ZCE;      /* '<S232>/vn_delay1' */
   ZCSigState x_delay_Reset_ZCE_lr;     /* '<S223>/x_delay' */
-  ZCSigState x_delay1_Reset_ZCE_b;     /* '<S223>/x_delay1' */
+  ZCSigState y_delay_Reset_ZCE;        /* '<S223>/y_delay' */
 } PrevZCSigStates_INS_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -1307,8 +1307,8 @@ struct Parameters_INS_T_ {
   real32_T Constant1_Value_n;          /* Computed Parameter: Constant1_Value_n
                                         * Referenced by: '<S82>/Constant1'
                                         */
-  real32_T Gain_Gain_o[3];             /* Expression: [INS_PARAM.ATT_GAIN;INS_PARAM.ATT_GAIN;0]
-                                        * Referenced by: '<S77>/Gain'
+  real32_T Gain2_Gain_m;               /* Computed Parameter: Gain2_Gain_m
+                                        * Referenced by: '<S77>/Gain2'
                                         */
   real32_T DiscreteTimeIntegrator_gainva_n;/* Computed Parameter: DiscreteTimeIntegrator_gainva_n
                                             * Referenced by: '<S90>/Discrete-Time Integrator'
@@ -1328,6 +1328,9 @@ struct Parameters_INS_T_ {
   real32_T Gain_Gain_m[3];             /* Computed Parameter: Gain_Gain_m
                                         * Referenced by: '<S71>/Gain'
                                         */
+  real32_T Constant_Value_as[2];       /* Computed Parameter: Constant_Value_as
+                                        * Referenced by: '<S72>/Constant'
+                                        */
   real32_T Gain_Gain_pq;               /* Computed Parameter: Gain_Gain_pq
                                         * Referenced by: '<S108>/Gain'
                                         */
@@ -1342,9 +1345,6 @@ struct Parameters_INS_T_ {
                                             */
   real32_T Delay_InitialCondition_i;   /* Computed Parameter: Delay_InitialCondition_i
                                         * Referenced by: '<S107>/Delay'
-                                        */
-  real32_T Gain_Gain_m5[3];            /* Expression: [0; 0; INS_PARAM.MAG_GAIN]
-                                        * Referenced by: '<S72>/Gain'
                                         */
   real32_T DiscreteTimeIntegrator_gainva_h;/* Computed Parameter: DiscreteTimeIntegrator_gainva_h
                                             * Referenced by: '<S106>/Discrete-Time Integrator'
@@ -1415,7 +1415,7 @@ struct Parameters_INS_T_ {
   real32_T Gain1_Gain_b;               /* Computed Parameter: Gain1_Gain_b
                                         * Referenced by: '<S134>/Gain1'
                                         */
-  real32_T Gain_Gain_oz;               /* Computed Parameter: Gain_Gain_oz
+  real32_T Gain_Gain_o;                /* Computed Parameter: Gain_Gain_o
                                         * Referenced by: '<S135>/Gain'
                                         */
   real32_T Gain1_Gain_f;               /* Computed Parameter: Gain1_Gain_f
@@ -1493,7 +1493,7 @@ struct Parameters_INS_T_ {
   real32_T Gain1_Gain_ig;              /* Computed Parameter: Gain1_Gain_ig
                                         * Referenced by: '<S171>/Gain1'
                                         */
-  real32_T Gain2_Gain_m;               /* Computed Parameter: Gain2_Gain_m
+  real32_T Gain2_Gain_mx;              /* Computed Parameter: Gain2_Gain_mx
                                         * Referenced by: '<S171>/Gain2'
                                         */
   real32_T Gain3_Gain_ea;              /* Computed Parameter: Gain3_Gain_ea
@@ -1889,7 +1889,7 @@ struct Parameters_INS_T_ {
   real32_T AirDensity_15C_Value;       /* Computed Parameter: AirDensity_15C_Value
                                         * Referenced by: '<S402>/AirDensity_15C'
                                         */
-  real32_T Gain_Gain_ozb;              /* Computed Parameter: Gain_Gain_ozb
+  real32_T Gain_Gain_oz;               /* Computed Parameter: Gain_Gain_oz
                                         * Referenced by: '<S402>/Gain'
                                         */
   real32_T Saturation1_UpperSat_i;     /* Computed Parameter: Saturation1_UpperSat_i
@@ -2099,6 +2099,33 @@ struct Parameters_INS_T_ {
   uint32_T Gain9_Gain;                 /* Computed Parameter: Gain9_Gain
                                         * Referenced by: '<S8>/Gain9'
                                         */
+  uint32_T Gain_Gain_or;               /* Computed Parameter: Gain_Gain_or
+                                        * Referenced by: '<S223>/Gain'
+                                        */
+  uint32_T Gain_Gain_jz;               /* Computed Parameter: Gain_Gain_jz
+                                        * Referenced by: '<S232>/Gain'
+                                        */
+  uint32_T Gain1_Gain_d;               /* Computed Parameter: Gain1_Gain_d
+                                        * Referenced by: '<S232>/Gain1'
+                                        */
+  uint32_T Period_Gain;                /* Computed Parameter: Period_Gain
+                                        * Referenced by: '<S242>/Period'
+                                        */
+  uint32_T Gain_Gain_nu;               /* Computed Parameter: Gain_Gain_nu
+                                        * Referenced by: '<S263>/Gain'
+                                        */
+  uint32_T Gain_Gain_gn;               /* Computed Parameter: Gain_Gain_gn
+                                        * Referenced by: '<S272>/Gain'
+                                        */
+  uint32_T Gain_Gain_fs;               /* Computed Parameter: Gain_Gain_fs
+                                        * Referenced by: '<S281>/Gain'
+                                        */
+  uint32_T Gain1_Gain_p0;              /* Computed Parameter: Gain1_Gain_p0
+                                        * Referenced by: '<S281>/Gain1'
+                                        */
+  uint32_T Gain_Gain_a;                /* Computed Parameter: Gain_Gain_a
+                                        * Referenced by: '<S290>/Gain'
+                                        */
   uint32_T Gain1_Gain_po;              /* Computed Parameter: Gain1_Gain_po
                                         * Referenced by: '<S429>/Gain1'
                                         */
@@ -2195,38 +2222,11 @@ struct Parameters_INS_T_ {
   uint32_T Constant_Value_m;           /* Computed Parameter: Constant_Value_m
                                         * Referenced by: '<S154>/Constant'
                                         */
-  uint32_T x_delay_DelayLength;        /* Expression: INS_PARAM.EXTPOS_POS_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S223>/x_delay'
-                                        */
-  uint32_T x_delay1_DelayLength;       /* Expression: INS_PARAM.EXTPOS_POS_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S223>/x_delay1'
-                                        */
   uint32_T Delay_DelayLength_k2;       /* Computed Parameter: Delay_DelayLength_k2
                                         * Referenced by: '<S225>/Delay'
                                         */
-  uint32_T x_delay_DelayLength_j;      /* Expression: INS_PARAM.GPS_POS_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S232>/x_delay'
-                                        */
-  uint32_T x_delay1_DelayLength_j;     /* Expression: INS_PARAM.GPS_POS_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S232>/x_delay1'
-                                        */
-  uint32_T vn_delay_DelayLength;       /* Expression: INS_PARAM.GPS_VEL_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S232>/vn_delay'
-                                        */
-  uint32_T vn_delay1_DelayLength;      /* Expression: INS_PARAM.GPS_VEL_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S232>/vn_delay1'
-                                        */
-  uint32_T vn_delay_DelayLength_l;     /* Expression: INS_PARAM.OPF_VEL_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S242>/vn_delay'
-                                        */
-  uint32_T ve_delay_DelayLength;       /* Expression: INS_PARAM.OPF_VEL_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S242>/ve_delay'
-                                        */
   uint32_T Delay_DelayLength_fx;       /* Computed Parameter: Delay_DelayLength_fx
                                         * Referenced by: '<S261>/Delay'
-                                        */
-  uint32_T x_delay_DelayLength_m;      /* Expression: INS_PARAM.BARO_H_DELAY/INS_EXPORT_VALUE.period
-                                        * Referenced by: '<S263>/x_delay'
                                         */
   uint32_T Delay_DelayLength_d;        /* Computed Parameter: Delay_DelayLength_d
                                         * Referenced by: '<S265>/Delay'
@@ -2234,23 +2234,11 @@ struct Parameters_INS_T_ {
   uint32_T Delay_DelayLength_mb;       /* Computed Parameter: Delay_DelayLength_mb
                                         * Referenced by: '<S270>/Delay'
                                         */
-  uint32_T x_delay_DelayLength_o;      /* Expression: INS_PARAM.EXTPOS_POS_DELAY/INS_EXPORT_VALUE.period
-                                        * Referenced by: '<S272>/x_delay'
-                                        */
   uint32_T Delay_DelayLength_b;        /* Computed Parameter: Delay_DelayLength_b
                                         * Referenced by: '<S274>/Delay'
                                         */
-  uint32_T h_delay_DelayLength;        /* Expression: INS_PARAM.GPS_POS_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S281>/h_delay'
-                                        */
-  uint32_T vd_delay_DelayLength;       /* Expression: INS_PARAM.GPS_VEL_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S281>/vd_delay'
-                                        */
   uint32_T Constant_Value_kt;          /* Computed Parameter: Constant_Value_kt
                                         * Referenced by: '<S295>/Constant'
-                                        */
-  uint32_T h_delay_DelayLength_c;      /* Expression: INS_PARAM.RF_H_DELAY/INS_EXPORT.period
-                                        * Referenced by: '<S290>/h_delay'
                                         */
   uint32_T Delay_DelayLength_f2;       /* Computed Parameter: Delay_DelayLength_f2
                                         * Referenced by: '<S295>/Delay'
@@ -2703,27 +2691,39 @@ extern struct_0ZH64HzEFbup0thSpwxnrB INS_PARAM;/* Variable: INS_PARAM
                                                 *   '<S430>/Constant7'
                                                 *   '<S430>/Gain3'
                                                 *   '<S69>/Gain1'
+                                                *   '<S72>/Gain3'
                                                 *   '<S76>/Gain'
+                                                *   '<S77>/Gain'
+                                                *   '<S77>/Gain1'
                                                 *   '<S222>/Gain'
                                                 *   '<S222>/Gain2'
                                                 *   '<S222>/Gain3'
+                                                *   '<S223>/pos_delay'
                                                 *   '<S231>/Gain'
                                                 *   '<S231>/Gain2'
                                                 *   '<S231>/Gain3'
+                                                *   '<S232>/pos_delay'
+                                                *   '<S232>/vel_delay'
                                                 *   '<S241>/Gain'
                                                 *   '<S241>/Gain2'
+                                                *   '<S242>/Delay'
                                                 *   '<S262>/Gain'
                                                 *   '<S262>/Gain1'
                                                 *   '<S262>/Gain2'
+                                                *   '<S263>/delay'
                                                 *   '<S271>/Gain'
                                                 *   '<S271>/Gain1'
                                                 *   '<S271>/Gain2'
+                                                *   '<S272>/delay'
                                                 *   '<S280>/Gain'
                                                 *   '<S280>/Gain1'
                                                 *   '<S280>/Gain2'
+                                                *   '<S281>/pos_delay'
+                                                *   '<S281>/vel_delay'
                                                 *   '<S289>/Gain'
                                                 *   '<S289>/Gain1'
                                                 *   '<S289>/Gain2'
+                                                *   '<S290>/delay'
                                                 *   '<S295>/Constant2'
                                                 */
 extern struct_TYt7YeNdxIDXfczXumtXXB INS_EXPORT;/* Variable: INS_EXPORT
