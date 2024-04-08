@@ -35,16 +35,10 @@ MCN_DECLARE(sensor_gps);
 /* plant model input */
 MCN_DECLARE(control_output);
 MCN_DECLARE(environment_info);
+MCN_DECLARE(states_init);
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(QUAT_W_0, 1.0, false),
-    PARAM_FLOAT(QUAT_X_0, 0.0, false),
-    PARAM_FLOAT(QUAT_Y_0, 0.0, false),
-    PARAM_FLOAT(QUAT_Z_0, 0.0, false),
-    PARAM_FLOAT(POS_X_0, 0.0, false),
-    PARAM_FLOAT(POS_Y_0, 0.0, false),
-    PARAM_FLOAT(POS_Z_0, 0.0, false),
     PARAM_DOUBLE(LAT_0, 0.65673, false),
     PARAM_DOUBLE(LON_0, -2.1361, false),
     PARAM_DOUBLE(ALT_0, 4.5, false),
@@ -88,16 +82,26 @@ static mlog_elem_t Environment_Info_Elems[] = {
 };
 MLOG_BUS_DEFINE(Environment_Info, Environment_Info_Elems);
 
+static mlog_elem_t States_Init_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(euler, MLOG_FLOAT, 3),
+    MLOG_ELEMENT_VEC(pos, MLOG_FLOAT, 3),
+};
+MLOG_BUS_DEFINE(States_Init, States_Init_Elems);
+
 static McnNode_t control_out_nod;
 static McnNode_t environment_info_nod;
+static McnNode_t states_init_nod;
 static uint32_t  imu_timestamp  = 0xFFFF;
 static uint32_t  mag_timestamp  = 0xFFFF;
 static uint32_t  baro_timestamp = 0xFFFF;
 static uint32_t  gps_timestamp  = 0xFFFF;
 static uint8_t   environment_info_updated;
+static uint8_t   states_init_updated;
 
 static int Plant_States_ID;
 static int Environment_Info_ID;
+static int States_Init_ID;
 
 fmt_model_info_t plant_model_info;
 
@@ -123,6 +127,7 @@ static void mlog_start_cb(void)
 {
     /* when mlog started, record at least first data even there is no data publiced */
     environment_info_updated = 1;
+    states_init_updated = 1;
 }
 
 static void publish_sensor_data(uint32_t timestamp)
@@ -214,9 +219,6 @@ static void publish_sensor_data(uint32_t timestamp)
 
 static void init_parameter(void)
 {
-    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, POS_X_0), &PLANT_PARAM.POS_X_0));
-    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, POS_Y_0), &PLANT_PARAM.POS_Y_0));
-    FMT_CHECK(param_link_variable(PARAM_GET(PLANT, POS_Z_0), &PLANT_PARAM.POS_Z_0));
     FMT_CHECK(param_link_variable(PARAM_GET(PLANT, LAT_0), &PLANT_PARAM.LAT_0));
     FMT_CHECK(param_link_variable(PARAM_GET(PLANT, LON_0), &PLANT_PARAM.LON_0));
     FMT_CHECK(param_link_variable(PARAM_GET(PLANT, ALT_0), &PLANT_PARAM.ALT_0));
@@ -234,6 +236,14 @@ void plant_interface_step(uint32_t timestamp)
         Plant_U.Environment_Info.timestamp = systime_now_ms();
 
         environment_info_updated = 1;
+    }
+
+    if (mcn_poll(states_init_nod)) {
+        mcn_copy(MCN_HUB(states_init), states_init_nod, &Plant_U.States_Init);
+
+        Plant_U.States_Init.timestamp = systime_now_ms();
+
+        states_init_updated = 1;
     }
 
     /* run plant model */
@@ -255,6 +265,13 @@ void plant_interface_step(uint32_t timestamp)
         mlog_push_msg((uint8_t*)&Plant_U.Environment_Info, Environment_Info_ID, sizeof(Plant_U.Environment_Info));
     }
 
+    if (states_init_updated) {
+        states_init_updated = 0;
+        /* Log environment info data */
+        mlog_push_msg((uint8_t*)&Plant_U.States_Init, States_Init_ID, sizeof(Plant_U.States_Init));
+    }
+
+
     /* publish sensor model's data */
     publish_sensor_data(timestamp);
 }
@@ -268,6 +285,7 @@ void plant_interface_init(void)
 
     control_out_nod      = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
     environment_info_nod = mcn_subscribe(MCN_HUB(environment_info), NULL, NULL);
+    states_init_nod = mcn_subscribe(MCN_HUB(states_init), NULL, NULL);
 
     Plant_States_ID = mlog_get_bus_id("Plant_States");
     FMT_ASSERT(Plant_States_ID >= 0);
@@ -275,12 +293,19 @@ void plant_interface_init(void)
     Environment_Info_ID = mlog_get_bus_id("Environment_Info");
     FMT_ASSERT(Environment_Info_ID >= 0);
 
+    States_Init_ID = mlog_get_bus_id("States_Init");
+    FMT_ASSERT(States_Init_ID >= 0);
+
     if (control_out_nod == NULL) {
         ulog_e(TAG, "uMCN topic control_output subscribe fail!\n");
     }
 
     if (environment_info_nod == NULL) {
         ulog_e(TAG, "uMCN topic environment_info subscribe fail!\n");
+    }
+
+    if (states_init_nod == NULL) {
+        ulog_e(TAG, "uMCN topic states_init subscribe fail!\n");
     }
 
     mlog_register_callback(MLOG_CB_START, mlog_start_cb);

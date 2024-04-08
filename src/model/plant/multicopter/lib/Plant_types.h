@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1186
+ * Model version                  : 1.1197
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Apr  5 15:19:00 2024
+ * C/C++ source code generated on : Sat Apr  6 18:01:02 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -38,6 +38,20 @@ typedef struct {
   /* External force applied at body in body frame. */
   real32_T force[3];
 } Environment_Info_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_States_Init_Bus_
+#define DEFINED_TYPEDEF_FOR_States_Init_Bus_
+
+/* Plant model initialize states. Such as position and attitude. */
+typedef struct {
+  uint32_T timestamp;
+
+  /* roll,pitch,yaw in rad */
+  real32_T euler[3];
+  real32_T pos[3];
+} States_Init_Bus;
 
 #endif
 
@@ -184,21 +198,14 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_RbOon0HJYMHgBnPxFCHqoG_
-#define DEFINED_TYPEDEF_FOR_struct_RbOon0HJYMHgBnPxFCHqoG_
+#ifndef DEFINED_TYPEDEF_FOR_struct_3bORdf2BsPDFMyyhwl9bpH_
+#define DEFINED_TYPEDEF_FOR_struct_3bORdf2BsPDFMyyhwl9bpH_
 
 typedef struct {
-  real32_T QUAT_W_0;
-  real32_T QUAT_X_0;
-  real32_T QUAT_Y_0;
-  real32_T QUAT_Z_0;
-  real32_T POS_X_0;
-  real32_T POS_Y_0;
-  real32_T POS_Z_0;
   real_T LAT_0;
   real_T LON_0;
   real_T ALT_0;
-} struct_RbOon0HJYMHgBnPxFCHqoG;
+} struct_3bORdf2BsPDFMyyhwl9bpH;
 
 #endif
 

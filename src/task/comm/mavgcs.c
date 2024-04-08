@@ -32,6 +32,7 @@
 #define LOG_TAG "MAVGCS"
 
 MCN_DEFINE(environment_info, sizeof(Environment_Info_Bus));
+MCN_DEFINE(states_init, sizeof(States_Init_Bus));
 MCN_DEFINE(external_state, sizeof(mavlink_fmt_external_state_t));
 
 MCN_DECLARE(sensor_imu0);
@@ -419,6 +420,23 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         mcn_publish(MCN_HUB(environment_info), &environment_info);
     } break;
 
+    case MAVLINK_MSG_ID_FMT_STATES_INIT: {
+        mavlink_fmt_states_init_t states_init;
+        States_Init_Bus states_init_data;
+
+        mavlink_msg_fmt_states_init_decode(msg, &states_init);
+
+        states_init_data.timestamp = systime_now_ms();
+        states_init_data.euler[0] = states_init.euler[0];
+        states_init_data.euler[1] = states_init.euler[1];
+        states_init_data.euler[2] = states_init.euler[2];
+        states_init_data.pos[0] = states_init.pos[0];
+        states_init_data.pos[1] = states_init.pos[1];
+        states_init_data.pos[2] = states_init.pos[2];
+
+        mcn_publish(MCN_HUB(states_init), &states_init_data);
+    } break;
+
     default: {
         LOG_W("unhandled mavlink msg:%d", msg->msgid);
         return FMT_ENOTHANDLE;
@@ -432,6 +450,7 @@ fmt_err_t mavgcs_init(void)
 {
     mcn_advertise(MCN_HUB(external_state), NULL);
     mcn_advertise(MCN_HUB(environment_info), NULL);
+    mcn_advertise(MCN_HUB(states_init), NULL);
 
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
