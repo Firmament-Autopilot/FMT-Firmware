@@ -49,6 +49,20 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_States_Init_Bus_
+#define DEFINED_TYPEDEF_FOR_States_Init_Bus_
+
+/* Plant model initialize states. Such as position and attitude. */
+typedef struct {
+  uint32_T timestamp;
+
+  /* roll,pitch,yaw in rad */
+  real32_T euler[3];
+  real32_T pos[3];
+} States_Init_Bus;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_Control_Out_Bus_
     #define DEFINED_TYPEDEF_FOR_Control_Out_Bus_
 

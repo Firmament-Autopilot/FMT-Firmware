@@ -25,6 +25,9 @@
 
 #define BIT(u, n) (u & (1 << n))
 
+/* External Position */
+MCN_DEFINE(external_pos, sizeof(External_Pos_Bus));
+
 MCN_DECLARE(external_state);
 static McnNode_t ext_state_node;
 
