@@ -17,12 +17,26 @@ elif vehicle_type == 'Fixwing':
         'fms/fw_fms',
         'control/fw_controller',
     ]
+elif vehicle_type == 'Submarine':
+    MODELS = [
+        'plant/template_plant',
+        'ins/base_ins',
+        'fms/submarine_fms',
+        'control/submarine_controller',
+    ]
 elif vehicle_type == 'Boat_HIL':
     MODELS = [
         'plant/template_plant',
         'ins/external_ins',
         'fms/boat_fms',
         'control/boat_controller',
+    ]
+elif vehicle_type == 'Submarine_HIL':
+    MODELS = [
+        'plant/template_plant',
+        'ins/external_ins',
+        'fms/submarine_fms',
+        'control/submarine_controller',
     ]
 elif vehicle_type == 'Template':
     MODELS = [
