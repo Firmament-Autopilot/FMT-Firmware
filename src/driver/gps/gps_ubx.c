@@ -62,6 +62,15 @@ static int ubx_rx_handle(void)
             gps_report.fix_type      = ubx_decoder.buf.payload_rx_nav_pvt.fixType;
             gps_report.vel_ned_valid = 1;
 
+            /* Check if differential corrections were applied */
+            if (ubx_decoder.buf.payload_rx_nav_pvt.flags & UBX_RX_NAV_PVT_FLAGS_DIFFSOLN) {
+                uint8_t carrSoln = (ubx_decoder.buf.payload_rx_nav_pvt.flags & 0xC0) >> 6;
+                if (carrSoln == 1) {
+                    gps_report.fix_type = 5; /* RTK float */
+                } else if (carrSoln == 2) {
+                    gps_report.fix_type = 6; /* RTK fixed */
+                }
+            }
         } else {
             gps_report.fix_type      = 0;
             gps_report.vel_ned_valid = 0;
@@ -87,19 +96,19 @@ static int ubx_rx_handle(void)
         gps_report.c_variance_rad = (float)ubx_decoder.buf.payload_rx_nav_pvt.headAcc * M_DEG_TO_RAD_F * 1e-5f;
 
         // Check if time and date fix flags are good
-        if ((ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDDATE)
-            && (ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDTIME)
-            && (ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_FULLYRESOLVED)) {
-            /* convert to unix timestamp */
-            // timeinfo.tm_year	= ubx_decoder.buf.payload_rx_nav_pvt.year - 1900;
-            // timeinfo.tm_mon		= ubx_decoder.buf.payload_rx_nav_pvt.month - 1;
-            // timeinfo.tm_mday	= ubx_decoder.buf.payload_rx_nav_pvt.day;
-            // timeinfo.tm_hour	= ubx_decoder.buf.payload_rx_nav_pvt.hour;
-            // timeinfo.tm_min		= ubx_decoder.buf.payload_rx_nav_pvt.min;
-            // timeinfo.tm_sec		= ubx_decoder.buf.payload_rx_nav_pvt.sec;
+        // if ((ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDDATE)
+        //     && (ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDTIME)
+        //     && (ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_FULLYRESOLVED)) {
+        //     /* convert to unix timestamp */
+        //     timeinfo.tm_year	= ubx_decoder.buf.payload_rx_nav_pvt.year - 1900;
+        //     timeinfo.tm_mon		= ubx_decoder.buf.payload_rx_nav_pvt.month - 1;
+        //     timeinfo.tm_mday	= ubx_decoder.buf.payload_rx_nav_pvt.day;
+        //     timeinfo.tm_hour	= ubx_decoder.buf.payload_rx_nav_pvt.hour;
+        //     timeinfo.tm_min		= ubx_decoder.buf.payload_rx_nav_pvt.min;
+        //     timeinfo.tm_sec		= ubx_decoder.buf.payload_rx_nav_pvt.sec;
 
-            // gps_report.time_utc_usec = 0;
-        }
+        //     gps_report.time_utc_usec = 0;
+        // }
 
         gps_report.timestamp_time     = systime_now_ms();
         gps_report.timestamp_velocity = systime_now_ms();
