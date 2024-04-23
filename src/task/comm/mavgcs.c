@@ -25,6 +25,7 @@
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/gcs_cmd.h"
+#include "module/sysio/pilot_cmd.h"
 #include "module/system/statistic.h"
 #include "task_comm.h"
 
@@ -40,6 +41,8 @@ MCN_DECLARE(sensor_mag0);
 MCN_DECLARE(sensor_baro);
 MCN_DECLARE(sensor_gps);
 MCN_DECLARE(mission_data);
+MCN_DECLARE(pilot_cmd);
+MCN_DECLARE(gcs_cmd);
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
@@ -422,20 +425,44 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_FMT_STATES_INIT: {
         mavlink_fmt_states_init_t states_init;
-        States_Init_Bus states_init_data;
+        States_Init_Bus           states_init_data;
 
         mavlink_msg_fmt_states_init_decode(msg, &states_init);
 
         states_init_data.timestamp = systime_now_ms();
-        states_init_data.euler[0] = states_init.euler[0];
-        states_init_data.euler[1] = states_init.euler[1];
-        states_init_data.euler[2] = states_init.euler[2];
-        states_init_data.pos[0] = states_init.pos[0];
-        states_init_data.pos[1] = states_init.pos[1];
-        states_init_data.pos[2] = states_init.pos[2];
+        states_init_data.euler[0]  = states_init.euler[0];
+        states_init_data.euler[1]  = states_init.euler[1];
+        states_init_data.euler[2]  = states_init.euler[2];
+        states_init_data.pos[0]    = states_init.pos[0];
+        states_init_data.pos[1]    = states_init.pos[1];
+        states_init_data.pos[2]    = states_init.pos[2];
 
         mcn_publish(MCN_HUB(states_init), &states_init_data);
     } break;
+
+#if defined(FMT_USING_VIRTUAL_JOYSTICK)
+    case MAVLINK_MSG_ID_MANUAL_CONTROL: {
+        mavlink_manual_control_t manual_control;
+
+        mavlink_msg_manual_control_decode(msg, &manual_control);
+
+        if (this_system.sysid == manual_control.target) {
+            GCS_Cmd_Bus gcs_cmd;
+            mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd);
+
+            Pilot_Cmd_Bus pilot_cmd  = { 0 };
+            pilot_cmd.timestamp      = systime_now_ms();
+            pilot_cmd.stick_throttle = (manual_control.z - 500) / 500.0f;
+            pilot_cmd.stick_yaw      = manual_control.r / 1000.0f;
+            pilot_cmd.stick_roll     = manual_control.y / 1000.0f;
+            pilot_cmd.stick_pitch    = manual_control.x / 1000.0f;
+            pilot_cmd.mode           = gcs_cmd.mode;
+
+            /* publish virtual joystick data */
+            mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd);
+        }
+    } break;
+#endif
 
     default: {
         LOG_W("unhandled mavlink msg:%d", msg->msgid);
