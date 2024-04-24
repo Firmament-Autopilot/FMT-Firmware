@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.82
+ * Model version                  : 1.87
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Dec 15 05:17:08 2023
+ * C/C++ source code generated on : Tue Apr 23 20:41:10 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,23 +18,21 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Plant_T Plant_ConstB = {
-  1.9966471893352524,                  /* '<S138>/Sum' */
-  0.0066943799901413165,               /* '<S138>/Multiply3' */
-  0.99330562000985867,                 /* '<S138>/Sum4' */
+  1.9966471893352524,                  /* '<S145>/Sum' */
+  0.0066943799901413165,               /* '<S145>/Multiply3' */
+  0.99330562000985867,                 /* '<S145>/Sum4' */
   1.9966471868221032,                  /* '<S50>/Subtract1' */
   0.00669438499958795,                 /* '<S50>/Product1' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S173>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S180>/Add' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S172>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S179>/Vector Concatenate3' */
 
-  { 0.0F, 1.0F, 0.0F },                /* '<S171>/Vector Concatenate3' */
+  { 0.0F, 1.0F, 0.0F },                /* '<S178>/Vector Concatenate3' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S151>/Add' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S158>/Add' */
 
-  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S162>/Add' */
-
-  { 1.0F, 0.0F, 0.0F, 0.0F },          /* '<S86>/quat0' */
+  { 1.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 1.0F },/* '<S169>/Add' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S63>/Vector Concatenate3' */
   1.5F,                                /* '<S67>/Add' */
@@ -427,18 +425,14 @@ const ConstP_Plant_T Plant_ConstP = {
   { -0.047473, -0.045353, -0.043234, -0.044082, -0.047049 },
 
   /* Expression: gain
-   * Referenced by: '<S145>/Gain4'
+   * Referenced by: '<S152>/Gain4'
    */
   { 20.0, 20.0, 15.0 },
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S5>/Constant'
    *   '<S53>/Gain'
    *   '<S54>/Constant'
-   *   '<S87>/Constant'
-   *   '<S87>/Discrete-Time Integrator'
-   *   '<S87>/Discrete-Time Integrator1'
    *   '<S34>/Constant'
    *   '<S34>/Constant1'
    *   '<S64>/Constant'
@@ -450,34 +444,34 @@ const ConstP_Plant_T Plant_ConstP = {
    *   '<S35>/Discrete-Time Integrator'
    *   '<S36>/Saturation1'
    *   '<S70>/Switch'
-   *   '<S95>/Constant'
-   *   '<S95>/Constant1'
-   *   '<S95>/Constant2'
-   *   '<S95>/Constant3'
-   *   '<S128>/Saturation'
-   *   '<S131>/Delay1'
+   *   '<S100>/Constant'
+   *   '<S100>/Constant1'
+   *   '<S100>/Constant2'
+   *   '<S100>/Constant3'
+   *   '<S135>/Saturation'
+   *   '<S138>/Delay1'
    *   '<S63>/Constant1'
    *   '<S63>/Constant2'
    *   '<S63>/Constant3'
    *   '<S63>/Constant4'
-   *   '<S123>/Limit  altitude  to Stratosphere'
-   *   '<S123>/Limit  altitude  to troposhere'
-   *   '<S124>/Constant3'
-   *   '<S125>/Random Source'
-   *   '<S134>/Random Source'
-   *   '<S134>/Random Source1'
-   *   '<S137>/Discrete FIR Filter'
-   *   '<S152>/Random Source'
-   *   '<S163>/Random Source'
-   *   '<S174>/Random Source'
-   *   '<S171>/Constant'
-   *   '<S171>/Constant2'
-   *   '<S171>/Constant3'
-   *   '<S171>/Constant4'
-   *   '<S172>/Constant1'
-   *   '<S172>/Constant2'
-   *   '<S172>/Constant3'
-   *   '<S172>/Constant4'
+   *   '<S130>/Limit  altitude  to Stratosphere'
+   *   '<S130>/Limit  altitude  to troposhere'
+   *   '<S131>/Constant3'
+   *   '<S132>/Random Source'
+   *   '<S141>/Random Source'
+   *   '<S141>/Random Source1'
+   *   '<S144>/Discrete FIR Filter'
+   *   '<S159>/Random Source'
+   *   '<S170>/Random Source'
+   *   '<S181>/Random Source'
+   *   '<S178>/Constant'
+   *   '<S178>/Constant2'
+   *   '<S178>/Constant3'
+   *   '<S178>/Constant4'
+   *   '<S179>/Constant1'
+   *   '<S179>/Constant2'
+   *   '<S179>/Constant3'
+   *   '<S179>/Constant4'
    */
   0.0F,
 
@@ -490,33 +484,33 @@ const ConstP_Plant_T Plant_ConstP = {
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S168>/Saturation'
-   *   '<S125>/Random Source'
+   *   '<S175>/Saturation'
+   *   '<S132>/Random Source'
    */
   4.0F,
 
   /* Computed Parameter: RandomSource_VarianceRTP
-   * Referenced by: '<S134>/Random Source'
+   * Referenced by: '<S141>/Random Source'
    */
   { 0.2F, 0.2F, 0.4F },
 
   /* Computed Parameter: RandomSource1_VarianceRTP
-   * Referenced by: '<S134>/Random Source1'
+   * Referenced by: '<S141>/Random Source1'
    */
   { 0.01F, 0.01F, 0.01F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_h
-   * Referenced by: '<S152>/Random Source'
+   * Referenced by: '<S159>/Random Source'
    */
   { 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_o
-   * Referenced by: '<S163>/Random Source'
+   * Referenced by: '<S170>/Random Source'
    */
   { 0.005F, 0.005F, 0.005F },
 
   /* Expression: wmm_declination
-   * Referenced by: '<S169>/Declination_Lookup_Table'
+   * Referenced by: '<S176>/Declination_Lookup_Table'
    */
   { 129.47F, 85.74F, 47.95F, 31.19F, 22.49F, 16.95F, 13.27F, 11.01F, 9.8F, 9.04F,
     8.04F, 6.39F, 4.43F, 2.87F, 1.89F, 0.82F, -2.32F, 117.22F, 77.74F, 46.6F,
@@ -588,7 +582,7 @@ const ConstP_Plant_T Plant_ConstP = {
     1.89F, 0.82F, -2.32F },
 
   /* Expression: wmm_inclination
-   * Referenced by: '<S169>/Inclination_Lookup_Table'
+   * Referenced by: '<S176>/Inclination_Lookup_Table'
    */
   { -78.32F, -80.9F, -77.5F, -71.61F, -64.4F, -55.01F, -42.22F, -25.27F, -5.16F,
     14.71F, 31.05F, 43.37F, 53.09F, 61.88F, 70.58F, 78.83F, 85.96F, -77.55F,
@@ -663,7 +657,7 @@ const ConstP_Plant_T Plant_ConstP = {
     14.71F, 31.05F, 43.37F, 53.09F, 61.88F, 70.58F, 78.83F, 85.96F },
 
   /* Expression: wmm_magnitude
-   * Referenced by: '<S169>/Magnitude_Lookup_Table'
+   * Referenced by: '<S176>/Magnitude_Lookup_Table'
    */
   { 60.6688499F, 63.1136093F, 61.9571686F, 58.5107918F, 53.9825211F, 48.8148804F,
     43.2272797F, 37.9078407F, 34.1241F, 32.8304787F, 33.9999084F, 37.2338F,
@@ -772,7 +766,7 @@ const ConstP_Plant_T Plant_ConstP = {
     42.2268791F, 48.3138885F, 53.9158897F, 57.2580109F, 57.8856F },
 
   /* Computed Parameter: RandomSource_VarianceRTP_om
-   * Referenced by: '<S174>/Random Source'
+   * Referenced by: '<S181>/Random Source'
    */
   { 0.001F, 0.001F, 0.001F }
 };

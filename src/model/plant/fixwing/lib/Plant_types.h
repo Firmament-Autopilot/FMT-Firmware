@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.82
+ * Model version                  : 1.87
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Dec 15 05:17:08 2023
+ * C/C++ source code generated on : Tue Apr 23 20:41:10 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -48,6 +48,20 @@ typedef struct {
   uint32_T timestamp;
   uint16_T actuator_cmd[16];
 } Control_Out_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_States_Init_Bus_
+#define DEFINED_TYPEDEF_FOR_States_Init_Bus_
+
+/* Plant model initialize states. Such as position and attitude. */
+typedef struct {
+  uint32_T timestamp;
+
+  /* roll,pitch,yaw in rad */
+  real32_T euler[3];
+  real32_T pos[3];
+} States_Init_Bus;
 
 #endif
 
@@ -181,6 +195,17 @@ typedef struct {
   real32_T mag_y;
   real32_T mag_z;
 } MAG_Bus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_3bORdf2BsPDFMyyhwl9bpH_
+#define DEFINED_TYPEDEF_FOR_struct_3bORdf2BsPDFMyyhwl9bpH_
+
+typedef struct {
+  real_T LAT_0;
+  real_T LON_0;
+  real_T ALT_0;
+} struct_3bORdf2BsPDFMyyhwl9bpH;
 
 #endif
 
