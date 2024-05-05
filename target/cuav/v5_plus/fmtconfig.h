@@ -30,7 +30,7 @@
 #define FMT_USING_MAVLINK_V2
 
 /* Send out pilot cmd via mavlink */
-#define FMT_OUTPUT_PILOT_CMD
+// #define FMT_OUTPUT_PILOT_CMD
 
 // #define FMT_USING_VIRTUAL_JOYSTICK
 

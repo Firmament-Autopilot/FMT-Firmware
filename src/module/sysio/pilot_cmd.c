@@ -25,20 +25,20 @@
 /* channel index start from 0 */
 #define CHAN_IDX(_stick_idx) (stickMapping[_stick_idx] - 1)
 
-uint8_t modeNum = 0;
-uint8_t eventCmdNum = 0;
-uint8_t statusCmdNum = 0;
-pilot_mode_config* pilotModes = NULL;
-pilot_event_cmd_t* pilotEventCmds = NULL;
+uint8_t             modeNum         = 0;
+uint8_t             eventCmdNum     = 0;
+uint8_t             statusCmdNum    = 0;
+pilot_mode_config*  pilotModes      = NULL;
+pilot_event_cmd_t*  pilotEventCmds  = NULL;
 pilot_status_cmd_t* pilotStatusCmds = NULL;
 
 static rt_device_t rcDev;
-static uint8_t stickMapping[4];
-static int16_t rcChannel[16];
-static int16_t rcTrimChannel[16];
+static uint8_t     stickMapping[4];
+static int16_t     rcChannel[16];
+static int16_t     rcTrimChannel[16];
 
-static uint16_t rc_read_mask;
-static uint8_t rc_chan_num;
+static uint16_t      rc_read_mask;
+static uint8_t       rc_chan_num;
 static Pilot_Cmd_Bus pilot_cmd_bus;
 
 /* Define uMCN topic */
@@ -48,7 +48,7 @@ MCN_DEFINE(rc_trim_channels, sizeof(rcTrimChannel)); /* RC calibrated channels v
 
 static int echo_pilot_cmd(void* parameter)
 {
-    fmt_err_t err;
+    fmt_err_t     err;
     Pilot_Cmd_Bus pilot_cmd;
 
     err = mcn_copy_from_hub((McnHub*)parameter, &pilot_cmd);
@@ -71,7 +71,7 @@ static int echo_pilot_cmd(void* parameter)
 static int echo_rc_channels(void* parameter)
 {
     fmt_err_t err;
-    int16_t rc_chan_val[16];
+    int16_t   rc_chan_val[16];
 
     err = mcn_copy_from_hub((McnHub*)parameter, rc_chan_val);
 
@@ -93,29 +93,38 @@ static int echo_rc_channels(void* parameter)
 #ifdef FMT_OUTPUT_PILOT_CMD
 static void mavlink_send_pilot_cmd(void)
 {
-    mavlink_message_t msg;
+    static McnNode_t        pilot_cmd_nod;
+    mavlink_message_t       msg;
     mavlink_fmt_pilot_cmd_t mav_pilot_cmd;
-    mavlink_system_t mav_sys = mavproxy_get_system();
+    Pilot_Cmd_Bus           pilot_cmd;
+    mavlink_system_t        mav_sys = mavproxy_get_system();
 
-    mav_pilot_cmd.timestamp = pilot_cmd_bus.timestamp;
-    mav_pilot_cmd.ls_lr = pilot_cmd_bus.stick_yaw;
-    mav_pilot_cmd.ls_ud = pilot_cmd_bus.stick_throttle;
-    mav_pilot_cmd.rs_lr = pilot_cmd_bus.stick_roll;
-    mav_pilot_cmd.rs_ud = pilot_cmd_bus.stick_pitch;
-    mav_pilot_cmd.mode = pilot_cmd_bus.mode;
-    mav_pilot_cmd.command_1 = pilot_cmd_bus.cmd_1;
-    mav_pilot_cmd.command_2 = pilot_cmd_bus.cmd_2;
+    if (pilot_cmd_nod == NULL) {
+        pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    }
 
-    mavlink_msg_fmt_pilot_cmd_encode(mav_sys.sysid, mav_sys.compid, &msg, &mav_pilot_cmd);
+    if (mcn_poll(pilot_cmd_nod)) {
+        mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &pilot_cmd);
 
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
+        mav_pilot_cmd.timestamp = pilot_cmd.timestamp;
+        mav_pilot_cmd.ls_lr     = pilot_cmd.stick_yaw;
+        mav_pilot_cmd.ls_ud     = pilot_cmd.stick_throttle;
+        mav_pilot_cmd.rs_lr     = pilot_cmd.stick_roll;
+        mav_pilot_cmd.rs_ud     = pilot_cmd.stick_pitch;
+        mav_pilot_cmd.mode      = pilot_cmd.mode;
+        mav_pilot_cmd.command_1 = pilot_cmd.cmd_1;
+        mav_pilot_cmd.command_2 = pilot_cmd.cmd_2;
+
+        mavlink_msg_fmt_pilot_cmd_encode(mav_sys.sysid, mav_sys.compid, &msg, &mav_pilot_cmd);
+        mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
+    }
 }
 #endif
 
 static void rc_channels_trim(const int16_t raw_chan_val[], int16_t trim_chan_val[])
 {
-    float rc_max, rc_min, rc_rev, rc_trim;
-    float p;
+    float   rc_max, rc_min, rc_rev, rc_trim;
+    float   p;
     int32_t start_idx = param_get_index(PARAM_GET(RC, RC1_MAX));
     if (start_idx < 0) {
         /* Fail to find RC1_MAX parameter */
@@ -123,9 +132,9 @@ static void rc_channels_trim(const int16_t raw_chan_val[], int16_t trim_chan_val
     }
 
     for (uint8_t i = 0; i < 16; i++) {
-        rc_max = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4));
-        rc_min = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 1));
-        rc_rev = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 2));
+        rc_max  = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4));
+        rc_min  = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 1));
+        rc_rev  = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 2));
         rc_trim = PARAM_VALUE_FLOAT(param_get_by_index(start_idx + i * 4 + 3));
 
         if (raw_chan_val[i] > rc_trim) {
@@ -146,20 +155,20 @@ static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
     RT_ASSERT(stickMapping[0] && stickMapping[1] && stickMapping[2] && stickMapping[3]);
 
     struct rc_configure config = ((rc_dev_t)rcDev)->config;
-    float scale = 2.0f / (float)(config.rc_max_value - config.rc_min_value);
-    float offset = -1.0f;
+    float               scale  = 2.0f / (float)(config.rc_max_value - config.rc_min_value);
+    float               offset = -1.0f;
 
-    pilot_cmd->stick_yaw = (float)(chan_val[CHAN_IDX(STICK_YAW)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_yaw      = (float)(chan_val[CHAN_IDX(STICK_YAW)] - config.rc_min_value) * scale + offset;
     pilot_cmd->stick_throttle = (float)(chan_val[CHAN_IDX(STICK_THRO)] - config.rc_min_value) * scale + offset;
-    pilot_cmd->stick_roll = (float)(chan_val[CHAN_IDX(STICK_ROLL)] - config.rc_min_value) * scale + offset;
-    pilot_cmd->stick_pitch = (float)(chan_val[CHAN_IDX(STICK_PITCH)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_roll     = (float)(chan_val[CHAN_IDX(STICK_ROLL)] - config.rc_min_value) * scale + offset;
+    pilot_cmd->stick_pitch    = (float)(chan_val[CHAN_IDX(STICK_PITCH)] - config.rc_min_value) * scale + offset;
 }
 
 static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 {
-    int i, j;
+    int     i, j;
     int16_t val;
-    bool in_range;
+    bool    in_range;
 
     pilot_cmd->mode = 0xFF; // unknow mode
 
@@ -194,10 +203,10 @@ static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 
 static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 {
-    int i, j;
+    int     i, j;
     int16_t val;
     uint8_t state_new;
-    bool in_range;
+    bool    in_range;
 
     /* command history */
     static uint32_t _last_cmd_timestamp = 0;
@@ -279,9 +288,9 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 fmt_err_t pilot_cmd_collect(void)
 {
     static uint32_t last_timestamp;
-    uint32_t time_now = systime_now_ms();
-    uint8_t update = 0;
-    rc_dev_t rc = (rc_dev_t)rcDev;
+    uint32_t        time_now = systime_now_ms();
+    uint8_t         update   = 0;
+    rc_dev_t        rc       = (rc_dev_t)rcDev;
 
     if (rcDev == NULL) {
         /* no rc device */
@@ -312,14 +321,14 @@ fmt_err_t pilot_cmd_collect(void)
             /* publish pilot_cmd topic */
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd_bus);
 
-#ifdef FMT_OUTPUT_PILOT_CMD
-            /* send out pilot_cmd via mavlink */
-            mavlink_send_pilot_cmd();
-#endif
-
             last_timestamp = time_now;
         }
     }
+
+#ifdef FMT_OUTPUT_PILOT_CMD
+    /* send out pilot_cmd via mavlink */
+    mavlink_send_pilot_cmd();
+#endif
 
     return FMT_EOK;
 }
@@ -357,7 +366,7 @@ fmt_err_t pilot_cmd_set_chan_num(uint8_t chan_num)
     }
 
     rc_read_mask = mask;
-    rc_chan_num = chan_num;
+    rc_chan_num  = chan_num;
 
     return FMT_EOK;
 }
@@ -375,9 +384,9 @@ fmt_err_t pilot_cmd_map_stick(
     RT_ASSERT(roll_chan >= 1 && roll_chan <= 16);
     RT_ASSERT(pitch_chan >= 1 && pitch_chan <= 16);
 
-    stickMapping[STICK_YAW] = yaw_chan;
-    stickMapping[STICK_THRO] = thro_chan;
-    stickMapping[STICK_ROLL] = roll_chan;
+    stickMapping[STICK_YAW]   = yaw_chan;
+    stickMapping[STICK_THRO]  = thro_chan;
+    stickMapping[STICK_ROLL]  = roll_chan;
     stickMapping[STICK_PITCH] = pitch_chan;
 
     return FMT_EOK;
