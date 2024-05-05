@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2122
+ * Model version                  : 1.2127
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Apr 17 17:26:33 2024
+ * C/C++ source code generated on : Sat May  4 16:24:12 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -100,15 +100,6 @@ extern void FMS_MotionState(real32_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionState_FMS_T *localDW);
 extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
   rtu_P3_d, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
-extern void FMS_HoldControl_e_Init(DW_HoldControl_FMS_g_T *localDW);
-extern void FMS_HoldControl_kp_Reset(DW_HoldControl_FMS_g_T *localDW);
-extern void FMS_HoldControl_k(real32_T rtu_FMS_In, real32_T
-  *rty_psi_rate_cmd_radPs, DW_HoldControl_FMS_g_T *localDW);
-extern void FMS_MoveControl_j_Init(DW_MoveControl_FMS_c_T *localDW);
-extern void FMS_MoveControl_l_Reset(DW_MoveControl_FMS_c_T *localDW);
-extern void FMS_MoveControl_b(real32_T rtu_FMS_In, real32_T
-  *rty_psi_rate_cmd_radPs, const ConstB_MoveControl_FMS_f_T *localC,
-  DW_MoveControl_FMS_c_T *localDW);
 extern void FMS_MoveControl_l_Init(DW_MoveControl_FMS_k_T *localDW);
 extern void FMS_MoveControl_e_Reset(DW_MoveControl_FMS_k_T *localDW);
 extern void FMS_MoveControl_i(real32_T rtu_FMS_In, real32_T rtu_FMS_In_f,
@@ -116,6 +107,12 @@ extern void FMS_MoveControl_i(real32_T rtu_FMS_In, real32_T rtu_FMS_In_f,
   DW_MoveControl_FMS_k_T *localDW);
 extern void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T
   *localC);
+extern void FMS_BrakeControl_b(real32_T *rty_w_cmd_mPs);
+extern void FMS_MoveControl_c(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs);
+extern void FMS_MotionStatus_h_Init(DW_MotionStatus_FMS_b_T *localDW);
+extern void FMS_MotionStatus_b_Reset(DW_MotionStatus_FMS_b_T *localDW);
+extern void FMS_MotionStatus_n(boolean_T rtu_motion_req, real32_T rtu_speed,
+  MotionState *rty_state, DW_MotionStatus_FMS_b_T *localDW);
 extern void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const
   real_T rtu_llo[2], real_T rtu_href, real_T rtu_psio, real32_T rty_pos[3],
   const ConstB_VehicleArmAutoMissionL_T *localC);
