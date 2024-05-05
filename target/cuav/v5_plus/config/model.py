@@ -31,6 +31,13 @@ elif vehicle_type == 'Boat_HIL':
         'fms/boat_fms',
         'control/boat_controller',
     ]
+elif vehicle_type == 'Car_HIL':
+    MODELS = [
+        'plant/template_plant',
+        'ins/external_ins',
+        'fms/car_fms',
+        'control/car_controller',
+    ]
 elif vehicle_type == 'Submarine_HIL':
     MODELS = [
         'plant/template_plant',

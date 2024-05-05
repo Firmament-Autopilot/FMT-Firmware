@@ -22,7 +22,7 @@
 // #define FMT_USING_SYS_DEBUG
 
 /* HIL simulation */
-// #define FMT_USING_HIL
+#define FMT_USING_HIL
 /* SIH simulation */
 // #define FMT_USING_SIH
 
@@ -32,7 +32,7 @@
 /* Send out pilot cmd via mavlink */
 // #define FMT_OUTPUT_PILOT_CMD
 
-// #define FMT_USING_VIRTUAL_JOYSTICK
+#define FMT_USING_VIRTUAL_JOYSTICK
 
 /* MLog */
 #define MLOG_BUFFER_SIZE         128 * 1024
