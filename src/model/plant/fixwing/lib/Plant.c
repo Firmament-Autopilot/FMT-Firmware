@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.87
+ * Model version                  : 1.92
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Apr 23 20:41:10 2024
+ * C/C++ source code generated on : Sun May  5 13:48:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1430,7 +1430,7 @@ void Plant_step(void)
   /* Product: '<S67>/Divide2' incorporates:
    *  Constant: '<S67>/Inertia_Matrix'
    */
-  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled32, rtb_MathFunction_m,
+  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled33, rtb_MathFunction_m,
     rtb_Sum_po);
 
   /* Product: '<S78>/Multiply' */
@@ -1528,28 +1528,29 @@ void Plant_step(void)
      *  RelationalOperator: '<S83>/Compare'
      *  Sum: '<S81>/Add'
      */
-    if (Plant_Y.Plant_States.h_R <= -0.05F) {
+    if (Plant_Y.Plant_States.h_R <= -0.01F) {
       /* Switch: '<S81>/Switch3' incorporates:
        *  Constant: '<S81>/mg'
        *  Constant: '<S84>/Constant'
        *  Gain: '<S81>/Gain1'
        *  Gain: '<S81>/Gain2'
+       *  Gain: '<S81>/Gain3'
        *  Gain: '<S81>/Gain4'
        *  RelationalOperator: '<S84>/Compare'
        *  Sum: '<S81>/Add1'
        *  Sum: '<S81>/Add2'
        */
       if (Plant_Y.Plant_States.h_R <= -0.1F) {
-        rtb_Gain3 = (Plant_Y.Plant_States.h_R - 29.418F) - 50.0F *
+        rtb_Gain3 = (50.0F * Plant_Y.Plant_States.h_R - 29.418F) - 100.0F *
           Plant_Y.Plant_States.vel_z_O;
       } else {
-        rtb_Gain3 = (0.5F * Plant_Y.Plant_States.h_R - 29.418F) - 20.0F *
+        rtb_Gain3 = (30.0F * Plant_Y.Plant_States.h_R - 29.418F) - 50.0F *
           Plant_Y.Plant_States.vel_z_O;
       }
 
       /* End of Switch: '<S81>/Switch3' */
     } else {
-      rtb_Gain3 = -29.418F - 10.0F * Plant_Y.Plant_States.vel_z_O;
+      rtb_Gain3 = -29.418F - 25.0F * Plant_Y.Plant_States.vel_z_O;
     }
 
     /* End of Switch: '<S81>/Switch1' */
@@ -2082,9 +2083,9 @@ void Plant_step(void)
    *  DiscreteIntegrator: '<S86>/Discrete-Time Integrator'
    */
   for (i = 0; i < 3; i++) {
-    rtb_Add_m[i] = Plant_ConstP.pooled32[i + 6] *
-      Plant_DW.DiscreteTimeIntegrator_DSTATE_l[2] + (Plant_ConstP.pooled32[i + 3]
-      * Plant_DW.DiscreteTimeIntegrator_DSTATE_l[1] + Plant_ConstP.pooled32[i] *
+    rtb_Add_m[i] = Plant_ConstP.pooled33[i + 6] *
+      Plant_DW.DiscreteTimeIntegrator_DSTATE_l[2] + (Plant_ConstP.pooled33[i + 3]
+      * Plant_DW.DiscreteTimeIntegrator_DSTATE_l[1] + Plant_ConstP.pooled33[i] *
       Plant_DW.DiscreteTimeIntegrator_DSTATE_l[0]);
   }
 
@@ -2515,7 +2516,7 @@ void Plant_step(void)
   /* Product: '<S86>/Divide' incorporates:
    *  Constant: '<S86>/Inertia_Matrix'
    */
-  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled32, rtb_Sum_po, tmp_1);
+  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled33, rtb_Sum_po, tmp_1);
 
   /* Update for DiscreteIntegrator: '<S86>/Discrete-Time Integrator' incorporates:
    *  Logic: '<S86>/Logical Operator'
@@ -3117,7 +3118,7 @@ void Plant_step(void)
 
   /* S-Function (sdsprandsrc2): '<S132>/Random Source' */
   RandSrc_GZ_R(&rtb_MathFunction1_k, &Plant_ConstP.pooled27, 1,
-               &Plant_ConstP.pooled36, 1, Plant_DW.RandomSource_STATE_DWORK_fn,
+               &Plant_ConstP.pooled38, 1, Plant_DW.RandomSource_STATE_DWORK_fn,
                1, 1);
 
   /* BusAssignment: '<S127>/Bus Assignment' incorporates:

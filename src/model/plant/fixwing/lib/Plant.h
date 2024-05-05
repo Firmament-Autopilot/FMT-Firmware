@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.87
+ * Model version                  : 1.92
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Apr 23 20:41:10 2024
+ * C/C++ source code generated on : Sun May  5 13:48:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -381,14 +381,14 @@ typedef struct {
    *   '<S86>/Inertia_Matrix'
    *   '<S67>/Inertia_Matrix'
    */
-  real32_T pooled32[9];
+  real32_T pooled33[9];
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S175>/Saturation'
    *   '<S132>/Random Source'
    */
-  real32_T pooled36;
+  real32_T pooled38;
 
   /* Computed Parameter: RandomSource_VarianceRTP
    * Referenced by: '<S141>/Random Source'
@@ -531,7 +531,6 @@ extern RT_MODEL_Plant_T *const Plant_M;
  * Block '<S1>/Reshape1' : Reshape block reduction
  * Block '<S42>/Data Type Conversion2' : Eliminate redundant data type conversion
  * Block '<S53>/Gain1' : Eliminated nontunable gain of 1
- * Block '<S81>/Gain3' : Eliminated nontunable gain of 1
  * Block '<S81>/Reshape' : Reshape block reduction
  * Block '<S82>/Reshape1' : Reshape block reduction
  * Block '<S118>/Data Type Conversion2' : Eliminate redundant data type conversion
