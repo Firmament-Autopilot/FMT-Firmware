@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2032
+ * Model version                  : 1.2033
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Jan 30 23:01:08 2024
+ * C/C++ source code generated on : Tue May  7 15:30:31 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1620,7 +1620,8 @@ static void FMS_exit_internal_Arm(void)
 static void FMS_Arm(void)
 {
   boolean_T c_sf_internal_predicateOutput;
-  real_T tmp;
+  int32_T tmp;
+  real_T tmp_0;
   FMS_DW.durationLastReferenceTick_1_c = FMS_DW.chartAbsoluteTimeCounter;
 
   /* Constant: '<Root>/Constant' */
@@ -1632,16 +1633,16 @@ static void FMS_Arm(void)
     FMS_B.state = VehicleState_Disarm;
   } else if ((FMS_DW.mode_prev != FMS_DW.mode_start) && (FMS_B.target_mode !=
               PilotMode_None)) {
-    tmp = FMS_getArmMode(FMS_B.target_mode);
-    if (tmp == 3.0) {
+    tmp_0 = FMS_getArmMode(FMS_B.target_mode);
+    if (tmp_0 == 3.0) {
       FMS_exit_internal_Arm();
       FMS_DW.is_Arm = FMS_IN_Auto;
       FMS_enter_internal_Auto();
-    } else if (tmp == 2.0) {
+    } else if (tmp_0 == 2.0) {
       FMS_exit_internal_Arm();
       FMS_DW.is_Arm = FMS_IN_Assist;
       FMS_enter_internal_Assist();
-    } else if (tmp == 1.0) {
+    } else if (tmp_0 == 1.0) {
       FMS_exit_internal_Arm();
       FMS_DW.is_Arm = FMS_IN_Manual;
       if (FMS_B.target_mode == PilotMode_Manual) {
@@ -1704,9 +1705,8 @@ static void FMS_Arm(void)
       } else {
         switch (FMS_DW.is_Arm) {
          case FMS_IN_Assist:
-          if (FMS_B.Compare && ((int32_T)
-                                (FMS_B.BusConversion_InsertedFor_FMSSt.flag &
-                                 212U) == 212)) {
+          tmp = (int32_T)(FMS_B.BusConversion_InsertedFor_FMSSt.flag & 212U);
+          if (FMS_B.Compare && (tmp == 212)) {
             FMS_B.Cmd_In.cur_waypoint[0] =
               FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
             FMS_B.Cmd_In.cur_waypoint[1] =
@@ -1727,11 +1727,39 @@ static void FMS_Arm(void)
             FMS_DW.is_SubMode = FMS_IN_Hold_h;
             FMS_B.state = VehicleState_Hold;
           } else {
-            if (FMS_DW.is_Assist == FMS_IN_InvalidAssistMode) {
+            if (FMS_sf_msg_pop_M()) {
+              c_sf_internal_predicateOutput = ((FMS_DW.M_msgReservedData ==
+                FMS_Cmd_Pause) && (tmp == 212));
+            } else {
+              c_sf_internal_predicateOutput = false;
+            }
+
+            if (c_sf_internal_predicateOutput) {
+              FMS_B.Cmd_In.cur_waypoint[0] =
+                FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
+              FMS_B.Cmd_In.cur_waypoint[1] =
+                FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
+              FMS_B.Cmd_In.cur_waypoint[2] =
+                FMS_B.BusConversion_InsertedFor_FMSSt.h_R;
               FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_p;
-              FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_p;
-              FMS_DW.is_Vehicle = FMS_IN_Disarm;
-              FMS_B.state = VehicleState_Disarm;
+              FMS_DW.is_Arm = FMS_IN_SubMode;
+              FMS_DW.stick_val[0] =
+                FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
+              FMS_DW.stick_val[1] =
+                FMS_B.BusConversion_InsertedFor_FMS_f.stick_throttle;
+              FMS_DW.stick_val[2] =
+                FMS_B.BusConversion_InsertedFor_FMS_f.stick_roll;
+              FMS_DW.stick_val[3] =
+                FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
+              FMS_DW.is_SubMode = FMS_IN_Hold_h;
+              FMS_B.state = VehicleState_Hold;
+            } else {
+              if (FMS_DW.is_Assist == FMS_IN_InvalidAssistMode) {
+                FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD_p;
+                FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD_p;
+                FMS_DW.is_Vehicle = FMS_IN_Disarm;
+                FMS_B.state = VehicleState_Disarm;
+              }
             }
           }
           break;

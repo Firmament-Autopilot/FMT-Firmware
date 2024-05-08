@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2127
+ * Model version                  : 1.1987
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sat May  4 16:24:12 2024
+ * C/C++ source code generated on : Wed May  8 12:25:32 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -488,36 +488,25 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_pJ9vX14fiEgD1ptfg18n3D_
-#define DEFINED_TYPEDEF_FOR_struct_pJ9vX14fiEgD1ptfg18n3D_
+#ifndef DEFINED_TYPEDEF_FOR_struct_hM3owpvlTllo75JfBOVIvG_
+#define DEFINED_TYPEDEF_FOR_struct_hM3owpvlTllo75JfBOVIvG_
 
 typedef struct {
   real32_T THROTTLE_DZ;
   real32_T YAW_DZ;
   real32_T ROLL_DZ;
   real32_T PITCH_DZ;
+  real32_T X_P;
   real32_T XY_P;
   real32_T Z_P;
   real32_T VEL_X_LIM;
-  real32_T VEL_XY_LIM;
   real32_T VEL_Z_LIM;
-  real32_T YAW_P;
-  real32_T YAW_RATE_LIM;
-  real32_T ROLL_PITCH_LIM;
   real32_T L1;
   real32_T CRUISE_SPEED;
-  real32_T CRUISE_ACC;
-  real32_T TAKEOFF_H;
-  real32_T TAKEOFF_SPEED;
   real32_T ACCEPT_R;
-  real32_T ASSIST_LAND_H;
-  real32_T LAND_SPEED;
-  uint16_T LOST_RETURN_TIME;
-  uint8_T LOST_RETURN_EN;
-  uint16_T LAND_LOCK_THRO;
-  real32_T ACC_Y_LIM;
-  real32_T X_P;
-} struct_pJ9vX14fiEgD1ptfg18n3D;
+  real32_T ACC2RATE;
+  real32_T MAX_R;
+} struct_hM3owpvlTllo75JfBOVIvG;
 
 #endif
 

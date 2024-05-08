@@ -36,12 +36,19 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(L1, 20.0, false),
-    PARAM_FLOAT(CRUISE_SPEED, 3.0, false),
-    PARAM_FLOAT(ACCEPT_R, 5.0, false),
-    PARAM_FLOAT(MAX_VEL, 4.0, false),
-    PARAM_FLOAT(MAX_R, PI / 6, false),
+    PARAM_FLOAT(THROTTLE_DZ, 0.15, false),
+    PARAM_FLOAT(YAW_DZ, 0.14, false),
+    PARAM_FLOAT(ROLL_DZ, 0.1, false),
+    PARAM_FLOAT(PITCH_DZ, 0.1, false),
+    PARAM_FLOAT(X_P, 0.95, false),
+    PARAM_FLOAT(Z_P, 1.0, false),
+    PARAM_FLOAT(VEL_X_LIM, 6.0, false),
+    PARAM_FLOAT(VEL_Z_LIM, 2.5, false),
+    PARAM_FLOAT(L1, 30.0, false),
+    PARAM_FLOAT(CRUISE_SPEED, 5.0, false),
+    PARAM_FLOAT(ACCEPT_R, 50.0, false),
     PARAM_FLOAT(ACC2RATE, 0.5, false),
+    PARAM_FLOAT(MAX_R, PI/4, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -243,7 +250,19 @@ static void mlog_start_cb(void)
 
 static void init_parameter(void)
 {
-    // FMT_CHECK(param_link_variable(PARAM_GET(FMS, L1), &FMS_PARAM.L1));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, THROTTLE_DZ), &FMS_PARAM.THROTTLE_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_DZ), &FMS_PARAM.YAW_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_DZ), &FMS_PARAM.ROLL_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, PITCH_DZ), &FMS_PARAM.PITCH_DZ));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, X_P), &FMS_PARAM.X_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, Z_P), &FMS_PARAM.Z_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_X_LIM), &FMS_PARAM.VEL_X_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, VEL_Z_LIM), &FMS_PARAM.VEL_Z_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, L1), &FMS_PARAM.L1));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC2RATE), &FMS_PARAM.ACC2RATE));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_R), &FMS_PARAM.MAX_R));
 }
 
 void fms_interface_step(uint32_t timestamp)
