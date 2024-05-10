@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1109
+ * Model version                  : 1.1110
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May  7 16:13:48 2024
+ * C/C++ source code generated on : Fri May 10 11:29:32 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -147,22 +147,22 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S5>'   : 'Controller/Bus_Constructor/timestamp'
  * '<S6>'   : 'Controller/Controller/Control_Allocation'
  * '<S7>'   : 'Controller/Controller/Heading_Controller'
- * '<S8>'   : 'Controller/Controller/Sailing_Speed_Controller'
+ * '<S8>'   : 'Controller/Controller/Speed_Controller'
  * '<S9>'   : 'Controller/Controller/Heading_Controller/Error'
  * '<S10>'  : 'Controller/Controller/Heading_Controller/PID_Controller'
  * '<S11>'  : 'Controller/Controller/Heading_Controller/PID_Controller/D_Control'
  * '<S12>'  : 'Controller/Controller/Heading_Controller/PID_Controller/I_Control'
  * '<S13>'  : 'Controller/Controller/Heading_Controller/PID_Controller/P_Control'
  * '<S14>'  : 'Controller/Controller/Heading_Controller/PID_Controller/D_Control/DT Filter'
- * '<S15>'  : 'Controller/Controller/Sailing_Speed_Controller/Error'
- * '<S16>'  : 'Controller/Controller/Sailing_Speed_Controller/PID_Controller'
- * '<S17>'  : 'Controller/Controller/Sailing_Speed_Controller/Error/Bus_Select'
- * '<S18>'  : 'Controller/Controller/Sailing_Speed_Controller/Error/Bus_Select/Psi To DCM'
- * '<S19>'  : 'Controller/Controller/Sailing_Speed_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
- * '<S20>'  : 'Controller/Controller/Sailing_Speed_Controller/PID_Controller/D_Control'
- * '<S21>'  : 'Controller/Controller/Sailing_Speed_Controller/PID_Controller/I_Control'
- * '<S22>'  : 'Controller/Controller/Sailing_Speed_Controller/PID_Controller/P_Control'
- * '<S23>'  : 'Controller/Controller/Sailing_Speed_Controller/PID_Controller/D_Control/DT Filter'
+ * '<S15>'  : 'Controller/Controller/Speed_Controller/Error'
+ * '<S16>'  : 'Controller/Controller/Speed_Controller/PID_Controller'
+ * '<S17>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select'
+ * '<S18>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM'
+ * '<S19>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
+ * '<S20>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control'
+ * '<S21>'  : 'Controller/Controller/Speed_Controller/PID_Controller/I_Control'
+ * '<S22>'  : 'Controller/Controller/Speed_Controller/PID_Controller/P_Control'
+ * '<S23>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control/DT Filter'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

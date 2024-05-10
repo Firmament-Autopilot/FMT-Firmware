@@ -45,7 +45,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(PITCH_DZ, 0.1, false),
     PARAM_FLOAT(XY_P, 0.95, false),
     PARAM_FLOAT(Z_P, 1, false),
-    PARAM_FLOAT(VEL_Z_LIM, 5, false),
+    PARAM_FLOAT(VEL_Z_LIM, 10, false),
     PARAM_FLOAT(YAW_P, 2.5, false),
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3, false),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6, false),
