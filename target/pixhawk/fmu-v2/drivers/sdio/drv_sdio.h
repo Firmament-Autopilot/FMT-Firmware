@@ -33,6 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <rtdef.h>
 
-rt_err_t drv_sdio_init(void);
+rt_err_t drv_sdio_init(const char* device_name);
 
 #endif

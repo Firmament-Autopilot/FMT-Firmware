@@ -302,7 +302,7 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    RT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_sdio_init("sd0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

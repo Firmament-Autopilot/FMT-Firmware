@@ -17,7 +17,7 @@
 
 #include "module/file_manager/file_manager.h"
 
-#define BOOT_LOG_BUFFER_SIZE 4096
+#define BOOT_LOG_BUFFER_SIZE 2048
 
 static char* log_buffer = NULL;
 static uint32_t buffer_index;
