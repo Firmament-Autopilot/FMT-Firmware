@@ -270,6 +270,9 @@ void bsp_post_initialize(void)
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
+
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
 
