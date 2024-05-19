@@ -36,6 +36,7 @@ static rt_device_t rcDev;
 static uint8_t     stickMapping[4];
 static int16_t     rcChannel[16];
 static int16_t     rcTrimChannel[16];
+static uint32_t    rc_last_pub_timestamp;
 
 static uint16_t      rc_read_mask;
 static uint8_t       rc_chan_num;
@@ -287,10 +288,9 @@ static void generate_cmd(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
 
 fmt_err_t pilot_cmd_collect(void)
 {
-    static uint32_t last_timestamp;
-    uint32_t        time_now = systime_now_ms();
-    uint8_t         update   = 0;
-    rc_dev_t        rc       = (rc_dev_t)rcDev;
+    uint32_t time_now = systime_now_ms();
+    uint8_t  update   = 0;
+    rc_dev_t rc       = (rc_dev_t)rcDev;
 
     if (rcDev == NULL) {
         /* no rc device */
@@ -299,10 +299,10 @@ fmt_err_t pilot_cmd_collect(void)
 
     FMT_TRY(rt_device_control(rcDev, RC_CMD_CHECK_UPDATE, &update));
 
-    if (update && ((time_now - last_timestamp) >= rc->config.sample_time * 1000)) {
+    if (update && ((time_now - rc_last_pub_timestamp) >= rc->config.sample_time * 1000)) {
         if (rt_device_read(rcDev, rc_read_mask, rcChannel, rc_chan_num * sizeof(uint16_t))) {
 
-            pilot_cmd_bus.timestamp = systime_now_ms();
+            pilot_cmd_bus.timestamp = time_now;
 
             /* publish rc_channel topic */
             mcn_publish(MCN_HUB(rc_channels), rcChannel);
@@ -321,7 +321,7 @@ fmt_err_t pilot_cmd_collect(void)
             /* publish pilot_cmd topic */
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd_bus);
 
-            last_timestamp = time_now;
+            rc_last_pub_timestamp = time_now;
         }
     }
 
@@ -395,6 +395,11 @@ fmt_err_t pilot_cmd_map_stick(
 uint8_t pilot_cmd_get_stick_chan(stick_enum stick)
 {
     return CHAN_IDX(stick);
+}
+
+uint32_t pilot_cmd_get_last_pub_timestamp(void)
+{
+    return rc_last_pub_timestamp;
 }
 
 fmt_err_t pilot_cmd_init(void)

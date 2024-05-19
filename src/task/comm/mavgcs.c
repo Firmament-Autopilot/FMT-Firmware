@@ -444,14 +444,17 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     case MAVLINK_MSG_ID_MANUAL_CONTROL: {
         mavlink_manual_control_t manual_control;
 
+        uint32_t rc_last_pub_timestamp = pilot_cmd_get_last_pub_timestamp();
+        uint32_t time_now              = systime_now_ms();
+
         mavlink_msg_manual_control_decode(msg, &manual_control);
 
-        if (this_system.sysid == manual_control.target) {
+        if (this_system.sysid == manual_control.target && (time_now - rc_last_pub_timestamp) >= 1000) {
             GCS_Cmd_Bus gcs_cmd;
             mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd);
 
             Pilot_Cmd_Bus pilot_cmd  = { 0 };
-            pilot_cmd.timestamp      = systime_now_ms();
+            pilot_cmd.timestamp      = time_now;
             pilot_cmd.stick_throttle = (manual_control.z - 500) / 500.0f;
             pilot_cmd.stick_yaw      = manual_control.r / 1000.0f;
             pilot_cmd.stick_roll     = manual_control.y / 1000.0f;
