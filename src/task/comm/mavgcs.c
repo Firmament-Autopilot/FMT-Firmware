@@ -48,7 +48,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 {
     switch (command->command) {
     case MAV_CMD_REQUEST_PROTOCOL_VERSION: {
-        mavlink_system_t           mav_sys          = mavproxy_get_system();
+        mavlink_system_t mav_sys = mavproxy_get_system();
         mavlink_protocol_version_t protocol_version = { 0 };
 
         mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command->command, MAV_RESULT_ACCEPTED);
@@ -65,7 +65,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, msg, true);
     } break;
     case MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES: {
-        mavlink_system_t            mav_sys           = mavproxy_get_system();
+        mavlink_system_t mav_sys = mavproxy_get_system();
         mavlink_autopilot_version_t autopilot_version = { 0 };
 
         mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command->command, MAV_RESULT_ACCEPTED);
@@ -83,7 +83,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         // autopilot_version.capabilities |= MAV_PROTOCOL_CAPABILITY_MISSION_RALLY;
 
         /* cheat QGC that we are using the right px4 version */
-        autopilot_version.flight_sw_version     = ((uint8_t)1 << 8 * 3) | ((uint8_t)10 << 8 * 2) | ((uint8_t)0 << 8 * 1);
+        autopilot_version.flight_sw_version = ((uint8_t)1 << 8 * 3) | ((uint8_t)10 << 8 * 2) | ((uint8_t)0 << 8 * 1);
         autopilot_version.middleware_sw_version = autopilot_version.flight_sw_version;
 
         mavlink_msg_autopilot_version_encode(mav_sys.sysid, mav_sys.compid, msg, &autopilot_version);
@@ -162,9 +162,9 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             mavlink_set_mode_t set_mode;
             mavlink_msg_set_mode_decode(msg, &set_mode);
 
-            uint8_t base_mode        = set_mode.base_mode;
+            uint8_t base_mode = set_mode.base_mode;
             uint8_t custom_main_mode = (set_mode.custom_mode >> 16) & 0xFF;
-            uint8_t custom_sub_mode  = (set_mode.custom_mode >> 24) & 0xFF;
+            uint8_t custom_sub_mode = (set_mode.custom_mode >> 24) & 0xFF;
 
             if (base_mode & VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED) {
                 if (custom_main_mode == PX4_CUSTOM_MAIN_MODE_AUTO) {
@@ -255,24 +255,24 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     case MAVLINK_MSG_ID_COMMAND_INT:
         if (this_system.sysid == mavlink_msg_command_long_get_target_system(msg)) {
             mavlink_command_int_t command;
-            Mission_Data_Bus      mission_data = { 0 };
+            Mission_Data_Bus mission_data = { 0 };
             mavlink_msg_command_int_decode(msg, &command);
 
             if (mcn_copy_from_hub(MCN_HUB(mission_data), &mission_data) == FMT_EOK) {
                 /* check if there is no ongoing mission */
                 if (mission_data.valid_items == 0) {
                     if (command.command == MAV_CMD_DO_REPOSITION) {
-                        mission_data.timestamp       = systime_now_ms();
-                        mission_data.valid_items     = 1;
-                        mission_data.seq[0]          = 0;
-                        mission_data.command[0]      = MAV_CMD_NAV_WAYPOINT; /* we treat reposition command as single waypoint */
-                        mission_data.frame[0]        = command.frame;
-                        mission_data.current[0]      = command.current;
+                        mission_data.timestamp = systime_now_ms();
+                        mission_data.valid_items = 1;
+                        mission_data.seq[0] = 0;
+                        mission_data.command[0] = MAV_CMD_NAV_WAYPOINT; /* we treat reposition command as single waypoint */
+                        mission_data.frame[0] = command.frame;
+                        mission_data.current[0] = command.current;
                         mission_data.autocontinue[0] = command.autocontinue;
                         mission_data.mission_type[0] = 0;
-                        mission_data.x[0]            = command.x;
-                        mission_data.y[0]            = command.y;
-                        mission_data.z[0]            = command.z;
+                        mission_data.x[0] = command.x;
+                        mission_data.y[0] = command.y;
+                        mission_data.z[0] = command.z;
 
                         if (mcn_publish(MCN_HUB(mission_data), &mission_data) == FMT_EOK) {
                             /* now we set mode to mission to execute the reposition command */
@@ -317,9 +317,9 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             if (ftp_process_request(ftp_protocol_t.payload, msg->sysid, msg->compid) == FMT_EOK) {
 
-                ftp_protocol_t.target_system    = msg->sysid;
+                ftp_protocol_t.target_system = msg->sysid;
                 ftp_protocol_t.target_component = msg->compid;
-                ftp_protocol_t.target_network   = 0;
+                ftp_protocol_t.target_network = 0;
 
                 mavlink_msg_file_transfer_protocol_encode(this_system.sysid, this_system.compid, msg, &ftp_protocol_t);
 
@@ -340,52 +340,52 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 #if defined(FMT_USING_HIL)
     case MAVLINK_MSG_ID_HIL_SENSOR: {
         mavlink_hil_sensor_t hil_sensor;
-        imu_data_t           imu_data;
-        mag_data_t           mag_data;
-        baro_data_t          baro_data;
+        imu_data_t imu_data;
+        mag_data_t mag_data;
+        baro_data_t baro_data;
 
         mavlink_msg_hil_sensor_decode(msg, &hil_sensor);
 
         /* publish hil sensor data */
-        imu_data.acc_B_mDs2[0]  = hil_sensor.xacc;
-        imu_data.acc_B_mDs2[1]  = hil_sensor.yacc;
-        imu_data.acc_B_mDs2[2]  = hil_sensor.zacc;
+        imu_data.acc_B_mDs2[0] = hil_sensor.xacc;
+        imu_data.acc_B_mDs2[1] = hil_sensor.yacc;
+        imu_data.acc_B_mDs2[2] = hil_sensor.zacc;
         imu_data.gyr_B_radDs[0] = hil_sensor.xgyro;
         imu_data.gyr_B_radDs[1] = hil_sensor.ygyro;
         imu_data.gyr_B_radDs[2] = hil_sensor.zgyro;
-        imu_data.timestamp_ms   = systime_now_ms();
+        imu_data.timestamp_ms = systime_now_ms();
         mcn_publish(MCN_HUB(sensor_imu0), &imu_data);
 
         mag_data.mag_B_gauss[0] = hil_sensor.xmag;
         mag_data.mag_B_gauss[1] = hil_sensor.ymag;
         mag_data.mag_B_gauss[2] = hil_sensor.zmag;
-        mag_data.timestamp_ms   = systime_now_ms();
+        mag_data.timestamp_ms = systime_now_ms();
         mcn_publish(MCN_HUB(sensor_mag0), &mag_data);
 
-        baro_data.pressure_pa     = hil_sensor.abs_pressure * 1e-3;
+        baro_data.pressure_pa = hil_sensor.abs_pressure * 1e-3;
         baro_data.temperature_deg = hil_sensor.temperature;
-        baro_data.altitude_m      = hil_sensor.pressure_alt;
-        baro_data.timestamp_ms    = systime_now_ms();
+        baro_data.altitude_m = hil_sensor.pressure_alt;
+        baro_data.timestamp_ms = systime_now_ms();
         mcn_publish(MCN_HUB(sensor_baro), &baro_data);
     } break;
 
     case MAVLINK_MSG_ID_HIL_GPS: {
         mavlink_hil_gps_t hil_gps;
-        gps_data_t        gps_data;
+        gps_data_t gps_data;
 
         mavlink_msg_hil_gps_decode(msg, &hil_gps);
 
-        gps_data.lat          = hil_gps.lat;
-        gps_data.lon          = hil_gps.lon;
-        gps_data.height       = hil_gps.alt;
-        gps_data.velN         = (float)hil_gps.vn * 0.01f;
-        gps_data.velE         = (float)hil_gps.ve * 0.01f;
-        gps_data.velD         = (float)hil_gps.vd * 0.01f;
-        gps_data.hAcc         = (float)hil_gps.eph * 0.01f;
-        gps_data.vAcc         = (float)hil_gps.epv * 0.01f;
-        gps_data.sAcc         = 0; // speed accurancy unknown
-        gps_data.numSV        = hil_gps.satellites_visible;
-        gps_data.fixType      = hil_gps.fix_type;
+        gps_data.lat = hil_gps.lat;
+        gps_data.lon = hil_gps.lon;
+        gps_data.height = hil_gps.alt;
+        gps_data.velN = (float)hil_gps.vn * 0.01f;
+        gps_data.velE = (float)hil_gps.ve * 0.01f;
+        gps_data.velD = (float)hil_gps.vd * 0.01f;
+        gps_data.hAcc = (float)hil_gps.eph * 0.01f;
+        gps_data.vAcc = (float)hil_gps.epv * 0.01f;
+        gps_data.sAcc = 0; // speed accurancy unknown
+        gps_data.numSV = hil_gps.satellites_visible;
+        gps_data.fixType = hil_gps.fix_type;
         gps_data.timestamp_ms = systime_now_ms();
 
         mcn_publish(MCN_HUB(sensor_gps), &gps_data);
@@ -404,17 +404,17 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_FMT_ENVIRONMENT_INFO: {
         mavlink_fmt_environment_info_t env_info;
-        Environment_Info_Bus           environment_info = { 0 };
+        Environment_Info_Bus environment_info = { 0 };
 
         mavlink_msg_fmt_environment_info_decode(msg, &env_info);
 
-        environment_info.timestamp       = systime_now_ms();
-        environment_info.hit_point[0]    = env_info.hit_point[0];
-        environment_info.hit_point[1]    = env_info.hit_point[1];
-        environment_info.hit_point[2]    = env_info.hit_point[2];
-        environment_info.hit_normal[0]   = env_info.hit_normal[0];
-        environment_info.hit_normal[1]   = env_info.hit_normal[1];
-        environment_info.hit_normal[2]   = env_info.hit_normal[2];
+        environment_info.timestamp = systime_now_ms();
+        environment_info.hit_point[0] = env_info.hit_point[0];
+        environment_info.hit_point[1] = env_info.hit_point[1];
+        environment_info.hit_point[2] = env_info.hit_point[2];
+        environment_info.hit_normal[0] = env_info.hit_normal[0];
+        environment_info.hit_normal[1] = env_info.hit_normal[1];
+        environment_info.hit_normal[2] = env_info.hit_normal[2];
         environment_info.hit_location[0] = env_info.hit_location[0];
         environment_info.hit_location[1] = env_info.hit_location[1];
         environment_info.hit_location[2] = env_info.hit_location[2];
@@ -425,17 +425,17 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
     case MAVLINK_MSG_ID_FMT_STATES_INIT: {
         mavlink_fmt_states_init_t states_init;
-        States_Init_Bus           states_init_data;
+        States_Init_Bus states_init_data;
 
         mavlink_msg_fmt_states_init_decode(msg, &states_init);
 
         states_init_data.timestamp = systime_now_ms();
-        states_init_data.euler[0]  = states_init.euler[0];
-        states_init_data.euler[1]  = states_init.euler[1];
-        states_init_data.euler[2]  = states_init.euler[2];
-        states_init_data.pos[0]    = states_init.pos[0];
-        states_init_data.pos[1]    = states_init.pos[1];
-        states_init_data.pos[2]    = states_init.pos[2];
+        states_init_data.euler[0] = states_init.euler[0];
+        states_init_data.euler[1] = states_init.euler[1];
+        states_init_data.euler[2] = states_init.euler[2];
+        states_init_data.pos[0] = states_init.pos[0];
+        states_init_data.pos[1] = states_init.pos[1];
+        states_init_data.pos[2] = states_init.pos[2];
 
         mcn_publish(MCN_HUB(states_init), &states_init_data);
     } break;
@@ -444,7 +444,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         mavlink_manual_control_t manual_control;
 
         uint32_t rc_last_pub_timestamp = pilot_cmd_get_last_pub_timestamp();
-        uint32_t time_now              = systime_now_ms();
+        uint32_t time_now = systime_now_ms();
 
         mavlink_msg_manual_control_decode(msg, &manual_control);
 
@@ -452,13 +452,13 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             GCS_Cmd_Bus gcs_cmd;
             mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd);
 
-            Pilot_Cmd_Bus pilot_cmd  = { 0 };
-            pilot_cmd.timestamp      = time_now;
+            Pilot_Cmd_Bus pilot_cmd = { 0 };
+            pilot_cmd.timestamp = time_now;
             pilot_cmd.stick_throttle = (manual_control.z - 500) / 500.0f;
-            pilot_cmd.stick_yaw      = manual_control.r / 1000.0f;
-            pilot_cmd.stick_roll     = manual_control.y / 1000.0f;
-            pilot_cmd.stick_pitch    = manual_control.x / 1000.0f;
-            pilot_cmd.mode           = gcs_cmd.mode;
+            pilot_cmd.stick_yaw = manual_control.r / 1000.0f;
+            pilot_cmd.stick_roll = manual_control.y / 1000.0f;
+            pilot_cmd.stick_pitch = manual_control.x / 1000.0f;
+            pilot_cmd.mode = gcs_cmd.mode;
 
             /* publish virtual joystick data */
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd);

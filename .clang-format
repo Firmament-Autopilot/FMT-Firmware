@@ -24,8 +24,8 @@ AlignConsecutiveMacros:
 AlignTrailingComments: true
 BinPackArguments: false
 BinPackParameters: true
-AlignConsecutiveDeclarations: true
-AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: false
+AlignConsecutiveAssignments: false
 
 BraceWrapping:
   AfterClass:      true
