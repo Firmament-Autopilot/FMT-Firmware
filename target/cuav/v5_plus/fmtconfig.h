@@ -32,8 +32,6 @@
 /* Send out pilot cmd via mavlink */
 // #define FMT_OUTPUT_PILOT_CMD
 
-// #define FMT_USING_VIRTUAL_JOYSTICK
-
 /* MLog */
 #define MLOG_BUFFER_SIZE         128 * 1024
 #define MLOG_SECTOR_SIZE         4096

@@ -440,7 +440,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         mcn_publish(MCN_HUB(states_init), &states_init_data);
     } break;
 
-#if defined(FMT_USING_VIRTUAL_JOYSTICK)
     case MAVLINK_MSG_ID_MANUAL_CONTROL: {
         mavlink_manual_control_t manual_control;
 
@@ -465,7 +464,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd);
         }
     } break;
-#endif
 
     default: {
         LOG_W("unhandled mavlink msg:%d", msg->msgid);
