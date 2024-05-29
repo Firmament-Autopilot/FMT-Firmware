@@ -842,7 +842,7 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*FTDI*',
+                    serial_list = auto_detect_serial(preferred_list=['*MindPX*',
                         "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
 
                     if len(serial_list) == 0:
@@ -873,10 +873,8 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*FTDI*',
+                    serial_list = auto_detect_serial(preferred_list=['*MindPX*',
                         "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
-                    # serial_list = auto_detect_serial(preferred_list=['*FTDI*',
-                    #     "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
                 else:
                     serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
 
