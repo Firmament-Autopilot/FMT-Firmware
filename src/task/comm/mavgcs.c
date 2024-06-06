@@ -205,7 +205,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
                 }
             }
         }
-    }
+    } break;
 
     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
         if (this_system.sysid == mavlink_msg_param_request_read_get_target_system(msg)) {
