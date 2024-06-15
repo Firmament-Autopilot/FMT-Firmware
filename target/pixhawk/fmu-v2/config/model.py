@@ -6,14 +6,14 @@ vehicle_type = GetOption('vehicle')
 if vehicle_type == 'Multicopter':
     MODELS = [
         'plant/multicopter',
-        'ins/base_ins',
-        'fms/base_fms',
-        'control/base_controller',
+        'ins/cf_ins',
+        'fms/mc_fms',
+        'control/mc_controller',
     ]
 elif vehicle_type=='Fixwing':
     MODELS=[
     'plant/fixwing',
-    'ins/base_ins',
+    'ins/cf_ins',
     'fms/fw_fms',
     'control/fw_controller',
     ]

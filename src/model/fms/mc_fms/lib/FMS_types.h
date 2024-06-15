@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2107
+ * Model version                  : 1.2108
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed May 29 16:08:18 2024
+ * C/C++ source code generated on : Sat Jun 15 10:50:29 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -518,13 +518,13 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
-#define DEFINED_TYPEDEF_FOR_struct_TYt7YeNdxIDXfczXumtXXB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_i6HyuFQRjfkj8sSCv2bg5D_
+#define DEFINED_TYPEDEF_FOR_struct_i6HyuFQRjfkj8sSCv2bg5D_
 
 typedef struct {
   uint32_T period;
-  int8_T model_info[16];
-} struct_TYt7YeNdxIDXfczXumtXXB;
+  int8_T model_info[14];
+} struct_i6HyuFQRjfkj8sSCv2bg5D;
 
 #endif
 

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.968
+ * Model version                  : 1.969
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Nov 29 09:57:55 2023
+ * C/C++ source code generated on : Sat Jun 15 11:07:41 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -98,11 +98,11 @@ struct_2EnWz3ceFwjQa7SDRNn3C CONTROL_PARAM = {
                                         *   '<S76>/gain3'
                                         */
 
-struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT = {
+struct_ny3PY9hontv4J5WqwlFzJB CONTROL_EXPORT = {
   2U,
 
-  { 66, 97, 115, 101, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32,
-    118, 49, 46, 48, 46, 48, 0 }
+  { 77, 67, 32, 67, 111, 110, 116, 114, 111, 108, 108, 101, 114, 32, 118, 49, 46,
+    48, 46, 48, 0 }
 } ;                                    /* Variable: CONTROL_EXPORT
                                         * Referenced by: '<S3>/Constant'
                                         */
