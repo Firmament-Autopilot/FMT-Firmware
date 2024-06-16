@@ -36,6 +36,7 @@
 #include "driver/rgb_led/ncp5623c.h"
 #include "driver/vision_flow/mtf_01.h"
 #include "drv_adc.h"
+#include "drv_can.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -380,6 +381,9 @@ void bsp_early_initialize(void)
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
+
+    /* can driver init */
+    RT_CHECK(drv_can_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
