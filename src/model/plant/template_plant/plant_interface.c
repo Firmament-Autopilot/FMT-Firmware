@@ -15,6 +15,10 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include <Plant.h>
+
+MCN_DEFINE(plant_states, sizeof(Plant_States_Bus));
+
 /* Model information */
 fmt_model_info_t plant_model_info;
 
@@ -30,4 +34,6 @@ void plant_interface_init(void)
     plant_model_info.info = "Template Plant";
 
     /* Add your code here */
+
+    mcn_advertise(MCN_HUB(plant_states), NULL);
 }
