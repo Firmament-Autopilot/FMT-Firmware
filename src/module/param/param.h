@@ -19,6 +19,8 @@
 
 #include <firmament.h>
 
+#include "module/utils/list.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -67,10 +69,15 @@ typedef union {
     double lf;
 } param_value_t;
 
+struct linked_var_t {
+    void* var;
+    struct list_head link;
+};
+
 typedef struct {
     const char* name;
     const uint8_t type;
-    void* var;
+    struct list_head linked_var_list;
     param_value_t val;
     const param_value_t dval;
     bool read_only;
@@ -87,80 +94,88 @@ typedef struct {
     {                                          \
         .name = #_name,                        \
         .type = PARAM_TYPE_INT8,               \
-        .var = NULL,                           \
         .val.i8 = _default,                    \
         .dval.i8 = _default,                   \
-        .read_only = _readonly                 \
+        .read_only = _readonly,                \
+        .linked_var_list = { NULL,             \
+                             NULL }            \
     }
 
 #define PARAM_UINT8(_name, _default, _readonly) \
     {                                           \
         .name = #_name,                         \
         .type = PARAM_TYPE_UINT8,               \
-        .var = NULL,                            \
         .val.u8 = _default,                     \
         .dval.u8 = _default,                    \
-        .read_only = _readonly                  \
+        .read_only = _readonly,                 \
+        .linked_var_list = { NULL,              \
+                             NULL }             \
     }
 
 #define PARAM_INT16(_name, _default, _readonly) \
     {                                           \
         .name = #_name,                         \
         .type = PARAM_TYPE_INT16,               \
-        .var = NULL,                            \
         .val.i16 = _default,                    \
         .dval.i16 = _default,                   \
-        .read_only = _readonly                  \
+        .read_only = _readonly,                 \
+        .linked_var_list = { NULL,              \
+                             NULL }             \
     }
 
 #define PARAM_UINT16(_name, _default, _readonly) \
     {                                            \
         .name = #_name,                          \
         .type = PARAM_TYPE_UINT16,               \
-        .var = NULL,                             \
         .val.u16 = _default,                     \
         .dval.u16 = _default,                    \
-        .read_only = _readonly                   \
+        .read_only = _readonly,                  \
+        .linked_var_list = { NULL,               \
+                             NULL }              \
     }
 
 #define PARAM_INT32(_name, _default, _readonly) \
     {                                           \
         .name = #_name,                         \
         .type = PARAM_TYPE_INT32,               \
-        .var = NULL,                            \
         .val.i32 = _default,                    \
         .dval.i32 = _default,                   \
-        .read_only = _readonly                  \
+        .read_only = _readonly,                 \
+        .linked_var_list = { NULL,              \
+                             NULL }             \
     }
 
 #define PARAM_UINT32(_name, _default, _readonly) \
     {                                            \
         .name = #_name,                          \
         .type = PARAM_TYPE_UINT32,               \
-        .var = NULL,                             \
         .val.u32 = _default,                     \
         .dval.u32 = _default,                    \
-        .read_only = _readonly                   \
+        .read_only = _readonly,                  \
+        .linked_var_list = { NULL,               \
+                             NULL }              \
     }
 
 #define PARAM_FLOAT(_name, _default, _readonly) \
     {                                           \
         .name = #_name,                         \
         .type = PARAM_TYPE_FLOAT,               \
-        .var = NULL,                            \
         .val.f = _default,                      \
         .dval.f = _default,                     \
-        .read_only = _readonly                  \
+        .read_only = _readonly,                 \
+        .linked_var_list = { NULL,              \
+                             NULL }             \
     }
 
 #define PARAM_DOUBLE(_name, _default, _readonly) \
     {                                            \
         .name = #_name,                          \
         .type = PARAM_TYPE_DOUBLE,               \
-        .var = NULL,                             \
         .val.lf = _default,                      \
         .dval.lf = _default,                     \
-        .read_only = _readonly                   \
+        .read_only = _readonly,                  \
+        .linked_var_list = { NULL,               \
+                             NULL }              \
     }
 
 #define PARAM_GROUP_EXPORT                     RT_USED static const param_group_t SECTION("ParamTab")
@@ -171,24 +186,24 @@ typedef struct {
 }
 
 /********************** Helper Macro **********************/
-#define PARAM_VALUE_INT8(_param)   (_param)->val.i8
-#define PARAM_VALUE_UINT8(_param)  (_param)->val.u8
-#define PARAM_VALUE_INT16(_param)  (_param)->val.i16
-#define PARAM_VALUE_UINT16(_param) (_param)->val.u16
-#define PARAM_VALUE_INT32(_param)  (_param)->val.i32
-#define PARAM_VALUE_UINT32(_param) (_param)->val.u32
-#define PARAM_VALUE_FLOAT(_param)  (_param)->val.f
-#define PARAM_VALUE_DOUBLE(_param) (_param)->val.lf
+#define PARAM_VALUE_INT8(_param)              (_param)->val.i8
+#define PARAM_VALUE_UINT8(_param)             (_param)->val.u8
+#define PARAM_VALUE_INT16(_param)             (_param)->val.i16
+#define PARAM_VALUE_UINT16(_param)            (_param)->val.u16
+#define PARAM_VALUE_INT32(_param)             (_param)->val.i32
+#define PARAM_VALUE_UINT32(_param)            (_param)->val.u32
+#define PARAM_VALUE_FLOAT(_param)             (_param)->val.f
+#define PARAM_VALUE_DOUBLE(_param)            (_param)->val.lf
 
-#define PARAM_GET(_group, _name)        param_get_by_full_name(#_group, #_name)
-#define PARAM_GET_INT8(_group, _name)   PARAM_VALUE_INT8(PARAM_GET(_group, _name))
-#define PARAM_GET_UINT8(_group, _name)  PARAM_VALUE_UINT8(PARAM_GET(_group, _name))
-#define PARAM_GET_INT16(_group, _name)  PARAM_VALUE_INT16(PARAM_GET(_group, _name))
-#define PARAM_GET_UINT16(_group, _name) PARAM_VALUE_UINT16(PARAM_GET(_group, _name))
-#define PARAM_GET_INT32(_group, _name)  PARAM_VALUE_INT32(PARAM_GET(_group, _name))
-#define PARAM_GET_UINT32(_group, _name) PARAM_VALUE_UINT32(PARAM_GET(_group, _name))
-#define PARAM_GET_FLOAT(_group, _name)  PARAM_VALUE_FLOAT(PARAM_GET(_group, _name))
-#define PARAM_GET_DOUBLE(_group, _name) PARAM_VALUE_DOUBLE(PARAM_GET(_group, _name))
+#define PARAM_GET(_group, _name)              param_get_by_full_name(#_group, #_name)
+#define PARAM_GET_INT8(_group, _name)         PARAM_VALUE_INT8(PARAM_GET(_group, _name))
+#define PARAM_GET_UINT8(_group, _name)        PARAM_VALUE_UINT8(PARAM_GET(_group, _name))
+#define PARAM_GET_INT16(_group, _name)        PARAM_VALUE_INT16(PARAM_GET(_group, _name))
+#define PARAM_GET_UINT16(_group, _name)       PARAM_VALUE_UINT16(PARAM_GET(_group, _name))
+#define PARAM_GET_INT32(_group, _name)        PARAM_VALUE_INT32(PARAM_GET(_group, _name))
+#define PARAM_GET_UINT32(_group, _name)       PARAM_VALUE_UINT32(PARAM_GET(_group, _name))
+#define PARAM_GET_FLOAT(_group, _name)        PARAM_VALUE_FLOAT(PARAM_GET(_group, _name))
+#define PARAM_GET_DOUBLE(_group, _name)       PARAM_VALUE_DOUBLE(PARAM_GET(_group, _name))
 
 #define PARAM_SET_INT8(_group, _name, _val)   param_set_val(PARAM_GET(_group, _name), &((int8_t) { _val }))
 #define PARAM_SET_UINT8(_group, _name, _val)  param_set_val(PARAM_GET(_group, _name), &((uint8_t) { _val }))
@@ -225,6 +240,7 @@ int16_t param_get_group_count(void);
 fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param));
 fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param));
 fmt_err_t param_link_variable(param_t* param, void* var);
+fmt_err_t param_unlink_variable(param_t* param, void* var);
 
 #ifdef __cplusplus
 }

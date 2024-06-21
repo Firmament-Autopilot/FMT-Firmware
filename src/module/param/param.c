@@ -20,7 +20,7 @@
 #include "module/file_manager/yxml.h"
 #include "module/utils/list.h"
 
-#define TAG "Param"
+#define TAG             "Param"
 
 #define YXML_STACK_SIZE 1024
 
@@ -68,7 +68,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
                 *status = PARAM_PARSE_GROUP_NAME;
                 attr_cnt = 0;
             } else {
-                //TODO
+                // TODO
                 console_printf("parse group name err:%s\n", x->attr);
                 return FMT_ERROR;
             }
@@ -82,7 +82,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
 
         if (r == YXML_ATTREND) {
             group_name[attr_cnt] = '\0';
-            //console_printf("group %s\n", group_name);
+            // console_printf("group %s\n", group_name);
             attr_cnt = 0;
             *status = PARAM_PARSE_GROUP;
         }
@@ -93,14 +93,14 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
             if (strcmp("param", x->elem) == 0) {
                 *status = PARAM_PARSE_PARAM;
             } else {
-                //TODO
+                // TODO
                 console_printf("parse param ele err:%s\n", x->elem);
                 return FMT_ERROR;
             }
         }
 
         if (r == YXML_ELEMEND) {
-            //console_printf("group %s end\n", group_name);
+            // console_printf("group %s end\n", group_name);
             *status = PARAM_PARSE_LIST;
         }
     } break;
@@ -111,7 +111,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
                 *status = PARAM_PARSE_PARAM_NAME;
                 attr_cnt = 0;
             } else {
-                //TODO
+                // TODO
                 console_printf("parse param name err:%s\n", x->attr);
                 return FMT_ERROR;
             }
@@ -119,7 +119,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
 
         if (r == YXML_ELEMEND) {
             *status = PARAM_PARSE_GROUP;
-            //console_printf("param parse end\n");
+            // console_printf("param parse end\n");
         }
     } break;
 
@@ -130,7 +130,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
 
         if (r == YXML_ATTREND) {
             param_name[attr_cnt] = '\0';
-            //console_printf("param %s\n", param_name);
+            // console_printf("param %s\n", param_name);
             attr_cnt = 0;
             *status = PARAM_PARSE_PARAM_VAL;
         }
@@ -142,7 +142,7 @@ static fmt_err_t parse_xml(yxml_t* x, yxml_ret_t r, PARAM_PARSE_STATE* status)
                 *status = PARAM_PARSE_PARAM_VAL_CONTENT;
                 attr_cnt = 0;
             } else {
-                //TODO
+                // TODO
                 console_printf("parse param val err:%s\n", x->elem);
                 return FMT_ERROR;
             }
@@ -181,7 +181,7 @@ static void on_parameter_modify(void* parameter)
 
 /**
  * Get total parameter count.
- * 
+ *
  * @return parameter count.
  */
 int32_t param_get_count(void)
@@ -199,9 +199,9 @@ int32_t param_get_count(void)
 
 /**
  * Get parameter index in the parameter list.
- * 
+ *
  * @param param parameter instance
- *  
+ *
  * @return parameter index (start from 0).
  */
 int32_t param_get_index(const param_t* param)
@@ -229,10 +229,10 @@ int32_t param_get_index(const param_t* param)
 /**
  * Get parameter instance.
  * @note If there are several parameters with the same name but in the different group,
- * this will find the first parameter with the given name. 
- * 
+ * this will find the first parameter with the given name.
+ *
  * @param param_name parameter name
- *  
+ *
  * @return pointer of parameter instance.
  */
 param_t* param_get_by_name(const char* param_name)
@@ -257,10 +257,10 @@ param_t* param_get_by_name(const char* param_name)
 
 /**
  * Get parameter instance.
- * 
+ *
  * @param group_name group name
  * @param param_name parameter name
- *  
+ *
  * @return pointer of parameter instance.
  */
 param_t* param_get_by_full_name(const char* group_name, const char* param_name)
@@ -287,7 +287,7 @@ param_t* param_get_by_full_name(const char* group_name, const char* param_name)
 
 /**
  * @brief Get parameter by index
- * 
+ *
  * @param index Parameter index, start from 0
  * @return param_t* The pointer of parameter instance.
  */
@@ -315,10 +315,10 @@ param_t* param_get_by_index(int32_t index)
 
 /**
  * Set parameter value.
- * 
+ *
  * @param param parameter instance
  * @param val string value to be set. e.g, "12.5", "6"
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_set_str_val(param_t* param, char* val)
@@ -376,11 +376,11 @@ fmt_err_t param_set_str_val(param_t* param, char* val)
 /**
  * Set parameter value with parameter name.
  * @note If there are several parameters with the same name but in the different group,
- * this will find the first parameter with the given name. 
- * 
+ * this will find the first parameter with the given name.
+ *
  * @param param_name parameter name
  * @param val string value to be set. e.g, "12.5", "6"
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_set_str_val_by_name(char* param_name, char* val)
@@ -392,11 +392,11 @@ fmt_err_t param_set_str_val_by_name(char* param_name, char* val)
 
 /**
  * Set parameter value with given group and parameter name.
- * 
+ *
  * @param group_name group name
  * @param param_name parameter name
  * @param val string value to be set. e.g, "12.5", "6"
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_set_str_val_by_full_name(char* group_name, char* param_name, char* val)
@@ -408,15 +408,16 @@ fmt_err_t param_set_str_val_by_full_name(char* group_name, char* param_name, cha
 
 /**
  * Set parameter value.
- * 
+ *
  * @param param parameter instance
  * @param val value to be set
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_set_val(param_t* param, void* val)
 {
     size_t val_size;
+    struct linked_var_t* node;
 
     if (param == NULL) {
         return FMT_EINVAL;
@@ -466,9 +467,13 @@ fmt_err_t param_set_val(param_t* param, void* val)
     OS_ENTER_CRITICAL;
 
     memcpy(&(param->val), val, val_size);
+
     /* also update the linked variable */
-    if (param->var != NULL) {
-        memcpy(param->var, val, val_size);
+    if (param->linked_var_list.next != NULL && param->linked_var_list.prev != NULL) {
+        list_for_each_entry(node, struct linked_var_t, &param->linked_var_list, link)
+        {
+            memcpy(node->var, val, val_size);
+        }
     }
 
     OS_EXIT_CRITICAL;
@@ -483,11 +488,11 @@ fmt_err_t param_set_val(param_t* param, void* val)
 /**
  * Set parameter value with parameter name.
  * @note If there are several parameters with the same name but in the different group,
- * this will find the first parameter with the given name. 
- * 
+ * this will find the first parameter with the given name.
+ *
  * @param param_name parameter name
  * @param val value to be set
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_set_val_by_name(char* param_name, void* val)
@@ -499,11 +504,11 @@ fmt_err_t param_set_val_by_name(char* param_name, void* val)
 
 /**
  * Set parameter value with given group and parameter name.
- * 
+ *
  * @param group_name group name
  * @param param_name parameter name
  * @param val value to be set
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* val)
@@ -515,7 +520,7 @@ fmt_err_t param_set_val_by_full_name(char* group_name, char* param_name, void* v
 
 /**
  * @brief get parameter's group
- * 
+ *
  * @param param parameter object
  * @return param_group_t* group object
  */
@@ -537,7 +542,7 @@ param_group_t* param_get_group(const param_t* param)
 
 /**
  * @brief Find specific group
- * 
+ *
  * @param group_name Group name
  * @return param_group_t* Pointer of group instance, NULL means not found
  */
@@ -557,9 +562,9 @@ param_group_t* param_find_group(const char* group_name)
 
 /**
  * Save current parameters into a file.
- * 
+ *
  * @param path full path of parameter file
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_save(char* path)
@@ -637,9 +642,9 @@ fmt_err_t param_save(char* path)
 
 /**
  * Load parameter from file.
- * 
+ *
  * @param path full path of parameter file
- *  
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_load(char* path)
@@ -685,8 +690,8 @@ fmt_err_t param_load(char* path)
 
 /**
  * @brief Get the param table object
- * 
- * @return param_group_t* 
+ *
+ * @return param_group_t*
  */
 param_group_t* param_get_table(void)
 {
@@ -695,8 +700,8 @@ param_group_t* param_get_table(void)
 
 /**
  * @brief Get the param group num
- * 
- * @return uint16_t 
+ *
+ * @return uint16_t
  */
 int16_t param_get_group_count(void)
 {
@@ -706,16 +711,17 @@ int16_t param_get_group_count(void)
 /**
  * @brief Link parameter with a object. When parameter modified, the linked
  *        object will also be modified.
- * 
+ *
  * @param param parameter object
- * @param obj 
- * @return fmt_err_t 
+ * @param var variable to link
+ * @return fmt_err_t
  */
 fmt_err_t param_link_variable(param_t* param, void* var)
 {
     size_t val_size;
+    struct linked_var_t* node;
 
-    if (param == NULL) {
+    if (param == NULL || var == NULL) {
         return FMT_EINVAL;
     }
 
@@ -756,20 +762,73 @@ fmt_err_t param_link_variable(param_t* param, void* var)
         return FMT_ENOTHANDLE;
     }
 
+    /* init linked head */
+    if (param->linked_var_list.next == NULL && param->linked_var_list.prev == NULL) {
+        param->linked_var_list.next = &param->linked_var_list;
+        param->linked_var_list.prev = &param->linked_var_list;
+    }
+
+    /* check if alread linked before */
+    list_for_each_entry(node, struct linked_var_t, &param->linked_var_list, link)
+    {
+        if (node->var == var) {
+            return FMT_ENOTHANDLE;
+        }
+    }
+
+    node = (struct linked_var_t*)rt_malloc(sizeof(struct linked_var_t));
+    if (node == NULL) {
+        return FMT_ENOMEM;
+    }
+
+    /* init linked variable node */
+    INIT_LIST_HEAD(&node->link);
+    node->var = var;
+
     OS_ENTER_CRITICAL;
-    param->var = var;
+    /* push linked var to list */
+    list_add_tail(&node->link, &param->linked_var_list);
     /* update object value immediately */
-    memcpy(param->var, &param->val, val_size);
+    memcpy(var, &param->val, val_size);
     OS_EXIT_CRITICAL;
 
     return FMT_EOK;
 }
 
 /**
+ * @brief unlink variable
+ *
+ * @param param parameter object
+ * @param var variable to link
+ * @return fmt_err_t
+ */
+fmt_err_t param_unlink_variable(param_t* param, void* var)
+{
+    struct linked_var_t* node;
+
+    if (param == NULL || var == NULL) {
+        return FMT_EINVAL;
+    }
+
+    if (param->linked_var_list.next != NULL && param->linked_var_list.prev != NULL) {
+        list_for_each_entry(node, struct linked_var_t, &param->linked_var_list, link)
+        {
+            if (node->var == var) {
+                list_del(&node->link);
+                rt_free(node);
+                break;
+            }
+        }
+    }
+
+    return FMT_EOK;
+}
+
+/**
  * @brief Register parameter modify callback
- * 
+ *
  * @param on_modify callback function pointer
- * @return fmt_err_t 
+ * @return fmt_err_t
  */
 fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param))
 {
@@ -789,9 +848,9 @@ fmt_err_t register_param_modify_callback(void (*on_modify)(param_t* param))
 
 /**
  * @brief Deregister parameter modify callback
- * 
+ *
  * @param on_modify callback function pointer
- * @return fmt_err_t 
+ * @return fmt_err_t
  */
 fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param))
 {
@@ -812,7 +871,7 @@ fmt_err_t deregister_param_modify_callback(void (*on_modify)(param_t* param))
 
 /**
  * Initialize parameter module.
- * 
+ *
  * @return FMT Errors.
  */
 fmt_err_t param_init(void)
