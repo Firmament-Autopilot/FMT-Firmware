@@ -149,8 +149,8 @@ void control_interface_init(void)
 
     mcn_advertise(MCN_HUB(control_output), control_out_echo);
 
-    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
-    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL);
+    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL);
 
     Control_Out_ID = mlog_get_bus_id("Control_Out");
     FMT_ASSERT(Control_Out_ID >= 0);

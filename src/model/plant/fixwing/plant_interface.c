@@ -297,9 +297,9 @@ void plant_interface_init(void)
 
     mcn_advertise(MCN_HUB(plant_states), plant_states_echo);
 
-    control_out_nod      = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
-    environment_info_nod = mcn_subscribe(MCN_HUB(environment_info), NULL, NULL);
-    states_init_nod      = mcn_subscribe(MCN_HUB(states_init), NULL, NULL);
+    control_out_nod      = mcn_subscribe(MCN_HUB(control_output), NULL);
+    environment_info_nod = mcn_subscribe(MCN_HUB(environment_info), NULL);
+    states_init_nod      = mcn_subscribe(MCN_HUB(states_init), NULL);
 
     Plant_States_ID = mlog_get_bus_id("Plant_States");
     FMT_ASSERT(Plant_States_ID >= 0);

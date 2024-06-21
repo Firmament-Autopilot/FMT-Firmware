@@ -151,12 +151,12 @@ fmt_err_t send_actuator_cmd(void)
 
 fmt_err_t actuator_init(void)
 {
-    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+    _control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
     if (_control_out_nod == NULL) {
         return FMT_ERROR;
     }
 
-    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_trim_channels), NULL, NULL);
+    _rc_channels_nod = mcn_subscribe(MCN_HUB(rc_trim_channels), NULL);
     if (_rc_channels_nod == NULL) {
         return FMT_ERROR;
     }

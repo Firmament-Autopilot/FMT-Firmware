@@ -250,7 +250,7 @@ static int echo_topic(struct optparse options)
         return EXIT_FAILURE;
     }
 
-    McnNode_t node = mcn_subscribe(target_hub, NULL, NULL);
+    McnNode_t node = mcn_subscribe(target_hub, NULL);
 
     if (node == NULL) {
         console_printf("mcn subscribe fail\n");

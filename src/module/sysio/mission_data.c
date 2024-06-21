@@ -387,17 +387,17 @@ fmt_err_t mission_data_init(void)
 {
     FMT_TRY(mcn_advertise(MCN_HUB(mission_data), mission_data_echo));
 
-    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL);
     if (fms_out_nod == NULL) {
         return FMT_ERROR;
     }
 
-    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
     if (pilot_cmd_nod == NULL) {
         return FMT_ERROR;
     }
 
-    gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
+    gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
     if (gcs_cmd_nod == NULL) {
         return FMT_ERROR;
     }

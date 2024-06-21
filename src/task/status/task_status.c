@@ -248,16 +248,16 @@ static void update_pilot_cmd_status(void)
 
 fmt_err_t task_status_init(void)
 {
-    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL);
     RT_ASSERT(fms_out_nod != NULL);
 
-    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
+    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL);
     RT_ASSERT(ins_out_nod != NULL);
 
-    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
     RT_ASSERT(pilot_cmd_nod != NULL);
 
-    mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL, NULL);
+    mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL);
     RT_ASSERT(mission_data_nod != NULL);
 
     return FMT_EOK;

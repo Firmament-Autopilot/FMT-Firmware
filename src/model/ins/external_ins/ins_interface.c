@@ -175,7 +175,7 @@ void ins_interface_init(void)
     /* advertise ins_output topic */
     mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
 
-    ext_state_node = mcn_subscribe(MCN_HUB(external_state), NULL, NULL);
+    ext_state_node = mcn_subscribe(MCN_HUB(external_state), NULL);
     if (ext_state_node == NULL) {
         printf("External_INS fail to subscribe external_state topic!\n");
     }

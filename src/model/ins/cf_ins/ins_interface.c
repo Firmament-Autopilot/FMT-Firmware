@@ -534,14 +534,14 @@ void ins_interface_init(void)
     mcn_advertise(MCN_HUB(ins_output), ins_output_echo);
     mcn_advertise(MCN_HUB(external_pos), external_pos_echo);
 
-    ins_handle.imu_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_imu0), NULL, NULL);
-    ins_handle.mag_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_mag0), NULL, NULL);
-    ins_handle.baro_sub_node_t     = mcn_subscribe(MCN_HUB(sensor_baro), NULL, NULL);
-    ins_handle.gps_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_gps), NULL, NULL);
-    ins_handle.rf_sub_node_t       = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL, NULL);
-    ins_handle.optflow_sub_node_t  = mcn_subscribe(MCN_HUB(sensor_optflow), NULL, NULL);
-    ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL, NULL);
-    ins_handle.ext_pos_sub_node_t  = mcn_subscribe(MCN_HUB(external_pos), NULL, NULL);
+    ins_handle.imu_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_imu0), NULL);
+    ins_handle.mag_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_mag0), NULL);
+    ins_handle.baro_sub_node_t     = mcn_subscribe(MCN_HUB(sensor_baro), NULL);
+    ins_handle.gps_sub_node_t      = mcn_subscribe(MCN_HUB(sensor_gps), NULL);
+    ins_handle.rf_sub_node_t       = mcn_subscribe(MCN_HUB(sensor_rangefinder), NULL);
+    ins_handle.optflow_sub_node_t  = mcn_subscribe(MCN_HUB(sensor_optflow), NULL);
+    ins_handle.airspeed_sub_node_t = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL);
+    ins_handle.ext_pos_sub_node_t  = mcn_subscribe(MCN_HUB(external_pos), NULL);
 
     IMU_ID         = mlog_get_bus_id("IMU");
     MAG_ID         = mlog_get_bus_id("MAG");

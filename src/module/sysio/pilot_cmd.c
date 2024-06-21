@@ -101,7 +101,7 @@ static void mavlink_send_pilot_cmd(void)
     mavlink_system_t        mav_sys = mavproxy_get_system();
 
     if (pilot_cmd_nod == NULL) {
-        pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
+        pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
     }
 
     if (mcn_poll(pilot_cmd_nod)) {

@@ -28,7 +28,6 @@ MCN_DECLARE(sensor_airspeed);
 MCN_DECLARE(rc_channels);
 
 static McnNode_t rc_channels_nod;
-static MCN_EVENT_HANDLE event;
 
 static fmt_err_t get_stick_trim_value(float* thro_trim, float* yaw_trim, float* pitch_trim, float* roll_trim)
 {
@@ -133,15 +132,7 @@ static int rc_calib(struct optparse options)
 
     /* if we did not subscribe the rc_channels topic, subscribe it now  */
     if (rc_channels_nod == NULL) {
-        if (event == NULL) {
-            event = (MCN_EVENT_HANDLE)rt_sem_create("rc_calib", 0, RT_IPC_FLAG_FIFO);
-            if (event == NULL) {
-                printf("fail to create rc_calib event!");
-                return EXIT_FAILURE;
-            }
-        }
-
-        rc_channels_nod = mcn_subscribe(MCN_HUB(rc_channels), event, NULL);
+        rc_channels_nod = mcn_subscribe(MCN_HUB(rc_channels), NULL);
         if (rc_channels_nod == NULL) {
             printf("fail to subscribe rc_channels topic!");
             return EXIT_FAILURE;
@@ -306,12 +297,11 @@ static int airspeed_calib(struct optparse options)
 {
     airspeed_data_t airspeed_report;
     McnNode_t airspeed_sub_node;
-    rt_sem_t event = rt_sem_create("airspeed", 0, RT_IPC_FLAG_FIFO);
     uint16_t cnt = 0;
     float diff_pressure_pa = 0.0f;
     int res = EXIT_SUCCESS;
 
-    airspeed_sub_node = mcn_subscribe(MCN_HUB(sensor_airspeed), event, NULL);
+    airspeed_sub_node = mcn_subscribe(MCN_HUB(sensor_airspeed), NULL);
 
     if (mcn_wait(airspeed_sub_node, TICKS_FROM_MS(100))) {
         /* If we can read airspeed data, first reset offset */
@@ -339,7 +329,6 @@ static int airspeed_calib(struct optparse options)
     }
 
     mcn_unsubscribe(MCN_HUB(sensor_airspeed), airspeed_sub_node);
-    rt_sem_delete(event);
 
     return res;
 }

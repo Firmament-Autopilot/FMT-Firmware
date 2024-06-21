@@ -332,12 +332,12 @@ void fms_interface_init(void)
 
     mcn_advertise(MCN_HUB(fms_output), fms_output_echo);
 
-    pilot_cmd_nod    = mcn_subscribe(MCN_HUB(pilot_cmd), NULL, NULL);
-    gcs_cmd_nod      = mcn_subscribe(MCN_HUB(gcs_cmd), NULL, NULL);
-    auto_cmd_nod     = mcn_subscribe(MCN_HUB(auto_cmd), NULL, NULL);
-    mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL, NULL);
-    ins_out_nod      = mcn_subscribe(MCN_HUB(ins_output), NULL, NULL);
-    control_out_nod  = mcn_subscribe(MCN_HUB(control_output), NULL, NULL);
+    pilot_cmd_nod    = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
+    gcs_cmd_nod      = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
+    auto_cmd_nod     = mcn_subscribe(MCN_HUB(auto_cmd), NULL);
+    mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL);
+    ins_out_nod      = mcn_subscribe(MCN_HUB(ins_output), NULL);
+    control_out_nod  = mcn_subscribe(MCN_HUB(control_output), NULL);
 
     Pilot_Cmd_ID    = mlog_get_bus_id("Pilot_Cmd");
     GCS_Cmd_ID      = mlog_get_bus_id("GCS_Cmd");

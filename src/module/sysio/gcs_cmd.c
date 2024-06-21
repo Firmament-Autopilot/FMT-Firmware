@@ -214,7 +214,7 @@ fmt_err_t gcs_cmd_init(void)
 
     FMT_TRY(mcn_advertise(MCN_HUB(gcs_cmd), gcs_cmd_echo));
 
-    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL, NULL);
+    fms_out_nod = mcn_subscribe(MCN_HUB(fms_output), NULL);
     FMT_ASSERT(fms_out_nod != NULL);
 
     return FMT_EOK;
