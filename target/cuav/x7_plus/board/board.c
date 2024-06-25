@@ -21,8 +21,10 @@
 #include <string.h>
 
 #include "board_device.h"
+#include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
+#include "drv_usbd_cdc.h"
 
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
@@ -39,7 +41,7 @@
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    // { "sd0", "/", "elm", 0, NULL },
+    { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -111,30 +113,43 @@ static void EnablePower(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
+    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
     LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
+    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
 
     /* init gpio */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+    /* VDD_3V3_SENSORS_EN active high */
+    LL_GPIO_SetOutputPin(GPIOE, LL_GPIO_PIN_3);
+
+    /* init gpio */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_4 | LL_GPIO_PIN_5 | LL_GPIO_PIN_7;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-    /* VDD_3V3_Sensor_EN active high */
-    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_1);
-
-    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOI);
+    /* nVDD_5V_PERIPH_EN active high */
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_4);
+    /* VDD_5V_RC_EN active high */
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_5);
+    /* VDD_3V3_SD_CARD_EN active high */
+    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
 
     /* init gpio */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_5 | LL_GPIO_PIN_6 | LL_GPIO_PIN_7;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    LL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-    /* VDD_3V3_Sensor_EN active high */
-    LL_GPIO_ResetOutputPin(GPIOI, LL_GPIO_PIN_7);
-    LL_GPIO_SetOutputPin(GPIOI, LL_GPIO_PIN_6 | LL_GPIO_PIN_5);
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+    /* HS_USB_EN reset to disable HS，use FS instead */
+    LL_GPIO_SetOutputPin(GPIOH, LL_GPIO_PIN_15);
 }
 
 /**
@@ -270,12 +285,17 @@ void bsp_early_initialize(void)
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
-{    
+{
     /* enable on-board power supply */
     EnablePower();
 
+    /* init storage devices */
+    RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
+
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
 
     /* init finsh */
     finsh_system_init();

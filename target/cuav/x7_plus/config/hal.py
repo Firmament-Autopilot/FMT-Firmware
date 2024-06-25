@@ -3,6 +3,8 @@
 HAL = [
     'serial/*.c',
     'systick/*.c',
+    'sd/*.c',
+    'usb/usbd_cdc.c',
 ]
 
 HAL_CPPPATH = []

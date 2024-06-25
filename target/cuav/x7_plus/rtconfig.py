@@ -42,7 +42,7 @@ if PLATFORM == 'gcc':
 
     DEVICE = ' -mcpu=' + CPU + \
         ' -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
-    DEFINES = ' -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32H743xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -DHSE_VALUE="16000000" -DUSER_VECT_TAB_ADDRESS'
+    DEFINES = ' -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32H743xx -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM7 -DARM_MATH_ROUNDING -DUSER_VECT_TAB_ADDRESS'
     CFLAGS = DEVICE + \
         ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '

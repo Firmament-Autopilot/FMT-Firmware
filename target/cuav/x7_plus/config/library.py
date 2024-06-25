@@ -2,6 +2,6 @@
 
 LIBS = [
     # 'cm_backtrace',
-    # 'mavlink',
+    'mavlink',
     # 'dronecan',
 ]

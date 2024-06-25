@@ -1,21 +1,21 @@
 # Modify this file to decide which module are compiled
 
 MODULES = [
-    # 'calibration/*.c',
+    'calibration/*.c',
     'console/*.c',
     'system/*.c',
-    # 'ipc/*.c',
+    'ipc/*.c',
     # 'syscmd/*.c',
     'file_manager/*.c',
-    # 'ftp/*.c',
-    # "log/*.c",
-    # "param/*.c",
-    # 'utils/*.c',
+    'ftp/*.c',
+    "log/*.c",
+    "param/*.c",
+    'utils/*.c',
     # 'mavproxy/*.c',
     # 'sensor/*.c',
     # 'sysio/*.c',
     'toml/*.c',
-    # 'workqueue/*.c',
+    'workqueue/*.c',
     # 'math/*.c',
     # 'filter/*.c',
     # 'fmtio/*.c',
@@ -30,5 +30,5 @@ MODULES += [
 ]
 
 MODULES_CPPPATH = [
-    # 'calibration',
+    'calibration',
 ]
