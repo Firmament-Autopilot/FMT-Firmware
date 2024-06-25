@@ -17,6 +17,7 @@
 
 #include <board.h>
 #include <board_device.h>
+#include <msh.h>
 #include <shell.h>
 #include <string.h>
 
@@ -26,26 +27,41 @@
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 
+#include "default_config.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/mavproxy/mavproxy_config.h"
+#include "module/param/param.h"
+#include "module/pmu/power_manager.h"
+#include "module/sensor/sensor_hub.h"
+#include "module/sysio/actuator_cmd.h"
+#include "module/sysio/actuator_config.h"
+#include "module/sysio/auto_cmd.h"
+#include "module/sysio/gcs_cmd.h"
+#include "module/sysio/mission_data.h"
+#include "module/sysio/pilot_cmd.h"
+#include "module/sysio/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
+#include "module/utils/devmq.h"
+#include "module/workqueue/workqueue_manager.h"
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
-// static toml_table_t* __toml_root_tab = NULL;
+static toml_table_t* __toml_root_tab = NULL;
 
 static void banner_item(const char* name, const char* content, char pad, uint32_t len)
 {
@@ -105,6 +121,65 @@ static void bsp_show_information(void)
     }
 }
 
+static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+{
+    fmt_err_t err = FMT_EOK;
+    toml_table_t* sub_tab;
+    const char* key;
+    const char* raw;
+    char* target;
+    int i;
+
+    if (root_tab == NULL) {
+        return FMT_ERROR;
+    }
+
+    /* target should be defined and match with bsp */
+    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
+        if (toml_rtos(raw, &target) != 0) {
+            console_printf("Error: fail to parse type value\n");
+            err = FMT_ERROR;
+        }
+        if (!MATCH(target, TARGET_NAME)) {
+            /* check if target match */
+            console_printf("Error: target name doesn't match\n");
+            err = FMT_ERROR;
+        }
+        rt_free(target);
+    } else {
+        console_printf("Error: can not find target key\n");
+        err = FMT_ERROR;
+    }
+
+    if (err == FMT_EOK) {
+        /* traverse all sub-table */
+        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
+            /* handle all sub tables */
+            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
+                if (MATCH(key, "console")) {
+                    err = console_toml_config(sub_tab);
+                } else if (MATCH(key, "mavproxy")) {
+                    err = mavproxy_toml_config(sub_tab);
+                } else if (MATCH(key, "pilot-cmd")) {
+                    // err = pilot_cmd_toml_config(sub_tab);
+                } else if (MATCH(key, "actuator")) {
+                    // err = actuator_toml_config(sub_tab);
+                } else {
+                    console_printf("unknown table: %s\n", key);
+                }
+                if (err != FMT_EOK) {
+                    console_printf("fail to parse %s\n", key);
+                }
+            }
+        }
+    }
+
+    /* free toml root table */
+    toml_free(root_tab);
+
+    return err;
+}
+
 /**
  * @brief Enable on-board device power supply
  *
@@ -148,7 +223,7 @@ static void EnablePower(void)
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-    /* HS_USB_EN reset to disable HS，use FS instead */
+    /* HS_USB_EN set to disable HS，use FS instead */
     LL_GPIO_SetOutputPin(GPIOH, LL_GPIO_PIN_15);
 }
 
@@ -289,10 +364,22 @@ void bsp_initialize(void)
     /* enable on-board power supply */
     EnablePower();
 
+    /* start recording boot log */
+    FMT_CHECK(boot_log_init());
+
+    /* init uMCN */
+    FMT_CHECK(mcn_init());
+
+    /* create workqueue */
+    FMT_CHECK(workqueue_manager_init());
+
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
+
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
@@ -305,8 +392,25 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
+    /* toml system configure */
+    __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
+    if (!__toml_root_tab) {
+        /* use default system configuration */
+        __toml_root_tab = toml_parse_config_string(default_conf);
+    }
+    FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
+
     /* show system information */
     bsp_show_information();
+
+    /* execute init script */
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
+
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**

@@ -31,7 +31,7 @@
     UART6 ==> Serial5 (FMU/IO)
 */
 
-// #define USING_UART2
+#define USING_UART2
 // #define USING_UART3
 // #define USING_UART4
 // #define USING_UART6
@@ -459,7 +459,7 @@ static void GPIO_Configuration(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_5 | LL_GPIO_PIN_6;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
@@ -862,19 +862,19 @@ rt_err_t drv_usart_init(void)
     GPIO_Configuration();
 
 #ifdef USING_UART2
-    serial0.ops = &_usart_ops;
-    #ifdef SERIAL0_DEFAULT_CONFIG
-    struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
-    serial1.config = serial0_config;
+    serial1.ops = &_usart_ops;
+    #ifdef SERIAL1_DEFAULT_CONFIG
+    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
+    serial1.config = serial1_config;
     #else
-    serial0.config = config;
+    serial1.config = config;
     #endif
 
     NVIC_Configuration(&uart2);
     /* register serial device */
     rt_err |= hal_serial_register(
-        &serial0,
-        "serial0",
+        &serial1,
+        "serial1",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart2);
 #endif /* USING_UART2 */

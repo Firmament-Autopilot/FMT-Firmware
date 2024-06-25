@@ -40,6 +40,6 @@ target = "CUAV X7+"\n
 	chan = 0\n
 	type = "usb"\n
 	name = "usbd0"\n
-    auto-switch = true
+    auto-switch = true\n
 );
 // clang-format on
