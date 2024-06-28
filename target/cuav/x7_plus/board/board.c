@@ -22,10 +22,12 @@
 #include <string.h>
 
 #include "board_device.h"
+#include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "led.h"
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -354,6 +356,9 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -402,6 +407,9 @@ void bsp_post_initialize(void)
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
+
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     /* show system information */
     bsp_show_information();

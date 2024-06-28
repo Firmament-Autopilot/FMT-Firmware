@@ -18,28 +18,38 @@
 
 #include <firmament.h>
 
-#include "driver/rgb_led/rgb_dronecan.h"
 #include "hal/pin/pin.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define __STM32_PORT(port)  GPIO##port##_BASE
-#define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
+enum {
+    RGB_LED_RED = 0,
+    RGB_LED_GREEN,
+    RGB_LED_BLUE,
+    RGB_LED_YELLOW,
+    RGB_LED_PURPLE,
+    RGB_LED_CYAN,
+    RGB_LED_WHITE,
+};
 
-#define FMU_LED_RED_PIN GET_PIN(E, 12)
+#define __STM32_PORT(port)    GPIO##port##_BASE
+#define GET_PIN(PORTx, PIN)   (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
 
-#define LED_ON(_pin)     led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
-#define LED_OFF(_pin)    led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
-#define LED_TOGGLE(_pin) led_toggle(_pin)
+#define FMU_RGB_LED_RED_PIN   GET_PIN(I, 5)
+#define FMU_RGB_LED_GREEN_PIN GET_PIN(I, 6)
+#define FMU_RGB_LED_BLUE_PIN  GET_PIN(I, 7)
+
+#define LED_ON(_pin)          led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
+#define LED_OFF(_pin)         led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
+#define LED_TOGGLE(_pin)      led_toggle(_pin)
 
 fmt_err_t led_control_init(void);
 fmt_err_t led_init(struct device_pin_mode pin_mode);
 fmt_err_t led_set(struct device_pin_status pin_sta);
 fmt_err_t led_toggle(uint32_t pin);
 fmt_err_t rgb_led_set_color(uint32_t color);
-fmt_err_t rgb_led_set_bright(uint32_t bright);
 
 #ifdef __cplusplus
 }

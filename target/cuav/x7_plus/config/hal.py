@@ -5,6 +5,7 @@ HAL = [
     'systick/*.c',
     'sd/*.c',
     'usb/usbd_cdc.c',
+    'pin/*.c',
 ]
 
 HAL_CPPPATH = []

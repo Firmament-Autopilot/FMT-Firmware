@@ -10,7 +10,7 @@ MEMORY
     DATA (rw) : ORIGIN = 0x24000000, LENGTH =  512k /* 512K sram */
 }
 ENTRY(Reset_Handler)
-_system_stack_size = 0x4000;
+_system_stack_size = 0x1000;
 
 SECTIONS
 {
