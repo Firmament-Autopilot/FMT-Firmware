@@ -236,6 +236,14 @@ static void uart_isr(struct serial_device* serial)
         usart_getc(serial);
         LL_USART_ClearFlag_ORE(uart->uart_device);
     }
+
+    if (LL_USART_IsActiveFlag_FE(uart->uart_device) != RESET) {
+        LL_USART_ClearFlag_FE(uart->uart_device);
+    }
+
+    if (LL_USART_IsActiveFlag_NE(uart->uart_device) != RESET) {
+        LL_USART_ClearFlag_NE(uart->uart_device);
+    }
 }
 
 #ifdef USING_UART1
@@ -424,7 +432,7 @@ static struct serial_device serial0; // FMU Debug
 struct stm32_uart uart7 = {
     .uart_device = UART7,
     .irq = UART7_IRQn,
-    .dma = { 0 }
+    .dma = { 0 },
 };
 
 void UART7_IRQHandler(void)
@@ -590,6 +598,10 @@ static void GPIO_Configuration(void)
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    /* The UART7 RX pin is experiencing unexpected noise,
+        leading to framing errors and interrupt errors.
+        This issue prevents the system from booting normally.
+        To resolve this, we have enabled the pull-up resistor on this pin. */
     GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
@@ -800,8 +812,10 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     /* USART need be disabled first in order to configure it */
     LL_USART_Disable(uart->uart_device);
     LL_USART_Init(uart->uart_device, &USART_InitStructure);
-
+    /* Do no enable fifo as we create fifo in hal serail */
     LL_USART_DisableFIFO(uart->uart_device);
+    /* Disable error interrupt as we don't handle it */
+    // LL_USART_DisableIT_ERROR(uart->uart_device);
 
     LL_USART_ConfigAsyncMode(uart->uart_device);
     LL_USART_Enable(uart->uart_device);

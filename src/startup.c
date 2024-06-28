@@ -290,6 +290,9 @@ void rtthread_startup(void)
 
 int main(void)
 {
+    __set_PRIMASK(0);
+    __set_BASEPRI(0);
+
     /* startup RT-Thread RTOS */
     rtthread_startup();
 
