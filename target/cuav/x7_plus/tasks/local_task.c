@@ -26,7 +26,7 @@ void task_local_entry(void* parameter)
 {
     /* main loop */
     while (1) {
-        LL_GPIO_TogglePin(GPIOI, LL_GPIO_PIN_5);
+        LL_GPIO_TogglePin(GPIOI, LL_GPIO_PIN_6);
         sys_msleep(1000);
     }
 }

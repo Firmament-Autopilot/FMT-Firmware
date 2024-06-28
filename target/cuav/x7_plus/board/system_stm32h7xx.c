@@ -85,7 +85,7 @@
 /*!< Uncomment the following line if you need to relocate the vector table
      anywhere in FLASH BANK1 or AXI SRAM, else the vector table is kept at the automatic
      remap of boot address selected */
-/* #define USER_VECT_TAB_ADDRESS */
+#define USER_VECT_TAB_ADDRESS
 
 #if defined(USER_VECT_TAB_ADDRESS)
 #if defined(DUAL_CORE) && defined(CORE_CM4)

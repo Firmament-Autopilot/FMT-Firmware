@@ -62,7 +62,14 @@ void HAL_SD_AbortCallback(SD_HandleTypeDef* hsd)
 /**
  * @brief This function handles SDMMC1 global interrupt.
  */
-void SDMMC1_IRQHandler(void) { HAL_SD_IRQHandler(&hsd1); }
+void SDMMC1_IRQHandler(void)
+{
+    rt_interrupt_enter();
+
+    HAL_SD_IRQHandler(&hsd1);
+
+    rt_interrupt_leave();
+}
 
 void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
 {

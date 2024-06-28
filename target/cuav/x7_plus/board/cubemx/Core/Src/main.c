@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "sdmmc.h"
 #include "usart.h"
 #include "usb_otg.h"
@@ -69,6 +70,10 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+/* Enable the CPU Cache */
+
+  /* Enable I-Cache---------------------------------------------------------*/
+  SCB_EnableICache();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -88,10 +93,14 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_UART7_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_SDMMC1_SD_Init();
+  MX_USART6_UART_Init();
+  MX_UART4_Init();
+  MX_UART7_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
