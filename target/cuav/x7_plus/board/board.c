@@ -192,9 +192,9 @@ static void EnablePower(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
-    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
-    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
 
     /* init gpio */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
