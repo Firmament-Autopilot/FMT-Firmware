@@ -10,6 +10,7 @@ DRIVERS = [
     # 'gps/gps_dronecan.c',
     # 'rgb_led/rgb_dronecan.c',
     # 'mtd/ramtron.c',
+    'imu/icm20689.c',
 ]
 
 DRIVERS_CPPPATH = []

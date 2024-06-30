@@ -6,6 +6,11 @@ HAL = [
     'sd/*.c',
     'usb/usbd_cdc.c',
     'pin/*.c',
+    'spi/*.c',
+    'gyro/*.c',
+    'accel/*.c',
+    'mag/*.c',
+    'barometer/*.c',
 ]
 
 HAL_CPPPATH = []

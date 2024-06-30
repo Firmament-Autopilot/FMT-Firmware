@@ -22,8 +22,10 @@
 #include <string.h>
 
 #include "board_device.h"
+#include "driver/imu/icm20689.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
+#include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
@@ -359,6 +361,9 @@ void bsp_early_initialize(void)
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());
 
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 
@@ -391,6 +396,17 @@ void bsp_initialize(void)
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
+
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+    FMT_CHECK(advertise_sensor_airspeed(0));
+#else
+    /* init onboard sensors */
+    RT_CHECK(drv_icm20689_init("spi1_dev3", "gyro0", "accel0"));
+#endif
 
     /* init finsh */
     finsh_system_init();

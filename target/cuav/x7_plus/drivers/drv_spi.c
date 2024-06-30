@@ -29,24 +29,12 @@
 #define SPI1_CS2_GPIO_Port GPIOD
 #define SPI1_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
 
-// #define SPI1_CS3_Pin LL_GPIO_PIN_5
-// #define SPI1_CS3_GPIO_Port GPIOC
-// #define SPI1_CS3_CLOCK LL_AHB4_GRP1_PERIPH_GPIOC
-
-// #define SPI1_CS4_Pin       LL_GPIO_PIN_10
-// #define SPI1_CS4_GPIO_Port GPIOG
-// #define SPI1_CS4_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOG
-
-// #define SPI1_CS5_Pin       LL_GPIO_PIN_5
-// #define SPI1_CS5_GPIO_Port GPIOH
-// #define SPI1_CS5_CLOCK     LL_AHB1_GRP1_PERIPH_GPIOH
-
-#define DRV_USE_SPI2
+// #define DRV_USE_SPI2
 #define SPI2_CS1_Pin       LL_GPIO_PIN_10
 #define SPI2_CS1_GPIO_Port GPIOD
 #define SPI2_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOD
 
-#define DRV_USE_SPI4
+// #define DRV_USE_SPI4
 #define SPI4_CS1_Pin       LL_GPIO_PIN_13
 #define SPI4_CS1_GPIO_Port GPIOC
 #define SPI4_CS1_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOC
@@ -54,7 +42,6 @@
 #define SPI4_CS2_Pin       LL_GPIO_PIN_4
 #define SPI4_CS2_GPIO_Port GPIOE
 #define SPI4_CS2_CLOCK     LL_AHB4_GRP1_PERIPH_GPIOE
-
 
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
@@ -103,9 +90,9 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
         uint32_t spi_clock;
         uint32_t max_hz = configuration->max_hz;
 
-        if(stm32_spi_bus->SPI == SPI1 || stm32_spi_bus->SPI == SPI2 || stm32_spi_bus->SPI == SPI3)  {
+        if (stm32_spi_bus->SPI == SPI1 || stm32_spi_bus->SPI == SPI2 || stm32_spi_bus->SPI == SPI3) {
             spi_clock = LL_RCC_GetSPIClockFreq(LL_RCC_SPI123_CLKSOURCE);
-        } else if(stm32_spi_bus->SPI == SPI4 || stm32_spi_bus->SPI == SPI5) {
+        } else if (stm32_spi_bus->SPI == SPI4 || stm32_spi_bus->SPI == SPI5) {
             spi_clock = LL_RCC_GetSPIClockFreq(LL_RCC_SPI45_CLKSOURCE);
         }
 
@@ -282,12 +269,46 @@ static struct rt_spi_ops stm32_spi_ops = { configure, transfer };
  */
 static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32_spi, const char* spi_bus_name)
 {
+    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
     if (SPI == SPI1) {
 #ifdef DRV_USE_SPI1
         stm32_spi->SPI = SPI1;
 
         /* Peripheral clock enable */
         LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
+
+        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
+        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
+        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
+        /**SPI1 GPIO Configuration
+        PG11   ------> SPI1_SCK
+        PD7   ------> SPI1_MOSI
+        PA6   ------> SPI1_MISO
+        */
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_11;
+        GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+        GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+        GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
+        LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
+        GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+        GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+        GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
+        LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
+        GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+        GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+        GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
+        LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
     #ifdef SPI_USE_DMA
 
     #endif
@@ -330,12 +351,10 @@ static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32
 rt_err_t drv_spi_init(void)
 {
     rt_err_t ret;
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    LL_RCC_SetSPIClockSource(LL_RCC_SPI123_CLKSOURCE_PLL1Q);
 
     /* register SPI bus */
-#ifdef DRV_USE_SPI1
-    static struct stm32_spi_bus stm32_spi1;
-#endif
 #ifdef DRV_USE_SPI2
     static struct stm32_spi_bus stm32_spi2;
 #endif
@@ -344,20 +363,7 @@ rt_err_t drv_spi_init(void)
 #endif
 
 #ifdef DRV_USE_SPI1
-    /* SPI1 configure */
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
-    /**SPI1 GPIO Configuration
-    PA5   ------> SPI1_SCK
-    PA6   ------> SPI1_MISO
-    PA7   ------> SPI1_MOSI
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_5 | LL_GPIO_PIN_6 | LL_GPIO_PIN_7;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
-    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    static struct stm32_spi_bus stm32_spi1;
 
     /* register SPI1 bus */
     ret = stm32_spi_register(SPI1, &stm32_spi1, "spi1");
@@ -365,142 +371,31 @@ rt_err_t drv_spi_init(void)
         return ret;
     }
 
-    #ifdef SPI1_CS1_Pin
-    /* attach spi_device_1 to spi1 */
+    /* attach spi1_device_3 (ICM20689) to spi1 */
     {
-        static struct rt_spi_device rt_spi_device_1;
-        static struct stm32_spi_cs stm32_spi_cs_1;
-
-        stm32_spi_cs_1.GPIOx = SPI1_CS1_GPIO_Port;
-        stm32_spi_cs_1.GPIO_Pin = SPI1_CS1_Pin;
-
+        static struct rt_spi_device rt_spi1_device_3;
+        static struct stm32_spi_cs stm32_spi1_cs_3;
         LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-        LL_AHB4_GRP1_EnableClock(SPI1_CS1_CLOCK);
 
-        GPIO_InitStruct.Pin = SPI1_CS1_Pin;
+        stm32_spi1_cs_3.GPIOx = GPIOG;
+        stm32_spi1_cs_3.GPIO_Pin = LL_GPIO_PIN_6;
+
+        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
+
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
         GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
         GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
         GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
         GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(SPI1_CS1_GPIO_Port, &GPIO_InitStruct);
+        LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-        LL_GPIO_SetOutputPin(SPI1_CS1_GPIO_Port, SPI1_CS1_Pin);
+        LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_6);
 
-        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi1_dev1", "spi1", (void*)&stm32_spi_cs_1);
+        ret = rt_spi_bus_attach_device(&rt_spi1_device_3, "spi1_dev3", "spi1", (void*)&stm32_spi1_cs_3);
         if (ret != RT_EOK) {
             return ret;
         }
     }
-    #endif
-    #ifdef SPI1_CS2_Pin
-
-    /* attach spi_device_2 to spi1 */
-    {
-        static struct rt_spi_device rt_spi_device_2;
-        static struct stm32_spi_cs stm32_spi_cs_2;
-
-        stm32_spi_cs_2.GPIOx = SPI1_CS2_GPIO_Port;
-        stm32_spi_cs_2.GPIO_Pin = SPI1_CS2_Pin;
-
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-        LL_AHB4_GRP1_EnableClock(SPI1_CS2_CLOCK);
-
-        GPIO_InitStruct.Pin = SPI1_CS2_Pin;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(SPI1_CS2_GPIO_Port, &GPIO_InitStruct);
-
-        LL_GPIO_SetOutputPin(SPI1_CS2_GPIO_Port, SPI1_CS2_Pin);
-
-        ret = rt_spi_bus_attach_device(&rt_spi_device_2, "spi1_dev2", "spi1", (void*)&stm32_spi_cs_2);
-        if (ret != RT_EOK) {
-            return ret;
-        }
-    }
-    #endif
-    #ifdef SPI1_CS3_Pin
-    /* attach spi_device_3 to spi1 */
-    {
-        static struct rt_spi_device rt_spi_device_3;
-        static struct stm32_spi_cs stm32_spi_cs_3;
-
-        stm32_spi_cs_3.GPIOx = SPI1_CS3_GPIO_Port;
-        stm32_spi_cs_3.GPIO_Pin = SPI1_CS3_Pin;
-
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-        LL_AHB1_GRP1_EnableClock(SPI1_CS3_CLOCK);
-
-        GPIO_InitStruct.Pin = SPI1_CS3_Pin;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(SPI1_CS3_GPIO_Port, &GPIO_InitStruct);
-
-        LL_GPIO_SetOutputPin(SPI1_CS3_GPIO_Port, SPI1_CS3_Pin);
-
-        ret = rt_spi_bus_attach_device(&rt_spi_device_3, "spi1_dev3", "spi1", (void*)&stm32_spi_cs_3);
-        if (ret != RT_EOK) {
-            return ret;
-        }
-    }
-    #endif
-    #ifdef SPI1_CS4_Pin
-    /* attach spi_device_4 to spi1 */
-    {
-        static struct rt_spi_device rt_spi_device_4;
-        static struct stm32_spi_cs stm32_spi_cs_4;
-
-        stm32_spi_cs_4.GPIOx = SPI1_CS4_GPIO_Port;
-        stm32_spi_cs_4.GPIO_Pin = SPI1_CS4_Pin;
-
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-        LL_AHB1_GRP1_EnableClock(SPI1_CS4_CLOCK);
-
-        GPIO_InitStruct.Pin = SPI1_CS4_Pin;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(SPI1_CS4_GPIO_Port, &GPIO_InitStruct);
-
-        LL_GPIO_SetOutputPin(SPI1_CS4_GPIO_Port, SPI1_CS4_Pin);
-
-        ret = rt_spi_bus_attach_device(&rt_spi_device_4, "spi1_dev4", "spi1", (void*)&stm32_spi_cs_4);
-        if (ret != RT_EOK) {
-            return ret;
-        }
-    }
-    #endif
-    #ifdef SPI1_CS5_Pin
-    /* attach spi_device_5 to spi1 */
-    {
-        static struct rt_spi_device rt_spi_device_5;
-        static struct stm32_spi_cs stm32_spi_cs_5;
-
-        stm32_spi_cs_5.GPIOx = SPI1_CS5_GPIO_Port;
-        stm32_spi_cs_5.GPIO_Pin = SPI1_CS5_Pin;
-
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-        LL_AHB1_GRP1_EnableClock(SPI1_CS5_CLOCK);
-
-        GPIO_InitStruct.Pin = SPI1_CS5_Pin;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(SPI1_CS5_GPIO_Port, &GPIO_InitStruct);
-
-        LL_GPIO_SetOutputPin(SPI1_CS5_GPIO_Port, SPI1_CS5_Pin);
-
-        ret = rt_spi_bus_attach_device(&rt_spi_device_5, "spi1_dev5", "spi1", (void*)&stm32_spi_cs_5);
-        if (ret != RT_EOK) {
-            return ret;
-        }
-    }
-    #endif
 #endif
 
 #ifdef DRV_USE_SPI2
