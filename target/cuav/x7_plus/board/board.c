@@ -23,6 +23,7 @@
 
 #include "board_device.h"
 #include "driver/imu/icm20689.h"
+#include "driver/imu/icm42688p.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
@@ -366,9 +367,6 @@ void bsp_early_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
-
-    // __set_PRIMASK(0);
-    // __set_BASEPRI(0);
 }
 
 /* this function will be called after rtos start, which is in thread context */
@@ -405,7 +403,10 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
+    RT_CHECK(drv_icm42688_init("spi1_dev1", "gyro1", "accel1", 0));
     RT_CHECK(drv_icm20689_init("spi1_dev3", "gyro0", "accel0"));
+
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 #endif
 
     /* init finsh */

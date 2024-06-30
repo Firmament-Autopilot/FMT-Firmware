@@ -371,6 +371,29 @@ rt_err_t drv_spi_init(void)
         return ret;
     }
 
+    /* attach spi1_device_1 (ICM42688-P) to spi1 */
+    {
+        static struct rt_spi_device rt_spi1_device_1;
+        static struct stm32_spi_cs stm32_spi1_cs_1;
+        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+        stm32_spi1_cs_1.GPIOx = GPIOF;
+        stm32_spi1_cs_1.GPIO_Pin = LL_GPIO_PIN_10;
+
+        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
+
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_10;
+        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
+        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+        LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+        LL_GPIO_SetOutputPin(GPIOF, LL_GPIO_PIN_10);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_device_1, "spi1_dev1", "spi1", (void*)&stm32_spi1_cs_1));
+    }
+
     /* attach spi1_device_3 (ICM20689) to spi1 */
     {
         static struct rt_spi_device rt_spi1_device_3;
@@ -391,10 +414,7 @@ rt_err_t drv_spi_init(void)
 
         LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_6);
 
-        ret = rt_spi_bus_attach_device(&rt_spi1_device_3, "spi1_dev3", "spi1", (void*)&stm32_spi1_cs_3);
-        if (ret != RT_EOK) {
-            return ret;
-        }
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_device_3, "spi1_dev3", "spi1", (void*)&stm32_spi1_cs_3));
     }
 #endif
 
