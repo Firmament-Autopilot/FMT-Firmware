@@ -311,6 +311,19 @@ void SPI1_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles SPI2 global interrupt.
+  */
+void SPI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI2_IRQn 0 */
+
+  /* USER CODE END SPI2_IRQn 0 */
+  /* USER CODE BEGIN SPI2_IRQn 1 */
+
+  /* USER CODE END SPI2_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART1 global interrupt.
   */
 void USART1_IRQHandler(void)
@@ -388,6 +401,32 @@ void UART7_IRQHandler(void)
   /* USER CODE BEGIN UART7_IRQn 1 */
 
   /* USER CODE END UART7_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI4 global interrupt.
+  */
+void SPI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI4_IRQn 0 */
+
+  /* USER CODE END SPI4_IRQn 0 */
+  /* USER CODE BEGIN SPI4_IRQn 1 */
+
+  /* USER CODE END SPI4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI6 global interrupt.
+  */
+void SPI6_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI6_IRQn 0 */
+
+  /* USER CODE END SPI6_IRQn 0 */
+  /* USER CODE BEGIN SPI6_IRQn 1 */
+
+  /* USER CODE END SPI6_IRQn 1 */
 }
 
 /**

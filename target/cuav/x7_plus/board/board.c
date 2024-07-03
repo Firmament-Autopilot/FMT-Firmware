@@ -24,6 +24,7 @@
 #include "board_device.h"
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm42688p.h"
+#include "driver/mtd/ramtron.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
@@ -63,6 +64,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -386,6 +388,8 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    /* fram init */
+    RT_CHECK(drv_ramtron_init("spi2_dev1"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
@@ -403,8 +407,8 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
-    RT_CHECK(drv_icm42688_init("spi1_dev1", "gyro1", "accel1", 0));
-    RT_CHECK(drv_icm20689_init("spi1_dev3", "gyro0", "accel0"));
+    RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
+    RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 #endif

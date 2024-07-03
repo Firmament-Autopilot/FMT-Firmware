@@ -4,6 +4,7 @@ HAL = [
     'serial/*.c',
     'systick/*.c',
     'sd/*.c',
+    'mtd/*.c',
     'usb/usbd_cdc.c',
     'pin/*.c',
     'spi/*.c',

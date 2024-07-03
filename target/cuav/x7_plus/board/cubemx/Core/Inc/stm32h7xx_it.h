@@ -63,12 +63,15 @@ void DMA1_Stream4_IRQHandler(void);
 void DMA1_Stream5_IRQHandler(void);
 void DMA1_Stream6_IRQHandler(void);
 void SPI1_IRQHandler(void);
+void SPI2_IRQHandler(void);
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
 void DMA1_Stream7_IRQHandler(void);
 void SDMMC1_IRQHandler(void);
 void USART6_IRQHandler(void);
 void UART7_IRQHandler(void);
+void SPI4_IRQHandler(void);
+void SPI6_IRQHandler(void);
 void OTG_FS_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 

@@ -12,6 +12,7 @@ DRIVERS = [
     # 'mtd/ramtron.c',
     'imu/icm20689.c',
     'imu/icm42688p.c',
+    'mtd/ramtron.c',
 ]
 
 DRIVERS_CPPPATH = []
