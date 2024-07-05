@@ -63,7 +63,7 @@ GCS_Cmd_Bus gcs_cmd_get(void)
     return gcs_cmd;
 }
 
-fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float param[5])
+fmt_err_t gcs_set_cmd(FMS_Cmd cmd, float* param)
 {
     uint32_t new_cmd = cmd;
 
