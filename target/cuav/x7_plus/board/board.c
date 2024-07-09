@@ -24,6 +24,7 @@
 #include "board_device.h"
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm42688p.h"
+#include "driver/mag/rm3100.h"
 #include "driver/mtd/ramtron.h"
 #include "drv_gpio.h"
 #include "drv_sdio.h"
@@ -409,6 +410,7 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1"));
+    RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
 #endif

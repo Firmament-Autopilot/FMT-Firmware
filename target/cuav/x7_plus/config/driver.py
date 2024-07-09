@@ -12,6 +12,7 @@ DRIVERS = [
     # 'mtd/ramtron.c',
     'imu/icm20689.c',
     'imu/icm42688p.c',
+    'mag/rm3100.c',
     'mtd/ramtron.c',
 ]
 
