@@ -21,8 +21,8 @@
 #include "module/sysio/actuator_config.h"
 #include "module/toml/toml.h"
 
-#define TOML_DBG_E(...) toml_debug("Actuator", "E", __VA_ARGS__)
-#define TOML_DBG_W(...) toml_debug("Actuator", "W", __VA_ARGS__)
+#define TOML_DBG_E(...)                 toml_debug("Actuator", "E", __VA_ARGS__)
+#define TOML_DBG_W(...)                 toml_debug("Actuator", "W", __VA_ARGS__)
 
 #define ACTUATOR_MAX_DEVICE_NUM         5
 #define ACTUATOR_MAX_MAPPING_NUM        10
@@ -36,6 +36,40 @@ static actuator_device_info actuator_device_list[ACTUATOR_MAX_DEVICE_NUM];
 static uint8_t actuator_device_num;
 static actuator_mapping actuator_mappings_list[ACTUATOR_MAX_MAPPING_NUM];
 static uint8_t actuator_mapping_num;
+
+static void swap(uint8_t* a, uint8_t* b)
+{
+    uint8_t temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static int partition(uint8_t arr[], uint8_t arr2[], int low, int high)
+{
+    uint8_t pivot = arr[high];
+    int i = (low - 1);
+
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+            swap(&arr2[i], &arr2[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    swap(&arr2[i + 1], &arr2[high]);
+    return (i + 1);
+}
+
+static void quickSort(uint8_t arr[], uint8_t arr2[], int low, int high)
+{
+    if (low < high) {
+        int pi = partition(arr, arr2, low, high);
+
+        quickSort(arr, arr2, low, pi - 1);
+        quickSort(arr, arr2, pi + 1, high);
+    }
+}
 
 static fmt_err_t actuator_parse_device(const toml_table_t* curtab, int idx)
 {
@@ -246,6 +280,10 @@ static fmt_err_t actuator_parse_mapping(const toml_table_t* curtab, int idx)
             return FMT_ERROR;
         }
     }
+
+    /* sort to_mapping from small to big */
+    if (actuator_mappings_list[idx].map_size > 0)
+        quickSort(actuator_mappings_list[idx].to_map, actuator_mappings_list[idx].from_map, 0, actuator_mappings_list[idx].map_size - 1);
 
     return err;
 }
