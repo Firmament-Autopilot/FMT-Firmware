@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1111
+ * Model version                  : 1.1115
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 10 15:56:29 2024
+ * C/C++ source code generated on : Thu Jul 18 14:04:35 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -41,7 +41,7 @@ typedef struct {
   real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S25>/Discrete-Time Integrator1' */
   real32_T DiscreteTimeIntegrator_DSTATE_k;/* '<S14>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTAT_l;/* '<S16>/Discrete-Time Integrator1' */
-  uint32_T DiscreteTimeIntegrator_DSTATE_b;/* '<S5>/Discrete-Time Integrator' */
+  uint32_T DiscreteTimeIntegrator_DSTATE_i;/* '<S3>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S23>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S25>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRe_l;/* '<S14>/Discrete-Time Integrator' */
@@ -108,7 +108,7 @@ extern struct_L5ioibiXFlDXzs1YoXn9HB CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S24>/gain1'
                                                     */
 extern struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
-                                                     * Referenced by: '<S5>/Constant'
+                                                     * Referenced by: '<S3>/Constant'
                                                      */
 
 /* Model entry point functions */
@@ -122,7 +122,8 @@ extern RT_MODEL_Controller_T *const Controller_M;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S5>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S3>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S7>/Reshape' : Reshape block reduction
  */
 
 /*-
@@ -142,14 +143,14 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<Root>' : 'Controller'
  * '<S1>'   : 'Controller/Bus_Constructor'
  * '<S2>'   : 'Controller/Controller'
- * '<S3>'   : 'Controller/Bus_Constructor/Compare To Constant'
- * '<S4>'   : 'Controller/Bus_Constructor/Compare To Constant1'
- * '<S5>'   : 'Controller/Bus_Constructor/timestamp'
- * '<S6>'   : 'Controller/Controller/Control_Allocation'
- * '<S7>'   : 'Controller/Controller/Control_Allocation1'
- * '<S8>'   : 'Controller/Controller/Heading_Controller'
- * '<S9>'   : 'Controller/Controller/Speed_Controller'
- * '<S10>'  : 'Controller/Controller/Control_Allocation1/Boat_1'
+ * '<S3>'   : 'Controller/Bus_Constructor/timestamp'
+ * '<S4>'   : 'Controller/Controller/Control_Allocation'
+ * '<S5>'   : 'Controller/Controller/Heading_Controller'
+ * '<S6>'   : 'Controller/Controller/Speed_Controller'
+ * '<S7>'   : 'Controller/Controller/Control_Allocation/Boat_1'
+ * '<S8>'   : 'Controller/Controller/Control_Allocation/Boat_1/Signal_Router'
+ * '<S9>'   : 'Controller/Controller/Control_Allocation/Boat_1/actuator_cmd_routing'
+ * '<S10>'  : 'Controller/Controller/Control_Allocation/Boat_1/Signal_Router/Compare To Constant1'
  * '<S11>'  : 'Controller/Controller/Heading_Controller/Error'
  * '<S12>'  : 'Controller/Controller/Heading_Controller/PID_Controller'
  * '<S13>'  : 'Controller/Controller/Heading_Controller/PID_Controller/D_Control'
