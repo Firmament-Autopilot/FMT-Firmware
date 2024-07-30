@@ -12,6 +12,7 @@ HAL = [
     'accel/*.c',
     'mag/*.c',
     'barometer/*.c',
+    'gps/*.c',
 ]
 
 HAL_CPPPATH = []
