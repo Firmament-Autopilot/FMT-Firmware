@@ -26,7 +26,7 @@
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm42688p.h"
-// #include "driver/mag/ist8310.h"
+#include "driver/mag/ist8310.h"
 #include "driver/mag/rm3100.h"
 #include "driver/mtd/ramtron.h"
 #include "drv_gpio.h"

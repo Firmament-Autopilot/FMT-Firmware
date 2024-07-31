@@ -359,7 +359,7 @@ static struct stm32_i2c_bus stm32_i2c3 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2C4 };
 
 /* i2c device instances */
-static struct rt_i2c_device i2c3_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
+static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
@@ -377,7 +377,7 @@ rt_err_t drv_i2c_init(void)
     RT_TRY(rt_i2c_bus_device_register(&stm32_i2c4.parent, "i2c4"));
 
     /* attach i2c devices */
-    RT_TRY(rt_i2c_bus_attach_device(&i2c3_dev1, "i2c3_dev1", "i2c3", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
 
     return RT_EOK;
 }
