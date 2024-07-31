@@ -13,6 +13,7 @@ HAL = [
     'mag/*.c',
     'barometer/*.c',
     'gps/*.c',
+    'i2c/*.c',
 ]
 
 HAL_CPPPATH = []

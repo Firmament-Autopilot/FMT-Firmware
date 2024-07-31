@@ -4,7 +4,6 @@ DRIVERS = [
     # 'imu/icm20649.c',
     # 'imu/icm20948.c',
     # 'imu/bmi055.c',
-    # 'mag/ist8310.c',
     'barometer/ms5611.c',
     'gps/gps_ubx.c',
     # 'gps/gps_dronecan.c',
@@ -13,6 +12,7 @@ DRIVERS = [
     'imu/icm20689.c',
     'imu/icm42688p.c',
     'mag/rm3100.c',
+    # 'mag/ist8310.c',
     'mtd/ramtron.c',
 ]
 

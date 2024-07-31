@@ -26,9 +26,11 @@
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm42688p.h"
+// #include "driver/mag/ist8310.h"
 #include "driver/mag/rm3100.h"
 #include "driver/mtd/ramtron.h"
 #include "drv_gpio.h"
+#include "drv_i2c.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
@@ -366,6 +368,9 @@ void bsp_early_initialize(void)
 
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());
+
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());

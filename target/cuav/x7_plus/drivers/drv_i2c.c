@@ -14,18 +14,16 @@
  * limitations under the License.
  *****************************************************************************/
 #include "drv_i2c.h"
+#include "hal/i2c/i2c.h"
 
-#if I2C_ENABLE == 1
+#include "stm32h7xx_ll_i2c.h"
 
-    #include "hal/i2c.h"
-    #include "stm32h7xx_ll_i2c.h"
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
-    // #define DRV_DBG(...) console_printf(__VA_ARGS__)
-    #define DRV_DBG(...)
-
-    /* We want to ensure the real-time performace, so the i2c timeout here is
+/* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-    #define I2C_TIMEOUT_US (1000)
+#define I2C_TIMEOUT_US (1000)
 
 struct stm32_i2c_bus {
     struct rt_i2c_bus parent;
@@ -38,20 +36,14 @@ static void i2c1_hw_init(void)
 
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
-    /**I2C1 GPIO Configuration
-  PB8   ------> I2C1_SCL
-  PB9   ------> I2C1_SDA
-  */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
 
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_9;
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
+    /**I2C1 GPIO Configuration
+    PB9   ------> I2C1_SDA
+    PB8   ------> I2C1_SCL
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_9 | LL_GPIO_PIN_8;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
@@ -62,6 +54,10 @@ static void i2c1_hw_init(void)
     /* Peripheral clock enable */
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
 
+    /* USER CODE BEGIN I2C1_Init 1 */
+
+    /* USER CODE END I2C1_Init 1 */
+
     /** I2C Initialization
      */
     LL_I2C_EnableAutoEndMode(I2C1);
@@ -70,7 +66,7 @@ static void i2c1_hw_init(void)
     LL_I2C_DisableGeneralCall(I2C1);
     LL_I2C_EnableClockStretching(I2C1);
     I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x6000030D;
+    I2C_InitStruct.Timing = 0x00B03FDB;
     I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
     I2C_InitStruct.DigitalFilter = 0;
     I2C_InitStruct.OwnAddress1 = 0;
@@ -85,20 +81,14 @@ static void i2c2_hw_init(void)
 
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
-    /**I2C2 GPIO Configuration
-  PF0   ------> I2C2_SDA
-  PF1   ------> I2C2_SCL
-  */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
 
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
+    /**I2C2 GPIO Configuration
+    PF1   ------> I2C2_SCL
+    PF0   ------> I2C2_SDA
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_1 | LL_GPIO_PIN_0;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
@@ -109,6 +99,10 @@ static void i2c2_hw_init(void)
     /* Peripheral clock enable */
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C2);
 
+    /* USER CODE BEGIN I2C2_Init 1 */
+
+    /* USER CODE END I2C2_Init 1 */
+
     /** I2C Initialization
      */
     LL_I2C_EnableAutoEndMode(I2C2);
@@ -117,7 +111,7 @@ static void i2c2_hw_init(void)
     LL_I2C_DisableGeneralCall(I2C2);
     LL_I2C_EnableClockStretching(I2C2);
     I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x6000030D;
+    I2C_InitStruct.Timing = 0x00B03FDB;
     I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
     I2C_InitStruct.DigitalFilter = 0;
     I2C_InitStruct.OwnAddress1 = 0;
@@ -132,20 +126,14 @@ static void i2c3_hw_init(void)
 
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
-    /**I2C3 GPIO Configuration
-  PH8   ------> I2C3_SDA
-  PH7   ------> I2C3_SCL
-  */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
 
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
+    /**I2C3 GPIO Configuration
+    PH8   ------> I2C3_SDA
+    PH7   ------> I2C3_SCL
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_7;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
@@ -156,6 +144,10 @@ static void i2c3_hw_init(void)
     /* Peripheral clock enable */
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C3);
 
+    /* USER CODE BEGIN I2C3_Init 1 */
+
+    /* USER CODE END I2C3_Init 1 */
+
     /** I2C Initialization
      */
     LL_I2C_EnableAutoEndMode(I2C3);
@@ -164,7 +156,7 @@ static void i2c3_hw_init(void)
     LL_I2C_DisableGeneralCall(I2C3);
     LL_I2C_EnableClockStretching(I2C3);
     I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x6000030D;
+    I2C_InitStruct.Timing = 0x00B03FDB;
     I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
     I2C_InitStruct.DigitalFilter = 0;
     I2C_InitStruct.OwnAddress1 = 0;
@@ -179,19 +171,13 @@ static void i2c4_hw_init(void)
 
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
-    /**I2C4 GPIO Configuration
-  PF15   ------> I2C4_SDA
-  PF14   ------> I2C4_SCL
-  */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+    LL_RCC_SetI2CClockSource(LL_RCC_I2C4_CLKSOURCE_PCLK4);
 
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
+    /**I2C4 GPIO Configuration
+    PF14   ------> I2C4_SCL
+    PF15   ------> I2C4_SDA
+    */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
@@ -200,8 +186,20 @@ static void i2c4_hw_init(void)
     GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
     LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
+    LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
     /* Peripheral clock enable */
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C4);
+    LL_APB4_GRP1_EnableClock(LL_APB4_GRP1_PERIPH_I2C4);
+
+    /* USER CODE BEGIN I2C4_Init 1 */
+
+    /* USER CODE END I2C4_Init 1 */
 
     /** I2C Initialization
      */
@@ -211,7 +209,7 @@ static void i2c4_hw_init(void)
     LL_I2C_DisableGeneralCall(I2C4);
     LL_I2C_EnableClockStretching(I2C4);
     I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x6000030D;
+    I2C_InitStruct.Timing = 0x00B03FDB;
     I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
     I2C_InitStruct.DigitalFilter = 0;
     I2C_InitStruct.OwnAddress1 = 0;
@@ -361,20 +359,11 @@ static struct stm32_i2c_bus stm32_i2c3 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2C4 };
 
 /* i2c device instances */
-static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };
-
-static struct rt_i2c_device i2c1_dev2 = { .slave_addr = NCP5623C_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };
-
 static struct rt_i2c_device i2c3_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
 
-#endif
-
 rt_err_t drv_i2c_init(void)
 {
-#if I2C_ENABLE == 1
     /* i2c low-level initialization */
     i2c1_hw_init();
     i2c2_hw_init();
@@ -388,10 +377,7 @@ rt_err_t drv_i2c_init(void)
     RT_TRY(rt_i2c_bus_device_register(&stm32_i2c4.parent, "i2c4"));
 
     /* attach i2c devices */
-    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c3_dev1, "i2c3_dev1", "i2c3", RT_NULL));
 
-#endif
     return RT_EOK;
 }
