@@ -31,6 +31,7 @@
 #include "driver/mtd/ramtron.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
+#include "drv_pwm.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
@@ -374,6 +375,9 @@ void bsp_early_initialize(void)
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
+
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());

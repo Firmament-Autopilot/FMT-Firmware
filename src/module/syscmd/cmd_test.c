@@ -20,6 +20,9 @@ int cmd_test(int argc, char** argv)
 {
     /* add your test code here */
 
+    rt_device_t dev = rt_device_find("main_out");
+    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
+
     return 0;
 }
 FINSH_FUNCTION_EXPORT_ALIAS(cmd_test, __cmd_test, user test command);
