@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2144
+ * Model version                  : 1.2161
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul 24 10:37:11 2024
+ * C/C++ source code generated on : Tue Aug  6 13:42:57 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -260,18 +260,6 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_MotionState_
-#define DEFINED_TYPEDEF_FOR_MotionState_
-
-/* enumeration of motion state */
-typedef enum {
-  MotionState_Hold = 0,                /* Default value */
-  MotionState_Brake,
-  MotionState_Move
-} MotionState;
-
-#endif
-
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 
@@ -464,6 +452,31 @@ typedef enum {
   VehicleStatus_Standby,
   VehicleStatus_Arm
 } VehicleStatus;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_MotionState_
+#define DEFINED_TYPEDEF_FOR_MotionState_
+
+/* enumeration of motion state */
+typedef enum {
+  MotionState_Hold = 0,                /* Default value */
+  MotionState_Brake,
+  MotionState_Move
+} MotionState;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_VTOLState_
+#define DEFINED_TYPEDEF_FOR_VTOLState_
+
+/* enumeration to track active leaf state of FMS/FMS State Machine/Vehicle */
+typedef enum {
+  VTOLState_Multicopter = 0,           /* Default value */
+  VTOLState_ForwardTrans,
+  VTOLState_Fixwing,
+  VTOLState_BackTrans
+} VTOLState;
 
 #endif
 

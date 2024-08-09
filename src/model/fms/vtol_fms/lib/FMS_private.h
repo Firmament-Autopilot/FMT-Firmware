@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2144
+ * Model version                  : 1.2161
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul 24 10:37:11 2024
+ * C/C++ source code generated on : Tue Aug  6 13:42:57 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -75,6 +75,15 @@ extern int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn);
 extern int32_T FMS_pop(Queue_FMS_Cmd *q, Msg_FMS_Cmd *elementOut);
 extern void FMS_initQueue(Queue_FMS_Cmd *q, QueuePolicy_T policy, int32_T
   capacity, Msg_FMS_Cmd *qPool);
+extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
+  rtu_P3_f, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
+extern void FMS_OutRegionRegWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
+  real32_T rtu_P3, real32_T rtu_P3_k, real32_T rty_P[2]);
+extern void FMS_SearchL1RefWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
+  real32_T rtu_P3, real32_T rtu_P3_i, real32_T rtu_L1, real32_T rty_P[2],
+  real32_T *rty_u);
+extern void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T
+  *localC);
 extern void FMS_HoldControl_Init(DW_HoldControl_FMS_T *localDW);
 extern void FMS_HoldControl_Reset(DW_HoldControl_FMS_T *localDW);
 extern void FMS_HoldControl(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
@@ -86,8 +95,20 @@ extern void FMS_MoveControl(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs, const
   ConstB_MoveControl_FMS_T *localC, DW_MoveControl_FMS_T *localDW);
 extern void FMS_MotionStatus_Init(DW_MotionStatus_FMS_T *localDW);
 extern void FMS_MotionStatus_Reset(DW_MotionStatus_FMS_T *localDW);
-extern void FMS_MotionStatus(real32_T rtu_motion_req, real32_T rtu_speed,
+extern void FMS_MotionStatus(boolean_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionStatus_FMS_T *localDW);
+extern void FMS_HoldControl_o_Init(DW_HoldControl_FMS_f_T *localDW);
+extern void FMS_HoldControl_k_Reset(DW_HoldControl_FMS_f_T *localDW);
+extern void FMS_HoldControl_e(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
+  DW_HoldControl_FMS_f_T *localDW);
+extern void FMS_MoveControl_b_Init(DW_MoveControl_FMS_e_T *localDW);
+extern void FMS_MoveControl_e_Reset(DW_MoveControl_FMS_e_T *localDW);
+extern void FMS_MoveControl_c(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
+  const ConstB_MoveControl_FMS_b_T *localC, DW_MoveControl_FMS_e_T *localDW);
+extern void FMS_MotionStatus_a_Init(DW_MotionStatus_FMS_p_T *localDW);
+extern void FMS_MotionStatus_f_Reset(DW_MotionStatus_FMS_p_T *localDW);
+extern void FMS_MotionStatus_g(real32_T rtu_motion_req, real32_T rtu_speed,
+  MotionState *rty_state, DW_MotionStatus_FMS_p_T *localDW);
 extern void FMS_HoldControl_l_Init(DW_HoldControl_FMS_m_T *localDW);
 extern void FMS_HoldControl_i_Reset(DW_HoldControl_FMS_m_T *localDW);
 extern void FMS_HoldControl_i(real32_T rtu_FMS_In, real32_T rtu_FMS_In_g,
@@ -103,8 +124,6 @@ extern void FMS_MotionState_Init(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState_Reset(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState(real32_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionState_FMS_T *localDW);
-extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
-  rtu_P3_g, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
 extern void FMS_HoldControl_d_Init(DW_HoldControl_FMS_c_T *localDW);
 extern void FMS_HoldControl_o_Reset(DW_HoldControl_FMS_c_T *localDW);
 extern void FMS_HoldControl_f(real32_T rtu_FMS_In, real32_T
@@ -114,31 +133,12 @@ extern void FMS_MoveControl_m_Reset(DW_MoveControl_FMS_g_T *localDW);
 extern void FMS_MoveControl_a(real32_T rtu_FMS_In, real32_T
   *rty_psi_rate_cmd_radPs, const ConstB_MoveControl_FMS_e_T *localC,
   DW_MoveControl_FMS_g_T *localDW);
-extern void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T
-  *localC);
-extern void FMS_SearchL1RefWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
-  real32_T rtu_P3, real32_T rtu_P3_h, real32_T rtu_L1, real32_T rty_P[2],
-  real32_T *rty_u);
 extern void FMS_MotionState_f_Init(DW_MotionState_FMS_i_T *localDW);
 extern void FMS_MotionState_g_Reset(DW_MotionState_FMS_i_T *localDW);
 extern void FMS_MotionState_m(boolean_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionState_FMS_i_T *localDW);
 extern void FMS_MoveControl_g(real32_T rtu_FMS_In, real32_T rtu_FMS_In_b,
   uint32_T rtu_FMS_In_o, real32_T *rty_w_cmd_mPs);
-extern void FMS_MotionStatus_c_Init(DW_MotionStatus_FMS_i_T *localDW);
-extern void FMS_MotionStatus_a_Reset(DW_MotionStatus_FMS_i_T *localDW);
-extern void FMS_MotionStatus_k(boolean_T rtu_motion_req, real32_T rtu_speed,
-  MotionState *rty_state, DW_MotionStatus_FMS_i_T *localDW);
-extern void FMS_OutRegionRegWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
-  real32_T rtu_P3, real32_T rtu_P3_k, real32_T rty_P[2]);
-extern void FMS_HoldControl_e_Init(DW_HoldControl_FMS_b_T *localDW);
-extern void FMS_HoldControl_p_Reset(DW_HoldControl_FMS_b_T *localDW);
-extern void FMS_HoldControl_o(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
-  DW_HoldControl_FMS_b_T *localDW);
-extern void FMS_MoveControl_e_Init(DW_MoveControl_FMS_a_T *localDW);
-extern void FMS_MoveControl_d_Reset(DW_MoveControl_FMS_a_T *localDW);
-extern void FMS_MoveControl_o(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
-  const ConstB_MoveControl_FMS_i_T *localC, DW_MoveControl_FMS_a_T *localDW);
 extern void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const
   real_T rtu_llo[2], real_T rtu_href, real_T rtu_psio, real32_T rty_pos[3],
   const ConstB_VehicleArmAutoMissionL_T *localC);

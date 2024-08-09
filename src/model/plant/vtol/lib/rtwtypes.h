@@ -1,11 +1,11 @@
 /*
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'Controller'.
+ * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.141
+ * Model version                  : 1.121
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug  6 13:46:11 2024
+ * C/C++ source code generated on : Tue Jul 30 15:11:08 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -34,7 +34,7 @@
  *                       long:  32
  *                       native word size:  32
  *   Byte ordering: LittleEndian
- *   Signed integer division rounds to: Undefined
+ *   Signed integer division rounds to: Zero
  *   Shift right on a signed integer as arithmetic shift: on
  *=======================================================================*/
 

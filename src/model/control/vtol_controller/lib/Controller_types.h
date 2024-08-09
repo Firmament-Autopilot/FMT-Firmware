@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.67
+ * Model version                  : 1.141
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Jul 24 10:38:02 2024
+ * C/C++ source code generated on : Tue Aug  6 13:46:11 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -202,6 +202,19 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_VTOLState_
+#define DEFINED_TYPEDEF_FOR_VTOLState_
+
+/* enumeration to track active leaf state of FMS/FMS State Machine/Vehicle */
+typedef enum {
+  VTOLState_Multicopter = 0,           /* Default value */
+  VTOLState_ForwardTrans,
+  VTOLState_Fixwing,
+  VTOLState_BackTrans
+} VTOLState;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_struct_biZzOMrg0u3lxrb7POOubF_
 #define DEFINED_TYPEDEF_FOR_struct_biZzOMrg0u3lxrb7POOubF_
 
@@ -212,8 +225,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_04mtDUt8mpbOWDWTaHkfhC_
-#define DEFINED_TYPEDEF_FOR_struct_04mtDUt8mpbOWDWTaHkfhC_
+#ifndef DEFINED_TYPEDEF_FOR_struct_EKLmLRDj4sm70rxKUP2Rn_
+#define DEFINED_TYPEDEF_FOR_struct_EKLmLRDj4sm70rxKUP2Rn_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -288,8 +301,7 @@ typedef struct {
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
-  real32_T VTOL_TRIM_VT;
-} struct_04mtDUt8mpbOWDWTaHkfhC;
+} struct_EKLmLRDj4sm70rxKUP2Rn;
 
 #endif
 
