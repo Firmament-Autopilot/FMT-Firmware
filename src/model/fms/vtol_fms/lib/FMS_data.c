@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2161
+ * Model version                  : 1.2164
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug  6 13:42:57 2024
+ * C/C++ source code generated on : Fri Aug  9 11:38:45 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -157,8 +157,8 @@ const ConstB_FMS_T FMS_ConstB = {
   17U,                                 /* '<S524>/Data Type Conversion1' */
   5U,                                  /* '<S524>/Data Type Conversion2' */
   3U,                                  /* '<S35>/Data Type Conversion1' */
-  9U,                                  /* '<S35>/Data Type Conversion2' */
-  4U,                                  /* '<S35>/Data Type Conversion3' */
+  10U,                                 /* '<S35>/Data Type Conversion2' */
+  5U,                                  /* '<S35>/Data Type Conversion3' */
   3U,                                  /* '<S40>/Data Type Conversion' */
   12U,                                 /* '<S40>/Data Type Conversion1' */
   1U,                                  /* '<S40>/Data Type Conversion2' */

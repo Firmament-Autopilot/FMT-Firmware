@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.121
+ * Model version                  : 1.123
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Jul 30 15:11:08 2024
+ * C/C++ source code generated on : Fri Aug  9 11:41:45 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -441,6 +441,7 @@ const ConstP_Plant_T Plant_ConstP = {
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
    *   '<S5>/Constant'
+   *   '<S11>/Saturation'
    *   '<S68>/Gain'
    *   '<S69>/Constant'
    *   '<S102>/Constant'

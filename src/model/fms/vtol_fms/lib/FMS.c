@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2161
+ * Model version                  : 1.2164
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug  6 13:42:57 2024
+ * C/C++ source code generated on : Fri Aug  9 11:38:45 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -9407,8 +9407,8 @@ void FMS_step(void)
            */
           if (FMS_U.Pilot_Cmd.stick_throttle > 1.0F) {
             rtb_Saturation1_hc = 1.0F;
-          } else if (FMS_U.Pilot_Cmd.stick_throttle < 0.0F) {
-            rtb_Saturation1_hc = 0.0F;
+          } else if (FMS_U.Pilot_Cmd.stick_throttle < -0.2F) {
+            rtb_Saturation1_hc = -0.2F;
           } else {
             rtb_Saturation1_hc = FMS_U.Pilot_Cmd.stick_throttle;
           }
@@ -9765,10 +9765,10 @@ void FMS_step(void)
       FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion1_f;
       FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion2_g;
       FMS_Y.FMS_Out.ctrl_mode = FMS_ConstB.DataTypeConversion3_i;
-      FMS_Y.FMS_Out.phi_cmd = 0.0F;
-      FMS_Y.FMS_Out.theta_cmd = 0.261799395F;
-      FMS_Y.FMS_Out.psi_rate_cmd = 0.0F;
+      FMS_Y.FMS_Out.u_cmd = 0.0F;
+      FMS_Y.FMS_Out.v_cmd = 0.0F;
       FMS_Y.FMS_Out.w_cmd = 0.0F;
+      FMS_Y.FMS_Out.psi_rate_cmd = 0.0F;
 
       /* End of Outputs for SubSystem: '<S31>/BackTrans_Mode' */
       break;
@@ -16860,7 +16860,7 @@ void FMS_step(void)
               /* Outputs for Atomic SubSystem: '<S4>/FMS_Input' */
               if ((sqrtf(FMS_U.INS_Out.vn * FMS_U.INS_Out.vn + FMS_U.INS_Out.ve *
                          FMS_U.INS_Out.ve) <= 0.2) ||
-                  (FMS_DW.temporalCounter_i1_g >= 2000U)) {
+                  (FMS_DW.temporalCounter_i1_g >= 1250U)) {
                 FMS_DW.is_c16_FMS = FMS_IN_Hold_od;
                 rtb_state_fg = MotionState_Hold;
               } else {
