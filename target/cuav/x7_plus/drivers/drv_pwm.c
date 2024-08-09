@@ -19,7 +19,7 @@
 #include "stm32h7xx_ll_rcc.h"
 #include "stm32h7xx_ll_tim.h"
 
-#define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)          console_printf(__VA_ARGS__)
 // #define DRV_DBG(...)
 
 #define PWM_FREQ_50HZ         (50)
@@ -233,6 +233,9 @@ void pwm_timer_init(void)
 
     /* Timer 5 initialization */
 
+    /* Peripheral clock enable */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM5);
+
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
     TIM_InitStruct.Autoreload = PWM_ARR(__pwm_freq) - 1;
@@ -260,6 +263,9 @@ void pwm_timer_init(void)
     LL_TIM_DisableMasterSlaveMode(TIM5);
 
     /* Timer 12 initialization */
+
+    /* Peripheral clock enable */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM12);
 
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
@@ -394,12 +400,12 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH4);
         LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH2);
+        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH3);
         LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH5);
         LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH2);
+        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH3);
         LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH5);
         LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH2);
 
