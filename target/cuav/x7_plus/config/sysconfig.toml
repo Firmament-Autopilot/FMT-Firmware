@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "Cubepilot Cubeorange"
+target = "CUAV X7+"
 
 # Console Configuration
 [console]
@@ -33,7 +33,7 @@ target = "Cubepilot Cubeorange"
     [[mavproxy.devices]]
     chan = 1
     type = "serial"
-    name = "serial3"
+    name = "serial2"
     baudrate = 115200
 
 # Pilot CMD Configuration
@@ -44,8 +44,8 @@ target = "Cubepilot Cubeorange"
     [pilot-cmd.device]
     type = "rc"
     name = "rc"
-    protocol = "sbus"           # sbus or ppm
-    channel-num = 6             # max supported channel: sbus:16, ppm:8
+    protocol = "sbus"           # auto/sbus/ppm
+    channel-num = 8             # max supported channel: sbus:16, ppm:8
     sample-time = 0.05          # sample time in second (-1 for inherit)
     range = [1000,2000]
 
@@ -75,11 +75,6 @@ target = "Cubepilot Cubeorange"
     [[actuator.devices]]
     protocol = "pwm"
     name = "main_out"
-    freq = 400                  # pwm frequency in Hz
-
-    [[actuator.devices]]
-    protocol = "pwm"
-    name = "aux_out"
     freq = 400                  # pwm frequency in Hz
 
     [[actuator.mappings]]

@@ -70,6 +70,7 @@ void DMA1_Stream7_IRQHandler(void);
 void SDMMC1_IRQHandler(void);
 void USART6_IRQHandler(void);
 void UART7_IRQHandler(void);
+void UART8_IRQHandler(void);
 void SPI4_IRQHandler(void);
 void SPI6_IRQHandler(void);
 void OTG_FS_IRQHandler(void);

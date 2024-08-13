@@ -15,6 +15,7 @@ HAL = [
     'gps/*.c',
     'i2c/*.c',
     'actuator/*.c',
+    'rc/*.c',
 ]
 
 HAL_CPPPATH = []
