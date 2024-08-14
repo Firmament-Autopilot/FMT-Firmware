@@ -25,6 +25,7 @@ extern "C" {
 
 // Board Information
 #define TARGET_NAME  "Amov-ICF5"
+#define BSP_CLOCK_SYSTEM_FREQ_HZ         ((uint32_t)200000000)
 
 // Interupt Vector Offset
 #define INT_VECTOR_OFFSET 0x0

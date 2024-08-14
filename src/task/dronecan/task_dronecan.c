@@ -1,9 +1,10 @@
 #include <firmament.h>
-
-#include "drv_timer.h"
 #include "module/dronecan/dronecan.h"
 #include "module/task_manager/task_manager.h"
 #include "task/logger/task_logger.h"
+#ifdef SOC_SERIES_STM32H7
+#include "drv_timer.h"
+#endif
 
 static struct rt_timer timer_dronecan;
 static struct rt_event event_dronecan;

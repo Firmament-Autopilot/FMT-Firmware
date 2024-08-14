@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#define CAN_BAUD_RATE_10000K 10000 /* 1MBit/sec */
 #define CAN_BAUD_RATE_5000K 5000 /* 5000 kBit/sec */
 #define CAN_BAUD_RATE_2000K 2000 /* 2000 kBit/sec */
 #define CAN_BAUD_RATE_1000K 1000 /* 1000 kBit/sec */
@@ -16,7 +16,7 @@ extern "C" {
 /* Default config for serial_configure structure */
 #define CAN_DEFAULT_CONFIG                       \
     {                                            \
-        CAN_BAUD_RATE_1000K, /* 1000 kBit/sec */ \
+        CAN_BAUD_RATE_10000K, /* 1000 kBit/sec */ \
     }
 
 typedef struct {

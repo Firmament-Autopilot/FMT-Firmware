@@ -43,6 +43,7 @@
 #include "drv_pwm.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
+#include "drv_can.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
@@ -52,6 +53,7 @@
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
+#include "module/dronecan/dronecan.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
@@ -292,6 +294,11 @@ void bsp_initialize(void)
 
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
+
+    /* can driver init */
+    RT_CHECK(drv_can_init());
+
+    RT_CHECK(dronecan_init());
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());

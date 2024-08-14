@@ -33,6 +33,7 @@ MODULES = [
     'filter/*.c',
     'task_manager/*.c',
     'pmu/*.c',
+    'dronecan/*.c',
 ]
 
 MODULES_CPPPATH = [
