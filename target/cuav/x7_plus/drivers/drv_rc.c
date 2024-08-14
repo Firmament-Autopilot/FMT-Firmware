@@ -50,18 +50,33 @@ void UART8_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    if (LL_USART_IsActiveFlag_RXNE(UART8) && LL_USART_IsEnabledIT_RXNE(UART8)) {
-        while (LL_USART_IsActiveFlag_RXNE(UART8)) {
+    if (LL_USART_IsActiveFlag_RXNE(UART8)) {
+        do {
             ch = LL_USART_ReceiveData8(UART8);
             sbus_input(&sbus_decoder, &ch, 1);
-        }
+        } while (LL_USART_IsActiveFlag_RXNE(UART8));
 
         /* if it's reading sbus data, we just parse it later */
         if (!sbus_islock(&sbus_decoder)) {
             sbus_update(&sbus_decoder);
         }
-
         /* the RXNE flag is cleared by reading the USART_RDR register */
+    }
+
+    if (LL_USART_IsActiveFlag_IDLE(UART8)) {
+        LL_USART_ClearFlag_IDLE(UART8);
+    }
+
+    if (LL_USART_IsActiveFlag_FE(UART8)) {
+        LL_USART_ClearFlag_FE(UART8);
+    }
+
+    if (LL_USART_IsActiveFlag_PE(UART8)) {
+        LL_USART_ClearFlag_PE(UART8);
+    }
+
+    if (LL_USART_IsActiveFlag_ORE(UART8)) {
+        LL_USART_ClearFlag_ORE(UART8);
     }
 
     /* leave interrupt */
@@ -86,17 +101,17 @@ static rt_err_t sbus_lowlevel_init(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_1 | LL_GPIO_PIN_0;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-    /* UART8 interrupt Init */
-    NVIC_SetPriority(UART8_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
-    NVIC_EnableIRQ(UART8_IRQn);
-
     /* USER CODE BEGIN UART8_Init 1 */
+
+    /* UART8 interrupt Init */
+    NVIC_SetPriority(UART8_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
+    NVIC_EnableIRQ(UART8_IRQn);
 
     /* USER CODE END UART8_Init 1 */
     UART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV1;
@@ -112,8 +127,6 @@ static rt_err_t sbus_lowlevel_init(void)
     LL_USART_SetTXFIFOThreshold(UART8, LL_USART_FIFOTHRESHOLD_1_8);
     LL_USART_SetRXFIFOThreshold(UART8, LL_USART_FIFOTHRESHOLD_1_8);
     LL_USART_SetRXPinLevel(UART8, LL_USART_RXPIN_LEVEL_INVERTED);
-    LL_USART_SetTXPinLevel(UART8, LL_USART_TXPIN_LEVEL_INVERTED);
-    // LL_USART_SetBinaryDataLogic(UART8, LL_USART_BINARY_LOGIC_NEGATIVE);
     LL_USART_SetTXRXSwap(UART8, LL_USART_TXRX_SWAPPED);
     LL_USART_ConfigAsyncMode(UART8);
 

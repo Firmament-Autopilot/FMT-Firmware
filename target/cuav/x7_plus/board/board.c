@@ -453,6 +453,9 @@ void bsp_post_initialize(void)
     /* init rc */
     FMT_CHECK(pilot_cmd_init());
 
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
+
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
