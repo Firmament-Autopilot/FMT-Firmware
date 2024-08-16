@@ -77,6 +77,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(EXTPOS_VEL_GAIN, 1.5, false),
     PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.1, false),
     PARAM_UINT32(EXTPOS_POS_DELAY, 20, false),
+    PARAM_UINT8(EXTPOS_ORIEN_MODE, 1, false),
+    PARAM_FLOAT(EXTPOS_ORIEN, 0.0, false),
     PARAM_UINT8(TERRAIN_TRACK, 1, false),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
@@ -354,6 +356,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_VEL_GAIN), &INS_PARAM.EXTPOS_VEL_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_BIAS_A_GAIN), &INS_PARAM.EXTPOS_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_POS_DELAY), &INS_PARAM.EXTPOS_POS_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_ORIEN_MODE), &INS_PARAM.EXTPOS_ORIEN_MODE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_ORIEN), &INS_PARAM.EXTPOS_ORIEN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, TERRAIN_TRACK), &INS_PARAM.TERRAIN_TRACK));
 }
 
