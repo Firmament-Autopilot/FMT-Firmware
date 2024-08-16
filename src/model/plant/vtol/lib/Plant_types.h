@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.123
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug  9 11:41:45 2024
+ * C/C++ source code generated on : Fri Aug 16 13:57:08 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -198,13 +198,13 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_jgVLU9PsiazymsYzo6u6IH_
-#define DEFINED_TYPEDEF_FOR_struct_jgVLU9PsiazymsYzo6u6IH_
+#ifndef DEFINED_TYPEDEF_FOR_struct_AjtFzZRX3GJyUtRZj0A4oG_
+#define DEFINED_TYPEDEF_FOR_struct_AjtFzZRX3GJyUtRZj0A4oG_
 
 typedef struct {
   uint32_T period;
-  int8_T model_info[15];
-} struct_jgVLU9PsiazymsYzo6u6IH;
+  int8_T model_info[12];
+} struct_AjtFzZRX3GJyUtRZj0A4oG;
 
 #endif
 
