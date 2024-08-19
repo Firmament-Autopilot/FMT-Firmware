@@ -145,6 +145,10 @@ static rt_err_t ppm_lowlevel_init(void)
     LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
     LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
 
+    LL_TIM_EnableCounter(TIM3);
+    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
+    LL_TIM_EnableIT_CC1(TIM3);
+
     return RT_EOK;
 }
 
