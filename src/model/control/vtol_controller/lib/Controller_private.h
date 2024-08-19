@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.196
+ * Model version                  : 1.207
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug  9 11:40:35 2024
+ * C/C++ source code generated on : Mon Aug 19 14:49:22 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -16,6 +16,7 @@
 #ifndef RTW_HEADER_Controller_private_h_
 #define RTW_HEADER_Controller_private_h_
 #include "rtwtypes.h"
+#include "Controller_types.h"
 #endif                                 /* RTW_HEADER_Controller_private_h_ */
 
 /*
