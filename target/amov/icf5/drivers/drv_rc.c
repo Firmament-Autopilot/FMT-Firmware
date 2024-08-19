@@ -37,7 +37,7 @@
             2000,         /* maximal 2000us */ \
     }
 
-static ppm_decoder_t  ppm_decoder;
+static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
 
 void TIMER0_BRK_TIMER8_IRQHandler(void)
@@ -100,8 +100,8 @@ static rt_err_t ppm_lowlevel_init(void)
     /* timer configuration for input capture */
 
     timer_ic_parameter_struct timer_icinitpara;
-    timer_parameter_struct    timer_initpara;
-    uint32_t                  APB1_2_PrescalerValue;
+    timer_parameter_struct timer_initpara;
+    uint32_t APB1_2_PrescalerValue;
 
     rcu_periph_clock_enable(RCU_TIMER8);
 
@@ -113,20 +113,20 @@ static rt_err_t ppm_lowlevel_init(void)
 
     timer_deinit(TIMER8);
     /* TIMER2 configuration */
-    timer_initpara.prescaler         = APB1_2_PrescalerValue;
-    timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
-    timer_initpara.counterdirection  = TIMER_COUNTER_UP;
-    timer_initpara.period            = 65535;
-    timer_initpara.clockdivision     = TIMER_CKDIV_DIV1;
+    timer_initpara.prescaler = APB1_2_PrescalerValue;
+    timer_initpara.alignedmode = TIMER_COUNTER_EDGE;
+    timer_initpara.counterdirection = TIMER_COUNTER_UP;
+    timer_initpara.period = 65535;
+    timer_initpara.clockdivision = TIMER_CKDIV_DIV1;
     timer_initpara.repetitioncounter = 0;
     timer_init(TIMER8, &timer_initpara);
 
     /* TIMER8  configuration */
     /* TIMER8 CH1 input capture configuration */
-    timer_icinitpara.icpolarity  = TIMER_IC_POLARITY_RISING;
+    timer_icinitpara.icpolarity = TIMER_IC_POLARITY_RISING;
     timer_icinitpara.icselection = TIMER_IC_SELECTION_DIRECTTI;
     timer_icinitpara.icprescaler = TIMER_IC_PSC_DIV1;
-    timer_icinitpara.icfilter    = 0x0;
+    timer_icinitpara.icfilter = 0x0;
     timer_input_capture_config(TIMER8, TIMER_CH_1, &timer_icinitpara);
 
     /* auto-reload preload enable */
@@ -199,8 +199,8 @@ static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
 
 static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan_val)
 {
-    uint16_t*   index = chan_val;
-    rt_uint16_t rb    = 0;
+    uint16_t* index = chan_val;
+    rt_uint16_t rb = 0;
 
     if (rc->config.protocol == RC_PROTOCOL_SBUS) {
         if (sbus_data_ready(&sbus_decoder) == 0) {
@@ -243,12 +243,12 @@ const static struct rc_ops rc_ops = {
     .rc_init = NULL,
     .rc_config  = NULL,
     .rc_control = rc_control,
-    .rc_read    = rc_read,
+    .rc_read = rc_read,
 };
 
 static struct rc_device rc_dev = {
     .config = RC_CONFIG_DEFAULT,
-    .ops    = &rc_ops,
+    .ops = &rc_ops,
 };
 
 rt_err_t drv_rc_init(void)

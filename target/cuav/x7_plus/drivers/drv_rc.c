@@ -41,8 +41,24 @@
             2000,         /* maximal 2000us */ \
     }
 
-// static ppm_decoder_t  ppm_decoder;
+static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
+
+void TIM3_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
+        uint32_t ic_val = LL_TIM_IC_GetCaptureCH1(TIM3) + 1;
+        LL_TIM_ClearFlag_CC1(TIM3);
+
+        ppm_update(&ppm_decoder, ic_val);
+    }
+
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
 
 void UART8_IRQHandler(void)
 {
@@ -81,6 +97,55 @@ void UART8_IRQHandler(void)
 
     /* leave interrupt */
     rt_interrupt_leave();
+}
+
+static rt_err_t ppm_lowlevel_init(void)
+{
+    LL_TIM_InitTypeDef TIM_InitStruct = { 0 };
+    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    LL_RCC_ClocksTypeDef RCC_Clock;
+    uint32_t TIM3_Clk;
+
+    LL_RCC_GetSystemClocksFreq(&RCC_Clock);
+    /* APB1 Timer Clock = PCLK1 * 2 */
+    TIM3_Clk = RCC_Clock.PCLK1_Frequency * 2;
+
+    /* Peripheral clock enable */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM3);
+
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
+    /**TIM3 GPIO Configuration
+    PB4 (NJTRST)   ------> TIM3_CH1
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_4;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
+    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    /* TIM3 interrupt Init */
+    NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
+    NVIC_EnableIRQ(TIM3_IRQn);
+
+    /* USER CODE BEGIN TIM3_Init 1 */
+
+    /* USER CODE END TIM3_Init 1 */
+    TIM_InitStruct.Prescaler = TIM3_Clk / PPM_DECODER_FREQUENCY - 1;
+    TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+    TIM_InitStruct.Autoreload = 65535;
+    TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+    LL_TIM_Init(TIM3, &TIM_InitStruct);
+    LL_TIM_EnableARRPreload(TIM3);
+    LL_TIM_SetTriggerOutput(TIM3, LL_TIM_TRGO_RESET);
+    LL_TIM_DisableMasterSlaveMode(TIM3);
+    LL_TIM_IC_SetActiveInput(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
+    LL_TIM_IC_SetPrescaler(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
+    LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
+    LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
+
+    return RT_EOK;
 }
 
 static rt_err_t sbus_lowlevel_init(void)
@@ -153,7 +218,7 @@ static rt_err_t rc_control(rc_dev_t rc, int cmd, void* arg)
         if (rc->config.protocol == RC_PROTOCOL_SBUS) {
             updated = sbus_data_ready(&sbus_decoder);
         } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
-            // updated = ppm_data_ready(&ppm_decoder);
+            updated = ppm_data_ready(&ppm_decoder);
         }
 
         *(uint8_t*)arg = updated;
@@ -187,22 +252,22 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
 
         sbus_unlock(&sbus_decoder);
     } else if (rc->config.protocol == RC_PROTOCOL_PPM) {
-        // if (ppm_data_ready(&ppm_decoder) == 0) {
-        //     /* no data received, just return */
-        //     return 0;
-        // }
+        if (ppm_data_ready(&ppm_decoder) == 0) {
+            /* no data received, just return */
+            return 0;
+        }
 
-        // ppm_lock(&ppm_decoder);
+        ppm_lock(&ppm_decoder);
 
-        // for (uint8_t i = 0; i < min(rc->config.channel_num, ppm_decoder.total_chan); i++) {
-        //     if (chan_mask & (1 << i)) {
-        //         *(index++) = ppm_decoder.ppm_val[i];
-        //         rb += 2;
-        //     }
-        // }
-        // ppm_data_clear(&ppm_decoder);
+        for (uint8_t i = 0; i < min(rc->config.channel_num, ppm_decoder.total_chan); i++) {
+            if (chan_mask & (1 << i)) {
+                *(index++) = ppm_decoder.ppm_val[i];
+                rb += 2;
+            }
+        }
+        ppm_data_clear(&ppm_decoder);
 
-        // ppm_unlock(&ppm_decoder);
+        ppm_unlock(&ppm_decoder);
     }
 
     return rb;
@@ -221,10 +286,10 @@ static struct rc_device rc_dev = {
 
 rt_err_t drv_rc_init(void)
 {
-    // /* init ppm driver */
-    // RT_TRY(ppm_lowlevel_init());
-    // /* init ppm decoder */
-    // RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
+    /* init ppm driver */
+    RT_TRY(ppm_lowlevel_init());
+    /* init ppm decoder */
+    RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
 
     RT_TRY(sbus_lowlevel_init());
     RT_TRY(sbus_decoder_init(&sbus_decoder));
