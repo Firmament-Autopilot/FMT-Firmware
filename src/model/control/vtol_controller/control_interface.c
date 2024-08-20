@@ -65,6 +65,12 @@ static param_t __param_list[] = {
     PARAM_FLOAT(MC_P_Q_CMD_LIM, PI / 2, false),
     PARAM_FLOAT(MC_R_CMD_LIM, PI, false),
     PARAM_FLOAT(MC_HOVER_THRO, 0.5, false),
+    PARAM_FLOAT(FW_AILERON1_DIR, 1.0, false),
+    PARAM_FLOAT(FW_AILERON2_DIR, 1.0, false),
+    PARAM_FLOAT(FW_ELEVATOR_DIR, 1.0, false),
+    PARAM_FLOAT(FW_RUDDER_DIR, 1.0, false),
+    PARAM_FLOAT(FW_TAIL1_DIR, 1.0, false),
+    PARAM_FLOAT(FW_TAIL2_DIR, 1.0, false),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
