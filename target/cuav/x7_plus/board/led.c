@@ -101,6 +101,11 @@ fmt_err_t led_init(struct device_pin_mode pin_mode)
 
 fmt_err_t rgb_led_set_color(uint32_t color)
 {
+    /* First off all leds */
+    LED_OFF(FMU_RGB_LED_RED_PIN);
+    LED_OFF(FMU_RGB_LED_GREEN_PIN);
+    LED_OFF(FMU_RGB_LED_BLUE_PIN);
+
     switch (color) {
     case RGB_LED_RED:
         _r = 1;
