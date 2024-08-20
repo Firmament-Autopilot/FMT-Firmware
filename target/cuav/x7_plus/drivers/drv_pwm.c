@@ -19,8 +19,8 @@
 #include "stm32h7xx_ll_rcc.h"
 #include "stm32h7xx_ll_tim.h"
 
-#define DRV_DBG(...)          console_printf(__VA_ARGS__)
-// #define DRV_DBG(...)
+// #define DRV_DBG(...)          console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
 
 #define PWM_FREQ_50HZ         (50)
 #define PWM_FREQ_125HZ        (125)
