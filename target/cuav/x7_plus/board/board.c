@@ -456,6 +456,12 @@ void bsp_post_initialize(void)
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
 
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
+
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
+
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
