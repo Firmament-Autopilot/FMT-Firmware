@@ -21,8 +21,8 @@
 #define PIN_PORT(pin)     ((uint8_t)(((pin) >> 4) & 0xFu))
 #define PIN_NO(pin)       ((uint8_t)((pin)&0xFu))
 
-#define PIN_STPORT(pin) ((GPIO_TypeDef*)(GPIOA_BASE + (0x400u * PIN_PORT(pin))))
-#define PIN_STPIN(pin)  ((uint16_t)(1u << PIN_NO(pin)))
+#define PIN_STPORT(pin)   ((GPIO_TypeDef*)(GPIOA_BASE + (0x400u * PIN_PORT(pin))))
+#define PIN_STPIN(pin)    ((uint16_t)(1u << PIN_NO(pin)))
 
 #if defined(GPIOZ)
     #define __STM32_PORT_MAX 12u
@@ -182,6 +182,8 @@ rt_err_t drv_gpio_init(void)
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOI);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOJ);
 
     pin_device.ops = &_stm32_pin_ops;
 
