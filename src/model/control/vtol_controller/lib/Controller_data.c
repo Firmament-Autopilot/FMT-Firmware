@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.221
+ * Model version                  : 1.252
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 20 13:42:12 2024
+ * C/C++ source code generated on : Wed Aug 21 11:52:03 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -43,16 +43,16 @@ const ConstB_Controller_T Controller_ConstB = {
   -78.448F,                            /* '<S55>/Gain4' */
   289.0F,                              /* '<S145>/Square1' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S221>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S229>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S223>/Vector Concatenate3' */
-  0.0F,                                /* '<S226>/Zero1' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S231>/Vector Concatenate3' */
+  0.0F,                                /* '<S234>/Zero1' */
   19.1986F,                            /* '<S169>/Gain' */
 
   { 0.0F, 0.0F, 0.0F },                /* '<S161>/Constant' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S201>/Constant' */
-  0.0F,                                /* '<S229>/Zero' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S210>/Constant' */
+  0.0F,                                /* '<S237>/Zero' */
   0.00250000018F,                      /* '<S184>/Square' */
   0.196120009F,                        /* '<S184>/Multiply' */
   -78.448F,                            /* '<S184>/Gain4' */
@@ -92,13 +92,18 @@ const ConstB_Controller_T Controller_ConstB = {
 
 /* Constant parameters (default storage) */
 const ConstP_Controller_T Controller_ConstP = {
+  /* Computed Parameter: Switch_Threshold
+   * Referenced by: '<S189>/Switch'
+   */
+  { { 0UL, 0UL } },
+
   /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
    * Referenced by:
    *   '<S127>/Effective_Matrix'
    *   '<S65>/Effective_Matrix'
    *   '<S71>/Effective_Matrix'
-   *   '<S244>/Effective_Matrix'
    *   '<S252>/Effective_Matrix'
+   *   '<S260>/Effective_Matrix'
    */
   { -1.41421354F, 1.41421354F, 1.41421354F, -1.41421354F, 1.41421354F,
     -1.41421354F, 1.41421354F, -1.41421354F, 1.0F, 1.0F, -1.0F, -1.0F },
@@ -108,7 +113,7 @@ const ConstP_Controller_T Controller_ConstP = {
   /* Pooled Parameter (Expression: [1000 1000 1000 1000 1000 1500 1500 1500 1500]')
    * Referenced by:
    *   '<S66>/Disarm'
-   *   '<S245>/Disarm'
+   *   '<S253>/Disarm'
    */
   { 1000U, 1000U, 1000U, 1000U, 1000U, 1500U, 1500U, 1500U, 1500U },
 
@@ -119,7 +124,7 @@ const ConstP_Controller_T Controller_ConstP = {
   /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000 1500 1500 1500 1500]')
    * Referenced by:
    *   '<S66>/Standby'
-   *   '<S245>/Standby'
+   *   '<S253>/Standby'
    */
   { 1150U, 1150U, 1150U, 1150U, 1000U, 1500U, 1500U, 1500U, 1500U },
 

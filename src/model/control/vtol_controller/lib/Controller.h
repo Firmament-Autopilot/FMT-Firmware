@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.221
+ * Model version                  : 1.252
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 20 13:42:12 2024
+ * C/C++ source code generated on : Wed Aug 21 11:52:03 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -24,6 +24,9 @@
 #endif                                 /* Controller_COMMON_INCLUDES_ */
 
 #include "Controller_types.h"
+
+/* Shared type includes */
+#include "multiword_types.h"
 #include "arm_math.h"
 
 /* Macros for accessing real-time model data structure */
@@ -66,20 +69,21 @@ typedef struct {
   real32_T DiscreteTimeIntegrator1_DSTAT_d;/* '<S59>/Discrete-Time Integrator1' */
   real32_T Integrator_DSTATE_jg[2];    /* '<S42>/Integrator' */
   real32_T Integrator_DSTATE_e;        /* '<S54>/Integrator' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_a;/* '<S191>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTA_a2;/* '<S190>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_j;/* '<S193>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_a;/* '<S192>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTA_a2;/* '<S191>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE_i;       /* '<S183>/Integrator1' */
   real32_T DiscreteTimeIntegrator_DSTATE_b;/* '<S186>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTA_ld;/* '<S188>/Discrete-Time Integrator1' */
-  real32_T _DSTATE;                    /* '<S226>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_e;/* '<S227>/Discrete-Time Integrator1' */
+  real32_T _DSTATE;                    /* '<S234>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_e;/* '<S235>/Discrete-Time Integrator1' */
   real32_T DiscreteTimeIntegrator5_DSTAT_l[3];/* '<S159>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator_DSTATE_d[3];/* '<S161>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTAT_p[3];/* '<S163>/Discrete-Time Integrator1' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_j;/* '<S189>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator_DSTAT_l5[3];/* '<S201>/Discrete-Time Integrator' */
-  real32_T _DSTATE_d;                  /* '<S229>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTA_nm;/* '<S230>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator5_DSTA_jo;/* '<S190>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator_DSTAT_l5[3];/* '<S210>/Discrete-Time Integrator' */
+  real32_T _DSTATE_d;                  /* '<S237>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTA_nm;/* '<S238>/Discrete-Time Integrator1' */
   real32_T Integrator_DSTATE_f;        /* '<S183>/Integrator' */
   uint32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S3>/Discrete-Time Integrator' */
   int8_T SwitchCase1_ActiveSubsystem;  /* '<S8>/Switch Case1' */
@@ -97,13 +101,13 @@ typedef struct {
   int8_T DiscreteTimeIntegrator1_PrevR_a;/* '<S59>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRe_e;/* '<S186>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevR_h;/* '<S188>/Discrete-Time Integrator1' */
-  int8_T _PrevResetState;              /* '<S226>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevR_b;/* '<S227>/Discrete-Time Integrator1' */
+  int8_T _PrevResetState;              /* '<S234>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevR_b;/* '<S235>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRe_o;/* '<S161>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevR_l;/* '<S163>/Discrete-Time Integrator1' */
-  int8_T DiscreteTimeIntegrator_PrevR_ef;/* '<S201>/Discrete-Time Integrator' */
-  int8_T _PrevResetState_e;            /* '<S229>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevR_d;/* '<S230>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevR_ef;/* '<S210>/Discrete-Time Integrator' */
+  int8_T _PrevResetState_e;            /* '<S237>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevR_d;/* '<S238>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S122>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S91>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_j;/* '<S95>/Discrete-Time Integrator1' */
@@ -112,14 +116,15 @@ typedef struct {
   uint8_T DiscreteTimeIntegrator5_IC_LO_e;/* '<S23>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_p;/* '<S27>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_b;/* '<S59>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_L_eo;/* '<S191>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_o;/* '<S190>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_L_ed;/* '<S193>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_L_eo;/* '<S192>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_o;/* '<S191>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_i;/* '<S188>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LO_f;/* '<S227>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LO_f;/* '<S235>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_b;/* '<S159>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_L_h2;/* '<S163>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_g;/* '<S189>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator1_IC_L_h0;/* '<S230>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_g;/* '<S190>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator1_IC_L_h0;/* '<S238>/Discrete-Time Integrator1' */
   boolean_T Relay_Mode;                /* '<S145>/Relay' */
 } DW_Controller_T;
 
@@ -174,13 +179,13 @@ typedef struct {
   const real32_T d_j;                  /* '<S55>/Multiply' */
   const real32_T Gain4_n;              /* '<S55>/Gain4' */
   const real32_T Square1;              /* '<S145>/Square1' */
-  const real32_T VectorConcatenate3_c[3];/* '<S221>/Vector Concatenate3' */
-  const real32_T VectorConcatenate3_o[3];/* '<S223>/Vector Concatenate3' */
-  const real32_T Zero1;                /* '<S226>/Zero1' */
+  const real32_T VectorConcatenate3_c[3];/* '<S229>/Vector Concatenate3' */
+  const real32_T VectorConcatenate3_o[3];/* '<S231>/Vector Concatenate3' */
+  const real32_T Zero1;                /* '<S234>/Zero1' */
   const real32_T Gain_np;              /* '<S169>/Gain' */
   const real32_T Constant_j[3];        /* '<S161>/Constant' */
-  const real32_T Constant_c[3];        /* '<S201>/Constant' */
-  const real32_T Zero;                 /* '<S229>/Zero' */
+  const real32_T Constant_c[3];        /* '<S210>/Constant' */
+  const real32_T Zero;                 /* '<S237>/Zero' */
   const real32_T Square_h2;            /* '<S184>/Square' */
   const real32_T d_m;                  /* '<S184>/Multiply' */
   const real32_T Gain4_o;              /* '<S184>/Gain4' */
@@ -203,13 +208,18 @@ typedef struct {
 
 /* Constant parameters (default storage) */
 typedef struct {
+  /* Computed Parameter: Switch_Threshold
+   * Referenced by: '<S189>/Switch'
+   */
+  uint64m_T Switch_Threshold;
+
   /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
    * Referenced by:
    *   '<S127>/Effective_Matrix'
    *   '<S65>/Effective_Matrix'
    *   '<S71>/Effective_Matrix'
-   *   '<S244>/Effective_Matrix'
    *   '<S252>/Effective_Matrix'
+   *   '<S260>/Effective_Matrix'
    */
   real32_T pooled16[12];
 
@@ -218,9 +228,9 @@ typedef struct {
   /* Pooled Parameter (Expression: [1000 1000 1000 1000 1000 1500 1500 1500 1500]')
    * Referenced by:
    *   '<S66>/Disarm'
-   *   '<S245>/Disarm'
+   *   '<S253>/Disarm'
    */
-  uint16_T pooled37[9];
+  uint16_T pooled38[9];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
@@ -230,9 +240,9 @@ typedef struct {
   /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000 1500 1500 1500 1500]')
    * Referenced by:
    *   '<S66>/Standby'
-   *   '<S245>/Standby'
+   *   '<S253>/Standby'
    */
-  uint16_T pooled38[9];
+  uint16_T pooled39[9];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
@@ -290,24 +300,24 @@ extern struct_66Lz2XM6ObrCrxI96MstFF CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S9>/mc_hover_throttle'
                                                     *   '<S150>/mc_hover_throttle'
-                                                    *   '<S193>/Saturation'
-                                                    *   '<S194>/Gain'
-                                                    *   '<S194>/Gain1'
-                                                    *   '<S194>/balabnce_ratio2'
-                                                    *   '<S194>/balance_ratio'
-                                                    *   '<S194>/pitch_ff'
-                                                    *   '<S194>/thorttle_ff'
-                                                    *   '<S194>/ucmd2pitch'
-                                                    *   '<S194>/ucmd2thor'
-                                                    *   '<S194>/wcmd2pitch'
-                                                    *   '<S194>/wcmd2thor'
+                                                    *   '<S202>/Saturation'
+                                                    *   '<S203>/Gain'
+                                                    *   '<S203>/Gain1'
+                                                    *   '<S203>/balabnce_ratio2'
+                                                    *   '<S203>/balance_ratio'
+                                                    *   '<S203>/pitch_ff'
+                                                    *   '<S203>/thorttle_ff'
+                                                    *   '<S203>/ucmd2pitch'
+                                                    *   '<S203>/ucmd2thor'
+                                                    *   '<S203>/wcmd2pitch'
+                                                    *   '<S203>/wcmd2thor'
                                                     *   '<S110>/Saturation'
                                                     *   '<S130>/hover_throttle'
-                                                    *   '<S195>/FF'
-                                                    *   '<S195>/FF_limit'
-                                                    *   '<S195>/PI_limit'
-                                                    *   '<S214>/P_control'
-                                                    *   '<S215>/P_control'
+                                                    *   '<S204>/FF'
+                                                    *   '<S204>/FF_limit'
+                                                    *   '<S204>/PI_limit'
+                                                    *   '<S223>/P_control'
+                                                    *   '<S224>/P_control'
                                                     *   '<S38>/Saturation'
                                                     *   '<S70>/Bias1'
                                                     *   '<S70>/Bias2'
@@ -328,17 +338,17 @@ extern struct_66Lz2XM6ObrCrxI96MstFF CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S142>/kp'
                                                     *   '<S155>/Saturation'
                                                     *   '<S155>/Saturation1'
-                                                    *   '<S199>/trim_speed'
-                                                    *   '<S200>/trim_speed'
-                                                    *   '<S225>/Gain'
-                                                    *   '<S226>/ '
-                                                    *   '<S226>/Gain3'
-                                                    *   '<S228>/Gain'
-                                                    *   '<S229>/Gain'
-                                                    *   '<S251>/Bias1'
-                                                    *   '<S251>/Bias2'
-                                                    *   '<S251>/Bias3'
-                                                    *   '<S251>/Bias4'
+                                                    *   '<S208>/trim_speed'
+                                                    *   '<S209>/trim_speed'
+                                                    *   '<S233>/Gain'
+                                                    *   '<S234>/ '
+                                                    *   '<S234>/Gain3'
+                                                    *   '<S236>/Gain'
+                                                    *   '<S237>/Gain'
+                                                    *   '<S259>/Bias1'
+                                                    *   '<S259>/Bias2'
+                                                    *   '<S259>/Bias3'
+                                                    *   '<S259>/Bias4'
                                                     *   '<S18>/Saturation'
                                                     *   '<S18>/Saturation1'
                                                     *   '<S46>/kd'
@@ -380,35 +390,35 @@ extern struct_66Lz2XM6ObrCrxI96MstFF CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S186>/ki'
                                                     *   '<S186>/Discrete-Time Integrator'
                                                     *   '<S187>/kp'
-                                                    *   '<S201>/gain1'
-                                                    *   '<S201>/gain2'
-                                                    *   '<S201>/gain3'
-                                                    *   '<S201>/Discrete-Time Integrator'
-                                                    *   '<S202>/gain1'
-                                                    *   '<S202>/gain2'
-                                                    *   '<S202>/gain3'
-                                                    *   '<S206>/Pitch Offset'
-                                                    *   '<S206>/Saturation'
-                                                    *   '<S207>/Constant1'
-                                                    *   '<S207>/Constant2'
-                                                    *   '<S246>/Constant1'
-                                                    *   '<S246>/Constant12'
-                                                    *   '<S246>/Constant2'
-                                                    *   '<S246>/Constant7'
+                                                    *   '<S210>/gain1'
+                                                    *   '<S210>/gain2'
+                                                    *   '<S210>/gain3'
+                                                    *   '<S210>/Discrete-Time Integrator'
+                                                    *   '<S211>/gain1'
+                                                    *   '<S211>/gain2'
+                                                    *   '<S211>/gain3'
+                                                    *   '<S215>/Pitch Offset'
+                                                    *   '<S215>/Saturation'
+                                                    *   '<S216>/Constant1'
+                                                    *   '<S216>/Constant2'
                                                     *   '<S254>/Constant1'
-                                                    *   '<S254>/Constant11'
                                                     *   '<S254>/Constant12'
                                                     *   '<S254>/Constant2'
                                                     *   '<S254>/Constant7'
-                                                    *   '<S254>/Constant8'
-                                                    *   '<S259>/Bias'
-                                                    *   '<S259>/Bias1'
-                                                    *   '<S259>/Bias2'
-                                                    *   '<S259>/Bias3'
-                                                    *   '<S260>/Bias'
-                                                    *   '<S260>/Bias1'
-                                                    *   '<S260>/Bias2'
-                                                    *   '<S260>/Bias3'
+                                                    *   '<S262>/Constant1'
+                                                    *   '<S262>/Constant11'
+                                                    *   '<S262>/Constant12'
+                                                    *   '<S262>/Constant2'
+                                                    *   '<S262>/Constant7'
+                                                    *   '<S262>/Constant8'
+                                                    *   '<S267>/Bias'
+                                                    *   '<S267>/Bias1'
+                                                    *   '<S267>/Bias2'
+                                                    *   '<S267>/Bias3'
+                                                    *   '<S268>/Bias'
+                                                    *   '<S268>/Bias1'
+                                                    *   '<S268>/Bias2'
+                                                    *   '<S268>/Bias3'
                                                     *   '<S33>/Constant1'
                                                     *   '<S33>/Constant2'
                                                     *   '<S92>/gain1'
@@ -474,14 +484,15 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * Block '<S136>/Signal Copy1' : Eliminate redundant signal conversion block
  * Block '<S159>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S181>/Signal Copy1' : Eliminate redundant signal conversion block
- * Block '<S189>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S193>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S190>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S191>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S196>/Reshape' : Reshape block reduction
- * Block '<S205>/Logical Operator1' : Eliminated due to no operation
- * Block '<S213>/Logical Operator' : Eliminated due to no operation
- * Block '<S241>/Reshape' : Reshape block reduction
- * Block '<S242>/Reshape' : Reshape block reduction
+ * Block '<S192>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S205>/Reshape' : Reshape block reduction
+ * Block '<S214>/Logical Operator1' : Eliminated due to no operation
+ * Block '<S222>/Logical Operator' : Eliminated due to no operation
+ * Block '<S249>/Reshape' : Reshape block reduction
+ * Block '<S250>/Reshape' : Reshape block reduction
  */
 
 /*-
@@ -687,78 +698,86 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S186>' : 'Controller/Controller/VTOL_Controller/Aux_MC_Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/I_Control'
  * '<S187>' : 'Controller/Controller/VTOL_Controller/Aux_MC_Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/P_Control'
  * '<S188>' : 'Controller/Controller/VTOL_Controller/Aux_MC_Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/D_Control/DT Filter'
- * '<S189>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/First Order LPF'
- * '<S190>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/First Order LPF1'
- * '<S191>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/First Order LPF2'
- * '<S192>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control'
- * '<S193>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Lateral_Control'
- * '<S194>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core'
- * '<S195>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control'
- * '<S196>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control'
- * '<S197>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/Euler To Angle Rate'
- * '<S198>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_Control'
- * '<S199>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_scaler'
- * '<S200>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/VT_scaler'
- * '<S201>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_Control/I_Control'
- * '<S202>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_Control/P_Control'
- * '<S203>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller'
- * '<S204>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Heading_Controller'
- * '<S205>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select'
- * '<S206>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller/Error'
- * '<S207>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller/P_Controller'
- * '<S208>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller/Error/Bus_Select'
- * '<S209>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Heading_Controller/Turning_Coordination'
- * '<S210>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant'
- * '<S211>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant1'
- * '<S212>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control'
- * '<S213>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/phi_cmd'
- * '<S214>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out'
- * '<S215>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out'
- * '<S216>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control'
- * '<S217>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Flight_Path_Angle'
- * '<S218>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Subsystem2'
- * '<S219>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Target_Flight_Path_Angle'
- * '<S220>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Flight_Path_Angle/Psi To DCM'
- * '<S221>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Flight_Path_Angle/Psi To DCM/Rotation Matrix Z'
- * '<S222>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Target_Flight_Path_Angle/Psi To DCM'
- * '<S223>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Target_Flight_Path_Angle/Psi To DCM/Rotation Matrix Z'
- * '<S224>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/phi_cmd/Compare To Constant'
- * '<S225>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out/D_control'
- * '<S226>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out/I_control'
- * '<S227>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out/D_control/DT Filter'
- * '<S228>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out/D_control'
- * '<S229>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out/I_control'
- * '<S230>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
- * '<S231>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed'
- * '<S232>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Compare To Constant'
- * '<S233>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM'
- * '<S234>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/Quaternion Normalize'
- * '<S235>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/column_1'
- * '<S236>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/column_2'
- * '<S237>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/column_3'
- * '<S238>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
- * '<S239>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/Bus_Construct'
- * '<S240>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation'
- * '<S241>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1'
- * '<S242>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2'
- * '<S243>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation'
- * '<S244>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation'
- * '<S245>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing'
- * '<S246>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/FW_Effective_Matrix'
- * '<S247>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select'
- * '<S248>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/fw_throttle_mapping'
- * '<S249>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select/Compare To Constant'
- * '<S250>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/throttle_mapping'
- * '<S251>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation'
- * '<S252>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation'
- * '<S253>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing'
- * '<S254>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/FW_Effective_Matrix'
- * '<S255>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select'
- * '<S256>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/fw_throttle_mapping'
- * '<S257>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select/Compare To Constant'
- * '<S258>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation/throttle_mapping'
- * '<S259>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Disarm'
- * '<S260>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Standby'
+ * '<S189>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed'
+ * '<S190>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/First Order LPF'
+ * '<S191>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/First Order LPF1'
+ * '<S192>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/First Order LPF2'
+ * '<S193>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/First Order LPF3'
+ * '<S194>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction'
+ * '<S195>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction/Quaternion To DCM'
+ * '<S196>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction/Quaternion To DCM/Quaternion Normalize'
+ * '<S197>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction/Quaternion To DCM/column_1'
+ * '<S198>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction/Quaternion To DCM/column_2'
+ * '<S199>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction/Quaternion To DCM/column_3'
+ * '<S200>' : 'Controller/Controller/VTOL_Controller/Effective_Factor/Airspeed/Fly_Direction/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S201>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control'
+ * '<S202>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Lateral_Control'
+ * '<S203>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core'
+ * '<S204>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control'
+ * '<S205>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control'
+ * '<S206>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/Euler To Angle Rate'
+ * '<S207>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_Control'
+ * '<S208>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_scaler'
+ * '<S209>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/VT_scaler'
+ * '<S210>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_Control/I_Control'
+ * '<S211>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Innerloop_Rate_Control/PI_Control/P_Control'
+ * '<S212>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller'
+ * '<S213>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Heading_Controller'
+ * '<S214>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select'
+ * '<S215>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller/Error'
+ * '<S216>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller/P_Controller'
+ * '<S217>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Attitude_Controller/Error/Bus_Select'
+ * '<S218>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Heading_Controller/Turning_Coordination'
+ * '<S219>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant'
+ * '<S220>' : 'Controller/Controller/VTOL_Controller/FW_Controller/Attitude_Control/Outloop_Angle_Control/Signal_Select/Compare To Constant1'
+ * '<S221>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control'
+ * '<S222>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/phi_cmd'
+ * '<S223>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out'
+ * '<S224>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out'
+ * '<S225>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control'
+ * '<S226>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Flight_Path_Angle'
+ * '<S227>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Target_Flight_Path_Angle'
+ * '<S228>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Flight_Path_Angle/Psi To DCM'
+ * '<S229>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Flight_Path_Angle/Psi To DCM/Rotation Matrix Z'
+ * '<S230>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Target_Flight_Path_Angle/Psi To DCM'
+ * '<S231>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/path_angle_control/Target_Flight_Path_Angle/Psi To DCM/Rotation Matrix Z'
+ * '<S232>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/phi_cmd/Compare To Constant'
+ * '<S233>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out/D_control'
+ * '<S234>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out/I_control'
+ * '<S235>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/pitch_pid_out/D_control/DT Filter'
+ * '<S236>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out/D_control'
+ * '<S237>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out/I_control'
+ * '<S238>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/thorttle_pid_out/D_control/DT Filter'
+ * '<S239>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed'
+ * '<S240>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Compare To Constant'
+ * '<S241>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM'
+ * '<S242>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/Quaternion Normalize'
+ * '<S243>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/column_1'
+ * '<S244>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/column_2'
+ * '<S245>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/column_3'
+ * '<S246>' : 'Controller/Controller/VTOL_Controller/FW_Controller/TECS_Core/velocity_control/Flight_Speed/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S247>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/Bus_Construct'
+ * '<S248>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation'
+ * '<S249>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1'
+ * '<S250>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2'
+ * '<S251>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation'
+ * '<S252>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation'
+ * '<S253>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing'
+ * '<S254>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/FW_Effective_Matrix'
+ * '<S255>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select'
+ * '<S256>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/fw_throttle_mapping'
+ * '<S257>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select/Compare To Constant'
+ * '<S258>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/throttle_mapping'
+ * '<S259>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation'
+ * '<S260>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation'
+ * '<S261>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing'
+ * '<S262>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/FW_Effective_Matrix'
+ * '<S263>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select'
+ * '<S264>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/fw_throttle_mapping'
+ * '<S265>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select/Compare To Constant'
+ * '<S266>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation/throttle_mapping'
+ * '<S267>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Disarm'
+ * '<S268>' : 'Controller/Controller/VTOL_Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Standby'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

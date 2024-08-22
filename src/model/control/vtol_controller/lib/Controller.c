@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.221
+ * Model version                  : 1.252
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 20 13:42:12 2024
+ * C/C++ source code generated on : Wed Aug 21 11:52:03 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -112,24 +112,24 @@ struct_66Lz2XM6ObrCrxI96MstFF CONTROL_PARAM = {
                                         * Referenced by:
                                         *   '<S9>/mc_hover_throttle'
                                         *   '<S150>/mc_hover_throttle'
-                                        *   '<S193>/Saturation'
-                                        *   '<S194>/Gain'
-                                        *   '<S194>/Gain1'
-                                        *   '<S194>/balabnce_ratio2'
-                                        *   '<S194>/balance_ratio'
-                                        *   '<S194>/pitch_ff'
-                                        *   '<S194>/thorttle_ff'
-                                        *   '<S194>/ucmd2pitch'
-                                        *   '<S194>/ucmd2thor'
-                                        *   '<S194>/wcmd2pitch'
-                                        *   '<S194>/wcmd2thor'
+                                        *   '<S202>/Saturation'
+                                        *   '<S203>/Gain'
+                                        *   '<S203>/Gain1'
+                                        *   '<S203>/balabnce_ratio2'
+                                        *   '<S203>/balance_ratio'
+                                        *   '<S203>/pitch_ff'
+                                        *   '<S203>/thorttle_ff'
+                                        *   '<S203>/ucmd2pitch'
+                                        *   '<S203>/ucmd2thor'
+                                        *   '<S203>/wcmd2pitch'
+                                        *   '<S203>/wcmd2thor'
                                         *   '<S110>/Saturation'
                                         *   '<S130>/hover_throttle'
-                                        *   '<S195>/FF'
-                                        *   '<S195>/FF_limit'
-                                        *   '<S195>/PI_limit'
-                                        *   '<S214>/P_control'
-                                        *   '<S215>/P_control'
+                                        *   '<S204>/FF'
+                                        *   '<S204>/FF_limit'
+                                        *   '<S204>/PI_limit'
+                                        *   '<S223>/P_control'
+                                        *   '<S224>/P_control'
                                         *   '<S38>/Saturation'
                                         *   '<S70>/Bias1'
                                         *   '<S70>/Bias2'
@@ -150,17 +150,17 @@ struct_66Lz2XM6ObrCrxI96MstFF CONTROL_PARAM = {
                                         *   '<S142>/kp'
                                         *   '<S155>/Saturation'
                                         *   '<S155>/Saturation1'
-                                        *   '<S199>/trim_speed'
-                                        *   '<S200>/trim_speed'
-                                        *   '<S225>/Gain'
-                                        *   '<S226>/ '
-                                        *   '<S226>/Gain3'
-                                        *   '<S228>/Gain'
-                                        *   '<S229>/Gain'
-                                        *   '<S251>/Bias1'
-                                        *   '<S251>/Bias2'
-                                        *   '<S251>/Bias3'
-                                        *   '<S251>/Bias4'
+                                        *   '<S208>/trim_speed'
+                                        *   '<S209>/trim_speed'
+                                        *   '<S233>/Gain'
+                                        *   '<S234>/ '
+                                        *   '<S234>/Gain3'
+                                        *   '<S236>/Gain'
+                                        *   '<S237>/Gain'
+                                        *   '<S259>/Bias1'
+                                        *   '<S259>/Bias2'
+                                        *   '<S259>/Bias3'
+                                        *   '<S259>/Bias4'
                                         *   '<S18>/Saturation'
                                         *   '<S18>/Saturation1'
                                         *   '<S46>/kd'
@@ -202,35 +202,35 @@ struct_66Lz2XM6ObrCrxI96MstFF CONTROL_PARAM = {
                                         *   '<S186>/ki'
                                         *   '<S186>/Discrete-Time Integrator'
                                         *   '<S187>/kp'
-                                        *   '<S201>/gain1'
-                                        *   '<S201>/gain2'
-                                        *   '<S201>/gain3'
-                                        *   '<S201>/Discrete-Time Integrator'
-                                        *   '<S202>/gain1'
-                                        *   '<S202>/gain2'
-                                        *   '<S202>/gain3'
-                                        *   '<S206>/Pitch Offset'
-                                        *   '<S206>/Saturation'
-                                        *   '<S207>/Constant1'
-                                        *   '<S207>/Constant2'
-                                        *   '<S246>/Constant1'
-                                        *   '<S246>/Constant12'
-                                        *   '<S246>/Constant2'
-                                        *   '<S246>/Constant7'
+                                        *   '<S210>/gain1'
+                                        *   '<S210>/gain2'
+                                        *   '<S210>/gain3'
+                                        *   '<S210>/Discrete-Time Integrator'
+                                        *   '<S211>/gain1'
+                                        *   '<S211>/gain2'
+                                        *   '<S211>/gain3'
+                                        *   '<S215>/Pitch Offset'
+                                        *   '<S215>/Saturation'
+                                        *   '<S216>/Constant1'
+                                        *   '<S216>/Constant2'
                                         *   '<S254>/Constant1'
-                                        *   '<S254>/Constant11'
                                         *   '<S254>/Constant12'
                                         *   '<S254>/Constant2'
                                         *   '<S254>/Constant7'
-                                        *   '<S254>/Constant8'
-                                        *   '<S259>/Bias'
-                                        *   '<S259>/Bias1'
-                                        *   '<S259>/Bias2'
-                                        *   '<S259>/Bias3'
-                                        *   '<S260>/Bias'
-                                        *   '<S260>/Bias1'
-                                        *   '<S260>/Bias2'
-                                        *   '<S260>/Bias3'
+                                        *   '<S262>/Constant1'
+                                        *   '<S262>/Constant11'
+                                        *   '<S262>/Constant12'
+                                        *   '<S262>/Constant2'
+                                        *   '<S262>/Constant7'
+                                        *   '<S262>/Constant8'
+                                        *   '<S267>/Bias'
+                                        *   '<S267>/Bias1'
+                                        *   '<S267>/Bias2'
+                                        *   '<S267>/Bias3'
+                                        *   '<S268>/Bias'
+                                        *   '<S268>/Bias1'
+                                        *   '<S268>/Bias2'
+                                        *   '<S268>/Bias3'
                                         *   '<S33>/Constant1'
                                         *   '<S33>/Constant2'
                                         *   '<S92>/gain1'
@@ -292,6 +292,30 @@ ExtY_Controller_T Controller_Y;
 /* Real-time model */
 RT_MODEL_Controller_T Controller_M_;
 RT_MODEL_Controller_T *const Controller_M = &Controller_M_;
+boolean_T uMultiWordGt(const uint32_T u1[], const uint32_T u2[], int32_T n)
+{
+  return uMultiWordCmp(u1, u2, n) > 0;
+}
+
+int32_T uMultiWordCmp(const uint32_T u1[], const uint32_T u2[], int32_T n)
+{
+  int32_T y;
+  uint32_T u1i;
+  uint32_T u2i;
+  int32_T i;
+  y = 0;
+  i = n;
+  while ((y == 0) && (i > 0)) {
+    i--;
+    u1i = u1[i];
+    u2i = u2[i];
+    if (u1i != u2i) {
+      y = u1i > u2i ? 1 : -1;
+    }
+  }
+
+  return y;
+}
 
 /* Model step function */
 void Controller_step(void)
@@ -299,7 +323,7 @@ void Controller_step(void)
   /* local block i/o variables */
   real32_T rtb_Add_h[3];
   real32_T rtb_Saturation_hi;
-  real32_T rtb_Saturation1[3];
+  real32_T rtb_Saturation1_d[3];
   real32_T rtb_Saturation2[3];
   real32_T rtb_Saturation1_f[3];
   real32_T rtb_Saturation2_l[3];
@@ -307,6 +331,7 @@ void Controller_step(void)
   uint16_T rtb_VariantMergeForOutportact_h[9];
   uint8_T rtb_BitwiseAND_a;
   int8_T rtPrevAction;
+  real32_T rtb_DiscreteTimeIntegrator5_c;
   real32_T rtb_Divide_gn;
   real32_T rtb_Saturation_ov;
   int32_T rtb_Relay;
@@ -314,37 +339,39 @@ void Controller_step(void)
   boolean_T rtb_LogicalOperator_b3;
   real32_T rtb_Gain_it;
   real32_T rtb_Cos_j;
-  real32_T rtb_Cos1_d;
-  real32_T rtb_Add_c;
   real32_T rtb_Abs;
   real32_T rtb_Saturation1_ih;
-  real32_T rtb_MatrixConcatenate1[9];
   real32_T rtb_DiscreteTimeIntegrator1_k1[3];
   real32_T rtb_VdotPg;
-  real32_T rtb_Sum;
   real32_T rtb_Minus;
   real32_T rtb_B_err;
   real32_T rtb_Gain_il;
-  real32_T rtb_Add2_h;
-  real32_T rtb_DiscreteTimeIntegrator1_g;
-  boolean_T rtb_LogicalOperator_m;
+  real32_T rtb_a_n;
   real32_T rtb_u;
+  boolean_T rtb_LogicalOperator_m;
   real32_T rtb_Gain_cu;
+  real32_T rtb_Add3_n;
   uint16_T rtb_throttle_cmd;
+  real32_T rtb_MatrixConcatenate1[9];
   uint16_T rtb_MultiportSwitch[4];
   int32_T i;
   real32_T rtb_MatrixConcatenate1_0[3];
-  real32_T rtb_FF_limit_idx_1;
-  real32_T rtb_FF_limit_idx_2;
-  real32_T rtb_Divide_i_idx_0;
-  real32_T rtb_Divide_i_idx_1;
-  real32_T rtb_Divide_i_idx_2;
-  real32_T rtb_Divide_i_idx_3;
-  real32_T rtb_Saturation1_h_idx_0;
-  real32_T rtb_Multiply_ga_idx_0;
+  real32_T rtb_TmpSignalConversionAtMult_0;
+  real32_T rtb_TmpSignalConversionAtMult_1;
+  real32_T rtb_TmpSignalConversionAtMult_2;
+  real32_T rtb_rate_err_B_idx_0;
+  real32_T rtb_rate_err_B_idx_1;
+  real32_T rtb_Divide_m_idx_0;
+  real32_T rtb_Divide_m_idx_3;
+  real32_T rtb_Divide_m_idx_1;
+  real32_T rtb_Divide_m_idx_2;
   real32_T u0;
   uint16_T u0_0;
-  real32_T rtb_MatrixConcatenate1_tmp;
+  real32_T rtb_Sum_0;
+  real32_T rtb_Add1_g_tmp;
+  real32_T rtb_TmpSignalConversionAtMult_3;
+  static uint64m_T tmp = { { 0U, 0U }  /* chunks */
+  };
 
   /* S-Function (sfix_bitop): '<S7>/Bitwise AND' incorporates:
    *  Inport: '<Root>/FMS_Out'
@@ -395,15 +422,17 @@ void Controller_step(void)
        *  DiscreteIntegrator: '<S183>/Integrator1'
        *  DiscreteIntegrator: '<S186>/Discrete-Time Integrator'
        *  DiscreteIntegrator: '<S188>/Discrete-Time Integrator1'
-       *  DiscreteIntegrator: '<S189>/Discrete-Time Integrator5'
        *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
        *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
-       *  DiscreteIntegrator: '<S201>/Discrete-Time Integrator'
-       *  DiscreteIntegrator: '<S226>/ '
-       *  DiscreteIntegrator: '<S227>/Discrete-Time Integrator1'
-       *  DiscreteIntegrator: '<S229>/ '
-       *  DiscreteIntegrator: '<S230>/Discrete-Time Integrator1'
+       *  DiscreteIntegrator: '<S192>/Discrete-Time Integrator5'
+       *  DiscreteIntegrator: '<S193>/Discrete-Time Integrator5'
+       *  DiscreteIntegrator: '<S210>/Discrete-Time Integrator'
+       *  DiscreteIntegrator: '<S234>/ '
+       *  DiscreteIntegrator: '<S235>/Discrete-Time Integrator1'
+       *  DiscreteIntegrator: '<S237>/ '
+       *  DiscreteIntegrator: '<S238>/Discrete-Time Integrator1'
        */
+      Controller_DW.DiscreteTimeIntegrator5_IC_L_ed = 1U;
       Controller_DW.DiscreteTimeIntegrator5_IC_L_eo = 1U;
       Controller_DW.DiscreteTimeIntegrator5_IC_LO_o = 1U;
       Controller_DW.Integrator1_DSTATE_i = 0.0F;
@@ -545,14 +574,217 @@ void Controller_step(void)
     /* Outputs for IfAction SubSystem: '<S2>/VTOL_Controller' incorporates:
      *  ActionPort: '<S6>/Action Port'
      */
-    /* Product: '<S145>/Divide' incorporates:
+    /* SignalConversion: '<S194>/TmpSignal ConversionAtMultiplyInport2' incorporates:
      *  Inport: '<Root>/INS_Out'
+     */
+    rtb_TmpSignalConversionAtMult_0 = Controller_U.INS_Out.vn;
+    rtb_TmpSignalConversionAtMult_1 = Controller_U.INS_Out.ve;
+    rtb_TmpSignalConversionAtMult_2 = Controller_U.INS_Out.vd;
+
+    /* Switch: '<S189>/Switch' incorporates:
+     *  Inport: '<Root>/INS_Out'
+     *  Math: '<S189>/Square2'
+     *  Math: '<S189>/Square3'
+     *  Product: '<S189>/Multiply'
+     *  Sqrt: '<S189>/Sqrt'
+     *  Sum: '<S189>/Add'
+     */
+    if (uMultiWordGt(&tmp.chunks[0U],
+                     &Controller_ConstP.Switch_Threshold.chunks[0], 2)) {
+      rtb_DiscreteTimeIntegrator5_c = Controller_U.INS_Out.airspeed;
+    } else {
+      /* Sqrt: '<S200>/Sqrt' incorporates:
+       *  Inport: '<Root>/INS_Out'
+       *  Math: '<S200>/Square'
+       *  Sum: '<S200>/Sum of Elements'
+       */
+      rtb_rate_err_B_idx_0 = sqrtf(((Controller_U.INS_Out.quat[0] *
+        Controller_U.INS_Out.quat[0] + Controller_U.INS_Out.quat[1] *
+        Controller_U.INS_Out.quat[1]) + Controller_U.INS_Out.quat[2] *
+        Controller_U.INS_Out.quat[2]) + Controller_U.INS_Out.quat[3] *
+        Controller_U.INS_Out.quat[3]);
+
+      /* Product: '<S196>/Divide' incorporates:
+       *  Inport: '<Root>/INS_Out'
+       *  Sqrt: '<S200>/Sqrt'
+       */
+      rtb_Divide_m_idx_0 = Controller_U.INS_Out.quat[0] / rtb_rate_err_B_idx_0;
+      rtb_Divide_m_idx_1 = Controller_U.INS_Out.quat[1] / rtb_rate_err_B_idx_0;
+      rtb_Divide_m_idx_2 = Controller_U.INS_Out.quat[2] / rtb_rate_err_B_idx_0;
+      rtb_Divide_m_idx_3 = Controller_U.INS_Out.quat[3] / rtb_rate_err_B_idx_0;
+
+      /* Math: '<S199>/Square' incorporates:
+       *  Math: '<S197>/Square'
+       *  Math: '<S198>/Square'
+       */
+      rtb_rate_err_B_idx_0 = rtb_Divide_m_idx_0 * rtb_Divide_m_idx_0;
+
+      /* Math: '<S199>/Square2' incorporates:
+       *  Math: '<S197>/Square2'
+       *  Math: '<S198>/Square2'
+       */
+      rtb_rate_err_B_idx_1 = rtb_Divide_m_idx_2 * rtb_Divide_m_idx_2;
+
+      /* Math: '<S199>/Square1' incorporates:
+       *  Math: '<S197>/Square1'
+       *  Math: '<S198>/Square1'
+       */
+      rtb_DiscreteTimeIntegrator5_c = rtb_Divide_m_idx_1 * rtb_Divide_m_idx_1;
+
+      /* Math: '<S199>/Square3' incorporates:
+       *  Math: '<S197>/Square3'
+       *  Math: '<S198>/Square3'
+       */
+      rtb_Divide_gn = rtb_Divide_m_idx_3 * rtb_Divide_m_idx_3;
+
+      /* Sum: '<S199>/Subtract' incorporates:
+       *  Math: '<S199>/Square'
+       *  Math: '<S199>/Square1'
+       *  Math: '<S199>/Square2'
+       *  Math: '<S199>/Square3'
+       *  Sum: '<S199>/Add'
+       *  Sum: '<S199>/Add1'
+       */
+      rtb_MatrixConcatenate1[8] = (rtb_rate_err_B_idx_0 + rtb_Divide_gn) -
+        (rtb_DiscreteTimeIntegrator5_c + rtb_rate_err_B_idx_1);
+
+      /* Product: '<S199>/Multiply2' incorporates:
+       *  Product: '<S198>/Multiply2'
+       */
+      rtb_Saturation_ov = rtb_Divide_m_idx_2 * rtb_Divide_m_idx_3;
+
+      /* Product: '<S199>/Multiply3' incorporates:
+       *  Product: '<S198>/Multiply3'
+       */
+      rtb_Gain_ms = rtb_Divide_m_idx_0 * rtb_Divide_m_idx_1;
+
+      /* Gain: '<S199>/Gain1' incorporates:
+       *  Product: '<S199>/Multiply2'
+       *  Product: '<S199>/Multiply3'
+       *  Sum: '<S199>/Add2'
+       */
+      rtb_MatrixConcatenate1[7] = (rtb_Saturation_ov + rtb_Gain_ms) * 2.0F;
+
+      /* Product: '<S199>/Multiply' incorporates:
+       *  Product: '<S197>/Multiply2'
+       */
+      rtb_Gain_it = rtb_Divide_m_idx_1 * rtb_Divide_m_idx_3;
+
+      /* Product: '<S199>/Multiply1' incorporates:
+       *  Product: '<S197>/Multiply3'
+       */
+      rtb_Add3_n = rtb_Divide_m_idx_0 * rtb_Divide_m_idx_2;
+
+      /* Gain: '<S199>/Gain' incorporates:
+       *  Product: '<S199>/Multiply'
+       *  Product: '<S199>/Multiply1'
+       *  Sum: '<S199>/Subtract2'
+       */
+      rtb_MatrixConcatenate1[6] = (rtb_Gain_it - rtb_Add3_n) * 2.0F;
+
+      /* Gain: '<S198>/Gain1' incorporates:
+       *  Sum: '<S198>/Subtract1'
+       */
+      rtb_MatrixConcatenate1[5] = (rtb_Saturation_ov - rtb_Gain_ms) * 2.0F;
+
+      /* Sum: '<S198>/Subtract' incorporates:
+       *  Sum: '<S198>/Add'
+       *  Sum: '<S198>/Add1'
+       */
+      rtb_MatrixConcatenate1[4] = (rtb_rate_err_B_idx_0 + rtb_rate_err_B_idx_1)
+        - (rtb_DiscreteTimeIntegrator5_c + rtb_Divide_gn);
+
+      /* Product: '<S198>/Multiply' incorporates:
+       *  Product: '<S197>/Multiply'
+       */
+      rtb_Saturation_ov = rtb_Divide_m_idx_1 * rtb_Divide_m_idx_2;
+
+      /* Product: '<S198>/Multiply1' incorporates:
+       *  Product: '<S197>/Multiply1'
+       */
+      rtb_Gain_ms = rtb_Divide_m_idx_0 * rtb_Divide_m_idx_3;
+
+      /* Gain: '<S198>/Gain' incorporates:
+       *  Product: '<S198>/Multiply'
+       *  Product: '<S198>/Multiply1'
+       *  Sum: '<S198>/Add3'
+       */
+      rtb_MatrixConcatenate1[3] = (rtb_Saturation_ov + rtb_Gain_ms) * 2.0F;
+
+      /* Gain: '<S197>/Gain1' incorporates:
+       *  Sum: '<S197>/Add2'
+       */
+      rtb_MatrixConcatenate1[2] = (rtb_Gain_it + rtb_Add3_n) * 2.0F;
+
+      /* Gain: '<S197>/Gain' incorporates:
+       *  Sum: '<S197>/Subtract1'
+       */
+      rtb_MatrixConcatenate1[1] = (rtb_Saturation_ov - rtb_Gain_ms) * 2.0F;
+
+      /* Sum: '<S197>/Subtract' incorporates:
+       *  Sum: '<S197>/Add'
+       *  Sum: '<S197>/Add1'
+       */
+      rtb_MatrixConcatenate1[0] = (rtb_rate_err_B_idx_0 +
+        rtb_DiscreteTimeIntegrator5_c) - (rtb_rate_err_B_idx_1 + rtb_Divide_gn);
+
+      /* Product: '<S194>/Multiply' */
+      for (i = 0; i < 3; i++) {
+        rtb_MatrixConcatenate1_0[i] = rtb_MatrixConcatenate1[i + 6] *
+          rtb_TmpSignalConversionAtMult_2 + (rtb_MatrixConcatenate1[i + 3] *
+          rtb_TmpSignalConversionAtMult_1 + rtb_MatrixConcatenate1[i] *
+          rtb_TmpSignalConversionAtMult_0);
+      }
+
+      /* End of Product: '<S194>/Multiply' */
+
+      /* Signum: '<S194>/Sign' */
+      if (rtb_MatrixConcatenate1_0[0] < 0.0F) {
+        rtb_Divide_m_idx_0 = -1.0F;
+      } else if (rtb_MatrixConcatenate1_0[0] > 0.0F) {
+        rtb_Divide_m_idx_0 = 1.0F;
+      } else {
+        rtb_Divide_m_idx_0 = rtb_MatrixConcatenate1_0[0];
+      }
+
+      /* End of Signum: '<S194>/Sign' */
+      rtb_DiscreteTimeIntegrator5_c = sqrtf(Controller_U.INS_Out.vn *
+        Controller_U.INS_Out.vn + Controller_U.INS_Out.ve *
+        Controller_U.INS_Out.ve) * rtb_Divide_m_idx_0;
+    }
+
+    /* End of Switch: '<S189>/Switch' */
+
+    /* Saturate: '<S189>/Saturation1' */
+    if (rtb_DiscreteTimeIntegrator5_c > 100.0F) {
+      rtb_DiscreteTimeIntegrator5_c = 100.0F;
+    } else {
+      if (rtb_DiscreteTimeIntegrator5_c < 0.1F) {
+        rtb_DiscreteTimeIntegrator5_c = 0.1F;
+      }
+    }
+
+    /* End of Saturate: '<S189>/Saturation1' */
+
+    /* DiscreteIntegrator: '<S193>/Discrete-Time Integrator5' */
+    if (Controller_DW.DiscreteTimeIntegrator5_IC_L_ed != 0) {
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j =
+        rtb_DiscreteTimeIntegrator5_c;
+    }
+
+    /* Math: '<S145>/Square' incorporates:
+     *  DiscreteIntegrator: '<S193>/Discrete-Time Integrator5'
+     *  Math: '<S208>/Square1'
+     */
+    rtb_Add3_n = Controller_DW.DiscreteTimeIntegrator5_DSTAT_j *
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
+
+    /* Product: '<S145>/Divide' incorporates:
      *  Math: '<S145>/Square'
      */
-    rtb_Divide_gn = Controller_U.INS_Out.airspeed *
-      Controller_U.INS_Out.airspeed / Controller_ConstB.Square1;
+    rtb_Divide_gn = rtb_Add3_n / Controller_ConstB.Square1;
 
-    /* DiscreteIntegrator: '<S191>/Discrete-Time Integrator5' */
+    /* DiscreteIntegrator: '<S192>/Discrete-Time Integrator5' */
     if (Controller_DW.DiscreteTimeIntegrator5_IC_L_eo != 0) {
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_a = rtb_Divide_gn;
     }
@@ -581,7 +813,7 @@ void Controller_step(void)
 
     /* End of Relay: '<S145>/Relay' */
 
-    /* DiscreteIntegrator: '<S190>/Discrete-Time Integrator5' */
+    /* DiscreteIntegrator: '<S191>/Discrete-Time Integrator5' */
     if (Controller_DW.DiscreteTimeIntegrator5_IC_LO_o != 0) {
       Controller_DW.DiscreteTimeIntegrator5_DSTA_a2 = (real32_T)rtb_Relay;
     }
@@ -595,7 +827,7 @@ void Controller_step(void)
 
     /* Logic: '<S178>/Logical Operator' incorporates:
      *  Constant: '<S180>/Constant'
-     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
      *  RelationalOperator: '<S180>/Compare'
      */
     rtb_LogicalOperator_b3 = ((Controller_U.FMS_Out.reset != 0) ||
@@ -654,9 +886,9 @@ void Controller_step(void)
      *  Gain: '<S188>/Gain1'
      */
     if (rtb_LogicalOperator_b3) {
-      rtb_Add_c = 0.0F;
+      rtb_Divide_m_idx_0 = 0.0F;
     } else {
-      rtb_Add_c = rtb_Gain_it;
+      rtb_Divide_m_idx_0 = rtb_Gain_it;
     }
 
     /* End of Switch: '<S188>/Switch' */
@@ -664,14 +896,14 @@ void Controller_step(void)
     /* Product: '<S185>/Multiply' incorporates:
      *  Constant: '<S185>/kd'
      */
-    rtb_Cos_j = CONTROL_PARAM.MC_VEL_Z_D * rtb_Add_c;
+    rtb_Divide_m_idx_2 = CONTROL_PARAM.MC_VEL_Z_D * rtb_Divide_m_idx_0;
 
     /* Saturate: '<S185>/Saturation' */
-    if (rtb_Cos_j > CONTROL_PARAM.MC_VEL_Z_D_MAX) {
-      rtb_Cos_j = CONTROL_PARAM.MC_VEL_Z_D_MAX;
+    if (rtb_Divide_m_idx_2 > CONTROL_PARAM.MC_VEL_Z_D_MAX) {
+      rtb_Divide_m_idx_2 = CONTROL_PARAM.MC_VEL_Z_D_MAX;
     } else {
-      if (rtb_Cos_j < CONTROL_PARAM.MC_VEL_Z_D_MIN) {
-        rtb_Cos_j = CONTROL_PARAM.MC_VEL_Z_D_MIN;
+      if (rtb_Divide_m_idx_2 < CONTROL_PARAM.MC_VEL_Z_D_MIN) {
+        rtb_Divide_m_idx_2 = CONTROL_PARAM.MC_VEL_Z_D_MIN;
       }
     }
 
@@ -682,38 +914,39 @@ void Controller_step(void)
      *  DiscreteIntegrator: '<S186>/Discrete-Time Integrator'
      *  Product: '<S187>/Multiply'
      */
-    rtb_Add_c = (CONTROL_PARAM.MC_VEL_Z_P * rtb_Gain_ms +
-                 Controller_DW.DiscreteTimeIntegrator_DSTATE_b) + rtb_Cos_j;
+    rtb_Divide_m_idx_0 = (CONTROL_PARAM.MC_VEL_Z_P * rtb_Gain_ms +
+                          Controller_DW.DiscreteTimeIntegrator_DSTATE_b) +
+      rtb_Divide_m_idx_2;
 
     /* Trigonometry: '<S179>/Cos1' incorporates:
      *  Inport: '<Root>/INS_Out'
      *  Trigonometry: '<S164>/Cos1'
-     *  Trigonometry: '<S197>/Cos1'
+     *  Trigonometry: '<S206>/Cos1'
      */
     rtb_Gain_cu = arm_cos_f32(Controller_U.INS_Out.theta);
 
     /* Trigonometry: '<S179>/Cos' incorporates:
      *  Inport: '<Root>/INS_Out'
      *  Trigonometry: '<S164>/Cos'
-     *  Trigonometry: '<S197>/Cos'
+     *  Trigonometry: '<S206>/Cos'
      */
-    rtb_Multiply_ga_idx_0 = arm_cos_f32(Controller_U.INS_Out.phi);
+    rtb_Add1_g_tmp = arm_cos_f32(Controller_U.INS_Out.phi);
 
     /* Product: '<S179>/Multiply' incorporates:
      *  Trigonometry: '<S179>/Cos'
      *  Trigonometry: '<S179>/Cos1'
      */
-    rtb_FF_limit_idx_1 = rtb_Multiply_ga_idx_0 * rtb_Gain_cu;
+    rtb_Divide_m_idx_1 = rtb_Add1_g_tmp * rtb_Gain_cu;
 
     /* Saturate: '<S179>/Saturation1' incorporates:
      *  Product: '<S179>/Multiply'
      */
-    if (rtb_FF_limit_idx_1 > 1.0F) {
-      rtb_Cos1_d = 1.0F;
-    } else if (rtb_FF_limit_idx_1 < 0.5F) {
-      rtb_Cos1_d = 0.5F;
+    if (rtb_Divide_m_idx_1 > 1.0F) {
+      rtb_Cos_j = 1.0F;
+    } else if (rtb_Divide_m_idx_1 < 0.5F) {
+      rtb_Cos_j = 0.5F;
     } else {
-      rtb_Cos1_d = rtb_FF_limit_idx_1;
+      rtb_Cos_j = rtb_Divide_m_idx_1;
     }
 
     /* End of Saturate: '<S179>/Saturation1' */
@@ -721,14 +954,14 @@ void Controller_step(void)
     /* Gain: '<S179>/Gain' incorporates:
      *  Product: '<S179>/Multiply'
      */
-    rtb_Cos_j = 2.0F * rtb_FF_limit_idx_1;
+    rtb_Divide_m_idx_2 = 2.0F * rtb_Divide_m_idx_1;
 
     /* Saturate: '<S179>/Saturation' */
-    if (rtb_Cos_j > 1.0F) {
-      rtb_Cos_j = 1.0F;
+    if (rtb_Divide_m_idx_2 > 1.0F) {
+      rtb_Divide_m_idx_2 = 1.0F;
     } else {
-      if (rtb_Cos_j < 0.0F) {
-        rtb_Cos_j = 0.0F;
+      if (rtb_Divide_m_idx_2 < 0.0F) {
+        rtb_Divide_m_idx_2 = 0.0F;
       }
     }
 
@@ -738,14 +971,14 @@ void Controller_step(void)
      *  Constant: '<S179>/Constant'
      *  Product: '<S179>/Divide'
      */
-    rtb_Cos_j *= 1.0F / rtb_Cos1_d * rtb_Add_c;
+    rtb_Divide_m_idx_2 *= 1.0F / rtb_Cos_j * rtb_Divide_m_idx_0;
 
     /* Saturate: '<S178>/Saturation' */
-    if (rtb_Cos_j > 0.35F) {
-      rtb_Cos_j = 0.35F;
+    if (rtb_Divide_m_idx_2 > 0.35F) {
+      rtb_Divide_m_idx_2 = 0.35F;
     } else {
-      if (rtb_Cos_j < -0.35F) {
-        rtb_Cos_j = -0.35F;
+      if (rtb_Divide_m_idx_2 < -0.35F) {
+        rtb_Divide_m_idx_2 = -0.35F;
       }
     }
 
@@ -754,14 +987,14 @@ void Controller_step(void)
     /* Sum: '<S150>/Sum' incorporates:
      *  Constant: '<S150>/mc_hover_throttle'
      */
-    rtb_Cos_j += CONTROL_PARAM.MC_HOVER_THRO;
+    rtb_Divide_m_idx_2 += CONTROL_PARAM.MC_HOVER_THRO;
 
     /* Saturate: '<S150>/Saturation' */
-    if (rtb_Cos_j > 1.0F) {
-      rtb_Cos_j = 1.0F;
+    if (rtb_Divide_m_idx_2 > 1.0F) {
+      rtb_Divide_m_idx_2 = 1.0F;
     } else {
-      if (rtb_Cos_j < -1.0F) {
-        rtb_Cos_j = -1.0F;
+      if (rtb_Divide_m_idx_2 < -1.0F) {
+        rtb_Divide_m_idx_2 = -1.0F;
       }
     }
 
@@ -771,185 +1004,177 @@ void Controller_step(void)
      *  Constant: '<S150>/Constant'
      *  Product: '<S144>/Multiply1'
      */
-    rtb_Saturation1[0] = 0.0F;
-    rtb_Saturation1[1] = 0.0F;
+    rtb_Saturation1_d[0] = 0.0F;
+    rtb_Saturation1_d[1] = 0.0F;
 
     /* Product: '<S144>/Multiply1' incorporates:
-     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
      */
-    u0 = rtb_Cos_j * Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
+    u0 = rtb_Divide_m_idx_2 * Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
 
     /* Saturate: '<S144>/Saturation1' */
     if (u0 > 1.0F) {
-      rtb_Saturation1[2] = 1.0F;
+      rtb_Saturation1_d[2] = 1.0F;
     } else if (u0 < -1.0F) {
-      rtb_Saturation1[2] = -1.0F;
+      rtb_Saturation1_d[2] = -1.0F;
     } else {
-      rtb_Saturation1[2] = u0;
+      rtb_Saturation1_d[2] = u0;
     }
 
-    /* Trigonometry: '<S193>/Atan' incorporates:
-     *  Gain: '<S193>/g_force'
-     *  Sum: '<S193>/Minus'
+    /* Trigonometry: '<S202>/Atan' incorporates:
+     *  Gain: '<S202>/g_force'
+     *  Sum: '<S202>/Minus'
      */
-    rtb_Cos1_d = atanf(0.101936802F * Controller_U.FMS_Out.ay_cmd);
+    rtb_Cos_j = atanf(0.101936802F * Controller_U.FMS_Out.ay_cmd);
 
-    /* Saturate: '<S193>/Saturation' */
-    if (rtb_Cos1_d > CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
-      rtb_Cos1_d = CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
+    /* Saturate: '<S202>/Saturation' */
+    if (rtb_Cos_j > CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
+      rtb_Cos_j = CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
     } else {
-      if (rtb_Cos1_d < -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
-        rtb_Cos1_d = -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
+      if (rtb_Cos_j < -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
+        rtb_Cos_j = -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
       }
     }
 
-    /* End of Saturate: '<S193>/Saturation' */
+    /* End of Saturate: '<S202>/Saturation' */
 
-    /* Switch: '<S213>/Switch' incorporates:
-     *  Constant: '<S224>/Constant'
-     *  RelationalOperator: '<S224>/Compare'
+    /* Switch: '<S222>/Switch' incorporates:
+     *  Constant: '<S232>/Constant'
+     *  RelationalOperator: '<S232>/Compare'
      */
     if (rtb_BitwiseAND_a == 4) {
-      rtb_MatrixConcatenate1_tmp = Controller_U.FMS_Out.phi_cmd;
+      rtb_u = Controller_U.FMS_Out.phi_cmd;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Cos1_d;
+      rtb_u = rtb_Cos_j;
     }
 
-    /* End of Switch: '<S213>/Switch' */
+    /* End of Switch: '<S222>/Switch' */
 
-    /* Abs: '<S194>/Abs' */
-    rtb_Abs = fabsf(rtb_MatrixConcatenate1_tmp);
+    /* Abs: '<S203>/Abs' */
+    rtb_Abs = fabsf(rtb_u);
 
-    /* Trigonometry: '<S221>/Trigonometric Function1' incorporates:
-     *  Gain: '<S220>/Gain'
+    /* Trigonometry: '<S229>/Trigonometric Function1' incorporates:
+     *  Gain: '<S228>/Gain'
      *  Inport: '<Root>/INS_Out'
-     *  Trigonometry: '<S221>/Trigonometric Function3'
-     *  Trigonometry: '<S223>/Trigonometric Function1'
-     *  Trigonometry: '<S223>/Trigonometric Function3'
+     *  Trigonometry: '<S229>/Trigonometric Function3'
+     *  Trigonometry: '<S231>/Trigonometric Function1'
+     *  Trigonometry: '<S231>/Trigonometric Function3'
      */
-    rtb_Cos_j = arm_cos_f32(-Controller_U.INS_Out.psi);
-    rtb_MatrixConcatenate1[0] = rtb_Cos_j;
+    rtb_rate_err_B_idx_0 = arm_cos_f32(-Controller_U.INS_Out.psi);
+    rtb_MatrixConcatenate1[0] = rtb_rate_err_B_idx_0;
 
-    /* Trigonometry: '<S221>/Trigonometric Function' incorporates:
-     *  Gain: '<S220>/Gain'
+    /* Trigonometry: '<S229>/Trigonometric Function' incorporates:
+     *  Gain: '<S228>/Gain'
      *  Inport: '<Root>/INS_Out'
-     *  Trigonometry: '<S221>/Trigonometric Function2'
-     *  Trigonometry: '<S223>/Trigonometric Function'
+     *  Trigonometry: '<S229>/Trigonometric Function2'
+     *  Trigonometry: '<S231>/Trigonometric Function'
      */
-    rtb_Saturation1_h_idx_0 = arm_sin_f32(-Controller_U.INS_Out.psi);
-    rtb_MatrixConcatenate1[1] = rtb_Saturation1_h_idx_0;
+    rtb_rate_err_B_idx_1 = arm_sin_f32(-Controller_U.INS_Out.psi);
+    rtb_MatrixConcatenate1[1] = rtb_rate_err_B_idx_1;
 
-    /* SignalConversion: '<S221>/ConcatBufferAtVector Concatenate1In3' incorporates:
-     *  Constant: '<S221>/Constant3'
+    /* SignalConversion: '<S229>/ConcatBufferAtVector Concatenate1In3' incorporates:
+     *  Constant: '<S229>/Constant3'
      */
     rtb_MatrixConcatenate1[2] = 0.0F;
 
-    /* Gain: '<S221>/Gain' */
-    rtb_MatrixConcatenate1[3] = -rtb_Saturation1_h_idx_0;
+    /* Gain: '<S229>/Gain' */
+    rtb_MatrixConcatenate1[3] = -rtb_rate_err_B_idx_1;
 
-    /* Trigonometry: '<S221>/Trigonometric Function3' */
-    rtb_MatrixConcatenate1[4] = rtb_Cos_j;
+    /* Trigonometry: '<S229>/Trigonometric Function3' */
+    rtb_MatrixConcatenate1[4] = rtb_rate_err_B_idx_0;
 
-    /* SignalConversion: '<S221>/ConcatBufferAtVector Concatenate2In3' incorporates:
-     *  Constant: '<S221>/Constant4'
+    /* SignalConversion: '<S229>/ConcatBufferAtVector Concatenate2In3' incorporates:
+     *  Constant: '<S229>/Constant4'
      */
     rtb_MatrixConcatenate1[5] = 0.0F;
 
-    /* SignalConversion: '<S221>/ConcatBufferAtVector ConcatenateIn3' */
+    /* SignalConversion: '<S229>/ConcatBufferAtVector ConcatenateIn3' */
     rtb_MatrixConcatenate1[6] = Controller_ConstB.VectorConcatenate3_c[0];
     rtb_MatrixConcatenate1[7] = Controller_ConstB.VectorConcatenate3_c[1];
     rtb_MatrixConcatenate1[8] = Controller_ConstB.VectorConcatenate3_c[2];
 
-    /* SignalConversion: '<S217>/TmpSignal ConversionAtMultiplyInport2' incorporates:
-     *  Inport: '<Root>/INS_Out'
-     */
-    rtb_Add_c = Controller_U.INS_Out.vn;
-    rtb_FF_limit_idx_1 = Controller_U.INS_Out.ve;
-    rtb_FF_limit_idx_2 = Controller_U.INS_Out.vd;
-
-    /* Product: '<S217>/Multiply' */
+    /* Product: '<S226>/Multiply' */
     for (i = 0; i < 3; i++) {
       rtb_DiscreteTimeIntegrator1_k1[i] = rtb_MatrixConcatenate1[i + 6] *
-        rtb_FF_limit_idx_2 + (rtb_MatrixConcatenate1[i + 3] * rtb_FF_limit_idx_1
-        + rtb_MatrixConcatenate1[i] * rtb_Add_c);
+        rtb_TmpSignalConversionAtMult_2 + (rtb_MatrixConcatenate1[i + 3] *
+        rtb_TmpSignalConversionAtMult_1 + rtb_MatrixConcatenate1[i] *
+        rtb_TmpSignalConversionAtMult_0);
     }
 
-    /* End of Product: '<S217>/Multiply' */
+    /* End of Product: '<S226>/Multiply' */
 
-    /* Switch: '<S217>/Switch' incorporates:
-     *  Gain: '<S217>/Gain'
+    /* Switch: '<S226>/Switch' incorporates:
+     *  Gain: '<S226>/Gain'
      *  Inport: '<Root>/INS_Out'
-     *  Product: '<S217>/Divide'
-     *  S-Function (sfix_bitop): '<S217>/Bitwise AND'
-     *  Trigonometry: '<S217>/Asin'
+     *  Product: '<S226>/Divide'
+     *  S-Function (sfix_bitop): '<S226>/Bitwise AND'
+     *  Trigonometry: '<S226>/Asin'
      */
     if ((Controller_U.INS_Out.flag & 16U) > 1U) {
-      /* Sqrt: '<S217>/Sqrt' incorporates:
-       *  Math: '<S217>/Square'
-       *  Math: '<S217>/Square1'
-       *  Sum: '<S217>/Add'
+      /* Sqrt: '<S226>/Sqrt' incorporates:
+       *  Math: '<S226>/Square'
+       *  Math: '<S226>/Square1'
+       *  Sum: '<S226>/Add'
        */
-      rtb_Divide_i_idx_0 = sqrtf(Controller_U.INS_Out.vn *
-        Controller_U.INS_Out.vn + Controller_U.INS_Out.ve *
-        Controller_U.INS_Out.ve);
+      u0 = sqrtf(Controller_U.INS_Out.vn * Controller_U.INS_Out.vn +
+                 Controller_U.INS_Out.ve * Controller_U.INS_Out.ve);
 
-      /* Saturate: '<S217>/Saturation' incorporates:
-       *  Sqrt: '<S217>/Sqrt'
+      /* Saturate: '<S226>/Saturation' incorporates:
+       *  Sqrt: '<S226>/Sqrt'
        */
-      if (rtb_Divide_i_idx_0 > 100.0F) {
-        rtb_Divide_i_idx_0 = 100.0F;
+      if (u0 > 100.0F) {
+        u0 = 100.0F;
       } else {
-        if (rtb_Divide_i_idx_0 < 8.0F) {
-          rtb_Divide_i_idx_0 = 8.0F;
+        if (u0 < 8.0F) {
+          u0 = 8.0F;
         }
       }
 
-      /* End of Saturate: '<S217>/Saturation' */
+      /* End of Saturate: '<S226>/Saturation' */
 
-      /* DeadZone: '<S217>/Dead Zone' */
+      /* DeadZone: '<S226>/Dead Zone' */
       if (Controller_U.INS_Out.vd > 0.1F) {
-        rtb_MatrixConcatenate1_tmp = Controller_U.INS_Out.vd - 0.1F;
+        rtb_u = Controller_U.INS_Out.vd - 0.1F;
       } else if (Controller_U.INS_Out.vd >= -0.1F) {
-        rtb_MatrixConcatenate1_tmp = 0.0F;
+        rtb_u = 0.0F;
       } else {
-        rtb_MatrixConcatenate1_tmp = Controller_U.INS_Out.vd - -0.1F;
+        rtb_u = Controller_U.INS_Out.vd - -0.1F;
       }
 
-      /* End of DeadZone: '<S217>/Dead Zone' */
-      rtb_Saturation1_ih = atanf(1.0F / rtb_Divide_i_idx_0 *
-        -rtb_MatrixConcatenate1_tmp);
+      /* End of DeadZone: '<S226>/Dead Zone' */
+      rtb_Saturation1_ih = atanf(1.0F / u0 * -rtb_u);
     } else {
       rtb_Saturation1_ih = Controller_U.INS_Out.theta;
     }
 
-    /* End of Switch: '<S217>/Switch' */
+    /* End of Switch: '<S226>/Switch' */
 
-    /* DeadZone: '<S217>/Dead Zone1' */
+    /* DeadZone: '<S226>/Dead Zone1' */
     if (rtb_DiscreteTimeIntegrator1_k1[0] > 1.0F) {
-      rtb_Divide_i_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - 1.0F;
+      rtb_Divide_m_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - 1.0F;
     } else if (rtb_DiscreteTimeIntegrator1_k1[0] >= -1.0F) {
-      rtb_Divide_i_idx_0 = 0.0F;
+      rtb_Divide_m_idx_0 = 0.0F;
     } else {
-      rtb_Divide_i_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - -1.0F;
+      rtb_Divide_m_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - -1.0F;
     }
 
-    /* End of DeadZone: '<S217>/Dead Zone1' */
+    /* End of DeadZone: '<S226>/Dead Zone1' */
 
-    /* Signum: '<S217>/Sign' */
-    if (rtb_Divide_i_idx_0 < 0.0F) {
-      rtb_Divide_i_idx_0 = -1.0F;
+    /* Signum: '<S226>/Sign' */
+    if (rtb_Divide_m_idx_0 < 0.0F) {
+      rtb_Divide_m_idx_0 = -1.0F;
     } else {
-      if (rtb_Divide_i_idx_0 > 0.0F) {
-        rtb_Divide_i_idx_0 = 1.0F;
+      if (rtb_Divide_m_idx_0 > 0.0F) {
+        rtb_Divide_m_idx_0 = 1.0F;
       }
     }
 
-    /* End of Signum: '<S217>/Sign' */
+    /* End of Signum: '<S226>/Sign' */
 
-    /* Product: '<S217>/Multiply1' */
-    rtb_Saturation1_ih *= rtb_Divide_i_idx_0;
+    /* Product: '<S226>/Multiply1' */
+    rtb_Saturation1_ih *= rtb_Divide_m_idx_0;
 
-    /* Saturate: '<S217>/Saturation1' */
+    /* Saturate: '<S226>/Saturation1' */
     if (rtb_Saturation1_ih > 0.785398185F) {
       rtb_Saturation1_ih = 0.785398185F;
     } else {
@@ -958,75 +1183,76 @@ void Controller_step(void)
       }
     }
 
-    /* End of Saturate: '<S217>/Saturation1' */
+    /* End of Saturate: '<S226>/Saturation1' */
 
-    /* Gain: '<S216>/Gain1' incorporates:
+    /* Gain: '<S225>/Gain1' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
     rtb_VdotPg = 0.101936802F * Controller_U.INS_Out.ax;
 
-    /* Sqrt: '<S219>/Sqrt' incorporates:
+    /* Sqrt: '<S227>/Sqrt' incorporates:
      *  Inport: '<Root>/INS_Out'
-     *  Math: '<S219>/Square'
-     *  Math: '<S219>/Square1'
-     *  Sum: '<S219>/Add'
+     *  Math: '<S227>/Square'
+     *  Math: '<S227>/Square1'
+     *  Sum: '<S227>/Add'
      */
     u0 = sqrtf(Controller_U.INS_Out.vn * Controller_U.INS_Out.vn +
                Controller_U.INS_Out.ve * Controller_U.INS_Out.ve);
 
-    /* Trigonometry: '<S223>/Trigonometric Function1' */
-    rtb_MatrixConcatenate1[0] = rtb_Cos_j;
+    /* Trigonometry: '<S231>/Trigonometric Function1' */
+    rtb_MatrixConcatenate1[0] = rtb_rate_err_B_idx_0;
 
-    /* Trigonometry: '<S223>/Trigonometric Function' */
-    rtb_MatrixConcatenate1[1] = rtb_Saturation1_h_idx_0;
+    /* Trigonometry: '<S231>/Trigonometric Function' */
+    rtb_MatrixConcatenate1[1] = rtb_rate_err_B_idx_1;
 
-    /* SignalConversion: '<S223>/ConcatBufferAtVector Concatenate1In3' incorporates:
-     *  Constant: '<S223>/Constant3'
+    /* SignalConversion: '<S231>/ConcatBufferAtVector Concatenate1In3' incorporates:
+     *  Constant: '<S231>/Constant3'
      */
     rtb_MatrixConcatenate1[2] = 0.0F;
 
-    /* Gain: '<S223>/Gain' incorporates:
-     *  Gain: '<S222>/Gain'
+    /* Gain: '<S231>/Gain' incorporates:
+     *  Gain: '<S230>/Gain'
      *  Inport: '<Root>/INS_Out'
-     *  Trigonometry: '<S223>/Trigonometric Function2'
+     *  Trigonometry: '<S231>/Trigonometric Function2'
      */
     rtb_MatrixConcatenate1[3] = -arm_sin_f32(-Controller_U.INS_Out.psi);
 
-    /* Trigonometry: '<S223>/Trigonometric Function3' */
-    rtb_MatrixConcatenate1[4] = rtb_Cos_j;
+    /* Trigonometry: '<S231>/Trigonometric Function3' */
+    rtb_MatrixConcatenate1[4] = rtb_rate_err_B_idx_0;
 
-    /* SignalConversion: '<S223>/ConcatBufferAtVector Concatenate2In3' incorporates:
-     *  Constant: '<S223>/Constant4'
+    /* SignalConversion: '<S231>/ConcatBufferAtVector Concatenate2In3' incorporates:
+     *  Constant: '<S231>/Constant4'
      */
     rtb_MatrixConcatenate1[5] = 0.0F;
 
-    /* SignalConversion: '<S223>/ConcatBufferAtVector ConcatenateIn3' */
+    /* SignalConversion: '<S231>/ConcatBufferAtVector ConcatenateIn3' */
     rtb_MatrixConcatenate1[6] = Controller_ConstB.VectorConcatenate3_o[0];
     rtb_MatrixConcatenate1[7] = Controller_ConstB.VectorConcatenate3_o[1];
     rtb_MatrixConcatenate1[8] = Controller_ConstB.VectorConcatenate3_o[2];
 
-    /* Product: '<S219>/Multiply' */
+    /* Product: '<S227>/Multiply' */
     for (i = 0; i < 3; i++) {
       rtb_DiscreteTimeIntegrator1_k1[i] = rtb_MatrixConcatenate1[i + 6] *
-        rtb_FF_limit_idx_2 + (rtb_MatrixConcatenate1[i + 3] * rtb_FF_limit_idx_1
-        + rtb_MatrixConcatenate1[i] * rtb_Add_c);
+        rtb_TmpSignalConversionAtMult_2 + (rtb_MatrixConcatenate1[i + 3] *
+        rtb_TmpSignalConversionAtMult_1 + rtb_MatrixConcatenate1[i] *
+        rtb_TmpSignalConversionAtMult_0);
     }
 
-    /* End of Product: '<S219>/Multiply' */
+    /* End of Product: '<S227>/Multiply' */
 
-    /* DeadZone: '<S219>/Dead Zone' */
+    /* DeadZone: '<S227>/Dead Zone' */
     if (rtb_DiscreteTimeIntegrator1_k1[0] > 1.0F) {
-      rtb_Divide_i_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - 1.0F;
+      rtb_Divide_m_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - 1.0F;
     } else if (rtb_DiscreteTimeIntegrator1_k1[0] >= -1.0F) {
-      rtb_Divide_i_idx_0 = 0.0F;
+      rtb_Divide_m_idx_0 = 0.0F;
     } else {
-      rtb_Divide_i_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - -1.0F;
+      rtb_Divide_m_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0] - -1.0F;
     }
 
-    /* End of DeadZone: '<S219>/Dead Zone' */
+    /* End of DeadZone: '<S227>/Dead Zone' */
 
-    /* Saturate: '<S219>/Saturation1' incorporates:
-     *  Sqrt: '<S219>/Sqrt'
+    /* Saturate: '<S227>/Saturation1' incorporates:
+     *  Sqrt: '<S227>/Sqrt'
      */
     if (u0 > 100.0F) {
       u0 = 100.0F;
@@ -1036,27 +1262,27 @@ void Controller_step(void)
       }
     }
 
-    /* End of Saturate: '<S219>/Saturation1' */
+    /* End of Saturate: '<S227>/Saturation1' */
 
-    /* Signum: '<S219>/Sign' */
-    if (rtb_Divide_i_idx_0 < 0.0F) {
-      rtb_Divide_i_idx_0 = -1.0F;
+    /* Signum: '<S227>/Sign' */
+    if (rtb_Divide_m_idx_0 < 0.0F) {
+      rtb_Divide_m_idx_0 = -1.0F;
     } else {
-      if (rtb_Divide_i_idx_0 > 0.0F) {
-        rtb_Divide_i_idx_0 = 1.0F;
+      if (rtb_Divide_m_idx_0 > 0.0F) {
+        rtb_Divide_m_idx_0 = 1.0F;
       }
     }
 
-    /* End of Signum: '<S219>/Sign' */
+    /* End of Signum: '<S227>/Sign' */
 
-    /* Product: '<S219>/Multiply1' incorporates:
-     *  Gain: '<S219>/Gain'
-     *  Product: '<S219>/Divide'
-     *  Trigonometry: '<S219>/Asin'
+    /* Product: '<S227>/Multiply1' incorporates:
+     *  Gain: '<S227>/Gain'
+     *  Product: '<S227>/Divide'
+     *  Trigonometry: '<S227>/Asin'
      */
-    u0 = atanf(-Controller_U.FMS_Out.w_cmd / u0) * rtb_Divide_i_idx_0;
+    u0 = atanf(-Controller_U.FMS_Out.w_cmd / u0) * rtb_Divide_m_idx_0;
 
-    /* Saturate: '<S219>/Saturation2' */
+    /* Saturate: '<S227>/Saturation2' */
     if (u0 > 0.785398185F) {
       u0 = 0.785398185F;
     } else {
@@ -1065,182 +1291,155 @@ void Controller_step(void)
       }
     }
 
-    /* End of Saturate: '<S219>/Saturation2' */
+    /* End of Saturate: '<S227>/Saturation2' */
 
-    /* Sum: '<S212>/Minus' */
+    /* Sum: '<S221>/Minus' */
     rtb_Minus = u0 - rtb_Saturation1_ih;
 
-    /* Sqrt: '<S238>/Sqrt' incorporates:
+    /* Sqrt: '<S246>/Sqrt' incorporates:
      *  Inport: '<Root>/INS_Out'
-     *  Math: '<S238>/Square'
-     *  Sum: '<S238>/Sum of Elements'
+     *  Math: '<S246>/Square'
+     *  Sum: '<S246>/Sum of Elements'
      */
-    rtb_Sum = sqrtf(((Controller_U.INS_Out.quat[0] * Controller_U.INS_Out.quat[0]
-                      + Controller_U.INS_Out.quat[1] *
-                      Controller_U.INS_Out.quat[1]) + Controller_U.INS_Out.quat
-                     [2] * Controller_U.INS_Out.quat[2]) +
-                    Controller_U.INS_Out.quat[3] * Controller_U.INS_Out.quat[3]);
+    rtb_Sum_0 = sqrtf(((Controller_U.INS_Out.quat[0] *
+                        Controller_U.INS_Out.quat[0] +
+                        Controller_U.INS_Out.quat[1] *
+                        Controller_U.INS_Out.quat[1]) +
+                       Controller_U.INS_Out.quat[2] * Controller_U.INS_Out.quat
+                       [2]) + Controller_U.INS_Out.quat[3] *
+                      Controller_U.INS_Out.quat[3]);
 
-    /* Product: '<S234>/Divide' incorporates:
+    /* Product: '<S242>/Divide' incorporates:
      *  Inport: '<Root>/INS_Out'
+     *  Sqrt: '<S246>/Sqrt'
      */
-    rtb_Divide_i_idx_0 = Controller_U.INS_Out.quat[0] / rtb_Sum;
-    rtb_Divide_i_idx_1 = Controller_U.INS_Out.quat[1] / rtb_Sum;
-    rtb_Divide_i_idx_2 = Controller_U.INS_Out.quat[2] / rtb_Sum;
-    rtb_Divide_i_idx_3 = Controller_U.INS_Out.quat[3] / rtb_Sum;
+    rtb_Divide_m_idx_0 = Controller_U.INS_Out.quat[0] / rtb_Sum_0;
+    rtb_Divide_m_idx_1 = Controller_U.INS_Out.quat[1] / rtb_Sum_0;
+    rtb_Divide_m_idx_2 = Controller_U.INS_Out.quat[2] / rtb_Sum_0;
+    rtb_Divide_m_idx_3 = Controller_U.INS_Out.quat[3] / rtb_Sum_0;
 
-    /* Math: '<S235>/Square' incorporates:
-     *  Math: '<S236>/Square'
-     *  Math: '<S237>/Square'
+    /* Sum: '<S243>/Subtract' incorporates:
+     *  Math: '<S243>/Square'
+     *  Math: '<S243>/Square1'
+     *  Math: '<S243>/Square2'
+     *  Math: '<S243>/Square3'
+     *  Sum: '<S243>/Add'
+     *  Sum: '<S243>/Add1'
      */
-    rtb_Cos_j = rtb_Divide_i_idx_0 * rtb_Divide_i_idx_0;
+    rtb_MatrixConcatenate1[0] = (rtb_Divide_m_idx_0 * rtb_Divide_m_idx_0 +
+      rtb_Divide_m_idx_1 * rtb_Divide_m_idx_1) - (rtb_Divide_m_idx_2 *
+      rtb_Divide_m_idx_2 + rtb_Divide_m_idx_3 * rtb_Divide_m_idx_3);
 
-    /* Math: '<S235>/Square2' incorporates:
-     *  Math: '<S236>/Square2'
-     *  Math: '<S237>/Square2'
+    /* Gain: '<S243>/Gain' incorporates:
+     *  Product: '<S243>/Multiply'
+     *  Product: '<S243>/Multiply1'
+     *  Sum: '<S243>/Subtract1'
      */
-    rtb_Saturation1_h_idx_0 = rtb_Divide_i_idx_2 * rtb_Divide_i_idx_2;
+    rtb_MatrixConcatenate1[1] = (rtb_Divide_m_idx_1 * rtb_Divide_m_idx_2 -
+      rtb_Divide_m_idx_0 * rtb_Divide_m_idx_3) * 2.0F;
 
-    /* Math: '<S235>/Square1' incorporates:
-     *  Math: '<S236>/Square1'
-     *  Math: '<S237>/Square1'
+    /* Gain: '<S243>/Gain1' incorporates:
+     *  Product: '<S243>/Multiply2'
+     *  Product: '<S243>/Multiply3'
+     *  Sum: '<S243>/Add2'
      */
-    rtb_MatrixConcatenate1_tmp = rtb_Divide_i_idx_1 * rtb_Divide_i_idx_1;
+    rtb_MatrixConcatenate1[2] = (rtb_Divide_m_idx_1 * rtb_Divide_m_idx_3 +
+      rtb_Divide_m_idx_0 * rtb_Divide_m_idx_2) * 2.0F;
 
-    /* Math: '<S235>/Square3' incorporates:
-     *  Math: '<S236>/Square3'
-     *  Math: '<S237>/Square3'
+    /* Gain: '<S244>/Gain' incorporates:
+     *  Product: '<S244>/Multiply'
+     *  Product: '<S244>/Multiply1'
+     *  Sum: '<S244>/Add3'
      */
-    rtb_B_err = rtb_Divide_i_idx_3 * rtb_Divide_i_idx_3;
+    rtb_MatrixConcatenate1[3] = (rtb_Divide_m_idx_1 * rtb_Divide_m_idx_2 +
+      rtb_Divide_m_idx_0 * rtb_Divide_m_idx_3) * 2.0F;
 
-    /* Sum: '<S235>/Subtract' incorporates:
-     *  Math: '<S235>/Square'
-     *  Math: '<S235>/Square1'
-     *  Math: '<S235>/Square2'
-     *  Math: '<S235>/Square3'
-     *  Sum: '<S235>/Add'
-     *  Sum: '<S235>/Add1'
+    /* Sum: '<S244>/Subtract' incorporates:
+     *  Math: '<S244>/Square'
+     *  Math: '<S244>/Square1'
+     *  Math: '<S244>/Square2'
+     *  Math: '<S244>/Square3'
+     *  Sum: '<S244>/Add'
+     *  Sum: '<S244>/Add1'
      */
-    rtb_MatrixConcatenate1[0] = (rtb_Cos_j + rtb_MatrixConcatenate1_tmp) -
-      (rtb_Saturation1_h_idx_0 + rtb_B_err);
+    rtb_MatrixConcatenate1[4] = (rtb_Divide_m_idx_0 * rtb_Divide_m_idx_0 +
+      rtb_Divide_m_idx_2 * rtb_Divide_m_idx_2) - (rtb_Divide_m_idx_1 *
+      rtb_Divide_m_idx_1 + rtb_Divide_m_idx_3 * rtb_Divide_m_idx_3);
 
-    /* Product: '<S235>/Multiply' incorporates:
-     *  Product: '<S236>/Multiply'
+    /* Gain: '<S244>/Gain1' incorporates:
+     *  Product: '<S244>/Multiply2'
+     *  Product: '<S244>/Multiply3'
+     *  Sum: '<S244>/Subtract1'
      */
-    rtb_Gain_il = rtb_Divide_i_idx_1 * rtb_Divide_i_idx_2;
+    rtb_MatrixConcatenate1[5] = (rtb_Divide_m_idx_2 * rtb_Divide_m_idx_3 -
+      rtb_Divide_m_idx_0 * rtb_Divide_m_idx_1) * 2.0F;
 
-    /* Product: '<S235>/Multiply1' incorporates:
-     *  Product: '<S236>/Multiply1'
+    /* Gain: '<S245>/Gain' incorporates:
+     *  Product: '<S245>/Multiply'
+     *  Product: '<S245>/Multiply1'
+     *  Sum: '<S245>/Subtract2'
      */
-    u0 = rtb_Divide_i_idx_0 * rtb_Divide_i_idx_3;
+    rtb_MatrixConcatenate1[6] = (rtb_Divide_m_idx_1 * rtb_Divide_m_idx_3 -
+      rtb_Divide_m_idx_0 * rtb_Divide_m_idx_2) * 2.0F;
 
-    /* Gain: '<S235>/Gain' incorporates:
-     *  Product: '<S235>/Multiply'
-     *  Product: '<S235>/Multiply1'
-     *  Sum: '<S235>/Subtract1'
+    /* Gain: '<S245>/Gain1' incorporates:
+     *  Product: '<S245>/Multiply2'
+     *  Product: '<S245>/Multiply3'
+     *  Sum: '<S245>/Add2'
      */
-    rtb_MatrixConcatenate1[1] = (rtb_Gain_il - u0) * 2.0F;
+    rtb_MatrixConcatenate1[7] = (rtb_Divide_m_idx_2 * rtb_Divide_m_idx_3 +
+      rtb_Divide_m_idx_0 * rtb_Divide_m_idx_1) * 2.0F;
 
-    /* Product: '<S235>/Multiply2' incorporates:
-     *  Product: '<S237>/Multiply'
+    /* Sum: '<S245>/Subtract' incorporates:
+     *  Math: '<S245>/Square'
+     *  Math: '<S245>/Square1'
+     *  Math: '<S245>/Square2'
+     *  Math: '<S245>/Square3'
+     *  Sum: '<S245>/Add'
+     *  Sum: '<S245>/Add1'
      */
-    rtb_Sum = rtb_Divide_i_idx_1 * rtb_Divide_i_idx_3;
+    rtb_MatrixConcatenate1[8] = (rtb_Divide_m_idx_0 * rtb_Divide_m_idx_0 +
+      rtb_Divide_m_idx_3 * rtb_Divide_m_idx_3) - (rtb_Divide_m_idx_1 *
+      rtb_Divide_m_idx_1 + rtb_Divide_m_idx_2 * rtb_Divide_m_idx_2);
 
-    /* Product: '<S235>/Multiply3' incorporates:
-     *  Product: '<S237>/Multiply1'
-     */
-    rtb_Add2_h = rtb_Divide_i_idx_0 * rtb_Divide_i_idx_2;
-
-    /* Gain: '<S235>/Gain1' incorporates:
-     *  Product: '<S235>/Multiply2'
-     *  Product: '<S235>/Multiply3'
-     *  Sum: '<S235>/Add2'
-     */
-    rtb_MatrixConcatenate1[2] = (rtb_Sum + rtb_Add2_h) * 2.0F;
-
-    /* Gain: '<S236>/Gain' incorporates:
-     *  Sum: '<S236>/Add3'
-     */
-    rtb_MatrixConcatenate1[3] = (rtb_Gain_il + u0) * 2.0F;
-
-    /* Sum: '<S236>/Subtract' incorporates:
-     *  Sum: '<S236>/Add'
-     *  Sum: '<S236>/Add1'
-     */
-    rtb_MatrixConcatenate1[4] = (rtb_Cos_j + rtb_Saturation1_h_idx_0) -
-      (rtb_MatrixConcatenate1_tmp + rtb_B_err);
-
-    /* Product: '<S236>/Multiply2' incorporates:
-     *  Product: '<S237>/Multiply2'
-     */
-    rtb_Gain_il = rtb_Divide_i_idx_2 * rtb_Divide_i_idx_3;
-
-    /* Product: '<S236>/Multiply3' incorporates:
-     *  Product: '<S237>/Multiply3'
-     */
-    u0 = rtb_Divide_i_idx_0 * rtb_Divide_i_idx_1;
-
-    /* Gain: '<S236>/Gain1' incorporates:
-     *  Product: '<S236>/Multiply2'
-     *  Product: '<S236>/Multiply3'
-     *  Sum: '<S236>/Subtract1'
-     */
-    rtb_MatrixConcatenate1[5] = (rtb_Gain_il - u0) * 2.0F;
-
-    /* Gain: '<S237>/Gain' incorporates:
-     *  Sum: '<S237>/Subtract2'
-     */
-    rtb_MatrixConcatenate1[6] = (rtb_Sum - rtb_Add2_h) * 2.0F;
-
-    /* Gain: '<S237>/Gain1' incorporates:
-     *  Sum: '<S237>/Add2'
-     */
-    rtb_MatrixConcatenate1[7] = (rtb_Gain_il + u0) * 2.0F;
-
-    /* Sum: '<S237>/Subtract' incorporates:
-     *  Sum: '<S237>/Add'
-     *  Sum: '<S237>/Add1'
-     */
-    rtb_MatrixConcatenate1[8] = (rtb_Cos_j + rtb_B_err) -
-      (rtb_MatrixConcatenate1_tmp + rtb_Saturation1_h_idx_0);
-
-    /* Product: '<S231>/Multiply' */
+    /* Product: '<S239>/Multiply' */
     for (i = 0; i < 3; i++) {
       rtb_DiscreteTimeIntegrator1_k1[i] = rtb_MatrixConcatenate1[i + 6] *
-        rtb_FF_limit_idx_2 + (rtb_MatrixConcatenate1[i + 3] * rtb_FF_limit_idx_1
-        + rtb_MatrixConcatenate1[i] * rtb_Add_c);
+        rtb_TmpSignalConversionAtMult_2 + (rtb_MatrixConcatenate1[i + 3] *
+        rtb_TmpSignalConversionAtMult_1 + rtb_MatrixConcatenate1[i] *
+        rtb_TmpSignalConversionAtMult_0);
     }
 
-    /* End of Product: '<S231>/Multiply' */
+    /* End of Product: '<S239>/Multiply' */
 
-    /* Switch: '<S231>/Switch' incorporates:
-     *  Constant: '<S232>/Constant'
-     *  Inport: '<Root>/INS_Out'
-     *  RelationalOperator: '<S232>/Compare'
+    /* Switch: '<S239>/Switch' incorporates:
+     *  Constant: '<S240>/Constant'
+     *  DiscreteIntegrator: '<S193>/Discrete-Time Integrator5'
+     *  RelationalOperator: '<S240>/Compare'
      */
     if (rtb_DiscreteTimeIntegrator1_k1[0] >= 3.0F) {
-      rtb_Divide_i_idx_0 = Controller_U.INS_Out.airspeed;
+      rtb_Divide_m_idx_0 = Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
     } else {
-      rtb_Divide_i_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0];
+      rtb_Divide_m_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0];
     }
 
-    /* End of Switch: '<S231>/Switch' */
+    /* End of Switch: '<S239>/Switch' */
 
-    /* Sum: '<S216>/Sum' incorporates:
-     *  Gain: '<S216>/Gain'
-     *  Sum: '<S216>/Minus'
+    /* Sum: '<S225>/Sum' incorporates:
+     *  Gain: '<S225>/Gain'
+     *  Sum: '<S225>/Minus'
      */
-    rtb_Sum = (Controller_U.FMS_Out.u_cmd - rtb_Divide_i_idx_0) * 0.101936802F -
-      rtb_VdotPg;
+    rtb_Sum_0 = (Controller_U.FMS_Out.u_cmd - rtb_Divide_m_idx_0) * 0.101936802F
+      - rtb_VdotPg;
 
-    /* Sum: '<S194>/Minus1' incorporates:
-     *  Gain: '<S194>/ucmd2pitch'
-     *  Gain: '<S194>/wcmd2pitch'
+    /* Sum: '<S203>/Minus1' incorporates:
+     *  Gain: '<S203>/ucmd2pitch'
+     *  Gain: '<S203>/wcmd2pitch'
      */
     rtb_B_err = CONTROL_PARAM.FW_TECS_W2P * rtb_Minus -
-      CONTROL_PARAM.FW_TECS_U2P * rtb_Sum;
+      CONTROL_PARAM.FW_TECS_U2P * rtb_Sum_0;
 
-    /* DiscreteIntegrator: '<S226>/ ' */
+    /* DiscreteIntegrator: '<S234>/ ' */
     if ((Controller_U.FMS_Out.reset != 0) || (Controller_DW._PrevResetState != 0))
     {
       Controller_DW._DSTATE = Controller_ConstB.Zero1;
@@ -1261,7 +1460,7 @@ void Controller_step(void)
       }
     }
 
-    /* DiscreteIntegrator: '<S227>/Discrete-Time Integrator1' */
+    /* DiscreteIntegrator: '<S235>/Discrete-Time Integrator1' */
     if (Controller_DW.DiscreteTimeIntegrator1_IC_LO_f != 0) {
       Controller_DW.DiscreteTimeIntegrator1_DSTAT_e = rtb_B_err;
     }
@@ -1271,64 +1470,63 @@ void Controller_step(void)
       Controller_DW.DiscreteTimeIntegrator1_DSTAT_e = rtb_B_err;
     }
 
-    /* Gain: '<S227>/Gain' incorporates:
-     *  DiscreteIntegrator: '<S227>/Discrete-Time Integrator1'
-     *  Sum: '<S227>/Sum5'
+    /* Gain: '<S235>/Gain' incorporates:
+     *  DiscreteIntegrator: '<S235>/Discrete-Time Integrator1'
+     *  Sum: '<S235>/Sum5'
      */
     rtb_Gain_il = (rtb_B_err - Controller_DW.DiscreteTimeIntegrator1_DSTAT_e) *
       62.831852F;
 
-    /* Switch: '<S227>/Switch' incorporates:
-     *  Gain: '<S227>/Gain1'
+    /* Switch: '<S235>/Switch' incorporates:
+     *  Gain: '<S235>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_MatrixConcatenate1_tmp = 0.0F;
+      rtb_u = 0.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Gain_il;
+      rtb_u = rtb_Gain_il;
     }
 
-    /* End of Switch: '<S227>/Switch' */
+    /* End of Switch: '<S235>/Switch' */
 
-    /* Gain: '<S225>/Gain' */
-    rtb_Add2_h = CONTROL_PARAM.FW_TECS_PITCH_D * rtb_MatrixConcatenate1_tmp;
+    /* Gain: '<S233>/Gain' */
+    rtb_a_n = CONTROL_PARAM.FW_TECS_PITCH_D * rtb_u;
 
-    /* Saturate: '<S214>/Saturation1' */
-    if (rtb_Add2_h > 0.3F) {
-      rtb_Add2_h = 0.3F;
+    /* Saturate: '<S223>/Saturation1' */
+    if (rtb_a_n > 0.3F) {
+      rtb_a_n = 0.3F;
     } else {
-      if (rtb_Add2_h < -0.3F) {
-        rtb_Add2_h = -0.3F;
+      if (rtb_a_n < -0.3F) {
+        rtb_a_n = -0.3F;
       }
     }
 
-    /* End of Saturate: '<S214>/Saturation1' */
+    /* End of Saturate: '<S223>/Saturation1' */
 
-    /* Sum: '<S194>/Sum' incorporates:
-     *  DiscreteIntegrator: '<S226>/ '
-     *  Gain: '<S194>/Gain'
-     *  Gain: '<S194>/balabnce_ratio2'
-     *  Gain: '<S194>/balance_ratio'
-     *  Gain: '<S194>/pitch_ff'
-     *  Gain: '<S214>/P_control'
-     *  Sum: '<S194>/Add3'
-     *  Sum: '<S194>/Minus'
-     *  Sum: '<S214>/Add'
+    /* Sum: '<S203>/Sum' incorporates:
+     *  DiscreteIntegrator: '<S234>/ '
+     *  Gain: '<S203>/Gain'
+     *  Gain: '<S203>/balabnce_ratio2'
+     *  Gain: '<S203>/balance_ratio'
+     *  Gain: '<S203>/pitch_ff'
+     *  Gain: '<S223>/P_control'
+     *  Sum: '<S203>/Add3'
+     *  Sum: '<S203>/Minus'
+     *  Sum: '<S223>/Add'
      */
-    rtb_Add2_h = (((2.0F - CONTROL_PARAM.FW_TECS_RATIO) * rtb_Saturation1_ih -
-                   CONTROL_PARAM.FW_TECS_RATIO * rtb_VdotPg) *
-                  CONTROL_PARAM.FW_TECS_PITCH_F +
-                  ((CONTROL_PARAM.FW_TECS_PITCH_P * rtb_B_err +
-                    Controller_DW._DSTATE) + rtb_Add2_h)) +
-      CONTROL_PARAM.FW_TECS_R2P * rtb_Abs;
+    rtb_a_n = (((2.0F - CONTROL_PARAM.FW_TECS_RATIO) * rtb_Saturation1_ih -
+                CONTROL_PARAM.FW_TECS_RATIO * rtb_VdotPg) *
+               CONTROL_PARAM.FW_TECS_PITCH_F + ((CONTROL_PARAM.FW_TECS_PITCH_P *
+      rtb_B_err + Controller_DW._DSTATE) + rtb_a_n)) + CONTROL_PARAM.FW_TECS_R2P
+      * rtb_Abs;
 
     /* Switch: '<S172>/Switch' incorporates:
      *  Constant: '<S175>/Constant'
      *  RelationalOperator: '<S175>/Compare'
      */
     if (rtb_BitwiseAND_a <= 4) {
-      rtb_MatrixConcatenate1_tmp = Controller_U.FMS_Out.phi_cmd;
+      rtb_u = Controller_U.FMS_Out.phi_cmd;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Cos1_d;
+      rtb_u = rtb_Cos_j;
     }
 
     /* End of Switch: '<S172>/Switch' */
@@ -1336,16 +1534,16 @@ void Controller_step(void)
     /* Sum: '<S166>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Divide_i_idx_0 = rtb_MatrixConcatenate1_tmp - Controller_U.INS_Out.phi;
+    rtb_Divide_m_idx_2 = rtb_u - Controller_U.INS_Out.phi;
 
     /* Switch: '<S173>/Switch' incorporates:
      *  Constant: '<S176>/Constant'
      *  RelationalOperator: '<S176>/Compare'
      */
     if (rtb_BitwiseAND_a <= 3) {
-      rtb_MatrixConcatenate1_tmp = Controller_U.FMS_Out.theta_cmd;
+      rtb_u = Controller_U.FMS_Out.theta_cmd;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Add2_h;
+      rtb_u = rtb_a_n;
     }
 
     /* End of Switch: '<S173>/Switch' */
@@ -1353,13 +1551,13 @@ void Controller_step(void)
     /* Sum: '<S166>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Cos_j = rtb_MatrixConcatenate1_tmp - Controller_U.INS_Out.theta;
+    rtb_Divide_m_idx_1 = rtb_u - Controller_U.INS_Out.theta;
 
     /* Product: '<S169>/Divide1' incorporates:
      *  Abs: '<S169>/Abs'
      *  Constant: '<S169>/const2'
      */
-    rtb_FF_limit_idx_2 = fabsf(rtb_Divide_i_idx_0) / 0.002F;
+    rtb_TmpSignalConversionAtMult_2 = fabsf(rtb_Divide_m_idx_2) / 0.002F;
 
     /* Product: '<S169>/Divide' incorporates:
      *  Constant: '<S167>/Constant1'
@@ -1367,17 +1565,18 @@ void Controller_step(void)
      *  Math: '<S169>/Square'
      *  SignalConversion: '<S169>/TmpSignal ConversionAtSquareInport1'
      */
-    rtb_Add_c = 9.5993F / (CONTROL_PARAM.MC_ROLL_P * CONTROL_PARAM.MC_ROLL_P);
+    rtb_TmpSignalConversionAtMult_0 = 9.5993F / (CONTROL_PARAM.MC_ROLL_P *
+      CONTROL_PARAM.MC_ROLL_P);
 
     /* Signum: '<S169>/Sign' incorporates:
      *  Abs: '<S169>/Abs'
      */
-    if (rtb_Divide_i_idx_0 < 0.0F) {
-      rtb_MatrixConcatenate1_tmp = -1.0F;
-    } else if (rtb_Divide_i_idx_0 > 0.0F) {
-      rtb_MatrixConcatenate1_tmp = 1.0F;
+    if (rtb_Divide_m_idx_2 < 0.0F) {
+      u0 = -1.0F;
+    } else if (rtb_Divide_m_idx_2 > 0.0F) {
+      u0 = 1.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Divide_i_idx_0;
+      u0 = rtb_Divide_m_idx_2;
     }
 
     /* Switch: '<S169>/Switch' incorporates:
@@ -1397,48 +1596,48 @@ void Controller_step(void)
      *  Sqrt: '<S169>/Sqrt'
      *  Sum: '<S169>/Subtract'
      */
-    if ((rtb_Divide_i_idx_0 <= rtb_Add_c) && (rtb_Divide_i_idx_0 >= -rtb_Add_c))
-    {
-      rtb_MatrixConcatenate1_tmp = rtb_Divide_i_idx_0 * CONTROL_PARAM.MC_ROLL_P;
+    if ((rtb_Divide_m_idx_2 <= rtb_TmpSignalConversionAtMult_0) &&
+        (rtb_Divide_m_idx_2 >= -rtb_TmpSignalConversionAtMult_0)) {
+      u0 = rtb_Divide_m_idx_2 * CONTROL_PARAM.MC_ROLL_P;
     } else {
-      rtb_MatrixConcatenate1_tmp *= sqrtf((rtb_MatrixConcatenate1_tmp *
-        rtb_Divide_i_idx_0 - 0.5F * rtb_Add_c) * Controller_ConstB.Gain_np);
+      u0 *= sqrtf((u0 * rtb_Divide_m_idx_2 - 0.5F *
+                   rtb_TmpSignalConversionAtMult_0) * Controller_ConstB.Gain_np);
     }
 
     /* Gain: '<S169>/Gain3' */
-    rtb_Add_c = -rtb_FF_limit_idx_2;
+    rtb_u = -rtb_TmpSignalConversionAtMult_2;
 
     /* Switch: '<S170>/Switch' incorporates:
      *  Gain: '<S169>/Gain3'
      *  RelationalOperator: '<S170>/UpperRelop'
      */
-    if (rtb_MatrixConcatenate1_tmp >= -rtb_FF_limit_idx_2) {
-      rtb_Add_c = rtb_MatrixConcatenate1_tmp;
+    if (u0 >= -rtb_TmpSignalConversionAtMult_2) {
+      rtb_u = u0;
     }
 
     /* Switch: '<S170>/Switch2' incorporates:
      *  RelationalOperator: '<S170>/LowerRelop1'
      */
-    if (rtb_MatrixConcatenate1_tmp <= rtb_FF_limit_idx_2) {
-      rtb_FF_limit_idx_2 = rtb_Add_c;
+    if (u0 <= rtb_TmpSignalConversionAtMult_2) {
+      rtb_TmpSignalConversionAtMult_2 = rtb_u;
     }
 
     /* Saturate: '<S155>/Saturation1' */
-    if (rtb_FF_limit_idx_2 > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-      rtb_FF_limit_idx_2 = CONTROL_PARAM.MC_P_Q_CMD_LIM;
+    if (rtb_TmpSignalConversionAtMult_2 > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+      rtb_TmpSignalConversionAtMult_2 = CONTROL_PARAM.MC_P_Q_CMD_LIM;
     } else {
-      if (rtb_FF_limit_idx_2 < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-        rtb_FF_limit_idx_2 = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
+      if (rtb_TmpSignalConversionAtMult_2 < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+        rtb_TmpSignalConversionAtMult_2 = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
       }
     }
 
-    rtb_Saturation1_h_idx_0 = rtb_FF_limit_idx_2;
+    rtb_Divide_m_idx_0 = rtb_TmpSignalConversionAtMult_2;
 
     /* Product: '<S169>/Divide1' incorporates:
      *  Abs: '<S169>/Abs'
      *  Constant: '<S169>/const2'
      */
-    rtb_FF_limit_idx_2 = fabsf(rtb_Cos_j) / 0.002F;
+    rtb_TmpSignalConversionAtMult_2 = fabsf(rtb_Divide_m_idx_1) / 0.002F;
 
     /* Product: '<S169>/Divide' incorporates:
      *  Constant: '<S167>/Constant2'
@@ -1446,17 +1645,18 @@ void Controller_step(void)
      *  Math: '<S169>/Square'
      *  SignalConversion: '<S169>/TmpSignal ConversionAtSquareInport1'
      */
-    rtb_Add_c = 9.5993F / (CONTROL_PARAM.MC_PITCH_P * CONTROL_PARAM.MC_PITCH_P);
+    rtb_TmpSignalConversionAtMult_0 = 9.5993F / (CONTROL_PARAM.MC_PITCH_P *
+      CONTROL_PARAM.MC_PITCH_P);
 
     /* Signum: '<S169>/Sign' incorporates:
      *  Abs: '<S169>/Abs'
      */
-    if (rtb_Cos_j < 0.0F) {
-      rtb_MatrixConcatenate1_tmp = -1.0F;
-    } else if (rtb_Cos_j > 0.0F) {
-      rtb_MatrixConcatenate1_tmp = 1.0F;
+    if (rtb_Divide_m_idx_1 < 0.0F) {
+      u0 = -1.0F;
+    } else if (rtb_Divide_m_idx_1 > 0.0F) {
+      u0 = 1.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Cos_j;
+      u0 = rtb_Divide_m_idx_1;
     }
 
     /* Switch: '<S169>/Switch' incorporates:
@@ -1476,63 +1676,64 @@ void Controller_step(void)
      *  Sqrt: '<S169>/Sqrt'
      *  Sum: '<S169>/Subtract'
      */
-    if ((rtb_Cos_j <= rtb_Add_c) && (rtb_Cos_j >= -rtb_Add_c)) {
-      rtb_MatrixConcatenate1_tmp = rtb_Cos_j * CONTROL_PARAM.MC_PITCH_P;
+    if ((rtb_Divide_m_idx_1 <= rtb_TmpSignalConversionAtMult_0) &&
+        (rtb_Divide_m_idx_1 >= -rtb_TmpSignalConversionAtMult_0)) {
+      u0 = rtb_Divide_m_idx_1 * CONTROL_PARAM.MC_PITCH_P;
     } else {
-      rtb_MatrixConcatenate1_tmp *= sqrtf((rtb_MatrixConcatenate1_tmp *
-        rtb_Cos_j - 0.5F * rtb_Add_c) * Controller_ConstB.Gain_np);
+      u0 *= sqrtf((u0 * rtb_Divide_m_idx_1 - 0.5F *
+                   rtb_TmpSignalConversionAtMult_0) * Controller_ConstB.Gain_np);
     }
 
     /* Gain: '<S169>/Gain3' */
-    rtb_Add_c = -rtb_FF_limit_idx_2;
+    rtb_u = -rtb_TmpSignalConversionAtMult_2;
 
     /* Switch: '<S170>/Switch' incorporates:
      *  Gain: '<S169>/Gain3'
      *  RelationalOperator: '<S170>/UpperRelop'
      */
-    if (rtb_MatrixConcatenate1_tmp >= -rtb_FF_limit_idx_2) {
-      rtb_Add_c = rtb_MatrixConcatenate1_tmp;
+    if (u0 >= -rtb_TmpSignalConversionAtMult_2) {
+      rtb_u = u0;
     }
 
     /* Switch: '<S170>/Switch2' incorporates:
      *  RelationalOperator: '<S170>/LowerRelop1'
      */
-    if (rtb_MatrixConcatenate1_tmp <= rtb_FF_limit_idx_2) {
-      rtb_FF_limit_idx_2 = rtb_Add_c;
+    if (u0 <= rtb_TmpSignalConversionAtMult_2) {
+      rtb_TmpSignalConversionAtMult_2 = rtb_u;
     }
 
     /* Saturate: '<S155>/Saturation1' */
-    if (rtb_FF_limit_idx_2 > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-      rtb_FF_limit_idx_2 = CONTROL_PARAM.MC_P_Q_CMD_LIM;
+    if (rtb_TmpSignalConversionAtMult_2 > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+      rtb_TmpSignalConversionAtMult_2 = CONTROL_PARAM.MC_P_Q_CMD_LIM;
     } else {
-      if (rtb_FF_limit_idx_2 < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-        rtb_FF_limit_idx_2 = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
+      if (rtb_TmpSignalConversionAtMult_2 < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+        rtb_TmpSignalConversionAtMult_2 = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
       }
     }
 
     /* Saturate: '<S155>/Saturation' */
     if (Controller_U.FMS_Out.psi_rate_cmd > CONTROL_PARAM.MC_R_CMD_LIM) {
-      rtb_Cos_j = CONTROL_PARAM.MC_R_CMD_LIM;
+      rtb_Divide_m_idx_2 = CONTROL_PARAM.MC_R_CMD_LIM;
     } else if (Controller_U.FMS_Out.psi_rate_cmd < -CONTROL_PARAM.MC_R_CMD_LIM)
     {
-      rtb_Cos_j = -CONTROL_PARAM.MC_R_CMD_LIM;
+      rtb_Divide_m_idx_2 = -CONTROL_PARAM.MC_R_CMD_LIM;
     } else {
-      rtb_Cos_j = Controller_U.FMS_Out.psi_rate_cmd;
+      rtb_Divide_m_idx_2 = Controller_U.FMS_Out.psi_rate_cmd;
     }
 
     /* End of Saturate: '<S155>/Saturation' */
 
     /* Trigonometry: '<S164>/Sin' incorporates:
      *  Inport: '<Root>/INS_Out'
-     *  Trigonometry: '<S197>/Sin'
+     *  Trigonometry: '<S206>/Sin'
      */
-    rtb_MatrixConcatenate1_tmp = arm_sin_f32(Controller_U.INS_Out.phi);
+    rtb_Divide_m_idx_1 = arm_sin_f32(Controller_U.INS_Out.phi);
 
     /* Trigonometry: '<S164>/Sin1' incorporates:
      *  Inport: '<Root>/INS_Out'
-     *  Trigonometry: '<S197>/Sin1'
+     *  Trigonometry: '<S206>/Sin1'
      */
-    rtb_u = arm_sin_f32(Controller_U.INS_Out.theta);
+    rtb_TmpSignalConversionAtMult_3 = arm_sin_f32(Controller_U.INS_Out.theta);
 
     /* Sum: '<S156>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
@@ -1547,25 +1748,29 @@ void Controller_step(void)
      *  Trigonometry: '<S164>/Sin'
      *  Trigonometry: '<S164>/Sin1'
      */
-    rtb_Add_c = (rtb_Saturation1_h_idx_0 - rtb_u * rtb_Cos_j) -
+    rtb_TmpSignalConversionAtMult_0 = (rtb_Divide_m_idx_0 -
+      rtb_TmpSignalConversionAtMult_3 * rtb_Divide_m_idx_2) -
       Controller_U.INS_Out.p;
-    rtb_FF_limit_idx_1 = (rtb_MatrixConcatenate1_tmp * rtb_Gain_cu * rtb_Cos_j +
-                          rtb_Multiply_ga_idx_0 * rtb_FF_limit_idx_2) -
+    rtb_TmpSignalConversionAtMult_1 = (rtb_Divide_m_idx_1 * rtb_Gain_cu *
+      rtb_Divide_m_idx_2 + rtb_Add1_g_tmp * rtb_TmpSignalConversionAtMult_2) -
       Controller_U.INS_Out.q;
-    rtb_FF_limit_idx_2 = (rtb_Multiply_ga_idx_0 * rtb_Gain_cu * rtb_Cos_j -
-                          rtb_MatrixConcatenate1_tmp * rtb_FF_limit_idx_2) -
-      Controller_U.INS_Out.r;
+    rtb_TmpSignalConversionAtMult_2 = (rtb_Add1_g_tmp * rtb_Gain_cu *
+      rtb_Divide_m_idx_2 - rtb_Divide_m_idx_1 * rtb_TmpSignalConversionAtMult_2)
+      - Controller_U.INS_Out.r;
 
     /* DiscreteIntegrator: '<S159>/Discrete-Time Integrator5' */
     if (Controller_DW.DiscreteTimeIntegrator5_IC_LO_b != 0) {
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0] = rtb_Add_c;
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1] = rtb_FF_limit_idx_1;
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2] = rtb_FF_limit_idx_2;
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0] =
+        rtb_TmpSignalConversionAtMult_0;
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1] =
+        rtb_TmpSignalConversionAtMult_1;
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2] =
+        rtb_TmpSignalConversionAtMult_2;
     }
 
     /* Logic: '<S151>/Logical Operator' incorporates:
      *  Constant: '<S153>/Constant'
-     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
      *  RelationalOperator: '<S153>/Compare'
      */
     rtb_LogicalOperator_m = ((Controller_U.FMS_Out.reset != 0) ||
@@ -1694,13 +1899,13 @@ void Controller_step(void)
      *  Gain: '<S163>/Gain1'
      */
     if (rtb_LogicalOperator_m) {
-      rtb_Divide_i_idx_1 = 0.0F;
-      rtb_Divide_i_idx_2 = 0.0F;
-      rtb_Divide_i_idx_3 = 0.0F;
+      rtb_rate_err_B_idx_0 = 0.0F;
+      rtb_rate_err_B_idx_1 = 0.0F;
+      rtb_Divide_m_idx_3 = 0.0F;
     } else {
-      rtb_Divide_i_idx_1 = rtb_DiscreteTimeIntegrator1_k1[0];
-      rtb_Divide_i_idx_2 = rtb_DiscreteTimeIntegrator1_k1[1];
-      rtb_Divide_i_idx_3 = rtb_DiscreteTimeIntegrator1_k1[2];
+      rtb_rate_err_B_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0];
+      rtb_rate_err_B_idx_1 = rtb_DiscreteTimeIntegrator1_k1[1];
+      rtb_Divide_m_idx_3 = rtb_DiscreteTimeIntegrator1_k1[2];
     }
 
     /* End of Switch: '<S163>/Switch' */
@@ -1708,49 +1913,46 @@ void Controller_step(void)
     /* Product: '<S160>/Multiply' incorporates:
      *  Constant: '<S160>/gain1'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_ROLL_RATE_D *
-      rtb_Divide_i_idx_1;
+    rtb_u = CONTROL_PARAM.MC_ROLL_RATE_D * rtb_rate_err_B_idx_0;
 
     /* Saturate: '<S160>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+    if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+      rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+      if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
       }
     }
 
-    rtb_Divide_i_idx_1 = rtb_DiscreteTimeIntegrator1_g;
+    rtb_rate_err_B_idx_0 = rtb_u;
 
     /* Product: '<S160>/Multiply' incorporates:
      *  Constant: '<S160>/gain2'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_PITCH_RATE_D *
-      rtb_Divide_i_idx_2;
+    rtb_u = CONTROL_PARAM.MC_PITCH_RATE_D * rtb_rate_err_B_idx_1;
 
     /* Saturate: '<S160>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+    if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+      rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+      if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
       }
     }
 
-    rtb_Divide_i_idx_2 = rtb_DiscreteTimeIntegrator1_g;
+    rtb_rate_err_B_idx_1 = rtb_u;
 
     /* Product: '<S160>/Multiply' incorporates:
      *  Constant: '<S160>/gain3'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_YAW_RATE_D *
-      rtb_Divide_i_idx_3;
+    rtb_u = CONTROL_PARAM.MC_YAW_RATE_D * rtb_Divide_m_idx_3;
 
     /* Saturate: '<S160>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+    if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+      rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+      if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
       }
     }
 
@@ -1758,14 +1960,14 @@ void Controller_step(void)
      *  Constant: '<S162>/gain1'
      *  DiscreteIntegrator: '<S159>/Discrete-Time Integrator5'
      *  DiscreteIntegrator: '<S161>/Discrete-Time Integrator'
-     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
      *  Product: '<S162>/Multiply'
      *  Sum: '<S157>/Add'
      */
     u0 = ((CONTROL_PARAM.MC_ROLL_RATE_P *
            Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0] +
            Controller_DW.DiscreteTimeIntegrator_DSTATE_d[0]) +
-          rtb_Divide_i_idx_1) * Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
+          rtb_rate_err_B_idx_0) * Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
 
     /* Saturate: '<S144>/Saturation2' */
     if (u0 > 1.0F) {
@@ -1780,14 +1982,14 @@ void Controller_step(void)
      *  Constant: '<S162>/gain2'
      *  DiscreteIntegrator: '<S159>/Discrete-Time Integrator5'
      *  DiscreteIntegrator: '<S161>/Discrete-Time Integrator'
-     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
      *  Product: '<S162>/Multiply'
      *  Sum: '<S157>/Add'
      */
     u0 = ((CONTROL_PARAM.MC_PITCH_RATE_P *
            Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1] +
            Controller_DW.DiscreteTimeIntegrator_DSTATE_d[1]) +
-          rtb_Divide_i_idx_2) * Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
+          rtb_rate_err_B_idx_1) * Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
 
     /* Saturate: '<S144>/Saturation2' */
     if (u0 > 1.0F) {
@@ -1802,14 +2004,13 @@ void Controller_step(void)
      *  Constant: '<S162>/gain3'
      *  DiscreteIntegrator: '<S159>/Discrete-Time Integrator5'
      *  DiscreteIntegrator: '<S161>/Discrete-Time Integrator'
-     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  DiscreteIntegrator: '<S191>/Discrete-Time Integrator5'
      *  Product: '<S162>/Multiply'
      *  Sum: '<S157>/Add'
      */
     u0 = ((CONTROL_PARAM.MC_YAW_RATE_P *
            Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2] +
-           Controller_DW.DiscreteTimeIntegrator_DSTATE_d[2]) +
-          rtb_DiscreteTimeIntegrator1_g) *
+           Controller_DW.DiscreteTimeIntegrator_DSTATE_d[2]) + rtb_u) *
       Controller_DW.DiscreteTimeIntegrator5_DSTA_a2;
 
     /* Saturate: '<S144>/Saturation2' */
@@ -1821,88 +2022,76 @@ void Controller_step(void)
       rtb_Saturation2[2] = u0;
     }
 
-    /* DiscreteIntegrator: '<S189>/Discrete-Time Integrator5' */
+    /* DiscreteIntegrator: '<S190>/Discrete-Time Integrator5' */
     if (Controller_DW.DiscreteTimeIntegrator5_IC_LO_g != 0) {
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j = rtb_Saturation_ov;
+      Controller_DW.DiscreteTimeIntegrator5_DSTA_jo = rtb_Saturation_ov;
     }
-
-    /* Saturate: '<S195>/Saturation1' incorporates:
-     *  Inport: '<Root>/INS_Out'
-     */
-    if (Controller_U.INS_Out.airspeed > 999.0F) {
-      rtb_DiscreteTimeIntegrator1_g = 999.0F;
-    } else if (Controller_U.INS_Out.airspeed < 0.1F) {
-      rtb_DiscreteTimeIntegrator1_g = 0.1F;
-    } else {
-      rtb_DiscreteTimeIntegrator1_g = Controller_U.INS_Out.airspeed;
-    }
-
-    /* End of Saturate: '<S195>/Saturation1' */
-
-    /* Product: '<S200>/Divide' incorporates:
-     *  Constant: '<S200>/trim_speed'
-     */
-    rtb_Saturation1_h_idx_0 = CONTROL_PARAM.FW_AIRSPEED_TRIM /
-      rtb_DiscreteTimeIntegrator1_g;
-
-    /* Saturate: '<S200>/Saturation' */
-    if (rtb_Saturation1_h_idx_0 > 1.0F) {
-      rtb_Saturation1_h_idx_0 = 1.0F;
-    } else {
-      if (rtb_Saturation1_h_idx_0 < 0.0F) {
-        rtb_Saturation1_h_idx_0 = 0.0F;
-      }
-    }
-
-    /* End of Saturate: '<S200>/Saturation' */
-
-    /* Switch: '<S205>/Switch' incorporates:
-     *  Logic: '<S205>/Logical Operator'
-     *  RelationalOperator: '<S210>/Compare'
-     */
-    if ((rtb_BitwiseAND_a == 3) || (rtb_BitwiseAND_a == 4)) {
-      rtb_Cos1_d = Controller_U.FMS_Out.phi_cmd;
-    }
-
-    /* End of Switch: '<S205>/Switch' */
-
-    /* Switch: '<S205>/Switch1' incorporates:
-     *  Constant: '<S211>/Constant'
-     *  RelationalOperator: '<S211>/Compare'
-     */
-    if (rtb_BitwiseAND_a == 3) {
-      rtb_Add2_h = Controller_U.FMS_Out.theta_cmd;
-    }
-
-    /* End of Switch: '<S205>/Switch1' */
-
-    /* Bias: '<S206>/Pitch Offset' */
-    rtb_Add2_h += CONTROL_PARAM.FW_PITCH_OFFSET;
-
-    /* Saturate: '<S206>/Saturation' */
-    if (rtb_Add2_h > CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
-      rtb_Add2_h = CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
-    } else {
-      if (rtb_Add2_h < -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
-        rtb_Add2_h = -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
-      }
-    }
-
-    /* Product: '<S207>/Multiply' incorporates:
-     *  Constant: '<S207>/Constant2'
-     *  Inport: '<Root>/INS_Out'
-     *  Sum: '<S206>/Sum'
-     */
-    rtb_Cos_j = (rtb_Add2_h - Controller_U.INS_Out.theta) *
-      CONTROL_PARAM.FW_PITCH_P;
 
     /* Product: '<S209>/Divide' incorporates:
-     *  Constant: '<S209>/Constant'
-     *  Inport: '<Root>/INS_Out'
+     *  Constant: '<S209>/trim_speed'
+     *  DiscreteIntegrator: '<S193>/Discrete-Time Integrator5'
      */
-    u0 = 9.81F / Controller_U.INS_Out.airspeed;
+    rtb_u = CONTROL_PARAM.FW_AIRSPEED_TRIM /
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
 
     /* Saturate: '<S209>/Saturation' */
+    if (rtb_u > 1.0F) {
+      rtb_u = 1.0F;
+    } else {
+      if (rtb_u < 0.0F) {
+        rtb_u = 0.0F;
+      }
+    }
+
+    /* End of Saturate: '<S209>/Saturation' */
+
+    /* Switch: '<S214>/Switch' incorporates:
+     *  Logic: '<S214>/Logical Operator'
+     *  RelationalOperator: '<S219>/Compare'
+     */
+    if ((rtb_BitwiseAND_a == 3) || (rtb_BitwiseAND_a == 4)) {
+      rtb_Cos_j = Controller_U.FMS_Out.phi_cmd;
+    }
+
+    /* End of Switch: '<S214>/Switch' */
+
+    /* Switch: '<S214>/Switch1' incorporates:
+     *  Constant: '<S220>/Constant'
+     *  RelationalOperator: '<S220>/Compare'
+     */
+    if (rtb_BitwiseAND_a == 3) {
+      rtb_a_n = Controller_U.FMS_Out.theta_cmd;
+    }
+
+    /* End of Switch: '<S214>/Switch1' */
+
+    /* Bias: '<S215>/Pitch Offset' */
+    rtb_a_n += CONTROL_PARAM.FW_PITCH_OFFSET;
+
+    /* Saturate: '<S215>/Saturation' */
+    if (rtb_a_n > CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
+      rtb_a_n = CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
+    } else {
+      if (rtb_a_n < -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
+        rtb_a_n = -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
+      }
+    }
+
+    /* Product: '<S216>/Multiply' incorporates:
+     *  Constant: '<S216>/Constant2'
+     *  Inport: '<Root>/INS_Out'
+     *  Sum: '<S215>/Sum'
+     */
+    rtb_rate_err_B_idx_0 = (rtb_a_n - Controller_U.INS_Out.theta) *
+      CONTROL_PARAM.FW_PITCH_P;
+
+    /* Product: '<S218>/Divide' incorporates:
+     *  Constant: '<S218>/Constant'
+     *  DiscreteIntegrator: '<S193>/Discrete-Time Integrator5'
+     */
+    u0 = 9.81F / Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
+
+    /* Saturate: '<S218>/Saturation' */
     if (u0 > 1.0F) {
       u0 = 1.0F;
     } else {
@@ -1911,78 +2100,84 @@ void Controller_step(void)
       }
     }
 
-    /* End of Saturate: '<S209>/Saturation' */
+    /* End of Saturate: '<S218>/Saturation' */
 
-    /* Sum: '<S204>/Sum' incorporates:
-     *  Product: '<S209>/Multiply'
-     *  Product: '<S209>/Multiply1'
-     *  Trigonometry: '<S209>/Cos'
-     *  Trigonometry: '<S209>/Tan'
+    /* Sum: '<S213>/Sum' incorporates:
+     *  Product: '<S218>/Multiply'
+     *  Product: '<S218>/Multiply1'
+     *  Trigonometry: '<S218>/Cos'
+     *  Trigonometry: '<S218>/Tan'
      */
-    rtb_Divide_i_idx_0 = tanf(Controller_U.FMS_Out.phi_cmd) * arm_cos_f32
+    rtb_Divide_m_idx_0 = tanf(Controller_U.FMS_Out.phi_cmd) * arm_cos_f32
       (Controller_U.FMS_Out.theta_cmd) * u0 + Controller_U.FMS_Out.psi_rate_cmd;
 
-    /* Saturate: '<S206>/Saturation' */
-    if (rtb_Cos1_d > CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
-      rtb_Cos1_d = CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
+    /* Saturate: '<S215>/Saturation' */
+    if (rtb_Cos_j > CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
+      rtb_Cos_j = CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
     } else {
-      if (rtb_Cos1_d < -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
-        rtb_Cos1_d = -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
+      if (rtb_Cos_j < -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM) {
+        rtb_Cos_j = -CONTROL_PARAM.FW_ROLL_PITCH_CMD_LIM;
       }
     }
 
-    /* Sum: '<S197>/Add' incorporates:
-     *  Constant: '<S207>/Constant1'
+    /* Sum: '<S206>/Add' incorporates:
+     *  Constant: '<S216>/Constant1'
      *  Inport: '<Root>/INS_Out'
-     *  Product: '<S197>/Multiply'
-     *  Product: '<S207>/Multiply'
-     *  Sum: '<S206>/Sum'
+     *  Product: '<S206>/Multiply'
+     *  Product: '<S216>/Multiply'
+     *  Sum: '<S215>/Sum'
      */
-    rtb_Cos1_d = (rtb_Cos1_d - Controller_U.INS_Out.phi) *
-      CONTROL_PARAM.FW_ROLL_P - rtb_u * rtb_Divide_i_idx_0;
+    rtb_rate_err_B_idx_1 = (rtb_Cos_j - Controller_U.INS_Out.phi) *
+      CONTROL_PARAM.FW_ROLL_P - rtb_TmpSignalConversionAtMult_3 *
+      rtb_Divide_m_idx_0;
 
-    /* Sum: '<S197>/Add1' incorporates:
-     *  Product: '<S197>/Multiply1'
-     *  Product: '<S197>/Multiply3'
+    /* Sum: '<S206>/Add1' incorporates:
+     *  Product: '<S206>/Multiply1'
+     *  Product: '<S206>/Multiply3'
      */
-    rtb_u = rtb_MatrixConcatenate1_tmp * rtb_Gain_cu * rtb_Divide_i_idx_0 +
-      rtb_Multiply_ga_idx_0 * rtb_Cos_j;
+    rtb_Divide_m_idx_2 = rtb_Divide_m_idx_1 * rtb_Gain_cu * rtb_Divide_m_idx_0 +
+      rtb_Add1_g_tmp * rtb_rate_err_B_idx_0;
 
-    /* Sum: '<S197>/Add2' incorporates:
-     *  Product: '<S197>/Multiply4'
-     *  Product: '<S197>/Multiply5'
+    /* Sum: '<S206>/Add2' incorporates:
+     *  Product: '<S206>/Multiply4'
+     *  Product: '<S206>/Multiply5'
      */
-    rtb_Add2_h = rtb_Multiply_ga_idx_0 * rtb_Gain_cu * rtb_Divide_i_idx_0 -
-      rtb_MatrixConcatenate1_tmp * rtb_Cos_j;
+    rtb_Divide_m_idx_1 = rtb_Add1_g_tmp * rtb_Gain_cu * rtb_Divide_m_idx_0 -
+      rtb_Divide_m_idx_1 * rtb_rate_err_B_idx_0;
 
-    /* Product: '<S199>/Divide' incorporates:
-     *  Constant: '<S199>/trim_speed'
-     *  Math: '<S199>/Square'
-     *  Math: '<S199>/Square1'
+    /* Product: '<S204>/Multiply1' incorporates:
+     *  Gain: '<S204>/FF'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.FW_AIRSPEED_TRIM *
-      CONTROL_PARAM.FW_AIRSPEED_TRIM / (rtb_DiscreteTimeIntegrator1_g *
-      rtb_DiscreteTimeIntegrator1_g);
+    u0 = CONTROL_PARAM.FW_FF * rtb_rate_err_B_idx_1 * rtb_u;
+    rtb_Gain_cu = CONTROL_PARAM.FW_FF * rtb_Divide_m_idx_2 * rtb_u;
+    rtb_Add1_g_tmp = CONTROL_PARAM.FW_FF * rtb_Divide_m_idx_1 * rtb_u;
 
-    /* Saturate: '<S199>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > 1.0F) {
-      rtb_DiscreteTimeIntegrator1_g = 1.0F;
+    /* Product: '<S208>/Divide' incorporates:
+     *  Constant: '<S208>/trim_speed'
+     *  Math: '<S208>/Square'
+     */
+    rtb_u = CONTROL_PARAM.FW_AIRSPEED_TRIM * CONTROL_PARAM.FW_AIRSPEED_TRIM /
+      rtb_Add3_n;
+
+    /* Saturate: '<S208>/Saturation' */
+    if (rtb_u > 1.0F) {
+      rtb_u = 1.0F;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < 0.0F) {
-        rtb_DiscreteTimeIntegrator1_g = 0.0F;
+      if (rtb_u < 0.0F) {
+        rtb_u = 0.0F;
       }
     }
 
-    /* End of Saturate: '<S199>/Saturation' */
+    /* End of Saturate: '<S208>/Saturation' */
 
-    /* Sum: '<S195>/Minus2' incorporates:
+    /* Sum: '<S204>/Minus2' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Divide_i_idx_1 = rtb_Cos1_d - Controller_U.INS_Out.p;
-    rtb_Divide_i_idx_2 = rtb_u - Controller_U.INS_Out.q;
-    rtb_Divide_i_idx_3 = rtb_Add2_h - Controller_U.INS_Out.r;
+    rtb_rate_err_B_idx_0 = rtb_rate_err_B_idx_1 - Controller_U.INS_Out.p;
+    rtb_rate_err_B_idx_1 = rtb_Divide_m_idx_2 - Controller_U.INS_Out.q;
+    rtb_Divide_m_idx_3 = rtb_Divide_m_idx_1 - Controller_U.INS_Out.r;
 
-    /* DiscreteIntegrator: '<S201>/Discrete-Time Integrator' */
+    /* DiscreteIntegrator: '<S210>/Discrete-Time Integrator' */
     if ((Controller_U.FMS_Out.reset != 0) ||
         (Controller_DW.DiscreteTimeIntegrator_PrevR_ef != 0)) {
       Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0] =
@@ -2064,22 +2259,17 @@ void Controller_step(void)
       }
     }
 
-    /* Product: '<S195>/Multiply1' incorporates:
-     *  Gain: '<S195>/FF'
+    /* Product: '<S204>/Multiply' incorporates:
+     *  Constant: '<S211>/gain1'
+     *  DiscreteIntegrator: '<S210>/Discrete-Time Integrator'
+     *  Product: '<S211>/Multiply'
+     *  Sum: '<S207>/Add1'
      */
-    u0 = CONTROL_PARAM.FW_FF * rtb_Cos1_d * rtb_Saturation1_h_idx_0;
+    rtb_Divide_m_idx_0 = (CONTROL_PARAM.FW_ROLL_RATE_P * rtb_rate_err_B_idx_0 +
+                          Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0]) *
+      rtb_u;
 
-    /* Product: '<S195>/Multiply' incorporates:
-     *  Constant: '<S202>/gain1'
-     *  DiscreteIntegrator: '<S201>/Discrete-Time Integrator'
-     *  Product: '<S202>/Multiply'
-     *  Sum: '<S198>/Add1'
-     */
-    rtb_Multiply_ga_idx_0 = (CONTROL_PARAM.FW_ROLL_RATE_P * rtb_Divide_i_idx_1 +
-      Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0]) *
-      rtb_DiscreteTimeIntegrator1_g;
-
-    /* Saturate: '<S195>/FF_limit' */
+    /* Saturate: '<S204>/FF_limit' */
     if (u0 > CONTROL_PARAM.FW_FF_LIMIT) {
       u0 = CONTROL_PARAM.FW_FF_LIMIT;
     } else {
@@ -2088,21 +2278,21 @@ void Controller_step(void)
       }
     }
 
-    /* Saturate: '<S195>/PI_limit' */
-    if (rtb_Multiply_ga_idx_0 > CONTROL_PARAM.FW_PI_LIMIT) {
-      rtb_Multiply_ga_idx_0 = CONTROL_PARAM.FW_PI_LIMIT;
+    /* Saturate: '<S204>/PI_limit' */
+    if (rtb_Divide_m_idx_0 > CONTROL_PARAM.FW_PI_LIMIT) {
+      rtb_Divide_m_idx_0 = CONTROL_PARAM.FW_PI_LIMIT;
     } else {
-      if (rtb_Multiply_ga_idx_0 < -CONTROL_PARAM.FW_PI_LIMIT) {
-        rtb_Multiply_ga_idx_0 = -CONTROL_PARAM.FW_PI_LIMIT;
+      if (rtb_Divide_m_idx_0 < -CONTROL_PARAM.FW_PI_LIMIT) {
+        rtb_Divide_m_idx_0 = -CONTROL_PARAM.FW_PI_LIMIT;
       }
     }
 
     /* Product: '<S146>/Multiply' incorporates:
-     *  DiscreteIntegrator: '<S189>/Discrete-Time Integrator5'
-     *  Sum: '<S195>/Add'
+     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  Sum: '<S204>/Add'
      */
-    u0 = (u0 + rtb_Multiply_ga_idx_0) *
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
+    u0 = (u0 + rtb_Divide_m_idx_0) *
+      Controller_DW.DiscreteTimeIntegrator5_DSTA_jo;
 
     /* Saturate: '<S146>/Saturation1' */
     if (u0 > 1.0F) {
@@ -2113,45 +2303,38 @@ void Controller_step(void)
       rtb_Saturation1_f[0] = u0;
     }
 
-    /* Product: '<S195>/Multiply1' incorporates:
-     *  Gain: '<S195>/FF'
+    /* Product: '<S204>/Multiply' incorporates:
+     *  Constant: '<S211>/gain2'
+     *  DiscreteIntegrator: '<S210>/Discrete-Time Integrator'
+     *  Product: '<S211>/Multiply'
+     *  Sum: '<S207>/Add1'
      */
-    u0 = CONTROL_PARAM.FW_FF * rtb_u * rtb_Saturation1_h_idx_0;
+    u0 = (CONTROL_PARAM.FW_PITCH_RATE_P * rtb_rate_err_B_idx_1 +
+          Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1]) * rtb_u;
 
-    /* Product: '<S195>/Multiply' incorporates:
-     *  Constant: '<S202>/gain2'
-     *  DiscreteIntegrator: '<S201>/Discrete-Time Integrator'
-     *  Product: '<S202>/Multiply'
-     *  Sum: '<S198>/Add1'
-     */
-    rtb_Multiply_ga_idx_0 = (CONTROL_PARAM.FW_PITCH_RATE_P * rtb_Divide_i_idx_2
-      + Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1]) *
-      rtb_DiscreteTimeIntegrator1_g;
-
-    /* Saturate: '<S195>/FF_limit' */
-    if (u0 > CONTROL_PARAM.FW_FF_LIMIT) {
-      u0 = CONTROL_PARAM.FW_FF_LIMIT;
+    /* Saturate: '<S204>/FF_limit' */
+    if (rtb_Gain_cu > CONTROL_PARAM.FW_FF_LIMIT) {
+      rtb_Gain_cu = CONTROL_PARAM.FW_FF_LIMIT;
     } else {
-      if (u0 < -CONTROL_PARAM.FW_FF_LIMIT) {
-        u0 = -CONTROL_PARAM.FW_FF_LIMIT;
+      if (rtb_Gain_cu < -CONTROL_PARAM.FW_FF_LIMIT) {
+        rtb_Gain_cu = -CONTROL_PARAM.FW_FF_LIMIT;
       }
     }
 
-    /* Saturate: '<S195>/PI_limit' */
-    if (rtb_Multiply_ga_idx_0 > CONTROL_PARAM.FW_PI_LIMIT) {
-      rtb_Multiply_ga_idx_0 = CONTROL_PARAM.FW_PI_LIMIT;
+    /* Saturate: '<S204>/PI_limit' */
+    if (u0 > CONTROL_PARAM.FW_PI_LIMIT) {
+      u0 = CONTROL_PARAM.FW_PI_LIMIT;
     } else {
-      if (rtb_Multiply_ga_idx_0 < -CONTROL_PARAM.FW_PI_LIMIT) {
-        rtb_Multiply_ga_idx_0 = -CONTROL_PARAM.FW_PI_LIMIT;
+      if (u0 < -CONTROL_PARAM.FW_PI_LIMIT) {
+        u0 = -CONTROL_PARAM.FW_PI_LIMIT;
       }
     }
 
     /* Product: '<S146>/Multiply' incorporates:
-     *  DiscreteIntegrator: '<S189>/Discrete-Time Integrator5'
-     *  Sum: '<S195>/Add'
+     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  Sum: '<S204>/Add'
      */
-    u0 = (u0 + rtb_Multiply_ga_idx_0) *
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
+    u0 = (rtb_Gain_cu + u0) * Controller_DW.DiscreteTimeIntegrator5_DSTA_jo;
 
     /* Saturate: '<S146>/Saturation1' */
     if (u0 > 1.0F) {
@@ -2162,45 +2345,38 @@ void Controller_step(void)
       rtb_Saturation1_f[1] = u0;
     }
 
-    /* Product: '<S195>/Multiply1' incorporates:
-     *  Gain: '<S195>/FF'
+    /* Product: '<S204>/Multiply' incorporates:
+     *  Constant: '<S211>/gain3'
+     *  DiscreteIntegrator: '<S210>/Discrete-Time Integrator'
+     *  Product: '<S211>/Multiply'
+     *  Sum: '<S207>/Add1'
      */
-    u0 = CONTROL_PARAM.FW_FF * rtb_Add2_h * rtb_Saturation1_h_idx_0;
+    u0 = (CONTROL_PARAM.FW_YAW_RATE_P * rtb_Divide_m_idx_3 +
+          Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2]) * rtb_u;
 
-    /* Product: '<S195>/Multiply' incorporates:
-     *  Constant: '<S202>/gain3'
-     *  DiscreteIntegrator: '<S201>/Discrete-Time Integrator'
-     *  Product: '<S202>/Multiply'
-     *  Sum: '<S198>/Add1'
-     */
-    rtb_Multiply_ga_idx_0 = (CONTROL_PARAM.FW_YAW_RATE_P * rtb_Divide_i_idx_3 +
-      Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2]) *
-      rtb_DiscreteTimeIntegrator1_g;
-
-    /* Saturate: '<S195>/FF_limit' */
-    if (u0 > CONTROL_PARAM.FW_FF_LIMIT) {
-      u0 = CONTROL_PARAM.FW_FF_LIMIT;
+    /* Saturate: '<S204>/FF_limit' */
+    if (rtb_Add1_g_tmp > CONTROL_PARAM.FW_FF_LIMIT) {
+      rtb_Add1_g_tmp = CONTROL_PARAM.FW_FF_LIMIT;
     } else {
-      if (u0 < -CONTROL_PARAM.FW_FF_LIMIT) {
-        u0 = -CONTROL_PARAM.FW_FF_LIMIT;
+      if (rtb_Add1_g_tmp < -CONTROL_PARAM.FW_FF_LIMIT) {
+        rtb_Add1_g_tmp = -CONTROL_PARAM.FW_FF_LIMIT;
       }
     }
 
-    /* Saturate: '<S195>/PI_limit' */
-    if (rtb_Multiply_ga_idx_0 > CONTROL_PARAM.FW_PI_LIMIT) {
-      rtb_Multiply_ga_idx_0 = CONTROL_PARAM.FW_PI_LIMIT;
+    /* Saturate: '<S204>/PI_limit' */
+    if (u0 > CONTROL_PARAM.FW_PI_LIMIT) {
+      u0 = CONTROL_PARAM.FW_PI_LIMIT;
     } else {
-      if (rtb_Multiply_ga_idx_0 < -CONTROL_PARAM.FW_PI_LIMIT) {
-        rtb_Multiply_ga_idx_0 = -CONTROL_PARAM.FW_PI_LIMIT;
+      if (u0 < -CONTROL_PARAM.FW_PI_LIMIT) {
+        u0 = -CONTROL_PARAM.FW_PI_LIMIT;
       }
     }
 
     /* Product: '<S146>/Multiply' incorporates:
-     *  DiscreteIntegrator: '<S189>/Discrete-Time Integrator5'
-     *  Sum: '<S195>/Add'
+     *  DiscreteIntegrator: '<S190>/Discrete-Time Integrator5'
+     *  Sum: '<S204>/Add'
      */
-    u0 = (u0 + rtb_Multiply_ga_idx_0) *
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j;
+    u0 = (rtb_Add1_g_tmp + u0) * Controller_DW.DiscreteTimeIntegrator5_DSTA_jo;
 
     /* Saturate: '<S146>/Saturation1' */
     if (u0 > 1.0F) {
@@ -2211,14 +2387,14 @@ void Controller_step(void)
       rtb_Saturation1_f[2] = u0;
     }
 
-    /* Sum: '<S194>/Add' incorporates:
-     *  Gain: '<S194>/ucmd2thor'
-     *  Gain: '<S194>/wcmd2thor'
+    /* Sum: '<S203>/Add' incorporates:
+     *  Gain: '<S203>/ucmd2thor'
+     *  Gain: '<S203>/wcmd2thor'
      */
-    rtb_Cos_j = CONTROL_PARAM.FW_TECS_W2T * rtb_Minus +
-      CONTROL_PARAM.FW_TECS_U2T * rtb_Sum;
+    rtb_Divide_m_idx_2 = CONTROL_PARAM.FW_TECS_W2T * rtb_Minus +
+      CONTROL_PARAM.FW_TECS_U2T * rtb_Sum_0;
 
-    /* DiscreteIntegrator: '<S229>/ ' */
+    /* DiscreteIntegrator: '<S237>/ ' */
     if ((Controller_U.FMS_Out.reset != 0) || (Controller_DW._PrevResetState_e !=
          0)) {
       Controller_DW._DSTATE_d = Controller_ConstB.Zero;
@@ -2239,64 +2415,63 @@ void Controller_step(void)
       }
     }
 
-    /* DiscreteIntegrator: '<S230>/Discrete-Time Integrator1' */
+    /* DiscreteIntegrator: '<S238>/Discrete-Time Integrator1' */
     if (Controller_DW.DiscreteTimeIntegrator1_IC_L_h0 != 0) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTA_nm = rtb_Cos_j;
+      Controller_DW.DiscreteTimeIntegrator1_DSTA_nm = rtb_Divide_m_idx_2;
     }
 
     if ((Controller_U.FMS_Out.reset != 0) ||
         (Controller_DW.DiscreteTimeIntegrator1_PrevR_d != 0)) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTA_nm = rtb_Cos_j;
+      Controller_DW.DiscreteTimeIntegrator1_DSTA_nm = rtb_Divide_m_idx_2;
     }
 
-    /* Gain: '<S230>/Gain' incorporates:
-     *  DiscreteIntegrator: '<S230>/Discrete-Time Integrator1'
-     *  Sum: '<S230>/Sum5'
+    /* Gain: '<S238>/Gain' incorporates:
+     *  DiscreteIntegrator: '<S238>/Discrete-Time Integrator1'
+     *  Sum: '<S238>/Sum5'
      */
-    rtb_Gain_cu = (rtb_Cos_j - Controller_DW.DiscreteTimeIntegrator1_DSTA_nm) *
-      188.49556F;
+    rtb_Gain_cu = (rtb_Divide_m_idx_2 -
+                   Controller_DW.DiscreteTimeIntegrator1_DSTA_nm) * 188.49556F;
 
-    /* Switch: '<S230>/Switch' incorporates:
-     *  Gain: '<S230>/Gain1'
+    /* Switch: '<S238>/Switch' incorporates:
+     *  Gain: '<S238>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_MatrixConcatenate1_tmp = 0.0F;
+      rtb_u = 0.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Gain_cu;
+      rtb_u = rtb_Gain_cu;
     }
 
-    /* End of Switch: '<S230>/Switch' */
+    /* End of Switch: '<S238>/Switch' */
 
-    /* Gain: '<S228>/Gain' */
-    rtb_Saturation1_h_idx_0 = CONTROL_PARAM.FW_TECS_THOR_D *
-      rtb_MatrixConcatenate1_tmp;
+    /* Gain: '<S236>/Gain' */
+    rtb_Divide_m_idx_0 = CONTROL_PARAM.FW_TECS_THOR_D * rtb_u;
 
-    /* Saturate: '<S215>/Saturation1' */
-    if (rtb_Saturation1_h_idx_0 > 0.3F) {
-      rtb_Saturation1_h_idx_0 = 0.3F;
+    /* Saturate: '<S224>/Saturation1' */
+    if (rtb_Divide_m_idx_0 > 0.3F) {
+      rtb_Divide_m_idx_0 = 0.3F;
     } else {
-      if (rtb_Saturation1_h_idx_0 < -0.3F) {
-        rtb_Saturation1_h_idx_0 = -0.3F;
+      if (rtb_Divide_m_idx_0 < -0.3F) {
+        rtb_Divide_m_idx_0 = -0.3F;
       }
     }
 
-    /* End of Saturate: '<S215>/Saturation1' */
+    /* End of Saturate: '<S224>/Saturation1' */
 
     /* Sum: '<S146>/Sum' incorporates:
      *  Constant: '<S146>/cruise_throttle'
-     *  DiscreteIntegrator: '<S229>/ '
-     *  Gain: '<S194>/Gain1'
-     *  Gain: '<S194>/thorttle_ff'
-     *  Gain: '<S215>/P_control'
-     *  Sum: '<S194>/Add1'
-     *  Sum: '<S194>/Add2'
-     *  Sum: '<S194>/Sum1'
-     *  Sum: '<S215>/Add4'
+     *  DiscreteIntegrator: '<S237>/ '
+     *  Gain: '<S203>/Gain1'
+     *  Gain: '<S203>/thorttle_ff'
+     *  Gain: '<S224>/P_control'
+     *  Sum: '<S203>/Add1'
+     *  Sum: '<S203>/Add2'
+     *  Sum: '<S203>/Sum1'
+     *  Sum: '<S224>/Add4'
      */
-    u0 = ((((CONTROL_PARAM.FW_TECS_THOR_P * rtb_Cos_j + Controller_DW._DSTATE_d)
-            + rtb_Saturation1_h_idx_0) + (rtb_Saturation1_ih + rtb_VdotPg) *
-           CONTROL_PARAM.FW_TECS_THOR_FF) + CONTROL_PARAM.FW_TECS_R2T * rtb_Abs)
-      + 0.5F;
+    u0 = ((((CONTROL_PARAM.FW_TECS_THOR_P * rtb_Divide_m_idx_2 +
+             Controller_DW._DSTATE_d) + rtb_Divide_m_idx_0) +
+           (rtb_Saturation1_ih + rtb_VdotPg) * CONTROL_PARAM.FW_TECS_THOR_FF) +
+          CONTROL_PARAM.FW_TECS_R2T * rtb_Abs) + 0.5F;
 
     /* Saturate: '<S146>/Saturation' */
     if (u0 > 1.0F) {
@@ -2321,7 +2496,7 @@ void Controller_step(void)
     /* Outputs for Atomic SubSystem: '<S147>/VTOL_Control_Allocation' */
 #if AIRFRAME == 1
 
-    /* Output and update for atomic system: '<S240>/VTOL1' */
+    /* Output and update for atomic system: '<S248>/VTOL1' */
     {
       real32_T rtb_MatrixConcatenate[12];
       uint16_T rtb_DataTypeConversion_i;
@@ -2333,25 +2508,25 @@ void Controller_step(void)
       real32_T u0_f;
       uint16_T u0_c;
 
-      /* MultiPortSwitch: '<S245>/Multiport Switch' incorporates:
-       *  Constant: '<S245>/Disarm'
-       *  Constant: '<S245>/Standby'
-       *  Constant: '<S246>/Constant1'
-       *  Constant: '<S246>/Constant12'
-       *  Constant: '<S246>/Constant2'
-       *  Constant: '<S246>/Constant7'
+      /* MultiPortSwitch: '<S253>/Multiport Switch' incorporates:
+       *  Constant: '<S253>/Disarm'
+       *  Constant: '<S253>/Standby'
+       *  Constant: '<S254>/Constant1'
+       *  Constant: '<S254>/Constant12'
+       *  Constant: '<S254>/Constant2'
+       *  Constant: '<S254>/Constant7'
        *  Inport: '<Root>/FMS_Out'
        */
       switch (Controller_U.FMS_Out.status) {
        case 1:
         for (i_f = 0; i_f < 9; i_f++) {
-          rtb_VariantMergeForOutportact_h[i_f] = Controller_ConstP.pooled37[i_f];
+          rtb_VariantMergeForOutportact_h[i_f] = Controller_ConstP.pooled38[i_f];
         }
         break;
 
        case 2:
         for (i_f = 0; i_f < 9; i_f++) {
-          rtb_VariantMergeForOutportact_h[i_f] = Controller_ConstP.pooled38[i_f];
+          rtb_VariantMergeForOutportact_h[i_f] = Controller_ConstP.pooled39[i_f];
         }
         break;
 
@@ -2359,47 +2534,47 @@ void Controller_step(void)
         rtb_MatrixConcatenate[11] = CONTROL_PARAM.FW_YAW_EFFC *
           CONTROL_PARAM.FW_RUDDER_DIR;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector Concatenate2In3' incorporates:
-         *  Constant: '<S246>/Constant11'
-         *  Constant: '<S246>/Constant12'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate2In3' incorporates:
+         *  Constant: '<S254>/Constant11'
+         *  Constant: '<S254>/Constant12'
          */
         rtb_MatrixConcatenate[10] = 0.0F;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector Concatenate2In2' incorporates:
-         *  Constant: '<S246>/Constant10'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate2In2' incorporates:
+         *  Constant: '<S254>/Constant10'
          */
         rtb_MatrixConcatenate[9] = 0.0F;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector Concatenate2In1' incorporates:
-         *  Constant: '<S246>/Constant9'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate2In1' incorporates:
+         *  Constant: '<S254>/Constant9'
          */
         rtb_MatrixConcatenate[8] = 0.0F;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector Concatenate1In4' incorporates:
-         *  Constant: '<S246>/Constant8'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate1In4' incorporates:
+         *  Constant: '<S254>/Constant8'
          */
         rtb_MatrixConcatenate[7] = 0.0F;
         rtb_MatrixConcatenate[6] = CONTROL_PARAM.FW_PITCH_EFFC *
           CONTROL_PARAM.FW_ELEVATOR_DIR;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector Concatenate1In2' incorporates:
-         *  Constant: '<S246>/Constant6'
-         *  Constant: '<S246>/Constant7'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate1In2' incorporates:
+         *  Constant: '<S254>/Constant6'
+         *  Constant: '<S254>/Constant7'
          */
         rtb_MatrixConcatenate[5] = 0.0F;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector Concatenate1In1' incorporates:
-         *  Constant: '<S246>/Constant5'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate1In1' incorporates:
+         *  Constant: '<S254>/Constant5'
          */
         rtb_MatrixConcatenate[4] = 0.0F;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector ConcatenateIn4' incorporates:
-         *  Constant: '<S246>/Constant4'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector ConcatenateIn4' incorporates:
+         *  Constant: '<S254>/Constant4'
          */
         rtb_MatrixConcatenate[3] = 0.0F;
 
-        /* SignalConversion: '<S246>/ConcatBufferAtVector ConcatenateIn3' incorporates:
-         *  Constant: '<S246>/Constant3'
+        /* SignalConversion: '<S254>/ConcatBufferAtVector ConcatenateIn3' incorporates:
+         *  Constant: '<S254>/Constant3'
          */
         rtb_MatrixConcatenate[2] = 0.0F;
         rtb_MatrixConcatenate[1] = CONTROL_PARAM.FW_ROLL_EFFC *
@@ -2407,72 +2582,72 @@ void Controller_step(void)
         rtb_MatrixConcatenate[0] = CONTROL_PARAM.FW_ROLL_EFFC *
           CONTROL_PARAM.FW_AILERON1_DIR;
 
-        /* Switch: '<S247>/Switch' incorporates:
-         *  Constant: '<S246>/Constant1'
-         *  Constant: '<S246>/Constant2'
-         *  Constant: '<S248>/Constant1'
-         *  Constant: '<S249>/Constant'
-         *  DataTypeConversion: '<S248>/Data Type Conversion'
-         *  Gain: '<S248>/Gain1'
-         *  RelationalOperator: '<S249>/Compare'
-         *  Saturate: '<S243>/Saturation4'
-         *  Sum: '<S248>/Sum1'
+        /* Switch: '<S255>/Switch' incorporates:
+         *  Constant: '<S254>/Constant1'
+         *  Constant: '<S254>/Constant2'
+         *  Constant: '<S256>/Constant1'
+         *  Constant: '<S257>/Constant'
+         *  DataTypeConversion: '<S256>/Data Type Conversion'
+         *  Gain: '<S256>/Gain1'
+         *  RelationalOperator: '<S257>/Compare'
+         *  Saturate: '<S251>/Saturation4'
+         *  Sum: '<S256>/Sum1'
          */
         if (rtb_BitwiseAND_a <= 3) {
           rtb_VariantMergeForOutportact_h[4] = Controller_U.FMS_Out.throttle_cmd;
         } else {
           if (rtb_Saturation2_l[0] > 1.0F) {
-            /* Saturate: '<S243>/Saturation4' */
+            /* Saturate: '<S251>/Saturation4' */
             u0_f = 1.0F;
           } else if (rtb_Saturation2_l[0] < -1.0F) {
-            /* Saturate: '<S243>/Saturation4' */
+            /* Saturate: '<S251>/Saturation4' */
             u0_f = -1.0F;
           } else {
-            /* Saturate: '<S243>/Saturation4' */
+            /* Saturate: '<S251>/Saturation4' */
             u0_f = rtb_Saturation2_l[0];
           }
 
-          /* Saturate: '<S248>/Saturation' incorporates:
-           *  Saturate: '<S243>/Saturation4'
+          /* Saturate: '<S256>/Saturation' incorporates:
+           *  Saturate: '<S251>/Saturation4'
            */
           if (u0_f < 0.0F) {
             u0_f = 0.0F;
           }
 
-          /* End of Saturate: '<S248>/Saturation' */
+          /* End of Saturate: '<S256>/Saturation' */
           rtb_VariantMergeForOutportact_h[4] = (uint16_T)((uint32_T)fmodf(floorf
             (1000.0F * u0_f), 4.2949673E+9F) + 1000U);
         }
 
-        /* End of Switch: '<S247>/Switch' */
+        /* End of Switch: '<S255>/Switch' */
 
-        /* Saturate: '<S244>/Saturation2' */
-        if (rtb_Saturation1[2] > 1.0F) {
+        /* Saturate: '<S252>/Saturation2' */
+        if (rtb_Saturation1_d[2] > 1.0F) {
           u0_f = 1.0F;
-        } else if (rtb_Saturation1[2] < -1.0F) {
+        } else if (rtb_Saturation1_d[2] < -1.0F) {
           u0_f = -1.0F;
         } else {
-          u0_f = rtb_Saturation1[2];
+          u0_f = rtb_Saturation1_d[2];
         }
 
-        /* End of Saturate: '<S244>/Saturation2' */
+        /* End of Saturate: '<S252>/Saturation2' */
 
-        /* Saturate: '<S250>/Saturation' */
+        /* Saturate: '<S258>/Saturation' */
         if (u0_f < 0.0F) {
           u0_f = 0.0F;
         }
 
-        /* End of Saturate: '<S250>/Saturation' */
+        /* End of Saturate: '<S258>/Saturation' */
 
-        /* DataTypeConversion: '<S250>/Data Type Conversion' incorporates:
-         *  Constant: '<S250>/Constant1'
-         *  Gain: '<S250>/Gain1'
-         *  Sum: '<S250>/Sum1'
+        /* DataTypeConversion: '<S258>/Data Type Conversion' incorporates:
+         *  Constant: '<S258>/Constant1'
+         *  Gain: '<S258>/Gain1'
+         *  Sum: '<S258>/Sum1'
          */
         rtb_DataTypeConversion_i = (uint16_T)((uint32_T)fmodf(floorf(1000.0F *
           u0_f), 4.2949673E+9F) + 1000U);
 
-        /* Saturate: '<S244>/Saturation1' */
+        /* Saturate: '<S252>/Saturation1' */
         if (rtb_Saturation2[0] > 1.0F) {
           tmp_c = 1.0F;
         } else if (rtb_Saturation2[0] < -1.0F) {
@@ -2497,10 +2672,10 @@ void Controller_step(void)
           tmp_k = rtb_Saturation2[2];
         }
 
-        /* End of Saturate: '<S244>/Saturation1' */
+        /* End of Saturate: '<S252>/Saturation1' */
 
-        /* Product: '<S244>/Multiply' incorporates:
-         *  Constant: '<S244>/Effective_Matrix'
+        /* Product: '<S252>/Multiply' incorporates:
+         *  Constant: '<S252>/Effective_Matrix'
          */
         for (i_f = 0; i_f < 4; i_f++) {
           tmp_f[i_f] = Controller_ConstP.pooled16[i_f + 8] * tmp_k +
@@ -2508,9 +2683,9 @@ void Controller_step(void)
              Controller_ConstP.pooled16[i_f] * tmp_c);
         }
 
-        /* End of Product: '<S244>/Multiply' */
+        /* End of Product: '<S252>/Multiply' */
 
-        /* Saturate: '<S243>/Saturation5' */
+        /* Saturate: '<S251>/Saturation5' */
         if (rtb_Saturation1_f[0] > 1.0F) {
           tmp_c = 1.0F;
         } else if (rtb_Saturation1_f[0] < -1.0F) {
@@ -2535,15 +2710,15 @@ void Controller_step(void)
           tmp_k = rtb_Saturation1_f[2];
         }
 
-        /* End of Saturate: '<S243>/Saturation5' */
+        /* End of Saturate: '<S251>/Saturation5' */
 
-        /* Product: '<S243>/Multiply1' incorporates:
-         *  Saturate: '<S243>/Saturation1'
+        /* Product: '<S251>/Multiply1' incorporates:
+         *  Saturate: '<S251>/Saturation1'
          */
         for (i_f = 0; i_f < 4; i_f++) {
-          /* Saturate: '<S244>/Saturation' incorporates:
-           *  Gain: '<S244>/Gain'
-           *  Sum: '<S244>/Add'
+          /* Saturate: '<S252>/Saturation' incorporates:
+           *  Gain: '<S252>/Gain'
+           *  Sum: '<S252>/Add'
            */
           u0_f = fmodf(floorf(1000.0F * tmp_f[i_f] + (real32_T)
                               rtb_DataTypeConversion_i), 65536.0F);
@@ -2557,11 +2732,11 @@ void Controller_step(void)
             rtb_VariantMergeForOutportact_h[i_f] = u0_c;
           }
 
-          /* End of Saturate: '<S244>/Saturation' */
+          /* End of Saturate: '<S252>/Saturation' */
 
-          /* Saturate: '<S243>/Saturation1' incorporates:
-           *  Bias: '<S243>/Bias'
-           *  Gain: '<S243>/Gain1'
+          /* Saturate: '<S251>/Saturation1' incorporates:
+           *  Bias: '<S251>/Bias'
+           *  Gain: '<S251>/Gain1'
            */
           u0_f = 500.0F * (rtb_MatrixConcatenate[i_f + 8] * tmp_k +
                            (rtb_MatrixConcatenate[i_f + 4] * tmp_n +
@@ -2578,22 +2753,22 @@ void Controller_step(void)
             65536.0F);
         }
 
-        /* End of Product: '<S243>/Multiply1' */
+        /* End of Product: '<S251>/Multiply1' */
         break;
 
        default:
         for (i_f = 0; i_f < 9; i_f++) {
-          rtb_VariantMergeForOutportact_h[i_f] = Controller_ConstP.pooled37[i_f];
+          rtb_VariantMergeForOutportact_h[i_f] = Controller_ConstP.pooled38[i_f];
         }
         break;
       }
 
-      /* End of MultiPortSwitch: '<S245>/Multiport Switch' */
+      /* End of MultiPortSwitch: '<S253>/Multiport Switch' */
     }
 
 #elif AIRFRAME == 2
 
-    /* Output and update for atomic system: '<S240>/VTOL2' */
+    /* Output and update for atomic system: '<S248>/VTOL2' */
     {
       real32_T rtb_MatrixConcatenate_g[12];
       real32_T rtb_Multiply_ka[4];
@@ -2607,12 +2782,12 @@ void Controller_step(void)
       real32_T tmp_c;
       real32_T u0_b;
 
-      /* Saturate: '<S259>/Saturation' incorporates:
-       *  Bias: '<S259>/Bias'
-       *  Bias: '<S259>/Bias1'
-       *  Bias: '<S259>/Bias2'
-       *  Bias: '<S259>/Bias3'
-       *  Constant: '<S259>/Constant'
+      /* Saturate: '<S267>/Saturation' incorporates:
+       *  Bias: '<S267>/Bias'
+       *  Bias: '<S267>/Bias1'
+       *  Bias: '<S267>/Bias2'
+       *  Bias: '<S267>/Bias3'
+       *  Constant: '<S267>/Constant'
        */
       for (i_b = 0; i_b < 5; i_b++) {
         rtb_Saturation_kl[i_b] = 1000.0F;
@@ -2650,19 +2825,19 @@ void Controller_step(void)
         rtb_Saturation_kl[8] = 1500.0F + CONTROL_PARAM.SERVO4_BIAS;
       }
 
-      /* End of Saturate: '<S259>/Saturation' */
+      /* End of Saturate: '<S267>/Saturation' */
 
-      /* MultiPortSwitch: '<S253>/Multiport Switch' incorporates:
-       *  Constant: '<S254>/Constant1'
-       *  Constant: '<S254>/Constant11'
-       *  Constant: '<S254>/Constant12'
-       *  Constant: '<S254>/Constant2'
-       *  Constant: '<S254>/Constant7'
-       *  Constant: '<S254>/Constant8'
-       *  DataTypeConversion: '<S259>/Data Type Conversion'
-       *  DataTypeConversion: '<S260>/Data Type Conversion'
+      /* MultiPortSwitch: '<S261>/Multiport Switch' incorporates:
+       *  Constant: '<S262>/Constant1'
+       *  Constant: '<S262>/Constant11'
+       *  Constant: '<S262>/Constant12'
+       *  Constant: '<S262>/Constant2'
+       *  Constant: '<S262>/Constant7'
+       *  Constant: '<S262>/Constant8'
+       *  DataTypeConversion: '<S267>/Data Type Conversion'
+       *  DataTypeConversion: '<S268>/Data Type Conversion'
        *  Inport: '<Root>/FMS_Out'
-       *  Saturate: '<S260>/Saturation'
+       *  Saturate: '<S268>/Saturation'
        */
       switch (Controller_U.FMS_Out.status) {
        case 1:
@@ -2677,10 +2852,10 @@ void Controller_step(void)
           rtb_VariantMergeForOutportact_h[i_b] = 1150U;
         }
 
-        /* Saturate: '<S260>/Saturation' incorporates:
-         *  Bias: '<S260>/Bias'
-         *  Constant: '<S260>/Constant'
-         *  DataTypeConversion: '<S260>/Data Type Conversion'
+        /* Saturate: '<S268>/Saturation' incorporates:
+         *  Bias: '<S268>/Bias'
+         *  Constant: '<S268>/Constant'
+         *  DataTypeConversion: '<S268>/Data Type Conversion'
          */
         if (1500.0F + CONTROL_PARAM.SERVO1_BIAS > 2000.0F) {
           u0_b = 2000.0F;
@@ -2693,10 +2868,10 @@ void Controller_step(void)
         rtb_VariantMergeForOutportact_h[5] = (uint16_T)fmodf(floorf(u0_b),
           65536.0F);
 
-        /* Saturate: '<S260>/Saturation' incorporates:
-         *  Bias: '<S260>/Bias1'
-         *  Constant: '<S260>/Constant'
-         *  DataTypeConversion: '<S260>/Data Type Conversion'
+        /* Saturate: '<S268>/Saturation' incorporates:
+         *  Bias: '<S268>/Bias1'
+         *  Constant: '<S268>/Constant'
+         *  DataTypeConversion: '<S268>/Data Type Conversion'
          */
         if (1500.0F + CONTROL_PARAM.SERVO2_BIAS > 2000.0F) {
           u0_b = 2000.0F;
@@ -2709,10 +2884,10 @@ void Controller_step(void)
         rtb_VariantMergeForOutportact_h[6] = (uint16_T)fmodf(floorf(u0_b),
           65536.0F);
 
-        /* Saturate: '<S260>/Saturation' incorporates:
-         *  Bias: '<S260>/Bias2'
-         *  Constant: '<S260>/Constant'
-         *  DataTypeConversion: '<S260>/Data Type Conversion'
+        /* Saturate: '<S268>/Saturation' incorporates:
+         *  Bias: '<S268>/Bias2'
+         *  Constant: '<S268>/Constant'
+         *  DataTypeConversion: '<S268>/Data Type Conversion'
          */
         if (1500.0F + CONTROL_PARAM.SERVO3_BIAS > 2000.0F) {
           u0_b = 2000.0F;
@@ -2725,10 +2900,10 @@ void Controller_step(void)
         rtb_VariantMergeForOutportact_h[7] = (uint16_T)fmodf(floorf(u0_b),
           65536.0F);
 
-        /* Saturate: '<S260>/Saturation' incorporates:
-         *  Bias: '<S260>/Bias3'
-         *  Constant: '<S260>/Constant'
-         *  DataTypeConversion: '<S260>/Data Type Conversion'
+        /* Saturate: '<S268>/Saturation' incorporates:
+         *  Bias: '<S268>/Bias3'
+         *  Constant: '<S268>/Constant'
+         *  DataTypeConversion: '<S268>/Data Type Conversion'
          */
         if (1500.0F + CONTROL_PARAM.SERVO4_BIAS > 2000.0F) {
           u0_b = 2000.0F;
@@ -2743,56 +2918,56 @@ void Controller_step(void)
         break;
 
        case 3:
-        /* Switch: '<S255>/Switch' incorporates:
-         *  Constant: '<S256>/Constant1'
-         *  Constant: '<S257>/Constant'
-         *  DataTypeConversion: '<S256>/Data Type Conversion'
-         *  Gain: '<S256>/Gain1'
-         *  RelationalOperator: '<S257>/Compare'
-         *  Saturate: '<S251>/Saturation4'
-         *  Sum: '<S256>/Sum1'
+        /* Switch: '<S263>/Switch' incorporates:
+         *  Constant: '<S264>/Constant1'
+         *  Constant: '<S265>/Constant'
+         *  DataTypeConversion: '<S264>/Data Type Conversion'
+         *  Gain: '<S264>/Gain1'
+         *  RelationalOperator: '<S265>/Compare'
+         *  Saturate: '<S259>/Saturation4'
+         *  Sum: '<S264>/Sum1'
          */
         if (rtb_BitwiseAND_a <= 3) {
           rtb_Switch_f = Controller_U.FMS_Out.throttle_cmd;
         } else {
           if (rtb_Saturation2_l[0] > 1.0F) {
-            /* Saturate: '<S251>/Saturation4' */
+            /* Saturate: '<S259>/Saturation4' */
             u0_b = 1.0F;
           } else if (rtb_Saturation2_l[0] < -1.0F) {
-            /* Saturate: '<S251>/Saturation4' */
+            /* Saturate: '<S259>/Saturation4' */
             u0_b = -1.0F;
           } else {
-            /* Saturate: '<S251>/Saturation4' */
+            /* Saturate: '<S259>/Saturation4' */
             u0_b = rtb_Saturation2_l[0];
           }
 
-          /* Saturate: '<S256>/Saturation' incorporates:
-           *  Saturate: '<S251>/Saturation4'
+          /* Saturate: '<S264>/Saturation' incorporates:
+           *  Saturate: '<S259>/Saturation4'
            */
           if (u0_b < 0.0F) {
             u0_b = 0.0F;
           }
 
-          /* End of Saturate: '<S256>/Saturation' */
+          /* End of Saturate: '<S264>/Saturation' */
           rtb_Switch_f = (uint16_T)((uint32_T)fmodf(floorf(1000.0F * u0_b),
             4.2949673E+9F) + 1000U);
         }
 
-        /* End of Switch: '<S255>/Switch' */
+        /* End of Switch: '<S263>/Switch' */
         rtb_MatrixConcatenate_g[11] = CONTROL_PARAM.FW_YAW_EFFC *
           CONTROL_PARAM.FW_TAIL2_DIR;
         rtb_MatrixConcatenate_g[10] = CONTROL_PARAM.FW_YAW_EFFC *
           CONTROL_PARAM.FW_TAIL1_DIR;
 
-        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate2In2' incorporates:
-         *  Constant: '<S254>/Constant10'
-         *  Constant: '<S254>/Constant11'
-         *  Constant: '<S254>/Constant12'
+        /* SignalConversion: '<S262>/ConcatBufferAtVector Concatenate2In2' incorporates:
+         *  Constant: '<S262>/Constant10'
+         *  Constant: '<S262>/Constant11'
+         *  Constant: '<S262>/Constant12'
          */
         rtb_MatrixConcatenate_g[9] = 0.0F;
 
-        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate2In1' incorporates:
-         *  Constant: '<S254>/Constant9'
+        /* SignalConversion: '<S262>/ConcatBufferAtVector Concatenate2In1' incorporates:
+         *  Constant: '<S262>/Constant9'
          */
         rtb_MatrixConcatenate_g[8] = 0.0F;
         rtb_MatrixConcatenate_g[7] = -CONTROL_PARAM.FW_PITCH_EFFC *
@@ -2800,25 +2975,25 @@ void Controller_step(void)
         rtb_MatrixConcatenate_g[6] = CONTROL_PARAM.FW_PITCH_EFFC *
           CONTROL_PARAM.FW_TAIL1_DIR;
 
-        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate1In2' incorporates:
-         *  Constant: '<S254>/Constant6'
-         *  Constant: '<S254>/Constant7'
-         *  Constant: '<S254>/Constant8'
+        /* SignalConversion: '<S262>/ConcatBufferAtVector Concatenate1In2' incorporates:
+         *  Constant: '<S262>/Constant6'
+         *  Constant: '<S262>/Constant7'
+         *  Constant: '<S262>/Constant8'
          */
         rtb_MatrixConcatenate_g[5] = 0.0F;
 
-        /* SignalConversion: '<S254>/ConcatBufferAtVector Concatenate1In1' incorporates:
-         *  Constant: '<S254>/Constant5'
+        /* SignalConversion: '<S262>/ConcatBufferAtVector Concatenate1In1' incorporates:
+         *  Constant: '<S262>/Constant5'
          */
         rtb_MatrixConcatenate_g[4] = 0.0F;
 
-        /* SignalConversion: '<S254>/ConcatBufferAtVector ConcatenateIn4' incorporates:
-         *  Constant: '<S254>/Constant4'
+        /* SignalConversion: '<S262>/ConcatBufferAtVector ConcatenateIn4' incorporates:
+         *  Constant: '<S262>/Constant4'
          */
         rtb_MatrixConcatenate_g[3] = 0.0F;
 
-        /* SignalConversion: '<S254>/ConcatBufferAtVector ConcatenateIn3' incorporates:
-         *  Constant: '<S254>/Constant3'
+        /* SignalConversion: '<S262>/ConcatBufferAtVector ConcatenateIn3' incorporates:
+         *  Constant: '<S262>/Constant3'
          */
         rtb_MatrixConcatenate_g[2] = 0.0F;
         rtb_MatrixConcatenate_g[1] = CONTROL_PARAM.FW_ROLL_EFFC *
@@ -2826,9 +3001,9 @@ void Controller_step(void)
         rtb_MatrixConcatenate_g[0] = CONTROL_PARAM.FW_ROLL_EFFC *
           CONTROL_PARAM.FW_AILERON1_DIR;
 
-        /* Saturate: '<S251>/Saturation5' incorporates:
-         *  Constant: '<S254>/Constant1'
-         *  Constant: '<S254>/Constant2'
+        /* Saturate: '<S259>/Saturation5' incorporates:
+         *  Constant: '<S262>/Constant1'
+         *  Constant: '<S262>/Constant2'
          */
         if (rtb_Saturation1_f[0] > 1.0F) {
           tmp_b = 1.0F;
@@ -2854,44 +3029,44 @@ void Controller_step(void)
           tmp_c = rtb_Saturation1_f[2];
         }
 
-        /* End of Saturate: '<S251>/Saturation5' */
+        /* End of Saturate: '<S259>/Saturation5' */
         for (i_b = 0; i_b < 4; i_b++) {
-          /* Bias: '<S251>/Bias' incorporates:
-           *  Gain: '<S251>/Gain1'
-           *  Product: '<S251>/Multiply1'
+          /* Bias: '<S259>/Bias' incorporates:
+           *  Gain: '<S259>/Gain1'
+           *  Product: '<S259>/Multiply1'
            */
           rtb_Multiply_ka[i_b] = 500.0F * (rtb_MatrixConcatenate_g[i_b + 8] *
             tmp_c + (rtb_MatrixConcatenate_g[i_b + 4] * tmp_o +
                      rtb_MatrixConcatenate_g[i_b] * tmp_b)) + 1500.0F;
         }
 
-        /* Saturate: '<S252>/Saturation2' */
-        if (rtb_Saturation1[2] > 1.0F) {
+        /* Saturate: '<S260>/Saturation2' */
+        if (rtb_Saturation1_d[2] > 1.0F) {
           u0_b = 1.0F;
-        } else if (rtb_Saturation1[2] < -1.0F) {
+        } else if (rtb_Saturation1_d[2] < -1.0F) {
           u0_b = -1.0F;
         } else {
-          u0_b = rtb_Saturation1[2];
+          u0_b = rtb_Saturation1_d[2];
         }
 
-        /* End of Saturate: '<S252>/Saturation2' */
+        /* End of Saturate: '<S260>/Saturation2' */
 
-        /* Saturate: '<S258>/Saturation' */
+        /* Saturate: '<S266>/Saturation' */
         if (u0_b < 0.0F) {
           u0_b = 0.0F;
         }
 
-        /* End of Saturate: '<S258>/Saturation' */
+        /* End of Saturate: '<S266>/Saturation' */
 
-        /* DataTypeConversion: '<S258>/Data Type Conversion' incorporates:
-         *  Constant: '<S258>/Constant1'
-         *  Gain: '<S258>/Gain1'
-         *  Sum: '<S258>/Sum1'
+        /* DataTypeConversion: '<S266>/Data Type Conversion' incorporates:
+         *  Constant: '<S266>/Constant1'
+         *  Gain: '<S266>/Gain1'
+         *  Sum: '<S266>/Sum1'
          */
         rtb_DataTypeConversion_f = (uint16_T)((uint32_T)fmodf(floorf(1000.0F *
           u0_b), 4.2949673E+9F) + 1000U);
 
-        /* Saturate: '<S252>/Saturation1' */
+        /* Saturate: '<S260>/Saturation1' */
         if (rtb_Saturation2[0] > 1.0F) {
           tmp_b = 1.0F;
         } else if (rtb_Saturation2[0] < -1.0F) {
@@ -2916,65 +3091,65 @@ void Controller_step(void)
           tmp_c = rtb_Saturation2[2];
         }
 
-        /* End of Saturate: '<S252>/Saturation1' */
+        /* End of Saturate: '<S260>/Saturation1' */
 
-        /* Saturate: '<S251>/Saturation1' */
+        /* Saturate: '<S259>/Saturation1' */
         rtb_Switch_f_b[0] = rtb_Switch_f;
 
-        /* DataTypeConversion: '<S251>/Data Type Conversion' incorporates:
-         *  Bias: '<S251>/Bias1'
+        /* DataTypeConversion: '<S259>/Data Type Conversion' incorporates:
+         *  Bias: '<S259>/Bias1'
          */
         u0_b = fmodf(floorf(rtb_Multiply_ka[0] + CONTROL_PARAM.SERVO1_BIAS),
                      65536.0F);
 
-        /* Saturate: '<S251>/Saturation1' incorporates:
-         *  DataTypeConversion: '<S251>/Data Type Conversion'
+        /* Saturate: '<S259>/Saturation1' incorporates:
+         *  DataTypeConversion: '<S259>/Data Type Conversion'
          */
         rtb_Switch_f_b[1] = (uint16_T)(u0_b < 0.0F ? (int32_T)(uint16_T)
           -(int16_T)(uint16_T)-u0_b : (int32_T)(uint16_T)u0_b);
 
-        /* DataTypeConversion: '<S251>/Data Type Conversion1' incorporates:
-         *  Bias: '<S251>/Bias2'
+        /* DataTypeConversion: '<S259>/Data Type Conversion1' incorporates:
+         *  Bias: '<S259>/Bias2'
          */
         u0_b = fmodf(floorf(rtb_Multiply_ka[1] + CONTROL_PARAM.SERVO2_BIAS),
                      65536.0F);
 
-        /* Saturate: '<S251>/Saturation1' incorporates:
-         *  DataTypeConversion: '<S251>/Data Type Conversion1'
+        /* Saturate: '<S259>/Saturation1' incorporates:
+         *  DataTypeConversion: '<S259>/Data Type Conversion1'
          */
         rtb_Switch_f_b[2] = (uint16_T)(u0_b < 0.0F ? (int32_T)(uint16_T)
           -(int16_T)(uint16_T)-u0_b : (int32_T)(uint16_T)u0_b);
 
-        /* DataTypeConversion: '<S251>/Data Type Conversion2' incorporates:
-         *  Bias: '<S251>/Bias3'
+        /* DataTypeConversion: '<S259>/Data Type Conversion2' incorporates:
+         *  Bias: '<S259>/Bias3'
          */
         u0_b = fmodf(floorf(rtb_Multiply_ka[2] + CONTROL_PARAM.SERVO3_BIAS),
                      65536.0F);
 
-        /* Saturate: '<S251>/Saturation1' incorporates:
-         *  DataTypeConversion: '<S251>/Data Type Conversion2'
+        /* Saturate: '<S259>/Saturation1' incorporates:
+         *  DataTypeConversion: '<S259>/Data Type Conversion2'
          */
         rtb_Switch_f_b[3] = (uint16_T)(u0_b < 0.0F ? (int32_T)(uint16_T)
           -(int16_T)(uint16_T)-u0_b : (int32_T)(uint16_T)u0_b);
 
-        /* DataTypeConversion: '<S251>/Data Type Conversion3' incorporates:
-         *  Bias: '<S251>/Bias4'
+        /* DataTypeConversion: '<S259>/Data Type Conversion3' incorporates:
+         *  Bias: '<S259>/Bias4'
          */
         u0_b = fmodf(floorf(rtb_Multiply_ka[3] + CONTROL_PARAM.SERVO4_BIAS),
                      65536.0F);
 
-        /* Saturate: '<S251>/Saturation1' incorporates:
-         *  DataTypeConversion: '<S251>/Data Type Conversion3'
+        /* Saturate: '<S259>/Saturation1' incorporates:
+         *  DataTypeConversion: '<S259>/Data Type Conversion3'
          */
         rtb_Switch_f_b[4] = (uint16_T)(u0_b < 0.0F ? (int32_T)(uint16_T)
           -(int16_T)(uint16_T)-u0_b : (int32_T)(uint16_T)u0_b);
 
-        /* Product: '<S252>/Multiply' */
+        /* Product: '<S260>/Multiply' */
         for (i_b = 0; i_b < 4; i_b++) {
-          /* Saturate: '<S252>/Saturation' incorporates:
-           *  Constant: '<S252>/Effective_Matrix'
-           *  Gain: '<S252>/Gain'
-           *  Sum: '<S252>/Add'
+          /* Saturate: '<S260>/Saturation' incorporates:
+           *  Constant: '<S260>/Effective_Matrix'
+           *  Gain: '<S260>/Gain'
+           *  Sum: '<S260>/Add'
            */
           u0_b = fmodf(floorf(1000.0F * (Controller_ConstP.pooled16[i_b + 8] *
             tmp_c + (Controller_ConstP.pooled16[i_b + 4] * tmp_o +
@@ -2990,12 +3165,12 @@ void Controller_step(void)
             rtb_VariantMergeForOutportact_h[i_b] = rtb_Switch_f;
           }
 
-          /* End of Saturate: '<S252>/Saturation' */
+          /* End of Saturate: '<S260>/Saturation' */
         }
 
-        /* End of Product: '<S252>/Multiply' */
+        /* End of Product: '<S260>/Multiply' */
         for (i_b = 0; i_b < 5; i_b++) {
-          /* Saturate: '<S251>/Saturation1' */
+          /* Saturate: '<S259>/Saturation1' */
           if (rtb_Switch_f_b[i_b] > 2000) {
             rtb_VariantMergeForOutportact_h[i_b + 4] = 2000U;
           } else if (rtb_Switch_f_b[i_b] < 1000) {
@@ -3014,7 +3189,7 @@ void Controller_step(void)
         break;
       }
 
-      /* End of MultiPortSwitch: '<S253>/Multiport Switch' */
+      /* End of MultiPortSwitch: '<S261>/Multiport Switch' */
     }
 
 #endif
@@ -3022,7 +3197,7 @@ void Controller_step(void)
     /* End of Outputs for SubSystem: '<S147>/VTOL_Control_Allocation' */
     for (i = 0; i < 9; i++) {
       /* Outport: '<Root>/Control_Out' incorporates:
-       *  Reshape: '<S239>/Reshape'
+       *  Reshape: '<S247>/Reshape'
        */
       Controller_Y.Control_Out.actuator_cmd[i] =
         rtb_VariantMergeForOutportact_h[i];
@@ -3030,7 +3205,7 @@ void Controller_step(void)
 
     for (i = 0; i < 7; i++) {
       /* Outport: '<Root>/Control_Out' incorporates:
-       *  Reshape: '<S239>/Reshape'
+       *  Reshape: '<S247>/Reshape'
        */
       Controller_Y.Control_Out.actuator_cmd[i + 9] = 0U;
     }
@@ -3041,7 +3216,7 @@ void Controller_step(void)
      *  Constant: '<S161>/gain3'
      *  DiscreteIntegrator: '<S159>/Discrete-Time Integrator5'
      */
-    rtb_Multiply_ga_idx_0 = CONTROL_PARAM.MC_ROLL_RATE_I *
+    rtb_Abs = CONTROL_PARAM.MC_ROLL_RATE_I *
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0];
     rtb_Saturation1_ih = CONTROL_PARAM.MC_PITCH_RATE_I *
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1];
@@ -3052,7 +3227,7 @@ void Controller_step(void)
      *  Constant: '<S184>/const1'
      *  DiscreteIntegrator: '<S183>/Integrator'
      */
-    rtb_Saturation1_h_idx_0 = Controller_DW.Integrator_DSTATE_f * 0.05F;
+    rtb_Divide_m_idx_0 = Controller_DW.Integrator_DSTATE_f * 0.05F;
 
     /* Switch: '<S174>/Switch' incorporates:
      *  Constant: '<S174>/Zero'
@@ -3060,9 +3235,9 @@ void Controller_step(void)
      *  RelationalOperator: '<S177>/Compare'
      */
     if (rtb_BitwiseAND_a <= 3) {
-      rtb_MatrixConcatenate1_tmp = 0.0F;
+      rtb_u = 0.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = Controller_U.FMS_Out.w_cmd;
+      rtb_u = Controller_U.FMS_Out.w_cmd;
     }
 
     /* End of Switch: '<S174>/Switch' */
@@ -3071,16 +3246,16 @@ void Controller_step(void)
      *  DiscreteIntegrator: '<S183>/Integrator1'
      *  Sum: '<S183>/Subtract'
      */
-    rtb_Cos1_d = (Controller_DW.Integrator1_DSTATE_i -
-                  rtb_MatrixConcatenate1_tmp) + rtb_Saturation1_h_idx_0;
+    rtb_Divide_m_idx_1 = (Controller_DW.Integrator1_DSTATE_i - rtb_u) +
+      rtb_Divide_m_idx_0;
 
     /* Signum: '<S184>/Sign' */
-    if (rtb_Cos1_d < 0.0F) {
-      rtb_Divide_i_idx_0 = -1.0F;
-    } else if (rtb_Cos1_d > 0.0F) {
-      rtb_Divide_i_idx_0 = 1.0F;
+    if (rtb_Divide_m_idx_1 < 0.0F) {
+      rtb_Add3_n = -1.0F;
+    } else if (rtb_Divide_m_idx_1 > 0.0F) {
+      rtb_Add3_n = 1.0F;
     } else {
-      rtb_Divide_i_idx_0 = rtb_Cos1_d;
+      rtb_Add3_n = rtb_Divide_m_idx_1;
     }
 
     /* End of Signum: '<S184>/Sign' */
@@ -3095,36 +3270,36 @@ void Controller_step(void)
      *  Sum: '<S184>/Add1'
      *  Sum: '<S184>/Subtract'
      */
-    rtb_Divide_i_idx_0 = (sqrtf((8.0F * fabsf(rtb_Cos1_d) +
-      Controller_ConstB.d_m) * Controller_ConstB.d_m) - Controller_ConstB.d_m) *
-      0.5F * rtb_Divide_i_idx_0 + rtb_Saturation1_h_idx_0;
+    rtb_a_n = (sqrtf((8.0F * fabsf(rtb_Divide_m_idx_1) + Controller_ConstB.d_m) *
+                     Controller_ConstB.d_m) - Controller_ConstB.d_m) * 0.5F *
+      rtb_Add3_n + rtb_Divide_m_idx_0;
 
     /* Sum: '<S184>/Add4' */
-    rtb_Saturation1_h_idx_0 += rtb_Cos1_d - rtb_Divide_i_idx_0;
+    rtb_Divide_m_idx_0 += rtb_Divide_m_idx_1 - rtb_a_n;
 
     /* Sum: '<S184>/Add3' */
-    rtb_Abs = rtb_Cos1_d + Controller_ConstB.d_m;
+    rtb_Add3_n = rtb_Divide_m_idx_1 + Controller_ConstB.d_m;
 
     /* Sum: '<S184>/Subtract1' */
-    rtb_Cos1_d -= Controller_ConstB.d_m;
+    rtb_Divide_m_idx_1 -= Controller_ConstB.d_m;
 
     /* Signum: '<S184>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* End of Signum: '<S184>/Sign1' */
 
     /* Signum: '<S184>/Sign2' */
-    if (rtb_Cos1_d < 0.0F) {
-      rtb_Cos1_d = -1.0F;
+    if (rtb_Divide_m_idx_1 < 0.0F) {
+      rtb_Divide_m_idx_1 = -1.0F;
     } else {
-      if (rtb_Cos1_d > 0.0F) {
-        rtb_Cos1_d = 1.0F;
+      if (rtb_Divide_m_idx_1 > 0.0F) {
+        rtb_Divide_m_idx_1 = 1.0F;
       }
     }
 
@@ -3135,20 +3310,28 @@ void Controller_step(void)
      *  Product: '<S184>/Multiply4'
      *  Sum: '<S184>/Subtract2'
      */
-    rtb_Divide_i_idx_0 += (rtb_Abs - rtb_Cos1_d) * 0.5F *
-      rtb_Saturation1_h_idx_0;
+    rtb_a_n += (rtb_Add3_n - rtb_Divide_m_idx_1) * 0.5F * rtb_Divide_m_idx_0;
 
-    /* Update for DiscreteIntegrator: '<S191>/Discrete-Time Integrator5' incorporates:
-     *  Gain: '<S191>/Gain'
-     *  Sum: '<S191>/Sum5'
+    /* Update for DiscreteIntegrator: '<S193>/Discrete-Time Integrator5' incorporates:
+     *  Gain: '<S193>/Gain'
+     *  Sum: '<S193>/Sum5'
+     */
+    Controller_DW.DiscreteTimeIntegrator5_IC_L_ed = 0U;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_j +=
+      (rtb_DiscreteTimeIntegrator5_c -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_j) * 125.663704F * 0.002F;
+
+    /* Update for DiscreteIntegrator: '<S192>/Discrete-Time Integrator5' incorporates:
+     *  Gain: '<S192>/Gain'
+     *  Sum: '<S192>/Sum5'
      */
     Controller_DW.DiscreteTimeIntegrator5_IC_L_eo = 0U;
     Controller_DW.DiscreteTimeIntegrator5_DSTAT_a += (rtb_Divide_gn -
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_a) * 31.415926F * 0.002F;
 
-    /* Update for DiscreteIntegrator: '<S190>/Discrete-Time Integrator5' incorporates:
-     *  Gain: '<S190>/Gain'
-     *  Sum: '<S190>/Sum5'
+    /* Update for DiscreteIntegrator: '<S191>/Discrete-Time Integrator5' incorporates:
+     *  Gain: '<S191>/Gain'
+     *  Sum: '<S191>/Sum5'
      */
     Controller_DW.DiscreteTimeIntegrator5_IC_LO_o = 0U;
     Controller_DW.DiscreteTimeIntegrator5_DSTA_a2 += ((real32_T)rtb_Relay -
@@ -3189,8 +3372,8 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator1_PrevR_h = (int8_T)
       rtb_LogicalOperator_b3;
 
-    /* Update for DiscreteIntegrator: '<S226>/ ' incorporates:
-     *  Gain: '<S226>/Gain3'
+    /* Update for DiscreteIntegrator: '<S234>/ ' incorporates:
+     *  Gain: '<S234>/Gain3'
      */
     Controller_DW._DSTATE += CONTROL_PARAM.FW_TECS_PITCH_I * rtb_B_err * 0.002F;
     if (Controller_DW._DSTATE >= CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
@@ -3203,9 +3386,9 @@ void Controller_step(void)
 
     Controller_DW._PrevResetState = (int8_T)(Controller_U.FMS_Out.reset > 0);
 
-    /* End of Update for DiscreteIntegrator: '<S226>/ ' */
+    /* End of Update for DiscreteIntegrator: '<S234>/ ' */
 
-    /* Update for DiscreteIntegrator: '<S227>/Discrete-Time Integrator1' */
+    /* Update for DiscreteIntegrator: '<S235>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_IC_LO_f = 0U;
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_e += 0.002F * rtb_Gain_il;
     Controller_DW.DiscreteTimeIntegrator1_PrevR_b = (int8_T)
@@ -3223,24 +3406,24 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator1_PrevR_l = (int8_T)
       rtb_LogicalOperator_m;
 
-    /* Update for DiscreteIntegrator: '<S189>/Discrete-Time Integrator5' incorporates:
-     *  Gain: '<S189>/Gain'
-     *  Sum: '<S189>/Sum5'
+    /* Update for DiscreteIntegrator: '<S190>/Discrete-Time Integrator5' incorporates:
+     *  Gain: '<S190>/Gain'
+     *  Sum: '<S190>/Sum5'
      */
     Controller_DW.DiscreteTimeIntegrator5_IC_LO_g = 0U;
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_j += (rtb_Saturation_ov -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_j) * 12.566371F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTA_jo += (rtb_Saturation_ov -
+      Controller_DW.DiscreteTimeIntegrator5_DSTA_jo) * 12.566371F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S159>/Discrete-Time Integrator5' incorporates:
      *  Gain: '<S159>/Gain'
      *  Sum: '<S159>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0] += (rtb_Add_c -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0] +=
+      (rtb_TmpSignalConversionAtMult_0 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[0]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S161>/Discrete-Time Integrator' */
-    Controller_DW.DiscreteTimeIntegrator_DSTATE_d[0] += 0.002F *
-      rtb_Multiply_ga_idx_0;
+    Controller_DW.DiscreteTimeIntegrator_DSTATE_d[0] += 0.002F * rtb_Abs;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_d[0] >=
         CONTROL_PARAM.MC_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_d[0] =
@@ -3257,12 +3440,12 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_p[0] += 0.002F *
       rtb_DiscreteTimeIntegrator1_k1[0];
 
-    /* Update for DiscreteIntegrator: '<S201>/Discrete-Time Integrator' incorporates:
-     *  Constant: '<S201>/gain1'
-     *  Product: '<S201>/Multiply'
+    /* Update for DiscreteIntegrator: '<S210>/Discrete-Time Integrator' incorporates:
+     *  Constant: '<S210>/gain1'
+     *  Product: '<S210>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0] +=
-      CONTROL_PARAM.FW_ROLL_RATE_I * rtb_Divide_i_idx_1 * 0.002F;
+      CONTROL_PARAM.FW_ROLL_RATE_I * rtb_rate_err_B_idx_0 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0] >=
         CONTROL_PARAM.FW_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0] =
@@ -3279,8 +3462,9 @@ void Controller_step(void)
      *  Gain: '<S159>/Gain'
      *  Sum: '<S159>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1] += (rtb_FF_limit_idx_1 -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1] +=
+      (rtb_TmpSignalConversionAtMult_1 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[1]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S161>/Discrete-Time Integrator' */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_d[1] += 0.002F *
@@ -3301,12 +3485,12 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_p[1] += 0.002F *
       rtb_DiscreteTimeIntegrator1_k1[1];
 
-    /* Update for DiscreteIntegrator: '<S201>/Discrete-Time Integrator' incorporates:
-     *  Constant: '<S201>/gain2'
-     *  Product: '<S201>/Multiply'
+    /* Update for DiscreteIntegrator: '<S210>/Discrete-Time Integrator' incorporates:
+     *  Constant: '<S210>/gain2'
+     *  Product: '<S210>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1] +=
-      CONTROL_PARAM.FW_PITCH_RATE_I * rtb_Divide_i_idx_2 * 0.002F;
+      CONTROL_PARAM.FW_PITCH_RATE_I * rtb_rate_err_B_idx_1 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1] >=
         CONTROL_PARAM.FW_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1] =
@@ -3323,8 +3507,9 @@ void Controller_step(void)
      *  Gain: '<S159>/Gain'
      *  Sum: '<S159>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2] += (rtb_FF_limit_idx_2 -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2] +=
+      (rtb_TmpSignalConversionAtMult_2 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_l[2]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S161>/Discrete-Time Integrator' */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_d[2] += 0.002F * rtb_VdotPg;
@@ -3344,12 +3529,12 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_p[2] += 0.002F *
       rtb_DiscreteTimeIntegrator1_k1[2];
 
-    /* Update for DiscreteIntegrator: '<S201>/Discrete-Time Integrator' incorporates:
-     *  Constant: '<S201>/gain3'
-     *  Product: '<S201>/Multiply'
+    /* Update for DiscreteIntegrator: '<S210>/Discrete-Time Integrator' incorporates:
+     *  Constant: '<S210>/gain3'
+     *  Product: '<S210>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2] +=
-      CONTROL_PARAM.FW_YAW_RATE_I * rtb_Divide_i_idx_3 * 0.002F;
+      CONTROL_PARAM.FW_YAW_RATE_I * rtb_Divide_m_idx_3 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2] >=
         CONTROL_PARAM.FW_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2] =
@@ -3365,10 +3550,11 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator_PrevR_ef = (int8_T)
       (Controller_U.FMS_Out.reset > 0);
 
-    /* Update for DiscreteIntegrator: '<S229>/ ' incorporates:
-     *  Gain: '<S229>/Gain'
+    /* Update for DiscreteIntegrator: '<S237>/ ' incorporates:
+     *  Gain: '<S237>/Gain'
      */
-    Controller_DW._DSTATE_d += CONTROL_PARAM.FW_TECS_THOR_I * rtb_Cos_j * 0.002F;
+    Controller_DW._DSTATE_d += CONTROL_PARAM.FW_TECS_THOR_I * rtb_Divide_m_idx_2
+      * 0.002F;
     if (Controller_DW._DSTATE_d >= 0.3F) {
       Controller_DW._DSTATE_d = 0.3F;
     } else {
@@ -3379,9 +3565,9 @@ void Controller_step(void)
 
     Controller_DW._PrevResetState_e = (int8_T)(Controller_U.FMS_Out.reset > 0);
 
-    /* End of Update for DiscreteIntegrator: '<S229>/ ' */
+    /* End of Update for DiscreteIntegrator: '<S237>/ ' */
 
-    /* Update for DiscreteIntegrator: '<S230>/Discrete-Time Integrator1' */
+    /* Update for DiscreteIntegrator: '<S238>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_IC_L_h0 = 0U;
     Controller_DW.DiscreteTimeIntegrator1_DSTA_nm += 0.002F * rtb_Gain_cu;
     Controller_DW.DiscreteTimeIntegrator1_PrevR_d = (int8_T)
@@ -3390,48 +3576,48 @@ void Controller_step(void)
     /* Signum: '<S184>/Sign6' incorporates:
      *  Signum: '<S184>/Sign5'
      */
-    if (rtb_Divide_i_idx_0 < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
+    if (rtb_a_n < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
 
       /* Signum: '<S184>/Sign5' */
-      rtb_FF_limit_idx_2 = -1.0F;
-    } else if (rtb_Divide_i_idx_0 > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+      rtb_TmpSignalConversionAtMult_2 = -1.0F;
+    } else if (rtb_a_n > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
 
       /* Signum: '<S184>/Sign5' */
-      rtb_FF_limit_idx_2 = 1.0F;
+      rtb_TmpSignalConversionAtMult_2 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Divide_i_idx_0;
+      rtb_TmpSignalConversionAtMult_1 = rtb_a_n;
 
       /* Signum: '<S184>/Sign5' */
-      rtb_FF_limit_idx_2 = rtb_Divide_i_idx_0;
+      rtb_TmpSignalConversionAtMult_2 = rtb_a_n;
     }
 
     /* End of Signum: '<S184>/Sign6' */
 
     /* Sum: '<S184>/Add6' */
-    rtb_Abs = rtb_Divide_i_idx_0 + Controller_ConstB.d_m;
+    rtb_Add3_n = rtb_a_n + Controller_ConstB.d_m;
 
     /* Sum: '<S184>/Subtract3' */
-    rtb_Add_c = rtb_Divide_i_idx_0 - Controller_ConstB.d_m;
+    rtb_TmpSignalConversionAtMult_0 = rtb_a_n - Controller_ConstB.d_m;
 
     /* Signum: '<S184>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* End of Signum: '<S184>/Sign3' */
 
     /* Signum: '<S184>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
@@ -3447,9 +3633,10 @@ void Controller_step(void)
      *  Sum: '<S184>/Subtract5'
      *  Sum: '<S184>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE_f += ((rtb_Divide_i_idx_0 /
-      Controller_ConstB.d_m - rtb_FF_limit_idx_2) * Controller_ConstB.Gain4_o *
-      ((rtb_Abs - rtb_Add_c) * 0.5F) - rtb_FF_limit_idx_1 * 78.448F) * 0.002F;
+    Controller_DW.Integrator_DSTATE_f += ((rtb_a_n / Controller_ConstB.d_m -
+      rtb_TmpSignalConversionAtMult_2) * Controller_ConstB.Gain4_o *
+      ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0) * 0.5F) -
+      rtb_TmpSignalConversionAtMult_1 * 78.448F) * 0.002F;
 
     /* End of Outputs for SubSystem: '<S2>/VTOL_Controller' */
     break;
@@ -3633,9 +3820,9 @@ void Controller_step(void)
     /* Sum: '<S39>/Sum' incorporates:
      *  DiscreteIntegrator: '<S42>/Integrator1'
      */
-    rtb_Divide_i_idx_0 = Controller_DW.Integrator1_DSTATE_h[0] -
+    rtb_Divide_m_idx_2 = Controller_DW.Integrator1_DSTATE_h[0] -
       rtb_MatrixConcatenate1_0[0];
-    rtb_Cos_j = Controller_DW.Integrator1_DSTATE_h[1] -
+    rtb_Divide_m_idx_1 = Controller_DW.Integrator1_DSTATE_h[1] -
       rtb_MatrixConcatenate1_0[1];
 
     /* DiscreteIntegrator: '<S47>/Discrete-Time Integrator' */
@@ -3696,24 +3883,25 @@ void Controller_step(void)
 
     /* DiscreteIntegrator: '<S49>/Discrete-Time Integrator1' */
     if (Controller_DW.DiscreteTimeIntegrator1_IC_LO_h != 0) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0] = rtb_Divide_i_idx_0;
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1] = rtb_Cos_j;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0] = rtb_Divide_m_idx_2;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1] = rtb_Divide_m_idx_1;
     }
 
     if ((Controller_U.FMS_Out.reset != 0) ||
         (Controller_DW.DiscreteTimeIntegrator1_PrevR_p != 0)) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0] = rtb_Divide_i_idx_0;
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1] = rtb_Cos_j;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0] = rtb_Divide_m_idx_2;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1] = rtb_Divide_m_idx_1;
     }
 
     /* Gain: '<S49>/Gain' incorporates:
      *  DiscreteIntegrator: '<S49>/Discrete-Time Integrator1'
      *  Sum: '<S49>/Sum5'
      */
-    rtb_Saturation1_h_idx_0 = (rtb_Divide_i_idx_0 -
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0]) * 62.831852F;
-    rtb_Divide_gn = (rtb_Cos_j - Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1])
-      * 62.831852F;
+    rtb_Divide_m_idx_0 = (rtb_Divide_m_idx_2 -
+                          Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0]) *
+      62.831852F;
+    rtb_DiscreteTimeIntegrator5_c = (rtb_Divide_m_idx_1 -
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1]) * 62.831852F;
 
     /* Switch: '<S19>/Switch' incorporates:
      *  Constant: '<S29>/Constant'
@@ -3741,14 +3929,14 @@ void Controller_step(void)
     } else {
       if (Controller_U.FMS_Out.psi_rate_cmd > CONTROL_PARAM.MC_R_CMD_LIM) {
         /* Saturate: '<S18>/Saturation' */
-        rtb_Add_c = CONTROL_PARAM.MC_R_CMD_LIM;
+        rtb_TmpSignalConversionAtMult_0 = CONTROL_PARAM.MC_R_CMD_LIM;
       } else if (Controller_U.FMS_Out.psi_rate_cmd < -CONTROL_PARAM.MC_R_CMD_LIM)
       {
         /* Saturate: '<S18>/Saturation' */
-        rtb_Add_c = -CONTROL_PARAM.MC_R_CMD_LIM;
+        rtb_TmpSignalConversionAtMult_0 = -CONTROL_PARAM.MC_R_CMD_LIM;
       } else {
         /* Saturate: '<S18>/Saturation' */
-        rtb_Add_c = Controller_U.FMS_Out.psi_rate_cmd;
+        rtb_TmpSignalConversionAtMult_0 = Controller_U.FMS_Out.psi_rate_cmd;
       }
 
       /* Switch: '<S31>/Switch' incorporates:
@@ -3759,32 +3947,32 @@ void Controller_step(void)
        *  Trigonometry: '<S38>/Atan'
        */
       if ((rtb_BitwiseAND_a == 3) || (rtb_BitwiseAND_a == 4)) {
-        rtb_Gain_ms = Controller_U.FMS_Out.phi_cmd;
-        rtb_Gain_cu = Controller_U.FMS_Out.theta_cmd;
+        rtb_Saturation_ov = Controller_U.FMS_Out.phi_cmd;
+        rtb_Gain_ms = Controller_U.FMS_Out.theta_cmd;
       } else {
         if (Controller_U.FMS_Out.reset > 0) {
           /* Switch: '<S49>/Switch' incorporates:
            *  Gain: '<S49>/Gain1'
            */
+          rtb_Saturation_ov = 0.0F;
           rtb_Gain_ms = 0.0F;
-          rtb_Gain_cu = 0.0F;
         } else {
           /* Switch: '<S49>/Switch' */
-          rtb_Gain_ms = rtb_Saturation1_h_idx_0;
-          rtb_Gain_cu = rtb_Divide_gn;
+          rtb_Saturation_ov = rtb_Divide_m_idx_0;
+          rtb_Gain_ms = rtb_DiscreteTimeIntegrator5_c;
         }
 
         /* Product: '<S46>/Multiply' incorporates:
          *  Constant: '<S46>/kd'
          */
-        rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Gain_ms;
+        rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Saturation_ov;
 
         /* Saturate: '<S46>/Saturation' */
-        if (rtb_Divide_i_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
-          rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
+        if (rtb_rate_err_B_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
+          rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
         } else {
-          if (rtb_Divide_i_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
-            rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
+          if (rtb_rate_err_B_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
+            rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
           }
         }
 
@@ -3795,21 +3983,21 @@ void Controller_step(void)
          *  Product: '<S48>/Multiply'
          *  Sum: '<S40>/Add'
          */
-        rtb_MatrixConcatenate1_tmp = (CONTROL_PARAM.MC_VEL_XY_P *
-          rtb_Divide_i_idx_0 + Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[0])
-          + rtb_Divide_i_idx_1;
+        rtb_u = (CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_m_idx_2 +
+                 Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[0]) +
+          rtb_rate_err_B_idx_1;
 
         /* Product: '<S46>/Multiply' incorporates:
          *  Constant: '<S46>/kd'
          */
-        rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Gain_cu;
+        rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Gain_ms;
 
         /* Saturate: '<S46>/Saturation' */
-        if (rtb_Divide_i_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
-          rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
+        if (rtb_rate_err_B_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
+          rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
         } else {
-          if (rtb_Divide_i_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
-            rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
+          if (rtb_rate_err_B_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
+            rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
           }
         }
 
@@ -3818,7 +4006,7 @@ void Controller_step(void)
          *  DiscreteIntegrator: '<S47>/Discrete-Time Integrator'
          *  Product: '<S48>/Multiply'
          */
-        rtb_Divide_i_idx_1 += CONTROL_PARAM.MC_VEL_XY_P * rtb_Cos_j +
+        rtb_rate_err_B_idx_1 += CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_m_idx_1 +
           Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[1];
 
         /* Trigonometry: '<S38>/Atan' incorporates:
@@ -3826,18 +4014,18 @@ void Controller_step(void)
          *  Gain: '<S38>/gain'
          *  Product: '<S38>/Divide'
          */
-        rtb_Gain_cu = atanf(1.1F * rtb_Divide_i_idx_1 / 9.8055F);
+        rtb_Gain_ms = atanf(1.1F * rtb_rate_err_B_idx_1 / 9.8055F);
 
         /* Saturate: '<S38>/Saturation' */
-        if (rtb_Gain_cu > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
-          rtb_Gain_cu = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        if (rtb_Gain_ms > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+          rtb_Gain_ms = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
         } else {
-          if (rtb_Gain_cu < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
-            rtb_Gain_cu = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+          if (rtb_Gain_ms < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+            rtb_Gain_ms = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
           }
         }
 
-        rtb_Gain_ms = rtb_Gain_cu;
+        rtb_Saturation_ov = rtb_Gain_ms;
 
         /* Trigonometry: '<S38>/Atan' incorporates:
          *  Constant: '<S38>/g'
@@ -3845,14 +4033,14 @@ void Controller_step(void)
          *  Gain: '<S38>/gain'
          *  Product: '<S38>/Divide'
          */
-        rtb_Gain_cu = atanf(1.1F * -rtb_MatrixConcatenate1_tmp / 9.8055F);
+        rtb_Gain_ms = atanf(1.1F * -rtb_u / 9.8055F);
 
         /* Saturate: '<S38>/Saturation' */
-        if (rtb_Gain_cu > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
-          rtb_Gain_cu = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        if (rtb_Gain_ms > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+          rtb_Gain_ms = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
         } else {
-          if (rtb_Gain_cu < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
-            rtb_Gain_cu = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+          if (rtb_Gain_ms < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+            rtb_Gain_ms = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
           }
         }
       }
@@ -3862,16 +4050,16 @@ void Controller_step(void)
       /* Sum: '<S32>/Sum' incorporates:
        *  Inport: '<Root>/INS_Out'
        */
-      rtb_Divide_i_idx_1 = rtb_Gain_ms - Controller_U.INS_Out.phi;
+      rtb_rate_err_B_idx_1 = rtb_Saturation_ov - Controller_U.INS_Out.phi;
 
       /* Product: '<S35>/Divide1' incorporates:
        *  Abs: '<S35>/Abs'
        *  Constant: '<S35>/const2'
        */
-      rtb_Gain_it = fabsf(rtb_Divide_i_idx_1) / 0.002F;
+      rtb_u = fabsf(rtb_rate_err_B_idx_1) / 0.002F;
 
       /* Gain: '<S35>/Gain3' */
-      rtb_MatrixConcatenate1_tmp = -rtb_Gain_it;
+      u0 = -rtb_u;
 
       /* Product: '<S35>/Divide' incorporates:
        *  Constant: '<S33>/Constant1'
@@ -3879,16 +4067,16 @@ void Controller_step(void)
        *  Math: '<S35>/Square'
        *  SignalConversion: '<S35>/TmpSignal ConversionAtSquareInport1'
        */
-      rtb_FF_limit_idx_1 = 9.5993F / (CONTROL_PARAM.MC_ROLL_P *
+      rtb_TmpSignalConversionAtMult_1 = 9.5993F / (CONTROL_PARAM.MC_ROLL_P *
         CONTROL_PARAM.MC_ROLL_P);
 
       /* Signum: '<S35>/Sign' */
-      if (rtb_Divide_i_idx_1 < 0.0F) {
-        rtb_FF_limit_idx_2 = -1.0F;
-      } else if (rtb_Divide_i_idx_1 > 0.0F) {
-        rtb_FF_limit_idx_2 = 1.0F;
+      if (rtb_rate_err_B_idx_1 < 0.0F) {
+        rtb_TmpSignalConversionAtMult_2 = -1.0F;
+      } else if (rtb_rate_err_B_idx_1 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_2 = 1.0F;
       } else {
-        rtb_FF_limit_idx_2 = rtb_Divide_i_idx_1;
+        rtb_TmpSignalConversionAtMult_2 = rtb_rate_err_B_idx_1;
       }
 
       /* Switch: '<S35>/Switch' incorporates:
@@ -3907,55 +4095,55 @@ void Controller_step(void)
        *  Sqrt: '<S35>/Sqrt'
        *  Sum: '<S35>/Subtract'
        */
-      if ((rtb_Divide_i_idx_1 <= rtb_FF_limit_idx_1) && (rtb_Divide_i_idx_1 >=
-           -rtb_FF_limit_idx_1)) {
-        rtb_Divide_i_idx_1 *= CONTROL_PARAM.MC_ROLL_P;
+      if ((rtb_rate_err_B_idx_1 <= rtb_TmpSignalConversionAtMult_1) &&
+          (rtb_rate_err_B_idx_1 >= -rtb_TmpSignalConversionAtMult_1)) {
+        rtb_rate_err_B_idx_1 *= CONTROL_PARAM.MC_ROLL_P;
       } else {
-        rtb_Divide_i_idx_1 = sqrtf((rtb_FF_limit_idx_2 * rtb_Divide_i_idx_1 -
-          0.5F * rtb_FF_limit_idx_1) * Controller_ConstB.Gain_n) *
-          rtb_FF_limit_idx_2;
+        rtb_rate_err_B_idx_1 = sqrtf((rtb_TmpSignalConversionAtMult_2 *
+          rtb_rate_err_B_idx_1 - 0.5F * rtb_TmpSignalConversionAtMult_1) *
+          Controller_ConstB.Gain_n) * rtb_TmpSignalConversionAtMult_2;
       }
 
       /* Switch: '<S36>/Switch' incorporates:
        *  Gain: '<S35>/Gain3'
        *  RelationalOperator: '<S36>/UpperRelop'
        */
-      if (rtb_Divide_i_idx_1 >= -rtb_Gain_it) {
-        rtb_MatrixConcatenate1_tmp = rtb_Divide_i_idx_1;
+      if (rtb_rate_err_B_idx_1 >= -rtb_u) {
+        u0 = rtb_rate_err_B_idx_1;
       }
 
       /* Switch: '<S36>/Switch2' incorporates:
        *  RelationalOperator: '<S36>/LowerRelop1'
        */
-      if (rtb_Divide_i_idx_1 <= rtb_Gain_it) {
-        rtb_Gain_it = rtb_MatrixConcatenate1_tmp;
+      if (rtb_rate_err_B_idx_1 <= rtb_u) {
+        rtb_u = u0;
       }
 
       /* Saturate: '<S18>/Saturation1' */
-      if (rtb_Gain_it > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-        rtb_Gain_it = CONTROL_PARAM.MC_P_Q_CMD_LIM;
+      if (rtb_u > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+        rtb_u = CONTROL_PARAM.MC_P_Q_CMD_LIM;
       } else {
-        if (rtb_Gain_it < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-          rtb_Gain_it = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
+        if (rtb_u < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+          rtb_u = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
         }
       }
 
-      rtb_Saturation_ov = rtb_Gain_it;
+      rtb_Divide_gn = rtb_u;
 
       /* Sum: '<S32>/Sum' incorporates:
        *  Inport: '<Root>/INS_Out'
        *  Product: '<S35>/Divide1'
        */
-      rtb_Divide_i_idx_1 = rtb_Gain_cu - Controller_U.INS_Out.theta;
+      rtb_rate_err_B_idx_1 = rtb_Gain_ms - Controller_U.INS_Out.theta;
 
       /* Product: '<S35>/Divide1' incorporates:
        *  Abs: '<S35>/Abs'
        *  Constant: '<S35>/const2'
        */
-      rtb_Gain_it = fabsf(rtb_Divide_i_idx_1) / 0.002F;
+      rtb_u = fabsf(rtb_rate_err_B_idx_1) / 0.002F;
 
       /* Gain: '<S35>/Gain3' */
-      rtb_MatrixConcatenate1_tmp = -rtb_Gain_it;
+      u0 = -rtb_u;
 
       /* Product: '<S35>/Divide' incorporates:
        *  Constant: '<S33>/Constant2'
@@ -3963,16 +4151,16 @@ void Controller_step(void)
        *  Math: '<S35>/Square'
        *  SignalConversion: '<S35>/TmpSignal ConversionAtSquareInport1'
        */
-      rtb_FF_limit_idx_1 = 9.5993F / (CONTROL_PARAM.MC_PITCH_P *
+      rtb_TmpSignalConversionAtMult_1 = 9.5993F / (CONTROL_PARAM.MC_PITCH_P *
         CONTROL_PARAM.MC_PITCH_P);
 
       /* Signum: '<S35>/Sign' */
-      if (rtb_Divide_i_idx_1 < 0.0F) {
-        rtb_FF_limit_idx_2 = -1.0F;
-      } else if (rtb_Divide_i_idx_1 > 0.0F) {
-        rtb_FF_limit_idx_2 = 1.0F;
+      if (rtb_rate_err_B_idx_1 < 0.0F) {
+        rtb_TmpSignalConversionAtMult_2 = -1.0F;
+      } else if (rtb_rate_err_B_idx_1 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_2 = 1.0F;
       } else {
-        rtb_FF_limit_idx_2 = rtb_Divide_i_idx_1;
+        rtb_TmpSignalConversionAtMult_2 = rtb_rate_err_B_idx_1;
       }
 
       /* Switch: '<S35>/Switch' incorporates:
@@ -3991,59 +4179,61 @@ void Controller_step(void)
        *  Sqrt: '<S35>/Sqrt'
        *  Sum: '<S35>/Subtract'
        */
-      if ((rtb_Divide_i_idx_1 <= rtb_FF_limit_idx_1) && (rtb_Divide_i_idx_1 >=
-           -rtb_FF_limit_idx_1)) {
-        rtb_Divide_i_idx_1 *= CONTROL_PARAM.MC_PITCH_P;
+      if ((rtb_rate_err_B_idx_1 <= rtb_TmpSignalConversionAtMult_1) &&
+          (rtb_rate_err_B_idx_1 >= -rtb_TmpSignalConversionAtMult_1)) {
+        rtb_rate_err_B_idx_1 *= CONTROL_PARAM.MC_PITCH_P;
       } else {
-        rtb_Divide_i_idx_1 = sqrtf((rtb_FF_limit_idx_2 * rtb_Divide_i_idx_1 -
-          0.5F * rtb_FF_limit_idx_1) * Controller_ConstB.Gain_n) *
-          rtb_FF_limit_idx_2;
+        rtb_rate_err_B_idx_1 = sqrtf((rtb_TmpSignalConversionAtMult_2 *
+          rtb_rate_err_B_idx_1 - 0.5F * rtb_TmpSignalConversionAtMult_1) *
+          Controller_ConstB.Gain_n) * rtb_TmpSignalConversionAtMult_2;
       }
 
       /* Switch: '<S36>/Switch' incorporates:
        *  Gain: '<S35>/Gain3'
        *  RelationalOperator: '<S36>/UpperRelop'
        */
-      if (rtb_Divide_i_idx_1 >= -rtb_Gain_it) {
-        rtb_MatrixConcatenate1_tmp = rtb_Divide_i_idx_1;
+      if (rtb_rate_err_B_idx_1 >= -rtb_u) {
+        u0 = rtb_rate_err_B_idx_1;
       }
 
       /* Switch: '<S36>/Switch2' incorporates:
        *  RelationalOperator: '<S36>/LowerRelop1'
        */
-      if (rtb_Divide_i_idx_1 <= rtb_Gain_it) {
-        rtb_Gain_it = rtb_MatrixConcatenate1_tmp;
+      if (rtb_rate_err_B_idx_1 <= rtb_u) {
+        rtb_u = u0;
       }
 
       /* Saturate: '<S18>/Saturation1' */
-      if (rtb_Gain_it > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-        rtb_Gain_it = CONTROL_PARAM.MC_P_Q_CMD_LIM;
+      if (rtb_u > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+        rtb_u = CONTROL_PARAM.MC_P_Q_CMD_LIM;
       } else {
-        if (rtb_Gain_it < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-          rtb_Gain_it = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
+        if (rtb_u < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+          rtb_u = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
         }
       }
 
       /* Trigonometry: '<S28>/Cos' incorporates:
        *  Inport: '<Root>/INS_Out'
        */
-      rtb_FF_limit_idx_1 = arm_cos_f32(Controller_U.INS_Out.phi);
+      rtb_TmpSignalConversionAtMult_1 = arm_cos_f32(Controller_U.INS_Out.phi);
 
       /* Trigonometry: '<S28>/Cos1' incorporates:
        *  Inport: '<Root>/INS_Out'
        */
-      rtb_FF_limit_idx_2 = arm_cos_f32(Controller_U.INS_Out.theta);
+      rtb_TmpSignalConversionAtMult_2 = arm_cos_f32(Controller_U.INS_Out.theta);
 
       /* Trigonometry: '<S28>/Sin' incorporates:
        *  Inport: '<Root>/INS_Out'
        */
-      rtb_Gain_ms = arm_sin_f32(Controller_U.INS_Out.phi);
-      rtb_DiscreteTimeIntegrator1_k1[0] = rtb_Saturation_ov - arm_sin_f32
-        (Controller_U.INS_Out.theta) * rtb_Add_c;
-      rtb_DiscreteTimeIntegrator1_k1[1] = rtb_FF_limit_idx_1 * rtb_Gain_it +
-        rtb_Gain_ms * rtb_FF_limit_idx_2 * rtb_Add_c;
-      rtb_DiscreteTimeIntegrator1_k1[2] = rtb_FF_limit_idx_1 *
-        rtb_FF_limit_idx_2 * rtb_Add_c - rtb_Gain_ms * rtb_Gain_it;
+      rtb_rate_err_B_idx_0 = arm_sin_f32(Controller_U.INS_Out.phi);
+      rtb_DiscreteTimeIntegrator1_k1[0] = rtb_Divide_gn - arm_sin_f32
+        (Controller_U.INS_Out.theta) * rtb_TmpSignalConversionAtMult_0;
+      rtb_DiscreteTimeIntegrator1_k1[1] = rtb_TmpSignalConversionAtMult_1 *
+        rtb_u + rtb_rate_err_B_idx_0 * rtb_TmpSignalConversionAtMult_2 *
+        rtb_TmpSignalConversionAtMult_0;
+      rtb_DiscreteTimeIntegrator1_k1[2] = rtb_TmpSignalConversionAtMult_1 *
+        rtb_TmpSignalConversionAtMult_2 * rtb_TmpSignalConversionAtMult_0 -
+        rtb_rate_err_B_idx_0 * rtb_u;
     }
 
     /* End of Switch: '<S19>/Switch' */
@@ -4051,17 +4241,21 @@ void Controller_step(void)
     /* Sum: '<S20>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Add_c = rtb_DiscreteTimeIntegrator1_k1[0] - Controller_U.INS_Out.p;
-    rtb_FF_limit_idx_1 = rtb_DiscreteTimeIntegrator1_k1[1] -
+    rtb_TmpSignalConversionAtMult_0 = rtb_DiscreteTimeIntegrator1_k1[0] -
+      Controller_U.INS_Out.p;
+    rtb_TmpSignalConversionAtMult_1 = rtb_DiscreteTimeIntegrator1_k1[1] -
       Controller_U.INS_Out.q;
-    rtb_FF_limit_idx_2 = rtb_DiscreteTimeIntegrator1_k1[2] -
+    rtb_TmpSignalConversionAtMult_2 = rtb_DiscreteTimeIntegrator1_k1[2] -
       Controller_U.INS_Out.r;
 
     /* DiscreteIntegrator: '<S23>/Discrete-Time Integrator5' */
     if (Controller_DW.DiscreteTimeIntegrator5_IC_LO_e != 0) {
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0] = rtb_Add_c;
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1] = rtb_FF_limit_idx_1;
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2] = rtb_FF_limit_idx_2;
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0] =
+        rtb_TmpSignalConversionAtMult_0;
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1] =
+        rtb_TmpSignalConversionAtMult_1;
+      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2] =
+        rtb_TmpSignalConversionAtMult_2;
     }
 
     /* DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
@@ -4187,13 +4381,13 @@ void Controller_step(void)
      *  Gain: '<S27>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_Divide_i_idx_1 = 0.0F;
-      rtb_Divide_i_idx_2 = 0.0F;
-      rtb_Divide_i_idx_3 = 0.0F;
+      rtb_rate_err_B_idx_0 = 0.0F;
+      rtb_rate_err_B_idx_1 = 0.0F;
+      rtb_Divide_m_idx_3 = 0.0F;
     } else {
-      rtb_Divide_i_idx_1 = rtb_DiscreteTimeIntegrator1_k1[0];
-      rtb_Divide_i_idx_2 = rtb_DiscreteTimeIntegrator1_k1[1];
-      rtb_Divide_i_idx_3 = rtb_DiscreteTimeIntegrator1_k1[2];
+      rtb_rate_err_B_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0];
+      rtb_rate_err_B_idx_1 = rtb_DiscreteTimeIntegrator1_k1[1];
+      rtb_Divide_m_idx_3 = rtb_DiscreteTimeIntegrator1_k1[2];
     }
 
     /* End of Switch: '<S27>/Switch' */
@@ -4201,49 +4395,46 @@ void Controller_step(void)
     /* Product: '<S24>/Multiply' incorporates:
      *  Constant: '<S24>/gain1'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_ROLL_RATE_D *
-      rtb_Divide_i_idx_1;
+    rtb_u = CONTROL_PARAM.MC_ROLL_RATE_D * rtb_rate_err_B_idx_0;
 
     /* Saturate: '<S24>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+    if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+      rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+      if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
       }
     }
 
-    rtb_Divide_i_idx_1 = rtb_DiscreteTimeIntegrator1_g;
+    rtb_rate_err_B_idx_0 = rtb_u;
 
     /* Product: '<S24>/Multiply' incorporates:
      *  Constant: '<S24>/gain2'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_PITCH_RATE_D *
-      rtb_Divide_i_idx_2;
+    rtb_u = CONTROL_PARAM.MC_PITCH_RATE_D * rtb_rate_err_B_idx_1;
 
     /* Saturate: '<S24>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+    if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+      rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+      if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
       }
     }
 
-    rtb_Divide_i_idx_2 = rtb_DiscreteTimeIntegrator1_g;
+    rtb_rate_err_B_idx_1 = rtb_u;
 
     /* Product: '<S24>/Multiply' incorporates:
      *  Constant: '<S24>/gain3'
      */
-    rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_YAW_RATE_D *
-      rtb_Divide_i_idx_3;
+    rtb_u = CONTROL_PARAM.MC_YAW_RATE_D * rtb_Divide_m_idx_3;
 
     /* Saturate: '<S24>/Saturation' */
-    if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+    if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+      rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
     } else {
-      if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+      if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
       }
     }
 
@@ -4258,22 +4449,22 @@ void Controller_step(void)
     rtb_Add_h[0] = (CONTROL_PARAM.MC_ROLL_RATE_P *
                     Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0] +
                     Controller_DW.DiscreteTimeIntegrator_DSTATE_g[0]) +
-      rtb_Divide_i_idx_1;
+      rtb_rate_err_B_idx_0;
     rtb_Add_h[1] = (CONTROL_PARAM.MC_PITCH_RATE_P *
                     Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1] +
                     Controller_DW.DiscreteTimeIntegrator_DSTATE_g[1]) +
-      rtb_Divide_i_idx_2;
+      rtb_rate_err_B_idx_1;
     rtb_Add_h[2] = (CONTROL_PARAM.MC_YAW_RATE_P *
                     Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2] +
-                    Controller_DW.DiscreteTimeIntegrator_DSTATE_g[2]) +
-      rtb_DiscreteTimeIntegrator1_g;
+                    Controller_DW.DiscreteTimeIntegrator_DSTATE_g[2]) + rtb_u;
 
     /* Gain: '<S52>/Gain' incorporates:
      *  DiscreteIntegrator: '<S54>/Integrator1'
      *  Inport: '<Root>/INS_Out'
      *  Sum: '<S52>/Sum1'
      */
-    rtb_VdotPg = -(Controller_DW.Integrator1_DSTATE_o - Controller_U.INS_Out.vd);
+    rtb_Saturation1_ih = -(Controller_DW.Integrator1_DSTATE_o -
+      Controller_U.INS_Out.vd);
     Controller_B.Constant_i = CONTROL_PARAM.MC_VEL_Z_I_MIN;
 
     /* DiscreteIntegrator: '<S57>/Discrete-Time Integrator' incorporates:
@@ -4309,28 +4500,28 @@ void Controller_step(void)
 
     /* DiscreteIntegrator: '<S59>/Discrete-Time Integrator1' */
     if (Controller_DW.DiscreteTimeIntegrator1_IC_LO_b != 0) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_d = rtb_VdotPg;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_d = rtb_Saturation1_ih;
     }
 
     if ((Controller_U.FMS_Out.reset != 0) ||
         (Controller_DW.DiscreteTimeIntegrator1_PrevR_a != 0)) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_d = rtb_VdotPg;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_d = rtb_Saturation1_ih;
     }
 
     /* Gain: '<S59>/Gain' incorporates:
      *  DiscreteIntegrator: '<S59>/Discrete-Time Integrator1'
      *  Sum: '<S59>/Sum5'
      */
-    rtb_Cos1_d = (rtb_VdotPg - Controller_DW.DiscreteTimeIntegrator1_DSTAT_d) *
-      62.831852F;
+    rtb_VdotPg = (rtb_Saturation1_ih -
+                  Controller_DW.DiscreteTimeIntegrator1_DSTAT_d) * 62.831852F;
 
     /* Switch: '<S59>/Switch' incorporates:
      *  Gain: '<S59>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_MatrixConcatenate1_tmp = 0.0F;
+      rtb_u = 0.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Cos1_d;
+      rtb_u = rtb_VdotPg;
     }
 
     /* End of Switch: '<S59>/Switch' */
@@ -4338,14 +4529,14 @@ void Controller_step(void)
     /* Product: '<S56>/Multiply' incorporates:
      *  Constant: '<S56>/kd'
      */
-    rtb_Abs = CONTROL_PARAM.MC_VEL_Z_D * rtb_MatrixConcatenate1_tmp;
+    rtb_Add3_n = CONTROL_PARAM.MC_VEL_Z_D * rtb_u;
 
     /* Saturate: '<S56>/Saturation' */
-    if (rtb_Abs > CONTROL_PARAM.MC_VEL_Z_D_MAX) {
-      rtb_Abs = CONTROL_PARAM.MC_VEL_Z_D_MAX;
+    if (rtb_Add3_n > CONTROL_PARAM.MC_VEL_Z_D_MAX) {
+      rtb_Add3_n = CONTROL_PARAM.MC_VEL_Z_D_MAX;
     } else {
-      if (rtb_Abs < CONTROL_PARAM.MC_VEL_Z_D_MIN) {
-        rtb_Abs = CONTROL_PARAM.MC_VEL_Z_D_MIN;
+      if (rtb_Add3_n < CONTROL_PARAM.MC_VEL_Z_D_MIN) {
+        rtb_Add3_n = CONTROL_PARAM.MC_VEL_Z_D_MIN;
       }
     }
 
@@ -4356,27 +4547,26 @@ void Controller_step(void)
      *  DiscreteIntegrator: '<S57>/Discrete-Time Integrator'
      *  Product: '<S58>/Multiply'
      */
-    rtb_Saturation_ov = (CONTROL_PARAM.MC_VEL_Z_P * rtb_VdotPg +
-                         Controller_DW.DiscreteTimeIntegrator_DSTATE_p) +
-      rtb_Abs;
+    rtb_rate_err_B_idx_0 = (CONTROL_PARAM.MC_VEL_Z_P * rtb_Saturation1_ih +
+      Controller_DW.DiscreteTimeIntegrator_DSTATE_p) + rtb_Add3_n;
 
     /* Product: '<S51>/Multiply' incorporates:
      *  Inport: '<Root>/INS_Out'
      *  Trigonometry: '<S51>/Cos'
      *  Trigonometry: '<S51>/Cos1'
      */
-    rtb_Abs = arm_cos_f32(Controller_U.INS_Out.phi) * arm_cos_f32
+    rtb_Add3_n = arm_cos_f32(Controller_U.INS_Out.phi) * arm_cos_f32
       (Controller_U.INS_Out.theta);
 
     /* Saturate: '<S51>/Saturation1' incorporates:
      *  Product: '<S51>/Multiply'
      */
-    if (rtb_Abs > 1.0F) {
-      rtb_Gain_it = 1.0F;
-    } else if (rtb_Abs < 0.5F) {
-      rtb_Gain_it = 0.5F;
+    if (rtb_Add3_n > 1.0F) {
+      rtb_B_err = 1.0F;
+    } else if (rtb_Add3_n < 0.5F) {
+      rtb_B_err = 0.5F;
     } else {
-      rtb_Gain_it = rtb_Abs;
+      rtb_B_err = rtb_Add3_n;
     }
 
     /* End of Saturate: '<S51>/Saturation1' */
@@ -4384,14 +4574,14 @@ void Controller_step(void)
     /* Gain: '<S51>/Gain' incorporates:
      *  Product: '<S51>/Multiply'
      */
-    rtb_Abs *= 2.0F;
+    rtb_Add3_n *= 2.0F;
 
     /* Saturate: '<S51>/Saturation' */
-    if (rtb_Abs > 1.0F) {
-      rtb_Abs = 1.0F;
+    if (rtb_Add3_n > 1.0F) {
+      rtb_Add3_n = 1.0F;
     } else {
-      if (rtb_Abs < 0.0F) {
-        rtb_Abs = 0.0F;
+      if (rtb_Add3_n < 0.0F) {
+        rtb_Add3_n = 0.0F;
       }
     }
 
@@ -4401,14 +4591,14 @@ void Controller_step(void)
      *  Constant: '<S51>/Constant'
      *  Product: '<S51>/Divide'
      */
-    rtb_Abs *= 1.0F / rtb_Gain_it * rtb_Saturation_ov;
+    rtb_Add3_n *= 1.0F / rtb_B_err * rtb_rate_err_B_idx_0;
 
     /* Saturate: '<S50>/Saturation' */
-    if (rtb_Abs > 0.35F) {
-      rtb_Abs = 0.35F;
+    if (rtb_Add3_n > 0.35F) {
+      rtb_Add3_n = 0.35F;
     } else {
-      if (rtb_Abs < -0.35F) {
-        rtb_Abs = -0.35F;
+      if (rtb_Add3_n < -0.35F) {
+        rtb_Add3_n = -0.35F;
       }
     }
 
@@ -4417,15 +4607,15 @@ void Controller_step(void)
     /* Sum: '<S9>/Sum' incorporates:
      *  Constant: '<S9>/mc_hover_throttle'
      */
-    rtb_Abs += CONTROL_PARAM.MC_HOVER_THRO;
+    rtb_Add3_n += CONTROL_PARAM.MC_HOVER_THRO;
 
     /* Saturate: '<S9>/Saturation' */
-    if (rtb_Abs > 1.0F) {
+    if (rtb_Add3_n > 1.0F) {
       rtb_Saturation_hi = 1.0F;
-    } else if (rtb_Abs < -1.0F) {
+    } else if (rtb_Add3_n < -1.0F) {
       rtb_Saturation_hi = -1.0F;
     } else {
-      rtb_Saturation_hi = rtb_Abs;
+      rtb_Saturation_hi = rtb_Add3_n;
     }
 
     /* End of Saturate: '<S9>/Saturation' */
@@ -4458,13 +4648,13 @@ void Controller_step(void)
       switch (Controller_U.FMS_Out.status) {
        case 1:
         for (i_n = 0; i_n < 9; i_n++) {
-          rtb_VariantMergeForOutportactua[i_n] = Controller_ConstP.pooled37[i_n];
+          rtb_VariantMergeForOutportactua[i_n] = Controller_ConstP.pooled38[i_n];
         }
         break;
 
        case 2:
         for (i_n = 0; i_n < 9; i_n++) {
-          rtb_VariantMergeForOutportactua[i_n] = Controller_ConstP.pooled38[i_n];
+          rtb_VariantMergeForOutportactua[i_n] = Controller_ConstP.pooled39[i_n];
         }
         break;
 
@@ -4629,7 +4819,7 @@ void Controller_step(void)
 
        default:
         for (i_n = 0; i_n < 9; i_n++) {
-          rtb_VariantMergeForOutportactua[i_n] = Controller_ConstP.pooled37[i_n];
+          rtb_VariantMergeForOutportactua[i_n] = Controller_ConstP.pooled38[i_n];
         }
         break;
       }
@@ -5023,49 +5213,49 @@ void Controller_step(void)
      *  Constant: '<S25>/gain3'
      *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator5'
      */
-    rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_ROLL_RATE_I *
+    rtb_rate_err_B_idx_0 = CONTROL_PARAM.MC_ROLL_RATE_I *
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0];
-    rtb_Divide_i_idx_2 = CONTROL_PARAM.MC_PITCH_RATE_I *
+    rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_PITCH_RATE_I *
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1];
-    rtb_Divide_i_idx_3 = CONTROL_PARAM.MC_YAW_RATE_I *
+    rtb_Divide_m_idx_3 = CONTROL_PARAM.MC_YAW_RATE_I *
       Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2];
 
     /* Product: '<S45>/Multiply1' incorporates:
      *  Constant: '<S45>/const1'
      *  DiscreteIntegrator: '<S42>/Integrator'
      */
-    rtb_Gain_ms = Controller_DW.Integrator_DSTATE_jg[0] * 0.05F;
-    rtb_Gain_cu = Controller_DW.Integrator_DSTATE_jg[1] * 0.05F;
+    rtb_Saturation_ov = Controller_DW.Integrator_DSTATE_jg[0] * 0.05F;
+    rtb_Gain_ms = Controller_DW.Integrator_DSTATE_jg[1] * 0.05F;
 
     /* Sum: '<S45>/Add' incorporates:
      *  DiscreteIntegrator: '<S42>/Integrator1'
      *  Sum: '<S42>/Subtract'
      */
-    rtb_Saturation_ov = (Controller_DW.Integrator1_DSTATE_h[0] -
-                         Controller_U.FMS_Out.u_cmd) + rtb_Gain_ms;
-    rtb_Multiply_ga_idx_0 = (Controller_DW.Integrator1_DSTATE_h[1] -
-      Controller_U.FMS_Out.v_cmd) + rtb_Gain_cu;
+    rtb_Divide_gn = (Controller_DW.Integrator1_DSTATE_h[0] -
+                     Controller_U.FMS_Out.u_cmd) + rtb_Saturation_ov;
+    rtb_Gain_it = (Controller_DW.Integrator1_DSTATE_h[1] -
+                   Controller_U.FMS_Out.v_cmd) + rtb_Gain_ms;
 
     /* Product: '<S55>/Multiply1' incorporates:
      *  Constant: '<S55>/const1'
      *  DiscreteIntegrator: '<S54>/Integrator'
      */
-    rtb_Abs = Controller_DW.Integrator_DSTATE_e * 0.05F;
+    rtb_Add3_n = Controller_DW.Integrator_DSTATE_e * 0.05F;
 
     /* Sum: '<S55>/Add' incorporates:
      *  DiscreteIntegrator: '<S54>/Integrator1'
      *  Sum: '<S54>/Subtract'
      */
-    rtb_Gain_it = (Controller_DW.Integrator1_DSTATE_o -
-                   Controller_U.FMS_Out.w_cmd) + rtb_Abs;
+    rtb_B_err = (Controller_DW.Integrator1_DSTATE_o - Controller_U.FMS_Out.w_cmd)
+      + rtb_Add3_n;
 
     /* Signum: '<S55>/Sign' */
-    if (rtb_Gain_it < 0.0F) {
-      rtb_Saturation1_ih = -1.0F;
-    } else if (rtb_Gain_it > 0.0F) {
-      rtb_Saturation1_ih = 1.0F;
+    if (rtb_B_err < 0.0F) {
+      rtb_Abs = -1.0F;
+    } else if (rtb_B_err > 0.0F) {
+      rtb_Abs = 1.0F;
     } else {
-      rtb_Saturation1_ih = rtb_Gain_it;
+      rtb_Abs = rtb_B_err;
     }
 
     /* End of Signum: '<S55>/Sign' */
@@ -5080,36 +5270,36 @@ void Controller_step(void)
      *  Sum: '<S55>/Add1'
      *  Sum: '<S55>/Subtract'
      */
-    rtb_Saturation1_ih = (sqrtf((8.0F * fabsf(rtb_Gain_it) +
-      Controller_ConstB.d_j) * Controller_ConstB.d_j) - Controller_ConstB.d_j) *
-      0.5F * rtb_Saturation1_ih + rtb_Abs;
+    rtb_Abs = (sqrtf((8.0F * fabsf(rtb_B_err) + Controller_ConstB.d_j) *
+                     Controller_ConstB.d_j) - Controller_ConstB.d_j) * 0.5F *
+      rtb_Abs + rtb_Add3_n;
 
     /* Sum: '<S55>/Add4' */
-    rtb_Minus = (rtb_Gain_it - rtb_Saturation1_ih) + rtb_Abs;
+    rtb_Gain_il = (rtb_B_err - rtb_Abs) + rtb_Add3_n;
 
     /* Sum: '<S55>/Add3' */
-    rtb_Abs = rtb_Gain_it + Controller_ConstB.d_j;
+    rtb_Add3_n = rtb_B_err + Controller_ConstB.d_j;
 
     /* Sum: '<S55>/Subtract1' */
-    rtb_Gain_it -= Controller_ConstB.d_j;
+    rtb_B_err -= Controller_ConstB.d_j;
 
     /* Signum: '<S55>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* End of Signum: '<S55>/Sign1' */
 
     /* Signum: '<S55>/Sign2' */
-    if (rtb_Gain_it < 0.0F) {
-      rtb_Gain_it = -1.0F;
+    if (rtb_B_err < 0.0F) {
+      rtb_B_err = -1.0F;
     } else {
-      if (rtb_Gain_it > 0.0F) {
-        rtb_Gain_it = 1.0F;
+      if (rtb_B_err > 0.0F) {
+        rtb_B_err = 1.0F;
       }
     }
 
@@ -5120,7 +5310,7 @@ void Controller_step(void)
      *  Product: '<S55>/Multiply4'
      *  Sum: '<S55>/Subtract2'
      */
-    rtb_Saturation1_ih += (rtb_Abs - rtb_Gain_it) * 0.5F * rtb_Minus;
+    rtb_Abs += (rtb_Add3_n - rtb_B_err) * 0.5F * rtb_Gain_il;
 
     /* Update for DiscreteIntegrator: '<S47>/Discrete-Time Integrator' */
     Controller_DW.DiscreteTimeIntegrator_PrevRe_a = (int8_T)
@@ -5130,12 +5320,12 @@ void Controller_step(void)
     Controller_DW.DiscreteTimeIntegrator1_IC_LO_h = 0U;
 
     /* Signum: '<S45>/Sign' */
-    if (rtb_Saturation_ov < 0.0F) {
-      rtb_Gain_it = -1.0F;
-    } else if (rtb_Saturation_ov > 0.0F) {
-      rtb_Gain_it = 1.0F;
+    if (rtb_Divide_gn < 0.0F) {
+      rtb_Add3_n = -1.0F;
+    } else if (rtb_Divide_gn > 0.0F) {
+      rtb_Add3_n = 1.0F;
     } else {
-      rtb_Gain_it = rtb_Saturation_ov;
+      rtb_Add3_n = rtb_Divide_gn;
     }
 
     /* Sum: '<S45>/Add2' incorporates:
@@ -5149,35 +5339,35 @@ void Controller_step(void)
      *  Sum: '<S45>/Add1'
      *  Sum: '<S45>/Subtract'
      */
-    rtb_MatrixConcatenate1_tmp = (sqrtf((8.0F * fabsf(rtb_Saturation_ov) +
-      Controller_ConstB.d_ih) * Controller_ConstB.d_ih) - Controller_ConstB.d_ih)
-      * 0.5F * rtb_Gain_it + rtb_Gain_ms;
+    u0 = (sqrtf((8.0F * fabsf(rtb_Divide_gn) + Controller_ConstB.d_ih) *
+                Controller_ConstB.d_ih) - Controller_ConstB.d_ih) * 0.5F *
+      rtb_Add3_n + rtb_Saturation_ov;
 
     /* Sum: '<S45>/Add3' incorporates:
      *  Signum: '<S45>/Sign'
      */
-    rtb_Abs = rtb_Saturation_ov + Controller_ConstB.d_ih;
+    rtb_Add3_n = rtb_Divide_gn + Controller_ConstB.d_ih;
 
     /* Sum: '<S45>/Subtract1' incorporates:
      *  Signum: '<S45>/Sign'
      */
-    rtb_Gain_it = rtb_Saturation_ov - Controller_ConstB.d_ih;
+    rtb_u = rtb_Divide_gn - Controller_ConstB.d_ih;
 
     /* Signum: '<S45>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S45>/Sign2' */
-    if (rtb_Gain_it < 0.0F) {
-      rtb_Gain_it = -1.0F;
+    if (rtb_u < 0.0F) {
+      rtb_u = -1.0F;
     } else {
-      if (rtb_Gain_it > 0.0F) {
-        rtb_Gain_it = 1.0F;
+      if (rtb_u > 0.0F) {
+        rtb_u = 1.0F;
       }
     }
 
@@ -5189,9 +5379,8 @@ void Controller_step(void)
      *  Sum: '<S45>/Add5'
      *  Sum: '<S45>/Subtract2'
      */
-    rtb_Gain_ms = ((rtb_Saturation_ov - rtb_MatrixConcatenate1_tmp) +
-                   rtb_Gain_ms) * ((rtb_Abs - rtb_Gain_it) * 0.5F) +
-      rtb_MatrixConcatenate1_tmp;
+    rtb_Saturation_ov = ((rtb_Divide_gn - u0) + rtb_Saturation_ov) *
+      ((rtb_Add3_n - rtb_u) * 0.5F) + u0;
 
     /* Update for DiscreteIntegrator: '<S42>/Integrator1' incorporates:
      *  DiscreteIntegrator: '<S42>/Integrator'
@@ -5204,7 +5393,7 @@ void Controller_step(void)
      *  Product: '<S47>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[0] +=
-      CONTROL_PARAM.MC_VEL_XY_I * rtb_Divide_i_idx_0 * 0.002F;
+      CONTROL_PARAM.MC_VEL_XY_I * rtb_Divide_m_idx_2 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[0] >=
         CONTROL_PARAM.MC_VEL_XY_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[0] =
@@ -5219,15 +5408,15 @@ void Controller_step(void)
 
     /* Update for DiscreteIntegrator: '<S49>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[0] += 0.002F *
-      rtb_Saturation1_h_idx_0;
+      rtb_Divide_m_idx_0;
 
     /* Signum: '<S45>/Sign' */
-    if (rtb_Multiply_ga_idx_0 < 0.0F) {
-      rtb_Saturation1_h_idx_0 = -1.0F;
-    } else if (rtb_Multiply_ga_idx_0 > 0.0F) {
-      rtb_Saturation1_h_idx_0 = 1.0F;
+    if (rtb_Gain_it < 0.0F) {
+      rtb_Divide_m_idx_0 = -1.0F;
+    } else if (rtb_Gain_it > 0.0F) {
+      rtb_Divide_m_idx_0 = 1.0F;
     } else {
-      rtb_Saturation1_h_idx_0 = rtb_Multiply_ga_idx_0;
+      rtb_Divide_m_idx_0 = rtb_Gain_it;
     }
 
     /* Sum: '<S45>/Add2' incorporates:
@@ -5241,35 +5430,35 @@ void Controller_step(void)
      *  Sum: '<S45>/Add1'
      *  Sum: '<S45>/Subtract'
      */
-    rtb_MatrixConcatenate1_tmp = (sqrtf((8.0F * fabsf(rtb_Multiply_ga_idx_0) +
-      Controller_ConstB.d_ih) * Controller_ConstB.d_ih) - Controller_ConstB.d_ih)
-      * 0.5F * rtb_Saturation1_h_idx_0 + rtb_Gain_cu;
+    u0 = (sqrtf((8.0F * fabsf(rtb_Gain_it) + Controller_ConstB.d_ih) *
+                Controller_ConstB.d_ih) - Controller_ConstB.d_ih) * 0.5F *
+      rtb_Divide_m_idx_0 + rtb_Gain_ms;
 
     /* Sum: '<S45>/Add3' incorporates:
      *  Signum: '<S45>/Sign'
      */
-    rtb_Abs = rtb_Multiply_ga_idx_0 + Controller_ConstB.d_ih;
+    rtb_Add3_n = rtb_Gain_it + Controller_ConstB.d_ih;
 
     /* Sum: '<S45>/Subtract1' incorporates:
      *  Signum: '<S45>/Sign'
      */
-    rtb_Gain_it = rtb_Multiply_ga_idx_0 - Controller_ConstB.d_ih;
+    rtb_u = rtb_Gain_it - Controller_ConstB.d_ih;
 
     /* Signum: '<S45>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S45>/Sign2' */
-    if (rtb_Gain_it < 0.0F) {
-      rtb_Gain_it = -1.0F;
+    if (rtb_u < 0.0F) {
+      rtb_u = -1.0F;
     } else {
-      if (rtb_Gain_it > 0.0F) {
-        rtb_Gain_it = 1.0F;
+      if (rtb_u > 0.0F) {
+        rtb_u = 1.0F;
       }
     }
 
@@ -5281,9 +5470,7 @@ void Controller_step(void)
      *  Sum: '<S45>/Add4'
      *  Sum: '<S45>/Subtract2'
      */
-    rtb_MatrixConcatenate1_tmp += ((rtb_Multiply_ga_idx_0 -
-      rtb_MatrixConcatenate1_tmp) + rtb_Gain_cu) * ((rtb_Abs - rtb_Gain_it) *
-      0.5F);
+    u0 += ((rtb_Gain_it - u0) + rtb_Gain_ms) * ((rtb_Add3_n - rtb_u) * 0.5F);
 
     /* Update for DiscreteIntegrator: '<S42>/Integrator1' incorporates:
      *  DiscreteIntegrator: '<S42>/Integrator'
@@ -5296,7 +5483,7 @@ void Controller_step(void)
      *  Product: '<S47>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[1] +=
-      CONTROL_PARAM.MC_VEL_XY_I * rtb_Cos_j * 0.002F;
+      CONTROL_PARAM.MC_VEL_XY_I * rtb_Divide_m_idx_1 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[1] >=
         CONTROL_PARAM.MC_VEL_XY_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTAT_kh[1] =
@@ -5310,7 +5497,8 @@ void Controller_step(void)
     }
 
     /* Update for DiscreteIntegrator: '<S49>/Discrete-Time Integrator1' */
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1] += 0.002F * rtb_Divide_gn;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_g[1] += 0.002F *
+      rtb_DiscreteTimeIntegrator5_c;
     Controller_DW.DiscreteTimeIntegrator1_PrevR_p = (int8_T)
       (Controller_U.FMS_Out.reset > 0);
 
@@ -5328,12 +5516,13 @@ void Controller_step(void)
      *  Gain: '<S23>/Gain'
      *  Sum: '<S23>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0] += (rtb_Add_c -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0] +=
+      (rtb_TmpSignalConversionAtMult_0 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[0]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_g[0] += 0.002F *
-      rtb_Divide_i_idx_1;
+      rtb_rate_err_B_idx_0;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_g[0] >=
         CONTROL_PARAM.MC_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_g[0] =
@@ -5354,12 +5543,13 @@ void Controller_step(void)
      *  Gain: '<S23>/Gain'
      *  Sum: '<S23>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1] += (rtb_FF_limit_idx_1 -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1] +=
+      (rtb_TmpSignalConversionAtMult_1 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[1]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_g[1] += 0.002F *
-      rtb_Divide_i_idx_2;
+      rtb_rate_err_B_idx_1;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_g[1] >=
         CONTROL_PARAM.MC_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_g[1] =
@@ -5380,12 +5570,13 @@ void Controller_step(void)
      *  Gain: '<S23>/Gain'
      *  Sum: '<S23>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2] += (rtb_FF_limit_idx_2 -
-      Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2] +=
+      (rtb_TmpSignalConversionAtMult_2 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTAT_c[2]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_g[2] += 0.002F *
-      rtb_Divide_i_idx_3;
+      rtb_Divide_m_idx_3;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_g[2] >=
         CONTROL_PARAM.MC_RATE_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_g[2] =
@@ -5415,7 +5606,7 @@ void Controller_step(void)
      *  Product: '<S57>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_p += CONTROL_PARAM.MC_VEL_Z_I *
-      rtb_VdotPg * 0.002F;
+      rtb_Saturation1_ih * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_p >=
         CONTROL_PARAM.MC_VEL_Z_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_p =
@@ -5435,7 +5626,7 @@ void Controller_step(void)
 
     /* Update for DiscreteIntegrator: '<S59>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_IC_LO_b = 0U;
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_d += 0.002F * rtb_Cos1_d;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_d += 0.002F * rtb_VdotPg;
     Controller_DW.DiscreteTimeIntegrator1_PrevR_a = (int8_T)
       (Controller_U.FMS_Out.reset > 0);
 
@@ -5443,52 +5634,52 @@ void Controller_step(void)
      *  Product: '<S45>/Divide'
      *  Sum: '<S45>/Add6'
      */
-    rtb_Abs = rtb_Gain_ms + Controller_ConstB.d_ih;
+    rtb_Add3_n = rtb_Saturation_ov + Controller_ConstB.d_ih;
 
     /* Signum: '<S45>/Sign4' incorporates:
      *  Product: '<S45>/Divide'
      *  Sum: '<S45>/Subtract3'
      */
-    rtb_Add_c = rtb_Gain_ms - Controller_ConstB.d_ih;
+    rtb_TmpSignalConversionAtMult_0 = rtb_Saturation_ov - Controller_ConstB.d_ih;
 
     /* Signum: '<S45>/Sign5' incorporates:
      *  Product: '<S45>/Divide'
      */
-    if (rtb_Gain_ms < 0.0F) {
-      rtb_Divide_i_idx_1 = -1.0F;
-    } else if (rtb_Gain_ms > 0.0F) {
-      rtb_Divide_i_idx_1 = 1.0F;
+    if (rtb_Saturation_ov < 0.0F) {
+      rtb_rate_err_B_idx_1 = -1.0F;
+    } else if (rtb_Saturation_ov > 0.0F) {
+      rtb_rate_err_B_idx_1 = 1.0F;
     } else {
-      rtb_Divide_i_idx_1 = rtb_Gain_ms;
+      rtb_rate_err_B_idx_1 = rtb_Saturation_ov;
     }
 
     /* Signum: '<S45>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S45>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
     /* Signum: '<S45>/Sign6' incorporates:
      *  Product: '<S45>/Divide'
      */
-    if (rtb_Gain_ms < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
-    } else if (rtb_Gain_ms > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+    if (rtb_Saturation_ov < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
+    } else if (rtb_Saturation_ov > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Gain_ms;
+      rtb_TmpSignalConversionAtMult_1 = rtb_Saturation_ov;
     }
 
     /* Update for DiscreteIntegrator: '<S42>/Integrator' incorporates:
@@ -5501,54 +5692,55 @@ void Controller_step(void)
      *  Sum: '<S45>/Subtract5'
      *  Sum: '<S45>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE_jg[0] += ((rtb_Gain_ms /
-      Controller_ConstB.d_ih - rtb_Divide_i_idx_1) * Controller_ConstB.Gain4_f *
-      ((rtb_Abs - rtb_Add_c) * 0.5F) - rtb_FF_limit_idx_1 * 58.836F) * 0.002F;
+    Controller_DW.Integrator_DSTATE_jg[0] += ((rtb_Saturation_ov /
+      Controller_ConstB.d_ih - rtb_rate_err_B_idx_1) * Controller_ConstB.Gain4_f
+      * ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0) * 0.5F) -
+      rtb_TmpSignalConversionAtMult_1 * 58.836F) * 0.002F;
 
     /* Signum: '<S45>/Sign3' incorporates:
      *  Sum: '<S45>/Add6'
      */
-    rtb_Abs = rtb_MatrixConcatenate1_tmp + Controller_ConstB.d_ih;
+    rtb_Add3_n = u0 + Controller_ConstB.d_ih;
 
     /* Signum: '<S45>/Sign4' incorporates:
      *  Sum: '<S45>/Subtract3'
      */
-    rtb_Add_c = rtb_MatrixConcatenate1_tmp - Controller_ConstB.d_ih;
+    rtb_TmpSignalConversionAtMult_0 = u0 - Controller_ConstB.d_ih;
 
     /* Signum: '<S45>/Sign5' */
-    if (rtb_MatrixConcatenate1_tmp < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
-    } else if (rtb_MatrixConcatenate1_tmp > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+    if (u0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
+    } else if (u0 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_MatrixConcatenate1_tmp;
+      rtb_TmpSignalConversionAtMult_1 = u0;
     }
 
     /* Signum: '<S45>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S45>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
     /* Signum: '<S45>/Sign6' */
-    if (rtb_MatrixConcatenate1_tmp < 0.0F) {
-      rtb_FF_limit_idx_2 = -1.0F;
-    } else if (rtb_MatrixConcatenate1_tmp > 0.0F) {
-      rtb_FF_limit_idx_2 = 1.0F;
+    if (u0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_2 = -1.0F;
+    } else if (u0 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_2 = 1.0F;
     } else {
-      rtb_FF_limit_idx_2 = rtb_MatrixConcatenate1_tmp;
+      rtb_TmpSignalConversionAtMult_2 = u0;
     }
 
     /* Update for DiscreteIntegrator: '<S42>/Integrator' incorporates:
@@ -5561,55 +5753,56 @@ void Controller_step(void)
      *  Sum: '<S45>/Subtract5'
      *  Sum: '<S45>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE_jg[1] += ((rtb_MatrixConcatenate1_tmp /
-      Controller_ConstB.d_ih - rtb_FF_limit_idx_1) * Controller_ConstB.Gain4_f *
-      ((rtb_Abs - rtb_Add_c) * 0.5F) - rtb_FF_limit_idx_2 * 58.836F) * 0.002F;
+    Controller_DW.Integrator_DSTATE_jg[1] += ((u0 / Controller_ConstB.d_ih -
+      rtb_TmpSignalConversionAtMult_1) * Controller_ConstB.Gain4_f *
+      ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0) * 0.5F) -
+      rtb_TmpSignalConversionAtMult_2 * 58.836F) * 0.002F;
 
     /* Signum: '<S55>/Sign6' incorporates:
      *  Signum: '<S55>/Sign5'
      */
-    if (rtb_Saturation1_ih < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
+    if (rtb_Abs < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
 
       /* Signum: '<S55>/Sign5' */
-      rtb_FF_limit_idx_2 = -1.0F;
-    } else if (rtb_Saturation1_ih > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+      rtb_TmpSignalConversionAtMult_2 = -1.0F;
+    } else if (rtb_Abs > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
 
       /* Signum: '<S55>/Sign5' */
-      rtb_FF_limit_idx_2 = 1.0F;
+      rtb_TmpSignalConversionAtMult_2 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Saturation1_ih;
+      rtb_TmpSignalConversionAtMult_1 = rtb_Abs;
 
       /* Signum: '<S55>/Sign5' */
-      rtb_FF_limit_idx_2 = rtb_Saturation1_ih;
+      rtb_TmpSignalConversionAtMult_2 = rtb_Abs;
     }
 
     /* End of Signum: '<S55>/Sign6' */
 
     /* Sum: '<S55>/Add6' */
-    rtb_Abs = rtb_Saturation1_ih + Controller_ConstB.d_j;
+    rtb_Add3_n = rtb_Abs + Controller_ConstB.d_j;
 
     /* Sum: '<S55>/Subtract3' */
-    rtb_Add_c = rtb_Saturation1_ih - Controller_ConstB.d_j;
+    rtb_TmpSignalConversionAtMult_0 = rtb_Abs - Controller_ConstB.d_j;
 
     /* Signum: '<S55>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* End of Signum: '<S55>/Sign3' */
 
     /* Signum: '<S55>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
@@ -5625,9 +5818,10 @@ void Controller_step(void)
      *  Sum: '<S55>/Subtract5'
      *  Sum: '<S55>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE_e += ((rtb_Saturation1_ih /
-      Controller_ConstB.d_j - rtb_FF_limit_idx_2) * Controller_ConstB.Gain4_n *
-      ((rtb_Abs - rtb_Add_c) * 0.5F) - rtb_FF_limit_idx_1 * 78.448F) * 0.002F;
+    Controller_DW.Integrator_DSTATE_e += ((rtb_Abs / Controller_ConstB.d_j -
+      rtb_TmpSignalConversionAtMult_2) * Controller_ConstB.Gain4_n *
+      ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0) * 0.5F) -
+      rtb_TmpSignalConversionAtMult_1 * 78.448F) * 0.002F;
 
     /* End of Outputs for SubSystem: '<S2>/BackTrans_Controller' */
     break;
@@ -5893,9 +6087,10 @@ void Controller_step(void)
     /* Sum: '<S111>/Sum' incorporates:
      *  DiscreteIntegrator: '<S115>/Integrator1'
      */
-    rtb_Divide_i_idx_0 = Controller_DW.Integrator1_DSTATE[0] -
+    rtb_Divide_m_idx_2 = Controller_DW.Integrator1_DSTATE[0] -
       rtb_MatrixConcatenate1_0[0];
-    rtb_Cos_j = Controller_DW.Integrator1_DSTATE[1] - rtb_MatrixConcatenate1_0[1];
+    rtb_Divide_m_idx_1 = Controller_DW.Integrator1_DSTATE[1] -
+      rtb_MatrixConcatenate1_0[1];
 
     /* DiscreteIntegrator: '<S120>/Discrete-Time Integrator' */
     if ((Controller_U.FMS_Out.reset != 0) ||
@@ -5955,34 +6150,35 @@ void Controller_step(void)
 
     /* DiscreteIntegrator: '<S122>/Discrete-Time Integrator1' */
     if (Controller_DW.DiscreteTimeIntegrator1_IC_LOAD != 0) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTATE[0] = rtb_Divide_i_idx_0;
-      Controller_DW.DiscreteTimeIntegrator1_DSTATE[1] = rtb_Cos_j;
+      Controller_DW.DiscreteTimeIntegrator1_DSTATE[0] = rtb_Divide_m_idx_2;
+      Controller_DW.DiscreteTimeIntegrator1_DSTATE[1] = rtb_Divide_m_idx_1;
     }
 
     if ((Controller_U.FMS_Out.reset != 0) ||
         (Controller_DW.DiscreteTimeIntegrator1_PrevRes != 0)) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTATE[0] = rtb_Divide_i_idx_0;
-      Controller_DW.DiscreteTimeIntegrator1_DSTATE[1] = rtb_Cos_j;
+      Controller_DW.DiscreteTimeIntegrator1_DSTATE[0] = rtb_Divide_m_idx_2;
+      Controller_DW.DiscreteTimeIntegrator1_DSTATE[1] = rtb_Divide_m_idx_1;
     }
 
     /* Gain: '<S122>/Gain' incorporates:
      *  DiscreteIntegrator: '<S122>/Discrete-Time Integrator1'
      *  Sum: '<S122>/Sum5'
      */
-    rtb_Saturation1_h_idx_0 = (rtb_Divide_i_idx_0 -
-      Controller_DW.DiscreteTimeIntegrator1_DSTATE[0]) * 62.831852F;
-    rtb_Divide_gn = (rtb_Cos_j - Controller_DW.DiscreteTimeIntegrator1_DSTATE[1])
-      * 62.831852F;
+    rtb_Divide_m_idx_0 = (rtb_Divide_m_idx_2 -
+                          Controller_DW.DiscreteTimeIntegrator1_DSTATE[0]) *
+      62.831852F;
+    rtb_DiscreteTimeIntegrator5_c = (rtb_Divide_m_idx_1 -
+      Controller_DW.DiscreteTimeIntegrator1_DSTATE[1]) * 62.831852F;
 
     /* Switch: '<S122>/Switch' incorporates:
      *  Gain: '<S122>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
+      rtb_Saturation_ov = 0.0F;
       rtb_Gain_ms = 0.0F;
-      rtb_Gain_cu = 0.0F;
     } else {
-      rtb_Gain_ms = rtb_Saturation1_h_idx_0;
-      rtb_Gain_cu = rtb_Divide_gn;
+      rtb_Saturation_ov = rtb_Divide_m_idx_0;
+      rtb_Gain_ms = rtb_DiscreteTimeIntegrator5_c;
     }
 
     /* End of Switch: '<S122>/Switch' */
@@ -5990,30 +6186,30 @@ void Controller_step(void)
     /* Product: '<S119>/Multiply' incorporates:
      *  Constant: '<S119>/kd'
      */
-    rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Gain_ms;
+    rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Saturation_ov;
 
     /* Saturate: '<S119>/Saturation' */
-    if (rtb_Divide_i_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
-      rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
+    if (rtb_rate_err_B_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
+      rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
     } else {
-      if (rtb_Divide_i_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
-        rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
+      if (rtb_rate_err_B_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
+        rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
       }
     }
 
-    rtb_Gain_ms = rtb_Divide_i_idx_1;
+    rtb_Saturation_ov = rtb_rate_err_B_idx_1;
 
     /* Product: '<S119>/Multiply' incorporates:
      *  Constant: '<S119>/kd'
      */
-    rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Gain_cu;
+    rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D * rtb_Gain_ms;
 
     /* Saturate: '<S119>/Saturation' */
-    if (rtb_Divide_i_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
-      rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
+    if (rtb_rate_err_B_idx_1 > CONTROL_PARAM.MC_VEL_XY_D_MAX) {
+      rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MAX;
     } else {
-      if (rtb_Divide_i_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
-        rtb_Divide_i_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
+      if (rtb_rate_err_B_idx_1 < CONTROL_PARAM.MC_VEL_XY_D_MIN) {
+        rtb_rate_err_B_idx_1 = CONTROL_PARAM.MC_VEL_XY_D_MIN;
       }
     }
 
@@ -6037,23 +6233,24 @@ void Controller_step(void)
      *  Sum: '<S124>/Sum1'
      */
     if (rtb_BitwiseAND_a == 6) {
-      rtb_Gain_ms = ((Controller_U.FMS_Out.cmd_mask & 64) > 0 ?
-                     (CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_i_idx_0 +
-                      Controller_DW.DiscreteTimeIntegrator_DSTATE_k[0]) +
-                     rtb_Gain_ms : 0.0F) + ((Controller_U.FMS_Out.cmd_mask & 512)
-        > 0 ? Controller_U.FMS_Out.ax_cmd : 0.0F);
-      rtb_Gain_cu = ((Controller_U.FMS_Out.cmd_mask & 128) > 0 ?
-                     (CONTROL_PARAM.MC_VEL_XY_P * rtb_Cos_j +
+      rtb_Saturation_ov = ((Controller_U.FMS_Out.cmd_mask & 64) > 0 ?
+                           (CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_m_idx_2 +
+                            Controller_DW.DiscreteTimeIntegrator_DSTATE_k[0]) +
+                           rtb_Saturation_ov : 0.0F) +
+        ((Controller_U.FMS_Out.cmd_mask & 512) > 0 ? Controller_U.FMS_Out.ax_cmd
+         : 0.0F);
+      rtb_Gain_ms = ((Controller_U.FMS_Out.cmd_mask & 128) > 0 ?
+                     (CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_m_idx_1 +
                       Controller_DW.DiscreteTimeIntegrator_DSTATE_k[1]) +
-                     rtb_Divide_i_idx_1 : 0.0F) +
+                     rtb_rate_err_B_idx_1 : 0.0F) +
         ((Controller_U.FMS_Out.cmd_mask & 1024) > 0 ?
          Controller_U.FMS_Out.ay_cmd : 0.0F);
     } else {
-      rtb_Gain_ms += CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_i_idx_0 +
+      rtb_Saturation_ov += CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_m_idx_2 +
         Controller_DW.DiscreteTimeIntegrator_DSTATE_k[0];
-      rtb_Gain_cu = (CONTROL_PARAM.MC_VEL_XY_P * rtb_Cos_j +
+      rtb_Gain_ms = (CONTROL_PARAM.MC_VEL_XY_P * rtb_Divide_m_idx_1 +
                      Controller_DW.DiscreteTimeIntegrator_DSTATE_k[1]) +
-        rtb_Divide_i_idx_1;
+        rtb_rate_err_B_idx_1;
     }
 
     /* End of Switch: '<S113>/Switch' */
@@ -6064,8 +6261,8 @@ void Controller_step(void)
      *  Gain: '<S110>/gain'
      *  Product: '<S110>/Divide'
      */
-    u0 = atanf(1.1F * rtb_Gain_cu / 9.8055F);
-    rtb_Gain_cu = atanf(1.1F * -rtb_Gain_ms / 9.8055F);
+    u0 = atanf(1.1F * rtb_Gain_ms / 9.8055F);
+    rtb_Gain_ms = atanf(1.1F * -rtb_Saturation_ov / 9.8055F);
 
     /* Switch: '<S101>/Switch' incorporates:
      *  Constant: '<S108>/Constant'
@@ -6076,8 +6273,8 @@ void Controller_step(void)
      *  Switch: '<S101>/Switch1'
      */
     if ((rtb_BitwiseAND_a == 3) || (rtb_BitwiseAND_a == 4)) {
-      rtb_Gain_ms = Controller_U.FMS_Out.phi_cmd;
-      rtb_Gain_cu = Controller_U.FMS_Out.theta_cmd;
+      rtb_Saturation_ov = Controller_U.FMS_Out.phi_cmd;
+      rtb_Gain_ms = Controller_U.FMS_Out.theta_cmd;
     } else if (rtb_BitwiseAND_a == 6) {
       /* Switch: '<S109>/Switch' incorporates:
        *  S-Function (sfix_bitop): '<S109>/cmd_phi valid'
@@ -6086,26 +6283,26 @@ void Controller_step(void)
        *  Switch: '<S101>/Switch1'
        */
       if ((Controller_U.FMS_Out.cmd_mask & 8) > 0) {
-        rtb_Gain_ms = Controller_U.FMS_Out.phi_cmd;
+        rtb_Saturation_ov = Controller_U.FMS_Out.phi_cmd;
       } else if (u0 > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
         /* Saturate: '<S110>/Saturation' */
-        rtb_Gain_ms = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        rtb_Saturation_ov = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
       } else if (u0 < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
         /* Saturate: '<S110>/Saturation' */
-        rtb_Gain_ms = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        rtb_Saturation_ov = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
       } else {
-        rtb_Gain_ms = u0;
+        rtb_Saturation_ov = u0;
       }
 
       if ((Controller_U.FMS_Out.cmd_mask & 16) > 0) {
-        rtb_Gain_cu = Controller_U.FMS_Out.theta_cmd;
-      } else if (rtb_Gain_cu > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+        rtb_Gain_ms = Controller_U.FMS_Out.theta_cmd;
+      } else if (rtb_Gain_ms > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
         /* Saturate: '<S110>/Saturation' */
-        rtb_Gain_cu = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        rtb_Gain_ms = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
       } else {
-        if (rtb_Gain_cu < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+        if (rtb_Gain_ms < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
           /* Saturate: '<S110>/Saturation' */
-          rtb_Gain_cu = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+          rtb_Gain_ms = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
         }
       }
 
@@ -6115,27 +6312,27 @@ void Controller_step(void)
         /* Saturate: '<S110>/Saturation' incorporates:
          *  Switch: '<S101>/Switch1'
          */
-        rtb_Gain_ms = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        rtb_Saturation_ov = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
       } else if (u0 < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
         /* Saturate: '<S110>/Saturation' incorporates:
          *  Switch: '<S101>/Switch1'
          */
-        rtb_Gain_ms = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        rtb_Saturation_ov = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
       } else {
         /* Switch: '<S101>/Switch1' incorporates:
          *  Saturate: '<S110>/Saturation'
          */
-        rtb_Gain_ms = u0;
+        rtb_Saturation_ov = u0;
       }
 
       /* Saturate: '<S110>/Saturation' */
-      if (rtb_Gain_cu > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+      if (rtb_Gain_ms > CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
         /* Switch: '<S101>/Switch1' */
-        rtb_Gain_cu = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+        rtb_Gain_ms = CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
       } else {
-        if (rtb_Gain_cu < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
+        if (rtb_Gain_ms < -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM) {
           /* Switch: '<S101>/Switch1' */
-          rtb_Gain_cu = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
+          rtb_Gain_ms = -CONTROL_PARAM.MC_ROLL_PITCH_CMD_LIM;
         }
       }
     }
@@ -6145,13 +6342,13 @@ void Controller_step(void)
     /* Sum: '<S102>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Divide_i_idx_1 = rtb_Gain_ms - Controller_U.INS_Out.phi;
+    rtb_rate_err_B_idx_1 = rtb_Saturation_ov - Controller_U.INS_Out.phi;
 
     /* Product: '<S105>/Divide1' incorporates:
      *  Abs: '<S105>/Abs'
      *  Constant: '<S105>/const2'
      */
-    rtb_Gain_it = fabsf(rtb_Divide_i_idx_1) / 0.002F;
+    rtb_u = fabsf(rtb_rate_err_B_idx_1) / 0.002F;
 
     /* Product: '<S105>/Divide' incorporates:
      *  Constant: '<S103>/Constant1'
@@ -6159,16 +6356,15 @@ void Controller_step(void)
      *  Math: '<S105>/Square'
      *  SignalConversion: '<S105>/TmpSignal ConversionAtSquareInport1'
      */
-    rtb_MatrixConcatenate1_tmp = 9.5993F / (CONTROL_PARAM.MC_ROLL_P *
-      CONTROL_PARAM.MC_ROLL_P);
+    u0 = 9.5993F / (CONTROL_PARAM.MC_ROLL_P * CONTROL_PARAM.MC_ROLL_P);
 
     /* Signum: '<S105>/Sign' */
-    if (rtb_Divide_i_idx_1 < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
-    } else if (rtb_Divide_i_idx_1 > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+    if (rtb_rate_err_B_idx_1 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
+    } else if (rtb_rate_err_B_idx_1 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Divide_i_idx_1;
+      rtb_TmpSignalConversionAtMult_1 = rtb_rate_err_B_idx_1;
     }
 
     /* Switch: '<S105>/Switch' incorporates:
@@ -6187,54 +6383,54 @@ void Controller_step(void)
      *  Sqrt: '<S105>/Sqrt'
      *  Sum: '<S105>/Subtract'
      */
-    if ((rtb_Divide_i_idx_1 <= rtb_MatrixConcatenate1_tmp) &&
-        (rtb_Divide_i_idx_1 >= -rtb_MatrixConcatenate1_tmp)) {
-      rtb_FF_limit_idx_1 = rtb_Divide_i_idx_1 * CONTROL_PARAM.MC_ROLL_P;
+    if ((rtb_rate_err_B_idx_1 <= u0) && (rtb_rate_err_B_idx_1 >= -u0)) {
+      rtb_TmpSignalConversionAtMult_1 = rtb_rate_err_B_idx_1 *
+        CONTROL_PARAM.MC_ROLL_P;
     } else {
-      rtb_FF_limit_idx_1 *= sqrtf((rtb_FF_limit_idx_1 * rtb_Divide_i_idx_1 -
-        0.5F * rtb_MatrixConcatenate1_tmp) * Controller_ConstB.Gain);
+      rtb_TmpSignalConversionAtMult_1 *= sqrtf((rtb_TmpSignalConversionAtMult_1 *
+        rtb_rate_err_B_idx_1 - 0.5F * u0) * Controller_ConstB.Gain);
     }
 
     /* Gain: '<S105>/Gain3' */
-    rtb_MatrixConcatenate1_tmp = -rtb_Gain_it;
+    u0 = -rtb_u;
 
     /* Switch: '<S106>/Switch' incorporates:
      *  Gain: '<S105>/Gain3'
      *  RelationalOperator: '<S106>/UpperRelop'
      */
-    if (rtb_FF_limit_idx_1 >= -rtb_Gain_it) {
-      rtb_MatrixConcatenate1_tmp = rtb_FF_limit_idx_1;
+    if (rtb_TmpSignalConversionAtMult_1 >= -rtb_u) {
+      u0 = rtb_TmpSignalConversionAtMult_1;
     }
 
     /* Switch: '<S106>/Switch2' incorporates:
      *  RelationalOperator: '<S106>/LowerRelop1'
      */
-    if (rtb_FF_limit_idx_1 <= rtb_Gain_it) {
-      rtb_Gain_it = rtb_MatrixConcatenate1_tmp;
+    if (rtb_TmpSignalConversionAtMult_1 <= rtb_u) {
+      rtb_u = u0;
     }
 
     /* Saturate: '<S86>/Saturation1' */
-    if (rtb_Gain_it > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-      rtb_Gain_it = CONTROL_PARAM.MC_P_Q_CMD_LIM;
+    if (rtb_u > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+      rtb_u = CONTROL_PARAM.MC_P_Q_CMD_LIM;
     } else {
-      if (rtb_Gain_it < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-        rtb_Gain_it = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
+      if (rtb_u < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+        rtb_u = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
       }
     }
 
-    rtb_Saturation_ov = rtb_Gain_it;
+    rtb_Divide_gn = rtb_u;
 
     /* Sum: '<S102>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
      *  Product: '<S105>/Divide1'
      */
-    rtb_Divide_i_idx_1 = rtb_Gain_cu - Controller_U.INS_Out.theta;
+    rtb_rate_err_B_idx_1 = rtb_Gain_ms - Controller_U.INS_Out.theta;
 
     /* Product: '<S105>/Divide1' incorporates:
      *  Abs: '<S105>/Abs'
      *  Constant: '<S105>/const2'
      */
-    rtb_Gain_it = fabsf(rtb_Divide_i_idx_1) / 0.002F;
+    rtb_u = fabsf(rtb_rate_err_B_idx_1) / 0.002F;
 
     /* Product: '<S105>/Divide' incorporates:
      *  Constant: '<S103>/Constant2'
@@ -6242,16 +6438,15 @@ void Controller_step(void)
      *  Math: '<S105>/Square'
      *  SignalConversion: '<S105>/TmpSignal ConversionAtSquareInport1'
      */
-    rtb_MatrixConcatenate1_tmp = 9.5993F / (CONTROL_PARAM.MC_PITCH_P *
-      CONTROL_PARAM.MC_PITCH_P);
+    u0 = 9.5993F / (CONTROL_PARAM.MC_PITCH_P * CONTROL_PARAM.MC_PITCH_P);
 
     /* Signum: '<S105>/Sign' */
-    if (rtb_Divide_i_idx_1 < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
-    } else if (rtb_Divide_i_idx_1 > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+    if (rtb_rate_err_B_idx_1 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
+    } else if (rtb_rate_err_B_idx_1 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Divide_i_idx_1;
+      rtb_TmpSignalConversionAtMult_1 = rtb_rate_err_B_idx_1;
     }
 
     /* Switch: '<S105>/Switch' incorporates:
@@ -6270,49 +6465,49 @@ void Controller_step(void)
      *  Sqrt: '<S105>/Sqrt'
      *  Sum: '<S105>/Subtract'
      */
-    if ((rtb_Divide_i_idx_1 <= rtb_MatrixConcatenate1_tmp) &&
-        (rtb_Divide_i_idx_1 >= -rtb_MatrixConcatenate1_tmp)) {
-      rtb_FF_limit_idx_1 = rtb_Divide_i_idx_1 * CONTROL_PARAM.MC_PITCH_P;
+    if ((rtb_rate_err_B_idx_1 <= u0) && (rtb_rate_err_B_idx_1 >= -u0)) {
+      rtb_TmpSignalConversionAtMult_1 = rtb_rate_err_B_idx_1 *
+        CONTROL_PARAM.MC_PITCH_P;
     } else {
-      rtb_FF_limit_idx_1 *= sqrtf((rtb_FF_limit_idx_1 * rtb_Divide_i_idx_1 -
-        0.5F * rtb_MatrixConcatenate1_tmp) * Controller_ConstB.Gain);
+      rtb_TmpSignalConversionAtMult_1 *= sqrtf((rtb_TmpSignalConversionAtMult_1 *
+        rtb_rate_err_B_idx_1 - 0.5F * u0) * Controller_ConstB.Gain);
     }
 
     /* Gain: '<S105>/Gain3' */
-    rtb_MatrixConcatenate1_tmp = -rtb_Gain_it;
+    u0 = -rtb_u;
 
     /* Switch: '<S106>/Switch' incorporates:
      *  Gain: '<S105>/Gain3'
      *  RelationalOperator: '<S106>/UpperRelop'
      */
-    if (rtb_FF_limit_idx_1 >= -rtb_Gain_it) {
-      rtb_MatrixConcatenate1_tmp = rtb_FF_limit_idx_1;
+    if (rtb_TmpSignalConversionAtMult_1 >= -rtb_u) {
+      u0 = rtb_TmpSignalConversionAtMult_1;
     }
 
     /* Switch: '<S106>/Switch2' incorporates:
      *  RelationalOperator: '<S106>/LowerRelop1'
      */
-    if (rtb_FF_limit_idx_1 <= rtb_Gain_it) {
-      rtb_Gain_it = rtb_MatrixConcatenate1_tmp;
+    if (rtb_TmpSignalConversionAtMult_1 <= rtb_u) {
+      rtb_u = u0;
     }
 
     /* Saturate: '<S86>/Saturation1' */
-    if (rtb_Gain_it > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-      rtb_Gain_it = CONTROL_PARAM.MC_P_Q_CMD_LIM;
+    if (rtb_u > CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+      rtb_u = CONTROL_PARAM.MC_P_Q_CMD_LIM;
     } else {
-      if (rtb_Gain_it < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
-        rtb_Gain_it = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
+      if (rtb_u < -CONTROL_PARAM.MC_P_Q_CMD_LIM) {
+        rtb_u = -CONTROL_PARAM.MC_P_Q_CMD_LIM;
       }
     }
 
     /* Saturate: '<S86>/Saturation' */
     if (Controller_U.FMS_Out.psi_rate_cmd > CONTROL_PARAM.MC_R_CMD_LIM) {
-      rtb_Multiply_ga_idx_0 = CONTROL_PARAM.MC_R_CMD_LIM;
+      rtb_Gain_it = CONTROL_PARAM.MC_R_CMD_LIM;
     } else if (Controller_U.FMS_Out.psi_rate_cmd < -CONTROL_PARAM.MC_R_CMD_LIM)
     {
-      rtb_Multiply_ga_idx_0 = -CONTROL_PARAM.MC_R_CMD_LIM;
+      rtb_Gain_it = -CONTROL_PARAM.MC_R_CMD_LIM;
     } else {
-      rtb_Multiply_ga_idx_0 = Controller_U.FMS_Out.psi_rate_cmd;
+      rtb_Gain_it = Controller_U.FMS_Out.psi_rate_cmd;
     }
 
     /* End of Saturate: '<S86>/Saturation' */
@@ -6320,33 +6515,34 @@ void Controller_step(void)
     /* Trigonometry: '<S96>/Sin' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Divide_i_idx_2 = arm_sin_f32(Controller_U.INS_Out.phi);
+    rtb_Divide_m_idx_3 = arm_sin_f32(Controller_U.INS_Out.phi);
 
     /* Trigonometry: '<S96>/Cos1' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Add_c = arm_cos_f32(Controller_U.INS_Out.theta);
+    rtb_TmpSignalConversionAtMult_0 = arm_cos_f32(Controller_U.INS_Out.theta);
 
     /* Product: '<S96>/Multiply3' incorporates:
      *  Trigonometry: '<S96>/Cos1'
      *  Trigonometry: '<S96>/Sin'
      */
-    rtb_FF_limit_idx_1 = rtb_Divide_i_idx_2 * rtb_Add_c * rtb_Multiply_ga_idx_0;
+    rtb_TmpSignalConversionAtMult_1 = rtb_Divide_m_idx_3 *
+      rtb_TmpSignalConversionAtMult_0 * rtb_Gain_it;
 
     /* Trigonometry: '<S96>/Cos' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_FF_limit_idx_2 = arm_cos_f32(Controller_U.INS_Out.phi);
+    rtb_TmpSignalConversionAtMult_2 = arm_cos_f32(Controller_U.INS_Out.phi);
 
     /* Product: '<S96>/Multiply1' incorporates:
      *  Trigonometry: '<S96>/Cos'
      */
-    rtb_Gain_ms = rtb_FF_limit_idx_2 * rtb_Gain_it;
+    rtb_rate_err_B_idx_0 = rtb_TmpSignalConversionAtMult_2 * rtb_u;
 
     /* Product: '<S96>/Multiply4' incorporates:
      *  Trigonometry: '<S96>/Sin'
      */
-    rtb_Divide_i_idx_2 *= rtb_Gain_it;
+    rtb_Divide_m_idx_3 *= rtb_u;
 
     /* Switch: '<S87>/Switch' incorporates:
      *  Constant: '<S97>/Constant'
@@ -6379,21 +6575,22 @@ void Controller_step(void)
       if ((Controller_U.FMS_Out.cmd_mask & 1) > 0) {
         rtb_DiscreteTimeIntegrator1_k1[0] = Controller_U.FMS_Out.p_cmd;
       } else {
-        rtb_DiscreteTimeIntegrator1_k1[0] = rtb_Saturation_ov - arm_sin_f32
-          (Controller_U.INS_Out.theta) * rtb_Multiply_ga_idx_0;
+        rtb_DiscreteTimeIntegrator1_k1[0] = rtb_Divide_gn - arm_sin_f32
+          (Controller_U.INS_Out.theta) * rtb_Gain_it;
       }
 
       if ((Controller_U.FMS_Out.cmd_mask & 2) > 0) {
         rtb_DiscreteTimeIntegrator1_k1[1] = Controller_U.FMS_Out.q_cmd;
       } else {
-        rtb_DiscreteTimeIntegrator1_k1[1] = rtb_FF_limit_idx_1 + rtb_Gain_ms;
+        rtb_DiscreteTimeIntegrator1_k1[1] = rtb_TmpSignalConversionAtMult_1 +
+          rtb_rate_err_B_idx_0;
       }
 
       if ((Controller_U.FMS_Out.cmd_mask & 4) > 0) {
         rtb_DiscreteTimeIntegrator1_k1[2] = Controller_U.FMS_Out.r_cmd;
       } else {
-        rtb_DiscreteTimeIntegrator1_k1[2] = rtb_FF_limit_idx_2 * rtb_Add_c *
-          rtb_Multiply_ga_idx_0 - rtb_Divide_i_idx_2;
+        rtb_DiscreteTimeIntegrator1_k1[2] = rtb_TmpSignalConversionAtMult_2 *
+          rtb_TmpSignalConversionAtMult_0 * rtb_Gain_it - rtb_Divide_m_idx_3;
       }
 
       /* End of Switch: '<S99>/Switch' */
@@ -6410,11 +6607,12 @@ void Controller_step(void)
        *  Trigonometry: '<S96>/Cos1'
        *  Trigonometry: '<S96>/Sin1'
        */
-      rtb_DiscreteTimeIntegrator1_k1[0] = rtb_Saturation_ov - arm_sin_f32
-        (Controller_U.INS_Out.theta) * rtb_Multiply_ga_idx_0;
-      rtb_DiscreteTimeIntegrator1_k1[1] = rtb_Gain_ms + rtb_FF_limit_idx_1;
-      rtb_DiscreteTimeIntegrator1_k1[2] = rtb_FF_limit_idx_2 * rtb_Add_c *
-        rtb_Multiply_ga_idx_0 - rtb_Divide_i_idx_2;
+      rtb_DiscreteTimeIntegrator1_k1[0] = rtb_Divide_gn - arm_sin_f32
+        (Controller_U.INS_Out.theta) * rtb_Gain_it;
+      rtb_DiscreteTimeIntegrator1_k1[1] = rtb_rate_err_B_idx_0 +
+        rtb_TmpSignalConversionAtMult_1;
+      rtb_DiscreteTimeIntegrator1_k1[2] = rtb_TmpSignalConversionAtMult_2 *
+        rtb_TmpSignalConversionAtMult_0 * rtb_Gain_it - rtb_Divide_m_idx_3;
     }
 
     /* End of Switch: '<S87>/Switch' */
@@ -6422,17 +6620,21 @@ void Controller_step(void)
     /* Sum: '<S88>/Sum' incorporates:
      *  Inport: '<Root>/INS_Out'
      */
-    rtb_Add_c = rtb_DiscreteTimeIntegrator1_k1[0] - Controller_U.INS_Out.p;
-    rtb_FF_limit_idx_1 = rtb_DiscreteTimeIntegrator1_k1[1] -
+    rtb_TmpSignalConversionAtMult_0 = rtb_DiscreteTimeIntegrator1_k1[0] -
+      Controller_U.INS_Out.p;
+    rtb_TmpSignalConversionAtMult_1 = rtb_DiscreteTimeIntegrator1_k1[1] -
       Controller_U.INS_Out.q;
-    rtb_FF_limit_idx_2 = rtb_DiscreteTimeIntegrator1_k1[2] -
+    rtb_TmpSignalConversionAtMult_2 = rtb_DiscreteTimeIntegrator1_k1[2] -
       Controller_U.INS_Out.r;
 
     /* DiscreteIntegrator: '<S91>/Discrete-Time Integrator5' */
     if (Controller_DW.DiscreteTimeIntegrator5_IC_LOAD != 0) {
-      Controller_DW.DiscreteTimeIntegrator5_DSTATE[0] = rtb_Add_c;
-      Controller_DW.DiscreteTimeIntegrator5_DSTATE[1] = rtb_FF_limit_idx_1;
-      Controller_DW.DiscreteTimeIntegrator5_DSTATE[2] = rtb_FF_limit_idx_2;
+      Controller_DW.DiscreteTimeIntegrator5_DSTATE[0] =
+        rtb_TmpSignalConversionAtMult_0;
+      Controller_DW.DiscreteTimeIntegrator5_DSTATE[1] =
+        rtb_TmpSignalConversionAtMult_1;
+      Controller_DW.DiscreteTimeIntegrator5_DSTATE[2] =
+        rtb_TmpSignalConversionAtMult_2;
     }
 
     /* DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' incorporates:
@@ -6477,7 +6679,7 @@ void Controller_step(void)
      *  Inport: '<Root>/INS_Out'
      *  Sum: '<S136>/Sum1'
      */
-    rtb_Gain_it = -(Controller_DW.Integrator1_DSTATE_e - Controller_U.INS_Out.vd);
+    rtb_Gain_ms = -(Controller_DW.Integrator1_DSTATE_e - Controller_U.INS_Out.vd);
     Controller_B.Constant = CONTROL_PARAM.MC_VEL_Z_I_MIN;
 
     /* DiscreteIntegrator: '<S141>/Discrete-Time Integrator' incorporates:
@@ -6513,28 +6715,28 @@ void Controller_step(void)
 
     /* DiscreteIntegrator: '<S143>/Discrete-Time Integrator1' */
     if (Controller_DW.DiscreteTimeIntegrator1_IC_LO_d != 0) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_i = rtb_Gain_it;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_i = rtb_Gain_ms;
     }
 
     if ((Controller_U.FMS_Out.reset != 0) ||
         (Controller_DW.DiscreteTimeIntegrator1_Prev_ks != 0)) {
-      Controller_DW.DiscreteTimeIntegrator1_DSTAT_i = rtb_Gain_it;
+      Controller_DW.DiscreteTimeIntegrator1_DSTAT_i = rtb_Gain_ms;
     }
 
     /* Gain: '<S143>/Gain' incorporates:
      *  DiscreteIntegrator: '<S143>/Discrete-Time Integrator1'
      *  Sum: '<S143>/Sum5'
      */
-    rtb_Gain_cu = (rtb_Gain_it - Controller_DW.DiscreteTimeIntegrator1_DSTAT_i) *
+    rtb_Abs = (rtb_Gain_ms - Controller_DW.DiscreteTimeIntegrator1_DSTAT_i) *
       62.831852F;
 
     /* Switch: '<S143>/Switch' incorporates:
      *  Gain: '<S143>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_MatrixConcatenate1_tmp = 0.0F;
+      rtb_u = 0.0F;
     } else {
-      rtb_MatrixConcatenate1_tmp = rtb_Gain_cu;
+      rtb_u = rtb_Abs;
     }
 
     /* End of Switch: '<S143>/Switch' */
@@ -6542,15 +6744,14 @@ void Controller_step(void)
     /* Product: '<S140>/Multiply' incorporates:
      *  Constant: '<S140>/kd'
      */
-    rtb_Multiply_ga_idx_0 = CONTROL_PARAM.MC_VEL_Z_D *
-      rtb_MatrixConcatenate1_tmp;
+    rtb_Gain_it = CONTROL_PARAM.MC_VEL_Z_D * rtb_u;
 
     /* Saturate: '<S140>/Saturation' */
-    if (rtb_Multiply_ga_idx_0 > CONTROL_PARAM.MC_VEL_Z_D_MAX) {
-      rtb_Multiply_ga_idx_0 = CONTROL_PARAM.MC_VEL_Z_D_MAX;
+    if (rtb_Gain_it > CONTROL_PARAM.MC_VEL_Z_D_MAX) {
+      rtb_Gain_it = CONTROL_PARAM.MC_VEL_Z_D_MAX;
     } else {
-      if (rtb_Multiply_ga_idx_0 < CONTROL_PARAM.MC_VEL_Z_D_MIN) {
-        rtb_Multiply_ga_idx_0 = CONTROL_PARAM.MC_VEL_Z_D_MIN;
+      if (rtb_Gain_it < CONTROL_PARAM.MC_VEL_Z_D_MIN) {
+        rtb_Gain_it = CONTROL_PARAM.MC_VEL_Z_D_MIN;
       }
     }
 
@@ -6561,27 +6762,26 @@ void Controller_step(void)
      *  DiscreteIntegrator: '<S141>/Discrete-Time Integrator'
      *  Product: '<S142>/Multiply'
      */
-    rtb_Saturation_ov = (CONTROL_PARAM.MC_VEL_Z_P * rtb_Gain_it +
-                         Controller_DW.DiscreteTimeIntegrator_DSTATE_l) +
-      rtb_Multiply_ga_idx_0;
+    rtb_rate_err_B_idx_0 = (CONTROL_PARAM.MC_VEL_Z_P * rtb_Gain_ms +
+      Controller_DW.DiscreteTimeIntegrator_DSTATE_l) + rtb_Gain_it;
 
     /* Product: '<S135>/Multiply' incorporates:
      *  Inport: '<Root>/INS_Out'
      *  Trigonometry: '<S135>/Cos'
      *  Trigonometry: '<S135>/Cos1'
      */
-    rtb_Multiply_ga_idx_0 = arm_cos_f32(Controller_U.INS_Out.phi) * arm_cos_f32
+    rtb_Gain_it = arm_cos_f32(Controller_U.INS_Out.phi) * arm_cos_f32
       (Controller_U.INS_Out.theta);
 
     /* Saturate: '<S135>/Saturation1' incorporates:
      *  Product: '<S135>/Multiply'
      */
-    if (rtb_Multiply_ga_idx_0 > 1.0F) {
-      rtb_Divide_i_idx_2 = 1.0F;
-    } else if (rtb_Multiply_ga_idx_0 < 0.5F) {
-      rtb_Divide_i_idx_2 = 0.5F;
+    if (rtb_Gain_it > 1.0F) {
+      rtb_Divide_m_idx_3 = 1.0F;
+    } else if (rtb_Gain_it < 0.5F) {
+      rtb_Divide_m_idx_3 = 0.5F;
     } else {
-      rtb_Divide_i_idx_2 = rtb_Multiply_ga_idx_0;
+      rtb_Divide_m_idx_3 = rtb_Gain_it;
     }
 
     /* End of Saturate: '<S135>/Saturation1' */
@@ -6589,14 +6789,14 @@ void Controller_step(void)
     /* Gain: '<S135>/Gain' incorporates:
      *  Product: '<S135>/Multiply'
      */
-    rtb_Multiply_ga_idx_0 *= 2.0F;
+    rtb_Gain_it *= 2.0F;
 
     /* Saturate: '<S135>/Saturation' */
-    if (rtb_Multiply_ga_idx_0 > 1.0F) {
-      rtb_Multiply_ga_idx_0 = 1.0F;
+    if (rtb_Gain_it > 1.0F) {
+      rtb_Gain_it = 1.0F;
     } else {
-      if (rtb_Multiply_ga_idx_0 < 0.0F) {
-        rtb_Multiply_ga_idx_0 = 0.0F;
+      if (rtb_Gain_it < 0.0F) {
+        rtb_Gain_it = 0.0F;
       }
     }
 
@@ -6606,7 +6806,7 @@ void Controller_step(void)
      *  Constant: '<S135>/Constant'
      *  Product: '<S135>/Divide'
      */
-    rtb_Multiply_ga_idx_0 *= 1.0F / rtb_Divide_i_idx_2 * rtb_Saturation_ov;
+    rtb_Gain_it *= 1.0F / rtb_Divide_m_idx_3 * rtb_rate_err_B_idx_0;
 
     /* Outputs for Atomic SubSystem: '<S79>/Quadcopter_x' */
     /* MultiPortSwitch: '<S129>/Multiport Switch' incorporates:
@@ -6632,13 +6832,13 @@ void Controller_step(void)
        *  Gain: '<S95>/Gain1'
        */
       if (Controller_U.FMS_Out.reset > 0) {
-        rtb_Divide_i_idx_1 = 0.0F;
-        rtb_Divide_i_idx_2 = 0.0F;
-        rtb_Divide_i_idx_3 = 0.0F;
+        rtb_rate_err_B_idx_0 = 0.0F;
+        rtb_rate_err_B_idx_1 = 0.0F;
+        rtb_Divide_m_idx_3 = 0.0F;
       } else {
-        rtb_Divide_i_idx_1 = rtb_DiscreteTimeIntegrator1_k1[0];
-        rtb_Divide_i_idx_2 = rtb_DiscreteTimeIntegrator1_k1[1];
-        rtb_Divide_i_idx_3 = rtb_DiscreteTimeIntegrator1_k1[2];
+        rtb_rate_err_B_idx_0 = rtb_DiscreteTimeIntegrator1_k1[0];
+        rtb_rate_err_B_idx_1 = rtb_DiscreteTimeIntegrator1_k1[1];
+        rtb_Divide_m_idx_3 = rtb_DiscreteTimeIntegrator1_k1[2];
       }
 
       /* End of Switch: '<S95>/Switch' */
@@ -6646,49 +6846,46 @@ void Controller_step(void)
       /* Product: '<S92>/Multiply' incorporates:
        *  Constant: '<S92>/gain1'
        */
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_ROLL_RATE_D *
-        rtb_Divide_i_idx_1;
+      rtb_u = CONTROL_PARAM.MC_ROLL_RATE_D * rtb_rate_err_B_idx_0;
 
       /* Saturate: '<S92>/Saturation' */
-      if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+      if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
       } else {
-        if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-          rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+        if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+          rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
         }
       }
 
-      rtb_Divide_i_idx_1 = rtb_DiscreteTimeIntegrator1_g;
+      rtb_rate_err_B_idx_0 = rtb_u;
 
       /* Product: '<S92>/Multiply' incorporates:
        *  Constant: '<S92>/gain2'
        */
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_PITCH_RATE_D *
-        rtb_Divide_i_idx_2;
+      rtb_u = CONTROL_PARAM.MC_PITCH_RATE_D * rtb_rate_err_B_idx_1;
 
       /* Saturate: '<S92>/Saturation' */
-      if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+      if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
       } else {
-        if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-          rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+        if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+          rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
         }
       }
 
-      rtb_Divide_i_idx_2 = rtb_DiscreteTimeIntegrator1_g;
+      rtb_rate_err_B_idx_1 = rtb_u;
 
       /* Product: '<S92>/Multiply' incorporates:
        *  Constant: '<S92>/gain3'
        */
-      rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_YAW_RATE_D *
-        rtb_Divide_i_idx_3;
+      rtb_u = CONTROL_PARAM.MC_YAW_RATE_D * rtb_Divide_m_idx_3;
 
       /* Saturate: '<S92>/Saturation' */
-      if (rtb_DiscreteTimeIntegrator1_g > CONTROL_PARAM.MC_RATE_D_MAX) {
-        rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MAX;
+      if (rtb_u > CONTROL_PARAM.MC_RATE_D_MAX) {
+        rtb_u = CONTROL_PARAM.MC_RATE_D_MAX;
       } else {
-        if (rtb_DiscreteTimeIntegrator1_g < CONTROL_PARAM.MC_RATE_D_MIN) {
-          rtb_DiscreteTimeIntegrator1_g = CONTROL_PARAM.MC_RATE_D_MIN;
+        if (rtb_u < CONTROL_PARAM.MC_RATE_D_MIN) {
+          rtb_u = CONTROL_PARAM.MC_RATE_D_MIN;
         }
       }
 
@@ -6716,13 +6913,13 @@ void Controller_step(void)
         if ((Controller_U.FMS_Out.cmd_mask & 4096) > 0) {
           rtb_throttle_cmd = Controller_U.FMS_Out.throttle_cmd;
         } else {
-          if (rtb_Multiply_ga_idx_0 > 0.35F) {
+          if (rtb_Gain_it > 0.35F) {
             /* Saturate: '<S134>/Saturation' */
-            rtb_Multiply_ga_idx_0 = 0.35F;
+            rtb_Gain_it = 0.35F;
           } else {
-            if (rtb_Multiply_ga_idx_0 < -0.35F) {
+            if (rtb_Gain_it < -0.35F) {
               /* Saturate: '<S134>/Saturation' */
-              rtb_Multiply_ga_idx_0 = -0.35F;
+              rtb_Gain_it = -0.35F;
             }
           }
 
@@ -6730,7 +6927,7 @@ void Controller_step(void)
            *  Constant: '<S130>/hover_throttle'
            *  Saturate: '<S134>/Saturation'
            */
-          u0 = rtb_Multiply_ga_idx_0 + CONTROL_PARAM.MC_HOVER_THRO;
+          u0 = rtb_Gain_it + CONTROL_PARAM.MC_HOVER_THRO;
 
           /* Saturate: '<S130>/Saturation' */
           if (u0 > 1.0F) {
@@ -6747,13 +6944,13 @@ void Controller_step(void)
 
         /* End of Switch: '<S133>/Switch' */
       } else {
-        if (rtb_Multiply_ga_idx_0 > 0.35F) {
+        if (rtb_Gain_it > 0.35F) {
           /* Saturate: '<S134>/Saturation' */
-          rtb_Multiply_ga_idx_0 = 0.35F;
+          rtb_Gain_it = 0.35F;
         } else {
-          if (rtb_Multiply_ga_idx_0 < -0.35F) {
+          if (rtb_Gain_it < -0.35F) {
             /* Saturate: '<S134>/Saturation' */
-            rtb_Multiply_ga_idx_0 = -0.35F;
+            rtb_Gain_it = -0.35F;
           }
         }
 
@@ -6761,7 +6958,7 @@ void Controller_step(void)
          *  Constant: '<S130>/hover_throttle'
          *  Saturate: '<S134>/Saturation'
          */
-        u0 = rtb_Multiply_ga_idx_0 + CONTROL_PARAM.MC_HOVER_THRO;
+        u0 = rtb_Gain_it + CONTROL_PARAM.MC_HOVER_THRO;
 
         /* Saturate: '<S130>/Saturation' */
         if (u0 > 1.0F) {
@@ -6795,7 +6992,8 @@ void Controller_step(void)
        */
       u0 = (CONTROL_PARAM.MC_ROLL_RATE_P *
             Controller_DW.DiscreteTimeIntegrator5_DSTATE[0] +
-            Controller_DW.DiscreteTimeIntegrator_DSTATE[0]) + rtb_Divide_i_idx_1;
+            Controller_DW.DiscreteTimeIntegrator_DSTATE[0]) +
+        rtb_rate_err_B_idx_0;
       if (u0 > 1.0F) {
         u0 = 1.0F;
       } else {
@@ -6804,26 +7002,26 @@ void Controller_step(void)
         }
       }
 
-      rtb_Multiply_ga_idx_0 = (CONTROL_PARAM.MC_PITCH_RATE_P *
-        Controller_DW.DiscreteTimeIntegrator5_DSTATE[1] +
-        Controller_DW.DiscreteTimeIntegrator_DSTATE[1]) + rtb_Divide_i_idx_2;
-      if (rtb_Multiply_ga_idx_0 > 1.0F) {
-        rtb_Multiply_ga_idx_0 = 1.0F;
+      rtb_Gain_cu = (CONTROL_PARAM.MC_PITCH_RATE_P *
+                     Controller_DW.DiscreteTimeIntegrator5_DSTATE[1] +
+                     Controller_DW.DiscreteTimeIntegrator_DSTATE[1]) +
+        rtb_rate_err_B_idx_1;
+      if (rtb_Gain_cu > 1.0F) {
+        rtb_Gain_cu = 1.0F;
       } else {
-        if (rtb_Multiply_ga_idx_0 < -1.0F) {
-          rtb_Multiply_ga_idx_0 = -1.0F;
+        if (rtb_Gain_cu < -1.0F) {
+          rtb_Gain_cu = -1.0F;
         }
       }
 
-      rtb_Saturation_ov = (CONTROL_PARAM.MC_YAW_RATE_P *
-                           Controller_DW.DiscreteTimeIntegrator5_DSTATE[2] +
-                           Controller_DW.DiscreteTimeIntegrator_DSTATE[2]) +
-        rtb_DiscreteTimeIntegrator1_g;
-      if (rtb_Saturation_ov > 1.0F) {
-        rtb_Saturation_ov = 1.0F;
+      rtb_Add1_g_tmp = (CONTROL_PARAM.MC_YAW_RATE_P *
+                        Controller_DW.DiscreteTimeIntegrator5_DSTATE[2] +
+                        Controller_DW.DiscreteTimeIntegrator_DSTATE[2]) + rtb_u;
+      if (rtb_Add1_g_tmp > 1.0F) {
+        rtb_Add1_g_tmp = 1.0F;
       } else {
-        if (rtb_Saturation_ov < -1.0F) {
-          rtb_Saturation_ov = -1.0F;
+        if (rtb_Add1_g_tmp < -1.0F) {
+          rtb_Add1_g_tmp = -1.0F;
         }
       }
 
@@ -6836,14 +7034,12 @@ void Controller_step(void)
          *  Gain: '<S127>/Gain'
          *  Sum: '<S127>/Add'
          */
-        rtb_MatrixConcatenate1_tmp = fmodf(floorf(1000.0F *
-          (Controller_ConstP.pooled16[i + 8] * rtb_Saturation_ov +
-           (Controller_ConstP.pooled16[i + 4] * rtb_Multiply_ga_idx_0 +
-            Controller_ConstP.pooled16[i] * u0)) + (real32_T)rtb_throttle_cmd),
-          65536.0F);
-        u0_0 = (uint16_T)(rtb_MatrixConcatenate1_tmp < 0.0F ? (int32_T)(uint16_T)
-                          -(int16_T)(uint16_T)-rtb_MatrixConcatenate1_tmp :
-                          (int32_T)(uint16_T)rtb_MatrixConcatenate1_tmp);
+        rtb_u = fmodf(floorf(1000.0F * (Controller_ConstP.pooled16[i + 8] *
+          rtb_Add1_g_tmp + (Controller_ConstP.pooled16[i + 4] * rtb_Gain_cu +
+                            Controller_ConstP.pooled16[i] * u0)) + (real32_T)
+                             rtb_throttle_cmd), 65536.0F);
+        u0_0 = (uint16_T)(rtb_u < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                          -rtb_u : (int32_T)(uint16_T)rtb_u);
         if (u0_0 > 1900) {
           rtb_MultiportSwitch[i] = 1900U;
         } else if (u0_0 < 1100) {
@@ -6891,25 +7087,25 @@ void Controller_step(void)
      *  Constant: '<S118>/const1'
      *  DiscreteIntegrator: '<S115>/Integrator'
      */
-    rtb_Saturation_ov = Controller_DW.Integrator_DSTATE[0] * 0.05F;
-    rtb_Multiply_ga_idx_0 = Controller_DW.Integrator_DSTATE[1] * 0.05F;
+    rtb_Divide_gn = Controller_DW.Integrator_DSTATE[0] * 0.05F;
+    rtb_Gain_it = Controller_DW.Integrator_DSTATE[1] * 0.05F;
 
     /* Sum: '<S118>/Add' incorporates:
      *  DiscreteIntegrator: '<S115>/Integrator1'
      *  Sum: '<S115>/Subtract'
      */
-    rtb_Gain_ms = (Controller_DW.Integrator1_DSTATE[0] -
-                   Controller_U.FMS_Out.u_cmd) + rtb_Saturation_ov;
-    rtb_Divide_i_idx_2 = (Controller_DW.Integrator1_DSTATE[1] -
-                          Controller_U.FMS_Out.v_cmd) + rtb_Multiply_ga_idx_0;
+    rtb_Saturation_ov = (Controller_DW.Integrator1_DSTATE[0] -
+                         Controller_U.FMS_Out.u_cmd) + rtb_Divide_gn;
+    rtb_rate_err_B_idx_0 = (Controller_DW.Integrator1_DSTATE[1] -
+      Controller_U.FMS_Out.v_cmd) + rtb_Gain_it;
 
     /* Signum: '<S118>/Sign' */
-    if (rtb_Gain_ms < 0.0F) {
-      rtb_Divide_i_idx_1 = -1.0F;
-    } else if (rtb_Gain_ms > 0.0F) {
-      rtb_Divide_i_idx_1 = 1.0F;
+    if (rtb_Saturation_ov < 0.0F) {
+      rtb_rate_err_B_idx_1 = -1.0F;
+    } else if (rtb_Saturation_ov > 0.0F) {
+      rtb_rate_err_B_idx_1 = 1.0F;
     } else {
-      rtb_Divide_i_idx_1 = rtb_Gain_ms;
+      rtb_rate_err_B_idx_1 = rtb_Saturation_ov;
     }
 
     /* Sum: '<S118>/Add2' incorporates:
@@ -6923,35 +7119,35 @@ void Controller_step(void)
      *  Sum: '<S118>/Add1'
      *  Sum: '<S118>/Subtract'
      */
-    rtb_Divide_i_idx_1 = (sqrtf((8.0F * fabsf(rtb_Gain_ms) + Controller_ConstB.d)
-      * Controller_ConstB.d) - Controller_ConstB.d) * 0.5F * rtb_Divide_i_idx_1
-      + rtb_Saturation_ov;
+    rtb_rate_err_B_idx_1 = (sqrtf((8.0F * fabsf(rtb_Saturation_ov) +
+      Controller_ConstB.d) * Controller_ConstB.d) - Controller_ConstB.d) * 0.5F *
+      rtb_rate_err_B_idx_1 + rtb_Divide_gn;
 
     /* Sum: '<S118>/Add3' incorporates:
      *  Signum: '<S118>/Sign'
      */
-    rtb_Abs = rtb_Gain_ms + Controller_ConstB.d;
+    rtb_Add3_n = rtb_Saturation_ov + Controller_ConstB.d;
 
     /* Sum: '<S118>/Subtract1' incorporates:
      *  Signum: '<S118>/Sign'
      */
-    rtb_MatrixConcatenate1_tmp = rtb_Gain_ms - Controller_ConstB.d;
+    u0 = rtb_Saturation_ov - Controller_ConstB.d;
 
     /* Signum: '<S118>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S118>/Sign2' */
-    if (rtb_MatrixConcatenate1_tmp < 0.0F) {
-      rtb_MatrixConcatenate1_tmp = -1.0F;
+    if (u0 < 0.0F) {
+      u0 = -1.0F;
     } else {
-      if (rtb_MatrixConcatenate1_tmp > 0.0F) {
-        rtb_MatrixConcatenate1_tmp = 1.0F;
+      if (u0 > 0.0F) {
+        u0 = 1.0F;
       }
     }
 
@@ -6963,16 +7159,17 @@ void Controller_step(void)
      *  Sum: '<S118>/Add5'
      *  Sum: '<S118>/Subtract2'
      */
-    rtb_Gain_ms = ((rtb_Gain_ms - rtb_Divide_i_idx_1) + rtb_Saturation_ov) *
-      ((rtb_Abs - rtb_MatrixConcatenate1_tmp) * 0.5F) + rtb_Divide_i_idx_1;
+    rtb_Saturation_ov = ((rtb_Saturation_ov - rtb_rate_err_B_idx_1) +
+                         rtb_Divide_gn) * ((rtb_Add3_n - u0) * 0.5F) +
+      rtb_rate_err_B_idx_1;
 
     /* Signum: '<S118>/Sign' */
-    if (rtb_Divide_i_idx_2 < 0.0F) {
-      rtb_Saturation_ov = -1.0F;
-    } else if (rtb_Divide_i_idx_2 > 0.0F) {
-      rtb_Saturation_ov = 1.0F;
+    if (rtb_rate_err_B_idx_0 < 0.0F) {
+      rtb_rate_err_B_idx_1 = -1.0F;
+    } else if (rtb_rate_err_B_idx_0 > 0.0F) {
+      rtb_rate_err_B_idx_1 = 1.0F;
     } else {
-      rtb_Saturation_ov = rtb_Divide_i_idx_2;
+      rtb_rate_err_B_idx_1 = rtb_rate_err_B_idx_0;
     }
 
     /* Sum: '<S118>/Add2' incorporates:
@@ -6986,35 +7183,35 @@ void Controller_step(void)
      *  Sum: '<S118>/Add1'
      *  Sum: '<S118>/Subtract'
      */
-    rtb_Divide_i_idx_1 = (sqrtf((8.0F * fabsf(rtb_Divide_i_idx_2) +
+    rtb_rate_err_B_idx_1 = (sqrtf((8.0F * fabsf(rtb_rate_err_B_idx_0) +
       Controller_ConstB.d) * Controller_ConstB.d) - Controller_ConstB.d) * 0.5F *
-      rtb_Saturation_ov + rtb_Multiply_ga_idx_0;
+      rtb_rate_err_B_idx_1 + rtb_Gain_it;
 
     /* Sum: '<S118>/Add3' incorporates:
      *  Signum: '<S118>/Sign'
      */
-    rtb_Abs = rtb_Divide_i_idx_2 + Controller_ConstB.d;
+    rtb_Add3_n = rtb_rate_err_B_idx_0 + Controller_ConstB.d;
 
     /* Sum: '<S118>/Subtract1' incorporates:
      *  Signum: '<S118>/Sign'
      */
-    rtb_MatrixConcatenate1_tmp = rtb_Divide_i_idx_2 - Controller_ConstB.d;
+    u0 = rtb_rate_err_B_idx_0 - Controller_ConstB.d;
 
     /* Signum: '<S118>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S118>/Sign2' */
-    if (rtb_MatrixConcatenate1_tmp < 0.0F) {
-      rtb_MatrixConcatenate1_tmp = -1.0F;
+    if (u0 < 0.0F) {
+      u0 = -1.0F;
     } else {
-      if (rtb_MatrixConcatenate1_tmp > 0.0F) {
-        rtb_MatrixConcatenate1_tmp = 1.0F;
+      if (u0 > 0.0F) {
+        u0 = 1.0F;
       }
     }
 
@@ -7026,29 +7223,29 @@ void Controller_step(void)
      *  Sum: '<S118>/Add4'
      *  Sum: '<S118>/Subtract2'
      */
-    rtb_Divide_i_idx_1 += ((rtb_Divide_i_idx_2 - rtb_Divide_i_idx_1) +
-      rtb_Multiply_ga_idx_0) * ((rtb_Abs - rtb_MatrixConcatenate1_tmp) * 0.5F);
+    rtb_rate_err_B_idx_1 += ((rtb_rate_err_B_idx_0 - rtb_rate_err_B_idx_1) +
+      rtb_Gain_it) * ((rtb_Add3_n - u0) * 0.5F);
 
     /* Product: '<S139>/Multiply1' incorporates:
      *  Constant: '<S139>/const1'
      *  DiscreteIntegrator: '<S138>/Integrator'
      */
-    rtb_Divide_i_idx_2 = Controller_DW.Integrator_DSTATE_j * 0.05F;
+    rtb_Divide_m_idx_3 = Controller_DW.Integrator_DSTATE_j * 0.05F;
 
     /* Sum: '<S139>/Add' incorporates:
      *  DiscreteIntegrator: '<S138>/Integrator1'
      *  Sum: '<S138>/Subtract'
      */
-    rtb_Multiply_ga_idx_0 = (Controller_DW.Integrator1_DSTATE_e -
-      Controller_U.FMS_Out.w_cmd) + rtb_Divide_i_idx_2;
+    rtb_Gain_it = (Controller_DW.Integrator1_DSTATE_e -
+                   Controller_U.FMS_Out.w_cmd) + rtb_Divide_m_idx_3;
 
     /* Signum: '<S139>/Sign' */
-    if (rtb_Multiply_ga_idx_0 < 0.0F) {
-      rtb_Saturation_ov = -1.0F;
-    } else if (rtb_Multiply_ga_idx_0 > 0.0F) {
-      rtb_Saturation_ov = 1.0F;
+    if (rtb_Gain_it < 0.0F) {
+      rtb_rate_err_B_idx_0 = -1.0F;
+    } else if (rtb_Gain_it > 0.0F) {
+      rtb_rate_err_B_idx_0 = 1.0F;
     } else {
-      rtb_Saturation_ov = rtb_Multiply_ga_idx_0;
+      rtb_rate_err_B_idx_0 = rtb_Gain_it;
     }
 
     /* End of Signum: '<S139>/Sign' */
@@ -7063,36 +7260,36 @@ void Controller_step(void)
      *  Sum: '<S139>/Add1'
      *  Sum: '<S139>/Subtract'
      */
-    rtb_Saturation_ov = (sqrtf((8.0F * fabsf(rtb_Multiply_ga_idx_0) +
+    rtb_rate_err_B_idx_0 = (sqrtf((8.0F * fabsf(rtb_Gain_it) +
       Controller_ConstB.d_i) * Controller_ConstB.d_i) - Controller_ConstB.d_i) *
-      0.5F * rtb_Saturation_ov + rtb_Divide_i_idx_2;
+      0.5F * rtb_rate_err_B_idx_0 + rtb_Divide_m_idx_3;
 
     /* Sum: '<S139>/Add4' */
-    rtb_Divide_i_idx_2 += rtb_Multiply_ga_idx_0 - rtb_Saturation_ov;
+    rtb_Divide_m_idx_3 += rtb_Gain_it - rtb_rate_err_B_idx_0;
 
     /* Sum: '<S139>/Add3' */
-    rtb_Abs = rtb_Multiply_ga_idx_0 + Controller_ConstB.d_i;
+    rtb_Add3_n = rtb_Gain_it + Controller_ConstB.d_i;
 
     /* Sum: '<S139>/Subtract1' */
-    rtb_Multiply_ga_idx_0 -= Controller_ConstB.d_i;
+    rtb_Gain_it -= Controller_ConstB.d_i;
 
     /* Signum: '<S139>/Sign1' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* End of Signum: '<S139>/Sign1' */
 
     /* Signum: '<S139>/Sign2' */
-    if (rtb_Multiply_ga_idx_0 < 0.0F) {
-      rtb_Multiply_ga_idx_0 = -1.0F;
+    if (rtb_Gain_it < 0.0F) {
+      rtb_Gain_it = -1.0F;
     } else {
-      if (rtb_Multiply_ga_idx_0 > 0.0F) {
-        rtb_Multiply_ga_idx_0 = 1.0F;
+      if (rtb_Gain_it > 0.0F) {
+        rtb_Gain_it = 1.0F;
       }
     }
 
@@ -7103,8 +7300,8 @@ void Controller_step(void)
      *  Product: '<S139>/Multiply4'
      *  Sum: '<S139>/Subtract2'
      */
-    rtb_Saturation_ov += (rtb_Abs - rtb_Multiply_ga_idx_0) * 0.5F *
-      rtb_Divide_i_idx_2;
+    rtb_rate_err_B_idx_0 += (rtb_Add3_n - rtb_Gain_it) * 0.5F *
+      rtb_Divide_m_idx_3;
 
     /* Update for DiscreteIntegrator: '<S93>/Discrete-Time Integrator' incorporates:
      *  Constant: '<S93>/gain1'
@@ -7181,7 +7378,7 @@ void Controller_step(void)
      *  Product: '<S120>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_k[0] +=
-      CONTROL_PARAM.MC_VEL_XY_I * rtb_Divide_i_idx_0 * 0.002F;
+      CONTROL_PARAM.MC_VEL_XY_I * rtb_Divide_m_idx_2 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_k[0] >=
         CONTROL_PARAM.MC_VEL_XY_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_k[0] =
@@ -7196,7 +7393,7 @@ void Controller_step(void)
 
     /* Update for DiscreteIntegrator: '<S122>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_DSTATE[0] += 0.002F *
-      rtb_Saturation1_h_idx_0;
+      rtb_Divide_m_idx_0;
 
     /* Update for DiscreteIntegrator: '<S115>/Integrator1' incorporates:
      *  DiscreteIntegrator: '<S115>/Integrator'
@@ -7209,7 +7406,7 @@ void Controller_step(void)
      *  Product: '<S120>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_k[1] +=
-      CONTROL_PARAM.MC_VEL_XY_I * rtb_Cos_j * 0.002F;
+      CONTROL_PARAM.MC_VEL_XY_I * rtb_Divide_m_idx_1 * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_k[1] >=
         CONTROL_PARAM.MC_VEL_XY_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_k[1] =
@@ -7223,7 +7420,8 @@ void Controller_step(void)
     }
 
     /* Update for DiscreteIntegrator: '<S122>/Discrete-Time Integrator1' */
-    Controller_DW.DiscreteTimeIntegrator1_DSTATE[1] += 0.002F * rtb_Divide_gn;
+    Controller_DW.DiscreteTimeIntegrator1_DSTATE[1] += 0.002F *
+      rtb_DiscreteTimeIntegrator5_c;
     Controller_DW.DiscreteTimeIntegrator1_PrevRes = (int8_T)
       (Controller_U.FMS_Out.reset > 0);
 
@@ -7237,8 +7435,9 @@ void Controller_step(void)
      *  Gain: '<S91>/Gain'
      *  Sum: '<S91>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTATE[0] += (rtb_Add_c -
-      Controller_DW.DiscreteTimeIntegrator5_DSTATE[0]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTATE[0] +=
+      (rtb_TmpSignalConversionAtMult_0 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTATE[0]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_n[0] += 0.002F *
@@ -7248,8 +7447,9 @@ void Controller_step(void)
      *  Gain: '<S91>/Gain'
      *  Sum: '<S91>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTATE[1] += (rtb_FF_limit_idx_1 -
-      Controller_DW.DiscreteTimeIntegrator5_DSTATE[1]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTATE[1] +=
+      (rtb_TmpSignalConversionAtMult_1 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTATE[1]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_n[1] += 0.002F *
@@ -7259,8 +7459,9 @@ void Controller_step(void)
      *  Gain: '<S91>/Gain'
      *  Sum: '<S91>/Sum5'
      */
-    Controller_DW.DiscreteTimeIntegrator5_DSTATE[2] += (rtb_FF_limit_idx_2 -
-      Controller_DW.DiscreteTimeIntegrator5_DSTATE[2]) * 188.49556F * 0.002F;
+    Controller_DW.DiscreteTimeIntegrator5_DSTATE[2] +=
+      (rtb_TmpSignalConversionAtMult_2 -
+       Controller_DW.DiscreteTimeIntegrator5_DSTATE[2]) * 188.49556F * 0.002F;
 
     /* Update for DiscreteIntegrator: '<S95>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_DSTAT_n[2] += 0.002F *
@@ -7279,7 +7480,7 @@ void Controller_step(void)
      *  Product: '<S141>/Multiply'
      */
     Controller_DW.DiscreteTimeIntegrator_DSTATE_l += CONTROL_PARAM.MC_VEL_Z_I *
-      rtb_Gain_it * 0.002F;
+      rtb_Gain_ms * 0.002F;
     if (Controller_DW.DiscreteTimeIntegrator_DSTATE_l >=
         CONTROL_PARAM.MC_VEL_Z_I_MAX) {
       Controller_DW.DiscreteTimeIntegrator_DSTATE_l =
@@ -7299,7 +7500,7 @@ void Controller_step(void)
 
     /* Update for DiscreteIntegrator: '<S143>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_IC_LO_d = 0U;
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_i += 0.002F * rtb_Gain_cu;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_i += 0.002F * rtb_Abs;
     Controller_DW.DiscreteTimeIntegrator1_Prev_ks = (int8_T)
       (Controller_U.FMS_Out.reset > 0);
 
@@ -7307,52 +7508,52 @@ void Controller_step(void)
      *  Product: '<S118>/Divide'
      *  Sum: '<S118>/Add6'
      */
-    rtb_Abs = rtb_Gain_ms + Controller_ConstB.d;
+    rtb_Add3_n = rtb_Saturation_ov + Controller_ConstB.d;
 
     /* Signum: '<S118>/Sign4' incorporates:
      *  Product: '<S118>/Divide'
      *  Sum: '<S118>/Subtract3'
      */
-    rtb_Add_c = rtb_Gain_ms - Controller_ConstB.d;
+    rtb_TmpSignalConversionAtMult_0 = rtb_Saturation_ov - Controller_ConstB.d;
 
     /* Signum: '<S118>/Sign5' incorporates:
      *  Product: '<S118>/Divide'
      */
-    if (rtb_Gain_ms < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
-    } else if (rtb_Gain_ms > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+    if (rtb_Saturation_ov < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
+    } else if (rtb_Saturation_ov > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Gain_ms;
+      rtb_TmpSignalConversionAtMult_1 = rtb_Saturation_ov;
     }
 
     /* Signum: '<S118>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S118>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
     /* Signum: '<S118>/Sign6' incorporates:
      *  Product: '<S118>/Divide'
      */
-    if (rtb_Gain_ms < 0.0F) {
-      rtb_FF_limit_idx_2 = -1.0F;
-    } else if (rtb_Gain_ms > 0.0F) {
-      rtb_FF_limit_idx_2 = 1.0F;
+    if (rtb_Saturation_ov < 0.0F) {
+      rtb_TmpSignalConversionAtMult_2 = -1.0F;
+    } else if (rtb_Saturation_ov > 0.0F) {
+      rtb_TmpSignalConversionAtMult_2 = 1.0F;
     } else {
-      rtb_FF_limit_idx_2 = rtb_Gain_ms;
+      rtb_TmpSignalConversionAtMult_2 = rtb_Saturation_ov;
     }
 
     /* Update for DiscreteIntegrator: '<S115>/Integrator' incorporates:
@@ -7365,54 +7566,55 @@ void Controller_step(void)
      *  Sum: '<S118>/Subtract5'
      *  Sum: '<S118>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE[0] += ((rtb_Gain_ms / Controller_ConstB.d -
-      rtb_FF_limit_idx_1) * Controller_ConstB.Gain4 * ((rtb_Abs - rtb_Add_c) *
-      0.5F) - rtb_FF_limit_idx_2 * 58.836F) * 0.002F;
+    Controller_DW.Integrator_DSTATE[0] += ((rtb_Saturation_ov /
+      Controller_ConstB.d - rtb_TmpSignalConversionAtMult_1) *
+      Controller_ConstB.Gain4 * ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0) *
+      0.5F) - rtb_TmpSignalConversionAtMult_2 * 58.836F) * 0.002F;
 
     /* Signum: '<S118>/Sign3' incorporates:
      *  Sum: '<S118>/Add6'
      */
-    rtb_Abs = rtb_Divide_i_idx_1 + Controller_ConstB.d;
+    rtb_Add3_n = rtb_rate_err_B_idx_1 + Controller_ConstB.d;
 
     /* Signum: '<S118>/Sign4' incorporates:
      *  Sum: '<S118>/Subtract3'
      */
-    rtb_Add_c = rtb_Divide_i_idx_1 - Controller_ConstB.d;
+    rtb_TmpSignalConversionAtMult_0 = rtb_rate_err_B_idx_1 - Controller_ConstB.d;
 
     /* Signum: '<S118>/Sign5' */
-    if (rtb_Divide_i_idx_1 < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
-    } else if (rtb_Divide_i_idx_1 > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+    if (rtb_rate_err_B_idx_1 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
+    } else if (rtb_rate_err_B_idx_1 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Divide_i_idx_1;
+      rtb_TmpSignalConversionAtMult_1 = rtb_rate_err_B_idx_1;
     }
 
     /* Signum: '<S118>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* Signum: '<S118>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
     /* Signum: '<S118>/Sign6' */
-    if (rtb_Divide_i_idx_1 < 0.0F) {
-      rtb_FF_limit_idx_2 = -1.0F;
-    } else if (rtb_Divide_i_idx_1 > 0.0F) {
-      rtb_FF_limit_idx_2 = 1.0F;
+    if (rtb_rate_err_B_idx_1 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_2 = -1.0F;
+    } else if (rtb_rate_err_B_idx_1 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_2 = 1.0F;
     } else {
-      rtb_FF_limit_idx_2 = rtb_Divide_i_idx_1;
+      rtb_TmpSignalConversionAtMult_2 = rtb_rate_err_B_idx_1;
     }
 
     /* Update for DiscreteIntegrator: '<S115>/Integrator' incorporates:
@@ -7425,55 +7627,57 @@ void Controller_step(void)
      *  Sum: '<S118>/Subtract5'
      *  Sum: '<S118>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE[1] += ((rtb_Divide_i_idx_1 /
-      Controller_ConstB.d - rtb_FF_limit_idx_1) * Controller_ConstB.Gain4 *
-      ((rtb_Abs - rtb_Add_c) * 0.5F) - rtb_FF_limit_idx_2 * 58.836F) * 0.002F;
+    Controller_DW.Integrator_DSTATE[1] += ((rtb_rate_err_B_idx_1 /
+      Controller_ConstB.d - rtb_TmpSignalConversionAtMult_1) *
+      Controller_ConstB.Gain4 * ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0) *
+      0.5F) - rtb_TmpSignalConversionAtMult_2 * 58.836F) * 0.002F;
 
     /* Signum: '<S139>/Sign6' incorporates:
      *  Signum: '<S139>/Sign5'
      */
-    if (rtb_Saturation_ov < 0.0F) {
-      rtb_FF_limit_idx_1 = -1.0F;
+    if (rtb_rate_err_B_idx_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = -1.0F;
 
       /* Signum: '<S139>/Sign5' */
-      rtb_FF_limit_idx_2 = -1.0F;
-    } else if (rtb_Saturation_ov > 0.0F) {
-      rtb_FF_limit_idx_1 = 1.0F;
+      rtb_TmpSignalConversionAtMult_2 = -1.0F;
+    } else if (rtb_rate_err_B_idx_0 > 0.0F) {
+      rtb_TmpSignalConversionAtMult_1 = 1.0F;
 
       /* Signum: '<S139>/Sign5' */
-      rtb_FF_limit_idx_2 = 1.0F;
+      rtb_TmpSignalConversionAtMult_2 = 1.0F;
     } else {
-      rtb_FF_limit_idx_1 = rtb_Saturation_ov;
+      rtb_TmpSignalConversionAtMult_1 = rtb_rate_err_B_idx_0;
 
       /* Signum: '<S139>/Sign5' */
-      rtb_FF_limit_idx_2 = rtb_Saturation_ov;
+      rtb_TmpSignalConversionAtMult_2 = rtb_rate_err_B_idx_0;
     }
 
     /* End of Signum: '<S139>/Sign6' */
 
     /* Sum: '<S139>/Add6' */
-    rtb_Abs = rtb_Saturation_ov + Controller_ConstB.d_i;
+    rtb_Add3_n = rtb_rate_err_B_idx_0 + Controller_ConstB.d_i;
 
     /* Sum: '<S139>/Subtract3' */
-    rtb_Add_c = rtb_Saturation_ov - Controller_ConstB.d_i;
+    rtb_TmpSignalConversionAtMult_0 = rtb_rate_err_B_idx_0 -
+      Controller_ConstB.d_i;
 
     /* Signum: '<S139>/Sign3' */
-    if (rtb_Abs < 0.0F) {
-      rtb_Abs = -1.0F;
+    if (rtb_Add3_n < 0.0F) {
+      rtb_Add3_n = -1.0F;
     } else {
-      if (rtb_Abs > 0.0F) {
-        rtb_Abs = 1.0F;
+      if (rtb_Add3_n > 0.0F) {
+        rtb_Add3_n = 1.0F;
       }
     }
 
     /* End of Signum: '<S139>/Sign3' */
 
     /* Signum: '<S139>/Sign4' */
-    if (rtb_Add_c < 0.0F) {
-      rtb_Add_c = -1.0F;
+    if (rtb_TmpSignalConversionAtMult_0 < 0.0F) {
+      rtb_TmpSignalConversionAtMult_0 = -1.0F;
     } else {
-      if (rtb_Add_c > 0.0F) {
-        rtb_Add_c = 1.0F;
+      if (rtb_TmpSignalConversionAtMult_0 > 0.0F) {
+        rtb_TmpSignalConversionAtMult_0 = 1.0F;
       }
     }
 
@@ -7489,9 +7693,10 @@ void Controller_step(void)
      *  Sum: '<S139>/Subtract5'
      *  Sum: '<S139>/Subtract6'
      */
-    Controller_DW.Integrator_DSTATE_j += ((rtb_Saturation_ov /
-      Controller_ConstB.d_i - rtb_FF_limit_idx_2) * Controller_ConstB.Gain4_p *
-      ((rtb_Abs - rtb_Add_c) * 0.5F) - rtb_FF_limit_idx_1 * 78.448F) * 0.002F;
+    Controller_DW.Integrator_DSTATE_j += ((rtb_rate_err_B_idx_0 /
+      Controller_ConstB.d_i - rtb_TmpSignalConversionAtMult_2) *
+      Controller_ConstB.Gain4_p * ((rtb_Add3_n - rtb_TmpSignalConversionAtMult_0)
+      * 0.5F) - rtb_TmpSignalConversionAtMult_1 * 78.448F) * 0.002F;
 
     /* End of Outputs for SubSystem: '<S2>/MC_Controller' */
     break;
@@ -7555,10 +7760,13 @@ void Controller_init(void)
   /* End of Start for SubSystem: '<S2>/MC_Controller' */
 
   /* SystemInitialize for IfAction SubSystem: '<S2>/VTOL_Controller' */
-  /* InitializeConditions for DiscreteIntegrator: '<S191>/Discrete-Time Integrator5' */
+  /* InitializeConditions for DiscreteIntegrator: '<S193>/Discrete-Time Integrator5' */
+  Controller_DW.DiscreteTimeIntegrator5_IC_L_ed = 1U;
+
+  /* InitializeConditions for DiscreteIntegrator: '<S192>/Discrete-Time Integrator5' */
   Controller_DW.DiscreteTimeIntegrator5_IC_L_eo = 1U;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S190>/Discrete-Time Integrator5' */
+  /* InitializeConditions for DiscreteIntegrator: '<S191>/Discrete-Time Integrator5' */
   Controller_DW.DiscreteTimeIntegrator5_IC_LO_o = 1U;
 
   /* InitializeConditions for DiscreteIntegrator: '<S183>/Integrator1' */
@@ -7585,7 +7793,7 @@ void Controller_init(void)
   Controller_DW.DiscreteTimeIntegrator1_IC_LO_i = 1U;
   Controller_DW.DiscreteTimeIntegrator1_PrevR_h = 0;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S226>/ ' */
+  /* InitializeConditions for DiscreteIntegrator: '<S234>/ ' */
   Controller_DW._DSTATE = Controller_ConstB.Zero1;
   if (Controller_DW._DSTATE >= CONTROL_PARAM.FW_TECS_PITCH_I_LIM) {
     Controller_DW._DSTATE = CONTROL_PARAM.FW_TECS_PITCH_I_LIM;
@@ -7597,9 +7805,9 @@ void Controller_init(void)
 
   Controller_DW._PrevResetState = 0;
 
-  /* End of InitializeConditions for DiscreteIntegrator: '<S226>/ ' */
+  /* End of InitializeConditions for DiscreteIntegrator: '<S234>/ ' */
 
-  /* InitializeConditions for DiscreteIntegrator: '<S227>/Discrete-Time Integrator1' */
+  /* InitializeConditions for DiscreteIntegrator: '<S235>/Discrete-Time Integrator1' */
   Controller_DW.DiscreteTimeIntegrator1_IC_LO_f = 1U;
   Controller_DW.DiscreteTimeIntegrator1_PrevR_b = 0;
 
@@ -7613,7 +7821,7 @@ void Controller_init(void)
   Controller_DW.DiscreteTimeIntegrator1_IC_L_h2 = 1U;
   Controller_DW.DiscreteTimeIntegrator1_PrevR_l = 0;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S189>/Discrete-Time Integrator5' */
+  /* InitializeConditions for DiscreteIntegrator: '<S190>/Discrete-Time Integrator5' */
   Controller_DW.DiscreteTimeIntegrator5_IC_LO_g = 1U;
 
   /* InitializeConditions for DiscreteIntegrator: '<S161>/Discrete-Time Integrator' */
@@ -7631,7 +7839,7 @@ void Controller_init(void)
     }
   }
 
-  /* InitializeConditions for DiscreteIntegrator: '<S201>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S210>/Discrete-Time Integrator' */
   Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0] =
     Controller_ConstB.Constant_c[0];
   if (Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[0] >=
@@ -7661,7 +7869,7 @@ void Controller_init(void)
     }
   }
 
-  /* InitializeConditions for DiscreteIntegrator: '<S201>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S210>/Discrete-Time Integrator' */
   Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1] =
     Controller_ConstB.Constant_c[1];
   if (Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[1] >=
@@ -7691,7 +7899,7 @@ void Controller_init(void)
     }
   }
 
-  /* InitializeConditions for DiscreteIntegrator: '<S201>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S210>/Discrete-Time Integrator' */
   Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2] =
     Controller_ConstB.Constant_c[2];
   if (Controller_DW.DiscreteTimeIntegrator_DSTAT_l5[2] >=
@@ -7708,7 +7916,7 @@ void Controller_init(void)
 
   Controller_DW.DiscreteTimeIntegrator_PrevR_ef = 0;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S229>/ ' */
+  /* InitializeConditions for DiscreteIntegrator: '<S237>/ ' */
   Controller_DW._DSTATE_d = Controller_ConstB.Zero;
   if (Controller_DW._DSTATE_d >= 0.3F) {
     Controller_DW._DSTATE_d = 0.3F;
@@ -7720,9 +7928,9 @@ void Controller_init(void)
 
   Controller_DW._PrevResetState_e = 0;
 
-  /* End of InitializeConditions for DiscreteIntegrator: '<S229>/ ' */
+  /* End of InitializeConditions for DiscreteIntegrator: '<S237>/ ' */
 
-  /* InitializeConditions for DiscreteIntegrator: '<S230>/Discrete-Time Integrator1' */
+  /* InitializeConditions for DiscreteIntegrator: '<S238>/Discrete-Time Integrator1' */
   Controller_DW.DiscreteTimeIntegrator1_IC_L_h0 = 1U;
   Controller_DW.DiscreteTimeIntegrator1_PrevR_d = 0;
 
