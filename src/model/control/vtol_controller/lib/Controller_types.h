@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.252
+ * Model version                  : 1.321
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 21 11:52:03 2024
+ * C/C++ source code generated on : Tue Aug 27 09:56:56 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,14 +42,9 @@
 #define AIRFRAME                       1
 #endif
 
-/* Exactly one variant for '<S10>/VTOL_Control_Allocation' should be active */
+/* Exactly one variant for '<S7>/VTOL_Control_Allocation' should be active */
 #if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
-#error Exactly one variant for '<S10>/VTOL_Control_Allocation' should be active
-#endif
-
-/* Exactly one variant for '<S147>/VTOL_Control_Allocation' should be active */
-#if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
-#error Exactly one variant for '<S147>/VTOL_Control_Allocation' should be active
+#error Exactly one variant for '<S7>/VTOL_Control_Allocation' should be active
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
@@ -246,7 +241,7 @@ typedef enum {
   VTOLState_Multicopter = 0,           /* Default value */
   VTOLState_ForwardTrans,
   VTOLState_Fixwing,
-  VTOLState_BackTrans
+  VTOLState_BackwardTrans
 } VTOLState;
 
 #endif
@@ -261,8 +256,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_66Lz2XM6ObrCrxI96MstFF_
-#define DEFINED_TYPEDEF_FOR_struct_66Lz2XM6ObrCrxI96MstFF_
+#ifndef DEFINED_TYPEDEF_FOR_struct_QRK8c3803lO9d4oZFNG08F_
+#define DEFINED_TYPEDEF_FOR_struct_QRK8c3803lO9d4oZFNG08F_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -319,12 +314,7 @@ typedef struct {
   real32_T FW_PITCH_EFFC;
   real32_T FW_YAW_EFFC;
   real32_T FW_PITCH_OFFSET;
-  real32_T FW_AILERON1_DIR;
-  real32_T FW_AILERON2_DIR;
-  real32_T FW_ELEVATOR_DIR;
-  real32_T FW_RUDDER_DIR;
-  real32_T FW_TAIL1_DIR;
-  real32_T FW_TAIL2_DIR;
+  real32_T FW_CRUISE_THRO;
   real32_T FW_TECS_PITCH_F;
   real32_T FW_TECS_THOR_FF;
   real32_T FW_TECS_PITCH_P;
@@ -343,11 +333,17 @@ typedef struct {
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
+  real32_T FW_AILERON1_DIR;
+  real32_T FW_AILERON2_DIR;
+  real32_T FW_ELEVATOR_DIR;
+  real32_T FW_RUDDER_DIR;
+  real32_T FW_TAIL1_DIR;
+  real32_T FW_TAIL2_DIR;
   real32_T SERVO1_BIAS;
   real32_T SERVO2_BIAS;
   real32_T SERVO3_BIAS;
   real32_T SERVO4_BIAS;
-} struct_66Lz2XM6ObrCrxI96MstFF;
+} struct_QRK8c3803lO9d4oZFNG08F;
 
 #endif
 

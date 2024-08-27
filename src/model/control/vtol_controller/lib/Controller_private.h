@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.252
+ * Model version                  : 1.321
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 21 11:52:03 2024
+ * C/C++ source code generated on : Tue Aug 27 09:56:56 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -16,7 +16,6 @@
 #ifndef RTW_HEADER_Controller_private_h_
 #define RTW_HEADER_Controller_private_h_
 #include "rtwtypes.h"
-#include "multiword_types.h"
 #include "Controller_types.h"
 #ifndef UCHAR_MAX
 #include <limits.h>
@@ -65,11 +64,6 @@ select the Enable portable word sizes option on the Code Generation > \
 Verification pane for ERT based targets, which will disable the \
 preprocessor word size checks.
 #endif
-
-extern boolean_T uMultiWordGt(const uint32_T u1[], const uint32_T u2[], int32_T
-  n);
-extern int32_T uMultiWordCmp(const uint32_T u1[], const uint32_T u2[], int32_T n);
-
 #endif                                 /* RTW_HEADER_Controller_private_h_ */
 
 /*

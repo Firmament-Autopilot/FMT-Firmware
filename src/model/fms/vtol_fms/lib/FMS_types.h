@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2164
+ * Model version                  : 1.2217
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 21 11:44:08 2024
+ * C/C++ source code generated on : Tue Aug 27 10:00:27 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -475,7 +475,7 @@ typedef enum {
   VTOLState_Multicopter = 0,           /* Default value */
   VTOLState_ForwardTrans,
   VTOLState_Fixwing,
-  VTOLState_BackTrans
+  VTOLState_BackwardTrans
 } VTOLState;
 
 #endif
