@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<mavlink>
+  <!-- FMT (Firmament) Autopilot mavlink messages -->
+  <include>common.xml</include>
+  <enums>
+  	<enum name="FMT_EXT_STATE_FLAG_TYPE">
+		<entry value="4" name="EXT_STATE_ATT_VALID">
+			<description>attitude valid</description>
+		</entry>
+		<entry value="8" name="EXT_STATE_HEADING_VALID">
+			<description>heading valid</description>
+		</entry>
+		<entry value="16" name="EXT_STATE_VEL_VALID">
+			<description>velocity valid</description>
+		</entry>
+		<entry value="32" name="EXT_STATE_LLA_VALID">
+			<description>WGS84 position valid</description>
+		</entry>
+		<entry value="64" name="EXT_STATE_POS_VALID">
+			<description>position valid</description>
+		</entry>
+		<entry value="128" name="EXT_STATE_HGT_VALID">
+			<description>height valid</description>
+		</entry>
+		<entry value="256" name="EXT_STATE_H_AGL_VALID">
+			<description>height above ground level valid</description>
+		</entry>
+  	</enum>
+  </enums>
+  <messages>
+    <message id="12000" name="FMT_PILOT_CMD">
+      <description>FMT pilot (RC) command</description>
+      <field type="uint32_t" name="timestamp" units="ms">Timestamp</field>
+	  <field type="float" name="ls_lr">Left stick left/right</field>
+	  <field type="float" name="ls_ud">Left stick up/down</field>
+	  <field type="float" name="rs_lr">Right stick left/right</field>
+	  <field type="float" name="rs_ud">Right stick up/down</field>
+	  <field type="uint32_t" name="mode">Pilot mode</field>
+	  <field type="uint32_t" name="command_1">Pilot command 1</field>
+	  <field type="uint32_t" name="command_2">Pilot command 2</field>
+    </message>
+    <message id="12001" name="FMT_EXTERNAL_STATE">
+      <description>FMT external states</description>
+      <field type="uint32_t" name="timestamp" units="ms">Timestamp</field>
+      <field type="float[4]" name="quat">Vehicle quaternion</field>
+      <field type="float[3]" name="rot" units="rad/s">Vehicle rotation speed in body frame</field>
+      <field type="float[3]" name="acc" units="m/s^2">Vehicle accleration in earth frame</field>
+      <field type="float[3]" name="vel" units="m/s">Vehicle velocity in earth frame</field>
+      <field type="float[3]" name="pos" units="m">Vehicle position in earth frame</field>
+      <field type="int32_t[3]" name="lla" units="degE7/degE7/mm">Vehicle WGS84 global position</field>
+      <field type="float" name="h_AGL" units="m">Height above ground</field>
+      <field type="uint32_t" name="flag">External states flag</field>
+    </message>
+	<message id="12002" name="FMT_ENVIRONMENT_INFO">
+      <description>FMT environment information</description>
+      <field type="float[3]" name="hit_point" units="m">Hit point in global frame</field>
+      <field type="float[3]" name="hit_normal">Hit normal in global frame</field>
+	  <field type="float[3]" name="hit_location" units="m">Hit location in global frame</field>
+    </message>
+	<message id="12003" name="FMT_STATES_INIT">
+      <description>FMT initial states</description>
+      <field type="float[3]" name="euler" units="rad">Initial attitude</field>
+	  <field type="float[3]" name="pos" units="m">Initial position</field>
+    </message>
+  </messages>
+</mavlink>
