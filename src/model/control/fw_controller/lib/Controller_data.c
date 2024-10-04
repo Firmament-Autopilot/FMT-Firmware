@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1086
+ * Model version                  : 1.1110
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Jan 15 09:50:49 2024
+ * C/C++ source code generated on : Fri Oct  4 14:50:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -20,19 +20,19 @@
 const ConstB_Controller_T Controller_ConstB = {
   0.0F,                                /* '<S42>/Zero1' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S14>/Constant' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S16>/Constant' */
   0.0F                                 /* '<S45>/Zero' */
 };
 
 /* Constant parameters (default storage) */
 const ConstP_Controller_T Controller_ConstP = {
   /* Computed Parameter: Disarm_Value
-   * Referenced by: '<S29>/Disarm'
+   * Referenced by: '<S31>/Disarm'
    */
   { 1000U, 1000U, 1500U, 1500U, 1500U, 1500U },
 
   /* Computed Parameter: Standby_Value
-   * Referenced by: '<S29>/Standby'
+   * Referenced by: '<S31>/Standby'
    */
   { 1050U, 1050U, 1500U, 1500U, 1500U, 1500U }
 };

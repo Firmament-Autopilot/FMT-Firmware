@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2044
+ * Model version                  : 1.2046
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 10 10:55:14 2024
+ * C/C++ source code generated on : Fri Oct  4 14:53:27 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -90,6 +90,10 @@ typedef struct {
   void* M_msgDataPtr;                  /* '<Root>/FMS State Machine' */
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S2>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S2>/Discrete-Time Integrator1' */
+  real32_T Integrator1_DSTATE;         /* '<S77>/Integrator1' */
+  real32_T Integrator_DSTATE;          /* '<S77>/Integrator' */
+  real32_T Integrator1_DSTATE_c;       /* '<S101>/Integrator1' */
+  real32_T Integrator_DSTATE_h;        /* '<S101>/Integrator' */
   real32_T start_vel_DSTATE[2];        /* '<S86>/start_vel' */
   real32_T start_wp_DSTATE[2];         /* '<S86>/start_wp' */
   real32_T start_vel_DSTATE_g[2];      /* '<S160>/start_vel' */
@@ -198,6 +202,12 @@ typedef struct {
 /* Invariant block signals (default storage) */
 typedef struct {
   const real32_T VectorConcatenate3[3];/* '<S106>/Vector Concatenate3' */
+  const real32_T Square;               /* '<S78>/Square' */
+  const real32_T d;                    /* '<S78>/Multiply' */
+  const real32_T Gain4;                /* '<S78>/Gain4' */
+  const real32_T Square_k;             /* '<S102>/Square' */
+  const real32_T d_j;                  /* '<S102>/Multiply' */
+  const real32_T Gain4_k;              /* '<S102>/Gain4' */
   const uint8_T DataTypeConversion;    /* '<S30>/Data Type Conversion' */
   const uint8_T DataTypeConversion1;   /* '<S30>/Data Type Conversion1' */
   const uint8_T DataTypeConversion2;   /* '<S30>/Data Type Conversion2' */

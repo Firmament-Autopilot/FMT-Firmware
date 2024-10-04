@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1086
+ * Model version                  : 1.1110
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Jan 15 09:50:49 2024
+ * C/C++ source code generated on : Fri Oct  4 14:50:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -212,8 +212,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_VdEoPQWX2EedVH2abVW5XB_
-#define DEFINED_TYPEDEF_FOR_struct_VdEoPQWX2EedVH2abVW5XB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_lzoF37tBBeIntrvVclVjfF_
+#define DEFINED_TYPEDEF_FOR_struct_lzoF37tBBeIntrvVclVjfF_
 
 typedef struct {
   real32_T ROLL_P;
@@ -229,7 +229,6 @@ typedef struct {
   real32_T RATE_I_MAX;
   real32_T P_Q_CMD_LIM;
   real32_T R_CMD_LIM;
-  real32_T FW_AIRSPEED_TRIM;
   real32_T FW_FF;
   real32_T FW_FF_LIMIT;
   real32_T FW_PI_LIMIT;
@@ -237,6 +236,7 @@ typedef struct {
   real32_T FW_PITCH_EFFC;
   real32_T FW_YAW_EFFC;
   real32_T FW_PITCH_OFFSET;
+  real32_T FW_CRUISE_THRO;
   real32_T FW_TECS_PITCH_F;
   real32_T FW_TECS_THOR_FF;
   real32_T FW_TECS_PITCH_P;
@@ -247,15 +247,14 @@ typedef struct {
   real32_T FW_TECS_PITCH_D;
   real32_T FW_TECS_THOR_D;
   real32_T FW_TECS_RATIO;
-  real32_T FW_TECS_SWITCH;
-  real32_T FW_TECS_ANSW;
   real32_T FW_TECS_W2T;
   real32_T FW_TECS_U2T;
   real32_T FW_TECS_W2P;
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
-} struct_VdEoPQWX2EedVH2abVW5XB;
+  real32_T FW_AIRSPEED_TRIM;
+} struct_lzoF37tBBeIntrvVclVjfF;
 
 #endif
 

@@ -34,7 +34,7 @@ static param_t __param_list[] = {
     PARAM_UINT8(AIRFRAME, AIRFRAME, true),
     PARAM_FLOAT(ROLL_P, 7, false),
     PARAM_FLOAT(PITCH_P, 7, false),
-    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 4, false),
+    PARAM_FLOAT(ROLL_PITCH_CMD_LIM, PI / 3, false),
     PARAM_FLOAT(ROLL_RATE_P, 0.1, false),
     PARAM_FLOAT(PITCH_RATE_P, 0.2, false),
     PARAM_FLOAT(YAW_RATE_P, 0.15, false),
@@ -46,33 +46,31 @@ static param_t __param_list[] = {
     PARAM_FLOAT(P_Q_CMD_LIM, PI / 2, false),
     PARAM_FLOAT(R_CMD_LIM, PI, false),
 
-    PARAM_FLOAT(FW_AIRSPEED_TRIM, 13, false),
+    PARAM_FLOAT(FW_AIRSPEED_TRIM, 15, false),
     PARAM_FLOAT(FW_FF, 0.2, false),
     PARAM_FLOAT(FW_FF_LIMIT, 0.3, false),
     PARAM_FLOAT(FW_PI_LIMIT, 1, false),
     PARAM_FLOAT(FW_ROLL_EFFC, 1, false),
     PARAM_FLOAT(FW_PITCH_EFFC, 1, false),
     PARAM_FLOAT(FW_YAW_EFFC, 1, false),
-    PARAM_FLOAT(FW_PITCH_OFFSET, 3.0f / 180.0f * PI, false),
+    PARAM_FLOAT(FW_PITCH_OFFSET, 0 / 180.0f * PI, false),
 
     PARAM_FLOAT(FW_TECS_PITCH_F, 0.1, false),
     PARAM_FLOAT(FW_TECS_THOR_FF, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_P, 0.4, false),
-    PARAM_FLOAT(FW_TECS_THOR_P, 0.2, false),
+    PARAM_FLOAT(FW_TECS_THOR_P, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_I, 0.2, false),
     PARAM_FLOAT(FW_TECS_PITCH_I_LIM, 0.2, false),
     PARAM_FLOAT(FW_TECS_THOR_I, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_D, 0.0, false),
     PARAM_FLOAT(FW_TECS_THOR_D, 0.0, false),
     PARAM_FLOAT(FW_TECS_RATIO, 1, false),
-    PARAM_FLOAT(FW_TECS_SWITCH, 2, false),
-    PARAM_FLOAT(FW_TECS_ANSW, 2, false),
     PARAM_FLOAT(FW_TECS_W2T, 1, false),
     PARAM_FLOAT(FW_TECS_U2T, 1, false),
     PARAM_FLOAT(FW_TECS_W2P, 2, false),
-    PARAM_FLOAT(FW_TECS_U2P, 0.1, false),
-    PARAM_FLOAT(FW_TECS_R2P, 0.2, false),
-    PARAM_FLOAT(FW_TECS_R2T, 0.2, false),
+    PARAM_FLOAT(FW_TECS_U2P, 0.2, false),
+    PARAM_FLOAT(FW_TECS_R2P, 0.1, false),
+    PARAM_FLOAT(FW_TECS_R2T, 0.1, false),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
@@ -144,8 +142,6 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_PITCH_D), &CONTROL_PARAM.FW_TECS_PITCH_D));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_THOR_D), &CONTROL_PARAM.FW_TECS_THOR_D));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_RATIO), &CONTROL_PARAM.FW_TECS_RATIO));
-    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_SWITCH), &CONTROL_PARAM.FW_TECS_SWITCH));
-    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_ANSW), &CONTROL_PARAM.FW_TECS_ANSW));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_W2T), &CONTROL_PARAM.FW_TECS_W2T));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_U2T), &CONTROL_PARAM.FW_TECS_U2T));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_W2P), &CONTROL_PARAM.FW_TECS_W2P));

@@ -50,7 +50,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3, false),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6, false),
     PARAM_FLOAT(L1, 30.0, false),
-    PARAM_FLOAT(CRUISE_SPEED, 13.0, false),
+    PARAM_FLOAT(CRUISE_SPEED, 15.0, false),
     PARAM_FLOAT(TAKEOFF_H, 10.0, false),
     PARAM_FLOAT(ACCEPT_R, 55, false),
     PARAM_FLOAT(LOITER_R, 50, false),
