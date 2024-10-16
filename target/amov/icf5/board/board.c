@@ -151,12 +151,12 @@ static void bsp_show_information(void)
 
 static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
-    fmt_err_t     err = FMT_EOK;
+    fmt_err_t err = FMT_EOK;
     toml_table_t* sub_tab;
-    const char*   key;
-    const char*   raw;
-    char*         target;
-    int           i;
+    const char* key;
+    const char* raw;
+    char* target;
+    int i;
 
     if (root_tab == NULL) {
         return FMT_ERROR;
@@ -337,10 +337,9 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_rangefinder(0));
 
     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0) {
-        // FMT_CHECK(advertise_sensor_airspeed(0));
-        // RT_CHECK(drv_ms4525_init("i2c0_dev1", NULL));
-        RT_CHECK(drv_ms4525_init("i2c0_dev1", "airspeed"));
-        FMT_CHECK(register_sensor_airspeed("airspeed"));
+        if (drv_ms4525_init("i2c0_dev1", "airspeed") == RT_EOK) {
+            FMT_CHECK(register_sensor_airspeed("airspeed"));
+        }
     }
 #endif
 

@@ -150,7 +150,7 @@ static void bsp_show_information(void)
 
 /**
  * @brief Enable on-board device power supply
- * 
+ *
  */
 static void EnablePower(void)
 {
@@ -349,8 +349,9 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0) {
-        RT_CHECK(drv_ms4525_init("i2c1_dev1", "airspeed"));
-        FMT_CHECK(register_sensor_airspeed("airspeed"));
+        if (drv_ms4525_init("i2c1_dev1", "airspeed") == RT_EOK) {
+            FMT_CHECK(register_sensor_airspeed("airspeed"));
+        }
     }
 #endif
 

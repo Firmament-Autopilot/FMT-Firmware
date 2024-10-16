@@ -449,8 +449,9 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_rangefinder(0));
 
     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0) {
-        RT_CHECK(drv_ms4525_init("i2c2_dev1", "airspeed"));
-        FMT_CHECK(register_sensor_airspeed("airspeed"));
+        if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
+            FMT_CHECK(register_sensor_airspeed("airspeed"));
+        }
     }
 #endif
 
