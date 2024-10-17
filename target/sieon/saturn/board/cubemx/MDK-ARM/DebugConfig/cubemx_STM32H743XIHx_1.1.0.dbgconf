@@ -1,0 +1,94 @@
+// File: STM32H742_743_753_750.dbgconf
+// Version: 1.0.0
+// Note: refer to STM32H742, STM32H743/753 and STM32H750 reference manual (RM0433)
+//       refer to STM32H742xI/G STM32H743xI/G datasheets
+//       refer to STM32H753xI datasheet
+//       refer to STM32H750VB STM32H750IB STM32H750XB datasheets
+
+// <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> DBGMCU configuration register (DBGMCU_CR)
+//   <o.28> TRGOEN                   <i> External trigger output enable
+//   <o.8>  DBGSTBY_D3               <i> Allow debug in D3 Standby mode
+//   <o.7>  DBGSTOP_D3               <i> Allow debug in D3 Stop mode
+//   <o.2>  DBGSTBY_D1               <i> Allow D1 domain debug in Standby mode
+//   <o.1>  DBGSTOP_D1               <i> Allow D1 domain debug in Stop mode
+//   <o.0>  DBGSLEEP_D1              <i> Allow D1 domain debug in Sleep mode
+// </h>
+DbgMCU_CR = 0x00000007;
+
+// <h> DBGMCU APB3 peripheral freeze register (DBGMCU_APB3FZ1)
+//                                   <i> Reserved bits must be kept at reset value
+//   <o.6>  WWDG1                    <i> WWDG1 stop in debug
+// </h>
+DbgMCU_APB3_Fz1 = 0x00000000;
+
+// <h> DBGMCU APB1L peripheral freeze register (DBGMCU_APB1LFZ1)
+//                                   <i> Reserved bits must be kept at reset value
+//   <o.23> DBG_I2C3                 <i> I2C3 SMBUS timeout stop in debug
+//   <o.22> DBG_I2C2                 <i> I2C2 SMBUS timeout stop in debug
+//   <o.21> DBG_I2C1                 <i> I2C1 SMBUS timeout stop in debug
+//   <o.9>  DBG_LPTIM1               <i> LPTIM1 stop in debug
+//   <o.8>  DBG_TIM14                <i> TIM14 stop in debug
+//   <o.7>  DBG_TIM13                <i> TIM13 stop in debug
+//   <o.6>  DBG_TIM12                <i> TIM12 stop in debug
+//   <o.5>  DBG_TIM7                 <i> TIM7 stop in debug
+//   <o.4>  DBG_TIM6                 <i> TIM6 stop in debug
+//   <o.3>  DBG_TIM5                 <i> TIM5 stop in debug
+//   <o.2>  DBG_TIM4                 <i> TIM4 stop in debug
+//   <o.1>  DBG_TIM3                 <i> TIM3 stop in debug
+//   <o.0>  DBG_TIM2                 <i> TIM2 stop in debug
+// </h>
+DbgMCU_APB1L_Fz1 = 0x00000000;
+
+// <h> DBGMCU APB2 peripheral freeze register (DBGMCU_APB2FZ1)
+//                                   <i> Reserved bits must be kept at reset value
+//   <o.29> DBG_HRTIM                <i> HRTIM stop in debug
+//   <o.18> DBG_TIM17                <i> TIM17 stop in debug
+//   <o.17> DBG_TIM16                <i> TIM16 stop in debug
+//   <o.16> DBG_TIM15                <i> TIM15 stop in debug
+//   <o.1>  DBG_TIM8                 <i> TIM8 stop in debug
+//   <o.0>  DBG_TIM1                 <i> TIM1 stop in debug
+// </h>
+DbgMCU_APB2_Fz1 = 0x00000000;
+
+// <h> DBGMCU APB4 peripheral freeze register (DBGMCU_APB4FZ1)
+//                                   <i> Reserved bits must be kept at reset value
+//   <o.18> DBG_IIWDG1               <i> Independent watchdog for D1 stop in debug
+//   <o.16> DBG_RTC                  <i> RTC stop in debug
+//   <o.12> DBG_LPTIM5               <i> LPTIM5 stop in debug
+//   <o.11> DBG_LPTIM4               <i> LPTIM4 stop in debug
+//   <o.10> DBG_LPTIM3               <i> LPTIM2 stop in debug
+//   <o.9>  DBG_LPTIM2               <i> LPTIM2 stop in debug
+//   <o.7>  DBG_I2C4                 <i> I2C4 SMBUS timeout stop in debug
+// </h>
+DbgMCU_APB4_Fz1 = 0x00000000;
+
+// <h> TPIU Pin Routing (TRACECLK fixed on Pin PE2)
+//   <i> TRACECLK: Pin PE2
+//   <o1> TRACED0
+//     <i> ETM Trace Data 0
+//       <0x00040003=> Pin PE3
+//       <0x00020001=> Pin PC1
+//       <0x0006000D=> Pin PG13
+//   <o2> TRACED1
+//     <i> ETM Trace Data 1
+//       <0x00040004=> Pin PE4
+//       <0x00020008=> Pin PC8
+//       <0x0006000E=> Pin PG14
+//   <o3> TRACED2
+//     <i> ETM Trace Data 2
+//       <0x00040005=> Pin PE5
+//       <0x00030002=> Pin PD2
+//   <o4> TRACED3
+//     <i> ETM Trace Data 3
+//       <0x00040006=> Pin PE6
+//       <0x0002000C=> Pin PC12
+// </h>
+TraceClk_Pin = 0x00040002;
+TraceD0_Pin  = 0x00040003;
+TraceD1_Pin  = 0x00040004;
+TraceD2_Pin  = 0x00040005;
+TraceD3_Pin  = 0x00040006;
+
+// <<< end of configuration section >>>
