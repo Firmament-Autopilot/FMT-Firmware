@@ -471,6 +471,7 @@ void USART6_IRQHandler(void)
 static void RCC_Configuration(void)
 {
     LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
 
 #ifdef USING_UART2
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
@@ -742,7 +743,6 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
     uart = (struct stm32_uart*)serial->parent.user_data;
 
-    USART_InitStructure.PrescalerValue = LL_USART_PRESCALER_DIV1;
     USART_InitStructure.BaudRate = cfg->baud_rate;
 
     if (cfg->data_bits == DATA_BITS_8) {
@@ -772,14 +772,11 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     /* USART need be disabled first in order to configure it */
     LL_USART_Disable(uart->uart_device);
     LL_USART_Init(uart->uart_device, &USART_InitStructure);
-    /* Do no enable fifo as we create fifo in hal serail */
-    LL_USART_DisableFIFO(uart->uart_device);
-    /* Disable error interrupt as we don't handle it */
-    // LL_USART_DisableIT_ERROR(uart->uart_device);
-
     LL_USART_ConfigAsyncMode(uart->uart_device);
+    LL_USART_DisableIT_ERROR(uart->uart_device); /* Disable error interrupt */
     LL_USART_Enable(uart->uart_device);
 
+    /* Polling USART initialisation */
     while ((!(LL_USART_IsActiveFlag_TEACK(uart->uart_device))) || (!(LL_USART_IsActiveFlag_REACK(uart->uart_device)))) {
     }
 
