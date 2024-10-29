@@ -30,3 +30,4 @@ cconfig.h
 .cortex-debug*
 
 src/lib/dronecan/dsdlc_generated/*
+target/*/*/board/cubemx/*
