@@ -27,7 +27,8 @@
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
-#include "driver/mtd/ramtron.h"
+#include "driver/mtd/w25qxx.h"
+#include "driver/barometer/spl06.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_rc.h"
@@ -405,8 +406,7 @@ void bsp_initialize(void)
 
     /* init storage devices */
     // RT_CHECK(drv_sdio_init());
-    /* fram init */
-    // RT_CHECK(drv_ramtron_init("spi2_dev1"));
+    RT_CHECK(drv_w25qxx_init("spi5_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
@@ -427,6 +427,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
+    RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1"));
     // RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
     // // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")

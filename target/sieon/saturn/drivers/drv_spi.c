@@ -537,7 +537,7 @@ rt_err_t drv_spi_init(void)
     /* register SPI6 bus */
     RT_TRY(stm32_spi_register(SPI5, &stm32_spi5, "spi5"));
 
-    /* attach spi6_device_1 (GD25Q) to spi5 */
+    /* attach spi5_device_1 (GD25Q) to spi5 */
     {
         static struct rt_spi_device rt_spi5_device_1;
         static struct stm32_spi_cs stm32_spi5_cs_1;
