@@ -10,7 +10,8 @@ DRIVERS = [
     # 'rgb_led/rgb_dronecan.c',
     # 'mtd/ramtron.c',
     'imu/bmi088.c',
-    'mag/ist8310.c',
+    'imu/icm42688p.c',
+    'mag/bmm150.c',
     'mtd/ramtron.c',
 ]
 
