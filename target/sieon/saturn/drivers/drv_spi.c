@@ -379,28 +379,28 @@ rt_err_t drv_spi_init(void)
     /* register SPI1 bus */
     RT_TRY(stm32_spi_register(SPI1, &stm32_spi1, "spi1"));
 
-    // /* attach spi1_device_1 (SPL06) to spi1 */
-    // {
-    //     static struct rt_spi_device rt_spi1_device_1;
-    //     static struct stm32_spi_cs stm32_spi1_cs_1;
-    //     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    /* attach spi1_device_1 (SPL06) to spi1 */
+    {
+        static struct rt_spi_device rt_spi1_device_1;
+        static struct stm32_spi_cs stm32_spi1_cs_1;
+        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    //     stm32_spi1_cs_1.GPIOx = GPIOG;
-    //     stm32_spi1_cs_1.GPIO_Pin = LL_GPIO_PIN_6;
+        stm32_spi1_cs_1.GPIOx = GPIOB;
+        stm32_spi1_cs_1.GPIO_Pin = LL_GPIO_PIN_1;
 
-    //     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
+        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
 
-    //     GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
-    //     GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    //     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-    //     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    //     GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    //     LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_1;
+        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
+        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+        LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    //     LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_6);
+        LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_1);
 
-    //     RT_TRY(rt_spi_bus_attach_device(&rt_spi1_device_1, "spi1_dev1", "spi1", (void*)&stm32_spi1_cs_1));
-    // }
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_device_1, "spi1_dev1", "spi1", (void*)&stm32_spi1_cs_1));
+    }
 
     static struct stm32_spi_bus stm32_spi2;
     /* register SPI2 bus */

@@ -24,10 +24,8 @@
 #include "board_device.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_ubx.h"
-#include "driver/imu/icm20689.h"
-#include "driver/imu/icm42688p.h"
+#include "driver/imu/bmi088.h"
 #include "driver/mag/ist8310.h"
-#include "driver/mag/rm3100.h"
 #include "driver/mtd/ramtron.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -376,8 +374,8 @@ void bsp_early_initialize(void)
     // /* i2c driver init */
     // RT_CHECK(drv_i2c_init());
 
-    // /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
 
     /* pwm driver init */
     // RT_CHECK(drv_pwm_init());
@@ -425,6 +423,7 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
+    RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
     // RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1"));
     // RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));

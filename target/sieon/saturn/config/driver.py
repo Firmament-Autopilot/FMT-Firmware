@@ -9,9 +9,7 @@ DRIVERS = [
     # 'gps/gps_dronecan.c',
     # 'rgb_led/rgb_dronecan.c',
     # 'mtd/ramtron.c',
-    'imu/icm20689.c',
-    'imu/icm42688p.c',
-    'mag/rm3100.c',
+    'imu/bmi088.c',
     'mag/ist8310.c',
     'mtd/ramtron.c',
 ]
