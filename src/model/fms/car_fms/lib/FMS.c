@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1999
+ * Model version                  : 1.2001
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Jul 15 19:32:31 2024
+ * C/C++ source code generated on : Thu Nov  7 11:16:11 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -163,6 +163,7 @@ static boolean_T FMS_BottomLeft(real32_T pilot_cmd_stick_yaw, real32_T
   pilot_cmd_stick_throttle);
 static boolean_T FMS_sf_msg_pop_M(void);
 static real32_T FMS_norm(const real32_T x[2]);
+static void FMS_exit_internal_Auto(void);
 static real_T FMS_getArmMode(PilotMode pilotMode);
 static void FMS_enter_internal_Auto(void);
 static void FMS_enter_internal_Arm(void);
@@ -267,15 +268,6 @@ static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag)
 {
   boolean_T valid;
-  int32_T b_index;
-  int32_T j;
-  boolean_T y;
-  boolean_T x[2];
-  static const PilotMode varargin_1[2] = { PilotMode_Position,
-    PilotMode_Offboard };
-
-  int32_T exitg1;
-  boolean_T exitg2;
   valid = false;
   if ((ins_flag & 1U) != 0U) {
     switch (cmd_in) {
@@ -288,60 +280,27 @@ static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
       break;
 
      case FMS_Cmd_PreArm:
-      b_index = -1;
-      j = 0;
-      do {
-        exitg1 = 0;
-        if (j < 2) {
-          if (varargin_1[j] == mode_in) {
-            b_index = 0;
-            exitg1 = 1;
-          } else {
-            j++;
-          }
-        } else {
-          if (PilotMode_Mission == mode_in) {
-            b_index = 1;
-          } else {
-            x[0] = (PilotMode_Stabilize == mode_in);
-            x[1] = (PilotMode_Manual == mode_in);
-            y = true;
-            j = 0;
-            exitg2 = false;
-            while ((!exitg2) && (j < 2)) {
-              if (!x[j]) {
-                y = false;
-                exitg2 = true;
-              } else {
-                j++;
-              }
-            }
-
-            if (y) {
-              b_index = 2;
-            }
-          }
-
-          exitg1 = 1;
-        }
-      } while (exitg1 == 0);
-
-      switch (b_index) {
-       case 0:
+      switch (mode_in) {
+       case PilotMode_Position:
+       case PilotMode_Offboard:
         if (((ins_flag & 8U) != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag &
               64U) != 0U)) {
           valid = true;
         }
         break;
 
-       case 1:
+       case PilotMode_Mission:
         if (((ins_flag & 8U) != 0U) && ((ins_flag & 16U) != 0U) && ((ins_flag &
               32U) != 0U) && ((ins_flag & 64U) != 0U)) {
           valid = true;
         }
         break;
 
-       case 2:
+       case PilotMode_Stabilize:
+        valid = true;
+        break;
+
+       case PilotMode_Manual:
         valid = true;
         break;
       }
@@ -476,6 +435,18 @@ static real32_T FMS_norm(const real32_T x[2])
   }
 
   return scale * sqrtf(y);
+}
+
+/* Function for Chart: '<Root>/FMS State Machine' */
+static void FMS_exit_internal_Auto(void)
+{
+  if (FMS_DW.is_Auto == FMS_IN_Mission) {
+    FMS_DW.is_Mission = FMS_IN_NO_ACTIVE_CHILD;
+    FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD;
+  } else {
+    FMS_DW.is_Offboard = FMS_IN_NO_ACTIVE_CHILD;
+    FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD;
+  }
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
@@ -742,14 +713,7 @@ static void FMS_SubMode(void)
 static void FMS_exit_internal_Arm(void)
 {
   if (FMS_DW.is_Arm == FMS_IN_Auto) {
-    if (FMS_DW.is_Auto == FMS_IN_Mission) {
-      FMS_DW.is_Mission = FMS_IN_NO_ACTIVE_CHILD;
-      FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD;
-    } else {
-      FMS_DW.is_Offboard = FMS_IN_NO_ACTIVE_CHILD;
-      FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD;
-    }
-
+    FMS_exit_internal_Auto();
     FMS_DW.is_Arm = FMS_IN_NO_ACTIVE_CHILD;
   } else {
     FMS_DW.is_Assist = FMS_IN_NO_ACTIVE_CHILD;
@@ -849,14 +813,7 @@ static void FMS_Arm(void)
         }
 
         if (b_sf_internal_predicateOutput) {
-          if (FMS_DW.is_Auto == FMS_IN_Mission) {
-            FMS_DW.is_Mission = FMS_IN_NO_ACTIVE_CHILD;
-            FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD;
-          } else {
-            FMS_DW.is_Offboard = FMS_IN_NO_ACTIVE_CHILD;
-            FMS_DW.is_Auto = FMS_IN_NO_ACTIVE_CHILD;
-          }
-
+          FMS_exit_internal_Auto();
           FMS_DW.is_Arm = FMS_IN_SubMode;
           FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
           FMS_DW.stick_val[1] =

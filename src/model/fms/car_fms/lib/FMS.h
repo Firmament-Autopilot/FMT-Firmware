@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1999
+ * Model version                  : 1.2001
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Jul 15 19:32:31 2024
+ * C/C++ source code generated on : Thu Nov  7 11:16:11 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -120,12 +120,12 @@ typedef struct {
   uint8_T is_Arm;                      /* '<Root>/FMS State Machine' */
   uint8_T is_SubMode;                  /* '<Root>/FMS State Machine' */
   uint8_T is_Auto;                     /* '<Root>/FMS State Machine' */
+  uint8_T is_Offboard;                 /* '<Root>/FMS State Machine' */
   uint8_T is_Mission;                  /* '<Root>/FMS State Machine' */
   uint8_T is_Assist;                   /* '<Root>/FMS State Machine' */
   uint8_T is_Manual;                   /* '<Root>/FMS State Machine' */
   uint8_T is_Combo_Stick;              /* '<Root>/FMS State Machine' */
   uint8_T is_active_Combo_Stick;       /* '<Root>/FMS State Machine' */
-  uint8_T is_Offboard;                 /* '<Root>/FMS State Machine' */
   uint8_T is_active_c10_FMS;           /* '<S37>/Motion State' */
   uint8_T is_c10_FMS;                  /* '<S37>/Motion State' */
   uint8_T icLoad;                      /* '<S42>/start_vel' */
