@@ -59,8 +59,12 @@ static param_t __param_list[] = {
     PARAM_FLOAT(GPS_ALT_GAIN, 0, false),
     PARAM_FLOAT(GPS_VEL_GAIN, 2, false),
     PARAM_FLOAT(GPS_BIAS_A_GAIN, 1, false),
-    PARAM_UINT32(GPS_POS_DELAY, 150, false),
+    PARAM_UINT32(GPS_POS_DELAY, 100, false),
     PARAM_UINT32(GPS_VEL_DELAY, 100, false),
+    PARAM_FLOAT(RTK_POS_GAIN, 2, false),
+    PARAM_FLOAT(RTK_ALT_GAIN, 2, false),
+    PARAM_FLOAT(RTK_VEL_GAIN, 0, false),
+    PARAM_FLOAT(RTK_BIAS_A_GAIN, 0, false),
     PARAM_FLOAT(OPF_VEL_GAIN, 2, false),
     PARAM_FLOAT(OPF_BIAS_A_GAIN, 1, false),
     PARAM_UINT32(OPF_VEL_DELAY, 10, false),
@@ -77,8 +81,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(EXTPOS_VEL_GAIN, 1.5, false),
     PARAM_FLOAT(EXTPOS_BIAS_A_GAIN, 0.1, false),
     PARAM_UINT32(EXTPOS_POS_DELAY, 20, false),
-    PARAM_UINT8(EXTPOS_ORIEN_MODE, 1, false),
-    PARAM_FLOAT(EXTPOS_ORIEN, 0.0, false),
+    PARAM_UINT8(EXTPOS_PSI_MODE, 1, false),
+    PARAM_FLOAT(EXTPOS_PSI, 0.0, false),
     PARAM_UINT8(TERRAIN_TRACK, 1, false),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
@@ -340,6 +344,10 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_BIAS_A_GAIN), &INS_PARAM.GPS_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_POS_DELAY), &INS_PARAM.GPS_POS_DELAY));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_VEL_DELAY), &INS_PARAM.GPS_VEL_DELAY));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_POS_GAIN), &INS_PARAM.RTK_POS_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_ALT_GAIN), &INS_PARAM.RTK_ALT_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_VEL_GAIN), &INS_PARAM.RTK_VEL_GAIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_BIAS_A_GAIN), &INS_PARAM.RTK_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_VEL_GAIN), &INS_PARAM.OPF_VEL_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_BIAS_A_GAIN), &INS_PARAM.OPF_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, OPF_VEL_DELAY), &INS_PARAM.OPF_VEL_DELAY));
@@ -356,8 +364,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_VEL_GAIN), &INS_PARAM.EXTPOS_VEL_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_BIAS_A_GAIN), &INS_PARAM.EXTPOS_BIAS_A_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_POS_DELAY), &INS_PARAM.EXTPOS_POS_DELAY));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_ORIEN_MODE), &INS_PARAM.EXTPOS_ORIEN_MODE));
-    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_ORIEN), &INS_PARAM.EXTPOS_ORIEN));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_PSI_MODE), &INS_PARAM.EXTPOS_PSI_MODE));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, EXTPOS_PSI), &INS_PARAM.EXTPOS_PSI));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, TERRAIN_TRACK), &INS_PARAM.TERRAIN_TRACK));
 }
 
