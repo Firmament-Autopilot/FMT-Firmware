@@ -355,6 +355,8 @@ static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bi
                                           .flags = 0 };
 static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
+static struct rt_i2c_device i2c1_dev2 = { .slave_addr = 0x0D, /* 7 bit address */
+                                          .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
 {
@@ -373,6 +375,7 @@ rt_err_t drv_i2c_init(void)
     /* attach i2c devices */
     RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev1, "i2c2_dev1", "i2c2", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
 
     return RT_EOK;
 }

@@ -27,6 +27,7 @@
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
+#include "driver/mag/qmc5883l.h"
 #include "driver/mtd/w25qxx.h"
 #include "driver/barometer/spl06.h"
 #include "drv_gpio.h"
@@ -370,11 +371,11 @@ void bsp_early_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
-    // /* gpio driver init */
-    // RT_CHECK(drv_gpio_init());
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
 
-    // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
@@ -427,12 +428,13 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
+    RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag1"));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1"));
     // RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
     // // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")
     // RT_CHECK(drv_ms5611_init("spi4_dev2", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    RT_CHECK(gps_ubx_init("serial3", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
@@ -447,7 +449,7 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    // /* toml system configure */
+    /* toml system configure */
     // __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
     // if (!__toml_root_tab) {
     //     /* use default system configuration */
@@ -455,17 +457,17 @@ void bsp_post_initialize(void)
     // }
     // FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
-    // /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
-    // /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
-    // /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
-    // /* init mission data */
-    // FMT_CHECK(mission_data_init());
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
 
     // /* start device message queue work */
     // FMT_CHECK(devmq_start_work());
