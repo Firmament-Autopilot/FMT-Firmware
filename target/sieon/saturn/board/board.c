@@ -396,7 +396,7 @@ void bsp_initialize(void)
     EnablePower();
 
     /* start recording boot log */
-    // FMT_CHECK(boot_log_init());
+    FMT_CHECK(boot_log_init());
 
     /* init uMCN */
     FMT_CHECK(mcn_init());
@@ -411,7 +411,7 @@ void bsp_initialize(void)
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init parameter system */
-    // FMT_CHECK(param_init());
+    FMT_CHECK(param_init());
 
     /* init usbd_cdc */
     // RT_CHECK(drv_usb_cdc_init());
@@ -434,9 +434,9 @@ void bsp_initialize(void)
     // RT_CHECK(drv_ms5611_init("spi4_dev2", "barometer"));
     // RT_CHECK(gps_ubx_init("serial3", "gps"));
 
-    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    // FMT_CHECK(register_sensor_mag("mag0", 0));
-    // FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
 #endif
 
     /* init finsh */
@@ -480,7 +480,7 @@ void bsp_post_initialize(void)
     msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
     /* dump boot log to file */
-    // boot_log_dump();
+    boot_log_dump();
 }
 
 /**
