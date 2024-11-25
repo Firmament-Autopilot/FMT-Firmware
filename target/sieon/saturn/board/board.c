@@ -69,7 +69,7 @@
 #define SYS_INIT_SCRIPT "/sys/init.sh"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    // { "sd0", "/", "elm", 0, NULL },
+    { "sd0", "/", "elm", 0, NULL },
     // { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
@@ -405,8 +405,8 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    // RT_CHECK(drv_sdio_init());
-    RT_CHECK(drv_w25qxx_init("spi5_dev1", "mtdblk0"));
+    RT_CHECK(drv_sdio_init());
+    // RT_CHECK(drv_w25qxx_init("spi5_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
