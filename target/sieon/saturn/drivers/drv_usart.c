@@ -742,6 +742,9 @@ static void NVIC_Configuration(struct stm32_uart* uart)
 {
     // TODO: configure the PreemptionPriority and SubPriority
 
+    /* disable usart device by default, incase that enter irq before usart has been configured */
+    LL_USART_Disable(uart->uart_device);
+
     /* enable the usart interrupt */
     NVIC_SetPriority(uart->irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
     NVIC_EnableIRQ(uart->irq);
@@ -1134,7 +1137,9 @@ rt_err_t drv_usart_init(void)
     #else
     serial5.config = config;
     #endif
+
     NVIC_Configuration(&uart7);
+
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial5,

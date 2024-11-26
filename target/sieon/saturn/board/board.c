@@ -428,12 +428,8 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
-    RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag1"));
+    // RT_CHECK(drv_qmc5883l_init("i2c3_dev1", "mag0"));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-    // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1"));
-    // RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
-    // // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")
-    // RT_CHECK(drv_ms5611_init("spi4_dev2", "barometer"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
