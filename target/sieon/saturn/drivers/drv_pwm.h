@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#ifndef DRV_PWM_H__
+#define DRV_PWM_H__
 
-/* This is the default toml config for the target, which is loaded when there is
- * no sysconfig.toml finded. Please do not format this file. */
+#include <firmament.h>
 
-// clang-format off
-static char* default_conf = STRING(
-target = "SIEON Saturn"\n
-[console]\n
-	[[console.devices]]\n
-	type = "serial"\n
-	name = "serial0"\n
-	baudrate = 57600\n
-	auto-switch = true\n
-[actuator]\n
-    [[actuator.devices]]\n
-    protocol = "pwm"\n
-    name = "main_out"\n
-    freq = 400
-);
-// clang-format on
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_pwm_init(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
