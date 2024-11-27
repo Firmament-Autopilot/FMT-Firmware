@@ -385,7 +385,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_pwm_init());
 
     /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
+    RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());

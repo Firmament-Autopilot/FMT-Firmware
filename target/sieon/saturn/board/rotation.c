@@ -18,5 +18,10 @@
 
 void icm42688_rotate_to_frd(float* data, uint32_t dev_id)
 {
-    rotation(ROTATION_PITCH_180_YAW_270, data, data + 1, data + 2);
+    rotation(ROTATION_YAW_270, data, data + 1, data + 2);
+}
+
+void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
+{
+    rotation(ROTATION_YAW_180, data, data + 1, data + 2);
 }

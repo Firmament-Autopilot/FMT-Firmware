@@ -26,6 +26,25 @@ target = "SIEON Saturn"\n
 	name = "serial0"\n
 	baudrate = 57600\n
 	auto-switch = true\n
+	[[console.devices]]\n
+	type = "mavlink"\n
+	name = "mav_console"\n
+	auto-switch = true\n
+[mavproxy]\n
+	[[mavproxy.devices]]\n
+	chan = 0\n
+	type = "serial"\n
+	name = "serial2"\n
+	baudrate = 57600\n
+[pilot-cmd]\n
+    stick-channel = [4,3,1,2]\n
+    [pilot-cmd.device]\n
+    type = "rc"\n
+    name = "rc"\n
+    protocol = "auto"\n
+    channel-num = 8\n
+    sample-time = 0.05\n
+    range = [1000,2000]\n
 [actuator]\n
     [[actuator.devices]]\n
     protocol = "pwm"\n
