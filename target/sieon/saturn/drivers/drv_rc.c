@@ -136,6 +136,7 @@ static rt_err_t ppm_lowlevel_init(void)
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
     TIM_InitStruct.Autoreload = 65535;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+    LL_TIM_DeInit(TIM3);
     LL_TIM_Init(TIM3, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM3);
     LL_TIM_SetTriggerOutput(TIM3, LL_TIM_TRGO_RESET);
@@ -144,10 +145,6 @@ static rt_err_t ppm_lowlevel_init(void)
     LL_TIM_IC_SetPrescaler(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
     LL_TIM_IC_SetFilter(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
     LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
-
-    LL_TIM_EnableCounter(TIM3);
-    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
-    LL_TIM_EnableIT_CC1(TIM3);
 
     return RT_EOK;
 }
@@ -172,7 +169,7 @@ static rt_err_t sbus_lowlevel_init(void)
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
@@ -196,7 +193,6 @@ static rt_err_t sbus_lowlevel_init(void)
     LL_USART_SetTXFIFOThreshold(UART8, LL_USART_FIFOTHRESHOLD_1_8);
     LL_USART_SetRXFIFOThreshold(UART8, LL_USART_FIFOTHRESHOLD_1_8);
     LL_USART_SetRXPinLevel(UART8, LL_USART_RXPIN_LEVEL_INVERTED);
-    LL_USART_SetTXRXSwap(UART8, LL_USART_TXRX_SWAPPED);
     LL_USART_ConfigAsyncMode(UART8);
 
     /* USER CODE BEGIN WKUPType UART8 */
@@ -204,11 +200,22 @@ static rt_err_t sbus_lowlevel_init(void)
     /* USER CODE END WKUPType UART8 */
 
     LL_USART_Enable(UART8);
-    LL_USART_EnableIT_RXNE(UART8);
 
     /* Polling UART8 initialisation */
     while ((!(LL_USART_IsActiveFlag_TEACK(UART8))) || (!(LL_USART_IsActiveFlag_REACK(UART8)))) {
     }
+
+    return RT_EOK;
+}
+
+rt_err_t rc_init(rc_dev_t dev)
+{
+    /* open interrupt */
+    LL_TIM_EnableCounter(TIM3);
+    LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
+    LL_TIM_EnableIT_CC1(TIM3);
+
+    LL_USART_EnableIT_RXNE(UART8);
 
     return RT_EOK;
 }
@@ -278,6 +285,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
 }
 
 const static struct rc_ops rc_ops = {
+    .rc_init = rc_init,
     .rc_config = NULL,
     .rc_control = rc_control,
     .rc_read = rc_read,
@@ -290,13 +298,13 @@ static struct rc_device rc_dev = {
 
 rt_err_t drv_rc_init(void)
 {
-    /* init ppm driver */
-    RT_TRY(ppm_lowlevel_init());
     /* init ppm decoder */
     RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
+    /* init ppm driver */
+    RT_TRY(ppm_lowlevel_init());
 
-    RT_TRY(sbus_lowlevel_init());
     RT_TRY(sbus_decoder_init(&sbus_decoder));
+    RT_TRY(sbus_lowlevel_init());
 
     RT_CHECK(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, NULL));
 

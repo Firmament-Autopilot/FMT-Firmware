@@ -25,9 +25,9 @@ static rt_err_t hal_rc_init(struct rt_device* dev)
 
     rc = (rc_dev_t)dev;
 
-    /* apply configuration */
-    if (rc->ops->rc_config) {
-        ret = rc->ops->rc_config(rc, &rc->config);
+    /* apply init function */
+    if (rc->ops->rc_init) {
+        ret = rc->ops->rc_init(rc);
     }
 
     return ret;
@@ -140,7 +140,7 @@ static rt_err_t hal_rc_control(struct rt_device* dev, int cmd, void* args)
 
 /**
  * @brief indicate rc has data received
- * 
+ *
  * @param rc rc device
  * @param size size of received data
  * @return rt_err_t RT_EOK for success
@@ -158,7 +158,7 @@ rt_err_t hal_rc_rx_ind(rc_dev_t rc, rt_size_t size)
 
 /**
  * @brief register a rc device
- * 
+ *
  * @param rc rc device
  * @param name device name
  * @param flag device flag
