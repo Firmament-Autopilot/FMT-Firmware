@@ -30,6 +30,7 @@
 #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/w25qxx.h"
+#include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -196,53 +197,6 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 }
 
 /**
- * @brief Enable on-board device power supply
- *
- */
-static void EnablePower(void)
-{
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
-
-    /* init gpio */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    /* VDD_3V3_SENSORS_EN active high */
-    LL_GPIO_SetOutputPin(GPIOE, LL_GPIO_PIN_3);
-
-    /* init gpio */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_4 | LL_GPIO_PIN_5 | LL_GPIO_PIN_7;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-    /* nVDD_5V_PERIPH_EN active high */
-    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_4);
-    /* VDD_5V_RC_EN active high */
-    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_5);
-    /* VDD_3V3_SD_CARD_EN active high */
-    LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
-
-    /* init gpio */
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-    // /* HS_USB_EN set to disable HS，use FS instead */
-    // LL_GPIO_SetOutputPin(GPIOH, LL_GPIO_PIN_15);
-}
-
-/**
  * @brief  CPU Config.
  * @param  None
  * @retval None
@@ -384,6 +338,8 @@ void bsp_early_initialize(void)
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
+    RT_CHECK(drv_fdcan_init());
+
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
 
@@ -394,9 +350,6 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-    /* enable on-board power supply */
-    EnablePower();
-
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
