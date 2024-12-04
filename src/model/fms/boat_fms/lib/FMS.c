@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.1985
+ * Model version                  : 1.1986
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Nov  7 11:14:41 2024
+ * C/C++ source code generated on : Wed Dec  4 12:00:13 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -2897,7 +2897,7 @@ void FMS_step(void)
         FMS_Y.FMS_Out.u_cmd = rtb_Switch_fd[0];
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        FMS_Y.FMS_Out.r_cmd = FMS_U.Auto_Cmd.r_cmd;
+        FMS_Y.FMS_Out.r_cmd = FMS_U.Auto_Cmd.psi_rate_cmd;
 
         /* Outputs for Atomic SubSystem: '<S85>/r_cmd_valid' */
         /* Outputs for Atomic SubSystem: '<S85>/u_cmd_valid' */
