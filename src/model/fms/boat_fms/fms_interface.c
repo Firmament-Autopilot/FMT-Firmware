@@ -40,8 +40,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(CRUISE_SPEED, 3.0, false),
     PARAM_FLOAT(ACCEPT_R, 5.0, false),
     PARAM_FLOAT(MAX_VEL, 4.0, false),
-    PARAM_FLOAT(MAX_R, PI / 6, false),
-    PARAM_FLOAT(ACC2RATE, 0.5, false),
+    PARAM_FLOAT(AY_P, 0.8, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -247,8 +246,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_VEL), &FMS_PARAM.MAX_VEL));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_R), &FMS_PARAM.MAX_R));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC2RATE), &FMS_PARAM.ACC2RATE));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, AY_P), &FMS_PARAM.AY_P));
 }
 
 void fms_interface_step(uint32_t timestamp)
