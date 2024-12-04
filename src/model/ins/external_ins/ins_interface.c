@@ -71,6 +71,8 @@ static int INS_Out_ID;
 
 /* Model information */
 fmt_model_info_t ins_model_info;
+static bool lla0_valid = false;
+static double lla0[3];
 
 static int ins_output_echo(void* param)
 {
@@ -146,6 +148,17 @@ void ins_interface_step(void)
         ins_out.lat = DEG2RAD((double)external_state.lla[0]) * 1e-7;
         ins_out.lon = DEG2RAD((double)external_state.lla[1]) * 1e-7;
         ins_out.alt = (double)external_state.lla[2] * 1e-3;
+
+        if (!lla0_valid) {
+            lla0_valid = true;
+            lla0[0] = ins_out.lat;
+            lla0[1] = ins_out.lon;
+            lla0[2] = ins_out.alt;
+        }
+
+        ins_out.lat_0 = lla0[0];
+        ins_out.lon_0 = lla0[1];
+        ins_out.alt_0 = lla0[2];
 
         ins_out.x_R = external_state.pos[0];
         ins_out.y_R = external_state.pos[1];
