@@ -41,18 +41,18 @@ Main FMU Processor: STM32F765◦32 Bit Arm® Cortex®-M7, 216MHz, 2MB memory, 51
 
 ## Wiki
 
-[CUAV V5 Plus Overview — Copter documentation (ardupilot.org)](https://ardupilot.org/copter/docs/common-cuav-v5plus-overview.html)
+[V5 nano · cuav-v5](https://doc.cuav.net/controller/v5-autopilot/en/v5-nano.html)
 
 ## Where to Buy
 
-Order from [here](https://store.cuav.net/index.php). Official retailers are listed [here](https://www.cuav.net/en/resellers/).
+[CUAV Store](https://store.cuav.net/shop/v5-nano/)
 
 ## Build
 
 Build fmu firmware for quadcopter
 
 ```
-cd FMT-Firmware/taget/cuav/v5_plus
+cd FMT-Firmware/taget/cuav/v5_nano
 scons -j4
 ```
 
@@ -64,13 +64,6 @@ For other vehicle, such as fixwing, using
 scons -j4 --vehicle=Fixwing
 ```
 
-CUAV V5+ has an io (co-processor) processor onboard. Use the following command to build io firmware.
-
-```
-cd FMT-Firmware/target/pixhawk/fmt-io/project
-scons -j4
-```
-
 ## Download
 
 
@@ -80,15 +73,13 @@ Currently there are 3 ways to download fmu firmware to hardware.
 1. **Donwload Script**: Enter `python3 uploader.py` in the V5+ directory. Then connect your hardware via usb.
 
 ```
-PS D:\ws\FMT\FMT-Firmware\target\cuav\v5_plus> python .\uploader.py
+PS D:\ws\FMT\FMT-Firmware\target\cuav\v5_nano> python.exe .\uploader.py
 waiting for the bootloader...
-Error: no serial connection found
-wait for connect fmt-fmu...
-Error: no serial connection found
-wait for connect fmt-fmu...
+Attempting reboot on COM31 with baudrate=57600...
+If the board does not respond, unplug and re-plug the USB connector.
 
-Found board id: 50,0 bootloader version: 5 on COM3
-sn: 0027003a5931500620333539
+Found board id: 50,0 bootloader version: 5 on COM6
+sn: 0023003f3033511236323635
 chip: 10016451
 family: b'STM32F7[6|7]x'
 revision: b'Z'
@@ -98,7 +89,7 @@ Windowed mode: False
 Erase  : [====================] 100.0%
 Program: [====================] 100.0%
 Verify : [====================] 100.0%
-Rebooting. Elapsed Time 11.289
+Rebooting. Elapsed Time 11.949
 ```
 
 > If the `"ModuleNotFoundError: No module named 'serial'"` error occurs, indicating that the **pyserial** component is missing, enter `pip3 install pyserial` to install.
@@ -118,53 +109,49 @@ When system is up and running, the system banner is output via serial0 or you ca
   / __(_)_____ _  ___ ___ _  ___ ___  / /_
  / _// / __/  ' \/ _ `/  ' \/ -_) _ \/ __/
 /_/ /_/_/ /_/_/_/\_,_/_/_/_/\__/_//_/\__/ 
-Firmware.....................FMT FW v0.3.0
+Firmware.....................FMT FW v1.0.0
 Kernel....................RT-Thread v4.0.3
 RAM.................................512 KB
-Target............................CUAV V5+
-Vehicle.........................Multicopter
-INS Model..................Base INS v0.3.1
-FMS Model..................Base FMS v0.4.0
-Control Model.......Base Controller v0.2.4
+Target........................CUAV V5-Nano
+Vehicle........................Multicopter
+Airframe.................................1
+INS Model....................CF INS v1.0.0
+FMS Model....................MC FMS v1.0.0
+Control Model.........MC Controller v1.0.0
 Task Initialize:
-  comm..................................OK
+  mavobc................................OK
+  mavgcs................................OK
   logger................................OK
-  fmtio.................................OK
   status................................OK
   vehicle...............................OK
 ```
-
-### Download IO Firmware
-
-The next step is to upload the io firmware which is downloaded through the fmu. First copy the io firmware `target/pixhawk/fmt-io/project/build/fmt_io.bin` to the on board sd card. You can do that via QGC onboard files page (QGC version 3.5.6 only) or a sd card reader. 
-
-![qgc_download](https://qiniu.md.amovlab.com/img/m/202303/20230305/1820266235233805846609920.png)
-
-
-Then enter the following command in FMT console to upload the firmware to io processor.
-
-```
-msh /usr>fmtio upload /usr/fmt_io.bin
-[312785] I/Uploader: sync success
-[312793] I/Uploader: found bootloader revision: 5
-[312803] I/Uploader: io firmaware:/usr/fmt_io.bin
-[312818] I/Uploader: erase...
-[314151] I/Uploader: program...
-[316275] I/Uploader: CRC check ok, received: 8a27ed4f, expected: 8a27ed4f
-```
-
-> For the first time to download the io firmware, you need connect GPS module and hold the safety button to power up, which would lead io processor to stay in bootloader.
 
 ## Port Mapping
 
 | UART   | Device  | Port         |
 | ------ | ------- | ------------ |
-| UART7  | serial0 | DSU7 (DEBUG) |
+| UART7  | serial0 | DSU7 (DEBUG&UART7) |
 | USART2 | serial1 | TELEM1       |
 | USART3 | serial2 | TELEM2       |
 | USART1 | serial3 | GPS          |
 | UART4 | serial4 | UART       |
 
+| SPI   | Device  | Port         |
+| ------ | ------- | ------------ |
+| SPI1  | spi1 | Internal |
+| SPI2 | spi2 | Internal       |
+
+| I2C   | Device  | Port         |
+| ------ | ------- | ------------ |
+| I2C1  | i2c1 | GPS |
+| I2C2  | i2c2 | I2C2 |
+| I2C3  | i2c3 | I2C3 |
+| I2C4  | i2c4 | I2C4 |
+
+| CAN   | Device  | Port         |
+| ------ | ------- | ------------ |
+| CAN1  | can1 | CAN1 |
+| CAN2  | can2 | CAN2 |
+
 ## Maintainer
-Josh Zou
-zoujiachi666@163.com
+Josh Zou zoujiachi666@163.com
