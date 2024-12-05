@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2008
+ * Model version                  : 1.2009
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec  4 20:26:58 2024
+ * C/C++ source code generated on : Thu Dec  5 10:29:29 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,13 +110,13 @@ struct_Gbvu0nA7ZOwZNsa8mFLQ7C FMS_PARAM = {
                                         *   '<S24>/Constant6'
                                         *   '<S25>/Constant6'
                                         *   '<S32>/Gain'
-                                        *   '<S107>/L1'
-                                        *   '<S107>/vel'
+                                        *   '<S109>/L1'
+                                        *   '<S109>/vel'
                                         *   '<S35>/Gain'
                                         *   '<S69>/L1'
                                         *   '<S69>/vel'
-                                        *   '<S109>/AY_P'
-                                        *   '<S70>/AY_P'
+                                        *   '<S111>/AY_P'
+                                        *   '<S71>/AY_P'
                                         *   '<S39>/L1'
                                         *   '<S39>/AY_P'
                                         */
@@ -129,7 +129,7 @@ struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT = {
                                         * Referenced by:
                                         *   '<S1>/Constant'
                                         *   '<S10>/Constant1'
-                                        *   '<S126>/Constant'
+                                        *   '<S128>/Constant'
                                         */
 
 /* Block signals (default storage) */
@@ -176,8 +176,8 @@ static void initialize_msg_local_queues_for(void);
 
 /*
  * Output and update for atomic system:
- *    '<S111>/NearbyRefWP'
- *    '<S72>/NearbyRefWP'
+ *    '<S113>/NearbyRefWP'
+ *    '<S74>/NearbyRefWP'
  */
 void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
                      rtu_P3_k, real32_T rtu_L1, real32_T rty_P[2], real32_T
@@ -186,7 +186,7 @@ void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
   real32_T P3P2_idx_0;
   real32_T P3P2_idx_1;
 
-  /* SignalConversion: '<S115>/TmpSignal ConversionAt SFunction Inport2' */
+  /* SignalConversion: '<S117>/TmpSignal ConversionAt SFunction Inport2' */
   P3P2_idx_0 = rtu_P2[0] - rtu_P3;
   P3P2_idx_1 = rtu_P2[1] - rtu_P3_k;
   P3P2_idx_0 = sqrtf(P3P2_idx_0 * P3P2_idx_0 + P3P2_idx_1 * P3P2_idx_1);
@@ -212,10 +212,10 @@ void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T *localC)
 {
   int32_T i;
 
-  /* BusAssignment: '<S108>/Bus Assignment' incorporates:
-   *  Constant: '<S108>/Constant'
-   *  Constant: '<S108>/Constant2'
-   *  SignalConversion: '<S108>/TmpHiddenBufferAtBus AssignmentInport1'
+  /* BusAssignment: '<S110>/Bus Assignment' incorporates:
+   *  Constant: '<S110>/Constant'
+   *  Constant: '<S110>/Constant2'
+   *  SignalConversion: '<S110>/TmpHiddenBufferAtBus AssignmentInport1'
    */
   *rty_FMS_Out = FMS_rtZFMS_Out_Bus;
   rty_FMS_Out->reset = 1U;
@@ -229,7 +229,7 @@ void FMS_Unknown(FMS_Out_Bus *rty_FMS_Out, const ConstB_Unknown_FMS_T *localC)
     rty_FMS_Out->actuator_cmd[i + 4] = 0U;
   }
 
-  /* End of BusAssignment: '<S108>/Bus Assignment' */
+  /* End of BusAssignment: '<S110>/Bus Assignment' */
 }
 
 int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn)
@@ -579,11 +579,11 @@ static void FMS_SubMode(void)
   FMS_B.pilot_cmd = FMS_B.BusConversion_InsertedFor_FMS_f;
 
   /* Outputs for Function Call SubSystem: '<S4>/Vehicle.StickMoved' */
-  /* RelationalOperator: '<S139>/Compare' incorporates:
-   *  Abs: '<S128>/Abs'
-   *  Constant: '<S139>/Constant'
-   *  MinMax: '<S128>/Max'
-   *  Sum: '<S128>/Sum'
+  /* RelationalOperator: '<S141>/Compare' incorporates:
+   *  Abs: '<S130>/Abs'
+   *  Constant: '<S141>/Constant'
+   *  MinMax: '<S130>/Max'
+   *  Sum: '<S130>/Sum'
    */
   FMS_B.Compare = (fmax(fmax(fmax(fabs(FMS_B.stick_val[0] -
     FMS_B.pilot_cmd.stick_yaw), fabs(FMS_B.stick_val[1] -
@@ -867,83 +867,83 @@ static void FMS_Arm(void)
                   FMS_B.llo[0] = FMS_DW.llo[0];
 
                   /* Outputs for Function Call SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-                  /* Sum: '<S129>/Sum' */
+                  /* Sum: '<S131>/Sum' */
                   rtb_Sum_idx_0 = FMS_B.lla[0] - FMS_B.llo[0];
 
                   /* End of Outputs for SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
                   FMS_B.llo[1] = FMS_DW.llo[1];
 
                   /* Outputs for Function Call SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-                  /* Gain: '<S129>/deg2rad' */
+                  /* Gain: '<S131>/deg2rad' */
                   rtb_Multiply2 = 0.017453292519943295 * FMS_B.llo[0];
 
-                  /* Trigonometry: '<S130>/Sin' */
+                  /* Trigonometry: '<S132>/Sin' */
                   rtb_Sum2_m = sin(rtb_Multiply2);
 
-                  /* Math: '<S130>/Square1' */
+                  /* Math: '<S132>/Square1' */
                   rtb_Sum2_m *= rtb_Sum2_m;
 
-                  /* Product: '<S130>/Multiply1' incorporates:
-                   *  Product: '<S130>/Multiply'
+                  /* Product: '<S132>/Multiply1' incorporates:
+                   *  Product: '<S132>/Multiply'
                    */
                   rtb_Gain = FMS_ConstB.ff * rtb_Sum2_m;
 
-                  /* Product: '<S130>/Divide' incorporates:
-                   *  Constant: '<S130>/Constant'
-                   *  Constant: '<S130>/R'
-                   *  Sqrt: '<S130>/Sqrt'
-                   *  Sum: '<S130>/Sum1'
+                  /* Product: '<S132>/Divide' incorporates:
+                   *  Constant: '<S132>/Constant'
+                   *  Constant: '<S132>/R'
+                   *  Sqrt: '<S132>/Sqrt'
+                   *  Sum: '<S132>/Sum1'
                    */
                   rtb_Sum2_m = 6.378137E+6 / sqrt(1.0 - rtb_Gain);
 
-                  /* Product: '<S130>/Product3' incorporates:
-                   *  Constant: '<S130>/Constant1'
-                   *  Product: '<S130>/Multiply1'
-                   *  Sum: '<S130>/Sum2'
+                  /* Product: '<S132>/Product3' incorporates:
+                   *  Constant: '<S132>/Constant1'
+                   *  Product: '<S132>/Multiply1'
+                   *  Sum: '<S132>/Sum2'
                    */
                   rtb_Gain = 1.0 / (1.0 - rtb_Gain) * FMS_ConstB.Sum4 *
                     rtb_Sum2_m;
 
-                  /* Product: '<S130>/Multiply2' incorporates:
-                   *  Trigonometry: '<S130>/Cos'
+                  /* Product: '<S132>/Multiply2' incorporates:
+                   *  Trigonometry: '<S132>/Cos'
                    */
                   rtb_Sum2_m *= cos(rtb_Multiply2);
 
-                  /* Abs: '<S134>/Abs' incorporates:
-                   *  Abs: '<S137>/Abs1'
-                   *  Switch: '<S134>/Switch1'
+                  /* Abs: '<S136>/Abs' incorporates:
+                   *  Abs: '<S139>/Abs1'
+                   *  Switch: '<S136>/Switch1'
                    */
                   rtb_Multiply2 = fabs(rtb_Sum_idx_0);
 
-                  /* Switch: '<S134>/Switch1' incorporates:
-                   *  Abs: '<S134>/Abs'
-                   *  Bias: '<S134>/Bias2'
-                   *  Bias: '<S134>/Bias3'
-                   *  Constant: '<S131>/Constant'
-                   *  Constant: '<S131>/Constant1'
-                   *  Constant: '<S136>/Constant'
-                   *  Gain: '<S134>/Gain1'
-                   *  Product: '<S134>/Multiply'
-                   *  RelationalOperator: '<S136>/Compare'
-                   *  Switch: '<S131>/Switch'
+                  /* Switch: '<S136>/Switch1' incorporates:
+                   *  Abs: '<S136>/Abs'
+                   *  Bias: '<S136>/Bias2'
+                   *  Bias: '<S136>/Bias3'
+                   *  Constant: '<S133>/Constant'
+                   *  Constant: '<S133>/Constant1'
+                   *  Constant: '<S138>/Constant'
+                   *  Gain: '<S136>/Gain1'
+                   *  Product: '<S136>/Multiply'
+                   *  RelationalOperator: '<S138>/Compare'
+                   *  Switch: '<S133>/Switch'
                    */
                   if (rtb_Multiply2 > 90.0) {
-                    /* Switch: '<S137>/Switch1' incorporates:
-                     *  Bias: '<S137>/Bias2'
-                     *  Bias: '<S137>/Bias3'
-                     *  Constant: '<S137>/Constant'
-                     *  Constant: '<S138>/Constant'
-                     *  Math: '<S137>/Math Function'
-                     *  RelationalOperator: '<S138>/Compare'
+                    /* Switch: '<S139>/Switch1' incorporates:
+                     *  Bias: '<S139>/Bias2'
+                     *  Bias: '<S139>/Bias3'
+                     *  Constant: '<S139>/Constant'
+                     *  Constant: '<S140>/Constant'
+                     *  Math: '<S139>/Math Function'
+                     *  RelationalOperator: '<S140>/Compare'
                      */
                     if (rtb_Multiply2 > 180.0) {
                       rtb_Sum_idx_0 = rt_modd(rtb_Sum_idx_0 + 180.0, 360.0) +
                         -180.0;
                     }
 
-                    /* End of Switch: '<S137>/Switch1' */
+                    /* End of Switch: '<S139>/Switch1' */
 
-                    /* Signum: '<S134>/Sign' */
+                    /* Signum: '<S136>/Sign' */
                     if (rtb_Sum_idx_0 < 0.0) {
                       rtb_Sum_idx_0 = -1.0;
                     } else {
@@ -952,7 +952,7 @@ static void FMS_Arm(void)
                       }
                     }
 
-                    /* End of Signum: '<S134>/Sign' */
+                    /* End of Signum: '<S136>/Sign' */
                     rtb_Multiply2 = (-(rtb_Multiply2 + -90.0) + 90.0) *
                       rtb_Sum_idx_0;
                     lla_tmp = 180;
@@ -961,63 +961,63 @@ static void FMS_Arm(void)
                     lla_tmp = 0;
                   }
 
-                  /* Sum: '<S131>/Sum' incorporates:
-                   *  Sum: '<S129>/Sum'
+                  /* Sum: '<S133>/Sum' incorporates:
+                   *  Sum: '<S131>/Sum'
                    */
                   rtb_Sum_d = (FMS_B.lla[1] - FMS_B.llo[1]) + (real_T)lla_tmp;
 
-                  /* Product: '<S129>/Multiply' incorporates:
-                   *  Gain: '<S129>/deg2rad1'
+                  /* Product: '<S131>/Multiply' incorporates:
+                   *  Gain: '<S131>/deg2rad1'
                    */
                   rtb_Sum_idx_0 = 0.017453292519943295 * rtb_Multiply2 *
                     rtb_Gain;
 
-                  /* Switch: '<S133>/Switch1' incorporates:
-                   *  Abs: '<S133>/Abs1'
-                   *  Bias: '<S133>/Bias2'
-                   *  Bias: '<S133>/Bias3'
-                   *  Constant: '<S133>/Constant'
+                  /* Switch: '<S135>/Switch1' incorporates:
+                   *  Abs: '<S135>/Abs1'
+                   *  Bias: '<S135>/Bias2'
+                   *  Bias: '<S135>/Bias3'
                    *  Constant: '<S135>/Constant'
-                   *  Math: '<S133>/Math Function'
-                   *  RelationalOperator: '<S135>/Compare'
+                   *  Constant: '<S137>/Constant'
+                   *  Math: '<S135>/Math Function'
+                   *  RelationalOperator: '<S137>/Compare'
                    */
                   if (fabs(rtb_Sum_d) > 180.0) {
                     rtb_Sum_d = rt_modd(rtb_Sum_d + 180.0, 360.0) + -180.0;
                   }
 
-                  /* End of Switch: '<S133>/Switch1' */
+                  /* End of Switch: '<S135>/Switch1' */
 
-                  /* Product: '<S129>/Multiply' incorporates:
-                   *  Gain: '<S129>/deg2rad1'
+                  /* Product: '<S131>/Multiply' incorporates:
+                   *  Gain: '<S131>/deg2rad1'
                    */
                   rtb_Multiply2 = 0.017453292519943295 * rtb_Sum_d * rtb_Sum2_m;
 
-                  /* Gain: '<S129>/deg2rad2' */
+                  /* Gain: '<S131>/deg2rad2' */
                   rtb_Sum2_m = 0.017453292519943295 * FMS_B.psio;
 
-                  /* Trigonometry: '<S132>/SinCos' */
+                  /* Trigonometry: '<S134>/SinCos' */
                   rtb_Sum_d = sin(rtb_Sum2_m);
                   rtb_Gain = cos(rtb_Sum2_m);
 
-                  /* Sum: '<S132>/Sum2' incorporates:
-                   *  Product: '<S132>/Multiply1'
-                   *  Product: '<S132>/Multiply2'
+                  /* Sum: '<S134>/Sum2' incorporates:
+                   *  Product: '<S134>/Multiply1'
+                   *  Product: '<S134>/Multiply2'
                    */
                   rtb_Sum2_m = rtb_Sum_idx_0 * rtb_Gain + rtb_Multiply2 *
                     rtb_Sum_d;
 
-                  /* Product: '<S132>/Multiply3' */
+                  /* Product: '<S134>/Multiply3' */
                   rtb_Sum_d *= rtb_Sum_idx_0;
 
-                  /* Product: '<S132>/Multiply4' */
+                  /* Product: '<S134>/Multiply4' */
                   rtb_Gain *= rtb_Multiply2;
 
-                  /* Sum: '<S132>/Sum3' */
+                  /* Sum: '<S134>/Sum3' */
                   rtb_Sum_d = rtb_Gain - rtb_Sum_d;
 
-                  /* DataTypeConversion: '<S127>/Data Type Conversion' incorporates:
-                   *  Gain: '<S129>/Gain'
-                   *  Sum: '<S129>/Sum1'
+                  /* DataTypeConversion: '<S129>/Data Type Conversion' incorporates:
+                   *  Gain: '<S131>/Gain'
+                   *  Sum: '<S131>/Sum1'
                    */
                   FMS_B.DataTypeConversion[0] = (real32_T)rtb_Sum2_m;
                   FMS_B.DataTypeConversion[1] = (real32_T)rtb_Sum_d;
@@ -1507,10 +1507,10 @@ void FMS_step(void)
   real32_T D;
   uint8_T rtb_Switch_m;
   int8_T rtPrevAction;
-  real32_T rtb_Saturation_k;
+  real32_T rtb_Saturation;
   real32_T rtb_Divide_aj[2];
   real32_T rtb_MathFunction_k[2];
-  real32_T rtb_AY_P_g;
+  real32_T rtb_AY_P;
   real32_T rtb_Switch_fd[3];
   real32_T rtb_Gain;
   boolean_T rtb_Compare_as;
@@ -2152,8 +2152,8 @@ void FMS_step(void)
        *  ActionPort: '<S29>/Action Port'
        */
       /* SwitchCase: '<S29>/Switch Case' incorporates:
-       *  Product: '<S124>/Divide'
-       *  Sum: '<S112>/Subtract'
+       *  Product: '<S126>/Divide'
+       *  Sum: '<S114>/Subtract'
        */
       rtPrevAction = FMS_DW.SwitchCase_ActiveSubsystem_a;
 
@@ -2177,10 +2177,10 @@ void FMS_step(void)
        case 0:
         if (FMS_DW.SwitchCase_ActiveSubsystem_a != rtPrevAction) {
           /* InitializeConditions for IfAction SubSystem: '<S29>/Return' incorporates:
-           *  ActionPort: '<S107>/Action Port'
+           *  ActionPort: '<S109>/Action Port'
            */
           /* InitializeConditions for SwitchCase: '<S29>/Switch Case' incorporates:
-           *  Delay: '<S110>/Delay'
+           *  Delay: '<S112>/Delay'
            */
           FMS_DW.icLoad_c = 1U;
 
@@ -2188,108 +2188,108 @@ void FMS_step(void)
         }
 
         /* Outputs for IfAction SubSystem: '<S29>/Return' incorporates:
-         *  ActionPort: '<S107>/Action Port'
+         *  ActionPort: '<S109>/Action Port'
          */
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* Sum: '<S121>/Sum of Elements' incorporates:
+        /* Sum: '<S123>/Sum of Elements' incorporates:
          *  Inport: '<Root>/INS_Out'
-         *  Math: '<S121>/Math Function'
+         *  Math: '<S123>/Math Function'
          *  SignalConversion: '<S21>/Signal Copy1'
-         *  Sum: '<S119>/Sum of Elements'
+         *  Sum: '<S121>/Sum of Elements'
          */
         rtb_Gain = FMS_U.INS_Out.vn * FMS_U.INS_Out.vn + FMS_U.INS_Out.ve *
           FMS_U.INS_Out.ve;
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Math: '<S121>/Math Function1' incorporates:
-         *  Sum: '<S121>/Sum of Elements'
+        /* Math: '<S123>/Math Function1' incorporates:
+         *  Sum: '<S123>/Sum of Elements'
          *
-         * About '<S121>/Math Function1':
+         * About '<S123>/Math Function1':
          *  Operator: sqrt
          */
         if (rtb_Gain < 0.0F) {
-          rtb_Saturation_k = -sqrtf(fabsf(rtb_Gain));
+          rtb_Saturation = -sqrtf(fabsf(rtb_Gain));
         } else {
-          rtb_Saturation_k = sqrtf(rtb_Gain);
+          rtb_Saturation = sqrtf(rtb_Gain);
         }
 
-        /* End of Math: '<S121>/Math Function1' */
+        /* End of Math: '<S123>/Math Function1' */
 
-        /* Switch: '<S121>/Switch' incorporates:
-         *  Constant: '<S121>/Constant'
+        /* Switch: '<S123>/Switch' incorporates:
+         *  Constant: '<S123>/Constant'
          *  Inport: '<Root>/INS_Out'
-         *  Product: '<S121>/Product'
+         *  Product: '<S123>/Product'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
-        if (rtb_Saturation_k > 0.0F) {
+        if (rtb_Saturation > 0.0F) {
           /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
           rtb_Switch_f_idx_0 = FMS_U.INS_Out.vn;
           rtb_Switch_f_idx_1 = FMS_U.INS_Out.ve;
 
           /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-          rtb_Switch_f_idx_2 = rtb_Saturation_k;
+          rtb_Switch_f_idx_2 = rtb_Saturation;
         } else {
           rtb_Switch_f_idx_0 = 0.0F;
           rtb_Switch_f_idx_1 = 0.0F;
           rtb_Switch_f_idx_2 = 1.0F;
         }
 
-        /* End of Switch: '<S121>/Switch' */
+        /* End of Switch: '<S123>/Switch' */
 
-        /* Product: '<S121>/Divide' */
+        /* Product: '<S123>/Divide' */
         rtb_Divide_aj[0] = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
         rtb_Divide_aj[1] = rtb_Switch_f_idx_1 / rtb_Switch_f_idx_2;
 
-        /* Sum: '<S124>/Sum of Elements' incorporates:
-         *  Math: '<S124>/Math Function'
-         *  SignalConversion: '<S124>/TmpSignal ConversionAtMath FunctionInport1'
+        /* Sum: '<S126>/Sum of Elements' incorporates:
+         *  Math: '<S126>/Math Function'
+         *  SignalConversion: '<S126>/TmpSignal ConversionAtMath FunctionInport1'
          */
         rtb_P_i_idx_0 = rtb_Divide_aj[1] * rtb_Divide_aj[1] + rtb_Divide_aj[0] *
           rtb_Divide_aj[0];
 
-        /* Math: '<S124>/Math Function1' incorporates:
-         *  Sum: '<S124>/Sum of Elements'
+        /* Math: '<S126>/Math Function1' incorporates:
+         *  Sum: '<S126>/Sum of Elements'
          *
-         * About '<S124>/Math Function1':
+         * About '<S126>/Math Function1':
          *  Operator: sqrt
          */
         if (rtb_P_i_idx_0 < 0.0F) {
-          rtb_Saturation_k = -sqrtf(fabsf(rtb_P_i_idx_0));
+          rtb_Saturation = -sqrtf(fabsf(rtb_P_i_idx_0));
         } else {
-          rtb_Saturation_k = sqrtf(rtb_P_i_idx_0);
+          rtb_Saturation = sqrtf(rtb_P_i_idx_0);
         }
 
-        /* End of Math: '<S124>/Math Function1' */
+        /* End of Math: '<S126>/Math Function1' */
 
-        /* Switch: '<S124>/Switch' incorporates:
-         *  Constant: '<S124>/Constant'
-         *  Product: '<S124>/Product'
+        /* Switch: '<S126>/Switch' incorporates:
+         *  Constant: '<S126>/Constant'
+         *  Product: '<S126>/Product'
          */
-        if (rtb_Saturation_k > 0.0F) {
+        if (rtb_Saturation > 0.0F) {
           rtb_Switch_f_idx_0 = rtb_Divide_aj[1];
           rtb_Switch_f_idx_1 = rtb_Divide_aj[0];
-          rtb_Switch_f_idx_2 = rtb_Saturation_k;
+          rtb_Switch_f_idx_2 = rtb_Saturation;
         } else {
           rtb_Switch_f_idx_0 = 0.0F;
           rtb_Switch_f_idx_1 = 0.0F;
           rtb_Switch_f_idx_2 = 1.0F;
         }
 
-        /* End of Switch: '<S124>/Switch' */
+        /* End of Switch: '<S126>/Switch' */
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* MATLAB Function: '<S111>/NearbyRefWP' incorporates:
-         *  Constant: '<S107>/L1'
+        /* MATLAB Function: '<S113>/NearbyRefWP' incorporates:
+         *  Constant: '<S109>/L1'
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
         FMS_NearbyRefWP(&rtb_Switch_fd[0], FMS_U.INS_Out.x_R, FMS_U.INS_Out.y_R,
-                        FMS_PARAM.L1, rtb_Divide_aj, &rtb_AY_P_g);
+                        FMS_PARAM.L1, rtb_Divide_aj, &rtb_AY_P);
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Delay: '<S110>/Delay' incorporates:
+        /* Delay: '<S112>/Delay' incorporates:
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
@@ -2302,25 +2302,27 @@ void FMS_step(void)
         }
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* MATLAB Function: '<S111>/SearchL1RefWP' incorporates:
-         *  Constant: '<S107>/L1'
-         *  Delay: '<S110>/Delay'
+        /* MATLAB Function: '<S113>/SearchL1RefWP' incorporates:
+         *  Constant: '<S109>/L1'
+         *  Delay: '<S112>/Delay'
          *  Inport: '<Root>/INS_Out'
-         *  MATLAB Function: '<S111>/OutRegionRegWP'
+         *  MATLAB Function: '<S113>/OutRegionRegWP'
          *  SignalConversion: '<S21>/Signal Copy1'
          *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
          */
         rtb_P_i_idx_0 = FMS_B.Cmd_In.sp_waypoint[0] - FMS_DW.Delay_DSTATE[0];
-        rtb_Gain_cl = FMS_B.Cmd_In.sp_waypoint[1] - FMS_DW.Delay_DSTATE[1];
+        rtb_TmpSignalConversionAtMath_0 = FMS_B.Cmd_In.sp_waypoint[1] -
+          FMS_DW.Delay_DSTATE[1];
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-        A = rtb_P_i_idx_0 * rtb_P_i_idx_0 + rtb_Gain_cl * rtb_Gain_cl;
+        A = rtb_P_i_idx_0 * rtb_P_i_idx_0 + rtb_TmpSignalConversionAtMath_0 *
+          rtb_TmpSignalConversionAtMath_0;
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        rtb_Saturation_k = (rtb_P_i_idx_0 * (FMS_DW.Delay_DSTATE[0] -
-          FMS_U.INS_Out.x_R) + rtb_Gain_cl * (FMS_DW.Delay_DSTATE[1] -
-          FMS_U.INS_Out.y_R)) * 2.0F;
-        D = rtb_Saturation_k * rtb_Saturation_k - (((((FMS_U.INS_Out.x_R *
+        rtb_Saturation = (rtb_P_i_idx_0 * (FMS_DW.Delay_DSTATE[0] -
+          FMS_U.INS_Out.x_R) + rtb_TmpSignalConversionAtMath_0 *
+                          (FMS_DW.Delay_DSTATE[1] - FMS_U.INS_Out.y_R)) * 2.0F;
+        D = rtb_Saturation * rtb_Saturation - (((((FMS_U.INS_Out.x_R *
           FMS_U.INS_Out.x_R + FMS_U.INS_Out.y_R * FMS_U.INS_Out.y_R) +
           FMS_DW.Delay_DSTATE[0] * FMS_DW.Delay_DSTATE[0]) +
           FMS_DW.Delay_DSTATE[1] * FMS_DW.Delay_DSTATE[1]) - (FMS_U.INS_Out.x_R *
@@ -2328,59 +2330,59 @@ void FMS_step(void)
           2.0F) - FMS_PARAM.L1 * FMS_PARAM.L1) * (4.0F * A);
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-        rtb_TmpSignalConversionAtMath_0 = -1.0F;
+        rtb_Gain_cl = -1.0F;
         rtb_P_f_idx_0 = 0.0F;
         rtb_P_f_idx_1 = 0.0F;
         guard1 = false;
         if (D > 0.0F) {
           u1_tmp = sqrtf(D);
-          D = (-rtb_Saturation_k + u1_tmp) / (2.0F * A);
-          rtb_Saturation_k = (-rtb_Saturation_k - u1_tmp) / (2.0F * A);
-          if ((D >= 0.0F) && (D <= 1.0F) && (rtb_Saturation_k >= 0.0F) &&
-              (rtb_Saturation_k <= 1.0F)) {
-            rtb_TmpSignalConversionAtMath_0 = fmaxf(D, rtb_Saturation_k);
+          D = (-rtb_Saturation + u1_tmp) / (2.0F * A);
+          rtb_Saturation = (-rtb_Saturation - u1_tmp) / (2.0F * A);
+          if ((D >= 0.0F) && (D <= 1.0F) && (rtb_Saturation >= 0.0F) &&
+              (rtb_Saturation <= 1.0F)) {
+            rtb_Gain_cl = fmaxf(D, rtb_Saturation);
             guard1 = true;
           } else if ((D >= 0.0F) && (D <= 1.0F)) {
-            rtb_TmpSignalConversionAtMath_0 = D;
+            rtb_Gain_cl = D;
             guard1 = true;
           } else {
-            if ((rtb_Saturation_k >= 0.0F) && (rtb_Saturation_k <= 1.0F)) {
-              rtb_TmpSignalConversionAtMath_0 = rtb_Saturation_k;
+            if ((rtb_Saturation >= 0.0F) && (rtb_Saturation <= 1.0F)) {
+              rtb_Gain_cl = rtb_Saturation;
               guard1 = true;
             }
           }
         } else {
           if (D == 0.0F) {
-            D = -rtb_Saturation_k / (2.0F * A);
+            D = -rtb_Saturation / (2.0F * A);
             if ((D >= 0.0F) && (D <= 1.0F)) {
-              rtb_TmpSignalConversionAtMath_0 = D;
+              rtb_Gain_cl = D;
               guard1 = true;
             }
           }
         }
 
         if (guard1) {
-          rtb_P_f_idx_0 = rtb_P_i_idx_0 * rtb_TmpSignalConversionAtMath_0 +
-            FMS_DW.Delay_DSTATE[0];
-          rtb_P_f_idx_1 = rtb_Gain_cl * rtb_TmpSignalConversionAtMath_0 +
+          rtb_P_f_idx_0 = rtb_P_i_idx_0 * rtb_Gain_cl + FMS_DW.Delay_DSTATE[0];
+          rtb_P_f_idx_1 = rtb_TmpSignalConversionAtMath_0 * rtb_Gain_cl +
             FMS_DW.Delay_DSTATE[1];
         }
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* MATLAB Function: '<S111>/OutRegionRegWP' incorporates:
-         *  Delay: '<S110>/Delay'
+        /* MATLAB Function: '<S113>/OutRegionRegWP' incorporates:
+         *  Delay: '<S112>/Delay'
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
          */
-        rtb_Saturation_k = ((FMS_U.INS_Out.y_R - FMS_DW.Delay_DSTATE[1]) *
-                            rtb_Gain_cl + (FMS_U.INS_Out.x_R -
+        rtb_Saturation = ((FMS_U.INS_Out.y_R - FMS_DW.Delay_DSTATE[1]) *
+                          rtb_TmpSignalConversionAtMath_0 + (FMS_U.INS_Out.x_R -
           FMS_DW.Delay_DSTATE[0]) * rtb_P_i_idx_0) / (rtb_P_i_idx_0 *
-          rtb_P_i_idx_0 + rtb_Gain_cl * rtb_Gain_cl);
+          rtb_P_i_idx_0 + rtb_TmpSignalConversionAtMath_0 *
+          rtb_TmpSignalConversionAtMath_0);
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-        rtb_Compare_as = (rtb_Saturation_k <= 0.0F);
-        u = (rtb_Saturation_k >= 1.0F);
+        rtb_Compare_as = (rtb_Saturation <= 0.0F);
+        u = (rtb_Saturation >= 1.0F);
         if (rtb_Compare_as) {
           rtb_P_i_idx_0 = FMS_DW.Delay_DSTATE[0];
         } else if (u) {
@@ -2389,28 +2391,27 @@ void FMS_step(void)
 
           /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
         } else {
-          rtb_P_i_idx_0 = rtb_Saturation_k * rtb_P_i_idx_0 +
-            FMS_DW.Delay_DSTATE[0];
+          rtb_P_i_idx_0 = rtb_Saturation * rtb_P_i_idx_0 + FMS_DW.Delay_DSTATE[0];
         }
 
-        /* Switch: '<S111>/Switch1' incorporates:
-         *  Constant: '<S114>/Constant'
-         *  RelationalOperator: '<S114>/Compare'
+        /* Switch: '<S113>/Switch1' incorporates:
+         *  Constant: '<S116>/Constant'
+         *  RelationalOperator: '<S116>/Compare'
          */
-        if (rtb_AY_P_g <= 0.0F) {
-          /* Switch: '<S111>/Switch' incorporates:
-           *  Constant: '<S113>/Constant'
-           *  MATLAB Function: '<S111>/SearchL1RefWP'
-           *  RelationalOperator: '<S113>/Compare'
+        if (rtb_AY_P <= 0.0F) {
+          /* Switch: '<S113>/Switch' incorporates:
+           *  Constant: '<S115>/Constant'
+           *  MATLAB Function: '<S113>/SearchL1RefWP'
+           *  RelationalOperator: '<S115>/Compare'
            */
-          if (rtb_TmpSignalConversionAtMath_0 >= 0.0F) {
+          if (rtb_Gain_cl >= 0.0F) {
             rtb_Divide_aj[0] = rtb_P_f_idx_0;
             rtb_Divide_aj[1] = rtb_P_f_idx_1;
           } else {
             rtb_Divide_aj[0] = rtb_P_i_idx_0;
 
-            /* MATLAB Function: '<S111>/OutRegionRegWP' incorporates:
-             *  Delay: '<S110>/Delay'
+            /* MATLAB Function: '<S113>/OutRegionRegWP' incorporates:
+             *  Delay: '<S112>/Delay'
              *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
              */
             if (rtb_Compare_as) {
@@ -2421,18 +2422,18 @@ void FMS_step(void)
 
               /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
             } else {
-              rtb_Divide_aj[1] = rtb_Saturation_k * rtb_Gain_cl +
-                FMS_DW.Delay_DSTATE[1];
+              rtb_Divide_aj[1] = rtb_Saturation *
+                rtb_TmpSignalConversionAtMath_0 + FMS_DW.Delay_DSTATE[1];
             }
           }
 
-          /* End of Switch: '<S111>/Switch' */
+          /* End of Switch: '<S113>/Switch' */
         }
 
-        /* End of Switch: '<S111>/Switch1' */
+        /* End of Switch: '<S113>/Switch1' */
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* Sum: '<S112>/Subtract' incorporates:
+        /* Sum: '<S114>/Subtract' incorporates:
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
@@ -2440,12 +2441,12 @@ void FMS_step(void)
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Math: '<S122>/Math Function' */
+        /* Math: '<S124>/Math Function' */
         rtb_TmpSignalConversionAtMath_0 = rtb_Gain_cl * rtb_Gain_cl;
         rtb_Divide_aj[0] = rtb_Gain_cl;
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* Sum: '<S112>/Subtract' incorporates:
+        /* Sum: '<S114>/Subtract' incorporates:
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
@@ -2453,143 +2454,143 @@ void FMS_step(void)
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Math: '<S122>/Math Function' incorporates:
-         *  Math: '<S120>/Square'
+        /* Math: '<S124>/Math Function' incorporates:
+         *  Math: '<S122>/Square'
          */
         rtb_P_i_idx_0 = rtb_Gain_cl * rtb_Gain_cl;
 
-        /* Sum: '<S122>/Sum of Elements' incorporates:
-         *  Math: '<S122>/Math Function'
+        /* Sum: '<S124>/Sum of Elements' incorporates:
+         *  Math: '<S124>/Math Function'
          */
-        rtb_Saturation_k = rtb_P_i_idx_0 + rtb_TmpSignalConversionAtMath_0;
+        rtb_Saturation = rtb_P_i_idx_0 + rtb_TmpSignalConversionAtMath_0;
 
-        /* Math: '<S122>/Math Function1' incorporates:
-         *  Sum: '<S122>/Sum of Elements'
+        /* Math: '<S124>/Math Function1' incorporates:
+         *  Sum: '<S124>/Sum of Elements'
          *
-         * About '<S122>/Math Function1':
+         * About '<S124>/Math Function1':
          *  Operator: sqrt
          */
-        if (rtb_Saturation_k < 0.0F) {
-          rtb_Saturation_k = -sqrtf(fabsf(rtb_Saturation_k));
+        if (rtb_Saturation < 0.0F) {
+          rtb_Saturation = -sqrtf(fabsf(rtb_Saturation));
         } else {
-          rtb_Saturation_k = sqrtf(rtb_Saturation_k);
+          rtb_Saturation = sqrtf(rtb_Saturation);
         }
 
-        /* End of Math: '<S122>/Math Function1' */
+        /* End of Math: '<S124>/Math Function1' */
 
-        /* Switch: '<S122>/Switch' incorporates:
-         *  Constant: '<S122>/Constant'
-         *  Product: '<S122>/Product'
+        /* Switch: '<S124>/Switch' incorporates:
+         *  Constant: '<S124>/Constant'
+         *  Product: '<S124>/Product'
          */
-        if (rtb_Saturation_k > 0.0F) {
+        if (rtb_Saturation > 0.0F) {
           rtb_Switch_fd[0] = rtb_Divide_aj[0];
           rtb_Switch_fd[1] = rtb_Gain_cl;
-          rtb_Switch_fd[2] = rtb_Saturation_k;
+          rtb_Switch_fd[2] = rtb_Saturation;
         } else {
           rtb_Switch_fd[0] = 0.0F;
           rtb_Switch_fd[1] = 0.0F;
           rtb_Switch_fd[2] = 1.0F;
         }
 
-        /* End of Switch: '<S122>/Switch' */
+        /* End of Switch: '<S124>/Switch' */
 
-        /* Product: '<S122>/Divide' */
+        /* Product: '<S124>/Divide' */
         rtb_TmpSignalConversionAtMath_0 = rtb_Switch_fd[0] / rtb_Switch_fd[2];
         rtb_P_f_idx_0 = rtb_Switch_fd[1] / rtb_Switch_fd[2];
 
-        /* Sum: '<S125>/Sum of Elements' incorporates:
-         *  Math: '<S125>/Math Function'
-         *  SignalConversion: '<S125>/TmpSignal ConversionAtMath FunctionInport1'
+        /* Sum: '<S127>/Sum of Elements' incorporates:
+         *  Math: '<S127>/Math Function'
+         *  SignalConversion: '<S127>/TmpSignal ConversionAtMath FunctionInport1'
          */
-        rtb_Saturation_k = rtb_P_f_idx_0 * rtb_P_f_idx_0 +
+        rtb_Saturation = rtb_P_f_idx_0 * rtb_P_f_idx_0 +
           rtb_TmpSignalConversionAtMath_0 * rtb_TmpSignalConversionAtMath_0;
 
-        /* Math: '<S125>/Math Function1' incorporates:
-         *  Sum: '<S125>/Sum of Elements'
+        /* Math: '<S127>/Math Function1' incorporates:
+         *  Sum: '<S127>/Sum of Elements'
          *
-         * About '<S125>/Math Function1':
+         * About '<S127>/Math Function1':
          *  Operator: sqrt
          */
-        if (rtb_Saturation_k < 0.0F) {
-          rtb_Saturation_k = -sqrtf(fabsf(rtb_Saturation_k));
+        if (rtb_Saturation < 0.0F) {
+          rtb_Saturation = -sqrtf(fabsf(rtb_Saturation));
         } else {
-          rtb_Saturation_k = sqrtf(rtb_Saturation_k);
+          rtb_Saturation = sqrtf(rtb_Saturation);
         }
 
-        /* End of Math: '<S125>/Math Function1' */
+        /* End of Math: '<S127>/Math Function1' */
 
-        /* Switch: '<S125>/Switch' incorporates:
-         *  Constant: '<S125>/Constant'
-         *  Product: '<S125>/Product'
+        /* Switch: '<S127>/Switch' incorporates:
+         *  Constant: '<S127>/Constant'
+         *  Product: '<S127>/Product'
          */
-        if (rtb_Saturation_k > 0.0F) {
+        if (rtb_Saturation > 0.0F) {
           rtb_Switch_fd[0] = rtb_P_f_idx_0;
           rtb_Switch_fd[1] = rtb_TmpSignalConversionAtMath_0;
-          rtb_Switch_fd[2] = rtb_Saturation_k;
+          rtb_Switch_fd[2] = rtb_Saturation;
         } else {
           rtb_Switch_fd[0] = 0.0F;
           rtb_Switch_fd[1] = 0.0F;
           rtb_Switch_fd[2] = 1.0F;
         }
 
-        /* End of Switch: '<S125>/Switch' */
+        /* End of Switch: '<S127>/Switch' */
 
-        /* Product: '<S125>/Divide' */
+        /* Product: '<S127>/Divide' */
         rtb_TmpSignalConversionAtMath_0 = rtb_Switch_fd[0] / rtb_Switch_fd[2];
 
-        /* Math: '<S120>/Square' */
+        /* Math: '<S122>/Square' */
         rtb_MathFunction_k[0] = rtb_Divide_aj[0] * rtb_Divide_aj[0];
         rtb_Divide_aj[0] = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
 
-        /* Product: '<S125>/Divide' incorporates:
-         *  Product: '<S124>/Divide'
+        /* Product: '<S127>/Divide' incorporates:
+         *  Product: '<S126>/Divide'
          */
         rtb_P_f_idx_0 = rtb_Switch_fd[1] / rtb_Switch_fd[2];
 
-        /* Product: '<S124>/Divide' */
+        /* Product: '<S126>/Divide' */
         rtb_Gain_cl = rtb_Switch_f_idx_1 / rtb_Switch_f_idx_2;
 
-        /* Sqrt: '<S119>/Sqrt' */
-        rtb_Saturation_k = sqrtf(rtb_Gain);
+        /* Sqrt: '<S121>/Sqrt' */
+        rtb_Saturation = sqrtf(rtb_Gain);
 
-        /* Gain: '<S112>/Gain' incorporates:
-         *  Math: '<S112>/Square'
+        /* Gain: '<S114>/Gain' incorporates:
+         *  Math: '<S114>/Square'
          */
-        rtb_Gain = rtb_Saturation_k * rtb_Saturation_k * 2.0F;
+        rtb_Gain = rtb_Saturation * rtb_Saturation * 2.0F;
 
-        /* Sum: '<S123>/Subtract' incorporates:
-         *  Product: '<S123>/Multiply'
-         *  Product: '<S123>/Multiply1'
+        /* Sum: '<S125>/Subtract' incorporates:
+         *  Product: '<S125>/Multiply'
+         *  Product: '<S125>/Multiply1'
          */
-        rtb_Saturation_k = rtb_TmpSignalConversionAtMath_0 * rtb_Gain_cl -
+        rtb_Saturation = rtb_TmpSignalConversionAtMath_0 * rtb_Gain_cl -
           rtb_P_f_idx_0 * rtb_Divide_aj[0];
 
-        /* Signum: '<S118>/Sign1' */
-        if (rtb_Saturation_k < 0.0F) {
-          rtb_Saturation_k = -1.0F;
+        /* Signum: '<S120>/Sign1' */
+        if (rtb_Saturation < 0.0F) {
+          rtb_Saturation = -1.0F;
         } else {
-          if (rtb_Saturation_k > 0.0F) {
-            rtb_Saturation_k = 1.0F;
+          if (rtb_Saturation > 0.0F) {
+            rtb_Saturation = 1.0F;
           }
         }
 
-        /* End of Signum: '<S118>/Sign1' */
+        /* End of Signum: '<S120>/Sign1' */
 
-        /* Switch: '<S118>/Switch2' incorporates:
-         *  Constant: '<S118>/Constant4'
+        /* Switch: '<S120>/Switch2' incorporates:
+         *  Constant: '<S120>/Constant4'
          */
-        if (rtb_Saturation_k == 0.0F) {
-          rtb_Saturation_k = 1.0F;
+        if (rtb_Saturation == 0.0F) {
+          rtb_Saturation = 1.0F;
         }
 
-        /* End of Switch: '<S118>/Switch2' */
+        /* End of Switch: '<S120>/Switch2' */
 
-        /* DotProduct: '<S118>/Dot Product' */
+        /* DotProduct: '<S120>/Dot Product' */
         rtb_Gain_cl = rtb_Divide_aj[0] * rtb_TmpSignalConversionAtMath_0 +
           rtb_Gain_cl * rtb_P_f_idx_0;
 
-        /* Trigonometry: '<S118>/Acos' incorporates:
-         *  DotProduct: '<S118>/Dot Product'
+        /* Trigonometry: '<S120>/Acos' incorporates:
+         *  DotProduct: '<S120>/Dot Product'
          */
         if (rtb_Gain_cl > 1.0F) {
           rtb_Gain_cl = 1.0F;
@@ -2599,53 +2600,53 @@ void FMS_step(void)
           }
         }
 
-        /* Product: '<S118>/Multiply' incorporates:
-         *  Trigonometry: '<S118>/Acos'
+        /* Product: '<S120>/Multiply' incorporates:
+         *  Trigonometry: '<S120>/Acos'
          */
-        rtb_Saturation_k *= acosf(rtb_Gain_cl);
+        rtb_Saturation *= acosf(rtb_Gain_cl);
 
-        /* Saturate: '<S112>/Saturation' */
-        if (rtb_Saturation_k > 1.57079637F) {
-          rtb_Saturation_k = 1.57079637F;
+        /* Saturate: '<S114>/Saturation' */
+        if (rtb_Saturation > 1.57079637F) {
+          rtb_Saturation = 1.57079637F;
         } else {
-          if (rtb_Saturation_k < -1.57079637F) {
-            rtb_Saturation_k = -1.57079637F;
+          if (rtb_Saturation < -1.57079637F) {
+            rtb_Saturation = -1.57079637F;
           }
         }
 
-        /* End of Saturate: '<S112>/Saturation' */
+        /* End of Saturate: '<S114>/Saturation' */
 
         /* Outport: '<Root>/FMS_Out' incorporates:
-         *  BusAssignment: '<S107>/Bus Assignment1'
+         *  BusAssignment: '<S109>/Bus Assignment1'
          *  BusAssignment: '<S23>/Bus Assignment'
-         *  Constant: '<S107>/Constant2'
+         *  Constant: '<S109>/Constant2'
          */
         FMS_Y.FMS_Out = FMS_rtZFMS_Out_Bus;
 
-        /* BusAssignment: '<S107>/Bus Assignment1' incorporates:
+        /* BusAssignment: '<S109>/Bus Assignment1' incorporates:
          *  BusAssignment: '<S23>/Bus Assignment'
-         *  Constant: '<S107>/L1'
-         *  Constant: '<S107>/vel'
-         *  Constant: '<S112>/Constant'
-         *  Gain: '<S109>/AY_P'
-         *  MinMax: '<S112>/Max'
-         *  MinMax: '<S112>/Min'
+         *  Constant: '<S109>/L1'
+         *  Constant: '<S109>/vel'
+         *  Constant: '<S114>/Constant'
+         *  Gain: '<S111>/AY_P'
+         *  MinMax: '<S114>/Max'
+         *  MinMax: '<S114>/Min'
          *  Outport: '<Root>/FMS_Out'
-         *  Product: '<S112>/Divide'
-         *  Product: '<S112>/Multiply1'
-         *  Sqrt: '<S120>/Sqrt'
-         *  Sum: '<S120>/Sum of Elements'
-         *  Trigonometry: '<S112>/Sin'
+         *  Product: '<S114>/Divide'
+         *  Product: '<S114>/Multiply1'
+         *  Sqrt: '<S122>/Sqrt'
+         *  Sum: '<S122>/Sum of Elements'
+         *  Trigonometry: '<S114>/Sin'
          */
         FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion_o;
         FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_m0;
         FMS_Y.FMS_Out.ctrl_mode = FMS_ConstB.DataTypeConversion2_p;
         FMS_Y.FMS_Out.u_cmd = FMS_PARAM.CRUISE_SPEED;
-        FMS_Y.FMS_Out.psi_rate_cmd = arm_sin_f32(rtb_Saturation_k) * rtb_Gain /
+        FMS_Y.FMS_Out.psi_rate_cmd = arm_sin_f32(rtb_Saturation) * rtb_Gain /
           fminf(FMS_PARAM.L1, fmaxf(sqrtf(rtb_P_i_idx_0 + rtb_MathFunction_k[0]),
                  0.5F)) * FMS_PARAM.AY_P;
 
-        /* Update for Delay: '<S110>/Delay' */
+        /* Update for Delay: '<S112>/Delay' */
         FMS_DW.icLoad_c = 0U;
 
         /* End of Outputs for SubSystem: '<S29>/Return' */
@@ -2653,19 +2654,19 @@ void FMS_step(void)
 
        case 1:
         /* Outputs for IfAction SubSystem: '<S29>/Hold' incorporates:
-         *  ActionPort: '<S106>/Action Port'
+         *  ActionPort: '<S108>/Action Port'
          */
         /* Outport: '<Root>/FMS_Out' incorporates:
-         *  BusAssignment: '<S106>/Bus Assignment'
+         *  BusAssignment: '<S108>/Bus Assignment'
          *  BusAssignment: '<S23>/Bus Assignment'
-         *  Constant: '<S106>/Constant'
+         *  Constant: '<S108>/Constant'
          */
         FMS_Y.FMS_Out = FMS_rtZFMS_Out_Bus;
 
-        /* BusAssignment: '<S106>/Bus Assignment' incorporates:
+        /* BusAssignment: '<S108>/Bus Assignment' incorporates:
          *  BusAssignment: '<S23>/Bus Assignment'
-         *  Constant: '<S106>/Constant3'
-         *  Constant: '<S106>/Constant4'
+         *  Constant: '<S108>/Constant3'
+         *  Constant: '<S108>/Constant4'
          *  Outport: '<Root>/FMS_Out'
          */
         FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion_h;
@@ -2679,7 +2680,7 @@ void FMS_step(void)
 
        case 2:
         /* Outputs for IfAction SubSystem: '<S29>/Unknown' incorporates:
-         *  ActionPort: '<S108>/Action Port'
+         *  ActionPort: '<S110>/Action Port'
          */
         /* Outport: '<Root>/FMS_Out' incorporates:
          *  BusAssignment: '<S23>/Bus Assignment'
@@ -2698,15 +2699,7 @@ void FMS_step(void)
       /* Outputs for IfAction SubSystem: '<S22>/Auto' incorporates:
        *  ActionPort: '<S27>/Action Port'
        */
-      /* SwitchCase: '<S27>/Switch Case' incorporates:
-       *  RelationalOperator: '<S68>/FixPt Relational Operator'
-       *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy5Inport1'
-       *  UnitDelay: '<S68>/Delay Input1'
-       *
-       * Block description for '<S68>/Delay Input1':
-       *
-       *  Store in Global RAM
-       */
+      /* SwitchCase: '<S27>/Switch Case' */
       rtPrevAction = FMS_DW.SwitchCase_ActiveSubsystem_i;
 
       /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
@@ -2731,110 +2724,57 @@ void FMS_step(void)
          *  ActionPort: '<S66>/Action Port'
          */
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* S-Function (sfix_bitop): '<S96>/u_cmd valid' incorporates:
+        /* S-Function (sfix_bitop): '<S98>/u_cmd valid' incorporates:
          *  Inport: '<Root>/Auto_Cmd'
-         *  S-Function (sfix_bitop): '<S87>/u_cmd'
+         *  S-Function (sfix_bitop): '<S89>/u_cmd'
          *  SignalConversion: '<S21>/Signal Copy'
          */
         rtb_Compare_i_tmp = FMS_U.Auto_Cmd.cmd_mask & 8192U;
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* RelationalOperator: '<S99>/Compare' incorporates:
-         *  Constant: '<S99>/Constant'
-         *  S-Function (sfix_bitop): '<S96>/u_cmd valid'
+        /* RelationalOperator: '<S101>/Compare' incorporates:
+         *  Constant: '<S101>/Constant'
+         *  S-Function (sfix_bitop): '<S98>/u_cmd valid'
          */
         rtb_Compare_as = (rtb_Compare_i_tmp > 0U);
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* MultiPortSwitch: '<S88>/Index Vector' incorporates:
+        /* MultiPortSwitch: '<S90>/Index Vector' incorporates:
          *  Inport: '<Root>/Auto_Cmd'
-         *  Product: '<S88>/Multiply'
-         *  Product: '<S97>/Multiply'
-         *  Product: '<S98>/Multiply3'
+         *  Product: '<S100>/Multiply3'
+         *  Product: '<S90>/Multiply'
+         *  Product: '<S99>/Multiply'
          *  SignalConversion: '<S21>/Signal Copy'
          */
         switch (FMS_U.Auto_Cmd.frame) {
          case 0:
-          /* SignalConversion: '<S101>/ConcatBufferAtVector ConcatenateIn3' */
+          /* SignalConversion: '<S103>/ConcatBufferAtVector ConcatenateIn3' */
           rtb_VectorConcatenate[6] = FMS_ConstB.VectorConcatenate3[0];
           rtb_VectorConcatenate[7] = FMS_ConstB.VectorConcatenate3[1];
           rtb_VectorConcatenate[8] = FMS_ConstB.VectorConcatenate3[2];
-
-          /* SignalConversion: '<S101>/ConcatBufferAtVector Concatenate2In3' incorporates:
-           *  Constant: '<S101>/Constant4'
-           */
-          rtb_VectorConcatenate[5] = 0.0F;
-
-          /* Trigonometry: '<S101>/Trigonometric Function3' incorporates:
-           *  Gain: '<S100>/Gain'
-           *  Inport: '<Root>/INS_Out'
-           *  SignalConversion: '<S21>/Signal Copy1'
-           *  Trigonometry: '<S101>/Trigonometric Function1'
-           */
-          rtb_Gain = arm_cos_f32(-FMS_U.INS_Out.psi);
-          rtb_VectorConcatenate[4] = rtb_Gain;
-
-          /* Trigonometry: '<S101>/Trigonometric Function2' incorporates:
-           *  Gain: '<S100>/Gain'
-           *  Inport: '<Root>/INS_Out'
-           *  SignalConversion: '<S21>/Signal Copy1'
-           *  Trigonometry: '<S101>/Trigonometric Function'
-           */
-          rtb_Switch_f_idx_1 = arm_sin_f32(-FMS_U.INS_Out.psi);
-
-          /* Gain: '<S101>/Gain' incorporates:
-           *  Trigonometry: '<S101>/Trigonometric Function2'
-           */
-          rtb_VectorConcatenate[3] = -rtb_Switch_f_idx_1;
-
-          /* SignalConversion: '<S101>/ConcatBufferAtVector Concatenate1In3' incorporates:
-           *  Constant: '<S101>/Constant3'
-           */
-          rtb_VectorConcatenate[2] = 0.0F;
-
-          /* Trigonometry: '<S101>/Trigonometric Function' */
-          rtb_VectorConcatenate[1] = rtb_Switch_f_idx_1;
-
-          /* Trigonometry: '<S101>/Trigonometric Function1' */
-          rtb_VectorConcatenate[0] = rtb_Gain;
-
-          /* Product: '<S88>/Multiply' */
-          rtb_Gain = rtb_Compare_as ? FMS_U.Auto_Cmd.u_cmd : 0.0F;
-          for (i = 0; i < 3; i++) {
-            rtb_Switch_fd[i] = rtb_VectorConcatenate[i] * rtb_Gain;
-          }
-          break;
-
-         case 1:
-          /* SignalConversion: '<S103>/ConcatBufferAtVector ConcatenateIn3' */
-          rtb_VectorConcatenate[6] = FMS_ConstB.VectorConcatenate3_o[0];
-          rtb_VectorConcatenate[7] = FMS_ConstB.VectorConcatenate3_o[1];
-          rtb_VectorConcatenate[8] = FMS_ConstB.VectorConcatenate3_o[2];
 
           /* SignalConversion: '<S103>/ConcatBufferAtVector Concatenate2In3' incorporates:
            *  Constant: '<S103>/Constant4'
            */
           rtb_VectorConcatenate[5] = 0.0F;
 
-          /* Gain: '<S102>/Gain' incorporates:
+          /* Trigonometry: '<S103>/Trigonometric Function3' incorporates:
+           *  Gain: '<S102>/Gain'
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S21>/Signal Copy1'
-           *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
-           *  Sum: '<S98>/Subtract'
-           */
-          rtb_Switch_f_idx_1 = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.offboard_psi_0);
-
-          /* Trigonometry: '<S103>/Trigonometric Function3' incorporates:
            *  Trigonometry: '<S103>/Trigonometric Function1'
            */
-          rtb_Gain = arm_cos_f32(rtb_Switch_f_idx_1);
+          rtb_Gain = arm_cos_f32(-FMS_U.INS_Out.psi);
           rtb_VectorConcatenate[4] = rtb_Gain;
 
           /* Trigonometry: '<S103>/Trigonometric Function2' incorporates:
+           *  Gain: '<S102>/Gain'
+           *  Inport: '<Root>/INS_Out'
+           *  SignalConversion: '<S21>/Signal Copy1'
            *  Trigonometry: '<S103>/Trigonometric Function'
            */
-          rtb_Switch_f_idx_1 = arm_sin_f32(rtb_Switch_f_idx_1);
+          rtb_Switch_f_idx_1 = arm_sin_f32(-FMS_U.INS_Out.psi);
 
           /* Gain: '<S103>/Gain' incorporates:
            *  Trigonometry: '<S103>/Trigonometric Function2'
@@ -2852,7 +2792,60 @@ void FMS_step(void)
           /* Trigonometry: '<S103>/Trigonometric Function1' */
           rtb_VectorConcatenate[0] = rtb_Gain;
 
-          /* Product: '<S88>/Multiply' */
+          /* Product: '<S90>/Multiply' */
+          rtb_Gain = rtb_Compare_as ? FMS_U.Auto_Cmd.u_cmd : 0.0F;
+          for (i = 0; i < 3; i++) {
+            rtb_Switch_fd[i] = rtb_VectorConcatenate[i] * rtb_Gain;
+          }
+          break;
+
+         case 1:
+          /* SignalConversion: '<S105>/ConcatBufferAtVector ConcatenateIn3' */
+          rtb_VectorConcatenate[6] = FMS_ConstB.VectorConcatenate3_o[0];
+          rtb_VectorConcatenate[7] = FMS_ConstB.VectorConcatenate3_o[1];
+          rtb_VectorConcatenate[8] = FMS_ConstB.VectorConcatenate3_o[2];
+
+          /* SignalConversion: '<S105>/ConcatBufferAtVector Concatenate2In3' incorporates:
+           *  Constant: '<S105>/Constant4'
+           */
+          rtb_VectorConcatenate[5] = 0.0F;
+
+          /* Gain: '<S104>/Gain' incorporates:
+           *  Inport: '<Root>/INS_Out'
+           *  SignalConversion: '<S21>/Signal Copy1'
+           *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
+           *  Sum: '<S100>/Subtract'
+           */
+          rtb_Switch_f_idx_1 = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.offboard_psi_0);
+
+          /* Trigonometry: '<S105>/Trigonometric Function3' incorporates:
+           *  Trigonometry: '<S105>/Trigonometric Function1'
+           */
+          rtb_Gain = arm_cos_f32(rtb_Switch_f_idx_1);
+          rtb_VectorConcatenate[4] = rtb_Gain;
+
+          /* Trigonometry: '<S105>/Trigonometric Function2' incorporates:
+           *  Trigonometry: '<S105>/Trigonometric Function'
+           */
+          rtb_Switch_f_idx_1 = arm_sin_f32(rtb_Switch_f_idx_1);
+
+          /* Gain: '<S105>/Gain' incorporates:
+           *  Trigonometry: '<S105>/Trigonometric Function2'
+           */
+          rtb_VectorConcatenate[3] = -rtb_Switch_f_idx_1;
+
+          /* SignalConversion: '<S105>/ConcatBufferAtVector Concatenate1In3' incorporates:
+           *  Constant: '<S105>/Constant3'
+           */
+          rtb_VectorConcatenate[2] = 0.0F;
+
+          /* Trigonometry: '<S105>/Trigonometric Function' */
+          rtb_VectorConcatenate[1] = rtb_Switch_f_idx_1;
+
+          /* Trigonometry: '<S105>/Trigonometric Function1' */
+          rtb_VectorConcatenate[0] = rtb_Gain;
+
+          /* Product: '<S90>/Multiply' */
           rtb_Gain = rtb_Compare_as ? FMS_U.Auto_Cmd.u_cmd : 0.0F;
           for (i = 0; i < 3; i++) {
             rtb_Switch_fd[i] = rtb_VectorConcatenate[i] * rtb_Gain;
@@ -2864,7 +2857,7 @@ void FMS_step(void)
           break;
         }
 
-        /* End of MultiPortSwitch: '<S88>/Index Vector' */
+        /* End of MultiPortSwitch: '<S90>/Index Vector' */
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
         /* Outport: '<Root>/FMS_Out' incorporates:
@@ -2876,17 +2869,17 @@ void FMS_step(void)
 
         /* BusAssignment: '<S66>/Bus Assignment' incorporates:
          *  BusAssignment: '<S23>/Bus Assignment'
-         *  Constant: '<S89>/Constant'
-         *  Constant: '<S90>/Constant'
+         *  Constant: '<S91>/Constant'
+         *  Constant: '<S92>/Constant'
          *  Inport: '<Root>/Auto_Cmd'
-         *  MATLAB Function: '<S91>/bit_shift'
-         *  MATLAB Function: '<S92>/bit_shift'
+         *  MATLAB Function: '<S93>/bit_shift'
+         *  MATLAB Function: '<S94>/bit_shift'
          *  Outport: '<Root>/FMS_Out'
-         *  RelationalOperator: '<S89>/Compare'
-         *  RelationalOperator: '<S90>/Compare'
-         *  S-Function (sfix_bitop): '<S87>/psi_rate_cmd'
+         *  RelationalOperator: '<S91>/Compare'
+         *  RelationalOperator: '<S92>/Compare'
+         *  S-Function (sfix_bitop): '<S89>/psi_rate_cmd'
          *  SignalConversion: '<S21>/Signal Copy'
-         *  Sum: '<S87>/Add'
+         *  Sum: '<S89>/Add'
          */
         FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion_d;
         FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_c;
@@ -2896,13 +2889,13 @@ void FMS_step(void)
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
         FMS_Y.FMS_Out.psi_rate_cmd = FMS_U.Auto_Cmd.psi_rate_cmd;
 
-        /* Outputs for Atomic SubSystem: '<S87>/psi_rate_cmd_valid' */
-        /* Outputs for Atomic SubSystem: '<S87>/u_cmd_valid' */
+        /* Outputs for Atomic SubSystem: '<S89>/psi_rate_cmd_valid' */
+        /* Outputs for Atomic SubSystem: '<S89>/u_cmd_valid' */
         FMS_Y.FMS_Out.cmd_mask = (uint16_T)((uint32_T)(((FMS_U.Auto_Cmd.cmd_mask
           & 64U) > 0U) << 5) + ((rtb_Compare_i_tmp > 0U) << 6));
 
-        /* End of Outputs for SubSystem: '<S87>/u_cmd_valid' */
-        /* End of Outputs for SubSystem: '<S87>/psi_rate_cmd_valid' */
+        /* End of Outputs for SubSystem: '<S89>/u_cmd_valid' */
+        /* End of Outputs for SubSystem: '<S89>/psi_rate_cmd_valid' */
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
         /* End of Outputs for SubSystem: '<S27>/Offboard' */
         break;
@@ -2922,23 +2915,27 @@ void FMS_step(void)
           FMS_DW.DelayInput1_DSTATE_pe = 0U;
 
           /* End of InitializeConditions for SubSystem: '<S27>/Mission' */
+
+          /* SystemReset for IfAction SubSystem: '<S27>/Mission' incorporates:
+           *  ActionPort: '<S65>/Action Port'
+           */
+          /* SystemReset for Resettable SubSystem: '<S65>/Mission_SubSystem' */
+          /* SystemReset for SwitchCase: '<S27>/Switch Case' incorporates:
+           *  DiscreteIntegrator: '<S70>/Integrator'
+           *  DiscreteIntegrator: '<S70>/Integrator1'
+           */
+          FMS_DW.Integrator1_DSTATE = 0.0F;
+          FMS_DW.Integrator_DSTATE = 0.0F;
+
+          /* End of SystemReset for SubSystem: '<S65>/Mission_SubSystem' */
+          /* End of SystemReset for SubSystem: '<S27>/Mission' */
         }
 
         /* Outputs for IfAction SubSystem: '<S27>/Mission' incorporates:
          *  ActionPort: '<S65>/Action Port'
          */
-        /* Outputs for Resettable SubSystem: '<S65>/Mission_SubSystem' incorporates:
-         *  ResetPort: '<S69>/Reset'
-         */
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        FMS_PrevZCX.Mission_SubSystem_Reset_ZCE = (ZCSigState)(FMS_B.wp_index !=
-          FMS_DW.DelayInput1_DSTATE_pe);
-
-        /* Sum: '<S82>/Sum of Elements' incorporates:
-         *  Inport: '<Root>/INS_Out'
-         *  Math: '<S82>/Math Function'
-         *  RelationalOperator: '<S68>/FixPt Relational Operator'
-         *  SignalConversion: '<S21>/Signal Copy1'
+        /* RelationalOperator: '<S68>/FixPt Relational Operator' incorporates:
          *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy5Inport1'
          *  UnitDelay: '<S68>/Delay Input1'
          *
@@ -2946,15 +2943,39 @@ void FMS_step(void)
          *
          *  Store in Global RAM
          */
+        rtb_Compare_as = (FMS_B.wp_index != FMS_DW.DelayInput1_DSTATE_pe);
+
+        /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
+
+        /* Outputs for Resettable SubSystem: '<S65>/Mission_SubSystem' incorporates:
+         *  ResetPort: '<S69>/Reset'
+         */
+        if (rtb_Compare_as && (FMS_PrevZCX.Mission_SubSystem_Reset_ZCE !=
+                               POS_ZCSIG)) {
+          /* InitializeConditions for DiscreteIntegrator: '<S70>/Integrator1' */
+          FMS_DW.Integrator1_DSTATE = 0.0F;
+
+          /* InitializeConditions for DiscreteIntegrator: '<S70>/Integrator' */
+          FMS_DW.Integrator_DSTATE = 0.0F;
+        }
+
+        FMS_PrevZCX.Mission_SubSystem_Reset_ZCE = rtb_Compare_as;
+
+        /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
+        /* Sum: '<S84>/Sum of Elements' incorporates:
+         *  Inport: '<Root>/INS_Out'
+         *  Math: '<S84>/Math Function'
+         *  SignalConversion: '<S21>/Signal Copy1'
+         */
         rtb_Gain = FMS_U.INS_Out.vn * FMS_U.INS_Out.vn + FMS_U.INS_Out.ve *
           FMS_U.INS_Out.ve;
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Math: '<S82>/Math Function1' incorporates:
-         *  Sum: '<S82>/Sum of Elements'
+        /* Math: '<S84>/Math Function1' incorporates:
+         *  Sum: '<S84>/Sum of Elements'
          *
-         * About '<S82>/Math Function1':
+         * About '<S84>/Math Function1':
          *  Operator: sqrt
          */
         if (rtb_Gain < 0.0F) {
@@ -2963,12 +2984,12 @@ void FMS_step(void)
           rtb_P_i_idx_0 = sqrtf(rtb_Gain);
         }
 
-        /* End of Math: '<S82>/Math Function1' */
+        /* End of Math: '<S84>/Math Function1' */
 
-        /* Switch: '<S82>/Switch' incorporates:
-         *  Constant: '<S82>/Constant'
+        /* Switch: '<S84>/Switch' incorporates:
+         *  Constant: '<S84>/Constant'
          *  Inport: '<Root>/INS_Out'
-         *  Product: '<S82>/Product'
+         *  Product: '<S84>/Product'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
         if (rtb_P_i_idx_0 > 0.0F) {
@@ -2984,10 +3005,10 @@ void FMS_step(void)
           rtb_Switch_f_idx_2 = 1.0F;
         }
 
-        /* End of Switch: '<S82>/Switch' */
+        /* End of Switch: '<S84>/Switch' */
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* MATLAB Function: '<S72>/NearbyRefWP' incorporates:
+        /* MATLAB Function: '<S74>/NearbyRefWP' incorporates:
          *  Constant: '<S69>/L1'
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
@@ -2995,25 +3016,28 @@ void FMS_step(void)
         FMS_NearbyRefWP(&rtb_Switch_fd[0], FMS_U.INS_Out.x_R, FMS_U.INS_Out.y_R,
                         FMS_PARAM.L1, rtb_MathFunction_k, &rtb_Gain);
 
-        /* MATLAB Function: '<S72>/SearchL1RefWP' incorporates:
+        /* MATLAB Function: '<S74>/SearchL1RefWP' incorporates:
          *  Constant: '<S69>/L1'
          *  Inport: '<Root>/INS_Out'
-         *  MATLAB Function: '<S72>/OutRegionRegWP'
+         *  MATLAB Function: '<S74>/OutRegionRegWP'
          *  SignalConversion: '<S21>/Signal Copy1'
          *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
          */
         rtb_P_i_idx_0 = FMS_B.Cmd_In.sp_waypoint[0] - FMS_B.Cmd_In.cur_waypoint
           [0];
-        rtb_Gain_cl = FMS_B.Cmd_In.sp_waypoint[1] - FMS_B.Cmd_In.cur_waypoint[1];
+        rtb_TmpSignalConversionAtMath_0 = FMS_B.Cmd_In.sp_waypoint[1] -
+          FMS_B.Cmd_In.cur_waypoint[1];
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-        A = rtb_P_i_idx_0 * rtb_P_i_idx_0 + rtb_Gain_cl * rtb_Gain_cl;
+        A = rtb_P_i_idx_0 * rtb_P_i_idx_0 + rtb_TmpSignalConversionAtMath_0 *
+          rtb_TmpSignalConversionAtMath_0;
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        rtb_Saturation_k = (rtb_P_i_idx_0 * (FMS_B.Cmd_In.cur_waypoint[0] -
-          FMS_U.INS_Out.x_R) + rtb_Gain_cl * (FMS_B.Cmd_In.cur_waypoint[1] -
-          FMS_U.INS_Out.y_R)) * 2.0F;
-        D = rtb_Saturation_k * rtb_Saturation_k - (((((FMS_U.INS_Out.x_R *
+        rtb_Saturation = (rtb_P_i_idx_0 * (FMS_B.Cmd_In.cur_waypoint[0] -
+          FMS_U.INS_Out.x_R) + rtb_TmpSignalConversionAtMath_0 *
+                          (FMS_B.Cmd_In.cur_waypoint[1] - FMS_U.INS_Out.y_R)) *
+          2.0F;
+        D = rtb_Saturation * rtb_Saturation - (((((FMS_U.INS_Out.x_R *
           FMS_U.INS_Out.x_R + FMS_U.INS_Out.y_R * FMS_U.INS_Out.y_R) +
           FMS_B.Cmd_In.cur_waypoint[0] * FMS_B.Cmd_In.cur_waypoint[0]) +
           FMS_B.Cmd_In.cur_waypoint[1] * FMS_B.Cmd_In.cur_waypoint[1]) -
@@ -3022,32 +3046,32 @@ void FMS_step(void)
           (4.0F * A);
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-        rtb_TmpSignalConversionAtMath_0 = -1.0F;
+        rtb_Gain_cl = -1.0F;
         rtb_Divide_aj[0] = 0.0F;
         rtb_Divide_aj[1] = 0.0F;
         guard1 = false;
         if (D > 0.0F) {
           u1_tmp = sqrtf(D);
-          D = (-rtb_Saturation_k + u1_tmp) / (2.0F * A);
-          rtb_Saturation_k = (-rtb_Saturation_k - u1_tmp) / (2.0F * A);
-          if ((D >= 0.0F) && (D <= 1.0F) && (rtb_Saturation_k >= 0.0F) &&
-              (rtb_Saturation_k <= 1.0F)) {
-            rtb_TmpSignalConversionAtMath_0 = fmaxf(D, rtb_Saturation_k);
+          D = (-rtb_Saturation + u1_tmp) / (2.0F * A);
+          rtb_Saturation = (-rtb_Saturation - u1_tmp) / (2.0F * A);
+          if ((D >= 0.0F) && (D <= 1.0F) && (rtb_Saturation >= 0.0F) &&
+              (rtb_Saturation <= 1.0F)) {
+            rtb_Gain_cl = fmaxf(D, rtb_Saturation);
             guard1 = true;
           } else if ((D >= 0.0F) && (D <= 1.0F)) {
-            rtb_TmpSignalConversionAtMath_0 = D;
+            rtb_Gain_cl = D;
             guard1 = true;
           } else {
-            if ((rtb_Saturation_k >= 0.0F) && (rtb_Saturation_k <= 1.0F)) {
-              rtb_TmpSignalConversionAtMath_0 = rtb_Saturation_k;
+            if ((rtb_Saturation >= 0.0F) && (rtb_Saturation <= 1.0F)) {
+              rtb_Gain_cl = rtb_Saturation;
               guard1 = true;
             }
           }
         } else {
           if (D == 0.0F) {
-            D = -rtb_Saturation_k / (2.0F * A);
+            D = -rtb_Saturation / (2.0F * A);
             if ((D >= 0.0F) && (D <= 1.0F)) {
-              rtb_TmpSignalConversionAtMath_0 = D;
+              rtb_Gain_cl = D;
               guard1 = true;
             }
           }
@@ -3055,28 +3079,29 @@ void FMS_step(void)
 
         if (guard1) {
           /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-          rtb_Divide_aj[0] = rtb_P_i_idx_0 * rtb_TmpSignalConversionAtMath_0 +
+          rtb_Divide_aj[0] = rtb_P_i_idx_0 * rtb_Gain_cl +
             FMS_B.Cmd_In.cur_waypoint[0];
-          rtb_Divide_aj[1] = rtb_Gain_cl * rtb_TmpSignalConversionAtMath_0 +
+          rtb_Divide_aj[1] = rtb_TmpSignalConversionAtMath_0 * rtb_Gain_cl +
             FMS_B.Cmd_In.cur_waypoint[1];
 
           /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
         }
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* MATLAB Function: '<S72>/OutRegionRegWP' incorporates:
+        /* MATLAB Function: '<S74>/OutRegionRegWP' incorporates:
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
          */
-        rtb_Saturation_k = ((FMS_U.INS_Out.y_R - FMS_B.Cmd_In.cur_waypoint[1]) *
-                            rtb_Gain_cl + (FMS_U.INS_Out.x_R -
+        rtb_Saturation = ((FMS_U.INS_Out.y_R - FMS_B.Cmd_In.cur_waypoint[1]) *
+                          rtb_TmpSignalConversionAtMath_0 + (FMS_U.INS_Out.x_R -
           FMS_B.Cmd_In.cur_waypoint[0]) * rtb_P_i_idx_0) / (rtb_P_i_idx_0 *
-          rtb_P_i_idx_0 + rtb_Gain_cl * rtb_Gain_cl);
+          rtb_P_i_idx_0 + rtb_TmpSignalConversionAtMath_0 *
+          rtb_TmpSignalConversionAtMath_0);
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
-        rtb_Compare_as = (rtb_Saturation_k <= 0.0F);
-        u = (rtb_Saturation_k >= 1.0F);
+        rtb_Compare_as = (rtb_Saturation <= 0.0F);
+        u = (rtb_Saturation >= 1.0F);
         if (rtb_Compare_as) {
           /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
           rtb_P_f_idx_0 = FMS_B.Cmd_In.cur_waypoint[0];
@@ -3089,29 +3114,29 @@ void FMS_step(void)
           /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
         } else {
           /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-          rtb_P_f_idx_0 = rtb_Saturation_k * rtb_P_i_idx_0 +
+          rtb_P_f_idx_0 = rtb_Saturation * rtb_P_i_idx_0 +
             FMS_B.Cmd_In.cur_waypoint[0];
 
           /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
         }
 
-        /* Switch: '<S72>/Switch1' incorporates:
-         *  Constant: '<S75>/Constant'
-         *  RelationalOperator: '<S75>/Compare'
+        /* Switch: '<S74>/Switch1' incorporates:
+         *  Constant: '<S77>/Constant'
+         *  RelationalOperator: '<S77>/Compare'
          */
         if (rtb_Gain <= 0.0F) {
-          /* Switch: '<S72>/Switch' incorporates:
-           *  Constant: '<S74>/Constant'
-           *  MATLAB Function: '<S72>/SearchL1RefWP'
-           *  RelationalOperator: '<S74>/Compare'
+          /* Switch: '<S74>/Switch' incorporates:
+           *  Constant: '<S76>/Constant'
+           *  MATLAB Function: '<S74>/SearchL1RefWP'
+           *  RelationalOperator: '<S76>/Compare'
            */
-          if (rtb_TmpSignalConversionAtMath_0 >= 0.0F) {
+          if (rtb_Gain_cl >= 0.0F) {
             rtb_MathFunction_k[0] = rtb_Divide_aj[0];
             rtb_MathFunction_k[1] = rtb_Divide_aj[1];
           } else {
             rtb_MathFunction_k[0] = rtb_P_f_idx_0;
 
-            /* MATLAB Function: '<S72>/OutRegionRegWP' incorporates:
+            /* MATLAB Function: '<S74>/OutRegionRegWP' incorporates:
              *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
              */
             if (rtb_Compare_as) {
@@ -3126,20 +3151,20 @@ void FMS_step(void)
               /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
             } else {
               /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-              rtb_MathFunction_k[1] = rtb_Saturation_k * rtb_Gain_cl +
-                FMS_B.Cmd_In.cur_waypoint[1];
+              rtb_MathFunction_k[1] = rtb_Saturation *
+                rtb_TmpSignalConversionAtMath_0 + FMS_B.Cmd_In.cur_waypoint[1];
 
               /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
             }
           }
 
-          /* End of Switch: '<S72>/Switch' */
+          /* End of Switch: '<S74>/Switch' */
         }
 
-        /* End of Switch: '<S72>/Switch1' */
+        /* End of Switch: '<S74>/Switch1' */
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* Sum: '<S73>/Subtract' incorporates:
+        /* Sum: '<S75>/Subtract' incorporates:
          *  Inport: '<Root>/INS_Out'
          *  SignalConversion: '<S21>/Signal Copy1'
          */
@@ -3149,58 +3174,17 @@ void FMS_step(void)
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Math: '<S83>/Math Function' incorporates:
-         *  Math: '<S81>/Square'
+        /* Math: '<S85>/Math Function' incorporates:
+         *  Math: '<S83>/Square'
          */
         rtb_Gain_cl = rtb_TmpSignalConversionAtMath_0 *
           rtb_TmpSignalConversionAtMath_0;
         rtb_Gain = rtb_P_f_idx_0 * rtb_P_f_idx_0;
 
-        /* Sum: '<S83>/Sum of Elements' incorporates:
-         *  Math: '<S83>/Math Function'
-         */
-        rtb_P_i_idx_0 = rtb_Gain_cl + rtb_Gain;
-
-        /* Math: '<S83>/Math Function1' incorporates:
-         *  Sum: '<S83>/Sum of Elements'
-         *
-         * About '<S83>/Math Function1':
-         *  Operator: sqrt
-         */
-        if (rtb_P_i_idx_0 < 0.0F) {
-          rtb_P_i_idx_0 = -sqrtf(fabsf(rtb_P_i_idx_0));
-        } else {
-          rtb_P_i_idx_0 = sqrtf(rtb_P_i_idx_0);
-        }
-
-        /* End of Math: '<S83>/Math Function1' */
-
-        /* Switch: '<S83>/Switch' incorporates:
-         *  Constant: '<S83>/Constant'
-         *  Product: '<S83>/Product'
-         */
-        if (rtb_P_i_idx_0 > 0.0F) {
-          rtb_Switch_fd[0] = rtb_TmpSignalConversionAtMath_0;
-          rtb_Switch_fd[1] = rtb_P_f_idx_0;
-          rtb_Switch_fd[2] = rtb_P_i_idx_0;
-        } else {
-          rtb_Switch_fd[0] = 0.0F;
-          rtb_Switch_fd[1] = 0.0F;
-          rtb_Switch_fd[2] = 1.0F;
-        }
-
-        /* End of Switch: '<S83>/Switch' */
-
-        /* Product: '<S82>/Divide' */
-        rtb_Divide_aj[0] = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
-        rtb_Divide_aj[1] = rtb_Switch_f_idx_1 / rtb_Switch_f_idx_2;
-
         /* Sum: '<S85>/Sum of Elements' incorporates:
          *  Math: '<S85>/Math Function'
-         *  SignalConversion: '<S85>/TmpSignal ConversionAtMath FunctionInport1'
          */
-        rtb_P_i_idx_0 = rtb_Divide_aj[1] * rtb_Divide_aj[1] + rtb_Divide_aj[0] *
-          rtb_Divide_aj[0];
+        rtb_P_i_idx_0 = rtb_Gain_cl + rtb_Gain;
 
         /* Math: '<S85>/Math Function1' incorporates:
          *  Sum: '<S85>/Sum of Elements'
@@ -3221,6 +3205,47 @@ void FMS_step(void)
          *  Product: '<S85>/Product'
          */
         if (rtb_P_i_idx_0 > 0.0F) {
+          rtb_Switch_fd[0] = rtb_TmpSignalConversionAtMath_0;
+          rtb_Switch_fd[1] = rtb_P_f_idx_0;
+          rtb_Switch_fd[2] = rtb_P_i_idx_0;
+        } else {
+          rtb_Switch_fd[0] = 0.0F;
+          rtb_Switch_fd[1] = 0.0F;
+          rtb_Switch_fd[2] = 1.0F;
+        }
+
+        /* End of Switch: '<S85>/Switch' */
+
+        /* Product: '<S84>/Divide' */
+        rtb_Divide_aj[0] = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
+        rtb_Divide_aj[1] = rtb_Switch_f_idx_1 / rtb_Switch_f_idx_2;
+
+        /* Sum: '<S87>/Sum of Elements' incorporates:
+         *  Math: '<S87>/Math Function'
+         *  SignalConversion: '<S87>/TmpSignal ConversionAtMath FunctionInport1'
+         */
+        rtb_P_i_idx_0 = rtb_Divide_aj[1] * rtb_Divide_aj[1] + rtb_Divide_aj[0] *
+          rtb_Divide_aj[0];
+
+        /* Math: '<S87>/Math Function1' incorporates:
+         *  Sum: '<S87>/Sum of Elements'
+         *
+         * About '<S87>/Math Function1':
+         *  Operator: sqrt
+         */
+        if (rtb_P_i_idx_0 < 0.0F) {
+          rtb_P_i_idx_0 = -sqrtf(fabsf(rtb_P_i_idx_0));
+        } else {
+          rtb_P_i_idx_0 = sqrtf(rtb_P_i_idx_0);
+        }
+
+        /* End of Math: '<S87>/Math Function1' */
+
+        /* Switch: '<S87>/Switch' incorporates:
+         *  Constant: '<S87>/Constant'
+         *  Product: '<S87>/Product'
+         */
+        if (rtb_P_i_idx_0 > 0.0F) {
           rtb_Switch_f_idx_0 = rtb_Divide_aj[1];
           rtb_Switch_f_idx_1 = rtb_Divide_aj[0];
           rtb_Switch_f_idx_2 = rtb_P_i_idx_0;
@@ -3230,23 +3255,23 @@ void FMS_step(void)
           rtb_Switch_f_idx_2 = 1.0F;
         }
 
-        /* End of Switch: '<S85>/Switch' */
+        /* End of Switch: '<S87>/Switch' */
 
-        /* Product: '<S83>/Divide' */
+        /* Product: '<S85>/Divide' */
         rtb_Divide_aj[0] = rtb_Switch_fd[0] / rtb_Switch_fd[2];
         rtb_Divide_aj[1] = rtb_Switch_fd[1] / rtb_Switch_fd[2];
 
-        /* Sum: '<S86>/Sum of Elements' incorporates:
-         *  Math: '<S86>/Math Function'
-         *  SignalConversion: '<S86>/TmpSignal ConversionAtMath FunctionInport1'
+        /* Sum: '<S88>/Sum of Elements' incorporates:
+         *  Math: '<S88>/Math Function'
+         *  SignalConversion: '<S88>/TmpSignal ConversionAtMath FunctionInport1'
          */
         rtb_P_i_idx_0 = rtb_Divide_aj[1] * rtb_Divide_aj[1] + rtb_Divide_aj[0] *
           rtb_Divide_aj[0];
 
-        /* Math: '<S86>/Math Function1' incorporates:
-         *  Sum: '<S86>/Sum of Elements'
+        /* Math: '<S88>/Math Function1' incorporates:
+         *  Sum: '<S88>/Sum of Elements'
          *
-         * About '<S86>/Math Function1':
+         * About '<S88>/Math Function1':
          *  Operator: sqrt
          */
         if (rtb_P_i_idx_0 < 0.0F) {
@@ -3255,11 +3280,11 @@ void FMS_step(void)
           rtb_P_i_idx_0 = sqrtf(rtb_P_i_idx_0);
         }
 
-        /* End of Math: '<S86>/Math Function1' */
+        /* End of Math: '<S88>/Math Function1' */
 
-        /* Switch: '<S86>/Switch' incorporates:
-         *  Constant: '<S86>/Constant'
-         *  Product: '<S86>/Product'
+        /* Switch: '<S88>/Switch' incorporates:
+         *  Constant: '<S88>/Constant'
+         *  Product: '<S88>/Product'
          */
         if (rtb_P_i_idx_0 > 0.0F) {
           rtb_Switch_fd[0] = rtb_Divide_aj[1];
@@ -3271,45 +3296,45 @@ void FMS_step(void)
           rtb_Switch_fd[2] = 1.0F;
         }
 
-        /* End of Switch: '<S86>/Switch' */
+        /* End of Switch: '<S88>/Switch' */
 
-        /* Product: '<S86>/Divide' */
+        /* Product: '<S88>/Divide' */
         rtb_Divide_aj[0] = rtb_Switch_fd[0] / rtb_Switch_fd[2];
 
-        /* Product: '<S85>/Divide' */
+        /* Product: '<S87>/Divide' */
         rtb_MathFunction_k[0] = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
 
-        /* Product: '<S86>/Divide' */
+        /* Product: '<S88>/Divide' */
         rtb_Divide_aj[1] = rtb_Switch_fd[1] / rtb_Switch_fd[2];
 
-        /* Product: '<S85>/Divide' */
+        /* Product: '<S87>/Divide' */
         rtb_MathFunction_k[1] = rtb_Switch_f_idx_1 / rtb_Switch_f_idx_2;
 
         /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-        /* Sqrt: '<S80>/Sqrt' incorporates:
+        /* Sqrt: '<S82>/Sqrt' incorporates:
          *  Inport: '<Root>/INS_Out'
-         *  Math: '<S80>/Square'
+         *  Math: '<S82>/Square'
          *  SignalConversion: '<S21>/Signal Copy1'
-         *  Sum: '<S80>/Sum of Elements'
+         *  Sum: '<S82>/Sum of Elements'
          */
         rtb_P_i_idx_0 = sqrtf(FMS_U.INS_Out.vn * FMS_U.INS_Out.vn +
                               FMS_U.INS_Out.ve * FMS_U.INS_Out.ve);
 
         /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-        /* Gain: '<S73>/Gain' incorporates:
-         *  Math: '<S73>/Square'
+        /* Gain: '<S75>/Gain' incorporates:
+         *  Math: '<S75>/Square'
          */
         rtb_Switch_f_idx_1 = rtb_P_i_idx_0 * rtb_P_i_idx_0 * 2.0F;
 
-        /* Sum: '<S84>/Subtract' incorporates:
-         *  Product: '<S84>/Multiply'
-         *  Product: '<S84>/Multiply1'
+        /* Sum: '<S86>/Subtract' incorporates:
+         *  Product: '<S86>/Multiply'
+         *  Product: '<S86>/Multiply1'
          */
         rtb_P_i_idx_0 = rtb_Divide_aj[0] * rtb_MathFunction_k[1] -
           rtb_Divide_aj[1] * rtb_MathFunction_k[0];
 
-        /* Signum: '<S79>/Sign1' */
+        /* Signum: '<S81>/Sign1' */
         if (rtb_P_i_idx_0 < 0.0F) {
           rtb_P_i_idx_0 = -1.0F;
         } else {
@@ -3318,23 +3343,23 @@ void FMS_step(void)
           }
         }
 
-        /* End of Signum: '<S79>/Sign1' */
+        /* End of Signum: '<S81>/Sign1' */
 
-        /* Switch: '<S79>/Switch2' incorporates:
-         *  Constant: '<S79>/Constant4'
+        /* Switch: '<S81>/Switch2' incorporates:
+         *  Constant: '<S81>/Constant4'
          */
         if (rtb_P_i_idx_0 == 0.0F) {
           rtb_P_i_idx_0 = 1.0F;
         }
 
-        /* End of Switch: '<S79>/Switch2' */
+        /* End of Switch: '<S81>/Switch2' */
 
-        /* DotProduct: '<S79>/Dot Product' */
+        /* DotProduct: '<S81>/Dot Product' */
         rtb_Switch_f_idx_2 = rtb_MathFunction_k[0] * rtb_Divide_aj[0] +
           rtb_MathFunction_k[1] * rtb_Divide_aj[1];
 
-        /* Trigonometry: '<S79>/Acos' incorporates:
-         *  DotProduct: '<S79>/Dot Product'
+        /* Trigonometry: '<S81>/Acos' incorporates:
+         *  DotProduct: '<S81>/Dot Product'
          */
         if (rtb_Switch_f_idx_2 > 1.0F) {
           rtb_Switch_f_idx_2 = 1.0F;
@@ -3344,12 +3369,12 @@ void FMS_step(void)
           }
         }
 
-        /* Product: '<S79>/Multiply' incorporates:
-         *  Trigonometry: '<S79>/Acos'
+        /* Product: '<S81>/Multiply' incorporates:
+         *  Trigonometry: '<S81>/Acos'
          */
         rtb_P_i_idx_0 *= acosf(rtb_Switch_f_idx_2);
 
-        /* Saturate: '<S73>/Saturation' */
+        /* Saturate: '<S75>/Saturation' */
         if (rtb_P_i_idx_0 > 1.57079637F) {
           rtb_P_i_idx_0 = 1.57079637F;
         } else {
@@ -3358,7 +3383,7 @@ void FMS_step(void)
           }
         }
 
-        /* End of Saturate: '<S73>/Saturation' */
+        /* End of Saturate: '<S75>/Saturation' */
 
         /* Outport: '<Root>/FMS_Out' incorporates:
          *  BusAssignment: '<S23>/Bus Assignment'
@@ -3370,25 +3395,172 @@ void FMS_step(void)
         /* BusAssignment: '<S69>/Bus Assignment' incorporates:
          *  BusAssignment: '<S23>/Bus Assignment'
          *  Constant: '<S69>/L1'
-         *  Constant: '<S69>/vel'
-         *  Constant: '<S73>/Constant'
-         *  Gain: '<S70>/AY_P'
-         *  MinMax: '<S73>/Max'
-         *  MinMax: '<S73>/Min'
+         *  Constant: '<S75>/Constant'
+         *  DiscreteIntegrator: '<S70>/Integrator1'
+         *  Gain: '<S71>/AY_P'
+         *  MinMax: '<S75>/Max'
+         *  MinMax: '<S75>/Min'
          *  Outport: '<Root>/FMS_Out'
-         *  Product: '<S73>/Divide'
-         *  Product: '<S73>/Multiply1'
-         *  Sqrt: '<S81>/Sqrt'
-         *  Sum: '<S81>/Sum of Elements'
-         *  Trigonometry: '<S73>/Sin'
+         *  Product: '<S75>/Divide'
+         *  Product: '<S75>/Multiply1'
+         *  Sqrt: '<S83>/Sqrt'
+         *  Sum: '<S83>/Sum of Elements'
+         *  Trigonometry: '<S75>/Sin'
          */
         FMS_Y.FMS_Out.status = FMS_ConstB.DataTypeConversion_l;
         FMS_Y.FMS_Out.state = FMS_ConstB.DataTypeConversion1_b;
         FMS_Y.FMS_Out.ctrl_mode = FMS_ConstB.DataTypeConversion2_b;
-        FMS_Y.FMS_Out.u_cmd = FMS_PARAM.CRUISE_SPEED;
+        FMS_Y.FMS_Out.u_cmd = FMS_DW.Integrator1_DSTATE;
         FMS_Y.FMS_Out.psi_rate_cmd = arm_sin_f32(rtb_P_i_idx_0) *
           rtb_Switch_f_idx_1 / fminf(FMS_PARAM.L1, fmaxf(sqrtf(rtb_Gain +
           rtb_Gain_cl), 0.5F)) * FMS_PARAM.AY_P;
+
+        /* Product: '<S73>/Multiply1' incorporates:
+         *  Constant: '<S73>/const1'
+         *  DiscreteIntegrator: '<S70>/Integrator'
+         */
+        rtb_Switch_f_idx_2 = FMS_DW.Integrator_DSTATE * 0.5F;
+
+        /* Sum: '<S73>/Add' incorporates:
+         *  Constant: '<S69>/vel'
+         *  DiscreteIntegrator: '<S70>/Integrator1'
+         *  Sum: '<S70>/Subtract'
+         */
+        rtb_Switch_f_idx_1 = (FMS_DW.Integrator1_DSTATE - FMS_PARAM.CRUISE_SPEED)
+          + rtb_Switch_f_idx_2;
+
+        /* Signum: '<S73>/Sign' */
+        if (rtb_Switch_f_idx_1 < 0.0F) {
+          rtb_Gain = -1.0F;
+        } else if (rtb_Switch_f_idx_1 > 0.0F) {
+          rtb_Gain = 1.0F;
+        } else {
+          rtb_Gain = rtb_Switch_f_idx_1;
+        }
+
+        /* End of Signum: '<S73>/Sign' */
+
+        /* Sum: '<S73>/Add2' incorporates:
+         *  Abs: '<S73>/Abs'
+         *  Gain: '<S73>/Gain'
+         *  Gain: '<S73>/Gain1'
+         *  Product: '<S73>/Multiply2'
+         *  Product: '<S73>/Multiply3'
+         *  Sqrt: '<S73>/Sqrt'
+         *  Sum: '<S73>/Add1'
+         *  Sum: '<S73>/Subtract'
+         */
+        rtb_Gain = (sqrtf((8.0F * fabsf(rtb_Switch_f_idx_1) + FMS_ConstB.d) *
+                          FMS_ConstB.d) - FMS_ConstB.d) * 0.5F * rtb_Gain +
+          rtb_Switch_f_idx_2;
+
+        /* Sum: '<S73>/Add4' */
+        rtb_Switch_f_idx_2 += rtb_Switch_f_idx_1 - rtb_Gain;
+
+        /* Sum: '<S73>/Add3' */
+        rtb_Gain_cl = rtb_Switch_f_idx_1 + FMS_ConstB.d;
+
+        /* Sum: '<S73>/Subtract1' */
+        rtb_Switch_f_idx_1 -= FMS_ConstB.d;
+
+        /* Signum: '<S73>/Sign1' */
+        if (rtb_Gain_cl < 0.0F) {
+          rtb_Gain_cl = -1.0F;
+        } else {
+          if (rtb_Gain_cl > 0.0F) {
+            rtb_Gain_cl = 1.0F;
+          }
+        }
+
+        /* End of Signum: '<S73>/Sign1' */
+
+        /* Signum: '<S73>/Sign2' */
+        if (rtb_Switch_f_idx_1 < 0.0F) {
+          rtb_Switch_f_idx_1 = -1.0F;
+        } else {
+          if (rtb_Switch_f_idx_1 > 0.0F) {
+            rtb_Switch_f_idx_1 = 1.0F;
+          }
+        }
+
+        /* End of Signum: '<S73>/Sign2' */
+
+        /* Sum: '<S73>/Add5' incorporates:
+         *  Gain: '<S73>/Gain2'
+         *  Product: '<S73>/Multiply4'
+         *  Sum: '<S73>/Subtract2'
+         */
+        rtb_Gain += (rtb_Gain_cl - rtb_Switch_f_idx_1) * 0.5F *
+          rtb_Switch_f_idx_2;
+
+        /* Update for DiscreteIntegrator: '<S70>/Integrator1' incorporates:
+         *  DiscreteIntegrator: '<S70>/Integrator'
+         */
+        FMS_DW.Integrator1_DSTATE += 0.01F * FMS_DW.Integrator_DSTATE;
+
+        /* Sum: '<S73>/Subtract3' */
+        rtb_Gain_cl = rtb_Gain - FMS_ConstB.d;
+
+        /* Sum: '<S73>/Add6' */
+        rtb_Saturation = rtb_Gain + FMS_ConstB.d;
+
+        /* Signum: '<S73>/Sign5' */
+        if (rtb_Gain < 0.0F) {
+          rtb_Switch_f_idx_1 = -1.0F;
+        } else if (rtb_Gain > 0.0F) {
+          rtb_Switch_f_idx_1 = 1.0F;
+        } else {
+          rtb_Switch_f_idx_1 = rtb_Gain;
+        }
+
+        /* End of Signum: '<S73>/Sign5' */
+
+        /* Signum: '<S73>/Sign3' */
+        if (rtb_Saturation < 0.0F) {
+          rtb_Saturation = -1.0F;
+        } else {
+          if (rtb_Saturation > 0.0F) {
+            rtb_Saturation = 1.0F;
+          }
+        }
+
+        /* End of Signum: '<S73>/Sign3' */
+
+        /* Signum: '<S73>/Sign4' */
+        if (rtb_Gain_cl < 0.0F) {
+          rtb_Gain_cl = -1.0F;
+        } else {
+          if (rtb_Gain_cl > 0.0F) {
+            rtb_Gain_cl = 1.0F;
+          }
+        }
+
+        /* End of Signum: '<S73>/Sign4' */
+
+        /* Signum: '<S73>/Sign6' */
+        if (rtb_Gain < 0.0F) {
+          rtb_Switch_f_idx_2 = -1.0F;
+        } else if (rtb_Gain > 0.0F) {
+          rtb_Switch_f_idx_2 = 1.0F;
+        } else {
+          rtb_Switch_f_idx_2 = rtb_Gain;
+        }
+
+        /* End of Signum: '<S73>/Sign6' */
+
+        /* Update for DiscreteIntegrator: '<S70>/Integrator' incorporates:
+         *  Constant: '<S73>/const'
+         *  Gain: '<S73>/Gain3'
+         *  Product: '<S73>/Divide'
+         *  Product: '<S73>/Multiply5'
+         *  Product: '<S73>/Multiply6'
+         *  Sum: '<S73>/Subtract4'
+         *  Sum: '<S73>/Subtract5'
+         *  Sum: '<S73>/Subtract6'
+         */
+        FMS_DW.Integrator_DSTATE += ((rtb_Gain / FMS_ConstB.d -
+          rtb_Switch_f_idx_1) * FMS_ConstB.Gain4 * ((rtb_Saturation -
+          rtb_Gain_cl) * 0.5F) - rtb_Switch_f_idx_2 * 19.612F) * 0.01F;
 
         /* End of Outputs for SubSystem: '<S65>/Mission_SubSystem' */
 
@@ -3877,25 +4049,25 @@ void FMS_step(void)
            *  Delay: '<S43>/start_wp'
            */
           rtb_Switch_f_idx_0 += rtb_Gain * rtb_P_f_idx_0;
-          rtb_Saturation_k = 2.0F * rtb_Switch_f_idx_0;
+          rtb_Saturation = 2.0F * rtb_Switch_f_idx_0;
           rtb_MathFunction_k[0] = 0.0F;
           rtb_MathFunction_k[1] = 0.0F;
-          D = rtb_Saturation_k * rtb_Saturation_k -
+          D = rtb_Saturation * rtb_Saturation -
             ((rtb_TmpSignalConversionAtMath_0 * rtb_TmpSignalConversionAtMath_0
               + rtb_P_f_idx_0 * rtb_P_f_idx_0) - FMS_PARAM.L1 * FMS_PARAM.L1) *
             4.0F;
           rtb_Switch_f_idx_1 = -1.0F;
           if (D > 0.0F) {
             rtb_Switch_f_idx_1 = sqrtf(D);
-            rtb_Switch_f_idx_1 = fmaxf((-rtb_Saturation_k + rtb_Switch_f_idx_1) /
-              2.0F, (-rtb_Saturation_k - rtb_Switch_f_idx_1) / 2.0F);
+            rtb_Switch_f_idx_1 = fmaxf((-rtb_Saturation + rtb_Switch_f_idx_1) /
+              2.0F, (-rtb_Saturation - rtb_Switch_f_idx_1) / 2.0F);
             rtb_MathFunction_k[0] = rtb_Switch_f_idx_1 * rtb_P_i_idx_0 +
               FMS_DW.start_wp_DSTATE[0];
             rtb_MathFunction_k[1] = rtb_Switch_f_idx_1 * rtb_Gain +
               FMS_DW.start_wp_DSTATE[1];
           } else {
             if (D == 0.0F) {
-              rtb_Switch_f_idx_1 = -rtb_Saturation_k / 2.0F;
+              rtb_Switch_f_idx_1 = -rtb_Saturation / 2.0F;
               rtb_MathFunction_k[0] = rtb_Switch_f_idx_1 * rtb_P_i_idx_0 +
                 FMS_DW.start_wp_DSTATE[0];
               rtb_MathFunction_k[1] = rtb_Switch_f_idx_1 * rtb_Gain +
@@ -3931,9 +4103,8 @@ void FMS_step(void)
             rtb_TmpSignalConversionAtMath_0 = 1.0F;
             rtb_Switch_f_idx_2 = rtb_Switch_f_idx_0;
           } else {
-            rtb_Saturation_k = rtb_Switch_f_idx_0 / 1.29246971E-26F;
-            rtb_TmpSignalConversionAtMath_0 = rtb_Saturation_k *
-              rtb_Saturation_k;
+            rtb_Saturation = rtb_Switch_f_idx_0 / 1.29246971E-26F;
+            rtb_TmpSignalConversionAtMath_0 = rtb_Saturation * rtb_Saturation;
           }
 
           /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
@@ -3942,14 +4113,13 @@ void FMS_step(void)
 
           /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
           if (rtb_Switch_f_idx_0 > rtb_Switch_f_idx_2) {
-            rtb_Saturation_k = rtb_Switch_f_idx_2 / rtb_Switch_f_idx_0;
+            rtb_Saturation = rtb_Switch_f_idx_2 / rtb_Switch_f_idx_0;
             rtb_TmpSignalConversionAtMath_0 = rtb_TmpSignalConversionAtMath_0 *
-              rtb_Saturation_k * rtb_Saturation_k + 1.0F;
+              rtb_Saturation * rtb_Saturation + 1.0F;
             rtb_Switch_f_idx_2 = rtb_Switch_f_idx_0;
           } else {
-            rtb_Saturation_k = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
-            rtb_TmpSignalConversionAtMath_0 += rtb_Saturation_k *
-              rtb_Saturation_k;
+            rtb_Saturation = rtb_Switch_f_idx_0 / rtb_Switch_f_idx_2;
+            rtb_TmpSignalConversionAtMath_0 += rtb_Saturation * rtb_Saturation;
           }
 
           rtb_TmpSignalConversionAtMath_0 = rtb_Switch_f_idx_2 * sqrtf
@@ -4305,11 +4475,11 @@ void FMS_step(void)
       FMS_Y.FMS_Out.ctrl_mode = FMS_ConstB.DataTypeConversion2;
 
       /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-      /* Saturate: '<S105>/Saturation' incorporates:
-       *  Constant: '<S105>/Constant4'
+      /* Saturate: '<S107>/Saturation' incorporates:
+       *  Constant: '<S107>/Constant4'
        *  Inport: '<Root>/Pilot_Cmd'
        *  SignalConversion: '<S21>/Signal Copy2'
-       *  Sum: '<S105>/Sum'
+       *  Sum: '<S107>/Sum'
        */
       if (FMS_U.Pilot_Cmd.stick_throttle + 1.0F > 2.0F) {
         rtb_Gain = 2.0F;
@@ -4319,24 +4489,24 @@ void FMS_step(void)
         rtb_Gain = FMS_U.Pilot_Cmd.stick_throttle + 1.0F;
       }
 
-      /* End of Saturate: '<S105>/Saturation' */
+      /* End of Saturate: '<S107>/Saturation' */
       /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
       /* BusAssignment: '<S28>/Bus Assignment' incorporates:
        *  BusAssignment: '<S23>/Bus Assignment'
-       *  Constant: '<S105>/Constant5'
-       *  DataTypeConversion: '<S104>/Data Type Conversion'
-       *  Gain: '<S105>/Gain4'
+       *  Constant: '<S107>/Constant5'
+       *  DataTypeConversion: '<S106>/Data Type Conversion'
+       *  Gain: '<S107>/Gain4'
        *  Outport: '<Root>/FMS_Out'
-       *  Sum: '<S105>/Add'
+       *  Sum: '<S107>/Add'
        */
       FMS_Y.FMS_Out.actuator_cmd[0] = (uint16_T)fmodf(floorf(500.0F * rtb_Gain +
         1000.0F), 65536.0F);
 
       /* Outputs for Atomic SubSystem: '<S3>/FMS_Input' */
-      /* DataTypeConversion: '<S104>/Data Type Conversion1' incorporates:
-       *  Bias: '<S104>/Bias1'
-       *  Gain: '<S104>/Gain1'
+      /* DataTypeConversion: '<S106>/Data Type Conversion1' incorporates:
+       *  Bias: '<S106>/Bias1'
+       *  Gain: '<S106>/Gain1'
        *  Inport: '<Root>/Pilot_Cmd'
        *  SignalConversion: '<S21>/Signal Copy2'
        */
@@ -4347,7 +4517,7 @@ void FMS_step(void)
 
       /* BusAssignment: '<S28>/Bus Assignment' incorporates:
        *  BusAssignment: '<S23>/Bus Assignment'
-       *  DataTypeConversion: '<S104>/Data Type Conversion1'
+       *  DataTypeConversion: '<S106>/Data Type Conversion1'
        *  Outport: '<Root>/FMS_Out'
        */
       FMS_Y.FMS_Out.actuator_cmd[1] = (uint16_T)(rtb_Gain < 0.0F ? (int32_T)
@@ -4382,7 +4552,7 @@ void FMS_step(void)
   /* BusAssignment: '<S23>/Bus Assignment' incorporates:
    *  Constant: '<S23>/Constant'
    *  DataTypeConversion: '<S23>/Data Type Conversion'
-   *  DiscreteIntegrator: '<S126>/Discrete-Time Integrator'
+   *  DiscreteIntegrator: '<S128>/Discrete-Time Integrator'
    *  Outport: '<Root>/FMS_Out'
    *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy4Inport1'
    *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy5Inport1'
@@ -4397,8 +4567,8 @@ void FMS_step(void)
 
   /* End of Outputs for SubSystem: '<S3>/FMS_Input' */
 
-  /* Update for DiscreteIntegrator: '<S126>/Discrete-Time Integrator' incorporates:
-   *  Constant: '<S126>/Constant'
+  /* Update for DiscreteIntegrator: '<S128>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S128>/Constant'
    */
   FMS_DW.DiscreteTimeIntegrator_DSTATE_g += FMS_EXPORT.period;
 
@@ -4528,7 +4698,7 @@ void FMS_init(void)
   /* SystemInitialize for IfAction SubSystem: '<S20>/Arm' */
   /* SystemInitialize for IfAction SubSystem: '<S22>/SubMode' */
   /* SystemInitialize for IfAction SubSystem: '<S29>/Return' */
-  /* InitializeConditions for Delay: '<S110>/Delay' */
+  /* InitializeConditions for Delay: '<S112>/Delay' */
   FMS_DW.icLoad_c = 1U;
 
   /* End of SystemInitialize for SubSystem: '<S29>/Return' */
@@ -4544,6 +4714,14 @@ void FMS_init(void)
    */
   FMS_DW.DelayInput1_DSTATE_pe = 0U;
 
+  /* SystemInitialize for Resettable SubSystem: '<S65>/Mission_SubSystem' */
+  /* InitializeConditions for DiscreteIntegrator: '<S70>/Integrator1' */
+  FMS_DW.Integrator1_DSTATE = 0.0F;
+
+  /* InitializeConditions for DiscreteIntegrator: '<S70>/Integrator' */
+  FMS_DW.Integrator_DSTATE = 0.0F;
+
+  /* End of SystemInitialize for SubSystem: '<S65>/Mission_SubSystem' */
   /* End of SystemInitialize for SubSystem: '<S27>/Mission' */
   /* End of SystemInitialize for SubSystem: '<S22>/Auto' */
 
