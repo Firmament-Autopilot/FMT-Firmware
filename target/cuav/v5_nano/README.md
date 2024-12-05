@@ -1,44 +1,43 @@
 CUAV V5+ Flight Controller
 ============================
 
-The CUAV v5 Plus is an advanced STM32F765 autopilot designed and made by CUAV. It is a variant of the CUAV V5, updated to use Pixhawk standard pinouts. The modular design allows the users to customize their own carrier board. The Carrier Board design reference is [here](https://github.com/cuav/hardware/tree/master/V5_Autopilot/V5%2B/V5%2BBASE)
+V5 nano is an autopilot for space-constrained applications manufactured by CUAV®. It is based on the Pixhawk FMUv5 design standard and is compatible with PX4 firmware and ArduPilot firmware. The autopilot combines small size with powerful features, and can be used not only in ordinary drones, but also 220mm racing drones and other space limited vehicles. The Carrier Board design reference is [here](https://github.com/cuav/hardware/tree/master/V5_Autopilot/V5_NANO)
 
-<div align=center><img src="https://ardupilot.org/copter/_images/v5plus_01.png" width="50%"></div>
+<div align=center><img src="https://www.cuav.net/wp-content/uploads/2019/09/nono05.png" width="50%"></div>
+
+
 
 ## Feature
 
-- **Processor**
-  - 32-bit ARM Cortex M7 core with DPFPU
-  - 216 Mhz/512 KB RAM/2 MB Flash
-  - 32 bit IOMCU co-processor
-- **Sensors**
-  - InvenSense ICM20689 accelerometer / gyroscope
-  - InvenSense ICM20602 : accelerometer / gyroscope
-  - Bosch BMI055 accelerometer / gyroscope
-  - MS5611 barometer
-  - IST8310 magnetometer
-- **Power**
-  - Operating power: 4.3~5.4V
-  - USB Input: 4.75~5.25V
-  - High-power servo rail, up to 36V (servo rail does not power the autopilot)
-  - Dual voltage and current monitor inputs
-  - CUAV v5 Plus can be triple redundant if power is provided to both battery monitor inputs and the USB port
-- **Interfaces**
-  - 8 - 14 PWM servo outputs (6 IOMCU, 8 FMU)
-  - 3 dedicated PWM/Capture inputs on FMU
-  - S.Bus servo output
-  - PPM connector supports only PPM
-  - SBUS/DSM/RSSI connector supports all RC protocols (including SBUS, DSM, ST24, SRXL and PPM)
-  - Analog / PWM RSSI input
-  - 5x general purpose serial ports
-  - 4x I2C ports
-  - 4x SPI bus
-  - 2x CAN Bus ports
-  - 2x analog battery monitor ports
-- **Other**
-  - Weight: 90g
-  - Dimensions: 85.5mm x 42mm x 33mm
-  - Operating temperature: -20 ~ 80°c（Measured value）
+Main FMU Processor: STM32F765◦32 Bit Arm® Cortex®-M7, 216MHz, 2MB memory, 512KB RAM
+
+- **On-board sensors:**
+  - Accel/Gyro: ICM-20689
+  - Accel/Gyro: ICM-20602
+  - Accel/Gyro: BMI055
+  - Magnetometer: IST8310
+  - Barometer: MS5611
+- **Interfaces:**
+  - Up to 11 PWM outputs(8 standard pwm output +3 Optional pwm output )*
+  - 3 dedicated PWM/Capture inputs on FMU*
+  - 1 nARMED
+  - Dedicated R/C input for CPPM
+  - Dedicated R/C input for Spektrum / DSM and S.Bus
+  - analog / PWM RSSI input
+  - 4 general purpose serial ports
+  - 4 I2C ports
+  - 4 SPI buses
+  - 2 CANBuses
+  - Analog inputs for voltage / current of battery
+  - 2 additional analog input
+- **Power System:**
+  - Power Brick Input: 4.75~5.5V
+  - USB Power Input: 4.75~5.25V
+  - Servo Rail Input: 0~36V
+- **Weight and Dimensions:**
+  - Dimensions: 60*40*14mm
+- **Other Characteristics:**
+  - Operating temperature: -20 ~ 85°c（Measured value）
 
 ## Wiki
 
