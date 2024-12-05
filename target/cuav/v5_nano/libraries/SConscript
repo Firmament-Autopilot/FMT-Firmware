@@ -1,0 +1,8 @@
+# for module compiling
+import os
+from building import *
+
+# reuse libraries of pixhawk fmuv5
+objs = SConscript('../../../../pixhawk/fmu-v5/libraries/SConscript', variant_dir='libraries')
+
+Return('objs')
