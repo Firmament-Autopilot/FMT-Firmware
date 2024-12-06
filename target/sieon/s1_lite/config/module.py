@@ -33,7 +33,7 @@ MODULES += [
     'syscmd/cmd_mcn.c',
     'syscmd/cmd_act.c',
     'syscmd/cmd_task.c',
-    # 'syscmd/cmd_mlog.c',
+    'syscmd/cmd_mlog.c',
     'syscmd/cmd_calib.c',
     'syscmd/cmd_exec.c',
     'syscmd/cmd_delay.c',

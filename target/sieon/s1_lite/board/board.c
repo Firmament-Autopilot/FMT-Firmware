@@ -22,14 +22,12 @@
 #include <string.h>
 
 #include "board_device.h"
-#include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883l.h"
-#include "driver/mtd/w25qxx.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -362,7 +360,6 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
-    // RT_CHECK(drv_w25qxx_init("spi5_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
