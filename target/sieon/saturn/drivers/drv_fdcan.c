@@ -19,6 +19,11 @@ static can_device can1_dev = {
     .config = CAN_DEFAULT_CONFIG,
 };
 
+static can_device can2_dev = {
+    .ops = &can_dev_ops,
+    .config = CAN_DEFAULT_CONFIG,
+};
+
 void FDCAN1_IT0_IRQHandler(void)
 {
     HAL_FDCAN_IRQHandler(&hfdcan1);
@@ -60,10 +65,10 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan)
         HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
         /* FDCAN1 interrupt Init */
-        HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(FDCAN1_IT0_IRQn);
-        HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
+        // HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 0, 0);
+        // HAL_NVIC_EnableIRQ(FDCAN1_IT0_IRQn);
+        // HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
+        // HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
         /* USER CODE BEGIN FDCAN1_MspInit 1 */
 
         /* USER CODE END FDCAN1_MspInit 1 */
@@ -128,14 +133,14 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
             msg.id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
             msg.frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
             msg.data_len = RxHeader.DataLength;
-            memcpy(msg.data, RxData, sizeof(msg.data));
+            memcpy(msg.data, RxData, msg.data_len);
 
             hal_can_notify(&can1_dev, CAN_EVENT_RX_IND, &msg);
         }
 
+        /* Enable FDCAN_IT_RX_FIFO0_NEW_MESSAGE interrupt */
         if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
             /* Notification Error */
-            printf("error2\n");
         }
     }
 }
@@ -157,9 +162,9 @@ static rt_err_t fdcan_init(void)
     hfdcan1.Init.DataTimeSeg1 = 1;
     hfdcan1.Init.DataTimeSeg2 = 1;
     hfdcan1.Init.MessageRAMOffset = 0;
-    hfdcan1.Init.StdFiltersNbr = 0;
+    hfdcan1.Init.StdFiltersNbr = 1;
     hfdcan1.Init.ExtFiltersNbr = 0;
-    hfdcan1.Init.RxFifo0ElmtsNbr = 1;
+    hfdcan1.Init.RxFifo0ElmtsNbr = 10;
     hfdcan1.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
     hfdcan1.Init.RxFifo1ElmtsNbr = 0;
     hfdcan1.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
@@ -167,7 +172,7 @@ static rt_err_t fdcan_init(void)
     hfdcan1.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
     hfdcan1.Init.TxEventsNbr = 0;
     hfdcan1.Init.TxBuffersNbr = 0;
-    hfdcan1.Init.TxFifoQueueElmtsNbr = 1;
+    hfdcan1.Init.TxFifoQueueElmtsNbr = 10;
     hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
     hfdcan1.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
     if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK) {
@@ -179,7 +184,8 @@ static rt_err_t fdcan_init(void)
     sFilterConfig.IdType = FDCAN_STANDARD_ID;
     sFilterConfig.FilterIndex = 0;
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
-    sFilterConfig.FilterConfig = FDCAN_FILTER_REJECT;
+    sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
+    /* Accept all id */
     sFilterConfig.FilterID1 = 0x000;
     sFilterConfig.FilterID2 = 0x000;
     if (HAL_FDCAN_ConfigFilter(&hfdcan1, &sFilterConfig) != HAL_OK) {
@@ -189,6 +195,7 @@ static rt_err_t fdcan_init(void)
 
     /* Configure global filter to reject all non-matching frames */
     HAL_FDCAN_ConfigGlobalFilter(&hfdcan1, FDCAN_REJECT, FDCAN_REJECT, FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
+    // HAL_FDCAN_ConfigGlobalFilter(&hfdcan1, FDCAN_ACCEPT_IN_RX_FIFO0, FDCAN_ACCEPT_IN_RX_FIFO0, FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
 
     /* Start the FDCAN module */
     if (HAL_FDCAN_Start(&hfdcan1) != HAL_OK) {
@@ -221,8 +228,13 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     TxHeader.MessageMarker = 0;
 
     if (HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &TxHeader, msg->data) == HAL_OK) {
+        /* can msg has been put to tx fifo, notify tx complete */
+        hal_can_notify(&can1_dev, CAN_EVENT_TX_DONE, RT_NULL);
         return 1;
     }
+
+    /* in this case we also notify tx done to release tx cplt wait */
+    hal_can_notify(&can1_dev, CAN_EVENT_TX_DONE, RT_NULL);
 
     return 0;
 }
@@ -232,18 +244,19 @@ static int recv_canmsg(can_dev_t can, can_msg_t msg)
     FDCAN_RxHeaderTypeDef RxHeader;
     uint8_t RxData[16];
 
-    /* Retrieve Rx messages from RX FIFO0 */
-    if (HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
-        can_msg msg;
+    if (can == &can1_dev) {
+        /* Retrieve Rx messages from RX FIFO0 */
+        if (HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
+            msg->std_id = RxHeader.Identifier;
+            msg->ext_id = RxHeader.Identifier;
+            msg->id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
+            msg->frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
+            msg->data_len = RxHeader.DataLength;
+            memcpy(msg->data, RxData, msg->data_len);
 
-        msg.std_id = RxHeader.Identifier;
-        msg.ext_id = RxHeader.Identifier;
-        msg.id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
-        msg.frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
-        msg.data_len = RxHeader.DataLength;
-        memcpy(msg.data, RxData, sizeof(msg.data));
-
-        return 1;
+            return 1;
+        }
+    } else if (can == &can2_dev) {
     }
 
     return 0;

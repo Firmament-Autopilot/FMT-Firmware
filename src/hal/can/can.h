@@ -12,11 +12,10 @@ extern "C" {
 #define CAN_MSG_LEN         sizeof(can_msg)
 #define CAN_RX_FIFO_SIZE    8
 
-#define CAN_BAUD_RATE_5000K 5000 /* 5000 kBit/sec */
-#define CAN_BAUD_RATE_2000K 2000 /* 2000 kBit/sec */
 #define CAN_BAUD_RATE_1000K 1000 /* 1000 kBit/sec */
-#define CAN_BAUD_RATE_800K  800  /* 800 kBit/sec */
 #define CAN_BAUD_RATE_500K  500  /* 500 kBit/sec */
+#define CAN_BAUD_RATE_250K  250  /* 500 kBit/sec */
+#define CAN_BAUD_RATE_125K  125  /* 500 kBit/sec */
 
 /* can device command */
 #define CAN_OPEN_DEVICE     1000
