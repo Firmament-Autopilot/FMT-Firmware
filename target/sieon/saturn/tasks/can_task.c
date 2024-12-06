@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,49 +18,50 @@
 #include "hal/can/can.h"
 #include "module/task_manager/task_manager.h"
 
-fmt_err_t task_local_init(void)
+static rt_device_t can_dev;
+
+fmt_err_t task_can_init(void)
 {
+    can_dev = rt_device_find("can1");
     return FMT_EOK;
 }
 
-char** str = (char*[]) { "Hello", "C++", "World", NULL };
-
-void task_local_entry(void* parameter)
+void task_can_entry(void* parameter)
 {
-    printf("Hello FMT! This is a local demo task.\n");
-
-    rt_device_t can_dev = rt_device_find("can1");
-    rt_device_open(can_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
-
     can_msg msg;
+    struct can_filter filter = { .filter_type = CAN_FILTER_TYPE_MASK, .filter_id1 = 0x200, .filter_id2 = 0xFFF };
 
+    rt_device_open(can_dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
+    rt_device_control(can_dev, CAN_SET_RX_FILTER, &filter);
+
+    /* main loop */
     while (1) {
-        while (rt_device_read(can_dev, RT_WAITING_FOREVER, &msg, 1)) {
+        while (rt_device_read(can_dev, RT_WAITING_NO, &msg, 1) > 0) {
             printf("can recv msg, id:0x%x, data:%x,%x,%x,%x,%x,%x,%x,%x\n", msg.std_id, msg.data[0], msg.data[1], msg.data[2], msg.data[3], msg.data[4], msg.data[5], msg.data[6], msg.data[7]);
-
-            msg.std_id = 0x200;
-            msg.id_type = CAN_ID_STANDARD;
-            msg.frame_type = CAN_FRAME_DATA;
-            msg.data_len = 8;
-            msg.data[0] = 0x88;
-            msg.data[1] = 0x77;
-            msg.data[2] = 0x66;
-            msg.data[3] = 0x55;
-            msg.data[4] = 0x44;
-            msg.data[5] = 0xFF;
-            msg.data[6] = 0xEE;
-            msg.data[7] = 0xDD;
-            rt_device_write(can_dev, 5000, &msg, 1);
         }
 
-        // sys_msleep(1000);
+        msg.std_id = 0x100;
+        msg.id_type = CAN_ID_STANDARD;
+        msg.frame_type = CAN_FRAME_DATA;
+        msg.data_len = 8;
+        msg.data[0] = 0x11;
+        msg.data[1] = 0x22;
+        msg.data[2] = 0x33;
+        msg.data[3] = 0x44;
+        msg.data[4] = 0x55;
+        msg.data[5] = 0x66;
+        msg.data[6] = 0x77;
+        msg.data[7] = 0x88;
+        rt_device_write(can_dev, RT_WAITING_FOREVER, &msg, 1);
+
+        sys_msleep(500);
     }
 }
 
 TASK_EXPORT __fmt_task_desc = {
-    .name = "local",
-    .init = task_local_init,
-    .entry = task_local_entry,
+    .name = "can",
+    .init = task_can_init,
+    .entry = task_can_entry,
     .priority = 25,
     .auto_start = true,
     .stack_size = 4096,

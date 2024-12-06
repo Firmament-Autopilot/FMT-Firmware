@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 // Board Information
-#define TARGET_NAME "SIEON Saturn"
+#define TARGET_NAME "SIEON S1-Lite"
 
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (512 * 1024) // 512K
