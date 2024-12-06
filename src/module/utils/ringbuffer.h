@@ -32,7 +32,7 @@ ringbuffer* ringbuffer_create(uint32_t size);
 ringbuffer* ringbuffer_static_create(uint32_t size, uint8_t* buffer);
 uint32_t ringbuffer_getlen(ringbuffer* rb);
 uint8_t ringbuffer_putc(ringbuffer* rb, uint8_t c);
-uint8_t ringbuffer_getc(ringbuffer* rb);
+uint8_t ringbuffer_getc(ringbuffer* rb, uint8_t* c);
 uint32_t ringbuffer_get(ringbuffer* rb, uint8_t* ptr, uint32_t len);
 uint32_t ringbuffer_put(ringbuffer* rb, const uint8_t* ptr, uint32_t len);
 void ringbuffer_flush(ringbuffer* rb);
