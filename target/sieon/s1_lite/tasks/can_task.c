@@ -58,13 +58,13 @@ void task_can_entry(void* parameter)
     }
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "can",
-    .init = task_can_init,
-    .entry = task_can_entry,
-    .priority = 25,
-    .auto_start = true,
-    .stack_size = 4096,
-    .param = NULL,
-    .dependency = NULL
-};
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "can",
+//     .init = task_can_init,
+//     .entry = task_can_entry,
+//     .priority = 25,
+//     .auto_start = true,
+//     .stack_size = 4096,
+//     .param = NULL,
+//     .dependency = NULL
+// };

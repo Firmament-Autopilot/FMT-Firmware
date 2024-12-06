@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "SIEON Saturn J-Link",
+            "name": "SIEON S1Lite J-Link",
             "type": "cortex-debug",
             "request": "launch",
             "cwd": "${workspaceRoot}",
-            "executable": "target/sieon/saturn/build/fmt_sieon-saturn.elf",
+            "executable": "target/sieon/s1_lite/build/fmt_sieon-s1_lite.elf",
             "serverpath": "${env:JLINK_SERVER}",
             "servertype": "jlink",
             "device": "STM32H743II",
             "interface": "swd",
             "armToolchainPath": "${env:RTT_EXEC_PATH}",
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
-            "svdFile": "target/sieon/saturn/STM32H7x3.svd",
+            "svdFile": "target/sieon/s1_lite/STM32H7x3.svd",
             "runToMain": true
         },{
             "name": "FMUv5 Debug J-Link",

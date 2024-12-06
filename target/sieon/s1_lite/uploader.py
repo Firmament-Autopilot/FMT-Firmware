@@ -734,7 +734,7 @@ def main():
     parser.add_argument('--force', action='store_true', default=False,
                         help='Override board type check, or silicon errata checks and continue loading')
     parser.add_argument('--boot-delay', type=int, default=None, help='minimum boot delay to store in flash')
-    parser.add_argument('--firmware', action="store", default='build/fmt_sieon-saturn.bin', help="Firmware file to be uploaded")
+    parser.add_argument('--firmware', action="store", default='build/fmt_sieon-s1_lite.bin', help="Firmware file to be uploaded")
     args = parser.parse_args()
 
     # We need to check for pyserial because the import itself doesn't
@@ -842,7 +842,7 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*MindPX*',
+                    serial_list = auto_detect_serial(preferred_list=['*MindPX*', '*ArduPilot*',
                         "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
 
                     if len(serial_list) == 0:
@@ -855,9 +855,9 @@ def main():
                     if len(serial_list) > 1:
                         print('Auto-detected serial ports are:')
                         for port in serial_list:
-                            # print(" {:}".format(port))
+                            print(" {:}".format(port))
                             pass
-                    # print('Using port {:}'.format(serial_list[0]))
+                    print('Using port {:}'.format(serial_list[0]))
                     args.port = serial_list[0].device
                     break
                 except RuntimeError as ex:
@@ -873,7 +873,7 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*MindPX*',
+                    serial_list = auto_detect_serial(preferred_list=['*MindPX*', '*ArduPilot*',
                         "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
                 else:
                     serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
@@ -884,11 +884,11 @@ def main():
                     time.sleep(2)
                     continue
 
-                # if len(serial_list) > 1:
-                #     print('Auto-detected serial ports are:')
-                #     for port in serial_list:
-                #         print(" {:}".format(port))
-                # print('Using port {:}'.format(serial_list[0]))
+                if len(serial_list) > 1:
+                    print('Auto-detected serial ports are:')
+                    for port in serial_list:
+                        print(" {:}".format(port))
+                print('Using port {:}'.format(serial_list[0]))
                 args.port = serial_list[0].device
 
 
