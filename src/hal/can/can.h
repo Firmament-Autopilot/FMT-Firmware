@@ -14,8 +14,8 @@ extern "C" {
 
 #define CAN_BAUD_RATE_1000K 1000 /* 1000 kBit/sec */
 #define CAN_BAUD_RATE_500K  500  /* 500 kBit/sec */
-#define CAN_BAUD_RATE_250K  250  /* 500 kBit/sec */
-#define CAN_BAUD_RATE_125K  125  /* 500 kBit/sec */
+#define CAN_BAUD_RATE_250K  250  /* 250 kBit/sec */
+#define CAN_BAUD_RATE_125K  125  /* 125 kBit/sec */
 
 /* can device command */
 #define CAN_OPEN_DEVICE     1000
