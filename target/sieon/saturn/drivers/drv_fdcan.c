@@ -296,6 +296,31 @@ static rt_err_t can_control(can_dev_t can, int cmd, void* arg)
         }
         break;
 
+    case CAN_SET_RX_FILTER: {
+        FDCAN_FilterTypeDef sFilterConfig;
+        struct can_filter* filter = (struct can_filter*)arg;
+        FDCAN_HandleTypeDef* hfdcan = (FDCAN_HandleTypeDef*)can->parent.user_data;
+
+        if (filter->filter_type == CAN_FILTER_TYPE_MASK) {
+            sFilterConfig.FilterType = FDCAN_FILTER_MASK;
+        } else if (filter->filter_type == CAN_FILTER_TYPE_RANGE) {
+            sFilterConfig.FilterType = FDCAN_FILTER_RANGE;
+        } else {
+            return RT_EINVAL;
+        }
+
+        /* Configure Rx filter */
+        sFilterConfig.IdType = FDCAN_STANDARD_ID;
+        sFilterConfig.FilterIndex = 0;
+        sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
+        sFilterConfig.FilterID1 = filter->filter_id1;
+        sFilterConfig.FilterID2 = filter->filter_id2;
+        if (HAL_FDCAN_ConfigFilter(hfdcan, &sFilterConfig) != HAL_OK) {
+            /* Filter configuration Error */
+            return RT_ERROR;
+        }
+    } break;
+
     default:
         break;
     }

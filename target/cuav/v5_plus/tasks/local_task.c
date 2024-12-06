@@ -43,7 +43,7 @@ void task_local_entry(void* parameter)
 //     .entry = task_local_entry,
 //     .priority = 25,
 //     .auto_start = true,
-//     .stack_size = 1024,
+//     .stack_size = 4096,
 //     .param = NULL,
 //     .dependency = NULL
 // };

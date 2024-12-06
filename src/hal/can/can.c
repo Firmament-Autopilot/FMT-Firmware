@@ -7,7 +7,7 @@
 
 static rt_err_t hal_can_init(struct rt_device* dev)
 {
-    rt_err_t  ret = RT_EOK;
+    rt_err_t ret = RT_EOK;
     can_dev_t can_dev;
 
     RT_ASSERT(dev != RT_NULL);
@@ -23,7 +23,7 @@ static rt_err_t hal_can_init(struct rt_device* dev)
 
 static rt_err_t hal_can_open(rt_device_t dev, rt_uint16_t oflag)
 {
-    rt_err_t  ret = RT_EOK;
+    rt_err_t ret = RT_EOK;
     can_dev_t can_dev;
 
     RT_ASSERT(dev != RT_NULL);
@@ -49,7 +49,7 @@ static rt_err_t hal_can_open(rt_device_t dev, rt_uint16_t oflag)
 
 rt_err_t hal_can_close(rt_device_t dev)
 {
-    rt_err_t  ret = RT_EOK;
+    rt_err_t ret = RT_EOK;
     can_dev_t can_dev;
 
     RT_ASSERT(dev != RT_NULL);
@@ -71,14 +71,14 @@ rt_err_t hal_can_close(rt_device_t dev)
 }
 
 static rt_size_t hal_can_write(rt_device_t dev,
-                               rt_off_t    pos,
+                               rt_off_t pos,
                                const void* buffer,
-                               rt_size_t   size)
+                               rt_size_t size)
 {
-    can_dev_t  can_dev;
-    rt_size_t  s_size     = 0;
-    rt_int32_t timeout    = (rt_int32_t)pos;
-    can_msg_t  msg_buffer = (can_msg_t)buffer;
+    can_dev_t can_dev;
+    rt_size_t s_size = 0;
+    rt_int32_t timeout = (rt_int32_t)pos;
+    can_msg_t msg_buffer = (can_msg_t)buffer;
 
     RT_ASSERT(dev != RT_NULL);
     RT_ASSERT(buffer != RT_NULL);
@@ -106,12 +106,12 @@ static rt_size_t hal_can_write(rt_device_t dev,
 }
 
 static rt_size_t hal_can_read(rt_device_t dev,
-                              rt_off_t    pos,
-                              void*       buffer,
-                              rt_size_t   size)
+                              rt_off_t pos,
+                              void* buffer,
+                              rt_size_t size)
 {
-    can_dev_t  can_dev;
-    uint32_t   r_size  = 0;
+    can_dev_t can_dev;
+    uint32_t r_size = 0;
     rt_int32_t timeout = (rt_int32_t)pos;
 
     RT_ASSERT(dev != RT_NULL);
@@ -145,6 +145,35 @@ static rt_size_t hal_can_read(rt_device_t dev,
     }
 
     return r_size;
+}
+
+static rt_err_t hal_can_control(rt_device_t dev, int cmd, void* args)
+{
+    rt_err_t ret = RT_EOK;
+    can_dev_t can_dev;
+
+    RT_ASSERT(dev != RT_NULL);
+
+    can_dev = (can_dev_t)dev;
+
+    switch (cmd) {
+    case CAN_SET_RX_FILTER:
+        if (args == NULL)
+            return RT_EINVAL;
+
+        if (can_dev->ops->control) {
+            ret = can_dev->ops->control(can_dev, cmd, args);
+        }
+        break;
+
+    default:
+        /* invoke driver control function to handle command */
+        if (can_dev->ops->control) {
+            ret = can_dev->ops->control(can_dev, cmd, args);
+        }
+    }
+
+    return ret;
 }
 
 void hal_can_notify(can_device* can, int event, void* data)
@@ -190,7 +219,7 @@ void hal_can_notify(can_device* can, int event, void* data)
 rt_err_t hal_can_register(can_device* can,
                           const char* name,
                           rt_uint32_t flag,
-                          void*       data)
+                          void* data)
 {
     rt_err_t ret;
 
@@ -206,17 +235,17 @@ rt_err_t hal_can_register(can_device* can,
 
     device = &(can->parent);
 
-    device->type        = RT_Device_Class_CAN;
-    device->ref_count   = 0;
+    device->type = RT_Device_Class_CAN;
+    device->ref_count = 0;
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
 
-    device->init      = hal_can_init;
-    device->open      = hal_can_open;
-    device->close     = hal_can_close;
-    device->read      = hal_can_read;
-    device->write     = hal_can_write;
-    device->control   = RT_NULL;
+    device->init = hal_can_init;
+    device->open = hal_can_open;
+    device->close = hal_can_close;
+    device->read = hal_can_read;
+    device->write = hal_can_write;
+    device->control = hal_can_control;
     device->user_data = data;
 
     ret = rt_device_register(device, name, flag);
