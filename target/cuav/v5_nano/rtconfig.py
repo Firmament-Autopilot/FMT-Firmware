@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'cuav-v5+'
+BOARD = 'cuav-v5_nano'
 
 # toolchains options
 ARCH = 'arm'
