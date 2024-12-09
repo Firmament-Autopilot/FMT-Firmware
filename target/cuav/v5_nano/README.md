@@ -153,5 +153,10 @@ Task Initialize:
 | CAN1  | can1 | CAN1 |
 | CAN2  | can2 | CAN2 |
 
+| PWM   | Device  | Port         |
+| ------ | ------- | ------------ |
+| MAIN OUT  | main_out | M1-M8 |
+| AUX OUT  | aux_out | A1-A4 |
+
 ## Maintainer
 Josh Zou zoujiachi666@163.com
