@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2015
+ * Model version                  : 1.2016
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Dec  9 14:26:54 2024
+ * C/C++ source code generated on : Tue Dec 10 10:44:32 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -95,7 +95,7 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
-struct_IanTaCoVQ0ZTLiFhTJ6eFB FMS_PARAM = {
+struct_B4OPkzeRmVur9D1KA1RmPH FMS_PARAM = {
   { 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
     0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
 
@@ -107,7 +107,11 @@ struct_IanTaCoVQ0ZTLiFhTJ6eFB FMS_PARAM = {
   4.0F,
   0.7F,
   10U,
-  1U
+  1U,
+  500.0F,
+  1500U,
+  250.0F,
+  1500U
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<Root>/ACCEPT_R'
@@ -116,11 +120,15 @@ struct_IanTaCoVQ0ZTLiFhTJ6eFB FMS_PARAM = {
                                         *   '<S29>/Constant6'
                                         *   '<S30>/Constant6'
                                         *   '<S37>/Gain'
+                                        *   '<S111>/Bias1'
+                                        *   '<S111>/Gain1'
                                         *   '<S114>/L1'
                                         *   '<S114>/vel'
                                         *   '<S40>/Gain'
                                         *   '<S74>/L1'
                                         *   '<S74>/vel'
+                                        *   '<S112>/Constant5'
+                                        *   '<S112>/Gain4'
                                         *   '<S116>/AY_P'
                                         *   '<S76>/AY_P'
                                         *   '<S44>/L1'
@@ -4585,32 +4593,35 @@ void FMS_step(void)
 
       /* Outputs for Atomic SubSystem: '<S4>/FMS_Input' */
       /* Saturate: '<S112>/Saturation' incorporates:
-       *  Constant: '<S112>/Constant4'
        *  Inport: '<Root>/Pilot_Cmd'
        *  SignalConversion: '<S26>/Signal Copy2'
-       *  Sum: '<S112>/Sum'
        */
-      if (FMS_U.Pilot_Cmd.stick_throttle + 1.0F > 2.0F) {
-        rtb_Gain = 2.0F;
-      } else if (FMS_U.Pilot_Cmd.stick_throttle + 1.0F < 0.0F) {
-        rtb_Gain = 0.0F;
+      if (FMS_U.Pilot_Cmd.stick_throttle > 1.0F) {
+        rtb_Gain = 1.0F;
+      } else if (FMS_U.Pilot_Cmd.stick_throttle < -1.0F) {
+        rtb_Gain = -1.0F;
       } else {
-        rtb_Gain = FMS_U.Pilot_Cmd.stick_throttle + 1.0F;
+        rtb_Gain = FMS_U.Pilot_Cmd.stick_throttle;
       }
 
       /* End of Saturate: '<S112>/Saturation' */
       /* End of Outputs for SubSystem: '<S4>/FMS_Input' */
 
-      /* BusAssignment: '<S33>/Bus Assignment' incorporates:
-       *  BusAssignment: '<S28>/Bus Assignment'
+      /* DataTypeConversion: '<S111>/Data Type Conversion' incorporates:
        *  Constant: '<S112>/Constant5'
-       *  DataTypeConversion: '<S111>/Data Type Conversion'
        *  Gain: '<S112>/Gain4'
-       *  Outport: '<Root>/FMS_Out'
        *  Sum: '<S112>/Add'
        */
-      FMS_Y.FMS_Out.actuator_cmd[0] = (uint16_T)fmodf(floorf(500.0F * rtb_Gain +
-        1000.0F), 65536.0F);
+      rtb_Gain = fmodf(floorf(FMS_PARAM.THROTTLE_SCALE * rtb_Gain + (real32_T)
+        FMS_PARAM.THROTTLE_BIAS), 65536.0F);
+
+      /* BusAssignment: '<S33>/Bus Assignment' incorporates:
+       *  BusAssignment: '<S28>/Bus Assignment'
+       *  DataTypeConversion: '<S111>/Data Type Conversion'
+       *  Outport: '<Root>/FMS_Out'
+       */
+      FMS_Y.FMS_Out.actuator_cmd[0] = (uint16_T)(rtb_Gain < 0.0F ? (int32_T)
+        (uint16_T)-(int16_T)(uint16_T)-rtb_Gain : (int32_T)(uint16_T)rtb_Gain);
 
       /* Outputs for Atomic SubSystem: '<S4>/FMS_Input' */
       /* DataTypeConversion: '<S111>/Data Type Conversion1' incorporates:
@@ -4619,8 +4630,8 @@ void FMS_step(void)
        *  Inport: '<Root>/Pilot_Cmd'
        *  SignalConversion: '<S26>/Signal Copy2'
        */
-      rtb_Gain = fmodf(floorf(500.0F * FMS_U.Pilot_Cmd.stick_roll + 1500.0F),
-                       65536.0F);
+      rtb_Gain = fmodf(floorf(FMS_PARAM.SERVO_SCALE * FMS_U.Pilot_Cmd.stick_roll
+        + (real32_T)FMS_PARAM.SERVO_BIAS), 65536.0F);
 
       /* End of Outputs for SubSystem: '<S4>/FMS_Input' */
 

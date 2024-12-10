@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2015
+ * Model version                  : 1.2016
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Dec  9 14:26:54 2024
+ * C/C++ source code generated on : Tue Dec 10 10:44:32 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -249,7 +249,7 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_IanTaCoVQ0ZTLiFhTJ6eFB FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_B4OPkzeRmVur9D1KA1RmPH FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<Root>/ACCEPT_R'
                                                 *   '<S3>/Constant1'
@@ -257,11 +257,15 @@ extern struct_IanTaCoVQ0ZTLiFhTJ6eFB FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S29>/Constant6'
                                                 *   '<S30>/Constant6'
                                                 *   '<S37>/Gain'
+                                                *   '<S111>/Bias1'
+                                                *   '<S111>/Gain1'
                                                 *   '<S114>/L1'
                                                 *   '<S114>/vel'
                                                 *   '<S40>/Gain'
                                                 *   '<S74>/L1'
                                                 *   '<S74>/vel'
+                                                *   '<S112>/Constant5'
+                                                *   '<S112>/Gain4'
                                                 *   '<S116>/AY_P'
                                                 *   '<S76>/AY_P'
                                                 *   '<S44>/L1'

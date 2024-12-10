@@ -43,6 +43,10 @@ static param_t __param_list[] = {
     PARAM_FLOAT(AY_P, 0.7, false),
     PARAM_UINT16(LOST_RETURN_TIME, 10, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
+    PARAM_FLOAT(THROTTLE_SCALE, 500, false),
+    PARAM_UINT16(THROTTLE_BIAS, 1500, false),
+    PARAM_FLOAT(SERVO_SCALE, 250, false),
+    PARAM_UINT16(SERVO_BIAS, 1500, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -251,6 +255,10 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, AY_P), &FMS_PARAM.AY_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_TIME), &FMS_PARAM.LOST_RETURN_TIME));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_EN), &FMS_PARAM.LOST_RETURN_EN));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, THROTTLE_SCALE), &FMS_PARAM.THROTTLE_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, THROTTLE_BIAS), &FMS_PARAM.THROTTLE_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, SERVO_SCALE), &FMS_PARAM.SERVO_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, SERVO_BIAS), &FMS_PARAM.SERVO_BIAS));
 }
 
 void fms_interface_step(uint32_t timestamp)

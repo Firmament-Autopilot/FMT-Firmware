@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1120
+ * Model version                  : 1.1121
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec  4 18:07:53 2024
+ * C/C++ source code generated on : Tue Dec 10 10:47:05 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,18 +37,18 @@
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S17>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S19>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S19>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S21>/Discrete-Time Integrator1' */
   uint32_T DiscreteTimeIntegrator_DSTATE_i;/* '<S3>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S17>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S19>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S19>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S19>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S21>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S21>/Discrete-Time Integrator1' */
 } DW_Controller_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T VectorConcatenate3[3];/* '<S15>/Vector Concatenate3' */
-  const real32_T Constant;             /* '<S17>/Constant' */
+  const real32_T VectorConcatenate3[3];/* '<S17>/Vector Concatenate3' */
+  const real32_T Constant;             /* '<S19>/Constant' */
 } ConstB_Controller_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -94,11 +94,13 @@ extern struct_2HV4h0wnvObh5FK8iPBjE CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                    *   '<S7>/Bias1'
                                                    *   '<S7>/Gain'
                                                    *   '<S7>/Gain1'
-                                                   *   '<S16>/gain1'
-                                                   *   '<S16>/Saturation'
-                                                   *   '<S17>/gain1'
-                                                   *   '<S17>/Discrete-Time Integrator'
                                                    *   '<S18>/gain1'
+                                                   *   '<S18>/Saturation'
+                                                   *   '<S19>/gain1'
+                                                   *   '<S19>/Discrete-Time Integrator'
+                                                   *   '<S20>/gain1'
+                                                   *   '<S11>/Disarm'
+                                                   *   '<S12>/Standby'
                                                    */
 extern struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S3>/Constant'
@@ -144,15 +146,17 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S8>'   : 'Controller/Controller/Control_Allocation/Boat_1/Signal_Router'
  * '<S9>'   : 'Controller/Controller/Control_Allocation/Boat_1/actuator_cmd_routing'
  * '<S10>'  : 'Controller/Controller/Control_Allocation/Boat_1/Signal_Router/Compare To Constant1'
- * '<S11>'  : 'Controller/Controller/Speed_Controller/Error'
- * '<S12>'  : 'Controller/Controller/Speed_Controller/PID_Controller'
- * '<S13>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select'
- * '<S14>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM'
- * '<S15>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
- * '<S16>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control'
- * '<S17>'  : 'Controller/Controller/Speed_Controller/PID_Controller/I_Control'
- * '<S18>'  : 'Controller/Controller/Speed_Controller/PID_Controller/P_Control'
- * '<S19>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control/DT Filter'
+ * '<S11>'  : 'Controller/Controller/Control_Allocation/Boat_1/actuator_cmd_routing/Disarm'
+ * '<S12>'  : 'Controller/Controller/Control_Allocation/Boat_1/actuator_cmd_routing/Standby'
+ * '<S13>'  : 'Controller/Controller/Speed_Controller/Error'
+ * '<S14>'  : 'Controller/Controller/Speed_Controller/PID_Controller'
+ * '<S15>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select'
+ * '<S16>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM'
+ * '<S17>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
+ * '<S18>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control'
+ * '<S19>'  : 'Controller/Controller/Speed_Controller/PID_Controller/I_Control'
+ * '<S20>'  : 'Controller/Controller/Speed_Controller/PID_Controller/P_Control'
+ * '<S21>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control/DT Filter'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 
