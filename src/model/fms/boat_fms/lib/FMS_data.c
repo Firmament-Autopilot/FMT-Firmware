@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2016
+ * Model version                  : 1.2038
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Dec 10 10:44:32 2024
+ * C/C++ source code generated on : Thu Dec 12 10:12:05 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,16 +18,19 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  1.9966471893352524,                  /* '<S137>/Sum' */
-  0.0066943799901413165,               /* '<S137>/Multiply3' */
-  0.99330562000985867,                 /* '<S137>/Sum4' */
-  0.25F,                               /* '<S78>/Square' */
-  4.903F,                              /* '<S78>/Multiply' */
-  -19.612F,                            /* '<S78>/Gain4' */
+  1.9966471893352524,                  /* '<S152>/Sum' */
+  0.0066943799901413165,               /* '<S152>/Multiply3' */
+  0.99330562000985867,                 /* '<S152>/Sum4' */
+  0.25F,                               /* '<S90>/Square' */
+  4.903F,                              /* '<S90>/Multiply' */
+  -19.612F,                            /* '<S90>/Gain4' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S108>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S120>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S110>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S122>/Vector Concatenate3' */
+  0.25F,                               /* '<S132>/Square' */
+  4.903F,                              /* '<S132>/Multiply' */
+  -19.612F,                            /* '<S132>/Gain4' */
   3U,                                  /* '<S33>/Data Type Conversion' */
   12U,                                 /* '<S33>/Data Type Conversion1' */
   1U,                                  /* '<S33>/Data Type Conversion2' */
@@ -37,18 +40,18 @@ const ConstB_FMS_T FMS_ConstB = {
   3U,                                  /* '<S37>/Data Type Conversion' */
   8U,                                  /* '<S37>/Data Type Conversion1' */
   3U,                                  /* '<S37>/Data Type Conversion2' */
-  3U,                                  /* '<S74>/Data Type Conversion' */
-  4U,                                  /* '<S74>/Data Type Conversion1' */
-  5U,                                  /* '<S74>/Data Type Conversion2' */
-  3U,                                  /* '<S71>/Data Type Conversion' */
-  3U,                                  /* '<S71>/Data Type Conversion1' */
-  6U,                                  /* '<S71>/Data Type Conversion2' */
-  3U,                                  /* '<S113>/Data Type Conversion' */
-  6U,                                  /* '<S113>/Data Type Conversion1' */
-  5U,                                  /* '<S113>/Data Type Conversion2' */
-  3U,                                  /* '<S114>/Data Type Conversion' */
-  16U,                                 /* '<S114>/Data Type Conversion1' */
-  5U,                                  /* '<S114>/Data Type Conversion2' */
+  3U,                                  /* '<S86>/Data Type Conversion' */
+  4U,                                  /* '<S86>/Data Type Conversion1' */
+  5U,                                  /* '<S86>/Data Type Conversion2' */
+  3U,                                  /* '<S83>/Data Type Conversion' */
+  3U,                                  /* '<S83>/Data Type Conversion1' */
+  6U,                                  /* '<S83>/Data Type Conversion2' */
+  3U,                                  /* '<S126>/Data Type Conversion' */
+  6U,                                  /* '<S126>/Data Type Conversion1' */
+  5U,                                  /* '<S126>/Data Type Conversion2' */
+  3U,                                  /* '<S127>/Data Type Conversion' */
+  16U,                                 /* '<S127>/Data Type Conversion1' */
+  5U,                                  /* '<S127>/Data Type Conversion2' */
   2U,                                  /* '<S30>/Data Type Conversion2' */
   2U,                                  /* '<S30>/Data Type Conversion1' */
   1U,                                  /* '<S29>/Data Type Conversion' */
@@ -74,8 +77,8 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S32>/Unknown' */
   {
-    1U,                                /* '<S72>/Data Type Conversion' */
-    1U                                 /* '<S72>/Data Type Conversion1' */
+    1U,                                /* '<S84>/Data Type Conversion' */
+    1U                                 /* '<S84>/Data Type Conversion1' */
   }
   ,
 
@@ -83,8 +86,8 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S34>/Unknown' */
   {
-    1U,                                /* '<S115>/Data Type Conversion' */
-    1U                                 /* '<S115>/Data Type Conversion1' */
+    1U,                                /* '<S128>/Data Type Conversion' */
+    1U                                 /* '<S128>/Data Type Conversion1' */
   }
   /* End of '<S34>/Unknown' */
 };

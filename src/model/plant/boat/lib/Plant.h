@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1275
+ * Model version                  : 1.1276
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Dec  5 10:11:02 2024
+ * C/C++ source code generated on : Thu Dec 12 10:08:10 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -144,7 +144,7 @@ typedef struct {
    *   '<S107>/Saturation'
    *   '<S64>/Random Source'
    */
-  real32_T pooled20;
+  real32_T pooled19;
 
   /* Computed Parameter: Inertia_Matrix_Value
    * Referenced by: '<S21>/Inertia_Matrix'

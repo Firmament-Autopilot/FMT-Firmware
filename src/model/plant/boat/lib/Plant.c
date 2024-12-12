@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.1275
+ * Model version                  : 1.1276
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Dec  5 10:11:02 2024
+ * C/C++ source code generated on : Thu Dec 12 10:08:10 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -503,32 +503,20 @@ void Plant_step(void)
   /* Gain: '<S7>/Deg2Rad' */
   rtb_Gain_g2 *= 0.0174532924F;
 
-  /* Saturate: '<S6>/Saturation' incorporates:
+  /* Bias: '<S6>/Bias' incorporates:
+   *  Gain: '<S6>/Gain'
    *  Inport: '<Root>/Control_Out'
    */
-  if (Plant_U.Control_Out.actuator_cmd[0] > 2000) {
-    i = 2000;
-  } else if (Plant_U.Control_Out.actuator_cmd[0] < 1500) {
-    i = 1500;
-  } else {
-    i = Plant_U.Control_Out.actuator_cmd[0];
-  }
-
-  /* End of Saturate: '<S6>/Saturation' */
-
-  /* Bias: '<S6>/Bias' incorporates:
-   *  Bias: '<S6>/Bias1'
-   *  Bias: '<S6>/Bias2'
-   *  Gain: '<S6>/Gain'
-   *  Gain: '<S6>/Gain1'
-   */
-  rtb_Square2 = (((real32_T)i + -1500.0F) * 2.0F + 1000.0F) * 0.0101F + -9.2051F;
+  rtb_Square2 = 0.0100998878F * (real32_T)Plant_U.Control_Out.actuator_cmd[0] +
+    -10.1F;
 
   /* DeadZone: '<S6>/Dead Zone' */
   if (rtb_Square2 > 1.0F) {
     rtb_Square2--;
-  } else {
+  } else if (rtb_Square2 >= -1.0F) {
     rtb_Square2 = 0.0F;
+  } else {
+    rtb_Square2++;
   }
 
   /* End of DeadZone: '<S6>/Dead Zone' */
@@ -1896,7 +1884,7 @@ void Plant_step(void)
 
   /* S-Function (sdsprandsrc2): '<S64>/Random Source' */
   RandSrc_GZ_R(&rtb_MathFunction1_c, &Plant_ConstP.pooled14, 1,
-               &Plant_ConstP.pooled20, 1, Plant_DW.RandomSource_STATE_DWORK_b, 1,
+               &Plant_ConstP.pooled19, 1, Plant_DW.RandomSource_STATE_DWORK_b, 1,
                1);
 
   /* BusAssignment: '<S59>/Bus Assignment' incorporates:
