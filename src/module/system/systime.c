@@ -33,6 +33,8 @@ static rt_device_t systick_dev;
 static void systick_isr_cb(void)
 {
     __systime.msPeriod += __systime.msPerPeriod;
+    
+    rt_tick_increase();
 }
 
 /**
@@ -96,6 +98,10 @@ uint64_t systime_now_us(void)
     uint64_t time_now_ms;
     uint32_t level;
 
+    if (systick_dev == NULL) {
+        return 0;
+    }
+
     rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
 
     level = rt_hw_interrupt_disable();
@@ -126,6 +132,10 @@ uint32_t systime_now_ms(void)
 void systime_udelay(uint32_t time_us)
 {
     uint64_t target = systime_now_us() + time_us;
+
+    if (systick_dev == NULL) {
+        return;
+    }
 
     while (systime_now_us() < target)
         ;

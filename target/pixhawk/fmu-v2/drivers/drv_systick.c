@@ -32,7 +32,7 @@ void SysTick_Handler(void)
 
     hal_systick_isr(_systick_dev);
 
-    rt_tick_increase();
+    // rt_tick_increase();
 
     /* leave interrupt */
     rt_interrupt_leave();

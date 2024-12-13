@@ -49,7 +49,7 @@ static void rt_hw_timer_isr(int vector, void* param)
 
     hal_systick_isr(systick_dev);
 
-    rt_tick_increase();
+    // rt_tick_increase();
     /* clear interrupt */
     TIMER_INTCLR(TIMER_HW_BASE) = 0x01;
 
