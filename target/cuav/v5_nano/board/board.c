@@ -295,8 +295,8 @@ void SystemClock_Config(void)
 {
     HAL_RCC_DeInit();
 
-    __set_PRIMASK(0);
-    __set_BASEPRI(0);
+    // __set_PRIMASK(0);
+    // __set_BASEPRI(0);
 
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_7);
     while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_7) {
