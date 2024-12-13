@@ -365,9 +365,6 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    // /* system time module init */
-    // FMT_CHECK(systime_init());
-
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());
 
