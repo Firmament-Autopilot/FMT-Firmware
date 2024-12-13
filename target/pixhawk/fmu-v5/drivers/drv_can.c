@@ -22,37 +22,37 @@
 #include "stm32f7xx_hal_can.h"
 
 // #define CAN_DRV_DBG(...) printf(__VA_ARGS__)
-#define CAN_DRV_DBG(...) 
+#define CAN_DRV_DBG(...)
 
 static rt_err_t can_config(can_dev_t can, struct can_configure* cfg);
 static rt_err_t can_control(can_dev_t can, int cmd, void* arg);
-static int      can_sendmsg(can_dev_t can, const can_msg_t msg);
-static int      can_recvmsg(can_dev_t can, can_msg_t msg);
+static int can_sendmsg(can_dev_t can, const can_msg_t msg);
+static int can_recvmsg(can_dev_t can, can_msg_t msg);
 
 static struct can_data {
-    CAN_HandleTypeDef   hcan;
-    CAN_FilterTypeDef   filter;
+    CAN_HandleTypeDef hcan;
+    CAN_FilterTypeDef filter;
     CAN_TxHeaderTypeDef tx_header;
     CAN_RxHeaderTypeDef rx_header;
-    uint8_t             tx_data[8];
-    uint8_t             rx_data[8];
-    uint32_t            tx_mailbox;
+    uint8_t tx_data[8];
+    uint8_t rx_data[8];
+    uint32_t tx_mailbox;
 } can1_data, can2_data;
 
 const static struct can_ops can_dev_ops = {
     .configure = can_config,
-    .control   = can_control,
-    .sendmsg   = can_sendmsg,
-    .recvmsg   = can_recvmsg
+    .control = can_control,
+    .sendmsg = can_sendmsg,
+    .recvmsg = can_recvmsg
 };
 
 static can_device can1_dev = {
-    .ops    = &can_dev_ops,
+    .ops = &can_dev_ops,
     .config = CAN_DEFAULT_CONFIG,
 };
 
 static can_device can2_dev = {
-    .ops    = &can_dev_ops,
+    .ops = &can_dev_ops,
     .config = CAN_DEFAULT_CONFIG,
 };
 
@@ -140,9 +140,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 
         msg.std_id = can1_data.rx_header.StdId;
         msg.ext_id = can1_data.rx_header.ExtId;
-        msg.IDE    = can1_data.rx_header.IDE;
-        msg.RTR    = can1_data.rx_header.RTR;
-        msg.DLC    = can1_data.rx_header.DLC;
+        msg.id_type = can1_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
+        msg.frame_type = can1_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+        msg.data_len = can1_data.rx_header.DLC;
         memcpy(msg.data, can1_data.rx_data, sizeof(msg.data));
 
         hal_can_notify(&can1_dev, CAN_EVENT_RX_IND, &msg);
@@ -154,9 +154,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 
         msg.std_id = can2_data.rx_header.StdId;
         msg.ext_id = can2_data.rx_header.ExtId;
-        msg.IDE    = can2_data.rx_header.IDE;
-        msg.RTR    = can2_data.rx_header.RTR;
-        msg.DLC    = can2_data.rx_header.DLC;
+        msg.id_type = can2_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
+        msg.frame_type = can2_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+        msg.data_len = can2_data.rx_header.DLC;
         memcpy(msg.data, can2_data.rx_data, sizeof(msg.data));
 
         hal_can_notify(&can2_dev, CAN_EVENT_RX_IND, &msg);
@@ -200,17 +200,17 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
         PI9     ------> CAN1_RX
         PH13     ------> CAN1_TX
         */
-        GPIO_InitStruct.Pin       = GPIO_PIN_9;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Pin = GPIO_PIN_9;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
         HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 
-        GPIO_InitStruct.Pin       = GPIO_PIN_13;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Pin = GPIO_PIN_13;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
         HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
@@ -222,9 +222,9 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
         /* USER CODE BEGIN CAN1_MspInit 1 */
 
         /* Set silent pin to low to activate can transceiver */
-        GPIO_InitStruct.Pin   = GPIO_PIN_2;
-        GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_OD;
-        GPIO_InitStruct.Pull  = GPIO_NOPULL;
+        GPIO_InitStruct.Pin = GPIO_PIN_2;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
         HAL_GPIO_WritePin(GPIOH, GPIO_PIN_2, GPIO_PIN_RESET);
@@ -247,10 +247,10 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
         PB12     ------> CAN2_RX
         PB13     ------> CAN2_TX
         */
-        GPIO_InitStruct.Pin       = GPIO_PIN_12 | GPIO_PIN_13;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF9_CAN2;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -263,9 +263,9 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
 
         __HAL_RCC_GPIOH_CLK_ENABLE();
         /* Set silent pin to low to activate can transceiver */
-        GPIO_InitStruct.Pin   = GPIO_PIN_3;
-        GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_OD;
-        GPIO_InitStruct.Pull  = GPIO_NOPULL;
+        GPIO_InitStruct.Pin = GPIO_PIN_3;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
         HAL_GPIO_WritePin(GPIOH, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -331,31 +331,31 @@ static rt_err_t can_config(can_dev_t can, struct can_configure* cfg)
 
     if (can == &can1_dev) {
         /* Configure the CAN1 peripheral, 1Mbps */
-        can1_data.hcan.Instance                  = CAN1;
-        can1_data.hcan.Init.Prescaler            = 6;
-        can1_data.hcan.Init.Mode                 = CAN_MODE_NORMAL;
-        can1_data.hcan.Init.SyncJumpWidth        = CAN_SJW_1TQ;
-        can1_data.hcan.Init.TimeSeg1             = CAN_BS1_5TQ;
-        can1_data.hcan.Init.TimeSeg2             = CAN_BS2_3TQ;
-        can1_data.hcan.Init.TimeTriggeredMode    = DISABLE;
-        can1_data.hcan.Init.AutoBusOff           = ENABLE;
-        can1_data.hcan.Init.AutoWakeUp           = DISABLE;
-        can1_data.hcan.Init.AutoRetransmission   = DISABLE;
-        can1_data.hcan.Init.ReceiveFifoLocked    = DISABLE;
+        can1_data.hcan.Instance = CAN1;
+        can1_data.hcan.Init.Prescaler = 6;
+        can1_data.hcan.Init.Mode = CAN_MODE_NORMAL;
+        can1_data.hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
+        can1_data.hcan.Init.TimeSeg1 = CAN_BS1_5TQ;
+        can1_data.hcan.Init.TimeSeg2 = CAN_BS2_3TQ;
+        can1_data.hcan.Init.TimeTriggeredMode = DISABLE;
+        can1_data.hcan.Init.AutoBusOff = ENABLE;
+        can1_data.hcan.Init.AutoWakeUp = DISABLE;
+        can1_data.hcan.Init.AutoRetransmission = DISABLE;
+        can1_data.hcan.Init.ReceiveFifoLocked = DISABLE;
         can1_data.hcan.Init.TransmitFifoPriority = DISABLE;
         if (HAL_CAN_Init(&can1_data.hcan) != HAL_OK)
             return RT_ERROR;
 
         /* Configure the CAN filter */
-        can1_data.filter.FilterBank           = 0;
-        can1_data.filter.FilterMode           = CAN_FILTERMODE_IDMASK;
-        can1_data.filter.FilterScale          = CAN_FILTERSCALE_32BIT;
-        can1_data.filter.FilterIdHigh         = 0x0000;
-        can1_data.filter.FilterIdLow          = 0x0000;
-        can1_data.filter.FilterMaskIdHigh     = 0x0000;
-        can1_data.filter.FilterMaskIdLow      = 0x0000;
+        can1_data.filter.FilterBank = 0;
+        can1_data.filter.FilterMode = CAN_FILTERMODE_IDMASK;
+        can1_data.filter.FilterScale = CAN_FILTERSCALE_32BIT;
+        can1_data.filter.FilterIdHigh = 0x0000;
+        can1_data.filter.FilterIdLow = 0x0000;
+        can1_data.filter.FilterMaskIdHigh = 0x0000;
+        can1_data.filter.FilterMaskIdLow = 0x0000;
         can1_data.filter.FilterFIFOAssignment = CAN_RX_FIFO0;
-        can1_data.filter.FilterActivation     = ENABLE;
+        can1_data.filter.FilterActivation = ENABLE;
         can1_data.filter.SlaveStartFilterBank = 0;
         if (HAL_CAN_ConfigFilter(&can1_data.hcan, &can1_data.filter) != HAL_OK)
             return RT_ERROR;
@@ -365,31 +365,31 @@ static rt_err_t can_config(can_dev_t can, struct can_configure* cfg)
             return RT_ERROR;
     } else if (can == &can2_dev) {
         /* Configure the CAN2 peripheral, 1Mbps */
-        can2_data.hcan.Instance                  = CAN2;
-        can2_data.hcan.Init.Prescaler            = 6;
-        can2_data.hcan.Init.Mode                 = CAN_MODE_NORMAL;
-        can2_data.hcan.Init.SyncJumpWidth        = CAN_SJW_1TQ;
-        can2_data.hcan.Init.TimeSeg1             = CAN_BS1_5TQ;
-        can2_data.hcan.Init.TimeSeg2             = CAN_BS2_3TQ;
-        can2_data.hcan.Init.TimeTriggeredMode    = DISABLE;
-        can2_data.hcan.Init.AutoBusOff           = ENABLE;
-        can2_data.hcan.Init.AutoWakeUp           = DISABLE;
-        can2_data.hcan.Init.AutoRetransmission   = DISABLE;
-        can2_data.hcan.Init.ReceiveFifoLocked    = DISABLE;
+        can2_data.hcan.Instance = CAN2;
+        can2_data.hcan.Init.Prescaler = 6;
+        can2_data.hcan.Init.Mode = CAN_MODE_NORMAL;
+        can2_data.hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
+        can2_data.hcan.Init.TimeSeg1 = CAN_BS1_5TQ;
+        can2_data.hcan.Init.TimeSeg2 = CAN_BS2_3TQ;
+        can2_data.hcan.Init.TimeTriggeredMode = DISABLE;
+        can2_data.hcan.Init.AutoBusOff = ENABLE;
+        can2_data.hcan.Init.AutoWakeUp = DISABLE;
+        can2_data.hcan.Init.AutoRetransmission = DISABLE;
+        can2_data.hcan.Init.ReceiveFifoLocked = DISABLE;
         can2_data.hcan.Init.TransmitFifoPriority = DISABLE;
         if (HAL_CAN_Init(&can2_data.hcan) != HAL_OK)
             return RT_ERROR;
 
         /* Configure the CAN filter */
-        can2_data.filter.FilterBank           = 14;
-        can2_data.filter.FilterMode           = CAN_FILTERMODE_IDMASK;
-        can2_data.filter.FilterScale          = CAN_FILTERSCALE_32BIT;
-        can2_data.filter.FilterIdHigh         = 0x0000;
-        can2_data.filter.FilterIdLow          = 0x0000;
-        can2_data.filter.FilterMaskIdHigh     = 0x0000;
-        can2_data.filter.FilterMaskIdLow      = 0x0000;
+        can2_data.filter.FilterBank = 14;
+        can2_data.filter.FilterMode = CAN_FILTERMODE_IDMASK;
+        can2_data.filter.FilterScale = CAN_FILTERSCALE_32BIT;
+        can2_data.filter.FilterIdHigh = 0x0000;
+        can2_data.filter.FilterIdLow = 0x0000;
+        can2_data.filter.FilterMaskIdHigh = 0x0000;
+        can2_data.filter.FilterMaskIdLow = 0x0000;
         can2_data.filter.FilterFIFOAssignment = CAN_RX_FIFO0;
-        can2_data.filter.FilterActivation     = ENABLE;
+        can2_data.filter.FilterActivation = ENABLE;
         can2_data.filter.SlaveStartFilterBank = 14;
         if (HAL_CAN_ConfigFilter(&can2_data.hcan, &can2_data.filter) != HAL_OK)
             return RT_ERROR;
@@ -432,27 +432,27 @@ static rt_err_t can_control(can_dev_t can, int cmd, void* arg)
 static int can_sendmsg(can_dev_t can, const can_msg_t msg)
 {
     if (can == &can1_dev) {
-        can1_data.tx_header.StdId              = msg->std_id;
-        can1_data.tx_header.ExtId              = msg->ext_id;
-        can1_data.tx_header.IDE                = msg->IDE;
-        can1_data.tx_header.RTR                = msg->RTR;
-        can1_data.tx_header.DLC                = msg->DLC;
+        can1_data.tx_header.StdId = msg->std_id;
+        can1_data.tx_header.ExtId = msg->ext_id;
+        can1_data.tx_header.IDE = msg->id_type == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
+        can1_data.tx_header.RTR = msg->frame_type == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+        can1_data.tx_header.DLC = msg->data_len;
         can1_data.tx_header.TransmitGlobalTime = DISABLE;
 
-        memcpy(can1_data.tx_data, msg->data, 8);
+        memcpy(can1_data.tx_data, msg->data, msg->data_len);
 
         /* Request transmission */
         if (HAL_CAN_AddTxMessage(&can1_data.hcan, &can1_data.tx_header, can1_data.tx_data, &can1_data.tx_mailbox) == HAL_OK)
             return 1;
     } else if (can == &can2_dev) {
-        can2_data.tx_header.StdId              = msg->std_id;
-        can2_data.tx_header.ExtId              = msg->ext_id;
-        can2_data.tx_header.IDE                = msg->IDE;
-        can2_data.tx_header.RTR                = msg->RTR;
-        can2_data.tx_header.DLC                = msg->DLC;
+        can2_data.tx_header.StdId = msg->std_id;
+        can2_data.tx_header.ExtId = msg->ext_id;
+        can2_data.tx_header.IDE = msg->id_type == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
+        can2_data.tx_header.RTR = msg->frame_type == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+        can2_data.tx_header.DLC = msg->data_len;
         can2_data.tx_header.TransmitGlobalTime = DISABLE;
 
-        memcpy(can2_data.tx_data, msg->data, 8);
+        memcpy(can2_data.tx_data, msg->data, msg->data_len);
 
         /* Request transmission */
         if (HAL_CAN_AddTxMessage(&can2_data.hcan, &can2_data.tx_header, can2_data.tx_data, &can2_data.tx_mailbox) == HAL_OK)
@@ -468,11 +468,11 @@ static int can_recvmsg(can_dev_t can, can_msg_t msg)
         if (HAL_CAN_GetRxMessage(&can1_data.hcan, CAN_FILTER_FIFO0, &can1_data.rx_header, can1_data.rx_data) == HAL_OK) {
             msg->std_id = can1_data.rx_header.StdId;
             msg->ext_id = can1_data.rx_header.ExtId;
-            msg->IDE    = can1_data.rx_header.IDE;
-            msg->RTR    = can1_data.rx_header.RTR;
-            msg->DLC    = can1_data.rx_header.DLC;
+            msg->id_type = can1_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
+            msg->frame_type = can1_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+            msg->data_len = can1_data.rx_header.DLC;
 
-            memcpy(msg->data, can1_data.rx_data, 8);
+            memcpy(msg->data, can1_data.rx_data, msg->data_len);
 
             return 1;
         }
@@ -480,11 +480,11 @@ static int can_recvmsg(can_dev_t can, can_msg_t msg)
         if (HAL_CAN_GetRxMessage(&can2_data.hcan, CAN_FILTER_FIFO0, &can2_data.rx_header, can2_data.rx_data) == HAL_OK) {
             msg->std_id = can2_data.rx_header.StdId;
             msg->ext_id = can2_data.rx_header.ExtId;
-            msg->IDE    = can2_data.rx_header.IDE;
-            msg->RTR    = can2_data.rx_header.RTR;
-            msg->DLC    = can2_data.rx_header.DLC;
+            msg->id_type = can2_data.rx_header.IDE == CAN_ID_EXTENDED ? CAN_ID_EXT : CAN_ID_STD;
+            msg->frame_type = can2_data.rx_header.RTR == CAN_FRAME_REMOTE ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+            msg->data_len = can2_data.rx_header.DLC;
 
-            memcpy(msg->data, can2_data.rx_data, 8);
+            memcpy(msg->data, can2_data.rx_data, msg->data_len);
 
             return 1;
         }

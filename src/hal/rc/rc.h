@@ -75,6 +75,11 @@ typedef struct rc_device* rc_dev_t;
 
 struct rc_ops {
     /**
+     * @brief rc init function (optional)
+     * @param dev rc device
+    */
+    rt_err_t (*rc_init)(rc_dev_t dev);
+    /**
      * @brief rc configuration function (optional)
      * @param dev rc device
      * @param cfg rc configuration

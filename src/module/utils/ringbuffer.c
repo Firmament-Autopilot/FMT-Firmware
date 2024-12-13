@@ -59,6 +59,10 @@ ringbuffer* ringbuffer_static_create(uint32_t size, uint8_t* buffer)
 
 void ringbuffer_delete(ringbuffer* rb)
 {
+    if (rb == NULL) {
+        return;
+    }
+
     if (rb->static_flag != 0)
         rt_free(rb->buff);
 
@@ -68,6 +72,10 @@ void ringbuffer_delete(ringbuffer* rb)
 uint32_t ringbuffer_getlen(ringbuffer* rb)
 {
     uint32_t len;
+
+    if (rb == NULL) {
+        return 0;
+    }
 
     OS_ENTER_CRITICAL;
     if (rb->head >= rb->tail)
@@ -81,6 +89,10 @@ uint32_t ringbuffer_getlen(ringbuffer* rb)
 
 uint8_t ringbuffer_putc(ringbuffer* rb, uint8_t c)
 {
+    if (rb == NULL) {
+        return 0;
+    }
+
     OS_ENTER_CRITICAL;
     if ((rb->head + 1) % rb->size == rb->tail) {
         OS_EXIT_CRITICAL;
@@ -94,21 +106,27 @@ uint8_t ringbuffer_putc(ringbuffer* rb, uint8_t c)
     return 1;
 }
 
-uint8_t ringbuffer_getc(ringbuffer* rb)
+uint8_t ringbuffer_getc(ringbuffer* rb, uint8_t* c)
 {
-    uint8_t c;
+    if (rb == NULL) {
+        return 0;
+    }
 
     OS_ENTER_CRITICAL;
-    c = rb->buff[rb->tail];
+    *c = rb->buff[rb->tail];
     rb->tail = (rb->tail + 1) % rb->size;
     OS_EXIT_CRITICAL;
 
-    return c;
+    return 1;
 }
 
 uint32_t ringbuffer_get(ringbuffer* rb, uint8_t* ptr, uint32_t len)
 {
     uint32_t r_len, buffer_len;
+
+    if (rb == NULL || ptr == NULL || len == 0) {
+        return 0;
+    }
 
     /* check if there are enough data to read */
     buffer_len = ringbuffer_getlen(rb);
@@ -129,6 +147,10 @@ uint32_t ringbuffer_put(ringbuffer* rb, const uint8_t* ptr, uint32_t len)
     uint32_t w_len, buffer_len;
     uint32_t free_space;
     uint32_t space_to_end;
+
+    if (rb == NULL || ptr == NULL || len == 0) {
+        return 0;
+    }
 
     /* check if there are enough space to write */
     buffer_len = ringbuffer_getlen(rb);
@@ -153,6 +175,10 @@ uint32_t ringbuffer_put(ringbuffer* rb, const uint8_t* ptr, uint32_t len)
 
 void ringbuffer_flush(ringbuffer* rb)
 {
+    if (rb == NULL) {
+        return;
+    }
+
     OS_ENTER_CRITICAL;
     rb->head = rb->tail = 0;
     OS_EXIT_CRITICAL;
