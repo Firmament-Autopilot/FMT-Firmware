@@ -294,9 +294,6 @@ void SystemClock_Config(void)
 {
     HAL_RCC_DeInit();
 
-    __set_PRIMASK(0);
-    __set_BASEPRI(0);
-
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_7);
     while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_7) {
     }
@@ -367,9 +364,6 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    /* system time module init */
-    FMT_CHECK(systime_init());
-
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());
 
@@ -387,11 +381,17 @@ void bsp_early_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
+
+    __set_PRIMASK(0);
+    __set_BASEPRI(0);
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* system time module init */
+    FMT_CHECK(systime_init());
+
     /* enable on-board power supply */
     EnablePower();
 
