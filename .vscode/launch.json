@@ -49,7 +49,7 @@
             "runToMain": true
         },
         {
-            "name": "CUAV V5 Nano Debug J-Link",
+            "name": "CUAV V5-Nano Debug J-Link",
             "type": "cortex-debug",
             "request": "launch",
             "cwd": "${workspaceRoot}",
