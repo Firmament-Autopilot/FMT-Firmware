@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
+#include <INS.h>
 #include <firmament.h>
 
 #include "module/sensor/sensor_hub.h"
@@ -21,11 +22,11 @@
 #include "module/syscmd/syscmd.h"
 #include "module/sysio/pilot_cmd.h"
 
+MCN_DECLARE(rc_channels);
 MCN_DECLARE(sensor_airspeed);
+MCN_DECLARE(ins_output);
 
 #define IN_RANGE(_x, _low, _up) ((_x) >= (_low) && (_x) <= (_up))
-
-MCN_DECLARE(rc_channels);
 
 static McnNode_t rc_channels_nod;
 
@@ -108,6 +109,7 @@ static void show_usage(void)
     PRINT_STRING("\ncommand:\n");
     SHELL_COMMAND("rc", "Calibrate RC.");
     SHELL_COMMAND("airspeed", "Calibrate airspeed.");
+    SHELL_COMMAND("extpos", "Calibrate external position.");
 }
 
 static int rc_calib(struct optparse options)
@@ -333,6 +335,34 @@ static int airspeed_calib(struct optparse options)
     return res;
 }
 
+static int extpos_calib(struct optparse options)
+{
+    McnNode_t ins_sub_node;
+    INS_Out_Bus ins_out;
+    float psi_meas = 0.0f;
+    uint8_t i;
+
+    ins_sub_node = mcn_subscribe(MCN_HUB(ins_output), NULL);
+
+    for (i = 0; i < 10; i++) {
+        if (mcn_copy(MCN_HUB(ins_output), ins_sub_node, &ins_out) != FMT_EOK) {
+            return EXIT_FAILURE;
+        }
+        psi_meas += ins_out.psi;
+    }
+
+    psi_meas = psi_meas / i;
+
+    PARAM_SET_FLOAT(INS, EXTPOS_PSI, psi_meas);
+
+    printf("extpos psi:%f\n", psi_meas * 180 / PI);
+    printf("you need enter param save calibration result\n");
+
+    mcn_unsubscribe(MCN_HUB(ins_output), ins_sub_node);
+
+    return EXIT_SUCCESS;
+}
+
 int cmd_calib(int argc, char** argv)
 {
     char* arg;
@@ -347,6 +377,8 @@ int cmd_calib(int argc, char** argv)
             res = rc_calib(options);
         } else if (STRING_COMPARE(arg, "airspeed")) {
             res = airspeed_calib(options);
+        } else if (STRING_COMPARE(arg, "extpos")) {
+            res = extpos_calib(options);
         } else {
             show_usage();
             res = EXIT_FAILURE;
