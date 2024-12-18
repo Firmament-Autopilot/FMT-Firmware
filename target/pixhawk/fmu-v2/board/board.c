@@ -268,9 +268,6 @@ void bsp_early_initialize(void)
     /* system timer init */
     RT_CHECK(drv_systick_init());
 
-    /* system time module init */
-    FMT_CHECK(systime_init());
-
     /* init gpio, bus, etc. */
     RT_CHECK(drv_gpio_init());
 
@@ -290,6 +287,9 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* system time module init */
+    FMT_CHECK(systime_init());
+
     EnablePower();
 
     /* start recording boot log */

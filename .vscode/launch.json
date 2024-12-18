@@ -49,6 +49,21 @@
             "runToMain": true
         },
         {
+            "name": "CUAV V5-Nano Debug J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/cuav/v5_nano/build/fmt_cuav-v5_nano.elf",
+            "serverpath": "${env:JLINK_SERVER}",
+            "servertype": "jlink",
+            "device": "STM32F765II",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "target/cuav/v5_nano/STM32F7x5.svd",
+            "runToMain": true
+        },
+        {
             "name": "FMUv2 Debug J-Link",
             "type": "cortex-debug",
             "request": "launch",
