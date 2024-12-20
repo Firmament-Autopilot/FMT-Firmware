@@ -22,6 +22,7 @@
 #include "module/mavproxy/mavlink_console.h"
 #include "module/mavproxy/mavlink_mission.h"
 #include "module/mavproxy/mavlink_param.h"
+#include "module/mavproxy/mavlink_rtcm.h"
 #include "module/mavproxy/mavlink_status.h"
 #include "module/mavproxy/mavproxy_cmd.h"
 #include "module/mavproxy/mavproxy_dev.h"
@@ -35,9 +36,9 @@ extern "C" {
 #define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)
 #define EVENT_SEND_ALL_PARAM     (1 << 2)
 
-#define MAVPROXY_CHAN_NUM 2
-#define MAVPROXY_GCS_CHAN 0
-#define MAVPROXY_OBC_CHAN 1
+#define MAVPROXY_CHAN_NUM        2
+#define MAVPROXY_GCS_CHAN        0
+#define MAVPROXY_OBC_CHAN        1
 
 typedef bool (*msg_pack_cb_t)(mavlink_message_t* msg_t);
 
