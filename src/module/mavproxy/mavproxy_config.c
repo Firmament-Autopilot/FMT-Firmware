@@ -21,8 +21,8 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 
-#define TOML_DBG_E(...) toml_debug("Mavproxy", "E", __VA_ARGS__)
-#define TOML_DBG_W(...) toml_debug("Mavproxy", "W", __VA_ARGS__)
+#define TOML_DBG_E(...)                    toml_debug("Mavproxy", "E", __VA_ARGS__)
+#define TOML_DBG_W(...)                    toml_debug("Mavproxy", "W", __VA_ARGS__)
 
 #define MAVPROXY_MAX_DEVICE_NUM            5
 #define MATCH(a, b)                        (strcmp(a, b) == 0)
@@ -34,6 +34,8 @@
 
 static mavproxy_device_info mavproxy_device_list[MAVPROXY_CHAN_NUM][MAVPROXY_MAX_DEVICE_NUM];
 static uint8_t mavproxy_device_num[MAVPROXY_CHAN_NUM];
+static mavproxy_device_info mavproxy_rtcm_device_list[MAVPROXY_MAX_DEVICE_NUM];
+static uint8_t mavproxy_rtcm_device_num;
 
 static void __handle_device_msg(rt_device_t dev, void* msg)
 {
@@ -156,24 +158,6 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
                 TOML_DBG_E("unknown config key: %s\n", key);
                 continue;
             }
-        } else if (DEVICE_TYPE_IS(chan, idx, bb_com)) {
-            // DEVICE_NUM = idx + 1; /* the DEVICE_NUM has not set here, so add 1 for temp */
-            // if (MATCH(key, "auto-switch")) {
-            //     rt_device_t ret = rt_device_find(DEVICE_LIST(chan)[idx].name);
-            //     if (ret != RT_NULL) {
-            //         fmt_err_t ret = mavproxy_set_device(chan, idx);
-            //         if (ret != RT_EOK) {
-            //             TOML_DBG_W("mavproxy_set_device = %d failed!!! \n", idx);
-            //         } else {
-            //             TOML_DBG_E("mavproxy_set_device bb_com  \n");
-            //         }
-            //     } else {
-            //         TOML_DBG_E("can't find bb_com  \n");
-            //     }
-            // } else {
-            //     TOML_DBG_E("unknown config key: %s \n", key);
-            //     continue;
-            // }
         } else {
             TOML_DBG_W("unknown device type:%s \n", DEVICE_LIST(chan)[idx].type);
             continue;
@@ -205,6 +189,99 @@ static fmt_err_t mavproxy_parse_devices(const toml_array_t* array)
     return err;
 }
 
+static fmt_err_t mavproxy_parse_rtcm_device(const toml_table_t* curtab)
+{
+    fmt_err_t err = FMT_EOK;
+    int i;
+    const char* key;
+    uint8_t idx = mavproxy_rtcm_device_num;
+
+    if (idx >= MAVPROXY_MAX_DEVICE_NUM) {
+        TOML_DBG_W("too many rtcm devices\n");
+        return FMT_ENOTHANDLE;
+    }
+
+    /* get device type */
+    if (toml_string_in(curtab, "type", &mavproxy_rtcm_device_list[idx].type) == 0) {
+        if (MATCH(mavproxy_rtcm_device_list[idx].type, "serial")) {
+            mavproxy_serial_dev_config serial_default_config = {
+                .baudrate = 230400
+            };
+            mavproxy_rtcm_device_list[idx].config = rt_malloc(sizeof(mavproxy_serial_dev_config));
+
+            /* set default value */
+            if (mavproxy_rtcm_device_list[idx].config != NULL) {
+                *(mavproxy_serial_dev_config*)mavproxy_rtcm_device_list[idx].config = serial_default_config;
+            } else {
+                TOML_DBG_E("malloc fail\n");
+                err = FMT_ERROR;
+            }
+        } else {
+            TOML_DBG_E("unknown device type: %s\n", mavproxy_rtcm_device_list[idx].type);
+            err = FMT_ERROR;
+        }
+    } else {
+        TOML_DBG_E("fail to parse type value\n");
+        return FMT_ERROR;
+    }
+
+    if (toml_string_in(curtab, "name", &mavproxy_rtcm_device_list[idx].name) != 0) {
+        TOML_DBG_E("fail to parse name value\n");
+        return FMT_ERROR;
+    }
+
+    /* traverse keys in table */
+    for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
+        if (MATCH(key, "type") || MATCH(key, "name")) {
+            /* already handled */
+            continue;
+        }
+
+        if (MATCH(mavproxy_rtcm_device_list[idx].type, "serial")) {
+            mavproxy_serial_dev_config* config = (mavproxy_serial_dev_config*)mavproxy_rtcm_device_list[idx].config;
+            if (MATCH(key, "baudrate")) {
+                int64_t ival;
+                if (toml_int_in(curtab, key, &ival) == 0) {
+                    config->baudrate = (uint32_t)ival;
+                } else {
+                    TOML_DBG_W("fail to parse baudrate value\n");
+                    continue;
+                }
+            } else {
+                TOML_DBG_W("unknown config key: %s\n", key);
+                continue;
+            }
+        } else {
+            TOML_DBG_W("unknown device type:%s \n", mavproxy_rtcm_device_list[idx].type);
+            continue;
+        }
+    }
+
+    if (err == FMT_EOK) {
+        mavproxy_rtcm_device_num += 1;
+    }
+
+    return err;
+}
+
+static fmt_err_t mavproxy_parse_rtcm_devices(const toml_array_t* array)
+{
+    int i;
+    toml_table_t* curtab;
+    fmt_err_t err = FMT_EOK;
+
+    for (i = 0; 0 != (curtab = toml_table_at(array, i)); i++) {
+        err = mavproxy_parse_rtcm_device(curtab);
+
+        if (err != FMT_EOK) {
+            TOML_DBG_E("device parse fail: %d\n", err);
+            return err;
+        }
+    }
+
+    return err;
+}
+
 uint8_t mavproxy_get_dev_num(uint8_t chan)
 {
     return DEVICE_NUM(chan);
@@ -213,6 +290,16 @@ uint8_t mavproxy_get_dev_num(uint8_t chan)
 mavproxy_device_info* mavproxy_get_dev_list(uint8_t chan)
 {
     return DEVICE_LIST(chan);
+}
+
+uint8_t mavproxy_get_rtcm_dev_num(void)
+{
+    return mavproxy_rtcm_device_num;
+}
+
+mavproxy_device_info* mavproxy_get_rtcm_dev_list(void)
+{
+    return mavproxy_rtcm_device_list;
 }
 
 fmt_err_t mavproxy_get_devinfo(uint8_t chan, rt_device_t dev, mavproxy_device_info* info)
@@ -284,6 +371,17 @@ fmt_err_t mavproxy_toml_config(toml_table_t* table)
                 }
             } else {
                 TOML_DBG_E("fail to get devices table\n");
+                return FMT_ERROR;
+            }
+        } else if (MATCH(key, "rtcm_devices")) {
+            if (toml_array_table_in(table, key, &arr) == 0) {
+                err = mavproxy_parse_rtcm_devices(arr);
+                if (err != FMT_EOK) {
+                    TOML_DBG_E("fail to parse rtcm devices\n");
+                    return err;
+                }
+            } else {
+                TOML_DBG_E("fail to get rtcm devices table\n");
                 return FMT_ERROR;
             }
         } else {

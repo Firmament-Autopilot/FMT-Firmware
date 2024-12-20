@@ -117,12 +117,12 @@ static void dump_period_msg(uint8_t chan)
 
 /**
  * Register to send a mavlink message periodically
- * 
+ *
  * @param msgid mavlink message id
  * @param msg_rate_hz  message send rate in Hz
  * @param msg_pack_cb callback function to prepare the mavlink message data
  * @param auto_start auto start of sending the message
- * 
+ *
  * @return FMT Errors
  */
 fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg_rate_hz,
@@ -165,11 +165,11 @@ fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg
 
 /**
  * Send a mavlink message via the mavproxy device
- * 
+ *
  * @param msg mavlink message
  * @param sync  true: wait until the mavproxy device is available and send message
  *              false: push the message into a queue and return directly
- * 
+ *
  * @return FMT Errors
  */
 fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg, bool sync)
@@ -214,11 +214,11 @@ fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg
 
 /**
  * Send a event to mavproxy
- * 
+ *
  * @brief the event will be handled in mavproxy main loop
- * 
+ *
  * @param event_set event set
- * 
+ *
  * @return FMT Errors
  */
 fmt_err_t mavproxy_send_event(uint8_t chan, uint32_t event_set)
@@ -232,7 +232,7 @@ fmt_err_t mavproxy_send_event(uint8_t chan, uint32_t event_set)
 
 /**
  * Get mavlink system information. sysid and compid
- * 
+ *
  * @return mavlink system
  */
 mavlink_system_t mavproxy_get_system(void)
@@ -242,10 +242,10 @@ mavlink_system_t mavproxy_get_system(void)
 
 /**
  * Set mavproxy channel.
- * 
+ *
  * @param chan channel of mavproxy device
  * @param devid mavproxy device id
- * 
+ *
  * @return FMT Errors
  */
 fmt_err_t mavproxy_set_device(uint8_t chan, uint8_t devid)
@@ -267,7 +267,7 @@ fmt_err_t mavproxy_set_device(uint8_t chan, uint8_t devid)
 
 /**
  * @brief Main loop for mavproxy channel
- * 
+ *
  * @param chan mavproxy channel
  */
 void mavproxy_channel_loop(uint8_t chan)
@@ -329,7 +329,7 @@ void mavproxy_channel_loop(uint8_t chan)
 
 /**
  * Initialize the mavproxy module.
- * 
+ *
  * @return FMT Errors
  */
 fmt_err_t mavproxy_init(void)
@@ -343,6 +343,9 @@ fmt_err_t mavproxy_init(void)
 
     /* init mavlink console */
     mavlink_console_init();
+
+    /* init mavlink rtcm devices */
+    mavlink_rtcm_device_init();
 
     /* create tx lock */
     mav_handle.tx_lock[0] = rt_sem_create("mav0_tx_lock", 1, RT_IPC_FLAG_FIFO);
