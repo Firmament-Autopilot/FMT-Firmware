@@ -25,6 +25,7 @@ extern "C" {
 #endif
 
 void handle_gps_rtcm_data(const mavlink_message_t* msg);
+fmt_err_t mavlink_rtcm_device_init(void);
 
 #ifdef __cplusplus
 }

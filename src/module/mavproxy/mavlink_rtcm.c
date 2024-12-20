@@ -17,6 +17,9 @@
 #include <firmament.h>
 
 #include "module/mavproxy/mavproxy.h"
+#include "module/mavproxy/mavproxy_config.h"
+
+#define MAX_RTCM_DEV_NUM 5
 
 /*
     buffer for re-assembling RTCM data for GPS injection.
@@ -38,20 +41,15 @@ struct rtcm_buffer {
     uint8_t buffer[MAVLINK_MSG_GPS_RTCM_DATA_FIELD_DATA_LEN * 4];
 }* rtcm_buffer;
 
+static uint8_t rtcm_dev_num;
+static rt_device_t rtcm_dev[MAX_RTCM_DEV_NUM];
+
 static void inject_data(const uint8_t* data, uint16_t len)
 {
-    // //Support broadcasting to all GPSes.
-    // if (_inject_to == GPS_RTK_INJECT_TO_ALL) {
-    //     for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
-    //         if (is_rtk_rover(i)) {
-    //             // we don't externally inject to moving baseline rover
-    //             continue;
-    //         }
-    //         inject_data(i, data, len);
-    //     }
-    // } else {
-    //     inject_data(_inject_to, data, len);
-    // }
+    // TODO: check write complete before next write;
+    for (uint8_t i = 0; i < rtcm_dev_num; i++) {
+        rt_device_write(rtcm_dev[i], 0, data, len);
+    }
 }
 
 void handle_gps_rtcm_data(const mavlink_message_t* msg)
@@ -141,4 +139,30 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
         rtcm_buffer->fragment_count = 0;
         rtcm_buffer->fragments_received = 0;
     }
+}
+
+fmt_err_t mavlink_rtcm_device_init(void)
+{
+    mavproxy_device_info* rtcm_dev_list = mavproxy_get_rtcm_dev_list();
+
+    for (uint8_t i = 0; i < rtcm_dev_num && i < MAX_RTCM_DEV_NUM; i++) {
+        if (strcmp(rtcm_dev_list[i].type, "serial") == 0) {
+            rt_uint16_t oflag = RT_DEVICE_OFLAG_WRONLY;
+            rt_device_t dev = rt_device_find(rtcm_dev_list[i].name);
+
+            if (dev == NULL) {
+                continue;
+            }
+
+            if (dev->flag & RT_DEVICE_FLAG_DMA_TX) {
+                oflag |= RT_DEVICE_FLAG_DMA_TX;
+            }
+
+            if (rt_device_open(dev, oflag) == RT_EOK) {
+                rtcm_dev[rtcm_dev_num++] = dev;
+            }
+        }
+    }
+
+    return FMT_EOK;
 }
