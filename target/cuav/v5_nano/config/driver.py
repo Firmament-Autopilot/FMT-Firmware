@@ -10,6 +10,8 @@ DRIVERS = [
     'mtd/ramtron.c',
     'vision_flow/mtf_01.c',
     'airspeed/ms4525.c',
+    'range_finder/TFluna.c',
+    'range_finder/L08.c',
 ]
 
 DRIVERS_CPPPATH = []
