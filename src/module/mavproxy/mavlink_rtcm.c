@@ -57,6 +57,8 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
     mavlink_gps_rtcm_data_t packet;
     mavlink_msg_gps_rtcm_data_decode(msg, &packet);
 
+    // printf("rtcm pkg, len:%d fragmented:%d, fragment_id:%d, seq_id:%d\n", packet.len, packet.flags & 1, (packet.flags >> 1U) & 0x03, (packet.flags >> 3U) & 0x1F);
+
     if (packet.len > sizeof(packet.data)) {
         // invalid packet
         return;
@@ -144,8 +146,9 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
 fmt_err_t mavlink_rtcm_device_init(void)
 {
     mavproxy_device_info* rtcm_dev_list = mavproxy_get_rtcm_dev_list();
+    uint8_t dev_num = mavproxy_get_rtcm_dev_num();
 
-    for (uint8_t i = 0; i < rtcm_dev_num && i < MAX_RTCM_DEV_NUM; i++) {
+    for (uint8_t i = 0; i < dev_num && i < MAX_RTCM_DEV_NUM; i++) {
         if (strcmp(rtcm_dev_list[i].type, "serial") == 0) {
             rt_uint16_t oflag = RT_DEVICE_OFLAG_WRONLY;
             rt_device_t dev = rt_device_find(rtcm_dev_list[i].name);
@@ -154,13 +157,15 @@ fmt_err_t mavlink_rtcm_device_init(void)
                 continue;
             }
 
-            if (dev->flag & RT_DEVICE_FLAG_DMA_TX) {
-                oflag |= RT_DEVICE_FLAG_DMA_TX;
-            }
+            rtcm_dev[rtcm_dev_num++] = dev;
 
-            if (rt_device_open(dev, oflag) == RT_EOK) {
-                rtcm_dev[rtcm_dev_num++] = dev;
-            }
+            // if (dev->flag & RT_DEVICE_FLAG_DMA_TX) {
+            //     oflag |= RT_DEVICE_FLAG_DMA_TX;
+            // }
+
+            // if (rt_device_open(dev, oflag) == RT_EOK) {
+            //     rtcm_dev[rtcm_dev_num++] = dev;
+            // }
         }
     }
 

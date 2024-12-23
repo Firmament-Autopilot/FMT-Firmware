@@ -280,6 +280,11 @@ void mavproxy_channel_loop(uint8_t chan)
         return;
     }
 
+    if (chan == MAVPROXY_GCS_CHAN) {
+        /* init mavlink rtcm devices */
+        mavlink_rtcm_device_init();
+    }
+
     /* Set mavproxy new channel to 0 if not set. Here we need critical section
        since the new channel can possible be set in usb ISR. */
     OS_ENTER_CRITICAL;
@@ -343,9 +348,6 @@ fmt_err_t mavproxy_init(void)
 
     /* init mavlink console */
     mavlink_console_init();
-
-    /* init mavlink rtcm devices */
-    mavlink_rtcm_device_init();
 
     /* create tx lock */
     mav_handle.tx_lock[0] = rt_sem_create("mav0_tx_lock", 1, RT_IPC_FLAG_FIFO);
