@@ -150,7 +150,7 @@ fmt_err_t mavlink_rtcm_device_init(void)
 
     for (uint8_t i = 0; i < dev_num && i < MAX_RTCM_DEV_NUM; i++) {
         if (strcmp(rtcm_dev_list[i].type, "serial") == 0) {
-            rt_uint16_t oflag = RT_DEVICE_OFLAG_WRONLY;
+            // rt_uint16_t oflag = RT_DEVICE_OFLAG_WRONLY;
             rt_device_t dev = rt_device_find(rtcm_dev_list[i].name);
 
             if (dev == NULL) {
