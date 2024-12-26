@@ -16,6 +16,7 @@
 
 #include <firmament.h>
 
+#include "hal/serial/serial.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
 
@@ -43,12 +44,29 @@ struct rtcm_buffer {
 
 static uint8_t rtcm_dev_num;
 static rt_device_t rtcm_dev[MAX_RTCM_DEV_NUM];
+static struct rt_completion tx_cplt[MAX_RTCM_DEV_NUM];
+
+static rt_err_t rtcm_tx_done(rt_device_t dev, void* buffer)
+{
+    for (uint8_t i = 0; i < rtcm_dev_num; i++) {
+        if (dev == rtcm_dev[i]) {
+            rt_completion_done(&tx_cplt[i]);
+        }
+    }
+
+    return RT_EOK;
+}
 
 static void inject_data(const uint8_t* data, uint16_t len)
 {
     // TODO: check write complete before next write;
     for (uint8_t i = 0; i < rtcm_dev_num; i++) {
-        rt_device_write(rtcm_dev[i], 0, data, len);
+        if (rtcm_dev[i] != NULL) {
+            if (rt_device_write(rtcm_dev[i], 0, data, len) > 0) {
+                /* wait write complete (synchronized write) */
+                rt_completion_wait(&tx_cplt[i], TICKS_FROM_MS(100));
+            }
+        }
     }
 }
 
@@ -85,14 +103,12 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
     bool should_clear_previous_fragments = false;
 
     if (rtcm_buffer->fragments_received) {
-        // 已经有收到fragments过
-        const bool sequence_nr_changed = rtcm_buffer->sequence != sequence;                       // 新的sequence id
-        const bool seen_this_fragment_index = rtcm_buffer->fragments_received & (1U << fragment); // 是否是受到过的fragment
+        const bool sequence_nr_changed = rtcm_buffer->sequence != sequence;
+        const bool seen_this_fragment_index = rtcm_buffer->fragments_received & (1U << fragment);
 
         // check whether this is a duplicate fragment. If it is, we can
         // return early.
         if (!sequence_nr_changed && seen_this_fragment_index && !rt_memcmp(start_of_fragment_in_buffer, packet.data, packet.len)) {
-            // 如果是收到过的fragment，且sequence id和数据内容都没有变化，则返回
             return;
         }
 
@@ -103,7 +119,6 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
     if (should_clear_previous_fragments) {
         // we have one or more partial fragments already received
         // which conflict with the new fragment, discard previous fragments
-        // 清楚所有之前的fragments
         rtcm_buffer->fragment_count = 0;
         // rtcm_stats.fragments_discarded += __builtin_popcount(rtcm_buffer->fragments_received);
         rtcm_buffer->fragments_received = 0;
@@ -111,7 +126,6 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
 
     // add this fragment
     rtcm_buffer->sequence = sequence;
-    // 每一位对应fragment是否收到
     rtcm_buffer->fragments_received |= (1U << fragment);
 
     // copy the data
@@ -122,12 +136,10 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
     // block of RTCM data of an exact multiple of the buffer size you
     // need to send a final packet of zero length
     if (packet.len < MAVLINK_MSG_GPS_RTCM_DATA_FIELD_DATA_LEN) {
-        // 收到一个小于180字节的fragment，则知道已经收到完成的数据
         rtcm_buffer->fragment_count = fragment + 1;
         rtcm_buffer->total_length = (MAVLINK_MSG_GPS_RTCM_DATA_FIELD_DATA_LEN * fragment) + packet.len;
     } else if (rtcm_buffer->fragments_received == 0x0F) {
         // special case of 4 full fragments
-        // 收到4个fragment，也认为已经收到完整的
         rtcm_buffer->fragment_count = 4;
         rtcm_buffer->total_length = MAVLINK_MSG_GPS_RTCM_DATA_FIELD_DATA_LEN * 4;
     }
@@ -135,8 +147,6 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
     // see if we have all fragments
     if (rtcm_buffer->fragment_count != 0 && rtcm_buffer->fragments_received == (1U << rtcm_buffer->fragment_count) - 1) {
         // we have them all, inject
-        // 发送数据，并将fragment_count和fragments_received清除
-        // rtcm_stats.fragments_used += __builtin_popcount(rtcm_buffer->fragments_received);
         inject_data(rtcm_buffer->buffer, rtcm_buffer->total_length);
         rtcm_buffer->fragment_count = 0;
         rtcm_buffer->fragments_received = 0;
@@ -150,22 +160,38 @@ fmt_err_t mavlink_rtcm_device_init(void)
 
     for (uint8_t i = 0; i < dev_num && i < MAX_RTCM_DEV_NUM; i++) {
         if (strcmp(rtcm_dev_list[i].type, "serial") == 0) {
-            // rt_uint16_t oflag = RT_DEVICE_OFLAG_WRONLY;
             rt_device_t dev = rt_device_find(rtcm_dev_list[i].name);
 
             if (dev == NULL) {
                 continue;
             }
 
+            /* If device is not opened, then open it */
+            if (!(dev->open_flag & RT_DEVICE_OFLAG_OPEN)) {
+                rt_uint16_t oflag = RT_DEVICE_OFLAG_WRONLY;
+
+                if (dev->flag & RT_DEVICE_FLAG_DMA_TX) {
+                    oflag |= RT_DEVICE_FLAG_DMA_TX;
+                }
+
+                RT_TRY(rt_device_open(dev, oflag));
+
+                serial_dev_t serial_dev = (serial_dev_t)dev;
+                mavproxy_serial_dev_config* config = rtcm_dev_list[i].config;
+
+                if (serial_dev->config.baud_rate != config->baudrate) {
+                    struct serial_configure pconfig = serial_dev->config;
+                    pconfig.baud_rate = config->baudrate;
+
+                    RT_TRY(rt_device_control(dev, RT_DEVICE_CTRL_CONFIG, &pconfig));
+                }
+            }
+
+            rt_completion_init(&tx_cplt[i]);
+            /* set callback functions */
+            rt_device_set_tx_complete(dev, rtcm_tx_done);
+
             rtcm_dev[rtcm_dev_num++] = dev;
-
-            // if (dev->flag & RT_DEVICE_FLAG_DMA_TX) {
-            //     oflag |= RT_DEVICE_FLAG_DMA_TX;
-            // }
-
-            // if (rt_device_open(dev, oflag) == RT_EOK) {
-            //     rtcm_dev[rtcm_dev_num++] = dev;
-            // }
         }
     }
 
