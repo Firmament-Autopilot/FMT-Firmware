@@ -198,7 +198,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 
 /**
  * @brief Enable on-board device power supply
- * 
+ *
  */
 static void EnablePower(void)
 {
@@ -242,22 +242,22 @@ static void EnablePower(void)
 }
 
 /*
-* When enabling the D-cache there is cache coherency issue. 
-* This matter crops up when multiple masters (CPU, DMAs...) 
-* share the memory. If the CPU writes something to an area 
-* that has a write-back cache attribute (example SRAM), the 
-* write result is not seen on the SRAM as the access is 
-* buffered, and then if the DMA reads the same memory area 
-* to perform a data transfer, the values read do not match 
-* the intended data. The issue occurs for DMA read as well.
-* Currently not all drivers can ensure the data coherency 
-* when D-Cache enabled, so disable it by default.
-*/
+ * When enabling the D-cache there is cache coherency issue.
+ * This matter crops up when multiple masters (CPU, DMAs...)
+ * share the memory. If the CPU writes something to an area
+ * that has a write-back cache attribute (example SRAM), the
+ * write result is not seen on the SRAM as the access is
+ * buffered, and then if the DMA reads the same memory area
+ * to perform a data transfer, the values read do not match
+ * the intended data. The issue occurs for DMA read as well.
+ * Currently not all drivers can ensure the data coherency
+ * when D-Cache enabled, so disable it by default.
+ */
 /**
-  * @brief  CPU L1-Cache enable.
-  * @param  None
-  * @retval None
-  */
+ * @brief  CPU L1-Cache enable.
+ * @param  None
+ * @retval None
+ */
 static void CPU_CACHE_Enable(void)
 {
     /* Enable I-Cache */
@@ -268,9 +268,9 @@ static void CPU_CACHE_Enable(void)
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
     console_printf("Enter Error_Handler\n");
@@ -283,9 +283,9 @@ void Error_Handler(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_7);
@@ -357,9 +357,6 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    /* system time module init */
-    FMT_CHECK(systime_init());
-
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());
 
@@ -379,6 +376,9 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
+    /* system time module init */
+    FMT_CHECK(systime_init());
+
     /* enable on-board power supply */
     EnablePower();
 

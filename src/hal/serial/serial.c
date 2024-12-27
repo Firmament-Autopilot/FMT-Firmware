@@ -572,7 +572,7 @@ static rt_err_t hal_serial_control(struct rt_device* dev,
 
 /**
  * @brief serial isr handler
- * 
+ *
  * @param serial serial device
  * @param event serial isr event
  */
@@ -591,7 +591,9 @@ void hal_serial_isr(struct serial_device* serial, int event)
 
         /* interrupt mode receive */
         rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
-        RT_ASSERT(rx_fifo != RT_NULL);
+        if (rx_fifo == RT_NULL) {
+            return;
+        }
 
         while (1) {
             ch = serial->ops->getc(serial);
@@ -676,7 +678,7 @@ void hal_serial_isr(struct serial_device* serial, int event)
 
 /**
  * @brief register a serial device
- * 
+ *
  * @param serial serial device
  * @param name device name
  * @param flag device flag

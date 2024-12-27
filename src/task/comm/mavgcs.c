@@ -467,6 +467,10 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
     } break;
 
+    case MAVLINK_MSG_ID_GPS_RTCM_DATA:
+        handle_gps_rtcm_data(msg);
+        break;
+
     default: {
         LOG_W("unhandled mavlink msg:%d", msg->msgid);
         return FMT_ENOTHANDLE;
