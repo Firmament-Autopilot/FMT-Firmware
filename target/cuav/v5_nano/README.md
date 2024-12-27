@@ -1,4 +1,4 @@
-CUAV V5+ Flight Controller
+CUAV V5-Nano Flight Controller
 ============================
 
 V5 nano is an autopilot for space-constrained applications manufactured by CUAV®. It is based on the Pixhawk FMUv5 design standard and is compatible with PX4 firmware and ArduPilot firmware. The autopilot combines small size with powerful features, and can be used not only in ordinary drones, but also 220mm racing drones and other space limited vehicles. The Carrier Board design reference is [here](https://github.com/cuav/hardware/tree/master/V5_Autopilot/V5_NANO)
