@@ -312,7 +312,6 @@ rt_inline int _serial_dma_tx(struct serial_device* serial, const rt_uint8_t* dat
     return length;
 }
 
-/* RT-Thread Device Interface */
 /*
  * This function initializes serial device.
  */
@@ -328,11 +327,11 @@ static rt_err_t hal_serial_init(struct rt_device* dev)
 
     serial = (struct serial_device*)dev;
 
-    /* initialize rx/tx */
+    /* initialize rx/tx to NULL */
     serial->serial_rx = RT_NULL;
     serial->serial_tx = RT_NULL;
 
-    /* apply configuration */
+    /* do configuration */
     if (serial->ops->configure)
         result = serial->ops->configure(serial, &serial->config);
 
@@ -350,10 +349,7 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
 
     serial = (struct serial_device*)dev;
 
-    /*dbg_log(DBG_LOG, "open serial device: 0x%08x with open flag: 0x%04x\n",
-            dev, oflag);*/
-
-    /* check device flag with the open flag */
+    /* check device flags with the open flag. if flag not match, return error */
     if ((oflag & RT_DEVICE_FLAG_INT_RX) && !(dev->flag & RT_DEVICE_FLAG_INT_RX))
         return -RT_EIO;
 
@@ -366,14 +362,19 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
     /* get open flags */
     dev->open_flag = oflag;
 
-    /* initialize the Rx/Tx structure according to open flag */
+    /* initialize the rx/tx structure according */
     if (oflag & RT_DEVICE_FLAG_INT_RX || oflag & RT_DEVICE_FLAG_DMA_RX) {
+        /* init rx structure if it's not initialized before */
         if (serial->serial_rx == RT_NULL) {
             struct serial_rx_fifo* rx_fifo;
 
-            /* create dma rx fifo */
+            /* create rx fifo to store received rx data */
             rx_fifo = (struct serial_rx_fifo*)rt_malloc(sizeof(struct serial_rx_fifo) + serial->config.bufsz);
-            RT_ASSERT(rx_fifo != RT_NULL);
+            if(rx_fifo == RT_NULL) {
+                HAL_DBG("serial rx fifo create error\n");
+                return RT_ENOMEM;
+            }
+            
             rx_fifo->buffer = (rt_uint8_t*)(rx_fifo + 1);
             rt_memset(rx_fifo->buffer, 0, serial->config.bufsz);
             rx_fifo->put_index = 0;
@@ -677,20 +678,19 @@ void hal_serial_isr(struct serial_device* serial, int event)
 }
 
 /**
- * @brief register a serial device
+ * @brief register a serial device to system
  *
- * @param serial serial device
+ * @param serial serial device handler
  * @param name device name
- * @param flag device flag
- * @param data device data
- * @return rt_err_t RT_EOK for success
+ * @param flag device flags
+ * @param data device private data
+ * @return the result
  */
 rt_err_t hal_serial_register(struct serial_device* serial,
                              const char* name,
                              rt_uint32_t flag,
                              void* data)
 {
-    rt_err_t ret;
     struct rt_device* device;
     RT_ASSERT(serial != RT_NULL);
 
@@ -710,7 +710,5 @@ rt_err_t hal_serial_register(struct serial_device* serial,
     device->user_data = data;
 
     /* register character to system */
-    ret = rt_device_register(device, name, flag);
-
-    return ret;
+    return rt_device_register(device, name, flag);
 }
