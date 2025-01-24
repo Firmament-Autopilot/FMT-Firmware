@@ -24,7 +24,6 @@ struct mavdev {
     rt_err_t (*tx_done)(rt_device_t dev, void* buffer);
     rt_err_t (*rx_ind)(rt_device_t dev, rt_size_t size);
     fmt_err_t (*mav_rx_ind)(uint32_t size);
-    struct rt_completion tx_cplt, rx_cplt;
 };
 
 static rt_err_t mavdev_chan0_tx_done(rt_device_t dev, void* buffer);
@@ -39,15 +38,11 @@ static struct mavdev mavdev_list[MAVPROXY_DEV_CHAN_NUM] = {
 
 static rt_err_t mavdev_chan0_tx_done(rt_device_t dev, void* buffer)
 {
-    rt_completion_done(&mavdev_list[0].tx_cplt);
-
     return RT_EOK;
 }
 
 static rt_err_t mavdev_chan0_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_completion_done(&mavdev_list[0].rx_cplt);
-
     if (mavdev_list[0].mav_rx_ind) {
         mavdev_list[0].mav_rx_ind(size);
     }
@@ -57,15 +52,11 @@ static rt_err_t mavdev_chan0_rx_ind(rt_device_t dev, rt_size_t size)
 
 static rt_err_t mavdev_chan1_tx_done(rt_device_t dev, void* buffer)
 {
-    rt_completion_done(&mavdev_list[1].tx_cplt);
-
     return RT_EOK;
 }
 
 static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    rt_completion_done(&mavdev_list[1].rx_cplt);
-
     if (mavdev_list[0].mav_rx_ind) {
         mavdev_list[0].mav_rx_ind(size);
     }
@@ -145,10 +136,5 @@ rt_device_t mavproxy_dev_get_device(uint8_t chan)
 
 fmt_err_t mavproxy_dev_init(void)
 {
-    for (uint8_t chan = 0; chan < MAVPROXY_DEV_CHAN_NUM; chan++) {
-        rt_completion_init(&mavdev_list[chan].tx_cplt);
-        rt_completion_init(&mavdev_list[chan].rx_cplt);
-    }
-
     return FMT_EOK;
 }
