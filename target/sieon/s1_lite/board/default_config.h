@@ -34,7 +34,7 @@ target = "SIEON S1-Lite"\n
 	[[mavproxy.devices]]\n
 	chan = 0\n
 	type = "serial"\n
-	name = "serial2"\n
+	name = "serial1"\n
 	baudrate = 57600\n
 [pilot-cmd]\n
     stick-channel = [4,3,1,2]\n

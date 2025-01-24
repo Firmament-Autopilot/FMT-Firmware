@@ -989,12 +989,11 @@ static int usart_getc(struct serial_device* serial)
 
 static rt_size_t usart_dma_transmit(struct serial_device* serial, rt_uint8_t* buf, rt_size_t size, int direction)
 {
-    if (direction == SERIAL_DMA_TX) {
+    if (direction == SERIAL_DMA_TX && size > 0) {
         _dma_transmit(serial->parent.user_data, buf, size);
-        return size;
     }
 
-    return 0;
+    return size;
 }
 
 /* usart driver operations */

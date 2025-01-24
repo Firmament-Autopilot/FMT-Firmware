@@ -75,60 +75,22 @@ static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size)
 
 rt_size_t mavproxy_dev_write(uint8_t chan, const void* buffer, uint32_t len, int32_t timeout)
 {
-    rt_size_t size;
-
     if (mavdev_list[chan].dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
     }
-    /* write data to device */
-    size = rt_device_write(mavdev_list[chan].dev, 0, buffer, len);
-    if (size > 0) {
-        /* wait write complete (synchronized write) */
-        if (rt_completion_wait(&mavdev_list[chan].tx_cplt, timeout) != RT_EOK) {
-            return 0;
-        }
-    }
 
-    return size;
+    return rt_device_write(mavdev_list[chan].dev, timeout, buffer, len);
 }
 
 rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t timeout)
 {
-    rt_size_t cnt = 0;
-
     if (mavdev_list[chan].dev == NULL) {
         /* mavproxy device not initialized */
         return 0;
     }
 
-    /* try to read data */
-    cnt = rt_device_read(mavdev_list[chan].dev, 0, buffer, len);
-
-    /* sync mode */
-    if (timeout != 0) {
-        uint32_t time_start, elapse_time;
-        /* if not enough data reveived, wait it */
-        while (cnt < len) {
-            time_start = systime_now_ms();
-            /* wait until something reveived (synchronized read) */
-            if (rt_completion_wait(&mavdev_list[chan].rx_cplt, timeout) != RT_EOK) {
-                break;
-            }
-            if (timeout != RT_WAITING_FOREVER) {
-                elapse_time = systime_now_ms() - time_start;
-                timeout -= elapse_time;
-                if (timeout <= 0) {
-                    /* timeout */
-                    break;
-                }
-            }
-            /* read rest data */
-            cnt += rt_device_read(mavdev_list[chan].dev, 0, (void*)((uint32_t)buffer + cnt), len - cnt);
-        }
-    }
-
-    return cnt;
+    return rt_device_read(mavdev_list[chan].dev, timeout, buffer, len);
 }
 
 fmt_err_t mavproxy_dev_set_rx_indicate(uint8_t chan, fmt_err_t (*rx_ind)(uint32_t size))

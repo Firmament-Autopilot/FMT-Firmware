@@ -21,7 +21,7 @@
 /*
  * Serial poll routines
  */
-rt_inline int _serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, int length)
+rt_inline int serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
     int ch;
     int size;
@@ -53,7 +53,7 @@ rt_inline int _serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, in
     return rx_length;
 }
 
-rt_inline int _serial_poll_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
+rt_inline int serial_poll_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
 {
     int size;
 
@@ -85,15 +85,10 @@ rt_inline int _serial_poll_tx(struct serial_device* serial, const rt_uint8_t* da
 /*
  * Serial interrupt routines
  */
-rt_inline int _serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int length)
+rt_inline int serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
     int size = length;
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
-
-    if (rx_fifo == RT_NULL) {
-        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
-        return 0;
-    }
 
     /* read from software FIFO */
     while (length) {
@@ -269,7 +264,7 @@ static void _dma_recv_update_put_index(struct serial_device* serial, rt_size_t l
 /*
  * Serial DMA routines
  */
-rt_inline int _serial_dma_rx(struct serial_device* serial, rt_uint8_t* data, int length)
+rt_inline rt_size_t serial_dma_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
     rt_base_t level;
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
@@ -282,8 +277,6 @@ rt_inline int _serial_dma_rx(struct serial_device* serial, rt_uint8_t* data, int
     level = rt_hw_interrupt_disable();
 
     rt_size_t recv_len = 0, fifo_recved_len = _dma_calc_recved_len(serial);
-
-    RT_ASSERT(rx_fifo != RT_NULL);
 
     if (length < fifo_recved_len)
         recv_len = length;
@@ -304,12 +297,10 @@ rt_inline int _serial_dma_rx(struct serial_device* serial, rt_uint8_t* data, int
     return recv_len;
 }
 
-rt_inline int _serial_dma_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
+rt_inline rt_size_t serial_dma_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
 {
     /* make a DMA transfer */
-    serial->ops->dma_transmit(serial, (rt_uint8_t*)data, length, SERIAL_DMA_TX);
-
-    return length;
+    return serial->ops->dma_transmit(serial, (rt_uint8_t*)data, length, SERIAL_DMA_TX);
 }
 
 /* RT-Thread Device Interface */
@@ -350,10 +341,7 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
 
     serial = (struct serial_device*)dev;
 
-    /*dbg_log(DBG_LOG, "open serial device: 0x%08x with open flag: 0x%04x\n",
-            dev, oflag);*/
-
-    /* check device flag with the open flag */
+    /* check device flag with the open flag, if not match, return error */
     if ((oflag & RT_DEVICE_FLAG_INT_RX) && !(dev->flag & RT_DEVICE_FLAG_INT_RX))
         return -RT_EIO;
 
@@ -363,15 +351,19 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
     if ((oflag & RT_DEVICE_FLAG_DMA_TX) && !(dev->flag & RT_DEVICE_FLAG_DMA_TX))
         return -RT_EIO;
 
-    /* get open flags */
+    /* update open flags */
     dev->open_flag = oflag;
 
-    /* initialize the Rx/Tx structure according to open flag */
+    /* initialize tx/rx cplt structure */
+    rt_completion_init(&serial->tx_cplt);
+    rt_completion_init(&serial->rx_cplt);
+
+    /* we need use rx fifo with INT/DMA receive, so initialize rx fifo here */
     if (oflag & RT_DEVICE_FLAG_INT_RX || oflag & RT_DEVICE_FLAG_DMA_RX) {
         if (serial->serial_rx == RT_NULL) {
             struct serial_rx_fifo* rx_fifo;
 
-            /* create dma rx fifo */
+            /* create rx fifo */
             rx_fifo = (struct serial_rx_fifo*)rt_malloc(sizeof(struct serial_rx_fifo) + serial->config.bufsz);
             RT_ASSERT(rx_fifo != RT_NULL);
             rx_fifo->buffer = (rt_uint8_t*)(rx_fifo + 1);
@@ -483,12 +475,70 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
 
     serial = (struct serial_device*)dev;
 
-    if (dev->open_flag & RT_DEVICE_FLAG_INT_RX) {
-        return _serial_int_rx(serial, buffer, size);
-    } else if (dev->open_flag & RT_DEVICE_FLAG_DMA_RX) {
-        return _serial_dma_rx(serial, buffer, size);
+    if (dev->open_flag & RT_DEVICE_FLAG_DMA_RX) {
+        rt_size_t rx_cnt = 0;
+        rt_int32_t timeout = pos;
+
+        /* try to read data */
+        rx_cnt = serial_dma_rx(serial, buffer, size);
+
+        /* if timeout is not 0, then check if required length data read */
+        if (timeout != 0) {
+            uint32_t time_start, elapse_time;
+            /* if not enough data reveived, wait it */
+            while (rx_cnt < size) {
+                time_start = systime_now_ms();
+                /* wait until something reveived (synchronized read) */
+                if (rt_completion_wait(&serial->rx_cplt, timeout) != RT_EOK) {
+                    break;
+                }
+                if (timeout > 0) {
+                    elapse_time = systime_now_ms() - time_start;
+                    timeout -= elapse_time;
+                    if (timeout <= 0) {
+                        /* timeout */
+                        break;
+                    }
+                }
+                /* read rest data */
+                rx_cnt += serial_dma_rx(serial, (void*)((uint32_t)buffer + rx_cnt), size - rx_cnt);
+            }
+        }
+
+        return rx_cnt;
+    } else if (dev->open_flag & RT_DEVICE_FLAG_INT_RX) {
+        rt_size_t rx_cnt = 0;
+        rt_int32_t timeout = pos;
+
+        /* try to read data */
+        rx_cnt = serial_int_rx(serial, buffer, size);
+
+        /* if timeout is not 0, then check if required length data read */
+        if (timeout != 0) {
+            uint32_t time_start, elapse_time;
+            /* if not enough data reveived, wait it */
+            while (rx_cnt < size) {
+                time_start = systime_now_ms();
+                /* wait until something reveived (synchronized read) */
+                if (rt_completion_wait(&serial->rx_cplt, timeout) != RT_EOK) {
+                    break;
+                }
+                if (timeout > 0) {
+                    elapse_time = systime_now_ms() - time_start;
+                    timeout -= elapse_time;
+                    if (timeout <= 0) {
+                        /* timeout */
+                        break;
+                    }
+                }
+                /* read rest data */
+                rx_cnt += serial_int_rx(serial, (void*)((uint32_t)buffer + rx_cnt), size - rx_cnt);
+            }
+        }
+
+        return rx_cnt;
     } else {
-        return _serial_poll_rx(serial, buffer, size);
+        return serial_poll_rx(serial, buffer, size);
     }
 }
 
@@ -511,9 +561,23 @@ static rt_size_t hal_serial_write(struct rt_device* dev,
     serial = (struct serial_device*)dev;
 
     if (dev->open_flag & RT_DEVICE_FLAG_DMA_TX) {
-        return _serial_dma_tx(serial, buffer, size);
+        rt_size_t len;
+        rt_int32_t timeout = pos;
+
+        len = serial_dma_tx(serial, buffer, size);
+
+        if (len > 0) {
+            /* block transmit if timeout > 0 or timeout == -1 (waiting forever) */
+            /* unblock transmit if timeout = 0 */
+            rt_completion_wait(&serial->tx_cplt, timeout);
+        }
+
+        return len;
+    } else if (dev->open_flag & RT_DEVICE_FLAG_INT_TX) {
+        /* not supported yet */
+        return 0;
     } else {
-        return _serial_poll_tx(serial, buffer, size);
+        return serial_poll_tx(serial, buffer, size);
     }
 }
 
@@ -637,15 +701,21 @@ void hal_serial_isr(struct serial_device* serial, int event)
             }
         }
 
+        /* notify new data received */
+        rt_completion_done(&serial->rx_cplt);
+
         break;
     }
 
     case SERIAL_EVENT_TX_DMADONE: {
 
-        /* invoke callback */
+        /* invoke tx complete callbacks */
         if (serial->parent.tx_complete != RT_NULL) {
             serial->parent.tx_complete(&serial->parent, (void*)RT_NULL);
         }
+
+        /* notify dma transmit completion */
+        rt_completion_done(&serial->tx_cplt);
 
         break;
     }
@@ -670,6 +740,9 @@ void hal_serial_isr(struct serial_device* serial, int event)
         if (serial->parent.rx_indicate != RT_NULL) {
             serial->parent.rx_indicate(&(serial->parent), length);
         }
+
+        /* notify dma receive completion */
+        rt_completion_done(&serial->rx_cplt);
 
         break;
     }
