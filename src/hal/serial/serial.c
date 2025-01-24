@@ -21,11 +21,11 @@
 /*
  * Serial poll routines
  */
-rt_inline int serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, int length)
+static rt_size_t serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
     int ch;
-    int size;
-    int rx_length;
+    rt_size_t size;
+    rt_size_t rx_length;
 
     size = length;
 
@@ -53,9 +53,9 @@ rt_inline int serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, int
     return rx_length;
 }
 
-rt_inline int serial_poll_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
+static rt_size_t serial_poll_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
 {
-    int size;
+    rt_size_t size;
 
     size = length;
 
@@ -85,9 +85,9 @@ rt_inline int serial_poll_tx(struct serial_device* serial, const rt_uint8_t* dat
 /*
  * Serial interrupt routines
  */
-rt_inline int serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int length)
+static rt_size_t serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int length)
 {
-    int size = length;
+    rt_size_t size = length;
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
     /* read from software FIFO */
@@ -127,30 +127,7 @@ rt_inline int serial_int_rx(struct serial_device* serial, rt_uint8_t* data, int 
     return size - length;
 }
 
-rt_inline int _serial_int_tx(struct serial_device* serial, const rt_uint8_t* data, int length)
-{
-    int size = length;
-    struct serial_tx_fifo* tx_fifo = (struct serial_tx_fifo*)serial->serial_tx;
-
-    if (tx_fifo == RT_NULL) {
-        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
-        return 0;
-    }
-
-    while (length) {
-        if (serial->ops->putc(serial, *(char*)data) == -1) {
-            rt_completion_wait(&(tx_fifo->completion), RT_WAITING_FOREVER);
-            continue;
-        }
-
-        data++;
-        length--;
-    }
-
-    return size - length;
-}
-
-static rt_size_t _serial_fifo_calc_recved_len(struct serial_device* serial)
+static rt_size_t serial_fifo_calc_recved_len(struct serial_device* serial)
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
@@ -177,9 +154,9 @@ static rt_size_t _serial_fifo_calc_recved_len(struct serial_device* serial)
  *
  * @return length
  */
-static rt_size_t _dma_calc_recved_len(struct serial_device* serial)
+rt_inline rt_size_t dma_calc_recved_len(struct serial_device* serial)
 {
-    return _serial_fifo_calc_recved_len(serial);
+    return serial_fifo_calc_recved_len(serial);
 }
 
 /**
@@ -188,7 +165,7 @@ static rt_size_t _dma_calc_recved_len(struct serial_device* serial)
  * @param serial serial device
  * @param len get data length for this operate
  */
-static void _dma_recv_update_get_index(struct serial_device* serial, rt_size_t len)
+static void dma_recv_update_get_index(struct serial_device* serial, rt_size_t len)
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
@@ -197,7 +174,7 @@ static void _dma_recv_update_get_index(struct serial_device* serial, rt_size_t l
         return;
     }
 
-    if (len > _dma_calc_recved_len(serial)) {
+    if (len > dma_calc_recved_len(serial)) {
         HAL_DBG("length:%d exceeds the maxium received length\n", len);
         return;
     }
@@ -218,7 +195,7 @@ static void _dma_recv_update_get_index(struct serial_device* serial, rt_size_t l
  * @param serial serial device
  * @param len received length for this transmit
  */
-static void _dma_recv_update_put_index(struct serial_device* serial, rt_size_t len)
+static void dma_recv_update_put_index(struct serial_device* serial, rt_size_t len)
 {
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
@@ -269,14 +246,9 @@ rt_inline rt_size_t serial_dma_rx(struct serial_device* serial, rt_uint8_t* data
     rt_base_t level;
     struct serial_rx_fifo* rx_fifo = (struct serial_rx_fifo*)serial->serial_rx;
 
-    if (rx_fifo == RT_NULL) {
-        HAL_DBG("NULL check failed at function:%s, line number:%d\n", __FUNCTION__, __LINE__);
-        return 0;
-    }
-
     level = rt_hw_interrupt_disable();
 
-    rt_size_t recv_len = 0, fifo_recved_len = _dma_calc_recved_len(serial);
+    rt_size_t recv_len = 0, fifo_recved_len = dma_calc_recved_len(serial);
 
     if (length < fifo_recved_len)
         recv_len = length;
@@ -290,7 +262,7 @@ rt_inline rt_size_t serial_dma_rx(struct serial_device* serial, rt_uint8_t* data
         rt_memcpy(data + serial->config.bufsz - rx_fifo->get_index, rx_fifo->buffer, recv_len + rx_fifo->get_index - serial->config.bufsz);
     }
 
-    _dma_recv_update_get_index(serial, recv_len);
+    dma_recv_update_get_index(serial, recv_len);
 
     rt_hw_interrupt_enable(level);
 
@@ -730,9 +702,9 @@ void hal_serial_isr(struct serial_device* serial, int event)
         /* disable interrupt */
         level = rt_hw_interrupt_disable();
         /* update fifo put index */
-        _dma_recv_update_put_index(serial, length);
+        dma_recv_update_put_index(serial, length);
         /* calculate received total length in fifo */
-        length = _dma_calc_recved_len(serial);
+        length = dma_calc_recved_len(serial);
         /* enable interrupt */
         rt_hw_interrupt_enable(level);
 
