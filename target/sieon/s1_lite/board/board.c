@@ -28,6 +28,7 @@
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883l.h"
+#include "driver/mtd/gd25qxx.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -71,7 +72,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
-    // { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -360,6 +361,7 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

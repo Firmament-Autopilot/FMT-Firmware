@@ -7,7 +7,7 @@ DRIVERS = [
     'imu/icm42688p.c',
     'mag/bmm150.c',
     'mag/qmc5883l.c',
-    'mtd/w25qxx.c',
+    'mtd/gd25qxx.c',
 ]
 
 DRIVERS_CPPPATH = []
