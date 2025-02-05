@@ -393,7 +393,7 @@ void bsp_initialize(void)
     FMT_CHECK(param_init());
 
     /* init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

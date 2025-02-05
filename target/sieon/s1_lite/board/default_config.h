@@ -36,19 +36,10 @@ target = "SIEON S1-Lite"\n
 	type = "serial"\n
 	name = "serial1"\n
 	baudrate = 57600\n
-[pilot-cmd]\n
-    stick-channel = [4,3,1,2]\n
-    [pilot-cmd.device]\n
-    type = "rc"\n
-    name = "rc"\n
-    protocol = "auto"\n
-    channel-num = 8\n
-    sample-time = 0.05\n
-    range = [1000,2000]\n
-[actuator]\n
-    [[actuator.devices]]\n
-    protocol = "pwm"\n
-    name = "main_out"\n
-    freq = 400
+    [[mavproxy.devices]]\n
+	chan = 0\n
+	type = "usb"\n
+	name = "usbd0"\n
+    auto-switch = true
 );
 // clang-format on
