@@ -174,8 +174,8 @@ class uploader(object):
     INFO_BOARD_REV = b'\x03'  # board revision
     INFO_FLASH_SIZE = b'\x04'  # max firmware size in bytes
 
-    PROG_MULTI_MAX = 252  # protocol max is 255, must be multiple of 4
-    READ_MULTI_MAX = 252  # protocol max is 255
+    PROG_MULTI_MAX = 224  # protocol max is 255, must be multiple of 4
+    READ_MULTI_MAX = 224  # protocol max is 255
 
     NSH_INIT = bytearray(b'\x0d\x0d\x0d')
     NSH_REBOOT_BL = b"reboot -b\n"
@@ -187,6 +187,9 @@ class uploader(object):
 
     MAVLINK_REBOOT_MSH =   bytearray(
         b'\xfd\x10\x00\x00\x01\xff\x00\x7e\x00\x00\x00\x00\x00\x00\x00\x00\x0a\x06\x07\x72\x65\x62\x6f\x6f\x74\x0a\xf3\x46')
+    
+    MAVLINK_ENTER_MSH =   bytearray(
+        b'\xfd\x4a\x00\x00\x04\x00\x00\x7e\x00\x00\x00\x00\x00\x00\x00\x00\x0a\x06\x01\x0a\x00\x00\x00\xb8\xbf\xc7\x17\x96\xd6\x39\x0b\x00\x74\x03\x80\x00\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x10\x00\x00\x00\x6d\x00\x00\x00\xd8\xbf\xc7\x17\x92\xd6\x35\x0b\x00\x75\x03\x80\x00\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x10\x00\x00\x00\x2f\xde\x47')
 
     MAX_FLASH_PRGRAM_TIME = 0.001  # Time on an F7 to send SYNC, RESULT from last data in multi RXed
 
@@ -263,7 +266,7 @@ class uploader(object):
             self.port.flush()
         c = bytes(self.__recv())
         if c != self.INSYNC:
-            raise RuntimeError("unexpected %s instead of INSYNC" % c)
+            raise RuntimeError("unexpected %x instead of INSYNC" % c)
         c = self.__recv()
         if c == self.INVALID:
             raise RuntimeError("bootloader reports INVALID OPERATION")
@@ -282,7 +285,7 @@ class uploader(object):
                 raise RuntimeError("Ack Window %i not %i " % (len(data), count))
             for i in range(0, len(data), 2):
                 if chr(data[i]) != self.INSYNC:
-                    raise RuntimeError("unexpected %s instead of INSYNC" % data[i])
+                    raise RuntimeError("unexpected %x instead of INSYNC" % data[i])
                 if chr(data[i + 1]) == self.INVALID:
                     raise RuntimeError("bootloader reports INVALID OPERATION")
                 if chr(data[i + 1]) == self.FAILED:
@@ -339,7 +342,8 @@ class uploader(object):
             self.__getSync(False)
         except:
             # if it fails we are on a real Serial Port
-            self.ackWindowedMode = True
+            # self.ackWindowedMode = True
+            self.ackWindowedMode = False
 
         self.port.baudrate = self.baudrate_bootloader
 
@@ -468,8 +472,8 @@ class uploader(object):
         self.port.flush()
 
         # v3+ can report failure if the first word flash fails
-        if self.bl_rev >= 3:
-            self.__getSync()
+        # if self.bl_rev >= 3:
+        #     self.__getSync()
 
     # split a sequence into a list of size-constrained pieces
     def __split_len(self, seq, length):
@@ -684,17 +688,15 @@ class uploader(object):
             print("If the board does not respond, unplug and re-plug the USB connector.", file=sys.stderr)
 
         try:
-            # try MAVLINK command first
             self.port.flush()
-            # self.__send(uploader.MAVLINK_REBOOT_ID1)
-            # self.__send(uploader.MAVLINK_REBOOT_ID0)
+            # send \n to activate mavlink console
+            self.__send(uploader.MAVLINK_ENTER_MSH)
+            # sleep for a while to let mavproxy switch to usb
+            time.sleep(0.5)
+            # send MAVLINK reboot command
             self.__send(uploader.MAVLINK_REBOOT_MSH)
-            # then try reboot via NSH
-            # self.__send(uploader.NSH_INIT)
-            # self.__send(uploader.NSH_REBOOT_BL)
-            # self.__send(uploader.NSH_INIT)
-            # self.__send(uploader.NSH_REBOOT)
             self.port.flush()
+
             self.port.baudrate = self.baudrate_bootloader
         except Exception:
             try:
@@ -843,7 +845,7 @@ def main():
             while True:
                 try:
                     serial_list = auto_detect_serial(preferred_list=['*MindPX*', '*ArduPilot*',
-                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                        "*STMicroelectronics Virtual COM Port*", "*USB_to_UART*", '*PX4*'])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
