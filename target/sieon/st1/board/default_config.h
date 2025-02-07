@@ -19,7 +19,7 @@
 
 // clang-format off
 static char* default_conf = STRING(
-target = "SIEON S1-Lite"\n
+target = "SIEON ST1"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n
