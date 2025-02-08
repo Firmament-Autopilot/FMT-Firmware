@@ -443,11 +443,17 @@ void bsp_post_initialize(void)
     /* init mission data */
     FMT_CHECK(mission_data_init());
 
+    /* init actuator */
+    FMT_CHECK(actuator_init());
+
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
     /* init led control */
     FMT_CHECK(led_control_init());
+
+    /* initialize power management unit */
+    // FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
