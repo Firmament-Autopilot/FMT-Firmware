@@ -6,20 +6,19 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2015 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2015 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                      www.st.com/SLA0044
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_CDC_DEV_H
-#define __USB_CDC_DEV_H
+#ifndef __USB_CDC_H
+#define __USB_CDC_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,9 +40,15 @@ extern "C" {
 /** @defgroup usbd_cdc_Exported_Defines
   * @{
   */
+#ifndef CDC_IN_EP
 #define CDC_IN_EP                                   0x81U  /* EP1 for data IN */
+#endif /* CDC_IN_EP */
+#ifndef CDC_OUT_EP
 #define CDC_OUT_EP                                  0x01U  /* EP1 for data OUT */
-#define CDC_CMD_EP                                  0x82U  /* EP2 for CDC commands */
+#endif /* CDC_OUT_EP */
+#ifndef CDC_CMD_EP
+#define CDC_CMD_EP                                  0x83U  /* EP2 for CDC commands */
+#endif /* CDC_CMD_EP  */
 
 #ifndef CDC_HS_BINTERVAL
 #define CDC_HS_BINTERVAL                            0x10U
@@ -65,6 +70,7 @@ extern "C" {
 #define CDC_DATA_FS_IN_PACKET_SIZE                  CDC_DATA_FS_MAX_PACKET_SIZE
 #define CDC_DATA_FS_OUT_PACKET_SIZE                 CDC_DATA_FS_MAX_PACKET_SIZE
 
+#define CDC_REQ_MAX_DATA_SIZE                       0x7U
 /*---------------------------------------------------------------------*/
 /*  CDC definitions                                                    */
 /*---------------------------------------------------------------------*/
@@ -110,7 +116,7 @@ typedef struct _USBD_CDC_Itf
 
 typedef struct
 {
-  uint32_t data[CDC_DATA_HS_MAX_PACKET_SIZE / 4U];      /* Force 32bits alignment */
+  uint32_t data[CDC_DATA_HS_MAX_PACKET_SIZE / 4U];      /* Force 32-bit alignment */
   uint8_t  CmdOpCode;
   uint8_t  CmdLength;
   uint8_t  *RxBuffer;
@@ -148,12 +154,17 @@ extern USBD_ClassTypeDef USBD_CDC;
 uint8_t USBD_CDC_RegisterInterface(USBD_HandleTypeDef *pdev,
                                    USBD_CDC_ItfTypeDef *fops);
 
+#ifdef USE_USBD_COMPOSITE
+uint8_t USBD_CDC_SetTxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff,
+                             uint32_t length, uint8_t ClassId);
+uint8_t USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev, uint8_t ClassId);
+#else
 uint8_t USBD_CDC_SetTxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff,
                              uint32_t length);
-
+uint8_t USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev);
+#endif /* USE_USBD_COMPOSITE */
 uint8_t USBD_CDC_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff);
 uint8_t USBD_CDC_ReceivePacket(USBD_HandleTypeDef *pdev);
-uint8_t USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev);
 /**
   * @}
   */
@@ -171,4 +182,3 @@ uint8_t USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev);
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -19,6 +19,7 @@
 #include "drv_sdio.h"
 #include "hal/sd/sd.h"
 #include "stm32h7xx_ll_sdmmc.h"
+#include "drv_usbd_cdc.h"
 
 #define SD_TIMEOUT    5000
 #define EVENT_TX_CPLT 0x00000001
@@ -27,7 +28,7 @@
 #define EVENT_ABORT   0x00000008
 
 /* SDMMC1 */
-static SD_HandleTypeDef hsd1;
+SD_HandleTypeDef hsd1;
 
 static struct sd_device sd0_dev;
 
@@ -179,6 +180,9 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
     rt_err_t err = RT_EOK;
     rt_uint32_t status;
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
+    
+    if(get_is_usb_connected())
+		return RT_ERROR;
 
     RT_ASSERT(sd_handle != RT_NULL);
 
@@ -209,6 +213,9 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
     rt_err_t err = RT_EOK;
     rt_uint32_t status;
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
+
+    // if(get_is_usb_connected())
+	// 	return RT_ERROR;
 
     RT_ASSERT(sd_handle != RT_NULL);
 

@@ -24,6 +24,13 @@ extern "C" {
 
 rt_err_t drv_usb_cdc_init(void);
 
+/** 
+ * @author WeiXuan
+ * @brief 获取USB是否连接
+ * @returns 
+ */
+bool get_is_usb_connected(void);
+
 #ifdef __cplusplus
 }
 #endif

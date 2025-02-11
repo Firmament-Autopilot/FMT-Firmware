@@ -31,11 +31,6 @@ target = "SIEON ST1"\n
 	name = "mav_console"\n
 	auto-switch = true\n
 [mavproxy]\n
-	[[mavproxy.devices]]\n
-	chan = 0\n
-	type = "serial"\n
-	name = "serial1"\n
-	baudrate = 57600\n
     [[mavproxy.devices]]\n
 	chan = 0\n
 	type = "usb"\n

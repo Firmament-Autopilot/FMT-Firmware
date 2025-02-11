@@ -26,8 +26,23 @@
 #include "usbd_desc.h"
 
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+extern volatile uint8_t usb_connectflag; 
 
+// USB状态	
 static struct usbd_cdc_dev usbd_dev;
+
+/** 
+ * @author WeiXuan
+ * @brief 获取USB是否连接
+ * @returns 
+ */
+bool get_is_usb_connected(void)
+{
+	if( usb_connectflag==1 )
+		return true;
+	else
+		return false;
+}
 
 void OTG_FS_IRQHandler(void)
 {
@@ -50,7 +65,7 @@ static rt_size_t usbd_cdc_read(usbd_cdc_dev_t usbd, rt_off_t pos, void* buf, rt_
 
 static rt_size_t usbd_cdc_write(usbd_cdc_dev_t usbd, rt_off_t pos, const void* buf, rt_size_t size)
 {
-    if (CDC_Transmit_FS((uint8_t*)buf, size) != USBD_OK) {
+    if (CDC_Transmit((uint8_t*)buf, size) != USBD_OK) {
         return 0;
     }
     return size;
