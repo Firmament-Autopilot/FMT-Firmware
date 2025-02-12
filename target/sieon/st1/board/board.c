@@ -29,6 +29,7 @@
 #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
+#include "drv_adc.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -395,6 +396,9 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
+
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
     FMT_CHECK(advertise_sensor_mag(0));
@@ -453,7 +457,7 @@ void bsp_post_initialize(void)
     FMT_CHECK(led_control_init());
 
     /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
