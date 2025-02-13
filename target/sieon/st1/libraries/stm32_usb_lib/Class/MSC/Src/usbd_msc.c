@@ -214,9 +214,10 @@ uint8_t MSCOutEpAdd = MSC_EPOUT_ADDR;
 uint8_t USBD_MSC_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
   UNUSED(cfgidx);
-  USBD_MSC_BOT_HandleTypeDef *hmsc;
+  static USBD_MSC_BOT_HandleTypeDef hcdc_handle;
+  USBD_MSC_BOT_HandleTypeDef *hmsc = &hcdc_handle;
 
-  hmsc = (USBD_MSC_BOT_HandleTypeDef *)USBD_malloc(sizeof(USBD_MSC_BOT_HandleTypeDef));
+  // hmsc = (USBD_MSC_BOT_HandleTypeDef *)USBD_malloc(sizeof(USBD_MSC_BOT_HandleTypeDef));
 
   if (hmsc == NULL)
   {

@@ -23,7 +23,7 @@
 #define USBD_CMPSIT_ACTIVATE_MSC     1
 #define USBD_CMPSIT_ACTIVATE_CDC     1
 #define USBD_COMPOSITE_USE_IAD       1
-#define USE_USB_HS
+#define USE_USB_FS
 
 /* USBD composite接口数量 */                                     
 #define USBD_MAX_NUM_INTERFACES      3U
