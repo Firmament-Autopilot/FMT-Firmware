@@ -201,6 +201,23 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
     }
 }
 
+void HAL_FDCAN_TxFifoEmptyCallback(FDCAN_HandleTypeDef* hfdcan)
+{
+    /* notify tx complete */
+    if (hfdcan == &hfdcan1)
+        hal_can_notify(&can1_dev, CAN_EVENT_TX_DONE, RT_NULL);
+    else if (hfdcan == &hfdcan2)
+        hal_can_notify(&can2_dev, CAN_EVENT_TX_DONE, RT_NULL);
+}
+
+void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs)
+{
+    if ((ErrorStatusITs & FDCAN_IT_BUS_OFF) != RESET) {
+        /* recover from bus-off */
+        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+    }
+}
+
 static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
 {
     FDCAN_HandleTypeDef* hfdcan = (FDCAN_HandleTypeDef*)can->parent.user_data;
@@ -224,7 +241,7 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
     hfdcan->Init.MessageRAMOffset = 0;
     hfdcan->Init.StdFiltersNbr = 1;
     hfdcan->Init.ExtFiltersNbr = 0;
-    hfdcan->Init.RxFifo0ElmtsNbr = 10;
+    hfdcan->Init.RxFifo0ElmtsNbr = 32;
     hfdcan->Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
     hfdcan->Init.RxFifo1ElmtsNbr = 0;
     hfdcan->Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
@@ -265,6 +282,10 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
 
     if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
         /* Notification Error */
+        return RT_ERROR;
+    }
+
+    if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
         return RT_ERROR;
     }
 
@@ -332,7 +353,6 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
 {
     FDCAN_HandleTypeDef* hfdcan = (FDCAN_HandleTypeDef*)can->parent.user_data;
     FDCAN_TxHeaderTypeDef TxHeader;
-    int res = 0;
 
     /* Prepare Tx Header */
     TxHeader.Identifier = msg->std_id;
@@ -347,13 +367,13 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     TxHeader.MessageMarker = 0;
 
     if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &TxHeader, msg->data) == HAL_OK) {
-        res = 1;
+        /* Enable FDCAN_IT_TX_FIFO_EMPTY interrupt */
+        if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_TX_FIFO_EMPTY, 0) == HAL_OK) {
+            return 1;
+        }
     }
 
-    /* can msg has been put to tx fifo, notify tx complete */
-    hal_can_notify(can, CAN_EVENT_TX_DONE, RT_NULL);
-
-    return res;
+    return 0;
 }
 
 static int recv_canmsg(can_dev_t can, can_msg_t msg)
