@@ -57,8 +57,8 @@ static rt_err_t mavdev_chan1_tx_done(rt_device_t dev, void* buffer)
 
 static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    if (mavdev_list[0].mav_rx_ind) {
-        mavdev_list[0].mav_rx_ind(size);
+    if (mavdev_list[1].mav_rx_ind) {
+        mavdev_list[1].mav_rx_ind(size);
     }
 
     return RT_EOK;
