@@ -44,6 +44,7 @@ static rt_thread_t     thread;
 static struct rt_event event;
 static L08_data       data;
 static rf_data_t       rf_report;
+static int             RF_ID;
 
 static void start_thread(void* parameter)
 {
@@ -138,6 +139,8 @@ static void thread_entry(void* args)
                     }
                     /* publish range finder data */
                     mcn_publish(MCN_HUB(sensor_rangefinder), &rf_report);
+                    RF_ID = mlog_get_bus_id("Rangefinder");
+                    mlog_push_msg((uint8_t*)&rf_report, RF_ID, sizeof(rf_report));
                 }
             }
         }

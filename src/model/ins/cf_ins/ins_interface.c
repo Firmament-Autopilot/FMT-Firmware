@@ -152,6 +152,14 @@ mlog_elem_t Rangefinder_Elems[] = {
     MLOG_ELEMENT(distance, MLOG_FLOAT),
 };
 MLOG_BUS_DEFINE(Rangefinder, Rangefinder_Elems);
+/* 
+add TFluna mlog bus
+*/
+mlog_elem_t TFluna_rangefinder_Elems[] = {
+    MLOG_ELEMENT(timestamp, MLOG_UINT32),
+    MLOG_ELEMENT(distance, MLOG_FLOAT),
+};
+MLOG_BUS_DEFINE(TFluna, TFluna_rangefinder_Elems);
 
 mlog_elem_t Optflow_Elems[] = {
     MLOG_ELEMENT(timestamp, MLOG_UINT32),
@@ -240,6 +248,7 @@ static uint8_t mag_data_updated;
 static uint8_t baro_data_updated;
 static uint8_t gps_data_updated;
 static uint8_t rf_data_updated;
+static uint8_t tf_data_updated; // init tfluna mlog bus
 static uint8_t optflow_data_updated;
 static uint8_t airspeed_data_updated;
 static uint8_t ext_pos_data_updated;
@@ -249,6 +258,7 @@ static int MAG_ID;
 static int Barometer_ID;
 static int GPS_ID;
 static int Rangefinder_ID;
+static int TFluna_ID; // init tfluna mlog bus
 static int OpticalFlow_ID;
 static int AirSpeed_ID;
 static int ExtPos_ID;
@@ -319,6 +329,7 @@ static void mlog_start_cb(void)
     baro_data_updated = 1;
     gps_data_updated = 1;
     rf_data_updated = 1;
+    tf_data_updated = 1;
     optflow_data_updated = 1;
     airspeed_data_updated = 1;
     ext_pos_data_updated = 1;
@@ -510,6 +521,20 @@ void ins_interface_step(uint32_t timestamp)
         rf_data_updated = 0;
         /* Log Rangefinder data */
         mlog_push_msg((uint8_t*)&INS_U.Rangefinder, Rangefinder_ID, sizeof(INS_U.Rangefinder));
+    }
+
+    /* 
+        init tfluna mlog bus
+    */
+
+    if (tf_data_updated) { 
+        rf_data_t tfluna_report;
+        tfluna_report.distance_m = 0.0;
+        tfluna_report.timestamp_ms = 0;
+        TFluna_ID = mlog_get_bus_id("TFluna");
+        tf_data_updated = 0;
+        /* Log TFluna data */
+        mlog_push_msg((uint8_t*)&tfluna_report, TFluna_ID, sizeof(tfluna_report));
     }
 
     if (optflow_data_updated) {

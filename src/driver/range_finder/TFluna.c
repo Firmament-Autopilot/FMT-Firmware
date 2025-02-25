@@ -29,22 +29,23 @@ static rt_device_t i2c_dev;
 static rt_thread_t thread;
 static struct rt_event event;
 static struct rt_timer timer;
+static rf_data_t tfluna_data = {0};
 
 static int TFluna_ID;
 
-mlog_elem_t TFluna_rangefinder_Elems[] = {
-    MLOG_ELEMENT(timestamp, MLOG_UINT32),
-    MLOG_ELEMENT(distance, MLOG_FLOAT),
-};
+// mlog_elem_t TFluna_rangefinder_Elems[] = {
+//     MLOG_ELEMENT(timestamp, MLOG_UINT32),
+//     MLOG_ELEMENT(distance, MLOG_FLOAT),
+// };
+// MLOG_BUS_DEFINE(TFluna, TFluna_rangefinder_Elems);
 
-MLOG_BUS_DEFINE(TFluna, TFluna_rangefinder_Elems);
+// typedef struct {
+//     uint32_t timestamp_ms;
+//     float distance_m;
+//     // float Amp;
+//     // float temperature_deg;
+// } TFluna_data_t;
 
-typedef struct {
-    uint32_t timestamp_ms;
-    float distance_m;
-    // float Amp;
-    // float temperature_deg;
-} TFluna_data_t;
 
 
 
@@ -57,12 +58,14 @@ static void timer_update(void* parameter)
 
 static rt_err_t TFluna_init(void)
 {
+
+    
     if (i2c_write_reg(i2c_dev, 0x23, 0x01) != RT_EOK) {
         rt_kprintf("Failed to set order triger mode");
 
-        TFluna_ID = mlog_get_bus_id("TFluna");
         return RT_ERROR;
     }
+
     return RT_EOK;
 }
 
@@ -107,10 +110,7 @@ static void thread_entry(void* args)
     rt_uint32_t recv_set = 0;
     rt_uint32_t wait_set = EVENT_TFluna_UPDATE;
     float report[3];
-    rf_data_t tfluna_data = {0};
-
-    mlog_push_msg((uint8_t*)&tfluna_data, TFluna_ID, sizeof(tfluna_data));
-
+    
     while (1) {
         if (i2c_write_reg(i2c_dev, 0x24, 0x01) != RT_EOK)
         {
@@ -136,6 +136,9 @@ static void thread_entry(void* args)
 }
 
 rt_err_t tfluna_drv_init(const char* i2c_device_name) {
+
+    rt_kprintf("TFluna driver init\n");
+
     /* 查找I2C设备 */
     i2c_dev = rt_device_find(i2c_device_name);  
     RT_ASSERT(i2c_dev != NULL);  // 确保设备找到
@@ -143,10 +146,12 @@ rt_err_t tfluna_drv_init(const char* i2c_device_name) {
     if (rt_device_open(i2c_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK)
     {
         rt_kprintf("Failed to open I2C device!\n");
-        return 1;  // 如果打开失败，打印错误信息并返回
+        return RT_ERROR;  // 如果打开失败，打印错误信息并返回
     }
     
     RT_TRY(TFluna_init());
+
+    TFluna_ID = mlog_get_bus_id("TFluna");
 
     RT_CHECK(rt_event_init(&event, "TFluna", RT_IPC_FLAG_FIFO));
 
@@ -157,7 +162,7 @@ rt_err_t tfluna_drv_init(const char* i2c_device_name) {
      /* register timer event */
     rt_timer_init(&timer, "TFluna", timer_update, RT_NULL, TICKS_FROM_MS(10), RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
     if (rt_timer_start(&timer) != RT_EOK) {
-        return FMT_ERROR;
+        return RT_ERROR;
     }
 
     return RT_EOK;
