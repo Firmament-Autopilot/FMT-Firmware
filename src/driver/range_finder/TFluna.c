@@ -47,8 +47,6 @@ static int TFluna_ID;
 // } TFluna_data_t;
 
 
-
-
 static void timer_update(void* parameter)
 {
     rt_event_send(&event, EVENT_TFluna_UPDATE);
