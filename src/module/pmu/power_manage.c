@@ -69,13 +69,10 @@ fmt_err_t pmu_init(void)
     FMT_CHECK(mcn_advertise(MCN_HUB(bat_status), echo_battery_status));
 
     adc_dev = rt_device_find("adc0");
-    RT_ASSERT(adc_dev != NULL);
+    if (adc_dev != NULL) {
+        if (rt_device_open(adc_dev, RT_DEVICE_FLAG_RDONLY) == RT_EOK)
+            return FMT_EOK;
+    }
 
-    RT_CHECK(rt_device_open(adc_dev, RT_DEVICE_FLAG_RDONLY));
-
-    rt_device_t adc2_dev = rt_device_find("adc1");
-    RT_ASSERT(adc2_dev != NULL);
-    RT_CHECK(rt_device_open(adc2_dev, RT_DEVICE_FLAG_RDONLY));
-
-    return FMT_EOK;
+    return FMT_ERROR;
 }
