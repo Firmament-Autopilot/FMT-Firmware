@@ -8,6 +8,7 @@ DRIVERS = [
     'mag/bmm150.c',
     'mag/qmc5883l.c',
     'mtd/gd25qxx.c',
+    'range_finder/tofsense.c',
 ]
 
 DRIVERS_CPPPATH = []

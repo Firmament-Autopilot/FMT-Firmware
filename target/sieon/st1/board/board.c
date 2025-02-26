@@ -29,6 +29,7 @@
 #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
+#include "driver/range_finder/tofsense.h"
 #include "drv_adc.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
@@ -321,6 +322,21 @@ void SystemClock_Config(void)
     if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
         Error_Handler();
     }
+
+    /* Peripherals Common Clock Configuration */
+    LL_RCC_PLL2P_Enable();
+    LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
+    LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_MEDIUM);
+    LL_RCC_PLL2_SetM(1);
+    LL_RCC_PLL2_SetN(10);
+    LL_RCC_PLL2_SetP(2);
+    LL_RCC_PLL2_SetQ(2);
+    LL_RCC_PLL2_SetR(2);
+    LL_RCC_PLL2_Enable();
+
+    /* Wait till PLL is ready */
+    while (LL_RCC_PLL2_IsReady() != 1) {
+    }
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
@@ -413,10 +429,13 @@ void bsp_initialize(void)
     // RT_CHECK(drv_qmc5883l_init("i2c3_dev1", "mag0"));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
+    // RT_CHECK(drv_tofsense_init("serial5"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
 
     /* init finsh */

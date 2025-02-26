@@ -3,6 +3,7 @@
 PROTOCOL = [
     # 'msp/*.c',
     'ublox/*.c',
+    'nlink/*.c',
 ]
 
 PROTOCOL_CPPPATH = []
