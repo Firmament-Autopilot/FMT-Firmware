@@ -92,11 +92,11 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
         switch (channel) {
         case 0:
             /* Bat1 Volt */
-            adc_channel = LL_ADC_CHANNEL_VREFINT;
+            adc_channel = LL_ADC_CHANNEL_14;
             break;
         case 1:
             /* Bat1 Current */
-            adc_channel = LL_ADC_CHANNEL_VBAT;
+            adc_channel = LL_ADC_CHANNEL_VREFINT;
             break;
         case 2:
             /* Bat2 Volt */
@@ -113,21 +113,22 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
         switch (channel) {
         case 0:
             /* Bat1 Volt */
-            adc_channel = LL_ADC_CHANNEL_6;
+            adc_channel = LL_ADC_CHANNEL_14;
             break;
         case 1:
             /* Bat1 Current */
-            adc_channel = LL_ADC_CHANNEL_2;
+            adc_channel = LL_ADC_CHANNEL_13;
             break;
         default:
             return RT_EINVAL;
         }
-    }else{
+    } else {
         return RT_EINVAL;
     }
 
     LL_ADC_REG_SetSequencerRanks(adc->adc_handle, LL_ADC_REG_RANK_1, adc_channel);
     LL_ADC_SetChannelSamplingTime(adc->adc_handle, adc_channel, LL_ADC_SAMPLINGTIME_64CYCLES_5);
+    LL_ADC_SetChannelSingleDiff(adc->adc_handle, adc_channel, LL_ADC_SINGLE_ENDED);
 
     LL_ADC_REG_StartConversion(adc->adc_handle);
 
@@ -137,7 +138,7 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
 
     // systime_mdelay(10);
 
-    uint16_t adcData = LL_ADC_REG_ReadConversionData12(adc->adc_handle);
+    uint16_t adcData = LL_ADC_REG_ReadConversionData32(adc->adc_handle);
     *mVolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(3300, adcData, LL_ADC_RESOLUTION_12B);
 
     return RT_EOK;
@@ -156,7 +157,7 @@ static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
         /* the ADC needs a stabilization time of tSTAB
          * before it starts converting accurately
          */
-        sys_msleep(1);
+        sys_msleep(10);
     } else if (enable == ADC_CMD_DISABLE) {
         LL_ADC_Disable(adc->adc_handle);
     } else {
@@ -207,9 +208,13 @@ static rt_err_t adc3_hw_init(void)
     ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
     ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_OVERWRITTEN;
     LL_ADC_REG_Init(ADC3, &ADC_REG_InitStruct);
-    ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV4;
+    // ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV4;
+    ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV1;
     ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_INDEPENDENT;
     LL_ADC_CommonInit(__LL_ADC_COMMON_INSTANCE(ADC3), &ADC_CommonInitStruct);
+
+    /* BOOST 位控制 */
+    LL_ADC_SetBoostMode(ADC3, LL_ADC_BOOST_MODE_50MHZ);
 
     /* Disable ADC deep power down (enabled by default after reset state) */
     LL_ADC_DisableDeepPowerDown(ADC3);
@@ -221,21 +226,26 @@ static rt_err_t adc3_hw_init(void)
     /* CPU processing cycles (depends on compilation optimization). */
     /* Note: If system core clock frequency is below 200kHz, wait time */
     /* is only a few CPU processing cycles. */
-    __IO uint32_t wait_loop_index;
-    wait_loop_index = ((LL_ADC_DELAY_INTERNAL_REGUL_STAB_US * (SystemCoreClock / (100000 * 2))) / 10);
-    while (wait_loop_index != 0) {
-        wait_loop_index--;
-    }
+    // __IO uint32_t wait_loop_index;
+    // wait_loop_index = ((LL_ADC_DELAY_INTERNAL_REGUL_STAB_US * (SystemCoreClock / (100000 * 2))) / 10);
+    // while (wait_loop_index != 0) {
+    //     wait_loop_index--;
+    // }
+    systime_mdelay(10);
 
     /** Configure Regular Channel
      */
-    LL_ADC_REG_SetSequencerRanks(ADC3, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_VREFINT);
-    LL_ADC_SetChannelSamplingTime(ADC3, LL_ADC_CHANNEL_16, LL_ADC_SAMPLINGTIME_64CYCLES_5);
-    LL_ADC_SetChannelSingleDiff(ADC3, LL_ADC_CHANNEL_16, LL_ADC_SINGLE_ENDED);
+    // LL_ADC_REG_SetSequencerRanks(ADC3, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_VREFINT);
+    // LL_ADC_SetChannelSamplingTime(ADC3, LL_ADC_CHANNEL_16, LL_ADC_SAMPLINGTIME_64CYCLES_5);
+    // LL_ADC_SetChannelSingleDiff(ADC3, LL_ADC_CHANNEL_16, LL_ADC_SINGLE_ENDED);
+    // LL_ADC_SetCommonPathInternalCh(__LL_ADC_COMMON_INSTANCE(ADC3), LL_ADC_AWD_CH_VREFINT_REG);
 
-    // LL_ADC_StartCalibration(ADC3, LL_ADC_CALIB_OFFSET_LINEARITY, LL_ADC_SINGLE_ENDED);
-    // while (LL_ADC_IsCalibrationOnGoing(ADC3)) { /* Wait */
-    // }
+    LL_ADC_StartCalibration(ADC3, LL_ADC_CALIB_OFFSET_LINEARITY, LL_ADC_SINGLE_ENDED);
+    while (LL_ADC_IsCalibrationOnGoing(ADC3)) { /* Wait */
+    }
+
+    /* 通道预选设置，这个很关键 */
+    ADC3->PCSEL |= (1UL << (__LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14) & 0x1FUL));
 
     return RT_EOK;
 }
@@ -300,11 +310,15 @@ static rt_err_t adc1_hw_init(void)
         wait_loop_index--;
     }
 
+    LL_ADC_StartCalibration(ADC1, LL_ADC_CALIB_OFFSET_LINEARITY, LL_ADC_SINGLE_ENDED);
+    while (LL_ADC_IsCalibrationOnGoing(ADC1)) { /* Wait */
+    }
+
     /** Configure Regular Channel
      */
-    LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
-    LL_ADC_SetChannelSamplingTime(ADC1, LL_ADC_CHANNEL_6, LL_ADC_SAMPLINGTIME_64CYCLES_5);
-    LL_ADC_SetChannelSingleDiff(ADC1, LL_ADC_CHANNEL_6, LL_ADC_SINGLE_ENDED);
+    // LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
+    // LL_ADC_SetChannelSamplingTime(ADC1, LL_ADC_CHANNEL_6, LL_ADC_SAMPLINGTIME_64CYCLES_5);
+    // LL_ADC_SetChannelSingleDiff(ADC1, LL_ADC_CHANNEL_6, LL_ADC_SINGLE_ENDED);
 
     // LL_ADC_StartCalibration(ADC3, LL_ADC_CALIB_OFFSET_LINEARITY, LL_ADC_SINGLE_ENDED);
     // while (LL_ADC_IsCalibrationOnGoing(ADC3)) { /* Wait */
@@ -328,20 +342,20 @@ static const struct adc_ops _adc_ops = {
 
 rt_err_t drv_adc_init(void)
 {
+    // RT_TRY(adc1_hw_init());
     RT_TRY(adc3_hw_init());
-    RT_TRY(adc1_hw_init());
 
     adc_interrupt_configure(&stm_adc3);
-    adc_interrupt_configure(&stm_adc1);
+    // adc_interrupt_configure(&stm_adc1);
 
     rt_completion_init(&stm_adc3.convert_cplt);
-    rt_completion_init(&stm_adc1.convert_cplt);
+    // rt_completion_init(&stm_adc1.convert_cplt);
 
     adc0.ops = &_adc_ops;
-    adc1.ops = &_adc_ops;
+    // adc1.ops = &_adc_ops;
 
     RT_TRY(hal_adc_register(&adc0, "adc0", RT_DEVICE_FLAG_RDONLY, &stm_adc3));
-    RT_TRY(hal_adc_register(&adc1, "adc1", RT_DEVICE_FLAG_RDONLY, &stm_adc1));
+    // RT_TRY(hal_adc_register(&adc1, "adc1", RT_DEVICE_FLAG_RDONLY, &stm_adc1));
 
     return RT_EOK;
 }
