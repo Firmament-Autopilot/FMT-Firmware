@@ -23,6 +23,11 @@
 extern "C" {
 #endif
 
+#define BAT1_V_CHANNEL 0
+#define BAT1_I_CHANNEL 1
+#define BAT2_V_CHANNEL 2
+#define BAT2_I_CHANNEL 3
+
 enum {
     ADC_CMD_DISABLE = 0,
     ADC_CMD_ENABLE = 1,

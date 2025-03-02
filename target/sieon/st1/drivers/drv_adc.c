@@ -28,10 +28,7 @@ struct stm32_adc {
 } stm_adc1 = { .adc_handle = ADC1 }, stm_adc3 = { .adc_handle = ADC3 };
 
 static struct adc_device adc0;
-// static struct rt_completion adc0_convert_cplt;
-
 static struct adc_device adc1;
-// static struct rt_completion adc1_convert_cplt;
 
 void ADC3_IRQHandler(void)
 {
@@ -86,80 +83,95 @@ void ADC_IRQHandler(void)
 static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt)
 {
     uint32_t adc_channel;
-    struct stm32_adc* adc = (struct stm32_adc*)adc_dev->parent.user_data;
+    ADC_TypeDef* adc_handle;
+    struct rt_completion* adc_cplt;
 
-    if (adc->adc_handle == ADC3) {
+    if (adc_dev == &adc0) {
         switch (channel) {
-        case 0:
+        case BAT1_V_CHANNEL:
             /* Bat1 Volt */
             adc_channel = LL_ADC_CHANNEL_14;
             break;
-        case 1:
-            /* Bat1 Current */
-            adc_channel = LL_ADC_CHANNEL_VREFINT;
-            break;
-        case 2:
-            /* Bat2 Volt */
-            adc_channel = LL_ADC_CHANNEL_VREFINT;
-            break;
-        case 3:
-            /* Bat2 Current */
-            adc_channel = LL_ADC_CHANNEL_VREFINT;
-            break;
-        default:
-            return RT_EINVAL;
-        }
-    } else if (adc->adc_handle == ADC1) {
-        switch (channel) {
-        case 0:
-            /* Bat1 Volt */
-            adc_channel = LL_ADC_CHANNEL_14;
-            break;
-        case 1:
+        case BAT1_I_CHANNEL:
             /* Bat1 Current */
             adc_channel = LL_ADC_CHANNEL_13;
             break;
+        case BAT2_V_CHANNEL:
+            /* Bat2 Volt */
+            adc_channel = LL_ADC_CHANNEL_16;
+            break;
+        case BAT2_I_CHANNEL:
+            /* Bat2 Current */
+            adc_channel = LL_ADC_CHANNEL_15;
+            break;
         default:
             return RT_EINVAL;
         }
+
+        adc_handle = stm_adc3.adc_handle;
+        adc_cplt = &stm_adc3.convert_cplt;
+    } else if (adc_dev == &adc1) {
+        switch (channel) {
+        case 0:
+            /* ADC1 Out */
+            adc_channel = LL_ADC_CHANNEL_6;
+            break;
+        case 1:
+            /* ADC2 Out */
+            adc_channel = LL_ADC_CHANNEL_2;
+            break;
+        default:
+            return RT_EINVAL;
+        }
+
+        adc_handle = stm_adc1.adc_handle;
+        adc_cplt = &stm_adc1.convert_cplt;
     } else {
         return RT_EINVAL;
     }
 
-    LL_ADC_REG_SetSequencerRanks(adc->adc_handle, LL_ADC_REG_RANK_1, adc_channel);
-    LL_ADC_SetChannelSamplingTime(adc->adc_handle, adc_channel, LL_ADC_SAMPLINGTIME_64CYCLES_5);
-    LL_ADC_SetChannelSingleDiff(adc->adc_handle, adc_channel, LL_ADC_SINGLE_ENDED);
+    if (LL_ADC_REG_IsConversionOngoing(adc_handle)) {
+        return RT_EBUSY;
+    }
 
-    LL_ADC_REG_StartConversion(adc->adc_handle);
+    LL_ADC_REG_SetSequencerRanks(adc_handle, LL_ADC_REG_RANK_1, adc_channel);
+    LL_ADC_SetChannelSamplingTime(adc_handle, adc_channel, LL_ADC_SAMPLINGTIME_64CYCLES_5);
+    LL_ADC_SetChannelSingleDiff(adc_handle, adc_channel, LL_ADC_SINGLE_ENDED);
 
-    if (rt_completion_wait(&adc->convert_cplt, TICKS_FROM_MS(ADC_CONVERSION_TIMEOUT_MS)) != RT_EOK) {
+    LL_ADC_REG_StartConversion(adc_handle);
+
+    if (rt_completion_wait(adc_cplt, TICKS_FROM_MS(ADC_CONVERSION_TIMEOUT_MS)) != RT_EOK) {
         return RT_ERROR;
     }
 
-    // systime_mdelay(10);
-
-    uint16_t adcData = LL_ADC_REG_ReadConversionData32(adc->adc_handle);
-    *mVolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(3300, adcData, LL_ADC_RESOLUTION_12B);
+    uint16_t adcData = LL_ADC_REG_ReadConversionData14(adc_handle);
+    *mVolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(3300, adcData, LL_ADC_RESOLUTION_14B);
 
     return RT_EOK;
 }
 
 static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
 {
-    struct stm32_adc* adc = (struct stm32_adc*)adc_dev->parent.user_data;
-
-    if (adc->adc_handle != ADC3 && adc->adc_handle != ADC1) {
-        return RT_EINVAL;
-    }
-
     if (enable == ADC_CMD_ENABLE) {
-        LL_ADC_Enable(adc->adc_handle);
+        if (adc_dev == &adc0) {
+            LL_ADC_Enable(ADC3);
+        } else if (adc_dev == &adc1) {
+            LL_ADC_Enable(ADC1);
+        } else {
+            return RT_EINVAL;
+        }
         /* the ADC needs a stabilization time of tSTAB
          * before it starts converting accurately
          */
-        sys_msleep(10);
+        sys_msleep(5);
     } else if (enable == ADC_CMD_DISABLE) {
-        LL_ADC_Disable(adc->adc_handle);
+        if (adc_dev == &adc0) {
+            LL_ADC_Disable(ADC3);
+        } else if (adc_dev == &adc1) {
+            LL_ADC_Disable(ADC1);
+        } else {
+            return RT_EINVAL;
+        }
     } else {
         return RT_EINVAL;
     }
@@ -199,7 +211,7 @@ static rt_err_t adc3_hw_init(void)
     /** Common config
      */
     LL_ADC_SetOverSamplingScope(ADC3, LL_ADC_OVS_DISABLE);
-    ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_12B;
+    ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_14B;
     ADC_InitStruct.LowPowerMode = LL_ADC_LP_MODE_NONE;
     LL_ADC_Init(ADC3, &ADC_InitStruct);
     ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_SOFTWARE;
@@ -208,13 +220,12 @@ static rt_err_t adc3_hw_init(void)
     ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
     ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_OVERWRITTEN;
     LL_ADC_REG_Init(ADC3, &ADC_REG_InitStruct);
-    // ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV4;
     ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV1;
     ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_INDEPENDENT;
     LL_ADC_CommonInit(__LL_ADC_COMMON_INSTANCE(ADC3), &ADC_CommonInitStruct);
 
     /* BOOST 位控制 */
-    LL_ADC_SetBoostMode(ADC3, LL_ADC_BOOST_MODE_50MHZ);
+    // LL_ADC_SetBoostMode(ADC3, LL_ADC_BOOST_MODE_50MHZ);
 
     /* Disable ADC deep power down (enabled by default after reset state) */
     LL_ADC_DisableDeepPowerDown(ADC3);
@@ -226,12 +237,11 @@ static rt_err_t adc3_hw_init(void)
     /* CPU processing cycles (depends on compilation optimization). */
     /* Note: If system core clock frequency is below 200kHz, wait time */
     /* is only a few CPU processing cycles. */
-    // __IO uint32_t wait_loop_index;
-    // wait_loop_index = ((LL_ADC_DELAY_INTERNAL_REGUL_STAB_US * (SystemCoreClock / (100000 * 2))) / 10);
-    // while (wait_loop_index != 0) {
-    //     wait_loop_index--;
-    // }
-    systime_mdelay(10);
+    __IO uint32_t wait_loop_index;
+    wait_loop_index = ((LL_ADC_DELAY_INTERNAL_REGUL_STAB_US * (SystemCoreClock / (100000 * 2))) / 10);
+    while (wait_loop_index != 0) {
+        wait_loop_index--;
+    }
 
     /** Configure Regular Channel
      */
@@ -244,8 +254,15 @@ static rt_err_t adc3_hw_init(void)
     while (LL_ADC_IsCalibrationOnGoing(ADC3)) { /* Wait */
     }
 
-    /* 通道预选设置，这个很关键 */
-    ADC3->PCSEL |= (1UL << (__LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14) & 0x1FUL));
+    /* Channels preselection, which need be set before  starting conversion */
+    // ADC3->PCSEL |= (1UL << (__LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14) & 0x1FUL));
+    ADC3->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_13))
+        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14))
+        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_15))
+        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_16));
+
+    LL_ADC_EnableIT_EOC(ADC3);
+    LL_ADC_EnableIT_OVR(ADC3);
 
     return RT_EOK;
 }

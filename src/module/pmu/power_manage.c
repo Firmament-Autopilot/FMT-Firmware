@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 
+#include "hal/adc/adc.h"
 #include "module/pmu/power_manager.h"
 
 MCN_DEFINE(bat_status, sizeof(struct battery_status));
@@ -45,12 +46,12 @@ fmt_err_t pmu_poll_battery_status(void)
         return FMT_EEMPTY;
     }
 
-    if (rt_device_read(adc_dev, 0, &value, sizeof(value)) != sizeof(value)) {
+    if (rt_device_read(adc_dev, BAT1_V_CHANNEL, &value, sizeof(value)) != sizeof(value)) {
         return FMT_ERROR;
     }
     bat_status.battery_voltage = value * PARAM_GET_FLOAT(CALIB, BAT_V_DIV); /* millivolt */
 
-    if (rt_device_read(adc_dev, 1, &value, sizeof(value)) != sizeof(value)) {
+    if (rt_device_read(adc_dev, BAT1_I_CHANNEL, &value, sizeof(value)) != sizeof(value)) {
         return FMT_ERROR;
     }
     bat_status.battery_current = value; /* millicurrent */
