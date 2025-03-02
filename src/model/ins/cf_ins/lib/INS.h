@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.4278
+ * Model version                  : 1.4279
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Feb 28 12:07:44 2025
+ * C/C++ source code generated on : Sun Mar  2 09:37:05 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -214,14 +214,14 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_IVrIq1Kr8tAfY8Kw71Ekc_
-#define DEFINED_TYPEDEF_FOR_struct_IVrIq1Kr8tAfY8Kw71Ekc_
+#ifndef DEFINED_TYPEDEF_FOR_struct_MsHaBgmXpzpEo1zn25Qdc_
+#define DEFINED_TYPEDEF_FOR_struct_MsHaBgmXpzpEo1zn25Qdc_
 
 typedef struct {
   real32_T ATT_GAIN;
   real32_T HEADING_GAIN;
   real32_T MAG_GAIN;
-  uint8_T MAG_AIR_EN;
+  uint8_T MAG_FLY_EN;
   real32_T BIAS_G_GAIN;
   real32_T GPS_HOR_Q_BIAS;
   real32_T GPS_HOR_Q_SCALE;
@@ -260,7 +260,7 @@ typedef struct {
   uint32_T EXTPOS_POS_DELAY;
   uint8_T EXTPOS_PSI_MODE;
   real32_T EXTPOS_PSI;
-} struct_IVrIq1Kr8tAfY8Kw71Ekc;
+} struct_MsHaBgmXpzpEo1zn25Qdc;
 
 #endif
 
@@ -2791,7 +2791,7 @@ extern const INS_Out_Bus INS_rtZINS_Out_Bus;/* INS_Out_Bus ground */
  * these parameters and exports their symbols.
  *
  */
-extern struct_IVrIq1Kr8tAfY8Kw71Ekc INS_PARAM;/* Variable: INS_PARAM
+extern struct_MsHaBgmXpzpEo1zn25Qdc INS_PARAM;/* Variable: INS_PARAM
                                                * Referenced by:
                                                *   '<S484>/Gain1'
                                                *   '<S138>/Constant1'

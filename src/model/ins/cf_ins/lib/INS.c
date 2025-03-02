@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.4278
+ * Model version                  : 1.4279
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Feb 28 12:07:44 2025
+ * C/C++ source code generated on : Sun Mar  2 09:37:05 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -98,47 +98,47 @@ const INS_Out_Bus INS_rtZINS_Out_Bus = {
 } ;                                    /* INS_Out_Bus ground */
 
 /* Exported block parameters */
-struct_IVrIq1Kr8tAfY8Kw71Ekc INS_PARAM = {
+struct_MsHaBgmXpzpEo1zn25Qdc INS_PARAM = {
   0.2F,
   0.05F,
   0.3F,
   0U,
   0.25F,
   2.5F,
-  0.5F,
+  0.4F,
   4.5F,
   0.25F,
   1.0F,
   1.0F,
-  0.0F,
-  0.0F,
+  0.02F,
+  0.01F,
   2.0F,
   1.0F,
   100U,
   100U,
-  0.09F,
   0.0F,
   0.0F,
-  0.4F,
-  0.2F,
-  1.5F,
-  0.5F,
+  0.0F,
   2.0F,
-  1.0F,
-  10U,
+  2.0F,
+  0.0F,
   0.0F,
   2.0F,
   1.0F,
+  5U,
+  0.0F,
+  2.0F,
+  1.0F,
   0.2F,
   10U,
-  3.0F,
+  2.0F,
+  1.0F,
+  0.2F,
+  5U,
   5.0F,
-  0.2F,
-  10U,
   2.0F,
-  1.5F,
-  0.1F,
-  20U,
+  0.2F,
+  50U,
   3U,
   0.0F
 } ;                                    /* Variable: INS_PARAM
@@ -5011,7 +5011,7 @@ void INS_step(void)
    *  RelationalOperator: '<S103>/Compare'
    */
   rtb_LogicalOperator4 = (((!rtb_LogicalOperator5) && rtb_LogicalOperator4 &&
-    ((INS_PARAM.MAG_AIR_EN != 0) || (rtb_Relay != 0.0F))) ||
+    ((INS_PARAM.MAG_FLY_EN != 0) || (rtb_Relay != 0.0F))) ||
     ((!rtb_LogicalOperator5) && rtb_LogicalOperator4 &&
      (INS_DWork.DiscreteTimeIntegrator_DSTATE_d >=
       INS_P.CompareToConstant4_const)));
