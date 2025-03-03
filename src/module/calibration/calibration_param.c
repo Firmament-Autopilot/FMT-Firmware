@@ -81,9 +81,6 @@ static param_t __param_list[] = {
     PARAM_FLOAT(LEVEL_ZOFF, 0.0, false),
     /* Airspeed Calibration */
     PARAM_FLOAT(DIFF_PRESS_OFFSET, 0.0, false),
-    /* Battery Voltage Divider */
-    PARAM_FLOAT(BAT_V_DIV, 1.0, false),
-    PARAM_UINT8(BAT_N_CELLS, 0, false),
     /* Board Rotation */
     PARAM_UINT8(SENS_BOARD_ROT, ROTATION_NONE, false),
 };

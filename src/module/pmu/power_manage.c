@@ -19,6 +19,17 @@
 
 MCN_DEFINE(bat_status, sizeof(struct battery_status));
 
+/* define parameters */
+static param_t __param_list[] = {
+    /* Battery Voltage Divider */
+    PARAM_FLOAT(BAT_V_DIV, 1.0, false),
+    /* Battery Current Ampere per Volt */
+    PARAM_FLOAT(BAT_A_PER_V, 1.0, false),
+    /* Battery Cells Number */
+    PARAM_UINT8(BAT_N_CELLS, 0, false),
+};
+PARAM_GROUP_DEFINE(POWER, __param_list);
+
 static rt_device_t adc_dev;
 
 static int echo_battery_status(void* parameter)
@@ -46,18 +57,20 @@ fmt_err_t pmu_poll_battery_status(void)
         return FMT_EEMPTY;
     }
 
-    if (rt_device_read(adc_dev, BAT1_V_CHANNEL, &value, sizeof(value)) != sizeof(value)) {
-        return FMT_ERROR;
+    if (rt_device_read(adc_dev, BAT1_V_CHANNEL, &value, sizeof(value)) == sizeof(value)) {
+        bat_status.battery_voltage = value * PARAM_GET_FLOAT(POWER, BAT_V_DIV); /* mV */
+    } else {
+        bat_status.battery_voltage = 0;
     }
-    bat_status.battery_voltage = value * PARAM_GET_FLOAT(CALIB, BAT_V_DIV); /* millivolt */
 
-    if (rt_device_read(adc_dev, BAT1_I_CHANNEL, &value, sizeof(value)) != sizeof(value)) {
-        return FMT_ERROR;
+    if (rt_device_read(adc_dev, BAT1_I_CHANNEL, &value, sizeof(value)) == sizeof(value)) {
+        bat_status.battery_current = value * PARAM_GET_FLOAT(POWER, BAT_A_PER_V); /* mA */
+    } else {
+        bat_status.battery_current = -1;
     }
-    bat_status.battery_current = value; /* millicurrent */
     bat_status.battery_remaining = 0;
 
-    /* publish battery 0 status */
+    /* publish battery 1 status */
     if (mcn_publish(MCN_HUB(bat_status), &bat_status) != FMT_EOK) {
         return FMT_ERROR;
     }
