@@ -184,7 +184,6 @@ static rt_err_t adc3_hw_init(void)
     LL_ADC_InitTypeDef ADC_InitStruct = { 0 };
     LL_ADC_REG_InitTypeDef ADC_REG_InitStruct = { 0 };
     LL_ADC_CommonInitTypeDef ADC_CommonInitStruct = { 0 };
-
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     LL_RCC_SetADCClockSource(LL_RCC_ADC_CLKSOURCE_PLL2P);
@@ -224,9 +223,6 @@ static rt_err_t adc3_hw_init(void)
     ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_INDEPENDENT;
     LL_ADC_CommonInit(__LL_ADC_COMMON_INSTANCE(ADC3), &ADC_CommonInitStruct);
 
-    /* BOOST 位控制 */
-    // LL_ADC_SetBoostMode(ADC3, LL_ADC_BOOST_MODE_50MHZ);
-
     /* Disable ADC deep power down (enabled by default after reset state) */
     LL_ADC_DisableDeepPowerDown(ADC3);
     /* Enable ADC internal voltage regulator */
@@ -243,23 +239,17 @@ static rt_err_t adc3_hw_init(void)
         wait_loop_index--;
     }
 
-    /** Configure Regular Channel
-     */
-    // LL_ADC_REG_SetSequencerRanks(ADC3, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_VREFINT);
-    // LL_ADC_SetChannelSamplingTime(ADC3, LL_ADC_CHANNEL_16, LL_ADC_SAMPLINGTIME_64CYCLES_5);
-    // LL_ADC_SetChannelSingleDiff(ADC3, LL_ADC_CHANNEL_16, LL_ADC_SINGLE_ENDED);
-    // LL_ADC_SetCommonPathInternalCh(__LL_ADC_COMMON_INSTANCE(ADC3), LL_ADC_AWD_CH_VREFINT_REG);
-
     LL_ADC_StartCalibration(ADC3, LL_ADC_CALIB_OFFSET_LINEARITY, LL_ADC_SINGLE_ENDED);
     while (LL_ADC_IsCalibrationOnGoing(ADC3)) { /* Wait */
     }
 
     /* Channels preselection, which need be set before  starting conversion */
-    // ADC3->PCSEL |= (1UL << (__LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14) & 0x1FUL));
     ADC3->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_13))
         | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14))
         | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_15))
         | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_16));
+
+    rt_completion_init(&stm_adc3.convert_cplt);
 
     LL_ADC_EnableIT_EOC(ADC3);
     LL_ADC_EnableIT_OVR(ADC3);
@@ -273,7 +263,6 @@ static rt_err_t adc1_hw_init(void)
     LL_ADC_InitTypeDef ADC_InitStruct = { 0 };
     LL_ADC_REG_InitTypeDef ADC_REG_InitStruct = { 0 };
     LL_ADC_CommonInitTypeDef ADC_CommonInitStruct = { 0 };
-
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     LL_RCC_SetADCClockSource(LL_RCC_ADC_CLKSOURCE_PLL2P);
@@ -298,7 +287,7 @@ static rt_err_t adc1_hw_init(void)
     /** Common config
      */
     LL_ADC_SetOverSamplingScope(ADC1, LL_ADC_OVS_DISABLE);
-    ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_12B;
+    ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_14B;
     ADC_InitStruct.LowPowerMode = LL_ADC_LP_MODE_NONE;
     LL_ADC_Init(ADC1, &ADC_InitStruct);
     ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_SOFTWARE;
@@ -307,7 +296,7 @@ static rt_err_t adc1_hw_init(void)
     ADC_REG_InitStruct.ContinuousMode = LL_ADC_REG_CONV_SINGLE;
     ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_OVERWRITTEN;
     LL_ADC_REG_Init(ADC1, &ADC_REG_InitStruct);
-    ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV4;
+    ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_ASYNC_DIV1;
     ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_INDEPENDENT;
     LL_ADC_CommonInit(__LL_ADC_COMMON_INSTANCE(ADC1), &ADC_CommonInitStruct);
 
@@ -331,24 +320,16 @@ static rt_err_t adc1_hw_init(void)
     while (LL_ADC_IsCalibrationOnGoing(ADC1)) { /* Wait */
     }
 
-    /** Configure Regular Channel
-     */
-    // LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_6);
-    // LL_ADC_SetChannelSamplingTime(ADC1, LL_ADC_CHANNEL_6, LL_ADC_SAMPLINGTIME_64CYCLES_5);
-    // LL_ADC_SetChannelSingleDiff(ADC1, LL_ADC_CHANNEL_6, LL_ADC_SINGLE_ENDED);
+    /* Channels preselection, which need be set before  starting conversion */
+    ADC1->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_6))
+        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_2));
 
-    // LL_ADC_StartCalibration(ADC3, LL_ADC_CALIB_OFFSET_LINEARITY, LL_ADC_SINGLE_ENDED);
-    // while (LL_ADC_IsCalibrationOnGoing(ADC3)) { /* Wait */
-    // }
+    rt_completion_init(&stm_adc1.convert_cplt);
+
+    LL_ADC_EnableIT_EOC(ADC1);
+    LL_ADC_EnableIT_OVR(ADC1);
 
     return RT_EOK;
-}
-
-static void adc_interrupt_configure(struct stm32_adc* adc)
-{
-    /* Enable ADC interruptions */
-    LL_ADC_EnableIT_EOC(adc->adc_handle);
-    LL_ADC_EnableIT_OVR(adc->adc_handle);
 }
 
 /* usart driver operations */
@@ -359,14 +340,8 @@ static const struct adc_ops _adc_ops = {
 
 rt_err_t drv_adc_init(void)
 {
-    // RT_TRY(adc1_hw_init());
     RT_TRY(adc3_hw_init());
-
-    adc_interrupt_configure(&stm_adc3);
-    // adc_interrupt_configure(&stm_adc1);
-
-    rt_completion_init(&stm_adc3.convert_cplt);
-    // rt_completion_init(&stm_adc1.convert_cplt);
+    // RT_TRY(adc1_hw_init());
 
     adc0.ops = &_adc_ops;
     // adc1.ops = &_adc_ops;

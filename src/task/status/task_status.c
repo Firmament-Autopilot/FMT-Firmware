@@ -287,7 +287,7 @@ void task_status_entry(void* parameter)
         // update INS output status
         update_ins_status();
 
-        PERIOD_EXECUTE(poll_bat_status, 500, pmu_poll_battery_status(););
+        PERIOD_EXECUTE(poll_bat_status, 100, pmu_poll_battery_status(););
 
         sys_msleep(10);
     }
