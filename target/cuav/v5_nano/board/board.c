@@ -444,10 +444,13 @@ void bsp_initialize(void)
     if (drv_ist8310_init("i2c1_dev1", "mag0") != RT_EOK) {
         RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
     }
-    RT_CHECK(drv_mtf_01_init("serial4"));
+    // RT_CHECK(drv_mtf_01_init("serial4"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
 
-    RT_CHECK(L08_drv_init("serial4"));
+    if (L08_drv_init("serial4") == RT_EOK) {
+        FMT_CHECK(advertise_sensor_rangefinder(0));
+    }
+    
     if (tfluna_drv_init("i2c2_dev2") == FMT_EOK) {
         FMT_CHECK(advertise_sensor_rangefinder(1));
     }

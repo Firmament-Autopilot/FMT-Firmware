@@ -35,6 +35,8 @@
 #include "driver/mtd/ramtron.h"
 #include "driver/rgb_led/ncp5623c.h"
 #include "driver/vision_flow/mtf_01.h"
+#include "driver/range_finder/L08.h"
+#include "driver/range_finder/TFluna.h"
 #include "drv_adc.h"
 #include "drv_can.h"
 #include "drv_gpio.h"
@@ -438,8 +440,13 @@ void bsp_initialize(void)
     if (drv_ist8310_init("i2c1_dev1", "mag0") != RT_EOK) {
         RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
     }
-    RT_CHECK(drv_mtf_01_init("serial4"));
+    // RT_CHECK(drv_mtf_01_init("serial4"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
+
+    RT_CHECK(L08_drv_init("serial4"));
+    if (tfluna_drv_init("i2c2_dev2") == RT_EOK) {
+        FMT_CHECK(advertise_sensor_rangefinder(1));
+    }
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
