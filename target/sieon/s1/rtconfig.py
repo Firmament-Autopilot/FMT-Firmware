@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'sieon-st1'
+BOARD = 'sieon-s1'
 
 # toolchains options
 ARCH = 'arm'

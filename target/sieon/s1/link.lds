@@ -1,19 +1,19 @@
 /*
- * linker script for STM32H753VIT6 with GNU ld
+ * linker script for STM32H743 with GNU ld
  */
 
 /* Program Entry, set to mark it as "used" and avoid gc */
 MEMORY
 {
-	/* First 0x20000(128KB) area is reserved for bootloader */
-    FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 128KB flash */
+	/* First 0x8000(32KB) area is reserved for bootloader */
+    CODE (rx) : ORIGIN = 0x08020000, LENGTH = 1920k /* 2048KB - 32KB flash */
 
-    ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
-    DTCM_RAM    (rwx) : ORIGIN = 0x20000000, LENGTH =  128K
-    SRAMD1      (rwx) : ORIGIN = 0x24000000, LENGTH =  512k /* D1 512K sram */
-    SRAMD2      (rwx) : ORIGIN = 0x30000000, LENGTH =  288K /* D2 domain AHB bus */
-	SRAMD3      (rwx) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
-	BKPRAM      (rwx) : ORIGIN = 0x38800000, LENGTH =    4K
+    ITCM_RAM (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
+    DTCM_RAM (rw) : ORIGIN = 0x20000000, LENGTH =  128K
+    SRAMD1 (rw) : ORIGIN = 0x24000000, LENGTH =  512k /* D1 512K sram */
+    SRAMD2 (rw) : ORIGIN = 0x30000000, LENGTH =  288K /* D2 domain AHB bus */
+	SRAMD3 (rw) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
+	BKPRAM (rw) : ORIGIN = 0x38800000, LENGTH =    4K
 }
 ENTRY(Reset_Handler)
 _system_stack_size = 0x1000;
@@ -73,10 +73,10 @@ SECTIONS
         . = ALIGN(4);
 		
 		/* section information for utest */
-        . = ALIGN(4);
-        __rt_utest_tc_tab_start = .;
-        KEEP(*(UtestTcTab))
-        __rt_utest_tc_tab_end = .;
+		. = ALIGN(4);
+		__rt_utest_tc_tab_start = .;
+		KEEP(*(UtestTcTab))
+		__rt_utest_tc_tab_end = .;
         . = ALIGN(4);
 
         /* section information for task. */
@@ -87,11 +87,11 @@ SECTIONS
         . = ALIGN(4);
 
         _etext = .;
-    } > FLASH = 0
+    } > CODE = 0
 
     .ARM.extab : {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
-    } > FLASH
+    } > CODE
 
     /* .ARM.exidx is sorted, so has to go in its own output section.  */
     __exidx_start = .;
@@ -101,7 +101,7 @@ SECTIONS
 
         /* This is used by the startup in order to initialize the .data secion */
         _sidata = .;
-    } > FLASH
+    } > CODE
     __exidx_end = .;
 
     /* .data section which is used for initialized data */
@@ -124,7 +124,7 @@ SECTIONS
         . = ALIGN(4);
         /* This is used by the startup in order to initialize the .data secion */
         _edata = . ;
-    } > SRAMD1
+    } >SRAMD1
 
     .stack : 
     {
@@ -132,7 +132,7 @@ SECTIONS
         . = . + _system_stack_size;
         . = ALIGN(4);
         _estack = .;
-    } > SRAMD1
+    } >SRAMD1
 
     __bss_start = .;
     .bss :

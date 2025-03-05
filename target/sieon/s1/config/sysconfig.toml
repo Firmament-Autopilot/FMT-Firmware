@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "SIEON ST1"
+target = "SIEON S1"
 
 # Console Configuration
 [console]
