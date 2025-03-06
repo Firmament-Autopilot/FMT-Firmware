@@ -497,6 +497,7 @@ bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
     highres_imu.diff_pressure = airspeed_data.diff_pressure_pa * 1000; /* Pa to mPa */
     highres_imu.pressure_alt = baro_data.altitude_m;
     highres_imu.temperature = baro_data.temperature_deg;
+    highres_imu.fields_updated = 0x1FFF;
 
     mavlink_msg_highres_imu_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &highres_imu);
 
