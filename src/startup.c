@@ -71,7 +71,7 @@ int rt_application_init()
     tid0 = rt_thread_create("init",
                             rt_init_thread_entry,
                             RT_NULL,
-                            8192,
+                            10240,
                             RT_THREAD_PRIORITY_MAX / 2,
                             20);
 

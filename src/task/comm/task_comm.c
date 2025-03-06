@@ -139,12 +139,12 @@ static uint32_t get_custom_mode(FMS_Out_Bus fms_out)
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_heartbeat_t heartbeat = { 0 };
-    FMS_Out_Bus         fms_out   = { 0 };
+    FMS_Out_Bus fms_out = { 0 };
 
-    heartbeat.type          = MAV_TYPE_QUADROTOR;
-    heartbeat.autopilot     = MAV_AUTOPILOT_PX4;
-    heartbeat.base_mode     = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
-    heartbeat.custom_mode   = 0;
+    heartbeat.type = MAV_TYPE_QUADROTOR;
+    heartbeat.autopilot = MAV_AUTOPILOT_PX4;
+    heartbeat.base_mode = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
+    heartbeat.custom_mode = 0;
     heartbeat.system_status = MAV_STATE_STANDBY;
 
     if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK) {
@@ -165,7 +165,7 @@ bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_extended_sys_state_t ext_sys_state = { 0 };
-    FMS_Out_Bus                  fms_out;
+    FMS_Out_Bus fms_out;
 
     if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
         return false;
@@ -190,8 +190,8 @@ bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_sys_status_t  sys_status = { 0 };
-    INS_Out_Bus           ins_out;
+    mavlink_sys_status_t sys_status = { 0 };
+    INS_Out_Bus ins_out;
     struct battery_status bat_status;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
@@ -251,10 +251,10 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
     }
 
     sys_status.onboard_control_sensors_health = sys_status.onboard_control_sensors_enabled;
-    sys_status.load                           = (uint16_t)(get_cpu_usage() * 1e3);
-    sys_status.voltage_battery                = bat_status.battery_voltage;
-    sys_status.current_battery                = bat_status.battery_current;
-    sys_status.battery_remaining              = bat_status.battery_remaining;
+    sys_status.load = (uint16_t)(get_cpu_usage() * 1e3);
+    sys_status.voltage_battery = bat_status.battery_voltage;
+    sys_status.current_battery = bat_status.battery_current * 0.1f; /* mA to cA */
+    sys_status.battery_remaining = bat_status.battery_remaining;
 
     mavlink_msg_sys_status_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &sys_status);
 
@@ -266,7 +266,7 @@ bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t)
     mavlink_system_time_t system_time = { 0 };
 
     system_time.time_unix_usec = systime_now_us();
-    system_time.time_boot_ms   = systime_now_ms();
+    system_time.time_boot_ms = systime_now_ms();
 
     mavlink_msg_system_time_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &system_time);
 
@@ -276,18 +276,18 @@ bool mavlink_msg_system_time_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_attitude_t attitude = { 0 };
-    INS_Out_Bus        ins_out;
+    INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
-    attitude.roll       = ins_out.phi;
-    attitude.pitch      = ins_out.theta;
-    attitude.yaw        = ins_out.psi;
-    attitude.rollspeed  = ins_out.p;
+    attitude.roll = ins_out.phi;
+    attitude.pitch = ins_out.theta;
+    attitude.yaw = ins_out.psi;
+    attitude.rollspeed = ins_out.p;
     attitude.pitchspeed = ins_out.q;
-    attitude.yawspeed   = ins_out.r;
+    attitude.yawspeed = ins_out.r;
 
     mavlink_msg_attitude_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &attitude);
 
@@ -297,20 +297,20 @@ bool mavlink_msg_attitude_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_attitude_quaternion_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_attitude_quaternion_t att_quat = { 0 };
-    INS_Out_Bus                   ins_out;
+    INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
     att_quat.time_boot_ms = systime_now_us();
-    att_quat.q1           = ins_out.quat[0];
-    att_quat.q2           = ins_out.quat[1];
-    att_quat.q3           = ins_out.quat[2];
-    att_quat.q4           = ins_out.quat[3];
-    att_quat.rollspeed    = ins_out.p;
-    att_quat.pitchspeed   = ins_out.q;
-    att_quat.yawspeed     = ins_out.r;
+    att_quat.q1 = ins_out.quat[0];
+    att_quat.q2 = ins_out.quat[1];
+    att_quat.q3 = ins_out.quat[2];
+    att_quat.q4 = ins_out.quat[3];
+    att_quat.rollspeed = ins_out.p;
+    att_quat.pitchspeed = ins_out.q;
+    att_quat.yawspeed = ins_out.r;
 
     mavlink_msg_attitude_quaternion_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &att_quat);
 
@@ -320,19 +320,19 @@ bool mavlink_msg_attitude_quaternion_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_local_position_ned_t local_position_ned = { 0 };
-    INS_Out_Bus                  ins_out;
+    INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
     local_position_ned.time_boot_ms = systime_now_ms();
-    local_position_ned.x            = ins_out.x_R;
-    local_position_ned.y            = ins_out.y_R;
-    local_position_ned.z            = -ins_out.h_R;
-    local_position_ned.vx           = ins_out.vn;
-    local_position_ned.vy           = ins_out.ve;
-    local_position_ned.vz           = ins_out.vd;
+    local_position_ned.x = ins_out.x_R;
+    local_position_ned.y = ins_out.y_R;
+    local_position_ned.z = -ins_out.h_R;
+    local_position_ned.vx = ins_out.vn;
+    local_position_ned.vy = ins_out.ve;
+    local_position_ned.vz = ins_out.vd;
 
     mavlink_msg_local_position_ned_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &local_position_ned);
 
@@ -342,21 +342,21 @@ bool mavlink_msg_local_position_ned_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_global_position_int_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_global_position_int_t global_position_int = { 0 };
-    INS_Out_Bus                   ins_out;
+    INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
     global_position_int.time_boot_ms = systime_now_ms();
-    global_position_int.lat          = RAD2DEG(ins_out.lat) * 1e7;
-    global_position_int.lon          = RAD2DEG(ins_out.lon) * 1e7;
-    global_position_int.alt          = ins_out.alt * 1e3;
+    global_position_int.lat = RAD2DEG(ins_out.lat) * 1e7;
+    global_position_int.lon = RAD2DEG(ins_out.lon) * 1e7;
+    global_position_int.alt = ins_out.alt * 1e3;
     global_position_int.relative_alt = ins_out.h_R * 1e3;
-    global_position_int.vx           = ins_out.vn * 10;
-    global_position_int.vy           = ins_out.ve * 10;
-    global_position_int.vz           = ins_out.vd * 10;
-    global_position_int.hdg          = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 100;
+    global_position_int.vx = ins_out.vn * 10;
+    global_position_int.vy = ins_out.ve * 10;
+    global_position_int.vz = ins_out.vd * 10;
+    global_position_int.hdg = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi) * 100;
 
     mavlink_msg_global_position_int_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &global_position_int);
 
@@ -366,15 +366,15 @@ bool mavlink_msg_global_position_int_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_vfr_hud_pack_func(mavlink_message_t* msg_t)
 {
     INS_Out_Bus ins_out;
-    float       groundspeed;
-    int16_t     heading;
+    float groundspeed;
+    int16_t heading;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
     groundspeed = sqrtf(ins_out.vn * ins_out.vn + ins_out.ve * ins_out.ve);
-    heading     = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi);
+    heading = RAD2DEG(ins_out.psi < 0 ? ins_out.psi + 2 * PI : ins_out.psi);
 
     mavlink_msg_vfr_hud_pack(mavlink_system.sysid, mavlink_system.compid, msg_t, ins_out.airspeed, groundspeed, heading, 0, ins_out.alt, -ins_out.vd);
 
@@ -384,9 +384,9 @@ bool mavlink_msg_vfr_hud_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_altitude_t altitude = { 0 };
-    INS_Out_Bus        ins_out;
-    FMS_Out_Bus        fms_out;
-    fmt_err_t          fms_res;
+    INS_Out_Bus ins_out;
+    FMS_Out_Bus fms_out;
+    fmt_err_t fms_res;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
@@ -394,13 +394,13 @@ bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t)
 
     fms_res = mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
 
-    altitude.time_usec          = systime_now_us();
+    altitude.time_usec = systime_now_us();
     altitude.altitude_monotonic = 0.0f;
-    altitude.altitude_amsl      = ins_out.alt;
-    altitude.altitude_local     = ins_out.h_R;
-    altitude.altitude_relative  = fms_res == FMT_EOK ? ins_out.h_R - fms_out.home[2] : 0.0f;
-    altitude.altitude_terrain   = ins_out.h_AGL;
-    altitude.bottom_clearance   = 0.0f;
+    altitude.altitude_amsl = ins_out.alt;
+    altitude.altitude_local = ins_out.h_R;
+    altitude.altitude_relative = fms_res == FMT_EOK ? ins_out.h_R - fms_out.home[2] : 0.0f;
+    altitude.altitude_terrain = ins_out.h_AGL;
+    altitude.bottom_clearance = 0.0f;
 
     mavlink_msg_altitude_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &altitude);
 
@@ -410,28 +410,28 @@ bool mavlink_msg_altitude_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_gps_raw_int_t gps_raw_int = { 0 };
-    gps_data_t            gps_report;
+    gps_data_t gps_report;
 
     if (mcn_copy_from_hub(MCN_HUB(sensor_gps), &gps_report) != FMT_EOK) {
         return false;
     }
 
-    gps_raw_int.time_usec          = systime_now_us();
-    gps_raw_int.lat                = gps_report.lat;
-    gps_raw_int.lon                = gps_report.lon;
-    gps_raw_int.alt                = gps_report.height;
-    gps_raw_int.eph                = gps_report.hAcc * 1e2;
-    gps_raw_int.epv                = gps_report.vAcc * 1e2;
-    gps_raw_int.vel                = gps_report.vel * 1e2;
-    gps_raw_int.cog                = RAD2DEG(gps_report.cog + PI) * 1e2;
-    gps_raw_int.fix_type           = gps_report.fixType;
+    gps_raw_int.time_usec = systime_now_us();
+    gps_raw_int.lat = gps_report.lat;
+    gps_raw_int.lon = gps_report.lon;
+    gps_raw_int.alt = gps_report.height;
+    gps_raw_int.eph = gps_report.hAcc * 1e2;
+    gps_raw_int.epv = gps_report.vAcc * 1e2;
+    gps_raw_int.vel = gps_report.vel * 1e2;
+    gps_raw_int.cog = RAD2DEG(gps_report.cog + PI) * 1e2;
+    gps_raw_int.fix_type = gps_report.fixType;
     gps_raw_int.satellites_visible = gps_report.numSV;
-    gps_raw_int.alt_ellipsoid      = gps_report.height;
-    gps_raw_int.h_acc              = gps_report.hAcc * 1e3;
-    gps_raw_int.v_acc              = gps_report.vAcc * 1e3;
-    gps_raw_int.vel_acc            = gps_report.sAcc * 1e3;
-    gps_raw_int.hdg_acc            = 0;
-    gps_raw_int.yaw                = 0;
+    gps_raw_int.alt_ellipsoid = gps_report.height;
+    gps_raw_int.h_acc = gps_report.hAcc * 1e3;
+    gps_raw_int.v_acc = gps_report.vAcc * 1e3;
+    gps_raw_int.vel_acc = gps_report.sAcc * 1e3;
+    gps_raw_int.hdg_acc = 0;
+    gps_raw_int.yaw = 0;
 
     mavlink_msg_gps_raw_int_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &gps_raw_int);
 
@@ -441,8 +441,8 @@ bool mavlink_msg_gps_raw_int_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_rc_channels_t mavlink_rc_channels = { 0 };
-    int16_t               rc_channels[16];
-    McnHub*               hub = MCN_HUB(rc_channels);
+    int16_t rc_channels[16];
+    McnHub* hub = MCN_HUB(rc_channels);
 
     if (!hub->published) {
         return false;
@@ -453,8 +453,8 @@ bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t)
     }
 
     mavlink_rc_channels.time_boot_ms = systime_now_ms();
-    mavlink_rc_channels.chancount    = pilot_cmd_get_chan_num();
-    mavlink_rc_channels.rssi         = 255; /* unknown */
+    mavlink_rc_channels.chancount = pilot_cmd_get_chan_num();
+    mavlink_rc_channels.rssi = 255; /* unknown */
     memcpy(&mavlink_rc_channels.chan1_raw, &rc_channels, sizeof(rc_channels));
 
     mavlink_msg_rc_channels_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &mavlink_rc_channels);
@@ -464,16 +464,16 @@ bool mavlink_msg_rc_channels_pack_func(mavlink_message_t* msg_t)
 
 bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
 {
-    mavlink_highres_imu_t highres_imu   = { 0 };
-    imu_data_t            imu_data      = { 0 };
-    mag_data_t            mag_data      = { 0 };
-    baro_data_t           baro_data     = { 0 };
-    airspeed_data_t       airspeed_data = { 0 };
-    fmt_err_t             imu_res, mag_res, baro_res, airspeed_res;
+    mavlink_highres_imu_t highres_imu = { 0 };
+    imu_data_t imu_data = { 0 };
+    mag_data_t mag_data = { 0 };
+    baro_data_t baro_data = { 0 };
+    airspeed_data_t airspeed_data = { 0 };
+    fmt_err_t imu_res, mag_res, baro_res, airspeed_res;
 
-    imu_res      = mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data);
-    mag_res      = mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data);
-    baro_res     = mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data);
+    imu_res = mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data);
+    mag_res = mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data);
+    baro_res = mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data);
     airspeed_res = mcn_copy_from_hub(MCN_HUB(sensor_airspeed), &airspeed_data);
 
     if (imu_res != FMT_EOK
@@ -483,20 +483,20 @@ bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
         return false;
     }
 
-    highres_imu.time_usec     = systime_now_us();
-    highres_imu.xacc          = imu_data.acc_B_mDs2[0];
-    highres_imu.yacc          = imu_data.acc_B_mDs2[1];
-    highres_imu.zacc          = imu_data.acc_B_mDs2[2];
-    highres_imu.xgyro         = imu_data.gyr_B_radDs[0];
-    highres_imu.ygyro         = imu_data.gyr_B_radDs[1];
-    highres_imu.zgyro         = imu_data.gyr_B_radDs[2];
-    highres_imu.xmag          = mag_data.mag_B_gauss[0];
-    highres_imu.ymag          = mag_data.mag_B_gauss[1];
-    highres_imu.zmag          = mag_data.mag_B_gauss[2];
-    highres_imu.abs_pressure  = baro_data.pressure_pa * 1000;          /* Pa to mPa */
+    highres_imu.time_usec = systime_now_us();
+    highres_imu.xacc = imu_data.acc_B_mDs2[0];
+    highres_imu.yacc = imu_data.acc_B_mDs2[1];
+    highres_imu.zacc = imu_data.acc_B_mDs2[2];
+    highres_imu.xgyro = imu_data.gyr_B_radDs[0];
+    highres_imu.ygyro = imu_data.gyr_B_radDs[1];
+    highres_imu.zgyro = imu_data.gyr_B_radDs[2];
+    highres_imu.xmag = mag_data.mag_B_gauss[0];
+    highres_imu.ymag = mag_data.mag_B_gauss[1];
+    highres_imu.zmag = mag_data.mag_B_gauss[2];
+    highres_imu.abs_pressure = baro_data.pressure_pa * 1000;           /* Pa to mPa */
     highres_imu.diff_pressure = airspeed_data.diff_pressure_pa * 1000; /* Pa to mPa */
-    highres_imu.pressure_alt  = baro_data.altitude_m;
-    highres_imu.temperature   = baro_data.temperature_deg;
+    highres_imu.pressure_alt = baro_data.altitude_m;
+    highres_imu.temperature = baro_data.temperature_deg;
 
     mavlink_msg_highres_imu_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &highres_imu);
 
@@ -506,17 +506,17 @@ bool mavlink_msg_highres_imu_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_distance_sensor_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_distance_sensor_t distance_sensor = { 0 };
-    rf_data_t                 rf_data;
+    rf_data_t rf_data;
 
     if (mcn_copy_from_hub(MCN_HUB(sensor_rangefinder), &rf_data) != FMT_EOK) {
         return false;
     }
 
-    distance_sensor.time_boot_ms     = systime_now_ms();
+    distance_sensor.time_boot_ms = systime_now_ms();
     distance_sensor.current_distance = rf_data.distance_m > 0.0f ? rf_data.distance_m * 100 : 0;
-    distance_sensor.signal_quality   = rf_data.distance_m > 0.0f ? 100 : 0;
-    distance_sensor.orientation      = ROTATION_PITCH_270;
-    distance_sensor.quaternion[0]    = 1.0f;
+    distance_sensor.signal_quality = rf_data.distance_m > 0.0f ? 100 : 0;
+    distance_sensor.orientation = ROTATION_PITCH_270;
+    distance_sensor.quaternion[0] = 1.0f;
 
     mavlink_msg_distance_sensor_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &distance_sensor);
 
@@ -526,16 +526,16 @@ bool mavlink_msg_distance_sensor_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_gps_global_origin_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_gps_global_origin_t gps_global_origin = { 0 };
-    INS_Out_Bus                 ins_out;
+    INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 
     gps_global_origin.time_usec = systime_now_us();
-    gps_global_origin.latitude  = RAD2DEG(ins_out.lat_0) * 1e7;
+    gps_global_origin.latitude = RAD2DEG(ins_out.lat_0) * 1e7;
     gps_global_origin.longitude = RAD2DEG(ins_out.lon_0) * 1e7;
-    gps_global_origin.altitude  = ins_out.alt_0 * 1e3;
+    gps_global_origin.altitude = ins_out.alt_0 * 1e3;
 
     mavlink_msg_gps_global_origin_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &gps_global_origin);
 
@@ -545,9 +545,9 @@ bool mavlink_msg_gps_global_origin_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_home_position_t home_position = { 0 };
-    INS_Out_Bus             ins_out       = { 0 };
-    FMS_Out_Bus             fms_out       = { 0 };
-    fmt_err_t               ins_res, fms_res;
+    INS_Out_Bus ins_out = { 0 };
+    FMS_Out_Bus fms_out = { 0 };
+    fmt_err_t ins_res, fms_res;
 
     ins_res = mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out);
     fms_res = mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
@@ -557,12 +557,12 @@ bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
     }
 
     home_position.time_usec = systime_now_us();
-    home_position.x         = fms_out.home[0];
-    home_position.y         = fms_out.home[1];
-    home_position.z         = -fms_out.home[2];
-    home_position.latitude  = ins_out.dx_dlat > 0.0 ? RAD2DEG(fms_out.home[0] / ins_out.dx_dlat + ins_out.lat_0) * 1e7 : 0;
+    home_position.x = fms_out.home[0];
+    home_position.y = fms_out.home[1];
+    home_position.z = -fms_out.home[2];
+    home_position.latitude = ins_out.dx_dlat > 0.0 ? RAD2DEG(fms_out.home[0] / ins_out.dx_dlat + ins_out.lat_0) * 1e7 : 0;
     home_position.longitude = ins_out.dy_dlon > 0.0 ? RAD2DEG(fms_out.home[1] / ins_out.dy_dlon + ins_out.lon_0) * 1e7 : 0;
-    home_position.altitude  = (fms_out.home[2] + ins_out.alt_0) * 100;
+    home_position.altitude = (fms_out.home[2] + ins_out.alt_0) * 100;
 
     mavlink_msg_home_position_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &home_position);
 
@@ -572,7 +572,7 @@ bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_attitude_target_t att_target = { 0 };
-    Auto_Cmd_Bus              auto_cmd;
+    Auto_Cmd_Bus auto_cmd;
 
     if (mcn_copy_from_hub(MCN_HUB(auto_cmd), &auto_cmd) != FMT_EOK) {
         return false;
@@ -583,9 +583,9 @@ bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t)
     if ((auto_cmd.cmd_mask & PHI_CMD_VALID) && (auto_cmd.cmd_mask & THETA_CMD_VALID) && (auto_cmd.cmd_mask & PSI_CMD_VALID)) {
         Euler euler;
 
-        euler.roll  = auto_cmd.phi_cmd;
+        euler.roll = auto_cmd.phi_cmd;
         euler.pitch = auto_cmd.phi_cmd;
-        euler.yaw   = auto_cmd.psi_cmd;
+        euler.yaw = auto_cmd.psi_cmd;
         quaternion_fromEuler(euler, (quaternion*)att_target.q);
     } else {
         att_target.type_mask |= 128;
@@ -623,9 +623,9 @@ bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_scaled_imu_t scaled_imu = { 0 };
-    imu_data_t           imu_data   = { 0 };
-    mag_data_t           mag_data   = { 0 };
-    fmt_err_t            imu_res, mag_res;
+    imu_data_t imu_data = { 0 };
+    mag_data_t mag_data = { 0 };
+    fmt_err_t imu_res, mag_res;
 
     imu_res = mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data);
     mag_res = mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data);
@@ -635,15 +635,15 @@ bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t)
     }
 
     scaled_imu.time_boot_ms = systime_now_ms();
-    scaled_imu.xacc         = imu_data.acc_B_mDs2[0] * 1000 / 9.806;
-    scaled_imu.yacc         = imu_data.acc_B_mDs2[1] * 1000 / 9.806;
-    scaled_imu.zacc         = imu_data.acc_B_mDs2[2] * 1000 / 9.806;
-    scaled_imu.xgyro        = imu_data.gyr_B_radDs[0] * 1000;
-    scaled_imu.ygyro        = imu_data.gyr_B_radDs[1] * 1000;
-    scaled_imu.zgyro        = imu_data.gyr_B_radDs[2] * 1000;
-    scaled_imu.xmag         = mag_data.mag_B_gauss[0] * 1000;
-    scaled_imu.ymag         = mag_data.mag_B_gauss[1] * 1000;
-    scaled_imu.zmag         = mag_data.mag_B_gauss[2] * 1000;
+    scaled_imu.xacc = imu_data.acc_B_mDs2[0] * 1000 / 9.806;
+    scaled_imu.yacc = imu_data.acc_B_mDs2[1] * 1000 / 9.806;
+    scaled_imu.zacc = imu_data.acc_B_mDs2[2] * 1000 / 9.806;
+    scaled_imu.xgyro = imu_data.gyr_B_radDs[0] * 1000;
+    scaled_imu.ygyro = imu_data.gyr_B_radDs[1] * 1000;
+    scaled_imu.zgyro = imu_data.gyr_B_radDs[2] * 1000;
+    scaled_imu.xmag = mag_data.mag_B_gauss[0] * 1000;
+    scaled_imu.ymag = mag_data.mag_B_gauss[1] * 1000;
+    scaled_imu.zmag = mag_data.mag_B_gauss[2] * 1000;
 
     mavlink_msg_scaled_imu_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &scaled_imu);
 
@@ -653,7 +653,7 @@ bool mavlink_msg_scaled_imu_pack_func(mavlink_message_t* msg_t)
 bool mavlink_msg_position_target_local_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_position_target_local_ned_t pos_target_local = { 0 };
-    Auto_Cmd_Bus                        auto_cmd;
+    Auto_Cmd_Bus auto_cmd;
 
     if (mcn_copy_from_hub(MCN_HUB(auto_cmd), &auto_cmd) != FMT_EOK) {
         return false;
@@ -751,19 +751,19 @@ bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
         return false;
     }
 
-    hil_state.time_usec  = systime_now_us();
-    hil_state.roll       = plant_states.phi;
-    hil_state.pitch      = plant_states.theta;
-    hil_state.yaw        = plant_states.psi;
-    hil_state.rollspeed  = plant_states.rot_x_B;
+    hil_state.time_usec = systime_now_us();
+    hil_state.roll = plant_states.phi;
+    hil_state.pitch = plant_states.theta;
+    hil_state.yaw = plant_states.psi;
+    hil_state.rollspeed = plant_states.rot_x_B;
     hil_state.pitchspeed = plant_states.rot_y_B;
-    hil_state.yawspeed   = plant_states.rot_z_B;
-    hil_state.xacc       = plant_states.acc_x_O / 9.80665f * 1000;
-    hil_state.yacc       = plant_states.acc_y_O / 9.80665f * 1000;
-    hil_state.zacc       = plant_states.acc_z_O / 9.80665f * 1000;
-    hil_state.vx         = plant_states.vel_x_O * 100;
-    hil_state.vy         = plant_states.vel_y_O * 100;
-    hil_state.vz         = plant_states.vel_z_O * 100;
+    hil_state.yawspeed = plant_states.rot_z_B;
+    hil_state.xacc = plant_states.acc_x_O / 9.80665f * 1000;
+    hil_state.yacc = plant_states.acc_y_O / 9.80665f * 1000;
+    hil_state.zacc = plant_states.acc_z_O / 9.80665f * 1000;
+    hil_state.vx = plant_states.vel_x_O * 100;
+    hil_state.vy = plant_states.vel_y_O * 100;
+    hil_state.vz = plant_states.vel_z_O * 100;
     /* we don't send LLA, and send xyh in mm instead */
     hil_state.lat = plant_states.x_R * 1000;
     hil_state.lon = plant_states.y_R * 1000;
@@ -779,12 +779,12 @@ bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
 
 fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result)
 {
-    mavlink_system_t      mav_sys     = mavproxy_get_system();
+    mavlink_system_t mav_sys = mavproxy_get_system();
     mavlink_command_ack_t command_ack = { 0 };
-    mavlink_message_t     msg;
+    mavlink_message_t msg;
 
     command_ack.command = command;
-    command_ack.result  = result;
+    command_ack.result = result;
 
     mavlink_msg_command_ack_encode(mav_sys.sysid, mav_sys.compid, &msg, &command_ack);
 
@@ -825,23 +825,23 @@ static void task_mavobc_entry(void* parameter)
 }
 
 TASK_EXPORT __fmt_task1_desc = {
-    .name       = "mavgcs",
-    .init       = task_mavgcs_init,
-    .entry      = task_mavgcs_entry,
-    .priority   = MAVGCS_THREAD_PRIORITY,
+    .name = "mavgcs",
+    .init = task_mavgcs_init,
+    .entry = task_mavgcs_entry,
+    .priority = MAVGCS_THREAD_PRIORITY,
     .auto_start = true,
     .stack_size = 8192,
-    .param      = NULL,
+    .param = NULL,
     .dependency = NULL
 };
 
 TASK_EXPORT __fmt_task2_desc = {
-    .name       = "mavobc",
-    .init       = task_mavobc_init,
-    .entry      = task_mavobc_entry,
-    .priority   = MAVOBC_THREAD_PRIORITY,
+    .name = "mavobc",
+    .init = task_mavobc_init,
+    .entry = task_mavobc_entry,
+    .priority = MAVOBC_THREAD_PRIORITY,
     .auto_start = true,
     .stack_size = 4096,
-    .param      = NULL,
+    .param = NULL,
     .dependency = (char*[]) { "mavgcs", NULL }
 };
