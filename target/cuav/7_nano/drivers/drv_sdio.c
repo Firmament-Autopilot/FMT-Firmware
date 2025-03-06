@@ -78,9 +78,9 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
         /* USER CODE BEGIN SDMMC2_MspInit 0 */
 
         /* USER CODE END SDMMC2_MspInit 0 */
-        LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL2R);
+        LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
 
-        /* SDMMC2 clock enable */
+        /* Peripheral clock enable */
         __HAL_RCC_SDMMC2_CLK_ENABLE();
 
         __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -114,9 +114,7 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF10_SDIO2;
         HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-        /* USER CODE BEGIN SDMMC2_MspInit 1 */
 
-        /* USER CODE END SDMMC2_MspInit 1 */
         /* SDMMC2 interrupt Init */
         HAL_NVIC_SetPriority(SDMMC2_IRQn, 0, 0);
         HAL_NVIC_EnableIRQ(SDMMC2_IRQn);
@@ -126,8 +124,6 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
 void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
 {
     if (sdHandle->Instance == SDMMC2) {
-        /* USER CODE END SDMMC2_MspDeInit 0 */
-        /* Peripheral clock disable */
         __HAL_RCC_SDMMC2_CLK_DISABLE();
 
         /**SDMMC2 GPIO Configuration
@@ -143,6 +139,9 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
         HAL_GPIO_DeInit(GPIOD, GPIO_PIN_7 | GPIO_PIN_6);
 
         HAL_GPIO_DeInit(GPIOG, GPIO_PIN_11);
+
+        /* SDMMC2 interrupt DeInit */
+        HAL_NVIC_DisableIRQ(SDMMC2_IRQn);
     }
 }
 

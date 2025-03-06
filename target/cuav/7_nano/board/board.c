@@ -251,6 +251,30 @@ static void CPU_Config(void)
 }
 
 /**
+ * @brief Enable on-board device power supply
+ *
+ */
+static void EnablePower(void)
+{
+    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
+
+    /* init gpio */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    /* SD_CARD_EN active high */
+    LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+
+    /* Wait some time for power becoming stable */
+    systime_mdelay(100);
+}
+
+/**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
  */
@@ -391,6 +415,9 @@ void bsp_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* enable on-board power supply */
+    EnablePower();
+
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
@@ -410,7 +437,7 @@ void bsp_initialize(void)
     FMT_CHECK(param_init());
 
     /* init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
     /* adc driver init */
     // RT_CHECK(drv_adc_init());
