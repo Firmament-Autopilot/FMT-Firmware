@@ -94,9 +94,11 @@ static rt_size_t hal_can_write(rt_device_t dev,
 
     for (uint32_t i = 0; i < size; i++) {
         /* send can message */
-        s_size += can_dev->ops->sendmsg(can_dev, msg_buffer++);
-        /* wait write complete */
-        rt_completion_wait(&can_dev->tx_cplt, timeout);
+        if (can_dev->ops->sendmsg(can_dev, msg_buffer++) > 0) {
+            /* wait write complete */
+            rt_completion_wait(&can_dev->tx_cplt, timeout);
+            s_size++;
+        }
     }
 
     /* release tx lock */

@@ -26,5 +26,6 @@
     "[c]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
+    "cortex-debug.variableUseNaturalFormat": true,
     // "clang-format.executable": "/bin/clang-format-16",
 }

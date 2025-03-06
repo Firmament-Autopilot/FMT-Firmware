@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2114
+ * Model version                  : 1.2119
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Nov  7 11:08:55 2024
+ * C/C++ source code generated on : Sun Mar  2 09:27:32 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -126,7 +126,8 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 
   {
     0.0F, 0.0F, 0.0F, 0.0F }
-  /* home */
+  ,                                    /* home */
+  0.0F                                 /* local_psi */
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
@@ -324,6 +325,8 @@ RT_MODEL_FMS_T *const FMS_M = &FMS_M_;
 /* Forward declaration for local functions */
 static void FMS_Stabilize(void);
 static void FMS_Acro(void);
+static void FMS_Altitude(void);
+static void FMS_Manual(void);
 static void FMS_sf_msg_send_M(void);
 static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag);
@@ -335,6 +338,7 @@ static boolean_T FMS_sf_msg_pop_M(void);
 static real32_T FMS_norm(const real32_T x[2]);
 static void FMS_Mission(void);
 static real_T FMS_getArmMode(PilotMode pilotMode);
+static void FMS_enter_internal_Assist(void);
 static void FMS_enter_internal_Auto(void);
 static void FMS_enter_internal_Arm(void);
 static void FMS_SubMode(void);
@@ -2150,6 +2154,100 @@ static void FMS_Acro(void)
   /* End of Inport: '<Root>/INS_Out' */
 }
 
+/* Function for Chart: '<Root>/SafeMode' */
+static void FMS_Altitude(void)
+{
+  /* Inport: '<Root>/INS_Out' */
+  if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U))
+  {
+    FMS_B.target_mode = PilotMode_Altitude;
+
+    /* Delay: '<S14>/Delay' */
+    switch (FMS_DW.Delay_DSTATE_c) {
+     case PilotMode_Manual:
+      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+      break;
+
+     case PilotMode_Acro:
+      FMS_DW.is_c3_FMS = FMS_IN_Acro;
+      break;
+
+     case PilotMode_Stabilize:
+      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+      break;
+
+     case PilotMode_Altitude:
+      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+      break;
+
+     case PilotMode_Position:
+      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+      break;
+
+     case PilotMode_Mission:
+      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+      break;
+
+     case PilotMode_Offboard:
+      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
+      break;
+
+     default:
+      FMS_DW.is_c3_FMS = FMS_IN_Other;
+      break;
+    }
+
+    /* End of Delay: '<S14>/Delay' */
+  } else {
+    FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+  }
+
+  /* End of Inport: '<Root>/INS_Out' */
+}
+
+/* Function for Chart: '<Root>/SafeMode' */
+static void FMS_Manual(void)
+{
+  FMS_B.target_mode = PilotMode_Manual;
+
+  /* Delay: '<S14>/Delay' */
+  switch (FMS_DW.Delay_DSTATE_c) {
+   case PilotMode_Manual:
+    FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
+    break;
+
+   case PilotMode_Acro:
+    FMS_DW.is_c3_FMS = FMS_IN_Acro;
+    break;
+
+   case PilotMode_Stabilize:
+    FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
+    break;
+
+   case PilotMode_Altitude:
+    FMS_DW.is_c3_FMS = FMS_IN_Altitude;
+    break;
+
+   case PilotMode_Position:
+    FMS_DW.is_c3_FMS = FMS_IN_Position_f;
+    break;
+
+   case PilotMode_Mission:
+    FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
+    break;
+
+   case PilotMode_Offboard:
+    FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
+    break;
+
+   default:
+    FMS_DW.is_c3_FMS = FMS_IN_Other;
+    break;
+  }
+
+  /* End of Delay: '<S14>/Delay' */
+}
+
 int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn)
 {
   int32_T isEmplaced;
@@ -2640,13 +2738,42 @@ static real_T FMS_getArmMode(PilotMode pilotMode)
 }
 
 /* Function for Chart: '<Root>/FMS State Machine' */
+static void FMS_enter_internal_Assist(void)
+{
+  switch (FMS_B.target_mode) {
+   case PilotMode_Acro:
+    FMS_DW.is_Assist = FMS_IN_Acro;
+    FMS_B.state = VehicleState_Acro;
+    break;
+
+   case PilotMode_Stabilize:
+    FMS_DW.is_Assist = FMS_IN_Stabilize;
+    FMS_B.state = VehicleState_Stabilize;
+    break;
+
+   case PilotMode_Altitude:
+    FMS_DW.is_Assist = FMS_IN_Altitude;
+    FMS_B.state = VehicleState_Altitude;
+    break;
+
+   case PilotMode_Position:
+    FMS_DW.is_Assist = FMS_IN_Position;
+    FMS_B.state = VehicleState_Position;
+    break;
+
+   default:
+    FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
+    break;
+  }
+}
+
+/* Function for Chart: '<Root>/FMS State Machine' */
 static void FMS_enter_internal_Auto(void)
 {
   uint32_T qY;
   switch (FMS_B.target_mode) {
    case PilotMode_Offboard:
     FMS_DW.is_Auto = FMS_IN_Offboard;
-    FMS_B.Cmd_In.offboard_psi_0 = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
     if (FMS_B.LogicalOperator) {
       FMS_DW.is_Offboard = FMS_IN_Run;
       FMS_B.state = VehicleState_Offboard;
@@ -2700,31 +2827,7 @@ static void FMS_enter_internal_Arm(void)
     FMS_enter_internal_Auto();
   } else if (tmp == 2.0) {
     FMS_DW.is_Arm = FMS_IN_Assist;
-    switch (FMS_B.target_mode) {
-     case PilotMode_Acro:
-      FMS_DW.is_Assist = FMS_IN_Acro;
-      FMS_B.state = VehicleState_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_Assist = FMS_IN_Stabilize;
-      FMS_B.state = VehicleState_Stabilize;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_Assist = FMS_IN_Altitude;
-      FMS_B.state = VehicleState_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_Assist = FMS_IN_Position;
-      FMS_B.state = VehicleState_Position;
-      break;
-
-     default:
-      FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-      break;
-    }
+    FMS_enter_internal_Assist();
   } else if (tmp == 1.0) {
     FMS_DW.is_Arm = FMS_IN_Manual;
     if (FMS_B.target_mode == PilotMode_Manual) {
@@ -2776,31 +2879,7 @@ static void FMS_SubMode(void)
     } else if (FMS_getArmMode(FMS_B.target_mode) == 2.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Assist;
-      switch (FMS_B.target_mode) {
-       case PilotMode_Acro:
-        FMS_DW.is_Assist = FMS_IN_Acro;
-        FMS_B.state = VehicleState_Acro;
-        break;
-
-       case PilotMode_Stabilize:
-        FMS_DW.is_Assist = FMS_IN_Stabilize;
-        FMS_B.state = VehicleState_Stabilize;
-        break;
-
-       case PilotMode_Altitude:
-        FMS_DW.is_Assist = FMS_IN_Altitude;
-        FMS_B.state = VehicleState_Altitude;
-        break;
-
-       case PilotMode_Position:
-        FMS_DW.is_Assist = FMS_IN_Position;
-        FMS_B.state = VehicleState_Position;
-        break;
-
-       default:
-        FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-        break;
-      }
+      FMS_enter_internal_Assist();
     } else if (FMS_getArmMode(FMS_B.target_mode) == 1.0) {
       FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
       FMS_DW.is_Arm = FMS_IN_Manual;
@@ -2895,31 +2974,7 @@ static void FMS_SubMode(void)
           } else if (tmp == 2.0) {
             FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
             FMS_DW.is_Arm = FMS_IN_Assist;
-            switch (FMS_B.target_mode) {
-             case PilotMode_Acro:
-              FMS_DW.is_Assist = FMS_IN_Acro;
-              FMS_B.state = VehicleState_Acro;
-              break;
-
-             case PilotMode_Stabilize:
-              FMS_DW.is_Assist = FMS_IN_Stabilize;
-              FMS_B.state = VehicleState_Stabilize;
-              break;
-
-             case PilotMode_Altitude:
-              FMS_DW.is_Assist = FMS_IN_Altitude;
-              FMS_B.state = VehicleState_Altitude;
-              break;
-
-             case PilotMode_Position:
-              FMS_DW.is_Assist = FMS_IN_Position;
-              FMS_B.state = VehicleState_Position;
-              break;
-
-             default:
-              FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-              break;
-            }
+            FMS_enter_internal_Assist();
           } else if (tmp == 1.0) {
             FMS_DW.is_SubMode = FMS_IN_NO_ACTIVE_CHILD_h;
             FMS_DW.is_Arm = FMS_IN_Manual;
@@ -3005,31 +3060,7 @@ static void FMS_Arm(void)
       } else if (tmp == 2.0) {
         FMS_exit_internal_Arm();
         FMS_DW.is_Arm = FMS_IN_Assist;
-        switch (FMS_B.target_mode) {
-         case PilotMode_Acro:
-          FMS_DW.is_Assist = FMS_IN_Acro;
-          FMS_B.state = VehicleState_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_Assist = FMS_IN_Stabilize;
-          FMS_B.state = VehicleState_Stabilize;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_Assist = FMS_IN_Altitude;
-          FMS_B.state = VehicleState_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_Assist = FMS_IN_Position;
-          FMS_B.state = VehicleState_Position;
-          break;
-
-         default:
-          FMS_DW.is_Assist = FMS_IN_InvalidAssistMode;
-          break;
-        }
+        FMS_enter_internal_Assist();
       } else if (tmp == 1.0) {
         FMS_exit_internal_Arm();
         FMS_DW.is_Arm = FMS_IN_Manual;
@@ -3099,6 +3130,7 @@ static void FMS_Arm(void)
               FMS_DW.durationLastReferenceTick_1_n5 =
                 FMS_DW.chartAbsoluteTimeCounter;
               FMS_DW.is_Vehicle = FMS_IN_Arm;
+              FMS_B.Cmd_In.local_psi = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
               FMS_DW.is_Arm = FMS_IN_SubMode;
               FMS_DW.stick_val[0] =
                 FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
@@ -3379,6 +3411,7 @@ static void FMS_Vehicle(void)
             FMS_DW.durationLastReferenceTick_1_n5 =
               FMS_DW.chartAbsoluteTimeCounter;
             FMS_DW.is_Vehicle = FMS_IN_Arm;
+            FMS_B.Cmd_In.local_psi = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
             FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
             FMS_enter_internal_Arm();
           }
@@ -3422,6 +3455,7 @@ static void FMS_Vehicle(void)
       FMS_DW.condWasTrueAtLastTimeStep_2 = sf_internal_predicateOutput;
       FMS_DW.durationLastReferenceTick_1_n5 = FMS_DW.chartAbsoluteTimeCounter;
       FMS_DW.is_Vehicle = FMS_IN_Arm;
+      FMS_B.Cmd_In.local_psi = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
       FMS_DW.condWasTrueAtLastTimeStep_1_h = FMS_B.on_ground;
       FMS_DW.is_Arm = FMS_IN_SubMode;
       FMS_DW.stick_val[0] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_yaw;
@@ -4120,82 +4154,11 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Altitude:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) !=
-           0U)) {
-        FMS_B.target_mode = PilotMode_Altitude;
-        switch (FMS_DW.Delay_DSTATE_c) {
-         case PilotMode_Manual:
-          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-          break;
-
-         case PilotMode_Acro:
-          FMS_DW.is_c3_FMS = FMS_IN_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-          break;
-
-         case PilotMode_Mission:
-          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-          break;
-
-         case PilotMode_Offboard:
-          FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-          break;
-
-         default:
-          FMS_DW.is_c3_FMS = FMS_IN_Other;
-          break;
-        }
-      } else {
-        FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      }
+      FMS_Altitude();
       break;
 
      case FMS_IN_Manual_e:
-      FMS_B.target_mode = PilotMode_Manual;
-      switch (FMS_DW.Delay_DSTATE_c) {
-       case PilotMode_Manual:
-        FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-        break;
-
-       case PilotMode_Acro:
-        FMS_DW.is_c3_FMS = FMS_IN_Acro;
-        break;
-
-       case PilotMode_Stabilize:
-        FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-        break;
-
-       case PilotMode_Altitude:
-        FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-        break;
-
-       case PilotMode_Position:
-        FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-        break;
-
-       case PilotMode_Mission:
-        FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-        break;
-
-       case PilotMode_Offboard:
-        FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-        break;
-
-       default:
-        FMS_DW.is_c3_FMS = FMS_IN_Other;
-        break;
-      }
+      FMS_Manual();
       break;
 
      case FMS_IN_Mission_g:
@@ -8104,7 +8067,7 @@ void FMS_step(void)
            *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy3Inport1'
            *  Sum: '<S306>/Subtract'
            */
-          rtb_Add3_c = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.offboard_psi_0);
+          rtb_Add3_c = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.local_psi);
 
           /* Trigonometry: '<S318>/Trigonometric Function3' incorporates:
            *  Gain: '<S316>/Gain'
@@ -8163,7 +8126,7 @@ void FMS_step(void)
            *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy3Inport1'
            *  Trigonometry: '<S317>/Trigonometric Function1'
            */
-          rtb_Divide_lr_idx_1 = arm_cos_f32(-FMS_B.Cmd_In.offboard_psi_0);
+          rtb_Divide_lr_idx_1 = arm_cos_f32(-FMS_B.Cmd_In.local_psi);
           rtb_VectorConcatenate_e[4] = rtb_Divide_lr_idx_1;
 
           /* Trigonometry: '<S317>/Trigonometric Function2' incorporates:
@@ -8171,8 +8134,7 @@ void FMS_step(void)
            *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy3Inport1'
            *  Trigonometry: '<S317>/Trigonometric Function'
            */
-          rtb_DiscreteTimeIntegrator_n = arm_sin_f32
-            (-FMS_B.Cmd_In.offboard_psi_0);
+          rtb_DiscreteTimeIntegrator_n = arm_sin_f32(-FMS_B.Cmd_In.local_psi);
 
           /* Gain: '<S317>/Gain' incorporates:
            *  Trigonometry: '<S317>/Trigonometric Function2'
@@ -8744,8 +8706,7 @@ void FMS_step(void)
            *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy3Inport1'
            *  Sum: '<S336>/Subtract'
            */
-          rtb_Divide_lr_idx_1 = -(FMS_U.INS_Out.psi -
-            FMS_B.Cmd_In.offboard_psi_0);
+          rtb_Divide_lr_idx_1 = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.local_psi);
 
           /* Trigonometry: '<S341>/Trigonometric Function3' incorporates:
            *  Gain: '<S340>/Gain'
@@ -13058,6 +13019,7 @@ void FMS_step(void)
    *  DataTypeConversion: '<S31>/Data Type Conversion'
    *  DiscreteIntegrator: '<S482>/Discrete-Time Integrator'
    *  Outport: '<Root>/FMS_Out'
+   *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy3Inport1'
    *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy4Inport1'
    *  SignalConversion: '<S29>/TmpSignal ConversionAtSignal Copy5Inport1'
    *  Sum: '<S31>/Sum'
@@ -13068,6 +13030,7 @@ void FMS_step(void)
   /* Outputs for Atomic SubSystem: '<S4>/FMS_Input' */
   FMS_Y.FMS_Out.wp_consume = FMS_B.wp_consume;
   FMS_Y.FMS_Out.wp_current = (uint8_T)(FMS_B.wp_index - 1);
+  FMS_Y.FMS_Out.local_psi = FMS_B.Cmd_In.local_psi;
 
   /* End of Outputs for SubSystem: '<S4>/FMS_Input' */
   FMS_Y.FMS_Out.home[0] = FMS_DW.home[0];

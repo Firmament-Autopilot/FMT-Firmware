@@ -18,7 +18,7 @@
 
 #include "hal/serial/serial.h"
 #include "nlink_linktrack.h"
-#include "nlink_linktrack_tagframe0.h"
+#include "protocol/nlink/nlink_linktrack_tagframe0.h"
 
 #define EVENT_NLINK_UPDATE (1 << 0)
 #define DATA_SIZE          128

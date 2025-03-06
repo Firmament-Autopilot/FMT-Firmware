@@ -143,6 +143,8 @@ struct serial_device {
     const struct usart_ops* ops;
     struct serial_configure config;
 
+    struct rt_completion tx_cplt, rx_cplt;
+
     void* serial_rx;
     void* serial_tx;
 };
