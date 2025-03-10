@@ -31,6 +31,7 @@
 #include "driver/mtd/gd25qxx.h"
 #include "driver/range_finder/tofsense.h"
 #include "drv_adc.h"
+#include "drv_eth.h"
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -218,6 +219,38 @@ static void MPU_Config(void)
     MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
+    /* Configure the MPU attributes as Device not cacheable
+       for ETH DMA descriptors */
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30040000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_256B;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+    /* Configure the MPU attributes as Cacheable write through
+       for LwIP RAM heap which contains the Tx buffers */
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30044000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_16KB;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER3;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
     /* Enable the MPU */
     HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
@@ -229,13 +262,13 @@ static void MPU_Config(void)
  */
 static void CPU_Config(void)
 {
-    // MPU_Config();
+    MPU_Config();
 
     /*
      * When enabling the D-cache there is cache coherency issue.
      * This matter crops up when multiple masters (CPU, DMAs...)
      * share the memory. If the CPU writes something to an area
-     * that has a write-back cache attribute (example SRAM), the
+     * that has a write-back cache attribute (example SRAM), thed
      * write result is not seen on the SRAM as the access is
      * buffered, and then if the DMA reads the same memory area
      * to perform a data transfer, the values read do not match
@@ -354,6 +387,9 @@ void bsp_early_initialize(void)
     /* System clock initialization */
     SystemClock_Config();
 
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
     /* usart driver init */
     RT_CHECK(drv_usart_init());
 
@@ -362,9 +398,6 @@ void bsp_early_initialize(void)
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
-
-    /* gpio driver init */
-    RT_CHECK(drv_gpio_init());
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
@@ -414,6 +447,16 @@ void bsp_initialize(void)
 
     /* adc driver init */
     RT_CHECK(drv_adc_init());
+
+    /* init rt_workqueue, which is used by tcpip stack */
+    FMT_CHECK(rt_work_sys_workqueue_init());
+
+    /* init lwip */
+    extern int lwip_system_init();
+    FMT_CHECK(lwip_system_init());
+
+    /* eth driver init */
+    RT_CHECK(drv_eth_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
