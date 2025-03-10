@@ -42,7 +42,8 @@ src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.c')
 src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_fdcan.c')
-
+src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth.c')
+src += Glob('STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth_ex.c')
 
 #add for startup script 
 if rtconfig.CROSS_TOOL == 'gcc':

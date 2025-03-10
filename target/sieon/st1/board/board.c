@@ -41,6 +41,7 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
+#include "drv_eth.h"
 #include "led.h"
 
 #include "default_config.h"
@@ -216,6 +217,22 @@ static void MPU_Config(void)
     MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
     MPU_InitStruct.SubRegionDisable = 0x00;
     MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+    /* Configure the MPU attributes as Device not cacheable 
+       for ETH DMA descriptors and RX Buffers*/
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30040000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_32KB;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
     /* Enable the MPU */
@@ -406,6 +423,11 @@ void bsp_initialize(void)
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
+    FMT_CHECK(rt_work_sys_workqueue_init());
+
+    extern int lwip_system_init();
+    FMT_CHECK(lwip_system_init());
+
     /* init parameter system */
     FMT_CHECK(param_init());
 
@@ -414,6 +436,9 @@ void bsp_initialize(void)
 
     /* adc driver init */
     RT_CHECK(drv_adc_init());
+
+    /* eth driver init */
+    RT_CHECK(drv_eth_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
