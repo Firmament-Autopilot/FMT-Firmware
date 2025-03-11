@@ -442,10 +442,10 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_systick_init());
 
     // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
+    RT_CHECK(drv_i2c_init());
 
     // /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    RT_CHECK(drv_spi_init());
 
     // /* pwm driver init */
     // RT_CHECK(drv_pwm_init());

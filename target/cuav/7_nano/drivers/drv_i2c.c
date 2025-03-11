@@ -45,7 +45,7 @@ static void i2c1_hw_init(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_9;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
@@ -90,7 +90,7 @@ static void i2c2_hw_init(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_0 | LL_GPIO_PIN_1;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
@@ -131,15 +131,23 @@ static void i2c3_hw_init(void)
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
     /**I2C3 GPIO Configuration
     PH8   ------> I2C3_SDA
-    PH7   ------> I2C3_SCL
+    PA8   ------> I2C3_SCL
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_7;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
     LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* Peripheral clock enable */
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C3);
@@ -180,7 +188,7 @@ static void i2c4_hw_init(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_15 | LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
@@ -351,18 +359,8 @@ static struct stm32_i2c_bus stm32_i2c3 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2C4 };
 
 /* i2c device instances */
-static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };
-static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };
-static struct rt_i2c_device i2c1_dev2 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };
-static struct rt_i2c_device i2c2_dev2 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };          
-static struct rt_i2c_device i2c3_dev1 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };      
-static struct rt_i2c_device i2c4_dev1 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };                                                                                                     
+static struct rt_i2c_device i2c3_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
+                                          .flags = 0 };                                                                                              
 
 rt_err_t drv_i2c_init(void)
 {
@@ -379,13 +377,7 @@ rt_err_t drv_i2c_init(void)
     RT_TRY(rt_i2c_bus_device_register(&stm32_i2c4.parent, "i2c4"));
 
     /* attach i2c devices */
-    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev1, "i2c2_dev1", "i2c2", RT_NULL));
-
-    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev2, "i2c2_dev2", "i2c2", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c3_dev1, "i2c3_dev1", "i2c3", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c4_dev1, "i2c4_dev1", "i2c4", RT_NULL));
 
     return RT_EOK;
 }
