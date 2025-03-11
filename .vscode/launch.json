@@ -107,6 +107,21 @@
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
             "svdFile": "target/amov/icf5/GD32F4xx.svd",
             "runToMain": true
+        },
+        {
+            "name": "ZeroOne X6 J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/zeroone/x6/build/fmt_zeroone-x6.elf",
+            "serverpath": "${env:JLINK_SERVER}",
+            "servertype": "jlink",
+            "device": "STM32H753II",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "target/zeroone/x6/STM32H7x3.svd",
+            "runToMain": true
         }
     ]
 }
