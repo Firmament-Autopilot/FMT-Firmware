@@ -60,17 +60,17 @@ void TIM3_IRQHandler(void)
     rt_interrupt_leave();
 }
 
-void UART8_IRQHandler(void)
+void USART6_IRQHandler(void)
 {
     uint8_t ch;
     /* enter interrupt */
     rt_interrupt_enter();
 
-    if (LL_USART_IsActiveFlag_RXNE(UART8)) {
+    if (LL_USART_IsActiveFlag_RXNE(USART6)) {
         do {
-            ch = LL_USART_ReceiveData8(UART8);
+            ch = LL_USART_ReceiveData8(USART6);
             sbus_input(&sbus_decoder, &ch, 1);
-        } while (LL_USART_IsActiveFlag_RXNE(UART8));
+        } while (LL_USART_IsActiveFlag_RXNE(USART6));
 
         /* if it's reading sbus data, we just parse it later */
         if (!sbus_islock(&sbus_decoder)) {
@@ -79,20 +79,20 @@ void UART8_IRQHandler(void)
         /* the RXNE flag is cleared by reading the USART_RDR register */
     }
 
-    if (LL_USART_IsActiveFlag_IDLE(UART8)) {
-        LL_USART_ClearFlag_IDLE(UART8);
+    if (LL_USART_IsActiveFlag_IDLE(USART6)) {
+        LL_USART_ClearFlag_IDLE(USART6);
     }
 
-    if (LL_USART_IsActiveFlag_FE(UART8)) {
-        LL_USART_ClearFlag_FE(UART8);
+    if (LL_USART_IsActiveFlag_FE(USART6)) {
+        LL_USART_ClearFlag_FE(USART6);
     }
 
-    if (LL_USART_IsActiveFlag_PE(UART8)) {
-        LL_USART_ClearFlag_PE(UART8);
+    if (LL_USART_IsActiveFlag_PE(USART6)) {
+        LL_USART_ClearFlag_PE(USART6);
     }
 
-    if (LL_USART_IsActiveFlag_ORE(UART8)) {
-        LL_USART_ClearFlag_ORE(UART8);
+    if (LL_USART_IsActiveFlag_ORE(USART6)) {
+        LL_USART_ClearFlag_ORE(USART6);
     }
 
     /* leave interrupt */
@@ -115,15 +115,15 @@ static rt_err_t ppm_lowlevel_init(void)
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
     /**TIM3 GPIO Configuration
-    PB4 (NJTRST)   ------> TIM3_CH1
+    PC6   ------> TIM3_CH1
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_4;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_UP; /* Need internal pull-up, otherwise an unexpected interupt generated */
     GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
-    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /* TIM3 interrupt Init */
     NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
@@ -155,31 +155,38 @@ static rt_err_t sbus_lowlevel_init(void)
 
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
+    LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
 
     /* Peripheral clock enable */
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART8);
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
 
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
-    /**UART8 GPIO Configuration
-    PE1   ------> UART8_TX
-    PE0   ------> UART8_RX
+    /**USART6 GPIO Configuration
+    PG14   ------> USART6_TX
+    PC7   ------> USART6_RX
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_1 | LL_GPIO_PIN_0;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
-    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-    /* USER CODE BEGIN UART8_Init 1 */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_7;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    /* UART8 interrupt Init */
-    NVIC_SetPriority(UART8_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
-    NVIC_EnableIRQ(UART8_IRQn);
+    /* USER CODE BEGIN USART6_Init 1 */
 
-    /* USER CODE END UART8_Init 1 */
+    /* USART6 interrupt Init */
+    NVIC_SetPriority(USART6_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
+    NVIC_EnableIRQ(USART6_IRQn);
+
+    /* USER CODE END USART6_Init 1 */
     UART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV1;
     UART_InitStruct.BaudRate = 100000;
     UART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
@@ -188,21 +195,21 @@ static rt_err_t sbus_lowlevel_init(void)
     UART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
     UART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
     UART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
-    LL_USART_Init(UART8, &UART_InitStruct);
-    LL_USART_DisableFIFO(UART8);
-    LL_USART_SetTXFIFOThreshold(UART8, LL_USART_FIFOTHRESHOLD_1_8);
-    LL_USART_SetRXFIFOThreshold(UART8, LL_USART_FIFOTHRESHOLD_1_8);
-    LL_USART_SetRXPinLevel(UART8, LL_USART_RXPIN_LEVEL_INVERTED);
-    LL_USART_ConfigAsyncMode(UART8);
+    LL_USART_Init(USART6, &UART_InitStruct);
+    LL_USART_DisableFIFO(USART6);
+    LL_USART_SetTXFIFOThreshold(USART6, LL_USART_FIFOTHRESHOLD_1_8);
+    LL_USART_SetRXFIFOThreshold(USART6, LL_USART_FIFOTHRESHOLD_1_8);
+    LL_USART_SetRXPinLevel(USART6, LL_USART_RXPIN_LEVEL_INVERTED);
+    LL_USART_ConfigAsyncMode(USART6);
 
-    /* USER CODE BEGIN WKUPType UART8 */
+    /* USER CODE BEGIN WKUPType USART6 */
 
-    /* USER CODE END WKUPType UART8 */
+    /* USER CODE END WKUPType USART6 */
 
-    LL_USART_Enable(UART8);
+    LL_USART_Enable(USART6);
 
-    /* Polling UART8 initialisation */
-    while ((!(LL_USART_IsActiveFlag_TEACK(UART8))) || (!(LL_USART_IsActiveFlag_REACK(UART8)))) {
+    /* Polling USART6 initialisation */
+    while ((!(LL_USART_IsActiveFlag_TEACK(USART6))) || (!(LL_USART_IsActiveFlag_REACK(USART6)))) {
     }
 
     return RT_EOK;
@@ -215,7 +222,7 @@ rt_err_t rc_init(rc_dev_t dev)
     LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
     LL_TIM_EnableIT_CC1(TIM3);
 
-    LL_USART_EnableIT_RXNE(UART8);
+    LL_USART_EnableIT_RXNE(USART6);
 
     return RT_EOK;
 }
