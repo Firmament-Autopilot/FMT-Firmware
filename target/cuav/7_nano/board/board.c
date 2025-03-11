@@ -378,6 +378,9 @@ void bsp_early_initialize(void)
     /* System clock initialization */
     SystemClock_Config();
 
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
     /* usart driver init */
     RT_CHECK(drv_usart_init());
 
@@ -386,9 +389,6 @@ void bsp_early_initialize(void)
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
-
-    /* gpio driver init */
-    RT_CHECK(drv_gpio_init());
 
     // /* i2c driver init */
     // RT_CHECK(drv_i2c_init());
