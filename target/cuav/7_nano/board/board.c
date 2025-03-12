@@ -26,9 +26,8 @@
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
-#include "driver/mag/bmm150.h"
-#include "driver/mag/qmc5883l.h"
-#include "driver/mtd/gd25qxx.h"
+#include "driver/mag/ist8310.h"
+#include "driver/mtd/ramtron.h"
 #include "driver/range_finder/tofsense.h"
 #include "drv_adc.h"
 #include "drv_fdcan.h"
@@ -74,7 +73,7 @@
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
-    // { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -447,14 +446,14 @@ void bsp_early_initialize(void)
     // /* spi driver init */
     RT_CHECK(drv_spi_init());
 
-    // /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
 
     // /* can driver init */
     // RT_CHECK(drv_fdcan_init());
 
-    // /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
+    /* init remote controller driver */
+    RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -480,7 +479,8 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
-    // RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
+    /* fram init */
+    RT_CHECK(drv_ramtron_init("spi5_dev1"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
@@ -501,17 +501,19 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
-    // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
+    RT_CHECK(drv_bmi088_init("spi2_dev1", "spi2_dev2", "gyro0", "accel0", 0));
+    RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
     // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(gps_ubx_init("serial3", "gps"));
 
-    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    // FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
     // FMT_CHECK(register_sensor_barometer("barometer"));
-    // FMT_CHECK(advertise_sensor_optflow(0));
-    // FMT_CHECK(advertise_sensor_rangefinder(0));
+    advertise_sensor_baro(0);
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
 
     /* init finsh */
@@ -523,30 +525,30 @@ void bsp_initialize(void)
 void bsp_post_initialize(void)
 {
     /* toml system configure */
-    // __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    // if (!__toml_root_tab) {
-    //     /* use default system configuration */
-    //     __toml_root_tab = toml_parse_config_string(default_conf);
-    // }
-    // FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+    __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
+    if (!__toml_root_tab) {
+        /* use default system configuration */
+        __toml_root_tab = toml_parse_config_string(default_conf);
+    }
+    FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
     /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    FMT_CHECK(pilot_cmd_init());
 
     /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    FMT_CHECK(gcs_cmd_init());
 
     /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
+    FMT_CHECK(auto_cmd_init());
 
     /* init mission data */
-    // FMT_CHECK(mission_data_init());
+    FMT_CHECK(mission_data_init());
 
     /* init actuator */
-    // FMT_CHECK(actuator_init());
+    FMT_CHECK(actuator_init());
 
     /* start device message queue work */
-    // FMT_CHECK(devmq_start_work());
+    FMT_CHECK(devmq_start_work());
 
     /* init led control */
     // FMT_CHECK(led_control_init());
