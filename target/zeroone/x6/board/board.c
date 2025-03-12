@@ -513,36 +513,36 @@ void bsp_initialize(void)
 void bsp_post_initialize(void)
 {
     /* toml system configure */
-    // __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    // if (!__toml_root_tab) {
-    //     /* use default system configuration */
-    //     __toml_root_tab = toml_parse_config_string(default_conf);
-    // }
-    // FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+    __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
+    if (!__toml_root_tab) {
+        /* use default system configuration */
+        __toml_root_tab = toml_parse_config_string(default_conf);
+    }
+    FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
     /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    FMT_CHECK(pilot_cmd_init());
 
     /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    FMT_CHECK(gcs_cmd_init());
 
     /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
+    FMT_CHECK(auto_cmd_init());
 
     /* init mission data */
-    // FMT_CHECK(mission_data_init());
+    FMT_CHECK(mission_data_init());
 
     /* init actuator */
-    // FMT_CHECK(actuator_init());
+    FMT_CHECK(actuator_init());
 
     /* start device message queue work */
-    // FMT_CHECK(devmq_start_work());
+    FMT_CHECK(devmq_start_work());
 
     /* init led control */
-    // FMT_CHECK(led_control_init());
+    FMT_CHECK(led_control_init());
 
     /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
