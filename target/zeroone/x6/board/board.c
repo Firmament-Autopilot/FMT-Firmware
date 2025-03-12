@@ -35,7 +35,6 @@
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
-#include "drv_rc.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
@@ -73,7 +72,7 @@
 #define SYS_INIT_SCRIPT "/sys/init.sh"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    // { "sd0", "/", "elm", 0, NULL },
+    { "sd0", "/", "elm", 0, NULL },
     // { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
@@ -312,24 +311,6 @@ static void EnablePower(void)
     /* SD_CARD_EN active high */
     LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
 
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_10;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-    // /* SD_CARD_EN active high */
-    // LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_10);
-
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-    // /* SD_CARD_EN active high */
-    // LL_GPIO_SetOutputPin(GPIOH, LL_GPIO_PIN_2);
-
     /* Wait some time for power becoming stable */
     systime_mdelay(100);
 }
@@ -488,7 +469,7 @@ void bsp_initialize(void)
     FMT_CHECK(workqueue_manager_init());
 
     /* init storage devices */
-    // RT_CHECK(drv_sdio_init());
+    RT_CHECK(drv_sdio_init());
     // RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
@@ -497,7 +478,7 @@ void bsp_initialize(void)
     FMT_CHECK(param_init());
 
     /* init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());
+    RT_CHECK(drv_usb_cdc_init());
 
     /* adc driver init */
     // RT_CHECK(drv_adc_init());
