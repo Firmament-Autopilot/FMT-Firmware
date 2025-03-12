@@ -5,9 +5,8 @@ DRIVERS = [
     'gps/gps_ubx.c',
     'imu/bmi088.c',
     'imu/icm42688p.c',
-    'mag/bmm150.c',
-    'mag/qmc5883l.c',
-    'mtd/gd25qxx.c',
+    'mag/ist8310.c',
+    'mtd/ramtron.c',
     'range_finder/tofsense.c',
 ]
 
