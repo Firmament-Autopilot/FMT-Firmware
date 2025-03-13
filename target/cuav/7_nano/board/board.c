@@ -551,10 +551,10 @@ void bsp_post_initialize(void)
     FMT_CHECK(devmq_start_work());
 
     /* init led control */
-    // FMT_CHECK(led_control_init());
+    FMT_CHECK(led_control_init());
 
     /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
