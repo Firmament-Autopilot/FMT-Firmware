@@ -36,7 +36,7 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(L1, 10.0, false),
+    PARAM_FLOAT(L1, 7.0, false),
     PARAM_FLOAT(CRUISE_SPEED, 3.0, false),
     PARAM_FLOAT(ACCEPT_R, 5.0, false),
     PARAM_FLOAT(MAX_VEL, 4.0, false),
