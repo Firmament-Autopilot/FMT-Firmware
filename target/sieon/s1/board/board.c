@@ -264,18 +264,6 @@ static void CPU_Config(void)
 {
     MPU_Config();
 
-    /*
-     * When enabling the D-cache there is cache coherency issue.
-     * This matter crops up when multiple masters (CPU, DMAs...)
-     * share the memory. If the CPU writes something to an area
-     * that has a write-back cache attribute (example SRAM), thed
-     * write result is not seen on the SRAM as the access is
-     * buffered, and then if the DMA reads the same memory area
-     * to perform a data transfer, the values read do not match
-     * the intended data. The issue occurs for DMA read as well.
-     * Currently not all drivers can ensure the data coherency
-     * when D-Cache enabled, so disable it by default.
-     */
     /* Enable I-Cache */
     SCB_EnableICache();
 
