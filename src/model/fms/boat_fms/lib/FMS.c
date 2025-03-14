@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2038
+ * Model version                  : 1.2041
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Dec 12 10:12:05 2024
+ * C/C++ source code generated on : Fri Mar 14 13:27:05 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -97,16 +97,16 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 
 /* Exported block parameters */
 struct_U5lw6bCUkWz4DxN5NeKa6F FMS_PARAM = {
-  { 1500.0F, 1500.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
+  { 1000.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
+    0.0F, 0.0F, 0.0F, 0.0F },
 
-  { 1550.0F, 1550.0F, 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
-  10.0F,
-  3.0F,
+  { 1000.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
+    0.0F, 0.0F, 0.0F, 0.0F },
+  6.0F,
   5.0F,
-  4.0F,
-  0.7F,
+  2.0F,
+  5.0F,
+  1.0F,
   1.0F,
   10U,
   1U
@@ -998,7 +998,7 @@ static void FMS_Arm(void)
                   /* Inport: '<Root>/Mission_Data' */
                   FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[lla_tmp] * 1.0E-7;
                   FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[lla_tmp] * 1.0E-7;
-                  FMS_B.lla[2] = -FMS_U.Mission_Data.z[lla_tmp];
+                  FMS_B.lla[2] = -(FMS_U.Mission_Data.z[lla_tmp] + FMS_DW.home[2]);
                   FMS_B.href = 0.0;
                   FMS_B.psio = 0.0;
                   FMS_B.llo[0] = FMS_DW.llo[0];
@@ -1162,12 +1162,9 @@ static void FMS_Arm(void)
                     FMS_B.href);
 
                   /* End of Outputs for SubSystem: '<S5>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-                  FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.DataTypeConversion[0] +
-                    FMS_DW.home[0];
-                  FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.DataTypeConversion[1] +
-                    FMS_DW.home[1];
-                  FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.DataTypeConversion[2] +
-                    FMS_DW.home[2];
+                  FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.DataTypeConversion[0];
+                  FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.DataTypeConversion[1];
+                  FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.DataTypeConversion[2];
                   FMS_B.state = VehicleState_Mission;
                 } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Return) {
                   FMS_DW.is_Mission = FMS_IN_Return_h;
