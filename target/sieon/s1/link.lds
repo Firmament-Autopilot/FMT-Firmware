@@ -14,6 +14,9 @@ MEMORY
     SRAMD2 (rw) : ORIGIN = 0x30000000, LENGTH =  288K /* D2 domain AHB bus */
 	SRAMD3 (rw) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
 	BKPRAM (rw) : ORIGIN = 0x38800000, LENGTH =    4K
+    RxDecripSection (rw) : ORIGIN =0x30040000, LENGTH =32k
+    TxDecripSection (rw) : ORIGIN =0x30040060, LENGTH =32k
+    RxArraySection (rw) : ORIGIN =0x30040200, LENGTH =32k
 }
 ENTRY(Reset_Handler)
 _system_stack_size = 0x1000;
@@ -152,6 +155,33 @@ SECTIONS
         *(.bss.init)
     } > SRAMD1
     __bss_end = .;
+
+    .RxDecripSection (NOLOAD) : ALIGN(4)
+    {
+        . = ALIGN(4);
+        *(.RxDecripSection)
+        *(.RxDecripSection.*)
+        . = ALIGN(4);
+        __RxDecripSection_free__ = .;
+    } > RxDecripSection
+    
+    .TxDecripSection (NOLOAD) : ALIGN(4)
+    {
+        . = ALIGN(4);
+        *(.TxDecripSection)
+        *(.TxDecripSection.*)
+        . = ALIGN(4);
+        __TxDecripSection_free__ = .;
+    } > TxDecripSection
+    
+    .RxArraySection (NOLOAD) : ALIGN(4)
+    {
+        . = ALIGN(4);
+        *(.RxArraySection)
+        *(.RxArraySection.*)
+        . = ALIGN(4);
+        __RxArraySection_free__ = .;
+    } > RxArraySection
 
     _end = .;
 

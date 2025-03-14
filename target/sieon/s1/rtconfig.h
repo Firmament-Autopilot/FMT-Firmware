@@ -64,6 +64,9 @@
 /* Using Device System */
 #define RT_USING_DEVICE
 #define RT_USING_DEVICE_IPC
+#define RT_USING_SYSTEM_WORKQUEUE
+#define RT_SYSTEM_WORKQUEUE_STACKSIZE 2048
+#define RT_SYSTEM_WORKQUEUE_PRIORITY 23
 
 /* SECTION: Console options */
 #define RT_USING_CONSOLE
@@ -112,54 +115,76 @@
 #define RT_USING_LIBC
 //#define RT_USING_PTHREADS
 
-/* SECTION: lwip, a lighwight TCP/IP protocol stack */
-/* #define RT_USING_LWIP */
-/* LwIP uses RT-Thread Memory Management */
-#define RT_LWIP_USING_RT_MEM
-/* Enable ICMP protocol*/
+/* Network */
+
+/* Socket abstraction layer */
+
+#define RT_USING_SAL
+#define SAL_INTERNET_CHECK
+
+/* protocol stack implement */
+
+#define SAL_USING_LWIP
+/* end of protocol stack implement */
+#define SAL_SOCKETS_NUM 16
+/* end of Socket abstraction layer */
+
+/* Network interface device */
+
+#define RT_USING_NETDEV
+#define NETDEV_USING_IFCONFIG
+#define NETDEV_USING_PING
+#define NETDEV_USING_NETSTAT
+#define NETDEV_USING_AUTO_DEFAULT
+#define NETDEV_IPV4 1
+#define NETDEV_IPV6 0
+/* end of Network interface device */
+
+/* light weight TCP/IP stack */
+
+#define RT_USING_LWIP
+#define RT_USING_LWIP202
+#define RT_LWIP_MEM_ALIGNMENT 4
+#define RT_LWIP_IGMP
 #define RT_LWIP_ICMP
-/* Enable UDP protocol*/
-#define RT_LWIP_UDP
-/* Enable TCP protocol*/
-#define RT_LWIP_TCP
-/* Enable DNS */
 #define RT_LWIP_DNS
+#define RT_LWIP_DHCP
+#define IP_SOF_BROADCAST 1
+#define IP_SOF_BROADCAST_RECV 1
 
-/* the number of simulatenously active TCP connections*/
-#define RT_LWIP_TCP_PCB_NUM	5
+/* Static IPv4 Address */
 
-/* ip address of target*/
-#define RT_LWIP_IPADDR0	192
-#define RT_LWIP_IPADDR1	168
-#define RT_LWIP_IPADDR2	1
-#define RT_LWIP_IPADDR3	201
-
-/* gateway address of target*/
-#define RT_LWIP_GWADDR0	192
-#define RT_LWIP_GWADDR1	168
-#define RT_LWIP_GWADDR2	1
-#define RT_LWIP_GWADDR3	1
-
-/* mask address of target*/
-#define RT_LWIP_MSKADDR0	255
-#define RT_LWIP_MSKADDR1	255
-#define RT_LWIP_MSKADDR2	255
-#define RT_LWIP_MSKADDR3	0
-
-/* tcp thread options */
-#define RT_LWIP_TCPTHREAD_PRIORITY		12
-#define RT_LWIP_TCPTHREAD_MBOX_SIZE		4
-#define RT_LWIP_TCPTHREAD_STACKSIZE		1024
-
-/* ethernet if thread options */
-#define RT_LWIP_ETHTHREAD_PRIORITY		15
-#define RT_LWIP_ETHTHREAD_MBOX_SIZE		4
-#define RT_LWIP_ETHTHREAD_STACKSIZE		512
-
-/* TCP sender buffer space */
-#define RT_LWIP_TCP_SND_BUF	8192
-/* TCP receive window. */
-#define RT_LWIP_TCP_WND		8192
+#define RT_LWIP_IPADDR "192.168.1.30"
+#define RT_LWIP_GWADDR "192.168.1.1"
+#define RT_LWIP_MSKADDR "255.255.255.0"
+/* end of Static IPv4 Address */
+#define RT_LWIP_UDP
+#define RT_LWIP_TCP
+#define RT_LWIP_RAW
+#define RT_MEMP_NUM_NETCONN 8
+#define RT_LWIP_PBUF_NUM 16
+#define RT_LWIP_RAW_PCB_NUM 4
+#define RT_LWIP_UDP_PCB_NUM 4
+#define RT_LWIP_TCP_PCB_NUM 4
+#define RT_LWIP_TCP_SEG_NUM 40
+#define RT_LWIP_TCP_SND_BUF 8196
+#define RT_LWIP_TCP_WND 8196
+#define RT_LWIP_TCPTHREAD_PRIORITY 10
+#define RT_LWIP_TCPTHREAD_MBOX_SIZE 8
+#define RT_LWIP_TCPTHREAD_STACKSIZE 2048
+#define RT_LWIP_ETHTHREAD_PRIORITY 12
+#define RT_LWIP_ETHTHREAD_STACKSIZE 2048
+#define RT_LWIP_ETHTHREAD_MBOX_SIZE 8
+#define LWIP_NETIF_STATUS_CALLBACK 1
+#define LWIP_NETIF_LINK_CALLBACK 1
+#define SO_REUSE 1
+#define LWIP_SO_RCVTIMEO 1
+#define LWIP_SO_SNDTIMEO 1
+#define LWIP_SO_RCVBUF 1
+#define LWIP_SO_LINGER 0
+#define LWIP_NETIF_LOOPBACK 0
+#define RT_LWIP_USING_PING
+/* end of Network */
 
 #define CHECKSUM_CHECK_TCP              0
 #define CHECKSUM_CHECK_IP               0
