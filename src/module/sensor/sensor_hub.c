@@ -52,6 +52,8 @@ MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
 
 MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
 
+MCN_DEFINE(TFluna_rangefinder, sizeof(rf_data_t));
+
 static sensor_imu_t      imu_dev[MAX_IMU_DEV_NUM] = { NULL };
 static sensor_mag_t      mag_dev[MAX_MAG_DEV_NUM] = { NULL };
 static sensor_baro_t     baro_dev                 = NULL;
@@ -524,6 +526,9 @@ fmt_err_t advertise_sensor_rangefinder(uint8_t id)
     switch (id) {
     case 0:
         FMT_TRY(mcn_advertise(MCN_HUB(sensor_rangefinder), echo_sensor_rangefinder));
+        break;
+    case 1:
+        FMT_TRY(mcn_advertise(MCN_HUB(TFluna_rangefinder), echo_sensor_rangefinder));
         break;
     default:
         return FMT_EINVAL;

@@ -770,6 +770,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     LL_USART_Disable(uart->uart_device);
     LL_USART_Init(uart->uart_device, &USART_InitStructure);
     LL_USART_ConfigAsyncMode(uart->uart_device);
+    LL_USART_DisableIT_ERROR(uart->uart_device); /* Disable error interrupt */
     LL_USART_Enable(uart->uart_device);
 
     return RT_EOK;
