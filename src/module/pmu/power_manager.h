@@ -23,9 +23,23 @@ extern "C" {
 #endif
 
 struct battery_status {
-    uint16_t battery_voltage;
-    int16_t battery_current;
-    int8_t battery_remaining;
+    uint32_t timestamp;
+    float battery_voltage;
+    float battery_current;
+    float battery_remaining;
+    float remaining_c;
+    float remaining_v;
+    float state_of_health;
+    uint8_t battery_init;
+    uint8_t connected;
+    uint8_t reserved1;
+    uint8_t reserved2;
+    uint32_t last_unconnected_timestamp;
+    float init_SOC;
+    float internal_resistance;
+
+    float cell_voltage;
+    float cell_voltage_origin;
 };
 
 fmt_err_t pmu_init(void);
