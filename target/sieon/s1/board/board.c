@@ -68,6 +68,9 @@
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
+#ifdef FMT_USING_UNIT_TEST
+    #include "utest.h"
+#endif
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
@@ -473,6 +476,10 @@ void bsp_initialize(void)
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
+
+#ifdef FMT_USING_UNIT_TEST
+    utest_init();
+#endif
 }
 
 void bsp_post_initialize(void)
