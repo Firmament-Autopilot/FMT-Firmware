@@ -19,6 +19,8 @@
 
 // #define SPI_USE_DMA
 
+#define SPI_TIMEOUT_US (500)
+
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
     SPI_TypeDef* SPI;
@@ -38,6 +40,18 @@ struct stm32_spi_cs {
     GPIO_TypeDef* GPIOx;
     uint16_t GPIO_Pin;
 };
+
+static fmt_err_t wait_flag_until_timeout(const SPI_TypeDef *SPIx, uint32_t flag, uint32_t status, uint64_t timeout_us)
+{
+    uint64_t time_start = systime_now_us();
+
+    while (((READ_BIT(SPIx->SR, flag) == flag) ? 1UL : 0UL) == status) {
+        if ((systime_now_us() - time_start) > timeout_us) {
+            return FMT_ETIMEOUT;
+        }
+    }
+    return FMT_EOK;
+}
 
 /**
  * @brief Configure spi device
@@ -172,16 +186,14 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
                 LL_SPI_StartMasterTransfer(SPI);
 
                 /* Wait until the transmit buffer is empty */
-                while (LL_SPI_IsActiveFlag_TXP(SPI) == RESET)
-                    ;
+                wait_flag_until_timeout(SPI, SPI_SR_TXP, RESET, SPI_TIMEOUT_US);
 
                 /* Send the byte */
                 LL_SPI_TransmitData8(SPI, data);
 
                 /* Wait until a data is received */
-                while (LL_SPI_IsActiveFlag_RXP(SPI) == RESET)
-                    ;
-                // RT_ASSERT(RT_EOK);
+                wait_flag_until_timeout(SPI, SPI_SR_RXP, RESET, SPI_TIMEOUT_US);
+
 
                 /* Get the received data */
                 data = LL_SPI_ReceiveData8(SPI);
@@ -204,14 +216,12 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
                     data = *send_ptr++;
                 }
                 /* Wait until the transmit buffer is empty */
-                while (LL_SPI_IsActiveFlag_TXP(SPI) == RESET)
-                    ;
+                wait_flag_until_timeout(SPI, SPI_SR_TXP, RESET, SPI_TIMEOUT_US);
 
                 /* Send the byte */
                 LL_SPI_TransmitData16(SPI, data);
                 /* Wait until a data is received */
-                while (LL_SPI_IsActiveFlag_RXP(SPI) == RESET)
-                    ;
+                wait_flag_until_timeout(SPI, SPI_SR_RXP, RESET, SPI_TIMEOUT_US);
 
                 /* Get the received data */
                 data = LL_SPI_ReceiveData16(SPI);
