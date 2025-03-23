@@ -285,22 +285,13 @@ static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32
         /* Peripheral clock enable */
         LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
 
-        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
         LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOI);
         /**SPI2 GPIO Configuration
-        PA12   ------> SPI2_SCK
+        PI1   ------> SPI2_SCK
         PI3   ------> SPI2_MOSI
         PI2   ------> SPI2_MISO
         */
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-        GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
-        LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_3 | LL_GPIO_PIN_2;
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_3 | LL_GPIO_PIN_2 | LL_GPIO_PIN_1;
         GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
         GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
         GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
