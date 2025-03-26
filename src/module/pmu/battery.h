@@ -7,10 +7,13 @@
 #include <stdbool.h>
 #include <math.h>
 
+// #define USING_KALMAN_FILTER
+
 #define LITHIUM_BATTERY_RECOGNITION_VOLTAGE 4.0f
 #define OCV_DEFAULT 4.2f
 #define OCV_COVARIANCE  0.05f
 #define R_COVARIANCE 0.005f
+
 // #define FLT_EPSILON 1.1920929e-07F 
 
 
@@ -25,6 +28,19 @@ typedef struct {
     float emergen_thr;
     // float bat_avrg_current;
 } battery_params_t;
+
+typedef struct {
+    float x_hat;       // State estimate (SOC)
+    float P;           // Error covariance
+    float Q;           // Process noise covariance
+    float R;           // Observation noise covariance
+    float Q_base;      // Base value of Q
+    float residual_mean_sq; // Residual mean square (exponential smoothing)
+    float alpha;       // Smoothing factor (0.9~0.99)
+    float beta;        // Q adjustment factor (0.5~1.0)
+    float threshold;   // Residual threshold (set based on actual data)
+} AdaptiveKalmanFilter;
+
 typedef struct {
     uint32_t timestamp;
     battery_params_t params;
@@ -50,6 +66,8 @@ typedef struct {
 
     float cell_voltage;
     float cell_voltage_origin;
+
+    AdaptiveKalmanFilter kalman_filter;
 
 } Battery;
 
@@ -77,6 +95,8 @@ typedef enum {
 
  float Alpha_filter(float alpha, float x, float x_last);
 
+ void AdaptiveKalmanFilter_Init(AdaptiveKalmanFilter *kf, float initial_soc, float initial_P, float initial_Q, float initial_R);
+ float AdaptiveKalmanFilter_Update(AdaptiveKalmanFilter *kf, float z_coulomb, float z_voltage);
 
 
 #endif // BATTERY_H

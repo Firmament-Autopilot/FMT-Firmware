@@ -32,7 +32,7 @@ static param_t __param_list[] = {
     PARAM_UINT8(BAT_N_CELLS, 0, false),
     /* Battery Capacity */
     PARAM_FLOAT(CAPACITY_OF_BAT, 3500.0, false),
-    PARAM_FLOAT(VOLTAGE_EMPTY, 3.6, false),
+    PARAM_FLOAT(VOLTAGE_EMPTY, 3.0, false),
     PARAM_FLOAT(VOLTAGE_CHARGED, 4.2, false),
     PARAM_FLOAT(R_INTERNAL_CONST, -0.005, false),
     PARAM_FLOAT(R_INTERNAL, 0.010, false),
