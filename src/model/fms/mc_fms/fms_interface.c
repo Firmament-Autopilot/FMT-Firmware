@@ -59,6 +59,7 @@ static param_t __param_list[] = {
     PARAM_UINT16(LOST_RETURN_TIME, 120, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
     PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
+    PARAM_FLOAT(STICK_SENS, 0.5, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -284,6 +285,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_TIME), &FMS_PARAM.LOST_RETURN_TIME));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_EN), &FMS_PARAM.LOST_RETURN_EN));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LAND_LOCK_THRO), &FMS_PARAM.LAND_LOCK_THRO));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, STICK_SENS), &FMS_PARAM.STICK_SENS));
 }
 
 void fms_interface_step(uint32_t timestamp)

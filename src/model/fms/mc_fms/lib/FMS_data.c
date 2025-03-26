@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2119
+ * Model version                  : 1.2146
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar  2 09:27:32 2025
+ * C/C++ source code generated on : Wed Mar 26 15:01:22 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -24,21 +24,11 @@ const ConstB_FMS_T FMS_ConstB = {
   0.0,                                 /* '<S323>/deg2rad2' */
   0.0,                                 /* '<S326>/SinCos' */
   1.0,                                 /* '<S326>/SinCos' */
-  0.00250000018F,                      /* '<S125>/Square' */
-  0.14709F,                            /* '<S125>/Multiply' */
-  -58.836F,                            /* '<S125>/Gain4' */
+  0.0001F,                             /* '<S125>/Square' */
   0.0016F,                             /* '<S68>/Square' */
-  0.0201061927F,                       /* '<S68>/Multiply' */
-  -12.566371F,                         /* '<S68>/Gain4' */
   0.0016F,                             /* '<S69>/Square' */
-  0.0201061927F,                       /* '<S69>/Multiply' */
-  -12.566371F,                         /* '<S69>/Gain4' */
   0.0016F,                             /* '<S139>/Square' */
-  0.0201061927F,                       /* '<S139>/Multiply' */
-  -12.566371F,                         /* '<S139>/Gain4' */
   0.0016F,                             /* '<S140>/Square' */
-  0.0201061927F,                       /* '<S140>/Multiply' */
-  -12.566371F,                         /* '<S140>/Gain4' */
 
   { 0.0F, 0.0F, 1.0F },                /* '<S235>/Vector Concatenate3' */
 

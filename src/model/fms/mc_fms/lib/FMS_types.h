@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2119
+ * Model version                  : 1.2146
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar  2 09:27:32 2025
+ * C/C++ source code generated on : Wed Mar 26 15:01:22 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -467,7 +467,7 @@ typedef struct {
   real32_T sp_waypoint[3];
   real32_T cur_waypoint[3];
 
-  /* The psi value when arm state entered,
+  /* The psi value when offboard mode entered,
      which is used for FRAME_LOCAL_FRD */
   real32_T local_psi;
 
@@ -492,8 +492,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_C5XIQzgZOXj5pNdNFngVXC_
-#define DEFINED_TYPEDEF_FOR_struct_C5XIQzgZOXj5pNdNFngVXC_
+#ifndef DEFINED_TYPEDEF_FOR_struct_xXeuwAPh0ajaUfdgPpGaUB_
+#define DEFINED_TYPEDEF_FOR_struct_xXeuwAPh0ajaUfdgPpGaUB_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -518,7 +518,8 @@ typedef struct {
   uint16_T LOST_RETURN_TIME;
   uint8_T LOST_RETURN_EN;
   uint16_T LAND_LOCK_THRO;
-} struct_C5XIQzgZOXj5pNdNFngVXC;
+  real32_T STICK_SENS;
+} struct_xXeuwAPh0ajaUfdgPpGaUB;
 
 #endif
 

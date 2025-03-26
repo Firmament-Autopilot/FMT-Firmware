@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2119
+ * Model version                  : 1.2146
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Sun Mar  2 09:27:32 2025
+ * C/C++ source code generated on : Wed Mar 26 15:01:22 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -116,8 +116,8 @@ typedef struct {
   real32_T xy_R[2];                    /* '<Root>/FMS State Machine' */
   real32_T DataTypeConversion[3];      /* '<S483>/Data Type Conversion' */
   real32_T Reshape[3];                 /* '<S484>/Reshape' */
-  real32_T Merge[2];                   /* '<S111>/Merge' */
-  real32_T Merge_k;                    /* '<S86>/Merge' */
+  real32_T ff2[2];                     /* '<S111>/Merge' */
+  real32_T Merge;                      /* '<S86>/Merge' */
   real32_T Merge_d;                    /* '<S98>/Merge' */
   real32_T Merge_l;                    /* '<S49>/Merge' */
   real32_T Merge_m;                    /* '<S70>/Merge' */
@@ -162,10 +162,10 @@ typedef struct {
   real32_T Integrator_DSTATE_c;        /* '<S64>/Integrator' */
   real32_T Integrator1_DSTATE_e;       /* '<S65>/Integrator1' */
   real32_T Integrator_DSTATE_i;        /* '<S65>/Integrator' */
-  real32_T Integrator1_DSTATE_l;       /* '<S135>/Integrator1' */
-  real32_T Integrator_DSTATE_cm;       /* '<S135>/Integrator' */
-  real32_T Integrator1_DSTATE_h;       /* '<S136>/Integrator1' */
-  real32_T Integrator_DSTATE_a;        /* '<S136>/Integrator' */
+  real32_T Integrator1_DSTATE_k;       /* '<S135>/Integrator1' */
+  real32_T Integrator_DSTATE_a;        /* '<S135>/Integrator' */
+  real32_T Integrator1_DSTATE_n;       /* '<S136>/Integrator1' */
+  real32_T Integrator_DSTATE_b;        /* '<S136>/Integrator' */
   real32_T Delay_DSTATE[2];            /* '<S184>/Delay' */
   real32_T Acceleration_Speed_DSTATE;  /* '<S180>/Acceleration_Speed' */
   real32_T l1_heading;                 /* '<S232>/Discrete-Time Integrator' */
@@ -178,7 +178,7 @@ typedef struct {
   real32_T Delay_DSTATE_a;             /* '<S397>/Delay' */
   real32_T Integrator1_DSTATE_eh;      /* '<S400>/Integrator1' */
   real32_T Delay_DSTATE_p[2];          /* '<S396>/Delay' */
-  real32_T Integrator_DSTATE_b;        /* '<S400>/Integrator' */
+  real32_T Integrator_DSTATE_bs;       /* '<S400>/Integrator' */
   real32_T Integrator1_DSTATE_j;       /* '<S388>/Integrator1' */
   real32_T Integrator_DSTATE_d;        /* '<S388>/Integrator' */
   real32_T cur_waypoint_DSTATE[3];     /* '<S480>/cur_waypoint' */
@@ -379,20 +379,10 @@ typedef struct {
   const real_T SinCos_o1;              /* '<S326>/SinCos' */
   const real_T SinCos_o2;              /* '<S326>/SinCos' */
   const real32_T Square;               /* '<S125>/Square' */
-  const real32_T d;                    /* '<S125>/Multiply' */
-  const real32_T Gain4;                /* '<S125>/Gain4' */
   const real32_T Square_j;             /* '<S68>/Square' */
-  const real32_T d_i;                  /* '<S68>/Multiply' */
-  const real32_T Gain4_n;              /* '<S68>/Gain4' */
   const real32_T Square_c;             /* '<S69>/Square' */
-  const real32_T d_o;                  /* '<S69>/Multiply' */
-  const real32_T Gain4_c;              /* '<S69>/Gain4' */
-  const real32_T Square_d;             /* '<S139>/Square' */
-  const real32_T d_h;                  /* '<S139>/Multiply' */
-  const real32_T Gain4_nf;             /* '<S139>/Gain4' */
-  const real32_T Square_i;             /* '<S140>/Square' */
-  const real32_T d_l;                  /* '<S140>/Multiply' */
-  const real32_T Gain4_j;              /* '<S140>/Gain4' */
+  const real32_T Square_ct;            /* '<S139>/Square' */
+  const real32_T Square_b;             /* '<S140>/Square' */
   const real32_T VectorConcatenate3[3];/* '<S235>/Vector Concatenate3' */
   const real32_T TmpSignalConversionAtMathFu[2];
   const real32_T MathFunction[2];      /* '<S175>/Math Function' */
@@ -402,8 +392,8 @@ typedef struct {
   const real32_T Switch[3];            /* '<S175>/Switch' */
   const real32_T Divide[2];            /* '<S175>/Divide' */
   const real32_T Square_g;             /* '<S171>/Square' */
-  const real32_T d_j;                  /* '<S171>/Multiply' */
-  const real32_T Gain4_c5;             /* '<S171>/Gain4' */
+  const real32_T d;                    /* '<S171>/Multiply' */
+  const real32_T Gain4;                /* '<S171>/Gain4' */
   const real32_T VectorConcatenate3_n[3];/* '<S317>/Vector Concatenate3' */
   const real32_T VectorConcatenate3_e[3];/* '<S318>/Vector Concatenate3' */
   const real32_T VectorConcatenate3_i[3];/* '<S314>/Vector Concatenate3' */
@@ -421,14 +411,14 @@ typedef struct {
   const real32_T Switch_h[3];          /* '<S410>/Switch' */
   const real32_T Divide_d[2];          /* '<S410>/Divide' */
   const real32_T Square_k;             /* '<S406>/Square' */
-  const real32_T d_le;                 /* '<S406>/Multiply' */
-  const real32_T Gain4_np;             /* '<S406>/Gain4' */
+  const real32_T d_l;                  /* '<S406>/Multiply' */
+  const real32_T Gain4_n;              /* '<S406>/Gain4' */
   const real32_T VectorConcatenate3_f[3];/* '<S393>/Vector Concatenate3' */
   const real32_T Square_e;             /* '<S389>/Square' */
   const real32_T d_p;                  /* '<S389>/Multiply' */
   const real32_T Gain4_e;              /* '<S389>/Gain4' */
   const real32_T VectorConcatenate3_fb[3];/* '<S481>/Vector Concatenate3' */
-  const real32_T Square_b;             /* '<S477>/Square' */
+  const real32_T Square_bz;            /* '<S477>/Square' */
   const real32_T d_m;                  /* '<S477>/Multiply' */
   const real32_T Gain4_a;              /* '<S477>/Gain4' */
   const uint8_T DataTypeConversion;    /* '<S36>/Data Type Conversion' */
@@ -554,7 +544,7 @@ extern const ConstP_FMS_T FMS_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_C5XIQzgZOXj5pNdNFngVXC FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_xXeuwAPh0ajaUfdgPpGaUB FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<Root>/ACCEPT_R'
                                                 *   '<S3>/Constant1'
@@ -582,6 +572,8 @@ extern struct_C5XIQzgZOXj5pNdNFngVXC FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S62>/Gain'
                                                 *   '<S63>/Dead Zone'
                                                 *   '<S63>/Gain'
+                                                *   '<S64>/Constant'
+                                                *   '<S65>/Constant'
                                                 *   '<S70>/Saturation'
                                                 *   '<S86>/Saturation1'
                                                 *   '<S98>/Saturation'
@@ -590,6 +582,8 @@ extern struct_C5XIQzgZOXj5pNdNFngVXC FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S133>/Gain'
                                                 *   '<S134>/Dead Zone'
                                                 *   '<S134>/Gain'
+                                                *   '<S135>/Constant'
+                                                *   '<S136>/Constant'
                                                 *   '<S141>/Saturation'
                                                 *   '<S294>/Gain2'
                                                 *   '<S301>/Gain1'
@@ -653,6 +647,7 @@ extern struct_C5XIQzgZOXj5pNdNFngVXC FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S120>/Gain'
                                                 *   '<S121>/Dead Zone'
                                                 *   '<S121>/Gain'
+                                                *   '<S122>/Constant'
                                                 *   '<S149>/Dead Zone'
                                                 *   '<S149>/Gain'
                                                 *   '<S164>/Gain2'
