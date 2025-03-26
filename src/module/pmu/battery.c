@@ -457,7 +457,7 @@ void battery_estimate_state_of_charge(Battery *battery) {
 
         // Optimization 4: Improved SOC upper and lower bounds
         // Calculate current-based SOC
-        float state_of_charge_current_based = battery->state_of_charge_init - (battery->discharged_mah / (battery->params.capacity * battery->state_of_health)) * 100.0;
+        float state_of_charge_current_based = battery->state_of_charge_init - (battery->discharged_mah / (battery->params.capacity)) * 100.0;
 
         state_of_charge_current_based = fmaxf(0.0f, state_of_charge_current_based);
         battery->state_of_charge_current_based = state_of_charge_current_based;
