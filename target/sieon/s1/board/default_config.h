@@ -40,6 +40,15 @@ target = "SIEON S1"\n
 	chan = 0\n
 	type = "usb"\n
 	name = "usbd0"\n
-    auto-switch = true
+    auto-switch = true\n
+[pilot-cmd]\n
+    stick-channel = [4,3,1,2]\n
+    [pilot-cmd.device]\n
+    type = "rc"\n
+    name = "rc"\n
+    protocol = "auto"\n
+    channel-num = 8\n
+    sample-time = 0.05\n
+    range = [1000,2000]
 );
 // clang-format on
