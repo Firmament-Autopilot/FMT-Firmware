@@ -85,8 +85,6 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { NULL } /* NULL indicate the end */
 };
 
-static toml_table_t* _toml_root_tab = NULL;
-
 rt_device_t main_out_dev = NULL;
 rt_device_t aux_out_dev = NULL;
 
@@ -373,12 +371,11 @@ void bsp_initialize(void)
 void bsp_post_initialize(void)
 {
     /* toml system configure */
-    _toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    if (!_toml_root_tab) {
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
         /* use default system configuration */
-        _toml_root_tab = toml_parse_config_string(default_conf);
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        printf("Default configuration loaded.\n");
     }
-    FMT_CHECK(bsp_parse_toml_sysconfig(_toml_root_tab));
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());

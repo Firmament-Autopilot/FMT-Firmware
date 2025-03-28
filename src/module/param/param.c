@@ -883,8 +883,8 @@ fmt_err_t param_init(void)
     __param_group_num = (param_group_t*)&__fmt_param_end - __param_table;
 
     /* load parameter from file */
-    if (param_load(PARAM_FILE_NAME) != FMT_EOK) {
-        console_printf("can not load %s, use default parameter value.\n", PARAM_FILE_NAME);
+    if (param_load(PARAM_FILE_NAME) == FMT_EOK) {
+        console_printf("parameter loaded from %s\n", PARAM_FILE_NAME);
     }
 
     return FMT_EOK;
