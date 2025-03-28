@@ -77,6 +77,11 @@ target = "SIEON S1"
     name = "main_out"
     freq = 400                  # pwm frequency in Hz
 
+    [[actuator.devices]]
+    protocol = "pwm"
+    name = "aux_out"
+    freq = 50                  # pwm frequency in Hz
+
     [[actuator.mappings]]
     from = "control_out"
     to = "main_out"
