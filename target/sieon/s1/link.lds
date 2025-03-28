@@ -11,7 +11,7 @@ MEMORY
     ITCM_RAM (rwx) : ORIGIN = 0x00000000, LENGTH =   64K
     DTCM_RAM (rw) : ORIGIN = 0x20000000, LENGTH =  128K
     SRAMD1 (rw) : ORIGIN = 0x24000000, LENGTH =  512k /* D1 512K sram */
-    SRAMD2 (rw) : ORIGIN = 0x30000000, LENGTH =  288K /* D2 domain AHB bus */
+    SRAMD2 (rw) : ORIGIN = 0x30000000, LENGTH =  256K /* D2 domain AHB bus */
 	SRAMD3 (rw) : ORIGIN = 0x38000000, LENGTH =   64K /* D3 domain */
 	BKPRAM (rw) : ORIGIN = 0x38800000, LENGTH =    4K
     RxDecripSection (rw) : ORIGIN =0x30040000, LENGTH =32k
