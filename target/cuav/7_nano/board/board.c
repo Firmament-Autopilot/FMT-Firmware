@@ -491,7 +491,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_usb_cdc_init());
 
     /* adc driver init */
-    // RT_CHECK(drv_adc_init());
+    RT_CHECK(drv_adc_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

@@ -28,7 +28,7 @@ struct stm32_adc {
 } stm_adc1 = { .adc_handle = ADC1 }, stm_adc3 = { .adc_handle = ADC3 };
 
 static struct adc_device adc0;
-static struct adc_device adc1;
+// static struct adc_device adc1;
 
 void ADC3_IRQHandler(void)
 {
@@ -90,42 +90,19 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
         switch (channel) {
         case BAT1_V_CHANNEL:
             /* Bat1 Volt */
-            adc_channel = LL_ADC_CHANNEL_14;
+            adc_channel = LL_ADC_CHANNEL_0;
+            adc_handle = stm_adc3.adc_handle;
+            adc_cplt = &stm_adc3.convert_cplt;
             break;
         case BAT1_I_CHANNEL:
             /* Bat1 Current */
-            adc_channel = LL_ADC_CHANNEL_13;
-            break;
-        case BAT2_V_CHANNEL:
-            /* Bat2 Volt */
-            adc_channel = LL_ADC_CHANNEL_16;
-            break;
-        case BAT2_I_CHANNEL:
-            /* Bat2 Current */
-            adc_channel = LL_ADC_CHANNEL_15;
+            adc_channel = LL_ADC_CHANNEL_9;
+            adc_handle = stm_adc1.adc_handle;
+            adc_cplt = &stm_adc1.convert_cplt;
             break;
         default:
             return RT_EINVAL;
         }
-
-        adc_handle = stm_adc3.adc_handle;
-        adc_cplt = &stm_adc3.convert_cplt;
-    } else if (adc_dev == &adc1) {
-        switch (channel) {
-        case 0:
-            /* ADC1 Out */
-            adc_channel = LL_ADC_CHANNEL_6;
-            break;
-        case 1:
-            /* ADC2 Out */
-            adc_channel = LL_ADC_CHANNEL_2;
-            break;
-        default:
-            return RT_EINVAL;
-        }
-
-        adc_handle = stm_adc1.adc_handle;
-        adc_cplt = &stm_adc1.convert_cplt;
     } else {
         return RT_EINVAL;
     }
@@ -155,7 +132,6 @@ static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
     if (enable == ADC_CMD_ENABLE) {
         if (adc_dev == &adc0) {
             LL_ADC_Enable(ADC3);
-        } else if (adc_dev == &adc1) {
             LL_ADC_Enable(ADC1);
         } else {
             return RT_EINVAL;
@@ -167,7 +143,6 @@ static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
     } else if (enable == ADC_CMD_DISABLE) {
         if (adc_dev == &adc0) {
             LL_ADC_Disable(ADC3);
-        } else if (adc_dev == &adc1) {
             LL_ADC_Disable(ADC1);
         } else {
             return RT_EINVAL;
@@ -191,17 +166,14 @@ static rt_err_t adc3_hw_init(void)
     /* Peripheral clock enable */
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_ADC3);
 
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
     /**ADC3 GPIO Configuration
-    PH2   ------> ADC3_INP13
-    PH3   ------> ADC3_INP14
-    PH4   ------> ADC3_INP15
-    PH5   ------> ADC3_INP16
+    PC2   ------> ADC3_INP0
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_3 | LL_GPIO_PIN_4 | LL_GPIO_PIN_5;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /* ADC3 interrupt Init */
     NVIC_SetPriority(ADC3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
@@ -244,10 +216,7 @@ static rt_err_t adc3_hw_init(void)
     }
 
     /* Channels preselection, which need be set before  starting conversion */
-    ADC3->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_13))
-        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_14))
-        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_15))
-        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_16));
+    ADC3->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_0));
 
     rt_completion_init(&stm_adc3.convert_cplt);
 
@@ -270,15 +239,14 @@ static rt_err_t adc1_hw_init(void)
     /* Peripheral clock enable */
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_ADC12);
 
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
     /**ADC1 GPIO Configuration
-    PF12   ------> ADC1_INP6
-    PF11   ------> ADC1_INP2
+    PB0   ------> ADC1_INP9
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_12 | LL_GPIO_PIN_11;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_0;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* ADC1 interrupt Init */
     NVIC_SetPriority(ADC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
@@ -321,8 +289,7 @@ static rt_err_t adc1_hw_init(void)
     }
 
     /* Channels preselection, which need be set before  starting conversion */
-    ADC1->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_6))
-        | (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_2));
+    ADC1->PCSEL |= (1UL << __LL_ADC_CHANNEL_TO_DECIMAL_NB(LL_ADC_CHANNEL_9));
 
     rt_completion_init(&stm_adc1.convert_cplt);
 
@@ -341,12 +308,12 @@ static const struct adc_ops _adc_ops = {
 rt_err_t drv_adc_init(void)
 {
     RT_TRY(adc3_hw_init());
-    // RT_TRY(adc1_hw_init());
+    RT_TRY(adc1_hw_init());
 
     adc0.ops = &_adc_ops;
     // adc1.ops = &_adc_ops;
 
-    RT_TRY(hal_adc_register(&adc0, "adc0", RT_DEVICE_FLAG_RDONLY, &stm_adc3));
+    RT_TRY(hal_adc_register(&adc0, "adc0", RT_DEVICE_FLAG_RDONLY, NULL));
     // RT_TRY(hal_adc_register(&adc1, "adc1", RT_DEVICE_FLAG_RDONLY, &stm_adc1));
 
     return RT_EOK;
