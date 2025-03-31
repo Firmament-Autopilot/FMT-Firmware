@@ -589,7 +589,7 @@ const static struct actuator_ops __act_ops = {
 };
 
 // TODO modify channel mask
-static struct actuator_device act_dev = { .chan_mask = 0xFFF,
+static struct actuator_device act_dev = { .chan_mask = 0x3FFF,
                                           .range = { 1000, 2000 },
                                           .config = { .protocol = ACT_PROTOCOL_PWM,
                                                       .chan_num = MAX_PWM_OUT_CHAN,
