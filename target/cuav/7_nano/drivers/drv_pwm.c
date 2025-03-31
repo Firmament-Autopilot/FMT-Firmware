@@ -399,10 +399,10 @@ rt_inline void __write_pwm(uint8_t chan_id, float dc)
         LL_TIM_OC_SetCompareCH3(TIM4, PWM_ARR(__pwm_freq) * dc);
         break;
     case 6:
-        LL_TIM_OC_SetCompareCH1(TIM1, PWM_ARR(__pwm_freq) * dc);
+        LL_TIM_OC_SetCompareCH2(TIM1, PWM_ARR(__pwm_freq) * dc);
         break;
     case 7:
-        LL_TIM_OC_SetCompareCH2(TIM1, PWM_ARR(__pwm_freq) * dc);
+        LL_TIM_OC_SetCompareCH1(TIM1, PWM_ARR(__pwm_freq) * dc);
         break;
     case 8:
         LL_TIM_OC_SetCompareCH2(TIM8, PWM_ARR(__pwm_freq) * dc);
