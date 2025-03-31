@@ -110,7 +110,7 @@ class firmware(object):
     crcpad = bytearray(b'\xff\xff\xff\xff')
 
     def __init__(self, path):
-        self.desc['board_id'] = 1188
+        self.desc['board_id'] = 7000
         self.desc['image_maxsize'] = 2097152
         f = open(path, "rb")
         self.image = bytearray(f.read())
