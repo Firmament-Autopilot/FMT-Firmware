@@ -1,54 +1,53 @@
-#include <stdint.h>
+#include <float.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <math.h>
-#include <float.h>
+#include <stdint.h>
 
 #include "battery.h"
 
-
 // Variable definitions
-static float _RLS_est[2] = {0.0f, 0.0f};
-static float _estimation_covariance[2][2] = {{1.0f, 0.0f}, {0.0f, 1.0f}}; // 需要初始值，否则可能未定义行为
+static float _RLS_est[2] = { 0.0f, 0.0f };
+static float _estimation_covariance[2][2] = { { 1.0f, 0.0f }, { 0.0f, 1.0f } };
 static float dt = 0.0f;
 static float cell_voltage = 0.0f;
 static float _estimation_covariance_norm = 0.0f;
-static float running_error_mean = 0.0f; // 用于平滑预测误差的绝对值
+static float running_error_mean = 0.0f;
 static float R_DEFAULT = 0.005f;
 
 typedef struct {
-    float ocv;  // Open Circuit Voltage (V)
-    float soc;  // State of Charge (%)
+    float ocv; // Open Circuit Voltage (V)
+    float soc; // State of Charge (%)
 } OCV_SOC_Map;
 const OCV_SOC_Map ocv_soc_table[] = {
-    {4.200, 100.0},  // Fully charged state
-    {4.150, 95.0},   // Near full charge
-    {4.100, 90.0},   // High SOC region
-    {4.050, 85.0},
-    {4.000, 80.0},
-    {3.950, 70.0},   // Entering flat region
-    {3.900, 60.0},   // Midpoint of flat region
-    {3.850, 50.0},   // Nominal midpoint
-    {3.800, 40.0},   // End of flat region
-    {3.750, 30.0},   // Entering steep drop region
-    {3.700, 20.0},   // Low battery warning
-    {3.650, 15.0},
-    {3.600, 10.0},   // Approaching discharge cutoff
-    {3.500, 5.0},    // Deep discharge risk region
-    {3.000, 0.0}     // Fully discharged cutoff
+    { 4.200, 100.0 }, // Fully charged state
+    { 4.150, 95.0 },  // Near full charge
+    { 4.100, 90.0 },  // High SOC region
+    { 4.050, 85.0 },
+    { 4.000, 80.0 },
+    { 3.950, 70.0 }, // Entering flat region
+    { 3.900, 60.0 }, // Midpoint of flat region
+    { 3.850, 50.0 }, // Nominal midpoint
+    { 3.800, 40.0 }, // End of flat region
+    { 3.750, 30.0 }, // Entering steep drop region
+    { 3.700, 20.0 }, // Low battery warning
+    { 3.650, 15.0 },
+    { 3.600, 10.0 }, // Approaching discharge cutoff
+    { 3.500, 5.0 },  // Deep discharge risk region
+    { 3.000, 0.0 }   // Fully discharged cutoff
 };
-
 
 #define TABLE_SIZE (sizeof(ocv_soc_table) / sizeof(ocv_soc_table[0]))
 
-void battery_init(Battery *battery, battery_params_t *battery_params, uint8_t source, uint32_t timestamp) {
-    //need to read from PARAM List
-    
+void battery_init(Battery* battery, battery_params_t* battery_params, uint8_t source, uint32_t timestamp)
+{
+    // need to read from PARAM List
+
     uint32_t timeout_count = 100; // avoid infinite loop
     while (!PARAM_GET_FLOAT(POWER, VOLTAGE_EMPTY) && timeout_count--) {
         rt_thread_mdelay(10);
     }
-    if(timeout_count == 0) {
+    if (timeout_count == 0) {
         battery_params->v_empty = 3.0f;
         battery_params->v_charged = 4.2f;
         battery_params->n_cells = 0;
@@ -90,18 +89,14 @@ void battery_init(Battery *battery, battery_params_t *battery_params, uint8_t so
     battery->armed = false;
     battery->last_timestamp = 0;
     battery->last_unconnected_timestamp = 0;
-    
 
-    
     _RLS_est[0] = battery->voltage_v;
     _RLS_est[1] = battery->internal_resistance * battery->params.n_cells;
     _estimation_covariance[0][0] = OCV_COVARIANCE * battery->params.n_cells;
     _estimation_covariance[1][1] = R_COVARIANCE * battery->params.n_cells;
     _estimation_covariance[0][1] = 0.0f;
     _estimation_covariance[1][0] = 0.0f;
-
 }
-
 
 /**
  * @brief Estimates the State of Charge (SOC) of a battery based on its open-circuit voltage (OCV).
@@ -113,7 +108,8 @@ void battery_init(Battery *battery, battery_params_t *battery_params, uint8_t so
  * @param battery Pointer to the Battery structure containing the cell voltage.
  * @return Estimated SOC as a percentage (0.0 to 100.0).
  */
-float estimate_soc_from_ocv(Battery *battery) {
+float estimate_soc_from_ocv(Battery* battery)
+{
     // If the voltage is outside the table range, return boundary values
 
     float voltage = battery->cell_voltage;
@@ -133,16 +129,15 @@ float estimate_soc_from_ocv(Battery *battery) {
             float v2 = ocv_soc_table[i + 1].ocv;
             float soc1 = ocv_soc_table[i].soc;
             float soc2 = ocv_soc_table[i + 1].soc;
-            
+
             // Linear interpolation formula
             float soc = soc1 + (soc2 - soc1) * (voltage - v1) / (v2 - v1);
             return soc;
         }
     }
 
-    return 0.0;  // Should not reach here
+    return 0.0; // Should not reach here
 }
-
 
 /**
  * @brief Updates the battery voltage.
@@ -152,7 +147,8 @@ float estimate_soc_from_ocv(Battery *battery) {
  * @param battery Pointer to the Battery structure.
  * @param voltage_v The new voltage value in volts.
  */
-void battery_update_voltage(Battery *battery, float voltage_v) {
+void battery_update_voltage(Battery* battery, float voltage_v)
+{
     battery->voltage_v = voltage_v;
 }
 
@@ -164,7 +160,8 @@ void battery_update_voltage(Battery *battery, float voltage_v) {
  * @param battery Pointer to the Battery structure.
  * @param current_a The new current value in amperes.
  */
-void battery_update_current(Battery *battery, float current_a) {
+void battery_update_current(Battery* battery, float current_a)
+{
     battery->current_a = current_a;
 }
 
@@ -176,7 +173,8 @@ void battery_update_current(Battery *battery, float current_a) {
  * @param battery Pointer to the Battery structure.
  * @param temperature_c The new temperature value in degrees Celsius.
  */
-void battery_update_temperature(Battery *battery, float temperature_c) {
+void battery_update_temperature(Battery* battery, float temperature_c)
+{
     battery->temperature_c = temperature_c;
 }
 
@@ -190,8 +188,9 @@ void battery_update_temperature(Battery *battery, float temperature_c) {
  * @param battery Pointer to the Battery structure.
  * @param timestamp Current timestamp in milliseconds.
  */
-void battery_update_state_of_charge(Battery *battery, uint32_t timestamp) {
-    
+void battery_update_state_of_charge(Battery* battery, uint32_t timestamp)
+{
+
     if (battery->voltage_v < LITHIUM_BATTERY_RECOGNITION_VOLTAGE) {
         battery->connected = false;
     } else {
@@ -222,7 +221,6 @@ void battery_update_state_of_charge(Battery *battery, uint32_t timestamp) {
     if (battery->connected && battery->battery_initialized) {
         battery->warning = battery_SOC_warning(battery);
     }
-
 }
 /**
  * @brief Calculates the discharged capacity of the battery in milliampere-hours (mAh).
@@ -234,10 +232,11 @@ void battery_update_state_of_charge(Battery *battery, uint32_t timestamp) {
  * @param battery Pointer to the Battery structure.
  * @param timestamp Current timestamp in milliseconds.
  */
-void sumDischarged(Battery *battery, uint32_t timestamp) {
+void sumDischarged(Battery* battery, uint32_t timestamp)
+{
     if (battery->current_a < 0.0f) {
         battery->last_timestamp = 0;
-        return;   
+        return;
     }
 
     if (battery->last_timestamp != 0) {
@@ -258,7 +257,8 @@ void sumDischarged(Battery *battery, uint32_t timestamp) {
  * @param battery Pointer to the Battery structure.
  * @return SOC as a percentage (0.0 to 100.0), or -1.0 if the number of cells is zero.
  */
-float battery_calculate_soc_voltage_based(Battery *battery) {
+float battery_calculate_soc_voltage_based(Battery* battery)
+{
 
     if (battery->params.n_cells == 0) {
         return -1.0f;
@@ -294,9 +294,10 @@ float battery_calculate_soc_voltage_based(Battery *battery) {
  *
  * @param battery Pointer to the Battery structure.
  */
-void battery_update_internal_resistance(Battery *battery) {
+void battery_update_internal_resistance(Battery* battery)
+{
     // Define the x vector, where x[0] corresponds to OCV, and x[1] corresponds to the effect of internal resistance on current
-    float x[2] = {1.0f, -battery->current_a};
+    float x[2] = { 1.0f, -battery->current_a };
 
     // Calculate the predicted voltage: OCV - (internal resistance * current)
     float voltage_prediction = x[0] * _RLS_est[0] + x[1] * _RLS_est[1];
@@ -307,15 +308,15 @@ void battery_update_internal_resistance(Battery *battery) {
     // ---------------------------
     // Dynamically adjust error threshold and forgetting factor
     // ---------------------------
-    const float alpha_error = 0.3f;  
+    const float alpha_error = 0.3f;
     running_error_mean = alpha_error * fabsf(prediction_error) + (1.0f - alpha_error) * running_error_mean;
-    
+
     // Dynamic threshold is set to 3 times the smoothed mean
     float dynamic_threshold = 3.0f * running_error_mean;
 
     // Dynamically select forgetting factor: use a lower value for large errors to emphasize new data, and a higher value for small errors to maintain smoothness
     float lambda_dynamic = (fabsf(prediction_error) > dynamic_threshold) ? 0.9f : 0.98f;
-    
+
     // ---------------------------
     // Introduce a regularization term to prevent the denominator from becoming too small
     const float epsilon = 1e-3f;
@@ -324,7 +325,7 @@ void battery_update_internal_resistance(Battery *battery) {
     float temp0 = _estimation_covariance[0][0] * x[0] + _estimation_covariance[0][1] * x[1];
     float temp1 = _estimation_covariance[1][0] * x[0] + _estimation_covariance[1][1] * x[1];
     float denom = lambda_dynamic + x[0] * temp0 + x[1] * temp1 + epsilon;
-    
+
     if (fabsf(denom) < 1e-6f) {
         _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->current_a;
         return;
@@ -348,8 +349,8 @@ void battery_update_internal_resistance(Battery *battery) {
 
     // Calculate the elements of I - gamma * x^T
     float a = 1.0f - gamma[0] * x[0];
-    float b =       - gamma[0] * x[1];
-    float c =       - gamma[1] * x[0];
+    float b = -gamma[0] * x[1];
+    float c = -gamma[1] * x[0];
     float d = 1.0f - gamma[1] * x[1];
 
     // Let the original covariance matrix P be:
@@ -398,9 +399,7 @@ void battery_update_internal_resistance(Battery *battery) {
     }
 
     // Calculate the new covariance matrix norm (Frobenius norm)
-    float new_cov_norm = sqrtf(P_new[0][0] * P_new[0][0] +
-                                 2.0f * avg01 * avg01 +
-                                 P_new[1][1] * P_new[1][1]);
+    float new_cov_norm = sqrtf(P_new[0][0] * P_new[0][0] + 2.0f * avg01 * avg01 + P_new[1][1] * P_new[1][1]);
 
     // If the prediction error exceeds the dynamic threshold, only update OCV (to prevent abnormal data from affecting internal resistance estimation)
     if (fabsf(prediction_error) > dynamic_threshold) {
@@ -434,7 +433,8 @@ void battery_update_internal_resistance(Battery *battery) {
  *
  * @param battery Pointer to the Battery structure.
  */
-void battery_reset_internal_resistance(Battery *battery) {
+void battery_reset_internal_resistance(Battery* battery)
+{
     _RLS_est[0] = battery->voltage_v;
     _RLS_est[1] = R_DEFAULT * battery->params.n_cells;
     _estimation_covariance[0][0] = OCV_COVARIANCE * battery->params.n_cells;
@@ -458,45 +458,45 @@ void battery_reset_internal_resistance(Battery *battery) {
  *
  * @param battery Pointer to the Battery structure.
  */
-void battery_estimate_state_of_charge(Battery *battery) {
+void battery_estimate_state_of_charge(Battery* battery)
+{
     if ((battery->params.capacity > 0) && (battery->battery_initialized)) {
 
         float state_of_charge_volt_based = battery->state_of_charge_volt_based;
         float state_of_charge = battery->state_of_charge;
 
         // Calculate current-based SOC
-        float state_of_charge_current_based = battery->state_of_charge_init - (battery->discharged_mah / battery->params.capacity ) * 100.0;
+        float state_of_charge_current_based = battery->state_of_charge_init - (battery->discharged_mah / battery->params.capacity) * 100.0;
         state_of_charge_current_based = fmaxf(0.0f, state_of_charge_current_based);
         battery->state_of_charge_current_based = state_of_charge_current_based;
 
-        #if defined(USING_KALMAN_FILTER)
-            // Use Kalman filter for SOC estimation
-            state_of_charge = AdaptiveKalmanFilter_Update(&battery->kalman_filter, state_of_charge_current_based, state_of_charge_volt_based);
-            battery->state_of_charge = state_of_charge;
-        #else
-            // - Lower SOC increases voltage SOC error -> increase weight
-            // - During charging, voltage rises quickly -> decrease weight
-            float weight = 0.02f + 0.03f * expf(-state_of_charge_volt_based / 20.0f);
+#if defined(USING_KALMAN_FILTER)
+        // Use Kalman filter for SOC estimation
+        state_of_charge = AdaptiveKalmanFilter_Update(&battery->kalman_filter, state_of_charge_current_based, state_of_charge_volt_based);
+        battery->state_of_charge = state_of_charge;
+#else
+        // - Lower SOC increases voltage SOC error -> increase weight
+        // - During charging, voltage rises quickly -> decrease weight
+        float weight = 0.02f + 0.03f * expf(-state_of_charge_volt_based / 20.0f);
 
-            // Exponential smoothing for voltage SOC
-            state_of_charge = (1 - weight) * state_of_charge + weight * state_of_charge_volt_based;
+        // Exponential smoothing for voltage SOC
+        state_of_charge = (1 - weight) * state_of_charge + weight * state_of_charge_volt_based;
 
-            // Coulomb counting correction
-            float delta_soc = (battery->discharged_mah_loop / battery->params.capacity) * 100.0;
-            state_of_charge -= delta_soc;
+        // Coulomb counting correction
+        float delta_soc = (battery->discharged_mah_loop / battery->params.capacity) * 100.0;
+        state_of_charge -= delta_soc;
 
-            // Constrain SOC within bounds
-            state_of_charge = fminf(fmaxf(state_of_charge, 0.0f), state_of_charge_current_based);
-            battery_update_state_of_health(battery);
+        // Constrain SOC within bounds
+        state_of_charge = fminf(fmaxf(state_of_charge, 0.0f), state_of_charge_current_based);
+        battery_update_state_of_health(battery);
 
-            //  Exponential smoothing for final SOC to reduce sudden changes
-            battery->state_of_charge = Alpha_filter(0.4f, state_of_charge, battery->state_of_charge);
-        #endif
+        //  Exponential smoothing for final SOC to reduce sudden changes
+        battery->state_of_charge = Alpha_filter(0.4f, state_of_charge, battery->state_of_charge);
+#endif
     } else {
         battery->state_of_charge = battery->state_of_charge_volt_based;
     }
 }
-
 
 /**
  * @brief Determines the battery warning level based on the state of charge (SOC).
@@ -507,7 +507,8 @@ void battery_estimate_state_of_charge(Battery *battery) {
  * @param battery Pointer to the Battery structure.
  * @return Warning level as a uint8_t value.
  */
-uint8_t battery_SOC_warning(Battery *battery) {
+uint8_t battery_SOC_warning(Battery* battery)
+{
     if (battery->state_of_charge < battery->params.low_thr) {
         return BATTERY_WARNING_LOW_VOLTAGE;
     } else if (battery->state_of_charge < battery->params.crit_thr) {
@@ -528,10 +529,11 @@ uint8_t battery_SOC_warning(Battery *battery) {
  *
  * @param battery Pointer to the Battery structure.
  */
-void battery_update_state_of_health(Battery *battery) {
+void battery_update_state_of_health(Battery* battery)
+{
     float diff = fabs(battery->state_of_charge_volt_based - battery->state_of_charge_current_based);
     battery->state_of_health = 100.0f - diff * 1.5f;
-}// the estimation of SOH is remained to be supported in the future
+} // the estimation of SOH is remained to be supported in the future
 
 /**
  * @brief Applies an alpha filter for smoothing data.
@@ -544,7 +546,8 @@ void battery_update_state_of_health(Battery *battery) {
  * @param x_last Previous smoothed value.
  * @return Smoothed value after applying the alpha filter.
  */
-float Alpha_filter(float alpha, float x, float x_last) {
+float Alpha_filter(float alpha, float x, float x_last)
+{
     return alpha * x + (1.0f - alpha) * x_last;
 }
 
@@ -561,16 +564,17 @@ float Alpha_filter(float alpha, float x, float x_last) {
  * @param initial_Q Initial process noise covariance.
  * @param initial_R Initial measurement noise covariance.
  */
-void AdaptiveKalmanFilter_Init(AdaptiveKalmanFilter *kf, float initial_soc, float initial_P, float initial_Q, float initial_R) {
-    kf->x_hat = initial_soc;       // Estimated state (SOC)
-    kf->P = initial_P;             // Estimation error covariance
-    kf->Q = initial_Q;             // Process noise covariance
-    kf->Q_base = initial_Q;        // Base value for process noise covariance
-    kf->R = initial_R;             // Measurement noise covariance
-    kf->residual_mean_sq = 0;      // Mean squared residual for dynamic adjustment
-    kf->alpha = 0.95;              // Residual smoothing factor
-    kf->beta = 0.8;                // Adjustment strength for Q 
-    kf->threshold = 5;          // Residual squared threshold (requires calibration)
+void AdaptiveKalmanFilter_Init(AdaptiveKalmanFilter* kf, float initial_soc, float initial_P, float initial_Q, float initial_R)
+{
+    kf->x_hat = initial_soc;  // Estimated state (SOC)
+    kf->P = initial_P;        // Estimation error covariance
+    kf->Q = initial_Q;        // Process noise covariance
+    kf->Q_base = initial_Q;   // Base value for process noise covariance
+    kf->R = initial_R;        // Measurement noise covariance
+    kf->residual_mean_sq = 0; // Mean squared residual for dynamic adjustment
+    kf->alpha = 0.95;         // Residual smoothing factor
+    kf->beta = 0.8;           // Adjustment strength for Q
+    kf->threshold = 5;        // Residual squared threshold (requires calibration)
 }
 
 /**
@@ -585,19 +589,22 @@ void AdaptiveKalmanFilter_Init(AdaptiveKalmanFilter *kf, float initial_soc, floa
  * @param soc_voltage SOC estimate from voltage-based estimation.
  * @return Updated SOC estimate.
  */
-float AdaptiveKalmanFilter_Update(AdaptiveKalmanFilter *kf, float soc_coulomb, float soc_voltage) {
+float AdaptiveKalmanFilter_Update(AdaptiveKalmanFilter* kf, float soc_coulomb, float soc_voltage)
+{
 
-    if (isnan(soc_coulomb)) soc_coulomb = kf->x_hat;
-    if (isnan(soc_voltage)) soc_voltage = kf->x_hat;
+    if (isnan(soc_coulomb))
+        soc_coulomb = kf->x_hat;
+    if (isnan(soc_voltage))
+        soc_voltage = kf->x_hat;
     // Prediction step
     float x_hat_minus = soc_coulomb; // Predicted state (SOC from Coulomb counting)
-    float P_minus = kf->P + kf->Q; // Predicted estimation error covariance
+    float P_minus = kf->P + kf->Q;   // Predicted estimation error covariance
 
     // Update step
     float residual = soc_voltage - x_hat_minus; // Measurement residual
-    float K = P_minus / (P_minus + kf->R);    // Kalman gain
-    kf->x_hat = x_hat_minus + K * residual;   // Updated state estimate
-    kf->P = (1 - K) * P_minus;               // Updated estimation error covariance
+    float K = P_minus / (P_minus + kf->R);      // Kalman gain
+    kf->x_hat = x_hat_minus + K * residual;     // Updated state estimate
+    kf->P = (1 - K) * P_minus;                  // Updated estimation error covariance
 
     // Dynamically adjust R (based on residual)
     kf->R = kf->alpha * kf->R + (1 - kf->alpha) * residual * residual;
