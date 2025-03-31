@@ -449,8 +449,8 @@ void bsp_early_initialize(void)
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
-    // /* can driver init */
-    // RT_CHECK(drv_fdcan_init());
+    /* can driver init */
+    RT_CHECK(drv_fdcan_init());
 
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
