@@ -43,7 +43,7 @@ CUAV 7-Nano Flight Controller
 
 ## Wiki
 
-[7-nano]([https://doc.cuav.net/controller/v5-autopilot/en/v5-nano.html](https://doc.cuav.net/controller/7-nano/en/#Optional-hardware))
+[7-nano](https://doc.cuav.net/controller/7-nano/en/#Optional-hardware)
 
 
 ## Where to Buy
