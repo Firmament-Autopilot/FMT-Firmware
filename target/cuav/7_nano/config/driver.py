@@ -1,7 +1,7 @@
 # Modify this file to decide which drivers are compiled
 
 DRIVERS = [
-    'barometer/spl06.c',
+    'barometer/bmp581.c',
     'gps/gps_ubx.c',
     'imu/bmi088.c',
     'imu/icm42688p.c',
