@@ -1,57 +1,61 @@
-Cubepilot Cubeorange Flight Controller
+CUAV 7-Nano Flight Controller
 ============================
 
-The Cubepilot Cubeorange is an advanced STM32H743 autopilot designed and made by Cubepilot. It is a variant of the Cubeorange, updated to use Pixhawk standard pinouts. The Cubeorange reference document is [here](https://docs.cubepilot.org/user-guides/autopilot/the-cube-module-overview)
+7-Nano is a micro autopilot developed for miniaturized unmanned system equipment. It is independently developed and produced by CUAV. It innovatively adopts a stacked design and integrates a high-performance STM32H7 processor, dual redundant industrial-grade IMU and rich and complete expansion interfaces in a very small space; it supports Ethernet communication The interface can realize the low-latency and large-bandwidth real-time communication requirements of various components of the autopilot and unmanned system equipment. 
 
-<div align=center><img src="https://ardupilot.org/copter/_images/Cube_orange_adsb.jpg" width="50%"></div>
+<div align=center><img src="https://github.com/user-attachments/assets/cb447db7-3fd3-4d75-9059-fdacf84785fd" width="50%"></div>
 
 ## Feature
 
-- **Processor**
-  - 32-bit ARM Cortex M7 core with DPFPU
-  - 480 Mhz/1 MB RAM/2 MB Flash
-  - 32 bit IOMCU co-processor
-- **Sensors**
-  - InvenSense 20948 accelerometer / gyroscope / magnetometer
-  - MS5611 barometer
-- **Power**
-  - Operating power: 4.3~5.4V
+**7-Nano**
+- STM32H753 microcontroller
+- 2 IMUs: IIM42652 and BMI088
+- builtin IST8310 magnetometer
+- 2 barometers: BMP581 and ICP20100
+- microSD card slot
+- USB-TypeC port
+- 1 ETH network interface
+- 5 UARTs plus USB
+- 14 PWM outputs
+- 3 I2C ports
+- 2 CAN ports (two of which share a CAN bus and one is an independent CAN bus)
+- Analog RSSI input
+- 3.3V/5V configurable PWM ouput voltage
+- Power System:
+  - Power: 4.5~5.4V
   - USB Input: 4.75~5.25V
-  - High-power servo rail, up to 36V (servo rail does not power the autopilot)
-  - Dual voltage and current monitor inputs
-  - CUAV v5 Plus can be triple redundant if power is provided to both battery monitor inputs and the USB port
-- **Interfaces**
-  - 6 - 12 PWM servo outputs (6 IOMCU, 6 FMU)
-  - S.Bus servo output
-  - PPM connector supports only PPM
-  - SBUS/DSM/RSSI connector supports all RC protocols (including SBUS, DSM, ST24, SRXL and PPM)
-  - Analog / PWM RSSI input
-  - 4x general purpose serial ports
-  - 1x I2C ports
-  - 2x CAN Bus ports
-  - 2x analog battery monitor ports
+  - Servo Rail Input: 0~10V
+  - 4.5 ~ 5.5V Operating Voltage
+- Weight and Dimensions:
+  - Weight: 33.8g
+- Operating temperature
+  - -20 ~ 85°c
+  
+**7-Nano PDB**
+
+- Operating Voltage：12-70V
+- Detection current(MAX):79.2A
+- Bec out:5.3V/4A
+- Voltage and current accuracy:±0.2V/0.5A
+- Splitter:Divided into six
+- Sport:XT60/GH1.25 6Pin
+- Weight：17g
 
 ## Wiki
 
-[Cubepilot Cubeorange Overview — Copter documentation (ardupilot.org)](https://docs.cubepilot.org/user-guides/autopilot/the-cube-module-overview)
+[7-nano]([https://doc.cuav.net/controller/v5-autopilot/en/v5-nano.html](https://doc.cuav.net/controller/7-nano/en/#Optional-hardware))
+
 
 ## Where to Buy
 
-
-## Enivronment
-Cubepilot used dronecan, so you should install the python packages:  
-
-```
-pip install empy
-pip install pexpect
-pip install dronecan
-```
+[CUAV Store](https://store.cuav.net/)
 
 ## Build
+
 Build fmu firmware for quadcopter
 
 ```
-cd FMT-Firmware/taget/cubepilot/cubeorange
+cd FMT-Firmware/taget/cuav/7_nano
 scons -j4
 ```
 
@@ -63,43 +67,32 @@ For other vehicle, such as fixwing, using
 scons -j4 --vehicle=Fixwing
 ```
 
-Cubepilot Cubeorange has an io (co-processor) processor onboard. Use the following command to build io firmware.
-
-```
-cd FMT-Firmware/target/pixhawk/fmt-io/project
-scons -j4
-```
-
 ## Download
+
 
 ### Download FMU Firmware
 Currently there are 3 ways to download fmu firmware to hardware.
 
-1. **Donwload Script**: Enter `python3 uploader.py` in the Cubeorange directory. Then connect your hardware via usb.
+1. **Donwload Script**: Enter `python3 uploader.py` in the BSP directory. Then connect your hardware via usb.
 
 ```
-(fmt) E:\GitRepository\FMT-Firmware\target\cubepilot\cubeorange>python uploader.py
+PS D:\ws\FMT\FMT-Firmware\target\cuav\7_nano> python.exe .\uploader.py
 waiting for the bootloader...
-Attempting reboot on COM30 with baudrate=57600...
+Attempting reboot on COM72 with baudrate=57600...
 If the board does not respond, unplug and re-plug the USB connector.
-Not found fmt_fmu,please connect fmt_fmu!
-Not found fmt_fmu,please connect fmt_fmu!
-Attempting reboot on COM3 with baudrate=57600...
-If the board does not respond, unplug and re-plug the USB connector.
-Not found fmt_fmu,please connect fmt_fmu!
 
-Found board id: 140,0 bootloader version: 5 on COM29
-sn: 002700493430511030383637
-chip: 20036450
-family: b'STM32H743/753'
-revision: b'V'
+Found board id: 7000,0 bootloader version: 5 on COM72
+sn: 6828e780d4f5008030184823
+chip: 00000000
+family: b'STM32H??????'
+revision: b'?'
 flash: 1966080 bytes
 Windowed mode: False
 
 Erase  : [====================] 100.0%
 Program: [====================] 100.0%
 Verify : [====================] 100.0%
-Rebooting. Elapsed Time 12.231
+Rebooting. Elapsed Time 12.291
 ```
 
 > If the `"ModuleNotFoundError: No module named 'serial'"` error occurs, indicating that the **pyserial** component is missing, enter `pip3 install pyserial` to install.
@@ -115,58 +108,46 @@ Rebooting. Elapsed Time 12.231
 When system is up and running, the system banner is output via serial0 or you can view it by entering `boot_log` in QGC Mavlink Console.
 
 ```
-   _____                               __ 
+   _____                               __
   / __(_)_____ _  ___ ___ _  ___ ___  / /_
  / _// / __/  ' \/ _ `/  ' \/ -_) _ \/ __/
-/_/ /_/_/ /_/_/_/\_,_/_/_/_/\__/_//_/\__/ 
-Firmware.....................FMT FW v0.5.2
+/_/ /_/_/ /_/_/_/\_,_/_/_/_/\__/_//_/\__/
+Firmware.....................FMT FW v1.0.0
 Kernel....................RT-Thread v4.0.3
 RAM.................................512 KB
-Target................Cubepilot Cubeorange
+Target.........................CUAV 7-Nano
 Vehicle........................Multicopter
 Airframe.................................1
-INS Model..................Base INS v0.3.2
-FMS Model..................Base FMS v0.4.0
-Control Model.......Base Controller v0.2.4
+INS Model....................CF INS v1.0.0
+FMS Model....................MC FMS v1.0.0
+Control Model.........MC Controller v1.0.0
 Task Initialize:
   mavobc................................OK
   mavgcs................................OK
   logger................................OK
-  fmtio.................................OK
   status................................OK
   vehicle...............................OK
-  dronecan..............................OK
-```
-
-
-### Download IO Firmware
-
-The next step is to upload the io firmware which is downloaded through the fmu. First copy the io firmware `target/pixhawk/fmt-io/project/build/fmt_io.bin` to the on board sd card. You can do that via QGC onboard files page (QGC version 3.5.6 only) or a sd card reader. 
-
-![qgc_download](https://qiniu.md.amovlab.com/img/m/202303/20230305/1820266235233805846609920.png)
-
-
-Then enter the following command in FMT console to upload the firmware to io processor.
 
 ```
-msh /usr>fmtio upload /usr/fmt_io.bin
-[312785] I/Uploader: sync success
-[312793] I/Uploader: found bootloader revision: 5
-[312803] I/Uploader: io firmaware:/usr/fmt_io.bin
-[312818] I/Uploader: erase...
-[314151] I/Uploader: program...
-[316275] I/Uploader: CRC check ok, received: 8a27ed4f, expected: 8a27ed4f
-```
-
-> For the first time to download the io firmware, you need connect GPS module and hold the safety button to power up, which would lead io processor to stay in bootloader.
 
 ## Port Mapping
 
-| UART   | Device  | Port          |
-| ------ | ------- | ------------  |
-| UART2  | Serial0 | TELEM1(DEBUG) |
-| UART3  | Serial1 | TELEM2        |
-| UART4  | Serial2 | GPS1          |
-| UART8  | serial3 | GPS2          |
-| UART7  | serial4 | HAL           |
-| UART6  | serial5 | FMTIO         |
+| UART   | Device  | Port         |
+| ------ | ------- | ------------ |
+| UART3  | serial0 | DEBUG |
+| UART7 | serial1 | TELEM1       |
+| UART5 | serial2 | TELEM2       |
+| UART1 | serial3 | GPS          |
+| UART8 | serial4 | GPS2       |
+
+| CAN   | Device  | Port         |
+| ------ | ------- | ------------ |
+| CAN1  | can1 | CAN1 |
+| CAN2  | can2 | CAN2 |
+
+| PWM   | Device  | Port         |
+| ------ | ------- | ------------ |
+| MAIN OUT  | main_out | M1-M14 |
+
+## Maintainer
+Josh Zou zoujiachi666@163.com
