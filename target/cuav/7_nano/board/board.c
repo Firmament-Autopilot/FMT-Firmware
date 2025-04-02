@@ -320,6 +320,24 @@ static void EnablePower(void)
     LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
     LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_15);
 
+    /* GPIO_CAN1_SILENT */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+    LL_GPIO_ResetOutputPin(GPIOE, LL_GPIO_PIN_2);
+
+    /* GPIO_CAN2_SILENT */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+    LL_GPIO_ResetOutputPin(GPIOI, LL_GPIO_PIN_8);
+
     /* Wait some time for power becoming stable */
     systime_mdelay(100);
 }
@@ -503,15 +521,12 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi2_dev1", "spi2_dev2", "gyro0", "accel0", 0));
     RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
-    // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-    // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
     RT_CHECK(drv_bmp581_init("spi4_dev1", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    RT_CHECK(gps_ubx_init("serial3", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
-    // FMT_CHECK(register_sensor_barometer("barometer"));
-    advertise_sensor_baro(0);
+    FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif

@@ -21,11 +21,6 @@
 
 #define DRV_DBG(...)               printf(__VA_ARGS__)
 
-// #ifdef BIT
-//     #undef BIT
-// #endif
-// #define BIT(_idx) (1 << _idx)
-
 #define BMP581_ID                  0x50
 
 #define BMP581_REG_CHIP_ID         0x01
@@ -153,6 +148,11 @@ static rt_size_t baro_read(baro_dev_t baro, baro_report_t* report)
 
     if (buf[0] != 0x7f || buf[1] != 0x7f || buf[2] != 0x7f || buf[3] != 0x7f || buf[4] != 0x7f || buf[5] != 0x7f) {
         size = sizeof(baro_report_t);
+
+        report->timestamp_ms = systime_now_ms();
+        report->temperature_deg = (float)((int32_t)(((uint32_t)buf[2] << 24) | ((uint32_t)buf[1] << 16) | ((uint32_t)buf[0] << 8)) >> 8) * (1.0f / 65536.0f);
+        report->pressure_Pa = (float)(((uint32_t)buf[5] << 16) | ((uint32_t)buf[4] << 8) | (uint32_t)buf[3]) * (1.0f / 64.0f);
+        report->altitude_m = 44330.0f * (1.0f - powf(report->pressure_Pa / 101325.0f, 1.0f / 5.255f));
     }
 
     return size;
