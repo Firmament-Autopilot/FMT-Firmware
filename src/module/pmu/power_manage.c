@@ -15,10 +15,9 @@
  *****************************************************************************/
 
 #include "hal/adc/adc.h"
-#include "module/pmu/power_manager.h"
-#include "module/pmu/battery.h"
 #include "module/log/mlog.h"
-
+#include "module/pmu/battery.h"
+#include "module/pmu/power_manager.h"
 
 MCN_DEFINE(bat_status, sizeof(struct battery_status));
 
@@ -62,12 +61,9 @@ static mlog_elem_t Battery_Elems[] = {
 };
 MLOG_BUS_DEFINE(BATTERY, Battery_Elems);
 
-
-
-
 static rt_device_t adc_dev;
 static Battery battery;
-static battery_params_t battery_params = {0};
+static battery_params_t battery_params = { 0 };
 static uint32_t timestamps;
 static int BATTERY_ID;
 
@@ -82,15 +78,15 @@ static int echo_battery_status(void* parameter)
     console_printf("Voltage: %3.3f mV, Current: %3.3f mA, Internal Resistance: %3.3f\n"
                    "Init SOC: %3.3f, Remaining: %3.3f%%, Remaining_C: %3.3f%%, Remaing_V: %3.3f%%\n"
                    "Cell Voltage: %3.3f, Cell Voltage Origin: %3.3f\n\n",
-        bat_status.battery_voltage,
-        bat_status.battery_current,
-        bat_status.internal_resistance,
-        bat_status.init_SOC,
-        bat_status.battery_remaining,
-        bat_status.remaining_c,
-        bat_status.remaining_v,
-        bat_status.cell_voltage,
-        bat_status.cell_voltage_origin);
+                   bat_status.battery_voltage,
+                   bat_status.battery_current,
+                   bat_status.internal_resistance,
+                   bat_status.init_SOC,
+                   bat_status.battery_remaining,
+                   bat_status.remaining_c,
+                   bat_status.remaining_v,
+                   bat_status.cell_voltage,
+                   bat_status.cell_voltage_origin);
 
     return 0;
 }
@@ -163,8 +159,6 @@ fmt_err_t pmu_init(void)
             return FMT_EOK;
         }
     }
-
-    
 
     return FMT_ERROR;
 }
