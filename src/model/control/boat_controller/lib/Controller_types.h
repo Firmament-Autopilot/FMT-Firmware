@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1120
+ * Model version                  : 1.1142
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec  4 18:07:53 2024
+ * C/C++ source code generated on : Thu Apr  3 16:44:43 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -151,6 +151,10 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
+
+  /* The psi value when arm state entered,
+     which is used for FRAME_LOCAL_FRD */
+  real32_T local_psi;
 } FMS_Out_Bus;
 
 #endif
@@ -212,8 +216,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_2HV4h0wnvObh5FK8iPBjE_
-#define DEFINED_TYPEDEF_FOR_struct_2HV4h0wnvObh5FK8iPBjE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_pNbTadB0jgRVqt3p6wG0lB_
+#define DEFINED_TYPEDEF_FOR_struct_pNbTadB0jgRVqt3p6wG0lB_
 
 typedef struct {
   real32_T VEL_P;
@@ -223,11 +227,12 @@ typedef struct {
   real32_T VEL_I_MIN;
   real32_T VEL_D_MAX;
   real32_T VEL_D_MIN;
+  real32_T PSI_RATE_P;
   real32_T THROTTLE_SCALE;
   uint16_T THROTTLE_BIAS;
   real32_T SERVO_SCALE;
   uint16_T SERVO_BIAS;
-} struct_2HV4h0wnvObh5FK8iPBjE;
+} struct_pNbTadB0jgRVqt3p6wG0lB;
 
 #endif
 

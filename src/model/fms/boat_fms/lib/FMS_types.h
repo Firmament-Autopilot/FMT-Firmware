@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2008
+ * Model version                  : 1.2061
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec  4 20:26:58 2024
+ * C/C++ source code generated on : Thu Apr  3 16:44:07 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -384,6 +384,10 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
+
+  /* The psi value when arm state entered,
+     which is used for FRAME_LOCAL_FRD */
+  real32_T local_psi;
 } FMS_Out_Bus;
 
 #endif
@@ -465,7 +469,7 @@ typedef struct {
 
   /* The psi value when offboard mode entered,
      which is used for FRAME_LOCAL_FRD */
-  real32_T offboard_psi_0;
+  real32_T local_psi;
 
   /* Set speed for cuise flight */
   real32_T set_speed;
@@ -488,8 +492,8 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_Gbvu0nA7ZOwZNsa8mFLQ7C_
-#define DEFINED_TYPEDEF_FOR_struct_Gbvu0nA7ZOwZNsa8mFLQ7C_
+#ifndef DEFINED_TYPEDEF_FOR_struct_U5lw6bCUkWz4DxN5NeKa6F_
+#define DEFINED_TYPEDEF_FOR_struct_U5lw6bCUkWz4DxN5NeKa6F_
 
 typedef struct {
   real32_T DISARM_OUT[16];
@@ -499,7 +503,10 @@ typedef struct {
   real32_T ACCEPT_R;
   real32_T MAX_VEL;
   real32_T AY_P;
-} struct_Gbvu0nA7ZOwZNsa8mFLQ7C;
+  real32_T YAW_P;
+  uint16_T LOST_RETURN_TIME;
+  uint8_T LOST_RETURN_EN;
+} struct_U5lw6bCUkWz4DxN5NeKa6F;
 
 #endif
 

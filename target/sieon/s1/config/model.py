@@ -10,6 +10,34 @@ if vehicle_type == 'Multicopter':
         'fms/mc_fms',
         'control/mc_controller',
     ]
+elif vehicle_type == 'Fixwing':
+    MODELS = [
+        'plant/fixwing',
+        'ins/cf_ins',
+        'fms/fw_fms',
+        'control/fw_controller',
+    ]
+elif vehicle_type == 'Boat':
+    MODELS = [
+        'plant/boat',
+        'ins/cf_ins',
+        'fms/boat_fms',
+        'control/boat_controller',
+    ]
+elif vehicle_type == 'Boat_HIL':
+    MODELS = [
+        'plant/template_plant',
+        'ins/external_ins',
+        'fms/boat_fms',
+        'control/boat_controller',
+    ]
+elif vehicle_type == 'Car_HIL':
+    MODELS = [
+        'plant/template_plant',
+        'ins/external_ins',
+        'fms/car_fms',
+        'control/car_controller',
+    ]
 elif vehicle_type == 'Template':
     MODELS = [
         'plant/template_plant',
