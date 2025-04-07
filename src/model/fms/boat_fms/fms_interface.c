@@ -143,6 +143,7 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
     MLOG_ELEMENT(reserved, MLOG_UINT8),
     MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
+    MLOG_ELEMENT(local_psi, MLOG_FLOAT),
 };
 MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
 
