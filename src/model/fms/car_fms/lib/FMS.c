@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2002
+ * Model version                  : 1.2006
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Dec  4 12:10:02 2024
+ * C/C++ source code generated on : Tue Apr  8 14:49:57 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -87,7 +87,8 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 
   {
     0.0F, 0.0F, 0.0F, 0.0F }
-  /* home */
+  ,                                    /* home */
+  0.0F                                 /* local_psi */
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
@@ -497,7 +498,6 @@ static void FMS_enter_internal_Auto(void)
   switch (FMS_B.target_mode) {
    case PilotMode_Offboard:
     FMS_DW.is_Auto = FMS_IN_Offboard;
-    FMS_B.Cmd_In.offboard_psi_0 = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
     if (FMS_B.LogicalOperator) {
       FMS_DW.is_Offboard = FMS_IN_Run;
       FMS_B.state = VehicleState_Offboard;
@@ -509,9 +509,9 @@ static void FMS_enter_internal_Auto(void)
 
    case PilotMode_Mission:
     FMS_DW.is_Auto = FMS_IN_Mission;
-    FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat *
+    FMS_DW.llo[0] = FMS_B.BusConversion_InsertedFor_FMSSt.lat_0 *
       57.295779513082323;
-    FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon *
+    FMS_DW.llo[1] = FMS_B.BusConversion_InsertedFor_FMSSt.lon_0 *
       57.295779513082323;
     FMS_B.Cmd_In.cur_waypoint[0] = FMS_B.BusConversion_InsertedFor_FMSSt.x_R;
     FMS_B.Cmd_In.cur_waypoint[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
@@ -862,7 +862,7 @@ static void FMS_Arm(void)
                   /* Inport: '<Root>/Mission_Data' */
                   FMS_B.lla[0] = (real_T)FMS_U.Mission_Data.x[lla_tmp] * 1.0E-7;
                   FMS_B.lla[1] = (real_T)FMS_U.Mission_Data.y[lla_tmp] * 1.0E-7;
-                  FMS_B.lla[2] = -FMS_U.Mission_Data.z[lla_tmp];
+                  FMS_B.lla[2] = -(FMS_U.Mission_Data.z[lla_tmp] + FMS_DW.home[2]);
                   FMS_B.href = 0.0;
                   FMS_B.psio = 0.0;
                   FMS_B.llo[0] = FMS_DW.llo[0];
@@ -1026,12 +1026,9 @@ static void FMS_Arm(void)
                     FMS_B.href);
 
                   /* End of Outputs for SubSystem: '<S4>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
-                  FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.DataTypeConversion[0] +
-                    FMS_DW.home[0];
-                  FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.DataTypeConversion[1] +
-                    FMS_DW.home[1];
-                  FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.DataTypeConversion[2] +
-                    FMS_DW.home[2];
+                  FMS_B.Cmd_In.sp_waypoint[0] = FMS_B.DataTypeConversion[0];
+                  FMS_B.Cmd_In.sp_waypoint[1] = FMS_B.DataTypeConversion[1];
+                  FMS_B.Cmd_In.sp_waypoint[2] = FMS_B.DataTypeConversion[2];
                   FMS_B.state = VehicleState_Mission;
                 } else if (FMS_DW.nav_cmd == (int32_T)NAV_Cmd_Return) {
                   FMS_DW.is_Mission = FMS_IN_Return_h;
@@ -1328,6 +1325,7 @@ static void FMS_Vehicle(void)
 
       FMS_DW.condWasTrueAtLastTimeStep_1 = sf_internal_predicateOutput;
       FMS_DW.is_Vehicle = FMS_IN_Arm;
+      FMS_B.Cmd_In.local_psi = FMS_B.BusConversion_InsertedFor_FMSSt.psi;
       FMS_enter_internal_Arm();
     }
   }
@@ -2824,7 +2822,7 @@ void FMS_step(void)
            *  SignalConversion: '<S21>/TmpSignal ConversionAtSignal Copy3Inport1'
            *  Sum: '<S96>/Subtract'
            */
-          rtb_Switch_f_idx_1 = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.offboard_psi_0);
+          rtb_Switch_f_idx_1 = -(FMS_U.INS_Out.psi - FMS_B.Cmd_In.local_psi);
 
           /* Trigonometry: '<S101>/Trigonometric Function3' incorporates:
            *  Trigonometry: '<S101>/Trigonometric Function1'

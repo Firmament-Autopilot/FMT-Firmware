@@ -141,6 +141,7 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
     MLOG_ELEMENT(reserved, MLOG_UINT8),
     MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
+    MLOG_ELEMENT(local_psi, MLOG_FLOAT),
 };
 MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
 
@@ -150,10 +151,10 @@ static McnNode_t auto_cmd_nod;
 static McnNode_t mission_data_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
-static uint8_t   pilot_cmd_updated;
-static uint8_t   gcs_cmd_updated;
-static uint8_t   auto_cmd_updated;
-static uint8_t   mission_data_updated;
+static uint8_t pilot_cmd_updated;
+static uint8_t gcs_cmd_updated;
+static uint8_t auto_cmd_updated;
+static uint8_t mission_data_updated;
 
 static int Pilot_Cmd_ID;
 static int GCS_Cmd_ID;
@@ -235,9 +236,9 @@ static int fms_output_echo(void* param)
 
 static void mlog_start_cb(void)
 {
-    pilot_cmd_updated    = 1;
-    gcs_cmd_updated      = 1;
-    auto_cmd_updated     = 1;
+    pilot_cmd_updated = 1;
+    gcs_cmd_updated = 1;
+    auto_cmd_updated = 1;
     mission_data_updated = 1;
 }
 
@@ -257,28 +258,28 @@ void fms_interface_step(uint32_t timestamp)
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &FMS_U.Pilot_Cmd);
 
         FMS_U.Pilot_Cmd.timestamp = timestamp;
-        pilot_cmd_updated         = 1;
+        pilot_cmd_updated = 1;
     }
 
     if (mcn_poll(gcs_cmd_nod)) {
         mcn_copy(MCN_HUB(gcs_cmd), gcs_cmd_nod, &FMS_U.GCS_Cmd);
 
         FMS_U.GCS_Cmd.timestamp = timestamp;
-        gcs_cmd_updated         = 1;
+        gcs_cmd_updated = 1;
     }
 
     if (mcn_poll(auto_cmd_nod)) {
         mcn_copy(MCN_HUB(auto_cmd), auto_cmd_nod, &FMS_U.Auto_Cmd);
 
         FMS_U.Auto_Cmd.timestamp = timestamp;
-        auto_cmd_updated         = 1;
+        auto_cmd_updated = 1;
     }
 
     if (mcn_poll(mission_data_nod)) {
         mcn_copy(MCN_HUB(mission_data), mission_data_nod, &FMS_U.Mission_Data);
 
         FMS_U.Mission_Data.timestamp = timestamp;
-        mission_data_updated         = 1;
+        mission_data_updated = 1;
     }
 
     if (mcn_poll(ins_out_nod)) {
@@ -328,22 +329,22 @@ void fms_interface_step(uint32_t timestamp)
 void fms_interface_init(void)
 {
     fms_model_info.period = FMS_EXPORT.period;
-    fms_model_info.info   = (char*)FMS_EXPORT.model_info;
+    fms_model_info.info = (char*)FMS_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(fms_output), fms_output_echo);
 
-    pilot_cmd_nod    = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
-    gcs_cmd_nod      = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
-    auto_cmd_nod     = mcn_subscribe(MCN_HUB(auto_cmd), NULL);
+    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
+    gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
+    auto_cmd_nod = mcn_subscribe(MCN_HUB(auto_cmd), NULL);
     mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL);
-    ins_out_nod      = mcn_subscribe(MCN_HUB(ins_output), NULL);
-    control_out_nod  = mcn_subscribe(MCN_HUB(control_output), NULL);
+    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL);
+    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
 
-    Pilot_Cmd_ID    = mlog_get_bus_id("Pilot_Cmd");
-    GCS_Cmd_ID      = mlog_get_bus_id("GCS_Cmd");
-    Auto_Cmd_ID     = mlog_get_bus_id("Auto_Cmd");
+    Pilot_Cmd_ID = mlog_get_bus_id("Pilot_Cmd");
+    GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
+    Auto_Cmd_ID = mlog_get_bus_id("Auto_Cmd");
     Mission_Data_ID = mlog_get_bus_id("Mission_Data");
-    FMS_Out_ID      = mlog_get_bus_id("FMS_Out");
+    FMS_Out_ID = mlog_get_bus_id("FMS_Out");
     FMT_ASSERT(Pilot_Cmd_ID >= 0);
     FMT_ASSERT(GCS_Cmd_ID >= 0);
     FMT_ASSERT(Auto_Cmd_ID >= 0);
