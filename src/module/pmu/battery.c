@@ -37,7 +37,7 @@ const OCV_SOC_Map ocv_soc_table[] = {
     { 3.000, 0.0 }   // Fully discharged cutoff
 };
 
-#define TABLE_SIZE (sizeof(ocv_soc_table) / sizeof(ocv_soc_table[0]))
+#define SOC_TABLE_SIZE (sizeof(ocv_soc_table) / sizeof(ocv_soc_table[0]))
 
 void battery_init(Battery* battery, battery_params_t* battery_params, uint8_t source, uint32_t timestamp)
 {
@@ -117,12 +117,12 @@ float estimate_soc_from_ocv(Battery* battery)
     if (voltage >= ocv_soc_table[0].ocv) {
         return 100.0;
     }
-    if (voltage <= ocv_soc_table[TABLE_SIZE - 1].ocv) {
+    if (voltage <= ocv_soc_table[SOC_TABLE_SIZE - 1].ocv) {
         return 0.0;
     }
 
     // Traverse the lookup table to find the voltage range
-    for (int i = 0; i < TABLE_SIZE - 1; i++) {
+    for (int i = 0; i < SOC_TABLE_SIZE - 1; i++) {
         if (voltage <= ocv_soc_table[i].ocv && voltage > ocv_soc_table[i + 1].ocv) {
             // Perform linear interpolation to calculate SOC
             float v1 = ocv_soc_table[i].ocv;
