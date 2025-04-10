@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2146
+ * Model version                  : 1.2147
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Mar 26 15:01:22 2025
+ * C/C++ source code generated on : Thu Apr 10 13:49:53 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -138,7 +138,7 @@ struct_xXeuwAPh0ajaUfdgPpGaUB FMS_PARAM = {
   0.1F,
   1.2F,
   1.5F,
-  5.0F,
+  10.0F,
   1.5F,
   2.5F,
   1.04719806F,
@@ -4255,7 +4255,7 @@ void FMS_step(void)
       break;
 
      case FMS_IN_Other:
-      FMS_B.target_mode = FMS_DW.Delay_DSTATE_c;
+      FMS_B.target_mode = PilotMode_None;
       switch (FMS_DW.Delay_DSTATE_c) {
        case PilotMode_Manual:
         FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
