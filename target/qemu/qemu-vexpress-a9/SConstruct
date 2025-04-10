@@ -32,6 +32,12 @@ AddOption('--airframe',
                 action='store',
                 help='Specify the airframe value')
 
+AddOption('--sim',
+                dest = 'sim',
+                type = 'string',
+                default = 'SIH',
+                help = 'Specify the simulation mode')
+
 env = Environment(tools=['mingw'],
                   AS=rtconfig.AS, ASFLAGS=rtconfig.AFLAGS,
                   CC=rtconfig.CC, CFLAGS=rtconfig.CFLAGS,
@@ -42,6 +48,14 @@ env = Environment(tools=['mingw'],
 # set VEHICLE_TYPE macro for low-level usage
 env.Append(CPPDEFINES = [('VEHICLE_TYPE', GetOption('vehicle'))])
 env.Append(CPPDEFINES = [('AIRFRAME', GetOption('airframe'))])
+
+sim_mode = GetOption('sim')
+if sim_mode == 'SIH':
+    print("Build in SIH mode")
+    env.Append(CPPDEFINES = 'FMT_USING_SIH')
+elif sim_mode == 'HIL':
+    print("Build in HIL mode")
+    env.Append(CPPDEFINES = 'FMT_USING_HIL')
 
 # Add sys execute PATH to env PATH
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
