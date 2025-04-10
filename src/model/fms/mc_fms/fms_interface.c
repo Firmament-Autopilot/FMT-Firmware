@@ -243,8 +243,8 @@ static int fms_output_echo(void* param)
     printf("vel cmd: %.2f %.2f %.2f\n", fms_out.u_cmd, fms_out.v_cmd, fms_out.w_cmd);
     printf("throttle cmd: %u\n", fms_out.throttle_cmd);
     printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
-    printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
-    printf("mode:%s reset:%d\n", fms_mode[fms_out.mode], fms_out.reset);
+    printf("status:%s state:%s ctrl_mode:%s\n", STR_GET_VALID(fms_status, fms_out.status), STR_GET_VALID(fms_state, fms_out.state), STR_GET_VALID(fms_ctrl_mode, fms_out.ctrl_mode));
+    printf("mode:%s reset:%d\n", STR_GET_VALID(fms_mode, fms_out.mode), fms_out.reset);
     printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
     printf("home: xyz(m) %.2f %.2f %.2f yaw(deg) %.2f\n", fms_out.home[0], fms_out.home[1], fms_out.home[2], RAD2DEG(fms_out.home[3]));
     printf("lcoal psi:%f\n", fms_out.local_psi);

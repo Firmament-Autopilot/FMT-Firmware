@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /* Firmament version information */
-#define FMT_VERSION "v1.1.0"
+#define FMT_VERSION                "v1.1.0"
 
 /* Thread Prority */
 #define VEHICLE_THREAD_PRIORITY    3
@@ -89,14 +89,16 @@ typedef int bool;
         }                                                                                             \
     } while (false)
 
-#define OS_ENTER_CRITICAL rt_enter_critical()
-#define OS_EXIT_CRITICAL  rt_exit_critical()
-#define OS_MALLOC(size)   rt_malloc(size)
-#define OS_FREE(ptr)      rt_free(ptr)
+#define OS_ENTER_CRITICAL         rt_enter_critical()
+#define OS_EXIT_CRITICAL          rt_exit_critical()
+#define OS_MALLOC(size)           rt_malloc(size)
+#define OS_FREE(ptr)              rt_free(ptr)
 
-#define FMT_ASSERT(exp) RT_ASSERT((exp))
-#define FMT_CHECK(func) RT_ASSERT(func == FMT_EOK)
-#define RT_CHECK(func)  RT_ASSERT(func == RT_EOK)
+#define FMT_ASSERT(exp)           RT_ASSERT((exp))
+#define FMT_CHECK(func)           RT_ASSERT(func == FMT_EOK)
+#define RT_CHECK(func)            RT_ASSERT(func == RT_EOK)
+
+#define STR_GET_VALID(_arr, _idx) (_idx < sizeof(_arr) / sizeof(_arr[0]) ? _arr[_idx] : "invalid")
 
 typedef enum {
     FMT_EOK = 0,         /**< There is no error */
