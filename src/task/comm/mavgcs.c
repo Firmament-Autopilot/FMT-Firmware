@@ -91,7 +91,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     } break;
 
     case MAV_CMD_PREFLIGHT_CALIBRATION:
-        if (command->param1 == 1) { // calibration gyr
+        if (command->param1 == 1) {        // calibration gyr
             mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
             mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
@@ -452,7 +452,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
         if (this_system.sysid == manual_control.target && (time_now - rc_last_pub_timestamp) >= 1000) {
             GCS_Cmd_Bus gcs_cmd;
-            mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd);
 
             Pilot_Cmd_Bus pilot_cmd = { 0 };
             pilot_cmd.timestamp = time_now;
@@ -460,7 +459,11 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             pilot_cmd.stick_yaw = manual_control.r / 1000.0f;
             pilot_cmd.stick_roll = manual_control.y / 1000.0f;
             pilot_cmd.stick_pitch = manual_control.x / 1000.0f;
-            pilot_cmd.mode = gcs_cmd.mode;
+            if (mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd) == FMT_EOK) {
+                pilot_cmd.mode = gcs_cmd.mode;
+            } else {
+                pilot_cmd.mode = PilotMode_None;
+            }
 
             /* publish virtual joystick data */
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd);
