@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.969
+ * Model version                  : 1.974
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Apr 10 11:42:08 2025
+ * C/C++ source code generated on : Wed Apr 23 17:49:02 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -199,6 +199,21 @@ extern const ConstB_Controller_T Controller_ConstB;/* constant block i/o */
 extern const ConstP_Controller_T Controller_ConstP;
 
 /*
+ * Exported Global Signals
+ *
+ * Note: Exported global signals are block signals with an exported global
+ * storage class designation.  Code generation will declare the memory for
+ * these signals and export their symbols.
+ *
+ */
+extern real32_T att_cmd_B_rad[2];      /* '<S83>/Switch' */
+extern real32_T att_est_B_rad[2];      /* '<S86>/Signal Copy' */
+extern real32_T rate_cmd_B_radPs[3];   /* '<S69>/Switch' */
+extern real32_T rate_est_B_radPs[3];   /* '<S72>/Signal Copy' */
+extern real32_T w_cmd_C_mPs;           /* '<S113>/Integrator1' */
+extern real32_T w_est_C_mPs;           /* '<S111>/Signal Copy1' */
+
+/*
  * Exported Global Parameters
  *
  * Note: Exported global parameters are tunable parameters with an exported
@@ -263,7 +278,6 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * Block '<S88>/Data Type Propagation' : Unused code path elimination
  * Block '<S3>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S73>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S111>/Signal Copy1' : Eliminate redundant signal conversion block
  */
 
 /*-
