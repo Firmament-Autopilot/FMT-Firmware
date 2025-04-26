@@ -5,7 +5,7 @@ TASKS = [
     'logger/*.c',
     'fmtio/*.c',
     'status/*.c',
-    'vehicle/multicopter/*.c',
+    'vehicle/normal/*.c',
 ]
 
 TASKS_CPPPATH = []
