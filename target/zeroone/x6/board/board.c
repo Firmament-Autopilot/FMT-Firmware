@@ -434,8 +434,8 @@ void bsp_early_initialize(void)
     // /* i2c driver init */
     // RT_CHECK(drv_i2c_init());
 
-    // /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
 
     // /* pwm driver init */
     // RT_CHECK(drv_pwm_init());
@@ -491,17 +491,20 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     /* init onboard sensors */
-    // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
+    RT_CHECK(drv_bmi088_init("spi3_dev1", "spi3_dev2", "gyro0", "accel0", 0));
     // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    RT_CHECK(gps_ubx_init("serial5", "gps"));
 
-    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     // FMT_CHECK(register_sensor_mag("mag0", 0));
     // FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));
+
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
 #endif
 
     /* init finsh */
