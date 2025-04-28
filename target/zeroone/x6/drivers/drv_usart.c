@@ -35,7 +35,7 @@
             0                                     \
     }
 
-#define SERIAL5_DEFAULT_CONFIG                  \
+#define SERIAL7_DEFAULT_CONFIG                  \
     {                                           \
         BAUD_RATE_230400,  /* 115200 bits/s */  \
             DATA_BITS_8,   /* 8 databits */     \
