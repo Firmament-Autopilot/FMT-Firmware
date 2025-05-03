@@ -184,7 +184,7 @@ TASK_EXPORT __fmt_task_desc = {
     .entry = task_logger_entry,
     .priority = LOGGER_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 2048,
+    .stack_size = 1536,
     .param = NULL,
     .dependency = (char*[]) { "vehicle", NULL }
 };

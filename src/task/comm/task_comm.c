@@ -842,7 +842,7 @@ TASK_EXPORT __fmt_task2_desc = {
     .entry = task_mavobc_entry,
     .priority = MAVOBC_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 4096,
+    .stack_size = 2048,
     .param = NULL,
     .dependency = (char*[]) { "mavgcs", NULL }
 };
