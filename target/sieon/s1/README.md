@@ -1,57 +1,51 @@
-Cubepilot Cubeorange Flight Controller
+SIEON S1 Flight Controller
 ============================
 
-The Cubepilot Cubeorange is an advanced STM32H743 autopilot designed and made by Cubepilot. It is a variant of the Cubeorange, updated to use Pixhawk standard pinouts. The Cubeorange reference document is [here](https://docs.cubepilot.org/user-guides/autopilot/the-cube-module-overview)
+The SIEON S1 is an advanced STM32H743 autopilot designed and made by FMT team. 
 
 <div align=center><img src="https://ardupilot.org/copter/_images/Cube_orange_adsb.jpg" width="50%"></div>
 
 ## Feature
 
-- **Processor**
-  - 32-bit ARM Cortex M7 core with DPFPU
-  - 480 Mhz/1 MB RAM/2 MB Flash
-  - 32 bit IOMCU co-processor
-- **Sensors**
-  - InvenSense 20948 accelerometer / gyroscope / magnetometer
-  - MS5611 barometer
-- **Power**
-  - Operating power: 4.3~5.4V
-  - USB Input: 4.75~5.25V
-  - High-power servo rail, up to 36V (servo rail does not power the autopilot)
-  - Dual voltage and current monitor inputs
-  - CUAV v5 Plus can be triple redundant if power is provided to both battery monitor inputs and the USB port
-- **Interfaces**
-  - 6 - 12 PWM servo outputs (6 IOMCU, 6 FMU)
-  - S.Bus servo output
-  - PPM connector supports only PPM
-  - SBUS/DSM/RSSI connector supports all RC protocols (including SBUS, DSM, ST24, SRXL and PPM)
-  - Analog / PWM RSSI input
-  - 4x general purpose serial ports
-  - 1x I2C ports
-  - 2x CAN Bus ports
-  - 2x analog battery monitor ports
+Main FMU Processor: STM32F743◦32 Bit Arm® Cortex®-M7, 480MHz, 2MB Flash, 512KB RAM
+
+- **On-board sensors:**
+  - Accel/Gyro: BMI088
+  - Accel/Gyro: ICM-42688
+  - Magnetometer: BMM150
+  - Barometer: SPL06
+- **Interfaces:**
+  - Up to 16 PWM outputs(12 standard pwm output + 4 Optional pwm output )
+  - R/C input for S.Bus/PPM
+  - analog / PWM RSSI input
+  - 6 general purpose serial ports
+  - 2 GPS ports
+  - 3 I2C ports
+  - 1 SPI buses (3 chip select pins)
+  - 2 CAN Buses
+  - 1 ETH port
+  - Analog inputs for voltage / current of battery
+  - 1 Debug port (Jlink-SWD)
+- **Power System:**
+  - Power Brick Input: 4.75~5.5V
+  - USB Power Input: 4.75~5.25V
+  - Servo Rail Input: 0~36V
+- **Weight and Dimensions:**
+  - Dimensions: 60*40*14mm
+- **Other Characteristics:**
+  - Operating temperature: -20 ~ 65°c（Measured value）
 
 ## Wiki
 
-[Cubepilot Cubeorange Overview — Copter documentation (ardupilot.org)](https://docs.cubepilot.org/user-guides/autopilot/the-cube-module-overview)
+https://docs.sieon.net/product
 
 ## Where to Buy
-
-
-## Enivronment
-Cubepilot used dronecan, so you should install the python packages:  
-
-```
-pip install empy
-pip install pexpect
-pip install dronecan
-```
 
 ## Build
 Build fmu firmware for quadcopter
 
 ```
-cd FMT-Firmware/taget/cubepilot/cubeorange
+cd FMT-Firmware/taget/sieon/s1
 scons -j4
 ```
 
@@ -61,13 +55,6 @@ For other vehicle, such as fixwing, using
 
 ```
 scons -j4 --vehicle=Fixwing
-```
-
-Cubepilot Cubeorange has an io (co-processor) processor onboard. Use the following command to build io firmware.
-
-```
-cd FMT-Firmware/target/pixhawk/fmt-io/project
-scons -j4
 ```
 
 ## Download
@@ -119,54 +106,53 @@ When system is up and running, the system banner is output via serial0 or you ca
   / __(_)_____ _  ___ ___ _  ___ ___  / /_
  / _// / __/  ' \/ _ `/  ' \/ -_) _ \/ __/
 /_/ /_/_/ /_/_/_/\_,_/_/_/_/\__/_//_/\__/ 
-Firmware.....................FMT FW v0.5.2
+Firmware.....................FMT FW v1.1.0
 Kernel....................RT-Thread v4.0.3
 RAM.................................512 KB
-Target................Cubepilot Cubeorange
+Target............................SIEON S1
 Vehicle........................Multicopter
 Airframe.................................1
-INS Model..................Base INS v0.3.2
-FMS Model..................Base FMS v0.4.0
-Control Model.......Base Controller v0.2.4
+INS Model..................Base INS v1.0.0
+FMS Model..................Base FMS v1.0.0
+Control Model.......Base Controller v1.0.0
 Task Initialize:
   mavobc................................OK
   mavgcs................................OK
   logger................................OK
-  fmtio.................................OK
   status................................OK
   vehicle...............................OK
-  dronecan..............................OK
 ```
-
-
-### Download IO Firmware
-
-The next step is to upload the io firmware which is downloaded through the fmu. First copy the io firmware `target/pixhawk/fmt-io/project/build/fmt_io.bin` to the on board sd card. You can do that via QGC onboard files page (QGC version 3.5.6 only) or a sd card reader. 
-
-![qgc_download](https://qiniu.md.amovlab.com/img/m/202303/20230305/1820266235233805846609920.png)
-
-
-Then enter the following command in FMT console to upload the firmware to io processor.
-
-```
-msh /usr>fmtio upload /usr/fmt_io.bin
-[312785] I/Uploader: sync success
-[312793] I/Uploader: found bootloader revision: 5
-[312803] I/Uploader: io firmaware:/usr/fmt_io.bin
-[312818] I/Uploader: erase...
-[314151] I/Uploader: program...
-[316275] I/Uploader: CRC check ok, received: 8a27ed4f, expected: 8a27ed4f
-```
-
-> For the first time to download the io firmware, you need connect GPS module and hold the safety button to power up, which would lead io processor to stay in bootloader.
 
 ## Port Mapping
 
-| UART   | Device  | Port          |
-| ------ | ------- | ------------  |
-| UART2  | Serial0 | TELEM1(DEBUG) |
-| UART3  | Serial1 | TELEM2        |
-| UART4  | Serial2 | GPS1          |
-| UART8  | serial3 | GPS2          |
-| UART7  | serial4 | HAL           |
-| UART6  | serial5 | FMTIO         |
+| UART  | Device  | Port     |
+| ----- | ------- | -------- |
+| UART1 | Serial0 | DEBUG    |
+| UART6 | Serial1 | TELEM1   |
+| UART2 | Serial2 | TELEM2   |
+| UART3 | serial3 | GPS1     |
+| UART4 | serial4 | GPS2     |
+| UART7 | serial5 | UART/I2C |
+
+| SPI  | Device    | Port    |
+| ---- | --------- | ------- |
+| SPI2 | spi2_dev1 | SPI CS1 |
+| SPI2 | spi2_dev2 | SPI CS2 |
+| SPI2 | spi2_dev3 | SPI CS3 |
+
+| I2C  | Device | Port     |
+| ---- | ------ | -------- |
+| I2C1 | i2c1   | GPS1     |
+| I2C2 | i2c2   | GPS2     |
+| I2C3 | i2c3   | UART/I2C |
+
+| CAN  | Device | Port |
+| ---- | ------ | ---- |
+| CAN1 | can1   | CAN1 |
+| CAN2 | can2   | CAN2 |
+
+| PWM      | Device   | Port       |
+| -------- | -------- | ---------- |
+| MAIN OUT | main_out | M1-M12     |
+| AUX OUT  | aux_out  | PWM(A1-A4) |
+
