@@ -24,6 +24,7 @@ extern "C" {
 #endif
 
 rt_err_t drv_rm3100_init(const char* spi_device_name, const char* mag_device_name);
+rt_err_t drv_rm3100_i2c_init(const char* i2c_device_name, const char* mag_device_name);
 
 #ifdef __cplusplus
 }
