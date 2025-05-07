@@ -26,8 +26,7 @@
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
-#include "driver/mag/bmm150.h"
-#include "driver/mag/qmc5883l.h"
+#include "driver/mag/rm3100.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/range_finder/tofsense.h"
 #include "drv_adc.h"
@@ -431,8 +430,8 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
@@ -493,17 +492,17 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi3_dev1", "spi3_dev2", "gyro0", "accel0", 0));
     // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-    // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
+    RT_CHECK(drv_rm3100_i2c_init("i2c4_dev1", "mag0"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     RT_CHECK(gps_ubx_init("serial5", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    // FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
     // FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));
 
-    FMT_CHECK(advertise_sensor_mag(0));
+    // FMT_CHECK(advertise_sensor_mag(0));
     FMT_CHECK(advertise_sensor_baro(0));
 #endif
 

@@ -17,6 +17,8 @@
 #include <firmament.h>
 
 #include "driver/mag/rm3100.h"
+#include "hal/i2c/i2c.h"
+#include "hal/i2c/i2c_dev.h"
 #include "hal/mag/mag.h"
 #include "hal/spi/spi.h"
 
@@ -49,35 +51,66 @@
 #define UTESLA_TO_GAUSS    0.01f // uT to Gauss conversion
 
 static rt_device_t mag_spi_dev;
+static rt_device_t mag_i2c_dev;
 static float scale = 1.0;
+
+/* Re-implement this function to define customized rotation */
+RT_WEAK void rm310_rotate_to_frd(float* data)
+{
+    /* do nothing */
+    (void)data;
+}
 
 static rt_err_t lowlevel_init(void)
 {
     uint8_t mag_id = 0;
 
-    /* init spi bus */
-    RT_TRY(rt_device_open(mag_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    if (mag_spi_dev != NULL) {
+        /* init spi bus */
+        RT_TRY(rt_device_open(mag_i2c_dev, RT_DEVICE_OFLAG_RDWR));
 
-    RT_TRY(spi_read_reg8(mag_spi_dev, RM3100_REVID_REG, &mag_id));
-    if (RM3100_REVID != mag_id) {
-        DRV_DBG("rm3100 wrong chip id:0x%x\n", mag_id);
-        return RT_ERROR;
+        RT_TRY(spi_read_reg8(mag_spi_dev, RM3100_REVID_REG, &mag_id));
+        if (RM3100_REVID != mag_id) {
+            DRV_DBG("rm3100 wrong chip id:0x%x\n", mag_id);
+            return RT_ERROR;
+        }
+
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_TMRC_REG, RM3100_TMRC_150HZ));
+
+        /* set default cycle count */
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCX_MSB_REG, 0x00));
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCX_LSB_REG, 0xC8));
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCY_MSB_REG, 0x00));
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCY_LSB_REG, 0xC8));
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCZ_MSB_REG, 0x00));
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCZ_LSB_REG, 0xC8));
+        /* has to be changed if using a different cycle count */
+        scale = (1 / GAIN_CC200) * UTESLA_TO_GAUSS;
+
+        /* Set CMZ,CMY,CMX and START (Continue Mode) */
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CMM_REG, 0x71));
+    } else if (mag_i2c_dev != NULL) {
+        RT_TRY(i2c_read_reg(mag_i2c_dev, RM3100_REVID_REG, &mag_id));
+        if (RM3100_REVID != mag_id) {
+            DRV_DBG("rm3100 wrong chip id:0x%x\n", mag_id);
+            return RT_ERROR;
+        }
+
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_TMRC_REG, RM3100_TMRC_150HZ));
+
+        /* set default cycle count */
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CCX_MSB_REG, 0x00));
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CCX_LSB_REG, 0xC8));
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CCY_MSB_REG, 0x00));
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CCY_LSB_REG, 0xC8));
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CCZ_MSB_REG, 0x00));
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CCZ_LSB_REG, 0xC8));
+        /* has to be changed if using a different cycle count */
+        scale = (1 / GAIN_CC200) * UTESLA_TO_GAUSS;
+
+        /* Set CMZ,CMY,CMX and START (Continue Mode) */
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CMM_REG, 0x71));
     }
-
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_TMRC_REG, RM3100_TMRC_150HZ));
-
-    /* set default cycle count */
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCX_MSB_REG, 0x00));
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCX_LSB_REG, 0xC8));
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCY_MSB_REG, 0x00));
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCY_LSB_REG, 0xC8));
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCZ_MSB_REG, 0x00));
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CCZ_LSB_REG, 0xC8));
-    /* has to be changed if using a different cycle count */
-    scale = (1 / GAIN_CC200) * UTESLA_TO_GAUSS;
-
-    /* Set CMZ,CMY,CMX and START (Continue Mode) */
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CMM_REG, 0x71));
 
     return RT_EOK;
 }
@@ -90,30 +123,59 @@ static rt_err_t mag_measure(float mag[3])
     int32_t magy = 0;
     int32_t magz = 0;
 
-    RT_TRY(spi_read_reg8(mag_spi_dev, RM3100_STATUS_REG, &status));
-    if (!(status & 0x80)) {
-        /* data is not ready */
-        return RT_EBUSY;
+    if (mag_spi_dev != NULL) {
+        RT_TRY(spi_read_reg8(mag_spi_dev, RM3100_STATUS_REG, &status));
+        if (!(status & 0x80)) {
+            /* data is not ready */
+            return RT_EBUSY;
+        }
+
+        RT_TRY(spi_read_multi_reg8(mag_spi_dev, RM3100_MX2_REG, mag_data, sizeof(mag_data)));
+
+        // the 24 bits of data for each axis are in 2s complement representation
+        // each byte is shifted to its position in a 24-bit unsigned integer and from 8 more bits to be left-aligned in a 32-bit integer
+        magx = ((uint32_t)mag_data[0] << 24) | ((uint32_t)mag_data[1] << 16) | ((uint32_t)mag_data[2] << 8);
+        magy = ((uint32_t)mag_data[3] << 24) | ((uint32_t)mag_data[4] << 16) | ((uint32_t)mag_data[5] << 8);
+        magz = ((uint32_t)mag_data[6] << 24) | ((uint32_t)mag_data[7] << 16) | ((uint32_t)mag_data[8] << 8);
+        // right-shift signed integer back to get correct measurement value
+        magx >>= 8;
+        magy >>= 8;
+        magz >>= 8;
+        // apply scaler
+        mag[0] = magx * scale;
+        mag[1] = magy * scale;
+        mag[2] = magz * scale;
+
+        /* start next measurement */
+        RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CMM_REG, 0x71));
+    } else if (mag_i2c_dev != NULL) {
+        RT_TRY(i2c_read_reg(mag_i2c_dev, RM3100_STATUS_REG, &status));
+        if (!(status & 0x80)) {
+            /* data is not ready */
+            return RT_EBUSY;
+        }
+
+        RT_TRY(i2c_read_regs(mag_i2c_dev, RM3100_MX2_REG, mag_data, sizeof(mag_data)));
+
+        // the 24 bits of data for each axis are in 2s complement representation
+        // each byte is shifted to its position in a 24-bit unsigned integer and from 8 more bits to be left-aligned in a 32-bit integer
+        magx = ((uint32_t)mag_data[0] << 24) | ((uint32_t)mag_data[1] << 16) | ((uint32_t)mag_data[2] << 8);
+        magy = ((uint32_t)mag_data[3] << 24) | ((uint32_t)mag_data[4] << 16) | ((uint32_t)mag_data[5] << 8);
+        magz = ((uint32_t)mag_data[6] << 24) | ((uint32_t)mag_data[7] << 16) | ((uint32_t)mag_data[8] << 8);
+        // right-shift signed integer back to get correct measurement value
+        magx >>= 8;
+        magy >>= 8;
+        magz >>= 8;
+        // apply scaler
+        mag[0] = magx * scale;
+        mag[1] = magy * scale;
+        mag[2] = magz * scale;
+
+        /* start next measurement */
+        RT_TRY(i2c_write_reg(mag_i2c_dev, RM3100_CMM_REG, 0x71));
     }
 
-    RT_TRY(spi_read_multi_reg8(mag_spi_dev, RM3100_MX2_REG, mag_data, sizeof(mag_data)));
-
-    // the 24 bits of data for each axis are in 2s complement representation
-    // each byte is shifted to its position in a 24-bit unsigned integer and from 8 more bits to be left-aligned in a 32-bit integer
-    magx = ((uint32_t)mag_data[0] << 24) | ((uint32_t)mag_data[1] << 16) | ((uint32_t)mag_data[2] << 8);
-    magy = ((uint32_t)mag_data[3] << 24) | ((uint32_t)mag_data[4] << 16) | ((uint32_t)mag_data[5] << 8);
-    magz = ((uint32_t)mag_data[6] << 24) | ((uint32_t)mag_data[7] << 16) | ((uint32_t)mag_data[8] << 8);
-    // right-shift signed integer back to get correct measurement value
-    magx >>= 8;
-    magy >>= 8;
-    magz >>= 8;
-    // apply scaler
-    mag[0] = magx * scale;
-    mag[1] = magy * scale;
-    mag[2] = magz * scale;
-
-    /* start next measurement */
-    RT_TRY(spi_write_reg8(mag_spi_dev, RM3100_CMM_REG, 0x71));
+    rm310_rotate_to_frd(mag);
 
     return RT_EOK;
 }
@@ -162,6 +224,27 @@ rt_err_t drv_rm3100_init(const char* spi_device_name, const char* mag_device_nam
 
         RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
+
+    RT_TRY(lowlevel_init());
+
+    RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+
+    return RT_EOK;
+}
+
+rt_err_t drv_rm3100_i2c_init(const char* i2c_device_name, const char* mag_device_name)
+{
+    static struct mag_device mag_dev = {
+        .ops = &__mag_ops,
+        .config = { 0 },
+        .bus_type = MAG_I2C_BUS_TYPE
+    };
+
+    mag_i2c_dev = rt_device_find(i2c_device_name);
+
+    RT_ASSERT(mag_i2c_dev != NULL);
+
+    RT_CHECK(rt_device_open(mag_i2c_dev, RT_DEVICE_OFLAG_RDWR));
 
     RT_TRY(lowlevel_init());
 

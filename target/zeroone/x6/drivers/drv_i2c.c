@@ -23,147 +23,12 @@
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-#define I2C_TIMEOUT_US (1000)
+#define I2C_TIMEOUT_US (500)
 
 struct stm32_i2c_bus {
     struct rt_i2c_bus parent;
     I2C_TypeDef* I2C;
 };
-
-static void i2c1_hw_init(void)
-{
-    LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
-
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
-
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
-    /**I2C1 GPIO Configuration
-    PB8   ------> I2C1_SCL
-    PB9   ------> I2C1_SDA
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_9;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-    /* Peripheral clock enable */
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
-
-    /* USER CODE BEGIN I2C1_Init 1 */
-
-    /* USER CODE END I2C1_Init 1 */
-
-    /** I2C Initialization
-     */
-    LL_I2C_EnableAutoEndMode(I2C1);
-    LL_I2C_SetOwnAddress2(I2C1, 0, LL_I2C_OWNADDRESS2_NOMASK);
-    LL_I2C_DisableOwnAddress2(I2C1);
-    LL_I2C_DisableGeneralCall(I2C1);
-    LL_I2C_EnableClockStretching(I2C1);
-    I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x00B03FDB;
-    I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
-    I2C_InitStruct.DigitalFilter = 0;
-    I2C_InitStruct.OwnAddress1 = 0;
-    I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
-    I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
-    LL_I2C_Init(I2C1, &I2C_InitStruct);
-}
-
-static void i2c2_hw_init(void)
-{
-    LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
-
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
-
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
-    /**I2C2 GPIO Configuration
-    PF0   ------> I2C2_SDA
-    PF1   ------> I2C2_SCL
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_0 | LL_GPIO_PIN_1;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-    /* Peripheral clock enable */
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C2);
-
-    /* USER CODE BEGIN I2C2_Init 1 */
-
-    /* USER CODE END I2C2_Init 1 */
-
-    /** I2C Initialization
-     */
-    LL_I2C_EnableAutoEndMode(I2C2);
-    LL_I2C_SetOwnAddress2(I2C2, 0, LL_I2C_OWNADDRESS2_NOMASK);
-    LL_I2C_DisableOwnAddress2(I2C2);
-    LL_I2C_DisableGeneralCall(I2C2);
-    LL_I2C_EnableClockStretching(I2C2);
-    I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x00B03FDB;
-    I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
-    I2C_InitStruct.DigitalFilter = 0;
-    I2C_InitStruct.OwnAddress1 = 0;
-    I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
-    I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
-    LL_I2C_Init(I2C2, &I2C_InitStruct);
-}
-
-static void i2c3_hw_init(void)
-{
-    LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
-
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
-
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
-    /**I2C3 GPIO Configuration
-    PH8   ------> I2C3_SDA
-    PH7   ------> I2C3_SCL
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_7;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-    /* Peripheral clock enable */
-    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C3);
-
-    /* USER CODE BEGIN I2C3_Init 1 */
-
-    /* USER CODE END I2C3_Init 1 */
-
-    /** I2C Initialization
-     */
-    LL_I2C_EnableAutoEndMode(I2C3);
-    LL_I2C_SetOwnAddress2(I2C3, 0, LL_I2C_OWNADDRESS2_NOMASK);
-    LL_I2C_DisableOwnAddress2(I2C3);
-    LL_I2C_DisableGeneralCall(I2C3);
-    LL_I2C_EnableClockStretching(I2C3);
-    I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x00B03FDB;
-    I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
-    I2C_InitStruct.DigitalFilter = 0;
-    I2C_InitStruct.OwnAddress1 = 0;
-    I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
-    I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
-    LL_I2C_Init(I2C3, &I2C_InitStruct);
-}
 
 static void i2c4_hw_init(void)
 {
@@ -342,49 +207,21 @@ _stop:
 static const struct rt_i2c_bus_device_ops i2c_bus_ops = { i2c_master_transfer, RT_NULL, RT_NULL };
 
 /* i2c bus instances */
-static struct stm32_i2c_bus stm32_i2c1 = { .parent.ops = &i2c_bus_ops, .I2C = I2C1 };
-
-static struct stm32_i2c_bus stm32_i2c2 = { .parent.ops = &i2c_bus_ops, .I2C = I2C2 };
-
-static struct stm32_i2c_bus stm32_i2c3 = { .parent.ops = &i2c_bus_ops, .I2C = I2C3 };
-
 static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2C4 };
 
 /* i2c device instances */
-static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };
-static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };
-static struct rt_i2c_device i2c1_dev2 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };
-static struct rt_i2c_device i2c2_dev2 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };          
-static struct rt_i2c_device i2c3_dev1 = { .slave_addr = 0x0D, /* 7 bit address */
-                                          .flags = 0 };      
-static struct rt_i2c_device i2c4_dev1 = { .slave_addr = 0x0D, /* 7 bit address */
+static struct rt_i2c_device i2c4_dev1 = { .slave_addr = 0x20, /* RM3100 7 bit address */
                                           .flags = 0 };                                                                                                     
 
 rt_err_t drv_i2c_init(void)
 {
     /* i2c low-level initialization */
-    i2c1_hw_init();
-    i2c2_hw_init();
-    i2c3_hw_init();
     i2c4_hw_init();
 
     /* register i2c bus */
-    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c1.parent, "i2c1"));
-    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c2.parent, "i2c2"));
-    RT_TRY(rt_i2c_bus_device_register(&stm32_i2c3.parent, "i2c3"));
     RT_TRY(rt_i2c_bus_device_register(&stm32_i2c4.parent, "i2c4"));
 
     /* attach i2c devices */
-    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev1, "i2c2_dev1", "i2c2", RT_NULL));
-
-    RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev2, "i2c2_dev2", "i2c2", RT_NULL));
-    RT_TRY(rt_i2c_bus_attach_device(&i2c3_dev1, "i2c3_dev1", "i2c3", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c4_dev1, "i2c4_dev1", "i2c4", RT_NULL));
 
     return RT_EOK;
