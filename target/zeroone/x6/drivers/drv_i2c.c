@@ -45,7 +45,7 @@ static void i2c4_hw_init(void)
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_15 | LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
@@ -189,6 +189,9 @@ _stop:
     /* wait until stop flag is set */
     if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_STOPF, 0, I2C_TIMEOUT_US) != FMT_EOK) {
         DRV_DBG("I2C wait STOP timeout\n");
+        LL_I2C_Disable(stm32_i2c->I2C);
+        LL_I2C_Enable(stm32_i2c->I2C);
+        return msg_idx;
     }
     /* clear stop flag */
     LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
