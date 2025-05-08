@@ -22,7 +22,7 @@
 #include <string.h>
 
 #include "board_device.h"
-#include "driver/barometer/spl06.h"
+#include "driver/barometer/icp201xx.h"
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
@@ -493,7 +493,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi3_dev1", "spi3_dev2", "gyro0", "accel0", 0));
     // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     RT_CHECK(drv_rm3100_i2c_init("i2c4_dev1", "mag0"));
-    // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
+    RT_CHECK(drv_icp201xx_init("i2c4_dev2", "barometer"));
     RT_CHECK(gps_ubx_init("serial5", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));

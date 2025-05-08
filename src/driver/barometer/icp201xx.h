@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
-#include "module/math/rotation.h"
 
-void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
-{
-    data[0] = -data[0];
-    data[2] = -data[2];
-}
+#ifndef ICP201XX_H__
+#define ICP201XX_H__
 
-void rm310_rotate_to_frd(float* data)
-{
-    data[0] = -data[0];
-    data[1] = -data[1];
+#include <rtthread.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_icp201xx_init(const char* device_name, const char* baro_device_name);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif
