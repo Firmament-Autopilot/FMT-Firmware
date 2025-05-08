@@ -22,8 +22,8 @@ void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
     data[2] = -data[2];
 }
 
-void rm310_rotate_to_frd(float* data)
-{
-    data[0] = -data[0];
-    data[1] = -data[1];
-}
+// void rm310_rotate_to_frd(float* data)
+// {
+//     // data[0] = -data[0];
+//     // data[1] = -data[1];
+// }

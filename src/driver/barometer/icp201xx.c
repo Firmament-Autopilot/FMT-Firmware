@@ -160,7 +160,7 @@ static rt_err_t configure(void)
     /* FIFO Readout Mode Selection: Pressure first. */
     reg_value |= (reg_value & (~0x03)) | ((uint8_t)(FIFO_READOUT_MODE_PRES_TEMP));
 
-    /* Measurement Configuration: Mode2*/
+    /* Measurement Configuration: Mode1*/
     reg_value |= (reg_value & (~0xE0)) | (((uint8_t)OP_MODE2) << 5);
 
     /* Measurement Mode Selection: Continuous Measurements (duty cycled) */
@@ -194,9 +194,9 @@ static void wait_read(void)
     } while (fifo_packets == 0);
 }
 
-static void measure(void* parameter)
+static rt_err_t measure(baro_report_t* report)
 {
-    uint8_t fifo_data[96] = {0};
+    uint8_t fifo_data[96] = { 0 };
     uint8_t fifo_packets = 0;
     int32_t data_temp = 0;
     int32_t data_press = 0;
@@ -204,10 +204,10 @@ static void measure(void* parameter)
     float temperature = 0;
 
     if (i2c_read_reg(dev, REG_FIFO_FILL, &fifo_packets) == RT_EOK) {
-        fifo_packets  = (uint8_t)(fifo_packets & 0x1F);
+        fifo_packets = (uint8_t)(fifo_packets & 0x1F);
         if (fifo_packets > 16) {
             flush_fifo();
-            return;
+            return RT_ERROR;
         }
         if (fifo_packets > 0 && fifo_packets <= 16 && i2c_read_regs(dev, REG_FIFO_BASE, fifo_data, fifo_packets * 2 * 3) == RT_EOK) {
             uint8_t offset = 0;
@@ -218,7 +218,7 @@ static void measure(void* parameter)
                     data_press |= 0xFFF00000;
                 }
                 /* P = (POUT/2^17)*40kPa + 70kPa */
-                pressure += ((float)(data_press) * 40 / 131072) + 70;
+                pressure += ((float)(data_press)*40 / 131072) + 70;
                 offset += 3;
 
                 data_temp = (int32_t)(((fifo_data[offset + 2] & 0x0f) << 16) | (fifo_data[offset + 1] << 8) | fifo_data[offset]);
@@ -226,23 +226,52 @@ static void measure(void* parameter)
                     data_temp |= 0xFFF00000;
                 }
                 /* T = (TOUT/2^18)*65C + 25C */
-                temperature += ((float)(data_temp) * 65 / 262144) + 25;
+                temperature += ((float)(data_temp)*65 / 262144) + 25;
                 offset += 3;
             }
 
-            pressure = pressure * 1000 / fifo_packets;
-            temperature = temperature / fifo_packets;
+            report->pressure_Pa = pressure * 1000 / fifo_packets;
+            report->temperature_deg = temperature / fifo_packets;
+            report->altitude_m = 44330.0f * (1.0f - powf(report->pressure_Pa / 101325.0f, 1.0f / 5.255f));
+            report->timestamp_ms = systime_now_ms();
 
-            PERIOD_EXECUTE(test, 500, printf("press:%f, temp:%f\n", pressure, temperature););
+            // PERIOD_EXECUTE(test, 500, printf("press:%f temp:%f alt:%f\n", report->pressure_Pa, report->temperature_deg, report->altitude_m););
+
+            return RT_EOK;
         }
     }
+
+    return RT_ERROR;
 }
 
-static struct WorkItem icp201xx_work = {
-    .name = "icp201xx",
-    .period = 10,
-    .schedule_time = 0,
-    .run = measure
+static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
+{
+    switch (cmd) {
+    case BARO_CMD_CHECK_READY: {
+        DEFINE_TIMETAG(baro_interval, 10);
+        *(uint8_t*)arg = check_timetag(TIMETAG(baro_interval));
+    } break;
+    default:
+        break;
+    }
+
+    return RT_EOK;
+}
+
+static rt_size_t baro_read(baro_dev_t baro, baro_report_t* report)
+{
+    rt_size_t size = 0;
+
+    if (measure(report) == RT_EOK) {
+        size = sizeof(baro_report_t);
+    }
+
+    return size;
+}
+
+static struct baro_ops _baro_ops = {
+    .baro_control = baro_control,
+    .baro_read = baro_read
 };
 
 static rt_err_t lowlevel_init(void)
@@ -267,13 +296,12 @@ static rt_err_t lowlevel_init(void)
 
     wait_read();
 
-    /* find high-priority workqueue */
-    WorkQueue_t hp_wq = workqueue_find("wq:hp_work");
-    /* schedule the work */
-    FMT_CHECK(workqueue_schedule_work(hp_wq, &icp201xx_work));
-
     return RT_EOK;
 }
+
+static struct baro_device baro_dev = {
+    .ops = &_baro_ops
+};
 
 rt_err_t drv_icp201xx_init(const char* device_name, const char* baro_device_name)
 {
@@ -284,7 +312,8 @@ rt_err_t drv_icp201xx_init(const char* device_name, const char* baro_device_name
 
     RT_TRY(lowlevel_init());
 
-    // RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    /* register barometer device */
+    RT_TRY(hal_baro_register(&baro_dev, baro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
 }

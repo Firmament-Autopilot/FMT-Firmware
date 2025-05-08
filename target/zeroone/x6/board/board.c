@@ -498,12 +498,12 @@ void bsp_initialize(void)
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
-    // FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));
 
     // FMT_CHECK(advertise_sensor_mag(0));
-    FMT_CHECK(advertise_sensor_baro(0));
+    // FMT_CHECK(advertise_sensor_baro(0));
 #endif
 
     /* init finsh */
