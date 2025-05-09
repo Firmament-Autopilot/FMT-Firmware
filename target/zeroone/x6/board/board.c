@@ -386,21 +386,6 @@ void SystemClock_Config(void)
     if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
         Error_Handler();
     }
-
-    /* Peripherals Common Clock Configuration */
-    LL_RCC_PLL2P_Enable();
-    LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
-    LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_MEDIUM);
-    LL_RCC_PLL2_SetM(1);
-    LL_RCC_PLL2_SetN(10);
-    LL_RCC_PLL2_SetP(2);
-    LL_RCC_PLL2_SetQ(2);
-    LL_RCC_PLL2_SetR(2);
-    LL_RCC_PLL2_Enable();
-
-    /* Wait till PLL is ready */
-    while (LL_RCC_PLL2_IsReady() != 1) {
-    }
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
@@ -439,8 +424,8 @@ void bsp_early_initialize(void)
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
-    // /* can driver init */
-    // RT_CHECK(drv_fdcan_init());
+    /* can driver init */
+    RT_CHECK(drv_fdcan_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
