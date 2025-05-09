@@ -16,7 +16,7 @@ The system is mainly composed of two parts.
 - [FMT-Model](https://github.com/Firmament-Autopilot/FMT-Model): A simulation framework with algorithm libraries designed with MATLAB/Simulink.
 
 ## Documentation
-[User Guide](https://firmament-autopilot.github.io/FMT-DOCS/)
+[User Guide](https://docs.sieon.net/fmt)
 
 ## Download
 
