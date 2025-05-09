@@ -7,9 +7,9 @@ DRIVERS = [
     'mag/hmc5883.c',
     'barometer/ms5611.c',
     'gps/gps_ubx.c',
-    'vision_flow/mtf_01.c',
+    # 'vision_flow/mtf_01.c',
     'rgb_led/tca62724.c',
-    'uwb/nlink_linktrack/*.c',
+    # 'uwb/nlink_linktrack/*.c',
     'airspeed/ms4525.c',
 ]
 

@@ -29,7 +29,7 @@ struct mavlink_msg_handler_func {
 static LIST_HEAD(__mavlink_msg_chan0_handler_head);
 static LIST_HEAD(__mavlink_msg_chan1_handler_head);
 
-static char thread_mavlink_rx_stack[8192];
+static char thread_mavlink_rx_stack[6144];
 static struct rt_thread thread_mavlink_rx_handle;
 static struct rt_event mav_rx_event;
 

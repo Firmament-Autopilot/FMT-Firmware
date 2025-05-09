@@ -831,7 +831,7 @@ TASK_EXPORT __fmt_task1_desc = {
     .entry = task_mavgcs_entry,
     .priority = MAVGCS_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 8192,
+    .stack_size = 2048,
     .param = NULL,
     .dependency = NULL
 };
@@ -842,7 +842,7 @@ TASK_EXPORT __fmt_task2_desc = {
     .entry = task_mavobc_entry,
     .priority = MAVOBC_THREAD_PRIORITY,
     .auto_start = true,
-    .stack_size = 4096,
+    .stack_size = 2048,
     .param = NULL,
     .dependency = (char*[]) { "mavgcs", NULL }
 };

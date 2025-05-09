@@ -17,7 +17,7 @@
 #ifndef FMTCONFIG_H__
 #define FMTCONFIG_H__
 
-#define FMT_USING_CHECKED
+// #define FMT_USING_CHECKED
 
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
@@ -26,7 +26,7 @@
 #define FMT_OUTPUT_PILOT_CMD
 
 /* MLog */
-#define MLOG_BUFFER_SIZE         4 * 1024
+#define MLOG_BUFFER_SIZE         8 * 1024
 #define MLOG_SECTOR_SIZE         4096
 #define MLOG_MAX_SECTOR_TO_WRITE 5
 
