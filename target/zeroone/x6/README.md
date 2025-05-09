@@ -98,23 +98,22 @@ When system is up and running, the system banner is output via serial0 or you ca
   / __(_)_____ _  ___ ___ _  ___ ___  / /_
  / _// / __/  ' \/ _ `/  ' \/ -_) _ \/ __/
 /_/ /_/_/ /_/_/_/\_,_/_/_/_/\__/_//_/\__/ 
-Firmware.....................FMT FW v0.5.2
+Firmware.....................FMT FW v1.1.0
 Kernel....................RT-Thread v4.0.3
 RAM.................................512 KB
-Target................Cubepilot Cubeorange
+Target..........................ZeroOne X6
 Vehicle........................Multicopter
 Airframe.................................1
-INS Model..................Base INS v0.3.2
-FMS Model..................Base FMS v0.4.0
-Control Model.......Base Controller v0.2.4
+INS Model....................CF INS v1.0.0
+FMS Model....................MC FMS v1.0.0
+Control Model.........MC Controller v1.0.0
 Task Initialize:
   mavobc................................OK
   mavgcs................................OK
   logger................................OK
-  fmtio.................................OK
   status................................OK
   vehicle...............................OK
-  dronecan..............................OK
+  fmtio.................................OK
 ```
 
 
@@ -141,11 +140,13 @@ msh /usr>fmtio upload /usr/fmt_io.bin
 
 ## Port Mapping
 
-| UART   | Device  | Port          |
-| ------ | ------- | ------------  |
-| UART2  | Serial0 | TELEM1(DEBUG) |
-| UART3  | Serial1 | TELEM2        |
-| UART4  | Serial2 | GPS1          |
-| UART8  | serial3 | GPS2          |
-| UART7  | serial4 | HAL           |
-| UART6  | serial5 | FMTIO         |
+| UART  | Device  | Port   |
+| ----- | ------- | ------ |
+| UART3 | serial0 | DEBUG  |
+| UART7 | serial1 | TELEM1 |
+| UART5 | serial2 | TELEM2 |
+| UART2 | serial3 | TELEM3 |
+| UART4 | serial4 | UART4  |
+| UART1 | serial5 | GPS1   |
+| UART8 | serial6 | GPS2   |
+
