@@ -189,9 +189,6 @@ _stop:
     /* wait until stop flag is set */
     if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_STOPF, 0, I2C_TIMEOUT_US) != FMT_EOK) {
         DRV_DBG("I2C wait STOP timeout\n");
-        LL_I2C_Disable(stm32_i2c->I2C);
-        LL_I2C_Enable(stm32_i2c->I2C);
-        return msg_idx;
     }
     /* clear stop flag */
     LL_I2C_ClearFlag_STOP(stm32_i2c->I2C);
