@@ -1,57 +1,42 @@
-Cubepilot Cubeorange Flight Controller
+ZeroOne X6 Flight Controller
 ============================
 
-The Cubepilot Cubeorange is an advanced STM32H743 autopilot designed and made by Cubepilot. It is a variant of the Cubeorange, updated to use Pixhawk standard pinouts. The Cubeorange reference document is [here](https://docs.cubepilot.org/user-guides/autopilot/the-cube-module-overview)
+The ZeroOne X6 is a flight controller manufactured by ZeroOne, which is based on the open-source FMU v6X architecture and Pixhawk Autopilot Bus open source specifications.
 
-<div align=center><img src="https://ardupilot.org/copter/_images/Cube_orange_adsb.jpg" width="50%"></div>
+<div align=center><img src="https://ardupilot.org/plane/_images/ZeroOneX6.png" width="30%"></div>
 
-## Feature
+## Features:
 
-- **Processor**
-  - 32-bit ARM Cortex M7 core with DPFPU
-  - 480 Mhz/1 MB RAM/2 MB Flash
-  - 32 bit IOMCU co-processor
-- **Sensors**
-  - InvenSense 20948 accelerometer / gyroscope / magnetometer
-  - MS5611 barometer
-- **Power**
-  - Operating power: 4.3~5.4V
-  - USB Input: 4.75~5.25V
-  - High-power servo rail, up to 36V (servo rail does not power the autopilot)
-  - Dual voltage and current monitor inputs
-  - CUAV v5 Plus can be triple redundant if power is provided to both battery monitor inputs and the USB port
-- **Interfaces**
-  - 6 - 12 PWM servo outputs (6 IOMCU, 6 FMU)
-  - S.Bus servo output
-  - PPM connector supports only PPM
-  - SBUS/DSM/RSSI connector supports all RC protocols (including SBUS, DSM, ST24, SRXL and PPM)
-  - Analog / PWM RSSI input
-  - 4x general purpose serial ports
-  - 1x I2C ports
-  - 2x CAN Bus ports
-  - 2x analog battery monitor ports
+- Separate flight control core design.
+- MCU
+  STM32H753IIK6 32-bit processor running at 480MHz
+  2MB Flash
+  1MB RAM
+- Sensors
+- IMU:
+  Internal Vibration Isolation for IMUs
+  IMU constant temperature heating(1 W heating power).
+  With Triple Synced IMUs, BalancedGyro technology, low noise and more shock-resistant:
+  IMU1-ICM45686(With vibration isolation)
+  IMU2-BMI088(With vibration isolation)
+  IMU3- ICM45686(No vibration isolation)
+- Baro:
+  Two barometers:2 x ICP20100
+  Magnetometer: Builtin RM3100 magnetometer
 
 ## Wiki
 
-[Cubepilot Cubeorange Overview — Copter documentation (ardupilot.org)](https://docs.cubepilot.org/user-guides/autopilot/the-cube-module-overview)
+[X6飞控Readme-零一飞行文档中心](https://docs.01aero.cn/docs/X6_readme)
 
 ## Where to Buy
 
-
-## Enivronment
-Cubepilot used dronecan, so you should install the python packages:  
-
-```
-pip install empy
-pip install pexpect
-pip install dronecan
-```
+[零一X6开源飞控-淘宝网](https://item.taobao.com/item.htm?abbucket=11&detail_redpacket_pop=true&id=790973866451&ltk2=1746782887151tc8x6ek228s4847eip8xj&ns=1&priceTId=undefined&query=零一飞控&skuId=5780533500698&spm=a21n57.1.hoverItem.2&utparam={"aplus_abtest"%3A"4997d1bb11d5dfa1e801f6a4bf97e79d"}&xxc=taobaoSearch)
 
 ## Build
 Build fmu firmware for quadcopter
 
 ```
-cd FMT-Firmware/taget/cubepilot/cubeorange
+cd FMT-Firmware/taget/zeroone/x6
 scons -j4
 ```
 
@@ -63,7 +48,7 @@ For other vehicle, such as fixwing, using
 scons -j4 --vehicle=Fixwing
 ```
 
-Cubepilot Cubeorange has an io (co-processor) processor onboard. Use the following command to build io firmware.
+X6 has an io (co-processor) processor onboard. Use the following command to build io firmware.
 
 ```
 cd FMT-Firmware/target/pixhawk/fmt-io/project
@@ -78,28 +63,22 @@ Currently there are 3 ways to download fmu firmware to hardware.
 1. **Donwload Script**: Enter `python3 uploader.py` in the Cubeorange directory. Then connect your hardware via usb.
 
 ```
-(fmt) E:\GitRepository\FMT-Firmware\target\cubepilot\cubeorange>python uploader.py
-waiting for the bootloader...
-Attempting reboot on COM30 with baudrate=57600...
+PS D:\ws\FMT\FMT-Firmware\target\zeroone\x6> python.exe .\uploader.py
+Attempting reboot on COM22 with baudrate=57600...
 If the board does not respond, unplug and re-plug the USB connector.
-Not found fmt_fmu,please connect fmt_fmu!
-Not found fmt_fmu,please connect fmt_fmu!
-Attempting reboot on COM3 with baudrate=57600...
-If the board does not respond, unplug and re-plug the USB connector.
-Not found fmt_fmu,please connect fmt_fmu!
 
-Found board id: 140,0 bootloader version: 5 on COM29
-sn: 002700493430511030383637
-chip: 20036450
-family: b'STM32H743/753'
-revision: b'V'
+Found board id: 7000,0 bootloader version: 5 on COM22
+sn: 6828e780d4f5008030184823
+chip: 00000000
+family: b'STM32H??????'
+revision: b'?'
 flash: 1966080 bytes
 Windowed mode: False
 
 Erase  : [====================] 100.0%
 Program: [====================] 100.0%
 Verify : [====================] 100.0%
-Rebooting. Elapsed Time 12.231
+Rebooting. Elapsed Time 12.948
 ```
 
 > If the `"ModuleNotFoundError: No module named 'serial'"` error occurs, indicating that the **pyserial** component is missing, enter `pip3 install pyserial` to install.
