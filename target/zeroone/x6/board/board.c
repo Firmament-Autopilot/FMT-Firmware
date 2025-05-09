@@ -436,14 +436,11 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
-    // /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
 
     // /* can driver init */
     // RT_CHECK(drv_fdcan_init());
-
-    // /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
