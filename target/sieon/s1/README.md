@@ -3,7 +3,7 @@ SIEON S1 Flight Controller
 
 The SIEON S1 is an advanced STM32H743 autopilot designed and made by FMT team. 
 
-<div align=center><img src="https://ardupilot.org/copter/_images/Cube_orange_adsb.jpg" width="50%"></div>
+<div align=center><img src="https://docs.sieon.net/product/figures/s1.jpg" width="50%"></div>
 
 ## Feature
 
@@ -127,9 +127,9 @@ Task Initialize:
 
 | UART  | Device  | Port     |
 | ----- | ------- | -------- |
-| UART1 | Serial0 | DEBUG    |
-| UART6 | Serial1 | TELEM1   |
-| UART2 | Serial2 | TELEM2   |
+| UART1 | serial0 | DEBUG    |
+| UART6 | serial1 | TELEM1   |
+| UART2 | serial2 | TELEM2   |
 | UART3 | serial3 | GPS1     |
 | UART4 | serial4 | GPS2     |
 | UART7 | serial5 | UART/I2C |
