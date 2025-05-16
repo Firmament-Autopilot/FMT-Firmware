@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1142
+ * Model version                  : 1.1176
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Apr  3 16:44:43 2025
+ * C/C++ source code generated on : Fri May 16 14:46:58 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -16,6 +16,37 @@
 #ifndef RTW_HEADER_Controller_types_h_
 #define RTW_HEADER_Controller_types_h_
 #include "rtwtypes.h"
+
+/* Model Code Variants */
+/**
+ * Variant choices for normal variant control variables can be selected via:
+ *  1. -DVC_VARIABLE1=VALUE1 -DVC_VARIABLE2=VALUE2 *  2. -DUSE_VARIANT_DEFINES_HEADER="header.h"  (header.h contains #define's)
+ *
+ * Given a variant control expression in a Variant block such as "V==1", V is a
+ * variant control variable. A normal variant control variable is a plain MATLAB
+ * variable, i.e. not a Simulink.Parameter. By default the value defined for a
+ * normal variant control variable is the value seen when generating code.
+ * Alternatively, you can use Simulink.Parameter variant control variables to
+ * specify code generation behavior.
+ */
+#ifdef USE_VARIANT_DEFINES_HEADER
+#define VARIANT_DEFINES_HEADER_STR(h)  #h
+#define VARIANT_DEFINES_HEADER(h)      VARIANT_DEFINES_HEADER_STR(h)
+#include VARIANT_DEFINES_HEADER(USE_VARIANT_DEFINES_HEADER)
+#endif                                 /* USE_VARIANT_DEFINES_HEADER */
+
+/*
+ * Validate the variant control variables are consistent with the model requirements
+ */
+#ifndef AIRFRAME
+#define AIRFRAME                       1
+#endif
+
+/* Exactly one variant for '<S2>/Control_Allocation' should be active */
+#if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
+#error Exactly one variant for '<S2>/Control_Allocation' should be active
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 
@@ -216,8 +247,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_pNbTadB0jgRVqt3p6wG0lB_
-#define DEFINED_TYPEDEF_FOR_struct_pNbTadB0jgRVqt3p6wG0lB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_Zm37EZYmzJbgCrEnB3vf4C_
+#define DEFINED_TYPEDEF_FOR_struct_Zm37EZYmzJbgCrEnB3vf4C_
 
 typedef struct {
   real32_T VEL_P;
@@ -227,12 +258,24 @@ typedef struct {
   real32_T VEL_I_MIN;
   real32_T VEL_D_MAX;
   real32_T VEL_D_MIN;
-  real32_T PSI_RATE_P;
+  real32_T FW_PSI_RATE_P;
+  real32_T FW_PSI_RATE_I;
+  real32_T FW_PSI_RATE_D;
+  real32_T FW_PSI_RATE_FF;
+  real32_T BW_PSI_RATE_P;
+  real32_T BW_PSI_RATE_I;
+  real32_T BW_PSI_RATE_D;
+  real32_T BW_PSI_RATE_FF;
+  real32_T THROTTLE_MAX;
+  real32_T THROTTLE_MIN;
   real32_T THROTTLE_SCALE;
   uint16_T THROTTLE_BIAS;
+  uint16_T THROTTLE2_BIAS;
   real32_T SERVO_SCALE;
   uint16_T SERVO_BIAS;
-} struct_pNbTadB0jgRVqt3p6wG0lB;
+  real32_T SERVO_MAX;
+  real32_T SERVO_MIN;
+} struct_Zm37EZYmzJbgCrEnB3vf4C;
 
 #endif
 

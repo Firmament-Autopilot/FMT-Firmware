@@ -36,12 +36,13 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(L1, 7.0, false),
+    PARAM_FLOAT(L1, 6.0, false),
     PARAM_FLOAT(CRUISE_SPEED, 3.0, false),
     PARAM_FLOAT(ACCEPT_R, 5.0, false),
     PARAM_FLOAT(MAX_VEL, 4.0, false),
-    PARAM_FLOAT(AY_P, 0.7, false),
+    PARAM_FLOAT(AY_P, 0.5, false),
     PARAM_FLOAT(YAW_P, 0.7, false),
+    PARAM_FLOAT(MAX_PSI_RATE, 0.25 * PI, false),
     PARAM_UINT16(LOST_RETURN_TIME, 10, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
 };
@@ -252,6 +253,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_VEL), &FMS_PARAM.MAX_VEL));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, AY_P), &FMS_PARAM.AY_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_P), &FMS_PARAM.YAW_P));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_PSI_RATE), &FMS_PARAM.MAX_PSI_RATE));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_TIME), &FMS_PARAM.LOST_RETURN_TIME));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LOST_RETURN_EN), &FMS_PARAM.LOST_RETURN_EN));
 }

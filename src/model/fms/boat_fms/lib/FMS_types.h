@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2061
+ * Model version                  : 1.2077
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Apr  3 16:44:07 2025
+ * C/C++ source code generated on : Fri May 16 14:57:39 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -492,21 +492,20 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_U5lw6bCUkWz4DxN5NeKa6F_
-#define DEFINED_TYPEDEF_FOR_struct_U5lw6bCUkWz4DxN5NeKa6F_
+#ifndef DEFINED_TYPEDEF_FOR_struct_Gx4s46jqevXr2fL59Nw2BC_
+#define DEFINED_TYPEDEF_FOR_struct_Gx4s46jqevXr2fL59Nw2BC_
 
 typedef struct {
-  real32_T DISARM_OUT[16];
-  real32_T STANDBY_OUT[16];
   real32_T L1;
   real32_T CRUISE_SPEED;
   real32_T ACCEPT_R;
   real32_T MAX_VEL;
   real32_T AY_P;
   real32_T YAW_P;
+  real32_T MAX_PSI_RATE;
   uint16_T LOST_RETURN_TIME;
   uint8_T LOST_RETURN_EN;
-} struct_U5lw6bCUkWz4DxN5NeKa6F;
+} struct_Gx4s46jqevXr2fL59Nw2BC;
 
 #endif
 
