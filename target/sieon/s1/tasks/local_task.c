@@ -32,7 +32,7 @@ static void task_entry(void* parameter)
 }
 
 // TASK_EXPORT __fmt_task_desc = {
-//     .name = "eth",
+//     .name = "local",
 //     .init = task_init,
 //     .entry = task_entry,
 //     .priority = 25,
