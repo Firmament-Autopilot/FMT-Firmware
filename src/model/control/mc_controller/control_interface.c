@@ -58,6 +58,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ROLL_RATE_D, 0.0015, false),
     PARAM_FLOAT(PITCH_RATE_D, 0.0015, false),
     PARAM_FLOAT(YAW_RATE_D, 0.001, false),
+    PARAM_FLOAT(ROLL_RATE_FF, 0.0, false),
+    PARAM_FLOAT(PITCH_RATE_FF, 0.0, false),
     PARAM_FLOAT(RATE_I_MIN, -0.1, false),
     PARAM_FLOAT(RATE_I_MAX, 0.1, false),
     PARAM_FLOAT(RATE_D_MIN, -0.1, false),
@@ -129,6 +131,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_RATE_D), &CONTROL_PARAM.ROLL_RATE_D));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, PITCH_RATE_D), &CONTROL_PARAM.PITCH_RATE_D));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, YAW_RATE_D), &CONTROL_PARAM.YAW_RATE_D));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, ROLL_RATE_FF), &CONTROL_PARAM.ROLL_RATE_FF));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, PITCH_RATE_FF), &CONTROL_PARAM.PITCH_RATE_FF));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_I_MIN), &CONTROL_PARAM.RATE_I_MIN));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_I_MAX), &CONTROL_PARAM.RATE_I_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, RATE_D_MIN), &CONTROL_PARAM.RATE_D_MIN));
