@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1176
+ * Model version                  : 1.1185
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 16 14:46:58 2025
+ * C/C++ source code generated on : Tue May 20 17:00:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,18 +25,18 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_Zm37EZYmzJbgCrEnB3vf4C CONTROL_PARAM = {
+struct_KPrsn48OrR8nBbHqB69JGB CONTROL_PARAM = {
   0.5F,
   0.1F,
   0.0F,
-  0.2F,
-  -0.2F,
+  0.6F,
+  -0.6F,
   0.1F,
   -0.1F,
   0.0F,
   0.2F,
   0.0F,
-  3.0F,
+  2.0F,
   2.0F,
   0.2F,
   0.05F,
@@ -45,6 +45,7 @@ struct_Zm37EZYmzJbgCrEnB3vf4C CONTROL_PARAM = {
   -1.0F,
   500.0F,
   1500U,
+  500.0F,
   1500U,
   250.0F,
   1500U,
@@ -62,6 +63,7 @@ struct_Zm37EZYmzJbgCrEnB3vf4C CONTROL_PARAM = {
                                         *   '<S8>/Bias1'
                                         *   '<S8>/Gain'
                                         *   '<S8>/Gain1'
+                                        *   '<S8>/Gain2'
                                         *   '<S8>/Saturation1'
                                         *   '<S8>/Saturation2'
                                         *   '<S15>/BW_FF'
@@ -124,7 +126,7 @@ void Controller_step(void)
   real32_T rtb_Gain;
   real32_T rtb_Sum;
   real32_T rtb_Gain_h;
-  real32_T rtb_Gain_i;
+  real32_T rtb_Gain_hj;
   int32_T i;
   real32_T rtb_VectorConcatenate_0[3];
 
@@ -237,9 +239,9 @@ void Controller_step(void)
      *  Gain: '<S39>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_Gain_i = 0.0F;
+      rtb_Gain_hj = 0.0F;
     } else {
-      rtb_Gain_i = rtb_Gain;
+      rtb_Gain_hj = rtb_Gain;
     }
 
     /* End of Switch: '<S39>/Switch' */
@@ -247,7 +249,7 @@ void Controller_step(void)
     /* Product: '<S36>/Multiply' incorporates:
      *  Constant: '<S36>/gain1'
      */
-    rtb_Saturation_g = CONTROL_PARAM.VEL_D * rtb_Gain_i;
+    rtb_Saturation_g = CONTROL_PARAM.VEL_D * rtb_Gain_hj;
 
     /* Saturate: '<S36>/Saturation' */
     if (rtb_Saturation_g > CONTROL_PARAM.VEL_D_MAX) {
@@ -374,9 +376,9 @@ void Controller_step(void)
      *  Gain: '<S28>/Gain1'
      */
     if (Controller_U.FMS_Out.reset > 0) {
-      rtb_Gain_i = 0.0F;
+      rtb_Gain_hj = 0.0F;
     } else {
-      rtb_Gain_i = rtb_Gain_h;
+      rtb_Gain_hj = rtb_Gain_h;
     }
 
     /* End of Switch: '<S28>/Switch' */
@@ -384,14 +386,14 @@ void Controller_step(void)
     /* Product: '<S25>/Multiply' incorporates:
      *  Constant: '<S25>/gain1'
      */
-    rtb_Gain_i *= CONTROL_PARAM.FW_PSI_RATE_D;
+    rtb_Gain_hj *= CONTROL_PARAM.FW_PSI_RATE_D;
 
     /* Saturate: '<S25>/Saturation' */
-    if (rtb_Gain_i > 0.2F) {
-      rtb_Gain_i = 0.2F;
+    if (rtb_Gain_hj > 0.2F) {
+      rtb_Gain_hj = 0.2F;
     } else {
-      if (rtb_Gain_i < -0.2F) {
-        rtb_Gain_i = -0.2F;
+      if (rtb_Gain_hj < -0.2F) {
+        rtb_Gain_hj = -0.2F;
       }
     }
 
@@ -404,7 +406,7 @@ void Controller_step(void)
      */
     Controller_B.Merge = (CONTROL_PARAM.FW_PSI_RATE_P * rtb_Sum +
                           Controller_DW.DiscreteTimeIntegrator_DSTATE_f) +
-      rtb_Gain_i;
+      rtb_Gain_hj;
 
     /* Update for DiscreteIntegrator: '<S26>/Discrete-Time Integrator' incorporates:
      *  Constant: '<S26>/gain1'
@@ -508,7 +510,7 @@ void Controller_step(void)
      *  DiscreteIntegrator: '<S24>/Discrete-Time Integrator1'
      *  Sum: '<S24>/Sum5'
      */
-    rtb_Gain_i = (rtb_Sum - Controller_DW.DiscreteTimeIntegrator1_DSTAT_p) *
+    rtb_Gain_hj = (rtb_Sum - Controller_DW.DiscreteTimeIntegrator1_DSTAT_p) *
       188.49556F;
 
     /* Switch: '<S24>/Switch' incorporates:
@@ -517,7 +519,7 @@ void Controller_step(void)
     if (rtb_Sum > 0.0F) {
       rtb_Gain_h = 0.0F;
     } else {
-      rtb_Gain_h = rtb_Gain_i;
+      rtb_Gain_h = rtb_Gain_hj;
     }
 
     /* End of Switch: '<S24>/Switch' */
@@ -587,7 +589,7 @@ void Controller_step(void)
 
     /* Update for DiscreteIntegrator: '<S24>/Discrete-Time Integrator1' */
     Controller_DW.DiscreteTimeIntegrator1_IC_LO_m = 0U;
-    Controller_DW.DiscreteTimeIntegrator1_DSTAT_p += 0.01F * rtb_Gain_i;
+    Controller_DW.DiscreteTimeIntegrator1_DSTAT_p += 0.01F * rtb_Gain_hj;
 
     /* End of Outputs for SubSystem: '<S16>/Backward' */
   }
@@ -627,15 +629,15 @@ void Controller_step(void)
 
     /* Saturate: '<S16>/Saturation' */
     if (Controller_B.Merge > 1.0F) {
-      rtb_Gain_i = 1.0F;
+      rtb_Gain_hj = 1.0F;
     } else if (Controller_B.Merge < -1.0F) {
-      rtb_Gain_i = -1.0F;
+      rtb_Gain_hj = -1.0F;
     } else {
-      rtb_Gain_i = Controller_B.Merge;
+      rtb_Gain_hj = Controller_B.Merge;
     }
 
     /* End of Saturate: '<S16>/Saturation' */
-    rtb_Saturation_g = rtb_Sum + rtb_Gain_i;
+    rtb_Saturation_g = rtb_Sum + rtb_Gain_hj;
   } else {
     rtb_Saturation_g = Controller_U.FMS_Out.psi_rate_cmd;
   }
@@ -658,9 +660,10 @@ void Controller_step(void)
 
   /* Output and update for atomic system: '<S4>/Boat_1' */
   {
+    real32_T rtb_thruster;
     int32_T i_j;
+    real32_T tmp_j;
     uint16_T u0_j;
-    real32_T u0_c;
 
     /* MultiPortSwitch: '<S9>/Multiport Switch' incorporates:
      *  Inport: '<Root>/FMS_Out'
@@ -687,11 +690,11 @@ void Controller_step(void)
      case 3:
       /* Saturate: '<S7>/Saturation1' */
       if (rtb_Saturation > CONTROL_PARAM.THROTTLE_MAX) {
-        u0_c = CONTROL_PARAM.THROTTLE_MAX;
+        rtb_thruster = CONTROL_PARAM.THROTTLE_MAX;
       } else if (rtb_Saturation < CONTROL_PARAM.THROTTLE_MIN) {
-        u0_c = CONTROL_PARAM.THROTTLE_MIN;
+        rtb_thruster = CONTROL_PARAM.THROTTLE_MIN;
       } else {
-        u0_c = rtb_Saturation;
+        rtb_thruster = rtb_Saturation;
       }
 
       /* End of Saturate: '<S7>/Saturation1' */
@@ -700,15 +703,15 @@ void Controller_step(void)
        *  Bias: '<S7>/Bias'
        *  Gain: '<S7>/Gain'
        */
-      u0_c = fmodf(floorf(CONTROL_PARAM.THROTTLE_SCALE * u0_c + (real32_T)
-                          CONTROL_PARAM.THROTTLE_BIAS), 65536.0F);
-      u0_j = (uint16_T)(u0_c < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
-                        -u0_c : (int32_T)(uint16_T)u0_c);
+      tmp_j = fmodf(floorf(CONTROL_PARAM.THROTTLE_SCALE * rtb_thruster +
+                           (real32_T)CONTROL_PARAM.THROTTLE_BIAS), 65536.0F);
+      u0_j = (uint16_T)(tmp_j < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                        -tmp_j : (int32_T)(uint16_T)tmp_j);
 
       /* Saturate: '<S7>/Saturation' */
-      if (u0_j > 1950) {
+      if (u0_j > 2000) {
         /* Reshape: '<S9>/Reshape' */
-        rtb_VariantMergeForOutportactua[0] = 1950U;
+        rtb_VariantMergeForOutportactua[0] = 2000U;
       } else if (u0_j < 1000) {
         /* Reshape: '<S9>/Reshape' */
         rtb_VariantMergeForOutportactua[0] = 1000U;
@@ -717,27 +720,26 @@ void Controller_step(void)
         rtb_VariantMergeForOutportactua[0] = u0_j;
       }
 
-      /* Switch: '<S7>/Switch' incorporates:
-       *  Constant: '<S7>/Constant'
-       *  Constant: '<S7>/Constant1'
-       */
-      if (rtb_Saturation >= 0.0F) {
-        i_j = 1;
+      /* Signum: '<S7>/Sign' */
+      if (rtb_thruster < 0.0F) {
+        rtb_thruster = -1.0F;
       } else {
-        i_j = -1;
+        if (rtb_thruster > 0.0F) {
+          rtb_thruster = 1.0F;
+        }
       }
 
-      /* End of Switch: '<S7>/Switch' */
+      /* End of Signum: '<S7>/Sign' */
 
       /* Product: '<S7>/Multiply' */
-      u0_c = (real32_T)i_j * rtb_Saturation_g;
+      rtb_thruster *= rtb_Saturation_g;
 
       /* Saturate: '<S7>/Saturation2' */
-      if (u0_c > CONTROL_PARAM.SERVO_MAX) {
-        u0_c = CONTROL_PARAM.SERVO_MAX;
+      if (rtb_thruster > CONTROL_PARAM.SERVO_MAX) {
+        rtb_thruster = CONTROL_PARAM.SERVO_MAX;
       } else {
-        if (u0_c < CONTROL_PARAM.SERVO_MIN) {
-          u0_c = CONTROL_PARAM.SERVO_MIN;
+        if (rtb_thruster < CONTROL_PARAM.SERVO_MIN) {
+          rtb_thruster = CONTROL_PARAM.SERVO_MIN;
         }
       }
 
@@ -747,15 +749,15 @@ void Controller_step(void)
        *  Bias: '<S7>/Bias1'
        *  Gain: '<S7>/Gain1'
        */
-      u0_c = fmodf(floorf(CONTROL_PARAM.SERVO_SCALE * u0_c + (real32_T)
-                          CONTROL_PARAM.SERVO_BIAS), 65536.0F);
-      u0_j = (uint16_T)(u0_c < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
-                        -u0_c : (int32_T)(uint16_T)u0_c);
+      tmp_j = fmodf(floorf(CONTROL_PARAM.SERVO_SCALE * rtb_thruster + (real32_T)
+                           CONTROL_PARAM.SERVO_BIAS), 65536.0F);
+      u0_j = (uint16_T)(tmp_j < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)
+                        -tmp_j : (int32_T)(uint16_T)tmp_j);
 
       /* Saturate: '<S7>/Saturation' */
-      if (u0_j > 1950) {
+      if (u0_j > 2000) {
         /* Reshape: '<S9>/Reshape' */
-        rtb_VariantMergeForOutportactua[1] = 1950U;
+        rtb_VariantMergeForOutportactua[1] = 2000U;
       } else if (u0_j < 1000) {
         /* Reshape: '<S9>/Reshape' */
         rtb_VariantMergeForOutportactua[1] = 1000U;
@@ -787,7 +789,7 @@ void Controller_step(void)
 
   /* Output and update for atomic system: '<S4>/Boat_2' */
   {
-    real32_T rtb_Gain1_c4;
+    real32_T rtb_Saturation1;
     real32_T rtb_thruster1;
     int32_T i_e;
     real32_T u0_e;
@@ -815,6 +817,17 @@ void Controller_step(void)
       break;
 
      case 3:
+      /* Saturate: '<S8>/Saturation1' */
+      if (rtb_Saturation > CONTROL_PARAM.THROTTLE_MAX) {
+        rtb_Saturation1 = CONTROL_PARAM.THROTTLE_MAX;
+      } else if (rtb_Saturation < CONTROL_PARAM.THROTTLE_MIN) {
+        rtb_Saturation1 = CONTROL_PARAM.THROTTLE_MIN;
+      } else {
+        rtb_Saturation1 = rtb_Saturation;
+      }
+
+      /* End of Saturate: '<S8>/Saturation1' */
+
       /* Saturate: '<S8>/Saturation2' */
       if (rtb_Saturation_g > CONTROL_PARAM.SERVO_MAX) {
         rtb_thruster1 = CONTROL_PARAM.SERVO_MAX;
@@ -827,34 +840,21 @@ void Controller_step(void)
       /* End of Saturate: '<S8>/Saturation2' */
 
       /* Gain: '<S8>/Gain1' */
-      rtb_Gain1_c4 = CONTROL_PARAM.SERVO_SCALE * rtb_thruster1;
-
-      /* Saturate: '<S8>/Saturation1' */
-      if (rtb_Saturation > CONTROL_PARAM.THROTTLE_MAX) {
-        rtb_thruster1 = CONTROL_PARAM.THROTTLE_MAX;
-      } else if (rtb_Saturation < CONTROL_PARAM.THROTTLE_MIN) {
-        rtb_thruster1 = CONTROL_PARAM.THROTTLE_MIN;
-      } else {
-        rtb_thruster1 = rtb_Saturation;
-      }
-
-      /* End of Saturate: '<S8>/Saturation1' */
-
-      /* Gain: '<S8>/Gain' */
-      rtb_thruster1 *= CONTROL_PARAM.THROTTLE_SCALE;
+      rtb_thruster1 *= CONTROL_PARAM.SERVO_SCALE;
 
       /* Bias: '<S8>/Bias' incorporates:
+       *  Gain: '<S8>/Gain'
        *  Sum: '<S8>/Add'
        */
-      u0_e = (rtb_thruster1 + rtb_Gain1_c4) + (real32_T)
-        CONTROL_PARAM.THROTTLE_BIAS;
+      u0_e = (CONTROL_PARAM.THROTTLE_SCALE * rtb_Saturation1 + rtb_thruster1) +
+        (real32_T)CONTROL_PARAM.THROTTLE_BIAS;
 
       /* Saturate: '<S8>/Saturation' */
-      if (u0_e > 1900.0F) {
-        u0_e = 1900.0F;
+      if (u0_e > 2000.0F) {
+        u0_e = 2000.0F;
       } else {
-        if (u0_e < 1100.0F) {
-          u0_e = 1100.0F;
+        if (u0_e < 1000.0F) {
+          u0_e = 1000.0F;
         }
       }
 
@@ -865,17 +865,18 @@ void Controller_step(void)
         65536.0F);
 
       /* Bias: '<S8>/Bias1' incorporates:
+       *  Gain: '<S8>/Gain2'
        *  Sum: '<S8>/Add1'
        */
-      u0_e = (rtb_thruster1 - rtb_Gain1_c4) + (real32_T)
-        CONTROL_PARAM.THROTTLE2_BIAS;
+      u0_e = (CONTROL_PARAM.THROTTLE2_SCALE * rtb_Saturation1 - rtb_thruster1) +
+        (real32_T)CONTROL_PARAM.THROTTLE2_BIAS;
 
       /* Saturate: '<S8>/Saturation' */
-      if (u0_e > 1900.0F) {
-        u0_e = 1900.0F;
+      if (u0_e > 2000.0F) {
+        u0_e = 2000.0F;
       } else {
-        if (u0_e < 1100.0F) {
-          u0_e = 1100.0F;
+        if (u0_e < 1000.0F) {
+          u0_e = 1000.0F;
         }
       }
 

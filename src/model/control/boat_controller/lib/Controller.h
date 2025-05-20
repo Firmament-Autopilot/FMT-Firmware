@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1176
+ * Model version                  : 1.1185
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 16 14:46:58 2025
+ * C/C++ source code generated on : Tue May 20 17:00:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,7 +110,7 @@ extern const ConstB_Controller_T Controller_ConstB;/* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_Zm37EZYmzJbgCrEnB3vf4C CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_KPrsn48OrR8nBbHqB69JGB CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S7>/Bias'
                                                     *   '<S7>/Bias1'
@@ -122,6 +122,7 @@ extern struct_Zm37EZYmzJbgCrEnB3vf4C CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S8>/Bias1'
                                                     *   '<S8>/Gain'
                                                     *   '<S8>/Gain1'
+                                                    *   '<S8>/Gain2'
                                                     *   '<S8>/Saturation1'
                                                     *   '<S8>/Saturation2'
                                                     *   '<S15>/BW_FF'
