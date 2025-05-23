@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2147
+ * Model version                  : 1.2168
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Apr 10 13:49:53 2025
+ * C/C++ source code generated on : Thu May 22 22:47:36 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -249,6 +249,19 @@ typedef enum {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_FMS_Error_
+#define DEFINED_TYPEDEF_FOR_FMS_Error_
+
+/* enumeration of FMS error */
+typedef enum {
+  FMS_Error_None = 0,                  /* Default value */
+  FMS_Error_ModeDegradation,
+  FMS_Error_LostLink,
+  FMS_Error_LowBattery = 4
+} FMS_Error;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 
@@ -388,6 +401,7 @@ typedef struct {
   /* The psi value when arm state entered,
      which is used for FRAME_LOCAL_FRD */
   real32_T local_psi;
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif

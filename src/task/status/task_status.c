@@ -41,11 +41,12 @@ static McnNode_t mission_data_nod;
 
 RT_WEAK void vehicle_status_change_cb(uint8_t status);
 RT_WEAK void vehicle_state_change_cb(uint8_t mode);
+RT_WEAK void fms_error_change_cb(uint32_t error);
 
 static void send_mission_current(uint16_t seq)
 {
-    mavlink_system_t          mavsys = mavproxy_get_system();
-    mavlink_message_t         msg;
+    mavlink_system_t mavsys = mavproxy_get_system();
+    mavlink_message_t msg;
     mavlink_mission_current_t mission_current = { .seq = seq };
 
     mavlink_msg_mission_current_encode(mavsys.sysid, mavsys.compid, &msg, &mission_current);
@@ -54,29 +55,29 @@ static void send_mission_current(uint16_t seq)
 
 static void send_home_position(void)
 {
-    mavlink_system_t        mavsys = mavproxy_get_system();
-    mavlink_message_t       msg;
+    mavlink_system_t mavsys = mavproxy_get_system();
+    mavlink_message_t msg;
     mavlink_home_position_t home_position;
-    INS_Out_Bus             ins_out;
+    INS_Out_Bus ins_out;
 
     if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return;
     }
 
-    home_position.latitude   = ins_out.lat * 180 / PI * 1e7;
-    home_position.longitude  = ins_out.lon * 180 / PI * 1e7;
-    home_position.altitude   = ins_out.alt * 100;
-    home_position.x          = ins_out.x_R;
-    home_position.y          = ins_out.y_R;
-    home_position.z          = -ins_out.h_R;
-    home_position.q[0]       = ins_out.quat[0];
-    home_position.q[1]       = ins_out.quat[1];
-    home_position.q[2]       = ins_out.quat[2];
-    home_position.q[3]       = ins_out.quat[3];
+    home_position.latitude = ins_out.lat * 180 / PI * 1e7;
+    home_position.longitude = ins_out.lon * 180 / PI * 1e7;
+    home_position.altitude = ins_out.alt * 100;
+    home_position.x = ins_out.x_R;
+    home_position.y = ins_out.y_R;
+    home_position.z = -ins_out.h_R;
+    home_position.q[0] = ins_out.quat[0];
+    home_position.q[1] = ins_out.quat[1];
+    home_position.q[2] = ins_out.quat[2];
+    home_position.q[3] = ins_out.quat[3];
     home_position.approach_x = 0;
     home_position.approach_y = 0;
     home_position.approach_z = 0;
-    home_position.time_usec  = systime_now_us();
+    home_position.time_usec = systime_now_us();
 
     mavlink_msg_home_position_encode(mavsys.sysid, mavsys.compid, &msg, &home_position);
     mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, false);
@@ -86,7 +87,7 @@ static void update_fms_status(void)
 {
     /* set initial status/state to disarm to avoid mlog stop unintentionally */
     static FMS_Out_Bus old_fms_out = { .status = VehicleStatus_Disarm, .state = VehicleState_Disarm };
-    FMS_Out_Bus        fms_out;
+    FMS_Out_Bus fms_out;
 
     if (fms_out_nod == NULL)
         return;
@@ -165,6 +166,11 @@ static void update_fms_status(void)
             }
         }
 
+        /* handle fms error */
+        if (fms_out.error != old_fms_out.error) {
+            fms_error_change_cb(fms_out.error);
+        }
+
         old_fms_out = fms_out;
     }
 }
@@ -177,7 +183,7 @@ static void update_ins_status(void)
 static void update_pilot_cmd_status(void)
 {
     static Pilot_Cmd_Bus old_pilot_cmd;
-    Pilot_Cmd_Bus        pilot_cmd;
+    Pilot_Cmd_Bus pilot_cmd;
 
     if (mcn_poll(pilot_cmd_nod)) {
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &pilot_cmd);
@@ -294,12 +300,12 @@ void task_status_entry(void* parameter)
 }
 
 TASK_EXPORT __fmt_task_desc = {
-    .name       = "status",
-    .init       = task_status_init,
-    .entry      = task_status_entry,
-    .priority   = STATUS_THREAD_PRIORITY,
+    .name = "status",
+    .init = task_status_init,
+    .entry = task_status_entry,
+    .priority = STATUS_THREAD_PRIORITY,
     .auto_start = true,
     .stack_size = 4096,
-    .param      = NULL,
+    .param = NULL,
     .dependency = NULL
 };

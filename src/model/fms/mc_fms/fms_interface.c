@@ -160,6 +160,7 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(reserved, MLOG_UINT8),
     MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
     MLOG_ELEMENT(local_psi, MLOG_FLOAT),
+    MLOG_ELEMENT(error, MLOG_UINT32),
 };
 MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
 
@@ -248,6 +249,7 @@ static int fms_output_echo(void* param)
     printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
     printf("home: xyz(m) %.2f %.2f %.2f yaw(deg) %.2f\n", fms_out.home[0], fms_out.home[1], fms_out.home[2], RAD2DEG(fms_out.home[3]));
     printf("lcoal psi:%f\n", fms_out.local_psi);
+    printf("error:%d\n", fms_out.error);
     printf("------------------------------------------\n");
 
     return 0;

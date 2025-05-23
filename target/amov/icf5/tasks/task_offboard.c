@@ -97,7 +97,7 @@ static void task_entry(void* parameter)
         Auto_Cmd_Bus auto_cmd;
 
         auto_cmd.timestamp = systime_now_ms(),
-        auto_cmd.frame = FRAME_GLOBAL_NED,
+        auto_cmd.frame = FRAME_LOCAL_FRD,
         auto_cmd.x_cmd = -(r * c * s) / sspo + ins_out.x_R,
         auto_cmd.y_cmd = (r * c) / sspo + ins_out.y_R,
         auto_cmd.z_cmd = -ins_out.h_R,
