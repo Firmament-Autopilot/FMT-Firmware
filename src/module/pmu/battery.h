@@ -46,6 +46,7 @@ typedef struct {
     bool connected;
     float voltage_v;
     float current_a;
+    float alpha_filter_current; // for current smoothing
     float internal_resistance;
     float temperature_c;
     float discharged_mah;
