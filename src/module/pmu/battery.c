@@ -155,8 +155,7 @@ void battery_update_voltage(Battery* battery, float voltage_v)
     if (battery->voltage_v == 0.0f) {
         battery->voltage_v = voltage_v; // Initialize voltage
     } else {
-        battery->voltage_v = Alpha_filter(0.1f, voltage_v, battery->voltage_v);
-        // battery->voltage_v = Alpha_filter(0.01f, voltage_v, battery->voltage_v); // alpha can be adjusted to a lower value for smoother filtering
+        battery->voltage_v = Alpha_filter(0.01f, voltage_v, battery->voltage_v);
     }
     
 }
