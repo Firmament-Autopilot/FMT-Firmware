@@ -34,7 +34,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(VOLTAGE_EMPTY, 3.0, false),
     PARAM_FLOAT(VOLTAGE_CHARGED, 4.2, false),
     PARAM_FLOAT(R_INTERNAL_CONST, -0.005, false),
-    PARAM_FLOAT(R_INTERNAL, 0.010, false),
+    PARAM_FLOAT(R_INTERNAL, 0.020, false),
     PARAM_FLOAT(LOW_THR, 3.5, false),
     PARAM_FLOAT(CRIT_THR, 3.4, false),
     PARAM_FLOAT(EMERGEN_THR, 3.3, false),
@@ -75,7 +75,7 @@ static int echo_battery_status(void* parameter)
         return -1;
     }
 
-    console_printf("Voltage: %3.3f mV, Current: %3.3f mA, Internal Resistance: %3.3f\n"
+    console_printf("Voltage: %3.3f mV, Current: %3.3f mA, Internal Resistance: %3.6f\n"
                    "Init SOC: %3.3f, Remaining: %3.3f%%, Remaining_C: %3.3f%%, Remaing_V: %3.3f%%\n"
                    "Cell Voltage: %3.3f, Cell Voltage Origin: %3.3f\n\n",
                    bat_status.battery_voltage,

@@ -14,6 +14,8 @@ static float cell_voltage = 0.0f;
 static float _estimation_covariance_norm = 0.0f;
 static float running_error_mean = 0.0f;
 static float R_DEFAULT = 0.005f;
+const float MIN_P00 = 1e-4f;
+const float MIN_P11 = 1e-6f;
 
 typedef struct {
     float ocv; // Open Circuit Voltage (V)
@@ -74,6 +76,7 @@ void battery_init(Battery* battery, battery_params_t* battery_params, uint8_t so
     battery->connected = true;
     battery->voltage_v = 0.0f;
     battery->current_a = 0.0f;
+    battery->alpha_filter_current = 0.0f;
     battery->internal_resistance = R_DEFAULT;
     battery->temperature_c = 0.0f;
     battery->discharged_mah = 0.0f;
@@ -149,7 +152,12 @@ float estimate_soc_from_ocv(Battery* battery)
  */
 void battery_update_voltage(Battery* battery, float voltage_v)
 {
-    battery->voltage_v = voltage_v;
+    if (battery->voltage_v == 0.0f) {
+        battery->voltage_v = voltage_v; // Initialize voltage
+    } else {
+        battery->voltage_v = Alpha_filter(0.01f, voltage_v, battery->voltage_v);
+    }
+    
 }
 
 /**
@@ -162,7 +170,16 @@ void battery_update_voltage(Battery* battery, float voltage_v)
  */
 void battery_update_current(Battery* battery, float current_a)
 {
-    battery->current_a = current_a;
+    if (battery->current_a == 0.0f) {
+        battery->current_a = current_a; 
+    } else {
+        battery->current_a = Alpha_filter(0.1f, current_a, battery->current_a);
+    } 
+    if (battery->alpha_filter_current == 0.0f) {
+        battery->alpha_filter_current = current_a; // Initialize alpha filter with current
+    } else {
+        battery->alpha_filter_current = Alpha_filter(0.1f, current_a, battery->alpha_filter_current);
+    }
 }
 
 /**
@@ -266,20 +283,20 @@ float battery_calculate_soc_voltage_based(Battery* battery)
 
     cell_voltage = battery->voltage_v / battery->params.n_cells;
     battery->cell_voltage_origin = cell_voltage;
-    if (battery->current_a > FLT_EPSILON) {
+    if (battery->alpha_filter_current > FLT_EPSILON) {
         battery_update_internal_resistance(battery);
 
         if (battery->params.r_internal > 0) {
-            cell_voltage += battery->current_a * battery->params.r_internal;
+            cell_voltage += battery->alpha_filter_current * battery->params.r_internal;
         } else {
-            cell_voltage += battery->internal_resistance * battery->current_a;
+            cell_voltage += battery->internal_resistance * battery->alpha_filter_current;
         }
     }
     // Apply filtering to cell_voltage
     battery->cell_voltage = Alpha_filter(0.4f, cell_voltage, battery->cell_voltage);
-    if (cell_voltage <= battery->params.v_empty) {
+    if (battery->cell_voltage <= battery->params.v_empty) {
         return 0.0f;
-    } else if (cell_voltage >= battery->params.v_charged) {
+    } else if (battery->cell_voltage >= battery->params.v_charged) {
         return 100.0f;
     } else {
         return estimate_soc_from_ocv(battery);
@@ -297,7 +314,7 @@ float battery_calculate_soc_voltage_based(Battery* battery)
 void battery_update_internal_resistance(Battery* battery)
 {
     // Define the x vector, where x[0] corresponds to OCV, and x[1] corresponds to the effect of internal resistance on current
-    float x[2] = { 1.0f, -battery->current_a };
+    float x[2] = { 1.0f, -battery->alpha_filter_current };
 
     // Calculate the predicted voltage: OCV - (internal resistance * current)
     float voltage_prediction = x[0] * _RLS_est[0] + x[1] * _RLS_est[1];
@@ -327,7 +344,7 @@ void battery_update_internal_resistance(Battery* battery)
     float denom = lambda_dynamic + x[0] * temp0 + x[1] * temp1 + epsilon;
 
     if (fabsf(denom) < 1e-6f) {
-        _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->current_a;
+        _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->alpha_filter_current;
         return;
     }
 
@@ -397,13 +414,16 @@ void battery_update_internal_resistance(Battery* battery)
         P_new[1][1] = R_COVARIANCE * battery->params.n_cells;
         P_new[0][1] = P_new[1][0] = 0;
     }
+    
+    P_new[0][0] = fmaxf(P_new[0][0], MIN_P00);
+    P_new[1][1] = fmaxf(P_new[1][1], MIN_P11);
 
     // Calculate the new covariance matrix norm (Frobenius norm)
     float new_cov_norm = sqrtf(P_new[0][0] * P_new[0][0] + 2.0f * avg01 * avg01 + P_new[1][1] * P_new[1][1]);
 
     // If the prediction error exceeds the dynamic threshold, only update OCV (to prevent abnormal data from affecting internal resistance estimation)
     if (fabsf(prediction_error) > dynamic_threshold) {
-        _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->current_a;
+        _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->alpha_filter_current;
         return;
     }
 
@@ -418,7 +438,7 @@ void battery_update_internal_resistance(Battery* battery)
         _estimation_covariance[1][1] = P_new[1][1];
         _estimation_covariance_norm = new_cov_norm;
     } else {
-        _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->current_a;
+        _RLS_est[0] = battery->voltage_v + _RLS_est[1] * battery->alpha_filter_current;
     }
 
     battery->internal_resistance = fmaxf(_RLS_est[1] / battery->params.n_cells, 0.f);
@@ -443,9 +463,9 @@ void battery_reset_internal_resistance(Battery* battery)
     battery->internal_resistance = R_DEFAULT;
 
     if (battery->params.r_internal > 0.0f) {
-        battery->voltage_v = battery->voltage_v + battery->current_a * battery->params.r_internal * battery->params.n_cells;
+        battery->voltage_v = battery->voltage_v + battery->alpha_filter_current * battery->params.r_internal * battery->params.n_cells;
     } else {
-        battery->voltage_v = battery->voltage_v + battery->current_a * battery->internal_resistance * battery->params.n_cells;
+        battery->voltage_v = battery->voltage_v + battery->alpha_filter_current * battery->internal_resistance * battery->params.n_cells;
     }
 }
 
@@ -491,7 +511,7 @@ void battery_estimate_state_of_charge(Battery* battery)
         battery_update_state_of_health(battery);
 
         //  Exponential smoothing for final SOC to reduce sudden changes
-        battery->state_of_charge = Alpha_filter(0.4f, state_of_charge, battery->state_of_charge);
+        battery->state_of_charge = Alpha_filter(0.1f, state_of_charge, battery->state_of_charge);
 #endif
     } else {
         battery->state_of_charge = battery->state_of_charge_volt_based;
