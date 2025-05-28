@@ -44,11 +44,13 @@ FMT Firmware's architecture is shown in the figure below.
 
 ## Hardware
 Current supported hardware:
+- [SIEON S1](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/sieon/s1)
 - [AMOV ICF5](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/amov/icf5)
+- [CUAV V5Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_nano)
 - [CUAV V5+](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_plus)
+- [CUAV 7Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/7_nano)
 - [Pixhawk4 (FMUv5)](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v5)
 - [Pixhawk (FMUv2)](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v2)
-- [HEX Cubeorange](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cubepilot/cubeorange)
 - [QEMU vexpress-a9](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/qemu/qemu-vexpress-a9)
   
 
