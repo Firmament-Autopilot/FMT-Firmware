@@ -31,7 +31,8 @@ Main FMU Processor: STM32F743◦32 Bit Arm® Cortex®-M7, 480MHz, 2MB Flash, 512
   - USB Power Input: 4.75~5.25V
   - Servo Rail Input: 0~36V
 - **Weight and Dimensions:**
-  - Dimensions: 60*40*14mm
+  - Dimensions: 56mm * 37mm * 13mm
+  - Weight: 40.5g
 - **Other Characteristics:**
   - Operating temperature: -20 ~ 65°c（Measured value）
 
