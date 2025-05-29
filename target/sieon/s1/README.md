@@ -41,6 +41,7 @@ Main FMU Processor: STM32F743◦32 Bit Arm® Cortex®-M7, 480MHz, 2MB Flash, 512
 https://docs.sieon.net/product
 
 ## Where to Buy
+[taobao](https://e.tb.cn/h.6wnwfCVJ03YmIe2?tk=n1T1VmRQHeK)
 
 ## Build
 Build fmu firmware for quadcopter
