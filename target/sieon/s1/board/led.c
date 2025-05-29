@@ -69,9 +69,9 @@ void vehicle_state_change_cb(uint8_t mode)
 
 void fms_error_change_cb(uint32_t error)
 {
-    if (error != FMS_Error_None) {
+    if (error > 0) {
         rgb_led_set_color(RGB_LED_RED);
-    }else{
+    } else {
         FMS_Out_Bus fms_out;
         mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out);
         /* change led to current status color */
