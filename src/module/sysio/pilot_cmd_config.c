@@ -21,8 +21,8 @@
 #include "module/sysio/pilot_cmd.h"
 #include "module/toml/toml.h"
 
-#define TOML_DBG_E(...) toml_debug("Pilot_Cmd", "E", __VA_ARGS__)
-#define TOML_DBG_W(...) toml_debug("Pilot_Cmd", "W", __VA_ARGS__)
+#define TOML_DBG_E(...)          toml_debug("Pilot_Cmd", "E", __VA_ARGS__)
+#define TOML_DBG_W(...)          toml_debug("Pilot_Cmd", "W", __VA_ARGS__)
 
 #define PILOT_CMD_MAX_DEVICE_NUM 1
 #define MATCH(a, b)              (strcmp(a, b) == 0)
@@ -541,6 +541,23 @@ fmt_err_t pilot_cmd_toml_config(toml_table_t* table)
                 }
                 FMT_TRY(pilot_cmd_map_stick(
                     stick_mapping[0], stick_mapping[1], stick_mapping[2], stick_mapping[3]));
+            } else {
+                TOML_DBG_E("Wrong stick-channel definition\n");
+                return FMT_ERROR;
+            }
+        } else if (MATCH(key, "aux-channel")) {
+            if (toml_array_value_in(table, key, &arr) == 0) {
+                uint8_t aux_mapping[4] = { 0 };
+                int nelem = toml_array_nelem(arr) <= 4 ? toml_array_nelem(arr) : 4;
+                for (j = 0; j < nelem; j++) {
+                    if (toml_int_at(arr, j, &ival) == 0) {
+                        aux_mapping[j] = (uint8_t)ival;
+                    } else {
+                        TOML_DBG_E("Parse aux-channel fail\n");
+                        return FMT_ERROR;
+                    }
+                }
+                FMT_TRY(pilot_cmd_map_aux(aux_mapping));
             } else {
                 TOML_DBG_E("Wrong stick-channel definition\n");
                 return FMT_ERROR;

@@ -73,6 +73,7 @@ static mlog_elem_t Pilot_Cmd_Elems[] = {
     MLOG_ELEMENT(mode, MLOG_UINT32),
     MLOG_ELEMENT(cmd_1, MLOG_UINT32),
     MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(aux_chan, MLOG_UINT16, 4),
 };
 MLOG_BUS_DEFINE(Pilot_Cmd, Pilot_Cmd_Elems);
 

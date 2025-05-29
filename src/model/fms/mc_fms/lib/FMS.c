@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.2168
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu May 22 22:47:36 2025
+ * C/C++ source code generated on : Thu May 29 15:07:12 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -137,21 +137,21 @@ struct_xXeuwAPh0ajaUfdgPpGaUB FMS_PARAM = {
   0.15F,
   0.1F,
   0.1F,
-  1.2F,
-  1.5F,
+  0.95F,
+  1.0F,
+  5.0F,
+  2.5F,
+  2.5F,
+  1.04719758F,
+  0.52359879F,
+  15.0F,
+  5.0F,
   5.0F,
   1.5F,
-  2.5F,
-  0.6F,
-  0.523599F,
-  15.0F,
   1.0F,
-  1.0F,
-  1.0F,
-  0.6F,
   0.5F,
-  0.7F,
-  0.4F,
+  0.3F,
+  0.6F,
   120U,
   1U,
   1300U,

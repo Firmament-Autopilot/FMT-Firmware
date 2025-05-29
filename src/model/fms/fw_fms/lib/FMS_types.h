@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.2046
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Oct  4 14:53:27 2024
+ * C/C++ source code generated on : Thu May 29 15:33:01 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -40,6 +40,7 @@ typedef struct {
 
   /* Operation channel 2 */
   uint32_T cmd_2;
+  uint16_T aux_chan[4];
 } Pilot_Cmd_Bus;
 
 #endif
@@ -384,6 +385,11 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
+
+  /* The psi value when arm state entered,
+     which is used for FRAME_LOCAL_FRD */
+  real32_T local_psi;
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif
@@ -465,7 +471,7 @@ typedef struct {
 
   /* The psi value when offboard mode entered,
      which is used for FRAME_LOCAL_FRD */
-  real32_T offboard_psi_0;
+  real32_T local_psi;
 
   /* Set speed for cuise flight */
   real32_T set_speed;

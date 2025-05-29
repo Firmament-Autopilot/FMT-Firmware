@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.2077
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 16 14:57:39 2025
+ * C/C++ source code generated on : Thu May 29 15:37:29 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -93,7 +93,8 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
   {
     0.0F, 0.0F, 0.0F, 0.0F }
   ,                                    /* home */
-  0.0F                                 /* local_psi */
+  0.0F,                                /* local_psi */
+  0U                                   /* error */
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
