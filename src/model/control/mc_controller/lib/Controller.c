@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.976
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May 20 16:33:52 2025
+ * C/C++ source code generated on : Thu May 22 22:49:39 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -33,42 +33,42 @@ real32_T w_cmd_C_mPs;                  /* '<S115>/Integrator1' */
 real32_T w_est_C_mPs;                  /* '<S113>/Signal Copy1' */
 
 /* Exported block parameters */
-struct_e0d0imWhUJTKKUus9vUr5G CONTROL_PARAM = {
+struct_oqmoiGpNYV6eEvDoym9FPF CONTROL_PARAM = {
   1.4F,
   0.2F,
-  0.2F,
-  0.6F,
-  0.1F,
-  0.0F,
-  -1.0F,
-  1.0F,
-  -1.0F,
-  1.0F,
-  -0.15F,
-  0.15F,
-  -0.1F,
-  0.1F,
-  5.0F,
-  5.0F,
-  0.52359879F,
-  0.1F,
-  0.1F,
-  0.15F,
-  0.1F,
-  0.1F,
-  0.2F,
-  0.003F,
-  0.003F,
-  0.001F,
-  -0.1F,
-  0.1F,
-  -0.1F,
-  0.1F,
-  1.57079637F,
-  3.14159274F,
+  0.05F,
   0.5F,
+  0.12F,
   0.0F,
-  0.0F
+  -1.0F,
+  1.0F,
+  -1.0F,
+  1.0F,
+  -0.2F,
+  0.2F,
+  -0.1F,
+  0.1F,
+  5.0F,
+  5.0F,
+  0.349F,
+  0.065F,
+  0.065F,
+  0.25F,
+  0.05F,
+  0.05F,
+  0.15F,
+  0.002F,
+  0.002F,
+  0.002F,
+  0.0F,
+  0.0F,
+  -0.1F,
+  0.1F,
+  -0.1F,
+  0.1F,
+  1.57079601F,
+  3.14159298F,
+  0.6F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S17>/hover_throttle'

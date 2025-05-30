@@ -34,6 +34,7 @@ pilot_status_cmd_t* pilotStatusCmds = NULL;
 
 static rt_device_t rcDev;
 static uint8_t stickMapping[4];
+static uint8_t auxMapping[4];
 static int16_t rcChannel[16];
 static int16_t rcTrimChannel[16];
 static uint32_t rc_last_pub_timestamp;
@@ -57,14 +58,18 @@ static int echo_pilot_cmd(void* parameter)
     if (err != FMT_EOK)
         return -1;
 
-    console_printf("stick_yaw:%.2f stick_throttle:%.2f stick_roll:%.2f stick_pitch:%.2f mode:%u cmd:[%u %u]\n",
+    console_printf("stick_yaw:%.2f stick_throttle:%.2f stick_roll:%.2f stick_pitch:%.2f mode:%u cmd:[%u %u] aux_chan:[%d %d %d %d]\n",
                    pilot_cmd.stick_yaw,
                    pilot_cmd.stick_throttle,
                    pilot_cmd.stick_roll,
                    pilot_cmd.stick_pitch,
                    pilot_cmd.mode,
                    pilot_cmd.cmd_1,
-                   pilot_cmd.cmd_2);
+                   pilot_cmd.cmd_2,
+                   pilot_cmd.aux_chan[0],
+                   pilot_cmd.aux_chan[1],
+                   pilot_cmd.aux_chan[2],
+                   pilot_cmd.aux_chan[3]);
 
     return 0;
 }
@@ -151,7 +156,7 @@ static void rc_channels_trim(const int16_t raw_chan_val[], int16_t trim_chan_val
     }
 }
 
-static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
+static void channel_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
 {
     RT_ASSERT(stickMapping[0] && stickMapping[1] && stickMapping[2] && stickMapping[3]);
 
@@ -163,6 +168,14 @@ static void stick_mapping(Pilot_Cmd_Bus* pilot_cmd, const int16_t chan_val[])
     pilot_cmd->stick_throttle = (float)(chan_val[CHAN_IDX(STICK_THRO)] - config.rc_min_value) * scale + offset;
     pilot_cmd->stick_roll = (float)(chan_val[CHAN_IDX(STICK_ROLL)] - config.rc_min_value) * scale + offset;
     pilot_cmd->stick_pitch = (float)(chan_val[CHAN_IDX(STICK_PITCH)] - config.rc_min_value) * scale + offset;
+
+    for (uint8_t i = 0; i < 4; i++) {
+        if (auxMapping[i] > 0) {
+            pilot_cmd->aux_chan[i] = chan_val[auxMapping[i] - 1];
+        } else {
+            pilot_cmd->aux_chan[i] = 0;
+        }
+    }
 }
 
 static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
@@ -195,7 +208,7 @@ static void mode_switch(Pilot_Cmd_Bus* pilot_cmd, int16_t* rc_channel)
             pilot_cmd->mode = pilotModes[i].mode;
             /* Sync gcs mode with pilot_cmd mode */
             GCS_Cmd_Bus gcs_cmd = gcs_cmd_get();
-            if (pilot_cmd->mode <= PilotMode_Offboard && gcs_cmd.mode != pilot_cmd->mode) {
+            if (gcs_cmd.mode != pilot_cmd->mode) {
                 gcs_set_mode(pilot_cmd->mode);
             }
         }
@@ -311,8 +324,8 @@ fmt_err_t pilot_cmd_collect(void)
             /* publish rc_trim_channel topic */
             mcn_publish(MCN_HUB(rc_trim_channels), rcTrimChannel);
 
-            /* stick value mapping */
-            stick_mapping(&pilot_cmd_bus, rcTrimChannel);
+            /* rc channel mapping */
+            channel_mapping(&pilot_cmd_bus, rcTrimChannel);
             /* pilot mode switch */
             mode_switch(&pilot_cmd_bus, rcTrimChannel);
             /* generate pilot command */
@@ -375,18 +388,21 @@ uint8_t pilot_cmd_get_chan_num(void)
     return rc_chan_num;
 }
 
-fmt_err_t pilot_cmd_map_stick(
-    uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan)
+fmt_err_t pilot_cmd_map_stick(uint8_t yaw_chan, uint8_t thro_chan, uint8_t roll_chan, uint8_t pitch_chan)
 {
-    RT_ASSERT(yaw_chan >= 1 && yaw_chan <= 16);
-    RT_ASSERT(thro_chan >= 1 && thro_chan <= 16);
-    RT_ASSERT(roll_chan >= 1 && roll_chan <= 16);
-    RT_ASSERT(pitch_chan >= 1 && pitch_chan <= 16);
-
     stickMapping[STICK_YAW] = yaw_chan;
     stickMapping[STICK_THRO] = thro_chan;
     stickMapping[STICK_ROLL] = roll_chan;
     stickMapping[STICK_PITCH] = pitch_chan;
+
+    return FMT_EOK;
+}
+
+fmt_err_t pilot_cmd_map_aux(uint8_t mapping[4])
+{
+    for (uint8_t i = 0; i < 4; i++) {
+        auxMapping[i] = mapping[i];
+    }
 
     return FMT_EOK;
 }

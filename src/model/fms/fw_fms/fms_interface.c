@@ -77,6 +77,7 @@ static mlog_elem_t Pilot_Cmd_Elems[] = {
     MLOG_ELEMENT(mode, MLOG_UINT32),
     MLOG_ELEMENT(cmd_1, MLOG_UINT32),
     MLOG_ELEMENT(cmd_2, MLOG_UINT32),
+    MLOG_ELEMENT_VEC(aux_chan, MLOG_UINT16, 4),
 };
 MLOG_BUS_DEFINE(Pilot_Cmd, Pilot_Cmd_Elems);
 
@@ -163,6 +164,8 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
     MLOG_ELEMENT(reserved, MLOG_UINT8),
     MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
+    MLOG_ELEMENT(local_psi, MLOG_FLOAT),
+    MLOG_ELEMENT(error, MLOG_UINT32),
 };
 MLOG_BUS_DEFINE(FMS_Out, FMS_Out_Elems);
 
@@ -172,10 +175,10 @@ static McnNode_t auto_cmd_nod;
 static McnNode_t mission_data_nod;
 static McnNode_t ins_out_nod;
 static McnNode_t control_out_nod;
-static uint8_t   pilot_cmd_updated    = 1;
-static uint8_t   gcs_cmd_updated      = 1;
-static uint8_t   auto_cmd_updated     = 1;
-static uint8_t   mission_data_updated = 1;
+static uint8_t pilot_cmd_updated = 1;
+static uint8_t gcs_cmd_updated = 1;
+static uint8_t auto_cmd_updated = 1;
+static uint8_t mission_data_updated = 1;
 
 static int Pilot_Cmd_ID;
 static int GCS_Cmd_ID;
@@ -244,12 +247,14 @@ static int fms_output_echo(void* param)
     printf("rate cmd: %.2f %.2f %.2f\n", fms_out.p_cmd, fms_out.q_cmd, fms_out.r_cmd);
     printf("att cmd: %.2f %.2f %.2f\n", fms_out.phi_cmd, fms_out.theta_cmd, fms_out.psi_rate_cmd);
     printf("vel cmd: %.2f %.2f %.2f\n", fms_out.u_cmd, fms_out.v_cmd, fms_out.w_cmd);
-    printf("acc cmd: %.2f %.2f %.2f\n", fms_out.ax_cmd, fms_out.ay_cmd, fms_out.az_cmd);
-    printf("throttle cmd: %.2f\n", fms_out.throttle_cmd);
+    printf("throttle cmd: %u\n", fms_out.throttle_cmd);
     printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
-    printf("status:%s state:%s ctrl_mode:%s\n", fms_status[fms_out.status], fms_state[fms_out.state], fms_ctrl_mode[fms_out.ctrl_mode]);
-    printf("mode:%s reset:%d\n", fms_mode[fms_out.mode], fms_out.reset);
+    printf("status:%s state:%s ctrl_mode:%s\n", STR_GET_VALID(fms_status, fms_out.status), STR_GET_VALID(fms_state, fms_out.state), STR_GET_VALID(fms_ctrl_mode, fms_out.ctrl_mode));
+    printf("mode:%s reset:%d\n", STR_GET_VALID(fms_mode, fms_out.mode), fms_out.reset);
     printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
+    printf("home: xyz(m) %.2f %.2f %.2f yaw(deg) %.2f\n", fms_out.home[0], fms_out.home[1], fms_out.home[2], RAD2DEG(fms_out.home[3]));
+    printf("lcoal psi:%f\n", fms_out.local_psi);
+    printf("error:%d\n", fms_out.error);
     printf("------------------------------------------\n");
 
     return 0;
@@ -257,9 +262,9 @@ static int fms_output_echo(void* param)
 
 static void mlog_start_cb(void)
 {
-    pilot_cmd_updated    = 1;
-    gcs_cmd_updated      = 1;
-    auto_cmd_updated     = 1;
+    pilot_cmd_updated = 1;
+    gcs_cmd_updated = 1;
+    auto_cmd_updated = 1;
     mission_data_updated = 1;
 }
 
@@ -298,28 +303,28 @@ void fms_interface_step(uint32_t timestamp)
         mcn_copy(MCN_HUB(pilot_cmd), pilot_cmd_nod, &FMS_U.Pilot_Cmd);
 
         FMS_U.Pilot_Cmd.timestamp = timestamp;
-        pilot_cmd_updated         = 1;
+        pilot_cmd_updated = 1;
     }
 
     if (mcn_poll(gcs_cmd_nod)) {
         mcn_copy(MCN_HUB(gcs_cmd), gcs_cmd_nod, &FMS_U.GCS_Cmd);
 
         FMS_U.GCS_Cmd.timestamp = timestamp;
-        gcs_cmd_updated         = 1;
+        gcs_cmd_updated = 1;
     }
 
     if (mcn_poll(auto_cmd_nod)) {
         mcn_copy(MCN_HUB(auto_cmd), auto_cmd_nod, &FMS_U.Auto_Cmd);
 
         FMS_U.Auto_Cmd.timestamp = timestamp;
-        auto_cmd_updated         = 1;
+        auto_cmd_updated = 1;
     }
 
     if (mcn_poll(mission_data_nod)) {
         mcn_copy(MCN_HUB(mission_data), mission_data_nod, &FMS_U.Mission_Data);
 
         FMS_U.Mission_Data.timestamp = timestamp;
-        mission_data_updated         = 1;
+        mission_data_updated = 1;
     }
 
     if (mcn_poll(ins_out_nod)) {
@@ -369,22 +374,22 @@ void fms_interface_step(uint32_t timestamp)
 void fms_interface_init(void)
 {
     fms_model_info.period = FMS_EXPORT.period;
-    fms_model_info.info   = (char*)FMS_EXPORT.model_info;
+    fms_model_info.info = (char*)FMS_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(fms_output), fms_output_echo);
 
-    pilot_cmd_nod    = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
-    gcs_cmd_nod      = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
-    auto_cmd_nod     = mcn_subscribe(MCN_HUB(auto_cmd), NULL);
+    pilot_cmd_nod = mcn_subscribe(MCN_HUB(pilot_cmd), NULL);
+    gcs_cmd_nod = mcn_subscribe(MCN_HUB(gcs_cmd), NULL);
+    auto_cmd_nod = mcn_subscribe(MCN_HUB(auto_cmd), NULL);
     mission_data_nod = mcn_subscribe(MCN_HUB(mission_data), NULL);
-    ins_out_nod      = mcn_subscribe(MCN_HUB(ins_output), NULL);
-    control_out_nod  = mcn_subscribe(MCN_HUB(control_output), NULL);
+    ins_out_nod = mcn_subscribe(MCN_HUB(ins_output), NULL);
+    control_out_nod = mcn_subscribe(MCN_HUB(control_output), NULL);
 
-    Pilot_Cmd_ID    = mlog_get_bus_id("Pilot_Cmd");
-    GCS_Cmd_ID      = mlog_get_bus_id("GCS_Cmd");
-    Auto_Cmd_ID     = mlog_get_bus_id("Auto_Cmd");
+    Pilot_Cmd_ID = mlog_get_bus_id("Pilot_Cmd");
+    GCS_Cmd_ID = mlog_get_bus_id("GCS_Cmd");
+    Auto_Cmd_ID = mlog_get_bus_id("Auto_Cmd");
     Mission_Data_ID = mlog_get_bus_id("Mission_Data");
-    FMS_Out_ID      = mlog_get_bus_id("FMS_Out");
+    FMS_Out_ID = mlog_get_bus_id("FMS_Out");
     FMT_ASSERT(Pilot_Cmd_ID >= 0);
     FMT_ASSERT(GCS_Cmd_ID >= 0);
     FMT_ASSERT(Auto_Cmd_ID >= 0);

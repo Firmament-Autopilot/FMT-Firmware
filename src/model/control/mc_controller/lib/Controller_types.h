@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.976
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May 20 16:33:52 2025
+ * C/C++ source code generated on : Thu May 22 22:49:39 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -186,6 +186,7 @@ typedef struct {
   /* The psi value when arm state entered,
      which is used for FRAME_LOCAL_FRD */
   real32_T local_psi;
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif
@@ -247,8 +248,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_e0d0imWhUJTKKUus9vUr5G_
-#define DEFINED_TYPEDEF_FOR_struct_e0d0imWhUJTKKUus9vUr5G_
+#ifndef DEFINED_TYPEDEF_FOR_struct_oqmoiGpNYV6eEvDoym9FPF_
+#define DEFINED_TYPEDEF_FOR_struct_oqmoiGpNYV6eEvDoym9FPF_
 
 typedef struct {
   real32_T VEL_XY_P;
@@ -277,6 +278,8 @@ typedef struct {
   real32_T ROLL_RATE_D;
   real32_T PITCH_RATE_D;
   real32_T YAW_RATE_D;
+  real32_T ROLL_RATE_FF;
+  real32_T PITCH_RATE_FF;
   real32_T RATE_I_MIN;
   real32_T RATE_I_MAX;
   real32_T RATE_D_MIN;
@@ -284,9 +287,7 @@ typedef struct {
   real32_T P_Q_CMD_LIM;
   real32_T R_CMD_LIM;
   real32_T HOVER_THRO;
-  real32_T ROLL_RATE_FF;
-  real32_T PITCH_RATE_FF;
-} struct_e0d0imWhUJTKKUus9vUr5G;
+} struct_oqmoiGpNYV6eEvDoym9FPF;
 
 #endif
 

@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.976
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May 20 16:33:52 2025
+ * C/C++ source code generated on : Thu May 22 22:49:39 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -221,7 +221,7 @@ extern real32_T w_est_C_mPs;           /* '<S113>/Signal Copy1' */
  * these parameters and exports their symbols.
  *
  */
-extern struct_e0d0imWhUJTKKUus9vUr5G CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_oqmoiGpNYV6eEvDoym9FPF CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S17>/hover_throttle'
                                                     *   '<S23>/hover_throttle'
