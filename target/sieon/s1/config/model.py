@@ -34,6 +34,21 @@ elif vehicle_type == 'Fixwing':
             'fms/fw_fms',
             'control/fw_controller',
         ]
+elif vehicle_type == 'VTOL':
+    if sim_mode == 'HIL':
+        MODELS = [
+            'plant/template_plant',
+            'ins/external_ins',
+            'fms/vtol_fms',
+            'control/vtol_controller',
+        ]
+    else:
+        MODELS = [
+            'plant/vtol',
+            'ins/cf_ins',
+            'fms/vtol_fms',
+            'control/vtol_controller',
+        ]
 elif vehicle_type == 'Boat':
     if sim_mode == 'HIL':
         MODELS = [
