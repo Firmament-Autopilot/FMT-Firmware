@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.321
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Aug 27 09:56:56 2024
+ * C/C++ source code generated on : Fri Jun  6 14:34:27 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -182,6 +182,7 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif

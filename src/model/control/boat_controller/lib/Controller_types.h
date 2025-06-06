@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1185
+ * Model version                  : 1.1186
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue May 20 17:00:11 2025
+ * C/C++ source code generated on : Fri Jun  6 14:15:04 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -182,10 +182,7 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
-
-  /* The psi value when arm state entered,
-     which is used for FRAME_LOCAL_FRD */
-  real32_T local_psi;
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif

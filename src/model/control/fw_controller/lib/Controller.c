@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1110
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Oct  4 14:50:06 2024
+ * C/C++ source code generated on : Fri Jun  6 13:51:52 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -25,7 +25,7 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 } ;                                    /* Control_Out_Bus ground */
 
 /* Exported block parameters */
-struct_lzoF37tBBeIntrvVclVjfF CONTROL_PARAM = {
+struct_cGQ7mab9VSTQmeIosgrbRH CONTROL_PARAM = {
   7.0F,
   7.0F,
   1.04719758F,
@@ -39,6 +39,7 @@ struct_lzoF37tBBeIntrvVclVjfF CONTROL_PARAM = {
   0.1F,
   1.57079637F,
   3.14159274F,
+  15.0F,
   0.2F,
   0.3F,
   1.0F,
@@ -62,8 +63,7 @@ struct_lzoF37tBBeIntrvVclVjfF CONTROL_PARAM = {
   2.0F,
   0.2F,
   0.1F,
-  0.1F,
-  15.0F
+  0.1F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:
                                         *   '<S7>/Saturation'

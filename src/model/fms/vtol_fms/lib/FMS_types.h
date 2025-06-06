@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2222
+ * Model version                  : 1.2224
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri May 30 16:23:56 2025
+ * C/C++ source code generated on : Fri Jun  6 14:31:03 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -396,10 +396,6 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
-
-  /* The psi value when arm state entered,
-     which is used for FRAME_LOCAL_FRD */
-  real32_T local_psi;
   uint32_T error;
 } FMS_Out_Bus;
 
@@ -492,10 +488,6 @@ typedef enum {
 typedef struct {
   real32_T sp_waypoint[3];
   real32_T cur_waypoint[3];
-
-  /* The psi value when offboard mode entered,
-     which is used for FRAME_LOCAL_FRD */
-  real32_T local_psi;
 
   /* Set speed for cuise flight */
   real32_T set_speed;

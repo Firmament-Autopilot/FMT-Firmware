@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1120
+ * Model version                  : 1.1121
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Jul 15 15:17:52 2024
+ * C/C++ source code generated on : Fri Jun  6 14:19:32 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -151,6 +151,7 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif

@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.1110
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Oct  4 14:50:06 2024
+ * C/C++ source code generated on : Fri Jun  6 13:51:52 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -151,6 +151,7 @@ typedef struct {
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
+  uint32_T error;
 } FMS_Out_Bus;
 
 #endif
@@ -212,8 +213,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_lzoF37tBBeIntrvVclVjfF_
-#define DEFINED_TYPEDEF_FOR_struct_lzoF37tBBeIntrvVclVjfF_
+#ifndef DEFINED_TYPEDEF_FOR_struct_cGQ7mab9VSTQmeIosgrbRH_
+#define DEFINED_TYPEDEF_FOR_struct_cGQ7mab9VSTQmeIosgrbRH_
 
 typedef struct {
   real32_T ROLL_P;
@@ -229,6 +230,7 @@ typedef struct {
   real32_T RATE_I_MAX;
   real32_T P_Q_CMD_LIM;
   real32_T R_CMD_LIM;
+  real32_T FW_AIRSPEED_TRIM;
   real32_T FW_FF;
   real32_T FW_FF_LIMIT;
   real32_T FW_PI_LIMIT;
@@ -253,8 +255,7 @@ typedef struct {
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
-  real32_T FW_AIRSPEED_TRIM;
-} struct_lzoF37tBBeIntrvVclVjfF;
+} struct_cGQ7mab9VSTQmeIosgrbRH;
 
 #endif
 

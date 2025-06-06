@@ -48,6 +48,7 @@ typedef struct {
 
   /* Operation channel 2 */
   uint32_T cmd_2;
+  uint16_T aux_chan[4];
 } Pilot_Cmd_Bus;
 
 #endif
