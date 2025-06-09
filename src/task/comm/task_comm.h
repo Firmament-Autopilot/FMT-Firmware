@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+void print_mavlink_message(const mavlink_message_t* msg);
+void print_mavlink_command(const mavlink_command_long_t* command);
+
 bool mavlink_msg_heartbeat_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_extended_sys_state_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t);

@@ -26,22 +26,25 @@ extern "C" {
 typedef struct {
     const char* name;
     float value;
+    int type; // MAV_PARAM_TYPE_*
     param_t* param;
 } mav_param_t;
 
 #define MAVLINK_PARAM_DECLARE(_name) mav_param_t _name
 
-#define MAVLINK_PARAM_DEFINE(_name, _value) \
+#define MAVLINK_PARAM_DEFINE(_name, _value, _type) \
     {                                       \
         .name = #_name,                     \
         .value = _value,                    \
+        .type = _type,                      \
         .param = NULL                       \
     }
 
-#define MAVLINK_PARAM_DEFINE_FULL(_name, _value, _param) \
+#define MAVLINK_PARAM_DEFINE_FULL(_name, _value, _param, _type) \
     {                                                    \
         .name = #_name,                                  \
         .value = _value,                                 \
+        .type = _type,                                   \
         .param = _param                                  \
     }
 
@@ -304,6 +307,7 @@ typedef struct {
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_P);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_I);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_D);
+    MAVLINK_PARAM_DECLARE(SYS_HITL);
 } mav_param_list_t;
 
 enum Rotation {
@@ -348,8 +352,8 @@ fmt_err_t mavlink_param_send(const param_t* param);
 uint16_t get_mavparam_num(void);
 
 // mavlink param (not used by FMT) api
-fmt_err_t send_mavparam_by_name(char* name);
-fmt_err_t send_mavparam_by_index(int16_t index);
+fmt_err_t send_mavparam_by_name(char* name, uint8_t chan);
+fmt_err_t send_mavparam_by_index(int16_t index, uint8_t chan);
 
 #ifdef __cplusplus
 }

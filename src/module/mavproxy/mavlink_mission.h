@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-void handle_mission_message(mavlink_message_t* msg);
+void handle_mission_message(mavlink_message_t* msg, uint8_t channel);
 
 #ifdef __cplusplus
 }
