@@ -46,6 +46,8 @@ MCN_DECLARE(gcs_cmd);
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
+    // print_mavlink_command(command);
+
     switch (command->command) {
     case MAV_CMD_REQUEST_PROTOCOL_VERSION: {
         mavlink_system_t mav_sys = mavproxy_get_system();
@@ -91,7 +93,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     } break;
 
     case MAV_CMD_PREFLIGHT_CALIBRATION:
-        if (command->param1 == 1) {        // calibration gyr
+        if (command->param1 == 1) { // calibration gyr
             mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
             mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
@@ -148,6 +150,10 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 
 static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t this_system)
 {
+    // if (msg->msgid != MAVLINK_MSG_ID_HEARTBEAT && msg->msgid != MAVLINK_MSG_ID_PING && msg->msgid != MAVLINK_MSG_ID_SET_POSITION_TARGET_LOCAL_NED && msg->msgid != MAVLINK_MSG_ID_MANUAL_CONTROL) {
+    //     print_mavlink_message(msg);
+    // }
+
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
         gcs_cmd_heartbeat();
@@ -219,13 +225,13 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
                 if (param) {
                     mavlink_param_send(param);
                 } else {
-                    send_mavparam_by_name(request_read.param_id);
+                    send_mavparam_by_name(request_read.param_id, MAVPROXY_GCS_CHAN);
                 }
             } else {
                 uint16_t mavparam_num = get_mavparam_num();
 
                 if (request_read.param_index < mavparam_num) {
-                    send_mavparam_by_index(request_read.param_index);
+                    send_mavparam_by_index(request_read.param_index, MAVPROXY_GCS_CHAN);
                 } else {
                     param_t* param = param_get_by_index(request_read.param_index - mavparam_num);
                     mavlink_param_send(param);
@@ -336,7 +342,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
     case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
     case MAVLINK_MSG_ID_MISSION_ACK:
-        handle_mission_message(msg);
+        handle_mission_message(msg, MAVPROXY_GCS_CHAN);
         break;
 
 #if defined(FMT_USING_HIL)
@@ -452,6 +458,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
         if (this_system.sysid == manual_control.target && (time_now - rc_last_pub_timestamp) >= 1000) {
             GCS_Cmd_Bus gcs_cmd;
+            mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd);
 
             Pilot_Cmd_Bus pilot_cmd = { 0 };
             pilot_cmd.timestamp = time_now;
@@ -459,20 +466,12 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             pilot_cmd.stick_yaw = manual_control.r / 1000.0f;
             pilot_cmd.stick_roll = manual_control.y / 1000.0f;
             pilot_cmd.stick_pitch = manual_control.x / 1000.0f;
-            if (mcn_copy_from_hub(MCN_HUB(gcs_cmd), &gcs_cmd) == FMT_EOK) {
-                pilot_cmd.mode = gcs_cmd.mode;
-            } else {
-                pilot_cmd.mode = PilotMode_None;
-            }
+            pilot_cmd.mode = gcs_cmd.mode;
 
             /* publish virtual joystick data */
             mcn_publish(MCN_HUB(pilot_cmd), &pilot_cmd);
         }
     } break;
-
-    case MAVLINK_MSG_ID_GPS_RTCM_DATA:
-        handle_gps_rtcm_data(msg);
-        break;
 
     default: {
         LOG_W("unhandled mavlink msg:%d", msg->msgid);
@@ -500,17 +499,17 @@ fmt_err_t mavgcs_init(void)
 
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_ATTITUDE, 10, mavlink_msg_attitude_pack_func, true));
 
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 5, mavlink_msg_local_position_ned_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 10, mavlink_msg_local_position_ned_pack_func, true));
 
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 5, mavlink_msg_global_position_int_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 10, mavlink_msg_global_position_int_pack_func, true));
 
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_VFR_HUD, 5, mavlink_msg_vfr_hud_pack_func, true));
 
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_ALTITUDE, 5, mavlink_msg_altitude_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_ALTITUDE, 10, mavlink_msg_altitude_pack_func, true));
 
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_GPS_RAW_INT, 5, mavlink_msg_gps_raw_int_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_GPS_RAW_INT, 10, mavlink_msg_gps_raw_int_pack_func, true));
 
-    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_RC_CHANNELS, 5, mavlink_msg_rc_channels_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_RC_CHANNELS, 10, mavlink_msg_rc_channels_pack_func, true));
 
 #ifdef FMT_USING_SIH
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HIL_STATE, 60, mavlink_msg_hil_state_pack_func, true));

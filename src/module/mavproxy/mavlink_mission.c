@@ -27,7 +27,7 @@ static uint16_t wp_cnt;
 static uint16_t wp_seq;
 static int wp_fd = -1;
 
-static void send_mission_count(uint8_t sysid, uint8_t compid, uint16_t count, MAV_MISSION_TYPE mission_type)
+static void send_mission_count(uint8_t sysid, uint8_t compid, uint16_t count, MAV_MISSION_TYPE mission_type, uint8_t channel)
 {
     mavlink_system_t mavsys = mavproxy_get_system();
     mavlink_message_t msg;
@@ -39,10 +39,10 @@ static void send_mission_count(uint8_t sysid, uint8_t compid, uint16_t count, MA
     wpc.mission_type = mission_type;
 
     mavlink_msg_mission_count_encode(mavsys.sysid, mavsys.compid, &msg, &wpc);
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    mavproxy_send_immediate_msg(channel, &msg, true);
 }
 
-static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq)
+static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq, uint8_t channel)
 {
     mavlink_system_t mavsys = mavproxy_get_system();
     mavlink_message_t msg;
@@ -77,10 +77,10 @@ static void send_mission_item(uint8_t sysid, uint8_t compid, uint16_t seq)
     mav_mission_item.mission_type = mission_item->mission_type;
 
     mavlink_msg_mission_item_int_encode(mavsys.sysid, mavsys.compid, &msg, &mav_mission_item);
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    mavproxy_send_immediate_msg(channel, &msg, true);
 }
 
-static void send_mission_request(uint8_t sysid, uint8_t compid, uint16_t seq)
+static void send_mission_request(uint8_t sysid, uint8_t compid, uint16_t seq, uint8_t channel)
 {
     mavlink_system_t mavsys = mavproxy_get_system();
     mavlink_message_t msg;
@@ -92,10 +92,10 @@ static void send_mission_request(uint8_t sysid, uint8_t compid, uint16_t seq)
     mission_req.mission_type = MAV_MISSION_TYPE_MISSION;
 
     mavlink_msg_mission_request_int_encode(mavsys.sysid, mavsys.compid, &msg, &mission_req);
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    mavproxy_send_immediate_msg(channel, &msg, true);
 }
 
-static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type)
+static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type, uint8_t channel)
 {
     mavlink_system_t mavsys = mavproxy_get_system();
     mavlink_message_t msg;
@@ -107,10 +107,10 @@ static void send_mission_ack(uint8_t sysid, uint8_t compid, uint8_t type)
     mission_ack.mission_type = MAV_MISSION_TYPE_MISSION;
 
     mavlink_msg_mission_ack_encode(mavsys.sysid, mavsys.compid, &msg, &mission_ack);
-    mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    mavproxy_send_immediate_msg(channel, &msg, true);
 }
 
-static void handle_message_mission_clear_all(mavlink_message_t* msg)
+static void handle_message_mission_clear_all(mavlink_message_t* msg,uint8_t channel)
 {
     mavlink_mission_clear_all_t mission_clear_all;
 
@@ -122,27 +122,27 @@ static void handle_message_mission_clear_all(mavlink_message_t* msg)
             mission_reset();
             LOG_I("mission data cleared.");
             /* send accepted ack */
-            send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
+            send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED, channel);
         } else {
-            send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ERROR);
+            send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ERROR, channel);
         }
     }
 }
 
-static void handle_message_mission_request_list(mavlink_message_t* msg)
+static void handle_message_mission_request_list(mavlink_message_t* msg, uint8_t channel)
 {
-    send_mission_count(msg->sysid, msg->compid, get_mission_count(), MAV_MISSION_TYPE_MISSION);
+    send_mission_count(msg->sysid, msg->compid, get_mission_count(), MAV_MISSION_TYPE_MISSION, channel);
 }
 
-static void handle_message_mission_request_int(mavlink_message_t* msg)
+static void handle_message_mission_request_int(mavlink_message_t* msg, uint8_t channel)
 {
     mavlink_mission_request_int_t mission_req_int;
 
     mavlink_msg_mission_request_int_decode(msg, &mission_req_int);
-    send_mission_item(msg->sysid, msg->compid, mission_req_int.seq);
+    send_mission_item(msg->sysid, msg->compid, mission_req_int.seq, channel);
 }
 
-static void handle_message_mission_count(mavlink_message_t* msg)
+static void handle_message_mission_count(mavlink_message_t* msg, uint8_t channel)
 {
     mavlink_mission_count_t mission_cnt;
 
@@ -166,11 +166,11 @@ static void handle_message_mission_count(mavlink_message_t* msg)
         /* write mission count to the first line */
         fm_fprintf(wp_fd, "%u\n", wp_cnt);
         /* start to download waypoint from GCS */
-        send_mission_request(msg->sysid, msg->compid, wp_seq);
+        send_mission_request(msg->sysid, msg->compid, wp_seq, channel);
     }
 }
 
-static void handle_message_mission_item(mavlink_message_t* msg)
+static void handle_message_mission_item(mavlink_message_t* msg, uint8_t channel)
 {
     mavlink_mission_item_int_t mission_item_int;
 
@@ -184,7 +184,7 @@ static void handle_message_mission_item(mavlink_message_t* msg)
 
     if (mission_item_int.seq != wp_seq) {
         /* out-of-sequence received, send the requested item again */
-        send_mission_request(msg->sysid, msg->compid, wp_seq);
+        send_mission_request(msg->sysid, msg->compid, wp_seq, channel);
         /* drop the out-of-sequence item */
         return;
     }
@@ -203,7 +203,7 @@ static void handle_message_mission_item(mavlink_message_t* msg)
         close(wp_fd);
         wp_fd = -1;
         /* send ack with accepted result */
-        send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED);
+        send_mission_ack(msg->sysid, msg->compid, MAV_MISSION_ACCEPTED, channel);
         /* load new mission data */
         if (load_mission_data(MISSION_FILE) == FMT_EOK) {
             LOG_I("mission data reloaded.");
@@ -215,27 +215,28 @@ static void handle_message_mission_item(mavlink_message_t* msg)
     } else {
         /* request next item */
         wp_seq++;
-        send_mission_request(msg->sysid, msg->compid, wp_seq);
+        send_mission_request(msg->sysid, msg->compid, wp_seq, channel);
     }
 }
 
-void handle_mission_message(mavlink_message_t* msg)
+void handle_mission_message(mavlink_message_t* msg, uint8_t channel)
 {
+    // printf("handle_mission_message: msgid=%d, channel=%d\n", msg->msgid, channel);
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
-        handle_message_mission_request_list(msg);
+        handle_message_mission_request_list(msg, channel);
         break;
     case MAVLINK_MSG_ID_MISSION_COUNT:
-        handle_message_mission_count(msg);
+        handle_message_mission_count(msg, channel);
         break;
     case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
-        handle_message_mission_request_int(msg);
+        handle_message_mission_request_int(msg, channel);
         break;
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
-        handle_message_mission_item(msg);
+        handle_message_mission_item(msg, channel);
         break;
     case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
-        handle_message_mission_clear_all(msg);
+        handle_message_mission_clear_all(msg, channel);
         break;
     case MAVLINK_MSG_ID_MISSION_ACK:
         /* do nothing here */
