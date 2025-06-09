@@ -19,6 +19,17 @@
 
 #include "module/mavproxy/mavproxy.h"
 
+#define MAVLINK_PARAM_SEND_INTERVAL_MS 20  /* Default sending interval of parameters(ms) */
+/* Parameter send state */
+static struct {
+    uint32_t mav_param_index;  /* MAV parameter index being sent */
+    uint32_t group_index;      /* FMT parameter group index being sent */
+    uint32_t param_index;      /* FMT parameter index being sent */
+    bool is_sending;           /* Whether in sending process */
+    uint16_t send_interval;    /* Parameter send interval (ms) */
+    struct rt_timer timer;     /*  Parameter send timer */    
+} param_send_state = {.send_interval = MAVLINK_PARAM_SEND_INTERVAL_MS};
+
 #define MAV_PARAM_COUNT (sizeof(mav_param_list_t) / sizeof(mav_param_t))
 
 /* These are parameters required by QGC, should not be used by FMT */
@@ -517,33 +528,156 @@ fmt_err_t mavlink_param_send(const param_t* param)
     return FMT_EOK;
 }
 
-void mavlink_param_sendall(void)
+void mavlink_param_set_send_interval(uint16_t interval_ms)
+{
+    param_send_state.send_interval = interval_ms;
+}
+
+void param_send_timer_callback(void* param)
+{
+    mavproxy_send_event(MAVPROXY_GCS_CHAN, EVENT_SEND_NEXT_PARAM);
+}
+
+void mavlink_param_reset_send_state(void)
+{
+    /* stop the timer if it's running */
+    if (param_send_state.timer.parent.flag & RT_TIMER_FLAG_ACTIVATED) {
+        rt_timer_stop(&param_send_state.timer);
+    }
+    param_send_state.mav_param_index = 0;
+    param_send_state.group_index = 0;
+    param_send_state.param_index = 0;
+    param_send_state.is_sending = true;
+}
+
+static inline uint16_t mavlink_calculate_msg_len(const mavlink_message_t* msg)
+{
+    uint8_t signature_len, header_len;
+    uint8_t length = msg->len;
+
+    if (msg->magic == MAVLINK_STX_MAVLINK1) {
+        signature_len = 0;
+        header_len = MAVLINK_CORE_HEADER_MAVLINK1_LEN;
+    } else {
+        length = _mav_trim_payload(_MAV_PAYLOAD(msg), length);
+        header_len = MAVLINK_CORE_HEADER_LEN;
+        signature_len = (msg->incompat_flags & MAVLINK_IFLAG_SIGNED) ? MAVLINK_SIGNATURE_BLOCK_LEN : 0;
+    }
+
+    return header_len + 1 + 2 + (uint16_t)length + (uint16_t)signature_len;
+}
+
+/**
+ * @brief Send the next parameter in the sequence
+ * 
+ * This function handles the transmission of parameters in a sequence, first sending
+ * MAVLink parameters followed by FMT parameters. It manages the state transitions
+ * between different parameters and groups, and sets up the timer for the next send.
+ * 
+ * @return fmt_err_t Returns FMT_EOK on success, or FMT_ENOTHANDLE if no sending is active
+ * 
+ * @note
+ * - The function maintains send state across calls using param_send_state
+ * - For MAVLink parameters: sends one parameter per call until all are sent
+ * - For FMT parameters: sends one parameter per call, progressing through groups as needed
+ * - After sending the last parameter, it completes the sequence
+ * - Otherwise, it starts a timer to schedule the next parameter send
+ */
+fmt_err_t mavlink_param_send_next(void)
 {
     mavlink_message_t msg;
     param_t* param;
-    param_group_t* gp = param_get_table();
+    param_group_t* gp;
     mav_param_t* mav_param;
+    rt_tick_t timeout = 0;
+    uint32_t time_send_interval_ms = 0;
+    uint32_t bw;
+    uint16_t msg_bytes;    
 
-    for (uint32_t i = 0; i < MAV_PARAM_COUNT; i++) {
-        mav_param = get_mavparam_by_index(i);
-
-        if (!mav_param) {
-            break;
-        }
-
-        make_mavparam_msg(&msg, mav_param);
-        mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+    if (!param_send_state.is_sending) {
+        return FMT_ENOTHANDLE;
     }
 
-    for (uint32_t i = 0; i < param_get_group_count(); i++) {
-        param = gp->param_list;
-
-        for (uint32_t j = 0; j < gp->param_num; j++) {
-            make_mavlink_param_msg(&msg, param);
+    /* Send MAVLink parameters */
+    if (param_send_state.mav_param_index < MAV_PARAM_COUNT) {
+        mav_param = get_mavparam_by_index(param_send_state.mav_param_index);
+        if (mav_param) {
+            make_mavparam_msg(&msg, mav_param);
             mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
-            param++;
         }
-
-        gp++;
+        param_send_state.mav_param_index++;
+    } else {
+        /* Send FMT parameters */
+        gp = param_get_table();
+        if (param_send_state.group_index < param_get_group_count()) {
+            param = gp[param_send_state.group_index].param_list;
+            if (param_send_state.param_index < gp[param_send_state.group_index].param_num) {
+                make_mavlink_param_msg(&msg, &param[param_send_state.param_index]);
+                mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, &msg, true);
+                param_send_state.param_index++;
+            } else {
+                /* The current group has been sent successfully. Move to the next group. */
+                param_send_state.group_index++;
+                param_send_state.param_index = 0;
+            }
+        }
     }
+
+    /* All param send complete */
+    if (param_send_state.mav_param_index >= MAV_PARAM_COUNT 
+        && param_send_state.group_index >= param_get_group_count() 
+        && param_send_state.param_index ==  0) {
+        param_send_state.is_sending = false;
+    } else { /* start timer to send next param */
+        msg_bytes = mavlink_calculate_msg_len(&msg);
+        bw = mavproxy_dev_get_bw(MAVPROXY_GCS_CHAN);
+        if (bw > 0) { /* valid bandwidth */
+            /* Calculate the next timeout time based on the size of the data sent previously 
+             * and the transmission bandwidth. The sending bandwidth should not exceed 30% of 
+             * the transmission bandwidth. 
+             * msg_bytes = bw * send_interval / 1000 * 0.3 = bw * send_interval / 3333
+             * send_interval = 3333 * msg_bytes / bw
+             * time_send_interval_ms = send_interval - (msg_bytes / bw) * 1000 = 2333 * msg_bytes / bw
+             */
+            time_send_interval_ms = ((uint32_t)msg_bytes * 2333) / bw;
+            timeout = rt_tick_from_millisecond(time_send_interval_ms);
+        } else {
+            timeout = rt_tick_from_millisecond(param_send_state.send_interval);
+        }
+        if (timeout != 0) {
+            rt_timer_control(&param_send_state.timer, RT_TIMER_CTRL_SET_TIME, &timeout);
+            rt_timer_start(&param_send_state.timer);
+        } else { /* Send immediately */
+            mavproxy_send_event(MAVPROXY_GCS_CHAN, EVENT_SEND_NEXT_PARAM);
+        }
+    }
+
+    return FMT_EOK;
+}
+
+/**
+ * @brief Reset parameter sending state and start sending all parameters
+ * 
+ * This function initializes the parameter sending process by first resetting
+ * the send state, then immediately sending the first parameter to start
+ * the entire parameter transmission sequence.
+ * 
+ * @note
+ * - Ensure related modules are properly initialized before calling this function
+ * - The function internally calls two static functions to complete the operation
+ */
+void mavlink_param_sendall(void)
+{
+    /* Reset state and start sending */
+    mavlink_param_reset_send_state();
+    /* Send first parameter immediately */
+    mavlink_param_send_next();
+}
+
+void mavlink_param_init(void)
+{
+    rt_timer_init(&param_send_state.timer, "param_send", 
+        param_send_timer_callback, RT_NULL, 
+        rt_tick_from_millisecond(param_send_state.send_interval), 
+        RT_TIMER_FLAG_ONE_SHOT | RT_TIMER_FLAG_HARD_TIMER);
 }

@@ -29,6 +29,7 @@ rt_size_t mavproxy_dev_read(uint8_t chan, void* buffer, uint32_t len, int32_t ti
 void mavproxy_dev_set_rx_indicate(uint8_t chan, fmt_err_t (*rx_ind)(uint32_t size));
 fmt_err_t mavproxy_dev_set_device(uint8_t chan, const char* dev_name);
 rt_device_t mavproxy_dev_get_device(uint8_t chan);
+uint32_t mavproxy_dev_get_bw(uint8_t chan);
 
 #ifdef __cplusplus
 }
