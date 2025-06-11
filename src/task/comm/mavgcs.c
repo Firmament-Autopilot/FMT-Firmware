@@ -489,6 +489,9 @@ fmt_err_t mavgcs_init(void)
     mcn_advertise(MCN_HUB(environment_info), NULL);
     mcn_advertise(MCN_HUB(states_init), NULL);
 
+    /* register channel */
+    FMT_TRY(mavproxy_register_channel(MAVPROXY_GCS_CHAN));
+
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
 

@@ -15,9 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include "module/mavproxy/mavproxy_dev.h"
 #include "hal/serial/serial.h"
-
-#define MAVPROXY_DEV_CHAN_NUM 2
 
 struct mavdev {
     rt_device_t dev;
@@ -26,39 +25,22 @@ struct mavdev {
     fmt_err_t (*mav_rx_ind)(uint32_t size);
 };
 
-static rt_err_t mavdev_chan0_tx_done(rt_device_t dev, void* buffer);
-static rt_err_t mavdev_chan0_rx_ind(rt_device_t dev, rt_size_t size);
-static rt_err_t mavdev_chan1_tx_done(rt_device_t dev, void* buffer);
-static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size);
+static struct mavdev mavdev_list[MAXPROXY_MAX_CHAN];
 
-static struct mavdev mavdev_list[MAVPROXY_DEV_CHAN_NUM] = {
-    { .tx_done = mavdev_chan0_tx_done, .rx_ind = mavdev_chan0_rx_ind },
-    { .tx_done = mavdev_chan1_tx_done, .rx_ind = mavdev_chan1_rx_ind },
-};
-
-static rt_err_t mavdev_chan0_tx_done(rt_device_t dev, void* buffer)
+static rt_err_t mavdev_tx_done(rt_device_t dev, void* buffer)
 {
     return RT_EOK;
 }
 
-static rt_err_t mavdev_chan0_rx_ind(rt_device_t dev, rt_size_t size)
+static rt_err_t mavdev_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    if (mavdev_list[0].mav_rx_ind) {
-        mavdev_list[0].mav_rx_ind(size);
-    }
-
-    return RT_EOK;
-}
-
-static rt_err_t mavdev_chan1_tx_done(rt_device_t dev, void* buffer)
-{
-    return RT_EOK;
-}
-
-static rt_err_t mavdev_chan1_rx_ind(rt_device_t dev, rt_size_t size)
-{
-    if (mavdev_list[1].mav_rx_ind) {
-        mavdev_list[1].mav_rx_ind(size);
+    for (uint8_t chan = 0; chan < MAXPROXY_MAX_CHAN; chan++) {
+        if (dev == mavdev_list[chan].dev) {
+            /* find device channel */
+            if (mavdev_list[chan].mav_rx_ind) {
+                mavdev_list[chan].mav_rx_ind(size);
+            }
+        }
     }
 
     return RT_EOK;
@@ -155,7 +137,7 @@ uint32_t mavproxy_dev_get_bw(uint8_t chan)
         serial = (struct serial_device*)dev;
         bw = serial->config.baud_rate / 10; // convert bits to bytes minus overhead
     } else if (dev->type == RT_Device_Class_USBDevice) {
-        bw = 250 * 1024; // The USB Full Speed (FS) transmission rate is conservatively estimated at 2 Mbps.
+        bw = 250 * 1024;                    // The USB Full Speed (FS) transmission rate is conservatively estimated at 2 Mbps.
     } else {
         console_printf("Error device type %d\n", dev->type);
         bw = 0;
@@ -166,5 +148,10 @@ uint32_t mavproxy_dev_get_bw(uint8_t chan)
 
 fmt_err_t mavproxy_dev_init(void)
 {
+    for (uint8_t i = 0; i < MAXPROXY_MAX_CHAN; i++) {
+        mavdev_list[i].tx_done = mavdev_tx_done;
+        mavdev_list[i].rx_ind = mavdev_rx_ind;
+    }
+    
     return FMT_EOK;
 }

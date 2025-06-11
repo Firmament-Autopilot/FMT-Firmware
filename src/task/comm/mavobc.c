@@ -502,6 +502,9 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
 fmt_err_t mavobc_init(void)
 {
+    /* register channel */
+    FMT_TRY(mavproxy_register_channel(MAVPROXY_OBC_CHAN));
+
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_OBC_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
 
