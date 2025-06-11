@@ -50,6 +50,7 @@
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
@@ -65,6 +66,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
@@ -430,6 +432,9 @@ void bsp_initialize(void)
 
     /* init parameter system */
     FMT_CHECK(param_init());
+
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());

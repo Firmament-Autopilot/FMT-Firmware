@@ -33,6 +33,7 @@
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/sensor/sensor_hub.h"
@@ -241,6 +242,9 @@ void bsp_initialize(void)
 
     /* init parameter system */
     FMT_CHECK(param_init());
+
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));

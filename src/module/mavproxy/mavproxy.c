@@ -419,10 +419,6 @@ fmt_err_t mavproxy_init(void)
     mav_handle.system.sysid = PARAM_GET_UINT8(SYSTEM, MAV_SYS_ID);
     mav_handle.system.compid = PARAM_GET_UINT8(SYSTEM, MAV_COMP_ID);
 
-    for (uint8_t i = 0; i < MAXPROXY_MAX_CHAN; i++) {
-        mav_handle.chan_handle_list[i] = NULL;
-    }
-
     /* init mavproxy device */
     mavproxy_dev_init();
 

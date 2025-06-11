@@ -60,8 +60,8 @@ static fmt_err_t handle_mavlink_msg(uint8_t chan, mavlink_message_t* msg, mavlin
 
 static void mavproxy_rx_entry(void* param)
 {
-    mavlink_message_t msg[2];
-    mavlink_status_t mav_status[2];
+    mavlink_message_t msg[MAXPROXY_MAX_CHAN];
+    mavlink_status_t mav_status[MAXPROXY_MAX_CHAN];
     mavlink_system_t mavlink_system;
     char byte;
     rt_uint32_t recv_set = 0;
@@ -76,7 +76,7 @@ static void mavproxy_rx_entry(void* param)
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
-                for (uint8_t chan = 0; chan < mavproxy_is_valid_chan(chan); chan++) {
+                for (uint8_t chan = 0; mavproxy_is_valid_chan(chan); chan++) {
                     while (mavproxy_dev_read(chan, &byte, 1, 0)) {
                         /* decode mavlink package */
                         if (mavlink_parse_char(0, byte, &msg[chan], &mav_status[chan]) == 1) {

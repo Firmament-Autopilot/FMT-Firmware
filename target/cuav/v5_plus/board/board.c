@@ -53,6 +53,7 @@
 #include "model/ins/ins_interface.h"
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
@@ -411,6 +412,9 @@ void bsp_initialize(void)
 
     /* init parameter system */
     FMT_CHECK(param_init());
+
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());

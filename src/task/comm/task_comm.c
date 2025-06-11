@@ -794,8 +794,8 @@ fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t re
 
 static fmt_err_t task_mavgcs_init(void)
 {
-    /* init mavproxy */
-    FMT_TRY(mavproxy_init());
+    // /* init mavproxy */
+    // FMT_TRY(mavproxy_init());
 
     mavlink_system = mavproxy_get_system();
 
