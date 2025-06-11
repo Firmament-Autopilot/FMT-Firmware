@@ -134,6 +134,36 @@ rt_device_t mavproxy_dev_get_device(uint8_t chan)
     return mavdev_list[chan].dev;
 }
 
+/**
+ * @brief  Get the bandwidth of a mavlink channel
+ *
+ * @param  chan: mavlink channel
+ *
+ * @return bandwidth unit: bytes/s
+ */
+uint32_t mavproxy_dev_get_bw(uint8_t chan)
+{
+    uint32_t bw = 0;
+    struct serial_device* serial;
+    rt_device_t dev = mavdev_list[chan].dev;
+    if (dev == RT_NULL) {
+        /* mavproxy device not initialized */
+        return 0;
+    }
+
+    if (dev->type == RT_Device_Class_Char) {
+        serial = (struct serial_device*)dev;
+        bw = serial->config.baud_rate / 10; // convert bits to bytes minus overhead
+    } else if (dev->type == RT_Device_Class_USBDevice) {
+        bw = 250 * 1024; // The USB Full Speed (FS) transmission rate is conservatively estimated at 2 Mbps.
+    } else {
+        console_printf("Error device type %d\n", dev->type);
+        bw = 0;
+    }
+
+    return bw;
+}
+
 fmt_err_t mavproxy_dev_init(void)
 {
     return FMT_EOK;

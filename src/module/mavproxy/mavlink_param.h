@@ -342,7 +342,11 @@ enum Rotation {
     ROTATION_MAX
 };
 
+void mavlink_param_init(void);
 void mavlink_param_sendall(void);
+fmt_err_t mavlink_param_send_next(void); /* Send next parameter in queue */
+void mavlink_param_reset_send_state(void); /* Reset send state */
+void mavlink_param_set_send_interval(uint16_t interval_ms);
 fmt_err_t mavlink_param_set(const char* name, float val, uint8_t mav_param_type);
 fmt_err_t mavlink_param_send(const param_t* param);
 uint16_t get_mavparam_num(void);

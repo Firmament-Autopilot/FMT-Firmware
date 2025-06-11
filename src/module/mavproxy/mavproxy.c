@@ -18,7 +18,7 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
 
-#define MAVPROXY_INTERVAL            1
+#define MAVPROXY_INTERVAL            20
 #define MAVPROXY_BUFFER_SIZE         1024
 #define MAX_PERIOD_MSG_QUEUE_SIZE    25
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 20
@@ -274,7 +274,7 @@ void mavproxy_channel_loop(uint8_t chan)
 {
     rt_err_t res;
     rt_uint32_t recv_set = 0;
-    rt_uint32_t wait_set = chan == MAVPROXY_GCS_CHAN ? (EVENT_MAVPROXY_UPDATE | EVENT_MAVCONSOLE_TIMEOUT | EVENT_SEND_ALL_PARAM) : EVENT_MAVPROXY_UPDATE;
+    rt_uint32_t wait_set = chan == MAVPROXY_GCS_CHAN ? (EVENT_MAVPROXY_UPDATE | EVENT_MAVCONSOLE_TIMEOUT | EVENT_SEND_ALL_PARAM | EVENT_SEND_NEXT_PARAM) : EVENT_MAVPROXY_UPDATE;
 
     if (chan >= MAVPROXY_CHAN_NUM) {
         return;
@@ -312,6 +312,11 @@ void mavproxy_channel_loop(uint8_t chan)
 
             if (recv_set & EVENT_SEND_ALL_PARAM) {
                 mavlink_param_sendall();
+            }
+
+            if (recv_set & EVENT_SEND_NEXT_PARAM) {
+                /* Send next parameter */
+                mavlink_param_send_next();
             }
 
             if (recv_set & EVENT_MAVCONSOLE_TIMEOUT) {
@@ -365,6 +370,8 @@ fmt_err_t mavproxy_init(void)
 
     /* register parameter modify callback */
     register_param_modify_callback(on_param_modify);
+
+    mavlink_param_init();
 
     /* register timer event to periodly wakeup itself */
     rt_timer_init(&mav_handle.timer[0], "mav_chan0", mavproxy_chan0_timer_update, RT_NULL, MAVPROXY_INTERVAL, RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_HARD_TIMER);
