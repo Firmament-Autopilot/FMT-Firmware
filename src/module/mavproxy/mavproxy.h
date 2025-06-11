@@ -35,6 +35,7 @@ extern "C" {
 #define EVENT_MAVPROXY_UPDATE    (1 << 0)
 #define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)
 #define EVENT_SEND_ALL_PARAM     (1 << 2)
+#define EVENT_SEND_NEXT_PARAM    (1 << 3)
 
 #define MAVPROXY_CHAN_NUM        2
 #define MAVPROXY_GCS_CHAN        0

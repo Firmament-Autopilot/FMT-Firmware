@@ -161,7 +161,7 @@ msh /usr>fmtio upload /usr/fmt_io.bin
 | USART3 | serial0 | TELEM2   |
 | USART2 | serial1 | TELEM1   |
 | UART4  | serial2 | GPS      |
-| UART8  | serial3 | SERIAL 4 |
+| UART7  | serial3 | SERIAL 4 |
 | UART8  | serial4 | SERIAL 5 |
 
 ## Maintainer

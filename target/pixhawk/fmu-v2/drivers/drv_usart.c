@@ -24,11 +24,11 @@
 /*
     UART1 ==> IO Debug Console
     UART2 ==> Serial1 (TELEM1)
-    UART3 ==> Serial2 (TELEM2)
-    UART4 ==> Serial3 (GPS)
+    UART3 ==> Serial0 (TELEM2)
+    UART4 ==> Serial2 (GPS)
     UART6 ==> FMU/IO Serial
-    UART7 ==> Serial5 (SERIAL 4/5)
-    UART8 ==> Serial4 (SERIAL 4/5)
+    UART7 ==> Serial4 (SERIAL 5)
+    UART8 ==> Serial3 (SERIAL 4)
 */
 
 // #define USING_UART1
@@ -658,16 +658,16 @@ void UART8_IRQHandler(void)
 //     rt_interrupt_leave();
 // }
 
-// void DMA1_Stream0_IRQHandler(void)
-// {
-//     /* enter interrupt */
-//     rt_interrupt_enter();
+void DMA1_Stream0_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
 
-//     dma_tx_done_isr(&serial3);
+    dma_tx_done_isr(&serial3);
 
-//     /* leave interrupt */
-//     rt_interrupt_leave();
-// }
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
 #endif // USING_UART8
 
 static void RCC_Configuration(void)
@@ -1229,7 +1229,7 @@ rt_err_t drv_usart_init(void)
     /* register UART6 device */
     rt_err |= hal_serial_register(&serial3,
                                   "serial3",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
                                   &uart8);
 #endif /* USING_UART8 */
 
