@@ -217,18 +217,18 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
                 param_t* param = param_get_by_name(request_read.param_id);
 
                 if (param) {
-                    mavlink_param_send(param);
+                    mavlink_param_send(param, MAVPROXY_GCS_CHAN);
                 } else {
-                    send_mavparam_by_name(request_read.param_id);
+                    send_mavparam_by_name(request_read.param_id, MAVPROXY_GCS_CHAN);
                 }
             } else {
                 uint16_t mavparam_num = get_mavparam_num();
 
                 if (request_read.param_index < mavparam_num) {
-                    send_mavparam_by_index(request_read.param_index);
+                    send_mavparam_by_index(request_read.param_index, MAVPROXY_GCS_CHAN);
                 } else {
                     param_t* param = param_get_by_index(request_read.param_index - mavparam_num);
-                    mavlink_param_send(param);
+                    mavlink_param_send(param, MAVPROXY_GCS_CHAN);
                 }
             }
         }

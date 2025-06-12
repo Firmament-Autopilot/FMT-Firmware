@@ -68,7 +68,7 @@ static mavproxy_handler mav_handle;
 static void on_param_modify(param_t* param)
 {
     /* parameter modified, send new value to GCS */
-    mavlink_param_send(param);
+    mavlink_param_send(param, MAVPROXY_GCS_CHAN);
 }
 
 static void mavproxy_chan_timer_update(void* parameter)
@@ -325,17 +325,19 @@ void mavproxy_channel_loop(uint8_t chan)
                 }
             }
 
-            if (recv_set & EVENT_SEND_ALL_PARAM) {
-                mavlink_param_sendall();
-            }
+            if (chan == MAVPROXY_GCS_CHAN) {
+                if (recv_set & EVENT_SEND_ALL_PARAM) {
+                    mavlink_param_sendall();
+                }
 
-            if (recv_set & EVENT_SEND_NEXT_PARAM) {
-                /* Send next parameter */
-                mavlink_param_send_next();
-            }
+                if (recv_set & EVENT_SEND_NEXT_PARAM) {
+                    /* Send next parameter */
+                    mavlink_param_send_next();
+                }
 
-            if (recv_set & EVENT_MAVCONSOLE_TIMEOUT) {
-                mavlink_console_handle_timeout();
+                if (recv_set & EVENT_MAVCONSOLE_TIMEOUT) {
+                    mavlink_console_handle_timeout();
+                }
             }
 
             if (recv_set & EVENT_MAVPROXY_UPDATE) {
