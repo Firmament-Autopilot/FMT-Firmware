@@ -19,7 +19,7 @@
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/utils/list.h"
 
-#define MAVPROXY_INTERVAL            20
+#define MAVPROXY_INTERVAL            1
 #define MAX_PERIOD_MSG_QUEUE_SIZE    25
 #define MAX_IMMEDIATE_MSG_QUEUE_SIZE 20
 #define MAVPROXY_BUFFER_SIZE         1024
