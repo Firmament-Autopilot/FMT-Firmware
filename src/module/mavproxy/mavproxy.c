@@ -136,7 +136,10 @@ fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg
     mav_period_msg msg;
 
     if (mav_handle.chan_handle_list[chan] == NULL)
+    {
+        console_printf("mavproxy channel %d is not registered\n", chan);
         return FMT_EINVAL;
+    }
 
     msg.msgid = msgid;
     msg.enable = (start == true) ? 1 : 0;

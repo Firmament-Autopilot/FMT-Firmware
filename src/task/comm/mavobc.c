@@ -216,10 +216,9 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
                 } else {
                     mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_FAILED);
                 }
-                break;
+                return;
             }
         }
-
         mavlink_command_acknowledge(MAVPROXY_OBC_CHAN, command->command, MAV_RESULT_UNSUPPORTED);
     } break;
 
@@ -342,6 +341,8 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             }
         }
     } break;
+
+    
 
     case MAV_CMD_DO_SET_MODE: {
         uint8_t base_mode = (uint8_t)command->param1;
@@ -467,7 +468,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t this_system)
 {
     mavlink_system_t mav_sys = mavproxy_get_system();
-
+   
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
         if (PARAM_GET_UINT8(SYSTEM, OBC_HEARTBEAT)) {
@@ -491,6 +492,30 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             handle_mavlink_command(&command, msg);
         }
     } break;
+
+     case MAVLINK_MSG_ID_PING: {
+        
+        if (this_system.sysid == mavlink_msg_ping_get_target_system(msg) || 
+            mavlink_msg_ping_get_target_system(msg) == 0) {
+            mavlink_ping_t ping;
+            mavlink_msg_ping_decode(msg, &ping);
+
+            // If the ping is not a response to our ping
+            // Print target_system
+            
+            mavlink_message_t response_msg;
+            mavlink_system_t mav_sys = mavproxy_get_system();
+
+            mavlink_msg_ping_pack(mav_sys.sysid, mav_sys.compid, &response_msg,
+                                ping.time_usec,
+                                ping.seq,
+                                msg->sysid,
+                                msg->compid);
+
+            mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, &response_msg, true);
+        }
+        break;
+    }
 
     case MAVLINK_MSG_ID_SET_MODE:
         if (this_system.sysid == mavlink_msg_set_mode_get_target_system(msg)) {
@@ -601,7 +626,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
                 auto_cmd.frame = FRAME_GLOBAL_NED;
             } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_FRD) {
                 auto_cmd.frame = FRAME_LOCAL_FRD;
-            } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_FRD) {
+            } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_FRD || pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_NED) {
                 auto_cmd.frame = FRAME_BODY_FRD;
             } else {
                 LOG_W("unsupported SET_POSITION_TARGET_LOCAL_NED frame:%d", pos_target_local_ned.coordinate_frame);
@@ -668,6 +693,33 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
         break;
 
+     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
+        mavlink_param_request_read_t request_read;
+        mavlink_msg_param_request_read_decode(msg, &request_read);
+
+        // Check if the request is for this system
+        if (this_system.sysid == request_read.target_system) {
+            // Handle the parameter request
+            if (request_read.param_index == -1) {
+                // Use the param ID field as identifier
+                param_t* param = param_get_by_name(request_read.param_id);  
+                if (param) {
+                    mavlink_param_send(param, MAVPROXY_OBC_CHAN);
+                } else {
+                    send_mavparam_by_name(request_read.param_id,MAVPROXY_OBC_CHAN);
+                }
+            } else {
+                uint16_t mavparam_num = get_mavparam_num();
+                if (request_read.param_index < mavparam_num) {
+                    send_mavparam_by_index(request_read.param_index, MAVPROXY_OBC_CHAN);
+                } else {
+                    param_t* param = param_get_by_index(request_read.param_index - mavparam_num);
+                    mavlink_param_send(param, MAVPROXY_OBC_CHAN);
+                }
+            }
+        }
+    } break;
+
     case MAVLINK_MSG_ID_SET_POSITION_TARGET_GLOBAL_INT:
         if (this_system.sysid == mavlink_msg_set_position_target_global_int_get_target_system(msg)) {
             Auto_Cmd_Bus auto_cmd = { 0 };
@@ -677,7 +729,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             auto_cmd.timestamp = systime_now_ms();
 
-            if (pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_INT) {
+            if (pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_INT || pos_target_global_int.coordinate_frame == MAV_FRAME_GLOBAL_RELATIVE_ALT_INT) {
                 auto_cmd.frame = FRAME_GLOBAL_NED;
             } else {
                 LOG_W("unsupported SET_POSITION_TARGET_GLOBAL_INT frame:%d", pos_target_global_int.coordinate_frame);
@@ -866,6 +918,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         LOG_W("unsupported mavlink msg:%d", msg->msgid);
         break;
     }
+
 
     return FMT_EOK;
 }
