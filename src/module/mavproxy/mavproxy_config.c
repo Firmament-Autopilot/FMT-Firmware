@@ -32,8 +32,8 @@
 #define FIND_DEVICE(_chan, _idx)           rt_device_find(DEVICE_LIST(_chan)[_idx].name)
 #define MAVPROXY_SERIAL_BAUDRATE           57600
 
-static mavproxy_device_info mavproxy_device_list[MAVPROXY_CHAN_NUM][MAVPROXY_MAX_DEVICE_NUM];
-static uint8_t mavproxy_device_num[MAVPROXY_CHAN_NUM];
+static mavproxy_device_info mavproxy_device_list[MAXPROXY_MAX_CHAN][MAVPROXY_MAX_DEVICE_NUM];
+static uint8_t mavproxy_device_num[MAXPROXY_MAX_CHAN];
 static mavproxy_device_info mavproxy_rtcm_device_list[MAVPROXY_MAX_DEVICE_NUM];
 static uint8_t mavproxy_rtcm_device_num;
 
@@ -41,7 +41,7 @@ static void __handle_device_msg(rt_device_t dev, void* msg)
 {
     device_status status = *((device_status*)msg);
 
-    for (uint8_t chan = 0; chan < MAVPROXY_CHAN_NUM; chan++) {
+    for (uint8_t chan = 0; chan < MAXPROXY_MAX_CHAN; chan++) {
         for (uint8_t idx = 0; idx < DEVICE_NUM(chan); idx++) {
             if (rt_device_find(DEVICE_LIST(chan)[idx].name) == dev) {
                 if (status == DEVICE_STATUS_CONNECT) {
@@ -70,7 +70,7 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
     if (toml_int_in(curtab, "chan", &ival) == 0) {
         chan = (uint8_t)ival;
 
-        if (chan >= MAVPROXY_CHAN_NUM) {
+        if (chan >= MAXPROXY_MAX_CHAN) {
             TOML_DBG_E("invalid channel:%d\n", chan);
             return FMT_EINVAL;
         }
@@ -102,8 +102,6 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
                 err = FMT_ERROR;
             }
         } else if (DEVICE_TYPE_IS(chan, idx, usb)) {
-            /* do nothing */
-        } else if (DEVICE_TYPE_IS(chan, idx, bb_com)) {
             /* do nothing */
         } else {
             TOML_DBG_E("unknown device type: %s\n", DEVICE_LIST(chan)[idx].type);

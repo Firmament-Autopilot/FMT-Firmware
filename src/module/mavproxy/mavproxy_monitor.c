@@ -26,9 +26,6 @@ struct mavlink_msg_handler_func {
     struct list_head link;
 };
 
-static LIST_HEAD(__mavlink_msg_chan0_handler_head);
-static LIST_HEAD(__mavlink_msg_chan1_handler_head);
-
 static char thread_mavlink_rx_stack[6144];
 static struct rt_thread thread_mavlink_rx_handle;
 static struct rt_event mav_rx_event;
@@ -44,10 +41,7 @@ static fmt_err_t mavproxy_rx_ind(uint32_t size)
 static fmt_err_t handle_mavlink_msg(uint8_t chan, mavlink_message_t* msg, mavlink_system_t this_system)
 {
     struct mavlink_msg_handler_func* node;
-
-    if (chan >= MAVPROXY_CHAN_NUM) {
-        return FMT_EINVAL;
-    }
+    struct list_head* rx_handler_list = mavproxy_get_rx_handler_list(chan);
 
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
@@ -55,18 +49,10 @@ static fmt_err_t handle_mavlink_msg(uint8_t chan, mavlink_message_t* msg, mavlin
         break;
     }
 
-    if (chan == 0) {
-        list_for_each_entry(node, struct mavlink_msg_handler_func, &__mavlink_msg_chan0_handler_head, link)
-        {
-            /* invoke registered mavlink message handler */
-            FMT_TRY(node->mavlink_msg_handler(msg, this_system));
-        }
-    } else {
-        list_for_each_entry(node, struct mavlink_msg_handler_func, &__mavlink_msg_chan1_handler_head, link)
-        {
-            /* invoke registered mavlink message handler */
-            FMT_TRY(node->mavlink_msg_handler(msg, this_system));
-        }
+    list_for_each_entry(node, struct mavlink_msg_handler_func, rx_handler_list, link)
+    {
+        /* invoke registered mavlink message handler */
+        FMT_TRY(node->mavlink_msg_handler(msg, this_system));
     }
 
     return FMT_EOK;
@@ -74,8 +60,8 @@ static fmt_err_t handle_mavlink_msg(uint8_t chan, mavlink_message_t* msg, mavlin
 
 static void mavproxy_rx_entry(void* param)
 {
-    mavlink_message_t msg[2];
-    mavlink_status_t mav_status[2];
+    mavlink_message_t msg[MAXPROXY_MAX_CHAN];
+    mavlink_status_t mav_status[MAXPROXY_MAX_CHAN];
     mavlink_system_t mavlink_system;
     char byte;
     rt_uint32_t recv_set = 0;
@@ -90,7 +76,7 @@ static void mavproxy_rx_entry(void* param)
 
         if (rt_err == RT_EOK) {
             if (recv_set & EVENT_MAV_RX) {
-                for (uint8_t chan = 0; chan < MAVPROXY_CHAN_NUM; chan++) {
+                for (uint8_t chan = 0; mavproxy_is_valid_chan(chan); chan++) {
                     while (mavproxy_dev_read(chan, &byte, 1, 0)) {
                         /* decode mavlink package */
                         if (mavlink_parse_char(0, byte, &msg[chan], &mav_status[chan]) == 1) {
@@ -106,12 +92,9 @@ static void mavproxy_rx_entry(void* param)
 fmt_err_t mavproxy_monitor_register_handler(uint8_t chan, fmt_err_t (*handler)(mavlink_message_t*, mavlink_system_t))
 {
     struct mavlink_msg_handler_func* node;
+    struct list_head* rx_handler_list = mavproxy_get_rx_handler_list(chan);
 
-    if (chan >= MAVPROXY_CHAN_NUM) {
-        return FMT_EINVAL;
-    }
-
-    if (handler == NULL) {
+    if (!mavproxy_is_valid_chan(chan) || handler == NULL) {
         return FMT_EINVAL;
     }
 
@@ -120,14 +103,11 @@ fmt_err_t mavproxy_monitor_register_handler(uint8_t chan, fmt_err_t (*handler)(m
         return FMT_ENOMEM;
     }
 
+    /* init node */
     INIT_LIST_HEAD(&node->link);
     node->mavlink_msg_handler = handler;
-
-    if (chan == 0) {
-        list_add_tail(&node->link, &__mavlink_msg_chan0_handler_head);
-    } else {
-        list_add_tail(&node->link, &__mavlink_msg_chan1_handler_head);
-    }
+    /* add node to list */
+    list_add_tail(&node->link, rx_handler_list);
 
     return FMT_EOK;
 }
@@ -135,32 +115,18 @@ fmt_err_t mavproxy_monitor_register_handler(uint8_t chan, fmt_err_t (*handler)(m
 fmt_err_t mavproxy_monitor_deregister_handler(uint8_t chan, fmt_err_t (*handler)(mavlink_message_t*, mavlink_system_t))
 {
     struct mavlink_msg_handler_func* node;
+    struct list_head* rx_handler_list = mavproxy_get_rx_handler_list(chan);
 
-    if (chan >= MAVPROXY_CHAN_NUM) {
+    if (!mavproxy_is_valid_chan(chan) || handler == NULL) {
         return FMT_EINVAL;
     }
 
-    if (handler == NULL) {
-        return FMT_EINVAL;
-    }
-
-    if (chan == 0) {
-        list_for_each_entry(node, struct mavlink_msg_handler_func, &__mavlink_msg_chan0_handler_head, link)
-        {
-            if (node->mavlink_msg_handler == handler) {
-                list_del(&node->link);
-                rt_free(node);
-                return FMT_EOK;
-            }
-        }
-    } else {
-        list_for_each_entry(node, struct mavlink_msg_handler_func, &__mavlink_msg_chan1_handler_head, link)
-        {
-            if (node->mavlink_msg_handler == handler) {
-                list_del(&node->link);
-                rt_free(node);
-                return FMT_EOK;
-            }
+    list_for_each_entry(node, struct mavlink_msg_handler_func, rx_handler_list, link)
+    {
+        if (node->mavlink_msg_handler == handler) {
+            list_del(&node->link);
+            rt_free(node);
+            return FMT_EOK;
         }
     }
 
@@ -181,17 +147,15 @@ fmt_err_t mavproxy_monitor_create(void)
                          5);
 
     if (res != RT_EOK) {
-        console_printf("mav rx thread create fail\n");
         return FMT_ERROR;
     }
 
     if (rt_event_init(&mav_rx_event, "mav_rx", RT_IPC_FLAG_FIFO) != RT_EOK) {
-        console_printf("mav rx event create fail\n");
         return FMT_ERROR;
     }
 
     /* set mavproxy device rx indicator */
-    for (uint8_t chan = 0; chan < MAVPROXY_CHAN_NUM; chan++) {
+    for (uint8_t chan = 0; chan < MAXPROXY_MAX_CHAN; chan++) {
         mavproxy_dev_set_rx_indicate(chan, mavproxy_rx_ind);
     }
 

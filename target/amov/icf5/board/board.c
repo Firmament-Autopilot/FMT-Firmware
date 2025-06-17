@@ -300,6 +300,9 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
+
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 

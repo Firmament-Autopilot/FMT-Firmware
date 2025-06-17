@@ -32,20 +32,23 @@
 extern "C" {
 #endif
 
-#define EVENT_MAVPROXY_UPDATE    (1 << 0)
-#define EVENT_MAVCONSOLE_TIMEOUT (1 << 1)
-#define EVENT_SEND_ALL_PARAM     (1 << 2)
-#define EVENT_SEND_NEXT_PARAM    (1 << 3)
+#define EVENT_MAVPROXY_UPDATE        (1 << 0)
+#define EVENT_MAVCONSOLE_TIMEOUT     (1 << 1)
+#define EVENT_SEND_ALL_PARAM         (1 << 2)
+#define EVENT_SEND_NEXT_PARAM        (1 << 3)
 
-#define MAVPROXY_CHAN_NUM        2
-#define MAVPROXY_GCS_CHAN        0
-#define MAVPROXY_OBC_CHAN        1
+// #define MAXPROXY_MAX_CHAN            5
+#define MAVPROXY_GCS_CHAN            0
+#define MAVPROXY_OBC_CHAN            1
 
 typedef bool (*msg_pack_cb_t)(mavlink_message_t* msg_t);
 
 fmt_err_t mavproxy_init(void);
+fmt_err_t mavproxy_register_channel(uint8_t chan);
 void mavproxy_channel_loop(uint8_t chan);
 mavlink_system_t mavproxy_get_system(void);
+bool mavproxy_is_valid_chan(uint8_t chan);
+struct list_head* mavproxy_get_rx_handler_list(uint8_t chan);
 fmt_err_t mavproxy_set_device(uint8_t chan, uint8_t devid);
 fmt_err_t mavproxy_send_event(uint8_t chan, uint32_t event_set);
 fmt_err_t mavproxy_send_immediate_msg(uint8_t chan, const mavlink_message_t* msg, bool sync);

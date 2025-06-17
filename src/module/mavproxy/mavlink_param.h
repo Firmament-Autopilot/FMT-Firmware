@@ -26,23 +26,26 @@ extern "C" {
 typedef struct {
     const char* name;
     float value;
+    int type;
     param_t* param;
 } mav_param_t;
 
 #define MAVLINK_PARAM_DECLARE(_name) mav_param_t _name
 
-#define MAVLINK_PARAM_DEFINE(_name, _value) \
-    {                                       \
-        .name = #_name,                     \
-        .value = _value,                    \
-        .param = NULL                       \
+#define MAVLINK_PARAM_DEFINE(_name, _value, _type) \
+    {                                              \
+        .name = #_name,                            \
+        .value = _value,                           \
+        .type = _type,                             \
+        .param = NULL                              \
     }
 
-#define MAVLINK_PARAM_DEFINE_FULL(_name, _value, _param) \
-    {                                                    \
-        .name = #_name,                                  \
-        .value = _value,                                 \
-        .param = _param                                  \
+#define MAVLINK_PARAM_DEFINE_FULL(_name, _value, _param, _type) \
+    {                                                           \
+        .name = #_name,                                         \
+        .value = _value,                                        \
+        .type = _type,                                          \
+        .param = _param                                         \
     }
 
 typedef struct {
@@ -304,6 +307,9 @@ typedef struct {
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_P);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_I);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_D);
+#ifdef FMT_USING_SIH
+    MAVLINK_PARAM_DECLARE(SYS_HITL);
+#endif
 } mav_param_list_t;
 
 enum Rotation {
@@ -344,16 +350,16 @@ enum Rotation {
 
 void mavlink_param_init(void);
 void mavlink_param_sendall(void);
-fmt_err_t mavlink_param_send_next(void); /* Send next parameter in queue */
+fmt_err_t mavlink_param_send_next(void);   /* Send next parameter in queue */
 void mavlink_param_reset_send_state(void); /* Reset send state */
 void mavlink_param_set_send_interval(uint16_t interval_ms);
 fmt_err_t mavlink_param_set(const char* name, float val, uint8_t mav_param_type);
-fmt_err_t mavlink_param_send(const param_t* param);
+fmt_err_t mavlink_param_send(const param_t* param, uint8_t chan);
 uint16_t get_mavparam_num(void);
 
 // mavlink param (not used by FMT) api
-fmt_err_t send_mavparam_by_name(char* name);
-fmt_err_t send_mavparam_by_index(int16_t index);
+fmt_err_t send_mavparam_by_name(char* name, uint8_t chan);
+fmt_err_t send_mavparam_by_index(int16_t index, uint8_t chan);
 
 #ifdef __cplusplus
 }

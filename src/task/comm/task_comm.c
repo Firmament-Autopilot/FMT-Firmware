@@ -249,8 +249,9 @@ bool mavlink_msg_sys_status_pack_func(mavlink_message_t* msg_t)
     if (BIT(ins_out.flag, 7)) {
         sys_status.onboard_control_sensors_enabled |= MAV_SYS_STATUS_TERRAIN;
     }
-
-    sys_status.onboard_control_sensors_health = sys_status.onboard_control_sensors_enabled;
+    
+    sys_status.onboard_control_sensors_health = MAV_SYS_STATUS_PREARM_CHECK;
+    sys_status.onboard_control_sensors_health |= (sys_status.onboard_control_sensors_enabled | sys_status.onboard_control_sensors_present);
     sys_status.load = (uint16_t)(get_cpu_usage() * 1e3);
     sys_status.voltage_battery = bat_status.battery_voltage;
     sys_status.current_battery = bat_status.battery_current * 0.1f; /* mA to cA */
@@ -794,8 +795,8 @@ fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t re
 
 static fmt_err_t task_mavgcs_init(void)
 {
-    /* init mavproxy */
-    FMT_TRY(mavproxy_init());
+    // /* init mavproxy */
+    // FMT_TRY(mavproxy_init());
 
     mavlink_system = mavproxy_get_system();
 

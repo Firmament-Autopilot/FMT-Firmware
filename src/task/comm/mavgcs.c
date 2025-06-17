@@ -217,18 +217,18 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
                 param_t* param = param_get_by_name(request_read.param_id);
 
                 if (param) {
-                    mavlink_param_send(param);
+                    mavlink_param_send(param, MAVPROXY_GCS_CHAN);
                 } else {
-                    send_mavparam_by_name(request_read.param_id);
+                    send_mavparam_by_name(request_read.param_id, MAVPROXY_GCS_CHAN);
                 }
             } else {
                 uint16_t mavparam_num = get_mavparam_num();
 
                 if (request_read.param_index < mavparam_num) {
-                    send_mavparam_by_index(request_read.param_index);
+                    send_mavparam_by_index(request_read.param_index, MAVPROXY_GCS_CHAN);
                 } else {
                     param_t* param = param_get_by_index(request_read.param_index - mavparam_num);
-                    mavlink_param_send(param);
+                    mavlink_param_send(param, MAVPROXY_GCS_CHAN);
                 }
             }
         }
@@ -336,7 +336,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     case MAVLINK_MSG_ID_MISSION_ITEM_INT:
     case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
     case MAVLINK_MSG_ID_MISSION_ACK:
-        handle_mission_message(msg);
+        handle_mission_message(msg, MAVPROXY_GCS_CHAN);
         break;
 
 #if defined(FMT_USING_HIL)
@@ -488,6 +488,9 @@ fmt_err_t mavgcs_init(void)
     mcn_advertise(MCN_HUB(external_state), NULL);
     mcn_advertise(MCN_HUB(environment_info), NULL);
     mcn_advertise(MCN_HUB(states_init), NULL);
+
+    /* register channel */
+    FMT_TRY(mavproxy_register_channel(MAVPROXY_GCS_CHAN));
 
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
