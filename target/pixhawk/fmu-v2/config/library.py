@@ -3,4 +3,5 @@
 LIBS = [
     'cm_backtrace',
     'mavlink',
+    'CherryUSB',
 ]
