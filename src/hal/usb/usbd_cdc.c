@@ -26,12 +26,14 @@ static rt_err_t hal_usbd_cdc_init(rt_device_t dev)
     rt_err_t err = RT_EOK;
 
     RT_ASSERT(dev != RT_NULL);
-
+#ifdef PKG_USING_CHERRYUSB
+    usbd->rx_nbytes = 0;
+#else
     usbd->rx_rb = ringbuffer_create(USBD_RX_FIFO_SIZE);
     if (usbd->rx_rb == NULL) {
         return FMT_ENOMEM;
     }
-
+#endif
     usbd->tx_lock = rt_mutex_create("usbd_tx", RT_IPC_FLAG_FIFO);
     if (usbd->tx_lock == NULL) {
         return FMT_ENOMEM;
@@ -125,7 +127,11 @@ void hal_usbd_cdc_notify_status(usbd_cdc_dev_t usbd, int status)
         break;
     case USBD_STATUS_RX:
         if (usbd->parent.rx_indicate) {
+        #ifdef PKG_USING_CHERRYUSB
+            usbd->parent.rx_indicate(&usbd->parent, usbd->rx_nbytes);
+        #else
             usbd->parent.rx_indicate(&usbd->parent, ringbuffer_getlen(usbd->rx_rb));
+        #endif
         }
         break;
     default:
