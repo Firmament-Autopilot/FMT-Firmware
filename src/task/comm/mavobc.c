@@ -342,8 +342,6 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         }
     } break;
 
-    
-
     case MAV_CMD_DO_SET_MODE: {
         uint8_t base_mode = (uint8_t)command->param1;
         uint32_t custom_main_mode = (uint32_t)command->param2;
@@ -468,7 +466,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
 static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t this_system)
 {
     mavlink_system_t mav_sys = mavproxy_get_system();
-   
+
     switch (msg->msgid) {
     case MAVLINK_MSG_ID_HEARTBEAT:
         if (PARAM_GET_UINT8(SYSTEM, OBC_HEARTBEAT)) {
@@ -493,24 +491,19 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
     } break;
 
-     case MAVLINK_MSG_ID_PING: {
-        
-        if (this_system.sysid == mavlink_msg_ping_get_target_system(msg) || 
-            mavlink_msg_ping_get_target_system(msg) == 0) {
+    case MAVLINK_MSG_ID_PING: {
+
+        if (this_system.sysid == mavlink_msg_ping_get_target_system(msg) || mavlink_msg_ping_get_target_system(msg) == 0) {
             mavlink_ping_t ping;
             mavlink_msg_ping_decode(msg, &ping);
 
             // If the ping is not a response to our ping
             // Print target_system
-            
+
             mavlink_message_t response_msg;
             mavlink_system_t mav_sys = mavproxy_get_system();
 
-            mavlink_msg_ping_pack(mav_sys.sysid, mav_sys.compid, &response_msg,
-                                ping.time_usec,
-                                ping.seq,
-                                msg->sysid,
-                                msg->compid);
+            mavlink_msg_ping_pack(mav_sys.sysid, mav_sys.compid, &response_msg, ping.time_usec, ping.seq, msg->sysid, msg->compid);
 
             mavproxy_send_immediate_msg(MAVPROXY_OBC_CHAN, &response_msg, true);
         }
@@ -622,9 +615,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             auto_cmd.timestamp = systime_now_ms();
 
-            if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_NED) {
-                auto_cmd.frame = FRAME_GLOBAL_NED;
-            } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_FRD) {
+            if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_NED || MAV_FRAME_LOCAL_FRD) {
                 auto_cmd.frame = FRAME_LOCAL_FRD;
             } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_FRD || pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_NED) {
                 auto_cmd.frame = FRAME_BODY_FRD;
@@ -693,7 +684,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         }
         break;
 
-     case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
+    case MAVLINK_MSG_ID_PARAM_REQUEST_READ: {
         mavlink_param_request_read_t request_read;
         mavlink_msg_param_request_read_decode(msg, &request_read);
 
@@ -702,11 +693,11 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
             // Handle the parameter request
             if (request_read.param_index == -1) {
                 // Use the param ID field as identifier
-                param_t* param = param_get_by_name(request_read.param_id);  
+                param_t* param = param_get_by_name(request_read.param_id);
                 if (param) {
                     mavlink_param_send(param, MAVPROXY_OBC_CHAN);
                 } else {
-                    send_mavparam_by_name(request_read.param_id,MAVPROXY_OBC_CHAN);
+                    send_mavparam_by_name(request_read.param_id, MAVPROXY_OBC_CHAN);
                 }
             } else {
                 uint16_t mavparam_num = get_mavparam_num();
@@ -918,7 +909,6 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         LOG_W("unsupported mavlink msg:%d", msg->msgid);
         break;
     }
-
 
     return FMT_EOK;
 }
