@@ -307,9 +307,6 @@ typedef struct {
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_P);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_I);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_D);
-#ifdef FMT_USING_SIH
-    MAVLINK_PARAM_DECLARE(SYS_HITL);
-#endif
 } mav_param_list_t;
 
 enum Rotation {
