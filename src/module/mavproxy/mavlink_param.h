@@ -26,25 +26,23 @@ extern "C" {
 typedef struct {
     const char* name;
     float value;
-    int type;
+    // int type;
     param_t* param;
 } mav_param_t;
 
 #define MAVLINK_PARAM_DECLARE(_name) mav_param_t _name
 
-#define MAVLINK_PARAM_DEFINE(_name, _value, _type) \
+#define MAVLINK_PARAM_DEFINE(_name, _value) \
     {                                              \
         .name = #_name,                            \
         .value = _value,                           \
-        .type = _type,                             \
         .param = NULL                              \
     }
 
-#define MAVLINK_PARAM_DEFINE_FULL(_name, _value, _param, _type) \
+#define MAVLINK_PARAM_DEFINE_FULL(_name, _value, _param) \
     {                                                           \
         .name = #_name,                                         \
         .value = _value,                                        \
-        .type = _type,                                          \
         .param = _param                                         \
     }
 
@@ -307,6 +305,9 @@ typedef struct {
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_P);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_I);
     MAVLINK_PARAM_DECLARE(MPC_XY_VEL_D);
+#ifdef FMT_USING_SIH
+    MAVLINK_PARAM_DECLARE(SYS_HITL);
+#endif
 } mav_param_list_t;
 
 enum Rotation {
