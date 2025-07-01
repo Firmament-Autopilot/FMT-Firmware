@@ -36,12 +36,13 @@ MCN_DEFINE(fms_output, sizeof(FMS_Out_Bus));
 
 /* define parameters */
 static param_t __param_list[] = {
-    PARAM_FLOAT(L1, 5.0, false),
+    PARAM_FLOAT(L1, 4.0, false),
     PARAM_FLOAT(CRUISE_SPEED, 4.0, false),
     PARAM_FLOAT(ACCEPT_R, 1.0, false),
+    PARAM_FLOAT(YAW_P, 1.0, false),
     PARAM_FLOAT(MAX_VEL, 4.0, false),
     PARAM_FLOAT(MAX_R, PI / 3, false),
-    PARAM_FLOAT(ACC2RATE, 0.5, false),
+    PARAM_FLOAT(ACC2RATE, 0.7, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
@@ -249,6 +250,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, L1), &FMS_PARAM.L1));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACCEPT_R), &FMS_PARAM.ACCEPT_R));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_P), &FMS_PARAM.YAW_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_VEL), &FMS_PARAM.MAX_VEL));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, MAX_R), &FMS_PARAM.MAX_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC2RATE), &FMS_PARAM.ACC2RATE));
