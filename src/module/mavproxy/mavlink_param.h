@@ -26,7 +26,6 @@ extern "C" {
 typedef struct {
     const char* name;
     float value;
-    // int type;
     param_t* param;
 } mav_param_t;
 
