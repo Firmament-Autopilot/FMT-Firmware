@@ -324,8 +324,16 @@ static void make_mavparam_msg(mavlink_message_t* msg_t, const mav_param_t* param
     mav_param_value.param_index = get_index(param);
     memset(mav_param_value.param_id, 0, 16);
     memcpy(mav_param_value.param_id, param->name, len < 16 ? len : 16);
-
-    mav_param_value.param_type = MAVLINK_TYPE_FLOAT;
+    // 检查参数名称，根据参数名称分配param_type
+    if (strcmp(param->name, "SYS_HITL") == 0 ||
+        strcmp(param->name, "CAL_MAG0_ID") == 0 ||
+        strcmp(param->name, "CAL_GYRO0_ID") == 0 ||
+        strcmp(param->name, "CAL_ACC0_ID") == 0) {
+        mav_param_value.param_type = MAVLINK_TYPE_INT32_T;
+    } else {
+        // 默认使用float类型
+        mav_param_value.param_type = MAVLINK_TYPE_FLOAT;
+    }
     mav_param_value.param_value = param->value;
 
     mavlink_msg_param_value_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &mav_param_value);
