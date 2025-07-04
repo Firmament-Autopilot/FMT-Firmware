@@ -78,7 +78,7 @@ static void task_entry(void* parameter)
         mcn_copy(MCN_HUB(ins_output), ins_out_nod, &ins_out);
     }
 
-    uint32_t time_start = systime_now_ms();
+    // uint32_t time_start = systime_now_ms();
     while (1) {
         // calculate the parameter a which is an angle sweeping from -pi/2 to 3pi/2
         // through the curve
@@ -118,10 +118,10 @@ static void task_entry(void* parameter)
 
         i = (i + 1) % STEPS;
 
-        if (systime_now_ms() - time_start >= 60 * 1000) {
-            /* stop after 60s */
-            break;
-        }
+        // if (systime_now_ms() - time_start >= 60 * 1000) {
+        //     /* stop after 60s */
+        //     break;
+        // }
 
         sys_msleep(dt * 1000);
     }
@@ -129,13 +129,13 @@ static void task_entry(void* parameter)
     gcs_set_cmd(FMS_Cmd_Return, (float[7]) { 0 }); /* Send return command */
 }
 
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "offboard",
-//     .init = task_init,
-//     .entry = task_entry,
-//     .priority = 25,
-//     .auto_start = false,
-//     .stack_size = 4096,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+TASK_EXPORT __fmt_task_desc = {
+    .name = "offboard",
+    .init = task_init,
+    .entry = task_entry,
+    .priority = 25,
+    .auto_start = false,
+    .stack_size = 4096,
+    .param = NULL,
+    .dependency = NULL
+};
