@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2224
+ * Model version                  : 1.2244
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:31:03 2025
+ * C/C++ source code generated on : Fri Jul 11 10:13:10 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -250,17 +250,6 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_VTOLMode_
-#define DEFINED_TYPEDEF_FOR_VTOLMode_
-
-/* enumeration to track active leaf state of FMS/FMS State Machine/Vehicle */
-typedef enum {
-  VTOLMode_Multicopter = 0,            /* Default value */
-  VTOLMode_Fixwing
-} VTOLMode;
-
-#endif
-
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 
@@ -482,6 +471,17 @@ typedef enum {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_VTOLMode_
+#define DEFINED_TYPEDEF_FOR_VTOLMode_
+
+/* enumeration to track active leaf state of FMS/FMS State Machine/Vehicle */
+typedef enum {
+  VTOLMode_Multicopter = 0,            /* Default value */
+  VTOLMode_Fixwing
+} VTOLMode;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_Commander_In_Bus_
 #define DEFINED_TYPEDEF_FOR_Commander_In_Bus_
 
@@ -599,6 +599,28 @@ typedef struct {
   int32_T fCapacity;
   Msg_FMS_Cmd *fArray;
 } Queue_FMS_Cmd;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Msg_VTOLMode_
+#define DEFINED_TYPEDEF_FOR_Msg_VTOLMode_
+
+typedef struct {
+  VTOLMode fData;
+} Msg_VTOLMode;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Queue_VTOLMode_
+#define DEFINED_TYPEDEF_FOR_Queue_VTOLMode_
+
+typedef struct {
+  QueuePolicy_T fPolicy;
+  int32_T fHead;
+  int32_T fTail;
+  int32_T fCapacity;
+  Msg_VTOLMode *fArray;
+} Queue_VTOLMode;
 
 #endif
 

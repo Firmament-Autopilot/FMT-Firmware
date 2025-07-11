@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2224
+ * Model version                  : 1.2244
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:31:03 2025
+ * C/C++ source code generated on : Fri Jul 11 10:13:10 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -73,8 +73,12 @@ extern real32_T rt_remf(real32_T u0, real32_T u1);
 /* Exported functions */
 extern int32_T FMS_emplace(Queue_FMS_Cmd *q, const FMS_Cmd *dataIn);
 extern int32_T FMS_pop(Queue_FMS_Cmd *q, Msg_FMS_Cmd *elementOut);
+extern int32_T FMS_emplace_n(Queue_VTOLMode *q, const VTOLMode *dataIn);
+extern int32_T FMS_pop_c(Queue_VTOLMode *q, Msg_VTOLMode *elementOut);
 extern void FMS_initQueue(Queue_FMS_Cmd *q, QueuePolicy_T policy, int32_T
   capacity, Msg_FMS_Cmd *qPool);
+extern void FMS_initQueue_k(Queue_VTOLMode *q, QueuePolicy_T policy, int32_T
+  capacity, Msg_VTOLMode *qPool);
 extern void FMS_NearbyRefWP(const real32_T rtu_P2[2], real32_T rtu_P3, real32_T
   rtu_P3_f, real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d);
 extern void FMS_OutRegionRegWP(const real32_T rtu_P1[2], const real32_T rtu_P2[2],
