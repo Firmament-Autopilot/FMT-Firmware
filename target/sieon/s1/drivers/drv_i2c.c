@@ -156,7 +156,7 @@ static void i2c3_hw_init(void)
     LL_I2C_DisableGeneralCall(I2C3);
     LL_I2C_EnableClockStretching(I2C3);
     I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-    I2C_InitStruct.Timing = 0x00B03FDB;
+    I2C_InitStruct.Timing = 0x307075B1; // Standard Mode, 100KHz
     I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
     I2C_InitStruct.DigitalFilter = 0;
     I2C_InitStruct.OwnAddress1 = 0;
@@ -359,7 +359,7 @@ static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bi
                                           .flags = 0 };
 static struct rt_i2c_device i2c2_dev2 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
                                           .flags = 0 };       
-static struct rt_i2c_device i2c3_dev1 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
+static struct rt_i2c_device i2c3_dev1 = { .slave_addr = 0x28, /* MS4525 */
                                           .flags = 0 };                                                                                                                                              
 
 rt_err_t drv_i2c_init(void)

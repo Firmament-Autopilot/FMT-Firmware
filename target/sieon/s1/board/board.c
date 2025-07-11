@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "board_device.h"
+#include "driver/airspeed/ms4525.h"
 #include "driver/barometer/spl06.h"
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
@@ -473,6 +474,14 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
+
+    if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
+        if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
+            FMT_CHECK(register_sensor_airspeed("airspeed"));
+        }else{
+            printf("airspeed sensor init failed!\n");
+        }
+    }
 #endif
 
     /* init finsh */

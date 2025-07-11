@@ -13,6 +13,7 @@ HAL = [
     'mag/*.c',
     'barometer/*.c',
     'gps/*.c',
+    'airspeed/*.c',
     'i2c/*.c',
     'actuator/*.c',
     'rc/*.c',
