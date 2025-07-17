@@ -30,3 +30,9 @@ void bmm150_rotate_to_frd(float* data, uint32_t dev_id)
 {
     rotation(ROTATION_PITCH_180, data, data + 1, data + 2);
 }
+
+void qmc5883l_rotate_to_frd(float* data)
+{
+    rotation(ROTATION_YAW_90, data, data + 1, data + 2);
+}
+
