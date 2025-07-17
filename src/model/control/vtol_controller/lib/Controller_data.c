@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.340
+ * Model version                  : 1.344
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul 11 15:11:14 2025
+ * C/C++ source code generated on : Thu Jul 17 11:32:42 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -57,37 +57,21 @@ const ConstP_Controller_T Controller_ConstP = {
   /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
    * Referenced by:
    *   '<S242>/Effective_Matrix'
-   *   '<S249>/Effective_Matrix'
+   *   '<S252>/Effective_Matrix'
    */
   { -1.41421354F, 1.41421354F, 1.41421354F, -1.41421354F, 1.41421354F,
     -1.41421354F, 1.41421354F, -1.41421354F, 1.0F, 1.0F, -1.0F, -1.0F },
 
 #endif
 
-#if AIRFRAME == 2
+#if (AIRFRAME == 1) || (AIRFRAME == 2)
 
-  /* Computed Parameter: Disarm_Value_j
-   * Referenced by: '<S256>/Disarm'
+  /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
+   * Referenced by:
+   *   '<S250>/Disarm'
+   *   '<S259>/Disarm'
    */
   { 1150.0F, 1150.0F, 1150.0F, 1150.0F, 1000.0F },
-
-#endif
-
-#if AIRFRAME == 1
-
-  /* Computed Parameter: Disarm_Value_c
-   * Referenced by: '<S243>/Disarm'
-   */
-  { 1000U, 1000U, 1000U, 1000U, 1000U, 1500U, 1500U, 1500U, 1500U },
-
-#endif
-
-#if AIRFRAME == 1
-
-  /* Computed Parameter: Standby_Value
-   * Referenced by: '<S243>/Standby'
-   */
-  { 1150U, 1150U, 1150U, 1150U, 1000U, 1500U, 1500U, 1500U, 1500U },
 
 #endif
 

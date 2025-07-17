@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.340
+ * Model version                  : 1.344
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul 11 15:11:14 2025
+ * C/C++ source code generated on : Thu Jul 17 11:32:42 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -142,39 +142,21 @@ typedef struct {
   /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
    * Referenced by:
    *   '<S242>/Effective_Matrix'
-   *   '<S249>/Effective_Matrix'
+   *   '<S252>/Effective_Matrix'
    */
-  real32_T pooled4[12];
+  real32_T pooled5[12];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
 
-#if AIRFRAME == 2
+#if (AIRFRAME == 1) || (AIRFRAME == 2)
 
-  /* Computed Parameter: Disarm_Value_j
-   * Referenced by: '<S256>/Disarm'
+  /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
+   * Referenced by:
+   *   '<S250>/Disarm'
+   *   '<S259>/Disarm'
    */
-  real32_T Disarm_Value_j[5];
-
-#define CONSTP_CONTROLLER_T_VARIANT_EXISTS
-#endif
-
-#if AIRFRAME == 1
-
-  /* Computed Parameter: Disarm_Value_c
-   * Referenced by: '<S243>/Disarm'
-   */
-  uint16_T Disarm_Value_c[9];
-
-#define CONSTP_CONTROLLER_T_VARIANT_EXISTS
-#endif
-
-#if AIRFRAME == 1
-
-  /* Computed Parameter: Standby_Value
-   * Referenced by: '<S243>/Standby'
-   */
-  uint16_T Standby_Value[9];
+  real32_T pooled7[5];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
@@ -256,10 +238,10 @@ extern struct_QRK8c3803lO9d4oZFNG08F CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S241>/Bias2'
                                                     *   '<S241>/Bias3'
                                                     *   '<S241>/Bias4'
-                                                    *   '<S248>/Bias1'
-                                                    *   '<S248>/Bias2'
-                                                    *   '<S248>/Bias3'
-                                                    *   '<S248>/Bias4'
+                                                    *   '<S251>/Bias1'
+                                                    *   '<S251>/Bias2'
+                                                    *   '<S251>/Bias3'
+                                                    *   '<S251>/Bias4'
                                                     *   '<S80>/Saturation'
                                                     *   '<S80>/Saturation1'
                                                     *   '<S132>/trim_speed'
@@ -287,20 +269,28 @@ extern struct_QRK8c3803lO9d4oZFNG08F CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S244>/Constant12'
                                                     *   '<S244>/Constant2'
                                                     *   '<S244>/Constant7'
-                                                    *   '<S251>/Constant1'
-                                                    *   '<S251>/Constant11'
-                                                    *   '<S251>/Constant12'
-                                                    *   '<S251>/Constant2'
-                                                    *   '<S251>/Constant7'
-                                                    *   '<S251>/Constant8'
-                                                    *   '<S255>/Bias'
-                                                    *   '<S255>/Bias1'
-                                                    *   '<S255>/Bias2'
-                                                    *   '<S255>/Bias3'
-                                                    *   '<S256>/Bias'
-                                                    *   '<S256>/Bias1'
-                                                    *   '<S256>/Bias2'
-                                                    *   '<S256>/Bias3'
+                                                    *   '<S249>/Bias'
+                                                    *   '<S249>/Bias1'
+                                                    *   '<S249>/Bias2'
+                                                    *   '<S249>/Bias3'
+                                                    *   '<S250>/Bias'
+                                                    *   '<S250>/Bias1'
+                                                    *   '<S250>/Bias2'
+                                                    *   '<S250>/Bias3'
+                                                    *   '<S254>/Constant1'
+                                                    *   '<S254>/Constant11'
+                                                    *   '<S254>/Constant12'
+                                                    *   '<S254>/Constant2'
+                                                    *   '<S254>/Constant7'
+                                                    *   '<S254>/Constant8'
+                                                    *   '<S258>/Bias'
+                                                    *   '<S258>/Bias1'
+                                                    *   '<S258>/Bias2'
+                                                    *   '<S258>/Bias3'
+                                                    *   '<S259>/Bias'
+                                                    *   '<S259>/Bias1'
+                                                    *   '<S259>/Bias2'
+                                                    *   '<S259>/Bias3'
                                                     *   '<S92>/Constant1'
                                                     *   '<S92>/Constant2'
                                                     *   '<S108>/kd'
@@ -641,16 +631,19 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S244>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/FW_Effective_Matrix'
  * '<S245>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select'
  * '<S246>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/fw_throttle_mapping'
- * '<S247>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/throttle_mapping'
- * '<S248>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation'
- * '<S249>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation'
- * '<S250>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing'
- * '<S251>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/FW_Effective_Matrix'
- * '<S252>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select'
- * '<S253>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/fw_throttle_mapping'
- * '<S254>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation/throttle_mapping'
- * '<S255>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Disarm'
- * '<S256>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Standby'
+ * '<S247>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select/Compare To Constant'
+ * '<S248>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/throttle_mapping'
+ * '<S249>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing/Disarm'
+ * '<S250>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing/Standby'
+ * '<S251>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation'
+ * '<S252>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation'
+ * '<S253>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing'
+ * '<S254>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/FW_Effective_Matrix'
+ * '<S255>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select'
+ * '<S256>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/fw_throttle_mapping'
+ * '<S257>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation/throttle_mapping'
+ * '<S258>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Disarm'
+ * '<S259>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Standby'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 
