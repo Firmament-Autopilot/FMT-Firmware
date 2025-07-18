@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2252
+ * Model version                  : 1.2259
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul 18 10:03:15 2025
+ * C/C++ source code generated on : Fri Jul 18 10:38:22 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -198,9 +198,9 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S6>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   {
-    1.9966471893352524,                /* '<S693>/Sum' */
-    0.0066943799901413165,             /* '<S693>/Multiply3' */
-    0.99330562000985867                /* '<S693>/Sum4' */
+    1.9966471893352524,                /* '<S694>/Sum' */
+    0.0066943799901413165,             /* '<S694>/Multiply3' */
+    0.99330562000985867                /* '<S694>/Sum4' */
   }
   ,
 

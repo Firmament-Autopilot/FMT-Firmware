@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2252
+ * Model version                  : 1.2259
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul 18 10:03:15 2025
+ * C/C++ source code generated on : Fri Jul 18 10:38:22 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -129,8 +129,9 @@ typedef struct {
   real32_T Switch;                     /* '<S9>/Switch' */
   real32_T DiscreteTimeIntegrator5_p;  /* '<S11>/Discrete-Time Integrator5' */
   real32_T xy_R[2];                    /* '<Root>/FMS State Machine' */
-  real32_T DataTypeConversion[3];      /* '<S689>/Data Type Conversion' */
-  real32_T Reshape[3];                 /* '<S690>/Reshape' */
+  real32_T Airspeed;                   /* '<Root>/FMS State Machine' */
+  real32_T DataTypeConversion[3];      /* '<S690>/Data Type Conversion' */
+  real32_T Reshape[3];                 /* '<S691>/Reshape' */
   real32_T Merge[2];                   /* '<S329>/Merge' */
   real32_T Merge_o;                    /* '<S304>/Merge' */
   real32_T Merge_k;                    /* '<S316>/Merge' */
@@ -157,7 +158,8 @@ typedef struct {
   boolean_T LogicalOperator2;          /* '<S4>/Logical Operator2' */
   boolean_T Compare;                   /* '<S39>/Compare' */
   boolean_T LogicalOperator;           /* '<S2>/Logical Operator' */
-  boolean_T Compare_k;                 /* '<S702>/Compare' */
+  boolean_T RelationalOperator;        /* '<S689>/Relational Operator' */
+  boolean_T Compare_k;                 /* '<S703>/Compare' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -452,9 +454,9 @@ typedef struct {
 
 /* Invariant block signals for system '<S6>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 typedef struct {
-  const real_T Sum;                    /* '<S693>/Sum' */
-  const real_T ff;                     /* '<S693>/Multiply3' */
-  const real_T Sum4;                   /* '<S693>/Sum4' */
+  const real_T Sum;                    /* '<S694>/Sum' */
+  const real_T ff;                     /* '<S694>/Multiply3' */
+  const real_T Sum4;                   /* '<S694>/Sum4' */
 } ConstB_VehicleArmAutoMissionL_T;
 
 /* Invariant block signals (default storage) */
@@ -682,13 +684,14 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_SwqC4DOninLsg0M1PyUjpG FMS_PARAM;/* Variable: FMS_PARAM
+extern struct_VdiNVq53u90V1Cg8quBx8D FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<S4>/Constant1'
                                                 *   '<S9>/ACCEPT_R'
                                                 *   '<S9>/MC_ACCEPT_R'
                                                 *   '<S38>/Constant'
-                                                *   '<S690>/Constant'
+                                                *   '<S689>/Constant'
+                                                *   '<S691>/Constant'
                                                 *   '<S184>/Dead Zone'
                                                 *   '<S184>/Gain'
                                                 *   '<S185>/Dead Zone'
@@ -951,10 +954,6 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S7>/Cos1' : Unused code path elimination
  * Block '<S7>/Divide' : Unused code path elimination
  * Block '<S7>/Divide1' : Unused code path elimination
- * Block '<S703>/Data Type Conversion' : Unused code path elimination
- * Block '<S703>/Discrete-Time Integrator5' : Unused code path elimination
- * Block '<S703>/Gain' : Unused code path elimination
- * Block '<S703>/Sum5' : Unused code path elimination
  * Block '<S704>/Data Type Conversion' : Unused code path elimination
  * Block '<S704>/Discrete-Time Integrator5' : Unused code path elimination
  * Block '<S704>/Gain' : Unused code path elimination
@@ -963,12 +962,16 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S705>/Discrete-Time Integrator5' : Unused code path elimination
  * Block '<S705>/Gain' : Unused code path elimination
  * Block '<S705>/Sum5' : Unused code path elimination
- * Block '<S706>/AND' : Unused code path elimination
- * Block '<S706>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S706>/Lower Limit' : Unused code path elimination
- * Block '<S706>/Lower Test' : Unused code path elimination
- * Block '<S706>/Upper Limit' : Unused code path elimination
- * Block '<S706>/Upper Test' : Unused code path elimination
+ * Block '<S706>/Data Type Conversion' : Unused code path elimination
+ * Block '<S706>/Discrete-Time Integrator5' : Unused code path elimination
+ * Block '<S706>/Gain' : Unused code path elimination
+ * Block '<S706>/Sum5' : Unused code path elimination
+ * Block '<S707>/AND' : Unused code path elimination
+ * Block '<S707>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S707>/Lower Limit' : Unused code path elimination
+ * Block '<S707>/Lower Test' : Unused code path elimination
+ * Block '<S707>/Upper Limit' : Unused code path elimination
+ * Block '<S707>/Upper Test' : Unused code path elimination
  * Block '<S7>/Land_Lock_Thro' : Unused code path elimination
  * Block '<S7>/Logical Operator' : Unused code path elimination
  * Block '<S7>/Logical Operator1' : Unused code path elimination
@@ -1013,7 +1016,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S41>/Signal Copy6' : Eliminate redundant signal conversion block
  * Block '<S41>/Signal Copy7' : Eliminate redundant signal conversion block
  * Block '<S41>/Signal Copy8' : Eliminate redundant signal conversion block
- * Block '<S689>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S690>/Signal Conversion' : Eliminate redundant signal conversion block
  * Block '<S58>/Gain1' : Unused code path elimination
  */
 
@@ -1720,31 +1723,32 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S686>' : 'FMS/FMS Commander/Commander/Arm/MC_Mode/SubMode/Takeoff/Track Position/Target Position'
  * '<S687>' : 'FMS/FMS Commander/Commander/Arm/MC_Mode/SubMode/Takeoff/Track Position/Psi To DCM/Rotation Matrix Z'
  * '<S688>' : 'FMS/FMS Commander/Commander/Bus_Constructor/timestamp'
- * '<S689>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
- * '<S690>' : 'FMS/FMS State Machine/Vehicle.PrepTakeoff'
- * '<S691>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
- * '<S692>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
- * '<S693>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
- * '<S694>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
- * '<S695>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
- * '<S696>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
- * '<S697>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
- * '<S698>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
- * '<S699>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
- * '<S700>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
- * '<S701>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
- * '<S702>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
- * '<S703>' : 'FMS/Onground Check/First Order LPF'
- * '<S704>' : 'FMS/Onground Check/First Order LPF1'
- * '<S705>' : 'FMS/Onground Check/First Order LPF2'
- * '<S706>' : 'FMS/Onground Check/Interval Test'
- * '<S707>' : 'FMS/Onground Check/Quaternion To DCM'
- * '<S708>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize'
- * '<S709>' : 'FMS/Onground Check/Quaternion To DCM/column_1'
- * '<S710>' : 'FMS/Onground Check/Quaternion To DCM/column_2'
- * '<S711>' : 'FMS/Onground Check/Quaternion To DCM/column_3'
- * '<S712>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
- * '<S713>' : 'FMS/Subsystem/Compare To Constant'
+ * '<S689>' : 'FMS/FMS State Machine/VTOL_State.ForwardTransCplt'
+ * '<S690>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
+ * '<S691>' : 'FMS/FMS State Machine/Vehicle.PrepTakeoff'
+ * '<S692>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
+ * '<S693>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
+ * '<S694>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
+ * '<S695>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
+ * '<S696>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
+ * '<S697>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
+ * '<S698>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
+ * '<S699>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
+ * '<S700>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
+ * '<S701>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
+ * '<S702>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
+ * '<S703>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
+ * '<S704>' : 'FMS/Onground Check/First Order LPF'
+ * '<S705>' : 'FMS/Onground Check/First Order LPF1'
+ * '<S706>' : 'FMS/Onground Check/First Order LPF2'
+ * '<S707>' : 'FMS/Onground Check/Interval Test'
+ * '<S708>' : 'FMS/Onground Check/Quaternion To DCM'
+ * '<S709>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize'
+ * '<S710>' : 'FMS/Onground Check/Quaternion To DCM/column_1'
+ * '<S711>' : 'FMS/Onground Check/Quaternion To DCM/column_2'
+ * '<S712>' : 'FMS/Onground Check/Quaternion To DCM/column_3'
+ * '<S713>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S714>' : 'FMS/Subsystem/Compare To Constant'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

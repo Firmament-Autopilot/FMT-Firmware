@@ -59,7 +59,8 @@ static param_t __param_list[] = {
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
     PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
     PARAM_FLOAT(FW_L1, 30.0, false),
-    PARAM_FLOAT(FW_CRUISE_SPEED, 17.0, false),
+    PARAM_FLOAT(FW_CRUISE_SPEED, 20.0, false),
+    PARAM_FLOAT(FW_CRUISE_SPEED_MIN, 17.0, false),
     PARAM_FLOAT(FW_Z_P, 1.0, false),
     PARAM_FLOAT(FW_VEL_Z_LIM, 10.0, false),
     PARAM_FLOAT(FW_ACC_Y_LIM, 8.0, false),
@@ -301,6 +302,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LAND_LOCK_THRO), &FMS_PARAM.LAND_LOCK_THRO));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_L1), &FMS_PARAM.FW_L1));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_CRUISE_SPEED), &FMS_PARAM.FW_CRUISE_SPEED));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_CRUISE_SPEED_MIN), &FMS_PARAM.FW_CRUISE_SPEED_MIN));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_Z_P), &FMS_PARAM.FW_Z_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_VEL_Z_LIM), &FMS_PARAM.FW_VEL_Z_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_ACC_Y_LIM), &FMS_PARAM.FW_ACC_Y_LIM));
