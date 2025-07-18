@@ -32,13 +32,13 @@ extern "C" {
     #define LOGPACKED(__Declaration__) __pragma(pack(push, 1)) __Declaration__ __pragma(pack(pop))
 #endif
 
-#define MLOG_VERSION 1
+#define MLOG_VERSION 2
 
 #define MLOG_BEGIN_MSG1 0x92
 #define MLOG_BEGIN_MSG2 0x05
 #define MLOG_END_MSG    0x26
 
-#define MLOG_MAX_NAME_LEN     20
+#define MLOG_MAX_NAME_LEN     25
 #define MLOG_DESCRIPTION_SIZE 128
 #define MLOG_MODEL_INFO_SIZE  256
 
