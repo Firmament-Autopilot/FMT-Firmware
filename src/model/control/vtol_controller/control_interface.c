@@ -88,6 +88,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_PITCH_EFFC, 1.0, false),
     PARAM_FLOAT(FW_YAW_EFFC, 1.0, false),
     PARAM_FLOAT(FW_PITCH_OFFSET, 0.0, false),
+    PARAM_FLOAT(FW_CRUISE_THRO, 0.5, false),
 
     PARAM_FLOAT(FW_TECS_PITCH_F, 0.1, false),
     PARAM_FLOAT(FW_TECS_THOR_FF, 0.1, false),
@@ -212,6 +213,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PITCH_EFFC), &CONTROL_PARAM.FW_PITCH_EFFC));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_YAW_EFFC), &CONTROL_PARAM.FW_YAW_EFFC));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PITCH_OFFSET), &CONTROL_PARAM.FW_PITCH_OFFSET));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_CRUISE_THRO), &CONTROL_PARAM.FW_CRUISE_THRO));
 
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_PITCH_F), &CONTROL_PARAM.FW_TECS_PITCH_F));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_THOR_FF), &CONTROL_PARAM.FW_TECS_THOR_FF));
