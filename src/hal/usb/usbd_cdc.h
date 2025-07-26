@@ -35,11 +35,7 @@ extern "C" {
 struct usbd_cdc_dev {
     struct rt_device parent;
     struct usbd_cdc_ops* ops;
-#ifdef PKG_USING_CHERRYUSB
-    rt_size_t rx_nbytes;
-#else
     ringbuffer* rx_rb;
-#endif
     struct rt_completion tx_cplt;
     rt_mutex_t tx_lock;
     int status;

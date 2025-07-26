@@ -213,14 +213,20 @@ static const uint8_t cdc_descriptor[] = {
 };
 #endif
 
-static struct rt_event event_usb;
-#define EVENT_CDC_TX_DONE (1 << 0)
+#define MSG_MAX_MPS  CDC_MAX_MPS
+static bool is_read_busy = false;
+USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t read_buffer[MSG_MAX_MPS];
+USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t write_buffer[MSG_MAX_MPS];
 
-static uint16_t read_idx = 0;
-static uint16_t received_nbytes = 0;
-USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t read_buffer[CDC_MAX_MPS];
-static bool is_partial_write = false;
-USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t write_buffer[CDC_MAX_MPS];
+struct usb_xfer_msg {
+    uint8_t *msg_buffer;        /** Data buffer */
+    void *user_ptr;             /** User buf address */
+    uint32_t total_nbytes;      /** User buffer length */
+    uint32_t total_xfer_nbytes; /** The total number of bytes transferred */
+    bool  is_unalign;           /** Is the user buffer misaligned */
+};
+
+static struct usb_xfer_msg cdc_tx_msg = {.msg_buffer = write_buffer};
 
 static void usbd_event_handler(uint8_t busid, uint8_t event)
 {
@@ -241,7 +247,7 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
             break;
         case USBD_EVENT_CONFIGURED:
             /* setup first out ep read transfer */
-            usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, CDC_MAX_MPS);
+            usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, MSG_MAX_MPS);
             hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_CONNECT);
             console_printf("usb connected\r\n");
             break;
@@ -257,25 +263,55 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
 
 void usbd_cdc_acm_bulk_out(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
-    read_idx = 0;
-    received_nbytes  = nbytes;
-    usbd_dev.rx_nbytes = nbytes;
-    hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_RX);
+    uint32_t size;
+    size = ringbuffer_put(usbd_dev.rx_rb, read_buffer, nbytes);
+    if (size != nbytes) {
+        console_printf("usb rx buffer full\r\n");
+    }
     /* setup next out ep read transfer */
-    // usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, CDC_MAX_MPS);
+    if ((usbd_dev.rx_rb->size - ringbuffer_getlen(usbd_dev.rx_rb) - 1) >= MSG_MAX_MPS) {
+        usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, MSG_MAX_MPS);
+    } else {
+        is_read_busy = true;
+    }
+    
+    hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_RX);
 }
 
 void usbd_cdc_acm_bulk_in(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
+    cdc_tx_msg.total_xfer_nbytes += nbytes;
     if ((nbytes % usbd_get_ep_mps(busid, ep)) == 0 && nbytes) {
         /* send zlp */
         usbd_ep_start_write(busid, CDC_IN_EP, NULL, 0);
     } else {
-        if (is_partial_write) {
-            rt_event_send(&event_usb, EVENT_CDC_TX_DONE);
-        } else {
-            hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_TX_COMPLETE);
+        /* unalign transfer */
+        if (cdc_tx_msg.is_unalign)
+        {
+            if (cdc_tx_msg.total_xfer_nbytes < cdc_tx_msg.total_nbytes)
+            {
+                int ret = 0;
+                uint32_t bufsz = cdc_tx_msg.total_nbytes - cdc_tx_msg.total_xfer_nbytes;
+                uint8_t *ptr = (uint8_t *)cdc_tx_msg.user_ptr + cdc_tx_msg.total_xfer_nbytes;
+                if (bufsz > MSG_MAX_MPS)
+                    bufsz = MSG_MAX_MPS;
+                memcpy(cdc_tx_msg.msg_buffer, ptr, bufsz);
+                /**
+                 * @brief 启动下一次传输
+                 */
+                ret = usbd_ep_start_write(busid, CDC_IN_EP, cdc_tx_msg.msg_buffer, bufsz);
+                if (ret)
+                {
+                    USB_LOG_ERR("cdc ep write err:%d\n", ret);
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
+
+        hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_TX_COMPLETE);
     }
 }
 
@@ -295,7 +331,6 @@ static struct usbd_interface intf1;
 
 void cdc_acm_init(uint8_t busid, uintptr_t reg_base)
 {
-    rt_event_init(&event_usb, "usbevt", RT_IPC_FLAG_FIFO);
 #ifdef CONFIG_USBDEV_ADVANCE_DESC
     usbd_desc_register(busid, &cdc_descriptor);
 #else
@@ -310,23 +345,14 @@ void cdc_acm_init(uint8_t busid, uintptr_t reg_base)
 
 static rt_size_t usbd_cdc_read(usbd_cdc_dev_t usbd, rt_off_t pos, void* buf, rt_size_t size)
 {
-    rt_size_t rb = 0;
+    rt_size_t rb;
 
-    if (read_idx < received_nbytes) {
-        uint16_t total_size = received_nbytes - read_idx;
-        if (total_size < size) {
-            rb = total_size;
-        } else {
-            rb = size;
-        }
-        memcpy(buf, read_buffer + read_idx, rb);
-        read_idx += rb;
-        usbd_dev.rx_nbytes = received_nbytes - read_idx;
-        if (read_idx >= received_nbytes) {
-            read_idx = 0;
-            received_nbytes = 0;
-            usbd_ep_start_read(0, CDC_OUT_EP, read_buffer, CDC_MAX_MPS);
-        }
+    RT_ASSERT(usbd->rx_rb != NULL);
+
+    rb = ringbuffer_get(usbd->rx_rb, buf, size);
+    if (is_read_busy && ((usbd_dev.rx_rb->size - ringbuffer_getlen(usbd_dev.rx_rb) - 1) >= MSG_MAX_MPS)) {
+        is_read_busy = false;
+        usbd_ep_start_read(0, CDC_OUT_EP, read_buffer, MSG_MAX_MPS);
     }
     return rb;
 }
@@ -334,35 +360,42 @@ static rt_size_t usbd_cdc_read(usbd_cdc_dev_t usbd, rt_off_t pos, void* buf, rt_
 static rt_size_t usbd_cdc_write(usbd_cdc_dev_t usbd, rt_off_t pos, const void* buf, rt_size_t size)
 {
     rt_err_t res = RT_EOK;
-	rt_uint32_t recv_set = 0;
-    rt_uint32_t set = EVENT_CDC_TX_DONE;
     rt_size_t tx_size = 0;
-    rt_size_t send_bytes = 0;
+    uint32_t bufsz = 0;
+    uint8_t *send_ptr = (uint8_t *)buf;
+    cdc_tx_msg.user_ptr = (void *)buf;
+    cdc_tx_msg.total_nbytes = size;
+    cdc_tx_msg.total_xfer_nbytes = 0;
 
-    if ((uintptr_t)buf & (CONFIG_USB_ALIGN_SIZE - 1)) {
-        is_partial_write = true;
-        while (tx_size < size) {
-            send_bytes = size - tx_size;
-            if (send_bytes > CDC_MAX_MPS) {
-                send_bytes = CDC_MAX_MPS;
-            } else {
-                is_partial_write = false;
-            }
-            memcpy(write_buffer, buf + tx_size, send_bytes);
-            usbd_ep_start_write(0, CDC_IN_EP, write_buffer, send_bytes);
-            res = rt_event_recv(&event_usb, set, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, 
-                rt_tick_from_millisecond(200), &recv_set);
-            if (res == RT_EOK) {
-                tx_size += send_bytes;
-            } else {
-                break;
-            }
-        }                
+    if ((uintptr_t)buf & 0x3) { /** check if buffer is aligned to 4 bytes */
+        cdc_tx_msg.is_unalign = true;
+        if (cdc_tx_msg.total_nbytes > MSG_MAX_MPS)
+        {
+            bufsz = MSG_MAX_MPS;
+        }
+        else
+        {
+            bufsz = cdc_tx_msg.total_nbytes;
+        }
+        memcpy(cdc_tx_msg.msg_buffer, cdc_tx_msg.user_ptr, bufsz);
+        send_ptr = (uint8_t *)cdc_tx_msg.msg_buffer;
     } else {
-        is_partial_write = false;
-        usbd_ep_start_write(0, CDC_IN_EP, buf, size);
+        cdc_tx_msg.is_unalign = false;
+        send_ptr = (uint8_t *)buf;
+        bufsz = size;
+    }
+
+    res = usbd_ep_start_write(0, CDC_IN_EP, send_ptr, bufsz);
+    if (res)
+    {
+        USB_LOG_ERR("cdc ep write err:%d\n", res);
+        tx_size = 0;
+    }
+    else
+    {
         tx_size = size;
     }
+
     return tx_size;
 }
 
@@ -377,6 +410,10 @@ rt_err_t drv_usb_cdc_init(void)
 {
     rt_err_t err;
     usbd_dev.ops = &usbd_ops;
+    usbd_dev.rx_rb = ringbuffer_create(1024);
+    if (usbd_dev.rx_rb == NULL) {
+        return FMT_ENOMEM;
+    }
 
     err = hal_usbd_cdc_register(&usbd_dev, "usbd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, RT_NULL);
     if (err != RT_EOK) {
