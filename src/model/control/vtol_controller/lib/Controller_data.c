@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.358
+ * Model version                  : 1.419
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul 17 15:44:51 2025
+ * C/C++ source code generated on : Wed Jul 30 16:26:37 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,35 +18,35 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Controller_T Controller_ConstB = {
-  { 0.0F, 0.0F, 0.0F },                /* '<S6>/Constant' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S5>/Constant' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S6>/Constant1' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S5>/Constant1' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S189>/Constant' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S119>/Constant' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S213>/Vector Concatenate3' */
-  0.0F,                                /* '<S216>/Constant' */
-  19.1986F,                            /* '<S201>/Gain' */
-  0.00250000018F,                      /* '<S214>/Square' */
-  0.14709F,                            /* '<S214>/Multiply' */
-  -58.836F,                            /* '<S214>/Gain4' */
-  0.0F,                                /* '<S228>/Constant' */
-  0.00250000018F,                      /* '<S235>/Square' */
-  0.196120009F,                        /* '<S235>/Multiply' */
-  -78.448F,                            /* '<S235>/Gain4' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S143>/Vector Concatenate3' */
+  0.0F,                                /* '<S146>/Constant' */
+  19.1986F,                            /* '<S131>/Gain' */
+  0.0100000007F,                       /* '<S144>/Square' */
+  0.784480035F,                        /* '<S144>/Multiply' */
+  -78.448F,                            /* '<S144>/Gain4' */
+  0.0F,                                /* '<S158>/Constant' */
+  0.00250000018F,                      /* '<S165>/Square' */
+  0.196120009F,                        /* '<S165>/Multiply' */
+  -78.448F,                            /* '<S165>/Gain4' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S155>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S92>/Vector Concatenate3' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S87>/Constant' */
-  289.0F,                              /* '<S71>/Square1' */
-  0.0F,                                /* '<S158>/Zero1' */
-  19.1986F,                            /* '<S95>/Gain' */
-  0.0F,                                /* '<S161>/Zero' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S26>/Constant' */
+  289.0F,                              /* '<S10>/Square1' */
+  0.0F,                                /* '<S94>/Zero1' */
+  19.1986F,                            /* '<S34>/Gain' */
+  0.0F,                                /* '<S97>/Zero' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S135>/Constant' */
-  0.00250000018F,                      /* '<S108>/Square' */
-  0.196120009F,                        /* '<S108>/Multiply' */
-  -78.448F                             /* '<S108>/Gain4' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S73>/Constant' */
+  0.00250000018F,                      /* '<S46>/Square' */
+  0.196120009F,                        /* '<S46>/Multiply' */
+  -78.448F                             /* '<S46>/Gain4' */
 };
 
 /* Constant parameters (default storage) */
@@ -56,8 +56,8 @@ const ConstP_Controller_T Controller_ConstP = {
 
   /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
    * Referenced by:
-   *   '<S245>/Effective_Matrix'
-   *   '<S254>/Effective_Matrix'
+   *   '<S175>/Effective_Matrix'
+   *   '<S184>/Effective_Matrix'
    */
   { -1.41421354F, 1.41421354F, 1.41421354F, -1.41421354F, 1.41421354F,
     -1.41421354F, 1.41421354F, -1.41421354F, 1.0F, 1.0F, -1.0F, -1.0F },
@@ -68,8 +68,8 @@ const ConstP_Controller_T Controller_ConstP = {
 
   /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
    * Referenced by:
-   *   '<S252>/Disarm'
-   *   '<S261>/Disarm'
+   *   '<S182>/Disarm'
+   *   '<S191>/Disarm'
    */
   { 1150.0F, 1150.0F, 1150.0F, 1150.0F, 1000.0F },
 

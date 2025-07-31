@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.358
+ * Model version                  : 1.419
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Jul 17 15:44:51 2025
+ * C/C++ source code generated on : Wed Jul 30 16:26:37 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,9 +42,9 @@
 #define AIRFRAME                       1
 #endif
 
-/* Exactly one variant for '<S7>/VTOL_Control_Allocation' should be active */
+/* Exactly one variant for '<S6>/VTOL_Control_Allocation' should be active */
 #if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
-#error Exactly one variant for '<S7>/VTOL_Control_Allocation' should be active
+#error Exactly one variant for '<S6>/VTOL_Control_Allocation' should be active
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
@@ -257,8 +257,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_QRK8c3803lO9d4oZFNG08F_
-#define DEFINED_TYPEDEF_FOR_struct_QRK8c3803lO9d4oZFNG08F_
+#ifndef DEFINED_TYPEDEF_FOR_struct_wPl8ajGklGKyYxGcwjdpiH_
+#define DEFINED_TYPEDEF_FOR_struct_wPl8ajGklGKyYxGcwjdpiH_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -325,6 +325,7 @@ typedef struct {
   real32_T FW_TECS_THOR_I;
   real32_T FW_TECS_PITCH_D;
   real32_T FW_TECS_THOR_D;
+  real32_T FW_TECS_VEL_P;
   real32_T FW_TECS_RATIO;
   real32_T FW_TECS_SWITCH;
   real32_T FW_TECS_ANSW;
@@ -344,7 +345,7 @@ typedef struct {
   real32_T SERVO2_BIAS;
   real32_T SERVO3_BIAS;
   real32_T SERVO4_BIAS;
-} struct_QRK8c3803lO9d4oZFNG08F;
+} struct_wPl8ajGklGKyYxGcwjdpiH;
 
 #endif
 

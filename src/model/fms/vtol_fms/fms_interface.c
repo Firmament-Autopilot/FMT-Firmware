@@ -58,14 +58,14 @@ static param_t __param_list[] = {
     PARAM_UINT16(LOST_RETURN_TIME, 120, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
     PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
-    PARAM_FLOAT(FW_L1, 30.0, false),
+    PARAM_FLOAT(FW_L1, 50.0, false),
     PARAM_FLOAT(FW_CRUISE_SPEED, 20.0, false),
     PARAM_FLOAT(FW_CRUISE_SPEED_MIN, 17.0, false),
     PARAM_FLOAT(FW_Z_P, 1.0, false),
     PARAM_FLOAT(FW_VEL_Z_LIM, 10.0, false),
     PARAM_FLOAT(FW_ACC_Y_LIM, 8.0, false),
     PARAM_FLOAT(FW_ROLL_LIM, PI / 4, false),
-    PARAM_FLOAT(FW_PITCH_LIM, PI / 4, false),
+    PARAM_FLOAT(FW_PITCH_LIM, PI / 6, false),
     PARAM_FLOAT(FW_YAW_RATE_LIM, PI / 3, false),
     PARAM_FLOAT(FW_AIRSPD_MAX, 22.0, false),
     PARAM_FLOAT(FW_LOITER_R, 50.0, false),
@@ -74,7 +74,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(ROLL_LIM, PI / 4, false),
     PARAM_FLOAT(PITCH_LIM, PI / 4, false),
     PARAM_FLOAT(MC_ACCEPT_R, 1.0, false),
-    PARAM_FLOAT(FW_ACCEPT_R, 55.0, false),
+    PARAM_FLOAT(FW_ACCEPT_R, 100.0, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 

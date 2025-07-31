@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2259
+ * Model version                  : 1.2472
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul 18 10:38:22 2025
+ * C/C++ source code generated on : Wed Jul 30 16:19:08 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -491,6 +491,9 @@ typedef struct {
 
   /* Set speed for cuise flight */
   real32_T set_speed;
+
+  /* Set yaw angle in rad, valid range is [0 360]. Set to negative to ignore */
+  real32_T set_yaw;
 } Commander_In_Bus;
 
 #endif
@@ -505,7 +508,10 @@ typedef enum {
   NAV_Cmd_Return = 20,
   NAV_Cmd_Land,
   NAV_Cmd_Takeoff,
-  NAV_Cmd_SetSpeed = 178
+  NAV_Cmd_VTOL_Takeoff = 84,
+  NAV_Cmd_VTOL_Land,
+  NAV_Cmd_SetSpeed = 178,
+  NAV_Cmd_VTOL_Transition = 3000
 } NAV_Cmd;
 
 #endif
@@ -520,8 +526,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_VdiNVq53u90V1Cg8quBx8D_
-#define DEFINED_TYPEDEF_FOR_struct_VdiNVq53u90V1Cg8quBx8D_
+#ifndef DEFINED_TYPEDEF_FOR_struct_sVzVC2xSXHFQuusuHtL6zE_
+#define DEFINED_TYPEDEF_FOR_struct_sVzVC2xSXHFQuusuHtL6zE_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -547,6 +553,7 @@ typedef struct {
   uint16_T LAND_LOCK_THRO;
   real32_T FW_L1;
   real32_T FW_CRUISE_SPEED;
+  real32_T FW_CRUISE_SPEED_MIN;
   real32_T FW_Z_P;
   real32_T FW_VEL_Z_LIM;
   real32_T FW_ACC_Y_LIM;
@@ -561,8 +568,7 @@ typedef struct {
   real32_T PITCH_LIM;
   real32_T MC_ACCEPT_R;
   real32_T FW_ACCEPT_R;
-  real32_T FW_CRUISE_SPEED_MIN;
-} struct_VdiNVq53u90V1Cg8quBx8D;
+} struct_sVzVC2xSXHFQuusuHtL6zE;
 
 #endif
 
