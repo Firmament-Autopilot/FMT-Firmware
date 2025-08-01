@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2197
+ * Model version                  : 1.2218
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul  4 09:55:30 2025
+ * C/C++ source code generated on : Fri Aug  1 09:04:59 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -88,12 +88,12 @@
 #define FMS_event_DisarmEvent          (0)
 
 /* Named constants for Chart: '<Root>/SafeMode' */
-#define FMS_IN_Manual_e                ((uint8_T)3U)
-#define FMS_IN_Mission_g               ((uint8_T)4U)
-#define FMS_IN_Offboard_p              ((uint8_T)5U)
-#define FMS_IN_Other                   ((uint8_T)6U)
-#define FMS_IN_Position_f              ((uint8_T)7U)
-#define FMS_IN_Stabilize_j             ((uint8_T)8U)
+#define FMS_IN_Manual_b                ((uint8_T)3U)
+#define FMS_IN_Mission_c               ((uint8_T)4U)
+#define FMS_IN_Offboard_h              ((uint8_T)5U)
+#define FMS_IN_Position_k              ((uint8_T)6U)
+#define FMS_IN_Stabilize_k             ((uint8_T)7U)
+#define FMS_IN_Unknown                 ((uint8_T)8U)
 
 const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
   0U,                                  /* timestamp */
@@ -146,7 +146,7 @@ struct_xXeuwAPh0ajaUfdgPpGaUB FMS_PARAM = {
   15.0F,
   5.0F,
   5.0F,
-  0.5F,
+  1.5F,
   1.0F,
   0.5F,
   0.7F,
@@ -329,10 +329,9 @@ RT_MODEL_FMS_T FMS_M_;
 RT_MODEL_FMS_T *const FMS_M = &FMS_M_;
 
 /* Forward declaration for local functions */
-static void FMS_Stabilize(void);
-static void FMS_Acro(void);
-static void FMS_Altitude(void);
-static void FMS_Manual(void);
+static void FMS_exit_internal_Mode(void);
+static void FMS_Mode(void);
+static void FMS_enter_internal_c1_FMS(void);
 static void FMS_sf_msg_send_M(void);
 static boolean_T FMS_CheckCmdValid(FMS_Cmd cmd_in, PilotMode mode_in, uint32_T
   ins_flag, uint32_T error);
@@ -2061,194 +2060,262 @@ void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const real_T
 }
 
 /* Function for Chart: '<Root>/SafeMode' */
-static void FMS_Stabilize(void)
+static void FMS_exit_internal_Mode(void)
 {
-  /* Inport: '<Root>/INS_Out' */
-  if ((FMS_U.INS_Out.flag & 4U) != 0U) {
-    FMS_B.target_mode = PilotMode_Stabilize;
-
-    /* Delay: '<S15>/Delay' */
-    switch (FMS_DW.Delay_DSTATE_c) {
-     case PilotMode_Manual:
-      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      break;
-
-     case PilotMode_Acro:
-      FMS_DW.is_c3_FMS = FMS_IN_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      break;
-
-     case PilotMode_Mission:
-      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-      break;
-
-     case PilotMode_Offboard:
-      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-      break;
-
-     default:
-      FMS_DW.is_c3_FMS = FMS_IN_Other;
-      break;
-    }
-
-    /* End of Delay: '<S15>/Delay' */
-  } else {
-    FMS_DW.is_c3_FMS = FMS_IN_Acro;
-  }
-
-  /* End of Inport: '<Root>/INS_Out' */
+  FMS_DW.is_Mode = FMS_IN_NO_ACTIVE_CHILD_h;
 }
 
 /* Function for Chart: '<Root>/SafeMode' */
-static void FMS_Acro(void)
+static void FMS_Mode(void)
 {
-  /* Inport: '<Root>/INS_Out' */
-  if ((FMS_U.INS_Out.flag & 4U) != 0U) {
-    FMS_B.target_mode = PilotMode_Acro;
-
-    /* Delay: '<S15>/Delay' */
-    switch (FMS_DW.Delay_DSTATE_c) {
-     case PilotMode_Manual:
-      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      break;
-
-     case PilotMode_Acro:
-      FMS_DW.is_c3_FMS = FMS_IN_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      break;
-
-     case PilotMode_Mission:
-      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-      break;
-
-     case PilotMode_Offboard:
-      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-      break;
-
-     default:
-      FMS_DW.is_c3_FMS = FMS_IN_Other;
-      break;
-    }
-
-    /* End of Delay: '<S15>/Delay' */
-  } else {
-    FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-  }
-
-  /* End of Inport: '<Root>/INS_Out' */
-}
-
-/* Function for Chart: '<Root>/SafeMode' */
-static void FMS_Altitude(void)
-{
-  /* Inport: '<Root>/INS_Out' */
-  if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U))
-  {
-    FMS_B.target_mode = PilotMode_Altitude;
-
-    /* Delay: '<S15>/Delay' */
-    switch (FMS_DW.Delay_DSTATE_c) {
-     case PilotMode_Manual:
-      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      break;
-
-     case PilotMode_Acro:
-      FMS_DW.is_c3_FMS = FMS_IN_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      break;
-
-     case PilotMode_Mission:
-      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-      break;
-
-     case PilotMode_Offboard:
-      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-      break;
-
-     default:
-      FMS_DW.is_c3_FMS = FMS_IN_Other;
-      break;
-    }
-
-    /* End of Delay: '<S15>/Delay' */
-  } else {
-    FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-  }
-
-  /* End of Inport: '<Root>/INS_Out' */
-}
-
-/* Function for Chart: '<Root>/SafeMode' */
-static void FMS_Manual(void)
-{
-  FMS_B.target_mode = PilotMode_Manual;
+  boolean_T guard1 = false;
+  boolean_T guard2 = false;
+  boolean_T guard3 = false;
+  boolean_T guard4 = false;
+  boolean_T guard5 = false;
+  boolean_T guard6 = false;
 
   /* Delay: '<S15>/Delay' */
-  switch (FMS_DW.Delay_DSTATE_c) {
-   case PilotMode_Manual:
-    FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-    break;
+  if (((FMS_DW.mode_prev != FMS_DW.mode_start) || (FMS_DW.flag_prev !=
+        FMS_DW.flag_start)) && (FMS_DW.Delay_DSTATE_c != PilotMode_None)) {
+    FMS_B.degrade = 0.0;
+    guard1 = false;
+    guard2 = false;
+    guard3 = false;
+    guard4 = false;
+    guard5 = false;
+    guard6 = false;
+    if (FMS_DW.Delay_DSTATE_c == PilotMode_Offboard) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
+           != 0U)) {
+        FMS_exit_internal_Mode();
+        FMS_DW.is_Mode = FMS_IN_Offboard_h;
+        FMS_B.target_mode = PilotMode_Offboard;
+      } else {
+        FMS_B.degrade = 1.0;
+        guard6 = true;
+      }
+    } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Mission) {
+      guard6 = true;
+    } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Position) {
+      guard5 = true;
+    } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Altitude) {
+      guard4 = true;
+    } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Stabilize) {
+      guard3 = true;
+    } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Acro) {
+      guard2 = true;
+    } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Manual) {
+      guard1 = true;
+    } else {
+      FMS_DW.is_Mode = FMS_IN_Unknown;
+      FMS_B.target_mode = PilotMode_None;
+    }
 
-   case PilotMode_Acro:
-    FMS_DW.is_c3_FMS = FMS_IN_Acro;
-    break;
+    if (guard6) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 32U) != 0U) && ((FMS_U.INS_Out.flag & 64U)
+           != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+        FMS_exit_internal_Mode();
+        FMS_DW.is_Mode = FMS_IN_Mission_c;
+        FMS_B.target_mode = PilotMode_Mission;
+      } else {
+        FMS_B.degrade = 1.0;
+        guard5 = true;
+      }
+    }
 
-   case PilotMode_Stabilize:
-    FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-    break;
+    if (guard5) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
+          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
+           != 0U)) {
+        FMS_exit_internal_Mode();
+        FMS_DW.is_Mode = FMS_IN_Position_k;
+        FMS_B.target_mode = PilotMode_Position;
+      } else {
+        FMS_B.degrade = 1.0;
+        guard4 = true;
+      }
+    }
 
-   case PilotMode_Altitude:
-    FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-    break;
+    if (guard4) {
+      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) !=
+           0U)) {
+        FMS_DW.is_Mode = FMS_IN_Altitude;
+        FMS_B.target_mode = PilotMode_Altitude;
+      } else {
+        FMS_B.degrade = 1.0;
+        guard3 = true;
+      }
+    }
 
-   case PilotMode_Position:
-    FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-    break;
+    if (guard3) {
+      if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+        FMS_DW.is_Mode = FMS_IN_Stabilize_k;
+        FMS_B.target_mode = PilotMode_Stabilize;
+      } else {
+        FMS_B.degrade = 1.0;
+        guard2 = true;
+      }
+    }
 
-   case PilotMode_Mission:
-    FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-    break;
+    if (guard2) {
+      if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+        FMS_DW.is_Mode = FMS_IN_Acro;
+        FMS_B.target_mode = PilotMode_Acro;
+      } else {
+        FMS_B.degrade = 1.0;
+        guard1 = true;
+      }
+    }
 
-   case PilotMode_Offboard:
-    FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-    break;
+    if (guard1) {
+      FMS_DW.is_Mode = FMS_IN_Manual_b;
+      FMS_B.target_mode = PilotMode_Manual;
+    }
+  } else {
+    switch (FMS_DW.is_Mode) {
+     case FMS_IN_Acro:
+      FMS_B.target_mode = PilotMode_Acro;
+      break;
 
-   default:
-    FMS_DW.is_c3_FMS = FMS_IN_Other;
-    break;
+     case FMS_IN_Altitude:
+      FMS_B.target_mode = PilotMode_Altitude;
+      break;
+
+     case FMS_IN_Manual_b:
+      FMS_B.target_mode = PilotMode_Manual;
+      break;
+
+     case FMS_IN_Mission_c:
+      FMS_B.target_mode = PilotMode_Mission;
+      break;
+
+     case FMS_IN_Offboard_h:
+      FMS_B.target_mode = PilotMode_Offboard;
+      break;
+
+     case FMS_IN_Position_k:
+      FMS_B.target_mode = PilotMode_Position;
+      break;
+
+     case FMS_IN_Stabilize_k:
+      FMS_B.target_mode = PilotMode_Stabilize;
+      break;
+
+     default:
+      FMS_B.target_mode = PilotMode_None;
+      break;
+    }
+  }
+
+  /* End of Delay: '<S15>/Delay' */
+}
+
+/* Function for Chart: '<Root>/SafeMode' */
+static void FMS_enter_internal_c1_FMS(void)
+{
+  boolean_T guard1 = false;
+  boolean_T guard2 = false;
+  boolean_T guard3 = false;
+  boolean_T guard4 = false;
+  boolean_T guard5 = false;
+  boolean_T guard6 = false;
+  FMS_B.degrade = 0.0;
+
+  /* Delay: '<S15>/Delay' */
+  guard1 = false;
+  guard2 = false;
+  guard3 = false;
+  guard4 = false;
+  guard5 = false;
+  guard6 = false;
+  if (FMS_DW.Delay_DSTATE_c == PilotMode_Offboard) {
+    if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U) &&
+        ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U))
+    {
+      FMS_DW.is_Mode = FMS_IN_Offboard_h;
+      FMS_B.target_mode = PilotMode_Offboard;
+    } else {
+      FMS_B.degrade = 1.0;
+      guard6 = true;
+    }
+  } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Mission) {
+    guard6 = true;
+  } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Position) {
+    guard5 = true;
+  } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Altitude) {
+    guard4 = true;
+  } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Stabilize) {
+    guard3 = true;
+  } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Acro) {
+    guard2 = true;
+  } else if (FMS_DW.Delay_DSTATE_c == PilotMode_Manual) {
+    guard1 = true;
+  } else {
+    FMS_DW.is_Mode = FMS_IN_Unknown;
+    FMS_B.target_mode = PilotMode_None;
+  }
+
+  if (guard6) {
+    if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U) &&
+        ((FMS_U.INS_Out.flag & 32U) != 0U) && ((FMS_U.INS_Out.flag & 64U) != 0U)
+        && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
+      FMS_DW.is_Mode = FMS_IN_Mission_c;
+      FMS_B.target_mode = PilotMode_Mission;
+    } else {
+      FMS_B.degrade = 1.0;
+      guard5 = true;
+    }
+  }
+
+  if (guard5) {
+    if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U) &&
+        ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U))
+    {
+      FMS_DW.is_Mode = FMS_IN_Position_k;
+      FMS_B.target_mode = PilotMode_Position;
+    } else {
+      FMS_B.degrade = 1.0;
+      guard4 = true;
+    }
+  }
+
+  if (guard4) {
+    if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U))
+    {
+      FMS_DW.is_Mode = FMS_IN_Altitude;
+      FMS_B.target_mode = PilotMode_Altitude;
+    } else {
+      FMS_B.degrade = 1.0;
+      guard3 = true;
+    }
+  }
+
+  if (guard3) {
+    if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+      FMS_DW.is_Mode = FMS_IN_Stabilize_k;
+      FMS_B.target_mode = PilotMode_Stabilize;
+    } else {
+      FMS_B.degrade = 1.0;
+      guard2 = true;
+    }
+  }
+
+  if (guard2) {
+    if ((FMS_U.INS_Out.flag & 4U) != 0U) {
+      FMS_DW.is_Mode = FMS_IN_Acro;
+      FMS_B.target_mode = PilotMode_Acro;
+    } else {
+      FMS_B.degrade = 1.0;
+      guard1 = true;
+    }
+  }
+
+  if (guard1) {
+    FMS_DW.is_Mode = FMS_IN_Manual_b;
+    FMS_B.target_mode = PilotMode_Manual;
   }
 
   /* End of Delay: '<S15>/Delay' */
@@ -3062,8 +3129,8 @@ static void FMS_Arm(void)
       FMS_DW.stick_val[3] = FMS_B.BusConversion_InsertedFor_FMS_f.stick_pitch;
       FMS_DW.is_SubMode = FMS_IN_Hold_h;
       FMS_B.state = VehicleState_Hold;
-    } else if ((FMS_DW.mode_prev != FMS_DW.mode_start) && (FMS_B.target_mode !=
-                PilotMode_None)) {
+    } else if ((FMS_DW.mode_prev_n != FMS_DW.mode_start_a) && (FMS_B.target_mode
+                != PilotMode_None)) {
       tmp = FMS_getArmMode(FMS_B.target_mode);
       if (tmp == 3.0) {
         FMS_exit_internal_Arm();
@@ -3580,8 +3647,8 @@ static void FMS_c11_FMS(void)
     FMS_DW.mission_timestamp_start = FMS_U.Mission_Data.timestamp;
     FMS_DW.cmd_prev = FMS_B.Switch1;
     FMS_DW.cmd_start = FMS_B.Switch1;
-    FMS_DW.mode_prev = FMS_B.target_mode;
-    FMS_DW.mode_start = FMS_B.target_mode;
+    FMS_DW.mode_prev_n = FMS_B.target_mode;
+    FMS_DW.mode_start_a = FMS_B.target_mode;
     FMS_DW.chartAbsoluteTimeCounter = 0;
     FMS_DW.is_active_c11_FMS = 1U;
     FMS_DW.is_active_Command_Listener = 1U;
@@ -3923,225 +3990,17 @@ void FMS_step(void)
    *  Delay: '<S15>/Delay'
    *  Inport: '<Root>/INS_Out'
    */
-  if (FMS_DW.is_active_c3_FMS == 0U) {
-    FMS_DW.is_active_c3_FMS = 1U;
-    switch (FMS_DW.Delay_DSTATE_c) {
-     case PilotMode_Manual:
-      FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-      break;
-
-     case PilotMode_Acro:
-      FMS_DW.is_c3_FMS = FMS_IN_Acro;
-      break;
-
-     case PilotMode_Stabilize:
-      FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-      break;
-
-     case PilotMode_Altitude:
-      FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      break;
-
-     case PilotMode_Position:
-      FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      break;
-
-     case PilotMode_Mission:
-      FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-      break;
-
-     case PilotMode_Offboard:
-      FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-      break;
-
-     default:
-      FMS_DW.is_c3_FMS = FMS_IN_Other;
-      break;
-    }
+  FMS_DW.mode_prev = FMS_DW.mode_start;
+  FMS_DW.mode_start = FMS_DW.Delay_DSTATE_c;
+  FMS_DW.flag_prev = FMS_DW.flag_start;
+  FMS_DW.flag_start = FMS_U.INS_Out.flag;
+  if (FMS_DW.is_active_c1_FMS == 0U) {
+    FMS_DW.mode_prev = FMS_DW.Delay_DSTATE_c;
+    FMS_DW.flag_prev = FMS_U.INS_Out.flag;
+    FMS_DW.is_active_c1_FMS = 1U;
+    FMS_enter_internal_c1_FMS();
   } else {
-    switch (FMS_DW.is_c3_FMS) {
-     case FMS_IN_Acro:
-      FMS_Acro();
-      break;
-
-     case FMS_IN_Altitude:
-      FMS_Altitude();
-      break;
-
-     case FMS_IN_Manual_e:
-      FMS_Manual();
-      break;
-
-     case FMS_IN_Mission_g:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
-          && ((FMS_U.INS_Out.flag & 32U) != 0U) && ((FMS_U.INS_Out.flag & 64U)
-           != 0U) && ((FMS_U.INS_Out.flag & 128U) != 0U)) {
-        FMS_B.target_mode = PilotMode_Mission;
-        switch (FMS_DW.Delay_DSTATE_c) {
-         case PilotMode_Manual:
-          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-          break;
-
-         case PilotMode_Acro:
-          FMS_DW.is_c3_FMS = FMS_IN_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-          break;
-
-         case PilotMode_Mission:
-          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-          break;
-
-         case PilotMode_Offboard:
-          FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-          break;
-
-         default:
-          FMS_DW.is_c3_FMS = FMS_IN_Other;
-          break;
-        }
-      } else {
-        FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      }
-      break;
-
-     case FMS_IN_Offboard_p:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
-          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
-           != 0U)) {
-        FMS_B.target_mode = PilotMode_Offboard;
-        switch (FMS_DW.Delay_DSTATE_c) {
-         case PilotMode_Manual:
-          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-          break;
-
-         case PilotMode_Acro:
-          FMS_DW.is_c3_FMS = FMS_IN_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-          break;
-
-         case PilotMode_Mission:
-          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-          break;
-
-         case PilotMode_Offboard:
-          FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-          break;
-
-         default:
-          FMS_DW.is_c3_FMS = FMS_IN_Other;
-          break;
-        }
-      } else {
-        FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-      }
-      break;
-
-     case FMS_IN_Other:
-      FMS_B.target_mode = PilotMode_None;
-      switch (FMS_DW.Delay_DSTATE_c) {
-       case PilotMode_Manual:
-        FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-        break;
-
-       case PilotMode_Acro:
-        FMS_DW.is_c3_FMS = FMS_IN_Acro;
-        break;
-
-       case PilotMode_Stabilize:
-        FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-        break;
-
-       case PilotMode_Altitude:
-        FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-        break;
-
-       case PilotMode_Position:
-        FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-        break;
-
-       case PilotMode_Mission:
-        FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-        break;
-
-       case PilotMode_Offboard:
-        FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-        break;
-
-       default:
-        FMS_DW.is_c3_FMS = FMS_IN_Other;
-        break;
-      }
-      break;
-
-     case FMS_IN_Position_f:
-      if (((FMS_U.INS_Out.flag & 4U) != 0U) && ((FMS_U.INS_Out.flag & 16U) != 0U)
-          && ((FMS_U.INS_Out.flag & 64U) != 0U) && ((FMS_U.INS_Out.flag & 128U)
-           != 0U)) {
-        FMS_B.target_mode = PilotMode_Position;
-        switch (FMS_DW.Delay_DSTATE_c) {
-         case PilotMode_Manual:
-          FMS_DW.is_c3_FMS = FMS_IN_Manual_e;
-          break;
-
-         case PilotMode_Acro:
-          FMS_DW.is_c3_FMS = FMS_IN_Acro;
-          break;
-
-         case PilotMode_Stabilize:
-          FMS_DW.is_c3_FMS = FMS_IN_Stabilize_j;
-          break;
-
-         case PilotMode_Altitude:
-          FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-          break;
-
-         case PilotMode_Position:
-          FMS_DW.is_c3_FMS = FMS_IN_Position_f;
-          break;
-
-         case PilotMode_Mission:
-          FMS_DW.is_c3_FMS = FMS_IN_Mission_g;
-          break;
-
-         case PilotMode_Offboard:
-          FMS_DW.is_c3_FMS = FMS_IN_Offboard_p;
-          break;
-
-         default:
-          FMS_DW.is_c3_FMS = FMS_IN_Other;
-          break;
-        }
-      } else {
-        FMS_DW.is_c3_FMS = FMS_IN_Altitude;
-      }
-      break;
-
-     default:
-      FMS_Stabilize();
-      break;
-    }
+    FMS_Mode();
   }
 
   /* End of Chart: '<Root>/SafeMode' */
@@ -4489,13 +4348,11 @@ void FMS_step(void)
   /* Switch: '<S4>/Switch' incorporates:
    *  Constant: '<S4>/Constant'
    *  Constant: '<S4>/Constant1'
-   *  Delay: '<S15>/Delay'
-   *  RelationalOperator: '<S4>/Equal'
    */
-  if (FMS_DW.Delay_DSTATE_c == FMS_B.target_mode) {
-    tmp_2 = FMS_Error_None;
-  } else {
+  if (FMS_B.degrade > 0.0) {
     tmp_2 = FMS_Error_ModeDegradation;
+  } else {
+    tmp_2 = FMS_Error_None;
   }
 
   /* End of Switch: '<S4>/Switch' */
@@ -4570,8 +4427,8 @@ void FMS_step(void)
   FMS_DW.mission_timestamp_start = FMS_U.Mission_Data.timestamp;
   FMS_DW.cmd_prev = FMS_DW.cmd_start;
   FMS_DW.cmd_start = FMS_B.Switch1;
-  FMS_DW.mode_prev = FMS_DW.mode_start;
-  FMS_DW.mode_start = FMS_B.target_mode;
+  FMS_DW.mode_prev_n = FMS_DW.mode_start_a;
+  FMS_DW.mode_start_a = FMS_B.target_mode;
   FMS_DW.M_isValid = false;
   FMS_c11_FMS();
   FMS_sf_msg_discard_M();
@@ -13384,8 +13241,8 @@ void FMS_init(void)
   FMS_DW.DiscreteTimeIntegrator5_IC_LO_g = 1U;
 
   /* SystemInitialize for Chart: '<Root>/SafeMode' */
-  FMS_DW.is_active_c3_FMS = 0U;
-  FMS_DW.is_c3_FMS = FMS_IN_NO_ACTIVE_CHILD_h;
+  FMS_DW.is_Mode = FMS_IN_NO_ACTIVE_CHILD_h;
+  FMS_DW.is_active_c1_FMS = 0U;
 
   /* SystemInitialize for Chart: '<Root>/FMS State Machine' */
   initialize_msg_local_queues_for();

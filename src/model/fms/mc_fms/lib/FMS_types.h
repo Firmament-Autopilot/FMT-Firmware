@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2197
+ * Model version                  : 1.2218
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul  4 09:55:30 2025
+ * C/C++ source code generated on : Fri Aug  1 09:04:59 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -425,10 +425,7 @@ typedef enum {
   VehicleState_InvalidArmMode,
   VehicleState_Land,
   VehicleState_Return,
-  VehicleState_Takeoff,
-  VehicleState_Climb,
-  VehicleState_Climb_Manual,
-  VehicleState_Climb_Sideway
+  VehicleState_Takeoff
 } VehicleState;
 
 #endif
@@ -483,6 +480,9 @@ typedef struct {
 
   /* Set speed for cuise flight */
   real32_T set_speed;
+
+  /* Set yaw angle in rad, valid range is [0 360]. Set to negative to ignore */
+  real32_T set_yaw;
 } Commander_In_Bus;
 
 #endif
@@ -497,7 +497,10 @@ typedef enum {
   NAV_Cmd_Return = 20,
   NAV_Cmd_Land,
   NAV_Cmd_Takeoff,
-  NAV_Cmd_SetSpeed = 178
+  NAV_Cmd_VTOL_Takeoff = 84,
+  NAV_Cmd_VTOL_Land,
+  NAV_Cmd_SetSpeed = 178,
+  NAV_Cmd_VTOL_Transition = 3000
 } NAV_Cmd;
 
 #endif

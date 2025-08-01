@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2197
+ * Model version                  : 1.2218
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jul  4 09:55:30 2025
+ * C/C++ source code generated on : Fri Aug  1 09:04:59 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -108,6 +108,7 @@ typedef struct {
   Pilot_Cmd_Bus BusConversion_InsertedFor_FMS_f;
   Pilot_Cmd_Bus pilot_cmd;             /* '<Root>/FMS State Machine' */
   Commander_In_Bus Cmd_In;             /* '<Root>/FMS State Machine' */
+  real_T degrade;                      /* '<Root>/SafeMode' */
   real_T stick_val[4];                 /* '<Root>/FMS State Machine' */
   real_T lla[3];                       /* '<Root>/FMS State Machine' */
   real_T llo[2];                       /* '<Root>/FMS State Machine' */
@@ -208,6 +209,8 @@ typedef struct {
   int32_T durationLastReferenceTick_1_b;/* '<Root>/FMS State Machine' */
   int32_T durationLastReferenceTick_2_n;/* '<Root>/FMS State Machine' */
   int32_T M_qId;                       /* '<Root>/FMS State Machine' */
+  uint32_T flag_prev;                  /* '<Root>/SafeMode' */
+  uint32_T flag_start;                 /* '<Root>/SafeMode' */
   uint32_T temporalCounter_i1;         /* '<Root>/FMS State Machine' */
   uint32_T mission_timestamp_prev;     /* '<Root>/FMS State Machine' */
   uint32_T mission_timestamp_start;    /* '<Root>/FMS State Machine' */
@@ -217,8 +220,10 @@ typedef struct {
   FMS_Cmd cmd_start;                   /* '<Root>/FMS State Machine' */
   FMS_Cmd M_msgData;                   /* '<Root>/FMS State Machine' */
   FMS_Cmd M_msgReservedData;           /* '<Root>/FMS State Machine' */
-  PilotMode mode_prev;                 /* '<Root>/FMS State Machine' */
-  PilotMode mode_start;                /* '<Root>/FMS State Machine' */
+  PilotMode mode_prev;                 /* '<Root>/SafeMode' */
+  PilotMode mode_start;                /* '<Root>/SafeMode' */
+  PilotMode mode_prev_n;               /* '<Root>/FMS State Machine' */
+  PilotMode mode_start_a;              /* '<Root>/FMS State Machine' */
   uint16_T nav_cmd;                    /* '<Root>/FMS State Machine' */
   uint16_T temporalCounter_i1_i;       /* '<S114>/Motion State' */
   uint8_T Delay_DSTATE_o;              /* '<S11>/Delay' */
@@ -248,8 +253,8 @@ typedef struct {
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S502>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S504>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_g;/* '<S503>/Discrete-Time Integrator5' */
-  uint8_T is_active_c3_FMS;            /* '<Root>/SafeMode' */
-  uint8_T is_c3_FMS;                   /* '<Root>/SafeMode' */
+  uint8_T is_active_c1_FMS;            /* '<Root>/SafeMode' */
+  uint8_T is_Mode;                     /* '<Root>/SafeMode' */
   uint8_T is_active_c11_FMS;           /* '<Root>/FMS State Machine' */
   uint8_T is_Command_Listener;         /* '<Root>/FMS State Machine' */
   uint8_T is_active_Command_Listener;  /* '<Root>/FMS State Machine' */
