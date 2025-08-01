@@ -39,6 +39,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(VEL_I_MIN, -0.6, false),
     PARAM_FLOAT(VEL_D_MAX, 0.1, false),
     PARAM_FLOAT(VEL_D_MIN, -0.1, false),
+    PARAM_FLOAT(R_FF, 0.4, false),
     PARAM_FLOAT(R_P, 0.7, false),
     PARAM_FLOAT(R_I, 1.0, false),
     PARAM_FLOAT(R_D, 0.0, false),
@@ -46,6 +47,10 @@ static param_t __param_list[] = {
     PARAM_FLOAT(R_I_MIN, -0.1, false),
     PARAM_FLOAT(R_D_MAX, 0.1, false),
     PARAM_FLOAT(R_D_MIN, -0.1, false),
+    PARAM_FLOAT(THROTTLE_SCALE, 500.0, false),
+    PARAM_UINT16(THROTTLE_BIAS, 1500, false),
+    PARAM_FLOAT(SERVO_SCALE, 500.0, false),
+    PARAM_UINT16(SERVO_BIAS, 1500, false),
 };
 PARAM_GROUP_DEFINE(CONTROL, __param_list);
 
@@ -91,13 +96,17 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_I_MIN), &CONTROL_PARAM.VEL_I_MIN));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_D_MAX), &CONTROL_PARAM.VEL_D_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, VEL_D_MIN), &CONTROL_PARAM.VEL_D_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_FF), &CONTROL_PARAM.R_FF));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_P), &CONTROL_PARAM.R_P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_I), &CONTROL_PARAM.R_I));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_D), &CONTROL_PARAM.R_D));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_I_MAX), &CONTROL_PARAM.R_I_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_I_MIN), &CONTROL_PARAM.R_I_MIN));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_D_MAX), &CONTROL_PARAM.R_D_MAX));
-    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, R_D_MIN), &CONTROL_PARAM.R_D_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, THROTTLE_SCALE), &CONTROL_PARAM.THROTTLE_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, THROTTLE_BIAS), &CONTROL_PARAM.THROTTLE_BIAS));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, SERVO_SCALE), &CONTROL_PARAM.SERVO_SCALE));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, SERVO_BIAS), &CONTROL_PARAM.SERVO_BIAS));
 }
 
 void control_interface_step(uint32_t timestamp)
@@ -125,7 +134,7 @@ void control_interface_step(uint32_t timestamp)
 void control_interface_init(void)
 {
     control_model_info.period = CONTROL_EXPORT.period;
-    control_model_info.info   = (char*)CONTROL_EXPORT.model_info;
+    control_model_info.info = (char*)CONTROL_EXPORT.model_info;
 
     mcn_advertise(MCN_HUB(control_output), control_out_echo);
 

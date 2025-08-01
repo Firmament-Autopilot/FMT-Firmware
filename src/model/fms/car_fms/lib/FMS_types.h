@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2049
+ * Model version                  : 1.2065
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:18:01 2025
+ * C/C++ source code generated on : Fri Aug  1 16:25:28 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -467,6 +467,9 @@ typedef struct {
 
   /* Set speed for cuise flight */
   real32_T set_speed;
+
+  /* Set yaw angle in rad, valid range is [0 360]. Set to negative to ignore */
+  real32_T set_yaw;
 } Commander_In_Bus;
 
 #endif
@@ -481,13 +484,16 @@ typedef enum {
   NAV_Cmd_Return = 20,
   NAV_Cmd_Land,
   NAV_Cmd_Takeoff,
-  NAV_Cmd_SetSpeed = 178
+  NAV_Cmd_VTOL_Takeoff = 84,
+  NAV_Cmd_VTOL_Land,
+  NAV_Cmd_SetSpeed = 178,
+  NAV_Cmd_VTOL_Transition = 3000
 } NAV_Cmd;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_LVGChNcHeHKlRRwAVwv2dD_
-#define DEFINED_TYPEDEF_FOR_struct_LVGChNcHeHKlRRwAVwv2dD_
+#ifndef DEFINED_TYPEDEF_FOR_struct_xbxWDOkUedhvafLxKRw0h_
+#define DEFINED_TYPEDEF_FOR_struct_xbxWDOkUedhvafLxKRw0h_
 
 typedef struct {
   real32_T DISARM_OUT[16];
@@ -500,7 +506,8 @@ typedef struct {
   real32_T MAX_R;
   real32_T ACC2RATE;
   real32_T VEL_XY_LIM;
-} struct_LVGChNcHeHKlRRwAVwv2dD;
+  real32_T AY_P;
+} struct_xbxWDOkUedhvafLxKRw0h;
 
 #endif
 

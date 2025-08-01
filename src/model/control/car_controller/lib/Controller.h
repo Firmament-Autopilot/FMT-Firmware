@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1121
+ * Model version                  : 1.1146
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:19:32 2025
+ * C/C++ source code generated on : Fri Aug  1 15:46:08 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -37,23 +37,23 @@
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S23>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S25>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S24>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S26>/Discrete-Time Integrator1' */
   real32_T DiscreteTimeIntegrator_DSTATE_k;/* '<S14>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTAT_l;/* '<S16>/Discrete-Time Integrator1' */
   uint32_T DiscreteTimeIntegrator_DSTATE_f;/* '<S3>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S23>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S25>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S24>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S26>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRe_l;/* '<S14>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevR_n;/* '<S16>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S25>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S26>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_i;/* '<S16>/Discrete-Time Integrator1' */
 } DW_Controller_T;
 
 /* Invariant block signals (default storage) */
 typedef struct {
-  const real32_T VectorConcatenate3[3];/* '<S21>/Vector Concatenate3' */
-  const real32_T Constant;             /* '<S23>/Constant' */
+  const real32_T VectorConcatenate3[3];/* '<S22>/Vector Concatenate3' */
+  const real32_T Constant;             /* '<S24>/Constant' */
   const real32_T Constant_g;           /* '<S14>/Constant' */
 } ConstB_Controller_T;
 
@@ -94,18 +94,23 @@ extern const ConstB_Controller_T Controller_ConstB;/* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_L5ioibiXFlDXzs1YoXn9HB CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_XvtsEoSrVi3a89S22AK4KE CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
+                                                    *   '<S5>/FF'
+                                                    *   '<S7>/Bias'
+                                                    *   '<S7>/Bias1'
+                                                    *   '<S7>/Gain'
+                                                    *   '<S7>/Gain1'
                                                     *   '<S13>/gain1'
                                                     *   '<S13>/Saturation'
                                                     *   '<S14>/gain1'
                                                     *   '<S14>/Discrete-Time Integrator'
                                                     *   '<S15>/gain1'
-                                                    *   '<S22>/gain1'
-                                                    *   '<S22>/Saturation'
                                                     *   '<S23>/gain1'
-                                                    *   '<S23>/Discrete-Time Integrator'
+                                                    *   '<S23>/Saturation'
                                                     *   '<S24>/gain1'
+                                                    *   '<S24>/Discrete-Time Integrator'
+                                                    *   '<S25>/gain1'
                                                     */
 extern struct_j3HEuq2gKBtBznker0ckFF CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S3>/Constant'
@@ -122,6 +127,8 @@ extern RT_MODEL_Controller_T *const Controller_M;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
+ * Block '<S5>/Multiply' : Unused code path elimination
+ * Block '<S5>/Sign' : Unused code path elimination
  * Block '<S3>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S7>/Reshape' : Reshape block reduction
  */
@@ -159,13 +166,15 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S16>'  : 'Controller/Controller/Heading_Controller/PID_Controller/D_Control/DT Filter'
  * '<S17>'  : 'Controller/Controller/Speed_Controller/Error'
  * '<S18>'  : 'Controller/Controller/Speed_Controller/PID_Controller'
- * '<S19>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select'
- * '<S20>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM'
- * '<S21>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
- * '<S22>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control'
- * '<S23>'  : 'Controller/Controller/Speed_Controller/PID_Controller/I_Control'
- * '<S24>'  : 'Controller/Controller/Speed_Controller/PID_Controller/P_Control'
- * '<S25>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control/DT Filter'
+ * '<S19>'  : 'Controller/Controller/Speed_Controller/Signal_Select'
+ * '<S20>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select'
+ * '<S21>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM'
+ * '<S22>'  : 'Controller/Controller/Speed_Controller/Error/Bus_Select/Psi To DCM/Rotation Matrix Z'
+ * '<S23>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control'
+ * '<S24>'  : 'Controller/Controller/Speed_Controller/PID_Controller/I_Control'
+ * '<S25>'  : 'Controller/Controller/Speed_Controller/PID_Controller/P_Control'
+ * '<S26>'  : 'Controller/Controller/Speed_Controller/PID_Controller/D_Control/DT Filter'
+ * '<S27>'  : 'Controller/Controller/Speed_Controller/Signal_Select/Position'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 
