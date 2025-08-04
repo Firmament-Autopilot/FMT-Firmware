@@ -129,13 +129,13 @@ static void task_entry(void* parameter)
     gcs_set_cmd(FMS_Cmd_Return, (float[7]) { 0 }); /* Send return command */
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "offboard",
-    .init = task_init,
-    .entry = task_entry,
-    .priority = 25,
-    .auto_start = false,
-    .stack_size = 4096,
-    .param = NULL,
-    .dependency = NULL
-};
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "offboard",
+//     .init = task_init,
+//     .entry = task_entry,
+//     .priority = 25,
+//     .auto_start = false,
+//     .stack_size = 4096,
+//     .param = NULL,
+//     .dependency = NULL
+// };

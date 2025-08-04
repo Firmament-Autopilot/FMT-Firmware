@@ -615,7 +615,9 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
 
             auto_cmd.timestamp = systime_now_ms();
 
-            if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_NED || MAV_FRAME_LOCAL_FRD) {
+            if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_NED) {
+                auto_cmd.frame = FRAME_LOCAL_NED;
+            } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_LOCAL_FRD) {
                 auto_cmd.frame = FRAME_LOCAL_FRD;
             } else if (pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_FRD || pos_target_local_ned.coordinate_frame == MAV_FRAME_BODY_NED) {
                 auto_cmd.frame = FRAME_BODY_FRD;
