@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2071
+ * Model version                  : 1.2086
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Aug  4 13:59:39 2025
+ * C/C++ source code generated on : Wed Aug  6 11:38:45 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,9 +18,70 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_FMS_T FMS_ConstB = {
-  1.9966471893352524,                  /* '<S189>/Sum' */
-  0.0066943799901413165,               /* '<S189>/Multiply3' */
-  0.99330562000985867,                 /* '<S189>/Sum4' */
+  {
+    0U,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+
+    { 1500U, 1500U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U },
+    0U,
+    0U,
+    3U,
+    6U,
+    1U,
+    0U,
+    1U,
+    0U,
+    0U,
+    0U,
+
+    { 0.0F, 0.0F, 0.0F, 0.0F },
+    0U
+  },                                   /* '<S169>/Bus Assignment' */
+
+  {
+    0U,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+    0.0F,
+
+    { 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U },
+    0U,
+    0U,
+    3U,
+    10U,
+    5U,
+    0U,
+    0U,
+    0U,
+    0U,
+    0U,
+
+    { 0.0F, 0.0F, 0.0F, 0.0F },
+    0U
+  },                                   /* '<S168>/Bus Assignment' */
+  1.9966471893352524,                  /* '<S191>/Sum' */
+  0.0066943799901413165,               /* '<S191>/Multiply3' */
+  0.99330562000985867,                 /* '<S191>/Sum4' */
   1.9966471893352524,                  /* '<S152>/Sum' */
   0.0066943799901413165,               /* '<S152>/Multiply3' */
   0.99330562000985867,                 /* '<S152>/Sum4' */
@@ -60,9 +121,12 @@ const ConstB_FMS_T FMS_ConstB = {
   3U,                                  /* '<S83>/Data Type Conversion' */
   3U,                                  /* '<S83>/Data Type Conversion1' */
   6U,                                  /* '<S83>/Data Type Conversion2' */
-  3U,                                  /* '<S165>/Data Type Conversion' */
-  6U,                                  /* '<S165>/Data Type Conversion1' */
-  1U,                                  /* '<S165>/Data Type Conversion2' */
+  3U,                                  /* '<S169>/Data Type Conversion' */
+  6U,                                  /* '<S169>/Data Type Conversion1' */
+  1U,                                  /* '<S169>/Data Type Conversion2' */
+  3U,                                  /* '<S168>/Data Type Conversion' */
+  10U,                                 /* '<S168>/Data Type Conversion1' */
+  5U,                                  /* '<S168>/Data Type Conversion2' */
   3U,                                  /* '<S166>/Data Type Conversion' */
   16U,                                 /* '<S166>/Data Type Conversion1' */
   5U,                                  /* '<S166>/Data Type Conversion2' */
