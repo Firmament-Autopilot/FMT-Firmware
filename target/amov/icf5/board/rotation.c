@@ -17,7 +17,7 @@
 
 #include "module/math/rotation.h"
 
-void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
+void bmi088_rotate_to_frd(float* data, uint8_t dev_id)
 {
     (void)dev_id;
     float tmp;

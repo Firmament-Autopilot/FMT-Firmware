@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-rt_err_t drv_bmm150_init(const char* spi_device_name, const char* mag_device_name);
+rt_err_t drv_bmm150_init(const char* spi_device_name, const char* mag_device_name, uint32_t dev_flags);
 
 #ifdef __cplusplus
 }

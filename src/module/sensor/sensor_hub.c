@@ -52,11 +52,11 @@ MCN_DEFINE(sensor_optflow, sizeof(optflow_data_t));
 
 MCN_DEFINE(sensor_rangefinder, sizeof(rf_data_t));
 
-static sensor_imu_t      imu_dev[MAX_IMU_DEV_NUM] = { NULL };
-static sensor_mag_t      mag_dev[MAX_MAG_DEV_NUM] = { NULL };
-static sensor_baro_t     baro_dev                 = NULL;
-static sensor_gps_t      gps_dev                  = NULL;
-static sensor_airspeed_t airspeed_dev             = NULL;
+static sensor_imu_t imu_dev[MAX_IMU_DEV_NUM] = { NULL };
+static sensor_mag_t mag_dev[MAX_MAG_DEV_NUM] = { NULL };
+static sensor_baro_t baro_dev = NULL;
+static sensor_gps_t gps_dev = NULL;
+static sensor_airspeed_t airspeed_dev = NULL;
 
 static Butter3* butter3_gyr[MAX_IMU_DEV_NUM][3];
 static Butter3* butter3_acc[MAX_IMU_DEV_NUM][3];
@@ -85,7 +85,7 @@ static void dcm_from_euler(const float rpy[3], float dcm[9])
 
 static int echo_sensor_imu(void* param)
 {
-    fmt_err_t  err;
+    fmt_err_t err;
     imu_data_t imu_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &imu_report);
@@ -107,7 +107,7 @@ static int echo_sensor_imu(void* param)
 
 static int echo_sensor_mag(void* param)
 {
-    fmt_err_t  err;
+    fmt_err_t err;
     mag_data_t mag_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &mag_report);
@@ -126,7 +126,7 @@ static int echo_sensor_mag(void* param)
 
 static int echo_sensor_baro(void* param)
 {
-    fmt_err_t   err;
+    fmt_err_t err;
     baro_data_t baro_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &baro_report);
@@ -146,7 +146,7 @@ static int echo_sensor_baro(void* param)
 
 static int echo_sensor_airspeed(void* param)
 {
-    fmt_err_t       err;
+    fmt_err_t err;
     airspeed_data_t airspeed_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &airspeed_report);
@@ -165,7 +165,7 @@ static int echo_sensor_airspeed(void* param)
 
 static int echo_sensor_gps(void* param)
 {
-    fmt_err_t  err;
+    fmt_err_t err;
     gps_data_t gps_report;
 
     err = mcn_copy_from_hub((McnHub*)param, &gps_report);
@@ -207,9 +207,9 @@ static int echo_sensor_rangefinder(void* param)
 
 static void imu_rotation_init(uint8_t id)
 {
-    Mat   level_rot;
-    Mat   gyr_rot;
-    Mat   acc_rot, acc_scale;
+    Mat level_rot;
+    Mat gyr_rot;
+    Mat acc_rot, acc_scale;
     float val_level_rot[9];
     float level_rpy[] = {
         PARAM_GET_FLOAT(CALIB, LEVEL_XOFF), PARAM_GET_FLOAT(CALIB, LEVEL_YOFF), PARAM_GET_FLOAT(CALIB, LEVEL_ZOFF)
@@ -261,8 +261,8 @@ static void imu_rotation_init(uint8_t id)
 
 static void mag_rotation_init(uint8_t id)
 {
-    Mat   level_rot;
-    Mat   mag_rot, mag_scale;
+    Mat level_rot;
+    Mat mag_rot, mag_scale;
     float val_level_rot[9];
     float level_rpy[] = {
         PARAM_GET_FLOAT(CALIB, LEVEL_XOFF), PARAM_GET_FLOAT(CALIB, LEVEL_YOFF), PARAM_GET_FLOAT(CALIB, LEVEL_ZOFF)
@@ -653,8 +653,9 @@ fmt_err_t register_sensor_airspeed(const char* dev_name)
  */
 void sensor_collect(void)
 {
-    float         temp[3];
+    float temp[3];
     enum Rotation board_rot = PARAM_GET_UINT8(CALIB, SENS_BOARD_ROT);
+    enum Rotation mag0_rot = PARAM_GET_UINT8(CALIB, CAL_MAG0_ROT);
 
     /*
      * Collect imu data
@@ -687,9 +688,9 @@ void sensor_collect(void)
                 imu_data.gyr_B_radDs[0] = butter3_filter_process(imu_data.gyr_B_radDs[0], butter3_gyr[0][0]);
                 imu_data.gyr_B_radDs[1] = butter3_filter_process(imu_data.gyr_B_radDs[1], butter3_gyr[0][1]);
                 imu_data.gyr_B_radDs[2] = butter3_filter_process(imu_data.gyr_B_radDs[2], butter3_gyr[0][2]);
-                imu_data.acc_B_mDs2[0]  = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[0][0]);
-                imu_data.acc_B_mDs2[1]  = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[0][1]);
-                imu_data.acc_B_mDs2[2]  = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[0][2]);
+                imu_data.acc_B_mDs2[0] = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[0][0]);
+                imu_data.acc_B_mDs2[1] = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[0][1]);
+                imu_data.acc_B_mDs2[2] = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[0][2]);
                 /* publish calibrated & filtered imu data */
                 mcn_publish(MCN_HUB(sensor_imu0), &imu_data);
             }
@@ -717,9 +718,9 @@ void sensor_collect(void)
                 imu_data.gyr_B_radDs[0] = butter3_filter_process(imu_data.gyr_B_radDs[0], butter3_gyr[1][0]);
                 imu_data.gyr_B_radDs[1] = butter3_filter_process(imu_data.gyr_B_radDs[1], butter3_gyr[1][1]);
                 imu_data.gyr_B_radDs[2] = butter3_filter_process(imu_data.gyr_B_radDs[2], butter3_gyr[1][2]);
-                imu_data.acc_B_mDs2[0]  = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[1][0]);
-                imu_data.acc_B_mDs2[1]  = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[1][1]);
-                imu_data.acc_B_mDs2[2]  = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[1][2]);
+                imu_data.acc_B_mDs2[0] = butter3_filter_process(imu_data.acc_B_mDs2[0], butter3_acc[1][0]);
+                imu_data.acc_B_mDs2[1] = butter3_filter_process(imu_data.acc_B_mDs2[1], butter3_acc[1][1]);
+                imu_data.acc_B_mDs2[2] = butter3_filter_process(imu_data.acc_B_mDs2[2], butter3_acc[1][2]);
                 /* publish calibrated & filtered imu data */
                 mcn_publish(MCN_HUB(sensor_imu1), &imu_data);
             }
@@ -738,8 +739,13 @@ void sensor_collect(void)
         /* Collect mag0 data */
         if (mag_dev[0] != NULL) {
             if (sensor_mag_measure(mag_dev[0], mag_data.mag_B_gauss) == FMT_EOK) {
-                /* do board rotation */
-                rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
+                if (IS_EXTERNAL_DEV(mag_dev[0]->dev)) {
+                    /* do external mag rotation */
+                    rotation(mag0_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
+                } else {
+                    /* do board rotation */
+                    rotation(board_rot, &mag_data.mag_B_gauss[0], &mag_data.mag_B_gauss[1], &mag_data.mag_B_gauss[2]);
+                }
                 /* publish scaled mag data without calibration and filtering */
                 mcn_publish(MCN_HUB(sensor_mag0_0), &mag_data);
                 /* do calibration */

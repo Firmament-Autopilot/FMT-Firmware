@@ -111,9 +111,11 @@ static float accel_range_scale;
 static rt_device_t imu_spi_dev;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void icm20689_rotate_to_frd(float* val)
+RT_WEAK void icm20689_rotate_to_frd(float* data, uint8_t dev_id)
 {
     /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
@@ -301,7 +303,7 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
     return RT_EOK;
 }
 
-static rt_err_t gyro_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 {
     int16_t gyr_raw[3];
 
@@ -310,8 +312,9 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
+
     // change to NED coordinate
-    icm20689_rotate_to_frd(gyr);
+    icm20689_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -340,7 +343,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (gyro_read_rad(((float*)data)) != RT_EOK) {
+    if (gyro_read_rad(gyro, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -366,7 +369,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     return RT_EOK;
 }
 
-static rt_err_t accel_read_m_s2(float acc[3])
+static rt_err_t accel_read_m_s2(accel_dev_t accel_dev, float acc[3])
 {
     int16_t acc_raw[3];
 
@@ -376,7 +379,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
     // change to NED coordinate
-    icm20689_rotate_to_frd(acc);
+    icm20689_rotate_to_frd(acc, (uint32_t)accel_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -405,7 +408,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
+    if (accel_read_m_s2(accel, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -444,7 +447,7 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_icm20689_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
+rt_err_t drv_icm20689_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     imu_spi_dev = rt_device_find(spi_device_name);
     RT_ASSERT(imu_spi_dev != NULL);
@@ -468,10 +471,10 @@ rt_err_t drv_icm20689_init(const char* spi_device_name, const char* gyro_device_
     RT_TRY(imu_init());
 
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

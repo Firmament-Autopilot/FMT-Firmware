@@ -49,9 +49,11 @@ static rt_device_t i2c_dev;
 static float range_scale = 1.0 / 3000;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void qmc5883l_rotate_to_frd(float* data)
+RT_WEAK void qmc5883l_rotate_to_frd(float* data, uint8_t dev_id)
 {
     /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
 static rt_err_t probe(void)
@@ -87,7 +89,7 @@ static rt_err_t qmc5883l_init(void)
     return RT_EOK;
 }
 
-static rt_err_t mag_measure(float mag[3])
+static rt_err_t mag_measure(mag_dev_t mag_dev, float mag[3])
 {
     int16_t raw[3];
     uint8_t buf[6];
@@ -101,7 +103,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[1] = range_scale * raw[1];
     mag[2] = range_scale * raw[2];
 
-    qmc5883l_rotate_to_frd(mag);
+    qmc5883l_rotate_to_frd(mag, (uint32_t)mag_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -112,7 +114,7 @@ static rt_size_t qmc5883l_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_
         return 0;
     }
 
-    if (mag_measure(((float*)data)) != RT_EOK) {
+    if (mag_measure(mag, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -125,7 +127,7 @@ const static struct mag_ops __mag_ops = {
     .mag_read = qmc5883l_read,
 };
 
-rt_err_t drv_qmc5883l_init(const char* i2c_device_name, const char* mag_device_name)
+rt_err_t drv_qmc5883l_init(const char* i2c_device_name, const char* mag_device_name, uint32_t dev_flags)
 {
     static struct mag_device mag_dev = {
         .ops = &__mag_ops,
@@ -141,7 +143,7 @@ rt_err_t drv_qmc5883l_init(const char* i2c_device_name, const char* mag_device_n
 
     RT_TRY(qmc5883l_init());
 
-    RT_CHECK(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

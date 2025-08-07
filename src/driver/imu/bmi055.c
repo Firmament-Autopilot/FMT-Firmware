@@ -27,68 +27,68 @@
 #define REG_VAL(_setbits, _clearbits) \
     (reg_val_t) { .setbits = (_setbits), .clearbits = (_clearbits) }
 
-#define BMI055_ACC_I2C_ADDR1        0x18                 //SDO is low(GND)
-#define BMI055_ACC_I2C_ADDR2        0x19                 //SDO is high(VCC)
-#define BMI055_ACC_DEFAULT_ADDRESS  BMI055_ACC_I2C_ADDR2 //in the LPC54102 SPM-S
-#define BMI055_ACC_BGW_CHIPID_VALUE 0xFA
-#define BMI055_ACC_BGW_CHIPID       0x00
-#define BMI055_ACCD_X_LSB           0x02
-#define BMI055_ACCD_X_MSB           0x03
-#define BMI055_ACCD_Y_LSB           0x04
-#define BMI055_ACCD_Y_MSB           0x05
-#define BMI055_ACCD_Z_LSB           0x06
-#define BMI055_ACCD_Z_MSB           0x07
-#define BMI055_ACCD_TEMP            0x08
-#define BMI055_INT_STATUS_0         0x09
-#define BMI055_INT_STATUS_1         0x0A
-#define BMI055_INT_STATUS_2         0x0B
-#define BMI055_INT_STATUS_3         0x0C
-#define BMI055_FIFO_STATUS          0x0E
-#define BMI055_PMU_RANGE            0x0F
-#define BMI055_PMU_BW               0x10
-#define BMI055_PMU_LPW              0x11
-#define BMI055_PMU_LOW_POWER        0x12
-#define BMI055_ACCD_HBW             0x13
-#define BMI055_BGW_SOFTRESET        0x14
-#define BMI055_INT_EN_0             0x16
-#define BMI055_INT_EN_1             0x17
-#define BMI055_INT_EN_2             0x18
-#define BMI055_INT_MAP_0            0x19
-#define BMI055_INT_MAP_1            0x1A
-#define BMI055_INT_MAP_2            0x1B
-#define BMI055_INT_SRC              0x1E
-#define BMI055_INT_OUT_CTRL         0x20
-#define BMI055_INT_RST_LATCH        0x21
-#define BMI055_INT_0                0x22
-#define BMI055_INT_1                0x23
-#define BMI055_INT_2                0x24
-#define BMI055_INT_3                0x25
-#define BMI055_INT_4                0x26
-#define BMI055_INT_5                0x27
-#define BMI055_INT_6                0x28
-#define BMI055_INT_7                0x29
-#define BMI055_INT_8                0x2A
-#define BMI055_INT_9                0x2B
-#define BMI055_INT_A                0x2C
-#define BMI055_INT_B                0x2D
-#define BMI055_INT_C                0x2E
-#define BMI055_INT_D                0x2F
-#define BMI055_FIFO_CONFIG_0        0x30
-#define BMI055_PMU_SELF_TEST        0x32
-#define BMI055_TRIM_NVM_CTRL        0x33
-#define BMI055_BGW_SPI3_WDT         0x34
-#define BMI055_OFC_CTRL             0x36
-#define BMI055_OFC_SETTING          0x37
-#define BMI055_OFC_OFFSET_X         0x38
-#define BMI055_OFC_OFFSET_Y         0x39
-#define BMI055_OFC_OFFSET_Z         0x3A
-#define BMI055_TRIM_GP0             0x3B
-#define BMI055_TRIM_GP1             0x3C
-#define BMI055_FIFO_CONFIG_1        0x3E
-#define BMI055_FIFO_DATA            0x3F
+#define BMI055_ACC_I2C_ADDR1         0x18                 // SDO is low(GND)
+#define BMI055_ACC_I2C_ADDR2         0x19                 // SDO is high(VCC)
+#define BMI055_ACC_DEFAULT_ADDRESS   BMI055_ACC_I2C_ADDR2 // in the LPC54102 SPM-S
+#define BMI055_ACC_BGW_CHIPID_VALUE  0xFA
+#define BMI055_ACC_BGW_CHIPID        0x00
+#define BMI055_ACCD_X_LSB            0x02
+#define BMI055_ACCD_X_MSB            0x03
+#define BMI055_ACCD_Y_LSB            0x04
+#define BMI055_ACCD_Y_MSB            0x05
+#define BMI055_ACCD_Z_LSB            0x06
+#define BMI055_ACCD_Z_MSB            0x07
+#define BMI055_ACCD_TEMP             0x08
+#define BMI055_INT_STATUS_0          0x09
+#define BMI055_INT_STATUS_1          0x0A
+#define BMI055_INT_STATUS_2          0x0B
+#define BMI055_INT_STATUS_3          0x0C
+#define BMI055_FIFO_STATUS           0x0E
+#define BMI055_PMU_RANGE             0x0F
+#define BMI055_PMU_BW                0x10
+#define BMI055_PMU_LPW               0x11
+#define BMI055_PMU_LOW_POWER         0x12
+#define BMI055_ACCD_HBW              0x13
+#define BMI055_BGW_SOFTRESET         0x14
+#define BMI055_INT_EN_0              0x16
+#define BMI055_INT_EN_1              0x17
+#define BMI055_INT_EN_2              0x18
+#define BMI055_INT_MAP_0             0x19
+#define BMI055_INT_MAP_1             0x1A
+#define BMI055_INT_MAP_2             0x1B
+#define BMI055_INT_SRC               0x1E
+#define BMI055_INT_OUT_CTRL          0x20
+#define BMI055_INT_RST_LATCH         0x21
+#define BMI055_INT_0                 0x22
+#define BMI055_INT_1                 0x23
+#define BMI055_INT_2                 0x24
+#define BMI055_INT_3                 0x25
+#define BMI055_INT_4                 0x26
+#define BMI055_INT_5                 0x27
+#define BMI055_INT_6                 0x28
+#define BMI055_INT_7                 0x29
+#define BMI055_INT_8                 0x2A
+#define BMI055_INT_9                 0x2B
+#define BMI055_INT_A                 0x2C
+#define BMI055_INT_B                 0x2D
+#define BMI055_INT_C                 0x2E
+#define BMI055_INT_D                 0x2F
+#define BMI055_FIFO_CONFIG_0         0x30
+#define BMI055_PMU_SELF_TEST         0x32
+#define BMI055_TRIM_NVM_CTRL         0x33
+#define BMI055_BGW_SPI3_WDT          0x34
+#define BMI055_OFC_CTRL              0x36
+#define BMI055_OFC_SETTING           0x37
+#define BMI055_OFC_OFFSET_X          0x38
+#define BMI055_OFC_OFFSET_Y          0x39
+#define BMI055_OFC_OFFSET_Z          0x3A
+#define BMI055_TRIM_GP0              0x3B
+#define BMI055_TRIM_GP1              0x3C
+#define BMI055_FIFO_CONFIG_1         0x3E
+#define BMI055_FIFO_DATA             0x3F
 
-#define BMI055_GYRO_I2C_ADDR1        0x68 //SDO is low(GND)
-#define BMI055_GYRO_I2C_ADDR2        0x69 //SDO is high(VCC)
+#define BMI055_GYRO_I2C_ADDR1        0x68 // SDO is low(GND)
+#define BMI055_GYRO_I2C_ADDR2        0x69 // SDO is high(VCC)
 #define BMI055_GYRO_DEFAULT_ADDRESS  BMI055_GYRO_I2C_ADDR2
 #define BMI055_GRRO_CHIP_ID          0x0F
 #define BMI055_CHIP_ID_ADDR          0x00
@@ -141,36 +141,36 @@
 #define BMI055_FIFO_CGF0_ADDR        0x3E
 #define BMI055_FIFO_DATA_ADDR        0x3F
 
-#define BMI055_GYRO_RANGE_2000_DPS REG_VAL(0, BIT(2) | BIT(1) | BIT(0))
-#define BMI055_GYRO_RANGE_1000_DPS REG_VAL(BIT(0), BIT(2) | BIT(1))
-#define BMI055_GYRO_RANGE_500_DPS  REG_VAL(BIT(1), BIT(2) | BIT(0))
-#define BMI055_GYRO_RANGE_250_DPS  REG_VAL(BIT(1) | BIT(0), BIT(2))
-#define BMI055_GYRO_RANGE_125_DPS  REG_VAL(BIT(2), BIT(1) | BIT(0))
+#define BMI055_GYRO_RANGE_2000_DPS   REG_VAL(0, BIT(2) | BIT(1) | BIT(0))
+#define BMI055_GYRO_RANGE_1000_DPS   REG_VAL(BIT(0), BIT(2) | BIT(1))
+#define BMI055_GYRO_RANGE_500_DPS    REG_VAL(BIT(1), BIT(2) | BIT(0))
+#define BMI055_GYRO_RANGE_250_DPS    REG_VAL(BIT(1) | BIT(0), BIT(2))
+#define BMI055_GYRO_RANGE_125_DPS    REG_VAL(BIT(2), BIT(1) | BIT(0))
 
-#define BMI055_GYRO_RATE_100  REG_VAL(BIT(2) | BIT(1) | BIT(0), BIT(3))
-#define BMI055_GYRO_RATE_200  REG_VAL(BIT(2) | BIT(1), BIT(3) | BIT(0))
-#define BMI055_GYRO_RATE_400  REG_VAL(BIT(1) | BIT(0), BIT(3) | BIT(2))
-#define BMI055_GYRO_RATE_1000 REG_VAL(BIT(1), BIT(3) | BIT(2) | BIT(0))
-#define BMI055_GYRO_RATE_2000 REG_VAL(BIT(0), BIT(3) | BIT(2) | BIT(1))
+#define BMI055_GYRO_RATE_100         REG_VAL(BIT(2) | BIT(1) | BIT(0), BIT(3))
+#define BMI055_GYRO_RATE_200         REG_VAL(BIT(2) | BIT(1), BIT(3) | BIT(0))
+#define BMI055_GYRO_RATE_400         REG_VAL(BIT(1) | BIT(0), BIT(3) | BIT(2))
+#define BMI055_GYRO_RATE_1000        REG_VAL(BIT(1), BIT(3) | BIT(2) | BIT(0))
+#define BMI055_GYRO_RATE_2000        REG_VAL(BIT(0), BIT(3) | BIT(2) | BIT(1))
 
-#define BMI055_ACCEL_RANGE_2_G  REG_VAL(BIT(1) | BIT(0), BIT(3) | BIT(2))
-#define BMI055_ACCEL_RANGE_4_G  REG_VAL(BIT(2) | BIT(0), BIT(3) | BIT(1))
-#define BMI055_ACCEL_RANGE_8_G  REG_VAL(BIT(3), BIT(2) | BIT(1) | BIT(0))
-#define BMI055_ACCEL_RANGE_16_G REG_VAL(BIT(3) | BIT(2), BIT(1) | BIT(0))
+#define BMI055_ACCEL_RANGE_2_G       REG_VAL(BIT(1) | BIT(0), BIT(3) | BIT(2))
+#define BMI055_ACCEL_RANGE_4_G       REG_VAL(BIT(2) | BIT(0), BIT(3) | BIT(1))
+#define BMI055_ACCEL_RANGE_8_G       REG_VAL(BIT(3), BIT(2) | BIT(1) | BIT(0))
+#define BMI055_ACCEL_RANGE_16_G      REG_VAL(BIT(3) | BIT(2), BIT(1) | BIT(0))
 
-#define BMI055_ACCEL_BW_7_81  REG_VAL(BIT(3), BIT(4) | BIT(2) | BIT(1) | BIT(0))
-#define BMI055_ACCEL_BW_15_63 REG_VAL(BIT(3) | BIT(0), BIT(4) | BIT(2) | BIT(1))
-#define BMI055_ACCEL_BW_31_25 REG_VAL(BIT(3) | BIT(1), BIT(4) | BIT(2) | BIT(0))
-#define BMI055_ACCEL_BW_62_5  REG_VAL(BIT(3) | BIT(1) | BIT(0), BIT(4) | BIT(2))
-#define BMI055_ACCEL_BW_125   REG_VAL(BIT(3) | BIT(2), BIT(4) | BIT(1) | BIT(0))
-#define BMI055_ACCEL_BW_250   REG_VAL(BIT(3) | BIT(2) | BIT(0), BIT(4) | BIT(1))
-#define BMI055_ACCEL_BW_500   REG_VAL(BIT(3) | BIT(2) | BIT(1), BIT(4) | BIT(0))
-#define BMI055_ACCEL_BW_1000  REG_VAL(BIT(3) | BIT(2) | BIT(1) | BIT(0), BIT(4))
+#define BMI055_ACCEL_BW_7_81         REG_VAL(BIT(3), BIT(4) | BIT(2) | BIT(1) | BIT(0))
+#define BMI055_ACCEL_BW_15_63        REG_VAL(BIT(3) | BIT(0), BIT(4) | BIT(2) | BIT(1))
+#define BMI055_ACCEL_BW_31_25        REG_VAL(BIT(3) | BIT(1), BIT(4) | BIT(2) | BIT(0))
+#define BMI055_ACCEL_BW_62_5         REG_VAL(BIT(3) | BIT(1) | BIT(0), BIT(4) | BIT(2))
+#define BMI055_ACCEL_BW_125          REG_VAL(BIT(3) | BIT(2), BIT(4) | BIT(1) | BIT(0))
+#define BMI055_ACCEL_BW_250          REG_VAL(BIT(3) | BIT(2) | BIT(0), BIT(4) | BIT(1))
+#define BMI055_ACCEL_BW_500          REG_VAL(BIT(3) | BIT(2) | BIT(1), BIT(4) | BIT(0))
+#define BMI055_ACCEL_BW_1000         REG_VAL(BIT(3) | BIT(2) | BIT(1) | BIT(0), BIT(4))
 
-#define DIR_READ     0x80
-#define DIR_WRITE    0x00
-#define M_PI_F       3.1415926f
-#define BMI055_ONE_G 9.80665f
+#define DIR_READ                     0x80
+#define DIR_WRITE                    0x00
+#define M_PI_F                       3.1415926f
+#define BMI055_ONE_G                 9.80665f
 
 typedef struct {
     uint8_t setbits;
@@ -183,9 +183,11 @@ static float gyro_range_scale;
 static float accel_range_scale;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void bmi055_rotate_to_frd(float val[3])
+RT_WEAK void bmi055_rotate_to_frd(float* data, uint8_t dev_id)
 {
     /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
@@ -283,7 +285,7 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
     return RT_EOK;
 }
 
-static rt_err_t gyro_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 {
     int16_t gyr_raw[3];
 
@@ -292,8 +294,10 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
+
     // change to NED coordinate
-    bmi055_rotate_to_frd(gyr);
+    bmi055_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
+    
     return RT_EOK;
 }
 
@@ -350,7 +354,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (gyro_read_rad(((float*)data)) != RT_EOK) {
+    if (gyro_read_rad(gyro, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -473,7 +477,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     return RT_EOK;
 }
 
-static rt_err_t accel_read_m_s2(float acc[3])
+static rt_err_t accel_read_m_s2(accel_dev_t acc_dev, float acc[3])
 {
     int16_t acc_raw[3];
 
@@ -484,7 +488,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[2] = accel_range_scale * acc_raw[2];
 
     // change to NED coordinate
-    bmi055_rotate_to_frd(acc);
+    bmi055_rotate_to_frd(acc, (uint32_t)acc_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -515,7 +519,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
+    if (accel_read_m_s2(accel, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -554,7 +558,7 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
+rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     /* Initialize gyroscope */
 
@@ -602,7 +606,7 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
     RT_TRY(accelerometer_init());
 
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

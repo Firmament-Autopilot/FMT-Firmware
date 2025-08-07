@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_name);
+rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_name, uint32_t dev_flags);
 
 #ifdef __cplusplus
 }

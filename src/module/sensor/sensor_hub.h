@@ -22,28 +22,33 @@
 extern "C" {
 #endif
 
-#define RAW_TEMPERATURE_POS 0
-#define RAW_PRESSURE_POS    1
-#define COLLECT_DATA_POS    2
-#define GYR_RAW_POS         0
-#define GYR_SCALE_POS       1
-#define ACC_RAW_POS         2
-#define ACC_SCALE_POS       3
-#define MAG_RAW_POS         4
-#define MAG_SCLAE_POS       5
+#define RAW_TEMPERATURE_POS       0
+#define RAW_PRESSURE_POS          1
+#define COLLECT_DATA_POS          2
+#define GYR_RAW_POS               0
+#define GYR_SCALE_POS             1
+#define ACC_RAW_POS               2
+#define ACC_SCALE_POS             3
+#define MAG_RAW_POS               4
+#define MAG_SCLAE_POS             5
 
-//common cmd
-#define SENSOR_GET_DEVICE_ID 0x00
-//acc,mag cmd
+// common cmd
+#define SENSOR_GET_DEVICE_ID      0x00
+// acc,mag cmd
 #define SENSOR_SET_ACC_RANGE      0x01
 #define SENSOR_SET_ACC_SAMPLERATE 0x02
 #define SENSOR_SET_MAG_RANGE      0x03
 #define SENSOR_SET_MAG_SAMPLERATE 0x04
-//gyr cmd
-#define SENSOR_SET_GYR_RANGE 0x20
-//baro cmd
-#define SENSOR_CONVERSION  0x30
-#define SENSOR_IS_CONV_FIN 0x31
+// gyr cmd
+#define SENSOR_SET_GYR_RANGE      0x20
+// baro cmd
+#define SENSOR_CONVERSION         0x30
+#define SENSOR_IS_CONV_FIN        0x31
+
+// external sensor device id
+#define EXTERNAL_DEV              (1 << 7)
+
+#define IS_EXTERNAL_DEV(_dev)     ((uint32_t)_dev->user_data & EXTERNAL_DEV)
 
 struct sensor_imu {
     rt_device_t gyr_dev;

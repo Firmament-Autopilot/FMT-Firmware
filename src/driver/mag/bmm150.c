@@ -30,56 +30,56 @@
 #define REG_VAL(_setbits, _clearbits) \
     (reg_val_t) { .setbits = (_setbits), .clearbits = (_clearbits) }
 
-#define BMM150_CHIP_ID       0x40 // magnetometer chip identification number
-#define BMM150_DATAX_LSB     0x42 // 5-bit LSB of x-axis magnetic field data
-#define BMM150_DATAX_MSB     0x43 // 8-bit MSB of x-axis magnetic field data
-#define BMM150_DATAY_LSB     0x44 // 5-bit LSB of y-axis magnetic field data
-#define BMM150_DATAY_MSB     0x45 // 8-bit MSB of y-axis magnetic field data
-#define BMM150_DATAZ_LSB     0x46 // 7-bit LSB of z-axis magnetic field data
-#define BMM150_DATAZ_MSB     0x47 // 8-bit MSB of z-axis magnetic field data
-#define BMM150_RHALL_LSB     0x48 // 6-bit LSB of hall resistance
-#define BMM150_RHALL_MSB     0x49 // 8-bit MSB of hall resistance
-#define BMM150_STATUS        0x4A // Status register
-#define BMM150_POWER_CONTROL 0x4B // power control, soft reset and interface SPI mode selection
-#define BMM150_OP_MODE       0x4C // operation mode, output data rate and self-test
-#define BMM150_REPXY         0x51 // number of repetitions for x/y-axis
-#define BMM150_REPZ          0x52 // number of repetitions for z-axis
-#define BMM150_DIG_X1        0x5D
-#define BMM150_DIG_Z4_LSB    0x62
-#define BMM150_DIG_Z2_LSB    0x68
+#define BMM150_CHIP_ID               0x40 // magnetometer chip identification number
+#define BMM150_DATAX_LSB             0x42 // 5-bit LSB of x-axis magnetic field data
+#define BMM150_DATAX_MSB             0x43 // 8-bit MSB of x-axis magnetic field data
+#define BMM150_DATAY_LSB             0x44 // 5-bit LSB of y-axis magnetic field data
+#define BMM150_DATAY_MSB             0x45 // 8-bit MSB of y-axis magnetic field data
+#define BMM150_DATAZ_LSB             0x46 // 7-bit LSB of z-axis magnetic field data
+#define BMM150_DATAZ_MSB             0x47 // 8-bit MSB of z-axis magnetic field data
+#define BMM150_RHALL_LSB             0x48 // 6-bit LSB of hall resistance
+#define BMM150_RHALL_MSB             0x49 // 8-bit MSB of hall resistance
+#define BMM150_STATUS                0x4A // Status register
+#define BMM150_POWER_CONTROL         0x4B // power control, soft reset and interface SPI mode selection
+#define BMM150_OP_MODE               0x4C // operation mode, output data rate and self-test
+#define BMM150_REPXY                 0x51 // number of repetitions for x/y-axis
+#define BMM150_REPZ                  0x52 // number of repetitions for z-axis
+#define BMM150_DIG_X1                0x5D
+#define BMM150_DIG_Z4_LSB            0x62
+#define BMM150_DIG_Z2_LSB            0x68
 
 /* Trim Extended Registers */
-#define BMM150_DIG_X1       0x5D
-#define BMM150_DIG_Y1       0x5E
-#define BMM150_DIG_Z4_LSB   0x62
-#define BMM150_DIG_Z4_MSB   0x63
-#define BMM150_DIG_X2       0x64
-#define BMM150_DIG_Y2       0x65
-#define BMM150_DIG_Z2_LSB   0x68
-#define BMM150_DIG_Z2_MSB   0x69
-#define BMM150_DIG_Z1_LSB   0x6A
-#define BMM150_DIG_Z1_MSB   0x6B
-#define BMM150_DIG_XYZ1_LSB 0x6C
-#define BMM150_DIG_XYZ1_MSB 0x6D
-#define BMM150_DIG_Z3_LSB   0x6E
-#define BMM150_DIG_Z3_MSB   0x6F
-#define BMM150_DIG_XY2      0x70
-#define BMM150_DIG_XY1      0x71
+#define BMM150_DIG_X1                0x5D
+#define BMM150_DIG_Y1                0x5E
+#define BMM150_DIG_Z4_LSB            0x62
+#define BMM150_DIG_Z4_MSB            0x63
+#define BMM150_DIG_X2                0x64
+#define BMM150_DIG_Y2                0x65
+#define BMM150_DIG_Z2_LSB            0x68
+#define BMM150_DIG_Z2_MSB            0x69
+#define BMM150_DIG_Z1_LSB            0x6A
+#define BMM150_DIG_Z1_MSB            0x6B
+#define BMM150_DIG_XYZ1_LSB          0x6C
+#define BMM150_DIG_XYZ1_MSB          0x6D
+#define BMM150_DIG_Z3_LSB            0x6E
+#define BMM150_DIG_Z3_MSB            0x6F
+#define BMM150_DIG_XY2               0x70
+#define BMM150_DIG_XY1               0x71
 
 /* Data rate value definitions */
-#define BMM150_DATA_RATE_10HZ REG_VAL(0, BIT(3) | BIT(4) | BIT(5))
-#define BMM150_DATA_RATE_02HZ REG_VAL(BIT(3), BIT(4) | BIT(5))
-#define BMM150_DATA_RATE_06HZ REG_VAL(BIT(4), BIT(3) | BIT(5))
-#define BMM150_DATA_RATE_08HZ REG_VAL(BIT(3) | BIT(4), BIT(5))
-#define BMM150_DATA_RATE_15HZ REG_VAL(BIT(5), BIT(3) | BIT(4))
-#define BMM150_DATA_RATE_20HZ REG_VAL(BIT(3) | BIT(5), BIT(4))
-#define BMM150_DATA_RATE_25HZ REG_VAL(BIT(4) | BIT(5), BIT(3))
-#define BMM150_DATA_RATE_30HZ REG_VAL(BIT(3) | BIT(4) | BIT(5), 0)
+#define BMM150_DATA_RATE_10HZ        REG_VAL(0, BIT(3) | BIT(4) | BIT(5))
+#define BMM150_DATA_RATE_02HZ        REG_VAL(BIT(3), BIT(4) | BIT(5))
+#define BMM150_DATA_RATE_06HZ        REG_VAL(BIT(4), BIT(3) | BIT(5))
+#define BMM150_DATA_RATE_08HZ        REG_VAL(BIT(3) | BIT(4), BIT(5))
+#define BMM150_DATA_RATE_15HZ        REG_VAL(BIT(5), BIT(3) | BIT(4))
+#define BMM150_DATA_RATE_20HZ        REG_VAL(BIT(3) | BIT(5), BIT(4))
+#define BMM150_DATA_RATE_25HZ        REG_VAL(BIT(4) | BIT(5), BIT(3))
+#define BMM150_DATA_RATE_30HZ        REG_VAL(BIT(3) | BIT(4) | BIT(5), 0)
 
 /* Power modes value definitions */
-#define BMM150_NORMAL_MODE REG_VAL(0, BIT(1) | BIT(2))
-#define BMM150_FORCED_MODE REG_VAL(BIT(1), BIT(2))
-#define BMM150_SLEEP_MODE  REG_VAL(BIT(1) | BIT(2), 0)
+#define BMM150_NORMAL_MODE           REG_VAL(0, BIT(1) | BIT(2))
+#define BMM150_FORCED_MODE           REG_VAL(BIT(1), BIT(2))
+#define BMM150_SLEEP_MODE            REG_VAL(BIT(1) | BIT(2), 0)
 
 /* compensated output value returned if sensor had overflow */
 #define BMM150_OVERFLOW_OUTPUT       -32768
@@ -108,7 +108,7 @@ static int8_t _dig_xy2;    /**< trim xy2 data */
 static uint16_t _dig_xyz1; /**< trim xyz1 data */
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void bmm150_rotate_to_frd(float* data, uint32_t dev_id)
+RT_WEAK void bmm150_rotate_to_frd(float* data, uint8_t dev_id)
 {
     /* do nothing */
     (void)data;
@@ -148,7 +148,7 @@ static rt_err_t set_date_rate(reg_val_t data_rate)
     return modify_reg(mag_spi_dev, BMM150_OP_MODE, data_rate);
 }
 
-static rt_err_t mag_measure(float mag[3])
+static rt_err_t mag_measure(mag_dev_t mag_dev, float mag[3])
 {
     rt_err_t res = RT_EOK;
     uint8_t mag_data[8];
@@ -157,15 +157,15 @@ static rt_err_t mag_measure(float mag[3])
     float x, y, z;
 
     /* Array holding the mag XYZ and R data
-	mag_data[0] - X LSB
-	mag_data[1] - X MSB
-	mag_data[2] - Y LSB
-	mag_data[3] - Y MSB
-	mag_data[4] - Z LSB
-	mag_data[5] - Z MSB
+        mag_data[0] - X LSB
+        mag_data[1] - X MSB
+        mag_data[2] - Y LSB
+        mag_data[3] - Y MSB
+        mag_data[4] - Z LSB
+        mag_data[5] - Z MSB
     mag_data[6] - R LSB
-	mag_data[7] - R MSB
-	*/
+        mag_data[7] - R MSB
+        */
     res = spi_read_multi_reg8(mag_spi_dev, BMM150_DATAX_LSB, mag_data, sizeof(mag_data));
     if (res != RT_EOK) {
         goto exit;
@@ -251,7 +251,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[2] = z * 0.01f;
 
     /* rotate to ned */
-    bmm150_rotate_to_frd(mag, 0);
+    bmm150_rotate_to_frd(mag, (uint32_t)mag_dev->parent.user_data & 0x7F);
 
 exit:
     /* trigger the next measurement */
@@ -343,7 +343,7 @@ static rt_size_t bmm150_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (mag_measure(((float*)data)) != RT_EOK) {
+    if (mag_measure(mag, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -356,7 +356,7 @@ const static struct mag_ops __mag_ops = {
     bmm150_read,
 };
 
-rt_err_t drv_bmm150_init(const char* spi_device_name, const char* mag_device_name)
+rt_err_t drv_bmm150_init(const char* spi_device_name, const char* mag_device_name, uint32_t dev_flags)
 {
     static struct mag_device mag_dev = {
         .ops = &__mag_ops,
@@ -384,7 +384,7 @@ rt_err_t drv_bmm150_init(const char* spi_device_name, const char* mag_device_nam
 
     RT_TRY(lowlevel_init());
 
-    RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

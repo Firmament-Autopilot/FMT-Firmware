@@ -55,11 +55,11 @@ typedef struct
 } axises;
 
 typedef enum {
-    power_down_mode              = 0,
-    single_measurement_mode      = 1,
-    continuous_measurement_10hz  = 2,
-    continuous_measurement_20hz  = 4,
-    continuous_measurement_50hz  = 6,
+    power_down_mode = 0,
+    single_measurement_mode = 1,
+    continuous_measurement_10hz = 2,
+    continuous_measurement_20hz = 4,
+    continuous_measurement_50hz = 6,
     continuous_measurement_100hz = 8
 } operation_mode;
 
@@ -235,14 +235,19 @@ static userbank current_bank = 0;
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 
-RT_WEAK void icm20948_rotate_to_frd(float* data)
+RT_WEAK void icm20948_rotate_to_frd(float* data, uint8_t dev_id)
 {
+    /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
-RT_WEAK void ak09916_rotate_to_frd(float* data)
+RT_WEAK void ak09916_rotate_to_frd(float* data, uint8_t dev_id)
 {
+    /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
-
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -457,7 +462,7 @@ static void ak09916_operation_mode_setting(operation_mode mode)
 static void icm20948_gyro_full_scale_select(gyro_full_scale full_scale)
 {
     uint8_t new_val = read_single_icm20948_reg(ub_2, B2_GYRO_CONFIG_1);
-    float   lsb_per_dps;
+    float lsb_per_dps;
 
     switch (full_scale) {
     case _250dps:
@@ -486,7 +491,7 @@ static void icm20948_gyro_full_scale_select(gyro_full_scale full_scale)
 static void icm20948_accel_full_scale_select(accel_full_scale full_scale)
 {
     uint8_t new_val = read_single_icm20948_reg(ub_2, B2_ACCEL_CONFIG);
-    float   lsb_per_g;
+    float lsb_per_g;
 
     switch (full_scale) {
     case _2g:
@@ -542,10 +547,10 @@ static rt_err_t icm20948_accel_read(int16_t acc[3])
 ////////////////////////////////////////////////////////////////////////////
 static void probe_ak09916(int16_t* probe_mag)
 {
-    static uint8_t  temp[6];
-    static uint8_t  step = 0;
+    static uint8_t temp[6];
+    static uint8_t step = 0;
     static uint64_t t_start;
-    static uint8_t  drdy;
+    static uint8_t drdy;
 
     switch (step) {
     case 0:
@@ -554,7 +559,7 @@ static void probe_ak09916(int16_t* probe_mag)
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
         t_start = systime_now_us();
-        step    = 1;
+        step = 1;
         break;
 
     case 1:
@@ -562,7 +567,7 @@ static void probe_ak09916(int16_t* probe_mag)
             drdy = read_single_icm20948_reg(ub_0, B0_EXT_SLV_SENS_DATA_00);
             if (drdy & 0x01) {
                 t_start = systime_now_us();
-                step    = 2;
+                step = 2;
             }
         }
         break;
@@ -572,7 +577,7 @@ static void probe_ak09916(int16_t* probe_mag)
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_REG, MAG_HXL);
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x80 | 6);
         t_start = systime_now_us();
-        step    = 3;
+        step = 3;
         break;
 
     case 3:
@@ -592,7 +597,7 @@ static void probe_ak09916(int16_t* probe_mag)
         write_single_icm20948_reg(ub_3, B3_I2C_SLV0_CTRL, 0x81);
 
         t_start = systime_now_us();
-        step    = 5;
+        step = 5;
 
         break;
 
@@ -655,7 +660,7 @@ static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
-static rt_err_t mag_read_gauss(float mag[3])
+static rt_err_t mag_read_gauss(mag_dev_t mag_dev, float mag[3])
 {
     // static int16_t raw[3];
 
@@ -665,12 +670,12 @@ static rt_err_t mag_read_gauss(float mag[3])
     mag[1] = AK09916_SCALE_TO_GAUSS * mag_raw[1];
     mag[2] = AK09916_SCALE_TO_GAUSS * mag_raw[2];
 
-    ak09916_rotate_to_frd(mag);
+    ak09916_rotate_to_frd(mag, (uint32_t)mag_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
 
-static rt_err_t gyro_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 {
     int16_t gyr_raw[3];
 
@@ -681,12 +686,12 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[2] = gyro_range_scale * gyr_raw[2];
 
     // change to NED coordinate
-    icm20948_rotate_to_frd(gyr);
+    icm20948_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
 
-static rt_err_t accel_read_m_s2(float acc[3])
+static rt_err_t accel_read_m_s2(accel_dev_t accel_dev, float acc[3])
 {
     int16_t acc_raw[3];
 
@@ -696,7 +701,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
 
-    icm20948_rotate_to_frd(acc);
+    icm20948_rotate_to_frd(acc, (uint32_t)accel_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -707,7 +712,7 @@ static rt_size_t mag_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t siz
         return 0;
     }
 
-    if (mag_read_gauss(((float*)data)) != RT_EOK) {
+    if (mag_read_gauss(mag, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -720,7 +725,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (gyro_read_rad(((float*)data)) != RT_EOK) {
+    if (gyro_read_rad(gyro, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -733,7 +738,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
+    if (accel_read_m_s2(accel, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -827,24 +832,24 @@ const static struct mag_ops _mag_ops = {
     }
 
 static struct gyro_device gyro_dev = {
-    .ops      = &_gyro_ops,
-    .config   = GYRO_CONFIGURE,
+    .ops = &_gyro_ops,
+    .config = GYRO_CONFIGURE,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
 static struct accel_device accel_dev = {
-    .ops      = &_accel_ops,
-    .config   = ACCEL_CONFIGURE,
+    .ops = &_accel_ops,
+    .config = ACCEL_CONFIGURE,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
 static struct mag_device mag_dev = {
-    .ops      = &_mag_ops,
-    .config   = AK09916_CONFIG_DEFAULT,
+    .ops = &_mag_ops,
+    .config = AK09916_CONFIG_DEFAULT,
     .bus_type = MAG_SPI_BUS_TYPE
 };
 
-rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, const char* mag_device_name)
+rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, const char* mag_device_name, uint32_t dev_flags)
 {
     spi_dev = rt_device_find(spi_device_name);
     RT_ASSERT(spi_dev != NULL);
@@ -853,14 +858,14 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
-        cfg.mode       = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz     = 8000000;                    /* Max SPI speed: 7MHz */
+        cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
+        cfg.max_hz = 8000000;                  /* Max SPI speed: 7MHz */
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_dev;
 
         spi_device_t->config.data_width = cfg.data_width;
-        spi_device_t->config.mode       = cfg.mode & RT_SPI_MODE_MASK;
-        spi_device_t->config.max_hz     = cfg.max_hz;
+        spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
+        spi_device_t->config.max_hz = cfg.max_hz;
         RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
 
@@ -880,11 +885,11 @@ rt_err_t drv_icm20948_init(const char* spi_device_name, const char* gyro_device_
     }
 
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
     /* register mag hal device */
-    RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

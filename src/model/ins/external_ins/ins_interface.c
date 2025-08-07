@@ -119,7 +119,8 @@ void ins_interface_step(void)
 
         mcn_copy(MCN_HUB(external_state), ext_state_node, &external_state);
 
-        ins_out.timestamp = external_state.timestamp;
+        // ins_out.timestamp = external_state.timestamp;
+        ins_out.timestamp = systime_now_ms();
 
         ins_out.quat[0] = external_state.quat[0];
         ins_out.quat[1] = external_state.quat[1];
@@ -171,11 +172,14 @@ void ins_interface_step(void)
         mcn_publish(MCN_HUB(ins_output), &ins_out);
 
         /* Log INS output bus data */
-        DEFINE_TIMETAG(ins_output, 100);
-        if (check_timetag(TIMETAG(ins_output))) {
-            /* Log INS out data */
-            mlog_push_msg((uint8_t*)&ins_out, INS_Out_ID, sizeof(ins_out));
-        }
+        // DEFINE_TIMETAG(ins_output, 100);
+        // if (check_timetag(TIMETAG(ins_output))) {
+        //     /* Log INS out data */
+        //     mlog_push_msg((uint8_t*)&ins_out, INS_Out_ID, sizeof(ins_out));
+        // }
+
+        /* Log INS out data */
+        mlog_push_msg((uint8_t*)&ins_out, INS_Out_ID, sizeof(ins_out));
     }
 }
 

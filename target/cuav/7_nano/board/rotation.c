@@ -16,12 +16,12 @@
 #include "module/math/rotation.h"
 #include <firmament.h>
 
-void bmi088_rotate_to_frd(float* data, uint32_t dev_id)
+void bmi088_rotate_to_frd(float* data, uint8_t dev_id)
 {
     rotation(ROTATION_PITCH_90, data, data + 1, data + 2);
 }
 
-void ist8310_rotate_to_frd(float* data)
+void ist8310_rotate_to_frd(float* data, uint8_t dev_id)
 {
     float tmp;
 

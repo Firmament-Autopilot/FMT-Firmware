@@ -463,8 +463,8 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-    RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0"));
-    // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0"));
+    RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+    // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
     // RT_CHECK(drv_tofsense_init("serial5"));
@@ -478,7 +478,7 @@ void bsp_initialize(void)
     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
         if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
             FMT_CHECK(register_sensor_airspeed("airspeed"));
-        }else{
+        } else {
             printf("airspeed sensor init failed!\n");
         }
     }

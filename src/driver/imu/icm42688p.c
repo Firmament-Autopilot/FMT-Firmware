@@ -29,89 +29,89 @@
 #define REG_VAL(_setbits, _clearbits) \
     (reg_val_t) { .setbits = (_setbits), .clearbits = (_clearbits) }
 
-#define DEVICE_ID 0x47
+#define DEVICE_ID                0x47
 
 /* Bank0 Registers */
-#define REG_DEVICE_CONFIG      0x11
-#define REG_INT_CONFIG         0x14
-#define REG_FIFO_CONFIG        0x16
-#define REG_TEMP_DATA1         0x1D
-#define REG_TEMP_DATA0         0x1E
-#define REG_ACCEL_DATA_X1      0x1F
-#define REG_GYRO_DATA_X1       0x25
-#define REG_INT_STATUS         0x2D
-#define REG_FIFO_COUNTH        0x2E
-#define REG_FIFO_COUNTL        0x2F
-#define REG_FIFO_DATA          0x30
-#define REG_SIGNAL_PATH_RESET  0x4B
-#define REG_INTF_CONFIG0       0x4C
-#define REG_INTF_CONFIG1       0x4D
-#define REG_PWR_MGMT0          0x4E
-#define REG_GYRO_CONFIG0       0x4F
-#define REG_ACCEL_CONFIG0      0x50
-#define REG_GYRO_CONFIG1       0x51
-#define REG_GYRO_ACCEL_CONFIG0 0x52
-#define REG_ACCEL_CONFIG1      0x53
-#define REG_TMST_CONFIG        0x54
-#define REG_FIFO_CONFIG1       0x5F
-#define REG_FIFO_CONFIG2       0x60
-#define REG_FIFO_CONFIG3       0x61
-#define REG_INT_CONFIG0        0x63
-#define REG_INT_CONFIG1        0x64
-#define REG_INT_SOURCE0        0x65
-#define REG_SELF_TEST_CONFIG   0x70
-#define REG_WHO_AM_I           0x75
-#define REG_REG_BANK_SEL       0x76
+#define REG_DEVICE_CONFIG        0x11
+#define REG_INT_CONFIG           0x14
+#define REG_FIFO_CONFIG          0x16
+#define REG_TEMP_DATA1           0x1D
+#define REG_TEMP_DATA0           0x1E
+#define REG_ACCEL_DATA_X1        0x1F
+#define REG_GYRO_DATA_X1         0x25
+#define REG_INT_STATUS           0x2D
+#define REG_FIFO_COUNTH          0x2E
+#define REG_FIFO_COUNTL          0x2F
+#define REG_FIFO_DATA            0x30
+#define REG_SIGNAL_PATH_RESET    0x4B
+#define REG_INTF_CONFIG0         0x4C
+#define REG_INTF_CONFIG1         0x4D
+#define REG_PWR_MGMT0            0x4E
+#define REG_GYRO_CONFIG0         0x4F
+#define REG_ACCEL_CONFIG0        0x50
+#define REG_GYRO_CONFIG1         0x51
+#define REG_GYRO_ACCEL_CONFIG0   0x52
+#define REG_ACCEL_CONFIG1        0x53
+#define REG_TMST_CONFIG          0x54
+#define REG_FIFO_CONFIG1         0x5F
+#define REG_FIFO_CONFIG2         0x60
+#define REG_FIFO_CONFIG3         0x61
+#define REG_INT_CONFIG0          0x63
+#define REG_INT_CONFIG1          0x64
+#define REG_INT_SOURCE0          0x65
+#define REG_SELF_TEST_CONFIG     0x70
+#define REG_WHO_AM_I             0x75
+#define REG_REG_BANK_SEL         0x76
 
 /* Bank1 Registers */
-#define REG_GYRO_CONFIG_STATIC2 0x0B
-#define REG_INTF_CONFIG5        0x7B
+#define REG_GYRO_CONFIG_STATIC2  0x0B
+#define REG_INTF_CONFIG5         0x7B
 
 /* Bank2 Registers */
 #define REG_ACCEL_CONFIG_STATIC2 0x03
 
-#define GYRO_RANGE_2000_DPS   REG_VAL(0, BIT(5) | BIT(6) | BIT(7))
-#define GYRO_RANGE_1000_DPS   REG_VAL(BIT(5), BIT(6) | BIT(7))
-#define GYRO_RANGE_500_DPS    REG_VAL(BIT(6), BIT(5) | BIT(7))
-#define GYRO_RANGE_250_DPS    REG_VAL(BIT(5) | BIT(6), BIT(7))
-#define GYRO_RANGE_125_DPS    REG_VAL(BIT(7), BIT(5) | BIT(6))
-#define GYRO_RANGE_62_5_DPS   REG_VAL(BIT(5) | BIT(7), BIT(6))
-#define GYRO_RANGE_31_25_DPS  REG_VAL(BIT(6) | BIT(7), BIT(5))
-#define GYRO_RANGE_15_625_DPS REG_VAL(BIT(5) | BIT(6) | BIT(7), 0)
+#define GYRO_RANGE_2000_DPS      REG_VAL(0, BIT(5) | BIT(6) | BIT(7))
+#define GYRO_RANGE_1000_DPS      REG_VAL(BIT(5), BIT(6) | BIT(7))
+#define GYRO_RANGE_500_DPS       REG_VAL(BIT(6), BIT(5) | BIT(7))
+#define GYRO_RANGE_250_DPS       REG_VAL(BIT(5) | BIT(6), BIT(7))
+#define GYRO_RANGE_125_DPS       REG_VAL(BIT(7), BIT(5) | BIT(6))
+#define GYRO_RANGE_62_5_DPS      REG_VAL(BIT(5) | BIT(7), BIT(6))
+#define GYRO_RANGE_31_25_DPS     REG_VAL(BIT(6) | BIT(7), BIT(5))
+#define GYRO_RANGE_15_625_DPS    REG_VAL(BIT(5) | BIT(6) | BIT(7), 0)
 
-#define ACCEL_RANGE_16_G REG_VAL(0, BIT(5) | BIT(6) | BIT(7))
-#define ACCEL_RANGE_8_G  REG_VAL(BIT(5), BIT(6) | BIT(7))
-#define ACCEL_RANGE_4_G  REG_VAL(BIT(6), BIT(5) | BIT(7))
-#define ACCEL_RANGE_2_G  REG_VAL(BIT(5) | BIT(6), BIT(7))
+#define ACCEL_RANGE_16_G         REG_VAL(0, BIT(5) | BIT(6) | BIT(7))
+#define ACCEL_RANGE_8_G          REG_VAL(BIT(5), BIT(6) | BIT(7))
+#define ACCEL_RANGE_4_G          REG_VAL(BIT(6), BIT(5) | BIT(7))
+#define ACCEL_RANGE_2_G          REG_VAL(BIT(5) | BIT(6), BIT(7))
 
-#define GYRO_ODR_32000 REG_VAL(BIT(0), BIT(1) | BIT(2) | BIT(3))
-#define GYRO_ODR_16000 REG_VAL(BIT(1), BIT(1) | BIT(2) | BIT(3))
-#define GYRO_ODR_8000  REG_VAL(BIT(0) | BIT(1), BIT(2) | BIT(3))
-#define GYRO_ODR_4000  REG_VAL(BIT(2), BIT(0) | BIT(1) | BIT(3))
-#define GYRO_ODR_2000  REG_VAL(BIT(0) | BIT(2), BIT(1) | BIT(3))
-#define GYRO_ODR_1000  REG_VAL(BIT(1) | BIT(2), BIT(0) | BIT(3))
-#define GYRO_ODR_500   REG_VAL(BIT(0) | BIT(1) | BIT(2) | BIT(3), 0)
-#define GYRO_ODR_200   REG_VAL(BIT(0) | BIT(1) | BIT(2), BIT(3))
-#define GYRO_ODR_100   REG_VAL(BIT(3), BIT(0) | BIT(1) | BIT(2))
-#define GYRO_ODR_50    REG_VAL(BIT(0) | BIT(3), BIT(1) | BIT(2))
-#define GYRO_ODR_25    REG_VAL(BIT(1) | BIT(3), BIT(0) | BIT(2))
-#define GYRO_ODR_12_5  REG_VAL(BIT(0) | BIT(1) | BIT(3), BIT(2))
+#define GYRO_ODR_32000           REG_VAL(BIT(0), BIT(1) | BIT(2) | BIT(3))
+#define GYRO_ODR_16000           REG_VAL(BIT(1), BIT(1) | BIT(2) | BIT(3))
+#define GYRO_ODR_8000            REG_VAL(BIT(0) | BIT(1), BIT(2) | BIT(3))
+#define GYRO_ODR_4000            REG_VAL(BIT(2), BIT(0) | BIT(1) | BIT(3))
+#define GYRO_ODR_2000            REG_VAL(BIT(0) | BIT(2), BIT(1) | BIT(3))
+#define GYRO_ODR_1000            REG_VAL(BIT(1) | BIT(2), BIT(0) | BIT(3))
+#define GYRO_ODR_500             REG_VAL(BIT(0) | BIT(1) | BIT(2) | BIT(3), 0)
+#define GYRO_ODR_200             REG_VAL(BIT(0) | BIT(1) | BIT(2), BIT(3))
+#define GYRO_ODR_100             REG_VAL(BIT(3), BIT(0) | BIT(1) | BIT(2))
+#define GYRO_ODR_50              REG_VAL(BIT(0) | BIT(3), BIT(1) | BIT(2))
+#define GYRO_ODR_25              REG_VAL(BIT(1) | BIT(3), BIT(0) | BIT(2))
+#define GYRO_ODR_12_5            REG_VAL(BIT(0) | BIT(1) | BIT(3), BIT(2))
 
-#define ACCEL_ODR_32000 REG_VAL(BIT(0), BIT(1) | BIT(2) | BIT(3))
-#define ACCEL_ODR_16000 REG_VAL(BIT(1), BIT(1) | BIT(2) | BIT(3))
-#define ACCEL_ODR_8000  REG_VAL(BIT(0) | BIT(1), BIT(2) | BIT(3))
-#define ACCEL_ODR_4000  REG_VAL(BIT(2), BIT(0) | BIT(1) | BIT(3))
-#define ACCEL_ODR_2000  REG_VAL(BIT(0) | BIT(2), BIT(1) | BIT(3))
-#define ACCEL_ODR_1000  REG_VAL(BIT(1) | BIT(2), BIT(0) | BIT(3))
-#define ACCEL_ODR_500   REG_VAL(BIT(0) | BIT(1) | BIT(2) | BIT(3), 0)
-#define ACCEL_ODR_200   REG_VAL(BIT(0) | BIT(1) | BIT(2), BIT(3))
-#define ACCEL_ODR_100   REG_VAL(BIT(3), BIT(0) | BIT(1) | BIT(2))
-#define ACCEL_ODR_50    REG_VAL(BIT(0) | BIT(3), BIT(1) | BIT(2))
-#define ACCEL_ODR_25    REG_VAL(BIT(1) | BIT(3), BIT(0) | BIT(2))
-#define ACCEL_ODR_12_5  REG_VAL(BIT(0) | BIT(1) | BIT(3), BIT(2))
+#define ACCEL_ODR_32000          REG_VAL(BIT(0), BIT(1) | BIT(2) | BIT(3))
+#define ACCEL_ODR_16000          REG_VAL(BIT(1), BIT(1) | BIT(2) | BIT(3))
+#define ACCEL_ODR_8000           REG_VAL(BIT(0) | BIT(1), BIT(2) | BIT(3))
+#define ACCEL_ODR_4000           REG_VAL(BIT(2), BIT(0) | BIT(1) | BIT(3))
+#define ACCEL_ODR_2000           REG_VAL(BIT(0) | BIT(2), BIT(1) | BIT(3))
+#define ACCEL_ODR_1000           REG_VAL(BIT(1) | BIT(2), BIT(0) | BIT(3))
+#define ACCEL_ODR_500            REG_VAL(BIT(0) | BIT(1) | BIT(2) | BIT(3), 0)
+#define ACCEL_ODR_200            REG_VAL(BIT(0) | BIT(1) | BIT(2), BIT(3))
+#define ACCEL_ODR_100            REG_VAL(BIT(3), BIT(0) | BIT(1) | BIT(2))
+#define ACCEL_ODR_50             REG_VAL(BIT(0) | BIT(3), BIT(1) | BIT(2))
+#define ACCEL_ODR_25             REG_VAL(BIT(1) | BIT(3), BIT(0) | BIT(2))
+#define ACCEL_ODR_12_5           REG_VAL(BIT(0) | BIT(1) | BIT(3), BIT(2))
 
-#define M_PI_F  3.1415926f
-#define M_ONE_G 9.80665f
+#define M_PI_F                   3.1415926f
+#define M_ONE_G                  9.80665f
 
 #define GYRO_CONFIG                                   \
     {                                                 \
@@ -137,7 +137,7 @@ static float gyro_range_scale;
 static float accel_range_scale;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void icm42688_rotate_to_frd(float* data, uint32_t dev_id)
+RT_WEAK void icm42688_rotate_to_frd(float* data, uint8_t dev_id)
 {
     /* do nothing */
     /* do nothing */
@@ -345,7 +345,7 @@ static rt_err_t low_level_init(void)
 
     /* select bank0 */
     RT_TRY(spi_write_reg8(spi_dev, REG_REG_BANK_SEL, 0));
-    /* temperature sensor enabled (note that if it's disabled there will be a bias for gyro), 
+    /* temperature sensor enabled (note that if it's disabled there will be a bias for gyro),
        gyro and accel work in low noise (LN) mode */
     RT_TRY(spi_write_reg8(spi_dev, REG_PWR_MGMT0, 0x0F));
     /* gyro need 30ms startup time */
@@ -457,7 +457,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    icm42688_rotate_to_frd((float*)data, (uint32_t)gyro->parent.user_data);
+    icm42688_rotate_to_frd((float*)data, (uint32_t)gyro->parent.user_data & 0x7F);
 
     return size;
 }

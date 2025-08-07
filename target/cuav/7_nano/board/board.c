@@ -525,7 +525,7 @@ void bsp_initialize(void)
 #else
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi2_dev1", "spi2_dev2", "gyro0", "accel0", 0));
-    RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0"));
+    RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0", 0));
     RT_CHECK(drv_bmp581_init("spi4_dev1", "barometer"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
 

@@ -22,84 +22,84 @@
 #include "hal/spi/spi.h"
 #include "module/math/conversion.h"
 
-#define DRV_DBG(...) printf(__VA_ARGS__)
+#define DRV_DBG(...)   printf(__VA_ARGS__)
 
 #define DIR_READ       0x80
 #define DIR_WRITE      0x00
 #define ICM20600_ONE_G 9.80665f
 #define M_PI_F         3.1415926f
 
-#define BIT(_idx) (1 << _idx)
+#define BIT(_idx)      (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
     (reg_val_t) { .setbits = (_setbits), .clearbits = (_clearbits) }
 
-#define SELF_TEST_X_GYRO  0x00
-#define SELF_TEST_Y_GYRO  0x01
-#define SELF_TEST_Z_GYRO  0x02
-#define SELF_TEST_X_ACCEL 0x0D
-#define SELF_TEST_Y_ACCEL 0x0E
-#define SELF_TEST_Z_ACCEL 0x0F
-#define XG_OFFS_USRH      0x13
-#define XG_OFFS_USRL      0x14
-#define YG_OFFS_USRH      0x15
-#define YG_OFFS_USRL      0x16
-#define ZG_OFFS_USRH      0x17
-#define ZG_OFFS_USRL      0x18
-#define SMPLRT_DIV        0x19
-#define MPUREG_CONFIG     0x1A
-#define GYRO_CONFIG       0x1B
-#define ACCEL_CONFIG      0x1C
-#define ACCEL_CONFIG_2    0x1D
-#define LOW_POWER_MODE    0x1E
-#define MPU_FIFO_EN_REG   0X23
-#define MPU_INTBP_CFG_REG 0X37
-#define MPU_INT_EN_REG    0X38
-#define MPU_INT_STA_REG   0X3A
-#define ACCEL_XOUT_H      0x3B
-#define ACCEL_XOUT_L      0x3C
-#define ACCEL_YOUT_H      0x3D
-#define ACCEL_YOUT_L      0x3E
-#define ACCEL_ZOUT_H      0x3F
-#define ACCEL_ZOUT_L      0x40
-#define TEMP_OUT_H        0x41
-#define TEMP_OUT_L        0x42
-#define GYRO_XOUT_H       0x43
-#define GYRO_XOUT_L       0x44
-#define GYRO_YOUT_H       0x45
-#define GYRO_YOUT_L       0x46
-#define GYRO_ZOUT_H       0x47
-#define GYRO_ZOUT_L       0x48
-#define USER_CONTROL      0x6A
-#define PWR_MGMT_1        0x6B
-#define PWR_MGMT_2        0x6C
-#define WHO_AM_I          0x75
+#define SELF_TEST_X_GYRO    0x00
+#define SELF_TEST_Y_GYRO    0x01
+#define SELF_TEST_Z_GYRO    0x02
+#define SELF_TEST_X_ACCEL   0x0D
+#define SELF_TEST_Y_ACCEL   0x0E
+#define SELF_TEST_Z_ACCEL   0x0F
+#define XG_OFFS_USRH        0x13
+#define XG_OFFS_USRL        0x14
+#define YG_OFFS_USRH        0x15
+#define YG_OFFS_USRL        0x16
+#define ZG_OFFS_USRH        0x17
+#define ZG_OFFS_USRL        0x18
+#define SMPLRT_DIV          0x19
+#define MPUREG_CONFIG       0x1A
+#define GYRO_CONFIG         0x1B
+#define ACCEL_CONFIG        0x1C
+#define ACCEL_CONFIG_2      0x1D
+#define LOW_POWER_MODE      0x1E
+#define MPU_FIFO_EN_REG     0X23
+#define MPU_INTBP_CFG_REG   0X37
+#define MPU_INT_EN_REG      0X38
+#define MPU_INT_STA_REG     0X3A
+#define ACCEL_XOUT_H        0x3B
+#define ACCEL_XOUT_L        0x3C
+#define ACCEL_YOUT_H        0x3D
+#define ACCEL_YOUT_L        0x3E
+#define ACCEL_ZOUT_H        0x3F
+#define ACCEL_ZOUT_L        0x40
+#define TEMP_OUT_H          0x41
+#define TEMP_OUT_L          0x42
+#define GYRO_XOUT_H         0x43
+#define GYRO_XOUT_L         0x44
+#define GYRO_YOUT_H         0x45
+#define GYRO_YOUT_L         0x46
+#define GYRO_ZOUT_H         0x47
+#define GYRO_ZOUT_L         0x48
+#define USER_CONTROL        0x6A
+#define PWR_MGMT_1          0x6B
+#define PWR_MGMT_2          0x6C
+#define WHO_AM_I            0x75
 
 #define GYRO_RANGE_2000_DPS REG_VAL(BIT(3) | BIT(4), 0)
 #define GYRO_RANGE_1000_DPS REG_VAL(BIT(4), BIT(3))
 #define GYRO_RANGE_500_DPS  REG_VAL(BIT(3), BIT(4))
 #define GYRO_RANGE_250_DPS  REG_VAL(0, BIT(3) | BIT(4))
 
-#define GYRO_BW_5    REG_VAL(BIT(1) | BIT(2), BIT(0))
-#define GYRO_BW_10   REG_VAL(BIT(0) | BIT(2), BIT(1))
-#define GYRO_BW_20   REG_VAL(BIT(2), BIT(0) | BIT(1))
-#define GYRO_BW_41   REG_VAL(BIT(0) | BIT(1), BIT(2))
-#define GYRO_BW_92   REG_VAL(BIT(1), BIT(0) | BIT(2))
-#define GYRO_BW_176  REG_VAL(BIT(0), BIT(1) | BIT(2))
-#define GYRO_BW_250  REG_VAL(0, BIT(0) | BIT(1) | BIT(2))
-#define GYRO_BW_3281 REG_VAL(BIT(0) | BIT(1) | BIT(2), 0)
+#define GYRO_BW_5           REG_VAL(BIT(1) | BIT(2), BIT(0))
+#define GYRO_BW_10          REG_VAL(BIT(0) | BIT(2), BIT(1))
+#define GYRO_BW_20          REG_VAL(BIT(2), BIT(0) | BIT(1))
+#define GYRO_BW_41          REG_VAL(BIT(0) | BIT(1), BIT(2))
+#define GYRO_BW_92          REG_VAL(BIT(1), BIT(0) | BIT(2))
+#define GYRO_BW_176         REG_VAL(BIT(0), BIT(1) | BIT(2))
+#define GYRO_BW_250         REG_VAL(0, BIT(0) | BIT(1) | BIT(2))
+#define GYRO_BW_3281        REG_VAL(BIT(0) | BIT(1) | BIT(2), 0)
 
-#define ACCEL_RANGE_2_G  REG_VAL(0, BIT(3) | BIT(4))
-#define ACCEL_RANGE_4_G  REG_VAL(BIT(3), BIT(4))
-#define ACCEL_RANGE_8_G  REG_VAL(BIT(4), BIT(3))
-#define ACCEL_RANGE_16_G REG_VAL(BIT(3) | BIT(4), 0)
+#define ACCEL_RANGE_2_G     REG_VAL(0, BIT(3) | BIT(4))
+#define ACCEL_RANGE_4_G     REG_VAL(BIT(3), BIT(4))
+#define ACCEL_RANGE_8_G     REG_VAL(BIT(4), BIT(3))
+#define ACCEL_RANGE_16_G    REG_VAL(BIT(3) | BIT(4), 0)
 
-#define ACCEL_BW_5_1   REG_VAL(BIT(1) | BIT(2), BIT(0))
-#define ACCEL_BW_10_2  REG_VAL(BIT(0) | BIT(2), BIT(1))
-#define ACCEL_BW_21_2  REG_VAL(BIT(2), BIT(0) | BIT(1))
-#define ACCEL_BW_44_8  REG_VAL(BIT(0) | BIT(1), BIT(2))
-#define ACCEL_BW_99    REG_VAL(BIT(1), BIT(0) | BIT(2))
-#define ACCEL_BW_218_1 REG_VAL(BIT(0), BIT(1) | BIT(2))
-#define ACCEL_BW_420   REG_VAL(BIT(0) | BIT(1) | BIT(2), 0)
+#define ACCEL_BW_5_1        REG_VAL(BIT(1) | BIT(2), BIT(0))
+#define ACCEL_BW_10_2       REG_VAL(BIT(0) | BIT(2), BIT(1))
+#define ACCEL_BW_21_2       REG_VAL(BIT(2), BIT(0) | BIT(1))
+#define ACCEL_BW_44_8       REG_VAL(BIT(0) | BIT(1), BIT(2))
+#define ACCEL_BW_99         REG_VAL(BIT(1), BIT(0) | BIT(2))
+#define ACCEL_BW_218_1      REG_VAL(BIT(0), BIT(1) | BIT(2))
+#define ACCEL_BW_420        REG_VAL(BIT(0) | BIT(1) | BIT(2), 0)
 
 typedef struct {
     uint8_t setbits;
@@ -111,10 +111,11 @@ static float accel_range_scale;
 static rt_device_t imu_spi_dev;
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void icm20600_rotate_to_frd(float* val)
+RT_WEAK void icm20600_rotate_to_frd(float* data, uint8_t dev_id)
 {
-    
     /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
 static rt_err_t __write_checked_reg(rt_device_t spi_device, rt_uint8_t reg, rt_uint8_t val)
@@ -302,7 +303,7 @@ static rt_err_t gyro_read_raw(int16_t gyr[3])
     return RT_EOK;
 }
 
-static rt_err_t gyro_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 {
     int16_t gyr_raw[3];
 
@@ -311,8 +312,9 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
     gyr[2] = gyro_range_scale * gyr_raw[2];
+
     // change to NED coordinate
-    icm20600_rotate_to_frd(gyr);
+    icm20600_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -341,7 +343,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (gyro_read_rad(((float*)data)) != RT_EOK) {
+    if (gyro_read_rad(gyro, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -367,7 +369,7 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     return RT_EOK;
 }
 
-static rt_err_t accel_read_m_s2(float acc[3])
+static rt_err_t accel_read_m_s2(accel_dev_t accel_dev, float acc[3])
 {
     int16_t acc_raw[3];
 
@@ -376,8 +378,9 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
+
     // change to NED coordinate
-    icm20600_rotate_to_frd(acc);
+    icm20600_rotate_to_frd(acc, (uint32_t)accel_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -406,7 +409,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
+    if (accel_read_m_s2(accel, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -445,10 +448,10 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_icm20600_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
+rt_err_t drv_icm20600_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     imu_spi_dev = rt_device_find(spi_device_name);
-    
+
     RT_ASSERT(imu_spi_dev != NULL);
 
     /* config spi */
@@ -470,10 +473,10 @@ rt_err_t drv_icm20600_init(const char* spi_device_name, const char* gyro_device_
     RT_TRY(imu_init());
 
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

@@ -68,9 +68,11 @@ static float _range_scale = IST8310_SCALE_TO_GAUSS;
 RT_WEAK void ist8310_user_calibrate(float data[3]);
 
 /* Re-implement this function to define customized rotation */
-RT_WEAK void ist8310_rotate_to_frd(float* data)
+RT_WEAK void ist8310_rotate_to_frd(float* data, uint8_t dev_id)
 {
     /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
 
 static rt_err_t mag_raw_measure(int16_t mag[3])
@@ -89,7 +91,7 @@ static rt_err_t mag_raw_measure(int16_t mag[3])
     return RT_EOK;
 }
 
-static rt_err_t mag_measure(float mag[3])
+static rt_err_t mag_measure(mag_dev_t mag_dev, float mag[3])
 {
     int16_t raw[3];
 
@@ -99,7 +101,7 @@ static rt_err_t mag_measure(float mag[3])
     mag[1] = _range_scale * raw[1];
     mag[2] = _range_scale * raw[2];
 
-    ist8310_rotate_to_frd(mag);
+    ist8310_rotate_to_frd(mag, (uint32_t)mag_dev->parent.user_data & 0x7F);
 
     if (ist8310_user_calibrate != RT_NULL) {
         /* do user defined calibration */
@@ -153,7 +155,7 @@ static rt_size_t ist8310_read(mag_dev_t mag, rt_off_t pos, void* data, rt_size_t
         return 0;
     }
 
-    if (mag_measure(((float*)data)) != RT_EOK) {
+    if (mag_measure(mag, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -166,7 +168,7 @@ const static struct mag_ops __mag_ops = {
     ist8310_read,
 };
 
-rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_name)
+rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_name, uint32_t dev_flags)
 {
     static struct mag_device mag_dev = {
         .ops = &__mag_ops,
@@ -182,7 +184,7 @@ rt_err_t drv_ist8310_init(const char* i2c_device_name, const char* mag_device_na
 
     RT_TRY(ist8310_init());
 
-    RT_CHECK(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_CHECK(hal_mag_register(&mag_dev, mag_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

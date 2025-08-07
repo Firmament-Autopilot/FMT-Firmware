@@ -191,16 +191,18 @@ typedef struct
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 static rt_device_t spi_dev;
-static float       gyro_range_scale;
-static float       accel_range_scale;
+static float gyro_range_scale;
+static float accel_range_scale;
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 
-RT_WEAK void icm20649_rotate_to_frd(float* data)
+RT_WEAK void icm20649_rotate_to_frd(float* data, uint8_t dev_id)
 {
+    /* do nothing */
+    (void)data;
+    (void)dev_id;
 }
-
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -247,7 +249,6 @@ static rt_err_t icm20649_who_am_i()
         return RT_ERROR;
     }
 }
-
 
 static void icm20649_device_reset()
 {
@@ -352,7 +353,7 @@ static void icm20649_accel_sample_rate_divider(uint16_t divider)
 static void icm20649_gyro_full_scale_select(gyro_full_scale full_scale)
 {
     uint8_t new_val = read_single_icm20649_reg(ub_2, B2_GYRO_CONFIG_1);
-    float   lsb_per_dps;
+    float lsb_per_dps;
 
     switch (full_scale) {
     case _500dps:
@@ -380,7 +381,7 @@ static void icm20649_gyro_full_scale_select(gyro_full_scale full_scale)
 static void icm20649_accel_full_scale_select(accel_full_scale full_scale)
 {
     uint8_t new_val = read_single_icm20649_reg(ub_2, B2_ACCEL_CONFIG);
-    float   lsb_per_g;
+    float lsb_per_g;
 
     switch (full_scale) {
     case _4g:
@@ -457,7 +458,7 @@ static rt_err_t accel_control(accel_dev_t accel, int cmd, void* arg)
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-static rt_err_t gyro_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 {
     int16_t gyr_raw[3];
 
@@ -468,12 +469,12 @@ static rt_err_t gyro_read_rad(float gyr[3])
     gyr[2] = gyro_range_scale * gyr_raw[2];
 
     // change to NED coordinate
-    icm20649_rotate_to_frd(gyr);
+    icm20649_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
 
-static rt_err_t accel_read_m_s2(float acc[3])
+static rt_err_t accel_read_m_s2(accel_dev_t accel_dev, float acc[3])
 {
     int16_t acc_raw[3];
 
@@ -483,7 +484,7 @@ static rt_err_t accel_read_m_s2(float acc[3])
     acc[1] = accel_range_scale * acc_raw[1];
     acc[2] = accel_range_scale * acc_raw[2];
 
-    icm20649_rotate_to_frd(acc);
+    icm20649_rotate_to_frd(acc, (uint32_t)accel_dev->parent.user_data & 0x7F);
 
     return RT_EOK;
 }
@@ -494,7 +495,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro, rt_off_t pos, void* data, rt_size_t 
         return 0;
     }
 
-    if (gyro_read_rad(((float*)data)) != RT_EOK) {
+    if (gyro_read_rad(gyro, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -507,7 +508,7 @@ static rt_size_t accel_read(accel_dev_t accel, rt_off_t pos, void* data, rt_size
         return 0;
     }
 
-    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
+    if (accel_read_m_s2(accel, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -572,18 +573,18 @@ const static struct accel_ops _accel_ops = {
     }
 
 static struct gyro_device gyro_dev = {
-    .ops      = &_gyro_ops,
-    .config   = GYRO_CONFIGURE,
+    .ops = &_gyro_ops,
+    .config = GYRO_CONFIGURE,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
 static struct accel_device accel_dev = {
-    .ops      = &_accel_ops,
-    .config   = ACCEL_CONFIGURE,
+    .ops = &_accel_ops,
+    .config = ACCEL_CONFIGURE,
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_icm20649_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name)
+rt_err_t drv_icm20649_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     spi_dev = rt_device_find(spi_device_name);
     RT_ASSERT(spi_dev != NULL);
@@ -592,14 +593,14 @@ rt_err_t drv_icm20649_init(const char* spi_device_name, const char* gyro_device_
     {
         struct rt_spi_configuration cfg;
         cfg.data_width = 8;
-        cfg.mode       = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
-        cfg.max_hz     = 20000000;                   /* Max SPI speed: 7MHz */
+        cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
+        cfg.max_hz = 20000000;                 /* Max SPI speed: 7MHz */
 
         struct rt_spi_device* spi_device_t = (struct rt_spi_device*)spi_dev;
 
         spi_device_t->config.data_width = cfg.data_width;
-        spi_device_t->config.mode       = cfg.mode & RT_SPI_MODE_MASK;
-        spi_device_t->config.max_hz     = cfg.max_hz;
+        spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
+        spi_device_t->config.max_hz = cfg.max_hz;
         RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
 
@@ -607,9 +608,9 @@ rt_err_t drv_icm20649_init(const char* spi_device_name, const char* gyro_device_
     RT_TRY(lowlevel_init());
 
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
+    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }
