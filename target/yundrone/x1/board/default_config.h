@@ -23,7 +23,7 @@ target = "YunDrone X1"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n
-	name = "serial3"\n
+	name = "serial0"\n
 	baudrate = 57600\n
 	auto-switch = true\n
 	[[console.devices]]\n
@@ -34,7 +34,7 @@ target = "YunDrone X1"\n
 	[[mavproxy.devices]]\n
 	chan = 0\n
 	type = "serial"\n
-	name = "serial0"\n
+	name = "serial1"\n
 	baudrate = 57600\n
     [[mavproxy.devices]]\n
 	chan = 0\n
