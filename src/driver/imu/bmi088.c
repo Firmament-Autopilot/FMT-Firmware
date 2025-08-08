@@ -144,8 +144,6 @@ typedef struct {
     uint8_t clearbits;
 } reg_val_t;
 
-static rt_device_t gyro_spi_dev;
-static rt_device_t accel_spi_dev;
 static float gyro_range_scale;
 static float accel_range_scale;
 static float sample_rate;
@@ -190,7 +188,7 @@ static rt_err_t __modify_reg(rt_device_t spi_device, rt_uint8_t reg, reg_val_t r
     return RT_EOK;
 }
 
-static rt_err_t gyro_set_sample_rate(uint32_t frequency_hz)
+static rt_err_t gyro_set_sample_rate(gyro_dev_t dev, uint32_t frequency_hz)
 {
     reg_val_t reg_val;
 
@@ -208,20 +206,21 @@ static rt_err_t gyro_set_sample_rate(uint32_t frequency_hz)
         return RT_EINVAL;
     }
 
-    RT_TRY(__modify_reg(gyro_spi_dev, BMI088_BW_ADDR, reg_val));
+    RT_TRY(__modify_reg(dev->bus_dev, BMI088_BW_ADDR, reg_val));
 
     return RT_EOK;
 }
 
-static rt_err_t gyro_set_dlpf_filter(uint16_t frequency_hz)
+static rt_err_t gyro_set_dlpf_filter(gyro_dev_t dev, uint16_t frequency_hz)
 {
     /* lpf bw is set by BMI088_BW_ADDR */
+    (void)dev;
     (void)frequency_hz;
 
     return RT_EOK;
 }
 
-static rt_err_t gyro_set_range(unsigned max_dps)
+static rt_err_t gyro_set_range(gyro_dev_t dev, unsigned max_dps)
 {
     reg_val_t reg_val;
     float lsb_per_dps;
@@ -249,25 +248,25 @@ static rt_err_t gyro_set_range(unsigned max_dps)
         return RT_EINVAL;
     }
 
-    RT_TRY(__modify_reg(gyro_spi_dev, BMI088_RANGE_ADDR, reg_val));
+    RT_TRY(__modify_reg(dev->bus_dev, BMI088_RANGE_ADDR, reg_val));
 
     gyro_range_scale = (M_PI_F / (180.0f * lsb_per_dps));
 
     return RT_EOK;
 }
 
-static rt_err_t gyro_read_raw(int16_t gyr[3])
+static rt_err_t gyro_read_raw(gyro_dev_t dev, int16_t gyr[3])
 {
-    RT_TRY(spi_read_multi_reg8(gyro_spi_dev, BMI088_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
+    RT_TRY(spi_read_multi_reg8(dev->bus_dev, BMI088_RATE_X_LSB_ADDR, (uint8_t*)gyr, 6));
 
     return RT_EOK;
 }
 
-static rt_err_t gyro_read_rad(float gyr[3])
+static rt_err_t gyro_read_rad(gyro_dev_t dev, float gyr[3])
 {
     int16_t gyr_raw[3];
 
-    RT_TRY(gyro_read_raw(gyr_raw));
+    RT_TRY(gyro_read_raw(dev, gyr_raw));
 
     gyr[0] = gyro_range_scale * gyr_raw[0];
     gyr[1] = gyro_range_scale * gyr_raw[1];
@@ -276,16 +275,16 @@ static rt_err_t gyro_read_rad(float gyr[3])
     return RT_EOK;
 }
 
-static rt_err_t gyroscope_init(void)
+static rt_err_t gyroscope_init(gyro_dev_t dev)
 {
     uint8_t gyro_id;
 
     /* init spi bus */
-    RT_TRY(rt_device_open(gyro_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_TRY(rt_device_open(dev->bus_dev, RT_DEVICE_OFLAG_RDWR));
 
     uint8_t i;
     for (i = 0; i < RETRY_TIMES; i++) {
-        spi_read_reg8(gyro_spi_dev, BMI088_CHIP_ID_ADDR, &gyro_id);
+        spi_read_reg8(dev->bus_dev, BMI088_CHIP_ID_ADDR, &gyro_id);
         if (gyro_id == BMI088_GRRO_CHIP_ID) {
             break;
         }
@@ -296,14 +295,14 @@ static rt_err_t gyroscope_init(void)
     }
 
     /* soft reset */
-    RT_TRY(spi_write_reg8(gyro_spi_dev, BMI088_BGW_SOFT_RST_ADDR, 0xB6));
-    systime_udelay(35000);              // > 30ms delay
+    RT_TRY(spi_write_reg8(dev->bus_dev, BMI088_BGW_SOFT_RST_ADDR, 0xB6));
+    systime_udelay(35000);                   // > 30ms delay
 
-    RT_TRY(gyro_set_range(2000));       /* 2000dps */
-    RT_TRY(gyro_set_sample_rate(1000)); /* OSR 1000KHz, Filter BW: 116Hz */
+    RT_TRY(gyro_set_range(dev, 2000));       /* 2000dps */
+    RT_TRY(gyro_set_sample_rate(dev, 1000)); /* OSR 1000KHz, Filter BW: 116Hz */
 
     /* enable gyroscope */
-    RT_TRY(__modify_reg(gyro_spi_dev, BMI088_MODE_LPM1_ADDR, REG_VAL(0, BIT(7) | BIT(5)))); /* {0; 0}  NORMAL mode */
+    RT_TRY(__modify_reg(dev->bus_dev, BMI088_MODE_LPM1_ADDR, REG_VAL(0, BIT(7) | BIT(5)))); /* {0; 0}  NORMAL mode */
     systime_udelay(1000);
 
     return RT_EOK;
@@ -313,11 +312,11 @@ static rt_err_t gyro_config(gyro_dev_t gyro, const struct gyro_configure* cfg)
 {
     RT_ASSERT(cfg != RT_NULL);
 
-    RT_TRY(gyro_set_range(cfg->gyro_range_dps));
+    RT_TRY(gyro_set_range(gyro, cfg->gyro_range_dps));
 
-    RT_TRY(gyro_set_sample_rate(cfg->sample_rate_hz));
+    RT_TRY(gyro_set_sample_rate(gyro, cfg->sample_rate_hz));
 
-    RT_TRY(gyro_set_dlpf_filter(cfg->dlpf_freq_hz));
+    RT_TRY(gyro_set_dlpf_filter(gyro, cfg->dlpf_freq_hz));
 
     gyro->config = *cfg;
 
@@ -335,7 +334,7 @@ static rt_size_t gyro_read(gyro_dev_t gyro_dev, rt_off_t pos, void* data, rt_siz
         return 0;
     }
 
-    if (gyro_read_rad((float*)data) != RT_EOK) {
+    if (gyro_read_rad(gyro_dev, (float*)data) != RT_EOK) {
         return 0;
     }
 
@@ -351,7 +350,7 @@ const static struct gyro_ops __gyro_ops = {
     gyro_read,
 };
 
-static rt_err_t accel_set_sample_rate(uint32_t frequency_hz)
+static rt_err_t accel_set_sample_rate(accel_dev_t dev, uint32_t frequency_hz)
 {
     reg_val_t reg_val;
 
@@ -383,12 +382,12 @@ static rt_err_t accel_set_sample_rate(uint32_t frequency_hz)
         return EINVAL;
     }
 
-    RT_TRY(__modify_reg(accel_spi_dev, BMI088_ACC_CONF, reg_val));
+    RT_TRY(__modify_reg(dev->bus_dev, BMI088_ACC_CONF, reg_val));
 
     return RT_EOK;
 }
 
-static rt_err_t accel_set_bwp_odr(uint16_t dlpf_freq_hz)
+static rt_err_t accel_set_bwp_odr(accel_dev_t dev, uint16_t dlpf_freq_hz)
 {
     reg_val_t reg_val;
 
@@ -492,11 +491,11 @@ static rt_err_t accel_set_bwp_odr(uint16_t dlpf_freq_hz)
         return EINVAL;
     }
 
-    RT_TRY(__modify_reg(accel_spi_dev, BMI088_ACC_CONF, reg_val));
+    RT_TRY(__modify_reg(dev->bus_dev, BMI088_ACC_CONF, reg_val));
     return RT_EOK;
 }
 
-static rt_err_t accel_set_range(uint32_t max_g)
+static rt_err_t accel_set_range(accel_dev_t dev, uint32_t max_g)
 {
     uint8_t reg_val;
 
@@ -520,24 +519,24 @@ static rt_err_t accel_set_range(uint32_t max_g)
         return RT_EINVAL;
     }
 
-    RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_RANGE, reg_val));
+    RT_TRY(spi_write_reg8(dev->bus_dev, BMI088_ACC_RANGE, reg_val));
     return RT_EOK;
 }
 
-static rt_err_t accelerometer_init(void)
+static rt_err_t accelerometer_init(accel_dev_t dev)
 {
     uint8_t accel_id;
 
     /* init spi bus */
-    RT_TRY(rt_device_open(accel_spi_dev, RT_DEVICE_OFLAG_RDWR));
+    RT_TRY(rt_device_open(dev->bus_dev, RT_DEVICE_OFLAG_RDWR));
 
     /* dummy read to let accel enter SPI mode */
-    RT_TRY(spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
+    RT_TRY(spi_read_reg8(dev->bus_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
 
     /* read accel id */
     uint8_t i;
     for (i = 0; i < RETRY_TIMES; i++) {
-        RT_TRY(spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
+        RT_TRY(spi_read_reg8(dev->bus_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
         if (accel_id == BMI088_ACC_BGW_CHIPID_VALUE) {
             break;
         }
@@ -548,34 +547,34 @@ static rt_err_t accelerometer_init(void)
     }
 
     /* soft reset */
-    RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_SOFTRESET, 0xB6));
+    RT_TRY(spi_write_reg8(dev->bus_dev, BMI088_ACC_SOFTRESET, 0xB6));
     systime_udelay(2000);
     /* dummy read to let accel enter SPI mode */
-    RT_TRY(spi_read_reg8(accel_spi_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
+    RT_TRY(spi_read_reg8(dev->bus_dev, BMI088_ACC_BGW_CHIPID, &accel_id));
     /* enter normal mode */
-    RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CTRL, 0x04));
+    RT_TRY(spi_write_reg8(dev->bus_dev, BMI088_ACC_PWR_CTRL, 0x04));
     systime_udelay(55000);
 
     /* set default range and bandwidth */
-    RT_TRY(accel_set_range(24));         /* 24g */
-    RT_TRY(accel_set_sample_rate(1600)); /* 1600Hz sample rate */
-    RT_TRY(accel_set_bwp_odr(280));      /* Normal BW */
+    RT_TRY(accel_set_range(dev, 24));         /* 24g */
+    RT_TRY(accel_set_sample_rate(dev, 1600)); /* 1600Hz sample rate */
+    RT_TRY(accel_set_bwp_odr(dev, 280));      /* Normal BW */
 
     /* enter active mode */
-    RT_TRY(spi_write_reg8(accel_spi_dev, BMI088_ACC_PWR_CONF, 0x00));
+    RT_TRY(spi_write_reg8(dev->bus_dev, BMI088_ACC_PWR_CONF, 0x00));
     systime_udelay(1000);
 
     return RT_EOK;
 }
 
-static rt_err_t accel_read_raw(int16_t acc[3])
+static rt_err_t accel_read_raw(accel_dev_t dev, int16_t acc[3])
 {
     uint8_t buffer[7];
 
     /* In case of read operations of the accelerometer part, the requested data is not sent
     immediately, but instead first a dummy byte is sent, and after this dummy byte the actual
     reqested register content is transmitted. */
-    RT_TRY(spi_read_multi_reg8(accel_spi_dev, BMI088_ACCD_X_LSB, buffer, 7));
+    RT_TRY(spi_read_multi_reg8(dev->bus_dev, BMI088_ACCD_X_LSB, buffer, 7));
 
     acc[0] = buffer[2] << 8 | buffer[1];
     acc[1] = buffer[4] << 8 | buffer[3];
@@ -584,11 +583,11 @@ static rt_err_t accel_read_raw(int16_t acc[3])
     return RT_EOK;
 }
 
-static rt_err_t accel_read_m_s2(float acc[3])
+static rt_err_t accel_read_m_s2(accel_dev_t dev, float acc[3])
 {
     int16_t acc_raw[3];
 
-    RT_TRY(accel_read_raw(acc_raw));
+    RT_TRY(accel_read_raw(dev, acc_raw));
 
     acc[0] = accel_range_scale * acc_raw[0];
     acc[1] = accel_range_scale * acc_raw[1];
@@ -602,11 +601,11 @@ static rt_err_t accel_config(accel_dev_t accel, const struct accel_configure* cf
 
     RT_ASSERT(cfg != NULL);
 
-    RT_TRY(accel_set_range(cfg->acc_range_g));
+    RT_TRY(accel_set_range(accel, cfg->acc_range_g));
 
-    RT_TRY(accel_set_sample_rate(cfg->sample_rate_hz));
+    RT_TRY(accel_set_sample_rate(accel, cfg->sample_rate_hz));
 
-    RT_TRY(accel_set_bwp_odr(cfg->dlpf_freq_hz));
+    RT_TRY(accel_set_bwp_odr(accel, cfg->dlpf_freq_hz));
 
     accel->config = *cfg;
 
@@ -624,7 +623,7 @@ static rt_size_t accel_read(accel_dev_t accel_dev, rt_off_t pos, void* data, rt_
         return 0;
     }
 
-    if (accel_read_m_s2(((float*)data)) != RT_EOK) {
+    if (accel_read_m_s2(accel_dev, ((float*)data)) != RT_EOK) {
         return 0;
     }
 
@@ -640,39 +639,24 @@ const static struct accel_ops __accel_ops = {
     accel_read,
 };
 
-#define GYRO_CONFIG                                   \
-    {                                                 \
-        1000,                   /* 1K sample rate */  \
-            116,                /* 116Hz bandwidth */ \
-            GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
-    }
-
-#define ACCEL_CONFIG                          \
-    {                                         \
-        1600,    /* 1K sample rate */         \
-            145, /* OSR4 145Hz cutoff freq */ \
-            12,  /* +-12g */                  \
-    }
-
-static struct gyro_device gyro_dev = {
-    .ops = &__gyro_ops,
-    .config = GYRO_CONFIG,
-    .bus_type = GYRO_SPI_BUS_TYPE
-};
-
-static struct accel_device accel_dev = {
-    .ops = &__accel_ops,
-    .config = ACCEL_CONFIG,
-    .bus_type = GYRO_SPI_BUS_TYPE
-};
-
 rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi_device_name,
                          const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
-    /* Initialize gyroscope */
+    gyro_dev_t gyro_dev = rt_malloc(sizeof(struct gyro_device));
+    accel_dev_t accel_dev = rt_malloc(sizeof(struct accel_device));
 
-    gyro_spi_dev = rt_device_find(gyro_spi_device_name);
-    RT_ASSERT(gyro_spi_dev != NULL);
+    RT_ASSERT(gyro_dev != NULL);
+    RT_ASSERT(accel_dev != NULL);
+
+    /* Initialize gyroscope */
+    gyro_dev->ops = &__gyro_ops;
+    gyro_dev->config.sample_rate_hz = 1000;               /* 1K sample rate */
+    gyro_dev->config.dlpf_freq_hz = 116;                  /* 116Hz bandwidth */
+    gyro_dev->config.gyro_range_dps = GYRO_RANGE_2000DPS; /* +-2000 deg/s */
+    gyro_dev->bus_type = GYRO_SPI_BUS_TYPE;
+    gyro_dev->bus_dev = rt_device_find(gyro_spi_device_name);
+    RT_ASSERT(gyro_dev->bus_dev != NULL);
+
     /* config spi */
     {
         struct rt_spi_configuration cfg;
@@ -680,7 +664,7 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
         cfg.max_hz = 7000000;
 
-        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)gyro_spi_dev;
+        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)gyro_dev->bus_dev;
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
@@ -688,14 +672,18 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
         RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
     /* gyroscope low-level init */
-    RT_TRY(gyroscope_init());
+    RT_TRY(gyroscope_init(gyro_dev));
     /* register gyro hal device */
-    RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
+    RT_TRY(hal_gyro_register(gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     /* Initialize accelerometer */
-
-    accel_spi_dev = rt_device_find(accel_spi_device_name);
-    RT_ASSERT(accel_spi_dev != NULL);
+    accel_dev->ops = &__accel_ops;
+    accel_dev->config.sample_rate_hz = 1600; /* 1K sample rate */
+    accel_dev->config.dlpf_freq_hz = 145;    /* OSR4 145Hz cutoff freq */
+    accel_dev->config.acc_range_g = 12;      /* +-12g */
+    accel_dev->bus_type = ACCEL_SPI_BUS_TYPE;
+    accel_dev->bus_dev = rt_device_find(accel_spi_device_name);
+    RT_ASSERT(accel_dev->bus_dev != NULL);
 
     /* config spi */
     {
@@ -704,7 +692,7 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
         cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
         cfg.max_hz = 7000000;
 
-        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)accel_spi_dev;
+        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)accel_dev->bus_dev;
         spi_device_t->config.data_width = cfg.data_width;
         spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
         spi_device_t->config.max_hz = cfg.max_hz;
@@ -713,9 +701,9 @@ rt_err_t drv_bmi088_init(const char* gyro_spi_device_name, const char* accel_spi
     }
 
     /* accelerometer low-level init */
-    RT_TRY(accelerometer_init());
+    RT_TRY(accelerometer_init(accel_dev));
     /* register accel hal device */
-    RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
+    RT_TRY(hal_accel_register(accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
 
     return RT_EOK;
 }

@@ -29,8 +29,8 @@ extern "C" {
 #define GYRO_RANGE_2000DPS 2000
 
 /* gyro device bus type */
-#define GYRO_SPI_BUS_TYPE 1
-#define GYRO_I2C_BUS_TYPE 2
+#define GYRO_SPI_BUS_TYPE  1
+#define GYRO_I2C_BUS_TYPE  2
 
 /* default config for accel sensor */
 #define GYRO_CONFIG_DEFAULT                              \
@@ -51,6 +51,7 @@ struct gyro_device {
     const struct gyro_ops* ops;
     struct gyro_configure config;
     rt_uint8_t bus_type;
+    rt_device_t bus_dev;
 };
 typedef struct gyro_device* gyro_dev_t;
 
@@ -60,14 +61,14 @@ struct gyro_ops {
      * @brief gyro configuration function (optional)
      * @param dev gyro device
      * @param cfg gyro configuration
-    */
+     */
     rt_err_t (*gyro_config)(gyro_dev_t dev, const struct gyro_configure* cfg);
     /**
      * @brief gyro control function (optional)
      * @param dev gyro device
      * @param cmd operation command
      * @param arg command argument (optional)
-    */
+     */
     rt_err_t (*gyro_control)(gyro_dev_t dev, int cmd, void* arg);
     /**
      * @brief gyro read data function
@@ -75,7 +76,7 @@ struct gyro_ops {
      * @param pos read pos, sent by upper layer. can be used to identify the data type to read, e.g, raw data or scaled data
      * @param data read data buffer. normally it's a pointer to float[3]
      * @param size read data size
-    */
+     */
     rt_size_t (*gyro_read)(gyro_dev_t dev, rt_off_t pos, void* data, rt_size_t size);
 };
 
