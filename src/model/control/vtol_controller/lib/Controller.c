@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.420
+ * Model version                  : 1.423
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 10:09:13 2025
+ * C/C++ source code generated on : Thu Aug  7 17:30:19 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -28,9 +28,9 @@ const Control_Out_Bus Controller_rtZControl_Out_Bus = {
 struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM = {
   1.4F,
   0.2F,
+  0.2F,
+  0.6F,
   0.1F,
-  0.5F,
-  0.12F,
   0.0F,
   -1.0F,
   1.0F,
@@ -42,36 +42,36 @@ struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM = {
   0.1F,
   5.0F,
   5.0F,
-  0.523599F,
-  0.06F,
-  0.07F,
-  0.15F,
-  0.05F,
-  0.05F,
-  0.15F,
+  0.34906584F,
+  0.1F,
+  0.1F,
+  0.3F,
+  0.1F,
+  0.1F,
+  0.2F,
+  0.003F,
+  0.003F,
   0.001F,
-  0.0015F,
-  0.002F,
   -0.1F,
   0.1F,
   -0.1F,
   0.1F,
-  1.57079601F,
-  3.14159298F,
+  1.57079637F,
+  3.14159274F,
   0.5F,
   7.0F,
   7.0F,
-  0.785398F,
+  1.04719758F,
   0.1F,
   0.2F,
-  0.15F,
+  0.2F,
   0.1F,
   0.1F,
   0.2F,
   -0.2F,
   0.2F,
-  1.57079601F,
-  1.57079601F,
+  1.57079637F,
+  3.14159274F,
   17.0F,
   0.2F,
   0.3F,
@@ -83,26 +83,26 @@ struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM = {
   0.5F,
   0.1F,
   0.1F,
-  0.12F,
+  0.15F,
   0.1F,
   0.2F,
   0.15F,
+  0.2F,
+  0.0F,
+  0.0F,
+  1.0F,
+  1.0F,
+  2.0F,
+  2.0F,
+  1.0F,
+  1.0F,
+  2.0F,
   0.1F,
-  0.0F,
-  0.0F,
-  1.0F,
-  1.0F,
-  2.0F,
-  2.0F,
-  1.0F,
-  1.0F,
-  2.0F,
-  0.25F,
-  0.0F,
   0.1F,
-  -1.0F,
-  -1.0F,
-  -1.0F,
+  0.1F,
+  1.0F,
+  1.0F,
+  1.0F,
   1.0F,
   1.0F,
   1.0F,
@@ -123,7 +123,6 @@ struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM = {
                                         *   '<S65>/ucmd2thor'
                                         *   '<S65>/wcmd2pitch'
                                         *   '<S65>/wcmd2thor'
-                                        *   '<S66>/cruise_throttle'
                                         *   '<S159>/hover_throttle'
                                         *   '<S40>/hover_throttle'
                                         *   '<S67>/FF'
@@ -149,7 +148,6 @@ struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM = {
                                         *   '<S94>/ '
                                         *   '<S94>/Gain3'
                                         *   '<S96>/Gain'
-                                        *   '<S97>/ '
                                         *   '<S97>/Gain'
                                         *   '<S112>/Saturation'
                                         *   '<S112>/Saturation1'
@@ -421,11 +419,11 @@ void Controller_step(void)
       Controller_DW.DiscreteTimeIntegrator1_IC_LO_h = 1U;
       Controller_DW.DiscreteTimeIntegrator1_PrevR_l = 0;
       Controller_DW._DSTATE_d = Controller_ConstB.Zero;
-      if (Controller_DW._DSTATE_d >= CONTROL_PARAM.FW_CRUISE_THRO) {
-        Controller_DW._DSTATE_d = CONTROL_PARAM.FW_CRUISE_THRO;
+      if (Controller_DW._DSTATE_d >= 1.0F) {
+        Controller_DW._DSTATE_d = 1.0F;
       } else {
-        if (Controller_DW._DSTATE_d <= -CONTROL_PARAM.FW_CRUISE_THRO) {
-          Controller_DW._DSTATE_d = -CONTROL_PARAM.FW_CRUISE_THRO;
+        if (Controller_DW._DSTATE_d <= 0.0F) {
+          Controller_DW._DSTATE_d = 0.0F;
         }
       }
 
@@ -1608,20 +1606,20 @@ void Controller_step(void)
     if ((Controller_U.FMS_Out.reset != 0) || (Controller_DW._PrevResetState_e !=
          0)) {
       Controller_DW._DSTATE_d = Controller_ConstB.Zero;
-      if (Controller_DW._DSTATE_d >= CONTROL_PARAM.FW_CRUISE_THRO) {
-        Controller_DW._DSTATE_d = CONTROL_PARAM.FW_CRUISE_THRO;
+      if (Controller_DW._DSTATE_d >= 1.0F) {
+        Controller_DW._DSTATE_d = 1.0F;
       } else {
-        if (Controller_DW._DSTATE_d <= -CONTROL_PARAM.FW_CRUISE_THRO) {
-          Controller_DW._DSTATE_d = -CONTROL_PARAM.FW_CRUISE_THRO;
+        if (Controller_DW._DSTATE_d <= 0.0F) {
+          Controller_DW._DSTATE_d = 0.0F;
         }
       }
     }
 
-    if (Controller_DW._DSTATE_d >= CONTROL_PARAM.FW_CRUISE_THRO) {
-      Controller_DW._DSTATE_d = CONTROL_PARAM.FW_CRUISE_THRO;
+    if (Controller_DW._DSTATE_d >= 1.0F) {
+      Controller_DW._DSTATE_d = 1.0F;
     } else {
-      if (Controller_DW._DSTATE_d <= -CONTROL_PARAM.FW_CRUISE_THRO) {
-        Controller_DW._DSTATE_d = -CONTROL_PARAM.FW_CRUISE_THRO;
+      if (Controller_DW._DSTATE_d <= 0.0F) {
+        Controller_DW._DSTATE_d = 0.0F;
       }
     }
 
@@ -1695,24 +1693,21 @@ void Controller_step(void)
 
         /* End of Saturate: '<S86>/Saturation1' */
 
-        /* Sum: '<S66>/Sum' incorporates:
-         *  Constant: '<S66>/cruise_throttle'
+        /* Sum: '<S65>/Sum1' incorporates:
          *  DiscreteIntegrator: '<S97>/ '
          *  Gain: '<S65>/Gain1'
          *  Gain: '<S65>/thorttle_ff'
          *  Gain: '<S86>/P_control'
          *  Sum: '<S65>/Add1'
          *  Sum: '<S65>/Add2'
-         *  Sum: '<S65>/Sum1'
          *  Sum: '<S86>/Add4'
          *  Switch: '<S66>/Switch'
          */
-        rtb_Add3_fc = ((((CONTROL_PARAM.FW_TECS_THOR_P * rtb_Divide_m_idx_3 +
-                          Controller_DW._DSTATE_d) + rtb_Add3_fc) +
-                        (rtb_DiscreteTimeIntegrator5_h5 + rtb_VdotPg) *
-                        CONTROL_PARAM.FW_TECS_THOR_FF) +
-                       CONTROL_PARAM.FW_TECS_R2T * rtb_Abs) +
-          CONTROL_PARAM.FW_CRUISE_THRO;
+        rtb_Add3_fc = (((CONTROL_PARAM.FW_TECS_THOR_P * rtb_Divide_m_idx_3 +
+                         Controller_DW._DSTATE_d) + rtb_Add3_fc) +
+                       (rtb_DiscreteTimeIntegrator5_h5 + rtb_VdotPg) *
+                       CONTROL_PARAM.FW_TECS_THOR_FF) +
+          CONTROL_PARAM.FW_TECS_R2T * rtb_Abs;
 
         /* Saturate: '<S66>/Saturation' incorporates:
          *  Switch: '<S66>/Switch'
@@ -2521,11 +2516,11 @@ void Controller_step(void)
      */
     Controller_DW._DSTATE_d += CONTROL_PARAM.FW_TECS_THOR_I * rtb_Divide_m_idx_3
       * 0.002F;
-    if (Controller_DW._DSTATE_d >= CONTROL_PARAM.FW_CRUISE_THRO) {
-      Controller_DW._DSTATE_d = CONTROL_PARAM.FW_CRUISE_THRO;
+    if (Controller_DW._DSTATE_d >= 1.0F) {
+      Controller_DW._DSTATE_d = 1.0F;
     } else {
-      if (Controller_DW._DSTATE_d <= -CONTROL_PARAM.FW_CRUISE_THRO) {
-        Controller_DW._DSTATE_d = -CONTROL_PARAM.FW_CRUISE_THRO;
+      if (Controller_DW._DSTATE_d <= 0.0F) {
+        Controller_DW._DSTATE_d = 0.0F;
       }
     }
 
@@ -5449,11 +5444,11 @@ void Controller_init(void)
 
   /* InitializeConditions for DiscreteIntegrator: '<S97>/ ' */
   Controller_DW._DSTATE_d = Controller_ConstB.Zero;
-  if (Controller_DW._DSTATE_d >= CONTROL_PARAM.FW_CRUISE_THRO) {
-    Controller_DW._DSTATE_d = CONTROL_PARAM.FW_CRUISE_THRO;
+  if (Controller_DW._DSTATE_d >= 1.0F) {
+    Controller_DW._DSTATE_d = 1.0F;
   } else {
-    if (Controller_DW._DSTATE_d <= -CONTROL_PARAM.FW_CRUISE_THRO) {
-      Controller_DW._DSTATE_d = -CONTROL_PARAM.FW_CRUISE_THRO;
+    if (Controller_DW._DSTATE_d <= 0.0F) {
+      Controller_DW._DSTATE_d = 0.0F;
     }
   }
 

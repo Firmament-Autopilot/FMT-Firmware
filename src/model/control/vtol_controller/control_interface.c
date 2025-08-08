@@ -96,7 +96,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_TECS_THOR_P, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_I, 0.1, false),
     PARAM_FLOAT(FW_TECS_PITCH_I_LIM, 0.15, false),
-    PARAM_FLOAT(FW_TECS_THOR_I, 0.1, false),
+    PARAM_FLOAT(FW_TECS_THOR_I, 0.2, false),
     PARAM_FLOAT(FW_TECS_PITCH_D, 0.0, false),
     PARAM_FLOAT(FW_TECS_THOR_D, 0.0, false),
     PARAM_FLOAT(FW_TECS_VEL_P, 1.0, false),
@@ -106,7 +106,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_TECS_W2T, 1.0, false),
     PARAM_FLOAT(FW_TECS_U2T, 1.0, false),
     PARAM_FLOAT(FW_TECS_W2P, 2.0, false),
-    PARAM_FLOAT(FW_TECS_U2P, 0.25, false),
+    PARAM_FLOAT(FW_TECS_U2P, 0.1, false),
     PARAM_FLOAT(FW_TECS_R2P, 0.1, false),
     PARAM_FLOAT(FW_TECS_R2T, 0.1, false),
 

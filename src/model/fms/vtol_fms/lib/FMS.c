@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2480
+ * Model version                  : 1.2481
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 10:10:45 2025
+ * C/C++ source code generated on : Thu Aug  7 17:35:59 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -156,16 +156,16 @@ struct_sVzVC2xSXHFQuusuHtL6zE FMS_PARAM = {
   1.2F,
   1.5F,
   5.0F,
-  2.0F,
   2.5F,
-  1.04719806F,
-  0.523599F,
+  2.5F,
+  1.04719758F,
+  0.52359879F,
   15.0F,
   5.0F,
   5.0F,
-  1.5F,
   1.0F,
-  0.7F,
+  1.0F,
+  0.3F,
   0.6F,
   120U,
   1U,
@@ -176,15 +176,15 @@ struct_sVzVC2xSXHFQuusuHtL6zE FMS_PARAM = {
   1.0F,
   10.0F,
   8.0F,
-  0.785398F,
-  0.785398F,
-  1.04719806F,
+  0.785398185F,
+  0.52359879F,
+  0.52359879F,
   22.0F,
   50.0F,
   0.95F,
   8.0F,
-  0.785398F,
-  0.785398F,
+  0.785398185F,
+  0.785398185F,
   1.0F,
   55.0F
 } ;                                    /* Variable: FMS_PARAM
@@ -5547,6 +5547,7 @@ void FMS_step(void)
   real32_T rtb_Sign5_mn;
   real32_T rtb_Add4_o;
   MotionState rtb_state_l4;
+  real32_T rtb_VectorConcatenate_h[9];
   MotionState rtb_state_fg;
   MotionState rtb_state_og;
   real_T rtb_Switch1_n;
@@ -5554,16 +5555,15 @@ void FMS_step(void)
   real_T rtb_Sum3;
   uint16_T rtb_y_aw;
   uint16_T rtb_y_cc;
-  real32_T rtb_VectorConcatenate_ch[9];
   real32_T rtb_P_dg[2];
   boolean_T rtb_Compare_kd;
   real32_T rtb_P_cg[2];
   real32_T rtb_Subtract_hb[2];
   real32_T rtb_MatrixConcatenate1_i_0[3];
+  real32_T rtb_VectorConcatenate_g0[3];
   boolean_T tmp[3];
   boolean_T tmp_0[3];
   boolean_T tmp_1[3];
-  real32_T rtb_VectorConcatenate_fy[3];
   real32_T rtb_Divide_pr_idx_2;
   real32_T rtb_Divide_pr_idx_1;
   real32_T rtb_Divide_pr_idx_0;
@@ -10063,6 +10063,68 @@ void FMS_step(void)
           /* Outputs for IfAction SubSystem: '<S85>/Position' incorporates:
            *  ActionPort: '<S91>/Action Port'
            */
+          /* Outputs for IfAction SubSystem: '<S133>/Hold Control' incorporates:
+           *  ActionPort: '<S136>/Action Port'
+           */
+          /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
+          /* SwitchCase: '<S133>/Switch Case' incorporates:
+           *  Gain: '<S179>/Gain'
+           *  Inport: '<Root>/INS_Out'
+           *  SignalConversion: '<S40>/Signal Copy1'
+           *  Trigonometry: '<S168>/Trigonometric Function1'
+           *  Trigonometry: '<S168>/Trigonometric Function3'
+           *  Trigonometry: '<S180>/Trigonometric Function1'
+           *  Trigonometry: '<S180>/Trigonometric Function3'
+           */
+          rtb_Add4_o = arm_cos_f32(-FMS_U.INS_Out.psi);
+
+          /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
+          /* End of Outputs for SubSystem: '<S133>/Hold Control' */
+
+          /* Trigonometry: '<S180>/Trigonometric Function1' */
+          rtb_VectorConcatenate_h[0] = rtb_Add4_o;
+
+          /* Outputs for IfAction SubSystem: '<S133>/Hold Control' incorporates:
+           *  ActionPort: '<S136>/Action Port'
+           */
+          /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
+          /* SwitchCase: '<S133>/Switch Case' incorporates:
+           *  Gain: '<S179>/Gain'
+           *  Inport: '<Root>/INS_Out'
+           *  SignalConversion: '<S40>/Signal Copy1'
+           *  Trigonometry: '<S168>/Trigonometric Function'
+           *  Trigonometry: '<S180>/Trigonometric Function'
+           *  Trigonometry: '<S180>/Trigonometric Function2'
+           */
+          rtb_Divide_or = arm_sin_f32(-FMS_U.INS_Out.psi);
+
+          /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
+          /* End of Outputs for SubSystem: '<S133>/Hold Control' */
+
+          /* Trigonometry: '<S180>/Trigonometric Function' */
+          rtb_VectorConcatenate_h[1] = rtb_Divide_or;
+
+          /* SignalConversion: '<S180>/ConcatBufferAtVector Concatenate1In3' incorporates:
+           *  Constant: '<S180>/Constant3'
+           */
+          rtb_VectorConcatenate_h[2] = 0.0F;
+
+          /* Gain: '<S180>/Gain' */
+          rtb_VectorConcatenate_h[3] = -rtb_Divide_or;
+
+          /* Trigonometry: '<S180>/Trigonometric Function3' */
+          rtb_VectorConcatenate_h[4] = rtb_Add4_o;
+
+          /* SignalConversion: '<S180>/ConcatBufferAtVector Concatenate2In3' incorporates:
+           *  Constant: '<S180>/Constant4'
+           */
+          rtb_VectorConcatenate_h[5] = 0.0F;
+
+          /* SignalConversion: '<S180>/ConcatBufferAtVector ConcatenateIn3' */
+          rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_gy[0];
+          rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_gy[1];
+          rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_gy[2];
+
           /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
           /* Chart: '<S120>/Motion Status' incorporates:
            *  Abs: '<S120>/Abs'
@@ -10094,7 +10156,9 @@ void FMS_step(void)
 
           /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
-          /* Chart: '<S134>/Motion State' */
+          /* Chart: '<S134>/Motion State' incorporates:
+           *  Abs: '<S134>/Abs'
+           */
           if (FMS_DW.temporalCounter_i1_i < 1023U) {
             FMS_DW.temporalCounter_i1_i++;
           }
@@ -10107,7 +10171,24 @@ void FMS_step(void)
             switch (FMS_DW.is_c26_FMS) {
              case FMS_IN_Brake_bw:
               rtb_state_fg = MotionState_Brake;
-              if (FMS_DW.temporalCounter_i1_i >= 750U) {
+
+              /* Product: '<S134>/Multiply' incorporates:
+               *  Inport: '<Root>/INS_Out'
+               *  SignalConversion: '<S40>/Signal Copy1'
+               */
+              for (rtb_n = 0; rtb_n < 3; rtb_n++) {
+                /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
+                rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n
+                  + 6] * FMS_U.INS_Out.vd + (rtb_VectorConcatenate_h[rtb_n + 3] *
+                  FMS_U.INS_Out.ve + rtb_VectorConcatenate_h[rtb_n] *
+                  FMS_U.INS_Out.vn);
+
+                /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
+              }
+
+              /* End of Product: '<S134>/Multiply' */
+              if ((FMS_DW.temporalCounter_i1_i >= 750U) && (fabsf
+                   (rtb_VectorConcatenate_g0[1]) > 5.0F)) {
                 FMS_DW.is_c26_FMS = FMS_IN_Hold_od;
                 rtb_state_fg = MotionState_Hold;
               } else {
@@ -10209,7 +10290,7 @@ void FMS_step(void)
              *  Sum: '<S145>/Add'
              *  Sum: '<S145>/Add1'
              */
-            rtb_VectorConcatenate_ch[0] = (rtb_Divide_pr_idx_0 *
+            rtb_VectorConcatenate_h[0] = (rtb_Divide_pr_idx_0 *
               rtb_Divide_pr_idx_0 + rtb_Divide_pr_idx_1 * rtb_Divide_pr_idx_1) -
               (rtb_Divide_pr_idx_2 * rtb_Divide_pr_idx_2 + rtb_Saturation_e *
                rtb_Saturation_e);
@@ -10219,7 +10300,7 @@ void FMS_step(void)
              *  Product: '<S145>/Multiply1'
              *  Sum: '<S145>/Subtract1'
              */
-            rtb_VectorConcatenate_ch[1] = (rtb_Divide_pr_idx_1 *
+            rtb_VectorConcatenate_h[1] = (rtb_Divide_pr_idx_1 *
               rtb_Divide_pr_idx_2 - rtb_Divide_pr_idx_0 * rtb_Saturation_e) *
               2.0F;
 
@@ -10228,16 +10309,15 @@ void FMS_step(void)
              *  Product: '<S145>/Multiply3'
              *  Sum: '<S145>/Add2'
              */
-            rtb_VectorConcatenate_ch[2] = (rtb_Divide_pr_idx_1 *
-              rtb_Saturation_e + rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_2) *
-              2.0F;
+            rtb_VectorConcatenate_h[2] = (rtb_Divide_pr_idx_1 * rtb_Saturation_e
+              + rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_2) * 2.0F;
 
             /* Gain: '<S146>/Gain' incorporates:
              *  Product: '<S146>/Multiply'
              *  Product: '<S146>/Multiply1'
              *  Sum: '<S146>/Add3'
              */
-            rtb_VectorConcatenate_ch[3] = (rtb_Divide_pr_idx_1 *
+            rtb_VectorConcatenate_h[3] = (rtb_Divide_pr_idx_1 *
               rtb_Divide_pr_idx_2 + rtb_Divide_pr_idx_0 * rtb_Saturation_e) *
               2.0F;
 
@@ -10249,7 +10329,7 @@ void FMS_step(void)
              *  Sum: '<S146>/Add'
              *  Sum: '<S146>/Add1'
              */
-            rtb_VectorConcatenate_ch[4] = (rtb_Divide_pr_idx_0 *
+            rtb_VectorConcatenate_h[4] = (rtb_Divide_pr_idx_0 *
               rtb_Divide_pr_idx_0 + rtb_Divide_pr_idx_2 * rtb_Divide_pr_idx_2) -
               (rtb_Divide_pr_idx_1 * rtb_Divide_pr_idx_1 + rtb_Saturation_e *
                rtb_Saturation_e);
@@ -10259,27 +10339,24 @@ void FMS_step(void)
              *  Product: '<S146>/Multiply3'
              *  Sum: '<S146>/Subtract1'
              */
-            rtb_VectorConcatenate_ch[5] = (rtb_Divide_pr_idx_2 *
-              rtb_Saturation_e - rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_1) *
-              2.0F;
+            rtb_VectorConcatenate_h[5] = (rtb_Divide_pr_idx_2 * rtb_Saturation_e
+              - rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_1) * 2.0F;
 
             /* Gain: '<S147>/Gain' incorporates:
              *  Product: '<S147>/Multiply'
              *  Product: '<S147>/Multiply1'
              *  Sum: '<S147>/Subtract2'
              */
-            rtb_VectorConcatenate_ch[6] = (rtb_Divide_pr_idx_1 *
-              rtb_Saturation_e - rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_2) *
-              2.0F;
+            rtb_VectorConcatenate_h[6] = (rtb_Divide_pr_idx_1 * rtb_Saturation_e
+              - rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_2) * 2.0F;
 
             /* Gain: '<S147>/Gain1' incorporates:
              *  Product: '<S147>/Multiply2'
              *  Product: '<S147>/Multiply3'
              *  Sum: '<S147>/Add2'
              */
-            rtb_VectorConcatenate_ch[7] = (rtb_Divide_pr_idx_2 *
-              rtb_Saturation_e + rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_1) *
-              2.0F;
+            rtb_VectorConcatenate_h[7] = (rtb_Divide_pr_idx_2 * rtb_Saturation_e
+              + rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_1) * 2.0F;
 
             /* Sum: '<S147>/Subtract' incorporates:
              *  Math: '<S147>/Square'
@@ -10289,7 +10366,7 @@ void FMS_step(void)
              *  Sum: '<S147>/Add'
              *  Sum: '<S147>/Add1'
              */
-            rtb_VectorConcatenate_ch[8] = (rtb_Divide_pr_idx_0 *
+            rtb_VectorConcatenate_h[8] = (rtb_Divide_pr_idx_0 *
               rtb_Divide_pr_idx_0 + rtb_Saturation_e * rtb_Saturation_e) -
               (rtb_Divide_pr_idx_1 * rtb_Divide_pr_idx_1 + rtb_Divide_pr_idx_2 *
                rtb_Divide_pr_idx_2);
@@ -10300,10 +10377,10 @@ void FMS_step(void)
              */
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
               /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
-              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 6] *
-                FMS_U.INS_Out.vd + (rtb_VectorConcatenate_ch[rtb_n + 3] *
+              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 6] *
+                FMS_U.INS_Out.vd + (rtb_VectorConcatenate_h[rtb_n + 3] *
                                     FMS_U.INS_Out.ve +
-                                    rtb_VectorConcatenate_ch[rtb_n] *
+                                    rtb_VectorConcatenate_h[rtb_n] *
                                     FMS_U.INS_Out.vn);
 
               /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
@@ -10311,50 +10388,40 @@ void FMS_step(void)
 
             /* End of Product: '<S138>/Multiply' */
 
-            /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
-            /* Trigonometry: '<S168>/Trigonometric Function1' incorporates:
-             *  Gain: '<S167>/Gain'
-             *  Inport: '<Root>/INS_Out'
-             *  SignalConversion: '<S40>/Signal Copy1'
-             *  Trigonometry: '<S168>/Trigonometric Function3'
+            /* Trigonometry: '<S168>/Trigonometric Function1' */
+            rtb_VectorConcatenate_h[0] = rtb_Add4_o;
+
+            /* Trigonometry: '<S168>/Trigonometric Function' */
+            rtb_VectorConcatenate_h[1] = rtb_Divide_or;
+
+            /* SignalConversion: '<S168>/ConcatBufferAtVector Concatenate1In3' incorporates:
+             *  Constant: '<S168>/Constant3'
              */
-            rtb_Saturation_e = arm_cos_f32(-FMS_U.INS_Out.psi);
-
-            /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
-            rtb_VectorConcatenate_ch[0] = rtb_Saturation_e;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
-            /* Trigonometry: '<S168>/Trigonometric Function' incorporates:
+            /* Gain: '<S168>/Gain' incorporates:
              *  Gain: '<S167>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              *  Trigonometry: '<S168>/Trigonometric Function2'
              */
-            rtb_Divide_pr_idx_2 = arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
-            rtb_VectorConcatenate_ch[1] = rtb_Divide_pr_idx_2;
-
-            /* SignalConversion: '<S168>/ConcatBufferAtVector Concatenate1In3' incorporates:
-             *  Constant: '<S168>/Constant3'
-             */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
-
-            /* Gain: '<S168>/Gain' */
-            rtb_VectorConcatenate_ch[3] = -rtb_Divide_pr_idx_2;
 
             /* Trigonometry: '<S168>/Trigonometric Function3' */
-            rtb_VectorConcatenate_ch[4] = rtb_Saturation_e;
+            rtb_VectorConcatenate_h[4] = rtb_Add4_o;
 
             /* SignalConversion: '<S168>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S168>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* SignalConversion: '<S168>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_lr[0];
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_lr[1];
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_lr[2];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_lr[0];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_lr[1];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_lr[2];
 
             /* Delay: '<S141>/start_vel' incorporates:
              *  Inport: '<Root>/INS_Out'
@@ -10454,8 +10521,8 @@ void FMS_step(void)
              */
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
               /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
-              rtb_VectorConcatenate_fy[rtb_n] = rtb_VectorConcatenate_ch[rtb_n +
-                3] * FMS_U.INS_Out.ve + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n +
+                3] * FMS_U.INS_Out.ve + rtb_VectorConcatenate_h[rtb_n] *
                 FMS_U.INS_Out.vn;
 
               /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
@@ -10489,12 +10556,12 @@ void FMS_step(void)
              */
             if (FMS_DW.DiscreteTimeIntegrator1_IC_LO_f != 0) {
               FMS_DW.DiscreteTimeIntegrator1_DSTA_jv = 0.0F -
-                rtb_VectorConcatenate_fy[1];
+                rtb_VectorConcatenate_g0[1];
             }
 
             if (FMS_DW.DiscreteTimeIntegrator1_PrevR_p != 0) {
               FMS_DW.DiscreteTimeIntegrator1_DSTA_jv = 0.0F -
-                rtb_VectorConcatenate_fy[1];
+                rtb_VectorConcatenate_g0[1];
             }
 
             /* Signum: '<S138>/Sign' incorporates:
@@ -10517,7 +10584,7 @@ void FMS_step(void)
                *  Sum: '<S164>/Sum'
                *  Sum: '<S165>/Add'
                */
-              FMS_B.Merge_be = (0.0F - rtb_VectorConcatenate_fy[1]) * 1.2F +
+              FMS_B.Merge_be = (0.0F - rtb_VectorConcatenate_g0[1]) * 1.2F +
                 FMS_DW.DiscreteTimeIntegrator_DSTATE_k;
             } else {
               if (rtb_Divide_lr_idx_3 < 0.0F) {
@@ -10863,7 +10930,7 @@ void FMS_step(void)
              *  Sum: '<S164>/Sum'
              */
             FMS_DW.DiscreteTimeIntegrator_DSTATE_k += (0.0F -
-              rtb_VectorConcatenate_fy[1]) * 0.5F * 0.004F;
+              rtb_VectorConcatenate_g0[1]) * 0.5F * 0.004F;
             if (FMS_DW.DiscreteTimeIntegrator_DSTATE_k >= 1.0F) {
               FMS_DW.DiscreteTimeIntegrator_DSTATE_k = 1.0F;
             } else {
@@ -10884,7 +10951,7 @@ void FMS_step(void)
              */
             FMS_DW.DiscreteTimeIntegrator1_IC_LO_f = 0U;
             FMS_DW.DiscreteTimeIntegrator1_DSTA_jv += ((0.0F -
-              rtb_VectorConcatenate_fy[1]) -
+              rtb_VectorConcatenate_g0[1]) -
               FMS_DW.DiscreteTimeIntegrator1_DSTA_jv) * 62.831852F * 0.004F;
             FMS_DW.DiscreteTimeIntegrator1_PrevR_p = 0;
 
@@ -11578,21 +11645,21 @@ void FMS_step(void)
        *  Inport: '<Root>/INS_Out'
        *  SignalConversion: '<S40>/Signal Copy1'
        */
-      rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
       /* Trigonometry: '<S75>/Trigonometric Function' incorporates:
        *  Gain: '<S73>/Gain'
        *  Inport: '<Root>/INS_Out'
        *  SignalConversion: '<S40>/Signal Copy1'
        */
-      rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
       /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
       /* SignalConversion: '<S75>/ConcatBufferAtVector Concatenate1In3' incorporates:
        *  Constant: '<S75>/Constant3'
        */
-      rtb_VectorConcatenate_ch[2] = 0.0F;
+      rtb_VectorConcatenate_h[2] = 0.0F;
 
       /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
       /* Gain: '<S75>/Gain' incorporates:
@@ -11601,38 +11668,38 @@ void FMS_step(void)
        *  SignalConversion: '<S40>/Signal Copy1'
        *  Trigonometry: '<S75>/Trigonometric Function2'
        */
-      rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
       /* Trigonometry: '<S75>/Trigonometric Function3' incorporates:
        *  Gain: '<S73>/Gain'
        *  Inport: '<Root>/INS_Out'
        *  SignalConversion: '<S40>/Signal Copy1'
        */
-      rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
       /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
       /* SignalConversion: '<S75>/ConcatBufferAtVector Concatenate2In3' incorporates:
        *  Constant: '<S75>/Constant4'
        */
-      rtb_VectorConcatenate_ch[5] = 0.0F;
+      rtb_VectorConcatenate_h[5] = 0.0F;
 
       /* SignalConversion: '<S75>/ConcatBufferAtVector ConcatenateIn3' */
-      rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_n[0];
-      rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_n[1];
-      rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_n[2];
+      rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_n[0];
+      rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_n[1];
+      rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_n[2];
 
       /* Math: '<S53>/Transpose' */
       for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-        rtb_MatrixConcatenate1_i[3 * rtb_n] = rtb_VectorConcatenate_ch[rtb_n];
-        rtb_MatrixConcatenate1_i[1 + 3 * rtb_n] = rtb_VectorConcatenate_ch[rtb_n
+        rtb_MatrixConcatenate1_i[3 * rtb_n] = rtb_VectorConcatenate_h[rtb_n];
+        rtb_MatrixConcatenate1_i[1 + 3 * rtb_n] = rtb_VectorConcatenate_h[rtb_n
           + 3];
-        rtb_MatrixConcatenate1_i[2 + 3 * rtb_n] = rtb_VectorConcatenate_ch[rtb_n
+        rtb_MatrixConcatenate1_i[2 + 3 * rtb_n] = rtb_VectorConcatenate_h[rtb_n
           + 6];
       }
 
       for (rtb_n = 0; rtb_n < 9; rtb_n++) {
-        rtb_VectorConcatenate_ch[rtb_n] = rtb_MatrixConcatenate1_i[rtb_n];
+        rtb_VectorConcatenate_h[rtb_n] = rtb_MatrixConcatenate1_i[rtb_n];
       }
 
       /* End of Math: '<S53>/Transpose' */
@@ -11658,7 +11725,7 @@ void FMS_step(void)
 
       /* Product: '<S53>/Multiply' */
       for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-        rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_ch[rtb_n];
+        rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_h[rtb_n];
       }
 
       /* End of Product: '<S53>/Multiply' */
@@ -11790,21 +11857,21 @@ void FMS_step(void)
        *  Inport: '<Root>/INS_Out'
        *  SignalConversion: '<S40>/Signal Copy1'
        */
-      rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
       /* Trigonometry: '<S80>/Trigonometric Function' incorporates:
        *  Gain: '<S79>/Gain'
        *  Inport: '<Root>/INS_Out'
        *  SignalConversion: '<S40>/Signal Copy1'
        */
-      rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
       /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
       /* SignalConversion: '<S80>/ConcatBufferAtVector Concatenate1In3' incorporates:
        *  Constant: '<S80>/Constant3'
        */
-      rtb_VectorConcatenate_ch[2] = 0.0F;
+      rtb_VectorConcatenate_h[2] = 0.0F;
 
       /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
       /* Gain: '<S80>/Gain' incorporates:
@@ -11813,26 +11880,26 @@ void FMS_step(void)
        *  SignalConversion: '<S40>/Signal Copy1'
        *  Trigonometry: '<S80>/Trigonometric Function2'
        */
-      rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
       /* Trigonometry: '<S80>/Trigonometric Function3' incorporates:
        *  Gain: '<S79>/Gain'
        *  Inport: '<Root>/INS_Out'
        *  SignalConversion: '<S40>/Signal Copy1'
        */
-      rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+      rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
       /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
       /* SignalConversion: '<S80>/ConcatBufferAtVector Concatenate2In3' incorporates:
        *  Constant: '<S80>/Constant4'
        */
-      rtb_VectorConcatenate_ch[5] = 0.0F;
+      rtb_VectorConcatenate_h[5] = 0.0F;
 
       /* SignalConversion: '<S80>/ConcatBufferAtVector ConcatenateIn3' */
-      rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_o[0];
-      rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_o[1];
-      rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_o[2];
+      rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_o[0];
+      rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_o[1];
+      rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_o[2];
 
       /* Delay: '<S53>/start_vel' */
       if (FMS_DW.icLoad_i != 0) {
@@ -11921,8 +11988,8 @@ void FMS_step(void)
        */
       for (rtb_n = 0; rtb_n < 3; rtb_n++) {
         /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
-        rtb_VectorConcatenate_fy[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 3] *
-          FMS_U.INS_Out.ve + rtb_VectorConcatenate_ch[rtb_n] * FMS_U.INS_Out.vn;
+        rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 3] *
+          FMS_U.INS_Out.ve + rtb_VectorConcatenate_h[rtb_n] * FMS_U.INS_Out.vn;
 
         /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
       }
@@ -11955,12 +12022,12 @@ void FMS_step(void)
        */
       if (FMS_DW.DiscreteTimeIntegrator1_IC_LOAD != 0) {
         FMS_DW.DiscreteTimeIntegrator1_DSTAT_j = 0.0F -
-          rtb_VectorConcatenate_fy[1];
+          rtb_VectorConcatenate_g0[1];
       }
 
       if (FMS_DW.DiscreteTimeIntegrator1_PrevRes != 0) {
         FMS_DW.DiscreteTimeIntegrator1_DSTAT_j = 0.0F -
-          rtb_VectorConcatenate_fy[1];
+          rtb_VectorConcatenate_g0[1];
       }
 
       /* Product: '<S50>/Multiply' incorporates:
@@ -12277,7 +12344,7 @@ void FMS_step(void)
           arm_sin_f32(rtb_Divide_pr_idx_1) / fminf(FMS_PARAM.FW_L1, fmaxf(sqrtf
           (rtb_Saturation_e + rtb_Subtract_hb[0]), 0.5F));
       } else {
-        rtb_Saturation_e = (0.0F - rtb_VectorConcatenate_fy[1]) * 1.2F +
+        rtb_Saturation_e = (0.0F - rtb_VectorConcatenate_g0[1]) * 1.2F +
           FMS_DW.DiscreteTimeIntegrator_DSTATE_i;
       }
 
@@ -12308,7 +12375,7 @@ void FMS_step(void)
        *  Sum: '<S76>/Sum'
        */
       FMS_DW.DiscreteTimeIntegrator_DSTATE_i += (0.0F -
-        rtb_VectorConcatenate_fy[1]) * 0.5F * 0.004F;
+        rtb_VectorConcatenate_g0[1]) * 0.5F * 0.004F;
       if (FMS_DW.DiscreteTimeIntegrator_DSTATE_i >= 1.0F) {
         FMS_DW.DiscreteTimeIntegrator_DSTATE_i = 1.0F;
       } else {
@@ -12329,7 +12396,7 @@ void FMS_step(void)
        */
       FMS_DW.DiscreteTimeIntegrator1_IC_LOAD = 0U;
       FMS_DW.DiscreteTimeIntegrator1_DSTAT_j += ((0.0F -
-        rtb_VectorConcatenate_fy[1]) - FMS_DW.DiscreteTimeIntegrator1_DSTAT_j) *
+        rtb_VectorConcatenate_g0[1]) - FMS_DW.DiscreteTimeIntegrator1_DSTAT_j) *
         62.831852F * 0.004F;
       FMS_DW.DiscreteTimeIntegrator1_PrevRes = 0;
 
@@ -12593,21 +12660,21 @@ void FMS_step(void)
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S40>/Signal Copy1'
            */
-          rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
           /* Trigonometry: '<S736>/Trigonometric Function' incorporates:
            *  Gain: '<S734>/Gain'
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S40>/Signal Copy1'
            */
-          rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
           /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
           /* SignalConversion: '<S736>/ConcatBufferAtVector Concatenate1In3' incorporates:
            *  Constant: '<S736>/Constant3'
            */
-          rtb_VectorConcatenate_ch[2] = 0.0F;
+          rtb_VectorConcatenate_h[2] = 0.0F;
 
           /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
           /* Gain: '<S736>/Gain' incorporates:
@@ -12616,26 +12683,26 @@ void FMS_step(void)
            *  SignalConversion: '<S40>/Signal Copy1'
            *  Trigonometry: '<S736>/Trigonometric Function2'
            */
-          rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
           /* Trigonometry: '<S736>/Trigonometric Function3' incorporates:
            *  Gain: '<S734>/Gain'
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S40>/Signal Copy1'
            */
-          rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
           /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
           /* SignalConversion: '<S736>/ConcatBufferAtVector Concatenate2In3' incorporates:
            *  Constant: '<S736>/Constant4'
            */
-          rtb_VectorConcatenate_ch[5] = 0.0F;
+          rtb_VectorConcatenate_h[5] = 0.0F;
 
           /* SignalConversion: '<S736>/ConcatBufferAtVector ConcatenateIn3' */
-          rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_cs[0];
-          rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_cs[1];
-          rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_cs[2];
+          rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_cs[0];
+          rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_cs[1];
+          rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_cs[2];
 
           /* Saturate: '<S728>/Saturation1' */
           rtb_Divide_pr_idx_0 = FMS_PARAM.VEL_XY_LIM / 5.0F;
@@ -12663,8 +12730,8 @@ void FMS_step(void)
 
           /* Product: '<S728>/Multiply' */
           for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-            rtb_VectorConcatenate_fy[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 3]
-              * rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+            rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 3]
+              * rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
               rtb_Divide_pr_idx_1;
           }
 
@@ -12672,8 +12739,8 @@ void FMS_step(void)
            *  Gain: '<S728>/Gain2'
            *  Product: '<S728>/Multiply'
            */
-          rtb_Saturation_e = FMS_PARAM.XY_P * rtb_VectorConcatenate_fy[0];
-          rtb_Divide_pr_idx_1 = FMS_PARAM.XY_P * rtb_VectorConcatenate_fy[1];
+          rtb_Saturation_e = FMS_PARAM.XY_P * rtb_VectorConcatenate_g0[0];
+          rtb_Divide_pr_idx_1 = FMS_PARAM.XY_P * rtb_VectorConcatenate_g0[1];
 
           /* BusAssignment: '<S597>/Bus Assignment1' incorporates:
            *  Constant: '<S597>/Constant'
@@ -12917,21 +12984,21 @@ void FMS_step(void)
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S40>/Signal Copy1'
            */
-          rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
           /* Trigonometry: '<S655>/Trigonometric Function' incorporates:
            *  Gain: '<S654>/Gain'
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S40>/Signal Copy1'
            */
-          rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
           /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
           /* SignalConversion: '<S655>/ConcatBufferAtVector Concatenate1In3' incorporates:
            *  Constant: '<S655>/Constant3'
            */
-          rtb_VectorConcatenate_ch[2] = 0.0F;
+          rtb_VectorConcatenate_h[2] = 0.0F;
 
           /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
           /* Gain: '<S655>/Gain' incorporates:
@@ -12940,26 +13007,26 @@ void FMS_step(void)
            *  SignalConversion: '<S40>/Signal Copy1'
            *  Trigonometry: '<S655>/Trigonometric Function2'
            */
-          rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
           /* Trigonometry: '<S655>/Trigonometric Function3' incorporates:
            *  Gain: '<S654>/Gain'
            *  Inport: '<Root>/INS_Out'
            *  SignalConversion: '<S40>/Signal Copy1'
            */
-          rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+          rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
           /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
           /* SignalConversion: '<S655>/ConcatBufferAtVector Concatenate2In3' incorporates:
            *  Constant: '<S655>/Constant4'
            */
-          rtb_VectorConcatenate_ch[5] = 0.0F;
+          rtb_VectorConcatenate_h[5] = 0.0F;
 
           /* SignalConversion: '<S655>/ConcatBufferAtVector ConcatenateIn3' */
-          rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_j0[0];
-          rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_j0[1];
-          rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_j0[2];
+          rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_j0[0];
+          rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_j0[1];
+          rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_j0[2];
 
           /* Saturate: '<S648>/Saturation1' */
           rtb_Divide_pr_idx_2 = FMS_PARAM.VEL_XY_LIM / 5.0F;
@@ -12982,8 +13049,8 @@ void FMS_step(void)
            *  Sum: '<S652>/Sum'
            */
           for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-            rtb_VectorConcatenate_fy[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 3]
-              * rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+            rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 3]
+              * rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
               rtb_Divide_pr_idx_1;
           }
 
@@ -12992,8 +13059,8 @@ void FMS_step(void)
           /* Saturate: '<S648>/Saturation1' incorporates:
            *  Gain: '<S652>/Gain2'
            */
-          rtb_Saturation_e = FMS_PARAM.XY_P * rtb_VectorConcatenate_fy[0];
-          rtb_Divide_pr_idx_1 = FMS_PARAM.XY_P * rtb_VectorConcatenate_fy[1];
+          rtb_Saturation_e = FMS_PARAM.XY_P * rtb_VectorConcatenate_g0[0];
+          rtb_Divide_pr_idx_1 = FMS_PARAM.XY_P * rtb_VectorConcatenate_g0[1];
 
           /* BusAssignment: '<S595>/Bus Assignment1' incorporates:
            *  Constant: '<S595>/Constant'
@@ -13548,18 +13615,18 @@ void FMS_step(void)
              *  Sum: '<S676>/Sum'
              *  Sum: '<S682>/Sum of Elements'
              */
-            rtb_Divide_pr_idx_0 = sqrtf(rtb_Divide_pr_idx_0 *
-              rtb_Divide_pr_idx_0 + rtb_Saturation_e * rtb_Saturation_e);
+            rtb_Saturation_e = sqrtf(rtb_Divide_pr_idx_0 * rtb_Divide_pr_idx_0 +
+              rtb_Saturation_e * rtb_Saturation_e);
 
             /* SignalConversion: '<S725>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_db[0];
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_db[1];
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_db[2];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_db[0];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_db[1];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_db[2];
 
             /* SignalConversion: '<S725>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S725>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
             /* Gain: '<S724>/Gain' incorporates:
@@ -13575,38 +13642,38 @@ void FMS_step(void)
             /* Trigonometry: '<S725>/Trigonometric Function3' incorporates:
              *  Trigonometry: '<S725>/Trigonometric Function1'
              */
-            rtb_Saturation_e = arm_cos_f32(rtb_Divide_pr_idx_2);
-            rtb_VectorConcatenate_ch[4] = rtb_Saturation_e;
+            rtb_Add4_o = arm_cos_f32(rtb_Divide_pr_idx_2);
+            rtb_VectorConcatenate_h[4] = rtb_Add4_o;
 
             /* Trigonometry: '<S725>/Trigonometric Function2' incorporates:
              *  Trigonometry: '<S725>/Trigonometric Function'
              */
-            rtb_Divide_pr_idx_2 = arm_sin_f32(rtb_Divide_pr_idx_2);
+            rtb_Divide_or = arm_sin_f32(rtb_Divide_pr_idx_2);
 
             /* Gain: '<S725>/Gain' incorporates:
              *  Trigonometry: '<S725>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -rtb_Divide_pr_idx_2;
+            rtb_VectorConcatenate_h[3] = -rtb_Divide_or;
 
             /* SignalConversion: '<S725>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S725>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S725>/Trigonometric Function' */
-            rtb_VectorConcatenate_ch[1] = rtb_Divide_pr_idx_2;
+            rtb_VectorConcatenate_h[1] = rtb_Divide_or;
 
             /* Trigonometry: '<S725>/Trigonometric Function1' */
-            rtb_VectorConcatenate_ch[0] = rtb_Saturation_e;
+            rtb_VectorConcatenate_h[0] = rtb_Add4_o;
 
             /* Switch: '<S676>/Switch' incorporates:
              *  Constant: '<S676>/vel'
              */
-            if (rtb_Divide_pr_idx_0 > FMS_PARAM.L1) {
+            if (rtb_Saturation_e > FMS_PARAM.L1) {
               rtb_Divide_pr_idx_2 = FMS_PARAM.CRUISE_SPEED;
             } else {
               /* Gain: '<S676>/Gain' */
-              rtb_Divide_pr_idx_2 = 0.5F * rtb_Divide_pr_idx_0;
+              rtb_Divide_pr_idx_2 = 0.5F * rtb_Saturation_e;
 
               /* Saturate: '<S676>/Saturation' */
               if (rtb_Divide_pr_idx_2 > FMS_PARAM.CRUISE_SPEED) {
@@ -13675,8 +13742,8 @@ void FMS_step(void)
             rtb_Divide_pr_idx_1 = rtb_Divide_pr_idx_1 / rtb_Saturation_e *
               rtb_Divide_pr_idx_2;
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_Switch_c2[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_pr_idx_1 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_Switch_c2[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_pr_idx_1 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_0;
             }
           }
@@ -15413,14 +15480,14 @@ void FMS_step(void)
             /* SignalConversion: '<S565>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S565>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Trigonometry: '<S565>/Trigonometric Function3' incorporates:
              *  Gain: '<S564>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* Gain: '<S565>/Gain' incorporates:
              *  Gain: '<S564>/Gain'
@@ -15428,29 +15495,29 @@ void FMS_step(void)
              *  SignalConversion: '<S40>/Signal Copy1'
              *  Trigonometry: '<S565>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S565>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S565>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S565>/Trigonometric Function' incorporates:
              *  Gain: '<S564>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* Trigonometry: '<S565>/Trigonometric Function1' incorporates:
              *  Gain: '<S564>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S565>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_j[0];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_j[0];
 
             /* Switch: '<S558>/Switch' incorporates:
              *  Constant: '<S573>/Constant'
@@ -15485,7 +15552,7 @@ void FMS_step(void)
               FMS_U.INS_Out.x_R : 0.0F;
 
             /* SignalConversion: '<S565>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_j[1];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_j[1];
 
             /* Switch: '<S558>/Switch' incorporates:
              *  Constant: '<S573>/Constant'
@@ -15520,7 +15587,7 @@ void FMS_step(void)
               FMS_U.INS_Out.y_R : 0.0F;
 
             /* SignalConversion: '<S565>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_j[2];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_j[2];
 
             /* Switch: '<S558>/Switch' incorporates:
              *  Constant: '<S573>/Constant'
@@ -15558,9 +15625,9 @@ void FMS_step(void)
               ((FMS_U.Auto_Cmd.cmd_mask & 4096U) > 0U) ? rtb_Saturation_e -
               (-FMS_U.INS_Out.h_R) : 0.0F;
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 6] *
-                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 6] *
+                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_1);
             }
 
@@ -15569,7 +15636,7 @@ void FMS_step(void)
              *  MultiPortSwitch: '<S487>/Index Vector'
              *  Product: '<S556>/Multiply1'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Trigonometry: '<S498>/Trigonometric Function3' incorporates:
              *  Gain: '<S497>/Gain'
@@ -15577,7 +15644,7 @@ void FMS_step(void)
              *  MultiPortSwitch: '<S487>/Index Vector'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* Gain: '<S498>/Gain' incorporates:
              *  Gain: '<S497>/Gain'
@@ -15586,13 +15653,13 @@ void FMS_step(void)
              *  SignalConversion: '<S40>/Signal Copy1'
              *  Trigonometry: '<S498>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S498>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S498>/Constant3'
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S498>/Trigonometric Function' incorporates:
              *  Gain: '<S497>/Gain'
@@ -15600,7 +15667,7 @@ void FMS_step(void)
              *  MultiPortSwitch: '<S487>/Index Vector'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* Trigonometry: '<S498>/Trigonometric Function1' incorporates:
              *  Gain: '<S497>/Gain'
@@ -15608,12 +15675,12 @@ void FMS_step(void)
              *  MultiPortSwitch: '<S487>/Index Vector'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S498>/ConcatBufferAtVector ConcatenateIn3' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_d[0];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_d[0];
 
             /* Product: '<S487>/Multiply' incorporates:
              *  Constant: '<S496>/Constant'
@@ -15626,7 +15693,7 @@ void FMS_step(void)
             /* SignalConversion: '<S498>/ConcatBufferAtVector ConcatenateIn3' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_d[1];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_d[1];
 
             /* Product: '<S487>/Multiply' incorporates:
              *  Constant: '<S496>/Constant'
@@ -15639,7 +15706,7 @@ void FMS_step(void)
             /* SignalConversion: '<S498>/ConcatBufferAtVector ConcatenateIn3' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_d[2];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_d[2];
 
             /* Product: '<S487>/Multiply' incorporates:
              *  Constant: '<S496>/Constant'
@@ -15653,9 +15720,9 @@ void FMS_step(void)
              *  Product: '<S494>/Multiply'
              */
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_Switch_ee[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 6] *
-                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_Switch_ee[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 6] *
+                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_1);
             }
             break;
@@ -15664,38 +15731,38 @@ void FMS_step(void)
             /* SignalConversion: '<S568>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S568>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Trigonometry: '<S568>/Trigonometric Function3' incorporates:
              *  DataStoreRead: '<S557>/Data Store Read'
              *  Gain: '<S566>/Gain'
              *  Trigonometry: '<S568>/Trigonometric Function1'
              */
-            rtb_Saturation_e = arm_cos_f32(-FMS_DW.home[3]);
-            rtb_VectorConcatenate_ch[4] = rtb_Saturation_e;
+            rtb_Add4_o = arm_cos_f32(-FMS_DW.home[3]);
+            rtb_VectorConcatenate_h[4] = rtb_Add4_o;
 
             /* Trigonometry: '<S568>/Trigonometric Function2' incorporates:
              *  DataStoreRead: '<S557>/Data Store Read'
              *  Gain: '<S566>/Gain'
              *  Trigonometry: '<S568>/Trigonometric Function'
              */
-            rtb_Divide_pr_idx_2 = arm_sin_f32(-FMS_DW.home[3]);
+            rtb_Divide_or = arm_sin_f32(-FMS_DW.home[3]);
 
             /* Gain: '<S568>/Gain' incorporates:
              *  Trigonometry: '<S568>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -rtb_Divide_pr_idx_2;
+            rtb_VectorConcatenate_h[3] = -rtb_Divide_or;
 
             /* SignalConversion: '<S568>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S568>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S568>/Trigonometric Function' */
-            rtb_VectorConcatenate_ch[1] = rtb_Divide_pr_idx_2;
+            rtb_VectorConcatenate_h[1] = rtb_Divide_or;
 
             /* Trigonometry: '<S568>/Trigonometric Function1' */
-            rtb_VectorConcatenate_ch[0] = rtb_Saturation_e;
+            rtb_VectorConcatenate_h[0] = rtb_Add4_o;
 
             /* SignalConversion: '<S569>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S569>/Constant4'
@@ -15778,7 +15845,7 @@ void FMS_step(void)
             rtb_MatrixConcatenate1_i_0[2] = FMS_U.Auto_Cmd.z_cmd;
 
             /* SignalConversion: '<S568>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_i[0];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_i[0];
 
             /* SignalConversion: '<S569>/ConcatBufferAtVector ConcatenateIn3' */
             rtb_MatrixConcatenate1_i[6] = FMS_ConstB.VectorConcatenate3_m[0];
@@ -15791,7 +15858,7 @@ void FMS_step(void)
             rtb_Divide_pr_idx_1 = FMS_U.INS_Out.x_R - FMS_DW.home[0];
 
             /* SignalConversion: '<S568>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_i[1];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_i[1];
 
             /* SignalConversion: '<S569>/ConcatBufferAtVector ConcatenateIn3' */
             rtb_MatrixConcatenate1_i[7] = FMS_ConstB.VectorConcatenate3_m[1];
@@ -15804,7 +15871,7 @@ void FMS_step(void)
             rtb_Divide_lr_idx_2 = FMS_U.INS_Out.y_R - FMS_DW.home[1];
 
             /* SignalConversion: '<S568>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_i[2];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_i[2];
 
             /* SignalConversion: '<S569>/ConcatBufferAtVector ConcatenateIn3' */
             rtb_MatrixConcatenate1_i[8] = FMS_ConstB.VectorConcatenate3_m[2];
@@ -15854,9 +15921,9 @@ void FMS_step(void)
                *  Sum: '<S557>/Sum2'
                */
               rtb_Switch_ee[rtb_n] = tmp_0[rtb_n] || tmp_1[rtb_n] ?
-                rtb_Saturation_e - ((rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
-                rtb_Divide_pr_idx_1) + rtb_VectorConcatenate_ch[rtb_n + 6] *
+                rtb_Saturation_e - ((rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
+                rtb_Divide_pr_idx_1) + rtb_VectorConcatenate_h[rtb_n + 6] *
                                     rtb_Divide_pr_idx_0) : 0.0F;
             }
 
@@ -15864,34 +15931,34 @@ void FMS_step(void)
              *  Constant: '<S500>/Constant4'
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Trigonometry: '<S500>/Trigonometric Function3' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(rtb_Divide_pr_idx_2);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(rtb_Divide_pr_idx_2);
 
             /* Gain: '<S500>/Gain' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              *  Trigonometry: '<S500>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(rtb_Divide_pr_idx_2);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(rtb_Divide_pr_idx_2);
 
             /* SignalConversion: '<S500>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S500>/Constant3'
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S500>/Trigonometric Function' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(rtb_Divide_pr_idx_2);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(rtb_Divide_pr_idx_2);
 
             /* Trigonometry: '<S500>/Trigonometric Function1' incorporates:
              *  MultiPortSwitch: '<S487>/Index Vector'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(rtb_Divide_pr_idx_2);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(rtb_Divide_pr_idx_2);
 
             /* Product: '<S487>/Multiply' */
             rtb_MatrixConcatenate1_i_0[0] = FMS_U.Auto_Cmd.ax_cmd;
@@ -15911,7 +15978,7 @@ void FMS_step(void)
               /* SignalConversion: '<S500>/ConcatBufferAtVector ConcatenateIn3' incorporates:
                *  MultiPortSwitch: '<S487>/Index Vector'
                */
-              rtb_VectorConcatenate_ch[rtb_n + 6] =
+              rtb_VectorConcatenate_h[rtb_n + 6] =
                 FMS_ConstB.VectorConcatenate3_l[rtb_n];
 
               /* Product: '<S487>/Multiply' */
@@ -15929,10 +15996,10 @@ void FMS_step(void)
              *  Product: '<S557>/Multiply3'
              */
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_Switch_ee[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 6] *
-                rtb_Switch_c2[2] + (rtb_VectorConcatenate_ch[rtb_n + 3] *
+              rtb_Switch_ee[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 6] *
+                rtb_Switch_c2[2] + (rtb_VectorConcatenate_h[rtb_n + 3] *
                                     rtb_Switch_c2[1] +
-                                    rtb_VectorConcatenate_ch[rtb_n] *
+                                    rtb_VectorConcatenate_h[rtb_n] *
                                     rtb_Switch_c2[0]);
             }
             break;
@@ -15941,14 +16008,14 @@ void FMS_step(void)
             /* SignalConversion: '<S561>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S561>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Trigonometry: '<S561>/Trigonometric Function3' incorporates:
              *  Gain: '<S560>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* Gain: '<S561>/Gain' incorporates:
              *  Gain: '<S560>/Gain'
@@ -15956,26 +16023,26 @@ void FMS_step(void)
              *  SignalConversion: '<S40>/Signal Copy1'
              *  Trigonometry: '<S561>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S561>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S561>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S561>/Trigonometric Function' incorporates:
              *  Gain: '<S560>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* Trigonometry: '<S561>/Trigonometric Function1' incorporates:
              *  Gain: '<S560>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* S-Function (sfix_bitop): '<S570>/lat_cmd valid' incorporates:
              *  S-Function (sfix_bitop): '<S555>/lat_cmd valid'
@@ -16037,7 +16104,7 @@ void FMS_step(void)
             rtb_MatrixConcatenate1_i_0[2] = FMS_U.Auto_Cmd.z_cmd;
 
             /* SignalConversion: '<S561>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_g[0];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_g[0];
 
             /* Sum: '<S554>/Sum' incorporates:
              *  DataStoreRead: '<S554>/Data Store Read'
@@ -16047,7 +16114,7 @@ void FMS_step(void)
             rtb_Divide_pr_idx_1 = FMS_U.INS_Out.x_R - FMS_DW.home[0];
 
             /* SignalConversion: '<S561>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_g[1];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_g[1];
 
             /* Sum: '<S554>/Sum' incorporates:
              *  DataStoreRead: '<S554>/Data Store Read'
@@ -16057,7 +16124,7 @@ void FMS_step(void)
             rtb_Divide_lr_idx_2 = FMS_U.INS_Out.y_R - FMS_DW.home[1];
 
             /* SignalConversion: '<S561>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_g[2];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_g[2];
 
             /* Sum: '<S554>/Sum' incorporates:
              *  DataStoreRead: '<S554>/Data Store Read'
@@ -16101,9 +16168,9 @@ void FMS_step(void)
               }
 
               rtb_Switch_an[rtb_n] = tmp_0[rtb_n] || tmp_1[rtb_n] ?
-                rtb_Saturation_e - ((rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
-                rtb_Divide_pr_idx_1) + rtb_VectorConcatenate_ch[rtb_n + 6] *
+                rtb_Saturation_e - ((rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
+                rtb_Divide_pr_idx_1) + rtb_VectorConcatenate_h[rtb_n + 6] *
                                     rtb_Divide_pr_idx_0) : 0.0F;
             }
 
@@ -16226,14 +16293,14 @@ void FMS_step(void)
             /* SignalConversion: '<S591>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S591>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Trigonometry: '<S591>/Trigonometric Function3' incorporates:
              *  Gain: '<S590>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* Gain: '<S591>/Gain' incorporates:
              *  Gain: '<S590>/Gain'
@@ -16241,29 +16308,29 @@ void FMS_step(void)
              *  SignalConversion: '<S40>/Signal Copy1'
              *  Trigonometry: '<S591>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S591>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S591>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S591>/Trigonometric Function' incorporates:
              *  Gain: '<S590>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* Trigonometry: '<S591>/Trigonometric Function1' incorporates:
              *  Gain: '<S590>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* SignalConversion: '<S591>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_in[0];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_in[0];
 
             /* Product: '<S553>/Multiply' incorporates:
              *  Constant: '<S589>/Constant'
@@ -16274,7 +16341,7 @@ void FMS_step(void)
               FMS_U.Auto_Cmd.u_cmd : 0.0F;
 
             /* SignalConversion: '<S591>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_in[1];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_in[1];
 
             /* Product: '<S553>/Multiply' incorporates:
              *  Constant: '<S589>/Constant'
@@ -16285,7 +16352,7 @@ void FMS_step(void)
               FMS_U.Auto_Cmd.v_cmd : 0.0F;
 
             /* SignalConversion: '<S591>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_in[2];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_in[2];
 
             /* Product: '<S553>/Multiply' incorporates:
              *  Constant: '<S589>/Constant'
@@ -16295,9 +16362,9 @@ void FMS_step(void)
             rtb_Divide_pr_idx_0 = (FMS_U.Auto_Cmd.cmd_mask & 32768U) > 0U ?
               FMS_U.Auto_Cmd.w_cmd : 0.0F;
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 6] *
-                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 6] *
+                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_1);
             }
             break;
@@ -16306,7 +16373,7 @@ void FMS_step(void)
             /* SignalConversion: '<S593>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S593>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Gain: '<S592>/Gain' incorporates:
              *  DataStoreRead: '<S587>/Data Store Read'
@@ -16319,31 +16386,31 @@ void FMS_step(void)
             /* Trigonometry: '<S593>/Trigonometric Function3' incorporates:
              *  Gain: '<S592>/Gain'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(rtb_Divide_pr_idx_1);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(rtb_Divide_pr_idx_1);
 
             /* Gain: '<S593>/Gain' incorporates:
              *  Gain: '<S592>/Gain'
              *  Trigonometry: '<S593>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(rtb_Divide_pr_idx_1);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(rtb_Divide_pr_idx_1);
 
             /* SignalConversion: '<S593>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S593>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S593>/Trigonometric Function' incorporates:
              *  Gain: '<S592>/Gain'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(rtb_Divide_pr_idx_1);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(rtb_Divide_pr_idx_1);
 
             /* Trigonometry: '<S593>/Trigonometric Function1' incorporates:
              *  Gain: '<S592>/Gain'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(rtb_Divide_pr_idx_1);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(rtb_Divide_pr_idx_1);
 
             /* SignalConversion: '<S593>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_gj[0];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_gj[0];
 
             /* Product: '<S553>/Multiply' incorporates:
              *  Constant: '<S589>/Constant'
@@ -16354,7 +16421,7 @@ void FMS_step(void)
               FMS_U.Auto_Cmd.u_cmd : 0.0F;
 
             /* SignalConversion: '<S593>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_gj[1];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_gj[1];
 
             /* Product: '<S553>/Multiply' incorporates:
              *  Constant: '<S589>/Constant'
@@ -16365,7 +16432,7 @@ void FMS_step(void)
               FMS_U.Auto_Cmd.v_cmd : 0.0F;
 
             /* SignalConversion: '<S593>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_gj[2];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_gj[2];
 
             /* Product: '<S553>/Multiply' incorporates:
              *  Constant: '<S589>/Constant'
@@ -16375,9 +16442,9 @@ void FMS_step(void)
             rtb_Divide_pr_idx_0 = (FMS_U.Auto_Cmd.cmd_mask & 32768U) > 0U ?
               FMS_U.Auto_Cmd.w_cmd : 0.0F;
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_ch[rtb_n + 6] *
-                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_ch[rtb_n + 3] *
-                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_Switch_an[rtb_n] = rtb_VectorConcatenate_h[rtb_n + 6] *
+                rtb_Divide_pr_idx_0 + (rtb_VectorConcatenate_h[rtb_n + 3] *
+                rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_1);
             }
             break;
@@ -17645,14 +17712,14 @@ void FMS_step(void)
               rtb_Divide_pr_idx_0 + rtb_Saturation_e * rtb_Saturation_e);
 
             /* SignalConversion: '<S485>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3_c[0];
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3_c[1];
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3_c[2];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3_c[0];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3_c[1];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3_c[2];
 
             /* SignalConversion: '<S485>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S485>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
             /* Gain: '<S484>/Gain' incorporates:
@@ -17666,23 +17733,23 @@ void FMS_step(void)
             /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
             /* Trigonometry: '<S485>/Trigonometric Function3' */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(rtb_Saturation_e);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(rtb_Saturation_e);
 
             /* Gain: '<S485>/Gain' incorporates:
              *  Trigonometry: '<S485>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(rtb_Saturation_e);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(rtb_Saturation_e);
 
             /* SignalConversion: '<S485>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S485>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Trigonometry: '<S485>/Trigonometric Function' */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(rtb_Saturation_e);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(rtb_Saturation_e);
 
             /* Trigonometry: '<S485>/Trigonometric Function1' */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(rtb_Saturation_e);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(rtb_Saturation_e);
 
             /* Switch: '<S441>/Switch2' incorporates:
              *  Constant: '<S430>/Constant2'
@@ -17830,8 +17897,8 @@ void FMS_step(void)
 
             /* Product: '<S434>/Multiply' */
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_VectorConcatenate_fy[rtb_n] = rtb_VectorConcatenate_ch[rtb_n +
-                3] * rtb_Divide_pr_idx_1 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n +
+                3] * rtb_Divide_pr_idx_1 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_0;
             }
 
@@ -17850,8 +17917,8 @@ void FMS_step(void)
               FMS_B.Cmd_In.cur_waypoint[2])) * FMS_PARAM.Z_P;
 
             /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
-            rtb_Switch_c2[0] = rtb_VectorConcatenate_fy[0];
-            rtb_Switch_c2[1] = rtb_VectorConcatenate_fy[1];
+            rtb_Switch_c2[0] = rtb_VectorConcatenate_g0[0];
+            rtb_Switch_c2[1] = rtb_VectorConcatenate_g0[1];
 
             /* Saturate: '<S427>/Saturation1' incorporates:
              *  Product: '<S434>/Multiply'
@@ -20188,21 +20255,21 @@ void FMS_step(void)
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[0] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* Trigonometry: '<S372>/Trigonometric Function' incorporates:
              *  Gain: '<S371>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[1] = arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
             /* SignalConversion: '<S372>/ConcatBufferAtVector Concatenate1In3' incorporates:
              *  Constant: '<S372>/Constant3'
              */
-            rtb_VectorConcatenate_ch[2] = 0.0F;
+            rtb_VectorConcatenate_h[2] = 0.0F;
 
             /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
             /* Gain: '<S372>/Gain' incorporates:
@@ -20211,26 +20278,26 @@ void FMS_step(void)
              *  SignalConversion: '<S40>/Signal Copy1'
              *  Trigonometry: '<S372>/Trigonometric Function2'
              */
-            rtb_VectorConcatenate_ch[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[3] = -arm_sin_f32(-FMS_U.INS_Out.psi);
 
             /* Trigonometry: '<S372>/Trigonometric Function3' incorporates:
              *  Gain: '<S371>/Gain'
              *  Inport: '<Root>/INS_Out'
              *  SignalConversion: '<S40>/Signal Copy1'
              */
-            rtb_VectorConcatenate_ch[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
+            rtb_VectorConcatenate_h[4] = arm_cos_f32(-FMS_U.INS_Out.psi);
 
             /* End of Outputs for SubSystem: '<S5>/FMS_Input' */
 
             /* SignalConversion: '<S372>/ConcatBufferAtVector Concatenate2In3' incorporates:
              *  Constant: '<S372>/Constant4'
              */
-            rtb_VectorConcatenate_ch[5] = 0.0F;
+            rtb_VectorConcatenate_h[5] = 0.0F;
 
             /* SignalConversion: '<S372>/ConcatBufferAtVector ConcatenateIn3' */
-            rtb_VectorConcatenate_ch[6] = FMS_ConstB.VectorConcatenate3[0];
-            rtb_VectorConcatenate_ch[7] = FMS_ConstB.VectorConcatenate3[1];
-            rtb_VectorConcatenate_ch[8] = FMS_ConstB.VectorConcatenate3[2];
+            rtb_VectorConcatenate_h[6] = FMS_ConstB.VectorConcatenate3[0];
+            rtb_VectorConcatenate_h[7] = FMS_ConstB.VectorConcatenate3[1];
+            rtb_VectorConcatenate_h[8] = FMS_ConstB.VectorConcatenate3[2];
 
             /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
             /* SignalConversion: '<S368>/TmpSignal ConversionAtMultiplyInport2' incorporates:
@@ -20248,16 +20315,16 @@ void FMS_step(void)
              *  SignalConversion: '<S368>/TmpSignal ConversionAtMultiplyInport2'
              */
             for (rtb_n = 0; rtb_n < 3; rtb_n++) {
-              rtb_VectorConcatenate_fy[rtb_n] = rtb_VectorConcatenate_ch[rtb_n +
-                3] * rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_ch[rtb_n] *
+              rtb_VectorConcatenate_g0[rtb_n] = rtb_VectorConcatenate_h[rtb_n +
+                3] * rtb_Divide_lr_idx_2 + rtb_VectorConcatenate_h[rtb_n] *
                 rtb_Divide_pr_idx_1;
             }
 
             /* End of Product: '<S368>/Multiply' */
 
             /* Gain: '<S368>/Gain2' */
-            FMS_B.Merge[0] = FMS_PARAM.XY_P * rtb_VectorConcatenate_fy[0];
-            FMS_B.Merge[1] = FMS_PARAM.XY_P * rtb_VectorConcatenate_fy[1];
+            FMS_B.Merge[0] = FMS_PARAM.XY_P * rtb_VectorConcatenate_g0[0];
+            FMS_B.Merge[1] = FMS_PARAM.XY_P * rtb_VectorConcatenate_g0[1];
 
             /* Update for Delay: '<S368>/Delay' */
             FMS_DW.icLoad = 0U;

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.420
+ * Model version                  : 1.423
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 10:09:13 2025
+ * C/C++ source code generated on : Thu Aug  7 17:30:19 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -228,7 +228,6 @@ extern struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S65>/ucmd2thor'
                                                     *   '<S65>/wcmd2pitch'
                                                     *   '<S65>/wcmd2thor'
-                                                    *   '<S66>/cruise_throttle'
                                                     *   '<S159>/hover_throttle'
                                                     *   '<S40>/hover_throttle'
                                                     *   '<S67>/FF'
@@ -254,7 +253,6 @@ extern struct_wPl8ajGklGKyYxGcwjdpiH CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S94>/ '
                                                     *   '<S94>/Gain3'
                                                     *   '<S96>/Gain'
-                                                    *   '<S97>/ '
                                                     *   '<S97>/Gain'
                                                     *   '<S112>/Saturation'
                                                     *   '<S112>/Saturation1'
@@ -356,6 +354,8 @@ extern RT_MODEL_Controller_T *const Controller_M;
  *
  * Block '<S35>/Data Type Duplicate' : Unused code path elimination
  * Block '<S35>/Data Type Propagation' : Unused code path elimination
+ * Block '<S66>/Sum' : Unused code path elimination
+ * Block '<S66>/cruise_throttle' : Unused code path elimination
  * Block '<S132>/Data Type Duplicate' : Unused code path elimination
  * Block '<S132>/Data Type Propagation' : Unused code path elimination
  * Block '<S3>/Data Type Conversion' : Eliminate redundant data type conversion
