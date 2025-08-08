@@ -26,7 +26,6 @@
 #include "driver/barometer/spl06.h"
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
-#include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
@@ -462,7 +461,7 @@ void bsp_initialize(void)
 #else
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
-    RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
+    // RT_CHECK(drv_bmi088_init("spi4_dev5", "spi4_dev6", "gyro1", "accel1", 1));
     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
@@ -470,18 +469,11 @@ void bsp_initialize(void)
     // RT_CHECK(drv_tofsense_init("serial5"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    // FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
     FMT_CHECK(register_sensor_mag("mag0", 0));
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
-
-    if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
-        if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
-            FMT_CHECK(register_sensor_airspeed("airspeed"));
-        } else {
-            printf("airspeed sensor init failed!\n");
-        }
-    }
 #endif
 
     /* init finsh */

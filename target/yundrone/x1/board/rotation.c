@@ -16,11 +16,6 @@
 #include <firmament.h>
 #include "module/math/rotation.h"
 
-void icm42688_rotate_to_frd(float* data, uint8_t dev_id)
-{
-    rotation(ROTATION_YAW_270, data, data + 1, data + 2);
-}
-
 void bmi088_rotate_to_frd(float* data, uint8_t dev_id)
 {
     rotation(ROTATION_YAW_180, data, data + 1, data + 2);
