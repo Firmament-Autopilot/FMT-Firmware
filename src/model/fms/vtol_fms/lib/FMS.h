@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2481
+ * Model version                  : 1.2493
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 17:35:59 2025
+ * C/C++ source code generated on : Wed Aug 13 14:20:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -125,6 +125,7 @@ typedef struct {
   real_T llo[2];                       /* '<Root>/FMS State Machine' */
   real_T href;                         /* '<Root>/FMS State Machine' */
   real_T psio;                         /* '<Root>/FMS State Machine' */
+  uint32_T flag;                       /* '<Root>/FMS State Machine' */
   real32_T DiscreteTimeIntegrator5;    /* '<S11>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_p;  /* '<S10>/Discrete-Time Integrator5' */
   real32_T xy_R[2];                    /* '<Root>/FMS State Machine' */
@@ -133,11 +134,11 @@ typedef struct {
   real32_T start[3];                   /* '<Root>/FMS State Machine' */
   real32_T end[3];                     /* '<Root>/FMS State Machine' */
   real32_T Airspeed;                   /* '<Root>/FMS State Machine' */
-  real32_T DataTypeConversion[3];      /* '<S740>/Data Type Conversion' */
-  real32_T Switch;                     /* '<S744>/Switch' */
-  real32_T Switch_h;                   /* '<S756>/Switch' */
-  real32_T Switch_b;                   /* '<S739>/Switch' */
-  real32_T Reshape[3];                 /* '<S742>/Reshape' */
+  real32_T DataTypeConversion[3];      /* '<S741>/Data Type Conversion' */
+  real32_T Switch;                     /* '<S745>/Switch' */
+  real32_T Switch_h;                   /* '<S758>/Switch' */
+  real32_T Switch_b;                   /* '<S740>/Switch' */
+  real32_T Reshape[3];                 /* '<S743>/Reshape' */
   real32_T Merge[2];                   /* '<S366>/Merge' */
   real32_T Merge_o;                    /* '<S341>/Merge' */
   real32_T Merge_k;                    /* '<S353>/Merge' */
@@ -165,8 +166,9 @@ typedef struct {
   boolean_T LogicalOperator2;          /* '<S4>/Logical Operator2' */
   boolean_T Compare;                   /* '<S38>/Compare' */
   boolean_T LogicalOperator;           /* '<S2>/Logical Operator' */
+  boolean_T Compare_b;                 /* '<S746>/Compare' */
   boolean_T RelationalOperator;        /* '<S738>/Relational Operator' */
-  boolean_T Compare_k;                 /* '<S758>/Compare' */
+  boolean_T Compare_k;                 /* '<S760>/Compare' */
 } B_FMS_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -491,19 +493,19 @@ typedef struct {
 /* Invariant block signals for system '<S6>/Vehicle.WaypointAngle' */
 typedef struct {
   const real32_T TmpSignalConversionAtMathFu[2];
-  const real32_T MathFunction[2];      /* '<S761>/Math Function' */
-  const real32_T SumofElements;        /* '<S761>/Sum of Elements' */
-  const real32_T MathFunction1;        /* '<S761>/Math Function1' */
-  const real32_T Product[2];           /* '<S761>/Product' */
-  const real32_T Switch[3];            /* '<S761>/Switch' */
-  const real32_T Divide[2];            /* '<S761>/Divide' */
+  const real32_T MathFunction[2];      /* '<S763>/Math Function' */
+  const real32_T SumofElements;        /* '<S763>/Sum of Elements' */
+  const real32_T MathFunction1;        /* '<S763>/Math Function1' */
+  const real32_T Product[2];           /* '<S763>/Product' */
+  const real32_T Switch[3];            /* '<S763>/Switch' */
+  const real32_T Divide[2];            /* '<S763>/Divide' */
 } ConstB_VehicleWaypointAngle_F_T;
 
 /* Invariant block signals for system '<S6>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
 typedef struct {
-  const real_T Sum;                    /* '<S747>/Sum' */
-  const real_T ff;                     /* '<S747>/Multiply3' */
-  const real_T Sum4;                   /* '<S747>/Sum4' */
+  const real_T Sum;                    /* '<S749>/Sum' */
+  const real_T ff;                     /* '<S749>/Multiply3' */
+  const real_T Sum4;                   /* '<S749>/Sum4' */
 } ConstB_VehicleArmAutoMissionL_T;
 
 /* Invariant block signals (default storage) */
@@ -747,9 +749,9 @@ extern struct_sVzVC2xSXHFQuusuHtL6zE FMS_PARAM;/* Variable: FMS_PARAM
                                                 *   '<S4>/Constant1'
                                                 *   '<S37>/Constant'
                                                 *   '<S738>/Constant'
-                                                *   '<S739>/FW_ACCEPT_R'
-                                                *   '<S739>/MC_ACCEPT_R'
-                                                *   '<S742>/Constant'
+                                                *   '<S740>/FW_ACCEPT_R'
+                                                *   '<S740>/MC_ACCEPT_R'
+                                                *   '<S743>/Constant'
                                                 *   '<S48>/L1'
                                                 *   '<S221>/Dead Zone'
                                                 *   '<S221>/Gain'
@@ -1020,31 +1022,31 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S716>/Data Type Duplicate' : Unused code path elimination
  * Block '<S717>/Data Type Duplicate' : Unused code path elimination
  * Block '<S723>/Data Type Duplicate' : Unused code path elimination
- * Block '<S761>/Data Type Duplicate' : Unused code path elimination
- * Block '<S762>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S763>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S764>/Data Type Duplicate' : Unused code path elimination
  * Block '<S7>/Constant' : Unused code path elimination
  * Block '<S7>/Cos' : Unused code path elimination
  * Block '<S7>/Cos1' : Unused code path elimination
  * Block '<S7>/Divide' : Unused code path elimination
  * Block '<S7>/Divide1' : Unused code path elimination
- * Block '<S763>/Data Type Conversion' : Unused code path elimination
- * Block '<S763>/Discrete-Time Integrator5' : Unused code path elimination
- * Block '<S763>/Gain' : Unused code path elimination
- * Block '<S763>/Sum5' : Unused code path elimination
- * Block '<S764>/Data Type Conversion' : Unused code path elimination
- * Block '<S764>/Discrete-Time Integrator5' : Unused code path elimination
- * Block '<S764>/Gain' : Unused code path elimination
- * Block '<S764>/Sum5' : Unused code path elimination
  * Block '<S765>/Data Type Conversion' : Unused code path elimination
  * Block '<S765>/Discrete-Time Integrator5' : Unused code path elimination
  * Block '<S765>/Gain' : Unused code path elimination
  * Block '<S765>/Sum5' : Unused code path elimination
- * Block '<S766>/AND' : Unused code path elimination
- * Block '<S766>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S766>/Lower Limit' : Unused code path elimination
- * Block '<S766>/Lower Test' : Unused code path elimination
- * Block '<S766>/Upper Limit' : Unused code path elimination
- * Block '<S766>/Upper Test' : Unused code path elimination
+ * Block '<S766>/Data Type Conversion' : Unused code path elimination
+ * Block '<S766>/Discrete-Time Integrator5' : Unused code path elimination
+ * Block '<S766>/Gain' : Unused code path elimination
+ * Block '<S766>/Sum5' : Unused code path elimination
+ * Block '<S767>/Data Type Conversion' : Unused code path elimination
+ * Block '<S767>/Discrete-Time Integrator5' : Unused code path elimination
+ * Block '<S767>/Gain' : Unused code path elimination
+ * Block '<S767>/Sum5' : Unused code path elimination
+ * Block '<S768>/AND' : Unused code path elimination
+ * Block '<S768>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S768>/Lower Limit' : Unused code path elimination
+ * Block '<S768>/Lower Test' : Unused code path elimination
+ * Block '<S768>/Upper Limit' : Unused code path elimination
+ * Block '<S768>/Upper Test' : Unused code path elimination
  * Block '<S7>/Land_Lock_Thro' : Unused code path elimination
  * Block '<S7>/Logical Operator' : Unused code path elimination
  * Block '<S7>/Logical Operator1' : Unused code path elimination
@@ -1090,7 +1092,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S40>/Signal Copy6' : Eliminate redundant signal conversion block
  * Block '<S40>/Signal Copy7' : Eliminate redundant signal conversion block
  * Block '<S40>/Signal Copy8' : Eliminate redundant signal conversion block
- * Block '<S740>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S741>/Signal Conversion' : Eliminate redundant signal conversion block
  * Block '<S84>/Gain1' : Unused code path elimination
  * Block '<S172>/Gain1' : Unused code path elimination
  */
@@ -1848,40 +1850,42 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * '<S736>' : 'FMS/FMS Commander/Commander/Arm/MC_Mode/SubMode/Takeoff/Track Position/Psi To DCM/Rotation Matrix Z'
  * '<S737>' : 'FMS/FMS Commander/Commander/Bus_Constructor/timestamp'
  * '<S738>' : 'FMS/FMS State Machine/VTOL_State.ForwardTransCplt'
- * '<S739>' : 'FMS/FMS State Machine/Vehicle.AcceptRadius'
- * '<S740>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
- * '<S741>' : 'FMS/FMS State Machine/Vehicle.HeadingErr'
- * '<S742>' : 'FMS/FMS State Machine/Vehicle.PrepTakeoff'
- * '<S743>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
- * '<S744>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle'
- * '<S745>' : 'FMS/FMS State Machine/Vehicle.AcceptRadius/Compare To Constant'
- * '<S746>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
- * '<S747>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
- * '<S748>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
- * '<S749>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
- * '<S750>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
- * '<S751>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
- * '<S752>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
- * '<S753>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
- * '<S754>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
- * '<S755>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
- * '<S756>' : 'FMS/FMS State Machine/Vehicle.HeadingErr/psi_saturation'
- * '<S757>' : 'FMS/FMS State Machine/Vehicle.HeadingErr/psi_saturation/Compare To Constant'
- * '<S758>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
- * '<S759>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle'
- * '<S760>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle/2D Cross Product'
- * '<S761>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle/Vector Normalize'
- * '<S762>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle/Vector Normalize1'
- * '<S763>' : 'FMS/Onground Check/First Order LPF'
- * '<S764>' : 'FMS/Onground Check/First Order LPF1'
- * '<S765>' : 'FMS/Onground Check/First Order LPF2'
- * '<S766>' : 'FMS/Onground Check/Interval Test'
- * '<S767>' : 'FMS/Onground Check/Quaternion To DCM'
- * '<S768>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize'
- * '<S769>' : 'FMS/Onground Check/Quaternion To DCM/column_1'
- * '<S770>' : 'FMS/Onground Check/Quaternion To DCM/column_2'
- * '<S771>' : 'FMS/Onground Check/Quaternion To DCM/column_3'
- * '<S772>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S739>' : 'FMS/FMS State Machine/VTOL_State.IsPosValid'
+ * '<S740>' : 'FMS/FMS State Machine/Vehicle.AcceptRadius'
+ * '<S741>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT'
+ * '<S742>' : 'FMS/FMS State Machine/Vehicle.HeadingErr'
+ * '<S743>' : 'FMS/FMS State Machine/Vehicle.PrepTakeoff'
+ * '<S744>' : 'FMS/FMS State Machine/Vehicle.StickMoved'
+ * '<S745>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle'
+ * '<S746>' : 'FMS/FMS State Machine/VTOL_State.IsPosValid/Compare To Constant'
+ * '<S747>' : 'FMS/FMS State Machine/Vehicle.AcceptRadius/Compare To Constant'
+ * '<S748>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT'
+ * '<S749>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LAT2FLAT Curve'
+ * '<S750>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap'
+ * '<S751>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/Rotation'
+ * '<S752>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180'
+ * '<S753>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude'
+ * '<S754>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Weap Angle 180/Compare To Constant1'
+ * '<S755>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Compare To Constant1'
+ * '<S756>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180'
+ * '<S757>' : 'FMS/FMS State Machine/Vehicle.Arm.Auto.Mission.LLA2FLAT/LLA2FLAT/LatLon Wrap/Wrap Latitude/Weap Angle 180/Compare To Constant1'
+ * '<S758>' : 'FMS/FMS State Machine/Vehicle.HeadingErr/psi_saturation'
+ * '<S759>' : 'FMS/FMS State Machine/Vehicle.HeadingErr/psi_saturation/Compare To Constant'
+ * '<S760>' : 'FMS/FMS State Machine/Vehicle.StickMoved/Compare To Constant'
+ * '<S761>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle'
+ * '<S762>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle/2D Cross Product'
+ * '<S763>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle/Vector Normalize'
+ * '<S764>' : 'FMS/FMS State Machine/Vehicle.WaypointAngle/Included Angle/Vector Normalize1'
+ * '<S765>' : 'FMS/Onground Check/First Order LPF'
+ * '<S766>' : 'FMS/Onground Check/First Order LPF1'
+ * '<S767>' : 'FMS/Onground Check/First Order LPF2'
+ * '<S768>' : 'FMS/Onground Check/Interval Test'
+ * '<S769>' : 'FMS/Onground Check/Quaternion To DCM'
+ * '<S770>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize'
+ * '<S771>' : 'FMS/Onground Check/Quaternion To DCM/column_1'
+ * '<S772>' : 'FMS/Onground Check/Quaternion To DCM/column_2'
+ * '<S773>' : 'FMS/Onground Check/Quaternion To DCM/column_3'
+ * '<S774>' : 'FMS/Onground Check/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
  */
 #endif                                 /* RTW_HEADER_FMS_h_ */
 

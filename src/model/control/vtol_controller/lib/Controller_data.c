@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.423
+ * Model version                  : 1.430
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 17:30:19 2025
+ * C/C++ source code generated on : Wed Aug 13 14:18:47 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -22,31 +22,31 @@ const ConstB_Controller_T Controller_ConstB = {
 
   { 0.0F, 0.0F, 0.0F },                /* '<S5>/Constant1' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S119>/Constant' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S121>/Constant' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S143>/Vector Concatenate3' */
-  0.0F,                                /* '<S146>/Constant' */
-  19.1986F,                            /* '<S131>/Gain' */
-  0.0100000007F,                       /* '<S144>/Square' */
-  0.784480035F,                        /* '<S144>/Multiply' */
-  -78.448F,                            /* '<S144>/Gain4' */
-  0.0F,                                /* '<S158>/Constant' */
-  0.00250000018F,                      /* '<S165>/Square' */
-  0.196120009F,                        /* '<S165>/Multiply' */
-  -78.448F,                            /* '<S165>/Gain4' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S145>/Vector Concatenate3' */
+  0.0F,                                /* '<S148>/Constant' */
+  19.1986F,                            /* '<S133>/Gain' */
+  0.0100000007F,                       /* '<S146>/Square' */
+  0.784480035F,                        /* '<S146>/Multiply' */
+  -78.448F,                            /* '<S146>/Gain4' */
+  0.0F,                                /* '<S155>/Constant' */
+  0.00250000018F,                      /* '<S162>/Square' */
+  0.196120009F,                        /* '<S162>/Multiply' */
+  -78.448F,                            /* '<S162>/Gain4' */
 
-  { 0.0F, 0.0F, 1.0F },                /* '<S92>/Vector Concatenate3' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S96>/Vector Concatenate3' */
 
   { 0.0F, 0.0F, 0.0F },                /* '<S26>/Constant' */
   289.0F,                              /* '<S10>/Square1' */
-  0.0F,                                /* '<S94>/Zero1' */
+  0.0F,                                /* '<S98>/Zero1' */
   19.1986F,                            /* '<S34>/Gain' */
-  0.0F,                                /* '<S97>/Zero' */
+  0.0F,                                /* '<S101>/Zero' */
 
-  { 0.0F, 0.0F, 0.0F },                /* '<S73>/Constant' */
-  0.00250000018F,                      /* '<S46>/Square' */
-  0.196120009F,                        /* '<S46>/Multiply' */
-  -78.448F                             /* '<S46>/Gain4' */
+  { 0.0F, 0.0F, 0.0F },                /* '<S77>/Constant' */
+  0.00250000018F,                      /* '<S49>/Square' */
+  0.196120009F,                        /* '<S49>/Multiply' */
+  -78.448F                             /* '<S49>/Gain4' */
 };
 
 /* Constant parameters (default storage) */
@@ -56,8 +56,8 @@ const ConstP_Controller_T Controller_ConstP = {
 
   /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
    * Referenced by:
-   *   '<S175>/Effective_Matrix'
-   *   '<S184>/Effective_Matrix'
+   *   '<S172>/Effective_Matrix'
+   *   '<S182>/Effective_Matrix'
    */
   { -1.41421354F, 1.41421354F, 1.41421354F, -1.41421354F, 1.41421354F,
     -1.41421354F, 1.41421354F, -1.41421354F, 1.0F, 1.0F, -1.0F, -1.0F },
@@ -68,8 +68,8 @@ const ConstP_Controller_T Controller_ConstP = {
 
   /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
    * Referenced by:
-   *   '<S182>/Disarm'
-   *   '<S191>/Disarm'
+   *   '<S180>/Disarm'
+   *   '<S190>/Disarm'
    */
   { 1150.0F, 1150.0F, 1150.0F, 1150.0F, 1000.0F },
 

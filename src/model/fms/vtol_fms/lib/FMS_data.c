@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2481
+ * Model version                  : 1.2493
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 17:35:59 2025
+ * C/C++ source code generated on : Wed Aug 13 14:20:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -214,9 +214,9 @@ const ConstB_FMS_T FMS_ConstB = {
 
   /* Start of '<S6>/Vehicle.Arm.Auto.Mission.LLA2FLAT' */
   {
-    1.9966471893352524,                /* '<S747>/Sum' */
-    0.0066943799901413165,             /* '<S747>/Multiply3' */
-    0.99330562000985867                /* '<S747>/Sum4' */
+    1.9966471893352524,                /* '<S749>/Sum' */
+    0.0066943799901413165,             /* '<S749>/Multiply3' */
+    0.99330562000985867                /* '<S749>/Sum4' */
   }
   ,
 
@@ -226,15 +226,15 @@ const ConstB_FMS_T FMS_ConstB = {
   {
     { 0.0F, 1.0F },                    /* synthesized block */
 
-    { 0.0F, 1.0F },                    /* '<S761>/Math Function' */
-    1.0F,                              /* '<S761>/Sum of Elements' */
-    1.0F,                              /* '<S761>/Math Function1' */
+    { 0.0F, 1.0F },                    /* '<S763>/Math Function' */
+    1.0F,                              /* '<S763>/Sum of Elements' */
+    1.0F,                              /* '<S763>/Math Function1' */
 
-    { 0.0F, 0.0F },                    /* '<S761>/Product' */
+    { 0.0F, 0.0F },                    /* '<S763>/Product' */
 
-    { 0.0F, 1.0F, 1.0F },              /* '<S761>/Switch' */
+    { 0.0F, 1.0F, 1.0F },              /* '<S763>/Switch' */
 
-    { 0.0F, 1.0F }                     /* '<S761>/Divide' */
+    { 0.0F, 1.0F }                     /* '<S763>/Divide' */
   }
   ,
 

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2481
+ * Model version                  : 1.2493
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug  7 17:35:59 2025
+ * C/C++ source code generated on : Wed Aug 13 14:20:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -156,45 +156,45 @@ struct_sVzVC2xSXHFQuusuHtL6zE FMS_PARAM = {
   1.2F,
   1.5F,
   5.0F,
+  2.0F,
   2.5F,
-  2.5F,
-  1.04719758F,
-  0.52359879F,
+  0.523F,
+  0.523599F,
   15.0F,
   5.0F,
   5.0F,
+  1.5F,
   1.0F,
-  1.0F,
-  0.3F,
+  0.7F,
   0.6F,
-  120U,
+  3U,
   1U,
   1300U,
-  30.0F,
+  50.0F,
   20.0F,
   17.0F,
   1.0F,
   10.0F,
   8.0F,
-  0.785398185F,
-  0.52359879F,
-  0.52359879F,
+  0.785398F,
+  0.523599F,
+  1.04719806F,
   22.0F,
   50.0F,
   0.95F,
   8.0F,
-  0.785398185F,
-  0.785398185F,
+  0.785398F,
+  0.785398F,
   1.0F,
-  55.0F
+  100.0F
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<S4>/Constant1'
                                         *   '<S37>/Constant'
                                         *   '<S738>/Constant'
-                                        *   '<S739>/FW_ACCEPT_R'
-                                        *   '<S739>/MC_ACCEPT_R'
-                                        *   '<S742>/Constant'
+                                        *   '<S740>/FW_ACCEPT_R'
+                                        *   '<S740>/MC_ACCEPT_R'
+                                        *   '<S743>/Constant'
                                         *   '<S48>/L1'
                                         *   '<S221>/Dead Zone'
                                         *   '<S221>/Gain'
@@ -2464,11 +2464,11 @@ void FMS_MoveControl_g(real32_T rtu_FMS_In, real32_T rtu_FMS_In_b, uint32_T
 /* Output and update for function-call system: '<S6>/Vehicle.AcceptRadius' */
 void FMS_VehicleAcceptRadius(VTOLState rtu_state, real32_T *rty_radius)
 {
-  /* Switch: '<S739>/Switch' incorporates:
-   *  Constant: '<S739>/FW_ACCEPT_R'
-   *  Constant: '<S739>/MC_ACCEPT_R'
-   *  Constant: '<S745>/Constant'
-   *  RelationalOperator: '<S745>/Compare'
+  /* Switch: '<S740>/Switch' incorporates:
+   *  Constant: '<S740>/FW_ACCEPT_R'
+   *  Constant: '<S740>/MC_ACCEPT_R'
+   *  Constant: '<S747>/Constant'
+   *  RelationalOperator: '<S747>/Compare'
    */
   if (rtu_state == VTOLState_Multicopter) {
     *rty_radius = FMS_PARAM.MC_ACCEPT_R;
@@ -2476,7 +2476,7 @@ void FMS_VehicleAcceptRadius(VTOLState rtu_state, real32_T *rty_radius)
     *rty_radius = FMS_PARAM.FW_ACCEPT_R;
   }
 
-  /* End of Switch: '<S739>/Switch' */
+  /* End of Switch: '<S740>/Switch' */
 }
 
 real32_T rt_remf(real32_T u0, real32_T u1)
@@ -2504,22 +2504,22 @@ void FMS_VehicleHeadingErr(real32_T rtu_psi_cmd, real32_T rtu_psi_est, real32_T 
   real32_T rtb_Rem_h;
   real32_T rtb_Rem_h_0;
 
-  /* Math: '<S756>/Rem' incorporates:
-   *  Constant: '<S756>/Constant1'
-   *  Sum: '<S741>/Sum'
+  /* Math: '<S758>/Rem' incorporates:
+   *  Constant: '<S758>/Constant1'
+   *  Sum: '<S742>/Sum'
    */
   rtb_Rem_h = rt_remf(rtu_psi_cmd - rtu_psi_est, 6.28318548F);
 
-  /* Switch: '<S756>/Switch' incorporates:
-   *  Abs: '<S756>/Abs'
-   *  Constant: '<S756>/Constant'
-   *  Constant: '<S757>/Constant'
-   *  Product: '<S756>/Multiply'
-   *  RelationalOperator: '<S757>/Compare'
-   *  Sum: '<S756>/Add'
+  /* Switch: '<S758>/Switch' incorporates:
+   *  Abs: '<S758>/Abs'
+   *  Constant: '<S758>/Constant'
+   *  Constant: '<S759>/Constant'
+   *  Product: '<S758>/Multiply'
+   *  RelationalOperator: '<S759>/Compare'
+   *  Sum: '<S758>/Add'
    */
   if (fabsf(rtb_Rem_h) > 3.14159274F) {
-    /* Signum: '<S756>/Sign' */
+    /* Signum: '<S758>/Sign' */
     if (rtb_Rem_h < 0.0F) {
       rtb_Rem_h_0 = -1.0F;
     } else if (rtb_Rem_h > 0.0F) {
@@ -2528,13 +2528,13 @@ void FMS_VehicleHeadingErr(real32_T rtu_psi_cmd, real32_T rtu_psi_est, real32_T 
       rtb_Rem_h_0 = rtb_Rem_h;
     }
 
-    /* End of Signum: '<S756>/Sign' */
+    /* End of Signum: '<S758>/Sign' */
     *rty_err = rtb_Rem_h - 6.28318548F * rtb_Rem_h_0;
   } else {
     *rty_err = rtb_Rem_h;
   }
 
-  /* End of Switch: '<S756>/Switch' */
+  /* End of Switch: '<S758>/Switch' */
 }
 
 /* Output and update for function-call system: '<S6>/Vehicle.WaypointAngle' */
@@ -2546,21 +2546,21 @@ void FMS_VehicleWaypointAngle(const real32_T rtu_start[3], const real32_T
   real32_T rtb_Divide_cw_idx_0;
   real32_T rtb_Switch_a_idx_1;
 
-  /* Sum: '<S744>/Sum' */
+  /* Sum: '<S745>/Sum' */
   rtb_Divide_cw_idx_0 = rtu_end[0] - rtu_start[0];
   rtb_Divide_cw_idx_1 = rtu_end[1] - rtu_start[1];
 
-  /* Sum: '<S762>/Sum of Elements' incorporates:
-   *  Math: '<S762>/Math Function'
-   *  SignalConversion: '<S762>/TmpSignal ConversionAtMath FunctionInport1'
+  /* Sum: '<S764>/Sum of Elements' incorporates:
+   *  Math: '<S764>/Math Function'
+   *  SignalConversion: '<S764>/TmpSignal ConversionAtMath FunctionInport1'
    */
   rtb_Switch2_b = rtb_Divide_cw_idx_1 * rtb_Divide_cw_idx_1 +
     rtb_Divide_cw_idx_0 * rtb_Divide_cw_idx_0;
 
-  /* Math: '<S762>/Math Function1' incorporates:
-   *  Sum: '<S762>/Sum of Elements'
+  /* Math: '<S764>/Math Function1' incorporates:
+   *  Sum: '<S764>/Sum of Elements'
    *
-   * About '<S762>/Math Function1':
+   * About '<S764>/Math Function1':
    *  Operator: sqrt
    */
   if (rtb_Switch2_b < 0.0F) {
@@ -2569,11 +2569,11 @@ void FMS_VehicleWaypointAngle(const real32_T rtu_start[3], const real32_T
     rtb_Switch2_b = sqrtf(rtb_Switch2_b);
   }
 
-  /* End of Math: '<S762>/Math Function1' */
+  /* End of Math: '<S764>/Math Function1' */
 
-  /* Switch: '<S762>/Switch' incorporates:
-   *  Constant: '<S762>/Constant'
-   *  Product: '<S762>/Product'
+  /* Switch: '<S764>/Switch' incorporates:
+   *  Constant: '<S764>/Constant'
+   *  Product: '<S764>/Product'
    */
   if (rtb_Switch2_b > 0.0F) {
     rtb_Switch_a_idx_1 = rtb_Divide_cw_idx_0;
@@ -2583,20 +2583,20 @@ void FMS_VehicleWaypointAngle(const real32_T rtu_start[3], const real32_T
     rtb_Switch2_b = 1.0F;
   }
 
-  /* End of Switch: '<S762>/Switch' */
+  /* End of Switch: '<S764>/Switch' */
 
-  /* Product: '<S762>/Divide' */
+  /* Product: '<S764>/Divide' */
   rtb_Divide_cw_idx_0 = rtb_Divide_cw_idx_1 / rtb_Switch2_b;
   rtb_Divide_cw_idx_1 = rtb_Switch_a_idx_1 / rtb_Switch2_b;
 
-  /* Sum: '<S760>/Subtract' incorporates:
-   *  Product: '<S760>/Multiply'
-   *  Product: '<S760>/Multiply1'
+  /* Sum: '<S762>/Subtract' incorporates:
+   *  Product: '<S762>/Multiply'
+   *  Product: '<S762>/Multiply1'
    */
   rtb_Switch2_b = rtb_Divide_cw_idx_0 * localC->Divide[1] - rtb_Divide_cw_idx_1 *
     localC->Divide[0];
 
-  /* Signum: '<S759>/Sign1' */
+  /* Signum: '<S761>/Sign1' */
   if (rtb_Switch2_b < 0.0F) {
     rtb_Switch2_b = -1.0F;
   } else {
@@ -2605,23 +2605,23 @@ void FMS_VehicleWaypointAngle(const real32_T rtu_start[3], const real32_T
     }
   }
 
-  /* End of Signum: '<S759>/Sign1' */
+  /* End of Signum: '<S761>/Sign1' */
 
-  /* Switch: '<S759>/Switch2' incorporates:
-   *  Constant: '<S759>/Constant4'
+  /* Switch: '<S761>/Switch2' incorporates:
+   *  Constant: '<S761>/Constant4'
    */
   if (rtb_Switch2_b == 0.0F) {
     rtb_Switch2_b = 1.0F;
   }
 
-  /* End of Switch: '<S759>/Switch2' */
+  /* End of Switch: '<S761>/Switch2' */
 
-  /* DotProduct: '<S759>/Dot Product' */
+  /* DotProduct: '<S761>/Dot Product' */
   rtb_Divide_cw_idx_0 = localC->Divide[0] * rtb_Divide_cw_idx_0 + localC->
     Divide[1] * rtb_Divide_cw_idx_1;
 
-  /* Trigonometry: '<S759>/Acos' incorporates:
-   *  DotProduct: '<S759>/Dot Product'
+  /* Trigonometry: '<S761>/Acos' incorporates:
+   *  DotProduct: '<S761>/Dot Product'
    */
   if (rtb_Divide_cw_idx_0 > 1.0F) {
     rtb_Divide_cw_idx_0 = 1.0F;
@@ -2631,13 +2631,13 @@ void FMS_VehicleWaypointAngle(const real32_T rtu_start[3], const real32_T
     }
   }
 
-  /* Product: '<S759>/Multiply' incorporates:
-   *  Trigonometry: '<S759>/Acos'
+  /* Product: '<S761>/Multiply' incorporates:
+   *  Trigonometry: '<S761>/Acos'
    */
   rtb_Divide_cw_idx_0 = acosf(rtb_Divide_cw_idx_0) * rtb_Switch2_b;
 
-  /* Switch: '<S744>/Switch' incorporates:
-   *  Bias: '<S744>/Bias'
+  /* Switch: '<S745>/Switch' incorporates:
+   *  Bias: '<S745>/Bias'
    */
   if (rtb_Divide_cw_idx_0 >= 0.0F) {
     *rty_angle = rtb_Divide_cw_idx_0;
@@ -2645,7 +2645,7 @@ void FMS_VehicleWaypointAngle(const real32_T rtu_start[3], const real32_T
     *rty_angle = rtb_Divide_cw_idx_0 + 6.28318548F;
   }
 
-  /* End of Switch: '<S744>/Switch' */
+  /* End of Switch: '<S745>/Switch' */
 }
 
 real_T rt_modd(real_T u0, real_T u1)
@@ -2690,77 +2690,77 @@ void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const real_T
   int32_T rtb_Compare_dy_0;
   real_T rtb_Sum_e_idx_0;
 
-  /* Gain: '<S746>/deg2rad' */
+  /* Gain: '<S748>/deg2rad' */
   rtb_Sum_e_idx_0 = 0.017453292519943295 * rtu_llo[0];
 
-  /* Trigonometry: '<S747>/Sin' */
+  /* Trigonometry: '<S749>/Sin' */
   rtb_Sum2_m = sin(rtb_Sum_e_idx_0);
 
-  /* Math: '<S747>/Square1' */
+  /* Math: '<S749>/Square1' */
   rtb_Sum2_m *= rtb_Sum2_m;
 
-  /* Product: '<S747>/Multiply1' incorporates:
-   *  Product: '<S747>/Multiply'
+  /* Product: '<S749>/Multiply1' incorporates:
+   *  Product: '<S749>/Multiply'
    */
   rtb_Gain_lq = localC->ff * rtb_Sum2_m;
 
-  /* Product: '<S747>/Divide' incorporates:
-   *  Constant: '<S747>/Constant'
-   *  Constant: '<S747>/R'
-   *  Sqrt: '<S747>/Sqrt'
-   *  Sum: '<S747>/Sum1'
+  /* Product: '<S749>/Divide' incorporates:
+   *  Constant: '<S749>/Constant'
+   *  Constant: '<S749>/R'
+   *  Sqrt: '<S749>/Sqrt'
+   *  Sum: '<S749>/Sum1'
    */
   rtb_Sum2_m = 6.378137E+6 / sqrt(1.0 - rtb_Gain_lq);
 
-  /* Product: '<S747>/Product3' incorporates:
-   *  Constant: '<S747>/Constant1'
-   *  Product: '<S747>/Multiply1'
-   *  Sum: '<S747>/Sum2'
+  /* Product: '<S749>/Product3' incorporates:
+   *  Constant: '<S749>/Constant1'
+   *  Product: '<S749>/Multiply1'
+   *  Sum: '<S749>/Sum2'
    */
   rtb_Gain_lq = 1.0 / (1.0 - rtb_Gain_lq) * localC->Sum4 * rtb_Sum2_m;
 
-  /* Product: '<S747>/Multiply2' incorporates:
-   *  Trigonometry: '<S747>/Cos'
+  /* Product: '<S749>/Multiply2' incorporates:
+   *  Trigonometry: '<S749>/Cos'
    */
   rtb_Sum2_m *= cos(rtb_Sum_e_idx_0);
 
-  /* Sum: '<S746>/Sum' */
+  /* Sum: '<S748>/Sum' */
   rtb_Sum_e_idx_0 = rtu_lla[0] - rtu_llo[0];
 
-  /* Abs: '<S751>/Abs' incorporates:
-   *  Abs: '<S754>/Abs1'
-   *  Switch: '<S751>/Switch1'
+  /* Abs: '<S753>/Abs' incorporates:
+   *  Abs: '<S756>/Abs1'
+   *  Switch: '<S753>/Switch1'
    */
   rtb_Sum_n1 = fabs(rtb_Sum_e_idx_0);
 
-  /* Switch: '<S751>/Switch1' incorporates:
-   *  Abs: '<S751>/Abs'
-   *  Bias: '<S751>/Bias2'
-   *  Bias: '<S751>/Bias3'
-   *  Constant: '<S748>/Constant'
-   *  Constant: '<S748>/Constant1'
-   *  Constant: '<S753>/Constant'
-   *  Gain: '<S751>/Gain1'
-   *  Product: '<S751>/Multiply'
-   *  RelationalOperator: '<S753>/Compare'
-   *  Switch: '<S748>/Switch'
+  /* Switch: '<S753>/Switch1' incorporates:
+   *  Abs: '<S753>/Abs'
+   *  Bias: '<S753>/Bias2'
+   *  Bias: '<S753>/Bias3'
+   *  Constant: '<S750>/Constant'
+   *  Constant: '<S750>/Constant1'
+   *  Constant: '<S755>/Constant'
+   *  Gain: '<S753>/Gain1'
+   *  Product: '<S753>/Multiply'
+   *  RelationalOperator: '<S755>/Compare'
+   *  Switch: '<S750>/Switch'
    */
   if (rtb_Sum_n1 > 90.0) {
-    /* Switch: '<S754>/Switch1' incorporates:
-     *  Bias: '<S754>/Bias2'
-     *  Bias: '<S754>/Bias3'
-     *  Constant: '<S754>/Constant'
-     *  Constant: '<S755>/Constant'
-     *  Math: '<S754>/Math Function'
-     *  RelationalOperator: '<S755>/Compare'
+    /* Switch: '<S756>/Switch1' incorporates:
+     *  Bias: '<S756>/Bias2'
+     *  Bias: '<S756>/Bias3'
+     *  Constant: '<S756>/Constant'
+     *  Constant: '<S757>/Constant'
+     *  Math: '<S756>/Math Function'
+     *  RelationalOperator: '<S757>/Compare'
      */
     if (rtb_Sum_n1 > 180.0) {
       rtb_Sum_e_idx_0 = rt_modd(rtb_Sum_e_idx_0 + 180.0, 360.0) + -180.0;
     }
 
-    /* End of Switch: '<S754>/Switch1' */
+    /* End of Switch: '<S756>/Switch1' */
 
-    /* Signum: '<S751>/Sign' */
+    /* Signum: '<S753>/Sign' */
     if (rtb_Sum_e_idx_0 < 0.0) {
       rtb_Sum_e_idx_0 = -1.0;
     } else {
@@ -2769,68 +2769,68 @@ void F_VehicleArmAutoMissionLLA2FLAT(const real_T rtu_lla[3], const real_T
       }
     }
 
-    /* End of Signum: '<S751>/Sign' */
+    /* End of Signum: '<S753>/Sign' */
     rtb_Sum_e_idx_0 *= -(rtb_Sum_n1 + -90.0) + 90.0;
     rtb_Compare_dy_0 = 180;
   } else {
     rtb_Compare_dy_0 = 0;
   }
 
-  /* Sum: '<S748>/Sum' incorporates:
-   *  Sum: '<S746>/Sum'
+  /* Sum: '<S750>/Sum' incorporates:
+   *  Sum: '<S748>/Sum'
    */
   rtb_Sum_n1 = (rtu_lla[1] - rtu_llo[1]) + (real_T)rtb_Compare_dy_0;
 
-  /* Product: '<S746>/Multiply' incorporates:
-   *  Gain: '<S746>/deg2rad1'
+  /* Product: '<S748>/Multiply' incorporates:
+   *  Gain: '<S748>/deg2rad1'
    */
   rtb_Sum_e_idx_0 = 0.017453292519943295 * rtb_Sum_e_idx_0 * rtb_Gain_lq;
 
-  /* Switch: '<S750>/Switch1' incorporates:
-   *  Abs: '<S750>/Abs1'
-   *  Bias: '<S750>/Bias2'
-   *  Bias: '<S750>/Bias3'
-   *  Constant: '<S750>/Constant'
+  /* Switch: '<S752>/Switch1' incorporates:
+   *  Abs: '<S752>/Abs1'
+   *  Bias: '<S752>/Bias2'
+   *  Bias: '<S752>/Bias3'
    *  Constant: '<S752>/Constant'
-   *  Math: '<S750>/Math Function'
-   *  RelationalOperator: '<S752>/Compare'
+   *  Constant: '<S754>/Constant'
+   *  Math: '<S752>/Math Function'
+   *  RelationalOperator: '<S754>/Compare'
    */
   if (fabs(rtb_Sum_n1) > 180.0) {
     rtb_Sum_n1 = rt_modd(rtb_Sum_n1 + 180.0, 360.0) + -180.0;
   }
 
-  /* End of Switch: '<S750>/Switch1' */
+  /* End of Switch: '<S752>/Switch1' */
 
-  /* Product: '<S746>/Multiply' incorporates:
-   *  Gain: '<S746>/deg2rad1'
+  /* Product: '<S748>/Multiply' incorporates:
+   *  Gain: '<S748>/deg2rad1'
    */
   rtb_Sum_n1 = 0.017453292519943295 * rtb_Sum_n1 * rtb_Sum2_m;
 
-  /* Gain: '<S746>/deg2rad2' */
+  /* Gain: '<S748>/deg2rad2' */
   rtb_Sum2_m = 0.017453292519943295 * rtu_psio;
 
-  /* Trigonometry: '<S749>/SinCos' */
+  /* Trigonometry: '<S751>/SinCos' */
   rtb_Sum3_l = sin(rtb_Sum2_m);
   rtb_Gain_lq = cos(rtb_Sum2_m);
 
-  /* Sum: '<S749>/Sum2' incorporates:
-   *  Product: '<S749>/Multiply1'
-   *  Product: '<S749>/Multiply2'
+  /* Sum: '<S751>/Sum2' incorporates:
+   *  Product: '<S751>/Multiply1'
+   *  Product: '<S751>/Multiply2'
    */
   rtb_Sum2_m = rtb_Sum_e_idx_0 * rtb_Gain_lq + rtb_Sum_n1 * rtb_Sum3_l;
 
-  /* Product: '<S749>/Multiply3' */
+  /* Product: '<S751>/Multiply3' */
   rtb_Sum3_l *= rtb_Sum_e_idx_0;
 
-  /* Product: '<S749>/Multiply4' */
+  /* Product: '<S751>/Multiply4' */
   rtb_Gain_lq *= rtb_Sum_n1;
 
-  /* Sum: '<S749>/Sum3' */
+  /* Sum: '<S751>/Sum3' */
   rtb_Sum3_l = rtb_Gain_lq - rtb_Sum3_l;
 
-  /* DataTypeConversion: '<S740>/Data Type Conversion' incorporates:
-   *  Gain: '<S746>/Gain'
-   *  Sum: '<S746>/Sum1'
+  /* DataTypeConversion: '<S741>/Data Type Conversion' incorporates:
+   *  Gain: '<S748>/Gain'
+   *  Sum: '<S748>/Sum1'
    */
   rty_pos[0] = (real32_T)rtb_Sum2_m;
   rty_pos[1] = (real32_T)rtb_Sum3_l;
@@ -4304,11 +4304,11 @@ static void FMS_SubMode(void)
   FMS_B.pilot_cmd = FMS_B.BusConversion_InsertedFor_FMS_f;
 
   /* Outputs for Function Call SubSystem: '<S6>/Vehicle.StickMoved' */
-  /* RelationalOperator: '<S758>/Compare' incorporates:
-   *  Abs: '<S743>/Abs'
-   *  Constant: '<S758>/Constant'
-   *  MinMax: '<S743>/Max'
-   *  Sum: '<S743>/Sum'
+  /* RelationalOperator: '<S760>/Compare' incorporates:
+   *  Abs: '<S744>/Abs'
+   *  Constant: '<S760>/Constant'
+   *  MinMax: '<S744>/Max'
+   *  Sum: '<S744>/Sum'
    */
   FMS_B.Compare_k = (fmax(fmax(fmax(fabs(FMS_B.stick_val[0] -
     FMS_B.pilot_cmd.stick_yaw), fabs(FMS_B.stick_val[1] -
@@ -5000,8 +5000,8 @@ static void FMS_Vehicle(void)
       FMS_B.xy_R[1] = FMS_B.BusConversion_InsertedFor_FMSSt.y_R;
 
       /* Outputs for Function Call SubSystem: '<S6>/Vehicle.PrepTakeoff' */
-      /* Reshape: '<S742>/Reshape' incorporates:
-       *  Constant: '<S742>/Constant'
+      /* Reshape: '<S743>/Reshape' incorporates:
+       *  Constant: '<S743>/Constant'
        */
       FMS_B.Reshape[0] = FMS_B.xy_R[0];
       FMS_B.Reshape[1] = FMS_B.xy_R[1];
@@ -5205,7 +5205,7 @@ static boolean_T FMS_sf_msg_pop_VTOL_M(void)
 static void FMS_c11_FMS(void)
 {
   int32_T b_previousEvent;
-  boolean_T b_sf_internal_predicateOutput;
+  boolean_T sf_internal_predicateOutput;
   boolean_T guard1 = false;
 
   /* Chart: '<Root>/FMS State Machine' incorporates:
@@ -5378,28 +5378,45 @@ static void FMS_c11_FMS(void)
       guard1 = false;
       switch (FMS_DW.is_VTOL_State) {
        case FMS_IN_BackwardTrans:
-        if ((fabsf(FMS_B.DiscreteTimeIntegrator5_p) < 1.0F) ||
-            (FMS_DW.temporalCounter_i2 >= 5000U)) {
+        if (fabsf(FMS_B.DiscreteTimeIntegrator5_p) < 1.0F) {
+          sf_internal_predicateOutput = true;
+        } else if (FMS_DW.temporalCounter_i2 >= 5000U) {
+          sf_internal_predicateOutput = true;
+        } else {
+          FMS_B.flag = FMS_B.BusConversion_InsertedFor_FMSSt.flag;
+
+          /* Outputs for Function Call SubSystem: '<S6>/VTOL_State.IsPosValid' */
+          /* RelationalOperator: '<S746>/Compare' incorporates:
+           *  Constant: '<S746>/Constant'
+           *  S-Function (sfix_bitop): '<S739>/Bitwise AND'
+           */
+          FMS_B.Compare_b = ((FMS_B.flag & 212U) == 212U);
+
+          /* End of Outputs for SubSystem: '<S6>/VTOL_State.IsPosValid' */
+          sf_internal_predicateOutput = !FMS_B.Compare_b;
+        }
+
+        if (sf_internal_predicateOutput) {
           guard1 = true;
         } else {
           if (FMS_sf_msg_pop_M()) {
-            b_sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
+            sf_internal_predicateOutput = (FMS_DW.M_msgReservedData ==
               FMS_Cmd_Pause);
           } else {
-            b_sf_internal_predicateOutput = false;
+            sf_internal_predicateOutput = false;
           }
 
-          if (b_sf_internal_predicateOutput) {
+          if (sf_internal_predicateOutput) {
             guard1 = true;
           } else {
             if (FMS_sf_msg_pop_VTOL_M()) {
-              b_sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
+              sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
                 VTOLMode_Fixwing);
             } else {
-              b_sf_internal_predicateOutput = false;
+              sf_internal_predicateOutput = false;
             }
 
-            if (b_sf_internal_predicateOutput) {
+            if (sf_internal_predicateOutput) {
               FMS_DW.is_VTOL_State = FMS_IN_ForwardTrans;
               FMS_B.vtol_state = VTOLState_ForwardTrans;
             }
@@ -5409,13 +5426,13 @@ static void FMS_c11_FMS(void)
 
        case FMS_IN_Fixwing:
         if (FMS_sf_msg_pop_VTOL_M()) {
-          b_sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
+          sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
             VTOLMode_Multicopter);
         } else {
-          b_sf_internal_predicateOutput = false;
+          sf_internal_predicateOutput = false;
         }
 
-        if (b_sf_internal_predicateOutput) {
+        if (sf_internal_predicateOutput) {
           FMS_DW.is_VTOL_State = FMS_IN_BackwardTrans;
           FMS_DW.temporalCounter_i2 = 0U;
           FMS_B.vtol_state = VTOLState_BackwardTrans;
@@ -5438,13 +5455,13 @@ static void FMS_c11_FMS(void)
           FMS_B.vtol_state = VTOLState_Fixwing;
         } else {
           if (FMS_sf_msg_pop_VTOL_M()) {
-            b_sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
+            sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
               VTOLMode_Multicopter);
           } else {
-            b_sf_internal_predicateOutput = false;
+            sf_internal_predicateOutput = false;
           }
 
-          if (b_sf_internal_predicateOutput) {
+          if (sf_internal_predicateOutput) {
             FMS_DW.is_VTOL_State = FMS_IN_BackwardTrans;
             FMS_DW.temporalCounter_i2 = 0U;
             FMS_B.vtol_state = VTOLState_BackwardTrans;
@@ -5454,13 +5471,13 @@ static void FMS_c11_FMS(void)
 
        case FMS_IN_Multicopter:
         if (FMS_sf_msg_pop_VTOL_M()) {
-          b_sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
+          sf_internal_predicateOutput = (FMS_DW.VTOL_M_msgReservedData ==
             VTOLMode_Fixwing);
         } else {
-          b_sf_internal_predicateOutput = false;
+          sf_internal_predicateOutput = false;
         }
 
-        if (b_sf_internal_predicateOutput) {
+        if (sf_internal_predicateOutput) {
           FMS_DW.is_VTOL_State = FMS_IN_ForwardTrans;
           FMS_B.vtol_state = VTOLState_ForwardTrans;
         }
@@ -6220,15 +6237,25 @@ void FMS_step(void)
 
   /* End of Chart: '<Root>/SafeMode' */
 
-  /* Saturate: '<S1>/Saturation1' incorporates:
-   *  Switch: '<S1>/Switch'
+  /* Switch: '<S1>/Switch' incorporates:
+   *  Inport: '<Root>/INS_Out'
+   *  S-Function (sfix_bitop): '<S1>/Bitwise AND'
    */
-  if (rtb_Divide_lr_idx_0 > 100.0F) {
-    rtb_Divide_lr_idx_1 = 100.0F;
-  } else if (rtb_Divide_lr_idx_0 < 0.1F) {
-    rtb_Divide_lr_idx_1 = 0.1F;
+  if ((FMS_U.INS_Out.flag & 512U) > 0U) {
+    rtb_Divide_lr_idx_1 = FMS_U.INS_Out.airspeed;
   } else {
     rtb_Divide_lr_idx_1 = rtb_Divide_lr_idx_0;
+  }
+
+  /* End of Switch: '<S1>/Switch' */
+
+  /* Saturate: '<S1>/Saturation1' */
+  if (rtb_Divide_lr_idx_1 > 100.0F) {
+    rtb_Divide_lr_idx_1 = 100.0F;
+  } else {
+    if (rtb_Divide_lr_idx_1 < 0.1F) {
+      rtb_Divide_lr_idx_1 = 0.1F;
+    }
   }
 
   /* End of Saturate: '<S1>/Saturation1' */
@@ -10187,8 +10214,8 @@ void FMS_step(void)
               }
 
               /* End of Product: '<S134>/Multiply' */
-              if ((FMS_DW.temporalCounter_i1_i >= 750U) && (fabsf
-                   (rtb_VectorConcatenate_g0[1]) > 5.0F)) {
+              if ((FMS_DW.temporalCounter_i1_i >= 625U) && (fabsf
+                   (rtb_VectorConcatenate_g0[0]) > 5.0F)) {
                 FMS_DW.is_c26_FMS = FMS_IN_Hold_od;
                 rtb_state_fg = MotionState_Hold;
               } else {
