@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.430
+ * Model version                  : 1.572
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 13 14:18:47 2025
+ * C/C++ source code generated on : Tue Aug 19 15:35:45 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -46,7 +46,21 @@ const ConstB_Controller_T Controller_ConstB = {
   { 0.0F, 0.0F, 0.0F },                /* '<S77>/Constant' */
   0.00250000018F,                      /* '<S49>/Square' */
   0.196120009F,                        /* '<S49>/Multiply' */
-  -78.448F                             /* '<S49>/Gain4' */
+  -78.448F,                            /* '<S49>/Gain4' */
+
+#if AIRFRAME == 1
+
+  /* Start of '<S168>/VTOL1' */
+  {
+    { -0.5F, 0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, 0.5F, -0.5F,
+      -0.5F },                         /* '<S172>/Gain' */
+
+    { 0.5F, 0.5F, -0.5F, -0.5F },      /* '<S172>/r_column' */
+
+    { -0.5F, 0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, -0.5F }/* '<S172>/pq_column' */
+  }
+  /* End of '<S168>/VTOL1' */
+#endif
 };
 
 /* Constant parameters (default storage) */
@@ -54,24 +68,22 @@ const ConstP_Controller_T Controller_ConstP = {
 
 #if (AIRFRAME == 1) || (AIRFRAME == 2)
 
-  /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
+  /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
    * Referenced by:
-   *   '<S172>/Effective_Matrix'
-   *   '<S182>/Effective_Matrix'
+   *   '<S187>/Standby'
+   *   '<S197>/Disarm'
    */
-  { -1.41421354F, 1.41421354F, 1.41421354F, -1.41421354F, 1.41421354F,
-    -1.41421354F, 1.41421354F, -1.41421354F, 1.0F, 1.0F, -1.0F, -1.0F },
+  { 1150.0F, 1150.0F, 1150.0F, 1150.0F, 1000.0F },
 
 #endif
 
-#if (AIRFRAME == 1) || (AIRFRAME == 2)
+#if AIRFRAME == 2
 
-  /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
-   * Referenced by:
-   *   '<S180>/Disarm'
-   *   '<S190>/Disarm'
+  /* Computed Parameter: Effective_Matrix_Value_c
+   * Referenced by: '<S189>/Effective_Matrix'
    */
-  { 1150.0F, 1150.0F, 1150.0F, 1150.0F, 1000.0F },
+  { -1.41421354F, 1.41421354F, 1.41421354F, -1.41421354F, 1.41421354F,
+    -1.41421354F, 1.41421354F, -1.41421354F, 1.0F, 1.0F, -1.0F, -1.0F },
 
 #endif
 

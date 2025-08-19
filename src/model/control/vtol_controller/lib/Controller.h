@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.430
+ * Model version                  : 1.572
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 13 14:18:47 2025
+ * C/C++ source code generated on : Tue Aug 19 15:35:45 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -110,6 +110,17 @@ typedef struct {
   boolean_T Relay_Mode_m;              /* '<S10>/Relay' */
 } DW_Controller_T;
 
+/* Invariant block signals for system '<S168>/VTOL1' */
+#if AIRFRAME == 1
+
+typedef struct {
+  const real32_T Gain[12];             /* '<S172>/Gain' */
+  const real32_T r_column[4];          /* '<S172>/r_column' */
+  const real32_T pq_column[8];         /* '<S172>/pq_column' */
+} ConstB_VTOL1_Controller_T;
+
+#endif
+
 /* Invariant block signals (default storage) */
 typedef struct {
   const real32_T fw_torque_cmd[3];     /* '<S5>/Constant' */
@@ -135,6 +146,14 @@ typedef struct {
   const real32_T Square_h2;            /* '<S49>/Square' */
   const real32_T d_m;                  /* '<S49>/Multiply' */
   const real32_T Gain4_o;              /* '<S49>/Gain4' */
+
+#if AIRFRAME == 1
+
+  ConstB_VTOL1_Controller_T VTOL1;     /* '<S168>/VTOL1' */
+
+#define CONSTB_CONTROLLER_T_VARIANT_EXISTS
+#endif
+
 } ConstB_Controller_T;
 
 /* Constant parameters (default storage) */
@@ -142,24 +161,22 @@ typedef struct {
 
 #if (AIRFRAME == 1) || (AIRFRAME == 2)
 
-  /* Pooled Parameter (Expression: [-sqrt(2) sqrt(2) 1;sqrt(2) -sqrt(2) 1;sqrt(2) sqrt(2) -1;-sqrt(2) -sqrt(2) -1])
+  /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
    * Referenced by:
-   *   '<S172>/Effective_Matrix'
-   *   '<S182>/Effective_Matrix'
+   *   '<S187>/Standby'
+   *   '<S197>/Disarm'
    */
-  real32_T pooled5[12];
+  real32_T pooled7[5];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
 
-#if (AIRFRAME == 1) || (AIRFRAME == 2)
+#if AIRFRAME == 2
 
-  /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
-   * Referenced by:
-   *   '<S180>/Disarm'
-   *   '<S190>/Disarm'
+  /* Computed Parameter: Effective_Matrix_Value_c
+   * Referenced by: '<S189>/Effective_Matrix'
    */
-  real32_T pooled7[5];
+  real32_T Effective_Matrix_Value_c[12];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
@@ -215,129 +232,133 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_EmZSH4Jwlm4SR6cVayiT1B CONTROL_PARAM;/* Variable: CONTROL_PARAM
-                                                    * Referenced by:
-                                                    *   '<S68>/Saturation'
-                                                    *   '<S69>/Gain'
-                                                    *   '<S69>/Gain1'
-                                                    *   '<S69>/balabnce_ratio2'
-                                                    *   '<S69>/balance_ratio'
-                                                    *   '<S69>/pitch_ff'
-                                                    *   '<S69>/thorttle_ff'
-                                                    *   '<S69>/ucmd2pitch'
-                                                    *   '<S69>/ucmd2thor'
-                                                    *   '<S69>/wcmd2pitch'
-                                                    *   '<S69>/wcmd2thor'
-                                                    *   '<S156>/hover_throttle'
-                                                    *   '<S43>/hover_throttle'
-                                                    *   '<S71>/FF'
-                                                    *   '<S71>/FF_limit'
-                                                    *   '<S71>/PI_limit'
-                                                    *   '<S89>/P_control'
-                                                    *   '<S90>/P_control'
-                                                    *   '<S91>/Kv'
-                                                    *   '<S138>/Saturation'
-                                                    *   '<S171>/Bias1'
-                                                    *   '<S171>/Bias2'
-                                                    *   '<S171>/Bias3'
-                                                    *   '<S171>/Bias4'
-                                                    *   '<S181>/Bias1'
-                                                    *   '<S181>/Bias2'
-                                                    *   '<S181>/Bias3'
-                                                    *   '<S181>/Bias4'
-                                                    *   '<S20>/Saturation'
-                                                    *   '<S20>/Saturation1'
-                                                    *   '<S75>/trim_speed'
-                                                    *   '<S76>/trim_speed'
-                                                    *   '<S80>/Saturation'
-                                                    *   '<S97>/Gain'
-                                                    *   '<S98>/ '
-                                                    *   '<S98>/Gain3'
-                                                    *   '<S100>/Gain'
-                                                    *   '<S101>/Gain'
-                                                    *   '<S114>/Saturation'
-                                                    *   '<S114>/Saturation1'
-                                                    *   '<S147>/kd'
-                                                    *   '<S147>/Saturation'
-                                                    *   '<S148>/ki'
-                                                    *   '<S148>/Discrete-Time Integrator'
-                                                    *   '<S149>/kp'
-                                                    *   '<S163>/kd'
-                                                    *   '<S163>/Saturation'
-                                                    *   '<S164>/Constant'
-                                                    *   '<S164>/ki'
-                                                    *   '<S164>/Discrete-Time Integrator'
-                                                    *   '<S165>/kp'
-                                                    *   '<S174>/Constant1'
-                                                    *   '<S174>/Constant12'
-                                                    *   '<S174>/Constant2'
-                                                    *   '<S174>/Constant7'
-                                                    *   '<S179>/Bias'
-                                                    *   '<S179>/Bias1'
-                                                    *   '<S179>/Bias2'
-                                                    *   '<S179>/Bias3'
-                                                    *   '<S180>/Bias'
-                                                    *   '<S180>/Bias1'
-                                                    *   '<S180>/Bias2'
-                                                    *   '<S180>/Bias3'
-                                                    *   '<S184>/Constant1'
-                                                    *   '<S184>/Constant11'
-                                                    *   '<S184>/Constant12'
-                                                    *   '<S184>/Constant2'
-                                                    *   '<S184>/Constant7'
-                                                    *   '<S184>/Constant8'
-                                                    *   '<S189>/Bias'
-                                                    *   '<S189>/Bias1'
-                                                    *   '<S189>/Bias2'
-                                                    *   '<S189>/Bias3'
-                                                    *   '<S190>/Bias'
-                                                    *   '<S190>/Bias1'
-                                                    *   '<S190>/Bias2'
-                                                    *   '<S190>/Bias3'
-                                                    *   '<S32>/Constant1'
-                                                    *   '<S32>/Constant2'
-                                                    *   '<S50>/kd'
-                                                    *   '<S50>/Saturation'
-                                                    *   '<S51>/Constant'
-                                                    *   '<S51>/ki'
-                                                    *   '<S51>/Discrete-Time Integrator'
-                                                    *   '<S52>/kp'
-                                                    *   '<S77>/gain1'
-                                                    *   '<S77>/gain2'
-                                                    *   '<S77>/gain3'
-                                                    *   '<S77>/Discrete-Time Integrator'
-                                                    *   '<S78>/gain1'
-                                                    *   '<S78>/gain2'
-                                                    *   '<S78>/gain3'
-                                                    *   '<S82>/Pitch Offset'
-                                                    *   '<S82>/Saturation'
-                                                    *   '<S83>/Constant1'
-                                                    *   '<S83>/Constant2'
-                                                    *   '<S131>/Constant1'
-                                                    *   '<S131>/Constant2'
-                                                    *   '<S25>/gain1'
-                                                    *   '<S25>/gain2'
-                                                    *   '<S25>/gain3'
-                                                    *   '<S25>/Saturation'
-                                                    *   '<S26>/gain1'
-                                                    *   '<S26>/gain2'
-                                                    *   '<S26>/gain3'
-                                                    *   '<S26>/Discrete-Time Integrator'
-                                                    *   '<S27>/gain1'
-                                                    *   '<S27>/gain2'
-                                                    *   '<S27>/gain3'
-                                                    *   '<S120>/gain1'
-                                                    *   '<S120>/gain2'
-                                                    *   '<S120>/gain3'
-                                                    *   '<S120>/Saturation'
-                                                    *   '<S121>/gain1'
-                                                    *   '<S121>/gain2'
-                                                    *   '<S121>/gain3'
-                                                    *   '<S121>/Discrete-Time Integrator'
-                                                    *   '<S122>/gain1'
-                                                    *   '<S122>/gain2'
-                                                    *   '<S122>/gain3'
-                                                    */
+extern struct_mdDdQrQ86BvYjyHVnXla1 CONTROL_PARAM;/* Variable: CONTROL_PARAM
+                                                   * Referenced by:
+                                                   *   '<S68>/Saturation'
+                                                   *   '<S69>/Gain'
+                                                   *   '<S69>/Gain1'
+                                                   *   '<S69>/balabnce_ratio2'
+                                                   *   '<S69>/balance_ratio'
+                                                   *   '<S69>/pitch_ff'
+                                                   *   '<S69>/thorttle_ff'
+                                                   *   '<S69>/ucmd2pitch'
+                                                   *   '<S69>/ucmd2thor'
+                                                   *   '<S69>/wcmd2pitch'
+                                                   *   '<S69>/wcmd2thor'
+                                                   *   '<S156>/hover_throttle'
+                                                   *   '<S43>/hover_throttle'
+                                                   *   '<S71>/FF'
+                                                   *   '<S71>/FF_limit'
+                                                   *   '<S71>/PI_limit'
+                                                   *   '<S89>/P_control'
+                                                   *   '<S90>/P_control'
+                                                   *   '<S91>/Kv'
+                                                   *   '<S138>/Saturation'
+                                                   *   '<S171>/Bias1'
+                                                   *   '<S171>/Bias2'
+                                                   *   '<S171>/Bias3'
+                                                   *   '<S171>/Bias4'
+                                                   *   '<S171>/Saturation1'
+                                                   *   '<S172>/Constant'
+                                                   *   '<S172>/Constant1'
+                                                   *   '<S172>/Saturation'
+                                                   *   '<S188>/Bias1'
+                                                   *   '<S188>/Bias2'
+                                                   *   '<S188>/Bias3'
+                                                   *   '<S188>/Bias4'
+                                                   *   '<S20>/Saturation'
+                                                   *   '<S20>/Saturation1'
+                                                   *   '<S75>/trim_speed'
+                                                   *   '<S76>/trim_speed'
+                                                   *   '<S80>/Saturation'
+                                                   *   '<S97>/Gain'
+                                                   *   '<S98>/ '
+                                                   *   '<S98>/Gain3'
+                                                   *   '<S100>/Gain'
+                                                   *   '<S101>/Gain'
+                                                   *   '<S114>/Saturation'
+                                                   *   '<S114>/Saturation1'
+                                                   *   '<S147>/kd'
+                                                   *   '<S147>/Saturation'
+                                                   *   '<S148>/ki'
+                                                   *   '<S148>/Discrete-Time Integrator'
+                                                   *   '<S149>/kp'
+                                                   *   '<S163>/kd'
+                                                   *   '<S163>/Saturation'
+                                                   *   '<S164>/Constant'
+                                                   *   '<S164>/ki'
+                                                   *   '<S164>/Discrete-Time Integrator'
+                                                   *   '<S165>/kp'
+                                                   *   '<S176>/Constant1'
+                                                   *   '<S176>/Constant12'
+                                                   *   '<S176>/Constant2'
+                                                   *   '<S176>/Constant7'
+                                                   *   '<S186>/Bias'
+                                                   *   '<S186>/Bias1'
+                                                   *   '<S186>/Bias2'
+                                                   *   '<S186>/Bias3'
+                                                   *   '<S187>/Bias'
+                                                   *   '<S187>/Bias1'
+                                                   *   '<S187>/Bias2'
+                                                   *   '<S187>/Bias3'
+                                                   *   '<S191>/Constant1'
+                                                   *   '<S191>/Constant11'
+                                                   *   '<S191>/Constant12'
+                                                   *   '<S191>/Constant2'
+                                                   *   '<S191>/Constant7'
+                                                   *   '<S191>/Constant8'
+                                                   *   '<S196>/Bias'
+                                                   *   '<S196>/Bias1'
+                                                   *   '<S196>/Bias2'
+                                                   *   '<S196>/Bias3'
+                                                   *   '<S197>/Bias'
+                                                   *   '<S197>/Bias1'
+                                                   *   '<S197>/Bias2'
+                                                   *   '<S197>/Bias3'
+                                                   *   '<S32>/Constant1'
+                                                   *   '<S32>/Constant2'
+                                                   *   '<S50>/kd'
+                                                   *   '<S50>/Saturation'
+                                                   *   '<S51>/Constant'
+                                                   *   '<S51>/ki'
+                                                   *   '<S51>/Discrete-Time Integrator'
+                                                   *   '<S52>/kp'
+                                                   *   '<S77>/gain1'
+                                                   *   '<S77>/gain2'
+                                                   *   '<S77>/gain3'
+                                                   *   '<S77>/Discrete-Time Integrator'
+                                                   *   '<S78>/gain1'
+                                                   *   '<S78>/gain2'
+                                                   *   '<S78>/gain3'
+                                                   *   '<S82>/Pitch Offset'
+                                                   *   '<S82>/Saturation'
+                                                   *   '<S83>/Constant1'
+                                                   *   '<S83>/Constant2'
+                                                   *   '<S131>/Constant1'
+                                                   *   '<S131>/Constant2'
+                                                   *   '<S25>/gain1'
+                                                   *   '<S25>/gain2'
+                                                   *   '<S25>/gain3'
+                                                   *   '<S25>/Saturation'
+                                                   *   '<S26>/gain1'
+                                                   *   '<S26>/gain2'
+                                                   *   '<S26>/gain3'
+                                                   *   '<S26>/Discrete-Time Integrator'
+                                                   *   '<S27>/gain1'
+                                                   *   '<S27>/gain2'
+                                                   *   '<S27>/gain3'
+                                                   *   '<S120>/gain1'
+                                                   *   '<S120>/gain2'
+                                                   *   '<S120>/gain3'
+                                                   *   '<S120>/Saturation'
+                                                   *   '<S121>/gain1'
+                                                   *   '<S121>/gain2'
+                                                   *   '<S121>/gain3'
+                                                   *   '<S121>/Discrete-Time Integrator'
+                                                   *   '<S122>/gain1'
+                                                   *   '<S122>/gain2'
+                                                   *   '<S122>/gain3'
+                                                   */
 extern struct_biZzOMrg0u3lxrb7POOubF CONTROL_EXPORT;/* Variable: CONTROL_EXPORT
                                                      * Referenced by: '<S3>/Constant'
                                                      */
@@ -371,6 +392,7 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * Block '<S103>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S119>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S159>/Signal Copy1' : Eliminate redundant signal conversion block
+ * Block '<S172>/Reshape' : Reshape block reduction
  * Block '<S169>/Reshape' : Reshape block reduction
  * Block '<S170>/Reshape' : Reshape block reduction
  */
@@ -562,24 +584,31 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S170>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2'
  * '<S171>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation'
  * '<S172>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation'
- * '<S173>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing'
- * '<S174>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/FW_Effective_Matrix'
- * '<S175>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select'
- * '<S176>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/fw_throttle_mapping'
- * '<S177>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select/Compare To Constant'
- * '<S178>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/throttle_mapping'
- * '<S179>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing/Disarm'
- * '<S180>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing/Standby'
- * '<S181>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation'
- * '<S182>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation'
- * '<S183>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing'
- * '<S184>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/FW_Effective_Matrix'
- * '<S185>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select'
- * '<S186>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/fw_throttle_mapping'
- * '<S187>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select/Compare To Constant'
- * '<S188>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation/throttle_mapping'
- * '<S189>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Disarm'
- * '<S190>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Standby'
+ * '<S173>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation1'
+ * '<S174>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation2'
+ * '<S175>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing'
+ * '<S176>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/FW_Effective_Matrix'
+ * '<S177>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select'
+ * '<S178>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/fw_throttle_mapping'
+ * '<S179>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/FW_Control_Allocation/Signal_Select/Compare To Constant'
+ * '<S180>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/P_Q_Remix'
+ * '<S181>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation/R_Remix'
+ * '<S182>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation1/throttle_mapping'
+ * '<S183>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation2/MATLAB Function'
+ * '<S184>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation2/MATLAB Function1'
+ * '<S185>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/MC_Control_Allocation2/thrust_mapping'
+ * '<S186>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing/Disarm'
+ * '<S187>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL1/actuator_cmd_routing/Standby'
+ * '<S188>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation'
+ * '<S189>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation'
+ * '<S190>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing'
+ * '<S191>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/FW_Effective_Matrix'
+ * '<S192>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select'
+ * '<S193>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/fw_throttle_mapping'
+ * '<S194>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/FW_Control_Allocation/Signal_Select/Compare To Constant'
+ * '<S195>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/MC_Control_Allocation/throttle_mapping'
+ * '<S196>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Disarm'
+ * '<S197>' : 'Controller/Controller/VTOL_Control_Allocation/VTOL_Control_Allocation/VTOL2/actuator_cmd_routing/Standby'
  */
 #endif                                 /* RTW_HEADER_Controller_h_ */
 

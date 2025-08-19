@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.977
+ * Model version                  : 1.978
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:06:23 2025
+ * C/C++ source code generated on : Fri Aug 15 15:14:57 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -36,29 +36,29 @@ real32_T w_est_C_mPs;                  /* '<S113>/Signal Copy1' */
 struct_oqmoiGpNYV6eEvDoym9FPF CONTROL_PARAM = {
   1.4F,
   0.2F,
-  0.2F,
-  0.6F,
-  0.1F,
+  0.05F,
+  0.5F,
+  0.12F,
   0.0F,
   -1.0F,
   1.0F,
   -1.0F,
   1.0F,
-  -0.15F,
-  0.15F,
+  -0.2F,
+  0.2F,
   -0.1F,
   0.1F,
-  5.0F,
-  5.0F,
-  0.52359879F,
-  0.1F,
-  0.1F,
+  7.0F,
+  7.0F,
+  0.523599F,
+  0.045F,
+  0.045F,
   0.15F,
-  0.1F,
-  0.1F,
-  0.2F,
-  0.003F,
-  0.003F,
+  0.05F,
+  0.05F,
+  0.15F,
+  0.0015F,
+  0.0015F,
   0.001F,
   0.0F,
   0.0F,
@@ -66,8 +66,8 @@ struct_oqmoiGpNYV6eEvDoym9FPF CONTROL_PARAM = {
   0.1F,
   -0.1F,
   0.1F,
-  1.57079637F,
-  3.14159274F,
+  1.57079601F,
+  3.14159298F,
   0.5F
 } ;                                    /* Variable: CONTROL_PARAM
                                         * Referenced by:

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.430
+ * Model version                  : 1.572
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 13 14:18:47 2025
+ * C/C++ source code generated on : Tue Aug 19 15:35:45 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -257,8 +257,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_EmZSH4Jwlm4SR6cVayiT1B_
-#define DEFINED_TYPEDEF_FOR_struct_EmZSH4Jwlm4SR6cVayiT1B_
+#ifndef DEFINED_TYPEDEF_FOR_struct_mdDdQrQ86BvYjyHVnXla1_
+#define DEFINED_TYPEDEF_FOR_struct_mdDdQrQ86BvYjyHVnXla1_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -294,6 +294,8 @@ typedef struct {
   real32_T MC_P_Q_CMD_LIM;
   real32_T MC_R_CMD_LIM;
   real32_T MC_HOVER_THRO;
+  uint16_T MC_OUT_MAX;
+  uint16_T MC_OUT_MIN;
   real32_T FW_ROLL_P;
   real32_T FW_PITCH_P;
   real32_T FW_ROLL_PITCH_CMD_LIM;
@@ -307,6 +309,7 @@ typedef struct {
   real32_T FW_RATE_I_MAX;
   real32_T FW_P_Q_CMD_LIM;
   real32_T FW_R_CMD_LIM;
+  real32_T FW_YAW_RATE_LIM;
   real32_T FW_AIRSPEED_TRIM;
   real32_T FW_FF;
   real32_T FW_FF_LIMIT;
@@ -335,6 +338,8 @@ typedef struct {
   real32_T FW_TECS_U2P;
   real32_T FW_TECS_R2P;
   real32_T FW_TECS_R2T;
+  uint16_T FW_OUT_MAX;
+  uint16_T FW_OUT_MIN;
   real32_T FW_AILERON1_DIR;
   real32_T FW_AILERON2_DIR;
   real32_T FW_ELEVATOR_DIR;
@@ -345,8 +350,7 @@ typedef struct {
   real32_T SERVO2_BIAS;
   real32_T SERVO3_BIAS;
   real32_T SERVO4_BIAS;
-  real32_T FW_YAW_RATE_LIM;
-} struct_EmZSH4Jwlm4SR6cVayiT1B;
+} struct_mdDdQrQ86BvYjyHVnXla1;
 
 #endif
 

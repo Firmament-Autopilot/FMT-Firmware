@@ -49,22 +49,24 @@ static param_t __param_list[] = {
     PARAM_FLOAT(MC_ROLL_P, 5, false),
     PARAM_FLOAT(MC_PITCH_P, 5, false),
     PARAM_FLOAT(MC_ROLL_PITCH_CMD_LIM, PI / 6, false),
-    PARAM_FLOAT(MC_ROLL_RATE_P, 0.1, false),
-    PARAM_FLOAT(MC_PITCH_RATE_P, 0.1, false),
-    PARAM_FLOAT(MC_YAW_RATE_P, 0.3, false),
-    PARAM_FLOAT(MC_ROLL_RATE_I, 0.05, false),
-    PARAM_FLOAT(MC_PITCH_RATE_I, 0.05, false),
-    PARAM_FLOAT(MC_YAW_RATE_I, 0.15, false),
-    PARAM_FLOAT(MC_ROLL_RATE_D, 0.001, false),
-    PARAM_FLOAT(MC_PITCH_RATE_D, 0.002, false),
-    PARAM_FLOAT(MC_YAW_RATE_D, 0.002, false),
-    PARAM_FLOAT(MC_RATE_I_MIN, -0.1, false),
-    PARAM_FLOAT(MC_RATE_I_MAX, 0.1, false),
-    PARAM_FLOAT(MC_RATE_D_MIN, -0.1, false),
-    PARAM_FLOAT(MC_RATE_D_MAX, 0.1, false),
+    PARAM_FLOAT(MC_ROLL_RATE_P, 0.24, false),
+    PARAM_FLOAT(MC_PITCH_RATE_P, 0.3, false),
+    PARAM_FLOAT(MC_YAW_RATE_P, 0.6, false),
+    PARAM_FLOAT(MC_ROLL_RATE_I, 0.15, false),
+    PARAM_FLOAT(MC_PITCH_RATE_I, 0.15, false),
+    PARAM_FLOAT(MC_YAW_RATE_I, 0.2, false),
+    PARAM_FLOAT(MC_ROLL_RATE_D, 0.003, false),
+    PARAM_FLOAT(MC_PITCH_RATE_D, 0.006, false),
+    PARAM_FLOAT(MC_YAW_RATE_D, 0.004, false),
+    PARAM_FLOAT(MC_RATE_I_MIN, -0.3, false),
+    PARAM_FLOAT(MC_RATE_I_MAX, 0.3, false),
+    PARAM_FLOAT(MC_RATE_D_MIN, -0.3, false),
+    PARAM_FLOAT(MC_RATE_D_MAX, 0.3, false),
     PARAM_FLOAT(MC_P_Q_CMD_LIM, PI / 2, false),
     PARAM_FLOAT(MC_R_CMD_LIM, PI, false),
     PARAM_FLOAT(MC_HOVER_THRO, 0.5, false),
+    PARAM_UINT16(MC_OUT_MAX, 1950, false),
+    PARAM_UINT16(MC_OUT_MIN, 1050, false),
 
     PARAM_FLOAT(FW_ROLL_P, 7.0, false),
     PARAM_FLOAT(FW_PITCH_P, 7.0, false),
@@ -110,6 +112,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_TECS_U2P, 0.1, false),
     PARAM_FLOAT(FW_TECS_R2P, 0.1, false),
     PARAM_FLOAT(FW_TECS_R2T, 0.1, false),
+    PARAM_UINT16(FW_OUT_MAX, 2000, false),
+    PARAM_UINT16(FW_OUT_MIN, 1000, false),
 
     PARAM_FLOAT(FW_AILERON1_DIR, 1.0, false),
     PARAM_FLOAT(FW_AILERON2_DIR, 1.0, false),
@@ -192,6 +196,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_P_Q_CMD_LIM), &CONTROL_PARAM.MC_P_Q_CMD_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_R_CMD_LIM), &CONTROL_PARAM.MC_R_CMD_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_HOVER_THRO), &CONTROL_PARAM.MC_HOVER_THRO));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_OUT_MAX), &CONTROL_PARAM.MC_OUT_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_OUT_MIN), &CONTROL_PARAM.MC_OUT_MIN));
 
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_ROLL_P), &CONTROL_PARAM.FW_ROLL_P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PITCH_P), &CONTROL_PARAM.FW_PITCH_P));
@@ -237,6 +243,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_U2P), &CONTROL_PARAM.FW_TECS_U2P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_R2P), &CONTROL_PARAM.FW_TECS_R2P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_TECS_R2T), &CONTROL_PARAM.FW_TECS_R2T));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_OUT_MAX), &CONTROL_PARAM.FW_OUT_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_OUT_MIN), &CONTROL_PARAM.FW_OUT_MIN));
 
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_AILERON1_DIR), &CONTROL_PARAM.FW_AILERON1_DIR));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_AILERON2_DIR), &CONTROL_PARAM.FW_AILERON2_DIR));
