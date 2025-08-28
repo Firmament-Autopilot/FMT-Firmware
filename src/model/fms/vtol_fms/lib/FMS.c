@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2493
+ * Model version                  : 1.2494
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 20 09:53:41 2025
+ * C/C++ source code generated on : Wed Aug 27 13:47:10 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -11288,8 +11288,8 @@ void FMS_step(void)
            */
           if (FMS_U.Pilot_Cmd.stick_throttle > 1.0F) {
             rtb_Saturation_e = 1.0F;
-          } else if (FMS_U.Pilot_Cmd.stick_throttle < -0.2F) {
-            rtb_Saturation_e = -0.2F;
+          } else if (FMS_U.Pilot_Cmd.stick_throttle < 0.1F) {
+            rtb_Saturation_e = 0.1F;
           } else {
             rtb_Saturation_e = FMS_U.Pilot_Cmd.stick_throttle;
           }

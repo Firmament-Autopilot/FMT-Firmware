@@ -67,6 +67,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(MC_HOVER_THRO, 0.5, false),
     PARAM_UINT16(MC_OUT_MAX, 1950, false),
     PARAM_UINT16(MC_OUT_MIN, 1050, false),
+    PARAM_FLOAT(MC_FACTOR_OFS, 0.5, false),
 
     PARAM_FLOAT(FW_ROLL_P, 7.0, false),
     PARAM_FLOAT(FW_PITCH_P, 7.0, false),
@@ -85,8 +86,8 @@ static param_t __param_list[] = {
 
     PARAM_FLOAT(FW_AIRSPEED_TRIM, 17.0, false),
     PARAM_FLOAT(FW_FF, 0.2, false),
-    PARAM_FLOAT(FW_FF_LIMIT, 0.3, false),
-    PARAM_FLOAT(FW_PI_LIMIT, 1.0, false),
+    // PARAM_FLOAT(FW_FF_LIMIT, 0.3, false),
+    // PARAM_FLOAT(FW_PI_LIMIT, 1.0, false),
     PARAM_FLOAT(FW_ROLL_EFFC, 1.0, false),
     PARAM_FLOAT(FW_PITCH_EFFC, 1.0, false),
     PARAM_FLOAT(FW_YAW_EFFC, 1.0, false),
@@ -198,6 +199,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_HOVER_THRO), &CONTROL_PARAM.MC_HOVER_THRO));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_OUT_MAX), &CONTROL_PARAM.MC_OUT_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_OUT_MIN), &CONTROL_PARAM.MC_OUT_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, MC_FACTOR_OFS), &CONTROL_PARAM.MC_FACTOR_OFS));
 
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_ROLL_P), &CONTROL_PARAM.FW_ROLL_P));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PITCH_P), &CONTROL_PARAM.FW_PITCH_P));
@@ -216,8 +218,8 @@ static void init_parameter(void)
 
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_AIRSPEED_TRIM), &CONTROL_PARAM.FW_AIRSPEED_TRIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_FF), &CONTROL_PARAM.FW_FF));
-    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_FF_LIMIT), &CONTROL_PARAM.FW_FF_LIMIT));
-    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PI_LIMIT), &CONTROL_PARAM.FW_PI_LIMIT));
+    // FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_FF_LIMIT), &CONTROL_PARAM.FW_FF_LIMIT));
+    // FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PI_LIMIT), &CONTROL_PARAM.FW_PI_LIMIT));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_ROLL_EFFC), &CONTROL_PARAM.FW_ROLL_EFFC));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_PITCH_EFFC), &CONTROL_PARAM.FW_PITCH_EFFC));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_YAW_EFFC), &CONTROL_PARAM.FW_YAW_EFFC));

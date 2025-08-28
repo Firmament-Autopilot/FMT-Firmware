@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.572
+ * Model version                  : 1.615
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 20 09:48:40 2025
+ * C/C++ source code generated on : Thu Aug 28 10:26:49 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -257,8 +257,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_mdDdQrQ86BvYjyHVnXla1_
-#define DEFINED_TYPEDEF_FOR_struct_mdDdQrQ86BvYjyHVnXla1_
+#ifndef DEFINED_TYPEDEF_FOR_struct_GUtUWj3sckzFQXBoUWuuj_
+#define DEFINED_TYPEDEF_FOR_struct_GUtUWj3sckzFQXBoUWuuj_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -296,6 +296,7 @@ typedef struct {
   real32_T MC_HOVER_THRO;
   uint16_T MC_OUT_MAX;
   uint16_T MC_OUT_MIN;
+  real32_T MC_FACTOR_OFS;
   real32_T FW_ROLL_P;
   real32_T FW_PITCH_P;
   real32_T FW_ROLL_PITCH_CMD_LIM;
@@ -312,8 +313,6 @@ typedef struct {
   real32_T FW_YAW_RATE_LIM;
   real32_T FW_AIRSPEED_TRIM;
   real32_T FW_FF;
-  real32_T FW_FF_LIMIT;
-  real32_T FW_PI_LIMIT;
   real32_T FW_ROLL_EFFC;
   real32_T FW_PITCH_EFFC;
   real32_T FW_YAW_EFFC;
@@ -350,7 +349,7 @@ typedef struct {
   real32_T SERVO2_BIAS;
   real32_T SERVO3_BIAS;
   real32_T SERVO4_BIAS;
-} struct_mdDdQrQ86BvYjyHVnXla1;
+} struct_GUtUWj3sckzFQXBoUWuuj;
 
 #endif
 
