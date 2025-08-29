@@ -42,18 +42,6 @@
             0                                     \
     }
 
-#define SERIAL5_DEFAULT_CONFIG                  \
-    {                                           \
-        BAUD_RATE_230400,  /* 115200 bits/s */  \
-            DATA_BITS_8,   /* 8 databits */     \
-            STOP_BITS_1,   /* 1 stopbit */      \
-            PARITY_NONE,   /* No parity  */     \
-            BIT_ORDER_LSB, /* LSB first sent */ \
-            NRZ_NORMAL,    /* Normal mode */    \
-            1024,          /* Buffer size */    \
-            0                                   \
-    }
-
 /* STM32 uart driver */
 struct stm32_uart {
     USART_TypeDef* uart_device;
