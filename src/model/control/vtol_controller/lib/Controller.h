@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.615
+ * Model version                  : 1.650
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 28 10:26:49 2025
+ * C/C++ source code generated on : Tue Sep  2 10:31:23 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -58,26 +58,24 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_DSTATE_l;/* '<S160>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTAT_i;/* '<S162>/Discrete-Time Integrator1' */
   real32_T Integrator_DSTATE_j;        /* '<S157>/Integrator' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_j;/* '<S55>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_a;/* '<S51>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTA_jo;/* '<S49>/Discrete-Time Integrator5' */
-  real32_T DiscreteTimeIntegrator5_DSTA_a2;/* '<S50>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S50>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator_DSTATE_d[3];/* '<S25>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator5_DSTAT_f;/* '<S99>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_j;/* '<S53>/Discrete-Time Integrator5' */
   real32_T _DSTATE;                    /* '<S94>/ ' */
   real32_T DiscreteTimeIntegrator1_DSTAT_e;/* '<S95>/Discrete-Time Integrator1' */
   real32_T DiscreteTimeIntegrator5_DSTAT_l[3];/* '<S23>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator1_DSTAT_p[3];/* '<S27>/Discrete-Time Integrator1' */
-  real32_T _DSTATE_d;                  /* '<S97>/ ' */
-  real32_T DiscreteTimeIntegrator1_DSTA_nm;/* '<S98>/Discrete-Time Integrator1' */
-  real32_T DiscreteTimeIntegrator5_DSTAT_h;/* '<S52>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE_i;       /* '<S43>/Integrator1' */
   real32_T DiscreteTimeIntegrator_DSTATE_b;/* '<S46>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTAT_l;/* '<S48>/Discrete-Time Integrator1' */
+  real32_T _DSTATE_d;                  /* '<S97>/ ' */
+  real32_T DiscreteTimeIntegrator1_DSTA_nm;/* '<S98>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_a;/* '<S49>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator_DSTAT_l5[3];/* '<S73>/Discrete-Time Integrator' */
   real32_T Integrator_DSTATE_f;        /* '<S43>/Integrator' */
   uint32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S3>/Discrete-Time Integrator' */
-  int8_T SwitchCase1_ActiveSubsystem;  /* '<S8>/Switch Case1' */
+  int8_T SwitchCase1_ActiveSubsystem;  /* '<S7>/Switch Case1' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S117>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator_PrevRe_p;/* '<S144>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S146>/Discrete-Time Integrator1' */
@@ -88,30 +86,28 @@ typedef struct {
   int8_T _PrevResetState;              /* '<S94>/ ' */
   int8_T DiscreteTimeIntegrator1_PrevR_b;/* '<S95>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator1_PrevR_l;/* '<S27>/Discrete-Time Integrator1' */
-  int8_T _PrevResetState_e;            /* '<S97>/ ' */
-  int8_T DiscreteTimeIntegrator1_PrevR_d;/* '<S98>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRe_e;/* '<S46>/Discrete-Time Integrator' */
   int8_T DiscreteTimeIntegrator1_PrevR_h;/* '<S48>/Discrete-Time Integrator1' */
+  int8_T _PrevResetState_e;            /* '<S97>/ ' */
+  int8_T DiscreteTimeIntegrator1_PrevR_d;/* '<S98>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevR_ef;/* '<S73>/Discrete-Time Integrator' */
   uint8_T DiscreteTimeIntegrator1_IC_LOAD;/* '<S146>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S115>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_j;/* '<S119>/Discrete-Time Integrator1' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_d;/* '<S162>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_e;/* '<S55>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_L_eo;/* '<S51>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_g;/* '<S49>/Discrete-Time Integrator5' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_o;/* '<S50>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_b;/* '<S50>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_n;/* '<S99>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_e;/* '<S53>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_f;/* '<S95>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_b;/* '<S23>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_L_bo;/* '<S23>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_h;/* '<S27>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator1_IC_L_h0;/* '<S98>/Discrete-Time Integrator1' */
-  uint8_T DiscreteTimeIntegrator5_IC_LO_c;/* '<S52>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator1_IC_LO_i;/* '<S48>/Discrete-Time Integrator1' */
-  boolean_T Relay_Mode;                /* '<S53>/Relay' */
-  boolean_T Relay_Mode_m;              /* '<S10>/Relay' */
-  boolean_T Relay_Mode_j;              /* '<S18>/Relay' */
+  uint8_T DiscreteTimeIntegrator1_IC_L_h0;/* '<S98>/Discrete-Time Integrator1' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_o;/* '<S49>/Discrete-Time Integrator5' */
+  boolean_T Relay_Mode;                /* '<S18>/Relay' */
+  boolean_T Relay_Mode_i;              /* '<S51>/Relay' */
   boolean_T Relay_Mode_l;              /* '<S39>/Relay' */
+  boolean_T Relay_Mode_lh;             /* '<S67>/Relay' */
 } DW_Controller_T;
 
 /* Invariant block signals for system '<S164>/VTOL1' */
@@ -142,7 +138,6 @@ typedef struct {
   const real32_T Gain4_p;              /* '<S158>/Gain4' */
   const real32_T VectorConcatenate3_g[3];/* '<S92>/Vector Concatenate3' */
   const real32_T Constant_j[3];        /* '<S25>/Constant' */
-  const real32_T Square1;              /* '<S10>/Square1' */
   const real32_T Zero1;                /* '<S94>/Zero1' */
   const real32_T Gain_n;               /* '<S33>/Gain' */
   const real32_T Zero;                 /* '<S97>/Zero' */
@@ -236,7 +231,7 @@ extern const ConstP_Controller_T Controller_ConstP;
  * these parameters and exports their symbols.
  *
  */
-extern struct_GUtUWj3sckzFQXBoUWuuj CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_K2VRvrWPNWoAZKepj1gft CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                    * Referenced by:
                                                    *   '<S64>/Saturation'
                                                    *   '<S65>/Gain'
@@ -389,9 +384,7 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * Block '<S41>/Signal Copy1' : Eliminate redundant signal conversion block
  * Block '<S49>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S50>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S51>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S52>/Data Type Conversion' : Eliminate redundant data type conversion
- * Block '<S55>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S53>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S68>/Reshape' : Reshape block reduction
  * Block '<S77>/Logical Operator1' : Eliminated due to no operation
  * Block '<S99>/Data Type Conversion' : Eliminate redundant data type conversion
@@ -423,10 +416,10 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S4>'   : 'Controller/Controller/FW_Controller'
  * '<S5>'   : 'Controller/Controller/MC_Controller'
  * '<S6>'   : 'Controller/Controller/VTOL_Control_Allocation'
- * '<S7>'   : 'Controller/Controller/ctrl_mode_mask'
- * '<S8>'   : 'Controller/Controller/switch-case'
- * '<S9>'   : 'Controller/Controller/FW_Controller/Aux_MC_Controller'
- * '<S10>'  : 'Controller/Controller/FW_Controller/Effective_Factor'
+ * '<S7>'   : 'Controller/Controller/switch-case'
+ * '<S8>'   : 'Controller/Controller/FW_Controller/Aux_MC_Controller'
+ * '<S9>'   : 'Controller/Controller/FW_Controller/Effective_Factor'
+ * '<S10>'  : 'Controller/Controller/FW_Controller/Effective_Factor1'
  * '<S11>'  : 'Controller/Controller/FW_Controller/FW_Controller'
  * '<S12>'  : 'Controller/Controller/FW_Controller/Signal_Select'
  * '<S13>'  : 'Controller/Controller/FW_Controller/Aux_MC_Controller/Attitude_Controller'
@@ -465,20 +458,20 @@ extern RT_MODEL_Controller_T *const Controller_M;
  * '<S46>'  : 'Controller/Controller/FW_Controller/Aux_MC_Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/I_Control'
  * '<S47>'  : 'Controller/Controller/FW_Controller/Aux_MC_Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/P_Control'
  * '<S48>'  : 'Controller/Controller/FW_Controller/Aux_MC_Controller/Vertical_Control/Veloxity_Z_Controller/PID_Controller/D_Control/DT Filter'
- * '<S49>'  : 'Controller/Controller/FW_Controller/Effective_Factor/First Order LPF'
- * '<S50>'  : 'Controller/Controller/FW_Controller/Effective_Factor/First Order LPF1'
- * '<S51>'  : 'Controller/Controller/FW_Controller/Effective_Factor/First Order LPF2'
- * '<S52>'  : 'Controller/Controller/FW_Controller/Effective_Factor/First Order LPF3'
- * '<S53>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed'
- * '<S54>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Compare To Zero'
- * '<S55>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/First Order LPF3'
- * '<S56>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction'
- * '<S57>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM'
- * '<S58>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/Quaternion Normalize'
- * '<S59>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/column_1'
- * '<S60>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/column_2'
- * '<S61>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/column_3'
- * '<S62>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S49>'  : 'Controller/Controller/FW_Controller/Effective_Factor/First Order LPF1'
+ * '<S50>'  : 'Controller/Controller/FW_Controller/Effective_Factor/First Order LPF3'
+ * '<S51>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed'
+ * '<S52>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Compare To Zero'
+ * '<S53>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/First Order LPF3'
+ * '<S54>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction'
+ * '<S55>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM'
+ * '<S56>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/Quaternion Normalize'
+ * '<S57>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/column_1'
+ * '<S58>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/column_2'
+ * '<S59>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/column_3'
+ * '<S60>'  : 'Controller/Controller/FW_Controller/Effective_Factor/Fly_Speed/Fly_Direction/Quaternion To DCM/Quaternion Normalize/Quaternion Modulus'
+ * '<S61>'  : 'Controller/Controller/FW_Controller/Effective_Factor1/Fly_Speed'
+ * '<S62>'  : 'Controller/Controller/FW_Controller/Effective_Factor1/Fly_Speed/Fly_Direction'
  * '<S63>'  : 'Controller/Controller/FW_Controller/FW_Controller/Attitude_Control'
  * '<S64>'  : 'Controller/Controller/FW_Controller/FW_Controller/Lateral_Control'
  * '<S65>'  : 'Controller/Controller/FW_Controller/FW_Controller/TECS_Core'

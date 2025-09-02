@@ -337,7 +337,7 @@ static rt_err_t probe(uint32_t* gps_baudrate)
 
         send_ubx_msg(&ubx_decoder, UBX_MSG_CFG_PRT, ubx_decoder.buf.raw, sizeof(ubx_decoder.buf.payload_tx_cfg_prt));
 
-        if (wait_for_ack(UBX_MSG_CFG_PRT, 2 * UBX_CONFIG_TIMEOUT) < 0) {
+        if (wait_for_ack(UBX_MSG_CFG_PRT, 2 * UBX_CONFIG_TIMEOUT) < 0 && baudrate != 38400) {
             /* try next baudrate */
             continue;
         }

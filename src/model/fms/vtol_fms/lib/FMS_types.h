@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2494
+ * Model version                  : 1.2520
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug 27 13:47:10 2025
+ * C/C++ source code generated on : Tue Sep  2 10:30:08 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -347,6 +347,9 @@ typedef struct {
      17: Takeoff */
   uint8_T state;
 
+  /* Extended state. */
+  uint8_T ext_state;
+
   /* enum ControlMode
 
      control mode:
@@ -379,9 +382,6 @@ typedef struct {
 
   /* current waypoint */
   uint8_T wp_current;
-
-  /* enum of PilotMode */
-  uint8_T reserved;
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
@@ -466,7 +466,8 @@ typedef enum {
   VTOLState_Multicopter = 0,           /* Default value */
   VTOLState_ForwardTrans,
   VTOLState_Fixwing,
-  VTOLState_BackwardTrans
+  VTOLState_BackwardTrans,
+  VTOLState_Stall
 } VTOLState;
 
 #endif
@@ -526,8 +527,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_sVzVC2xSXHFQuusuHtL6zE_
-#define DEFINED_TYPEDEF_FOR_struct_sVzVC2xSXHFQuusuHtL6zE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_dWs0XrqIAH5LuSHjOHxbwF_
+#define DEFINED_TYPEDEF_FOR_struct_dWs0XrqIAH5LuSHjOHxbwF_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -553,7 +554,9 @@ typedef struct {
   uint16_T LAND_LOCK_THRO;
   real32_T FW_L1;
   real32_T FW_CRUISE_SPEED;
-  real32_T FW_CRUISE_SPEED_MIN;
+  real32_T FW_SPEED_MAX;
+  real32_T FW_SPEED_MIN;
+  real32_T FW_STALL_SPEED;
   real32_T FW_Z_P;
   real32_T FW_VEL_Z_LIM;
   real32_T FW_ACC_Y_LIM;
@@ -568,7 +571,7 @@ typedef struct {
   real32_T PITCH_LIM;
   real32_T MC_ACCEPT_R;
   real32_T FW_ACCEPT_R;
-} struct_sVzVC2xSXHFQuusuHtL6zE;
+} struct_dWs0XrqIAH5LuSHjOHxbwF;
 
 #endif
 

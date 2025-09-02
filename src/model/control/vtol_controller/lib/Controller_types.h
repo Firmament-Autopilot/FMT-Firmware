@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.615
+ * Model version                  : 1.650
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Aug 28 10:26:49 2025
+ * C/C++ source code generated on : Tue Sep  2 10:31:23 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -144,6 +144,9 @@ typedef struct {
      17: Takeoff */
   uint8_T state;
 
+  /* Extended state. */
+  uint8_T ext_state;
+
   /* enum ControlMode
 
      control mode:
@@ -176,9 +179,6 @@ typedef struct {
 
   /* current waypoint */
   uint8_T wp_current;
-
-  /* enum of PilotMode */
-  uint8_T reserved;
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
@@ -242,7 +242,8 @@ typedef enum {
   VTOLState_Multicopter = 0,           /* Default value */
   VTOLState_ForwardTrans,
   VTOLState_Fixwing,
-  VTOLState_BackwardTrans
+  VTOLState_BackwardTrans,
+  VTOLState_Stall
 } VTOLState;
 
 #endif
@@ -257,8 +258,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_GUtUWj3sckzFQXBoUWuuj_
-#define DEFINED_TYPEDEF_FOR_struct_GUtUWj3sckzFQXBoUWuuj_
+#ifndef DEFINED_TYPEDEF_FOR_struct_K2VRvrWPNWoAZKepj1gft_
+#define DEFINED_TYPEDEF_FOR_struct_K2VRvrWPNWoAZKepj1gft_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -329,8 +330,6 @@ typedef struct {
   real32_T FW_TECS_THOR_D;
   real32_T FW_TECS_VEL_P;
   real32_T FW_TECS_RATIO;
-  real32_T FW_TECS_SWITCH;
-  real32_T FW_TECS_ANSW;
   real32_T FW_TECS_W2T;
   real32_T FW_TECS_U2T;
   real32_T FW_TECS_W2P;
@@ -349,7 +348,7 @@ typedef struct {
   real32_T SERVO2_BIAS;
   real32_T SERVO3_BIAS;
   real32_T SERVO4_BIAS;
-} struct_GUtUWj3sckzFQXBoUWuuj;
+} struct_K2VRvrWPNWoAZKepj1gft;
 
 #endif
 

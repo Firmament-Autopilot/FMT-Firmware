@@ -59,15 +59,16 @@ static param_t __param_list[] = {
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
     PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
     PARAM_FLOAT(FW_L1, 50.0, false),
-    PARAM_FLOAT(FW_CRUISE_SPEED, 20.0, false),
-    PARAM_FLOAT(FW_CRUISE_SPEED_MIN, 17.0, false),
+    PARAM_FLOAT(FW_CRUISE_SPEED, 18.0, false),
+    PARAM_FLOAT(FW_SPEED_MAX, 20.0, false),
+    PARAM_FLOAT(FW_SPEED_MIN, 16.0, false),
+    PARAM_FLOAT(FW_STALL_SPEED, 12.0, false),
     PARAM_FLOAT(FW_Z_P, 1.0, false),
     PARAM_FLOAT(FW_VEL_Z_LIM, 10.0, false),
     PARAM_FLOAT(FW_ACC_Y_LIM, 8.0, false),
     PARAM_FLOAT(FW_ROLL_LIM, PI / 4, false),
     PARAM_FLOAT(FW_PITCH_LIM, PI / 6, false),
     PARAM_FLOAT(FW_YAW_RATE_LIM, PI / 3, false),
-    PARAM_FLOAT(FW_AIRSPD_MAX, 22.0, false),
     PARAM_FLOAT(FW_LOITER_R, 50.0, false),
     PARAM_FLOAT(Y_P, 0.95, false),
     PARAM_FLOAT(ACC_Y_LIM, 8.0, false),
@@ -168,12 +169,12 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(cmd_mask, MLOG_UINT16),
     MLOG_ELEMENT(status, MLOG_UINT8),
     MLOG_ELEMENT(state, MLOG_UINT8),
+    MLOG_ELEMENT(ext_state, MLOG_UINT8),
     MLOG_ELEMENT(ctrl_mode, MLOG_UINT8),
     MLOG_ELEMENT(mode, MLOG_UINT8),
     MLOG_ELEMENT(reset, MLOG_UINT8),
     MLOG_ELEMENT(wp_consume, MLOG_UINT8),
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
-    MLOG_ELEMENT(reserved, MLOG_UINT8),
     MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
     MLOG_ELEMENT(error, MLOG_UINT32),
 };
@@ -245,6 +246,14 @@ static char* fms_mode[] = {
     "Offboard",
 };
 
+static char* ext_state[] = {
+    "Multicopter",
+    "ForwardTrans",
+    "Fixwing",
+    "BackwardTrans",
+    "Stall",
+};
+
 fmt_model_info_t fms_model_info;
 
 static int fms_output_echo(void* param)
@@ -260,6 +269,7 @@ static int fms_output_echo(void* param)
     printf("throttle cmd: %u\n", fms_out.throttle_cmd);
     printf("act cmd: %u %u %u %u\n", fms_out.actuator_cmd[0], fms_out.actuator_cmd[1], fms_out.actuator_cmd[2], fms_out.actuator_cmd[3]);
     printf("status:%s state:%s ctrl_mode:%s\n", STR_GET_VALID(fms_status, fms_out.status), STR_GET_VALID(fms_state, fms_out.state), STR_GET_VALID(fms_ctrl_mode, fms_out.ctrl_mode));
+    printf("vtol state:%s\n", STR_GET_VALID(ext_state, fms_out.ext_state));
     printf("mode:%s reset:%d\n", STR_GET_VALID(fms_mode, fms_out.mode), fms_out.reset);
     printf("wp_current:%d wp_consume:%d\n", fms_out.wp_current, fms_out.wp_consume);
     printf("home: xyz(m) %.2f %.2f %.2f yaw(deg) %.2f\n", fms_out.home[0], fms_out.home[1], fms_out.home[2], RAD2DEG(fms_out.home[3]));
@@ -302,14 +312,15 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, LAND_LOCK_THRO), &FMS_PARAM.LAND_LOCK_THRO));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_L1), &FMS_PARAM.FW_L1));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_CRUISE_SPEED), &FMS_PARAM.FW_CRUISE_SPEED));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_CRUISE_SPEED_MIN), &FMS_PARAM.FW_CRUISE_SPEED_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_SPEED_MAX), &FMS_PARAM.FW_SPEED_MAX));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_SPEED_MIN), &FMS_PARAM.FW_SPEED_MIN));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_STALL_SPEED), &FMS_PARAM.FW_STALL_SPEED));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_Z_P), &FMS_PARAM.FW_Z_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_VEL_Z_LIM), &FMS_PARAM.FW_VEL_Z_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_ACC_Y_LIM), &FMS_PARAM.FW_ACC_Y_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_ROLL_LIM), &FMS_PARAM.FW_ROLL_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_PITCH_LIM), &FMS_PARAM.FW_PITCH_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_YAW_RATE_LIM), &FMS_PARAM.FW_YAW_RATE_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_AIRSPD_MAX), &FMS_PARAM.FW_AIRSPD_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_LOITER_R), &FMS_PARAM.FW_LOITER_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, Y_P), &FMS_PARAM.Y_P));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC_Y_LIM), &FMS_PARAM.ACC_Y_LIM));
