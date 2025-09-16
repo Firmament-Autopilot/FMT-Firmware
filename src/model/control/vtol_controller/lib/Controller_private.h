@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.654
+ * Model version                  : 1.724
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Sep  3 11:56:36 2025
+ * C/C++ source code generated on : Mon Sep 15 11:14:44 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -17,6 +17,7 @@
 #define RTW_HEADER_Controller_private_h_
 #include "rtwtypes.h"
 #include "Controller_types.h"
+#include "Controller.h"
 #ifndef UCHAR_MAX
 #include <limits.h>
 #endif
@@ -63,6 +64,13 @@ select the Test hardware is the same as production hardware option and \
 select the Enable portable word sizes option on the Code Generation > \
 Verification pane for ERT based targets, which will disable the \
 preprocessor word size checks.
+#endif
+
+#if (AIRFRAME == 1) || (AIRFRAME == 2)
+
+extern void Controller_R_Remix(const real32_T rtu_motor_out[4], real32_T
+  rtu_up_lim, real32_T rtu_lo_lim, real32_T rty_floating_yaw[4]);
+
 #endif
 #endif                                 /* RTW_HEADER_Controller_private_h_ */
 

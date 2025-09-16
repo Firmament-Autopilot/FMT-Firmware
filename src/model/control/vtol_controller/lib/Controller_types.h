@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.654
+ * Model version                  : 1.724
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Sep  3 11:56:36 2025
+ * C/C++ source code generated on : Mon Sep 15 11:14:44 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,9 +42,9 @@
 #define AIRFRAME                       1
 #endif
 
-/* Exactly one variant for '<S6>/VTOL_Control_Allocation' should be active */
+/* Exactly one variant for '<S8>/VTOL_Control_Allocation' should be active */
 #if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
-#error Exactly one variant for '<S6>/VTOL_Control_Allocation' should be active
+#error Exactly one variant for '<S8>/VTOL_Control_Allocation' should be active
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
@@ -231,20 +231,6 @@ typedef struct {
   uint32_T timestamp;
   uint16_T actuator_cmd[16];
 } Control_Out_Bus;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_VTOLState_
-#define DEFINED_TYPEDEF_FOR_VTOLState_
-
-/* enumeration to track active leaf state of FMS/FMS State Machine/Vehicle */
-typedef enum {
-  VTOLState_Multicopter = 0,           /* Default value */
-  VTOLState_ForwardTrans,
-  VTOLState_Fixwing,
-  VTOLState_BackwardTrans,
-  VTOLState_Stall
-} VTOLState;
 
 #endif
 
