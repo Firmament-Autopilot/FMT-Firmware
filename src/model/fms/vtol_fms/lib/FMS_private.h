@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2533
+ * Model version                  : 1.2548
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 15 11:08:00 2025
+ * C/C++ source code generated on : Wed Sep 17 08:37:35 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -101,11 +101,24 @@ extern void FMS_MotionStatus_Init(DW_MotionStatus_FMS_T *localDW);
 extern void FMS_MotionStatus_Reset(DW_MotionStatus_FMS_T *localDW);
 extern void FMS_MotionStatus(boolean_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionStatus_FMS_T *localDW);
-extern void FMS_OutRegionRefWP(real32_T rtu_c, real32_T rtu_c_f, const real32_T
-  rtu_p0[2], const real32_T rtu_n[2], real32_T rty_P[2]);
-extern void FMS_SearchL1RefWP_k(real32_T rtu_c, real32_T rtu_c_n, const real32_T
-  rtu_p0[2], const real32_T rtu_n[2], real32_T rtu_L1, real32_T rty_P[2],
-  real32_T *rty_t);
+extern void FMS_HoldControl_l_Init(const ConstB_HoldControl_FMS_i_T *localC,
+  DW_HoldControl_FMS_g_T *localDW);
+extern void FMS_HoldControl_g_Reset(const ConstB_HoldControl_FMS_i_T *localC,
+  DW_HoldControl_FMS_g_T *localDW);
+extern void FMS_HoldControl_b(const real32_T rtu_FMS_In[4], real32_T
+  rtu_FMS_In_c, real32_T rtu_FMS_In_h, real32_T rtu_FMS_In_g, real32_T
+  rtu_FMS_In_a, real32_T rtu_FMS_In_l, real32_T rtu_FMS_In_m, real32_T
+  *rty_ay_cmd_mPs2, const ConstB_HoldControl_FMS_i_T *localC,
+  DW_HoldControl_FMS_g_T *localDW);
+extern void FMS_BrakeControl_h(real32_T *rty_ay_cmd_mPs2);
+extern void FMS_MoveControl_d_Init(DW_MoveControl_FMS_p_T *localDW);
+extern void FMS_MoveControl_a_Reset(DW_MoveControl_FMS_p_T *localDW);
+extern void FMS_MoveControl_j(real32_T rtu_FMS_In, real32_T *rty_ay_cmd_mPs2,
+  const ConstB_MoveControl_FMS_a_T *localC, DW_MoveControl_FMS_p_T *localDW);
+extern void FMS_MotionState_Init(DW_MotionState_FMS_T *localDW);
+extern void FMS_MotionState_Reset(DW_MotionState_FMS_T *localDW);
+extern void FMS_MotionState(boolean_T rtu_motion_req, real32_T rtu_speed,
+  MotionState *rty_state, DW_MotionState_FMS_T *localDW);
 extern void FMS_HoldControl_o_Init(DW_HoldControl_FMS_f_T *localDW);
 extern void FMS_HoldControl_k_Reset(DW_HoldControl_FMS_f_T *localDW);
 extern void FMS_HoldControl_e(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
@@ -118,7 +131,7 @@ extern void FMS_MotionStatus_a_Init(DW_MotionStatus_FMS_p_T *localDW);
 extern void FMS_MotionStatus_f_Reset(DW_MotionStatus_FMS_p_T *localDW);
 extern void FMS_MotionStatus_g(real32_T rtu_motion_req, real32_T rtu_speed,
   MotionState *rty_state, DW_MotionStatus_FMS_p_T *localDW);
-extern void FMS_HoldControl_l_Init(DW_HoldControl_FMS_m_T *localDW);
+extern void FMS_HoldControl_l0_Init(DW_HoldControl_FMS_m_T *localDW);
 extern void FMS_HoldControl_i_Reset(DW_HoldControl_FMS_m_T *localDW);
 extern void FMS_HoldControl_i(real32_T rtu_FMS_In, real32_T rtu_FMS_In_g,
   real32_T rtu_FMS_In_d, real32_T rty_uv_cmd_mPs[2], const
@@ -129,10 +142,10 @@ extern void FMS_MoveControl_l_Reset(DW_MoveControl_FMS_l_T *localDW);
 extern void FMS_MoveControl_k(real32_T rtu_FMS_In, real32_T rtu_FMS_In_h,
   real32_T rty_uv_cmd_mPs[2], const ConstB_MoveControl_FMS_p_T *localC,
   DW_MoveControl_FMS_l_T *localDW);
-extern void FMS_MotionState_Init(DW_MotionState_FMS_T *localDW);
-extern void FMS_MotionState_Reset(DW_MotionState_FMS_T *localDW);
-extern void FMS_MotionState(real32_T rtu_motion_req, real32_T rtu_speed,
-  MotionState *rty_state, DW_MotionState_FMS_T *localDW);
+extern void FMS_MotionState_c_Init(DW_MotionState_FMS_g_T *localDW);
+extern void FMS_MotionState_f_Reset(DW_MotionState_FMS_g_T *localDW);
+extern void FMS_MotionState_p(real32_T rtu_motion_req, real32_T rtu_speed,
+  MotionState *rty_state, DW_MotionState_FMS_g_T *localDW);
 extern void FMS_OutRegionRegWP_c(const real32_T rtu_P1[2], const real32_T
   rtu_P2[2], real32_T rtu_P3, real32_T rtu_P3_g, real32_T rty_P[2]);
 extern void FMS_HoldControl_d_Init(DW_HoldControl_FMS_c_T *localDW);

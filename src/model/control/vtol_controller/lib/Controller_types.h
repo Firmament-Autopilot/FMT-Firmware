@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.724
+ * Model version                  : 1.758
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 15 11:14:44 2025
+ * C/C++ source code generated on : Wed Sep 17 08:38:28 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,9 +42,9 @@
 #define AIRFRAME                       1
 #endif
 
-/* Exactly one variant for '<S8>/VTOL_Control_Allocation' should be active */
+/* Exactly one variant for '<S9>/VTOL_Control_Allocation' should be active */
 #if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
-#error Exactly one variant for '<S8>/VTOL_Control_Allocation' should be active
+#error Exactly one variant for '<S9>/VTOL_Control_Allocation' should be active
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
