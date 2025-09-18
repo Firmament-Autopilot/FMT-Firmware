@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1110
+ * Model version                  : 1.1112
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 13:51:52 2025
+ * C/C++ source code generated on : Thu Sep 18 15:18:05 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -113,6 +113,9 @@ typedef struct {
      17: Takeoff */
   uint8_T state;
 
+  /* Extended state. */
+  uint8_T ext_state;
+
   /* enum ControlMode
 
      control mode:
@@ -145,9 +148,6 @@ typedef struct {
 
   /* current waypoint */
   uint8_T wp_current;
-
-  /* enum of PilotMode */
-  uint8_T reserved;
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];

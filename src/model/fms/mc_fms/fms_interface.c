@@ -153,12 +153,12 @@ static mlog_elem_t FMS_Out_Elems[] = {
     MLOG_ELEMENT(cmd_mask, MLOG_UINT16),
     MLOG_ELEMENT(status, MLOG_UINT8),
     MLOG_ELEMENT(state, MLOG_UINT8),
+    MLOG_ELEMENT(ext_state, MLOG_UINT8),
     MLOG_ELEMENT(ctrl_mode, MLOG_UINT8),
     MLOG_ELEMENT(mode, MLOG_UINT8),
     MLOG_ELEMENT(reset, MLOG_UINT8),
     MLOG_ELEMENT(wp_consume, MLOG_UINT8),
     MLOG_ELEMENT(wp_current, MLOG_UINT8),
-    MLOG_ELEMENT(reserved, MLOG_UINT8),
     MLOG_ELEMENT_VEC(home, MLOG_FLOAT, 4),
     MLOG_ELEMENT(error, MLOG_UINT32),
 };

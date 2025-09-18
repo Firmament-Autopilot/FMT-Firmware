@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2086
+ * Model version                  : 1.2089
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  6 11:38:45 2025
+ * C/C++ source code generated on : Thu Sep 18 15:45:01 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -80,12 +80,12 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
   0U,                                  /* cmd_mask */
   0U,                                  /* status */
   0U,                                  /* state */
+  0U,                                  /* ext_state */
   0U,                                  /* ctrl_mode */
   0U,                                  /* mode */
   0U,                                  /* reset */
   0U,                                  /* wp_consume */
   0U,                                  /* wp_current */
-  0U,                                  /* reserved */
 
   {
     0.0F, 0.0F, 0.0F, 0.0F }
@@ -94,20 +94,20 @@ const FMS_Out_Bus FMS_rtZFMS_Out_Bus = {
 } ;                                    /* FMS_Out_Bus ground */
 
 /* Exported block parameters */
-struct_nTZ1SrTKKDPHGARm0VS5K FMS_PARAM = {
+struct_60IzzXHZx8EoBHH2oNJTeB FMS_PARAM = {
+  10.0F,
+  3.0F,
+  5.0F,
+  1.0F,
+  4.0F,
+  0.785398185F,
+  0.5F,
+
   { 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
     0.0F, 0.0F, 0.0F, 0.0F },
 
   { 1500.0F, 1500.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F },
-  4.0F,
-  4.0F,
-  1.0F,
-  1.0F,
-  4.0F,
-  2.0F,
-  0.7F,
-  5.0F
+    0.0F, 0.0F, 0.0F, 0.0F }
 } ;                                    /* Variable: FMS_PARAM
                                         * Referenced by:
                                         *   '<Root>/ACCEPT_R'

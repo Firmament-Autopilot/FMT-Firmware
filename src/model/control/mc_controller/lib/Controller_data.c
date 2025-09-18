@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.978
+ * Model version                  : 1.981
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Aug 15 15:14:57 2025
+ * C/C++ source code generated on : Thu Sep 18 14:39:21 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,17 +18,17 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_Controller_T Controller_ConstB = {
-  { 0.0F, 0.0F, 1.0F },                /* '<S101>/Vector Concatenate3' */
-  0.0F,                                /* '<S104>/Constant' */
+  { 0.0F, 0.0F, 1.0F },                /* '<S102>/Vector Concatenate3' */
+  0.0F,                                /* '<S105>/Constant' */
   19.1986F,                            /* '<S89>/Gain' */
 
   { 0.0F, 0.0F, 0.0F },                /* '<S77>/Constant' */
-  0.00250000018F,                      /* '<S102>/Square' */
-  0.14709F,                            /* '<S102>/Multiply' */
-  -58.836F,                            /* '<S102>/Gain4' */
-  0.00250000018F,                      /* '<S116>/Square' */
-  0.196120009F,                        /* '<S116>/Multiply' */
-  -78.448F                             /* '<S116>/Gain4' */
+  0.00250000018F,                      /* '<S103>/Square' */
+  0.14709F,                            /* '<S103>/Multiply' */
+  -58.836F,                            /* '<S103>/Gain4' */
+  0.00250000018F,                      /* '<S118>/Square' */
+  0.196120009F,                        /* '<S118>/Multiply' */
+  -78.448F                             /* '<S118>/Gain4' */
 };
 
 /* Constant parameters (default storage) */

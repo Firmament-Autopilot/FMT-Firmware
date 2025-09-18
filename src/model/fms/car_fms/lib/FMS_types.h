@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2086
+ * Model version                  : 1.2089
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  6 11:38:45 2025
+ * C/C++ source code generated on : Thu Sep 18 15:45:01 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -347,6 +347,9 @@ typedef struct {
      17: Takeoff */
   uint8_T state;
 
+  /* Extended state. */
+  uint8_T ext_state;
+
   /* enum ControlMode
 
      control mode:
@@ -379,9 +382,6 @@ typedef struct {
 
   /* current waypoint */
   uint8_T wp_current;
-
-  /* enum of PilotMode */
-  uint8_T reserved;
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
@@ -492,12 +492,10 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_nTZ1SrTKKDPHGARm0VS5K_
-#define DEFINED_TYPEDEF_FOR_struct_nTZ1SrTKKDPHGARm0VS5K_
+#ifndef DEFINED_TYPEDEF_FOR_struct_60IzzXHZx8EoBHH2oNJTeB_
+#define DEFINED_TYPEDEF_FOR_struct_60IzzXHZx8EoBHH2oNJTeB_
 
 typedef struct {
-  real32_T DISARM_OUT[16];
-  real32_T STANDBY_OUT[16];
   real32_T L1;
   real32_T CRUISE_SPEED;
   real32_T ACCEPT_R;
@@ -505,8 +503,9 @@ typedef struct {
   real32_T MAX_VEL;
   real32_T MAX_R;
   real32_T AY_P;
-  real32_T VEL_XY_LIM;
-} struct_nTZ1SrTKKDPHGARm0VS5K;
+  real32_T DISARM_OUT[16];
+  real32_T STANDBY_OUT[16];
+} struct_60IzzXHZx8EoBHH2oNJTeB;
 
 #endif
 

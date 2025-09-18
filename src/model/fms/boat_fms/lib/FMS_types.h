@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.2082
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Jun  6 14:14:01 2025
+ * C/C++ source code generated on : Thu Sep 18 15:37:53 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -347,6 +347,9 @@ typedef struct {
      17: Takeoff */
   uint8_T state;
 
+  /* Extended state. */
+  uint8_T ext_state;
+
   /* enum ControlMode
 
      control mode:
@@ -379,9 +382,6 @@ typedef struct {
 
   /* current waypoint */
   uint8_T wp_current;
-
-  /* enum of PilotMode */
-  uint8_T reserved;
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];
@@ -467,6 +467,9 @@ typedef struct {
 
   /* Set speed for cuise flight */
   real32_T set_speed;
+
+  /* Set yaw angle in rad, valid range is [0 360]. Set to negative to ignore */
+  real32_T set_yaw;
 } Commander_In_Bus;
 
 #endif
@@ -481,7 +484,10 @@ typedef enum {
   NAV_Cmd_Return = 20,
   NAV_Cmd_Land,
   NAV_Cmd_Takeoff,
-  NAV_Cmd_SetSpeed = 178
+  NAV_Cmd_VTOL_Takeoff = 84,
+  NAV_Cmd_VTOL_Land,
+  NAV_Cmd_SetSpeed = 178,
+  NAV_Cmd_VTOL_Transition = 3000
 } NAV_Cmd;
 
 #endif

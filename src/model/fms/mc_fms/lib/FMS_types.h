@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2238
+ * Model version                  : 1.2242
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Sep  2 17:03:41 2025
+ * C/C++ source code generated on : Thu Sep 18 14:38:06 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -360,6 +360,9 @@ typedef struct {
      17: Takeoff */
   uint8_T state;
 
+  /* Extended state. */
+  uint8_T ext_state;
+
   /* enum ControlMode
 
      control mode:
@@ -392,9 +395,6 @@ typedef struct {
 
   /* current waypoint */
   uint8_T wp_current;
-
-  /* Extended state. */
-  uint8_T reserved;
 
   /* home position [x y h yaw], unit [m m m rad] */
   real32_T home[4];

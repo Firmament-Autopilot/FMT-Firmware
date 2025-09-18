@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2086
+ * Model version                  : 1.2089
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Aug  6 11:38:45 2025
+ * C/C++ source code generated on : Thu Sep 18 15:45:01 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -264,34 +264,34 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
  * these parameters and exports their symbols.
  *
  */
-extern struct_nTZ1SrTKKDPHGARm0VS5K FMS_PARAM;/* Variable: FMS_PARAM
-                                               * Referenced by:
-                                               *   '<Root>/ACCEPT_R'
-                                               *   '<S24>/Constant6'
-                                               *   '<S25>/Constant6'
-                                               *   '<S166>/L1'
-                                               *   '<S166>/vel'
-                                               *   '<S34>/Saturation'
-                                               *   '<S35>/Gain'
-                                               *   '<S64>/Saturation'
-                                               *   '<S86>/L1'
-                                               *   '<S86>/vel'
-                                               *   '<S86>/Saturation'
-                                               *   '<S86>/Saturation1'
-                                               *   '<S105>/L1'
-                                               *   '<S105>/Saturation'
-                                               *   '<S106>/vel'
-                                               *   '<S106>/Saturation'
-                                               *   '<S170>/AccToRate'
-                                               *   '<S87>/AccToRate'
-                                               *   '<S111>/Gain2'
-                                               *   '<S113>/AccToRate'
-                                               *   '<S39>/L1'
-                                               *   '<S39>/AccToRate'
-                                               *   '<S40>/Gain6'
-                                               *   '<S69>/Gain2'
-                                               *   '<S70>/Gain'
-                                               */
+extern struct_60IzzXHZx8EoBHH2oNJTeB FMS_PARAM;/* Variable: FMS_PARAM
+                                                * Referenced by:
+                                                *   '<Root>/ACCEPT_R'
+                                                *   '<S24>/Constant6'
+                                                *   '<S25>/Constant6'
+                                                *   '<S166>/L1'
+                                                *   '<S166>/vel'
+                                                *   '<S34>/Saturation'
+                                                *   '<S35>/Gain'
+                                                *   '<S64>/Saturation'
+                                                *   '<S86>/L1'
+                                                *   '<S86>/vel'
+                                                *   '<S86>/Saturation'
+                                                *   '<S86>/Saturation1'
+                                                *   '<S105>/L1'
+                                                *   '<S105>/Saturation'
+                                                *   '<S106>/vel'
+                                                *   '<S106>/Saturation'
+                                                *   '<S170>/AccToRate'
+                                                *   '<S87>/AccToRate'
+                                                *   '<S111>/Gain2'
+                                                *   '<S113>/AccToRate'
+                                                *   '<S39>/L1'
+                                                *   '<S39>/AccToRate'
+                                                *   '<S40>/Gain6'
+                                                *   '<S69>/Gain2'
+                                                *   '<S70>/Gain'
+                                                */
 extern struct_jgVLU9PsiazymsYzo6u6IH FMS_EXPORT;/* Variable: FMS_EXPORT
                                                  * Referenced by:
                                                  *   '<S1>/Constant'
