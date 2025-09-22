@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2548
+ * Model version                  : 1.2556
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Sep 17 08:37:35 2025
+ * C/C++ source code generated on : Mon Sep 22 10:24:41 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -111,10 +111,6 @@ extern void FMS_HoldControl_b(const real32_T rtu_FMS_In[4], real32_T
   *rty_ay_cmd_mPs2, const ConstB_HoldControl_FMS_i_T *localC,
   DW_HoldControl_FMS_g_T *localDW);
 extern void FMS_BrakeControl_h(real32_T *rty_ay_cmd_mPs2);
-extern void FMS_MoveControl_d_Init(DW_MoveControl_FMS_p_T *localDW);
-extern void FMS_MoveControl_a_Reset(DW_MoveControl_FMS_p_T *localDW);
-extern void FMS_MoveControl_j(real32_T rtu_FMS_In, real32_T *rty_ay_cmd_mPs2,
-  const ConstB_MoveControl_FMS_a_T *localC, DW_MoveControl_FMS_p_T *localDW);
 extern void FMS_MotionState_Init(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState_Reset(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState(boolean_T rtu_motion_req, real32_T rtu_speed,
