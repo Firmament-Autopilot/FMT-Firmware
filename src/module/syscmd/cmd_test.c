@@ -19,6 +19,9 @@
 int cmd_test(int argc, char** argv)
 {
     /* add your test code here */
+    int parse_nmea_sentence(const char* sentence);
+
+    parse_nmea_sentence("$GNRMC,092721.00,A,2926.688113,N,11127.771644,E,0.780,,200520,,,D,V*1D");
 
     return 0;
 }
