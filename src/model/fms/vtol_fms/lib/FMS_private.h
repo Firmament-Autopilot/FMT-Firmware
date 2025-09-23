@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2556
+ * Model version                  : 1.2570
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Sep 22 10:24:41 2025
+ * C/C++ source code generated on : Tue Sep 23 16:28:48 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -92,7 +92,6 @@ extern void FMS_HoldControl_Init(DW_HoldControl_FMS_T *localDW);
 extern void FMS_HoldControl_Reset(DW_HoldControl_FMS_T *localDW);
 extern void FMS_HoldControl(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
   DW_HoldControl_FMS_T *localDW);
-extern void FMS_BrakeControl(real32_T *rty_psi_rate_cmd_radPs);
 extern void FMS_MoveControl_Init(DW_MoveControl_FMS_T *localDW);
 extern void FMS_MoveControl_Reset(DW_MoveControl_FMS_T *localDW);
 extern void FMS_MoveControl(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs, const
@@ -110,7 +109,7 @@ extern void FMS_HoldControl_b(const real32_T rtu_FMS_In[4], real32_T
   rtu_FMS_In_a, real32_T rtu_FMS_In_l, real32_T rtu_FMS_In_m, real32_T
   *rty_ay_cmd_mPs2, const ConstB_HoldControl_FMS_i_T *localC,
   DW_HoldControl_FMS_g_T *localDW);
-extern void FMS_BrakeControl_h(real32_T *rty_ay_cmd_mPs2);
+extern void FMS_BrakeControl(real32_T *rty_ay_cmd_mPs2);
 extern void FMS_MotionState_Init(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState_Reset(DW_MotionState_FMS_T *localDW);
 extern void FMS_MotionState(boolean_T rtu_motion_req, real32_T rtu_speed,
@@ -119,6 +118,7 @@ extern void FMS_HoldControl_o_Init(DW_HoldControl_FMS_f_T *localDW);
 extern void FMS_HoldControl_k_Reset(DW_HoldControl_FMS_f_T *localDW);
 extern void FMS_HoldControl_e(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
   DW_HoldControl_FMS_f_T *localDW);
+extern void FMS_BrakeControl_e(real32_T *rty_psi_rate_cmd_radPs);
 extern void FMS_MoveControl_b_Init(DW_MoveControl_FMS_e_T *localDW);
 extern void FMS_MoveControl_e_Reset(DW_MoveControl_FMS_e_T *localDW);
 extern void FMS_MoveControl_c(real32_T rtu_FMS_In, real32_T *rty_w_cmd_mPs,
@@ -132,7 +132,7 @@ extern void FMS_HoldControl_i_Reset(DW_HoldControl_FMS_m_T *localDW);
 extern void FMS_HoldControl_i(real32_T rtu_FMS_In, real32_T rtu_FMS_In_g,
   real32_T rtu_FMS_In_d, real32_T rty_uv_cmd_mPs[2], const
   ConstB_HoldControl_FMS_k_T *localC, DW_HoldControl_FMS_m_T *localDW);
-extern void FMS_BrakeControl_e(real32_T rty_uv_cmd_mPs[2]);
+extern void FMS_BrakeControl_e1(real32_T rty_uv_cmd_mPs[2]);
 extern void FMS_MoveControl_f_Init(DW_MoveControl_FMS_l_T *localDW);
 extern void FMS_MoveControl_l_Reset(DW_MoveControl_FMS_l_T *localDW);
 extern void FMS_MoveControl_k(real32_T rtu_FMS_In, real32_T rtu_FMS_In_h,
