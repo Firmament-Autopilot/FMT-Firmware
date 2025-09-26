@@ -24,20 +24,26 @@ static fmt_err_t task_init(void)
 
 static void task_entry(void* parameter)
 {
+    rt_device_t dev = rt_device_find("serial4");
+    rt_device_open(dev, RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
+
     /* main loop */
     while (1) {
-        printf("Hello FMT");
-        sys_msleep(1000);
+        uint8_t ch;
+        while(rt_device_read(dev, 0, &ch, 1)) {
+            printf("%c", ch);
+        }
+        sys_msleep(1);
     }
 }
 
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "local",
-//     .init = task_init,
-//     .entry = task_entry,
-//     .priority = 25,
-//     .auto_start = true,
-//     .stack_size = 4096,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+TASK_EXPORT __fmt_task_desc = {
+    .name = "local",
+    .init = task_init,
+    .entry = task_entry,
+    .priority = 25,
+    .auto_start = true,
+    .stack_size = 4096,
+    .param = NULL,
+    .dependency = NULL
+};

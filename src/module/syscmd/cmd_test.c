@@ -19,9 +19,9 @@
 int cmd_test(int argc, char** argv)
 {
     /* add your test code here */
-    int parse_nmea_sentence(const char* sentence);
+    // int parse_nmea_sentence(const char* sentence);
 
-    parse_nmea_sentence("$GNRMC,092721.00,A,2926.688113,N,11127.771644,E,0.780,,200520,,,D,V*1D");
+    // parse_nmea_sentence("$KSXT,20190909084745.00,116.23662400,40.07897925,68.3830,299.22,-67.03,190.28,0.022,,1,3,46,28,,,,-0.004,-0.021,-0.020,,*27");
 
     return 0;
 }

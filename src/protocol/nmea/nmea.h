@@ -25,7 +25,70 @@ extern "C" {
 
 #define NMEA_RECV_BUFFER_SIZE 1024
 
-int parse_nmea_sentence(const char* sentence);
+#define NMEA_MSG_KSXT         (1)
+#define NMEA_MSG_GPGSA        (2)
+
+/* Decoder state */
+typedef enum {
+    NMEA_DECODE_START = 0,
+    NMEA_DECODE_PAYLOAD,
+    NMEA_DECODE_CS1,
+    NMEA_DECODE_CS2,
+    NMEA_DECODE_END,
+} nmea_decode_state_t;
+
+typedef struct {
+    uint16_t year;           /**< Year (UTC)*/
+    uint8_t month;           /**< Month, range 1..12 (UTC) */
+    uint8_t day;             /**< Day of month, range 1..31 (UTC) */
+    uint8_t hour;            /**< Hour of day, range 0..23 (UTC) */
+    uint8_t min;             /**< Minute of hour, range 0..59 (UTC) */
+    uint8_t sec;             /**< Seconds of minute, range 0..60 (UTC) */
+    int32_t lon;             /**< Longitude [1e-7 deg] */
+    int32_t lat;             /**< Latitude [1e-7 deg] */
+    int32_t height;          /**< Height above ellipsoid [mm] */
+    float velN;              /**< NED north velocity [m/s]*/
+    float velE;              /**< NED east velocity [m/s]*/
+    float velD;              /**< NED down velocity [m/s]*/
+    float heading;           /**< Heading [rad] */
+    float gSpeed;            /**< Ground Speed (2-D) [m/s] */
+    uint8_t pos_fixType;     /**< position fix type: 0 = No fix, 1 = Single fix, 2 = rtk floating, 3 = rtk fix */
+    uint8_t heading_fixType; /**< heading fix type: 0 = No fix, 1 = Single fix, 2 = rtk floating, 3 = rtk fix */
+    uint8_t MnumSV;          /**< Number of SVs used in master antenna  */
+    uint8_t SnumSV;          /**< Number of SVs used in sub antenna  */
+} nmea_payload_rx_ksxt_t;
+
+typedef struct {
+    uint8_t pdop;
+    uint8_t hdop;
+    uint8_t vdop;
+} nmea_payload_rx_gpgsa_t;
+
+/* General message and payload buffer union */
+typedef union {
+    nmea_payload_rx_ksxt_t payload_rx_ksxt;
+    nmea_payload_rx_gpgsa_t payload_rx_gpgsa;
+    uint8_t raw[256];
+} nmea_buf_t;
+
+typedef int (*nmea_rx_handle_ptr)(uint16_t msg_id);
+
+typedef struct {
+    rt_device_t nmea_dev;
+    nmea_decode_state_t decode_state;
+    nmea_buf_t buf;
+    uint8_t nmea_rx_buf[NMEA_RECV_BUFFER_SIZE];
+    uint16_t rx_buf_index;
+    bool got_posllh;
+    bool got_velned;
+    bool got_svinfo;
+    bool got_dop;
+    nmea_rx_handle_ptr rx_handle;
+} nmea_decoder_t;
+
+fmt_err_t init_nmea_decoder(nmea_decoder_t* decoder, rt_device_t dev, nmea_rx_handle_ptr rx_handle);
+int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence);
+int parse_nmea_char(nmea_decoder_t* decoder, const uint8_t c);
 
 #ifdef __cplusplus
 }
