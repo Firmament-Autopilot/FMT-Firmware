@@ -20,18 +20,18 @@
 
 #define NMEA_UNUSED(x) (void)x;
 
-static uint8_t strtohex(const char* str) {
-    if (str == NULL || strlen(str) < 2) return 0;
-    
-    int high = toupper(str[0]);
-    int low = toupper(str[1]);
-    
-    high = (high >= '0' && high <= '9') ? high - '0' : 
-           (high >= 'A' && high <= 'F') ? high - 'A' + 10 : 0;
-    
-    low = (low >= '0' && low <= '9') ? low - '0' : 
-          (low >= 'A' && low <= 'F') ? low - 'A' + 10 : 0;
-    
+static uint8_t strtohex(const char* str)
+{
+    static int offset = 'A' - 'a';
+    int high = (str[0] >= 'a' && str[0] <= 'z') ? str[0] + offset : str[0];
+    int low = (str[1] >= 'a' && str[1] <= 'z') ? str[1] + offset : str[1];
+
+    high = (high >= '0' && high <= '9') ? high - '0' : (high >= 'A' && high <= 'F') ? high - 'A' + 10
+                                                                                    : 0;
+
+    low = (low >= '0' && low <= '9') ? low - '0' : (low >= 'A' && low <= 'F') ? low - 'A' + 10
+                                                                              : 0;
+
     return (high << 4) | low;
 }
 
@@ -50,9 +50,11 @@ int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence)
     int len = strlen(sentence);
     char* endp;
     int comma_cnt = 0;
+    int ret = -1;
+    char* bufptr;
 
     if (decoder == NULL || len < 7) {
-        return 0;
+        return ret;
     }
 
     for (int i = 0; i < len; i++) {
@@ -60,9 +62,6 @@ int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence)
             comma_cnt++;
         }
     }
-
-    char* bufptr = (char*)(sentence + 6);
-    int ret = 0;
 
     if ((memcmp(sentence + 1, "KSXT,", 5) == 0) && (comma_cnt == 21)) {
 
@@ -232,6 +231,8 @@ int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence)
             ret = decoder->rx_handle(NMEA_MSG_KSXT);
     } else if ((memcmp(sentence + 3, "GSA,", 4) == 0) && (comma_cnt >= 17)) {
 
+        bufptr = (char*)(sentence + 6);
+
         /*
         GPS DOP and active satellites
         An example of the GSA message string is:
@@ -305,6 +306,8 @@ int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence)
 
 int parse_nmea_char(nmea_decoder_t* decoder, const uint8_t c)
 {
+    int ret = -1;
+
     switch (decoder->decode_state) {
     case NMEA_DECODE_START: {
         if (c == '$') {
@@ -320,6 +323,7 @@ int parse_nmea_char(nmea_decoder_t* decoder, const uint8_t c)
     } break;
     case NMEA_DECODE_CS1: {
         decoder->nmea_rx_buf[decoder->rx_buf_index++] = c;
+        decoder->decode_state = NMEA_DECODE_CS2;
     } break;
     case NMEA_DECODE_CS2: {
         decoder->nmea_rx_buf[decoder->rx_buf_index++] = c;
@@ -333,27 +337,28 @@ int parse_nmea_char(nmea_decoder_t* decoder, const uint8_t c)
         }
         recv_cs_str[0] = decoder->nmea_rx_buf[i + 1];
         recv_cs_str[1] = decoder->nmea_rx_buf[i + 2];
-        
-        recv_cs = strtohex(recv_cs_str);
-        if(recv_cs == calc_cs){
-            return 0;
-        }else{
-            return -1;
-        }
-    } break;
-    case NMEA_DECODE_END: {
 
+        recv_cs = strtohex(recv_cs_str);
+        if (recv_cs == calc_cs) {
+            decoder->nmea_rx_buf[decoder->rx_buf_index++] = 0;
+            ret = parse_nmea_sentence(decoder, decoder->nmea_rx_buf);
+        }
+
+        decoder->decode_state = NMEA_DECODE_START;
+        nmea_decoder_reset(decoder);
     } break;
     default:
         decoder->decode_state = NMEA_DECODE_START;
         nmea_decoder_reset(decoder);
         break;
     }
+
+    return ret;
 }
 
 fmt_err_t init_nmea_decoder(nmea_decoder_t* decoder, rt_device_t dev, nmea_rx_handle_ptr rx_handle)
 {
-    if (decoder == NULL || rx_handle == NULL) {
+    if (decoder == NULL || dev == NULL || rx_handle == NULL) {
         return FMT_EEMPTY;
     }
 

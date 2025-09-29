@@ -34,7 +34,6 @@ typedef enum {
     NMEA_DECODE_PAYLOAD,
     NMEA_DECODE_CS1,
     NMEA_DECODE_CS2,
-    NMEA_DECODE_END,
 } nmea_decode_state_t;
 
 typedef struct {
@@ -77,7 +76,7 @@ typedef struct {
     rt_device_t nmea_dev;
     nmea_decode_state_t decode_state;
     nmea_buf_t buf;
-    uint8_t nmea_rx_buf[NMEA_RECV_BUFFER_SIZE];
+    char nmea_rx_buf[NMEA_RECV_BUFFER_SIZE];
     uint16_t rx_buf_index;
     bool got_posllh;
     bool got_velned;
