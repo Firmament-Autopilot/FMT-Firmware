@@ -55,8 +55,10 @@ fmt_err_t sensor_gps_read(sensor_gps_t gps_dev, gps_data_t* gps_data)
     gps_data->velE = gps_drv_report.vel_e_m_s;
     gps_data->velD = gps_drv_report.vel_d_m_s;
     gps_data->vel = gps_drv_report.vel_m_s;
-    gps_data->cog = gps_drv_report.cog_rad;
     gps_data->sAcc = gps_drv_report.s_variance_m_s;
+    gps_data->cog = gps_drv_report.cog_rad;
+    gps_data->heading = gps_drv_report.heading_rad;
+    gps_data->headingAcc = gps_drv_report.c_variance_rad;
 
     return (r_size == sizeof(gps_report_t)) ? FMT_EOK : FMT_ERROR;
 }

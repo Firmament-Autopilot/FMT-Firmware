@@ -50,6 +50,7 @@ typedef struct {
     float velE;              /**< NED east velocity [m/s]*/
     float velD;              /**< NED down velocity [m/s]*/
     float heading;           /**< Heading [rad] */
+    float track;             /**< Track angle (true) [rad] */
     float gSpeed;            /**< Ground Speed (2-D) [m/s] */
     uint8_t pos_fixType;     /**< position fix type: 0 = No fix, 1 = Single fix, 2 = rtk floating, 3 = rtk fix */
     uint8_t heading_fixType; /**< heading fix type: 0 = No fix, 1 = Single fix, 2 = rtk floating, 3 = rtk fix */
@@ -58,9 +59,9 @@ typedef struct {
 } nmea_payload_rx_ksxt_t;
 
 typedef struct {
-    uint8_t pdop;
-    uint8_t hdop;
-    uint8_t vdop;
+    float pdop;
+    float hdop;
+    float vdop;
 } nmea_payload_rx_gpgsa_t;
 
 /* General message and payload buffer union */

@@ -44,19 +44,47 @@ static int nmea_rx_handle(uint16_t msg_id)
     switch (msg_id) {
     case NMEA_MSG_KSXT: {
         gps_report.vel_ned_valid = 1;
-        if(nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 1) {
-            gps_report.fix_type = 3;    /* 3D fix */
-        }else if(nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 2) {
-            gps_report.fix_type = 6;    /* RTK fix */
-        }else if(nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 3) {
-            gps_report.fix_type = 5;    /* RTK float */
-        }else{
-            gps_report.fix_type = 0;    /* No fix */
+        if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 1) {
+            gps_report.fix_type = 3; /* 3D fix */
+        } else if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 2) {
+            gps_report.fix_type = 6; /* RTK fix */
+        } else if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 3) {
+            gps_report.fix_type = 5; /* RTK float */
+        } else {
+            gps_report.fix_type = 0; /* No fix */
             gps_report.vel_ned_valid = 0;
         }
+
+        gps_report.satellites_used = nmea_decoder.buf.payload_rx_ksxt.MnumSV;
+        gps_report.lat = nmea_decoder.buf.payload_rx_ksxt.lat;
+        gps_report.lon = nmea_decoder.buf.payload_rx_ksxt.lon;
+        gps_report.alt = nmea_decoder.buf.payload_rx_ksxt.height;
+        gps_report.vel_m_s = nmea_decoder.buf.payload_rx_ksxt.gSpeed;
+        gps_report.vel_n_m_s = nmea_decoder.buf.payload_rx_ksxt.velN;
+        gps_report.vel_e_m_s = nmea_decoder.buf.payload_rx_ksxt.velE;
+        gps_report.vel_d_m_s = nmea_decoder.buf.payload_rx_ksxt.velD;
+
+        gps_report.heading_rad = nmea_decoder.buf.payload_rx_ksxt.heading;
+        gps_report.cog_rad = nmea_decoder.buf.payload_rx_ksxt.track;
+        gps_report.c_variance_rad = (3.0f - nmea_decoder.buf.payload_rx_ksxt.heading_fixType) * PI / 6.0f;
+
+        gps_report.timestamp_time = systime_now_ms();
+        gps_report.timestamp_velocity = systime_now_ms();
+        gps_report.timestamp_position = systime_now_ms();
+
+        nmea_decoder.got_posllh = true;
+        nmea_decoder.got_velned = true;
+        nmea_decoder.got_svinfo = true;
+
     } break;
     case NMEA_MSG_GPGSA: {
+        gps_report.eph = nmea_decoder.buf.payload_rx_gpgsa.hdop;
+        gps_report.epv = nmea_decoder.buf.payload_rx_gpgsa.vdop;
+        gps_report.s_variance_m_s = nmea_decoder.buf.payload_rx_gpgsa.hdop / 5;
 
+        gps_report.timestamp_variance = systime_now_ms();
+
+        nmea_decoder.got_dop = true;
     } break;
     default:
         ret = -1;
@@ -85,6 +113,10 @@ static void gps_probe_entry(void* parameter)
     // if (i >= CONFIGURE_RETRY_MAX) {
     //     printf("GPS configuration fail! Please check if GPS module has connected.");
     // }
+
+    /* GPS is dected, now register */
+    hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
+    register_sensor_gps((char*)parameter);
 
     rt_free(parameter);
 }

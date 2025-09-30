@@ -39,10 +39,10 @@ static void nmea_decoder_reset(nmea_decoder_t* decoder)
 {
     decoder->decode_state = NMEA_DECODE_START;
     decoder->rx_buf_index = 0;
-    decoder->got_posllh = false;
-    decoder->got_velned = false;
-    decoder->got_svinfo = false;
-    decoder->got_dop = false;
+    // decoder->got_posllh = false;
+    // decoder->got_velned = false;
+    // decoder->got_svinfo = false;
+    // decoder->got_dop = false;
 }
 
 int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence)
@@ -221,6 +221,7 @@ int parse_nmea_sentence(nmea_decoder_t* decoder, const char* sentence)
         decoder->buf.payload_rx_ksxt.velE = ve / 3.6f;
         decoder->buf.payload_rx_ksxt.velD = -vu / 3.6f;
         decoder->buf.payload_rx_ksxt.heading = heading / 180.0f * PI;
+        decoder->buf.payload_rx_ksxt.track = track / 180.0f * PI;
         decoder->buf.payload_rx_ksxt.gSpeed = vel / 3.6f;
         decoder->buf.payload_rx_ksxt.pos_fixType = pos_qual;
         decoder->buf.payload_rx_ksxt.heading_fixType = heading_qual;
@@ -364,6 +365,10 @@ fmt_err_t init_nmea_decoder(nmea_decoder_t* decoder, rt_device_t dev, nmea_rx_ha
 
     decoder->nmea_dev = dev;
     decoder->rx_handle = rx_handle;
+    decoder->got_posllh = false;
+    decoder->got_velned = false;
+    decoder->got_svinfo = false;
+    decoder->got_dop = false;
 
     nmea_decoder_reset(decoder);
 

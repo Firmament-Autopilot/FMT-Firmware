@@ -93,7 +93,7 @@ static int ubx_rx_handle(void)
         gps_report.vel_d_m_s = (float)ubx_decoder.buf.payload_rx_nav_pvt.velD * 1e-3f;
 
         gps_report.cog_rad = (float)ubx_decoder.buf.payload_rx_nav_pvt.headMot * M_DEG_TO_RAD_F * 1e-5f;
-        gps_report.c_variance_rad = (float)ubx_decoder.buf.payload_rx_nav_pvt.headAcc * M_DEG_TO_RAD_F * 1e-5f;
+        gps_report.c_variance_rad = 2 * PI;
 
         // Check if time and date fix flags are good
         // if ((ubx_decoder.buf.payload_rx_nav_pvt.valid & UBX_RX_NAV_PVT_VALID_VALIDDATE)
@@ -202,7 +202,7 @@ static int ubx_rx_handle(void)
         gps_report.vel_e_m_s = (float)ubx_decoder.buf.payload_rx_nav_velned.velE * 1e-2f; /* NED EAST velocity */
         gps_report.vel_d_m_s = (float)ubx_decoder.buf.payload_rx_nav_velned.velD * 1e-2f; /* NED DOWN velocity */
         gps_report.cog_rad = (float)ubx_decoder.buf.payload_rx_nav_velned.heading * M_DEG_TO_RAD_F * 1e-5f;
-        gps_report.c_variance_rad = (float)ubx_decoder.buf.payload_rx_nav_velned.cAcc * M_DEG_TO_RAD_F * 1e-5f;
+        gps_report.c_variance_rad = 2 * PI;
         gps_report.vel_ned_valid = 1;
 
         gps_report.timestamp_velocity = systime_now_ms();
