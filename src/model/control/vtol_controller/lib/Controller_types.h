@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.799
+ * Model version                  : 1.824
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Sep 23 16:31:22 2025
+ * C/C++ source code generated on : Tue Sep 30 15:14:14 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -42,9 +42,9 @@
 #define AIRFRAME                       1
 #endif
 
-/* Exactly one variant for '<S8>/VTOL_Control_Allocation' should be active */
+/* Exactly one variant for '<S7>/VTOL_Control_Allocation' should be active */
 #if ((AIRFRAME == 1) ? 1 : 0) + ((AIRFRAME == 2) ? 1 : 0) != 1
-#error Exactly one variant for '<S8>/VTOL_Control_Allocation' should be active
+#error Exactly one variant for '<S7>/VTOL_Control_Allocation' should be active
 #endif
 
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
@@ -244,8 +244,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_bbisFpyguPkQQvdqSWKvqB_
-#define DEFINED_TYPEDEF_FOR_struct_bbisFpyguPkQQvdqSWKvqB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_PwkgbKxZIDCjZ9tSDIOmy_
+#define DEFINED_TYPEDEF_FOR_struct_PwkgbKxZIDCjZ9tSDIOmy_
 
 typedef struct {
   real32_T MC_VEL_XY_P;
@@ -298,7 +298,7 @@ typedef struct {
   real32_T FW_RATE_I_MAX;
   real32_T FW_P_Q_CMD_LIM;
   real32_T FW_R_CMD_LIM;
-  real32_T FW_YAW_RATE_LIM;
+  real32_T FW_YAWRATE_LIM;
   real32_T FW_AIRSPEED_TRIM;
   real32_T FW_FF;
   real32_T FW_ROLL_EFFC;
@@ -335,7 +335,7 @@ typedef struct {
   real32_T SERVO2_BIAS;
   real32_T SERVO3_BIAS;
   real32_T SERVO4_BIAS;
-} struct_bbisFpyguPkQQvdqSWKvqB;
+} struct_PwkgbKxZIDCjZ9tSDIOmy;
 
 #endif
 

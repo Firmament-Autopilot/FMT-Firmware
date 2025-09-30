@@ -57,7 +57,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(LAND_SPEED, 0.6, false),
     PARAM_UINT16(LOST_RETURN_TIME, 120, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
-    PARAM_UINT16(LAND_LOCK_THRO, 1200, false),
+    PARAM_UINT16(LAND_LOCK_THRO, 1250, false),
     PARAM_FLOAT(FW_L1, 50.0, false),
     PARAM_FLOAT(FW_CRUISE_SPEED, 18.0, false),
     PARAM_FLOAT(FW_SPEED_MAX, 22.0, false),

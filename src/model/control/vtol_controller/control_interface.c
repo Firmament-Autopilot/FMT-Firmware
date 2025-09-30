@@ -83,7 +83,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_RATE_I_MAX, 0.4, false),
     PARAM_FLOAT(FW_P_Q_CMD_LIM, PI / 3, false),
     PARAM_FLOAT(FW_R_CMD_LIM, PI / 6, false),
-    PARAM_FLOAT(FW_YAW_RATE_LIM2, PI / 6, false),
+    PARAM_FLOAT(FW_YAWRATE_LIM, PI / 6, false),
 
     PARAM_FLOAT(FW_AIRSPEED_TRIM, 17.0, false),
     PARAM_FLOAT(FW_FF, 0.2, false),
@@ -216,7 +216,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_RATE_I_MAX), &CONTROL_PARAM.FW_RATE_I_MAX));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_P_Q_CMD_LIM), &CONTROL_PARAM.FW_P_Q_CMD_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_R_CMD_LIM), &CONTROL_PARAM.FW_R_CMD_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_YAW_RATE_LIM2), &CONTROL_PARAM.FW_YAW_RATE_LIM));
+    FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_YAWRATE_LIM), &CONTROL_PARAM.FW_YAWRATE_LIM));
 
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_AIRSPEED_TRIM), &CONTROL_PARAM.FW_AIRSPEED_TRIM));
     FMT_CHECK(param_link_variable(PARAM_GET(CONTROL, FW_FF), &CONTROL_PARAM.FW_FF));
