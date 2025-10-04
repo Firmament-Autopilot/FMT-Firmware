@@ -96,23 +96,15 @@ static int nmea_rx_handle(uint16_t msg_id)
 
 static void gps_probe_entry(void* parameter)
 {
-    // uint32_t baudrate;
-    // uint8_t i;
+    char nmea_cfg[][100] = {
+        "KSXT 0.1\r\n",
+        "GPGSA 0.1\r\n",
+    };
 
-    // for (i = 0; i < CONFIGURE_RETRY_MAX; i++) {
-    //     if (probe(&baudrate) == RT_EOK) {
-    //         if (configure_by_ubx(baudrate) == RT_EOK) {
-    //             /* GPS is dected, now register */
-    //             hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
-    //             register_sensor_gps((char*)parameter);
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // if (i >= CONFIGURE_RETRY_MAX) {
-    //     printf("GPS configuration fail! Please check if GPS module has connected.");
-    // }
+    for (uint8_t i = 0; i < sizeof(nmea_cfg) / sizeof(nmea_cfg[0]); i++) {
+        rt_device_write(nmea_decoder.nmea_dev, 0, nmea_cfg[i], strlen(nmea_cfg[i]));
+        systime_msleep(10);
+    }
 
     /* GPS is dected, now register */
     hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
@@ -188,7 +180,7 @@ rt_err_t gps_nmea_init(const char* serial_dev_name, const char* gps_dev_name)
     /* set gps rx indicator */
     RT_CHECK(rt_device_set_rx_indicate(serial_device, gps_serial_rx_ind));
     /* open serial device */
-    RT_CHECK(rt_device_open(serial_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX));
+    RT_CHECK(rt_device_open(serial_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX));
     /* init ublox decoder */
     FMT_CHECK(init_nmea_decoder(&nmea_decoder, serial_device, nmea_rx_handle));
 
