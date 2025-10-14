@@ -306,27 +306,9 @@ static rt_err_t set_baudrate(rt_device_t dev, uint32_t baudrate)
     return RT_EOK;
 }
 
-// #define GPS_UBX_BAUDRATE 38400
 static rt_err_t probe(uint32_t* gps_baudrate)
 {
     uint32_t baudrate;
-
-#ifdef GPS_UBX_BAUDRATE
-    baudrate = GPS_UBX_BAUDRATE;
-    if (set_baudrate(ubx_decoder.ubx_dev, baudrate) == RT_EOK) {
-        DRV_DBG("gps barud rate -> %d\n", baudrate);
-    } else {
-        DRV_DBG("gps barud rate -> %d fail\n", baudrate);
-        return RT_ERROR;
-    }
-
-    /* flush input and wait for at least 20 ms silence */
-    reset_ubx_decoder(&ubx_decoder);
-    sys_msleep(20);
-    reset_ubx_decoder(&ubx_decoder);
-
-    *gps_baudrate = baudrate;
-#else
     uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200, 230400, 460800 };
     uint8_t i;
 
@@ -370,7 +352,6 @@ static rt_err_t probe(uint32_t* gps_baudrate)
         DRV_DBG("gps connection and/or baudrate detection failed\r\n");
         return RT_ERROR;
     }
-#endif
 
     return RT_EOK;
 }
@@ -533,15 +514,18 @@ static struct gps_ops gps_ops = {
 
 static void gps_probe_entry(void* parameter)
 {
+#ifdef FMT_SKIP_GPS_UBX_CONFIG
+    ubx_decoder.use_nav_pvt = true;
+    ubx_decoder.configured = true;
+#else
     uint32_t baudrate;
     uint8_t i;
-
     for (i = 0; i < CONFIGURE_RETRY_MAX; i++) {
         if (probe(&baudrate) == RT_EOK) {
             if (configure_by_ubx(baudrate) == RT_EOK) {
-                /* GPS is dected, now register */
-                hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
-                register_sensor_gps((char*)parameter);
+                // /* GPS is dected, now register */
+                // hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
+                // register_sensor_gps((char*)parameter);
                 break;
             }
         }
@@ -549,6 +533,13 @@ static void gps_probe_entry(void* parameter)
 
     if (i >= CONFIGURE_RETRY_MAX) {
         printf("GPS configuration fail! Please check if GPS module has connected.");
+    }
+#endif
+
+    if (ubx_decoder.configured) {
+        /* GPS is dected, now register */
+        hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
+        register_sensor_gps((char*)parameter);
     }
 
     rt_free(parameter);
