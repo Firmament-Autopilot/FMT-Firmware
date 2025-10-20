@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2590
+ * Model version                  : 1.2595
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Sep 30 15:12:37 2025
+ * C/C++ source code generated on : Wed Oct 15 11:39:04 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -188,6 +188,7 @@ typedef struct {
   uint8_T wp_index;                    /* '<Root>/FMS State Machine' */
   boolean_T LogicalOperator2;          /* '<S4>/Logical Operator2' */
   boolean_T Compare;                   /* '<S41>/Compare' */
+  boolean_T on_ground;                 /* '<S7>/Logical Operator1' */
   boolean_T LogicalOperator;           /* '<S2>/Logical Operator' */
   boolean_T RelationalOperator1;       /* '<S786>/Relational Operator1' */
   boolean_T RelationalOperator1_b;     /* '<S789>/Relational Operator1' */
@@ -212,9 +213,12 @@ typedef struct {
   void* VTOL_M_msgInterface;           /* '<Root>/FMS State Machine' */
   void* VTOL_M_msgHandle;              /* '<Root>/FMS State Machine' */
   void* VTOL_M_msgDataPtr;             /* '<Root>/FMS State Machine' */
-  real32_T DiscreteTimeIntegrator5_DSTATE;/* '<S11>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTATE[3];/* '<S817>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_o;/* '<S11>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S4>/Discrete-Time Integrator' */
   real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S4>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_d;/* '<S819>/Discrete-Time Integrator5' */
+  real32_T DiscreteTimeIntegrator5_DSTAT_k;/* '<S818>/Discrete-Time Integrator5' */
   real32_T DiscreteTimeIntegrator5_DSTAT_h;/* '<S10>/Discrete-Time Integrator5' */
   real32_T Integrator1_DSTATE[2];      /* '<S423>/Integrator1' */
   real32_T Integrator_DSTATE[2];       /* '<S423>/Integrator' */
@@ -288,6 +292,7 @@ typedef struct {
   uint32_T DelayInput1_DSTATE_p;       /* '<S33>/Delay Input1' */
   uint32_T DelayInput1_DSTATE_d;       /* '<S38>/Delay Input1' */
   uint32_T DelayInput1_DSTATE_h;       /* '<S39>/Delay Input1' */
+  uint32_T DiscreteTimeIntegrator_DSTATE_c;/* '<S7>/Discrete-Time Integrator' */
   uint32_T DelayInput1_DSTATE_c;       /* '<S23>/Delay Input1' */
   uint32_T DiscreteTimeIntegrator_DSTATE_b;/* '<S2>/Discrete-Time Integrator' */
   uint32_T DiscreteTimeIntegrator_DSTATE_g;/* '<S785>/Discrete-Time Integrator' */
@@ -330,6 +335,8 @@ typedef struct {
   uint8_T DiscreteTimeIntegrator_DSTATE_k;/* '<S483>/Discrete-Time Integrator' */
   uint8_T DiscreteTimeIntegrator_DSTATE_a;/* '<S729>/Discrete-Time Integrator' */
   uint8_T DelayInput1_DSTATE_dy;       /* '<S242>/Delay Input1' */
+  boolean_T Delay_DSTATE_a;            /* '<S7>/Delay' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S7>/Discrete-Time Integrator' */
   int8_T SwitchCase_ActiveSubsystem;   /* '<S42>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_k; /* '<S44>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_b; /* '<S50>/Switch Case' */
@@ -361,7 +368,10 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_ah;/* '<S138>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_hd;/* '<S126>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_kv;/* '<S128>/Switch Case' */
-  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S11>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S817>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_a;/* '<S11>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_L_af;/* '<S819>/Discrete-Time Integrator5' */
+  uint8_T DiscreteTimeIntegrator5_IC_LO_g;/* '<S818>/Discrete-Time Integrator5' */
   uint8_T DiscreteTimeIntegrator5_IC_LO_m;/* '<S10>/Discrete-Time Integrator5' */
   uint8_T is_active_c3_FMS;            /* '<Root>/SafeMode' */
   uint8_T is_c3_FMS;                   /* '<Root>/SafeMode' */
@@ -795,6 +805,7 @@ extern const ConstB_FMS_T FMS_ConstB;  /* constant block i/o */
 extern struct_R5NVdknldGABThoGFgAvrE FMS_PARAM;/* Variable: FMS_PARAM
                                                 * Referenced by:
                                                 *   '<S4>/Constant1'
+                                                *   '<S7>/Land_Lock_Thro'
                                                 *   '<S40>/Constant'
                                                 *   '<S786>/Constant1'
                                                 *   '<S787>/Constant'
@@ -1029,6 +1040,7 @@ extern struct_R5NVdknldGABThoGFgAvrE FMS_PARAM;/* Variable: FMS_PARAM
 extern struct_TYt7YeNdxIDXfczXumtXXB FMS_EXPORT;/* Variable: FMS_EXPORT
                                                  * Referenced by:
                                                  *   '<S2>/Constant'
+                                                 *   '<S7>/Constant1'
                                                  *   '<S26>/Constant1'
                                                  *   '<S785>/Constant'
                                                  */
@@ -1093,45 +1105,7 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S771>/Data Type Duplicate' : Unused code path elimination
  * Block '<S813>/Data Type Duplicate' : Unused code path elimination
  * Block '<S814>/Data Type Duplicate' : Unused code path elimination
- * Block '<S815>/Compare' : Unused code path elimination
- * Block '<S815>/Constant' : Unused code path elimination
- * Block '<S816>/Compare' : Unused code path elimination
- * Block '<S816>/Constant' : Unused code path elimination
- * Block '<S7>/Constant' : Unused code path elimination
- * Block '<S7>/Constant1' : Unused code path elimination
- * Block '<S7>/Cos' : Unused code path elimination
- * Block '<S7>/Cos1' : Unused code path elimination
- * Block '<S7>/Delay' : Unused code path elimination
- * Block '<S7>/Discrete-Time Integrator' : Unused code path elimination
- * Block '<S7>/Divide' : Unused code path elimination
- * Block '<S7>/Divide1' : Unused code path elimination
- * Block '<S817>/Data Type Conversion' : Unused code path elimination
- * Block '<S817>/Discrete-Time Integrator5' : Unused code path elimination
- * Block '<S817>/Gain' : Unused code path elimination
- * Block '<S817>/Sum5' : Unused code path elimination
- * Block '<S818>/Data Type Conversion' : Unused code path elimination
- * Block '<S818>/Discrete-Time Integrator5' : Unused code path elimination
- * Block '<S818>/Gain' : Unused code path elimination
- * Block '<S818>/Sum5' : Unused code path elimination
- * Block '<S819>/Data Type Conversion' : Unused code path elimination
- * Block '<S819>/Discrete-Time Integrator5' : Unused code path elimination
- * Block '<S819>/Gain' : Unused code path elimination
- * Block '<S819>/Sum5' : Unused code path elimination
- * Block '<S820>/AND' : Unused code path elimination
  * Block '<S820>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S820>/Lower Limit' : Unused code path elimination
- * Block '<S820>/Lower Test' : Unused code path elimination
- * Block '<S820>/Upper Limit' : Unused code path elimination
- * Block '<S820>/Upper Test' : Unused code path elimination
- * Block '<S7>/Land_Lock_Thro' : Unused code path elimination
- * Block '<S7>/Logical Operator' : Unused code path elimination
- * Block '<S7>/Logical Operator1' : Unused code path elimination
- * Block '<S7>/Multiply' : Unused code path elimination
- * Block '<S7>/Multiply1' : Unused code path elimination
- * Block '<S7>/Relational Operator' : Unused code path elimination
- * Block '<S7>/Saturation' : Unused code path elimination
- * Block '<S7>/Sum of Elements' : Unused code path elimination
- * Block '<S7>/Transpose' : Unused code path elimination
  * Block '<S10>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S11>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S92>/Switch' : Eliminated due to constant selection input
@@ -1172,6 +1146,8 @@ extern RT_MODEL_FMS_T *const FMS_M;
  * Block '<S43>/Signal Copy7' : Eliminate redundant signal conversion block
  * Block '<S43>/Signal Copy8' : Eliminate redundant signal conversion block
  * Block '<S791>/Signal Conversion' : Eliminate redundant signal conversion block
+ * Block '<S817>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S818>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S92>/Gain1' : Unused code path elimination
  * Block '<S215>/Gain1' : Unused code path elimination
  */
