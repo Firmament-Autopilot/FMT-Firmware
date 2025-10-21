@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.847
+ * Model version                  : 1.850
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Oct 20 15:46:36 2025
+ * C/C++ source code generated on : Tue Oct 21 16:53:28 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -50,11 +50,11 @@ const ConstB_Controller_T Controller_ConstB = {
   /* Start of '<S145>/VTOL2' */
   {
     { -0.5F, 0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, 0.5F, -0.5F,
-      -0.5F },                         /* '<S165>/Gain' */
+      -0.5F },                         /* '<S159>/Gain' */
 
-    { 0.5F, 0.5F, -0.5F, -0.5F },      /* '<S165>/r_column' */
+    { 0.5F, 0.5F, -0.5F, -0.5F },      /* '<S159>/r_column' */
 
-    { -0.5F, 0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, -0.5F }/* '<S165>/pq_column' */
+    { -0.5F, 0.5F, 0.5F, -0.5F, 0.5F, -0.5F, 0.5F, -0.5F }/* '<S159>/pq_column' */
   }
   ,
 
@@ -83,8 +83,8 @@ const ConstP_Controller_T Controller_ConstP = {
 
   /* Pooled Parameter (Expression: [1150 1150 1150 1150 1000]')
    * Referenced by:
-   *   '<S163>/Standby'
-   *   '<S176>/Disarm'
+   *   '<S157>/Standby'
+   *   '<S168>/Disarm'
    */
   { 1150.0F, 1150.0F, 1150.0F, 1150.0F, 1000.0F },
 

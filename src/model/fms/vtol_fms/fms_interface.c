@@ -49,6 +49,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(YAW_RATE_LIM, PI / 3, false),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6, false),
     PARAM_FLOAT(L1, 15.0, false),
+    PARAM_FLOAT(MC_ACCEPT_R, 1.0, false),
     PARAM_FLOAT(CRUISE_SPEED, 5.0, false),
     PARAM_FLOAT(CRUISE_ACC, 5.0, false),
     PARAM_FLOAT(TAKEOFF_H, 2.0, false),
@@ -57,7 +58,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(LAND_SPEED, 0.6, false),
     PARAM_UINT16(LOST_RETURN_TIME, 120, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
-    PARAM_UINT16(LAND_LOCK_THRO, 1250, false),
+    PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
     PARAM_FLOAT(FW_L1, 50.0, false),
     PARAM_FLOAT(FW_CRUISE_SPEED, 18.0, false),
     PARAM_FLOAT(FW_SPEED_MAX, 22.0, false),
@@ -70,11 +71,6 @@ static param_t __param_list[] = {
     PARAM_FLOAT(FW_PITCH_LIM, PI / 6, false),
     PARAM_FLOAT(FW_YAW_RATE_LIM, PI / 6, false),
     PARAM_FLOAT(FW_LOITER_R, 50.0, false),
-    PARAM_FLOAT(Y_P, 0.95, false),
-    PARAM_FLOAT(ACC_Y_LIM, 8.0, false),
-    PARAM_FLOAT(ROLL_LIM, PI / 6, false),
-    PARAM_FLOAT(PITCH_LIM, PI / 6, false),
-    PARAM_FLOAT(MC_ACCEPT_R, 1.0, false),
     PARAM_FLOAT(FW_ACCEPT_R, 100.0, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
@@ -301,6 +297,7 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, YAW_RATE_LIM), &FMS_PARAM.YAW_RATE_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_PITCH_LIM), &FMS_PARAM.ROLL_PITCH_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, L1), &FMS_PARAM.L1));
+    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_ACCEPT_R), &FMS_PARAM.MC_ACCEPT_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_SPEED), &FMS_PARAM.CRUISE_SPEED));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, CRUISE_ACC), &FMS_PARAM.CRUISE_ACC));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, TAKEOFF_H), &FMS_PARAM.TAKEOFF_H));
@@ -322,11 +319,6 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_PITCH_LIM), &FMS_PARAM.FW_PITCH_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_YAW_RATE_LIM), &FMS_PARAM.FW_YAW_RATE_LIM));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_LOITER_R), &FMS_PARAM.FW_LOITER_R));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, Y_P), &FMS_PARAM.Y_P));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ACC_Y_LIM), &FMS_PARAM.ACC_Y_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, ROLL_LIM), &FMS_PARAM.ROLL_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, PITCH_LIM), &FMS_PARAM.PITCH_LIM));
-    FMT_CHECK(param_link_variable(PARAM_GET(FMS, MC_ACCEPT_R), &FMS_PARAM.MC_ACCEPT_R));
     FMT_CHECK(param_link_variable(PARAM_GET(FMS, FW_ACCEPT_R), &FMS_PARAM.FW_ACCEPT_R));
 }
 

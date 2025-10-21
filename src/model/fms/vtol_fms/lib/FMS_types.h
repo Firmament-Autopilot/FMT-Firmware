@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2595
+ * Model version                  : 1.2597
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Wed Oct 15 11:39:04 2025
+ * C/C++ source code generated on : Tue Oct 21 16:52:21 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -527,8 +527,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_R5NVdknldGABThoGFgAvrE_
-#define DEFINED_TYPEDEF_FOR_struct_R5NVdknldGABThoGFgAvrE_
+#ifndef DEFINED_TYPEDEF_FOR_struct_I9zhY9cxiv5dGpkYkLPNKB_
+#define DEFINED_TYPEDEF_FOR_struct_I9zhY9cxiv5dGpkYkLPNKB_
 
 typedef struct {
   real32_T THROTTLE_DZ;
@@ -543,6 +543,7 @@ typedef struct {
   real32_T YAW_RATE_LIM;
   real32_T ROLL_PITCH_LIM;
   real32_T L1;
+  real32_T MC_ACCEPT_R;
   real32_T CRUISE_SPEED;
   real32_T CRUISE_ACC;
   real32_T TAKEOFF_H;
@@ -564,13 +565,8 @@ typedef struct {
   real32_T FW_PITCH_LIM;
   real32_T FW_YAW_RATE_LIM;
   real32_T FW_LOITER_R;
-  real32_T Y_P;
-  real32_T ACC_Y_LIM;
-  real32_T ROLL_LIM;
-  real32_T PITCH_LIM;
-  real32_T MC_ACCEPT_R;
   real32_T FW_ACCEPT_R;
-} struct_R5NVdknldGABThoGFgAvrE;
+} struct_I9zhY9cxiv5dGpkYkLPNKB;
 
 #endif
 
