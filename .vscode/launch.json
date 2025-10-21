@@ -107,6 +107,21 @@
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
             "svdFile": "target/amov/icf5/GD32F4xx.svd",
             "runToMain": true
-        }
+        },
+        {
+            "name": "X1 Debug J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/yundrone/x1/build/fmt_yundrone-x1.elf",
+            "serverpath": "${env:JLINK_SERVER}",
+            "servertype": "jlink",
+            "device": "STM32H743II",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "target/yundrone/x1/STM32H7x3.svd",
+            "runToMain": true
+        },
     ]
 }
