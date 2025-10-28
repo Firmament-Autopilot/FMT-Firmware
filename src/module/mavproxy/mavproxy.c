@@ -79,6 +79,7 @@ static void mavproxy_chan_timer_update(void* parameter)
 static void dump_immediate_msg(uint8_t chan)
 {
     uint16_t cnt = 0;
+    uint16_t retry = 0;
 
     if (mav_handle.chan_handle_list[chan] == NULL)
         return;
@@ -88,10 +89,19 @@ static void dump_immediate_msg(uint8_t chan)
             OS_ENTER_CRITICAL;
             mav_handle.chan_handle_list[chan]->imm_mq.tail = (mav_handle.chan_handle_list[chan]->imm_mq.tail + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
             OS_EXIT_CRITICAL;
+            retry = 0;
 
             if (++cnt >= MAX_DUMP_MSG_COUNT) {
                 /* To prevent sending data too rapidly and overwhelming the buffer, ensure that this while loop does not overrun. */
                 break;
+            }
+        } else {
+            if (++retry >= 3) {
+                /* skip this message */
+                OS_ENTER_CRITICAL;
+                mav_handle.chan_handle_list[chan]->imm_mq.tail = (mav_handle.chan_handle_list[chan]->imm_mq.tail + 1) % MAX_IMMEDIATE_MSG_QUEUE_SIZE;
+                OS_EXIT_CRITICAL;
+                retry = 0;
             }
         }
     }
@@ -135,8 +145,7 @@ fmt_err_t mavproxy_register_period_msg(uint8_t chan, uint8_t msgid, uint16_t msg
 {
     mav_period_msg msg;
 
-    if (mav_handle.chan_handle_list[chan] == NULL)
-    {
+    if (mav_handle.chan_handle_list[chan] == NULL) {
         console_printf("mavproxy channel %d is not registered\n", chan);
         return FMT_EINVAL;
     }
