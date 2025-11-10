@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'INS'.
  *
- * Model version                  : 1.4378
+ * Model version                  : 1.4382
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Oct 24 16:57:11 2025
+ * C/C++ source code generated on : Mon Nov 10 18:04:54 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -136,9 +136,9 @@ struct_MsHaBgmXpzpEo1zn25Qdc INS_PARAM = {
   0.2F,
   10U,
   6.0F,
-  6.0F,
-  0.0F,
-  30U,
+  8.0F,
+  0.2F,
+  100U,
   1U,
   1.5708F
 } ;                                    /* Variable: INS_PARAM
@@ -7536,16 +7536,16 @@ void INS_step(void)
     rtb_DeadZone_idx_1 = rtb_Gain_m1[2] - rtb_Gain1_dz;
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
-    /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/GPS_PreProcess' */
     /* Switch: '<S295>/Switch' incorporates:
-     *  Inport: '<Root>/Barometer'
+     *  Inport: '<Root>/GPS_uBlox'
      *  Logic: '<S293>/Logical Operator'
      *  Memory: '<S295>/Memory'
      *  RelationalOperator: '<S294>/FixPt Relational Operator'
-     *  SignalConversion: '<S435>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
+     *  SignalConversion: '<S437>/BusConversion_InsertedFor_GPS_Data_at_inport_0'
      *  UnitDelay: '<S294>/Delay Input1'
      */
-    if (rtb_WGS84_pos_valid || (INS_U.Barometer.timestamp !=
+    if (rtb_WGS84_pos_valid || (INS_U.GPS_uBlox.timestamp !=
          INS_DWork.DelayInput1_DSTATE_d)) {
       /* Switch: '<S296>/Switch' incorporates:
        *  Delay: '<S297>/h_delay'
@@ -7622,7 +7622,7 @@ void INS_step(void)
     }
 
     /* End of Switch: '<S295>/Switch' */
-    /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
+    /* End of Outputs for SubSystem: '<S3>/GPS_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
     /* Sum: '<S293>/Sum1' incorporates:
@@ -7636,14 +7636,14 @@ void INS_step(void)
       rtb_MathFunction[2];
 
     /* Outputs for Atomic SubSystem: '<Root>/Sensor_PreProcess' */
-    /* Outputs for Atomic SubSystem: '<S3>/Baro_PreProcess' */
+    /* Outputs for Atomic SubSystem: '<S3>/GPS_PreProcess' */
     /* Update for UnitDelay: '<S294>/Delay Input1' incorporates:
-     *  Inport: '<Root>/Barometer'
-     *  SignalConversion: '<S435>/BusConversion_InsertedFor_Baro_Data_at_inport_0'
+     *  Inport: '<Root>/GPS_uBlox'
+     *  SignalConversion: '<S437>/BusConversion_InsertedFor_GPS_Data_at_inport_0'
      */
-    INS_DWork.DelayInput1_DSTATE_d = INS_U.Barometer.timestamp;
+    INS_DWork.DelayInput1_DSTATE_d = INS_U.GPS_uBlox.timestamp;
 
-    /* End of Outputs for SubSystem: '<S3>/Baro_PreProcess' */
+    /* End of Outputs for SubSystem: '<S3>/GPS_PreProcess' */
     /* End of Outputs for SubSystem: '<Root>/Sensor_PreProcess' */
 
     /* Update for Delay: '<S297>/h_delay' */
