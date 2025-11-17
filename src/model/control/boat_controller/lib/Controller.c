@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1186
+ * Model version                  : 1.1188
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 18 15:39:13 2025
+ * C/C++ source code generated on : Sat Nov 15 11:15:33 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -301,7 +301,7 @@ void Controller_step(void)
    *  Inport: '<Root>/FMS_Out'
    *  Inport: '<Root>/INS_Out'
    */
-  rtb_Sum = Controller_U.FMS_Out.psi_rate_cmd - Controller_U.INS_Out.r;
+  rtb_Sum = Controller_U.FMS_Out.r_cmd - Controller_U.INS_Out.r;
 
   /* Outputs for Enabled SubSystem: '<S16>/Forward' incorporates:
    *  EnablePort: '<S20>/Enable'
@@ -609,9 +609,9 @@ void Controller_step(void)
      *  Gain: '<S15>/FW_FF'
      */
     if (Controller_U.FMS_Out.u_cmd >= 0.0F) {
-      rtb_Sum = CONTROL_PARAM.FW_PSI_RATE_FF * Controller_U.FMS_Out.psi_rate_cmd;
+      rtb_Sum = CONTROL_PARAM.FW_PSI_RATE_FF * Controller_U.FMS_Out.r_cmd;
     } else {
-      rtb_Sum = CONTROL_PARAM.BW_PSI_RATE_FF * Controller_U.FMS_Out.psi_rate_cmd;
+      rtb_Sum = CONTROL_PARAM.BW_PSI_RATE_FF * Controller_U.FMS_Out.r_cmd;
     }
 
     /* End of Switch: '<S15>/Switch' */
@@ -639,7 +639,7 @@ void Controller_step(void)
     /* End of Saturate: '<S16>/Saturation' */
     rtb_Saturation_g = rtb_Sum + rtb_Gain_hj;
   } else {
-    rtb_Saturation_g = Controller_U.FMS_Out.psi_rate_cmd;
+    rtb_Saturation_g = Controller_U.FMS_Out.r_cmd;
   }
 
   /* End of Switch: '<S17>/Switch' */
