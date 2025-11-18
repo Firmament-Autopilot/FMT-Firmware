@@ -199,4 +199,12 @@ void ins_interface_init(void)
 
     INS_Out_ID = mlog_get_bus_id("INS_Out");
     FMT_ASSERT(INS_Out_ID >= 0);
+
+    INS_Out_Bus ins_out = { 0 };
+    ins_out.quat[0] = 1;
+    ins_out.quat[1] = 0;
+    ins_out.quat[2] = 0;
+    ins_out.quat[3] = 0;
+    /* publish a valid ins_out init value to avoid unexptected behavior for fms */
+    mcn_publish(MCN_HUB(ins_output), &ins_out);
 }
