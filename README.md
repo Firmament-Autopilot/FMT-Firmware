@@ -17,6 +17,7 @@ The system is mainly composed of two parts.
 
 ## Documentation
 [User Guide](https://docs.sieon.net/fmt)
+[S1 Flight Controller](https://docs.sieon.net/product)
 
 ## Download
 
@@ -46,7 +47,7 @@ FMT Firmware's architecture is shown in the figure below.
 Current supported hardware:
 - [SIEON S1](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/sieon/s1)
 - [AMOV ICF5](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/amov/icf5)
-- [CUAV V5Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_nano)
+- [CUAV V5-Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_nano)
 - [CUAV V5+](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/v5_plus)
 - [CUAV 7Nano](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/cuav/7_nano)
 - [Pixhawk4 (FMUv5)](https://github.com/Firmament-Autopilot/FMT-Firmware/tree/master/target/pixhawk/fmu-v5)

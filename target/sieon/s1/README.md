@@ -42,6 +42,7 @@ https://docs.sieon.net/product
 
 ## Where to Buy
 [taobao](https://e.tb.cn/h.6wnwfCVJ03YmIe2?tk=n1T1VmRQHeK)
+[taobao 2](https://item.taobao.com/item.htm?id=949781070694&pisk=fvamel1P4oob7ApmOg0fm9JmBUIJMKg_7RLtBVHN4YkW0jnZ3aSi1WJT6-IjIRVEim3xgAeMj-h0WhLtH3kaOYLOGqIsSRDuCxnxuxdgI5MWXSCXk8Hah8wifsMtQA2T_oCRJwFbGVgwS9QdJKzRoxeDbnoV_Yln1m0x-PPbGVMahamdQS_i4e79jcyZzYls9Vlwun5ozflm7Eowu7krFf8z2ppqIZz5iDHHBZxCdsCrsvPq3SFYzyvKKSlySFDSHmfYgYYw7zqZJduS3MO-CqHbHj21REgqjlzxzrWP72rQEPmE-GCj8rNaAlPWn1D4w-anuyXDkbninuzqqC8ai4ZqXl2cnnM4D8mIa0RGRbeKUSa4q19zgJHmuboR86Vrbgk24Hl6oFGP6z-6fmlSZvHxAs231lZEq_fkAiiqNjBdZ_x6fmlSZvClZH9j0bGAp&spm=a1z10.1-c-s.w4004-25786758291.2.40a034ddYta4cp)
 
 ## Build
 Build fmu firmware for quadcopter
