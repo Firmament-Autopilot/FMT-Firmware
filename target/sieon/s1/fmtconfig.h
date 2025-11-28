@@ -52,4 +52,6 @@
 
 // #define FMT_SKIP_GPS_UBX_CONFIG
 
+// #define FMT_USING_VR
+
 #endif

@@ -772,8 +772,30 @@ bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
     hil_state.lat = plant_states.x_R * 1000;
     hil_state.lon = plant_states.y_R * 1000;
     hil_state.alt = plant_states.h_R * 1000;
-#elif defined(FMT_USING_HIL)
+#elif defined(FMT_USING_VR)
+    INS_Out_Bus ins_out;
 
+    if(mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+        return false;
+    }
+
+    hil_state.time_usec = systime_now_us();
+    hil_state.roll = ins_out.phi;
+    hil_state.pitch = ins_out.theta;
+    hil_state.yaw = ins_out.psi;
+    hil_state.rollspeed = ins_out.p;
+    hil_state.pitchspeed = ins_out.q;
+    hil_state.yawspeed = ins_out.r;
+    hil_state.xacc = ins_out.ax / 9.80665f * 1000;
+    hil_state.yacc = ins_out.ay / 9.80665f * 1000;
+    hil_state.zacc = ins_out.az / 9.80665f * 1000;
+    hil_state.vx = ins_out.vn * 100;
+    hil_state.vy = ins_out.ve * 100;
+    hil_state.vz = ins_out.vd * 100;
+    /* we don't send LLA, and send xyh in mm instead */
+    hil_state.lat = ins_out.x_R * 1000;
+    hil_state.lon = ins_out.y_R * 1000;
+    hil_state.alt = ins_out.h_R * 1000;
 #endif
 
     mavlink_msg_hil_state_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &hil_state);
