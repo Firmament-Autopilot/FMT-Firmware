@@ -44,7 +44,7 @@ fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
     /* For hil simulation, we need faster actuator cmd send speed */
     DEFINE_TIMETAG(hil_actuator_tt, 4);
 #else
-    DEFINE_TIMETAG(hil_actuator_tt, 20);
+    DEFINE_TIMETAG(hil_actuator_tt, 100);
 #endif
 
     if (check_timetag(TIMETAG(hil_actuator_tt))) {

@@ -56,6 +56,9 @@ if sim_mode == 'SIH':
 elif sim_mode == 'HIL':
     print("Build in HIL mode")
     env.Append(CPPDEFINES = 'FMT_USING_HIL')
+elif sim_mode == 'VR':
+    print("Build in VR mode")
+    env.Append(CPPDEFINES = 'FMT_USING_VR')
 
 # Add sys execute PATH to env PATH
 env.PrependENVPath('PATH', os.getenv('PATH'))
