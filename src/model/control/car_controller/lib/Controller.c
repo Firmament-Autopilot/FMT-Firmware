@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.1148
+ * Model version                  : 1.1151
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Thu Sep 18 15:45:35 2025
+ * C/C++ source code generated on : Tue Dec  2 14:15:33 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -98,8 +98,8 @@ void Controller_step(void)
   real32_T rtb_Add;
   int32_T i;
   real32_T rtb_VectorConcatenate_0[3];
-  real32_T rtb_Saturation_m_idx_0;
-  real32_T rtb_Saturation_m_idx_1;
+  real32_T rtb_Switch1_idx_0;
+  real32_T rtb_Switch1_idx_1;
   uint16_T u0;
 
   /* Trigonometry: '<S23>/Trigonometric Function1' incorporates:
@@ -257,6 +257,17 @@ void Controller_step(void)
     188.49556F;
 
   /* Outputs for Atomic SubSystem: '<S4>/Car_1' */
+  /* Relay: '<S7>/Relay' incorporates:
+   *  Inport: '<Root>/FMS_Out'
+   */
+  if (Controller_U.FMS_Out.u_cmd >= 0.0F) {
+    Controller_DW.Relay_Mode = true;
+  } else {
+    if (Controller_U.FMS_Out.u_cmd <= -0.2F) {
+      Controller_DW.Relay_Mode = false;
+    }
+  }
+
   /* MultiPortSwitch: '<S9>/Multiport Switch' incorporates:
    *  Inport: '<Root>/FMS_Out'
    *  Saturate: '<S8>/Saturation'
@@ -281,15 +292,16 @@ void Controller_step(void)
      *  Constant: '<S28>/Constant'
      *  DataTypeConversion: '<S8>/Data Type Conversion'
      *  Gain: '<S8>/Gain'
+     *  Product: '<S7>/Multiply'
      *  RelationalOperator: '<S10>/Compare'
      *  RelationalOperator: '<S28>/Compare'
      *  Switch: '<S20>/Switch'
      */
     if (Controller_U.FMS_Out.ctrl_mode == 1) {
-      rtb_Saturation_m_idx_0 = ((real32_T)Controller_U.FMS_Out.actuator_cmd[0] +
-        -1500.0F) * 0.002F;
-      rtb_Saturation_m_idx_1 = ((real32_T)Controller_U.FMS_Out.actuator_cmd[1] +
-        -1500.0F) * 0.002F;
+      rtb_Switch1_idx_0 = ((real32_T)Controller_U.FMS_Out.actuator_cmd[0] +
+                           -1500.0F) * 0.002F;
+      rtb_Switch1_idx_1 = ((real32_T)Controller_U.FMS_Out.actuator_cmd[1] +
+                           -1500.0F) * 0.002F;
     } else {
       if (Controller_U.FMS_Out.ctrl_mode >= 5) {
         /* Switch: '<S27>/Switch' incorporates:
@@ -297,9 +309,9 @@ void Controller_step(void)
          *  Switch: '<S20>/Switch'
          */
         if (rtb_LogicalOperator) {
-          rtb_Saturation_m_idx_0 = 0.0F;
+          rtb_Switch1_idx_0 = 0.0F;
         } else {
-          rtb_Saturation_m_idx_0 = rtb_Gain;
+          rtb_Switch1_idx_0 = rtb_Gain;
         }
 
         /* End of Switch: '<S27>/Switch' */
@@ -308,7 +320,7 @@ void Controller_step(void)
          *  Constant: '<S24>/gain1'
          *  Switch: '<S20>/Switch'
          */
-        rtb_Add = CONTROL_PARAM.VEL_D * rtb_Saturation_m_idx_0;
+        rtb_Add = CONTROL_PARAM.VEL_D * rtb_Switch1_idx_0;
 
         /* Saturate: '<S24>/Saturation' incorporates:
          *  Switch: '<S20>/Switch'
@@ -351,11 +363,11 @@ void Controller_step(void)
 
       /* Saturate: '<S6>/Saturation' */
       if (rtb_Add > 1.0F) {
-        rtb_Saturation_m_idx_0 = 1.0F;
+        rtb_Switch1_idx_0 = 1.0F;
       } else if (rtb_Add < -1.0F) {
-        rtb_Saturation_m_idx_0 = -1.0F;
+        rtb_Switch1_idx_0 = -1.0F;
       } else {
-        rtb_Saturation_m_idx_0 = rtb_Add;
+        rtb_Switch1_idx_0 = rtb_Add;
       }
 
       /* End of Saturate: '<S6>/Saturation' */
@@ -364,9 +376,9 @@ void Controller_step(void)
        *  Gain: '<S16>/Gain1'
        */
       if (Controller_U.FMS_Out.reset > 0) {
-        rtb_Saturation_m_idx_1 = 0.0F;
+        rtb_Switch1_idx_1 = 0.0F;
       } else {
-        rtb_Saturation_m_idx_1 = rtb_Gain_f;
+        rtb_Switch1_idx_1 = rtb_Gain_f;
       }
 
       /* End of Switch: '<S16>/Switch' */
@@ -374,7 +386,7 @@ void Controller_step(void)
       /* Product: '<S13>/Multiply' incorporates:
        *  Constant: '<S13>/gain1'
        */
-      rtb_Add = CONTROL_PARAM.R_D * rtb_Saturation_m_idx_1;
+      rtb_Add = CONTROL_PARAM.R_D * rtb_Switch1_idx_1;
 
       /* Saturate: '<S13>/Saturation' */
       if (rtb_Add > CONTROL_PARAM.R_D_MAX) {
@@ -407,54 +419,63 @@ void Controller_step(void)
       /* End of Saturate: '<S12>/Saturation' */
 
       /* Gain: '<S5>/FF' */
-      rtb_Saturation_m_idx_1 = CONTROL_PARAM.R_FF * Controller_U.FMS_Out.r_cmd;
+      rtb_Switch1_idx_1 = CONTROL_PARAM.R_FF * Controller_U.FMS_Out.r_cmd;
 
       /* Saturate: '<S5>/Saturation1' */
-      if (rtb_Saturation_m_idx_1 > 0.5F) {
-        rtb_Saturation_m_idx_1 = 0.5F;
+      if (rtb_Switch1_idx_1 > 0.9F) {
+        rtb_Switch1_idx_1 = 0.9F;
       } else {
-        if (rtb_Saturation_m_idx_1 < -0.5F) {
-          rtb_Saturation_m_idx_1 = -0.5F;
+        if (rtb_Switch1_idx_1 < -0.9F) {
+          rtb_Switch1_idx_1 = -0.9F;
         }
       }
 
       /* End of Saturate: '<S5>/Saturation1' */
 
       /* Sum: '<S5>/Sum' */
-      rtb_Saturation_m_idx_1 += rtb_Add;
+      rtb_Switch1_idx_1 += rtb_Add;
 
       /* Saturate: '<S5>/Saturation' */
-      if (rtb_Saturation_m_idx_1 > 1.0F) {
-        rtb_Saturation_m_idx_1 = 1.0F;
+      if (rtb_Switch1_idx_1 > 1.0F) {
+        rtb_Switch1_idx_1 = 1.0F;
       } else {
-        if (rtb_Saturation_m_idx_1 < -1.0F) {
-          rtb_Saturation_m_idx_1 = -1.0F;
+        if (rtb_Switch1_idx_1 < -1.0F) {
+          rtb_Switch1_idx_1 = -1.0F;
         }
       }
 
       /* End of Saturate: '<S5>/Saturation' */
+
+      /* Relay: '<S7>/Relay' */
+      if (Controller_DW.Relay_Mode) {
+        i = 1;
+      } else {
+        i = -1;
+      }
+
+      rtb_Switch1_idx_1 *= (real32_T)i;
     }
 
     /* End of Switch: '<S8>/Switch1' */
-    rtb_Add = rtb_Saturation_m_idx_0;
+    rtb_Add = rtb_Switch1_idx_0;
 
     /* Saturate: '<S8>/Saturation' */
-    if (rtb_Saturation_m_idx_0 > 1.0F) {
+    if (rtb_Switch1_idx_0 > 1.0F) {
       rtb_Add = 1.0F;
     } else {
-      if (rtb_Saturation_m_idx_0 < -1.0F) {
+      if (rtb_Switch1_idx_0 < -1.0F) {
         rtb_Add = -1.0F;
       }
     }
 
-    rtb_Saturation_m_idx_0 = rtb_Add;
-    rtb_Add = rtb_Saturation_m_idx_1;
+    rtb_Switch1_idx_0 = rtb_Add;
+    rtb_Add = rtb_Switch1_idx_1;
 
     /* Saturate: '<S8>/Saturation' */
-    if (rtb_Saturation_m_idx_1 > 1.0F) {
+    if (rtb_Switch1_idx_1 > 1.0F) {
       rtb_Add = 1.0F;
     } else {
-      if (rtb_Saturation_m_idx_1 < -1.0F) {
+      if (rtb_Switch1_idx_1 < -1.0F) {
         rtb_Add = -1.0F;
       }
     }
@@ -463,11 +484,11 @@ void Controller_step(void)
      *  Bias: '<S7>/Bias'
      *  Gain: '<S7>/Gain'
      */
-    rtb_Saturation_m_idx_1 = fmodf(floorf(CONTROL_PARAM.THROTTLE_SCALE *
-      rtb_Saturation_m_idx_0 + (real32_T)CONTROL_PARAM.THROTTLE_BIAS), 65536.0F);
-    u0 = (uint16_T)(rtb_Saturation_m_idx_1 < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-                    (uint16_T)-rtb_Saturation_m_idx_1 : (int32_T)(uint16_T)
-                    rtb_Saturation_m_idx_1);
+    rtb_Switch1_idx_1 = fmodf(floorf(CONTROL_PARAM.THROTTLE_SCALE *
+      rtb_Switch1_idx_0 + (real32_T)CONTROL_PARAM.THROTTLE_BIAS), 65536.0F);
+    u0 = (uint16_T)(rtb_Switch1_idx_1 < 0.0F ? (int32_T)(uint16_T)-(int16_T)
+                    (uint16_T)-rtb_Switch1_idx_1 : (int32_T)(uint16_T)
+                    rtb_Switch1_idx_1);
 
     /* Saturate: '<S7>/Saturation1' */
     if (u0 > 2000) {
@@ -485,11 +506,11 @@ void Controller_step(void)
      *  Bias: '<S7>/Bias1'
      *  Gain: '<S7>/Gain1'
      */
-    rtb_Saturation_m_idx_1 = fmodf(floorf(CONTROL_PARAM.SERVO_SCALE * rtb_Add +
+    rtb_Switch1_idx_1 = fmodf(floorf(CONTROL_PARAM.SERVO_SCALE * rtb_Add +
       (real32_T)CONTROL_PARAM.SERVO_BIAS), 65536.0F);
-    u0 = (uint16_T)(rtb_Saturation_m_idx_1 < 0.0F ? (int32_T)(uint16_T)-(int16_T)
-                    (uint16_T)-rtb_Saturation_m_idx_1 : (int32_T)(uint16_T)
-                    rtb_Saturation_m_idx_1);
+    u0 = (uint16_T)(rtb_Switch1_idx_1 < 0.0F ? (int32_T)(uint16_T)-(int16_T)
+                    (uint16_T)-rtb_Switch1_idx_1 : (int32_T)(uint16_T)
+                    rtb_Switch1_idx_1);
 
     /* Saturate: '<S7>/Saturation1' */
     if (u0 > 2000) {

@@ -40,8 +40,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(CRUISE_SPEED, 2.0, false),
     PARAM_FLOAT(ACCEPT_R, 1.0, false),
     PARAM_FLOAT(YAW_P, 1.0, false),
-    PARAM_FLOAT(MAX_VEL, 4.0, false),
-    PARAM_FLOAT(MAX_R, PI * 0.67, false),
+    PARAM_FLOAT(MAX_VEL, 2.5, false),
+    PARAM_FLOAT(MAX_R, PI * 0.5, false),
     PARAM_FLOAT(AY_P, 0.5, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
