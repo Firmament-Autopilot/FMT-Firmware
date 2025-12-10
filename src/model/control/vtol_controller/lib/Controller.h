@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.850
+ * Model version                  : 1.855
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Oct 21 16:53:28 2025
+ * C/C++ source code generated on : Mon Dec  8 15:38:35 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -236,14 +236,16 @@ extern const ConstP_Controller_T Controller_ConstP;
 extern struct_AGLUWHQ2VVXz72aZazl5HE CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S14>/Saturation'
-                                                    *   '<S15>/balabnce_ratio2'
-                                                    *   '<S15>/balance_ratio'
+                                                    *   '<S15>/Gain'
+                                                    *   '<S15>/Gain1'
+                                                    *   '<S15>/Gain2'
+                                                    *   '<S15>/Gain3'
+                                                    *   '<S15>/Gain4'
+                                                    *   '<S15>/Gain5'
+                                                    *   '<S15>/Gain6'
+                                                    *   '<S15>/Gain7'
                                                     *   '<S15>/pitch_ff'
                                                     *   '<S15>/thorttle_ff'
-                                                    *   '<S15>/ucmd2pitch'
-                                                    *   '<S15>/ucmd2thor'
-                                                    *   '<S15>/wcmd2pitch'
-                                                    *   '<S15>/wcmd2thor'
                                                     *   '<S132>/hover_throttle'
                                                     *   '<S17>/FF'
                                                     *   '<S40>/P_control'
