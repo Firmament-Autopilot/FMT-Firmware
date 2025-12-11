@@ -86,6 +86,10 @@ static param_t __param_list[] = {
     PARAM_UINT32(EXTPOS_POS_DELAY, 20, false),
     PARAM_UINT8(EXTPOS_PSI_MODE, 3, false),
     PARAM_FLOAT(EXTPOS_PSI, 0.0, false),
+    PARAM_UINT8(EXTPOS_USE_POS, 0, false),
+    PARAM_UINT8(EXTPOS_USE_ALT, 0, false),
+    PARAM_UINT8(EXTPOS_USE_ATT, 0, false),
+    PARAM_UINT8(EXTPOS_USE_PSI, 0, false),
 };
 PARAM_GROUP_DEFINE(INS, __param_list);
 

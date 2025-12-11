@@ -819,11 +819,17 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         /* TODO: don't know why this msg doesn't have get_target_system() */
         mavlink_vision_position_estimate_t vision_pos_est;
         External_Pos_Bus ext_pos_report = { 0 };
+        uint8_t use_pos, use_alt, use_att, use_psi;
+
+        use_pos = PARAM_GET_UINT8(INS, EXTPOS_USE_POS);
+        use_alt = PARAM_GET_UINT8(INS, EXTPOS_USE_ALT);
+        use_att = PARAM_GET_UINT8(INS, EXTPOS_USE_ATT);
+        use_psi = PARAM_GET_UINT8(INS, EXTPOS_USE_PSI);
 
         mavlink_msg_vision_position_estimate_decode(msg, &vision_pos_est);
 
         ext_pos_report.timestamp = systime_now_ms();
-        ext_pos_report.field_valid = 11;
+        ext_pos_report.field_valid = use_pos | (use_alt << 1) | (use_att << 2) | (use_psi << 3);
         ext_pos_report.x = vision_pos_est.x;
         ext_pos_report.y = vision_pos_est.y;
         ext_pos_report.z = vision_pos_est.z;
