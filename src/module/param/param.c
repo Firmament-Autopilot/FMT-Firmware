@@ -572,7 +572,7 @@ fmt_err_t param_save(char* path)
     int fd;
     fmt_err_t res = FMT_EOK;
 
-    fd = open(path ? path : PARAM_FILE_NAME, O_CREAT | O_WRONLY);
+    fd = open(path ? path : PARAM_FILE_NAME, O_CREAT | O_TRUNC | O_WRONLY);
 
     if (fd < 0) {
         console_printf("parameter file open fail!\n");
