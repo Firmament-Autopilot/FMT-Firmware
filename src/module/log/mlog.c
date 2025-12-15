@@ -384,7 +384,7 @@ fmt_err_t mlog_start(char* file_name)
     }
 
     /*********************** create log file ***********************/
-    mlog_handle.fid = open(file_name, O_CREAT | O_WRONLY);
+    mlog_handle.fid = open(file_name, O_CREAT | O_TRUNC | O_WRONLY);
 
     if (mlog_handle.fid < 0) {
         ulog_e(TAG, "%s open fail", file_name);
