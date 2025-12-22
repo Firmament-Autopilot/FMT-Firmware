@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Plant'.
  *
- * Model version                  : 1.123
+ * Model version                  : 1.127
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Oct 21 16:50:07 2025
+ * C/C++ source code generated on : Mon Dec 22 16:53:37 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1674,7 +1674,7 @@ void Plant_step(void)
   /* Product: '<S82>/Divide2' incorporates:
    *  Constant: '<S82>/Inertia_Matrix'
    */
-  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled37, rtb_Multiply5_j,
+  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled36, rtb_Multiply5_j,
     rtb_Sum_jq);
 
   /* Product: '<S93>/Multiply' */
@@ -1778,22 +1778,23 @@ void Plant_step(void)
        *  Constant: '<S99>/Constant'
        *  Gain: '<S96>/Gain1'
        *  Gain: '<S96>/Gain2'
+       *  Gain: '<S96>/Gain3'
        *  Gain: '<S96>/Gain4'
        *  RelationalOperator: '<S99>/Compare'
        *  Sum: '<S96>/Add1'
        *  Sum: '<S96>/Add2'
        */
       if (Plant_Y.Plant_States.h_R <= -0.1F) {
-        rtb_Divide_k_idx_1 = (Plant_Y.Plant_States.h_R - 29.418F) - 50.0F *
-          Plant_Y.Plant_States.vel_z_O;
+        rtb_Divide_k_idx_1 = (3.0F * Plant_Y.Plant_States.h_R - 29.418F) -
+          100.0F * Plant_Y.Plant_States.vel_z_O;
       } else {
-        rtb_Divide_k_idx_1 = (0.5F * Plant_Y.Plant_States.h_R - 29.418F) - 20.0F
+        rtb_Divide_k_idx_1 = (1.5F * Plant_Y.Plant_States.h_R - 29.418F) - 50.0F
           * Plant_Y.Plant_States.vel_z_O;
       }
 
       /* End of Switch: '<S96>/Switch3' */
     } else {
-      rtb_Divide_k_idx_1 = -29.418F - 10.0F * Plant_Y.Plant_States.vel_z_O;
+      rtb_Divide_k_idx_1 = -29.418F - 50.0F * Plant_Y.Plant_States.vel_z_O;
     }
 
     /* End of Switch: '<S96>/Switch1' */
@@ -2189,9 +2190,9 @@ void Plant_step(void)
    *  DiscreteIntegrator: '<S101>/Discrete-Time Integrator'
    */
   for (i = 0; i < 3; i++) {
-    rtb_Add_hg[i] = Plant_ConstP.pooled37[i + 6] *
-      Plant_DW.DiscreteTimeIntegrator_DSTATE_i[2] + (Plant_ConstP.pooled37[i + 3]
-      * Plant_DW.DiscreteTimeIntegrator_DSTATE_i[1] + Plant_ConstP.pooled37[i] *
+    rtb_Add_hg[i] = Plant_ConstP.pooled36[i + 6] *
+      Plant_DW.DiscreteTimeIntegrator_DSTATE_i[2] + (Plant_ConstP.pooled36[i + 3]
+      * Plant_DW.DiscreteTimeIntegrator_DSTATE_i[1] + Plant_ConstP.pooled36[i] *
       Plant_DW.DiscreteTimeIntegrator_DSTATE_i[0]);
   }
 
@@ -2590,7 +2591,7 @@ void Plant_step(void)
   /* Product: '<S101>/Divide' incorporates:
    *  Constant: '<S101>/Inertia_Matrix'
    */
-  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled37, rtb_Sum_jq, rtb_Square_b);
+  rt_mldivide_U1f3x3_U2f3_Yf3x1(Plant_ConstP.pooled36, rtb_Sum_jq, rtb_Square_b);
 
   /* Update for DiscreteIntegrator: '<S101>/Discrete-Time Integrator' */
   Plant_DW.DiscreteTimeIntegrator_PrevRe_p = 0;

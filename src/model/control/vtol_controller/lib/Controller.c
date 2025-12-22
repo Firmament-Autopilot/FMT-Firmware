@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.855
+ * Model version                  : 1.859
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Dec  8 15:38:35 2025
+ * C/C++ source code generated on : Mon Dec 22 15:59:52 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -1349,7 +1349,7 @@ void Controller_step(void)
      *  Sum: '<S62>/Sum5'
      */
     rtb_Gain_az = (Controller_DW.DiscreteTimeIntegrator5_DSTAT_j -
-                   Controller_DW.DiscreteTimeIntegrator1_DSTAT_h) * 12.566371F;
+                   Controller_DW.DiscreteTimeIntegrator1_DSTAT_h) * 8.88442421F;
 
     /* Sum: '<S42>/Sum' incorporates:
      *  Gain: '<S42>/Gain1'
@@ -4669,12 +4669,12 @@ void Controller_step(void)
          *  Constant: '<S157>/Standby'
          *  Reshape: '<S157>/Reshape'
          */
-        if (Controller_ConstP.pooled34[i_p] > 2000.0F) {
+        if (Controller_ConstP.pooled33[i_p] > 2000.0F) {
           rtb_Saturation1_l_idx_2_p = 2000.0F;
-        } else if (Controller_ConstP.pooled34[i_p] < 1000.0F) {
+        } else if (Controller_ConstP.pooled33[i_p] < 1000.0F) {
           rtb_Saturation1_l_idx_2_p = 1000.0F;
         } else {
-          rtb_Saturation1_l_idx_2_p = Controller_ConstP.pooled34[i_p];
+          rtb_Saturation1_l_idx_2_p = Controller_ConstP.pooled33[i_p];
         }
 
         rtb_VariantMergeForOutportactua[i_p] = (uint16_T)fmodf(floorf
@@ -5338,12 +5338,12 @@ void Controller_step(void)
          *  Constant: '<S168>/Disarm'
          *  Reshape: '<S168>/Reshape'
          */
-        if (Controller_ConstP.pooled34[i_o] > 2000.0F) {
+        if (Controller_ConstP.pooled33[i_o] > 2000.0F) {
           rtb_Saturation1_p_idx_2_o = 2000.0F;
-        } else if (Controller_ConstP.pooled34[i_o] < 1000.0F) {
+        } else if (Controller_ConstP.pooled33[i_o] < 1000.0F) {
           rtb_Saturation1_p_idx_2_o = 1000.0F;
         } else {
-          rtb_Saturation1_p_idx_2_o = Controller_ConstP.pooled34[i_o];
+          rtb_Saturation1_p_idx_2_o = Controller_ConstP.pooled33[i_o];
         }
 
         rtb_VariantMergeForOutportactua[i_o] = (uint16_T)fmodf(floorf

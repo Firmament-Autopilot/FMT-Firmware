@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.855
+ * Model version                  : 1.859
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Mon Dec  8 15:38:35 2025
+ * C/C++ source code generated on : Mon Dec 22 15:59:52 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -177,7 +177,7 @@ typedef struct {
    *   '<S157>/Standby'
    *   '<S168>/Disarm'
    */
-  real32_T pooled34[5];
+  real32_T pooled33[5];
 
 #define CONSTP_CONTROLLER_T_VARIANT_EXISTS
 #endif
