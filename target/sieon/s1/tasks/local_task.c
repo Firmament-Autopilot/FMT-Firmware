@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright The Firmament Authors. All Rights Reserved.
+ * Copyright 2021-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,29 @@
 
 #include "module/task_manager/task_manager.h"
 
-static fmt_err_t task_init(void)
+fmt_err_t task_local_init(void)
 {
     return FMT_EOK;
 }
 
-static void task_entry(void* parameter)
+void task_local_entry(void* parameter)
 {
-    rt_device_t dev = rt_device_find("serial4");
-    rt_device_open(dev, RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX);
+    printf("Hello FMT!\n");
 
     /* main loop */
     while (1) {
-        uint8_t ch;
-        while(rt_device_read(dev, 0, &ch, 1)) {
-            printf("%c", ch);
-        }
+        printf("This is a local demo task.\n");
         sys_msleep(1);
     }
 }
 
-TASK_EXPORT __fmt_task_desc = {
-    .name = "local",
-    .init = task_init,
-    .entry = task_entry,
-    .priority = 25,
-    .auto_start = true,
-    .stack_size = 4096,
-    .param = NULL,
-    .dependency = NULL
-};
+// TASK_EXPORT __fmt_task_desc = {
+//     .name = "local",
+//     .init = task_local_init,
+//     .entry = task_local_entry,
+//     .priority = 25,
+//     .auto_start = false,
+//     .stack_size = 1024,
+//     .param = NULL,
+//     .dependency = NULL
+// };
