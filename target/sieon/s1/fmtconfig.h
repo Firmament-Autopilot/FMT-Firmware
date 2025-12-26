@@ -50,6 +50,4 @@
 
 // #define FMT_RECORD_CALIBRATION_DATA
 
-// #define FMT_SKIP_GPS_UBX_CONFIG
-
 #endif

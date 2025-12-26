@@ -25,6 +25,7 @@ static rt_device_t serial_device;
 static struct gps_device gps_device;
 static nmea_decoder_t nmea_decoder;
 static gps_report_t gps_report;
+static bool nmea_received;
 
 static rt_err_t gps_serial_rx_ind(rt_device_t dev, rt_size_t size)
 {
@@ -91,18 +92,31 @@ static int nmea_rx_handle(uint16_t msg_id)
         break;
     }
 
+    nmea_received = true;
+
     return ret;
 }
 
 static void gps_probe_entry(void* parameter)
 {
-    char nmea_cfg[][100] = {
+    char nmea_cfg[][50] = {
         "KSXT 0.1\r\n",
         "GPGSA 0.1\r\n",
     };
 
+    nmea_received = false;
+
     for (uint8_t i = 0; i < sizeof(nmea_cfg) / sizeof(nmea_cfg[0]); i++) {
         rt_device_write(nmea_decoder.nmea_dev, 0, nmea_cfg[i], strlen(nmea_cfg[i]));
+        systime_msleep(10);
+    }
+
+    uint32_t time_now = systime_now_ms();
+    while((systime_now_ms() - time_now) < 5000) {
+        if(nmea_received){
+            printf("NMEA GPS detected.\n");
+            break;
+        }
         systime_msleep(10);
     }
 

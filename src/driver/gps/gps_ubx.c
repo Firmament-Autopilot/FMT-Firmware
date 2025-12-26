@@ -514,18 +514,13 @@ static struct gps_ops gps_ops = {
 
 static void gps_probe_entry(void* parameter)
 {
-#ifdef FMT_SKIP_GPS_UBX_CONFIG
-    ubx_decoder.use_nav_pvt = true;
-    ubx_decoder.configured = true;
-#else
     uint32_t baudrate;
     uint8_t i;
+    
     for (i = 0; i < CONFIGURE_RETRY_MAX; i++) {
         if (probe(&baudrate) == RT_EOK) {
             if (configure_by_ubx(baudrate) == RT_EOK) {
-                // /* GPS is dected, now register */
-                // hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
-                // register_sensor_gps((char*)parameter);
+                printf("UBX GPS detected.\n");
                 break;
             }
         }
@@ -533,8 +528,11 @@ static void gps_probe_entry(void* parameter)
 
     if (i >= CONFIGURE_RETRY_MAX) {
         printf("GPS configuration fail! Please check if GPS module has connected.");
+
+        /* If configure failed, skip configure step and just wait pvt msg. since some ublox gps doesn't support ubx configure */
+        ubx_decoder.use_nav_pvt = true;
+        ubx_decoder.configured = true;
     }
-#endif
 
     if (ubx_decoder.configured) {
         /* GPS is dected, now register */
