@@ -111,8 +111,10 @@ typedef struct {
     float velE;
     float velD;
     float vel;
-    float cog;
     float sAcc;
+    float heading;
+    float cog;
+    float headingAcc;
     uint8_t fixType;
     uint8_t numSV;
     uint16_t reserved;

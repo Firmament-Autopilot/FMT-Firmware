@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef GPS_UBX_H__
-#define GPS_UBX_H__
+#ifndef GPS_NMEA_H__
+#define GPS_NMEA_H__
 
 #include <rtthread.h>
 
@@ -23,10 +23,10 @@
 extern "C" {
 #endif
 
-rt_err_t gps_ubx_init(const char* serial_device_name, const char* gps_device_name);
+rt_err_t gps_nmea_init(const char* serial_device_name, const char* gps_device_name);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* GPS_UBX_H__ */
+#endif
