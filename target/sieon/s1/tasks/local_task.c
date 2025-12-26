@@ -24,12 +24,10 @@ fmt_err_t task_local_init(void)
 
 void task_local_entry(void* parameter)
 {
-    printf("Hello FMT!\n");
-
     /* main loop */
     while (1) {
-        printf("This is a local demo task.\n");
-        sys_msleep(1);
+        printf("Hello FMT");
+        sys_msleep(1000);
     }
 }
 
