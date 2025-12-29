@@ -1,0 +1,34 @@
+import rtconfig
+Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = []
+
+# Add peripheral drivers
+src += Glob('hc32_ll_driver/src/*.c')
+
+# Add core source
+src += Glob('CMSIS/HC/HC32F4xx/Source/*.c')
+
+# add startup script 
+if rtconfig.CROSS_TOOL == 'gcc':
+     src = src + ['CMSIS/HC/HC32F4xx/Source/GCC/startup_hc32f4a0.S']
+
+# add DSP library
+src += Glob('CMSIS/DSP/Source/FastMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP/Source/BasicMathFunctions/*f32.c')
+src += Glob('CMSIS/DSP/Source/MatrixFunctions/*f32.c')
+src += Glob('CMSIS/DSP/Source/SupportFunctions/*f32.c')
+
+# add header file path
+path = [cwd + '/hc32_ll_driver/inc', 
+    cwd + '/CMSIS/HC/HC32F4xx/Include',
+	cwd + '/CMSIS/Core/Include']
+
+group = DefineGroup('HC32_StdPeriph', src, depend = [''], CPPPATH = path)
+
+Return('group')
