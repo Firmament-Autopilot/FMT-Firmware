@@ -88,7 +88,7 @@ SECTIONS
         __rt_init_end = .;
         . = ALIGN(4);
 
-        PROVIDE(__ctors_start__ = .);
+                PROVIDE(__ctors_start__ = .);
         KEEP(*(SORT(.init_array.*)))
         KEEP(*(.init_array))
         PROVIDE(__ctors_end__ = .);
@@ -121,8 +121,7 @@ SECTIONS
         KEEP(*(TaskTab))
         __fmt_task_end = .;
         . = ALIGN(4);
-
-        . = ALIGN(4);
+        
         _etext = .;
     } >FLASH
 
