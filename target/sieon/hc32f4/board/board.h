@@ -24,10 +24,10 @@ extern "C" {
 #endif
 
 // Board Information
-#define TARGET_NAME "SIEON S1"
+#define TARGET_NAME "HC32F4A0"
 
 // Internal SRAM memory size[Kbytes]
-#define SYSTEM_TOTAL_MEM_SIZE (512 * 1024) // 512K
+#define SYSTEM_TOTAL_MEM_SIZE (480 * 1024) // 480K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
 #ifdef __ICCARM__
 // Use *.icf ram symbal, to avoid hardcode.
@@ -42,7 +42,7 @@ extern int __heap_limit;
 #else
 extern int __bss_end;
     #define SYSTEM_FREE_MEM_BEGIN (&__bss_end)
-    #define SYSTEM_FREE_MEM_END   (0x24000000 + SYSTEM_TOTAL_MEM_SIZE)
+    #define SYSTEM_FREE_MEM_END   (0x1FFE0000 + SYSTEM_TOTAL_MEM_SIZE)
 #endif
 
 #ifndef NVIC_PRIORITYGROUP_0

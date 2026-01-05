@@ -5,7 +5,7 @@ Import('RTT_ROOT')
 cwd = GetCurrentDir()
 
 src = Glob('*.c')
-src += Glob('usbd/*.c')
+# src += Glob('usbd/*.c')
 
 
 inc = [cwd]

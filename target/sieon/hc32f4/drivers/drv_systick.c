@@ -38,24 +38,6 @@ static void _delay_us(rt_uint32_t us)
     } while (delta < us_tick * us);
 }
 
-/* HAL exported functions */
-uint32_t HAL_GetTick(void)
-{
-    /* return current ticks of ms */
-    return rt_tick_get() / (RT_TICK_PER_SECOND / 1000);
-}
-
-void HAL_Delay(__IO uint32_t Delay)
-{
-    if (rt_thread_self()) {
-        rt_thread_mdelay(Delay);
-    } else {
-        for (rt_uint32_t count = 0; count < Delay; count++) {
-            _delay_us(1000);
-        }
-    }
-}
-
 /**
  * This is the systick timer interrupt service routine.
  *
@@ -66,10 +48,6 @@ void SysTick_Handler(void)
     rt_interrupt_enter();
 
     hal_systick_isr(systick_dev);
-
-#ifdef USE_HAL_DRIVER
-    HAL_IncTick();
-#endif
 
     // rt_tick_increase();
 

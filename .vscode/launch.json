@@ -18,7 +18,23 @@
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
             "svdFile": "target/sieon/s1/STM32H7x3.svd",
             "runToMain": true
-        },{
+        },
+        {
+            "name": "HC32F4A0 J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/sieon/hc32f4/build/fmt_hc32f4.elf",
+            "serverpath": "${env:JLINK_SERVER}",
+            "servertype": "jlink",
+            "device": "HC32F4Ax",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "target/sieon/hc32f4/HC32F4A0.svd",
+            "runToMain": true
+        },
+        {
             "name": "FMUv5 Debug J-Link",
             "type": "cortex-debug",
             "request": "launch",

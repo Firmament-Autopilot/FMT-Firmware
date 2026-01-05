@@ -21,16 +21,21 @@
 #include <shell.h>
 #include <string.h>
 
-#include "board_device.h"
-#include "driver/airspeed/ms4525.h"
-#include "driver/barometer/spl06.h"
-#include "driver/gps/gps_ubx.h"
-#include "driver/imu/bmi088.h"
-#include "driver/imu/icm42688p.h"
-#include "driver/mag/bmm150.h"
-#include "driver/mag/qmc5883l.h"
-#include "driver/mtd/gd25qxx.h"
-#include "driver/range_finder/tofsense.h"
+#include <hc32_ll_clk.h>
+#include <hc32_ll_sram.h>
+#include <hc32_ll_efm.h>
+#include <hc32_ll_gpio.h>
+
+// #include "board_device.h"
+// #include "driver/airspeed/ms4525.h"
+// #include "driver/barometer/spl06.h"
+// #include "driver/gps/gps_ubx.h"
+// #include "driver/imu/bmi088.h"
+// #include "driver/imu/icm42688p.h"
+// #include "driver/mag/bmm150.h"
+// #include "driver/mag/qmc5883l.h"
+// #include "driver/mtd/gd25qxx.h"
+// #include "driver/range_finder/tofsense.h"
 // #include "drv_adc.h"
 // #include "drv_eth.h"
 // #include "drv_fdcan.h"
@@ -40,10 +45,10 @@
 // #include "drv_rc.h"
 // #include "drv_sdio.h"
 // #include "drv_spi.h"
-// #include "drv_systick.h"
+#include "drv_systick.h"
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
-#include "led.h"
+// #include "led.h"
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -217,38 +222,88 @@ void Error_Handler(void)
     /* USER CODE END Error_Handler_Debug */
 }
 
-static void NVIC_Configuration(void)
-{
-    extern const int _stext;
+// static void NVIC_Configuration(void)
+// {
+//     extern const int _stext;
 
-    /* NVIC Configuration */
-#define NVIC_VTOR_MASK 0x3FFFFF80
-#ifdef VECT_TAB_RAM
-    /* Set the Vector Table base location at 0x10000000 */
-    SCB->VTOR = (0x10000000 & NVIC_VTOR_MASK);
-#else /* VECT_TAB_FLASH  */
-    /* Set the Vector Table base location at 0x08000000 */
-    SCB->VTOR = ((uint32_t)&_stext & NVIC_VTOR_MASK);
-#endif
+//     /* NVIC Configuration */
+// #define NVIC_VTOR_MASK 0x3FFFFF80
+// #ifdef VECT_TAB_RAM
+//     /* Set the Vector Table base location at 0x10000000 */
+//     SCB->VTOR = (0x10000000 & NVIC_VTOR_MASK);
+// #else /* VECT_TAB_FLASH  */
+//     /* Set the Vector Table base location at 0x08000000 */
+//     SCB->VTOR = ((uint32_t)&_stext & NVIC_VTOR_MASK);
+// #endif
+// }
+
+/**
+ * @brief System Clock Configuration
+ * @retval None
+ */
+void SystemClock_Config(void)
+{
+    /* Set bus clock div. */
+    CLK_SetClockDiv(CLK_BUS_CLK_ALL, (CLK_HCLK_DIV1 | CLK_EXCLK_DIV2 | CLK_PCLK0_DIV1 | CLK_PCLK1_DIV2 | CLK_PCLK2_DIV4 | CLK_PCLK3_DIV4 | CLK_PCLK4_DIV2));
+    /* sram init include read/write wait cycle setting */
+    SRAM_SetWaitCycle(SRAM_SRAM_ALL, SRAM_WAIT_CYCLE1, SRAM_WAIT_CYCLE1);
+    SRAM_SetWaitCycle(SRAM_SRAMH, SRAM_WAIT_CYCLE0, SRAM_WAIT_CYCLE0);
+    /* flash read wait cycle setting */
+    EFM_SetWaitCycle(EFM_WAIT_CYCLE5);
+    /* XTAL config */
+    stc_clock_xtal_init_t stcXtalInit;
+    (void)CLK_XtalStructInit(&stcXtalInit);
+    stcXtalInit.u8State = CLK_XTAL_ON;
+    stcXtalInit.u8Drv = CLK_XTAL_DRV_HIGH;
+    stcXtalInit.u8Mode = CLK_XTAL_MD_OSC;
+    stcXtalInit.u8StableTime = CLK_XTAL_STB_2MS;
+    (void)CLK_XtalInit(&stcXtalInit);
+    /* PLLH config */
+    stc_clock_pll_init_t stcPLLHInit;
+    (void)CLK_PLLStructInit(&stcPLLHInit);
+    stcPLLHInit.PLLCFGR = 0UL;
+    stcPLLHInit.PLLCFGR_f.PLLM = (3UL - 1UL);
+    stcPLLHInit.PLLCFGR_f.PLLN = (120UL - 1UL);
+    stcPLLHInit.PLLCFGR_f.PLLP = (4UL - 1UL);
+    stcPLLHInit.PLLCFGR_f.PLLQ = (4UL - 1UL);
+    stcPLLHInit.PLLCFGR_f.PLLR = (4UL - 1UL);
+    stcPLLHInit.u8PLLState = CLK_PLL_ON;
+    stcPLLHInit.PLLCFGR_f.PLLSRC = CLK_PLL_SRC_XTAL;
+    (void)CLK_PLLInit(&stcPLLHInit);
+    /* PLLA config */
+    stc_clock_pllx_init_t stcPLLAInit;
+    (void)CLK_PLLxStructInit(&stcPLLAInit);
+    stcPLLAInit.PLLCFGR = 0UL;
+    stcPLLAInit.PLLCFGR_f.PLLM = (6UL - 1UL);
+    stcPLLAInit.PLLCFGR_f.PLLN = (60UL - 1UL);
+    stcPLLAInit.PLLCFGR_f.PLLP = (2UL - 1UL);
+    stcPLLAInit.PLLCFGR_f.PLLQ = (2UL - 1UL);
+    stcPLLAInit.PLLCFGR_f.PLLR = (5UL - 1UL);
+    stcPLLAInit.u8PLLState = CLK_PLLX_ON;
+    (void)CLK_PLLxInit(&stcPLLAInit);
+    /* 4 cycles for 200MHz ~ 250MHz */
+    GPIO_SetReadWaitCycle(GPIO_RD_WAIT4);
+    /* Set the system clock source */
+    CLK_SetSysClockSrc(CLK_SYSCLK_SRC_PLL);
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
-    /* CPU config */
-    CPU_Config();
+    // /* CPU config */
+    // CPU_Config();
 
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
 
-    /* HAL library initialization */
-    HAL_Init();
+    // /* HAL library initialization */
+    // HAL_Init();
 
     /* System clock initialization */
     SystemClock_Config();
 
     /* gpio driver init */
-    RT_CHECK(drv_gpio_init());
+    // RT_CHECK(drv_gpio_init());
 
     /* usart driver init */
     RT_CHECK(drv_usart_init());
@@ -259,149 +314,149 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    /* i2c driver init */
-    RT_CHECK(drv_i2c_init());
+    // /* i2c driver init */
+    // RT_CHECK(drv_i2c_init());
 
-    /* spi driver init */
-    RT_CHECK(drv_spi_init());
+    // /* spi driver init */
+    // RT_CHECK(drv_spi_init());
 
-    /* pwm driver init */
-    RT_CHECK(drv_pwm_init());
+    // /* pwm driver init */
+    // RT_CHECK(drv_pwm_init());
 
-    /* can driver init */
-    RT_CHECK(drv_fdcan_init());
+    // /* can driver init */
+    // RT_CHECK(drv_fdcan_init());
 
-    /* init remote controller driver */
-    RT_CHECK(drv_rc_init());
+    // /* init remote controller driver */
+    // RT_CHECK(drv_rc_init());
 
-    /* system statistic module */
-    FMT_CHECK(sys_stat_init());
+    // /* system statistic module */
+    // FMT_CHECK(sys_stat_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-    /* system time module init */
-    FMT_CHECK(systime_init());
+//     /* system time module init */
+//     FMT_CHECK(systime_init());
 
-    /* start recording boot log */
-    FMT_CHECK(boot_log_init());
+//     /* start recording boot log */
+//     FMT_CHECK(boot_log_init());
 
-    /* init uMCN */
-    FMT_CHECK(mcn_init());
+//     /* init uMCN */
+//     FMT_CHECK(mcn_init());
 
-    /* create workqueue */
-    FMT_CHECK(workqueue_manager_init());
+//     /* create workqueue */
+//     FMT_CHECK(workqueue_manager_init());
 
-    /* init storage devices */
-    RT_CHECK(drv_sdio_init());
-    RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
-    /* init file system */
-    FMT_CHECK(file_manager_init(mnt_table));
+//     /* init storage devices */
+//     RT_CHECK(drv_sdio_init());
+//     RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
+//     /* init file system */
+//     FMT_CHECK(file_manager_init(mnt_table));
 
-    /* init parameter system */
-    FMT_CHECK(param_init());
+//     /* init parameter system */
+//     FMT_CHECK(param_init());
 
-    /* init mavproxy */
-    FMT_CHECK(mavproxy_init());
+//     /* init mavproxy */
+//     FMT_CHECK(mavproxy_init());
 
-    /* init usbd_cdc */
-    RT_CHECK(drv_usb_cdc_init());
+//     /* init usbd_cdc */
+//     RT_CHECK(drv_usb_cdc_init());
 
-    /* adc driver init */
-    RT_CHECK(drv_adc_init());
+//     /* adc driver init */
+//     RT_CHECK(drv_adc_init());
 
-    /* init rt_workqueue, which is used by tcpip stack */
-    FMT_CHECK(rt_work_sys_workqueue_init());
+//     /* init rt_workqueue, which is used by tcpip stack */
+//     FMT_CHECK(rt_work_sys_workqueue_init());
 
-    /* init lwip */
-    extern int lwip_system_init();
-    FMT_CHECK(lwip_system_init());
+//     /* init lwip */
+//     extern int lwip_system_init();
+//     FMT_CHECK(lwip_system_init());
 
-    /* eth driver init */
-    RT_CHECK(drv_eth_init());
+//     /* eth driver init */
+//     RT_CHECK(drv_eth_init());
 
-#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
-    FMT_CHECK(advertise_sensor_imu(0));
-    FMT_CHECK(advertise_sensor_mag(0));
-    FMT_CHECK(advertise_sensor_baro(0));
-    FMT_CHECK(advertise_sensor_gps(0));
-    FMT_CHECK(advertise_sensor_airspeed(0));
-#else
-    /* init onboard sensors */
-    RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
-    RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-    RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
-    // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
-    RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-    RT_CHECK(gps_ubx_init("serial3", "gps"));
-    // RT_CHECK(drv_tofsense_init("serial5"));
+// #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+//     FMT_CHECK(advertise_sensor_imu(0));
+//     FMT_CHECK(advertise_sensor_mag(0));
+//     FMT_CHECK(advertise_sensor_baro(0));
+//     FMT_CHECK(advertise_sensor_gps(0));
+//     FMT_CHECK(advertise_sensor_airspeed(0));
+// #else
+//     /* init onboard sensors */
+//     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
+//     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
+//     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+//     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
+//     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
+//     RT_CHECK(gps_ubx_init("serial3", "gps"));
+//     // RT_CHECK(drv_tofsense_init("serial5"));
 
-    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    FMT_CHECK(register_sensor_mag("mag0", 0));
-    FMT_CHECK(register_sensor_barometer("barometer"));
-    FMT_CHECK(advertise_sensor_optflow(0));
-    FMT_CHECK(advertise_sensor_rangefinder(0));
+//     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+//     FMT_CHECK(register_sensor_mag("mag0", 0));
+//     FMT_CHECK(register_sensor_barometer("barometer"));
+//     FMT_CHECK(advertise_sensor_optflow(0));
+//     FMT_CHECK(advertise_sensor_rangefinder(0));
 
-    if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
-        if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
-            FMT_CHECK(register_sensor_airspeed("airspeed"));
-        } else {
-            printf("airspeed sensor init failed!\n");
-        }
-    }
-#endif
+//     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
+//         if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
+//             FMT_CHECK(register_sensor_airspeed("airspeed"));
+//         } else {
+//             printf("airspeed sensor init failed!\n");
+//         }
+//     }
+// #endif
 
-    /* init finsh */
-    finsh_system_init();
-    /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_input());
+//     /* init finsh */
+//     finsh_system_init();
+//     /* Mount finsh to console after finsh system init */
+//     FMT_CHECK(console_enable_input());
 
-#ifdef FMT_USING_UNIT_TEST
-    utest_init();
-#endif
+// #ifdef FMT_USING_UNIT_TEST
+//     utest_init();
+// #endif
 }
 
 void bsp_post_initialize(void)
 {
-    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
-        /* use default system configuration */
-        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
-        printf("Default configuration loaded.\n");
-    }
+    // if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
+    //     /* use default system configuration */
+    //     FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+    //     printf("Default configuration loaded.\n");
+    // }
 
-    /* init rc */
-    FMT_CHECK(pilot_cmd_init());
+    // /* init rc */
+    // FMT_CHECK(pilot_cmd_init());
 
-    /* init gcs */
-    FMT_CHECK(gcs_cmd_init());
+    // /* init gcs */
+    // FMT_CHECK(gcs_cmd_init());
 
-    /* init auto command */
-    FMT_CHECK(auto_cmd_init());
+    // /* init auto command */
+    // FMT_CHECK(auto_cmd_init());
 
-    /* init mission data */
-    FMT_CHECK(mission_data_init());
+    // /* init mission data */
+    // FMT_CHECK(mission_data_init());
 
-    /* init actuator */
-    FMT_CHECK(actuator_init());
+    // /* init actuator */
+    // FMT_CHECK(actuator_init());
 
-    /* start device message queue work */
-    FMT_CHECK(devmq_start_work());
+    // /* start device message queue work */
+    // FMT_CHECK(devmq_start_work());
 
-    /* init led control */
-    FMT_CHECK(led_control_init());
+    // /* init led control */
+    // FMT_CHECK(led_control_init());
 
-    /* initialize power management unit */
-    FMT_CHECK(pmu_init());
+    // /* initialize power management unit */
+    // FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
 
-    /* execute init script */
-    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
+    // /* execute init script */
+    // msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
-    /* dump boot log to file */
-    boot_log_dump();
+    // /* dump boot log to file */
+    // boot_log_dump();
 }
 
 /**
