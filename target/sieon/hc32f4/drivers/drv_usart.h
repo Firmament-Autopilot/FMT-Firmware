@@ -17,8 +17,8 @@
 #ifndef DRV_USART_H__
 #define DRV_USART_H__
 
-#include "board.h"
 #include <firmament.h>
+#include "hc32_ll.h"
 
 #ifdef __cplusplus
 extern "C" {
