@@ -407,10 +407,10 @@ void bsp_initialize(void)
 //     }
 // #endif
 
-//     /* init finsh */
-//     finsh_system_init();
-//     /* Mount finsh to console after finsh system init */
-//     FMT_CHECK(console_enable_input());
+    /* init finsh */
+    finsh_system_init();
+    /* Mount finsh to console after finsh system init */
+    FMT_CHECK(console_enable_input());
 
 // #ifdef FMT_USING_UNIT_TEST
 //     utest_init();

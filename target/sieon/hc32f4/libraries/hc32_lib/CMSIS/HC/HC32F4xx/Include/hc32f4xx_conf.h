@@ -69,7 +69,7 @@ extern "C"
 #define LL_EMB_ENABLE                               (DDL_OFF)
 #define LL_ETH_ENABLE                               (DDL_OFF)
 #define LL_EVENT_PORT_ENABLE                        (DDL_OFF)
-#define LL_FCG_ENABLE                               (DDL_OFF)
+#define LL_FCG_ENABLE                               (DDL_ON)
 #define LL_FCM_ENABLE                               (DDL_OFF)
 #define LL_FMAC_ENABLE                              (DDL_OFF)
 #define LL_GPIO_ENABLE                              (DDL_ON)
