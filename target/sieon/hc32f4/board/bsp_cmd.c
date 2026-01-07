@@ -21,6 +21,7 @@ static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
     printf("rebooting...\n");
     sys_msleep(10);
+    // systime_mdelay(10);
 
     NVIC_SystemReset();
 

@@ -351,8 +351,8 @@ void bsp_initialize(void)
 //     /* init storage devices */
 //     RT_CHECK(drv_sdio_init());
 //     RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
-//     /* init file system */
-//     FMT_CHECK(file_manager_init(mnt_table));
+    /* init file system */
+    FMT_CHECK(file_manager_init(mnt_table));
 
 //     /* init parameter system */
 //     FMT_CHECK(param_init());

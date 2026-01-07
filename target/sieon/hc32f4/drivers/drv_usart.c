@@ -52,16 +52,39 @@
 
 /* HC32 uart driver */
 struct hc32_uart {
-    CM_USART_TypeDef * uart_periph;
+    CM_USART_TypeDef* uart_periph;
 };
 
-static struct serial_device serial0;
 
 #ifdef USING_UART5
+static struct serial_device serial0;
 static struct hc32_uart uart5 = {
     .uart_periph = CM_USART5,
 };
+
+static void USART5_RxFull_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    hal_serial_isr(&serial0, SERIAL_EVENT_RX_IND);
+    rt_interrupt_leave();    
+}
 #endif
+
+/**
+ * @brief  Instal IRQ handler.
+ * @param  [in] pstcConfig      Pointer to struct @ref stc_irq_signin_config_t
+ * @param  [in] u32Priority     Interrupt priority
+ * @retval None
+ */
+static void INTC_IrqInstalHandler(const stc_irq_signin_config_t *pstcConfig, uint32_t u32Priority)
+{
+    if (NULL != pstcConfig) {
+        (void)INTC_IrqSignIn(pstcConfig);
+        NVIC_ClearPendingIRQ(pstcConfig->enIRQn);
+        NVIC_SetPriority(pstcConfig->enIRQn, u32Priority);
+        NVIC_EnableIRQ(pstcConfig->enIRQn);
+    }
+}
 
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg)
 {
@@ -107,7 +130,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     USART_UART_Init(uart->uart_periph, &stcUartInit, NULL);
 
     /* Enable USART_TX | USART_RX function */
-    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX), ENABLE);
+    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX | USART_INT_RX), ENABLE);
 
     LL_PERIPH_WP(LL_PERIPH_ALL);
 
@@ -190,8 +213,10 @@ static const struct usart_ops __usart_ops = {
     .dma_transmit = usart_dma_transmit,
 };
 
-static void uart_init(void)
+static void uart_peripheral_init(void)
 {
+    stc_irq_signin_config_t stcIrqSigninConfig;
+
     /* MCU Peripheral registers write unprotected */
     LL_PERIPH_WE(LL_PERIPH_ALL);
 
@@ -202,6 +227,12 @@ static void uart_init(void)
     /* Enable USART5 clock */
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART5, ENABLE);
 
+    /* Register RX full IRQ handler && configure NVIC. */
+    stcIrqSigninConfig.enIRQn = INT000_IRQn;
+    stcIrqSigninConfig.enIntSrc = INT_SRC_USART5_RI;
+    stcIrqSigninConfig.pfnCallback = &USART5_RxFull_IrqCallback;
+    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
+
     /* MCU Peripheral registers write protected */
     LL_PERIPH_WP(LL_PERIPH_ALL);
 }
@@ -211,7 +242,7 @@ rt_err_t drv_usart_init(void)
     rt_err_t rt_err = RT_EOK;
     struct serial_configure config = SERIAL_DEFAULT_CONFIG;
 
-    uart_init();
+    uart_peripheral_init();
 
 #ifdef USING_UART5
     serial0.ops = &__usart_ops;
@@ -225,7 +256,7 @@ rt_err_t drv_usart_init(void)
     /* register serial device */
     rt_err |= hal_serial_register(&serial0,
                                   "serial0",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE,
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart5);
 #endif /* USING_UART5 */
 

@@ -5,7 +5,7 @@ MODULES = [
     'console/*.c',
     'system/*.c',
     # 'ipc/*.c',
-    # 'file_manager/*.c',
+    'file_manager/*.c',
     # 'ftp/*.c',
     # "log/*.c",
     # "param/*.c",
