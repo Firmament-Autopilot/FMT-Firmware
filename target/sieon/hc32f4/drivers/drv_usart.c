@@ -25,23 +25,18 @@
 #define UART_ENABLE_IRQ(n)  NVIC_EnableIRQ((n))
 #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
 
-#define LL_PERIPH_SEL                   (LL_PERIPH_GPIO | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | \
-                                         LL_PERIPH_EFM | LL_PERIPH_SRAM)
+#define LL_PERIPH_SEL       (LL_PERIPH_GPIO | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_EFM | LL_PERIPH_SRAM)
 
 /* USART RX/TX pin definition */
-#define USART_RX_PORT                   (GPIO_PORT_E)   /* PH13: USART1_RX */
-#define USART_RX_PIN                    (GPIO_PIN_11)
-#define USART_RX_GPIO_FUNC              (GPIO_FUNC_37)
+#define USART_RX_PORT       (GPIO_PORT_E) /* PH13: USART1_RX */
+#define USART_RX_PIN        (GPIO_PIN_11)
+#define USART_RX_GPIO_FUNC  (GPIO_FUNC_37)
 
 // #define USART_TX_PORT                   (GPIO_PORT_E)   /* PH15: USART1_TX */
 // #define USART_TX_PIN                    (GPIO_PIN_12)
 // #define USART_TX_GPIO_FUNC              (GPIO_FUNC_36)
 
-
-#define USING_UART1 1
-#define USING_UART4 1
-#define USING_UART6 0
-#define USING_UART9 0
+#define USING_UART5
 
 #define SERIAL3_DEFAULT_CONFIG                    \
     {                                             \
@@ -79,8 +74,6 @@ struct wl32_uart {
 static struct serial_device serial0;
 static struct serial_device serial1;
 
-
-
 static uint8_t usart1_rx_data_runing = 0;
 static uint8_t usart1_rx_data_cnt = 0;
 static uint8_t usart1_rx_data_addr = 0;
@@ -93,67 +86,46 @@ void usart1_irq_full_callback(void)
     hal_serial_isr(&serial0, SERIAL_EVENT_RX_IND);
     usart1_rx_data_addr++;
     usart1_rx_data_runing = 1;
-    //uart_isr(&serial0);
+    // uart_isr(&serial0);
     rt_interrupt_leave();
-
 }
 
-
-static uint8_t usart4_rx_data_runing = 0;
-static uint8_t usart4_rx_data_cnt = 0;
-static uint8_t usart4_rx_data_addr = 0;
-static uint8_t usart4_rx_dell = 0;
-static void dma_uart_rx_idle_isr(struct serial_device* serial,rt_size_t datalen)
-{
-    rt_size_t recv_len;
-    recv_len = datalen;
-
-    if (recv_len) {
-        /* high-level ISR routine */
-        hal_serial_isr(serial, SERIAL_EVENT_RX_DMADONE | (recv_len << 8));
-    }
-}
-
-#if (USING_UART6 == 1)
-
+#ifdef USING_UART5
 static uint8_t usart6_rx_data_runing = 0;
 static uint8_t usart6_rx_data_cnt = 0;
 static uint8_t usart6_rx_data_addr = 0;
 static uint8_t usart6_rx_dell = 0;
-void usart6_irq_full_callback(void)
+void usart5_rx_full_irq_callback(void)
 {
     rt_interrupt_enter();
-    if(usart6_rx_dell)
+    if (usart6_rx_dell)
         return;
     hal_serial_isr(&serial0, SERIAL_EVENT_RX_IND);
     usart6_rx_data_addr++;
     usart6_rx_data_runing = 1;
-    //uart_isr(&serial0);
+    // uart_isr(&serial0);
     rt_interrupt_leave();
-
 }
 
-
-void usart6_irq_rto_callback(void)
+void usart5_rx_timo_irq_callback(void)
 {
 
     rt_interrupt_enter();
 
-    //hal_serial_isr(&serial0, SERIAL_EVENT_RX_IND);
-    //uart_isr(&serial0);
+    // hal_serial_isr(&serial0, SERIAL_EVENT_RX_IND);
+    // uart_isr(&serial0);
     rt_interrupt_leave();
-
 }
 
 static struct wl32_uart uart6 = {
-    .uart_periph = (uint32_t)CM_USART6,
-    .per_clk = FCG3_PERIPH_USART6,
+    .uart_periph = (uint32_t)CM_USART5,
+    .per_clk = FCG3_PERIPH_USART5,
     .rx_full_irqn = INT001_IRQn,
     .rx_full_int_src = INT_SRC_USART6_RI,
-    .rx_full_irq_call_back = usart6_irq_full_callback,
+    .rx_full_irq_call_back = usart5_rx_full_irq_callback,
     .rx_timo_irqn = INT002_IRQn,
     .rx_timo_int_src = INT_SRC_USART6_RTO,
-    .rx_timo_irq_call_back = usart6_irq_rto_callback,
+    .rx_timo_irq_call_back = usart5_rx_timo_irq_callback,
     .tx_port = GPIO_PORT_A,
     .tx_pin = GPIO_PIN_02,
     .tx_af = GPIO_FUNC_36,
@@ -162,63 +134,13 @@ static struct wl32_uart uart6 = {
     .rx_af = GPIO_FUNC_37,
 
 };
-
 #endif
-
-
-#if (USING_UART9 == 1)
-
-void usart9_irq_full_callback(void)
-{
-    
-    rt_interrupt_enter();
-    if(usart9_rx_dell)
-        return;
-    hal_serial_isr(&serial1, SERIAL_EVENT_RX_IND);
-    usart9_rx_data_addr++;
-    usart9_rx_data_runing = 1;
-    //uart_isr(&serial0);
-    rt_interrupt_leave();
-
-    // rt_interrupt_enter();
-    // hal_serial_isr(&serial1, SERIAL_EVENT_RX_IND);
-    // //uart_isr(&serial0);
-    // rt_interrupt_leave();
-
-}
-
-static struct wl32_uart uart9 = {
-    .uart_periph = (uint32_t)CM_USART9,
-    .per_clk = FCG3_PERIPH_USART9,
-    .rx_full_irqn = INT003_IRQn,
-    .rx_full_int_src = INT_SRC_USART9_RI,
-    .rx_full_irq_call_back = usart9_irq_full_callback,
-    .rx_timo_irq_call_back = NULL,
-
-    .tx_port = GPIO_PORT_E,
-    .tx_pin = GPIO_PIN_12,
-    .tx_af = GPIO_FUNC_36,
-    .rx_port = GPIO_PORT_E,
-    .rx_pin = GPIO_PIN_11,
-    .rx_af = GPIO_FUNC_37,
-
-};
-
-
-
-static uint8_t usart9_rx_data_runing = 0;
-static uint8_t usart9_rx_data_cnt = 0;
-static uint8_t usart9_rx_data_addr = 0;
-static uint8_t usart9_rx_dell = 0;
-
-#endif /* USING_UART9 */
 
 /**
  * Serial port receive idle process. This need add to uart idle ISR.
  *
  * @param serial serial device
  */
-
 
 static uint8_t drv_usart_task_creat = 0;
 static uint8_t drv_usart_task_run = 1;
@@ -253,12 +175,12 @@ static struct wl32_uart uart1 = {
 void usart4_irq_full_callback(void)
 {
     rt_interrupt_enter();
-    if(usart4_rx_dell)
+    if (usart4_rx_dell)
         return;
     hal_serial_isr(&serial1, SERIAL_EVENT_RX_IND);
     usart4_rx_data_addr++;
     usart4_rx_data_runing = 1;
-    //uart_isr(&serial0);
+    // uart_isr(&serial0);
     rt_interrupt_leave();
 }
 
@@ -281,7 +203,7 @@ static struct wl32_uart uart4 = {
 
 #endif
 
-static void INTC_IrqInstalHandler(const stc_irq_signin_config_t *pstcConfig, uint32_t u32Priority)
+static void INTC_IrqInstalHandler(const stc_irq_signin_config_t* pstcConfig, uint32_t u32Priority)
 {
     if (NULL != pstcConfig) {
         (void)INTC_IrqSignIn(pstcConfig);
@@ -302,12 +224,12 @@ static void USART_TxComplete_IrqCallback(void)
     USART_FuncCmd(CM_USART4, (USART_TX | USART_INT_TX_CPLT), DISABLE);
 }
 
-#define APP_FRAME_LEN_MAX               (500U)
+#define APP_FRAME_LEN_MAX (500U)
 
 static uint8_t m_au8RxBuf[APP_FRAME_LEN_MAX];
 void dma_init(void)
 {
-		int32_t i32Ret;
+    int32_t i32Ret;
     stc_dma_init_t stcDmaInit;
     stc_dma_llp_init_t stcDmaLlpInit;
     stc_irq_signin_config_t stcIrqSignConfig;
@@ -316,7 +238,6 @@ void dma_init(void)
     /* DMA&AOS FCG enable */
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_DMA2, ENABLE);
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_AOS, ENABLE);
-
 
     /* USART_TX_DMA */
     (void)DMA_StructInit(&stcDmaInit);
@@ -331,7 +252,7 @@ void dma_init(void)
     i32Ret = DMA_Init(CM_DMA2, DMA_CH0, &stcDmaInit);
     if (LL_OK == i32Ret) {
         stcIrqSignConfig.enIntSrc = INT_SRC_DMA2_TC0;
-        stcIrqSignConfig.enIRQn  = INT007_IRQn;
+        stcIrqSignConfig.enIRQn = INT007_IRQn;
         stcIrqSignConfig.pfnCallback = &TX_DMA_TC_IrqCallback;
         (void)INTC_IrqSignIn(&stcIrqSignConfig);
         NVIC_ClearPendingIRQ(stcIrqSignConfig.enIRQn);
@@ -343,7 +264,6 @@ void dma_init(void)
         DMA_Cmd(CM_DMA2, ENABLE);
         DMA_TransCompleteIntCmd(CM_DMA2, DMA_INT_TC_CH0, ENABLE);
     }
-
 }
 
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg)
@@ -359,10 +279,8 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
     LL_PERIPH_WE(LL_PERIPH_SEL);
 
-    if(uart->uart_periph == (uint32_t)CM_USART4)
-    {
+    if (uart->uart_periph == (uint32_t)CM_USART4) {
         dma_init();
-
     }
 
     /* Configure USART RX/TX pin. */
@@ -375,7 +293,6 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     /* Initialize UART. */
     (void)USART_UART_StructInit(&stcUartInit);
 
-    
     stcUartInit.u32Baudrate = cfg->baud_rate;
     switch (cfg->data_bits) {
     case DATA_BITS_9:
@@ -386,7 +303,6 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
         stcUartInit.u32DataWidth = USART_DATA_WIDTH_8BIT;
         break;
     }
-    
 
     switch (cfg->stop_bits) {
     case STOP_BITS_2:
@@ -411,13 +327,12 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     stcUartInit.u32ClockDiv = USART_CLK_DIV64;
     stcUartInit.u32OverSampleBit = USART_OVER_SAMPLE_8BIT;
     if (LL_OK != USART_UART_Init(uart->uart_periph, &stcUartInit, NULL)) {
-        //BSP_LED_On(LED_RED);
+        // BSP_LED_On(LED_RED);
         for (;;) {
         }
     }
 
-    if(uart->uart_periph == (uint32_t)CM_USART4)
-    {
+    if (uart->uart_periph == (uint32_t)CM_USART4) {
         stcIrqSigninConfig.enIRQn = INT009_IRQn;
         stcIrqSigninConfig.enIntSrc = INT_SRC_USART4_TCI;
         stcIrqSigninConfig.pfnCallback = &USART_TxComplete_IrqCallback;
@@ -436,8 +351,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     NVIC_SetPriority(stcIrqSigninConfig.enIRQn, DDL_IRQ_PRIO_DEFAULT);
     NVIC_DisableIRQ(stcIrqSigninConfig.enIRQn);
 
-    if(uart->rx_timo_irq_call_back != NULL)
-    {
+    if (uart->rx_timo_irq_call_back != NULL) {
         /* Register RX full IRQ handler && configure NVIC. */
         stcIrqSigninConfig.enIRQn = uart->rx_timo_irqn;
         stcIrqSigninConfig.enIntSrc = uart->rx_timo_int_src;
@@ -450,18 +364,16 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     /* MCU Peripheral registers write protected */
     LL_PERIPH_WP(LL_PERIPH_SEL);
 
-    if(uart->uart_periph == (uint32_t)CM_USART4)
-    {
-        USART_FuncCmd((CM_USART_TypeDef *)uart->uart_periph, (USART_RX | USART_INT_RX), ENABLE);
+    if (uart->uart_periph == (uint32_t)CM_USART4) {
+        USART_FuncCmd((CM_USART_TypeDef*)uart->uart_periph, (USART_RX | USART_INT_RX), ENABLE);
         drv_usart_task_run = 0;
-    return RT_EOK;
-
+        return RT_EOK;
     }
     /* Enable RX/TX function */
-    if(uart->rx_timo_irq_call_back != NULL)
-        USART_FuncCmd((CM_USART_TypeDef *)uart->uart_periph, (USART_RX | USART_INT_RX | USART_TX | USART_RX_TIMEOUT), ENABLE);
+    if (uart->rx_timo_irq_call_back != NULL)
+        USART_FuncCmd((CM_USART_TypeDef*)uart->uart_periph, (USART_RX | USART_INT_RX | USART_TX | USART_RX_TIMEOUT), ENABLE);
     else
-        USART_FuncCmd((CM_USART_TypeDef *)uart->uart_periph, (USART_RX | USART_INT_RX | USART_TX), ENABLE);
+        USART_FuncCmd((CM_USART_TypeDef*)uart->uart_periph, (USART_RX | USART_INT_RX | USART_TX), ENABLE);
     drv_usart_task_run = 0;
     return RT_EOK;
 }
@@ -477,13 +389,12 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
     switch (cmd) {
     case RT_DEVICE_CTRL_CLR_INT:
         if (ctrl_arg == RT_DEVICE_FLAG_INT_RX) {
-            
+
             NVIC_ClearPendingIRQ(uart->rx_full_irqn);
             NVIC_DisableIRQ(uart->rx_full_irqn);
 
-            if(uart->rx_timo_irq_call_back != NULL)
-            {
-                drv_usart_task_run = 0;     
+            if (uart->rx_timo_irq_call_back != NULL) {
+                drv_usart_task_run = 0;
                 NVIC_ClearPendingIRQ(uart->rx_timo_irqn);
                 NVIC_DisableIRQ(uart->rx_timo_irqn);
             }
@@ -492,13 +403,12 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
 
     case RT_DEVICE_CTRL_SET_INT:
         if (ctrl_arg == RT_DEVICE_FLAG_INT_RX) {
-            
+
             NVIC_ClearPendingIRQ(uart->rx_full_irqn);
             NVIC_EnableIRQ(uart->rx_full_irqn);
 
-            if(uart->rx_timo_irq_call_back != NULL)
-            {
-                drv_usart_task_run = 1; 
+            if (uart->rx_timo_irq_call_back != NULL) {
+                drv_usart_task_run = 1;
                 NVIC_ClearPendingIRQ(uart->rx_timo_irqn);
                 NVIC_EnableIRQ(uart->rx_timo_irqn);
             }
@@ -510,14 +420,13 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
         break;
 
     case RT_DEVICE_CTRL_SUSPEND:
-            NVIC_ClearPendingIRQ(uart->rx_full_irqn);
-            NVIC_DisableIRQ(uart->rx_full_irqn);
-            if(uart->rx_timo_irq_call_back != NULL)
-            {
-                drv_usart_task_run = 0; 
-                NVIC_ClearPendingIRQ(uart->rx_timo_irqn);
-                NVIC_DisableIRQ(uart->rx_timo_irqn);
-            }
+        NVIC_ClearPendingIRQ(uart->rx_full_irqn);
+        NVIC_DisableIRQ(uart->rx_full_irqn);
+        if (uart->rx_timo_irq_call_back != NULL) {
+            drv_usart_task_run = 0;
+            NVIC_ClearPendingIRQ(uart->rx_timo_irqn);
+            NVIC_DisableIRQ(uart->rx_timo_irqn);
+        }
         //_close_usart(serial);
         break;
 
@@ -537,14 +446,14 @@ static int usart_putc(struct serial_device* serial, char ch)
     uart = (struct wl32_uart*)serial->parent.user_data;
 
     /* Wait Tx data register empty */
-    while (RESET == USART_GetStatus((CM_USART_TypeDef *)uart->uart_periph, USART_FLAG_TX_EMPTY)) {
+    while (RESET == USART_GetStatus((CM_USART_TypeDef*)uart->uart_periph, USART_FLAG_TX_EMPTY)) {
     }
-    USART_WriteData((CM_USART_TypeDef *)uart->uart_periph, ch);
+    USART_WriteData((CM_USART_TypeDef*)uart->uart_periph, ch);
 
     return RT_EOK;
 }
 
-static volatile uint8_t tmp_rx_buf[100] = {0};
+static volatile uint8_t tmp_rx_buf[100] = { 0 };
 static volatile uint8_t tmp_rx_add = 0;
 static int usart_getc(struct serial_device* serial)
 {
@@ -554,18 +463,17 @@ static int usart_getc(struct serial_device* serial)
     RT_ASSERT(serial != RT_NULL);
     uart = (struct wl32_uart*)serial->parent.user_data;
 
-    if (SET == USART_GetStatus((CM_USART_TypeDef *)uart->uart_periph, USART_FLAG_RX_FULL)) 
-    {
-        ch = USART_ReadData((CM_USART_TypeDef *)uart->uart_periph);
+    if (SET == USART_GetStatus((CM_USART_TypeDef*)uart->uart_periph, USART_FLAG_RX_FULL)) {
+        ch = USART_ReadData((CM_USART_TypeDef*)uart->uart_periph);
         tmp_rx_buf[tmp_rx_add] = ch;
-        if(++tmp_rx_add>=100)
+        if (++tmp_rx_add >= 100)
             tmp_rx_add = 0;
     }
-    
+
     return ch;
 }
 uint8_t tmp_dma_sendddd[] = "hello word\n";
-void tmp_dma_send(uint8_t *buf, uint32_t size)
+void tmp_dma_send(uint8_t* buf, uint32_t size)
 {
     DMA_SetSrcAddr(CM_DMA2, DMA_CH0, (uint32_t)buf);
 
@@ -577,7 +485,7 @@ void tmp_dma_send(uint8_t *buf, uint32_t size)
 }
 static rt_size_t usart_dma_transmit(struct serial_device* serial, rt_uint8_t* buf, rt_size_t size, int direction)
 {
-    tmp_dma_send( buf, size);
+    tmp_dma_send(buf, size);
     return size;
 }
 
@@ -595,7 +503,7 @@ rt_err_t drv_usart_init(void)
     rt_err_t rt_err = RT_EOK;
     struct serial_configure config = SERIAL_DEFAULT_CONFIG;
 
-#ifdef USING_UART6
+#ifdef USING_UART5
     serial0.ops = &__usart_ops;
     #ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
@@ -609,22 +517,7 @@ rt_err_t drv_usart_init(void)
                                   "serial0",
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
                                   &uart1);
-#endif /* USING_UART6 */
+#endif /* USING_UART5 */
 
-#ifdef USING_UART9
-    serial1.ops = &__usart_ops;
-    #ifdef SERIAL0_DEFAULT_CONFIG
-    struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
-    serial0.config = serial0_config;
-    #else
-    serial1.config = config;
-    #endif
-
-    /* register serial device */
-    rt_err |= hal_serial_register(&serial1,
-                                  "serial1",
-                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
-                                  &uart4);
-#endif /* USING_UART9 */
     return rt_err;
 }
