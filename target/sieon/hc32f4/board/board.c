@@ -292,6 +292,9 @@ void bsp_early_initialize(void)
 {
     // /* CPU config */
     // CPU_Config();
+    
+    /* MCU Peripheral registers write unprotected */
+    LL_PERIPH_WE(LL_PERIPH_ALL);
 
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);

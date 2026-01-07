@@ -18,24 +18,6 @@
 #include "drv_usart.h"
 #include "hal/serial/serial.h"
 
-#define SET_BIT(REG, BIT)   ((REG) |= (BIT))
-#define CLEAR_BIT(REG, BIT) ((REG) &= ~(BIT))
-#define READ_BIT(REG, BIT)  ((REG) & (BIT))
-
-#define UART_ENABLE_IRQ(n)  NVIC_EnableIRQ((n))
-#define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
-
-#define LL_PERIPH_SEL       (LL_PERIPH_GPIO | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_EFM | LL_PERIPH_SRAM)
-
-/* USART RX/TX pin definition */
-#define USART_RX_PORT       (GPIO_PORT_E) /* PH13: USART1_RX */
-#define USART_RX_PIN        (GPIO_PIN_11)
-#define USART_RX_GPIO_FUNC  (GPIO_FUNC_37)
-
-// #define USART_TX_PORT                   (GPIO_PORT_E)   /* PH15: USART1_TX */
-// #define USART_TX_PIN                    (GPIO_PIN_12)
-// #define USART_TX_GPIO_FUNC              (GPIO_FUNC_36)
-
 #define USING_UART5
 
 #define SERIAL3_DEFAULT_CONFIG                    \
@@ -61,6 +43,13 @@ static struct serial_device serial0;
 static struct hc32_uart uart5 = {
     .uart_periph = CM_USART5,
 };
+
+static void USART5_RxError_IrqCallback(void)
+{
+    (void)USART_ReadData(uart5.uart_periph);
+
+    USART_ClearStatus(uart5.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+}
 
 static void USART5_RxFull_IrqCallback(void)
 {
@@ -96,7 +85,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
     uart = (struct hc32_uart*)serial->parent.user_data;
 
-    LL_PERIPH_WE(LL_PERIPH_ALL);
+    // LL_PERIPH_WE(LL_PERIPH_ALL);
 
     USART_DeInit(uart->uart_periph);
     (void)USART_UART_StructInit(&stcUartInit);
@@ -132,7 +121,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     /* Enable USART_TX | USART_RX function */
     USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX | USART_INT_RX), ENABLE);
 
-    LL_PERIPH_WP(LL_PERIPH_ALL);
+    // LL_PERIPH_WP(LL_PERIPH_ALL);
 
     return RT_EOK;
 }
@@ -218,7 +207,7 @@ static void uart_peripheral_init(void)
     stc_irq_signin_config_t stcIrqSigninConfig;
 
     /* MCU Peripheral registers write unprotected */
-    LL_PERIPH_WE(LL_PERIPH_ALL);
+    // LL_PERIPH_WE(LL_PERIPH_ALL);
 
     /* Configure USART RX/TX pin. */
     GPIO_SetFunc(GPIO_PORT_C, GPIO_PIN_12, GPIO_FUNC_20); // USART5-TX
@@ -227,14 +216,20 @@ static void uart_peripheral_init(void)
     /* Enable USART5 clock */
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART5, ENABLE);
 
-    /* Register RX full IRQ handler && configure NVIC. */
+    /* Register RX error IRQ handler && configure NVIC. */
     stcIrqSigninConfig.enIRQn = INT000_IRQn;
+    stcIrqSigninConfig.enIntSrc = INT_SRC_USART5_EI;
+    stcIrqSigninConfig.pfnCallback = &USART5_RxError_IrqCallback;
+    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
+
+    /* Register RX full IRQ handler && configure NVIC. */
+    stcIrqSigninConfig.enIRQn = INT001_IRQn;
     stcIrqSigninConfig.enIntSrc = INT_SRC_USART5_RI;
     stcIrqSigninConfig.pfnCallback = &USART5_RxFull_IrqCallback;
     INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
 
     /* MCU Peripheral registers write protected */
-    LL_PERIPH_WP(LL_PERIPH_ALL);
+    // LL_PERIPH_WP(LL_PERIPH_ALL);
 }
 
 rt_err_t drv_usart_init(void)
