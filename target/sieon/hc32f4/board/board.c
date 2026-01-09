@@ -292,7 +292,7 @@ void bsp_early_initialize(void)
 {
     // /* CPU config */
     // CPU_Config();
-    
+
     /* MCU Peripheral registers write unprotected */
     LL_PERIPH_WE(LL_PERIPH_ALL);
 
@@ -339,8 +339,8 @@ void bsp_early_initialize(void)
 /* this function will be called after rtos start, which is in thread context */
 void bsp_initialize(void)
 {
-//     /* system time module init */
-//     FMT_CHECK(systime_init());
+    /* system time module init */
+    FMT_CHECK(systime_init());
 
 //     /* start recording boot log */
 //     FMT_CHECK(boot_log_init());
