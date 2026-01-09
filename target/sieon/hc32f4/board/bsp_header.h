@@ -34,4 +34,19 @@
 // #include "stm32h7xx_ll_system.h"
 // #include "stm32h7xx_ll_utils.h"
 
+#define USART5_RX_ERR_IRQn         (INT000_IRQn)
+#define USART5_RX_FULL_IRQn        (INT001_IRQn)
+
+#define USART2_RX_ERR_IRQn         (INT002_IRQn)
+#define USART2_RX_FULL_IRQn        (INT003_IRQn)
+#define USART2_TX_CPLT_IRQn        (INT004_IRQn)
+#define USART2_TX_DMA_TC_IRQn      (INT005_IRQn)
+#define USART2_TX_DMA_UNIT         (CM_DMA1)
+#define USART2_TX_DMA_CH           (DMA_CH0)
+#define USART2_TX_DMA_TC_INT_SRC   (INT_SRC_DMA1_TC0)
+#define USART2_TX_DMA_TC_FLAG      (DMA_FLAG_TC_CH0)
+#define USART2_TX_DMA_TRIG_SEL     (AOS_DMA1_0)
+#define USART2_TX_DMA_TRIG_EVT_SRC (EVT_SRC_USART2_TI)
+#define USART2_TX_DMA_TC_INT       (DMA_INT_TC_CH0)
+
 #endif
