@@ -22,6 +22,10 @@
 /* FPU Library */
 #include <arm_math.h>
 
+#include "hc32_ll.h"
+#include "hc32_ll_fcg.h"
+#include "hc32_ll_gpio.h"
+
 // #include "stm32h7xx_hal.h"
 // #include "stm32h7xx_hal_fdcan.h"
 // #include "stm32h7xx_ll_bus.h"

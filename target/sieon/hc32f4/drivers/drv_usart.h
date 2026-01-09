@@ -19,10 +19,7 @@
 
 #include <firmament.h>
 
-#include "hc32_ll.h"
-#include "hc32_ll_gpio.h"
 #include "hc32_ll_usart.h"
-#include "hc32_ll_fcg.h"
 
 #ifdef __cplusplus
 extern "C" {

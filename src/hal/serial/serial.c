@@ -175,7 +175,7 @@ static void dma_recv_update_get_index(struct serial_device* serial, rt_size_t le
     }
 
     if (len > dma_calc_recved_len(serial)) {
-        HAL_DBG("length:%d exceeds the maxium received length\n", len);
+        HAL_DBG("length:%ld exceeds the maxium received length\n", len);
         return;
     }
 

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
-
 #include "drv_usart.h"
 #include "hal/serial/serial.h"
 
@@ -67,9 +65,10 @@ static struct hc32_uart uart5 = {
 
 static void USART5_RxError_IrqCallback(void)
 {
+    rt_interrupt_enter();
     (void)USART_ReadData(uart5.uart_periph);
-
     USART_ClearStatus(uart5.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+    rt_interrupt_leave();
 }
 
 static void USART5_RxFull_IrqCallback(void)
