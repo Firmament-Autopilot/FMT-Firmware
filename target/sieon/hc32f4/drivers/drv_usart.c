@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,12 @@
 /* HC32 uart driver */
 struct hc32_uart {
     CM_USART_TypeDef* uart_periph;
+    IRQn_Type rx_err_irq;
+    en_int_src_t rx_err_int_src;
+    func_ptr_t rx_err_callback;
+    IRQn_Type rx_full_irq;
+    en_int_src_t rx_full_int_src;
+    func_ptr_t rx_full_callback;
     struct hc32_uart_dma {
         /* dma instance */
         CM_DMA_TypeDef* dma_periph;
@@ -48,19 +54,32 @@ struct hc32_uart {
         // en_int_src_t dma_rx_tc_int_src;
         /* tx dma chan */
         uint8_t dma_tx_ch;
-        en_int_src_t dma_tx_tc_int_src;
-        uint32_t dma_tx_tc_flag;
         IRQn_Type dma_tx_tc_irq;
+        en_int_src_t dma_tx_tc_int_src;
+        func_ptr_t dma_tx_tc_callback;
+        uint32_t dma_tx_tc_flag;
         uint32_t dma_tx_trig_sel;
         en_event_src_t dma_tx_trig_evt_src;
         uint32_t dma_tx_tc_int;
+        IRQn_Type tx_cplt_irq;
+        en_int_src_t tx_cplt_int_src;
+        func_ptr_t tx_cplt_callback;
     } dma;
 };
 
 #ifdef USING_UART5
+static void USART5_RxError_IrqCallback(void);
+static void USART5_RxFull_IrqCallback(void);
+
 static struct serial_device serial0;
 static struct hc32_uart uart5 = {
     .uart_periph = CM_USART5,
+    .rx_err_irq = USART5_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART5_EI,
+    .rx_err_callback = &USART5_RxError_IrqCallback,
+    .rx_full_irq = USART5_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART5_RI,
+    .rx_full_callback = &USART5_RxFull_IrqCallback,
 };
 
 static void USART5_RxError_IrqCallback(void)
@@ -80,18 +99,21 @@ static void USART5_RxFull_IrqCallback(void)
 #endif
 
 #ifdef USING_UART2
+static void USART2_RxError_IrqCallback(void);
+static void USART2_RxFull_IrqCallback(void);
+static void USART2_TX_DMA_TC_IrqCallback(void);
+static void USART2_TxComplete_IrqCallback(void);
+
 static struct serial_device serial2;
 static struct hc32_uart uart2 = {
     .uart_periph = CM_USART2,
+    .rx_err_irq = USART2_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART2_EI,
+    .rx_err_callback = &USART2_RxError_IrqCallback,
+    .rx_full_irq = USART2_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART2_RI,
+    .rx_full_callback = &USART2_RxFull_IrqCallback,
     .dma = {
-        .dma_periph = USART2_TX_DMA_UNIT,
-        .dma_tx_ch = USART2_TX_DMA_CH,
-        .dma_tx_tc_int_src = USART2_TX_DMA_TC_INT_SRC,
-        .dma_tx_tc_flag = USART2_TX_DMA_TC_FLAG,
-        .dma_tx_tc_irq = USART2_TX_DMA_TC_IRQn,
-        .dma_tx_trig_sel = USART2_TX_DMA_TRIG_SEL,
-        .dma_tx_trig_evt_src = USART2_TX_DMA_TRIG_EVT_SRC,
-        .dma_tx_tc_int = USART2_TX_DMA_TC_INT,
         // .dma_rx_ch = DMA_CH0,
         // .dma_rx_tc_int = DMA_INT_TC_CH0,
         // .dma_rx_reconfig_trig_sel = AOS_DMA_RC,
@@ -100,6 +122,18 @@ static struct hc32_uart uart2 = {
         // .dma_rx_trig_sel = AOS_DMA1_0,
         // .dma_rx_trig_evt_src = EVT_SRC_USART2_RI,
         // .dma_rx_tc_int_src = INT_SRC_DMA1_TC0,
+        .dma_periph = USART2_TX_DMA_UNIT,
+        .dma_tx_ch = USART2_TX_DMA_CH,
+        .dma_tx_tc_irq = USART2_TX_DMA_TC_IRQn,
+        .dma_tx_tc_int_src = USART2_TX_DMA_TC_INT_SRC,
+        .dma_tx_tc_callback = &USART2_TX_DMA_TC_IrqCallback,
+        .dma_tx_tc_flag = USART2_TX_DMA_TC_FLAG,
+        .dma_tx_trig_sel = USART2_TX_DMA_TRIG_SEL,
+        .dma_tx_trig_evt_src = USART2_TX_DMA_TRIG_EVT_SRC,
+        .dma_tx_tc_int = USART2_TX_DMA_TC_INT,
+        .tx_cplt_irq = USART2_TX_CPLT_IRQn,
+        .tx_cplt_int_src = INT_SRC_USART2_TCI,
+        .tx_cplt_callback = &USART2_TxComplete_IrqCallback,
     }
 };
 
@@ -172,7 +206,7 @@ static void dma_tx_config(struct hc32_uart* uart)
 {
     int32_t i32Ret;
     stc_dma_init_t stcDmaInit;
-    stc_irq_signin_config_t stcIrqSignConfig;
+    stc_irq_signin_config_t stcIrqSigninConfig;
 
     /* USART_TX_DMA */
     (void)DMA_StructInit(&stcDmaInit);
@@ -186,19 +220,56 @@ static void dma_tx_config(struct hc32_uart* uart)
     stcDmaInit.u32DestAddrInc = DMA_DEST_ADDR_FIX;
     i32Ret = DMA_Init(uart->dma.dma_periph, uart->dma.dma_tx_ch, &stcDmaInit);
     if (LL_OK == i32Ret) {
-        stcIrqSignConfig.enIntSrc = uart->dma.dma_tx_tc_int_src;
-        stcIrqSignConfig.enIRQn = uart->dma.dma_tx_tc_irq;
-        stcIrqSignConfig.pfnCallback = &USART2_TX_DMA_TC_IrqCallback;
-        (void)INTC_IrqSignIn(&stcIrqSignConfig);
-        NVIC_ClearPendingIRQ(stcIrqSignConfig.enIRQn);
-        NVIC_SetPriority(stcIrqSignConfig.enIRQn, DDL_IRQ_PRIO_DEFAULT);
-        NVIC_EnableIRQ(stcIrqSignConfig.enIRQn);
+        /* Register TX complete IRQ handler && configure NVIC. */
+        stcIrqSigninConfig.enIRQn = uart->dma.tx_cplt_irq;
+        stcIrqSigninConfig.enIntSrc = uart->dma.tx_cplt_int_src;
+        stcIrqSigninConfig.pfnCallback = uart->dma.tx_cplt_callback;
+        INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
+
+        /* Register DMA Tx Cplt IRQ handler && configure NVIC. */
+        stcIrqSigninConfig.enIRQn = uart->dma.dma_tx_tc_irq;
+        stcIrqSigninConfig.enIntSrc = uart->dma.dma_tx_tc_int_src;
+        stcIrqSigninConfig.pfnCallback = uart->dma.dma_tx_tc_callback;
+        INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
 
         AOS_SetTriggerEventSrc(uart->dma.dma_tx_trig_sel, uart->dma.dma_tx_trig_evt_src);
 
         DMA_Cmd(uart->dma.dma_periph, ENABLE);
         DMA_TransCompleteIntCmd(uart->dma.dma_periph, uart->dma.dma_tx_tc_int, ENABLE);
     }
+}
+
+static void close_usart(struct serial_device* serial)
+{
+    struct hc32_uart* uart = (struct hc32_uart*)serial->parent.user_data;
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_INT_RX) {
+        /* disable int rx irq */
+        NVIC_ClearPendingIRQ(uart->rx_err_irq);
+        NVIC_DisableIRQ(uart->rx_err_irq);
+
+        NVIC_ClearPendingIRQ(uart->rx_full_irq);
+        NVIC_DisableIRQ(uart->rx_full_irq);
+    }
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_DMA_RX) {
+        /* disable dma rx irq and disable rx dma */
+    }
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_DMA_TX) {
+        /* disable dma tx irq and disable tx dma */
+        NVIC_ClearPendingIRQ(uart->dma.dma_tx_tc_irq);
+        NVIC_DisableIRQ(uart->dma.dma_tx_tc_irq);
+
+        NVIC_ClearPendingIRQ(uart->dma.tx_cplt_irq);
+        NVIC_DisableIRQ(uart->dma.tx_cplt_irq);
+
+        DMA_ChCmd(uart->dma.dma_periph, uart->dma.dma_tx_ch, DISABLE);
+        DMA_Cmd(uart->dma.dma_periph, DISABLE);
+        DMA_TransCompleteIntCmd(uart->dma.dma_periph, uart->dma.dma_tx_tc_int, DISABLE);
+    }
+
+    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_INT_TX_CPLT | USART_RX | USART_INT_RX), DISABLE);
 }
 
 static void dma_rx_config(struct hc32_uart* uart, rt_uint8_t* buf, rt_size_t size)
@@ -315,27 +386,44 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
     switch (cmd) {
     case RT_DEVICE_CTRL_CLR_INT:
         if (ctrl_arg == RT_DEVICE_FLAG_INT_RX) {
+            NVIC_ClearPendingIRQ(uart->rx_err_irq);
+            NVIC_DisableIRQ(uart->rx_err_irq);
+
+            NVIC_ClearPendingIRQ(uart->rx_full_irq);
+            NVIC_DisableIRQ(uart->rx_full_irq);
         }
         break;
 
     case RT_DEVICE_CTRL_SET_INT:
         if (ctrl_arg == RT_DEVICE_FLAG_INT_RX) {
+            stc_irq_signin_config_t stcIrqSigninConfig;
+
+            /* Register RX error IRQ handler && configure NVIC. */
+            stcIrqSigninConfig.enIRQn = uart->rx_err_irq;
+            stcIrqSigninConfig.enIntSrc = uart->rx_err_int_src;
+            stcIrqSigninConfig.pfnCallback = uart->rx_err_callback;
+            INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
+
+            /* Register RX full IRQ handler && configure NVIC. */
+            stcIrqSigninConfig.enIRQn = uart->rx_full_irq;
+            stcIrqSigninConfig.enIntSrc = uart->rx_full_int_src;
+            stcIrqSigninConfig.pfnCallback = uart->rx_full_callback;
+            INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
         }
         break;
 
         /* USART DMA config */
     case RT_DEVICE_CTRL_CONFIG:
         if (ctrl_arg == RT_DEVICE_FLAG_DMA_TX) {
-            struct hc32_uart* uart = (struct hc32_uart*)serial->parent.user_data;
-
             /* the USART_TX cmd will be enabled when dma configured */
             USART_FuncCmd(uart->uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
-
+            /* configure dma tx */
             dma_tx_config(uart);
         }
         break;
 
     case RT_DEVICE_CTRL_SUSPEND:
+        close_usart(serial);
         break;
 
     default:
@@ -403,8 +491,6 @@ static const struct usart_ops __usart_ops = {
 
 static void uart_peripheral_init(void)
 {
-    stc_irq_signin_config_t stcIrqSigninConfig;
-
     /* MCU Peripheral registers write unprotected */
     // LL_PERIPH_WE(LL_PERIPH_ALL);
 
@@ -413,7 +499,7 @@ static void uart_peripheral_init(void)
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_DMA2, ENABLE);
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_AOS, ENABLE);
 
-    /* USART6 Init */
+    /**** USART5 Init ****/
     /* Configure USART RX/TX pin. */
     GPIO_SetFunc(GPIO_PORT_C, GPIO_PIN_12, GPIO_FUNC_20); // USART5-TX
     GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_02, GPIO_FUNC_20); // USART5-RX
@@ -421,41 +507,11 @@ static void uart_peripheral_init(void)
     /* Enable USART5 clock */
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART5, ENABLE);
 
-    /* Register RX error IRQ handler && configure NVIC. */
-    stcIrqSigninConfig.enIRQn = USART5_RX_ERR_IRQn;
-    stcIrqSigninConfig.enIntSrc = INT_SRC_USART5_EI;
-    stcIrqSigninConfig.pfnCallback = &USART5_RxError_IrqCallback;
-    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
-
-    /* Register RX full IRQ handler && configure NVIC. */
-    stcIrqSigninConfig.enIRQn = USART5_RX_FULL_IRQn;
-    stcIrqSigninConfig.enIntSrc = INT_SRC_USART5_RI;
-    stcIrqSigninConfig.pfnCallback = &USART5_RxFull_IrqCallback;
-    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
-
-    /* USART2 Init */
+    /**** USART2 Init ****/
     GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_05, GPIO_FUNC_20); // USART2-TX
     GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_06, GPIO_FUNC_20); // USART2-RX
 
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART2, ENABLE);
-
-    /* Register RX error IRQ handler && configure NVIC. */
-    stcIrqSigninConfig.enIRQn = USART2_RX_ERR_IRQn;
-    stcIrqSigninConfig.enIntSrc = INT_SRC_USART2_EI;
-    stcIrqSigninConfig.pfnCallback = &USART2_RxError_IrqCallback;
-    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
-
-    /* Register RX full IRQ handler && configure NVIC. */
-    stcIrqSigninConfig.enIRQn = USART2_RX_FULL_IRQn;
-    stcIrqSigninConfig.enIntSrc = INT_SRC_USART2_RI;
-    stcIrqSigninConfig.pfnCallback = &USART2_RxFull_IrqCallback;
-    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
-
-    /* Register TX complete IRQ handler && configure NVIC. */
-    stcIrqSigninConfig.enIRQn = USART2_TX_CPLT_IRQn;
-    stcIrqSigninConfig.enIntSrc = INT_SRC_USART2_TCI;
-    stcIrqSigninConfig.pfnCallback = &USART2_TxComplete_IrqCallback;
-    INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
 
     /* MCU Peripheral registers write protected */
     // LL_PERIPH_WP(LL_PERIPH_ALL);

@@ -46,9 +46,8 @@ static rt_size_t serial_poll_rx(struct serial_device* serial, rt_uint8_t* data, 
     rx_length = size - length;
 
     /* invoke callback */
-    if (serial->parent.rx_indicate != RT_NULL && rx_length) {
+    if (serial->parent.rx_indicate != RT_NULL && rx_length > 0)
         serial->parent.rx_indicate(&serial->parent, rx_length);
-    }
 
     return rx_length;
 }
@@ -337,11 +336,11 @@ static rt_err_t hal_serial_open(struct rt_device* dev, rt_uint16_t oflag)
 
             /* create rx fifo to store received rx data */
             rx_fifo = (struct serial_rx_fifo*)rt_malloc(sizeof(struct serial_rx_fifo) + serial->config.bufsz);
-            if(rx_fifo == RT_NULL) {
+            if (rx_fifo == RT_NULL) {
                 HAL_DBG("serial rx fifo create error\n");
                 return RT_ENOMEM;
             }
-            
+
             rx_fifo->buffer = (rt_uint8_t*)(rx_fifo + 1);
             rt_memset(rx_fifo->buffer, 0, serial->config.bufsz);
             rx_fifo->put_index = 0;
@@ -436,6 +435,8 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
                                  rt_size_t size)
 {
     struct serial_device* serial;
+    rt_size_t rx_cnt = 0;
+    rt_int32_t timeout = pos;
 
     if (size == 0) {
         return 0;
@@ -452,9 +453,6 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
     serial = (struct serial_device*)dev;
 
     if (dev->open_flag & RT_DEVICE_FLAG_DMA_RX) {
-        rt_size_t rx_cnt = 0;
-        rt_int32_t timeout = pos;
-
         /* try to read data */
         rx_cnt = serial_dma_rx(serial, buffer, size);
 
@@ -483,9 +481,6 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
 
         return rx_cnt;
     } else if (dev->open_flag & RT_DEVICE_FLAG_INT_RX) {
-        rt_size_t rx_cnt = 0;
-        rt_int32_t timeout = pos;
-
         /* try to read data */
         rx_cnt = serial_int_rx(serial, buffer, size);
 
@@ -514,7 +509,29 @@ static rt_size_t hal_serial_read(struct rt_device* dev,
 
         return rx_cnt;
     } else {
-        return serial_poll_rx(serial, buffer, size);
+        /* try to read data */
+        rx_cnt = serial_poll_rx(serial, buffer, size);
+
+        /* if timeout is not 0, then check if required length data read */
+        if (timeout != 0) {
+            uint32_t time_start = systime_now_ms();
+
+            /* if not enough data reveived, wait it */
+            while (rx_cnt < size) {
+                if (timeout > 0) {
+                    if ((systime_now_ms() - time_start) >= timeout) {
+                        /* timeout */
+                        break;
+                    }
+                }
+                /* read rest data */
+                rx_cnt += serial_poll_rx(serial, (void*)((uint32_t)buffer + rx_cnt), size - rx_cnt);
+                /* sleep to do not block the system */
+                sys_msleep(1);
+            }
+        }
+
+        return rx_cnt;
     }
 }
 
