@@ -24,7 +24,7 @@ MODULES = [
 MODULES += [
     'syscmd/optparse.c',
     'syscmd/syscmd.c',
-    # 'syscmd/cmd_ps.c',
+    'syscmd/cmd_ps.c',
     # 'syscmd/cmd_test.c',
     # 'syscmd/cmd_param.c',
     # 'syscmd/cmd_boot_log.c',

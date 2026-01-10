@@ -216,7 +216,7 @@ static int list_thread(void)
                     while (*ptr == '#')
                         ptr++;
 
-                    printf(" 0x%08x 0x%08x    %02d%%   0x%08x %03d   %.2f%%\n",
+                    printf(" 0x%08lx 0x%08x    %02ld%%   0x%08lx %03ld   %.2f%%\n",
                            thread->stack_size + ((rt_ubase_t)thread->stack_addr - (rt_ubase_t)thread->sp),
                            thread->stack_size,
                            (thread->stack_size - ((rt_ubase_t)ptr - (rt_ubase_t)thread->stack_addr)) * 100

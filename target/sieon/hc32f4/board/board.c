@@ -332,8 +332,8 @@ void bsp_early_initialize(void)
     // /* init remote controller driver */
     // RT_CHECK(drv_rc_init());
 
-    // /* system statistic module */
-    // FMT_CHECK(sys_stat_init());
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
 }
 
 /* this function will be called after rtos start, which is in thread context */
