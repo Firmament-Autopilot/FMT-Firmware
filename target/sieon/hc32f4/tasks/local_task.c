@@ -26,7 +26,7 @@ static void task_entry(void* parameter)
 {
     rt_device_t dev = rt_device_find("serial2");
 
-    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_TX | RT_DEVICE_FLAG_INT_RX);
+    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_TX);
 
     /* main loop */
     while (1) {

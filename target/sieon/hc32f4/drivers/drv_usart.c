@@ -250,6 +250,8 @@ static void close_usart(struct serial_device* serial)
 
         NVIC_ClearPendingIRQ(uart->rx_full_irq);
         NVIC_DisableIRQ(uart->rx_full_irq);
+
+        USART_FuncCmd(uart->uart_periph, USART_INT_RX, DISABLE);
     }
 
     if (serial->parent.open_flag & RT_DEVICE_FLAG_DMA_RX) {
@@ -268,8 +270,6 @@ static void close_usart(struct serial_device* serial)
         DMA_Cmd(uart->dma.dma_periph, DISABLE);
         DMA_TransCompleteIntCmd(uart->dma.dma_periph, uart->dma.dma_tx_tc_int, DISABLE);
     }
-
-    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_INT_TX_CPLT | USART_RX | USART_INT_RX), DISABLE);
 }
 
 static void dma_rx_config(struct hc32_uart* uart, rt_uint8_t* buf, rt_size_t size)
@@ -368,7 +368,7 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     USART_UART_Init(uart->uart_periph, &stcUartInit, NULL);
 
     /* Enable USART_TX | USART_RX function */
-    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX | USART_INT_RX), ENABLE);
+    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX), ENABLE);
 
     // LL_PERIPH_WP(LL_PERIPH_ALL);
 
@@ -391,6 +391,8 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
 
             NVIC_ClearPendingIRQ(uart->rx_full_irq);
             NVIC_DisableIRQ(uart->rx_full_irq);
+
+            USART_FuncCmd(uart->uart_periph, USART_INT_RX, DISABLE);
         }
         break;
 
@@ -409,6 +411,8 @@ static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg)
             stcIrqSigninConfig.enIntSrc = uart->rx_full_int_src;
             stcIrqSigninConfig.pfnCallback = uart->rx_full_callback;
             INTC_IrqInstalHandler(&stcIrqSigninConfig, DDL_IRQ_PRIO_DEFAULT);
+
+            USART_FuncCmd(uart->uart_periph, USART_INT_RX, ENABLE);
         }
         break;
 
