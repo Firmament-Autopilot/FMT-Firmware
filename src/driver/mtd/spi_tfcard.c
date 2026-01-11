@@ -1,7 +1,22 @@
+/******************************************************************************
+ * Copyright The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
 #include <firmament.h>
 
 #include "hal/spi/spi.h"
-#include "hal/spi_msd/spi_msd.h"
+#include "hal/sd/spi_sd.h"
 
 static rt_device_t tfcard_spi_dev;
 
@@ -28,5 +43,5 @@ rt_err_t drv_spi_tfcard_init(const char* spi_device_name, const char* tfcard_dev
     /* init spi bus */
     RT_TRY(rt_device_open(tfcard_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    return hal_spi_msd_register(tfcard_device_name, spi_device_name);
+    return hal_spi_sd_register(tfcard_device_name, spi_device_name);
 }

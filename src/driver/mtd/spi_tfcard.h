@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,10 @@
 #ifndef SPI_TFCARD_H__
 #define SPI_TFCARD_H__
 
-#include <rtthread.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// rt_err_t drv_spi_tfcard_init(const char* tfcard_device_name, const char* spi_device_name);
 rt_err_t drv_spi_tfcard_init(const char* spi_device_name, const char* tfcard_device_name);
 
 #ifdef __cplusplus

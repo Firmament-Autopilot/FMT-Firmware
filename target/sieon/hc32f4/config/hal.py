@@ -5,7 +5,7 @@ HAL = [
     'systick/*.c',
     # 'sd/*.c',
     'mtd/*.c',
-    'spi_msd/*.c',
+    'sd/spi_sd.c',
     # 'usb/usbd_cdc.c',
     # 'pin/*.c',
     'spi/*.c',
