@@ -8,7 +8,8 @@ DRIVERS = [
     # 'mag/bmm150.c',
     # 'mag/qmc5883l.c',
     # 'airspeed/ms4525.c',
-    # 'mtd/gd25qxx.c',
+    'mtd/gd25qxx.c',
+    'mtd/spi_tfcard.c',
     # 'range_finder/tofsense.c',
 ]
 

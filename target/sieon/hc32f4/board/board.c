@@ -34,7 +34,8 @@
 // #include "driver/imu/icm42688p.h"
 // #include "driver/mag/bmm150.h"
 // #include "driver/mag/qmc5883l.h"
-// #include "driver/mtd/gd25qxx.h"
+#include "driver/mtd/gd25qxx.h"
+#include "driver/mtd/spi_tfcard.h"
 // #include "driver/range_finder/tofsense.h"
 // #include "drv_adc.h"
 // #include "drv_eth.h"
@@ -44,7 +45,7 @@
 // #include "drv_pwm.h"
 // #include "drv_rc.h"
 // #include "drv_sdio.h"
-// #include "drv_spi.h"
+#include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 // #include "drv_usbd_cdc.h"
@@ -85,8 +86,8 @@
 #define SYS_INIT_SCRIPT "/sys/init.sh"
 
 static const struct dfs_mount_tbl mnt_table[] = {
-    // { "sd0", "/", "elm", 0, NULL },
-    // { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
+    { "sd0", "/", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
@@ -320,8 +321,8 @@ void bsp_early_initialize(void)
     // /* i2c driver init */
     // RT_CHECK(drv_i2c_init());
 
-    // /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
 
     // /* pwm driver init */
     // RT_CHECK(drv_pwm_init());
@@ -353,7 +354,8 @@ void bsp_initialize(void)
 
 //     /* init storage devices */
 //     RT_CHECK(drv_sdio_init());
-//     RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
+    drv_spi_tfcard_init("spi2_dev0", "sd0");
+    RT_CHECK(drv_gd25qxx_init("spi2_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 

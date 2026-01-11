@@ -1,0 +1,413 @@
+/******************************************************************************
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+#include "drv_spi.h"
+#include "hal/spi/spi.h"
+
+// #define SPI_USE_DMA
+
+#define EXAMPLE_PERIPH_WE    (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
+#define EXAMPLE_PERIPH_WP    (LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_SRAM)
+
+#define EXAMPLE_SPI_BUF_LEN  (128UL)
+// static char u8TxBuf[EXAMPLE_SPI_BUF_LEN] = "SPI Master/Slave example: Communication between two boards!";
+// static char u8RxBuf[EXAMPLE_SPI_BUF_LEN];
+
+/* SPI communication timeout */
+#define SPI_COMM_TIMEOUT_VAL (0x20000000UL)
+#define SPI_CLK_BASE         (120000UL)
+
+struct hc32_spi_bus {
+    struct rt_spi_bus parent;
+    CM_SPI_TypeDef* spi_periph;
+    struct rt_spi_configuration bus_config;
+#ifdef SPI_USE_DMA
+    // TODO
+#endif
+};
+
+struct hc32_spi_cs {
+    uint32_t gpio_port;
+    uint32_t pin;
+};
+
+/**
+ * @brief Configure spi device
+ *
+ * @param device SPI device
+ * @param configuration SPI device configuration
+ * @return rt_err_t RT_EOK for success
+ */
+static rt_err_t configure(struct rt_spi_device* device,
+                          struct rt_spi_configuration* configuration)
+{
+    stc_spi_init_t stcSpiInit;
+    struct hc32_spi_bus* hc32_spi_bus = (struct hc32_spi_bus*)device->bus;
+    SPI_StructInit(&stcSpiInit);
+
+    if (hc32_spi_bus->bus_config.mode == configuration->mode
+        && hc32_spi_bus->bus_config.data_width == configuration->data_width
+        && hc32_spi_bus->bus_config.max_hz == configuration->max_hz) {
+        /* same configuration, do not need re-configure */
+        return RT_EOK;
+    }
+
+    if (configuration->data_width <= 8) {
+        stcSpiInit.u32DataBits = SPI_DATA_SIZE_8BIT;
+        // spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT;
+    } else if (configuration->data_width <= 16) {
+        stcSpiInit.u32DataBits = SPI_DATA_SIZE_16BIT;
+    } else {
+        return RT_EIO;
+    }
+
+    /* CPOL */
+    if (configuration->mode & RT_SPI_CPOL) {
+        /* CPHA */
+        if (configuration->mode & RT_SPI_CPHA) {
+            stcSpiInit.u32SpiMode = SPI_MD_3;
+            // spi_init_struct.clock_polarity_phase = SPI_CK_PL_HIGH_PH_2EDGE;
+        } else {
+            stcSpiInit.u32SpiMode = SPI_MD_2;
+            // spi_init_struct.clock_polarity_phase = SPI_CK_PL_HIGH_PH_1EDGE;
+        }
+    } else {
+        /* CPHA */
+        if (configuration->mode & RT_SPI_CPHA) {
+            stcSpiInit.u32SpiMode = SPI_MD_1;
+            // spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_2EDGE;
+        } else {
+            stcSpiInit.u32SpiMode = SPI_MD_0;
+            // spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;
+        }
+    }
+
+    /* MSB or LSB */
+    if (configuration->mode & RT_SPI_MSB) {
+        stcSpiInit.u32FirstBit = SPI_FIRST_MSB;
+        // spi_init_struct.endian = SPI_ENDIAN_MSB;
+    } else {
+        stcSpiInit.u32FirstBit = SPI_FIRST_LSB;
+        // spi_init_struct.endian = SPI_ENDIAN_LSB;
+    }
+    stcSpiInit.u32BaudRatePrescaler = SPI_BR_CLK_DIV32; // SPI_BR_CLK_DIV64;//SPI_BR_CLK_DIV32;//SPI_BR_CLK_DIV256;//
+    
+    if (hc32_spi_bus->spi_periph == CM_SPI1) {
+        SPI_Cmd(CM_SPI1, DISABLE);
+        /* Configuration SPI */
+        FCG_Fcg1PeriphClockCmd(FCG1_PERIPH_SPI1, ENABLE);
+        stcSpiInit.u32WireMode = SPI_3_WIRE; // SPI_4_WIRE;
+        stcSpiInit.u32TransMode = SPI_FULL_DUPLEX;
+        stcSpiInit.u32MasterSlave = SPI_MASTER;
+        stcSpiInit.u32Parity = SPI_PARITY_INVD;
+        // stcSpiInit.u32BaudRatePrescaler = SPI_BR_CLK_DIV256;//
+        // stcSpiInit.u32SpiMode           = SPI_MD_1;
+        // stcSpiInit.u32BaudRatePrescaler = SPI_BR_CLK_DIV32;
+        // stcSpiInit.u32DataBits          = SPI_DATA_SIZE_8BIT;
+        // stcSpiInit.u32FirstBit          = SPI_FIRST_MSB;
+        stcSpiInit.u32FrameLevel = SPI_1_FRAME;
+        (void)SPI_Init(CM_SPI1, &stcSpiInit);
+        SPI_Cmd(CM_SPI1, ENABLE);
+
+    } else if (hc32_spi_bus->spi_periph == CM_SPI2) {
+        SPI_Cmd(CM_SPI2, DISABLE);
+        /* Configuration SPI */
+        FCG_Fcg1PeriphClockCmd(FCG1_PERIPH_SPI2, ENABLE);
+        stcSpiInit.u32WireMode = SPI_3_WIRE; // SPI_4_WIRE;
+        stcSpiInit.u32TransMode = SPI_FULL_DUPLEX;
+        stcSpiInit.u32MasterSlave = SPI_MASTER;
+        stcSpiInit.u32Parity = SPI_PARITY_INVD;
+        // stcSpiInit.u32BaudRatePrescaler = SPI_BR_CLK_DIV256;//
+        // stcSpiInit.u32SpiMode           = SPI_MD_1;
+        // stcSpiInit.u32BaudRatePrescaler = SPI_BR_CLK_DIV32;
+        // stcSpiInit.u32DataBits          = SPI_DATA_SIZE_8BIT;
+        // stcSpiInit.u32FirstBit          = SPI_FIRST_MSB;
+        stcSpiInit.u32FrameLevel = SPI_1_FRAME;
+        (void)SPI_Init(CM_SPI2, &stcSpiInit);
+        SPI_Cmd(CM_SPI2, ENABLE);
+    }else{
+        return RT_EINVAL;
+    }
+
+    /* update SPI bus configuration */
+    hc32_spi_bus->bus_config = *configuration;
+
+    return RT_EOK;
+}
+uint32_t spi_flag_get(CM_SPI_TypeDef* spix, uint32_t u32FlagMask)
+{
+    return READ_REG32_BIT(spix->SR, u32FlagMask);
+}
+
+void spi_data_write(CM_SPI_TypeDef* spix, rt_uint8_t data)
+{
+    WRITE_REG32(spix->DR, data);
+}
+
+uint8_t spd_data_read(CM_SPI_TypeDef* spix)
+{
+    return (uint8_t)spix->DR;
+}
+
+/**
+ * @brief SPI transfer function
+ *
+ * @param device SPI device instance
+ * @param message SPI message to be transfered
+ * @return rt_uint32_t bytes have been transfered
+ */
+static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message* message)
+{
+    struct hc32_spi_bus* hc32_spi_bus = (struct hc32_spi_bus*)device->bus;
+    struct rt_spi_configuration* config = &device->config;
+    struct hc32_spi_cs* hc32_spi_cs = (struct hc32_spi_cs*)device->parent.user_data;
+    rt_uint32_t size = message->length;
+
+    /* take CS */
+    if (message->cs_take) {
+        GPIO_ResetPins(hc32_spi_cs->gpio_port, hc32_spi_cs->pin);
+        // gpio_bit_reset(hc32_spi_cs->gpio_port, hc32_spi_cs->pin);
+    }
+
+#ifdef SPI_USE_DMA
+    #error Not support SPI DMA.
+#endif
+
+    {
+        if (config->data_width <= 8) {
+            const rt_uint8_t* send_ptr = message->send_buf;
+            rt_uint8_t* recv_ptr = message->recv_buf;
+
+            while (size--) {
+                rt_uint8_t data = 0xFF;
+
+                if (send_ptr != RT_NULL) {
+                    data = *send_ptr++;
+                }
+
+                /* Wait until the transmit buffer is empty */
+                // while (RESET == spi_i2s_flag_get(gd32_spi_bus->spi_periph, SPI_FLAG_TBE))
+                //     ;
+
+                while (spi_flag_get(hc32_spi_bus->spi_periph, SPI_FLAG_TX_BUF_EMPTY) != SPI_FLAG_TX_BUF_EMPTY)
+                    ;
+
+                /* Send the byte */
+                // spi_i2s_data_transmit(gd32_spi_bus->spi_periph, data);
+                spi_data_write(hc32_spi_bus->spi_periph, data);
+
+                /* Wait until a data is received */
+                // while (RESET == spi_i2s_flag_get(gd32_spi_bus->spi_periph, SPI_FLAG_RBNE))
+                //     ;
+                while (spi_flag_get(hc32_spi_bus->spi_periph, SPI_FLAG_RX_BUF_FULL) != SPI_FLAG_RX_BUF_FULL)
+                    ;
+
+                /* Get the received data */
+                // data = spi_i2s_data_receive(hc32_spi_bus->spi_periph);
+                data = spd_data_read(hc32_spi_bus->spi_periph);
+
+                if (recv_ptr != RT_NULL) {
+                    *recv_ptr++ = data;
+                }
+            }
+        } else if (config->data_width <= 16) {
+            const rt_uint16_t* send_ptr = message->send_buf;
+            rt_uint16_t* recv_ptr = message->recv_buf;
+
+            while (size--) {
+                rt_uint16_t data = 0xFFFF;
+
+                if (send_ptr != RT_NULL) {
+                    data = *send_ptr++;
+                }
+
+                /* Wait until the transmit buffer is empty */
+                // while (RESET == spi_i2s_flag_get(gd32_spi_bus->spi_periph, SPI_FLAG_TBE))
+                //     ;
+                while (spi_flag_get(hc32_spi_bus->spi_periph, SPI_FLAG_TX_BUF_EMPTY) != SPI_FLAG_TX_BUF_EMPTY)
+                    ;
+
+                /* Send the byte */
+                // spi_i2s_data_transmit(gd32_spi_bus->spi_periph, data);
+                spi_data_write(hc32_spi_bus->spi_periph, data);
+
+                /* Wait until a data is received */
+                // while (RESET == spi_i2s_flag_get(gd32_spi_bus->spi_periph, SPI_FLAG_RBNE))
+                //     ;
+                while (spi_flag_get(hc32_spi_bus->spi_periph, SPI_FLAG_RX_BUF_FULL) != SPI_FLAG_RX_BUF_FULL)
+                    ;
+
+                /* Get the received data */
+                // data = spi_i2s_data_receive(gd32_spi_bus->spi_periph);
+                data = spd_data_read(hc32_spi_bus->spi_periph);
+
+                if (recv_ptr != RT_NULL) {
+                    *recv_ptr++ = data;
+                }
+            }
+        }
+    }
+
+    /* release CS */
+    if (message->cs_release) {
+        // gpio_bit_set(gd32_spi_cs->gpio_port, gd32_spi_cs->pin);
+        GPIO_SetPins(hc32_spi_cs->gpio_port, hc32_spi_cs->pin);
+    }
+
+    return message->length;
+}
+
+static struct rt_spi_ops hc32_spi_ops = {
+    configure,
+    transfer
+};
+
+/** \brief init and register hc32 spi bus.
+ *
+ * \param SPI: HC32 SPI, e.g: SPI1,SPI2,SPI3.
+ * \param stm32_spi: stm32 spi bus struct.
+ * \param spi_bus_name: spi bus name, e.g: "spi1"
+ * \return rt_err_t RT_EOK for success
+ */
+
+static rt_err_t hc32_spi_register(CM_SPI_TypeDef * spi_periph,
+                                  struct hc32_spi_bus* hc32_spi,
+                                  const char* spi_bus_name)
+{
+
+    stc_gpio_init_t stcGpioInit;
+
+    LL_PERIPH_WE(EXAMPLE_PERIPH_WE);
+
+    if (spi_periph == CM_SPI1) {
+
+        hc32_spi->spi_periph = CM_SPI1;
+
+        (void)GPIO_StructInit(&stcGpioInit);
+        stcGpioInit.u16PinDrv = PIN_HIGH_DRV;
+        stcGpioInit.u16PinInputType = PIN_IN_TYPE_CMOS;
+        // (void)GPIO_Init(GPIO_PORT_C, GPIO_PIN_06, &stcGpioInit);
+        // (void)GPIO_Init(GPIO_PORT_D, GPIO_PIN_15, &stcGpioInit);
+        // (void)GPIO_Init(GPIO_PORT_D, GPIO_PIN_14, &stcGpioInit);
+        (void)GPIO_Init(GPIO_PORT_A, GPIO_PIN_05, &stcGpioInit);
+        (void)GPIO_Init(GPIO_PORT_B, GPIO_PIN_04, &stcGpioInit);
+        (void)GPIO_Init(GPIO_PORT_B, GPIO_PIN_05, &stcGpioInit);
+
+        /* Configure Port */
+        // GPIO_SetFunc(GPIO_PORT_C, GPIO_PIN_06, GPIO_FUNC_40);
+        // GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_15, GPIO_FUNC_42);
+        // GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_14, GPIO_FUNC_41);
+
+        GPIO_SetFunc(GPIO_PORT_A, GPIO_PIN_05, GPIO_FUNC_40); // SPI1-SCK
+        GPIO_SetDebugPort(GPIO_PIN_TRST, DISABLE);
+        GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_04, GPIO_FUNC_42); // SPI1-MISO
+        GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_05, GPIO_FUNC_41); // SPI1-MOSI
+
+    } else if (spi_periph == CM_SPI2) {
+
+        hc32_spi->spi_periph = CM_SPI2;
+
+        (void)GPIO_StructInit(&stcGpioInit);
+        stcGpioInit.u16PinDrv = PIN_HIGH_DRV;
+        stcGpioInit.u16PinInputType = PIN_IN_TYPE_CMOS;
+        // (void)GPIO_Init(GPIO_PORT_D, GPIO_PIN_11, &stcGpioInit);
+        // (void)GPIO_Init(GPIO_PORT_D, GPIO_PIN_10, &stcGpioInit);
+        // (void)GPIO_Init(GPIO_PORT_D, GPIO_PIN_09, &stcGpioInit);
+        (void)GPIO_Init(GPIO_PORT_B, GPIO_PIN_10, &stcGpioInit);
+        (void)GPIO_Init(GPIO_PORT_B, GPIO_PIN_14, &stcGpioInit);
+        (void)GPIO_Init(GPIO_PORT_B, GPIO_PIN_15, &stcGpioInit);
+
+        /* Configure Port */
+        // GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_11, GPIO_FUNC_46);
+        // GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_10, GPIO_FUNC_48);
+        // GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_09, GPIO_FUNC_47);
+
+        GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_10, GPIO_FUNC_19); // SPI2-SCK
+        GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_14, GPIO_FUNC_45); // SPI2-MISO
+        GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_15, GPIO_FUNC_44); // SPI2-MOSI
+    } else {
+        return RT_ENOSYS;
+    }
+
+    LL_PERIPH_WP(EXAMPLE_PERIPH_WP);
+    return rt_spi_bus_register(&hc32_spi->parent, spi_bus_name, &hc32_spi_ops);
+}
+
+/**
+ * @brief Initialize spi bus and device
+ *
+ * @return rt_err_t RT_EOK for success
+ */
+rt_err_t drv_spi_init(void)
+{
+    static struct hc32_spi_bus hc32_spi1;
+    static struct hc32_spi_bus hc32_spi2;
+    stc_gpio_init_t stcGpioInit;
+
+    LL_PERIPH_WE(EXAMPLE_PERIPH_WE);
+
+    RT_TRY(hc32_spi_register(CM_SPI1, &hc32_spi1, "spi1"));
+    /* attach spi_device_0 (SH5001 ACCEL/GYRO) to spi1 */
+    {
+        static struct rt_spi_device rt_spi1_dev0;
+        static struct hc32_spi_cs spi1_cs0 = { .gpio_port = GPIO_PORT_E, .pin = GPIO_PIN_05 };
+
+        (void)GPIO_StructInit(&stcGpioInit);
+        stcGpioInit.u16PinDir = PIN_DIR_OUT;
+        stcGpioInit.u16PinOutputType = PIN_OUT_TYPE_CMOS;
+        GPIO_Init(spi1_cs0.gpio_port, spi1_cs0.pin, &stcGpioInit);
+
+        /* set CS pin by default */
+        GPIO_SetPins(spi1_cs0.gpio_port, spi1_cs0.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev0, "spi1_dev0", "spi1", (void*)&spi1_cs0));
+    }
+
+    RT_TRY(hc32_spi_register(CM_SPI2, &hc32_spi2, "spi2"));
+
+    /* attach spi_device_0 (TF Card) to spi2 */
+    {
+        static struct rt_spi_device rt_spi2_dev0;
+        static struct hc32_spi_cs spi2_cs0 = { .gpio_port = GPIO_PORT_D, .pin = GPIO_PIN_11 };
+
+        (void)GPIO_StructInit(&stcGpioInit);
+        stcGpioInit.u16PinDir = PIN_DIR_OUT;
+        stcGpioInit.u16PinOutputType = PIN_OUT_TYPE_CMOS;
+        GPIO_Init(spi2_cs0.gpio_port, spi2_cs0.pin, &stcGpioInit);
+
+        /* set CS pin by default */
+        GPIO_SetPins(spi2_cs0.gpio_port, spi2_cs0.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi2_dev0, "spi2_dev0", "spi2", (void*)&spi2_cs0));
+    }
+
+    /* attach spi_device_1 (GD25Q16 Flash) to spi2 */
+    {
+        static struct rt_spi_device rt_spi2_dev1;
+        static struct hc32_spi_cs spi2_cs1 = { .gpio_port = GPIO_PORT_D, .pin = GPIO_PIN_10 };
+
+        (void)GPIO_StructInit(&stcGpioInit);
+        stcGpioInit.u16PinDir = PIN_DIR_OUT;
+        stcGpioInit.u16PinOutputType = PIN_OUT_TYPE_CMOS;
+        GPIO_Init(spi2_cs1.gpio_port, spi2_cs1.pin, &stcGpioInit);
+
+        /* set CS pin by default */
+        GPIO_SetPins(spi2_cs1.gpio_port, spi2_cs1.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi2_dev1, "spi2_dev1", "spi2", (void*)&spi2_cs1));
+    }
+
+    return RT_EOK;
+}
