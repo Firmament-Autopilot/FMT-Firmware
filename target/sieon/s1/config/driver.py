@@ -3,6 +3,7 @@
 DRIVERS = [
     'barometer/spl06.c',
     'gps/gps_ubx.c',
+    'gps/gps_nmea.c',
     'imu/bmi088.c',
     'imu/icm42688p.c',
     'mag/bmm150.c',

@@ -427,9 +427,11 @@ void ins_interface_step(uint32_t timestamp)
         INS_U.GPS_uBlox.velN = (int32_t)(ins_handle.gps_report.velN * 1e3);
         INS_U.GPS_uBlox.velE = (int32_t)(ins_handle.gps_report.velE * 1e3);
         INS_U.GPS_uBlox.velD = (int32_t)(ins_handle.gps_report.velD * 1e3);
+        INS_U.GPS_uBlox.heading = (int32_t)(ins_handle.gps_report.heading * 1e3);
         INS_U.GPS_uBlox.hAcc = (uint32_t)(ins_handle.gps_report.hAcc * 1e3);
         INS_U.GPS_uBlox.vAcc = (uint32_t)(ins_handle.gps_report.vAcc * 1e3);
         INS_U.GPS_uBlox.sAcc = (uint32_t)(ins_handle.gps_report.sAcc * 1e3);
+        INS_U.GPS_uBlox.headingAcc = (uint32_t)(ins_handle.gps_report.headingAcc * 1e3);
         INS_U.GPS_uBlox.numSV = ins_handle.gps_report.numSV;
         INS_U.GPS_uBlox.timestamp = timestamp;
 

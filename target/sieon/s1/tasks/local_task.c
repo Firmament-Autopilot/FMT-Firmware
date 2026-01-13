@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright The Firmament Authors. All Rights Reserved.
+ * Copyright 2021-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 
 #include "module/task_manager/task_manager.h"
 
-static fmt_err_t task_init(void)
+fmt_err_t task_local_init(void)
 {
     return FMT_EOK;
 }
 
-static void task_entry(void* parameter)
+void task_local_entry(void* parameter)
 {
     /* main loop */
     while (1) {
@@ -33,11 +33,11 @@ static void task_entry(void* parameter)
 
 // TASK_EXPORT __fmt_task_desc = {
 //     .name = "local",
-//     .init = task_init,
-//     .entry = task_entry,
+//     .init = task_local_init,
+//     .entry = task_local_entry,
 //     .priority = 25,
-//     .auto_start = true,
-//     .stack_size = 4096,
+//     .auto_start = false,
+//     .stack_size = 1024,
 //     .param = NULL,
 //     .dependency = NULL
 // };
