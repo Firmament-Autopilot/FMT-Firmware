@@ -136,29 +136,29 @@ void drv_usbd_cdc_transmist_complete(uint8_t* buffer, uint32_t size)
     hal_usbd_cdc_notify_status(&usbd_dev, USBD_STATUS_TX_COMPLETE);
 }
 
-void usb_dev_user_init(void)
-{
-    usbd_cdc_dev_t usbd = &usbd_dev;
-    // rt_err_t err = RT_EOK;
+// void usb_dev_user_init(void)
+// {
+//     usbd_cdc_dev_t usbd = &usbd_dev;
+//     // rt_err_t err = RT_EOK;
 
-    // RT_ASSERT(dev != RT_NULL);
+//     // RT_ASSERT(dev != RT_NULL);
 
-    usbd->rx_rb = ringbuffer_create(USB_TX_BUF_SIZE);
-    if (usbd->rx_rb == NULL) {
-        return;
-    }
+//     usbd->rx_rb = ringbuffer_create(USB_TX_BUF_SIZE);
+//     if (usbd->rx_rb == NULL) {
+//         return;
+//     }
 
-    usbd->tx_lock = rt_mutex_create("usbd_tx", RT_IPC_FLAG_FIFO);
-    if (usbd->tx_lock == NULL) {
-        return;
-    }
+//     usbd->tx_lock = rt_mutex_create("usbd_tx", RT_IPC_FLAG_FIFO);
+//     if (usbd->tx_lock == NULL) {
+//         return;
+//     }
 
-    if (usbd->ops->dev_init) {
-        usbd->ops->dev_init(usbd);
-    }
-    return;
-    /* Add initial code here */
-}
+//     if (usbd->ops->dev_init) {
+//         usbd->ops->dev_init(usbd);
+//     }
+//     return;
+//     /* Add initial code here */
+// }
 void drv_mbtls_ota_mode_config(void);
 uint8_t ota_cmd_start[] = "ew_nowstart_otakey";
 uint8_t ota_cmd_key[] = { 0xf5, 0x50, 0x73, 0x15, 0xa0, 0x02, 0x57, 0x05, 0x37, 0x51, 0x0a, 0x20 };
@@ -196,26 +196,26 @@ void drv_usbd_cdc_disconnect_cb(void)
  * @param  None
  * @retval None
  */
-void usb_dev_user_conn(void)
-{
-    // drv_usbd_cdc_connect_cb();
-#if (LL_PRINT_ENABLE == DDL_ON)
-    // DDL_Printf(">>USB device connects.\r\n");
-#endif
-}
+// void usb_dev_user_conn(void)
+// {
+//     // drv_usbd_cdc_connect_cb();
+// #if (LL_PRINT_ENABLE == DDL_ON)
+//     // DDL_Printf(">>USB device connects.\r\n");
+// #endif
+// }
 
 /**
  * @brief  USBD_USR_DeviceDisonnected
  * @param  None
  * @retval None
  */
-void usb_dev_user_disconn(void)
-{
-    // drv_usbd_cdc_disconnect_cb();
-#if (LL_PRINT_ENABLE == DDL_ON)
-    // DDL_Printf(">>USB device disconnected.\r\n");
-#endif
-}
+// void usb_dev_user_disconn(void)
+// {
+//     // drv_usbd_cdc_disconnect_cb();
+// #if (LL_PRINT_ENABLE == DDL_ON)
+//     // DDL_Printf(">>USB device disconnected.\r\n");
+// #endif
+// }
 static void usb_rcu_config(void)
 {
 
@@ -271,15 +271,21 @@ static rt_size_t usbd_cdc_write(usbd_cdc_dev_t usbd, rt_off_t pos, const void* b
     uint32_t tx_size = size > APP_TX_DATA_SIZE ? APP_TX_DATA_SIZE : size;
     uint8_t* tx_buffer_ptr = buf;
 
-    for (uint32_t i = 0; i < size; i++) {
-        uart_rx_buffer[APP_Rx_ptr_in++] = tx_buffer_ptr[i];
+    // for (uint32_t i = 0; i < size; i++) {
+    //     uart_rx_buffer[APP_Rx_ptr_in++] = tx_buffer_ptr[i];
 
-        /* To avoid buffer overflow */
-        if (APP_Rx_ptr_in == APP_TX_DATA_SIZE) {
-            APP_Rx_ptr_in = 0U;
-        }
-    }
+    //     /* To avoid buffer overflow */
+    //     if (APP_Rx_ptr_in == APP_TX_DATA_SIZE) {
+    //         APP_Rx_ptr_in = 0U;
+    //     }
+    // }
     // usb_data_send(buf,size);
+    static uint8_t tmp_buffer[256];
+    memcpy(tmp_buffer, buf, size);
+    usb_deveptx(&usb_dev,
+                CDC_IN_EP,
+                tmp_buffer,
+                size);
 
     return tx_size;
 }
