@@ -6,11 +6,12 @@
    Change Logs:
    Date             Author          Notes
    2022-03-31       CDT             First version
+   2024-05-31       CDT             Support Microsoft OS descriptor
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -70,6 +71,7 @@ extern "C"
 #define SERIAL_STR_IDX                                  (0x03U)
 #define CONFIG_STR_IDX                                  (0x04U)
 #define INTERFACE_STR_IDX                               (0x05U)
+#define WINUSB_OS_STR_IDX                               (0xEEU)
 
 /* Request type */
 #define USB_REQ_TYPE_STANDARD                           (0x00U)

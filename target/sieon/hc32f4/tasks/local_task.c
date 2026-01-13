@@ -24,18 +24,17 @@ static fmt_err_t task_init(void)
 
 static void task_entry(void* parameter)
 {
-    rt_device_t dev = rt_device_find("serial2");
+    rt_device_t dev = rt_device_find("usbd0");
 
-    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_DMA_TX);
+    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
 
     /* main loop */
     while (1) {
         // printf("Hello FMT\n");
         uint8_t ch;
-        if (rt_device_read(dev, 1000, &ch, 1)) {
+        if (rt_device_read(dev, RT_WAITING_FOREVER, &ch, 1)) {
             rt_device_write(dev, 0, &ch, 1);
-        }else{
-            rt_device_write(dev, 0, "No Data\r\n", 9);
+            printf("%c", ch);
         }
     }
 }

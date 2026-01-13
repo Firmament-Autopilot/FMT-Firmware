@@ -8,11 +8,12 @@
    2022-03-31       CDT             First version
    2022-10-31       CDT             Modify for MISRAC
                                     Fix bug for USB endpoint GET_STATUS request
+   2024-05-31       CDT             Support Microsoft OS descriptor
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -125,6 +126,9 @@ void usb_standarditfreq(usb_core_instance *pdev, USB_SETUP_REQ *req)
         }
     } else if (req->bRequest == 0xFEU) {
         usb_getintf(pdev);
+        u8RetFlag = 1U;
+    } else if ((req->bmRequest & USB_REQ_TYPE_MASK) == USB_REQ_TYPE_VENDOR) {
+        pdev->dev.class_callback->ep0_setup(pdev, req);
         u8RetFlag = 1U;
     } else {
         ;
@@ -275,6 +279,14 @@ void usb_getdesc(usb_core_instance *pdev, const USB_SETUP_REQ *req)
                     break;
                 case INTERFACE_STR_IDX:
                     pbuf = pdev->dev.desc_callback->get_dev_interfacestr(&len);
+                    break;
+                case WINUSB_OS_STR_IDX:
+                    if (&pdev->dev.desc_callback->get_dev_winusbosstr != NULL) {
+                        pbuf = pdev->dev.desc_callback->get_dev_winusbosstr(&len);
+                    } else {
+                        usb_ctrlerr(pdev);
+                        u8ErrFlag = 1U;
+                    }
                     break;
                 default:
                     usb_ctrlerr(pdev);

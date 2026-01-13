@@ -6,11 +6,13 @@
    Change Logs:
    Date             Author          Notes
    2022-03-31       CDT             First version
+   2024-05-31       CDT             Support Microsoft OS descriptor
+                                    Modify for macro define USB_MAX_TX_FIFOS
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -105,6 +107,7 @@ typedef struct {
     uint8_t  *(*get_dev_serialstr)(uint16_t *length);
     uint8_t  *(*get_dev_configstr)(uint16_t *length);
     uint8_t  *(*get_dev_interfacestr)(uint16_t *length);
+    uint8_t  *(*get_dev_winusbosstr)(uint16_t *length);
 } usb_dev_desc_func;
 
 typedef struct {
@@ -149,19 +152,19 @@ typedef struct {
 } USB_DEV_PARAM;
 
 typedef struct {
-    uint16_t                 channel[USB_MAX_TX_FIFOS];
-    USB_HOST_CH              hc[USB_MAX_TX_FIFOS];
+    uint16_t                 channel[USB_MAX_CH_NUM];
+    USB_HOST_CH              hc[USB_MAX_CH_NUM];
     __IO uint32_t            is_dev_connect;
     uint8_t                  Rx_Buffer[MAX_DATA_LENGTH];
-    __IO uint32_t            ErrCnt[USB_MAX_TX_FIFOS];
-    __IO uint32_t            XferCnt[USB_MAX_TX_FIFOS];
-    __IO HOST_CH_STATUS      HC_Status[USB_MAX_TX_FIFOS];
-    __IO HOST_CH_XFER_STATE  URB_State[USB_MAX_TX_FIFOS];
+    __IO uint32_t            ErrCnt[USB_MAX_CH_NUM];
+    __IO uint32_t            XferCnt[USB_MAX_CH_NUM];
+    __IO HOST_CH_STATUS      HC_Status[USB_MAX_CH_NUM];
+    __IO HOST_CH_XFER_STATE  URB_State[USB_MAX_CH_NUM];
 } USB_HOST_PARAM;
 
 typedef struct {
     USB_CORE_BASIC_CFGS    basic_cfgs;
-    LL_USB_TypeDef            regs;
+    LL_USB_TypeDef         regs;
 #ifdef USE_DEVICE_MODE
     USB_DEV_PARAM          dev;
 #endif

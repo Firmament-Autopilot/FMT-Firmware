@@ -9,11 +9,12 @@
    2022-06-30       CDT             Modify for MISRAC
                                     Delete comment
    2023-09-30       CDT             Modify function usb_susp_isr()
+   2024-05-31       CDT             Modify for control write transfer for USB DMA mode
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -46,7 +47,7 @@
  * @param  [in] epnum       endpoint number
  * @retval status
  */
-static uint32_t usb_rddevinep(usb_core_instance *pdev, uint8_t epnum)
+static uint32_t usb_rddevinep(usb_core_instance* pdev, uint8_t epnum)
 {
     uint32_t u32diepmsk;
     uint32_t u32diepempmsk;
@@ -62,15 +63,15 @@ static uint32_t usb_rddevinep(usb_core_instance *pdev, uint8_t epnum)
  * @param  [in] epnum       endpoint number
  * @retval None
  */
-static void usb_wrblanktxfifo(usb_core_instance *pdev, uint32_t epnum)
+static void usb_wrblanktxfifo(usb_core_instance* pdev, uint32_t epnum)
 {
-    USB_DEV_EP *ep;
+    USB_DEV_EP* ep;
     uint32_t u32Len;
     uint32_t u32Len32b;
     uint16_t u16spclen;
     uint32_t u32diepempmsk;
 
-    ep  = &pdev->dev.in_ep[epnum];
+    ep = &pdev->dev.in_ep[epnum];
     u32Len = ep->xfer_len - ep->xfer_count;
     if (u32Len > ep->maxpacket) {
         u32Len = ep->maxpacket;
@@ -85,7 +86,7 @@ static void usb_wrblanktxfifo(usb_core_instance *pdev, uint32_t epnum)
         }
         u32Len32b = (u32Len + 3UL) >> 2;
         usb_wrpkt(&pdev->regs, ep->xfer_buff, (uint8_t)epnum, (uint16_t)u32Len, pdev->basic_cfgs.dmaen);
-        ep->xfer_buff  += u32Len;
+        ep->xfer_buff += u32Len;
         ep->xfer_count += u32Len;
         u16spclen = usb_rdineptxfspcavail(pdev, epnum);
     }
@@ -102,7 +103,7 @@ static void usb_wrblanktxfifo(usb_core_instance *pdev, uint32_t epnum)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_sessionrequest_isr(usb_core_instance *pdev)
+static void usb_sessionrequest_isr(usb_core_instance* pdev)
 {
     dev_int_cbkpr->devctrlconnect(pdev, 1U);
 
@@ -119,7 +120,7 @@ static void usb_sessionrequest_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_resume_isr(usb_core_instance *pdev)
+static void usb_resume_isr(usb_core_instance* pdev)
 {
     if (0U != pdev->basic_cfgs.low_power) {
         CLR_REG32_BIT(*pdev->regs.GCCTL, USBFS_GCCTL_STPPCLK | USBFS_GCCTL_GATEHCLK);
@@ -137,7 +138,7 @@ static void usb_resume_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_susp_isr(usb_core_instance *pdev)
+static void usb_susp_isr(usb_core_instance* pdev)
 {
     uint32_t u32dsts;
     uint8_t u8PrevStatus;
@@ -147,8 +148,7 @@ static void usb_susp_isr(usb_core_instance *pdev)
     WRITE_REG32(pdev->regs.GREGS->GINTSTS, USBFS_GINTSTS_USBSUSP);
 
     u8PrevStatus = pdev->dev.device_old_status;
-    if ((pdev->dev.connection_status == 1U) && (u8PrevStatus == USB_DEV_CONFIGURED) &&
-        (0U != pdev->basic_cfgs.low_power) && ((u32dsts & 1UL) != 0UL)) {
+    if ((pdev->dev.connection_status == 1U) && (u8PrevStatus == USB_DEV_CONFIGURED) && (0U != pdev->basic_cfgs.low_power) && ((u32dsts & 1UL) != 0UL)) {
         SET_REG32_BIT(*pdev->regs.GCCTL, USBFS_GCCTL_STPPCLK);
         SET_REG32_BIT(*pdev->regs.GCCTL, USBFS_GCCTL_GATEHCLK);
     }
@@ -159,7 +159,7 @@ static void usb_susp_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_inep_isr(usb_core_instance *pdev)
+static void usb_inep_isr(usb_core_instance* pdev)
 {
     uint32_t u32diepint;
     uint32_t u32EpIntr;
@@ -213,52 +213,116 @@ static void usb_inep_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_outep_isr(usb_core_instance *pdev)
+static void usb_outep_isr(usb_core_instance* pdev)
 {
     uint32_t u32EpIntr;
     uint32_t u32doepint;
+    uint32_t u32doepint_tmp;
     uint8_t u8epnum = 0U;
     uint32_t u8Xfer;
     uint32_t u32ReadEpSize;
 
-    u32EpIntr = usb_getalloepintr(&pdev->regs);
-    while ((u32EpIntr != 0UL) && (u8epnum < USB_MAX_TX_FIFOS)) {
-        if ((u32EpIntr & 0x1UL) != 0UL) {
-            u32doepint = usb_getoepintbit(&pdev->regs, u8epnum);
-            if ((u32doepint & XFER_COMPL) != 0UL) {
-                WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, XFER_COMPL);
-                if (pdev->basic_cfgs.dmaen == 1U) {
-                    u32ReadEpSize = (READ_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPTSIZ) & USBFS_DOEPTSIZ_XFRSIZ);
-                    u8Xfer = LL_MIN(pdev->dev.out_ep[u8epnum].maxpacket, pdev->dev.out_ep[u8epnum].xfer_len);
-                    pdev->dev.out_ep[u8epnum].xfer_count = u8Xfer - u32ReadEpSize;
-                    if (u8epnum != 0U) {
-                        pdev->dev.out_ep[u8epnum].xfer_count = pdev->dev.out_ep[u8epnum].xfer_len - u32ReadEpSize;
-                    }
-                }
-                dev_int_cbkpr->DataOutStage(pdev, u8epnum);
-                if (pdev->basic_cfgs.dmaen == 1U) {
-                    if ((pdev->dev.device_state == USB_EP0_STATUS_OUT) && (u8epnum == 0U)) {
-                        pdev->dev.out_ep[0].xfer_len       = 64U;
-                        pdev->dev.out_ep[0].rem_data_len   = 64U;
-                        pdev->dev.out_ep[0].total_data_len = 64U;
-                        usb_ep0revcfg(&pdev->regs, pdev->basic_cfgs.dmaen, pdev->dev.setup_pkt_buf);
-                        pdev->dev.device_state = USB_EP0_IDLE;
-                    }
-                }
-            }
-            if ((u32doepint & EPDISABLED) != 0UL) {
-                WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, EPDISABLED);
-            }
-            if (u8epnum == 0U) {
+    uint32_t u32dctl;
+    uint32_t u32gintsts;
+    if (pdev->basic_cfgs.dmaen == 1U) {
+        u32EpIntr = usb_getalloepintr(&pdev->regs);
+        while ((u32EpIntr != 0UL) && (u8epnum < USB_MAX_TX_FIFOS)) {
+            if ((u32EpIntr & 0x1UL) != 0UL) {
                 u32doepint = usb_getoepintbit(&pdev->regs, u8epnum);
+                if ((u32doepint & XFER_COMPL) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, XFER_COMPL);
+                    u32doepint_tmp = READ_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT);
+                    if ((u32doepint_tmp & SETUP_BIT) != 0UL) {
+                        if ((u32doepint_tmp & STUPPKTRCVD) != 0UL) {
+                            WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, STUPPKTRCVD);
+                        }
+                    } else if ((u32doepint_tmp & STSPHSERCVD) != 0UL) {
+                        WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, STSPHSERCVD);
+                    } else if ((u32doepint_tmp & (SETUP_BIT | STSPHSERCVD)) == 0UL) {
+                        if ((u32doepint_tmp & STUPPKTRCVD) != 0UL) {
+                            WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, STUPPKTRCVD);
+                        } else {
+                            u32ReadEpSize = (READ_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPTSIZ) & USBFS_DOEPTSIZ_XFRSIZ);
+                            u8Xfer = LL_MIN(pdev->dev.out_ep[u8epnum].maxpacket, pdev->dev.out_ep[u8epnum].xfer_len);
+                            pdev->dev.out_ep[u8epnum].xfer_count = u8Xfer - u32ReadEpSize;
+                            if (u8epnum == 0U) {
+                                if (pdev->dev.out_ep[u8epnum].xfer_len == 0U) {
+                                    usb_ep0revcfg(&pdev->regs, pdev->basic_cfgs.dmaen, pdev->dev.setup_pkt_buf);
+                                } else {
+                                    pdev->dev.out_ep[u8epnum].xfer_buff += pdev->dev.out_ep[u8epnum].xfer_count;
+                                }
+                            }
+
+                            if (u8epnum != 0U) {
+                                pdev->dev.out_ep[u8epnum].xfer_count = pdev->dev.out_ep[u8epnum].xfer_len - u32ReadEpSize;
+                            }
+                            dev_int_cbkpr->DataOutStage(pdev, u8epnum);
+                        }
+                    } else {
+                        /* For misra */
+                    }
+                }
                 if ((u32doepint & SETUP_BIT) != 0UL) {
                     dev_int_cbkpr->SetupStage(pdev);
                     WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, SETUP_BIT);
                 }
+                if ((u32doepint & OUTTKNEPDIS) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, OUTTKNEPDIS);
+                }
+                if ((u32doepint & EPDISABLED) != 0UL) {
+                    u32gintsts = READ_REG32(pdev->regs.GREGS->GINTSTS);
+                    u32dctl = READ_REG32(pdev->regs.DREGS->DCTL);
+                    if ((u32gintsts & USBFS_GINTSTS_GONAKEFF) != 0UL) {
+                        u32dctl |= USBFS_DCTL_CGONAK;
+                        WRITE_REG32(pdev->regs.DREGS->DCTL, u32dctl);
+                    }
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, EPDISABLED);
+                }
+                if ((u32doepint & STSPHSERCVD) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, STSPHSERCVD);
+                }
+                if ((u32doepint & NAKINTRPT) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, NAKINTRPT);
+                }
             }
+            u8epnum++;
+            u32EpIntr >>= 1U;
         }
-        u8epnum++;
-        u32EpIntr >>= 1U;
+    } else {
+        u32EpIntr = usb_getalloepintr(&pdev->regs);
+        while ((u32EpIntr != 0UL) && (u8epnum < USB_MAX_TX_FIFOS)) {
+            if ((u32EpIntr & 0x1UL) != 0UL) {
+                u32doepint = usb_getoepintbit(&pdev->regs, u8epnum);
+                if ((u32doepint & XFER_COMPL) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, XFER_COMPL);
+                    dev_int_cbkpr->DataOutStage(pdev, u8epnum);
+                }
+                if ((u32doepint & EPDISABLED) != 0UL) {
+                    u32gintsts = READ_REG32(pdev->regs.GREGS->GINTSTS);
+                    u32dctl = READ_REG32(pdev->regs.DREGS->DCTL);
+                    if ((u32gintsts & USBFS_GINTSTS_GONAKEFF) != 0UL) {
+                        u32dctl |= USBFS_DCTL_CGONAK;
+                        WRITE_REG32(pdev->regs.DREGS->DCTL, u32dctl);
+                    }
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, EPDISABLED);
+                }
+                if ((u32doepint & SETUP_BIT) != 0UL) {
+                    dev_int_cbkpr->SetupStage(pdev);
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, SETUP_BIT);
+                }
+                if ((u32doepint & OUTTKNEPDIS) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, OUTTKNEPDIS);
+                }
+                if ((u32doepint & STSPHSERCVD) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, STSPHSERCVD);
+                }
+                if ((u32doepint & NAKINTRPT) != 0UL) {
+                    WRITE_REG32(pdev->regs.OUTEP_REGS[u8epnum]->DOEPINT, NAKINTRPT);
+                }
+            }
+            u8epnum++;
+            u32EpIntr >>= 1U;
+        }
     }
 }
 
@@ -267,7 +331,7 @@ static void usb_outep_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_sof_isr(usb_core_instance *pdev)
+static void usb_sof_isr(usb_core_instance* pdev)
 {
     dev_int_cbkpr->SOF(pdev);
     WRITE_REG32(pdev->regs.GREGS->GINTSTS, USBFS_GINTSTS_SOF);
@@ -278,42 +342,42 @@ static void usb_sof_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval status
  */
-static void usb_rxstsqlvl_isr(usb_core_instance *pdev)
+static void usb_rxstsqlvl_isr(usb_core_instance* pdev)
 {
     uint32_t u32grxsts;
-    USB_DEV_EP *ep;
+    USB_DEV_EP* ep;
     uint8_t u8epnum;
     uint8_t u8PktStatus;
     uint16_t u16ByteCnt;
 
     CLR_REG32_BIT(pdev->regs.GREGS->GINTMSK, USBFS_GINTMSK_RXFNEM);
 
-    u32grxsts  = READ_REG32(pdev->regs.GREGS->GRXSTSP);
+    u32grxsts = READ_REG32(pdev->regs.GREGS->GRXSTSP);
     u8epnum = (uint8_t)(u32grxsts & USBFS_GRXSTSP_CHNUM_EPNUM);
     u8PktStatus = (uint8_t)((u32grxsts & USBFS_GRXSTSP_PKTSTS) >> USBFS_GRXSTSP_PKTSTS_POS);
     u16ByteCnt = (uint16_t)((u32grxsts & USBFS_GRXSTSP_BCNT) >> USBFS_GRXSTSP_BCNT_POS);
     ep = &pdev->dev.out_ep[u8epnum];
     switch (u8PktStatus) {
-        case STS_DATA_UPDT:
-            if (0U != u16ByteCnt) {
-                usb_rdpkt(&pdev->regs, ep->xfer_buff, u16ByteCnt);
-                ep->xfer_buff += u16ByteCnt;
-                ep->xfer_count += u16ByteCnt;
-            } else {
-                ;
-            }
-            break;
-        case STS_SETUP_UPDT:
-            /* Copy the setup packet received in FIFO into the setup buffer in RAM */
-            usb_rdpkt(&pdev->regs, pdev->dev.setup_pkt_buf, 8U);
+    case STS_DATA_UPDT:
+        if (0U != u16ByteCnt) {
+            usb_rdpkt(&pdev->regs, ep->xfer_buff, u16ByteCnt);
+            ep->xfer_buff += u16ByteCnt;
             ep->xfer_count += u16ByteCnt;
-            break;
-        case STS_GOUT_NAK:
-        case STS_XFER_COMP:
-        case STS_SETUP_COMP:
-            break;
-        default:
-            break;
+        } else {
+            ;
+        }
+        break;
+    case STS_SETUP_UPDT:
+        /* Copy the setup packet received in FIFO into the setup buffer in RAM */
+        usb_rdpkt(&pdev->regs, pdev->dev.setup_pkt_buf, 8U);
+        ep->xfer_count += u16ByteCnt;
+        break;
+    case STS_GOUT_NAK:
+    case STS_XFER_COMP:
+    case STS_SETUP_COMP:
+        break;
+    default:
+        break;
     }
     SET_REG32_BIT(pdev->regs.GREGS->GINTMSK, USBFS_GINTMSK_RXFNEM);
 }
@@ -323,13 +387,13 @@ static void usb_rxstsqlvl_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_reset_isr(usb_core_instance *pdev)
+static void usb_reset_isr(usb_core_instance* pdev)
 {
     uint32_t i;
 
     CLR_REG32_BIT(pdev->regs.DREGS->DCTL, USBFS_DCTL_RWUSIG);
     usb_txfifoflush(&pdev->regs, 0UL);
-    for (i = 0UL; i < pdev->basic_cfgs.dev_epnum ; i++) {
+    for (i = 0UL; i < pdev->basic_cfgs.dev_epnum; i++) {
         WRITE_REG32(pdev->regs.INEP_REGS[i]->DIEPINT, 0xFFUL);
         WRITE_REG32(pdev->regs.OUTEP_REGS[i]->DOEPINT, 0xFFUL);
     }
@@ -347,8 +411,8 @@ static void usb_reset_isr(usb_core_instance *pdev)
 #endif
 
     CLR_REG32_BIT(pdev->regs.DREGS->DCFG, USBFS_DCFG_DAD);
-    pdev->dev.out_ep[0].xfer_len       = 64U;
-    pdev->dev.out_ep[0].rem_data_len   = 64U;
+    pdev->dev.out_ep[0].xfer_len = 64U;
+    pdev->dev.out_ep[0].rem_data_len = 64U;
     pdev->dev.out_ep[0].total_data_len = 64U;
     usb_ep0revcfg(&pdev->regs, pdev->basic_cfgs.dmaen, pdev->dev.setup_pkt_buf);
     WRITE_REG32(pdev->regs.GREGS->GINTSTS, USBFS_GINTSTS_USBRST);
@@ -361,7 +425,7 @@ static void usb_reset_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_enumfinish_isr(usb_core_instance *pdev)
+static void usb_enumfinish_isr(usb_core_instance* pdev)
 {
     usb_ep0activate(&pdev->regs);
     usb_setaroundtim(pdev);
@@ -373,7 +437,7 @@ static void usb_enumfinish_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_isoinincomplt_isr(usb_core_instance *pdev)
+static void usb_isoinincomplt_isr(usb_core_instance* pdev)
 {
     dev_int_cbkpr->IsoINIncomplete(pdev);
     WRITE_REG32(pdev->regs.GREGS->GINTSTS, USBFS_GINTSTS_IISOIXFR);
@@ -384,7 +448,7 @@ static void usb_isoinincomplt_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-static void usb_isooutincomplt_isr(usb_core_instance *pdev)
+static void usb_isooutincomplt_isr(usb_core_instance* pdev)
 {
     dev_int_cbkpr->IsoOUTIncomplete(pdev);
     WRITE_REG32(pdev->regs.GREGS->GINTSTS, USBFS_GINTSTS_IPXFR_INCOMPISOOUT);
@@ -395,7 +459,10 @@ static void usb_isooutincomplt_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
-void usb_isr_handler(usb_core_instance *pdev)
+static uint8_t realdy_connect = 0;
+void drv_usbd_cdc_connect_cb(void);
+void drv_usbd_cdc_disconnect_cb(void);
+void usb_isr_handler(usb_core_instance* pdev)
 {
     uint32_t u32gintsts;
 
@@ -418,6 +485,13 @@ void usb_isr_handler(usb_core_instance *pdev)
         }
         if ((u32gintsts & USBSUSP_INT) != 0UL) {
             usb_susp_isr(pdev);
+
+            if (realdy_connect) {
+                realdy_connect = 0;
+                drv_usbd_cdc_connect_cb();
+            } else {
+                drv_usbd_cdc_disconnect_cb();
+            }
         }
         if ((u32gintsts & SOF_INT) != 0UL) {
             usb_sof_isr(pdev);
@@ -440,6 +514,7 @@ void usb_isr_handler(usb_core_instance *pdev)
 #ifdef VBUS_SENSING_ENABLED
         if ((u32gintsts & VBUSV_INT) != 0UL) {
             usb_sessionrequest_isr(pdev);
+            realdy_connect = 1;
         }
 #endif
     }

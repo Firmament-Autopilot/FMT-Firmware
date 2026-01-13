@@ -7,11 +7,12 @@
    Date             Author          Notes
    2022-03-31       CDT             First version
    2022-10-31       CDT             Modify DEV_MANUFACTURER_STRING
+   2024-11-08       CDT             Support Microsoft OS descriptor
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -26,7 +27,7 @@
 #include "usb_dev_stdreq.h"
 
 /**
- * @addtogroup WL32F436_DDL_Applications
+ * @addtogroup HC32F4A0_DDL_Applications
  * @{
  */
 
@@ -42,7 +43,7 @@
 #define DEV_PID                        (0x4603)
 
 #define DEV_LANGID_STRING              (0x409)
-#define DEV_MANUFACTURER_STRING        ("WLHC")
+#define DEV_MANUFACTURER_STRING        ("XHSC")
 #define DEV_PRODUCT_FS_STRING          ("Device of CDC")
 #define DEV_SERIALNUMBER_FS_STRING     ("00000000050C")
 #define DEV_CONFIGURATION_FS_STRING    ("CDC Config")
@@ -74,6 +75,7 @@ usb_dev_desc_func user_desc = {
     &usb_dev_serialstr,
     &usb_dev_configstrdesc,
     &usb_dev_intfstrdesc,
+    NULL,
 };
 
 /* USB Standard Device Descriptor */

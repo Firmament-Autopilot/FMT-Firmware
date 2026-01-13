@@ -6,11 +6,12 @@
    Change Logs:
    Date             Author          Notes
    2022-03-31       CDT             First version
+   2024-05-31       CDT             Modify for control write transfer for USB DMA mode
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -50,8 +51,12 @@ extern "C"
 #define TIME_OUT          (1UL<<3)
 #define SETUP_BIT         (1UL<<3)
 #define INTKNTXFEMP       (1UL<<4)
+#define OUTTKNEPDIS       (1UL<<4)
+#define STSPHSERCVD       (1UL<<5)
 #define INEPNAKEFF        (1UL<<6)
 #define TXFEMP            (1UL<<7)
+#define NAKINTRPT         (1UL<<13)
+#define STUPPKTRCVD       (1UL<<15)
 
 /* The bit of the GINTSTS */
 #define MODEMIS_INT       (1UL<<1)

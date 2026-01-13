@@ -48,7 +48,7 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
-// #include "drv_usbd_cdc.h"
+#include "drv_usbd_cdc.h"
 // #include "led.h"
 
 #include "default_config.h"
@@ -365,8 +365,8 @@ void bsp_initialize(void)
 //     /* init mavproxy */
 //     FMT_CHECK(mavproxy_init());
 
-//     /* init usbd_cdc */
-//     RT_CHECK(drv_usb_cdc_init());
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
 
 //     /* adc driver init */
 //     RT_CHECK(drv_adc_init());
