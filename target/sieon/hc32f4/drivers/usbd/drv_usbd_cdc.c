@@ -271,21 +271,22 @@ static rt_size_t usbd_cdc_write(usbd_cdc_dev_t usbd, rt_off_t pos, const void* b
     uint32_t tx_size = size > APP_TX_DATA_SIZE ? APP_TX_DATA_SIZE : size;
     uint8_t* tx_buffer_ptr = buf;
 
-    // for (uint32_t i = 0; i < size; i++) {
-    //     uart_rx_buffer[APP_Rx_ptr_in++] = tx_buffer_ptr[i];
+    for (uint32_t i = 0; i < size; i++) {
+        uart_rx_buffer[APP_Rx_ptr_in++] = tx_buffer_ptr[i];
 
-    //     /* To avoid buffer overflow */
-    //     if (APP_Rx_ptr_in == APP_TX_DATA_SIZE) {
-    //         APP_Rx_ptr_in = 0U;
-    //     }
-    // }
+        /* To avoid buffer overflow */
+        if (APP_Rx_ptr_in == APP_TX_DATA_SIZE) {
+            APP_Rx_ptr_in = 0U;
+        }
+    }
+
     // usb_data_send(buf,size);
-    static uint8_t tmp_buffer[256];
-    memcpy(tmp_buffer, buf, size);
-    usb_deveptx(&usb_dev,
-                CDC_IN_EP,
-                tmp_buffer,
-                size);
+    // static uint8_t tmp_buffer[256];
+    // memcpy(tmp_buffer, buf, size);
+    // usb_deveptx(&usb_dev,
+    //             CDC_IN_EP,
+    //             buf,
+    //             tx_size);
 
     return tx_size;
 }

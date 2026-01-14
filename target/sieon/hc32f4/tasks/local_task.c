@@ -33,8 +33,8 @@ static void task_entry(void* parameter)
         // printf("Hello FMT\n");
         uint8_t ch;
         if (rt_device_read(dev, RT_WAITING_FOREVER, &ch, 1)) {
-            rt_device_write(dev, 0, &ch, 1);
             printf("%c", ch);
+            rt_device_write(dev, 0, &ch, 1);
         }
     }
 }

@@ -79,7 +79,7 @@ usb_dev_class_func  class_cdc_cbk = {
  ******************************************************************************/
 __USB_ALIGN_BEGIN static uint32_t  alternate_setting  = 0UL;
 __USB_ALIGN_BEGIN static uint8_t usb_rx_buffer[MAX_CDC_PACKET_SIZE];
-uint8_t uart_rx_buffer[APP_TX_DATA_SIZE];  /* used as a buffer for receiving data from uart port */
+uint8_t uart_rx_buffer[APP_TX_DATA_SIZE];  /* used as a buffer for sending usb data */
 __USB_ALIGN_BEGIN static uint8_t CmdBuff[CDC_CMD_PACKET_SIZE];
 uint32_t APP_Rx_ptr_in  = 0UL;
 uint32_t APP_Rx_ptr_out = 0UL;
@@ -287,6 +287,7 @@ void usb_dev_cdc_ctrlep_rxready(void *pdev)
  * @param  [in] epnum       endpoint index
  * @retval None
  */
+void drv_usbd_cdc_transmist_complete(uint8_t* buffer, uint32_t size);
 void usb_dev_cdc_datain(void *pdev, uint8_t epnum)
 {
     uint16_t tx2usb_ptr;
@@ -299,6 +300,7 @@ void usb_dev_cdc_datain(void *pdev, uint8_t epnum)
                 LastPackLen = 0UL;
             } else {
                 USB_Tx_State = 0U;
+                drv_usbd_cdc_transmist_complete((uint8_t*)NULL, 0);
             }
         } else {
             if (APP_Rx_length >= MAX_CDC_IN_PACKET_SIZE) {
