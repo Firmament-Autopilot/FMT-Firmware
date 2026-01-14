@@ -26,7 +26,7 @@
 #include "usb_dev_ctrleptrans.h"
 #include "usb_dev_stdreq.h"
 #include "usb_dev_desc.h"
-#include "cdc_data_process.h"
+// #include "cdc_data_process.h"
 
 /**
  * @addtogroup LL_USB_LIB
@@ -79,7 +79,7 @@ usb_dev_class_func  class_cdc_cbk = {
  ******************************************************************************/
 __USB_ALIGN_BEGIN static uint32_t  alternate_setting  = 0UL;
 __USB_ALIGN_BEGIN static uint8_t usb_rx_buffer[MAX_CDC_PACKET_SIZE];
-uint8_t uart_rx_buffer[APP_TX_DATA_SIZE];  /* used as a buffer for sending usb data */
+uint8_t usb_tx_buffer[APP_TX_DATA_SIZE];  /* used as a buffer for sending usb data */
 __USB_ALIGN_BEGIN static uint8_t CmdBuff[CDC_CMD_PACKET_SIZE];
 uint32_t APP_Rx_ptr_in  = 0UL;
 uint32_t APP_Rx_ptr_out = 0UL;
@@ -316,7 +316,7 @@ void usb_dev_cdc_datain(void *pdev, uint8_t epnum)
             }
             usb_deveptx(pdev,
                         CDC_IN_EP,
-                        (uint8_t *)&uart_rx_buffer[tx2usb_ptr],
+                        (uint8_t *)&usb_tx_buffer[tx2usb_ptr],
                         (uint32_t)tx2usb_length);
             LastPackLen = (uint32_t)tx2usb_length;
         }
@@ -396,7 +396,7 @@ void process_asynchdata_uart2usb(void *pdev)
 
             usb_deveptx(pdev,
                         CDC_IN_EP,
-                        (uint8_t *)&uart_rx_buffer[tx2usb_ptr],
+                        (uint8_t *)&usb_tx_buffer[tx2usb_ptr],
                         (uint32_t)tx2usb_length);
             LastPackLen = (uint32_t)tx2usb_length;
         }

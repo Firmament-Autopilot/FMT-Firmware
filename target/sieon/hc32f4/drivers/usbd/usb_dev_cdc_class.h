@@ -81,7 +81,7 @@ extern "C"
 #define SEND_BREAK                              (0x23U)
 #define NO_CMD                                  (0xFFU)
 
-extern uint8_t uart_rx_buffer[APP_TX_DATA_SIZE];
+extern uint8_t usb_tx_buffer[APP_TX_DATA_SIZE];
 extern uint32_t APP_Rx_ptr_in;
 extern uint32_t APP_Rx_ptr_out;
 /*******************************************************************************
