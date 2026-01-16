@@ -33,7 +33,7 @@
 // #include "driver/imu/bmi088.h"
 // #include "driver/imu/icm42688p.h"
 // #include "driver/mag/bmm150.h"
-// #include "driver/mag/qmc5883l.h"
+#include "driver/mag/qmc5883p.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/mtd/spi_tfcard.h"
 // #include "driver/range_finder/tofsense.h"
@@ -41,7 +41,8 @@
 // #include "drv_eth.h"
 // #include "drv_fdcan.h"
 // #include "drv_gpio.h"
-// #include "drv_i2c.h"
+#include "drv_i2c.h"
+#include "drv_i2c_soft.h"
 // #include "drv_pwm.h"
 // #include "drv_rc.h"
 // #include "drv_sdio.h"
@@ -189,9 +190,9 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
-                    err = pilot_cmd_toml_config(sub_tab);
+                    // err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
-                    err = actuator_toml_config(sub_tab);
+                    // err = actuator_toml_config(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -300,9 +301,6 @@ void bsp_early_initialize(void)
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
 
-    // /* HAL library initialization */
-    // HAL_Init();
-
     /* System clock initialization */
     SystemClock_Config();
 
@@ -318,8 +316,9 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
+    RT_CHECK(drv_i2c_soft_init());
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
@@ -343,27 +342,26 @@ void bsp_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
-//     /* start recording boot log */
-//     FMT_CHECK(boot_log_init());
+    /* start recording boot log */
+    FMT_CHECK(boot_log_init());
 
-//     /* init uMCN */
-//     FMT_CHECK(mcn_init());
+    /* init uMCN */
+    FMT_CHECK(mcn_init());
 
-//     /* create workqueue */
-//     FMT_CHECK(workqueue_manager_init());
+    /* create workqueue */
+    FMT_CHECK(workqueue_manager_init());
 
-//     /* init storage devices */
-//     RT_CHECK(drv_sdio_init());
+    /* init storage devices */
     RT_CHECK(drv_spi_tfcard_init("spi2_dev0", "sd0"));
     RT_CHECK(drv_gd25qxx_init("spi2_dev1", "mtdblk0"));
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
-//     /* init parameter system */
-//     FMT_CHECK(param_init());
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
-//     /* init mavproxy */
-//     FMT_CHECK(mavproxy_init());
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
@@ -381,36 +379,36 @@ void bsp_initialize(void)
 //     /* eth driver init */
 //     RT_CHECK(drv_eth_init());
 
-// #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
-//     FMT_CHECK(advertise_sensor_imu(0));
-//     FMT_CHECK(advertise_sensor_mag(0));
-//     FMT_CHECK(advertise_sensor_baro(0));
-//     FMT_CHECK(advertise_sensor_gps(0));
-//     FMT_CHECK(advertise_sensor_airspeed(0));
-// #else
-//     /* init onboard sensors */
-//     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
-//     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-//     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
-//     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
-//     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-//     RT_CHECK(gps_ubx_init("serial3", "gps"));
-//     // RT_CHECK(drv_tofsense_init("serial5"));
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+    FMT_CHECK(advertise_sensor_airspeed(0));
+#else
+    /* init onboard sensors */
+    // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
+    // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
+    // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+    RT_CHECK(drv_qmc5883p_init("i2c1_dev0", "mag0", 0));
+    // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
+    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    // RT_CHECK(drv_tofsense_init("serial5"));
 
-//     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-//     FMT_CHECK(register_sensor_mag("mag0", 0));
-//     FMT_CHECK(register_sensor_barometer("barometer"));
-//     FMT_CHECK(advertise_sensor_optflow(0));
-//     FMT_CHECK(advertise_sensor_rangefinder(0));
+    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    // FMT_CHECK(register_sensor_mag("mag0", 0));
+    // FMT_CHECK(register_sensor_barometer("barometer"));
+    // FMT_CHECK(advertise_sensor_optflow(0));
+    // FMT_CHECK(advertise_sensor_rangefinder(0));
 
-//     if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
-//         if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
-//             FMT_CHECK(register_sensor_airspeed("airspeed"));
-//         } else {
-//             printf("airspeed sensor init failed!\n");
-//         }
-//     }
-// #endif
+    // if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
+    //     if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
+    //         FMT_CHECK(register_sensor_airspeed("airspeed"));
+    //     } else {
+    //         printf("airspeed sensor init failed!\n");
+    //     }
+    // }
+#endif
 
     /* init finsh */
     finsh_system_init();
@@ -424,11 +422,11 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    // if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
-    //     /* use default system configuration */
-    //     FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
-    //     printf("Default configuration loaded.\n");
-    // }
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
+        /* use default system configuration */
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        printf("Default configuration loaded.\n");
+    }
 
     // /* init rc */
     // FMT_CHECK(pilot_cmd_init());
@@ -445,8 +443,8 @@ void bsp_post_initialize(void)
     // /* init actuator */
     // FMT_CHECK(actuator_init());
 
-    // /* start device message queue work */
-    // FMT_CHECK(devmq_start_work());
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
 
     // /* init led control */
     // FMT_CHECK(led_control_init());
@@ -457,11 +455,11 @@ void bsp_post_initialize(void)
     /* show system information */
     bsp_show_information();
 
-    // /* execute init script */
-    // msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
+    /* execute init script */
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
-    // /* dump boot log to file */
-    // boot_log_dump();
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**

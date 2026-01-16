@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright The Firmament Authors. All Rights Reserved.
+ * Copyright 2022 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 
-#include "module/task_manager/task_manager.h"
+#ifndef QMC5883P_H__
+#define QMC5883P_H__
 
-static fmt_err_t task_init(void)
-{
-    return FMT_EOK;
+#include <rtthread.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_qmc5883p_init(const char* i2c_device_name, const char* mag_device_name, uint32_t dev_flags);
+
+#ifdef __cplusplus
 }
+#endif
 
-static void task_entry(void* parameter)
-{
-    rt_device_t dev = rt_device_find("usbd0");
-
-    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
-
-    /* main loop */
-    while (1) {
-        printf("Hello FMT\n");
-        sys_msleep(1000);
-    }
-}
-
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "local",
-//     .init = task_init,
-//     .entry = task_entry,
-//     .priority = 25,
-//     .auto_start = true,
-//     .stack_size = 4096,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+#endif

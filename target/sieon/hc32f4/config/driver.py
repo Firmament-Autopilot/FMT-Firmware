@@ -6,7 +6,7 @@ DRIVERS = [
     # 'imu/bmi088.c',
     # 'imu/icm42688p.c',
     # 'mag/bmm150.c',
-    # 'mag/qmc5883l.c',
+    'mag/qmc5883p.c',
     # 'airspeed/ms4525.c',
     'mtd/gd25qxx.c',
     'mtd/spi_tfcard.c',
