@@ -40,7 +40,7 @@
 // #include "drv_adc.h"
 // #include "drv_eth.h"
 // #include "drv_fdcan.h"
-// #include "drv_gpio.h"
+#include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_i2c_soft.h"
 // #include "drv_pwm.h"
@@ -50,7 +50,7 @@
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
-// #include "led.h"
+#include "led.h"
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -305,7 +305,7 @@ void bsp_early_initialize(void)
     SystemClock_Config();
 
     /* gpio driver init */
-    // RT_CHECK(drv_gpio_init());
+    RT_CHECK(drv_gpio_init());
 
     /* usart driver init */
     RT_CHECK(drv_usart_init());
@@ -446,8 +446,8 @@ void bsp_post_initialize(void)
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
-    // /* init led control */
-    // FMT_CHECK(led_control_init());
+    /* init led control */
+    FMT_CHECK(led_control_init());
 
     // /* initialize power management unit */
     // FMT_CHECK(pmu_init());
