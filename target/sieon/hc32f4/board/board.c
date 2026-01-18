@@ -27,7 +27,7 @@
 #include <hc32_ll_gpio.h>
 
 // #include "board_device.h"
-// #include "driver/airspeed/ms4525.h"
+#include "driver/airspeed/xgzp6899d.h"
 // #include "driver/barometer/spl06.h"
 // #include "driver/gps/gps_ubx.h"
 // #include "driver/imu/bmi088.h"
@@ -318,7 +318,7 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
-    RT_CHECK(drv_i2c_soft_init());
+    // RT_CHECK(drv_i2c_soft_init());
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
@@ -391,6 +391,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
     RT_CHECK(drv_qmc5883p_init("i2c1_dev0", "mag0", 0));
+    RT_CHECK(drv_xgzp6899d_init("i2c1_dev1", "airspeed"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(gps_ubx_init("serial3", "gps"));
     // RT_CHECK(drv_tofsense_init("serial5"));

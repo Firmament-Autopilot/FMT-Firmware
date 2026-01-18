@@ -22,12 +22,12 @@
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
 // #define I2C_TIMEOUT_US    (10000)
-// #define DRV_I2C_TIMEOUT (0x40000UL)
-#define DRV_I2C_TIMEOUT   (0x4000000UL)
+#define DRV_I2C_TIMEOUT (0x40000UL)
+// #define DRV_I2C_TIMEOUT   (0x4000000UL)
 
 // #define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
 // #define EXAMPLE_PERIPH_WP (LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_SRAM)
-#define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
+// #define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
 
 // #define I2C_UNIT          (CM_I2C1)
 // #define I2C_FCG_USE       (FCG1_PERIPH_I2C1)
@@ -46,6 +46,38 @@ struct hc32_i2c_bus {
     CM_I2C_TypeDef* i2c_periph;
 };
 
+static int32_t drv_i2c_trans_addr(CM_I2C_TypeDef *I2Cx, uint16_t u16Addr, uint8_t u8Dir, uint32_t u32Timeout)
+{
+    int32_t i32Ret;
+
+    DDL_ASSERT(IS_I2C_UNIT(I2Cx));
+    DDL_ASSERT(IS_I2C_TRANS_DIR(u8Dir));
+    DDL_ASSERT(IS_I2C_7BIT_ADDR(u16Addr));
+
+    i32Ret = I2C_WaitStatus(I2Cx, I2C_FLAG_TX_EMPTY, SET, u32Timeout);
+
+    if (LL_OK == i32Ret) {
+        /* Send I2C address */
+        I2C_WriteData(I2Cx, (uint8_t)u16Addr | u8Dir);
+
+        if (I2C_DIR_TX == u8Dir) {
+            /* If in master transfer process, Need wait transfer end */
+            i32Ret = I2C_WaitStatus(I2Cx, I2C_FLAG_TX_CPLT, SET, u32Timeout);
+        } else {
+            /* If in master receive process, wait I2C_FLAG_TRA changed to receive */
+            i32Ret = I2C_WaitStatus(I2Cx, I2C_FLAG_TRA, RESET, u32Timeout);
+        }
+
+        if (i32Ret == LL_OK) {
+            if (I2C_GetStatus(I2Cx, I2C_FLAG_NACKF) == SET) {
+                i32Ret = LL_ERR;
+            }
+        }
+    }
+
+    return i32Ret;
+}
+
 static int32_t drv_i2c_master_receive(CM_I2C_TypeDef* i2c, uint16_t u16DevAddr, uint8_t au8Data[], uint32_t u32Size, uint32_t u32Timeout)
 {
     int32_t i32Ret;
@@ -59,7 +91,7 @@ static int32_t drv_i2c_master_receive(CM_I2C_TypeDef* i2c, uint16_t u16DevAddr, 
             I2C_AckConfig(i2c, I2C_NACK);
         }
 
-        i32Ret = I2C_TransAddr(i2c, u16DevAddr, I2C_DIR_RX, u32Timeout);
+        i32Ret = drv_i2c_trans_addr(i2c, u16DevAddr, I2C_DIR_RX, u32Timeout);
 
         if (LL_OK == i32Ret) {
             i32Ret = I2C_MasterReceiveDataAndStop(i2c, au8Data, u32Size, u32Timeout);
@@ -84,7 +116,7 @@ static int32_t drv_i2c_master_transmit(CM_I2C_TypeDef* i2c, uint16_t u16DevAddr,
     I2C_SWResetCmd(i2c, DISABLE);
     i32Ret = I2C_Start(i2c, u32Timeout);
     if (LL_OK == i32Ret) {
-        i32Ret = I2C_TransAddr(i2c, u16DevAddr, I2C_DIR_TX, u32Timeout);
+        i32Ret = drv_i2c_trans_addr(i2c, u16DevAddr, I2C_DIR_TX, u32Timeout);
         if (LL_OK == i32Ret) {
             i32Ret = I2C_TransData(i2c, au8Data, u32Size, u32Timeout);
         }
@@ -128,12 +160,12 @@ static int32_t Master_Initialize(void)
     (void)I2C_DeInit(CM_I2C1);
 
     (void)I2C_StructInit(&stcI2cInit);
-    // stcI2cInit.u32ClockDiv = I2C_CLK_DIV4;
-    // stcI2cInit.u32Baudrate = 400000UL;
-    // stcI2cInit.u32SclTime = 3UL;
-    stcI2cInit.u32Baudrate = 100000UL; // 设置波特率为 100kHz
-    stcI2cInit.u32ClockDiv = I2C_CLK_DIV16;
-    stcI2cInit.u32SclTime = 0U;
+    stcI2cInit.u32ClockDiv = I2C_CLK_DIV4;
+    stcI2cInit.u32Baudrate = 400000UL;
+    stcI2cInit.u32SclTime = 3UL;
+    // stcI2cInit.u32Baudrate = 100000UL; // 设置波特率为 100kHz
+    // stcI2cInit.u32ClockDiv = I2C_CLK_DIV16;
+    // stcI2cInit.u32SclTime = 0U;
     i32Ret = I2C_Init(CM_I2C1, &stcI2cInit, &fErr);
 
     I2C_BusWaitCmd(CM_I2C1, ENABLE);
@@ -146,12 +178,12 @@ rt_err_t i2c1_hw_init(void)
     // /* Unlock peripherals or registers */
     // LL_PERIPH_WE(EXAMPLE_PERIPH_WE);
 
-    stc_gpio_init_t stcGpioInit;
-    GPIO_StructInit(&stcGpioInit);
+    // stc_gpio_init_t stcGpioInit;
+    // GPIO_StructInit(&stcGpioInit);
     // stcGpioInit.u16PinDrv = PIN_HIGH_DRV;
     // stcGpioInit.u16PinInputType = PIN_IN_TYPE_CMOS;
-    GPIO_Init(GPIO_PORT_B, GPIO_PIN_08, &stcGpioInit);
-    GPIO_Init(GPIO_PORT_B, GPIO_PIN_09, &stcGpioInit);
+    // GPIO_Init(GPIO_PORT_B, GPIO_PIN_08, &stcGpioInit);
+    // GPIO_Init(GPIO_PORT_B, GPIO_PIN_09, &stcGpioInit);
     /* Initialize I2C port*/
     GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_08, GPIO_FUNC_51); // I2C1-SCL
     GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_09, GPIO_FUNC_50); // I2C1-SDA
@@ -187,7 +219,7 @@ static struct rt_i2c_device i2c1_dev0 = {
 };
 
 static struct rt_i2c_device i2c1_dev1 = {
-    .slave_addr = 0x78, /* XGZP6816 7 bit address */
+    .slave_addr = 0x6D, /* XGZP6816D 7 bit address */
     .flags = 0
 };
 

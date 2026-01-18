@@ -7,7 +7,7 @@ DRIVERS = [
     # 'imu/icm42688p.c',
     # 'mag/bmm150.c',
     'mag/qmc5883p.c',
-    # 'airspeed/ms4525.c',
+    'airspeed/xgzp6899d.c',
     'mtd/gd25qxx.c',
     'mtd/spi_tfcard.c',
     # 'range_finder/tofsense.c',
