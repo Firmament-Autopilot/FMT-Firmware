@@ -44,7 +44,7 @@ if PLATFORM == 'gcc':
         ' -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -ffunction-sections -fdata-sections'
     DEFINES = ' -DUSE_DDL_DRIVER -DHC32F4A0 -D__VFP_FP__ -DARM_MATH_MATRIX_CHECK -DARM_MATH_CM4 -D__FPU_PRESENT="1" -D__FPU_USED="1" -DARM_MATH_ROUNDING'
     CFLAGS = DEVICE + \
-        ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch' + DEFINES
+        ' -g -Wall -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch -Wno-format' + DEFINES
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -lm -lgcc -lc' + \
         ' -nostartfiles -Wl,--gc-sections,--print-memory-usage,-Map=build/fmt_' + BOARD + '.map,-cref,-u,Reset_Handler -T link.lds'

@@ -43,8 +43,8 @@
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_i2c_soft.h"
-// #include "drv_pwm.h"
-// #include "drv_rc.h"
+#include "drv_pwm.h"
+#include "drv_rc.h"
 // #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
@@ -190,9 +190,9 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
-                    // err = pilot_cmd_toml_config(sub_tab);
+                    err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
-                    // err = actuator_toml_config(sub_tab);
+                    err = actuator_toml_config(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -323,14 +323,14 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
-    // /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
 
     // /* can driver init */
     // RT_CHECK(drv_fdcan_init());
 
-    // /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
+    /* init remote controller driver */
+    RT_CHECK(drv_rc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -429,20 +429,20 @@ void bsp_post_initialize(void)
         printf("Default configuration loaded.\n");
     }
 
-    // /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
-    // /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
-    // /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
-    // /* init mission data */
-    // FMT_CHECK(mission_data_init());
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
 
-    // /* init actuator */
-    // FMT_CHECK(actuator_init());
+    /* init actuator */
+    FMT_CHECK(actuator_init());
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());

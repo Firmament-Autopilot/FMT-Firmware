@@ -53,4 +53,7 @@
 #define USART2_TX_DMA_TRIG_EVT_SRC (EVT_SRC_USART2_TI)
 #define USART2_TX_DMA_TC_INT       (DMA_INT_TC_CH0)
 
+#define USART6_RX_ERR_IRQn         (INT006_IRQn)
+#define USART6_RX_FULL_IRQn        (INT007_IRQn)
+
 #endif
