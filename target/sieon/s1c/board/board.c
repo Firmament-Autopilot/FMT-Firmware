@@ -263,8 +263,8 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
-    // // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
     // // // RT_CHECK(drv_i2c_soft_init());
 
     // // /* pwm driver init */

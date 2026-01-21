@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#define IST8310_ADDRESS  0x0E
+#define QMC5883L_ADDRESS 0x0D
+#define NCP5623C_ADDRESS 0x39
+
 rt_err_t drv_i2c_init(void);
 
 #ifdef __cplusplus

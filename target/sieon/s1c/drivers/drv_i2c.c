@@ -25,28 +25,12 @@
 #define DRV_I2C_TIMEOUT (0x40000UL)
 // #define DRV_I2C_TIMEOUT   (0x4000000UL)
 
-// #define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
-// #define EXAMPLE_PERIPH_WP (LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_SRAM)
-// #define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
-
-// #define I2C_UNIT          (CM_I2C1)
-// #define I2C_FCG_USE       (FCG1_PERIPH_I2C1)
-// #define I2C_BAUDRATE      (400000UL)
-
-// /* Define port and pin for SDA and SCL */
-// #define I2C_SCL_PORT      (GPIO_PORT_E)
-// #define I2C_SCL_PIN       (GPIO_PIN_12)
-// #define I2C_SDA_PORT      (GPIO_PORT_E)
-// #define I2C_SDA_PIN       (GPIO_PIN_13)
-// #define I2C_GPIO_SCL_FUNC (GPIO_FUNC_49)
-// #define I2C_GPIO_SDA_FUNC (GPIO_FUNC_48)
-
 struct hc32_i2c_bus {
     struct rt_i2c_bus parent;
     CM_I2C_TypeDef* i2c_periph;
 };
 
-static int32_t drv_i2c_trans_addr(CM_I2C_TypeDef *I2Cx, uint16_t u16Addr, uint8_t u8Dir, uint32_t u32Timeout)
+static int32_t drv_i2c_trans_addr(CM_I2C_TypeDef* I2Cx, uint16_t u16Addr, uint8_t u8Dir, uint32_t u32Timeout)
 {
     int32_t i32Ret;
 
@@ -185,8 +169,8 @@ rt_err_t i2c1_hw_init(void)
     // GPIO_Init(GPIO_PORT_B, GPIO_PIN_08, &stcGpioInit);
     // GPIO_Init(GPIO_PORT_B, GPIO_PIN_09, &stcGpioInit);
     /* Initialize I2C port*/
-    GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_08, GPIO_FUNC_51); // I2C1-SCL
-    GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_09, GPIO_FUNC_50); // I2C1-SDA
+    GPIO_SetFunc(GPIO_PORT_I, GPIO_PIN_10, GPIO_FUNC_48); // I2C1-SDA
+    GPIO_SetFunc(GPIO_PORT_I, GPIO_PIN_11, GPIO_FUNC_49); // I2C1-SCL
 
     /* Enable I2C Peripheral*/
     FCG_Fcg1PeriphClockCmd(FCG1_PERIPH_I2C1, ENABLE);
@@ -213,15 +197,10 @@ static struct hc32_i2c_bus hc32_i2c1 = {
 };
 
 /* i2c device instances */
-static struct rt_i2c_device i2c1_dev0 = {
-    .slave_addr = 0x2C, /* QMC5883P 7 bit address */
-    .flags = 0
-};
-
-static struct rt_i2c_device i2c1_dev1 = {
-    .slave_addr = 0x6D, /* XGZP6816D 7 bit address */
-    .flags = 0
-};
+static struct rt_i2c_device i2c1_dev0 = { .slave_addr = IST8310_ADDRESS,  /* 7 bit address */
+                                          .flags = 0 };
+static struct rt_i2c_device i2c1_dev1 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
+                                          .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
 {
