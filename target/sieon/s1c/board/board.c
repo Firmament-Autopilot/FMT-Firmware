@@ -30,7 +30,7 @@
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
-#include "driver/mtd/w25qxx.h"
+#include "driver/mtd/gd25qxx.h"
 #include "driver/rgb_led/aw2023.h"
 #include "driver/uwb/nlink_linktrack/nlink_linktrack.h"
 #include "driver/vision_flow/mtf_01.h"
@@ -84,7 +84,7 @@ extern const struct romfs_dirent romfs_root;
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
-    // { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
+    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL, "/mnt/romfs", "rom", 0, &romfs_root },
     { NULL } /* NULL indicate the end */
 };
@@ -239,12 +239,11 @@ void App_SysClkIni(void);
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
-    // NVIC_Configuration();
-
     /* init system heap */
     rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
-    App_SysClkIni(); ///< System clock initialization 240Mhz,success
-    // SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND); ///< RT_THREAD need to config systick
+
+    /* System clock initialization */
+    App_SysClkIni();
 
     /* MCU Peripheral registers write unprotected */
     LL_PERIPH_WE(LL_PERIPH_ALL);
@@ -261,8 +260,8 @@ void bsp_early_initialize(void)
     // /* gpio driver init */
     RT_CHECK(drv_gpio_init());
 
-    // // /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
 
     // // /* i2c driver init */
     // RT_CHECK(drv_i2c_init());
@@ -298,7 +297,7 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
-    // RT_CHECK(drv_w25qxx_init("spi2_dev0", "mtdblk0"));
+    RT_CHECK(drv_gd25qxx_init("spi2_dev0", "mtdblk0"));
 
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
@@ -324,36 +323,29 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
-
     /* init onboard sensors */
-    // old pcb
-    //  RT_CHECK(drv_icm42688_init("spi0_dev4", "gyro1", "accel1", 0));
-    //  RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
+    RT_CHECK(drv_bmi088_init("spi4_dev0", "spi4_dev1", "gyro0", "accel0", 0));
+    RT_CHECK(drv_icm42688_init("spi4_dev2", "gyro1", "accel1", 0));
+    RT_CHECK(drv_bmm150_init("spi4_dev3", "mag0", 0));
+    // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
+    RT_CHECK(drv_spl06_init("spi1_dev0", "barometer"));
+    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    // RT_CHECK(gps_nmea_init("serial3", "gps"));
+    // RT_CHECK(drv_tofsense_init("serial5"));
 
-    // RT_CHECK(drv_bmi088_init("spi0_dev0", "spi0_dev1", "gyro0", "accel0", 0));
-    // RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0", 0));
-    // RT_CHECK(drv_icm42688_init("spi0_dev3", "gyro1", "accel1", 0));
-    // RT_CHECK(drv_spl06_init("spi1_dev0", "barometer"));
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
 
-    // test_while_bsp_init();
-    // drv_mtf_01_init("serial3");
-    //  drv_up_tx_init("serial3");
-    //  drv_nlink_linktrack_init("serial4");
-    // RT_CHECK(gps_ubx_init("serial4", "gps"));
-
-    // /* register sensor to sensor hub */
-    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    // FMT_CHECK(register_sensor_mag("mag0", 0));
-    // // FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
-    // FMT_CHECK(register_sensor_barometer("barometer"));
-    // FMT_CHECK(advertise_sensor_optflow(0));
-    // FMT_CHECK(advertise_sensor_rangefinder(0));
-
-    // if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0) {
-    //     if (drv_ms4525_init("i2c0_dev1", "airspeed") == RT_EOK) {
-    //         FMT_CHECK(register_sensor_airspeed("airspeed"));
-    //     }
-    // }
+    if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
+        if (drv_ms4525_init("i2c3_dev1", "airspeed") == RT_EOK) {
+            FMT_CHECK(register_sensor_airspeed("airspeed"));
+        } else {
+            printf("airspeed sensor init failed!\n");
+        }
+    }
 #endif
 
     /* init finsh */

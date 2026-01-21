@@ -9,7 +9,7 @@ DRIVERS = [
     'barometer/ms5611.c',
     'gps/gps_ubx.c',
     'rgb_led/aw2023.c',
-    'mtd/w25qxx.c',
+    'mtd/gd25qxx.c',
     'vision_flow/mtf_01.c',
     'vision_flow/up_tx.c',
     'airspeed/ms4525.c',
