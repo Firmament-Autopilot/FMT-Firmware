@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <board_bsp.h>
 
 #include "hal/sd/sd.h"
 #include "sd.h"
+
 #if 1
     #if defined(__CC_ARM)      /*!< ARM compiler */
         #pragma O0

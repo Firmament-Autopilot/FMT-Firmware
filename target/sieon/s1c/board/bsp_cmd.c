@@ -17,6 +17,9 @@
 
 #include "module/syscmd/syscmd.h"
 
+#include <wl32f436.h>
+#include <wl32_ll.h>
+
 static int handle_cmd(int argc, char** argv, int optc, optv_t* optv)
 {
     printf("rebooting...\n");

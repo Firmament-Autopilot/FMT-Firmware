@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <board_bsp.h>
 
 #include "usb_dev_cdc_class.h"
 #include "usb_dev_desc.h"

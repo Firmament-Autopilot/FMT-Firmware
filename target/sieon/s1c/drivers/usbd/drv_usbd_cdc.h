@@ -16,8 +16,6 @@
 #ifndef __DRV_USBD_CDC_H__
 #define __DRV_USBD_CDC_H__
 
-#include <firmament.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

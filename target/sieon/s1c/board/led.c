@@ -19,6 +19,9 @@
 #include "led.h"
 #include "module/workqueue/workqueue_manager.h"
 
+#include <wl32f436.h>
+#include <wl32_ll.h>
+
 MCN_DECLARE(fms_output);
 
 static rt_device_t pin_dev;

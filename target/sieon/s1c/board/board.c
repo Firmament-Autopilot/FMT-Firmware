@@ -69,6 +69,9 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 
+#include <wl32f436.h>
+#include <wl32_ll.h>
+
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif

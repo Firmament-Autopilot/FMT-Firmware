@@ -17,9 +17,6 @@
 #ifndef DRV_SYSTICK_H__
 #define DRV_SYSTICK_H__
 
-#include "board.h"
-#include <firmament.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

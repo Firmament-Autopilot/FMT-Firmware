@@ -17,8 +17,6 @@
 #ifndef DRV_GPIO_H__
 #define DRV_GPIO_H__
 
-#include <firmament.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

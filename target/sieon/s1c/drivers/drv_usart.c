@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#include <firmament.h>
+#include <board_bsp.h>
+
 #include "drv_usart.h"
 #include "hal/serial/serial.h"
 #include "wl32_ll_usart.h"

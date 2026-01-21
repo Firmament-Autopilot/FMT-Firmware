@@ -28,6 +28,7 @@
  * Include files
  ******************************************************************************/
 #include "wl32_ll_usb.h"
+#include "usb_bsp.h"
 
 #ifndef DDL_ASSERT
 #define DDL_ASSERT(x)                   ((void)0U)

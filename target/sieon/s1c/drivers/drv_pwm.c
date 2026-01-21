@@ -14,6 +14,7 @@
  * limitations under the License.
  *****************************************************************************/
 #include <firmament.h>
+#include <board_bsp.h>
 
 #include "hal/actuator/actuator.h"
 

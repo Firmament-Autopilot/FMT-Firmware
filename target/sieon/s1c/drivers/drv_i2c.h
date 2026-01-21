@@ -16,8 +16,6 @@
 #ifndef DRV_I2C_H__
 #define DRV_I2C_H__
 
-#include <firmament.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
