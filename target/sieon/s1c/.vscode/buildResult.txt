@@ -1,0 +1,184 @@
+   text	   data	    bss	    dec	    hex	filename
+ 661848	  44088	 140084	 846020	  ce8c4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 10:21:15.241373
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 661848	  44088	 140084	 846020	  ce8c4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 10:21:04.134500
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 661848	  44088	 140084	 846020	  ce8c4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 10:20:48.189948
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 661848	  44088	 140084	 846020	  ce8c4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 10:14:49.776091
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 672112	  44088	 138036	 854236	  d08dc	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:33:19.642005
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:05:20.812437
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:04:59.757266
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:04:29.895442
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:04:06.618260
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44096	 137524	 850508	  cfa4c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:01:01.276690
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44080	 137524	 850492	  cfa3c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 09:00:26.183866
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:59:31.353010
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:58:46.355676
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44096	 137524	 850508	  cfa4c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:55:14.914992
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:53:59.721358
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:52:56.447509
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44087	 137524	 850499	  cfa43	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:48:52.586542
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44095	 137524	 850507	  cfa4b	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:48:09.655370
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44087	 137524	 850499	  cfa43	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:47:53.666770
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44096	 137524	 850508	  cfa4c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:47:33.058460
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44096	 137524	 850508	  cfa4c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:47:03.381199
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44064	 137524	 850476	  cfa2c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:46:43.136219
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44064	 137524	 850476	  cfa2c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:45:18.475880
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44072	 137524	 850484	  cfa34	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:44:13.656257
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44064	 137524	 850476	  cfa2c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:42:17.832503
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44088	 137524	 850500	  cfa44	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:41:29.744692
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44064	 137524	 850476	  cfa2c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:41:09.532590
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44064	 137524	 850476	  cfa2c	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:39:50.351716
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44060	 137524	 850472	  cfa28	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:38:06.974457
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  44044	 137524	 850456	  cfa18	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:33:42.995193
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:33:29.546446
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:33:06.712898
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:31:44.167047
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:28:41.066042
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:24:12.644186
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:23:30.751720
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_eway-fw01.elf
+BuildTime:2025-04-29 08:21:51.109195
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:19:44.283637
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:18:41.358459
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:14:52.224410
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:14:11.076670
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:12:42.949848
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:11:20.125870
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 08:10:53.381821
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	e:/SoftProject/FMT-Firmware/target/eway/fly_warrior/build/fmt_amov-icf5.elf
+BuildTime:2025-04-29 06:45:33.521834
+-------------------------------------------------------
+   text	   data	    bss	    dec	    hex	filename
+ 668888	  43992	 137524	 850404	  cf9e4	build\fmt_amov-icf5.elf
+BuildTime:2025-04-29 06:41:38.282287
+-------------------------------------------------------

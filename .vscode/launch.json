@@ -18,7 +18,23 @@
             "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
             "svdFile": "target/sieon/s1/STM32H7x3.svd",
             "runToMain": true
-        },{
+        },
+        {
+            "name": "SIEON S1C J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/sieon/s1c/build/fmt_sieon-s1c.elf",
+            "serverpath": "${env:JLINK_SERVER}",
+            "servertype": "jlink",
+            "device": "WL32F436",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "serialNumber": "", //If you have more than one J-Link probe, add the serial number here.
+            "svdFile": "target/sieon/s1c/WL32F436.svd",
+            "runToMain": true
+        },
+        {
             "name": "FMUv5 Debug J-Link",
             "type": "cortex-debug",
             "request": "launch",
