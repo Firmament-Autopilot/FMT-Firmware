@@ -34,7 +34,7 @@ python parse_mlog.py
 
 ### 手动指定文件
 
-将 `mlog1.bin` 文件放在 `python` 目录下，然后运行：
+将 `mlog1.bin` 文件放在 `当前` 目录下，然后运行：
 
 ```bash
 cd python
