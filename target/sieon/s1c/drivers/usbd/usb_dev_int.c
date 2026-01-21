@@ -395,6 +395,8 @@ static void usb_isooutincomplt_isr(usb_core_instance *pdev)
  * @param  [in] pdev        device instance
  * @retval None
  */
+extern void drv_usbd_cdc_connect_cb(void);
+extern void drv_usbd_cdc_disconnect_cb(void);
 static uint8_t realdy_connect = 0;
 void usb_isr_handler(usb_core_instance *pdev)
 {

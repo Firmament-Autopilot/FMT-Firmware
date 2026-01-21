@@ -8,9 +8,9 @@
    2022-03-31       CDT             First version
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -49,41 +49,41 @@ extern "C"
 /*******************************************************************************
  * Global type definitions ('typedef')
  ******************************************************************************/
-#define USB_SELF_RX_SEND
+
 /*******************************************************************************
  * Global pre-processor symbols/macros ('#define')
  ******************************************************************************/
-#define USB_CDC_CONFIG_DESC_SIZ        ( 75U )
-#define USB_CDC_DESC_SIZ               ( 75U-9U )
+#define USB_CDC_CONFIG_DESC_SIZ                (75U)
+#define USB_CDC_DESC_SIZ                       (75U-9U)
 
-#define CDC_DESCRIPTOR_TYPE            ( 0x21U )
+#define CDC_DESCRIPTOR_TYPE                    (0x21U)
 
-#define DEVICE_CLASS_CDC               ( 0x02U )
-#define DEVICE_SUBCLASS_CDC            ( 0x00U )
+#define DEVICE_CLASS_CDC                       (0x02U)
+#define DEVICE_SUBCLASS_CDC                    (0x00U)
 
-#define STANDARD_ENDPOINT_DESC_SIZE    ( 0x09U )
+#define STANDARD_ENDPOINT_DESC_SIZE            (0x09U)
 
-#define MAX_CDC_IN_PACKET_SIZE         ( MAX_CDC_PACKET_SIZE )
+#define MAX_CDC_IN_PACKET_SIZE                 (MAX_CDC_PACKET_SIZE)
 
-#define MAX_CDC_OUT_PACKET_SIZE        ( MAX_CDC_PACKET_SIZE )
+#define MAX_CDC_OUT_PACKET_SIZE                (MAX_CDC_PACKET_SIZE)
 
 /**************************************************/
 /* CDC Requests                                   */
 /**************************************************/
-#define SEND_ENCAPSULATED_COMMAND      ( 0x00U )
-#define GET_ENCAPSULATED_RESPONSE      ( 0x01U )
-#define SET_COMM_FEATURE               ( 0x02U )
-#define GET_COMM_FEATURE               ( 0x03U )
-#define CLEAR_COMM_FEATURE             ( 0x04U )
-#define SET_LINE_CODING                ( 0x20U )
-#define GET_LINE_CODING                ( 0x21U )
-#define SET_CONTROL_LINE_STATE         ( 0x22U )
-#define SEND_BREAK                     ( 0x23U )
-#define NO_CMD                         ( 0xFFU )
+#define SEND_ENCAPSULATED_COMMAND               (0x00U)
+#define GET_ENCAPSULATED_RESPONSE               (0x01U)
+#define SET_COMM_FEATURE                        (0x02U)
+#define GET_COMM_FEATURE                        (0x03U)
+#define CLEAR_COMM_FEATURE                      (0x04U)
+#define SET_LINE_CODING                         (0x20U)
+#define GET_LINE_CODING                         (0x21U)
+#define SET_CONTROL_LINE_STATE                  (0x22U)
+#define SEND_BREAK                              (0x23U)
+#define NO_CMD                                  (0xFFU)
 
 extern uint8_t usb_tx_buffer[APP_TX_DATA_SIZE];
-extern uint32_t APP_Tx_ptr_in;
-extern uint32_t APP_Tx_ptr_out;
+extern uint32_t APP_Rx_ptr_in;
+extern uint32_t APP_Rx_ptr_out;
 /*******************************************************************************
  * Global variable definitions ('extern')
  ******************************************************************************/

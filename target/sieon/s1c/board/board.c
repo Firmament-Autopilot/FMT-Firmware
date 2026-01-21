@@ -187,9 +187,9 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
-                    err = pilot_cmd_toml_config(sub_tab);
+                    // err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
-                    err = actuator_toml_config(sub_tab);
+                    // err = actuator_toml_config(sub_tab);
                 } else {
                     console_printf("unknown table: %s\n", key);
                 }
@@ -295,7 +295,7 @@ void bsp_initialize(void)
 
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
-#if 1
+
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
     // RT_CHECK(drv_w25qxx_init("spi2_dev0", "mtdblk0"));
@@ -306,11 +306,11 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-#endif
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
 
-    // printf("test\n");
-    //  /* init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
 
     // /* adc driver init */
     // RT_CHECK(drv_adc_init());
@@ -368,33 +368,31 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-
-    // delay_tmp();
     /* toml system configure */
-    // if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
-    //     /* use default system configuration */
-    //     FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
-    //     //(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
-    //     printf("Default configuration loaded.\n");
-    // }
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
+        /* use default system configuration */
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        //(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        printf("Default configuration loaded.\n");
+    }
 
-    // /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
-    // /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
-    // /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
-    // /* init mission data */
-    // FMT_CHECK(mission_data_init());
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
 
-    // /* init actuator */
-    // FMT_CHECK(actuator_init());
+    /* init actuator */
+    FMT_CHECK(actuator_init());
 
-    // /* start device message queue work */
-    // FMT_CHECK(devmq_start_work());
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
 
     // /* initialize power management unit */
     // FMT_CHECK(pmu_init());

@@ -17,24 +17,30 @@
 /* This is the default toml config for the target, which is loaded when there is
  * no sysconfig.toml finded. Please do not format this file. */
 
+// clang-format off
 static char* default_conf = STRING(
 target = "SIEON S1C"\n
 [console]\n
-    [[console.devices]]\n
-    type = "serial"\n
-    name = "serial0"\n
-    baudrate = 57600\n
-    auto-switch = true\n
-    [[console.devices]]\n
-    type = "mavlink"\n
-    name = "mav_console"\n
-    auto-switch = true\n
+	[[console.devices]]\n
+	type = "serial"\n
+	name = "serial0"\n
+	baudrate = 57600\n
+	auto-switch = true\n
+	[[console.devices]]\n
+	type = "mavlink"\n
+	name = "mav_console"\n
+	auto-switch = true\n
 [mavproxy]\n
+	[[mavproxy.devices]]\n
+	chan = 0\n
+	type = "serial"\n
+	name = "serial1"\n
+	baudrate = 57600\n
     [[mavproxy.devices]]\n
-    chan = 0\n
-    type = "serial"\n
-    name = "serial1"\n
-    baudrate = 57600\n
+	chan = 0\n
+	type = "usb"\n
+	name = "usbd0"\n
+    auto-switch = true\n
 [pilot-cmd]\n
     stick-channel = [4,3,1,2]\n
     [pilot-cmd.device]\n
@@ -43,37 +49,6 @@ target = "SIEON S1C"\n
     protocol = "auto"\n
     channel-num = 8\n
     sample-time = 0.05\n
-    range = [1000,2000]\n
-    [[pilot-cmd.mode]]\n
-    mode = 5\n
-    channel = 5\n
-    range = [1000,1300]\n
-    [[pilot-cmd.mode]]\n
-    mode = 4\n
-    channel = 5\n
-    range = [1400,1600]\n
-    [[pilot-cmd.mode]]\n
-    mode = 3\n
-    channel = 5\n
-    range = [1700,2000]\n
-    [[pilot-cmd.command]]\n
-    type = 1\n
-    cmd = 1002\n
-    channel = 6\n
-    range = [1800,2000]\n
-[actuator]\n
-    [[actuator.devices]]\n
-    protocol = "pwm"\n
-    name = "main_out"\n
-    freq = 400\n
-    [[actuator.mappings]]\n
-    from = "control_out"\n
-    to = "main_out"\n
-    chan-map = [[1,2,3,4],[1,2,3,4]]\n
+    range = [1000,2000]
 );
 // clang-format on
-
-
-
-
-

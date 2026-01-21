@@ -162,7 +162,7 @@ void usb_ctrlconn(usb_core_instance *pdev, uint8_t conn)
     }
 }
 
-extern uint8_t u8UsbCdcConnected;
+// extern uint8_t u8UsbCdcConnected;
 /**
  * @brief  Handle Suspend event
  * @param  [in] pdev        device instance
@@ -173,7 +173,7 @@ void usb_dev_susp(usb_core_instance *pdev)
     pdev->dev.device_old_status  = pdev->dev.device_cur_status;
     pdev->dev.device_cur_status  = USB_DEV_SUSPENDED;
     pdev->dev.user_callback->user_devsusp();
-    u8UsbCdcConnected = 0;//�豸�������Ͽ���������
+    // u8UsbCdcConnected = 0;//�豸�������Ͽ���������
 }
 
 /**

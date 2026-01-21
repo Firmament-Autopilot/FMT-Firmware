@@ -77,10 +77,10 @@ usb_dev_user_func user_cb = {
  * @param  None
  * @retval None
  */
-// void usb_dev_user_init(void)
-// {
-//     /* Add initial code here */
-// }
+void usb_dev_user_init(void)
+{
+    /* Add initial code here */
+}
 
 /**
  * @brief  usb_dev_user_rst
@@ -111,24 +111,24 @@ void usb_dev_user_devcfg(void)
  * @param  None
  * @retval None
  */
-// void usb_dev_user_conn(void)
-// {
-// #if (LL_PRINT_ENABLE == DDL_ON)
-//     DDL_Printf(">>USB device connects.\r\n");
-// #endif
-// }
+void usb_dev_user_conn(void)
+{
+#if (LL_PRINT_ENABLE == DDL_ON)
+    DDL_Printf(">>USB device connects.\r\n");
+#endif
+}
 
 /**
  * @brief  USBD_USR_DeviceDisonnected
  * @param  None
  * @retval None
  */
-// void usb_dev_user_disconn(void)
-// {
-// #if (LL_PRINT_ENABLE == DDL_ON)
-//     DDL_Printf(">>USB device disconnected.\r\n");
-// #endif
-// }
+void usb_dev_user_disconn(void)
+{
+#if (LL_PRINT_ENABLE == DDL_ON)
+    DDL_Printf(">>USB device disconnected.\r\n");
+#endif
+}
 
 /**
  * @brief  usb_dev_user_devsusp

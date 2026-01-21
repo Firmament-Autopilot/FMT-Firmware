@@ -8,9 +8,9 @@
    2022-03-31       CDT             First version
  @endverbatim
  *******************************************************************************
- * Copyright (C) 2022-2023, wlhc Semiconductor Co., Ltd. All rights reserved.
+ * Copyright (C) 2022-2025, Xiaohua Semiconductor Co., Ltd. All rights reserved.
  *
- * This software component is licensed by WLHC under BSD 3-Clause license
+ * This software component is licensed by XHSC under BSD 3-Clause license
  * (the "License"); You may not use this file except in compliance with the
  * License. You may obtain a copy of the License at:
  *                    opensource.org/licenses/BSD-3-Clause
@@ -26,7 +26,7 @@
 #include "usb_dev_ctrleptrans.h"
 #include "usb_dev_stdreq.h"
 #include "usb_dev_desc.h"
-#include "cdc_data_process.h"
+// #include "cdc_data_process.h"
 
 /**
  * @addtogroup LL_USB_LIB
@@ -56,13 +56,11 @@
  ******************************************************************************/
 uint8_t *usb_dev_cdc_getcfgdesc(uint16_t *length);
 void process_asynchdata_uart2usb(void *pdev);
-void process_asynchdata_usbd_tx2_usbh(void *pdev);
 
 /*******************************************************************************
  * Global variable definitions (declared in header file with 'extern')
  ******************************************************************************/
-usb_dev_class_func  class_cdc_cbk =
-{
+usb_dev_class_func  class_cdc_cbk = {
     &usb_dev_cdc_init,
     &usb_dev_cdc_deinit,
     &usb_dev_cdc_setup,
@@ -81,19 +79,17 @@ usb_dev_class_func  class_cdc_cbk =
  ******************************************************************************/
 __USB_ALIGN_BEGIN static uint32_t  alternate_setting  = 0UL;
 __USB_ALIGN_BEGIN static uint8_t usb_rx_buffer[MAX_CDC_PACKET_SIZE];
-uint8_t usb_tx_buffer[APP_TX_DATA_SIZE] = "Hello World\r\n";  /* used as a buffer for receiving data from uart port */
-
+uint8_t usb_tx_buffer[APP_TX_DATA_SIZE];  /* used as a buffer for sending usb data */
 __USB_ALIGN_BEGIN static uint8_t CmdBuff[CDC_CMD_PACKET_SIZE];
-uint32_t APP_Tx_ptr_in  = 0UL;
-uint32_t APP_Tx_ptr_out = 0UL;
-uint32_t APP_Tx_length  = 0UL;
+uint32_t APP_Rx_ptr_in  = 0UL;
+uint32_t APP_Rx_ptr_out = 0UL;
+static uint32_t APP_Rx_length  = 0UL;
 static uint8_t  USB_Tx_State   = 0U;
 static uint32_t cdcCmd  = 0xFFUL;
 static uint32_t cdcLen  = 0UL;
 static uint32_t LastPackLen = 0UL;
 
-__USB_ALIGN_BEGIN static uint8_t usb_dev_cdc_cfgdesc[USB_CDC_CONFIG_DESC_SIZ]  =
-{
+__USB_ALIGN_BEGIN static uint8_t usb_dev_cdc_cfgdesc[USB_CDC_CONFIG_DESC_SIZ]  = {
     0x09,
     USB_CFG_DESCRIPTOR_TYPE,
     USB_CDC_CONFIG_DESC_SIZ,
@@ -185,7 +181,7 @@ __USB_ALIGN_BEGIN static uint8_t usb_dev_cdc_cfgdesc[USB_CDC_CONFIG_DESC_SIZ]  =
  * Function implementation - global ('extern') and local ('static')
  ******************************************************************************/
 /**
- * @brief  Initilaize the CDC application
+ * @brief  Initialize the CDC application
  * @param  [in] pdev        Device instance
  * @retval None
  */
@@ -194,7 +190,7 @@ void usb_dev_cdc_init(void *pdev)
     usb_opendevep(pdev, CDC_IN_EP, MAX_CDC_IN_PACKET_SIZE, EP_TYPE_BULK);
     usb_opendevep(pdev, CDC_OUT_EP, MAX_CDC_OUT_PACKET_SIZE, EP_TYPE_BULK);
     usb_opendevep(pdev, CDC_CMD_EP, CDC_CMD_PACKET_SIZE, EP_TYPE_INTR);
-    //vcp_init();
+    // vcp_init();
     usb_readytorx(pdev, CDC_OUT_EP, (uint8_t *)(usb_rx_buffer), MAX_CDC_OUT_PACKET_SIZE);
 }
 
@@ -208,10 +204,9 @@ void usb_dev_cdc_deinit(void *pdev)
     usb_shutdevep(pdev, CDC_IN_EP);
     usb_shutdevep(pdev, CDC_OUT_EP);
     usb_shutdevep(pdev, CDC_CMD_EP);
-    vcp_deinit();
+    // vcp_deinit();
 }
 
-extern uint8_t u8UsbCdcConnected;
 /**
  * @brief  Handle the setup requests
  * @param  [in] pdev        Device instance
@@ -224,71 +219,51 @@ uint8_t usb_dev_cdc_setup(void *pdev, USB_SETUP_REQ *req)
     uint8_t  *pbuf = usb_dev_cdc_cfgdesc + 9;
     uint8_t  u8Res = USB_DEV_OK;
 
-    switch (req->bmRequest & USB_REQ_TYPE_MASK)
-    {
-    case USB_REQ_TYPE_CLASS :
-        if (req->wLength != 0U)
-        {
-            if ((req->bmRequest & 0x80U) != 0U)
-            {
-                vcp_ctrlpare(req->bRequest, CmdBuff, req->wLength);
-                usb_ctrldatatx(pdev, CmdBuff, req->wLength);
+    switch (req->bmRequest & USB_REQ_TYPE_MASK) {
+        case USB_REQ_TYPE_CLASS :
+            if (req->wLength != 0U) {
+                if ((req->bmRequest & 0x80U) != 0U) {
+                    // vcp_ctrlpare(req->bRequest, CmdBuff, req->wLength);
+                    usb_ctrldatatx(pdev, CmdBuff, req->wLength);
+                } else {
+                    cdcCmd = req->bRequest;
+                    cdcLen = req->wLength;
+                    usb_ctrldatarx(pdev, CmdBuff, req->wLength);
+                }
+            } else {
+                // vcp_ctrlpare(req->bRequest, NULL, 0UL);
             }
-            else
-            {
-                cdcCmd = req->bRequest;
-                cdcLen = req->wLength;
-                usb_ctrldatarx(pdev, CmdBuff, req->wLength);
+            break;
+        case USB_REQ_TYPE_STANDARD:
+            switch (req->bRequest) {
+                case USB_REQ_GET_DESCRIPTOR:
+                    if ((req->wValue >> 8) == CDC_DESCRIPTOR_TYPE) {
+                        pbuf = usb_dev_cdc_cfgdesc + 9U + (9U * USBD_ITF_MAX_NUM);
+                        len  = LL_MIN(USB_CDC_DESC_SIZ, req->wLength);
+                    }
+                    usb_ctrldatatx(pdev, pbuf, len);
+                    break;
+
+                case USB_REQ_GET_INTERFACE :
+                    usb_ctrldatatx(pdev, (uint8_t *)&alternate_setting, 1U);
+                    break;
+
+                case USB_REQ_SET_INTERFACE :
+                    if ((uint8_t)(req->wValue) < USBD_ITF_MAX_NUM) {
+                        alternate_setting = (uint8_t)(req->wValue);
+                    } else {
+                        usb_ctrlerr(pdev);
+                    }
+                    break;
+                default:
+                    break;
             }
-        }
-        else
-        {
-            vcp_ctrlpare(req->bRequest, NULL, 0UL);
-            if (0x00 == req->wValue || 0x02 == req->wValue)
-            {
-                u8UsbCdcConnected = 0;//上位机串口工具点击 关
-            }
-            else if (0x01 == req->wValue)
-            {
-                u8UsbCdcConnected = 1;//上位机串口工具点击 开
-            }
-        }
-        break;
-    case USB_REQ_TYPE_STANDARD:
-        switch (req->bRequest)
-        {
-        case USB_REQ_GET_DESCRIPTOR:
-            if ((req->wValue >> 8) == CDC_DESCRIPTOR_TYPE)
-            {
-                pbuf = usb_dev_cdc_cfgdesc + 9U + (9U * USBD_ITF_MAX_NUM);
-                len  = LL_MIN(USB_CDC_DESC_SIZ, req->wLength);
-            }
-            usb_ctrldatatx(pdev, pbuf, len);
             break;
 
-        case USB_REQ_GET_INTERFACE :
-            usb_ctrldatatx(pdev, (uint8_t *)&alternate_setting, 1U);
-            break;
-
-        case USB_REQ_SET_INTERFACE :
-            if ((uint8_t)(req->wValue) < USBD_ITF_MAX_NUM)
-            {
-                alternate_setting = (uint8_t)(req->wValue);
-            }
-            else
-            {
-                usb_ctrlerr(pdev);
-            }
-            break;
         default:
+            usb_ctrlerr(pdev);
+            u8Res = USB_DEV_FAIL;
             break;
-        }
-        break;
-
-    default:
-        usb_ctrlerr(pdev);
-        u8Res = USB_DEV_FAIL;
-        break;
     }
     return u8Res;
 }
@@ -300,9 +275,8 @@ uint8_t usb_dev_cdc_setup(void *pdev, USB_SETUP_REQ *req)
  */
 void usb_dev_cdc_ctrlep_rxready(void *pdev)
 {
-    if (cdcCmd != NO_CMD)
-    {
-        vcp_ctrlpare(cdcCmd, CmdBuff, cdcLen);
+    if (cdcCmd != NO_CMD) {
+        // vcp_ctrlpare(cdcCmd, CmdBuff, cdcLen);
         cdcCmd = NO_CMD;
     }
 }
@@ -313,41 +287,32 @@ void usb_dev_cdc_ctrlep_rxready(void *pdev)
  * @param  [in] epnum       endpoint index
  * @retval None
  */
+void drv_usbd_cdc_transmist_complete(uint8_t* buffer, uint32_t size);
 void usb_dev_cdc_datain(void *pdev, uint8_t epnum)
 {
     uint16_t tx2usb_ptr;
     uint16_t tx2usb_length;
 
-    if (USB_Tx_State == 1U)
-    {
-        if (APP_Tx_length == 0U)
-        {
-            if (LastPackLen == MAX_CDC_IN_PACKET_SIZE)
-            {
+    if (USB_Tx_State == 1U) {
+        if (APP_Rx_length == 0U) {
+            if (LastPackLen == MAX_CDC_IN_PACKET_SIZE) {
                 usb_deveptx(pdev, CDC_IN_EP, NULL, 0UL);
                 LastPackLen = 0UL;
-            }
-            else
-            {
+            } else {
                 USB_Tx_State = 0U;
-                drv_usbd_cdc_transmist_complete();
+                drv_usbd_cdc_transmist_complete((uint8_t*)NULL, 0);
             }
-        }
-        else
-        {
-            if (APP_Tx_length >= MAX_CDC_IN_PACKET_SIZE)
-            {
-                tx2usb_ptr      = (uint16_t)APP_Tx_ptr_out;
+        } else {
+            if (APP_Rx_length >= MAX_CDC_IN_PACKET_SIZE) {
+                tx2usb_ptr      = (uint16_t)APP_Rx_ptr_out;
                 tx2usb_length   = (uint16_t)MAX_CDC_IN_PACKET_SIZE - 1U;
-                APP_Tx_ptr_out += MAX_CDC_IN_PACKET_SIZE - 1U;
-                APP_Tx_length  -= MAX_CDC_IN_PACKET_SIZE - 1U;
-            }
-            else
-            {
-                tx2usb_ptr      = (uint16_t)APP_Tx_ptr_out;
-                tx2usb_length   = (uint16_t)APP_Tx_length;
-                APP_Tx_ptr_out += APP_Tx_length;
-                APP_Tx_length   = 0U;
+                APP_Rx_ptr_out += MAX_CDC_IN_PACKET_SIZE - 1U;
+                APP_Rx_length  -= MAX_CDC_IN_PACKET_SIZE - 1U;
+            } else {
+                tx2usb_ptr      = (uint16_t)APP_Rx_ptr_out;
+                tx2usb_length   = (uint16_t)APP_Rx_length;
+                APP_Rx_ptr_out += APP_Rx_length;
+                APP_Rx_length   = 0U;
             }
             usb_deveptx(pdev,
                         CDC_IN_EP,
@@ -364,39 +329,17 @@ void usb_dev_cdc_datain(void *pdev, uint8_t epnum)
  * @param  [in] epnum       endpoint index
  * @retval None
  */
-#include <string.h>
-//usbd cdc 接收回调函数，应用层只需要把数据 usb_rx_buffer 里的 usb_rx_cnt 个数据往上层buffer里搬再去处理即可
+void drv_usbd_cdc_receive(uint8_t* buffer, uint32_t size);
 void usb_dev_cdc_dataout(void *pdev, uint8_t epnum)
 {
     uint16_t usb_rx_cnt;
 
     usb_rx_cnt = (uint16_t)((usb_core_instance *)pdev)->dev.out_ep[epnum].xfer_count;
-    //vcp_rxdata(usb_rx_buffer, usb_rx_cnt);
-    drv_usbd_cdc_receive(usb_rx_buffer,usb_rx_cnt);
+    // vcp_rxdata(usb_rx_buffer, usb_rx_cnt);
+    drv_usbd_cdc_receive(usb_rx_buffer, usb_rx_cnt);
     usb_readytorx(pdev, CDC_OUT_EP, (uint8_t *)(usb_rx_buffer), MAX_CDC_OUT_PACKET_SIZE);
 }
 
-uint8_t u8UsbCdcConnected = 0; // 成功连接和断开的标志位
-
-//usbd cdc 发送数据到上位机的接口函数，底层逻辑是：需要发送时就往 usb_tx_buffer 里填充数据，索引 APP_Tx_ptr_in 加1直到加到要发的个数
-//usb_dev_cdc_sof 每ms会自动进入，有数据需要发送的时候就会通过 process_asynchdata_usbd_tx2_usbh 触发发送以及发完一包后
-//触发回调函数 usb_dev_cdc_datain ，这2个函数自动完成组包、拆包的逻辑将该次需要发送的所有数据分包发完。
-void usb_data_send(uint8_t *buf, uint32_t size)
-{
-    if (u8UsbCdcConnected == 1)
-    {
-        for (uint16_t u16count = 0; u16count < size; u16count++)
-        {
-            usb_tx_buffer[APP_Tx_ptr_in] = buf[u16count];
-            APP_Tx_ptr_in++;
-            /* To avoid buffer overflow */
-            if (APP_Tx_ptr_in == APP_TX_DATA_SIZE)
-            {
-                APP_Tx_ptr_in = 0U;
-            }
-        }
-    }
-}
 /**
  * @brief  Start Of Frame event management
  * @param  [in] pdev        Device instance
@@ -406,67 +349,48 @@ uint8_t usb_dev_cdc_sof(void *pdev)
 {
     static uint32_t FrameCount = 0UL;
 
-    if (FrameCount++ == CDC_IN_FRAME_INTERVAL)
-    {
+    if (FrameCount++ == CDC_IN_FRAME_INTERVAL) {
         FrameCount = 0UL;
-#ifdef  USB_SELF_RX_SEND
-        if (u8UsbCdcConnected == 1)
-        {
-            process_asynchdata_usbd_tx2_usbh(pdev);       ///< cdc data in and cdc data out process
-        }
-#else
         process_asynchdata_uart2usb(pdev);
-#endif
     }
     return USB_DEV_OK;
 }
 
 /**
- * @brief  process the data received from usb and send through USB to host
+ * @brief  process the data received from usart and send through USB to host
  * @param  [in] pdev        device instance
  * @retval None
  */
-void process_asynchdata_usbd_tx2_usbh(void *pdev)
+void process_asynchdata_uart2usb(void *pdev)
 {
     uint16_t tx2usb_ptr;     /* the location of the pointer in buffer that would be sent to USB */
     uint16_t tx2usb_length;  /* the length in bytes that would be sent to USB */
 
-    if (USB_Tx_State != 1U)
-    {
-        if (APP_Tx_ptr_out == APP_TX_DATA_SIZE)
-        {
-            APP_Tx_ptr_out = 0UL;
+    if (USB_Tx_State != 1U) {
+        if (APP_Rx_ptr_out == APP_TX_DATA_SIZE) {
+            APP_Rx_ptr_out = 0UL;
         }
-        if (APP_Tx_ptr_out == APP_Tx_ptr_in)
-        {
+        if (APP_Rx_ptr_out == APP_Rx_ptr_in) {
             USB_Tx_State = 0U;
-        }
-        else
-        {
-            if (APP_Tx_ptr_out > APP_Tx_ptr_in)
-            {
-                APP_Tx_length = APP_TX_DATA_SIZE - APP_Tx_ptr_out;
-            }
-            else
-            {
-                APP_Tx_length = APP_Tx_ptr_in - APP_Tx_ptr_out;
+        } else {
+            if (APP_Rx_ptr_out > APP_Rx_ptr_in) {
+                APP_Rx_length = APP_TX_DATA_SIZE - APP_Rx_ptr_out;
+            } else {
+                APP_Rx_length = APP_Rx_ptr_in - APP_Rx_ptr_out;
             }
 
-            if (APP_Tx_length >= MAX_CDC_IN_PACKET_SIZE)
-            {
-                tx2usb_ptr = (uint16_t)APP_Tx_ptr_out;
+            if (APP_Rx_length >= MAX_CDC_IN_PACKET_SIZE) {
+                tx2usb_ptr = (uint16_t)APP_Rx_ptr_out;
                 tx2usb_length = MAX_CDC_IN_PACKET_SIZE - 1U;
 
-                APP_Tx_ptr_out += MAX_CDC_IN_PACKET_SIZE - 1UL;
-                APP_Tx_length -= MAX_CDC_IN_PACKET_SIZE - 1UL;
-            }
-            else
-            {
-                tx2usb_ptr = (uint16_t)APP_Tx_ptr_out;
-                tx2usb_length = (uint16_t)APP_Tx_length;
+                APP_Rx_ptr_out += MAX_CDC_IN_PACKET_SIZE - 1UL;
+                APP_Rx_length -= MAX_CDC_IN_PACKET_SIZE - 1UL;
+            } else {
+                tx2usb_ptr = (uint16_t)APP_Rx_ptr_out;
+                tx2usb_length = (uint16_t)APP_Rx_length;
 
-                APP_Tx_ptr_out += APP_Tx_length;
-                APP_Tx_length = 0UL;
+                APP_Rx_ptr_out += APP_Rx_length;
+                APP_Rx_length = 0UL;
             }
             USB_Tx_State = 1U;
 
@@ -478,7 +402,6 @@ void process_asynchdata_usbd_tx2_usbh(void *pdev)
         }
     }
 }
-
 
 /**
  * @brief  get the configuration descriptor
