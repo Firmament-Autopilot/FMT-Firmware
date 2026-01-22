@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="md_output_bsps_TARGET_KIT_PSE84_EVAL_EPC2_bsp_settings" kind="page">
+    <compoundname>md_output_bsps_TARGET_KIT_PSE84_EVAL_EPC2_bsp_settings</compoundname>
+    <title>Peripheral Default BSP Settings</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><table rows="18" cols="4"><row>
+<entry thead="yes" align='center'><para>Resource   </para>
+</entry><entry thead="yes" align='center'><para>Parameter   </para>
+</entry><entry thead="yes" align='center'><para>Value   </para>
+</entry><entry thead="yes" align='left'><para>Remarks    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center' rowspan="4"><para>ADC   </para>
+</entry><entry thead="no" align='center'><para>VREF   </para>
+</entry><entry thead="no" align='center'><para>1.2 V   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Measurement type   </para>
+</entry><entry thead="no" align='center'><para>Single Ended   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Input voltage range   </para>
+</entry><entry thead="no" align='center'><para>0 to 2.4 V (0 to 2*VREF)   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Output range   </para>
+</entry><entry thead="no" align='center'><para>0x000 to 0x7FF   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center' rowspan="4"><para>DAC   </para>
+</entry><entry thead="no" align='center'><para>Reference source   </para>
+</entry><entry thead="no" align='center'><para>VDDA   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Input range   </para>
+</entry><entry thead="no" align='center'><para>0x000 to 0xFFF   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Output range   </para>
+</entry><entry thead="no" align='center'><para>0 to VDDA   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Output type   </para>
+</entry><entry thead="no" align='center'><para>Unbuffered output   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center' rowspan="3"><para>I2C   </para>
+</entry><entry thead="no" align='center'><para>Role   </para>
+</entry><entry thead="no" align='center'><para>Master   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Data rate   </para>
+</entry><entry thead="no" align='center'><para>100 kbps   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Drive mode of SCL &amp; SDA pins   </para>
+</entry><entry thead="no" align='center'><para>Open Drain (drives low)   </para>
+</entry><entry thead="no" align='left'><para>External pull-up resistors are required    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Timer(TBD)   </para>
+</entry><entry thead="no" align='center' colspan="3"><para>TBD    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center' rowspan="2"><para>SPI   </para>
+</entry><entry thead="no" align='center'><para>Data rate   </para>
+</entry><entry thead="no" align='center'><para>100 kpbs   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Slave select polarity   </para>
+</entry><entry thead="no" align='center'><para>Active low   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center' rowspan="3"><para>UART   </para>
+</entry><entry thead="no" align='center'><para>Flow control   </para>
+</entry><entry thead="no" align='center'><para>No flow control   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Data format   </para>
+</entry><entry thead="no" align='center'><para>8N1   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Baud rate   </para>
+</entry><entry thead="no" align='center'><para>115200   </para>
+</entry><entry thead="no" align='left'><para></para>
+</entry></row>
+</table>
+</para>
+<para><hruler/>
+ © Infineon Technologies AG, 2023-2025. </para>
+    </detaileddescription>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/bsp_settings.md"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__mtb__srf__config" kind="group">
+    <compoundname>group_mtb_srf_config</compoundname>
+    <title>Secure Request Framework Configuration</title>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga864b2d587f63354c174102937f1c4e36" prot="public" static="no">
+        <name>MTB_SRF_MAX_ARG_IN_SIZE</name>
+        <initializer>(5U * sizeof(uint32_t))</initializer>
+        <briefdescription>
+<para>Maximum input argument count in bytes, adjusting the default BSP-generated pool. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="48" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga68ee7633d8162c1f31896810f563e206" prot="public" static="no">
+        <name>MTB_SRF_MAX_ARG_OUT_SIZE</name>
+        <initializer>(2U * sizeof(uint32_t))</initializer>
+        <briefdescription>
+<para>Maximum output argument count in bytes, adjusting the default BSP-generated pool. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="51" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga840535b930f09b3d78ca7406454bc51a" prot="public" static="no">
+        <name>MTB_SRF_SECURE_ARG_BUFFER_LEN</name>
+        <initializer>    (<ref refid="group__group__mtb__srf__config_1ga864b2d587f63354c174102937f1c4e36" kindref="member">MTB_SRF_MAX_ARG_IN_SIZE</ref> + sizeof(mtb_srf_input_ns_t) + \
+     <ref refid="group__group__mtb__srf__config_1ga68ee7633d8162c1f31896810f563e206" kindref="member">MTB_SRF_MAX_ARG_OUT_SIZE</ref> + sizeof(mtb_srf_output_ns_t) + \
+     128u)</initializer>
+        <briefdescription>
+<para>Size in bytes of the secure scratch buffer into which secure request inputs are copied before processing. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The size must be a multiple of 4 bytes, and be large enough to hold:<itemizedlist>
+<listitem><para>An <computeroutput>mtb_srf_input_ns_t</computeroutput> struct</para>
+</listitem><listitem><para>The maximum number of scalar input arguments (MTB_SRF_MAX_ARG_IN_SIZE)</para>
+</listitem><listitem><para>The largest input argument passed by pointer, excluding buffers whose contents are simply sent over a communications interface without requiring validation.</para>
+</listitem><listitem><para>An <computeroutput>mtb_srf_output_ns_t</computeroutput> struct</para>
+</listitem><listitem><para>The maximum number of scalar output arguments (MTB_SRF_MAX_ARG_OUT_SIZE) </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="65" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga589067eb1e3af68adab2b2caaf8435d5" prot="public" static="no">
+        <name>MTB_SRF_POOL_SIZE</name>
+        <initializer>(1U)</initializer>
+        <briefdescription>
+<para>Number of secure requests object allocated, adjusting the default BSP-generated pool. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="75" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga3f76c11e98c959e0ccb9863e20268f66" prot="public" static="no">
+        <name>MTB_SRF_IPC_SERVICE_TIMEOUT_US</name>
+        <initializer>(MTB_SRF_NEVER_TIMEOUT)</initializer>
+        <briefdescription>
+<para>IPC integration specific defines, adjusting the default BSP-generated setup. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default timeout for sending a request that requires IPC </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="85" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga9bdc01184ef62328bad398d51241d796" prot="public" static="no">
+        <name>MTB_SRF_MODULE_COUNT</name>
+        <initializer>(2U)</initializer>
+        <briefdescription>
+<para>Number of modules. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="89" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1ga023ab19da755d6f9a588dfdd935c1b6f" prot="public" static="no">
+        <name>MTB_SRF_MODULE_PDL</name>
+        <initializer>(0U)</initializer>
+        <briefdescription>
+<para>Module for PDL operations. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="92" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__mtb__srf__config_1gab41e47ced9cd3a8ccf3064eb69298831" prot="public" static="no">
+        <name>MTB_SRF_MODULE_USER</name>
+        <initializer>(1U)</initializer>
+        <briefdescription>
+<para>Module for User operations. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" line="94" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/mtb_srf_config.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The Secure Request Framework (SRF) requires modules be defined with unique values. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The values used do not matter, only that they are unique. Below are two sample modules - one for the Periphal Driver Library (PDL) and one for the user.</para>
+<para>This file is owned by the application. The expectation is for the user to add modules as needed. Should the user wish to use a middleware library that depends on the SRF, that middleware will not add the module itself - the user must do so. </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

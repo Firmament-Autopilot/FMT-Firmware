@@ -1,0 +1,9 @@
+[Device=PSE846GPS2DBZC4A]
+
+# The "reserved resources" feature is used to ensure that the device configurator reserves the listed memory regions for default use.
+# These regions are not accessible for user code in default use cases.
+
+[MemoryRegions]
+GUID=extended_boot_reserved ID=extended_boot_reserved MEMORY=RRAM OFFSET=0x00000000 SIZE=0x00011000 PROTECTION=kTqxq_31FkI REQUIRED_CAPABILITIES=NONVOLATILE
+GUID=reserved_region ID=reserved_region MEMORY=RRAM OFFSET=0x0006A000 SIZE=0x00016000 PROTECTION=kTqxq_31FkI REQUIRED_CAPABILITIES=NONVOLATILE
+GUID=extended_boot_sram_reserved ID=extended_boot_sram_reserved MEMORY=SRAM OFFSET=0x00000000 SIZE=0x0001000 PROTECTION=kTqxq_31FkI REQUIRED_CAPABILITIES=

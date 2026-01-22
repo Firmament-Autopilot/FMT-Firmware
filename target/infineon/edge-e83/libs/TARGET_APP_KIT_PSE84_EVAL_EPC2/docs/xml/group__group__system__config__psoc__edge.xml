@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__psoc__edge" kind="group">
+    <compoundname>group_system_config_psoc_edge</compoundname>
+    <title>Startup/System</title>
+    <innergroup refid="group__group__system__config__macro__edge">Macros</innergroup>
+    <innergroup refid="group__group__system__config__enum__edge">Enumerated Types</innergroup>
+    <innergroup refid="group__group__system__config__functions__edge">Functions</innergroup>
+    <innergroup refid="group__group__system__config__globals__edge">Global Variables</innergroup>
+    <briefdescription>
+<para>Provides device startup, system configuration, and linker script files. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The system startup provides the followings features:<itemizedlist>
+<listitem><para><ref refid="group__group__system__config__psoc__edge_1group_system_config_device_memory_definition_edge" kindref="member">Device Memory Definition</ref></para>
+</listitem><listitem><para><ref refid="group__group__system__config__psoc__edge_1group_system_config_device_initialization_edge" kindref="member">Device Initialization</ref></para>
+</listitem><listitem><para><ref refid="group__group__system__config__psoc__edge_1group_system_config_heap_stack_config_edge" kindref="member">Heap and Stack Configuration</ref></para>
+</listitem><listitem><para><ref refid="group__group__system__config__psoc__edge_1group_system_config_default_handlers_edge" kindref="member">Default Interrupt Handlers Definition</ref></para>
+</listitem><listitem><para><ref refid="group__group__system__config__psoc__edge_1group_system_config_device_vector_table_edge" kindref="member">Vectors Table Copy from Flash to RAM</ref></para>
+</listitem></itemizedlist>
+</para>
+<sect1 id="group__group__system__config__psoc__edge_1group_system_config_configuration_edge">
+<title>Configuration Considerations</title>
+<sect2 id="group__group__system__config__psoc__edge_1group_system_config_device_memory_definition_edge">
+<title>Device Memory Definition</title>
+<para>Allocation of different types of memory such as the RRAM and RAM etc. for the CPU is defined by the linker scripts.</para>
+<para><simplesect kind="note"><para>The linker files provided with the templates are generic and handle all common use cases. Your project may not use every section defined in the linker files. In that case you may see warnings during the build process. To eliminate build warnings in your project, you can simply comment out or remove the relevant section in the linker file.</para>
+</simplesect>
+<simplesect kind="note"><para>If the start of the Cortex-M33 non-secure application image is changed, the value of the <ref refid="group__group__system__config__user__settings__macro__edge_1ga3399608d4a92cfd16a7eca4d9636c616" kindref="member">CY_CORTEX_M33_NS_APPL_ADDR</ref> should also be changed. The <ref refid="group__group__system__config__user__settings__macro__edge_1ga3399608d4a92cfd16a7eca4d9636c616" kindref="member">CY_CORTEX_M33_NS_APPL_ADDR</ref> macro should be used as the parameter fo the __TZ_set_MSP_NS function call.</para>
+</simplesect>
+<simplesect kind="note"><para>If the start of the Cortex-M55 application image is changed, the value of the <ref refid="group__group__system__config__user__settings__macro__edge_1ga02de510de4ee1e844aa544b0db2c5b90" kindref="member">CY_CORTEX_M55_APPL_ADDR</ref> should also be changed. The <ref refid="group__group__system__config__user__settings__macro__edge_1ga02de510de4ee1e844aa544b0db2c5b90" kindref="member">CY_CORTEX_M55_APPL_ADDR</ref> macro should be used as the parameter for the <ref refid="group__group__system__config__cm55__functions__edge_1gaaee957e11ebb7961c2a80a7fc8785f95" kindref="member">Cy_SysCM55Enable()</ref> function call.</para>
+</simplesect>
+</para>
+</sect2>
+<sect2 id="group__group__system__config__psoc__edge_1group_system_config_device_initialization_edge">
+<title>Device Initialization</title>
+<para>After a power-on-reset (POR), the boot process is handled by the boot code from the on-chip ROM that is always executed by the Cortex-M0+ core. The boot code passes the control to the Cortex-M33 startup code and Cortex-M33 boots the Cortex-M55 core.</para>
+<para><bold>CM33 Boot</bold><linebreak/>
+ CM33 always boots in secure mode after reset. Then, the secure code switches execution to non-secure mode. Each execution environment has its own application image. Each application image contains its startup code. So, there are two separate startup codes. One is for secure execution environment, part of secure application image and other one is for non-secure execution environment, part of non-secure application image. Execution of startup code is triggered by the secure code after it completes the initialization during boot process. It switches control to non-secure startup code by switching processor execution state to non-secure state.<linebreak/>
+The secure code is programmed in RRAM NVM MAIN region. This code executes in place (XIP) from RRAM. First secure code to execute on CM33 is CM33_L1_BOOTLOADER. The CM33_L1_BOOTLOADER, SE_RRAM_BOOT code is launched by the code executing on CM0P core in secure enclave by setting the address of the image entry point in the CM33_S_VECTOR_TABLE_BASE (S_VTOR) register and setting the CM33_CTL.CPUWAIT to LOW to allow execution of reset handler of secure image. Address of CM33_L1_BOOTLOADER image entry point is obtained from the TOC2 table entry CM33_L1_BOOTLOADER_ADDR.</para>
+<para><bold>CM55 Boot</bold><linebreak/>
+ The CM55 CPUSS is OFF by default upon POR. CM55 application is launched from CM33 non-secure application depending on the use case requirements. CM55 Application is programmed executed in place from the external flash. The C runtime code will copy necessary code to SOCMEM and other memory areas depending on the choice made for the execution region in the linker script. CM55 execution is held by its CM55_CTL.CPU_WAIT (which will be HIGH) till released (made LOW) by CM33 app to launch the CM55 code after programming the CM55 VTOR with the image entry point in the targeted memory.</para>
+<para>Below sequence diagram captures the initialization process in the startup code. <image type="html" name="cm33_bootup_sequence.png" inline="yes"></image>
+</para>
+</sect2>
+<sect2 id="group__group__system__config__psoc__edge_1group_system_config_heap_stack_config_edge">
+<title>Heap and Stack Configuration</title>
+<para>By default, the stack size is set to 0x00001000 for non-secure applications and 0x00000800 for the CM33 secure application. The remaining ram is used for the heap</para>
+<sect3 id="group__group__system__config__psoc__edge_1group_system_config_heap_stack_config_gcc_edge">
+<title>ARM GCC</title>
+<para>The stack and heap sizes are defined in the linker script file: &apos;pse84_s_cm33.ld&apos;, &apos;pse84_ns_cm33.ld&apos; and &apos;pse84_ns_cm55.ld&apos; To set stack size in application add makefile ldflags: -Wl,<ndash/>defsym=APP_MSP_STACK_SIZE=&lt; CUSTOM_VALUE &gt; Remaining free RAM is used as heap.</para>
+<para><simplesect kind="note"><para>Correct operation of malloc and related functions depends on the working implementation of the &apos;sbrk&apos; function. Newlib-nano (default C runtime library used by the GNU Arm Embedded toolchain) provides weak &apos;sbrk&apos; implementation that doesn&apos;t check for heap and stack collisions during excessive memory allocations. To ensure the heap always remains within the range defined by __HeapBase and __HeapLimit linker symbols, provide a strong override for the &apos;sbrk&apos; function: <programlisting filename=".C"><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>_sbrk(uint32_t<sp/>incr)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>uint8_t<sp/>__HeapBase,<sp/>__HeapLimit;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>uint8_t<sp/>*heapBrk<sp/>=<sp/>&amp;__HeapBase;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>*prevBrk<sp/>=<sp/>heapBrk;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(incr<sp/>&gt;<sp/>(uint32_t)(&amp;__HeapLimit<sp/>-<sp/>heapBrk))</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>errno<sp/>=<sp/>ENOMEM;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CY_HALT();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>heapBrk<sp/>+=<sp/>incr;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>prevBrk;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> For FreeRTOS-enabled multi-threaded applications, it is sufficient to include clib-support library that provides newlib-compatible implementations of &apos;sbrk&apos;, &apos;__malloc_lock&apos; and &apos;__malloc_unlock&apos;: <linebreak/>
+ <ulink url="https://github.com/Infineon/clib-support">https://github.com/Infineon/clib-support</ulink>.</para>
+</simplesect>
+</para>
+</sect3>
+<sect3 id="group__group__system__config__psoc__edge_1group_system_config_heap_stack_config_arm_edge">
+<title>ARM Compiler</title>
+<para>The stack and heap sizes are defined in the linker script file: &apos;pse84_s_cm33.sct&apos;, &apos;pse84_ns_cm33.sct&apos; and &apos;pse84_ns_cm55.sct&apos; To set stack size in application add makefile ldflags: <ndash/>predefine=&quot;-DAPP_MSP_STACK_SIZE=&lt; CUSTOM_VALUE &gt;&quot; Remaining free RAM is used as heap.</para>
+</sect3>
+<sect3 id="group__group__system__config__psoc__edge_1group_system_config_heap_stack_config_iar_edge">
+<title>IAR</title>
+<para>The stack and heap sizes are defined in the linker script file: &apos;pse84_s_cm33.icf&apos;, &apos;pse84_ns_cm33.icf&apos; and &apos;pse84_ns_cm55.icf&apos; To set stack size in application add makefile ldflags: <ndash/>config_def APP_MSP_STACK_SIZE=&lt; CUSTOM_VALUE &gt; Remaining free RAM is used as heap.</para>
+</sect3>
+<sect3 id="group__group__system__config__psoc__edge_1group_system_config_heap_stack_config_llvm_edge">
+<title>LLVM ARM</title>
+<para>The stack and heap sizes are defined in the linker script file: &apos;pse84_s_cm33.ld&apos;, &apos;pse84_ns_cm33.ld&apos; and &apos;pse84_ns_cm55.ld&apos; To set stack size in application add makefile ldflags: -Wl,<ndash/>defsym=APP_MSP_STACK_SIZE=&lt; CUSTOM_VALUE &gt; Remaining free RAM is used as heap.</para>
+</sect3>
+</sect2>
+<sect2 id="group__group__system__config__psoc__edge_1group_system_config_default_handlers_edge">
+<title>Default Interrupt Handlers Definition</title>
+<para>The default interrupt handler functions are dummy handler in the startup file.<linebreak/>
+Below is the default handler for the non-secure interrupts:<linebreak/>
+<programlisting><codeline><highlight class="normal"><sp/>interrupt_type<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>InterruptHandler(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(1);</highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="group__group__system__config__psoc__edge_1group_system_config_device_vector_table_edge">
+<title>Vectors Table Copy from Flash to RAM</title>
+<para>This process uses memory sections defined in the linker script. The startup code copies the default vector table contents to the non-secure SRAM region specified by the linker script. APIs are provided in the sysint driver to hook user implemented handler replacing the default handler for the corresponding interrupt.</para>
+<para>Following tables provide the address of the default and non-secure SRAM interrupt vector table for different supported compilers. The linker script file is &apos;pse84_ns_cm33.ld&apos;. For non-secure world, it uses the following variable.<linebreak/>
+ Copy interrupt vectors from ROM/flash to RAM: <linebreak/>
+ From: <programlisting><codeline><highlight class="normal">__ns_vector_table<sp/></highlight></codeline>
+</programlisting> To: <programlisting><codeline><highlight class="normal">__ns_vector_table_rw<sp/></highlight></codeline>
+</programlisting> The vector table address (and the vector table itself) are defined in the ns_start_&lt;device&gt;.c startup file corresponding to non-secure world. The code in these files copies the vector table from Flash to RAM. </para>
+</sect2>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

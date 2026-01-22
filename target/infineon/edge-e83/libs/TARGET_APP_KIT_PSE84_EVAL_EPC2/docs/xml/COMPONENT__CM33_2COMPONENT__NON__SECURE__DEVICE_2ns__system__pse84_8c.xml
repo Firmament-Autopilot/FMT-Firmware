@@ -1,0 +1,508 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c" kind="file" language="C++">
+    <compoundname>COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c</compoundname>
+    <includes local="no">stdbool.h</includes>
+    <includes refid="system__pse84_8h" local="yes">system_pse84.h</includes>
+    <includes local="yes">cy_syslib.h</includes>
+    <includes local="yes">cy_wdt.h</includes>
+    <includes local="yes">cy_sysclk.h</includes>
+    <includes local="yes">cy_syspm.h</includes>
+    <includes local="yes">cy_syspm_pdcm.h</includes>
+    <includes refid="cybsp_8h" local="yes">cybsp.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>ns_system_pse84.c</label>
+        <link refid="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>cy_sysclk.h</label>
+      </node>
+      <node id="3">
+        <label>cy_syslib.h</label>
+      </node>
+      <node id="6">
+        <label>cy_syspm.h</label>
+      </node>
+      <node id="7">
+        <label>cy_syspm_pdcm.h</label>
+      </node>
+      <node id="4">
+        <label>cy_wdt.h</label>
+      </node>
+      <node id="2">
+        <label>stdbool.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a5cadba035f5ebdb00dcd70d01ef3e9b3" prot="public" static="no">
+        <name>CY_CLK_HFCLK0_FREQ_HZ_DEFAULT</name>
+        <initializer>(50000000UL)</initializer>
+        <briefdescription>
+<para>Default HFClk frequency in Hz. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="39" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a2f30d7ab7a0bbf3b862387fb39ed3394" prot="public" static="no">
+        <name>CY_CLK_PERICLK_FREQ_HZ_DEFAULT</name>
+        <initializer>(50000000UL)</initializer>
+        <briefdescription>
+<para>Default PeriClk frequency in Hz. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="42" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1ab4cc32901c7c918f8afd1d1d3885b8cd" prot="public" static="no">
+        <name>CY_CLK_SYSTEM_FREQ_HZ_DEFAULT</name>
+        <initializer>(50000000UL)</initializer>
+        <briefdescription>
+<para>Default system core frequency in Hz. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="48" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a2ee1b1088d98768deebedd7e11bdddfc" prot="public" static="no">
+        <name>RRAM_NVM_PROTECTED_BLOCKS_TO_CONFIG</name>
+        <initializer>32</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="51" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a2bddc1076d557927c273c1255bb0435d" prot="public" static="no">
+        <name>CY_DELAY_MS_OVERFLOW_THRESHOLD</name>
+        <initializer>(0x8000u)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="62" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a7ce6941bfc591de584305c405edd173f" prot="public" static="no">
+        <name>CY_DELAY_1K_THRESHOLD</name>
+        <initializer>(1000u)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="63" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1ad1ae9b4f0eab0f1ae5e94ff2ef6163ae" prot="public" static="no">
+        <name>CY_DELAY_1K_MINUS_1_THRESHOLD</name>
+        <initializer>(CY_DELAY_1K_THRESHOLD - 1u)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="64" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a0658126e98c6e971f8ab4b611edc437b" prot="public" static="no">
+        <name>CY_DELAY_1M_THRESHOLD</name>
+        <initializer>(1000000u)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="65" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a7fa46fa65576764fe6e7fe70216214f3" prot="public" static="no">
+        <name>CY_DELAY_1M_MINUS_1_THRESHOLD</name>
+        <initializer>(CY_DELAY_1M_THRESHOLD - 1u)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="66" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a39b8191a0fc5e177b11f4eb04f368a68" prot="public" static="no">
+        <name>CY_ROOT_PATH_SRC_IMO</name>
+        <initializer>(0UL)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="76" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a206f6d0a5bcca6ff6b4174f11eb416d3" prot="public" static="no">
+        <name>CY_ROOT_PATH_SRC_EXT</name>
+        <initializer>(1UL)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="77" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1abe9f787f4941445ce74b923e772abd44" prot="public" static="no">
+        <name>CY_ROOT_PATH_SRC_DSI_MUX</name>
+        <initializer>(4UL)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="84" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a9915befcb33c7383ef4e1cbd329ac0be" prot="public" static="no">
+        <name>CY_ROOT_PATH_SRC_DSI_MUX_HVILO</name>
+        <initializer>(16UL)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="85" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1af7b2f4303dc8fbcc320897b994c944b1" prot="public" static="no">
+        <name>CY_ROOT_PATH_SRC_DSI_MUX_WCO</name>
+        <initializer>(17UL)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="86" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t SystemCoreClock</definition>
+        <argsstring></argsstring>
+        <name>SystemCoreClock</name>
+        <initializer>= CY_CLK_SYSTEM_FREQ_HZ_DEFAULT</initializer>
+        <briefdescription>
+<para>System Clock Frequency (Core Clock) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Holds the system core clock, which is the system clock frequency supplied to the SysTick timer and the processor core clock. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="53" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t cy_AhbFreqHz</definition>
+        <argsstring></argsstring>
+        <name>cy_AhbFreqHz</name>
+        <initializer>= CY_CLK_SYSTEM_FREQ_HZ_DEFAULT</initializer>
+        <briefdescription>
+<para>Holds the AHB frequency. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Updated by <ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate()</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="55" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a4d9e1b2b20e89093355c2d5da8638d37" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t cy_delayFreqHz</definition>
+        <argsstring></argsstring>
+        <name>cy_delayFreqHz</name>
+        <initializer>= CY_CLK_SYSTEM_FREQ_HZ_DEFAULT</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="67" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1adc13cad6509d7cc483888dbaba8d7117" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t cy_delayFreqKhz</definition>
+        <argsstring></argsstring>
+        <name>cy_delayFreqKhz</name>
+        <initializer>= (CY_CLK_SYSTEM_FREQ_HZ_DEFAULT + CY_DELAY_1K_MINUS_1_THRESHOLD) /
+                            CY_DELAY_1K_THRESHOLD</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="69" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c_1a8cbe34bc8bdc0874633ef9a5c398a29d" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t cy_delayFreqMhz</definition>
+        <argsstring></argsstring>
+        <name>cy_delayFreqMhz</name>
+        <initializer>= (uint8_t)((CY_CLK_SYSTEM_FREQ_HZ_DEFAULT + CY_DELAY_1M_MINUS_1_THRESHOLD) /
+                            CY_DELAY_1M_THRESHOLD)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="72" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga93f514700ccf00d08dbdcff7f1224eb2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemInit</definition>
+        <argsstring>(void)</argsstring>
+        <name>SystemInit</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Setup the microcontroller system. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Initializes the system.</para>
+<para>Initialize the System and update the SystemCoreClock variable. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="98" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="98" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>__WEAK void</type>
+        <definition>__WEAK void Cy_SystemInit</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_SystemInit</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Performs custom system initialization. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The function is called during device startup. This is a weak function that by default does nothing. It can be overridden to add custom steps to SystemInit </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="107" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="107" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemCoreClockUpdate</definition>
+        <argsstring>(void)</argsstring>
+        <name>SystemCoreClockUpdate</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Update SystemCoreClock variable. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Update information about system clocks.</para>
+<para>Updates the SystemCoreClock with current core Clock retrieved from cpu registers. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="117" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="117" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga15d44a0428b12582b056c2501fbe52e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemCoreClockSetup</definition>
+        <argsstring>(uint32_t systemCoreClk_freq_hz, uint32_t ahb_freq_hz)</argsstring>
+        <name>SystemCoreClockSetup</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>systemCoreClk_freq_hz</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>ahb_freq_hz</declname>
+        </param>
+        <briefdescription>
+<para>Setup SystemCoreClock variable. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Populates system clock frequency variables with the provided values.</para>
+<para>Sets the SystemCoreClock with initial core Clock retrieved from cpu registers. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" line="140" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="140" bodyend="150"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="version"><para>1.0</para>
+</simplesect>
+The device system-source file.</para>
+<para><simplesect kind="copyright"><para>Copyright 2016-2025 Cypress Semiconductor Corporation SPDX-License-Identifier: Apache-2.0</para>
+</simplesect>
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <verbatim>http://www.apache.org/licenses/LICENSE-2.0
+</verbatim> Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/***************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdbool.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;system_pse84.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cy_syslib.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cy_wdt.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cy_sysclk.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cy_syspm.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cy_syspm_pdcm.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;cybsp.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="35"><highlight class="comment">*<sp/>SystemCoreClockUpdate()</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_CLK_HFCLK0_FREQ_HZ_DEFAULT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>(50000000UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_CLK_PERICLK_FREQ_HZ_DEFAULT<sp/><sp/><sp/><sp/><sp/><sp/>(50000000UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>PSE84_PSVP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_CLK_SYSTEM_FREQ_HZ_DEFAULT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>(12000000UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_CLK_SYSTEM_FREQ_HZ_DEFAULT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>(50000000UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RRAM_NVM_PROTECTED_BLOCKS_TO_CONFIG<sp/>32<sp/></highlight><highlight class="comment">//<sp/>128KB/4KB<sp/><sp/>4KB<sp/>block<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal">uint32_t<sp/><ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref><sp/>=<sp/>CY_CLK_SYSTEM_FREQ_HZ_DEFAULT;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal">uint32_t<sp/><ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref><sp/>=<sp/>CY_CLK_SYSTEM_FREQ_HZ_DEFAULT;</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="58"><highlight class="comment">*<sp/>SystemCoreClockUpdate<sp/>(void)</highlight></codeline>
+<codeline lineno="59"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Do<sp/>not<sp/>use<sp/>these<sp/>definitions<sp/>directly<sp/>in<sp/>your<sp/>application<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_DELAY_MS_OVERFLOW_THRESHOLD<sp/><sp/>(0x8000u)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_DELAY_1K_THRESHOLD<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1000u)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_DELAY_1K_MINUS_1_THRESHOLD<sp/><sp/><sp/>(CY_DELAY_1K_THRESHOLD<sp/>-<sp/>1u)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_DELAY_1M_THRESHOLD<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1000000u)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_DELAY_1M_MINUS_1_THRESHOLD<sp/><sp/><sp/>(CY_DELAY_1M_THRESHOLD<sp/>-<sp/>1u)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal">uint32_t<sp/>cy_delayFreqHz<sp/><sp/><sp/>=<sp/>CY_CLK_SYSTEM_FREQ_HZ_DEFAULT;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal">uint32_t<sp/>cy_delayFreqKhz<sp/><sp/>=<sp/>(CY_CLK_SYSTEM_FREQ_HZ_DEFAULT<sp/>+<sp/>CY_DELAY_1K_MINUS_1_THRESHOLD)<sp/>/</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CY_DELAY_1K_THRESHOLD;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal">uint32_t<sp/>cy_delayFreqMhz<sp/><sp/>=<sp/>(uint8_t)((CY_CLK_SYSTEM_FREQ_HZ_DEFAULT<sp/>+<sp/>CY_DELAY_1M_MINUS_1_THRESHOLD)<sp/>/</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CY_DELAY_1M_THRESHOLD);</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_ROOT_PATH_SRC_IMO<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(0UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_ROOT_PATH_SRC_EXT<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(1UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(SRSS_ECO_PRESENT<sp/>==<sp/>1U)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#define<sp/>CY_ROOT_PATH_SRC_ECO<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(2UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(SRSS_ECO_PRESENT<sp/>==<sp/>1U)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(SRSS_ALTHF_PRESENT<sp/>==<sp/>1U)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#define<sp/>CY_ROOT_PATH_SRC_ALTHF<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(3UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(SRSS_ALTHF_PRESENT<sp/>==<sp/>1U)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_ROOT_PATH_SRC_DSI_MUX<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(4UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_ROOT_PATH_SRC_DSI_MUX_HVILO<sp/><sp/><sp/><sp/><sp/><sp/>(16UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_ROOT_PATH_SRC_DSI_MUX_WCO<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(17UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(SRSS_ALTLF_PRESENT<sp/>==<sp/>1U)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#define<sp/>CY_ROOT_PATH_SRC_DSI_MUX_ALTLF<sp/><sp/>(18UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(SRSS_ALTLF_PRESENT<sp/>==<sp/>1U)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(SRSS_PILO_PRESENT<sp/>==<sp/>1U)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#define<sp/>CY_ROOT_PATH_SRC_DSI_MUX_PILO<sp/><sp/><sp/>(19UL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(SRSS_PILO_PRESENT<sp/>==<sp/>1U)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="96"><highlight class="comment">*<sp/>Function<sp/>Name:<sp/>SystemInit</highlight></codeline>
+<codeline lineno="97"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1ga93f514700ccf00d08dbdcff7f1224eb2" kindref="member">SystemInit</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="99"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>Cy_PDL_Init(CY_DEVICE_CFG);</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" kindref="member">Cy_SystemInit</ref>();</highlight></codeline>
+<codeline lineno="102"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="105"><highlight class="comment">*<sp/>Function<sp/>Name:<sp/>Cy_SystemInit</highlight></codeline>
+<codeline lineno="106"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal">__WEAK<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" kindref="member">Cy_SystemInit</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="108"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Empty<sp/>weak<sp/>function.</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="115"><highlight class="comment">*<sp/>Function<sp/>Name:<sp/>SystemCoreClockUpdate</highlight></codeline>
+<codeline lineno="116"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate</ref><sp/>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="118"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>uint32_t<sp/>pathFreqHz;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/>uint32_t<sp/>clkHfPath;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Get<sp/>frequency<sp/>for<sp/>the<sp/>high-frequency<sp/>clock<sp/>#<sp/>0<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>clkHfPath<sp/>=<sp/>CY_SYSCLK_CLK_CORE_HF_PATH_NUM;</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/>pathFreqHz<sp/>=<sp/>Cy_SysClk_ClkHfGetFrequency(clkHfPath);</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref><sp/>=<sp/>pathFreqHz;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Sets<sp/>clock<sp/>frequency<sp/>for<sp/>Delay<sp/>API<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/>cy_delayFreqHz<sp/>=<sp/><ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/>cy_delayFreqMhz<sp/>=<sp/>(uint32_t)((cy_delayFreqHz<sp/>+<sp/>CY_DELAY_1M_MINUS_1_THRESHOLD)<sp/>/<sp/>CY_DELAY_1M_THRESHOLD);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/>cy_delayFreqKhz<sp/>=<sp/>(cy_delayFreqHz<sp/>+<sp/>CY_DELAY_1K_MINUS_1_THRESHOLD)<sp/>/<sp/>CY_DELAY_1K_THRESHOLD;</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Get<sp/>the<sp/>frequency<sp/>of<sp/>AHB<sp/>source,<sp/>CLK<sp/>HF0<sp/>is<sp/>the<sp/>source<sp/>for<sp/>AHB*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref><sp/>=<sp/>Cy_SysClk_ClkHfGetFrequency(0UL);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="138"><highlight class="comment">*<sp/>Function<sp/>Name:<sp/>SystemCoreClockSetup</highlight></codeline>
+<codeline lineno="139"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1ga15d44a0428b12582b056c2501fbe52e2" kindref="member">SystemCoreClockSetup</ref><sp/>(uint32_t<sp/>systemCoreClk_freq_hz,<sp/>uint32_t<sp/>ahb_freq_hz)</highlight></codeline>
+<codeline lineno="141"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref><sp/>=<sp/>systemCoreClk_freq_hz;</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Sets<sp/>clock<sp/>frequency<sp/>for<sp/>Delay<sp/>API<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/>cy_delayFreqHz<sp/>=<sp/><ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>;</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/>cy_delayFreqMhz<sp/>=<sp/>(uint32_t)((cy_delayFreqHz<sp/>+<sp/>CY_DELAY_1M_MINUS_1_THRESHOLD)<sp/>/<sp/>CY_DELAY_1M_THRESHOLD);</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/>cy_delayFreqKhz<sp/>=<sp/>(cy_delayFreqHz<sp/>+<sp/>CY_DELAY_1K_MINUS_1_THRESHOLD)<sp/>/<sp/>CY_DELAY_1K_THRESHOLD;</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref><sp/>=<sp/>ahb_freq_hz;</highlight></codeline>
+<codeline lineno="150"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>[]<sp/>END<sp/>OF<sp/>FILE<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c"/>
+  </compounddef>
+</doxygen>
