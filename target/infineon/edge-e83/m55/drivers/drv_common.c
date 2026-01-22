@@ -1,12 +1,19 @@
-/*
- * Copyright (c) 2006-2023, RT-Thread Development Team
+/******************************************************************************
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Change Logs:
- * Date           Author       Notes
- * 2022-07-1      Rbb666       first version
- */
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+
 #include <firmament.h>
 
 #include <msh.h>
@@ -16,6 +23,7 @@
 #include "drv_common.h"
 #include "drv_uart.h"
 #include "drv_gpio.h"
+#include "drv_systick.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -53,28 +61,6 @@ MSH_CMD_EXPORT(reboot, Reboot System);
 #endif /* RT_USING_FINSH */
 
 /**
- * this is the timer interrupt service routine.
- */
-void SysTick_Handler_CB(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    rt_tick_increase();
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-/* systick configuration */
-void rt_hw_systick_init(void)
-{
-    Cy_SysTick_Init(CY_SYSTICK_CLOCK_SOURCE_CLK_CPU, SystemCoreClock / RT_TICK_PER_SECOND);
-    Cy_SysTick_SetCallback(0, SysTick_Handler_CB);
-    Cy_SysTick_EnableInterrupt();
-}
-
-/**
  * @brief  this function is executed in case of error occurrence.
  * @param  none
  * @retval none
@@ -89,33 +75,10 @@ void _Error_Handler(char *s, int num)
     }
 }
 
-/**
- * this function will delay for some us.
- *
- * @param us the delay time of us
- */
-void rt_hw_us_delay(rt_uint32_t us)
-{
-    rt_uint32_t start, now, delta, reload, us_tick;
-    start = SysTick->VAL;
-    reload = SysTick->LOAD;
-    us_tick = SystemCoreClock / 1000000UL;
-
-    do
-    {
-        now = SysTick->VAL;
-        delta = start > now ? start - now : reload + start - now;
-    }
-    while (delta < us_tick * us);
-}
-
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
     cy_bsp_all_init();
-
-    /* systick init */
-    rt_hw_systick_init();
 
     /* heap initialization */
 
@@ -130,8 +93,8 @@ void bsp_early_initialize(void)
     /* init console to enable console output */
     FMT_CHECK(console_init());
 
-    // /* systick driver init */
-    // RT_CHECK(drv_systick_init());
+    /* systick driver init */
+    RT_CHECK(drv_systick_init());
 
     // /* i2c driver init */
     // RT_CHECK(drv_i2c_init());
