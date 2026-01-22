@@ -1,0 +1,5 @@
+{
+  "description": "This is a template for creating a PEM file containing RSA public key based on a key modulus and exponent",
+  "modulus": "",
+  "exponent": "010001"
+}

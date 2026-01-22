@@ -1,0 +1,867 @@
+{
+  "device": {
+    "si": "0xED91",
+    "family": "0x115",
+    "rev": "0x21"
+  },
+  "regions": [
+    {
+      "description": "UPGRADE_FLAGS",
+      "region": [
+        [
+          "0x12000000",
+          "32"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Extended boot policy",
+      "region": [
+        [
+          "0x12001000",
+          "256"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "fb9bf1cc9f28e99a7d6651b319b10e466c213ba6971fc0a61a6a8c68074fd586"
+    },
+    {
+      "description": "IAK_LITE_PUBLIC_KEY",
+      "region": [
+        [
+          "0x12001352",
+          "69"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Extended boot",
+      "label": "CM33_L1_BOOT",
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "description": "serial",
+          "value": "1.1.0.1700",
+          "hash": "19ab23e7e96720d7bef258012b5b4f9be81603049d62124bd11660a6b70c1eb9"
+        },
+        {
+          "description": "no serial",
+          "value": "1.0.0.1700",
+          "hash": "62bd7addfd8949c133fb4f1e19cc01b7e21856c9242a45b6fa8d606b5c88e4c0"
+        }
+      ]
+    },
+    {
+      "description": "MAIN_NVM available for the user. Its base address and size are dynamic and depend on the product security category and Extended boot version programmed",
+      "label": "USER_NVM",
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": [
+        {
+          "description": "USER_NVM hash depending on Extended Boot 1.1.0.1700 (serial)",
+          "hash": "e837c15410a675238796184d0c9f1c43a7618a2f66e5711b3c310dc305beffb1"
+        },
+        {
+          "description": "USER_NVM hash depending on Extended Boot 1.0.0.1700 (no-serial)",
+          "hash": "ef0507a58dab3eda405719303b7a13193941b5538f6260e60cb836ca13529848"
+        }
+      ]
+    },
+    {
+      "description": "SE_RT_SERVICES_EDC",
+      "region": [
+        [
+          "0x13802000",
+          "32768"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "1.1.0.2361",
+          "hash": "de0b4b76c65df9016e82279a8e507b7f18ce9c5ff80ab24da37947b4a6948f33"
+        }
+      ]
+    },
+    {
+      "description": "SE_RT_SERVICES",
+      "region": [
+        [
+          "0x1380A000",
+          "131072"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "1.1.0.2361",
+          "hash": "b98eb4731467bf183e968eea6526d4f9ffd30838fbf294df6ba536979964c145"
+        }
+      ]
+    },
+    {
+      "description": "ASSET_HASH_LIST",
+      "region": [
+        [
+          "0x1382D000",
+          "128"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "2.0.0.7127",
+          "hash": "1a24efa216177a697894ec68ba0a115c3b7c88228f767ccc26c2449954b77449"
+        }
+      ]
+    },
+    {
+      "description": "TOC2",
+      "region": [
+        [
+          "0x1382D100",
+          "68"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "b8e9949bcd418db416aa1af620bd1afaac93a82df843753863860c45e37f81c2"
+    },
+    {
+      "description": "FACTORY_HASH_LIST",
+      "region": [
+        [
+          "0x1382D080",
+          "128"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "622a4949a906cd57ac49634d88910b278183c79fdc8b79d30b03d94316d20572"
+    },
+    {
+      "description": "SECURE_HASH_LIST",
+      "region": [
+        [
+          "0x1382D144",
+          "128"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "b425a9b75f281a0f9f3e282d7c1d9c28bcaec0f8a5b1330f048537e4a3d15b85"
+    },
+    {
+      "description": "Backup IFX_FW_INTEGRITY_KEY_REVOCATION",
+      "region": [
+        [
+          "0x1382D1D0",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX_FW_ENCRYPTION_KEY_REVOCATION",
+      "region": [
+        [
+          "0x1382D210",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX SE_RT_SERVICES NV Counter",
+      "region": [
+        [
+          "0x1382D250",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup UDS NV Counter",
+      "region": [
+        [
+          "0x1382D290",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "RMA_TRIAL_COUNTER_BACKUP",
+      "region": [
+        [
+          "0x1382D2D0",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "REPROVISIONING_POLICY_BACKUP",
+      "region": [
+        [
+          "0x1382D310",
+          "96"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "2ea9ab9198d1638007400cd2c3bef1cc745b864b76011a0e1bc52180ac6452d4"
+    },
+    {
+      "description": "Development Extended boot hash",
+      "region": [
+        [
+          "0x1382D370",
+          "36"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "description": "empty hash",
+          "value": "0.0.0.0",
+          "hash": "6db65fd59fd356f6729140571b5bcd6bb3b83492a16e1bf0a3884442fc3c8a0e"
+        },
+        {
+          "description": "serial",
+          "value": "1.1.0.1700",
+          "hash": "1c64448f96ed99811795f963ce1e3545b1a6762420043d7c9598e7f15234aef5"
+        },
+        {
+          "description": "no serial",
+          "value": "1.0.0.1700",
+          "hash": "0846625707fbc1e6cb189950b4b29b4bc2706de7ced0a7d6789fdb1fa13ec59e"
+        }
+      ]
+    },
+    {
+      "description": "Development OEM_ROT_KEY",
+      "region": [
+        [
+          "0x1382D394",
+          "69"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "b2573c58abb2fb716b4b48abcf33563645b40e5d3c737da6d4a4ae66ccd9f167"
+    },
+    {
+      "description": "OEM_POLICY, OEM_POLICY_PUBLIC",
+      "region": [
+        [
+          "0x1382D3D9",
+          "100"
+        ],
+        [
+          "0x12001100",
+          "100"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "670283c4865091d331c0697ede4613f04b605f9440ee63217c0bc17cbaed177e"
+    },
+    {
+      "description": "Development REPROVISIONING_POLICY",
+      "region": [
+        [
+          "0x1382D43D",
+          "36"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "bb679f8037e9b9f9de5817006940ef057ffdcb5bd4770b7d4b96fdfc44c0a821"
+    },
+    {
+      "description": "SECURE_HASH",
+      "region": [
+        [
+          "0x1382D461",
+          "36"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "SE_RT_SERVICES_HASH",
+      "region": [
+        [
+          "0x1382D485",
+          "36"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "1.1.0.2361",
+          "hash": "df139296945afbaa269f1e16ae4ee25272b8f9bfea4dde322344da473dfb59d2"
+        }
+      ]
+    },
+    {
+      "description": "PE_TE_SCRATCHPAD",
+      "region": [
+        [
+          "0x1382DB00",
+          "1280"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "SE_RT_SERVICES_BASE_EDC",
+      "region": [
+        [
+          "0x1382E000",
+          "8192"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "1.0.0.2361",
+          "hash": "433e09673c0bf6f3e1bbd9eb1e6c197aafcde16f4dd1649678edc0c20d024028"
+        }
+      ]
+    },
+    {
+      "description": "SE_RT_SERVICES_BASE",
+      "region": [
+        [
+          "0x13830000",
+          "32768"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "1.0.0.2361",
+          "hash": "7ee7352793f4bae548c93800f4ff70773f5103b1da8cf291261a01ca96667b09"
+        }
+      ]
+    },
+    {
+      "description": "RRAM_SE_BOOT_EDC",
+      "region": [
+        [
+          "0x13838000",
+          "6144"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "2.0.0.7127",
+          "hash": "9b282b82f58cd6d698da8f3b525503556fed8f8ba0d4cb47eac0c7514475a3e3"
+        }
+      ]
+    },
+    {
+      "description": "RRAM_SE_BOOT",
+      "region": [
+        [
+          "0x13839800",
+          "24576"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "2.0.0.7127",
+          "hash": "528bff064cdfcb43395e3ec28d33cd17aa65a568ee4c4d9ede73571ff30a6c94"
+        }
+      ]
+    },
+    {
+      "description": "FULL_TRIMS",
+      "region": [
+        [
+          "0x1383F800",
+          "800"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "BASIC_TRIMS",
+      "region": [
+        [
+          "0x1383FC04",
+          "88"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX_ROT_KEY_REVOCATION",
+      "region": [
+        [
+          "0x1383FC60",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup IFX_RMA_MASTER_KEY_REVOCATION",
+      "region": [
+        [
+          "0x1383FCA0",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup OEM_ROT_KEY_REVOCATION",
+      "region": [
+        [
+          "0x1383FCE0",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Backup DLM (RAM Application) NV Counter",
+      "region": [
+        [
+          "0x1383FD20",
+          "64"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "TOC1, BOOT_DEVICE_CFG",
+      "region": [
+        [
+          "0x1383FD60",
+          "100"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "cd054d1c45b231d4715119fa76560582d861d34405f705f0aa2bcd0ea060c905"
+    },
+    {
+      "description": "DIE_ID",
+      "region": [
+        [
+          "0x13C2B000",
+          "14"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_ID_TO",
+      "region": [
+        [
+          "0x13C2B00E",
+          "7"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_ID_MPN",
+      "region": [
+        [
+          "0x13C2B015",
+          "6"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "L0_VERSION",
+      "region": [
+        [
+          "0x13C2B01B",
+          "20"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "L1_VERSION",
+      "region": [
+        [
+          "0x13C2B02F",
+          "28"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_RT_CFG_PUBLIC",
+      "region": [
+        [
+          "0x13C2B04B",
+          "28"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "DEVICE_RT_CFG_PUBLIC_2",
+      "region": [
+        [
+          "0x13C2B067",
+          "512"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "OEM_Chain_of_Trust",
+      "region": [
+        [
+          "0x13C2BBCB",
+          "5120"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "a11937f356a9b0ba592c82f5290bac8016cb33a3f9bc68d3490147c158ebb10d"
+    },
+    {
+      "description": "NVM_RESERVED",
+      "region": [
+        [
+          "0x1383FDC4",
+          "572"
+        ],
+        [
+          "0x1383FB20",
+          "224"
+        ],
+        [
+          "0x1382D552",
+          "1454"
+        ],
+        [
+          "0x13801C00",
+          "1024"
+        ],
+        [
+          "0x13C2CFCB",
+          "53"
+        ],
+        [
+          "0x12000020",
+          "4064"
+        ],
+        [
+          "0x12001164",
+          "202"
+        ],
+        [
+          "0x1383FC5C",
+          "4"
+        ],
+        [
+          "0x1382D1C4",
+          "12"
+        ],
+        [
+          "0x13C2B43B",
+          "144"
+        ],
+        [
+          "0x13C2B693",
+          "824"
+        ],
+        [
+          "0x13C2BB8E",
+          "61"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "7b72c668d7daedfc184d9bd31dce51435043381c6a76148107ec6be90b1091e8"
+    },
+    {
+      "description": "DEV_DEVICE, IFX_ROT_KEY0, IFX_ROT_KEY1, IFX_RMA_MASTER_KEY0, IFX_RMA_MASTER_KEY1",
+      "region": [
+        [
+          "0x50100200",
+          "308"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "76a169446c8849a3b88b3c87b3ad776fae6e6fcc9114b62beb1f6313ef587dc0"
+    },
+    {
+      "description": "Production OEM_ROT_KEY0, Production OEM_ROT_KEY1",
+      "region": [
+        [
+          "0x50100334",
+          "156"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "59bf9091f4cbbd2a8796bfe086a501c57226c42739dcf8ad323e7493ad51e38f"
+    },
+    {
+      "description": "IFX_ROT_KEY_REVOCATION",
+      "region": [
+        [
+          "0x501003D0",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_RMA_MASTER_KEY_REVOCATION",
+      "region": [
+        [
+          "0x501003E0",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "OEM_ROT_KEY_REVOCATION",
+      "region": [
+        [
+          "0x501003F0",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "DLM (RAM Application) NV Counter",
+      "region": [
+        [
+          "0x50100400",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "ASSET_HASH",
+      "region": [
+        [
+          "0x50100410",
+          "36"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "SE_RT_SERVICES_BASE_HASH",
+      "region": [
+        [
+          "0x50100434",
+          "36"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "value": "1.0.0.2361",
+          "hash": "9c3ed5cfcc8f8ebd56f62be94d1aafc4593c659cb941e7aa825e114035c1eb21"
+        }
+      ]
+    },
+    {
+      "description": "FACTORY_HASH",
+      "region": [
+        [
+          "0x50100458",
+          "36"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_REVOCATION_KEY, IFX_FW_INTEGRITY_KEY0, IFX_FW_INTEGRITY_KEY1",
+      "region": [
+        [
+          "0x501004D4",
+          "216"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "39df25d9431cbd4a3512b7862755f92e158b96e72a23928af1f6c7d4f46e7c4a"
+    },
+    {
+      "description": "IFX_FW_INTEGRITY_KEY_REVOCATION",
+      "region": [
+        [
+          "0x50100680",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_FW_ENCRYPTION_KEY_REVOCATION",
+      "region": [
+        [
+          "0x50100690",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "IFX_SE_RT_SERVICES_NV_COUNTER",
+      "region": [
+        [
+          "0x501006A0",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "UDS_NV_COUNTER",
+      "region": [
+        [
+          "0x501006B0",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "RMA_TRIAL_COUNTER",
+      "region": [
+        [
+          "0x501006C0",
+          "16"
+        ]
+      ],
+      "operation": "return"
+    },
+    {
+      "description": "Production REPROVISIONING_POLICY",
+      "region": [
+        [
+          "0x501006D0",
+          "32"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925"
+    },
+    {
+      "description": "Production Extended boot hash",
+      "region": [
+        [
+          "0x501006F0",
+          "36"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": [
+        {
+          "description": "empty hash",
+          "value": "0.0.0.0",
+          "hash": "6db65fd59fd356f6729140571b5bcd6bb3b83492a16e1bf0a3884442fc3c8a0e"
+        },
+        {
+          "description": "serial",
+          "value": "1.1.0.1700",
+          "hash": "1c64448f96ed99811795f963ce1e3545b1a6762420043d7c9598e7f15234aef5"
+        },
+        {
+          "description": "no serial",
+          "value": "1.0.0.1700",
+          "hash": "0846625707fbc1e6cb189950b4b29b4bc2706de7ced0a7d6789fdb1fa13ec59e"
+        }
+      ]
+    },
+    {
+      "description": "RTS OTP area",
+      "region": [
+        [
+          "0x50101000",
+          "4096"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "description": "OTP RESERVED",
+      "region": [
+        [
+          "0x50100714",
+          "2284"
+        ],
+        [
+          "0x501001FC",
+          "4"
+        ],
+        [
+          "0x50100674",
+          "12"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "dec9d7d549b235f140075fe31dc857874d1b4abe699c21c8472bbf0b1a02e705"
+    },
+    {
+      "description": "GENERAL_OTP",
+      "region": [
+        [
+          "0x52204000",
+          "5632"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "OEM",
+      "hash": "07fa8a94dd06b17cdd8a23295f9687cd861be80591e8ab912dafabf21117f264"
+    },
+    {
+      "description": "IFX_POLICY",
+      "region": [
+        [
+          "0x5010047C",
+          "16"
+        ]
+      ],
+      "operation": "hash",
+      "owner": "IFX",
+      "hash": "9e82d4f49917ea68adb7f474e8961e31d3425e122a3c37378b37b489b8ddd049"
+    }
+  ],
+  "certificate": "d28443a10126a0591184a21a130100019841a266726567696f6e81821a120000001820696f7065726174696f6e6672657475726ea466726567696f6e81821a12001000190100696f7065726174696f6e6468617368656f776e6572634f454d64686173685820fb9bf1cc9f28e99a7d6651b319b10e466c213ba6971fc0a61a6a8c68074fd586a266726567696f6e81821a120013521845696f7065726174696f6e6672657475726ea4656c6162656c6c434d33335f4c315f424f4f54696f7065726174696f6e6468617368656f776e657263494658646861736882a26576616c75656a312e312e302e313730306468617368582019ab23e7e96720d7bef258012b5b4f9be81603049d62124bd11660a6b70c1eb9a26576616c75656a312e302e302e313730306468617368582062bd7addfd8949c133fb4f1e19cc01b7e21856c9242a45b6fa8d606b5c88e4c0a4656c6162656c68555345525f4e564d696f7065726174696f6e6468617368656f776e6572634f454d646861736882a164686173685820e837c15410a675238796184d0c9f1c43a7618a2f66e5711b3c310dc305beffb1a164686173685820ef0507a58dab3eda405719303b7a13193941b5538f6260e60cb836ca13529848a466726567696f6e81821a13802000198000696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a312e312e302e3233363164686173685820de0b4b76c65df9016e82279a8e507b7f18ce9c5ff80ab24da37947b4a6948f33a466726567696f6e81821a1380a0001a00020000696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a312e312e302e3233363164686173685820b98eb4731467bf183e968eea6526d4f9ffd30838fbf294df6ba536979964c145a466726567696f6e81821a1382d0001880696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a322e302e302e37313237646861736858201a24efa216177a697894ec68ba0a115c3b7c88228f767ccc26c2449954b77449a466726567696f6e81821a1382d1001844696f7065726174696f6e6468617368656f776e65726349465864686173685820b8e9949bcd418db416aa1af620bd1afaac93a82df843753863860c45e37f81c2a466726567696f6e81821a1382d0801880696f7065726174696f6e6468617368656f776e65726349465864686173685820622a4949a906cd57ac49634d88910b278183c79fdc8b79d30b03d94316d20572a466726567696f6e81821a1382d1441880696f7065726174696f6e6468617368656f776e6572634f454d64686173685820b425a9b75f281a0f9f3e282d7c1d9c28bcaec0f8a5b1330f048537e4a3d15b85a266726567696f6e81821a1382d1d01840696f7065726174696f6e6672657475726ea266726567696f6e81821a1382d2101840696f7065726174696f6e6672657475726ea266726567696f6e81821a1382d2501840696f7065726174696f6e6672657475726ea266726567696f6e81821a1382d2901840696f7065726174696f6e6672657475726ea266726567696f6e81821a1382d2d01840696f7065726174696f6e6672657475726ea466726567696f6e81821a1382d3101860696f7065726174696f6e6468617368656f776e6572634f454d646861736858202ea9ab9198d1638007400cd2c3bef1cc745b864b76011a0e1bc52180ac6452d4a466726567696f6e81821a1382d3701824696f7065726174696f6e6468617368656f776e657263494658646861736883a26576616c756567302e302e302e30646861736858206db65fd59fd356f6729140571b5bcd6bb3b83492a16e1bf0a3884442fc3c8a0ea26576616c75656a312e312e302e31373030646861736858201c64448f96ed99811795f963ce1e3545b1a6762420043d7c9598e7f15234aef5a26576616c75656a312e302e302e31373030646861736858200846625707fbc1e6cb189950b4b29b4bc2706de7ced0a7d6789fdb1fa13ec59ea466726567696f6e81821a1382d3941845696f7065726174696f6e6468617368656f776e6572634f454d64686173685820b2573c58abb2fb716b4b48abcf33563645b40e5d3c737da6d4a4ae66ccd9f167a466726567696f6e82821a1382d3d91864821a120011001864696f7065726174696f6e6468617368656f776e6572634f454d64686173685820670283c4865091d331c0697ede4613f04b605f9440ee63217c0bc17cbaed177ea466726567696f6e81821a1382d43d1824696f7065726174696f6e6468617368656f776e6572634f454d64686173685820bb679f8037e9b9f9de5817006940ef057ffdcb5bd4770b7d4b96fdfc44c0a821a266726567696f6e81821a1382d4611824696f7065726174696f6e6672657475726ea466726567696f6e81821a1382d4851824696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a312e312e302e3233363164686173685820df139296945afbaa269f1e16ae4ee25272b8f9bfea4dde322344da473dfb59d2a266726567696f6e81821a1382db00190500696f7065726174696f6e6672657475726ea466726567696f6e81821a1382e000192000696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a312e302e302e3233363164686173685820433e09673c0bf6f3e1bbd9eb1e6c197aafcde16f4dd1649678edc0c20d024028a466726567696f6e81821a13830000198000696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a312e302e302e32333631646861736858207ee7352793f4bae548c93800f4ff70773f5103b1da8cf291261a01ca96667b09a466726567696f6e81821a13838000191800696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a322e302e302e37313237646861736858209b282b82f58cd6d698da8f3b525503556fed8f8ba0d4cb47eac0c7514475a3e3a466726567696f6e81821a13839800196000696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a322e302e302e3731323764686173685820528bff064cdfcb43395e3ec28d33cd17aa65a568ee4c4d9ede73571ff30a6c94a266726567696f6e81821a1383f800190320696f7065726174696f6e6672657475726ea266726567696f6e81821a1383fc041858696f7065726174696f6e6672657475726ea266726567696f6e81821a1383fc601840696f7065726174696f6e6672657475726ea266726567696f6e81821a1383fca01840696f7065726174696f6e6672657475726ea266726567696f6e81821a1383fce01840696f7065726174696f6e6672657475726ea266726567696f6e81821a1383fd201840696f7065726174696f6e6672657475726ea466726567696f6e81821a1383fd601864696f7065726174696f6e6468617368656f776e65726349465864686173685820cd054d1c45b231d4715119fa76560582d861d34405f705f0aa2bcd0ea060c905a266726567696f6e81821a13c2b0000e696f7065726174696f6e6672657475726ea266726567696f6e81821a13c2b00e07696f7065726174696f6e6672657475726ea266726567696f6e81821a13c2b01506696f7065726174696f6e6672657475726ea266726567696f6e81821a13c2b01b14696f7065726174696f6e6672657475726ea266726567696f6e81821a13c2b02f181c696f7065726174696f6e6672657475726ea266726567696f6e81821a13c2b04b181c696f7065726174696f6e6672657475726ea266726567696f6e81821a13c2b067190200696f7065726174696f6e6672657475726ea466726567696f6e81821a13c2bbcb191400696f7065726174696f6e6468617368656f776e6572634f454d64686173685820a11937f356a9b0ba592c82f5290bac8016cb33a3f9bc68d3490147c158ebb10da466726567696f6e8c821a1383fdc419023c821a1383fb2018e0821a1382d5521905ae821a13801c00190400821a13c2cfcb1835821a12000020190fe0821a1200116418ca821a1383fc5c04821a1382d1c40c821a13c2b43b1890821a13c2b693190338821a13c2bb8e183d696f7065726174696f6e6468617368656f776e657263494658646861736858207b72c668d7daedfc184d9bd31dce51435043381c6a76148107ec6be90b1091e8a466726567696f6e81821a50100200190134696f7065726174696f6e6468617368656f776e6572634946586468617368582076a169446c8849a3b88b3c87b3ad776fae6e6fcc9114b62beb1f6313ef587dc0a466726567696f6e81821a50100334189c696f7065726174696f6e6468617368656f776e6572634f454d6468617368582059bf9091f4cbbd2a8796bfe086a501c57226c42739dcf8ad323e7493ad51e38fa266726567696f6e81821a501003d010696f7065726174696f6e6672657475726ea266726567696f6e81821a501003e010696f7065726174696f6e6672657475726ea266726567696f6e81821a501003f010696f7065726174696f6e6672657475726ea266726567696f6e81821a5010040010696f7065726174696f6e6672657475726ea266726567696f6e81821a501004101824696f7065726174696f6e6672657475726ea466726567696f6e81821a501004341824696f7065726174696f6e6468617368656f776e657263494658646861736881a26576616c75656a312e302e302e32333631646861736858209c3ed5cfcc8f8ebd56f62be94d1aafc4593c659cb941e7aa825e114035c1eb21a266726567696f6e81821a501004581824696f7065726174696f6e6672657475726ea466726567696f6e81821a501004d418d8696f7065726174696f6e6468617368656f776e6572634946586468617368582039df25d9431cbd4a3512b7862755f92e158b96e72a23928af1f6c7d4f46e7c4aa266726567696f6e81821a5010068010696f7065726174696f6e6672657475726ea266726567696f6e81821a5010069010696f7065726174696f6e6672657475726ea266726567696f6e81821a501006a010696f7065726174696f6e6672657475726ea266726567696f6e81821a501006b010696f7065726174696f6e6672657475726ea266726567696f6e81821a501006c010696f7065726174696f6e6672657475726ea466726567696f6e81821a501006d01820696f7065726174696f6e6468617368656f776e6572634f454d6468617368582066687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925a466726567696f6e81821a501006f01824696f7065726174696f6e6468617368656f776e657263494658646861736883a26576616c756567302e302e302e30646861736858206db65fd59fd356f6729140571b5bcd6bb3b83492a16e1bf0a3884442fc3c8a0ea26576616c75656a312e312e302e31373030646861736858201c64448f96ed99811795f963ce1e3545b1a6762420043d7c9598e7f15234aef5a26576616c75656a312e302e302e31373030646861736858200846625707fbc1e6cb189950b4b29b4bc2706de7ced0a7d6789fdb1fa13ec59ea466726567696f6e81821a50101000191000696f7065726174696f6e6468617368656f776e6572634f454d64686173685820ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7a466726567696f6e83821a501007141908ec821a501001fc04821a501006740c696f7065726174696f6e6468617368656f776e65726349465864686173685820dec9d7d549b235f140075fe31dc857874d1b4abe699c21c8472bbf0b1a02e705a466726567696f6e81821a52204000191600696f7065726174696f6e6468617368656f776e6572634f454d6468617368582007fa8a94dd06b17cdd8a23295f9687cd861be80591e8ab912dafabf21117f264a466726567696f6e81821a5010047c10696f7065726174696f6e6468617368656f776e657263494658646861736858209e82d4f49917ea68adb7f474e8961e31d3425e122a3c37378b37b489b8ddd04966646576696365a36273694291ed6666616d696c794215016372657641215840a45da0b43b541af15eb3fa9f14b36bcbe73f3392b2d4de11a563e826da6b6c8a4e145b132c4c56587d63f613e0d1137bc3d89eb2cab8acda83c6add71590b2f3"
+}

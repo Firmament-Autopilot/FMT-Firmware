@@ -1,0 +1,19 @@
+{
+  "image": {
+    "path": "",
+    "address": "0x34008000"
+  },
+  "dlm": {
+    "path": "factory_reset_dlm.hex"
+  },
+  "out_results": {
+    "path": "output.bin",
+    "offset": "0x1c000"
+  },
+  "dfu_commands": {
+    "path": "factory_reset_dfu.mtbdfu"
+  },
+  "allowed_lcs": [
+    "NORMAL_PROVISIONED"
+  ]
+}

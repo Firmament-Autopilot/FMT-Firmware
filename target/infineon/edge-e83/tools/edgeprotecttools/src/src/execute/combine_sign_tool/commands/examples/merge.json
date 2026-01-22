@@ -1,0 +1,36 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "merge command example",
+            "description": "Merges two or more hex/bin files into a single file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "merge",
+                    "inputs": [
+                        {
+                            "description": "CM33 Secure  application",
+                            "file": "./rram_1.hex"
+                        },
+                        {
+                            "description": "CM33 Non-Secure application",
+                            "file": "./rram_2.hex"
+                        },
+                        {
+                            "description": "CM33 Secure + CM33 Non-Secure application",
+                            "file": "./rram_3.hex"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "CM33 Secure + CM33 Non-Secure application merged to a one file",
+                            "format": "ihex",
+                            "file": "./cmd_merge_3_files.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

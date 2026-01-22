@@ -1,0 +1,4 @@
+name: cyapp_device_integrity_exam
+description: This application executes to verify that the device is in the expected state.
+type: Firmware application
+version: 2.0.0.5683

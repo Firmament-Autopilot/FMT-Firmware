@@ -1,0 +1,29 @@
+{
+  "extensions": [
+    {
+      "name": "Vendor name",
+      "oid": "1.3.6.1.4.1.15789.1",
+      "data": "0x41"
+    },
+    {
+      "name": "FAMILY_ID",
+      "oid": "1.3.6.1.4.1.15789.2",
+      "data": "0x115"
+    },
+    {
+      "name": "SI_REVISION_ID",
+      "oid": "1.3.6.1.4.1.15789.3",
+      "data": "0x11"
+    },
+    {
+      "name": "Certificate type (x509 - 0x1)",
+      "oid": "1.3.6.1.4.1.15789.4",
+      "data": "0x1"
+    },
+    {
+      "name": "Date",
+      "oid": "1.3.6.1.4.1.15789.5",
+      "data": "0x20220401"
+    }
+  ]
+}

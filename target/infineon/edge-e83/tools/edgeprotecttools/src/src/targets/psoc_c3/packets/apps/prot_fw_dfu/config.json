@@ -1,0 +1,17 @@
+{
+  "image": {
+    "path": "cyapp_prot_fw_dfu_signed_ifx0.bin",
+    "address": "0x34003000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "0x3400D000"
+  },
+  "dlm":{
+	"path": "prot_fw_dfu_dlm.hex"
+  },
+  "allowed_lcs": [
+    "NORMAL_PROVISIONED",
+    "SECURE"
+  ]
+}
