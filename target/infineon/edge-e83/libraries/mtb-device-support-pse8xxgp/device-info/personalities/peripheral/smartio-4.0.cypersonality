@@ -1,0 +1,483 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file smartio.cypersonality
+* \version 4.0
+*
+* \brief
+* Smart I/O personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2018-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='smartio' name='Smart I/O' version='4.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22ioss,mxs40ioss,mxs40sioss' />
+      <Resource name='ioss\.port\.smartio' />
+    </MappingRules>
+  </FittingRules>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__smartio.html' linkText='Open SmartIO Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <!-- External tools -->
+    <ParamCustom id='SmartIOConfigurator' name='Smart I/O Configurator' group='External Tools' path='`${cy_tools_path("smartio-configurator") . "/smartio-configurator"}`' visible='true' editable='true' desc='Launch Smart I/O Configurator'>
+        <Arg value='`${"--design=" . cy_design_file()}`' />
+        <Arg value='`${"--library=" . cy_libs_file()}`' />
+        <Arg value='`${"--resource=ioss[0].port[" . getInstNumber("port") . "].smartio[0]"}`' />
+    </ParamCustom>
+
+    <!--General-->
+    <ParamChoice id='clkSrc' name='Clock Source' group='General' default='CY_SMARTIO_CLK_ASYNC' visible='false' editable='true' desc='Smart I/O instance clock source' >
+      <Entry name='Signal on I/O terminal 0' value='CY_SMARTIO_CLK_IO0' visible='true' />
+      <Entry name='Signal on I/O terminal 1' value='CY_SMARTIO_CLK_IO1' visible='true' />
+      <Entry name='Signal on I/O terminal 2' value='CY_SMARTIO_CLK_IO2' visible='true' />
+      <Entry name='Signal on I/O terminal 3' value='CY_SMARTIO_CLK_IO3' visible='true' />
+      <Entry name='Signal on I/O terminal 4' value='CY_SMARTIO_CLK_IO4' visible='true' />
+      <Entry name='Signal on I/O terminal 5' value='CY_SMARTIO_CLK_IO5' visible='true' />
+      <Entry name='Signal on I/O terminal 6' value='CY_SMARTIO_CLK_IO6' visible='true' />
+      <Entry name='Signal on I/O terminal 7' value='CY_SMARTIO_CLK_IO7' visible='true' />
+      <Entry name='Signal on Chip terminal 0' value='CY_SMARTIO_CLK_CHIP0' visible='true' />
+      <Entry name='Signal on Chip terminal 1' value='CY_SMARTIO_CLK_CHIP1' visible='true' />
+      <Entry name='Signal on Chip terminal 2' value='CY_SMARTIO_CLK_CHIP2' visible='true' />
+      <Entry name='Signal on Chip terminal 3' value='CY_SMARTIO_CLK_CHIP3' visible='true' />
+      <Entry name='Signal on Chip terminal 4' value='CY_SMARTIO_CLK_CHIP4' visible='true' />
+      <Entry name='Signal on Chip terminal 5' value='CY_SMARTIO_CLK_CHIP5' visible='true' />
+      <Entry name='Signal on Chip terminal 6' value='CY_SMARTIO_CLK_CHIP6' visible='true' />
+      <Entry name='Signal on Chip terminal 7' value='CY_SMARTIO_CLK_CHIP7' visible='true' />
+      <Entry name='Peripheral clock divider (Active)' value='CY_SMARTIO_CLK_DIVACT' visible='true' />
+      <Entry name='Peripheral clock divider (Deep-Sleep)' value='CY_SMARTIO_CLK_DIVDS' visible='true' />
+      <Entry name='Peripheral clock divider (Hibernate)' value='CY_SMARTIO_CLK_DIVHIB' visible='true' />
+      <Entry name='Low-Frequency Clock (Clk_LF)' value='CY_SMARTIO_CLK_LFCLK' visible='true' />
+      <Entry name='Asynchronous' value='CY_SMARTIO_CLK_ASYNC' visible='true' />
+    </ParamChoice>
+
+    <ParamSignal port='clock[0]' name='Clock Divider' group='General' visible='`${(clkSrc eq CY_SMARTIO_CLK_DIVACT) || (clkSrc eq CY_SMARTIO_CLK_DIVDS) || (clkSrc eq CY_SMARTIO_CLK_DIVHIB)}`' desc='Peripheral clock divider to assign to the Smart I/O instance.' canBeEmpty='`${!((clkSrc eq CY_SMARTIO_CLK_DIVACT) || (clkSrc eq CY_SMARTIO_CLK_DIVDS) || (clkSrc eq CY_SMARTIO_CLK_DIVHIB))}`' />
+    <Repeat count='8'>
+      <ParamBool id='lutEn$idx'  name='LUT$idx Enable' group='General' default='false' visible='false' editable='true' desc='Enable/Disable LUT$idx configuration' />
+    </Repeat>
+    <ParamBool id='duEn'    name='DU Enable'   group='General' default='false' visible='false' editable='true' desc='Enable/Disable DU configuration' />
+    <ParamBool id='hldOvr'  name='Hold Override' group='General' default='false' visible='true' editable='true' desc='Enable/Disable hold override (Deep-Sleep functionality)' />
+
+    <!--I/O Terminal -->
+    <Repeat count='8'>
+      <ParamBool id='hasIoIn$idx' default='`${hasVisibleOption("io_in[$idx]")}`' desc='IO in signal available' />
+      <ParamBool id='hasIoOut$idx' default='`${hasVisibleOption("io_out[$idx]")}`' desc='IO out signal available' />
+      <ParamBool id='hasAnyIo$idx' default='`${hasIoIn$idx || hasIoOut$idx}`' desc='any io connection available'/>
+      <ParamChoice id='ioMode$idx' name='I/O terminal $idx mode' group='I/O Terminal' default='`${hasAnyIo$idx ? CY_SMARTIO_BYPASS : CY_SMARTIO_NONE}`' visible='false' editable='`${hasAnyIo$idx}`' desc='I/O terminal $idx signal mode/direction' >
+        <Entry name='Bypass' value='CY_SMARTIO_BYPASS' visible='`${hasAnyIo$idx}`' />
+        <Entry name='Input(Sync)' value='CY_SMARTIO_SYNC_INPUT' visible='`${(clkSrc ne CY_SMARTIO_CLK_ASYNC) &amp;&amp; hasIoIn$idx}`' />
+        <Entry name='Input(Async)' value='CY_SMARTIO_ASYNC_INPUT' visible='`${hasIoIn$idx}`' />
+        <Entry name='Output' value='CY_SMARTIO_OUTPUT' visible='`${hasIoOut$idx}`' />
+        <Entry name='None' value='CY_SMARTIO_NONE' visible='true' />
+      </ParamChoice>
+      <ParamSignal port='io_in[$idx]' name='I/O terminal $idx input' group='I/O Terminal' visible='`${(ioMode$idx eq CY_SMARTIO_SYNC_INPUT) || (ioMode$idx eq CY_SMARTIO_ASYNC_INPUT)}`' desc='I/O terminal $idx input signal source' canBeEmpty='`${!((ioMode$idx eq CY_SMARTIO_SYNC_INPUT) || (ioMode$idx eq CY_SMARTIO_ASYNC_INPUT))}`' />
+      <ParamSignal port='io_out[$idx]' name='I/O terminal $idx output' group='I/O Terminal' visible='`${(ioMode$idx eq CY_SMARTIO_OUTPUT)}`' desc='I/O terminal $idx output signal source' canBeEmpty='`${!((ioMode$idx eq CY_SMARTIO_OUTPUT))}`' />
+    </Repeat>
+
+    <!--Chip Terminal -->
+    <Repeat count='8'>
+      <ParamBool id='chipInConnected$idx' default='`${hasConnection("chip_in", $idx)}`' desc='chip in connected' />
+      <ParamBool id='chipOutConnected$idx' default='`${hasConnection("chip_out", $idx)}`' desc='chip out connected' />
+      <ParamBool id='chipInoutConnected$idx' default='`${hasConnection("chip_inout", $idx)}`' desc='chip inout connected' />
+      <ParamBool id='hasChipOut$idx' default='`${hasVisibleOption("chip_out[$idx]")}`'  desc='chip out connection available' />
+      <ParamBool id='hasChipIn$idx' default='`${hasVisibleOption("chip_in[$idx]")}`' desc='chip in connection available' />
+      <ParamBool id='hasChipInout$idx' default='`${hasVisibleOption("chip_inout[$idx]")}`' desc='chip inout connection available'/>
+      <ParamBool id='hasAnyChip$idx' default='`${hasChipIn$idx || hasChipOut$idx || hasChipInout$idx}`' desc='any chip connection available'/>
+
+      <!-- Chip_in and chip_out&apos;s visibility expressions appear reversed. They are not. The in/out are with respect to the chip -->
+      <ParamChoice id='chipMode$idx' name='Chip terminal $idx mode' group='Chip Terminal' default='`${hasAnyChip$idx &amp;&amp; hasAnyIo$idx ? CY_SMARTIO_BYPASS : CY_SMARTIO_NONE}`' visible='false' editable='`${hasAnyChip$idx}`' desc='Chip terminal $idx signal mode/direction' >
+        <Entry name='Bypass' value='CY_SMARTIO_BYPASS' visible='`${hasAnyChip$idx &amp;&amp; hasAnyIo$idx}`' />
+        <Entry name='Input(Sync)' value='CY_SMARTIO_SYNC_INPUT' visible='`${(clkSrc ne CY_SMARTIO_CLK_ASYNC) &amp;&amp; (hasChipOut$idx || hasChipInout$idx)}`' />
+        <Entry name='Input(Async)' value='CY_SMARTIO_ASYNC_INPUT' visible='`${hasChipOut$idx || hasChipInout$idx}`' />
+        <Entry name='Output' value='CY_SMARTIO_OUTPUT' visible='`${hasChipIn$idx || hasChipInout$idx}`' />
+        <Entry name='None' value='CY_SMARTIO_NONE' visible='true' />
+      </ParamChoice>
+      <ParamSignal port='chip_in[$idx]' name='Chip terminal $idx output' group='Chip Terminal' visible='`${(chipMode$idx eq CY_SMARTIO_OUTPUT)}`' desc='Chip terminal $idx output signal source' canBeEmpty='`${!(chipMode$idx eq CY_SMARTIO_OUTPUT) || chipInoutConnected$idx}`' />
+      <ParamSignal port='chip_out[$idx]' name='Chip terminal $idx input' group='Chip Terminal' visible='`${(chipMode$idx eq CY_SMARTIO_SYNC_INPUT) || (chipMode$idx eq CY_SMARTIO_ASYNC_INPUT)}`' desc='Chip terminal $idx input signal source' canBeEmpty='`${!((chipMode$idx eq CY_SMARTIO_SYNC_INPUT) || (chipMode$idx eq CY_SMARTIO_ASYNC_INPUT)) || chipInoutConnected$idx}`' />
+      <ParamSignal port='chip_inout[$idx]' name='Chip terminal $idx inout' group='Chip Terminal' visible='`${(chipMode$idx eq CY_SMARTIO_OUTPUT) || (chipMode$idx eq CY_SMARTIO_SYNC_INPUT) || (chipMode$idx eq CY_SMARTIO_ASYNC_INPUT)}`' desc='Chip terminal $idx inout signal source' canBeEmpty='`${!((chipMode$idx eq CY_SMARTIO_OUTPUT) || (chipMode$idx eq CY_SMARTIO_SYNC_INPUT) || (chipMode$idx eq CY_SMARTIO_ASYNC_INPUT)) || chipInConnected$idx || chipOutConnected$idx}`' />
+    </Repeat>
+
+    <!--LUTs -->
+    <Repeat count='8'>
+      <ParamChoice id='lut$idxOpcode' name='Op-code' group='LUT$idx' default='CY_SMARTIO_LUTOPC_COMB' visible='false' editable='true' desc='LUT$idx opcode' >
+        <Entry name='Combinatorial output' value='CY_SMARTIO_LUTOPC_COMB' visible='true' />
+        <Entry name='TR2 gated, combinatorial output' value='CY_SMARTIO_LUTOPC_GATED_TR2' visible='`${(clkSrc ne CY_SMARTIO_CLK_ASYNC)}`' />
+        <Entry name='Sequential (gated) output' value='CY_SMARTIO_LUTOPC_GATED_OUT' visible='`${(clkSrc ne CY_SMARTIO_CLK_ASYNC)}`' />
+        <Entry name='Asynchronous Set/Reset mode' value='CY_SMARTIO_LUTOPC_ASYNC_SR' visible='`${(clkSrc ne CY_SMARTIO_CLK_ASYNC)}`' />
+      </ParamChoice>
+
+      <!-- The smartio configurator adds the Notes box if it finds a string param with the specific id - lut#Notes. -->
+      <ParamString id='lut$idxNotes' name='Notes for LUT $idx' group='Internal' visible='false' editable='true' default='' desc='Notes for LUT $idx' />
+
+      <ParamRange id='lut$idxMap' name='LUT mapping' group='LUT$idx' default='0' min='0' max='`${pow(2, 8)-1}`' resolution='1' visible='false' editable='true' desc='LUT truth table: LUT out = 3&apos;b{TR2,TR1,TR0}' />
+
+      <ParamChoice id='lut$idxTr0' name='Input TR0' group='LUT$idx' default='CY_SMARTIO_LUTTR_INVALID' visible='false' editable='true' desc='LUT$idx input trigger 0 selection' >
+        <Entry name='DU' value='CY_SMARTIO_LUTTR_DU_OUT' visible='true' />
+        <Entry name='LUT1' value='CY_SMARTIO_LUTTR_LUT1_OUT' visible='true' />
+        <Entry name='LUT2' value='CY_SMARTIO_LUTTR_LUT2_OUT' visible='true' />
+        <Entry name='LUT3' value='CY_SMARTIO_LUTTR_LUT3_OUT' visible='true' />
+        <Entry name='LUT4' value='CY_SMARTIO_LUTTR_LUT4_OUT' visible='true' />
+        <Entry name='LUT5' value='CY_SMARTIO_LUTTR_LUT5_OUT' visible='true' />
+        <Entry name='LUT6' value='CY_SMARTIO_LUTTR_LUT6_OUT' visible='true' />
+        <Entry name='LUT7' value='CY_SMARTIO_LUTTR_LUT7_OUT' visible='true' />
+        <Entry name='Chip 0' value='CY_SMARTIO_LUTTR_CHIP0' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP0)) : false}`' />
+        <Entry name='Chip 1' value='CY_SMARTIO_LUTTR_CHIP1' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP1)) : false}`' />
+        <Entry name='Chip 2' value='CY_SMARTIO_LUTTR_CHIP2' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP2)) : false}`' />
+        <Entry name='Chip 3' value='CY_SMARTIO_LUTTR_CHIP3' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP3)) : false}`' />
+        <Entry name='Chip 4' value='CY_SMARTIO_LUTTR_CHIP4' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP4)) : false}`' />
+        <Entry name='Chip 5' value='CY_SMARTIO_LUTTR_CHIP5' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP5)) : false}`' />
+        <Entry name='Chip 6' value='CY_SMARTIO_LUTTR_CHIP6' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP6)) : false}`' />
+        <Entry name='Chip 7' value='CY_SMARTIO_LUTTR_CHIP7' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP7)) : false}`' />
+        <Entry name='I/O 0' value='CY_SMARTIO_LUTTR_IO0' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO0)) : false}`' />
+        <Entry name='I/O 1' value='CY_SMARTIO_LUTTR_IO1' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO1)) : false}`' />
+        <Entry name='I/O 2' value='CY_SMARTIO_LUTTR_IO2' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO2)) : false}`' />
+        <Entry name='I/O 3' value='CY_SMARTIO_LUTTR_IO3' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO3)) : false}`' />
+        <Entry name='I/O 4' value='CY_SMARTIO_LUTTR_IO4' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO4)) : false}`' />
+        <Entry name='I/O 5' value='CY_SMARTIO_LUTTR_IO5' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO5)) : false}`' />
+        <Entry name='I/O 6' value='CY_SMARTIO_LUTTR_IO6' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO6)) : false}`' />
+        <Entry name='I/O 7' value='CY_SMARTIO_LUTTR_IO7' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO7)) : false}`' />
+        <Entry name='None' value='CY_SMARTIO_LUTTR_INVALID' visible='true' />
+      </ParamChoice>
+
+      <ParamChoice id='lut$idxTr1' name='Input TR1' group='LUT$idx' default='CY_SMARTIO_LUTTR_INVALID' visible='false' editable='true' desc='LUT$idx input trigger 1 selection' >
+        <Entry name='LUT0' value='CY_SMARTIO_LUTTR_LUT0_OUT' visible='true' />
+        <Entry name='LUT1' value='CY_SMARTIO_LUTTR_LUT1_OUT' visible='true' />
+        <Entry name='LUT2' value='CY_SMARTIO_LUTTR_LUT2_OUT' visible='true' />
+        <Entry name='LUT3' value='CY_SMARTIO_LUTTR_LUT3_OUT' visible='true' />
+        <Entry name='LUT4' value='CY_SMARTIO_LUTTR_LUT4_OUT' visible='true' />
+        <Entry name='LUT5' value='CY_SMARTIO_LUTTR_LUT5_OUT' visible='true' />
+        <Entry name='LUT6' value='CY_SMARTIO_LUTTR_LUT6_OUT' visible='true' />
+        <Entry name='LUT7' value='CY_SMARTIO_LUTTR_LUT7_OUT' visible='true' />
+        <Entry name='Chip 0' value='CY_SMARTIO_LUTTR_CHIP0' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP0)) : false}`' />
+        <Entry name='Chip 1' value='CY_SMARTIO_LUTTR_CHIP1' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP1)) : false}`' />
+        <Entry name='Chip 2' value='CY_SMARTIO_LUTTR_CHIP2' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP2)) : false}`' />
+        <Entry name='Chip 3' value='CY_SMARTIO_LUTTR_CHIP3' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP3)) : false}`' />
+        <Entry name='Chip 4' value='CY_SMARTIO_LUTTR_CHIP4' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP4)) : false}`' />
+        <Entry name='Chip 5' value='CY_SMARTIO_LUTTR_CHIP5' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP5)) : false}`' />
+        <Entry name='Chip 6' value='CY_SMARTIO_LUTTR_CHIP6' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP6)) : false}`' />
+        <Entry name='Chip 7' value='CY_SMARTIO_LUTTR_CHIP7' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP7)) : false}`' />
+        <Entry name='I/O 0' value='CY_SMARTIO_LUTTR_IO0' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO0)) : false}`' />
+        <Entry name='I/O 1' value='CY_SMARTIO_LUTTR_IO1' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO1)) : false}`' />
+        <Entry name='I/O 2' value='CY_SMARTIO_LUTTR_IO2' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO2)) : false}`' />
+        <Entry name='I/O 3' value='CY_SMARTIO_LUTTR_IO3' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO3)) : false}`' />
+        <Entry name='I/O 4' value='CY_SMARTIO_LUTTR_IO4' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO4)) : false}`' />
+        <Entry name='I/O 5' value='CY_SMARTIO_LUTTR_IO5' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO5)) : false}`' />
+        <Entry name='I/O 6' value='CY_SMARTIO_LUTTR_IO6' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO6)) : false}`' />
+        <Entry name='I/O 7' value='CY_SMARTIO_LUTTR_IO7' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO7)) : false}`' />
+        <Entry name='None' value='CY_SMARTIO_LUTTR_INVALID' visible='true' />
+      </ParamChoice>
+
+      <ParamChoice id='lut$idxTr2' name='Input TR2' group='LUT$idx' default='CY_SMARTIO_LUTTR_INVALID' visible='false' editable='true' desc='LUT$idx input trigger 2 selection' >
+        <Entry name='LUT0' value='CY_SMARTIO_LUTTR_LUT0_OUT' visible='true' />
+        <Entry name='LUT1' value='CY_SMARTIO_LUTTR_LUT1_OUT' visible='true' />
+        <Entry name='LUT2' value='CY_SMARTIO_LUTTR_LUT2_OUT' visible='true' />
+        <Entry name='LUT3' value='CY_SMARTIO_LUTTR_LUT3_OUT' visible='true' />
+        <Entry name='LUT4' value='CY_SMARTIO_LUTTR_LUT4_OUT' visible='true' />
+        <Entry name='LUT5' value='CY_SMARTIO_LUTTR_LUT5_OUT' visible='true' />
+        <Entry name='LUT6' value='CY_SMARTIO_LUTTR_LUT6_OUT' visible='true' />
+        <Entry name='LUT7' value='CY_SMARTIO_LUTTR_LUT7_OUT' visible='true' />
+        <Entry name='Chip 0' value='CY_SMARTIO_LUTTR_CHIP0' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP0)) : false}`' />
+        <Entry name='Chip 1' value='CY_SMARTIO_LUTTR_CHIP1' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP1)) : false}`' />
+        <Entry name='Chip 2' value='CY_SMARTIO_LUTTR_CHIP2' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP2)) : false}`' />
+        <Entry name='Chip 3' value='CY_SMARTIO_LUTTR_CHIP3' visible='`${hasAnyChip$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP3)) : false}`' />
+        <Entry name='Chip 4' value='CY_SMARTIO_LUTTR_CHIP4' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP4)) : false}`' />
+        <Entry name='Chip 5' value='CY_SMARTIO_LUTTR_CHIP5' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP5)) : false}`' />
+        <Entry name='Chip 6' value='CY_SMARTIO_LUTTR_CHIP6' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP6)) : false}`' />
+        <Entry name='Chip 7' value='CY_SMARTIO_LUTTR_CHIP7' visible='`${hasAnyChip$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_CHIP7)) : false}`' />
+        <Entry name='I/O 0' value='CY_SMARTIO_LUTTR_IO0' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO0)) : false}`' />
+        <Entry name='I/O 1' value='CY_SMARTIO_LUTTR_IO1' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO1)) : false}`' />
+        <Entry name='I/O 2' value='CY_SMARTIO_LUTTR_IO2' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO2)) : false}`' />
+        <Entry name='I/O 3' value='CY_SMARTIO_LUTTR_IO3' visible='`${hasAnyIo$idx ? (($idx lt 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO3)) : false}`' />
+        <Entry name='I/O 4' value='CY_SMARTIO_LUTTR_IO4' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO4)) : false}`' />
+        <Entry name='I/O 5' value='CY_SMARTIO_LUTTR_IO5' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO5)) : false}`' />
+        <Entry name='I/O 6' value='CY_SMARTIO_LUTTR_IO6' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO6)) : false}`' />
+        <Entry name='I/O 7' value='CY_SMARTIO_LUTTR_IO7' visible='`${hasAnyIo$idx ? (($idx ge 4) &amp;&amp; (clkSrc ne CY_SMARTIO_CLK_IO7)) : false}`' />
+        <Entry name='None' value='CY_SMARTIO_LUTTR_INVALID' visible='true' />
+      </ParamChoice>
+
+    </Repeat>
+
+    <!--DU -->
+    <ParamChoice id='duOpcode' name='Op-code' group='DU' default='CY_SMARTIO_DUOPC_INCR' visible='false' editable='true' desc='DU opcode' >
+      <Entry name='Increment' value='CY_SMARTIO_DUOPC_INCR' visible='true' />
+      <Entry name='Decrement' value='CY_SMARTIO_DUOPC_DECR' visible='true' />
+      <Entry name='Increment and wrap' value='CY_SMARTIO_DUOPC_INCR_WRAP' visible='true' />
+      <Entry name='Decrement and wrap' value='CY_SMARTIO_DUOPC_DECR_WRAP' visible='true' />
+      <Entry name='Increment/Decrement' value='CY_SMARTIO_DUOPC_INCR_DECR' visible='true' />
+      <Entry name='Increment/Decrement and wrap' value='CY_SMARTIO_DUOPC_INCR_DECR_WRAP' visible='true' />
+      <Entry name='Rotate Right' value='CY_SMARTIO_DUOPC_ROR' visible='true' />
+      <Entry name='Shift Right' value='CY_SMARTIO_DUOPC_SHR' visible='true' />
+      <Entry name='AND, OR' value='CY_SMARTIO_DUOPC_AND_OR' visible='true' />
+      <Entry name='Shift right and Majority 3' value='CY_SMARTIO_DUOPC_SHR_MAJ3' visible='true' />
+      <Entry name='Shift right and Compare' value='CY_SMARTIO_DUOPC_SHR_EQL' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='duSize' name='Size' group='DU' default='CY_SMARTIO_DUSIZE_8' visible='false' editable='true' desc='DU operand size/width' >
+      <Entry name='1-bit size/width operand' value='CY_SMARTIO_DUSIZE_1' visible='true' />
+      <Entry name='2-bits size/width operand' value='CY_SMARTIO_DUSIZE_2' visible='true' />
+      <Entry name='3-bits size/width operand' value='CY_SMARTIO_DUSIZE_3' visible='true' />
+      <Entry name='4-bits size/width operand' value='CY_SMARTIO_DUSIZE_4' visible='true' />
+      <Entry name='5-bits size/width operand' value='CY_SMARTIO_DUSIZE_5' visible='true' />
+      <Entry name='6-bits size/width operand' value='CY_SMARTIO_DUSIZE_6' visible='true' />
+      <Entry name='7-bits size/width operand' value='CY_SMARTIO_DUSIZE_7' visible='true' />
+      <Entry name='8-bits size/width operand' value='CY_SMARTIO_DUSIZE_8' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='duTr0' name='Input TR0' group='DU' default='CY_SMARTIO_DUTR_ZERO' visible='false' editable='true' desc='DU input trigger 0 selection' >
+      <Entry name='Constant 0' value='CY_SMARTIO_DUTR_ZERO' visible='true' />
+      <Entry name='Constant 1' value='CY_SMARTIO_DUTR_ONE' visible='true' />
+      <Entry name='DU' value='CY_SMARTIO_DUTR_DU_OUT' visible='true' />
+      <Entry name='LUT0' value='CY_SMARTIO_DUTR_LUT0_OUT' visible='true' />
+      <Entry name='LUT1' value='CY_SMARTIO_DUTR_LUT1_OUT' visible='true' />
+      <Entry name='LUT2' value='CY_SMARTIO_DUTR_LUT2_OUT' visible='true' />
+      <Entry name='LUT3' value='CY_SMARTIO_DUTR_LUT3_OUT' visible='true' />
+      <Entry name='LUT4' value='CY_SMARTIO_DUTR_LUT4_OUT' visible='true' />
+      <Entry name='LUT5' value='CY_SMARTIO_DUTR_LUT5_OUT' visible='true' />
+      <Entry name='LUT6' value='CY_SMARTIO_DUTR_LUT6_OUT' visible='true' />
+      <Entry name='LUT7' value='CY_SMARTIO_DUTR_LUT7_OUT' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='duTr1' name='Input TR1' group='DU' default='CY_SMARTIO_DUTR_ZERO' visible='false' editable='true' desc='DU input trigger 1 selection' >
+      <Entry name='Constant 0' value='CY_SMARTIO_DUTR_ZERO' visible='true' />
+      <Entry name='Constant 1' value='CY_SMARTIO_DUTR_ONE' visible='true' />
+      <Entry name='DU' value='CY_SMARTIO_DUTR_DU_OUT' visible='true' />
+      <Entry name='LUT0' value='CY_SMARTIO_DUTR_LUT0_OUT' visible='true' />
+      <Entry name='LUT1' value='CY_SMARTIO_DUTR_LUT1_OUT' visible='true' />
+      <Entry name='LUT2' value='CY_SMARTIO_DUTR_LUT2_OUT' visible='true' />
+      <Entry name='LUT3' value='CY_SMARTIO_DUTR_LUT3_OUT' visible='true' />
+      <Entry name='LUT4' value='CY_SMARTIO_DUTR_LUT4_OUT' visible='true' />
+      <Entry name='LUT5' value='CY_SMARTIO_DUTR_LUT5_OUT' visible='true' />
+      <Entry name='LUT6' value='CY_SMARTIO_DUTR_LUT6_OUT' visible='true' />
+      <Entry name='LUT7' value='CY_SMARTIO_DUTR_LUT7_OUT' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='duTr2' name='Input TR2' group='DU' default='CY_SMARTIO_DUTR_ZERO' visible='false' editable='true' desc='DU input trigger 2 selection' >
+      <Entry name='Constant 0' value='CY_SMARTIO_DUTR_ZERO' visible='true' />
+      <Entry name='Constant 1' value='CY_SMARTIO_DUTR_ONE' visible='true' />
+      <Entry name='DU' value='CY_SMARTIO_DUTR_DU_OUT' visible='true' />
+      <Entry name='LUT0' value='CY_SMARTIO_DUTR_LUT0_OUT' visible='true' />
+      <Entry name='LUT1' value='CY_SMARTIO_DUTR_LUT1_OUT' visible='true' />
+      <Entry name='LUT2' value='CY_SMARTIO_DUTR_LUT2_OUT' visible='true' />
+      <Entry name='LUT3' value='CY_SMARTIO_DUTR_LUT3_OUT' visible='true' />
+      <Entry name='LUT4' value='CY_SMARTIO_DUTR_LUT4_OUT' visible='true' />
+      <Entry name='LUT5' value='CY_SMARTIO_DUTR_LUT5_OUT' visible='true' />
+      <Entry name='LUT6' value='CY_SMARTIO_DUTR_LUT6_OUT' visible='true' />
+      <Entry name='LUT7' value='CY_SMARTIO_DUTR_LUT7_OUT' visible='true' />
+    </ParamChoice>
+
+     <ParamChoice id='duData0' name='Input DATA0' group='DU' default='CY_SMARTIO_DUDATA_ZERO' visible='false' editable='true' desc='DU input DATA0 selection' >
+      <Entry name='Constant 0' value='CY_SMARTIO_DUDATA_ZERO' visible='true' />
+      <Entry name='Chip signal [7:0]' value='CY_SMARTIO_DUDATA_CHIP' visible='true' />
+      <Entry name='I/O signal [7:0]' value='CY_SMARTIO_DUDATA_IO' visible='true' />
+      <Entry name='DATA Register' value='CY_SMARTIO_DUDATA_DATAREG' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='duData1' name='Input DATA1' group='DU' default='CY_SMARTIO_DUDATA_ZERO' visible='false' editable='true' desc='DU input DATA1 selection' >
+      <Entry name='Constant 0' value='CY_SMARTIO_DUDATA_ZERO' visible='true' />
+      <Entry name='Chip signal [7:0]' value='CY_SMARTIO_DUDATA_CHIP' visible='true' />
+      <Entry name='I/O signal [7:0]' value='CY_SMARTIO_DUDATA_IO' visible='true' />
+      <Entry name='DATA Register' value='CY_SMARTIO_DUDATA_DATAREG' visible='true' />
+    </ParamChoice>
+
+    <ParamRange id='duDataReg' name='DATA Register' group='DU' default='0' min='0' max='`${pow(2, 8)-1}`' resolution='1' visible='false' editable='true' desc='DU DATA 8-bit Register value' />
+
+    <!--Config-->
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='true' visible='true' editable='true' desc='Controls whether the configuration structure is stored in Flash (const, true) or SRAM (not const, false).' />
+  </Parameters>
+
+  <Variables>
+    <!-- Port instance number -->
+    <Variable id='InstNumber' value='`${getInstNumber("port")}`' />
+
+    <!-- Connected peripheral clock divider (PCLK). -->
+    <Variable id='pclk' value='`${getBlockFromSignal("clock[0]")}`' />
+    <!-- Checks whether there is a PCLK connected and enabled. -->
+    <Variable id='pclkOk' value='`${hasConnection("clock", 0) &amp;&amp; isBlockUsed(pclk)}`' />
+    <!-- Gets the name of the IP Block. -->
+    <Variable id='ipblockName' value='`${getIpBlockName()}`' />
+    <!-- Checks if mxs40ioss is the IP Block. -->
+    <Variable id='mxs40iossIpblock' value='`${(ipblockName eq "mxs40ioss")}`' />
+    <Variable id='version' value='`${getVersion()}`' />
+    <!-- Clock connection macro for devices with MXS40IOSS -->
+    <Variable id='pclkDst1' value='PCLK_SMARTIO`${getInstNumber("port")}`_CLOCK' />
+    <!-- Clock connection macro for devices with MXS40SIOSS and MXS22IOSS -->
+    <Variable id='pclkDst2' value='PCLK_IOSS_CLOCK_SMARTIO_PCLK_POS_EN`${getInstNumber("port")}`' />
+    <!-- Generates PCLK connection define. -->
+    <Variable id='pclkDst' value='`${(mxs40iossIpblock ? pclkDst1 : pclkDst2)}`' />
+    <!-- Ioss instance name number. -->
+    <Variable id='Ioss' value='`${getInstNumber("ioss")}`' />
+  </Variables>
+
+  <DRCs>
+    <!--ioMode DRCs-->
+    <DRC type='ERROR' text='The complementary chip terminal [$idx] is set to "Bypass" mode. Either set the I/O terminal [$idx] to "Bypass" mode or update the chip terminal [$idx] mode.' condition='`${(chipMode$idx eq CY_SMARTIO_BYPASS) &amp;&amp; (ioMode$idx ne CY_SMARTIO_BYPASS)}`' repeatCount='8' />
+    <!--chipMode DRCs-->
+    <DRC type='ERROR' text='The complementary I/O terminal [$idx] is set to "Bypass" mode. Either set the chip terminal [$idx] to "Bypass" mode or update the I/O terminal [$idx] mode.' condition='`${(chipMode$idx ne CY_SMARTIO_BYPASS) &amp;&amp; (ioMode$idx eq CY_SMARTIO_BYPASS)}`' repeatCount='8' />
+    <!--LUT chip terminal clock DRCs-->
+    <DRC type='ERROR' text='Chip terminal [$idx] cannot simultaneously be used as an input to a LUT$idx input trigger and be used as the Smart I/O block clock source.' condition='`${((lut$idxTr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut$idxTr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut$idxTr2 eq CY_SMARTIO_LUTTR_CHIP$idx)) &amp;&amp; (clkSrc eq CY_SMARTIO_CLK_CHIP$idx)}`' repeatCount='8' />
+    <!--LUT I/O terminal clock DRCs-->
+    <DRC type='ERROR' text='I/O terminal [$idx] cannot simultaneously be used as an input to a LUT$idx input trigger and be used as the Smart I/O block clock source.' condition='`${((lut$idxTr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut$idxTr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut$idxTr2 eq CY_SMARTIO_LUTTR_IO$idx)) &amp;&amp; (clkSrc eq CY_SMARTIO_CLK_IO$idx)}`' repeatCount='8' />
+    <!-- Check for Input and Output simultaneous selection -->
+    <DRC type='ERROR' text='I/O terminal [$idx] and chip terminal [$idx] cannot simultaneously be used as outputs.' condition='`${(ioMode$idx eq CY_SMARTIO_OUTPUT) &amp;&amp; (chipMode$idx eq CY_SMARTIO_OUTPUT)}`' repeatCount='8' />
+
+    <!--LUT TR DRCs-->
+    <DRC type='ERROR' text='Invalid LUT connection. All three input trigger terminals of LUT [$idx] must have signal sources.'
+    condition='`${((lut$idxTr0 ne CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr1 ne CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr2 eq CY_SMARTIO_LUTTR_INVALID))
+    || ((lut$idxTr0 ne CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr1 eq CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr2 ne CY_SMARTIO_LUTTR_INVALID))
+    || ((lut$idxTr0 ne CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr1 eq CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr2 eq CY_SMARTIO_LUTTR_INVALID))
+    || ((lut$idxTr0 eq CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr1 ne CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr2 ne CY_SMARTIO_LUTTR_INVALID))
+    || ((lut$idxTr0 eq CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr1 ne CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr2 eq CY_SMARTIO_LUTTR_INVALID))
+    || ((lut$idxTr0 eq CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr1 eq CY_SMARTIO_LUTTR_INVALID) &amp;&amp; (lut$idxTr2 ne CY_SMARTIO_LUTTR_INVALID))}`'
+    repeatCount='8' />
+
+    <!--LUT-DU TR0 DRCs-->
+    <DRC type='ERROR' text='Invalid LUT connection. LUT [$idx] TR0 is sourced from DU but the Data Unit is not enabled to drive it.'
+    condition='`${(lut$idxTr0 eq CY_SMARTIO_LUTTR_DU_OUT) &amp;&amp; (!duEn)}`' repeatCount='8' />
+
+    <!--DU-LUT TR0 DRCs-->
+    <DRC type='ERROR' text='Invalid DU connection. DU TR0 is sourced from LUT [$idx] but the LUT is not enabled to drive it.'
+    condition='`${(duTr0 eq CY_SMARTIO_DUTR_LUT$idx_OUT) &amp;&amp; (!lutEn$idx)}`' repeatCount='8' />
+
+    <!--DU-LUT TR1 DRCs-->
+    <DRC type='ERROR' text='Invalid DU connection. DU TR1 is sourced from LUT [$idx] but the LUT is not enabled to drive it.'
+    condition='`${(duTr1 eq CY_SMARTIO_DUTR_LUT$idx_OUT) &amp;&amp; (!lutEn$idx)}`' repeatCount='8' />
+
+    <!--DU-LUT TR2 DRCs-->
+    <DRC type='ERROR' text='Invalid DU connection. DU TR2 is sourced from LUT [$idx] but the LUT is not enabled to drive it.'
+    condition='`${(duTr2 eq CY_SMARTIO_DUTR_LUT$idx_OUT) &amp;&amp; (!lutEn$idx)}`' repeatCount='8' />
+
+    <!--I/O input terminal DRCs-->
+    <DRC type='WARNING' text='I/O [$idx] terminal is configured to be an input but it is not used in this design.'
+    condition='`${!((ioMode$idx eq CY_SMARTIO_SYNC_INPUT) || (ioMode$idx eq CY_SMARTIO_ASYNC_INPUT)) &amp;&amp;
+    (((lut0Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut0Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut0Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut1Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut1Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut1Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut2Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut2Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut2Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut3Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut3Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut3Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut4Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut4Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut4Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut5Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut5Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut5Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut6Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut6Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut6Tr2 eq CY_SMARTIO_LUTTR_IO$idx) ||
+     (lut7Tr0 eq CY_SMARTIO_LUTTR_IO$idx) || (lut7Tr1 eq CY_SMARTIO_LUTTR_IO$idx) || (lut7Tr2 eq CY_SMARTIO_LUTTR_IO$idx)))}`'
+    repeatCount='8' />
+
+    <!--I/O output terminal DRCs-->
+    <DRC type='WARNING' text='I/O [$idx] terminal is configured to be an output but LUT [$idx] is not enabled to drive it.'
+    condition='`${(ioMode$idx eq CY_SMARTIO_OUTPUT) &amp;&amp; (!lutEn$idx)}`' repeatCount='8' />
+
+    <!--Chip input terminal DRCs-->
+    <DRC type='WARNING' text='Chip [$idx] terminal is configured to be an input but it is not used in this design.'
+    condition='`${!((chipMode$idx eq CY_SMARTIO_SYNC_INPUT) || (chipMode$idx eq CY_SMARTIO_ASYNC_INPUT)) &amp;&amp;
+    (((lut0Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut0Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut0Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut1Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut1Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut1Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut2Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut2Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut2Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut3Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut3Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut3Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut4Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut4Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut4Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut5Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut5Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut5Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut6Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut6Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut6Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx) ||
+     (lut7Tr0 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut7Tr1 eq CY_SMARTIO_LUTTR_CHIP$idx) || (lut7Tr2 eq CY_SMARTIO_LUTTR_CHIP$idx)))}`'
+    repeatCount='8' />
+
+    <!--Chip output terminal DRCs-->
+    <DRC type='WARNING' text='Chip [$idx] terminal is configured to be an output but LUT [$idx] is not enabled to drive it.'
+    condition='`${(chipMode$idx eq CY_SMARTIO_OUTPUT) &amp;&amp; (!lutEn$idx)}`' repeatCount='8' />
+
+    <!-- in/out is deliberately flipped between the condition and the DRC. In/out are with respect to the chip, so we reverse them for text we show to the user -->
+    <DRC type='ERROR' text='The chip output terminal $idx cannot be connected when the chip inout terminal $idx is connected.' condition='`${hasConnection("chip_in", $idx) &amp;&amp; chipInoutConnected$idx}`' paramId='chip_inout[$idx]' repeatCount='8' />
+    <DRC type='ERROR' text='The chip input terminal $idx cannot be connected when the chip inout terminal $idx is connected.' condition='`${hasConnection("chip_out", $idx) &amp;&amp; chipInoutConnected$idx}`' paramId='chip_inout[$idx]' repeatCount='8' />
+
+    <!-- Enable used pins DRC -->
+    <DRC type='ERROR'
+         text='`${"Smart I/O " . InstNumber . " requires " . getBlockDisplayName("ioss[" . Ioss . "].port[" . InstNumber . "].pin[$idx]",false) . " to be enabled."}`'
+         condition='`${hasBlock("ioss[" . Ioss . "].port[" . InstNumber . "].pin[$idx]") ? (((chipMode$idx ne CY_SMARTIO_BYPASS) || (ioMode$idx ne CY_SMARTIO_BYPASS)) &amp;&amp; isBlockUsed("ioss[" . Ioss . "].port[" . InstNumber . "].pin[$idx]") == false) : false}`'
+         repeatCount='8' >
+      <FixIt action='ENABLE_BLOCK' target='`${"ioss[" . Ioss . "].port[" . InstNumber . "].pin[$idx]"}`' value='' valid='true' />
+    </DRC>
+
+  </DRCs>
+
+  <!--Config Structs-->
+  <ConfigFirmware>
+    <ConfigInclude value='cy_smartio.h' include='true' />
+    <ConfigInclude value='cy_sysclk.h' include='`${pclkOk || (getIpBlockName() eq &quot;mxs22ioss&quot;)}`' />
+    <ConfigDefine name='`${INST_NAME}`_HW' value='SMARTIO_PRT`${InstNumber}`' public='true' include='true' />
+    <ConfigStruct name='`${INST_NAME . "_lutCfg$idx"}`' type='cy_stc_smartio_lutcfg_t' const='`${inFlash}`' public='true' include='`${lutEn$idx}`' repeatCount='8' >
+      <Member name='tr0' value='`${lut$idxTr0}`' />
+      <Member name='tr1' value='`${lut$idxTr1}`' />
+      <Member name='tr2' value='`${lut$idxTr2}`' />
+      <Member name='opcode' value='`${lut$idxOpcode}`' />
+      <Member name='lutMap' value='`${lut$idxMap}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME . "_duCfg"}`' type='cy_stc_smartio_ducfg_t' const='`${inFlash}`' public='true' include='`${duEn}`' >
+      <Member name='tr0' value='`${duTr0}`' />
+      <Member name='tr1' value='`${duTr1}`' />
+      <Member name='tr2' value='`${duTr2}`' />
+      <Member name='data0' value='`${duData0}`' />
+      <Member name='data1' value='`${duData1}`' />
+      <Member name='opcode' value='`${duOpcode}`' />
+      <Member name='size' value='`${duSize}`' />
+      <Member name='dataReg' value='`${duDataReg}`' />
+    </ConfigStruct>
+    <ConfigStruct name='`${INST_NAME . "_config"}`' type='cy_stc_smartio_config_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='clkSrc' value='`${clkSrc}`' />
+      <Member name='bypassMask' value='`${
+      ((ioMode0 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL0" : "0u") . "|" .
+      ((ioMode1 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL1" : "0u") . "|" .
+      ((ioMode2 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL2" : "0u") . "|" .
+      ((ioMode3 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL3" : "0u") . "|" .
+      ((ioMode4 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL4" : "0u") . "|" .
+      ((ioMode5 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL5" : "0u") . "|" .
+      ((ioMode6 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL6" : "0u") . "|" .
+      ((ioMode7 eq CY_SMARTIO_BYPASS) ? "CY_SMARTIO_CHANNEL7" : "0u")}`' />
+      <Member name='ioSyncEn' value='`${
+      ((ioMode0 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL0" : "0u") . "|" .
+      ((ioMode1 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL1" : "0u") . "|" .
+      ((ioMode2 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL2" : "0u") . "|" .
+      ((ioMode3 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL3" : "0u") . "|" .
+      ((ioMode4 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL4" : "0u") . "|" .
+      ((ioMode5 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL5" : "0u") . "|" .
+      ((ioMode6 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL6" : "0u") . "|" .
+      ((ioMode7 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL7" : "0u")}`' />
+      <Member name='chipSyncEn' value='`${
+      ((chipMode0 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL0" : "0u") . "|" .
+      ((chipMode1 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL1" : "0u") . "|" .
+      ((chipMode2 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL2" : "0u") . "|" .
+      ((chipMode3 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL3" : "0u") . "|" .
+      ((chipMode4 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL4" : "0u") . "|" .
+      ((chipMode5 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL5" : "0u") . "|" .
+      ((chipMode6 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL6" : "0u") . "|" .
+      ((chipMode7 eq CY_SMARTIO_SYNC_INPUT) ? "CY_SMARTIO_CHANNEL7" : "0u")}`' />
+      <Member name='lutCfg0' value='`${lutEn0 ? ("&amp;" . INST_NAME . "_lutCfg0") : "NULL"}`' />
+      <Member name='lutCfg1' value='`${lutEn1 ? ("&amp;" . INST_NAME . "_lutCfg1") : "NULL"}`' />
+      <Member name='lutCfg2' value='`${lutEn2 ? ("&amp;" . INST_NAME . "_lutCfg2") : "NULL"}`' />
+      <Member name='lutCfg3' value='`${lutEn3 ? ("&amp;" . INST_NAME . "_lutCfg3") : "NULL"}`' />
+      <Member name='lutCfg4' value='`${lutEn4 ? ("&amp;" . INST_NAME . "_lutCfg4") : "NULL"}`' />
+      <Member name='lutCfg5' value='`${lutEn5 ? ("&amp;" . INST_NAME . "_lutCfg5") : "NULL"}`' />
+      <Member name='lutCfg6' value='`${lutEn6 ? ("&amp;" . INST_NAME . "_lutCfg6") : "NULL"}`' />
+      <Member name='lutCfg7' value='`${lutEn7 ? ("&amp;" . INST_NAME . "_lutCfg7") : "NULL"}`' />
+      <Member name='duCfg' value='`${duEn ? ("&amp;" . INST_NAME . "_duCfg") : "NULL"}`' />
+      <Member name='hldOvr' value='`${hldOvr}`' />
+    </ConfigStruct>
+    <ConfigInstruction purpose='INITIALIZE' value='Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SMARTIO_PERI_NR, CY_MMIO_SMARTIO_GROUP_NR, CY_MMIO_SMARTIO_SLAVE_NR, CY_MMIO_SMARTIO_CLK_HF_NR);' include='`${(getIpBlockName() eq "mxs22ioss")}`'  />
+    <ConfigInstruction purpose='INITIALIZE' value='Cy_SysClk_PeriphAssignDivider(`${pclkDst1}`, `${getExposedMember(pclk, "clockSel")}`);' include='`${((mxs40iossIpblock) &amp;&amp; (version &lt; 3) &amp;&amp; pclkOk)}`'  />
+    <ConfigInstruction purpose='INITIALIZE' value='Cy_SysClk_PeriPclkAssignDivider(`${pclkDst}`, `${getExposedMember(pclk, "clockSel")}`);' include='`${((((mxs40iossIpblock) &amp;&amp; (version &gt; 2)) || (!mxs40iossIpblock)) &amp;&amp; pclkOk)}`'  />
+  </ConfigFirmware>
+</PersonalityTemplate>

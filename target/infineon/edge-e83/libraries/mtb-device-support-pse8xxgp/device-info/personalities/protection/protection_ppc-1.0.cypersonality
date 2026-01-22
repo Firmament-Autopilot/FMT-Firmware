@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='protection_ppc' name='PPC' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id="PROTECTION_LOC" value='vres[0].protection[0]'/>
+    <Const id="PPC_REGIONS" value='500'/>
+    <Const id="PPC_LOCATIONS" value='170'/>
+    <Const id="MAX_DOMAINS" value="16" />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name="mxsperi" />
+      <Resource name="peri" />
+      <OperatingMode value="MCU" />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='ppc_v1'>
+      <ExposedMember key='regKey$idx' paramId='regKey$idx' repeatCount='$PPC_REGIONS'/>
+      <ExposedMember key='reg$idx_valid' paramId='reg$idx_valid' repeatCount='$PPC_REGIONS'/>
+      <ExposedMember key='reg$idx_locationKey' paramId='reg$idx_locationKey' repeatCount='$PPC_REGIONS'/>
+      <ExposedMember key='reg$idx_location' paramId='reg$idx_location' repeatCount='$PPC_REGIONS'/>
+      <ExposedMember key='reg$idx_location_display' paramId='reg$idx_location_display' repeatCount='$PPC_REGIONS'/>
+      <ExposedMember key='reg$idx' paramId='reg$idx' repeatCount='$PPC_REGIONS'/>
+    </Implements>
+    <Implements type="protection_ppc_drc_v1">
+      <ExposedMember key="ppc_drc" paramId="ppc_drc" />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <ParamString id='domain_unprotected' default='`${getOrDefault(getExposedMember("$PROTECTION_LOC", "domain_unprotected"), "")}`' />
+    <ParamString id='domain_reserved' name='domain_reserved' default='`${getOrDefault(getExposedMember("$PROTECTION_LOC", "domain_reserved"), "")}`' />
+
+    <ParamChoice id='response' name='Invalid Access Response' group='' default='CY_PPC_BUS_ERR' visible='true' desc='What happens if a peripheral is accessed from a context that does not have access?'>
+      <Entry name='Read Zero and Write Ignore' value='CY_PPC_RZWI' />
+      <Entry name='Bus Error' value='CY_PPC_BUS_ERR' />
+    </ParamChoice>
+
+    <ParamString id='protection_mode' default='`${getOrDefault(getExposedMember("$PROTECTION_LOC", "protectionLevel"), "")}`' />
+    <ParamBool   id="isSupported" default='`${isBlockUsed("$PROTECTION_LOC") &amp;&amp; (protection_mode eq "SECURE_PERIPHERALS" || protection_mode eq "SECURE_CUSTOM")}`'/>
+    <ParamBool   id="isCustom" default='`${isBlockUsed("$PROTECTION_LOC") &amp;&amp; (protection_mode eq "SECURE_CUSTOM")}`'/>
+    <ParamString id='peri' default='`${getInstNumber("peri")}`' />
+    <ParamString id='note' group='Overview' name='Note' default='The current &apos;Protection Level&apos; disables peripheral configuration and yet PPC configuration is enabled.' visible='`${!isSupported}`' editable='false' />
+    <ParamString id='notice' group='' name='Notice' default='Some security aware PDL drivers require that multiple PPC regions are configured with the same security state. See the PDL driver documentation for details.' visible='`${isSupported}`' editable='false' />
+
+    <!--The Repeat count needs to be >= the value of locationCnt for all supported dies.-->
+    <ParamString id='locationCnt' default='`${getOrDefault(getCustomDataCount("/PPC_LOCATION"), 0)}`'/>
+    <Repeat count='$PPC_LOCATIONS' repeatId='parent'>
+      <ParamString id='location_$idx' default='`${getOrDefault(getCustomDataKeys("/PPC_LOCATION", $idx), "")}`'/>
+      <ParamString id='location_display_$idx' default='`${getOrDefault(getBlockDisplayName(location_$idx, true), "")}`'/>
+      <ParamString id='associated_$idx' default='`${getOrDefault(getCustomData("/PPC_LOCATION[@key=\"" . location_$idx . "\"]/@associated"), "")}`'/>
+      <ParamString id='peri_$idx'     default='`${getOrDefault(getCustomData("/PPC_LOCATION[@key=\"" . location_$idx . "\"]/@peri"), -1)}`'/>
+      <ParamBool   id='valid_$idx'    default='`${hasBlock(location_$idx) &amp;&amp; peri == peri_$idx}`' />
+      <ParamPersonality id='parent_$idx'
+                     name='`${location_display_$idx}`'
+                     default='`${domain_unprotected}`'
+                     visible='`${isSupported &amp;&amp; !isCustom &amp;&amp; valid_$idx}`'
+                     editable='`${valid_$idx}`' blockType='vres\.protection\.domain' canBeEmpty='false' multiSelect='false' displayMemberKey='displayName'>
+        <GotoLocation gotoLocationId='`${associated_$idx{parent}}`' reciprocalLinkDisplay='Peripheral PPC' />
+      </ParamPersonality>
+    </Repeat>
+
+    <!--The Repeat count needs to be >= the value of regCnt for all supported dies.-->
+    <ParamString id='regCnt' default='`${getOrDefault(getCustomDataCount("/PPC_REGISTER"), 0)}`'/>
+    <Repeat count='$PPC_REGIONS'  repeatId='reg'>
+      <ParamString id='regKey$idx' default='`${getOrDefault(getCustomDataKeys("/PPC_REGISTER", $idx), "")}`'/>
+      <!-- Query PDL cy_en_prot_region_t enum item name, fallback to PROT_$key (only works for single-PERI devices) -->
+      <ParamString id='reg$idx_enum_name' default='`${getOrDefault(getCustomData("/PPC_REGISTER[@key=\"" . regKey$idx . "\"]/@enum_name"), "PROT_" . regKey$idx)}`'/>
+      <ParamString id='reg$idx_start_address' default='`${getOrDefault(getCustomData("/PPC_REGISTER[@key=\"" . regKey$idx . "\"]/@address"), "0")}`'/>
+      <ParamString id='reg$idx_size' default='`${getOrDefault(getCustomData("/PPC_REGISTER[@key=\"" . regKey$idx . "\"]/@size"), "0")}`'/>
+      <ParamString id='reg$idx_locationKey' default='`${getOrDefault(getCustomData("/PPC_REGISTER[@key=\"" . regKey$idx . "\"]/@locationKey"), "")}`'/>
+      <ParamString id='reg$idx_locationIdx' default='`${getOrDefault(getCustomDataIndexOf("/PPC_LOCATION", reg$idx_locationKey), "")}`'/>
+      <ParamString id='reg$idx_location' default='`${getOrDefault(getParamValue("location_" . reg$idx_locationIdx), "")}`'/>
+      <ParamString id='reg$idx_location_display' default='`${getOrDefault(getParamValue("location_display_" . reg$idx_locationIdx), "")}`'/>
+      <ParamString id='reg$idx_associated' default='`${getOrDefault(getParamValue("associated_" . reg$idx_locationIdx), "")}`'/>
+      <ParamString id='reg$idx_valid' default='`${getOrDefault(getParamValue("valid_" . reg$idx_locationIdx), false)}`'/>
+      <ParamString id='reg$idx_pcMask' default='`${getOrDefault(getCustomData("/PPC_REGISTER[@key=\"" . regKey$idx . "\"]/@pcMask"), "")}`'/>
+      <ParamPersonality id='reg$idx'
+                        name='`${regKey$idx}`'
+                        default='`${getOrDefault(getParamValue("parent_" . reg$idx_locationIdx), domain_unprotected)}`'
+                        desc='`${"Address Range: " . reg$idx_start_address . "-" . toHex(reg$idx_start_address + reg$idx_size - 1, 8)"}`)'
+                        group='`${splitJoin(reg$idx_location_display, "//", "/")}`'
+                        visible='`${isSupported &amp;&amp; reg$idx_valid}`'
+                        editable='`${isSupported &amp;&amp; isCustom &amp;&amp; reg$idx_valid}`' blockType='vres\.protection\.domain' canBeEmpty='false' multiSelect='false' displayMemberKey='displayName'>
+        <GotoLocation gotoLocationId='`${reg$idx{reg}_associated}`' reciprocalLinkDisplay='Peripheral PPC' />
+      </ParamPersonality>
+    </Repeat>
+
+    <!-- Create JSON data for tool to evaluate connection DRCs -->
+    <!-- NOTE: These need to be params instead of variables because ppc_drc is an ExposedMember -->
+    <ParamString id='ppc_tcl_arg' default='`${createTclArgData()}`' />
+    <ParamString id='ppc_drc_tcl' default='`${runTcl("protection_ppc-1.0.tcl", ppc_tcl_arg)}`' />
+    <ParamString id='ppc_drc' default='`${(ppc_drc_tcl eq "" || (protection_mode ne "SECURE_PERIPHERALS")) ? "" : getTclVar("json", ppc_drc_tcl)}`' />
+  </Parameters>
+
+  <Variables>
+    <Variable id='tcl_ppc_region_set$idx' value='`${getOrDefault(getTclVar(getInstanceFromBlock("vres[0].protection[0].domain[$idx]"), ppc_drc_tcl), "")}`' repeatCount='$MAX_DOMAINS' />
+
+    <Variable id='en_mask$idx' value='`${isBlockUsed("vres[0].protection[0].domain[$idx]") ? (
+         (getExposedMember("vres[0].protection[0].domain[$idx]", "pc0") ? 1 : 0) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc1") ? 1 : 0) &lt;&lt; 1u) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc2") ? 1 : 0) &lt;&lt; 2u) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc3") ? 1 : 0) &lt;&lt; 3u) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc4") ? 1 : 0) &lt;&lt; 4u) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc5") ? 1 : 0) &lt;&lt; 5u) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc6") ? 1 : 0) &lt;&lt; 6u) |
+        ((getExposedMember("vres[0].protection[0].domain[$idx]", "pc7") ? 1 : 0) &lt;&lt; 7u) ) : "0x00"
+        }`' repeatCount='$MAX_DOMAINS' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='INFO' condition='`${!isSupported}`' text='The current &apos;Protection Level&apos; disables peripheral configuration and yet PPC configuration is enabled.' >
+      <FixItBatch description='Enable Protection with a protection level of &apos;Secure Services+Peripherals&apos;'>
+        <FixIt action='ENABLE_BLOCK' target='$PROTECTION_LOC' valid='`${!isBlockUsed("$PROTECTION_LOC")}`' />
+        <FixIt action='SET_PARAM' target='$PROTECTION_LOC.type' value='SECURE_PERIPHERALS' valid='true' />
+      </FixItBatch>
+    </DRC>
+    <DRC type='INFO' condition='`${isSupported &amp;&amp; !isCustom}`' text='The current &apos;Protection Level&apos; disables register-level PPC support. If more fine grain control is required, update the level to custom. Note: doing so will disable all system-level consistency checking for PPC settings.'>
+      <FixIt action='SET_PARAM' target='$PROTECTION_LOC.type' value='SECURE_CUSTOM' valid='true' />
+    </DRC>
+    <DRC type='INFO' condition='`${isSupported &amp;&amp; isCustom}`' text='The current &apos;Protection Level&apos; supports register-level PPC configurator. This means that no error checking is performed for consistency across connected peripheral settings. To get system-level consistency checking for PPC settings, switch to &apos;Secure Services+Peripherls&apos;.'>
+      <FixIt action='SET_PARAM' target='$PROTECTION_LOC.type' value='SECURE_PERIPHERALS' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_ppc.h' />
+
+    <ConfigDefine name='`${getExposedMember("vres[0].protection[0].domain[$idx]", "displayName") . "_ppc_" . peri}`_REGION_COUNT' value='`${splitCount(tcl_ppc_region_set$idx, " ")}`U' public='true' include='`${tcl_ppc_region_set$idx ne ""}`' repeatCount='$MAX_DOMAINS'/>
+
+    <!-- Create domain regions array -->
+    <ConfigArray name='`${getExposedMember("vres[0].protection[0].domain[$idx]", "displayName")}`_ppc_`${peri}`_regions' type='cy_en_prot_region_t' const='true' public='true' include='`${tcl_ppc_region_set$idx ne ""}`' repeatCount='$MAX_DOMAINS' repeatId='domain'>
+      <ArrayElement value='`${splitJoin(tcl_ppc_region_set$idx{domain}, ",&#10;    ", " ")}`' include='true' />
+    </ConfigArray>
+
+    <!-- Create domain attributes configurations -->
+    <ConfigStruct name='`${getExposedMember("vres[0].protection[0].domain[$idx{domain}]", "displayName")}`_ppc_`${peri}`_cfg' type='cy_stc_ppc_attribute_t' const='true' public='true' include='`${tcl_ppc_region_set$idx ne ""}`' repeatCount='$MAX_DOMAINS' repeatId='domain' >
+      <Member name='pcMask' value='`${toHex(en_mask$idx, 2)}`' />
+      <Member name='secAttribute' value='CY_PPC_`${getExposedMember("vres[0].protection[0].domain[$idx]", "cmseAttribute")}`' />
+      <Member name='privAttribute' value='CY_PPC_`${getExposedMember("vres[0].protection[0].domain[$idx]", "secureUnprivileged") ? "NONPRIV" : "PRIV"}`' />
+    </ConfigStruct>
+
+    <!-- Create domain configuration structure -->
+    <ConfigArray name='cycfg_ppc_`${peri}`_domains_config' type='cy_stc_ppc_cfg_t' const='true' public='true' include='true'>
+      <ConfigStruct name='na' type='na' const='true' public='false' include='`${(tcl_ppc_region_set$idx ne "") &amp;&amp; (domain_reserved ne getInstanceFromBlock("vres[0].protection[0].domain[$idx{domain}]"))}`' repeatCount='$MAX_DOMAINS' repeatId='domain'>
+        <Member name='regions' value='&amp;`${getExposedMember("vres[0].protection[0].domain[$idx{domain}]", "displayName")}`_ppc_`${peri}`_regions[0]' />
+        <Member name='region_count' value='`${getExposedMember("vres[0].protection[0].domain[$idx{domain}]", "displayName") . "_ppc_" . peri}`_REGION_COUNT' />
+        <Member name='cfg' value='&amp;`${getExposedMember("vres[0].protection[0].domain[$idx{domain}]", "displayName")}`_ppc_`${peri}`_cfg' />
+      </ConfigStruct>
+    </ConfigArray>
+
+    <!-- Variable count for the PPC structures -->
+    <ConfigVariable name='cycfg_ppc_`${peri}`_domains_count' type='size_t' const='true' value='sizeof(cycfg_ppc_`${peri}`_domains_config) / sizeof(cy_stc_ppc_cfg_t)' public='true' include='true' />
+
+    <ConfigFunction signature='cy_rslt_t init_cycfg_ppc`${peri}`(void)' public='true' replicateForAliases='false' guard='(CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_SECURE_DEVICE) &amp;&amp; defined(CY_PDL_TZ_ENABLED)' >
+      <Line value='return Cy_PPC_Init(PPC`${peri}`, cycfg_ppc_`${peri}`_domains_config, cycfg_ppc_`${peri}`_domains_count, `${response}`);'/>
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

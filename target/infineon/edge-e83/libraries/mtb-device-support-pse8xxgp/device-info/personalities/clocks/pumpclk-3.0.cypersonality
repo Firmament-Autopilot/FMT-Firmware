@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file pumpclk.cypersonality
+* \version 3.0
+*
+* \brief
+* CLK_PUMP personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2020-2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='pumpclk' name='CLK_PUMP' version='3.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs22srss' />
+      <Resource name='srss\.clock\.pumpclk' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_sourced_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClockDisplayName' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__pump.html' linkText='Open Pump Clock Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamChoice id='sourceClockNumber' name='Source Clock' group='General' default='0' visible='true' desc='The clock source selection'>
+      <Entry name='CLK_PATH$idx'  value='$idx'  visible='`${NUM_CLKPATH &gt; $idx}`' repeatCount='16' />
+    </ParamChoice>
+
+    <!-- If the FLL/PLL are enabled, their output drive the corresponding clock path -->
+    <ParamBool id='isFllUsed' default='`${(sourceClockNumber == 0) &amp;&amp; isBlockUsed("srss[0].clock[0].fll[0]")}`' />
+    <ParamBool id='isPllUsed' default='`${(sourceClockNumber &gt; 0) &amp;&amp; (sourceClockNumber &lt;= NUM_PLL) &amp;&amp; isBlockUsed("srss[0].clock[0].pll[" . (sourceClockNumber-1) . "]")}`' />
+
+    <ParamString id='sourceClock' default='`${isFllUsed ? "fll[0]" :
+                                              isPllUsed ? "pll[" . (sourceClockNumber-1) . "]" :
+                                                          "pathmux[" . sourceClockNumber . "]"}`' />
+
+    <ParamString id='sourceClockDisplayName' default='`${getParamValueDisplay("sourceClock")}`' />
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].`${sourceClock}`' />
+    <!-- Use default values in case of error -->
+    <ParamString id='sourceFreq' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFreq,accuracy)}`' visible='true' editable='false' desc='Source clock frequency' />
+    <ParamChoice id='divider' name='Divider' group='General' default='1' visible='true' desc='The source clock frequency divider'>
+      <Entry name='1'  value='1' />
+      <Entry name='2'  value='2' />
+      <Entry name='4'  value='4' />
+      <Entry name='8'  value='8' />
+      <Entry name='16' value='16' />
+    </ParamChoice>
+    <ParamString id='frequency' default='`${sourceFreq / divider}`' />
+    <!-- If the frequency is less than one MHz, display its value in kHz -->
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The actual frequency' />
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for CLK_PUMP is not enabled ' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPUMP_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPUMP_SOURCE' value='CY_SYSCLK_PUMP_IN_CLKPATH`${sourceClockNumber}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPUMP_DIVIDER' value='CY_SYSCLK_PUMP_`${(divider == 1 ? "NO_DIV" : ("DIV_" . divider))}`' public='false' />
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_ClkPumpInit(void)' public='false'>
+      <Line value='Cy_SysClk_ClkPumpDisable();' />
+      <Line value='Cy_SysClk_ClkPumpSetSource(CY_SYSCLK_PUMP_IN_CLKPATH`${sourceClockNumber}`);' />
+      <Line value='Cy_SysClk_ClkPumpSetDivider(CY_SYSCLK_PUMP_`${(divider == 1 ? "NO_DIV" : ("DIV_" . divider))}`);' />
+      <Line value='Cy_SysClk_ClkPumpEnable();' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

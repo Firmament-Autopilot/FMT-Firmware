@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PersonalityTemplate id="memory_region_data" name="memory_region_data" version="1.0" xmlns="http://cypress.com/xsd/cyhwpersonality_v14">
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='VirtualResource'>
+        <Param name='HAS_MEMORY_DATA' value='1' />
+      </IpBlock>
+       <Resource name="vres\.memory_region_data" />
+      <OperatingMode value="MCU" />
+    </MappingRules>
+  </FittingRules>
+  <BehaviorImplementation>
+    <Implements type="memory_region_data_v1">
+      <ExposedMember key="regionId" paramId="regionId" />
+      <ExposedMember key="memoryId" paramId="memoryId" />
+      <ExposedMember key="offset" paramId="offset" />
+      <ExposedMember key="size" paramId="size" />
+      <ExposedMember key="domain" paramId="domain" />
+      <ExposedMember key="reservedGuid" paramId="reservedGuid" />
+      <ExposedMember key="description" paramId="description" />
+    </Implements>
+  </BehaviorImplementation>
+  <Parameters>
+    <!-- Hidden parameters used by memory editor to store region data -->
+    <ParamString id="regionId" default="" editable="true" />
+    <ParamString id="memoryId" default="" editable="true" />
+    <ParamString id="offset" default="" editable="true" />
+    <ParamString id="size" default="" editable="true" />
+    <ParamString id="reservedGuid" default="" editable="true" />
+    <ParamString id="description" default="" editable="true" />
+    <!-- Read-only parameters to display region data -->
+    <ParamString id="displayRegionId" name="Region ID" default="`${regionId}`" group="" visible="true" editable="false" />
+    <ParamString id="displayMemoryId" name="Memory" default="`${memoryId}`" group="" visible="true" editable="false" />
+    <ParamString id="displayOffset" name="Offset" default="`${offset}`" group="" visible="true" editable="false" desc='If MPU-protected, sync offset changes to the corresponding MPU region in the System tab.' />
+    <ParamString id="displaySize" name="Size" default="`${size}`" group="" visible="true" editable="false" desc='If MPU-protected, sync size changes to the corresponding MPU region in the System tab.' />
+    <ParamPersonality id="domain" name="Domain" visible="true" editable="true" blockType="vres\.protection\.domain" canBeEmpty="false" multiSelect="false" displayMemberKey="displayName" />
+    <ParamString id="displayDescription" name="Description" default="`${description}`" group="" visible="true" editable="false" />
+
+    <ParamString id='CYBUILTIN_LOCK_REASON' default='`${regionId ne "" ? "Reserved by Memory tab" : ""}`' />
+  </Parameters>
+  <DRCs>
+    <DRC type='WARNING' condition='`${!isBlockUsed("vres[0].memory[0]")}`' text='The Memory resource has been disabled. The memory region data associated with it can also be disabled.' >
+      <FixIt action='ENABLE_BLOCK' target='vres[0].memory[0]' valid='true' />
+      <FixIt action='DISABLE_BLOCK' target='`${INST_LOC}`' valid='true' />
+    </DRC>
+  </DRCs>
+  <ConfigFirmware />
+</PersonalityTemplate>

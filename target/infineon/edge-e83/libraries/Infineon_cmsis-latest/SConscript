@@ -1,0 +1,19 @@
+from building import *
+import rtconfig
+Import('RTT_ROOT')
+
+cwd = GetCurrentDir()
+
+# collect sources recursively under Source
+src = Glob('COMPONENT_CMSIS_DSP/Source/*/*.c')
+
+# include paths
+path = []
+path += [cwd + '/Core/Include']
+path += [cwd + '/COMPONENT_CMSIS_DSP/Include']
+path += [cwd + '/COMPONENT_CMSIS_DSP/PrivateInclude']
+path += [cwd + '/Core/Include/m-profile']
+
+group = DefineGroup('Libraries', src, depend=[''], CPPPATH=path)
+
+Return('group')

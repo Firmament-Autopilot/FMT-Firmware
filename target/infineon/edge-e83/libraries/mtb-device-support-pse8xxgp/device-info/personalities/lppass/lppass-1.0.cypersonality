@@ -1,0 +1,401 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* Autonomous Analog personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass' name='Autonomous Analog' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='INST_NAME_lppass' paramId='INST_NAME_lppass' />
+    <ExposedMember key='inFlash' paramId='inFlash' />
+    <ExposedMember key='vdda'    paramId='vdda' />
+    <ExposedMember key='clockHfHz' paramId='clockHfHz' />
+    <ExposedMember key='clockPtc' paramId='clock_ptc[0]' />
+    <ExposedMember key='clockDac$idx' paramId='clock_dac[$idx]' repeatCount='2'/>
+    <ExposedMember key='clockPumpPeri' paramId='clock_pump_peri[0]' />
+    <ExposedMember key='ctbl$idx_pad_2_shared_ctbl$idx_oa0_out' paramId='ctbl$idx_pad_2_shared_ctbl$idx_oa0_out' repeatCount='2'/>
+    <ExposedMember key='ctbl$idx_pad_3_shared_ctbl$idx_oa1_out' paramId='ctbl$idx_pad_3_shared_ctbl$idx_oa1_out' repeatCount='2'/>
+    <ExposedMember key='ctbl$idx_pad_6_shared_dac$idx_pad' paramId='ctbl$idx_pad_6_shared_dac$idx_pad' repeatCount='2'/>
+    <ExposedMember key='ptc_pad_$idx_shared_sarmux_pad_$idx' paramId='ptc_pad_$idx_shared_sarmux_pad_$idx' repeatCount='8'/>
+    <ExposedMember key='lppass_dout_$idx' paramId='lppass_dout[$idx]' repeatCount='4'/>
+    <ExposedMember key='ctb0_pin$idx' paramId='ctb0_pin$idx' repeatCount='8'/>
+    <ExposedMember key='ctb1_pin$idx' paramId='ctb1_pin$idx' repeatCount='8'/>
+    <ExposedMember key='ptc_pin$idx' paramId='ptc_pin$idx' repeatCount='8'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='false'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_prb'
+                 name='resource_prb'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].prb[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_ptc'
+                 name='resource_ptc'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ptc[" . 0 . "]"}`'/>
+
+    <Repeat count='2'>
+      <ParamString id='resource_ctb_$idx' name='resource_ctb_$idx' group='Internal' default='`${"pass[" . inst_pass . "].ctb[" . $idx . "]"}`' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+    <Repeat count='2'>
+      <ParamString id='resource_dac_$idx' name='resource_dac_$idx' group='Internal' default='`${"pass[" . inst_pass . "].dac[" . $idx . "]"}`' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+    <ParamString id='resource_adc'
+                 name='resource_adc'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . 0 . "]"}`'/>
+
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__autanalog.html' linkText='Open Autonomous Analog Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamString id='INST_NAME_lppass' name='INST_NAME_lppass' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamSignal port='clk_hf[0]' name='High-Frequency Clock' group='High-Frequency Clocks' visible='true' desc='High-Frequency Clock for Autonomous Analog' canBeEmpty='false' />
+    <ParamBool id='clockHfIsConnected' name='clockHfIsConnected' group='Internal' default='`${hasConnection("clk_hf", 0)}`' visible='`${debug}`' editable='false' desc='Check if clk_hf[0] is connected' />
+
+    <ParamString id='clockHf' name='clockHf' group='Internal' default='`${clockHfIsConnected ? getBlockFromSignal("clk_hf[0]") : 0}`' visible='false' editable='false' desc='Get Block signal from clk_hf[0]' />
+    <ParamRange  id='clockHfHz' name='clockHfHz' group='Internal' default='`${clockHfIsConnected ? getExposedMember(clockHf, "frequency") : 0}`' min='0' max='1000000000' resolution='1' visible='`${debug}`' editable='false' desc='Frequency of High-Frequency Clock' />
+    <ParamString  id='clockHfFreq' name='Frequency' group='High-Frequency Clocks' default='`${formatFrequency(clockHfHz, clockHfIsConnected ? getExposedMember(clockHf, "accuracy") : 0)}`' visible='true' editable='false' desc='Frequency of High-Frequency Clock' />
+
+    <ParamSignal port='clock_ptc[0]' name='PTC Clock' group='Clocks' visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`' desc='Clock that operates PTC if HS mode is enabled.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='peri\[\d+\](\.group\[\d+\])?\.div_.*' valid='true'/>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='clock_dac[0]' name='DAC0 Clock' group='Clocks' visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`' desc='Clock that operates DAC0 if HS mode is enabled.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='peri\[\d+\](\.group\[\d+\])?\.div_.*' valid='true'/>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='clock_dac[1]' name='DAC1 Clock' group='Clocks' visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`' desc='Clock that operates DAC1 if HS mode is enabled.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='peri\[\d+\](\.group\[\d+\])?\.div_.*' valid='true'/>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='clock_pump_peri[0]' name='Pump Clock' group='Clocks' visible='true' desc='Clock that operates Pump if HS mode is enabled' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='peri\[\d+\](\.group\[\d+\])?\.div_.*' valid='true'/>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+
+    <Repeat count='16'>
+       <ParamSignal port='ctbl_pads[$idx]' name='CTB`${$idx / 8}` PIN[`${$idx % 8}`]' group='CTB Connections'
+        visible='`${hasBlock("pass[0].ctb[" . ($idx / 8) . "]") &amp;&amp; hasVisibleOption("ctbl_pads[$idx]")}`'
+        desc='CTB`${$idx / 8}` pin' canBeEmpty='true'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+          <Parameter id='DriveModes' severity='ERROR' reason='The pin Drive Mode parameter does not match the expected.'>
+            <Fixed value='CY_GPIO_DM_ANALOG' />
+          </Parameter>
+        </Constraint>
+      </ParamSignal>
+     </Repeat>
+
+    <Repeat count='8'>
+        <ParamBool id='ctb0_pin$idx' name='ctb0_pin$idx' group='Internal' default='`${hasVisibleOption("ctbl_pads[$idx]")}`' visible='`${debug}`' editable='false' desc='' />
+        <ParamBool id='ctb1_pin$idx' name='ctb1_pin$idx' group='Internal' default='`${hasVisibleOption("ctbl_pads[" . ($idx + 8) . "]")}`' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+     <Repeat count='2'>
+      <ParamSignal port='dac_pads[$idx]' name='DAC $idx PIN' group='DAC Connections'
+        visible='`${hasBlock("pass[0].dac[$idx]") &amp;&amp; hasVisibleOption("dac_pads[$idx]")}`'
+        desc='DAC $idx pin' canBeEmpty='true'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+          <Parameter id='DriveModes' severity='ERROR' reason='The pin Drive Mode parameter does not match the expected.'>
+            <Fixed value='CY_GPIO_DM_ANALOG' />
+          </Parameter>
+        </Constraint>
+      </ParamSignal>
+    </Repeat>
+
+    <Repeat count='2'>
+      <ParamSignal port='ctbl_oa$idx_out_10x[0]' name='CTB0 OA$idx OUT 10x' group='CTB Connections'
+        visible='`${hasBlock("pass[0].ctb[0]") &amp;&amp;
+                    hasBlock("pass[0].ctb[0].oa[$idx]") &amp;&amp;
+                    hasVisibleOption("ctbl_oa$idx_out_10x[0]")}`'
+        desc='CTB0 OA$idx OUT 10x pin' canBeEmpty='true'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+          <Parameter id='DriveModes' severity='ERROR' reason='The pin Drive Mode parameter does not match the expected.'>
+            <Fixed value='CY_GPIO_DM_ANALOG' />
+          </Parameter>
+        </Constraint>
+      </ParamSignal>
+    </Repeat>
+
+    <Repeat count='2'>
+      <ParamSignal port='ctbl_oa$idx_out_10x[1]' name='CTB1 OA$idx OUT 10x' group='CTB Connections'
+        visible='`${hasBlock("pass[0].ctb[1]") &amp;&amp;
+                    hasBlock("pass[0].ctb[1].oa[$idx]") &amp;&amp;
+                    hasVisibleOption("ctbl_oa$idx_out_10x[1]")}`'
+        desc='CTB1 OA$idx OUT 10x pin' canBeEmpty='true'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+          <Parameter id='DriveModes' severity='ERROR' reason='The pin Drive Mode parameter does not match expected.'>
+            <Fixed value='CY_GPIO_DM_ANALOG' />
+          </Parameter>
+        </Constraint>
+      </ParamSignal>
+    </Repeat>
+
+    <Repeat count='8'>
+      <ParamSignal port='ptc_pads[$idx]' name='PTC/SAR PIN[$idx]' group='PTC and SAR Connections'
+        visible='`${(hasBlock("pass[0].ptc[0]") || hasBlock("pass[0].sar[0]")) &amp;&amp; hasVisibleOption("ptc_pads[$idx]")}`'
+        desc='PTComp and SAR ADC pin' canBeEmpty='true'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+          <Parameter id='DriveModes' severity='ERROR' reason='The pin Drive Mode parameter does not match the expected.'>
+            <Fixed value='CY_GPIO_DM_ANALOG' />
+          </Parameter>
+        </Constraint>
+      </ParamSignal>
+      <ParamBool id='ptc_pin$idx' name='ptc_pin$idx' group='Internal' default='`${hasVisibleOption("ptc_pads[$idx]")}`' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+    <Repeat count='4'>
+      <ParamSignal port='lppass_dout[$idx]' name='GPIO Digital Output PIN[$idx]' group='Connections' visible='`${hasVisibleOption("lppass_dout[$idx]")}`' desc='GPIO Digital Output pins' canBeEmpty='true'>
+        <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+          <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+            <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+          </Parameter>
+        </Constraint>
+      </ParamSignal>
+    </Repeat>
+
+    <!-- TrigMux connections -->
+    <Repeat count='8'>
+      <ParamSignal port='tr_lppass_out[$idx]' name='Trigger Output $idx' group='Trigger Output' visible='true' desc='Trigger Output $idx' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    </Repeat>
+
+    <Repeat count='4'>
+      <ParamSignal port='tr_lppass_in[$idx]' name='Trigger Input $idx' group='Trigger Input' visible='true' desc='Trigger Input $idx' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_HIGHZ' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+    </Repeat>
+
+    <!-- Vdda  -->
+    <ParamBool  id='isPowerEnabled' name='isPowerEnabled' group='Internal' visible='`${debug}`' editable='false' desc=''
+                default='`${isBlockUsed("srss[0].power[0]")}`' />
+    <ParamString id='vdda' name='vdda' group='Internal' visible='`${debug}`' editable='false' desc=''
+                 default='`${isPowerEnabled ? getExposedMember("srss[0].power[0]", "vddaMv") : 1800}`' />
+
+    <!-- local variables for the PTComp clock configuration -->
+    <ParamString  id='pclkPtc'     name='pclkPtc'     group='Internal' visible='`${debug}`' editable='false' desc='' default='`${getBlockFromSignal("clock_ptc[0]")}`' />
+    <ParamBool    id='pclkPtcOk'   name='pclkPtcOk'   group='Internal' visible='`${debug}`' editable='false' desc='' default='`${hasConnection("clock_ptc", 0) &amp;&amp; isBlockUsed(pclkPtc)}`' />
+    <ParamBool    id='ptcOk'       name='ptcOk'       group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed("pass[" . inst_pass . "].ptc[0]")}`' />
+    <ParamString  id='pclkPtcDst'  name='pclkPtcDst'  group='Internal' visible='`${debug}`' editable='false' desc='' default='PCLK_PASS_CLOCK_PTC'/>
+
+    <!-- local variables for the DAC0/1 clocks configuration -->
+    <Repeat count='2'>
+        <ParamString  id='pclkDac$idx'     name='pclkDac$idx'     group='Internal' visible='`${debug}`' editable='false' desc='' default='`${getBlockFromSignal("clock_dac[$idx]")}`' />
+        <ParamBool    id='pclkDac$idxOk'   name='pclkDac$idxOk'   group='Internal' visible='`${debug}`' editable='false' desc='' default='`${hasConnection("clock_dac", $idx) &amp;&amp; isBlockUsed(pclkDac$idx)}`' />
+        <ParamBool    id='dac$idxOk'       name='dac$idxOk'       group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed("pass[" . inst_pass . "].dac[$idx]")}`' />
+        <ParamString  id='pclkDac$idxDst'  name='pclkDac$idxDst'  group='Internal' visible='`${debug}`' editable='false' desc='' default='PCLK_PASS_CLOCK_DAC$idx'/>
+    </Repeat>
+
+    <!-- local variables for the Pump clock configuration -->
+    <ParamString  id='pclkPump'     name='pclkPump'     group='Internal' visible='`${debug}`' editable='false' desc='' default='`${getBlockFromSignal("clock_pump_peri[0]")}`' />
+    <ParamBool    id='pclkPumpOk'   name='pclkPumpOk'   group='Internal' visible='`${debug}`' editable='false' desc='' default='`${hasConnection("clock_pump_peri", 0) &amp;&amp; isBlockUsed(pclkPump)}`' />
+    <ParamString  id='pclkPumpDst'  name='pclkPumpDst'  group='Internal' visible='`${debug}`' editable='false' desc='' default='PCLK_PASS_CLOCK_PUMP_PERI'/>
+    <Repeat count='2'>
+        <ParamString id='resource_ctb0Oa$idx' name='resource_ctb0Oa$idx' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${resource_pass}`.ctb[0].oa[$idx]' />
+        <ParamBool   id='isUsed_ctb0Oa$idx'   name='isUsed_ctb0Oa$idx'   group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed(resource_ctb0Oa$idx)}`'/>
+        <ParamString id='resource_ctb1Oa$idx' name='resource_ctb1Oa$idx' group='Internal' visible='`${debug}`' editable='false' desc='' default='`${resource_pass}`.ctb[1].oa[$idx]' />
+        <ParamBool   id='isUsed_ctb1Oa$idx'   name='isUsed_ctb1Oa$idx'   group='Internal' visible='`${debug}`' editable='false' desc='' default='`${isBlockUsed(resource_ctb1Oa$idx)}`'/>
+    </Repeat>
+
+<!-- LPPASS internal parameters -->
+    <!-- Set inFlash to False, as this functionality is not supported now, see Drivers-19054 -->
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='false' visible='false' editable='false' desc='Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false).' />
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='The Power personality must be enabled for Autonomous Analog operation.' condition='`${!isPowerEnabled}`' />
+    <DRC type='ERROR' text='Autonomous Controller should be enabled and configured.' condition='`${!isBlockUsed(resource_ac)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_ac}`' value='lppass_ac-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='High-Frequency Clock 9 shoud be in the next range [20 MHz - 80 MHz].' condition='`${clockHfIsConnected &amp;&amp; ((clockHfHz &gt; 80000000) || (clockHfHz &lt; 20000000))}`' />
+    <DRC type='ERROR' text='Pump Clock is not reserved.'     condition='`${!pclkPumpOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "HighSpeed" &amp;&amp;
+                                                                        ((isUsed_ctb0Oa0 &amp;&amp; (getExposedMember(resource_ctb0Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb0Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                      || (isUsed_ctb0Oa1 &amp;&amp; (getExposedMember(resource_ctb0Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb0Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                      || (isUsed_ctb1Oa0 &amp;&amp; (getExposedMember(resource_ctb1Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb1Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                      || (isUsed_ctb1Oa1 &amp;&amp; (getExposedMember(resource_ctb1Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb1Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                      || ((isBlockUsed(resource_dac_0) &amp;&amp; (((getExposedMember(resource_dac_0, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_0, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_dac_1) &amp;&amp; ((getExposedMember(resource_dac_1, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_1, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_dac_0) &amp;&amp; (getExposedMember(resource_dac_0, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_0, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_dac_1) &amp;&amp; ((getExposedMember(resource_dac_1, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_1, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW"))))
+                                                                      || (isBlockUsed(resource_adc) &amp;&amp; (((getExposedMember(resource_adc, "sar_noninvInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_adc, "sar_noninvInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_adc) &amp;&amp; ((getExposedMember(resource_adc, "sar_invInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_adc, "sar_invInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW"))))
+                                                                      )}`' />
+   <DRC type='ERROR' text='PTC Clock is not reserved.'       condition='`${!pclkPtcOk  &amp;&amp; ptcOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "HighSpeed" &amp;&amp; getExposedMember("pass[" . inst_pass . "].ptc[0]", "ptc_sta_postProcessingIsEnabled")}`' />
+   <DRC type='ERROR' text='DAC $idx Clock is not reserved.'  condition='`${!pclkDac$idxOk &amp;&amp; dac$idxOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "HighSpeed"}`' repeatCount='2'/>
+
+   <DRC type='ERROR' text='Pump Clock should not be reserved for Low Power operating mode.'      condition='`${pclkPumpOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "LowPower"}`' />
+   <DRC type='ERROR' text='Pump Clock should be 4 MHz in High Speed operating mode.'             condition='`${pclkPumpOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "HighSpeed" &amp;&amp; (clockHfHz / getExposedMember(pclkPump, "divider")) != 4000000}`' />
+   <DRC type='ERROR' text='PTC Clock should not be reserved for Low Power operating mode.'       condition='`${pclkPtcOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "LowPower"}`' />
+   <DRC type='ERROR' text='DAC $idx Clock should not be reserved for Low Power operating mode.'  condition='`${pclkDac$idxOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "LowPower"}`' repeatCount='2'/>
+   <DRC type='ERROR' text='DAC $idx Clock should not exceed 1 MHz in High Speed operating mode.' condition='`${pclkDac$idxOk &amp;&amp; isBlockUsed(resource_ac) &amp;&amp; getExposedMember(resource_ac, "opMode") eq "HighSpeed" &amp;&amp; (clockHfHz / getExposedMember(pclkDac$idx, "divider")) &gt; 1000000}`' repeatCount='2'/>
+
+  </DRCs>
+
+  <ConfigFirmware>
+    <!-- The LPPASS header file -->
+    <ConfigInclude value='cy_autanalog.h' include='true' />
+    <ConfigInclude value='cy_sysclk.h' include='true' />
+    <ConfigDefine name='AUTANALOG_CLOCK_DIV_PRIO_HS_DEFAULT' value='`${cast(int64, getExposedMember("srss[0].clock[0].hfclk[9]", "frequency") / 4096000.0 + 0.5)}`' public='true' include='`${getExposedMember("pass[" . inst_pass . "].ac[0]", "opMode") eq "HighSpeed"}`' />
+
+    <!-- The LPPASS IRQ -->
+    <ConfigDefine name='`${INST_NAME_lppass}`_lppass_IRQ' value='pass_interrupt_lppass_IRQn' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME_lppass}`_fifo_IRQ' value='pass_interrupt_fifo_IRQn' public='true' include='true' />
+
+    <!-- The Autonomous Analog configuration structure -->
+    <ConfigStruct name='autonomous_analog_cfg'
+                  type='cy_stc_autanalog_cfg_t'
+                  const='`${inFlash}`'
+                  public='true'
+                  include='true'>
+      <Member name='prb' value='`${(isBlockUsed(resource_prb) ? "&amp;" . getExposedMember(resource_prb, "INST_NAME_prb") . "_cfg" : "NULL")}`'/>
+      <Member name='ac' value='`${isBlockUsed(resource_ac) ? "&amp;" . getExposedMember(resource_ac, "INST_NAME_ac") . "_cfg" : "NULL"}`'/>
+      <ConfigArray name='ctb' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].ctb[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_ctb_$idx{0}, "INST_NAME_ctb") . "_cfg" : "NULL") }`' count='2' />
+      </ConfigArray>
+      <ConfigArray name='ptcomp' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].ptc[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_ptc, "INST_NAME_ptc") . "_cfg" : "NULL") }`' count='1' />
+      </ConfigArray>
+      <ConfigArray name='dac' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].dac[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_dac_$idx{0}, "INST_NAME_dac") . "_cfg" : "NULL") }`' count='2' />
+      </ConfigArray>
+      <ConfigArray name='sar' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].sar[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_adc, "INST_NAME_adc") . "_cfg" : "NULL") }`' count='1' />
+      </ConfigArray>
+    </ConfigStruct>
+
+    <!-- The Autonomous Analog State Transition Table structure -->
+    <ConfigArray name='autonomous_analog_stt' type='cy_stc_autanalog_stt_t' const='`${inFlash}`' public='true' include='true' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . inst_pass . "].ac[0].state[" . $idx{0} . "]")}`'>
+        <Member name='ac' value='`${"&amp;" . getExposedMember(resource_ac, "INST_NAME_ac") . "_stt[" . $idx{1} . "U]"}`' />
+        <Member name='prb' value='`${(isBlockUsed(resource_prb) ? "&amp;" . getExposedMember(resource_prb, "INST_NAME_prb") . "_stt[" . $idx{1} . "U]" : "NULL")}`' />
+      <ConfigArray name='ctb' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].ctb[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_ctb_$idx{0}, "INST_NAME_ctb") . "_stt[" . $idx{2} . "U]" : "NULL")}`' count='2' />
+      </ConfigArray>
+      <ConfigArray name='ptcomp' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].ptc[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_ptc, "INST_NAME_ptc") . "_stt[" . $idx{2} . "U]" : "NULL")}`' count='1' />
+      </ConfigArray>
+      <ConfigArray name='dac' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].dac[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_dac_$idx{0}, "INST_NAME_dac") . "_stt[" . $idx{2} . "U]" : "NULL")}`' count='2' />
+      </ConfigArray>
+      <ConfigArray name='sar' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='`${(isBlockUsed("pass[" . inst_pass . "].sar[" . $idx{0} . "]") ? "&amp;" . getExposedMember(resource_adc, "INST_NAME_adc") . "_stt[" . $idx{2} . "U]" : "NULL")}`' count='1' />
+      </ConfigArray>
+      </ConfigStruct>
+    </ConfigArray>
+
+    <!-- The Autonomous Analog initialization structure -->
+    <ConfigStruct name='autonomous_analog_init'
+                  type='cy_stc_autanalog_t'
+                  const='`${inFlash}`'
+                  public='true'
+                  include='true'>
+      <Member name='configuration' value='&amp;autonomous_analog_cfg'/>
+      <Member name='numSttEntries' value='sizeof(autonomous_analog_stt)/sizeof(autonomous_analog_stt[0U])'/>
+      <Member name='stateTransitionTable' value='&amp;autonomous_analog_stt[0U]'/>
+    </ConfigStruct>
+
+    <!-- The Autonomous Analog clocks initialization -->
+    <ConfigInstruction value='Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_PASS_PERI_NR, CY_MMIO_PASS_GROUP_NR, CY_MMIO_PASS_SLAVE_NR, CY_MMIO_PASS_CLK_HF_NR);' include='true' purpose='INITIALIZE' />
+
+    <ConfigInstruction value='Cy_SysClk_PeriPclkAssignDivider(`${pclkPtcDst}`, `${getExposedMember(pclkPtc, "clockSel")}`);' purpose='INITIALIZE'
+                       include='`${pclkPtcOk &amp;&amp; getExposedMember("pass[" . inst_pass . "].ac[0]", "opMode") eq "HighSpeed"}`' />
+
+    <ConfigInstruction value='Cy_SysClk_PeriPclkAssignDivider(`${pclkDac$idxDst}`, `${getExposedMember(pclkDac$idx, "clockSel")}`);' purpose='INITIALIZE' repeatCount='2'
+                        include='`${pclkDac$idxOk &amp;&amp; getExposedMember("pass[" . inst_pass . "].ac[0]", "opMode") eq "HighSpeed"}`' />
+
+    <ConfigInstruction value='Cy_SysClk_PeriPclkAssignDivider(`${pclkPumpDst}`, `${getExposedMember(pclkPump, "clockSel")}`);' purpose='INITIALIZE' include='`${pclkPumpOk &amp;&amp; (getExposedMember("pass[" . inst_pass . "].ac[0]", "opMode") eq "HighSpeed") &amp;&amp;
+                                                                                                                                                                ((isUsed_ctb0Oa0 &amp;&amp; (getExposedMember(resource_ctb0Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb0Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                                                                                                              || (isUsed_ctb0Oa1 &amp;&amp; (getExposedMember(resource_ctb0Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb0Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                                                                                                              || (isUsed_ctb1Oa0 &amp;&amp; (getExposedMember(resource_ctb1Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb1Oa0, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                                                                                                              || (isUsed_ctb1Oa1 &amp;&amp; (getExposedMember(resource_ctb1Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_OFF" &amp;&amp; getExposedMember(resource_ctb1Oa1, "power") ne "CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW"))
+                                                                                                                                                              || ((isBlockUsed(resource_dac_0) &amp;&amp; (((getExposedMember(resource_dac_0, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_0, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_dac_1) &amp;&amp; ((getExposedMember(resource_dac_1, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_1, "dac_referenceBufferPower") ne "CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_dac_0) &amp;&amp; (getExposedMember(resource_dac_0, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_0, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_dac_1) &amp;&amp; ((getExposedMember(resource_dac_1, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_dac_1, "dac_outputBufferPower") ne "CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW"))))
+                                                                                                                                                              || (isBlockUsed(resource_adc) &amp;&amp; (((getExposedMember(resource_adc, "sar_noninvInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_adc, "sar_noninvInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW"))) || (isBlockUsed(resource_adc) &amp;&amp; ((getExposedMember(resource_adc, "sar_invInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_OFF") &amp;&amp; (getExposedMember(resource_adc, "sar_invInputBufferPower") ne "CY_AUTANALOG_SAR_BUF_PWR_ULTRA_LOW"))))
+    )}`' />
+
+  </ConfigFirmware>
+
+</PersonalityTemplate>

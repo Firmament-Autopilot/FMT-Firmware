@@ -1,0 +1,210 @@
+        {
+            "name": "Start_Application_Through_CM0SEC PSOCE84 (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "&&_MTB_RECIPE__QSPI_CFG_PATH&&"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set DEVICE m0sec; set BOARD psvp"
+            ],
+            "configFiles": [
+                "interface/kitprog3.cfg",
+                "target/infineon/pse84xgxs2.cfg"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400; init; reset init" // Serial number of a probe that is connected to the CM0SEC debug port
+            ],
+            "overrideLaunchCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                "set remotetimeout 60",
+                "monitor mdw 0x50100000 4",
+                "monitor mww 0x522138F4 0x07",
+                "monitor mww 0x52210020 0xF0000000",
+                "monitor mww 0x52213004 0x0001",
+                "monitor mww 0x52213008 0x8000",
+                "monitor mww 0x50100000 0x000000db",
+                "monitor mww 0x50100004 0x00000b70",
+                "monitor mww 0x50100008 0",
+                "monitor mww 0x5010000C 0",
+                "monitor mww 0x52213004 0xC001",
+                "monitor mdw 0x50100000 4",
+                "monitor reset init",
+                "monitor flash erase_address 0x13800000 0x40000",
+                "monitor flash write_image erase &&_MTB_RECIPE__PREBUILT_SECURE_APP&& 0x1201A400",
+                "set {int}0x50002300 = 0x13800000",
+                "set {int}0x50002308 = 0x13830000",
+                "file &&_MTB_RECIPE__PREBUILT_CM0_IMAGE&&",
+                "load",
+                "set {int}0x50002304 = 0x00030000",
+                "detach"
+            ],
+            "postStartSessionCommands": [
+                "monitor poll off",
+                "monitor cmsis-dap cmd 0x03",
+                "quit"
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "preLaunchTask": "Build",
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&"
+            }
+        },
+        // When using 'attach', make sure your program is running on the board and that your
+        // executable matches the image in the chip exactly, or else strange things can happen
+        // with breakpoints, variables, etc.
+        {
+            "name": "Attach PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "&&_MTB_RECIPE__ATTACH_SERVER_TYPE&&",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set ENABLE_ACQUIRE 0"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400" // Serial number of a probe that is connected to the CM0SEC debug port
+            ],
+            "overrideAttachCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                "set remotetimeout 60",
+                "info threads"
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,
+            "targetProcessor": &&_MTB_RECIPE__TARGET_PROCESSOR_NUMBER&&,
+            "overrideRestartCommands": [
+                "starti"
+            ],
+            "postRestartSessionCommands": [
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",    // Specifies application entry point name for restart/reset
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&"
+            }
+        },
+        {
+            "name": "Erase Device (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400; init; reset init" // Serial number of a probe that is connected to the CM33 debug port
+            ],
+            "overrideLaunchCommands": [
+                "set remotetimeout 60",
+                "monitor flash erase_sector 0 0 last"
+            ],
+            "postStartSessionCommands": [
+                "monitor poll off",
+                "monitor cmsis-dap cmd 0x03",
+                "quit"
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&"
+            }
+        },
+        {
+            "name": "Erase All (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/",
+                "&&_MTB_RECIPE__QSPI_CFG_PATH&&"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400; init; reset init" // Serial number of a probe that is connected to the CM33 debug port
+            ],
+            "overrideLaunchCommands": [
+                "set remotetimeout 60",
+                "monitor flash erase_sector 0 0 last"
+            ],
+            "postStartSessionCommands": [
+                "monitor poll off",
+                "monitor cmsis-dap cmd 0x03",
+                "quit"
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&"
+            }
+        },
+        {
+            "name": "Program (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/",
+                "&&_MTB_RECIPE__QSPI_CFG_PATH&&"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400; init; reset init" // Serial number of a probe that is connected to the CM33 debug port
+            ],
+            "overrideLaunchCommands": [
+                "set remotetimeout 60",
+                "monitor flash write_image erase {&&_MTB_RECIPE__HEX_FILE&&}",
+                "monitor reset run",
+                "monitor shutdown"
+            ],
+            "postStartSessionCommands": [
+                "monitor poll off",
+                "monitor cmsis-dap cmd 0x03",
+                "quit"
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,
+            "preLaunchTask": "Build",
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&"
+            }
+        }

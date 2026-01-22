@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--****************************************************************************
+* \file gfxss.cypersonality
+* \version 1.0
+*
+* \brief
+* Graphics Subsystem (GFXSS) personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2022-23 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id="gfxss" name="Graphics Subsystem (GFXSS)" version="1.0" xmlns="http://cypress.com/xsd/cyhwpersonality_v7">
+  <Dependencies>
+    <IpBlock name="mxs22gfxss" />
+    <Resource name="gfxss" />
+  </Dependencies>
+  <ExposedMembers>
+  </ExposedMembers>
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id="pdlDoc" name="Configuration Help" group="Overview" default="file:///`${cy_libs_path()}`/docs/html/group__group__graphics.html" linkText="Open GFXSS Documentation" visible="true" desc="Opens the Peripheral Driver Library Documentation" />
+
+    <!-- Clocks -->
+    <ParamSignal port="clk_hf[0]" name="Main Clock" group="Clocks" visible="true" desc="High frequency main clock." canBeEmpty="false" />
+    <ParamString id="sourceClock" name="sourceClock" group="Internal" default="`${getBlockFromSignal(&quot;clk_hf[0]&quot;)}`" visible="false" editable="false" desc="Source Clock Resource" />
+    <ParamRange  id="gfxssClkHz" name="gfxssClkHz" group="Internal" default="`${getExposedMember(sourceClock, &quot;frequency&quot;)}`" min="1" max="400000000" resolution="1" visible="false" editable="false" desc="gfxss clock frequency in Hz" />
+
+    <!-- Internal Variables -->
+	  <ParamRange id="max_display_width" name="Max Width" group="hidden" default="1024" min="1" max="1024" resolution="1" visible="false" editable="false" desc="Maximum Width that hardware supports." />
+    <ParamRange id="max_display_height" name="Max Height" group="hidden" default="768" min="1" max="768" resolution="1" visible="false" editable="false" desc="Maximum Height that hardware supports." />
+
+    <!-- General -->
+    <ParamBool id="gpu_enabled" name="Enable GPU" group="General" default="true" visible="true" editable="true" desc="Enable hardware acceleration for composition." />
+
+    <ParamChoice id="display_type" name="Display Type" group="General" default="GFX_DISP_TYPE_DSI_DPI" visible="true" editable="true" desc="Select the type of display connected." >
+      <Entry name="MIPI DSI Video Mode" value="GFX_DISP_TYPE_DSI_DPI" visible="true" />
+      <Entry name="MIPI DSI Command Mode" value="GFX_DISP_TYPE_DSI_DBI" visible="true" />
+	  <Entry name="MIPI DBI-A" value="GFX_DISP_TYPE_DBI_A" visible="true" />
+	  <Entry name="MIPI DBI-B" value="GFX_DISP_TYPE_DBI_B" visible="true" />
+	  <Entry name="MIPI DBI-C" value="GFX_DISP_TYPE_DBI_C" visible="true" />
+    </ParamChoice>
+
+    <!-- DSI Video Mode Flags -->
+    <ParamChoice id="mode_flags" name="Transfer Type" group="General" default="VID_MODE_TYPE_BURST" visible="`${display_type eq GFX_DISP_TYPE_DSI_DPI}`" editable="true" desc="Select video mode type." >
+      <Entry name="Video Mode Burst" value="VID_MODE_TYPE_BURST" visible="true" />
+      <Entry name="Video Mode Non Burst Sync Pulses" value="VID_MODE_TYPE_NON_BURST_SYNC_PULSES" visible="true" />
+	    <Entry name="Video Mode Non Burst Sync Events" value="VID_MODE_TYPE_NON_BURST_SYNC_EVENTS" visible="true" />
+    </ParamChoice>
+    <ParamSignal port="clk_ref_mipidsi[0]" name="MIPI DPHY PLL Clock" group="Clocks" visible="`${((display_type eq GFX_DISP_TYPE_DSI_DPI) || (display_type eq GFX_DISP_TYPE_DSI_DBI))}`"  desc="Reference clock for the D-PHY PLL." canBeEmpty="`${!((display_type eq GFX_DISP_TYPE_DSI_DPI) || (display_type eq GFX_DISP_TYPE_DSI_DBI))}`" />
+
+    <!-- Display Resolution -->
+    <ParamRange id="display_width" name="Width" group="General" default="1" min="1" max="`${max_display_width}`" resolution="1" visible="true" editable="true" desc="Display Width." />
+    <ParamRange id="display_height" name="Height" group="General" default="1" min="1" max="`${max_display_height}`" resolution="1" visible="true" editable="true" desc="Display Height." />
+
+    <!-- FPS -->
+    <ParamRange id="fps" name="Target FPS" group="General" default="60" min="1" max="60" resolution="1" visible="`${display_type eq GFX_DISP_TYPE_DSI_DPI}`" editable="true" desc="Frames Per Second." />
+
+    <!-- Display Format -->
+    <ParamChoice id="format" name="Display Interface" group="General" default="`${(display_type eq GFX_DISP_TYPE_DBI_C) ? vivD1R5G6B5OP1 : ((display_type eq GFX_DISP_TYPE_DSI_DPI) ? vivD24 : vivD8R5G6B5)}`" visible="true" editable="true" desc="Select display interface." >
+        <Entry name="DPI-24bit" value="vivD24" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" />
+        <Entry name="DPI-18bit Configuration 2" value="vivD18CFG2" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" />
+	    <Entry name="DPI-16bit Configuration 2" value="vivD16CFG2" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" />
+	    <Entry name="RGB565" value="vivD1R5G6B5OP3" visible="`${(display_type eq GFX_DISP_TYPE_DBI_C)}`" />
+	    <Entry name="RGB888" value="vivD1R8G8B8OP3" visible="`${(display_type eq GFX_DISP_TYPE_DBI_C)}`" />
+        <Entry name="RGB332-8bit" value="vivD8R3G3B2" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+        <Entry name="RGB444-8bit" value="vivD8R4G4B4" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB565-8bit" value="vivD8R5G6B5" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB666-8bit" value="vivD8R6G6B6" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B || (display_type eq GFX_DISP_TYPE_DSI_DBI))}`" />
+	    <Entry name="RGB888-8bit" value="vivD8R8G8B8" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+        <Entry name="RGB666-9bit" value="vivD9R6G6B6" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 8)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+        <Entry name="RGB332-16bit" value="vivD16R3G3B2" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB444-16bit" value="vivD16R4G4B4" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB565-16bit" value="vivD16R5G6B5" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB666-16bit Op1" value="vivD16R6G6B6OP1" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB666-16bit Op2" value="vivD16R6G6B6OP2" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB888-16bit Op1" value="vivD16R8G8B8OP1" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+	    <Entry name="RGB888-16bit Op2" value="vivD16R8G8B8OP2" visible="`${(((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; (CHIP_TOP.DBI_DATA_PIN_NR > 15)) || (display_type eq GFX_DISP_TYPE_DSI_DBI)}`" />
+    </ParamChoice>
+    <ParamRange  id="color_depth" name="color depth" group="Internal" default="`${(format eq vivD24) ? 24 : ((format eq vivD18CFG2) ? 18 : 16)}`" min="0" max="60" resolution="1" visible="false" editable="false" desc="Color Depth." />
+
+    <ParamRange  id="hsync_width" name="HSync Width" group="General" default="0" min="0" max="1024" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="HSync Width." />
+    <ParamRange  id="hfp" name="HFP" group="General" default="0" min="0" max="1024" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Horizontal Front Porch." />
+    <ParamRange  id="hbp" name="HBP" group="General" default="0" min="0" max="1024" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Horizontal Back Porch." />
+    <ParamRange  id="vsync_width" name="VSync Width" group="General" default="0" min="0" max="768" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Vsync Width." />
+    <ParamRange  id="vfp" name="VFP" group="General" default="0" min="0" max="768" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Vertical Front Porch." />
+    <ParamRange  id="vbp" name="VBP" group="General" default="0" min="0" max="768" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Vertical Back Porch." />
+
+    <!--DSI/DPHY configuration-->
+    <ParamRange  id="no_of_dsi_lines" name="Number of DSI Lanes" group="DSI/DPHY configuration" default="2" min="1" max="2" resolution="1" visible="`${((display_type eq GFX_DISP_TYPE_DSI_DPI) || (display_type eq GFX_DISP_TYPE_DSI_DBI))}`" editable="`${((display_type eq GFX_DISP_TYPE_DSI_DPI) || (display_type eq GFX_DISP_TYPE_DSI_DBI))}`" desc="Number of DSI Lanes." />
+    <ParamRange id="per_lane_mbps_cmd_mode" name="Per Lane Mbps" group="DSI/DPHY configuration" default="500" min="250" max="1500" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DBI)}`" editable="`${(display_type eq GFX_DISP_TYPE_DSI_DBI)}`" desc="MIPI DSI per lane Mbps." />
+    <ParamRange id="max_per_lane_Mbps" name="Max Per Lane Mbps" group="DSI/DPHY configuration" default="500" min="`${(((hsync_width + hfp + hbp + display_width) * (vsync_width + vfp + vbp + display_height) * fps * color_depth / 1000000) / no_of_dsi_lines)}`" max="1500" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Maximum bandwidth supported by panel in Mega bits/s." />
+    <ParamBool id="use_max_per_lane_Mbps" name="Use Max Per Lane Mbps" group="DSI/DPHY configuration" default="true" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Use max per lane mbps." />
+    <ParamRange id="req_per_lane_Mbps" name="Required Per Lane Mbps" group="DSI/DPHY configuration" default="`${ (use_max_per_lane_Mbps) ? (max_per_lane_Mbps) : (((hsync_width + hfp + hbp + display_width) * (vsync_width + vfp + vbp + display_height) * fps * color_depth / 1000000) / no_of_dsi_lines)}`" min="1" max="1500" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="false" desc="required per lane mbps to support target FPS." />
+    <ParamBool id="lp_mode_cmd_transfer" name="Allow CMD transfer in LP" group="DSI/DPHY configuration" default="true" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Use Low power mode transmission during command transfer." />
+    <ParamBool id="lp_mode_video_transfer" name="Allow LP transition in VIDEO" group="DSI/DPHY configuration" default="true" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="true" desc="Allow return to low power mode during VIDEO tranmission which includes VSA, VBP, VFP, VACT, HBP, HFP." />
+
+    <!-- General-->
+    <ParamRange  id="dbi_write_clock" name="DBI write clock (MHz)" group="General" default="`${(((max_per_lane_Mbps) / 8U) / 4U)}`" min="1" max="1500" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DBI)}`" editable="false" desc="Display controller DBI write clock in MHz." />
+    <ParamRange  id="pixel_clock" name="Pixel clock (KHz)" group="General" default="`${((hsync_width + hfp + hbp + display_width) * (vsync_width + vfp + vbp + display_height) * fps / 1000)}`" min="1" max="2500000" resolution="1" visible="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)}`" editable="false" desc="Display controller pixel clock in KHz." />
+
+    <!--Inputs/Outputs-->
+    <!--DBI-C-->
+    <ParamSignal port="spi_csx[0]" name="Chip select" group="DBI-C Interface" visible="`${display_type eq GFX_DISP_TYPE_DBI_C}`" desc="Chip select (active low)." canBeEmpty="true">
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="spi_scl[0]" name="Serial Clock" group="DBI-C Interface" visible="`${display_type eq GFX_DISP_TYPE_DBI_C}`" desc="Serial Clock." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="spi_dout[0]" name="Data Output" group="DBI-C Interface" visible="`${display_type eq GFX_DISP_TYPE_DBI_C}`" desc="Data output." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="spi_dcx[0]" name="D/C Select" group="DBI-C Interface" visible="`${display_type eq GFX_DISP_TYPE_DBI_C}`" desc="Data/Command select (optional)." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <!--DBI-A/B-->
+    <ParamSignal port="dbi_csx[0]" name="Chip select" group="`${(display_type eq GFX_DISP_TYPE_DBI_A) ? &quot;DBI-A Interface&quot; : &quot;DBI-B Interface&quot;}`" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)}`" desc="Chip select (active low)." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="dbi_dcx[0]" name="D/C Select" group="`${(display_type eq GFX_DISP_TYPE_DBI_A) ? &quot;DBI-A Interface&quot; : &quot;DBI-B Interface&quot;}`" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)}`" desc="Data/Command Select." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="dbi_e[0]" name="E Clock" group="`${(display_type eq GFX_DISP_TYPE_DBI_A) ? &quot;DBI-A Interface&quot; : &quot;DBI-B Interface&quot;}`" visible="`${(display_type eq GFX_DISP_TYPE_DBI_A)}`" desc="In Fixed E mode, this signal is tied HIGH." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+    <ParamSignal port="dbi_wrx[0]" name="Write" group="`${(display_type eq GFX_DISP_TYPE_DBI_A) ? &quot;DBI-A Interface&quot; : &quot;DBI-B Interface&quot;}`" visible="`${(display_type eq GFX_DISP_TYPE_DBI_B)}`" desc="Write data sampling (rising edge)." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+
+    <ParamBool id="biteight_enabled" name="8 data lines" group="Hidden" default="`${(format eq vivD8R3G3B2) || (format eq vivD8R4G4B4) || (format eq vivD8R5G6B5) || (format eq vivD8R6G6B6) || (format eq vivD8R8G8B8)}`" visible="false" editable="false" desc="8 data lines used." />
+    <ParamBool id="bitnine_enabled" name="9 data lines" group="Hidden" default="`${(format eq vivD9R6G6B6)}`" visible="false" editable="false" desc="9 data lines used." />
+    <ParamRange  id="data_lines_used" name="Number of Data Lines" group="Hidden" default="`${(biteight_enabled ? 8 : (bitnine_enabled ? 9 : 16))}`" min="0" max="16" resolution="1" visible="false" editable="false" desc="Number of data lines." />
+
+	<Repeat count="16">
+    <ParamSignal port="dbi_d[$idx]" name="Data[$idx]" group="`${(display_type eq GFX_DISP_TYPE_DBI_A) ? &quot;DBI-A Interface&quot; : &quot;DBI-B Interface&quot;}`" visible="`${((display_type eq GFX_DISP_TYPE_DBI_A) || (display_type eq GFX_DISP_TYPE_DBI_B)) &amp;&amp; ($idx &lt; data_lines_used)}`" desc="Data output." canBeEmpty="true" >
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="DEFAULT" reason="">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation="ioss\[\d+\]\.port\[\d+\]\.pin.*" valid="true" >
+        <Parameter id="DriveModes" severity="INFO" reason="The pin Drive Mode parameter does not match expected.">
+          <Fixed value="CY_GPIO_DM_STRONG" />
+        </Parameter>
+      </Constraint>
+      <Constraint type="ACCEPT" targetLocation=".*" valid="true" />
+    </ParamSignal>
+	</Repeat>
+
+    <!-- Layer 0 - Graphics/Video Layer-->
+    <ParamBool id="layer0_enabled" name="Enable Graphics/Video Layer" group="Layer Configuration" default="true" visible="true" editable="true" desc="Enable Graphics/Video Layer." />
+    <ParamBool id="layer0_visibility" name="Visibility" group="Graphics/Video Layer" default="true" visible="`${layer0_enabled}`" editable="true" desc="Toggle visibility for Graphics/Video Layer." />
+    <ParamChoice id="layer0_format" name="Input Format" group="Graphics/Video Layer" default="vivRGB565" visible="`${layer0_enabled}`" editable="true" desc="Select display format." >
+      <Entry name="RGB565" value="vivRGB565" visible="true" />
+      <Entry name="ARGB8888" value="vivARGB8888" visible="true" />
+	  <Entry name="ARGB1555" value="vivARGB1555" visible="true" />
+	  <Entry name="ARGB4444" value="vivARGB4444" visible="true" />
+	  <Entry name="Packed YUV422" value="vivYUY2" visible="true" />
+	  <Entry name="YUV 420 semi-planar" value="vivNV12" visible="true" />
+    </ParamChoice>
+    <ParamRange id="layer0_pos_x" name="X Position" group="Graphics/Video Layer" default="0" min="0" max="`${display_width}`" resolution="1" visible="`${layer0_enabled}`" editable="true" desc="Graphics/Video Layer X-Position." />
+    <ParamRange id="layer0_pos_y" name="Y Position" group="Graphics/Video Layer" default="0" min="0" max="`${display_height}`" resolution="1" visible="`${layer0_enabled}`" editable="true" desc="Graphics/Video Layer Y-Position." />
+    <ParamRange id="layer0_width" name="Width" group="Graphics/Video Layer" default="`${display_width}`" min="1" max="`${max_display_width}`" resolution="1" visible="`${layer0_enabled}`" editable="true" desc="Graphics/Video Layer Width." />
+    <ParamRange id="layer0_height" name="Height" group="Graphics/Video Layer" default="`${display_height}`" min="1" max="`${max_display_height}`" resolution="1" visible="`${layer0_enabled}`" editable="true" desc="Graphics/Video Layer Height." />
+    <ParamRange id="layer0_zorder" name="Z Order" group="Graphics/Video Layer" default="0" min="0" max="2" resolution="1" visible="`${layer0_enabled}`" editable="true" desc="Graphics/Video Layer Height." />
+
+    <!-- Layer 1 -->
+    <ParamBool id="layer1_enabled" name="Enable Overlay0" group="Layer Configuration" default="false" visible="true" editable="true" desc="Enable Overlay0." />
+    <ParamBool id="layer1_visibility" name="Visibility" group="Overlay 0" default="true" visible="`${layer1_enabled}`" editable="true" desc="Toggle visibility for Overlay0." />
+    <ParamChoice id="layer1_format" name="Input Format" group="Overlay 0" default="vivRGB565" visible="`${layer1_enabled}`" editable="true" desc="Select display format." >
+      <Entry name="RGB565" value="vivRGB565" visible="true" />
+      <Entry name="ARGB8888" value="vivARGB8888" visible="true" />
+	  <Entry name="ARGB1555" value="vivARGB1555" visible="true" />
+	  <Entry name="ARGB4444" value="vivARGB4444" visible="true" />
+	  <Entry name="Packed YUV422" value="vivYUY2" visible="true" />
+	  <Entry name="YUV 420 semi-planar" value="vivNV12" visible="true" />
+    </ParamChoice>
+    <ParamRange id="layer1_pos_x" name="X Position" group="Overlay 0" default="0" min="0" max="`${display_width}`" resolution="1" visible="`${layer1_enabled}`" editable="true" desc="Overlay0 X-Position." />
+    <ParamRange id="layer1_pos_y" name="Y Position" group="Overlay 0" default="0" min="0" max="`${display_height}`" resolution="1" visible="`${layer1_enabled}`" editable="true" desc="Overlay0 Y-Position." />
+    <ParamRange id="layer1_width" name="Width" group="Overlay 0" default="`${display_width}`" min="1" max="`${max_display_width}`" resolution="1" visible="`${layer1_enabled}`" editable="true" desc="Overlay0 Width." />
+    <ParamRange id="layer1_height" name="Height" group="Overlay 0" default="`${display_height}`" min="1" max="`${max_display_height}`" resolution="1" visible="`${layer1_enabled}`" editable="true" desc="Overlay0 Height." />
+    <ParamRange id="layer1_zorder" name="Z Order" group="Overlay 0" default="0" min="0" max="2" resolution="1" visible="`${layer1_enabled}`" editable="true" desc="Graphics/Video Layer Height." />
+
+    <!-- Layer 2 -->
+    <ParamBool id="layer2_enabled" name="Enable Overlay1" group="Layer Configuration" default="false" visible="true" editable="true" desc="Enable Overlay1." />
+    <ParamBool id="layer2_visibility" name="Visibility" group="Overlay 1" default="true" visible="`${layer2_enabled}`" editable="true" desc="Toggle visibility for Overlay1." />
+    <ParamChoice id="layer2_format" name="Input Format" group="Overlay 1" default="vivRGB565" visible="`${layer2_enabled}`" editable="true" desc="Select display format." >
+      <Entry name="RGB565" value="vivRGB565" visible="true" />
+      <Entry name="ARGB8888" value="vivARGB8888" visible="true" />
+	  <Entry name="ARGB1555" value="vivARGB1555" visible="true" />
+	  <Entry name="ARGB4444" value="vivARGB4444" visible="true" />
+    </ParamChoice>
+    <ParamRange id="layer2_pos_x" name="X Position" group="Overlay 1" default="0" min="0" max="`${display_width}`" resolution="1" visible="`${layer2_enabled}`" editable="true" desc="Overlay1- Position." />
+    <ParamRange id="layer2_pos_y" name="Y Position" group="Overlay 1" default="0" min="0" max="`${display_height}`" resolution="1" visible="`${layer2_enabled}`" editable="true" desc="Overlay1- Position." />
+    <ParamRange id="layer2_width" name="Width" group="Overlay 1" default="`${display_width}`" min="1" max="`${max_display_width}`" resolution="1" visible="`${layer2_enabled}`" editable="true" desc="Overlay1 Width." />
+    <ParamRange id="layer2_height" name="Height" group="Overlay 1" default="`${display_height}`" min="1" max="`${max_display_height}`" resolution="1" visible="`${layer2_enabled}`" editable="true" desc="Overlay1 Height." />
+    <ParamRange id="layer2_zorder" name="Z Order" group="Overlay 1" default="0" min="0" max="2" resolution="1" visible="`${layer2_enabled}`" editable="true" desc="Graphics/Video Layer Height." />
+ </Parameters>
+
+<DRCs>
+    <DRC type="WARNING" text="Graphics/Video Layer stride (width * bytes per pixel) should be a multiple of 128 bytes as per Display Controller requirements."
+         condition="`${(layer0_enabled eq false? 128 : (layer0_format eq vivRGB565) ? (layer0_width * 2) : ((layer0_format eq vivARGB8888) || (layer0_format eq vivARGB1555)) ? (layer0_width * 4) : (layer0_width)) % 128 != 0}`" />
+    <DRC type="WARNING" text="Overlay 0 stride (width * bytes per pixel) should be a multiple of 128 bytes as per Display Controller requirements."
+         condition="`${(layer1_enabled eq false? 128 : (layer1_format eq vivRGB565) ? (layer1_width * 2) : ((layer1_format eq vivARGB8888) || (layer1_format eq vivARGB1555)) ? (layer1_width * 4) : (layer1_width)) % 128 != 0}`" />
+    <DRC type="WARNING" text="Overlay 1 stride (width * bytes per pixel) should be a multiple of 128 bytes as per Display Controller requirements."
+         condition="`${(layer2_enabled eq false? 128 : (layer2_format eq vivRGB565) ? (layer2_width * 2) : ((layer2_format eq vivARGB8888) || (layer2_format eq vivARGB1555)) ? (layer2_width * 4) : (layer2_width)) % 128 != 0}`" />
+</DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value="cy_graphics.h" include="true" />
+    <ConfigInclude value="cy_sysclk.h" include="true" />
+    <ConfigInclude value="cyhal_hwmgr.h" include="true" guard="defined (CY_USING_HAL)" />
+
+	<ConfigDefine name="GFXSS_HW" value="GFXSS" public="true" include="true" />
+    <ConfigDefine name="GFXSS_GPU_IRQ" value="gfxss_interrupt_gpu_IRQn" public="true" include="true" />
+    <ConfigDefine name="GFXSS_DC_IRQ" value="gfxss_interrupt_dc_IRQn" public="true" include="true" />
+    <ConfigDefine name="GFXSS_MIPIDSI_IRQ" value="gfxss_interrupt_mipidsi_IRQn" public="true" include="true" />
+
+	<ConfigStruct name="GFXSS_graphics_layer" type="cy_stc_gfx_layer_config_t" const="false" public="true" include="true">
+      <Member name="layer_type" value="GFX_LAYER_GRAPHICS" />
+      <Member name="buffer_address" value="(gctADDRESS *)CY_SOCMEM_RAM_BASE" />
+      <Member name="uv_buffer_address" value="(gctADDRESS *)CY_SOCMEM_RAM_BASE" />
+      <Member name="input_format_type" value="`${layer0_format}`" />
+      <Member name="tiling_type" value="`${((layer0_format eq vivNV12) || (layer0_format eq vivYUY2)) ? &quot;vivTILED4X4&quot; : &quot;vivLINEAR&quot;}`"  />
+      <Member name="pos_x" value="`${layer0_pos_x}`" />
+      <Member name="pos_y" value="`${layer0_pos_y}`" />
+      <Member name="width" value="`${layer0_width}`" />
+      <Member name="height" value="`${layer0_height}`" />
+      <Member name="zorder" value="`${layer0_zorder}`" />
+      <Member name="layer_enable" value="`${layer0_enabled}`" />
+      <Member name="visibility" value="`${(layer0_enabled) ? ((layer0_visibility) ? true : false) : false}`" />
+    </ConfigStruct>
+	<ConfigStruct name="GFXSS_overlay0_layer" type="cy_stc_gfx_layer_config_t" const="false" public="true" include="true">
+      <Member name="layer_type" value="GFX_LAYER_OVERLAY0" />
+      <Member name="buffer_address" value="(gctADDRESS *)CY_SOCMEM_RAM_BASE" />
+      <Member name="uv_buffer_address" value="(gctADDRESS *)CY_SOCMEM_RAM_BASE" />
+      <Member name="input_format_type" value="`${layer1_format}`" />
+      <Member name="tiling_type" value="`${((layer1_format eq vivNV12) || (layer1_format eq vivYUY2)) ? &quot;vivTILED4X4&quot; : &quot;vivLINEAR&quot;}`" />
+      <Member name="pos_x" value="`${layer1_pos_x}`" />
+      <Member name="pos_y" value="`${layer1_pos_y}`" />
+      <Member name="width" value="`${layer1_width}`" />
+      <Member name="height" value="`${layer1_height}`" />
+      <Member name="zorder" value="`${layer1_zorder}`" />
+      <Member name="layer_enable" value="`${layer1_enabled}`" />
+      <Member name="visibility" value="`${(layer1_enabled) ? ((layer1_visibility) ? true : false) : false}`" />
+    </ConfigStruct>
+	<ConfigStruct name="GFXSS_overlay1_layer" type="cy_stc_gfx_layer_config_t" const="false" public="true" include="true">
+      <Member name="layer_type" value="GFX_LAYER_OVERLAY1" />
+      <Member name="buffer_address" value="(gctADDRESS *)CY_SOCMEM_RAM_BASE" />
+      <Member name="uv_buffer_address" value="(gctADDRESS *)CY_SOCMEM_RAM_BASE" />
+      <Member name="input_format_type" value="`${layer2_format}`" />
+      <Member name="tiling_type" value="vivLINEAR" />
+      <Member name="pos_x" value="`${layer2_pos_x}`" />
+      <Member name="pos_y" value="`${layer2_pos_y}`" />
+      <Member name="width" value="`${layer2_width}`" />
+      <Member name="height" value="`${layer2_height}`" />
+      <Member name="zorder" value="`${layer2_zorder}`" />
+      <Member name="layer_enable" value="`${layer2_enabled}`" />
+      <Member name="visibility" value="`${(layer2_enabled) ? ((layer2_visibility) ? true : false) : false}`" />
+    </ConfigStruct>
+
+	<ConfigStruct name="GFXSS_dc_config" type="cy_stc_gfx_dc_config_t" const="false" public="true" include="true">
+      <Member name="gfx_layer_config" value="&amp;GFXSS_graphics_layer" />
+      <Member name="ovl0_layer_config" value="&amp;GFXSS_overlay0_layer" />
+      <Member name="ovl1_layer_config" value="&amp;GFXSS_overlay1_layer" />
+      <Member name="display_type" value="`${display_type}`" />
+      <Member name="display_format" value="`${format}`" />
+      <Member name="display_size" value="vivDISPLAY_CUSTOMIZED" />
+      <Member name="display_width" value="`${display_width}`" />
+      <Member name="display_height" value="`${display_height}`" />
+    </ConfigStruct>
+
+  <ConfigStruct name="GFXSS_gpu_config" type="cy_stc_gfx_gpu_cfg_t" const="false" public="true" include="true">
+      <Member name="enable" value="`${gpu_enabled}`" />
+    </ConfigStruct>
+
+	<ConfigStruct name="GFXSS_mipidsi_display_params" type="cy_stc_mipidsi_display_params_t" const="false" public="true" include="true">
+      <Member name="pixel_clock" value="`${pixel_clock}`" />
+      <Member name="hdisplay" value="`${display_width}`" />
+      <Member name="hsync_width" value="`${hsync_width}`" />
+      <Member name="hfp" value="`${hfp}`" />
+      <Member name="hbp" value="`${hbp}`" />
+      <Member name="vdisplay" value="`${display_height}`" />
+      <Member name="vsync_width" value="`${vsync_width}`" />
+      <Member name="vfp" value="`${vfp}`" />
+      <Member name="vbp" value="`${vbp}`" />
+      <Member name="polarity_flags" value="0" />
+    </ConfigStruct>
+
+	<ConfigStruct name="GFXSS_mipi_dsi_config" type="cy_stc_mipidsi_config_t" const="false" public="true" include="true">
+      <Member name="virtual_ch" value="0" /> <!-- Default Channel 0 -->
+      <Member name="num_of_lanes" value="`${no_of_dsi_lines}`" />
+      <Member name="per_lane_mbps" value="`${ ((display_type eq GFX_DISP_TYPE_DSI_DBI)) ? (per_lane_mbps_cmd_mode) : (req_per_lane_Mbps) }`" />
+      <Member name="dpi_fmt" value="`${(display_type eq GFX_DISP_TYPE_DSI_DPI) ? ((format eq vivD24) ? &quot;CY_MIPIDSI_FMT_RGB888&quot; : ((format eq vivD18CFG2) ? &quot;CY_MIPIDSI_FMT_RGB666&quot; : &quot;CY_MIPIDSI_FMT_RGB565&quot;)):
+	                                   ((format eq vivD8R3G3B2) ? &quot;CY_MIPIDSI_FMT_8BIT_8BPP&quot; :
+									   (format eq vivD8R4G4B4) ? &quot;CY_MIPIDSI_FMT_8BIT_12BPP&quot; :
+									   (format eq vivD8R5G6B5) ? &quot;CY_MIPIDSI_FMT_8BIT_16BPP&quot; :
+									   (format eq vivD8R6G6B6) ? &quot;CY_MIPIDSI_FMT_8BIT_18BPP&quot; :
+									   (format eq vivD9R6G6B6) ? &quot;CY_MIPIDSI_FMT_9BIT_18BPP&quot; :
+									   (format eq vivD16R3G3B2) ? &quot;CY_MIPIDSI_FMT_16BIT_8BPP&quot; :
+									   (format eq vivD16R4G4B4) ? &quot;CY_MIPIDSI_FMT_16BIT_12BPP&quot; :
+									   (format eq vivD16R5G6B5) ? &quot;CY_MIPIDSI_FMT_16BIT_16BPP&quot; :
+									   (format eq vivD16R6G6B6OP1) ? &quot;CY_MIPIDSI_FMT_16BIT_18BPP_OP1&quot; :
+									   (format eq vivD16R6G6B6OP2) ? &quot;CY_MIPIDSI_FMT_16BIT_18BPP_OP2&quot; :
+									   (format eq vivD16R8G8B8OP1) ? &quot;CY_MIPIDSI_FMT_16BIT_24BPP_OP1&quot; : &quot;CY_MIPIDSI_FMT_16BIT_24BPP_OP2&quot;)}`" />
+      <Member name="dsi_mode" value="`${(display_type eq GFX_DISP_TYPE_DSI_DPI)? &quot;DSI_VIDEO_MODE&quot; : &quot;DSI_COMMAND_MODE&quot;}`" />
+      <Member name="max_phy_clk" value="2500000000" />
+      <Member name="mode_flags" value="`${(lp_mode_cmd_transfer) ?
+                                                          (lp_mode_video_transfer ? mode_flags . &quot; | ENABLE_LOW_POWER_CMD | ENABLE_LOW_POWER&quot; : mode_flags . &quot; | ENABLE_LOW_POWER_CMD&quot;) :
+														  (lp_mode_video_transfer ? mode_flags . &quot; | ENABLE_LOW_POWER&quot; : mode_flags)}`"/>
+      <Member name="display_params" value="&amp;GFXSS_mipidsi_display_params" />
+    </ConfigStruct>
+
+	<ConfigStruct name="GFXSS_config" type="cy_stc_gfx_config_t" const="false" public="true" include="true">
+      <Member name="dc_cfg" value="&amp;GFXSS_dc_config" />
+      <Member name="gpu_cfg" value="&amp;GFXSS_gpu_config" />
+      <Member name="mipi_dsi_cfg" value="&amp;GFXSS_mipi_dsi_config" />
+      <Member name="display_update_type" value="GFX_DOUBLE_BUFFER" />
+      <Member name="clockHz" value="`${gfxssClkHz}`U" />
+    </ConfigStruct>
+
+    <ConfigInstruction value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_GFXSS_GPU_PERI_NR, CY_MMIO_GFXSS_GPU_GROUP_NR, CY_MMIO_GFXSS_GPU_SLAVE_NR, CY_MMIO_GFXSS_GPU_CLK_HF_NR);" include="`${(getIpBlockName() eq &quot;mxs22gfxss&quot;)}`"  />
+    <ConfigInstruction value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_GFXSS_DC_PERI_NR, CY_MMIO_GFXSS_DC_GROUP_NR, CY_MMIO_GFXSS_DC_SLAVE_NR, CY_MMIO_GFXSS_DC_CLK_HF_NR);" include="`${(getIpBlockName() eq &quot;mxs22gfxss&quot;)}`"  />
+    <ConfigInstruction value="Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_GFXSS_MIPIDSI_PERI_NR, CY_MMIO_GFXSS_MIPIDSI_GROUP_NR, CY_MMIO_GFXSS_MIPIDSI_SLAVE_NR, CY_MMIO_GFXSS_MIPIDSI_CLK_HF_NR);" include="`${(getIpBlockName() eq &quot;mxs22gfxss&quot;)}`"  />
+  </ConfigFirmware>
+</Personality>

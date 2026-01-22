@@ -1,0 +1,13 @@
+from building import *
+import rtconfig
+Import('RTT_ROOT')
+
+# get current directory
+cwd = GetCurrentDir()
+src = []
+path = []
+if GetDepend(['BSP_USING_HYPERAM']) or GetDepend(['BSP_USING_FLASH']):
+    src += ['source/mtb_serial_memory.c']
+    path = [cwd + '/include']
+group = DefineGroup('cy_serial_memory', src, depend=[''], CPPPATH=path)
+Return('group')

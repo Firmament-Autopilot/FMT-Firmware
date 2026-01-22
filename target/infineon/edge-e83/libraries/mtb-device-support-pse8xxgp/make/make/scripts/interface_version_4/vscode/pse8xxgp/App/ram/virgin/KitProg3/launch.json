@@ -1,0 +1,140 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    //
+    // NOTE for JLink users:
+    //
+    //    Please create the following setting in your VSCode User Settings or in
+    //    your global PATH.  Cortex-Debug needs to find the specific gdb-server
+    //    you want to use.
+    //
+    //       Windows     : "cortex-debug.JLinkGDBServerPath": "<JLinkInstallDir>/JLinkGDBServerCL"
+    //       Linux / Mac : "cortex-debug.JLinkGDBServerPath": "<JLinkInstallDir>/JLinkGDBServer"
+    //
+    //    User settings are located in:
+    //
+    //       Windows : %APPDATA%/Code/User/settings.json
+    //       Mac     : $HOME/Library/Application Support/Code/User/settings.json
+    //       Linux   : $HOME/.config/Code/User/settings.json
+    //
+    //    You can use the VSCode Settings UI to edit the files mentioned above.
+    //
+    //    For the JLink configurations in this file, the "device" name comes from
+    //    the list found here:
+    //       https://www.segger.com/downloads/supported-devices.php
+    //
+    //    To use KitProg3/MiniProg4 JTAG interface, update transport in openocd.tcl located at the
+    //    project root - find "transport select [swd|jtag]" and specify the appropriate interface.
+    //    To use JLink JTAG interface, update corresponding JLink configuration. Set "interface"
+    //    property to "jtag" and delete the "_tm" suffix (if present) in the "device" property.
+    //
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Multi-Core Debug (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE_APPLICATION&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set BOARD psvp",
+                "set ENABLE_ACQUIRE 0"
+            ],
+            "configFiles": [
+                "openocd.tcl"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial FEE1DEAD01237400" // Serial number of a probe that is connected to the CM33/CM55 debug port
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__APPLICATION_SVD_FILE_NAME&&",
+            "overrideRestartCommands": [
+            ],
+            "postRestartSessionCommands": [
+            ],
+            "numberOfProcessors": 2,
+            "targetProcessor": &&_MTB_RECIPE__TARGET_PROCESSOR_NUMBER&&,
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",    // Specifies application entry point name where program will halt
+            "showDevDebugOutput": "none",
+            "preLaunchTask": "Build",    // Set this to run a task from tasks.json
+            "presentation": {
+                "hidden": false,
+                "group": " Multi-core"
+            },
+            "chainedConfigurations": {
+                "enabled": true,
+                "waitOnEvent": "postInit",
+                "lifecycleManagedByParent": true,
+                "launches": [                               // Array of launches. Order is respected
+                    {
+                        "name": "Attach RAM PSOCE84 CM55 (KitProg3_MiniProg4)",     // Name of another configuration
+                        "folder": "./&&_MTB_RECIPE__CM55_PRJ_DIR&&",
+                        "overrides": {
+                            "overrideRestartCommands": [
+                                "monitor halt"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Program Application (KitProg3_MiniProg4)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            // executable not needed but need some valid file to get the session to start
+            "executable": "&&_MTB_RECIPE__ELF_FILE_APPLICATION&&",
+            "servertype": "openocd",
+            "searchDir": [
+                "${workspaceFolder}",
+                "${config:modustoolbox.toolsPath}/&&_MTB_RECIPE__OPENOCD_SCRIPTS_DIR_RELATIVE&&/"
+            ],
+            "openOCDPreConfigLaunchCommands": [
+                "set DEVICE m0sec; set BOARD psvp"
+            ],
+            "configFiles": [
+                "interface/kitprog3.cfg",
+                "target/infineon/pse84xgxs2.cfg"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter serial DEADBEEF01237400; init; reset init" // Serial number of a probe that is connected to the CM0SEC debug port
+            ],
+            "overrideLaunchCommands": [
+                "set {int}0x52401240=0x80000000",
+                "set {int}0x52401244=0x80000000",
+                "set {int}0x52401248=0x80000000",
+                "set {int}0x52410070=0x00000010",
+                "set {int}0x54004090=0x00000002",
+                "set {int}0x54640008=0x0000001f",
+                "set {int}0x52413000=0x108",
+                "set {int}0x54100000=0x108",
+                "set {int}0x54101000=0x01010108",
+                "set {int}0x54004110=0x00000001",
+                "load &&_MTB_RECIPE__HEX_FILE_APPLICATION&&",
+                "load &&_MTB_RECIPE__PREBUILT_CM0_IMAGE_APPLICATION&&",
+                "detach"
+            ],
+            "postStartSessionCommands": [
+                "monitor poll off",
+                "monitor cmsis-dap cmd 0x03",
+                "quit"
+            ],
+            "numberOfProcessors": &&_MTB_RECIPE__PROCESSOR_COUNT&&,
+            "preLaunchTask": "Build",    // Set this to run a task from tasks.json
+                                                        // before device programming
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": " Multi-core"
+            }
+        }
+    ]
+}

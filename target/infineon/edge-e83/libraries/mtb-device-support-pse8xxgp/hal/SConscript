@@ -1,0 +1,71 @@
+from building import *
+import rtconfig
+Import('RTT_ROOT')
+
+# get current directory
+cwd = GetCurrentDir()
+src = []
+path = []
+
+# The set of source files associated with this SConscript file.
+src = Split('''
+            source/mtb_hal_clock.c
+            source/mtb_hal_syspm.c
+            source/mtb_hal_system.c
+            source/mtb_hal_gpio.c
+            source/mtb_hal_lptimer.c
+            source/mtb_hal_utils_impl.c
+            ''')
+# if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
+#     src += ['COMPONENT_CAT1D/source/triggers/cyhal_triggers_pse84_a0.c']
+#     src += ['COMPONENT_CAT1D/source/pin_packages/cyhal_pse84_a0_bga_220.c']
+
+
+src += ['source/mtb_hal_uart.c']
+src += ['source/mtb_hal_dma.c']
+src += ['source/mtb_hal_dma_dw.c']
+src += ['source/mtb_hal_dma_dmac.c']
+
+# if GetDepend(['RT_USING_ADC']):
+#     src += ['source/cyhal_dma_dw.c']
+#     src += ['source/cyhal_dma_dmac.c']
+#     src += ['source/cyhal_dma.c']
+#     src += ['source/cyhal_adc_sar.c']
+#     src += ['source/cyhal_analog_common.c']
+#     if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
+#         src += ['source/cyhal_adc_sar_lppass.c']
+#         src += ['source/cyhal_lppass_common.c']
+
+if GetDepend(['BSP_USING_SDCARD']) or GetDepend(['BSP_USING_WIFI_HOST_DRIVER']):
+    src += ['source/mtb_hal_sdhc.c']
+
+
+src += ['source/mtb_hal_pwm.c']
+
+
+src += ['source/mtb_hal_spi.c']
+
+# if GetDepend(['BSP_USING_FLASH']):
+#     src += ['source/cyhal_qspi.c']
+
+src += ['source/mtb_hal_i2c.c']
+
+if GetDepend('BSP_USING_RTC'):
+    src += ['source/mtb_hal_rtc.c']
+
+
+# if GetDepend('BSP_USING_ON_CHIP_FLASH') or GetDepend('BSP_USING_CYW43012_BT') :
+#     src += ['source/cyhal_flash.c']
+
+if GetDepend(['RT_USING_HWTIMER']):
+    src += ['source/mtb_hal_timer.c']
+
+path = [cwd + '/include']
+
+# if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
+#     path += [cwd + '/COMPONENT_CAT1D/include']
+#     path += [cwd + '/COMPONENT_CAT1D/include/pin_packages']
+#     path += [cwd + '/COMPONENT_CAT1D/include/triggers']
+
+group = DefineGroup('Libraries', src, depend=[''], CPPPATH=path)
+Return('group')

@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file pathmux.cypersonality
+* \version 3.0
+*
+* \brief
+* PATH_MUX personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright 2022-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='pathmux' name='PATH_MUX' version='3.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs40srss_ver3,mxs40srss_ver2,mxs22srss' />
+      <Resource name='srss\.clock\.pathmux' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_sourced_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClockDisplayName' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__path__src.html' linkText='Open Clock Path Source Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamString id='clockInst' default='`${getInstNumber("pathmux")}`' />
+    <ParamChoice id='sourceClock' name='Source Clock' group='General' default='`${("mxs22srss" eq getIpBlockName()) ? iho : imo}`' visible='true' desc='The clock source for Clock Path `${clockInst}`'>
+      <Entry name='IMO'    value='imo'    visible='`${hasBlock("srss[0].clock[0].imo[0]")}`'/>
+      <Entry name='ECO'    value='eco'    visible='`${hasBlock("srss[0].clock[0].eco[0]")}`'/>
+      <Entry name='EXTCLK' value='ext'    visible='`${hasBlock("srss[0].clock[0].ext[0]")}`'/>
+      <Entry name='ALTHF'  value='althf'  visible='`${hasBlock("srss[0].clock[0].altlf[0]")}`'/>
+      <Entry name='ILO'    value='ilo'    visible='`${!hasBlock("srss[0].clock[0].ilo[1]")}`'/>
+      <!-- Not a typo. We check for ILO1 here because if we do not have ILO1 we use the unsuffixed variant -->
+      <Entry name='ILO0'   value='ilo0'   visible='`${hasBlock("srss[0].clock[0].ilo[1]")}`'/>
+      <Entry name='ILO1'   value='ilo1'   visible='`${hasBlock("srss[0].clock[0].ilo[1]")}`'/>
+      <Entry name='PILO'   value='pilo'   visible='`${hasBlock("srss[0].clock[0].pilo[0]")}`'/>
+      <Entry name='WCO'    value='wco'    visible='`${hasBlock("srss[0].clock[0].wco[0]")}`'/>
+      <Entry name='IHO'    value='iho'    visible='`${hasBlock("srss[0].clock[0].iho[0]")}`'/>
+    </ParamChoice>
+    <ParamString id='sourceClockDisplayName' default='`${getParamValueDisplay("sourceClock")}`' />
+    <ParamString id='sourceClockRsc' default='`${sourceClock eq ilo1 ? "srss[0].clock[0].ilo[1]" : sourceClock eq ilo0 ? "srss[0].clock[0].ilo[0]" : "srss[0].clock[0]." . sourceClock . "[0]"}`' />
+
+    <ParamString id='frequency' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+
+    <!-- If the frequency is less than one MHz, display its value in kHz -->
+    <ParamString id='frequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The Clock Path frequency provided by the chosen clock source' />
+  </Parameters>
+
+  <Variables>
+    <Variable id='sourceClockApiName' value='`${sourceClock eq imo      ? "IMO" :
+                                                sourceClock eq eco      ? "ECO" :
+                                                sourceClock eq ext      ? "EXT" :
+                                                sourceClock eq althf    ? "ALTHF" :
+                                                sourceClock eq ilo      ? "ILO" :
+                                                sourceClock eq pilo     ? "PILO" :
+                                                sourceClock eq iho      ? "IHO" :
+                                                sourceClock eq wco      ? "WCO" :
+                                                sourceClock eq ilo0     ? "ILO0" :
+                                                                          "ILO1"}`' />
+
+    <Variable id='sourceClockNumber' value='`${sourceClock eq imo    ? 0 :
+                                               sourceClock eq eco    ? 1 :
+                                               sourceClock eq ext    ? 2 :
+                                               sourceClock eq althf  ? 3 :
+                                               sourceClock eq ilo    ? 4 :
+                                               sourceClock eq pilo   ? 5 :
+                                               sourceClock eq iho    ? 7 :
+                                                                       6}`' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for PATH_MUX`${clockInst}` is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPATH`${clockInst}`_SOURCE' value='CY_SYSCLK_CLKPATH_IN_`${sourceClockApiName}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPATH`${clockInst}`_SOURCE_NUM' value='`${sourceClockNumber}`UL'  public='false' include='`${"mxs40srss" eq getIpBlockName()}`' />
+
+  </ConfigFirmware>
+</PersonalityTemplate>
