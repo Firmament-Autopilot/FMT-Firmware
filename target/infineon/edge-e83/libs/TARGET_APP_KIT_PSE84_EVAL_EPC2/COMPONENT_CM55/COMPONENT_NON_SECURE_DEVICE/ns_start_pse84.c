@@ -481,6 +481,12 @@ int __low_level_init(void)
 /**/
 #endif /* defined(__GNUC__) && !defined(__ARMCC_VERSION) */
 
+#if defined (BUILD_KIT_PROCE84_EVK_M55)
+__STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
+{
+    (void)MainStackPtrLimit;
+}
+#endif
 
 // Reset Handler
 __WEAK void Reset_Handler(void)
