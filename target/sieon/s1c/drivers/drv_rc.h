@@ -16,8 +16,6 @@
 #ifndef DRV_RC_H__
 #define DRV_RC_H__
 
-#include <firmament.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

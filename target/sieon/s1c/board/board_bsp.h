@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <wl32f436.h>
 #include <wl32_ll.h>
+#include <wl32f436.h>
+
 
 #define USART1_RX_ERR_IRQn         (INT000_IRQn)
 #define USART1_RX_FULL_IRQn        (INT001_IRQn)
@@ -54,3 +55,8 @@
 #define USART2_TX_DMA_TRIG_SEL     (AOS_DMA1_2)
 #define USART2_TX_DMA_TRIG_EVT_SRC (EVT_SRC_USART2_TI)
 #define USART2_TX_DMA_TC_INT       (DMA_INT_TC_CH2)
+
+#define USART7_RX_ERR_IRQn         (INT014_IRQn)
+#define USART7_RX_FULL_IRQn        (INT015_IRQn)
+
+#define TIMA_2_CMP_IRQn            (INT080_IRQn)

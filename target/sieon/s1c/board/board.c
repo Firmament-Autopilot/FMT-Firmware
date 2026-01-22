@@ -190,7 +190,7 @@ static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                 } else if (MATCH(key, "mavproxy")) {
                     err = mavproxy_toml_config(sub_tab);
                 } else if (MATCH(key, "pilot-cmd")) {
-                    // err = pilot_cmd_toml_config(sub_tab);
+                    err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
                     // err = actuator_toml_config(sub_tab);
                 } else {
@@ -276,9 +276,10 @@ void bsp_early_initialize(void)
     // /* buzzer(pwm) driver init */
     //  RT_CHECK(drv_buzzer_init());
 
-    // /* init remote controller driver */
+    /* init remote controller driver */
     // time4_test_init();
-    // RT_CHECK(drv_rc_init());
+    RT_CHECK(drv_rc_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
