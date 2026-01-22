@@ -1,0 +1,329 @@
+menu "Hardware Drivers Config"
+
+menu "Select SOC Multi Core Mode"
+    config SOC_Enable_CM55
+        bool "Enable CM55 Core"
+        default y
+    config SOC_Enable_CM33_DeepSleep
+        bool "Enable CM33 DeepSleep"
+        default y
+endmenu
+
+config SOC_SERIES_IFX_PSOCE84
+    bool 
+    select RT_USING_COMPONENTS_INIT
+    select RT_USING_USER_MAIN
+    default y
+
+config KIT_PROCE84_EVK_M33
+    bool 
+    default y
+
+menu "Onboard Peripheral Drivers"
+
+    config BSP_USING_USB_TO_UART
+        bool "Enable USB TO UART (uart2)"
+        select BSP_USING_UART
+        select BSP_USING_UART2
+        default y
+
+    menuconfig BSP_USING_AUDIO
+        bool "Enable Audio Device"
+        select RT_USING_AUDIO
+        select BSP_USING_I2C
+        default n
+
+        if BSP_USING_AUDIO
+            config BSP_USING_AUDIO_PLAY
+            bool "Enable Audio Play"
+            default n
+
+            menuconfig BSP_USING_AUDIO_RECORD
+                bool "Enable Audio Record"
+                default n
+                if BSP_USING_AUDIO_RECORD
+                    config  ENABLE_STEREO_INPUT_FEED
+                    bool "Enable STEREO INPUT FEED"
+                    default y
+                endif
+        endif
+
+    config BSP_USING_AHT20
+        bool "Enable AHT20"
+        default n
+        select PKG_USING_AHT10
+        select BSP_USING_I2C
+        if BSP_USING_AHT20
+            config PKG_USING_AHT10_SAMPLE 
+            bool "Enable AHT20 SAMPLE"
+            default n
+            if PKG_USING_AHT10_SAMPLE
+                config PKG_AHT10_I2C_BUS_NAME
+                    string  "PKG_AHT20_I2C_BUS_NAME"
+                    default "i2c1"
+            endif
+        endif
+
+    config BSP_USING_USB
+        bool "Enable USB"
+        default n
+        if BSP_USING_USB
+            config BSP_USING_FREERTOS
+            bool "Enable FREERTOS ABSTRACTION"
+            default n
+            select PKG_USING_FREERTOS_WRAPPER
+        endif
+
+    config BSP_USING_LSM6DS3
+        bool "Enable LSM6DS3"
+        default n
+        select BSP_USING_I2C
+
+endmenu
+
+menu "On-chip Peripheral Drivers"
+
+    config BSP_USING_GPIO
+        bool "Enable GPIO"
+        select RT_USING_PIN
+        default y
+
+    menuconfig BSP_USING_SPI
+        bool "Enable SPI"
+        select RT_USING_PIN
+        default n
+        if BSP_USING_SPI
+            config BSP_USING_SPI1
+                bool "Enable SPI1"
+                default n
+            config BSP_USING_SPI2
+                bool "Enable SPI2"
+                default n
+        endif
+
+    menuconfig BSP_USING_ADC
+        bool "Enable ADC"
+        select RT_USING_ADC
+        default n
+        if BSP_USING_ADC
+            config BSP_USING_ADC1
+                bool "Enable ADC1"
+                default n
+        endif
+
+    menuconfig BSP_USING_I2C
+        bool "Enable I2C"
+        default n
+        select RT_USING_I2C
+        if BSP_USING_I2C
+            config BSP_USING_HW_I2C0
+                bool "Enable HW I2C0"
+                default n
+            config BSP_USING_SOFT_I2C1
+                bool "Enable SOFT I2C1"
+                default n
+                if BSP_USING_SOFT_I2C1
+                    config BSP_SOFT_I2C1_SCL_PIN
+                    int "I2C1 SCL PIN number"
+                    default 25
+                    config BSP_SOFT_I2C1_SDA_PIN
+                    int "I2C1 SDA PIN number"
+                    default 107
+                endif
+        endif
+
+    menuconfig BSP_USING_UART
+        bool "Enable UART"
+        default y
+        select RT_USING_SERIAL
+        if BSP_USING_UART
+            config BSP_USING_UART1
+                bool "Enable UART1"
+                default n
+                
+            config BSP_USING_UART2
+                bool "Enable UART2"
+                default y
+                
+            config BSP_USING_UART5
+                bool "Enable UART5"
+                default n
+        endif
+
+    config BSP_USING_RTC
+        bool "Enable RTC"
+        select RT_USING_RTC
+        default n
+
+        config BSP_USING_HYPERAM
+            bool "Enable HYPERAM"
+            if BSP_USING_HYPERAM
+                config BSP_USING_HYPERAM_SIZE 
+                    hex "(HEX)HYPERAM SIZE"
+                    default 0x1000000
+            endif
+
+    menuconfig BSP_USING_PWM
+        bool "Enable PWM"
+        select RT_USING_PWM
+        default n
+        if BSP_USING_PWM
+            config BSP_USING_PWM18
+                bool "Enable PWM18"
+                default y
+        endif
+
+    menuconfig BSP_USING_TIM
+        bool "Enable Timer"
+        default n
+        select RT_USING_HWTIMER
+        if BSP_USING_TIM
+            config BSP_USING_TIM0
+                bool "Enable TIM0"
+                default n
+        endif
+
+    menuconfig BSP_USING_WDT
+        bool "Enable WDT"
+        select RT_USING_WDT
+        default n
+
+    menuconfig BSP_USING_LCD
+        bool "Enable MIPI LCD controller"
+        select RT_USING_LCD
+        select RT_USING_TOUCH
+        select RT_TOUCH_PIN_IRQ
+        default n
+        if BSP_USING_LCD
+            config COMPONENT_MTB_DISPLAY_tl043wvv02
+                bool "Enable MIPI LCD Screen tl043wvv02"
+                default n
+        endif
+
+    menuconfig BSP_USING_FILESYSTEM
+        bool "Enable filesystem support"
+        select RT_USING_DFS
+        select RT_USING_POSIX_FS
+        select RT_USING_DFS_ROMFS
+        default n
+        if BSP_USING_FILESYSTEM
+            config BSP_USING_SDCARD
+                bool "Enable SDCARD (sd card)"
+                select RT_USING_DFS_ELMFAT
+                default n
+                if BSP_USING_SDCARD
+                    config BSP_USING_FS
+                        bool "Enable filesystem"
+                        default n
+                endif
+
+            config BSP_USING_FLASH
+                bool "Enable QSPI Flash filesystem"
+                select RT_USING_FAL
+                select BSP_USING_LITTLEFS
+                select RT_USING_MTD_NOR
+                default y
+
+            if BSP_USING_FLASH
+                config BSP_USING_LITTLEFS
+                    bool "Enable LittleFS"
+                    default n
+                if BSP_USING_LITTLEFS
+                    config LFS_READ_SIZE
+                        int "disk read size"
+                        default 256
+                    config LFS_PROG_SIZE
+                        int "disk write size"
+                        default 256
+                    config LFS_BLOCK_SIZE
+                        int "disk block size"
+                        default 4096
+                    config LFS_CACHE_SIZE
+                        int "lfs r/w cache size"
+                        default LFS_PROG_SIZE
+                    config LFS_BLOCK_CYCLES
+                        int "lfs enable wear leveling. -1 is disable."
+                        default -1
+                    config LFS_THREADSAFE
+                        bool
+                        default y
+                    config LFS_LOOKAHEAD_MAX
+                        int "lfs lookahead size"
+                        default 128
+                    config RT_DEF_LFS_DRIVERS
+                        int "lfs drivers count"
+                        default 1
+                endif
+            endif
+        endif
+
+    menuconfig USING_LVGL
+        bool "Enable LVGL"
+        select BSP_USING_LVGL
+        default n
+        if USING_LVGL
+            config BSP_USING_LVGL
+                bool "Enable BSP_USING_LVGL"
+                default n
+            config LVGL_USING_DEMOS
+                bool "Enable LVGL_USING_DEMOS"
+                default n
+        endif
+
+    config BSP_USING_FREERTOS
+        bool "Enable FREERTOS ABSTRACTION"
+        default n
+        select PKG_USING_FREERTOS_WRAPPER
+
+    menuconfig BSP_USING_WIFI_HOST_DRIVER
+        bool "Enable WIFI6 of CYW55512"
+        default n
+        select PKG_USING_FREERTOS_WRAPPER
+        select RT_USING_WIFI
+        select RT_USING_LWIP212
+        if BSP_USING_WIFI_HOST_DRIVER
+            config BSP_USING_NETUTILS
+                bool "Enable iperf-liked network performance tool"
+                default n
+                select PKG_USING_NETUTILS
+                select PKG_NETUTILS_IPERF
+
+            config CYBSP_REG_ON_PIN
+                int "Set the WiFi_REG ON pin number"
+                default 94
+
+            config CYBSP_HOST_WAKE_IRQ_PIN
+                int "Set the HOST_WAKE_IRQ pin number"
+                default 92
+
+            config CYBSP_OOB_INTR_PRIORITY
+                int "Set the interrput priority for HOST_WAKE_IRQ pin"
+                default 2
+
+            config CY_WIFI_USING_THREAD_INIT
+                bool "Using thread initialization"
+                default n
+            config CY_WIFI_INIT_THREAD_STACK_SIZE
+                int "The stack size for init thread"
+                range 0 8192
+                default 2048
+            config NVRAM_IMAGE_SIZE
+                int "NVRAM_IMAGE_SIZE"
+                range 0 8192
+                default 6741
+            config CLM_IMAGE_SIZE
+                int "CLM_IMAGE_SIZE"
+                range 0 8192
+                default 1519
+            config CY_WIFI_WHD_THREAD_PRIORITY
+                int "CY_WIFI_WHD_THREAD_PRIORITY"
+                range 0 8192
+                default 8
+            config CY_WIFI_WHD_THREAD_STACK_SIZE
+                int "CY_WIFI_WHD_THREAD_STACK_SIZE"
+                range 0 8192
+                default 5120
+        endif
+endmenu
+
+endmenu

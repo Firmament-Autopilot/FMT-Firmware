@@ -1,0 +1,30 @@
+import os
+import rtconfig
+from building import *
+
+Import('SDK_LIB')
+
+cwd = GetCurrentDir()
+
+# add common drivers
+src = []
+path =  [cwd]
+
+if GetDepend(['BSP_USING_FLASH']):
+    src += Glob('ports/fal/fal_flash_port.c')
+    path += [cwd + '/ports/fal']
+
+if GetDepend(['BSP_USING_HYPERAM']):
+    src += Glob('ports/drv_hyperam.c')
+
+if GetDepend(['BSP_USING_FILESYSTEM']):
+    src += Glob('ports/filesystem/*.c')
+
+group = DefineGroup('Common', src, depend = [''], CPPPATH = path)
+
+list = os.listdir(cwd)
+for item in list:
+    if os.path.isfile(os.path.join(cwd, item, 'SConscript')):
+        group = group + SConscript(os.path.join(item, 'SConscript'))
+
+Return('group')
