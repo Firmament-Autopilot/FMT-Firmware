@@ -1,4 +1,7 @@
 import os
+import shutil
+
+from pathlib import Path
 
 # board options
 BOARD = 'sieon-s1'
@@ -17,15 +20,19 @@ if os.getenv('RTT_CC'):
 # EXEC_PATH is the compiler execute path, for example, CodeSourcery, Keil MDK, IAR
 if CROSS_TOOL == 'gcc':
     PLATFORM = 'gcc'
-    EXEC_PATH = 'your-compiler-path'
+    try:
+        EXEC_PATH = str(Path(shutil.which('arm-none-eabi-gcc')).parent)
+    except:
+        print('================ERROR============================')
+        print('Not found arm-none-eabi-gcc in PATH!')
+        print('Please set it manually in your PATH!')
+        print('=================================================')
+        exit(0)
 else:
     print('================ERROR============================')
     print('Not support %s yet!' % CROSS_TOOL)
     print('=================================================')
     exit(0)
-
-if os.getenv('RTT_EXEC_PATH'):
-    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
 if PLATFORM == 'gcc':
     # toolchains
