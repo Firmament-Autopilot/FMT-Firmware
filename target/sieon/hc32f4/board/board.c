@@ -31,7 +31,7 @@
 // #include "driver/barometer/spl06.h"
 // #include "driver/gps/gps_ubx.h"
 // #include "driver/imu/bmi088.h"
-// #include "driver/imu/icm42688p.h"
+#include "driver/imu/sh5001.h"
 // #include "driver/mag/bmm150.h"
 #include "driver/mag/qmc5883p.h"
 #include "driver/mtd/gd25qxx.h"
@@ -390,6 +390,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
     // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
     // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+    RT_CHECK(drv_sh5001_init("spi1_dev0", "gyro0", "accel0"));
     RT_CHECK(drv_qmc5883p_init("i2c1_dev0", "mag0", 0));
     RT_CHECK(drv_xgzp6899d_init("i2c1_dev1", "airspeed"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));

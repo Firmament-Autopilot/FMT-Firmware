@@ -2,9 +2,9 @@
 
 TASKS = [
     'comm/*.c',
-    # 'logger/*.c',
-    # 'status/*.c',
-    # 'vehicle/normal/*.c',
+    'logger/*.c',
+    'status/*.c',
+    'vehicle/normal/*.c',
 ]
 
 TASKS_CPPPATH = []

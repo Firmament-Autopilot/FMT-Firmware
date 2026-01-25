@@ -4,7 +4,7 @@ DRIVERS = [
     # 'barometer/spl06.c',
     # 'gps/gps_ubx.c',
     # 'imu/bmi088.c',
-    # 'imu/icm42688p.c',
+    'imu/sh5001.c',
     # 'mag/bmm150.c',
     'mag/qmc5883p.c',
     'airspeed/xgzp6899d.c',
