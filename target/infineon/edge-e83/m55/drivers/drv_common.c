@@ -24,6 +24,7 @@
 #include "drv_uart.h"
 #include "drv_gpio.h"
 #include "drv_systick.h"
+#include "drv_i2c.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -96,10 +97,10 @@ void bsp_early_initialize(void)
     /* systick driver init */
     RT_CHECK(drv_systick_init());
 
-    // /* i2c driver init */
-    // RT_CHECK(drv_i2c_init());
-
-    // /* spi driver init */
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
+    
+    /* spi driver init */
     // RT_CHECK(drv_spi_init());
 
     // /* pwm driver init */
