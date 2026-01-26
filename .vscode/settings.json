@@ -27,5 +27,23 @@
         "editor.defaultFormatter": "xaver.clang-format"
     },
     "cortex-debug.variableUseNaturalFormat": true,
+    "MicroPython.executeButton": [
+        {
+            "text": "▶",
+            "tooltip": "运行",
+            "alignment": "left",
+            "command": "extension.executeFile",
+            "priority": 3.5
+        }
+    ],
+    "MicroPython.syncButton": [
+        {
+            "text": "$(sync)",
+            "tooltip": "同步",
+            "alignment": "left",
+            "command": "extension.execute",
+            "priority": 4
+        }
+    ],
     // "clang-format.executable": "/bin/clang-format-16",
 }
