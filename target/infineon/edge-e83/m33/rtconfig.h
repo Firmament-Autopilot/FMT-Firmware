@@ -346,6 +346,9 @@
 #define BSP_USING_GPIO
 #define BSP_USING_UART
 #define BSP_USING_UART2
+#define RT_USING_ADC
+#define BSP_USING_ADC
+#define BSP_USING_ADC1
 /* end of On-chip Peripheral Drivers */
 /* end of Hardware Drivers Config */
 

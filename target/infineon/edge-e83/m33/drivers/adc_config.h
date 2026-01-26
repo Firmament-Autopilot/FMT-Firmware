@@ -14,20 +14,47 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef __DRV_ADC_H__
-#define __DRV_ADC_H__
+#ifndef __ADC_CONFIG_H__
+#define __ADC_CONFIG_H__
 
-#include <rtthread.h>
-#include <rtdevice.h>
+#include "cy_autanalog.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int rt_hw_adc_init(void);
+#if defined(BSP_USING_ADC1)
+
+struct ifx_sar_adc_config
+{
+    uint8_t  sar_idx;        /* SAR index */
+    uint8_t  sequencer;      /* SAR sequencer */
+    uint8_t  channel;        /* GPIO: 0~7, MUX: 0~15 */
+    bool     low_power;      /* false: HS, true: LP */
+    cy_en_autanalog_sar_input_t input;
+    uint32_t vref_mv;        /* Reference voltage (mV) */
+};
+
+static const struct ifx_sar_adc_config adc1_cfg =
+{
+    .sar_idx    = 0,
+    .sequencer = 0,
+    .channel   = 0,
+    .input     = CY_AUTANALOG_SAR_INPUT_GPIO,
+    .low_power = false,
+    .vref_mv   = 1800,
+};
+
+#define ADC1_CONFIG        \
+{                          \
+    .cfg  = &adc1_cfg,     \
+    .name = "adc1",        \
+}
+
+#endif /* BSP_USING_ADC1 */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __DRV_ADC_H__ */
+#endif /* __ADC_CONFIG_H__ */

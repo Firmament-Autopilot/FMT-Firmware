@@ -44,7 +44,6 @@ src += ['drivers/source/cy_scb_uart.c']
 src += ['drivers/source/cy_scb_i2c.c']
 
 if GetDepend(['RT_USING_ADC']):
-    src += ['drivers/source/cy_dma.c']
     if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
         src += ['drivers/source/cy_autanalog_sar.c']
         src += ['drivers/source/cy_autanalog_ac.c']
