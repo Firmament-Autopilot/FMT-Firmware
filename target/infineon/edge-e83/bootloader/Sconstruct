@@ -1,0 +1,477 @@
+# =============================================================================
+# Bare-metal SCons Build Script for PSoC E84 CM33 Secure Device
+# =============================================================================
+
+import os
+import sys
+import platform
+import subprocess
+import uuid
+
+# Project paths
+PROJECT_ROOT = Dir('.').abspath
+SDK_ROOT = os.path.normpath(os.path.join(PROJECT_ROOT, '..', '..'))
+BUILD_DIR = 'build'
+
+# =============================================================================
+# Toolchain configuration
+# =============================================================================
+# Get toolchain path from environment variable RTT_EXEC_PATH
+# If not set, use default path
+EXEC_PATH = os.getenv('RTT_EXEC_PATH')
+if not EXEC_PATH:
+    # Default toolchain path (can be overridden by RTT_EXEC_PATH environment variable)
+    EXEC_PATH = r'C:\Users\XXYYZZ'
+
+# Cross compiler prefix
+PREFIX = 'arm-none-eabi-'
+
+# Tools
+CC = os.path.join(EXEC_PATH, PREFIX + 'gcc')
+CXX = os.path.join(EXEC_PATH, PREFIX + 'g++')
+AS = os.path.join(EXEC_PATH, PREFIX + 'gcc')
+AR = os.path.join(EXEC_PATH, PREFIX + 'ar')
+LINK = os.path.join(EXEC_PATH, PREFIX + 'gcc')
+SIZE = os.path.join(EXEC_PATH, PREFIX + 'size')
+OBJCOPY = os.path.join(EXEC_PATH, PREFIX + 'objcopy')
+OBJDUMP = os.path.join(EXEC_PATH, PREFIX + 'objdump')
+
+# Target
+TARGET = 'rtthread'
+
+# =============================================================================
+# Compiler flags
+# =============================================================================
+# CPU flags
+CPU_FLAGS = '-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=softfp'
+
+# Security extension flag for TrustZone
+SECURE_FLAGS = '-mcmse'
+
+# Common flags
+COMMON_FLAGS = CPU_FLAGS + ' ' + SECURE_FLAGS + ' -ffunction-sections -fdata-sections'
+
+# C flags
+CFLAGS = COMMON_FLAGS + ' -Wall -std=gnu11 -g -O2'
+
+# Assembly flags
+AFLAGS = COMMON_FLAGS + ' -x assembler-with-cpp'
+
+# Linker flags (matching original Eclipse .cproject)
+LDFLAGS = COMMON_FLAGS + ' -Wl,--gc-sections -Wl,-Map=' + TARGET + '.map'
+LDFLAGS += ' -T linkscripts/pse84_s_cm33.ld'
+LDFLAGS += ' -Wl,--cref'  # Cross reference
+LDFLAGS += ' --specs=nosys.specs'  # Use nosys specs for bare-metal
+
+# Libraries (nosys is handled by linker script GROUP directive)
+LIBS = ['c', 'm', 'nosys']
+
+# =============================================================================
+# Long command line support for Windows (spawn function)
+# =============================================================================
+# Windows has a command line length limit (~32KB). When building large projects,
+# the compiler command line (with many include paths and source files) can exceed
+# this limit. This spawn function handles this by writing arguments to a temporary
+# response file when the command line is too long.
+def ourspawn(sh, escape, cmd, args, e):
+    filename = str(uuid.uuid4())
+    newargs = ' '.join(args[1:])
+    cmdline = cmd + " " + newargs
+    if (len(cmdline) > 16 * 1024):
+        f = open(filename, 'w')
+        f.write(' '.join(args[1:]).replace('\\', '/'))
+        f.close()
+        # exec
+        cmdline = cmd + " @" + filename
+    proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, shell = False, env = e)
+    data, err = proc.communicate()
+    rv = proc.wait()
+    def res_output(_output, _s):
+        if len(_s):
+            if isinstance(_s, str):
+                _output(_s)
+            elif isinstance(_s, bytes):
+                _output(str(_s, 'UTF-8'))
+            else:
+                _output(str(_s))
+    res_output(sys.stderr.write, err)
+    res_output(sys.stdout.write, data)
+    if os.path.isfile(filename):
+        os.remove(filename)
+    return rv
+
+# =============================================================================
+# Preprocessor definitions
+# =============================================================================
+CPPDEFINES = [
+    'BLHS_SUPPORT',
+    'COMPONENT_55500',
+    'COMPONENT_55500A1',
+    'COMPONENT_APP_KIT_PSE84_EVAL_EPC2',
+    'COMPONENT_CM33',
+    'COMPONENT_CM33_0',
+    'COMPONENT_CYW55513_MOD_PSE84_SOM',
+    'COMPONENT_Debug',
+    'COMPONENT_GCC_ARM',
+    'COMPONENT_HCI_UART',
+    'COMPONENT_MTB_DEVICE_SUPPORT',
+    'COMPONENT_MTB_HAL',
+    'COMPONENT_MW_ASYNC_TRANSFER',
+    'COMPONENT_MW_BT_FW_IFX_CYW55500A1',
+    'COMPONENT_MW_CMSIS',
+    'COMPONENT_MW_CORE_LIB',
+    'COMPONENT_MW_CORE_MAKE',
+    'COMPONENT_MW_MTB_DSL_PSE8XXGP',
+    'COMPONENT_MW_MTB_IPC',
+    'COMPONENT_MW_MTB_SRF',
+    'COMPONENT_MW_SE_RT_SERVICES_UTILS',
+    'COMPONENT_PSE84',
+    'COMPONENT_SECURE_DEVICE',
+    'COMPONENT_SECURE_DRIVERS',
+    'COMPONENT_SM',
+    'COMPONENT_SOFTFP',
+    'COMPONENT_WIFI_INTERFACE_SDIO',
+    'COMPONENT_wlbga_iPA_sLNA_ANT0_LHL_XTAL_IN',
+    'CORE_NAME_CM33_0=1',
+    'CYBSP_MCUBOOT_HEADER_SIZE=0x400',
+    'CYBSP_WIFI_WL_HOSTWAKE_DRIVE_MODE=MTB_HAL_GPIO_DRIVE_OPENDRAINDRIVESLOW',
+    'CYBSP_WIFI_WL_HOSTWAKE_INIT_STATE=WHD_TRUE',
+    'CY_APPNAME_proj_cm33_s',
+    'CY_SUPPORTS_DEVICE_VALIDATION',
+    'CY_TARGET_BOARD=APP_KIT_PSE84_EVAL_EPC2',
+    'CY_WIFI_COUNTRY=WHD_COUNTRY_UNITED_STATES',
+    'DEBUG',
+    'PSE846GPS2DBZC4A',
+    'TARGET_APP_KIT_PSE84_EVAL_EPC2',
+    'TRXV5',
+    'FLASH_BOOT',
+    'CY_PDL_FLASH_BOOT',
+]
+
+# =============================================================================
+# Library path detection (support both local and external libraries)
+# =============================================================================
+def _posix(path):
+    return path.replace('\\', '/')
+
+# Check if libraries exist locally or need to use external path
+local_libraries_dir = os.path.join(PROJECT_ROOT, 'libraries')
+if os.path.exists(local_libraries_dir):
+    libraries_src = PROJECT_ROOT + '/libraries'
+    libraries_variant = os.path.join(BUILD_DIR, 'libraries_local')
+else:
+    libraries_src = os.path.relpath(os.path.join(SDK_ROOT, 'libraries'), PROJECT_ROOT)
+    libraries_variant = os.path.join(BUILD_DIR, 'libraries_ext')
+libraries_src_abs = os.path.normpath(os.path.join(PROJECT_ROOT, libraries_src))
+libraries_variant_abs = os.path.normpath(os.path.join(PROJECT_ROOT, libraries_variant))
+libraries_real_path = libraries_src_abs
+libraries_variant_rel = libraries_variant
+VariantDir(libraries_variant, libraries_src, duplicate=0)
+libraries_real_path = _posix(libraries_real_path)
+libraries_variant = _posix(libraries_variant_rel)
+LIBRARIES_PREFIX = libraries_variant + '/'
+
+# Check if libs exist locally or need to use external path
+local_libs_dir = os.path.join(PROJECT_ROOT, 'libs')
+if os.path.exists(local_libs_dir):
+    libs_src = 'libs'
+    libs_variant = os.path.join(BUILD_DIR, 'libs_local')
+else:
+    libs_src = os.path.relpath(os.path.join(PROJECT_ROOT, '..', 'libs'), PROJECT_ROOT)
+    libs_variant = os.path.join(BUILD_DIR, 'libs_ext')
+libs_src_abs = os.path.normpath(os.path.join(PROJECT_ROOT, libs_src))
+libs_variant_abs = os.path.normpath(os.path.join(PROJECT_ROOT, libs_variant))
+libs_real_path = libs_src_abs
+libs_variant_rel = libs_variant
+VariantDir(libs_variant, libs_src, duplicate=0)
+libs_real_path = _posix(libs_real_path)
+libs_variant = _posix(libs_variant_rel)
+LIBS_PREFIX = libs_variant + '/'
+
+# =============================================================================
+# Include paths
+# =============================================================================
+CPPPATH = [
+    PROJECT_ROOT + '/applications',
+    PROJECT_ROOT + '/config',
+    libraries_real_path + '/retarget-io/include',
+    libraries_real_path + '/mtb-ipc/include',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_GFXSS/vsi/gcnano',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/drivers/third_party/COMPONENT_GFXSS',
+    libraries_real_path + '/mtb-srf/include/COMPONENT_NON_SECURE_DEVICE/COMPONENT_MW_MTB_IPC',
+    libraries_real_path + '/mtb-srf/include/COMPONENT_NON_SECURE_DEVICE',
+    libraries_real_path + '/mtb-srf/include',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/nnkernel/COMPONENT_CM33/include',
+    libraries_real_path + '/async-transfer/include',
+    libraries_real_path + '/Infineon_cmsis-latest/Core/Include',
+    libraries_real_path + '/Infineon_cmsis-latest/Core/Include/m-profile',
+    libraries_real_path + '/Infineon_core-lib-latest/include',
+    libraries_real_path + '/Infineon_retarget-io-latest',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/device-utils/syspm/include',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/hal/include',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/devices/include',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/devices/include/ip',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/drivers/include',
+    libraries_real_path + '/mtb-device-support-pse8xxgp/pdl/drivers/third_party/ethernet/include',
+    libraries_real_path + '/serial-memory/include',
+    libraries_real_path + '/se-rt-services-utils',
+    libs_real_path + '/TARGET_APP_KIT_PSE84_EVAL_EPC2',
+    libs_real_path + '/TARGET_APP_KIT_PSE84_EVAL_EPC2/bluetooth',
+    libs_real_path + '/TARGET_APP_KIT_PSE84_EVAL_EPC2/config',
+    libs_real_path + '/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource',
+    libs_real_path + '/TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_SECURE_DEVICE',
+]
+
+# =============================================================================
+# Source files
+# =============================================================================
+SRC = []
+
+# Applications
+SRC += Glob('applications/*.c')
+
+# BSP - libs/TARGET_APP_KIT_PSE84_EVAL_EPC2
+SRC += [LIBS_PREFIX + 'TARGET_APP_KIT_PSE84_EVAL_EPC2/cybsp.c']
+SRC += [LIBS_PREFIX + 'TARGET_APP_KIT_PSE84_EVAL_EPC2/system_edge.c']
+SRC += Glob(LIBS_PREFIX + 'TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource/*.c')
+SRC += Glob(LIBS_PREFIX + 'TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_SECURE_DEVICE/*.c')
+
+# Startup files (GCC)
+SRC += Glob(LIBS_PREFIX + 'TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/TOOLCHAIN_GCC_ARM/*.S')
+SRC += Glob(LIBS_PREFIX + 'TARGET_APP_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/TOOLCHAIN_GCC_ARM/*.c')
+
+# async-transfer
+SRC += Glob(LIBRARIES_PREFIX + '/async-transfer/source/*.c')
+
+# Infineon_retarget-io-latest
+SRC += [LIBRARIES_PREFIX + '/Infineon_retarget-io-latest/cy_retarget_io.c']
+
+# mtb-ipc
+SRC += Glob(LIBRARIES_PREFIX + '/mtb-ipc/source/*.c')
+
+# mtb-srf (exclude mtb_srf_pool.c)
+SRC += [LIBRARIES_PREFIX + '/mtb-srf/mtb_srf.c']
+SRC += [LIBRARIES_PREFIX + '/mtb-srf/mtb_srf_ipc.c']
+
+# serial-memory
+SRC += Glob(LIBRARIES_PREFIX + '/serial-memory/source/*.c')
+
+# se-rt-services-utils
+SRC += [
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_crc32.c',
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_fih.c',
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_platform.c',
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_psacrypto.c',
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_ss_wifi.c',
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_syscall.c',
+    LIBRARIES_PREFIX + '/se-rt-services-utils/ifx_se_syscall_builtin.c',
+]
+
+# HAL source files
+SRC += [
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_clock.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_syspm.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_system.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_gpio.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_lptimer.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_utils_impl.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_uart.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_dma.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_dma_dw.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/hal/source/mtb_hal_dma_dmac.c',
+]
+
+# PDL source files
+SRC += [
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_sysclk_v2.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_systick_v2.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_gpio.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_sysint_v2.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_syslib.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_syspm_v4.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_ipc_pipe.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_ipc_sema.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_ipc_drv.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_scb_common.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_syspm_ppu.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_syspm_pdcm.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_axidmac.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/ppu_v1.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/devices/source/cy_device.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_dma.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_scb_uart.c',
+    # Required by cycfg_clocks.c, cycfg_system.c, cybsp.c, etc.
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_wdt.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_mcwdt.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_mpc.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_ppc.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_trigmux.c',
+    # SMIF drivers
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_smif.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_smif_memslot.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_smif_memnum.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_smif_sfdp.c',
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_smif_hb_flash.c',
+    # PDL SRF module
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/cy_pdl_srf.c',
+    # GCC toolchain assembly
+    LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/pdl/drivers/source/TOOLCHAIN_GCC_ARM/cy_syslib_ext.S',
+]
+
+# Device Utils - SysPM
+SRC += Glob(LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/device-utils/syspm/source/*.c')
+
+# NNKernel - CM33
+SRC += Glob(LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/nnkernel/COMPONENT_CM33/source/*.c')
+
+# Support
+SRC += Glob(LIBRARIES_PREFIX + '/mtb-device-support-pse8xxgp/support/source/*.c')
+
+# =============================================================================
+# Build environment
+# =============================================================================
+env = Environment(
+    tools=['gcc', 'g++', 'gnulink', 'ar', 'as'],
+    ENV=os.environ,  # Pass system environment variables (needed for edgeprotecttools)
+    CC=CC,
+    CXX=CXX,
+    AS=AS,
+    AR=AR,
+    LINK=LINK,
+    CFLAGS=CFLAGS,
+    ASFLAGS=AFLAGS,
+    LINKFLAGS=LDFLAGS,
+    CPPPATH=CPPPATH,
+    CPPDEFINES=CPPDEFINES,
+    LIBS=LIBS,
+    ARCOMSTR = 'AR $TARGET',
+    ASCOMSTR = 'AS $TARGET',
+    ASPPCOMSTR = 'AS $TARGET',
+    CCCOMSTR = 'CC $TARGET',
+    CXXCOMSTR = 'CXX $TARGET',
+    LINKCOMSTR = 'LINK $TARGET'
+)
+
+# Set the program suffix
+env['PROGSUFFIX'] = '.elf'
+
+# Enable long command line support on Windows
+if platform.system() == 'Windows':
+    env['SPAWN'] = ourspawn
+
+# Configure .S file (assembly with C preprocessor) compilation
+# Use gcc instead of as to handle preprocessor directives
+import SCons.Tool
+import SCons.Builder
+static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
+
+# Create a proper builder for .S files that uses gcc with preprocessor
+as_builder = SCons.Builder.Builder(
+    action='$CC $ASFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -c -o $TARGET $SOURCE',
+    suffix='.o',
+    src_suffix='.S'
+)
+static_obj.add_action('.S', as_builder.action)
+
+# =============================================================================
+# Build target
+# =============================================================================
+# Create build directory
+VariantDir(BUILD_DIR, '.', duplicate=0)
+
+# Separate local sources and external sources
+# External sources (starting with ../) should not go through VariantDir
+local_src = []
+external_src = []
+
+for s in SRC:
+    src_str = str(s)
+    src_abs = os.path.abspath(src_str)
+    try:
+        rel_to_proj = os.path.relpath(src_abs, PROJECT_ROOT).replace('\\', '/')
+    except ValueError:
+        external_src.append(src_str)
+        continue
+
+    src_abs_norm = os.path.normcase(src_abs)
+    libs_src_norm = os.path.normcase(libs_src_abs)
+    libraries_src_norm = os.path.normcase(libraries_src_abs)
+
+    if src_abs_norm.startswith(libs_src_norm):
+        rel_in_libs = os.path.relpath(src_abs, libs_src_abs).replace('\\', '/')
+        local_src.append(LIBS_PREFIX + rel_in_libs)
+        continue
+
+    if src_abs_norm.startswith(libraries_src_norm):
+        rel_in_libraries = os.path.relpath(src_abs, libraries_src_abs).replace('\\', '/')
+        local_src.append(LIBRARIES_PREFIX + rel_in_libraries)
+        continue
+
+    build_prefix = BUILD_DIR + '/'
+
+    # Path escapes project root → treat as external
+    if rel_to_proj.startswith('../'):
+        external_src.append(src_str)
+    elif rel_to_proj.startswith(build_prefix):
+        # Already under build directory
+        local_src.append(rel_to_proj)
+    else:
+        # Located inside project tree: mirror into build directory
+        local_src.append(build_prefix + rel_to_proj)
+
+# Combine: local sources (with build dir prefix) + external sources (as-is)
+build_src = local_src + external_src
+
+# Build the ELF - output to build directory (to match boot_with_extended_boot.json path)
+# The JSON config uses "build/rtthread.hex"
+DEBUG_DIR = 'build'
+
+# Create Debug directory if not exists
+if not os.path.exists(DEBUG_DIR):
+    os.makedirs(DEBUG_DIR)
+
+elf = env.Program(DEBUG_DIR + '/' + TARGET, build_src)
+
+# Generate HEX file
+hex_file = env.Command(
+    DEBUG_DIR + '/' + TARGET + '.hex',
+    elf,
+    OBJCOPY + ' -O ihex $SOURCE $TARGET'
+)
+
+# Generate BIN file
+bin_file = env.Command(
+    DEBUG_DIR + '/' + TARGET + '.bin',
+    elf,
+    OBJCOPY + ' -O binary $SOURCE $TARGET'
+)
+
+# Print size
+size_cmd = env.Command(
+    'size',
+    elf,
+    SIZE + ' $SOURCE'
+)
+
+# =============================================================================
+# Secure image packaging using edgeprotecttools (Windows only)
+# =============================================================================
+if platform.system() == 'Windows':
+    EDGEPROTECTTOOLS = os.path.join(PROJECT_ROOT, 'tools', 'edgeprotecttools', 'bin', 'edgeprotecttools.exe')
+    BOOT_CONFIG = os.path.join(PROJECT_ROOT, 'config', 'boot_with_extended_boot_scons.json')
+
+    if os.path.exists(EDGEPROTECTTOOLS) and os.path.exists(BOOT_CONFIG):
+        secure_image = env.Command(
+            'secure_image',  # Pseudo target
+            hex_file,
+            '"' + EDGEPROTECTTOOLS + '" run-config -i "' + BOOT_CONFIG + '"'
+        )
+    else:
+        print("edgeprotecttools or boot config not found, skipping secure image packaging")
+        print("EDGEPROTECTTOOLS:", EDGEPROTECTTOOLS)
+        print("BOOT_CONFIG:", BOOT_CONFIG)
+
+# Clean target
+Clean(elf, [DEBUG_DIR + '/' + TARGET + '.map', BUILD_DIR, DEBUG_DIR])

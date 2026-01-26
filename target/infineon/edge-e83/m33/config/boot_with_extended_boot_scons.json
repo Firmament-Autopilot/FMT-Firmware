@@ -47,7 +47,7 @@
                             "file" : "build/rtthread.hex"
                         },
                         {
-                            "file" : "../tools/edgeprotecttools/cm33_s_signed_fw/proj_cm33_s_signed.hex"
+                            "file" : "../bootloader/build/sign_rtthread.hex"
                         }
                     ],
                     "outputs" :
