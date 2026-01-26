@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2022 The Firmament Authors. All Rights Reserved.
+ * Copyright 2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "module/math/rotation.h"
-#include <firmament.h>
+#ifndef QMI8A01_H__
+#define QMI8A01_H__
 
-void sh5001_rotate_to_frd(float val[3])
-{
-    float tmp = val[0];
-    val[0] = val[1];
-    val[1] = tmp;
-    val[2] = -val[2];
-}
+#include <rtthread.h>
 
-void qmi8a01_rotate_to_frd(float* val)
-{
-    float tmp = val[0];
-    val[0] = val[1];
-    val[1] = tmp;
-    val[2] = -val[2];
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+rt_err_t drv_qmi8a01_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif

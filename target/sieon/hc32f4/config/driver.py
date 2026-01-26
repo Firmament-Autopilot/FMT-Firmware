@@ -5,6 +5,7 @@ DRIVERS = [
     # 'gps/gps_ubx.c',
     # 'imu/bmi088.c',
     'imu/sh5001.c',
+    'imu/qmi8a01.c',
     # 'mag/bmm150.c',
     'mag/qmc5883p.c',
     'airspeed/xgzp6899d.c',

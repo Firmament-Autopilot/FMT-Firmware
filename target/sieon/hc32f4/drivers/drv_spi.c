@@ -346,6 +346,22 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev0, "spi1_dev0", "spi1", (void*)&spi1_cs0));
     }
 
+    /* attach spi_device_1 (QMI8A0a ACCEL/GYRO) to spi1 */
+    {
+        static struct rt_spi_device rt_spi1_dev1;
+        static struct hc32_spi_cs spi1_cs1 = { .gpio_port = GPIO_PORT_E, .pin = GPIO_PIN_02 };
+
+        (void)GPIO_StructInit(&stcGpioInit);
+        stcGpioInit.u16PinDir = PIN_DIR_OUT;
+        stcGpioInit.u16PinOutputType = PIN_OUT_TYPE_CMOS;
+        GPIO_Init(spi1_cs1.gpio_port, spi1_cs1.pin, &stcGpioInit);
+
+        /* set CS pin by default */
+        GPIO_SetPins(spi1_cs1.gpio_port, spi1_cs1.pin);
+
+        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev1, "spi1_dev1", "spi1", (void*)&spi1_cs1));
+    }
+
     RT_TRY(hc32_spi_register(CM_SPI2, &hc32_spi2, "spi2"));
 
     /* attach spi_device_0 (TF Card) to spi2 */
