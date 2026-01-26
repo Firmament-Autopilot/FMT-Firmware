@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.debug.core.groups.GroupLaunchConfigurationType">
+<stringAttribute key="com.cypress.studio.launch.owner.0" value="&&APPLICATION_UUID&&"/>
+<booleanAttribute key="com.cypress.studio.launch.hide" value="false"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.0.action" value="DELAY"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.0.actionParam" value="3"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.0.adoptIfRunning" value="false"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.0.enabled" value="true"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.0.mode" value="inherit"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.0.name" value="&&_MTB_RECIPE__APP_NAME&&.&&_MTB_RECIPE__FIRST_APP_NAME&& Debug Multicore (KitProg3_MiniProg4)"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.1.action" value="NONE"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.1.adoptIfRunning" value="false"/>
+<booleanAttribute key="org.eclipse.debug.core.launchGroup.1.enabled" value="true"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.1.mode" value="inherit"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.1.name" value="&&_MTB_RECIPE__APP_NAME&&.&&_MTB_RECIPE__CM55_PRJ_DIR&& Add CM55 to CM33 (KitProg3_MiniProg4)"/>
+</launchConfiguration>

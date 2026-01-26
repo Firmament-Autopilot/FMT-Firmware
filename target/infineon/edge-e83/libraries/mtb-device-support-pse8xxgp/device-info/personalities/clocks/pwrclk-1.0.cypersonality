@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file pwrclk.cypersonality
+* \version 3.0
+*
+* \brief
+* CLK_PWR personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='pwrclk' name='CLK_PWR' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40ssrss' />
+      <Resource name='srss\.clock\.powerclk' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_sourced_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClockDisplayName' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__pwr.html' linkText='Open Power Clock Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamChoice id='sourceClock' name='Source Clock' group='General' default='imo' visible='true' desc='Source clock path'>
+      <Entry name='IMO'   value='imo'  />
+      <Entry name='IHO'   value='iho'  />
+    </ParamChoice>
+    <ParamString id='sourceClockDisplayName' default='`${getParamValueDisplay("sourceClock")}`' />
+
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].`${sourceClock}`[0]' />
+    <ParamString id='sourceFreq' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFreq,accuracy)}`' visible='true' editable='false' desc='Source clock frequency' />
+    <ParamRange id='divider' name='Divider' group='General' default='1' min='`${"mxs22srss" eq getIpBlockName() &amp;&amp; sourceClock eq iho ? "2" : "1"}`' max='256' resolution='1' visible='true' desc='The source clock frequency divider' />
+    <ParamString id='frequency' name='Frequency' group='Internal' default='`${sourceFreq / divider}`' />
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The resulting CLK_PWR output clock frequency' />
+  </Parameters>
+
+  <Variables>
+    <Variable id='sourceClockApiName' value='`${sourceClock eq imo ? "IMO" : "IHO"}`' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for CLK_PWR is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPWR_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPWR_FREQ' value='`${frequency}`UL' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPWR_DIVIDER' value='`${divider}`UL' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKPWR_SOURCE' value='CY_SYSCLK_CLKMF_IN_`${sourceClockApiName}`' public='true' include='`${"mxs40ssrss" eq getIpBlockName()}`' />
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_ClkPwrInit(void)' public='false' >
+      <Line value='Cy_SysClk_ClkPwrSetSource(CY_SYSCLK_CLKPWR_IN_`${sourceClockApiName}`);' />
+      <Line value='Cy_SysClk_ClkPwrSetDivider(CY_CFG_SYSCLK_CLKPWR_DIVIDER);' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

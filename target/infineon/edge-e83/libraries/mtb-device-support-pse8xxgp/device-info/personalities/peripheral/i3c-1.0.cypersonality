@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file i3c.cypersonality
+* \version 1.0
+*
+* \brief
+* I3C personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2018-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='mxi3c' name='I3C Controller' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v5'>
+  <Dependencies>
+    <IpBlock name='mxi3c' />
+    <Resource name='i3c' />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Peripheral Documentation' default='file:///`${cy_libs_path()}`/docs/html/group__group__cy__i3c.html' linkText='Open I3C Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <!-- General -->
+    <ParamChoice id='ModeUser' name='Mode' group='General' default='`${"CY_I3C_CONTROLLER"}`' visible='true' editable='true' desc='This parameter defines the I3C operation mode as: the Target or Controller. Target mode is only supported in PSE84B0.'>
+      <Entry name='Target' value='CY_I3C_TARGET' visible='true' />
+      <Entry name='Controller' value='CY_I3C_CONTROLLER' visible='true' />
+    </ParamChoice>
+
+    <ParamBool id='Target' name='Target' group='Internal' default='`${ModeUser eq CY_I3C_TARGET}`' visible='false' editable='false' desc='Enables Target functionality.' />
+    <ParamBool id='Controller' name='Controller' group='Internal' default='`${ModeUser eq CY_I3C_CONTROLLER}`' visible='false' editable='false' desc='Enables Controller functionality.' />
+
+    <ParamChoice id='I3CBusMode' name='I3C Bus Mode' group='General' default='`${"CY_I3C_BUS_PURE"}`' visible='`${Controller}`' editable='true' desc='Selects the I3C block to work in Pure bus, Mixed Bus Fast or Mixed bus Slow' >
+      <Entry name='Pure Bus' value='CY_I3C_BUS_PURE' visible='true' />
+      <Entry name='Mixed Bus - Fast' value='CY_I3C_BUS_MIXED_FAST' visible='true' />
+      <Entry name='Mixed Bus - Slow' value='CY_I3C_BUS_MIXED_SLOW' visible='true' />
+    </ParamChoice>
+
+
+    <ParamBool id='ManualDataRateCtrl' name='Manual Data Rate Control' group='General' default='false' visible='`${Controller}`' editable='true' desc='This parameter enables the user to configure data rate related parameters for the controller modes.' />
+    <ParamBool id='ManualDataRate' name='ManualDataRate' group='Internal' default='`${Controller &amp;&amp; ManualDataRateCtrl}`' visible='false' editable='false' desc='This parameter enables the user to configure data rate related parameters for the controller modes.' />
+
+    <ParamRange id='PushPullDataRate' name='Push Pull Data Rate (kbps)' group='General' default='12500' min='1' max='12500' resolution='1' visible='`${(Controller &amp;&amp; ((!ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW)))}`' editable='true' desc='SDR Mode Speed. Push-Pull data rate that I3C operates. Maximum data rate is 12500 kbps.' />
+    <ParamRange id='OpenDrainDataRate' name='Open Drain Data Rate (kbps)' group='General' default='4000' min='1' max='4000' resolution='1' visible='`${(Controller &amp;&amp; ((!ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW)))}`' editable='true' desc='Open-Drain data rate that I3C operates. Maximum data rate is 4000 kbps.' />
+    <ParamChoice id='DataRate' name='Data Rate (kbps)' group='General' default='400' visible='`${(Controller &amp;&amp; ((!ManualDataRate) &amp;&amp; (I3CBusMode eq CY_I3C_BUS_MIXED_SLOW)))}`' editable='true' desc='SDR Mode Speed.'>
+      <Entry name='FM' value='400' visible='true' />
+      <Entry name='FM+' value='1000' visible='true' />
+    </ParamChoice>
+    <ParamRange id='TargetDataRate' name='Max Data Rate (kbps)' group='General' default='12500' min='1' max='12500' resolution='1' visible='`${Target}`' editable='false' desc='Maximum data rate supported is 12500 kbps.' />
+
+    <ParamChoice id='TXBufferThreshold' name='Transmit Buffer Threshold' group='General' default='`${"CY_I3C_1_WORD_DEPTH"}`' visible='true' editable='true' desc='Transmit queue empty locations count for triggering the Transmit queue status interrupt.' >
+      <Entry name='1-Word Depth' value='CY_I3C_1_WORD_DEPTH' visible='true' />
+      <Entry name='4-Word Depth' value='CY_I3C_4_WORD_DEPTH' visible='true' />
+      <Entry name='8-Word Depth' value='CY_I3C_8_WORD_DEPTH' visible='true' />
+      <Entry name='16-Word Depth' value='CY_I3C_16_WORD_DEPTH' visible='true' />
+      <Entry name='32-Word Depth' value='CY_I3C_32_WORD_DEPTH' visible='true' />
+      <Entry name='64-Word Depth' value='CY_I3C_64_WORD_DEPTH' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='RXBufferThreshold' name='Receive Buffer Threshold' group='General' default='`${"CY_I3C_1_WORD_DEPTH"}`' visible='true' editable='true' desc='Receive queue filled locations count for triggering the Receive queue status interrupt.' >
+      <Entry name='1-Word Depth' value='CY_I3C_1_WORD_DEPTH' visible='true' />
+      <Entry name='4-Word Depth' value='CY_I3C_4_WORD_DEPTH' visible='true' />
+      <Entry name='8-Word Depth' value='CY_I3C_8_WORD_DEPTH' visible='true' />
+      <Entry name='16-Word Depth' value='CY_I3C_16_WORD_DEPTH' visible='true' />
+      <Entry name='32-Word Depth' value='CY_I3C_32_WORD_DEPTH' visible='true' />
+      <Entry name='64-Word Depth' value='CY_I3C_64_WORD_DEPTH' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='TXBufferStartThreshold' name='Transmit Buffer Start Threshold' group='General' default='`${"CY_I3C_1_WORD_DEPTH"}`' visible='true' editable='true' desc='Transmit queue filled locations count for triggering the transmission.' >
+      <Entry name='1-Word Depth' value='CY_I3C_1_WORD_DEPTH' visible='true' />
+      <Entry name='4-Word Depth' value='CY_I3C_4_WORD_DEPTH' visible='true' />
+      <Entry name='8-Word Depth' value='CY_I3C_8_WORD_DEPTH' visible='true' />
+      <Entry name='16-Word Depth' value='CY_I3C_16_WORD_DEPTH' visible='true' />
+      <Entry name='32-Word Depth' value='CY_I3C_32_WORD_DEPTH' visible='true' />
+      <Entry name='64-Word Depth' value='CY_I3C_64_WORD_DEPTH' visible='true' />
+    </ParamChoice>
+
+    <ParamChoice id='RXBufferStartThreshold' name='Receive Buffer Start Threshold' group='General' default='`${"CY_I3C_1_WORD_DEPTH"}`' visible='true' editable='true' desc='Receive queue empty locations count for triggering the reception.' >
+      <Entry name='1-Word Depth' value='CY_I3C_1_WORD_DEPTH' visible='true' />
+      <Entry name='4-Word Depth' value='CY_I3C_4_WORD_DEPTH' visible='true' />
+      <Entry name='8-Word Depth' value='CY_I3C_8_WORD_DEPTH' visible='true' />
+      <Entry name='16-Word Depth' value='CY_I3C_16_WORD_DEPTH' visible='true' />
+      <Entry name='32-Word Depth' value='CY_I3C_32_WORD_DEPTH' visible='true' />
+      <Entry name='64-Word Depth' value='CY_I3C_64_WORD_DEPTH' visible='true' />
+    </ParamChoice>
+
+    <ParamRange id='CommandQueueThreshold' name='Command Queue Threshold' group='General' default='1' min='0' max='15' resolution='1' visible='true' editable='true' desc='Command queue empty locations count for triggering the command queue status interrupt.' />
+    <ParamRange id='ResponseQueueThreshold' name='Response Queue Threshold' group='General' default='0' min='0' max='15' resolution='1' visible='true' editable='true' desc='Response queue filled locations count for triggering the response queue status interrupt.' />
+
+
+    <!-- Manual DataRate Control -->
+    <ParamRange id='PushPullLowCount' name='Push Pull Low Count (I3C Clocks)' group='Manual DataRate Control' default='5' min='5' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='Push Pull Low Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='PushPullHighCount' name='Push Pull High Count (I3C Clocks)' group='Manual DataRate Control' default='5' min='5' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='Push Pull High Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='OpenDrainLowCount' name='Open Drain Low Count (I3C Clocks)' group='Manual DataRate Control' default='27' min='0' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW)) }`' editable='true' desc='Open Drain Low Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='OpenDrainHighCount' name='Open Drain High Count (I3C Clocks)' group='Manual DataRate Control' default='5' min='0' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='Open Drain High Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='I2CFMLowCount' name='I2C FM Low Count (I3C Clocks)' group='Manual DataRate Control' default='212' min='0' max='65535' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='true' desc='I2C FM Low Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='I2CFMHighCount' name='I2C FM High Count (I3C Clocks)' group='Manual DataRate Control' default='100' min='0' max='65535' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`'  editable='true' desc='I2C FM High Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='I2CFMPlusLowCount' name='I2C FM+ Low Count (I3C Clocks)' group='Manual DataRate Control' default='80' min='0' max='65535' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`'  editable='true' desc='I2C FM+ Low Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='I2CFMPlusHighCount' name='I2C FM+ High Count (I3C Clocks)' group='Manual DataRate Control' default='45' min='0' max='65535' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`'  editable='true' desc='I2C FM+ High Count timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='ExtLowCnt1' name='Extended Low Count 1 (I3C Clocks)' group='Manual DataRate Control' default='11' min='0' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='I3C extended low count 1 timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='ExtLowCnt2' name='Extended Low Count 2 (I3C Clocks)' group='Manual DataRate Control' default='16' min='0' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='I3C extended low count 2 timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='ExtLowCnt3' name='Extended Low Count 3 (I3C Clocks)' group='Manual DataRate Control' default='27' min='0' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='I3C extended low count 3 timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='ExtLowCnt4' name='Extended Low Count 4 (I3C Clocks)' group='Manual DataRate Control' default='58' min='0' max='255' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='I3C extended low count 4 timing in terms of number of I3C block clock cycles.' />
+    <ParamRange id='ExtTerminationLowCnt' name='Extended Termination Low Count (I3C Clocks)' group='Manual DataRate Control' default='0' min='0' max='15' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='true' desc='I3C extended low count for read termination bit.' />
+
+    <!-- Controller -->
+    <ParamBool id='IBA' name='IBA Include' group='Controller' default='false' visible='`${Controller}`' editable='true' desc='I3C broadcast address used or not for private transfers.' />
+    <ParamBool id='HotJoinControl' name='Hot Join Control' group='Controller' default='false' visible='`${Controller}`' editable='true' desc='To select whether the controller, ACK/NACK the hot join request from target.' />
+    <ParamRange id='DynamicAddress' name='Dynamic Address' group='Controller' default='8' min='0' max='126' resolution='1' visible='`${Controller}`' editable='true' desc='Dynamic Address of the I3C Controller.' />
+    <ParamRange id='IBIQueueThreshold' name='In Band Interrupt Queue Threshold' group='Controller' default='0' min='0' max='15' resolution='1' visible='`${Controller}`' editable='true' desc='In Band Interrupt queue filled locations count for triggering the In Band Interrupt queue status interrupt.' />
+    <ParamRange id='IBIDataThreshold' name='In Band Interrupt Data Threshold' group='Controller' default='15' min='1' max='15' resolution='1' visible='`${Controller}`' editable='true' desc='In Band Interrupt data segment size in words (4 bytes) that enables the slicing of the incoming IBI data.' />
+    <ParamRange id='SDAHoldTime' name='SDA Hold Time (I3C Clocks)' group='Controller' default='1' min='0' max='7' resolution='1' visible='`${Controller}`' editable='true' desc='SDA hold time in terms of number of I3C block clock cycles.' />
+    <ParamRange id='BusFreeTime' name='Bus Free Time (I3C Clocks)' group='Controller' default='32' min='0' max='65535' resolution='1' visible='`${Controller}`' editable='true' desc='I3C bus free count value. Bus free condition should be atleast 39ns in Pure Bus Mode; atleast 1300ns in Mixed Mode for FM data rate and 500ns for FM+ data rate' />
+
+    <!-- Target -->
+    <ParamBool id='AdaptiveI2C' name='Adaptive I2C I3C' group='Target' default='false' visible='`${Target}`' editable='true' desc='To select whether the device as target uses adaptive I2C/I3C mode, It is required to be set only if the device is not aware of the type of the bus to which it is connected.' />
+    <ParamRange id='StaticAddr' name='Static Address' group='Target' default='0' min='0' max='126' resolution='1' visible='`${Target}`' editable='true' desc='Target static address to be used with SETDASA command.' />
+    <ParamRange id='ProvisionalID' name='Provisional ID' group='Target' default='0' min='0' max='281474976710655' resolution='1' visible='`${Target}`' editable='true' desc='48 bit Target provisional ID used during ENTDAA command.' />
+    <ParamRange id='DeviceCharVal' name='Device Characteristic Value' group='Target' default='0' min='0' max='255' resolution='1' visible='`${Target}`' editable='true' desc='8 bit Target DCR used during ENTDAA command.' />
+    <!-- This will basically approve ack for GETMXDS -->
+    <ParamBool id='MaxDataSpeedLim' name='Max Data Speed Limitation' group='Target' default='false' visible='`${Target}`' editable='true' desc='Max data speed limitation setting of Target Bus Characteristics Register(BCR).' />
+    <ParamBool id='HDRCap' name='HDR Capability' group='Target' default='false' visible='`${Target}`' editable='true' desc='HDR capability setting of Target Bus Characteristics Register(BCR).' />
+    <ParamChoice id='DevRoleCap' name='Device Role Capability' group='Target' default='`${"I3C_TARGET_ONLY"}`' visible='`${Target}`' editable='true' desc='Device role setting of Target Bus Characteristics Register(BCR).'>
+      <Entry name='Target Only' value='I3C_TARGET_ONLY' visible='true' />
+      <Entry name='Secondary Controller' value='I3C_SECONDARY_CONTROLLER' visible='true' />
+    </ParamChoice>
+    <ParamBool id='HotJoinIntrEnable' name='Hot Join Interrupt Enable' group='Target' default='false' visible='`${Target}`' editable='true' desc='whether the Hot-Join Request Interrupts are allowed on the I3C bus or not.' />
+    <ParamRange id='BusAvailTime' name='Bus Available Time' group='Target' default='125' min='0' max='65535' resolution='1' visible='`${Target}`' editable='true' desc='I3C bus available count value.' />
+    <ParamRange id='BusIdleTime' name='Bus Idle Time' group='Target' default='25000' min='0' max='1048575' resolution='1' visible='`${Target}`' editable='true' desc='I3C bus idle count value.' />
+
+    <!-- Connections -->
+    <ParamSignal port='clock_i3c_en[0]' name='Clock Signal' group='Connections' visible='true' desc='The clock input defines the operating frequency.' canBeEmpty='false' />
+    <ParamSignal port='i3c_scl[0]' name='SCL' group='Connections' visible='true' desc='Serial clock (SCL) is the controller-generated I3C clock.' canBeEmpty='false'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_CFGOUT3_STRONG_PULLUP_HIGHZ' />
+        </Parameter>
+      </Constraint>
+    </ParamSignal>
+    <ParamSignal port='i3c_sda[0]' name='SDA' group='Connections' visible='true' desc='Serial data (SDA) is the I3C data signal.' canBeEmpty='false'>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_CFGOUT3_STRONG_PULLUP_HIGHZ' />
+        </Parameter>
+      </Constraint>
+    </ParamSignal>
+    <ParamSignal port='tr_tx_req[0]' name='TX trigger' group='Connections' visible='true' desc='TX trigger signal' canBeEmpty='true' />
+    <ParamSignal port='tr_rx_req[0]' name='RX trigger' group='Connections' visible='true' desc='RX trigger signal' canBeEmpty='true' />
+
+    <!-- Clock Frequency -->
+    <ParamString id='sourceClock' name='sourceClock' group='Internal' default='`${getBlockFromSignal("clock_i3c_en[0]")}`' visible='false' editable='false' desc='Source Clock Resource' />
+    <ParamRange  id='i3cClkHz' name='i3cClkHz' group='Internal' default='`${getExposedMember(sourceClock, "frequency")}`' min='1' max='400000000' resolution='1' visible='false' editable='false' desc='I3C clock frequency in kHz' />
+    <!--ParamRange  id='i3cClkHz' name='i3cClkHz' group='Internal' default='`${"125000000"}`' min='1' max='125000000' resolution='1' visible='false' editable='false' desc='I3C clock frequency in kHz' /-->
+
+    <!-- Peripheral clock divider connection -->
+    <ParamBool id='pclkOk' name='PCLK Valid' group='Internal' default='`${hasConnection("clock_i3c_en", 0) &amp;&amp; isBlockUsed(sourceClock)}`' visible='false' editable='false' desc='Checks whether there is a PCLK connected and enabled.' />
+    <ParamString id='pclkDst' name='PCLK Destination' group='Internal' default='PCLK_I3C_CLOCK_I3C_EN' visible='false' editable='false' desc='Generates PCLK connection define.' />
+
+    <!-- Actual Data rate -->
+    <ParamRange id='acheivedPushPullDataRate' name='Actual Data Rate Push Pull Mode(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((PushPullHighCount + PushPullLowCount) * 1000))}`' min='0' max='12500' resolution='1' visible='`${(ManualDataRate &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='The actual Push-Pull data rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='sclLowPushPull' name='tLow_pp (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * PushPullLowCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='tLow parameter (the LOW period of the Push-pull SCL clock).' />
+    <ParamRange id='sclHighPushPull' name='tHigh_pp (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * PushPullHighCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='tHigh parameter (the HIGH period of the Push-pull SCL clock).' />
+    <ParamRange id='acheivedOpenDrainDataRate' name='Actual Data Rate - Open Drain Mode(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((OpenDrainHighCount + OpenDrainLowCount) * 1000))}`' min='0' max='4000' resolution='1' visible='`${(ManualDataRate &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='The actual Open-Drain rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='sclLowOpenDrain' name='tLow_od (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * OpenDrainLowCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='tLow parameter (the LOW period of the Open-Drain SCL clock).' />
+    <ParamRange id='sclHighOpenDrain' name='tHigh_od (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * OpenDrainHighCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='tHigh parameter (the HIGH period of the Open-Drain SCL clock).' />
+    <ParamRange id='acheivedI2CFMDataRate' name='Actual Data Rate - I2C FM(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((I2CFMLowCount + I2CFMHighCount) * 1000))}`' min='0' max='400' resolution='1' visible='`${(ManualDataRate &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='false' desc='The actual I2C FM rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='i2cFMLowPushPull' name='tLow_i2cFM (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * I2CFMLowCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='false' desc='tLow parameter (the LOW period of the I2C FM SCL clock).' />
+    <ParamRange id='i2cFMHighPushPull' name='tHigh_i2cFM (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * I2CFMHighCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='false' desc='tHigh parameter (the HIGH period of the I2C FM SCL clock).' />
+    <ParamRange id='acheivedI2CFMPlusDataRate' name='Actual Data Rate - I2C FM Plus(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((I2CFMPlusLowCount + I2CFMPlusHighCount) * 1000))}`' min='0' max='1000' resolution='1' visible='`${(ManualDataRate &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='false' desc='The actual I2C FM rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='i2cFMPlusLowPushPull' name='tLow_i2cFMPlus (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * I2CFMPlusLowCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='false' desc='tLow parameter (the LOW period of the I2C FM SCL clock).' />
+    <ParamRange id='i2cFMPlusHighPushPull' name='tHigh_i2cFMPlus (ns)' group='Actual Data Rate' default='`${((1000000000.0 / i3cClkHz) * I2CFMPlusHighCount)}`' min='0' max='2040' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE))}`' editable='false' desc='tHigh parameter (the HIGH period of the I2C FM SCL clock).' />
+    <ParamRange id='acheivedSDR_1_DataRate' name='Actual Data Rate - SDR1(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((PushPullHighCount + ExtLowCnt1) * 1000))}`' min='0' max='8000' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='The actual SDR1 data rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='acheivedSDR_2_DataRate' name='Actual Data Rate - SDR2(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((PushPullHighCount + ExtLowCnt2) * 1000))}`' min='0' max='6000' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='The actual SDR2 data rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='acheivedSDR_3_DataRate' name='Actual Data Rate - SDR3(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((PushPullHighCount + ExtLowCnt3) * 1000))}`' min='0' max='4000' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='The actual SDR3 data rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamRange id='acheivedSDR_4_DataRate' name='Actual Data Rate - SDR4(kbps)' group='Actual Data Rate' default='`${(i3cClkHz / ((PushPullHighCount + ExtLowCnt4) * 1000))}`' min='0' max='2000' resolution='1' visible='`${((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW))}`' editable='false' desc='The actual SDR4 data rate displays the data rate at which the I3C operates with current settings.' />
+    <ParamString id='ClkFreq' name='Clock Frequency' group='Actual Data Rate' default='`${(i3cClkHz &lt; 1000000) ? (i3cClkHz / 1000.0) . " kHz" : (i3cClkHz / 1000000.0) . " MHz"}`' visible='`${ManualDataRate}`' editable='false' desc='Frequency of the connected clock' />
+
+    <!-- Advanced-->
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='true' visible='true' editable='true' desc='Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false).' />
+
+  </Parameters>
+
+  <DRCs>
+      <!-- DRC: checks that DataWidth = 9 is valid -->
+    <DRC type='ERROR' text='The Dynamic Address is I3C Reserved.' paramId='DynamicAddress' condition='`${ Controller ? (((DynamicAddress &gt;= 8) &amp;&amp; (DynamicAddress &lt;= 61))? "0" :
+                                                                                                         ((( DynamicAddress &gt;= 63) &amp;&amp; (DynamicAddress &lt;= 93)) ? "0" :
+                                                                                                         ((( DynamicAddress &gt;= 95) &amp;&amp; (DynamicAddress &lt;= 109)) ? "0" :
+                                                                                                         ((( DynamicAddress &gt;= 111) &amp;&amp; (DynamicAddress &lt;= 117)) ? "0" :
+                                                                                                         ( DynamicAddress eq 119 ? "0" : "1" ))))) : "0" }`' />
+    <!--Open Drain High Period-->
+    <DRC type='ERROR' text='Push Pull High Period should be less than 41ns' paramId='PushPullHighCount' condition='`${Controller ? (((ManualDataRateCtrl &amp;&amp; (I3CBusMode eq CY_I3C_BUS_MIXED_FAST)) &amp;&amp; (((1000000000 / i3cClkHz) * PushPullHighCount) &gt;= (41)))? "1" : "0") : "0"}`' />
+
+    <DRC type='ERROR' text='Push Pull High Period should be greater than 31ns' paramId='PushPullHighCount' condition='`${Controller ? ((ManualDataRateCtrl &amp;&amp; (((1000000000 / i3cClkHz) * PushPullHighCount) &lt; (31)))? "1" : "0") : "0"}`' />
+    <DRC type='ERROR' text='Push Pull Low Period should be greater than 31ns' paramId='PushPullHighCount' condition='`${Controller ? ((ManualDataRateCtrl &amp;&amp; (((1000000000 / i3cClkHz) * PushPullLowCount) &lt; (31)))? "1" : "0") : "0"}`' />
+
+    <DRC type='ERROR' text='Open Drain High Period should be less than 41ns' paramId='OpenDrainHighCount' condition='`${Controller ? ((((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW)) &amp;&amp; (((1000000000 / i3cClkHz) * OpenDrainHighCount) &gt;= (41)))? "1" : "0") : "0"}`' />
+    <DRC type='ERROR' text='Open Drain Low Period should be atleast 200ns' paramId='OpenDrainLowCount' condition='`${Controller ? ((((ManualDataRate) &amp;&amp; (I3CBusMode ne CY_I3C_BUS_MIXED_SLOW)) &amp;&amp; (((1000000000 / i3cClkHz) * OpenDrainLowCount) &lt; (200)))? "1" : "0") : "0"}`' />
+
+    <!-- tLOW + trCL and tHIGH + trCL from the spec -->
+    <DRC type='ERROR' text='FM Low Period should be atleast 1320ns' paramId='I2CFMLowCount' condition='`${Controller ? (((ManualDataRateCtrl &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE)) &amp;&amp; (((1000000000 / i3cClkHz) * I2CFMLowCount) &lt;= (1320)))? "1" : "0") : "0"}`' />
+    <DRC type='ERROR' text='FM High Period should be atleast 620ns' paramId='I2CFMHighCount' condition='`${Controller ? (((ManualDataRateCtrl &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE)) &amp;&amp; (((1000000000 / i3cClkHz) * I2CFMHighCount) &lt;= (620)))? "1" : "0") : "0"}`' />
+    <DRC type='ERROR' text='FM Plus Low Period should be atleast 520ns' paramId='I2CFMPlusLowCount' condition='`${Controller ? (((ManualDataRateCtrl &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE)) &amp;&amp; (((1000000000 / i3cClkHz) * I2CFMPlusLowCount) &lt;= (520)))? "1" : "0") : "0"}`' />
+    <DRC type='ERROR' text='FM Plus High Period should be atleast 280ns' paramId='I2CFMPlusHighCount' condition='`${Controller ? (((ManualDataRateCtrl &amp;&amp; (I3CBusMode ne CY_I3C_BUS_PURE)) &amp;&amp; (((1000000000 / i3cClkHz) * I2CFMPlusHighCount) &lt;= (280)))? "1" : "0") : "0"}`' />
+
+    <DRC type='ERROR' text='Bus Available Time should be atleast 1us' paramId='BusAvailTime' condition='`${(Target &amp;&amp; ((BusAvailTime * (1000000000 / i3cClkHz)) &lt; 1000)) ? "1" : "0"}`' /> <!-- tAVAL least is 1us -->
+    <DRC type='ERROR' text='Bus Idle Condition should be atleast 200us' paramId='BusIdleTime' condition='`${(Target &amp;&amp; ((BusIdleTime * (1000000000 / i3cClkHz)) &lt; 200000)) ? "1" : "0"}`' /> <!-- tIDLE least is 200us -->
+
+    <DRC type='ERROR' text='I3C Clock input signal cannot exceed 125 MHz' condition='`${i3cClkHz &gt; 125000000}`' />
+
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_i3c.h' include='true' />
+    <ConfigInclude value='cy_sysclk.h' include='`${pclkOk}`' />
+
+    <ConfigDefine name='`${INST_NAME}`_HW' value='I3C_CORE' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_IRQ' value='i3c_interrupt_IRQn' public='true' include='true' />
+    <ConfigStruct name='`${INST_NAME}`_config' type='cy_stc_i3c_config_t' const='`${inFlash}`' public='true' include='true'>
+      <Member name='i3cMode' value='`${ModeUser}`' />
+      <Member name='i3cBusMode' value='`${Controller ?  I3CBusMode : "CY_I3C_BUS_MODE_NOT_APPLICABLE"}`' />  <!-- add one more enum member for target in PDL code-->
+      <Member name='useDma' value='`${"false"}`' />
+      <Member name='manualDataRate' value='`${ManualDataRate}`' />
+      <Member name='i3cClockHz' value='`${i3cClkHz}`U' />
+      <Member name='i3cSclRate' value='`${(Controller ? (ManualDataRateCtrl ? "0" : ((I3CBusMode eq CY_I3C_BUS_MIXED_SLOW) ? DataRate : PushPullDataRate)) : TargetDataRate)*1000}`U' />
+      <Member name='openDrainSclRate' value='`${(Controller ? (ManualDataRateCtrl ? "0" : ((I3CBusMode eq CY_I3C_BUS_MIXED_SLOW) ? DataRate : OpenDrainDataRate)) : "0")*1000}`U' />
+      <Member name='txEmptyBufThld' value='`${TXBufferThreshold}`' />
+      <Member name='rxBufThld' value='`${RXBufferThreshold}`' />
+      <Member name='txBufStartThld' value='`${TXBufferStartThreshold}`' />
+      <Member name='rxBufStartThld' value='`${RXBufferStartThreshold}`' />
+
+      <Member name='ibaInclude' value='`${Controller ? IBA : "false"}`' />
+      <Member name='hotJoinCtrl' value='`${Controller ? HotJoinControl : "false"}`' />
+      <Member name='dynamicAddr' value='`${Controller ? DynamicAddress : "0"}`U' />
+      <Member name='cmdQueueEmptyThld' value='`${Controller ? CommandQueueThreshold : "0"}`U' />
+      <Member name='respQueueThld' value='`${Controller ? ResponseQueueThreshold : "0"}`U' />
+      <Member name='ibiQueueThld' value='`${Controller ? IBIQueueThreshold : "0"}`U' />
+      <Member name='ibiDataThld' value='`${Controller ? IBIDataThreshold : "0"}`U' />
+      <Member name='extLowCnt1' value='`${Controller ? ExtLowCnt1 : "0"}`U' />
+      <Member name='extLowCnt2' value='`${Controller ? ExtLowCnt2 : "0"}`U' />
+      <Member name='extLowCnt3' value='`${Controller ? ExtLowCnt3 : "0"}`U' />
+      <Member name='extLowCnt4' value='`${Controller ? ExtLowCnt4 : "0"}`U' />
+      <Member name='extTerminationLowCnt' value='`${Controller ? ExtTerminationLowCnt : "0"}`U' />
+      <Member name='sdaHoldTime' value='`${Controller ? SDAHoldTime : "0"}`U' />
+      <Member name='busFreeTime' value='`${Controller ? BusFreeTime : "0"}`U' />
+
+      <Member name='openDrainLowCnt' value='`${ManualDataRate ? OpenDrainLowCount : "0"}`U' />
+      <Member name='openDrainHighCnt' value='`${ManualDataRate ? OpenDrainHighCount : "0"}`U' />
+      <Member name='pushPullLowCnt' value='`${ManualDataRate ? PushPullLowCount : "0"}`U' />
+      <Member name='pushPullHighCnt' value='`${ManualDataRate ? PushPullHighCount : "0"}`U' />
+      <Member name='i2cFMLowCnt' value='`${ManualDataRate ? I2CFMLowCount : "0"}`U' />
+      <Member name='i2cFMHighCnt' value='`${ManualDataRate ? I2CFMHighCount : "0"}`U' />
+      <Member name='i2cFMPlusLowCnt' value='`${ManualDataRate ? I2CFMPlusLowCount : "0"}`U' />
+      <Member name='i2cFMPlusHighCnt' value='`${ManualDataRate ? I2CFMPlusHighCount : "0"}`U' />
+
+      <Member name='adaptiveI2CI3C' value='`${Target ? AdaptiveI2C : "false"}`' />
+      <Member name='staticAddress' value='`${Target ? StaticAddr : "0"}`U' />
+      <Member name='pid' value='`${Target ? ProvisionalID : "0"}`U' />
+      <Member name='dcr' value='`${Target ? DeviceCharVal : "0"}`U' />
+      <Member name='speedLimit' value='`${Target ? MaxDataSpeedLim : "false"}`' />
+      <Member name='hdrCapable' value='`${Target ? HDRCap : "false"}`' />
+      <Member name='deviceRoleCap' value='`${Target ? (DevRoleCap eq "I3C_TARGET_ONLY" ? "CY_I3C_TARGET" : "CY_I3C_SECONDARY_CONTROLLER") : "CY_I3C_SECONDARY_CONTROLLER"}`' />
+      <Member name='hotjoinEnable' value='`${Target ? HotJoinIntrEnable : "false"}`' />
+      <Member name='busAvailTime' value='`${Target ? BusAvailTime : "0"}`U' />
+      <Member name='busIdleTime' value='`${Target ? BusIdleTime : "0"}`U' />
+    </ConfigStruct>
+
+    <ConfigInstruction value='Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_I3C_PERI_NR, CY_MMIO_I3C_GROUP_NR, CY_MMIO_I3C_SLAVE_NR, CY_MMIO_I3C_CLK_HF_NR);' include='true' />
+    <ConfigInstruction value='Cy_SysClk_PeriphAssignDivider(`${pclkDst}`, `${getExposedMember(sourceClock, "clockSel")}`);' include='`${pclkOk}`' />
+  </ConfigFirmware>
+
+</Personality>

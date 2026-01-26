@@ -1,0 +1,20 @@
+{
+  "flows": {
+    "oem_provisioning": {
+      "desc": "Provisioning minidriver",
+      "apps": [
+        "minidriver"
+      ]
+    },
+    "erase": {
+      "desc": "Erase minidriver",
+      "apps": [
+        "erase_minidriver"
+      ]
+    }
+  },
+  "paths": {
+    "minidriver": "../packets/apps/minidriver/config.json",
+    "erase_minidriver": "../packets/apps/erase_minidriver/config.json"
+  }
+}

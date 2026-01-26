@@ -1,0 +1,19 @@
+{ 
+  "VERSION": "1",
+  "TEMPLATE_TYPE": "DEVICE_CERT",
+  "CERTIFICATE_NAME": "",
+  "ISSUER": "IFX",
+  "SIGNER_ID": "001",
+  "ALGORITHM": {
+      "description": "Key algorithm. Applicable values: ES256, ES384",
+      "value": "ES384"
+  },
+  "DATE": {
+      "description": "The date of creation of the certificate in the format: YYYY-MM-DD hh:mm:ss. If not provided, the system time will be used",
+      "value": ""
+  },
+  "ID": {
+      "description": "Certificate (unique) ID",
+      "value": ""
+  }
+}

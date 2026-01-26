@@ -1,0 +1,133 @@
+import os
+import sys
+import rtconfig
+import platform
+import subprocess
+import uuid
+
+# FMT path
+FMU_ROOT = os.path.normpath(os.getcwd() + '/../../../..')
+# RTOS path
+RTT_ROOT = FMU_ROOT + '/rtos/rt-thread'
+
+sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
+try:
+    from building import *
+except Exception as e:
+    print("Error message:", e)
+    print('Cannot found RT-Thread root directory, please check RTT_ROOT')
+    print(RTT_ROOT)
+    sys.exit(-1)
+
+TARGET = 'rt-thread.' + rtconfig.TARGET_EXT
+
+DefaultEnvironment(tools=[])
+
+# ===== Add option to SCons =====
+AddOption('--vehicle',
+                dest = 'vehicle',
+                type = 'string',
+                default = 'Multicopter',
+                help = 'Specify the vehicle type')
+
+AddOption('--airframe', 
+                dest='airframe', 
+                type='int', 
+                nargs=1, 
+                default = 1, 
+                action='store',
+                help='Specify the airframe value')
+
+AddOption('--sim',
+                dest = 'sim',
+                type = 'string',
+                default = 'None',
+                help = 'Specify the simulation mode')
+
+env = Environment(tools = ['mingw'], ENV=os.environ,
+    AS = rtconfig.AS, ASFLAGS = rtconfig.AFLAGS,
+    CC = rtconfig.CC, CFLAGS = rtconfig.CFLAGS,
+    AR = rtconfig.AR, ARFLAGS = '-rc',
+    CXX = rtconfig.CXX, CXXFLAGS = rtconfig.CXXFLAGS,
+    LINK = rtconfig.LINK, LINKFLAGS = rtconfig.LFLAGS)
+env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
+
+OBJCOPY = os.path.join(rtconfig.EXEC_PATH, 'arm-none-eabi-objcopy')
+
+if rtconfig.PLATFORM in ['iccarm']:
+    env.Replace(CCCOM = ['$CC $CFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -o $TARGET $SOURCES'])
+    env.Replace(ARFLAGS = [''])
+    env.Replace(LINKCOM = env["LINKCOM"] + ' --map rt-thread.map')
+
+Export('RTT_ROOT')
+Export('rtconfig')
+
+SDK_ROOT = os.path.abspath('./')
+libraries_path_prefix = os.path.dirname(SDK_ROOT) + '/libraries'
+
+SDK_LIB = libraries_path_prefix
+Export('SDK_LIB')
+
+# prepare building environment
+objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=False)
+
+# set spawn
+def ourspawn(sh, escape, cmd, args, e):
+    filename = str(uuid.uuid4())
+    newargs = ' '.join(args[1:])
+    cmdline = cmd + " " + newargs
+    if (len(cmdline) > 16 * 1024):
+        f = open(filename, 'w')
+        f.write(' '.join(args[1:]).replace('\\', '/'))
+        f.close()
+        # exec
+        cmdline = cmd + " @" + filename
+    proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, shell = False, env = e)
+    data, err = proc.communicate()
+    rv = proc.wait()
+    def res_output(_output, _s):
+        if len(_s):
+            if isinstance(_s, str):
+                _output(_s)
+            elif isinstance(_s, bytes):
+                _output(str(_s, 'UTF-8'))
+            else:
+                _output(str(_s))
+    res_output(sys.stderr.write, err)
+    res_output(sys.stdout.write, data)
+    if os.path.isfile(filename):
+        os.remove(filename)
+    return rv
+
+if platform.system() == 'Windows':
+    env['SPAWN'] = ourspawn
+
+
+cwd = str(Dir('#'))
+list = os.listdir(FMU_ROOT)
+vdir = 'build/fmt'
+for d in list:
+    path = os.path.join(FMU_ROOT, d)
+    if os.path.isfile(os.path.join(path, 'SConscript')):
+        objs.extend(SConscript(os.path.join(path, 'SConscript'),
+                    variant_dir=vdir + '/' + d, duplicate=0))
+
+env.VariantDir('build/libs', '../libs', duplicate=0)
+env.VariantDir('build/libraries/', '../libraries', duplicate=0)
+objs.extend(SConscript('../libs/SConscript', variant_dir='build/libs', duplicate=0))
+objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/components/Infineon_cmsis-latest', duplicate=0))
+objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/components/Infineon_core-lib-latest', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/hal/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/hal', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/pdl/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/pdl', duplicate=0))
+objs.extend(SConscript('../libraries/async-transfer/SConscript', variant_dir='build/libraries/components/async-transfer', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/device-utils/syspm/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/device-utils/syspm', duplicate=0))
+objs.extend(SConscript('../libraries/serial-memory/SConscript', variant_dir='build/libraries/components/serial-memory', duplicate=0))
+objs.extend(SConscript('../libraries/Infineon_retarget-io-latest/SConscript', variant_dir='build/libraries/components/Infineon_retarget-io-latest', duplicate=0))
+objs.extend(SConscript('../libraries/SConscript', variant_dir='build/libraries/components', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-srf/SConscript', variant_dir='build/libraries/components/mtb-srf', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-ipc/SConscript', variant_dir='build/libraries/components/mtb-ipc', duplicate=0))
+objs.extend(SConscript('../libraries/littlefs/SConscript', variant_dir='build/libraries/components/littlefs', duplicate=0))
+
+# make a building
+DoBuilding(TARGET, objs)

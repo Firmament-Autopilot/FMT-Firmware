@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file tickclk.cypersonality
+* \version 3.0
+*
+* \brief
+* CLK_ALT_SYS_TICK personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2020-2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='altsystick' name='CLK_ALT_SYS_TICK' version='3.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs40srss_ver3,m0seccpuss,m33syscpuss,m55appcpuss,mxs40srss_ver2' />
+      <Resource name='srss\.clock\.altsystickclk|(m33syscpuss|m55appcpuss|cpuss)\.(systick_s|systick_ns)' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_sourced_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClock' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__arm__system__timer.html' linkText='Open SysTick Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamChoice id='sourceClock' name='Source Clock' group='General' default='`${"m0seccpuss" eq getIpBlockName() ? "lfclk" :
+                                                                                  "m33syscpuss" eq getIpBlockName() ? "lfclk" :
+                                                                                  "m55appcpuss" eq getIpBlockName() ? "lfclk" : "imo"}`' visible='true' desc='The clock source selection'>
+      <Entry name='CLK_LF' value='lfclk' />
+      <Entry name='IMO' value='imo' visible='`${hasBlock("srss[0].clock[0].imo[0]")}`'/>
+      <Entry name='ECO' value='eco' visible='`${hasBlock("srss[0].clock[0].eco[0]")}`'/>
+      <Entry name='CLK_TIMER' value='timerclk' />
+      <Entry name='CLK_HF`${"m55appcpuss" eq getIpBlockName() ? "1" : "0"}`' value='hfclk' visible='`${("mxs40ssrss" eq getIpBlockName()) || ("m0seccpuss" eq getIpBlockName()) || ("m33syscpuss" eq getIpBlockName()) || ("m55appcpuss" eq getIpBlockName())}`'/>
+    </ParamChoice>
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].`${sourceClock}`[`${("m55appcpuss" eq getIpBlockName()&amp;&amp; (sourceClock eq hfclk)) ? "1" : "0"}`]' />
+    <ParamString id='guardStr' default='`${"m0seccpuss" eq getIpBlockName() ? " (CY_CPU_CORTEX_M0P)" : "mxs40srss" eq getIpBlockName() ? " (CY_CPU_CORTEX_M4)" : "mxs40srss_ver3" eq getIpBlockName() ? " (CY_CPU_CORTEX_M7)" : "m55appcpuss" eq getIpBlockName() ? " (CY_CPU_CORTEX_M55)" : "systick_s" eq getBlockType(1) ? " (CY_CPU_CORTEX_M33) &amp;&amp; defined(CY_PDL_TZ_ENABLED)" : "(CY_CPU_CORTEX_M33) &amp;&amp; !defined(CY_PDL_TZ_ENABLED)"}`' />
+    <ParamString id='sourceClockRscName' default='`${sourceClock eq lfclk ? "LF" :
+                                                     sourceClock eq imo   ? "IMO" :
+                                                     sourceClock eq hfclk ? "CPU" :
+                                                     sourceClock eq eco ? "ECO" : "TIMER"}`' />
+    <ParamString id='frequency' default='`${(("mxs40srss" ne getIpBlockName()) &amp;&amp; (sourceClock eq timerclk)) ? (1000000) : (getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0))}`' />
+    <ParamString id='accuracy' default='`${(("mxs40srss" ne getIpBlockName()) &amp;&amp; (sourceClock eq timerclk)) ? (0) : (getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0))}`' />
+
+    <!-- If the frequency is less than one MHz, display its value in kHz -->
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The resulting CLK_ALT_SYS_TICK output clock frequency' />
+    <ParamRange id='interval' name='Interval (µs)' group='General' default='1000' min='0' max='`${floor(((16777215.0 / frequency) * 1000000) )}`' resolution='1' visible='true' desc='Systick Interrupt Interval. Range (0 - `${floor(((16777215.0 / frequency) * 1000000) )}`) µs' />
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for CLK_ALT_SYS_TICK is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_systick.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKALTSYSTICK_ENABLED' value='1' public='false' guard='`${guardStr}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKALTSYSTICK_SOURCE' value='CY_SYSTICK_CLOCK_SOURCE_CLK_`${sourceClockRscName}`' public='false' guard='`${guardStr}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKALTSYSTICK_INTERVAL' value='`${interval}`' public='false' guard='`${guardStr}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKALTSYSTICK_FREQUENCY' value='`${frequency}`' public='false' guard='`${guardStr}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKALTSYSTICK_TICKS' value='((uint32_t)(((`${interval}`)/1000000.0)*`${frequency}`))' public='false' guard='`${guardStr}`' />
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_ClkAltSysTickInit(void)' public='false' guard='`${guardStr}`'>
+      <Line value='Cy_SysTick_Init(CY_CFG_SYSCLK_CLKALTSYSTICK_SOURCE, CY_CFG_SYSCLK_CLKALTSYSTICK_TICKS);' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

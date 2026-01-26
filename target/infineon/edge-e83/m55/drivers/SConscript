@@ -1,0 +1,25 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd = GetCurrentDir()
+
+# add the general drivers.
+src = Split("""
+drv_common.c
+""")
+
+src += ['drv_gpio.c']
+
+src += ['drv_uart.c']
+
+src += ['drv_systick.c']
+src += ['drv_i2c.c']
+
+path =  [cwd]
+path += [cwd + '/config']
+
+group = DefineGroup('Drivers', src, depend = [''], CPPPATH = path, LOCAL_CPPPATH = path)
+
+Return('group')
+

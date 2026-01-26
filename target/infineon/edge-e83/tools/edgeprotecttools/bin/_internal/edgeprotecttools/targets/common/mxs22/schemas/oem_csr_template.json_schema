@@ -1,0 +1,120 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "OEM_CSR",
+    "type": "object",
+    "required": [
+        "VERSION",
+        "TEMPLATE_TYPE",
+        "CERTIFICATE_NAME",
+        "TYPE",
+        "ISSUER",
+        "ID",
+        "DATE",
+        "ALGORITHM",
+        "SIGNER_ID",
+        "PUBLIC_KEY_0",
+        "OEM",
+        "PROJECT",
+        "PROJECT_NUMBER"
+    ],
+    "if": {
+        "properties": {
+            "TYPE": {
+                "type": "object",
+                "required": ["value"],
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "const": "PRODUCTION"
+                    }
+                }
+            }
+        }
+    },
+    "then": {
+        "required": ["PUBLIC_KEY_1"]
+    },
+    "properties": {
+        "VERSION": {
+            "type": "string"
+        },
+        "TEMPLATE_TYPE": {
+            "type": "string",
+            "enum": ["OEM_CSR"]
+        },
+        "CERTIFICATE_NAME": {
+            "type": "string"
+        },
+        "OEM": {
+            "type": "string"
+        },
+        "PROJECT": {
+            "type": "string"
+        },
+        "PROJECT_NUMBER": {
+            "type": "string"
+        },
+        "ISSUER": {
+            "type": "string"
+        },
+        "SIGNER_ID": {
+            "type": "string"
+        },
+        "ALGORITHM": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": ["ES256", "ES384"]
+                }
+            }
+        },
+        "PUBLIC_KEY_0": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "PUBLIC_KEY_1": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "TYPE": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": ["DEVELOPMENT", "PRODUCTION"]
+                }
+            }
+        },
+        "DATE": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "ID": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

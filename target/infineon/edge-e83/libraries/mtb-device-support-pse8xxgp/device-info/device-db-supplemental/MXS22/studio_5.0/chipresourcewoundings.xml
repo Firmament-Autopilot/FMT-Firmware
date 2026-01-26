@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Woundings xml_version="1" xmlns="http://cypress.com/xsd/cychipresourcewoundings_v1">
+  <MemoryWounding name="RRAM_KB" memoryId="RRAM" />
+  <MemoryWounding name="DCDRAM_KB" memoryId="DCDRAM" />
+  <MemoryWounding name="SRAM_KB" memoryId="SRAM" />
+  <MemoryWounding name="SOCMEM_KB" memoryId="SOCMEM_RAM" />
+  <BooleanWounding name="CAMERA">
+    <Block name="ispss" />
+  </BooleanWounding>
+  <BooleanWounding name="CAN_FD">
+    <Block name="canfd.chan" />
+  </BooleanWounding>
+  <BooleanWounding name="CRYPTO">
+    <Block name="crypto" />
+  </BooleanWounding>
+  <BooleanWounding name="DIRDRIVELCD">
+    <Block name="lcd" />
+  </BooleanWounding>
+  <BooleanWounding name="GFX">
+    <Block name="gfxss" />
+  </BooleanWounding>
+  <BooleanWounding name="U55">
+    <Block name="mxu55" />
+  </BooleanWounding>
+  <BooleanWounding name="U85">
+    <Block name="mxu85" />
+  </BooleanWounding>
+  <NaWounding name="USB_TYPE">
+    <Block name="usb" />
+    <Block name="usbhs" />
+  </NaWounding>
+  <NaWounding name="BLUETOOTH">
+    <Block name="btss" />
+    <Block name="srss.clock.althf" />
+  </NaWounding>
+  <RemoveListWounding name="DAC12_REMOVED">
+    <Block name="pass.dac" />
+  </RemoveListWounding>
+  <RemoveListWounding name="ETH_REMOVED">
+    <Block name="eth" />
+  </RemoveListWounding>
+  <RemoveListWounding name="I3C_REMOVED">
+    <Block name="i3c" />
+  </RemoveListWounding>
+  <RemoveListWounding name="LIN_REMOVED">
+    <Block name="lin" />
+  </RemoveListWounding>
+  <RemoveListWounding name="LPCOMP_REMOVED">
+    <Block name="lpcomp.comp" />
+  </RemoveListWounding>
+  <RemoveListWounding name="I2S_REMOVED">
+    <Block name="tdm.tdm" />
+  </RemoveListWounding>
+  <RemoveListWounding name="PDM_REMOVED">
+    <Block name="pdm.rx_struct" />
+    <Block name="pdm.tx_struct" />
+  </RemoveListWounding>
+  <RemoveListWounding name="SAR12_REMOVED">
+    <Block name="pass.sar" />
+  </RemoveListWounding>
+  <RemoveListWounding name="SCB_REMOVED">
+    <Block name="scb" />
+  </RemoveListWounding>
+  <RemoveListWounding name="SDHC_REMOVED">
+    <Block name="sdhc" />
+  </RemoveListWounding>
+  <RemoveListWounding name="TIMERCOUNTERPWM_REMOVED">
+    <Block name="tcpwm.group.cnt" />
+  </RemoveListWounding>
+  <IndexResourceWounding name="SMIF_REMOVED">
+    <ResourceIndex index="0">
+      <Block name="smif[0].core[0]" />
+    </ResourceIndex>
+    <ResourceIndex index="1">
+      <Block name="smif[0].core[1]" />
+      <Block name="smif[1].core[0]" />
+    </ResourceIndex>
+  </IndexResourceWounding>
+  <IndexResourceWounding name="OPAMP_REMOVED">
+    <ResourceIndex index="0">
+      <Block name="pass[0].ctb[0].oa[0]" />
+    </ResourceIndex>
+    <ResourceIndex index="1">
+      <Block name="pass[0].ctb[0].oa[1]" />
+    </ResourceIndex>
+    <ResourceIndex index="2">
+      <Block name="pass[0].ctb[1].oa[0]" />
+    </ResourceIndex>
+    <ResourceIndex index="3">
+      <Block name="pass[0].ctb[1].oa[1]" />
+    </ResourceIndex>
+  </IndexResourceWounding>
+</Woundings>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="bsp__settings_8md" kind="file" language="Markdown">
+    <compoundname>bsp_settings.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>Peripheral<sp/>Default<sp/>BSP<sp/>Settings</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">|<sp/>Resource<sp/>|<sp/>Parameter<sp/>|<sp/>Value<sp/>|<sp/>Remarks<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>:------:<sp/>|<sp/>:-------:<sp/>|<sp/>:---:<sp/>|<sp/>:------<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>ADC<sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>VREF<sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>1.2<sp/>V<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Measurement<sp/>type<sp/>|<sp/>Single<sp/>Ended<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Input<sp/>voltage<sp/>range<sp/>|<sp/>0<sp/>to<sp/>2.4<sp/>V<sp/>(0<sp/>to<sp/>2*VREF)<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Output<sp/>range<sp/>|<sp/>0x000<sp/>to<sp/>0x7FF<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>DAC<sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Reference<sp/>source<sp/>|<sp/>VDDA<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Input<sp/>range<sp/>|<sp/>0x000<sp/>to<sp/>0xFFF<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Output<sp/>range<sp/>|<sp/>0<sp/>to<sp/>VDDA<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Output<sp/>type<sp/>|<sp/>Unbuffered<sp/>output<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>I2C<sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Role<sp/>|<sp/>Master<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Data<sp/>rate<sp/>|<sp/>100<sp/>kbps<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Drive<sp/>mode<sp/>of<sp/>SCL<sp/>&amp;<sp/>SDA<sp/>pins<sp/>|<sp/>Open<sp/>Drain<sp/>(drives<sp/>low)<sp/>|<sp/>External<sp/>pull-up<sp/>resistors<sp/>are<sp/>required<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>Timer(TBD)<sp/>|<sp/>TBD<sp/>|||</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>SPI<sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Data<sp/>rate<sp/>|<sp/>100<sp/>kpbs<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Slave<sp/>select<sp/>polarity<sp/>|<sp/>Active<sp/>low<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>UART<sp/><sp/><sp/><sp/><sp/>|<sp/>Flow<sp/>control<sp/>|<sp/>No<sp/>flow<sp/>control<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Data<sp/>format<sp/>|<sp/>8N1<sp/>|<sp/>|</highlight></codeline>
+<codeline><highlight class="normal">|<sp/>^<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>Baud<sp/>rate<sp/>|<sp/>115200<sp/>|<sp/>|</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">---</highlight></codeline>
+<codeline><highlight class="normal">©<sp/>Infineon<sp/>Technologies<sp/>AG,<sp/>2023-2025.</highlight></codeline>
+    </programlisting>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/bsp_settings.md"/>
+  </compounddef>
+</doxygen>

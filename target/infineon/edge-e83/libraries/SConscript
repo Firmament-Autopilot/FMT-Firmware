@@ -1,9 +1,12 @@
-# for module compiling
-Import('rtconfig')
-import os
+import rtconfig
 from building import *
-		
-objs = SConscript('stm32_lib/SConscript')
-# objs += SConscript('stm32_usb_lib/SConscript')
+import os
+
+objs = []
+cwd  = GetCurrentDir()
+list = os.listdir(cwd)
+
+if GetDepend(['BSP_USING_FREERTOS']):
+    objs = objs + SConscript('abstraction-rtos/SConscript')
 
 Return('objs')

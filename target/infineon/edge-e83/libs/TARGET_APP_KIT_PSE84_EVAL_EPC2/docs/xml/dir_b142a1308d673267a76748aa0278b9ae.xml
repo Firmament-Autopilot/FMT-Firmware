@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="dir_b142a1308d673267a76748aa0278b9ae" kind="dir">
+    <compoundname>bluetooth</compoundname>
+    <innerfile refid="cybsp__bt__config_8c">cybsp_bt_config.c</innerfile>
+    <innerfile refid="cybsp__bt__config_8h">cybsp_bt_config.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/bluetooth/"/>
+  </compounddef>
+</doxygen>

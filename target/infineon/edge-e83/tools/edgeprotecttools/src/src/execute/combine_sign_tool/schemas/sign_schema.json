@@ -1,0 +1,341 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "sign"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the file to be signed or converted into MCUboot format",
+                        "type": "string"
+                    },
+                    "signing-key": {
+                        "title": "ECDSA or RSA private key used to sign the image",
+                        "type": "string"
+                    },
+                    "header-size": {
+                        "title": "MCUboot header size",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    },
+                    "slot-size": {
+                        "title": "The maximum slot size",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    },
+                    "fill-value": {
+                        "title": "The value, which is read back from erased flash. Applicable values: 0, 0xFF",
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "default": 0
+                    },
+                    "min-erase-size": {
+                        "title": "Sets minimum erase size",
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "default": "0x8000"
+                    },
+                    "image-version": {
+                        "title": "The image version in the image header",
+                        "type": "string",
+                        "default": "0.0.0"
+                    },
+                    "security-counter": {
+                        "title": "The value of security counter. Use the 'auto' keyword to automatically generate it from the image version",
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "default": "auto"
+                    },
+                    "align": {
+                        "title": "Flash alignment. Applicable values: 1, 2, 4, 8",
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "default": 8
+                    },
+                    "pubkey-format": {
+                        "title": "The public key format in the image TLV - full key or hash of the key. Applicable values: 'hash', or 'full'",
+                        "type": "string",
+                        "enum": [
+                            "hash",
+                            "full"
+                        ],
+                        "default": "hash"
+                    },
+                    "pubkey-encoding": {
+                        "title": "The public key encoding in the image TLV. Applicable values: 'der', 'raw'",
+                        "type": "string",
+                        "enum": [
+                            "der",
+                            "raw"
+                        ],
+                        "default": "der"
+                    },
+                    "signature-encoding": {
+                        "title": "The image signature encoding. Applicable values: 'asn1', 'raw'",
+                        "type": "string",
+                        "enum": [
+                            "asn1",
+                            "raw"
+                        ],
+                        "default": "asn1"
+                    },
+                    "pad": {
+                        "title": "Indicates whether to add padding to the image trailer",
+                        "type": "boolean"
+                    },
+                    "confirm": {
+                        "title": "Indicates whether to add image OK status to trailer",
+                        "type": "boolean"
+                    },
+                    "overwrite-only": {
+                        "title": "Use overwrite mode instead of swap",
+                        "type": "boolean"
+                    },
+                    "boot-record": {
+                        "title": "Create CBOR encoded boot record TLV. Represents the role of the software component (e.g. CoFM for coprocessor firmware). Maximum 12 characters",
+                        "type": "string"
+                    },
+                    "hex-address": {
+                        "title": "Adjust the address in the hex output file",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    },
+                    "load-address": {
+                        "title": "Load address for image when it should run from RAM",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    },
+                    "rom-fixed": {
+                        "title": "Set flash address the image is built for",
+                        "type": [
+                            "integer",
+                            "string"
+                        ]
+                    },
+                    "max-sectors": {
+                        "title": "When padding allow for this amount of sectors",
+                        "type": [
+                            "integer",
+                            "string"
+                        ],
+                        "default": 128
+                    },
+                    "save-enctlv": {
+                        "title": "When upgrading, save encrypted key TLVs instead of plain keys. Enable when BOOT_SWAP_SAVE_ENCTLV config option was set",
+                        "type": "boolean"
+                    },
+                    "dependencies": {
+                        "title": "Add dependence on another image. Format: '(<image_ID>,<image_version>), ... '",
+                        "type": "string"
+                    },
+                    "encryption-public-key": {
+                        "title": "ECDSA public key used to generate the symmetric key for image encryption (ECIES schema). It must be the receiver's public key",
+                        "type": "string"
+                    },
+                    "encryption-secret-key": {
+                        "title": "Symmetric key used to encrypt the image (AES)",
+                        "type": "string"
+                    },
+                    "encryption-key-role": {
+                        "title": "An encryption key role",
+                        "type": "string",
+                        "enum": [
+                            "XIP",
+                            "AES-KW"
+                        ]
+                    },
+                    "encryption-address": {
+                        "title": "Starting address for data encryption",
+                        "type": "string"
+                    },
+                    "remove-tlv": {
+                        "title": "Removes TLV with the specified ID",
+                        "type": "array"
+                    },
+                    "kdf": {
+                        "title": "Use HKDF or KBKDFCMAC for key derivation method",
+                        "type": "string",
+                        "enum": [
+                            "HKDF",
+                            "KBKDFCMAC"
+                        ]
+                    },
+                    "protected-tlv": {
+                        "title": "The custom TLV to be placed into a protected area (the signed part). Add the '0x' prefix for the value to be interpreted as an integer, otherwise it will be interpreted as a string",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "tag": {
+                                    "type": [
+                                        "string",
+                                        "integer"
+                                    ]
+                                },
+                                "value": {
+                                    "type": [
+                                        "string",
+                                        "integer"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "tag",
+                                "value"
+                            ]
+                        }
+                    },
+                    "tlv": {
+                        "title": "The custom TLV to be placed into a non-protected area. Add the '0x' prefix for the value to be interpreted as an integer, otherwise it will be interpreted as a string",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "tag": {
+                                    "type": [
+                                        "string",
+                                        "integer"
+                                    ]
+                                },
+                                "value": {
+                                    "type": [
+                                        "string",
+                                        "integer"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "tag",
+                                "value"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "file"
+                ],
+                "allOf": [
+                    {
+                        "contains": {
+                            "required": [
+                                "file"
+                            ]
+                        },
+                        "minContains": 1,
+                        "maxContains": 1
+                    },
+                    {
+                        "contains": {
+                            "required": [
+                                "header-size"
+                            ]
+                        },
+                        "minContains": 1,
+                        "maxContains": 1
+                    },
+                    {
+                        "contains": {
+                            "required": [
+                                "slot-size"
+                            ]
+                        },
+                        "minContains": 1,
+                        "maxContains": 1
+                    }
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the signed and/or converted to the MCUboot format image",
+                        "type": "string"
+                    },
+                    "format": {
+                        "title": "Format of the output file: 'ihex' or 'bin'",
+                        "type": "string",
+                        "enum": [
+                            "ihex",
+                            "bin"
+                        ]
+                    },
+                    "unencrypted": {
+                        "title": "The path where to save unencrypted image payload (bin). Specify this option if the image is encrypted and provide the unencrypted image to HSM because the signature is calculated on the unencrypted data.",
+                        "type": "string"
+                    },
+                    "nonce-output": {
+                        "title": "The path to a file where to save the nonce",
+                        "type": "string"
+                    }
+                }
+            },
+            "allOf": [
+                {
+                    "contains": {
+                        "required": [
+                            "file"
+                        ]
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                },
+                {
+                    "contains": {
+                        "required": [
+                            "format"
+                        ]
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file eco_prescaler.cypersonality
+* \version 1.0
+*
+* \brief
+* ECO prescaler personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='eco_prescaler' name='ECO Prescaler' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <Constants>
+    <Const id='SRC_CLK_RSC' value='srss[0].clock[0].eco[0]' />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss_ver3,mxs22srss,mxs40ssrss,mxs40srss_ver2' />
+      <Resource name='srss\.clock\.ecoprescaler' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_sourced_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClockDisplayName' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+     <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__eco.html' linkText='Open ECO Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+     <!-- Source clock -->
+    <ParamString id='sourceFreq' default='`${getOrDefault(getExposedMember("$SRC_CLK_RSC", "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember("$SRC_CLK_RSC", "accuracy"), 0)}`' />
+    <ParamString id='sourceClock' name='Source Clock' group='General' default='ECO' visible='true' editable='false' desc='Source clock ' />
+    <ParamString id='sourceClockDisplayName' default='`${getParamValueDisplay("sourceClock")}`' />
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFreq,accuracy)}`' visible='true' editable='false' desc='Source clock frequency' />
+
+    <!-- Resulted clock -->
+    <ParamRange id='divider' name='Integer Divider' group='General' default='1' min='1' max='1024' resolution='1' visible='true' desc='' />
+    <ParamRange id='fractdivider' name='Fractional Divider' group='General' default='0' min='0' max='255' resolution='1' visible='true' desc='' />
+    <ParamString id='frequency' default='`${(sourceFreq / (divider + (fractdivider / 256.0)))}`' />
+
+    <!-- If the frequency is less than one MHz, display its value in kHz -->
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency,accuracy)}`' visible='true' editable='false' desc='The resulting output clock frequency' />
+  </Parameters>
+
+  <DRCs>
+   <DRC type='ERROR' text='Source clock for ECO_PRESCALER is not enabled' condition='`${!isBlockUsed($SRC_CLK_RSC)}`' >
+     <FixIt action='ENABLE_BLOCK' target='$SRC_CLK_RSC' valid='true' />
+   </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_PRESCALER_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_PRESCALER_INT_DIVIDER' value='`${divider - 1}`'  public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_ECO_PRESCALER_FRACT_DIVIDER' value='`${fractdivider}`'  public='false' />
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_EcoPrescalerInit(void)' public='false'>
+      <Line value='Cy_SysClk_EcoPrescaleConfigure(CY_CFG_SYSCLK_ECO_PRESCALER_ENABLED, CY_CFG_SYSCLK_ECO_PRESCALER_INT_DIVIDER, CY_CFG_SYSCLK_ECO_PRESCALER_FRACT_DIVIDER);' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

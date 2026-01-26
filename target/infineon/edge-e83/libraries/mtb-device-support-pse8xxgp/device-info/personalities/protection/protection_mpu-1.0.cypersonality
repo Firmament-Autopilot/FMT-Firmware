@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='protection_mpu' name='MPU' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='VirtualResource' />
+      <Resource name='vres\.protection\..*\.mpu' />
+      <OperatingMode value="MCU" />
+    </MappingRules>
+  </FittingRules>
+
+  <Parameters>
+    <ParamDoc id='doc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/page_prot_person.html#MPU_personality' linkText='Open MPU Documentation' visible='true' desc='Open MPU Documentation' />
+
+    <ParamRange id='base_addr' name='Start Address' group='' default='0x00000000' min='0' max='4294967264' resolution='32' visible='true' desc='Start address of MPU region region .' />
+    <ParamRange id='size' name='Size (bytes)' group='' default='`${toHex(1048576, 8)}`' min='31' max='4294967294' resolution='32' visible='true' desc='Size of MPU region region .' />
+    <ParamRange id='end_addr' name='End Address' group='' default='`${toHex((base_addr + size - 1), 8)}`' min='31' max='4294967294' resolution='32' visible='true' editable='false' desc='The End address of MPU region region .' />
+    <ParamBool id='privileged' name='Privileged Access Only' group='' default='false' visible='true' desc='Are these memory locations only accessible to privileged callers?' />
+    <ParamBool id='writable' name='Writable' group='' default='true' visible='true' desc='Are these memory locations writable?' />
+    <ParamBool id='executable' name='Executable' group='' default='false' visible='true' desc='Are these memory locations executable?' />
+    <ParamBool id='device' name='Device Memory' group='' default='false' visible='true' desc='Is this memory used for peripheral control registers?' />
+    <ParamBool id='early_write' name='Early Write Acknowledge' group='' default='false' visible='`${device}`' desc='Can these memory locations be buffered?' />
+    <ParamBool id='shareable' name='Shareable' group='' default='false' visible='true' desc='Can these memory locations be shared?' />
+    <ParamChoice id='cacheable' name='Cacheable' group='' default='1' visible='`${!device}`' desc='Can these memory locations be cached?'>
+      <Entry name='Non-Cacheable' value='0' visible='true' />
+      <Entry name='Write-Back Non-Transient' value='1' visible='true' />
+      <Entry name='Write-Back Transient' value='2' visible='true' />
+      <Entry name='Write-Through Non-Transient' value='3' visible='true' />
+      <Entry name='Write-Through Transient' value='4' visible='true' />
+    </ParamChoice>
+
+  </Parameters>
+
+  <DRCs>
+  </DRCs>
+
+  <ConfigFirmware>
+  </ConfigFirmware>
+</PersonalityTemplate>
