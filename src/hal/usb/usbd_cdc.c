@@ -26,12 +26,12 @@ static rt_err_t hal_usbd_cdc_init(rt_device_t dev)
     rt_err_t err = RT_EOK;
 
     RT_ASSERT(dev != RT_NULL);
-
+#ifndef PKG_USING_CHERRYUSB
     usbd->rx_rb = ringbuffer_create(USBD_RX_FIFO_SIZE);
     if (usbd->rx_rb == NULL) {
         return FMT_ENOMEM;
     }
-
+#endif
     usbd->tx_lock = rt_mutex_create("usbd_tx", RT_IPC_FLAG_FIFO);
     if (usbd->tx_lock == NULL) {
         return FMT_ENOMEM;

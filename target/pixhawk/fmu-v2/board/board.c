@@ -45,7 +45,11 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
+#ifdef PKG_USING_CHERRYUSB
+#include "drv_usbd_cdc_acm.h"
+#else
 #include "drv_usbd_cdc.h"
+#endif
 #include "hal/fmtio_dev/fmtio_dev.h"
 #include "led.h"
 #include "model/control/control_interface.h"
