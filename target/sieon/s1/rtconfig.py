@@ -37,9 +37,6 @@ else:
     print('=================================================')
     exit(0)
 
-if os.getenv('RTT_EXEC_PATH'):
-    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
-
 if PLATFORM == 'gcc':
     # toolchains
     PREFIX = 'arm-none-eabi-'
