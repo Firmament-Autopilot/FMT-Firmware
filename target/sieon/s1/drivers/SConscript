@@ -5,11 +5,16 @@ Import('RTT_ROOT')
 cwd = GetCurrentDir()
 
 src = Glob('*.c')
-src += Glob('usbd/*.c')
-
+if GetDepend('PKG_USING_CHERRYUSB'):
+    src += Glob('drv_usbd/drv_usb_adapter.c')
+else:
+    src += Glob('usbd/*.c')
 
 inc = [cwd]
-inc += [cwd + '/usbd']
+if GetDepend('PKG_USING_CHERRYUSB'):
+    inc += [cwd + '/drv_usbd']
+else:
+    inc += [cwd + '/usbd']
 
 group = DefineGroup('PeripheralDriver', src, depend = [''], CPPPATH = inc)
 
