@@ -1,0 +1,83 @@
+name: Build Tests
+
+on:
+  push:
+    branches:
+    - master
+    - release/v1.5
+  pull_request:
+    branches:
+    - master
+    - release/v1.5
+
+jobs:
+  build_hpmicro:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
+
+      - name: Download hpm_sdk
+        run: |
+          cd ~
+          git clone https://github.com/hpmicro/hpm_sdk.git
+
+      - name: Download RISC-V toolchain
+        run: |
+          cd ~
+          wget https://github.com/hpmicro/riscv-gnu-toolchain/releases/download/2023.10.18/rv32imac_zicsr_zifencei_multilib_b_ext-linux.tar.gz
+          tar -xzf rv32imac_zicsr_zifencei_multilib_b_ext-linux.tar.gz
+
+      - name: Build hpm demo
+        run: |
+          cd tests/hpmicro
+          export HPM_SDK_BASE=~/hpm_sdk
+          export GNURISCV_TOOLCHAIN_PATH=~/rv32imac_zicsr_zifencei_multilib_b_ext-linux
+          export HPM_SDK_TOOLCHAIN_VARIANT=
+          cmake -S . -B build -GNinja -DBOARD=hpm6800evk -DHPM_BUILD_TYPE=flash_sdram_xip -DCMAKE_BUILD_TYPE=debug -DEXTRA_C_FLAGS="-Werror";cmake --build build
+
+  build_bouffalolab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake make
+
+      - name: Download bouffalo_sdk
+        run: |
+          cd ~
+          git clone https://github.com/bouffalolab/bouffalo_sdk.git
+
+      - name: Download RISC-V toolchain
+        run: |
+          cd ~
+          git clone https://github.com/bouffalolab/toolchain_gcc_t-head_linux.git
+
+      - name: Build bouffalo demo
+        run: |
+          cd tests/bouffalolab
+          export BL_SDK_BASE=~/bouffalo_sdk
+          export PATH=~/toolchain_gcc_t-head_linux/bin:$PATH
+          make CHIP=bl616 BOARD=bl616dk -j12
+
+  build_espressif:
+    strategy:
+      matrix:
+        idf_ver: ["latest"]
+    runs-on: ubuntu-latest
+    container: espressif/idf:${{ matrix.idf_ver }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Build espressif demo
+        shell: bash
+        run: |
+          . ${IDF_PATH}/export.sh
+          pip install idf-component-manager ruamel.yaml idf-build-apps --upgrade
+          idf-build-apps build -p ./tests/espressif --recursive --target esp32s3
