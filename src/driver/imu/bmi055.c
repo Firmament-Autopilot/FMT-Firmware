@@ -21,7 +21,9 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...)
+#define SPI1_SPEED_HZ 10000000
+
+#define DRV_DBG(...) rt_kprintf(__VA_ARGS__)
 
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
@@ -558,11 +560,11 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
+rt_err_t drv_bmi055_init(const char* gyro_spi_device_name, const char* accel_spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     /* Initialize gyroscope */
 
-    gyro_spi_dev = rt_device_find(spi_device_name);
+    gyro_spi_dev = rt_device_find(gyro_spi_device_name);
     RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {
@@ -585,7 +587,7 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
 
     /* Initialize accelerometer */
 
-    accel_spi_dev = rt_device_find("spi1_dev4");
+    accel_spi_dev = rt_device_find(accel_spi_device_name);
     RT_ASSERT(accel_spi_dev != NULL);
     /* config spi */
     {

@@ -1,0 +1,9 @@
+# for module compiling
+Import('rtconfig')
+import os
+from building import *
+		
+objs = SConscript('stm32_lib/SConscript')
+objs += SConscript('stm32_usb_lib/SConscript')
+
+Return('objs')
