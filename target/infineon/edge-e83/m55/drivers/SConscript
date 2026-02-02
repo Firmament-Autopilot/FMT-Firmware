@@ -15,6 +15,7 @@ src += ['drv_uart.c']
 
 src += ['drv_systick.c']
 src += ['drv_i2c.c']
+src += ['drv_sdio.c']
 
 path =  [cwd]
 path += [cwd + '/config']
