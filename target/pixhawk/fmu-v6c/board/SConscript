@@ -1,0 +1,13 @@
+import os
+from building import *
+Import('RTT_ROOT')
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+
+inc = [cwd]
+
+group = DefineGroup('Board', src, depend = [''], CPPPATH = inc)
+
+Return('group')
