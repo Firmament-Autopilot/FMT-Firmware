@@ -7,10 +7,11 @@ import sys
 import platform
 import subprocess
 import uuid
+from SCons.Script import Copy
 
 # Project paths
 PROJECT_ROOT = Dir('.').abspath
-SDK_ROOT = os.path.normpath(os.path.join(PROJECT_ROOT, '..', '..'))
+SDK_ROOT = os.path.normpath(os.path.join(PROJECT_ROOT, '..'))
 BUILD_DIR = 'build'
 
 # =============================================================================
@@ -37,7 +38,7 @@ OBJCOPY = os.path.join(EXEC_PATH, PREFIX + 'objcopy')
 OBJDUMP = os.path.join(EXEC_PATH, PREFIX + 'objdump')
 
 # Target
-TARGET = 'rtthread'
+TARGET = 'sign_rtthread'
 
 # =============================================================================
 # Compiler flags
@@ -441,6 +442,13 @@ hex_file = env.Command(
     OBJCOPY + ' -O ihex $SOURCE $TARGET'
 )
 
+# Keep a canonical name expected by boot_with_extended_boot_scons.json
+rtthread_hex = env.Command(
+    DEBUG_DIR + '/rtthread.hex',
+    hex_file,
+    Copy('$TARGET', '$SOURCE')
+)
+
 # Generate BIN file
 bin_file = env.Command(
     DEBUG_DIR + '/' + TARGET + '.bin',
@@ -459,7 +467,7 @@ size_cmd = env.Command(
 # Secure image packaging using edgeprotecttools (Windows only)
 # =============================================================================
 if platform.system() == 'Windows':
-    EDGEPROTECTTOOLS = os.path.join(PROJECT_ROOT, 'tools', 'edgeprotecttools', 'bin', 'edgeprotecttools.exe')
+    EDGEPROTECTTOOLS = os.path.join(PROJECT_ROOT, '..', 'tools', 'edgeprotecttools', 'bin', 'edgeprotecttools.exe')
     BOOT_CONFIG = os.path.join(PROJECT_ROOT, 'config', 'boot_with_extended_boot_scons.json')
 
     if os.path.exists(EDGEPROTECTTOOLS) and os.path.exists(BOOT_CONFIG):

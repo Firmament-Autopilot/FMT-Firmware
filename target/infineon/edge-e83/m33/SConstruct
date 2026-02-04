@@ -5,10 +5,9 @@ import platform
 import subprocess
 import uuid
 
-if os.path.exists('rt-thread'):
-    RTT_ROOT = os.path.normpath(os.getcwd() + '/rt-thread')
-else:
-    RTT_ROOT = os.path.normpath(os.getcwd() + '/../../rt-thread')
+FMU_ROOT = os.path.normpath(os.getcwd() + '/../../../..')
+# RTOS path
+RTT_ROOT = FMU_ROOT + '/rtos/rt-thread'
 
 sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
 try:
@@ -88,6 +87,7 @@ env.VariantDir('build/libs', '../libs', duplicate=0)
 env.VariantDir('build/libraries', '../libraries', duplicate=0)
 
 objs.extend(SConscript('/board/ports/SConscript', variant_dir='build/board/ports/', duplicate=0))
+objs.extend(SConscript('../libs/SConscript', variant_dir='build/libs', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/Infineon_cmsis-latest', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/Infineon_core-lib-latest', duplicate=0))
 objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/hal/SConscript', variant_dir='build/libraries/mtb-device-support-pse8xxgp/hal', duplicate=0))
