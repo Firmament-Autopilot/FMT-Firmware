@@ -26,6 +26,7 @@
 #include "drv_systick.h"
 #include "drv_i2c.h"
 #include "drv_sdio.h"
+#include "drv_spi.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -107,7 +108,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_i2c_init());
     
     /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    RT_CHECK(drv_spi_init());
 
     // /* pwm driver init */
     // RT_CHECK(drv_pwm_init());
