@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2024 The Firmament Authors. All Rights Reserved.
+ * Copyright 2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef __DRV_FDCAN_H__
-#define __DRV_FDCAN_H__
 
-#include <firmament.h>
+/* This is the default toml config for the target, which is loaded when there is
+ * no sysconfig.toml finded. Please do not format this file. */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-rt_err_t drv_fdcan_init(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+// clang-format off
+static char* default_conf = STRING(
+target = "Pixhawk 6C"\n
+[console]\n
+	[[console.devices]]\n
+	type = "serial"\n
+	name = "serial1"\n
+	baudrate = 57600\n
+	auto-switch = true\n
+	[[console.devices]]\n
+	type = "mavlink"\n
+	name = "mav_console"\n
+	auto-switch = true\n
+[mavproxy]\n
+	[[mavproxy.devices]]\n
+	chan = 0\n
+	type = "serial"\n
+	name = "serial0"\n
+	baudrate = 57600\n
+	[[mavproxy.devices]]\n
+	chan = 0\n
+	type = "usb"\n
+	name = "usbd0"\n
+	auto-switch = true
+);
+// clang-format on

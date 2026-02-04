@@ -42,17 +42,16 @@ static void _delay_us(rt_uint32_t us)
 uint32_t HAL_GetTick(void)
 {
     /* return current ticks of ms */
-    return rt_tick_get();
+    return rt_tick_get() / (RT_TICK_PER_SECOND / 1000);
 }
 
 void HAL_Delay(__IO uint32_t Delay)
 {
-    if (rt_thread_self() && rt_interrupt_get_nest() == 0) {
+    if (rt_thread_self()) {
         rt_thread_mdelay(Delay);
     } else {
         for (rt_uint32_t count = 0; count < Delay; count++) {
-            _delay_us(500);
-            _delay_us(500);
+            _delay_us(1000);
         }
     }
 }

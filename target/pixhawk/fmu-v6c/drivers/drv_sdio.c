@@ -15,136 +15,55 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "board.h"
-#include "drv_sdio.h"
-#include "hal/sd/sd.h"
-#include "stm32h7xx_ll_sdmmc.h"
+#define SDIO_ENABLE 1
 
-#define SD_TIMEOUT    5000
-#define EVENT_TX_CPLT 0x00000001
-#define EVENT_RX_CPLT 0x00000002
-#define EVENT_ERROR   0x00000004
-#define EVENT_ABORT   0x00000008
+#if SDIO_ENABLE == 1
 
-/* SDMMC1 */
-/* CRITICAL: Initialize to zero to prevent spurious SDMMC register access */
-static SD_HandleTypeDef hsd1 = {0};
+    #include "board.h"
+    #include "drv_sdio.h"
+    #include "hal/sd/sd.h"
+    #include "stm32h7xx_ll_sdmmc.h"
+
+    #define SD_TIMEOUT    5000
+    #define EVENT_TX_CPLT 0x00000001
+    #define EVENT_RX_CPLT 0x00000002
+    #define EVENT_ERROR   0x00000004
+    #define EVENT_ABORT   0x00000008
+
+/* SDMMC2 */
+extern SD_HandleTypeDef hsd2;
 
 static struct sd_device sd0_dev;
 
 void HAL_SD_TxCpltCallback(SD_HandleTypeDef* hsd)
 {
-    if (hsd == &hsd1) {
+    if (hsd == &hsd2) {
         rt_event_send(&sd0_dev.event, EVENT_TX_CPLT);
     }
 }
 
 void HAL_SD_RxCpltCallback(SD_HandleTypeDef* hsd)
 {
-    if (hsd == &hsd1) {
+    if (hsd == &hsd2) {
         rt_event_send(&sd0_dev.event, EVENT_RX_CPLT);
     }
 }
 
 void HAL_SD_ErrorCallback(SD_HandleTypeDef* hsd)
 {
-    if (hsd == &hsd1) {
+    if (hsd == &hsd2) {
         rt_event_send(&sd0_dev.event, EVENT_ERROR);
     }
 }
 
 void HAL_SD_AbortCallback(SD_HandleTypeDef* hsd)
 {
-    if (hsd == &hsd1) {
+    if (hsd == &hsd2) {
         rt_event_send(&sd0_dev.event, EVENT_ABORT);
     }
 }
 
-/**
- * @brief This function handles SDMMC1 global interrupt.
- */
-void SDMMC1_IRQHandler(void)
-{
-    rt_interrupt_enter();
-
-    HAL_SD_IRQHandler(&hsd1);
-
-    rt_interrupt_leave();
-}
-
-void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
-{
-    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-    if (sdHandle->Instance == SDMMC1) {
-        /* USER CODE BEGIN SDMMC1_MspInit 0 */
-
-        /* USER CODE END SDMMC1_MspInit 0 */
-        LL_RCC_SetSDMMCClockSource(LL_RCC_SDMMC_CLKSOURCE_PLL1Q);
-
-        /* SDMMC1 clock enable */
-        __HAL_RCC_SDMMC1_CLK_ENABLE();
-
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-        /**SDMMC1 GPIO Configuration
-        PC10     ------> SDMMC1_D2
-        PC11     ------> SDMMC1_D3
-        PC12     ------> SDMMC1_CK
-        PD2     ------> SDMMC1_CMD
-        PC8     ------> SDMMC1_D0
-        PC9     ------> SDMMC1_D1
-        */
-        GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_12;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
-        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin = GPIO_PIN_2;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-        /* SDMMC1 interrupt Init */
-        HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
-        /* USER CODE BEGIN SDMMC1_MspInit 1 */
-
-        /* USER CODE END SDMMC1_MspInit 1 */
-    }
-}
-
-void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
-{
-    if (sdHandle->Instance == SDMMC1) {
-        /* USER CODE BEGIN SDMMC1_MspDeInit 0 */
-
-        /* USER CODE END SDMMC1_MspDeInit 0 */
-        /* Peripheral clock disable */
-        __HAL_RCC_SDMMC1_CLK_DISABLE();
-
-        /**SDMMC1 GPIO Configuration
-        PC10     ------> SDMMC1_D2
-        PC11     ------> SDMMC1_D3
-        PC12     ------> SDMMC1_CK
-        PD2     ------> SDMMC1_CMD
-        PC8     ------> SDMMC1_D0
-        PC9     ------> SDMMC1_D1
-        */
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_8 | GPIO_PIN_9);
-
-        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
-
-        /* SDMMC1 interrupt Deinit */
-        HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
-        /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
-
-        /* USER CODE END SDMMC1_MspDeInit 1 */
-    }
-}
+/* HAL_SD_MspInit and HAL_SD_MspDeInit are defined in stm32h7xx_hal_msp.c */
 
 static rt_err_t sdio_wait_complete(sd_dev_t sd_dev, rt_uint32_t* status)
 {
@@ -162,13 +81,14 @@ static rt_err_t init(sd_dev_t sd)
 
     RT_ASSERT(sd_handle != RT_NULL);
 
-    hsd1.Instance = SDMMC1;
-    hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
-    hsd1.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-    hsd1.Init.BusWide = SDMMC_BUS_WIDE_4B;
-    hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    hsd1.Init.ClockDiv = 0;
-    if (HAL_SD_Init(&hsd1) != HAL_OK) {
+    hsd2.Instance = SDMMC2;
+    hsd2.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
+    hsd2.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+    hsd2.Init.BusWide = SDMMC_BUS_WIDE_4B;
+    hsd2.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
+    hsd2.Init.ClockDiv = 0;
+    // hsd2.Init.TranceiverPresent = SDMMC_TRANSCEIVER_NOT_PRESENT;
+    if (HAL_SD_Init(&hsd2) != HAL_OK) {
         return RT_ERROR;
     }
 
@@ -182,9 +102,6 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
 
     RT_ASSERT(sd_handle != RT_NULL);
-
-    /* Clean D-Cache before DMA write to ensure cache coherency */
-    SCB_CleanDCache_by_Addr((uint32_t*)buffer, count * 512);
 
     if (HAL_SD_WriteBlocks_DMA(sd_handle, buffer, sector, count) != HAL_OK) {
         return RT_ERROR;
@@ -216,18 +133,12 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
 
     RT_ASSERT(sd_handle != RT_NULL);
 
-    /* Invalidate D-Cache before DMA read to avoid stale data */
-    SCB_InvalidateDCache_by_Addr((uint32_t*)buffer, count * 512);
-
     if (HAL_SD_ReadBlocks_DMA(sd_handle, buffer, sector, count) != HAL_OK) {
         return RT_ERROR;
     }
 
     err = sdio_wait_complete(sd, &status);
     if ((err == RT_EOK) && (status & EVENT_RX_CPLT)) {
-        /* Invalidate D-Cache after DMA read to ensure CPU reads latest data */
-        SCB_InvalidateDCache_by_Addr((uint32_t*)buffer, count * 512);
-
         /* block until SDIO IP is ready or a timeout occur */
         uint32_t start = systime_now_ms();
         uint32_t now;
@@ -296,8 +207,10 @@ const static struct sd_ops dev_ops = {
     .sd_control = io_control
 };
 
+#endif
 rt_err_t drv_sdio_init(void)
 {
+#if SDIO_ENABLE == 1
     sd0_dev.ops = &dev_ops;
 
     if (rt_event_init(&sd0_dev.event, "sdio", RT_IPC_FLAG_FIFO) != RT_EOK) {
@@ -305,5 +218,8 @@ rt_err_t drv_sdio_init(void)
         return RT_ERROR;
     }
 
-    return hal_sd_register(&sd0_dev, "sd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE, &hsd1);
+    return hal_sd_register(&sd0_dev, "sd0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_REMOVABLE | RT_DEVICE_FLAG_STANDALONE, &hsd2);
+
+#endif
+    return RT_ERROR;
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef DRV_RC_H__
-#define DRV_RC_H__
-
 #include <firmament.h>
+#include "module/math/rotation.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-rt_err_t drv_rc_init(void);
-
-#ifdef __cplusplus
+/**
+ * @brief Rotate ICM42688P sensor data to FRD (Front-Right-Down) frame
+ * 
+ * @param data Pointer to sensor data array [x, y, z]
+ * @param dev_id Device ID (0 for primary, 1 for backup)
+ */
+void icm42688_rotate_to_frd(float* data, uint8_t dev_id)
+{
+    rotation(ROTATION_PITCH_180_YAW_90, data, data + 1, data + 2);
 }
-#endif
 
-#endif
+/**
+ * @brief Rotate BMI055 sensor data to FRD (Front-Right-Down) frame
+ * 
+ * @param data Pointer to sensor data array [x, y, z]
+ * @param dev_id Device ID (0 for primary, 1 for backup)
+ */
+void bmi055_rotate_to_frd(float* data, uint8_t dev_id)
+{
+    rotation(ROTATION_PITCH_180_YAW_270, data, data + 1, data + 2);
+}

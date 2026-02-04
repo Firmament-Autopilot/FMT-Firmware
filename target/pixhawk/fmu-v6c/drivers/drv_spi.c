@@ -15,24 +15,53 @@
  *****************************************************************************/
 #include "drv_spi.h"
 #include "hal/spi/spi.h"
-#include "stm32h7xx_ll_spi.h"
+#include "stm32h7xx_hal.h"
+
+// Use HAL library instead of LL library
+extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi2;
+
+#ifdef DRV_USE_SPI4
+SPI_HandleTypeDef hspi4;
+#endif
 
 // #define SPI_USE_DMA
 
-#define SPI_TIMEOUT_US (500)
+#define DRV_USE_SPI1
+
+#define SPI1_CS1_Pin       GPIO_PIN_13
+#define SPI1_CS1_GPIO_Port GPIOC
+
+#define SPI1_CS2_Pin       GPIO_PIN_14
+#define SPI1_CS2_GPIO_Port GPIOC
+
+#define SPI1_CS3_Pin       GPIO_PIN_15
+#define SPI1_CS3_GPIO_Port GPIOC
+
+// #define SPI1_CS4_Pin       GPIO_PIN_10
+// #define SPI1_CS4_GPIO_Port GPIOG
+
+// #define SPI1_CS5_Pin       GPIO_PIN_5
+// #define SPI1_CS5_GPIO_Port GPIOH
+
+#define DRV_USE_SPI2
+#define SPI2_CS1_Pin       GPIO_PIN_4
+#define SPI2_CS1_GPIO_Port GPIOD
+
+//#define DRV_USE_SPI4
+//#define SPI4_CS1_Pin       GPIO_PIN_13
+//#define SPI4_CS1_GPIO_Port GPIOC
+
+//#define SPI4_CS2_Pin       GPIO_PIN_4
+//#define SPI4_CS2_GPIO_Port GPIOE
+
 
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
-    SPI_TypeDef* SPI;
+    SPI_HandleTypeDef* hspi;  // Use HAL handle
 #ifdef SPI_USE_DMA
-    DMA_Stream_TypeDef* DMA_Stream_TX;
-    uint32_t DMA_Channel_TX;
-
-    DMA_Stream_TypeDef* DMA_Stream_RX;
-    uint32_t DMA_Channel_RX;
-
-    uint32_t DMA_Channel_TX_FLAG_TC;
-    uint32_t DMA_Channel_RX_FLAG_TC;
+    DMA_HandleTypeDef* hdma_tx;
+    DMA_HandleTypeDef* hdma_rx;
 #endif /* #ifdef SPI_USE_DMA */
 };
 
@@ -41,16 +70,15 @@ struct stm32_spi_cs {
     uint16_t GPIO_Pin;
 };
 
-static fmt_err_t wait_flag_until_timeout(const SPI_TypeDef *SPIx, uint32_t flag, uint32_t status, uint64_t timeout_us)
+// Helper function to convert HAL SPI handle to clock frequency
+static uint32_t get_spi_clock_freq(SPI_HandleTypeDef* hspi)
 {
-    uint64_t time_start = systime_now_us();
-
-    while (((READ_BIT(SPIx->SR, flag) == flag) ? 1UL : 0UL) == status) {
-        if ((systime_now_us() - time_start) > timeout_us) {
-            return FMT_ETIMEOUT;
-        }
+    if(hspi->Instance == SPI1 || hspi->Instance == SPI2 || hspi->Instance == SPI3)  {
+        return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123);
+    } else if(hspi->Instance == SPI4 || hspi->Instance == SPI5) {
+        return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI45);
     }
-    return FMT_EOK;
+    return 0;
 }
 
 /**
@@ -62,86 +90,99 @@ static fmt_err_t wait_flag_until_timeout(const SPI_TypeDef *SPIx, uint32_t flag,
  */
 static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configuration* configuration)
 {
+    RT_ASSERT(device != RT_NULL);
+    RT_ASSERT(device->bus != RT_NULL);
+    
     struct stm32_spi_bus* stm32_spi_bus = (struct stm32_spi_bus*)device->bus;
-
-    LL_SPI_InitTypeDef SPI_InitStruct = { 0 };
-    LL_SPI_StructInit(&SPI_InitStruct);
-
+    RT_ASSERT(stm32_spi_bus != RT_NULL);
+    RT_ASSERT(stm32_spi_bus->hspi != RT_NULL);
+    
+    SPI_HandleTypeDef* hspi = stm32_spi_bus->hspi;
+    
+    // Configure data width
     if (configuration->data_width <= 8) {
-        SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
+        hspi->Init.DataSize = SPI_DATASIZE_8BIT;
     } else if (configuration->data_width <= 16) {
-        SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_16BIT;
+        hspi->Init.DataSize = SPI_DATASIZE_16BIT;
     } else {
         return RT_EIO;
     }
 
     /* baudrate */
     {
-        uint32_t spi_clock;
+        uint32_t spi_clock = get_spi_clock_freq(hspi);
         uint32_t max_hz = configuration->max_hz;
-
-        if (stm32_spi_bus->SPI == SPI1 || stm32_spi_bus->SPI == SPI2 || stm32_spi_bus->SPI == SPI3) {
-            spi_clock = LL_RCC_GetSPIClockFreq(LL_RCC_SPI123_CLKSOURCE);
-        } else if (stm32_spi_bus->SPI == SPI4 || stm32_spi_bus->SPI == SPI5) {
-            spi_clock = LL_RCC_GetSPIClockFreq(LL_RCC_SPI45_CLKSOURCE);
-        }
 
         if (max_hz > spi_clock) {
             max_hz = spi_clock;
         }
 
         if (max_hz >= spi_clock / 2) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV2;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
         } else if (max_hz >= spi_clock / 4) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV4;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
         } else if (max_hz >= spi_clock / 8) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV8;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
         } else if (max_hz >= spi_clock / 16) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV16;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
         } else if (max_hz >= spi_clock / 32) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
         } else if (max_hz >= spi_clock / 64) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
         } else if (max_hz >= spi_clock / 128) {
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
         } else {
             /*  min prescaler 256 */
-            SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV256;
+            hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
         }
     } /* baudrate */
 
     /* CPOL */
     if (configuration->mode & RT_SPI_CPOL) {
-        SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_HIGH;
+        hspi->Init.CLKPolarity = SPI_POLARITY_HIGH;
     } else {
-        SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
+        hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
     }
 
     /* CPHA */
     if (configuration->mode & RT_SPI_CPHA) {
-        SPI_InitStruct.ClockPhase = LL_SPI_PHASE_2EDGE;
+        hspi->Init.CLKPhase = SPI_PHASE_2EDGE;
     } else {
-        SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
+        hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
     }
 
     /* MSB or LSB */
     if (configuration->mode & RT_SPI_MSB) {
-        SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;
+        hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
     } else {
-        SPI_InitStruct.BitOrder = LL_SPI_LSB_FIRST;
+        hspi->Init.FirstBit = SPI_FIRSTBIT_LSB;
     }
 
-    SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
-    SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
-    SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;
-    SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;
-    SPI_InitStruct.CRCPoly = 0x0;
+    hspi->Init.Direction = SPI_DIRECTION_2LINES;
+    hspi->Init.Mode = SPI_MODE_MASTER;
+    hspi->Init.NSS = SPI_NSS_SOFT;
+    hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi->Init.CRCPolynomial = 0x0;
+    hspi->Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    hspi->Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+    hspi->Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+    hspi->Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi->Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi->Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+    hspi->Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+    hspi->Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+    hspi->Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+    hspi->Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+    hspi->Init.IOSwap = SPI_IO_SWAP_DISABLE;
+    hspi->Init.TIMode = SPI_TIMODE_DISABLE;
 
-    LL_SPI_DeInit(stm32_spi_bus->SPI);
-    LL_SPI_Init(stm32_spi_bus->SPI, &SPI_InitStruct);
-    LL_SPI_SetStandard(stm32_spi_bus->SPI, LL_SPI_PROTOCOL_MOTOROLA);
-    LL_SPI_DisableNSSPulseMgt(stm32_spi_bus->SPI);
-    LL_SPI_Enable(stm32_spi_bus->SPI);
+    // Only initialize if not already initialized
+    // This avoids repeated DeInit/Init cycles that can cause issues
+    if (hspi->State == HAL_SPI_STATE_RESET) {
+        if (HAL_SPI_Init(hspi) != HAL_OK) {
+            return RT_ERROR;
+        }
+    }
 
     return RT_EOK;
 }
@@ -156,89 +197,41 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
 static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message* message)
 {
     struct stm32_spi_bus* stm32_spi_bus = (struct stm32_spi_bus*)device->bus;
-    struct rt_spi_configuration* config = &device->config;
-    SPI_TypeDef* SPI = stm32_spi_bus->SPI;
+    SPI_HandleTypeDef* hspi = stm32_spi_bus->hspi;
     struct stm32_spi_cs* stm32_spi_cs = device->parent.user_data;
     rt_uint32_t size = message->length;
 
     /* take CS */
     if (message->cs_take) {
-        LL_GPIO_ResetOutputPin(stm32_spi_cs->GPIOx, stm32_spi_cs->GPIO_Pin);
+        HAL_GPIO_WritePin(stm32_spi_cs->GPIOx, stm32_spi_cs->GPIO_Pin, GPIO_PIN_RESET);
     }
 
 #ifdef SPI_USE_DMA
-    #error Not support SPI DMA.
-#endif
-
-    {
-        if (config->data_width <= 8) {
-            const rt_uint8_t* send_ptr = message->send_buf;
-            rt_uint8_t* recv_ptr = message->recv_buf;
-
-            while (size--) {
-                rt_uint8_t data = 0xFF;
-
-                if (send_ptr != RT_NULL) {
-                    data = *send_ptr++;
-                }
-
-                // start spi !!!!
-                LL_SPI_StartMasterTransfer(SPI);
-
-                /* Wait until the transmit buffer is empty */
-                wait_flag_until_timeout(SPI, SPI_SR_TXP, RESET, SPI_TIMEOUT_US);
-
-                /* Send the byte */
-                LL_SPI_TransmitData8(SPI, data);
-
-                /* Wait until a data is received */
-                wait_flag_until_timeout(SPI, SPI_SR_RXP, RESET, SPI_TIMEOUT_US);
-
-
-                /* Get the received data */
-                data = LL_SPI_ReceiveData8(SPI);
-
-                LL_SPI_ClearFlag_EOT(SPI);
-                LL_SPI_ClearFlag_TXTF(SPI);
-
-                if (recv_ptr != RT_NULL) {
-                    *recv_ptr++ = data;
-                }
-            }
-        } else if (config->data_width <= 16) {
-            const rt_uint16_t* send_ptr = message->send_buf;
-            rt_uint16_t* recv_ptr = message->recv_buf;
-
-            while (size--) {
-                rt_uint16_t data = 0xFF;
-
-                if (send_ptr != RT_NULL) {
-                    data = *send_ptr++;
-                }
-                /* Wait until the transmit buffer is empty */
-                wait_flag_until_timeout(SPI, SPI_SR_TXP, RESET, SPI_TIMEOUT_US);
-
-                /* Send the byte */
-                LL_SPI_TransmitData16(SPI, data);
-                /* Wait until a data is received */
-                wait_flag_until_timeout(SPI, SPI_SR_RXP, RESET, SPI_TIMEOUT_US);
-
-                /* Get the received data */
-                data = LL_SPI_ReceiveData16(SPI);
-
-                LL_SPI_ClearFlag_EOT(SPI);
-                LL_SPI_ClearFlag_TXTF(SPI);
-
-                if (recv_ptr != RT_NULL) {
-                    *recv_ptr++ = data;
-                }
-            }
-        }
+    if (message->send_buf && message->recv_buf) {
+        HAL_SPI_TransmitReceive_DMA(hspi, (uint8_t*)message->send_buf, 
+                                    (uint8_t*)message->recv_buf, size);
+    } else if (message->send_buf) {
+        HAL_SPI_Transmit_DMA(hspi, (uint8_t*)message->send_buf, size);
+    } else if (message->recv_buf) {
+        HAL_SPI_Receive_DMA(hspi, (uint8_t*)message->recv_buf, size);
     }
+    // Wait for DMA to complete
+    while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY);
+#else
+    // Use blocking mode
+    if (message->send_buf && message->recv_buf) {
+        HAL_SPI_TransmitReceive(hspi, (uint8_t*)message->send_buf, 
+                                (uint8_t*)message->recv_buf, size, HAL_MAX_DELAY);
+    } else if (message->send_buf) {
+        HAL_SPI_Transmit(hspi, (uint8_t*)message->send_buf, size, HAL_MAX_DELAY);
+    } else if (message->recv_buf) {
+        HAL_SPI_Receive(hspi, (uint8_t*)message->recv_buf, size, HAL_MAX_DELAY);
+    }
+#endif
 
     /* release CS */
     if (message->cs_release) {
-        LL_GPIO_SetOutputPin(stm32_spi_cs->GPIOx, stm32_spi_cs->GPIO_Pin);
+        HAL_GPIO_WritePin(stm32_spi_cs->GPIOx, stm32_spi_cs->GPIO_Pin, GPIO_PIN_SET);
     }
 
     return message->length;
@@ -248,61 +241,18 @@ static struct rt_spi_ops stm32_spi_ops = { configure, transfer };
 
 /** \brief init and register stm32 spi bus.
  *
- * \param SPI: STM32 SPI, e.g: SPI1,SPI2,SPI3.
+ * \param hspi: HAL SPI Handle
  * \param stm32_spi: stm32 spi bus struct.
  * \param spi_bus_name: spi bus name, e.g: "spi1"
  * \return rt_err_t RT_EOK for success
  */
-static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32_spi, const char* spi_bus_name)
+static rt_err_t stm32_spi_register(SPI_HandleTypeDef* hspi, struct stm32_spi_bus* stm32_spi, const char* spi_bus_name)
 {
-    LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-    if (SPI == SPI1) {
-        stm32_spi->SPI = SPI1;
-
-        /* Peripheral clock enable */
-        LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
-        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
-        
-        /**SPI1 GPIO Configuration
-        PA5   ------> SPI1_SCK
-        PA6   ------> SPI1_MISO
-        PA7   ------> SPI1_MOSI
-        */
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_5 | LL_GPIO_PIN_6 | LL_GPIO_PIN_7;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-        GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
-        LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    } else if (SPI == SPI2) {
-        stm32_spi->SPI = SPI2;
-
-        /* Peripheral clock enable */
-        LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
-        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
-        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
-        
-        /**SPI2 GPIO Configuration
-        PD3   ------> SPI2_SCK
-        PC2   ------> SPI2_MISO
-        PC3   ------> SPI2_MOSI
-        */
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-        GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
-        LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-        
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_2 | LL_GPIO_PIN_3;
-        LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-    } else {
-        return RT_ENOSYS;
+    stm32_spi->hspi = hspi;
+    
+    // Initialize the SPI using HAL - MSP init will be called automatically
+    if (HAL_SPI_Init(hspi) != HAL_OK) {
+        return RT_ERROR;
     }
 
     return rt_spi_bus_register(&stm32_spi->parent, spi_bus_name, &stm32_spi_ops);
@@ -315,108 +265,320 @@ static rt_err_t stm32_spi_register(SPI_TypeDef* SPI, struct stm32_spi_bus* stm32
  */
 rt_err_t drv_spi_init(void)
 {
-    LL_RCC_SetSPIClockSource(LL_RCC_SPI123_CLKSOURCE_PLL1Q);
-    // LL_RCC_SetSPIClockSource(LL_RCC_SPI45_CLKSOURCE_PCLK2); // Not using SPI4/5
+    rt_err_t ret;
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    /* register SPI bus */
+#ifdef DRV_USE_SPI1
+    static struct stm32_spi_bus stm32_spi1;
+#endif
+#ifdef DRV_USE_SPI2
+    static struct stm32_spi_bus stm32_spi2;
+#endif
+#ifdef DRV_USE_SPI4
+    static struct stm32_spi_bus stm32_spi4;
+#endif
+
+#ifdef DRV_USE_SPI1
+    /* Configure SPI1 */
+    hspi1.Instance = SPI1;
+    hspi1.Init.Mode = SPI_MODE_MASTER;
+    hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+    hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
+    hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
+    hspi1.Init.NSS = SPI_NSS_SOFT;
+    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+    hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi1.Init.CRCPolynomial = 0x0;
+    hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    hspi1.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+    hspi1.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+    hspi1.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi1.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi1.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+    hspi1.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+    hspi1.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+    hspi1.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+    hspi1.Init.IOSwap = SPI_IO_SWAP_DISABLE;
 
     /* register SPI1 bus */
-    static struct stm32_spi_bus stm32_spi1;
-    RT_TRY(stm32_spi_register(SPI1, &stm32_spi1, "spi1"));
-
-    /* attach BMI088 Gyro (PC14) to spi1 */
-    {
-        static struct rt_spi_device rt_spi1_dev1;
-        static struct stm32_spi_cs stm32_spi1_cs1;
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-        stm32_spi1_cs1.GPIOx = GPIOC;
-        stm32_spi1_cs1.GPIO_Pin = LL_GPIO_PIN_14;
-
-        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
-
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_14;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-        LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_14);
-
-        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev1, "spi1_dev1", "spi1", (void*)&stm32_spi1_cs1));
+    ret = stm32_spi_register(&hspi1, &stm32_spi1, "spi1");
+    if (ret != RT_EOK) {
+        return ret;
     }
 
-    /* attach BMI088 Accel (PC15) to spi1 */
+    #ifdef SPI1_CS1_Pin
+    /* attach spi_device_1 to spi1 */
     {
-        static struct rt_spi_device rt_spi1_dev2;
-        static struct stm32_spi_cs stm32_spi1_cs2;
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+        static struct rt_spi_device rt_spi_device_1;
+        static struct stm32_spi_cs stm32_spi_cs_1;
 
-        stm32_spi1_cs2.GPIOx = GPIOC;
-        stm32_spi1_cs2.GPIO_Pin = LL_GPIO_PIN_15;
+        stm32_spi_cs_1.GPIOx = SPI1_CS1_GPIO_Port;
+        stm32_spi_cs_1.GPIO_Pin = SPI1_CS1_Pin;
 
-        // Clock included above
-       
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+        __HAL_RCC_GPIOC_CLK_ENABLE();
 
-        LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_15);
+        GPIO_InitStruct.Pin = SPI1_CS1_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI1_CS1_GPIO_Port, &GPIO_InitStruct);
 
-        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev2, "spi1_dev2", "spi1", (void*)&stm32_spi1_cs2));
+        HAL_GPIO_WritePin(SPI1_CS1_GPIO_Port, SPI1_CS1_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi1_dev1", "spi1", (void*)&stm32_spi_cs_1);
+        if (ret != RT_EOK) {
+            return ret;
+        }
     }
+    #endif
+    #ifdef SPI1_CS2_Pin
 
-     /* attach ICM42688 (PC13) to spi1 */
+    /* attach spi_device_2 to spi1 */
     {
-        static struct rt_spi_device rt_spi1_dev3;
-        static struct stm32_spi_cs stm32_spi1_cs3;
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+        static struct rt_spi_device rt_spi_device_2;
+        static struct stm32_spi_cs stm32_spi_cs_2;
 
-        stm32_spi1_cs3.GPIOx = GPIOC;
-        stm32_spi1_cs3.GPIO_Pin = LL_GPIO_PIN_13;
+        stm32_spi_cs_2.GPIOx = SPI1_CS2_GPIO_Port;
+        stm32_spi_cs_2.GPIO_Pin = SPI1_CS2_Pin;
 
-        // Clock included above
-       
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+        __HAL_RCC_GPIOC_CLK_ENABLE();
 
-        LL_GPIO_SetOutputPin(GPIOC, LL_GPIO_PIN_13);
+        GPIO_InitStruct.Pin = SPI1_CS2_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI1_CS2_GPIO_Port, &GPIO_InitStruct);
 
-        RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev3, "spi1_dev3", "spi1", (void*)&stm32_spi1_cs3));
+        HAL_GPIO_WritePin(SPI1_CS2_GPIO_Port, SPI1_CS2_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_2, "spi1_dev2", "spi1", (void*)&stm32_spi_cs_2);
+        if (ret != RT_EOK) {
+            return ret;
+        }
     }
+    #endif
+    #ifdef SPI1_CS3_Pin
+    /* attach spi_device_3 to spi1 */
+    {
+        static struct rt_spi_device rt_spi_device_3;
+        static struct stm32_spi_cs stm32_spi_cs_3;
+
+        stm32_spi_cs_3.GPIOx = SPI1_CS3_GPIO_Port;
+        stm32_spi_cs_3.GPIO_Pin = SPI1_CS3_Pin;
+
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+
+        GPIO_InitStruct.Pin = SPI1_CS3_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI1_CS3_GPIO_Port, &GPIO_InitStruct);
+
+        HAL_GPIO_WritePin(SPI1_CS3_GPIO_Port, SPI1_CS3_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_3, "spi1_dev3", "spi1", (void*)&stm32_spi_cs_3);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+    #endif
+    #ifdef SPI1_CS4_Pin
+    /* attach spi_device_4 to spi1 */
+    {
+        static struct rt_spi_device rt_spi_device_4;
+        static struct stm32_spi_cs stm32_spi_cs_4;
+
+        stm32_spi_cs_4.GPIOx = SPI1_CS4_GPIO_Port;
+        stm32_spi_cs_4.GPIO_Pin = SPI1_CS4_Pin;
+
+        __HAL_RCC_GPIOG_CLK_ENABLE();
+
+        GPIO_InitStruct.Pin = SPI1_CS4_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI1_CS4_GPIO_Port, &GPIO_InitStruct);
+
+        HAL_GPIO_WritePin(SPI1_CS4_GPIO_Port, SPI1_CS4_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_4, "spi1_dev4", "spi1", (void*)&stm32_spi_cs_4);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+    #endif
+    #ifdef SPI1_CS5_Pin
+    /* attach spi_device_5 to spi1 */
+    {
+        static struct rt_spi_device rt_spi_device_5;
+        static struct stm32_spi_cs stm32_spi_cs_5;
+
+        stm32_spi_cs_5.GPIOx = SPI1_CS5_GPIO_Port;
+        stm32_spi_cs_5.GPIO_Pin = SPI1_CS5_Pin;
+
+        __HAL_RCC_GPIOH_CLK_ENABLE();
+
+        GPIO_InitStruct.Pin = SPI1_CS5_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI1_CS5_GPIO_Port, &GPIO_InitStruct);
+
+        HAL_GPIO_WritePin(SPI1_CS5_GPIO_Port, SPI1_CS5_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_5, "spi1_dev5", "spi1", (void*)&stm32_spi_cs_5);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+    #endif
+#endif
+
+#ifdef DRV_USE_SPI2
+    /* Configure SPI2 - Mode 0 (CPOL=0, CPHA=0) */
+    hspi2.Instance = SPI2;
+    hspi2.Init.Mode = SPI_MODE_MASTER;
+    hspi2.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
+    hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;      /* CPOL = 0 */
+    hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;          /* CPHA = 0 */
+    hspi2.Init.NSS = SPI_NSS_SOFT;
+    hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+    hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi2.Init.CRCPolynomial = 0x0;
+    hspi2.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    hspi2.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+    hspi2.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+    hspi2.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi2.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi2.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+    hspi2.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+    hspi2.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+    hspi2.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+    hspi2.Init.IOSwap = SPI_IO_SWAP_DISABLE;
 
     /* register SPI2 bus */
-    static struct stm32_spi_bus stm32_spi2;
-    RT_TRY(stm32_spi_register(SPI2, &stm32_spi2, "spi2"));
-
-    /* attach FRAM (PD4) to spi2 */
-    {
-        static struct rt_spi_device rt_spi2_dev1;
-        static struct stm32_spi_cs stm32_spi2_cs1;
-        LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-
-        stm32_spi2_cs1.GPIOx = GPIOD;
-        stm32_spi2_cs1.GPIO_Pin = LL_GPIO_PIN_4;
-
-        LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
-       
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_4;
-        GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-        GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
-        GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-        GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-        LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-        LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_4);
-
-        RT_TRY(rt_spi_bus_attach_device(&rt_spi2_dev1, "spi2_dev1", "spi2", (void*)&stm32_spi2_cs1));
+    ret = stm32_spi_register(&hspi2, &stm32_spi2, "spi2");
+    if (ret != RT_EOK) {
+        return ret;
     }
+
+    #ifdef SPI2_CS1_Pin
+    /* attach spi_device_1 to spi2 */
+    {
+        static struct rt_spi_device rt_spi_device_1;
+        static struct stm32_spi_cs stm32_spi_cs_1;
+
+        stm32_spi_cs_1.GPIOx = SPI2_CS1_GPIO_Port;
+        stm32_spi_cs_1.GPIO_Pin = SPI2_CS1_Pin;
+
+        __HAL_RCC_GPIOD_CLK_ENABLE();
+
+        GPIO_InitStruct.Pin = SPI2_CS1_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI2_CS1_GPIO_Port, &GPIO_InitStruct);
+
+        HAL_GPIO_WritePin(SPI2_CS1_GPIO_Port, SPI2_CS1_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi2_dev1", "spi2", (void*)&stm32_spi_cs_1);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+    #endif
+#endif
+
+#ifdef DRV_USE_SPI4
+
+    /* SPI4 configure */
+    hspi4.Instance = SPI4;
+    hspi4.Init.Mode = SPI_MODE_MASTER;
+    hspi4.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
+    hspi4.Init.CLKPolarity = SPI_POLARITY_HIGH;
+    hspi4.Init.CLKPhase = SPI_PHASE_2EDGE;
+    hspi4.Init.NSS = SPI_NSS_SOFT;
+    hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+    hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi4.Init.CRCPolynomial = 0x0;
+    hspi4.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    hspi4.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+    hspi4.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+    hspi4.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi4.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+    hspi4.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+    hspi4.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+    hspi4.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+    hspi4.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+    hspi4.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+
+    /* register SPI4 bus */
+    ret = stm32_spi_register(&hspi4, &stm32_spi4, "spi4");
+    if (ret != RT_EOK) {
+        return ret;
+    }
+    #ifdef SPI4_CS1_Pin
+
+    /* attach spi_device_1 to spi4 */
+    {
+        static struct rt_spi_device rt_spi_device_1;
+        static struct stm32_spi_cs stm32_spi_cs_1;
+
+        stm32_spi_cs_1.GPIOx = SPI4_CS1_GPIO_Port;
+        stm32_spi_cs_1.GPIO_Pin = SPI4_CS1_Pin;
+
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+
+        GPIO_InitStruct.Pin = SPI4_CS1_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI4_CS1_GPIO_Port, &GPIO_InitStruct);
+
+        HAL_GPIO_WritePin(SPI4_CS1_GPIO_Port, SPI4_CS1_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_1, "spi4_dev1", "spi4", (void*)&stm32_spi_cs_1);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+    #endif
+    #ifdef SPI4_CS2_Pin
+    /* attach spi_device_2 to spi4 */
+    {
+        static struct rt_spi_device rt_spi_device_2;
+        static struct stm32_spi_cs stm32_spi_cs_2;
+
+        stm32_spi_cs_2.GPIOx = SPI4_CS2_GPIO_Port;
+        stm32_spi_cs_2.GPIO_Pin = SPI4_CS2_Pin;
+
+        __HAL_RCC_GPIOE_CLK_ENABLE();
+
+        GPIO_InitStruct.Pin = SPI4_CS2_Pin;
+        GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+        GPIO_InitStruct.Pull = GPIO_PULLUP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+        HAL_GPIO_Init(SPI4_CS2_GPIO_Port, &GPIO_InitStruct);
+
+        HAL_GPIO_WritePin(SPI4_CS2_GPIO_Port, SPI4_CS2_Pin, GPIO_PIN_SET);
+
+        ret = rt_spi_bus_attach_device(&rt_spi_device_2, "spi4_dev2", "spi4", (void*)&stm32_spi_cs_2);
+        if (ret != RT_EOK) {
+            return ret;
+        }
+    }
+    #endif
+#endif
 
     return RT_EOK;
 }

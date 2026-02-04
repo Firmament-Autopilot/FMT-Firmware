@@ -258,6 +258,87 @@ fmt_err_t file_manager_init(const struct dfs_mount_tbl* mnt_table)
                       mnt_table[i].rwflag,
                       mnt_table[i].data)
             < 0) {
+            /* Mount failed, try to format the device */
+            rt_device_t dev = rt_device_find(mnt_table[i].device_name);
+            if (dev != RT_NULL) {
+                /* Check device geometry before formatting */
+                struct rt_device_blk_geometry geo;
+                if (rt_device_control(dev, RT_DEVICE_CTRL_BLK_GETGEOME, &geo) == RT_EOK) {
+                    printf("Device geometry: sector_size=%d, sector_count=%d, block_size=%d\n",
+                           geo.bytes_per_sector, geo.sector_count, geo.block_size);
+                    
+                    if (geo.sector_count == 0 || geo.bytes_per_sector == 0) {
+                        printf("ERROR: Invalid device geometry!\n");
+                    } else {
+                        /* Test device read/write before formatting */
+                        printf("Testing device read/write...\n");
+                        uint8_t test_buf[512];
+                        uint8_t verify_buf[512];
+                        
+                        /* Fill test pattern */
+                        for (int i = 0; i < 512; i++) {
+                            test_buf[i] = i & 0xFF;
+                        }
+                        
+                        /* Open device */
+                        if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR) == RT_EOK) {
+                            /* Write test sector */
+                            if (rt_device_write(dev, 0, test_buf, 1) == 1) {
+                                printf("Write test: OK\n");
+                                
+                                /* Read back and verify */
+                                if (rt_device_read(dev, 0, verify_buf, 1) == 1) {
+                                    int errors = 0;
+                                    for (int i = 0; i < 512; i++) {
+                                        if (verify_buf[i] != test_buf[i]) {
+                                            if (errors < 5) {
+                                                printf("Verify error at offset %d: wrote 0x%02X, read 0x%02X\n",
+                                                       i, test_buf[i], verify_buf[i]);
+                                            }
+                                            errors++;
+                                        }
+                                    }
+                                    if (errors == 0) {
+                                        printf("Read/Verify test: OK\n");
+                                    } else {
+                                        printf("Read/Verify test: FAILED (%d errors)\n", errors);
+                                    }
+                                } else {
+                                    printf("Read test: FAILED\n");
+                                }
+                            } else {
+                                printf("Write test: FAILED\n");
+                            }
+                            /* Keep device open for formatting */
+                        } else {
+                            printf("Failed to open device\n");
+                        }
+                        
+                        printf("Formatting %s...\n", mnt_table[i].device_name);
+                        if (dfs_mkfs(mnt_table[i].filesystemtype, mnt_table[i].device_name) == 0) {
+                            printf("Format successful, retrying mount...\n");
+                            
+                            /* Close device after formatting */
+                            rt_device_close(dev);
+                            
+                            /* Retry mount after format */
+                            if (dfs_mount(mnt_table[i].device_name,
+                                          mnt_table[i].path,
+                                          mnt_table[i].filesystemtype,
+                                          mnt_table[i].rwflag,
+                                          mnt_table[i].data) == 0) {
+                                printf("Mount %s at %s successful!\n",
+                                       mnt_table[i].device_name,
+                                       mnt_table[i].path);
+                                continue; /* Success, continue to next device */
+                            }
+                        }
+                    }
+                } else {
+                    printf("ERROR: Failed to get device geometry\n");
+                }
+            }
+            
             printf("Fail to mount %s at %s!\n",
                    mnt_table[i].device_name,
                    mnt_table[i].path);

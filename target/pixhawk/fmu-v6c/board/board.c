@@ -17,6 +17,8 @@
 #include <firmament.h>
 #include <board.h>
 #include <string.h>
+#include <msh.h>
+#include <shell.h>
 
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
@@ -25,12 +27,20 @@
 #include "module/sysio/actuator_config.h"
 #include "module/sysio/pilot_cmd.h"
 #include "module/sysio/pilot_cmd_config.h"
+#include "module/sysio/mission_data.h"
+#include "module/sysio/auto_cmd.h"
+#include "module/sysio/gcs_cmd.h"
 #include "module/task_manager/task_manager.h"
 #include "module/workqueue/workqueue_manager.h"
 #include "module/toml/toml.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/mavproxy/mavproxy.h"
-#include "drv_usbd_cdc.h"
+#include "module/mavproxy/mavproxy_config.h"
+#include "module/utils/devmq.h"
+#include "module/system/statistic.h"
+
+// Default Configuration
+#include "default_config.h"
 
 // Hardware Drivers
 #include "drv_gpio.h"
@@ -40,9 +50,10 @@
 #include "drv_pwm.h"
 #include "drv_systick.h"
 #include "drv_sdio.h"
+#include "drv_adc.h"
+#include "usbd/drv_usbd_cdc.h"
 
 // Sensor Drivers
-#include "driver/imu/bmi088.h"
 #include "driver/imu/bmi055.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mtd/ramtron.h"
@@ -50,15 +61,19 @@
 // System Init
 #include "module/param/param.h"
 #include "module/system/systime.h"
-#include "module/mavproxy/mavproxy.h"
+#include "module/log/boot_log.h"
 
-// Missing declarations
-extern void finsh_system_init(void);
+#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
 
 // Mount Table
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
-    { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
+    /* FRAM (mtdblk0) is NOT mounted as filesystem.
+     * It is used for direct parameter backup storage.
+     * Parameters are automatically backed up to FRAM when saved to SD card,
+     * and loaded from FRAM if SD card fails to load. */
     { NULL } /* NULL indicate the end */
 };
 
@@ -68,7 +83,119 @@ const struct dfs_mount_tbl mnt_table_empty[] = {
 };
 
 void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 void Error_Handler(void);
+
+static void banner_item(const char* name, const char* content, char pad, uint32_t len)
+{
+    int pad_len;
+
+    if (content == NULL) {
+        content = "NULL";
+    }
+
+    pad_len = len - strlen(name) - strlen(content);
+
+    if (pad_len < 1) {
+        pad_len = 1;
+    }
+    // e.g, name..............content
+    console_printf("%s", name);
+    while (pad_len--) {
+        console_write(&pad, 1);
+    }
+
+    console_printf("%s\n", content);
+}
+
+#define BANNER_ITEM_LEN 42
+static void bsp_show_information(void)
+{
+    char buffer[50];
+
+    console_printf("\n");
+    console_println("   _____                               __ ");
+    console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
+    console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
+    console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
+
+    sprintf(buffer, "FMT FW %s", FMT_VERSION);
+    banner_item("Firmware", buffer, '.', BANNER_ITEM_LEN);
+    sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
+    sprintf(buffer, "%d KB", SYSTEM_TOTAL_MEM_SIZE / 1024);
+    banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
+    banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
+    banner_item("Airframe", STR(AIRFRAME), '.', BANNER_ITEM_LEN);
+
+    console_println("Task Initialize:");
+    fmt_task_desc_t task_tab = get_task_table();
+    for (uint32_t i = 0; i < get_task_num(); i++) {
+        sprintf(buffer, "  %s", task_tab[i].name);
+        /* task status must be okay to reach here */
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
+    }
+}
+
+static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+{
+    fmt_err_t err = FMT_EOK;
+    toml_table_t* sub_tab;
+    const char* key;
+    const char* raw;
+    char* target;
+    int i;
+
+    if (root_tab == NULL) {
+        return FMT_ERROR;
+    }
+
+    /* target should be defined and match with bsp */
+    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
+        if (toml_rtos(raw, &target) != 0) {
+            console_printf("Error: fail to parse type value\n");
+            err = FMT_ERROR;
+        }
+        if (!MATCH(target, TARGET_NAME)) {
+            /* check if target match */
+            console_printf("Error: target name doesn't match\n");
+            err = FMT_ERROR;
+        }
+        rt_free(target);
+    } else {
+        console_printf("Error: can not find target key\n");
+        err = FMT_ERROR;
+    }
+
+    if (err == FMT_EOK) {
+        /* traverse all sub-table */
+        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
+            /* handle all sub tables */
+            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
+                if (MATCH(key, "console")) {
+                    err = console_toml_config(sub_tab);
+                } else if (MATCH(key, "mavproxy")) {
+                    err = mavproxy_toml_config(sub_tab);
+                } else if (MATCH(key, "pilot-cmd")) {
+                    err = pilot_cmd_toml_config(sub_tab);
+                } else if (MATCH(key, "actuator")) {
+                    err = actuator_toml_config(sub_tab);
+                } else {
+                    console_printf("unknown table: %s\n", key);
+                }
+                if (err != FMT_EOK) {
+                    console_printf("fail to parse %s\n", key);
+                }
+            }
+        }
+    }
+
+    /* free toml root table */
+    toml_free(root_tab);
+
+    return err;
+}
 
 static void MPU_Config(void)
 {
@@ -77,149 +204,207 @@ static void MPU_Config(void)
     /* Disable the MPU before configure */
     HAL_MPU_Disable();
 
-    /* Configure the MPU attributes for AXI SRAM (0x24000000) */
-    /* Since D-Cache is disabled, set as NOT cacheable to match actual CPU state */
+    /* Configure the MPU attributes as WT for AXI SRAM */
     MPU_InitStruct.Enable = MPU_REGION_ENABLE;
     MPU_InitStruct.BaseAddress = 0x24000000;
     MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
     MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
     MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;  // Match D-Cache disabled state
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
     MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
     MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
     MPU_InitStruct.SubRegionDisable = 0x00;
     MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+    // MPU_REGION_NUMBER1 reserved for stack/heap override if needed
+
+    /* Configure the MPU attributes as Device not cacheable
+       for ETH DMA descriptors */
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30040000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_256B;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
+    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+    /* Configure the MPU attributes as Cacheable write through
+       for LwIP RAM heap which contains the Tx buffers */
+    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+    MPU_InitStruct.BaseAddress = 0x30044000;
+    MPU_InitStruct.Size = MPU_REGION_SIZE_16KB;
+    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+    MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+    MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+    MPU_InitStruct.Number = MPU_REGION_NUMBER3;
+    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+    MPU_InitStruct.SubRegionDisable = 0x00;
+    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
     /* Enable the MPU */
     HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
 
+
 static void CPU_Config(void)
 {
-    /* Enable MPU with proper configuration */
     MPU_Config();
 
-    /* Disable unaligned access trap - Cortex-M7 supports unaligned access in hardware */
-    /* Some bootloaders may enable UNALIGN_TRP, we need to disable it */
-    SCB->CCR &= ~SCB_CCR_UNALIGN_TRP_Msk;
-
-    /* Enable I-Cache for better performance */
+    /* Enable I-Cache */
     SCB_EnableICache();
-    
-    /* Keep D-Cache disabled to avoid DMA coherency issues with SDMMC */
-    // SCB_EnableDCache();
-}
 
-void bsp_early_initialize(void)
-{
-    /* HAL Initialization */
-    HAL_Init();
-    
-    /* Freeze watchdog during debug */
-    __HAL_DBGMCU_FREEZE_IWDG1();
-    __HAL_DBGMCU_FREEZE_WWDG1();
-
-    /* System Clock Config */
-    SystemClock_Config();
-
-    /* CPU Config - MPU and Cache */
-    CPU_Config();
-
-    /* Init system heap */
-    rt_system_heap_init((void*)SYSTEM_FREE_MEM_BEGIN, (void*)SYSTEM_FREE_MEM_END);
-
-    /* GPIO Driver Initialization */
-    RT_CHECK(drv_gpio_init());
-
-    /* Usart Driver Initialization */
-    RT_CHECK(drv_usart_init());
-
-    /* Console Initialization */
-    FMT_CHECK(console_init());
-    
-    /* Set console to serial3 (USART3 - Debug Console, PD8/PD9) */
-    rt_device_t console_dev = rt_device_find("serial3");
-    if (console_dev != RT_NULL) {
-        if (rt_device_open(console_dev, RT_DEVICE_OFLAG_WRONLY | RT_DEVICE_FLAG_STREAM) == RT_EOK) {
-            rt_console_set_device(console_dev->parent.name);
-        }
-    }
-    
-    /* Early debug output */
-    rt_kprintf("\r\n\r\n");
-    rt_kprintf("====================================\r\n");
-    rt_kprintf("FMT Pixhawk 6C Early Boot (GPIO disabled)\r\n");
-    rt_kprintf("Console: serial3 (USART3 PD8/PD9)\r\n");
-    rt_kprintf("====================================\r\n");
-
-    /* System Tick Configuration */
-    RT_CHECK(drv_systick_init());
-
-    /* I2C Driver Initialization */
-    RT_CHECK(drv_i2c_init());
-
-    /* SPI Driver Initialization */
-    RT_CHECK(drv_spi_init());
-
-    /* PWM Driver Initialization */
-    // RT_CHECK(drv_pwm_init());  // Keep PWM disabled for now
-
-    /* System statistic module */
-    FMT_CHECK(sys_stat_init());
-    
-    /* Clear BASEPRI to allow interrupts after scheduler starts */
-    /* Do this LAST, after all hardware is initialized */
-    __set_BASEPRI(0);
+    /* Enable D-Cache */
+    SCB_EnableDCache();
 }
 
 static void EnableSensorPower(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    /* Enable GPIO Clocks */
     __HAL_RCC_GPIOB_CLK_ENABLE();
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+
+    /* Common Configuration */
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+    /* PB2: VDD_3V3_SENSORS_EN (Pull Low to Enable per user request) */
+    GPIO_InitStruct.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
+
+    /* PC10: N_VDD_5V_HIPOWER_EN (Pull Low to Enable) */
+    GPIO_InitStruct.Pin = GPIO_PIN_10;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
+
+    /* PE2: N_VDD_5V_PERIPH_EN (Pull Low to Enable) */
+    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
     
-    /* Busy-loop delay - 20ms at 480MHz (HAL_Delay doesn't work in early boot) */
-    for (volatile uint32_t i = 0; i < 4800000; i++) {
+    /* Power rail stabilization delay - 100ms at 480MHz */
+    for (volatile uint32_t i = 0; i < 24000000; i++) {
         __NOP();
     }
 }
 
-/* This function will be called after RTOS start, which is in thread context */
-void bsp_initialize(void)
+void bsp_early_initialize(void)
 {
-    /* System time module init */
-    FMT_CHECK(systime_init());
+    /* CPU config */
+    CPU_Config();
+    
+    /* Manually zero SPI handles to ensure clean state */
+    extern SPI_HandleTypeDef hspi1, hspi2;
+    memset(&hspi1, 0, sizeof(hspi1));
+    memset(&hspi2, 0, sizeof(hspi2));
 
-    /* Start recording boot log */
-    FMT_CHECK(boot_log_init());
+    /* init system heap */
+    // Ensure 4-byte alignment
+    rt_ubase_t heap_start = (rt_ubase_t)SYSTEM_FREE_MEM_BEGIN;
+    if (heap_start & 0x03) {
+        heap_start = (heap_start + 4) & ~0x03;
+    }
+    
+    // [Fix] Ensure heap starts AFTER the stack, not just after BSS
+    extern int _estack;
+    if (heap_start < (rt_ubase_t)&_estack) {
+        heap_start = (rt_ubase_t)&_estack;
+    }
 
-    /* Enable sensor power */
+    rt_system_heap_init((void*)heap_start, (void*)SYSTEM_FREE_MEM_END);
+
+    /* HAL library initialization */
+    HAL_Init();
+
+    /* System clock initialization */
+    SystemClock_Config();
+    PeriphCommonClock_Config();
+
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
+    /* usart driver init */
+    RT_CHECK(drv_usart_init());
+
+    /* init console to enable console output */
+    FMT_CHECK(console_init());
+    
+    /* Set console to serial1 (USART3 - Debug Console, PD8/PD9) */
+    FMT_CHECK(console_set_device("serial1"));
+
+    /* systick driver init */
+    RT_CHECK(drv_systick_init());
+    
+    /* early debug info */
+    console_println("FMT Pixhawk 6C Booting...");
+    
+    /* Enable sensor power BEFORE initializing SPI */
     EnableSensorPower();
 
-    /* Init uMCN */
+    /* i2c driver init */
+    RT_CHECK(drv_i2c_init());
+
+    /* spi driver init */
+    RT_CHECK(drv_spi_init());
+
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
+
+    /* system statistic module */
+    FMT_CHECK(sys_stat_init());
+    
+    __set_BASEPRI(0);
+}
+
+/* this function will be called after rtos start, which is in thread context */
+void bsp_initialize(void)
+{
+    /* system time module init */
+    FMT_CHECK(systime_init());
+
+    /* start recording boot log */
+    FMT_CHECK(boot_log_init());
+
+    /* init uMCN */
     FMT_CHECK(mcn_init());
 
-    /* Create workqueue */
+    /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
 
-    /* Init storage devices */
+    /* init storage devices */
     RT_CHECK(drv_sdio_init());
     
-    /* Init FRAM */
-    RT_CHECK(drv_ramtron_init("spi2_dev1"));
+    /* Delay for SPI2 and FRAM power stabilization */
+    rt_thread_mdelay(20);
+    rt_err_t fram_ret = drv_ramtron_init("spi2_dev1");
+    if (fram_ret != RT_EOK) {
+        console_printf("Warning: FRAM initialization failed (error: %ld)\n", (long)fram_ret);
+    }
     
     /* Check SD card status to prevent crash in file_manager_init */
     rt_device_t sd0 = rt_device_find("sd0");
     rt_err_t sd_stat = RT_ERROR;
+    
     if (sd0) {
         sd_stat = rt_device_init(sd0);
+        if (sd_stat != RT_EOK) {
+            console_println("Info: SD card not detected or init failed");
+        }
     }
 
     /* Init file system */
@@ -229,41 +414,29 @@ void bsp_initialize(void)
         FMT_CHECK(file_manager_init(mnt_table_empty));
     }
 
-    /* Init parameter system */
+    /* init parameter system */
     FMT_CHECK(param_init());
 
-    /* Init mavproxy */
+    /* init mavproxy */
     FMT_CHECK(mavproxy_init());
 
-    /* Init usbd_cdc */
-    // RT_CHECK(drv_usb_cdc_init());  // Skip USB for now
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
 
-    /* Give a little delay for threads to settle */
-    rt_thread_mdelay(50);
+    /* init ADC driver */
+    RT_CHECK(drv_adc_init());
+
+    /* Give time for SPI bus and sensor power to fully stabilize */
+    rt_thread_mdelay(100);
 
     /* Init onboard sensors */
-    int bmi088_started = 0;
-    if (drv_bmi088_init("spi1_dev1", "spi1_dev2", "gyro0", "accel0", 0) != RT_EOK) {
-        // Try BMI055 if BMI088 fails
-        if (drv_bmi055_init("spi1_dev1", "spi1_dev2", "gyro0", "accel0", 0) == RT_EOK) {
-            bmi088_started = 1;
-        }
-    } else {
-        bmi088_started = 1;
-    }
-    
-    int icm42688_started = 0;
-    if (drv_icm42688_init("spi1_dev3", "gyro1", "accel1", 1) == RT_EOK) {
-        icm42688_started = 1;
-    }
+    /* ICM42688P as primary (ID=0), BMI055 as backup (ID=1) */
+    FMT_CHECK(drv_icm42688_init("spi1_dev1", "gyro0", "accel0", 0));
+    FMT_CHECK(drv_bmi055_init("spi1_dev2", "spi1_dev3", "gyro1", "accel1", 1));
 
-    /* Register IMUs */
-    if (bmi088_started) {
-        FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    }
-    if (icm42688_started) {
-        FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
-    }
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
+
 
     /* Advertise other sensors */
     FMT_CHECK(advertise_sensor_mag(0));
@@ -272,28 +445,53 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_optflow(0));
     FMT_CHECK(advertise_sensor_rangefinder(0));
 
-    /* Init finsh */
+
+    /* init finsh */
     finsh_system_init();
     
-    /* Fallback: if console device is not set (e.g. no SD card config), force it to serial3 */
-    if (console_get_device() == NULL) {
-        console_set_device("serial3");
-    }
-
-    /* Enable console input */
+    /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
 }
 
 void bsp_post_initialize(void)
 {
-    /* Init rc */
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
+        /* use default system configuration */
+        printf("Default configuration loaded.\n");
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+    }
+
+    /* init rc */
     FMT_CHECK(pilot_cmd_init());
 
-    /* Init actuator */
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
+    
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
+
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
+
+    /* init actuator */
     FMT_CHECK(actuator_init());
 
-    /* Initialize power management unit */
-    FMT_CHECK(pmu_init());
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
+
+    /* initialize power management unit */
+    if (pmu_init() != FMT_EOK) {
+        console_println("Warning: PMU init failed (ADC driver not available)");
+    }
+
+    /* show system information */
+    bsp_show_information();
+
+    /* execute init script */
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
+
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**
@@ -308,30 +506,44 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-  /* Configure the main internal regulator output voltage */
-  /* STM32H743VI on Pixhawk 6C uses SMPS */
+  /** Supply configuration update enable
+  */
   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
 
+  /** Configure the main internal regulator output voltage
+  */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
+
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
 
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSIState = RCC_HSI_DIV2;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
   RCC_OscInitStruct.PLL.PLLN = 240;
   RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 20;
+  RCC_OscInitStruct.PLL.PLLQ = 8;
   RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_1;
+  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
   RCC_OscInitStruct.PLL.PLLFRACN = 0;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) { Error_Handler(); }
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2|RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
+                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -340,14 +552,57 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) { Error_Handler(); }
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_SPI2|RCC_PERIPHCLK_I2C4;
+  /** Enables the Clock Security System
+  */
+  HAL_RCC_EnableCSS();
+}
+
+void PeriphCommonClock_Config(void)
+{
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+  /** Initializes the peripherals clock
+  */
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_FDCAN | 
+                                             RCC_PERIPHCLK_CKPER | RCC_PERIPHCLK_USART3;
+  
+  /* Configure USART3 clock source to PCLK1 (APB1)
+   * APB1 = 120MHz (HCLK 240MHz / 2)
+   * This ensures correct baud rate calculation
+   */
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
-  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
-  PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;
-
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) { Error_Handler(); }
+  
+  /* Configure PLL3 for USB: 48MHz = HSE(16MHz) / PLL3M(4) * PLL3N(48) / PLL3Q(4) */
+  PeriphClkInitStruct.PLL3.PLL3M = 4;
+  PeriphClkInitStruct.PLL3.PLL3N = 48;
+  PeriphClkInitStruct.PLL3.PLL3P = 2;
+  PeriphClkInitStruct.PLL3.PLL3Q = 4;  /* USB clock: 48MHz */
+  PeriphClkInitStruct.PLL3.PLL3R = 2;
+  PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;
+  PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
+  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
+  PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL3;
+  
+  /* PLL2 for FDCAN */
+  PeriphClkInitStruct.PLL2.PLL2M = 1;
+  PeriphClkInitStruct.PLL2.PLL2N = 10;
+  PeriphClkInitStruct.PLL2.PLL2P = 2;
+  PeriphClkInitStruct.PLL2.PLL2Q = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.CkperClockSelection = RCC_CLKPSOURCE_HSI;
+  PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 void Error_Handler(void)
