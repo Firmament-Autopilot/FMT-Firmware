@@ -32,7 +32,6 @@ $qspi_flashloader_file = "$target_lib_dir/config/GeneratedSource/PSE84_SMIF.FLM"
     -c "set QSPI_FLASHLOADER $qspi_flashloader_file" `
     -c "source [find interface/kitprog3.cfg]" `
     -c "transport select swd" `
-    -c "set ENABLE_ACQUIRE 0" `
     -c "set ENABLE_CM55 1" `
     -c "gdb_port 3332" `
     -c "source [find target/infineon/pse84xgxs2.cfg]" `

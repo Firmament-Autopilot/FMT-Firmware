@@ -3,7 +3,7 @@ param (
     [string]$scriptDir  = $(Convert-Path (Split-Path -Path $scriptPath -Parent)),
 
     # ARM GNU Toolchain 根目录
-    [string]$toolchain_dir = "E:\SomeIDE\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\13.3",
+    [string]$toolchain_dir = "E:\SomeIDE\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\10.2.1",
 
     [string]$elf_file = "$scriptDir/../m55/rt-thread.elf"
 )
