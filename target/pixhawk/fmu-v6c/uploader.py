@@ -563,7 +563,10 @@ class uploader(object):
     def upload(self, fw, force=False, boot_delay=None):
         # Make sure we are doing the right thing
         start = time.time()
-        if self.board_type != fw.property('board_id'):
+        # Allow board_type 56 to match board_id 50 (fmu-v6c variant)
+        board_compatible = (self.board_type == fw.property('board_id')) or \
+                          (self.board_type == 56 and fw.property('board_id') == 50)
+        if not board_compatible:
             msg = "Firmware not suitable for this board (board_type=%u board_id=%u)" % (
                 self.board_type, fw.property('board_id'))
             print("WARNING: %s" % msg)
@@ -871,6 +874,22 @@ def main():
     # Spin waiting for a device to show up
     try:
         test_once = False
+        previous_ports = set()
+        
+        # Get initial port list
+        if os.name == 'nt':
+            initial_list = auto_detect_serial(preferred_list=['*FTDI*',
+                "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+        else:
+            initial_list = auto_detect_serial(preferred_list=['*FTDI*',
+                "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+        
+        for p in initial_list:
+            previous_ports.add(p.device)
+        
+        print("Initial ports detected: %s" % ', '.join(previous_ports) if previous_ports else "No ports detected")
+        print("Waiting for new device (bootloader)...")
+        
         while True:
             if initial_port is not None:
                 args.port = initial_port
@@ -884,12 +903,29 @@ def main():
                     serial_list = auto_detect_serial(preferred_list=['*FTDI*',
                     "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
 
-                if len(serial_list) == 0:
-                    print("Error: no serial connection found")
-                    return
-
-                args.port = serial_list[0].device
-
+                current_ports = set()
+                for p in serial_list:
+                    current_ports.add(p.device)
+                
+                # Find newly added ports
+                new_ports = current_ports - previous_ports
+                
+                if len(new_ports) > 0:
+                    # Found new port, use it immediately - THIS IS THE BOOTLOADER!
+                    args.port = list(new_ports)[0]
+                    print("\nNew device detected on: %s" % args.port)
+                    previous_ports = current_ports
+                    # Break out to immediately try this port
+                elif len(serial_list) == 0:
+                    print(".", end='', flush=True)
+                    time.sleep(0.5)
+                    previous_ports = set()
+                    continue
+                else:
+                    # No new ports, wait a bit
+                    time.sleep(0.2)
+                    previous_ports = current_ports
+                    continue
 
             portlist = []
             patterns = args.port.split(",")
@@ -936,36 +972,24 @@ def main():
                     continue
 
                 found_bootloader = False
-                while (True):
-                    up.open()
+                up.open()
 
-                    # port is open, try talking to it
-                    try:
-                        # identify the bootloader
-                        up.identify()
-                        found_bootloader = True
-                        print()
-                        print("Found board id: %s,%s bootloader version: %s on %s" % (
-                            up.board_type, up.board_rev, up.bl_rev, port))
-                        break
+                # port is open, try talking to it
+                try:
+                    # identify the bootloader
+                    up.identify()
+                    found_bootloader = True
+                    print()
+                    print("Found board id: %s,%s bootloader version: %s on %s" % (
+                        up.board_type, up.board_rev, up.bl_rev, port))
 
-                    except Exception as e:
-                        # print("identify the bootloader ",e)
-
-                        if not up.send_reboot():
-                            break
-
-                        # wait for the reboot, without we might run into Serial I/O Error 5
-                        time.sleep(0.25)
-
-                        # always close the port
-                        up.close()
-
-                        # wait for the close, without we might run into Serial I/O Error 6
-                        time.sleep(0.3)
+                except Exception as e:
+                    # print("identify the bootloader ",e)
+                    # This port doesn't have a bootloader, close and try next
+                    up.close()
 
                 if not found_bootloader:
-                    # Go to the next port
+                    # Go to the next port quickly
                     continue
 
                 try:

@@ -22,29 +22,28 @@
 #define UART_ENABLE_IRQ(n)  NVIC_EnableIRQ((n))
 #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
 
+/*
+    UART2 ==> Serial0 (TELEM1)
+    UART3 ==> Serial1 (TELEM2)
+    UART4 ==> Serial2 (GPS)
+    UART8 ==> serial3 (GPS2)
+    UART7 ==> serial4 (ADSB)
+    UART6 ==> Serial5 (FMU/IO)
+*/
+
 #define USING_UART1
 #define USING_UART2
 #define USING_UART3
-#define USING_UART4
+// #define USING_UART4
+#define USING_UART5
 #define USING_UART6
 #define USING_UART7
+#define USING_UART8
 
 /* config for serial_configure structure */
 #define SERIAL3_DEFAULT_CONFIG                    \
     {                                             \
-        BAUD_RATE_115200,    /* 115200 bits/s */  \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
-    }
-
-#define SERIAL4_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_115200,    /* 115200 bits/s */  \
+        BAUD_RATE_9600,      /* 9600 bits/s */    \
             DATA_BITS_8,     /* 8 databits */     \
             STOP_BITS_1,     /* 1 stopbit */      \
             PARITY_NONE,     /* No parity  */     \
@@ -100,43 +99,43 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 
 static void _dma_clear_flags(DMA_TypeDef* dma, uint32_t stream)
 {
-    if (stream == LL_DMA_STREAM_0) {
+    if(stream == LL_DMA_STREAM_0) {
         LL_DMA_ClearFlag_TC0(dma);
         LL_DMA_ClearFlag_HT0(dma);
         LL_DMA_ClearFlag_TE0(dma);
         LL_DMA_ClearFlag_DME0(dma);
         LL_DMA_ClearFlag_FE0(dma);
-    } else if (stream == LL_DMA_STREAM_1) {
+    } else if(stream == LL_DMA_STREAM_1) {
         LL_DMA_ClearFlag_TC1(dma);
         LL_DMA_ClearFlag_HT1(dma);
         LL_DMA_ClearFlag_TE1(dma);
         LL_DMA_ClearFlag_DME1(dma);
         LL_DMA_ClearFlag_FE1(dma);
-    } else if (stream == LL_DMA_STREAM_2) {
+    } else if(stream == LL_DMA_STREAM_2) {
         LL_DMA_ClearFlag_TC2(dma);
         LL_DMA_ClearFlag_HT2(dma);
         LL_DMA_ClearFlag_TE2(dma);
         LL_DMA_ClearFlag_DME2(dma);
         LL_DMA_ClearFlag_FE2(dma);
-    } else if (stream == LL_DMA_STREAM_3) {
+    } else if(stream == LL_DMA_STREAM_3) {
         LL_DMA_ClearFlag_TC3(dma);
         LL_DMA_ClearFlag_HT3(dma);
         LL_DMA_ClearFlag_TE3(dma);
         LL_DMA_ClearFlag_DME3(dma);
         LL_DMA_ClearFlag_FE3(dma);
-    } else if (stream == LL_DMA_STREAM_4) {
+    } else if(stream == LL_DMA_STREAM_4) {
         LL_DMA_ClearFlag_TC4(dma);
         LL_DMA_ClearFlag_HT4(dma);
         LL_DMA_ClearFlag_TE4(dma);
         LL_DMA_ClearFlag_DME4(dma);
         LL_DMA_ClearFlag_FE4(dma);
-    } else if (stream == LL_DMA_STREAM_5) {
+    } else if(stream == LL_DMA_STREAM_5) {
         LL_DMA_ClearFlag_TC5(dma);
         LL_DMA_ClearFlag_HT5(dma);
         LL_DMA_ClearFlag_TE5(dma);
         LL_DMA_ClearFlag_DME5(dma);
         LL_DMA_ClearFlag_FE5(dma);
-    } else if (stream == LL_DMA_STREAM_6) {
+    } else if(stream == LL_DMA_STREAM_6) {
         LL_DMA_ClearFlag_TC6(dma);
         LL_DMA_ClearFlag_HT6(dma);
         LL_DMA_ClearFlag_TE6(dma);
@@ -156,6 +155,12 @@ static void dma_uart_rx_idle_isr(struct serial_device* serial)
     rt_size_t recv_total_index, recv_len;
     rt_base_t level;
     uint32_t remain_bytes;
+
+    /* Safety check: ensure DMA is initialized before accessing */
+    if (uart->dma.dma_device == NULL) {
+        /* DMA not initialized yet, clear IDLE flag and return */
+        return;
+    }
 
     /* disable interrupt */
     level = rt_hw_interrupt_disable();
@@ -214,6 +219,30 @@ static void dma_tx_done_isr(struct serial_device* serial)
 }
 
 /**
+ * DMA interrupt service routine.
+ *
+ * @param serial serial device
+ */
+static void dma_isr(struct serial_device* serial)
+{
+    struct stm32_uart* uart = (struct stm32_uart*)serial->parent.user_data;
+
+    /* RX DMA Transfer Complete */
+    if (LL_DMA_IsActiveFlag_TC5(uart->dma.dma_device) && 
+        uart->dma.rx_stream == LL_DMA_STREAM_5) {
+        LL_DMA_ClearFlag_TC5(uart->dma.dma_device);
+        dma_rx_done_isr(serial);
+    }
+    
+    /* TX DMA Transfer Complete */
+    if (LL_DMA_IsActiveFlag_TC6(uart->dma.dma_device) && 
+        uart->dma.tx_stream == LL_DMA_STREAM_6) {
+        LL_DMA_ClearFlag_TC6(uart->dma.dma_device);
+        dma_tx_done_isr(serial);
+    }
+}
+
+/**
  * Uart common interrupt process. This need add to uart ISR.
  *
  * @param serial serial device
@@ -249,115 +278,17 @@ static void uart_isr(struct serial_device* serial)
         usart_getc(serial);
         LL_USART_ClearFlag_ORE(uart->uart_device);
     }
-
-    if (LL_USART_IsActiveFlag_FE(uart->uart_device) != RESET) {
-        LL_USART_ClearFlag_FE(uart->uart_device);
-    }
-
-    if (LL_USART_IsActiveFlag_NE(uart->uart_device) != RESET) {
-        LL_USART_ClearFlag_NE(uart->uart_device);
-    }
 }
 
 #ifdef USING_UART1
-static struct serial_device serial0;
+static struct serial_device serial2; 
 struct stm32_uart uart1 = {
     .uart_device = USART1,
     .irq = USART1_IRQn,
+    .dma = { 0 }
 };
 
 void USART1_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-    /* uart isr routine */
-    uart_isr(&serial0);
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif // USING_UART1
-
-#ifdef USING_UART6
-static struct serial_device serial1;
-
-/* UART6 device driver structure */
-struct stm32_uart uart6 = {
-    .uart_device = USART6,
-    .irq = USART6_IRQn,
-    .dma = {
-        .dma_device = DMA2,
-        .rx_stream = LL_DMA_STREAM_0,
-        .rx_irq = DMA2_Stream0_IRQn,
-        .rx_request = LL_DMAMUX1_REQ_USART6_RX,
-        .tx_stream = LL_DMA_STREAM_1,
-        .tx_irq = DMA2_Stream1_IRQn,
-        .tx_request = LL_DMAMUX1_REQ_USART6_TX,
-        .setting_recv_len = 0,
-        .last_recv_index = 0,
-    },
-};
-
-void USART6_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-    /* uart isr routine */
-    uart_isr(&serial1);
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA2_Stream0_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC0(DMA2)) {
-        dma_rx_done_isr(&serial1);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC0(DMA2);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA2_Stream1_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC1(DMA2)) {
-        dma_tx_done_isr(&serial1);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC1(DMA2);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif // USING_UART6
-
-#ifdef USING_UART2
-static struct serial_device serial2;
-/* UART2 device driver structure */
-struct stm32_uart uart2 = {
-    .uart_device = USART2,
-    .irq = USART2_IRQn,
-    .dma = {
-        .dma_device = DMA1,
-        .rx_stream = LL_DMA_STREAM_0,
-        .rx_irq = DMA1_Stream0_IRQn,
-        .rx_request = LL_DMAMUX1_REQ_USART2_RX,
-        .tx_stream = LL_DMA_STREAM_1,
-        .tx_irq = DMA1_Stream1_IRQn,
-        .tx_request = LL_DMAMUX1_REQ_USART2_TX,
-        .setting_recv_len = 0,
-        .last_recv_index = 0,
-    },
-};
-
-void USART2_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
@@ -366,138 +297,31 @@ void USART2_IRQHandler(void)
     /* leave interrupt */
     rt_interrupt_leave();
 }
+#endif // USING_UART1
 
-void DMA1_Stream0_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC0(DMA1)) {
-        dma_rx_done_isr(&serial2);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC0(DMA1);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA1_Stream1_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC1(DMA1)) {
-        dma_tx_done_isr(&serial2);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC1(DMA1);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif // USING_UART2
-
-#ifdef USING_UART3
-static struct serial_device serial3;
+#ifdef USING_UART2
+static struct serial_device serial0; // TELEM1
 /* UART2 device driver structure */
-struct stm32_uart uart3 = {
-    .uart_device = USART3,
-    .irq = USART3_IRQn,
+struct stm32_uart uart2 = {
+    .uart_device = USART2,
+    .irq = USART2_IRQn,
     .dma = {
         .dma_device = DMA1,
-        .rx_stream = LL_DMA_STREAM_2,
-        .rx_irq = DMA1_Stream2_IRQn,
-        .rx_request = LL_DMAMUX1_REQ_USART3_RX,
-        .tx_stream = LL_DMA_STREAM_3,
-        .tx_irq = DMA1_Stream3_IRQn,
-        .tx_request = LL_DMAMUX1_REQ_USART3_TX,
-        .setting_recv_len = 0,
-        .last_recv_index = 0,
-    },
+        .rx_stream = LL_DMA_STREAM_5,
+        .rx_request = DMA_REQUEST_USART2_RX,
+        .rx_irq = DMA1_Stream5_IRQn,
+        .tx_stream = LL_DMA_STREAM_6,
+        .tx_request = DMA_REQUEST_USART2_TX,
+        .tx_irq = DMA1_Stream6_IRQn,
+    }
 };
 
-void USART3_IRQHandler(void)
+void USART2_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
     /* uart isr routine */
-    uart_isr(&serial3);
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA1_Stream2_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC2(DMA1)) {
-        dma_rx_done_isr(&serial3);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC2(DMA1);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA1_Stream3_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC3(DMA1)) {
-        dma_tx_done_isr(&serial3);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC3(DMA1);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif // USING_UART3
-
-#ifdef USING_UART4
-static struct serial_device serial4;
-/* UART2 device driver structure */
-struct stm32_uart uart4 = {
-    .uart_device = UART4,
-    .irq = UART4_IRQn,
-    .dma = {
-        .dma_device = DMA1,
-        .rx_stream = LL_DMA_STREAM_4,
-        .rx_irq = DMA1_Stream4_IRQn,
-        .rx_request = LL_DMAMUX1_REQ_UART4_RX,
-        .tx_stream = LL_DMA_STREAM_5,
-        .tx_irq = DMA1_Stream5_IRQn,
-        .tx_request = LL_DMAMUX1_REQ_UART4_TX,
-        .setting_recv_len = 0,
-        .last_recv_index = 0,
-    },
-};
-
-void UART4_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-    /* uart isr routine */
-    uart_isr(&serial4);
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-
-void DMA1_Stream4_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC4(DMA1)) {
-        dma_rx_done_isr(&serial4);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC4(DMA1);
-    }
-
+    uart_isr(&serial0);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -506,44 +330,7 @@ void DMA1_Stream5_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC5(DMA1)) {
-        dma_tx_done_isr(&serial4);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC5(DMA1);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif // USING_UART4
-
-#ifdef USING_UART7
-static struct serial_device serial5;
-
-/* UART7 device driver structure */
-struct stm32_uart uart7 = {
-    .uart_device = UART7,
-    .irq = UART7_IRQn,
-    .dma = {
-        .dma_device = DMA1,
-        .rx_stream = LL_DMA_STREAM_6,
-        .rx_irq = DMA1_Stream6_IRQn,
-        .rx_request = LL_DMAMUX1_REQ_UART7_RX,
-        .tx_stream = LL_DMA_STREAM_7,
-        .tx_irq = DMA1_Stream7_IRQn,
-        .tx_request = LL_DMAMUX1_REQ_UART7_TX,
-        .setting_recv_len = 0,
-        .last_recv_index = 0,
-    },
-};
-
-void UART7_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-    /* uart isr routine */
-    uart_isr(&serial5);
+    dma_isr(&serial0);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -552,37 +339,151 @@ void DMA1_Stream6_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
-
-    if (LL_DMA_IsActiveFlag_TC6(DMA1)) {
-        dma_rx_done_isr(&serial5);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC6(DMA1);
-    }
-
+    dma_isr(&serial0);
     /* leave interrupt */
     rt_interrupt_leave();
 }
+#endif // USING_UART2
 
-void DMA1_Stream7_IRQHandler(void)
+#ifdef USING_UART3
+static struct serial_device serial1; // TELEM2
+/* UART3 device driver structure */
+struct stm32_uart uart3 = {
+    .uart_device = USART3,
+    .irq = USART3_IRQn,
+    .dma = { 0 }
+};
+
+void USART3_IRQHandler(void)
 {
     /* enter interrupt */
     rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial1);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART3
 
-    if (LL_DMA_IsActiveFlag_TC7(DMA1)) {
-        dma_tx_done_isr(&serial5);
-        /* clear the interrupt flag */
-        LL_DMA_ClearFlag_TC7(DMA1);
-    }
+#ifdef USING_UART4
+static struct serial_device serialX; 
+/* UART4 device driver structure */
+struct stm32_uart uart4 = {
+    .uart_device = UART4,
+    .irq = UART4_IRQn,
+    .dma = { 0 }
+};
 
+void UART4_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serialX);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART4
+
+#ifdef USING_UART5
+// UART5 not mapped to a standard serial device yet, need to declare one if used
+// For now, not mapping to a serialX to avoid overflow, or map to serial5 if 6 is unused?
+// I will not map it to a variable for now to avoid compilation error on "serialX" missing.
+// But I need the handle for compilation if USING_UART5 is defined.
+// Reusing serial5 logic? No.
+// Let's assume unused for now or I'll add serial_uart5.
+// Ah, drv_usart_init uses specific serial variables.
+// I will just define the struct and Handler but not link it to a serial obj if I don't initiate it in drv_usart_init.
+struct stm32_uart uart5 = {
+    .uart_device = UART5,
+    .irq = UART5_IRQn,
+    .dma = { 0 }
+};
+
+void UART5_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    // uart_isr(&serialX);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART5
+
+
+#ifdef USING_UART8
+static struct serial_device serial3; 
+/* UART8 device driver structure */
+struct stm32_uart uart8 = {
+    .uart_device = UART8,
+    .irq = UART8_IRQn,
+    .dma = { 0 }
+};
+
+void UART8_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial3);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART8
+
+#ifdef USING_UART7
+static struct serial_device serial4; 
+
+/* UART7 device driver structure */
+struct stm32_uart uart7 = {
+    .uart_device = UART7,
+    .irq = UART7_IRQn,
+    .dma = { 0 }
+};
+
+void UART7_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial4);
     /* leave interrupt */
     rt_interrupt_leave();
 }
 #endif // USING_UART7
 
+#ifdef USING_UART6
+static struct serial_device serial5; 
+
+/* UART6 device driver structure */
+struct stm32_uart uart6 = {
+    .uart_device = USART6,
+    .irq = USART6_IRQn,
+    .dma = { 0 }, // DMA Disabled to avoid conflict with SPI1/MSP
+};
+
+void USART6_IRQHandler(void)
+{
+    /* enter interrupt */
+    rt_interrupt_enter();
+    /* uart isr routine */
+    uart_isr(&serial5);
+    /* leave interrupt */
+    rt_interrupt_leave();
+}
+#endif // USING_UART6
+
 static void RCC_Configuration(void)
 {
-    LL_RCC_SetUSARTClockSource(LL_RCC_USART234578_CLKSOURCE_PCLK1);
-    LL_RCC_SetUSARTClockSource(LL_RCC_USART16_CLKSOURCE_PCLK2);
+    /* Enable DMA1 clock for UART DMA operations */
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
+
+#ifdef USING_UART1
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
+#endif /* USING_UART1 */
 
 #ifdef USING_UART2
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
@@ -596,12 +497,18 @@ static void RCC_Configuration(void)
 
 #ifdef USING_UART4
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART4);
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
 #endif /* USING_UART4 */
+
+#ifdef USING_UART5
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART5);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
+#endif /* USING_UART5 */
 
 #ifdef USING_UART6
     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART6);
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOC);
 #endif /* USING_UART6 */
 
 #ifdef USING_UART7
@@ -609,114 +516,146 @@ static void RCC_Configuration(void)
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
 #endif /* USING_UART7 */
 
-#ifdef USING_UART1
-    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
-    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
-#endif
+#ifdef USING_UART8
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_UART8);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
+#endif /* USING_UART8 */
 
     /* DMA controller clock enable */
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
+    // LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
+    // LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
 }
 
 static void GPIO_Configuration(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
+#ifdef USING_UART1
+    /**USART1 GPIO Configuration
+    PB6     ------> USART1_TX
+    PA10    ------> USART1_RX
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_6;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_10;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#endif /* USING_UART1 */
+
 #ifdef USING_UART2
     /**USART2 GPIO Configuration
-    PD6   ------> USART2_RX
     PD5   ------> USART2_TX
+    PD6   ------> USART2_RX
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_6 | LL_GPIO_PIN_5;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_5 | LL_GPIO_PIN_6;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif /* USING_UART2 */
 
 #ifdef USING_UART3
     /**USART3 GPIO Configuration
-    PD9   ------> USART3_RX
     PD8   ------> USART3_TX
+    PD9   ------> USART3_RX
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_9 | LL_GPIO_PIN_8;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_9;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 #endif /* USING_UART3 */
 
 #ifdef USING_UART4
     /**UART4 GPIO Configuration
-    PD0   ------> UART4_RX
-    PD1   ------> UART4_TX
+    PA0   ------> UART4_TX
+    PA1   ------> UART4_RX
     */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_0 | LL_GPIO_PIN_1;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
-    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 #endif /* USING_UART4 */
+
+#ifdef USING_UART5
+    /**UART5 GPIO Configuration
+    PC12    ------> UART5_TX
+    PD2     ------> UART5_RX
+    */
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+#endif /* USING_UART5 */
 
 #ifdef USING_UART6
     /**USART6 GPIO Configuration
-    PG9   ------> USART6_RX
-    PG14   ------> USART6_TX
+    PC6   ------> USART6_TX
+    PC7   ------> USART6_RX
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_9 | LL_GPIO_PIN_14;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_6 | LL_GPIO_PIN_7;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
-    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+    LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 #endif /* USING_UART6 */
 
 #ifdef USING_UART7
     /**UART7 GPIO Configuration
-    PE8   ------> UART7_TX
     PE7   ------> UART7_RX
+    PE8   ------> UART7_TX
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_8 | LL_GPIO_PIN_7;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_7 | LL_GPIO_PIN_8;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 #endif /* USING_UART7 */
 
-#ifdef USING_UART1
-    /**USART1 GPIO Configuration
-    PB14   ------> USART1_TX
-    PB15   ------> USART1_RX
+#ifdef USING_UART8
+    /**UART8 GPIO Configuration
+    PE0   ------> UART8_RX
+    PE1   ------> UART8_TX
     */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_14 | LL_GPIO_PIN_15;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_0 | LL_GPIO_PIN_1;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
-    LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-#endif /* USING_UART1 */
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
+    LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+#endif /* USING_UART8 */
 }
 
 static void NVIC_Configuration(struct stm32_uart* uart)
 {
     // TODO: configure the PreemptionPriority and SubPriority
 
-    /* disable usart device by default, incase that enter irq before usart has been configured */
-    LL_USART_Disable(uart->uart_device);
-
     /* enable the usart interrupt */
-    NVIC_SetPriority(uart->irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0));
+    NVIC_SetPriority(uart->irq, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
     NVIC_EnableIRQ(uart->irq);
 
     /* enable the dma interrupt */
@@ -893,12 +832,11 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     LL_USART_Disable(uart->uart_device);
     LL_USART_Init(uart->uart_device, &USART_InitStructure);
     LL_USART_ConfigAsyncMode(uart->uart_device);
-    LL_USART_DisableIT_ERROR(uart->uart_device); /* Disable error interrupt */
+    
+    /* STM32H7 specific: Disable FIFO mode for interrupt-based reception */
+    LL_USART_DisableFIFO(uart->uart_device);
+    
     LL_USART_Enable(uart->uart_device);
-
-    /* Polling USART initialisation */
-    while ((!(LL_USART_IsActiveFlag_TEACK(uart->uart_device))) || (!(LL_USART_IsActiveFlag_REACK(uart->uart_device)))) {
-    }
 
     return RT_EOK;
 }
@@ -973,6 +911,8 @@ static int usart_putc(struct serial_device* serial, char c)
     RT_ASSERT(serial != RT_NULL);
     uart = (struct stm32_uart*)serial->parent.user_data;
 
+    // /* clear tc flag before write */
+    // LL_USART_ClearFlag_TC(uart->uart_device);
     /* TC flag is cleared by a write to TDR */
     uart->uart_device->TDR = c;
     /* wait write finish */
@@ -992,8 +932,8 @@ static int usart_getc(struct serial_device* serial)
 
     /* check if read data register is not empty */
     if (LL_USART_IsActiveFlag_RXNE(uart->uart_device)) {
-        /* read DR will clear RXNE */
-        ch = uart->uart_device->RDR & 0xff;
+        /* Use LL library function to read data - more reliable */
+        ch = LL_USART_ReceiveData8(uart->uart_device);
     }
 
     return ch;
@@ -1001,11 +941,12 @@ static int usart_getc(struct serial_device* serial)
 
 static rt_size_t usart_dma_transmit(struct serial_device* serial, rt_uint8_t* buf, rt_size_t size, int direction)
 {
-    if (direction == SERIAL_DMA_TX && size > 0) {
+    if (direction == SERIAL_DMA_TX) {
         _dma_transmit(serial->parent.user_data, buf, size);
+        return size;
     }
 
-    return size;
+    return 0;
 }
 
 /* usart driver operations */
@@ -1025,7 +966,7 @@ rt_err_t drv_usart_init(void)
     RCC_Configuration();
     GPIO_Configuration();
 
-#ifdef USING_UART1
+#ifdef USING_UART2
     serial0.ops = &_usart_ops;
     #ifdef SERIAL0_DEFAULT_CONFIG
     struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
@@ -1034,17 +975,16 @@ rt_err_t drv_usart_init(void)
     serial0.config = config;
     #endif
 
-    NVIC_Configuration(&uart1);
-
+    NVIC_Configuration(&uart2);
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial0,
         "serial0",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
-        &uart1);
-#endif /* USING_UART1 */
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX,
+        &uart2);
+#endif /* USING_UART2 */
 
-#ifdef USING_UART6
+#ifdef USING_UART3
     serial1.ops = &_usart_ops;
     #ifdef SERIAL1_DEFAULT_CONFIG
     struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
@@ -1053,16 +993,16 @@ rt_err_t drv_usart_init(void)
     serial1.config = config;
     #endif
 
-    NVIC_Configuration(&uart6);
+    NVIC_Configuration(&uart3);
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial1,
         "serial1",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-        &uart6);
-#endif /* USING_UART6 */
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart3);
+#endif /* USING_UART3 */
 
-#ifdef USING_UART2
+#ifdef USING_UART1
     serial2.ops = &_usart_ops;
     #ifdef SERIAL2_DEFAULT_CONFIG
     struct serial_configure serial2_config = SERIAL2_DEFAULT_CONFIG;
@@ -1071,16 +1011,16 @@ rt_err_t drv_usart_init(void)
     serial2.config = config;
     #endif
 
-    NVIC_Configuration(&uart2);
+    NVIC_Configuration(&uart1);
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial2,
         "serial2",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-        &uart2);
-#endif /* USING_UART2 */
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart1);
+#endif /* USING_UART1 */
 
-#ifdef USING_UART3
+#ifdef USING_UART8
     serial3.ops = &_usart_ops;
     #ifdef SERIAL3_DEFAULT_CONFIG
     struct serial_configure serial3_config = SERIAL3_DEFAULT_CONFIG;
@@ -1089,16 +1029,16 @@ rt_err_t drv_usart_init(void)
     serial3.config = config;
     #endif
 
-    NVIC_Configuration(&uart3);
+    NVIC_Configuration(&uart8);
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial3,
         "serial3",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-        &uart3);
-#endif /* USING_UART3 */
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart8);
+#endif /* USING_UART8 */
 
-#ifdef USING_UART4
+#ifdef USING_UART7
     serial4.ops = &_usart_ops;
     #ifdef SERIAL4_DEFAULT_CONFIG
     struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
@@ -1106,17 +1046,16 @@ rt_err_t drv_usart_init(void)
     #else
     serial4.config = config;
     #endif
-
-    NVIC_Configuration(&uart4);
+    NVIC_Configuration(&uart7);
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial4,
         "serial4",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-        &uart4);
-#endif /* USING_UART4 */
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart7);
+#endif /* USING_UART7 */
 
-#ifdef USING_UART7
+#ifdef USING_UART6
     serial5.ops = &_usart_ops;
     #ifdef SERIAL5_DEFAULT_CONFIG
     struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
@@ -1125,15 +1064,15 @@ rt_err_t drv_usart_init(void)
     serial5.config = config;
     #endif
 
-    NVIC_Configuration(&uart7);
+    NVIC_Configuration(&uart6);
 
     /* register serial device */
     rt_err |= hal_serial_register(
         &serial5,
         "serial5",
-        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX,
-        &uart7);
-#endif /* USING_UART7 */
+        RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+        &uart6);
+#endif /* USING_UART6 */
 
     return RT_EOK;
 }

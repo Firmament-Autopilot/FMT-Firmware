@@ -34,7 +34,7 @@
   */
 #define HAL_MODULE_ENABLED
 
-  /* #define HAL_ADC_MODULE_ENABLED   */
+  #define HAL_ADC_MODULE_ENABLED
 #define HAL_FDCAN_MODULE_ENABLED
 /* #define HAL_FMAC_MODULE_ENABLED   */
 /* #define HAL_CEC_MODULE_ENABLED   */
@@ -45,7 +45,7 @@
 /* #define HAL_DAC_MODULE_ENABLED   */
 /* #define HAL_DCMI_MODULE_ENABLED   */
 /* #define HAL_DMA2D_MODULE_ENABLED   */
-#define HAL_ETH_MODULE_ENABLED
+/* #define HAL_ETH_MODULE_ENABLED   */
 /* #define HAL_ETH_LEGACY_MODULE_ENABLED   */
 /* #define HAL_NAND_MODULE_ENABLED   */
 /* #define HAL_NOR_MODULE_ENABLED   */
@@ -58,7 +58,6 @@
 /* #define HAL_GFXMMU_MODULE_ENABLED   */
 /* #define HAL_JPEG_MODULE_ENABLED   */
 /* #define HAL_OPAMP_MODULE_ENABLED   */
-/* #define HAL_OSPI_MODULE_ENABLED   */
 /* #define HAL_OSPI_MODULE_ENABLED   */
 /* #define HAL_I2S_MODULE_ENABLED   */
 /* #define HAL_SMBUS_MODULE_ENABLED   */
@@ -77,7 +76,7 @@
 /* #define HAL_SWPMI_MODULE_ENABLED   */
 #define HAL_TIM_MODULE_ENABLED
 #define HAL_UART_MODULE_ENABLED
-#define HAL_USART_MODULE_ENABLED
+/* #define HAL_USART_MODULE_ENABLED   */
 /* #define HAL_IRDA_MODULE_ENABLED   */
 /* #define HAL_SMARTCARD_MODULE_ENABLED   */
 /* #define HAL_WWDG_MODULE_ENABLED   */
@@ -166,7 +165,7 @@
   * @brief This is the HAL system configuration section
   */
 #define  VDD_VALUE                    (3300UL) /*!< Value of VDD in mv */
-#define  TICK_INT_PRIORITY            (0UL) /*!< tick interrupt priority */
+#define  TICK_INT_PRIORITY            (15UL) /*!< tick interrupt priority */
 #define  USE_RTOS                     0
 #define  USE_SD_TRANSCEIVER           0U               /*!< use uSD Transceiver */
 #define  USE_SPI_CRC	              0U               /*!< use CRC in SPI */
@@ -199,18 +198,19 @@
 #define  USE_HAL_JPEG_REGISTER_CALLBACKS    0U /* JPEG register callback disabled    */
 #define  USE_HAL_LPTIM_REGISTER_CALLBACKS   0U /* LPTIM register callback disabled   */
 #define  USE_HAL_LTDC_REGISTER_CALLBACKS    0U /* LTDC register callback disabled    */
-#define  USE_HAL_MDMA_REGISTER_CALLBACKS    0U /* MDMA register callback disabled    */
+#define  USE_HAL_MDIOS_REGISTER_CALLBACKS   0U /* MDIO register callback disabled    */
 #define  USE_HAL_MMC_REGISTER_CALLBACKS     0U /* MMC register callback disabled     */
-#define  USE_HAL_OPAMP_REGISTER_CALLBACKS   0U /* OPAMP register callback disabled   */
+#define  USE_HAL_OPAMP_REGISTER_CALLBACKS   0U /* MDIO register callback disabled    */
 #define  USE_HAL_OSPI_REGISTER_CALLBACKS    0U /* OSPI register callback disabled    */
 #define  USE_HAL_OTFDEC_REGISTER_CALLBACKS  0U /* OTFDEC register callback disabled  */
 #define  USE_HAL_PCD_REGISTER_CALLBACKS     0U /* PCD register callback disabled     */
-#define  USE_HAL_PSSI_REGISTER_CALLBACKS    0U /* PSSI register callback disabled     */
 #define  USE_HAL_QSPI_REGISTER_CALLBACKS    0U /* QSPI register callback disabled    */
 #define  USE_HAL_RNG_REGISTER_CALLBACKS     0U /* RNG register callback disabled     */
 #define  USE_HAL_RTC_REGISTER_CALLBACKS     0U /* RTC register callback disabled     */
 #define  USE_HAL_SAI_REGISTER_CALLBACKS     0U /* SAI register callback disabled     */
 #define  USE_HAL_SD_REGISTER_CALLBACKS      0U /* SD register callback disabled      */
+#define  USE_HAL_SMARTCARD_REGISTER_CALLBACKS  0U /* SMARTCARD register callback disabled */
+#define  USE_HAL_SPDIFRX_REGISTER_CALLBACKS 0U /* SPDIFRX register callback disabled */
 #define  USE_HAL_SMBUS_REGISTER_CALLBACKS   0U /* SMBUS register callback disabled   */
 #define  USE_HAL_SPI_REGISTER_CALLBACKS     0U /* SPI register callback disabled     */
 #define  USE_HAL_SWPMI_REGISTER_CALLBACKS   0U /* SWPMI register callback disabled   */
@@ -219,15 +219,16 @@
 #define  USE_HAL_USART_REGISTER_CALLBACKS   0U /* USART register callback disabled   */
 #define  USE_HAL_WWDG_REGISTER_CALLBACKS    0U /* WWDG register callback disabled    */
 
-/* ################## SPI peripheral configuration ########################## */
+/* ########################### Ethernet Configuration ######################### */
+#define ETH_TX_DESC_CNT         4U  /* number of Ethernet Tx DMA descriptors */
+#define ETH_RX_DESC_CNT         4U  /* number of Ethernet Rx DMA descriptors */
 
-/* CRC FEATURE: Use to activate CRC feature */
-/* Activated   */
-#define USE_SPI_CRC                   0U
-
-/* ################## SDMMC peripheral configuration ######################### */
-
-#define USE_SD_TRANSCEIVER            0U
+#define ETH_MAC_ADDR0    (0x02UL)
+#define ETH_MAC_ADDR1    (0x00UL)
+#define ETH_MAC_ADDR2    (0x00UL)
+#define ETH_MAC_ADDR3    (0x00UL)
+#define ETH_MAC_ADDR4    (0x00UL)
+#define ETH_MAC_ADDR5    (0x00UL)
 
 /* ########################## Assert Selection ############################## */
 /**
@@ -235,65 +236,6 @@
   *        HAL drivers code
   */
 /* #define USE_FULL_ASSERT    1U */
-
-/* ################## Ethernet peripheral configuration ##################### */
-
-/* Section 1 : Ethernet peripheral configuration */
-
-/* MAC ADDRESS: MAC_ADDR0:MAC_ADDR1:MAC_ADDR2:MAC_ADDR3:MAC_ADDR4:MAC_ADDR5 */
-#define MAC_ADDR0   2U
-#define MAC_ADDR1   0U
-#define MAC_ADDR2   0U
-#define MAC_ADDR3   0U
-#define MAC_ADDR4   0U
-#define MAC_ADDR5   0U
-
-/* Definition of the Ethernet driver buffers size and count */
-#define ETH_RX_BUF_SIZE                1528U    /* buffer size for receive               */
-#define ETH_TX_BUF_SIZE                1528U    /* buffer size for transmit              */
-#define ETH_RXBUFNB                    4U       /* 4 Rx buffers of size ETH_RX_BUF_SIZE  */
-#define ETH_TXBUFNB                    4U       /* 4 Tx buffers of size ETH_TX_BUF_SIZE  */
-
-/* Section 2: PHY configuration section */
-/* DP83848_PHY_ADDRESS Address*/
-#define DP83848_PHY_ADDRESS           0x01U
-/* PHY Reset delay these values are based on a 1 ms Systick interrupt*/
-#define PHY_RESET_DELAY                 0x000000FFU
-/* PHY Configuration delay */
-#define PHY_CONFIG_DELAY                0x00000FFFU
-
-#define PHY_READ_TO                     0x0000FFFFU
-#define PHY_WRITE_TO                    0x0000FFFFU
-
-/* Section 3: Common PHY Registers */
-
-#define PHY_BCR                         ((uint16_t)0x00)    /*!< Transceiver Basic Control Register   */
-#define PHY_BSR                         ((uint16_t)0x01)    /*!< Transceiver Basic Status Register    */
-
-#define PHY_RESET                       ((uint16_t)0x8000)  /*!< PHY Reset */
-#define PHY_LOOPBACK                    ((uint16_t)0x4000)  /*!< Select loop-back mode */
-#define PHY_FULLDUPLEX_100M             ((uint16_t)0x2100)  /*!< Set the full-duplex mode at 100 Mb/s */
-#define PHY_HALFDUPLEX_100M             ((uint16_t)0x2000)  /*!< Set the half-duplex mode at 100 Mb/s */
-#define PHY_FULLDUPLEX_10M              ((uint16_t)0x0100)  /*!< Set the full-duplex mode at 10 Mb/s  */
-#define PHY_HALFDUPLEX_10M              ((uint16_t)0x0000)  /*!< Set the half-duplex mode at 10 Mb/s  */
-#define PHY_AUTONEGOTIATION             ((uint16_t)0x1000)  /*!< Enable auto-negotiation function     */
-#define PHY_RESTART_AUTONEGOTIATION     ((uint16_t)0x0200)  /*!< Restart auto-negotiation function    */
-#define PHY_POWERDOWN                   ((uint16_t)0x0800)  /*!< Select the power down mode           */
-#define PHY_ISOLATE                     ((uint16_t)0x0400)  /*!< Isolate PHY from MII                 */
-
-#define PHY_AUTONEGO_COMPLETE           ((uint16_t)0x0020)  /*!< Auto-Negotiation process completed   */
-#define PHY_LINKED_STATUS               ((uint16_t)0x0004)  /*!< Valid link established               */
-#define PHY_JABBER_DETECTION            ((uint16_t)0x0002)  /*!< Jabber condition detected            */
-
-/* Section 4: Extended PHY Registers */
-#define PHY_SR                          ((uint16_t)0x10U)    /*!< PHY status register Offset                      */
-
-#define PHY_SPEED_STATUS                ((uint16_t)0x0002U)  /*!< PHY Speed mask                                  */
-#define PHY_DUPLEX_STATUS               ((uint16_t)0x0004U)  /*!< PHY Duplex mask                                 */
-
-/* Register definition */
-
-#define LAN8742A_PHY_ADDRESS            0x00U
 
 /* Includes ------------------------------------------------------------------*/
 /**
@@ -332,6 +274,14 @@
   #include "stm32h7xx_hal_dsi.h"
 #endif /* HAL_DSI_MODULE_ENABLED */
 
+#ifdef HAL_DFSDM_MODULE_ENABLED
+  #include "stm32h7xx_hal_dfsdm.h"
+#endif /* HAL_DFSDM_MODULE_ENABLED */
+
+#ifdef HAL_DTS_MODULE_ENABLED
+ #include "stm32h7xx_hal_dts.h"
+#endif /* HAL_DTS_MODULE_ENABLED */
+
 #ifdef HAL_ETH_MODULE_ENABLED
   #include "stm32h7xx_hal_eth.h"
 #endif /* HAL_ETH_MODULE_ENABLED */
@@ -339,6 +289,10 @@
 #ifdef HAL_ETH_LEGACY_MODULE_ENABLED
   #include "stm32h7xx_hal_eth_legacy.h"
 #endif /* HAL_ETH_LEGACY_MODULE_ENABLED */
+
+#ifdef HAL_EXTI_MODULE_ENABLED
+  #include "stm32h7xx_hal_exti.h"
+#endif /* HAL_EXTI_MODULE_ENABLED */
 
 #ifdef HAL_CORTEX_MODULE_ENABLED
   #include "stm32h7xx_hal_cortex.h"
@@ -380,6 +334,10 @@
   #include "stm32h7xx_hal_flash.h"
 #endif /* HAL_FLASH_MODULE_ENABLED */
 
+#ifdef HAL_GFXMMU_MODULE_ENABLED
+  #include "stm32h7xx_hal_gfxmmu.h"
+#endif /* HAL_GFXMMU_MODULE_ENABLED */
+
 #ifdef HAL_FMAC_MODULE_ENABLED
   #include "stm32h7xx_hal_fmac.h"
 #endif /* HAL_FMAC_MODULE_ENABLED */
@@ -405,132 +363,132 @@
 #endif /* HAL_NAND_MODULE_ENABLED */
 
 #ifdef HAL_I2C_MODULE_ENABLED
-  #include "stm32h7xx_hal_i2c.h"
+ #include "stm32h7xx_hal_i2c.h"
 #endif /* HAL_I2C_MODULE_ENABLED */
 
 #ifdef HAL_I2S_MODULE_ENABLED
-  #include "stm32h7xx_hal_i2s.h"
+ #include "stm32h7xx_hal_i2s.h"
 #endif /* HAL_I2S_MODULE_ENABLED */
 
 #ifdef HAL_IWDG_MODULE_ENABLED
-  #include "stm32h7xx_hal_iwdg.h"
+ #include "stm32h7xx_hal_iwdg.h"
 #endif /* HAL_IWDG_MODULE_ENABLED */
 
 #ifdef HAL_JPEG_MODULE_ENABLED
-  #include "stm32h7xx_hal_jpeg.h"
+ #include "stm32h7xx_hal_jpeg.h"
 #endif /* HAL_JPEG_MODULE_ENABLED */
 
 #ifdef HAL_MDIOS_MODULE_ENABLED
-  #include "stm32h7xx_hal_mdios.h"
+ #include "stm32h7xx_hal_mdios.h"
 #endif /* HAL_MDIOS_MODULE_ENABLED */
 
+#ifdef HAL_MMC_MODULE_ENABLED
+ #include "stm32h7xx_hal_mmc.h"
+#endif /* HAL_MMC_MODULE_ENABLED */
+
 #ifdef HAL_LPTIM_MODULE_ENABLED
-  #include "stm32h7xx_hal_lptim.h"
+#include "stm32h7xx_hal_lptim.h"
 #endif /* HAL_LPTIM_MODULE_ENABLED */
 
 #ifdef HAL_LTDC_MODULE_ENABLED
-  #include "stm32h7xx_hal_ltdc.h"
+#include "stm32h7xx_hal_ltdc.h"
 #endif /* HAL_LTDC_MODULE_ENABLED */
 
 #ifdef HAL_OPAMP_MODULE_ENABLED
-  #include "stm32h7xx_hal_opamp.h"
+#include "stm32h7xx_hal_opamp.h"
 #endif /* HAL_OPAMP_MODULE_ENABLED */
 
 #ifdef HAL_OSPI_MODULE_ENABLED
-  #include "stm32h7xx_hal_ospi.h"
+ #include "stm32h7xx_hal_ospi.h"
 #endif /* HAL_OSPI_MODULE_ENABLED */
 
 #ifdef HAL_OTFDEC_MODULE_ENABLED
-  #include "stm32h7xx_hal_otfdec.h"
+#include "stm32h7xx_hal_otfdec.h"
 #endif /* HAL_OTFDEC_MODULE_ENABLED */
 
+#ifdef HAL_PSSI_MODULE_ENABLED
+ #include "stm32h7xx_hal_pssi.h"
+#endif /* HAL_PSSI_MODULE_ENABLED */
+
 #ifdef HAL_PWR_MODULE_ENABLED
-  #include "stm32h7xx_hal_pwr.h"
+ #include "stm32h7xx_hal_pwr.h"
 #endif /* HAL_PWR_MODULE_ENABLED */
 
 #ifdef HAL_QSPI_MODULE_ENABLED
-  #include "stm32h7xx_hal_qspi.h"
+ #include "stm32h7xx_hal_qspi.h"
 #endif /* HAL_QSPI_MODULE_ENABLED */
 
 #ifdef HAL_RAMECC_MODULE_ENABLED
-  #include "stm32h7xx_hal_ramecc.h"
+ #include "stm32h7xx_hal_ramecc.h"
 #endif /* HAL_RAMECC_MODULE_ENABLED */
 
 #ifdef HAL_RNG_MODULE_ENABLED
-  #include "stm32h7xx_hal_rng.h"
+ #include "stm32h7xx_hal_rng.h"
 #endif /* HAL_RNG_MODULE_ENABLED */
 
 #ifdef HAL_RTC_MODULE_ENABLED
-  #include "stm32h7xx_hal_rtc.h"
+ #include "stm32h7xx_hal_rtc.h"
 #endif /* HAL_RTC_MODULE_ENABLED */
 
 #ifdef HAL_SAI_MODULE_ENABLED
-  #include "stm32h7xx_hal_sai.h"
+ #include "stm32h7xx_hal_sai.h"
 #endif /* HAL_SAI_MODULE_ENABLED */
 
 #ifdef HAL_SD_MODULE_ENABLED
-  #include "stm32h7xx_hal_sd.h"
+ #include "stm32h7xx_hal_sd.h"
 #endif /* HAL_SD_MODULE_ENABLED */
 
-#ifdef HAL_MMC_MODULE_ENABLED
-  #include "stm32h7xx_hal_mmc.h"
-#endif /* HAL_MMC_MODULE_ENABLED */
-
-#ifdef HAL_SMBUS_MODULE_ENABLED
-  #include "stm32h7xx_hal_smbus.h"
-#endif /* HAL_SMBUS_MODULE_ENABLED */
+#ifdef HAL_SDRAM_MODULE_ENABLED
+ #include "stm32h7xx_hal_sdram.h"
+#endif /* HAL_SDRAM_MODULE_ENABLED */
 
 #ifdef HAL_SPI_MODULE_ENABLED
-  #include "stm32h7xx_hal_spi.h"
+ #include "stm32h7xx_hal_spi.h"
 #endif /* HAL_SPI_MODULE_ENABLED */
 
+#ifdef HAL_SPDIFRX_MODULE_ENABLED
+ #include "stm32h7xx_hal_spdifrx.h"
+#endif /* HAL_SPDIFRX_MODULE_ENABLED */
+
 #ifdef HAL_SWPMI_MODULE_ENABLED
-  #include "stm32h7xx_hal_swpmi.h"
+ #include "stm32h7xx_hal_swpmi.h"
 #endif /* HAL_SWPMI_MODULE_ENABLED */
 
 #ifdef HAL_TIM_MODULE_ENABLED
-  #include "stm32h7xx_hal_tim.h"
+ #include "stm32h7xx_hal_tim.h"
 #endif /* HAL_TIM_MODULE_ENABLED */
 
 #ifdef HAL_UART_MODULE_ENABLED
-  #include "stm32h7xx_hal_uart.h"
+ #include "stm32h7xx_hal_uart.h"
 #endif /* HAL_UART_MODULE_ENABLED */
 
 #ifdef HAL_USART_MODULE_ENABLED
-  #include "stm32h7xx_hal_usart.h"
+ #include "stm32h7xx_hal_usart.h"
 #endif /* HAL_USART_MODULE_ENABLED */
 
 #ifdef HAL_IRDA_MODULE_ENABLED
-  #include "stm32h7xx_hal_irda.h"
+ #include "stm32h7xx_hal_irda.h"
 #endif /* HAL_IRDA_MODULE_ENABLED */
 
 #ifdef HAL_SMARTCARD_MODULE_ENABLED
-  #include "stm32h7xx_hal_smartcard.h"
+ #include "stm32h7xx_hal_smartcard.h"
 #endif /* HAL_SMARTCARD_MODULE_ENABLED */
 
+#ifdef HAL_SMBUS_MODULE_ENABLED
+ #include "stm32h7xx_hal_smbus.h"
+#endif /* HAL_SMBUS_MODULE_ENABLED */
+
 #ifdef HAL_WWDG_MODULE_ENABLED
-  #include "stm32h7xx_hal_wwdg.h"
+ #include "stm32h7xx_hal_wwdg.h"
 #endif /* HAL_WWDG_MODULE_ENABLED */
 
 #ifdef HAL_PCD_MODULE_ENABLED
-  #include "stm32h7xx_hal_pcd.h"
+ #include "stm32h7xx_hal_pcd.h"
 #endif /* HAL_PCD_MODULE_ENABLED */
 
 #ifdef HAL_HCD_MODULE_ENABLED
-  #include "stm32h7xx_hal_hcd.h"
+ #include "stm32h7xx_hal_hcd.h"
 #endif /* HAL_HCD_MODULE_ENABLED */
-
-#ifdef HAL_GFXMMU_MODULE_ENABLED
-  #include "stm32h7xx_hal_gfxmmu.h"
-#endif /* HAL_GFXMMU_MODULE_ENABLED */
-
-#ifdef HAL_PSSI_MODULE_ENABLED
-  #include "stm32h7xx_hal_pssi.h"
-#endif /* HAL_PSSI_MODULE_ENABLED */
-
-#ifdef HAL_DTS_MODULE_ENABLED
-  #include "stm32h7xx_hal_dts.h"
-#endif /* HAL_DTS_MODULE_ENABLED */
 
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT

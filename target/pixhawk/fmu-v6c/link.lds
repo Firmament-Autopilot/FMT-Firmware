@@ -19,7 +19,7 @@ MEMORY
     RxArraySection (rw) : ORIGIN =0x30040200, LENGTH =32k
 }
 ENTRY(Reset_Handler)
-_system_stack_size = 0x1000;
+_system_stack_size = 0x2000;
 
 SECTIONS
 {
@@ -63,13 +63,13 @@ SECTIONS
 
         . = ALIGN(4);
         __fmt_task_start = .;
-        KEEP(*(FmtTaskTbl))
+        KEEP(*(TaskTab))
         __fmt_task_end = .;
         . = ALIGN(4);
 
         . = ALIGN(4);
         __fmt_param_start = .;
-        KEEP(*(FmtParamTbl))
+        KEEP(*(ParamTab))
         __fmt_param_end = .;
         . = ALIGN(4);
 

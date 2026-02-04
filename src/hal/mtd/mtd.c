@@ -93,6 +93,14 @@ rt_err_t hal_mtd_control(rt_device_t dev, int cmd, void* args)
     RT_ASSERT(dev != RT_NULL);
 
     switch (cmd) {
+    case RT_DEVICE_CTRL_BLK_GETGEOME: {
+        struct rt_device_blk_geometry* geometry = (struct rt_device_blk_geometry*)args;
+        if (geometry == RT_NULL) {
+            return -RT_ERROR;
+        }
+        *geometry = mtd->blk_geometry;
+        break;
+    }
     default:
         /* control ops can be NULL */
         if (mtd->ops->control) {

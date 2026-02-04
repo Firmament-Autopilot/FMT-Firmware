@@ -19,6 +19,7 @@
 #include "module/file_manager/file_manager.h"
 #include "module/file_manager/yxml.h"
 #include "module/utils/list.h"
+#include "param_fram.h"
 
 #define TAG             "Param"
 
@@ -637,6 +638,11 @@ fmt_err_t param_save(char* path)
     fm_fprintf(fd, "</param_list>\n");
     close(fd);
 
+    /* Also backup to FRAM if available */
+    if (param_fram_save() == FMT_EOK) {
+        console_printf("Parameters backed up to FRAM\n");
+    }
+
     return res;
 }
 
@@ -657,7 +663,8 @@ fmt_err_t param_load(char* path)
     fd = open(path ? path : PARAM_FILE_NAME, O_RDONLY);
 
     if (fd < 0) {
-        return FMT_ERROR;
+        /* Try loading from FRAM backup silently */
+        return param_fram_load();
     }
 
     PARAM_PARSE_STATE status = PARAM_PARSE_START;
@@ -699,9 +706,9 @@ param_group_t* param_get_table(void)
 }
 
 /**
- * @brief Get the param group num
+ * @brief Get the number of parameter groups
  *
- * @return uint16_t
+ * @return int16_t Number of parameter groups
  */
 int16_t param_get_group_count(void)
 {
