@@ -25,6 +25,7 @@
 #include "drv_gpio.h"
 #include "drv_systick.h"
 #include "drv_i2c.h"
+#include "drv_eth.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -131,6 +132,20 @@ void bsp_initialize(void)
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
 
+#ifdef RT_USING_LWIP
+    /* init rt_workqueue, which is used by tcpip stack */
+    FMT_CHECK(rt_work_sys_workqueue_init());
+
+    /* init lwip */
+    extern int lwip_system_init();
+    FMT_CHECK(lwip_system_init());
+#endif
+
+#ifdef BSP_USING_ETH
+    /* eth driver init */
+    RT_CHECK(drv_eth_init());
+#endif
+
 //     /* init storage devices */
 //     RT_CHECK(drv_sdio_init());
 //     RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
@@ -196,6 +211,10 @@ void bsp_initialize(void)
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
 
+#ifdef FMT_USING_CM_BACKTRACE
+    /* cortex-m backtrace */
+    cm_backtrace_init("e83", TARGET_NAME, FMT_VERSION);
+#endif
 #ifdef FMT_USING_UNIT_TEST
     utest_init();
 #endif

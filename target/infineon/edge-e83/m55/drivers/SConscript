@@ -16,6 +16,9 @@ src += ['drv_uart.c']
 src += ['drv_systick.c']
 src += ['drv_i2c.c']
 
+if GetDepend('BSP_USING_ETH'):
+	src += ['drv_eth.c']
+
 path =  [cwd]
 path += [cwd + '/config']
 
