@@ -6,9 +6,9 @@ name: Build BSP
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ staging/edge-e83 ]
   pull_request:
-    branches: [ master ]
+    branches: [ staging/edge-e83 ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,6 +25,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+          fetch-depth: 0
+
+      - name: Update rt-thread submodule to latest branch
+        shell: bash
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          git -C rtos/rt-thread fetch origin rtt-v4.0.3-patched
+          git -C rtos/rt-thread checkout rtt-v4.0.3-patched
+          git -C rtos/rt-thread pull --ff-only origin rtt-v4.0.3-patched
 
       - name: Install Tools
         shell: bash
@@ -39,18 +49,20 @@ jobs:
       - name: Install Arm ToolChains
         shell: bash
         run: |
-          wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-linux.tar.bz2
-          sudo tar xjf gcc-arm-none-eabi-7-2018-q2-update-linux.tar.bz2 -C /opt
-          /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-gcc --version
-          echo "RTT_EXEC_PATH=/opt/gcc-arm-none-eabi-7-2018-q2-update/bin" >> $GITHUB_ENV
-          
+          wget -q https://github.com/RT-Thread/toolchains-ci/releases/download/v1.8/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz
+          sudo tar -xf arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz -C /opt
+          /opt/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc --version
+          echo "RTT_EXEC_PATH=/opt/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_ENV
       - name: Compile BSP
         run: |
-          scons -C target/sieon/s1 -j4
-          scons -C target/amov/icf5 -j4
-          scons -C target/pixhawk/fmu-v2 -j4
-          scons -C target/pixhawk/fmu-v5 -j4
-          scons -C target/cuav/v5_plus -j4
-          scons -C target/cuav/v5_nano -j4
-          scons -C target/cuav/7_nano -j4
-          scons -C target/qemu/qemu-vexpress-a9 -j4
+          # scons -C target/sieon/s1 -j4
+          # scons -C target/amov/icf5 -j4
+          # scons -C target/pixhawk/fmu-v2 -j4
+          # scons -C target/pixhawk/fmu-v5 -j4
+          # scons -C target/cuav/v5_plus -j4
+          # scons -C target/cuav/v5_nano -j4
+          # scons -C target/cuav/7_nano -j4
+          # scons -C target/qemu/qemu-vexpress-a9 -j4
+          scons -C target/infineon/edge-e83/bootloader -j4
+          scons -C target/infineon/edge-e83/m33 -j4
+          scons -C target/infineon/edge-e83/m55 -j4
