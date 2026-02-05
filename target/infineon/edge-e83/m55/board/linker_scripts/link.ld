@@ -114,15 +114,18 @@ MCUBOOT_HEADER_SIZE = 0x400;
 SECTIONS
 {
     /* This section reserves a space for MCUBoot header */
-    .mcu_boot_header (READONLY) : ALIGN(MCUBOOT_HEADER_SIZE)
+    .mcu_boot_header :
     {
+        . = ALIGN(MCUBOOT_HEADER_SIZE);
         . += MCUBOOT_HEADER_SIZE;
     } > m55_nvm_sel
 
     /* This section is intended to hold the main application code for the Cortex-M55 */
     /* Performance-sensitive or critical functions that need to be executed in sram are manually excluded */
-    .app_code_main : ALIGN(VECTORS_ALIGNMENT)
+    .app_code_main :
     {
+        . = ALIGN(VECTORS_ALIGNMENT);
+        _stext = .;
         __text_begin = .;
         __Vectors = . ;
         /* Keep the vector table */
@@ -220,14 +223,16 @@ SECTIONS
     } > m55_nvm_sel
 
     /* Exception tables for ARM architecture */
-    .ARM.extab (READONLY) : ALIGN(4)
+    .ARM.extab :
     {
+        . = ALIGN(4);
         *(.ARM.extab* .gnu.linkonce.armextab.*)
     } > m55_nvm_sel
 
     /* Exception index tables for ARM architecture */
-    .ARM.exidx (READONLY) : ALIGN(4)
+    .ARM.exidx :
     {
+        . = ALIGN(4);
         __exidx_start = .;
 
         *(.ARM.exidx* .gnu.linkonce.armexidx.*)
@@ -237,8 +242,9 @@ SECTIONS
 
 
     /* Define copying of data from flash memory to RAM during the startup */
-    .copy.table (READONLY) : ALIGN(4)
+    .copy.table :
     {
+        . = ALIGN(4);
         __copy_table_start__ = .;
 
         /* Initialized data in DTCM */
@@ -265,8 +271,9 @@ SECTIONS
     } > m55_nvm_sel
 
     /* Define zeroing of the uninitialized data section */
-    .zero.table (READONLY): ALIGN(4)
+    .zero.table :
     {
+        . = ALIGN(4);
         __zero_table_start__ = .;
 
         LONG(__bss_start__)                       /* Start of the zero-initialized data section */
@@ -276,8 +283,9 @@ SECTIONS
     } > m55_nvm_sel
 
     /* A section for performance-sensitive or critical functions that need to be executed in ITCM */
-    .app_code_itcm : ALIGN(16)
+    .app_code_itcm :
     {
+        . = ALIGN(16);
         /* Reserving the first 16 bytes to avoid debug symbols (that have default address 0x0) to be confused with actual code  */
         . += 16;
         KEEP(*(.cy_itcm))
@@ -305,8 +313,9 @@ SECTIONS
     } > m55_code_INTERNAL AT > m55_nvm_sel
 
     /* A section for the vector table */
-    .ram_vectors (NOLOAD) : ALIGN(VECTORS_ALIGNMENT)
+    .ram_vectors (NOLOAD) :
     {
+        . = ALIGN(VECTORS_ALIGNMENT);
         __ram_vectors_start__ = .;
 
         KEEP(*(.ram_vectors))
@@ -315,16 +324,18 @@ SECTIONS
     } > m55_code_INTERNAL
 
     /* A section for less performance-sensitive or critical functions that might be executed in SOC memory */
-    .app_code_socmem : ALIGN(4)
+    .app_code_socmem :
     {
+        . = ALIGN(4);
         KEEP(*(.cy_socmem_code))
 
         . = ALIGN(4);
     }  > m55_code_secondary AT > m55_nvm_sel
 
     /* A section for initialized data memory */
-    .data : ALIGN(4)
+    .data :
     {
+        . = ALIGN(4);
         __data_start__ = .;
 
         *(vtable)
@@ -372,8 +383,9 @@ SECTIONS
     } > m55_data_INTERNAL AT > m55_nvm_sel
 
     /* A section for variables that should not be initialized during the device startup */
-    .noinit (NOLOAD) : ALIGN(8)
+    .noinit (NOLOAD) :
     {
+        . = ALIGN(8);
         __noinit_start__ = .;
 
         KEEP(*(.noinit))
@@ -384,14 +396,16 @@ SECTIONS
     } > m55_data_INTERNAL
 
     /* A section for non-initialized data memory */
-    .bss(NOLOAD) : ALIGN(4)
+    .bss(NOLOAD) :
     {
+        . = ALIGN(4);
         __bss_start__ = .;
 
         *(.bss*)
         *(COMMON)
 
         . = ALIGN(4);
+        _sstack = .;
 
         __bss_end__ = .;
     } > m55_data_INTERNAL
@@ -407,8 +421,9 @@ SECTIONS
     )
 
     /* A section for SOC memory data */
-    .cy_socmem_data : ALIGN(4)
+    .cy_socmem_data :
     {
+        . = ALIGN(4);
         KEEP(*(.cy_socmem_data))
 
         . = ALIGN(4);
@@ -416,8 +431,9 @@ SECTIONS
     }  > m55_data_secondary AT > m55_nvm_sel
 
     /* A section for the heap memory */
-    .heap(NOLOAD) : ALIGN(8)
+    .heap(NOLOAD) :
     {
+        . = ALIGN(8);
         __HeapBase = .;
         __end__ = .;
         end = __end__;
@@ -442,8 +458,9 @@ SECTIONS
 
 
     /* A section for shared RAM memory where only the Cortex-M55 can allocate data but all cores can access */
-    .cy_sharedmem(NOLOAD) : ALIGN(4)
+    .cy_sharedmem(NOLOAD) :
     {
+        . = ALIGN(4);
         KEEP(*(.cy_sharedmem))
 
         . = ALIGN(4);

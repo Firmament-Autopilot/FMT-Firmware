@@ -44,6 +44,8 @@
     #define HEAP_END      (void*)&__HeapLimit
 #endif
 
+#define TARGET_NAME  "e83"
+
 void cy_bsp_all_init(void);
 
 #endif
