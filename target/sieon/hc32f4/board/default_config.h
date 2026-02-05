@@ -44,6 +44,11 @@ target = "FMT-HC5"\n
     protocol = "auto"\n
     channel-num = 8\n
     sample-time = 0.05\n
-    range = [1000,2000]
+    range = [1000,2000]\n
+[actuator]\n
+    [[actuator.devices]]\n
+    protocol = "pwm"\n
+    name = "main_out"\n
+    freq = 400
 );
 // clang-format on

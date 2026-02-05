@@ -1,7 +1,7 @@
 # FMT System Configuration File
 
 # The target should match with BSP's target name
-target = "SIEON S1"
+target = "FMT-HC5"
 
 # Console Configuration
 [console]
@@ -78,11 +78,6 @@ target = "SIEON S1"
     protocol = "pwm"
     name = "main_out"
     freq = 400                  # pwm frequency in Hz
-
-    [[actuator.devices]]
-    protocol = "pwm"
-    name = "aux_out"
-    freq = 50                  # pwm frequency in Hz
 
     [[actuator.mappings]]
     from = "control_out"
