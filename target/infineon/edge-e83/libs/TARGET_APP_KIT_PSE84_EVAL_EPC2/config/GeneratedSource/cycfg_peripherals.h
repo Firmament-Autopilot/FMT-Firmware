@@ -4,7 +4,7 @@
  * Description:
  * Analog configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
+ * Configurator Backend 3.70.0
  * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
@@ -36,7 +36,6 @@
 #include "cy_pdm_pcm_v2.h"
 #include "cy_scb_i2c.h"
 #include "cy_scb_uart.h"
-#include "cy_scb_ezi2c.h"
 #include "cy_scb_spi.h"
 #include "cy_sd_host.h"
 #include "cy_smif.h"
@@ -86,9 +85,9 @@ extern "C" {
 #define CYBSP_BT_UART_ENABLED 1U
 #define CYBSP_BT_UART_HW SCB4
 #define CYBSP_BT_UART_IRQ scb_4_interrupt_IRQn
-#define CYBSP_EZ_I2C_TARGET_ENABLED 1U
-#define CYBSP_EZ_I2C_TARGET_HW SCB5
-#define CYBSP_EZ_I2C_TARGET_IRQ scb_5_interrupt_IRQn
+#define CYBSP_UART5_ENABLED 1U
+#define CYBSP_UART5_HW SCB5
+#define CYBSP_UART5_IRQ scb_5_interrupt_IRQn
 #define scb_10_ENABLED 1U
 #define scb_10_HW SCB10
 #define scb_10_IRQ scb_10_interrupt_IRQn
@@ -223,7 +222,17 @@ extern const mtb_hal_clock_t CYBSP_BT_UART_hal_clock;
 extern const mtb_hal_uart_configurator_t CYBSP_BT_UART_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
 
-extern const cy_stc_scb_ezi2c_config_t CYBSP_EZ_I2C_TARGET_config;
+extern const cy_stc_scb_uart_config_t CYBSP_UART5_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t CYBSP_UART5_clock_ref;
+extern const mtb_hal_clock_t CYBSP_UART5_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+extern const mtb_hal_uart_configurator_t CYBSP_UART5_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
 extern const cy_stc_scb_spi_config_t scb_10_config;
 
 #if defined (COMPONENT_MTB_HAL)

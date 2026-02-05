@@ -4,7 +4,7 @@
  * Description:
  * Establishes all necessary connections between hardware elements.
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
+ * Configurator Backend 3.70.0
  * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
@@ -70,8 +70,8 @@ extern "C" {
 #define ioss_0_port_16_pin_2_HSIOM P16_2_SCB10_SPI_MISO
 #define ioss_0_port_16_pin_3_HSIOM P16_3_SCB10_SPI_SELECT0
 #define ioss_0_port_16_pin_5_HSIOM P16_5_TCPWM0_LINE5
-#define ioss_0_port_17_pin_0_HSIOM P17_0_SCB5_I2C_SCL
-#define ioss_0_port_17_pin_1_HSIOM P17_1_SCB5_I2C_SDA
+#define ioss_0_port_17_pin_0_HSIOM P17_0_SCB5_UART_RX
+#define ioss_0_port_17_pin_1_HSIOM P17_1_SCB5_UART_TX
 #define ioss_0_port_21_pin_0_HSIOM P21_0_SDHC0_CARD_CMD
 #define ioss_0_port_21_pin_1_HSIOM P21_1_TDM_TDM_TX_SD0
 #define ioss_0_port_21_pin_2_HSIOM P21_2_TDM_TDM_TX_SCK0

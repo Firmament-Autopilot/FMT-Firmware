@@ -4,7 +4,7 @@
  * Description:
  * Pin configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
+ * Configurator Backend 3.70.0
  * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
@@ -771,8 +771,8 @@ const cy_stc_gpio_pin_config_t CYBSP_WIFI_HOST_WAKE_config =
     .outVal = 1,
     .driveMode = CY_GPIO_DM_OD_DRIVESLOW,
     .hsiom = CYBSP_WIFI_HOST_WAKE_HSIOM,
-    .intEdge = CY_GPIO_INTR_DISABLE,
-    .intMask = 0UL,
+    .intEdge = CY_GPIO_INTR_RISING,
+    .intMask = 1UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
     .slewRate = CY_GPIO_SLEW_FAST,
     .driveSel = CY_GPIO_DRIVE_1_2,
@@ -1113,11 +1113,11 @@ const cy_stc_gpio_pin_config_t CYBSP_USER_LED1_config =
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
 };
-const cy_stc_gpio_pin_config_t CYBSP_EZ_I2C_SCL_config =
+const cy_stc_gpio_pin_config_t CYBSP_UART5_RX_config =
 {
     .outVal = 1,
-    .driveMode = CY_GPIO_DM_OD_DRIVESLOW,
-    .hsiom = CYBSP_EZ_I2C_SCL_HSIOM,
+    .driveMode = CY_GPIO_DM_HIGHZ,
+    .hsiom = CYBSP_UART5_RX_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
     .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
@@ -1131,11 +1131,11 @@ const cy_stc_gpio_pin_config_t CYBSP_EZ_I2C_SCL_config =
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
 };
-const cy_stc_gpio_pin_config_t CYBSP_EZ_I2C_SDA_config =
+const cy_stc_gpio_pin_config_t CYBSP_UART5_TX_config =
 {
     .outVal = 1,
-    .driveMode = CY_GPIO_DM_OD_DRIVESLOW,
-    .hsiom = CYBSP_EZ_I2C_SDA_HSIOM,
+    .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
+    .hsiom = CYBSP_UART5_TX_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
     .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
@@ -1391,8 +1391,8 @@ void init_cycfg_pins(void)
     Cy_GPIO_Pin_Init(ioss_0_port_16_pin_5_PORT, ioss_0_port_16_pin_5_PIN, &ioss_0_port_16_pin_5_config);
     Cy_GPIO_Pin_Init(CYBSP_USER_LED2_PORT, CYBSP_USER_LED2_PIN, &CYBSP_USER_LED2_config);
     Cy_GPIO_Pin_Init(CYBSP_USER_LED1_PORT, CYBSP_USER_LED1_PIN, &CYBSP_USER_LED1_config);
-    Cy_GPIO_Pin_Init(CYBSP_EZ_I2C_SCL_PORT, CYBSP_EZ_I2C_SCL_PIN, &CYBSP_EZ_I2C_SCL_config);
-    Cy_GPIO_Pin_Init(CYBSP_EZ_I2C_SDA_PORT, CYBSP_EZ_I2C_SDA_PIN, &CYBSP_EZ_I2C_SDA_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART5_RX_PORT, CYBSP_UART5_RX_PIN, &CYBSP_UART5_RX_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART5_TX_PORT, CYBSP_UART5_TX_PIN, &CYBSP_UART5_TX_config);
     Cy_GPIO_Pin_Init(CYBSP_SDHC_DETECT_PORT, CYBSP_SDHC_DETECT_PIN, &CYBSP_SDHC_DETECT_config);
     Cy_GPIO_Pin_Init(CYBSP_DISP_RST_PORT, CYBSP_DISP_RST_PIN, &CYBSP_DISP_RST_config);
     Cy_GPIO_Pin_Init(CYBSP_WIFI_SDIO_CMD_PORT, CYBSP_WIFI_SDIO_CMD_PIN, &CYBSP_WIFI_SDIO_CMD_config);

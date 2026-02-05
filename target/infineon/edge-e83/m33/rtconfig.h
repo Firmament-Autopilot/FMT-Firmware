@@ -51,6 +51,9 @@
 /* Kernel Device Object */
 
 #define RT_USING_DEVICE
+#define RT_USING_CONSOLE
+#define RT_CONSOLEBUF_SIZE 1024
+#define RT_CONSOLE_DEVICE_NAME "uart5"
 /* end of Kernel Device Object */
 #define RT_VER_NUM 0x40003
 /* end of RT-Thread Kernel */
@@ -61,6 +64,17 @@
 #define RT_USING_USER_MAIN
 #define RT_MAIN_THREAD_STACK_SIZE 2048
 #define RT_MAIN_THREAD_PRIORITY 10
+#define RT_USING_FINSH
+#define FINSH_USING_HISTORY
+#define FINSH_HISTORY_LINES 5
+#define FINSH_USING_SYMTAB
+#define FINSH_USING_DESCRIPTION
+#define FINSH_THREAD_PRIORITY 20
+#define FINSH_THREAD_STACK_SIZE 4096
+#define FINSH_CMD_SIZE 80
+#define FINSH_USING_MSH
+#define FINSH_USING_MSH_DEFAULT
+#define FINSH_ARG_MAX 20
 
 /* DFS: device virtual file system */
 
@@ -345,7 +359,7 @@
 
 #define BSP_USING_GPIO
 #define BSP_USING_UART
-#define BSP_USING_UART2
+#define BSP_USING_UART5
 #define RT_USING_ADC
 #define BSP_USING_ADC
 #define BSP_USING_ADC1

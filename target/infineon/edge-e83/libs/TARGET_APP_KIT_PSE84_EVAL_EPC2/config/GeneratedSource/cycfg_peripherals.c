@@ -4,7 +4,7 @@
  * Description:
  * Analog configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
+ * Configurator Backend 3.70.0
  * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
@@ -579,14 +579,67 @@ const mtb_hal_uart_configurator_t CYBSP_BT_UART_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
 
-const cy_stc_scb_ezi2c_config_t CYBSP_EZ_I2C_TARGET_config =
+const cy_stc_scb_uart_config_t CYBSP_UART5_config =
 {
-    .numberOfAddresses = CY_SCB_EZI2C_ONE_ADDRESS,
-    .slaveAddress1 = 0x24U,
-    .slaveAddress2 = 0U,
-    .subAddressSize = CY_SCB_EZI2C_SUB_ADDR8_BITS,
-    .enableWakeFromSleep = false,
+    .uartMode = CY_SCB_UART_STANDARD,
+    .enableMultiProcessorMode = false,
+    .smartCardRetryOnNack = false,
+    .irdaInvertRx = false,
+    .irdaEnableLowPowerReceiver = false,
+    .oversample = 10,
+    .enableMsbFirst = false,
+    .dataWidth = 8UL,
+    .parity = CY_SCB_UART_PARITY_NONE,
+    .stopBits = CY_SCB_UART_STOP_BITS_1,
+    .enableInputFilter = false,
+    .breakWidth = 11UL,
+    .dropOnFrameError = false,
+    .dropOnParityError = false,
+    .breaklevel = false,
+    .receiverAddress = 0x0UL,
+    .receiverAddressMask = 0x0UL,
+    .acceptAddrInFifo = false,
+    .enableCts = false,
+    .ctsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rtsRxFifoLevel = 0UL,
+    .rtsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rxFifoTriggerLevel = 63UL,
+    .rxFifoIntEnableMask = 0UL,
+    .txFifoTriggerLevel = 63UL,
+    .txFifoIntEnableMask = 0UL,
 };
+
+#if defined (COMPONENT_MTB_HAL)
+const mtb_hal_peri_div_t CYBSP_UART5_clock_ref =
+{
+    .clk_dst = (en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM,
+    .div_type = CYBSP_UART5_CLK_DIV_HW,
+    .div_num = CYBSP_UART5_CLK_DIV_NUM,
+};
+const mtb_hal_clock_t CYBSP_UART5_hal_clock =
+{
+    .clock_ref = &CYBSP_UART5_clock_ref,
+    .interface = &mtb_hal_clock_peri_interface,
+};
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+const mtb_hal_uart_configurator_t CYBSP_UART5_hal_config =
+{
+    .base = CYBSP_UART5_HW,
+    .clock = &CYBSP_UART5_hal_clock,
+    .tx_pin = 1,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_pin = 0xFF,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+    .tx_port = 17,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_port = 0xFF,
+    .rts_enable = 0UL,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
 const cy_stc_scb_spi_config_t scb_10_config =
 {
     .spiMode = CY_SCB_SPI_MASTER,
