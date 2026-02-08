@@ -21,8 +21,6 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 
-#define SPI1_SPEED_HZ 10000000
-
 #define DRV_DBG(...) rt_kprintf(__VA_ARGS__)
 
 #define BIT(_idx) (1 << _idx)
