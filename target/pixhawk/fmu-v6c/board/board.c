@@ -46,7 +46,6 @@
 #include "drv_gpio.h"
 #include "drv_usart.h"
 #include "drv_spi.h"
-#include "hal/spi/spi.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
 #include "drv_systick.h"
@@ -431,26 +430,10 @@ void bsp_initialize(void)
     rt_thread_mdelay(100);
 
     /* Init onboard sensors */
-     /* ICM42688P as primary (ID=0), BMI055 as backup (ID=1)
-         Use CubeMX FMU CS naming: CS3 -> ICM42688 (spi1_dev3),
-         CS2 -> BMI055 Gyro (spi1_dev2), CS1 -> BMI055 Accel (spi1_dev1) */
-    /* Board-level dummy SPI transaction to wake/sync ICM42688 before driver probe.
-       This sends WHO_AM_I opcode then reads one byte (no driver modification needed). */
-    {
-        rt_device_t tmp_spi = rt_device_find("spi1_dev3");
-        if (tmp_spi != RT_NULL) {
-            rt_err_t r = rt_device_open(tmp_spi, RT_DEVICE_OFLAG_RDWR);
-            if (r == RT_EOK) {
-                struct rt_spi_device* spi_dev_t = (struct rt_spi_device*)tmp_spi;
-                uint8_t cmd = 0x80 | 0x75; /* DIR_READ | REG_WHO_AM_I */
-                uint8_t resp = 0;
-                rt_err_t rr = rt_spi_send_then_recv(spi_dev_t, &cmd, 1, &resp, 1);
-                rt_device_close(tmp_spi);
-            }
-        } else {
-            /* spi device not found at board level; driver will assert/report */
-        }
-    }
+    /* ICM42688P as primary (ID=0), BMI055 as backup (ID=1)*/
+    /* Warm up ICM42688 SPI device via drv_spi helper to avoid including
+       HAL SPI internals in board code. */
+    drv_spi_warmup_device("spi1_dev3", 0x75);
 
     FMT_CHECK(drv_icm42688_init("spi1_dev3", "gyro0", "accel0", 0));
     FMT_CHECK(drv_bmi055_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
