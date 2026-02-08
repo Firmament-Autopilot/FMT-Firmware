@@ -204,6 +204,36 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
 }
 
 /**
+ * @brief Perform a short dummy transfer to wake/synchronize an SPI device.
+ *
+ * This will open the named device, send a single read command for the
+ * provided register and read back one byte. It's intended for devices
+ * that need a wake/dummy transfer (e.g. WHO_AM_I) before their driver
+ * probe sequence.
+ */
+rt_err_t drv_spi_warmup_device(const char* dev_name, uint8_t reg)
+{
+    rt_device_t dev = rt_device_find(dev_name);
+    if (dev == RT_NULL) {
+        return -RT_ERROR;
+    }
+
+    if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+        return -RT_ERROR;
+    }
+
+    struct rt_spi_device* spi_dev = (struct rt_spi_device*)dev;
+    uint8_t cmd = 0x80 | reg; /* DIR_READ | reg */
+    uint8_t resp = 0;
+
+    rt_err_t rr = rt_spi_send_then_recv(spi_dev, &cmd, 1, &resp, 1);
+
+    rt_device_close(dev);
+
+    return rr;
+}
+
+/**
  * @brief SPI transfer function
  *
  * @param device SPI device instance

@@ -25,6 +25,7 @@ extern "C" {
 #endif
 
 rt_err_t drv_spi_init(void);
+rt_err_t drv_spi_warmup_device(const char* dev_name, uint8_t reg);
 
 #ifdef __cplusplus
 }
