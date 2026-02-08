@@ -38,6 +38,7 @@
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/utils/devmq.h"
 #include "module/system/statistic.h"
+#include "led.h"
 
 // Default Configuration
 #include "default_config.h"
@@ -331,6 +332,9 @@ void bsp_early_initialize(void)
     /* HAL library initialization */
     HAL_Init();
 
+    /* initialize simple LED GPIOs immediately so boot failures show red */
+    led_early_init();
+
     /* System clock initialization */
     SystemClock_Config();
     PeriphCommonClock_Config();
@@ -483,10 +487,11 @@ void bsp_post_initialize(void)
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
+    /* init led control */
+    FMT_CHECK(led_control_init());
+
     /* initialize power management unit */
-    if (pmu_init() != FMT_EOK) {
-        console_println("Warning: PMU init failed (ADC driver not available)");
-    }
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
@@ -612,6 +617,8 @@ void PeriphCommonClock_Config(void)
 void Error_Handler(void)
 {
     __disable_irq();
+    /* attempt to indicate fatal error via LED */
+    led_force_red();
     while (1)
     {
     }
