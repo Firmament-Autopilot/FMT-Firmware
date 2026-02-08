@@ -76,12 +76,13 @@ extern int __bss_end;
 // SPI2: FRAM
 
 /* SPI Definitions */
-#define SPI1_CS1_GPIO       GPIOC
-#define SPI1_CS1_PIN        GPIO_PIN_14  // BMI088 Gyro
-#define SPI1_CS2_GPIO       GPIOC
-#define SPI1_CS2_PIN        GPIO_PIN_15  // BMI088 Accel
-#define SPI1_CS3_GPIO       GPIOC
-#define SPI1_CS3_PIN        GPIO_PIN_13  // ICM42688
+/* Map logical SPI1 CS entries to CubeMX FMU pin definitions */
+#define SPI1_CS1_GPIO       FMU_SPI1_CS1_BMI055_ACC_GPIO_Port
+#define SPI1_CS1_PIN        FMU_SPI1_CS1_BMI055_ACC_Pin   /* BMI055 Accel (spi1_dev1) */
+#define SPI1_CS2_GPIO       FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port
+#define SPI1_CS2_PIN        FMU_SPI1_CS2_BMI055_GYRO_Pin  /* BMI055 Gyro (spi1_dev2) */
+#define SPI1_CS3_GPIO       FMU_SPI1_CS3_ICM42688_GPIO_Port
+#define SPI1_CS3_PIN        FMU_SPI1_CS3_ICM42688_Pin     /* ICM42688 (spi1_dev3) */
 
 #define SPI2_CS1_GPIO       GPIOD
 #define SPI2_CS1_PIN        GPIO_PIN_4   // FRAM
