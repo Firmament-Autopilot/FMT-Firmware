@@ -29,14 +29,30 @@ SPI_HandleTypeDef hspi4;
 
 #define DRV_USE_SPI1
 
+/* Use CubeMX-generated FMU pin definitions when available to keep names consistent */
+#ifdef FMU_SPI1_CS1_BMI055_ACC_Pin
+#define SPI1_CS1_Pin       FMU_SPI1_CS1_BMI055_ACC_Pin
+#define SPI1_CS1_GPIO_Port FMU_SPI1_CS1_BMI055_ACC_GPIO_Port
+#else
 #define SPI1_CS1_Pin       GPIO_PIN_13
 #define SPI1_CS1_GPIO_Port GPIOC
+#endif
 
+#ifdef FMU_SPI1_CS2_BMI055_GYRO_Pin
+#define SPI1_CS2_Pin       FMU_SPI1_CS2_BMI055_GYRO_Pin
+#define SPI1_CS2_GPIO_Port FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port
+#else
 #define SPI1_CS2_Pin       GPIO_PIN_14
 #define SPI1_CS2_GPIO_Port GPIOC
+#endif
 
+#ifdef FMU_SPI1_CS3_ICM42688_Pin
+#define SPI1_CS3_Pin       FMU_SPI1_CS3_ICM42688_Pin
+#define SPI1_CS3_GPIO_Port FMU_SPI1_CS3_ICM42688_GPIO_Port
+#else
 #define SPI1_CS3_Pin       GPIO_PIN_15
 #define SPI1_CS3_GPIO_Port GPIOC
+#endif
 
 // #define SPI1_CS4_Pin       GPIO_PIN_10
 // #define SPI1_CS4_GPIO_Port GPIOG
