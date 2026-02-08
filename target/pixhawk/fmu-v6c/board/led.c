@@ -10,7 +10,7 @@
 MCN_DECLARE(fms_output);
 
 static rt_device_t pin_dev;
-static uint8_t _r;
+//static uint8_t _r;
 static uint8_t _b;
 
 static void run_led(void* parameter)

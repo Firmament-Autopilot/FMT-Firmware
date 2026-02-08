@@ -18,7 +18,7 @@ MODULES = [
     'workqueue/*.c',
     'math/*.c',
     'filter/*.c',
-    # 'fmtio/*.c',
+    'fmtio/*.c',
     'task_manager/*.c',
     'pmu/*.c',
 ]
@@ -37,6 +37,7 @@ MODULES += [
     'syscmd/cmd_calib.c',
     'syscmd/cmd_exec.c',
     'syscmd/cmd_delay.c',
+    'syscmd/cmd_fmtio.c',
 ]
 
 MODULES_CPPPATH = [

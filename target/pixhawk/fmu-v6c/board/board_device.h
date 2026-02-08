@@ -17,8 +17,10 @@
 #ifndef BOARD_DEVICE_H__
 #define BOARD_DEVICE_H__
 
-// This file is included by drivers to access board-specific configurations.
-// Currently empty as definitions are typically in board.h or strictly run-time resolved,
-// but the driver headers expect this file to exist.
+// Device Name
+#define FMTIO_DEVICE_NAME "serial5"
+
+#define SPI1_SPEED_HZ 7000000
+
 
 #endif
