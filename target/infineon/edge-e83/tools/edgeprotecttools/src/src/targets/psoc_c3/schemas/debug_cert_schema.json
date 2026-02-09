@@ -1,0 +1,236 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "silicon_id": {
+      "type": "string"
+    },
+    "family_id": {
+      "type": "string"
+    },
+    "si_revision_id": {
+      "type": "string"
+    },
+    "control_word": {
+      "type": "object",
+      "properties": {
+        "cm33_ap": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "sys_ap": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_dbg": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_nid": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_spid": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_spnid": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "cm33_secure": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "sys_secure": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        },
+        "rma": {
+          "type": "string",
+          "enum": [
+            "Enable",
+            "Disable"
+          ]
+        }
+      },
+      "required": [
+        "cm33_ap",
+        "sys_ap",
+        "cm33_dbg",
+        "cm33_nid",
+        "cm33_spid",
+        "cm33_spnid",
+        "cm33_secure",
+        "sys_secure",
+        "rma"
+      ]
+    },
+    "die_id": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "object",
+          "properties": {
+            "lot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777215
+            },
+            "wafer": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "xpos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "ypos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "sort": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "day": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "lot",
+            "wafer",
+            "xpos",
+            "ypos",
+            "sort",
+            "minor",
+            "day",
+            "month",
+            "year"
+          ]
+        },
+        "min": {
+          "type": "object",
+          "properties": {
+            "lot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777215
+            },
+            "wafer": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "xpos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "ypos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "sort": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "minor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "day": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "lot",
+            "wafer",
+            "xpos",
+            "ypos",
+            "sort",
+            "minor",
+            "day",
+            "month",
+            "year"
+          ]
+        }
+      },
+      "required": [
+        "max",
+        "min"
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "silicon_id",
+    "family_id",
+    "si_revision_id",
+    "control_word",
+    "die_id"
+  ]
+}

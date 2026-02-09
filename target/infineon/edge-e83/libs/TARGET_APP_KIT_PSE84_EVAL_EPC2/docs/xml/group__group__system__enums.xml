@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__enums" kind="group">
+    <compoundname>group_system_enums</compoundname>
+    <title>APPCPU Debug mode Enumerated Types</title>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="group__group__system__enums_1ga634e13f2e3ab2305ee501dea2d00ed24" prot="public" static="no" strong="no">
+        <type></type>
+        <name>cy_app_cpu_dbg_port_type_t</name>
+        <enumvalue id="group__group__system__enums_1gga634e13f2e3ab2305ee501dea2d00ed24a8123f09fa422958d437363e73e81b533" prot="public">
+          <name>APPCPUSS_DBG_DISABLE</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+<para>Disable debug port for CM55. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__group__system__enums_1gga634e13f2e3ab2305ee501dea2d00ed24a4cecfb04b25542eacd3ed33cdf6ba599" prot="public">
+          <name>APPCPUSS_DBG_INVASIVE_MODE</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+<para>Enables invasive debug CM55. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__group__system__enums_1gga634e13f2e3ab2305ee501dea2d00ed24a84dc69dd02052685b51bcb92bf019523" prot="public">
+          <name>APPCPUSS_DBG_TRACES_NON_INVASIVE_MODE</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+<para>Enables all trace and non-invasive debug features. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group__group__system__enums_1gga634e13f2e3ab2305ee501dea2d00ed24a12c86f1dd49c90c73a30191570cf7655" prot="public">
+          <name>APPCPUSS_DBG_ENABLE_ALL</name>
+          <initializer>= 3</initializer>
+          <briefdescription>
+<para>Enables invasive debug &amp; all trace and non-invasive enable for CM55. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>APPCPU debug port control. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="66" column="1" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="67" bodyend="72"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

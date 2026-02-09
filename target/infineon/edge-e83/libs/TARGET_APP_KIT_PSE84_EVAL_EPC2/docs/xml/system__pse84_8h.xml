@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="system__pse84_8h" kind="file" language="C++">
+    <compoundname>system_pse84.h</compoundname>
+    <includes local="no">stdint.h</includes>
+    <includedby refid="COMPONENT__CM33_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c" local="yes">ns_system_pse84.c</includedby>
+    <includedby refid="COMPONENT__CM55_2COMPONENT__NON__SECURE__DEVICE_2ns__system__pse84_8c" local="yes">ns_system_pse84.c</includedby>
+    <includedby refid="system__edge_8h" local="yes">system_edge.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>system_pse84.h</label>
+        <link refid="system__pse84_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>stdint.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__system__config__system__macro__edge_1ga2c3161220ca73cd6884dcaba546bf772" prot="public" static="no">
+        <name>CY_STARTUP_M33_ID</name>
+        <initializer>((uint32_t)((uint32_t)((0x10U) &amp; 0x3FFFU) &lt;&lt; 18U))</initializer>
+        <briefdescription>
+<para>The Cortex-M33 startup driver identifier. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="208" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__system__macro__edge_1ga5f7da3feb40c1556b01fb39f09302784" prot="public" static="no">
+        <name>CY_STARTUP_M55_ID</name>
+        <initializer>((uint32_t)((uint32_t)((0x11U) &amp; 0x3FFFU) &lt;&lt; 18U))</initializer>
+        <briefdescription>
+<para>The Cortex-M55 startup driver identifier. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="211" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" bodystart="211" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t SystemCoreClock</definition>
+        <argsstring></argsstring>
+        <name>SystemCoreClock</name>
+        <briefdescription>
+<para>Holds the system core clock, which is the system clock frequency supplied to the SysTick timer and the processor core clock. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This variable implements the CMSIS Core global variable. Refer to the <ulink url="http://www.keil.com/pack/doc/CMSIS/Core/html/group__system__init__gr.html">CMSIS documentation</ulink> for more details. This variable can be used by debuggers to query the frequency of the debug timer or to configure the trace clock speed.</para>
+<para><simplesect kind="attention"><para>Compilers must be configured to avoid removing this variable in case the application program is not using it. Debugging systems require the variable to be physically present in memory so that it can be examined to configure the debugger.</para>
+</simplesect>
+Holds the system core clock, which is the system clock frequency supplied to the SysTick timer and the processor core clock. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="284" column="17" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="53" bodyend="-1" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="284" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t cy_AhbFreqHz</definition>
+        <argsstring></argsstring>
+        <name>cy_AhbFreqHz</name>
+        <briefdescription>
+<para>Holds the AHB frequency. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Updated by <ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate()</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="287" column="17" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="55" bodyend="-1" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="287" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1ga2fa1348d4103c847e7f583bfb6dcddc8" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool cy_WakeupFromWarmBootStatus</definition>
+        <argsstring></argsstring>
+        <name>cy_WakeupFromWarmBootStatus</name>
+        <briefdescription>
+<para>Holds the flag to indicate if the System woke up from Warm Boot or not. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="290" column="13" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="290" declcolumn="13"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga93f514700ccf00d08dbdcff7f1224eb2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemInit</definition>
+        <argsstring>(void)</argsstring>
+        <name>SystemInit</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Initializes the system. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Custom steps can be added to this process by overrding the weak <ref refid="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" kindref="member">Cy_SystemInit()</ref> function.</para>
+<para>Initializes the system.</para>
+<para>Initialize the System and update the SystemCoreClock variable. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="224" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="98" bodyend="102" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="224" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemCoreClockUpdate</definition>
+        <argsstring>(void)</argsstring>
+        <name>SystemCoreClockUpdate</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Update information about system clocks. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Gets core clock frequency and updates <ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>, and <ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref>.</para>
+<para>Updates global variables used by the Cy_SysLib_Delay(), Cy_SysLib_DelayUs(), and Cy_SysLib_DelayCycles().</para>
+<para>Update information about system clocks.</para>
+<para>Updates the SystemCoreClock with current core Clock retrieved from cpu registers. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="234" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="117" bodyend="135" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="234" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga15d44a0428b12582b056c2501fbe52e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SystemCoreClockSetup</definition>
+        <argsstring>(uint32_t systemCoreClk_freq_hz, uint32_t ahb_freq_hz)</argsstring>
+        <name>SystemCoreClockSetup</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>systemCoreClk_freq_hz</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>ahb_freq_hz</declname>
+        </param>
+        <briefdescription>
+<para>Populates system clock frequency variables with the provided values. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets the startup clock frequencies of <ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>, and <ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref> variables.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>systemCoreClk_freq_hz</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Frequency in Hz for the System Core Clock (e.g. Cortex-M33)</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ahb_freq_hz</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Frequency in Hz of the AHB source</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This API does not take into account any run-time clock frequency updates. Should any updates occur, <ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate</ref> must be called afterwards on the CM33_NS and CM55.</para>
+</simplesect>
+Populates system clock frequency variables with the provided values.</para>
+<para>Sets the SystemCoreClock with initial core Clock retrieved from cpu registers. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="250" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="140" bodyend="150" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="250" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SystemInit</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_SystemInit</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Performs custom system initialization. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The function is called during device startup. This is a weak function that by default does nothing. It can be overridden to add custom steps to SystemInit </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="257" column="13" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="107" bodyend="111" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="257" declcolumn="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Device system header file. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="version"><para>1.0</para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright 2016-2025 Cypress Semiconductor Corporation SPDX-License-Identifier: Apache-2.0</para>
+</simplesect>
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at <verbatim>http://www.apache.org/licenses/LICENSE-2.0
+</verbatim> Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/***************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>_SYSTEM_PSE84_H_</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>_SYSTEM_PSE84_H_</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="189"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="191"><highlight class="normal"></highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="194"><highlight class="comment">*<sp/>Include<sp/>files</highlight></codeline>
+<codeline lineno="195"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198"><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight><highlight class="comment">/*******************************************************************************</highlight></codeline>
+<codeline lineno="200"><highlight class="comment">*<sp/>Global<sp/>preprocessor<sp/>symbols/macros<sp/>(&apos;define&apos;)</highlight></codeline>
+<codeline lineno="201"><highlight class="comment">*******************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_STARTUP_M33_ID<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((uint32_t)((uint32_t)((0x10U)<sp/>&amp;<sp/>0x3FFFU)<sp/>&lt;&lt;<sp/>18U))</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="209"><highlight class="normal"></highlight></codeline>
+<codeline lineno="211"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CY_STARTUP_M55_ID<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((uint32_t)((uint32_t)((0x11U)<sp/>&amp;<sp/>0x3FFFU)<sp/>&lt;&lt;<sp/>18U))</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1ga93f514700ccf00d08dbdcff7f1224eb2" kindref="member">SystemInit</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"></highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1ga15d44a0428b12582b056c2501fbe52e2" kindref="member">SystemCoreClockSetup</ref><sp/>(uint32_t<sp/>systemCoreClk_freq_hz,<sp/>uint32_t<sp/>ahb_freq_hz);</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__functions__edge_1ga70ad2d6aad9d042677abbbbc571f9d68" kindref="member">Cy_SystemInit</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"></highlight></codeline>
+<codeline lineno="262"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>uint32_t<sp/>cy_delayFreqHz;</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>uint32_t<sp/>cy_delayFreqKhz;</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>uint32_t<sp/>cy_delayFreqMhz;</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" kindref="member">SystemCoreClock</ref>;</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"></highlight></codeline>
+<codeline lineno="287"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" kindref="member">cy_AhbFreqHz</ref>;</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"></highlight></codeline>
+<codeline lineno="290"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group__group__system__config__globals__edge_1ga2fa1348d4103c847e7f583bfb6dcddc8" kindref="member">cy_WakeupFromWarmBootStatus</ref>;</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight></codeline>
+<codeline lineno="296"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="297"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="299"><highlight class="normal"></highlight></codeline>
+<codeline lineno="300"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>_SYSTEM_PSE84_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="301"><highlight class="normal"></highlight></codeline>
+<codeline lineno="302"><highlight class="normal"></highlight></codeline>
+<codeline lineno="303"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>[]<sp/>END<sp/>OF<sp/>FILE<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h"/>
+  </compounddef>
+</doxygen>

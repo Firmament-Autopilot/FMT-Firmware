@@ -1,0 +1,8 @@
+{
+  "revoke": {
+    "IFX_ROT_KEY": false,
+    "IFX_FW_INTEGRITY_KEY": false,
+    "IFX_FW_ENCRYPTION_KEY": false,
+    "IFX_RMA_MASTER_KEY": false
+  }
+}

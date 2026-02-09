@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ctb-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* CTB personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ctb' name='CTB' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.ctb'/>
+        <DependentResource name='pass.ctb.oa' />
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='INST_NAME_ctb'          paramId='INST_NAME_ctb' />
+    <ExposedMember key='ctb_differentialMode'   paramId='differentialMode'/>
+    <ExposedMember key='ctb_oa$idx_dynCfgCnt'   paramId='dynCfgCntoa$idx'   repeatCount='2'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='passInstNum' name='PASS Instance Number' group='Internal' default='`${getInstNumber("pass")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='ctbInstNum'  name='CTB Instance Number'  group='Internal' default='`${getInstNumber("ctb")}`'  visible='`${debug}`' editable='false' desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${passInstNum}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ctb'
+                 name='resource_ctb'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . passInstNum . "].ctb[" . ctbInstNum . "]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='inFlash' name='inFlash' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_pass, "inFlash")}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='INST_NAME_ctb' name='INST_NAME_ctb' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamBool id='differentialMode'
+               name='Differential Mode'
+               group='Static Configuration'
+               editable='true'
+               visible='true'
+               desc='Combines Opamp 0 and Opamp 1 into a Differential PGA, State Transition Table controls the gain'
+               default='false'/>
+
+    <!-- opamp -->
+    <Repeat count='2'>
+      <ParamString id='blockoa$idx' name='blockoa$idx' group='Internal' default='pass[`${passInstNum}`].ctb[`${ctbInstNum}`].oa[$idx]' visible='`${debug}`' editable='false' desc='' />
+      <ParamBool id='oa$idxIsEnabled' name='oa$idxIsEnabled' group='Internal' default='`${isBlockUsed(blockoa$idx)}`' visible='`${debug}`' editable='false' desc=''/>
+    </Repeat>
+
+    <!-- dynamic cfg -->
+    <Repeat count='2'>
+      <ParamRange id='dynCfgCntoa$idx' name='dynCfgCntoa$idx' group='Internal'
+        default='`${((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[0]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[1]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[2]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[3]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[4]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[5]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[6]"))  ? 1 : 0) +
+                    ((isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "].oa[$idx].ctb_dynamic[7]"))  ? 1 : 0)}`'
+        min='0' max='8' resolution='1' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+    <ParamString id='dynCfgCnt' name='Total Dyn Cfg Cnt' group='Internal' default='`${dynCfgCntoa0 + dynCfgCntoa1}`' visible='`${debug}`' editable='false' desc='' />
+
+    <Repeat count='8'>
+      <ParamString id='oa0dyn$idx' name='oa0dyn$idx' group='Internal' default='pass[`${passInstNum}`].ctb[`${ctbInstNum}`].oa[0].ctb_dynamic[$idx]' visible='`${debug}`' editable='false' desc='' />
+      <ParamString id='oa1dyn$idx' name='oa1dyn$idx' group='Internal' default='pass[`${passInstNum}`].ctb[`${ctbInstNum}`].oa[1].ctb_dynamic[$idx]' visible='`${debug}`' editable='false' desc='' />
+    </Repeat>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure Autonomous Analog.' condition='`${!isBlockUsed(resource_pass)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_pass}`' value='lppass-1.0' valid='true' />
+    </DRC>
+      <DRC type='ERROR' text='Enable and configure at least one Opamp for CTB `${ctbInstNum}`.' condition='`${!oa0IsEnabled &amp;&amp; !oa1IsEnabled}`' />
+      <DRC type='ERROR' text='The Opamp $idx in CTB `${ctbInstNum}` shall have at least one dynamic configuration.' condition='`${oa$idxIsEnabled &amp;&amp; (dynCfgCntoa$idx eq 0)}`' repeatCount='2' />
+      <DRC type='ERROR' text='The total number of Opamps Dynamic configurations shall not be greater than 8 for CTB subsystem.' condition='`${dynCfgCnt &gt; 8}`' />
+      <DRC type='ERROR' text='Enable both Opams for Differential Mode.'  condition='`${differentialMode &amp;&amp; !(oa0IsEnabled &amp;&amp; oa1IsEnabled)}`' />
+  </DRCs>
+
+  <ConfigFirmware>
+      <ConfigInclude value='cy_autanalog.h' include='true' />
+
+      <ConfigStruct name='`${INST_NAME_ctb . "_sta_cfg"}`' type='cy_stc_autanalog_ctb_sta_t' const='`${inFlash}`' public='true' include='true' >
+          <Member name='pwrOpamp$idx{0}'      value='`${isBlockUsed(blockoa$idx{0}) ? getExposedMember(blockoa$idx{0}, "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF"}`'                            count='2'/>
+          <Member name='topologyOpamp$idx{0}' value='`${isBlockUsed(blockoa$idx{0}) ? getExposedMember(blockoa$idx{0}, "topology") : "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR"}`'                 count='2'/>
+          <Member name='intComp$idx{0}'       value='`${isBlockUsed(blockoa$idx{0}) ? getExposedMember(blockoa$idx{0}, "comparatorEdgeDetect") : "CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED"}`' count='2'/>
+          <Member name='capCcOpamp$idx{0}'    value='`${isBlockUsed(blockoa$idx{0}) ? getExposedMember(blockoa$idx{0}, "compensationCapacitor") : "CY_AUTANALOG_CTB_OA_CC_CAP_DISABLED"}`'    count='2'/>
+          <Member name='capFbOpamp$idx{0}'    value='`${isBlockUsed(blockoa$idx{0}) ? getExposedMember(blockoa$idx{0}, "feedbackCapacitor") : "CY_AUTANALOG_CTB_OA_FB_CAP_0_pF"}`'            count='2'/>
+      </ConfigStruct>
+
+      <ConfigArray name='`${INST_NAME_ctb . "_dyn_cfg"}`' type='cy_stc_autanalog_ctb_dyn_t' const='`${inFlash}`' public='true' include='true' >
+        <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='8' include='`${(dynCfgCntoa0 &gt; $idx{0})}`'>
+          <Member name='ninvInpPin'           value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_nonInvInputPinMux")}`'   include='`${isBlockUsed(oa0dyn$idx{1})}`' />
+          <Member name='ninvInpRef'           value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_nonInvInputRefMux")}`'   include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+          <Member name='invInpPin'            value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_invInputPinMux")}`'      include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+          <Member name='resInpPin'            value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_resInputPinMux")}`'      include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+          <Member name='resInpRef'            value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_resInputRefMux")}`'      include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+          <Member name='sharedMuxIn'          value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_sharedMuxInput")}`'      include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+          <Member name='sharedMuxOut'         value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_sharedMuxOutput")}`'     include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+          <Member name='outToPin'             value='`${getExposedMember(oa0dyn$idx{1}, "ctb_dyn_connectOutputToPin")}`'  include='`${isBlockUsed(oa0dyn$idx{1})}`'/>
+        </ConfigStruct>
+        <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='8' include='`${(dynCfgCntoa1 &gt; $idx{0})}`'>
+          <Member name='ninvInpPin'           value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_nonInvInputPinMux")}`'   include='`${isBlockUsed(oa1dyn$idx{1})}`' />
+          <Member name='ninvInpRef'           value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_nonInvInputRefMux")}`'   include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+          <Member name='invInpPin'            value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_invInputPinMux")}`'      include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+          <Member name='resInpPin'            value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_resInputPinMux")}`'      include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+          <Member name='resInpRef'            value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_resInputRefMux")}`'      include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+          <Member name='sharedMuxIn'          value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_sharedMuxInput")}`'      include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+          <Member name='sharedMuxOut'         value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_sharedMuxOutput")}`'     include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+          <Member name='outToPin'             value='`${getExposedMember(oa1dyn$idx{1}, "ctb_dyn_connectOutputToPin")}`'  include='`${isBlockUsed(oa1dyn$idx{1})}`'/>
+        </ConfigStruct>
+      </ConfigArray>
+
+      <ConfigStruct name='`${INST_NAME_ctb . "_cfg"}`' type='cy_stc_autanalog_ctb_t' const='`${inFlash}`' public='true' include='true' >
+          <Member name='ctbStaCfg' value='&amp;`${INST_NAME_ctb . "_sta_cfg"}`'/>
+          <Member name='ctbDynCfgNum' value='`${dynCfgCntoa0 + dynCfgCntoa1}`U'/>
+          <Member name='ctbDynCfgArr' value='`${INST_NAME_ctb . "_dyn_cfg"}`'/>
+      </ConfigStruct>
+
+    <!-- The CTB State Transition Table structure -->
+    <ConfigArray name='`${INST_NAME_ctb . "_stt"}`' type='cy_stc_autanalog_stt_ctb_t' const='`${inFlash}`' public='true' include='`${isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "]")}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . passInstNum . "].ac[0].state[" . $idx{0} . "]")}`'>
+        <Member name='unlock' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ctb" . ctbInstNum . "Unlock")}`' />
+        <Member name='enableOpamp0' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ctb" . ctbInstNum . "opamp0Enable") ? true : false}`' />
+        <Member name='cfgOpamp0'
+                value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]",
+                      "stt_ctb" . ctbInstNum . "opamp0Enable")
+                      ? getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]",
+                        "stt_ctb" . ctbInstNum . "opamp0DynCfg")
+                      : 0}`U' />
+        <Member name='gainOpamp0' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ctb" . ctbInstNum . "opamp0Gain")}`' />
+        <Member name='enableOpamp1' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ctb" . ctbInstNum . "opamp1Enable") ? true : false}`' />
+        <Member name='cfgOpamp1'
+                value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]",
+                      "stt_ctb" . ctbInstNum . "opamp1Enable")
+                      ? (
+                        dynCfgCntoa0
+                        + getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]",
+                        "stt_ctb" . ctbInstNum . "opamp1DynCfg"))
+                      : 0}`U' />
+        <Member name='gainOpamp1' value='`${getExposedMember("pass[" . passInstNum . "].ac[0].state[" . $idx{1} . "]", "stt_ctb" . ctbInstNum . "opamp1Gain")}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+</ConfigFirmware>
+</PersonalityTemplate>

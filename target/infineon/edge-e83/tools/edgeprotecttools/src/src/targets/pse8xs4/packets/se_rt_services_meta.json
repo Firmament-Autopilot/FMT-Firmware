@@ -1,0 +1,16 @@
+{
+  "description": "Metadata for image upgrade",
+  "comment1": "addr - SE_RT_SERVICES image base address",
+  "comment2": "nv_counter - Anti-rollback counter IFX_SE_RT_SERVICES_NV_COUNTER",
+  "comment3": "'auto' - hash calculated automatically or SE_RT_SERVICES_HASH value: SHA-256 32-byte hex string",
+  "comment4": "edc_addr - EDC for SE_RT_SERVICES code base address",
+  "meta": [
+    {
+      "addr": "0x1380A000",
+      "nv_counter": 0,
+      "hash": "auto",
+      "edc_addr": "0x13802000"
+    }
+  ]
+}
+

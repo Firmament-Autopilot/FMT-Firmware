@@ -1,0 +1,1224 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ctb_sta-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* CTB static configuration personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2024-2025 Cypress Semiconductor Corporation (an Infineon company)
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ctb_static' name='CTB Static' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.ctb\.oa'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='power'                            paramId='power'/>
+    <ExposedMember key='topology'                         paramId='topology'/>
+    <ExposedMember key='topologyIsOpenLoop'               paramId='topologyIsOpenLoop'/>
+    <ExposedMember key='topologyIsBuffer'                 paramId='topologyIsBuffer'/>
+    <ExposedMember key='topologyIsPGA'                    paramId='topologyIsPGA'/>
+    <ExposedMember key='topologyIsTIA'                    paramId='topologyIsTIA'/>
+    <ExposedMember key='topologyIsComparator'             paramId='topologyIsComparator'/>
+    <ExposedMember key='topologyIsHystericComparator'     paramId='topologyIsHystericComparator'/>
+    <ExposedMember key='topologyIsDifferential'           paramId='topologyIsDifferential'/>
+    <ExposedMember key='comparatorEdgeDetect'             paramId='comparatorEdgeDetect'/>
+    <ExposedMember key='compensationCapacitor'            paramId='compensationCapacitor'/>
+    <ExposedMember key='feedbackCapacitor'                paramId='feedbackCapacitor'/>
+    <ExposedMember key='outputConnection'                 paramId='outputConnection'/>
+    <ExposedMember key='opampGainMin'                     paramId='opampGainMin'/>
+    <ExposedMember key='genStates'                        paramId='genStates'/>
+    <ExposedMember key='showAdvanced'                     paramId='showAdvanced'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool id='debug' name='debug' group='Internal' default='false' visible='false' editable='true' desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='passInstNum' name='PASS Instance Number' group='Internal' default='`${getInstNumber("pass")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='ctbInstNum' name='CTB Instance Number' group='Internal' default='`${getInstNumber("ctb")}`' visible='`${debug}`' editable='false' desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_ctb'
+                 name='resource_ctb'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . passInstNum . "].ctb[" . ctbInstNum . "]"}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false' default=''/>
+    <ParamString id='ctbIsEnabled' name='CTB Instance Is Enabled' group='Internal' default='`${isBlockUsed("pass[" . passInstNum . "].ctb[" . ctbInstNum . "]")}`' visible='`${debug}`' editable='false' desc=''/>
+    <ParamString id='differentialMode' name='' group='Internal' desc='' visible='`${debug}`' editable='false'
+                 default='`${ctbIsEnabled ? getExposedMember("pass[" . passInstNum . "].ctb[" . ctbInstNum . "]", "ctb_differentialMode") : false}`'/>
+
+    <ParamString id='oaInstNum' name='OA Instance Number' group='Internal' default='`${getInstNumber("oa")}`' visible='`${debug}`' editable='false' desc='' />
+    <ParamString id='blockoa0' name='blockoa0' group='Internal' default='pass[`${passInstNum}`].ctb[`${ctbInstNum}`].oa[0]' visible='`${debug}`' editable='false' desc='' />
+    <ParamBool id='oa0IsEnabled' name='oa0IsEnabled' group='Internal' default='`${isBlockUsed(blockoa0)}`' visible='`${debug}`' editable='false' desc=''/>
+
+    <ParamBool id='cpuForDifferentianMode' name='Copy flag data for Differential Mode' group='Internal' default='`${differentialMode &amp;&amp; (oaInstNum eq 1) &amp;&amp; oa0IsEnabled}`' visible='`${debug}`' editable='false' desc=''/>
+    <ParamString id='power0' name='power0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "power")}`'/>
+    <ParamString id='topology0' name='topology0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "topology")}`'/>
+    <ParamString id='comparatorEdgeDetect0' name='comparatorEdgeDetect0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "comparatorEdgeDetect")}`'/>
+    <ParamString id='compensationCapacitor0' name='compensationCapacitor0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "compensationCapacitor")}`'/>
+    <ParamString id='feedbackCapacitor0' name='feedbackCapacitor0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "feedbackCapacitor")}`'/>
+    <ParamString id='opamp0outputConnection' name='opamp0outputConnection' group='Internal' desc='' visible='$DEBUG' editable='false' default='`${getExposedMember(blockoa0, "outputConnection")}`'/>
+    <ParamString id='opamp0GainMin' name='opamp0GainMin' group='Internal' desc='' visible='$DEBUG' editable='false' default='`${getExposedMember(blockoa0, "opampGainMin")}`'/>
+    <ParamString id='genStates0' name='genStates0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "genStates")}`'/>
+    <ParamString id='showAdvanced0' name='showAdvanced0' group='Internal' desc='' visible='`${debug}`' editable='false' default='`${getExposedMember(blockoa0, "showAdvanced")}`'/>
+
+   <ParamChoice id='power'
+                 name='Power'
+                 group='`${(rootGroupName)}`'
+                 visible='true'
+                 desc='Controls power consumption, bandwidth and input voltage range. See the Datasheet for detailed specs'
+                 editable='`${!cpuForDifferentianMode}`'
+                 default='`${cpuForDifferentianMode ? power0 : CY_AUTANALOG_CTB_OA_PWR_OFF}`'>
+      <Entry name='Off' value='CY_AUTANALOG_CTB_OA_PWR_OFF' visible='true'/>
+      <Entry name='Ultra-low' value='CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW' visible='true'/>
+      <Entry name='Ultra-low, Rail-to-Rail Inputs' value='CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL' visible='true'/>
+      <Entry name='Low, Rail-to-Rail Inputs' value='CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL' visible='true'/>
+      <Entry name='Medium, Rail-to-Rail Inputs' value='CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL' visible='true'/>
+      <Entry name='High, Rail-to-Rail Inputs' value='CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL' visible='true'/>
+      <Entry name='Ultra-High, Rail-to-Rail Inputs' value='CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='powerConsumption'
+                 name='Power Consumption'
+                 group='`${rootGroupName}`'
+                 editable='false'
+                 visible='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF}`'
+                 desc='Opamp power consumption'
+                 default='`${power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW       ? "15 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL  ? "35 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL        ? "150 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL     ? "300 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL       ? "800 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL ? "1.3 m" :
+                             "0 "}`A'/>
+
+    <ParamString id='bandwidth'
+                 name='Bandwidth'
+                 group='`${rootGroupName}`'
+                 editable='false'
+                 visible='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF}`'
+                 desc='Opamp bandwidth'
+                 default='`${power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW       ? "100 k" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL  ? "100 k" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL        ? "1.2 M" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL     ? "2.4 M" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL       ? "6 M" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL ? "7.5 M" :
+                             "0 "}`Hz'/>
+
+    <ParamString id='vdda'
+                 name='vdda'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember("pass[0]", "vdda")}`'/>
+
+    <ParamString id='inputVoltageRange'
+                 name='Input Voltage Range'
+                 group='`${rootGroupName}`'
+                 editable='false'
+                 visible='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF}`'
+                 desc='Opamp input voltage range'
+                 default='0 to `${power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW  ? vdda / 1000.0 - 1.0 :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL  ? vdda / 1000.0 - 0.2 :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL        ? vdda / 1000.0 - 0.2 :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL     ? vdda / 1000.0 - 0.2 :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL       ? vdda / 1000.0 - 0.2 :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL ? vdda / 1000.0 - 0.2 :
+                             0}` V'/>
+
+    <ParamString id='maxOutputCurrent'
+                 name='Max Output Current'
+                 group='`${rootGroupName}`'
+                 editable='false'
+                 visible='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF}`'
+                 desc='Opamp maximum output current value'
+                 default='`${power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW       ? "10 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL  ? "10 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL        ? "100 u" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL     ? "1 m" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL       ? "1 m" :
+                             power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL ? "10 m" :
+                             "0 "}`A'/>
+
+    <ParamChoice id='topologyNotDifferential'
+                 name='Topology'
+                 group='`${rootGroupName}`'
+                 visible='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF &amp;&amp; !differentialMode}`'
+                 desc='Topology of the Opamp Circuit'
+                 editable='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF &amp;&amp; !differentialMode}`'
+                 default='CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP'>
+      <Entry name='Open-Loop Opamp' value='CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP' visible='true'/>
+      <Entry name='Buffer' value='CY_AUTANALOG_CTB_OA_TOPO_BUFFER' visible='true'/>
+      <Entry name='PGA' value='CY_AUTANALOG_CTB_OA_TOPO_PGA' visible='true'/>
+      <Entry name='TIA' value='CY_AUTANALOG_CTB_OA_TOPO_TIA' visible='true'/>
+      <Entry name='Comparator' value='CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR' visible='true'/>
+      <Entry name='Hysteric Comparator' value='CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='topologyDifferential'
+                 name='Topology'
+                 group='`${rootGroupName}`'
+                 visible='`${power ne CY_AUTANALOG_CTB_OA_PWR_OFF &amp;&amp; differentialMode}`'
+                 desc='Topology of the Opamp Circuit'
+                 editable='false'
+                 default='Differential Amplifier'/>
+
+    <ParamString id='topology' name='Topology' group='Internal' editable='false' visible='false' desc='Topology of the Opamp Circuit'
+              default='`${differentialMode ? "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER" : topologyNotDifferential}`'/>
+
+    <ParamChoice id='comparatorEdgeDetect'
+                 name='Comparator Edge Detect'
+                 group='`${(rootGroupName)}`'
+                 visible='`${(power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; ((topology eq CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) || (topology eq CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR))}`'
+                 desc='Edge detection for interrupts and triggers. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                 editable='`${!cpuForDifferentianMode &amp;&amp; (topology eq CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) || (topology eq CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR)}`'
+                 default='`${cpuForDifferentianMode ? comparatorEdgeDetect0 : CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED}`'>
+      <Entry name='Disabled' value='CY_AUTANALOG_CTB_COMP_INT_EDGE_DISABLED' visible='true'/>
+      <Entry name='Rising Edge' value='CY_AUTANALOG_CTB_COMP_INT_EDGE_RISING' visible='true'/>
+      <Entry name='Falling Edge' value='CY_AUTANALOG_CTB_COMP_INT_EDGE_FALLING' visible='true'/>
+      <Entry name='Rising and Falling Edge' value='CY_AUTANALOG_CTB_COMP_INT_EDGE_BOTH' visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='opampGainMin'
+                 name='Minimum Gain'
+                 group='`${(rootGroupName)}`'
+                 visible='`${(power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA" || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER")}`'
+                 desc='The minimum gain allowed to set in the State Transition Table. This value is used for compensation.'
+                 editable='`${!cpuForDifferentianMode &amp;&amp; (power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA" || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER")}`'
+                 default='`${cpuForDifferentianMode ? opamp0GainMin : "1.00"}`'>
+          <Entry name='PGA: nonInv 1.00,  Inv 0;     Diff: 1.00;  TIA: 0k'   value='1.00'  visible='true'/>
+          <Entry name='PGA: nonInv 1.42,  Inv 0.42;  Diff: 1.42;  TIA: 57k'  value='1.42'  visible='true'/>
+          <Entry name='PGA: nonInv 2.00,  Inv 1.00;  Diff: 2.00;  TIA: 96k'  value='2.00'  visible='true'/>
+          <Entry name='PGA: nonInv 2.78,  Inv 1.78;  Diff: 2.78;  TIA: 123k' value='2.78'  visible='true'/>
+          <Entry name='PGA: nonInv 4.00,  Inv 3.00;  Diff: 4.00;  TIA: 144k' value='4.00'  visible='true'/>
+          <Entry name='PGA: nonInv 5.82,  Inv 4.82;  Diff: 5.82;  TIA: 159k' value='5.82'  visible='true'/>
+          <Entry name='PGA: nonInv 8.00,  Inv 7.00;  Diff: 8.00;  TIA: 168k' value='8.00'  visible='true'/>
+          <Entry name='PGA: nonInv 10.67, Inv 9.67;  Diff: 10.67; TIA: 174k' value='10.67' visible='true'/>
+          <Entry name='PGA: nonInv 16.00, Inv 15.00; Diff: 16.00; TIA: 180k' value='16.00' visible='true'/>
+          <Entry name='PGA: nonInv 21.33, Inv 20.33; Diff: 21.33; TIA: 183k' value='21.33' visible='true'/>
+          <Entry name='PGA: nonInv 32.00, Inv 31.00; Diff: 32.00; TIA: 186k' value='32.00' visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='outputConnection'
+                 name='Output connection'
+                 group='`${(rootGroupName)}`'
+                 visible='`${(power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP)}`'
+                 desc='The output terminal’s dynamic configurations are restricted to internal connections only or also allow driving pins. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                 editable='`${!cpuForDifferentianMode &amp;&amp; (power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP)}`'
+                 default='`${cpuForDifferentianMode ? opamp0outputConnection : (topology eq CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP ? true : false)}`'>
+        <Entry name='Internal only'      value='false' visible='true'/>
+        <Entry name='Internal/Drive Pin' value='true'  visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='showAdvanced'
+               name='Show Advanced Settings'
+               group='`${(rootGroupName)}`'
+               editable='`${!cpuForDifferentianMode &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR)}`'
+               visible='`${((power ne CY_AUTANALOG_CTB_OA_PWR_OFF)  &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR))}`'
+               desc='Unlocks advanced compensation controls – may cause unstable behavior if overridden'
+               default='`${cpuForDifferentianMode ? showAdvanced0 : false}`'/>
+
+    <ParamChoice id='feedbackCapacitor'
+                 name='Feedback Capacitor'
+                 group='`${(rootGroupName)}`'
+                 visible='`${showAdvanced &amp;&amp; (power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA" || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER")}`'
+                 desc='Overrides the feedback capacitor - may cause unstable behavior'
+                 editable='`${!cpuForDifferentianMode &amp;&amp; showAdvanced &amp;&amp; (power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA" || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER")}`'
+                 default='`${cpuForDifferentianMode ?
+                             feedbackCapacitor0 :
+                             (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA" || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER") ?
+                             (outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "8.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "8.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_1_4_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "16.00")) ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "16.00")) ? CY_AUTANALOG_CTB_OA_FB_CAP_1_4_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF :
+                              CY_AUTANALOG_CTB_OA_FB_CAP_0_pF) : CY_AUTANALOG_CTB_OA_FB_CAP_0_pF}`'>
+      <Entry name='Disconnect' value='CY_AUTANALOG_CTB_OA_FB_CAP_0_pF'    visible='true'/>
+      <Entry name='0.7 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_0_7_pF'  visible='true'/>
+      <Entry name='1.4 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_1_4_pF'  visible='true'/>
+      <Entry name='2.1 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_2_1_pF'  visible='true'/>
+      <Entry name='2.8 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_2_8_pF'  visible='true'/>
+      <Entry name='3.5 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_3_5_pF'  visible='true'/>
+      <Entry name='4.2 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_4_2_pF'  visible='true'/>
+      <Entry name='4.9 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_4_9_pF'  visible='true'/>
+      <Entry name='5.6 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_5_6_pF'  visible='true'/>
+      <Entry name='6.3 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_6_3_pF'  visible='true'/>
+      <Entry name='7.0 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_7_0_pF'  visible='true'/>
+      <Entry name='7.7 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_7_7_pF'  visible='true'/>
+      <Entry name='8.4 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_8_4_pF'  visible='true'/>
+      <Entry name='9.1 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_9_1_pF'  visible='true'/>
+      <Entry name='9.8 pF'     value='CY_AUTANALOG_CTB_OA_FB_CAP_9_8_pF'  visible='true'/>
+      <Entry name='10.5 pF'    value='CY_AUTANALOG_CTB_OA_FB_CAP_10_5_pF' visible='true'/>
+    </ParamChoice>
+
+    <ParamChoice id='compensationCapacitor'
+                 name='Compensation Capacitor'
+                 group='`${(rootGroupName)}`'
+                 visible='`${showAdvanced &amp;&amp; (power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR)}`'
+                 desc='Overrides the internal compensation capacitor - may cause unstable behavior'
+                 editable='`${!cpuForDifferentianMode &amp;&amp; showAdvanced &amp;&amp; (power ne CY_AUTANALOG_CTB_OA_PWR_OFF) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR) &amp;&amp; (topology ne CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR)}`'
+                 default='`${cpuForDifferentianMode ?
+                             compensationCapacitor0 :
+                             (topology eq CY_AUTANALOG_CTB_OA_TOPO_PGA || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER" ?
+                             (outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "8.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "8.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "16.00")) ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "16.00")) ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                              outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_6_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_6_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_6_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_6_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_3_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_3_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) >=   cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_3_1_pF :
+                             !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) &amp;&amp; (cast(float, opampGainMin) &lt; cast(float, "4.00"))  ? CY_AUTANALOG_CTB_OA_CC_CAP_3_1_pF :
+                              CY_AUTANALOG_CTB_OA_CC_CAP_DISABLED) :
+                             !(topology eq CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR || topology eq CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR) ?
+                            (outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                             outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                             outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                             outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                             outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                             outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF :
+                            !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_HIGH_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                            !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_HIGH_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF :
+                            !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_MEDIUM_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_4_1_pF :
+                            !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_LOW_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_4_1_pF :
+                            !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW) ? CY_AUTANALOG_CTB_OA_CC_CAP_4_1_pF :
+                            !outputConnection &amp;&amp; (power eq CY_AUTANALOG_CTB_OA_PWR_ULTRA_LOW_RAIL) ? CY_AUTANALOG_CTB_OA_CC_CAP_4_1_pF :
+                             CY_AUTANALOG_CTB_OA_CC_CAP_DISABLED) : CY_AUTANALOG_CTB_OA_CC_CAP_DISABLED)}`'>
+      <Entry name='Disconnect' value='CY_AUTANALOG_CTB_OA_CC_CAP_DISABLED' visible='true'/>
+      <Entry name='0.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_0_1_pF'   visible='true'/>
+      <Entry name='1.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_1_1_pF'   visible='true'/>
+      <Entry name='2.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_2_1_pF'   visible='true'/>
+      <Entry name='3.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_3_1_pF'   visible='true'/>
+      <Entry name='4.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_4_1_pF'   visible='true'/>
+      <Entry name='5.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_5_1_pF'   visible='true'/>
+      <Entry name='6.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_6_1_pF'   visible='true'/>
+      <Entry name='7.1 pF'     value='CY_AUTANALOG_CTB_OA_CC_CAP_7_1_pF'   visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='topologyIsOpenLoop'
+               name='topologyIsOpenLoop'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_OPEN_LOOP_OPAMP"))}`'/>
+
+    <ParamBool id='topologyIsBuffer'
+               name='topologyIsBuffer'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_BUFFER"))}`'/>
+
+    <ParamBool id='topologyIsPGA'
+               name='topologyIsPGA'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA"))}`'/>
+
+    <ParamBool id='topologyIsTIA'
+               name='topologyIsTIA'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_TIA"))}`'/>
+
+    <ParamBool id='topologyIsComparator'
+               name='topologyIsComparator'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR"))}`'/>
+
+    <ParamBool id='topologyIsHystericComparator'
+               name='topologyIsHystericComparator'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR"))}`'/>
+
+    <ParamBool id='topologyIsDifferential'
+               name='topologyIsDifferential'
+               group='Export'
+               editable='false'
+               visible='`${debug}`'
+               desc=''
+               default='`${ ((power ne "CY_AUTANALOG_CTB_OA_PWR_OFF") &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER"))}`'/>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure a parent resource for OpAmp.' condition='`${!isBlockUsed(resource_ctb)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_ctb}`' value='lppass_ctb-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='The Opamp output connection to the pin is not aligned with dynamic configuration for Opamp `${oaInstNum}` in CTB `${ctbInstNum}`.'
+         condition='`${outputConnection ?
+                     !(
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[0]") ? getExposedMember(INST_LOC . ".ctb_dynamic[0]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[1]") ? getExposedMember(INST_LOC . ".ctb_dynamic[1]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[2]") ? getExposedMember(INST_LOC . ".ctb_dynamic[2]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[3]") ? getExposedMember(INST_LOC . ".ctb_dynamic[3]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[4]") ? getExposedMember(INST_LOC . ".ctb_dynamic[4]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[5]") ? getExposedMember(INST_LOC . ".ctb_dynamic[5]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[6]") ? getExposedMember(INST_LOC . ".ctb_dynamic[6]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[7]") ? getExposedMember(INST_LOC . ".ctb_dynamic[7]", "ctb_dyn_connectOutputToPin") : false)
+                      ) :
+                      (
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[0]") ? getExposedMember(INST_LOC . ".ctb_dynamic[0]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[1]") ? getExposedMember(INST_LOC . ".ctb_dynamic[1]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[2]") ? getExposedMember(INST_LOC . ".ctb_dynamic[2]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[3]") ? getExposedMember(INST_LOC . ".ctb_dynamic[3]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[4]") ? getExposedMember(INST_LOC . ".ctb_dynamic[4]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[5]") ? getExposedMember(INST_LOC . ".ctb_dynamic[5]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[6]") ? getExposedMember(INST_LOC . ".ctb_dynamic[6]", "ctb_dyn_connectOutputToPin") : false) ||
+                        (isBlockUsed(INST_LOC . ".ctb_dynamic[7]") ? getExposedMember(INST_LOC . ".ctb_dynamic[7]", "ctb_dyn_connectOutputToPin") : false)
+                      )}`' />
+    <DRC type='ERROR' text='The minimum gain for Opamp `${oaInstNum}` in CTB `${ctbInstNum}` is not aligned with gain from the State Transition Table.'
+         condition='`${power &amp;&amp; (topology eq "CY_AUTANALOG_CTB_OA_TOPO_PGA" || topology eq "CY_AUTANALOG_CTB_OA_TOPO_DIFF_AMPLIFIER") &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[0]") ? (getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[0]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[1]") ? (getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[1]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[2]") ? (getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[2]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[3]") ? (getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[3]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[4]") ? (getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[4]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[5]") ? (getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[5]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[6]") ? (getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[6]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[7]") ? (getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[7]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[8]") ? (getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[8]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[9]") ? (getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[9]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[10]") ? (getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[10]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[11]") ? (getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[11]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[12]") ? (getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[12]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[13]") ? (getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[13]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[14]") ? (getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[14]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[15]") ? (getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[15]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[16]") ? (getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[16]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[17]") ? (getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[17]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[18]") ? (getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[18]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[19]") ? (getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[19]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[20]") ? (getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[20]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[21]") ? (getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[21]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[22]") ? (getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[22]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[23]") ? (getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[23]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[24]") ? (getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[24]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[25]") ? (getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[25]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[26]") ? (getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[26]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[27]") ? (getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[27]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[28]") ? (getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[28]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[29]") ? (getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[29]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[30]") ? (getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[30]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[31]") ? (getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[31]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[32]") ? (getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[32]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[33]") ? (getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[33]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[34]") ? (getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[34]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[35]") ? (getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[35]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[36]") ? (getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[36]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[37]") ? (getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[37]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[38]") ? (getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[38]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[39]") ? (getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[39]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[40]") ? (getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[40]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[41]") ? (getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[41]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[42]") ? (getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[42]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[43]") ? (getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[43]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[44]") ? (getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[44]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[45]") ? (getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[45]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[46]") ? (getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[46", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[46]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[47]") ? (getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[47]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[48]") ? (getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[48]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[49]") ? (getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[49]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[50]") ? (getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[50]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[51]") ? (getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[51]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[52]") ? (getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[52]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[53]") ? (getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[53]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[54]") ? (getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[54]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[55]") ? (getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[55]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[56]") ? (getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[56]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[57]") ? (getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[57]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[58]") ? (getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[58]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[59]") ? (getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[59]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[60]") ? (getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[60]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[61]") ? (getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[61]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[62]") ? (getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[62]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true) &amp;&amp;
+                       (isBlockUsed("pass[0].ac[0].state[63]") ? (getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Enable") ? (cast(float, opampGainMin) &lt; cast(float,
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_00"  ?  1.00 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_1_42"  ?  1.42 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_00"  ?  2.00 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_2_78"  ?  2.78 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_4_00"  ?  4.00 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_5_82"  ?  5.82 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_8_00"  ?  8.00 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_10_67" ? 10.67 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_16_00" ? 16.00 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_21_33" ? 21.33 :
+                        getExposedMember("pass[0].ac[0].state[63]", "stt_ctb" . ctbInstNum . "opamp" . oaInstNum . "Gain") eq "CY_AUTANALOG_STT_CTB_OA_GAIN_32_00" ? 32.00 : 1.00) ? true : false) : true) : true)
+                      }`' />
+  </DRCs>
+
+  <ConfigFirmware>
+  </ConfigFirmware>
+
+</PersonalityTemplate>

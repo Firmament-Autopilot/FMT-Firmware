@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="dir_491c0eae963b95001b915b139d721729" kind="dir">
+    <compoundname>COMPONENT_SECURE_DEVICE</compoundname>
+    <innerfile refid="partition__ARMCM33_8h">partition_ARMCM33.h</innerfile>
+    <innerfile refid="s__start__pse84_8c">s_start_pse84.c</innerfile>
+    <innerfile refid="s__system__init_8c">s_system_init.c</innerfile>
+    <innerfile refid="s__system__pse84_8c">s_system_pse84.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_SECURE_DEVICE/"/>
+  </compounddef>
+</doxygen>

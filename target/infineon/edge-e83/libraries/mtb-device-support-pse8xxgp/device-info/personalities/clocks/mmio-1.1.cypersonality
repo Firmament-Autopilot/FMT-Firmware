@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file mmio.cypersonality
+* \version 1.0
+*
+* \brief
+* Peripheral Clock Group personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='mmio' name='Memory-Mapped I/O' version='1.1' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <Constants>
+    <Const id='COUNT' value='16' />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxsperi' />
+      <Resource name='peri\.mmio' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_mmio_v1'>
+      <ExposedMember key='frequency$idx' paramId='DIVIDED_FREQ_$idx' repeatCount='$COUNT' />
+      <ExposedMember key='accuracy$idx' paramId='SOURCE_ACCURACY_$idx' repeatCount='$COUNT' />
+      <ExposedMember key="displayedTargets$idx" paramId="displayedTargets_$idx" repeatCount="$COUNT" />
+      <ExposedMember key='dividerEnabled$idx' paramId='dividerEnabled$idx' repeatCount='$COUNT' />
+      <ExposedMember key='dividerFreq$idx' paramId='DIVIDED_FREQ_$idx' repeatCount='$COUNT' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__peripheral__group.html' linkText='Open Peripherals Group Controls Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <Repeat count='$COUNT'>
+      <!--$idx == group number-->
+      <ParamBool id='HAS_DIVIDER_$idx' default='`${lookupExpression("GROUP_PRESENT[$idx].PERI_GROUP.CLOCK_PRESENT",0)}`' visible='false' editable='false' group='' name='HAS_DIVIDER_$idx' desc='' />
+      <ParamRange  id='DIVIDER_DEFAULT_$idx' default='`${1 + lookupExpression("GROUP_PRESENT[$idx].PERI_GROUP.GROUP_CLOCK_CTL_DIV_DEFAULT",0)}`' min='1' max='256' resolution='1' visible='false' editable='false' name='' group='' desc='' />
+      <ParamString id='DIVIDER_DISPLAY_NAME_$idx' default='`${lookupExpression("GENERATED.IS_SYS_MMIO", 0) ? "SYS_MMIO $idx" : lookupExpression("GENERATED.IS_MMIO", 0) ? "MMIO $idx" : lookupExpression("GENERATED.IS_APP_MMIO", 0) ? (lookupExpression("GENERATED.APP_MMIO_TCM_INDEX", -1) == $idx ? "APP_MMIO_TCM" : "APP_MMIO $idx") : "PERI_GROUP $idx" }`' visible='false' editable='false' group='' name='' desc='' />
+      <ParamString id='TARGETS_$idx' default='`${getOrDefault(getDeviceAttr("PERI" . getInstNumber("peri") . "_MMIO$idx_TARGETS"),"")}`' visible='false' editable='false' group='' name='' desc='' />
+      <ParamString id='TARGETS_CNT_$idx' default='`${splitCount(TARGETS_$idx)}`' visible='false' editable='false' group='' name='' desc='' />
+      <!--25 is just an upper bound that currently works with the data. If TARGETS_CNT_$idx is ever greater than that, the number needs to be increased.-->
+      <Repeat count='25'>
+        <!--If a location has been wounded out getBlockDisplayName will fail so this will be set to an empty string.-->
+        <ParamString id='TARGET$idx_$idx{1}' default='`${$idx &lt; TARGETS_CNT_$idx{1} ? getOrDefault(getBlockDisplayName(splitAt(TARGETS_$idx{1}, $idx), false), "") : ""}`' visible='false' editable='false' group='' name='' desc='' />
+      </Repeat>
+      <ParamString id='JOINED_TARGETS_$idx' visible='false' editable='false' group='' name='' desc=''
+                  default='`${TARGET0_$idx . splitSeparator() .
+                              TARGET1_$idx . splitSeparator() .
+                              TARGET2_$idx . splitSeparator() .
+                              TARGET3_$idx . splitSeparator() .
+                              TARGET4_$idx . splitSeparator() .
+                              TARGET5_$idx . splitSeparator() .
+                              TARGET6_$idx . splitSeparator() .
+                              TARGET7_$idx . splitSeparator() .
+                              TARGET8_$idx . splitSeparator() .
+                              TARGET9_$idx . splitSeparator() .
+                              TARGET10_$idx . splitSeparator() .
+                              TARGET11_$idx . splitSeparator() .
+                              TARGET12_$idx . splitSeparator() .
+                              TARGET13_$idx . splitSeparator() .
+                              TARGET14_$idx . splitSeparator() .
+                              TARGET15_$idx . splitSeparator() .
+                              TARGET16_$idx . splitSeparator() .
+                              TARGET17_$idx . splitSeparator() .
+                              TARGET18_$idx . splitSeparator() .
+                              TARGET19_$idx . splitSeparator() .
+                              TARGET20_$idx . splitSeparator() .
+                              TARGET21_$idx . splitSeparator() .
+                              TARGET22_$idx . splitSeparator() .
+                              TARGET23_$idx . splitSeparator() .
+                              TARGET24_$idx . splitSeparator()}`' />
+      <!--Calling splitJoin will throw away any empty strings in the provided list-->
+      <ParamString id='TARGET_DISPLAY_$idx' default='`${splitJoin(JOINED_TARGETS_$idx, ", ")}`' visible='false' editable='false' group='' name='' desc='' />
+      <ParamString id='displayedTargets_$idx' name='Downstream Peripherals' desc='The peripherals this clock gets used by.' default='`${TARGET_DISPLAY_$idx eq "" ? "None" : TARGET_DISPLAY_$idx}`' visible='`${HAS_DIVIDER_$idx}`' editable='false' group='`${DIVIDER_DISPLAY_NAME_$idx}`' />
+
+      <ParamSignal port='clk_pclk_root[$idx]' canBeEmpty='true' visible='`${(GROUP_PRESENT &amp; (1 &lt;&lt; $idx))}`' group='`${DIVIDER_DISPLAY_NAME_$idx}`' name='Source' desc='The source clock to the divider.'  />
+      <ParamString id='SOURCE_LOC_$idx' default='`${getBlockFromSignal("clk_pclk_root[$idx]")}`' visible='false' editable='false' name='' group='' desc='' />
+      <ParamString id='SOURCE_LOC_ENABLED_$idx' default='`${isBlockUsed(SOURCE_LOC_$idx)}`' visible='false' editable='false' name='' group='' desc='' />
+      <ParamRange  id='SOURCE_FREQ_$idx' default='`${getOrDefault(getExposedMember(SOURCE_LOC_$idx, "frequency"),0)}`' min='0' max='400000000' resolution='1' visible='false' editable='false' name='' group='' desc='' />
+      <ParamString id='SOURCE_ACCURACY_$idx' default='`${getOrDefault(getExposedMember(SOURCE_LOC_$idx, "accuracy"),0)}`' visible='false' editable='false' desc='' name='' group='' />
+      <ParamString id='SOURCE_DISPLAY_$idx' default='`${getOrDefault(getBlockDisplayName(SOURCE_LOC_$idx,false), "")}`' visible='false' editable='false' desc='' name='' group='' />
+
+      <ParamBool id='dividerEnabled$idx' name='Enable Divider' group='`${DIVIDER_DISPLAY_NAME_$idx}`' default='false' visible='`${HAS_DIVIDER_$idx &amp;&amp; SOURCE_LOC_ENABLED_$idx}`' desc='Enable the `${DIVIDER_DISPLAY_NAME_$idx}` divider.' />
+      <ParamRange id='divider$idx' name='Divider' group='`${DIVIDER_DISPLAY_NAME_$idx}`/Enable Divider' default='`${DIVIDER_DEFAULT_$idx}`' min='1' max='256' resolution='1' visible='`${HAS_DIVIDER_$idx &amp;&amp; dividerEnabled$idx}`' desc='The default divider is `${DIVIDER_DEFAULT_$idx}`.' />
+
+      <ParamString id='DIVIDED_FREQ_$idx' default='`${cast(int64, ((SOURCE_FREQ_$idx / cast(float, divider$idx) + 0.0005) * 1000)) / 1000.0}`' />
+      <ParamString id='DIVIDED_FREQ_DISPLAY_$idx' name='Frequency' group='`${DIVIDER_DISPLAY_NAME_$idx}`/Enable Divider' default='`${formatFrequency(DIVIDED_FREQ_$idx,SOURCE_ACCURACY_$idx)}`' visible='`${HAS_DIVIDER_$idx &amp;&amp; dividerEnabled$idx}`' editable='false' desc='The resulting output clock frequency' />
+    </Repeat>
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' condition='`${dividerEnabled$idx &amp;&amp; !SOURCE_LOC_ENABLED_$idx}`' text='"`${DIVIDER_DISPLAY_NAME_$idx}`" requires "`${SOURCE_DISPLAY_$idx}`" to be enabled.' paramId='dividerEnabled$idx' repeatCount='$COUNT'>
+      <FixIt action='ENABLE_BLOCK' target='`${SOURCE_LOC_$idx}`' valid='true' />
+      <FixIt action='SET_PARAM' target='dividerEnabled$idx' value='false' valid='true' description='Disable `${DIVIDER_DISPLAY_NAME_$idx}`' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigInstruction purpose='INITIALIZE' value='Cy_SysClk_PeriGroupSetDivider((`${getInstNumber("peri")}` &lt;&lt; 8) | $idx, `${divider$idx-1}`U);' include='`${dividerEnabled$idx}`' repeatCount='$COUNT' />
+  </ConfigFirmware>
+</PersonalityTemplate>

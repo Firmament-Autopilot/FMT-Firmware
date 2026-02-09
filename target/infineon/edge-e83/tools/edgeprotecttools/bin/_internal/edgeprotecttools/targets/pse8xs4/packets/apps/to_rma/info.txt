@@ -1,0 +1,4 @@
+name: cyapp_to_rma
+description: The application clears IFX assets and advances the device LCS to RMA.
+type: Firmware application
+version: 2.0.0.5683

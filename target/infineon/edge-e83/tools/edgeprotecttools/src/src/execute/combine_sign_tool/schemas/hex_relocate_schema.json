@@ -1,0 +1,120 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "hex-relocate"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "Input hex file",
+                        "type": "string"
+                    },
+                    "regions": {
+                        "title": "Hex Relocate Regions",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "start": {
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "pattern": "^0x[0-9a-fA-F]+$"
+                                        }
+                                    ],
+                                    "description": "Start address of the region to relocate (integer or hex string, e.g. 0x08000000)"
+                                },
+                                "size": {
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "pattern": "^0x[0-9a-fA-F]+$"
+                                        }
+                                    ],
+                                    "description": "Size of the region to relocate (integer or hex string, e.g. 0x04000000)"
+                                },
+                                "dest": {
+                                    "oneOf": [
+                                        {
+                                            "type": "integer"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "pattern": "^0x[0-9a-fA-F]+$"
+                                        }
+                                    ],
+                                    "description": "Destination base address (integer or hex string, e.g. 0x60000000)"
+                                }
+                            },
+                            "required": [
+                                "start",
+                                "size",
+                                "dest"
+                            ],
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            },
+            "allOf": [
+                {
+                    "contains": {
+                        "required": [
+                            "file",
+                            "regions"
+                        ]
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                }
+            ]
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the output hex file",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        }
+    }
+}

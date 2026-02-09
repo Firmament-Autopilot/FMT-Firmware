@@ -1,0 +1,4 @@
+name: cyapp_device_integrity_exam
+description: Device integrity application verifies the device is in the expected LCS. This application is signed by PTE_ROT_KEY. This application is executed in NORMAL_PROVISIONED LCS.
+type: Firmware application
+version: 1.0.0.4508

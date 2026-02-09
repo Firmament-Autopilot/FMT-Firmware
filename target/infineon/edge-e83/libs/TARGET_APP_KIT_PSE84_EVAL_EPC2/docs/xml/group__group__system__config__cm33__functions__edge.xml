@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__cm33__functions__edge" kind="group">
+    <compoundname>group_system_config_cm33_functions_edge</compoundname>
+    <title>Cortex-M33 Control Functions</title>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="group__group__system__config__cm33__functions__edge_1gaa15fa85670d0eedf2d279e7224400022" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t Cy_SysCM33GetStatus</definition>
+        <argsstring>(void)</argsstring>
+        <name>Cy_SysCM33GetStatus</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Returns the Cortex-M33 core power mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para><ref refid="group__group__system__config__core__status__macro__edge" kindref="compound">Core Status Macros</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="177" column="10" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="690" bodyend="694" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="177" declcolumn="10"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm33__functions__edge_1ga8f3b905620b91664007b3ba7fe58c133" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysCM33Enable</definition>
+        <argsstring>(uint32_t vectorTableOffset, uint32_t waitus)</argsstring>
+        <name>Cy_SysCM33Enable</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>vectorTableOffset</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>waitus</declname>
+        </param>
+        <briefdescription>
+<para>Sets vector table base address and enables the Cortex-M33 core in secure mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="note"><para>If the CPU is already enabled, it is reset and then enabled.</para>
+</simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>vectorTableOffset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The offset of the vector table base address from memory address 0x00000000. The offset should be multiple to 1024 bytes. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>waitus</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The timeout value in microsecond used to wait for core to be booted. value zero is for infinite wait till the core is booted successfully. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="178" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="711" bodyend="753" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="178" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm33__functions__edge_1gaa45b4961fc31a1b0bf59ff42aa59c1cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Cy_SysCM33Reset</definition>
+        <argsstring>(uint32_t waitus)</argsstring>
+        <name>Cy_SysCM33Reset</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>waitus</declname>
+        </param>
+        <briefdescription>
+<para>Resets the Cortex-M33 core and waits for the mode to take the effect. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>waitus</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The timeout value in microsecond used to wait for core to be reset. value zero is for infinite wait till the core is reset successfully.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="warning"><para>Do not call the function while the Cortex-M33 is executing because such a call may corrupt/abort a pending bus-transaction by the CPU and cause unexpected behavior in the system including a deadlock. Call the function while the Cortex-M55 core is in the Sleep or Deep Sleep low-power mode. Use the Power Management (syspm) API to put the CPU into the low-power modes. Use the Cy_SysPm_ReadStatus() to get a status of the CPU. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="179" column="6" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.c" bodystart="773" bodyend="803" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" declline="179" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm33__functions__edge_1gaa9fe7771438fdc28c0a4daaf8c0efd24" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t cy_CbusRemapAddr</definition>
+        <argsstring>(const void *addr)</argsstring>
+        <name>cy_CbusRemapAddr</name>
+        <param>
+          <type>const void *</type>
+          <declname>addr</declname>
+        </param>
+        <briefdescription>
+<para>CBUS address remap remap address for masters on CBUS. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">addr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to be remap</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="retval"><parameteritem>
+<parameternamelist>
+<parametername>remap</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>address </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="192" column="24" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="192" bodyend="228"/>
+      </memberdef>
+      <memberdef kind="function" id="group__group__system__config__cm33__functions__edge_1ga6004d48d31cfd458ce78d807803c2f5a" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t cy_AhbRemapAddr</definition>
+        <argsstring>(const void *addr)</argsstring>
+        <name>cy_AhbRemapAddr</name>
+        <param>
+          <type>const void *</type>
+          <declname>addr</declname>
+        </param>
+        <briefdescription>
+<para>AHB address remap remap address for masters. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">addr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to be remap</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="retval"><parameteritem>
+<parameternamelist>
+<parametername>remap</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>address </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="240" column="24" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="240" bodyend="277"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

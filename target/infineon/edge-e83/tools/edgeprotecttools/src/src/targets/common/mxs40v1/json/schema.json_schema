@@ -1,0 +1,382 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "id": "#",
+    "required": true,
+    "type": "object",
+    "properties": {
+        "debug": {
+            "id": "debug",
+            "required": true,
+            "type": "object",
+            "properties": {
+                "m0p": {
+                    "id": "m0p",
+                    "required": true,
+                    "type": "object",
+                    "properties": {
+                        "permission": {
+                            "enum": [
+                                "disabled",
+                                "enabled",
+                                "allowed"
+                            ],
+                            "id": "permission",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "control": {
+                            "enum": [
+                                "firmware",
+                                "certificate",
+                                "open"
+                            ],
+                            "id": "control",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "key": {
+                            "id": "key",
+                            "required": true,
+                            "type": "number"
+                        }
+                    }
+                },
+                "m4": {
+                    "id": "m4",
+                    "required": true,
+                    "type": "object",
+                    "properties": {
+                        "permission": {
+                            "enum": [
+                                "disabled",
+                                "enabled",
+                                "allowed"
+                            ],
+                            "id": "permission",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "control": {
+                            "enum": [
+                                "firmware",
+                                "certificate",
+                                "open"
+                            ],
+                            "id": "control",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "key": {
+                            "id": "key",
+                            "required": true,
+                            "type": "number"
+                        }
+                    }
+                },
+                "system": {
+                    "id": "system",
+                    "required": true,
+                    "type": "object",
+                    "properties": {
+                        "permission": {
+                            "enum": [
+                                "disabled",
+                                "enabled",
+                                "allowed"
+                            ],
+                            "id": "permission",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "control": {
+                            "enum": [
+                                "firmware",
+                                "certificate",
+                                "open"
+                            ],
+                            "id": "control",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "key": {
+                            "id": "key",
+                            "required": true,
+                            "type": "number"
+                        },
+                        "flashw": {
+                            "id": "flash",
+                            "required": true,
+                            "type": "boolean"
+                        },
+                        "flashr": {
+                            "id": "flash",
+                            "required": true,
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "rma": {
+                    "id": "rma",
+                    "required": true,
+                    "type": "object",
+                    "properties": {
+                        "permission": {
+                            "enum": [
+                                "disabled",
+                                "enabled",
+                                "allowed"
+                            ],
+                            "id": "permission",
+                            "required": true,
+                            "type": "string"
+                        },
+                        "destroy_fuses": {
+                            "id": "destroy_fuses",
+                            "required": true,
+                            "type": "array",
+                            "items": {
+                                "id": "0",
+                                "required": true,
+                                "type": "object",
+                                "properties": {
+                                    "start": {
+                                        "maximum": 65535,
+                                        "id": "start",
+                                        "required": true,
+                                        "type": "number"
+                                    },
+                                    "size": {
+                                        "maximum": 65535,
+                                        "id": "size",
+                                        "required": true,
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        },
+                        "destroy_flash": {
+                            "id": "destroy_flash",
+                            "required": true,
+                            "type": "array",
+                            "items": {
+                                "id": "0",
+                                "required": true,
+                                "type": "object",
+                                "properties": {
+                                    "start": {
+                                        "maximum": 4294967295,
+                                        "id": "start",
+                                        "required": true,
+                                        "type": "number"
+                                    },
+                                    "size": {
+                                        "maximum": 4294967295,
+                                        "id": "size",
+                                        "required": true,
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        },
+                        "key": {
+                            "id": "key",
+                            "required": true,
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "boot_upgrade": {
+            "id": "boot_upgrade",
+            "required": true,
+            "type": "object",
+            "properties": {
+                "title": {
+                    "id": "title",
+                    "required": true,
+                    "type": "string"
+                },
+                "firmware": {
+                    "id": "firmware",
+                    "required": true,
+                    "type": "array",
+                    "items": {
+                        "id": "0",
+                        "required": true,
+                        "type": "object",
+                        "properties": {
+                            "boot_auth": {
+                                "id": "boot_auth",
+                                "required": true,
+                                "type": "array",
+                                "items": {
+                                    "id": "0",
+                                    "required": true,
+                                    "type": "number"
+                                }
+                            },
+                            "id": {
+                                "maximum": 256,
+                                "id": "id",
+                                "required": true,
+                                "type": "number"
+                            },
+                            "launch": {
+                                "id": "launch",
+                                "required": false,
+                                "type": "number"
+                            },
+                            "monotonic": {
+                                "id": "monotonic",
+                                "required": true,
+                                "type": "number"
+                            },
+                            "smif_id": {
+                                "id": "smif_id",
+                                "required": false,
+                                "type": "number"
+                            },
+                            "smif_sector_size": {
+                                "id": "smif_sector_size",
+                                "required": false,
+                                "type": "number"
+                            },
+                            "wdt_timeout": {
+                                "id": "wdt_timeout",
+                                "required": false,
+                                "type": "number"
+                            },
+                            "wdt_enable": {
+                                "id": "wdt_enable",
+                                "required": false,
+                                "type": "boolean"
+                            },
+                            "reset_after_failure": {
+                                "id": "reset_after_failure",
+                                "required": false,
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 4294967295
+                            },
+                            "set_img_ok": {
+                                "id": "set_img_ok",
+                                "required": false,
+                                "type": "boolean"
+                            },
+                            "upgrade": {
+                                "id": "upgrade",
+                                "required": true,
+                                "type": "boolean"
+                            },
+                            "upgrade_mode": {
+                                "id": "upgrade_mode",
+                                "required": false,
+                                "type": "string",
+                                "enum": [
+                                    "overwrite",
+                                    "swap"
+                                ]
+                            },
+                            "resources": {
+                                "id": "resources",
+                                "required": true,
+                                "type": "array",
+                                "items": {
+                                    "id": "0",
+                                    "required": true,
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "enum": [
+                                                "SRAM_DAP",
+                                                "FLASH_PC1_SPM",
+                                                "FLASH_PC2",
+                                                "FLASH_PC3",
+                                                "FLASH_PC4",
+                                                "FLASH_MAIN_CODE",
+                                                "FLASH_MAIN_XO",
+                                                "FLASH_MAIN_DATA",
+                                                "FLASH_SUPERVISORY",
+                                                "FLASH_WORK_SECURE",
+                                                "FLASH_WORK",
+                                                "SRAM_PC0_PRIV",
+                                                "SRAM_PC0_PUB",
+                                                "SRAM_SPM_PRIV",
+                                                "SRAM_SPM_PUB",
+                                                "SRAM_PC1_PRIV",
+                                                "SRAM_PC2_PRIV",
+                                                "SRAM_PC3_PRIV",
+                                                "SRAM_PC4_PRIV",
+                                                "SRAM_MAIN",
+                                                "SMIF_CODE",
+                                                "SMIF_XO",
+                                                "SMIF_DATA",
+                                                "BOOT",
+                                                "UPGRADE",
+                                                "STATUS_PARTITION",
+                                                "SCRATCH"
+                                            ],
+                                            "id": "type",
+                                            "required": true,
+                                            "type": "string"
+                                        },
+                                        "address": {
+                                            "maximum": 4294967295,
+                                            "id": "address",
+                                            "required": true,
+                                            "type": "number"
+                                        },
+                                        "size": {
+                                            "maximum": 4294967295,
+                                            "id": "size",
+                                            "required": true,
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "cy_bootloader": {
+            "id": "cy_bootloader",
+            "required": true,
+            "type": "object",
+            "properties": {
+                "mode": {
+                    "enum": [
+                        "debug",
+                        "release",
+                        "custom"
+                    ],
+                    "id": "mode",
+                    "required": true,
+                    "type": "string"
+                }
+            }
+        },
+        "provisioning": {
+            "id": "provisioning",
+            "required": true,
+            "type": "object",
+            "properties": {
+                "packet_dir": {
+                    "id": "packet_dir",
+                    "required": true,
+                    "type": "string"
+                },
+                "chain_of_trust": {
+                    "id": "chain_of_trust",
+                    "required": false,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

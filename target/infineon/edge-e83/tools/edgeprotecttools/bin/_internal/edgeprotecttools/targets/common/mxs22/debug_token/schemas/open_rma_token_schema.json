@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "device_id": {
+      "type": "object",
+      "properties": {
+        "family_id": {
+          "type": "string"
+        },
+        "si_revision_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "family_id",
+        "si_revision_id"
+      ]
+    },
+    "silicon_id": {
+      "type": "string"
+    },
+    "control_word": {
+      "type": "object",
+      "properties": {
+        "cm0p": {
+          "type": "object",
+          "properties": {
+            "m0seccpuss": {
+              "type": "string",
+              "enum": [
+                "Enabled",
+                "Disabled"
+              ]
+            }
+          },
+          "required": [
+            "m0seccpuss"
+          ]
+        }
+      },
+      "required": [
+        "cm0p"
+      ]
+    },
+    "die_id": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "object",
+          "properties": {
+            "lot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777215
+            },
+            "wafer": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "xpos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "ypos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "sort": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "day": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "lot",
+            "wafer",
+            "xpos",
+            "ypos",
+            "sort",
+            "day",
+            "month",
+            "year"
+          ]
+        },
+        "min": {
+          "type": "object",
+          "properties": {
+            "lot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777215
+            },
+            "wafer": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "xpos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "ypos": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "sort": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "day": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "month": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "lot",
+            "wafer",
+            "xpos",
+            "ypos",
+            "sort",
+            "day",
+            "month",
+            "year"
+          ]
+        }
+      },
+      "required": [
+        "max",
+        "min"
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "device_id",
+    "silicon_id",
+    "control_word",
+    "die_id"
+  ]
+}

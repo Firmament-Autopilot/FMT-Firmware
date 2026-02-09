@@ -1,0 +1,72 @@
+{
+  "flows": {
+    "sort": {
+      "desc": "Transition to SORT LCS",
+      "apps": [
+        "to_sort"
+      ]
+    },
+    "provisioned": {
+      "desc": "Transition to PROVISIONED LCS",
+      "apps": [
+        "to_sort",
+        "device_id"
+      ]
+    },
+    "normal_provisioned": {
+      "desc": "Transition to NORMAL_PROVISIONED LCS",
+      "apps": [
+        "to_sort",
+        "device_id",
+        "prov_icv"
+      ]
+    },
+    "oem_provisioning": {
+      "desc": "OEM Provisioning. Transition to SECURE or NORMAL_PROVISIONED LCS",
+      "apps": [
+        "prov_oem"
+      ]
+    },
+    "reprovisioning": {
+      "desc": "Reprovisioning",
+      "apps": [
+        "reprovisioning"
+      ]
+    },
+    "rma": {
+      "desc": "Converts a part to RMA LCS",
+      "apps": [
+        "to_rma"
+      ]
+    },
+    "prot_fw_policy": {
+      "desc": "Protected FW Policy",
+      "apps": [
+        "prot_fw_policy"
+      ]
+    },
+    "prot_fw_dfu": {
+      "desc": "Protected FW DFU",
+      "apps": [
+        "prot_fw_dfu"
+      ]
+    },
+    "device_integrity_exam": {
+      "desc": "Device Integrity Exam",
+      "apps": [
+        "device_integrity_exam"
+      ]
+    }
+  },
+  "paths": {
+    "to_sort": "../packets/apps/to_sort/config.json",
+    "device_id": "../packets/apps/device_id/config.json",
+    "prov_icv": "../packets/apps/prov_icv/config.json",
+    "prov_oem": "../packets/apps/prov_oem/config.json",
+    "reprovisioning": "../packets/apps/reprovisioning/config.json",
+    "to_rma": "../packets/apps/to_rma/config.json",
+    "prot_fw_policy": "../packets/apps/prot_fw_policy/config.json",
+    "prot_fw_dfu": "../packets/apps/prot_fw_dfu/config.json",
+    "device_integrity_exam": "../packets/apps/device_integrity_exam/config.json"
+  }
+}

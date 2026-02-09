@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "serial_number": {
+      "type": "string"
+    },
+    "issuer": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "organizational_unit": {
+          "type": "string"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "street_address": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "email_address": {
+          "type": "string"
+        },
+        "common_name": {
+          "type": "string"
+        },
+        "serial_number": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "common_name"
+      ]
+    },
+    "validity": {
+      "type": "object",
+      "properties": {
+        "not_before": {
+          "type": "string"
+        },
+        "not_after": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "not_before",
+        "not_after"
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "organizational_unit": {
+          "type": "string"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "street_address": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "email_address": {
+          "type": "string"
+        },
+        "common_name": {
+          "type": "string"
+        },
+        "serial_number": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "common_name"
+      ]
+    },
+    "subject_public_key": {
+      "type": "string"
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "oid": {
+            "type": "string"
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "data_format": {
+            "type": "string",
+            "enum": [
+              "hex",
+              "binary_file",
+              "base64"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "oid",
+          "critical",
+          "data_format",
+          "value"
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "serial_number",
+    "issuer",
+    "validity",
+    "subject",
+    "subject_public_key",
+    "extensions"
+  ]
+}

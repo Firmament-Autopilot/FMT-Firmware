@@ -1,0 +1,29 @@
+{   
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name" : "hex-segment command example",
+            "description": "Extracts a segment from the hex and saves it to a file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-segment",
+                    "inputs": [
+                        {
+                            "description": "Path to the input hex file",
+                            "file": "./some.hex",
+                            "address" : "0x32002000"
+                        }
+                    ],
+                    "outputs" : [
+                        {
+                            "description": "Name of output file ",
+                            "format" : "ihex",
+                            "file" : "./extracted_result.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

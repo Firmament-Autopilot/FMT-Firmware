@@ -1,0 +1,62 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "Reprovisioning Schema",
+    "type": "object",
+    "required": [
+        "policy",
+        "revoke",
+        "public_key"
+    ],
+    "properties": {
+        "policy": {
+            "type": "object",
+            "required": [
+                "platform",
+                "version",
+                "type"
+            ],
+            "properties": {
+                "platform": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 99.99
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "revoke": {
+            "title": "Key revocation",
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "enum": [
+                        "IFX_ROT_KEY_0",
+                        "OEM_ROT_KEY_0",
+                        "PROT_FW_ROT_KEY_0"
+                    ]
+                }
+            }
+        },
+        "public_key": {
+            "title": "Path to the public key used to sign the policy",
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

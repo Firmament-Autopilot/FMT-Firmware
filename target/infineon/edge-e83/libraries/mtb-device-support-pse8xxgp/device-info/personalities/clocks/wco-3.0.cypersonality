@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file wco.cypersonality
+* \version 3.0
+*
+* \brief
+* WCO personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='wco' name='WCO' version='3.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <RequiresConnectivity>
+        <SignalGroup type="ANY">
+          <Signal port="wco_in[0]"/>
+          <Signal port="wco_out[0]"/>
+        </SignalGroup>
+      </RequiresConnectivity>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs40srss_ver2,mxs40srss_ver3,mxs22srss' />
+      <Resource name='srss\.clock\.wco' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_pin_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracyPct' />
+      <ExposedMember key='suppressCodeGen' paramId='suppressCodeGen' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__wco.html' linkText='Open WCO Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+    <ParamString id='isWCOCSVPresent' default='`${lookupExpression("WCO_CSV_PRESENT", 0)}`' />
+    <ParamString id='isCSVBAKPresent' default='`${lookupExpression("CSV_BAK_PRESENT", 0)}`' />
+
+    <ParamString id='frequency' default='32768' />
+
+    <ParamChoice id='clockPort' name='Clock Port' group='General' default='CY_SYSCLK_WCO_NOT_BYPASSED' visible='true' desc='Activates the WCO bypass mode'>
+      <Entry name='Normal (Crystal)' value='CY_SYSCLK_WCO_NOT_BYPASSED' />
+      <Entry name='Bypass (External sine wave)' value='CY_SYSCLK_WCO_BYPASSED' />
+    </ParamChoice>
+    <ParamBool id='clockLostDetection' name='Enable Clock Loss Detection' group='General' default='false' visible='`${isCSVBAKPresent || isWCOCSVPresent}`' desc='' />
+    <ParamChoice id='clockSupervisor' name='Supervisor' group='General' default='CY_SYSCLK_WCO_CSV_SUPERVISOR_ILO' visible='`${clockLostDetection}`' desc=''>
+      <Entry name='ILO' value='CY_SYSCLK_WCO_CSV_SUPERVISOR_ILO' />
+      <Entry name='ALTLF' value='CY_SYSCLK_WCO_CSV_SUPERVISOR_ALTLF' visible='`${hasBlock("srss[0].clock[0].altlf[0]")}`'/>
+      <Entry name='PILO' value='CY_SYSCLK_WCO_CSV_SUPERVISOR_PILO' visible='`${hasBlock("srss[0].clock[0].pilo[0]")}`'/>
+    </ParamChoice>
+    <ParamChoice id='lossWindow' name='Loss Window' group='General' default='CY_SYSCLK_CSV_LOSS_4_CYCLES' visible='`${clockLostDetection}`' desc=''>
+      <Entry name='4 cycle' value='CY_SYSCLK_CSV_LOSS_4_CYCLES' />
+      <Entry name='8 cycle' value='CY_SYSCLK_CSV_LOSS_8_CYCLES' />
+      <Entry name='16 cycle' value='CY_SYSCLK_CSV_LOSS_16_CYCLES' />
+      <Entry name='32 cycle' value='CY_SYSCLK_CSV_LOSS_32_CYCLES' />
+      <Entry name='64 cycle' value='CY_SYSCLK_CSV_LOSS_64_CYCLES' />
+      <Entry name='128 cycle' value='CY_SYSCLK_CSV_LOSS_128_CYCLES' />
+      <Entry name='256 cycle' value='CY_SYSCLK_CSV_LOSS_256_CYCLES' />
+      <Entry name='512 cycle' value='CY_SYSCLK_CSV_LOSS_512_CYCLES' />
+    </ParamChoice>
+    <ParamChoice id='lossAction' name='Loss Action' group='General' default='CY_SYSCLK_CSV_ERROR_FAULT' visible='`${clockLostDetection}`' desc=''>
+      <Entry name='None' value='CY_SYSCLK_CSV_ERROR_IGNORE' />
+      <Entry name='Fault' value='CY_SYSCLK_CSV_ERROR_FAULT' />
+      <Entry name='Reset' value='CY_SYSCLK_CSV_ERROR_RESET' />
+      <Entry name='Fault-Reset' value='CY_SYSCLK_CSV_ERROR_FAULT_RESET' />
+    </ParamChoice>
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${frequency / 1000.0 . " kHz"}`' visible='true' editable='false' desc='The nominal output frequency' />
+    <ParamRange id='accuracyPpm' name='Accuracy (±ppm)' group='General' default='150' min='0' max='1000000' resolution='1' visible='true' desc='Clock accuracy in ppm' />
+    <ParamString id='accuracyPct' name='Accuracy (±%)' group='General' default='`${accuracyPpm/10000.0}`' visible='true' editable='false' desc='Clock accuracy in %' />
+
+    <!-- Restrict WCO connections to pins -->
+    <ParamSignal port='wco_in[0]' name='Input' group='Connections' visible='true' desc='The input/passive terminal of the internal WCO circuitry' canBeEmpty='false' requirePreferred='true'>
+      <Constraint type='REQUIRE' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' />
+    </ParamSignal>
+    <ParamSignal port='wco_out[0]' name='Output' group='Connections' visible='true' desc='The output/active terminal of the internal WCO circuitry' canBeEmpty='false' requirePreferred='true'>
+      <Constraint type='REQUIRE' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' />
+    </ParamSignal>
+
+    <!-- ExposedMember -->
+    <ParamBool id='suppressCodeGen' default='true' />
+  </Parameters>
+
+  <Variables>
+    <Variable id='gpio_in_port' value='`${getInstFromLocation(getParamValue("wco_in[0]"), "port")}`' />
+    <Variable id='gpio_in_pin' value='`${getInstFromLocation(getParamValue("wco_in[0]"), "pin")}`' />
+    <Variable id='gpio_out_port' value='`${getInstFromLocation(getParamValue("wco_out[0]"), "port")}`' />
+    <Variable id='gpio_out_pin' value='`${getInstFromLocation(getParamValue("wco_out[0]"), "pin")}`' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='INFO' text='The WCO is enabled. Chip startup will be slower because clock configuration cannot continue until the WCO is ready. See the device datasheet for WCO startup timing. If WCO is not required during startup, consider starting it in main() for faster chip startup.' condition='`${!("mxs22srss" eq getIpBlockName())}`' />
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_gpio.h' />
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_IN_PRT' value='GPIO_PRT`${gpio_in_port}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_IN_PIN' value='`${gpio_in_pin}`U' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_OUT_PRT' value='GPIO_PRT`${gpio_out_port}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_OUT_PIN' value='`${gpio_out_pin}`U' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_WCO_BYPASS' value='`${clockPort}`' public='false' />
+    <ConfigStruct name='`${INST_NAME . "_wcoCsv"}`' type='cy_stc_wco_csv_config_t' const='true' public='true' include='`${isCSVBAKPresent || isWCOCSVPresent}`' >
+      <Member name='supervisorClock' value='`${clockSupervisor}`' />
+      <Member name='enableLossDetection' value='`${clockLostDetection}`' />
+      <Member name='lossWindow' value='`${lossWindow}`' />
+      <Member name='lossAction' value='`${lossAction}`' />
+    </ConfigStruct>
+
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_WcoInit(void)' public='false' include='`${("mxs40srss" ne getIpBlockName()) || (getDeviceAttr("Security") eq "NA")}`'>
+      <Line value='(void)Cy_GPIO_Pin_FastInit(GPIO_PRT`${gpio_in_port}`, `${gpio_in_pin}`U, 0x00U, 0x00U, HSIOM_SEL_GPIO);' />
+      <Line value='(void)Cy_GPIO_Pin_FastInit(GPIO_PRT`${gpio_out_port}`, `${gpio_out_pin}`U, 0x00U, 0x00U, HSIOM_SEL_GPIO);' />
+      <Line value='Cy_SysClk_WcoBypass(CY_SYSCLK_WCO_BYPASSED);' include='`${clockPort eq CY_SYSCLK_WCO_BYPASSED}`' />
+      <Line value='if (CY_SYSCLK_SUCCESS != Cy_SysClk_WcoEnable(1000000UL))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_WCO_ERROR);' />
+      <Line value='}' />
+      <Line value='Cy_SysClk_WcoConfigureCsv(&amp;wcoCsv);' include='`${isCSVBAKPresent || isWCOCSVPresent}`' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

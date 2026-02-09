@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file iho.cypersonality
+* \version 1.0
+*
+* \brief
+* IHO personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright 2018-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='mxs40iho' name='IHO' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40ssrss,mxs22srss' />
+      <Resource name='srss\.clock\.iho' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <ParamString id='is22srssAvailable' default='`${("mxs22srss" eq getIpBlockName())}`' />
+
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk.html' linkText='Open SysClk Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+    <ParamBool id='is_mxs22srssv2_1' name='is_mxs22srssv2_1' group="" default='`${is22srssAvailable &amp;&amp; (getVersion() eq 2) &amp;&amp; (GENERATED.IP_MINOR_VERSION == 1)}`' visible='false' editable='false' desc='True if the IP version is MX22SRSS v2.1' />
+    <ParamString id='frequency' default='`${"mxs40ssrss" eq getIpBlockName() ? 48000000 : is_mxs22srssv2_1 ? 48000000: 50000000}`' />
+    <ParamString id='accuracy' default='1' />
+
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${formatFrequency(frequency, accuracy)}`' visible='true' editable='false' desc='The nominal output frequency' />
+
+    <ParamBool id='apply_trim' name='Apply IHO Trim' group='Trims' default='`${is22srssAvailable}`' visible='`${is22srssAvailable}`' desc='If checked TRIM value will be applied. Otherwise ignored.' />
+    <ParamRange id='IHOTrim' name='IHO Trim Value' group='Trims' default='1396' min='0' max='2047' resolution='1' visible='`${apply_trim}`' desc='Set IHO Trim Value' />
+  </Parameters>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_IHO_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_IHO_TRIM_VALUE' value='`${IHOTrim}`' public='false' include='`${apply_trim}`'/>
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_IhoInit(void)'  public='false'>
+      <Line value='Cy_SysClk_IhoEnable();' />
+      <Line value='Cy_SysClk_IhoSetTrim(CY_CFG_SYSCLK_IHO_TRIM_VALUE);' include='`${apply_trim}`' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

@@ -1,0 +1,50 @@
+DevicePreset "55900 Test Patch"
+{
+    ConfigFSOffset = 0
+    DLReadWriteMode = "Cortex M3 HCI"
+    DLWriteVerifyMode = "Write and verify"
+    DLMaxWriteSize = 240
+    DLSectorEraseMode = "Written sectors only"
+    DLDTRReset = 0
+    DLPostResetDelay_ms = 100
+    DLAutobaud = 0
+    DLAutobaudRepeat = 1
+    DLAutobaudRepeatDelay_ms = 200
+    DLWaitForLaunchAnnounce = 0
+    DLConfigReprogramIF_PLL = 0
+    DLUsbBulkPipe = 0
+    DLMinidriver = 1
+    DLMinidriverPathUSB = "[MINIDRIVERS]\55560\INVALID.hex"
+    DLMinidriverPathNET = "[MINIDRIVERS]\55560\INVALID.hex"
+    DLMinidriverPathSDIO = "[MINIDRIVERS]\55560\INVALID.hex"
+    DLMinidriverPathUPRX = "[MINIDRIVERS]\55560\INVALID.hex"
+    DLMinidriverPathUART = "[MINIDRIVERS]\55560\uart.hex"
+    DLFirmware = 1
+    DLFirmwareTargeting = "Standard"
+    DLConfig = 1
+    DLConfigTargeting = "Flash absolute"
+    DLConfigFixedHeader = 1
+    DLConfigFixedHeaderFromBurnImage = 0
+    DLConfigOmitRF_PLL = 1
+    DLConfigIncludeChargerConfig = 0
+    DLConfigDFUKey = 4294967295
+    DLConfigCrystalFreqMHzX10000 = 374000
+    DLConfigOutputPowerAdjust = 40
+    DLConfigImpedanceMatchTuning = 31
+    DLConfigSerialControlBaudRate = 115200
+    DLConfigEEPROMAccessSpeed = 100
+    DLConfigVSOffset = 0
+    ConfigDSLocation = 2151841792
+    ConfigDS2Location = 0
+    DLConfigSSLocation = 2151809024
+    DLConfigIncludeBTWSecurityKey = 0
+    DLConfigVSLocation = 0
+    DLConfigVSLength = 0
+    DLConfigRemoteDeviceCount = 0
+    DLConfigBD_ADDRBase = "55900A0A****"
+    DLConfigFixedBD_ADDRFlag = "Can change"
+    OTAFWUAckAllRecords = 0
+    OTAFWUUpdateFirmware = 1
+    OTAFWUUpdateConfig = 1
+}
+

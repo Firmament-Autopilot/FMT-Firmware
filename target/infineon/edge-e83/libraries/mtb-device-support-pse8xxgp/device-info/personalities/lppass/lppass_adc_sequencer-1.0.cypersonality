@@ -1,0 +1,440 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_adc_sequencer-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* SAR ADC sequencer personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_adc_sequencer' name='SAR ADC Sequencer' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+ <FittingRules>
+  <MappingRules>
+    <IpBlock name='mxs22lppass' />
+    <Resource name='pass\.sar\.group\.scan'/>
+  </MappingRules>
+ </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='channelGpio'                   paramId='channelGpio'/>
+    <ExposedMember key='channelMux'                    paramId='channelMux'/>
+    <ExposedMember key='sampleTimeEnable'              paramId='sampleTimeEnable'/>
+    <ExposedMember key='sampleTimeSelect'              paramId='sampleTimeSelect'/>
+    <ExposedMember key='accumulationEnable'            paramId='accumulationEnable'/>
+    <ExposedMember key='accCount'                      paramId='accCount'/>
+    <ExposedMember key='calibrationInRuntime'          paramId='calibrationInRuntime'/>
+    <ExposedMember key='nonSimultaneousSamplingGPIOch' paramId='nonSimultaneousSamplingGPIOch'/>
+    <ExposedMember key='simultaneousSamplingGPIOch'    paramId='simultaneousSamplingGPIOch'/>
+    <ExposedMember key='nonSimultaneousMuxMode'        paramId='nonSimultaneousMuxMode'/>
+    <ExposedMember key='simultaneousMuxMode'           paramId='simultaneousMuxMode'/>
+    <ExposedMember key='nonSimultaneousMux0Sel'        paramId='nonSimultaneousMux0Sel'/>
+    <ExposedMember key='simultaneousMux0Sel'           paramId='simultaneousMux0Sel'/>
+    <ExposedMember key='simultaneousMux1Sel'           paramId='simultaneousMux1Sel'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ac'
+                 name='inst_ac'
+                 group='Internal'
+                 default='`${getInstNumber("ac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_sar'
+                 name='inst_sar'
+                 group='Internal'
+                 default='`${getInstNumber("sar")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_group'
+                 name='inst_group'
+                 group='Internal'
+                 default='`${getInstNumber("group")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_sar'
+                 name='resource_sar'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "]"}`'/>
+
+    <ParamString id='resource_group'
+                 name='resource_group'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].sar[" . inst_sar . "].group[" . inst_group . "]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='operatingMode' name='operatingMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_ac, "opMode")}`'/>
+    <ParamString id='lpAutosetConversionRate' name='lpAutosetConversionRate' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_lpAutosetConversionRate")}`'/>
+    <ParamString id='hsAutosetConversionRate' name='hsAutosetConversionRate' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_hsAutosetConversionRate")}`'/>
+    <ParamString id='accMode' name='accMode' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_accumulationMode")}`'/>
+    <ParamString id='channelGpioEnable' name='channelGpioEnable' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_hsGpioResultMaskValue")}`'/>
+    <ParamString id='channelMuxEnable' name='channelMuxEnable' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_lpMuxResultMaskValue")}`'/>
+    <ParamString id='simultaneousSampling' name='simultaneousSampling' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_group, "simultaneousSampling")}`'/>
+
+    <Repeat count='8'>
+      <ParamString id='sar_gpiochan_$idx_enabled' name='sar_gpiochan_$idx_enabled' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_gpiochan_$idx_enabled")}`'/>
+    </Repeat>
+
+    <Repeat count='16'>
+      <ParamString id='sar_muxchan_$idx_enabled' name='sar_muxchan_$idx_enabled' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_sar, "sar_muxchan_$idx_enabled")}`'/>
+      <ParamString id='muxchan_$idx_pseudoDiffMode' name='muxchan_$idx_pseudoDiffMode' group='Internal' visible='false' desc='' editable='false' default='`${sar_muxchan_$idx_enabled ? getExposedMember("pass[" . inst_pass . "].sar[" . inst_sar . "].muxchan[" . $idx . "]",  "sar_mux_pseudoDiffMode") : false}`'/>
+    </Repeat>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='rootGroupName' name='rootGroupName' group='Internal' visible='`${debug}`' desc='' editable='false'
+                 default='Sequencer Configuration'/>
+
+    <ParamChoice id='channelMux'
+                 name='Channel'
+                 group='`${rootGroupName}`'
+                 visible='`${(channelMuxEnable) &amp;&amp; (operatingMode eq "LowPower")}`'
+                 editable='true'
+                 desc='List of configured Mux channels'
+                                   default='CY_AUTANALOG_SAR_CHAN_CFG_MUX0'>
+      <Entry name='Mux channel $idx' value='CY_AUTANALOG_SAR_CHAN_CFG_MUX$idx' visible='`${sar_muxchan_$idx_enabled}`' repeatCount='16'/>
+    </ParamChoice>
+
+    <ParamChoice id='channelGpio'
+                 name='Channel'
+                 group='`${rootGroupName}`'
+                 visible='`${(channelGpioEnable || channelMuxEnable) &amp;&amp; (operatingMode eq "HighSpeed") &amp;&amp; (!simultaneousSampling)}`'
+                 editable='true'
+                 desc='List of configured Mux and GPIO channels'
+                                        default='CY_AUTANALOG_SAR_CHAN_MASK_GPIO_DISABLED'>
+      <Entry name='Disabled'              value='CY_AUTANALOG_SAR_CHAN_MASK_GPIO_DISABLED' visible='true'/>
+      <Entry name='MUX channel $idx'      value='CY_AUTANALOG_SAR_CHAN_CFG_MUX$idx'   visible='`${sar_muxchan_$idx_enabled}`'  repeatCount='16'/>
+      <Entry name='GPIO channel $idx'     value='CY_AUTANALOG_SAR_CHAN_MASK_GPIO$idx' visible='`${sar_gpiochan_$idx_enabled}`' repeatCount='8'/>
+    </ParamChoice>
+
+    <Repeat count='2'>
+       <ParamBool id='channelMux$idx'
+               name='Mux Channel $idx'
+               group='`${rootGroupName}`'
+               visible='`${(channelMuxEnable) &amp;&amp; (operatingMode eq "HighSpeed") &amp;&amp; (simultaneousSampling)}`'
+               editable='true'
+               desc='Enable Mux Channel $idx in Scan'
+               default='false'/>
+    </Repeat>
+
+    <Repeat count='8'>
+        <ParamBool id='channelGpio$idx'
+               name='GPIO Channel $idx'
+               group='`${rootGroupName}`'
+               visible='`${(channelGpioEnable) &amp;&amp; (operatingMode eq "HighSpeed") &amp;&amp; (simultaneousSampling) &amp;&amp; (sar_gpiochan_$idx_enabled)}`'
+               editable='true'
+               desc='Enable GPIO Channel $idx in Scan'
+               default='false'/>
+    </Repeat>
+
+    <Repeat count='2'>
+       <ParamChoice id='sar_mux_$idxChoice'
+                 name='Mux Channel $idx'
+                 group='`${rootGroupName}`'
+                 visible='`${(channelMuxEnable) &amp;&amp; (operatingMode eq "HighSpeed") &amp;&amp; (simultaneousSampling) &amp;&amp; (channelMux$idx)}`'
+                 editable='true'
+                 desc='List of configured Mux channels'
+                                      default='CY_AUTANALOG_SAR_CHAN_CFG_MUX0'>
+         <Entry name='Mux channel $idx' value='CY_AUTANALOG_SAR_CHAN_CFG_MUX$idx' visible='`${sar_muxchan_$idx_enabled}`' repeatCount='16'/>
+       </ParamChoice>
+    </Repeat>
+
+    <ParamBool id='sampleTimeEnable'
+               name='Sample Time'
+               group='`${rootGroupName}`'
+               visible='`${(channelMuxEnable || channelGpioEnable)}`'
+               editable='`${!(operatingMode eq "HighSpeed" ? hsAutosetConversionRate : lpAutosetConversionRate)}`'
+               desc='Enable a Global Sampling time for this scan'
+               default='`${!(operatingMode eq "HighSpeed" ? hsAutosetConversionRate : lpAutosetConversionRate)}`'/>
+
+    <ParamChoice id='sampleTimeSelect'
+                 name='Sample Time Select'
+                 group='`${rootGroupName}`'
+                 visible='`${(channelMuxEnable || channelGpioEnable) &amp;&amp; (sampleTimeEnable)}`'
+                 editable='true'
+                 desc='Sample time clocks, uS'
+                                          default='CY_AUTANALOG_SAR_SAMPLE_TIME0'>
+      <Entry name='Global Sample Time $idx' value='CY_AUTANALOG_SAR_SAMPLE_TIME$idx' visible='true' repeatCount='4'/>
+    </ParamChoice>
+
+    <ParamBool id='accumulationEnable'
+               name='Accumulation Enable'
+               group='`${rootGroupName}`'
+               visible='`${(channelMuxEnable || channelGpioEnable) &amp;&amp; (accMode ne "CY_AUTANALOG_SAR_ACC_DISABLED")}`'
+               editable='`${!(operatingMode eq "HighSpeed" ? hsAutosetConversionRate : lpAutosetConversionRate)}`'
+               desc='Enable accumulation over multiple samples'
+               default='`${!(operatingMode eq "HighSpeed" ? hsAutosetConversionRate : lpAutosetConversionRate)}`'/>
+
+    <ParamChoice id='accCount'
+                 name='Accumulation Count'
+                 group='`${rootGroupName}`'
+                 visible='`${(channelMuxEnable || channelGpioEnable) &amp;&amp; (accumulationEnable) &amp;&amp; (accMode ne "CY_AUTANALOG_SAR_ACC_DISABLED")}`'
+                 editable='true'
+                 desc='Number of samples accumulated '
+                    default='CY_AUTANALOG_SAR_ACC_CNT2'>
+      <Entry name='2'   value='CY_AUTANALOG_SAR_ACC_CNT2'   visible='true'/>
+      <Entry name='4'   value='CY_AUTANALOG_SAR_ACC_CNT4'   visible='true'/>
+      <Entry name='8'   value='CY_AUTANALOG_SAR_ACC_CNT8'   visible='true'/>
+      <Entry name='16'  value='CY_AUTANALOG_SAR_ACC_CNT16'  visible='true'/>
+      <Entry name='32'  value='CY_AUTANALOG_SAR_ACC_CNT32'  visible='true'/>
+      <Entry name='64'  value='CY_AUTANALOG_SAR_ACC_CNT64'  visible='true'/>
+      <Entry name='128' value='CY_AUTANALOG_SAR_ACC_CNT128' visible='true'/>
+      <Entry name='256' value='CY_AUTANALOG_SAR_ACC_CNT256' visible='true'/>
+    </ParamChoice>
+<!-- DRIVERS-19853
+    <ParamString id='conversionTime'
+                 name='Achieved Conversion Time'
+                 group='`${rootGroupName}`'
+                 default='TBD'
+                 visible='`${(channelMuxEnable || channelGpioEnable)}`'
+                 editable='false'
+                 desc='Expected Conversion Time for this channel' />
+
+    <ParamString id='resultFormat'
+                 name='Result Format'
+                 group='`${rootGroupName}`'
+                 default='TBD'
+                 visible='`${(channelMuxEnable || channelGpioEnable)}`'
+                 editable='false'
+                 desc='Result Format Number of bits, voltage/bits, signed/unsigned, Max Value, Min Value, Chan ID' />
+-->
+    <ParamChoice id='calibrationInRuntime'
+                 name='Calibration in Runtime'
+                 group='`${rootGroupName}`'
+                 visible='false'
+                 editable='true'
+                 desc='A real-time calibration channel request'
+                                       default='CY_AUTANALOG_SAR_CAL_DISABLED'>
+      <Entry name='Disabled'             value='CY_AUTANALOG_SAR_CAL_DISABLED'  visible='true'/>
+      <Entry name='Offset and Linearity' value='CY_AUTANALOG_SAR_CAL_BOTH'      visible='true'/>
+      <Entry name='Offset Only'          value='CY_AUTANALOG_SAR_CAL_OFFSET'    visible='true'/>
+      <Entry name='Linearity Only'       value='CY_AUTANALOG_SAR_CAL_LINEARITY' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='nonSimultaneousSamplingGPIOch' name='nonSimultaneousSamplingGPIOch' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${(channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO0) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO0" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO1) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO1" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO2) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO2" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO3) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO3" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO4) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO4" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO5) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO5" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO6) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO6" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO7" :
+                     "CY_AUTANALOG_SAR_CHAN_MASK_GPIO_DISABLED"}`' />
+
+    <ParamString id='simultaneousSamplingGPIOch' name='simultaneousSamplingGPIOch' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${" &#13; " .
+                  (       !(channelGpio0 || channelGpio1 || channelGpio2 || channelGpio3 || channelGpio4 || channelGpio5 || channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO_DISABLED"  : "") .
+                  (channelGpio0 &amp;&amp; (channelGpio1 || channelGpio2 || channelGpio3 || channelGpio4 || channelGpio5 || channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO0 | &#13; " : channelGpio0 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO0" : "") .
+                  (channelGpio1 &amp;&amp; (                channelGpio2 || channelGpio3 || channelGpio4 || channelGpio5 || channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO1 | &#13; " : channelGpio1 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO1" : "") .
+                  (channelGpio2 &amp;&amp; (                                channelGpio3 || channelGpio4 || channelGpio5 || channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO2 | &#13; " : channelGpio2 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO2" : "") .
+                  (channelGpio3 &amp;&amp; (                                                channelGpio4 || channelGpio5 || channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO3 | &#13; " : channelGpio3 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO3" : "") .
+                  (channelGpio4 &amp;&amp; (                                                                channelGpio5 || channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO4 | &#13; " : channelGpio4 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO4" : "") .
+                  (channelGpio5 &amp;&amp; (                                                                                channelGpio6 || channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO5 | &#13; " : channelGpio5 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO5" : "") .
+                  (channelGpio6 &amp;&amp; (                                                                                                channelGpio7) ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO6 | &#13; " : channelGpio6 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO6" : "") .
+                  (channelGpio7 ? "CY_AUTANALOG_SAR_CHAN_MASK_GPIO7" : "")}`' />
+
+    <ParamString id='nonSimultaneousMuxMode' name='nonSimultaneousMuxMode' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${(channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX0)  &amp;&amp; (muxchan_0_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX1)  &amp;&amp; (muxchan_1_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX2)  &amp;&amp; (muxchan_2_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX3)  &amp;&amp; (muxchan_3_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX4)  &amp;&amp; (muxchan_4_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX5)  &amp;&amp; (muxchan_5_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX6)  &amp;&amp; (muxchan_6_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX7)  &amp;&amp; (muxchan_7_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX8)  &amp;&amp; (muxchan_8_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX9)  &amp;&amp; (muxchan_9_pseudoDiffMode)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX10) &amp;&amp; (muxchan_10_pseudoDiffMode) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX11) &amp;&amp; (muxchan_11_pseudoDiffMode) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX12) &amp;&amp; (muxchan_12_pseudoDiffMode) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX13) &amp;&amp; (muxchan_13_pseudoDiffMode) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX14) &amp;&amp; (muxchan_14_pseudoDiffMode) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX15) &amp;&amp; (muxchan_15_pseudoDiffMode) ?
+                    "CY_AUTANALOG_SAR_CHAN_CFG_MUX0_PSEUDO_DIFF" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX0)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX1)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX2)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX3)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX4)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX5)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX6)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX7)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX8)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX9)  ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX10) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX11) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX12) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX13) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX14) ||
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX15) ?
+                     "CY_AUTANALOG_SAR_CHAN_CFG_MUX0_SINGLE_ENDED" :
+                     "CY_AUTANALOG_SAR_CHAN_CFG_MUX_DISABLED"}`' />
+
+    <ParamString id='simultaneousMuxMode' name='simultaneousMuxMode' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${channelMux0 &amp;&amp;
+                    ((sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX0)  &amp;&amp; (muxchan_0_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX1)  &amp;&amp; (muxchan_1_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX2)  &amp;&amp; (muxchan_2_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX3)  &amp;&amp; (muxchan_3_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX4)  &amp;&amp; (muxchan_4_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX5)  &amp;&amp; (muxchan_5_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX6)  &amp;&amp; (muxchan_6_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX7)  &amp;&amp; (muxchan_7_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX8)  &amp;&amp; (muxchan_8_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX9)  &amp;&amp; (muxchan_9_pseudoDiffMode)  ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX10) &amp;&amp; (muxchan_10_pseudoDiffMode) ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX11) &amp;&amp; (muxchan_11_pseudoDiffMode) ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX12) &amp;&amp; (muxchan_12_pseudoDiffMode) ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX13) &amp;&amp; (muxchan_13_pseudoDiffMode) ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX14) &amp;&amp; (muxchan_14_pseudoDiffMode) ||
+                     (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX15) &amp;&amp; (muxchan_15_pseudoDiffMode)) ?
+                      "CY_AUTANALOG_SAR_CHAN_CFG_MUX0_PSEUDO_DIFF" :
+                    ( channelMux0 &amp;&amp; !channelMux1) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0_SINGLE_ENDED" :
+                    (!channelMux0 &amp;&amp;  channelMux1) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX1_SINGLE_ENDED" :
+                    ( channelMux0 &amp;&amp;  channelMux1) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0_MUX1_SINGLE_ENDED" :
+                      "CY_AUTANALOG_SAR_CHAN_CFG_MUX_DISABLED"}`' />
+
+    <ParamString id='nonSimultaneousMux0Sel' name='nonSimultaneousMux0Sel' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${(channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX0)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX1)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX1"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX2)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX2"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX3)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX3"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX4)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX4"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX5)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX5"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX6)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX6"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX7)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX7"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX8)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX8"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX9)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX9"  :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX10) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX10" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX11) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX11" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX12) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX12" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX13) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX13" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX14) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX14" :
+                    (channelGpio eq CY_AUTANALOG_SAR_CHAN_CFG_MUX15) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX15" :
+                     "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"}`' />
+
+    <ParamString id='simultaneousMux0Sel' name='simultaneousMux0Sel' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${!channelMux0 ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0" :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX0)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX1)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX1"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX2)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX2"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX3)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX3"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX4)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX4"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX5)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX5"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX6)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX6"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX7)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX7"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX8)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX8"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX9)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX9"  :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX10) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX10" :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX11) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX11" :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX12) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX12" :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX13) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX13" :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX14) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX14" :
+                    (sar_mux_0Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX15) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX15" :
+                     "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"}`' />
+
+    <ParamString id='simultaneousMux1Sel' name='simultaneousMux1Sel' group='Internal' visible='`${debug}`' desc='' editable='false'
+        default='`${!channelMux1 ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0" :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX0)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX1)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX1"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX2)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX2"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX3)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX3"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX4)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX4"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX5)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX5"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX6)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX6"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX7)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX7"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX8)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX8"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX9)  ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX9"  :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX10) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX10" :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX11) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX11" :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX12) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX12" :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX13) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX13" :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX14) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX14" :
+                    (sar_mux_1Choice eq CY_AUTANALOG_SAR_CHAN_CFG_MUX15) ? "CY_AUTANALOG_SAR_CHAN_CFG_MUX15" :
+                     "CY_AUTANALOG_SAR_CHAN_CFG_MUX0"}`' />
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Parent resource for ADC Scans should be enabled and configured.' condition='`${!isBlockUsed(resource_sar)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_sar}`' value='lppass_adc-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR'
+         text='For the SAR ADC in High Speed mode, either MUX or GPIO channel should be selected in the scan.'
+         condition='`${((channelGpioEnable || channelMuxEnable) &amp;&amp; (operatingMode eq "HighSpeed") &amp;&amp; (!simultaneousSampling)) &amp;&amp; (channelGpio eq CY_AUTANALOG_SAR_CHAN_MASK_GPIO_DISABLED)}`'/>
+    <DRC type='ERROR'
+         text='For the SAR ADC in High Speed mode, MUX1 cannot be used because Mux0 is configured for the channel in pseudo-differential mode.'
+         condition='`${(operatingMode eq "HighSpeed") &amp;&amp; (simultaneousMuxMode eq "CY_AUTANALOG_SAR_CHAN_CFG_MUX0_PSEUDO_DIFF") &amp;&amp; channelMux1}`'/>
+  </DRCs>
+
+  <ConfigFirmware/>
+
+</PersonalityTemplate>

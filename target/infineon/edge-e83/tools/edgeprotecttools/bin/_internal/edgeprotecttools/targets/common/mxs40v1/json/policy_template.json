@@ -1,0 +1,168 @@
+{
+    "debug" :
+    {
+        "m0p" : {
+            "permission" : "",
+            "control" : "",
+            "key" : 0
+        },
+        "m4" : {
+            "permission" : "",
+            "control" : "",
+            "key" : 0
+        },
+        "system" : {
+            "permission" : "",
+            "control" : "",
+            "key" : 0,
+            "flashw": false,
+            "flashr": false
+        },
+        "rma" : {
+            "permission" : "",
+            "destroy_fuses" : [
+                {
+                    "start" : 0,
+                    "size" : 0
+                },
+                {
+                    "start" : 0,
+                    "size" : 0
+                }
+            ],
+            "destroy_flash" : [
+                {
+                    "start" : 0,
+                    "size" : 0
+                },
+                {
+                    "start" : 0,
+                    "size" : 0
+                }
+            ],
+            "key" : 0
+        }
+    },
+    "wounding" :
+    {
+    },
+    "boot_upgrade" :
+    {
+        "title": "upgrade_policy",
+        "firmware": [
+            {
+                "boot_auth": [
+                    0
+                ],
+                "id": 0,
+                "launch": 0,
+                "acq_win": 0,
+                "wdt_timeout": 0,
+                "wdt_enable": false,
+                "reset_after_failure": 0,
+                "clock_flags": 0,
+                "buck_enabled": false,
+                "protect_flags": 0,
+                "upgrade": false,
+                "upgrade_mode": "",
+                "resources": [
+                    {
+                        "type": "FLASH_PC1_SPM",
+                        "address": 0,
+                        "size": 0
+                    },
+                    {
+                        "type": "SRAM_SPM_PRIV",
+                        "address": 0,
+                        "size": 0
+                    },
+                    {
+                        "type": "SRAM_DAP",
+                        "address": 0,
+                        "size": 0
+                    },
+                    {
+                        "type": "STATUS_PARTITION",
+                        "address": 0,
+                        "size": 0
+                    },
+                    {
+                        "type": "SCRATCH",
+                        "address": 0,
+                        "size": 0
+                    }
+                ]
+            },
+            {
+                "boot_auth": [
+                    0
+                ],
+                "id": 0,
+                "launch": 0,
+                "monotonic": 0,
+                "smif_id": 0,
+                "smif_sector_size": 0,
+                "acq_win": 0,
+                "wdt_timeout": 0,
+                "wdt_enable": false,
+                "set_img_ok": false,
+                "multi_image" : 0,
+                "rollback_counter": 0,
+                "upgrade": false,
+                "encrypt": false,
+                "encrypt_key_id": 0,
+                "resources": [
+                    {
+                        "type": "BOOT",
+                        "address": 0,
+                        "size": 0
+                    },
+                    {
+                        "type": "UPGRADE",
+                        "address": 0,
+                        "size": 0
+                    }
+                ]
+            },
+            {
+                "boot_auth": [
+                    0
+                ],
+                "id": 0,
+                "monotonic": 0,
+                "smif_id": 0,
+                "smif_sector_size": 0,
+                "multi_image" : 0,
+                "upgrade": false,
+                "encrypt": false,
+                "encrypt_key_id": 0,
+                "resources": [
+                    {
+                        "type": "BOOT",
+                        "address": 0,
+                        "size": 0
+                    },
+                    {
+                        "type": "UPGRADE",
+                        "address": 0,
+                        "size": 0
+                    }
+                ]
+            }
+        ],
+        "reprogram": [
+            {
+                "start": 0,
+                "size": 0
+            },
+            {
+                "start": 0,
+                "size": 0
+            }
+        ],
+        "reprovision": {
+            "boot_loader": false,
+            "keys_and_policies": false
+        }
+    }
+}

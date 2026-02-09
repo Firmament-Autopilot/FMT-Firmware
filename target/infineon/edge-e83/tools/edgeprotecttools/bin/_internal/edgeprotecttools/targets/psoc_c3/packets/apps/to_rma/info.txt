@@ -1,0 +1,4 @@
+name: cyapp_to_rma
+description: The application advances the device LCS to RMA. The valid device LCS to launch this application is NORMAL_PROVISIONED or SECURE. List of assets in SFLASH which are cleared: HUK; IAK; MPN_KEY and MPN_ROT_KEY_01_HASH; OEM policies; PROT_FW policy; IFX policies -L1_HASH, L2_HASH,PROT_FW_HASH; SFLASH backup row 5.
+type: Firmware application
+version: 1.0.0.4508

@@ -1,0 +1,345 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<PersonalityTemplate id='protection_intrinsic' name='Security-Intrinsic' intrinsic='true' version='2.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v14'>
+  <Constants>
+    <Const id='COUNT_CORES' value='2' />
+    <Const id='COUNT_MEMORIES' value='6' />
+    <Const id='COUNT_PC' value='8' />
+    <Const id='COUNT_PPC' value='471' />
+    <Const id='COUNT_BM' value='18' />
+    <Const id='COUNT_ACG' value='5' />
+    <Const id='COUNT_BLOCKS' value='375' />
+    <Const id='COUNT_PPC0' value='22' /> <!-- TODOPPC: This should be data driven. Explorer is CY_IP_MXSPERI_INSTANCES -->
+    <Const id='COUNT_PPC1' value='9' /> <!-- TODOPPC: This should be data driven. Explorer is CY_IP_MXSPERI_INSTANCES -->
+  </Constants>
+
+  <VirtualResourceDefinition ipblock='VirtualResource' type='vres' count='1'>
+    <VirtualResourceDefinition type='protection' display_name='Protection' display_path='' profile_fileName='system' display_mode='STATIC' count='1'>
+      <!-- Order here determines the evaluation order of personalities and thus what is able to expose members to what -->
+      <VirtualResourceDefinition type='domain' display_name='Domain $idx' display_path='$display_path{1}/$display_name{1}/Domains' profile_fileName='system' display_mode='DYNAMIC' count='15' />
+      <VirtualResourceDefinition type='mpc' display_name='Memory Protection Controller (MPC)' display_path='$display_path{1}/$display_name{1}' profile_fileName='system' display_mode='STATIC' count='1' />
+      <VirtualResourceDefinition type='ppc' display_name='Peripheral Protection Controller (PPC)' display_path='$display_path{1}/$display_name{1}' profile_fileName='system' display_mode='STATIC' count='1' />
+      <VirtualResourceDefinition type='sau' display_name='Security Attribution Unit (SAU)' display_path='$display_path{1}/$display_name{1}' profile_fileName='system' display_mode='STATIC' count='1' />
+    </VirtualResourceDefinition>
+  </VirtualResourceDefinition>
+
+  <VirtualResourceDefinition ipblock='VirtualResource' type='vres' count='1'>
+    <VirtualResourceDefinition type='protection' display_name='Security-Intrinsic' display_path='Access Control' profile_fileName='protection' display_mode='STATIC' count='1' />
+  </VirtualResourceDefinition>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='VirtualResource' />
+      <Resource name='vres\.protection' />
+      <OperatingMode value='MCU'/>
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type="protection_intrinsic_v1">
+      <ExposedMember key='core_count' paramId='core_count' />
+      <ExposedMember key='corename$idx' paramId='corename$idx' repeatCount='$COUNT_CORES' />
+
+      <ExposedMember key='memory_count' paramId='memory_count' />
+      <ExposedMember key='memory_$idx' paramId='memory_$idx' repeatCount='$COUNT_MEMORIES' />
+
+      <ExposedMember key='pc_count' paramId='pc_count' />
+      <ExposedMember key='pc$idx' paramId='pc$idx' repeatCount='$COUNT_PC' />
+
+      <ExposedMember key='bm_count' paramId='bm_count' />
+      <ExposedMember key='bm$idx' paramId='bm$idx' repeatCount='$COUNT_BM' />
+
+      <ExposedMember key='acg_count' paramId='acg_count' />
+      <ExposedMember key='acg$idx' paramId='acg$idx' repeatCount='$COUNT_ACG' />
+
+      <ExposedMember key='ppc_count' paramId='ppc_count' />
+
+      <ExposedMember key='ppc_0_startRegion_$idx' paramId='ppc_0_startRegion_$idx' repeatCount='$COUNT_PPC0' />
+      <ExposedMember key='ppc_0_endRegion_$idx' paramId='ppc_0_endRegion_$idx' repeatCount='$COUNT_PPC0' />
+      <ExposedMember key='ppc_0_secAttribute_$idx' paramId='ppc_0_secAttribute_$idx' repeatCount='$COUNT_PPC0' />
+      <ExposedMember key='ppc_0_privAttribute_$idx' paramId='ppc_0_privAttribute_$idx' repeatCount='$COUNT_PPC0' />
+      <ExposedMember key='ppc_0_pcMask_$idx' paramId='ppc_0_pcMask_$idx' repeatCount='$COUNT_PPC0' />
+      <ExposedMember key='ppc_0_count' paramId='ppc_0_count' />
+
+      <ExposedMember key='ppc_1_startRegion_$idx' paramId='ppc_1_startRegion_$idx' repeatCount='$COUNT_PPC1' />
+      <ExposedMember key='ppc_1_endRegion_$idx' paramId='ppc_1_endRegion_$idx' repeatCount='$COUNT_PPC1' />
+      <ExposedMember key='ppc_1_secAttribute_$idx' paramId='ppc_1_secAttribute_$idx' repeatCount='$COUNT_PPC1' />
+      <ExposedMember key='ppc_1_privAttribute_$idx' paramId='ppc_1_privAttribute_$idx' repeatCount='$COUNT_PPC1' />
+      <ExposedMember key='ppc_1_pcMask_$idx' paramId='ppc_1_pcMask_$idx' repeatCount='$COUNT_PPC1' />
+      <ExposedMember key='ppc_1_count' paramId='ppc_1_count' />
+
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <ParamString id='core_count' default='$COUNT_CORES' />
+    <ParamString id='corename0' default='ARM Cortex-M33' />
+    <ParamString id='corename1' default='ARM Cortex-M55' />
+
+    <!-- TODO: FIGURE OUT HOW TO MAKE MEMORIES DATA DRIVEN. -->
+    <ParamString id='memory_count' default='$COUNT_MEMORIES' />
+    <ParamString id='memory_0' default='RRAM' />
+    <ParamString id='memory_1' default='SocMem' />
+    <ParamString id='memory_2' default='SRAM 0' />
+    <ParamString id='memory_3' default='SRAM 1' />
+    <ParamString id='memory_4' default='SMIF 0' />
+    <ParamString id='memory_5' default='SMIF 1' />
+
+    <!-- TODO: FIGURE OUT HOW TO MAKE PROTECTION CONTEXTS DATA DRIVEN. -->
+    <ParamString id='pc_count' default='$COUNT_PC' />
+    <ParamString id='pc0' default='CM0+: BootRom' />
+    <ParamString id='pc1' default='CM0+: RT services' />
+    <ParamString id='pc2' default='CM33: Extended Boot, Bootloader, CM33 Secure' />
+    <ParamString id='pc3' default='Reserved' />
+    <ParamString id='pc4' default='CM33 Secure' />
+    <ParamString id='pc5' default='CM33 Non-Secure' />
+    <ParamString id='pc6' default='CM55 Non-Secure' />
+    <ParamString id='pc7' default='Debugger' />
+    <!--/Repeat-->
+
+    <!-- TODO: FIGURE OUT HOW TO MAKE PROTECTION CONTEXTS DATA DRIVEN. -->
+    <ParamString id='bm_count' default='$COUNT_BM' />
+    <ParamString id='bm0' default='Bus master 4: DataWire 0 (DW0_MS)' />
+    <ParamString id='bm1' default='Bus master 5: DataWire 1 (DW1_MS)' />
+    <ParamString id='bm2' default='Bus master 6: MXNNLITE (CODE_MS_0)' />
+    <ParamString id='bm3' default='Bus master 7: M0SECCPUSS (SYS_MS_0)' />
+    <ParamString id='bm4' default='Bus master 8: Crypto (SYS_MS_1)' />
+    <ParamString id='bm5' default='Bus master 9: MXNNLITE (EXP_SYSCPUSS_MS_0)' />
+    <ParamString id='bm6' default='Bus master 10: DFT - jmcu_out (EXP_SYSCPUSS_MS_1)' />
+    <ParamString id='bm7' default='Bus master 11: MXETH (EXP_SYSCPUSS_MS_2)' />
+    <ParamString id='bm8' default='Bus master 13: SDHC0 (EXP_APPCPUSS_MS_0)' />
+    <ParamString id='bm9' default='Bus master 14: SDHC1 (EXP_APPCPUSS_MS_1)' />
+    <ParamString id='bm10' default='Bus master 15: USBHS (EXP_APPCPUSS_MS_2)' />
+    <ParamString id='bm11' default='Bus master 23: DMA 0 (AXIDMAC0_MS)' />
+    <ParamString id='bm12' default='Bus master 25: U55 Port 0 (AXI_SYS_MS_0)' />
+    <ParamString id='bm13' default='Bus master 26: U55 Port 1 (AXI_SYS_MS_1)' />
+    <ParamString id='bm14' default='Bus master 27: GFX GPU (AXI_SYS_MS_2)' />
+    <ParamString id='bm15' default='Bus master 28: GFX DC (AXI_SYS_MS_3' />
+    <ParamString id='bm16' default='Bus master 29: DFT to RRAM (BISR_MS)' />
+    <ParamString id='bm17' default='Bus master 31: Test Controller (TC_MS)' />
+
+    <ParamString id='acg_count' default='$COUNT_ACG' />
+    <ParamString id='acg0' default='Access control gate 0: AHB5 CODE master-0 (CODE_MS_0)' />
+    <ParamString id='acg1' default='Access control gate 1: AHB5 SYS interconnect master-0 (SYS_MS_0)' />
+    <ParamString id='acg2' default='Access control gate 2: AHB5 SYS interconnect master-1 (SYS_MS_1)' />
+    <ParamString id='acg3' default='Access control gate 3: AHB5 EXP interconnect master (EXP_MS)' />
+    <ParamString id='acg4' default='Access control gate 4: AXIDMA 0 controller (AXIDMAC0_MS)' />
+
+	<!-- TODO: FIGURE OUT HOW TO MAKE PPCs DATA DRIVEN. -->
+    <ParamString id='ppc_count' default='$COUNT_PPC' />
+
+    <ParamString id='ppc_0_count' default='$COUNT_PPC0' />
+    <ParamString id='ppc_1_count' default='$COUNT_PPC1' />
+
+    <!-- ppc_0_regions_attributes -->
+    <ParamString id='ppc_0_startRegion_0' default='PROT_PERI0_MAIN' />
+    <ParamString id='ppc_0_endRegion_0' default='PROT_PERI0_MAIN' />
+    <ParamString id='ppc_0_secAttribute_0' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_0' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_1' default='PROT_PERI0_GR1_GROUP' />
+    <ParamString id='ppc_0_endRegion_1' default='PROT_PERI0_GR5_GROUP' />
+    <ParamString id='ppc_0_secAttribute_1' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_1' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_2' default='PROT_PERI0_TR' />
+    <ParamString id='ppc_0_endRegion_2' default='PROT_PERI0_TR' />
+    <ParamString id='ppc_0_secAttribute_2' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_2' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_3' default='PROT_PERI0_PERI_PCLK0_MAIN' />
+    <ParamString id='ppc_0_endRegion_3' default='PROT_PERI0_PERI_PCLK0_MAIN' />
+    <ParamString id='ppc_0_secAttribute_3' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_3' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_4' default='PROT_PERI0_RRAMC0_RRAM_EXTRA_AREA_RRAMC_GENERAL' />
+    <ParamString id='ppc_0_endRegion_4' default='PROT_PERI0_RRAMC0_RRAM_EXTRA_AREA_RRAMC_GENERAL' />
+    <ParamString id='ppc_0_secAttribute_4' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_4' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_5' default='PROT_PERI0_RRAMC0_RRAMC0_RRAMC_USER' />
+    <ParamString id='ppc_0_endRegion_5' default='PROT_PERI0_RRAMC0_RRAMC0_RRAMC_ALLUSER' />
+    <ParamString id='ppc_0_secAttribute_5' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_5' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_6' default='PROT_PERI0_RRAMC0_RRAM_SFR_RRAMC_SFR_USER' />
+    <ParamString id='ppc_0_endRegion_6' default='PROT_PERI0_RRAMC0_RRAM_SFR_RRAMC_SFR_USER' />
+    <ParamString id='ppc_0_secAttribute_6' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_6' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_7' default='PROT_PERI0_M33SYSCPUSS' />
+    <ParamString id='ppc_0_endRegion_7' default='PROT_PERI0_RAMC1_CM33' />
+    <ParamString id='ppc_0_secAttribute_7' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_7' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_8' default='PROT_PERI0_RAMC0_RAM_PWR' />
+    <ParamString id='ppc_0_endRegion_8' default='PROT_PERI0_RAMC1_RAM_PWR' />
+    <ParamString id='ppc_0_secAttribute_8' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_8' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_9' default='PROT_PERI0_MXCM33_CM33' />
+    <ParamString id='ppc_0_endRegion_9' default='PROT_PERI0_MXCM33_CM33' />
+    <ParamString id='ppc_0_secAttribute_9' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_9' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_10' default='PROT_PERI0_MXCM33_CM33_NS' />
+    <ParamString id='ppc_0_endRegion_10' default='PROT_PERI0_MXCM33_CM33_NS' />
+    <ParamString id='ppc_0_secAttribute_10' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_10' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_11' default='PROT_PERI0_MXCM33_CM33_INT' />
+    <ParamString id='ppc_0_endRegion_11' default='PROT_PERI0_DW1_CH_STRUCT15_CH' />
+    <ParamString id='ppc_0_secAttribute_11' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_11' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_12' default='PROT_PERI0_CPUSS_CM33_NS' />
+    <ParamString id='ppc_0_endRegion_12' default='PROT_PERI0_CPUSS_MSC_INT' />
+    <ParamString id='ppc_0_secAttribute_12' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_12' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_13' default='PROT_PERI0_CPUSS_BOOT' />
+    <ParamString id='ppc_0_endRegion_13' default='PROT_PERI0_CPUSS_BOOT' />
+    <ParamString id='ppc_0_secAttribute_13' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_13' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_14' default='PROT_PERI0_MS_PC0_PRIV_MIR' />
+    <ParamString id='ppc_0_endRegion_14' default='PROT_PERI0_MSC_ACG' />
+    <ParamString id='ppc_0_secAttribute_14' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_14' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_15' default='PROT_PERI0_IPC0_STRUCT1_IPC' />
+    <ParamString id='ppc_0_endRegion_15' default='PROT_PERI0_IPC0_STRUCT15_IPC' />
+    <ParamString id='ppc_0_secAttribute_15' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_15' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_16' default='PROT_PERI0_IPC0_INTR_STRUCT2_INTR' />
+    <ParamString id='ppc_0_endRegion_16' default='PROT_PERI0_SRSS_GENERAL' />
+    <ParamString id='ppc_0_secAttribute_16' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_16' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_17' default='PROT_PERI0_SRSS_HIB_DATA' />
+    <ParamString id='ppc_0_endRegion_17' default='PROT_PERI0_SRSS_HIB_DATA' />
+    <ParamString id='ppc_0_secAttribute_17' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_17' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_18' default='PROT_PERI0_SRSS_MAIN' />
+    <ParamString id='ppc_0_endRegion_18' default='PROT_PERI0_SRSS_MAIN' />
+    <ParamString id='ppc_0_secAttribute_18' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_18' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_19' default='PROT_PERI0_RAM_TRIM_SRSS_SRAM' />
+    <ParamString id='ppc_0_endRegion_19' default='PROT_PERI0_DEBUG600_DEBUG600' />
+    <ParamString id='ppc_0_secAttribute_19' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_19' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_20' default='PROT_PERI0_CRYPTO_MAIN' />
+    <ParamString id='ppc_0_endRegion_20' default='PROT_PERI0_I3C' />
+    <ParamString id='ppc_0_secAttribute_20' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_20' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_startRegion_21' default='PROT_PERI0_ETH0' />
+    <ParamString id='ppc_0_endRegion_21' default='PROT_PERI0_MXNNLITE_2_0' />
+    <ParamString id='ppc_0_secAttribute_21' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_0_privAttribute_21' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_0_pcMask_0' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_1' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_2' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_3' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_4' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_5' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_6' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_7' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_8' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_9' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_10' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_11' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_12' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_13' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_14' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_15' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_16' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_17' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_18' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_19' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_20' default='0xF7U' />
+    <ParamString id='ppc_0_pcMask_21' default='0xF7U' />
+
+    <ParamString id='ppc_1_startRegion_0' default='PROT_PERI1_MAIN' />
+    <ParamString id='ppc_1_endRegion_0' default='PROT_PERI1_GR4_GROUP' />
+    <ParamString id='ppc_1_secAttribute_0' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_0' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_1' default='PROT_PERI1_TR' />
+    <ParamString id='ppc_1_endRegion_1' default='PROT_PERI1_TR' />
+    <ParamString id='ppc_1_secAttribute_1' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_1' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_2' default='PROT_PERI1_PERI_PCLK1_MAIN' />
+    <ParamString id='ppc_1_endRegion_2' default='PROT_PERI1_MXCM55_CM55_NS' />
+    <ParamString id='ppc_1_secAttribute_2' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_2' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_3' default='PROT_PERI1_MXCM55_CM55_INT' />
+    <ParamString id='ppc_1_endRegion_3' default='PROT_PERI1_APPCPUSS_AP' />
+    <ParamString id='ppc_1_secAttribute_3' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_3' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_4' default='PROT_PERI1_MS_CTL_MS_PC13_PRIV_MIR' />
+    <ParamString id='ppc_1_endRegion_4' default='PROT_PERI1_SMIF1_CACHE_BLOCK_MMIO_MAIN' />
+    <ParamString id='ppc_1_secAttribute_4' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_4' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_5' default='PROT_PERI1_SMIF0_CORE_MAIN' />
+    <ParamString id='ppc_1_endRegion_5' default='PROT_PERI1_SMIF1_CORE_DEVICE' />
+    <ParamString id='ppc_1_secAttribute_5' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_5' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_6' default='PROT_PERI1_SMIF0_CORE_SMIF_HSIOM_SMIF_PRT0_PRT' />
+    <ParamString id='ppc_1_endRegion_6' default='PROT_PERI1_SOCMEM_MAIN' />
+    <ParamString id='ppc_1_secAttribute_6' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_6' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_7' default='PROT_PERI1_SOCMEM_SOCMEM_PWR' />
+    <ParamString id='ppc_1_endRegion_7' default='PROT_PERI1_SOCMEM_SOCMEM_PWR' />
+    <ParamString id='ppc_1_secAttribute_7' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_7' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_startRegion_8' default='PROT_PERI1_SOCMEM_MAIN_PORT' />
+    <ParamString id='ppc_1_endRegion_8' default='PROT_PERI1_DTCM' />
+    <ParamString id='ppc_1_secAttribute_8' default='CY_PPC_NON_SECURE' />
+    <ParamString id='ppc_1_privAttribute_8' default='CY_PPC_NONPRIV' />
+
+    <ParamString id='ppc_1_pcMask_0' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_1' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_2' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_3' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_4' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_5' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_6' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_7' default='0xF7U' />
+    <ParamString id='ppc_1_pcMask_8' default='0xF7U' />
+
+
+  </Parameters>
+
+  <Variables>
+    <Variable id='isProtectionUsed' value='`${isBlockUsed("vres[0].protection[0]")}`' />
+    <Variable id='isSauUsed' value='`${isBlockUsed("m33syscpuss[0].cm33[0].sau[0]")}`' />
+    <Variable id='isMpuUsedCM33S' value='`${isBlockUsed("m33syscpuss[0].cm33[0].mpu_s[0]")}`' />
+    <Variable id='isMpcUsed' value='`${isBlockUsed("vres[0].protection[0].mpc[0]")}`' />
+    <Variable id='isMpuUsedCM33NS' value='`${isBlockUsed("m33syscpuss[0].cm33[0].mpu_ns[0]")}`' />
+    <Variable id='isMpuUsedCM55' value='`${isBlockUsed("m55appcpuss[0].cm55[0].mpu_ns[0]")}`' />
+  </Variables>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cycfg_system.h' public='source' />
+    <ConfigInstruction value='Cy_SAU_Init(SAU, SAU_config, sizeof(SAU_config) / sizeof(SAU_config[0]));' guard='(CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_SECURE_DEVICE) &amp;&amp; !defined(CYBSP_SKIP_SAU_INIT)' include='`${isSauUsed &amp;&amp; isProtectionUsed}`' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_MPU_Init(cycfg_mpu_cm33_s_0_config, sizeof(cycfg_mpu_cm33_s_0_config) / sizeof(cycfg_mpu_cm33_s_0_config[0]));' guard=' (CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_SECURE_DEVICE) &amp;&amp; !defined(CYBSP_SKIP_MPU_INIT)' include='`${isMpuUsedCM33S &amp;&amp; isProtectionUsed}`'  purpose='INITIALIZE' />
+    <ConfigInstruction value='init_cycfg_mpc();' guard=' (CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_SECURE_DEVICE) &amp;&amp; defined(CY_PDL_TZ_ENABLED) &amp;&amp; !defined(CYBSP_SKIP_MPC_INIT)' include='`${isMpcUsed &amp;&amp; isProtectionUsed}`' purpose='INITIALIZE' />
+    <!--Always include Cy_PPC_Init call, since the intrinsic PPC personality always generates initialization code.-->
+    <ConfigInstruction value='init_cycfg_ppc0();' guard=' (CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_SECURE_DEVICE) &amp;&amp; defined(CY_PDL_TZ_ENABLED) &amp;&amp; !defined(CYBSP_SKIP_PPC_INIT)' include='`${isProtectionUsed}`' purpose='INITIALIZE' />
+    <ConfigInstruction value='init_cycfg_ppc1();' guard=' (CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_SECURE_DEVICE) &amp;&amp; defined(CY_PDL_TZ_ENABLED) &amp;&amp; !defined(CYBSP_SKIP_PPC_INIT)' include='`${isProtectionUsed}`' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_MPU_Init(cycfg_mpu_cm33_ns_0_config, sizeof(cycfg_mpu_cm33_ns_0_config) / sizeof(cycfg_mpu_cm33_ns_0_config[0]));' guard='(CY_SYSTEM_CPU_M33) &amp;&amp; defined(COMPONENT_NON_SECURE_DEVICE) &amp;&amp; !defined(CYBSP_SKIP_MPU_INIT)' include='`${isMpuUsedCM33NS &amp;&amp; isProtectionUsed}`' purpose='INITIALIZE' />
+    <ConfigInstruction value='Cy_MPU_Init(cycfg_mpu_cm55_ns_0_config, sizeof(cycfg_mpu_cm55_ns_0_config) / sizeof(cycfg_mpu_cm55_ns_0_config[0]));' guard='(CY_SYSTEM_CPU_M55) &amp;&amp; !defined(CYBSP_SKIP_MPU_INIT)' include='`${isMpuUsedCM55 &amp;&amp; isProtectionUsed}`' purpose='INITIALIZE' />
+  </ConfigFirmware>
+</PersonalityTemplate>

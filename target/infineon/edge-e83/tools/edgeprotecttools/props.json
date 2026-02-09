@@ -1,0 +1,27 @@
+{
+    "core": {
+        "id": "2f2f8f00-a420-4d2f-b5b3-dea0e13163ba",
+        "name": "edgeprotecttools",
+        "version": "1.6.1.12972",
+        "schema-version": "1"
+    },
+    "opt": {
+        "tool": {
+            "make-vars": {
+                "edgeprotecttools_BASE": "$$TOOL_DIR:relative$$",
+                "edgeprotecttools_EXE": "$$TOOLPATH:bin/edgeprotecttools:relative$$",
+                "edgeprotecttools_BASE_ABS": "$$TOOL_DIR:absolute$$",
+                "edgeprotecttools_EXE_ABS": "$$TOOLPATH:bin/edgeprotecttools:absolute$$"
+            }
+        },
+        "programs": [
+            {
+                "id": "809222b5-5389-41d2-817d-ec5e22dfc3f6",
+                "exe": "bin/edgeprotecttools",
+                "type": "none",
+                "display-name": "Edge Protect Tools",
+                "short-name": "edgeprotecttools"
+            }
+        ]
+    }
+}

@@ -1,0 +1,83 @@
+        {
+            "name": "&&MTB_COMBINE_SIGN_&&IDX&&_CONFIG_NAME&& Launch PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (JLink)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "preLaunchCommands": [
+                // Program via the hex file to get complete coverage
+                "exec-file &&MTB_COMBINE_SIGN_&&IDX&&_VSCODE_HEX_PATH&&",
+                // Add symbol file of NS or S project//CM33 Only//
+                &&MTB_COMBINE_SIGN_&&IDX&&_VSCODE_EXTRA_ELF_PATH&&//CM33 Only//
+            ],
+            "overrideRestartCommands": [
+                "starti"
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",  // Specifies application entry point name where program will halt
+            "preLaunchTask": "Build Application",
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&_&&_PRJ_NAME&&"
+            }
+        },
+        {
+            "name": "&&MTB_COMBINE_SIGN_&&IDX&&_CONFIG_NAME&& Attach PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (JLink)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",
+            "servertype": "jlink",
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",
+            "preAttachCommands": [
+                // Add symbol file of NS or S project//CM33 Only//
+                &&MTB_COMBINE_SIGN_&&IDX&&_VSCODE_EXTRA_ELF_PATH&&//CM33 Only//
+            ],
+            "overrideRestartCommands": [
+                "starti"
+            ],
+            // svdFile is optional, it can be very large.
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",
+            "breakAfterReset": true,
+            "runToEntryPoint": "main",    // Specifies application entry point name for restart/reset
+            "showDevDebugOutput": "none",
+            "presentation": {
+                "hidden": false,
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&_&&_PRJ_NAME&&"
+            }
+        },//CM55 Only//
+        }//CM33 Only//
+        {//CM55 Only//
+            "name": "Attach PSOCE84 &&_MTB_RECIPE__TARGET_PROCESSOR_NAME&& (JLink)",//CM55 Only//
+            "type": "cortex-debug",//CM55 Only//
+            "request": "attach",//CM55 Only//
+            "cwd": "${workspaceFolder}",//CM55 Only//
+            "executable": "&&_MTB_RECIPE__ELF_FILE&&",//CM55 Only//
+            "servertype": "jlink",//CM55 Only//
+            "device": "&&_MTB_RECIPE__JLINK_CFG&&",//CM55 Only//
+            "interface": "&&_MTB_RECIPE__PROBE_INTERFACE&&",//CM55 Only//
+            "serialNumber": "&&_MTB_RECIPE__PROBE_SERIAL&&",//CM55 Only//
+            "preAttachCommands": [//CM55 Only//
+            ],//CM55 Only//
+            "overrideRestartCommands": [//CM55 Only//
+                "starti"//CM55 Only//
+            ],//CM55 Only//
+            // svdFile is optional, it can be very large.//CM55 Only//
+            "svdFile": "&&_MTB_RECIPE__SVD_FILE_NAME&&",//CM55 Only//
+            "breakAfterReset": true,//CM55 Only//
+            "runToEntryPoint": "main",    // Specifies application entry point name for restart/reset//CM55 Only//
+            "showDevDebugOutput": "none",//CM55 Only//
+            "presentation": {//CM55 Only//
+                "hidden": true,//CM55 Only//
+                "group": "&&_MTB_RECIPE__TARGET_PROCESSOR_NAME&&_&&_PRJ_NAME&&"//CM55 Only//
+            }//CM55 Only//
+        }//CM55 Only//

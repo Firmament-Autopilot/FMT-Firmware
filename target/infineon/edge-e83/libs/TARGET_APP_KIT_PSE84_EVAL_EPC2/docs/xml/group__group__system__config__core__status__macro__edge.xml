@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__core__status__macro__edge" kind="group">
+    <compoundname>group_system_config_core_status_macro_edge</compoundname>
+    <title>Core Status Macros</title>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="group__group__system__config__core__status__macro__edge_1gaf8d12e58d12dfa8262844eca954ed88e" prot="public" static="no">
+        <name>CY_SYS_CORE_STATUS_ACTIVE</name>
+        <initializer>(0x0U)</initializer>
+        <briefdescription>
+<para>The core is in Active mode. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="141" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="141" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__core__status__macro__edge_1gae19edffb916199f0c61480f8fa7dc097" prot="public" static="no">
+        <name>CY_SYS_CORE_STATUS_SLEEP</name>
+        <initializer>(0x1U)</initializer>
+        <briefdescription>
+<para>The core is in sleep mode. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="142" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__core__status__macro__edge_1ga69276501d56771fe9a6d7096785b7e29" prot="public" static="no">
+        <name>CY_SYS_CORE_STATUS_DEEPSLEEP</name>
+        <initializer>(0x3U)</initializer>
+        <briefdescription>
+<para>The core is in deep sleep mode. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="143" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__core__status__macro__edge_1gabef3d6a425977837ff60cb1913452fd9" prot="public" static="no">
+        <name>CY_SYS_CORE_STATUS_INVALID</name>
+        <initializer>(0x2U)</initializer>
+        <briefdescription>
+<para>Invalid core state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="144" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group__group__system__config__core__status__macro__edge_1gab80ec125ebf59f019c95a7b7076821b9" prot="public" static="no">
+        <name>CY_SYS_CORE_WAIT_INFINITE</name>
+        <initializer>(0x0U)</initializer>
+        <briefdescription>
+<para>Wait in a loop for Infinite micro second. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" line="146" column="9" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_edge.h" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

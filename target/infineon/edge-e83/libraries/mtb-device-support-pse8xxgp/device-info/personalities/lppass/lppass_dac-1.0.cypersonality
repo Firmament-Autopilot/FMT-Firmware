@@ -1,0 +1,822 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_dac-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* CT DAC personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_dac' name='CT DAC' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.dac'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+      <ExposedMember key='INST_NAME_dac'              paramId='INST_NAME_dac' />
+      <ExposedMember key='dac_outputTopology'         paramId='outputTopology'/>
+      <ExposedMember key='dac_sampleAndHoldEnable'    paramId='sampleAndHoldEnable'/>
+      <ExposedMember key='dac_enableStepValues'       paramId='enableStepValues'/>
+      <ExposedMember key='dac_stepValue$idx'          paramId='stepValue$idx'             repeatCount='3'/>
+      <ExposedMember key='dac_rangeCondition$idx'     paramId='rangeCondition$idx'        repeatCount='3'/>
+      <ExposedMember key='dac_rangeCondition$idx_Info' paramId='rangeCondition$idx_Info'  repeatCount='3'/>
+      <ExposedMember key='dac_lowerThreshold$idx'      paramId='lowerThreshold$idx'       repeatCount='3'/>
+      <ExposedMember key='dac_upperThreshold$idx'      paramId='upperThreshold$idx'       repeatCount='3'/>
+      <ExposedMember key='dac_rangeDetection'         paramId='rangeDetection'/>
+      <ExposedMember key='dac_channelCount'           paramId='channelCount'/>
+      <ExposedMember key='dac_refreshTimeValueHS'     paramId='refreshTimeValueHS'/>
+      <ExposedMember key='dac_refreshTimeValueLP'     paramId='refreshTimeValueLP'/>
+      <ExposedMember key='dac_sampleTimeLP'           paramId='sampleTimeLP'/>
+      <ExposedMember key='dac_holdTimeLP'             paramId='holdTimeLP'/>
+      <ExposedMember key='dac_referenceBufferPower'   paramId='referenceBufferPower'/>
+      <ExposedMember key='dac_outputBufferPower'      paramId='outputBufferPower'/>
+      <ExposedMember key='dac_vrefSel'                paramId='vrefSelect'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='Instance Number'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_dac'
+                 name='inst_dac'
+                 group='Internal'
+                 default='`${getInstNumber("dac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='PASS Resource'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+    <ParamString id='resource_dac'
+                 name='resource_dac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].dac[" . inst_dac . "]"}`'/>
+
+    <Repeat count='15'>
+      <ParamString id='resource_chan_$idx'
+                   name='resource_chan_$idx'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${"pass[" . inst_pass . "].dac[" . inst_dac . "].dacchan[" . $idx . "]"}`'/>
+
+      <ParamBool id='dacChan_$idx_enabled'
+                 name='dacChan_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_chan_$idx))}`'/>
+    </Repeat>
+
+<!-- LPPASS external variables -->
+    <ParamString id='inFlash' name='inFlash' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_pass, "inFlash")}`'/>
+    <ParamString id='opMode' name='opMode' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_ac, "opMode"))}`'/>
+    <ParamString id='vdda' name='vdda' group='Internal' visible='false' desc='' editable='false' default='`${(getExposedMember(resource_pass, "vdda"))}`'/>
+
+    <Repeat count='2'>
+        <ParamBool   id='prbOut$idxIsEnabled'
+                     name='prbOut$idxIsEnabled'
+                     group='Internal'
+                     visible='`${debug}`'
+                     editable='false'
+                     desc=''
+                     default='`${isBlockUsed("pass[" . inst_pass . "].prb[0]") ? getExposedMember("pass[" . inst_pass . "].prb[0]", "prbOut$idxEnable") : "false"}`'/>
+
+    <ParamString id='prbOut$idxVoltage'
+                 name='prbOut$idxVoltage'
+                 group='Internal'
+                 editable='false'
+                 visible='`${debug}`'
+                 desc=''
+                 default='`${getExposedMember("pass[" . inst_pass . "].prb[0]", "prbOut" . $idx . "Voltage")}`'/>
+    </Repeat>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='INST_NAME_dac' name='INST_NAME_dac' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamChoice id='outputTopology'
+                 name='Output Topology'
+                 group='Static Configuration'
+                 visible='true'
+                 editable='true'
+                 desc='Topology of the DAC. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                 default='CY_AUTANALOG_DAC_TOPO_DIRECT'>
+      <Entry name='Unbuffered'                          value='CY_AUTANALOG_DAC_TOPO_DIRECT' visible='true'/>
+      <Entry name='Unbuffered with Track Cap'           value='CY_AUTANALOG_DAC_TOPO_DIRECT_WITH_TRACK_CAP' visible='true'/>
+      <Entry name='Unbuffered with Track and Hold Caps' value='CY_AUTANALOG_DAC_TOPO_DIRECT_WITH_TRACK_HOLD_CAP' visible='true'/>
+      <Entry name='Buffered Internal Drive'             value='CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL' visible='true'/>
+      <Entry name='Buffered Pin Drive'                  value='CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL' visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='sampleAndHoldEnable'
+               name='Sample and Hold Enable'
+               group='Static Configuration'
+               visible='`${(opMode eq "LowPower") &amp;&amp; ((outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL) || (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL))}`'
+               editable='true'
+               desc='Use Sample and Hold. Can be enabled for individual channels in channel settings'
+               default='false'/>
+
+    <ParamChoice id='vrefSelect'
+                 name='VREF Select'
+                 group='Static Configuration'
+                 visible='true'
+                 editable='true'
+                 desc='Select the reference voltage of the DAC'
+                 default='0'>
+      <Entry name='VDDA'            value='0' visible='true'/>
+      <Entry name='VBGR (0.9 V)'    value='1' visible='true'/>
+      <Entry name='PRB Out0'        value='2' visible='true'/>
+      <Entry name='PRB Out1'        value='3' visible='true'/>
+      <Entry name='CTB0 Opamp0 Out' value='4' visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+      <Entry name='CTB0 Opamp1 Out' value='5' visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+      <Entry name='CTB1 Opamp0 Out' value='6' visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+      <Entry name='CTB1 Opamp1 Out' value='7' visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+    </ParamChoice>
+
+    <ParamRange  id='OpampVrefOutput'
+                 name='Opamp VREF Output'
+                 group='Static Configuration'
+                 min='0'
+                 max='1800'
+                 resolution='1'
+                 visible='`${(vrefSelect == 4) || (vrefSelect == 5) || (vrefSelect == 6) || (vrefSelect == 7)}`'
+                 editable='true'
+                 desc='Enter the value of expected VREF output in mV from Opamp'
+                 default='1800'/>
+
+    <ParamString id='vrefOutput'
+        name='vrefOutput'
+        group='Internal'
+        visible='`${debug}`'
+        editable='false'
+        desc=''
+        default='`${(vrefSelect == 0) ? (vdda) :
+                    (vrefSelect == 1) ? (900) :
+                    (vrefSelect == 2) ? (prbOut0Voltage) :
+                    (vrefSelect == 3) ? (prbOut1Voltage) :
+                   ((vrefSelect == 4) ||
+                    (vrefSelect == 5) ||
+                    (vrefSelect == 6) ||
+                    (vrefSelect == 7)) ? OpampVrefOutput : 0}`'/>
+
+    <ParamString id='voltageOutput'
+        name='Voltage Output'
+        group='Static Configuration'
+        visible='true'
+        editable='false'
+        desc='0 to VREF - Voltage Resolution, mV'
+        default='0 to `${(vrefOutput - vrefOutput / 4096.0)}` mV'/>
+
+    <ParamChoice id='disabledOutputState'
+                 name='Disabled Output State'
+                 group='Static Configuration'
+                 visible='true'
+                 editable='true'
+                 desc='Output when the DAC is disabled'
+                 default='false'>
+      <Entry name='Analog Hi-Z' value='false' visible='true'/>
+      <Entry name='VSSA'        value='true' visible='true'/>
+    </ParamChoice>
+
+  <!-- local variables for clocks initialization -->
+    <ParamString id='dacInstNum'          name='dacInstNum'           group='Internal' desc='' visible='false' editable='false'   default='`${getInstNumber("dac")}`' />
+    <ParamString id='clockDacExternalVar' name='clockDacExternalVar'  group='Internal' desc='' visible='false' editable='false'   default='clockDac`${dacInstNum}`'/>
+    <ParamString id='clockDac'            name='clockDac'             group='Internal' desc='' visible='false' editable='false'   default='`${getExposedMember("pass[0]", clockDacExternalVar)}`'/>
+    <ParamString id='clockSource'         name='clockSource'          group='Internal' desc='' visible='false' editable='false'   default='`${findBlockFromSignalValue(clockDac, "peri.group.div_")}`'/>
+    <ParamString id='isClockEnabled'      name='isClockEnabled'       group='Internal' desc='' visible='false' editable='false'   default='`${clockDac ne ""}`'/>
+    <ParamString id='errorMessage'        name='errorMessage'         group='Internal' desc='' visible='false' editable='false'   default='DAC Clock Divider is not reserved'/>
+    <ParamString id='dividerValue'        name='divider'              group='Internal' desc='' visible='false' editable='false'   default='`${isClockEnabled ? getExposedMember(clockSource, "divider") : 0}`'/>
+    <ParamString id='accuracy'            name='accuracy'             group='Internal' desc='' visible='false' editable='false'   default='`${isClockEnabled ? getExposedMember(clockSource, "accuracy") : 0}`' />
+    <ParamString id='frequencyValue'      name='frequency'            group='Internal' desc='' visible='false' editable='false'   default='`${isClockEnabled ? getExposedMember(clockSource, "frequency") : 0}`'/>
+
+    <!-- LP clock -->
+    <ParamRange  id='clockDividerLP'
+                 name='Clock Divider (LP)'
+                 group='DAC Clock'
+                 min='4'
+                 max='1024'
+                 resolution='1'
+                 visible='`${opMode eq "LowPower"}`'
+                 editable='true'
+                 desc='Divider for DAC Refresh Rate and DAC Refresh Time evaluation'
+                 default='4'/>
+
+    <ParamString id='refreshRateLP'
+                 name='DAC Refresh Rate (LP)'
+                 group='DAC Clock'
+                 desc='DAC Refresh Rate = 4.096 MHz / Clock Divider'
+                 visible='`${opMode eq "LowPower"}`'
+                 editable='false'
+                 default='`${formatFrequency(4096000.0/clockDividerLP)}`'/>
+
+    <ParamString id='refreshTimeValueLP' name='refreshTimeValueLP' group='Internal' desc='' visible='false' editable='false' default='`${clockDividerLP /4096000.0}`'/>
+
+    <ParamString id='refreshTimeLP'
+                 name='DAC Refresh Time (LP)'
+                 group='DAC Clock'
+                 desc='DAC Refresh Time = 1 / DAC Refresh Rate'
+                 visible='`${opMode eq "LowPower"}`'
+                 editable='false'
+                 default='`${refreshTimeValueLP gt 0.001 ? refreshTimeValueLP * 1000 :
+                            refreshTimeValueLP gt 0.000001 ? refreshTimeValueLP * 1000000 :
+                            refreshTimeValueLP gt 0.000000001 ? refreshTimeValueLP * 1000000000 :
+                            refreshTimeValueLP * 1000000000000}` `${
+                            refreshTimeValueLP gt 0.001 ? "ms" :
+                            refreshTimeValueLP gt 0.000001 ? "us" :
+                            refreshTimeValueLP gt 0.000000001 ? "ns" :
+                            "ps"}`'/>
+
+    <!-- HS clock -->
+    <ParamString id='clockDividerHS'
+                name='Clock Divider (HS)'
+                group='DAC Clock'
+                visible='`${opMode eq "HighSpeed"}`'
+                editable='false'
+                desc='Peri Clock connected to DAC0 /DAC1 divider value'
+                default='`${isClockEnabled ? cast(int64, dividerValue) : errorMessage}`'/>
+
+   <ParamString id='refreshRateHS'
+                name='DAC Refresh Rate (HS)'
+                group='DAC Clock'
+                desc='DAC Refresh Rate  = Peri Clock connected to DAC0 /DAC1 frequency value'
+                visible='`${opMode eq "HighSpeed"}`'
+                editable='false'
+                default='`${isClockEnabled ? formatFrequency(frequencyValue, accuracy) : errorMessage}`'/>
+
+    <ParamString id='refreshTimeValueHS' name='refreshTimeValueHS' group='Internal' desc='' visible='false' editable='false' default='`${isClockEnabled ? (1.0 / frequencyValue) : 0}`'/>
+
+    <ParamString id='refreshTimeHS'
+                 name='DAC Refresh Time (HS)'
+                 group='DAC Clock'
+                 desc='DAC Refresh Time = 1 / DAC Refresh Rate'
+                 visible='`${opMode eq "HighSpeed"}`'
+                 editable='false'
+                 default='`${isClockEnabled ? (
+                            refreshTimeValueHS gt 0.001 ? refreshTimeValueHS * 1000 :
+                            refreshTimeValueHS gt 0.000001 ? refreshTimeValueHS * 1000000 :
+                            refreshTimeValueHS gt 0.000000001 ? refreshTimeValueHS * 1000000000 :
+                            refreshTimeValueHS * 1000000000000) : refreshTimeValueHS}` `${isClockEnabled ? (
+                            refreshTimeValueHS gt 0.001 ? "ms" :
+                            refreshTimeValueHS gt 0.000001 ? "us" :
+                            refreshTimeValueHS gt 0.000000001 ? "ns" :
+                            "ps") : ""}`'/>
+
+    <ParamBool id='enableStepValues'
+               name='Enable Step Values'
+               group='DAC Step'
+               visible='true'
+               editable='true'
+               desc='Enable multiple global values of data step sizes'
+               default='false'/>
+
+    <Repeat count='3'>
+    <ParamRange id='stepValue$idx'
+                name='Step Value $idx'
+                group='DAC Step'
+                min='1'
+                max='256'
+                resolution='1'
+                visible='`${(enableStepValues)}`'
+                editable='true'
+                desc='Global Step Value $idx used by the DAC channels'
+                default='1'/>
+    </Repeat>
+
+    <ParamChoice id='dataFormat'
+                 name='Data Format'
+                 group='Common DAC Settings'
+                 visible='true'
+                 editable='true'
+                 desc='Unsigned or two&apos;s complement (signed) mode'
+                 default='false'>
+      <Entry name='Unsigned' value='false' visible='true'/>
+      <Entry name='Signed'   value='true' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='vrefOutputInfo'
+                 name='vrefOutputInfo'
+                 group='Internal'
+                 desc=''
+                 visible='`${debug}`'
+                 editable='false'
+                 default='`${(vrefOutput - vrefOutput / 4096.0)}`'/>
+
+    <ParamString id='halfVrefOutputInfo'
+                 name='halfVrefOutputInfo'
+                 group='Internal'
+                 desc=''
+                 visible='`${debug}`'
+                 editable='false'
+                 default='`${(vrefOutput - vrefOutput / 4096.0) / 2.0}`'/>
+
+    <ParamString id='dataFormat_InfoLow'
+                 name='Data Ranges, low'
+                 group='Common DAC Settings'
+                 desc='DAC data ranges and corresponding output voltages'
+                 visible='true'
+                 editable='false'
+                 default='`${(dataFormat eq false) ?
+                             "0x000 = 0 mV" :
+                             "0x800 = 0 mV"}`'/>
+
+    <ParamString id='dataFormat_InfoMid'
+                 name='Data Ranges, mid'
+                 group='Common DAC Settings'
+                 desc='DAC data ranges and corresponding output voltages'
+                 visible='true'
+                 editable='false'
+                 default='`${(dataFormat eq false) ?
+                             "0x800 = " . halfVrefOutputInfo . " mV" :
+                             "0x000 = " . halfVrefOutputInfo . " mV"}`'/>
+
+    <ParamString id='dataFormat_InfoHigh'
+                 name='Data Ranges, high'
+                 group='Common DAC Settings'
+                 desc='DAC data ranges and corresponding output voltages'
+                 visible='true'
+                 editable='false'
+                 default='`${(dataFormat eq false) ?
+                             "0xFFF = " . vrefOutputInfo . " mV" :
+                             "0x7FF = " . vrefOutputInfo . " mV"}`'/>
+
+    <ParamBool id='rangeDetection'
+               name='Limit Detection'
+               group='DAC Limits'
+               visible='true'
+               editable='true'
+               desc='Enable Data Limit Detection that generates Triggers/Interrupts. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+               default='false'/>
+
+    <Repeat count='3'>
+    <ParamChoice id='rangeCondition$idx'
+                 name='Limit Condition $idx'
+                 group='DAC Limits'
+                 visible='`${(rangeDetection)}`'
+                 editable='`${(rangeDetection)}`'
+                 desc='Select Limit Condition mode'
+                 default='CY_AUTANALOG_DAC_CH_LIMIT_BELOW'>
+      <Entry name='Below the Threshold' value='CY_AUTANALOG_DAC_CH_LIMIT_BELOW'   visible='true'/>
+      <Entry name='Above the Threshold' value='CY_AUTANALOG_DAC_CH_LIMIT_ABOVE'   visible='true'/>
+      <Entry name='Inside the Window'   value='CY_AUTANALOG_DAC_CH_LIMIT_INSIDE'  visible='true'/>
+      <Entry name='Outside the Window'  value='CY_AUTANALOG_DAC_CH_LIMIT_OUTSIDE' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='rangeCondition$idx_Info'
+                 name='Limit Condition Equation $idx'
+                 group='DAC Limits'
+                 desc='Limit Condition Equation for selected mode'
+                 visible='`${(rangeDetection)}`'
+                 editable='false'
+                 default='`${(rangeCondition$idx eq CY_AUTANALOG_DAC_CH_LIMIT_BELOW) ? "DAC Data &lt; Lower Threshold $idx" : (rangeCondition$idx eq CY_AUTANALOG_DAC_CH_LIMIT_ABOVE) ? "DAC Data &gt; Upper Threshold $idx" : (rangeCondition$idx eq CY_AUTANALOG_DAC_CH_LIMIT_INSIDE) ? "Lower Threshold $idx &lt;= DAC Data &lt; Upper Threshold $idx" : (rangeCondition$idx eq CY_AUTANALOG_DAC_CH_LIMIT_OUTSIDE) ? "DAC Data &lt; Lower Threshold $idx or DAC Data &gt;= Upper Threshold $idx" : "N/A"}`'/>
+
+    <ParamRange id='lowerThreshold$idx'
+                name='Lower Threshold $idx'
+                group='DAC Limits'
+                min='`${dataFormat ? -2048 : 0}`'
+                max='`${dataFormat ? 2047 : 4095}`'
+                resolution='1'
+                visible='`${(rangeDetection) &amp;&amp; (rangeCondition$idx ne "CY_AUTANALOG_DAC_CH_LIMIT_ABOVE")}`'
+                editable='`${(rangeDetection) &amp;&amp; (rangeCondition$idx ne "CY_AUTANALOG_DAC_CH_LIMIT_ABOVE")}`'
+                desc='Low Threshold for Limit Detect'
+                default='0'/>
+
+        <ParamRange id='upperThreshold$idx'
+                name='Upper Threshold $idx'
+                group='DAC Limits'
+                min='`${dataFormat ? -2048 : 0}`'
+                max='`${dataFormat ? 2047 : 4095}`'
+                resolution='1'
+                visible='`${(rangeDetection) &amp;&amp; (rangeCondition$idx ne "CY_AUTANALOG_DAC_CH_LIMIT_BELOW")}`'
+                editable='`${(rangeDetection) &amp;&amp; (rangeCondition$idx ne "CY_AUTANALOG_DAC_CH_LIMIT_BELOW")}`'
+                desc='Upper Threshold for Limit Detect'
+                default='0'/>
+    </Repeat>
+
+    <ParamBool id='showAdvancedSettings'
+               name='Show Advanced Settings'
+               group='Advanced Settings'
+               visible='true'
+               editable='true'
+               desc='Unlocks advanced controls for reference and output buffer power, sampling and de-glitctch timings'
+               default='false'/>
+
+    <ParamChoice id='referenceBufferPower'
+                 name='Reference Buffer Power'
+                 group='Advanced Settings'
+                 visible='`${(showAdvancedSettings) &amp;&amp; (vrefSelect != 0)}`'
+                 editable='`${(showAdvancedSettings) &amp;&amp; (vrefSelect != 0)}`'
+                 desc='Controls power consumption, Max sample rate and input VREF voltage range of the DAC&apos;s reference buffer'
+                 default='CY_AUTANALOG_DAC_REF_BUF_PWR_OFF'>
+      <Entry name='Off'                             value='CY_AUTANALOG_DAC_REF_BUF_PWR_OFF'             visible='true'/>
+      <Entry name='Ultra-Low'                       value='CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW'       visible='true'/>
+      <Entry name='Ultra-Low, Rail-to-Rail Inputs'  value='CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW_RAIL'  visible='true'/>
+      <Entry name='Low, Rail-to-Rail Inputs'        value='CY_AUTANALOG_DAC_REF_BUF_PWR_LOW_RAIL'        visible='true'/>
+      <Entry name='Medium, Rail-to-Rail Inputs'     value='CY_AUTANALOG_DAC_REF_BUF_PWR_MEDIUM_RAIL'     visible='true'/>
+      <Entry name='High, Rail-to-Rail Inputs'       value='CY_AUTANALOG_DAC_REF_BUF_PWR_HIGH_RAIL'       visible='true'/>
+      <Entry name='Ultra-High, Rail-to-Rail Inputs' value='CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_HIGH_RAIL' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='referenceBufferCurrent'
+                 name='Reference Buffer current'
+                 group='Advanced Settings'
+                 default='`${referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW ? "15" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW_RAIL ? "35" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_LOW_RAIL ? "150" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_MEDIUM_RAIL ? "200" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_HIGH_RAIL ? "600" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_HIGH_RAIL ? "800" : ""}` uA'
+                 visible='`${referenceBufferPower ne CY_AUTANALOG_DAC_REF_BUF_PWR_OFF}`'
+                 editable='false'
+                 desc='Reference Buffer quiescent current' />
+
+    <ParamString id='referenceBufferVoltage'
+                 name='Reference Buffer common mode range'
+                 group='Advanced Settings'
+                 default='`${referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW ? "0.2 V to VDDA - 1.0 V" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_MEDIUM_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" : ""}`'
+                 visible='`${referenceBufferPower ne CY_AUTANALOG_DAC_REF_BUF_PWR_OFF}`'
+                 editable='false'
+                 desc='Reference Buffer common mode voltage range' />
+
+    <ParamString id='referenceBufferBandwidth'
+                 name='Reference Buffer bandwidth'
+                 group='Advanced Settings'
+                 default='`${referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW ? "30 kHz" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_LOW_RAIL ? "30 kHz" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_LOW_RAIL ? "350 kHz" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_MEDIUM_RAIL ? "700 kHz" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_HIGH_RAIL ? "1.75 MHz" :
+                             referenceBufferPower eq CY_AUTANALOG_DAC_REF_BUF_PWR_ULTRA_HIGH_RAIL ? "2.8 MHz" : ""}`'
+                 visible='`${referenceBufferPower ne CY_AUTANALOG_DAC_REF_BUF_PWR_OFF}`'
+                 editable='false'
+                 desc='Reference Buffer frequency bandwidth' />
+
+    <ParamChoice id='outputBufferPower'
+                 name='Output Buffer Power'
+                 group='Advanced Settings'
+                 visible='`${((showAdvancedSettings) &amp;&amp; ((outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL) || (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL)))}`'
+                 editable='`${((showAdvancedSettings) &amp;&amp; ((outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL) || (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL)))}`'
+                 desc='Controls power consumption, Max sample rate and output voltage range of the DAC&apos;s output buffer'
+                 default='CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF'>
+      <Entry name='Off'                             value='CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF'             visible='true'/>
+      <Entry name='Ultra-Low'                       value='CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW'       visible='true'/>
+      <Entry name='Ultra-Low, Rail-to-Rail Inputs'  value='CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW_RAIL'  visible='true'/>
+      <Entry name='Low, Rail-to-Rail Inputs'        value='CY_AUTANALOG_DAC_OUT_BUF_PWR_LOW_RAIL'        visible='true'/>
+      <Entry name='Medium, Rail-to-Rail Inputs'     value='CY_AUTANALOG_DAC_OUT_BUF_PWR_MEDIUM_RAIL'     visible='true'/>
+      <Entry name='High, Rail-to-Rail Inputs'       value='CY_AUTANALOG_DAC_OUT_BUF_PWR_HIGH_RAIL'       visible='true'/>
+      <Entry name='Ultra-High, Rail-to-Rail Inputs' value='CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_HIGH_RAIL' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='outputBufferCurrent'
+                 name='Output Buffer current'
+                 group='Advanced Settings'
+                 default='`${outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW ? "15" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW_RAIL ? "35" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_LOW_RAIL ? "150" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_MEDIUM_RAIL ? "200" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_HIGH_RAIL ? "600" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_HIGH_RAIL ? "800" : ""}` uA'
+                 visible='`${outputBufferPower ne CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF}`'
+                 editable='false'
+                 desc='Output Buffer quiescent current' />
+
+    <ParamString id='outputBufferVoltage'
+                 name='Output Buffer common mode range'
+                 group='Advanced Settings'
+                 default='`${outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW ? "0.2 V to VDDA - 1.0 V" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_LOW_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_MEDIUM_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_HIGH_RAIL ? "0.2 V to VDDA - 0.2 V" : ""}`'
+                 visible='`${outputBufferPower ne CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF}`'
+                 editable='false'
+                 desc='Output Buffer common mode voltage range' />
+
+    <ParamString id='outputBufferBandwidth'
+                 name='Output Buffer bandwidth'
+                 group='Advanced Settings'
+                 default='`${outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW ? (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL ? "100 kHz" : "30 kHz") :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW_RAIL ? (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL ? "100 kHz" : "30 kHz") :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_LOW_RAIL ? (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL ? "1.2 MHz" : "350 kHz") :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_MEDIUM_RAIL ? (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL ? "2.4 MHz" : "700 kHz") :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_HIGH_RAIL ? (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL ? "6 MHz" : "1.75 MHz") :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_HIGH_RAIL ? (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL ? "7.5 MHz" : "2.8 MHz") : ""}`'
+                 visible='`${outputBufferPower ne CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF}`'
+                 editable='false'
+                 desc='Output Buffer frequency bandwidth' />
+
+    <ParamString id='outputBufferCapability'
+                 name='Output Buffer drive capability'
+                 group='Advanced Settings'
+                 default='`${outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW ? "10 uA" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_LOW_RAIL ? "10 uA" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_LOW_RAIL ? "100 uA" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_MEDIUM_RAIL ? "1 mA" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_HIGH_RAIL ? "1 mA" :
+                             outputBufferPower eq CY_AUTANALOG_DAC_OUT_BUF_PWR_ULTRA_HIGH_RAIL ? "10 mA" : ""}`'
+                 visible='`${(outputBufferPower ne CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF) &amp;&amp; (outputTopology eq CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL)}`'
+                 editable='false'
+                 desc='Output drive capability of the output buffer' />
+
+    <ParamRange id='sampleTime'
+                name='Sample Time (LP)'
+                group='Advanced Settings'
+                min='1'
+                max='256'
+                resolution='1'
+                visible='`${(opMode eq "LowPower") &amp;&amp; (showAdvancedSettings) &amp;&amp; (sampleAndHoldEnable)}`'
+                editable='true'
+                desc='Sample time in undivided DAC Clock Cycles (for sample and hold modes).'
+                default='1'/>
+
+    <ParamString id='sampleTimeValueLP' name='sampleTimeValueLP' group='Internal' desc='' visible='false' editable='false' default='`${sampleTime / 4096000.0}`'/>
+
+    <ParamString id='sampleTimeLP'
+                 name='Sample Time (LP)'
+                 group='Advanced Settings'
+                 desc='Sample Time value = Sample Time / 4.096 MHz'
+                 visible='`${(opMode eq "LowPower") &amp;&amp; (showAdvancedSettings) &amp;&amp; (sampleAndHoldEnable)}`'
+                 editable='false'
+                 default='`${sampleTimeValueLP gt 0.001 ? sampleTimeValueLP * 1000 :
+                             sampleTimeValueLP gt 0.000001 ? sampleTimeValueLP * 1000000 :
+                             sampleTimeValueLP gt 0.000000001 ? sampleTimeValueLP * 1000000000 :
+                             sampleTimeValueLP * 1000000000000}` `${
+                             sampleTimeValueLP gt 0.001 ? "ms" :
+                             sampleTimeValueLP gt 0.000001 ? "us" :
+                             sampleTimeValueLP gt 0.000000001 ? "ns" :
+                             "ps"}`'/>
+
+    <ParamString id='holdTimeValueLP' name='holdTimeValueLP' group='Internal' desc='' visible='false' editable='false' default='`${(refreshTimeValueLP > sampleTimeValueLP) ? (refreshTimeValueLP - sampleTimeValueLP) : 0}`'/>
+
+    <ParamString id='holdTimeLP'
+                 name='Hold Time (LP)'
+                 group='Advanced Settings'
+                 desc='Hold time (for sample and hold modes) = Refresh Time -  Sample Time'
+                 visible='`${(opMode eq "LowPower") &amp;&amp; (showAdvancedSettings) &amp;&amp; (sampleAndHoldEnable)}`'
+                 editable='false'
+                 default='`${holdTimeValueLP gt 0.001 ? holdTimeValueLP * 1000 :
+                             holdTimeValueLP gt 0.000001 ? holdTimeValueLP * 1000000 :
+                             holdTimeValueLP gt 0.000000001 ? holdTimeValueLP * 1000000000 :
+                             holdTimeValueLP * 1000000000000}` `${
+                             holdTimeValueLP gt 0.001 ? "ms" :
+                             holdTimeValueLP gt 0.000001 ? "us" :
+                             holdTimeValueLP gt 0.000000001 ? "ns" :
+                             "ps"}`'/>
+
+    <ParamBool id='deglitchEnable'
+               name='Deglitch Enable'
+               group='Advanced Settings'
+               visible='`${(showAdvancedSettings)}`'
+               editable='true'
+               desc='Deglitch disconnects the DAC from the output for a specified time'
+               default='false'/>
+
+    <ParamRange id='deglitchTime'
+                name='Deglitch Time'
+                group='Advanced Settings'
+                min='1'
+                max='256'
+                resolution='1'
+                visible='`${(showAdvancedSettings) &amp;&amp; (deglitchEnable)}`'
+                editable='true'
+                desc='Deglitch time in DAC Clock Cycles.'
+                default='1'/>
+
+    <ParamString id='deglitchTimeValue' name='deglitchTimeValue' group='Internal' desc='' visible='false' editable='false' default='`${(opMode eq "LowPower") ? (deglitchTime / 4096000.0) : (isClockEnabled ? (1.0 * deglitchTime) / (frequencyValue * clockDividerHS) : 0)}`'/>
+
+    <ParamString id='deglitchTimeLP'
+                 name='Deglitch Time'
+                 group='Advanced Settings'
+                 desc='Deglitch Time value = Deglitch Time / DAC Clock'
+                 visible='`${(showAdvancedSettings) &amp;&amp; (deglitchEnable) &amp;&amp; (opMode eq "LowPower")}`'
+                 editable='false'
+                 default='`${deglitchTimeValue gt 0.001 ? deglitchTimeValue * 1000 :
+                             deglitchTimeValue gt 0.000001 ? deglitchTimeValue * 1000000 :
+                             deglitchTimeValue gt 0.000000001 ? deglitchTimeValue * 1000000000 :
+                             deglitchTimeValue * 1000000000000}` `${
+                             deglitchTimeValue gt 0.001 ? "ms" :
+                             deglitchTimeValue gt 0.000001 ? "us" :
+                             deglitchTimeValue gt 0.000000001 ? "ns" :
+                             "ps"}`'/>
+
+    <ParamString id='deglitchTimeHS'
+                 name='Deglitch Time'
+                 group='Advanced Settings'
+                 desc='Deglitch Time value = Deglitch Time / DAC Clock'
+                 visible='`${(showAdvancedSettings) &amp;&amp; (deglitchEnable) &amp;&amp; (opMode eq "HighSpeed")}`'
+                 editable='false'
+                 default='`${isClockEnabled ? (
+                            deglitchTimeValue gt 0.001 ? deglitchTimeValue * 1000 :
+                            deglitchTimeValue gt 0.000001 ? deglitchTimeValue * 1000000 :
+                            deglitchTimeValue gt 0.000000001 ? deglitchTimeValue * 1000000000 :
+                            deglitchTimeValue * 1000000000000) : deglitchTimeValue}` `${isClockEnabled ? (
+                            deglitchTimeValue gt 0.001 ? "ms" :
+                            deglitchTimeValue gt 0.000001 ? "us" :
+                            deglitchTimeValue gt 0.000000001 ? "ns" :
+                            "ps") : ""}`'/>
+
+    <ParamBool id='dacChanEnabled'
+               name='dacChanEnabled'
+               group='Internal'
+               visible='false'
+               editable='false'
+               desc=''
+               default='`${dacChan_0_enabled  ||
+                           dacChan_1_enabled  ||
+                           dacChan_2_enabled  ||
+                           dacChan_3_enabled  ||
+                           dacChan_4_enabled  ||
+                           dacChan_5_enabled  ||
+                           dacChan_6_enabled  ||
+                           dacChan_7_enabled  ||
+                           dacChan_8_enabled  ||
+                           dacChan_9_enabled  ||
+                           dacChan_10_enabled ||
+                           dacChan_11_enabled ||
+                           dacChan_12_enabled ||
+                           dacChan_12_enabled ||
+                           dacChan_14_enabled}`'/>
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Enable and configure Autonomous Analog.' condition='`${!isBlockUsed(resource_pass)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_pass}`' value='lppass-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR'
+         text='Enable the PRB output $idx to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == (2 + $idx)) &amp;&amp; !(isBlockUsed("pass[" . inst_pass . "].prb[0]") ? getExposedMember("pass[" . inst_pass . "].prb[0]", "prbOut$idxEnable") : "false")}`' repeatCount='2'/>
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 0 to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 4) &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' />
+    <DRC type='ERROR'
+         text='Enable and power the CTB 0, opamp 1 to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 5) &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' />
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 0 to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 6) &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' />
+    <DRC type='ERROR'
+         text='Enable and power the CTB 1, opamp 1 to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 7) &amp;&amp; ((isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "power") : "CY_AUTANALOG_CTB_OA_PWR_OFF") eq "CY_AUTANALOG_CTB_OA_PWR_OFF")}`' />
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 0 in the comparator mode to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 4) &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' />
+    <DRC type='ERROR'
+         text='Do not configure the CTB 0, opamp 1 in the comparator mode to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 5) &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[0].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[0].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' />
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 0 in the comparator mode to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 6) &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[0]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[0]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' />
+    <DRC type='ERROR'
+         text='Do not configure the CTB 1, opamp 1 in the comparator mode to generate a reference voltage for the DAC.'
+         condition='`${(vrefSelect == 7) &amp;&amp; (isBlockUsed("pass[" . inst_pass . "].ctb[1].oa[1]") ? (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_COMPARATOR") || (getExposedMember("pass[" . inst_pass . "].ctb[1].oa[1]", "topology") eq "CY_AUTANALOG_CTB_OA_TOPO_HYST_COMPARATOR") : "false")}`' />
+    <DRC type='ERROR'
+         text='The Sample Time is greater than Refresh Time for the DAC `${inst_dac}`.'
+         condition='`${(opMode eq "LowPower") ? sampleTimeValueLP > refreshTimeValueLP : "false"}`'/>
+    <DRC type='ERROR' text='Lower Threshold greater or equal then Upper Threshold for the DAC `${inst_dac}`.' repeatCount='3'
+         condition='`${(upperThreshold$idx &lt; lowerThreshold$idx || upperThreshold$idx eq lowerThreshold$idx) &amp;&amp; (rangeCondition$idx eq CY_AUTANALOG_DAC_CH_LIMIT_INSIDE || rangeCondition$idx eq CY_AUTANALOG_DAC_CH_LIMIT_OUTSIDE)}`' />
+</DRCs>
+
+  <ConfigFirmware>
+
+    <ConfigInclude value='cy_autanalog.h' include='true' />
+
+<!-- The DAC channel range detection -->
+    <ConfigArray    name='`${INST_NAME_dac . "_lim_cfg"}`' type='cy_stc_autanalog_dac_ch_limit_t' const='`${inFlash}`' public='true' include='`${rangeDetection}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='3' include='true'>
+        <Member     name='cond'  value='`${rangeCondition$idx{1}}`' />
+        <Member     name='low'   value='`${lowerThreshold$idx{1}}`' />
+        <Member     name='high'  value='`${upperThreshold$idx{1}}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The DAC channel configuration -->
+    <ConfigArray name='`${INST_NAME_dac . "_ch_cfg"}`' type='cy_stc_autanalog_dac_ch_t' const='`${inFlash}`' public='true' include='`${dacChanEnabled}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='15' include='`${dacChan_$idx{0}_enabled}`'>
+        <Member name='startAddr'     value='`${getExposedMember(resource_chan_$idx{1}, "runMode") eq "3" ? getExposedMember(resource_chan_$idx{1}, "dataAddress") : getExposedMember(resource_chan_$idx{1}, "dataStartAddress")}`U' />
+        <Member name='endAddr'       value='`${getExposedMember(resource_chan_$idx{1}, "runMode") eq "3" ? getExposedMember(resource_chan_$idx{1}, "dataAddress") : getExposedMember(resource_chan_$idx{1}, "dataEndAddress")}`U' />
+        <Member name='operMode'      value='`${getExposedMember(resource_chan_$idx{1}, "dataOperMode")}`' />
+        <Member name='sampleAndHold' value='`${getExposedMember(resource_chan_$idx{1}, "sampleAndHold")}`' />
+        <Member name='stepSel'       value='`${enableStepValues &amp;&amp; (getExposedMember(resource_chan_$idx{1}, "waveformData") != 0) ? (getExposedMember(resource_chan_$idx{1}, "runMode") eq "3" ? getExposedMember(resource_chan_$idx{1}, "dataStepSize") : getExposedMember(resource_chan_$idx{1}, "addressStepSize")) : "CY_AUTANALOG_DAC_STEP_SEL_DISABLED"}`' />
+        <Member name='statSel'       value='`${rangeDetection ? (getExposedMember(resource_chan_$idx{1}, "runMode") eq "3" ? getExposedMember(resource_chan_$idx{1}, "dataLimitDetection") : getExposedMember(resource_chan_$idx{1}, "runMode") eq "2" ? getExposedMember(resource_chan_$idx{1}, "addressRangeDetection") : "CY_AUTANALOG_DAC_STATUS_SEL_DISABLED") : "CY_AUTANALOG_DAC_STATUS_SEL_DISABLED"}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+<!-- The DAC static configuration -->
+      <ConfigStruct name='`${INST_NAME_dac . "_sta_cfg"}`' type='cy_stc_autanalog_dac_sta_t' const='`${inFlash}`' public='true' include='`${isBlockUsed(resource_dac)}`'>
+        <Member name='lpDivDac'      value='`${(clockDividerLP - 1)}`U' />
+        <Member name='topology'      value='`${outputTopology}`' />
+        <Member name='vrefSel'       value='`${vrefSelect == 0 ? "CY_AUTANALOG_DAC_VREF_VDDA" : "CY_AUTANALOG_DAC_VREF_MUX_OUT"}`' />
+        <Member name='deGlitch'      value='`${deglitchEnable}`' />
+        <Member name='bottomSel'     value='false' />
+        <Member name='disabledMode'  value='`${disabledOutputState}`' />
+        <Member name='refBuffPwr'    value='`${(vrefSelect != 0) ? referenceBufferPower : "CY_AUTANALOG_DAC_REF_BUF_PWR_OFF"}`' />
+        <Member name='outBuffPwr'    value='`${(outputTopology eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_INTERNAL") || (outputTopology eq "CY_AUTANALOG_DAC_TOPO_BUFFERED_EXTERNAL") ? outputBufferPower : "CY_AUTANALOG_DAC_OUT_BUF_PWR_OFF"}`' />
+        <Member name='sign'          value='`${dataFormat}`' />
+        <Member name='vrefMux'       value='`${vrefSelect == 1 ? "CY_AUTANALOG_DAC_VREF_MUX_VBGR"      :
+                                               vrefSelect == 2 ? "CY_AUTANALOG_DAC_VREF_MUX_PRB_OUT0"  :
+                                               vrefSelect == 3 ? "CY_AUTANALOG_DAC_VREF_MUX_PRB_OUT1"  :
+                                               vrefSelect == 4 ? "CY_AUTANALOG_DAC_VREF_MUX_CTB0_OA0"  :
+                                               vrefSelect == 5 ? "CY_AUTANALOG_DAC_VREF_MUX_CTB0_OA1"  :
+                                               vrefSelect == 6 ? "CY_AUTANALOG_DAC_VREF_MUX_CTB1_OA0"  :
+                                               vrefSelect == 7 ? "CY_AUTANALOG_DAC_VREF_MUX_CTB1_OA1"  :
+                                                                 "CY_AUTANALOG_DAC_VREF_MUX_VBGR"}`' />
+        <Member name='sampleTime'    value='`${(sampleTime - 1)}`U' />
+        <ConfigArray name='stepVal' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${stepValue$idx{0} - 1}`U' count='3'/>
+        </ConfigArray>
+        <Member name='deGlitchTime'  value='`${deglitchTime - 1}`U' />
+        <ConfigArray name='chCfg' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${(dacChan_$idx{0}_enabled) ? "&amp;" . getExposedMember(resource_dac, "INST_NAME_dac") . "_ch_cfg[" . $idx{0} . "U]" : "NULL"}`' count='15'/>
+        </ConfigArray>
+        <ConfigArray name='chLimitCfg' type='nested' const='false' public='true' include='true'>
+          <ArrayElement value='`${rangeDetection ? "&amp;" . getExposedMember(resource_dac, "INST_NAME_dac") . "_lim_cfg[" . $idx{0} . "U]" : "NULL"}`' count='3'/>
+        </ConfigArray>
+      </ConfigStruct>
+
+<!-- The configuration structure to set up the entire DAC -->
+      <ConfigStruct name='`${INST_NAME_dac}`_cfg' type='cy_stc_autanalog_dac_t' const='`${inFlash}`' public='true' repeatCount='1' include='`${isBlockUsed(resource_dac)}`'>
+        <Member name='dacStaCfg' value='`${"&amp;" . getExposedMember(resource_dac, "INST_NAME_dac") . "_sta_cfg"}`' />
+<!--        <Member name='waveform'  value='`${dacChanEnabled ? "&amp;pass_" . inst_pass . "_dac_" . inst_dac . "_waveform_cfg" : "NULL"}`' /> -->
+        <Member name='waveform'  value='NULL' />
+      </ConfigStruct>
+
+    <!-- The DAC State Transition Table structure -->
+    <ConfigArray name='`${INST_NAME_dac}`_stt' type='cy_stc_autanalog_stt_dac_t' const='`${inFlash}`' public='true' include='`${isBlockUsed(resource_dac)}`' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . inst_pass . "].ac[0].state[" . $idx{0} . "]")}`'>
+        <Member name='unlock'    value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_dac" . inst_dac . "Unlock")}`' />
+        <Member name='enable'    value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_dac" . inst_dac . "Enable")}`' />
+        <Member name='trigger'   value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_dac" . inst_dac . "Trigger")}`' />
+        <Member name='channel'   value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_dac" . inst_dac . "Channel")}`' />
+        <Member name='direction' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_dac" . inst_dac . "Command")}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+  </ConfigFirmware>
+
+</PersonalityTemplate>

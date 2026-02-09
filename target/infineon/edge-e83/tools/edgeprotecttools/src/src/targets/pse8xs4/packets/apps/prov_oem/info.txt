@@ -1,0 +1,4 @@
+name: cyapp_prov_oem
+description: The application injects OEM assets and advances the device LCS to PRODUCTION LCS when production certificate is provided.
+type: Firmware application
+version: 2.0.0.5683

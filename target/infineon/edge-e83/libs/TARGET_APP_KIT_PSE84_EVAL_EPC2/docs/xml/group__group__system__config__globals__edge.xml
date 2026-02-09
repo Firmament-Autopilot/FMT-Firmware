@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="group__group__system__config__globals__edge" kind="group">
+    <compoundname>group_system_config_globals_edge</compoundname>
+    <title>Global Variables</title>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1gaa3cd3e43291e81e795d642b79b6088e6" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t SystemCoreClock</definition>
+        <argsstring></argsstring>
+        <name>SystemCoreClock</name>
+        <briefdescription>
+<para>Holds the system core clock, which is the system clock frequency supplied to the SysTick timer and the processor core clock. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This variable implements the CMSIS Core global variable. Refer to the <ulink url="http://www.keil.com/pack/doc/CMSIS/Core/html/group__system__init__gr.html">CMSIS documentation</ulink> for more details. This variable can be used by debuggers to query the frequency of the debug timer or to configure the trace clock speed.</para>
+<para><simplesect kind="attention"><para>Compilers must be configured to avoid removing this variable in case the application program is not using it. Debugging systems require the variable to be physically present in memory so that it can be examined to configure the debugger.</para>
+</simplesect>
+Holds the system core clock, which is the system clock frequency supplied to the SysTick timer and the processor core clock. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="284" column="17" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="53" bodyend="-1" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="284" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1gacacb048cf07405e3bb7d2aeca6ed1339" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t cy_AhbFreqHz</definition>
+        <argsstring></argsstring>
+        <name>cy_AhbFreqHz</name>
+        <briefdescription>
+<para>Holds the AHB frequency. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Updated by <ref refid="group__group__system__config__functions__edge_1gae0c36a9591fe6e9c45ecb21a794f0f0f" kindref="member">SystemCoreClockUpdate()</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="287" column="17" bodyfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/COMPONENT_CM33/COMPONENT_NON_SECURE_DEVICE/ns_system_pse84.c" bodystart="55" bodyend="-1" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="287" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="variable" id="group__group__system__config__globals__edge_1ga2fa1348d4103c847e7f583bfb6dcddc8" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool cy_WakeupFromWarmBootStatus</definition>
+        <argsstring></argsstring>
+        <name>cy_WakeupFromWarmBootStatus</name>
+        <briefdescription>
+<para>Holds the flag to indicate if the System woke up from Warm Boot or not. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" line="290" column="13" declfile="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/system_pse84.h" declline="290" declcolumn="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

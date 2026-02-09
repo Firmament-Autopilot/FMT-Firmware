@@ -1,0 +1,202 @@
+{
+  "policy": {
+    "platform": "pse8x",
+    "version": 1.0,
+    "type": "prov_oem"
+  },
+  "extended_boot_image": {
+    "description": "Image of Extended Boot in CBOR format, signed by IFX",
+    "value": ""
+  },
+  "user_certificate": {
+    "description": "Custom user certificates",
+    "value": []
+  },
+  "debug": {
+    "cm33": {
+      "cpu": {
+        "description": "CPU access port debug restriction",
+        "applicable_conf": "Disabled, Enabled, Allowed",
+        "value": "Enabled"
+      },
+      "allowed": {
+        "description": "Indicates who is allowed to access the AP. The option is applicable when CPU control is 'Allowed'",
+        "applicable_conf": "Firmware, Certificate, Open",
+        "value": "Open"
+      },
+      "dbgen": {
+        "description": "Invasive Debug. It implies non-invasive is also enabled",
+        "value": true
+      },
+      "niden": {
+        "description": "Non-Invasive Debug (monitoring without control)",
+        "value": true
+      },
+      "spiden": {
+        "description": "Secure Privileged Invasive Debug. Requires 'secure' option set to true",
+        "value": true
+      },
+      "spniden": {
+        "description": "Secure Privileged Non-Invasive Debug. Requires 'secure' option set to true",
+        "value": true
+      },
+      "secure": {
+        "description": "Enables Secure debug of CM33 CPU. Secure invasive and non-invasive debug policies are applicable only if this option is enabled",
+        "value": true
+      }
+    },
+    "system": {
+      "ap": {
+        "description": "System access port (SYS-AP) restriction. The SYS-AP restrictions are not enforced in the Development LCS",
+        "applicable_conf": "Disabled, Enabled, Allowed",
+        "value": "Enabled"
+      },
+      "allowed": {
+        "description": "Indicates who is allowed to access the AP. The option is applicable when AP control is 'Allowed'",
+        "applicable_conf": "Firmware, Certificate, Open",
+        "value": "Open"
+      },
+      "mpc_ppc_enable": {
+        "description": "Indicates whether the system access port is restricted according to the settings in the next four fields. If this field is set to 'false', the next restrictions will not be enforced",
+        "value": true
+      },
+      "rram_otp_enable": {
+        "description": "This field indicates if access is allowed to general purpose OTP",
+        "applicable_conf": "Entire region, Nothing",
+        "value": "Entire region"
+      },
+      "rram_nvm_enable": {
+        "description": "This field indicates what portion of user programmable NVM is accessible through the system access port. When a fraction value is selected, only a portion of NVM starting at the bottom is exposed",
+        "applicable_conf": "Entire region, 7/8th, 3/4th, 1/2, 1/4th, 1/8th, 1/16th, Nothing",
+        "value": "Entire region"
+      },
+      "ram_enable": {
+        "description": "This field indicates what portion of SRAM is accessible through the system access port. Only a portion of SRAM starting at the bottom of the area is exposed, like the 'rram_nvm' option",
+        "applicable_conf": "Entire region, 7/8th, 3/4th, 1/2, 1/4th, 1/8th, 1/16th, Nothing",
+        "value": "Entire region"
+      },
+      "mmio_enable": {
+        "description": "This field indicates what portion of the MMIO region is accessible through the system access port",
+        "applicable_conf": "All MMIO registers, Boot Status, RAM app only, No MMIO access",
+        "value": "All MMIO registers"
+      }
+    },
+    "rma": {
+      "permission": {
+        "description": "Permission for transition to RMA LCS",
+        "value": true
+      }
+    },
+    "debug_key": {
+      "description": "ECDSA public key, used to verify debug token. Use the path to the ECDSA P-256 public key or a 65-byte hex string",
+      "value": ""
+    }
+  },
+  "reprovisioning": {
+    "description": "Reprovisioning policy. Used to restrict the assets reprovisioning",
+    "debug": {
+      "cm33": true,
+      "system": true,
+      "rma": true,
+      "debug_key": true
+    },
+    "extended_boot_policy": true,
+    "user_keys": true,
+    "user_certificate": true
+  },
+  "user_keys": {
+    "description": "List of user keys. Fill in the key data with your values",
+    "value": [
+      {
+        "kid": {
+          "description": "The ID of the key in the PSA vault. The value between '0x40000000' and '0x7FFEFFFF'",
+          "value": null
+        },
+        "alg": {
+          "description": "Key algorithm",
+          "applicable_conf": "ECDSA, RSA, AES-CTR, AES-CBC, AES-ECB, ECDH, HKDF_ALG_SHA_256, IFX_SE_ALG_KDF_AES_CMAC, NONE",
+          "value": null
+        },
+        "use": {
+          "description": "Key usage flags are encoded in a bitmask (usage example SIGN|ENCRYPT)",
+          "applicable_conf": "EXPORT, COPY, CACHE, ENCRYPT, DECRYPT, SIGN_MESSAGE, VERIFY_MESSAGE, SIGN_HASH, VERIFY_HASH, DERIVE, VERIFY_DERIVATION",
+          "value": null
+        },
+        "key": {
+          "description": "Path to the key file in PEM, DER, or JWK format",
+          "value": null
+        },
+        "owner": {
+          "description": "Key owner identifier. The value between '-2147483648' and '2147483647'",
+          "value": null
+        }
+      }
+    ]
+  },
+  "extended_boot_policy": {
+    "secure_boot": {
+      "description": "Disable/Enable secure boot option by setting the value to false/true",
+      "value": false
+    },
+    "clock": {
+      "description": "Defines default core clock speed in MHz",
+      "applicable_conf": "200, 100, 50, 5",
+      "value": 200
+    },
+    "listen_window": {
+      "description": "Defines listen window timeout in ms",
+      "value": 100
+    },
+    "enable_alt_serial": {
+      "description": "Disable/Enable Alternate serial interface by setting the value to false/true",
+      "value": true
+    },
+    "cm33_ram_app": {
+      "enable": {
+        "description": "Disable/Enable CM33 OEM RAM applications by setting the value to false/true",
+        "value": true
+      },
+      "address": {
+        "description": "Start address of the CM33 OEM RAM application",
+        "value": "0x34008000"
+      }
+    },
+    "oem_app_address": {
+      "description": "Starting location of OEM application",
+      "value": "0x32011000"
+    },
+    "oem_alt_boot": {
+      "description": "Disable/Enable alternate boot by setting the value to false/true",
+      "value": true
+    },
+    "oem_alt_app_address": {
+      "description": "Alternate starting location of OEM application",
+      "value": "0x70100000"
+    },
+    "external_flash": {
+      "smif_chip_select": {
+        "description": "Chip select for primary external flash",
+        "applicable_conf": "0, 1, 2, 3",
+        "value": 1
+      },
+      "smif_data_width": {
+        "description": "Select data width used to interface the external flash",
+        "applicable_conf": "4, 8",
+        "value": 4
+      },
+      "smif_data_select": {
+        "description": "Select data IO pins for d0/d1",
+        "applicable_conf": "0, 2",
+        "value": 0
+      }
+    }
+  },
+  "boundary_scan": {
+    "description": "Indicates whether boundary scan is enabled",
+    "value": false
+  },
+  "oem_key_revocation": {
+    "description": "Request for OEM RoT key revocation",
+    "value": false
+  }
+}

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.2" xml:lang="en-US">
+  <compounddef id="dir_d62c600266a66eb2d33a6815665d6a1e" kind="dir">
+    <compoundname>TARGET_KIT_PSE84_EVAL_EPC2</compoundname>
+    <innerdir refid="dir_b142a1308d673267a76748aa0278b9ae">bluetooth</innerdir>
+    <innerdir refid="dir_deec1e376f8b01dc4855535696eb8422">COMPONENT_CM33</innerdir>
+    <innerdir refid="dir_8eaeef4c871aa4e6fbf4d1e1f3df7120">COMPONENT_CM55</innerdir>
+    <innerfile refid="cybsp_8c">cybsp.c</innerfile>
+    <innerfile refid="cybsp_8h">cybsp.h</innerfile>
+    <innerfile refid="cybsp__doc_8h">cybsp_doc.h</innerfile>
+    <innerfile refid="cybsp__hw__config_8h">cybsp_hw_config.h</innerfile>
+    <innerfile refid="cybsp__types_8h">cybsp_types.h</innerfile>
+    <innerfile refid="gpio__pse84__bga__220_8h">gpio_pse84_bga_220.h</innerfile>
+    <innerfile refid="mtb__ipc__config_8h">mtb_ipc_config.h</innerfile>
+    <innerfile refid="mtb__srf__config_8h">mtb_srf_config.h</innerfile>
+    <innerfile refid="partition__edge_8h">partition_edge.h</innerfile>
+    <innerfile refid="pse84__config_8h">pse84_config.h</innerfile>
+    <innerfile refid="startup__edge_8h">startup_edge.h</innerfile>
+    <innerfile refid="system__edge_8c">system_edge.c</innerfile>
+    <innerfile refid="system__edge_8h">system_edge.h</innerfile>
+    <innerfile refid="system__pse84_8h">system_pse84.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="output/bsps/TARGET_KIT_PSE84_EVAL_EPC2/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,28 @@
+{    
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "bin2hex command example",
+            "description": "Converts binary image to hex",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "bin2hex",
+                    "inputs": [
+                        {
+                            "description": "Input bin file",
+                            "file": "input.bin",
+                            "offset": 0
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "Output hex file",
+                            "file": "output.hex"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

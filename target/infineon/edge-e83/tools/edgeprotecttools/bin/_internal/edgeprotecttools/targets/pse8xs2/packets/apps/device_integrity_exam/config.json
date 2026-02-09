@@ -1,0 +1,25 @@
+{
+  "image": {
+    "path": "cyapp_device_integrity_exam_signed_0.bin",
+    "address": "0x34008000"
+  },
+  "in_params": {
+    "path": "in_params.bin",
+    "address": "",
+    "optional": true
+  },
+  "dlm": {
+    "path": "device_integrity_exam_dlm.hex"
+  },
+  "out_results": {
+    "path": "output.bin",
+    "offset": "0x8000"
+  },
+  "dfu_commands": {
+    "path": "device_integrity_exam.mtbdfu"
+  },
+  "allowed_lcs": [
+    "NORMAL_PROVISIONED",
+    "SECURE"
+  ]
+}

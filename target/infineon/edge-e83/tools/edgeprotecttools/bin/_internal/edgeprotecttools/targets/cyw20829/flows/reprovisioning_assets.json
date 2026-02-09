@@ -1,0 +1,8 @@
+{
+  "Assets": [
+    "control_word",
+    "nv_counter",
+    "oem_key_1_hash",
+    "pubkey"
+  ]
+}

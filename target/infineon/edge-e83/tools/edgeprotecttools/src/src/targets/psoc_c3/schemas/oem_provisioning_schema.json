@@ -1,0 +1,904 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "OEM Provisioning Schema",
+    "type": "object",
+    "required": [
+        "policy",
+        "device_policy",
+        "raw_data_pc012"
+    ],
+    "properties": {
+        "policy": {
+            "type": "object",
+            "required": [
+                "platform",
+                "version",
+                "type"
+            ],
+            "properties": {
+                "platform": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 99.99
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "device_policy": {
+            "type": "object",
+            "required": [
+                "target_lcs",
+                "program_sflash_assets",
+                "program_iak",
+                "program_hash",
+                "nv_counter_l1",
+                "nv_counter_l2",
+                "prov_oem_complete",
+                "debug",
+                "boot",
+                "dfu",
+                "boot_od_clk",
+                "pc1_ctl_valid",
+                "pc2_ctl_valid",
+                "pc3_ctl_valid",
+                "pc1_handler",
+                "pc2_handler",
+                "pc3_handler",
+                "mpc"
+            ],
+            "properties": {
+                "target_lcs": {
+                    "title": "The LCS to which the transition should be done",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "enum": [
+                                "NORMAL_PROVISIONED",
+                                "SECURE"
+                            ]
+                        }
+                    }
+                },
+                "program_sflash_assets": {
+                    "title": "Indicates whether to program the assets which are placed into SFLASH",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "program_iak": {
+                    "title": "Indicates whether to generate and program Initial Attestation Key",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "program_hash": {
+                    "title": "Enables ASSET_HASH and FACTORY_HASH validation in NORMAL_PROVISIONED LCS",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "nv_counter_l1": {
+                    "title": "L1 application NV counter. 0, if no update",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255
+                        }
+                    }
+                },
+                "nv_counter_l2": {
+                    "title": "L2 application NV counter. 0, if no update",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 255
+                        }
+                    }
+                },
+                "prov_oem_complete": {
+                    "title": "Indicates whether OEM assets are finalized in SFLASH and no further update is allowed",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "debug": {
+                    "title": "Access restrictions",
+                    "type": "object",
+                    "default": {},
+                    "required": [
+                        "cpu",
+                        "system"
+                    ],
+                    "properties": {
+                        "cpu": {
+                            "title": "CPU configuration",
+                            "type": "object",
+                            "required": [
+                                "ap_cm33",
+                                "listen_window",
+                                "cm33_dbg",
+                                "cm33_nid",
+                                "cm33_spid",
+                                "cm33_spnid",
+                                "cm33_secure"
+                            ],
+                            "properties": {
+                                "ap_cm33": {
+                                    "title": "Configures the CM33 debug access port availability in the SECURE and NORMAL_PROVISIONED LCS",
+                                    "type": "object",
+                                    "required": [
+                                        "value"
+                                    ],
+                                    "properties": {
+                                        "value": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Enable",
+                                                "Disable",
+                                                "Permanently Disable"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "listen_window": {
+                                    "title": "Configures the listen window time to acquire the CM33 debug access port in the SECURE LCS",
+                                    "type": "object",
+                                    "required": [
+                                        "value"
+                                    ],
+                                    "properties": {
+                                        "value": {
+                                            "type": "string",
+                                            "enum": [
+                                                "100 ms",
+                                                "20 ms",
+                                                "2 ms",
+                                                "0 ms"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "cm33_dbg": {
+                                    "title": "Configures the invasive debug of CM33 core",
+                                    "type": "object",
+                                    "required": [
+                                        "value"
+                                    ],
+                                    "properties": {
+                                        "value": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Enable",
+                                                "Disable",
+                                                "Permanently Disable"
+                                            ]
+                                        }
+                                    },
+                                    "cm33_nid": {
+                                        "title": "Configures the non-invasive debug of CM33 core",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Enable",
+                                                    "Disable",
+                                                    "Permanently Disable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "cm33_spid": {
+                                        "title": "Configures the secure privileged invasive debug of CM33 core",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Enable",
+                                                    "Disable",
+                                                    "Permanently Disable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "cm33_spnid": {
+                                        "title": "Configures the secure privileged non-invasive debug of CM33 core",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Enable",
+                                                    "Disable",
+                                                    "Permanently Disable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "cm33_secure": {
+                                        "title": "Enables the CM33 secure AP interface",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Enable",
+                                                    "Disable",
+                                                    "Permanently Disable"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "system": {
+                                "title": "System AP configuration",
+                                "type": "object",
+                                "required": [
+                                    "ap",
+                                    "secure",
+                                    "mmio_restrictions",
+                                    "debug_pins"
+                                ],
+                                "properties": {
+                                    "ap": {
+                                        "title": "Configures the System debug access port availability in the SECURE and NORMAL_PROVISIONED LCS",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Enable",
+                                                    "Disable",
+                                                    "Permanently Disable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "secure": {
+                                        "title": "Enables the system secure AP interface",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Enable",
+                                                    "Disable",
+                                                    "Permanently Disable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "mmio_restrictions": {
+                                        "title": "MMIO restrictions for System AP",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "No restrictions",
+                                                    "SRSS_GENERAL2 only",
+                                                    "No access"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "debug_pins": {
+                                        "title": "Configures debug pins and interface",
+                                        "type": "object",
+                                        "required": [
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "value": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "0000",
+                                                    "0011",
+                                                    "0101",
+                                                    "0110",
+                                                    "1001",
+                                                    "1010"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "boot": {
+                    "title": "Boot configuration",
+                    "type": "object",
+                    "required": [
+                        "boot_cfg_id",
+                        "boot_dual_bank_enable",
+                        "boot_bank_ctr_offset",
+                        "boot_auth_l1",
+                        "boot_auth_l2",
+                        "boot_auth_l2_enable",
+                        "boot_move_app",
+                        "boot_app_layout"
+                    ],
+                    "properties": {
+                        "boot_cfg_id": {
+                            "title": "A behavior for BOOT_APP_LAYOUT (BOOT_SIMPLE_APP applicable to NORMAL_PROVISIONED only)",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "string",
+                                    "enum": [
+                                        "BOOT_SIMPLE_APP",
+                                        "BOOT_ONE_SLOT",
+                                        "BOOT_TWO_SLOTS",
+                                        "BOOT_THREE_SLOTS",
+                                        "BOOT_IDLE"
+                                    ]
+                                }
+                            }
+                        },
+                        "boot_dual_bank_enable": {
+                            "title": "Indicates whether to enable flash dual bank feature",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "boot_bank_ctr_offset": {
+                            "title": "An offset from the start of each flash bank where a 32-bit counter for flash dual bank switching is placed",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": [
+                                        "number",
+                                        "string"
+                                    ],
+                                    "minimum": 0,
+                                    "maximum": 4294967295
+                                }
+                            }
+                        },
+                        "boot_bank_ctr_addr": {
+                            "title": "An offset from the start of each flash bank where a 32-bit counter for flash dual bank switching is placed",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": [
+                                        "number",
+                                        "string"
+                                    ],
+                                    "minimum": 0,
+                                    "maximum": 4294967295
+                                }
+                            }
+                        },
+                        "boot_auth_l1": {
+                            "title": "Fast or full authentication configuration for L1 application",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Fast",
+                                        "Full"
+                                    ]
+                                }
+                            }
+                        },
+                        "boot_auth_l2": {
+                            "title": "Fast or full authentication configuration for L2 application",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Fast",
+                                        "Full"
+                                    ]
+                                }
+                            }
+                        },
+                        "boot_auth_l2_enable": {
+                            "title": "Indicates whether to enable L2 slot authentication by Boot FW",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "boot_move_app": {
+                            "title": "Indicates whether the L2 application overwrites the L1 application. Relevant for the case when there is an application in the second slot",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "boot_app_layout": {
+                            "title": "The memory layout for the applications defined by BOOT_CFG_ID",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "address",
+                                            "size"
+                                        ],
+                                        "properties": {
+                                            "address": {
+                                                "type": [
+                                                    "number",
+                                                    "string"
+                                                ]
+                                            },
+                                            "size": {
+                                                "type": [
+                                                    "number",
+                                                    "string"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "minItems": 3,
+                                    "maxItems": 3
+                                }
+                            }
+                        }
+                    }
+                },
+                "dfu": {
+                    "title": "DFU configuration",
+                    "type": "object",
+                    "required": [
+                        "dfu_enable",
+                        "dfu_l1_update"
+                    ],
+                    "properties": {
+                        "dfu_enable": {
+                            "title": "Indicates whether Device Firmware Update is enabled",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "dfu_l1_update": {
+                            "title": "Indicates whether to allow L1 update with DFU",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "boot_od_clk": {
+                    "title": "CM33 boot frequency",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "string",
+                            "enum": [
+                                "48 MHz",
+                                "100 MHz",
+                                "180 MHz"
+                            ]
+                        }
+                    }
+                },
+                "pc1_ctl_valid": {
+                    "title": "True when 'pc1_handler' is valid",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "pc2_ctl_valid": {
+                    "title": "True when 'pc2_handler' is valid",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "pc3_ctl_valid": {
+                    "title": "True when 'pc3_handler' is valid",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "pc1_handler": {
+                    "title": "Used to switch to PC1 when it is a 'Special' PC",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": [
+                                "number",
+                                "string"
+                            ],
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        }
+                    }
+                },
+                "pc2_handler": {
+                    "title": "Used to switch to PC2 when it is a 'Special' PC",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": [
+                                "number",
+                                "string"
+                            ],
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        }
+                    }
+                },
+                "pc3_handler": {
+                    "title": "Used to switch to PC3 when it is a 'Special' PC",
+                    "type": "object",
+                    "required": [
+                        "value"
+                    ],
+                    "properties": {
+                        "value": {
+                            "type": [
+                                "number",
+                                "string"
+                            ],
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        }
+                    }
+                },
+                "mpc": {
+                    "title": "MPC configuration",
+                    "type": "object",
+                    "required": [
+                        "mpc_struct_ram",
+                        "mpc_struct_flash"
+                    ],
+                    "properties": {
+                        "mpc_struct_ram": {
+                            "title": "RAM MPC structures",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "offset",
+                                            "size",
+                                            "attr"
+                                        ],
+                                        "properties": {
+                                            "offset": {
+                                                "type": [
+                                                    "string"
+                                                ]
+                                            },
+                                            "size": {
+                                                "type": [
+                                                    "string"
+                                                ]
+                                            },
+                                            "attr": {
+                                                "type": "object",
+                                                "required": [
+                                                    "value"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "pc0",
+                                                            "pc1",
+                                                            "pc2",
+                                                            "pc3",
+                                                            "pc4",
+                                                            "pc5",
+                                                            "pc6",
+                                                            "pc7"
+                                                        ],
+                                                        "properties": {
+                                                            "pc0": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc1": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc2": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc3": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc4": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc5": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc6": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc7": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "mpc_struct_flash": {
+                            "title": "Flash MPC structures",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "offset",
+                                            "size",
+                                            "attr"
+                                        ],
+                                        "properties": {
+                                            "offset": {
+                                                "type": [
+                                                    "string"
+                                                ]
+                                            },
+                                            "size": {
+                                                "type": [
+                                                    "number",
+                                                    "string"
+                                                ]
+                                            },
+                                            "attr": {
+                                                "type": "object",
+                                                "required": [
+                                                    "value"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "pc0",
+                                                            "pc1",
+                                                            "pc2",
+                                                            "pc3",
+                                                            "pc4",
+                                                            "pc5",
+                                                            "pc6",
+                                                            "pc7"
+                                                        ],
+                                                        "properties": {
+                                                            "pc0": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc1": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc2": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc3": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc4": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc5": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc6": {
+                                                                "type": "string"
+                                                            },
+                                                            "pc7": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "pre_build": {
+            "type": "object",
+            "properties": {
+                "keys": {
+                    "type": "object",
+                    "properties": {
+                        "oem_rot_public_key_0": {
+                            "title": "Path to the OEM RoT public key 0",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "oem_rot_public_key_1": {
+                            "title": "Path to the OEM RoT public key 1",
+                            "type": "object",
+                            "required": [
+                                "value"
+                            ],
+                            "properties": {
+                                "value": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "raw_data_pc012": {
+            "title": "Path to a binary file containing custom data accessible in PC0, PC1, and PC2. Up to 256 bytes",
+            "type": "object",
+            "required": [
+                "value"
+            ],
+            "properties": {
+                "value": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

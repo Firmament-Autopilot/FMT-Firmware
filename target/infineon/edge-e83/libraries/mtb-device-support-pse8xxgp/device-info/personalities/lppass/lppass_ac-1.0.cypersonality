@@ -1,0 +1,464 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file lppass_ac-1.0.cypersonality
+* \version 1.0
+*
+* \brief
+* Autonomous Controller personality description file.
+*
+********************************************************************************
+* \copyright
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='lppass_ac' name='Autonomous Controller' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v10'>
+  <FittingRules>
+    <MappingRules>
+        <IpBlock name='mxs22lppass' />
+        <Resource name='pass\.ac'/>
+    </MappingRules>
+  </FittingRules>
+
+  <ExposedMembers>
+    <ExposedMember key='INST_NAME_ac'               paramId='INST_NAME_ac' />
+    <ExposedMember key='opMode'                     paramId='opMode'/>
+    <ExposedMember key='lpModeEnabled'              paramId='lpModeEnabled'/>
+    <ExposedMember key='enableGpioControl'          paramId='enableGpioControl'/>
+    <ExposedMember key='gpio$idxOutEn'              paramId='gpio$idxOutEn' repeatCount='4'/>
+    <ExposedMember key='sttTimerEnable'             paramId='sttTimerEnable'/>
+    <ExposedMember key='sttTimerActualPeriod'       paramId='sttTimerActualPeriod'/>
+    <ExposedMember key='sttTimerActualPeriodValue'  paramId='period'/>
+    <ExposedMember key='resource_state_$idx'        paramId='resource_state_$idx' repeatCount='64'/>
+  </ExposedMembers>
+
+  <Parameters>
+
+<!-- Debug -->
+    <ParamBool   id='debug'
+                 name='debug'
+                 group='Internal'
+                 default='false'
+                 visible='false'
+                 editable='true'
+                 desc='' />
+
+<!-- LPPASS instances -->
+    <ParamString id='inst_pass'
+                 name='inst_pass'
+                 group='Internal'
+                 default='`${getInstNumber("pass")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='inst_ac'
+                 name='inst_ac'
+                 group='Internal'
+                 default='`${getInstNumber("ac")}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+<!-- LPPASS resources -->
+    <ParamString id='resource_pass'
+                 name='resource_pass'
+                 group='Internal'
+                 default='pass[`${inst_pass}`]'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='resource_ac'
+                 name='resource_ac'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${"pass[" . inst_pass . "].ac[" . 0 . "]"}`'/>
+
+<!-- LPPASS external variables -->
+    <ParamString id='inFlash' name='inFlash' group='Internal' visible='false' desc='' editable='false' default='`${getExposedMember(resource_pass, "inFlash")}`'/>
+
+<!-- LPPASS internal parameters -->
+    <ParamString id='INST_NAME_ac' name='INST_NAME_ac' group='Internal' default='`${INST_NAME}`' visible='`${debug}`' editable='false' desc='' />
+
+    <ParamString id='resource_srss_clock_lfclk' name='resource_srss_clock_lfclk' group='Internal' visible='`${debug}`' editable='false' desc=''
+                 default='`${"srss[0].clock[0].lfclk[0]"}`'/>
+
+    <ParamBool id='lfClkIsEnabled' name='lfClkIsEnabled' group='Internal' default='`${isBlockUsed(resource_srss_clock_lfclk)}`' visible='false' editable='false' desc='Is Low frequency timer is enabled' />
+
+    <ParamString id='lfClkFreqInfo' name='lfClkFreqInfo' group='Internal' visible='`${debug}`' editable='false' desc=''
+                 default='`${(lfClkIsEnabled ? formatFrequency(getExposedMember(resource_srss_clock_lfclk, "frequency"), getExposedMember(resource_srss_clock_lfclk, "accuracy")) : 0)}`'/>
+
+    <ParamString id='lfClkFreq' name='lfClkFreq' group='Internal'
+                 visible='`${debug}`' editable='false' desc=''
+                 default='`${(lfClkIsEnabled ? getExposedMember(resource_srss_clock_lfclk, "frequency") : 0)}`'/>
+
+    <Repeat count='64'>
+      <ParamString id='resource_state_$idx'
+                   name='resource_state_$idx'
+                   group='Internal'
+                   visible='`${debug}`'
+                   desc=''
+                   editable='false'
+                   default='`${"pass[" . inst_pass . "].ac[" . inst_ac . "].state[" . $idx . "]"}`'/>
+
+    <ParamBool id='state_$idx_enabled'
+                 name='state_$idx_enabled'
+                 group='Internal'
+                 visible='`${debug}`'
+                 desc=''
+                 editable='false'
+                 default='`${(isBlockUsed(resource_state_$idx))}`'/>
+    </Repeat>
+
+    <ParamChoice id='opMode'
+                 name='Operating Mode'
+                 group=''
+                 visible='true'
+                 editable='true'
+                 desc='Controls the Deep-Sleep capability and Max sample rate'
+                 default='LowPower'>
+      <Entry name='Low-Power (LP)' value='LowPower' visible='true'/>
+      <Entry name='High-Speed (HS)' value='HighSpeed' visible='true'/>
+    </ParamChoice>
+
+    <ParamBool id='lpModeEnabled'
+            name='lpModeEnabled'
+            group='Internal'
+            desc=''
+            visible='`${debug}`'
+            editable='false'
+            default='`${opMode eq LowPower}`'/>
+
+    <ParamString id='MaxSarSampleRate'
+                 name='Max SAR ADC sample rate'
+                 group=''
+                 desc='`${lpModeEnabled ? "Deep-Sleep capable" : "Active Mode-only"}`'
+                 visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'
+                 editable='false'
+                 default='`${lpModeEnabled ? "200 ksps" : "5 Msps"}`'/>
+
+    <ParamBool id='sttTimerEnable'
+               name='Timer Enable'
+               group='State Transition Table Timer'
+               desc='Timer execution switch'
+               visible='true'
+               editable='true'
+               default='false'/>
+
+    <ParamString id='sttTimerEnableInfo'
+                 name='Timer Info'
+                 group='State Transition Table Timer'
+                 desc='Additional info about timer start'
+                 visible='true'
+                 editable='false'
+                 default='`${sttTimerEnable ? "Timer runs once the Autonomous Controller starts" : "Timer disabled"}`'/>
+
+    <ParamChoice id='sttClockSource'
+                 name='Clock Source'
+                 group='State Transition Table Timer'
+                 desc='Clock source selection'
+                 editable='true'
+                 visible='`${sttTimerEnable}`'
+                 default='CY_AUTANALOG_TIMER_CLK_LP'>
+      <Entry name='LP Oscillator' value='CY_AUTANALOG_TIMER_CLK_LP' visible='true'/>
+      <Entry name='CLOCK_LF' value='CY_AUTANALOG_TIMER_CLK_LF' visible='true'/>
+    </ParamChoice>
+
+    <ParamString id='sttClockSource_LP_Oscillator_Info'
+                 name='Internal LP Oscillator Frequency'
+                 group='State Transition Table Timer'
+                 desc='Addional info about LP Oscillator Clock source'
+                 editable='false'
+                 visible='`${sttTimerEnable &amp;&amp; (sttClockSource eq CY_AUTANALOG_TIMER_CLK_LP)}`'
+                 default='4.096 MHz'/>
+
+    <ParamString id='sttClockSource_CLK_LF_Info'
+                 name='CLK_LF From System Resources Frequency'
+                 group='State Transition Table Timer'
+                 desc='Addional info about CLOCK_LF Clock source'
+                 editable='false'
+                 visible='`${sttTimerEnable &amp;&amp; sttClockSource eq CY_AUTANALOG_TIMER_CLK_LF}`'
+                 default='`${lfClkFreqInfo}`'/>
+
+    <ParamRange id='sttTimerPeriod'
+                name='Timer Period'
+                group='State Transition Table Timer'
+                min='1'
+                max='65536'
+                resolution='1'
+                editable='true'
+                desc='Define timer period for stt timer'
+                visible='`${sttTimerEnable}`'
+                default='1'/>
+
+    <ParamString id='effectiveTimerFrequency' name='effectiveTimerFrequency' group='Internal' desc='Timer frequency in Hz' visible='false' editable='false'
+                 default='`${sttClockSource eq CY_AUTANALOG_TIMER_CLK_LP ? 4096000 : lfClkFreq}`'/>
+    <ParamString id='externvalue_accuracy' name='externvalue_accuracy' group='Internal' desc='' visible='false' editable='false'
+                 default='`${sttClockSource eq CY_AUTANALOG_TIMER_CLK_LF ? (isBlockUsed(resource_srss_clock_lfclk) ? getExposedMember(resource_srss_clock_lfclk, "accuracy") : 0) : 1}`'/>
+    <ParamString id='period' name='period' group='Internal' desc='' visible='false' editable='false'
+                 default='`${(effectiveTimerFrequency eq 0) ? 0 : cast(float, sttTimerPeriod) / effectiveTimerFrequency}`'/>
+
+    <ParamString id='sttTimerActualPeriod'
+                 name='Actual Period'
+                 group='State Transition Table Timer'
+                 desc='Stt timer actual period'
+                 visible='`${sttTimerEnable}`'
+                 editable='false'
+                 default='`${period ge 0.001 ? "" . period * 1000 . " m" :
+                             period ge 0.000001 ? "" . period * 1000000 . " u" :
+                             period ge 0.000000001 ? "" . period * 1000000000 . " n" :
+                             "" . period * 1000000000000 . " p"}`s'/>
+
+    <ParamString id='sttTimerFrequency'
+                 name='Frequency'
+                 group='State Transition Table Timer'
+                 desc='Stt Timer Frequency'
+                 visible='`${sttTimerEnable}`'
+                 editable='false'
+                 default='`${formatFrequency(1/(cast(float, sttTimerPeriod) / effectiveTimerFrequency), externvalue_accuracy)}`'/>
+
+    <ParamBool id='enableGpioControl'
+               name='Enable GPIO control'
+               group='GPIO Digital Outputs'
+               editable='true'
+               desc='Allow "Data Out" field of the State Transition Table to control GPIOs.'
+               visible='true'
+               default='false' />
+
+    <Repeat count='4'>
+      <ParamBool id='gpio$idxOutEn'
+                 name='Data Out $idx to GPIO'
+                 group='GPIO Digital Outputs'
+                 editable='true'
+                 desc='Allow Bit $idx of the "GPIO Out" field of the State Transition Table to control a GPIO. Reserve and configure the corresponding pin in Autonomous Analog tab.'
+                 visible='`${enableGpioControl}`'
+                 default='false'/>
+    </Repeat>
+
+    <ParamBool id='gpioDigitalOutputDisabled'
+               name='gpioDigitalOutputDisabled'
+               group='Internal'
+               editable='false'
+               desc=''
+               visible='`${debug}`'
+               default='`${(!enableGpioControl || (!gpio0OutEn &amp;&amp; !gpio1OutEn &amp;&amp; !gpio2OutEn &amp;&amp; !gpio3OutEn))}`'/>
+
+    <ParamString id='gpioDigitalOutputMaskValue'
+                 name='gpioDigitalOutputMaskValue'
+                 group='Internal'
+                 default='`${((enableGpioControl &amp;&amp; gpio0OutEn) ? 1 &lt;&lt; 0 : 0) |
+                             ((enableGpioControl &amp;&amp; gpio1OutEn) ? 1 &lt;&lt; 1 : 0) |
+                             ((enableGpioControl &amp;&amp; gpio2OutEn) ? 1 &lt;&lt; 2 : 0) |
+                             ((enableGpioControl &amp;&amp; gpio3OutEn) ? 1 &lt;&lt; 3 : 0)}`'
+                 visible='`${debug}`'
+                 editable='false'
+                 desc='' />
+
+    <ParamString id='gpioDigitalOutputMask'
+                 name='gpioDigitalOutputMask'
+                 group='Internal'
+                 editable='false'
+                 desc=''
+                 visible='`${debug}`'
+                 default='`${" &#13; " .
+                  ((gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 0)) &amp;&amp; (gpioDigitalOutputMaskValue &gt; 1)   ? "CY_AUTANALOG_STT_AC_GPIO_OUT0 | &#13; " : (gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 0)) ? "CY_AUTANALOG_STT_AC_GPIO_OUT0" : "") .
+                  ((gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 1)) &amp;&amp; (gpioDigitalOutputMaskValue &gt; 3)   ? "CY_AUTANALOG_STT_AC_GPIO_OUT1 | &#13; " : (gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 1)) ? "CY_AUTANALOG_STT_AC_GPIO_OUT1" : "") .
+                  ((gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 2)) &amp;&amp; (gpioDigitalOutputMaskValue &gt; 7)   ? "CY_AUTANALOG_STT_AC_GPIO_OUT2 | &#13; " : (gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 2)) ? "CY_AUTANALOG_STT_AC_GPIO_OUT2" : "") .
+                  ((gpioDigitalOutputMaskValue &amp; (1 &lt;&lt; 3)) ? "CY_AUTANALOG_STT_AC_GPIO_OUT3" : (gpioDigitalOutputMaskValue eq 0) ? "CY_AUTANALOG_STT_AC_GPIO_OUT_DISABLED" : "")}`' />
+
+    <ParamRange id='externalTriggerOutputCount'
+                name='Output Count'
+                group='External Trigger Outputs'
+                desc='External trigger output count'
+                min='0'
+                max='8'
+                resolution='1'
+                visible='true'
+                editable='true'
+                default='1'/>
+
+    <Repeat count='8'>
+      <ParamChoice id='externalTriggerOutput$idx'
+                   name='Output $idx'
+                   group='External Trigger Outputs'
+                   desc='External trigger output $idx selection. Reserve and configure the corresponding pin in Autonomous Analog tab (if required).'
+                   visible='`${($idx &lt; externalTriggerOutputCount)}`'
+                   editable='true'
+                   default='CY_AUTANALOG_AC_OUT_TRIG_MASK_EMPTY'>
+        <Entry name='Autonomous Controller' value='CY_AUTANALOG_AC_OUT_TRIG_MASK_AC'            visible='true'/>
+        <Entry name='SAR Done'              value='CY_AUTANALOG_AC_OUT_TRIG_MASK_SAR_DONE'      visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR EOS'               value='CY_AUTANALOG_AC_OUT_TRIG_MASK_SAR_EOS'       visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range 0'           value='CY_AUTANALOG_AC_OUT_TRIG_MASK_SAR_RANGE0'    visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range 1'           value='CY_AUTANALOG_AC_OUT_TRIG_MASK_SAR_RANGE1'    visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range 2'           value='CY_AUTANALOG_AC_OUT_TRIG_MASK_SAR_RANGE2'    visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR Range 3'           value='CY_AUTANALOG_AC_OUT_TRIG_MASK_SAR_RANGE3'    visible='`${hasBlock("pass[0].sar[0]") &amp;&amp; isBlockUsed("pass[0].sar[0]")}`'/>
+        <Entry name='SAR FIFO 0 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL0'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 1 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL1'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 2 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL2'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 3 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL3'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 4 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL4'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 5 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL5'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 6 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL6'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='SAR FIFO 7 Level'      value='CY_AUTANALOG_AC_OUT_TRIG_MASK_FIFO_LEVEL7'   visible='`${hasBlock("pass[0].sar[0].fifo[0]") &amp;&amp; isBlockUsed("pass[0].sar[0].fifo[0]")}`'/>
+        <Entry name='PTComp Comparator 0'   value='CY_AUTANALOG_AC_OUT_TRIG_MASK_PTCOMP_CMP0'   visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Comparator 1'   value='CY_AUTANALOG_AC_OUT_TRIG_MASK_PTCOMP_CMP1'   visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Post Process 0' value='CY_AUTANALOG_AC_OUT_TRIG_MASK_PTCOMP_RANGE0' visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='PTComp Post Process 1' value='CY_AUTANALOG_AC_OUT_TRIG_MASK_PTCOMP_RANGE1' visible='`${hasBlock("pass[0].ptc[0]") &amp;&amp; isBlockUsed("pass[0].ptc[0]")}`'/>
+        <Entry name='DAC 0 Range 0'         value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC0_RANGE0'   visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 0 Range 1'         value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC0_RANGE1'   visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 0 Range 2'         value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC0_RANGE2'   visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 1 Range 0'         value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC1_RANGE0'   visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 1 Range 1'         value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC1_RANGE1'   visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 1 Range 2'         value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC1_RANGE2'   visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='DAC 0 Epoch'           value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC0_EPOCH'    visible='`${hasBlock("pass[0].dac[0]") &amp;&amp; isBlockUsed("pass[0].dac[0]")}`'/>
+        <Entry name='DAC 1 Epoch'           value='CY_AUTANALOG_AC_OUT_TRIG_MASK_DAC1_EPOCH'    visible='`${hasBlock("pass[0].dac[1]") &amp;&amp; isBlockUsed("pass[0].dac[1]")}`'/>
+        <Entry name='CTB 0 Comparator 0'    value='CY_AUTANALOG_AC_OUT_TRIG_MASK_CTB0_COMP0'    visible='`${hasBlock("pass[0].ctb[0].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[0]")}`'/>
+        <Entry name='CTB 0 Comparator 1'    value='CY_AUTANALOG_AC_OUT_TRIG_MASK_CTB0_COMP1'    visible='`${hasBlock("pass[0].ctb[0].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[0].oa[1]")}`'/>
+        <Entry name='CTB 1 Comparator 0'    value='CY_AUTANALOG_AC_OUT_TRIG_MASK_CTB1_COMP0'    visible='`${hasBlock("pass[0].ctb[1].oa[0]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[0]")}`'/>
+        <Entry name='CTB 1 Comparator 1'    value='CY_AUTANALOG_AC_OUT_TRIG_MASK_CTB1_COMP1'    visible='`${hasBlock("pass[0].ctb[1].oa[1]") &amp;&amp; isBlockUsed("pass[0].ctb[1].oa[1]")}`'/>
+        <Entry name='None'                  value='CY_AUTANALOG_AC_OUT_TRIG_MASK_EMPTY'         visible='true'/>
+      </ParamChoice>
+    </Repeat>
+
+    <ParamRange id='stateCnt' name='stateCnt' group='Internal'
+                default='`${(state_0_enabled  ? 1 : 0) +
+                            (state_1_enabled  ? 1 : 0) +
+                            (state_2_enabled  ? 1 : 0) +
+                            (state_3_enabled  ? 1 : 0) +
+                            (state_4_enabled  ? 1 : 0) +
+                            (state_5_enabled  ? 1 : 0) +
+                            (state_6_enabled  ? 1 : 0) +
+                            (state_7_enabled  ? 1 : 0) +
+                            (state_8_enabled  ? 1 : 0) +
+                            (state_9_enabled  ? 1 : 0) +
+                            (state_10_enabled ? 1 : 0) +
+                            (state_11_enabled ? 1 : 0) +
+                            (state_12_enabled ? 1 : 0) +
+                            (state_13_enabled ? 1 : 0) +
+                            (state_14_enabled ? 1 : 0) +
+                            (state_15_enabled ? 1 : 0) +
+                            (state_16_enabled ? 1 : 0) +
+                            (state_17_enabled ? 1 : 0) +
+                            (state_18_enabled ? 1 : 0) +
+                            (state_19_enabled ? 1 : 0) +
+                            (state_20_enabled ? 1 : 0) +
+                            (state_21_enabled ? 1 : 0) +
+                            (state_22_enabled ? 1 : 0) +
+                            (state_23_enabled ? 1 : 0) +
+                            (state_24_enabled ? 1 : 0) +
+                            (state_25_enabled ? 1 : 0) +
+                            (state_26_enabled ? 1 : 0) +
+                            (state_27_enabled ? 1 : 0) +
+                            (state_28_enabled ? 1 : 0) +
+                            (state_29_enabled ? 1 : 0) +
+                            (state_30_enabled ? 1 : 0) +
+                            (state_31_enabled ? 1 : 0) +
+                            (state_32_enabled ? 1 : 0) +
+                            (state_33_enabled ? 1 : 0) +
+                            (state_34_enabled ? 1 : 0) +
+                            (state_35_enabled ? 1 : 0) +
+                            (state_36_enabled ? 1 : 0) +
+                            (state_37_enabled ? 1 : 0) +
+                            (state_38_enabled ? 1 : 0) +
+                            (state_39_enabled ? 1 : 0) +
+                            (state_40_enabled ? 1 : 0) +
+                            (state_41_enabled ? 1 : 0) +
+                            (state_42_enabled ? 1 : 0) +
+                            (state_43_enabled ? 1 : 0) +
+                            (state_44_enabled ? 1 : 0) +
+                            (state_45_enabled ? 1 : 0) +
+                            (state_46_enabled ? 1 : 0) +
+                            (state_47_enabled ? 1 : 0) +
+                            (state_48_enabled ? 1 : 0) +
+                            (state_49_enabled ? 1 : 0) +
+                            (state_50_enabled ? 1 : 0) +
+                            (state_51_enabled ? 1 : 0) +
+                            (state_52_enabled ? 1 : 0) +
+                            (state_53_enabled ? 1 : 0) +
+                            (state_54_enabled ? 1 : 0) +
+                            (state_55_enabled ? 1 : 0) +
+                            (state_56_enabled ? 1 : 0) +
+                            (state_57_enabled ? 1 : 0) +
+                            (state_58_enabled ? 1 : 0) +
+                            (state_59_enabled ? 1 : 0) +
+                            (state_60_enabled ? 1 : 0) +
+                            (state_61_enabled ? 1 : 0) +
+                            (state_62_enabled ? 1 : 0) +
+                            (state_63_enabled ? 1 : 0)}`'
+                min='0' max='64' resolution='1' visible='`${debug}`' editable='false' desc='' />
+
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Low-Frequency clock must be enabled when CLOCK_LF is selected as the clock source for the Table Timer.' condition='`${!lfClkIsEnabled &amp;&amp; (sttClockSource eq CY_AUTANALOG_TIMER_CLK_LF)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_srss_clock_lfclk}`' value='' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='Enable and configure Autonomous Analog.' condition='`${!isBlockUsed(resource_pass)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${resource_pass}`' value='lppass-1.0' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='The Autonomous Controller shall have at least one enabled state (Wait Blocks Ready) in the State Transition Table.' condition='`${stateCnt eq 0}`' >
+        <FixIt action='ENABLE_BLOCK' target='`${resource_state_0}`' value='lppass_ac_stt-1.0' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+
+<!-- The output trigger mask configuration array -->
+    <ConfigArray name='`${INST_NAME_ac}`_out_trig_mask' type='cy_en_autanalog_ac_out_trigger_mask_t' const='`${inFlash}`' public='true' include='true' >
+        <ArrayElement value='`${externalTriggerOutput$idx{0}}`' count='8' />
+    </ConfigArray>
+
+    <!-- The Autonomous Controller configuration structure -->
+    <ConfigStruct name='`${INST_NAME_ac}`_cfg'
+                  type='cy_stc_autanalog_ac_t'
+                  const='`${inFlash}`'
+                  public='true'
+                  include='`${isBlockUsed(resource_ac)}`'>
+      <Member name='gpioOutEn' value='`${gpioDigitalOutputMask}`'/>
+      <ConfigArray name='mask' type='nested' const='false' public='true' include='true' >
+        <ArrayElement value='&amp;`${INST_NAME_ac}`_out_trig_mask[`${$idx{0}}`U]' count='8' />
+      </ConfigArray>
+    <ConfigStruct name='timer' type='nested' const='false' public='true' include='true'>
+        <Member name='enable' value='`${sttTimerEnable}`'/>
+        <Member name='clkSrc' value='`${sttClockSource}`'/>
+        <Member name='period' value = '`${sttTimerPeriod - 1}`U'/>
+    </ConfigStruct>
+    </ConfigStruct>
+
+<!-- The Autonomous Controller State Transition Table structure -->
+    <ConfigArray name='`${INST_NAME_ac}`_stt' type='cy_stc_autanalog_stt_ac_t' const='`${inFlash}`' public='true' include='true' >
+      <ConfigStruct name='empty' type='nested' const='false' public='true' repeatCount='64' include='`${isBlockUsed("pass[" . inst_pass . "].ac[0].state[" . $idx{0} . "]")}`'>
+        <Member name='unlock' value='`${$idx{1} == 0 ? true : false}`' />
+        <Member name='lpMode' value='`${$idx{1} == 0 ? getExposedMember(resource_ac, "lpModeEnabled") : false}`' />
+        <Member name='condition' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_conditionCodeGen")}`' />
+        <Member name='action' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_actionCodeGen")}`' />
+        <Member name='branchState' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_branchingState")}`U' />
+        <Member name='trigInt' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_sendTriggerInterrupt")}`' />
+        <Member name='count' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_conditionCodeGen") eq "CY_AUTANALOG_STT_AC_CONDITION_CNT_DONE" ?
+                                       getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_writeCounter") - 1 : 0}`U' />
+        <Member name='unlockGpioOut' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_gpioOutUnlock")}`' />
+        <Member name='gpioOut' value='`${getExposedMember("pass[" . inst_pass . "].ac[0].state[" . $idx{1} . "]", "stt_gpioOutCodeGen")}`' />
+      </ConfigStruct>
+    </ConfigArray>
+
+  </ConfigFirmware>
+
+</PersonalityTemplate>

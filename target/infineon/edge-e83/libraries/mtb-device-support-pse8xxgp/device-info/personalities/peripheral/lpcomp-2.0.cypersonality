@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+
+<!--****************************************************************************
+* \file lpcomp.cypersonality
+* \version 2.0
+*
+* \brief
+* Low Power Comparator personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<Personality id='lpcomp' name='Low Power Comparator' version='2.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v7'>
+  <Dependencies>
+    <IpBlock name='mxlpcomp_s40,mxs22lpcomp,mxs40lpcomp' />
+    <Resource name='lpcomp\.comp' />
+  </Dependencies>
+  <ExposedMembers />
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__lpcomp.html' linkText='Open LPComp Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamBool id='Hysteresis' name='Hysteresis' group='General' default='true' visible='true' editable='true' desc='Allows to add approximately 30 mV of hysteresis to the LPComp. This helps to ensure that slowly moving voltages or slightly noisy voltages will not cause the output of the LPComp to oscillate when the two input voltages are nearly equal.' />
+    <ParamChoice id='OutputConfiguration' name='Output Configuration' group='General' default='CY_LPCOMP_OUT_DIRECT' visible='true' editable='true' desc='Defines mode of the LPCOMP output: Direct, Synchronized, or Pulse.' >
+      <Entry name='Pulse' value='CY_LPCOMP_OUT_PULSE' visible='true' />
+      <Entry name='Direct' value='CY_LPCOMP_OUT_DIRECT' visible='true' />
+      <Entry name='Synchronized' value='CY_LPCOMP_OUT_SYNC' visible='true' />
+    </ParamChoice>
+    <ParamChoice id='PowerSpeed' name='Power/Speed' group='General' default='CY_LPCOMP_MODE_LP' visible='true' editable='true' desc='The LPCOMP power setting.' >
+      <Entry name='Ultra low Power/Slow' value='CY_LPCOMP_MODE_ULP' visible='true' />
+      <Entry name='Low Power/Low' value='CY_LPCOMP_MODE_LP' visible='true' />
+      <Entry name='Normal Power/Fast' value='CY_LPCOMP_MODE_NORMAL' visible='true' />
+    </ParamChoice>
+
+    <!-- Response time -->
+    <ParamString id='CAT1D_ModeNormal_ResponseTime' name='Response time for device CAT1D in Normal power mode' group='General' default='Approx: 100 ns' visible='false' editable='false' desc='' />
+    <ParamString id='CAT1D_ModeLP_ResponseTime' name='Response time for device CAT1D in LP power mode' group='General' default='Approx: 1000 ns' visible='false' editable='false' desc='' />
+    <ParamString id='CAT1D_ModeULP_ResponseTime' name='Response time for device CAT1D in ULP power mode' group='General' default='Approx: 20 us' visible='false' editable='false' desc='' />
+    <ParamString id='ResponseTime' name='Response Time' group='General' default='`${(PowerSpeed eq "CY_LPCOMP_MODE_NORMAL" ? CAT1D_ModeNormal_ResponseTime : (PowerSpeed eq "CY_LPCOMP_MODE_LP" ? CAT1D_ModeLP_ResponseTime : (PowerSpeed eq "CY_LPCOMP_MODE_ULP" ? CAT1D_ModeULP_ResponseTime : 0)))}`' visible='`${"mxlpcomp_s40" eq getIpBlockName() ? false : true}`' editable='false' desc='Display the response time of the comparator based on the Power/Speed setting.' />
+
+    <ParamChoice id='PulseInterruptConfiguration' name='Pulse/Interrupt Configuration' group='General' default='CY_LPCOMP_INTR_RISING' visible='true' editable='true' desc='Defines the transition that will cause a pulse to be generated on the interrupt terminal or direct comparator output. Allows to select interrupt/output mode: Disabled, Rising edge, Falling edge, or Both edges.' >
+      <Entry name='Rising Edge' value='CY_LPCOMP_INTR_RISING' visible='true' />
+      <Entry name='Falling Edge' value='CY_LPCOMP_INTR_FALLING' visible='true' />
+      <Entry name='Either Edge' value='CY_LPCOMP_INTR_BOTH' visible='true' />
+      <Entry name='Disabled' value='CY_LPCOMP_INTR_DISABLE' visible='true' />
+    </ParamChoice>
+    <ParamBool id='LocalVrefInput' name='Local VREF input' group='General' default='false' visible='true' editable='true' desc='Enables the internal reference voltage as the input to the negative terminal (vminus). This is not the precision reference and it can vary in the range 0.45V - 0.75V.' />
+
+    <ParamSignal name='Positive Input (inp)' group='Connections' port='inp[0]' visible='true' desc='This analog input is usually connected to the voltage that is being compared.' canBeEmpty='true' />
+    <ParamSignal name='Negative Input (inn)' group='Connections' port='inn[0]' visible='`${!LocalVrefInput}`' desc='This analog input is usually connected to the reference voltage.' canBeEmpty='true' />
+    <ParamSignal name='Compare Output (dsi_comp)' group='Connections' port='dsi_comp[0]' visible='true' desc='This digital output is configured by the &apos;Output Configuration&apos; parameter can be used to trigger an interrupt, routed to digital logic or sent to a pin.' canBeEmpty='true' >
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='DEFAULT' reason=''>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='ioss\[\d+\]\.port\[\d+\]\.pin.*' valid='true' >
+        <Parameter id='DriveModes' severity='INFO' reason='The pin Drive Mode parameter does not match expected.'>
+          <Fixed value='CY_GPIO_DM_STRONG_IN_OFF' />
+        </Parameter>
+      </Constraint>
+      <Constraint type='ACCEPT' targetLocation='.*' valid='true' />
+    </ParamSignal>
+
+    <ParamBool id='inFlash' name='Store Config in Flash' group='Advanced' default='true' visible='true' editable='true' desc='Controls whether the configuration structure is stored in flash (const, true) or SRAM (not const, false).' />
+  </Parameters>
+  <ConfigFirmware>
+    <ConfigInclude value='cy_lpcomp.h' include='true' />
+
+    <!-- There can be only one instance of the LPComp block on a device -->
+    <ConfigDefine name='`${INST_NAME . "_HW"}`' value='LPCOMP' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME . "_CHANNEL"}`' value='CY_LPCOMP_CHANNEL_`${getInstNumber("comp")}`' public='true' include='true' />
+    <ConfigDefine name='`${INST_NAME}`_IRQ' value='lpcomp_interrupt_IRQn' public='true' include='true' />
+    <ConfigStruct name='`${INST_NAME . "_config"}`' type='cy_stc_lpcomp_config_t' const='`${inFlash}`' public='true' include='true' >
+      <Member name='outputMode' value='`${OutputConfiguration}`' />
+      <Member name='hysteresis' value='`${Hysteresis ? "CY_LPCOMP_HYST_ENABLE" : "CY_LPCOMP_HYST_DISABLE"}`' />
+      <Member name='power' value='`${PowerSpeed}`' />
+      <Member name='intType' value='`${PulseInterruptConfiguration}`' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME}`_hal_config' type='mtb_hal_comp_configurator_t' const='`${inFlash}`' public='true' include='true' guard='defined (COMPONENT_MTB_HAL) &amp;&amp; (MTB_HAL_DRIVER_AVAILABLE_COMP)'>
+      <Member name='resource_type' value='MTB_HAL_RSC_LPCOMP' />
+      <Member name='channel_num' value='`${getInstNumber("comp")}`U' />
+      <Member name='lpcomp' value='&amp;`${INST_NAME . "_config"}`' />
+    </ConfigStruct>
+
+    <ConfigInstruction value='Cy_LPComp_UlpReferenceEnable(`${INST_NAME}`_HW);' include='`${LocalVrefInput || (PowerSpeed eq CY_LPCOMP_MODE_ULP)}`'  />
+    <ConfigInstruction value='Cy_LPComp_ConnectULPReference(`${INST_NAME}`_HW, `${INST_NAME . "_CHANNEL"}`);' include='`${LocalVrefInput}`'  />
+    <ConfigInstruction value='Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_LPCOMP_PERI_NR , CY_MMIO_LPCOMP_GROUP_NR, CY_MMIO_LPCOMP_SLAVE_NR, CY_MMIO_LPCOMP_CLK_HF_NR);' include='`${(getIpBlockName() eq "mxs22lpcomp")}`' />
+  </ConfigFirmware>
+</Personality>

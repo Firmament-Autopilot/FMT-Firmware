@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file pll500m.cypersonality
+* \version 1.0
+*
+* \brief
+* PLL500M personality description file.
+*
+********************************************************************************
+* \copyright
+* Copyright 2021-2025 Cypress Semiconductor Corporation
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='mxs22pll500' name='PLL500' version='1.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <Constants>
+    <Const id='MAX_FREQ' value='500' />
+  </Constants>
+
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs22srss' />
+      <Resource name='srss\.clock\.pll500m' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__pll.html' linkText='Open PLL Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <!-- PLL source clock and max device frequency -->
+    <ParamString id='pll500mInst' default='`${getInstNumber("pll500m")}`' />
+    <ParamString id='clockInst' default='`${getInstNumber("pll500m") + NUM_DPLL_LP}`' />
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].pathmux[`${clockInst}`]' />
+    <ParamString id='sourceFrequency' default='`${getOrDefault(getExposedMember(sourceClockRsc, "frequency"), 0)}`' />
+    <ParamString id='accuracy' default='`${getOrDefault(getExposedMember(sourceClockRsc, "accuracy"), 0)}`' />
+
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFrequency,accuracy)}`' visible='true' editable='false' desc='Source clock frequency' />
+
+    <ParamBool id='lowFrequencyMode' name='Low Frequency Mode' group='General' default='false' visible='true' editable='false' desc='VCO frequency range selection' />
+    <ParamChoice id='configuration' name='Configuration' group='General' default='auto' visible='true' desc='Choose the automatic or manual PLL tuning'>
+      <Entry name='Automatic' value='auto'   />
+      <Entry name='Manual'    value='manual' />
+    </ParamChoice>
+    <ParamBool id='manConfig' default='`${configuration eq manual}`' />
+    <ParamRange id='desiredFrequency' name='Desired Frequency (MHz)' group='General' default='100' min='50' max='$MAX_FREQ' resolution='0.001' visible='`${!manConfig}`' desc='' />
+    <ParamChoice id='optimization' name='Optimization' group='General' default='MinPower' visible='`${!manConfig}`' editable='false' desc='The feedback tuning options'>
+      <Entry name='Min Power' value='MinPower' />
+      <Entry name='Min Jitter' value='MinJitter' />
+    </ParamChoice>
+
+    <ParamString id='callSolver' default='`${runTcl("pll500_solver-1.0.tcl", sourceFrequency / 1000000.0, desiredFrequency, lowFrequencyMode, optimization eq MinPower)}`' editable='false' desc='PLL clock solver' />
+    <ParamRange id='pdiv' name='Divider P (0-7)' group='General' default='`${getTclVar("pDiv", callSolver)-1}`' min='0' max='7' resolution='1'  visible='true' editable='`${manConfig}`' desc='The P clock divider' />
+    <ParamRange id='ndiv' name='Divider N (7-249)' group='General' default='`${getTclVar("nDiv", callSolver)-1}`' min='7' max='249' resolution='1'  visible='true' editable='`${manConfig}`' desc='The N clock divider' />
+    <ParamRange id='kdiv' name='Divider K (0-7)' group='General' default='`${getTclVar("kDiv", callSolver)-1}`' min='0' max='7' resolution='1'  visible='true' editable='`${manConfig}`' desc='The K clock divider' />
+    <ParamRange id='frac' name='Fraction divider (0-16777215)' group='General' default='`${getTclVar("fracDiv", callSolver)}`' min='0' max='16777215' resolution='1'  visible='true' editable='`${manConfig}`' desc='The fractional clock divider.' />
+    <ParamRange id='FreqModeSelect' name='Frequency Mode Selection (0-7)' group='General' default='`${getTclVar("fMode", callSolver)}`' min='0' max='7' resolution='1'  visible='true' editable='`${manConfig}`' desc='The Frequency Mode Selection' />
+    <ParamRange id='FlockThreshold' name='Flock Enable Threshold (3/7)' group='General' default='`${getTclVar("fTh", callSolver)}`' min='3' max='7' resolution='1'  visible='true' editable='`${manConfig}`' desc='The Flock Enable Threshold Selection' />
+    <ParamRange id='LFBeta' name='LF Beta Value (16/20)' group='General' default='`${getTclVar("lfBeta", callSolver)}`' min='16' max='20' resolution='1'  visible='true' editable='`${manConfig}`' desc='The LF BETA Value Selection' />
+    <ParamString id='frequency' default='`${(sourceFrequency * ( ((ndiv+1) &lt;&lt; 21) + frac)  / ((pdiv+1) * (kdiv+1))) &gt;&gt; 21}`' />
+    <ParamString id='frequencyInfo' name='Actual Frequency' group='General' default='`${getOrDefault(formatFrequency(frequency), "No source")}`' visible='true' editable='false' desc='The calculated resulting PLL output frequency' />
+  </Parameters>
+
+  <Variables>
+    <!-- Manual DRC verify params -->
+    <Variable id='maxFrequencyPwrMode' value='`${getExposedMember("srss[0].power[0]", "usingUlp") ? 100 : (getExposedMember("srss[0].power[0]", "usingLp") ? 350 : 500)}`' />
+  </Variables>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for PLL is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz is higher than the maximum operating frequency $MAX_FREQ MHz of the device' condition='`${!(isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingUlp")) &amp;&amp; desiredFrequency &gt; $MAX_FREQ}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of `${maxFrequencyPwrMode}` MHz when the ULP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingUlp") &amp;&amp; desiredFrequency &gt; maxFrequencyPwrMode}`' paramId='desiredFrequency' />
+
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz is higher than the maximum operating frequency $MAX_FREQ MHz of the device' condition='`${!(isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingLp")) &amp;&amp; desiredFrequency &gt; $MAX_FREQ}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of `${maxFrequencyPwrMode}` MHz when the LP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingLp") &amp;&amp; desiredFrequency &gt; maxFrequencyPwrMode}`' paramId='desiredFrequency' />
+
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz is higher than the maximum operating frequency $MAX_FREQ MHz of the device' condition='`${!(isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingHp")) &amp;&amp; desiredFrequency &gt; $MAX_FREQ}`' paramId='desiredFrequency' />
+    <DRC type='ERROR' text='The desired PLL frequency `${desiredFrequency}` MHz exceeds the maximum of $MAX_FREQ MHz when the HP mode is used' condition='`${isBlockUsed("srss[0].power[0]") &amp;&amp; getExposedMember("srss[0].power[0]", "usingHp") &amp;&amp; desiredFrequency &gt; $MAX_FREQ}`' paramId='desiredFrequency' />
+
+    <DRC type='ERROR' text='Source clock for PLL is outside the valid range of 4 MHz - 64 MHz' condition='`${(sourceFrequency &lt; 4000000) || (sourceFrequency &gt; 64000000)}`' paramId='sourceFrequencyInfo'/>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_ENABLED' value='1' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_P_DIV' value='`${pdiv}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_N_DIV' value='`${ndiv}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_K_DIV' value='`${kdiv}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_FRAC_DIV' value='`${frac}`' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_OUTPUT_MODE' value='CY_SYSCLK_FLLPLL_OUTPUT_AUTO' public='false' />
+    <ConfigDefine name='CY_CFG_SYSCLK_DPLL_HP`${pll500mInst}`_OUTPUT_FREQ' value='`${frequency}`' public='false' />
+    <ConfigStruct name='`${INST_NAME . "_hp_pllConfig"}`' type='cy_stc_dpll_hp_config_t' const='false' public='false'>
+      <Member name='pDiv' value='`${pdiv}`' />
+      <Member name='nDiv' value='`${ndiv}`' />
+      <Member name='kDiv' value='`${kdiv}`' />
+      <Member name='nDivFract' value='`${frac}`' />
+      <Member name='freqModeSel' value='(cy_en_wait_mode_select_t)`${FreqModeSelect}`' />
+      <Member name='ivrTrim' value='0x8U' />
+      <Member name='clkrSel' value='0x1U' />
+      <Member name='alphaCoarse' value='0xCU' />
+      <Member name='betaCoarse' value='0x5U' />
+      <Member name='flockThresh' value='`${FlockThreshold}`' />
+      <Member name='flockWait' value='0x6U' />
+      <Member name='flockLkThres' value='0x7U' />
+      <Member name='flockLkWait' value='0x4U' />
+      <Member name='alphaExt' value='0x14U' />
+      <Member name='betaExt' value='`${LFBeta}`' />
+      <Member name='lfEn' value='0x1U' />
+      <Member name='dcEn' value='0x1U' />
+      <Member name='outputMode' value='CY_SYSCLK_FLLPLL_OUTPUT_AUTO' />
+    </ConfigStruct>
+
+    <ConfigStruct name='`${INST_NAME . "_pllConfig"}`' type='cy_stc_pll_manual_config_t' const='false' public='false'>
+      <Member name='hpPllCfg' value='&amp;`${INST_NAME . "_hp_pllConfig"}`' />
+    </ConfigStruct>
+
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_Dpll_Hp`${pll500mInst}`_Init(void)' public='false'>
+      <Line value='#if !defined (CY_PDL_TZ_ENABLED)' />
+      <Line value='if (Cy_SysClk_PllIsEnabled(SRSS_DPLL_HP_`${pll500mInst}`_PATH_NUM))' />
+      <Line value='    return;' />
+      <Line value='#endif' />
+      <Line value='Cy_SysClk_PllDisable(SRSS_DPLL_HP_`${pll500mInst}`_PATH_NUM);' />
+      <Line value='if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllManualConfigure(SRSS_DPLL_HP_`${pll500mInst}`_PATH_NUM, &amp;`${INST_NAME}`_pllConfig))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);' />
+      <Line value='}' />
+      <Line value='if (CY_SYSCLK_SUCCESS != Cy_SysClk_PllEnable(SRSS_DPLL_HP_`${pll500mInst}`_PATH_NUM, 10000u))' />
+      <Line value='{' />
+      <Line value='    cycfg_ClockStartupError(CY_CFG_SYSCLK_PLL_ERROR);' />
+      <Line value='}' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

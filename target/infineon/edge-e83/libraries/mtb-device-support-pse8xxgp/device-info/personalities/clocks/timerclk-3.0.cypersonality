@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--****************************************************************************
+* \file timerclk.cypersonality
+* \version 3.0
+*
+* \brief
+* CLK_TIMER personality description file.
+*
+*
+********************************************************************************
+* \copyright
+* Copyright (c) 2022-2025, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+* SPDX-License-Identifier: Apache-2.0
+*
+* Licensed under the Apache License, Version 2.0 (the 'License');
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an 'AS IS' BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*****************************************************************************-->
+
+<PersonalityTemplate id='timerclk' name='CLK_TIMER' version='3.0' xmlns='http://cypress.com/xsd/cyhwpersonality_v13'>
+  <FittingRules>
+    <MappingRules>
+      <IpBlock name='mxs40srss,mxs40ssrss,mxs40srss_ver3,mxs22srss,mxs40srss_ver2' />
+      <Resource name='srss\.clock\.timerclk' />
+    </MappingRules>
+  </FittingRules>
+
+  <BehaviorImplementation>
+    <Implements type='clock_sourced_v1'>
+      <ExposedMember key='frequency' paramId='frequency' />
+      <ExposedMember key='accuracy' paramId='accuracy' />
+      <ExposedMember key='sourceClockDisplayName' paramId='sourceClockDisplayName' />
+    </Implements>
+  </BehaviorImplementation>
+
+  <Parameters>
+    <!-- PDL documentation -->
+    <ParamDoc id='pdlDoc' name='Configuration Help' group='Overview' default='file:///`${cy_libs_path()}`/docs/html/group__group__sysclk__clk__timer.html' linkText='Open Timer Clock Documentation' visible='true' desc='Opens the Peripheral Driver Library Documentation' />
+
+    <ParamChoice id='sourceClock' name='Source Clock' group='General' default='`${"mxs22srss" eq getIpBlockName() ? "iho" : "imo"}`' visible='`${"mxs40srss" eq getIpBlockName()}`' desc='The source clock for the CLK_TIMER'>
+      <Entry name='IMO' value='imo' />
+      <Entry name='CLK_HF0' value='hfclk' />
+      <Entry name='IHO' value='iho' />
+    </ParamChoice>
+    <ParamString id='sourceClockDisplayName' default='`${getParamValueDisplay("sourceClock")}`' />
+    <ParamString id='sourceClockRsc' default='srss[0].clock[0].`${sourceClock}`[0]' />
+    <ParamString id='sourceFreq' default='`${getExposedMember(sourceClockRsc, "frequency")}`' />
+    <ParamString id='accuracy' default='`${getExposedMember(sourceClockRsc, "accuracy")}`' />
+    <ParamString id='sourceFrequencyInfo' name='Source Frequency' group='General' default='`${formatFrequency(sourceFreq,accuracy)}`' visible='`${"mxs40srss" eq getIpBlockName()}`' editable='false' desc='Source clock frequency' />
+    <ParamChoice id='hf0Div' name='CLK_HF0 Divider' group='General' default='1' visible='`${"mxs40srss" eq getIpBlockName()}`' editable='`${sourceClock eq hfclk}`' desc='CLK_HF0 can be additionaly divided before it is connected to the timer divider. If CLK_HF0 frequency is less than 100 MHz and has approximately 50% duty cycle, then no division is required. Otherwise, select a divide ratio of 2, 4, or 8.'>
+      <Entry name='1' value='1' />
+      <Entry name='2' value='2' />
+      <Entry name='4' value='4' />
+      <Entry name='8' value='8' />
+    </ParamChoice>
+
+    <ParamRange id='timerDivider' name='Timer Divider' group='General' default='`${"mxs40ssrss" eq getIpBlockName() ? 8 : 1}`' min='1' max='256' resolution='1' visible='`${("mxs40srss" eq getIpBlockName()) || ("mxs40ssrss" eq getIpBlockName())}`' desc='' />
+    <ParamString id='frequency' default='`${"mxs22srss" eq getIpBlockName() ? 1000000 : (sourceFreq / (sourceClock eq imo ? timerDivider : hf0Div))}`' />
+    <!-- If the frequency is less than one MHz, display its value in kHz -->
+    <ParamString id='frequencyInfo' name='Frequency' group='General' default='`${"mxs40srss" eq getIpBlockName() ? formatFrequency(frequency,accuracy) : "mxs40ssrss" eq getIpBlockName() ? formatFrequency(sourceFreq / timerDivider) : formatFrequency(2000000)}`' visible='true' editable='false' desc='The resulting CLK_TIMER output clock frequency' />
+  </Parameters>
+
+  <DRCs>
+    <DRC type='ERROR' text='Source clock for CLK_TIMER is not enabled' condition='`${!isBlockUsed(sourceClockRsc)}`' >
+      <FixIt action='ENABLE_BLOCK' target='`${sourceClockRsc}`' valid='true' />
+    </DRC>
+  </DRCs>
+
+  <ConfigFirmware>
+    <ConfigInclude value='cy_sysclk.h' include='`${"mxs40srss" eq getIpBlockName()}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKTIMER_ENABLED' value='1' public='false' include='`${"mxs40srss" eq getIpBlockName()}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKTIMER_SOURCE' value='CY_SYSCLK_CLKTIMER_IN_`${sourceClock eq imo ? "IMO" : "HF0" . (hf0Div == 1 ? "_NODIV" : "_DIV" . hf0Div)}`' public='false' include='`${"mxs40srss" eq getIpBlockName()}`' />
+    <ConfigDefine name='CY_CFG_SYSCLK_CLKTIMER_DIVIDER' value='`${timerDivider-1}`U' public='false' include='`${"mxs40srss" eq getIpBlockName()}`' />
+    <ConfigFunction signature='__STATIC_INLINE void Cy_SysClk_ClkTimerInit(void)' public='false' include='`${"mxs40srss" eq getIpBlockName()}`'>
+      <Line value='Cy_SysClk_ClkTimerDisable();' />
+      <Line value='Cy_SysClk_ClkTimerSetSource(CY_SYSCLK_CLKTIMER_IN_`${sourceClock eq imo ? "IMO" : "HF0" . (hf0Div == 1 ? "_NODIV" : "_DIV" . hf0Div)}`);' />
+      <Line value='Cy_SysClk_ClkTimerSetDivider(`${timerDivider-1}`U);' />
+      <Line value='Cy_SysClk_ClkTimerEnable();' />
+    </ConfigFunction>
+  </ConfigFirmware>
+</PersonalityTemplate>

@@ -1,0 +1,24 @@
+{
+    "core": {
+        "name": "mtb-dsl-pse8xxgp",
+        "id": "bb978f72-0d70-5540-99e3-bc1cf0bf1dc2",
+        "version": "1.2.0.895"
+    },
+    "configurator_support": true,
+    "opt": {
+        "documentation": [
+            {
+                "location": "docs/api_reference_manual.html",
+                "path": [
+                    "Reference Guides",
+                    "PSOC E8XXGP"
+                ],
+                "title": "Device Support Library API reference manual",
+                "type": "api-guide"
+            }
+        ],
+        "svd": {
+            "COMPONENT_PSE84": "pdl/svd/pse84.svd"
+        }
+    }
+}

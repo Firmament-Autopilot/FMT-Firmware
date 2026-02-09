@@ -1,0 +1,80 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "command",
+        "inputs",
+        "outputs"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "merge"
+        },
+        "inputs": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The inputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path to the file to merge",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "description": {
+                        "title": "The outputs description",
+                        "type": "string"
+                    },
+                    "file": {
+                        "title": "The path where to save the merged file",
+                        "type": "string"
+                    },
+                    "address": {
+                        "title": "The address for shifting merged binaries",
+                        "type": "string"
+                    },
+                    "format": {
+                        "title": "Format of the output file: 'ihex' or 'bin'",
+                        "type": "string",
+                        "enum": [
+                            "ihex",
+                            "bin"
+                        ]
+                    },
+                    "overlap": {
+                        "title": "Action on overlap of data or starting addresses",
+                        "type": "string",
+                        "enum": [
+                            "error",
+                            "replace",
+                            "ignore"
+                        ]
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            }
+        }
+    }
+}

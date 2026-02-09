@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BehaviorDefintion xmlns="http://cypress.com/xsd/cybehavior_v1">
+  <!--The clock tree diagrams use expressions to update what they display. Clocks displayed in the diagram are expected to implement this to allow for their speed to be displayed in the clock body.-->
+  <Behavior type="protection_intrinsic_v1">
+    <Member key='core_count' /> <!-- Integer: Number of Cores actually available -->
+    <Member key='corename$idx' repeatCount='2' /> <!-- String: Name of each Core element -->
+
+    <Member key='memory_count' /> <!-- Integer: Number of Memory elements actually available -->
+    <Member key='memory_$idx' repeatCount='6' /> <!-- String: Name of each Memory element -->
+
+    <Member key='pc_count' /> <!-- Integer: Number of PC elements actually available -->
+    <Member key='pc$idx' repeatCount='8' /> <!-- String: Name of each PPC element -->
+
+    <Member key='bm_count' /> <!-- Integer: Number of Block Master elements actually available -->
+    <Member key='bm$idx' repeatCount='18' /> <!-- String: Name of each Bus Master element -->
+
+    <Member key='acg_count' /> <!-- Integer: Number of ACG elements actually available -->
+    <Member key='acg$idx' repeatCount='5' /> <!-- String: Name of a ACG element -->
+
+    <Member key='ppc_count' /> <!-- Integer: Number of PPC elements actually available -->
+
+    <Member key='ppc_0_startRegion_$idx' repeatCount='22' />
+    <Member key='ppc_0_endRegion_$idx' repeatCount='22' />
+    <Member key='ppc_0_secAttribute_$idx' repeatCount='22' />
+    <Member key='ppc_0_privAttribute_$idx' repeatCount='22' />
+    <Member key='ppc_0_pcMask_$idx' repeatCount='22' />
+    <Member key='ppc_0_count' />
+
+    <Member key='ppc_1_startRegion_$idx' repeatCount='9' />
+    <Member key='ppc_1_endRegion_$idx' repeatCount='9' />
+    <Member key='ppc_1_secAttribute_$idx' repeatCount='9' />
+    <Member key='ppc_1_privAttribute_$idx' repeatCount='9' />
+    <Member key='ppc_1_pcMask_$idx' repeatCount='9' />
+    <Member key='ppc_1_count' />
+  </Behavior>
+
+  <Behavior type="protection_domain_v1">
+    <!-- string: Unique name of the domain -->
+    <Member key='domainId' />
+    <!-- string: Human-readable name of the domain (may be empty) -->
+    <Member key='displayName' />
+    <!-- string: SAU memory attribute (SECURE, NON_SECURE, or NON_SECURE_CALLABLE) -->
+    <Member key='cmseAttribute' />
+    <!-- boolean: MPC setting: true to allow read access from corresponding PC (protection context) -->
+    <Member key='pc$idxread' repeatCount='8' />
+    <!-- boolean: MPC setting: true to allow write access from corresponding PC (protection context) -->
+    <Member key='pc$idxwrite' repeatCount='8' />
+    <!-- boolean: MPC setting: true to allow non-secure access from corresponding PC (protection context) -->
+    <Member key='pc$idxns' repeatCount='8' />
+    <!-- boolean: PPC setting: true to allow access from corresponding PC (protection context) -->
+    <Member key='pc$idx' repeatCount='8' />
+    <!-- boolean: PPC setting: true to allow access from secure unprivileged context -->
+    <Member key='secureUnprivileged' />
+    <!-- boolean: PPC setting: true to allow access from non-secure unprivileged context -->
+    <Member key='nonSecureUnprivileged' />
+    <!-- boolean: True if the virtual core at index is accessible (order defined by getVirtualCoreDefineNames()). -->
+    <Member key='coreIsAccessible$idx' repeatCount='4'  />
+  </Behavior>
+
+  <Behavior type="protection_v1">
+    <Member key='protectionLevel' />
+    <Member key="validation_security_boundary" />
+    <Member key="validation_root_domain" />
+    <Member key='domain_reserved' /> <!-- String: Location ID for the reserved protection domain -->
+    <Member key='domain_root' /> <!-- String: Location ID for the root protection domain -->
+    <Member key='domain_unprotected' /> <!-- String: Location ID for the unprotected protection domain -->
+    <Member key='pcSwitch' />  <!-- boolean: Protection Context switching: true to switch PC when transitioning between secure and non-secure -->
+    <Member key='secureDebuggerAccess' />  <!-- boolean: Secure Debugger Access: true to allow debugger PC access in the secure default domain -->
+  </Behavior>
+
+  <Behavior type="mpc_v1">
+    <Member key='response$idx' repeatCount='6' />
+  </Behavior>
+
+  <Behavior type="protection_ppc_drc_v1">
+    <Member key="ppc_drc" />
+  </Behavior>
+
+  <Behavior type="mpc_intrinsic_v1">
+    <Member key='block_name' />
+    <Member key='blockSize' />
+    <Member key='RegisterDefine' />
+    <Member key='RegisterDefineUnified' />
+  </Behavior>
+
+  <Behavior type="sau_v1">
+    <Member key='starts_list' /> <!-- List of all start addresses for the SAU -->
+    <Member key='ends_list' /> <!-- List of all end addresses for the SAU -->
+    <Member key="sau_core_idx" /> <!-- Index of the Core attached to the SAU -->
+    <Member key="sau_core_type" /> <!-- Type of the Core attached to the SAU -->
+    <Member key='enable$idx' repeatCount='8' /> <!-- Enable flag for each SAU region -->
+    <Member key='base_addr$idx' repeatCount='8' /> <!-- Base address for each SAU region -->
+    <Member key='end_addr$idx' repeatCount='8' /> <!-- End address for each SAU region -->
+    <Member key='size$idx' repeatCount='8' /> <!-- Size of each SAU region -->
+    <Member key='attribute$idx' repeatCount='8' /> <!-- Attribute for each SAU region -->
+    <Member key='security$idx' repeatCount='8' /> <!-- Security setting for each SAU region -->
+  </Behavior>
+
+  <Behavior type="ppc_v1">
+    <Member key='regKey$idx' repeatCount='500'/> <!-- Key identifier for each registry entry -->
+    <Member key='reg$idx_valid' repeatCount='500'/> <!-- Validity status of each registry entry -->
+    <Member key='reg$idx_locationKey' repeatCount='500'/> <!-- Location key associated with each registry entry -->
+    <Member key='reg$idx_location' repeatCount='500'/> <!-- Location information for each registry entry -->
+    <Member key='reg$idx_location_display' repeatCount='500'/> <!-- Display-friendly version of the location for each registry entry -->
+    <Member key='reg$idx' repeatCount='500'/> <!-- Represents the registry entry itself -->
+  </Behavior>
+
+</BehaviorDefintion>

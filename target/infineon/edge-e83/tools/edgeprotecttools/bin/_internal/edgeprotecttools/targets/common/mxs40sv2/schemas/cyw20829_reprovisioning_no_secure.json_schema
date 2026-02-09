@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema#",
+    "id": "#",
+    "required": true,
+    "type": "object",
+    "properties": {
+        "device_policy": {
+            "id": "device_policy",
+            "required": true,
+            "type": "object",
+            "description" : "Device configuration parameters",
+            "properties": {
+                "reprovisioning": {
+                    "id": "reprovisioning",
+                    "required": false,
+                    "type": "object",
+                    "description": "Re-provisioning assets",
+                    "properties": {
+                        "revoke_icv_pubkey_0": {
+                            "id": "revoke_icv_pubkey_0",
+                            "required": false,
+                            "description": "Revokes ICV public key 0. The ICV public key 1 is used for service application verification (this can be done only once)",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "flow_control": {
+                    "id": "flow_control",
+                    "required": false,
+                    "type": "object",
+                    "description": "Flow Control",
+                    "properties": {
+                        "sys_reset_req": {
+                            "id": "sys_reset_req",
+                            "required": false,
+                            "description": "Resets a device after service application completes execution",
+                            "properties": {
+                             	"value":
+                                {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
