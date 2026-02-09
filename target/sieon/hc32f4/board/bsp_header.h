@@ -56,4 +56,6 @@
 #define USART6_RX_ERR_IRQn         (INT006_IRQn)
 #define USART6_RX_FULL_IRQn        (INT007_IRQn)
 
+#define TIMA_9_CAPTURE_IRQn         (INT080_IRQn)
+
 #endif

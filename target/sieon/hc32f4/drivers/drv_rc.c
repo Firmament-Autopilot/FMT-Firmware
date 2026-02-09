@@ -40,8 +40,8 @@
 static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
 
-#define TMRA_UNIT              (CM_TMRA_4)
-#define TMRA_CH                (TMRA_CH1)
+#define TMRA_UNIT              (CM_TMRA_9)
+#define TMRA_CH                (TMRA_CH2)
 #define TMRA_PERIPH_CLK        (FCG2_PERIPH_TMRA_4)
 #define TMRA_AOS_CAPT_REG      (AOS_TMRA_4)
 #define TMRA_CAPT_COND         (TMRA_CAPT_COND_PWM_RISING)
@@ -70,9 +70,9 @@ uint16_t tmp_data_last = 0;
 static void TMRA_IrqCallback(void)
 {
     rt_interrupt_enter();
-    ppm_timex = (TMRA_GetCompareValue(CM_TMRA_4, TMRA_CH1) / 1.3125f) + 1;
+    ppm_timex = (TMRA_GetCompareValue(CM_TMRA_9, TMRA_CH2) / 1.3125f) + 1;
     ppm_update(&ppm_decoder, ppm_timex);
-    TMRA_ClearStatus(CM_TMRA_4, TMRA_FLAG_CMP_CH1);
+    TMRA_ClearStatus(CM_TMRA_9, TMRA_FLAG_CMP_CH2);
     rt_interrupt_leave();
 }
 
@@ -81,10 +81,10 @@ static rt_err_t ppm_lowlevel_init(void)
     stc_tmra_init_t stcTmraInit;
     // stc_clock_xtal_init_t stcXtalInit;
     stc_irq_signin_config_t stcIrq;
-    LL_PERIPH_WE(LL_PERIPH_GPIO | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU);
+    // LL_PERIPH_WE(LL_PERIPH_GPIO | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU);
 
     /* 1. Enable TimerA peripheral clock. */
-    FCG_Fcg2PeriphClockCmd(FCG2_PERIPH_TMRA_4, ENABLE);
+    FCG_Fcg2PeriphClockCmd(FCG2_PERIPH_TMRA_9, ENABLE);
 
     /* 2. Set a default initialization value for stcTmraInit. */
     (void)TMRA_StructInit(&stcTmraInit);
@@ -94,19 +94,20 @@ static rt_err_t ppm_lowlevel_init(void)
     // stcTmraInit.u32PeriodValue = 0xffff;
     // stcTmraInit.sw_count.u8CountMode = TMRA_MD_SAWTOOTH;
     // stcTmraInit.sw_count.u8CountDir  = TMRA_DIR_UP;
-    (void)TMRA_Init(CM_TMRA_4, &stcTmraInit);
+    (void)TMRA_Init(CM_TMRA_9, &stcTmraInit);
 
     /* 4. Set function mode as capturing mode. */
-    TMRA_SetFunc(CM_TMRA_4, TMRA_CH1, TMRA_FUNC_CAPT);
+    TMRA_SetFunc(CM_TMRA_9, TMRA_CH2, TMRA_FUNC_CAPT);
 
     /* 5. Configures the capture condition. */
-    GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_06, GPIO_FUNC_4);
-    TMRA_HWCaptureCondCmd(CM_TMRA_4, TMRA_CH1, TMRA_CAPT_COND_PWM_RISING, ENABLE);
+    // GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_06, GPIO_FUNC_4);
+    GPIO_SetFunc(GPIO_PORT_E,GPIO_PIN_06,GPIO_FUNC_6);//TIMA-9-TRIG
+    TMRA_HWCaptureCondCmd(CM_TMRA_9, TMRA_CH2, TMRA_CAPT_COND_PWM_RISING, ENABLE);
 
     /* 6. Configures IRQ if needed. */
 
-    stcIrq.enIntSrc = INT_SRC_TMRA_4_CMP;
-    stcIrq.enIRQn = INT080_IRQn;
+    stcIrq.enIntSrc = INT_SRC_TMRA_9_CMP;
+    stcIrq.enIRQn = TIMA_9_CAPTURE_IRQn;
     stcIrq.pfnCallback = &TMRA_IrqCallback;
     (void)INTC_IrqSignIn(&stcIrq);
 
@@ -115,9 +116,9 @@ static rt_err_t ppm_lowlevel_init(void)
     NVIC_EnableIRQ(stcIrq.enIRQn);
 
     /* Enable the specified interrupts of TimerA. */
-    TMRA_IntCmd(CM_TMRA_4, TMRA_INT_CMP_CH1, ENABLE);
+    TMRA_IntCmd(CM_TMRA_9, TMRA_INT_CMP_CH2, ENABLE);
 
-    TMRA_Start(CM_TMRA_4);
+    TMRA_Start(CM_TMRA_9);
 
     return RT_EOK;
 }
@@ -125,8 +126,10 @@ static rt_err_t ppm_lowlevel_init(void)
 static void USART6_RxError_IrqCallback(void)
 {
     rt_interrupt_enter();
+
     (void)USART_ReadData(CM_USART6);
     USART_ClearStatus(CM_USART6, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+
     rt_interrupt_leave();
 }
 
@@ -276,10 +279,10 @@ static struct rc_device rc_dev = {
 
 rt_err_t drv_rc_init(void)
 {
-    // /* init ppm decoder */
-    // RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
-    // /* init ppm driver */
-    // RT_TRY(ppm_lowlevel_init());
+    /* init ppm decoder */
+    RT_TRY(ppm_decoder_init(&ppm_decoder, PPM_DECODER_FREQUENCY));
+    /* init ppm driver */
+    RT_TRY(ppm_lowlevel_init());
 
     RT_TRY(sbus_decoder_init(&sbus_decoder));
     RT_TRY(sbus_lowlevel_init());
