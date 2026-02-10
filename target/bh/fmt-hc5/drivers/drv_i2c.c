@@ -89,6 +89,7 @@ static int32_t drv_i2c_master_receive(CM_I2C_TypeDef* i2c, uint16_t u16DevAddr, 
 
     return i32Ret;
 }
+
 static int32_t drv_i2c_master_transmit(CM_I2C_TypeDef* i2c, uint16_t u16DevAddr, const uint8_t au8Data[], uint32_t u32Size, uint32_t u32Timeout)
 {
     int32_t i32Ret;

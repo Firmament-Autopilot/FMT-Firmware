@@ -70,10 +70,10 @@
     <GPIOConfig Name="PD6" Signal="USART2-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB4" Signal="SPI1-MISO" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB5" Signal="SPI1-MOSI" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
-    <GPIOConfig Name="PB8" Signal="I2C1-SCL" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
-    <GPIOConfig Name="PB9" Signal="I2C1-SDA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB6" Signal="USART1-TX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB7" Signal="USART1-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PB8" Signal="I2C1-SCL" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PB9" Signal="I2C1-SDA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
   </ConfiguredGPIOs>
   <ConfiguredEIRQs />
   <ConfiguredADC1Chs>
@@ -497,5 +497,5 @@
     <DMA2_CH6 Ch="DMA2_CH6" DmaX="DMA2" ChX="6" En="false" StartTri="EVT_SRC_PORT_EIRQ0" BcInt="true" TcInt="false" ErrInt="false" Sar="00000000" Dar="00000000" DataWidth="8BIT" DataWidthItems="8BIT.16BIT.32BIT" Bc="1" Tc="0" SrcInc="FIX" DesInc="FIX" IncItems="FIX.INC.DEC" RptMode="NONE" ModeItems="NONE.SRC.DEST.BOTH" Srpt="0" SrptEn="false" Drpt="0" DrptEn="false" NsMode="NONE" Snscnt="0" Soffset="0" SnsEn="false" Dnscnt="0" Doffset="0" DnsEn="false" LlpEn="false" LlpMode="WAIT" LlpModeItems="WAIT.RUN" LlpSar="00000000" LlpDar="00000000" LlpDt="00000000" LlpRpt="00000000" LlpSns="00000000" LlpDns="00000000" Llp="00000000" LlpCh="00000000" RcEn="false" RcCnt="KEEP" RcSar="KEEP" RcDar="KEEP" RcCntModeItems="KEEP.SRC.DEST" RcAddrModeItems="KEEP.NS.RPT" RcTri="EVT_SRC_PORT_EIRQ0" />
     <DMA2_CH7 Ch="DMA2_CH7" DmaX="DMA2" ChX="7" En="false" StartTri="EVT_SRC_PORT_EIRQ0" BcInt="true" TcInt="false" ErrInt="false" Sar="00000000" Dar="00000000" DataWidth="8BIT" DataWidthItems="8BIT.16BIT.32BIT" Bc="1" Tc="0" SrcInc="FIX" DesInc="FIX" IncItems="FIX.INC.DEC" RptMode="NONE" ModeItems="NONE.SRC.DEST.BOTH" Srpt="0" SrptEn="false" Drpt="0" DrptEn="false" NsMode="NONE" Snscnt="0" Soffset="0" SnsEn="false" Dnscnt="0" Doffset="0" DnsEn="false" LlpEn="false" LlpMode="WAIT" LlpModeItems="WAIT.RUN" LlpSar="00000000" LlpDar="00000000" LlpDt="00000000" LlpRpt="00000000" LlpSns="00000000" LlpDns="00000000" Llp="00000000" LlpCh="00000000" RcEn="false" RcCnt="KEEP" RcSar="KEEP" RcDar="KEEP" RcCntModeItems="KEEP.SRC.DEST" RcAddrModeItems="KEEP.NS.RPT" RcTri="EVT_SRC_PORT_EIRQ0" />
   </DMA>
-  <ProjectSettings ProName="New Project" IDE="MDK" ProLocation="D:\ws\FMT\FMT-Firmware\target\sieon\hc32f4\board\xhcode\XHSC XHCode" DDLLocation="D:\释云科技\6-项目\2025\10-北京航空航天大学\国产飞控\技术\HC32F4A0\驱动库\HC32F4A0_DDL_Rev2.4.0\HC32F4A0_DDL_Rev2.4.0" />
+  <ProjectSettings ProName="New Project" IDE="MDK" ProLocation="D:\ws\FMT\FMT-Firmware\target\bh\fmt-hc5\board\xhcode" DDLLocation="D:\释云科技\6-项目\2025\10-北京航空航天大学\国产飞控\技术\HC32F4A0\驱动库\HC32F4A0_DDL_Rev2.4.0\HC32F4A0_DDL_Rev2.4.0" />
 </UserConfig>

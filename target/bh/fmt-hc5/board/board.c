@@ -394,7 +394,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_sh5001_init("spi1_dev0", "gyro0", "accel0"));
     RT_CHECK(drv_qmi8a01_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_qmc5883p_init("i2c1_dev0", "mag0", 0));
-    // RT_CHECK(drv_qmc5883l_init("i2c2_dev0", "mag0", EXTERNAL_DEV | 0));
+    RT_CHECK(drv_qmc5883l_init("i2c2_dev0", "mag0", EXTERNAL_DEV | 0));
     // RT_CHECK(drv_xgzp6899d_init("i2c1_dev1", "airspeed"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
