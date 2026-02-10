@@ -5,10 +5,9 @@ import platform
 import subprocess
 import uuid
 
-if os.path.exists('rt-thread'):
-    RTT_ROOT = os.path.normpath(os.getcwd() + '/rt-thread')
-else:
-    RTT_ROOT = os.path.normpath(os.getcwd() + '/../../rt-thread')
+FMU_ROOT = os.path.normpath(os.getcwd() + '/../../../..')
+# RTOS path
+RTT_ROOT = FMU_ROOT + '/rtos/rt-thread'
 
 sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
 try:
@@ -88,6 +87,7 @@ env.VariantDir('build/libs', '../libs', duplicate=0)
 env.VariantDir('build/libraries', '../libraries', duplicate=0)
 
 objs.extend(SConscript('/board/ports/SConscript', variant_dir='build/board/ports/', duplicate=0))
+objs.extend(SConscript('../libs/SConscript', variant_dir='build/libs', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/Infineon_cmsis-latest', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/Infineon_core-lib-latest', duplicate=0))
 objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/hal/SConscript', variant_dir='build/libraries/mtb-device-support-pse8xxgp/hal', duplicate=0))
@@ -111,18 +111,20 @@ if not os.path.exists(DEBUG_DIR):
     os.makedirs(DEBUG_DIR)
 hex_file = env.Command(DEBUG_DIR + '/rtthread.hex', TARGET, OBJCOPY + ' -O ihex $SOURCE $TARGET')
 
-# SDK_ROOT is the project directory, go up 2 levels to reach sdk-bsp root
-SDK_BSP_ROOT = os.path.dirname(os.path.dirname(SDK_ROOT + '../'))
-EDGEPROTECTTOOLS = os.path.join(SDK_BSP_ROOT, 'tools', 'edgeprotecttools', 'bin', 'edgeprotecttools.exe')
-BOOT_CONFIG = os.path.join(SDK_ROOT, 'config', 'boot_with_extended_boot_scons.json')
+# Secure image packaging using edgeprotecttools (Windows only)
+if platform.system() == 'Windows':
+    # SDK_ROOT is the project directory, go up 2 levels to reach sdk-bsp root
+    SDK_BSP_ROOT = os.path.dirname(os.path.dirname(SDK_ROOT + '../'))
+    EDGEPROTECTTOOLS = os.path.join(SDK_BSP_ROOT, 'tools', 'edgeprotecttools', 'bin', 'edgeprotecttools.exe')
+    BOOT_CONFIG = os.path.join(SDK_ROOT, 'config', 'boot_with_extended_boot_scons.json')
 
-if os.path.exists(EDGEPROTECTTOOLS) and os.path.exists(BOOT_CONFIG):
-    secure_image = env.Command(
-        'secure_image',  # Pseudo target
-        hex_file,
-        '"' + EDGEPROTECTTOOLS + '" run-config -i "' + BOOT_CONFIG + '"'
-    )
-else:
-    print("edgeprotecttools or boot config not found, skipping secure image packaging")
-    print("EDGEPROTECTTOOLS:", EDGEPROTECTTOOLS)
-    print("BOOT_CONFIG:", BOOT_CONFIG)
+    if os.path.exists(EDGEPROTECTTOOLS) and os.path.exists(BOOT_CONFIG):
+        secure_image = env.Command(
+            'secure_image',  # Pseudo target
+            hex_file,
+            '"' + EDGEPROTECTTOOLS + '" run-config -i "' + BOOT_CONFIG + '"'
+        )
+    else:
+        print("edgeprotecttools or boot config not found, skipping secure image packaging")
+        print("EDGEPROTECTTOOLS:", EDGEPROTECTTOOLS)
+        print("BOOT_CONFIG:", BOOT_CONFIG)

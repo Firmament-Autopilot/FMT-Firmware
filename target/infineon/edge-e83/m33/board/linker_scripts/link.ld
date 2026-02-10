@@ -121,7 +121,7 @@ MCUBOOT_HEADER_SIZE = 0x400;
 SECTIONS
 {
     /* This section reserves a space for MCUBoot header */
-    .mcu_boot_header(READONLY) : ALIGN(MCUBOOT_HEADER_SIZE)
+    .mcu_boot_header : ALIGN(MCUBOOT_HEADER_SIZE)
     {
         . += MCUBOOT_HEADER_SIZE;
     } > m33_nvm_sel
@@ -188,14 +188,14 @@ SECTIONS
     } > m33_nvm_sel
 
     /* Exception tables for ARM architecture */
-    .ARM.extab (READONLY): ALIGN(4)
+    .ARM.extab : ALIGN(4)
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
 
     } > m33_nvm_sel
 
     /* Exception index tables for ARM architecture */
-    .ARM.exidx (READONLY): ALIGN(4)
+    .ARM.exidx : ALIGN(4)
     {
         __exidx_start = .;
 
@@ -206,7 +206,7 @@ SECTIONS
     } > m33_nvm_sel
 
     /* Define copying of data from flash memory to RAM during the startup */
-    .copy.table (READONLY): ALIGN(4)
+    .copy.table : ALIGN(4)
     {
         __copy_table_start__ = .;
 
@@ -225,7 +225,7 @@ SECTIONS
     } > m33_nvm_sel
 
     /* Define zeroing of the uninitialized data section */
-    .zero.table (READONLY): ALIGN(4)
+    .zero.table : ALIGN(4)
     {
         __zero_table_start__ = .;
 

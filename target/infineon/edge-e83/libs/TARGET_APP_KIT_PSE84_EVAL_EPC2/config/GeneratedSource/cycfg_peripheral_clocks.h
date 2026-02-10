@@ -181,6 +181,32 @@ extern "C" {
 #define CYBSP_SMART_IO_CLK_DIV_GRP_NUM CYBSP_SMART_IO_CLK_DIV_GRP_NUM
 #endif /* !defined (CYBSP_SMART_IO_CLK_DIV_GRP_NUM) */
 
+#define peri_0_group_3_div_8_0_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_3_div_8_0_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_3_div_8_0_NUM 0U
+#define PERI_0_GROUP_3_DIV_8_0_GRP_NUM ((3U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_3_div_8_0_GRP_NUM)
+#define peri_0_group_3_div_8_0_GRP_NUM PERI_0_GROUP_3_DIV_8_0_GRP_NUM
+#endif /* !defined (peri_0_group_3_div_8_0_GRP_NUM) */
+
+#define peri_0_group_4_div_8_0_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_4_div_8_0_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_4_div_8_0_NUM 0U
+#define PERI_0_GROUP_4_DIV_8_0_GRP_NUM ((4U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_4_div_8_0_GRP_NUM)
+#define peri_0_group_4_div_8_0_GRP_NUM PERI_0_GROUP_4_DIV_8_0_GRP_NUM
+#endif /* !defined (peri_0_group_4_div_8_0_GRP_NUM) */
+
 #define CYBSP_TRACE_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)

@@ -567,11 +567,11 @@ const mtb_hal_uart_configurator_t CYBSP_BT_UART_hal_config =
 {
     .base = CYBSP_BT_UART_HW,
     .clock = &CYBSP_BT_UART_hal_clock,
-    .tx_pin = 1,
+    .tx_pin = 0xFF,
 #if defined (COMPONENT_MW_ASYNC_TRANSFER)
     .rts_pin = 3,
 #endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
-    .tx_port = 10,
+    .tx_port = 0xFF,
 #if defined (COMPONENT_MW_ASYNC_TRANSFER)
     .rts_port = 10,
     .rts_enable = 1UL,
@@ -1358,6 +1358,7 @@ const mtb_hal_pwm_configurator_t CYBSP_SMARTIO_PWM_hal_config =
 void init_cycfg_peripherals(void)
 {
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_PASS_PERI_NR, CY_MMIO_PASS_GROUP_NR, CY_MMIO_PASS_SLAVE_NR, CY_MMIO_PASS_CLK_HF_NR);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_ETH0_PERI_NR, CY_MMIO_ETH0_GROUP_NR, CY_MMIO_ETH0_SLAVE_NR, CY_MMIO_ETH0_CLK_HF_NR);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_I3C_PERI_NR, CY_MMIO_I3C_GROUP_NR, CY_MMIO_I3C_SLAVE_NR, CY_MMIO_I3C_CLK_HF_NR);
     Cy_SysClk_PeriphAssignDivider(PCLK_I3C_CLOCK_I3C_EN, CY_SYSCLK_DIV_8_BIT, 0U);
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)

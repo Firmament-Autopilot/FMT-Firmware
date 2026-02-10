@@ -27,7 +27,7 @@ if rtconfig.PLATFORM in ['gcc']:
 elif rtconfig.PLATFORM in ['armclang']:
     src += ['drivers/source/TOOLCHAIN_ARM/cy_syslib_ext.S']
 
-path = [cwd + '/drivers/include', cwd + 'drivers/third_party/ethernet/include']
+path = [cwd + '/drivers/include', cwd + '/drivers/third_party/ethernet/include']
 
 if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
     src += ['drivers/source/cy_syspm_ppu.c']
@@ -35,6 +35,12 @@ if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
     src += ['drivers/source/cy_axidmac.c']
     src += ['drivers/source/ppu_v1.c']
     src += ['devices/source/cy_device.c']
+
+if GetDepend('BSP_USING_ETH'):
+    src += ['drivers/source/cy_ethif.c']
+    src += ['drivers/third_party/ethernet/src/edd.c']
+    src += ['drivers/third_party/ethernet/src/edd_rx.c']
+    src += ['drivers/third_party/ethernet/src/edd_tx.c']
 
 
 
