@@ -25,6 +25,8 @@
     <Pin Name="Pin62" Signal="TIMA-4-PWM4" />
     <Pin Name="Pin63" Signal="USART6-TX" />
     <Pin Name="Pin64" Signal="USART6-RX" />
+    <Pin Name="Pin67" Signal="I2C2-SCL" />
+    <Pin Name="Pin68" Signal="I2C2-SDA" />
     <Pin Name="Pin80" Signal="USART5-TX" />
     <Pin Name="Pin83" Signal="USART5-RX" />
     <Pin Name="Pin86" Signal="USART2-TX" />
@@ -45,6 +47,7 @@
     <GPIOConfig Name="PA7" Signal="TIMA-3-PWM2/TIMA-3-CLKB" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB0" Signal="TIMA-3-PWM3" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB1" Signal="TIMA-3-PWM4" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PE9" Signal="TIMA-1-PWM1/TIMA-1-CLKA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PE11" Signal="TIMA-1-PWM2/TIMA-1-CLKB" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PE13" Signal="TIMA-1-PWM3" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PE14" Signal="TIMA-1-PWM4" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
@@ -65,7 +68,8 @@
     <GPIOConfig Name="PB5" Signal="SPI1-MOSI" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB8" Signal="I2C1-SCL" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB9" Signal="I2C1-SDA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
-    <GPIOConfig Name="PE9" Signal="TIMA-1-PWM1/TIMA-1-CLKA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PA8" Signal="I2C2-SCL" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PA9" Signal="I2C2-SDA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
   </ConfiguredGPIOs>
   <ConfiguredEIRQs />
   <ConfiguredADC1Chs>
@@ -422,9 +426,9 @@
   <SPIx_5 En="false" 主从模式选择="SLAVE|" 线模式选择="4_WIRE|" 通信模式选择="FULL_DUPLEX|" 奇偶校验模式选择="INVD|" 奇偶校验自诊断="DISABLE|" 模式故障错误检测允许="DISABLE|" SPI模式选择="MD_1|" 波特率预分频="DIV256|" 数据长度="32BIT|" First位="MSB|" 帧数设定="1|" 通讯自动挂起功能允许="OFF|" 回环设定="INVD|" SS信号有效设定="SS0|" SS高电平有效设定="DISABLE|" 主机下次存取延迟时间设定="1SCK|" 主机SS无效延迟时间设定="1SCK|" 主机SS闲置时间设定="1SCK|" 空闲中断允许="DISABLE|" 接受中断允许="DISABLE|" 发送中断允许="DISABLE|" 错误中断允许="DISABLE|" />
   <SPIx_6 En="false" 主从模式选择="SLAVE|" 线模式选择="4_WIRE|" 通信模式选择="FULL_DUPLEX|" 奇偶校验模式选择="INVD|" 奇偶校验自诊断="DISABLE|" 模式故障错误检测允许="DISABLE|" SPI模式选择="MD_1|" 波特率预分频="DIV256|" 数据长度="32BIT|" First位="MSB|" 帧数设定="1|" 通讯自动挂起功能允许="OFF|" 回环设定="INVD|" SS信号有效设定="SS0|" SS高电平有效设定="DISABLE|" 主机下次存取延迟时间设定="1SCK|" 主机SS无效延迟时间设定="1SCK|" 主机SS闲置时间设定="1SCK|" 空闲中断允许="DISABLE|" 接受中断允许="DISABLE|" 发送中断允许="DISABLE|" 错误中断允许="DISABLE|" />
   <QSPI En="false" En1="false" En2="false" PERBREn="false" PERCREn="false" StrList="0.0" 基准时钟选择="DIV64|" SPI模式选择="MD0|" 预读取模式设置="INVD|" 读取模式选择="STD_RD|" 虚拟周期设置="CYCLE3|" 地址宽度选择="32BIT_INSTR_24BIT|" WP管脚输出电平设置="LOW|" 外部扩展块设置="0|" QSSN输出延时设置="QSCK1P5|" QSSN释放延时设置="QSCK1P5|" QSSN最小无效时间设置="QSCK16|" 指令SPI协议选择="1LINE|" 地址SPI协议选择="1LINE|" 数据SPI协议选择="1LINE|" />
-  <I2Cx 模块单元="I2C1|" />
+  <I2Cx 模块单元="I2C2|" />
   <I2Cx_1 En="true" En1="false" En2="false" StrList="07.06.50000.000.000" 主从选择="Master|" 基准时钟频率设定="DIV1|" 单双地址选择="Single|" 从机地址0格式="7BIT|" 从机地址1格式="7BIT|" 开始条件中断允许="DISABLE|" 从机地址0匹配中断允许="DISABLE|" 从机地址1匹配中断允许="DISABLE|" 发送结束中断允许="DISABLE|" 停止条件中断允许="DISABLE|" 接受数据满中断允许="DISABLE|" 发送数据空中断允许="DISABLE|" 仲裁失败中断允许="DISABLE|" NACK中断允许="DISABLE|" 超时中断允许="DISABLE|" 广播呼叫地址匹配中断允许="DISABLE|" />
-  <I2Cx_2 En="false" En1="false" En2="false" StrList="07.06.50000.000.000" 主从选择="Master|" 基准时钟频率设定="DIV1|" 单双地址选择="Single|" 从机地址0格式="7BIT|" 从机地址1格式="7BIT|" 开始条件中断允许="DISABLE|" 从机地址0匹配中断允许="DISABLE|" 从机地址1匹配中断允许="DISABLE|" 发送结束中断允许="DISABLE|" 停止条件中断允许="DISABLE|" 接受数据满中断允许="DISABLE|" 发送数据空中断允许="DISABLE|" 仲裁失败中断允许="DISABLE|" NACK中断允许="DISABLE|" 超时中断允许="DISABLE|" 广播呼叫地址匹配中断允许="DISABLE|" />
+  <I2Cx_2 En="true" En1="false" En2="false" StrList="07.06.50000.000.000" 主从选择="Master|" 基准时钟频率设定="DIV1|" 单双地址选择="Single|" 从机地址0格式="7BIT|" 从机地址1格式="7BIT|" 开始条件中断允许="DISABLE|" 从机地址0匹配中断允许="DISABLE|" 从机地址1匹配中断允许="DISABLE|" 发送结束中断允许="DISABLE|" 停止条件中断允许="DISABLE|" 接受数据满中断允许="DISABLE|" 发送数据空中断允许="DISABLE|" 仲裁失败中断允许="DISABLE|" NACK中断允许="DISABLE|" 超时中断允许="DISABLE|" 广播呼叫地址匹配中断允许="DISABLE|" />
   <I2Cx_3 En="false" En1="false" En2="false" StrList="07.06.50000.000.000" 主从选择="Master|" 基准时钟频率设定="DIV1|" 单双地址选择="Single|" 从机地址0格式="7BIT|" 从机地址1格式="7BIT|" 开始条件中断允许="DISABLE|" 从机地址0匹配中断允许="DISABLE|" 从机地址1匹配中断允许="DISABLE|" 发送结束中断允许="DISABLE|" 停止条件中断允许="DISABLE|" 接受数据满中断允许="DISABLE|" 发送数据空中断允许="DISABLE|" 仲裁失败中断允许="DISABLE|" NACK中断允许="DISABLE|" 超时中断允许="DISABLE|" 广播呼叫地址匹配中断允许="DISABLE|" />
   <I2Cx_4 En="false" En1="false" En2="false" StrList="07.06.50000.000.000" 主从选择="Master|" 基准时钟频率设定="DIV1|" 单双地址选择="Single|" 从机地址0格式="7BIT|" 从机地址1格式="7BIT|" 开始条件中断允许="DISABLE|" 从机地址0匹配中断允许="DISABLE|" 从机地址1匹配中断允许="DISABLE|" 发送结束中断允许="DISABLE|" 停止条件中断允许="DISABLE|" 接受数据满中断允许="DISABLE|" 发送数据空中断允许="DISABLE|" 仲裁失败中断允许="DISABLE|" NACK中断允许="DISABLE|" 超时中断允许="DISABLE|" 广播呼叫地址匹配中断允许="DISABLE|" />
   <I2Cx_5 En="false" En1="false" En2="false" StrList="07.06.50000.000.000" 主从选择="Master|" 基准时钟频率设定="DIV1|" 单双地址选择="Single|" 从机地址0格式="7BIT|" 从机地址1格式="7BIT|" 开始条件中断允许="DISABLE|" 从机地址0匹配中断允许="DISABLE|" 从机地址1匹配中断允许="DISABLE|" 发送结束中断允许="DISABLE|" 停止条件中断允许="DISABLE|" 接受数据满中断允许="DISABLE|" 发送数据空中断允许="DISABLE|" 仲裁失败中断允许="DISABLE|" NACK中断允许="DISABLE|" 超时中断允许="DISABLE|" 广播呼叫地址匹配中断允许="DISABLE|" />

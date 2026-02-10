@@ -21,32 +21,14 @@
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-// #define I2C_TIMEOUT_US    (10000)
 #define DRV_I2C_TIMEOUT (0x40000UL)
-// #define DRV_I2C_TIMEOUT   (0x4000000UL)
-
-// #define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
-// #define EXAMPLE_PERIPH_WP (LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_SRAM)
-// #define EXAMPLE_PERIPH_WE (LL_PERIPH_GPIO | LL_PERIPH_EFM | LL_PERIPH_FCG | LL_PERIPH_PWC_CLK_RMU | LL_PERIPH_SRAM)
-
-// #define I2C_UNIT          (CM_I2C1)
-// #define I2C_FCG_USE       (FCG1_PERIPH_I2C1)
-// #define I2C_BAUDRATE      (400000UL)
-
-// /* Define port and pin for SDA and SCL */
-// #define I2C_SCL_PORT      (GPIO_PORT_E)
-// #define I2C_SCL_PIN       (GPIO_PIN_12)
-// #define I2C_SDA_PORT      (GPIO_PORT_E)
-// #define I2C_SDA_PIN       (GPIO_PIN_13)
-// #define I2C_GPIO_SCL_FUNC (GPIO_FUNC_49)
-// #define I2C_GPIO_SDA_FUNC (GPIO_FUNC_48)
 
 struct hc32_i2c_bus {
     struct rt_i2c_bus parent;
     CM_I2C_TypeDef* i2c_periph;
 };
 
-static int32_t drv_i2c_trans_addr(CM_I2C_TypeDef *I2Cx, uint16_t u16Addr, uint8_t u8Dir, uint32_t u32Timeout)
+static int32_t drv_i2c_trans_addr(CM_I2C_TypeDef* I2Cx, uint16_t u16Addr, uint8_t u8Dir, uint32_t u32Timeout)
 {
     int32_t i32Ret;
 
@@ -151,39 +133,27 @@ static rt_size_t i2c_master_transfer(struct rt_i2c_bus* bus, rt_uint16_t slave_a
     return msg_idx;
 }
 
-static int32_t Master_Initialize(void)
+static int32_t Master_Initialize(CM_I2C_TypeDef* i2c_periph)
 {
     int32_t i32Ret;
     stc_i2c_init_t stcI2cInit;
     float32_t fErr;
 
-    (void)I2C_DeInit(CM_I2C1);
+    (void)I2C_DeInit(i2c_periph);
 
     (void)I2C_StructInit(&stcI2cInit);
     stcI2cInit.u32ClockDiv = I2C_CLK_DIV4;
     stcI2cInit.u32Baudrate = 400000UL;
     stcI2cInit.u32SclTime = 3UL;
-    // stcI2cInit.u32Baudrate = 100000UL; // 设置波特率为 100kHz
-    // stcI2cInit.u32ClockDiv = I2C_CLK_DIV16;
-    // stcI2cInit.u32SclTime = 0U;
-    i32Ret = I2C_Init(CM_I2C1, &stcI2cInit, &fErr);
+    i32Ret = I2C_Init(i2c_periph, &stcI2cInit, &fErr);
 
-    I2C_BusWaitCmd(CM_I2C1, ENABLE);
+    I2C_BusWaitCmd(i2c_periph, ENABLE);
 
     return i32Ret;
 }
-// static uint8_t u8TxBuf[256U];
+
 rt_err_t i2c1_hw_init(void)
 {
-    // /* Unlock peripherals or registers */
-    // LL_PERIPH_WE(EXAMPLE_PERIPH_WE);
-
-    // stc_gpio_init_t stcGpioInit;
-    // GPIO_StructInit(&stcGpioInit);
-    // stcGpioInit.u16PinDrv = PIN_HIGH_DRV;
-    // stcGpioInit.u16PinInputType = PIN_IN_TYPE_CMOS;
-    // GPIO_Init(GPIO_PORT_B, GPIO_PIN_08, &stcGpioInit);
-    // GPIO_Init(GPIO_PORT_B, GPIO_PIN_09, &stcGpioInit);
     /* Initialize I2C port*/
     GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_08, GPIO_FUNC_51); // I2C1-SCL
     GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_09, GPIO_FUNC_50); // I2C1-SDA
@@ -192,7 +162,25 @@ rt_err_t i2c1_hw_init(void)
     FCG_Fcg1PeriphClockCmd(FCG1_PERIPH_I2C1, ENABLE);
 
     /* Initialize I2C peripheral and enable function*/
-    if (LL_OK != Master_Initialize()) {
+    if (LL_OK != Master_Initialize(CM_I2C1)) {
+        /* Initialize error*/
+        return RT_ERROR;
+    }
+
+    return RT_EOK;
+}
+
+rt_err_t i2c2_hw_init(void)
+{
+    /* Initialize I2C port*/
+    GPIO_SetFunc(GPIO_PORT_A, GPIO_PIN_08, GPIO_FUNC_51); // I2C2-SCL
+    GPIO_SetFunc(GPIO_PORT_A, GPIO_PIN_09, GPIO_FUNC_50); // I2C2-SDA
+
+    /* Enable I2C Peripheral*/
+    FCG_Fcg1PeriphClockCmd(FCG1_PERIPH_I2C2, ENABLE);
+
+    /* Initialize I2C peripheral and enable function*/
+    if (LL_OK != Master_Initialize(CM_I2C2)) {
         /* Initialize error*/
         return RT_ERROR;
     }
@@ -212,6 +200,11 @@ static struct hc32_i2c_bus hc32_i2c1 = {
     .i2c_periph = CM_I2C1
 };
 
+static struct hc32_i2c_bus hc32_i2c2 = {
+    .parent.ops = &i2c_bus_ops,
+    .i2c_periph = CM_I2C2
+};
+
 /* i2c device instances */
 static struct rt_i2c_device i2c1_dev0 = {
     .slave_addr = 0x2C, /* QMC5883P 7 bit address */
@@ -223,17 +216,25 @@ static struct rt_i2c_device i2c1_dev1 = {
     .flags = 0
 };
 
+static struct rt_i2c_device i2c2_dev0 = {
+    .slave_addr = 0x0D, /* QMC5883L 7 bit address */
+    .flags = 0
+};
+
 rt_err_t drv_i2c_init(void)
 {
     /* i2c low-level initialization */
     RT_TRY(i2c1_hw_init());
+    RT_TRY(i2c2_hw_init());
 
     /* register i2c bus */
     RT_TRY(rt_i2c_bus_device_register(&hc32_i2c1.parent, "i2c1"));
+    RT_TRY(rt_i2c_bus_device_register(&hc32_i2c2.parent, "i2c2"));
 
     /* attach i2c devices */
     RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev0, "i2c1_dev0", "i2c1", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev0, "i2c2_dev0", "i2c2", RT_NULL));
 
     return RT_EOK;
 }
