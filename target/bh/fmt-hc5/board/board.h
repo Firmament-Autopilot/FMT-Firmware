@@ -27,7 +27,7 @@ extern "C" {
 #define TARGET_NAME "FMT-HC5"
 
 // Internal SRAM memory size[Kbytes]
-#define SYSTEM_TOTAL_MEM_SIZE (480 * 1024) // 480K
+#define SYSTEM_TOTAL_MEM_SIZE (512 * 1024) // 480K
 // Internal Free SRAM memory used by kernel (e.g, rt_malloc)
 #ifdef __ICCARM__
 // Use *.icf ram symbal, to avoid hardcode.
