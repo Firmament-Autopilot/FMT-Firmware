@@ -5,6 +5,7 @@ DRIVERS = [
     'imu/icm42688p.c',
     'imu/icm20948.c',
     'mag/bmm150.c',
+    'mag/qmc5883l.c',
     'barometer/spl06.c',
     'barometer/ms5611.c',
     'gps/gps_ubx.c',

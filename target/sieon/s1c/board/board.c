@@ -30,6 +30,7 @@
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/bmm150.h"
+#include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/rgb_led/aw2023.h"
 #include "driver/uwb/nlink_linktrack/nlink_linktrack.h"
@@ -330,8 +331,8 @@ void bsp_initialize(void)
     /* init onboard sensors */
     RT_CHECK(drv_bmi088_init("spi4_dev0", "spi4_dev1", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm42688_init("spi4_dev2", "gyro1", "accel1", 0));
-    RT_CHECK(drv_bmm150_init("spi4_dev3", "mag0", 0));
-    // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
+    // RT_CHECK(drv_bmm150_init("spi4_dev3", "mag0", 0));
+    RT_CHECK(drv_qmc5883l_init("i2c1_dev1", "mag0", EXTERNAL_DEV | 0));
     RT_CHECK(drv_spl06_init("spi1_dev0", "barometer"));
     RT_CHECK(gps_ubx_init("serial3", "gps"));
     // RT_CHECK(gps_nmea_init("serial3", "gps"));

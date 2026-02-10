@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include <board_bsp.h>
+#include <firmament.h>
+
 
 #include "drv_i2c.h"
 #include "hal/i2c/i2c.h"
@@ -24,9 +25,7 @@
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-// #define I2C_TIMEOUT_US    (10000)
 #define DRV_I2C_TIMEOUT (0x40000UL)
-// #define DRV_I2C_TIMEOUT   (0x4000000UL)
 
 struct hc32_i2c_bus {
     struct rt_i2c_bus parent;
@@ -150,27 +149,15 @@ static int32_t Master_Initialize(void)
     stcI2cInit.u32ClockDiv = I2C_CLK_DIV4;
     stcI2cInit.u32Baudrate = 400000UL;
     stcI2cInit.u32SclTime = 3UL;
-    // stcI2cInit.u32Baudrate = 100000UL; // 设置波特率为 100kHz
-    // stcI2cInit.u32ClockDiv = I2C_CLK_DIV16;
-    // stcI2cInit.u32SclTime = 0U;
     i32Ret = I2C_Init(CM_I2C1, &stcI2cInit, &fErr);
 
     I2C_BusWaitCmd(CM_I2C1, ENABLE);
 
     return i32Ret;
 }
-// static uint8_t u8TxBuf[256U];
+
 rt_err_t i2c1_hw_init(void)
 {
-    // /* Unlock peripherals or registers */
-    // LL_PERIPH_WE(EXAMPLE_PERIPH_WE);
-
-    // stc_gpio_init_t stcGpioInit;
-    // GPIO_StructInit(&stcGpioInit);
-    // stcGpioInit.u16PinDrv = PIN_HIGH_DRV;
-    // stcGpioInit.u16PinInputType = PIN_IN_TYPE_CMOS;
-    // GPIO_Init(GPIO_PORT_B, GPIO_PIN_08, &stcGpioInit);
-    // GPIO_Init(GPIO_PORT_B, GPIO_PIN_09, &stcGpioInit);
     /* Initialize I2C port*/
     GPIO_SetFunc(GPIO_PORT_I, GPIO_PIN_10, GPIO_FUNC_48); // I2C1-SDA
     GPIO_SetFunc(GPIO_PORT_I, GPIO_PIN_11, GPIO_FUNC_49); // I2C1-SCL
