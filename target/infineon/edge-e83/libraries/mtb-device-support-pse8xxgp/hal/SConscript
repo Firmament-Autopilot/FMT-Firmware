@@ -36,13 +36,8 @@ src += ['source/mtb_hal_dma_dmac.c']
 #         src += ['source/cyhal_adc_sar_lppass.c']
 #         src += ['source/cyhal_lppass_common.c']
 
-if GetDepend(['BSP_USING_SDCARD']) or GetDepend(['BSP_USING_WIFI_HOST_DRIVER']):
-    src += ['source/mtb_hal_sdhc.c']
-
-
+src += ['source/mtb_hal_sdhc.c']
 src += ['source/mtb_hal_pwm.c']
-
-
 src += ['source/mtb_hal_spi.c']
 
 # if GetDepend(['BSP_USING_FLASH']):

@@ -4,7 +4,7 @@
  * Description:
  * Pin configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
+ * Configurator Backend 3.70.0
  * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
@@ -1068,30 +1068,30 @@ extern "C" {
 #define CYBSP_USER_LED1_IRQ ioss_interrupts_gpio_16_IRQn
 #define CYBSP_USER_LED_IRQ CYBSP_USER_LED1_IRQ
 #define CYBSP_LED_RED_IRQ CYBSP_USER_LED1_IRQ
-#define CYBSP_EZ_I2C_SCL_ENABLED 1U
-#define CYBSP_EZ_I2C_SCL_PORT GPIO_PRT17
-#define CYBSP_EZ_I2C_SCL_PORT_NUM 17U
-#define CYBSP_EZ_I2C_SCL_PIN 0U
-#define CYBSP_EZ_I2C_SCL_NUM 0U
-#define CYBSP_EZ_I2C_SCL_DRIVEMODE CY_GPIO_DM_OD_DRIVESLOW
-#define CYBSP_EZ_I2C_SCL_INIT_DRIVESTATE 1
+#define CYBSP_UART5_RX_ENABLED 1U
+#define CYBSP_UART5_RX_PORT GPIO_PRT17
+#define CYBSP_UART5_RX_PORT_NUM 17U
+#define CYBSP_UART5_RX_PIN 0U
+#define CYBSP_UART5_RX_NUM 0U
+#define CYBSP_UART5_RX_DRIVEMODE CY_GPIO_DM_HIGHZ
+#define CYBSP_UART5_RX_INIT_DRIVESTATE 1
 #ifndef ioss_0_port_17_pin_0_HSIOM
     #define ioss_0_port_17_pin_0_HSIOM HSIOM_SEL_GPIO
 #endif
-#define CYBSP_EZ_I2C_SCL_HSIOM ioss_0_port_17_pin_0_HSIOM
-#define CYBSP_EZ_I2C_SCL_IRQ ioss_interrupts_gpio_17_IRQn
-#define CYBSP_EZ_I2C_SDA_ENABLED 1U
-#define CYBSP_EZ_I2C_SDA_PORT GPIO_PRT17
-#define CYBSP_EZ_I2C_SDA_PORT_NUM 17U
-#define CYBSP_EZ_I2C_SDA_PIN 1U
-#define CYBSP_EZ_I2C_SDA_NUM 1U
-#define CYBSP_EZ_I2C_SDA_DRIVEMODE CY_GPIO_DM_OD_DRIVESLOW
-#define CYBSP_EZ_I2C_SDA_INIT_DRIVESTATE 1
+#define CYBSP_UART5_RX_HSIOM ioss_0_port_17_pin_0_HSIOM
+#define CYBSP_UART5_RX_IRQ ioss_interrupts_gpio_17_IRQn
+#define CYBSP_UART5_TX_ENABLED 1U
+#define CYBSP_UART5_TX_PORT GPIO_PRT17
+#define CYBSP_UART5_TX_PORT_NUM 17U
+#define CYBSP_UART5_TX_PIN 1U
+#define CYBSP_UART5_TX_NUM 1U
+#define CYBSP_UART5_TX_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define CYBSP_UART5_TX_INIT_DRIVESTATE 1
 #ifndef ioss_0_port_17_pin_1_HSIOM
     #define ioss_0_port_17_pin_1_HSIOM HSIOM_SEL_GPIO
 #endif
-#define CYBSP_EZ_I2C_SDA_HSIOM ioss_0_port_17_pin_1_HSIOM
-#define CYBSP_EZ_I2C_SDA_IRQ ioss_interrupts_gpio_17_IRQn
+#define CYBSP_UART5_TX_HSIOM ioss_0_port_17_pin_1_HSIOM
+#define CYBSP_UART5_TX_IRQ ioss_interrupts_gpio_17_IRQn
 #define CYBSP_SDHC_DETECT_ENABLED 1U
 #define CYBSP_SDHC_DETECT_PORT GPIO_PRT17
 #define CYBSP_SDHC_DETECT_PORT_NUM 17U
@@ -1354,8 +1354,8 @@ extern const cy_stc_gpio_pin_config_t CYBSP_USER_LED1_config;
 #define CYBSP_USER_LED_config CYBSP_USER_LED1_config
 #define CYBSP_LED_RED_config CYBSP_USER_LED1_config
 
-extern const cy_stc_gpio_pin_config_t CYBSP_EZ_I2C_SCL_config;
-extern const cy_stc_gpio_pin_config_t CYBSP_EZ_I2C_SDA_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART5_RX_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART5_TX_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SDHC_DETECT_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WCO_OUT_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WCO_IN_config;

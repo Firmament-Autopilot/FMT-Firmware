@@ -25,6 +25,8 @@
 #include "drv_gpio.h"
 #include "drv_systick.h"
 #include "drv_i2c.h"
+#include "drv_sdio.h"
+#include "drv_spi.h"
 #include "drv_eth.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
@@ -52,6 +54,11 @@
 // #define DBG_TAG "drv_common"
 // #define DBG_LVL DBG_INFO
 // #include <rtdbg.h>
+
+static const struct dfs_mount_tbl mnt_table[] = {
+    { "sd0", "/", "elm", 0, NULL },
+    { NULL } /* NULL indicate the end */
+};
 
 #ifdef RT_USING_FINSH
 #include <finsh.h>
@@ -102,7 +109,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_i2c_init());
     
     /* spi driver init */
-    // RT_CHECK(drv_spi_init());
+    RT_CHECK(drv_spi_init());
 
     // /* pwm driver init */
     // RT_CHECK(drv_pwm_init());
@@ -132,6 +139,8 @@ void bsp_initialize(void)
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
 
+    /* init storage devices */
+    RT_CHECK(drv_sdio_init());
 #ifdef RT_USING_LWIP
     /* init rt_workqueue, which is used by tcpip stack */
     FMT_CHECK(rt_work_sys_workqueue_init());
@@ -149,8 +158,8 @@ void bsp_initialize(void)
 //     /* init storage devices */
 //     RT_CHECK(drv_sdio_init());
 //     RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
-//     /* init file system */
-//     FMT_CHECK(file_manager_init(mnt_table));
+     /* init file system */
+    FMT_CHECK(file_manager_init(mnt_table));
 
 //     /* init parameter system */
 //     FMT_CHECK(param_init());

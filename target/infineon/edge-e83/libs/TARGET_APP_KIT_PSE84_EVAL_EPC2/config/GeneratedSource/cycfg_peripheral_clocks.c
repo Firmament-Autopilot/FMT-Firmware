@@ -4,7 +4,7 @@
  * Description:
  * Peripheral clock divider configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
+ * Configurator Backend 3.70.0
  * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
@@ -33,9 +33,9 @@ void init_cycfg_peripheral_clocks(void)
     Cy_SysClk_PeriGroupSetDivider((0 << 8) | 2, 1U);
     Cy_SysClk_PeriGroupSetDivider((1 << 8) | 1, 1U);
     Cy_SysClk_PeriGroupSetDivider((1 << 8) | 3, 3U);
-    Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)CYBSP_EZ_I2C_TARGET_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U);
-    Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_EZ_I2C_TARGET_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U, 6U);
-    Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_EZ_I2C_TARGET_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U);
+    Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U);
+    Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U, 86U);
+    Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U);
     Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U, 9U);
     Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U);

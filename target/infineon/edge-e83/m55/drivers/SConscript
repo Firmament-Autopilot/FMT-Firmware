@@ -10,11 +10,11 @@ drv_common.c
 """)
 
 src += ['drv_gpio.c']
-
 src += ['drv_uart.c']
-
 src += ['drv_systick.c']
 src += ['drv_i2c.c']
+src += ['drv_spi.c']
+src += ['drv_sdio.c']
 
 if GetDepend('BSP_USING_ETH'):
 	src += ['drv_eth.c']

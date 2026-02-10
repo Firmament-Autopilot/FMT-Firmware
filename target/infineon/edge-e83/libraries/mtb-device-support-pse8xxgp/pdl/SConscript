@@ -46,7 +46,7 @@ if GetDepend('BSP_USING_ETH'):
 
 src += ['drivers/source/cy_dma.c']
 src += ['drivers/source/cy_scb_uart.c']
-
+src += ['drivers/source/cy_sd_host.c']
 src += ['drivers/source/cy_scb_i2c.c']
 
 if GetDepend(['RT_USING_ADC']):
