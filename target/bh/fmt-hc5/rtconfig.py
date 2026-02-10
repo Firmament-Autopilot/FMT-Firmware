@@ -1,7 +1,7 @@
 import os
 
 # board options
-BOARD = 'hc32f4'
+BOARD = 'hc5'
 
 # toolchains options
 ARCH = 'arm'
