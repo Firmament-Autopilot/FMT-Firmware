@@ -2,7 +2,7 @@
 
 DRIVERS = [
     # 'barometer/spl06.c',
-    # 'gps/gps_ubx.c',
+    'gps/gps_ubx.c',
     # 'imu/bmi088.c',
     'imu/sh5001.c',
     'imu/qmi8a01.c',

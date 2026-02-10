@@ -29,7 +29,7 @@
 // #include "board_device.h"
 #include "driver/airspeed/xgzp6899d.h"
 // #include "driver/barometer/spl06.h"
-// #include "driver/gps/gps_ubx.h"
+#include "driver/gps/gps_ubx.h"
 // #include "driver/imu/bmi088.h"
 #include "driver/imu/sh5001.h"
 #include "driver/imu/qmi8a01.h"
@@ -394,10 +394,10 @@ void bsp_initialize(void)
     // RT_CHECK(drv_sh5001_init("spi1_dev0", "gyro0", "accel0"));
     RT_CHECK(drv_qmi8a01_init("spi1_dev1", "gyro0", "accel0"));
     // RT_CHECK(drv_qmc5883p_init("i2c1_dev0", "mag0", 0));
-    RT_CHECK(drv_qmc5883l_init("i2c2_dev0", "mag0", EXTERNAL_DEV | 0));
+    // RT_CHECK(drv_qmc5883l_init("i2c2_dev0", "mag0", EXTERNAL_DEV | 0));
     // RT_CHECK(drv_xgzp6899d_init("i2c1_dev1", "airspeed"));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    RT_CHECK(gps_ubx_init("serial3", "gps"));
     // RT_CHECK(drv_tofsense_init("serial5"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
@@ -420,9 +420,9 @@ void bsp_initialize(void)
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
 
-// #ifdef FMT_USING_UNIT_TEST
-//     utest_init();
-// #endif
+#ifdef FMT_USING_UNIT_TEST
+    utest_init();
+#endif
 }
 
 void bsp_post_initialize(void)

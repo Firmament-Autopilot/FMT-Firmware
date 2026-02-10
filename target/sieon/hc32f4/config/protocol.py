@@ -2,7 +2,7 @@
 
 PROTOCOL = [
     # 'msp/*.c',
-    # 'ublox/*.c',
+    'ublox/*.c',
     # 'nlink/*.c',
 ]
 

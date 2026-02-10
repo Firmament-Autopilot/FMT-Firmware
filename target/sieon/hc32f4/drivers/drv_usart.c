@@ -18,6 +18,7 @@
 
 #define USING_UART5
 #define USING_UART2
+#define USING_UART1
 
 #define SERIAL3_DEFAULT_CONFIG                    \
     {                                             \
@@ -184,6 +185,69 @@ static void USART2_TxComplete_IrqCallback(void)
 //         hal_serial_isr(&serial2, SERIAL_EVENT_RX_DMADONE | (recv_len << 8));
 //     }
 // }
+#endif
+
+#ifdef USING_UART1
+static void USART1_RxError_IrqCallback(void);
+static void USART1_RxFull_IrqCallback(void);
+static void USART1_TX_DMA_TC_IrqCallback(void);
+static void USART1_TxComplete_IrqCallback(void);
+
+static struct serial_device serial3;
+static struct hc32_uart uart1 = {
+    .uart_periph = CM_USART1,
+    .rx_err_irq = USART1_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART1_EI,
+    .rx_err_callback = &USART1_RxError_IrqCallback,
+    .rx_full_irq = USART1_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART1_RI,
+    .rx_full_callback = &USART1_RxFull_IrqCallback,
+    .dma = {
+        .dma_periph = USART1_TX_DMA_UNIT,
+        .dma_tx_ch = USART1_TX_DMA_CH,
+        .dma_tx_tc_irq = USART1_TX_DMA_TC_IRQn,
+        .dma_tx_tc_int_src = USART1_TX_DMA_TC_INT_SRC,
+        .dma_tx_tc_callback = &USART1_TX_DMA_TC_IrqCallback,
+        .dma_tx_tc_flag = USART1_TX_DMA_TC_FLAG,
+        .dma_tx_trig_sel = USART1_TX_DMA_TRIG_SEL,
+        .dma_tx_trig_evt_src = USART1_TX_DMA_TRIG_EVT_SRC,
+        .dma_tx_tc_int = USART1_TX_DMA_TC_INT,
+        .tx_cplt_irq = USART1_TX_CPLT_IRQn,
+        .tx_cplt_int_src = INT_SRC_USART1_TCI,
+        .tx_cplt_callback = &USART1_TxComplete_IrqCallback,
+    }
+};
+
+static void USART1_RxError_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    (void)USART_ReadData(uart1.uart_periph);
+    USART_ClearStatus(uart1.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+    rt_interrupt_leave();
+}
+
+static void USART1_RxFull_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    hal_serial_isr(&serial3, SERIAL_EVENT_RX_IND);
+    rt_interrupt_leave();
+}
+
+static void USART1_TX_DMA_TC_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart1.uart_periph, USART_INT_TX_CPLT, ENABLE);
+    DMA_ClearTransCompleteStatus(uart1.dma.dma_periph, uart1.dma.dma_tx_tc_flag);
+    rt_interrupt_leave();
+}
+
+static void USART1_TxComplete_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart1.uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
+    hal_serial_isr(&serial3, SERIAL_EVENT_TX_DMADONE);
+    rt_interrupt_leave();
+}
 #endif
 
 /**
@@ -495,9 +559,6 @@ static const struct usart_ops __usart_ops = {
 
 static void uart_peripheral_init(void)
 {
-    /* MCU Peripheral registers write unprotected */
-    // LL_PERIPH_WE(LL_PERIPH_ALL);
-
     /* DMA&AOS FCG enable */
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_DMA1, ENABLE);
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_DMA2, ENABLE);
@@ -517,8 +578,11 @@ static void uart_peripheral_init(void)
 
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART2, ENABLE);
 
-    /* MCU Peripheral registers write protected */
-    // LL_PERIPH_WP(LL_PERIPH_ALL);
+    /**** USART1 Init ****/
+    GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_06, GPIO_FUNC_32); // USART1-TX
+    GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_07, GPIO_FUNC_33); // USART1-RX
+
+    FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART1, ENABLE);
 }
 
 rt_err_t drv_usart_init(void)
@@ -559,6 +623,22 @@ rt_err_t drv_usart_init(void)
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
                                   &uart2);
 #endif /* USING_UART2 */
+
+#ifdef USING_UART1
+    serial3.ops = &__usart_ops;
+    #ifdef SERIAL3_DEFAULT_CONFIG
+    struct serial_configure serial3_config = SERIAL3_DEFAULT_CONFIG;
+    serial3.config = serial3_config;
+    #else
+    serial3.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial3,
+                                  "serial3",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
+                                  &uart1);
+#endif /* USING_UART1 */
 
     return rt_err;
 }

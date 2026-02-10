@@ -56,6 +56,19 @@
 #define USART6_RX_ERR_IRQn         (INT006_IRQn)
 #define USART6_RX_FULL_IRQn        (INT007_IRQn)
 
+#define USART1_RX_ERR_IRQn         (INT008_IRQn)
+#define USART1_RX_FULL_IRQn        (INT009_IRQn)
+#define USART1_TX_CPLT_IRQn        (INT010_IRQn)
+#define USART1_TX_DMA_TC_IRQn      (INT011_IRQn)
+#define USART1_TX_DMA_UNIT         (CM_DMA1)
+#define USART1_TX_DMA_CH           (DMA_CH1)
+#define USART1_TX_DMA_TC_INT_SRC   (INT_SRC_DMA1_TC1)
+#define USART1_TX_DMA_TC_FLAG      (DMA_FLAG_TC_CH1)
+#define USART1_TX_DMA_TRIG_SEL     (AOS_DMA1_1)
+#define USART1_TX_DMA_TRIG_EVT_SRC (EVT_SRC_USART1_TI)
+#define USART1_TX_DMA_TC_INT       (DMA_INT_TC_CH1)
+
+
 #define TIMA_9_CAPTURE_IRQn         (INT080_IRQn)
 
 #endif
