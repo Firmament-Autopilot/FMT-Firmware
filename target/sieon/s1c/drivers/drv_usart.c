@@ -16,7 +16,6 @@
 #include <board_bsp.h>
 #include <firmament.h>
 
-
 #include "drv_usart.h"
 #include "hal/serial/serial.h"
 #include "wl32_ll_usart.h"
@@ -461,13 +460,12 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 {
     struct wl32_uart* uart;
     stc_usart_uart_init_t stcUartInit;
+    uint32_t func_state = USART_TX | USART_RX;
 
     RT_ASSERT(serial != RT_NULL);
     RT_ASSERT(cfg != RT_NULL);
 
     uart = (struct wl32_uart*)serial->parent.user_data;
-
-    // LL_PERIPH_WE(LL_PERIPH_ALL);
 
     (void)USART_UART_StructInit(&stcUartInit);
 
@@ -502,16 +500,17 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     stcUartInit.u32HWFlowControl = USART_HW_FLOWCTRL_NONE;
     stcUartInit.u32OverSampleBit = USART_OVER_SAMPLE_16BIT;
     stcUartInit.u32ClockDiv = USART_CLK_DIV16;
-    // stcUartInit.u32StartBitPolarity = USART_START_BIT_FALLING;
+
+    if (USART_GetFuncState(uart->uart_periph, USART_INT_RX)) {
+        func_state |= USART_INT_RX;
+    }
 
     USART_DeInit(uart->uart_periph);
     USART_UART_Init(uart->uart_periph, &stcUartInit, NULL);
 
     /* Enable USART_TX | USART_RX function */
-    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX | USART_INT_RX), ENABLE);
-    // USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX), ENABLE);
-
-    // LL_PERIPH_WP(LL_PERIPH_ALL);
+    // USART_FuncCmd(c, (USART_TX | USART_RX | USART_INT_RX), ENABLE);
+    USART_FuncCmd(uart->uart_periph, func_state, ENABLE);
 
     return RT_EOK;
 }
