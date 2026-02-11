@@ -502,14 +502,14 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
     stcUartInit.u32ClockDiv = USART_CLK_DIV16;
 
     if (USART_GetFuncState(uart->uart_periph, USART_INT_RX)) {
+        /* The deinit/init operation would clear function state, so recover it if INT_RX configured */
         func_state |= USART_INT_RX;
     }
 
     USART_DeInit(uart->uart_periph);
     USART_UART_Init(uart->uart_periph, &stcUartInit, NULL);
 
-    /* Enable USART_TX | USART_RX function */
-    // USART_FuncCmd(c, (USART_TX | USART_RX | USART_INT_RX), ENABLE);
+    /* Set usart function */
     USART_FuncCmd(uart->uart_periph, func_state, ENABLE);
 
     return RT_EOK;
@@ -613,6 +613,7 @@ static rt_size_t usart_dma_transmit(struct serial_device* serial, rt_uint8_t* bu
         struct wl32_uart* uart = (struct wl32_uart*)serial->parent.user_data;
         uint16_t trimmed_size = size > 65535 ? 65535 : size; /* the maximul dma transfer block is 65535 */
 
+        USART_FuncCmd(uart->uart_periph, USART_TX | USART_INT_TX_CPLT, DISABLE);
         DMA_SetSrcAddr(uart->dma.dma_periph, uart->dma.dma_tx_ch, (uint32_t)buf);
         DMA_SetTransCount(uart->dma.dma_periph, uart->dma.dma_tx_ch, trimmed_size);
         DMA_ChCmd(uart->dma.dma_periph, uart->dma.dma_tx_ch, ENABLE);
@@ -635,9 +636,6 @@ static const struct usart_ops __usart_ops = {
 
 static void uart_peripheral_init(void)
 {
-    /* MCU Peripheral registers write unprotected */
-    // LL_PERIPH_WE(LL_PERIPH_ALL);
-
     /* DMA&AOS FCG enable */
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_DMA1, ENABLE);
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_DMA2, ENABLE);
@@ -667,9 +665,6 @@ static void uart_peripheral_init(void)
     GPIO_SetFunc(GPIO_PORT_A, GPIO_PIN_05, GPIO_FUNC_35); // USART2-RX
 
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART2, ENABLE);
-
-    /* MCU Peripheral registers write protected */
-    // LL_PERIPH_WP(LL_PERIPH_ALL);
 }
 
 rt_err_t drv_usart_init(void)
