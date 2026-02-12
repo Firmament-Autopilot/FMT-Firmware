@@ -252,7 +252,7 @@ void bsp_early_initialize(void)
     /* MCU Peripheral registers write unprotected */
     LL_PERIPH_WE(LL_PERIPH_ALL);
 
-    // /* usart driver init */
+    /* usart driver init */
     RT_CHECK(drv_usart_init());
 
     /* init console to enable console output */
@@ -269,16 +269,11 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
-    // // // RT_CHECK(drv_i2c_soft_init());
 
-    // // /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
-
-    // /* buzzer(pwm) driver init */
-    //  RT_CHECK(drv_buzzer_init());
+    /* pwm driver init */
+    RT_CHECK(drv_pwm_init());
 
     /* init remote controller driver */
-    // time4_test_init();
     RT_CHECK(drv_rc_init());
 
     /* system statistic module */
