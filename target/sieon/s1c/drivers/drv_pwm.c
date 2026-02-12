@@ -39,33 +39,38 @@
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
-#define PWM_FREQ_50HZ         (50)
-#define PWM_FREQ_125HZ        (125)
-#define PWM_FREQ_250HZ        (250)
-#define PWM_FREQ_400HZ        (400)
+#define PWM_FREQ_50HZ          (50)
+#define PWM_FREQ_125HZ         (125)
+#define PWM_FREQ_250HZ         (250)
+#define PWM_FREQ_400HZ         (400)
 
-#define TIMER_FREQUENCY       (5250000)     // Timer frequency: 5.25M, PCLK0=336M, PCLK1=168M
-#define MAIN_PWM_OUT_CHAN     (12)          // Main Out has 12 pwm channel
-#define AUX_PWM_CHAN          (4)
-#define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
-#define VAL_TO_DC(_val)       ((float)(_val * __pwm_freq) / 1000000.0f)
-#define DC_TO_VAL(_dc)        (1000000.0f / __pwm_freq * _dc)
+#define TIMER_FREQUENCY        (5250000) // Timer frequency: 5.25M, PCLK0=336M, PCLK1=168M
+#define MAIN_PWM_OUT_CHAN      (12)
+#define AUX_PWM_OUT_CHAN       (4)
+#define PWM_DEFAULT_FREQUENCY  PWM_FREQ_50HZ
+#define VAL_TO_DC(_val, _freq) ((float)(_val * _freq) / 1000000.0f)
+#define DC_TO_VAL(_dc, _freq)  (1000000.0f / _freq * _dc)
 
-#define PWM_ARR(freq)         (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = TIMER_FREQUENCY/(PWM_ARR+1)
+#define PWM_ARR(freq)          (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = TIMER_FREQUENCY/(PWM_ARR+1)
 
-static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg);
-static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg);
-static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
-static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
+static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg);
+static rt_err_t main_pwm_control(actuator_dev_t dev, int cmd, void* arg);
+static rt_size_t main_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
+static rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
 
-const static struct actuator_ops __act_ops = {
-    .act_config = pwm_config,
-    .act_control = pwm_control,
-    .act_read = pwm_read,
-    .act_write = pwm_write
+static rt_err_t aux_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg);
+static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg);
+static rt_size_t aux_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size);
+static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
+
+const static struct actuator_ops _main_out_ops = {
+    .act_config = main_pwm_config,
+    .act_control = main_pwm_control,
+    .act_read = main_pwm_read,
+    .act_write = main_pwm_write
 };
 
-static struct actuator_device act_dev = {
+static struct actuator_device main_out_dev = {
     .chan_mask = 0xFFF,
     .range = { 1000, 2000 },
     .config = {
@@ -73,11 +78,31 @@ static struct actuator_device act_dev = {
         .chan_num = MAIN_PWM_OUT_CHAN,
         .pwm_config = { .pwm_freq = 50 },
         .dshot_config = { 0 } },
-    .ops = &__act_ops
+    .ops = &_main_out_ops
 };
 
-static uint32_t __pwm_freq = PWM_DEFAULT_FREQUENCY;
-static float __pwm_dc[MAIN_PWM_OUT_CHAN];
+const static struct actuator_ops _aux_out_ops = {
+    .act_config = aux_pwm_config,
+    .act_control = aux_pwm_control,
+    .act_read = aux_pwm_read,
+    .act_write = aux_pwm_write
+};
+
+static struct actuator_device aux_out_dev = {
+    .chan_mask = 0xF,
+    .range = { 1000, 2000 },
+    .config = {
+        .protocol = ACT_PROTOCOL_PWM,
+        .chan_num = MAIN_PWM_OUT_CHAN,
+        .pwm_config = { .pwm_freq = 50 },
+        .dshot_config = { 0 } },
+    .ops = &_aux_out_ops
+};
+
+static uint32_t main_pwm_freq = PWM_DEFAULT_FREQUENCY;
+static float main_pwm_dc[MAIN_PWM_OUT_CHAN];
+static uint32_t aux_pwm_freq = PWM_DEFAULT_FREQUENCY;
+static float aux_pwm_dc[AUX_PWM_OUT_CHAN];
 
 static void pwm_timer_init(void)
 {
@@ -98,7 +123,7 @@ static void pwm_timer_init(void)
     stcTmraInit.sw_count.u8ClockDiv = TMRA_CLK_DIV64;
     stcTmraInit.sw_count.u8CountMode = TMRA_MD_SAWTOOTH;
     stcTmraInit.sw_count.u8CountDir = TMRA_DIR_UP;
-    stcTmraInit.u32PeriodValue = PWM_ARR(__pwm_freq) - 1;
+    stcTmraInit.u32PeriodValue = PWM_ARR(main_pwm_freq) - 1;
     (void)TMRA_Init(CM_TMRA_1, &stcTmraInit);
     (void)TMRA_Init(CM_TMRA_4, &stcTmraInit);
     /* TIMA-5 ~ TIMA-12 use PCLK1 */
@@ -173,83 +198,83 @@ static void pwm_timer_init(void)
     TMRA_Start(CM_TMRA_8);
 }
 
-rt_inline void __read_pwm(uint8_t chan_id, float* dc)
+rt_inline float _main_read_pwm(uint8_t chan_id)
 {
-    *dc = __pwm_dc[chan_id];
+    return main_pwm_dc[chan_id];
 }
 
-rt_inline void __write_pwm(uint8_t chan_id, float dc)
+rt_inline void _main_write_pwm(uint8_t chan_id, float dc)
 {
     switch (chan_id) {
     case 0:
-        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH1, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH1, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 1:
-        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH2, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH2, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 2:
-        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH3, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH3, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 3:
-        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH4, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_1, TMRA_CH4, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 4:
-        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH1, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH1, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 5:
-        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH2, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH2, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 6:
-        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH3, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH3, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 7:
-        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH4, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_4, TMRA_CH4, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 8:
-        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH1, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH1, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 9:
-        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH2, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH2, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 10:
-        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH3, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH3, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     case 11:
-        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH4, PWM_ARR(__pwm_freq) * dc - 1);
+        TMRA_SetCompareValue(CM_TMRA_5, TMRA_CH4, PWM_ARR(main_pwm_freq) * dc - 1);
         break;
     default:
         return;
     }
 
-    __pwm_dc[chan_id] = dc;
+    main_pwm_dc[chan_id] = dc;
 }
 
-static rt_err_t __set_pwm_frequency(uint16_t freq)
+rt_inline rt_err_t _main_set_pwm_frequency(uint16_t freq)
 {
     if (freq < PWM_FREQ_50HZ || freq > PWM_FREQ_400HZ) {
         /* invalid frequency */
         return RT_EINVAL;
     }
 
-    __pwm_freq = freq;
-
-    TMRA_SetPeriodValue(CM_TMRA_1, PWM_ARR(__pwm_freq) - 1);
-    TMRA_SetPeriodValue(CM_TMRA_4, PWM_ARR(__pwm_freq) - 1);
-    TMRA_SetPeriodValue(CM_TMRA_5, PWM_ARR(__pwm_freq) - 1);
+    TMRA_SetPeriodValue(CM_TMRA_1, PWM_ARR(main_pwm_freq) - 1);
+    TMRA_SetPeriodValue(CM_TMRA_4, PWM_ARR(main_pwm_freq) - 1);
+    TMRA_SetPeriodValue(CM_TMRA_5, PWM_ARR(main_pwm_freq) - 1);
 
     /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < MAIN_PWM_OUT_CHAN; i++) {
-        __write_pwm(i, __pwm_dc[i]);
+        _main_write_pwm(i, main_pwm_dc[i]);
     }
+
+    main_pwm_freq = freq;
 
     return RT_EOK;
 }
 
-static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
     DRV_DBG("main out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
-    if (__set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
+    if (_main_set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
         return RT_ERROR;
     }
 
@@ -259,7 +284,7 @@ static rt_err_t pwm_config(actuator_dev_t dev, const struct actuator_configure* 
     return RT_EOK;
 }
 
-static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
+static rt_err_t main_pwm_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
 
@@ -267,7 +292,7 @@ static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
     case ACT_CMD_CHANNEL_ENABLE:
         /* set to lowest pwm before open */
         for (uint8_t i = 0; i < MAIN_PWM_OUT_CHAN; i++) {
-            __write_pwm(i, VAL_TO_DC(act_dev.range[0]));
+            _main_write_pwm(i, VAL_TO_DC(1000, main_pwm_freq));
         }
 
         TMRA_Start(CM_TMRA_1);
@@ -291,15 +316,15 @@ static rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
     return ret;
 }
 
-static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t main_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
     float dc;
 
     for (uint8_t i = 0; i < MAIN_PWM_OUT_CHAN; i++) {
         if (chan_sel & (1 << i)) {
-            __read_pwm(i, &dc);
-            *index = DC_TO_VAL(dc);
+            dc = _main_read_pwm(i);
+            *index = DC_TO_VAL(dc, main_pwm_freq);
             index++;
         }
     }
@@ -307,7 +332,7 @@ static rt_size_t pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t*
     return size;
 }
 
-static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
@@ -317,9 +342,134 @@ static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_ui
         if (chan_sel & (1 << i)) {
             val = *index;
             /* calculate pwm duty cycle */
-            dc = VAL_TO_DC(val);
+            dc = VAL_TO_DC(val, main_pwm_freq);
             /* update pwm signal */
-            __write_pwm(i, dc);
+            _main_write_pwm(i, dc);
+
+            index++;
+        }
+    }
+
+    return size;
+}
+
+rt_inline float _aux_read_pwm(uint8_t chan_id)
+{
+    return aux_pwm_dc[chan_id];
+}
+
+rt_inline void _aux_write_pwm(uint8_t chan_id, float dc)
+{
+    switch (chan_id) {
+    case 0:
+        TMRA_SetCompareValue(CM_TMRA_8, TMRA_CH1, PWM_ARR(aux_pwm_freq) * dc - 1);
+        break;
+    case 1:
+        TMRA_SetCompareValue(CM_TMRA_8, TMRA_CH2, PWM_ARR(aux_pwm_freq) * dc - 1);
+        break;
+    case 2:
+        TMRA_SetCompareValue(CM_TMRA_8, TMRA_CH3, PWM_ARR(aux_pwm_freq) * dc - 1);
+        break;
+    case 3:
+        TMRA_SetCompareValue(CM_TMRA_8, TMRA_CH4, PWM_ARR(aux_pwm_freq) * dc - 1);
+        break;
+    default:
+        return;
+    }
+
+    aux_pwm_dc[chan_id] = dc;
+}
+
+rt_inline rt_err_t _aux_set_pwm_frequency(uint16_t freq)
+{
+    if (freq < PWM_FREQ_50HZ || freq > PWM_FREQ_400HZ) {
+        /* invalid frequency */
+        return RT_EINVAL;
+    }
+
+    TMRA_SetPeriodValue(CM_TMRA_8, PWM_ARR(aux_pwm_freq) - 1);
+
+    /* the timer compare value should be re-configured */
+    for (uint8_t i = 0; i < AUX_PWM_OUT_CHAN; i++) {
+        _aux_write_pwm(i, aux_pwm_dc[i]);
+    }
+
+    aux_pwm_freq = freq;
+
+    return RT_EOK;
+}
+
+static rt_err_t aux_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+{
+    DRV_DBG("aux out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
+
+    if (_aux_set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
+        return RT_ERROR;
+    }
+
+    /* update device configuration */
+    dev->config = *cfg;
+
+    return RT_EOK;
+}
+
+static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
+{
+    rt_err_t ret = RT_EOK;
+
+    switch (cmd) {
+    case ACT_CMD_CHANNEL_ENABLE:
+        /* set to lowest pwm before open */
+        for (uint8_t i = 0; i < AUX_PWM_OUT_CHAN; i++) {
+            _aux_write_pwm(i, VAL_TO_DC(1000, aux_pwm_freq));
+        }
+
+        TMRA_Start(CM_TMRA_8);
+        break;
+    case ACT_CMD_CHANNEL_DISABLE:
+        TMRA_Stop(CM_TMRA_8);
+        break;
+    case ACT_CMD_SET_PROTOCOL:
+        /* TODO: Support dshot */
+        ret = RT_EINVAL;
+        break;
+    default:
+        ret = RT_EINVAL;
+        break;
+    }
+
+    return ret;
+}
+
+static rt_size_t aux_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+{
+    rt_uint16_t* index = chan_val;
+    float dc;
+
+    for (uint8_t i = 0; i < AUX_PWM_OUT_CHAN; i++) {
+        if (chan_sel & (1 << i)) {
+            dc = _aux_read_pwm(i);
+            *index = DC_TO_VAL(dc, aux_pwm_freq);
+            index++;
+        }
+    }
+
+    return size;
+}
+
+static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+{
+    const rt_uint16_t* index = chan_val;
+    rt_uint16_t val;
+    float dc;
+
+    for (uint8_t i = 0; i < AUX_PWM_OUT_CHAN; i++) {
+        if (chan_sel & (1 << i)) {
+            val = *index;
+            /* calculate pwm duty cycle */
+            dc = VAL_TO_DC(val, aux_pwm_freq);
+            /* update pwm signal */
+            _aux_write_pwm(i, dc);
 
             index++;
         }
@@ -334,5 +484,8 @@ rt_err_t drv_pwm_init(void)
     pwm_timer_init();
 
     /* register actuator hal device */
-    return hal_actuator_register(&act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL);
+    RT_TRY(hal_actuator_register(&main_out_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&aux_out_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
+
+    return RT_EOK;
 }
