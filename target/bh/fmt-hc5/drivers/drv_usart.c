@@ -392,15 +392,13 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
 {
     struct hc32_uart* uart;
     stc_usart_uart_init_t stcUartInit;
+    uint32_t func_state = USART_TX | USART_RX;
 
     RT_ASSERT(serial != RT_NULL);
     RT_ASSERT(cfg != RT_NULL);
 
     uart = (struct hc32_uart*)serial->parent.user_data;
 
-    // LL_PERIPH_WE(LL_PERIPH_ALL);
-
-    USART_DeInit(uart->uart_periph);
     (void)USART_UART_StructInit(&stcUartInit);
 
     stcUartInit.u32Baudrate = cfg->baud_rate;
@@ -425,16 +423,26 @@ static rt_err_t usart_configure(struct serial_device* serial, struct serial_conf
         stcUartInit.u32Parity = USART_PARITY_EVEN;
     }
 
+    if (cfg->bit_order == BIT_ORDER_LSB) {
+        stcUartInit.u32FirstBit = USART_FIRST_BIT_LSB;
+    } else {
+        stcUartInit.u32FirstBit = USART_FIRST_BIT_MSB;
+    }
+
     stcUartInit.u32HWFlowControl = USART_HW_FLOWCTRL_NONE;
     stcUartInit.u32OverSampleBit = USART_OVER_SAMPLE_16BIT;
-    stcUartInit.u32FirstBit = USART_FIRST_BIT_LSB;
-    stcUartInit.u32StartBitPolarity = USART_START_BIT_FALLING;
+    stcUartInit.u32ClockDiv = USART_CLK_DIV16;
+
+    if (USART_GetFuncState(uart->uart_periph, USART_INT_RX)) {
+        /* The deinit/init operation would clear function state, so recover it if INT_RX configured */
+        func_state |= USART_INT_RX;
+    }
+
+    USART_DeInit(uart->uart_periph);
     USART_UART_Init(uart->uart_periph, &stcUartInit, NULL);
 
-    /* Enable USART_TX | USART_RX function */
-    USART_FuncCmd(uart->uart_periph, (USART_TX | USART_RX), ENABLE);
-
-    // LL_PERIPH_WP(LL_PERIPH_ALL);
+    /* Set usart function */
+    USART_FuncCmd(uart->uart_periph, func_state, ENABLE);
 
     return RT_EOK;
 }
@@ -537,6 +545,7 @@ static rt_size_t usart_dma_transmit(struct serial_device* serial, rt_uint8_t* bu
         struct hc32_uart* uart = (struct hc32_uart*)serial->parent.user_data;
         uint16_t trimmed_size = size > 65535 ? 65535 : size; /* the maximul dma transfer block is 65535 */
 
+        USART_FuncCmd(uart->uart_periph, USART_TX | USART_INT_TX_CPLT, DISABLE);
         DMA_SetSrcAddr(uart->dma.dma_periph, uart->dma.dma_tx_ch, (uint32_t)buf);
         DMA_SetTransCount(uart->dma.dma_periph, uart->dma.dma_tx_ch, trimmed_size);
         DMA_ChCmd(uart->dma.dma_periph, uart->dma.dma_tx_ch, ENABLE);
