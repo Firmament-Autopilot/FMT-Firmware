@@ -22,11 +22,16 @@
 extern "C" {
 #endif
 
-/* i2c slave device addresses */
-#define IST8310_ADDRESS  0x0E
+#define IST8310_ADDRESS  0x0C
 #define NCP5623C_ADDRESS 0x39
+#define MS5611_ADDRESS   0x77
+
+/* Note: currently using software I2C as a temporary fallback while
+* hardware I2C is being diagnosed. Replace `drv_i2c_soft_init()` with
+* the hardware I2C init when available. */
 
 rt_err_t drv_i2c_init(void);
+//rt_err_t drv_i2c_soft_init(void);
 
 #ifdef __cplusplus
 }

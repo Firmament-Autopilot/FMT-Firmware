@@ -153,9 +153,9 @@ typedef struct
   */
 #if !defined  (HSE_VALUE)
 #if defined(RCC_VER_X) || defined(RCC_VER_3_0)
-#define HSE_VALUE    25000000U  /*!< Value of the HSE oscillator in Hz */
+#define HSE_VALUE    16000000U  /*!< Value of the HSE oscillator in Hz */
 #else
-#define HSE_VALUE    24000000U  /*!< Value of the HSE oscillator in Hz */
+#define HSE_VALUE    16000000U  /*!< Value of the HSE oscillator in Hz */
 #endif /* RCC_VER_X || RCC_VER_3_0 */
 #endif /* HSE_VALUE */
 
