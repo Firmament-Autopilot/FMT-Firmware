@@ -28,6 +28,8 @@ fmt_err_t led_init(struct device_pin_mode pin_mode);
 fmt_err_t led_set(struct device_pin_status pin_sta);
 fmt_err_t led_toggle(uint32_t pin);
 fmt_err_t rgb_led_set_color(uint32_t color);
+/* signal a hardware fault: 1 = hardware fault active (red solid), 0 = clear */
+void led_set_hardware_fault(uint8_t hw_fault);
 /* early init for turning on LEDs during early boot (uses HAL, no RT device)
  * and a helper to force red LED on in fatal error paths */
 void led_early_init(void);

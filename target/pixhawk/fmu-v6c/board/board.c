@@ -16,6 +16,7 @@
 
 #include <firmament.h>
 #include <board.h>
+#include <board_device.h>
 #include <string.h>
 #include <msh.h>
 #include <shell.h>
@@ -38,7 +39,6 @@
 #include "module/mavproxy/mavproxy_config.h"
 #include "module/utils/devmq.h"
 #include "module/system/statistic.h"
-#include "led.h"
 
 // Default Configuration
 #include "default_config.h"
@@ -48,21 +48,31 @@
 #include "drv_usart.h"
 #include "drv_spi.h"
 #include "drv_i2c.h"
+#include "hal/i2c/i2c.h"
+#include "stm32h7xx_ll_i2c.h"
 #include "drv_pwm.h"
 #include "drv_systick.h"
 #include "drv_sdio.h"
 #include "drv_adc.h"
 #include "usbd/drv_usbd_cdc.h"
+#include "led.h"
 
 // Sensor Drivers
 #include "driver/imu/bmi055.h"
 #include "driver/imu/icm42688p.h"
+#include "driver/mag/ist8310.h"
 #include "driver/mtd/ramtron.h"
+#include "driver/vision_flow/mtf_01.h"
+#include "driver/barometer/ms5611.h"
+#include "driver/gps/gps_ubx.h"
 
 // System Init
 #include "module/param/param.h"
 #include "module/system/systime.h"
 #include "module/log/boot_log.h"
+#ifdef FMT_USING_SIH
+    #include "model/plant/plant_interface.h"
+#endif
 
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
@@ -283,21 +293,23 @@ static void EnableSensorPower(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
-    /* PB2: VDD_3V3_SENSORS_EN (Pull Low to Enable per user request) */
+    /* PB2: VDD_3V3_SENSORS_EN (Pull High to Enable per user request)
+        * Match PX4 defaults: keep 3.3V sensors rail DISABLED by default
+        * (PX4 config uses GPIO_OUTPUT_CLEAR for PB2). */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
 
-    /* PC10: N_VDD_5V_HIPOWER_EN (Pull Low to Enable) */
+    /* PC10: N_VDD_5V_HIPOWER_EN (active low). Match PX4 defaults: keep disabled */
     GPIO_InitStruct.Pin = GPIO_PIN_10;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
 
-    /* PE2: N_VDD_5V_PERIPH_EN (Pull Low to Enable) */
+    /* PE2: N_VDD_5V_PERIPH_EN (active low). Match PX4 defaults: keep disabled */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
-    
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
+
     /* Power rail stabilization delay - 100ms at 480MHz */
     for (volatile uint32_t i = 0; i < 24000000; i++) {
         __NOP();
@@ -394,11 +406,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_sdio_init());
     
     /* Delay for SPI2 and FRAM power stabilization */
-    rt_thread_mdelay(20);
-    rt_err_t fram_ret = drv_ramtron_init("spi2_dev1");
-    if (fram_ret != RT_EOK) {
-        console_printf("Warning: FRAM initialization failed (error: %ld)\n", (long)fram_ret);
-    }
+    RT_CHECK(drv_ramtron_init("spi2_dev1"));
     
     /* Check SD card status to prevent crash in file_manager_init */
     rt_device_t sd0 = rt_device_find("sd0");
@@ -430,29 +438,37 @@ void bsp_initialize(void)
     /* init ADC driver */
     RT_CHECK(drv_adc_init());
 
-    /* Give time for SPI bus and sensor power to fully stabilize */
+    /* allow some time for sensors to power up */
     rt_thread_mdelay(100);
 
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+    FMT_CHECK(advertise_sensor_airspeed(0));
+    FMT_CHECK(advertise_sensor_optflow(0));
+    FMT_CHECK(advertise_sensor_rangefinder(0));
+#else
     /* Init onboard sensors */
     /* ICM42688P as primary (ID=0), BMI055 as backup (ID=1)*/
     /* Warm up ICM42688 SPI device via drv_spi helper to avoid including
        HAL SPI internals in board code. */
     drv_spi_warmup_device("spi1_dev3", 0x75);
+    RT_CHECK(drv_icm42688_init("spi1_dev3", "gyro0", "accel0", 0));
+    RT_CHECK(drv_bmi055_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
+    RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
+    RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
+    //RT_CHECK(drv_mtf_01_init("serial4"));
+    //RT_CHECK(gps_ubx_init("serial3", "gps"));
 
-    FMT_CHECK(drv_icm42688_init("spi1_dev3", "gyro0", "accel0", 0));
-    FMT_CHECK(drv_bmi055_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
-
+    /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
+    FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
 
-
-    /* Advertise other sensors */
-    FMT_CHECK(advertise_sensor_mag(0));
-    FMT_CHECK(advertise_sensor_baro(0));
-    FMT_CHECK(advertise_sensor_gps(0));
-    FMT_CHECK(advertise_sensor_optflow(0));
-    FMT_CHECK(advertise_sensor_rangefinder(0));
-
+#endif
 
     /* init finsh */
     finsh_system_init();
@@ -578,13 +594,18 @@ void PeriphCommonClock_Config(void)
   /** Initializes the peripherals clock
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_FDCAN | 
-                                             RCC_PERIPHCLK_CKPER | RCC_PERIPHCLK_USART3;
+                                             RCC_PERIPHCLK_CKPER | RCC_PERIPHCLK_USART3 |
+                                             RCC_PERIPHCLK_I2C123 | RCC_PERIPHCLK_I2C4;
   
   /* Configure USART3 clock source to PCLK1 (APB1)
    * APB1 = 120MHz (HCLK 240MHz / 2)
    * This ensures correct baud rate calculation
    */
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
+  
+  /* Configure I2C clock sources */
+  PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;  /* I2C1, I2C2, I2C3 */
+  PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_HSI;      /* I2C4 */
   
   /* Configure PLL3 for USB: 48MHz = HSE(16MHz) / PLL3M(4) * PLL3N(48) / PLL3Q(4) */
   PeriphClkInitStruct.PLL3.PLL3M = 4;

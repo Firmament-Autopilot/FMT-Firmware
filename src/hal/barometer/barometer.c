@@ -72,7 +72,15 @@ rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, 
 
     device = &(baro->parent);
 
-    device->type = RT_Device_Class_SPIDevice;
+    /* Allow caller to indicate underlying bus type via `data` string:
+     * - if data is "i2c" then register as I2C device class
+     * - otherwise default to SPI device class for backward compatibility
+     */
+    if (data != RT_NULL && strcmp((const char*)data, "i2c") == 0) {
+        device->type = RT_Device_Class_I2CDevice;
+    } else {
+        device->type = RT_Device_Class_SPIDevice;
+    }
     device->ref_count = 0;
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;

@@ -35,5 +35,17 @@ void icm42688_rotate_to_frd(float* data, uint8_t dev_id)
  */
 void bmi055_rotate_to_frd(float* data, uint8_t dev_id)
 {
-    rotation(ROTATION_PITCH_180_YAW_270, data, data + 1, data + 2);
+    rotation(ROTATION_PITCH_180, data, data + 1, data + 2);
+}
+
+/**
+ * @brief Rotate IST8310 sensor data to FRD (Front-Right-Down) frame
+ * 
+ * @param data Pointer to sensor data array [x, y, z]
+ * @param dev_id Device ID (0 for primary, 1 for backup)
+ */
+void ist8310_rotate_to_frd(float* data, uint8_t dev_id)
+{
+    /* z=-z */
+    data[2] = -data[2];
 }
