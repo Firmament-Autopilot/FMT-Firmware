@@ -371,7 +371,7 @@ void bsp_early_initialize(void)
     
     /* Enable sensor power BEFORE initializing SPI */
     EnableSensorPower();
-
+    
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
 

@@ -39,6 +39,23 @@ static void i2c1_hw_init(void)
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
     /* I2C1: PB7 = SDA, PB8 = SCL on FMU-V6C board mapping */
+    /* Bus clear: toggle SCL 9 times to try to release stuck SDA devices */
+    {
+        LL_GPIO_InitTypeDef tmp = {0};
+        /* configure SCL (PB8) as open-drain output for toggling */
+        tmp.Pin = LL_GPIO_PIN_8;
+        tmp.Mode = LL_GPIO_MODE_OUTPUT;
+        tmp.Speed = LL_GPIO_SPEED_FREQ_LOW;
+        tmp.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+        tmp.Pull = LL_GPIO_PULL_NO;
+        LL_GPIO_Init(GPIOB, &tmp);
+        for (int _i = 0; _i < 9; _i++) {
+            LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_8);
+            systime_udelay(5);
+            LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_8);
+            systime_udelay(5);
+        }
+    }
     GPIO_InitStruct.Pin = LL_GPIO_PIN_7 | LL_GPIO_PIN_8;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
@@ -76,6 +93,22 @@ static void i2c2_hw_init(void)
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
     /* I2C2: PB10 = SCL, PB11 = SDA on FMU-V6C mapping */
+    /* Bus clear: toggle SCL 9 times to try to release stuck SDA devices */
+    {
+        LL_GPIO_InitTypeDef tmp = {0};
+        tmp.Pin = LL_GPIO_PIN_10;
+        tmp.Mode = LL_GPIO_MODE_OUTPUT;
+        tmp.Speed = LL_GPIO_SPEED_FREQ_LOW;
+        tmp.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+        tmp.Pull = LL_GPIO_PULL_NO;
+        LL_GPIO_Init(GPIOB, &tmp);
+        for (int _i = 0; _i < 9; _i++) {
+            LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_10);
+            systime_udelay(5);
+            LL_GPIO_ResetOutputPin(GPIOB, LL_GPIO_PIN_10);
+            systime_udelay(5);
+        }
+    }
     GPIO_InitStruct.Pin = LL_GPIO_PIN_10 | LL_GPIO_PIN_11;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
@@ -113,6 +146,22 @@ static void i2c4_hw_init(void)
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
     /* I2C4: PD12 = SCL, PD13 = SDA on FMU-V6C mapping */
+    /* Bus clear: toggle SCL 9 times to try to release stuck SDA devices */
+    {
+        LL_GPIO_InitTypeDef tmp = {0};
+        tmp.Pin = LL_GPIO_PIN_12;
+        tmp.Mode = LL_GPIO_MODE_OUTPUT;
+        tmp.Speed = LL_GPIO_SPEED_FREQ_LOW;
+        tmp.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
+        tmp.Pull = LL_GPIO_PULL_NO;
+        LL_GPIO_Init(GPIOD, &tmp);
+        for (int _i = 0; _i < 9; _i++) {
+            LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_12);
+            systime_udelay(5);
+            LL_GPIO_ResetOutputPin(GPIOD, LL_GPIO_PIN_12);
+            systime_udelay(5);
+        }
+    }
     GPIO_InitStruct.Pin = LL_GPIO_PIN_12 | LL_GPIO_PIN_13;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
