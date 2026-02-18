@@ -32,5 +32,3 @@ cconfig.h
 src/lib/dronecan/dsdlc_generated/*
 **/cubemx/**
 !*.ioc
-
-./reference/*
