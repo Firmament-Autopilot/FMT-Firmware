@@ -27,7 +27,7 @@
 #define PWM_FREQ_250HZ (250)
 #define PWM_FREQ_400HZ (400)
 
-#define MAX_PWM_OUT_CHAN      6             // AUX Out has 6 pwm channel
+#define MAX_PWM_OUT_CHAN      8             // AUX Out has 8 pwm channel (TIM1:1-4, TIM4:5-6, TIM5:7-8)
 #define TIMER_FREQUENCY       3000000       // Timer frequency: 3M
 #define PWM_DEFAULT_FREQUENCY PWM_FREQ_50HZ // pwm default frequqncy
 #define VAL_TO_DC(_val)       ((float)(_val * __pwm_freq) / 1000000.0f)
@@ -72,6 +72,16 @@ void pwm_gpio_init(void)
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
     LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    /* Timer 5 gpio init (TIM5_CH1 -> PA0, TIM5_CH2 -> PA1) */
+    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_0 | LL_GPIO_PIN_1;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 void pwm_timer_init(void)
@@ -154,21 +164,47 @@ void pwm_timer_init(void)
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM4, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM4);
-    LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH2);
+    /* Configure TIM4 CH3 and CH4 (PD14 -> CH3, PD15 -> CH4) */
+    LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH3);
     TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_PWM1;
     TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
     TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
     TIM_OC_InitStruct.CompareValue = 0;
     TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_HIGH;
-    LL_TIM_OC_Init(TIM4, LL_TIM_CHANNEL_CH2, &TIM_OC_InitStruct);
-    LL_TIM_OC_DisableFast(TIM4, LL_TIM_CHANNEL_CH2);
-    LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH3);
-    TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
-    TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
     LL_TIM_OC_Init(TIM4, LL_TIM_CHANNEL_CH3, &TIM_OC_InitStruct);
     LL_TIM_OC_DisableFast(TIM4, LL_TIM_CHANNEL_CH3);
+    LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH4);
+    TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
+    TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
+    LL_TIM_OC_Init(TIM4, LL_TIM_CHANNEL_CH4, &TIM_OC_InitStruct);
+    LL_TIM_OC_DisableFast(TIM4, LL_TIM_CHANNEL_CH4);
     LL_TIM_SetTriggerOutput(TIM4, LL_TIM_TRGO_RESET);
     LL_TIM_DisableMasterSlaveMode(TIM4);
+
+    /* Timer 5 initialization (TIM5 CH1/CH2 -> channels 7/8) */
+    LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM5);
+
+    TIM_InitStruct.Prescaler = APB1_PrescalerValue;
+    TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+    TIM_InitStruct.Autoreload = PWM_ARR(__pwm_freq) - 1;
+    TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+    LL_TIM_Init(TIM5, &TIM_InitStruct);
+    LL_TIM_EnableARRPreload(TIM5);
+
+    LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH1);
+    TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_PWM1;
+    TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
+    TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
+    TIM_OC_InitStruct.CompareValue = 0;
+    TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_HIGH;
+    LL_TIM_OC_Init(TIM5, LL_TIM_CHANNEL_CH1, &TIM_OC_InitStruct);
+    LL_TIM_OC_DisableFast(TIM5, LL_TIM_CHANNEL_CH1);
+
+    LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH2);
+    TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
+    TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
+    LL_TIM_OC_Init(TIM5, LL_TIM_CHANNEL_CH2, &TIM_OC_InitStruct);
+    LL_TIM_OC_DisableFast(TIM5, LL_TIM_CHANNEL_CH2);
 }
 
 rt_inline void __read_pwm(uint8_t chan_id, float* dc) { *dc = __pwm_dc[chan_id]; }
@@ -177,22 +213,28 @@ rt_inline void __write_pwm(uint8_t chan_id, float dc)
 {
     switch (chan_id) {
     case 0:
-        LL_TIM_OC_SetCompareCH4(TIM1, PWM_ARR(__pwm_freq) * dc);
-        break;
-    case 1:
-        LL_TIM_OC_SetCompareCH3(TIM1, PWM_ARR(__pwm_freq) * dc);
-        break;
-    case 2:
-        LL_TIM_OC_SetCompareCH2(TIM1, PWM_ARR(__pwm_freq) * dc);
-        break;
-    case 3:
         LL_TIM_OC_SetCompareCH1(TIM1, PWM_ARR(__pwm_freq) * dc);
         break;
+    case 1:
+        LL_TIM_OC_SetCompareCH2(TIM1, PWM_ARR(__pwm_freq) * dc);
+        break;
+    case 2:
+        LL_TIM_OC_SetCompareCH3(TIM1, PWM_ARR(__pwm_freq) * dc);
+        break;
+    case 3:
+        LL_TIM_OC_SetCompareCH4(TIM1, PWM_ARR(__pwm_freq) * dc);
+        break;
     case 4:
-        LL_TIM_OC_SetCompareCH2(TIM4, PWM_ARR(__pwm_freq) * dc);
+        LL_TIM_OC_SetCompareCH3(TIM4, PWM_ARR(__pwm_freq) * dc);
         break;
     case 5:
-        LL_TIM_OC_SetCompareCH3(TIM4, PWM_ARR(__pwm_freq) * dc);
+        LL_TIM_OC_SetCompareCH4(TIM4, PWM_ARR(__pwm_freq) * dc);
+        break;
+    case 6:
+        LL_TIM_OC_SetCompareCH1(TIM5, PWM_ARR(__pwm_freq) * dc);
+        break;
+    case 7:
+        LL_TIM_OC_SetCompareCH2(TIM5, PWM_ARR(__pwm_freq) * dc);
         break;
     default:
         break;
@@ -212,6 +254,7 @@ rt_err_t __set_pwm_frequency(uint16_t freq)
 
     LL_TIM_SetAutoReload(TIM1, PWM_ARR(__pwm_freq) - 1);
     LL_TIM_SetAutoReload(TIM4, PWM_ARR(__pwm_freq) - 1);
+    LL_TIM_SetAutoReload(TIM5, PWM_ARR(__pwm_freq) - 1);
 
     /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < MAX_PWM_OUT_CHAN; i++) {
@@ -247,28 +290,34 @@ rt_err_t pwm_control(actuator_dev_t dev, int cmd, void* arg)
 
         LL_TIM_EnableCounter(TIM1);
         LL_TIM_EnableCounter(TIM4);
+        LL_TIM_EnableCounter(TIM5);
         LL_TIM_EnableAllOutputs(TIM1);
 
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH3);
         LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH3);
+        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH4);
+        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH1);
+        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH2);
 
         DRV_DBG("aux out enabled\n");
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         LL_TIM_DisableCounter(TIM1);
         LL_TIM_DisableCounter(TIM4);
+        LL_TIM_DisableCounter(TIM5);
         LL_TIM_DisableAllOutputs(TIM1);
 
         LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH3);
         LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH3);
+        LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH4);
+        LL_TIM_CC_DisableChannel(TIM5, LL_TIM_CHANNEL_CH1);
+        LL_TIM_CC_DisableChannel(TIM5, LL_TIM_CHANNEL_CH2);
 
         DRV_DBG("aux out disabled\n");
         break;

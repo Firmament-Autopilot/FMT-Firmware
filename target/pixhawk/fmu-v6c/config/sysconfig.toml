@@ -44,7 +44,7 @@ target = "Pixhawk 6C"
     [pilot-cmd.device]
     type = "rc"
     name = "rc"
-    protocol = "auto"           # auto/sbus/ppm
+    protocol = "sbus"           # auto/sbus/ppm
     channel-num = 16            # max supported channel: sbus:16, ppm:8
     sample-time = 0.05          # sample time in second (-1 for inherit)
     range = [1000,2000]
@@ -80,4 +80,4 @@ target = "Pixhawk 6C"
     [[actuator.mappings]]
     from = "control_out"
     to = "aux_out"
-    chan-map = [[1,2,3,4,5,6],[1,2,3,4,5,6]]
+    chan-map = [[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8]]
