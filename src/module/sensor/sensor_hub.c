@@ -221,16 +221,8 @@ static void imu_rotation_init(uint8_t id)
     Mat gyr_rot;
     Mat acc_rot, acc_scale;
     float val_level_rot[9];
-    
-    /* Get level calibration parameters with safety checks */
-    param_t* level_xoff_param = param_get_by_full_name("CALIB", "LEVEL_XOFF");
-    param_t* level_yoff_param = param_get_by_full_name("CALIB", "LEVEL_YOFF");
-    param_t* level_zoff_param = param_get_by_full_name("CALIB", "LEVEL_ZOFF");
-    
     float level_rpy[] = {
-        level_xoff_param ? level_xoff_param->val.f : 0.0f,
-        level_yoff_param ? level_yoff_param->val.f : 0.0f,
-        level_zoff_param ? level_zoff_param->val.f : 0.0f
+        PARAM_GET_FLOAT(CALIB, LEVEL_XOFF), PARAM_GET_FLOAT(CALIB, LEVEL_YOFF), PARAM_GET_FLOAT(CALIB, LEVEL_ZOFF)
     };
 
     /* Create Matrix */
@@ -247,17 +239,8 @@ static void imu_rotation_init(uint8_t id)
     MatSetVal(&gyr_rot, val_level_rot);
 
     if (id == 0) {
-        param_t* p_xx = param_get_by_full_name("CALIB", "ACC0_XXSCALE");
-        param_t* p_xy = param_get_by_full_name("CALIB", "ACC0_XYSCALE");
-        param_t* p_xz = param_get_by_full_name("CALIB", "ACC0_XZSCALE");
-        param_t* p_yy = param_get_by_full_name("CALIB", "ACC0_YYSCALE");
-        param_t* p_yz = param_get_by_full_name("CALIB", "ACC0_YZSCALE");
-        param_t* p_zz = param_get_by_full_name("CALIB", "ACC0_ZZSCALE");
-        
         float val_acc0_scale[] = {
-            p_xx ? p_xx->val.f : 1.0f, p_xy ? p_xy->val.f : 0.0f, p_xz ? p_xz->val.f : 0.0f,
-            p_xy ? p_xy->val.f : 0.0f, p_yy ? p_yy->val.f : 1.0f, p_yz ? p_yz->val.f : 0.0f,
-            p_xz ? p_xz->val.f : 0.0f, p_yz ? p_yz->val.f : 0.0f, p_zz ? p_zz->val.f : 1.0f
+            PARAM_GET_FLOAT(CALIB, ACC0_XXSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YYSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC0_ZZSCALE)
         };
         /* calculate rotation matrix */
         MatSetVal(&acc_scale, val_acc0_scale);
@@ -266,17 +249,8 @@ static void imu_rotation_init(uint8_t id)
         sensor_gyr_set_rotation(imu_dev[id], gyr_rot.buffer);
         sensor_acc_set_rotation(imu_dev[id], acc_rot.buffer);
     } else if (id == 1) {
-        param_t* p_xx = param_get_by_full_name("CALIB", "ACC1_XXSCALE");
-        param_t* p_xy = param_get_by_full_name("CALIB", "ACC1_XYSCALE");
-        param_t* p_xz = param_get_by_full_name("CALIB", "ACC1_XZSCALE");
-        param_t* p_yy = param_get_by_full_name("CALIB", "ACC1_YYSCALE");
-        param_t* p_yz = param_get_by_full_name("CALIB", "ACC1_YZSCALE");
-        param_t* p_zz = param_get_by_full_name("CALIB", "ACC1_ZZSCALE");
-        
         float val_acc1_scale[] = {
-            p_xx ? p_xx->val.f : 1.0f, p_xy ? p_xy->val.f : 0.0f, p_xz ? p_xz->val.f : 0.0f,
-            p_xy ? p_xy->val.f : 0.0f, p_yy ? p_yy->val.f : 1.0f, p_yz ? p_yz->val.f : 0.0f,
-            p_xz ? p_xz->val.f : 0.0f, p_yz ? p_yz->val.f : 0.0f, p_zz ? p_zz->val.f : 1.0f
+            PARAM_GET_FLOAT(CALIB, ACC1_XXSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YYSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE), PARAM_GET_FLOAT(CALIB, ACC1_ZZSCALE)
         };
         /* calculate rotation matrix */
         MatSetVal(&acc_scale, val_acc1_scale);
@@ -346,33 +320,27 @@ static void mag_rotation_init(uint8_t id)
 static void imu_offset_init(uint8_t id)
 {
     if (id == 0) {
-        param_t* gx = param_get_by_full_name("CALIB", "GYRO0_XOFF");
-        param_t* gy = param_get_by_full_name("CALIB", "GYRO0_YOFF");
-        param_t* gz = param_get_by_full_name("CALIB", "GYRO0_ZOFF");
-        param_t* ax = param_get_by_full_name("CALIB", "ACC0_XOFF");
-        param_t* ay = param_get_by_full_name("CALIB", "ACC0_YOFF");
-        param_t* az = param_get_by_full_name("CALIB", "ACC0_ZOFF");
-        
-        float gyr0_offset[] = { gx ? gx->val.f : 0.0f, gy ? gy->val.f : 0.0f, gz ? gz->val.f : 0.0f };
-        float acc0_offset[] = { ax ? ax->val.f : 0.0f, ay ? ay->val.f : 0.0f, az ? az->val.f : 0.0f };
-        
+        float gyr0_offset[] = {
+            PARAM_GET_FLOAT(CALIB, GYRO0_XOFF), PARAM_GET_FLOAT(CALIB, GYRO0_YOFF), PARAM_GET_FLOAT(CALIB, GYRO0_ZOFF)
+        };
+        float acc0_offset[] = {
+            PARAM_GET_FLOAT(CALIB, ACC0_XOFF), PARAM_GET_FLOAT(CALIB, ACC0_YOFF), PARAM_GET_FLOAT(CALIB, ACC0_ZOFF)
+        };
         /* Set offset */
         sensor_gyr_set_offset(imu_dev[id], gyr0_offset);
         sensor_acc_set_offset(imu_dev[id], acc0_offset);
     } else if (id == 1) {
-        param_t* gx = param_get_by_full_name("CALIB", "GYRO1_XOFF");
-        param_t* gy = param_get_by_full_name("CALIB", "GYRO1_YOFF");
-        param_t* gz = param_get_by_full_name("CALIB", "GYRO1_ZOFF");
-        param_t* ax = param_get_by_full_name("CALIB", "ACC1_XOFF");
-        param_t* ay = param_get_by_full_name("CALIB", "ACC1_YOFF");
-        param_t* az = param_get_by_full_name("CALIB", "ACC1_ZOFF");
-        
-        float gyr1_offset[] = { gx ? gx->val.f : 0.0f, gy ? gy->val.f : 0.0f, gz ? gz->val.f : 0.0f };
-        float acc1_offset[] = { ax ? ax->val.f : 0.0f, ay ? ay->val.f : 0.0f, az ? az->val.f : 0.0f };
-        
+        float gyr1_offset[] = {
+            PARAM_GET_FLOAT(CALIB, GYRO1_XOFF), PARAM_GET_FLOAT(CALIB, GYRO1_YOFF), PARAM_GET_FLOAT(CALIB, GYRO1_ZOFF)
+        };
+        float acc1_offset[] = {
+            PARAM_GET_FLOAT(CALIB, ACC1_XOFF), PARAM_GET_FLOAT(CALIB, ACC1_YOFF), PARAM_GET_FLOAT(CALIB, ACC1_ZOFF)
+        };
         /* Set offset */
         sensor_gyr_set_offset(imu_dev[id], gyr1_offset);
         sensor_acc_set_offset(imu_dev[id], acc1_offset);
+    } else {
+        RT_ASSERT(false);
     }
 }
 
