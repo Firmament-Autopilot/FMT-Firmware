@@ -2,7 +2,6 @@
 
 #include "hal/mtd/mtd.h"
 #include "hal/spi/spi.h"
-#include "stm32h7xx_hal.h"
 
 /* SPI CS structure from drv_spi.c */
 struct stm32_spi_cs {
