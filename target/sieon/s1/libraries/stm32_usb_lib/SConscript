@@ -8,10 +8,12 @@ cwd = GetCurrentDir()
 src = []
 src += Glob('Class/CDC/Src/*.c')
 src += Glob('Class/MSC/Src/*.c')
+src += Glob('Class/CompositeBuilder/Src/*.c')
 src += Glob('Core/Src/*.c')
 
 path = [cwd + '/Class/CDC/Inc', 
         cwd + '/Class/MSC/Inc',
+        cwd + '/Class/CompositeBuilder/Inc',
         cwd + '/Core/Inc']
 
 group = DefineGroup('STM32_USB_Library', src, depend = [''], CPPPATH = path)

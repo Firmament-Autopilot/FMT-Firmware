@@ -44,7 +44,7 @@ extern "C" {
   * @{
   */
 #ifndef USBD_DEBUG_LEVEL
-#define USBD_DEBUG_LEVEL           0U
+#define USBD_DEBUG_LEVEL           2U
 #endif /* USBD_DEBUG_LEVEL */
 /**
   * @}

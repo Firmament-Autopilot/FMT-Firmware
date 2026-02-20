@@ -740,7 +740,13 @@ uint8_t USBD_CDC_RegisterInterface(USBD_HandleTypeDef *pdev,
     return (uint8_t)USBD_FAIL;
   }
 
+#ifdef USE_USBD_COMPOSITE
+  pdev->classId--;
+#endif
   pdev->pUserData[pdev->classId] = fops;
+#ifdef USE_USBD_COMPOSITE
+  pdev->classId++;
+#endif
 
   return (uint8_t)USBD_OK;
 }

@@ -39,7 +39,7 @@
 EndBSPDependencies */
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_msc.h"
+#include "usbd_msc_dev.h"
 
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
@@ -558,7 +558,13 @@ uint8_t USBD_MSC_RegisterStorage(USBD_HandleTypeDef *pdev, USBD_StorageTypeDef *
     return (uint8_t)USBD_FAIL;
   }
 
+#ifdef USE_USBD_COMPOSITE
+  pdev->classId--;
+#endif
   pdev->pUserData[pdev->classId] = fops;
+#ifdef USE_USBD_COMPOSITE
+  pdev->classId++;
+#endif
 
   return (uint8_t)USBD_OK;
 }

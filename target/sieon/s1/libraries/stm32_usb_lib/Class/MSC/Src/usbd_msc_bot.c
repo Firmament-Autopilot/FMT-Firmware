@@ -24,7 +24,7 @@ EndBSPDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_msc_bot.h"
-#include "usbd_msc.h"
+#include "usbd_msc_dev.h"
 #include "usbd_msc_scsi.h"
 #include "usbd_ioreq.h"
 

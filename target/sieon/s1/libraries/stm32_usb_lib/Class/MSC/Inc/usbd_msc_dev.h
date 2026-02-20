@@ -55,11 +55,11 @@ extern "C" {
 #define USB_MSC_CONFIG_DESC_SIZ      32
 
 #ifndef MSC_EPIN_ADDR
-#define MSC_EPIN_ADDR                0x81U
+#define MSC_EPIN_ADDR                0x83U
 #endif /* MSC_EPIN_ADDR */
 
 #ifndef MSC_EPOUT_ADDR
-#define MSC_EPOUT_ADDR               0x01U
+#define MSC_EPOUT_ADDR               0x03U
 #endif /* MSC_EPOUT_ADDR */
 
 /**
