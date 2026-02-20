@@ -77,13 +77,13 @@ void MX_USB_DEVICE_Init(void)
     }
 
 #ifdef USE_USBD_COMPOSITE
-    // if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_MSC, CLASS_TYPE_MSC, 0) != USBD_OK) {
-    //     Error_Handler();
-    // }
+    if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_MSC, CLASS_TYPE_MSC, 0) != USBD_OK) {
+        Error_Handler();
+    }
 
-    // if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_MSC_Template_fops) != USBD_OK) {
-    //     Error_Handler();
-    // }
+    if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_MSC_Template_fops) != USBD_OK) {
+        Error_Handler();
+    }
 
     if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_CDC, CLASS_TYPE_CDC, 0) != USBD_OK) {
         Error_Handler();

@@ -75,7 +75,7 @@ extern "C" {
     /*---------- -----------*/
     #define USBD_MAX_STR_DESC_SIZ      512U
     /*---------- -----------*/
-    #define USBD_DEBUG_LEVEL           0U
+    #define USBD_DEBUG_LEVEL           2U
     /*---------- -----------*/
     #define USBD_LPM_ENABLED           0U
     /*---------- -----------*/
