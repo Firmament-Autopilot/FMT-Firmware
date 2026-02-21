@@ -285,10 +285,20 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
     uint8_t result = USBD_OK;
     /* USER CODE BEGIN 7 */
-    USBD_CDC_HandleTypeDef* hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
-    if (hcdc->TxState != 0) {
-        return USBD_BUSY;
-    }
+  /* Protect against calls when USB device class isn't yet configured by host
+     (pClassData is set when host issues SET_CONFIGURATION). */
+  if (hUsbDeviceFS.pClassData == NULL) {
+    return USBD_FAIL;
+  }
+
+  USBD_CDC_HandleTypeDef* hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
+  if (hcdc == NULL) {
+    return USBD_FAIL;
+  }
+
+  if (hcdc->TxState != 0) {
+    return USBD_BUSY;
+  }
     USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
     result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
     /* USER CODE END 7 */
