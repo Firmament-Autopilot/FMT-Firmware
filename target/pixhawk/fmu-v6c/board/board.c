@@ -294,21 +294,24 @@ static void EnableSensorPower(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
     /* PB2: VDD_3V3_SENSORS_EN (Pull High to Enable per user request)
-        * Match PX4 defaults: keep 3.3V sensors rail DISABLED by default
-        * (PX4 config uses GPIO_OUTPUT_CLEAR for PB2). */
+    * Enable 3.3V sensors rail for sensors
+    */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
+    /* Drive PB2 HIGH to enable 3.3V sensors rail */
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
 
-    /* PC10: N_VDD_5V_HIPOWER_EN (active low). Match PX4 defaults: keep disabled */
+    /* PC10: N_VDD_5V_HIPOWER_EN (active low). Enable 5V high-power rail for peripherals */
     GPIO_InitStruct.Pin = GPIO_PIN_10;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
+    /* Drive PC10 LOW (active low) to enable 5V high-power rail */
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
 
-    /* PE2: N_VDD_5V_PERIPH_EN (active low). Match PX4 defaults: keep disabled */
+    /* PE2: N_VDD_5V_PERIPH_EN (active low). Enable 5V peripheral rail for GPS/peripherals */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
+    /* Drive PE2 LOW (active low) to enable 5V peripheral rail */
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
 
     /* Power rail stabilization delay - 100ms at 480MHz */
     for (volatile uint32_t i = 0; i < 24000000; i++) {
@@ -460,7 +463,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
     RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
     //RT_CHECK(drv_mtf_01_init("serial4"));
-    //RT_CHECK(gps_ubx_init("serial3", "gps"));
+    RT_CHECK(gps_ubx_init("serial2", "gps"));
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
