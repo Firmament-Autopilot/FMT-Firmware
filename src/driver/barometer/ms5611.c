@@ -369,7 +369,8 @@ static struct WorkItem ms5611_work = {
 rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_name)
 {
     static struct baro_device baro_device = {
-        .ops = &_baro_ops
+        .ops = &_baro_ops,
+        .bus_type = BARO_SPI_BUS_TYPE
     };
 
     dev = rt_device_find(spi_device_name);
@@ -408,6 +409,8 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_na
     /* schedule the work */
     FMT_CHECK(workqueue_schedule_work(hp_wq, &ms5611_work));
 
+    /* indicate underlying bus type to hal layer so device type is correct */
+    baro_device.bus_type = use_spi ? BARO_SPI_BUS_TYPE : BARO_I2C_BUS_TYPE;
     RT_TRY(hal_baro_register(&baro_device, baro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
     return RT_EOK;
