@@ -78,8 +78,6 @@ rt_err_t hal_baro_register(baro_dev_t baro, const char* name, rt_uint32_t flag, 
         device->type = RT_Device_Class_SPIDevice;
     } else if (baro->bus_type == BARO_I2C_BUS_TYPE) {
         device->type = RT_Device_Class_I2CDevice;
-    } else if (data != RT_NULL && strcmp((const char*)data, "i2c") == 0) {
-        device->type = RT_Device_Class_I2CDevice;
     } else {
         device->type = RT_Device_Class_SPIDevice;
     }
