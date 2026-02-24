@@ -219,7 +219,11 @@
 /* Onboard Peripheral Drivers */
 
 /* end of Onboard Peripheral Drivers */
-
+#define PKG_USING_CHERRYUSB
+#define PKG_CHERRYUSB_DEVICE
+#define PKG_CHERRYUSB_DEVICE_SPEED_HS
+#define PKG_CHERRYUSB_DEVICE_DWC2_INFINEON
+#define PKG_CHERRYUSB_DEVICE_CDC_ACM
 /* On-chip Peripheral Drivers */
 
 #define BSP_USING_GPIO

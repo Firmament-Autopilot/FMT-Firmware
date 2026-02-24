@@ -28,6 +28,7 @@
 #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_eth.h"
+#include "drv_usbd_cdc.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -155,8 +156,6 @@ void bsp_initialize(void)
     RT_CHECK(drv_eth_init());
 #endif
 
-//     /* init storage devices */
-//     RT_CHECK(drv_sdio_init());
 //     RT_CHECK(drv_gd25qxx_init("spi5_dev1", "mtdblk0"));
      /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
@@ -167,21 +166,11 @@ void bsp_initialize(void)
 //     /* init mavproxy */
 //     FMT_CHECK(mavproxy_init());
 
-//     /* init usbd_cdc */
-//     RT_CHECK(drv_usb_cdc_init());
+    /* init usbd_cdc */
+    RT_CHECK(drv_usb_cdc_init());
 
 //     /* adc driver init */
 //     RT_CHECK(drv_adc_init());
-
-//     /* init rt_workqueue, which is used by tcpip stack */
-//     FMT_CHECK(rt_work_sys_workqueue_init());
-
-//     /* init lwip */
-//     extern int lwip_system_init();
-//     FMT_CHECK(lwip_system_init());
-
-//     /* eth driver init */
-//     RT_CHECK(drv_eth_init());
 
 // #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
 //     FMT_CHECK(advertise_sensor_imu(0));

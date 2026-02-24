@@ -2,7 +2,7 @@
 #include <rtdevice.h>
 #include <board.h>
 
-#define LED_PIN_B                 GET_PIN(16, 5)
+#define LED_PIN_B                 GET_PIN(16, 6)
 
 int main(void)
 {
