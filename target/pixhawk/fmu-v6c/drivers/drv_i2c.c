@@ -34,8 +34,7 @@ static void i2c1_hw_init(void)
     LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    /* Set I2C1/2/3 clock source to PCLK1 */
-    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
+    /* I2C1/2/3 clock source configured at board-level (PeriphCommonClock_Config) */
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
     /* I2C1: PB7 = SDA, PB8 = SCL on FMU-V6C board mapping */
@@ -88,8 +87,7 @@ static void i2c2_hw_init(void)
     LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    /* Set I2C1/2/3 clock source to PCLK1 */
-    LL_RCC_SetI2CClockSource(LL_RCC_I2C123_CLKSOURCE_PCLK1);
+    /* I2C1/2/3 clock source configured at board-level (PeriphCommonClock_Config) */
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOB);
     /* I2C2: PB10 = SCL, PB11 = SDA on FMU-V6C mapping */
@@ -141,8 +139,7 @@ static void i2c4_hw_init(void)
     LL_I2C_InitTypeDef I2C_InitStruct = { 0 };
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    /* Set I2C4 clock source to HSI*/
-    LL_RCC_SetI2CClockSource(LL_RCC_I2C4_CLKSOURCE_HSI);
+    /* I2C4 clock source configured at board-level (PeriphCommonClock_Config) */
 
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
     /* I2C4: PD12 = SCL, PD13 = SDA on FMU-V6C mapping */
@@ -178,7 +175,8 @@ static void i2c4_hw_init(void)
     LL_I2C_DisableGeneralCall(I2C4);
     LL_I2C_EnableClockStretching(I2C4);
     I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C; /* Fast mode (400 kHz) */
-    I2C_InitStruct.Timing = 0x00300F38; /* timing for 400kHz */
+    /* Timing for PCLK4=120MHz */
+    I2C_InitStruct.Timing = 0x00B03FDB;
     I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
     I2C_InitStruct.DigitalFilter = 0;
     I2C_InitStruct.OwnAddress1 = 0;
