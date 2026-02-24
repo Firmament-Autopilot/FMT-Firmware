@@ -2604,7 +2604,7 @@
                 <Personality template="pclk_v2" version="1.1" instance="vy6xFOXZU08">
                     <Block location="peri[0].group[1].div_16_5[1]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_SMARTIO_PWM_CLK_DIV"/>
+                            <Alias value="CYBSP_PWM_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -4306,16 +4306,8 @@
                     <Port name="tcpwm[0].group[0].cnt[0].clock_counter_en[0]"/>
                 </Net>
                 <Net>
-                    <Port name="peri[0].group[1].div_16[3].clk[0]"/>
-                    <Port name="tcpwm[0].group[0].cnt[5].clock_counter_en[0]"/>
-                </Net>
-                <Net>
                     <Port name="peri[0].group[1].div_16_5[0].clk[0]"/>
                     <Port name="scb[4].clock_scb_en[0]"/>
-                </Net>
-                <Net>
-                    <Port name="peri[0].group[1].div_16_5[1].clk[0]"/>
-                    <Port name="tcpwm[0].group[1].cnt[6].clock_counter_en[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[1].div_8[0].clk[0]"/>
@@ -4369,6 +4361,11 @@
                     <Port name="pass[0].clk_hf[0]"/>
                     <Port name="peri[0].mmio[0].clk_pclk_root[5]"/>
                     <Port name="srss[0].clock[0].hfclk[9].root_clk[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[1].div_16_5[1].clk[0]"/>
+                    <Port name="tcpwm[0].group[0].cnt[5].clock_counter_en[0]"/>
+                    <Port name="tcpwm[0].group[1].cnt[6].clock_counter_en[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[3].div_8[0].clk_pclk_root[0]"/>

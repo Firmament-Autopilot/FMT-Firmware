@@ -11,3 +11,7 @@
 [submodule "src/lib/dronecan/libcanard"]
 	path = src/lib/dronecan/libcanard
 	url = https://github.com/dronecan/libcanard.git
+[submodule "src/lib/cherryusb"]
+	path = src/lib/cherryusb
+	url = https://github.com/Firmament-Autopilot/CherryUSB.git
+	branch = release/v1.6
