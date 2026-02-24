@@ -17,7 +17,7 @@ if os.getenv('RTT_ROOT'):
 # EXEC_PATH is the compiler execute path, for example, CodeSourcery, Keil MDK, IAR
 if  CROSS_TOOL == 'gcc':
     PLATFORM    = 'gcc'
-    EXEC_PATH   = r'C:\Users\XXYYZZ'
+    EXEC_PATH   = r'D:\ProgramFiles\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\13.3\bin'
 elif CROSS_TOOL == 'keil':
     PLATFORM    = 'armclang'
     EXEC_PATH   = r'C:/Keil_v5'
@@ -25,8 +25,8 @@ elif CROSS_TOOL == 'iar':
     PLATFORM = 'iccarm'
     EXEC_PATH   = r'C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.3'
 
-if os.getenv('RTT_EXEC_PATH'):
-    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
+# if os.getenv('RTT_EXEC_PATH'):
+#     EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
 BUILD = 'debug'
 
