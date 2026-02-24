@@ -607,8 +607,9 @@ void PeriphCommonClock_Config(void)
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
   
   /* Configure I2C clock sources */
-  PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;  /* I2C1, I2C2, I2C3 */
-  PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_HSI;      /* I2C4 */
+    PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;  /* I2C1, I2C2, I2C3 */
+    /* Use D3PCLK1 (alias PCLK4) for I2C4 - use HAL-defined macro */
+    PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;      /* I2C4 -> D3PCLK1 (PCLK4) */
   
   /* Configure PLL3 for USB: 48MHz = HSE(16MHz) / PLL3M(4) * PLL3N(48) / PLL3Q(4) */
   PeriphClkInitStruct.PLL3.PLL3M = 4;
