@@ -17,6 +17,7 @@
 #include "cy_gpio.h"
 #include "cy_sysclk.h"
 #include "cy_sysint.h"
+#include "cycfg_pins.h"
 
 #undef LOG_TAG
 #undef LOG_LVL
@@ -28,14 +29,14 @@
 
 /* Debug shell commands switch (default: disabled) */
 #ifndef ETH_DRV_DEBUG
-    #define ETH_DRV_DEBUG 0
+#define ETH_DRV_DEBUG 0
 #endif
 
 /*
  * Force CM55 ETH IRQ numbers - the header file conditional compilation
  */
 #ifndef BSP_ETH_PHY_ADDR
-    #define BSP_ETH_PHY_ADDR 0U
+#define BSP_ETH_PHY_ADDR 0U
 #endif
 
 #define BSP_ETH_RX_BUF_SIZE  1536U
@@ -62,12 +63,14 @@
 /* ======================== Data Structures ======================== */
 
 /* RX frame descriptor */
-struct eth_rx_frame {
-    uint8_t* data;
+struct eth_rx_frame
+{
+    uint8_t *data;
     uint32_t len;
 };
 
-struct rt_psoc_eth {
+struct rt_psoc_eth
+{
     struct eth_device parent;
 #ifndef PHY_USING_INTERRUPT_MODE
     rt_timer_t poll_link_timer;
@@ -88,15 +91,18 @@ struct rt_psoc_eth {
 };
 
 /* Use CM55-specific IRQ numbers (171, 172, 173) */
-const cy_stc_sysint_t intr_cfg_0 = {
+const cy_stc_sysint_t intr_cfg_0 =
+{
     .intrSrc = eth_interrupt_eth_0_IRQn,
     .intrPriority = 7U,
 };
-const cy_stc_sysint_t intr_cfg_1 = {
+const cy_stc_sysint_t intr_cfg_1 =
+{
     .intrSrc = eth_interrupt_eth_1_IRQn,
     .intrPriority = 7U,
 };
-const cy_stc_sysint_t intr_cfg_2 = {
+const cy_stc_sysint_t intr_cfg_2 =
+{
     .intrSrc = eth_interrupt_eth_2_IRQn,
     .intrPriority = 7U,
 };
@@ -114,7 +120,8 @@ CY_SECTION(".cy_socmem_data")
 CY_ALIGN(32)
 static uint8_t psoc_eth_tx_buf[BSP_ETH_TX_BUF_SIZE];
 
-/* Buffer pool pointer array for ETHIF driver */
+/* Buffer pool pointer array for ETHIF driver - must be in SOCMEM for DMA access */
+CY_SECTION(".cy_socmem_data")
 static cy_ethif_buffpool_t psoc_eth_rx_pool;
 
 /* Configuration structures */
@@ -129,6 +136,31 @@ void eth_interrupt_eth_0_IRQHandler(void);
 void eth_interrupt_eth_1_IRQHandler(void);
 void eth_interrupt_eth_2_IRQHandler(void);
 
+#define __is_print(ch) ((unsigned int)((ch) - ' ') < 127u - ' ')
+static void dump_hex(const rt_uint8_t *ptr, rt_size_t buflen)
+{
+#if (ETH_DRV_DEBUG == 1)
+    unsigned char *buf = (unsigned char *)ptr;
+    int i, j;
+
+    for (i = 0; i < buflen; i += 16)
+    {
+        rt_kprintf("%08X: ", i);
+
+        for (j = 0; j < 16; j++)
+            if (i + j < buflen)
+                rt_kprintf("%02X ", buf[i + j]);
+            else
+                rt_kprintf("   ");
+        rt_kprintf(" ");
+
+        for (j = 0; j < 16; j++)
+            if (i + j < buflen)
+                rt_kprintf("%c", __is_print(buf[i + j]) ? buf[i + j] : '.');
+        rt_kprintf("\n");
+    }
+#endif
+}
 /* ======================== RX Queue Helpers ======================== */
 
 static inline rt_bool_t rx_queue_is_full(void)
@@ -142,19 +174,21 @@ static inline rt_bool_t rx_queue_is_empty(void)
     return (psoc_eth.rx_queue_head == psoc_eth.rx_queue_tail);
 }
 
-static inline void rx_queue_push(uint8_t* data, uint32_t len)
+static inline void rx_queue_push(uint8_t *data, uint32_t len)
 {
-    if (!rx_queue_is_full()) {
+    if (!rx_queue_is_full())
+    {
         psoc_eth.rx_queue[psoc_eth.rx_queue_head].data = data;
         psoc_eth.rx_queue[psoc_eth.rx_queue_head].len = len;
         psoc_eth.rx_queue_head = (psoc_eth.rx_queue_head + 1U) % ETH_RX_QUEUE_SIZE;
     }
 }
 
-static inline struct eth_rx_frame* rx_queue_pop(void)
+static inline struct eth_rx_frame *rx_queue_pop(void)
 {
-    struct eth_rx_frame* frame = RT_NULL;
-    if (!rx_queue_is_empty()) {
+    struct eth_rx_frame *frame = RT_NULL;
+    if (!rx_queue_is_empty())
+    {
         frame = &psoc_eth.rx_queue[psoc_eth.rx_queue_tail];
         psoc_eth.rx_queue_tail = (psoc_eth.rx_queue_tail + 1U) % ETH_RX_QUEUE_SIZE;
     }
@@ -180,29 +214,24 @@ static void psoc_eth_set_default_mac(void)
 }
 
 /**
- * @brief Initialize MII pins for Ethernet
+ * @brief Initialize RMII pins for Ethernet
  *
- * TX Data (output to PHY):
+ * RMII Data (output to PHY):
  * - TXD0:   P11.2 (CYBSP_BT_DEV_WAKE)
  * - TXD1:   P11.3 (CYBSP_SMART_IO_OUTPUT)
- * - TXD2:   P11.6 (CYBSP_WIFI_WL_REG_ON)
- * - TXD3:   P10.0 (CYBSP_BT_UART_RX)
  *
- * TX Control (output to PHY):
- * - TX_CTL: P11.4 (TX_EN, CYBSP_WIFI_HOST_WAKE)
- * - TX_CLK: P11.5 (input from PHY, CYBSP_ARD_D5)
- * - TX_ER:  P10.2 (CYBSP_BT_UART_CTS)
+ * RMII Control (output to PHY):
+ * - TX_EN:  P11.4 (CYBSP_WIFI_HOST_WAKE)
  *
- * RX Data (input from PHY):
+ * RMII Reference Clock (input from PHY or output to PHY):
+ * - REF_CLK: P11.7 (CYBSP_ARD_D4)
+ *
+ * RMII Data (input from PHY):
  * - RXD0:   P10.6 (CYBSP_BT_DEVICE_WAKE)
  * - RXD1:   P10.7 (CYBSP_ARD_D9)
- * - RXD2:   P11.0 (CYBSP_BT_POWER)
- * - RXD3:   P10.4 (CYBSP_BT_HOST_WAKE)
  *
- * RX Control (input from PHY):
- * - RX_CTL: P10.5 (RX_DV, CYBSP_ARD_D6)
- * - RX_CLK: P10.1 (CYBSP_BT_UART_TX)
- * - RX_ER:  P11.1 (CYBSP_ARD_D7)
+ * RMII Control (input from PHY):
+ * - RX_DV:  P10.5 (CYBSP_ARD_D6)
  *
  * MDIO:
  * - MDC:    P13.1 (output)
@@ -210,67 +239,26 @@ static void psoc_eth_set_default_mac(void)
  */
 static void psoc_eth_pin_init(void)
 {
-    const cy_stc_gpio_pin_config_t cfg_out = {
-        .outVal = 0U,
-        .driveMode = CY_GPIO_DM_STRONG,
-        .hsiom = HSIOM_SEL_ACT_15,
-        .intEdge = CY_GPIO_INTR_DISABLE,
-        .intMask = 0U,
-        .vtrip = CY_GPIO_VTRIP_CMOS,
-        .slewRate = CY_GPIO_SLEW_FAST,
-        .driveSel = CY_GPIO_DRIVE_FULL,
-        .nonSec = 1U,
-    };
+    /* RMII TX Data pins (output to PHY) */
+    Cy_GPIO_Pin_Init(GPIO_PRT11, 2U, &CYBSP_ETH_TXD_0_config); /* TXD0 - P11.2 */
+    Cy_GPIO_Pin_Init(GPIO_PRT11, 3U, &CYBSP_ETH_TXD_1_config); /* TXD1 - P11.3 */
 
-    const cy_stc_gpio_pin_config_t cfg_in = {
-        .outVal = 0U,
-        .driveMode = CY_GPIO_DM_HIGHZ,
-        .hsiom = HSIOM_SEL_ACT_15,
-        .intEdge = CY_GPIO_INTR_DISABLE,
-        .intMask = 0U,
-        .vtrip = CY_GPIO_VTRIP_CMOS,
-        .slewRate = CY_GPIO_SLEW_FAST,
-        .driveSel = CY_GPIO_DRIVE_FULL,
-        .nonSec = 1U,
-    };
+    /* RMII TX Control pin */
+    Cy_GPIO_Pin_Init(GPIO_PRT11, 4U, &CYBSP_ETH_TX_CTL_config); /* TX_CTL - P11.4 */
 
-    const cy_stc_gpio_pin_config_t cfg_od = {
-        .outVal = 1U,
-        .driveMode = CY_GPIO_DM_OD_DRIVESLOW,
-        .hsiom = HSIOM_SEL_ACT_15,
-        .intEdge = CY_GPIO_INTR_DISABLE,
-        .intMask = 0U,
-        .vtrip = CY_GPIO_VTRIP_CMOS,
-        .slewRate = CY_GPIO_SLEW_FAST,
-        .driveSel = CY_GPIO_DRIVE_FULL,
-        .nonSec = 1U,
-    };
+    /* RMII Reference Clock (input from PHY for 100Mbps) */
+    Cy_GPIO_Pin_Init(GPIO_PRT11, 7U, &CYBSP_ETH_REF_CLK_config); /* REF_CLK - P11.7 */
 
-    /* MII TX Data pins (output to PHY) */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 2U, &cfg_out); /* TXD0 - P11.2 */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 3U, &cfg_out); /* TXD1 - P11.3 */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 6U, &cfg_out); /* TXD2 - P11.6 */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 0U, &cfg_out); /* TXD3 - P10.0 */
+    /* RMII RX Data pins (input from PHY) */
+    Cy_GPIO_Pin_Init(GPIO_PRT10, 6U, &CYBSP_ETH_RXD_0_config); /* RXD0 - P10.6 */
+    Cy_GPIO_Pin_Init(GPIO_PRT10, 7U, &CYBSP_ETH_RXD_1_config); /* RXD1 - P10.7 */
 
-    /* MII TX Control pins */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 4U, &cfg_out); /* TX_EN (TX_CTL) - P11.4 */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 5U, &cfg_in);  /* TX_CLK (input from PHY) - P11.5 */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 2U, &cfg_out); /* TX_ER - P10.2 */
-
-    /* MII RX Data pins (input from PHY) */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 6U, &cfg_in); /* RXD0 - P10.6 */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 7U, &cfg_in); /* RXD1 - P10.7 */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 0U, &cfg_in); /* RXD2 - P11.0 */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 4U, &cfg_in); /* RXD3 - P10.4 */
-
-    /* MII RX Control pins */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 5U, &cfg_in); /* RX_DV (RX_CTL) - P10.5 */
-    Cy_GPIO_Pin_Init(GPIO_PRT10, 1U, &cfg_in); /* RX_CLK (input from PHY) - P10.1 */
-    Cy_GPIO_Pin_Init(GPIO_PRT11, 1U, &cfg_in); /* RX_ER - P11.1 */
+    /* RMII RX Control pin */
+    Cy_GPIO_Pin_Init(GPIO_PRT10, 5U, &CYBSP_ETH_RX_CTL_config); /* RX_DV - P10.5 */
 
     /* MDIO pins */
-    Cy_GPIO_Pin_Init(GPIO_PRT13, 1U, &cfg_out); /* MDC - P13.1 */
-    Cy_GPIO_Pin_Init(GPIO_PRT13, 6U, &cfg_od);  /* MDIO - P13.6 */
+    Cy_GPIO_Pin_Init(GPIO_PRT13, 1U, &CYBSP_ETH_MDC_config); /* MDC - P13.1 */
+    Cy_GPIO_Pin_Init(GPIO_PRT13, 6U, &CYBSP_ETH_MDIO_config);  /* MDIO - P13.6 */
 }
 
 /**
@@ -278,7 +266,8 @@ static void psoc_eth_pin_init(void)
  */
 static void psoc_eth_clock_init(void)
 {
-    if (!Cy_SysClk_IsPeriGroupSlaveEnabled(CY_MMIO_ETH0_PERI_NR, CY_MMIO_ETH0_GROUP_NR, CY_MMIO_ETH0_SLAVE_NR)) {
+    if (!Cy_SysClk_IsPeriGroupSlaveEnabled(CY_MMIO_ETH0_PERI_NR, CY_MMIO_ETH0_GROUP_NR, CY_MMIO_ETH0_SLAVE_NR))
+    {
         Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_ETH0_PERI_NR, CY_MMIO_ETH0_GROUP_NR, CY_MMIO_ETH0_SLAVE_NR, CY_MMIO_ETH0_CLK_HF_NR);
     }
 }
@@ -288,7 +277,8 @@ static void psoc_eth_clock_init(void)
  */
 static void psoc_eth_rx_pool_init(void)
 {
-    for (rt_uint32_t i = 0; i < CY_ETH_DEFINE_TOTAL_BD_PER_RXQUEUE; i++) {
+    for (rt_uint32_t i = 0; i < CY_ETH_DEFINE_TOTAL_BD_PER_RXQUEUE; i++)
+    {
         psoc_eth_rx_pool[i] = psoc_eth_rx_buf[i];
     }
 }
@@ -311,16 +301,19 @@ static void psoc_eth_intr_init(void)
  * @brief RX frame callback from ETHIF driver (called in ISR context)
  *        This is called when a complete frame is received
  */
-static void psoc_eth_rx_frame_cb(ETH_Type* base, uint8_t* rxbuf, uint32_t len)
+static void psoc_eth_rx_frame_cb(ETH_Type *base, uint8_t *rxbuf, uint32_t len)
 {
     (void)base;
 
-    if (len == 0 || rxbuf == RT_NULL) {
+    dump_hex(&rxbuf[0], len);
+
+    if (len == 0 || rxbuf == RT_NULL)
+    {
         return;
     }
 
     /* Invalidate cache for received data */
-    SCB_InvalidateDCache_by_Addr((void*)rxbuf, (int32_t)len);
+    SCB_InvalidateDCache_by_Addr((void *)rxbuf, (int32_t)len);
 
     /* Push frame to queue */
     rx_queue_push(rxbuf, len);
@@ -332,7 +325,7 @@ static void psoc_eth_rx_frame_cb(ETH_Type* base, uint8_t* rxbuf, uint32_t len)
 /**
  * @brief RX get buffer callback - provides new buffer for DMA
  */
-static void psoc_eth_rx_getbuff_cb(ETH_Type* base, uint8_t** buf, uint32_t* len)
+static void psoc_eth_rx_getbuff_cb(ETH_Type *base, uint8_t **buf, uint32_t *len)
 {
     (void)base;
 
@@ -344,7 +337,7 @@ static void psoc_eth_rx_getbuff_cb(ETH_Type* base, uint8_t** buf, uint32_t* len)
 /**
  * @brief TX complete callback (called in ISR context)
  */
-static void psoc_eth_tx_complete_cb(ETH_Type* base, uint8_t queue)
+static void psoc_eth_tx_complete_cb(ETH_Type *base, uint8_t queue)
 {
     (void)base;
     (void)queue;
@@ -353,7 +346,7 @@ static void psoc_eth_tx_complete_cb(ETH_Type* base, uint8_t queue)
 /**
  * @brief TX error callback (called in ISR context)
  */
-static void psoc_eth_tx_error_cb(ETH_Type* base, uint8_t queue)
+static void psoc_eth_tx_error_cb(ETH_Type *base, uint8_t queue)
 {
     (void)base;
     (void)queue;
@@ -362,13 +355,15 @@ static void psoc_eth_tx_error_cb(ETH_Type* base, uint8_t queue)
 /**
  * @brief Detect PHY address by scanning
  */
-static rt_uint8_t psoc_phy_detect(ETH_Type* base)
+static rt_uint8_t psoc_phy_detect(ETH_Type *base)
 {
-    for (rt_uint8_t addr = 0; addr < 32U; addr++) {
+    for (rt_uint8_t addr = 0; addr < 32U; addr++)
+    {
         uint32_t id1 = Cy_ETHIF_PhyRegRead(base, PHY_REG_PHYID1, addr);
         uint32_t id2 = Cy_ETHIF_PhyRegRead(base, PHY_REG_PHYID2, addr);
 
-        if (id1 != 0xFFFFU && id1 != 0x0000U && id2 != 0xFFFFU && id2 != 0x0000U) {
+        if (id1 != 0xFFFFU && id1 != 0x0000U && id2 != 0xFFFFU && id2 != 0x0000U)
+        {
             rt_kprintf("PHY detected at addr %u, ID: 0x%04X:0x%04X\n", addr, id1, id2);
             return addr;
         }
@@ -399,7 +394,7 @@ static rt_uint8_t psoc_phy_detect(ETH_Type* base)
  * @brief Initialize PHY and wait for auto-negotiation
  * @return RT_EOK on success, -RT_ERROR on failure
  */
-static rt_err_t psoc_phy_init(ETH_Type* base)
+static rt_err_t psoc_phy_init(ETH_Type *base)
 {
     uint32_t reg;
     int timeout;
@@ -411,15 +406,18 @@ static rt_err_t psoc_phy_init(ETH_Type* base)
 
     /* Wait for reset to complete (bit 15 self-clears) */
     timeout = 50;
-    while (timeout-- > 0) {
+    while (timeout-- > 0)
+    {
         rt_thread_mdelay(50);
         reg = Cy_ETHIF_PhyRegRead(base, PHY_REG_BMCR, psoc_eth.phy_addr);
-        if ((reg & PHY_BMCR_RESET) == 0) {
+        if ((reg & PHY_BMCR_RESET) == 0)
+        {
             break;
         }
     }
-    if (timeout <= 0) {
-        ulog_w(LOG_TAG, "PHY reset timeout");
+    if (timeout <= 0)
+    {
+        rt_kprintf("[ETH] PHY reset timeout\n");
     }
 
     /* Wait additional time for PHY to be ready */
@@ -427,10 +425,10 @@ static rt_err_t psoc_phy_init(ETH_Type* base)
 
     /* Configure auto-negotiation advertisement - all capabilities */
     reg = (1U << 8)  /* 100BASE-TX Full Duplex */
-        | (1U << 7)  /* 100BASE-TX Half Duplex */
-        | (1U << 6)  /* 10BASE-T Full Duplex */
-        | (1U << 5)  /* 10BASE-T Half Duplex */
-        | (1U << 0); /* Selector field: 802.3 */
+          | (1U << 7)  /* 100BASE-TX Half Duplex */
+          | (1U << 6)  /* 10BASE-T Full Duplex */
+          | (1U << 5)  /* 10BASE-T Half Duplex */
+          | (1U << 0); /* Selector field: 802.3 */
     (void)Cy_ETHIF_PhyRegWrite(base, PHY_REG_ANAR, (uint16_t)reg, psoc_eth.phy_addr);
 
     /* Enable and restart auto-negotiation */
@@ -440,23 +438,27 @@ static rt_err_t psoc_phy_init(ETH_Type* base)
 
     /* Wait for auto-negotiation to complete */
     timeout = 50; /* 5 seconds max */
-    while (timeout-- > 0) {
+    while (timeout-- > 0)
+    {
         rt_thread_mdelay(100);
         reg = Cy_ETHIF_PhyRegRead(base, PHY_REG_BMSR, psoc_eth.phy_addr);
-        if (reg & PHY_BMSR_AN_COMPLETE) {
+        if (reg & PHY_BMSR_AN_COMPLETE)
+        {
             break;
         }
     }
-    if (timeout <= 0) {
-        ulog_w(LOG_TAG, "PHY auto-negotiation timeout");
+    if (timeout <= 0)
+    {
+        rt_kprintf("[ETH] PHY auto-negotiation timeout\n");
     }
 
     /* Read negotiated speed from Special Control/Status Register (LAN8710AI) */
     reg = Cy_ETHIF_PhyRegRead(base, PHY_REG_SPECIAL, psoc_eth.phy_addr);
 
     uint32_t speed_bits = reg & PHY_SPECIAL_SPEED_MASK;
-    const char* speed_str = "Unknown";
-    switch (speed_bits) {
+    const char *speed_str = "Unknown";
+    switch (speed_bits)
+    {
     case PHY_SPECIAL_SPEED_100FD:
         speed_str = "100Mbps Full";
         break;
@@ -470,7 +472,7 @@ static rt_err_t psoc_phy_init(ETH_Type* base)
         speed_str = "10Mbps Half";
         break;
     }
-    ulog_i(LOG_TAG, "PHY negotiated: %s", speed_str);
+    rt_kprintf("[ETH] PHY negotiated: %s\n", speed_str);
 
     return RT_EOK;
 }
@@ -478,7 +480,7 @@ static rt_err_t psoc_phy_init(ETH_Type* base)
 /**
  * @brief Check if PHY link is up
  */
-static rt_bool_t psoc_phy_is_link_up(ETH_Type* base)
+static rt_bool_t psoc_phy_is_link_up(ETH_Type *base)
 {
     uint32_t bmsr = Cy_ETHIF_PhyRegRead(base, PHY_REG_BMSR, psoc_eth.phy_addr);
     return ((bmsr & PHY_BMSR_LINK) != 0U) ? RT_TRUE : RT_FALSE;
@@ -487,16 +489,17 @@ static rt_bool_t psoc_phy_is_link_up(ETH_Type* base)
 /**
  * @brief PHY link status polling timer callback
  */
-static void psoc_phy_poll_link(void* parameter)
+static void psoc_phy_poll_link(void *parameter)
 {
     rt_bool_t link_up;
 
     (void)parameter;
 
     link_up = psoc_phy_is_link_up(ETH0);
-    if (link_up != psoc_eth.link_up) {
+    if (link_up != psoc_eth.link_up)
+    {
         psoc_eth.link_up = link_up;
-        ulog_i(LOG_TAG, "ETH link %s", link_up ? "UP" : "DOWN");
+        rt_kprintf("[ETH] ETH link %s\n", link_up ? "UP" : "DOWN");
         eth_device_linkchange(&psoc_eth.parent, link_up);
     }
 }
@@ -520,10 +523,14 @@ static rt_err_t psoc_eth_hw_init(void)
     psoc_eth_clock_init();
     psoc_eth_rx_pool_init();
 
-    /* Wrapper configuration for MII 100Mbps */
-    psoc_eth_wrapper_cfg.stcInterfaceSel = CY_ETHIF_CTL_MII_100;
+    /*
+     * Wrapper configuration for RMII 100Mbps
+     * Keep this aligned with Infineon ECM reference (eth_internal.c):
+     * - RMII 100M uses divider = 1
+     */
+    psoc_eth_wrapper_cfg.stcInterfaceSel = CY_ETHIF_CTL_RMII_100;
     psoc_eth_wrapper_cfg.bRefClockSource = CY_ETHIF_EXTERNAL_HSIO;
-    psoc_eth_wrapper_cfg.u8RefClkDiv = 1U; /* RefClk div for 100Mbps MII */
+    psoc_eth_wrapper_cfg.u8RefClkDiv = 1U;
 
     /* MAC configuration */
     rt_memset(&psoc_eth_mac_cfg, 0, sizeof(psoc_eth_mac_cfg));
@@ -558,10 +565,14 @@ static rt_err_t psoc_eth_hw_init(void)
     psoc_eth_mac_cfg.pRxQbuffPool[0] = &psoc_eth_rx_pool;
     psoc_eth_mac_cfg.pRxQbuffPool[1] = RT_NULL;
 
+    rt_kprintf("[ETH] pRxQbuffPool[0]: 0x%08X\n", (uint32_t)psoc_eth_mac_cfg.pRxQbuffPool[0]);
+    rt_kprintf("[ETH] RX pool[0]: 0x%08X\n", (uint32_t)psoc_eth_rx_pool[0]);
+
     /* Initialize MDIO interface first (for PHY communication) */
     status = Cy_ETHIF_MdioInit(ETH0, &psoc_eth_mac_cfg);
-    if (status != CY_ETHIF_SUCCESS) {
-        ulog_e(LOG_TAG, "MDIO init failed: %d", status);
+    if (status != CY_ETHIF_SUCCESS)
+    {
+        rt_kprintf("[ETH] MDIO init failed: %d\n", status);
         return -RT_ERROR;
     }
 
@@ -579,7 +590,7 @@ static rt_err_t psoc_eth_hw_init(void)
     psoc_eth_intr_cfg.btx_underrun = true;
     psoc_eth_intr_cfg.btx_retry_ex_late_coll = true;
 
-    /* Callback configuration */
+    /* Callback configuration - must be done BEFORE Cy_ETHIF_Init */
     rt_memset(&psoc_eth_cb, 0, sizeof(psoc_eth_cb));
     psoc_eth_cb.rxframecb = psoc_eth_rx_frame_cb;
     psoc_eth_cb.rxgetbuff = psoc_eth_rx_getbuff_cb;
@@ -589,12 +600,13 @@ static rt_err_t psoc_eth_hw_init(void)
 
     /* Initialize full ETHIF (MAC + DMA) */
     status = Cy_ETHIF_Init(ETH0, &psoc_eth_mac_cfg, &psoc_eth_intr_cfg);
-    if (status != CY_ETHIF_SUCCESS) {
-        ulog_e(LOG_TAG, "ETHIF init failed: %d", status);
+    if (status != CY_ETHIF_SUCCESS)
+    {
+        rt_kprintf("[ETH] ETHIF init failed: %d\n", status);
         return -RT_ERROR;
     }
 
-    /* Register callbacks */
+    /* Register callbacks AFTER Cy_ETHIF_Init */
     (void)Cy_ETHIF_RegisterCallbacks(ETH0, &psoc_eth_cb);
 
     /* Configure MAC address filter */
@@ -642,7 +654,7 @@ static rt_err_t psoc_eth_close(rt_device_t dev)
 /**
  * @brief Device read callback (not used for ethernet)
  */
-static rt_size_t psoc_eth_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
+static rt_size_t psoc_eth_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
 {
     (void)dev;
     (void)pos;
@@ -656,7 +668,7 @@ static rt_size_t psoc_eth_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_s
 /**
  * @brief Device write callback (not used for ethernet)
  */
-static rt_size_t psoc_eth_write(rt_device_t dev, rt_off_t pos, const void* buffer, rt_size_t size)
+static rt_size_t psoc_eth_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
 {
     (void)dev;
     (void)pos;
@@ -670,15 +682,19 @@ static rt_size_t psoc_eth_write(rt_device_t dev, rt_off_t pos, const void* buffe
 /**
  * @brief Device control callback
  */
-static rt_err_t psoc_eth_control(rt_device_t dev, int cmd, void* args)
+static rt_err_t psoc_eth_control(rt_device_t dev, int cmd, void *args)
 {
     (void)dev;
 
-    switch (cmd) {
+    switch (cmd)
+    {
     case NIOCTL_GADDR:
-        if (args != RT_NULL) {
+        if (args != RT_NULL)
+        {
             rt_memcpy(args, psoc_eth.dev_addr, sizeof(psoc_eth.dev_addr));
-        } else {
+        }
+        else
+        {
             return -RT_ERROR;
         }
         break;
@@ -694,18 +710,20 @@ static rt_err_t psoc_eth_control(rt_device_t dev, int cmd, void* args)
  * @brief Ethernet RX callback - called by erx thread to get received packet
  *        This function is called in a loop until it returns RT_NULL
  */
-static struct pbuf* psoc_eth_rx(rt_device_t dev)
+static struct pbuf *psoc_eth_rx(rt_device_t dev)
 {
-    struct pbuf* p = RT_NULL;
-    struct eth_rx_frame* frame;
+    struct pbuf *p = RT_NULL;
+    struct eth_rx_frame *frame;
 
     (void)dev;
 
     frame = rx_queue_pop();
-    if (frame != RT_NULL && frame->len > 0) {
+    if (frame != RT_NULL && frame->len > 0)
+    {
         /* Allocate pbuf */
         p = pbuf_alloc(PBUF_RAW, (u16_t)frame->len, PBUF_RAM);
-        if (p != RT_NULL) {
+        if (p != RT_NULL)
+        {
             /* Copy data to pbuf */
             pbuf_take(p, frame->data, (u16_t)frame->len);
         }
@@ -717,22 +735,25 @@ static struct pbuf* psoc_eth_rx(rt_device_t dev)
 /**
  * @brief Ethernet TX callback - called to transmit packet
  */
-static rt_err_t psoc_eth_tx(rt_device_t dev, struct pbuf* p)
+static rt_err_t psoc_eth_tx(rt_device_t dev, struct pbuf *p)
 {
     cy_en_ethif_status_t status;
 
     (void)dev;
 
-    if (p == RT_NULL || p->tot_len == 0) {
+    if (p == RT_NULL || p->tot_len == 0)
+    {
         return -RT_ERROR;
     }
 
-    if (p->tot_len > BSP_ETH_TX_BUF_SIZE) {
+    if (p->tot_len > BSP_ETH_TX_BUF_SIZE)
+    {
         return -RT_ERROR;
     }
 
     /* Check link status before sending */
-    if (!psoc_eth.link_up) {
+    if (!psoc_eth.link_up)
+    {
         return -RT_ERROR;
     }
 
@@ -743,14 +764,16 @@ static rt_err_t psoc_eth_tx(rt_device_t dev, struct pbuf* p)
     pbuf_copy_partial(p, psoc_eth_tx_buf, p->tot_len, 0);
 
     /* Clean cache for TX data */
-    SCB_CleanDCache_by_Addr((void*)psoc_eth_tx_buf, (int32_t)p->tot_len);
+    SCB_CleanDCache_by_Addr((void *)psoc_eth_tx_buf, (int32_t)p->tot_len);
 
     /* Transmit frame */
     status = Cy_ETHIF_TransmitFrame(ETH0, psoc_eth_tx_buf, (uint16_t)p->tot_len, BSP_ETH_QUEUE_ID, true);
 
     rt_mutex_release(psoc_eth.tx_lock);
 
-    if (status != CY_ETHIF_SUCCESS) {
+    if (status != CY_ETHIF_SUCCESS)
+    {
+        rt_kprintf("[ETH] TX failed: status=%d\n", status);
         return -RT_ERROR;
     }
 
@@ -801,8 +824,9 @@ rt_err_t drv_eth_init(void)
 
     /* Create TX mutex */
     psoc_eth.tx_lock = rt_mutex_create("ethtx", RT_IPC_FLAG_PRIO);
-    if (psoc_eth.tx_lock == RT_NULL) {
-        ulog_e(LOG_TAG, "Failed to create TX mutex");
+    if (psoc_eth.tx_lock == RT_NULL)
+    {
+        rt_kprintf("[ETH] Failed to create TX mutex\n");
         return -RT_ERROR;
     }
 
@@ -820,8 +844,9 @@ rt_err_t drv_eth_init(void)
 
     /* Register ethernet device */
     ret = eth_device_init(&psoc_eth.parent, "e0");
-    if (ret != RT_EOK) {
-        ulog_e(LOG_TAG, "eth_device_init failed: %d", ret);
+    if (ret != RT_EOK)
+    {
+        rt_kprintf("[ETH] eth_device_init failed: %d\n", ret);
         rt_mutex_delete(psoc_eth.tx_lock);
         return ret;
     }
@@ -835,18 +860,20 @@ rt_err_t drv_eth_init(void)
                psoc_eth.dev_addr[5]);
 
     /* Notify link status after device is fully registered */
-    if (psoc_eth.link_up) {
+    if (psoc_eth.link_up)
+    {
         eth_device_linkchange(&psoc_eth.parent, RT_TRUE);
     }
 
 #ifndef PHY_USING_INTERRUPT_MODE
     /* Create PHY link polling timer */
     psoc_eth.poll_link_timer = rt_timer_create("phylnk",
-                                               psoc_phy_poll_link,
-                                               RT_NULL,
-                                               RT_TICK_PER_SECOND,
-                                               RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
-    if (psoc_eth.poll_link_timer != RT_NULL) {
+                               psoc_phy_poll_link,
+                               RT_NULL,
+                               RT_TICK_PER_SECOND,
+                               RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+    if (psoc_eth.poll_link_timer != RT_NULL)
+    {
         rt_timer_start(psoc_eth.poll_link_timer);
     }
 #endif
@@ -857,12 +884,12 @@ rt_err_t drv_eth_init(void)
 /* ======================== Debug Shell Commands ======================== */
 
 #if defined(RT_USING_FINSH) && (ETH_DRV_DEBUG)
-    #include <finsh.h>
+#include <finsh.h>
 
 /**
  * @brief Check NVIC pending status for ETH IRQs
  */
-static int eth_nvic(int argc, char** argv)
+static int eth_nvic(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
@@ -889,7 +916,7 @@ MSH_CMD_EXPORT(eth_nvic, Check NVIC status for ETH IRQs);
 /**
  * @brief Dump ETH MAC registers for debugging
  */
-static int eth_regs(int argc, char** argv)
+static int eth_regs(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
@@ -900,13 +927,17 @@ static int eth_regs(int argc, char** argv)
     rt_kprintf("NETWORK_STATUS:       0x%08lX\n", ETH0->NETWORK_STATUS);
     rt_kprintf("TRANSMIT_STATUS:      0x%08lX\n", ETH0->TRANSMIT_STATUS);
     rt_kprintf("RECEIVE_STATUS:       0x%08lX\n", ETH0->RECEIVE_STATUS);
+    rt_kprintf("  RX buf avail: %lu\n", (ETH0->RECEIVE_STATUS >> 0) & 0x1);
+    rt_kprintf("  RX frame rx: %lu\n", (ETH0->RECEIVE_STATUS >> 1) & 0x1);
     rt_kprintf("INT_STATUS:           0x%08lX\n", ETH0->INT_STATUS);
+    rt_kprintf("  RX complete: %lu\n", (ETH0->INT_STATUS >> 1) & 0x1);
     rt_kprintf("INT_MASK:             0x%08lX\n", ETH0->INT_MASK);
     rt_kprintf("INT_ENABLE:           0x%08lX\n", ETH0->INT_ENABLE);
     rt_kprintf("INT_DISABLE:          0x%08lX\n", ETH0->INT_DISABLE);
     rt_kprintf("PHY_MANAGEMENT:       0x%08lX\n", ETH0->PHY_MANAGEMENT);
     rt_kprintf("TX_QBAR:              0x%08lX\n", ETH0->TRANSMIT_Q_PTR);
     rt_kprintf("RX_QBAR:              0x%08lX\n", ETH0->RECEIVE_Q_PTR);
+    rt_kprintf("RX queue ptr:        0x%08lX\n", ETH0->RECEIVE_Q_PTR);
     rt_kprintf("DMA_CONFIG:           0x%08lX\n", ETH0->DMA_CONFIG);
     rt_kprintf("CTL:                  0x%08lX\n", ETH0->CTL);
     rt_kprintf("==============================\n");
@@ -914,110 +945,12 @@ static int eth_regs(int argc, char** argv)
     /* Check specific bits */
     rt_kprintf("TX Enable: %s\n", (ETH0->NETWORK_CONTROL & (1UL << 3)) ? "YES" : "NO");
     rt_kprintf("RX Enable: %s\n", (ETH0->NETWORK_CONTROL & (1UL << 2)) ? "YES" : "NO");
-    rt_kprintf("MII mode (CTL): %lu\n", (ETH0->CTL >> 0) & 0x3);
+    rt_kprintf("ETH Mode (CTL): %lu (0=MII, 3=RMII)\n", (ETH0->CTL >> 0) & 0x3);
+    rt_kprintf("REFCLK Source (CTL): %lu (0=HSIO, 1=PLL)\n", (ETH0->CTL >> 2) & 0x1);
+    rt_kprintf("REFCLK DIV (CTL): %lu\n", (ETH0->CTL >> 8) & 0xFF);
 
     return 0;
 }
 MSH_CMD_EXPORT(eth_regs, Dump ETH MAC registers);
-
-/**
- * @brief Check GPIO pin states for ETH MII
- */
-static int eth_pins(int argc, char** argv)
-{
-    (void)argc;
-    (void)argv;
-
-    rt_kprintf("===== ETH MII Pin States =====\n");
-
-    /* TX data pins */
-    rt_kprintf("TXD0 (P11.2): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 2),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 2));
-    rt_kprintf("TXD1 (P11.3): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 3),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 3));
-    rt_kprintf("TXD2 (P11.6): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 6),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 6));
-    rt_kprintf("TXD3 (P10.0): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 0),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 0));
-
-    /* TX control */
-    rt_kprintf("TX_EN  (P11.4): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 4),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 4));
-    rt_kprintf("TX_CLK (P11.5): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 5),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 5));
-    rt_kprintf("TX_ER  (P10.2): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 2),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 2));
-
-    /* RX data pins */
-    rt_kprintf("RXD0 (P10.6): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 6),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 6));
-    rt_kprintf("RXD1 (P10.7): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 7),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 7));
-    rt_kprintf("RXD2 (P11.0): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 0),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 0));
-    rt_kprintf("RXD3 (P10.4): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 4),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 4));
-
-    /* RX control */
-    rt_kprintf("RX_CLK (P10.1): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 1),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 1));
-    rt_kprintf("RX_DV  (P10.5): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT10, 5),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT10, 5));
-    rt_kprintf("RX_ER  (P11.1): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT11, 1),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT11, 1));
-
-    /* MDIO pins */
-    rt_kprintf("MDC  (P13.1): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT13, 1),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT13, 1));
-    rt_kprintf("MDIO (P13.6): Val=%d HSIOM=%d\n",
-               Cy_GPIO_Read(GPIO_PRT13, 6),
-               (int)Cy_GPIO_GetHSIOM(GPIO_PRT13, 6));
-
-    rt_kprintf("==============================\n");
-    rt_kprintf("HSIOM: 0=GPIO, 27=ETH\n");
-
-    /* Check TX_CLK toggling */
-    rt_kprintf("\nChecking TX_CLK activity...\n");
-    int tx_clk_count = 0;
-    int last_val = Cy_GPIO_Read(GPIO_PRT11, 5);
-    for (int i = 0; i < 1000; i++) {
-        int val = Cy_GPIO_Read(GPIO_PRT11, 5);
-        if (val != last_val) {
-            tx_clk_count++;
-            last_val = val;
-        }
-    }
-    rt_kprintf("TX_CLK toggles in 1000 reads: %d\n", tx_clk_count);
-
-    /* Check RX_CLK toggling */
-    int rx_clk_count = 0;
-    last_val = Cy_GPIO_Read(GPIO_PRT10, 1);
-    for (int i = 0; i < 1000; i++) {
-        int val = Cy_GPIO_Read(GPIO_PRT10, 1);
-        if (val != last_val) {
-            rx_clk_count++;
-            last_val = val;
-        }
-    }
-    rt_kprintf("RX_CLK toggles in 1000 reads: %d\n", rx_clk_count);
-
-    return 0;
-}
-MSH_CMD_EXPORT(eth_pins, Check ETH MII pin states);
 
 #endif /* RT_USING_FINSH && ETH_DRV_DEBUG */

@@ -4,8 +4,8 @@
  * Description:
  * Establishes all necessary connections between hardware elements.
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -54,21 +54,14 @@ extern "C" {
 #define ioss_0_port_8_pin_6_HSIOM P8_6_PDM_PDM_DATA3
 #define ioss_0_port_9_pin_0_HSIOM P9_0_TCPWM0_LINE7
 #define ioss_0_port_9_pin_2_HSIOM P9_2_TCPWM0_LINE_COMPL7
-#define ioss_0_port_10_pin_0_HSIOM P10_0_ETH_TXD3
-#define ioss_0_port_10_pin_1_HSIOM P10_1_ETH_RX_CLK
-#define ioss_0_port_10_pin_2_HSIOM P10_2_ETH_TX_ER
 #define ioss_0_port_10_pin_3_HSIOM P10_3_SCB4_UART_RTS
-#define ioss_0_port_10_pin_4_HSIOM P10_4_ETH_RXD3
 #define ioss_0_port_10_pin_5_HSIOM P10_5_ETH_RX_CTL
 #define ioss_0_port_10_pin_6_HSIOM P10_6_ETH_RXD0
 #define ioss_0_port_10_pin_7_HSIOM P10_7_ETH_RXD1
-#define ioss_0_port_11_pin_0_HSIOM P11_0_ETH_RXD2
-#define ioss_0_port_11_pin_1_HSIOM P11_1_ETH_RX_ER
 #define ioss_0_port_11_pin_2_HSIOM P11_2_ETH_TXD0
 #define ioss_0_port_11_pin_3_HSIOM P11_3_ETH_TXD1
 #define ioss_0_port_11_pin_4_HSIOM P11_4_ETH_TX_CTL
-#define ioss_0_port_11_pin_5_HSIOM P11_5_ETH_TX_CLK
-#define ioss_0_port_11_pin_6_HSIOM P11_6_ETH_TXD2
+#define ioss_0_port_11_pin_7_HSIOM P11_7_ETH_REF_CLK
 #define ioss_0_port_12_pin_0_HSIOM P12_0_SDHC0_CLK_CARD
 #define ioss_0_port_12_pin_1_HSIOM P12_1_SDHC0_CARD_DAT_3TO00
 #define ioss_0_port_12_pin_2_HSIOM P12_2_SDHC0_CARD_DAT_3TO01
