@@ -4,8 +4,8 @@
  * Description:
  * Analog configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -72,7 +72,7 @@ extern "C" {
 #define eth_0_ENABLED 1U
 #define ETH_PHY_LAN8710AI 
 #define eth_0_PHY_ADDR 0
-#define eth_0_PHY_INTERFACE 0u
+#define eth_0_PHY_INTERFACE 1u
 #define eth_0_PHY_SPEED 3
 #define eth_0_PHY_MODE 2
 #define eth_0_MAC_ADDR0 0x00U

@@ -4,8 +4,8 @@
  * Description:
  * Pin configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -804,7 +804,7 @@ const cy_stc_gpio_pin_config_t CYBSP_ARD_D7_config =
 };
 const cy_stc_gpio_pin_config_t CYBSP_BT_DEV_WAKE_config =
 {
-    .outVal = 1,
+    .outVal = 0,
     .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
     .hsiom = CYBSP_BT_DEV_WAKE_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
@@ -843,8 +843,8 @@ const cy_stc_gpio_pin_config_t CYBSP_WIFI_HOST_WAKE_config =
     .outVal = 0,
     .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
     .hsiom = CYBSP_WIFI_HOST_WAKE_HSIOM,
-    .intEdge = CY_GPIO_INTR_RISING,
-    .intMask = 1UL,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
     .slewRate = CY_GPIO_SLEW_FAST,
     .driveSel = CY_GPIO_DRIVE_1_2,
@@ -891,6 +891,41 @@ const cy_stc_gpio_pin_config_t CYBSP_WIFI_WL_REG_ON_config =
     .vohSel = 0UL,
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_ARD_D4_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_HIGHZ,
+    .hsiom = CYBSP_ARD_D4_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_smartio_config_t CYBSP_SMART_IO_11_config =
+{
+    .clkSrc = CY_SMARTIO_CLK_ASYNC,
+    .bypassMask = CY_SMARTIO_CHANNEL0|CY_SMARTIO_CHANNEL1|CY_SMARTIO_CHANNEL2|CY_SMARTIO_CHANNEL3|CY_SMARTIO_CHANNEL4|CY_SMARTIO_CHANNEL5|CY_SMARTIO_CHANNEL6|CY_SMARTIO_CHANNEL7,
+    .ioSyncEn = 0u|0u|0u|0u|0u|0u|0u|0u,
+    .chipSyncEn = 0u|0u|0u|0u|0u|0u|0u|0u,
+    .lutCfg0 = NULL,
+    .lutCfg1 = NULL,
+    .lutCfg2 = NULL,
+    .lutCfg3 = NULL,
+    .lutCfg4 = NULL,
+    .lutCfg5 = NULL,
+    .lutCfg6 = NULL,
+    .lutCfg7 = NULL,
+    .duCfg = NULL,
+    .hldOvr = false,
 };
 const cy_stc_gpio_pin_config_t CYBSP_WIFI_SDIO_CLK_config =
 {
@@ -1464,6 +1499,8 @@ void init_cycfg_pins(void)
     Cy_GPIO_Pin_Init(CYBSP_WIFI_HOST_WAKE_PORT, CYBSP_WIFI_HOST_WAKE_PIN, &CYBSP_WIFI_HOST_WAKE_config);
     Cy_GPIO_Pin_Init(CYBSP_ARD_D5_PORT, CYBSP_ARD_D5_PIN, &CYBSP_ARD_D5_config);
     Cy_GPIO_Pin_Init(CYBSP_WIFI_WL_REG_ON_PORT, CYBSP_WIFI_WL_REG_ON_PIN, &CYBSP_WIFI_WL_REG_ON_config);
+    Cy_GPIO_Pin_Init(CYBSP_ARD_D4_PORT, CYBSP_ARD_D4_PIN, &CYBSP_ARD_D4_config);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SMARTIO_PERI_NR, CY_MMIO_SMARTIO_GROUP_NR, CY_MMIO_SMARTIO_SLAVE_NR, CY_MMIO_SMARTIO_CLK_HF_NR);
     Cy_GPIO_Pin_Init(CYBSP_WIFI_SDIO_CLK_PORT, CYBSP_WIFI_SDIO_CLK_PIN, &CYBSP_WIFI_SDIO_CLK_config);
     Cy_GPIO_Pin_Init(CYBSP_WIFI_SDIO_D0_PORT, CYBSP_WIFI_SDIO_D0_PIN, &CYBSP_WIFI_SDIO_D0_config);
     Cy_GPIO_Pin_Init(CYBSP_WIFI_SDIO_D1_PORT, CYBSP_WIFI_SDIO_D1_PIN, &CYBSP_WIFI_SDIO_D1_config);
