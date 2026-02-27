@@ -12,6 +12,8 @@
     <Pin Name="Pin32" Signal="TIMA-3-PWM2/TIMA-3-CLKB" />
     <Pin Name="Pin35" Signal="TIMA-3-PWM3" />
     <Pin Name="Pin36" Signal="TIMA-3-PWM4" />
+    <Pin Name="Pin38" Signal="USART7-RX" />
+    <Pin Name="Pin39" Signal="USART7-TX" />
     <Pin Name="Pin40" Signal="TIMA-1-PWM1/TIMA-1-CLKA" />
     <Pin Name="Pin42" Signal="TIMA-1-PWM2/TIMA-1-CLKB" />
     <Pin Name="Pin44" Signal="TIMA-1-PWM3" />
@@ -19,6 +21,8 @@
     <Pin Name="Pin47" Signal="SPI2-SCK" />
     <Pin Name="Pin53" Signal="SPI2-MISO" />
     <Pin Name="Pin54" Signal="SPI2-MOSI" />
+    <Pin Name="Pin55" Signal="USART3-TX" />
+    <Pin Name="Pin56" Signal="USART3-RX" />
     <Pin Name="Pin59" Signal="TIMA-4-PWM1/TIMA-4-CLKA" />
     <Pin Name="Pin60" Signal="TIMA-4-PWM2/TIMA-4-CLKB" />
     <Pin Name="Pin61" Signal="TIMA-4-PWM3" />
@@ -27,6 +31,8 @@
     <Pin Name="Pin64" Signal="USART6-RX" />
     <Pin Name="Pin67" Signal="I2C2-SCL" />
     <Pin Name="Pin68" Signal="I2C2-SDA" />
+    <Pin Name="Pin78" Signal="USART4-TX" />
+    <Pin Name="Pin79" Signal="USART4-RX" />
     <Pin Name="Pin80" Signal="USART5-TX" />
     <Pin Name="Pin83" Signal="USART5-RX" />
     <Pin Name="Pin86" Signal="USART2-TX" />
@@ -37,6 +43,8 @@
     <Pin Name="Pin93" Signal="USART1-RX" />
     <Pin Name="Pin95" Signal="I2C1-SCL" />
     <Pin Name="Pin96" Signal="I2C1-SDA" />
+    <Pin Name="Pin97" Signal="USART8-RX" />
+    <Pin Name="Pin98" Signal="USART8-TX" />
   </ConfiguredPins>
   <ConfiguredGPIOs>
     <GPIOConfig Name="PE6" Signal="TIMA-9-TRIG" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
@@ -74,6 +82,14 @@
     <GPIOConfig Name="PB7" Signal="USART1-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB8" Signal="I2C1-SCL" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
     <GPIOConfig Name="PB9" Signal="I2C1-SDA" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PE7" Signal="USART7-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PE8" Signal="USART7-TX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PD8" Signal="USART3-TX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PD9" Signal="USART3-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PE0" Signal="USART8-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PE1" Signal="USART8-TX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PC10" Signal="USART4-TX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
+    <GPIOConfig Name="PC11" Signal="USART4-RX" UserLabel="" Dir="n/a" OutputMode="n/a" OutputLevel="n/a" PU="n/a" Latch="n/a" Drive="n/a" Invt="n/a" ExtI="n/a" DDIS="n/a" InputMode="n/a" />
   </ConfiguredGPIOs>
   <ConfiguredEIRQs />
   <ConfiguredADC1Chs>

@@ -16,9 +16,13 @@
 #include "drv_usart.h"
 #include "hal/serial/serial.h"
 
-#define USING_UART5
-#define USING_UART2
 #define USING_UART1
+#define USING_UART2
+#define USING_UART3
+#define USING_UART4
+#define USING_UART5
+#define USING_UART7
+#define USING_UART8
 
 #define SERIAL3_DEFAULT_CONFIG                    \
     {                                             \
@@ -99,6 +103,132 @@ static void USART5_RxFull_IrqCallback(void)
 }
 #endif
 
+#ifdef USING_UART7
+static void USART7_RxError_IrqCallback(void);
+static void USART7_RxFull_IrqCallback(void);
+static void USART7_TX_DMA_TC_IrqCallback(void);
+static void USART7_TxComplete_IrqCallback(void);
+
+static struct serial_device serial1;
+static struct hc32_uart uart7 = {
+    .uart_periph = CM_USART7,
+    .rx_err_irq = USART7_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART7_EI,
+    .rx_err_callback = &USART7_RxError_IrqCallback,
+    .rx_full_irq = USART7_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART7_RI,
+    .rx_full_callback = &USART7_RxFull_IrqCallback,
+    .dma = {
+        .dma_periph = USART7_TX_DMA_UNIT,
+        .dma_tx_ch = USART7_TX_DMA_CH,
+        .dma_tx_tc_irq = USART7_TX_DMA_TC_IRQn,
+        .dma_tx_tc_int_src = USART7_TX_DMA_TC_INT_SRC,
+        .dma_tx_tc_callback = &USART7_TX_DMA_TC_IrqCallback,
+        .dma_tx_tc_flag = USART7_TX_DMA_TC_FLAG,
+        .dma_tx_trig_sel = USART7_TX_DMA_TRIG_SEL,
+        .dma_tx_trig_evt_src = EVT_SRC_USART7_TI,
+        .dma_tx_tc_int = USART7_TX_DMA_TC_INT,
+        .tx_cplt_irq = USART7_TX_CPLT_IRQn,
+        .tx_cplt_int_src = INT_SRC_USART7_TCI,
+        .tx_cplt_callback = &USART7_TxComplete_IrqCallback,
+    }
+};
+
+static void USART7_RxError_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    (void)USART_ReadData(uart7.uart_periph);
+    USART_ClearStatus(uart7.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+    rt_interrupt_leave();
+}
+
+static void USART7_RxFull_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    hal_serial_isr(&serial1, SERIAL_EVENT_RX_IND);
+    rt_interrupt_leave();
+}
+
+static void USART7_TX_DMA_TC_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart7.uart_periph, USART_INT_TX_CPLT, ENABLE);
+    DMA_ClearTransCompleteStatus(uart7.dma.dma_periph, uart7.dma.dma_tx_tc_flag);
+    rt_interrupt_leave();
+}
+
+static void USART7_TxComplete_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart7.uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
+    hal_serial_isr(&serial1, SERIAL_EVENT_TX_DMADONE);
+    rt_interrupt_leave();
+}
+#endif
+
+#ifdef USING_UART3
+static void USART3_RxError_IrqCallback(void);
+static void USART3_RxFull_IrqCallback(void);
+static void USART3_TX_DMA_TC_IrqCallback(void);
+static void USART3_TxComplete_IrqCallback(void);
+
+static struct serial_device serial3;
+static struct hc32_uart uart3 = {
+    .uart_periph = CM_USART3,
+    .rx_err_irq = USART3_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART3_EI,
+    .rx_err_callback = &USART3_RxError_IrqCallback,
+    .rx_full_irq = USART3_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART3_RI,
+    .rx_full_callback = &USART3_RxFull_IrqCallback,
+    .dma = {
+        .dma_periph = USART3_TX_DMA_UNIT,
+        .dma_tx_ch = USART3_TX_DMA_CH,
+        .dma_tx_tc_irq = USART3_TX_DMA_TC_IRQn,
+        .dma_tx_tc_int_src = USART3_TX_DMA_TC_INT_SRC,
+        .dma_tx_tc_callback = &USART3_TX_DMA_TC_IrqCallback,
+        .dma_tx_tc_flag = USART3_TX_DMA_TC_FLAG,
+        .dma_tx_trig_sel = USART3_TX_DMA_TRIG_SEL,
+        .dma_tx_trig_evt_src = EVT_SRC_USART3_TI,
+        .dma_tx_tc_int = USART3_TX_DMA_TC_INT,
+        .tx_cplt_irq = USART3_TX_CPLT_IRQn,
+        .tx_cplt_int_src = INT_SRC_USART3_TCI,
+        .tx_cplt_callback = &USART3_TxComplete_IrqCallback,
+    }
+};
+
+static void USART3_RxError_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    (void)USART_ReadData(uart3.uart_periph);
+    USART_ClearStatus(uart3.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+    rt_interrupt_leave();
+}
+
+static void USART3_RxFull_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    hal_serial_isr(&serial3, SERIAL_EVENT_RX_IND);
+    rt_interrupt_leave();
+}
+
+static void USART3_TX_DMA_TC_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart3.uart_periph, USART_INT_TX_CPLT, ENABLE);
+    DMA_ClearTransCompleteStatus(uart3.dma.dma_periph, uart3.dma.dma_tx_tc_flag);
+    rt_interrupt_leave();
+}
+
+static void USART3_TxComplete_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart3.uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
+    hal_serial_isr(&serial3, SERIAL_EVENT_TX_DMADONE);
+    rt_interrupt_leave();
+}
+#endif
+
 #ifdef USING_UART2
 static void USART2_RxError_IrqCallback(void);
 static void USART2_RxFull_IrqCallback(void);
@@ -130,7 +260,7 @@ static struct hc32_uart uart2 = {
         .dma_tx_tc_callback = &USART2_TX_DMA_TC_IrqCallback,
         .dma_tx_tc_flag = USART2_TX_DMA_TC_FLAG,
         .dma_tx_trig_sel = USART2_TX_DMA_TRIG_SEL,
-        .dma_tx_trig_evt_src = USART2_TX_DMA_TRIG_EVT_SRC,
+        .dma_tx_trig_evt_src = EVT_SRC_USART2_TI,
         .dma_tx_tc_int = USART2_TX_DMA_TC_INT,
         .tx_cplt_irq = USART2_TX_CPLT_IRQn,
         .tx_cplt_int_src = INT_SRC_USART2_TCI,
@@ -193,7 +323,7 @@ static void USART1_RxFull_IrqCallback(void);
 static void USART1_TX_DMA_TC_IrqCallback(void);
 static void USART1_TxComplete_IrqCallback(void);
 
-static struct serial_device serial3;
+static struct serial_device serial4;
 static struct hc32_uart uart1 = {
     .uart_periph = CM_USART1,
     .rx_err_irq = USART1_RX_ERR_IRQn,
@@ -210,7 +340,7 @@ static struct hc32_uart uart1 = {
         .dma_tx_tc_callback = &USART1_TX_DMA_TC_IrqCallback,
         .dma_tx_tc_flag = USART1_TX_DMA_TC_FLAG,
         .dma_tx_trig_sel = USART1_TX_DMA_TRIG_SEL,
-        .dma_tx_trig_evt_src = USART1_TX_DMA_TRIG_EVT_SRC,
+        .dma_tx_trig_evt_src = EVT_SRC_USART1_TI,
         .dma_tx_tc_int = USART1_TX_DMA_TC_INT,
         .tx_cplt_irq = USART1_TX_CPLT_IRQn,
         .tx_cplt_int_src = INT_SRC_USART1_TCI,
@@ -229,7 +359,7 @@ static void USART1_RxError_IrqCallback(void)
 static void USART1_RxFull_IrqCallback(void)
 {
     rt_interrupt_enter();
-    hal_serial_isr(&serial3, SERIAL_EVENT_RX_IND);
+    hal_serial_isr(&serial4, SERIAL_EVENT_RX_IND);
     rt_interrupt_leave();
 }
 
@@ -245,7 +375,133 @@ static void USART1_TxComplete_IrqCallback(void)
 {
     rt_interrupt_enter();
     USART_FuncCmd(uart1.uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
-    hal_serial_isr(&serial3, SERIAL_EVENT_TX_DMADONE);
+    hal_serial_isr(&serial4, SERIAL_EVENT_TX_DMADONE);
+    rt_interrupt_leave();
+}
+#endif
+
+#ifdef USING_UART8
+static void USART8_RxError_IrqCallback(void);
+static void USART8_RxFull_IrqCallback(void);
+static void USART8_TX_DMA_TC_IrqCallback(void);
+static void USART8_TxComplete_IrqCallback(void);
+
+static struct serial_device serial5;
+static struct hc32_uart uart8 = {
+    .uart_periph = CM_USART8,
+    .rx_err_irq = USART8_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART8_EI,
+    .rx_err_callback = &USART8_RxError_IrqCallback,
+    .rx_full_irq = USART8_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART8_RI,
+    .rx_full_callback = &USART8_RxFull_IrqCallback,
+    .dma = {
+        .dma_periph = USART8_TX_DMA_UNIT,
+        .dma_tx_ch = USART8_TX_DMA_CH,
+        .dma_tx_tc_irq = USART8_TX_DMA_TC_IRQn,
+        .dma_tx_tc_int_src = USART8_TX_DMA_TC_INT_SRC,
+        .dma_tx_tc_callback = &USART8_TX_DMA_TC_IrqCallback,
+        .dma_tx_tc_flag = USART8_TX_DMA_TC_FLAG,
+        .dma_tx_trig_sel = USART8_TX_DMA_TRIG_SEL,
+        .dma_tx_trig_evt_src = EVT_SRC_USART8_TI,
+        .dma_tx_tc_int = USART8_TX_DMA_TC_INT,
+        .tx_cplt_irq = USART8_TX_CPLT_IRQn,
+        .tx_cplt_int_src = INT_SRC_USART8_TCI,
+        .tx_cplt_callback = &USART8_TxComplete_IrqCallback,
+    }
+};
+
+static void USART8_RxError_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    (void)USART_ReadData(uart8.uart_periph);
+    USART_ClearStatus(uart8.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+    rt_interrupt_leave();
+}
+
+static void USART8_RxFull_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    hal_serial_isr(&serial5, SERIAL_EVENT_RX_IND);
+    rt_interrupt_leave();
+}
+
+static void USART8_TX_DMA_TC_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart8.uart_periph, USART_INT_TX_CPLT, ENABLE);
+    DMA_ClearTransCompleteStatus(uart8.dma.dma_periph, uart8.dma.dma_tx_tc_flag);
+    rt_interrupt_leave();
+}
+
+static void USART8_TxComplete_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart8.uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
+    hal_serial_isr(&serial5, SERIAL_EVENT_TX_DMADONE);
+    rt_interrupt_leave();
+}
+#endif
+
+#ifdef USING_UART4
+static void USART4_RxError_IrqCallback(void);
+static void USART4_RxFull_IrqCallback(void);
+static void USART4_TX_DMA_TC_IrqCallback(void);
+static void USART4_TxComplete_IrqCallback(void);
+
+static struct serial_device serial6;
+static struct hc32_uart uart4 = {
+    .uart_periph = CM_USART4,
+    .rx_err_irq = USART4_RX_ERR_IRQn,
+    .rx_err_int_src = INT_SRC_USART4_EI,
+    .rx_err_callback = &USART4_RxError_IrqCallback,
+    .rx_full_irq = USART4_RX_FULL_IRQn,
+    .rx_full_int_src = INT_SRC_USART4_RI,
+    .rx_full_callback = &USART4_RxFull_IrqCallback,
+    .dma = {
+        .dma_periph = USART4_TX_DMA_UNIT,
+        .dma_tx_ch = USART4_TX_DMA_CH,
+        .dma_tx_tc_irq = USART4_TX_DMA_TC_IRQn,
+        .dma_tx_tc_int_src = USART4_TX_DMA_TC_INT_SRC,
+        .dma_tx_tc_callback = &USART4_TX_DMA_TC_IrqCallback,
+        .dma_tx_tc_flag = USART4_TX_DMA_TC_FLAG,
+        .dma_tx_trig_sel = USART4_TX_DMA_TRIG_SEL,
+        .dma_tx_trig_evt_src = EVT_SRC_USART4_TI,
+        .dma_tx_tc_int = USART4_TX_DMA_TC_INT,
+        .tx_cplt_irq = USART4_TX_CPLT_IRQn,
+        .tx_cplt_int_src = INT_SRC_USART4_TCI,
+        .tx_cplt_callback = &USART4_TxComplete_IrqCallback,
+    }
+};
+
+static void USART4_RxError_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    (void)USART_ReadData(uart4.uart_periph);
+    USART_ClearStatus(uart4.uart_periph, (USART_FLAG_PARITY_ERR | USART_FLAG_FRAME_ERR | USART_FLAG_OVERRUN));
+    rt_interrupt_leave();
+}
+
+static void USART4_RxFull_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    hal_serial_isr(&serial6, SERIAL_EVENT_RX_IND);
+    rt_interrupt_leave();
+}
+
+static void USART4_TX_DMA_TC_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart4.uart_periph, USART_INT_TX_CPLT, ENABLE);
+    DMA_ClearTransCompleteStatus(uart4.dma.dma_periph, uart4.dma.dma_tx_tc_flag);
+    rt_interrupt_leave();
+}
+
+static void USART4_TxComplete_IrqCallback(void)
+{
+    rt_interrupt_enter();
+    USART_FuncCmd(uart4.uart_periph, (USART_TX | USART_INT_TX_CPLT), DISABLE);
+    hal_serial_isr(&serial6, SERIAL_EVENT_TX_DMADONE);
     rt_interrupt_leave();
 }
 #endif
@@ -574,24 +830,39 @@ static void uart_peripheral_init(void)
     FCG_Fcg0PeriphClockCmd(FCG0_PERIPH_AOS, ENABLE);
 
     /**** USART5 Init ****/
-    /* Configure USART RX/TX pin. */
     GPIO_SetFunc(GPIO_PORT_C, GPIO_PIN_12, GPIO_FUNC_20); // USART5-TX
     GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_02, GPIO_FUNC_20); // USART5-RX
-
-    /* Enable USART5 clock */
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART5, ENABLE);
+
+    /**** USART7 Init ****/
+    GPIO_SetFunc(GPIO_PORT_E, GPIO_PIN_07, GPIO_FUNC_39); // USART7-RX
+    GPIO_SetFunc(GPIO_PORT_E, GPIO_PIN_08, GPIO_FUNC_38); // USART7-TX
+    FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART7, ENABLE);
+
+    /**** USART3 Init ****/
+    GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_08, GPIO_FUNC_36); // USART3-TX
+    GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_09, GPIO_FUNC_37); // USART3-RX
+    FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART3, ENABLE);
 
     /**** USART2 Init ****/
     GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_05, GPIO_FUNC_20); // USART2-TX
     GPIO_SetFunc(GPIO_PORT_D, GPIO_PIN_06, GPIO_FUNC_20); // USART2-RX
-
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART2, ENABLE);
 
     /**** USART1 Init ****/
     GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_06, GPIO_FUNC_32); // USART1-TX
     GPIO_SetFunc(GPIO_PORT_B, GPIO_PIN_07, GPIO_FUNC_33); // USART1-RX
-
     FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART1, ENABLE);
+
+    /**** USART8 Init ****/
+    GPIO_SetFunc(GPIO_PORT_E, GPIO_PIN_00, GPIO_FUNC_20); // USART8-RX
+    GPIO_SetFunc(GPIO_PORT_E, GPIO_PIN_01, GPIO_FUNC_20); // USART8-TX
+    FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART8, ENABLE);
+
+    /**** USART4 Init ****/
+    GPIO_SetFunc(GPIO_PORT_C, GPIO_PIN_10, GPIO_FUNC_20); // USART4-TX
+    GPIO_SetFunc(GPIO_PORT_C, GPIO_PIN_11, GPIO_FUNC_20); // USART4-RX
+    FCG_Fcg3PeriphClockCmd(FCG3_PERIPH_USART4, ENABLE);
 }
 
 rt_err_t drv_usart_init(void)
@@ -617,6 +888,22 @@ rt_err_t drv_usart_init(void)
                                   &uart5);
 #endif /* USING_UART5 */
 
+#ifdef USING_UART7
+    serial1.ops = &__usart_ops;
+    #ifdef SERIAL1_DEFAULT_CONFIG
+    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
+    serial1.config = serial1_config;
+    #else
+    serial1.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial1,
+                                  "serial1",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
+                                  &uart7);
+#endif /* USING_UART7 */
+
 #ifdef USING_UART2
     serial2.ops = &__usart_ops;
     #ifdef SERIAL2_DEFAULT_CONFIG
@@ -633,7 +920,7 @@ rt_err_t drv_usart_init(void)
                                   &uart2);
 #endif /* USING_UART2 */
 
-#ifdef USING_UART1
+#ifdef USING_UART3
     serial3.ops = &__usart_ops;
     #ifdef SERIAL3_DEFAULT_CONFIG
     struct serial_configure serial3_config = SERIAL3_DEFAULT_CONFIG;
@@ -646,8 +933,56 @@ rt_err_t drv_usart_init(void)
     rt_err |= hal_serial_register(&serial3,
                                   "serial3",
                                   RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
+                                  &uart3);
+#endif /* USING_UART3 */
+
+#ifdef USING_UART1
+    serial4.ops = &__usart_ops;
+    #ifdef SERIAL4_DEFAULT_CONFIG
+    struct serial_configure serial4_config = SERIAL4_DEFAULT_CONFIG;
+    serial4.config = serial4_config;
+    #else
+    serial4.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial4,
+                                  "serial4",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
                                   &uart1);
 #endif /* USING_UART1 */
+
+#ifdef USING_UART8
+    serial5.ops = &__usart_ops;
+    #ifdef SERIAL5_DEFAULT_CONFIG
+    struct serial_configure serial5_config = SERIAL5_DEFAULT_CONFIG;
+    serial5.config = serial5_config;
+    #else
+    serial5.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial5,
+                                  "serial5",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
+                                  &uart8);
+#endif /* USING_UART8 */
+
+#ifdef USING_UART4
+    serial6.ops = &__usart_ops;
+    #ifdef SERIAL6_DEFAULT_CONFIG
+    struct serial_configure serial6_config = SERIAL6_DEFAULT_CONFIG;
+    serial6.config = serial6_config;
+    #else
+    serial6.config = config;
+    #endif
+
+    /* register serial device */
+    rt_err |= hal_serial_register(&serial6,
+                                  "serial6",
+                                  RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_DMA_TX,
+                                  &uart4);
+#endif /* USING_UART4 */
 
     return rt_err;
 }
