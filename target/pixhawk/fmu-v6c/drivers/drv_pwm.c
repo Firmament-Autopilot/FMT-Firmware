@@ -19,7 +19,6 @@
 #include "stm32h7xx_ll_rcc.h"
 #include "stm32h7xx_ll_tim.h"
 
-// #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
 #define PWM_FREQ_50HZ  (50)
@@ -44,20 +43,25 @@ void pwm_gpio_init(void)
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     /* Timer 1 gpio init */
+    /* TIM1 GPIO Configuration: CH1 on PA8, CH2/3/4 on PE11/PE13/PE14 */
     LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
-    /**TIM1 GPIO Configuration
-    PE9     ------> TIM1_CH1
-    PE11     ------> TIM1_CH2
-    PE13     ------> TIM1_CH3
-    PE14     ------> TIM1_CH4
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_9 | LL_GPIO_PIN_11 | LL_GPIO_PIN_13 | LL_GPIO_PIN_14;
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_11 | LL_GPIO_PIN_13 | LL_GPIO_PIN_14;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
     GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
     LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+    /* Configure PA8 for TIM1_CH1 (FMU_CH1) */
+    LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOA);
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_8;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
+    LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* Timer 4 gpio init */
     LL_AHB1_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
