@@ -22,7 +22,7 @@ target = "Pixhawk 6C"
     chan = 0
     type = "serial"
     name = "serial0"
-    baudrate = 57600
+    baudrate = 115200
 
     [[mavproxy.devices]]
     chan = 0
@@ -33,7 +33,13 @@ target = "Pixhawk 6C"
     [[mavproxy.devices]]
     chan = 1
     type = "serial"
-    name = "serial2"
+    name = "serial4"
+    baudrate = 115200
+
+    [[mavproxy.devices]]
+    chan = 2
+    type = "serial"
+    name = "serial6"
     baudrate = 115200
 
 # Pilot CMD Configuration
@@ -75,7 +81,12 @@ target = "Pixhawk 6C"
     [[actuator.devices]]
     protocol = "pwm"
     name = "aux_out"
-    freq = 50                   # pwm frequency in Hz
+    freq = 400                   # pwm frequency in Hz
+
+    [[actuator.devices]]
+    protocol = "pwm"
+    name = "main_out"
+    freq = 50                  # pwm frequency in Hz
 
     [[actuator.mappings]]
     from = "control_out"
