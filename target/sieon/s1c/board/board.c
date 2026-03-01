@@ -41,6 +41,7 @@
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 // #include "drv_i2c_soft.h"
+#include "drv_adc.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
@@ -70,8 +71,10 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 
-#include <wl32f436.h>
+
 #include <wl32_ll.h>
+#include <wl32f436.h>
+
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -311,8 +314,8 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
-    // /* adc driver init */
-    // RT_CHECK(drv_adc_init());
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
 
     // RT_CHECK(drv_aw2023_init("i2c0_dev0"));
 
@@ -386,8 +389,8 @@ void bsp_post_initialize(void)
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
-    // /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
 
     /* init led control */
     FMT_CHECK(led_control_init());
