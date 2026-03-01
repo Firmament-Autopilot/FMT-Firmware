@@ -22,36 +22,39 @@
 #include <string.h>
 
 #include <hc32_ll_clk.h>
-#include <hc32_ll_sram.h>
 #include <hc32_ll_efm.h>
 #include <hc32_ll_gpio.h>
+#include <hc32_ll_sram.h>
+
 
 // #include "board_device.h"
 #include "driver/airspeed/xgzp6899d.h"
 // #include "driver/barometer/spl06.h"
 #include "driver/gps/gps_ubx.h"
 // #include "driver/imu/bmi088.h"
-#include "driver/imu/sh5001.h"
 #include "driver/imu/qmi8a01.h"
+#include "driver/imu/sh5001.h"
 #include "driver/mag/qmc5883l.h"
 #include "driver/mag/qmc5883p.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/mtd/spi_tfcard.h"
+
 // #include "driver/range_finder/tofsense.h"
 // #include "drv_adc.h"
 // #include "drv_eth.h"
 // #include "drv_fdcan.h"
+#include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_i2c_soft.h"
 #include "drv_pwm.h"
 #include "drv_rc.h"
-// #include "drv_sdio.h"
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
+
 
 #include "default_config.h"
 #include "model/control/control_interface.h"
@@ -367,18 +370,18 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
-//     /* adc driver init */
-//     RT_CHECK(drv_adc_init());
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
 
-//     /* init rt_workqueue, which is used by tcpip stack */
-//     FMT_CHECK(rt_work_sys_workqueue_init());
+    //     /* init rt_workqueue, which is used by tcpip stack */
+    //     FMT_CHECK(rt_work_sys_workqueue_init());
 
-//     /* init lwip */
-//     extern int lwip_system_init();
-//     FMT_CHECK(lwip_system_init());
+    //     /* init lwip */
+    //     extern int lwip_system_init();
+    //     FMT_CHECK(lwip_system_init());
 
-//     /* eth driver init */
-//     RT_CHECK(drv_eth_init());
+    //     /* eth driver init */
+    //     RT_CHECK(drv_eth_init());
 
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
@@ -454,8 +457,8 @@ void bsp_post_initialize(void)
     /* init led control */
     FMT_CHECK(led_control_init());
 
-    // /* initialize power management unit */
-    // FMT_CHECK(pmu_init());
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
