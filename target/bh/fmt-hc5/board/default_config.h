@@ -23,7 +23,7 @@ target = "FMT-HC5"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n
-	name = "serial0"\n
+	name = "serial5"\n
 	baudrate = 57600\n
 	auto-switch = true\n
 	[[console.devices]]\n
