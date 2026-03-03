@@ -404,7 +404,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_tofsense_init("serial5"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    // FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_mag("mag0", 0));
     // FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));

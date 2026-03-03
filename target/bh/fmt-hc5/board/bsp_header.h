@@ -26,18 +26,6 @@
 #include "hc32_ll_fcg.h"
 #include "hc32_ll_gpio.h"
 
-// #include "stm32h7xx_hal.h"
-// #include "stm32h7xx_hal_fdcan.h"
-// #include "stm32h7xx_ll_bus.h"
-// #include "stm32h7xx_ll_cortex.h"
-// #include "stm32h7xx_ll_dma.h"
-// #include "stm32h7xx_ll_exti.h"
-// #include "stm32h7xx_ll_gpio.h"
-// #include "stm32h7xx_ll_pwr.h"
-// #include "stm32h7xx_ll_rcc.h"
-// #include "stm32h7xx_ll_system.h"
-// #include "stm32h7xx_ll_utils.h"
-
 #define USART5_RX_ERR_IRQn       (INT000_IRQn)
 #define USART5_RX_FULL_IRQn      (INT001_IRQn)
 

@@ -23,7 +23,7 @@ target = "FMT-HC5"\n
 [console]\n
 	[[console.devices]]\n
 	type = "serial"\n
-	name = "serial5"\n
+	name = "serial0"\n
 	baudrate = 57600\n
 	auto-switch = true\n
 	[[console.devices]]\n
@@ -34,7 +34,7 @@ target = "FMT-HC5"\n
 	[[mavproxy.devices]]\n
 	chan = 0\n
 	type = "serial"\n
-	name = "serial1"\n
+	name = "serial2"\n
 	baudrate = 57600\n
 	[[mavproxy.devices]]\n
 	chan = 0\n
@@ -50,10 +50,31 @@ target = "FMT-HC5"\n
     channel-num = 8\n
     sample-time = 0.05\n
     range = [1000,2000]\n
+    [[pilot-cmd.mode]]\n
+    mode = 5\n
+    channel = 5\n
+    range = [1000,1300]\n
+    [[pilot-cmd.mode]]\n
+    mode = 4\n
+    channel = 5\n
+    range = [1400,1600]\n
+    [[pilot-cmd.mode]]\n
+    mode = 3\n
+    channel = 5\n
+    range = [1700,2000]\n
+    [[pilot-cmd.command]]\n
+    type = 1\n
+    cmd = 1002\n
+    channel = 6\n
+    range = [1800,2000]\n
 [actuator]\n
     [[actuator.devices]]\n
     protocol = "pwm"\n
     name = "main_out"\n
-    freq = 400
+    freq = 400\n
+    [[actuator.mappings]]\n
+    from = "control_out"\n
+    to = "main_out"\n
+    chan-map = [[1,2,3,4],[1,2,3,4]]
 );
 // clang-format on
