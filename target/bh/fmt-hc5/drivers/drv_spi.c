@@ -346,7 +346,7 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_dev0, "spi1_dev0", "spi1", (void*)&spi1_cs0));
     }
 
-    /* attach spi_device_1 (QMI8A0a ACCEL/GYRO) to spi1 */
+    /* attach spi_device_1 (QMI8A01 ACCEL/GYRO) to spi1 */
     {
         static struct rt_spi_device rt_spi1_dev1;
         static struct hc32_spi_cs spi1_cs1 = { .gpio_port = GPIO_PORT_E, .pin = GPIO_PIN_02 };

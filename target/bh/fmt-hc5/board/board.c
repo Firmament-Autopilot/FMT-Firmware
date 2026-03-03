@@ -228,21 +228,6 @@ void Error_Handler(void)
     /* USER CODE END Error_Handler_Debug */
 }
 
-// static void NVIC_Configuration(void)
-// {
-//     extern const int _stext;
-
-//     /* NVIC Configuration */
-// #define NVIC_VTOR_MASK 0x3FFFFF80
-// #ifdef VECT_TAB_RAM
-//     /* Set the Vector Table base location at 0x10000000 */
-//     SCB->VTOR = (0x10000000 & NVIC_VTOR_MASK);
-// #else /* VECT_TAB_FLASH  */
-//     /* Set the Vector Table base location at 0x08000000 */
-//     SCB->VTOR = ((uint32_t)&_stext & NVIC_VTOR_MASK);
-// #endif
-// }
-
 /**
  * @brief System Clock Configuration
  * @retval None
@@ -330,9 +315,6 @@ void bsp_early_initialize(void)
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
-    // /* can driver init */
-    // RT_CHECK(drv_fdcan_init());
-
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
 
@@ -373,16 +355,6 @@ void bsp_initialize(void)
     /* adc driver init */
     RT_CHECK(drv_adc_init());
 
-    //     /* init rt_workqueue, which is used by tcpip stack */
-    //     FMT_CHECK(rt_work_sys_workqueue_init());
-
-    //     /* init lwip */
-    //     extern int lwip_system_init();
-    //     FMT_CHECK(lwip_system_init());
-
-    //     /* eth driver init */
-    //     RT_CHECK(drv_eth_init());
-
 #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
     FMT_CHECK(advertise_sensor_imu(0));
     FMT_CHECK(advertise_sensor_mag(0));
@@ -404,7 +376,7 @@ void bsp_initialize(void)
     // RT_CHECK(drv_tofsense_init("serial5"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-    FMT_CHECK(register_sensor_mag("mag0", 0));
+    // FMT_CHECK(register_sensor_mag("mag0", 0));
     // FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));
