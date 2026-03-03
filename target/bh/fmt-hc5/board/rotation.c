@@ -31,8 +31,3 @@ void qmi8a01_rotate_to_frd(float* val)
     val[1] = tmp;
     val[2] = -val[2];
 }
-
-void qmc5883l_rotate_to_frd(float* data, uint8_t dev_id)
-{
-    rotation(ROTATION_YAW_90, data, data + 1, data + 2);
-}
