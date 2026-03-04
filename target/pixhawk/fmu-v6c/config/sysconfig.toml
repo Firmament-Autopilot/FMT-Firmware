@@ -7,7 +7,7 @@ target = "Pixhawk 6C"
 [console]
     [[console.devices]]
     type = "serial"
-    name = "serial1"
+    name = "serial0"
     baudrate = 57600
     auto-switch = true
 
@@ -21,8 +21,8 @@ target = "Pixhawk 6C"
     [[mavproxy.devices]]
     chan = 0
     type = "serial"
-    name = "serial0"
-    baudrate = 115200
+    name = "serial1"
+    baudrate = 57600
 
     [[mavproxy.devices]]
     chan = 0

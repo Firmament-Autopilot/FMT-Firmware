@@ -23,8 +23,8 @@
 #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
 
 /*
-    UART7 ==> Serial0 (TELEM1)
-    UART3 ==> Serial1 (Debug)
+    UART3 ==> Serial0 (Debug)
+    UART7 ==> Serial1 (TELEM1)
     UART1 ==> Serial2 (GPS1)
     UART8 ==> Serial3 (GPS2)
     UART5 ==> Serial4 (TELEM2)
@@ -366,7 +366,7 @@ void USART3_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
     /* uart isr routine */
-    uart_isr(&serial1);
+    uart_isr(&serial0);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -430,7 +430,7 @@ void UART8_IRQHandler(void)
 #endif // USING_UART8
 
 #ifdef USING_UART7
-/* UART7 device driver structure (map to serial0) */
+/* UART7 device driver structure (map to serial1) */
 struct stm32_uart uart7 = {
     .uart_device = UART7,
     .irq = UART7_IRQn,
@@ -442,7 +442,7 @@ void UART7_IRQHandler(void)
     /* enter interrupt */
     rt_interrupt_enter();
     /* uart isr routine */
-    uart_isr(&serial0);
+    uart_isr(&serial1);
     /* leave interrupt */
     rt_interrupt_leave();
 }
@@ -986,19 +986,19 @@ rt_err_t drv_usart_init(void)
 #endif /* USING_UART2 */
 
 #ifdef USING_UART3
-    serial1.ops = &_usart_ops;
-    #ifdef SERIAL1_DEFAULT_CONFIG
-    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
-    serial1.config = serial1_config;
+    serial0.ops = &_usart_ops;
+    #ifdef SERIAL0_DEFAULT_CONFIG
+    struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
+    serial0.config = serial0_config;
     #else
-    serial1.config = config;
+    serial0.config = config;
     #endif
 
     NVIC_Configuration(&uart3);
     /* register serial device */
     rt_err |= hal_serial_register(
-        &serial1,
-        "serial1",
+        &serial0,
+        "serial0",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart3);
 #endif /* USING_UART3 */
@@ -1058,20 +1058,20 @@ rt_err_t drv_usart_init(void)
         &uart8);
 #endif /* USING_UART8 */
 
-/* USING_UART7: register serial0 for UART7 (TELEM1) */
+/* USING_UART7: register serial1 for UART7 (TELEM1) */
 #ifdef USING_UART7
-    serial0.ops = &_usart_ops;
-    #ifdef SERIAL0_DEFAULT_CONFIG
-    struct serial_configure serial0_config = SERIAL0_DEFAULT_CONFIG;
-    serial0.config = serial0_config;
+    serial1.ops = &_usart_ops;
+    #ifdef SERIAL1_DEFAULT_CONFIG
+    struct serial_configure serial1_config = SERIAL1_DEFAULT_CONFIG;
+    serial1.config = serial1_config;
     #else
-    serial0.config = config;
+    serial1.config = config;
     #endif
     NVIC_Configuration(&uart7);
     /* register serial device */
     rt_err |= hal_serial_register(
-        &serial0,
-        "serial0",
+        &serial1,
+        "serial1",
         RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_INT_RX,
         &uart7);
 #endif /* USING_UART7 */
