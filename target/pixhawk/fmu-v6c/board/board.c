@@ -362,9 +362,6 @@ void bsp_early_initialize(void)
 
     /* init console to enable console output */
     FMT_CHECK(console_init());
-    
-    /* Set console to serial1 (USART3 - Debug Console, PD8/PD9) */
-    FMT_CHECK(console_set_device("serial1"));
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
@@ -463,7 +460,8 @@ void bsp_initialize(void)
     RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
     RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
     //RT_CHECK(drv_mtf_01_init("serial4"));
-    RT_CHECK(gps_ubx_init("serial2", "gps"));
+    RT_CHECK(gps_ubx_init("serial2", "gps")); //GPS1
+    //RT_CHECK(gps_ubx_init("serial3", "gps")); //GPS2
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
