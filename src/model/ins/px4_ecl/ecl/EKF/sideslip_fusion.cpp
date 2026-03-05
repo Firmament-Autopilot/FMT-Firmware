@@ -45,7 +45,9 @@
 #include <ecl.h>
 #include <mathlib/mathlib.h>
 
+#if !defined(UNUSED)
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
+#endif /* UNUSED */
 
 void Ekf::fuseSideslip()
 {
