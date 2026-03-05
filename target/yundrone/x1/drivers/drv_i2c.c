@@ -23,7 +23,7 @@
 
 /* We want to ensure the real-time performace, so the i2c timeout here is
  * relatively short */
-#define I2C_TIMEOUT_US (10000)
+#define I2C_TIMEOUT_US (1000)
 
 struct stm32_i2c_bus {
     struct rt_i2c_bus parent;
