@@ -1,0 +1,52 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "defines": [
+                1,
+                "__RTTHREAD__",
+                "RT_USING_NEWLIB",
+                "VEHICLE_TYPE",
+                "HAVE_CCONFIG_H",
+                "Multicopter",
+                "AIRFRAME"
+            ],
+            "intelliSenseMode": "clang-x64",
+            "compilerPath": "D:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin/arm-none-eabi-gcc",
+            "cStandard": "c99",
+            "cppStandard": "c++11",
+            "includePath": [
+                "E:/SoftProject/FMT-Firmware/src",
+                "E:/SoftProject/FMT-Firmware/src/lib/mavlink/v2.0",
+                "E:/SoftProject/FMT-Firmware/src/lib/mavlink/v2.0/fmt",
+                "E:/SoftProject/FMT-Firmware/src/model/control/mc_controller",
+                "E:/SoftProject/FMT-Firmware/src/model/control/mc_controller/lib",
+                "E:/SoftProject/FMT-Firmware/src/model/fms/mc_fms",
+                "E:/SoftProject/FMT-Firmware/src/model/fms/mc_fms/lib",
+                "E:/SoftProject/FMT-Firmware/src/model/ins/cf_ins",
+                "E:/SoftProject/FMT-Firmware/src/model/ins/cf_ins/lib",
+                "E:/SoftProject/FMT-Firmware/src/model/plant/multicopter",
+                "E:/SoftProject/FMT-Firmware/src/model/plant/multicopter/lib",
+                "E:/SoftProject/FMT-Firmware/src/module/calibration",
+                "E:/SoftProject/FMT-Firmware/src/src",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/cplusplus",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/dfs/filesystems/elmfat",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/dfs/filesystems/romfs",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/dfs/include",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/drivers/include",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/finsh",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/libc/compilers/common",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/components/libc/compilers/newlib",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/include",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/libcpu/arm/common",
+                "E:/SoftProject/FMT-Firmware/rtos/rt-thread/libcpu/arm/cortex-m4",
+                "E:/SoftProject/FMT-Firmware/target/eway/fly_warrior",
+                "E:/SoftProject/FMT-Firmware/target/eway/fly_warrior/board",
+                "E:/SoftProject/FMT-Firmware/target/eway/fly_warrior/libraries/wl32_lib/CMSIS",
+                "E:/SoftProject/FMT-Firmware/target/eway/fly_warrior/libraries/wl32_lib/CMSIS/HC/WL32F4xx/Include",
+                "E:/SoftProject/FMT-Firmware/target/eway/fly_warrior/libraries/wl32_lib/wl32_ll_driver/inc"
+            ]
+        }
+    ],
+    "version": 4
+}
