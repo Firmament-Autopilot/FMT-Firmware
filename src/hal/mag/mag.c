@@ -88,7 +88,8 @@ rt_err_t hal_mag_register(mag_dev_t mag, const char* name, rt_uint32_t flag, voi
 
     device = &(mag->parent);
 
-    device->type = (mag->bus_type == MAG_SPI_BUS_TYPE) ? RT_Device_Class_SPIDevice : RT_Device_Class_I2CBUS;
+    /* register as SPI device when on SPI bus, otherwise as I2C device */
+    device->type = (mag->bus_type == MAG_SPI_BUS_TYPE) ? RT_Device_Class_SPIDevice : RT_Device_Class_I2CDevice;
     device->ref_count = 0;
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
