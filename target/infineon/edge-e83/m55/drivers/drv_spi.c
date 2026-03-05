@@ -140,10 +140,10 @@ static rt_err_t spi_configure(struct rt_spi_device* device, struct rt_spi_config
         spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA0_CPOL0;
         break;
     case RT_SPI_MODE_1:
-        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA0_CPOL1;
+        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA1_CPOL0;
         break;
     case RT_SPI_MODE_2:
-        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA1_CPOL0;
+        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA0_CPOL1;
         break;
     case RT_SPI_MODE_3:
         spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA1_CPOL1;
@@ -197,7 +197,7 @@ static const struct rt_spi_ops ifx_spi_ops = {
     .configure = spi_configure,
     .xfer = spixfer,
 };
-
+static struct rt_spi_device spi1_dev;
 rt_err_t drv_spi_init(void)
 {
     for (int i = 0; i < sizeof(ifx_spi_obj) / sizeof(ifx_spi_obj[0]); i++) {
@@ -207,5 +207,6 @@ rt_err_t drv_spi_init(void)
             rt_spi_bus_register(&obj->spi_bus, obj->name, &ifx_spi_ops);
         }
     }
+     rt_spi_bus_attach_device(&spi1_dev, "spi1_dev1", "spi1", (void*)GET_PIN(16,3));
     return RT_EOK;
 }
