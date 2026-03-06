@@ -360,7 +360,7 @@ static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 
 /* i2c device instances */
 static struct rt_i2c_device i2c3_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };                                                                                              
+                                          .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
 {

@@ -358,9 +358,9 @@ static struct rt_i2c_device i2c1_dev2 = { .slave_addr = QMC5883L_ADDRESS, /* 7 b
 static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
 static struct rt_i2c_device i2c2_dev2 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };       
+                                          .flags = 0 };
 static struct rt_i2c_device i2c3_dev1 = { .slave_addr = 0x28, /* MS4525 */
-                                          .flags = 0 };                                                                                                                                              
+                                          .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
 {

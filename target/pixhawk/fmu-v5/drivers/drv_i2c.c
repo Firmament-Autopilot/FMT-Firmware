@@ -60,7 +60,7 @@ static void i2c1_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C1);
     LL_I2C_SetOwnAddress2(I2C1, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C1);
@@ -107,7 +107,7 @@ static void i2c2_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C2);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C2);
     LL_I2C_SetOwnAddress2(I2C2, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C2);
@@ -154,7 +154,7 @@ static void i2c3_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C3);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C3);
     LL_I2C_SetOwnAddress2(I2C3, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C3);
@@ -201,7 +201,7 @@ static void i2c4_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C4);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C4);
     LL_I2C_SetOwnAddress2(I2C4, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C4);
