@@ -115,12 +115,12 @@ static void disp_param(param_t* p, int only_change, int show_default)
     }
 
     if (has_changed) {
-        printf("[*]", p->name);
+        printf("[*]");
     } else if (only_change) {
         /* only show changed parameter, just return */
         return;
     } else {
-        printf("   ", p->name);
+        printf("   ");
     }
 
     if (p->read_only) {
