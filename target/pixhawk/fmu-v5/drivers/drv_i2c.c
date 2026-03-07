@@ -60,7 +60,7 @@ static void i2c1_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C1);
     LL_I2C_SetOwnAddress2(I2C1, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C1);
@@ -107,7 +107,7 @@ static void i2c2_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C2);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C2);
     LL_I2C_SetOwnAddress2(I2C2, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C2);
@@ -154,7 +154,7 @@ static void i2c3_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C3);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C3);
     LL_I2C_SetOwnAddress2(I2C3, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C3);
@@ -201,7 +201,7 @@ static void i2c4_hw_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C4);
 
     /** I2C Initialization
-  */
+     */
     LL_I2C_EnableAutoEndMode(I2C4);
     LL_I2C_SetOwnAddress2(I2C4, 0, LL_I2C_OWNADDRESS2_NOMASK);
     LL_I2C_DisableOwnAddress2(I2C4);
@@ -217,9 +217,9 @@ static void i2c4_hw_init(void)
     LL_I2C_Init(I2C4, &I2C_InitStruct);
 }
 
-static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status, uint32_t timeout)
+static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status, uint64_t timeout_us)
 {
-    uint32_t time_start = systime_now_ms();
+    uint64_t time_start = systime_now_us();
 
     while (((READ_BIT(I2Cx->ISR, I2C_ISR_TXIS) == I2C_ISR_TXIS) ? 1UL : 0UL) == status) {
         /*  TXIS bit is not set when a NACK is received */
@@ -227,7 +227,7 @@ static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status
             return FMT_ERROR;
         }
 
-        if ((systime_now_ms() - time_start) > timeout) {
+        if ((systime_now_us() - time_start) > timeout_us) {
             return FMT_ETIMEOUT;
         }
     }
