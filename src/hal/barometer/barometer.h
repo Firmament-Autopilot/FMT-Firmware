@@ -43,8 +43,13 @@ struct baro_configure {
 struct baro_device {
     struct rt_device parent;
     const struct baro_ops* ops;
+    rt_uint8_t bus_type;
 };
 typedef struct baro_device* baro_dev_t;
+
+/* baro device bus type */
+#define BARO_SPI_BUS_TYPE 1
+#define BARO_I2C_BUS_TYPE 2
 
 /* baro driver opeations */
 struct baro_ops {

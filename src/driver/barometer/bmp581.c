@@ -166,7 +166,8 @@ static struct baro_ops _baro_ops = {
 rt_err_t drv_bmp581_init(const char* spi_device_name, const char* baro_device_name)
 {
     static struct baro_device baro_dev = {
-        .ops = &_baro_ops
+        .ops = &_baro_ops,
+        .bus_type = BARO_SPI_BUS_TYPE
     };
 
     baro_spi_dev = rt_device_find(spi_device_name);
