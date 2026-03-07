@@ -28,12 +28,10 @@ static rt_device_t systick_dev;
 
 /**
  * @brief Systick ISR callback
- *
  */
 static void systick_isr_cb(void)
 {
     __systime.msPeriod += __systime.msPerPeriod;
-    
     rt_tick_increase();
 }
 
@@ -94,22 +92,42 @@ uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
  */
 uint64_t systime_now_us(void)
 {
+    uint32_t systick_us_before = 0;
     uint32_t systick_us = 0;
+    uint64_t time_now_ms_before;
     uint64_t time_now_ms;
+    uint64_t now_us;
+    static uint64_t monotonic_us = 0;
     uint32_t level;
 
     if (systick_dev == NULL) {
         return 0;
     }
 
-    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+    time_now_ms_before = __systime.msPeriod;
+    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us_before, sizeof(uint32_t));
 
     level = rt_hw_interrupt_disable();
-    /* atomic read */
+
     time_now_ms = __systime.msPeriod;
+    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+
     rt_hw_interrupt_enable(level);
 
-    return time_now_ms * (uint64_t)1000 + systick_us;
+    now_us = time_now_ms * 1000ULL + systick_us;
+
+    /* Fix the race condition where the SysTick hardware timer has wrapped around */
+    if (systick_us < systick_us_before && time_now_ms == time_now_ms_before) {
+        now_us += (uint64_t)__systime.msPerPeriod * 1000ULL;
+    }
+
+    /* Ensure monotonic time */
+    while (now_us < monotonic_us) {
+        now_us += (uint64_t)__systime.msPerPeriod * 1000ULL;
+    }
+    monotonic_us = now_us;
+
+    return now_us;
 }
 
 /**
@@ -119,7 +137,7 @@ uint64_t systime_now_us(void)
  */
 uint32_t systime_now_ms(void)
 {
-    uint32_t time_now_ms = systime_now_us() / 1e3;
+    uint32_t time_now_ms = systime_now_us() / 1000ULL;
 
     return time_now_ms;
 }
@@ -148,7 +166,7 @@ void systime_udelay(uint32_t time_us)
  */
 inline void systime_mdelay(uint32_t time_ms)
 {
-    systime_udelay(time_ms * 1000);
+    systime_udelay(time_ms * 1000ULL);
 }
 
 /**
@@ -189,7 +207,8 @@ fmt_err_t systime_init(void)
     systick_device = (systick_dev_t)systick_dev;
 
     __systime.msPeriod = 0;
-    __systime.msPerPeriod = systick_device->ticks_per_isr / systick_device->ticks_per_us / 1e3;
+    /* Calculate integer ms without losing precision */
+    __systime.msPerPeriod = systick_device->ticks_per_isr / (systick_device->ticks_per_us * 1000);
 
     systick_device->systick_isr_cb = systick_isr_cb;
 
