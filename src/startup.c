@@ -88,7 +88,7 @@ void rtthread_startup(void)
 {
     /* disable interrupt first */
     rt_hw_interrupt_disable();
-
+    
     rt_assert_set_hook(assert_hook);
 
     /* board level initialization
@@ -119,6 +119,10 @@ void rtthread_startup(void)
 #ifdef RT_USING_SMP
     rt_hw_spin_lock(&_cpus_lock);
 #endif /*RT_USING_SMP*/
+
+    /* Ensure memory consistency before first context switch */
+    __DSB();
+    __ISB();
 
     /* start scheduler */
     rt_system_scheduler_start();

@@ -123,5 +123,19 @@
             "svdFile": "target/yundrone/x1/STM32H7x3.svd",
             "runToMain": true
         },
+        {
+            "name": "FMUv6c Debug ST-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "target/pixhawk/fmu-v6c/build/fmt_pixhawk-fmu-v6c.elf",
+            "serverpath": "${env:STLINK_SERVER}",
+            "servertype": "stlink",
+            "device": "STM32H743II",
+            "interface": "swd",
+            "armToolchainPath": "${env:RTT_EXEC_PATH}",
+            "svdFile": "target/pixhawk/fmu-v6c/STM32H7x3.svd",
+            "runToMain": true
+        },
     ]
 }

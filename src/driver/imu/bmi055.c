@@ -21,7 +21,7 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...)
+#define DRV_DBG(...) rt_kprintf(__VA_ARGS__)
 
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
@@ -558,11 +558,11 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
+rt_err_t drv_bmi055_init(const char* gyro_spi_device_name, const char* accel_spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     /* Initialize gyroscope */
 
-    gyro_spi_dev = rt_device_find(spi_device_name);
+    gyro_spi_dev = rt_device_find(gyro_spi_device_name);
     RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {
@@ -583,9 +583,14 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
     /* register gyro hal device */
     RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
+    /* Ensure the registered gyro device is initialized now so that
+     * later rt_device_open() won't trigger a deferred init depending
+     * on SPI state. This mirrors the fix applied for icm42688. */
+    RT_TRY(rt_device_init(&gyro_dev.parent));
+
     /* Initialize accelerometer */
 
-    accel_spi_dev = rt_device_find("spi1_dev4");
+    accel_spi_dev = rt_device_find(accel_spi_device_name);
     RT_ASSERT(accel_spi_dev != NULL);
     /* config spi */
     {
@@ -607,6 +612,9 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
 
     /* register accel hal device */
     RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
+
+    /* Ensure the registered accel device is initialized now. */
+    RT_TRY(rt_device_init(&accel_dev.parent));
 
     return RT_EOK;
 }
