@@ -395,6 +395,18 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_na
     } else if (dev->type == RT_Device_Class_I2CDevice) {
         use_spi = 0;
         /* I2C device: no open/config needed here; use i2c_read_regs/i2c_write_* helpers */
+        /* perform sanity checks: ensure the i2c bus is attached and slave addr is valid */
+        {
+            struct rt_i2c_device* i2c_dev = (struct rt_i2c_device*)dev;
+            if (i2c_dev->bus == RT_NULL) {
+                DRV_DBG("ms5611: i2c device '%s' has no bus attached\n", spi_device_name);
+                return RT_ERROR;
+            }
+            if (i2c_dev->slave_addr == 0) {
+                DRV_DBG("ms5611: i2c device '%s' has invalid slave addr 0\n", spi_device_name);
+                return RT_ERROR;
+            }
+        }
     } else {
         return RT_ERROR;
     }
