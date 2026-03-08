@@ -584,11 +584,6 @@ rt_err_t drv_bmi055_init(const char* gyro_spi_device_name, const char* accel_spi
     /* register gyro hal device */
     RT_TRY(hal_gyro_register(&gyro_dev, gyro_device_name, RT_DEVICE_FLAG_RDWR, RT_NULL));
 
-    /* Ensure the registered gyro device is initialized now so that
-     * later rt_device_open() won't trigger a deferred init depending
-     * on SPI state. This mirrors the fix applied for icm42688. */
-    RT_TRY(rt_device_init(&gyro_dev.parent));
-
     /* Initialize accelerometer */
 
     accel_spi_dev = rt_device_find(accel_spi_device_name);
@@ -613,9 +608,6 @@ rt_err_t drv_bmi055_init(const char* gyro_spi_device_name, const char* accel_spi
 
     /* register accel hal device */
     RT_TRY(hal_accel_register(&accel_dev, accel_device_name, RT_DEVICE_FLAG_RDWR, (void*)dev_flags));
-
-    /* Ensure the registered accel device is initialized now. */
-    RT_TRY(rt_device_init(&accel_dev.parent));
 
     return RT_EOK;
 }
