@@ -267,10 +267,6 @@ void rtthread_startup(void)
     rt_hw_spin_lock(&_cpus_lock);
 #endif /*RT_USING_SMP*/
 
-    /* Ensure memory consistency before first context switch */
-    __DSB();
-    __ISB();
-
     /* start scheduler */
     rt_system_scheduler_start();
 
