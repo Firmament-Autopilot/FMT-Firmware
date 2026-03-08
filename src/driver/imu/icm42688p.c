@@ -547,12 +547,5 @@ rt_err_t drv_icm42688_init(const char* spi_dev_name, const char* gyro_dev_name, 
     /* register accel hal device */
     RT_TRY(hal_accel_register(&accel_dev, accel_dev_name, RT_DEVICE_FLAG_RDWR, (void*)dev_id));
 
-    /* Ensure the registered devices are initialized now so that
-     * subsequent rt_device_open() calls won't re-run init that
-     * depends on the SPI bus state. This prevents failures when
-     * upper layers open the device later. */
-    RT_TRY(rt_device_init(&gyro_dev.parent));
-    RT_TRY(rt_device_init(&accel_dev.parent));
-
     return RT_EOK;
 }
