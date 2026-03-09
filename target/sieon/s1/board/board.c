@@ -37,7 +37,7 @@
 #include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
-#include "drv_pwm.h"
+#include "drv_actuator.h"
 #include "drv_rc.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
@@ -399,7 +399,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_spi_init());
 
     /* pwm driver init */
-    RT_CHECK(drv_pwm_init());
+    RT_CHECK(drv_actuator_init());
 
     /* can driver init */
     RT_CHECK(drv_fdcan_init());
