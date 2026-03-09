@@ -15,10 +15,14 @@
  *****************************************************************************/
 #include "driver/dshot/dshot.h"
 #include "hal/actuator/actuator.h"
+#include "model/fms/fms_interface.h"
 #include "stm32h7xx_ll_dma.h"
 #include "stm32h7xx_ll_rcc.h"
 #include "stm32h7xx_ll_tim.h"
 #include <firmament.h>
+
+
+MCN_DECLARE(fms_output);
 
 /* Track current protocol */
 static uint8_t main_protocol = ACT_PROTOCOL_PWM;
@@ -912,7 +916,15 @@ rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
             if (chan_sel & (1 << i)) {
                 val = *index;
                 float norm_throttle = (val > 1000) ? ((float)(val - 1000) / 1000.0f) : 0.0f;
-                uint16_t dshot_val = dshot_throttle_to_value(norm_throttle);
+                uint16_t dshot_val;
+                /* If vehicle is disarmed, send DSHOT motor stop (0). Otherwise map throttle
+                 * normally (note: mapping 0 -> 48 remains for standby/arm states). */
+                FMS_Out_Bus fms_out;
+                if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK && fms_out.status == VehicleStatus_Disarm) {
+                    dshot_val = DSHOT_CMD_MOTOR_STOP;
+                } else {
+                    dshot_val = dshot_throttle_to_value(norm_throttle);
+                }
                 uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
                 _dshot_pack(i, frame, current_arr);
                 index++;
@@ -955,7 +967,14 @@ static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
             if (chan_sel & (1 << i)) {
                 val = *index;
                 float norm_throttle = (val > 1000) ? ((float)(val - 1000) / 1000.0f) : 0.0f;
-                uint16_t dshot_val = dshot_throttle_to_value(norm_throttle);
+                uint16_t dshot_val;
+                /* See comment in main_pwm_write: output 0 while disarmed. */
+                FMS_Out_Bus fms_out;
+                if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK && fms_out.status == VehicleStatus_Disarm) {
+                    dshot_val = DSHOT_CMD_MOTOR_STOP;
+                } else {
+                    dshot_val = dshot_throttle_to_value(norm_throttle);
+                }
                 uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
                 /* Map aux channels (0-1) to timer index 3 (TIM8), ch_in_tim 0-1 */
                 _dshot_pack(MAIN_PWM_CHAN + i, frame, current_arr);
