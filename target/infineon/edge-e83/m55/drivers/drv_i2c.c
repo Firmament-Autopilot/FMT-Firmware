@@ -99,10 +99,7 @@ static rt_size_t _i2c_xfer(struct rt_i2c_bus *bus,
     i2c_obj = rt_container_of(bus, struct ifx_i2c, i2c_bus);
 
     addr7 = slave_addr;
-    if (addr7 > 0x7F)
-    {
-        addr7 >>= 1;
-    }
+    addr7 >>= 1;
     RT_ASSERT(addr7 <= 0x7F);
 
     for (i = 0; i < num; i++)

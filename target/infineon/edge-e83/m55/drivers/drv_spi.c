@@ -32,7 +32,7 @@ struct ifx_spi {
     const cy_stc_scb_spi_config_t* default_cfg;
     const mtb_hal_spi_configurator_t* hal_cfg;
     cy_stc_scb_spi_context_t* context;
-    mtb_hal_spi_t* spi_obj;
+    mtb_hal_spi_t spi_obj;
 
     uint16_t cs_pin;
 
@@ -68,13 +68,24 @@ static struct ifx_spi ifx_spi_obj[] = {
 
 static rt_device_t pin_dev;
 
+static rt_err_t ifx_spi_set_cs(struct ifx_spi* spi, rt_base_t level)
+{
+    RT_ASSERT(spi);
+    RT_ASSERT(pin_dev != RT_NULL);
+
+    struct device_pin_status pin_sta = { spi->cs_pin, (uint16_t)level };
+    pin_dev->write(pin_dev, 0, &pin_sta, sizeof(pin_sta));
+
+    return RT_EOK;
+}
+
 static void ifx_spi_irq_handler_generic(struct ifx_spi* spi)
 {
     rt_interrupt_enter();
 
-    mtb_hal_spi_process_interrupt(spi->spi_obj);
+    mtb_hal_spi_process_interrupt(&spi->spi_obj);
 
-    if (!mtb_hal_spi_is_busy(spi->spi_obj)) {
+    if (!mtb_hal_spi_is_busy(&spi->spi_obj)) {
         rt_completion_done(&spi->cpt);
     }
 
@@ -92,23 +103,26 @@ static rt_err_t ifx_hw_spi_init(struct ifx_spi* spi)
 {
     RT_ASSERT(spi);
 
-    pin_dev = rt_device_find("pin");
-    RT_ASSERT(pin_dev != RT_NULL);
-    RT_CHECK(rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR));
+    if (pin_dev == RT_NULL) {
+        pin_dev = rt_device_find("pin");
+        if (pin_dev == RT_NULL)
+            return -RT_ERROR;
 
-    struct device_pin_mode pin_mode = { spi->cs_pin, PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
-    pin_dev->control(pin_dev, 0, &pin_mode);
+        if (rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK)
+            return -RT_ERROR;
+    }
+
+    struct device_pin_mode pin_mode = { spi->cs_pin, PIN_MODE_OUTPUT, PIN_OUT_TYPE_PP };
+    if (pin_dev->control(pin_dev, 0, &pin_mode) != RT_EOK)
+        return -RT_ERROR;
+    ifx_spi_set_cs(spi, PIN_HIGH);
 
     spi->runtime_cfg = *spi->default_cfg;
-    spi->spi_obj = rt_malloc(sizeof(mtb_hal_spi_t));
-    if (!spi->spi_obj)
-        return -RT_ENOMEM;
-
     if (Cy_SCB_SPI_Init(spi->base, &spi->runtime_cfg, spi->context) != CY_SCB_SPI_SUCCESS)
         return -RT_ERROR;
     Cy_SCB_SPI_Enable(spi->base);
 
-    if (mtb_hal_spi_setup(spi->spi_obj, spi->hal_cfg, spi->context, NULL) != CY_RSLT_SUCCESS)
+    if (mtb_hal_spi_setup(&spi->spi_obj, spi->hal_cfg, spi->context, NULL) != CY_RSLT_SUCCESS)
         return -RT_ERROR;
 
     cy_israddress isr_func = RT_NULL;
@@ -122,28 +136,38 @@ static rt_err_t ifx_hw_spi_init(struct ifx_spi* spi)
 
     rt_completion_init(&spi->cpt);
     spi->freq = 1000000;
-    mtb_hal_spi_set_frequency(spi->spi_obj, spi->freq);
+    if (mtb_hal_spi_set_frequency(&spi->spi_obj, spi->freq) != CY_RSLT_SUCCESS)
+        return -RT_ERROR;
 
     return RT_EOK;
 }
 
 static rt_err_t spi_configure(struct rt_spi_device* device, struct rt_spi_configuration* cfg)
 {
+    RT_ASSERT(device);
+    RT_ASSERT(cfg);
+
     struct ifx_spi* spi = rt_container_of(device->bus, struct ifx_spi, spi_bus);
 
-    spi->spi_obj->data_bits = (cfg->data_width <= 8) ? 8 : 16;
+    if (cfg->data_width == 0 || cfg->data_width > 16)
+        return -RT_EINVAL;
+
+    spi->spi_obj.data_bits = (cfg->data_width <= 8) ? 8 : 16;
     spi->freq = cfg->max_hz;
-    mtb_hal_spi_set_frequency(spi->spi_obj, spi->freq);
+    if (mtb_hal_spi_set_frequency(&spi->spi_obj, spi->freq) != CY_RSLT_SUCCESS)
+        return -RT_ERROR;
+
+    spi->runtime_cfg.enableMsbFirst = ((cfg->mode & RT_SPI_MSB) == RT_SPI_MSB) ? true : false;
 
     switch (cfg->mode & RT_SPI_MODE_3) {
     case RT_SPI_MODE_0:
         spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA0_CPOL0;
         break;
     case RT_SPI_MODE_1:
-        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA0_CPOL1;
+        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA1_CPOL0;
         break;
     case RT_SPI_MODE_2:
-        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA1_CPOL0;
+        spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA0_CPOL1;
         break;
     case RT_SPI_MODE_3:
         spi->runtime_cfg.sclkMode = CY_SCB_SPI_CPHA1_CPOL1;
@@ -151,7 +175,11 @@ static rt_err_t spi_configure(struct rt_spi_device* device, struct rt_spi_config
     }
 
     Cy_SCB_SPI_Disable(spi->base, spi->context);
-    Cy_SCB_SPI_Init(spi->base, &spi->runtime_cfg, spi->context);
+    if (Cy_SCB_SPI_Init(spi->base, &spi->runtime_cfg, spi->context) != CY_SCB_SPI_SUCCESS) {
+        rt_kprintf("Cy_SCB_SPI_Init fail!!\n");
+        return -RT_ERROR;
+    }
+
     Cy_SCB_SPI_Enable(spi->base);
 
     return RT_EOK;
@@ -159,53 +187,72 @@ static rt_err_t spi_configure(struct rt_spi_device* device, struct rt_spi_config
 
 static rt_uint32_t spixfer(struct rt_spi_device* device, struct rt_spi_message* message)
 {
+    RT_ASSERT(device);
+    RT_ASSERT(message);
+
     struct ifx_spi* spi = rt_container_of(device->bus, struct ifx_spi, spi_bus);
-    rt_err_t result = RT_EOK;
+    cy_rslt_t result = CY_RSLT_SUCCESS;
+    rt_err_t wait_ret = RT_EOK;
 
     if (message->cs_take && !(device->config.mode & RT_SPI_NO_CS)) {
-        struct device_pin_status pin_sta = { spi->cs_pin, (device->config.mode & RT_SPI_CS_HIGH) ? PIN_HIGH : PIN_LOW };
-        pin_dev->write(pin_dev, 0, &pin_sta, sizeof(pin_sta));
+        ifx_spi_set_cs(spi, (device->config.mode & RT_SPI_CS_HIGH) ? PIN_HIGH : PIN_LOW);
     }
 
     if (message->length > 0) {
-        const void* tx_buf = message->send_buf;
-        void* rx_buf = message->recv_buf;
-        size_t len = message->length;
-        uint8_t dummy_fill = 0x00; 
-        if (mtb_hal_spi_transfer(spi->spi_obj,
-                                 tx_buf ? tx_buf : &dummy_fill,
-                                 len,
-                                 rx_buf,
-                                 rx_buf ? len : 0,
-                                 dummy_fill)
-            == CY_RSLT_SUCCESS) {
-            rt_completion_wait(&spi->cpt, RT_WAITING_FOREVER);
-        } else {
-            result = -RT_ERROR;
+        if (message->send_buf == RT_NULL && message->recv_buf == RT_NULL) {
+            result = (cy_rslt_t)-RT_EINVAL;
+            goto __exit;
+        }
+
+        mtb_hal_spi_clear(&spi->spi_obj);
+        rt_completion_init(&spi->cpt);
+
+        if (message->send_buf == RT_NULL && message->recv_buf != RT_NULL) {
+            result = mtb_hal_spi_transfer(&spi->spi_obj, RT_NULL, 0x00, message->recv_buf, message->length, 0x00);
+        } else if (message->send_buf != RT_NULL && message->recv_buf == RT_NULL) {
+            result = mtb_hal_spi_transfer(&spi->spi_obj, message->send_buf, message->length, RT_NULL, 0x00, 0x00);
+        } else if (message->send_buf != RT_NULL && message->recv_buf != RT_NULL) {
+            result = mtb_hal_spi_transfer(&spi->spi_obj, message->send_buf, message->length, message->recv_buf, message->length, 0x00);
+        }
+        if (result == CY_RSLT_SUCCESS) {
+            wait_ret = rt_completion_wait(&spi->cpt, RT_WAITING_FOREVER);
         }
     }
 
+__exit:
     if (message->cs_release && !(device->config.mode & RT_SPI_NO_CS)) {
-        struct device_pin_status pin_sta = { spi->cs_pin, (device->config.mode & RT_SPI_CS_HIGH) ? PIN_LOW : PIN_HIGH };
-        pin_dev->write(pin_dev, 0, &pin_sta, sizeof(pin_sta));
+        ifx_spi_set_cs(spi, (device->config.mode & RT_SPI_CS_HIGH) ? PIN_LOW : PIN_HIGH);
     }
 
-    return (result == RT_EOK) ? message->length : result;
+    if (result != CY_RSLT_SUCCESS || wait_ret != RT_EOK)
+        return 0;
+
+    return message->length;
 }
 
 static const struct rt_spi_ops ifx_spi_ops = {
     .configure = spi_configure,
     .xfer = spixfer,
 };
-
+#ifdef BSP_USING_SPI1
+static struct rt_spi_device spi1_dev;
+#endif
 rt_err_t drv_spi_init(void)
 {
     for (int i = 0; i < sizeof(ifx_spi_obj) / sizeof(ifx_spi_obj[0]); i++) {
         struct ifx_spi* obj = &ifx_spi_obj[i];
 
         if (ifx_hw_spi_init(obj) == RT_EOK) {
-            rt_spi_bus_register(&obj->spi_bus, obj->name, &ifx_spi_ops);
+            if (rt_spi_bus_register(&obj->spi_bus, obj->name, &ifx_spi_ops) != RT_EOK)
+                return -RT_ERROR;
+        } else {
+            return -RT_ERROR;
         }
     }
+#ifdef BSP_USING_SPI1
+    if (rt_spi_bus_attach_device(&spi1_dev, "spi1_dev1", "spi1", (void*)GET_PIN(16, 3)) != RT_EOK)
+        return -RT_ERROR;
+#endif
+
     return RT_EOK;
 }
