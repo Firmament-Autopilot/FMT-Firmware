@@ -95,16 +95,17 @@ uint64_t systime_now_us(void)
     uint32_t systick_us = 0;
     uint64_t time_now_ms;
     uint64_t now_us;
-    static uint64_t monotonic_us = 0;
     uint32_t level;
+    static uint64_t monotonic_us = 0;
 
     if (systick_dev == NULL) {
         return 0;
     }
 
     level = rt_hw_interrupt_disable();
-    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
+
     /* atomic read */
+    rt_device_read(systick_dev, SYSTICK_RD_TIME_US, &systick_us, sizeof(uint32_t));
     time_now_ms = __systime.msPeriod;
 
     now_us = time_now_ms * 1000ULL + systick_us;
@@ -115,11 +116,8 @@ uint64_t systime_now_us(void)
     }
 
     /* Ensure strict monotonicity */
-    if (now_us > monotonic_us) {
-        monotonic_us = now_us;
-    } else {
-        now_us = monotonic_us;
-    }
+    monotonic_us = now_us;
+
     rt_hw_interrupt_enable(level);
 
     return now_us;
@@ -132,7 +130,7 @@ uint64_t systime_now_us(void)
  */
 uint32_t systime_now_ms(void)
 {
-    uint32_t time_now_ms = systime_now_us() / 1e3;
+    uint32_t time_now_ms = systime_now_us() / 1000ULL;
 
     return time_now_ms;
 }
@@ -161,7 +159,7 @@ void systime_udelay(uint32_t time_us)
  */
 inline void systime_mdelay(uint32_t time_ms)
 {
-    systime_udelay(time_ms * 1000);
+    systime_udelay(time_ms * 1000ULL);
 }
 
 /**
@@ -203,7 +201,7 @@ fmt_err_t systime_init(void)
 
     __systime.msPeriod = 0;
     /* Calculate integer ms without losing precision */
-    __systime.msPerPeriod = systick_device->ticks_per_isr / (systick_device->ticks_per_us * 1000);
+    __systime.msPerPeriod = systick_device->ticks_per_isr / (systick_device->ticks_per_us * 1000UL);
 
     systick_device->systick_isr_cb = systick_isr_cb;
 
