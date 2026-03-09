@@ -86,9 +86,11 @@ fmt_err_t send_actuator_cmd(void)
     int16_t         rc_channel[16];
     uint16_t        chan_val[16] = { 0 };
 
-    DEFINE_TIMETAG(actuator_intv, 2);
-
-    if (check_timetag(TIMETAG(actuator_intv)) == 0) {
+    /* Only proceed when there's new data published from control_output or rc_trim_channels.
+     * This ensures actuator output is triggered by publish events (e.g. 500 Hz control loop)
+     * instead of a separate software timetag, reducing duplicate sends and aligning DShot
+     * updates to the control frames. */
+    if (mcn_poll(_control_out_nod) == false && mcn_poll(_rc_channels_nod) == false) {
         return FMT_EBUSY;
     }
 

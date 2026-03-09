@@ -183,8 +183,6 @@ static void _dshot_fire_tim(uint8_t tim_idx)
      * it wraps to 0, generates UEV, loads Row 0 to Active CCR, and triggers DMA! */
     map->tim->CNT = LL_TIM_GetAutoReload(map->tim);
 
-    SCB_CleanDCache_by_Addr((uint32_t*)dshot_dma_frame[tim_idx], sizeof(dshot_dma_frame[tim_idx]));
-
     LL_DMA_SetMemoryAddress(map->dma, map->stream, (uint32_t)&dshot_dma_frame[tim_idx][1][0]);
     LL_DMA_SetDataLength(map->dma, map->stream, DSHOT_DMA_WORDS);
     LL_DMA_EnableStream(map->dma, map->stream);
@@ -192,6 +190,11 @@ static void _dshot_fire_tim(uint8_t tim_idx)
     /* 4. Start! Enable UDE to let DMA respond to the upcoming UEV. */
     SET_BIT(map->tim->DIER, TIM_DIER_UDE);
     SET_BIT(map->tim->CR1, TIM_CR1_CEN);
+}
+
+static void _dshot_clean_cache(uint8_t tim_idx)
+{
+    SCB_CleanDCache_by_Addr((uint32_t*)dshot_dma_frame[tim_idx], sizeof(dshot_dma_frame[tim_idx]));
 }
 
 // #define DRV_DBG(...)          console_printf(__VA_ARGS__)
@@ -930,12 +933,18 @@ rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 index++;
             }
         }
-        if (chan_sel & 0x000F)
+        if (chan_sel & 0x000F) {
+            _dshot_clean_cache(0);
             _dshot_fire_tim(0);
-        if (chan_sel & 0x00F0)
+        }
+        if (chan_sel & 0x00F0) {
+            _dshot_clean_cache(1);
             _dshot_fire_tim(1);
-        if (chan_sel & 0x0F00)
+        }
+        if (chan_sel & 0x0F00) {
+            _dshot_clean_cache(2);
             _dshot_fire_tim(2);
+        }
         return size;
     }
 
@@ -981,8 +990,10 @@ static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
                 index++;
             }
         }
-        if (chan_sel & 0x0003)
+        if (chan_sel & 0x0003) {
+            _dshot_clean_cache(3);
             _dshot_fire_tim(3);
+        }
         return size;
     }
 
