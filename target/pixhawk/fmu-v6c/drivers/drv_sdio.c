@@ -25,15 +25,75 @@
     #include "stm32h7xx_ll_sdmmc.h"
 
     #define SD_TIMEOUT    5000
+    #define SD_BLOCK_SIZE 512U
     #define EVENT_TX_CPLT 0x00000001
     #define EVENT_RX_CPLT 0x00000002
     #define EVENT_ERROR   0x00000004
     #define EVENT_ABORT   0x00000008
 
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U) && defined(__SCB_DCACHE_LINE_SIZE)
+    #define SD_DMA_CACHE_ALIGNMENT __SCB_DCACHE_LINE_SIZE
+#else
+    #define SD_DMA_CACHE_ALIGNMENT 32U
+#endif
+
 /* SDMMC2 */
 extern SD_HandleTypeDef hsd2;
 
 static struct sd_device sd0_dev;
+
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+static void sd_dma_clean_buffer(const void* buffer, rt_size_t size)
+{
+    if (buffer != RT_NULL && size > 0) {
+        SCB_CleanDCache_by_Addr((uint32_t*)buffer, (int32_t)size);
+    }
+}
+
+static void sd_dma_invalidate_buffer(void* buffer, rt_size_t size)
+{
+    if (buffer != RT_NULL && size > 0) {
+        SCB_InvalidateDCache_by_Addr(buffer, (int32_t)size);
+    }
+}
+#else
+static void sd_dma_clean_buffer(const void* buffer, rt_size_t size)
+{
+    RT_UNUSED(buffer);
+    RT_UNUSED(size);
+}
+
+static void sd_dma_invalidate_buffer(void* buffer, rt_size_t size)
+{
+    RT_UNUSED(buffer);
+    RT_UNUSED(size);
+}
+#endif
+
+static rt_uint8_t* sd_dma_alloc_buffer(rt_size_t size, rt_size_t* aligned_size)
+{
+    rt_size_t dma_size;
+    rt_uint8_t* buffer;
+
+    dma_size = (size + SD_DMA_CACHE_ALIGNMENT - 1U) & ~(SD_DMA_CACHE_ALIGNMENT - 1U);
+    buffer = rt_malloc_align(dma_size, SD_DMA_CACHE_ALIGNMENT);
+    if (buffer == RT_NULL) {
+        return RT_NULL;
+    }
+
+    if (aligned_size != RT_NULL) {
+        *aligned_size = dma_size;
+    }
+
+    return buffer;
+}
+
+static void sd_dma_free_buffer(rt_uint8_t* buffer)
+{
+    if (buffer != RT_NULL) {
+        rt_free_align(buffer);
+    }
+}
 
 void HAL_SD_TxCpltCallback(SD_HandleTypeDef* hsd)
 {
@@ -99,11 +159,24 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
 {
     rt_err_t err = RT_EOK;
     rt_uint32_t status;
+    rt_uint8_t* dma_buffer;
+    rt_size_t data_size;
+    rt_size_t dma_size;
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
 
     RT_ASSERT(sd_handle != RT_NULL);
 
-    if (HAL_SD_WriteBlocks_DMA(sd_handle, buffer, sector, count) != HAL_OK) {
+    data_size = count * SD_BLOCK_SIZE;
+    dma_buffer = sd_dma_alloc_buffer(data_size, &dma_size);
+    if (dma_buffer == RT_NULL) {
+        return RT_ENOMEM;
+    }
+
+    rt_memcpy(dma_buffer, buffer, data_size);
+    sd_dma_clean_buffer(dma_buffer, dma_size);
+
+    if (HAL_SD_WriteBlocks_DMA(sd_handle, dma_buffer, sector, count) != HAL_OK) {
+        sd_dma_free_buffer(dma_buffer);
         return RT_ERROR;
     }
 
@@ -122,6 +195,8 @@ static rt_err_t write_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, 
         }
     }
 
+    sd_dma_free_buffer(dma_buffer);
+
     return err;
 }
 
@@ -129,11 +204,23 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
 {
     rt_err_t err = RT_EOK;
     rt_uint32_t status;
+    rt_uint8_t* dma_buffer;
+    rt_size_t data_size;
+    rt_size_t dma_size;
     SD_HandleTypeDef* sd_handle = sd->parent.user_data;
 
     RT_ASSERT(sd_handle != RT_NULL);
 
-    if (HAL_SD_ReadBlocks_DMA(sd_handle, buffer, sector, count) != HAL_OK) {
+    data_size = count * SD_BLOCK_SIZE;
+    dma_buffer = sd_dma_alloc_buffer(data_size, &dma_size);
+    if (dma_buffer == RT_NULL) {
+        return RT_ENOMEM;
+    }
+
+    sd_dma_invalidate_buffer(dma_buffer, dma_size);
+
+    if (HAL_SD_ReadBlocks_DMA(sd_handle, dma_buffer, sector, count) != HAL_OK) {
+        sd_dma_free_buffer(dma_buffer);
         return RT_ERROR;
     }
 
@@ -150,7 +237,14 @@ static rt_err_t read_disk(sd_dev_t sd, rt_uint8_t* buffer, rt_uint32_t sector, r
             }
             sys_msleep(1);
         }
+
+        if (err == RT_EOK) {
+            sd_dma_invalidate_buffer(dma_buffer, dma_size);
+            rt_memcpy(buffer, dma_buffer, data_size);
+        }
     }
+
+    sd_dma_free_buffer(dma_buffer);
 
     return err;
 }

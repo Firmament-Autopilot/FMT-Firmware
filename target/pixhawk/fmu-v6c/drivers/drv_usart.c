@@ -138,12 +138,16 @@ static void uart_dma_invalidate_buffer(void* buffer, rt_size_t size)
 
 static rt_err_t uart_dma_prepare_rx_buffer(struct stm32_uart* uart, rt_size_t size)
 {
+    rt_size_t aligned_size;
+
     if (size == 0) {
         return RT_ERROR;
     }
 
-    if (uart->dma.rx_buffer != RT_NULL && uart->dma.rx_buffer_size == size) {
-        rt_memset(uart->dma.rx_buffer, 0, size);
+    aligned_size = (size + UART_DMA_CACHE_ALIGNMENT - 1U) & ~(UART_DMA_CACHE_ALIGNMENT - 1U);
+
+    if (uart->dma.rx_buffer != RT_NULL && uart->dma.rx_buffer_size == aligned_size) {
+        rt_memset(uart->dma.rx_buffer, 0, aligned_size);
         return RT_EOK;
     }
 
@@ -153,13 +157,13 @@ static rt_err_t uart_dma_prepare_rx_buffer(struct stm32_uart* uart, rt_size_t si
         uart->dma.rx_buffer_size = 0;
     }
 
-    uart->dma.rx_buffer = rt_malloc_align(size, UART_DMA_CACHE_ALIGNMENT);
+    uart->dma.rx_buffer = rt_malloc_align(aligned_size, UART_DMA_CACHE_ALIGNMENT);
     if (uart->dma.rx_buffer == RT_NULL) {
         return RT_ENOMEM;
     }
 
-    uart->dma.rx_buffer_size = size;
-    rt_memset(uart->dma.rx_buffer, 0, size);
+    uart->dma.rx_buffer_size = aligned_size;
+    rt_memset(uart->dma.rx_buffer, 0, aligned_size);
 
     return RT_EOK;
 }
@@ -320,9 +324,14 @@ static void dma_uart_rx_idle_isr(struct serial_device* serial)
     remain_bytes = LL_DMA_GetDataLength(uart->dma.dma_device, uart->dma.rx_stream);
     /* total received bytes */
     recv_total_index = uart->dma.setting_recv_len - remain_bytes;
-    /* received bytes at this time */
     start_index = uart->dma.last_recv_index;
-    recv_len = recv_total_index - uart->dma.last_recv_index;
+
+    if (recv_total_index >= uart->dma.last_recv_index) {
+        recv_len = recv_total_index - uart->dma.last_recv_index;
+    } else {
+        recv_len = uart->dma.setting_recv_len - uart->dma.last_recv_index + recv_total_index;
+    }
+
     /* update last received total bytes */
     uart->dma.last_recv_index = recv_total_index;
     /* enable interrupt */
@@ -1049,8 +1058,10 @@ static void _dma_receive(struct stm32_uart* uart)
 
 static void _dma_rx_config(struct stm32_uart* uart, rt_size_t size)
 {
+    (void)size;
+
     /* set expected receive length */
-    uart->dma.setting_recv_len = size;
+    uart->dma.setting_recv_len = uart->dma.rx_buffer_size;
     uart->dma.last_recv_index = 0;
 
     LL_DMA_DeInit(uart->dma.dma_device, uart->dma.rx_stream);
@@ -1067,11 +1078,11 @@ static void _dma_rx_config(struct stm32_uart* uart, rt_size_t size)
 
     LL_DMA_SetPeriphAddress(uart->dma.dma_device, uart->dma.rx_stream, LL_USART_DMA_GetRegAddr(uart->uart_device, LL_USART_DMA_REG_DATA_RECEIVE));
     LL_DMA_SetMemoryAddress(uart->dma.dma_device, uart->dma.rx_stream, (uint32_t)uart->dma.rx_buffer);
-    LL_DMA_SetDataLength(uart->dma.dma_device, uart->dma.rx_stream, size);
+    LL_DMA_SetDataLength(uart->dma.dma_device, uart->dma.rx_stream, uart->dma.rx_buffer_size);
     LL_USART_ConfigAsyncMode(uart->uart_device);
     LL_USART_DisableFIFO(uart->uart_device);
 
-    uart_dma_invalidate_buffer(uart->dma.rx_buffer, size);
+    uart_dma_invalidate_buffer(uart->dma.rx_buffer, uart->dma.rx_buffer_size);
 
     /* start to receive data */
     _dma_receive(uart);
