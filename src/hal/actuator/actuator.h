@@ -26,6 +26,7 @@ extern "C" {
 #define ACT_CMD_CHANNEL_ENABLE  0x20
 #define ACT_CMD_CHANNEL_DISABLE 0x21
 #define ACT_CMD_SET_PROTOCOL    0x22
+#define ACT_CMD_DSHOT_SEND      0x23
 
 enum {
     ACT_PROTOCOL_PWM = 1,
@@ -57,6 +58,12 @@ struct actuator_device {
     rt_bool_t suspend;     /* suspend device */
 };
 typedef struct actuator_device* actuator_dev_t;
+struct dshot_command {
+    rt_uint16_t chan_mask; /* chan_mask: bitmask of channels to target (1<<chan) */
+    rt_uint16_t value;     /* value: DShot command value (0..47) */
+    rt_uint8_t repeat;     /* repeat: number of times to send (e.g. 6) */
+    rt_uint16_t wait_ms;   /* wait_ms: milliseconds to wait after the full sequence */
+};
 
 struct actuator_ops {
     /**
