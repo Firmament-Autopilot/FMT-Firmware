@@ -514,24 +514,29 @@ static struct gps_ops gps_ops = {
 
 static void gps_probe_entry(void* parameter)
 {
-    uint32_t baudrate;
+    uint32_t baudrate, prev_baudrate;
+    struct serial_device* serial_dev = (struct serial_device*)ubx_decoder.ubx_dev;
     uint8_t i;
-    
+
+    prev_baudrate = serial_dev->config.baud_rate;
+
     for (i = 0; i < CONFIGURE_RETRY_MAX; i++) {
         if (probe(&baudrate) == RT_EOK) {
             if (configure_by_ubx(baudrate) == RT_EOK) {
-                printf("UBX GPS detected.\n");
                 break;
             }
         }
     }
 
     if (i >= CONFIGURE_RETRY_MAX) {
-        printf("GPS configuration fail! Please check if GPS module has connected.");
+        set_baudrate(ubx_decoder.ubx_dev, prev_baudrate);
+        printf("UBX-GPS not detected on %s, swith back to default baudrate %d.\n", ubx_decoder.ubx_dev->parent.name, prev_baudrate);
 
         /* If configure failed, skip configure step and just wait pvt msg. since some ublox gps doesn't support ubx configure */
         ubx_decoder.use_nav_pvt = true;
         ubx_decoder.configured = true;
+    } else {
+        printf("UBX-GPS detected on %s, with baudrate of %d.\n", ubx_decoder.ubx_dev->parent.name, baudrate);
     }
 
     if (ubx_decoder.configured) {
