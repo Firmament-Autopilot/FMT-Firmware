@@ -155,9 +155,9 @@ static void _dshot_pack(uint8_t chan, uint16_t frame, uint32_t arr)
     uint8_t ch_in_tim = chan % 4U;
     uint32_t period = arr + 1U;
 
-    /* +4U rounds to nearest: (x + divisor/2) / divisor */
-    uint32_t duty_0 = (period * 3U + 4U) / 8U; /* T0H: ~37.5% */
-    uint32_t duty_1 = (period * 6U + 4U) / 8U; /* T1H: ~75.0% */
+    /* +3U rounds to nearest: (x + divisor/2) / divisor */
+    uint32_t duty_0 = (period * 2U + 3U) / 6U; /* T0H: ~33.3% */
+    uint32_t duty_1 = (period * 4U + 3U) / 6U; /* T1H: ~66.7% */
 
     for (uint8_t i = 0; i < DSHOT_BITS; i++) {
         dshot_dma_frame[tim_idx][i][ch_in_tim] = (frame & (0x8000U >> i)) ? duty_1 : duty_0;
