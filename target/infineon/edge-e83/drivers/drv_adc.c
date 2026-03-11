@@ -1,0 +1,133 @@
+/******************************************************************************
+ * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *****************************************************************************/
+#include <firmament.h>
+
+#include "adc_config.h"
+#include "board.h"
+#include "cy_autanalog.h"
+#include "hal/adc/adc.h"
+
+struct ifx_adc {
+    struct adc_device adc_dev;
+    const struct ifx_sar_adc_config* cfg;
+    const char* name;
+};
+
+static struct ifx_adc ifx_adc_obj[] = {
+#ifdef BSP_USING_ADC0
+    ADC0_CONFIG,
+#endif
+};
+
+static rt_bool_t autonomous_initialized = RT_FALSE;
+
+static rt_err_t ifx_autonomous_analog_init_once(void)
+{
+    if (autonomous_initialized)
+        return RT_EOK;
+
+    if (Cy_AutAnalog_Init(&autonomous_analog_init) != CY_AUTANALOG_SUCCESS) {
+        rt_kprintf("Autonomous Analog init failed\n");
+        return RT_ERROR;
+    }
+
+    Cy_AutAnalog_SetInterruptMask(CY_AUTANALOG_INT_SAR0_RESULT);
+    Cy_AutAnalog_StartAutonomousControl();
+
+    autonomous_initialized = RT_TRUE;
+
+    return RT_EOK;
+}
+
+static rt_err_t ifx_adc_enable(adc_dev_t adc_dev, uint8_t enable)
+{
+    if (!autonomous_initialized) {
+        return RT_ERROR;
+    }
+
+    if (enable == ADC_CMD_ENABLE) {
+        rt_kprintf("ADC enabled");
+    } else if (enable == ADC_CMD_DISABLE) {
+        rt_kprintf("ADC disabled");
+    } else {
+        return RT_EINVAL;
+    }
+
+    return RT_EOK;
+}
+
+static rt_err_t ifx_adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt)
+{
+    struct ifx_adc* adc;
+    const struct ifx_sar_adc_config* cfg;
+    int32_t counts;
+    int16_t mv;
+
+    adc = rt_container_of(adc_dev, struct ifx_adc, adc_dev);
+    cfg = adc->cfg;
+
+    if (channel >= 8) {
+        return RT_EINVAL;
+    }
+
+    counts = Cy_AutAnalog_SAR_ReadResult(
+        cfg->sar_idx,
+        cfg->input,
+        channel);
+
+    mv = Cy_AutAnalog_SAR_CountsTo_mVolts(
+        cfg->sar_idx,
+        cfg->low_power,
+        cfg->sequencer,
+        cfg->input,
+        channel,
+        cfg->vref_mv,
+        counts);
+
+    *mVolt = (uint32_t)mv;
+
+    return RT_EOK;
+}
+
+static const struct adc_ops ifx_adc_ops = {
+    .enable = ifx_adc_enable,
+    .measure = ifx_adc_measure,
+};
+
+int drv_adc_init(void)
+{
+    rt_err_t result;
+
+    result = ifx_autonomous_analog_init_once();
+    if (result != RT_EOK) {
+        return result;
+    }
+
+    for (int i = 0;
+         i < (int)(sizeof(ifx_adc_obj) / sizeof(ifx_adc_obj[0]));
+         i++) {
+        ifx_adc_obj[i].adc_dev.ops = &ifx_adc_ops;
+        result = hal_adc_register(&ifx_adc_obj[i].adc_dev,
+                                  ifx_adc_obj[i].name,
+                                  RT_DEVICE_FLAG_RDONLY,
+                                  RT_NULL);
+        if (result != RT_EOK) {
+            return result;
+        }
+    }
+
+    return RT_EOK;
+}

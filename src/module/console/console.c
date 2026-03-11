@@ -22,6 +22,12 @@
 
 #define CONSOLE_BUFF_SIZE 1024
 
+#ifdef RT_CONSOLE_DEVICE_NAME
+#define CONSOLE_DEVICE_NAME RT_CONSOLE_DEVICE_NAME
+#else
+#define CONSOLE_DEVICE_NAME "serial0"
+#endif
+
 /* console write hook function, can be reimplemented by other modules. */
 RT_WEAK void console_write_hook(const char* content, uint32_t len);
 
@@ -197,7 +203,7 @@ fmt_err_t console_enable_input(void)
 fmt_err_t console_init(void)
 {
     /* console use serial0 by default */
-    console_dev = rt_device_find("serial0");
+    console_dev = rt_device_find(CONSOLE_DEVICE_NAME);
     if (console_dev == RT_NULL) {
         /* can not find console device */
         return FMT_EEMPTY;

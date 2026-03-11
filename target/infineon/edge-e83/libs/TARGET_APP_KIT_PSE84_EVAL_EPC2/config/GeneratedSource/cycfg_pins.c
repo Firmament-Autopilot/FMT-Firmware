@@ -4,8 +4,8 @@
  * Description:
  * Pin configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.60.0
- * device-db 4.35.0.9884
+ * Configurator Backend 3.70.0
+ * device-db 4.34.0.9502
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -843,8 +843,8 @@ const cy_stc_gpio_pin_config_t CYBSP_WIFI_HOST_WAKE_config =
     .outVal = 0,
     .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
     .hsiom = CYBSP_WIFI_HOST_WAKE_HSIOM,
-    .intEdge = CY_GPIO_INTR_DISABLE,
-    .intMask = 0UL,
+    .intEdge = CY_GPIO_INTR_RISING,
+    .intMask = 1UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
     .slewRate = CY_GPIO_SLEW_FAST,
     .driveSel = CY_GPIO_DRIVE_1_2,

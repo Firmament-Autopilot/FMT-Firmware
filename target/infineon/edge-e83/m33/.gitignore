@@ -17,6 +17,7 @@ documentation/html
 *.obj
 *.out
 *.bak
+*.asm
 *.dep
 *.lib
 *.i

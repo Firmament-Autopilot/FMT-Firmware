@@ -1,9 +1,9 @@
-#include <rtthread.h>
 #include <rtdevice.h>
+#include <rtthread.h>
 #include <string.h>
 
-#include "edge_ipc_common.h"
-#include "edge_ipc_device.h"
+#include "drv_ipc.h"
+#include "ipc_common.h"
 
 static rt_device_t g_ipc_dev = RT_NULL;
 static rt_thread_t g_ipc_thread = RT_NULL;
@@ -24,13 +24,11 @@ static void cm55_dump_frame(const edge_rc_frame_t* frame)
 
 static rt_bool_t cm55_verify_request(const edge_rc_frame_t* frame)
 {
-    if (frame->role != RC_ROLE_M33 || frame->magic != RC_MAGIC_WORD)
-    {
+    if (frame->role != RC_ROLE_M33 || frame->magic != RC_MAGIC_WORD) {
         return RT_FALSE;
     }
 
-    if (edge_rc_checksum(frame) != frame->checksum)
-    {
+    if (edge_rc_checksum(frame) != frame->checksum) {
         return RT_FALSE;
     }
 
@@ -42,12 +40,9 @@ void edge_ipc_demo_run(void)
     edge_rc_frame_t rx;
     edge_rc_frame_t tx;
 
-    while (1)
-    {
-        while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1)
-        {
-            if (!cm55_verify_request(&rx))
-            {
+    while (1) {
+        while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
+            if (!cm55_verify_request(&rx)) {
                 continue;
             }
 
@@ -72,38 +67,32 @@ static void edge_ipc_demo_entry(void* parameter)
 int ipc_test_run(void)
 {
     g_ipc_dev = edge_ipc_device_find();
-    if (g_ipc_dev == RT_NULL)
-    {
-        if (edge_ipc_device_register() != RT_EOK)
-        {
+    if (g_ipc_dev == RT_NULL) {
+        if (edge_ipc_device_register() != RT_EOK) {
             rt_kprintf("[M55][IPC] device register failed\r\n");
             return -RT_ERROR;
         }
 
         g_ipc_dev = edge_ipc_device_find();
-        if (g_ipc_dev == RT_NULL)
-        {
+        if (g_ipc_dev == RT_NULL) {
             rt_kprintf("[M55][IPC] device not found\r\n");
             return -RT_ERROR;
         }
     }
 
-    if (rt_device_open(g_ipc_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK)
-    {
+    if (rt_device_open(g_ipc_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
         rt_kprintf("[M55][IPC] open device failed\r\n");
         return -RT_ERROR;
     }
 
-    if (g_ipc_thread == RT_NULL)
-    {
+    if (g_ipc_thread == RT_NULL) {
         g_ipc_thread = rt_thread_create("ipc_demo",
                                         edge_ipc_demo_entry,
                                         RT_NULL,
                                         2048,
                                         25,
                                         10);
-        if (g_ipc_thread == RT_NULL)
-        {
+        if (g_ipc_thread == RT_NULL) {
             rt_kprintf("[M55][IPC] create thread failed\r\n");
             return -RT_ENOMEM;
         }

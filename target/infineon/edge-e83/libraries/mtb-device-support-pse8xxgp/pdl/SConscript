@@ -19,6 +19,8 @@ src = Split('''
             drivers/source/cy_ipc_sema.c
             drivers/source/cy_ipc_drv.c
             drivers/source/cy_scb_common.c
+            drivers/source/cy_dma.c
+            drivers/source/cy_sysfault.c
             ''')
 
 # Add toolchain-specific assembly files
@@ -29,103 +31,54 @@ elif rtconfig.PLATFORM in ['armclang']:
 
 path = [cwd + '/drivers/include', cwd + '/drivers/third_party/ethernet/include']
 
+# SOC series specific files
 if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
     src += ['drivers/source/cy_syspm_ppu.c']
     src += ['drivers/source/cy_syspm_pdcm.c']
     src += ['drivers/source/cy_axidmac.c']
     src += ['drivers/source/ppu_v1.c']
     src += ['devices/source/cy_device.c']
+    path += [cwd + '/devices/include']
+    path += [cwd + '/devices/include/ip']
 
+# Ethernet driver
 if GetDepend('BSP_USING_ETH'):
     src += ['drivers/source/cy_ethif.c']
+    src += ['drivers/source/cy_ephy.c']
     src += ['drivers/third_party/ethernet/src/edd.c']
     src += ['drivers/third_party/ethernet/src/edd_rx.c']
     src += ['drivers/third_party/ethernet/src/edd_tx.c']
 
+# UART driver
+if GetDepend(['BSP_USING_UART']):
+    src += ['drivers/source/cy_scb_uart.c']
 
+# SPI driver
+if GetDepend('BSP_USING_SPI'):
+    src += ['drivers/source/cy_scb_spi.c']
 
-src += ['drivers/source/cy_dma.c']
-src += ['drivers/source/cy_scb_uart.c']
-src += ['drivers/source/cy_sd_host.c']
-src += ['drivers/source/cy_scb_i2c.c']
+# I2C driver
+if GetDepend('BSP_USING_HW_I2C'):
+    src += ['drivers/source/cy_scb_i2c.c']
 
-if GetDepend(['RT_USING_ADC']):
-    if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
-        src += ['drivers/source/cy_autanalog_sar.c']
-        src += ['drivers/source/cy_autanalog_ac.c']
-        src += ['drivers/source/cy_autanalog.c']
-        src += ['drivers/source/cy_autanalog_ctb.c']
-        src += ['drivers/source/cy_autanalog_dac.c']
-        src += ['drivers/source/cy_autanalog_ptc.c']
-        src += ['drivers/source/cy_systrimm.c']
-        src += ['drivers/source/cy_rram.c']
+# PWM driver
+if GetDepend(['BSP_USING_PWM']):
+    src += ['drivers/source/cy_tcpwm_pwm.c']
 
-if GetDepend(['BSP_USING_SDCARD']) or GetDepend(['BSP_USING_WIFI_HOST_DRIVER']):
+# ADC driver
+if GetDepend('BSP_USING_ADC'):
+    src += ['drivers/source/cy_autanalog_sar.c']
+    src += ['drivers/source/cy_autanalog_ac.c']
+    src += ['drivers/source/cy_autanalog.c']
+    src += ['drivers/source/cy_autanalog_ctb.c']
+    src += ['drivers/source/cy_autanalog_dac.c']
+    src += ['drivers/source/cy_autanalog_ptc.c']
+    src += ['drivers/source/cy_systrimm.c']
+    src += ['drivers/source/cy_rram.c']
+
+# SD card driver
+if GetDepend('BSP_USING_SDCARD'):
     src += ['drivers/source/cy_sd_host.c']
-
-
-src += ['drivers/source/cy_tcpwm_pwm.c']
-
-
-src += ['drivers/source/cy_scb_spi.c']
-
-if GetDepend('BSP_USING_LCD'):
-    src += Split('''
-            drivers/source/cy_mipidsi.c
-            drivers/third_party/COMPONENT_GFXSS/cy_graphics.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_setting.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_tools.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_util.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_os.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_interface.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_core.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_shell.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_database.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_lcd.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/dc_layer_feature.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_platform.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000/viv_dc_hardware.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_stroke.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_path.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_matrix.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_image.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_dump.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_os.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_kernel.c
-            drivers/third_party/COMPONENT_GFXSS/vsi/gcnano/vg_lite_hal.c
-            
-            ''')
-            
-path += [cwd + '/drivers/include']
-path += [cwd + '/drivers/third_party/COMPONENT_GFXSS']
-path += [cwd + '/drivers/third_party/COMPONENT_GFXSS/vsi/dcnano8000']
-path += [cwd + '/drivers/third_party/COMPONENT_GFXSS/vsi/gcnano']
-
-if GetDepend('BSP_USING_RTC'):
-    src += ['drivers/source/cy_rtc.c']
-
-if GetDepend(['BSP_USING_HYPERAM']) or GetDepend(['BSP_USING_FLASH']):
-    src += ['drivers/source/cy_smif.c']
-    src += ['drivers/source/cy_smif_memslot.c']
-    src += ['drivers/source/cy_smif_hb_flash.c']
-    src += ['drivers/source/cy_smif_sfdp.c']
-    src += ['drivers/source/cy_smif_memnum.c']
-
-if GetDepend(['RT_USING_WDT']):
-    src += ['drivers/source/cy_wdt.c']
-
-if GetDepend(['RT_USING_HWTIMER']):
-    src += ['drivers/source/cy_tcpwm_counter.c']
-
-if GetDepend(['RT_USING_AUDIO']):
-    src += ['drivers/source/cy_tdm.c']
-    src += ['drivers/source/cy_pdm_pcm_v2.c']
-
-if GetDepend(['SOC_SERIES_IFX_PSOCE84']):
-    path += [cwd + '/devices/include']
-    path += [cwd + '/devices/include/ip']
 
 group = DefineGroup('Libraries', src, depend=[''], CPPPATH=path)
 Return('group')
-
