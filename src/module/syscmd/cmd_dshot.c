@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "FMS.h"
-#include "driver/dshot/dshot.h"
 #include "hal/actuator/actuator.h"
 #include "model/fms/fms_interface.h"
 #include "module/syscmd/optparse.h"

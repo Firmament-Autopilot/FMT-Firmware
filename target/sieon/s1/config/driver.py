@@ -11,7 +11,6 @@ DRIVERS = [
     'airspeed/ms4525.c',
     'mtd/gd25qxx.c',
     'range_finder/tofsense.c',
-    'dshot/dshot.c',
 ]
 
 DRIVERS_CPPPATH = []

@@ -23,10 +23,31 @@
 extern "C" {
 #endif
 
-#define ACT_CMD_CHANNEL_ENABLE  0x20
-#define ACT_CMD_CHANNEL_DISABLE 0x21
-#define ACT_CMD_SET_PROTOCOL    0x22
-#define ACT_CMD_DSHOT_SEND      0x23
+#define ACT_CMD_CHANNEL_ENABLE     0x20
+#define ACT_CMD_CHANNEL_DISABLE    0x21
+#define ACT_CMD_SET_PROTOCOL       0x22
+#define ACT_CMD_DSHOT_SEND         0x23
+
+#define DSHOT_MIN_THROTTLE         48
+#define DSHOT_MAX_THROTTLE         2047
+#define DSHOT_RANGE                (DSHOT_MAX_THROTTLE - DSHOT_MIN_THROTTLE)
+
+/* DShot commands, valid in range 0..47. */
+#define DSHOT_CMD_MOTOR_STOP       0
+#define DSHOT_CMD_BEEP1            1
+#define DSHOT_CMD_BEEP2            2
+#define DSHOT_CMD_BEEP3            3
+#define DSHOT_CMD_BEEP4            4
+#define DSHOT_CMD_BEEP5            5
+#define DSHOT_CMD_ESC_INFO         6
+#define DSHOT_CMD_SPIN_DIRECTION_1 7
+#define DSHOT_CMD_SPIN_DIRECTION_2 8
+#define DSHOT_CMD_3D_MODE_OFF      9
+#define DSHOT_CMD_3D_MODE_ON       10
+#define DSHOT_CMD_SETTINGS_REQUEST 11
+#define DSHOT_CMD_SAVE_SETTINGS    12
+
+#define DSHOT_CMD_MAX              47
 
 enum {
     ACT_PROTOCOL_PWM = 1,
@@ -97,6 +118,8 @@ struct actuator_ops {
     rt_size_t (*act_write)(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
 };
 
+uint16_t dshot_pack_frame(uint16_t value, bool telemetry);
+uint16_t dshot_throttle_to_value(float norm_throttle);
 rt_err_t hal_actuator_register(actuator_dev_t dev, const char* name, rt_uint32_t flag, void* data);
 
 #ifdef __cplusplus
