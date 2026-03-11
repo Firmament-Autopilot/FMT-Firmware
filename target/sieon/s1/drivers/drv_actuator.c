@@ -57,7 +57,7 @@ typedef struct {
     uint16_t wait_ms;
     bool active;
 } dshot_cmd_state_t;
-static volatile dshot_cmd_state_t dshot_cmds[MAIN_OUT_CHAN_NUM + AUX_OUT_CHAN_NUM] = { 0 };
+static volatile dshot_cmd_state_t dshot_cmds[MAIN_OUT_CHAN_NUM] = { 0 };
 
 /* Channels serviced by the periodic actuator loop. */
 static volatile uint16_t main_polled_mask = 0;
@@ -66,7 +66,7 @@ static volatile uint16_t aux_polled_mask = 0;
 /* One DMA stream is used per timer, with 4 CCR values updated on each event. */
 
 #define DSHOT_BITS           16U
-#define DSHOT_TIMER_COUNT    4U
+#define DSHOT_TIMER_COUNT    3U
 #define DSHOT_TIMER_CHANNELS 4U
 #define DSHOT_FRAME_ROWS     17U
 #define DSHOT_DMA_ROWS       18U
@@ -86,7 +86,6 @@ static const struct dshot_dma_map dshot_dma_map[DSHOT_TIMER_COUNT] = {
     { DMA2, LL_DMA_STREAM_2, LL_DMAMUX1_REQ_TIM1_UP, TIM1 },
     { DMA2, LL_DMA_STREAM_3, LL_DMAMUX1_REQ_TIM4_UP, TIM4 },
     { DMA2, LL_DMA_STREAM_4, LL_DMAMUX1_REQ_TIM5_UP, TIM5 },
-    { DMA2, LL_DMA_STREAM_5, LL_DMAMUX1_REQ_TIM8_UP, TIM8 },
 };
 
 static void _dshot_clear_dma_flags(DMA_TypeDef* dma, uint32_t stream)
@@ -681,21 +680,14 @@ static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_config
     if (cfg->protocol == ACT_PROTOCOL_PWM) {
         DRV_DBG("main out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
-        LL_RCC_ClocksTypeDef rcc_clocks;
-        LL_RCC_GetSystemClocksFreq(&rcc_clocks);
-        uint32_t psc_apb1 = (rcc_clocks.PCLK1_Frequency * 2) / PWM_TIMER_FREQUENCY - 1;
-        uint32_t psc_apb2 = (rcc_clocks.PCLK2_Frequency * 2) / PWM_TIMER_FREQUENCY - 1;
-        LL_TIM_SetPrescaler(TIM1, psc_apb2);
-        LL_TIM_SetPrescaler(TIM4, psc_apb1);
-        LL_TIM_SetPrescaler(TIM5, psc_apb1);
-
         if (__main_set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
             return RT_ERROR;
         }
     } else if (cfg->protocol == ACT_PROTOCOL_DSHOT) {
-        DRV_DBG("main out configured: dshot speed:%d\n", cfg->dshot_config.speed);
         uint16_t speed = cfg->dshot_config.speed;
-        if (speed > 0) {
+        DRV_DBG("main out configured: dshot speed:%d\n", cfg->dshot_config.speed);
+
+        if (speed == 150 || speed == 300 || speed == 600) {
             LL_RCC_ClocksTypeDef rcc_clocks;
             LL_RCC_GetSystemClocksFreq(&rcc_clocks);
             uint32_t psc_apb1 = (rcc_clocks.PCLK1_Frequency * 2) / DSHOT_TIMER_FREQUENCY - 1;
@@ -708,32 +700,10 @@ static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_config
             LL_TIM_SetAutoReload(TIM1, new_arr - 1);
             LL_TIM_SetAutoReload(TIM4, new_arr - 1);
             LL_TIM_SetAutoReload(TIM5, new_arr - 1);
-            /* DShot updates CCR through DMA burst, so preload must stay enabled. */
-            LL_TIM_OC_EnablePreload(TIM1, LL_TIM_CHANNEL_CH1);
-            LL_TIM_OC_EnablePreload(TIM1, LL_TIM_CHANNEL_CH2);
-            LL_TIM_OC_EnablePreload(TIM1, LL_TIM_CHANNEL_CH3);
-            LL_TIM_OC_EnablePreload(TIM1, LL_TIM_CHANNEL_CH4);
-            LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH1);
-            LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH2);
-            LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH3);
-            LL_TIM_OC_EnablePreload(TIM4, LL_TIM_CHANNEL_CH4);
-            LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH1);
-            LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH2);
-            LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH3);
-            LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH4);
-            TIM1->CCR1 = 0;
-            TIM1->CCR2 = 0;
-            TIM1->CCR3 = 0;
-            TIM1->CCR4 = 0;
-            TIM4->CCR1 = 0;
-            TIM4->CCR2 = 0;
-            TIM4->CCR3 = 0;
-            TIM4->CCR4 = 0;
-            TIM5->CCR1 = 0;
-            TIM5->CCR2 = 0;
-            TIM5->CCR3 = 0;
-            TIM5->CCR4 = 0;
+
             _setup_dshot_dma();
+        } else {
+            return RT_EINVAL;
         }
     }
     /* update device configuration */
@@ -747,31 +717,11 @@ static rt_err_t aux_pwm_config(actuator_dev_t dev, const struct actuator_configu
     if (cfg->protocol == ACT_PROTOCOL_PWM) {
         DRV_DBG("aux out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
 
-        LL_RCC_ClocksTypeDef rcc_clocks;
-        LL_RCC_GetSystemClocksFreq(&rcc_clocks);
-        uint32_t psc_apb2 = (rcc_clocks.PCLK2_Frequency * 2) / PWM_TIMER_FREQUENCY - 1;
-        LL_TIM_SetPrescaler(TIM8, psc_apb2);
-
         if (__aux_set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
             return RT_ERROR;
         }
-    } else if (cfg->protocol == ACT_PROTOCOL_DSHOT) {
-        DRV_DBG("aux out configured: dshot speed:%d\n", cfg->dshot_config.speed);
-        uint16_t speed = cfg->dshot_config.speed;
-        if (speed > 0) {
-            LL_RCC_ClocksTypeDef rcc_clocks;
-            LL_RCC_GetSystemClocksFreq(&rcc_clocks);
-            uint32_t psc_apb2 = (rcc_clocks.PCLK2_Frequency * 2) / DSHOT_TIMER_FREQUENCY - 1;
-            LL_TIM_SetPrescaler(TIM8, psc_apb2);
-
-            uint32_t new_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
-            LL_TIM_SetAutoReload(TIM8, new_arr - 1);
-            LL_TIM_OC_EnablePreload(TIM8, LL_TIM_CHANNEL_CH1);
-            LL_TIM_OC_EnablePreload(TIM8, LL_TIM_CHANNEL_CH2);
-            TIM8->CCR1 = 0;
-            TIM8->CCR2 = 0;
-            _setup_dshot_dma();
-        }
+    } else {
+        return RT_EINVAL;
     }
     /* update device configuration */
     dev->config = *cfg;
@@ -912,30 +862,6 @@ static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
 
         DRV_DBG("aux out disabled\n");
         break;
-    case ACT_CMD_SET_PROTOCOL: {
-        uint8_t protocol = *(uint8_t*)arg;
-        if (protocol == ACT_PROTOCOL_DSHOT || protocol == ACT_PROTOCOL_PWM) {
-            aux_protocol = protocol;
-            dev->config.protocol = protocol;
-            ret = RT_EOK;
-        } else {
-            ret = RT_EINVAL;
-        }
-        break;
-    }
-    case ACT_CMD_DSHOT_SEND: {
-        struct dshot_command* c = (struct dshot_command*)arg;
-        if (c == RT_NULL) {
-            ret = RT_EINVAL;
-            break;
-        }
-        if (dev->config.protocol != ACT_PROTOCOL_DSHOT) {
-            ret = RT_EINVAL;
-            break;
-        }
-        ret = _dshot_send_command(c->chan_mask, c->value, c->repeat ? c->repeat : 1, c->wait_ms, true);
-        break;
-    }
     default:
         ret = RT_EINVAL;
         break;
@@ -1064,49 +990,6 @@ static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
                 __aux_write_pwm(i, dc);
                 index++;
             }
-        }
-    } else if (aux_protocol == ACT_PROTOCOL_DSHOT) {
-        uint32_t current_arr = LL_TIM_GetAutoReload(TIM8);
-        uint16_t packed_sel_aux = 0;
-
-        aux_polled_mask |= chan_sel;
-
-        for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
-            if (chan_sel & (1 << i)) {
-                uint16_t dshot_val;
-                val = *index;
-                uint8_t global_idx = MAIN_OUT_CHAN_NUM + i;
-
-                if (dshot_cmds[global_idx].active) {
-                    if (dshot_cmds[global_idx].repeat > 0) {
-                        dshot_val = dshot_cmds[global_idx].cmd;
-                        dshot_cmds[global_idx].repeat--;
-                        if (dshot_cmds[global_idx].repeat == 0) {
-                            dshot_cmds[global_idx].wait_start_ms = systime_now_ms();
-                            if (dshot_cmds[global_idx].wait_ms == 0) {
-                                dshot_cmds[global_idx].active = false;
-                            }
-                        }
-                    } else {
-                        dshot_val = DSHOT_CMD_MOTOR_STOP;
-                        if ((systime_now_ms() - dshot_cmds[global_idx].wait_start_ms) >= dshot_cmds[global_idx].wait_ms) {
-                            dshot_cmds[global_idx].active = false;
-                        }
-                    }
-                } else {
-                    float norm_throttle = (val > 1000) ? ((float)(val - 1000) / 1000.0f) : 0.0f;
-                    dshot_val = dshot_throttle_to_value(norm_throttle);
-                }
-
-                uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
-                _dshot_pack(global_idx, frame, current_arr);
-                packed_sel_aux |= (1u << i);
-                index++;
-            }
-        }
-        if (packed_sel_aux & 0x0003) {
-            _dshot_clean_cache(3);
-            _dshot_fire_tim(3);
         }
     } else {
         /* unsupported protocol */
