@@ -86,14 +86,6 @@ fmt_err_t send_actuator_cmd(void)
     int16_t rc_channel[16];
     uint16_t chan_val[16] = { 0 };
 
-    /* Only proceed when there's new data published from control_output or rc_trim_channels.
-     * This ensures actuator output is triggered by publish events (e.g. 500 Hz control loop)
-     * instead of a separate software timetag, reducing duplicate sends and aligning DShot
-     * updates to the control frames. */
-    if (mcn_poll(_control_out_nod) == false && mcn_poll(_rc_channels_nod) == false) {
-        return FMT_EBUSY;
-    }
-
     for (i = 0; i < mapping_num; i++) {
         rt_size_t size = mapping_list[i].map_size;
         uint16_t chan_sel = 0;
@@ -101,7 +93,8 @@ fmt_err_t send_actuator_cmd(void)
         if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
             if (has_poll_control_out == false) {
                 if (mcn_poll(_control_out_nod) == false) {
-                    return FMT_ERROR;
+                    /* no control_out topic updated, continue for next mapping */
+                    continue;
                 }
                 mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
                 has_poll_control_out = true;
@@ -116,7 +109,8 @@ fmt_err_t send_actuator_cmd(void)
         } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
             if (has_poll_rc_channels == false) {
                 if (mcn_poll(_rc_channels_nod) == 0) {
-                    return FMT_ERROR;
+                    /* no rc_channels topic updated, continue for next mapping */
+                    continue;
                 }
                 mcn_copy(MCN_HUB(rc_trim_channels), _rc_channels_nod, &rc_channel);
                 has_poll_rc_channels = true;
