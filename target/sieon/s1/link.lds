@@ -156,6 +156,15 @@ SECTIONS
     } > SRAMD1
     __bss_end = .;
 
+    /* DShot DMA buffers must reside in D2 SRAM so DMA1/DMA2 can access them */
+    .dshot_dma_buf (NOLOAD) : ALIGN(32)
+    {
+        . = ALIGN(32);
+        *(.dshot_dma_buf)
+        *(.dshot_dma_buf.*)
+        . = ALIGN(32);
+    } > SRAMD2
+
     .RxDecripSection (NOLOAD) : ALIGN(4)
     {
         . = ALIGN(4);

@@ -122,7 +122,7 @@ static rt_size_t hal_actuator_write(rt_device_t dev, rt_off_t pos, const void* b
 
 /**
  * @brief register an actuator device
- * 
+ *
  * @param dev actuator device
  * @param name device name
  * @param flag device flag
