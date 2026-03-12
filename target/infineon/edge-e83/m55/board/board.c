@@ -262,15 +262,6 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
-    /* pwm driver init */
-    // RT_CHECK(drv_pwm_init());
-    
-    // /* can driver init */
-    // RT_CHECK(drv_fdcan_init());
-
-    // /* init remote controller driver */
-    // RT_CHECK(drv_rc_init());
-
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -309,8 +300,8 @@ void bsp_initialize(void)
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
-//     /* init parameter system */
-//     FMT_CHECK(param_init());
+    /* init parameter system */
+    FMT_CHECK(param_init());
 
     /* init mavproxy */
     FMT_CHECK(mavproxy_init());
