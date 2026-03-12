@@ -1,12 +1,12 @@
-#include <rtthread.h>
 #include <rtdevice.h>
+#include <rtthread.h>
 #include <string.h>
 
-#include "edge_ipc_device.h"
-#include "edge_ipc_common.h"
+#include "drv_ipc.h"
+#include "ipc_common.h"
 
-#define EDGE_IPC_DEMO_HZ               (500U)
-#define EDGE_IPC_DEMO_PRINT_MS          (5000U)
+#define EDGE_IPC_DEMO_HZ       (500U)
+#define EDGE_IPC_DEMO_PRINT_MS (5000U)
 
 static void cm33_dump_frame(const edge_rc_frame_t* frame)
 {
@@ -32,8 +32,7 @@ static void cm33_fill_rc_frame(edge_rc_frame_t* frame, rt_uint32_t seq)
     frame->magic = RC_MAGIC_WORD;
     frame->seq = seq;
 
-    for (i = 0; i < RC_CHANNEL_COUNT; i++)
-    {
+    for (i = 0; i < RC_CHANNEL_COUNT; i++) {
         frame->channel[i] = (rt_uint16_t)(1000U + (i * 100U) + (seq % 500U));
     }
 
@@ -44,20 +43,17 @@ static rt_bool_t cm33_verify_echo(const edge_rc_frame_t* frame)
 {
     edge_rc_frame_t expected;
 
-    if (frame->role != RC_ROLE_M55_ECHO || frame->magic != RC_MAGIC_WORD)
-    {
+    if (frame->role != RC_ROLE_M55_ECHO || frame->magic != RC_MAGIC_WORD) {
         return RT_FALSE;
     }
 
-    if (edge_rc_checksum(frame) != frame->checksum)
-    {
+    if (edge_rc_checksum(frame) != frame->checksum) {
         return RT_FALSE;
     }
 
     cm33_fill_rc_frame(&expected, frame->seq);
 
-    if (rt_memcmp(frame->channel, expected.channel, sizeof(expected.channel)) != 0)
-    {
+    if (rt_memcmp(frame->channel, expected.channel, sizeof(expected.channel)) != 0) {
         return RT_FALSE;
     }
 
@@ -69,8 +65,7 @@ static rt_tick_t cm33_calc_delay_tick(void)
     rt_tick_t delay_tick;
 
     delay_tick = (EDGE_IPC_DEMO_HZ >= RT_TICK_PER_SECOND) ? 1U : (RT_TICK_PER_SECOND / EDGE_IPC_DEMO_HZ);
-    if (delay_tick == 0U)
-    {
+    if (delay_tick == 0U) {
         delay_tick = 1U;
     }
 
@@ -91,24 +86,20 @@ void ipc_test_run(void)
     rt_bool_t has_ok = RT_FALSE;
 
     ipc_dev = edge_ipc_device_find();
-    if (ipc_dev == RT_NULL)
-    {
-        if (edge_ipc_device_register() != RT_EOK)
-        {
+    if (ipc_dev == RT_NULL) {
+        if (edge_ipc_device_register() != RT_EOK) {
             rt_kprintf("[M33][IPC] device register failed\r\n");
             return;
         }
 
         ipc_dev = edge_ipc_device_find();
-        if (ipc_dev == RT_NULL)
-        {
+        if (ipc_dev == RT_NULL) {
             rt_kprintf("[M33][IPC] device not found\r\n");
             return;
         }
     }
 
-    if (rt_device_open(ipc_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK)
-    {
+    if (rt_device_open(ipc_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
         rt_kprintf("[M33][IPC] open device failed\r\n");
         return;
     }
@@ -117,35 +108,26 @@ void ipc_test_run(void)
     print_tick = rt_tick_get();
     rt_kprintf("[M33][IPC] demo start hz=%u\r\n", EDGE_IPC_DEMO_HZ);
 
-    while (1)
-    {
+    while (1) {
         rt_uint32_t wait_loop = 0;
 
         cm33_fill_rc_frame(&tx, seq);
-        if (rt_device_write(ipc_dev, 0, &tx, 1) == 1)
-        {
-            while (wait_loop++ < 10U)
-            {
-                if (rt_device_read(ipc_dev, 0, &rx, 1) == 1)
-                {
-                    if (cm33_verify_echo(&rx))
-                    {
+        if (rt_device_write(ipc_dev, 0, &tx, 1) == 1) {
+            while (wait_loop++ < 10U) {
+                if (rt_device_read(ipc_dev, 0, &rx, 1) == 1) {
+                    if (cm33_verify_echo(&rx)) {
                         last_ok = rx;
                         has_ok = RT_TRUE;
                         ok_cnt++;
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         fail_cnt++;
                         rt_kprintf("[M33][IPC][ERR] verify failed: seq=%lu role=0x%02X magic=0x%08lX\r\n",
                                    rx.seq,
                                    rx.role,
                                    rx.magic);
                     }
-                }
-                else
-                {
+                } else {
                     rt_thread_mdelay(1U);
                 }
             }
@@ -153,11 +135,9 @@ void ipc_test_run(void)
             seq++;
         }
 
-        if ((rt_tick_get() - print_tick) >= rt_tick_from_millisecond(EDGE_IPC_DEMO_PRINT_MS))
-        {
+        if ((rt_tick_get() - print_tick) >= rt_tick_from_millisecond(EDGE_IPC_DEMO_PRINT_MS)) {
             rt_kprintf("[M33][IPC] PASS=%lu FAIL=%lu\r\n", ok_cnt, fail_cnt);
-            if (has_ok)
-            {
+            if (has_ok) {
                 cm33_dump_frame(&last_ok);
             }
             print_tick = rt_tick_get();

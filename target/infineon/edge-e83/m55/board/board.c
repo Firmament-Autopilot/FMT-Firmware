@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,13 @@
 #include "default_config.h"
 #include "drv_eth.h"
 #include "drv_gpio.h"
+#include "drv_systick.h"
 #include "drv_i2c.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
-#include "drv_systick.h"
-#include "drv_uart.h"
+#include "drv_pwm.h"
+#include "drv_adc.h"
+#include "drv_eth.h"
 #include "drv_usbd_cdc.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
@@ -53,6 +55,32 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+// #define DBG_TAG "board"
+// #define DBG_LVL DBG_INFO
+// #include <rtdbg.h>
+
+void cy_bsp_all_init(void)
+{
+    cy_rslt_t result;
+
+    /* Initialize the device and board peripherals */
+    result = cybsp_init();
+
+    /* Board init failed. Stop program execution */
+    if (result != CY_RSLT_SUCCESS) {
+        CY_ASSERT(0);
+    }
+}
+
+void _start(void)
+{
+    extern int main(void);
+    main();
+    while (1)
+        ;
+    __builtin_unreachable();
+}
+
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -234,6 +262,15 @@ void bsp_early_initialize(void)
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
+    /* pwm driver init */
+    // RT_CHECK(drv_pwm_init());
+    
+    // /* can driver init */
+    // RT_CHECK(drv_fdcan_init());
+
+    // /* init remote controller driver */
+    // RT_CHECK(drv_rc_init());
+
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
 }
@@ -253,6 +290,8 @@ void bsp_initialize(void)
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
 
+    /* init storage devices */
+    RT_CHECK(drv_sdio_init());
 #ifdef RT_USING_LWIP
     /* init rt_workqueue, which is used by tcpip stack */
     FMT_CHECK(rt_work_sys_workqueue_init());
@@ -272,8 +311,8 @@ void bsp_initialize(void)
     /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
-    /* init parameter system */
-    FMT_CHECK(param_init());
+//     /* init parameter system */
+//     FMT_CHECK(param_init());
 
     /* init mavproxy */
     FMT_CHECK(mavproxy_init());
@@ -366,26 +405,4 @@ void bsp_post_initialize(void)
 void rt_hw_board_init()
 {
     bsp_early_initialize();
-}
-
-void cy_bsp_all_init(void)
-{
-    cy_rslt_t result;
-
-    /* Initialize the device and board peripherals */
-    result = cybsp_init();
-
-    /* Board init failed. Stop program execution */
-    if (result != CY_RSLT_SUCCESS) {
-        CY_ASSERT(0);
-    }
-}
-
-void _start(void)
-{
-    extern int main(void);
-    main();
-    while (1)
-        ;
-    __builtin_unreachable();
 }

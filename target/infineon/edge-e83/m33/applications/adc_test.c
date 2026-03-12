@@ -1,66 +1,150 @@
-/******************************************************************************
- * Copyright 2020 The Firmament Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *****************************************************************************/
-
-#include <rtthread.h>
+#include "hal/adc/adc.h"
 #include <rtdevice.h>
-#include <board.h>
+#include <rtthread.h>
 
-#define ADC_DEV_NAME "adc1"
-#define ADC_DEV_CHANNEL 0
+#ifdef RT_USING_FINSH
+    #include <finsh.h>
+#endif
 
-rt_adc_device_t adc_dev;
-rt_uint32_t value, mv, v, mv_frac;
+#define ADC_TEST_STACK_SIZE 1024
+#define ADC_TEST_PRIORITY   25
+#define ADC_TEST_TICK       1000
 
-static rt_thread_t adc_test_tid = RT_NULL;
+static rt_thread_t adc_test_thread = RT_NULL;
+static volatile rt_bool_t adc_test_running = RT_FALSE;
+static uint32_t adc_test_interval = ADC_TEST_TICK;
 
-static void adc_test_entry(void* parameter) {
-  adc_dev = (rt_adc_device_t)rt_device_find(ADC_DEV_NAME);
-  if (adc_dev == RT_NULL) {
-    rt_kprintf("adc sample run failed! can't find %s device!\n", ADC_DEV_NAME);
-    return;
-  }
+static void adc_test_thread_entry(void* parameter)
+{
+    rt_device_t dev;
+    uint32_t mv;
+    rt_size_t result;
+    rt_err_t ret;
+    uint32_t channel = (uint32_t)parameter;
 
-  rt_adc_enable(adc_dev, ADC_DEV_CHANNEL);
-  while (1) {
-    value = rt_adc_read(adc_dev, ADC_DEV_CHANNEL);
-    rt_kprintf("Value is: %d \n", value);
-    rt_thread_mdelay(1000);
-  }
+    dev = rt_device_find("adc0");
+    if (dev == RT_NULL) {
+        rt_kprintf("ADC device not found!\n");
+        adc_test_running = RT_FALSE;
+        return;
+    }
+
+    rt_kprintf("ADC test thread started for channel %d\n", channel);
+
+    ret = rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY);
+    if (ret != RT_EOK) {
+        rt_kprintf("Failed to open ADC device! Error code: %d\n", ret);
+        adc_test_running = RT_FALSE;
+        return;
+    }
+
+    rt_kprintf("ADC device opened successfully\n");
+
+    while (adc_test_running) {
+        result = rt_device_read(dev, channel, &mv, sizeof(mv));
+
+        if (result == sizeof(mv)) {
+            rt_kprintf("ADC channel %d: %d mV\n", channel, mv);
+        } else {
+            rt_kprintf("Failed to read ADC channel %d\n", channel);
+        }
+
+        rt_thread_mdelay(adc_test_interval);
+    }
+
+    rt_device_close(dev);
+    rt_kprintf("ADC test thread stopped\n");
 }
 
-static int adc_test_entry_init(void) {
-  adc_test_tid = rt_thread_create("adc_test_thread", adc_test_entry,
-                                  (void*)0x01,  // Default parameter
-                                  2048,         // Stack size
-                                  15,           // Priority
-                                  5             // Time slice
-  );
+void adc_test_start(void)
+{
+    if (adc_test_running) {
+        rt_kprintf("ADC test thread is already running!\n");
+        return;
+    }
 
-  if (RT_NULL == adc_test_tid) {
-    rt_kprintf("[%s] Create failed!\n", __FUNCTION__);
-    return -RT_ENOMEM;
-  }
+    adc_test_thread = rt_thread_create("adc_test",
+                                       adc_test_thread_entry,
+                                       (void*)BAT1_V_CHANNEL,
+                                       ADC_TEST_STACK_SIZE,
+                                       ADC_TEST_PRIORITY,
+                                       20);
 
-  if (RT_EOK != rt_thread_startup(adc_test_tid)) {
-    rt_kprintf("[%s] Startup failed!\n", __FUNCTION__);
-    return -RT_ERROR;
-  }
+    if (adc_test_thread == RT_NULL) {
+        rt_kprintf("Failed to create ADC test thread!\n");
+        return;
+    }
 
-  rt_kprintf("[%s] Created successfully\n", __FUNCTION__);
-  return RT_EOK;
+    adc_test_running = RT_TRUE;
+    rt_thread_startup(adc_test_thread);
+    rt_kprintf("ADC test thread started with %d ms interval\n", adc_test_interval);
 }
 
-MSH_CMD_EXPORT(adc_test_entry_init, adc_test thread demo);
+void adc_test_stop(void)
+{
+    if (!adc_test_running) {
+        rt_kprintf("ADC test thread is not running!\n");
+        return;
+    }
+
+    rt_kprintf("Stopping ADC test thread...\n");
+    adc_test_running = RT_FALSE;
+
+    if (adc_test_thread != RT_NULL) {
+        rt_thread_mdelay(50);
+        rt_thread_delete(adc_test_thread);
+        adc_test_thread = RT_NULL;
+    }
+
+    rt_kprintf("ADC test thread stopped\n");
+}
+
+void adc_test_set_interval(uint32_t interval_ms)
+{
+    if (interval_ms == 0) {
+        rt_kprintf("Invalid interval! Must be > 0\n");
+        return;
+    }
+
+    adc_test_interval = interval_ms;
+    rt_kprintf("ADC test sampling interval set to %d ms\n", interval_ms);
+}
+
+void adc_test(void)
+{
+    rt_device_t dev;
+    uint32_t mv;
+    rt_size_t result;
+
+    dev = rt_device_find("adc0");
+    if (dev == RT_NULL) {
+        rt_kprintf("ADC device not found!\n");
+        return;
+    }
+
+    rt_kprintf("ADC device found!\n");
+
+    if (rt_device_open(dev, RT_DEVICE_OFLAG_RDONLY) != RT_EOK) {
+        rt_kprintf("Failed to open ADC device!\n");
+        return;
+    }
+
+    rt_kprintf("ADC device opened\n");
+
+    result = rt_device_read(dev, BAT1_V_CHANNEL, &mv, sizeof(mv));
+
+    if (result == sizeof(mv)) {
+        rt_kprintf("ADC channel %d: %d mV\n", BAT1_V_CHANNEL, mv);
+    } else {
+        rt_kprintf("Failed to read ADC channel %d\n", BAT1_V_CHANNEL);
+    }
+
+    rt_device_close(dev);
+}
+
+#ifdef RT_USING_FINSH
+MSH_CMD_EXPORT(adc_test, Single ADC test function for FMT framework);
+MSH_CMD_EXPORT(adc_test_start, Start continuous ADC test thread);
+MSH_CMD_EXPORT(adc_test_stop, Stop continuous ADC test thread);
+MSH_CMD_EXPORT(adc_test_set_interval, Set ADC test sampling interval(ms));
+#endif

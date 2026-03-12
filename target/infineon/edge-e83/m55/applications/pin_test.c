@@ -1,9 +1,9 @@
-#include <firmament.h>
 #include "hal/pin/pin.h"
+#include <firmament.h>
 
-#define GET_PIN(PORTx,PIN)      ((((uint8_t)(PORTx)) << 3U) + ((uint8_t)(PIN)))
-#define LED_ON(_pin)          led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
-#define LED_OFF(_pin)         led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
+#define GET_PIN(PORTx, PIN) ((((uint8_t)(PORTx)) << 3U) + ((uint8_t)(PIN)))
+#define LED_ON(_pin)        led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
+#define LED_OFF(_pin)       led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
 
 static rt_thread_t pin_test_tid = RT_NULL;
 struct device_pin_mode led_mode = { GET_PIN(16, 5), PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
@@ -27,7 +27,6 @@ fmt_err_t led_init(struct device_pin_mode pin_mode)
     return FMT_EOK;
 }
 
-
 static void pin_test_entry(void* parameter)
 {
     pin_dev = rt_device_find("pin");
@@ -46,12 +45,11 @@ static int pin_test_entry_init(void)
 {
     pin_test_tid = rt_thread_create(
         "pin_test_thread",
-        pin_test_entry,       
-        (void*)0x01,      // Default parameter
-        2048,        // Stack size
-        15,          // Priority
-        5            // Time slice
-    );
+        pin_test_entry,
+        (void*)0x01,
+        2048,
+        15,
+        5);
 
     if (RT_NULL == pin_test_tid) {
         rt_kprintf("[%s] Create failed!\n", __FUNCTION__);

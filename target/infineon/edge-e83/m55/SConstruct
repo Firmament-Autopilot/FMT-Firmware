@@ -119,8 +119,8 @@ for d in list:
 
 env.VariantDir('build/libs', '../libs', duplicate=0)
 env.VariantDir('build/libraries/', '../libraries', duplicate=0)
-env.VariantDir('build/common', '../common', duplicate=0)
-objs.extend(SConscript('../common/SConscript', variant_dir='build/common', duplicate=0))
+env.VariantDir('build/drivers', '../drivers', duplicate=0)
+objs.extend(SConscript('../drivers/SConscript', variant_dir='build/drivers', duplicate=0))
 objs.extend(SConscript('../libs/SConscript', variant_dir='build/libs', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/components/Infineon_cmsis-latest', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/components/Infineon_core-lib-latest', duplicate=0))

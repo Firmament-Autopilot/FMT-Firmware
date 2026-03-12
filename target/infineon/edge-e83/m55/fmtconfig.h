@@ -24,6 +24,9 @@
 /* SIH simulation */
 #define FMT_USING_SIH
 
+/* console device name */
+#define RT_CONSOLE_DEVICE_NAME "serial2"
+
 /* Mavlink */
 #define FMT_USING_MAVLINK_V2
 

@@ -183,7 +183,51 @@ SECTIONS
         *(.rodata .rodata.* .constdata .constdata.* .conststring .conststring.*)
         /* Exclude certain files from this section as they will be placed in RAM */
         *(EXCLUDE_FILE(*cy_syslib.* *cy_syslib_ext.* *cy_smif.* *cy_smif_memnum.* *cy_smif_memslot.* *cy_smif_sfdp.* *cy_smif_hb_flash.* *mtb_hal_memoryspi.* *mtb_serial_memory.* *freertos/Source*.* *cy_clib_support*.* *cy_mutex_pool*.* *cy_time.* *cyabs_*.* *cy_worker_thread.* *cmsis*.*) .text*)
+        /* section information for task. */
 
+         . = ALIGN(4);
+        /* section information for utest */
+        . = ALIGN(4);
+        __rt_utest_tc_tab_start = .;
+        KEEP(*(UtestTcTab))
+        __rt_utest_tc_tab_end = .;
+
+        /* section information for finsh shell */
+        . = ALIGN(4);
+        __fsymtab_start = .;
+        KEEP(*(FSymTab))
+        __fsymtab_end = .;
+        . = ALIGN(4);
+        __vsymtab_start = .;
+        KEEP(*(VSymTab))
+        __vsymtab_end = .;
+        . = ALIGN(4);
+
+        /* section information for modules */
+        . = ALIGN(4);
+        __rtmsymtab_start = .;
+        KEEP(*(RTMSymTab))
+        __rtmsymtab_end = .;
+
+        /* section information for initialization */
+        . = ALIGN(4);
+        __rt_init_start = .;
+        KEEP(*(SORT(.rti_fn*)))
+        __rt_init_end = .;
+
+        /* section information for task. */
+        . = ALIGN(4);
+        __fmt_task_start = .;
+        KEEP(*(TaskTab))
+        __fmt_task_end = .;
+        . = ALIGN(4);
+
+        /* section information for mlog. */
+        . = ALIGN(4);
+        __fmt_mlog_start = .;
+        KEEP(*(MlogTab))
+        __fmt_mlog_end = .;
+        . = ALIGN(4);
 
     } > m33_nvm_sel
 
@@ -259,35 +303,6 @@ SECTIONS
         *cy_worker_thread.*(.text*)
         *cmsis*.*(.text*)
         
-        /* section information for utest */
-        . = ALIGN(4);
-        __rt_utest_tc_tab_start = .;
-        KEEP(*(UtestTcTab))
-        __rt_utest_tc_tab_end = .;
-
-        /* section information for finsh shell */
-        . = ALIGN(4);
-        __fsymtab_start = .;
-        KEEP(*(FSymTab))
-        __fsymtab_end = .;
-        . = ALIGN(4);
-        __vsymtab_start = .;
-        KEEP(*(VSymTab))
-        __vsymtab_end = .;
-        . = ALIGN(4);
-
-        /* section information for modules */
-        . = ALIGN(4);
-        __rtmsymtab_start = .;
-        KEEP(*(RTMSymTab))
-        __rtmsymtab_end = .;
-
-        /* section information for initialization */
-        . = ALIGN(4);
-        __rt_init_start = .;
-        KEEP(*(SORT(.rti_fn*)))
-        __rt_init_end = .;
-
         . = ALIGN(4);
     } > m33_code_sel AT > m33_nvm_sel
 

@@ -31,7 +31,7 @@ static void usbd_cdc_thread_entry(void* parameter)
     while (1) {
         len = rt_device_read(usb_dev, 0, rx_buffer, sizeof(rx_buffer) - 1);
         if (len > 0) {
-            rx_buffer[len] = '\0'; 
+            rx_buffer[len] = '\0';
             rt_kprintf("%s", rx_buffer);
         }
 
@@ -67,4 +67,3 @@ void usbd_cdc_thread_start(void)
 }
 
 MSH_CMD_EXPORT(usbd_cdc_thread_start, start USB CDC echo thread);
-
