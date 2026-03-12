@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "board.h"
+#include "default_config.h"
 #include "drv_eth.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
@@ -52,6 +53,10 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
+#define MATCH(a, b)     (strcmp(a, b) == 0)
+#define SYS_CONFIG_FILE "/sys/sysconfig.toml"
+#define SYS_INIT_SCRIPT "/sys/init.sh"
 
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
@@ -137,6 +142,66 @@ static void bsp_show_information(void)
         /* task status must be okay to reach here */
         banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
+}
+
+
+static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
+{
+    fmt_err_t err = FMT_EOK;
+    toml_table_t* sub_tab;
+    const char* key;
+    const char* raw;
+    char* target;
+    int i;
+
+    if (root_tab == NULL) {
+        return FMT_ERROR;
+    }
+
+    /* target should be defined and match with bsp */
+    if ((raw = toml_raw_in(root_tab, "target")) != 0) {
+        if (toml_rtos(raw, &target) != 0) {
+            console_printf("Error: fail to parse type value\n");
+            err = FMT_ERROR;
+        }
+        if (!MATCH(target, TARGET_NAME)) {
+            /* check if target match */
+            console_printf("Error: target name doesn't match\n");
+            err = FMT_ERROR;
+        }
+        rt_free(target);
+    } else {
+        console_printf("Error: can not find target key\n");
+        err = FMT_ERROR;
+    }
+
+    if (err == FMT_EOK) {
+        /* traverse all sub-table */
+        for (i = 0; 0 != (key = toml_key_in(root_tab, i)); i++) {
+            /* handle all sub tables */
+            if (0 != (sub_tab = toml_table_in(root_tab, key))) {
+                if (MATCH(key, "console")) {
+                    err = console_toml_config(sub_tab);
+                } else if (MATCH(key, "mavproxy")) {
+                    err = mavproxy_toml_config(sub_tab);
+                } else if (MATCH(key, "pilot-cmd")) {
+                    err = pilot_cmd_toml_config(sub_tab);
+                } else if (MATCH(key, "actuator")) {
+                    err = actuator_toml_config(sub_tab);
+                } else {
+                    console_printf("unknown table: %s\n", key);
+                }
+                if (err != FMT_EOK) {
+                    console_printf("fail to parse %s\n", key);
+                }
+            }
+        }
+    }
+
+    /* free toml root table */
+    toml_free(root_tab);
+
+    return err;
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
@@ -252,44 +317,44 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    // if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
-    //     /* use default system configuration */
-    //     FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
-    //     printf("Default configuration loaded.\n");
-    // }
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
+        /* use default system configuration */
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        printf("Default configuration loaded.\n");
+    }
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());
 
-    // /* init gcs */
-    // FMT_CHECK(gcs_cmd_init());
+    /* init gcs */
+    FMT_CHECK(gcs_cmd_init());
 
-    // /* init auto command */
-    // FMT_CHECK(auto_cmd_init());
+    /* init auto command */
+    FMT_CHECK(auto_cmd_init());
 
-    // /* init mission data */
-    // FMT_CHECK(mission_data_init());
+    /* init mission data */
+    FMT_CHECK(mission_data_init());
 
-    // /* init actuator */
-    // FMT_CHECK(actuator_init());
+    /* init actuator */
+    FMT_CHECK(actuator_init());
 
-    // /* start device message queue work */
-    // FMT_CHECK(devmq_start_work());
+    /* start device message queue work */
+    FMT_CHECK(devmq_start_work());
 
     // /* init led control */
     // FMT_CHECK(led_control_init());
 
-    // /* initialize power management unit */
+    /* initialize power management unit */
     // FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
 
-    // /* execute init script */
-    // msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
+    /* execute init script */
+    msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));
 
-    // /* dump boot log to file */
-    // boot_log_dump();
+    /* dump boot log to file */
+    boot_log_dump();
 }
 
 /**

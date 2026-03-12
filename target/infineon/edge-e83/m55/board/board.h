@@ -43,7 +43,7 @@
     #define HEAP_END      (void*)&__HeapLimit
 #endif
 
-#define TARGET_NAME  "e83"
+#define TARGET_NAME  "Edge-E83"
 
 void cy_bsp_all_init(void);
 
