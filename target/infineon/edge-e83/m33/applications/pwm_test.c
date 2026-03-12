@@ -1,56 +1,64 @@
-#include "drv_pwm.h"
-#define PWM_DEV_NAME "pwm5"
-#define PWM_DEV_CHANNEL 1
+#include "hal/actuator/actuator.h"
+#include <rtdevice.h>
+#include <rtthread.h>
 
-struct rt_device_pwm *pwm_dev;
+#ifdef RT_USING_FINSH
+    #include <finsh.h>
+#endif
 
-static int pwm_sample(int argc, char *argv[])
+void pwm_test(void)
 {
-    rt_uint32_t period, pulse, dir;
+    rt_device_t dev;
+    rt_uint16_t chan_val[4];
+    rt_uint16_t chan_mask = 0x01;
 
-    period = 5000000;
-    dir = 1;
-    pulse = 0;
-    struct rt_pwm_configuration config = {0};
-    pwm_dev = (struct rt_device_pwm *)rt_device_find(PWM_DEV_NAME);
-
-    if (pwm_dev == RT_NULL)
-    {
-        rt_kprintf("pwm sample run failed! can't find %s device!\n", PWM_DEV_NAME);
-        return -RT_ERROR;
+    dev = rt_device_find("main_out");
+    if (dev == RT_NULL) {
+        rt_kprintf("actuator device main_out not found!\n");
+        return;
     }
 
-    rt_pwm_set(pwm_dev, PWM_DEV_CHANNEL, period, pulse);
-    rt_pwm_enable(pwm_dev, PWM_DEV_CHANNEL);
-//    rt_pwm_disable(pwm_dev, PWM_DEV_CHANNEL);
-    rt_kprintf("Now PWM[%s] Channel[%d] Period[%d] Pulse[%d]\n", PWM_DEV_NAME, PWM_DEV_CHANNEL, period, pulse);
+    rt_kprintf("actuator device main_out found!\n");
 
-    while (1)
-    {
-        rt_thread_mdelay(80);
+    if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK) {
+        rt_kprintf("Failed to open actuator device!\n");
+        return;
+    }
 
-        if (dir)
-        {
-            pulse += 50000;
-        }
-        else
-        {
-            pulse -= 50000;
-        }
+    rt_kprintf("Actuator device opened and enabled!\n");
 
-        if (pulse >= period)
-        {
-            dir = 0;
-        }
+    chan_val[0] = 1500;
 
-        if (0 == pulse)
-        {
-            dir = 1;
-        }
+    if (rt_device_write(dev, chan_mask, chan_val, 1) != 1) {
+        rt_kprintf("Failed to write actuator values!\n");
+        rt_device_close(dev);
+        return;
+    }
 
-        rt_pwm_set(pwm_dev, PWM_DEV_CHANNEL, period, pulse);
-        rt_device_control((rt_device_t)pwm_dev, PWM_CMD_GET, &config);
-        rt_kprintf("period %d pulse %d \r\n", config.period, config.pulse);
+    rt_kprintf("PWM value set: %d us\n", chan_val[0]);
+
+    rt_kprintf("PWM test running at 400Hz on channel 0\n");
+    rt_kprintf("Device will remain open. Use 'pwm_test_stop' to close.\n");
+}
+
+void pwm_test_stop(void)
+{
+    rt_device_t dev;
+
+    dev = rt_device_find("main_out");
+    if (dev == RT_NULL) {
+        rt_kprintf("actuator device main_out not found!\n");
+        return;
+    }
+
+    if (rt_device_close(dev) == RT_EOK) {
+        rt_kprintf("Actuator device closed and disabled.\n");
+    } else {
+        rt_kprintf("Failed to close actuator device!\n");
     }
 }
-MSH_CMD_EXPORT(pwm_sample, <pwm0> channel5 sample);
+
+#ifdef RT_USING_FINSH
+MSH_CMD_EXPORT(pwm_test, PWM test function for FMT framework);
+MSH_CMD_EXPORT(pwm_test_stop, Stop PWM test and close device);
+#endif

@@ -5,6 +5,7 @@ import platform
 import subprocess
 import uuid
 
+# FMT path
 FMU_ROOT = os.path.normpath(os.getcwd() + '/../../../..')
 # RTOS path
 RTT_ROOT = FMU_ROOT + '/rtos/rt-thread'
@@ -21,6 +22,28 @@ except Exception as e:
 TARGET = 'rt-thread.' + rtconfig.TARGET_EXT
 
 DefaultEnvironment(tools=[])
+
+# ===== Add option to SCons =====
+AddOption('--vehicle',
+                dest = 'vehicle',
+                type = 'string',
+                default = 'Template',
+                help = 'Specify the vehicle type')
+
+AddOption('--airframe', 
+                dest='airframe', 
+                type='int', 
+                nargs=1, 
+                default = 1, 
+                action='store',
+                help='Specify the airframe value')
+
+AddOption('--sim',
+                dest = 'sim',
+                type = 'string',
+                default = 'None',
+                help = 'Specify the simulation mode')
+
 env = Environment(tools = ['mingw'], ENV=os.environ,
     AS = rtconfig.AS, ASFLAGS = rtconfig.AFLAGS,
     CC = rtconfig.CC, CFLAGS = rtconfig.CFLAGS,
@@ -47,9 +70,6 @@ Export('SDK_LIB')
 
 # prepare building environment
 objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=False)
-
-IFX_library = 'Packages'
-rtconfig.BSP_LIBRARY_TYPE = IFX_library
 
 # set spawn
 def ourspawn(sh, escape, cmd, args, e):
@@ -83,28 +103,39 @@ def ourspawn(sh, escape, cmd, args, e):
 if platform.system() == 'Windows':
     env['SPAWN'] = ourspawn
 
-env.VariantDir('build/libs', '../libs', duplicate=0)
-env.VariantDir('build/libraries', '../libraries', duplicate=0)
-env.VariantDir('build/common', '../common', duplicate=0)
 
-objs.extend(SConscript('/board/ports/SConscript', variant_dir='build/board/ports/', duplicate=0))
-objs.extend(SConscript('../common/SConscript', variant_dir='build/common', duplicate=0))
+cwd = str(Dir('#'))
+list = os.listdir(FMU_ROOT)
+vdir = 'build/fmt'
+for d in list:
+    path = os.path.join(FMU_ROOT, d)
+    if os.path.isfile(os.path.join(path, 'SConscript')):
+        objs.extend(SConscript(os.path.join(path, 'SConscript'),
+                    variant_dir=vdir + '/' + d, duplicate=0))
+
+env.VariantDir('build/libs', '../libs', duplicate=0)
+env.VariantDir('build/libraries/', '../libraries', duplicate=0)
+# env.VariantDir('build/common', '../common', duplicate=0)
+env.VariantDir('build/drivers', '../drivers', duplicate=0)
+objs.extend(SConscript('../drivers/SConscript', variant_dir='build/drivers', duplicate=0))
+# objs.extend(SConscript('../common/SConscript', variant_dir='build/common', duplicate=0))
 objs.extend(SConscript('../libs/SConscript', variant_dir='build/libs', duplicate=0))
-objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/Infineon_cmsis-latest', duplicate=0))
-objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/Infineon_core-lib-latest', duplicate=0))
-objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/hal/SConscript', variant_dir='build/libraries/mtb-device-support-pse8xxgp/hal', duplicate=0))
-objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/pdl/SConscript', variant_dir='build/libraries/mtb-device-support-pse8xxgp/pdl', duplicate=0))
-objs.extend(SConscript('../libraries/async-transfer/SConscript', variant_dir='build/libraries/async-transfer', duplicate=0))
-objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/device-utils/syspm/SConscript', variant_dir='build/libraries/mtb-device-support-pse8xxgp/device-utils/syspm', duplicate=0))
-objs.extend(SConscript('../libraries/serial-memory/SConscript', variant_dir='build/libraries/serial-memory', duplicate=0))
-objs.extend(SConscript('../libraries/Infineon_retarget-io-latest/SConscript', variant_dir='build/libraries/Infineon_retarget-io-latest', duplicate=0))
-objs.extend(SConscript('../libraries/SConscript', variant_dir='build/libraries', duplicate=0))
-objs.extend(SConscript('../libraries/mtb-srf/SConscript', variant_dir='build/libraries/mtb-srf', duplicate=0))
-objs.extend(SConscript('../libraries/mtb-ipc/SConscript', variant_dir='build/libraries/mtb-ipc', duplicate=0))
-objs.extend(SConscript('../libraries/littlefs/SConscript', variant_dir='build/libraries/littlefs', duplicate=0))
+objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/components/Infineon_cmsis-latest', duplicate=0))
+objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/components/Infineon_core-lib-latest', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/hal/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/hal', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/pdl/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/pdl', duplicate=0))
+objs.extend(SConscript('../libraries/async-transfer/SConscript', variant_dir='build/libraries/components/async-transfer', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-device-support-pse8xxgp/device-utils/syspm/SConscript', variant_dir='build/libraries/components/mtb-device-support-pse8xxgp/device-utils/syspm', duplicate=0))
+objs.extend(SConscript('../libraries/serial-memory/SConscript', variant_dir='build/libraries/components/serial-memory', duplicate=0))
+objs.extend(SConscript('../libraries/Infineon_retarget-io-latest/SConscript', variant_dir='build/libraries/components/Infineon_retarget-io-latest', duplicate=0))
+objs.extend(SConscript('../libraries/SConscript', variant_dir='build/libraries/components', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-srf/SConscript', variant_dir='build/libraries/components/mtb-srf', duplicate=0))
+objs.extend(SConscript('../libraries/mtb-ipc/SConscript', variant_dir='build/libraries/components/mtb-ipc', duplicate=0))
+objs.extend(SConscript('../libraries/littlefs/SConscript', variant_dir='build/libraries/components/littlefs', duplicate=0))
 
 # make a building
 DoBuilding(TARGET, objs)
+
 
 # Generate HEX file
 DEBUG_DIR = 'build'
