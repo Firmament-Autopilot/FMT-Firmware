@@ -21,7 +21,8 @@
 #include "hal/gyro/gyro.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...) rt_kprintf(__VA_ARGS__)
+#define DRV_DBG(...)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
 
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
@@ -297,7 +298,7 @@ static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 
     // change to NED coordinate
     bmi055_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
-    
+
     return RT_EOK;
 }
 
@@ -532,18 +533,18 @@ const static struct accel_ops __accel_ops = {
     accel_read,
 };
 
-#define GYRO_CONFIG                                   \
-    {                                                 \
-        1000,                   /* 1K sample rate */  \
-            92,                 /* 256Hz bandwidth */ \
-            GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
+#define GYRO_CONFIG                               \
+    {                                             \
+        1000,               /* 1K sample rate */  \
+        92,                 /* 256Hz bandwidth */ \
+        GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
     }
 
-#define ACCEL_CONFIG                               \
-    {                                              \
-        1000,                /* 1K sample rate */  \
-            125,             /* 125Hz bandwidth */ \
-            ACCEL_RANGE_16G, /* +-16g */           \
+#define ACCEL_CONFIG                           \
+    {                                          \
+        1000,            /* 1K sample rate */  \
+        125,             /* 125Hz bandwidth */ \
+        ACCEL_RANGE_16G, /* +-16g */           \
     }
 
 static struct gyro_device gyro_dev = {

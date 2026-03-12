@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef DRV_PWM_H__
-#define DRV_PWM_H__
+#ifndef DRV_ACTUATOR_H__
+#define DRV_ACTUATOR_H__
 
 #include <firmament.h>
 
@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-rt_err_t drv_pwm_init(void);
+rt_err_t drv_actuator_init(void);
 
 #ifdef __cplusplus
 }

@@ -79,10 +79,16 @@ target = "SIEON S1"
     name = "main_out"
     freq = 400                  # pwm frequency in Hz
 
+#    [[actuator.devices]]
+#    protocol = "dshot"
+#    name = "main_out"
+#    speed = 600                 # dshot speed: 150, 300, 600
+#    telem-req = false           # request telemetry on main_out
+
     [[actuator.devices]]
     protocol = "pwm"
     name = "aux_out"
-    freq = 50                  # pwm frequency in Hz
+    freq = 50                   # pwm frequency in Hz
 
     [[actuator.mappings]]
     from = "control_out"
