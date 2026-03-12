@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /* baro read pos */
-#define BARO_RD_REPORT 1
+#define BARO_RD_REPORT       1
 
 /* baro command */
 #define BARO_CMD_CHECK_READY 0x20

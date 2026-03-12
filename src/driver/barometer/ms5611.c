@@ -23,7 +23,6 @@
 #include "module/math/conversion.h"
 #include "module/workqueue/workqueue_manager.h"
 
-
 #define DRV_DBG(...)
 // #define DRV_DBG(...) printf(__VA_ARGS__)
 #define POW2(_x)        ((_x) * (_x))

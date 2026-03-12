@@ -56,7 +56,7 @@ static rt_err_t hal_baro_control(struct rt_device* dev,
 
 /**
  * @brief register a barometer device
- * 
+ *
  * @param baro barometer device
  * @param name device name
  * @param flag device flag
