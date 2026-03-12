@@ -85,8 +85,10 @@ if platform.system() == 'Windows':
 
 env.VariantDir('build/libs', '../libs', duplicate=0)
 env.VariantDir('build/libraries', '../libraries', duplicate=0)
+env.VariantDir('build/common', '../common', duplicate=0)
 
 objs.extend(SConscript('/board/ports/SConscript', variant_dir='build/board/ports/', duplicate=0))
+objs.extend(SConscript('../common/SConscript', variant_dir='build/common', duplicate=0))
 objs.extend(SConscript('../libs/SConscript', variant_dir='build/libs', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_cmsis-latest/SConscript', variant_dir='build/libraries/Infineon_cmsis-latest', duplicate=0))
 objs.extend(SConscript('../libraries/Infineon_core-lib-latest/SConscript', variant_dir='build/libraries/Infineon_core-lib-latest', duplicate=0))
@@ -100,7 +102,6 @@ objs.extend(SConscript('../libraries/SConscript', variant_dir='build/libraries',
 objs.extend(SConscript('../libraries/mtb-srf/SConscript', variant_dir='build/libraries/mtb-srf', duplicate=0))
 objs.extend(SConscript('../libraries/mtb-ipc/SConscript', variant_dir='build/libraries/mtb-ipc', duplicate=0))
 objs.extend(SConscript('../libraries/littlefs/SConscript', variant_dir='build/libraries/littlefs', duplicate=0))
-
 
 # make a building
 DoBuilding(TARGET, objs)

@@ -88,7 +88,7 @@
 #define RT_USING_SERIAL_V1
 #define RT_SERIAL_RB_BUFSZ 128
 #define RT_USING_PIN
-
+#define RT_USING_PWM
 /* Using USB */
 
 /* end of Using USB */
@@ -363,6 +363,9 @@
 #define RT_USING_ADC
 #define BSP_USING_ADC
 #define BSP_USING_ADC1
+#define BSP_USING_PWM
+#define BSP_USING_PWM5
+// #define BSP_USING_PWM18
 /* end of On-chip Peripheral Drivers */
 /* end of Hardware Drivers Config */
 

@@ -4,8 +4,8 @@
  * Description:
  * Peripheral clock divider configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -155,18 +155,18 @@ extern "C" {
 #define CYBSP_BT_UART_CLK_DIV_GRP_NUM CYBSP_BT_UART_CLK_DIV_GRP_NUM
 #endif /* !defined (CYBSP_BT_UART_CLK_DIV_GRP_NUM) */
 
-#define CYBSP_SMARTIO_PWM_CLK_DIV_ENABLED 1U
+#define CYBSP_PWM_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
-#define CYBSP_SMARTIO_PWM_CLK_DIV_HW CY_SYSCLK_DIV_16_5_BIT
+#define CYBSP_PWM_CLK_DIV_HW CY_SYSCLK_DIV_16_5_BIT
 #endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
 
-#define CYBSP_SMARTIO_PWM_CLK_DIV_NUM 1U
-#define CYBSP_SMARTIO_PWM_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+#define CYBSP_PWM_CLK_DIV_NUM 1U
+#define CYBSP_PWM_CLK_DIV_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
 
-#if !defined (CYBSP_SMARTIO_PWM_CLK_DIV_GRP_NUM)
-#define CYBSP_SMARTIO_PWM_CLK_DIV_GRP_NUM CYBSP_SMARTIO_PWM_CLK_DIV_GRP_NUM
-#endif /* !defined (CYBSP_SMARTIO_PWM_CLK_DIV_GRP_NUM) */
+#if !defined (CYBSP_PWM_CLK_DIV_GRP_NUM)
+#define CYBSP_PWM_CLK_DIV_GRP_NUM CYBSP_PWM_CLK_DIV_GRP_NUM
+#endif /* !defined (CYBSP_PWM_CLK_DIV_GRP_NUM) */
 
 #define CYBSP_SMART_IO_CLK_DIV_ENABLED 1U
 

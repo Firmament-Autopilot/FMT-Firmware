@@ -4,8 +4,8 @@
  * Description:
  * Pin configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -32,6 +32,8 @@
 #include "cycfg_notices.h"
 #include "cy_gpio.h"
 #include "cycfg_routing.h"
+#include "cy_smartio.h"
+#include "cy_sysclk.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -709,7 +711,7 @@ extern "C" {
 #define CYBSP_ETH_TXD_0_NUM CYBSP_BT_DEV_WAKE_NUM
 #define CYBSP_BT_DEV_WAKE_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
 #define CYBSP_ETH_TXD_0_DRIVEMODE CYBSP_BT_DEV_WAKE_DRIVEMODE
-#define CYBSP_BT_DEV_WAKE_INIT_DRIVESTATE 1
+#define CYBSP_BT_DEV_WAKE_INIT_DRIVESTATE 0
 #define CYBSP_ETH_TXD_0_INIT_DRIVESTATE CYBSP_BT_DEV_WAKE_INIT_DRIVESTATE
 #ifndef ioss_0_port_11_pin_2_HSIOM
     #define ioss_0_port_11_pin_2_HSIOM HSIOM_SEL_GPIO
@@ -811,6 +813,29 @@ extern "C" {
 #define CYBSP_ETH_TXD_2_HSIOM CYBSP_WIFI_WL_REG_ON_HSIOM
 #define CYBSP_WIFI_WL_REG_ON_IRQ ioss_interrupts_gpio_11_IRQn
 #define CYBSP_ETH_TXD_2_IRQ CYBSP_WIFI_WL_REG_ON_IRQ
+#define CYBSP_ARD_D4_ENABLED 1U
+#define CYBSP_ETH_REF_CLK_ENABLED CYBSP_ARD_D4_ENABLED
+#define CYBSP_ARD_D4_PORT GPIO_PRT11
+#define CYBSP_ETH_REF_CLK_PORT CYBSP_ARD_D4_PORT
+#define CYBSP_ARD_D4_PORT_NUM 11U
+#define CYBSP_ETH_REF_CLK_PORT_NUM CYBSP_ARD_D4_PORT_NUM
+#define CYBSP_ARD_D4_PIN 7U
+#define CYBSP_ETH_REF_CLK_PIN CYBSP_ARD_D4_PIN
+#define CYBSP_ARD_D4_NUM 7U
+#define CYBSP_ETH_REF_CLK_NUM CYBSP_ARD_D4_NUM
+#define CYBSP_ARD_D4_DRIVEMODE CY_GPIO_DM_HIGHZ
+#define CYBSP_ETH_REF_CLK_DRIVEMODE CYBSP_ARD_D4_DRIVEMODE
+#define CYBSP_ARD_D4_INIT_DRIVESTATE 1
+#define CYBSP_ETH_REF_CLK_INIT_DRIVESTATE CYBSP_ARD_D4_INIT_DRIVESTATE
+#ifndef ioss_0_port_11_pin_7_HSIOM
+    #define ioss_0_port_11_pin_7_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_ARD_D4_HSIOM ioss_0_port_11_pin_7_HSIOM
+#define CYBSP_ETH_REF_CLK_HSIOM CYBSP_ARD_D4_HSIOM
+#define CYBSP_ARD_D4_IRQ ioss_interrupts_gpio_11_IRQn
+#define CYBSP_ETH_REF_CLK_IRQ CYBSP_ARD_D4_IRQ
+#define CYBSP_SMART_IO_11_ENABLED 1U
+#define CYBSP_SMART_IO_11_HW SMARTIO_PRT11
 #define CYBSP_WIFI_SDIO_CLK_ENABLED 1U
 #define CYBSP_WIFI_SDIO_CLK_PORT GPIO_PRT12
 #define CYBSP_WIFI_SDIO_CLK_PORT_NUM 12U
@@ -1323,6 +1348,11 @@ extern const cy_stc_gpio_pin_config_t CYBSP_WIFI_WL_REG_ON_config;
 
 #define CYBSP_ETH_TXD_2_config CYBSP_WIFI_WL_REG_ON_config
 
+extern const cy_stc_gpio_pin_config_t CYBSP_ARD_D4_config;
+
+#define CYBSP_ETH_REF_CLK_config CYBSP_ARD_D4_config
+
+extern const cy_stc_smartio_config_t CYBSP_SMART_IO_11_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WIFI_SDIO_CLK_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WIFI_SDIO_D0_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WIFI_SDIO_D1_config;

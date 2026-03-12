@@ -4,8 +4,8 @@
  * Description:
  * Connectivity BT configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -36,18 +36,18 @@
 extern "C" {
 #endif /* defined(__cplusplus) */
 
-#define bt_0_power_0_ENABLED 1U
-#define CYCFG_BT_LP_ENABLED (1u)
+#define bt_0_power_0_ENABLED (0)
+#define CYCFG_BT_LP_ENABLED 0
 #define CYCFG_BT_WAKE_EVENT_ACTIVE_LOW (0)
 #define CYCFG_BT_WAKE_EVENT_ACTIVE_HIGH (1)
-#define CYCFG_BT_HOST_WAKE_GPIO CYBSP_BT_HOST_WAKE_HAL_PORT_PIN
-#define CYCFG_BT_HOST_WAKE_IRQ_EVENT CYCFG_BT_WAKE_EVENT_ACTIVE_HIGH
-#define CYCFG_BT_DEV_WAKE_GPIO CYBSP_BT_DEVICE_WAKE_HAL_PORT_PIN
-#define CYCFG_BT_DEV_WAKE_POLARITY CYCFG_BT_WAKE_EVENT_ACTIVE_LOW
-#define CYCFG_BT_HOST_WAKE_PORT_NUM CYBSP_BT_HOST_WAKE_HAL_PORT_PIN
-#define CYCFG_BT_HOST_WAKE_PIN CYCFG_BT_WAKE_EVENT_ACTIVE_HIGH
-#define CYCFG_BT_DEVICE_WAKE_PORT_NUM CYBSP_BT_HOST_WAKE_HAL_PORT_PIN
-#define CYCFG_BT_DEVICE_WAKE_PIN CYCFG_BT_WAKE_EVENT_ACTIVE_HIGH
+#define CYCFG_BT_HOST_WAKE_GPIO CYHAL_NC_PIN_VALUE
+#define CYCFG_BT_HOST_WAKE_IRQ_EVENT 0
+#define CYCFG_BT_DEV_WAKE_GPIO CYHAL_NC_PIN_VALUE
+#define CYCFG_BT_DEV_WAKE_POLARITY 0
+#define CYCFG_BT_HOST_WAKE_PORT_NUM MTB_HAL_GPIO_NC_VALUE
+#define CYCFG_BT_HOST_WAKE_PIN MTB_HAL_GPIO_NC_VALUE
+#define CYCFG_BT_DEVICE_WAKE_PORT_NUM MTB_HAL_GPIO_NC_VALUE
+#define CYCFG_BT_DEVICE_WAKE_PIN MTB_HAL_GPIO_NC_VALUE
 
 #if defined(__cplusplus)
 }

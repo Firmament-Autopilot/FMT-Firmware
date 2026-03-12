@@ -4,8 +4,8 @@
  * Description:
  * Analog configuration
  * This file was automatically generated and should not be modified.
- * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
+ * Configurator Backend 3.60.0
+ * device-db 4.35.0.9884
  * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
@@ -1152,8 +1152,8 @@ const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_5_config =
 const mtb_hal_peri_div_t tcpwm_0_group_0_cnt_5_clock_ref =
 {
     .clk_dst = (en_clk_dst_t)PCLK_TCPWM0_CLOCK_COUNTER_EN5,
-    .div_type = CY_SYSCLK_DIV_16_BIT,
-    .div_num = 3,
+    .div_type = CY_SYSCLK_DIV_16_5_BIT,
+    .div_num = 1,
 };
 const mtb_hal_clock_t tcpwm_0_group_0_cnt_5_hal_clock =
 {
@@ -1401,7 +1401,7 @@ void init_cycfg_peripherals(void)
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_TCPWM0_PERI_NR, CY_MMIO_TCPWM0_GROUP_NR, CY_MMIO_TCPWM0_SLAVE_NR, CY_MMIO_TCPWM0_CLK_HF_NR);
 #endif /* defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE) */
-    Cy_SysClk_PeriphAssignDivider(PCLK_TCPWM0_CLOCK_COUNTER_EN5, CY_SYSCLK_DIV_16_BIT, 3U);
+    Cy_SysClk_PeriphAssignDivider(PCLK_TCPWM0_CLOCK_COUNTER_EN5, CY_SYSCLK_DIV_16_5_BIT, 1U);
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_TCPWM0_PERI_NR, CY_MMIO_TCPWM0_GROUP_NR, CY_MMIO_TCPWM0_SLAVE_NR, CY_MMIO_TCPWM0_CLK_HF_NR);
 #endif /* defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE) */

@@ -33,6 +33,12 @@ struct ifx_pwm
 
 static struct ifx_pwm ifx_pwm_obj[] =
 {
+#ifdef BSP_USING_PWM5
+    #ifdef TCPWM_0_GRP_0_PWM_5_CONFIG
+        TCPWM_0_GRP_0_PWM_5_CONFIG,
+    #endif
+#endif
+
 #ifdef BSP_USING_PWM18
     #ifdef TCPWM_0_GRP_1_PWM_9_CONFIG
         TCPWM_0_GRP_1_PWM_9_CONFIG,
@@ -220,11 +226,11 @@ static rt_err_t drv_pwm_control(struct rt_device_pwm *device, int cmd, void *arg
     case PWM_CMD_GET:
         return drv_pwm_get(device, configuration);
 
-    case PWM_CMD_SET_PERIOD:
-        return drv_pwm_set_period((struct ifx_pwm *)device->parent.user_data, configuration);
+    // case PWM_CMD_SET_PERIOD:
+    //     return drv_pwm_set_period((struct ifx_pwm *)device->parent.user_data, configuration);
 
-    case PWM_CMD_SET_PULSE:
-        return drv_pwm_set_pulse((struct ifx_pwm *)device->parent.user_data, configuration);
+    // case PWM_CMD_SET_PULSE:
+    //     return drv_pwm_set_pulse((struct ifx_pwm *)device->parent.user_data, configuration);
 
     default:
         return -RT_EINVAL;
