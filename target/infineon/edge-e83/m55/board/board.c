@@ -290,8 +290,6 @@ void bsp_initialize(void)
     /* create workqueue */
     FMT_CHECK(workqueue_manager_init());
 
-    /* init storage devices */
-    RT_CHECK(drv_sdio_init());
 #ifdef RT_USING_LWIP
     /* init rt_workqueue, which is used by tcpip stack */
     FMT_CHECK(rt_work_sys_workqueue_init());
