@@ -193,6 +193,13 @@ SECTIONS
         __fmt_task_end = .;
         . = ALIGN(4);
 
+        /* section information for parameters. */
+        . = ALIGN(4);
+        __fmt_param_start = .;
+        KEEP(*(ParamTab))
+        __fmt_param_end = .;
+        . = ALIGN(4);  
+
         /* section information for mlog. */
         . = ALIGN(4);
         __fmt_mlog_start = .;

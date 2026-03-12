@@ -13,7 +13,6 @@
 #define __BOARD_H__
 
 #include <rtthread.h>
-#include "drv_common.h"
 #include "drv_gpio.h"
 
 #include "cy_result.h"
@@ -47,6 +46,14 @@
 #define TARGET_NAME  "e83"
 
 void cy_bsp_all_init(void);
+
+void _Error_Handler(char *s, int num);
+void bsp_post_initialize(void);
+void bsp_initialize(void);
+void rt_hw_board_init(void);
+#ifndef Error_Handler
+#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
+#endif
 
 #endif
 

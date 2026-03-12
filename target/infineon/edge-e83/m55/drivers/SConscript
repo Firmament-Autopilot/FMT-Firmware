@@ -6,7 +6,6 @@ cwd = GetCurrentDir()
 
 # add the general drivers.
 src = Split("""
-drv_common.c
 """)
 
 src += ['drv_gpio.c']
