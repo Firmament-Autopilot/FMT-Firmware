@@ -18,17 +18,19 @@
 
 #include "driver/barometer/ms5611.h"
 #include "hal/barometer/barometer.h"
-#include "hal/spi/spi.h"
 #include "hal/i2c/i2c.h"
+#include "hal/spi/spi.h"
 #include "module/math/conversion.h"
 #include "module/workqueue/workqueue_manager.h"
 
-#define DRV_DBG(...) printf(__VA_ARGS__)
-#define POW2(_x)     ((_x) * (_x))
+
+#define DRV_DBG(...)
+// #define DRV_DBG(...) printf(__VA_ARGS__)
+#define POW2(_x)        ((_x) * (_x))
 
 /* SPI protocol address bits */
-#define DIR_READ  (1 << 7)
-#define DIR_WRITE (0 << 7)
+#define DIR_READ        (1 << 7)
+#define DIR_WRITE       (0 << 7)
 
 #define ADDR_RESET_CMD  0x1E /* write to this address to reset chip */
 #define ADDR_ADC        0x00 /* address of 3 bytes / 32bit pressure data */
@@ -41,13 +43,13 @@
 #define ADDR_PROM_C6    0xAC
 #define ADDR_PROM_CRC   0xAE
 
-#define BARO_OSR_256  0
-#define BARO_OSR_512  1
-#define BARO_OSR_1024 2
-#define BARO_OSR_2048 3
-#define BARO_OSR_4096 4
+#define BARO_OSR_256    0
+#define BARO_OSR_512    1
+#define BARO_OSR_1024   2
+#define BARO_OSR_2048   3
+#define BARO_OSR_4096   4
 
-#define DEFAULT_OSR BARO_OSR_2048
+#define DEFAULT_OSR     BARO_OSR_2048
 
 static uint8_t CMD_CONVERT_D1_ADDR[5] = {
     0x40, // OSR=256
@@ -249,15 +251,15 @@ static rt_err_t collect_data(baro_report_t* report)
     double p = _pressure / 1000.0;
 
     /*
-	 * Solve:
-	 *
-	 *     /        -(aR / g)     \
-	 *    | (p / p1)          . T1 | - T1
-	 *     \                      /
-	 * h = -------------------------------  + h1
-	 *                   a
-	 */
-    //report->altitude = (((exp((-(a * R) / g) * log((p / p1)))) * T1) - T1) / a;
+     * Solve:
+     *
+     *     /        -(aR / g)     \
+     *    | (p / p1)          . T1 | - T1
+     *     \                      /
+     * h = -------------------------------  + h1
+     *                   a
+     */
+    // report->altitude = (((exp((-(a * R) / g) * log((p / p1)))) * T1) - T1) / a;
     report->altitude_m = (((pow((p / p1), (-(a * R) / g))) * T1) - T1) / a;
 
     report->timestamp_ms = systime_now_ms();
@@ -366,14 +368,14 @@ static struct WorkItem ms5611_work = {
     .run = ms5611_measure
 };
 
-rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_name)
+rt_err_t drv_ms5611_init(const char* device_name, const char* baro_device_name)
 {
     static struct baro_device baro_device = {
         .ops = &_baro_ops,
         .bus_type = BARO_SPI_BUS_TYPE
     };
 
-    dev = rt_device_find(spi_device_name);
+    dev = rt_device_find(device_name);
     RT_ASSERT(dev != NULL);
 
     if (dev->type == RT_Device_Class_SPIDevice) {
@@ -394,19 +396,19 @@ rt_err_t drv_ms5611_init(const char* spi_device_name, const char* baro_device_na
         RT_TRY(rt_device_open(dev, RT_DEVICE_OFLAG_RDWR));
     } else if (dev->type == RT_Device_Class_I2CDevice) {
         use_spi = 0;
-        /* I2C device: no open/config needed here; use i2c_read_regs/i2c_write_* helpers */
-        /* perform sanity checks: ensure the i2c bus is attached and slave addr is valid */
         {
             struct rt_i2c_device* i2c_dev = (struct rt_i2c_device*)dev;
             if (i2c_dev->bus == RT_NULL) {
-                DRV_DBG("ms5611: i2c device '%s' has no bus attached\n", spi_device_name);
+                DRV_DBG("ms5611: i2c device '%s' has no bus attached\n", device_name);
                 return RT_ERROR;
             }
             if (i2c_dev->slave_addr == 0) {
-                DRV_DBG("ms5611: i2c device '%s' has invalid slave addr 0\n", spi_device_name);
+                DRV_DBG("ms5611: i2c device '%s' has invalid slave addr 0\n", device_name);
                 return RT_ERROR;
             }
         }
+        /* open i2c device for read/write */
+        RT_TRY(rt_device_open(dev, RT_DEVICE_OFLAG_RDWR));
     } else {
         return RT_ERROR;
     }
