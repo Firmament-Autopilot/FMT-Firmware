@@ -151,8 +151,8 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
-//     /* init mavproxy */
-//     FMT_CHECK(mavproxy_init());
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
 
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
@@ -203,8 +203,8 @@ void bsp_post_initialize(void)
     //     printf("Default configuration loaded.\n");
     // }
 
-    // /* init rc */
-    // FMT_CHECK(pilot_cmd_init());
+    /* init rc */
+    FMT_CHECK(pilot_cmd_init());
 
     // /* init gcs */
     // FMT_CHECK(gcs_cmd_init());

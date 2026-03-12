@@ -19,6 +19,7 @@
 int cmd_test(int argc, char** argv)
 {
     /* add your test code here */
+    printf("val:%f\n", 1.23f);
 
     return 0;
 }
