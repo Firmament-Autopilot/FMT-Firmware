@@ -231,7 +231,7 @@ static rt_size_t cdc_dev_write(usbd_cdc_dev_t dev, rt_off_t pos, const void* buf
 
         ep_tx_busy_flag = true;
         usbd_ep_start_write(usb_busid, CDC_IN_EP, usb_write_buffer, chunk_size);
-        rt_completion_wait(&dev->tx_cplt, RT_WAITING_FOREVER);
+        // rt_completion_wait(&dev->tx_cplt, RT_WAITING_FOREVER);
 
         sent_len += chunk_size;
         data_ptr += chunk_size;
@@ -291,7 +291,7 @@ rt_err_t drv_usb_cdc_init(void)
         return RT_ENOMEM;
     }
 
-    ret = hal_usbd_cdc_register(&cdc_device, "usbd_cdc", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STREAM, NULL);
+    ret = hal_usbd_cdc_register(&cdc_device, "usbd_cdc", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_DMA_RX | RT_DEVICE_FLAG_DMA_TX, NULL);
     if (ret != RT_EOK) {
         rt_mutex_delete(cdc_device.tx_lock);
         return ret;

@@ -29,6 +29,12 @@ target = "Edge-E83"\n
 	[[console.devices]]\n
 	type = "mavlink"\n
 	name = "mav_console"\n
-	auto-switch = true
+	auto-switch = true\n
+[mavproxy]\n
+[[mavproxy.devices]]\n
+	chan = 0\n
+	type = "usb"\n
+	name = "usbd_cdc"\n
+    auto-switch = true
 );
 // clang-format on
