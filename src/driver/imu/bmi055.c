@@ -22,6 +22,7 @@
 #include "hal/spi/spi.h"
 
 #define DRV_DBG(...)
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
 
 #define BIT(_idx) (1 << _idx)
 #define REG_VAL(_setbits, _clearbits) \
@@ -297,7 +298,7 @@ static rt_err_t gyro_read_rad(gyro_dev_t gyro_dev, float gyr[3])
 
     // change to NED coordinate
     bmi055_rotate_to_frd(gyr, (uint32_t)gyro_dev->parent.user_data & 0x7F);
-    
+
     return RT_EOK;
 }
 
@@ -532,18 +533,18 @@ const static struct accel_ops __accel_ops = {
     accel_read,
 };
 
-#define GYRO_CONFIG                                   \
-    {                                                 \
-        1000,                   /* 1K sample rate */  \
-            92,                 /* 256Hz bandwidth */ \
-            GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
+#define GYRO_CONFIG                               \
+    {                                             \
+        1000,               /* 1K sample rate */  \
+        92,                 /* 256Hz bandwidth */ \
+        GYRO_RANGE_2000DPS, /* +-2000 deg/s */    \
     }
 
-#define ACCEL_CONFIG                               \
-    {                                              \
-        1000,                /* 1K sample rate */  \
-            125,             /* 125Hz bandwidth */ \
-            ACCEL_RANGE_16G, /* +-16g */           \
+#define ACCEL_CONFIG                           \
+    {                                          \
+        1000,            /* 1K sample rate */  \
+        125,             /* 125Hz bandwidth */ \
+        ACCEL_RANGE_16G, /* +-16g */           \
     }
 
 static struct gyro_device gyro_dev = {
@@ -558,11 +559,11 @@ static struct accel_device accel_dev = {
     .bus_type = GYRO_SPI_BUS_TYPE
 };
 
-rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
+rt_err_t drv_bmi055_init(const char* gyro_spi_device_name, const char* accel_spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags)
 {
     /* Initialize gyroscope */
 
-    gyro_spi_dev = rt_device_find(spi_device_name);
+    gyro_spi_dev = rt_device_find(gyro_spi_device_name);
     RT_ASSERT(gyro_spi_dev != NULL);
     /* config spi */
     {
@@ -585,7 +586,7 @@ rt_err_t drv_bmi055_init(const char* spi_device_name, const char* gyro_device_na
 
     /* Initialize accelerometer */
 
-    accel_spi_dev = rt_device_find("spi1_dev4");
+    accel_spi_dev = rt_device_find(accel_spi_device_name);
     RT_ASSERT(accel_spi_dev != NULL);
     /* config spi */
     {
