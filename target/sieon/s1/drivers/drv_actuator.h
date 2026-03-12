@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2021 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#ifndef BMI055_H__
-#define BMI055_H__
+#ifndef DRV_ACTUATOR_H__
+#define DRV_ACTUATOR_H__
 
-#include <rtthread.h>
+#include <firmament.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-rt_err_t drv_bmi055_init(const char* gyro_spi_device_name, const char* accel_spi_device_name, const char* gyro_device_name, const char* accel_device_name, uint32_t dev_flags);
+rt_err_t drv_actuator_init(void);
 
 #ifdef __cplusplus
 }

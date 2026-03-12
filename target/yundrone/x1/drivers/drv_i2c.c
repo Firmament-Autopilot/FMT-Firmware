@@ -75,9 +75,9 @@ static void i2c2_hw_init(void)
     LL_I2C_Init(I2C2, &I2C_InitStruct);
 }
 
-static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status, uint32_t timeout)
+static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status, uint64_t timeout_us)
 {
-    uint32_t time_start = systime_now_ms();
+    uint64_t time_start = systime_now_us();
 
     while (((READ_BIT(I2Cx->ISR, I2C_ISR_TXIS) == I2C_ISR_TXIS) ? 1UL : 0UL) == status) {
         /*  TXIS bit is not set when a NACK is received */
@@ -85,7 +85,7 @@ static fmt_err_t wait_TXIS_flag_until_timeout(I2C_TypeDef* I2Cx, uint32_t status
             return FMT_ERROR;
         }
 
-        if ((systime_now_ms() - time_start) > timeout) {
+        if ((systime_now_us() - time_start) > timeout_us) {
             return FMT_ETIMEOUT;
         }
     }
@@ -213,7 +213,7 @@ static struct stm32_i2c_bus stm32_i2c2 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
 static struct rt_i2c_device i2c2_dev2 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
-                                          .flags = 0 };                                                                                                                                                 
+                                          .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
 {

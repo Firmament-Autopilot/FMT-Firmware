@@ -30,11 +30,11 @@ enum {
     ACTUATOR_FROM_UNKNOWN
 };
 
-static McnNode_t         _control_out_nod;
-static McnNode_t         _rc_channels_nod;
-static uint8_t*          from_dev;
-static rt_device_t*      to_dev;
-static uint8_t           mapping_num;
+static McnNode_t _control_out_nod;
+static McnNode_t _rc_channels_nod;
+static uint8_t* from_dev;
+static rt_device_t* to_dev;
+static uint8_t mapping_num;
 static actuator_mapping* mapping_list;
 
 fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
@@ -49,16 +49,16 @@ fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
 
     if (check_timetag(TIMETAG(hil_actuator_tt))) {
         mavlink_hil_actuator_controls_t hil_actuator_ctrl;
-        mavlink_message_t               msg;
-        mavlink_system_t                mav_sys;
-        uint8_t                         val_index = 0;
+        mavlink_message_t msg;
+        mavlink_system_t mav_sys;
+        uint8_t val_index = 0;
 
         /* send command by mavlink */
         mav_sys = mavproxy_get_system();
 
         hil_actuator_ctrl.time_usec = systime_now_us();
-        hil_actuator_ctrl.mode      = MAV_MODE_FLAG_SAFETY_ARMED;
-        hil_actuator_ctrl.flags     = 0;
+        hil_actuator_ctrl.mode = MAV_MODE_FLAG_SAFETY_ARMED;
+        hil_actuator_ctrl.flags = 0;
         for (int i = 0; i < 16; i++) {
             if (chan_mask & (1 << i)) {
                 /* map to -1~1 */
@@ -78,28 +78,23 @@ fmt_err_t send_hil_actuator_cmd(uint16_t chan_mask, const uint16_t* chan_val)
 
 fmt_err_t send_actuator_cmd(void)
 {
-    fmt_err_t       err = FMT_EOK;
-    int             i, j;
-    bool            has_poll_control_out = false;
-    bool            has_poll_rc_channels = false;
+    fmt_err_t err = FMT_EOK;
+    int i, j;
+    bool has_poll_control_out = false;
+    bool has_poll_rc_channels = false;
     Control_Out_Bus control_out;
-    int16_t         rc_channel[16];
-    uint16_t        chan_val[16] = { 0 };
-
-    DEFINE_TIMETAG(actuator_intv, 2);
-
-    if (check_timetag(TIMETAG(actuator_intv)) == 0) {
-        return FMT_EBUSY;
-    }
+    int16_t rc_channel[16];
+    uint16_t chan_val[16] = { 0 };
 
     for (i = 0; i < mapping_num; i++) {
-        rt_size_t size     = mapping_list[i].map_size;
-        uint16_t  chan_sel = 0;
+        rt_size_t size = mapping_list[i].map_size;
+        uint16_t chan_sel = 0;
 
         if (from_dev[i] == ACTUATOR_FROM_CONTROL_OUT) {
             if (has_poll_control_out == false) {
                 if (mcn_poll(_control_out_nod) == false) {
-                    return FMT_ERROR;
+                    /* no control_out topic updated, continue for next mapping */
+                    continue;
                 }
                 mcn_copy(MCN_HUB(control_output), _control_out_nod, &control_out);
                 has_poll_control_out = true;
@@ -114,7 +109,8 @@ fmt_err_t send_actuator_cmd(void)
         } else if (from_dev[i] == ACTUATOR_FROM_RC_CHANNELS) {
             if (has_poll_rc_channels == false) {
                 if (mcn_poll(_rc_channels_nod) == 0) {
-                    return FMT_ERROR;
+                    /* no rc_channels topic updated, continue for next mapping */
+                    continue;
                 }
                 mcn_copy(MCN_HUB(rc_trim_channels), _rc_channels_nod, &rc_channel);
                 has_poll_rc_channels = true;
@@ -161,12 +157,12 @@ fmt_err_t actuator_init(void)
         return FMT_ERROR;
     }
 
-    mapping_num  = actuator_toml_get_mapping_num();
+    mapping_num = actuator_toml_get_mapping_num();
     mapping_list = actuator_toml_get_mapping_list();
 
     if (mapping_num) {
         from_dev = (uint8_t*)rt_malloc(sizeof(uint8_t) * mapping_num);
-        to_dev   = (rt_device_t*)rt_malloc(sizeof(rt_device_t) * mapping_num);
+        to_dev = (rt_device_t*)rt_malloc(sizeof(rt_device_t) * mapping_num);
         if (from_dev == NULL || to_dev == NULL) {
             return FMT_ENOMEM;
         }
