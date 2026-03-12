@@ -53,16 +53,14 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 
-
 static const struct dfs_mount_tbl mnt_table[] = {
     { "sd0", "/", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
 
-
 #ifdef RT_USING_FINSH
-#include <finsh.h>
-static void reboot(uint8_t argc, char **argv)
+    #include <finsh.h>
+static void reboot(uint8_t argc, char** argv)
 {
     rt_hw_cpu_reset();
 }
@@ -74,13 +72,70 @@ MSH_CMD_EXPORT(reboot, Reboot System);
  * @param  none
  * @retval none
  */
-void _Error_Handler(char *s, int num)
+void _Error_Handler(char* s, int num)
 {
     /* User can add his own implementation to report the HAL error return state */
     LOG_E("Error_Handler at file:%s num:%d", s, num);
 
-    while (1)
-    {
+    while (1) {
+    }
+}
+
+static void banner_item(const char* name, const char* content, char pad, uint32_t len)
+{
+    int pad_len;
+
+    if (content == NULL) {
+        content = "NULL";
+    }
+
+    pad_len = len - strlen(name) - strlen(content);
+
+    if (pad_len < 1) {
+        pad_len = 1;
+    }
+    // e.g, name..............content
+    console_printf("%s", name);
+    while (pad_len--) {
+        console_write(&pad, 1);
+    }
+
+    console_printf("%s\n", content);
+}
+
+#define BANNER_ITEM_LEN 42
+static void bsp_show_information(void)
+{
+    char buffer[50];
+
+    console_printf("\n");
+    console_println("   _____                               __ ");
+    console_println("  / __(_)_____ _  ___ ___ _  ___ ___  / /_");
+    console_println(" / _// / __/  ' \\/ _ `/  ' \\/ -_) _ \\/ __/");
+    console_println("/_/ /_/_/ /_/_/_/\\_,_/_/_/_/\\__/_//_/\\__/ ");
+
+    sprintf(buffer, "FMT FW %s", FMT_VERSION);
+    banner_item("Firmware", buffer, '.', BANNER_ITEM_LEN);
+    sprintf(buffer, "RT-Thread v%ld.%ld.%ld", RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    banner_item("Kernel", buffer, '.', BANNER_ITEM_LEN);
+    sprintf(buffer, "%d KB", IFX_SRAM_SIZE);
+    banner_item("RAM", buffer, '.', BANNER_ITEM_LEN);
+    banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
+    banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
+    banner_item("Airframe", STR(AIRFRAME), '.', BANNER_ITEM_LEN);
+    banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
+    banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
+#ifdef FMT_USING_SIH
+    banner_item("Plant Model", plant_model_info.info, '.', BANNER_ITEM_LEN);
+#endif
+
+    console_println("Task Initialize:");
+    fmt_task_desc_t task_tab = get_task_table();
+    for (uint32_t i = 0; i < get_task_num(); i++) {
+        sprintf(buffer, "  %s", task_tab[i].name);
+        /* task status must be okay to reach here */
+        banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
 }
 
@@ -90,7 +145,7 @@ void bsp_early_initialize(void)
     cy_bsp_all_init();
 
     /* heap initialization */
-    rt_system_heap_init((void *)HEAP_BEGIN, (void *)HEAP_END);
+    rt_system_heap_init((void*)HEAP_BEGIN, (void*)HEAP_END);
 
     /* gpio driver init */
     RT_CHECK(drv_gpio_init());
@@ -106,7 +161,7 @@ void bsp_early_initialize(void)
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
-    
+
     /* spi driver init */
     RT_CHECK(drv_spi_init());
 
@@ -145,7 +200,7 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
-     /* init file system */
+    /* init file system */
     FMT_CHECK(file_manager_init(mnt_table));
 
     /* init parameter system */
@@ -157,29 +212,29 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
-// #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
-//     FMT_CHECK(advertise_sensor_imu(0));
-//     FMT_CHECK(advertise_sensor_mag(0));
-//     FMT_CHECK(advertise_sensor_baro(0));
-//     FMT_CHECK(advertise_sensor_gps(0));
-//     FMT_CHECK(advertise_sensor_airspeed(0));
-// #else
-//     /* init onboard sensors */
-//     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
-//     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-//     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
-//     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
-//     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-//     RT_CHECK(gps_ubx_init("serial3", "gps"));
-//     // RT_CHECK(gps_nmea_init("serial3", "gps"));
-//     // RT_CHECK(drv_tofsense_init("serial5"));
+    // #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    //     FMT_CHECK(advertise_sensor_imu(0));
+    //     FMT_CHECK(advertise_sensor_mag(0));
+    //     FMT_CHECK(advertise_sensor_baro(0));
+    //     FMT_CHECK(advertise_sensor_gps(0));
+    //     FMT_CHECK(advertise_sensor_airspeed(0));
+    // #else
+    //     /* init onboard sensors */
+    //     RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
+    //     RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
+    //     RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+    //     // RT_CHECK(drv_qmc5883l_init("i2c1_dev2", "mag0", EXTERNAL_DEV | 0));
+    //     RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
+    //     RT_CHECK(gps_ubx_init("serial3", "gps"));
+    //     // RT_CHECK(gps_nmea_init("serial3", "gps"));
+    //     // RT_CHECK(drv_tofsense_init("serial5"));
 
-//     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-//     FMT_CHECK(register_sensor_mag("mag0", 0));
-//     FMT_CHECK(register_sensor_barometer("barometer"));
-//     FMT_CHECK(advertise_sensor_optflow(0));
-//     FMT_CHECK(advertise_sensor_rangefinder(0));
-// #endif
+    //     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    //     FMT_CHECK(register_sensor_mag("mag0", 0));
+    //     FMT_CHECK(register_sensor_barometer("barometer"));
+    //     FMT_CHECK(advertise_sensor_optflow(0));
+    //     FMT_CHECK(advertise_sensor_rangefinder(0));
+    // #endif
 
     /* init finsh */
     finsh_system_init();
@@ -227,8 +282,8 @@ void bsp_post_initialize(void)
     // /* initialize power management unit */
     // FMT_CHECK(pmu_init());
 
-    // /* show system information */
-    // bsp_show_information();
+    /* show system information */
+    bsp_show_information();
 
     // /* execute init script */
     // msh_exec_script(SYS_INIT_SCRIPT, strlen(SYS_INIT_SCRIPT));

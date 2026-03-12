@@ -52,6 +52,10 @@ env = Environment(tools = ['mingw'], ENV=os.environ,
     LINK = rtconfig.LINK, LINKFLAGS = rtconfig.LFLAGS)
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
 
+# set VEHICLE_TYPE macro for low-level usage
+env.Append(CPPDEFINES = [('VEHICLE_TYPE', GetOption('vehicle'))])
+env.Append(CPPDEFINES = [('AIRFRAME', GetOption('airframe'))])
+
 OBJCOPY = os.path.join(rtconfig.EXEC_PATH, 'arm-none-eabi-objcopy')
 
 if rtconfig.PLATFORM in ['iccarm']:
