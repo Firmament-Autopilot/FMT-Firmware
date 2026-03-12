@@ -19,7 +19,8 @@
 #include "hal/barometer/barometer.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...)               printf(__VA_ARGS__)
+#define DRV_DBG(...)
+// #define DRV_DBG(...)               printf(__VA_ARGS__)
 
 #define BMP581_ID                  0x50
 
