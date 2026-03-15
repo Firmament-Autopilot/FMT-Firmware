@@ -19,7 +19,6 @@
 
 #include "module/syscmd/optparse.h"
 #include "module/syscmd/syscmd.h"
-#include "module/param/param_fram.h"
 
 static void show_usage(void)
 {
@@ -32,10 +31,6 @@ static void show_usage(void)
     SHELL_COMMAND("save", "Save parameters to file.");
     SHELL_COMMAND("load", "Load parameters from file.");
     SHELL_COMMAND("restore", "Restore parameters value to default.");
-    SHELL_COMMAND("fram_save", "Manually save parameters to FRAM.");
-    SHELL_COMMAND("fram_load", "Manually load parameters from FRAM.");
-    SHELL_COMMAND("fram_check", "Check if FRAM has valid parameters.");
-    SHELL_COMMAND("fram_erase", "Erase FRAM parameters.");
 }
 
 static void show_list_usage(void)
@@ -565,14 +560,6 @@ int cmd_param(int argc, char** argv)
             res = load(options);
         } else if (STRING_COMPARE(arg, "restore")) {
             res = restore(argc, options);
-        } else if (STRING_COMPARE(arg, "fram_save")) {
-            res = param_fram_save();
-        } else if (STRING_COMPARE(arg, "fram_load")) {
-            res = param_fram_load();
-        } else if (STRING_COMPARE(arg, "fram_check")) {
-            res = param_fram_valid() ? FMT_EOK : FMT_ERROR;
-        } else if (STRING_COMPARE(arg, "fram_erase")) {
-            res = param_fram_erase();
         } else {
             show_usage();
         }

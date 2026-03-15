@@ -235,7 +235,7 @@ void rtthread_startup(void)
 {
     /* disable interrupt first */
     rt_hw_interrupt_disable();
-    
+
     rt_assert_set_hook(assert_hook);
 
     /* board level initialization

@@ -3,12 +3,6 @@
 #include "hal/mtd/mtd.h"
 #include "hal/spi/spi.h"
 
-/* SPI CS structure from drv_spi.c */
-struct stm32_spi_cs {
-    GPIO_TypeDef* GPIOx;
-    uint16_t GPIO_Pin;
-};
-
 #define RAMTRON_WREN  0x06 /* Write Enable */
 #define RAMTRON_WRDI  0x04 /* Write Disable */
 #define RAMTRON_RDSR  0x05 /* Read Status Register */
@@ -68,6 +62,8 @@ static rt_err_t ramtron_read_devinfo(void)
 
     /* JEDEC assigned Ramtron C2h in bank 7 */
     if (id[6] != 0xC2) {
+        printf("INVALID ramtron ID!\n");
+        printf("id[6] = %02x \n", id[6]);
         return RT_EINVAL;
     }
 
@@ -114,9 +110,7 @@ rt_err_t ramtron_read(mtd_dev_t mtd, rt_uint8_t* buffer, rt_uint32_t sector, rt_
     uint32_t addr = sector * geometry.bytes_per_sector;
     struct rt_spi_message message1, message2, message3;
 
-    /* FM25V02A (256Kbit = 32KB) uses 3-byte addressing (up to 24-bit = 16MB) */
-    /* Only very small FRAMs (<= 16Kbit) use 2-byte addressing */
-    uint8_t addr_length = (geometry.sector_count <= 32) ? 2 : 3;
+    uint8_t addr_length = (geometry.sector_count < 512) ? 2 : 3;
 
     /* send MSB first */
     Msb2Lsb((uint8_t*)&addr, addr_length);
@@ -154,9 +148,7 @@ rt_err_t ramtron_write(mtd_dev_t mtd, const rt_uint8_t* buffer, rt_uint32_t sect
     uint32_t addr = sector * geometry.bytes_per_sector;
     struct rt_spi_message message1, message2, message3;
 
-    /* FM25V02A (256Kbit = 32KB) uses 3-byte addressing (up to 24-bit = 16MB) */
-    /* Only very small FRAMs (<= 16Kbit) use 2-byte addressing */
-    uint8_t addr_length = (geometry.sector_count <= 32) ? 2 : 3;
+    uint8_t addr_length = (geometry.sector_count < 512) ? 2 : 3;
 
     /* send MSB first */
 
@@ -226,42 +218,30 @@ const static struct mtd_ops dev_ops = {
 
 rt_err_t drv_ramtron_init(const char* spi_device_name)
 {
-    rt_err_t ret;
-    
-    /* Find SPI device */
     ramtron_spi_dev = rt_device_find(spi_device_name);
-    if (ramtron_spi_dev == RT_NULL) {
-        console_printf("spi device %s not found!\n", spi_device_name);
-        return RT_ERROR;
+    RT_ASSERT(ramtron_spi_dev != NULL);
+
+    /* config spi */
+    {
+        struct rt_spi_configuration cfg;
+        cfg.data_width = 8;
+        cfg.mode = RT_SPI_MODE_3 | RT_SPI_MSB; /* SPI Compatible Modes 3 */
+        cfg.max_hz = 7000000;
+
+        struct rt_spi_device* spi_device_t = (struct rt_spi_device*)ramtron_spi_dev;
+        spi_device_t->config.data_width = cfg.data_width;
+        spi_device_t->config.mode = cfg.mode & RT_SPI_MODE_MASK;
+        spi_device_t->config.max_hz = cfg.max_hz;
+
+        RT_TRY(rt_spi_configure(spi_device_t, &cfg));
     }
 
-    /* Configure SPI - Mode 0 (CPOL=0, CPHA=0) */
-    struct rt_spi_configuration cfg;
-    cfg.data_width = 8;
-    cfg.mode = RT_SPI_MODE_0 | RT_SPI_MSB;
-    cfg.max_hz = 7 * 1000 * 1000; /* 7 MHz */
-    rt_spi_configure((struct rt_spi_device*)ramtron_spi_dev, &cfg);
+    /* init spi bus */
+    RT_TRY(rt_device_open(ramtron_spi_dev, RT_DEVICE_OFLAG_RDWR));
 
-    /* Open SPI device */
-    ret = rt_device_open(ramtron_spi_dev, RT_DEVICE_OFLAG_RDWR);
-    if (ret != RT_EOK) {
-        return ret;
-    }
+    /* try read device id */
+    RT_TRY(ramtron_read_devinfo());
 
-    /* FRAM wake-up: send dummy bytes in case device is in sleep mode */
-    uint8_t dummy[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-    rt_spi_send((struct rt_spi_device*)ramtron_spi_dev, dummy, sizeof(dummy));
-    rt_thread_mdelay(5);
-
-    /* Read device info */
-    ret = ramtron_read_devinfo();
-    if (ret != RT_EOK) {
-        console_printf("ramtron init fail\n");
-        return ret;
-    }
-
-    /* Copy geometry to device structure for block device interface */
-    ramtron_dev.blk_geometry = geometry;
     ramtron_dev.ops = &dev_ops;
     return hal_mtd_register(&ramtron_dev, "mtdblk0", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE, RT_NULL);
 }
