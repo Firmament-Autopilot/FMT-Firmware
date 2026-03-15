@@ -234,9 +234,11 @@ static rt_size_t i2c_master_transfer(
     uint32_t msg_idx = 0;
     rt_size_t bytes_sent = 0;
     struct stm32_i2c_bus* stm32_i2c = (struct stm32_i2c_bus*)bus;
+    uint8_t bus_error_happened = 0;
 
     if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_BUSY, 1, I2C_TIMEOUT_US) != FMT_EOK) {
         DRV_DBG("I2C wait BUSY timeout\n");
+        bus_error_happened = 1;
         goto _stop;
     }
 
@@ -252,6 +254,7 @@ static rt_size_t i2c_master_transfer(
             while (nbytes--) {
                 if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_RXNE, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                     DRV_DBG("I2C wait RXNE timeout\n");
+                    bus_error_happened = 1;
                     goto _stop;
                 }
                 *(msg->buf++) = LL_I2C_ReceiveData8(stm32_i2c->I2C);
@@ -259,6 +262,7 @@ static rt_size_t i2c_master_transfer(
 
             if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_TC, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                 DRV_DBG("I2C wait RX TC timeout\n");
+                bus_error_happened = 1;
                 goto _stop;
             }
         } else {
@@ -267,6 +271,7 @@ static rt_size_t i2c_master_transfer(
             while (nbytes--) {
                 if (wait_TXIS_flag_until_timeout(stm32_i2c->I2C, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                     DRV_DBG("I2C wait TXIS timeout\n");
+                    bus_error_happened = 1;
                     goto _stop;
                 }
                 LL_I2C_TransmitData8(stm32_i2c->I2C, *(msg->buf++));
@@ -274,6 +279,7 @@ static rt_size_t i2c_master_transfer(
 
             if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_TC, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                 DRV_DBG("I2C wait TC timeout\n");
+                bus_error_happened = 1;
                 goto _stop;
             }
         }
@@ -298,6 +304,13 @@ _stop:
     }
 
     CLEAR_BIT(stm32_i2c->I2C->CR2, I2C_CR2_SADD | I2C_CR2_HEAD10R | I2C_CR2_NBYTES | I2C_CR2_RELOAD | I2C_CR2_RD_WRN);
+
+    if (bus_error_happened) {
+        /* some error happened, try to recover */
+        LL_I2C_Disable(stm32_i2c->I2C);
+        systime_udelay(10);
+        LL_I2C_Enable(stm32_i2c->I2C);
+    }
 
     return msg_idx;
 }
