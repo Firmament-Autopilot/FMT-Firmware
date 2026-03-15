@@ -259,10 +259,12 @@ static rt_size_t i2c_master_transfer(
     struct rt_i2c_msg* msg;
     uint32_t msg_idx = 0;
     struct stm32_i2c_bus* stm32_i2c = (struct stm32_i2c_bus*)bus;
+    uint8_t bus_error_happened = 0;
 
     /* wait until bus is free. If timeout, generate stop again */
     if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_BUSY, 1, I2C_TIMEOUT_US) != FMT_EOK) {
         DRV_DBG("I2C wait BUSY timeout\n");
+        bus_error_happened = 1;
         goto _stop;
     }
 
@@ -281,6 +283,7 @@ static rt_size_t i2c_master_transfer(
                 /* wait data received */
                 if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_RXNE, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                     DRV_DBG("I2C wait RXNE timeout\n");
+                    bus_error_happened = 1;
                     goto _stop;
                 }
                 /* receive data */
@@ -290,6 +293,7 @@ static rt_size_t i2c_master_transfer(
             /* Wait transmit complete */
             if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_TC, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                 DRV_DBG("I2C wait RX TC timeout\n");
+                bus_error_happened = 1;
                 goto _stop;
             }
         } else {
@@ -299,6 +303,7 @@ static rt_size_t i2c_master_transfer(
             while (nbytes--) {
                 if (wait_TXIS_flag_until_timeout(stm32_i2c->I2C, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                     DRV_DBG("I2C wait TXIS timeout\n");
+                    bus_error_happened = 1;
                     goto _stop;
                 }
                 /* transmit data */
@@ -308,6 +313,7 @@ static rt_size_t i2c_master_transfer(
             /* Wait transmit complete */
             if (wait_flag_until_timeout(stm32_i2c->I2C, I2C_ISR_TC, 0, I2C_TIMEOUT_US) != FMT_EOK) {
                 DRV_DBG("I2C wait TC timeout\n");
+                bus_error_happened = 1;
                 goto _stop;
             }
         }
@@ -336,6 +342,13 @@ _stop:
     /* clear CR2 register */
     CLEAR_BIT(stm32_i2c->I2C->CR2, I2C_CR2_SADD | I2C_CR2_HEAD10R | I2C_CR2_NBYTES | I2C_CR2_RELOAD | I2C_CR2_RD_WRN);
 
+    if (bus_error_happened) {
+        /* some error happened, try to recover */
+        LL_I2C_Disable(stm32_i2c->I2C);
+        systime_udelay(10);
+        LL_I2C_Enable(stm32_i2c->I2C);
+    }
+
     return msg_idx;
 }
 
@@ -351,15 +364,15 @@ static struct stm32_i2c_bus stm32_i2c3 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2C4 };
 
 /* i2c device instances */
-static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
+static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS,  /* 7 bit address */
                                           .flags = 0 };
 static struct rt_i2c_device i2c1_dev2 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
-static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS, /* 7 bit address */
+static struct rt_i2c_device i2c2_dev1 = { .slave_addr = IST8310_ADDRESS,  /* 7 bit address */
                                           .flags = 0 };
 static struct rt_i2c_device i2c2_dev2 = { .slave_addr = QMC5883L_ADDRESS, /* 7 bit address */
                                           .flags = 0 };
-static struct rt_i2c_device i2c3_dev1 = { .slave_addr = 0x28, /* MS4525 */
+static struct rt_i2c_device i2c3_dev1 = { .slave_addr = 0x28,             /* MS4525 */
                                           .flags = 0 };
 
 rt_err_t drv_i2c_init(void)
