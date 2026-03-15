@@ -34,7 +34,7 @@ extern "C" {
 #endif
 
 /********************** Parameter Data Structure **********************/
-typedef enum {
+enum param_type_t {
     PARAM_TYPE_INT8 = 0,
     PARAM_TYPE_UINT8,
     PARAM_TYPE_INT16,
@@ -44,7 +44,7 @@ typedef enum {
     PARAM_TYPE_FLOAT,
     PARAM_TYPE_DOUBLE,
     PARAM_TYPE_UNKNOWN = 0xFF
-} param_type_t;
+};
 
 typedef enum {
     PARAM_PARSE_START = 0,
