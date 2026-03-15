@@ -18,6 +18,9 @@
 #include "drv_usart.h"
 #include "hal/serial/serial.h"
 #include "stm32h7xx_ll_usart.h"
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    #include "core_cm7.h"
+#endif
 
 #define UART_ENABLE_IRQ(n)  NVIC_EnableIRQ((n))
 #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
@@ -108,33 +111,60 @@ static int usart_putc(struct serial_device* serial, char c);
 static rt_err_t usart_control(struct serial_device* serial, int cmd, void* arg);
 static rt_err_t usart_configure(struct serial_device* serial, struct serial_configure* cfg);
 
+/* runtime D-cache check for UART DMA */
+static inline int uart_is_dcache_enabled(void)
+{
 #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    return ((SCB->CCR & SCB_CCR_DC_Msk) != 0U);
+#else
+    return 0;
+#endif
+}
+
 static void uart_dma_clean_buffer(const void* buffer, rt_size_t size)
 {
-    if (buffer != RT_NULL && size > 0) {
+    if (buffer == RT_NULL || size == 0) {
+        return;
+    }
+
+    if (uart_is_dcache_enabled()) {
         SCB_CleanDCache_by_Addr((uint32_t*)buffer, (int32_t)size);
     }
 }
 
 static void uart_dma_invalidate_buffer(void* buffer, rt_size_t size)
 {
-    if (buffer != RT_NULL && size > 0) {
+    if (buffer == RT_NULL || size == 0) {
+        return;
+    }
+
+    if (uart_is_dcache_enabled()) {
         SCB_InvalidateDCache_by_Addr(buffer, (int32_t)size);
     }
 }
-#else
-static void uart_dma_clean_buffer(const void* buffer, rt_size_t size)
+
+/* DMA-capable address check and static pool for UART */
+static inline int uart_addr_is_dma_capable(uint8_t* addr, rt_size_t size)
 {
-    RT_UNUSED(buffer);
-    RT_UNUSED(size);
+    if (addr == RT_NULL || size == 0) {
+        return 0;
+    }
+
+    uintptr_t a = (uintptr_t)addr;
+    uintptr_t s = (uintptr_t)size;
+
+    if ((a >= 0x24000000UL) && (s <= (0x24080000UL - a))) return 1;
+    if ((a >= 0x30000000UL) && (s <= (0x30040000UL - a))) return 1;
+    if ((a >= 0x38000000UL) && (s <= (0x38010000UL - a))) return 1;
+    return 0;
 }
 
-static void uart_dma_invalidate_buffer(void* buffer, rt_size_t size)
-{
-    RT_UNUSED(buffer);
-    RT_UNUSED(size);
-}
+#ifndef UART_DMA_POOL_SIZE
+#define UART_DMA_POOL_SIZE (32 * 1024)
 #endif
+static uint8_t uart_dma_static_pool[UART_DMA_POOL_SIZE] __attribute__((section(".sram_dma"), aligned(32)));
+static rt_size_t uart_dma_static_pool_used = 0;
+static rt_bool_t uart_dma_pool_inuse = RT_FALSE;
 
 static rt_err_t uart_dma_prepare_rx_buffer(struct stm32_uart* uart, rt_size_t size)
 {
@@ -152,26 +182,60 @@ static rt_err_t uart_dma_prepare_rx_buffer(struct stm32_uart* uart, rt_size_t si
     }
 
     if (uart->dma.rx_buffer != RT_NULL) {
-        rt_free_align(uart->dma.rx_buffer);
+        /* if it's static pool, mark free, else free heap */
+        if (uart->dma.rx_buffer == uart_dma_static_pool) {
+            uart_dma_pool_inuse = RT_FALSE;
+            uart_dma_static_pool_used = 0;
+        } else {
+            rt_free_align(uart->dma.rx_buffer);
+        }
         uart->dma.rx_buffer = RT_NULL;
         uart->dma.rx_buffer_size = 0;
     }
 
+    /* Try heap allocation first */
     uart->dma.rx_buffer = rt_malloc_align(aligned_size, UART_DMA_CACHE_ALIGNMENT);
-    if (uart->dma.rx_buffer == RT_NULL) {
-        return RT_ENOMEM;
+    if (uart->dma.rx_buffer != RT_NULL) {
+        if (uart_addr_is_dma_capable(uart->dma.rx_buffer, aligned_size)) {
+            uart->dma.rx_buffer_size = aligned_size;
+            rt_memset(uart->dma.rx_buffer, 0, aligned_size);
+            return RT_EOK;
+        }
+
+        /* not DMA-capable, free and fall back */
+        rt_free_align(uart->dma.rx_buffer);
+        uart->dma.rx_buffer = RT_NULL;
     }
 
-    uart->dma.rx_buffer_size = aligned_size;
-    rt_memset(uart->dma.rx_buffer, 0, aligned_size);
+    /* Fallback: use static pool if fits and not in use */
+    if (aligned_size <= UART_DMA_POOL_SIZE) {
+        rt_base_t level = rt_hw_interrupt_disable();
+        if (uart_dma_pool_inuse == RT_FALSE) {
+            uart_dma_pool_inuse = RT_TRUE;
+            uart_dma_static_pool_used = aligned_size;
+            rt_hw_interrupt_enable(level);
+            uart->dma.rx_buffer = uart_dma_static_pool;
+            uart->dma.rx_buffer_size = aligned_size;
+            rt_memset(uart->dma.rx_buffer, 0, aligned_size);
+            return RT_EOK;
+        }
+        rt_hw_interrupt_enable(level);
+    }
 
-    return RT_EOK;
+    return RT_ENOMEM;
 }
 
 static void uart_dma_release_rx_buffer(struct stm32_uart* uart)
 {
     if (uart->dma.rx_buffer != RT_NULL) {
-        rt_free_align(uart->dma.rx_buffer);
+        if (uart->dma.rx_buffer == uart_dma_static_pool) {
+            rt_base_t level = rt_hw_interrupt_disable();
+            uart_dma_pool_inuse = RT_FALSE;
+            uart_dma_static_pool_used = 0;
+            rt_hw_interrupt_enable(level);
+        } else {
+            rt_free_align(uart->dma.rx_buffer);
+        }
         uart->dma.rx_buffer = RT_NULL;
         uart->dma.rx_buffer_size = 0;
     }

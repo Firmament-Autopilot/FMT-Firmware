@@ -276,7 +276,7 @@ static void CPU_Config(void)
     SCB_EnableICache();
 
     /* Enable D-Cache */
-    SCB_EnableDCache();
+    // SCB_EnableDCache();
 }
 
 static void EnableSensorPower(void)
