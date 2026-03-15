@@ -166,6 +166,14 @@ SECTIONS
         . = ALIGN(4);
     } > SRAMD2
 
+    /* Section to place static DMA buffers */
+    .sram_dma (NOLOAD) :
+    {
+        . = ALIGN(4);
+        *(.sram_dma*)
+        . = ALIGN(4);
+    } > SRAMD1
+
     /* Ethernet DMA Descriptors (D2 Domain) */
     .RxDecripSection (NOLOAD) : { *(.RxDecripSection) } > RxDecripSection
     .TxDecripSection (NOLOAD) : { *(.TxDecripSection) } > TxDecripSection

@@ -23,6 +23,9 @@
     #include "drv_sdio.h"
     #include "hal/sd/sd.h"
     #include "stm32h7xx_ll_sdmmc.h"
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    #include "core_cm7.h"
+#endif
 
     #define SD_TIMEOUT    5000
     #define SD_BLOCK_SIZE 512U
@@ -42,33 +45,79 @@ extern SD_HandleTypeDef hsd2;
 
 static struct sd_device sd0_dev;
 
+/* Cache maintenance with runtime D-Cache check. */
+static inline int sd_is_dcache_enabled(void)
+{
 #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    return ((SCB->CCR & SCB_CCR_DC_Msk) != 0U);
+#else
+    return 0;
+#endif
+}
+
 static void sd_dma_clean_buffer(const void* buffer, rt_size_t size)
 {
-    if (buffer != RT_NULL && size > 0) {
+    if (buffer == RT_NULL || size == 0) {
+        return;
+    }
+
+    if (sd_is_dcache_enabled()) {
         SCB_CleanDCache_by_Addr((uint32_t*)buffer, (int32_t)size);
     }
 }
 
 static void sd_dma_invalidate_buffer(void* buffer, rt_size_t size)
 {
-    if (buffer != RT_NULL && size > 0) {
+    if (buffer == RT_NULL || size == 0) {
+        return;
+    }
+
+    if (sd_is_dcache_enabled()) {
         SCB_InvalidateDCache_by_Addr(buffer, (int32_t)size);
     }
 }
-#else
-static void sd_dma_clean_buffer(const void* buffer, rt_size_t size)
+
+/*
+ * Ensure DMA buffer is located in DMA-capable RAM.
+ * H7 memory map (used here): SRAMD1: 0x24000000 (512KB), SRAMD2: 0x30000000 (256KB),
+ * SRAMD3: 0x38000000 (64KB). We treat 0x24000000 and 0x30000000 as DMA-capable.
+ */
+static inline int sd_addr_is_dma_capable(uint8_t* addr, rt_size_t size)
 {
-    RT_UNUSED(buffer);
-    RT_UNUSED(size);
+    if (addr == RT_NULL || size == 0) {
+        return 0;
+    }
+
+    uintptr_t a = (uintptr_t)addr;
+    uintptr_t s = (uintptr_t)size;
+
+    /* SRAMD1: 0x24000000 - 0x24080000 (512KB) */
+    if ((a >= 0x24000000UL) && (s <= (0x24080000UL - a))) {
+        return 1;
+    }
+
+    /* SRAMD2: 0x30000000 - 0x30040000 (256KB) */
+    if ((a >= 0x30000000UL) && (s <= (0x30040000UL - a))) {
+        return 1;
+    }
+
+    /* SRAMD3: 0x38000000 - 0x38010000 (64KB) */
+    if ((a >= 0x38000000UL) && (s <= (0x38010000UL - a))) {
+        return 1;
+    }
+
+    return 0;
 }
 
-static void sd_dma_invalidate_buffer(void* buffer, rt_size_t size)
-{
-    RT_UNUSED(buffer);
-    RT_UNUSED(size);
-}
+/* Static DMA pool placed to a linker section we expect to be in SRAMD1.
+ * Size can be tuned; keep conservative default. */
+#ifndef SD_DMA_POOL_SIZE
+#define SD_DMA_POOL_SIZE (64 * 1024)
 #endif
+static uint8_t sd_dma_static_pool[SD_DMA_POOL_SIZE] __attribute__((section(".sram_dma"), aligned(32)));
+static rt_size_t sd_dma_static_pool_used = 0;
+
+static rt_bool_t sd_dma_pool_inuse = RT_FALSE;
 
 static rt_uint8_t* sd_dma_alloc_buffer(rt_size_t size, rt_size_t* aligned_size)
 {
@@ -76,23 +125,56 @@ static rt_uint8_t* sd_dma_alloc_buffer(rt_size_t size, rt_size_t* aligned_size)
     rt_uint8_t* buffer;
 
     dma_size = (size + SD_DMA_CACHE_ALIGNMENT - 1U) & ~(SD_DMA_CACHE_ALIGNMENT - 1U);
+
+    /* Try normal aligned malloc first */
     buffer = rt_malloc_align(dma_size, SD_DMA_CACHE_ALIGNMENT);
-    if (buffer == RT_NULL) {
-        return RT_NULL;
+    if (buffer != RT_NULL) {
+        if (sd_addr_is_dma_capable(buffer, dma_size)) {
+            if (aligned_size != RT_NULL) {
+                *aligned_size = dma_size;
+            }
+            return buffer;
+        }
+
+        /* not DMA-capable memory, free and fall through */
+        rt_free_align(buffer);
+        buffer = RT_NULL;
     }
 
-    if (aligned_size != RT_NULL) {
-        *aligned_size = dma_size;
+    /* Fallback: use static DMA pool if size fits and pool is free */
+    if (dma_size <= SD_DMA_POOL_SIZE) {
+        rt_base_t level = rt_hw_interrupt_disable();
+        if (sd_dma_pool_inuse == RT_FALSE) {
+            sd_dma_pool_inuse = RT_TRUE;
+            sd_dma_static_pool_used = dma_size;
+            rt_hw_interrupt_enable(level);
+            if (aligned_size != RT_NULL) {
+                *aligned_size = dma_size;
+            }
+            return sd_dma_static_pool;
+        }
+        rt_hw_interrupt_enable(level);
     }
 
-    return buffer;
+    /* allocation failed */
+    return RT_NULL;
 }
 
 static void sd_dma_free_buffer(rt_uint8_t* buffer)
 {
-    if (buffer != RT_NULL) {
-        rt_free_align(buffer);
+    if (buffer == RT_NULL) {
+        return;
     }
+
+    if (buffer == sd_dma_static_pool) {
+        rt_base_t level = rt_hw_interrupt_disable();
+        sd_dma_pool_inuse = RT_FALSE;
+        sd_dma_static_pool_used = 0;
+        rt_hw_interrupt_enable(level);
+        return;
+    }
+
+    rt_free_align(buffer);
 }
 
 void HAL_SD_TxCpltCallback(SD_HandleTypeDef* hsd)
