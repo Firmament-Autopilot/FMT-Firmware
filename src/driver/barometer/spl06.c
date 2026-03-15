@@ -20,12 +20,13 @@
 #include "hal/barometer/barometer.h"
 #include "hal/spi/spi.h"
 
-#define DRV_DBG(...) printf(__VA_ARGS__)
+#define DRV_DBG(...)
+// #define DRV_DBG(...) printf(__VA_ARGS__)
 
 #ifdef BIT
     #undef BIT
 #endif
-#define BIT(_idx) (1 << _idx)
+#define BIT(_idx)      (1 << _idx)
 
 #define SPL06_PRS_B2   0x00
 #define SPL06_PRS_B1   0x01
@@ -43,41 +44,41 @@
 #define SPL06_ID       0x0D
 #define SPL06_COEF     0x10
 
-#define PM_RATE_1   (0)
-#define PM_RATE_2   (BIT(4))
-#define PM_RATE_4   (BIT(5))
-#define PM_RATE_8   (BIT(4) | BIT(5))
-#define PM_RATE_16  (BIT(6))
-#define PM_RATE_32  (BIT(4) | BIT(6))
-#define PM_RATE_64  (BIT(5) | BIT(6))
-#define PM_RATE_128 (BIT(4) | BIT(5) | BIT(6))
+#define PM_RATE_1      (0)
+#define PM_RATE_2      (BIT(4))
+#define PM_RATE_4      (BIT(5))
+#define PM_RATE_8      (BIT(4) | BIT(5))
+#define PM_RATE_16     (BIT(6))
+#define PM_RATE_32     (BIT(4) | BIT(6))
+#define PM_RATE_64     (BIT(5) | BIT(6))
+#define PM_RATE_128    (BIT(4) | BIT(5) | BIT(6))
 
-#define PM_PRC_1   (0)
-#define PM_PRC_2   (BIT(0))
-#define PM_PRC_4   (BIT(1))
-#define PM_PRC_8   (BIT(0) | BIT(1))
-#define PM_PRC_16  (BIT(2))
-#define PM_PRC_32  (BIT(0) | BIT(2))
-#define PM_PRC_64  (BIT(1) | BIT(2))
-#define PM_PRC_128 (BIT(0) | BIT(1) | BIT(2))
+#define PM_PRC_1       (0)
+#define PM_PRC_2       (BIT(0))
+#define PM_PRC_4       (BIT(1))
+#define PM_PRC_8       (BIT(0) | BIT(1))
+#define PM_PRC_16      (BIT(2))
+#define PM_PRC_32      (BIT(0) | BIT(2))
+#define PM_PRC_64      (BIT(1) | BIT(2))
+#define PM_PRC_128     (BIT(0) | BIT(1) | BIT(2))
 
-#define TMP_RATE_1   (0)
-#define TMP_RATE_2   (BIT(4))
-#define TMP_RATE_4   (BIT(5))
-#define TMP_RATE_8   (BIT(4) | BIT(5))
-#define TMP_RATE_16  (BIT(6))
-#define TMP_RATE_32  (BIT(4) | BIT(6))
-#define TMP_RATE_64  (BIT(5) | BIT(6))
-#define TMP_RATE_128 (BIT(4) | BIT(5) | BIT(6))
+#define TMP_RATE_1     (0)
+#define TMP_RATE_2     (BIT(4))
+#define TMP_RATE_4     (BIT(5))
+#define TMP_RATE_8     (BIT(4) | BIT(5))
+#define TMP_RATE_16    (BIT(6))
+#define TMP_RATE_32    (BIT(4) | BIT(6))
+#define TMP_RATE_64    (BIT(5) | BIT(6))
+#define TMP_RATE_128   (BIT(4) | BIT(5) | BIT(6))
 
-#define TMP_PRC_1   (0)
-#define TMP_PRC_2   (BIT(0))
-#define TMP_PRC_4   (BIT(1))
-#define TMP_PRC_8   (BIT(0) | BIT(1))
-#define TMP_PRC_16  (BIT(2))
-#define TMP_PRC_32  (BIT(0) | BIT(2))
-#define TMP_PRC_64  (BIT(1) | BIT(2))
-#define TMP_PRC_128 (BIT(0) | BIT(1) | BIT(2))
+#define TMP_PRC_1      (0)
+#define TMP_PRC_2      (BIT(0))
+#define TMP_PRC_4      (BIT(1))
+#define TMP_PRC_8      (BIT(0) | BIT(1))
+#define TMP_PRC_16     (BIT(2))
+#define TMP_PRC_32     (BIT(0) | BIT(2))
+#define TMP_PRC_64     (BIT(1) | BIT(2))
+#define TMP_PRC_128    (BIT(0) | BIT(1) | BIT(2))
 
 typedef struct {
     uint8_t setbits;
@@ -302,7 +303,8 @@ static struct baro_ops _baro_ops = {
 rt_err_t drv_spl06_init(const char* spi_device_name, const char* baro_device_name)
 {
     static struct baro_device baro_dev = {
-        .ops = &_baro_ops
+        .ops = &_baro_ops,
+        .bus_type = BARO_SPI_BUS_TYPE
     };
 
     baro_spi_dev = rt_device_find(spi_device_name);
