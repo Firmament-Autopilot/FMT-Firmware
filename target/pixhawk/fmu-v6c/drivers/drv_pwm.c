@@ -21,10 +21,10 @@
 
 #define DRV_DBG(...)
 
-#define PWM_FREQ_50HZ  (50)
-#define PWM_FREQ_125HZ (125)
-#define PWM_FREQ_250HZ (250)
-#define PWM_FREQ_400HZ (400)
+#define PWM_FREQ_50HZ         (50)
+#define PWM_FREQ_125HZ        (125)
+#define PWM_FREQ_250HZ        (250)
+#define PWM_FREQ_400HZ        (400)
 
 #define MAX_PWM_OUT_CHAN      8             // AUX Out has 8 pwm channel (TIM1:1-4, TIM4:5-6, TIM5:7-8)
 #define TIMER_FREQUENCY       3000000       // Timer frequency: 3M
@@ -32,8 +32,8 @@
 #define VAL_TO_DC(_val)       ((float)(_val * __pwm_freq) / 1000000.0f)
 #define DC_TO_VAL(_dc)        (1000000.0f / __pwm_freq * _dc)
 
-#define PWM_ARR(freq) (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
-#define PWM_TIMER(id) (id < 4 ? TIM1 : TIM4)
+#define PWM_ARR(freq)         (TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
+#define PWM_TIMER(id)         (id < 4 ? TIM1 : TIM4)
 
 static uint32_t __pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float __pwm_dc[MAX_PWM_OUT_CHAN];

@@ -1,20 +1,20 @@
 /**
  * LED implementation for FMU-v6C
  */
-#include <firmament.h>
-#include "FMS.h"
 #include "led.h"
+#include "FMS.h"
 #include "module/workqueue/workqueue_manager.h"
 #include "stm32h7xx_hal.h"
+#include <firmament.h>
 
 MCN_DECLARE(fms_output);
 
 static rt_device_t pin_dev;
-static uint8_t _b; /* blue blink enable (1 = blink, 0 = off/solid)
-                    * note: when blue is solid we set pin directly */
+static uint8_t _b;          /* blue blink enable (1 = blink, 0 = off/solid)
+                             * note: when blue is solid we set pin directly */
 static uint8_t _blue_solid; /* 1 = blue solid on */
-static uint8_t _red_mode; /* 0=off,1=solid,2=slow blink,3=fast blink */
-static uint8_t _hw_fault; /* hardware fault flag */
+static uint8_t _red_mode;   /* 0=off,1=solid,2=slow blink,3=fast blink */
+static uint8_t _hw_fault;   /* hardware fault flag */
 static uint32_t _led_ticks;
 
 static void run_led(void* parameter)
@@ -113,7 +113,6 @@ fmt_err_t led_set(struct device_pin_status pin_sta)
     }
 
     return FMT_EOK;
-
 }
 
 fmt_err_t led_toggle(uint32_t pin)
@@ -174,7 +173,6 @@ fmt_err_t rgb_led_set_color(uint32_t color)
     }
 
     return FMT_EOK;
-
 }
 
 static struct WorkItem led_item = {
@@ -220,7 +218,7 @@ fmt_err_t led_control_init(void)
 /* Early init using HAL so LEDs can be used before RT devices are ready */
 void led_early_init(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     /* Enable GPIOD clock for PD10/PD11 */
     __HAL_RCC_GPIOD_CLK_ENABLE();

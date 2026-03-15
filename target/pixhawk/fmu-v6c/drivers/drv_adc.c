@@ -56,7 +56,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt)
 {
     struct stm32_adc* adc = (struct stm32_adc*)adc_dev->parent.user_data;
-    ADC_ChannelConfTypeDef sConfig = {0};
+    ADC_ChannelConfTypeDef sConfig = { 0 };
     uint32_t adc_channel;
     uint32_t adcData;
 
@@ -66,19 +66,19 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
 
     /* Map logical channel to physical ADC channel */
     switch (channel) {
-    case 0:  /* ADC1_INP4  - PC4 */
+    case 0: /* ADC1_INP4  - PC4 */
         adc_channel = ADC_CHANNEL_4;
         break;
-    case 1:  /* ADC1_INP5  - PB1 */
+    case 1: /* ADC1_INP5  - PB1 */
         adc_channel = ADC_CHANNEL_5;
         break;
-    case 2:  /* ADC1_INP8  - PC5 */
+    case 2: /* ADC1_INP8  - PC5 */
         adc_channel = ADC_CHANNEL_8;
         break;
-    case 3:  /* ADC1_INP14 - PA2 */
+    case 3: /* ADC1_INP14 - PA2 */
         adc_channel = ADC_CHANNEL_14;
         break;
-    case 4:  /* ADC1_INP18 - PA4 (VBAT sense) */
+    case 4: /* ADC1_INP18 - PA4 (VBAT sense) */
         adc_channel = ADC_CHANNEL_18;
         break;
     default:
@@ -135,7 +135,7 @@ static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
             return RT_ERROR;
         }
         /* ADC is automatically enabled after calibration */
-        sys_msleep(10);  /* Stabilization time */
+        sys_msleep(10); /* Stabilization time */
     } else if (enable == ADC_CMD_DISABLE) {
         HAL_ADC_Stop(adc->adc_handle);
     } else {
@@ -147,8 +147,8 @@ static rt_err_t adc_enable(adc_dev_t adc_dev, uint8_t enable)
 
 static rt_err_t adc_hw_init(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
     /* Configure ADC clock */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;

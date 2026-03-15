@@ -14,62 +14,62 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <firmament.h>
 #include <board.h>
 #include <board_device.h>
-#include <string.h>
+#include <firmament.h>
 #include <msh.h>
 #include <shell.h>
+#include <string.h>
 
 #include "module/console/console_config.h"
 #include "module/file_manager/file_manager.h"
-#include "module/pmu/power_manager.h"
-#include "module/sysio/actuator_cmd.h"
-#include "module/sysio/actuator_config.h"
-#include "module/sysio/pilot_cmd.h"
-#include "module/sysio/pilot_cmd_config.h"
-#include "module/sysio/mission_data.h"
-#include "module/sysio/auto_cmd.h"
-#include "module/sysio/gcs_cmd.h"
-#include "module/task_manager/task_manager.h"
-#include "module/workqueue/workqueue_manager.h"
-#include "module/toml/toml.h"
-#include "module/sensor/sensor_hub.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/mavproxy/mavproxy_config.h"
-#include "module/utils/devmq.h"
+#include "module/pmu/power_manager.h"
+#include "module/sensor/sensor_hub.h"
+#include "module/sysio/actuator_cmd.h"
+#include "module/sysio/actuator_config.h"
+#include "module/sysio/auto_cmd.h"
+#include "module/sysio/gcs_cmd.h"
+#include "module/sysio/mission_data.h"
+#include "module/sysio/pilot_cmd.h"
+#include "module/sysio/pilot_cmd_config.h"
 #include "module/system/statistic.h"
+#include "module/task_manager/task_manager.h"
+#include "module/toml/toml.h"
+#include "module/utils/devmq.h"
+#include "module/workqueue/workqueue_manager.h"
 
 // Default Configuration
 #include "default_config.h"
 
 // Hardware Drivers
-#include "drv_gpio.h"
-#include "drv_usart.h"
-#include "drv_spi.h"
-#include "drv_i2c.h"
-#include "hal/i2c/i2c.h"
-#include "stm32h7xx_ll_i2c.h"
-#include "drv_pwm.h"
-#include "drv_systick.h"
-#include "drv_sdio.h"
 #include "drv_adc.h"
-#include "usbd/drv_usbd_cdc.h"
+#include "drv_gpio.h"
+#include "drv_i2c.h"
+#include "drv_pwm.h"
+#include "drv_sdio.h"
+#include "drv_spi.h"
+#include "drv_systick.h"
+#include "drv_usart.h"
+#include "hal/i2c/i2c.h"
 #include "led.h"
+#include "stm32h7xx_ll_i2c.h"
+#include "usbd/drv_usbd_cdc.h"
 
 // Sensor Drivers
+#include "driver/barometer/ms5611.h"
+#include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi055.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/ist8310.h"
 #include "driver/mtd/ramtron.h"
 #include "driver/vision_flow/mtf_01.h"
-#include "driver/barometer/ms5611.h"
-#include "driver/gps/gps_ubx.h"
 
 // System Init
+#include "module/log/boot_log.h"
 #include "module/param/param.h"
 #include "module/system/systime.h"
-#include "module/log/boot_log.h"
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
 #endif
@@ -267,7 +267,6 @@ static void MPU_Config(void)
     HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
 
-
 static void CPU_Config(void)
 {
     MPU_Config();
@@ -281,7 +280,7 @@ static void CPU_Config(void)
 
 static void EnableSensorPower(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     /* Enable GPIO Clocks */
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -294,8 +293,8 @@ static void EnableSensorPower(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
     /* PB2: VDD_3V3_SENSORS_EN (Pull High to Enable per user request)
-    * Enable 3.3V sensors rail for sensors
-    */
+     * Enable 3.3V sensors rail for sensors
+     */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     /* Drive PB2 HIGH to enable 3.3V sensors rail */
@@ -323,7 +322,7 @@ void bsp_early_initialize(void)
 {
     /* CPU config */
     CPU_Config();
-    
+
     /* Manually zero SPI handles to ensure clean state */
     extern SPI_HandleTypeDef hspi1, hspi2;
     memset(&hspi1, 0, sizeof(hspi1));
@@ -335,7 +334,7 @@ void bsp_early_initialize(void)
     if (heap_start & 0x03) {
         heap_start = (heap_start + 4) & ~0x03;
     }
-    
+
     // [Fix] Ensure heap starts AFTER the stack, not just after BSS
     extern int _estack;
     if (heap_start < (rt_ubase_t)&_estack) {
@@ -365,13 +364,13 @@ void bsp_early_initialize(void)
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
-    
+
     /* early debug info */
     console_println("FMT Pixhawk 6C Booting...");
-    
+
     /* Enable sensor power BEFORE initializing SPI */
     EnableSensorPower();
-    
+
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
 
@@ -383,7 +382,7 @@ void bsp_early_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
-    
+
     __set_BASEPRI(0);
 }
 
@@ -404,14 +403,14 @@ void bsp_initialize(void)
 
     /* init storage devices */
     RT_CHECK(drv_sdio_init());
-    
+
     /* Delay for SPI2 and FRAM power stabilization */
     RT_CHECK(drv_ramtron_init("spi2_dev1"));
-    
+
     /* Check SD card status to prevent crash in file_manager_init */
     rt_device_t sd0 = rt_device_find("sd0");
     rt_err_t sd_stat = RT_ERROR;
-    
+
     if (sd0) {
         sd_stat = rt_device_init(sd0);
         if (sd_stat != RT_EOK) {
@@ -459,9 +458,9 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi055_init("spi1_dev2", "spi1_dev1", "gyro1", "accel1", 1));
     RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
     RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
-    //RT_CHECK(drv_mtf_01_init("serial4"));
-    RT_CHECK(gps_ubx_init("serial2", "gps")); //GPS1
-    //RT_CHECK(gps_ubx_init("serial3", "gps")); //GPS2
+    // RT_CHECK(drv_mtf_01_init("serial4"));
+    RT_CHECK(gps_ubx_init("serial2", "gps")); // GPS1
+    // RT_CHECK(gps_ubx_init("serial3", "gps")); //GPS2
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
@@ -473,7 +472,7 @@ void bsp_initialize(void)
 
     /* init finsh */
     finsh_system_init();
-    
+
     /* Mount finsh to console after finsh system init */
     FMT_CHECK(console_enable_input());
 }
@@ -491,7 +490,7 @@ void bsp_post_initialize(void)
 
     /* init gcs */
     FMT_CHECK(gcs_cmd_init());
-    
+
     /* init auto command */
     FMT_CHECK(auto_cmd_init());
 
@@ -530,111 +529,106 @@ void rt_hw_board_init()
 
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
 
-  /** Supply configuration update enable
-  */
-  HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
+    /** Supply configuration update enable
+     */
+    HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
 
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
+    /** Configure the main internal regulator output voltage
+     */
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+    while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) { }
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSIState = RCC_HSI_DIV2;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 240;
-  RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 8;
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
-  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
-  RCC_OscInitStruct.PLL.PLLFRACN = 0;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    /** Initializes the RCC Oscillators according to the specified parameters
+     * in the RCC_OscInitTypeDef structure.
+     */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    RCC_OscInitStruct.HSIState = RCC_HSI_DIV2;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLM = 4;
+    RCC_OscInitStruct.PLL.PLLN = 240;
+    RCC_OscInitStruct.PLL.PLLP = 2;
+    RCC_OscInitStruct.PLL.PLLQ = 8;
+    RCC_OscInitStruct.PLL.PLLR = 2;
+    RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
+    RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
+    RCC_OscInitStruct.PLL.PLLFRACN = 0;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+        Error_Handler();
+    }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
-  RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
+    /** Initializes the CPU, AHB and APB buses clocks
+     */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+        | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2
+        | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
+    RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
+    RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) {
+        Error_Handler();
+    }
 
-  /** Enables the Clock Security System
-  */
-  HAL_RCC_EnableCSS();
+    /** Enables the Clock Security System
+     */
+    HAL_RCC_EnableCSS();
 }
 
 void PeriphCommonClock_Config(void)
 {
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
-  /** Initializes the peripherals clock
-  */
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_FDCAN | 
-                                             RCC_PERIPHCLK_CKPER | RCC_PERIPHCLK_USART3 |
-                                             RCC_PERIPHCLK_I2C123 | RCC_PERIPHCLK_I2C4;
-  
-  /* Configure USART3 clock source to PCLK1 (APB1)
-   * APB1 = 120MHz (HCLK 240MHz / 2)
-   * This ensures correct baud rate calculation
-   */
-  PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
-  
-  /* Configure I2C clock sources */
-    PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;  /* I2C1, I2C2, I2C3 */
+    /** Initializes the peripherals clock
+     */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_FDCAN | RCC_PERIPHCLK_CKPER | RCC_PERIPHCLK_USART3 | RCC_PERIPHCLK_I2C123 | RCC_PERIPHCLK_I2C4;
+
+    /* Configure USART3 clock source to PCLK1 (APB1)
+     * APB1 = 120MHz (HCLK 240MHz / 2)
+     * This ensures correct baud rate calculation
+     */
+    PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
+
+    /* Configure I2C clock sources */
+    PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1; /* I2C1, I2C2, I2C3 */
     /* Use D3PCLK1 (alias PCLK4) for I2C4 - use HAL-defined macro */
-    PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;      /* I2C4 -> D3PCLK1 (PCLK4) */
-  
-  /* Configure PLL3 for USB: 48MHz = HSE(16MHz) / PLL3M(4) * PLL3N(48) / PLL3Q(4) */
-  PeriphClkInitStruct.PLL3.PLL3M = 4;
-  PeriphClkInitStruct.PLL3.PLL3N = 48;
-  PeriphClkInitStruct.PLL3.PLL3P = 2;
-  PeriphClkInitStruct.PLL3.PLL3Q = 4;  /* USB clock: 48MHz */
-  PeriphClkInitStruct.PLL3.PLL3R = 2;
-  PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;
-  PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
-  PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
-  PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL3;
-  
-  /* PLL2 for FDCAN */
-  PeriphClkInitStruct.PLL2.PLL2M = 1;
-  PeriphClkInitStruct.PLL2.PLL2N = 10;
-  PeriphClkInitStruct.PLL2.PLL2P = 2;
-  PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 2;
-  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
-  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
-  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-  PeriphClkInitStruct.CkperClockSelection = RCC_CLKPSOURCE_HSI;
-  PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1; /* I2C4 -> D3PCLK1 (PCLK4) */
+
+    /* Configure PLL3 for USB: 48MHz = HSE(16MHz) / PLL3M(4) * PLL3N(48) / PLL3Q(4) */
+    PeriphClkInitStruct.PLL3.PLL3M = 4;
+    PeriphClkInitStruct.PLL3.PLL3N = 48;
+    PeriphClkInitStruct.PLL3.PLL3P = 2;
+    PeriphClkInitStruct.PLL3.PLL3Q = 4; /* USB clock: 48MHz */
+    PeriphClkInitStruct.PLL3.PLL3R = 2;
+    PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;
+    PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
+    PeriphClkInitStruct.PLL3.PLL3FRACN = 0;
+    PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL3;
+
+    /* PLL2 for FDCAN */
+    PeriphClkInitStruct.PLL2.PLL2M = 1;
+    PeriphClkInitStruct.PLL2.PLL2N = 10;
+    PeriphClkInitStruct.PLL2.PLL2P = 2;
+    PeriphClkInitStruct.PLL2.PLL2Q = 2;
+    PeriphClkInitStruct.PLL2.PLL2R = 2;
+    PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
+    PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
+    PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+    PeriphClkInitStruct.CkperClockSelection = RCC_CLKPSOURCE_HSI;
+    PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+        Error_Handler();
+    }
 }
 
 void Error_Handler(void)
@@ -642,7 +636,6 @@ void Error_Handler(void)
     __disable_irq();
     /* attempt to indicate fatal error via LED */
     led_force_red();
-    while (1)
-    {
+    while (1) {
     }
 }

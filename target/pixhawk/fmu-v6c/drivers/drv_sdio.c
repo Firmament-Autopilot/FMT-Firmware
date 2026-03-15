@@ -23,9 +23,9 @@
     #include "drv_sdio.h"
     #include "hal/sd/sd.h"
     #include "stm32h7xx_ll_sdmmc.h"
-#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
-    #include "core_cm7.h"
-#endif
+    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+        #include "core_cm7.h"
+    #endif
 
     #define SD_TIMEOUT    5000
     #define SD_BLOCK_SIZE 512U
@@ -34,11 +34,11 @@
     #define EVENT_ERROR   0x00000004
     #define EVENT_ABORT   0x00000008
 
-#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U) && defined(__SCB_DCACHE_LINE_SIZE)
-    #define SD_DMA_CACHE_ALIGNMENT __SCB_DCACHE_LINE_SIZE
-#else
-    #define SD_DMA_CACHE_ALIGNMENT 32U
-#endif
+    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U) && defined(__SCB_DCACHE_LINE_SIZE)
+        #define SD_DMA_CACHE_ALIGNMENT __SCB_DCACHE_LINE_SIZE
+    #else
+        #define SD_DMA_CACHE_ALIGNMENT 32U
+    #endif
 
 /* SDMMC2 */
 extern SD_HandleTypeDef hsd2;
@@ -48,11 +48,11 @@ static struct sd_device sd0_dev;
 /* Cache maintenance with runtime D-Cache check. */
 static inline int sd_is_dcache_enabled(void)
 {
-#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
     return ((SCB->CCR & SCB_CCR_DC_Msk) != 0U);
-#else
+    #else
     return 0;
-#endif
+    #endif
 }
 
 static void sd_dma_clean_buffer(const void* buffer, rt_size_t size)
@@ -109,11 +109,11 @@ static inline int sd_addr_is_dma_capable(uint8_t* addr, rt_size_t size)
     return 0;
 }
 
-/* Static DMA pool placed to a linker section we expect to be in SRAMD1.
- * Size can be tuned; keep conservative default. */
-#ifndef SD_DMA_POOL_SIZE
-#define SD_DMA_POOL_SIZE (64 * 1024)
-#endif
+    /* Static DMA pool placed to a linker section we expect to be in SRAMD1.
+     * Size can be tuned; keep conservative default. */
+    #ifndef SD_DMA_POOL_SIZE
+        #define SD_DMA_POOL_SIZE (64 * 1024)
+    #endif
 static uint8_t sd_dma_static_pool[SD_DMA_POOL_SIZE] __attribute__((section(".sram_dma"), aligned(32)));
 static rt_size_t sd_dma_static_pool_used = 0;
 

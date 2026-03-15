@@ -26,9 +26,9 @@
 #define UART_DISABLE_IRQ(n) NVIC_DisableIRQ((n))
 
 #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U) && defined(__SCB_DCACHE_LINE_SIZE)
-#define UART_DMA_CACHE_ALIGNMENT __SCB_DCACHE_LINE_SIZE
+    #define UART_DMA_CACHE_ALIGNMENT __SCB_DCACHE_LINE_SIZE
 #else
-#define UART_DMA_CACHE_ALIGNMENT 32U
+    #define UART_DMA_CACHE_ALIGNMENT 32U
 #endif
 
 /*
@@ -51,28 +51,28 @@
 #define USING_UART8
 
 /* config for serial_configure structure */
-#define SERIAL3_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_9600,      /* 9600 bits/s */    \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
+#define SERIAL3_DEFAULT_CONFIG                \
+    {                                         \
+        BAUD_RATE_9600,  /* 9600 bits/s */    \
+        DATA_BITS_8,     /* 8 databits */     \
+        STOP_BITS_1,     /* 1 stopbit */      \
+        PARITY_NONE,     /* No parity  */     \
+        BIT_ORDER_LSB,   /* LSB first sent */ \
+        NRZ_NORMAL,      /* Normal mode */    \
+        SERIAL_RB_BUFSZ, /* Buffer size */    \
+        0                                     \
     }
 
-#define SERIAL5_DEFAULT_CONFIG                  \
-    {                                           \
-        BAUD_RATE_230400,  /* 115200 bits/s */  \
-            DATA_BITS_8,   /* 8 databits */     \
-            STOP_BITS_1,   /* 1 stopbit */      \
-            PARITY_NONE,   /* No parity  */     \
-            BIT_ORDER_LSB, /* LSB first sent */ \
-            NRZ_NORMAL,    /* Normal mode */    \
-            1024,          /* Buffer size */    \
-            0                                   \
+#define SERIAL5_DEFAULT_CONFIG                 \
+    {                                          \
+        BAUD_RATE_230400, /* 115200 bits/s */  \
+        DATA_BITS_8,      /* 8 databits */     \
+        STOP_BITS_1,      /* 1 stopbit */      \
+        PARITY_NONE,      /* No parity  */     \
+        BIT_ORDER_LSB,    /* LSB first sent */ \
+        NRZ_NORMAL,       /* Normal mode */    \
+        1024,             /* Buffer size */    \
+        0                                      \
     }
 
 /* STM32 uart driver */
@@ -153,14 +153,17 @@ static inline int uart_addr_is_dma_capable(uint8_t* addr, rt_size_t size)
     uintptr_t a = (uintptr_t)addr;
     uintptr_t s = (uintptr_t)size;
 
-    if ((a >= 0x24000000UL) && (s <= (0x24080000UL - a))) return 1;
-    if ((a >= 0x30000000UL) && (s <= (0x30040000UL - a))) return 1;
-    if ((a >= 0x38000000UL) && (s <= (0x38010000UL - a))) return 1;
+    if ((a >= 0x24000000UL) && (s <= (0x24080000UL - a)))
+        return 1;
+    if ((a >= 0x30000000UL) && (s <= (0x30040000UL - a)))
+        return 1;
+    if ((a >= 0x38000000UL) && (s <= (0x38010000UL - a)))
+        return 1;
     return 0;
 }
 
 #ifndef UART_DMA_POOL_SIZE
-#define UART_DMA_POOL_SIZE (32 * 1024)
+    #define UART_DMA_POOL_SIZE (32 * 1024)
 #endif
 static uint8_t uart_dma_static_pool[UART_DMA_POOL_SIZE] __attribute__((section(".sram_dma"), aligned(32)));
 static rt_size_t uart_dma_static_pool_used = 0;
@@ -313,49 +316,49 @@ static void uart_dma_push_rx_data(struct serial_device* serial, rt_size_t start_
 
 static void _dma_clear_flags(DMA_TypeDef* dma, uint32_t stream)
 {
-    if(stream == LL_DMA_STREAM_0) {
+    if (stream == LL_DMA_STREAM_0) {
         LL_DMA_ClearFlag_TC0(dma);
         LL_DMA_ClearFlag_HT0(dma);
         LL_DMA_ClearFlag_TE0(dma);
         LL_DMA_ClearFlag_DME0(dma);
         LL_DMA_ClearFlag_FE0(dma);
-    } else if(stream == LL_DMA_STREAM_1) {
+    } else if (stream == LL_DMA_STREAM_1) {
         LL_DMA_ClearFlag_TC1(dma);
         LL_DMA_ClearFlag_HT1(dma);
         LL_DMA_ClearFlag_TE1(dma);
         LL_DMA_ClearFlag_DME1(dma);
         LL_DMA_ClearFlag_FE1(dma);
-    } else if(stream == LL_DMA_STREAM_2) {
+    } else if (stream == LL_DMA_STREAM_2) {
         LL_DMA_ClearFlag_TC2(dma);
         LL_DMA_ClearFlag_HT2(dma);
         LL_DMA_ClearFlag_TE2(dma);
         LL_DMA_ClearFlag_DME2(dma);
         LL_DMA_ClearFlag_FE2(dma);
-    } else if(stream == LL_DMA_STREAM_3) {
+    } else if (stream == LL_DMA_STREAM_3) {
         LL_DMA_ClearFlag_TC3(dma);
         LL_DMA_ClearFlag_HT3(dma);
         LL_DMA_ClearFlag_TE3(dma);
         LL_DMA_ClearFlag_DME3(dma);
         LL_DMA_ClearFlag_FE3(dma);
-    } else if(stream == LL_DMA_STREAM_4) {
+    } else if (stream == LL_DMA_STREAM_4) {
         LL_DMA_ClearFlag_TC4(dma);
         LL_DMA_ClearFlag_HT4(dma);
         LL_DMA_ClearFlag_TE4(dma);
         LL_DMA_ClearFlag_DME4(dma);
         LL_DMA_ClearFlag_FE4(dma);
-    } else if(stream == LL_DMA_STREAM_5) {
+    } else if (stream == LL_DMA_STREAM_5) {
         LL_DMA_ClearFlag_TC5(dma);
         LL_DMA_ClearFlag_HT5(dma);
         LL_DMA_ClearFlag_TE5(dma);
         LL_DMA_ClearFlag_DME5(dma);
         LL_DMA_ClearFlag_FE5(dma);
-    } else if(stream == LL_DMA_STREAM_6) {
+    } else if (stream == LL_DMA_STREAM_6) {
         LL_DMA_ClearFlag_TC6(dma);
         LL_DMA_ClearFlag_HT6(dma);
         LL_DMA_ClearFlag_TE6(dma);
         LL_DMA_ClearFlag_DME6(dma);
         LL_DMA_ClearFlag_FE6(dma);
-    } else if(stream == LL_DMA_STREAM_7) {
+    } else if (stream == LL_DMA_STREAM_7) {
         LL_DMA_ClearFlag_TC7(dma);
         LL_DMA_ClearFlag_HT7(dma);
         LL_DMA_ClearFlag_TE7(dma);
@@ -703,7 +706,6 @@ void DMA2_Stream5_IRQHandler(void)
     rt_interrupt_leave();
 }
 #endif // USING_UART5
-
 
 #ifdef USING_UART8
 /* UART8 device driver structure */

@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 // Board Information
-#define TARGET_NAME "Pixhawk 6C"
+#define TARGET_NAME           "Pixhawk 6C"
 
 // Internal SRAM memory size[Kbytes]
 #define SYSTEM_TOTAL_MEM_SIZE (512 * 1024) // 512K
@@ -63,13 +63,13 @@ extern int __bss_end;
 // #define HSE_VALUE           16000000U /* 16MHz */
 
 /* Console Device */
-#define CONSOLE_UART        "serial3"
+#define CONSOLE_UART                       "serial3"
 
 /* I2C Device */
-#define I2C_ENABLE          1
-#define I2C_DEVICE_EXT1     "i2c1"
-#define I2C_DEVICE_EXT2     "i2c2"
-#define I2C_DEVICE_INT      "i2c4"
+#define I2C_ENABLE                         1
+#define I2C_DEVICE_EXT1                    "i2c1"
+#define I2C_DEVICE_EXT2                    "i2c2"
+#define I2C_DEVICE_INT                     "i2c4"
 
 /* SPI Device */
 // SPI1: Sensors (BMI088, ICM42688)
@@ -77,52 +77,52 @@ extern int __bss_end;
 
 /* SPI Definitions */
 /* Map logical SPI1 CS entries to CubeMX FMU pin definitions */
-#define SPI1_CS1_GPIO       FMU_SPI1_CS1_BMI055_ACC_GPIO_Port
-#define SPI1_CS1_PIN        FMU_SPI1_CS1_BMI055_ACC_Pin   /* BMI055 Accel (spi1_dev1) */
-#define SPI1_CS2_GPIO       FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port
-#define SPI1_CS2_PIN        FMU_SPI1_CS2_BMI055_GYRO_Pin  /* BMI055 Gyro (spi1_dev2) */
-#define SPI1_CS3_GPIO       FMU_SPI1_CS3_ICM42688_GPIO_Port
-#define SPI1_CS3_PIN        FMU_SPI1_CS3_ICM42688_Pin     /* ICM42688 (spi1_dev3) */
+#define SPI1_CS1_GPIO                      FMU_SPI1_CS1_BMI055_ACC_GPIO_Port
+#define SPI1_CS1_PIN                       FMU_SPI1_CS1_BMI055_ACC_Pin /* BMI055 Accel (spi1_dev1) */
+#define SPI1_CS2_GPIO                      FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port
+#define SPI1_CS2_PIN                       FMU_SPI1_CS2_BMI055_GYRO_Pin /* BMI055 Gyro (spi1_dev2) */
+#define SPI1_CS3_GPIO                      FMU_SPI1_CS3_ICM42688_GPIO_Port
+#define SPI1_CS3_PIN                       FMU_SPI1_CS3_ICM42688_Pin /* ICM42688 (spi1_dev3) */
 
-#define SPI2_CS1_GPIO       GPIOD
-#define SPI2_CS1_PIN        GPIO_PIN_4   // FRAM
+#define SPI2_CS1_GPIO                      GPIOD
+#define SPI2_CS1_PIN                       GPIO_PIN_4 // FRAM
 
 /* CubeMX Generated Definitions */
-#define FMU_SPI1_CS2_BMI055_GYRO_Pin GPIO_PIN_14
+#define FMU_SPI1_CS2_BMI055_GYRO_Pin       GPIO_PIN_14
 #define FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port GPIOC
-#define FMU_SPI1_CS3_ICM42688_Pin GPIO_PIN_13
-#define FMU_SPI1_CS3_ICM42688_GPIO_Port GPIOC
-#define N_VDD_5V_PERIPH_EN_Pin GPIO_PIN_2
-#define N_VDD_5V_PERIPH_EN_GPIO_Port GPIOE
-#define N_BRICK1_VALID_Pin GPIO_PIN_15
-#define N_BRICK1_VALID_GPIO_Port GPIOA
-#define FMU_SPI1_CS1_BMI055_ACC_Pin GPIO_PIN_15
-#define FMU_SPI1_CS1_BMI055_ACC_GPIO_Port GPIOC
-#define N_VDD_5V_HIPOWER_EN_Pin GPIO_PIN_10
-#define N_VDD_5V_HIPOWER_EN_GPIO_Port GPIOC
-#define SPI1_DRDY1_BMI055_ACC_Pin GPIO_PIN_4
-#define SPI1_DRDY1_BMI055_ACC_GPIO_Port GPIOE
-#define SPI1_DRDY1_BMI055_ACC_EXTI_IRQn EXTI4_IRQn
-#define SPI1_DRDY2_BMI055_GYRO_Pin GPIO_PIN_5
-#define SPI1_DRDY2_BMI055_GYRO_GPIO_Port GPIOE
-#define SPI1_DRDY2_BMI055_GYRO_EXTI_IRQn EXTI9_5_IRQn
-#define FMU_SPI2_CS_FRAM_Pin GPIO_PIN_4
-#define FMU_SPI2_CS_FRAM_GPIO_Port GPIOD
-#define SPI1_DRDY3_ICM42688_Pin GPIO_PIN_6
-#define SPI1_DRDY3_ICM42688_GPIO_Port GPIOE
-#define SPI1_DRDY3_ICM42688_EXTI_IRQn EXTI9_5_IRQn
-#define VDD_3V3_SENSORS_EN_Pin GPIO_PIN_2
-#define VDD_3V3_SENSORS_EN_GPIO_Port GPIOB
-#define N_FMU_LED_BLUE_Pin GPIO_PIN_11
-#define N_FMU_LED_BLUE_GPIO_Port GPIOD
-#define N_USB_VBUS_VALID_Pin GPIO_PIN_15
-#define N_USB_VBUS_VALID_GPIO_Port GPIOE
-#define N_FMU_LED_RED_Pin GPIO_PIN_10
-#define N_FMU_LED_RED_GPIO_Port GPIOD
-#define HW_VER_REV_DRIVE_Pin GPIO_PIN_12
-#define HW_VER_REV_DRIVE_GPIO_Port GPIOE
-#define N_BRICK2_VALID_Pin GPIO_PIN_12
-#define N_BRICK2_VALID_GPIO_Port GPIOB
+#define FMU_SPI1_CS3_ICM42688_Pin          GPIO_PIN_13
+#define FMU_SPI1_CS3_ICM42688_GPIO_Port    GPIOC
+#define N_VDD_5V_PERIPH_EN_Pin             GPIO_PIN_2
+#define N_VDD_5V_PERIPH_EN_GPIO_Port       GPIOE
+#define N_BRICK1_VALID_Pin                 GPIO_PIN_15
+#define N_BRICK1_VALID_GPIO_Port           GPIOA
+#define FMU_SPI1_CS1_BMI055_ACC_Pin        GPIO_PIN_15
+#define FMU_SPI1_CS1_BMI055_ACC_GPIO_Port  GPIOC
+#define N_VDD_5V_HIPOWER_EN_Pin            GPIO_PIN_10
+#define N_VDD_5V_HIPOWER_EN_GPIO_Port      GPIOC
+#define SPI1_DRDY1_BMI055_ACC_Pin          GPIO_PIN_4
+#define SPI1_DRDY1_BMI055_ACC_GPIO_Port    GPIOE
+#define SPI1_DRDY1_BMI055_ACC_EXTI_IRQn    EXTI4_IRQn
+#define SPI1_DRDY2_BMI055_GYRO_Pin         GPIO_PIN_5
+#define SPI1_DRDY2_BMI055_GYRO_GPIO_Port   GPIOE
+#define SPI1_DRDY2_BMI055_GYRO_EXTI_IRQn   EXTI9_5_IRQn
+#define FMU_SPI2_CS_FRAM_Pin               GPIO_PIN_4
+#define FMU_SPI2_CS_FRAM_GPIO_Port         GPIOD
+#define SPI1_DRDY3_ICM42688_Pin            GPIO_PIN_6
+#define SPI1_DRDY3_ICM42688_GPIO_Port      GPIOE
+#define SPI1_DRDY3_ICM42688_EXTI_IRQn      EXTI9_5_IRQn
+#define VDD_3V3_SENSORS_EN_Pin             GPIO_PIN_2
+#define VDD_3V3_SENSORS_EN_GPIO_Port       GPIOB
+#define N_FMU_LED_BLUE_Pin                 GPIO_PIN_11
+#define N_FMU_LED_BLUE_GPIO_Port           GPIOD
+#define N_USB_VBUS_VALID_Pin               GPIO_PIN_15
+#define N_USB_VBUS_VALID_GPIO_Port         GPIOE
+#define N_FMU_LED_RED_Pin                  GPIO_PIN_10
+#define N_FMU_LED_RED_GPIO_Port            GPIOD
+#define HW_VER_REV_DRIVE_Pin               GPIO_PIN_12
+#define HW_VER_REV_DRIVE_GPIO_Port         GPIOE
+#define N_BRICK2_VALID_Pin                 GPIO_PIN_12
+#define N_BRICK2_VALID_GPIO_Port           GPIOB
 
 void SystemClock_Config(void);
 void Error_Handler(void);

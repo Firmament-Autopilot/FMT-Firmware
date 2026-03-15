@@ -7,16 +7,16 @@
 #include <fmtconfig.h>
 
 /* RT_NAME_MAX*/
-#define RT_NAME_MAX	   20	//change log: change from 8 to 20
+#define RT_NAME_MAX            20 // change log: change from 8 to 20
 
 /* RT_ALIGN_SIZE*/
-#define RT_ALIGN_SIZE	8
+#define RT_ALIGN_SIZE          8
 
 /* PRIORITY_MAX */
-#define RT_THREAD_PRIORITY_MAX	32
+#define RT_THREAD_PRIORITY_MAX 32
 
 /* Tick per Second */
-#define RT_TICK_PER_SECOND	1000	//change from 100 to 1000, in order to get ms time unit
+#define RT_TICK_PER_SECOND     1000 // change from 100 to 1000, in order to get ms time unit
 
 /* SECTION: RT_DEBUG */
 /* Thread Debug */
@@ -26,13 +26,13 @@
 /* Using Hook */
 #define RT_USING_HOOK
 
-#define IDLE_THREAD_STACK_SIZE     1024
+#define IDLE_THREAD_STACK_SIZE 1024
 
 /* Using Software Timer */
 #define RT_USING_TIMER_SOFT
 // #define RT_TIMER_THREAD_PRIO		2
-#define RT_TIMER_THREAD_PRIO		5
-#define RT_TIMER_THREAD_STACK_SIZE	1024
+#define RT_TIMER_THREAD_PRIO       5
+#define RT_TIMER_THREAD_STACK_SIZE 1024
 
 /* SECTION: IPC */
 /* Using Semaphore*/
@@ -66,12 +66,12 @@
 #define RT_USING_DEVICE_IPC
 #define RT_USING_SYSTEM_WORKQUEUE
 #define RT_SYSTEM_WORKQUEUE_STACKSIZE 2048
-#define RT_SYSTEM_WORKQUEUE_PRIORITY 23
+#define RT_SYSTEM_WORKQUEUE_PRIORITY  23
 
 /* SECTION: Console options */
 #define RT_USING_CONSOLE
 /* the buffer size of console*/
-#define RT_CONSOLEBUF_SIZE	256
+#define RT_CONSOLEBUF_SIZE 256
 
 /* SECTION: finsh, a C-Express shell */
 #define RT_USING_FINSH
@@ -86,15 +86,15 @@
 /* Enable finsh history */
 #define FINSH_USING_HISTORY
 /* Finsh maximal arguments number */
-#define FINSH_ARG_MAX   20
+#define FINSH_ARG_MAX 20
 
 /* SECTION: device filesystem */
 /* Using Device file system */
 #define RT_USING_DFS
 /* the max number of mounted filesystem */
-#define DFS_FILESYSTEMS_MAX			4
+#define DFS_FILESYSTEMS_MAX 4
 /* the max number of opened files 		*/
-#define DFS_FD_MAX					20
+#define DFS_FD_MAX          20
 
 /* Using ELM FATFS */
 #define RT_USING_DFS_ELMFAT
@@ -102,11 +102,11 @@
 /* Reentrancy (thread safe) of the FatFs module.  */
 #define RT_DFS_ELM_REENTRANT
 /* Number of volumes (logical drives) to be used. */
-#define RT_DFS_ELM_DRIVES			2
-#define RT_DFS_ELM_USE_LFN			3
-#define RT_DFS_ELM_MAX_LFN			255
+#define RT_DFS_ELM_DRIVES          2
+#define RT_DFS_ELM_USE_LFN         3
+#define RT_DFS_ELM_MAX_LFN         255
 /* Maximum sector size to be handled. */
-#define RT_DFS_ELM_MAX_SECTOR_SIZE  4096
+#define RT_DFS_ELM_MAX_SECTOR_SIZE 4096
 
 /* Using ROM file system */
 #define RT_USING_DFS_ROMFS
@@ -117,7 +117,7 @@
 /* USING utest */
 // #define RT_USING_UTEST
 #define UTEST_THR_STACK_SIZE 4096
-#define UTEST_THR_PRIORITY 20
+#define UTEST_THR_PRIORITY   20
 
 /* SOC Define */
 #define SOC_FAMILY_STM32

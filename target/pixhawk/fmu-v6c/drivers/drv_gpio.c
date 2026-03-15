@@ -17,12 +17,12 @@
 #include "drv_gpio.h"
 #include "hal/pin/pin.h"
 
-#define PIN_NUM(port, no) (((((port)&0xFu) << 4) | ((no)&0xFu)))
+#define PIN_NUM(port, no) (((((port) & 0xFu) << 4) | ((no) & 0xFu)))
 #define PIN_PORT(pin)     ((uint8_t)(((pin) >> 4) & 0xFu))
-#define PIN_NO(pin)       ((uint8_t)((pin)&0xFu))
+#define PIN_NO(pin)       ((uint8_t)((pin) & 0xFu))
 
-#define PIN_STPORT(pin) ((GPIO_TypeDef*)(GPIOA_BASE + (0x400u * PIN_PORT(pin))))
-#define PIN_STPIN(pin)  ((uint16_t)(1u << PIN_NO(pin)))
+#define PIN_STPORT(pin)   ((GPIO_TypeDef*)(GPIOA_BASE + (0x400u * PIN_PORT(pin))))
+#define PIN_STPIN(pin)    ((uint16_t)(1u << PIN_NO(pin)))
 
 #if defined(GPIOZ)
     #define __STM32_PORT_MAX 12u
