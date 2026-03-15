@@ -64,18 +64,23 @@ static rt_err_t adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* mVolt
         return RT_EINVAL;
     }
 
-    /* Map logical channel to physical ADC channel */
+    /* Map logical channel to physical ADC channel
+     * PMU expects: BAT1_V -> channel 0, BAT1_I -> channel 1
+     * Hardware pin mapping on FMU-v6c:
+     *  - PC5 : ADC1_INP8 -> FMU_BAT1_V
+     *  - PC4 : ADC1_INP4 -> FMU_BAT1_I
+     */
     switch (channel) {
-    case 0: /* ADC1_INP4  - PC4 */
-        adc_channel = ADC_CHANNEL_4;
-        break;
-    case 1: /* ADC1_INP5  - PB1 */
-        adc_channel = ADC_CHANNEL_5;
-        break;
-    case 2: /* ADC1_INP8  - PC5 */
+    case 0: /* ADC1_INP8  - PC5 (BAT1_V) */
         adc_channel = ADC_CHANNEL_8;
         break;
-    case 3: /* ADC1_INP14 - PA2 */
+    case 1: /* ADC1_INP4  - PC4 (BAT1_I) */
+        adc_channel = ADC_CHANNEL_4;
+        break;
+    case 2: /* ADC1_INP5  - PB1 (BAT2_V) */
+        adc_channel = ADC_CHANNEL_5;
+        break;
+    case 3: /* ADC1_INP14 - PA2 (BAT2_I) */
         adc_channel = ADC_CHANNEL_14;
         break;
     case 4: /* ADC1_INP18 - PA4 (VBAT sense) */
