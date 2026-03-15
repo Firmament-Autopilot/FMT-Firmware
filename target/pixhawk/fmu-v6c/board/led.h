@@ -13,15 +13,15 @@ extern "C" {
 #endif
 
 /* simple two-color indicator: RED (PD10), BLUE (PD11) */
-#define __STM32_PORT(port)    GPIO##port##_BASE
-#define GET_PIN(PORTx, PIN)   (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
+#define __STM32_PORT(port)  GPIO##port##_BASE
+#define GET_PIN(PORTx, PIN) (rt_base_t)((16 * (((rt_base_t)__STM32_PORT(PORTx) - (rt_base_t)GPIOA_BASE) / (0x0400UL))) + PIN)
 
-#define FMU_LED_RED_PIN   GET_PIN(D, 10)
-#define FMU_LED_BLUE_PIN  GET_PIN(D, 11)
+#define FMU_LED_RED_PIN     GET_PIN(D, 10)
+#define FMU_LED_BLUE_PIN    GET_PIN(D, 11)
 
-#define LED_ON(_pin)          led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
-#define LED_OFF(_pin)         led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
-#define LED_TOGGLE(_pin)      led_toggle(_pin)
+#define LED_ON(_pin)        led_set((struct device_pin_status) { .pin = _pin, .status = 0 })
+#define LED_OFF(_pin)       led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
+#define LED_TOGGLE(_pin)    led_toggle(_pin)
 
 fmt_err_t led_control_init(void);
 fmt_err_t led_init(struct device_pin_mode pin_mode);

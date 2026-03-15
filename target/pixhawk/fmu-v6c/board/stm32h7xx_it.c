@@ -5,9 +5,9 @@
  ******************************************************************************
  */
 
-#include <firmament.h>
 #include "board.h"
 #include "stm32h7xx_hal.h"
+#include <firmament.h>
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
@@ -268,7 +268,7 @@ void DebugMon_Handler(void)
 
 void SDMMC2_IRQHandler(void)
 {
-  HAL_SD_IRQHandler(&hsd2);
+    HAL_SD_IRQHandler(&hsd2);
 }
 
 // void ADC3_IRQHandler(void)

@@ -41,7 +41,7 @@ static void i2c1_hw_init(void)
     /* I2C1: PB7 = SDA, PB8 = SCL on FMU-V6C board mapping */
     /* Bus clear: toggle SCL 9 times to try to release stuck SDA devices */
     {
-        LL_GPIO_InitTypeDef tmp = {0};
+        LL_GPIO_InitTypeDef tmp = { 0 };
         /* configure SCL (PB8) as open-drain output for toggling */
         tmp.Pin = LL_GPIO_PIN_8;
         tmp.Mode = LL_GPIO_MODE_OUTPUT;
@@ -94,7 +94,7 @@ static void i2c2_hw_init(void)
     /* I2C2: PB10 = SCL, PB11 = SDA on FMU-V6C mapping */
     /* Bus clear: toggle SCL 9 times to try to release stuck SDA devices */
     {
-        LL_GPIO_InitTypeDef tmp = {0};
+        LL_GPIO_InitTypeDef tmp = { 0 };
         tmp.Pin = LL_GPIO_PIN_10;
         tmp.Mode = LL_GPIO_MODE_OUTPUT;
         tmp.Speed = LL_GPIO_SPEED_FREQ_LOW;
@@ -146,7 +146,7 @@ static void i2c4_hw_init(void)
     /* I2C4: PD12 = SCL, PD13 = SDA on FMU-V6C mapping */
     /* Bus clear: toggle SCL 9 times to try to release stuck SDA devices */
     {
-        LL_GPIO_InitTypeDef tmp = {0};
+        LL_GPIO_InitTypeDef tmp = { 0 };
         tmp.Pin = LL_GPIO_PIN_12;
         tmp.Mode = LL_GPIO_MODE_OUTPUT;
         tmp.Speed = LL_GPIO_SPEED_FREQ_LOW;

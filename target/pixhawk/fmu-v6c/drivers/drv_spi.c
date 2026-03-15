@@ -31,27 +31,27 @@ SPI_HandleTypeDef hspi4;
 
 /* Use CubeMX-generated FMU pin definitions when available to keep names consistent */
 #ifdef FMU_SPI1_CS1_BMI055_ACC_Pin
-#define SPI1_CS1_Pin       FMU_SPI1_CS1_BMI055_ACC_Pin
-#define SPI1_CS1_GPIO_Port FMU_SPI1_CS1_BMI055_ACC_GPIO_Port
+    #define SPI1_CS1_Pin       FMU_SPI1_CS1_BMI055_ACC_Pin
+    #define SPI1_CS1_GPIO_Port FMU_SPI1_CS1_BMI055_ACC_GPIO_Port
 #else
-#define SPI1_CS1_Pin       GPIO_PIN_13
-#define SPI1_CS1_GPIO_Port GPIOC
+    #define SPI1_CS1_Pin       GPIO_PIN_13
+    #define SPI1_CS1_GPIO_Port GPIOC
 #endif
 
 #ifdef FMU_SPI1_CS2_BMI055_GYRO_Pin
-#define SPI1_CS2_Pin       FMU_SPI1_CS2_BMI055_GYRO_Pin
-#define SPI1_CS2_GPIO_Port FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port
+    #define SPI1_CS2_Pin       FMU_SPI1_CS2_BMI055_GYRO_Pin
+    #define SPI1_CS2_GPIO_Port FMU_SPI1_CS2_BMI055_GYRO_GPIO_Port
 #else
-#define SPI1_CS2_Pin       GPIO_PIN_14
-#define SPI1_CS2_GPIO_Port GPIOC
+    #define SPI1_CS2_Pin       GPIO_PIN_14
+    #define SPI1_CS2_GPIO_Port GPIOC
 #endif
 
 #ifdef FMU_SPI1_CS3_ICM42688_Pin
-#define SPI1_CS3_Pin       FMU_SPI1_CS3_ICM42688_Pin
-#define SPI1_CS3_GPIO_Port FMU_SPI1_CS3_ICM42688_GPIO_Port
+    #define SPI1_CS3_Pin       FMU_SPI1_CS3_ICM42688_Pin
+    #define SPI1_CS3_GPIO_Port FMU_SPI1_CS3_ICM42688_GPIO_Port
 #else
-#define SPI1_CS3_Pin       GPIO_PIN_15
-#define SPI1_CS3_GPIO_Port GPIOC
+    #define SPI1_CS3_Pin       GPIO_PIN_15
+    #define SPI1_CS3_GPIO_Port GPIOC
 #endif
 
 // #define SPI1_CS4_Pin       GPIO_PIN_10
@@ -64,17 +64,16 @@ SPI_HandleTypeDef hspi4;
 #define SPI2_CS1_Pin       GPIO_PIN_4
 #define SPI2_CS1_GPIO_Port GPIOD
 
-//#define DRV_USE_SPI4
-//#define SPI4_CS1_Pin       GPIO_PIN_13
-//#define SPI4_CS1_GPIO_Port GPIOC
+// #define DRV_USE_SPI4
+// #define SPI4_CS1_Pin       GPIO_PIN_13
+// #define SPI4_CS1_GPIO_Port GPIOC
 
-//#define SPI4_CS2_Pin       GPIO_PIN_4
-//#define SPI4_CS2_GPIO_Port GPIOE
-
+// #define SPI4_CS2_Pin       GPIO_PIN_4
+// #define SPI4_CS2_GPIO_Port GPIOE
 
 struct stm32_spi_bus {
     struct rt_spi_bus parent;
-    SPI_HandleTypeDef* hspi;  // Use HAL handle
+    SPI_HandleTypeDef* hspi; // Use HAL handle
 #ifdef SPI_USE_DMA
     DMA_HandleTypeDef* hdma_tx;
     DMA_HandleTypeDef* hdma_rx;
@@ -89,9 +88,9 @@ struct stm32_spi_cs {
 // Helper function to convert HAL SPI handle to clock frequency
 static uint32_t get_spi_clock_freq(SPI_HandleTypeDef* hspi)
 {
-    if(hspi->Instance == SPI1 || hspi->Instance == SPI2 || hspi->Instance == SPI3)  {
+    if (hspi->Instance == SPI1 || hspi->Instance == SPI2 || hspi->Instance == SPI3) {
         return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123);
-    } else if(hspi->Instance == SPI4 || hspi->Instance == SPI5) {
+    } else if (hspi->Instance == SPI4 || hspi->Instance == SPI5) {
         return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI45);
     }
     return 0;
@@ -108,13 +107,13 @@ static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configurat
 {
     RT_ASSERT(device != RT_NULL);
     RT_ASSERT(device->bus != RT_NULL);
-    
+
     struct stm32_spi_bus* stm32_spi_bus = (struct stm32_spi_bus*)device->bus;
     RT_ASSERT(stm32_spi_bus != RT_NULL);
     RT_ASSERT(stm32_spi_bus->hspi != RT_NULL);
-    
+
     SPI_HandleTypeDef* hspi = stm32_spi_bus->hspi;
-    
+
     // Configure data width
     if (configuration->data_width <= 8) {
         hspi->Init.DataSize = SPI_DATASIZE_8BIT;
@@ -254,20 +253,19 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
 
 #ifdef SPI_USE_DMA
     if (message->send_buf && message->recv_buf) {
-        HAL_SPI_TransmitReceive_DMA(hspi, (uint8_t*)message->send_buf, 
-                                    (uint8_t*)message->recv_buf, size);
+        HAL_SPI_TransmitReceive_DMA(hspi, (uint8_t*)message->send_buf, (uint8_t*)message->recv_buf, size);
     } else if (message->send_buf) {
         HAL_SPI_Transmit_DMA(hspi, (uint8_t*)message->send_buf, size);
     } else if (message->recv_buf) {
         HAL_SPI_Receive_DMA(hspi, (uint8_t*)message->recv_buf, size);
     }
     // Wait for DMA to complete
-    while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY);
+    while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY)
+        ;
 #else
     // Use blocking mode
     if (message->send_buf && message->recv_buf) {
-        HAL_SPI_TransmitReceive(hspi, (uint8_t*)message->send_buf, 
-                                (uint8_t*)message->recv_buf, size, HAL_MAX_DELAY);
+        HAL_SPI_TransmitReceive(hspi, (uint8_t*)message->send_buf, (uint8_t*)message->recv_buf, size, HAL_MAX_DELAY);
     } else if (message->send_buf) {
         HAL_SPI_Transmit(hspi, (uint8_t*)message->send_buf, size, HAL_MAX_DELAY);
     } else if (message->recv_buf) {
@@ -295,7 +293,7 @@ static struct rt_spi_ops stm32_spi_ops = { configure, transfer };
 static rt_err_t stm32_spi_register(SPI_HandleTypeDef* hspi, struct stm32_spi_bus* stm32_spi, const char* spi_bus_name)
 {
     stm32_spi->hspi = hspi;
-    
+
     // Initialize the SPI using HAL - MSP init will be called automatically
     if (HAL_SPI_Init(hspi) != HAL_OK) {
         return RT_ERROR;
@@ -490,8 +488,8 @@ rt_err_t drv_spi_init(void)
     hspi2.Init.Mode = SPI_MODE_MASTER;
     hspi2.Init.Direction = SPI_DIRECTION_2LINES;
     hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-    hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;      /* CPOL = 0 */
-    hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;          /* CPHA = 0 */
+    hspi2.Init.CLKPolarity = SPI_POLARITY_LOW; /* CPOL = 0 */
+    hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;     /* CPHA = 0 */
     hspi2.Init.NSS = SPI_NSS_SOFT;
     hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
     hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;

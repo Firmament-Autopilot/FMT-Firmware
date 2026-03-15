@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include "module/math/rotation.h"
+#include <firmament.h>
 
 /**
  * @brief Rotate ICM42688P sensor data to FRD (Front-Right-Down) frame
- * 
+ *
  * @param data Pointer to sensor data array [x, y, z]
  * @param dev_id Device ID (0 for primary, 1 for backup)
  */
@@ -29,7 +29,7 @@ void icm42688_rotate_to_frd(float* data, uint8_t dev_id)
 
 /**
  * @brief Rotate BMI055 sensor data to FRD (Front-Right-Down) frame
- * 
+ *
  * @param data Pointer to sensor data array [x, y, z]
  * @param dev_id Device ID (0 for primary, 1 for backup)
  */
@@ -40,7 +40,7 @@ void bmi055_rotate_to_frd(float* data, uint8_t dev_id)
 
 /**
  * @brief Rotate IST8310 sensor data to FRD (Front-Right-Down) frame
- * 
+ *
  * @param data Pointer to sensor data array [x, y, z]
  * @param dev_id Device ID (0 for primary, 1 for backup)
  */

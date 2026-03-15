@@ -1,9 +1,9 @@
 /**
-  ******************************************************************************
-  * @file    stm32h7xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32h7xx_it.h
+ * @brief   This file contains the headers of the interrupt handlers.
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32H7xx_IT_H
