@@ -43,7 +43,11 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
+#ifdef PKG_USING_CHERRYUSB
+#include "driver/usb/usbd_cdc_mtp.h"
+#else
 #include "drv_usbd_cdc.h"
+#endif
 #include "led.h"
 
 #include "default_config.h"
