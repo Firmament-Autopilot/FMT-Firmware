@@ -52,6 +52,7 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
+#include "drv_fdcan.h"
 #include "hal/i2c/i2c.h"
 #include "led.h"
 #include "stm32h7xx_ll_i2c.h"
@@ -379,6 +380,9 @@ void bsp_early_initialize(void)
 
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
+
+    /* can driver init */
+    RT_CHECK(drv_fdcan_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
