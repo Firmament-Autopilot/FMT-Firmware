@@ -182,8 +182,12 @@ static void _dshot_fire_tim(uint8_t tim_idx)
     map->tim->CCR2 = 0;
     map->tim->CCR3 = 0;
     map->tim->CCR4 = 0;
+
+    /* Only counter overflow/underflow generates an update interrupt or DMA request */
     SET_BIT(map->tim->CR1, TIM_CR1_URS);
+    /* Generate update event */
     map->tim->EGR = TIM_EGR_UG;
+    /* Clear update interrupt flag */
     CLEAR_BIT(map->tim->SR, TIM_SR_UIF);
 
     /* Preload the first bit; the next update event latches it. */
@@ -198,7 +202,9 @@ static void _dshot_fire_tim(uint8_t tim_idx)
     LL_DMA_SetDataLength(map->dma, map->stream, DSHOT_DMA_WORDS);
     LL_DMA_EnableStream(map->dma, map->stream);
 
+    /* Update DMA request enable */
     SET_BIT(map->tim->DIER, TIM_DIER_UDE);
+    /* Enable TIM counter */
     SET_BIT(map->tim->CR1, TIM_CR1_CEN);
 }
 
