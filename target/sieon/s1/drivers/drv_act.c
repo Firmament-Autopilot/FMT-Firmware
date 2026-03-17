@@ -46,9 +46,6 @@ static uint32_t aux_pwm_freq = PWM_DEFAULT_FREQUENCY;
 static float main_pwm_dc[MAIN_OUT_CHAN_NUM];
 static float aux_pwm_dc[AUX_OUT_CHAN_NUM];
 
-/* Track current protocol */
-static uint8_t main_protocol = ACT_PROTOCOL_PWM;
-static uint8_t aux_protocol = ACT_PROTOCOL_PWM;
 /* DShot command state array: keeps track of ongoing sequence correctly synced to cyclic update */
 typedef struct {
     uint16_t cmd;
@@ -680,7 +677,7 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
 
     switch (cmd) {
     case ACT_CMD_CHANNEL_ENABLE:
-        if (main_protocol == ACT_PROTOCOL_PWM) {
+        if (dev->config.protocol == ACT_PROTOCOL_PWM) {
             /* set to lowest pwm before open */
             for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
                 __main_write_pwm(i, VAL_TO_DC(1000, main_pwm_freq));
@@ -744,7 +741,7 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
     case ACT_CMD_SET_PROTOCOL: {
         uint8_t protocol = *(uint8_t*)arg;
         if (protocol == ACT_PROTOCOL_DSHOT || protocol == ACT_PROTOCOL_PWM) {
-            main_protocol = protocol;
+            // main_protocol = protocol;
             dev->config.protocol = protocol;
             ret = RT_EOK;
         } else {
@@ -847,7 +844,7 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
     rt_uint16_t val;
     float dc;
 
-    if (main_protocol == ACT_PROTOCOL_PWM) {
+    if (dev->config.protocol == ACT_PROTOCOL_PWM) {
         for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
             if (chan_sel & (1 << i)) {
                 val = *index;
@@ -857,7 +854,7 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 index++;
             }
         }
-    } else if (main_protocol == ACT_PROTOCOL_DSHOT) {
+    } else if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
         uint16_t packed_sel = 0;
 
         for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
@@ -900,7 +897,7 @@ static rt_size_t aux_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
     rt_uint16_t val;
     float dc;
 
-    if (aux_protocol == ACT_PROTOCOL_PWM) {
+    if (dev->config.protocol == ACT_PROTOCOL_PWM) {
         for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
             if (chan_sel & (1 << i)) {
                 val = *index;
