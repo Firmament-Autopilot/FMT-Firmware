@@ -147,7 +147,7 @@ static void _setup_dshot_dma(void)
     }
 }
 
-static void _dshot_pack(uint8_t chan, uint16_t frame, uint32_t arr)
+static void _dshot_push_frame(uint8_t chan, uint16_t frame, uint32_t arr)
 {
     uint8_t tim_idx = chan / 4U;
     uint8_t ch_in_tim = chan % 4U;
@@ -182,7 +182,6 @@ static void _dshot_fire_tim(uint8_t tim_idx)
     map->tim->CCR2 = 0;
     map->tim->CCR3 = 0;
     map->tim->CCR4 = 0;
-
     /* Only counter overflow/underflow generates an update interrupt or DMA request */
     SET_BIT(map->tim->CR1, TIM_CR1_URS);
     /* Generate update event */
@@ -195,9 +194,10 @@ static void _dshot_fire_tim(uint8_t tim_idx)
     map->tim->CCR2 = dshot_dma_frame[tim_idx][0][1];
     map->tim->CCR3 = dshot_dma_frame[tim_idx][0][2];
     map->tim->CCR4 = dshot_dma_frame[tim_idx][0][3];
-
+    /* Generate overflow event immediately as the first bit preloaded */
     map->tim->CNT = LL_TIM_GetAutoReload(map->tim);
 
+    /* Jump over the first bit as it already sent */
     LL_DMA_SetMemoryAddress(map->dma, map->stream, (uint32_t)&dshot_dma_frame[tim_idx][1][0]);
     LL_DMA_SetDataLength(map->dma, map->stream, DSHOT_DMA_WORDS);
     LL_DMA_EnableStream(map->dma, map->stream);
@@ -681,7 +681,7 @@ rt_inline rt_err_t __aux_set_pwm_frequency(uint16_t freq)
     return RT_EOK;
 }
 
-static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+static rt_err_t main_act_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
     if (cfg->protocol == ACT_PROTOCOL_PWM) {
         DRV_DBG("main out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
@@ -702,10 +702,10 @@ static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_config
             LL_TIM_SetPrescaler(TIM4, psc_apb1);
             LL_TIM_SetPrescaler(TIM5, psc_apb1);
 
-            uint32_t new_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
-            LL_TIM_SetAutoReload(TIM1, new_arr - 1);
-            LL_TIM_SetAutoReload(TIM4, new_arr - 1);
-            LL_TIM_SetAutoReload(TIM5, new_arr - 1);
+            uint32_t tim_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
+            LL_TIM_SetAutoReload(TIM1, tim_arr - 1);
+            LL_TIM_SetAutoReload(TIM4, tim_arr - 1);
+            LL_TIM_SetAutoReload(TIM5, tim_arr - 1);
 
             _setup_dshot_dma();
         } else {
@@ -718,7 +718,7 @@ static rt_err_t main_pwm_config(actuator_dev_t dev, const struct actuator_config
     return RT_EOK;
 }
 
-static rt_err_t aux_pwm_config(actuator_dev_t dev, const struct actuator_configure* cfg)
+static rt_err_t aux_act_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
     if (cfg->protocol == ACT_PROTOCOL_PWM) {
         DRV_DBG("aux out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
@@ -735,7 +735,7 @@ static rt_err_t aux_pwm_config(actuator_dev_t dev, const struct actuator_configu
     return RT_EOK;
 }
 
-static rt_err_t main_pwm_control(actuator_dev_t dev, int cmd, void* arg)
+static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
 
@@ -834,7 +834,7 @@ static rt_err_t main_pwm_control(actuator_dev_t dev, int cmd, void* arg)
     return ret;
 }
 
-static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
+static rt_err_t aux_act_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
 
@@ -876,7 +876,7 @@ static rt_err_t aux_pwm_control(actuator_dev_t dev, int cmd, void* arg)
     return ret;
 }
 
-rt_size_t main_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+rt_size_t main_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
     float dc;
@@ -892,7 +892,7 @@ rt_size_t main_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* c
     return size;
 }
 
-static rt_size_t aux_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t aux_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
     float dc;
@@ -908,7 +908,7 @@ static rt_size_t aux_pwm_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint1
     return size;
 }
 
-rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
@@ -957,7 +957,7 @@ rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 }
 
                 uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
-                _dshot_pack(i, frame, current_arr);
+                _dshot_push_frame(i, frame, current_arr);
                 packed_sel |= (1u << i);
                 index++;
             }
@@ -982,7 +982,7 @@ rt_size_t main_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
     return size;
 }
 
-static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+static rt_size_t aux_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
@@ -1006,17 +1006,17 @@ static rt_size_t aux_pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
 }
 
 const static struct actuator_ops main_act_ops = {
-    .act_config = main_pwm_config,
-    .act_control = main_pwm_control,
-    .act_read = main_pwm_read,
-    .act_write = main_pwm_write
+    .act_config = main_act_config,
+    .act_control = main_act_control,
+    .act_read = main_act_read,
+    .act_write = main_act_write
 };
 
 const static struct actuator_ops aux_act_ops = {
-    .act_config = aux_pwm_config,
-    .act_control = aux_pwm_control,
-    .act_read = aux_pwm_read,
-    .act_write = aux_pwm_write
+    .act_config = aux_act_config,
+    .act_control = aux_act_control,
+    .act_read = aux_act_read,
+    .act_write = aux_act_write
 };
 
 static struct actuator_device main_act_dev = { .chan_mask = 0xFFF,
