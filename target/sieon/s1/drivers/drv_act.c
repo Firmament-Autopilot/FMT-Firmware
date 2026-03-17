@@ -215,64 +215,6 @@ rt_inline void _dshot_clean_cache(uint8_t tim_idx)
     SCB_CleanDCache_by_Addr((uint32_t*)dshot_dma_frame[tim_idx], sizeof(dshot_dma_frame[tim_idx]));
 }
 
-static rt_err_t _dshot_send_command(rt_uint16_t chan_mask, uint16_t dshot_val, uint8_t repeat, uint16_t wait_ms,
-                                    bool aux)
-{
-    rt_ubase_t level;
-    uint8_t base = aux ? MAIN_OUT_CHAN_NUM : 0;
-    uint8_t count = aux ? AUX_OUT_CHAN_NUM : MAIN_OUT_CHAN_NUM;
-
-    chan_mask &= (aux ? aux_polled_mask : main_polled_mask);
-
-    if (chan_mask == 0) {
-        return RT_EINVAL;
-    }
-
-    level = rt_hw_interrupt_disable();
-    for (uint8_t i = 0; i < count; i++) {
-        if (chan_mask & (1u << i)) {
-            dshot_cmds[base + i].cmd = dshot_val;
-            dshot_cmds[base + i].repeat = repeat;
-            dshot_cmds[base + i].wait_ms = wait_ms;
-            dshot_cmds[base + i].wait_start_ms = 0;
-            dshot_cmds[base + i].active = true;
-        }
-    }
-    rt_hw_interrupt_enable(level);
-
-    uint32_t start_time = systime_now_ms();
-    uint32_t timeout = repeat * 20 + wait_ms + 1000;
-
-    while (1) {
-        bool done = true;
-        level = rt_hw_interrupt_disable();
-        for (uint8_t i = 0; i < count; i++) {
-            if ((chan_mask & (1u << i)) && dshot_cmds[base + i].active) {
-                done = false;
-                break;
-            }
-        }
-        rt_hw_interrupt_enable(level);
-
-        if (done) {
-            break;
-        }
-
-        if (systime_now_ms() - start_time > timeout) {
-            console_printf("dshot timeout, chan_mask: %x\n", chan_mask);
-            return RT_ETIMEOUT;
-        }
-
-        if (rt_thread_self()) {
-            rt_thread_delay(1);
-        } else {
-            systime_mdelay(1);
-        }
-    }
-
-    return RT_EOK;
-}
-
 static void timer_gpio_init(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
@@ -817,15 +759,9 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
     }
     case ACT_CMD_DSHOT_SEND: {
         struct dshot_command* c = (struct dshot_command*)arg;
-        if (c == RT_NULL) {
-            ret = RT_EINVAL;
-            break;
-        }
-        if (dev->config.protocol != ACT_PROTOCOL_DSHOT) {
-            ret = RT_EINVAL;
-            break;
-        }
-        ret = _dshot_send_command(c->chan_mask, c->value, c->repeat ? c->repeat : 1, c->wait_ms, false);
+
+        rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
+        ret = main_act_write(dev, c->chan_mask, c->value, c->size) == c->size ? RT_EOK : RT_ERROR;
         break;
     }
     default:
@@ -936,22 +872,9 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 uint16_t dshot_val;
                 val = *index;
 
-                if (dshot_cmds[i].active) {
-                    if (dshot_cmds[i].repeat > 0) {
-                        dshot_val = dshot_cmds[i].cmd;
-                        dshot_cmds[i].repeat--;
-                        if (dshot_cmds[i].repeat == 0) {
-                            dshot_cmds[i].wait_start_ms = systime_now_ms();
-                            if (dshot_cmds[i].wait_ms == 0) {
-                                dshot_cmds[i].active = false;
-                            }
-                        }
-                    } else {
-                        dshot_val = DSHOT_CMD_MOTOR_STOP;
-                        if ((systime_now_ms() - dshot_cmds[i].wait_start_ms) >= dshot_cmds[i].wait_ms) {
-                            dshot_cmds[i].active = false;
-                        }
-                    }
+                if (val < 48) {
+                    /* Handle dshot command */
+                    dshot_val = val;
                 } else {
                     float norm_throttle = (val > 1000) ? ((float)(val - 1000) / 1000.0f) : 0.0f;
                     dshot_val = dshot_throttle_to_value(norm_throttle);

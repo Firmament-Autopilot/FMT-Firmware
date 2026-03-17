@@ -110,38 +110,40 @@ int cmd_dshot(int argc, char** argv)
     }
 
     struct dshot_command c = { 0 };
+    uint16_t cmd_val = 0;
     c.chan_mask = chan_sel;
+    c.size = 0;
 
     if (STRING_COMPARE(cmd, "reverse")) {
-        c.value = DSHOT_CMD_SPIN_DIRECTION_2;
+        cmd_val = DSHOT_CMD_SPIN_DIRECTION_2;
         c.repeat = 10;
         c.wait_ms = 0;
     } else if (STRING_COMPARE(cmd, "normal")) {
-        c.value = DSHOT_CMD_SPIN_DIRECTION_1;
+        cmd_val = DSHOT_CMD_SPIN_DIRECTION_1;
         c.repeat = 10;
         c.wait_ms = 0;
     } else if (STRING_COMPARE(cmd, "save")) {
-        c.value = DSHOT_CMD_SAVE_SETTINGS;
+        cmd_val = DSHOT_CMD_SAVE_SETTINGS;
         c.repeat = 10;
         c.wait_ms = 35;
     } else if (STRING_COMPARE(cmd, "beep1")) {
-        c.value = DSHOT_CMD_BEEP1;
+        cmd_val = DSHOT_CMD_BEEP1;
         c.repeat = 1;
         c.wait_ms = 400;
     } else if (STRING_COMPARE(cmd, "beep2")) {
-        c.value = DSHOT_CMD_BEEP2;
+        cmd_val = DSHOT_CMD_BEEP2;
         c.repeat = 1;
         c.wait_ms = 400;
     } else if (STRING_COMPARE(cmd, "beep3")) {
-        c.value = DSHOT_CMD_BEEP3;
+        cmd_val = DSHOT_CMD_BEEP3;
         c.repeat = 1;
         c.wait_ms = 400;
     } else if (STRING_COMPARE(cmd, "beep4")) {
-        c.value = DSHOT_CMD_BEEP4;
+        cmd_val = DSHOT_CMD_BEEP4;
         c.repeat = 1;
         c.wait_ms = 400;
     } else if (STRING_COMPARE(cmd, "beep5")) {
-        c.value = DSHOT_CMD_BEEP5;
+        cmd_val = DSHOT_CMD_BEEP5;
         c.repeat = 1;
         c.wait_ms = 400;
     } else {
@@ -149,12 +151,25 @@ int cmd_dshot(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    if (rt_device_control(dev, ACT_CMD_DSHOT_SEND, &c) != RT_EOK) {
-        console_printf("failed to send dshot command\n");
-        return EXIT_FAILURE;
-    } else {
-        console_printf("dshot %s sent to %s channel mask 0x%X\n", cmd, dev_name, c.chan_mask);
+    for (uint16_t i = 0; i < 16; i++) {
+        if (c.chan_mask & (1 << i)) {
+            c.value[i] = cmd_val;
+            c.size++;
+        } else {
+            c.value[i] = 0;
+        }
     }
+
+    for (uint16_t i = 0; i < c.repeat; i++) {
+        if (rt_device_control(dev, ACT_CMD_DSHOT_SEND, &c) != RT_EOK) {
+            console_printf("failed to send dshot command\n");
+            return EXIT_FAILURE;
+        }
+        systime_msleep(2);
+    }
+    systime_msleep(c.wait_ms);
+
+    console_printf("dshot %s sent to %s channel mask 0x%X\n", cmd, dev_name, c.chan_mask);
 
     return EXIT_SUCCESS;
 }
