@@ -843,10 +843,10 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
         }
     } else if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
         uint16_t packed_sel = 0;
+        uint16_t dshot_val;
 
         for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
             if (chan_sel & (1 << i)) {
-                uint16_t dshot_val;
                 val = *index;
 
                 if (val < 48) {
@@ -857,13 +857,17 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                     dshot_val = dshot_throttle_to_value(norm_throttle);
                 }
 
-                uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
-                _dshot_push_frame(i, frame);
                 packed_sel |= (1u << i);
                 index++;
-
                 main_out_val[i] = val;
+            } else {
+                /* if channel isn't selected, stop the motor */
+                dshot_val = DSHOT_CMD_MOTOR_STOP;
+                main_out_val[i] = 0;
             }
+
+            uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
+            _dshot_push_frame(i, frame);
         }
 
         for (uint8_t i = 0; i < DSHOT_TIMER_COUNT; i++) {
