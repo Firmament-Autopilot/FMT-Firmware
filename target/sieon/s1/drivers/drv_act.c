@@ -43,8 +43,10 @@ MCN_DECLARE(fms_output);
 
 static uint32_t main_pwm_freq = PWM_DEFAULT_FREQUENCY;
 static uint32_t aux_pwm_freq = PWM_DEFAULT_FREQUENCY;
-static float main_pwm_dc[MAIN_OUT_CHAN_NUM];
-static float aux_pwm_dc[AUX_OUT_CHAN_NUM];
+// static float main_pwm_dc[MAIN_OUT_CHAN_NUM];
+// static float aux_pwm_dc[AUX_OUT_CHAN_NUM];
+static float main_out_val[MAIN_OUT_CHAN_NUM];
+static float aux_out_val[AUX_OUT_CHAN_NUM];
 
 /* DShot command state array: keeps track of ongoing sequence correctly synced to cyclic update */
 typedef struct {
@@ -498,16 +500,6 @@ static void timer_init(void)
     LL_TIM_DisableMasterSlaveMode(TIM12);
 }
 
-rt_inline void __main_read_pwm(uint8_t chan_id, float* dc)
-{
-    *dc = main_pwm_dc[chan_id];
-}
-
-rt_inline void __aux_read_pwm(uint8_t chan_id, float* dc)
-{
-    *dc = aux_pwm_dc[chan_id];
-}
-
 rt_inline void __main_write_pwm(uint8_t chan_id, float dc)
 {
     switch (chan_id) {
@@ -550,8 +542,6 @@ rt_inline void __main_write_pwm(uint8_t chan_id, float dc)
     default:
         break;
     }
-
-    main_pwm_dc[chan_id] = dc;
 }
 
 rt_inline void __aux_write_pwm(uint8_t chan_id, float dc)
@@ -572,8 +562,6 @@ rt_inline void __aux_write_pwm(uint8_t chan_id, float dc)
     default:
         break;
     }
-
-    aux_pwm_dc[chan_id] = dc;
 }
 
 rt_inline rt_err_t __main_set_pwm_frequency(uint16_t freq)
@@ -591,7 +579,7 @@ rt_inline rt_err_t __main_set_pwm_frequency(uint16_t freq)
 
     /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
-        __main_write_pwm(i, main_pwm_dc[i]);
+        __main_write_pwm(i, VAL_TO_DC(main_out_val[i], main_pwm_freq));
     }
 
     return RT_EOK;
@@ -611,7 +599,7 @@ rt_inline rt_err_t __aux_set_pwm_frequency(uint16_t freq)
 
     /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
-        __aux_write_pwm(i, aux_pwm_dc[i]);
+        __aux_write_pwm(i, VAL_TO_DC(aux_out_val[i], aux_pwm_freq));
     }
 
     return RT_EOK;
@@ -681,6 +669,7 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
             /* set to lowest pwm before open */
             for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
                 __main_write_pwm(i, VAL_TO_DC(1000, main_pwm_freq));
+                main_out_val[i] = 1000;
             }
         } else {
             TIM1->CCR1 = 0;
@@ -773,6 +762,7 @@ static rt_err_t aux_act_control(actuator_dev_t dev, int cmd, void* arg)
         /* set to lowest pwm before open */
         for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
             __aux_write_pwm(i, VAL_TO_DC(1000, aux_pwm_freq));
+            aux_out_val[i] = 1000;
         }
 
         LL_TIM_EnableCounter(TIM8);
@@ -809,12 +799,10 @@ static rt_err_t aux_act_control(actuator_dev_t dev, int cmd, void* arg)
 rt_size_t main_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
-    float dc;
 
     for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
         if (chan_sel & (1 << i)) {
-            __main_read_pwm(i, &dc);
-            *index = DC_TO_VAL(dc, main_pwm_freq);
+            *index = main_out_val[i];
             index++;
         }
     }
@@ -825,12 +813,10 @@ rt_size_t main_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* c
 static rt_size_t aux_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
-    float dc;
 
     for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
         if (chan_sel & (1 << i)) {
-            __aux_read_pwm(i, &dc);
-            *index = DC_TO_VAL(dc, aux_pwm_freq);
+            *index = aux_out_val[i];
             index++;
         }
     }
@@ -850,8 +836,9 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 val = *index;
                 dc = VAL_TO_DC(val, main_pwm_freq);
                 __main_write_pwm(i, dc);
-
                 index++;
+
+                main_out_val[i] = val;
             }
         }
     } else if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
@@ -874,6 +861,8 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 _dshot_push_frame(i, frame);
                 packed_sel |= (1u << i);
                 index++;
+
+                main_out_val[i] = val;
             }
         }
 
@@ -904,6 +893,8 @@ static rt_size_t aux_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
                 dc = VAL_TO_DC(val, aux_pwm_freq);
                 __aux_write_pwm(i, dc);
                 index++;
+
+                aux_out_val[i] = val;
             }
         }
     } else {
