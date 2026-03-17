@@ -19,6 +19,10 @@
 
 #include "rtdef.h"
 
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -38,14 +42,12 @@ extern "C" {
 
 #if !defined(bool) && !defined(__cplusplus)
 typedef int bool;
-#endif
-
 #ifndef true
-    #define true (1U)
+#define true (1U)
 #endif
-
 #ifndef false
-    #define false (0U)
+#define false (0U)
+#endif
 #endif
 
 // Macro to define packed structures

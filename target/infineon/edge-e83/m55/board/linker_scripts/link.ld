@@ -153,8 +153,8 @@ SECTIONS
         *(.dtors)
         /* Read only code (constants) */
         *(.rodata .rodata.* .constdata .constdata.* .conststring .conststring.*)
-        /* Exclude certain files from this section as they will be placed in RAM */
-        *(EXCLUDE_FILE(*cy_syslib.* *cy_syslib_ext.* *cy_smif.* *cy_smif_memnum.* *cy_smif_memslot.* *cy_smif_sfdp.* *cy_smif_hb_flash.* *mtb_hal_memoryspi.* *mtb_serial_memory.* *freertos/Source*.* *cy_clib_support*.* *cy_mutex_pool*.* *cy_time.* *cyabs_*.* *cy_worker_thread.* *cmsis*.*) .text*)
+        /* Exclude hot vehicle-path objects from XIP so they can execute from ITCM */
+        *(EXCLUDE_FILE(*cy_syslib.* *cy_syslib_ext.* *cy_smif.* *cy_smif_memnum.* *cy_smif_memslot.* *cy_smif_sfdp.* *cy_smif_hb_flash.* *mtb_hal_memoryspi.* *mtb_serial_memory.* *freertos/Source*.* *cy_clib_support*.* *cy_mutex_pool*.* *cy_time.* *cyabs_*.* *cy_worker_thread.* *cmsis*.* *ins_interface.* *INS.* *fms_interface.* *FMS.* *control_interface.* *Controller.* *task_vehicle.*) .text*)
 
         . = ALIGN(4);
         /* section information for utest */
@@ -298,6 +298,13 @@ SECTIONS
         KEEP(*(.cy_itcm))
         KEEP(*(.cy_sram_code))
         KEEP(*(.cy_ramfunc))
+        *task_vehicle.*(.text*)
+        *ins_interface.*(.text*)
+        *INS.*(.text*)
+        *fms_interface.*(.text*)
+        *FMS.*(.text*)
+        *control_interface.*(.text*)
+        *Controller.*(.text*)
         KEEP(*(.text.cy_os_common))
         *cy_syslib_ext.*(.text*)
         *cy_syslib.*(.text*)
