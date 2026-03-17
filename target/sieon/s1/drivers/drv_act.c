@@ -853,7 +853,7 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                     /* Handle dshot command */
                     dshot_val = val;
                 } else {
-                    float norm_throttle = (val > 1000) ? ((float)(val - 1000) / 1000.0f) : 0.0f;
+                    float norm_throttle = (float)(val - 1000) / 1000.0f;
                     dshot_val = dshot_throttle_to_value(norm_throttle);
                 }
 
