@@ -11,6 +11,7 @@
 #include "module/syscmd/syscmd.h"
 
 MCN_DECLARE(fms_output);
+MCN_DECLARE(control_output);
 
 static void show_usage(void)
 {
@@ -103,6 +104,11 @@ int cmd_dshot(int argc, char** argv)
     }
 
     actuator_dev_t act = (actuator_dev_t)dev;
+    if (act->config.protocol != ACT_PROTOCOL_DSHOT) {
+        console_printf("device %s protocol is not dshot\n", dev_name);
+        return EXIT_FAILURE;
+    }
+
     chan_sel &= act->chan_mask;
     if (chan_sel == 0) {
         console_printf("no valid channels selected on %s\n", dev_name);
@@ -160,14 +166,22 @@ int cmd_dshot(int argc, char** argv)
         }
     }
 
+    /* Suspend controller output */
+    mcn_suspend(MCN_HUB(control_output));
+
     for (uint16_t i = 0; i < c.repeat; i++) {
         if (rt_device_control(dev, ACT_CMD_DSHOT_SEND, &c) != RT_EOK) {
             console_printf("failed to send dshot command\n");
+            /* Resume controller output */
+            mcn_resume(MCN_HUB(control_output));
             return EXIT_FAILURE;
         }
-        systime_msleep(2);
+        systime_msleep(5);
     }
     systime_msleep(c.wait_ms);
+
+    /* Resume controller output */
+    mcn_resume(MCN_HUB(control_output));
 
     console_printf("dshot %s sent to %s channel mask 0x%X\n", cmd, dev_name, c.chan_mask);
 
