@@ -15,8 +15,13 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include "FMS.h"
+#include "hal/actuator/actuator.h"
 #include "module/syscmd/optparse.h"
 #include "module/syscmd/syscmd.h"
+
+MCN_DECLARE(control_output);
+MCN_DECLARE(fms_output);
 
 static void show_usage(void)
 {
@@ -48,6 +53,47 @@ static void show_get_usage(void)
     SHELL_OPTION("-c, --channel", "Selected channel in hex, e.g, f means channel 1 to channel 4.");
 }
 
+static rt_size_t act_device_write(rt_device_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
+{
+    actuator_dev_t act_dev = (actuator_dev_t)dev;
+    rt_size_t ret = size;
+
+    /* Suspend controller output */
+    mcn_suspend(MCN_HUB(control_output));
+
+    if (act_dev->config.protocol == ACT_PROTOCOL_PWM) {
+        ret = rt_device_write(dev, chan_sel, chan_val, size);
+    } else if (act_dev->config.protocol == ACT_PROTOCOL_DSHOT) {
+
+        printf("Press any key to stop...\n");
+
+        while (1) {
+            /* type any key to exit */
+            if (syscmd_has_input()) {
+                syscmd_flush();
+                break;
+            }
+
+            if (rt_device_write(dev, chan_sel, chan_val, size) != size) {
+                printf("dshot write failed!\n");
+                ret = 0;
+                break;
+                ;
+            }
+
+            systime_msleep(10);
+        }
+    } else {
+        /* Unknown protocol */
+        ret = 0;
+    }
+
+    /* Resume controller output */
+    mcn_resume(MCN_HUB(control_output));
+
+    return ret;
+}
+
 static int set(int argc, struct optparse options)
 {
     char* arg;
@@ -64,6 +110,17 @@ static int set(int argc, struct optparse options)
     uint16_t chan_sel = 0;
     uint16_t chan_val[16] = { 0 };
     rt_device_t dev = NULL;
+
+    FMS_Out_Bus fms_out;
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK) {
+        if (fms_out.status != VehicleStatus_Disarm) {
+            printf("act set command only allowed when disarmed\n");
+            return EXIT_FAILURE;
+        }
+    } else {
+        printf("failed to get vehicle status\n");
+        return EXIT_FAILURE;
+    }
 
     while ((option = optparse_long(&options, longopts, NULL)) != -1) {
         switch (option) {
@@ -122,7 +179,7 @@ static int set(int argc, struct optparse options)
             chan_val[i] = val;
         }
 
-        rt_device_write(dev, chan_sel, chan_val, 16);
+        act_device_write(dev, chan_sel, chan_val, 16);
     } else {
         uint8_t index = 0;
         for (int i = 0; i < 16; i++) {
@@ -135,7 +192,7 @@ static int set(int argc, struct optparse options)
             }
         }
 
-        rt_device_write(dev, chan_sel, chan_val, index);
+        act_device_write(dev, chan_sel, chan_val, index);
     }
 
     return EXIT_SUCCESS;
