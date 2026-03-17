@@ -59,12 +59,7 @@ typedef struct {
 } dshot_cmd_state_t;
 static volatile dshot_cmd_state_t dshot_cmds[MAIN_OUT_CHAN_NUM] = { 0 };
 
-/* Channels serviced by the periodic actuator loop. */
-static volatile uint16_t main_polled_mask = 0;
-static volatile uint16_t aux_polled_mask = 0;
-
 /* One DMA stream is used per timer, with 4 CCR values updated on each event. */
-
 #define DSHOT_BITS           16U
 #define DSHOT_TIMER_COUNT    3U
 #define DSHOT_TIMER_CHANNELS 4U
@@ -864,8 +859,6 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
         }
     } else if (main_protocol == ACT_PROTOCOL_DSHOT) {
         uint16_t packed_sel = 0;
-
-        main_polled_mask |= chan_sel;
 
         for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
             if (chan_sel & (1 << i)) {
