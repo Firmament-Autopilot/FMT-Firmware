@@ -32,7 +32,7 @@
 #include "driver/mag/qmc5883l.h"
 #include "driver/mtd/gd25qxx.h"
 #include "driver/range_finder/tofsense.h"
-#include "drv_actuator.h"
+#include "drv_act.h"
 #include "drv_adc.h"
 #include "drv_eth.h"
 #include "drv_fdcan.h"
@@ -399,7 +399,7 @@ void bsp_early_initialize(void)
     RT_CHECK(drv_spi_init());
 
     /* pwm driver init */
-    RT_CHECK(drv_actuator_init());
+    RT_CHECK(drv_act_init());
 
     /* can driver init */
     RT_CHECK(drv_fdcan_init());

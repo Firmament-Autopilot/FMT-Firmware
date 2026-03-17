@@ -33,7 +33,7 @@ MCN_DECLARE(fms_output);
 #define PWM_FREQ_400HZ         (400)
 
 #define PWM_TIMER_FREQUENCY    3000000       // Timer frequency: 3M
-#define DSHOT_TIMER_FREQUENCY  120000000     // Timer frequency for DShot: 120M
+#define DSHOT_TIMER_FREQUENCY  24000000      // Timer frequency for DShot: 24M
 #define PWM_DEFAULT_FREQUENCY  PWM_FREQ_50HZ // pwm default frequqncy
 #define VAL_TO_DC(_val, _freq) ((float)(_val * _freq) / 1000000.0f)
 #define DC_TO_VAL(_dc, _freq)  (1000000.0f / _freq * _dc)
@@ -80,12 +80,14 @@ struct dshot_dma_map {
     uint32_t stream;
     uint32_t request;
     TIM_TypeDef* tim;
+    uint32_t t0h;
+    uint32_t t1h;
 };
 
-static const struct dshot_dma_map dshot_dma_map[DSHOT_TIMER_COUNT] = {
-    { DMA2, LL_DMA_STREAM_2, LL_DMAMUX1_REQ_TIM1_UP, TIM1 },
-    { DMA2, LL_DMA_STREAM_3, LL_DMAMUX1_REQ_TIM4_UP, TIM4 },
-    { DMA2, LL_DMA_STREAM_4, LL_DMAMUX1_REQ_TIM5_UP, TIM5 },
+static struct dshot_dma_map dshot_dma_map[DSHOT_TIMER_COUNT] = {
+    { DMA2, LL_DMA_STREAM_2, LL_DMAMUX1_REQ_TIM1_UP, TIM1, 0, 0 },
+    { DMA2, LL_DMA_STREAM_3, LL_DMAMUX1_REQ_TIM4_UP, TIM4, 0, 0 },
+    { DMA2, LL_DMA_STREAM_4, LL_DMAMUX1_REQ_TIM5_UP, TIM5, 0, 0 },
 };
 
 static void _dshot_clear_dma_flags(DMA_TypeDef* dma, uint32_t stream)
@@ -144,21 +146,21 @@ static void _setup_dshot_dma(void)
         LL_DMA_DisableIT_TE(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
 
         dshot_dma_map[i].tim->DCR = LL_TIM_DMABURST_BASEADDR_CCR1 | LL_TIM_DMABURST_LENGTH_4TRANSFERS;
+
+        uint32_t period = LL_TIM_GetAutoReload(dshot_dma_map[i].tim) + 1U;
+        /* +3U rounds to nearest: (x + divisor/2) / divisor */
+        dshot_dma_map[i].t0h = (period * 2U + 3U) / 6U; /* T0H: ~33.3% */
+        dshot_dma_map[i].t1h = (period * 4U + 3U) / 6U; /* T1H: ~66.7% */
     }
 }
 
-static void _dshot_push_frame(uint8_t chan, uint16_t frame, uint32_t arr)
+static void _dshot_push_frame(uint8_t chan, uint16_t frame)
 {
     uint8_t tim_idx = chan / 4U;
     uint8_t ch_in_tim = chan % 4U;
-    uint32_t period = arr + 1U;
-
-    /* +3U rounds to nearest: (x + divisor/2) / divisor */
-    uint32_t duty_0 = (period * 2U + 3U) / 6U; /* T0H: ~33.3% */
-    uint32_t duty_1 = (period * 4U + 3U) / 6U; /* T1H: ~66.7% */
 
     for (uint8_t i = 0; i < DSHOT_BITS; i++) {
-        dshot_dma_frame[tim_idx][i][ch_in_tim] = (frame & (0x8000U >> i)) ? duty_1 : duty_0;
+        dshot_dma_frame[tim_idx][i][ch_in_tim] = (frame & (0x8000U >> i)) ? dshot_dma_map[tim_idx].t1h : dshot_dma_map[tim_idx].t0h;
     }
 
     dshot_dma_frame[tim_idx][DSHOT_BITS][ch_in_tim] = 0;
@@ -925,7 +927,6 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
             }
         }
     } else if (main_protocol == ACT_PROTOCOL_DSHOT) {
-        uint32_t current_arr = LL_TIM_GetAutoReload(TIM1);
         uint16_t packed_sel = 0;
 
         main_polled_mask |= chan_sel;
@@ -957,22 +958,17 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                 }
 
                 uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
-                _dshot_push_frame(i, frame, current_arr);
+                _dshot_push_frame(i, frame);
                 packed_sel |= (1u << i);
                 index++;
             }
         }
-        if (packed_sel & 0x000F) {
-            _dshot_clean_cache(0);
-            _dshot_fire_tim(0);
-        }
-        if (packed_sel & 0x00F0) {
-            _dshot_clean_cache(1);
-            _dshot_fire_tim(1);
-        }
-        if (packed_sel & 0x0F00) {
-            _dshot_clean_cache(2);
-            _dshot_fire_tim(2);
+
+        for (uint8_t i = 0; i < DSHOT_TIMER_COUNT; i++) {
+            if (packed_sel & (0x000F << (4 * i))) {
+                _dshot_clean_cache(i);
+                _dshot_fire_tim(i);
+            }
         }
     } else {
         /* unsupported protocol */
@@ -1024,7 +1020,7 @@ static struct actuator_device main_act_dev = { .chan_mask = 0xFFF,
                                                .config = { .protocol = ACT_PROTOCOL_PWM,
                                                            .chan_num = MAIN_OUT_CHAN_NUM,
                                                            .pwm_config = { .pwm_freq = 50 },
-                                                           .dshot_config = { 0 } },
+                                                           .dshot_config = { .speed = 600, .telem_req = false } },
                                                .ops = &main_act_ops };
 
 static struct actuator_device aux_act_dev = { .chan_mask = 0x0F,
@@ -1035,7 +1031,7 @@ static struct actuator_device aux_act_dev = { .chan_mask = 0x0F,
                                                           .dshot_config = { 0 } },
                                               .ops = &aux_act_ops };
 
-rt_err_t drv_actuator_init(void)
+rt_err_t drv_act_init(void)
 {
     /* init pwm gpio pin */
     timer_gpio_init();
