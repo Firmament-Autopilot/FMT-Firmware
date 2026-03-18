@@ -57,13 +57,14 @@ static rt_size_t act_device_write(actuator_dev_t act_dev, rt_uint16_t chan_sel, 
 {
     rt_size_t ret = size;
 
-    /* Suspend controller output */
-    mcn_suspend(MCN_HUB(control_output));
-
     if (act_dev->config.protocol == ACT_PROTOCOL_PWM) {
         ret = rt_device_write(&act_dev->parent, chan_sel, chan_val, size);
     } else if (act_dev->config.protocol == ACT_PROTOCOL_DSHOT) {
         printf("Press any key to stop...\n");
+
+        /* Suspend controller output */
+        mcn_suspend(MCN_HUB(control_output));
+
         while (1) {
             /* type any key to exit */
             if (syscmd_has_input()) {
@@ -80,13 +81,13 @@ static rt_size_t act_device_write(actuator_dev_t act_dev, rt_uint16_t chan_sel, 
 
             systime_msleep(10);
         }
+
+        /* Resume controller output */
+        mcn_resume(MCN_HUB(control_output));
     } else {
         /* Unknown protocol */
         ret = 0;
     }
-
-    /* Resume controller output */
-    mcn_resume(MCN_HUB(control_output));
 
     return ret;
 }
