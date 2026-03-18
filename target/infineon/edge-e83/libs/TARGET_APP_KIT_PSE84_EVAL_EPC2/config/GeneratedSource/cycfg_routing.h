@@ -5,8 +5,8 @@
  * Establishes all necessary connections between hardware elements.
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.35.0.9884
+ * mtb-dsl-pse8xxgp 1.4.0.994
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -81,8 +81,10 @@ extern "C" {
 #define ioss_0_port_21_pin_1_HSIOM P21_1_TDM_TDM_TX_SD0
 #define ioss_0_port_21_pin_2_HSIOM P21_2_TDM_TDM_TX_SCK0
 #define ioss_0_port_21_pin_3_HSIOM P21_3_TDM_TDM_TX_MCK0
-#define CYBSP_DMA_TX_SPI_CONTROLLER_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN1
-#define scb_10_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT10
+#define CYBSP_DEBUG_UART_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT2
+#define CYBSP_UART2_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN1
+#define CYBSP_UART5_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT5
+#define CYBSP_UART5_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN2
 
 void init_cycfg_routing(void);
 

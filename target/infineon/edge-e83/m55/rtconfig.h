@@ -230,6 +230,8 @@
 #define BSP_USING_GPIO
 #define BSP_USING_UART
 #define BSP_USING_UART2
+// #define BSP_USING_UART5
+// #define BSP_USING_UART5_DMA_TX
 #define BSP_USING_SPI
 #define BSP_USING_SPI1
 #define BSP_USING_HW_I2C

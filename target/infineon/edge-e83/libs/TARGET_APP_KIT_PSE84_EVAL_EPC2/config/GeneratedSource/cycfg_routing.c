@@ -5,8 +5,8 @@
  * Establishes all necessary connections between hardware elements.
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.35.0.9884
+ * mtb-dsl-pse8xxgp 1.4.0.994
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -33,5 +33,6 @@
 
 void init_cycfg_routing(void)
 {
-    Cy_TrigMux_Connect(PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT10, PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN1, false, TRIGGER_TYPE_LEVEL);
+    Cy_TrigMux_Connect(PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT2, PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN1, false, TRIGGER_TYPE_LEVEL);
+    Cy_TrigMux_Connect(PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT5, PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN2, false, TRIGGER_TYPE_LEVEL);
 }
