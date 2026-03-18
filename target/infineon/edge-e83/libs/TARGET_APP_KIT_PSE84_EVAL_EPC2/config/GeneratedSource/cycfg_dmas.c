@@ -5,8 +5,8 @@
  * DMA configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.35.0.9884
+ * mtb-dsl-pse8xxgp 1.4.0.994
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -28,28 +28,28 @@
 
 #include "cycfg_dmas.h"
 
-const cy_stc_dma_descriptor_config_t CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0_config =
+const cy_stc_dma_descriptor_config_t CYBSP_UART2_TX_DMA_Descriptor_0_config =
 {
     .retrigger = CY_DMA_RETRIG_IM,
-    .interruptType = CY_DMA_DESCR,
+    .interruptType = CY_DMA_1ELEMENT,
     .triggerOutType = CY_DMA_1ELEMENT,
-    .channelState = CY_DMA_CHANNEL_DISABLED,
+    .channelState = CY_DMA_CHANNEL_ENABLED,
     .triggerInType = CY_DMA_1ELEMENT,
     .dataSize = CY_DMA_BYTE,
     .srcTransferSize = CY_DMA_TRANSFER_SIZE_DATA,
     .dstTransferSize = CY_DMA_TRANSFER_SIZE_WORD,
-    .descriptorType = CY_DMA_1D_TRANSFER,
+    .descriptorType = CY_DMA_SINGLE_TRANSFER,
     .srcAddress = NULL,
     .dstAddress = NULL,
     .srcXincrement = 1,
     .dstXincrement = 0,
-    .xCount = 12,
-    .srcYincrement = 0,
-    .dstYincrement = 0,
+    .xCount = 1,
+    .srcYincrement = 1,
+    .dstYincrement = 1,
     .yCount = 1,
-    .nextDescriptor = &CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0,
+    .nextDescriptor = NULL,
 };
-CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0 =
+CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART2_TX_DMA_Descriptor_0 =
 {
     .ctl = 0UL,
     .src = 0UL,
@@ -58,15 +58,15 @@ CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_DMA_TX_S
     .yCtl = 0UL,
     .nextPtr = 0UL,
 };
-const cy_stc_dma_channel_config_t CYBSP_DMA_TX_SPI_CONTROLLER_channelConfig =
+const cy_stc_dma_channel_config_t CYBSP_UART2_TX_DMA_channelConfig =
 {
-    .descriptor = &CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0,
+    .descriptor = &CYBSP_UART2_TX_DMA_Descriptor_0,
     .preemptable = false,
     .priority = 3,
     .enable = false,
     .bufferable = false,
 };
-const cy_stc_dma_crc_config_t CYBSP_DMA_TX_SPI_CONTROLLER_crcConfig =
+const cy_stc_dma_crc_config_t CYBSP_UART2_TX_DMA_crcConfig =
 {
     .dataReverse = false,
     .dataXor = 0,
@@ -76,11 +76,68 @@ const cy_stc_dma_crc_config_t CYBSP_DMA_TX_SPI_CONTROLLER_crcConfig =
 };
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
-const mtb_hal_dma_configurator_t CYBSP_DMA_TX_SPI_CONTROLLER_hal_config =
+const mtb_hal_dma_configurator_t CYBSP_UART2_TX_DMA_hal_config =
 {
     .dma_type = MTB_HAL_DMA_DW,
-    .channel = CYBSP_DMA_TX_SPI_CONTROLLER_CHANNEL,
-    .dw_base = CYBSP_DMA_TX_SPI_CONTROLLER_HW,
-    .dw_descriptor = &CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0,
+    .channel = CYBSP_UART2_TX_DMA_CHANNEL,
+    .dw_base = CYBSP_UART2_TX_DMA_HW,
+    .dw_descriptor = &CYBSP_UART2_TX_DMA_Descriptor_0,
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+const cy_stc_dma_descriptor_config_t CYBSP_UART5_TX_DMA_Descriptor_0_config =
+{
+    .retrigger = CY_DMA_RETRIG_IM,
+    .interruptType = CY_DMA_1ELEMENT,
+    .triggerOutType = CY_DMA_1ELEMENT,
+    .channelState = CY_DMA_CHANNEL_ENABLED,
+    .triggerInType = CY_DMA_1ELEMENT,
+    .dataSize = CY_DMA_BYTE,
+    .srcTransferSize = CY_DMA_TRANSFER_SIZE_DATA,
+    .dstTransferSize = CY_DMA_TRANSFER_SIZE_WORD,
+    .descriptorType = CY_DMA_SINGLE_TRANSFER,
+    .srcAddress = NULL,
+    .dstAddress = NULL,
+    .srcXincrement = 1,
+    .dstXincrement = 0,
+    .xCount = 1,
+    .srcYincrement = 1,
+    .dstYincrement = 1,
+    .yCount = 1,
+    .nextDescriptor = NULL,
+};
+CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART5_TX_DMA_Descriptor_0 =
+{
+    .ctl = 0UL,
+    .src = 0UL,
+    .dst = 0UL,
+    .xCtl = 0UL,
+    .yCtl = 0UL,
+    .nextPtr = 0UL,
+};
+const cy_stc_dma_channel_config_t CYBSP_UART5_TX_DMA_channelConfig =
+{
+    .descriptor = &CYBSP_UART5_TX_DMA_Descriptor_0,
+    .preemptable = false,
+    .priority = 3,
+    .enable = false,
+    .bufferable = false,
+};
+const cy_stc_dma_crc_config_t CYBSP_UART5_TX_DMA_crcConfig =
+{
+    .dataReverse = false,
+    .dataXor = 0,
+    .reminderReverse = false,
+    .reminderXor = 0,
+    .polynomial = 79764919,
+};
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+const mtb_hal_dma_configurator_t CYBSP_UART5_TX_DMA_hal_config =
+{
+    .dma_type = MTB_HAL_DMA_DW,
+    .channel = CYBSP_UART5_TX_DMA_CHANNEL,
+    .dw_base = CYBSP_UART5_TX_DMA_HW,
+    .dw_descriptor = &CYBSP_UART5_TX_DMA_Descriptor_0,
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
