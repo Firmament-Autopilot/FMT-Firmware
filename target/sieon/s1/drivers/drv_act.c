@@ -854,7 +854,12 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                     dshot_val = val;
                 } else {
                     float norm_throttle = (float)(val - 1000) / 1000.0f;
-                    dshot_val = dshot_throttle_to_value(norm_throttle);
+                    FMS_Out_Bus fms_out;
+                    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK && fms_out.status == VehicleStatus_Disarm && norm_throttle < 0.05f) {
+                        dshot_val = DSHOT_CMD_MOTOR_STOP;
+                    } else {
+                        dshot_val = dshot_throttle_to_value(norm_throttle);
+                    }
                 }
 
                 packed_sel |= (1u << i);
