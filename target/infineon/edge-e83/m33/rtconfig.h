@@ -138,5 +138,6 @@
 #define BSP_USING_ADC
 #define BSP_USING_ADC0
 #define BSP_USING_IPC
+#define BSP_USING_RC
 
 #endif /* __RTTHREAD_CFG_H__ */
