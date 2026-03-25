@@ -38,6 +38,9 @@ if GetDepend('BSP_USING_ETH'):
 if GetDepend('BSP_USING_IPC'):
     src += ['drv_ipc.c']
 
+if GetDepend('BSP_USING_RC'):
+    src += ['drv_rc.c']
+
 path =  [cwd]
 path += [cwd + '/config']
 

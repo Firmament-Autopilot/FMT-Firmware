@@ -2649,6 +2649,13 @@
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
+                <Personality template="pclk_v2" version="1.1" instance="K-5Nwjsysyw">
+                    <Block location="peri[0].group[1].div_8[4]" locked="true"/>
+                    <Parameters>
+                        <Param id="intDivider" value="100"/>
+                        <Param id="startOnReset" value="true"/>
+                    </Parameters>
+                </Personality>
                 <Personality template="pclk_v2" version="1.1" instance="SnXZ_ZAruzg">
                     <Block location="peri[0].group[1].div_16[0]" locked="true">
                         <Aliases>
@@ -3669,6 +3676,39 @@
                         <Param id="trigger1Event" value="CY_TCPWM_CNT_TRIGGER_ON_DISABLED"/>
                     </Parameters>
                 </Personality>
+                <Personality template="mxs40timercounter_ver2" version="1.0" instance="Sx4Uz-O4pPQ">
+                    <Block location="tcpwm[0].group[1].cnt[20]" locked="true">
+                        <Aliases>
+                            <Alias value="RC_TIMER"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="Capture0Input" value="CY_TCPWM_INPUT_RISINGEDGE"/>
+                        <Param id="Capture1Input" value="CY_TCPWM_INPUT_DISABLED"/>
+                        <Param id="ClockPrescaler" value="CY_TCPWM_COUNTER_PRESCALER_DIVBY_1"/>
+                        <Param id="Compare0" value="16384"/>
+                        <Param id="Compare1" value="16384"/>
+                        <Param id="Compare2" value="16384"/>
+                        <Param id="Compare3" value="16384"/>
+                        <Param id="CompareOrCapture" value="CY_TCPWM_COUNTER_MODE_CAPTURE"/>
+                        <Param id="CountDirection" value="CY_TCPWM_COUNTER_COUNT_UP"/>
+                        <Param id="CountInput" value="CY_TCPWM_INPUT_DISABLED"/>
+                        <Param id="EnableCompare0Swap" value="false"/>
+                        <Param id="EnableCompare1Swap" value="false"/>
+                        <Param id="InterruptCC0" value="true"/>
+                        <Param id="InterruptCC1" value="false"/>
+                        <Param id="InterruptTC" value="false"/>
+                        <Param id="Period" value="65535"/>
+                        <Param id="ReloadInput" value="CY_TCPWM_INPUT_DISABLED"/>
+                        <Param id="RunMode" value="CY_TCPWM_COUNTER_CONTINUOUS"/>
+                        <Param id="StartInput" value="CY_TCPWM_INPUT_DISABLED"/>
+                        <Param id="StopInput" value="CY_TCPWM_INPUT_DISABLED"/>
+                        <Param id="gf_enable" value="false"/>
+                        <Param id="inFlash" value="true"/>
+                        <Param id="trigger0Event" value="CY_TCPWM_CNT_TRIGGER_ON_DISABLED"/>
+                        <Param id="trigger1Event" value="CY_TCPWM_CNT_TRIGGER_ON_DISABLED"/>
+                    </Parameters>
+                </Personality>
                 <Personality template="tdm" version="1.0" instance="Uixq_gSYLS4">
                     <Block location="tdm[0].tdm[0]" locked="true">
                         <Aliases>
@@ -4274,6 +4314,10 @@
                     <Port name="scb[4].uart_rts[0]"/>
                 </Net>
                 <Net>
+                    <Port name="ioss[0].port[11].pin[1].digital_in[0]"/>
+                    <Port name="tcpwm[0].group[1].cnt[20].capture0[0]"/>
+                </Net>
+                <Net>
                     <Port name="ioss[0].port[12].pin[0].digital_inout[0]"/>
                     <Port name="sdhc[0].clk_card[0]"/>
                 </Net>
@@ -4402,6 +4446,10 @@
                     <Port name="tcpwm[0].group[0].cnt[7].clock_counter_en[0]"/>
                 </Net>
                 <Net>
+                    <Port name="peri[0].group[1].div_8[4].clk[0]"/>
+                    <Port name="tcpwm[0].group[1].cnt[20].clock_counter_en[0]"/>
+                </Net>
+                <Net>
                     <Port name="peri[0].group[9].div_8[0].clk_pclk_root[0]"/>
                     <Port name="srss[0].clock[0].hfclk[13].root_clk[0]"/>
                 </Net>
@@ -4486,6 +4534,7 @@
                     <Port name="peri[0].group[1].div_8[1].clk_pclk_root[0]"/>
                     <Port name="peri[0].group[1].div_8[2].clk_pclk_root[0]"/>
                     <Port name="peri[0].group[1].div_8[3].clk_pclk_root[0]"/>
+                    <Port name="peri[0].group[1].div_8[4].clk_pclk_root[0]"/>
                     <Port name="peri[0].mmio[0].clk_pclk_root[1]"/>
                     <Port name="srss[0].clock[0].hfclk[10].root_clk[0]"/>
                 </Net>

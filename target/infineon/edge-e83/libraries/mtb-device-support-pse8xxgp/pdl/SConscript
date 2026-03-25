@@ -80,5 +80,9 @@ if GetDepend('BSP_USING_ADC'):
 if GetDepend('BSP_USING_SDCARD'):
     src += ['drivers/source/cy_sd_host.c']
 
+# RC driver
+if GetDepend('BSP_USING_RC'):
+    src += ['drivers/source/cy_tcpwm_counter.c']
+
 group = DefineGroup('Libraries', src, depend=[''], CPPPATH=path)
 Return('group')

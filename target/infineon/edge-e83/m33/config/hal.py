@@ -6,6 +6,7 @@ HAL = [
     'pin/*.c',
     'actuator/*.c',
     'adc/*.c',
+    'rc/*.c',
 ]
 
 HAL_CPPPATH = []
