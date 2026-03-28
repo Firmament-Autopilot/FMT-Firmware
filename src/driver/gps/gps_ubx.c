@@ -530,7 +530,7 @@ static void gps_probe_entry(void* parameter)
 
     if (i >= CONFIGURE_RETRY_MAX) {
         set_baudrate(ubx_decoder.ubx_dev, prev_baudrate);
-        printf("UBX-GPS not detected on %s, swith back to default baudrate %d.\n", ubx_decoder.ubx_dev->parent.name, prev_baudrate);
+        printf("UBX-GPS configure failed on %s, swith back to default baudrate %d.\n", ubx_decoder.ubx_dev->parent.name, prev_baudrate);
 
         /* If configure failed, skip configure step and just wait pvt msg. since some ublox gps doesn't support ubx configure */
         ubx_decoder.use_nav_pvt = true;

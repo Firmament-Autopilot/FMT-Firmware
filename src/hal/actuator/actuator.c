@@ -133,13 +133,7 @@ uint16_t dshot_pack_frame(uint16_t value, bool telemetry)
 
 uint16_t dshot_throttle_to_value(float norm_throttle)
 {
-    if (norm_throttle < 0.0f) {
-        norm_throttle = 0.0f;
-    } else if (norm_throttle > 1.0f) {
-        norm_throttle = 1.0f;
-    }
-
-    return (uint16_t)(DSHOT_MIN_THROTTLE + (uint16_t)(norm_throttle * DSHOT_RANGE));
+    return (uint16_t)(DSHOT_MIN_THROTTLE + (uint16_t)(constrain_float(norm_throttle, 0.0f, 1.0f) * DSHOT_RANGE));
 }
 
 /**
