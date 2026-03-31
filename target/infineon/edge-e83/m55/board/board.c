@@ -22,15 +22,16 @@
 
 #include "board.h"
 #include "default_config.h"
-#include "drv_eth.h"
-#include "drv_gpio.h"
-#include "drv_systick.h"
-#include "drv_i2c.h"
-#include "drv_sdio.h"
-#include "drv_spi.h"
-#include "drv_pwm.h"
+#include "driver/barometer/dps368.h"
 #include "drv_adc.h"
 #include "drv_eth.h"
+#include "drv_gpio.h"
+#include "drv_i2c.h"
+#include "drv_pwm.h"
+#include "drv_sdio.h"
+#include "drv_spi.h"
+#include "drv_systick.h"
+#include "drv_uart.h"
 #include "drv_usbd_cdc.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
@@ -55,6 +56,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 // #define DBG_TAG "board"
 // #define DBG_LVL DBG_INFO
 // #include <rtdbg.h>
@@ -80,7 +82,6 @@ void _start(void)
         ;
     __builtin_unreachable();
 }
-
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -175,7 +176,6 @@ static void bsp_show_information(void)
         banner_item(buffer, get_task_status(task_tab[i].name) == TASK_READY ? "OK" : "Fail", '.', BANNER_ITEM_LEN);
     }
 }
-
 
 static fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
 {
@@ -309,28 +309,29 @@ void bsp_initialize(void)
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
-    #if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
-        FMT_CHECK(advertise_sensor_imu(0));
-        FMT_CHECK(advertise_sensor_mag(0));
-        FMT_CHECK(advertise_sensor_baro(0));
-        FMT_CHECK(advertise_sensor_gps(0));
-        FMT_CHECK(advertise_sensor_airspeed(0));
-    #else
-        // /* init onboard sensors */
-        // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
-        // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-        // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
-        // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-        // RT_CHECK(gps_ubx_init("serial3", "gps"));
-        // // RT_CHECK(gps_nmea_init("serial3", "gps"));
-        // // RT_CHECK(drv_tofsense_init("serial5"));
+#if defined(FMT_USING_SIH) || defined(FMT_USING_HIL)
+    FMT_CHECK(advertise_sensor_imu(0));
+    FMT_CHECK(advertise_sensor_mag(0));
+    FMT_CHECK(advertise_sensor_baro(0));
+    FMT_CHECK(advertise_sensor_gps(0));
+    FMT_CHECK(advertise_sensor_airspeed(0));
+#else
+    // /* init onboard sensors */
+    // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
+    // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
+    // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+    // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
+    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    // // RT_CHECK(gps_nmea_init("serial3", "gps"));
+    // // RT_CHECK(drv_tofsense_init("serial5"));
+    RT_CHECK(drv_dps368_init("i2c0_dev1", "barometer"));
 
-        // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
-        // FMT_CHECK(register_sensor_mag("mag0", 0));
-        // FMT_CHECK(register_sensor_barometer("barometer"));
-        // FMT_CHECK(advertise_sensor_optflow(0));
-        // FMT_CHECK(advertise_sensor_rangefinder(0));
-    #endif
+    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    // FMT_CHECK(register_sensor_mag("mag0", 0));
+    FMT_CHECK(register_sensor_barometer("barometer"));
+    // FMT_CHECK(advertise_sensor_optflow(0));
+    // FMT_CHECK(advertise_sensor_rangefinder(0));
+#endif
 
     /* init finsh */
     finsh_system_init();
