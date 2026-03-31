@@ -89,7 +89,7 @@ bool syscmd_is_num(const char* str)
 
 char syscmd_getc(void)
 {
-    char ch[SERIAL_RB_BUFSZ];
+    char buffer[SERIAL_RB_BUFSZ];
     // struct finsh_shell* shell = finsh_get_shell();
 
     syscmd_flush();
@@ -97,9 +97,9 @@ char syscmd_getc(void)
     if (rt_sem_take(&shell->rx_sem, RT_WAITING_FOREVER) != RT_EOK)
         return -1;
 
-    rt_device_read(shell->device, 0, &ch, SERIAL_RB_BUFSZ);
+    rt_device_read(shell->device, 0, buffer, SERIAL_RB_BUFSZ);
 
-    return ch[0];
+    return buffer[0];
 }
 
 bool syscmd_has_input(void)
@@ -113,8 +113,9 @@ void syscmd_flush(void)
 {
     // struct finsh_shell* shell = finsh_get_shell();
 
-    char ch[SERIAL_RB_BUFSZ];
-    rt_device_read(shell->device, 0, &ch, SERIAL_RB_BUFSZ);
+    char buffer[SERIAL_RB_BUFSZ];
+    rt_sem_trytake(&shell->rx_sem);
+    rt_device_read(shell->device, RT_WAITING_NO, buffer, SERIAL_RB_BUFSZ);
 }
 
 void syscmd_putc(const char c, int cnt)
@@ -252,7 +253,7 @@ int syscmd_process(int argc, char** argv, shell_handle_func func)
                 opt_v[opt_cnt].val = NULL;
             }
 
-            //console_printf("opt:%s val:%s\n", opt_v[opt_cnt].opt, opt_v[opt_cnt].val);
+            // console_printf("opt:%s val:%s\n", opt_v[opt_cnt].opt, opt_v[opt_cnt].val);
 
             opt_cnt++;
         } else {
@@ -269,7 +270,7 @@ int syscmd_process(int argc, char** argv, shell_handle_func func)
             memcpy(arg_v[arg_cnt], argv[i], arg_len);
             arg_v[arg_cnt][arg_len] = '\0';
 
-            //console_printf("arg:%s\n", arg_v[arg_cnt]);
+            // console_printf("arg:%s\n", arg_v[arg_cnt]);
 
             arg_cnt++;
         }
