@@ -47,7 +47,7 @@ if PLATFORM == 'gcc':
     OBJCPY = PREFIX + 'objcopy'
 
     DEVICE = ' -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 --specs=nano.specs -mfloat-abi=hard -ffunction-sections -fdata-sections -nostartfiles -nostartfiles'
-    CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member'
+    CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -flto -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler -T board/linker_scripts/link.ld'
 
