@@ -324,11 +324,11 @@ void bsp_initialize(void)
     // RT_CHECK(gps_ubx_init("serial3", "gps"));
     // // RT_CHECK(gps_nmea_init("serial3", "gps"));
     // // RT_CHECK(drv_tofsense_init("serial5"));
-    RT_CHECK(drv_dps368_init("i2c0_dev1", "barometer"));
+    // RT_CHECK(drv_dps368_init("i2c0_dev1", "barometer"));
 
     // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     // FMT_CHECK(register_sensor_mag("mag0", 0));
-    FMT_CHECK(register_sensor_barometer("barometer"));
+    // FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
