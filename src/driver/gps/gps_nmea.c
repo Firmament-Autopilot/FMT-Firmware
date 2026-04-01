@@ -46,11 +46,11 @@ static int nmea_rx_handle(uint16_t msg_id)
     case NMEA_MSG_KSXT: {
         gps_report.vel_ned_valid = 1;
         if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 1) {
-            gps_report.fix_type = 3; /* 3D fix */
+            gps_report.fix_type = 3; /* Single fix */
         } else if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 2) {
-            gps_report.fix_type = 6; /* RTK fix */
-        } else if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 3) {
             gps_report.fix_type = 5; /* RTK float */
+        } else if (nmea_decoder.buf.payload_rx_ksxt.pos_fixType == 3) {
+            gps_report.fix_type = 6; /* RTK fix */
         } else {
             gps_report.fix_type = 0; /* No fix */
             gps_report.vel_ned_valid = 0;
@@ -112,8 +112,8 @@ static void gps_probe_entry(void* parameter)
     }
 
     uint32_t time_now = systime_now_ms();
-    while((systime_now_ms() - time_now) < 5000) {
-        if(nmea_received){
+    while ((systime_now_ms() - time_now) < 5000) {
+        if (nmea_received) {
             printf("NMEA GPS detected.\n");
             break;
         }
