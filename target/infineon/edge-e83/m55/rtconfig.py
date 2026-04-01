@@ -28,8 +28,8 @@ elif CROSS_TOOL == 'iar':
     PLATFORM = 'iccarm'
     EXEC_PATH   = r'C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.3'
 
-if os.getenv('RTT_EXEC_PATH'):
-    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
+# if os.getenv('RTT_EXEC_PATH'):
+#     EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
 BUILD = 'release'
 
@@ -47,7 +47,7 @@ if PLATFORM == 'gcc':
     OBJCPY = PREFIX + 'objcopy'
 
     DEVICE = ' -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 --specs=nano.specs -mfloat-abi=hard -ffunction-sections -fdata-sections -nostartfiles -nostartfiles'
-    CFLAGS = DEVICE + ' -g -Wall -pipe'
+    CFLAGS = DEVICE + ' -g -Wall -pipe -Wno-address-of-packed-member -Wstrict-aliasing=0 -Wno-uninitialized -Wno-unused-function -Wno-switch'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
     LFLAGS = DEVICE + ' -flto -Wl,--gc-sections,-Map=rtthread.map,-cref,-u,Reset_Handler -T board/linker_scripts/link.ld'
 

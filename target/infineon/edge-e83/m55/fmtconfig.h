@@ -22,7 +22,7 @@
 /* HIL simulation */
 // #define FMT_USING_HIL
 /* SIH simulation */
-#define FMT_USING_SIH
+// #define FMT_USING_SIH
 
 /* console device name */
 #define RT_CONSOLE_DEVICE_NAME "serial2"

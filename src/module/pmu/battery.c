@@ -527,7 +527,7 @@ void battery_estimate_state_of_charge(Battery* battery)
  * @param battery Pointer to the Battery structure.
  * @return Warning level as a uint8_t value.
  */
-uint8_t battery_SOC_warning(Battery* battery)
+battery_warning_t battery_SOC_warning(Battery* battery)
 {
     if (battery->state_of_charge < battery->params.low_thr) {
         return BATTERY_WARNING_LOW_VOLTAGE;

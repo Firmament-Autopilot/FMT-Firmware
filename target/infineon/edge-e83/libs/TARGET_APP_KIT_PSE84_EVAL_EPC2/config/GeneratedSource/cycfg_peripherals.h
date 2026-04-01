@@ -219,6 +219,10 @@ extern "C" {
 #define CYBSP_SMARTIO_PWM_ENABLED 1U
 #define CYBSP_SMARTIO_PWM_HW TCPWM0
 #define CYBSP_SMARTIO_PWM_NUM 262UL
+#define RC_TIMER_ENABLED 1U
+#define RC_TIMER_HW TCPWM0
+#define RC_TIMER_NUM 276UL
+#define RC_TIMER_IRQ tcpwm_0_interrupts_276_IRQn
 
 extern cy_stc_autanalog_cfg_t autonomous_analog_cfg;
 extern cy_stc_autanalog_stt_t autonomous_analog_stt[];
@@ -419,6 +423,17 @@ extern const mtb_hal_clock_t CYBSP_SMARTIO_PWM_hal_clock;
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
 extern const mtb_hal_pwm_configurator_t CYBSP_SMARTIO_PWM_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_counter_config_t RC_TIMER_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t RC_TIMER_clock_ref;
+extern const mtb_hal_clock_t RC_TIMER_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
+extern const mtb_hal_timer_configurator_t RC_TIMER_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
 
 void init_cycfg_peripherals(void);
 

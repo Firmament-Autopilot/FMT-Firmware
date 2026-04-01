@@ -90,6 +90,19 @@ extern "C" {
 #define CYBSP_PWM_DT_CLK_DIV_GRP_NUM CYBSP_PWM_DT_CLK_DIV_GRP_NUM
 #endif /* !defined (CYBSP_PWM_DT_CLK_DIV_GRP_NUM) */
 
+#define peri_0_group_1_div_8_4_ENABLED 1U
+
+#if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)
+#define peri_0_group_1_div_8_4_HW CY_SYSCLK_DIV_8_BIT
+#endif /* !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE) */
+
+#define peri_0_group_1_div_8_4_NUM 4U
+#define PERI_0_GROUP_1_DIV_8_4_GRP_NUM ((1U << PERI_PCLK_GR_NUM_Pos) | (0U << PERI_PCLK_INST_NUM_Pos))
+
+#if !defined (peri_0_group_1_div_8_4_GRP_NUM)
+#define peri_0_group_1_div_8_4_GRP_NUM PERI_0_GROUP_1_DIV_8_4_GRP_NUM
+#endif /* !defined (peri_0_group_1_div_8_4_GRP_NUM) */
+
 #define CYBSP_I2C_CONTROLLER_CLK_DIV_ENABLED 1U
 
 #if !defined (CY_USING_HAL) && !defined (CY_USING_HAL_LITE)

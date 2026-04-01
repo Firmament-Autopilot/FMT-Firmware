@@ -1,7 +1,7 @@
 param (
     [string]$scriptPath = $MyInvocation.MyCommand.Path,
     [string]$scriptDir = $(Convert-Path (Split-Path -Path $scriptPath -Parent)),
-    [string]$tools_dir_path = "./OpenOCD-Infineon",
+    [string]$tools_dir_path = "$scriptDir/OpenOCD-Infineon",
     [string]$target_lib_dir = "$scriptDir/../libs/TARGET_APP_KIT_PSE84_EVAL_EPC2",
     [string]$hex_file = "$scriptDir/../m33/build/rtthread.hex"
 )

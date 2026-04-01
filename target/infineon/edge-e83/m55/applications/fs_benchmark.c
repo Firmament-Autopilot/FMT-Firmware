@@ -18,7 +18,6 @@ static float g_read_speed_kb = 0.0f;
 
 static void print_speed(const char* name, float speed_kb)
 {
-    char buf[64];
     int kb_int = (int)speed_kb;
     int kb_frac = (int)((speed_kb - kb_int) * 100);
     if (kb_frac < 0)

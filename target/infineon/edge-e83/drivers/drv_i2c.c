@@ -166,6 +166,10 @@ void HAL_I2C_Init(struct ifx_i2c* obj)
     }
 }
 
+/* i2c device instances */
+static struct rt_i2c_device i2c0_dev1 = { .slave_addr = 0x77, /* 7 bit address */
+                                          .flags = 0 };
+
 rt_err_t drv_i2c_init(void)
 {
     rt_err_t result = RT_EOK;
@@ -182,6 +186,9 @@ rt_err_t drv_i2c_init(void)
         result = rt_i2c_bus_device_register(&i2c_objs[i].i2c_bus, i2c_objs[i].name);
         RT_ASSERT(result == RT_EOK);
     }
+
+    /* attach i2c devices */
+    RT_TRY(rt_i2c_bus_attach_device(&i2c0_dev1, "i2c0_dev1", "i2c0", RT_NULL));
 
     return RT_EOK;
 }

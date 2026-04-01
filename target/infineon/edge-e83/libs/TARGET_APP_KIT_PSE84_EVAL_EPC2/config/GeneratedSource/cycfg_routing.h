@@ -58,6 +58,7 @@ extern "C" {
 #define ioss_0_port_10_pin_5_HSIOM P10_5_ETH_RX_CTL
 #define ioss_0_port_10_pin_6_HSIOM P10_6_ETH_RXD0
 #define ioss_0_port_10_pin_7_HSIOM P10_7_ETH_RXD1
+#define ioss_0_port_11_pin_1_HSIOM P11_1_PERI1_TR_IO_INPUT1
 #define ioss_0_port_11_pin_2_HSIOM P11_2_ETH_TXD0
 #define ioss_0_port_11_pin_3_HSIOM P11_3_ETH_TXD1
 #define ioss_0_port_11_pin_4_HSIOM P11_4_ETH_TX_CTL
@@ -81,10 +82,14 @@ extern "C" {
 #define ioss_0_port_21_pin_1_HSIOM P21_1_TDM_TDM_TX_SD0
 #define ioss_0_port_21_pin_2_HSIOM P21_2_TDM_TDM_TX_SCK0
 #define ioss_0_port_21_pin_3_HSIOM P21_3_TDM_TDM_TX_MCK0
+#define CYBSP_ARD_D7_digital_in_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_3_PERI1_HSIOM_TR_OUT1
+#define CYBSP_ETH_RX_ER_digital_in_0_TRIGGER_IN CYBSP_ARD_D7_digital_in_0_TRIGGER_IN
 #define CYBSP_DEBUG_UART_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT2
 #define CYBSP_UART2_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN1
 #define CYBSP_UART5_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT5
 #define CYBSP_UART5_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN2
+#define RC_TIMER_capture0_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_3_TCPWM0_ALL_CNT_TR_IN27
+#define TCPWM0_GRP1_CNT20_CAPTURE0_VALUE 0x1E
 
 void init_cycfg_routing(void);
 
