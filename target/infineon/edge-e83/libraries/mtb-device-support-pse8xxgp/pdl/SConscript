@@ -20,6 +20,7 @@ src = Split('''
             drivers/source/cy_ipc_drv.c
             drivers/source/cy_scb_common.c
             drivers/source/cy_dma.c
+            drivers/source/cy_trigmux.c
             drivers/source/cy_sysfault.c
             ''')
 

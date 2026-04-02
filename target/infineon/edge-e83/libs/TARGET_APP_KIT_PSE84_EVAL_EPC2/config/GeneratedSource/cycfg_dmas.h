@@ -5,8 +5,8 @@
  * DMA configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.34.0.9502
- * mtb-dsl-pse8xxgp 1.2.0.895
+ * device-db 4.35.0.9884
+ * mtb-dsl-pse8xxgp 1.4.0.994
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -40,18 +40,31 @@
 extern "C" {
 #endif /* defined(__cplusplus) */
 
-#define CYBSP_DMA_TX_SPI_CONTROLLER_ENABLED 1U
-#define CYBSP_DMA_TX_SPI_CONTROLLER_HW DW0
-#define CYBSP_DMA_TX_SPI_CONTROLLER_CHANNEL 1U
-#define CYBSP_DMA_TX_SPI_CONTROLLER_IRQ cpuss_interrupts_dw0_1_IRQn
+#define CYBSP_UART2_TX_DMA_ENABLED 1U
+#define CYBSP_UART2_TX_DMA_HW DW0
+#define CYBSP_UART2_TX_DMA_CHANNEL 1U
+#define CYBSP_UART2_TX_DMA_IRQ cpuss_interrupts_dw0_1_IRQn
+#define CYBSP_UART5_TX_DMA_ENABLED 1U
+#define CYBSP_UART5_TX_DMA_HW DW0
+#define CYBSP_UART5_TX_DMA_CHANNEL 2U
+#define CYBSP_UART5_TX_DMA_IRQ cpuss_interrupts_dw0_2_IRQn
 
-extern const cy_stc_dma_descriptor_config_t CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0_config;
-extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_DMA_TX_SPI_CONTROLLER_Descriptor_0;
-extern const cy_stc_dma_channel_config_t CYBSP_DMA_TX_SPI_CONTROLLER_channelConfig;
-extern const cy_stc_dma_crc_config_t CYBSP_DMA_TX_SPI_CONTROLLER_crcConfig;
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART2_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART2_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART2_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART2_TX_DMA_crcConfig;
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
-extern const mtb_hal_dma_configurator_t CYBSP_DMA_TX_SPI_CONTROLLER_hal_config;
+extern const mtb_hal_dma_configurator_t CYBSP_UART2_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART5_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART5_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART5_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART5_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART5_TX_DMA_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
 
 #if defined(__cplusplus)

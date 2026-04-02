@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+
 #ifndef __DRV_UART_H__
 #define __DRV_UART_H__
 
@@ -23,7 +24,7 @@
 #include "hal/serial/serial.h"
 #include "mtb_hal_uart.h"
 
-#define uart_isr_callback(name) name##_isr_callback
+#define UART_TX_BUFFER_SIZE 256
 
 struct ifx_uart_config {
     mtb_hal_uart_t* uart_obj;
@@ -33,13 +34,26 @@ struct ifx_uart_config {
     uint32_t* actualbaud;
     CySCB_Type* usart_x;
     cy_stc_scb_uart_context_t* uart_context;
-#if defined(SOC_SERIES_IFX_XMC)
-    rt_uint32_t intrSrc;
-#else
     IRQn_Type intrSrc;
-#endif
     cy_israddress userIsr;
     cy_stc_sysint_t* UART_SCB_IRQ_cfg;
+
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+    uint8_t* tx_buffer;
+    cy_stc_dma_descriptor_t* tx_dma_descriptor;
+    volatile uint8_t tx_dma_done;
+    uint8_t dma_enabled;
+    uint8_t dma_initialized;
+    rt_sem_t tx_dma_sem;
+
+    const cy_stc_dma_descriptor_config_t* tx_dma_descriptor_config;
+    const cy_stc_dma_channel_config_t* tx_dma_channel_config;
+    cy_stc_sysint_t* tx_dma_int_cfg;
+    cy_israddress tx_dma_isr;
+    IRQn_Type tx_dma_irq;
+    uint8_t tx_dma_channel;
+    DW_Type* tx_dma_hw;
+#endif
 };
 
 struct ifx_uart {
@@ -49,4 +63,4 @@ struct ifx_uart {
 
 rt_err_t drv_usart_init(void);
 
-#endif
+#endif /* __DRV_UART_H__ */
