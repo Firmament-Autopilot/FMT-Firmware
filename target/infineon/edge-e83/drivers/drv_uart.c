@@ -187,7 +187,9 @@ static void uart_dma_tx_isr(struct ifx_uart* uart)
         rt_kprintf("[UART DMA] %s error, status=%d\n",
                    config->name,
                    (int)status);
+        config->tx_dma_done = 1u;
         rt_sem_release(config->tx_dma_sem);
+        hal_serial_isr(&uart->serial, SERIAL_EVENT_TX_DMADONE);
     }
 
     Cy_DMA_Channel_ClearInterrupt(config->tx_dma_hw, config->tx_dma_channel);
@@ -310,6 +312,28 @@ static rt_err_t ifx_control(struct serial_device* serial, int cmd, void* arg)
         uart->config->usart_x->INTR_RX_MASK = SCB_INTR_RX_MASK_NOT_EMPTY_Msk;
         Cy_SysInt_Init(uart->config->UART_SCB_IRQ_cfg, uart->config->userIsr);
         NVIC_EnableIRQ(uart->config->intrSrc);
+        break;
+
+    case RT_DEVICE_CTRL_SUSPEND:
+        if (serial->parent.open_flag & RT_DEVICE_FLAG_INT_RX) {
+            uart->config->usart_x->INTR_RX_MASK &= ~SCB_INTR_RX_MASK_NOT_EMPTY_Msk;
+            NVIC_DisableIRQ(uart->config->intrSrc);
+        }
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+        if ((serial->parent.open_flag & RT_DEVICE_FLAG_DMA_TX) && uart->config->dma_enabled) {
+            Cy_DMA_Channel_Disable(uart->config->tx_dma_hw,
+                                   uart->config->tx_dma_channel);
+        }
+#endif
+        break;
+
+    case RT_DEVICE_CTRL_RESUME:
+        if (serial->parent.open_flag & RT_DEVICE_FLAG_INT_RX) {
+            uart->config->usart_x->INTR_RX_MASK = SCB_INTR_RX_MASK_NOT_EMPTY_Msk;
+            NVIC_EnableIRQ(uart->config->intrSrc);
+        }
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#endif
         break;
     }
 
@@ -455,11 +479,15 @@ rt_err_t drv_usart_init(void)
         }
 #endif /* BSP_USING_UARTx_DMA_TX */
 
+        rt_uint16_t flags = RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX;
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+        if (uart_obj[index].config->dma_enabled) {
+            flags |= RT_DEVICE_FLAG_DMA_TX;
+        }
+#endif
         result = hal_serial_register(&uart_obj[index].serial,
                                      uart_obj[index].config->name,
-                                     RT_DEVICE_FLAG_RDWR
-                                         | RT_DEVICE_FLAG_INT_RX
-                                         | RT_DEVICE_FLAG_DMA_TX,
+                                     flags,
                                      &uart_obj[index]);
         RT_ASSERT(result == RT_EOK);
     }
