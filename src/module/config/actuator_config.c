@@ -18,7 +18,7 @@
 #include <string.h>
 
 #include "hal/actuator/actuator.h"
-#include "module/sysio/actuator_config.h"
+#include "module/config/actuator_config.h"
 #include "module/toml/toml.h"
 
 #define TOML_DBG_E(...)                 toml_debug("Actuator", "E", __VA_ARGS__)

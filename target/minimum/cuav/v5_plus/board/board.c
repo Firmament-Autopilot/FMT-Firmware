@@ -27,7 +27,7 @@
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
-#include "module/console/console_config.h"
+#include "module/config/console_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
