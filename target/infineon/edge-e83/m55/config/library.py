@@ -5,4 +5,5 @@ LIBS = [
     'mavlink',
     # 'dronecan',
     'cherryusb',
+    'micro-xrce-dds-client',
 ]

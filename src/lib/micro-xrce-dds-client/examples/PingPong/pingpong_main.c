@@ -7,8 +7,11 @@
 #include <firmament.h>
 #include <stdio.h>
 
-#define STREAM_HISTORY 1
+#define DEVICE_NAME    "serial2"
+#define STREAM_HISTORY 5
 #define BUFFER_SIZE    UXR_CONFIG_SERIAL_TRANSPORT_MTU* STREAM_HISTORY
+
+static int recv_ping = 0;
 
 void on_topic(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer* ub, uint16_t length, void* args)
 {
@@ -21,6 +24,10 @@ void on_topic(uxrSession* session, uxrObjectId object_id, uint16_t request_id, u
 
     Header topic;
     Header_deserialize_topic(ub, &topic);
+
+    recv_ping = 1;
+
+    printf("Received topic: %s, sec: %ld\n", topic.frame_id, topic.stamp.sec);
 }
 
 int pingpong_main(void)
@@ -28,18 +35,19 @@ int pingpong_main(void)
     uxrSerialTransport transport;
     uxrSerialPlatform serial_platform;
 
-    rt_device_t dev = rt_device_find("serial0");
+    rt_device_t dev = rt_device_find(DEVICE_NAME);
     serial_dev_t serial_dev = (serial_dev_t)dev;
 
     if (!(dev->open_flag & RT_DEVICE_OFLAG_OPEN)) {
         rt_err_t err = rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
         if (err != RT_EOK) {
-            printf("fail open serial0 device: %ld\n", err);
+            printf("fail open %s device: %ld\n", DEVICE_NAME, err);
         }
 
         struct serial_configure pconfig = serial_dev->config;
         pconfig.baud_rate = 115200;
         if (rt_device_control(dev, RT_DEVICE_CTRL_CONFIG, &pconfig) != RT_EOK) {
+            printf("Fail to config baudrate\n");
             return FMT_ERROR;
         }
     }
@@ -51,7 +59,7 @@ int pingpong_main(void)
 
     // Session
     uxrSession session;
-    uxr_init_session(&session, &transport.comm, 0xABCDABCD);
+    uxr_init_session(&session, &transport.comm, 0xAAAABBBB);
     uxr_set_topic_callback(&session, on_topic, NULL);
     if (!uxr_create_session(&session)) {
         console_printf("Error at create session.\n");
@@ -59,11 +67,11 @@ int pingpong_main(void)
     }
 
     // Streams
-    uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
+    static uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
     uxrStreamId reliable_out = uxr_create_output_reliable_stream(&session, output_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
 
-    uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
-    uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
+    static uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
+    uxrStreamId reliable_in = uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
 
     // Create entities
     uxrObjectId participant_id = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
@@ -76,14 +84,39 @@ int pingpong_main(void)
                                   "</dds>";
     uint16_t participant_req = uxr_buffer_create_participant_xml(&session, reliable_out, participant_id, 0, participant_xml, UXR_REPLACE);
 
-    uxrObjectId topic_id = uxr_object_id(0x01, UXR_TOPIC_ID);
-    const char* topic_xml = "<dds>"
-                            "<topic>"
-                            "<name>rt/microROS/ping</name>"
-                            "<dataType>std_msgs::msg::dds_::Header_</dataType>"
-                            "</topic>"
-                            "</dds>";
-    uint16_t topic_req = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id, participant_id, topic_xml, UXR_REPLACE);
+    uxrObjectId topic_ping_id = uxr_object_id(0x01, UXR_TOPIC_ID);
+    const char* topic_ping_xml = "<dds>"
+                                 "<topic>"
+                                 "<name>rt/microROS/ping</name>"
+                                 "<dataType>std_msgs::msg::dds_::Header_</dataType>"
+                                 "</topic>"
+                                 "</dds>";
+    uint16_t topic_ping_req = uxr_buffer_create_topic_xml(&session, reliable_out, topic_ping_id, participant_id, topic_ping_xml, UXR_REPLACE);
+
+    uxrObjectId subscriber_id = uxr_object_id(0x01, UXR_SUBSCRIBER_ID);
+    const char* subscriber_xml = "";
+    uint16_t subscriber_req = uxr_buffer_create_subscriber_xml(&session, reliable_out, subscriber_id, participant_id, subscriber_xml, UXR_REPLACE);
+
+    uxrObjectId datareader_id = uxr_object_id(0x01, UXR_DATAREADER_ID);
+    const char* datareader_xml = "<dds>"
+                                 "<data_reader>"
+                                 "<topic>"
+                                 "<kind>NO_KEY</kind>"
+                                 "<name>rt/microROS/ping</name>"
+                                 "<dataType>std_msgs::msg::dds_::Header_</dataType>"
+                                 "</topic>"
+                                 "</data_reader>"
+                                 "</dds>";
+    uint16_t datareader_req = uxr_buffer_create_datareader_xml(&session, reliable_out, datareader_id, subscriber_id, datareader_xml, UXR_REPLACE);
+
+    uxrObjectId topic_pong_id = uxr_object_id(0x02, UXR_TOPIC_ID);
+    const char* topic_pong_xml = "<dds>"
+                                 "<topic>"
+                                 "<name>rt/microROS/pong</name>"
+                                 "<dataType>std_msgs::msg::dds_::Header_</dataType>"
+                                 "</topic>"
+                                 "</dds>";
+    uint16_t topic_pong_req = uxr_buffer_create_topic_xml(&session, reliable_out, topic_pong_id, participant_id, topic_pong_xml, UXR_REPLACE);
 
     uxrObjectId publisher_id = uxr_object_id(0x01, UXR_PUBLISHER_ID);
     const char* publisher_xml = "";
@@ -94,30 +127,44 @@ int pingpong_main(void)
                                  "<data_writer>"
                                  "<topic>"
                                  "<kind>NO_KEY</kind>"
-                                 "<name>rt/microROS/ping</name>"
+                                 "<name>rt/microROS/pong</name>"
                                  "<dataType>std_msgs::msg::dds_::Header_</dataType>"
                                  "</topic>"
                                  "</data_writer>"
                                  "</dds>";
     uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml, UXR_REPLACE);
 
-    // Send create entities message and wait its status
-    uint8_t status[4];
-    uint16_t requests[4] = { participant_req, topic_req, publisher_req, datawriter_req };
-    if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 4)) {
-        console_printf("Error at create entities: participant: %i topic: %i publisher: %i darawriter: %i\n", status[0], status[1], status[2], status[3]);
-        return 1;
+    uint8_t status[7] = { 0 }; // we have 7 request to check.
+    uint16_t requests[7] = { participant_req, topic_ping_req, subscriber_req, datareader_req, topic_pong_req, publisher_req, datawriter_req };
+    if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 7)) {
+        rt_kprintf("Error at create entities: participant: %i topic_ping: %i subscriber: %i datareader: %i topic_pong: %i publisher: %i datawriter: %i\n",
+                   status[0],
+                   status[1],
+                   status[2],
+                   status[3],
+                   status[4],
+                   status[5],
+                   status[6]);
+        return FMT_ERROR;
     }
 
     // Write topics
     bool connected = true;
     uint32_t count = 0;
     Header topic;
-    sprintf(topic.frame_id, "Hello RT-Thread!\n");
-    DEFINE_TIMETAG(topic_send, 5000);
-    while (connected && count < 100) {
-        if (check_timetag(TIMETAG(topic_send))) {
-            uint32_t time_now_ms = systime_now_ms();
+    rt_sprintf(topic.frame_id, "Hello ROS2 World!");
+
+    // Request topics
+    uxrDeliveryControl delivery_control = { 0 };
+    delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
+    uxr_buffer_request_data(&session, reliable_out, datareader_id, reliable_in, &delivery_control);
+
+    printf("Wait for ping topic\n");
+    while (connected) {
+        connected = uxr_run_session_until_data(&session, 1000 * 300);
+
+        if (recv_ping) {
+            uint32_t time_now_ms = rt_tick_get_millisecond();
             topic.stamp.sec = time_now_ms / 1000;
             topic.stamp.nanosec = (time_now_ms % 1000) * 1e6;
 
@@ -126,10 +173,14 @@ int pingpong_main(void)
             uxr_prepare_output_stream(&session, reliable_out, datawriter_id, &ub, topic_size);
             Header_serialize_topic(&ub, &topic);
 
-            printf("Send topic: %s at %ld\n", topic.frame_id, topic.stamp.sec);
-            connected = uxr_run_session_until_confirm_delivery(&session, 1000);
+            rt_kprintf("Send pong topic: %s, sec: %ld\n", topic.frame_id, topic.stamp.sec);
+
+            recv_ping = 0;
+            count++;
         }
     }
+
+    printf("Exit demo\n");
 
     // Delete resources
     uxr_delete_session(&session);
@@ -137,3 +188,10 @@ int pingpong_main(void)
 
     return 0;
 }
+
+static void uros_test(int argc, char** argv)
+{
+    pingpong_main();
+}
+
+MSH_CMD_EXPORT(uros_test, micro - ros ping - pong demo.);

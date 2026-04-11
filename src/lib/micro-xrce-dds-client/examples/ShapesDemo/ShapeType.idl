@@ -1,6 +1,0 @@
-struct ShapeType {
-    @Key string color;
-    long x;
-    long y;
-    long shapesize;
-};
