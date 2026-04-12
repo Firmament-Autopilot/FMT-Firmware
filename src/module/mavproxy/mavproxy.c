@@ -16,7 +16,7 @@
 #include <firmament.h>
 
 #include "module/mavproxy/mavproxy.h"
-#include "module/mavproxy/mavproxy_config.h"
+#include "module/config/mavproxy_config.h"
 #include "module/utils/list.h"
 
 #define MAVPROXY_INTERVAL            1

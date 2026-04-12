@@ -17,7 +17,7 @@
 
 #include "hal/serial/serial.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/mavproxy/mavproxy_config.h"
+#include "module/config/mavproxy_config.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 

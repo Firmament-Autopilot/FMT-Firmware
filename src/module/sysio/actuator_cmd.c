@@ -19,7 +19,7 @@
 
 #include "model/control/control_interface.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/sysio/actuator_config.h"
+#include "module/config/actuator_config.h"
 
 MCN_DECLARE(control_output);
 MCN_DECLARE(rc_trim_channels);

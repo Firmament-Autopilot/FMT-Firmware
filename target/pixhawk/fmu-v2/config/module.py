@@ -3,6 +3,7 @@
 MODULES = [
     'calibration/*.c',
     'console/*.c',
+    'config/*.c',
     'file_manager/*.c',
     'ftp/*.c',
     'ipc/*.c',
