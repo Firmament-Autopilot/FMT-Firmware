@@ -21,19 +21,19 @@
 #include <shell.h>
 #include <string.h>
 
-#include "module/console/console_config.h"
+#include "module/config/console_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/mavproxy/mavproxy_config.h"
+#include "module/config/mavproxy_config.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
-#include "module/sysio/actuator_config.h"
+#include "module/config/actuator_config.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
-#include "module/sysio/pilot_cmd_config.h"
+#include "module/config/pilot_cmd_config.h"
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
