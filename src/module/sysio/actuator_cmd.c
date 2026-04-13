@@ -17,6 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "hal/actuator/actuator.h"
 #include "model/control/control_interface.h"
 #include "module/config/actuator_config.h"
 #include "module/mavproxy/mavproxy.h"
