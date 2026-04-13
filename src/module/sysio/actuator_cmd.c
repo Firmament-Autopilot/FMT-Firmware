@@ -21,7 +21,6 @@
 #include "module/config/actuator_config.h"
 #include "module/mavproxy/mavproxy.h"
 
-
 MCN_DECLARE(control_output);
 MCN_DECLARE(rc_trim_channels);
 
