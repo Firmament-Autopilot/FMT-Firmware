@@ -44,12 +44,12 @@ int pingpong_main(void)
             printf("fail open %s device: %ld\n", DEVICE_NAME, err);
         }
 
-        struct serial_configure pconfig = serial_dev->config;
-        pconfig.baud_rate = 115200;
-        if (rt_device_control(dev, RT_DEVICE_CTRL_CONFIG, &pconfig) != RT_EOK) {
-            printf("Fail to config baudrate\n");
-            return FMT_ERROR;
-        }
+        // struct serial_configure pconfig = serial_dev->config;
+        // pconfig.baud_rate = 115200;
+        // if (rt_device_control(dev, RT_DEVICE_CTRL_CONFIG, &pconfig) != RT_EOK) {
+        //     printf("Fail to config baudrate\n");
+        //     return FMT_ERROR;
+        // }
     }
 
     if (!uxr_init_serial_transport(&transport, &serial_platform, (int)dev, 0, 1)) {

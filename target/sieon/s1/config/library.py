@@ -4,4 +4,5 @@ LIBS = [
     # 'cm_backtrace',
     'mavlink',
     # 'dronecan',
+    'micro-xrce-dds-client'
 ]
