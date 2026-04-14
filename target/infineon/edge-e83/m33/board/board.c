@@ -117,10 +117,10 @@ void bsp_initialize(void)
     /* adc driver init */
     RT_CHECK(drv_adc_init());
 
-    /* init finsh */
-    finsh_system_init();
-    /* Mount finsh to console after finsh system init */
-    FMT_CHECK(console_enable_input());
+    // /* init finsh */
+    // finsh_system_init();
+    // /* Mount finsh to console after finsh system init */
+    // FMT_CHECK(console_enable_input());
 }
 
 void bsp_post_initialize(void)
