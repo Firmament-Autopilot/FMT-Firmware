@@ -76,21 +76,43 @@ target = "SIEON S1"
 [actuator]
     [[actuator.devices]]
     protocol = "pwm"
-    name = "main_out"
+    name = "main_out_1"
+    freq = 400                  # pwm frequency in Hz
+
+    [[actuator.devices]]
+    protocol = "dshot"
+    name = "main_out_2"
+    speed = 600                 # dshot speed: 150, 300, 600
+    telem-req = false           # request telemetry on main_out
+
+
+    [[actuator.devices]]
+    protocol = "pwm"
+    name = "main_out_3"
     freq = 400                  # pwm frequency in Hz
 
 #    [[actuator.devices]]
 #    protocol = "dshot"
-#    name = "main_out"
+#    name = "aux_out"
 #    speed = 600                 # dshot speed: 150, 300, 600
 #    telem-req = false           # request telemetry on main_out
 
-    [[actuator.devices]]
-    protocol = "pwm"
-    name = "aux_out"
-    freq = 50                   # pwm frequency in Hz
+    [[actuator.mappings]]
+    from = "control_out"
+    to = "main_out_1"
+    chan-map = [[1,2,3,4],[1,2,3,4]]
 
     [[actuator.mappings]]
     from = "control_out"
-    to = "main_out"
-    chan-map = [[1,2,3,4],[1,2,3,4]]
+    to = "main_out_2"
+    chan-map = [[5,8],[1,4]]
+
+    [[actuator.mappings]]
+    from = "control_out"
+    to = "main_out_3"
+    chan-map = [[9,12],[1,4]]
+
+#    [[actuator.mappings]]
+#    from = "control_out"
+#    to = "aux_out"
+#    chan-map = [[13,14],[1,2]]

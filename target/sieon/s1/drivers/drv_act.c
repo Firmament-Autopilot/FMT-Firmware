@@ -26,6 +26,8 @@ MCN_DECLARE(fms_output);
 #define DRV_DBG(...)
 
 #define MAIN_OUT_CHAN_NUM      12
+#define MAIN_DEV_NUM           3
+#define MAIN_DEV_CHAN_NUM      4
 #define AUX_OUT_CHAN_NUM       4
 #define PWM_FREQ_50HZ          (50)
 #define PWM_FREQ_125HZ         (125)
@@ -41,11 +43,11 @@ MCN_DECLARE(fms_output);
 #define PWM_ARR(freq)          (PWM_TIMER_FREQUENCY / freq) // CCR reload value, Timer frequency = 3M/60K = 50 Hz
 #define PWM_TIMER(id)          (id < 4 ? TIM1 : TIM4)
 
-static uint32_t main_pwm_freq = PWM_DEFAULT_FREQUENCY;
+static uint32_t main_pwm_freq[MAIN_DEV_NUM] = { PWM_DEFAULT_FREQUENCY, PWM_DEFAULT_FREQUENCY, PWM_DEFAULT_FREQUENCY };
 static uint32_t aux_pwm_freq = PWM_DEFAULT_FREQUENCY;
 // static float main_pwm_dc[MAIN_OUT_CHAN_NUM];
 // static float aux_pwm_dc[AUX_OUT_CHAN_NUM];
-static float main_out_val[MAIN_OUT_CHAN_NUM];
+static float main_out_val[MAIN_DEV_NUM][MAIN_DEV_CHAN_NUM];
 static float aux_out_val[AUX_OUT_CHAN_NUM];
 
 /* DShot command state array: keeps track of ongoing sequence correctly synced to cyclic update */
@@ -103,7 +105,7 @@ static void _dshot_clear_dma_flags(DMA_TypeDef* dma, uint32_t stream)
     *ifcr = (mask << shift);
 }
 
-static void _setup_dshot_dma(void)
+static void _setup_dshot_dma(uint8_t tim_idx)
 {
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
@@ -111,41 +113,40 @@ static void _setup_dshot_dma(void)
     SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_D2SRAM1EN | RCC_AHB2ENR_D2SRAM2EN);
     (void)RCC->AHB2ENR; /* dummy read to ensure clock is enabled before use */
 
-    for (uint8_t i = 0; i < DSHOT_TIMER_COUNT; i++) {
-        LL_DMA_InitTypeDef dma_init = { 0 };
+    uint8_t i = tim_idx;
+    LL_DMA_InitTypeDef dma_init = { 0 };
 
-        LL_DMA_DisableStream(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
-        while (LL_DMA_IsEnabledStream(dshot_dma_map[i].dma, dshot_dma_map[i].stream))
-            ;
-        CLEAR_BIT(dshot_dma_map[i].tim->DIER, TIM_DIER_UDE);
-        _dshot_clear_dma_flags(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
+    LL_DMA_DisableStream(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
+    while (LL_DMA_IsEnabledStream(dshot_dma_map[i].dma, dshot_dma_map[i].stream))
+        ;
+    CLEAR_BIT(dshot_dma_map[i].tim->DIER, TIM_DIER_UDE);
+    _dshot_clear_dma_flags(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
 
-        dma_init.PeriphOrM2MSrcAddress = (uint32_t)&dshot_dma_map[i].tim->DMAR;
-        dma_init.MemoryOrM2MDstAddress = (uint32_t)&dshot_dma_frame[i][1][0];
-        dma_init.Direction = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
-        dma_init.Mode = LL_DMA_MODE_NORMAL;
-        dma_init.PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
-        dma_init.MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
-        dma_init.PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_WORD;
-        dma_init.MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_WORD;
-        dma_init.NbData = DSHOT_DMA_WORDS;
-        dma_init.Priority = LL_DMA_PRIORITY_HIGH;
-        /* Timer DMAR burst still issues single DMA requests on STM32H7. */
-        dma_init.FIFOMode = LL_DMA_FIFOMODE_DISABLE;
-        dma_init.PeriphRequest = dshot_dma_map[i].request;
+    dma_init.PeriphOrM2MSrcAddress = (uint32_t)&dshot_dma_map[i].tim->DMAR;
+    dma_init.MemoryOrM2MDstAddress = (uint32_t)&dshot_dma_frame[i][1][0];
+    dma_init.Direction = LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
+    dma_init.Mode = LL_DMA_MODE_NORMAL;
+    dma_init.PeriphOrM2MSrcIncMode = LL_DMA_PERIPH_NOINCREMENT;
+    dma_init.MemoryOrM2MDstIncMode = LL_DMA_MEMORY_INCREMENT;
+    dma_init.PeriphOrM2MSrcDataSize = LL_DMA_PDATAALIGN_WORD;
+    dma_init.MemoryOrM2MDstDataSize = LL_DMA_MDATAALIGN_WORD;
+    dma_init.NbData = DSHOT_DMA_WORDS;
+    dma_init.Priority = LL_DMA_PRIORITY_HIGH;
+    /* Timer DMAR burst still issues single DMA requests on STM32H7. */
+    dma_init.FIFOMode = LL_DMA_FIFOMODE_DISABLE;
+    dma_init.PeriphRequest = dshot_dma_map[i].request;
 
-        LL_DMA_Init(dshot_dma_map[i].dma, dshot_dma_map[i].stream, &dma_init);
-        LL_DMA_DisableIT_HT(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
-        LL_DMA_DisableIT_TC(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
-        LL_DMA_DisableIT_TE(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
+    LL_DMA_Init(dshot_dma_map[i].dma, dshot_dma_map[i].stream, &dma_init);
+    LL_DMA_DisableIT_HT(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
+    LL_DMA_DisableIT_TC(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
+    LL_DMA_DisableIT_TE(dshot_dma_map[i].dma, dshot_dma_map[i].stream);
 
-        dshot_dma_map[i].tim->DCR = LL_TIM_DMABURST_BASEADDR_CCR1 | LL_TIM_DMABURST_LENGTH_4TRANSFERS;
+    dshot_dma_map[i].tim->DCR = LL_TIM_DMABURST_BASEADDR_CCR1 | LL_TIM_DMABURST_LENGTH_4TRANSFERS;
 
-        uint32_t period = LL_TIM_GetAutoReload(dshot_dma_map[i].tim) + 1U;
-        /* +3U rounds to nearest: (x + divisor/2) / divisor */
-        dshot_dma_map[i].t0h = (period * 2U + 3U) / 6U; /* T0H: ~33.3% */
-        dshot_dma_map[i].t1h = (period * 4U + 3U) / 6U; /* T1H: ~66.7% */
-    }
+    uint32_t period = LL_TIM_GetAutoReload(dshot_dma_map[i].tim) + 1U;
+    /* +3U rounds to nearest: (x + divisor/2) / divisor */
+    dshot_dma_map[i].t0h = (period * 2U + 3U) / 6U; /* T0H: ~33.3% */
+    dshot_dma_map[i].t1h = (period * 4U + 3U) / 6U; /* T1H: ~66.7% */
 }
 
 static void _dshot_push_frame(uint8_t chan, uint16_t frame)
@@ -321,7 +322,7 @@ static void timer_init(void)
 
     TIM_InitStruct.Prescaler = APB2_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq[0]) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     TIM_InitStruct.RepetitionCounter = 0;
     LL_TIM_Init(TIM1, &TIM_InitStruct);
@@ -376,7 +377,7 @@ static void timer_init(void)
 
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq[1]) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM4, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM4);
@@ -413,7 +414,7 @@ static void timer_init(void)
 
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq[2]) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM5, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM5);
@@ -442,7 +443,7 @@ static void timer_init(void)
     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM8);
     TIM_InitStruct.Prescaler = APB2_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(aux_pwm_freq) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     TIM_InitStruct.RepetitionCounter = 0;
     LL_TIM_Init(TIM8, &TIM_InitStruct);
@@ -481,7 +482,7 @@ static void timer_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM12);
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(aux_pwm_freq) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM12, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM12);
@@ -500,44 +501,56 @@ static void timer_init(void)
     LL_TIM_DisableMasterSlaveMode(TIM12);
 }
 
-rt_inline void __main_write_pwm(uint8_t chan_id, float dc)
+rt_inline void __main_write_pwm(uint8_t tim_idx, uint8_t chan_idx, float dc)
 {
-    switch (chan_id) {
+    switch (tim_idx) {
     case 0:
-        LL_TIM_OC_SetCompareCH1(TIM1, PWM_ARR(main_pwm_freq) * dc);
+        switch (chan_idx) {
+        case 0:
+            LL_TIM_OC_SetCompareCH1(TIM1, PWM_ARR(main_pwm_freq[0]) * dc);
+            break;
+        case 1:
+            LL_TIM_OC_SetCompareCH2(TIM1, PWM_ARR(main_pwm_freq[0]) * dc);
+            break;
+        case 2:
+            LL_TIM_OC_SetCompareCH3(TIM1, PWM_ARR(main_pwm_freq[0]) * dc);
+            break;
+        case 3:
+            LL_TIM_OC_SetCompareCH4(TIM1, PWM_ARR(main_pwm_freq[0]) * dc);
+            break;
+        }
         break;
     case 1:
-        LL_TIM_OC_SetCompareCH2(TIM1, PWM_ARR(main_pwm_freq) * dc);
+        switch (chan_idx) {
+        case 0:
+            LL_TIM_OC_SetCompareCH1(TIM4, PWM_ARR(main_pwm_freq[1]) * dc);
+            break;
+        case 1:
+            LL_TIM_OC_SetCompareCH2(TIM4, PWM_ARR(main_pwm_freq[1]) * dc);
+            break;
+        case 2:
+            LL_TIM_OC_SetCompareCH3(TIM4, PWM_ARR(main_pwm_freq[1]) * dc);
+            break;
+        case 3:
+            LL_TIM_OC_SetCompareCH4(TIM4, PWM_ARR(main_pwm_freq[1]) * dc);
+            break;
+        }
         break;
     case 2:
-        LL_TIM_OC_SetCompareCH3(TIM1, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 3:
-        LL_TIM_OC_SetCompareCH4(TIM1, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 4:
-        LL_TIM_OC_SetCompareCH1(TIM4, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 5:
-        LL_TIM_OC_SetCompareCH2(TIM4, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 6:
-        LL_TIM_OC_SetCompareCH3(TIM4, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 7:
-        LL_TIM_OC_SetCompareCH4(TIM4, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 8:
-        LL_TIM_OC_SetCompareCH1(TIM5, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 9:
-        LL_TIM_OC_SetCompareCH2(TIM5, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 10:
-        LL_TIM_OC_SetCompareCH3(TIM5, PWM_ARR(main_pwm_freq) * dc);
-        break;
-    case 11:
-        LL_TIM_OC_SetCompareCH4(TIM5, PWM_ARR(main_pwm_freq) * dc);
+        switch (chan_idx) {
+        case 0:
+            LL_TIM_OC_SetCompareCH1(TIM5, PWM_ARR(main_pwm_freq[2]) * dc);
+            break;
+        case 1:
+            LL_TIM_OC_SetCompareCH2(TIM5, PWM_ARR(main_pwm_freq[2]) * dc);
+            break;
+        case 2:
+            LL_TIM_OC_SetCompareCH3(TIM5, PWM_ARR(main_pwm_freq[2]) * dc);
+            break;
+        case 3:
+            LL_TIM_OC_SetCompareCH4(TIM5, PWM_ARR(main_pwm_freq[2]) * dc);
+            break;
+        }
         break;
     default:
         break;
@@ -564,22 +577,23 @@ rt_inline void __aux_write_pwm(uint8_t chan_id, float dc)
     }
 }
 
-rt_inline rt_err_t __main_set_pwm_frequency(uint16_t freq)
+rt_inline rt_err_t __main_set_pwm_frequency(uint8_t tim_idx, uint16_t freq)
 {
     if (freq < PWM_FREQ_50HZ || freq > PWM_FREQ_400HZ) {
-        /* invalid frequency */
         return RT_EINVAL;
     }
 
-    main_pwm_freq = freq;
+    main_pwm_freq[tim_idx] = freq;
 
-    LL_TIM_SetAutoReload(TIM1, PWM_ARR(main_pwm_freq) - 1);
-    LL_TIM_SetAutoReload(TIM4, PWM_ARR(main_pwm_freq) - 1);
-    LL_TIM_SetAutoReload(TIM5, PWM_ARR(main_pwm_freq) - 1);
+    if (tim_idx == 0)
+        LL_TIM_SetAutoReload(TIM1, PWM_ARR(main_pwm_freq[0]) - 1);
+    else if (tim_idx == 1)
+        LL_TIM_SetAutoReload(TIM4, PWM_ARR(main_pwm_freq[1]) - 1);
+    else if (tim_idx == 2)
+        LL_TIM_SetAutoReload(TIM5, PWM_ARR(main_pwm_freq[2]) - 1);
 
-    /* the timer compare value should be re-configured */
-    for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
-        __main_write_pwm(i, VAL_TO_DC(main_out_val[i], main_pwm_freq));
+    for (uint8_t i = 0; i < MAIN_DEV_CHAN_NUM; i++) {
+        __main_write_pwm(tim_idx, i, VAL_TO_DC(main_out_val[tim_idx][i], main_pwm_freq[tim_idx]));
     }
 
     return RT_EOK;
@@ -588,7 +602,6 @@ rt_inline rt_err_t __main_set_pwm_frequency(uint16_t freq)
 rt_inline rt_err_t __aux_set_pwm_frequency(uint16_t freq)
 {
     if (freq < PWM_FREQ_50HZ || freq > PWM_FREQ_400HZ) {
-        /* invalid frequency */
         return RT_EINVAL;
     }
 
@@ -597,7 +610,6 @@ rt_inline rt_err_t __aux_set_pwm_frequency(uint16_t freq)
     LL_TIM_SetAutoReload(TIM8, PWM_ARR(aux_pwm_freq) - 1);
     LL_TIM_SetAutoReload(TIM12, PWM_ARR(aux_pwm_freq) - 1);
 
-    /* the timer compare value should be re-configured */
     for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
         __aux_write_pwm(i, VAL_TO_DC(aux_out_val[i], aux_pwm_freq));
     }
@@ -605,38 +617,61 @@ rt_inline rt_err_t __aux_set_pwm_frequency(uint16_t freq)
     return RT_EOK;
 }
 
+static struct actuator_device main_act_dev[MAIN_DEV_NUM];
+rt_inline uint8_t get_main_tim_idx(actuator_dev_t dev)
+{
+    if (dev == &main_act_dev[0])
+        return 0;
+    if (dev == &main_act_dev[1])
+        return 1;
+    if (dev == &main_act_dev[2])
+        return 2;
+    return 0; // Default
+}
+
 static rt_err_t main_act_config(actuator_dev_t dev, const struct actuator_configure* cfg)
 {
-    if (cfg->protocol == ACT_PROTOCOL_PWM) {
-        DRV_DBG("main out configured: pwm frequency:%d\n", cfg->pwm_config.pwm_freq);
+    uint8_t tim_idx = get_main_tim_idx(dev);
 
-        if (__main_set_pwm_frequency(cfg->pwm_config.pwm_freq) != RT_EOK) {
+    if (cfg->protocol == ACT_PROTOCOL_PWM) {
+        DRV_DBG("main out %d configured: pwm frequency:%d\n", tim_idx + 1, cfg->pwm_config.pwm_freq);
+
+        if (__main_set_pwm_frequency(tim_idx, cfg->pwm_config.pwm_freq) != RT_EOK) {
             return RT_ERROR;
         }
     } else if (cfg->protocol == ACT_PROTOCOL_DSHOT) {
         uint16_t speed = cfg->dshot_config.speed;
-        DRV_DBG("main out configured: dshot speed:%d\n", cfg->dshot_config.speed);
+        DRV_DBG("main out %d configured: dshot speed:%d\n", tim_idx + 1, cfg->dshot_config.speed);
 
         if (speed == 150 || speed == 300 || speed == 600) {
             LL_RCC_ClocksTypeDef rcc_clocks;
             LL_RCC_GetSystemClocksFreq(&rcc_clocks);
             uint32_t psc_apb1 = (rcc_clocks.PCLK1_Frequency * 2) / DSHOT_TIMER_FREQUENCY - 1;
             uint32_t psc_apb2 = (rcc_clocks.PCLK2_Frequency * 2) / DSHOT_TIMER_FREQUENCY - 1;
-            LL_TIM_SetPrescaler(TIM1, psc_apb2);
-            LL_TIM_SetPrescaler(TIM4, psc_apb1);
-            LL_TIM_SetPrescaler(TIM5, psc_apb1);
 
-            uint32_t tim_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
-            LL_TIM_SetAutoReload(TIM1, tim_arr - 1);
-            LL_TIM_SetAutoReload(TIM4, tim_arr - 1);
-            LL_TIM_SetAutoReload(TIM5, tim_arr - 1);
+            if (tim_idx == 0) {
+                LL_TIM_SetPrescaler(TIM1, psc_apb2);
+                uint32_t tim_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
+                LL_TIM_SetAutoReload(TIM1, tim_arr - 1);
+            } else if (tim_idx == 1) {
+                LL_TIM_SetPrescaler(TIM4, psc_apb1);
+                uint32_t tim_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
+                LL_TIM_SetAutoReload(TIM4, tim_arr - 1);
+            } else if (tim_idx == 2) {
+                LL_TIM_SetPrescaler(TIM5, psc_apb1);
+                uint32_t tim_arr = DSHOT_TIMER_FREQUENCY / ((uint32_t)speed * 1000U);
+                LL_TIM_SetAutoReload(TIM5, tim_arr - 1);
+            }
 
-            _setup_dshot_dma();
+            static bool dshot_dma_inited[MAIN_DEV_NUM] = { false };
+            if (!dshot_dma_inited[tim_idx]) {
+                _setup_dshot_dma(tim_idx);
+                dshot_dma_inited[tim_idx] = true;
+            }
         } else {
             return RT_EINVAL;
         }
     }
-    /* update device configuration */
     dev->config = *cfg;
 
     return RT_EOK;
@@ -653,7 +688,6 @@ static rt_err_t aux_act_config(actuator_dev_t dev, const struct actuator_configu
     } else {
         return RT_EINVAL;
     }
-    /* update device configuration */
     dev->config = *cfg;
 
     return RT_EOK;
@@ -662,75 +696,50 @@ static rt_err_t aux_act_config(actuator_dev_t dev, const struct actuator_configu
 static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
 {
     rt_err_t ret = RT_EOK;
+    uint8_t tim_idx = get_main_tim_idx(dev);
+    TIM_TypeDef* TIMx = (tim_idx == 0) ? TIM1 : (tim_idx == 1) ? TIM4
+                                                               : TIM5;
 
     switch (cmd) {
     case ACT_CMD_CHANNEL_ENABLE:
         if (dev->config.protocol == ACT_PROTOCOL_PWM) {
-            /* set to lowest pwm before open */
-            for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
-                __main_write_pwm(i, VAL_TO_DC(1000, main_pwm_freq));
-                main_out_val[i] = 1000;
+            for (uint8_t i = 0; i < MAIN_DEV_CHAN_NUM; i++) {
+                __main_write_pwm(tim_idx, i, VAL_TO_DC(1000, main_pwm_freq[tim_idx]));
+                main_out_val[tim_idx][i] = 1000;
             }
         } else {
-            TIM1->CCR1 = 0;
-            TIM1->CCR2 = 0;
-            TIM1->CCR3 = 0;
-            TIM1->CCR4 = 0;
-            TIM4->CCR1 = 0;
-            TIM4->CCR2 = 0;
-            TIM4->CCR3 = 0;
-            TIM4->CCR4 = 0;
-            TIM5->CCR1 = 0;
-            TIM5->CCR2 = 0;
-            TIM5->CCR3 = 0;
-            TIM5->CCR4 = 0;
+            TIMx->CCR1 = 0;
+            TIMx->CCR2 = 0;
+            TIMx->CCR3 = 0;
+            TIMx->CCR4 = 0;
         }
 
-        LL_TIM_EnableCounter(TIM1);
-        LL_TIM_EnableCounter(TIM4);
-        LL_TIM_EnableCounter(TIM5);
-        LL_TIM_EnableAllOutputs(TIM1);
+        LL_TIM_EnableCounter(TIMx);
+        if (tim_idx == 0)
+            LL_TIM_EnableAllOutputs(TIM1);
 
-        LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_EnableChannel(TIM4, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH4);
+        LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH1);
+        LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH2);
+        LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH3);
+        LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH4);
 
-        DRV_DBG("main out enabled\n");
+        DRV_DBG("main out %d enabled\n", tim_idx + 1);
         break;
     case ACT_CMD_CHANNEL_DISABLE:
-        LL_TIM_DisableCounter(TIM1);
-        LL_TIM_DisableCounter(TIM4);
-        LL_TIM_DisableCounter(TIM5);
-        LL_TIM_DisableAllOutputs(TIM1);
+        LL_TIM_DisableCounter(TIMx);
+        if (tim_idx == 0)
+            LL_TIM_DisableAllOutputs(TIM1);
 
-        LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_DisableChannel(TIM4, LL_TIM_CHANNEL_CH4);
-        LL_TIM_CC_DisableChannel(TIM5, LL_TIM_CHANNEL_CH1);
-        LL_TIM_CC_DisableChannel(TIM5, LL_TIM_CHANNEL_CH2);
-        LL_TIM_CC_DisableChannel(TIM5, LL_TIM_CHANNEL_CH3);
-        LL_TIM_CC_DisableChannel(TIM5, LL_TIM_CHANNEL_CH4);
+        LL_TIM_CC_DisableChannel(TIMx, LL_TIM_CHANNEL_CH1);
+        LL_TIM_CC_DisableChannel(TIMx, LL_TIM_CHANNEL_CH2);
+        LL_TIM_CC_DisableChannel(TIMx, LL_TIM_CHANNEL_CH3);
+        LL_TIM_CC_DisableChannel(TIMx, LL_TIM_CHANNEL_CH4);
 
-        DRV_DBG("main out disabled\n");
+        DRV_DBG("main out %d disabled\n", tim_idx + 1);
         break;
     case ACT_CMD_SET_PROTOCOL: {
         uint8_t protocol = *(uint8_t*)arg;
         if (protocol == ACT_PROTOCOL_DSHOT || protocol == ACT_PROTOCOL_PWM) {
-            // main_protocol = protocol;
             dev->config.protocol = protocol;
             ret = RT_EOK;
         } else {
@@ -740,7 +749,6 @@ static rt_err_t main_act_control(actuator_dev_t dev, int cmd, void* arg)
     }
     case ACT_CMD_DSHOT_SEND: {
         struct dshot_command* c = (struct dshot_command*)arg;
-
         rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size);
         ret = main_act_write(dev, c->chan_mask, c->value, c->size) == c->size ? RT_EOK : RT_ERROR;
         break;
@@ -759,50 +767,46 @@ static rt_err_t aux_act_control(actuator_dev_t dev, int cmd, void* arg)
 
     switch (cmd) {
     case ACT_CMD_CHANNEL_ENABLE:
-        /* set to lowest pwm before open */
         for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
             __aux_write_pwm(i, VAL_TO_DC(1000, aux_pwm_freq));
             aux_out_val[i] = 1000;
         }
-
         LL_TIM_EnableCounter(TIM8);
         LL_TIM_EnableAllOutputs(TIM8);
         LL_TIM_EnableCounter(TIM12);
-
         LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_EnableChannel(TIM12, LL_TIM_CHANNEL_CH2);
-
         DRV_DBG("aux out enabled\n");
         break;
     case ACT_CMD_CHANNEL_DISABLE:
         LL_TIM_DisableCounter(TIM8);
         LL_TIM_DisableAllOutputs(TIM8);
         LL_TIM_DisableCounter(TIM12);
-
         LL_TIM_CC_DisableChannel(TIM8, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_DisableChannel(TIM8, LL_TIM_CHANNEL_CH2);
         LL_TIM_CC_DisableChannel(TIM12, LL_TIM_CHANNEL_CH1);
         LL_TIM_CC_DisableChannel(TIM12, LL_TIM_CHANNEL_CH2);
-
         DRV_DBG("aux out disabled\n");
         break;
     default:
         ret = RT_EINVAL;
         break;
     }
-
     return ret;
 }
 
 rt_size_t main_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
+    uint8_t tim_idx = get_main_tim_idx(dev);
     rt_uint16_t* index = chan_val;
 
-    for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
+    RT_ASSERT((chan_sel & ~0x0F) == 0); // check if out of bounds (only channel 1~4 allowed)
+
+    for (uint8_t i = 0; i < MAIN_DEV_CHAN_NUM; i++) {
         if (chan_sel & (1 << i)) {
-            *index = main_out_val[i];
+            *index = main_out_val[tim_idx][i];
             index++;
         }
     }
@@ -813,6 +817,8 @@ rt_size_t main_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* c
 static rt_size_t aux_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint16_t* chan_val, rt_size_t size)
 {
     rt_uint16_t* index = chan_val;
+
+    RT_ASSERT((chan_sel & ~((1 << AUX_OUT_CHAN_NUM) - 1)) == 0); // check if out of bounds
 
     for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
         if (chan_sel & (1 << i)) {
@@ -826,26 +832,29 @@ static rt_size_t aux_act_read(actuator_dev_t dev, rt_uint16_t chan_sel, rt_uint1
 
 rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint16_t* chan_val, rt_size_t size)
 {
+    uint8_t tim_idx = get_main_tim_idx(dev);
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
     float dc;
 
+    RT_ASSERT((chan_sel & ~0x0F) == 0); // check if out of bounds (only channel 1~4 allowed)
+
     if (dev->config.protocol == ACT_PROTOCOL_PWM) {
-        for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
+        for (uint8_t i = 0; i < MAIN_DEV_CHAN_NUM; i++) {
             if (chan_sel & (1 << i)) {
                 val = *index;
-                dc = VAL_TO_DC(val, main_pwm_freq);
-                __main_write_pwm(i, dc);
+                dc = VAL_TO_DC(val, main_pwm_freq[tim_idx]);
+                __main_write_pwm(tim_idx, i, dc);
                 index++;
 
-                main_out_val[i] = val;
+                main_out_val[tim_idx][i] = val;
             }
         }
     } else if (dev->config.protocol == ACT_PROTOCOL_DSHOT) {
         uint16_t packed_sel = 0;
         uint16_t dshot_val;
 
-        for (uint8_t i = 0; i < MAIN_OUT_CHAN_NUM; i++) {
+        for (uint8_t i = 0; i < MAIN_DEV_CHAN_NUM; i++) {
             if (chan_sel & (1 << i)) {
                 val = *index;
 
@@ -864,25 +873,22 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
 
                 packed_sel |= (1u << i);
                 index++;
-                main_out_val[i] = val;
+                main_out_val[tim_idx][i] = val;
             } else {
                 /* if channel isn't selected, stop the motor */
                 dshot_val = DSHOT_CMD_MOTOR_STOP;
-                main_out_val[i] = 0;
+                main_out_val[tim_idx][i] = 0;
             }
 
             uint16_t frame = dshot_pack_frame(dshot_val, dev->config.dshot_config.telem_req);
-            _dshot_push_frame(i, frame);
+            _dshot_push_frame(tim_idx * 4 + i, frame);
         }
 
-        for (uint8_t i = 0; i < DSHOT_TIMER_COUNT; i++) {
-            if (packed_sel & (0x000F << (4 * i))) {
-                _dshot_clean_cache(i);
-                _dshot_fire_tim(i);
-            }
+        if (packed_sel) {
+            _dshot_clean_cache(tim_idx);
+            _dshot_fire_tim(tim_idx);
         }
     } else {
-        /* unsupported protocol */
         return 0;
     }
 
@@ -894,6 +900,8 @@ static rt_size_t aux_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
     const rt_uint16_t* index = chan_val;
     rt_uint16_t val;
     float dc;
+
+    RT_ASSERT((chan_sel & ~((1 << AUX_OUT_CHAN_NUM) - 1)) == 0); // check if out of bounds
 
     if (dev->config.protocol == ACT_PROTOCOL_PWM) {
         for (uint8_t i = 0; i < AUX_OUT_CHAN_NUM; i++) {
@@ -907,7 +915,6 @@ static rt_size_t aux_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const r
             }
         }
     } else {
-        /* unsupported protocol */
         return 0;
     }
 
@@ -928,13 +935,18 @@ const static struct actuator_ops aux_act_ops = {
     .act_write = aux_act_write
 };
 
-static struct actuator_device main_act_dev = { .chan_mask = 0xFFF,
-                                               .range = { 1000, 2000 },
-                                               .config = { .protocol = ACT_PROTOCOL_PWM,
-                                                           .chan_num = MAIN_OUT_CHAN_NUM,
-                                                           .pwm_config = { .pwm_freq = 50 },
-                                                           .dshot_config = { .speed = 600, .telem_req = false } },
-                                               .ops = &main_act_ops };
+static struct actuator_device main_act_dev[MAIN_DEV_NUM] = {
+    { .chan_mask = 0x0F,
+      .range = { 1000, 2000 },
+      .config = {
+          .protocol = ACT_PROTOCOL_PWM,
+          .chan_num = MAIN_DEV_CHAN_NUM,
+          .pwm_config = { .pwm_freq = 50 },
+          .dshot_config = { .speed = 600, .telem_req = false } },
+      .ops = &main_act_ops },
+    { .chan_mask = 0x0F, .range = { 1000, 2000 }, .config = { .protocol = ACT_PROTOCOL_PWM, .chan_num = MAIN_DEV_CHAN_NUM, .pwm_config = { .pwm_freq = 50 }, .dshot_config = { .speed = 600, .telem_req = false } }, .ops = &main_act_ops },
+    { .chan_mask = 0x0F, .range = { 1000, 2000 }, .config = { .protocol = ACT_PROTOCOL_PWM, .chan_num = MAIN_DEV_CHAN_NUM, .pwm_config = { .pwm_freq = 50 }, .dshot_config = { .speed = 600, .telem_req = false } }, .ops = &main_act_ops }
+};
 
 static struct actuator_device aux_act_dev = { .chan_mask = 0x0F,
                                               .range = { 1000, 2000 },
@@ -951,8 +963,10 @@ rt_err_t drv_act_init(void)
     /* init pwm timer, pwm output mode */
     timer_init();
 
-    /* register actuator hal device */
-    RT_TRY(hal_actuator_register(&main_act_dev, "main_out", RT_DEVICE_FLAG_RDWR, NULL));
+    /* register actuator hal devices */
+    RT_TRY(hal_actuator_register(&main_act_dev[0], "main_out_1", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&main_act_dev[1], "main_out_2", RT_DEVICE_FLAG_RDWR, NULL));
+    RT_TRY(hal_actuator_register(&main_act_dev[2], "main_out_3", RT_DEVICE_FLAG_RDWR, NULL));
     RT_TRY(hal_actuator_register(&aux_act_dev, "aux_out", RT_DEVICE_FLAG_RDWR, NULL));
 
     return RT_EOK;
