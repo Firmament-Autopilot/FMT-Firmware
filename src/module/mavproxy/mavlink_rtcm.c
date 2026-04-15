@@ -44,28 +44,13 @@ struct rtcm_buffer {
 
 static uint8_t rtcm_dev_num;
 static rt_device_t rtcm_dev[MAX_RTCM_DEV_NUM];
-static struct rt_completion tx_cplt[MAX_RTCM_DEV_NUM];
-
-static rt_err_t rtcm_tx_done(rt_device_t dev, void* buffer)
-{
-    for (uint8_t i = 0; i < rtcm_dev_num; i++) {
-        if (dev == rtcm_dev[i]) {
-            rt_completion_done(&tx_cplt[i]);
-        }
-    }
-
-    return RT_EOK;
-}
 
 static void inject_data(const uint8_t* data, uint16_t len)
 {
     // TODO: check write complete before next write;
     for (uint8_t i = 0; i < rtcm_dev_num; i++) {
         if (rtcm_dev[i] != NULL) {
-            if (rt_device_write(rtcm_dev[i], 0, data, len) > 0) {
-                /* wait write complete (synchronized write) */
-                rt_completion_wait(&tx_cplt[i], TICKS_FROM_MS(100));
-            }
+            rt_device_write(rtcm_dev[i], RT_WAITING_FOREVER, data, len);
         }
     }
 }
@@ -186,10 +171,6 @@ fmt_err_t mavlink_rtcm_device_init(void)
                     RT_TRY(rt_device_control(dev, RT_DEVICE_CTRL_CONFIG, &pconfig));
                 }
             }
-
-            rt_completion_init(&tx_cplt[i]);
-            /* set callback functions */
-            rt_device_set_tx_complete(dev, rtcm_tx_done);
 
             rtcm_dev[rtcm_dev_num++] = dev;
         }
