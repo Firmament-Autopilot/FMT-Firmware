@@ -238,7 +238,7 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
     hfdcan->Init.DataSyncJumpWidth = 1;
     hfdcan->Init.DataTimeSeg1 = 1;
     hfdcan->Init.DataTimeSeg2 = 1;
-    hfdcan->Init.MessageRAMOffset = 0;
+    hfdcan->Init.MessageRAMOffset = (can == &can1_dev) ? 0 : 1280;
     hfdcan->Init.StdFiltersNbr = 1;
     hfdcan->Init.ExtFiltersNbr = 0;
     hfdcan->Init.RxFifo0ElmtsNbr = 32;
@@ -263,8 +263,8 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
     /* Accept all id */
-    sFilterConfig.FilterID1 = 0x000;
-    sFilterConfig.FilterID2 = 0x000;
+    sFilterConfig.FilterID1 = 0;
+    sFilterConfig.FilterID2 = 0;
     if (HAL_FDCAN_ConfigFilter(hfdcan, &sFilterConfig) != HAL_OK) {
         /* Filter configuration Error */
         return RT_ERROR;
@@ -355,8 +355,8 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     FDCAN_TxHeaderTypeDef TxHeader;
 
     /* Prepare Tx Header */
-    TxHeader.Identifier = msg->std_id;
-    TxHeader.IdType = msg->id_type == CAN_ID_EXTENDED ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
+    TxHeader.Identifier = (msg->id_type == CAN_ID_EXTENDED) ? msg->ext_id : msg->std_id;
+    TxHeader.IdType = (msg->id_type == CAN_ID_EXTENDED) ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
     TxHeader.TxFrameType = msg->frame_type == CAN_FRAME_REMOTE ? FDCAN_REMOTE_FRAME : FDCAN_DATA_FRAME;
     TxHeader.DataLength = msg->data_len;
     TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
