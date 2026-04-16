@@ -180,7 +180,6 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
         /* Retrieve Rx messages from RX FIFO0 */
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
             can_msg msg = { 0 };
-
             if (RxHeader.IdType == FDCAN_EXTENDED_ID) {
                 msg.ext_id = RxHeader.Identifier;
                 msg.id_type = CAN_ID_EXTENDED;
