@@ -203,7 +203,7 @@ static fmt_err_t mavproxy_parse_rtcm_device(const toml_table_t* curtab)
     if (toml_string_in(curtab, "type", &mavproxy_rtcm_device_list[idx].type) == 0) {
         if (MATCH(mavproxy_rtcm_device_list[idx].type, "serial")) {
             mavproxy_serial_dev_config serial_default_config = {
-                .baudrate = 230400
+                .baudrate = 0   /* 0 means don't change baudrate */
             };
             mavproxy_rtcm_device_list[idx].config = rt_malloc(sizeof(mavproxy_serial_dev_config));
 

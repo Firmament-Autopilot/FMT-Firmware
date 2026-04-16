@@ -17,8 +17,9 @@
 #include <firmament.h>
 
 #include "hal/serial/serial.h"
-#include "module/mavproxy/mavproxy.h"
 #include "module/config/mavproxy_config.h"
+#include "module/mavproxy/mavproxy.h"
+
 
 #define MAX_RTCM_DEV_NUM 5
 
@@ -164,7 +165,7 @@ fmt_err_t mavlink_rtcm_device_init(void)
                 serial_dev_t serial_dev = (serial_dev_t)dev;
                 mavproxy_serial_dev_config* config = rtcm_dev_list[i].config;
 
-                if (serial_dev->config.baud_rate != config->baudrate) {
+                if (config->baudrate > 0 && serial_dev->config.baud_rate != config->baudrate) {
                     struct serial_configure pconfig = serial_dev->config;
                     pconfig.baud_rate = config->baudrate;
 
