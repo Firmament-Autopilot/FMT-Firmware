@@ -27,6 +27,7 @@
 #include "drv_eth.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
+#include "drv_ipc_dev.h"
 #include "drv_pwm.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
@@ -56,6 +57,7 @@
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
 
 // #define DBG_TAG "board"
 // #define DBG_LVL DBG_INFO
@@ -378,6 +380,8 @@ void bsp_post_initialize(void)
 
     /* initialize power management unit */
     // FMT_CHECK(pmu_init());
+
+    RT_CHECK(drv_ipc_dev_init());
 
     /* show system information */
     bsp_show_information();

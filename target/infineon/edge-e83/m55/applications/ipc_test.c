@@ -40,6 +40,8 @@ void edge_ipc_demo_run(void)
     edge_rc_frame_t rx;
     edge_rc_frame_t tx;
 
+    rt_kprintf("channel size:%d\n", sizeof(tx.channel));
+
     while (1) {
         while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
             if (!cm55_verify_request(&rx)) {

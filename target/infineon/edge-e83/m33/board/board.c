@@ -25,6 +25,7 @@
 #include "drv_eth.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
+#include "drv_ipc_dev.h"
 #include "drv_pwm.h"
 #include "drv_sdio.h"
 #include "drv_spi.h"
@@ -125,6 +126,7 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
+    RT_CHECK(drv_ipc_dev_init());
 }
 
 void _start(void)
