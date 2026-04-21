@@ -7,6 +7,7 @@
 #include "module/system/systime.h"
 #include "module/utils/ringbuffer.h"
 
+static struct rt_device ipc_device;
 static rt_device_t g_ipc_dev = RT_NULL;
 static edge_rc_frame_t rx;
 static edge_rc_frame_t tx;
@@ -21,6 +22,19 @@ static rt_err_t ipc_dev_rx_indicate(rt_device_t dev, rt_size_t size)
     }
 
     rt_completion_done(&rx_ind);
+
+    if (ipc_device.rx_indicate) {
+        ipc_device.rx_indicate(&ipc_device, size);
+    }
+
+    return RT_EOK;
+}
+
+static rt_err_t ipc_dev_tx_complete(rt_device_t dev, void* buffer)
+{
+    if (ipc_device.tx_complete) {
+        ipc_device.tx_complete(&ipc_device, buffer);
+    }
 
     return RT_EOK;
 }
@@ -126,6 +140,7 @@ static rt_err_t ipc_dev_init(struct rt_device* dev)
     rt_completion_init(&rx_ind);
 
     g_ipc_dev->rx_indicate = ipc_dev_rx_indicate;
+    g_ipc_dev->tx_complete = ipc_dev_tx_complete;
 
     return RT_EOK;
 }
@@ -152,21 +167,19 @@ static rt_err_t ipc_dev_close(struct rt_device* dev)
 
 rt_err_t drv_ipc_dev_init(void)
 {
-    static struct rt_device device;
+    ipc_device.type = RT_Device_Class_Char;
+    ipc_device.ref_count = 0;
+    ipc_device.rx_indicate = RT_NULL;
+    ipc_device.tx_complete = RT_NULL;
 
-    device.type = RT_Device_Class_Char;
-    device.ref_count = 0;
-    device.rx_indicate = RT_NULL;
-    device.tx_complete = RT_NULL;
-
-    device.init = ipc_dev_init;
-    device.open = ipc_dev_open;
-    device.close = ipc_dev_close;
-    device.read = ipc_dev_read;
-    device.write = ipc_dev_write;
-    device.control = RT_NULL;
-    device.user_data = RT_NULL;
+    ipc_device.init = ipc_dev_init;
+    ipc_device.open = ipc_dev_open;
+    ipc_device.close = ipc_dev_close;
+    ipc_device.read = ipc_dev_read;
+    ipc_device.write = ipc_dev_write;
+    ipc_device.control = RT_NULL;
+    ipc_device.user_data = RT_NULL;
 
     /* register character to system */
-    return rt_device_register(&device, "ipc0_dev", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
+    return rt_device_register(&ipc_device, "ipc0_dev", RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX);
 }
