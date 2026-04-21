@@ -5,10 +5,12 @@
 #include "drv_ipc.h"
 #include "ipc_common.h"
 
+#define SNED_DATA   "pongpongpongpongpong\r\n"
+
 void ipc_dev_test_run(void)
 {
     rt_device_t dev;
-    uint8_t buffer[20] = { 0 };
+    uint8_t ch;
 
     dev = rt_device_find("ipc0_dev");
 
@@ -23,20 +25,13 @@ void ipc_dev_test_run(void)
     }
 
     while (1) {
-        memset(buffer, 0, sizeof(buffer));
-        rt_device_read(dev, RT_WAITING_FOREVER, buffer, sizeof(buffer));
-        rt_kprintf("[M55][IPC_DEV] recv data:");
-        for (int8_t i = 0; i < sizeof(buffer); i++) {
-            rt_kprintf("%d,", buffer[i]);
-        }
-        rt_kprintf("\r\n");
+        rt_device_write(dev, RT_WAITING_FOREVER, SNED_DATA, strlen(SNED_DATA));
 
-        for (int8_t i = 0; i < sizeof(buffer); i++) {
-            buffer[i] = sizeof(buffer) - i;
+        while(rt_device_read(dev, 100, &ch, 1)) {
+            rt_kprintf("%c", ch);
         }
-        rt_device_write(dev, 0, buffer, sizeof(buffer));
 
-        rt_thread_mdelay(100U);
+        rt_thread_mdelay(500U);
     }
 }
 MSH_CMD_EXPORT(ipc_dev_test_run, M33 ipc dev test);
