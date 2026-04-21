@@ -7,11 +7,11 @@
 #include "module/system/systime.h"
 #include "module/utils/ringbuffer.h"
 
-
 static rt_device_t g_ipc_dev = RT_NULL;
 static edge_rc_frame_t rx;
 static edge_rc_frame_t tx;
 static ringbuffer* rx_rb;
+static struct rt_completion rx_ind;
 static const uint32_t ipc_channel_size = sizeof(tx.channel);
 
 static rt_err_t ipc_dev_rx_indicate(rt_device_t dev, rt_size_t size)
@@ -19,6 +19,8 @@ static rt_err_t ipc_dev_rx_indicate(rt_device_t dev, rt_size_t size)
     while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
         ringbuffer_put(rx_rb, (uint8_t*)rx.channel, rx.seq);
     }
+
+    rt_completion_done(&rx_ind);
 
     return RT_EOK;
 }
@@ -76,21 +78,24 @@ static rt_size_t ipc_dev_read(struct rt_device* dev, rt_off_t pos, void* buffer,
 
     /* if timeout is not 0, then check if required length data read */
     if (timeout != 0) {
-        uint32_t time_start = systime_now_ms();
-
+        uint32_t time_start, elapse_time;
         /* if not enough data reveived, wait it */
         while (rx_cnt < size) {
+            time_start = systime_now_ms();
+            /* wait until something reveived (synchronized read) */
+            if (rt_completion_wait(&rx_ind, timeout) != RT_EOK) {
+                break;
+            }
             if (timeout > 0) {
-                if ((systime_now_ms() - time_start) >= timeout) {
+                elapse_time = systime_now_ms() - time_start;
+                timeout -= elapse_time;
+                if (timeout <= 0) {
                     /* timeout */
                     break;
                 }
             }
             /* read rest data */
             rx_cnt += ringbuffer_get(rx_rb, (void*)((uint32_t)buffer + rx_cnt), size - rx_cnt);
-
-            /* sleep to do not block the system */
-            sys_msleep(1);
         }
     }
 
@@ -117,6 +122,8 @@ static rt_err_t ipc_dev_init(struct rt_device* dev)
     if (rx_rb == RT_NULL) {
         return -RT_ENOMEM;
     }
+
+    rt_completion_init(&rx_ind);
 
     g_ipc_dev->rx_indicate = ipc_dev_rx_indicate;
 
