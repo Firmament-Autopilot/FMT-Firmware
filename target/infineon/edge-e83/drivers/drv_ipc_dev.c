@@ -2,14 +2,26 @@
 #include <rtthread.h>
 #include <string.h>
 
-#include "module/system/systime.h"
 #include "drv_ipc.h"
 #include "ipc_common.h"
+#include "module/system/systime.h"
+#include "module/utils/ringbuffer.h"
+
 
 static rt_device_t g_ipc_dev = RT_NULL;
 static edge_rc_frame_t rx;
 static edge_rc_frame_t tx;
+static ringbuffer* rx_rb;
 static const uint32_t ipc_channel_size = sizeof(tx.channel);
+
+static rt_err_t ipc_dev_rx_indicate(rt_device_t dev, rt_size_t size)
+{
+    while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
+        ringbuffer_put(rx_rb, (uint8_t*)rx.channel, rx.seq);
+    }
+
+    return RT_EOK;
+}
 
 static void ipc_fill_packet(edge_rc_frame_t* frame, const void* data, rt_size_t size)
 {
@@ -30,13 +42,13 @@ static rt_size_t ipc_dev_write(struct rt_device* dev, rt_off_t pos, const void* 
 
     for (i = 0; i < size / ipc_channel_size; i++) {
         ipc_fill_packet(&tx, (void*)((uint32_t)buffer + i * ipc_channel_size), ipc_channel_size);
-        if (rt_device_write(g_ipc_dev, 0, &tx, 1) != 1)
+        if (rt_device_write(g_ipc_dev, pos, &tx, 1) != 1)
             return 0;
     }
 
     if (size % ipc_channel_size) {
         ipc_fill_packet(&tx, (void*)((uint32_t)buffer + i * ipc_channel_size), size % ipc_channel_size);
-        if (rt_device_write(g_ipc_dev, 0, &tx, 1) != 1)
+        if (rt_device_write(g_ipc_dev, pos, &tx, 1) != 1)
             return 0;
     }
 
@@ -60,12 +72,7 @@ static rt_size_t ipc_dev_read(struct rt_device* dev, rt_off_t pos, void* buffer,
         return 0;
 
     /* try to read data */
-    while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
-        rt_memcpy((void*)((uint32_t)buffer + rx_cnt), (void*)rx.channel, rx.seq);
-        rx_cnt += rx.seq;
-        if (rx_cnt >= size)
-            break;
-    }
+    rx_cnt = ringbuffer_get(rx_rb, buffer, size);
 
     /* if timeout is not 0, then check if required length data read */
     if (timeout != 0) {
@@ -80,12 +87,7 @@ static rt_size_t ipc_dev_read(struct rt_device* dev, rt_off_t pos, void* buffer,
                 }
             }
             /* read rest data */
-            while (rt_device_read(g_ipc_dev, 0, &rx, 1) == 1) {
-                rt_memcpy((void*)((uint32_t)buffer + rx_cnt), (void*)rx.channel, rx.seq);
-                rx_cnt += rx.seq;
-                if (rx_cnt >= size)
-                    break;
-            }
+            rx_cnt += ringbuffer_get(rx_rb, (void*)((uint32_t)buffer + rx_cnt), size - rx_cnt);
 
             /* sleep to do not block the system */
             sys_msleep(1);
@@ -110,6 +112,13 @@ static rt_err_t ipc_dev_init(struct rt_device* dev)
             return -RT_ERROR;
         }
     }
+
+    rx_rb = ringbuffer_create(sizeof(tx.channel) * 20);
+    if (rx_rb == RT_NULL) {
+        return -RT_ENOMEM;
+    }
+
+    g_ipc_dev->rx_indicate = ipc_dev_rx_indicate;
 
     return RT_EOK;
 }

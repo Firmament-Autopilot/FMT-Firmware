@@ -10,7 +10,7 @@ MODULES = [
     # 'ftp/*.c',
     # 'log/*.c',
     # 'param/*.c',
-    # 'utils/*.c',
+    'utils/*.c',
     # 'mavproxy/*.c',
     # 'sensor/*.c',
     # 'sysio/*.c',
