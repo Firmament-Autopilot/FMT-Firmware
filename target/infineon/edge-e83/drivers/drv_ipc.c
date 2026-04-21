@@ -75,6 +75,7 @@ struct edge_ipc_device {
 };
 
 static struct edge_ipc_device g_edge_ipc_dev;
+static struct rt_completion tx_cplt;
 CY_SECTION_SHAREDMEM static edge_rc_frame_t g_edge_ipc_tx_pool[EDGE_IPC_FRAME_POOL_SIZE];
 
 static rt_bool_t edge_ipc_lock_sema(void)
@@ -136,6 +137,17 @@ static rt_bool_t edge_ipc_rx_queue_pop(struct edge_ipc_device* dev, edge_rc_fram
 static void edge_ipc_pipe_isr(void)
 {
     Cy_IPC_Pipe_ExecuteCallback(EDGE_IPC_LOCAL_EP_ADDR);
+}
+
+static void edge_ipc_release_callback(void)
+{
+    struct edge_ipc_device* dev = &g_edge_ipc_dev;
+
+    if (dev->parent.tx_complete) {
+        dev->parent.tx_complete(&dev->parent, RT_NULL);
+    }
+
+    rt_completion_done(&tx_cplt);
 }
 
 static void edge_ipc_rx_callback(uint32_t* msg_data)
@@ -260,8 +272,6 @@ static rt_size_t edge_ipc_dev_write(rt_device_t rt_dev, rt_off_t pos, const void
     rt_size_t write_cnt = 0;
     cy_en_ipc_pipe_status_t status;
 
-    (void)pos;
-
     if (buffer == RT_NULL || size == 0) {
         return 0;
     }
@@ -285,13 +295,15 @@ static rt_size_t edge_ipc_dev_write(rt_device_t rt_dev, rt_off_t pos, const void
         status = Cy_IPC_Pipe_SendMessage(EDGE_IPC_PEER_EP_ADDR,
                                          EDGE_IPC_LOCAL_EP_ADDR,
                                          (void*)tx,
-                                         0UL);
+                                         edge_ipc_release_callback);
         edge_ipc_unlock_sema();
 
         if (status != CY_IPC_PIPE_SUCCESS) {
             dev->stats_tx_err++;
             break;
         }
+
+        rt_completion_wait(&tx_cplt, pos);
 
         dev->stats_tx_ok++;
         write_cnt++;
@@ -356,6 +368,8 @@ int edge_ipc_device_register(void)
     dev->parent.write = edge_ipc_dev_write;
     dev->parent.control = edge_ipc_dev_control;
 #endif
+
+    rt_completion_init(&tx_cplt);
 
     return rt_device_register(&dev->parent,
                               EDGE_IPC_DEVICE_NAME,
