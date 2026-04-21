@@ -188,7 +188,7 @@ fmt_err_t actuator_init(void)
             for (int j = 0; j < mapping_list[i].map_size; j++) {
                 uint16_t to_chan = mapping_list[i].to_map[j];
                 if (to_chan < 1 || to_chan > 16 || !(act_dev->chan_mask & (1 << (to_chan - 1)))) {
-                    console_printf("Actuator error: invalid channel %d mapped to %s\n", to_chan, mapping_list[i].to);
+                    printf("Actuator error: invalid channel %d mapped to %s\n", to_chan, mapping_list[i].to);
                     return FMT_ERROR;
                 }
             }
