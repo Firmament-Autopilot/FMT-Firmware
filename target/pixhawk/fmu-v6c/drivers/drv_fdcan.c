@@ -7,7 +7,7 @@
 
 static FDCAN_HandleTypeDef hfdcan1;
 static FDCAN_HandleTypeDef hfdcan2;
-static uint32_t HAL_RCC_FDCAN_CLK_ENABLED = 0;
+// static uint32_t HAL_RCC_FDCAN_CLK_ENABLED = 0;
 
 static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg);
 static rt_err_t can_control(can_dev_t can, int cmd, void* arg);
