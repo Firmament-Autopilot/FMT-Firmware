@@ -24,8 +24,10 @@ const static struct actuator_ops __act_ops = {
     .act_write = RT_NULL
 };
 
-//TODO modify channel mask
+// TODO modify channel mask
 static struct actuator_device act_dev = {
+    .chan_mask = 0xFFFF,
+    .range = { 1000, 2000 },
     .ops = &__act_ops
 };
 

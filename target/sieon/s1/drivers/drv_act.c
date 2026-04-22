@@ -442,7 +442,7 @@ static void timer_init(void)
     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM8);
     TIM_InitStruct.Prescaler = APB2_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(aux_pwm_freq) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     TIM_InitStruct.RepetitionCounter = 0;
     LL_TIM_Init(TIM8, &TIM_InitStruct);
@@ -481,7 +481,7 @@ static void timer_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM12);
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(aux_pwm_freq) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM12, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM12);

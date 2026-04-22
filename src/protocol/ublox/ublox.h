@@ -23,62 +23,62 @@
 extern "C" {
 #endif
 
-#define UBX_SYNC1 0xB5
-#define UBX_SYNC2 0x62
+#define UBX_SYNC1                            0xB5
+#define UBX_SYNC2                            0x62
 
 /* Message Classes */
-#define UBX_CLASS_NAV 0x01
-#define UBX_CLASS_ACK 0x05
-#define UBX_CLASS_CFG 0x06
-#define UBX_CLASS_MON 0x0A
+#define UBX_CLASS_NAV                        0x01
+#define UBX_CLASS_ACK                        0x05
+#define UBX_CLASS_CFG                        0x06
+#define UBX_CLASS_MON                        0x0A
 
 /* Message IDs */
-#define UBX_ID_NAV_POSLLH  0x02
-#define UBX_ID_NAV_DOP     0x04
-#define UBX_ID_NAV_SOL     0x06
-#define UBX_ID_NAV_PVT     0x07
-#define UBX_ID_NAV_VELNED  0x12
-#define UBX_ID_NAV_TIMEUTC 0x21
-#define UBX_ID_NAV_SVINFO  0x30
-#define UBX_ID_ACK_NAK     0x00
-#define UBX_ID_ACK_ACK     0x01
-#define UBX_ID_CFG_PRT     0x00
-#define UBX_ID_CFG_MSG     0x01
-#define UBX_ID_CFG_RATE    0x08
-#define UBX_ID_CFG_NAV5    0x24
-#define UBX_ID_CFG_SBAS    0x16
-#define UBX_ID_MON_VER     0x04
-#define UBX_ID_MON_HW      0x09
+#define UBX_ID_NAV_POSLLH                    0x02
+#define UBX_ID_NAV_DOP                       0x04
+#define UBX_ID_NAV_SOL                       0x06
+#define UBX_ID_NAV_PVT                       0x07
+#define UBX_ID_NAV_VELNED                    0x12
+#define UBX_ID_NAV_TIMEUTC                   0x21
+#define UBX_ID_NAV_SVINFO                    0x30
+#define UBX_ID_ACK_NAK                       0x00
+#define UBX_ID_ACK_ACK                       0x01
+#define UBX_ID_CFG_PRT                       0x00
+#define UBX_ID_CFG_MSG                       0x01
+#define UBX_ID_CFG_RATE                      0x08
+#define UBX_ID_CFG_NAV5                      0x24
+#define UBX_ID_CFG_SBAS                      0x16
+#define UBX_ID_MON_VER                       0x04
+#define UBX_ID_MON_HW                        0x09
 
 /* Message Classes & IDs */
-#define UBX_MSG_NAV_POSLLH  ((UBX_CLASS_NAV) | UBX_ID_NAV_POSLLH << 8)
-#define UBX_MSG_NAV_SOL     ((UBX_CLASS_NAV) | UBX_ID_NAV_SOL << 8)
-#define UBX_MSG_NAV_DOP     ((UBX_CLASS_NAV) | UBX_ID_NAV_DOP << 8)
-#define UBX_MSG_NAV_PVT     ((UBX_CLASS_NAV) | UBX_ID_NAV_PVT << 8)
-#define UBX_MSG_NAV_VELNED  ((UBX_CLASS_NAV) | UBX_ID_NAV_VELNED << 8)
-#define UBX_MSG_NAV_TIMEUTC ((UBX_CLASS_NAV) | UBX_ID_NAV_TIMEUTC << 8)
-#define UBX_MSG_NAV_SVINFO  ((UBX_CLASS_NAV) | UBX_ID_NAV_SVINFO << 8)
-#define UBX_MSG_ACK_NAK     ((UBX_CLASS_ACK) | UBX_ID_ACK_NAK << 8)
-#define UBX_MSG_ACK_ACK     ((UBX_CLASS_ACK) | UBX_ID_ACK_ACK << 8)
-#define UBX_MSG_CFG_PRT     ((UBX_CLASS_CFG) | UBX_ID_CFG_PRT << 8)
-#define UBX_MSG_CFG_MSG     ((UBX_CLASS_CFG) | UBX_ID_CFG_MSG << 8)
-#define UBX_MSG_CFG_RATE    ((UBX_CLASS_CFG) | UBX_ID_CFG_RATE << 8)
-#define UBX_MSG_CFG_NAV5    ((UBX_CLASS_CFG) | UBX_ID_CFG_NAV5 << 8)
-#define UBX_MSG_CFG_SBAS    ((UBX_CLASS_CFG) | UBX_ID_CFG_SBAS << 8)
-#define UBX_MSG_MON_HW      ((UBX_CLASS_MON) | UBX_ID_MON_HW << 8)
-#define UBX_MSG_MON_VER     ((UBX_CLASS_MON) | UBX_ID_MON_VER << 8)
+#define UBX_MSG_NAV_POSLLH                   ((UBX_CLASS_NAV) | UBX_ID_NAV_POSLLH << 8)
+#define UBX_MSG_NAV_SOL                      ((UBX_CLASS_NAV) | UBX_ID_NAV_SOL << 8)
+#define UBX_MSG_NAV_DOP                      ((UBX_CLASS_NAV) | UBX_ID_NAV_DOP << 8)
+#define UBX_MSG_NAV_PVT                      ((UBX_CLASS_NAV) | UBX_ID_NAV_PVT << 8)
+#define UBX_MSG_NAV_VELNED                   ((UBX_CLASS_NAV) | UBX_ID_NAV_VELNED << 8)
+#define UBX_MSG_NAV_TIMEUTC                  ((UBX_CLASS_NAV) | UBX_ID_NAV_TIMEUTC << 8)
+#define UBX_MSG_NAV_SVINFO                   ((UBX_CLASS_NAV) | UBX_ID_NAV_SVINFO << 8)
+#define UBX_MSG_ACK_NAK                      ((UBX_CLASS_ACK) | UBX_ID_ACK_NAK << 8)
+#define UBX_MSG_ACK_ACK                      ((UBX_CLASS_ACK) | UBX_ID_ACK_ACK << 8)
+#define UBX_MSG_CFG_PRT                      ((UBX_CLASS_CFG) | UBX_ID_CFG_PRT << 8)
+#define UBX_MSG_CFG_MSG                      ((UBX_CLASS_CFG) | UBX_ID_CFG_MSG << 8)
+#define UBX_MSG_CFG_RATE                     ((UBX_CLASS_CFG) | UBX_ID_CFG_RATE << 8)
+#define UBX_MSG_CFG_NAV5                     ((UBX_CLASS_CFG) | UBX_ID_CFG_NAV5 << 8)
+#define UBX_MSG_CFG_SBAS                     ((UBX_CLASS_CFG) | UBX_ID_CFG_SBAS << 8)
+#define UBX_MSG_MON_HW                       ((UBX_CLASS_MON) | UBX_ID_MON_HW << 8)
+#define UBX_MSG_MON_VER                      ((UBX_CLASS_MON) | UBX_ID_MON_VER << 8)
 
 /* RX NAV-PVT message content details */
 /*   Bitfield "valid" masks */
-#define UBX_RX_NAV_PVT_VALID_VALIDDATE     0x01 /**< validDate (Valid UTC Date) */
-#define UBX_RX_NAV_PVT_VALID_VALIDTIME     0x02 /**< validTime (Valid UTC Time) */
-#define UBX_RX_NAV_PVT_VALID_FULLYRESOLVED 0x04 /**< fullyResolved (1 = UTC Time of Day has been fully resolved (no seconds uncertainty)) */
+#define UBX_RX_NAV_PVT_VALID_VALIDDATE       0x01 /**< validDate (Valid UTC Date) */
+#define UBX_RX_NAV_PVT_VALID_VALIDTIME       0x02 /**< validTime (Valid UTC Time) */
+#define UBX_RX_NAV_PVT_VALID_FULLYRESOLVED   0x04 /**< fullyResolved (1 = UTC Time of Day has been fully resolved (no seconds uncertainty)) */
 
 /*   Bitfield "flags" masks */
-#define UBX_RX_NAV_PVT_FLAGS_GNSSFIXOK    0x01 /**< gnssFixOK (A valid fix (i.e within DOP & accuracy masks)) */
-#define UBX_RX_NAV_PVT_FLAGS_DIFFSOLN     0x02 /**< diffSoln (1 if differential corrections were applied) */
-#define UBX_RX_NAV_PVT_FLAGS_PSMSTATE     0x1C /**< psmState (Power Save Mode state (see Power Management)) */
-#define UBX_RX_NAV_PVT_FLAGS_HEADVEHVALID 0x20 /**< headVehValid (Heading of vehicle is valid) */
+#define UBX_RX_NAV_PVT_FLAGS_GNSSFIXOK       0x01 /**< gnssFixOK (A valid fix (i.e within DOP & accuracy masks)) */
+#define UBX_RX_NAV_PVT_FLAGS_DIFFSOLN        0x02 /**< diffSoln (1 if differential corrections were applied) */
+#define UBX_RX_NAV_PVT_FLAGS_PSMSTATE        0x1C /**< psmState (Power Save Mode state (see Power Management)) */
+#define UBX_RX_NAV_PVT_FLAGS_HEADVEHVALID    0x20 /**< headVehValid (Heading of vehicle is valid) */
 
 /* RX NAV-TIMEUTC message content details */
 /*   Bitfield "valid" masks */
@@ -88,33 +88,34 @@ extern "C" {
 #define UBX_RX_NAV_TIMEUTC_VALID_UTCSTANDARD 0xF0 /**< utcStandard (0..15 = UTC standard identifier) */
 
 /* TX CFG-PRT message contents */
-#define UBX_TX_CFG_PRT_PORTID       0x01       /**< UART1 */
-#define UBX_TX_CFG_PRT_MODE         0x000008D0 /**< 0b0000100011010000: 8N1 */
-#define UBX_TX_CFG_PRT_BAUDRATE     57600      /**< choose 38400 as GPS baudrate */
-#define UBX_TX_CFG_PRT_INPROTOMASK  0x01       /**< UBX in */
-#define UBX_TX_CFG_PRT_OUTPROTOMASK 0x01       /**< UBX out */
+#define UBX_TX_CFG_PRT_PORTID                0x01       /**< UART1 */
+#define UBX_TX_CFG_PRT_MODE                  0x000008D0 /**< 0b0000100011010000: 8N1 */
+#define UBX_TX_CFG_PRT_BAUDRATE              57600      /**< choose 38400 as GPS baudrate */
+// #define UBX_TX_CFG_PRT_INPROTOMASK  0x01       /**< UBX in */
+#define UBX_TX_CFG_PRT_INPROTOMASK           0x25 /**< UBX|RTCM2|RTCM3 in */
+#define UBX_TX_CFG_PRT_OUTPROTOMASK          0x01 /**< UBX out */
 
 /* TX CFG-RATE message contents */
-#define UBX_TX_CFG_RATE_MEASINTERVAL 100 /**< 100ms for 10Hz */
-#define UBX_TX_CFG_RATE_NAVRATE      1   /**< cannot be changed */
-#define UBX_TX_CFG_RATE_TIMEREF      0   /**< 0: UTC, 1: GPS time */
+#define UBX_TX_CFG_RATE_MEASINTERVAL         100 /**< 100ms for 10Hz */
+#define UBX_TX_CFG_RATE_NAVRATE              1   /**< cannot be changed */
+#define UBX_TX_CFG_RATE_TIMEREF              0   /**< 0: UTC, 1: GPS time */
 
 /* TX CFG-NAV5 message contents */
-#define UBX_TX_CFG_NAV5_MASK     0x0005 /**< Only update dynamic model and fix mode */
-#define UBX_TX_CFG_NAV5_DYNMODEL 7      /**< 0 Portable, 2 Stationary, 3 Pedestrian, 4 Automotive, 5 Sea, 6 Airborne <1g, 7 Airborne <2g, 8 Airborne <4g */
-#define UBX_TX_CFG_NAV5_FIXMODE  2      /**< 1 2D only, 2 3D only, 3 Auto 2D/3D */
+#define UBX_TX_CFG_NAV5_MASK                 0x0005 /**< Only update dynamic model and fix mode */
+#define UBX_TX_CFG_NAV5_DYNMODEL             7      /**< 0 Portable, 2 Stationary, 3 Pedestrian, 4 Automotive, 5 Sea, 6 Airborne <1g, 7 Airborne <2g, 8 Airborne <4g */
+#define UBX_TX_CFG_NAV5_FIXMODE              2      /**< 1 2D only, 2 3D only, 3 Auto 2D/3D */
 
 /* TX CFG-SBAS message contents */
-#define UBX_TX_CFG_SBAS_MODE_ENABLED  1                             /**< SBAS enabled */
-#define UBX_TX_CFG_SBAS_MODE_DISABLED 0                             /**< SBAS disabled */
-#define UBX_TX_CFG_SBAS_MODE          UBX_TX_CFG_SBAS_MODE_DISABLED /**< SBAS enabled or disabled */
+#define UBX_TX_CFG_SBAS_MODE_ENABLED         1                             /**< SBAS enabled */
+#define UBX_TX_CFG_SBAS_MODE_DISABLED        0                             /**< SBAS disabled */
+#define UBX_TX_CFG_SBAS_MODE                 UBX_TX_CFG_SBAS_MODE_DISABLED /**< SBAS enabled or disabled */
 
 /* TX CFG-MSG message contents */
-#define UBX_TX_CFG_MSG_RATE1_5HZ  0x01 /**< {0x00, 0x01, 0x00, 0x00, 0x00, 0x00} the second entry is for UART1 */
-#define UBX_TX_CFG_MSG_RATE1_1HZ  0x05 /**< {0x00, 0x05, 0x00, 0x00, 0x00, 0x00} the second entry is for UART1 */
-#define UBX_TX_CFG_MSG_RATE1_05HZ 10
+#define UBX_TX_CFG_MSG_RATE1_5HZ             0x01 /**< {0x00, 0x01, 0x00, 0x00, 0x00, 0x00} the second entry is for UART1 */
+#define UBX_TX_CFG_MSG_RATE1_1HZ             0x05 /**< {0x00, 0x05, 0x00, 0x00, 0x00, 0x00} the second entry is for UART1 */
+#define UBX_TX_CFG_MSG_RATE1_05HZ            10
 
-#define UBX_CONFIG_TIMEOUT 100 // ms, timeout for waiting ACK
+#define UBX_CONFIG_TIMEOUT                   100 // ms, timeout for waiting ACK
 // #define UBX_CONFIG_TIMEOUT	20		// ms, timeout for waiting ACK
 
 /*** u-blox protocol binary message and payload definitions ***/
@@ -180,18 +181,18 @@ typedef struct {
 
 /* Rx NAV-PVT (ubx8) */
 typedef struct {
-    uint32_t iTOW;   /**< GPS Time of Week [ms] */
-    uint16_t year;   /**< Year (UTC)*/
-    uint8_t month;   /**< Month, range 1..12 (UTC) */
-    uint8_t day;     /**< Day of month, range 1..31 (UTC) */
-    uint8_t hour;    /**< Hour of day, range 0..23 (UTC) */
-    uint8_t min;     /**< Minute of hour, range 0..59 (UTC) */
-    uint8_t sec;     /**< Seconds of minute, range 0..60 (UTC) */
-    uint8_t valid;   /**< Validity flags (see UBX_RX_NAV_PVT_VALID_...) */
-    uint32_t tAcc;   /**< Time accuracy estimate (UTC) [ns] */
-    int32_t nano;    /**< Fraction of second (UTC) [-1e9...1e9 ns] */
-    uint8_t fixType; /**< GNSSfix type: 0 = No fix, 1 = Dead Reckoning only, 2 = 2D fix, 3 = 3d-fix, 4 = GNSS + dead reckoning, 5 = time only fix */
-    uint8_t flags;   /**< Fix Status Flags (see UBX_RX_NAV_PVT_FLAGS_...) */
+    uint32_t iTOW;    /**< GPS Time of Week [ms] */
+    uint16_t year;    /**< Year (UTC)*/
+    uint8_t month;    /**< Month, range 1..12 (UTC) */
+    uint8_t day;      /**< Day of month, range 1..31 (UTC) */
+    uint8_t hour;     /**< Hour of day, range 0..23 (UTC) */
+    uint8_t min;      /**< Minute of hour, range 0..59 (UTC) */
+    uint8_t sec;      /**< Seconds of minute, range 0..60 (UTC) */
+    uint8_t valid;    /**< Validity flags (see UBX_RX_NAV_PVT_VALID_...) */
+    uint32_t tAcc;    /**< Time accuracy estimate (UTC) [ns] */
+    int32_t nano;     /**< Fraction of second (UTC) [-1e9...1e9 ns] */
+    uint8_t fixType;  /**< GNSSfix type: 0 = No fix, 1 = Dead Reckoning only, 2 = 2D fix, 3 = 3d-fix, 4 = GNSS + dead reckoning, 5 = time only fix */
+    uint8_t flags;    /**< Fix Status Flags (see UBX_RX_NAV_PVT_FLAGS_...) */
     uint8_t reserved1;
     uint8_t numSV;    /**< Number of SVs used in Nav Solution */
     int32_t lon;      /**< Longitude [1e-7 deg] */
@@ -369,8 +370,8 @@ typedef struct {
     uint16_t tAcc;
     uint8_t staticHoldThresh;
     uint8_t dgpsTimeOut;
-    uint8_t cnoThreshNumSVs; /**< (ubx7+ only, else 0) */
-    uint8_t cnoThresh;       /**< (ubx7+ only, else 0) */
+    uint8_t cnoThreshNumSVs;    /**< (ubx7+ only, else 0) */
+    uint8_t cnoThresh;          /**< (ubx7+ only, else 0) */
     uint16_t reserved;
     uint16_t staticHoldMaxDist; /**< (ubx8+ only, else 0) */
     uint8_t utcStandard;        /**< (ubx8+ only, else 0) */

@@ -65,6 +65,7 @@ struct can_configure {
 };
 
 struct can_filter {
+    uint32_t id_type;
     uint32_t filter_type;
     uint32_t filter_id1;
     uint32_t filter_id2;
