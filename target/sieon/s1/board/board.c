@@ -50,24 +50,27 @@
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
+#include "module/config/actuator_config.h"
 #include "module/config/console_config.h"
+#include "module/config/mavproxy_config.h"
+#include "module/config/pilot_cmd_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/config/mavproxy_config.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
-#include "module/config/actuator_config.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
-#include "module/config/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
+
+
+#include "hal/eth/eth_dev.h"
 
 #ifdef FMT_USING_SIH
     #include "model/plant/plant_interface.h"
@@ -527,6 +530,22 @@ void bsp_post_initialize(void)
 
     /* initialize power management unit */
     FMT_CHECK(pmu_init());
+
+    static struct eth_dev eth_dev0;
+    hal_eth_dev_init(&eth_dev0);
+    eth_dev0.domain = AF_INET;
+    eth_dev0.type = SOCK_DGRAM;
+    eth_dev0.protocol = IPPROTO_UDP;
+    eth_dev0.local_addr.sin_family = AF_INET;
+    eth_dev0.local_addr.sin_port = htons(5000);
+    eth_dev0.local_addr.sin_addr.s_addr = INADDR_ANY;
+
+    // memset(&eth_dev0.local_addr, 0, sizeof(eth_dev0.local_addr));
+    // eth_dev0.local_addr.sin_family = AF_INET;
+    // eth_dev0.local_addr.sin_port = htons(5000);
+    // eth_dev0.local_addr.sin_addr.s_addr = INADDR_ANY;
+
+    hal_eth_dev_register(&eth_dev0, "eth_dev0", RT_DEVICE_FLAG_RDWR, NULL);
 
     /* show system information */
     bsp_show_information();

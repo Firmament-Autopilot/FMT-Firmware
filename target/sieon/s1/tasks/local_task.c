@@ -24,20 +24,26 @@ fmt_err_t task_local_init(void)
 
 void task_local_entry(void* parameter)
 {
+    rt_device_t dev = rt_device_find("eth_dev0");
+    rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
+
+    uint8_t ch[128] = { 0 };
     /* main loop */
     while (1) {
-        printf("Hello FMT");
-        sys_msleep(1000);
+        printf("waiting...\n");
+        if (rt_device_read(dev, 0, ch, 128) > 0) {
+            printf("data:%s\r\n", ch);
+        }
     }
 }
 
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "local",
-//     .init = task_local_init,
-//     .entry = task_local_entry,
-//     .priority = 25,
-//     .auto_start = false,
-//     .stack_size = 1024,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+TASK_EXPORT __fmt_task_desc = {
+    .name = "local",
+    .init = task_local_init,
+    .entry = task_local_entry,
+    .priority = 25,
+    .auto_start = false,
+    .stack_size = 4096,
+    .param = NULL,
+    .dependency = NULL
+};
