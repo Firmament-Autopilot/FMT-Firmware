@@ -5,8 +5,8 @@
  * Clock configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.35.0.9884
- * mtb-dsl-pse8xxgp 1.4.0.994
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -50,7 +50,6 @@ extern "C" {
 #define CYBSP_RTC_10_YEAR_OFFSET (4U)
 #define CYBSP_RTC_YEAR_OFFSET (0U)
 #define srss_0_clock_0_eco_0_ENABLED 1U
-#define srss_0_clock_0_ext_0_ENABLED 1U
 #define srss_0_clock_0_iho_0_ENABLED 1U
 #define srss_0_clock_0_wco_0_ENABLED 1U
 #define srss_0_clock_0_timerclk_0_ENABLED 1U
@@ -67,7 +66,6 @@ extern "C" {
 #define srss_0_clock_0_bakclk_0_ENABLED 1U
 #define srss_0_clock_0_pll250m_0_ENABLED 1U
 #define srss_0_clock_0_pll250m_1_ENABLED 1U
-#define srss_0_clock_0_pll500m_0_ENABLED 1U
 #define srss_0_clock_0_hfclk_0_ENABLED 1U
 #define CY_CFG_SYSCLK_CLKHF0 0UL
 #define srss_0_clock_0_hfclk_1_ENABLED 1U
@@ -92,8 +90,6 @@ extern "C" {
 #define CY_CFG_SYSCLK_CLKHF10 10UL
 #define srss_0_clock_0_hfclk_11_ENABLED 1U
 #define CY_CFG_SYSCLK_CLKHF11 11UL
-#define srss_0_clock_0_hfclk_12_ENABLED 1U
-#define CY_CFG_SYSCLK_CLKHF12 12UL
 #define srss_0_clock_0_hfclk_13_ENABLED 1U
 #define CY_CFG_SYSCLK_CLKHF13 13UL
 
@@ -110,7 +106,6 @@ extern const cycfg_clkhf_config_t cycfg_hf8Config;
 extern const cycfg_clkhf_config_t cycfg_hf9Config;
 extern const cycfg_clkhf_config_t cycfg_hf10Config;
 extern const cycfg_clkhf_config_t cycfg_hf11Config;
-extern const cycfg_clkhf_config_t cycfg_hf12Config;
 extern const cycfg_clkhf_config_t cycfg_hf13Config;
 
 void init_cycfg_ns_clocks(void);

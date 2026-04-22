@@ -40,3 +40,4 @@ settings/
 cconfig.h
 /makefile.targets
 !proj_cm33_s_signed.hex
+*.asm

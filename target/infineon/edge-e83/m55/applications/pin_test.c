@@ -6,7 +6,7 @@
 #define LED_OFF(_pin)       led_set((struct device_pin_status) { .pin = _pin, .status = 1 })
 
 static rt_thread_t pin_test_tid = RT_NULL;
-struct device_pin_mode led_mode = { GET_PIN(16, 5), PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
+struct device_pin_mode led_mode = { GET_PIN(20, 7), PIN_MODE_OUTPUT, PIN_OUT_TYPE_OD };
 static rt_device_t pin_dev;
 
 fmt_err_t led_set(struct device_pin_status pin_sta)
@@ -34,14 +34,14 @@ static void pin_test_entry(void* parameter)
     RT_CHECK(rt_device_open(pin_dev, RT_DEVICE_OFLAG_RDWR));
     led_init(led_mode);
     while (1) {
-        LED_ON(GET_PIN(16, 6));
+        LED_ON(GET_PIN(20, 7));
         rt_thread_mdelay(500);
-        LED_OFF(GET_PIN(16, 6));
+        LED_OFF(GET_PIN(20, 7));
         rt_thread_mdelay(500);
     }
 }
 
-static int pin_test_entry_init(void)
+int pin_test_entry_init(void)
 {
     pin_test_tid = rt_thread_create(
         "pin_test_thread",

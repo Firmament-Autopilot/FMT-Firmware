@@ -5,8 +5,8 @@
  * System configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.35.0.9884
- * mtb-dsl-pse8xxgp 1.4.0.994
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -60,7 +60,7 @@ extern "C" {
 #define CY_CFG_PWR_MODE_DEEPSLEEP 0x10UL
 #define CY_CFG_PWR_MODE_DEEPSLEEP_RAM 0x11UL
 #define CY_CFG_PWR_MODE_DEEPSLEEP_OFF 0x12UL
-#define CY_CFG_PWR_SYS_IDLE_MODE CY_CFG_PWR_MODE_DEEPSLEEP
+#define CY_CFG_PWR_SYS_IDLE_MODE CY_CFG_PWR_MODE_SLEEP
 #define CY_CFG_PWR_DEEPSLEEP_LATENCY 20UL
 #define CY_CFG_PWR_SYS_ACTIVE_MODE CY_CFG_PWR_MODE_HP
 #define CY_CFG_PWR_SYS_ACTIVE_PROFILE CY_CFG_PWR_MODE_HP
@@ -72,14 +72,14 @@ extern "C" {
 #define CY_CFG_PWR_CBUCK_MODE CY_SYSPM_CORE_BUCK_MODE_HP
 #define CY_CFG_PWR_SRAMLDO_VOLT CY_SYSPM_SRAMLDO_VOLTAGE_0_80V
 #define CY_CFG_PWR_PD1_DOMAIN 1
-#define CY_CFG_PWR_PPU_MAIN PPU_V1_MODE_FULL_RET
-#define CY_CFG_PWR_PPU_PD1 PPU_V1_MODE_FULL_RET
-#define CY_CFG_PWR_PPU_SRAM0 PPU_V1_MODE_MEM_RET
-#define CY_CFG_PWR_PPU_SRAM1 PPU_V1_MODE_MEM_RET
-#define CY_CFG_PWR_PPU_SYSCPU PPU_V1_MODE_FULL_RET
-#define CY_CFG_PWR_PPU_APPCPUSS PPU_V1_MODE_FULL_RET
-#define CY_CFG_PWR_PPU_APPCPU PPU_V1_MODE_FULL_RET
-#define CY_CFG_PWR_PPU_SOCMEM PPU_V1_MODE_MEM_RET
+#define CY_CFG_PWR_PPU_MAIN PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_PD1 PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_SRAM0 PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_SRAM1 PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_SYSCPU PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_APPCPUSS PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_APPCPU PPU_V1_MODE_ON
+#define CY_CFG_PWR_PPU_SOCMEM PPU_V1_MODE_ON
 #define CY_CFG_PWR_PPU_U55 PPU_V1_MODE_ON
 #define M33S_ENABLED 1U
 #define M33_ENABLED 1U

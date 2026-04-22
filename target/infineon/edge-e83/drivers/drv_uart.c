@@ -22,43 +22,52 @@
 #include "uart_config.h"
 
 #if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
-    #define UART_DCACHE_CLEAN(addr, size) \
-        SCB_CleanDCache_by_Addr((void*)(addr), (int32_t)(size))
-    #define UART_DCACHE_INVALIDATE(addr, size) \
-        SCB_InvalidateDCache_by_Addr((void*)(addr), (int32_t)(size))
+#define UART_DCACHE_CLEAN(addr, size) \
+SCB_CleanDCache_by_Addr((void*)(addr), (int32_t)(size))
+#define UART_DCACHE_INVALIDATE(addr, size) \
+SCB_InvalidateDCache_by_Addr((void*)(addr), (int32_t)(size))
 #else
-    #define UART_DCACHE_CLEAN(addr, size)      ((void)0)
-    #define UART_DCACHE_INVALIDATE(addr, size) ((void)0)
+#define UART_DCACHE_CLEAN(addr, size)      ((void)0)
+#define UART_DCACHE_INVALIDATE(addr, size) ((void)0)
 #endif
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
 
-    #ifdef BSP_USING_UART1_DMA_TX
+#ifdef BSP_USING_UART1_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static uint8_t uart1_tx_buf[UART_TX_BUFFER_SIZE];
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart1_tx_desc;
-    #endif
+#endif
 
-    #ifdef BSP_USING_UART2_DMA_TX
+#ifdef BSP_USING_UART2_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static uint8_t uart2_tx_buf[UART_TX_BUFFER_SIZE];
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart2_tx_desc;
-    #endif
+#endif
 
-    #ifdef BSP_USING_UART5_DMA_TX
+#ifdef BSP_USING_UART4_DMA_TX
+CY_SECTION(".cy_sharedmem")
+CY_ALIGN(32)
+static uint8_t uart4_tx_buf[UART_TX_BUFFER_SIZE];
+CY_SECTION(".cy_sharedmem")
+CY_ALIGN(32)
+static cy_stc_dma_descriptor_t uart4_tx_desc;
+#endif
+
+#ifdef BSP_USING_UART5_DMA_TX
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static uint8_t uart5_tx_buf[UART_TX_BUFFER_SIZE];
 CY_SECTION(".cy_sharedmem")
 CY_ALIGN(32)
 static cy_stc_dma_descriptor_t uart5_tx_desc;
-    #endif
+#endif
 
 #endif /* BSP_USING_UARTx_DMA_TX */
 
@@ -68,6 +77,9 @@ enum {
 #endif
 #if defined(BSP_USING_UART2) || defined(BSP_USING_UART2_DMA_TX)
     UART2_INDEX,
+#endif
+#ifdef BSP_USING_UART4
+    UART4_INDEX,
 #endif
 #ifdef BSP_USING_UART5
     UART5_INDEX,
@@ -81,6 +93,9 @@ static struct ifx_uart_config uart_config[] = {
 #if defined(BSP_USING_UART2) || defined(BSP_USING_UART2_DMA_TX)
     UART2_CONFIG,
 #endif
+#ifdef BSP_USING_UART4
+    UART4_CONFIG,
+#endif
 #ifdef BSP_USING_UART5
     UART5_CONFIG,
 #endif
@@ -88,7 +103,7 @@ static struct ifx_uart_config uart_config[] = {
 
 static struct ifx_uart uart_obj[sizeof(uart_config) / sizeof(uart_config[0])] = { 0 };
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
 
 static void init_uart_tx_dma(struct ifx_uart* uart)
 {
@@ -231,6 +246,15 @@ void uart2_isr_callback(void)
 }
 #endif
 
+#ifdef BSP_USING_UART4
+void uart4_isr_callback(void)
+{
+    rt_interrupt_enter();
+    uart_isr(&uart_obj[UART4_INDEX].serial);
+    rt_interrupt_leave();
+}
+#endif
+
 #ifdef BSP_USING_UART5
 void uart5_isr_callback(void)
 {
@@ -245,6 +269,9 @@ void uart1_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART1_INDEX]); 
 #endif
 #ifdef BSP_USING_UART2_DMA_TX
 void uart2_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART2_INDEX]); }
+#endif
+#ifdef BSP_USING_UART4_DMA_TX
+void uart4_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART4_INDEX]); }
 #endif
 #ifdef BSP_USING_UART5_DMA_TX
 void uart5_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART5_INDEX]); }
@@ -274,7 +301,7 @@ static rt_err_t ifx_configure(struct serial_device* serial,
     }
     RT_ASSERT(result == RT_EOK);
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
     if (uart->config->dma_enabled && !uart->config->dma_initialized) {
         RT_ASSERT(uart->config->tx_buffer != RT_NULL);
         RT_ASSERT(uart->config->tx_dma_descriptor != RT_NULL);
@@ -297,7 +324,7 @@ static rt_err_t ifx_control(struct serial_device* serial, int cmd, void* arg)
     switch (cmd) {
     case RT_DEVICE_CTRL_CLR_INT:
         uart->config->usart_x->INTR_RX_MASK &= ~SCB_INTR_RX_MASK_NOT_EMPTY_Msk;
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
         if (uart->config->dma_enabled) {
             Cy_DMA_Channel_Disable(uart->config->tx_dma_hw,
                                    uart->config->tx_dma_channel);
@@ -319,7 +346,7 @@ static rt_err_t ifx_control(struct serial_device* serial, int cmd, void* arg)
             uart->config->usart_x->INTR_RX_MASK &= ~SCB_INTR_RX_MASK_NOT_EMPTY_Msk;
             NVIC_DisableIRQ(uart->config->intrSrc);
         }
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
         if ((serial->parent.open_flag & RT_DEVICE_FLAG_DMA_TX) && uart->config->dma_enabled) {
             Cy_DMA_Channel_Disable(uart->config->tx_dma_hw,
                                    uart->config->tx_dma_channel);
@@ -332,7 +359,7 @@ static rt_err_t ifx_control(struct serial_device* serial, int cmd, void* arg)
             uart->config->usart_x->INTR_RX_MASK = SCB_INTR_RX_MASK_NOT_EMPTY_Msk;
             NVIC_EnableIRQ(uart->config->intrSrc);
         }
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
 #endif
         break;
     }
@@ -380,7 +407,7 @@ static rt_size_t ifx_dma_transmit(struct serial_device* serial,
     struct ifx_uart* uart = (struct ifx_uart*)serial->parent.user_data;
     RT_ASSERT(uart != RT_NULL);
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
     if (uart->config->dma_enabled) {
         rt_size_t remaining = size;
         const uint8_t* ptr = buf;
@@ -431,7 +458,7 @@ rt_err_t drv_usart_init(void)
         RT_ASSERT(uart_obj[index].config->uart_obj != RT_NULL);
         RT_ASSERT(uart_obj[index].config->uart_context != RT_NULL);
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
         uart_obj[index].config->tx_buffer = RT_NULL;
         uart_obj[index].config->tx_dma_descriptor = RT_NULL;
         uart_obj[index].config->tx_dma_done = 1u;
@@ -445,6 +472,9 @@ rt_err_t drv_usart_init(void)
     #ifdef BSP_USING_UART2_DMA_TX
             || uart_obj[index].config->usart_x == SCB2
     #endif
+        #ifdef BSP_USING_UART4_DMA_TX
+            || uart_obj[index].config->usart_x == SCB4
+        #endif
     #ifdef BSP_USING_UART5_DMA_TX
             || uart_obj[index].config->usart_x == SCB5
     #endif
@@ -461,6 +491,12 @@ rt_err_t drv_usart_init(void)
             if (uart_obj[index].config->usart_x == SCB2) {
                 uart_obj[index].config->tx_buffer = uart2_tx_buf;
                 uart_obj[index].config->tx_dma_descriptor = &uart2_tx_desc;
+            }
+    #endif
+    #ifdef BSP_USING_UART4_DMA_TX
+            if (uart_obj[index].config->usart_x == SCB4) {
+                uart_obj[index].config->tx_buffer = uart4_tx_buf;
+                uart_obj[index].config->tx_dma_descriptor = &uart4_tx_desc;
             }
     #endif
     #ifdef BSP_USING_UART5_DMA_TX
@@ -480,7 +516,7 @@ rt_err_t drv_usart_init(void)
 #endif /* BSP_USING_UARTx_DMA_TX */
 
         rt_uint16_t flags = RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX;
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
         if (uart_obj[index].config->dma_enabled) {
             flags |= RT_DEVICE_FLAG_DMA_TX;
         }

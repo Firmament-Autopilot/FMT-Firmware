@@ -1,5 +1,4 @@
-#include <rtdevice.h>
-#include <rtthread.h>
+#include <firmament.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

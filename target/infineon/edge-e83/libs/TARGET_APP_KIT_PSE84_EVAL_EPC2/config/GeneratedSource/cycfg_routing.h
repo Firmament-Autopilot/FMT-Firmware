@@ -5,8 +5,8 @@
  * Establishes all necessary connections between hardware elements.
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.35.0.9884
- * mtb-dsl-pse8xxgp 1.4.0.994
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -44,17 +44,15 @@ extern "C" {
 #define ioss_0_port_7_pin_0_HSIOM P7_0_SDHC1_CARD_CMD
 #define ioss_0_port_7_pin_1_HSIOM P7_1_SDHC1_CLK_CARD
 #define ioss_0_port_7_pin_3_HSIOM P7_3_SDHC1_CARD_DAT_3TO00
-#define ioss_0_port_7_pin_4_HSIOM P7_4_SRSS_EXT_CLK
 #define ioss_0_port_7_pin_5_HSIOM P7_5_SDHC1_CARD_DAT_3TO01
 #define ioss_0_port_7_pin_6_HSIOM P7_6_SDHC1_CARD_DAT_3TO02
 #define ioss_0_port_7_pin_7_HSIOM P7_7_SDHC1_CARD_DAT_3TO03
 #define ioss_0_port_8_pin_0_HSIOM P8_0_SCB0_I2C_SCL
 #define ioss_0_port_8_pin_1_HSIOM P8_1_SCB0_I2C_SDA
-#define ioss_0_port_8_pin_5_HSIOM P8_5_PDM_PDM_CLK3
-#define ioss_0_port_8_pin_6_HSIOM P8_6_PDM_PDM_DATA3
 #define ioss_0_port_9_pin_0_HSIOM P9_0_TCPWM0_LINE7
 #define ioss_0_port_9_pin_2_HSIOM P9_2_TCPWM0_LINE_COMPL7
-#define ioss_0_port_10_pin_3_HSIOM P10_3_SCB4_UART_RTS
+#define ioss_0_port_10_pin_0_HSIOM P10_0_SCB4_UART_RX
+#define ioss_0_port_10_pin_1_HSIOM P10_1_SCB4_UART_TX
 #define ioss_0_port_10_pin_5_HSIOM P10_5_ETH_RX_CTL
 #define ioss_0_port_10_pin_6_HSIOM P10_6_ETH_RXD0
 #define ioss_0_port_10_pin_7_HSIOM P10_7_ETH_RXD1
@@ -63,12 +61,6 @@ extern "C" {
 #define ioss_0_port_11_pin_3_HSIOM P11_3_ETH_TXD1
 #define ioss_0_port_11_pin_4_HSIOM P11_4_ETH_TX_CTL
 #define ioss_0_port_11_pin_7_HSIOM P11_7_ETH_REF_CLK
-#define ioss_0_port_12_pin_0_HSIOM P12_0_SDHC0_CLK_CARD
-#define ioss_0_port_12_pin_1_HSIOM P12_1_SDHC0_CARD_DAT_3TO00
-#define ioss_0_port_12_pin_2_HSIOM P12_2_SDHC0_CARD_DAT_3TO01
-#define ioss_0_port_12_pin_3_HSIOM P12_3_TDM_TDM_TX_FSYNC0
-#define ioss_0_port_12_pin_4_HSIOM P12_4_SDHC0_CARD_DAT_3TO02
-#define ioss_0_port_12_pin_5_HSIOM P12_5_SDHC0_CARD_DAT_3TO03
 #define ioss_0_port_13_pin_1_HSIOM P13_1_ETH_MDC
 #define ioss_0_port_13_pin_6_HSIOM P13_6_ETH_MDIO
 #define ioss_0_port_16_pin_0_HSIOM P16_0_SCB10_SPI_CLK
@@ -78,13 +70,12 @@ extern "C" {
 #define ioss_0_port_16_pin_5_HSIOM P16_5_TCPWM0_LINE5
 #define ioss_0_port_17_pin_0_HSIOM P17_0_SCB5_UART_RX
 #define ioss_0_port_17_pin_1_HSIOM P17_1_SCB5_UART_TX
-#define ioss_0_port_21_pin_0_HSIOM P21_0_SDHC0_CARD_CMD
-#define ioss_0_port_21_pin_1_HSIOM P21_1_TDM_TDM_TX_SD0
-#define ioss_0_port_21_pin_2_HSIOM P21_2_TDM_TDM_TX_SCK0
-#define ioss_0_port_21_pin_3_HSIOM P21_3_TDM_TDM_TX_MCK0
+#define ioss_0_port_21_pin_4_HSIOM P21_4_SCB3_SPI_MISO
+#define ioss_0_port_21_pin_5_HSIOM P21_5_SCB3_SPI_MOSI
+#define ioss_0_port_21_pin_6_HSIOM P21_6_SCB3_SPI_CLK
 #define CYBSP_ARD_D7_digital_in_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_3_PERI1_HSIOM_TR_OUT1
 #define CYBSP_ETH_RX_ER_digital_in_0_TRIGGER_IN CYBSP_ARD_D7_digital_in_0_TRIGGER_IN
-#define CYBSP_DEBUG_UART_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT2
+#define CYBSP_UART2_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT2
 #define CYBSP_UART2_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN1
 #define CYBSP_UART5_tr_tx_req_0_TRIGGER_IN PERI_0_TRIG_IN_MUX_0_SCB_TX_TR_OUT5
 #define CYBSP_UART5_TX_DMA_tr_in_0_TRIGGER_OUT PERI_0_TRIG_OUT_MUX_0_PDMA0_TR_IN2

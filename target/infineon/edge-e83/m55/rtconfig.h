@@ -229,7 +229,7 @@
 #define BSP_USING_CMSIS_DSP
 #define BSP_USING_GPIO
 #define BSP_USING_UART
-#define BSP_USING_UART2
+#define BSP_USING_UART4
 // #define BSP_USING_UART5
 // #define BSP_USING_UART5_DMA_TX
 #define BSP_USING_SPI

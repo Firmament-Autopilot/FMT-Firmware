@@ -50,6 +50,19 @@ static cy_stc_sysint_t UART2_TX_DMA_SCB_IRQ_cfg = {
 };
 #endif
 
+#if defined(BSP_USING_UART4) || defined(BSP_USING_UART4_DMA_TX)
+static cy_stc_sysint_t UART4_SCB_IRQ_cfg = {
+    .intrSrc = (IRQn_Type)scb_4_interrupt_IRQn,
+    .intrPriority = (7u),
+};
+#endif
+#ifdef BSP_USING_UART4_DMA_TX
+static cy_stc_sysint_t UART4_TX_DMA_SCB_IRQ_cfg = {
+    .intrSrc = (IRQn_Type)CYBSP_UART4_TX_DMA_IRQ,
+    .intrPriority = (6u),
+};
+#endif
+
 #if defined(BSP_USING_UART5) || defined(BSP_USING_UART5_DMA_TX)
 static cy_stc_sysint_t UART5_SCB_IRQ_cfg = {
     .intrSrc = (IRQn_Type)scb_5_interrupt_IRQn,
@@ -123,8 +136,8 @@ void uart1_dma_tx_isr_callback(void);
                 .name = "serial2",                                     \
                 .usart_x = SCB2,                                       \
                 .intrSrc = scb_2_interrupt_IRQn,                       \
-                .uart_config = &CYBSP_DEBUG_UART_config,               \
-                .hal_uart_configurator = &CYBSP_DEBUG_UART_hal_config, \
+                .uart_config = &CYBSP_UART2_config,                    \
+                .hal_uart_configurator = &CYBSP_UART2_hal_config,      \
                 .userIsr = uart2_isr_callback,                         \
                 .UART_SCB_IRQ_cfg = &UART2_SCB_IRQ_cfg,                \
                 UART2_DMA_TX_CONFIG                                    \
@@ -137,6 +150,45 @@ void uart2_dma_tx_isr_callback(void);
     #endif
 
 #endif /* BSP_USING_UART2 */
+
+/* ----------------------------------------------------------------
+ * UART4
+ * ---------------------------------------------------------------- */
+#if defined(BSP_USING_UART4)
+
+    #ifdef BSP_USING_UART4_DMA_TX
+        #define UART4_DMA_TX_CONFIG                                              \
+            .tx_dma_descriptor_config = &CYBSP_UART4_TX_DMA_Descriptor_0_config, \
+            .tx_dma_channel_config = &CYBSP_UART4_TX_DMA_channelConfig,          \
+            .tx_dma_int_cfg = &UART4_TX_DMA_SCB_IRQ_cfg,                         \
+            .tx_dma_isr = uart4_dma_tx_isr_callback,                             \
+            .tx_dma_irq = CYBSP_UART4_TX_DMA_IRQ,                                \
+            .tx_dma_channel = CYBSP_UART4_TX_DMA_CHANNEL,                        \
+            .tx_dma_hw = CYBSP_UART4_TX_DMA_HW,
+    #else
+        #define UART4_DMA_TX_CONFIG
+    #endif
+
+    #ifndef UART4_CONFIG
+        #define UART4_CONFIG                                           \
+            {                                                          \
+                .name = "serial4",                                     \
+                .usart_x = SCB4,                                       \
+                .intrSrc = scb_4_interrupt_IRQn,                       \
+                .uart_config = &CYBSP_DEBUG_UART_config,               \
+                .hal_uart_configurator = &CYBSP_DEBUG_UART_hal_config, \
+                .userIsr = uart4_isr_callback,                         \
+                .UART_SCB_IRQ_cfg = &UART4_SCB_IRQ_cfg,                \
+                UART4_DMA_TX_CONFIG                                    \
+            }
+    #endif
+
+void uart4_isr_callback(void);
+    #ifdef BSP_USING_UART4_DMA_TX
+void uart4_dma_tx_isr_callback(void);
+    #endif
+
+#endif /* BSP_USING_UART4 */
 
 /* ----------------------------------------------------------------
  * UART5
