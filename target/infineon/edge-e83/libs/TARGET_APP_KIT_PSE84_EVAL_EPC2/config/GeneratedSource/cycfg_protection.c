@@ -5,8 +5,8 @@
  * System configuration
  * This file was automatically generated and should not be modified.
  * Configurator Backend 3.70.0
- * device-db 4.35.0.9884
- * mtb-dsl-pse8xxgp 1.4.0.994
+ * device-db 4.37.0.10260
+ * mtb-dsl-pse8xxgp 1.2.0.895
  *
  *******************************************************************************
  * Copyright 2026 Cypress Semiconductor Corporation (an Infineon company) or
@@ -29,11 +29,6 @@
 #include "cycfg_protection.h"
 #include "cycfg_system.h"
 
-#if  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED)
-#include "cycfg_ppc.h"
-#include "ifx_se_platform.h"
-#endif /*  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) */
-
 void init_cycfg_protection(void)
 {
 #if (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && !defined(CYBSP_SKIP_SAU_INIT)
@@ -42,9 +37,6 @@ void init_cycfg_protection(void)
 #if  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) && !defined(CYBSP_SKIP_MPC_INIT)
     init_cycfg_mpc();
 #endif /*  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) && !defined(CYBSP_SKIP_MPC_INIT) */
-#if  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) && !defined(CYCFG_PROTECTION_SE_ENABLE) && !defined(CYBSP_SKIP_PPC_INIT)
-    ifx_se_disable(NULL);
-#endif /*  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) && !defined(CYCFG_PROTECTION_SE_ENABLE) && !defined(CYBSP_SKIP_PPC_INIT) */
 #if  (CY_SYSTEM_CPU_M33) && defined(COMPONENT_SECURE_DEVICE) && defined(CY_PDL_TZ_ENABLED) && !defined(CYBSP_SKIP_PPC_INIT)
     init_cycfg_ppc0();
     init_cycfg_ppc1();

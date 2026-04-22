@@ -7,7 +7,7 @@ target = "SIEON S1"
 [console]
     [[console.devices]]
     type = "serial"
-    name = "serial0"
+    name = "serial4"
     baudrate = 57600
     auto-switch = true
 

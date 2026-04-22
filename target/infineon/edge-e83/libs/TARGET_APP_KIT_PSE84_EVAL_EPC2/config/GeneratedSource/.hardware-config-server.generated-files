@@ -4,7 +4,6 @@ cycfg_clock_types.h
 cycfg_clocks.c
 cycfg_clocks.h
 cycfg_connectivity_bt.h
-cycfg_connectivity_wifi.h
 cycfg_dmas.c
 cycfg_dmas.h
 cycfg_memory.h
