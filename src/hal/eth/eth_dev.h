@@ -18,22 +18,22 @@
 
 #include <lwip/sockets.h>
 
+#include "module/utils/ringbuffer.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 struct eth_dev {
     struct rt_device parent;
-    int sock;
-    int domain;
-    int type;
-    int protocol;
-    struct sockaddr_in remote_addr;
-    struct sockaddr_in local_addr;
+    struct udp_pcb* udp_pcb;
+    ringbuffer* rx_rb;
+    struct rt_completion rx_ind;
+    ip_addr_t local_addr, remote_addr;
+    uint16_t local_port, remote_port;
 };
 typedef struct eth_dev* eth_dev_t;
 
-void hal_eth_dev_init(eth_dev_t eth);
 rt_err_t hal_eth_dev_register(eth_dev_t eth, const char* name, rt_uint16_t flag, void* data);
 
 #ifdef __cplusplus

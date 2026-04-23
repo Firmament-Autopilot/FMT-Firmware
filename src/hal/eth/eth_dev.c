@@ -15,18 +15,45 @@
  *****************************************************************************/
 
 #include <firmament.h>
-#include <lwip/sockets.h>
+
+#include "lwip/err.h"
+
+#include "lwip/dns.h"
+#include "lwip/ip_addr.h"
+#include "lwip/opt.h"
+#include "lwip/pbuf.h"
+#include "lwip/timeouts.h"
+#include "lwip/udp.h"
 
 #include "hal/eth/eth_dev.h"
 
-// static rt_err_t hal_eth_dev_init(rt_device_t dev)
-// {
-//     eth_dev_t eth = (eth_dev_t)dev;
+#define ETH_DEV_RX_BUFFER_SIZE (4096)
 
-//     RT_ASSERT(dev != RT_NULL);
+static void udp_recv_callback(void* arg, struct udp_pcb* pcb, struct pbuf* p, const ip_addr_t* addr, u16_t port)
+{
+    eth_dev_t eth = (eth_dev_t)arg;
 
-//     return RT_EOK;
-// }
+    if (p == NULL || eth == NULL) {
+        return;
+    }
+
+    struct pbuf* sbuf = p;
+    while (sbuf != NULL) {
+        if (ringbuffer_put(eth->rx_rb, sbuf->payload, sbuf->len) != sbuf->len) {
+            /* maybe ringbuffer is full */
+            break;
+        }
+        sbuf = sbuf->next; /* move to next */
+    }
+
+    pbuf_free(p);
+
+    rt_completion_done(&eth->rx_ind);
+
+    if (eth->parent.rx_indicate) {
+        eth->parent.rx_indicate(&eth->parent, ringbuffer_getlen(eth->rx_rb));
+    }
+}
 
 static rt_err_t hal_eth_dev_open(rt_device_t dev, rt_uint16_t oflag)
 {
@@ -34,24 +61,33 @@ static rt_err_t hal_eth_dev_open(rt_device_t dev, rt_uint16_t oflag)
 
     RT_ASSERT(dev != RT_NULL);
 
-    eth->sock = socket(eth->domain, eth->type, eth->protocol);
-    if (eth->sock < 0) {
-        /* socket create fail */
-        return RT_ENOSYS;
+    if (eth->udp_pcb == NULL) {
+        eth->udp_pcb = udp_new_ip_type(IPADDR_TYPE_ANY);
+        if (eth->udp_pcb != NULL) {
+            /* create rx ringbuffer */
+            eth->rx_rb = ringbuffer_create(ETH_DEV_RX_BUFFER_SIZE);
+            if (eth->rx_rb == NULL) {
+                udp_remove(eth->udp_pcb);
+                return RT_ENOMEM;
+            }
+            /* create rx complete handler */
+            rt_completion_init(&eth->rx_ind);
+
+            if (udp_bind(eth->udp_pcb, &eth->local_addr, eth->local_port) != ERR_OK) {
+                udp_remove(eth->udp_pcb);
+                return RT_ERROR;
+            }
+
+            // if (udp_connect(eth->udp_pcb, &eth->remote_addr, eth->remote_port) != ERR_OK) {
+            //     udp_remove(eth->udp_pcb);
+            //     return RT_ERROR;
+            // }
+
+            udp_recv(eth->udp_pcb, udp_recv_callback, eth);
+        } else {
+            return RT_ERROR;
+        }
     }
-
-    // memset(&eth->local_addr, 0, sizeof(eth->local_addr));
-    // eth->local_addr.sin_family = AF_INET;
-    // eth->local_addr.sin_port = htons(5000);
-    // eth->local_addr.sin_addr.s_addr = INADDR_ANY;
-
-    /* bind local address/port */
-    if (bind(eth->sock, (struct sockaddr*)&eth->local_addr, sizeof(eth->local_addr)) < 0) {
-        /* bind fail */
-        closesocket(eth->sock);
-        eth->sock = -1;
-        return RT_ERROR;
-    };
 
     return RT_EOK;
 }
@@ -62,8 +98,8 @@ rt_err_t hal_eth_dev_close(rt_device_t dev)
 
     RT_ASSERT(dev != RT_NULL);
 
-    closesocket(eth->sock);
-    eth->sock = -1;
+    udp_disconnect(eth->udp_pcb);
+    udp_remove(eth->udp_pcb);
 
     return RT_EOK;
 }
@@ -71,66 +107,77 @@ rt_err_t hal_eth_dev_close(rt_device_t dev)
 static rt_size_t hal_eth_dev_read(rt_device_t dev, rt_off_t pos, void* buffer, rt_size_t size)
 {
     eth_dev_t eth = (eth_dev_t)dev;
-    struct sockaddr_in client_addr;
-    socklen_t addr_len = sizeof(client_addr);
-    uint32_t timeout_ms = pos;
-    int ret;
+    rt_size_t rx_cnt = 0;
+    rt_int32_t timeout = pos;
 
     RT_ASSERT(dev != RT_NULL);
 
-    struct timeval timeout;
-    uint32_t mode = 0; /* blocking */
-    if (timeout_ms == RT_WAITING_NO) {
-        mode = 1;      /* non-blocking */
-        ioctlsocket(eth->sock, FIONBIO, &mode);
-    } else {
-        ioctlsocket(eth->sock, FIONBIO, &mode);
+    if (size == 0) {
+        return 0;
+    }
 
-        if (timeout_ms > 0) {
-            timeout.tv_sec = timeout_ms / 1000;
-            timeout.tv_usec = (timeout_ms % 1000) * 1000;
+    if ((dev == RT_NULL) || (buffer == RT_NULL)) {
+        return 0;
+    }
 
-            if (setsockopt(eth->sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout)) < 0) {
-                return 0;
+    if (size == 0)
+        return 0;
+
+    /* try to read data */
+    rx_cnt = ringbuffer_get(eth->rx_rb, buffer, size);
+
+    /* if timeout is not 0, then check if required length data read */
+    if (timeout != 0) {
+        uint32_t time_start, elapse_time;
+        /* if not enough data reveived, wait it */
+        while (rx_cnt < size) {
+            time_start = systime_now_ms();
+            /* wait until something reveived (synchronized read) */
+            if (rt_completion_wait(&eth->rx_ind, timeout) != RT_EOK) {
+                break;
             }
+            if (timeout > 0) {
+                elapse_time = systime_now_ms() - time_start;
+                timeout -= elapse_time;
+                if (timeout <= 0) {
+                    /* timeout */
+                    break;
+                }
+            }
+            /* read rest data */
+            rx_cnt += ringbuffer_get(eth->rx_rb, (void*)((uint32_t)buffer + rx_cnt), size - rx_cnt);
         }
     }
 
-    ret = recvfrom(eth->sock, buffer, size, 0, (struct sockaddr*)&client_addr, &addr_len);
-
-    if (ret > 0) {
-        return ret;
-    } else {
-        return 0;
-    }
+    return rx_cnt;
 }
 
 static rt_size_t hal_eth_dev_write(rt_device_t dev, rt_off_t pos, const void* buffer, rt_size_t size)
 {
     eth_dev_t eth = (eth_dev_t)dev;
-    int ret;
+    struct pbuf* p;
+    rt_size_t w_size;
 
     RT_ASSERT(dev != RT_NULL);
 
-    ret = sendto(eth->sock, buffer, size, 0, (struct sockaddr*)&eth->remote_addr, sizeof(eth->remote_addr));
-    if (ret > 0) {
-        return ret;
-    } else {
+    p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
+    if (p == NULL) {
         return 0;
     }
-}
 
-void hal_eth_dev_init(eth_dev_t eth)
-{
-    RT_ASSERT(eth != RT_NULL);
+    memcpy(p->payload, buffer, size);
 
-    eth->sock = -1;
-    eth->domain = AF_INET;
-    eth->type = SOCK_DGRAM;
-    eth->protocol = IPPROTO_UDP;
+    if (udp_sendto(eth->udp_pcb, p, &eth->remote_addr, eth->remote_port) != ERR_OK) {
+        w_size = 0;
+        printf("send fail\n");
+    } else {
+        w_size = size;
+        printf("send ok\n");
+    }
 
-    memset(&eth->local_addr, 0, sizeof(eth->local_addr));
-    memset(&eth->remote_addr, 0, sizeof(eth->remote_addr));
+    pbuf_free(p);
+
+    return w_size;
 }
 
 /**

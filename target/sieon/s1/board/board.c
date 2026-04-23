@@ -532,19 +532,24 @@ void bsp_post_initialize(void)
     FMT_CHECK(pmu_init());
 
     static struct eth_dev eth_dev0;
-    hal_eth_dev_init(&eth_dev0);
-    eth_dev0.domain = AF_INET;
-    eth_dev0.type = SOCK_DGRAM;
-    eth_dev0.protocol = IPPROTO_UDP;
-    eth_dev0.local_addr.sin_family = AF_INET;
-    eth_dev0.local_addr.sin_port = htons(5000);
-    eth_dev0.local_addr.sin_addr.s_addr = INADDR_ANY;
+    // hal_eth_dev_init(&eth_dev0);
+    // eth_dev0.domain = AF_INET;
+    // eth_dev0.type = SOCK_DGRAM;
+    // eth_dev0.protocol = IPPROTO_UDP;
+    // eth_dev0.local_addr.sin_family = AF_INET;
+    // eth_dev0.local_addr.sin_port = htons(5000);
+    // eth_dev0.local_addr.sin_addr.s_addr = INADDR_ANY;
 
     // memset(&eth_dev0.local_addr, 0, sizeof(eth_dev0.local_addr));
     // eth_dev0.local_addr.sin_family = AF_INET;
     // eth_dev0.local_addr.sin_port = htons(5000);
     // eth_dev0.local_addr.sin_addr.s_addr = INADDR_ANY;
 
+    IP4_ADDR(&eth_dev0.local_addr, 0, 0, 0, 0);
+    // eth_dev0.local_addr.addr = IP4_ADDR_ANY;
+    eth_dev0.local_port = 5000;
+    IP4_ADDR(&eth_dev0.remote_addr, 192, 168, 1, 24);
+    eth_dev0.remote_port = 5001;
     hal_eth_dev_register(&eth_dev0, "eth_dev0", RT_DEVICE_FLAG_RDWR, NULL);
 
     /* show system information */

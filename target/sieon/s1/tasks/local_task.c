@@ -27,13 +27,18 @@ void task_local_entry(void* parameter)
     rt_device_t dev = rt_device_find("eth_dev0");
     rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
 
-    uint8_t ch[128] = { 0 };
+    uint8_t buffer[128] = { 0x66, 0x77, 0x88 };
+    // uint8_t ch;
+    printf("waiting...\n");
     /* main loop */
     while (1) {
-        printf("waiting...\n");
-        if (rt_device_read(dev, 0, ch, 128) > 0) {
-            printf("data:%s\r\n", ch);
-        }
+        // while (rt_device_read(dev, RT_WAITING_FOREVER, &ch, 1) > 0) {
+        //     printf("%c", ch);
+        // }
+
+        rt_device_write(dev, RT_WAITING_FOREVER, buffer, 3);
+
+        systime_msleep(1000);
     }
 }
 
