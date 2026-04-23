@@ -17,12 +17,6 @@
 #include <firmament.h>
 
 #include "lwip/err.h"
-
-#include "lwip/dns.h"
-#include "lwip/ip_addr.h"
-#include "lwip/opt.h"
-#include "lwip/pbuf.h"
-#include "lwip/timeouts.h"
 #include "lwip/udp.h"
 
 #include "hal/eth/eth_dev.h"
@@ -77,12 +71,7 @@ static rt_err_t hal_eth_dev_open(rt_device_t dev, rt_uint16_t oflag)
                 udp_remove(eth->udp_pcb);
                 return RT_ERROR;
             }
-
-            // if (udp_connect(eth->udp_pcb, &eth->remote_addr, eth->remote_port) != ERR_OK) {
-            //     udp_remove(eth->udp_pcb);
-            //     return RT_ERROR;
-            // }
-
+            /* start to receive data */
             udp_recv(eth->udp_pcb, udp_recv_callback, eth);
         } else {
             return RT_ERROR;
@@ -110,18 +99,9 @@ static rt_size_t hal_eth_dev_read(rt_device_t dev, rt_off_t pos, void* buffer, r
     rt_size_t rx_cnt = 0;
     rt_int32_t timeout = pos;
 
-    RT_ASSERT(dev != RT_NULL);
-
-    if (size == 0) {
+    if (size == 0 || dev == RT_NULL || buffer == RT_NULL) {
         return 0;
     }
-
-    if ((dev == RT_NULL) || (buffer == RT_NULL)) {
-        return 0;
-    }
-
-    if (size == 0)
-        return 0;
 
     /* try to read data */
     rx_cnt = ringbuffer_get(eth->rx_rb, buffer, size);
@@ -158,7 +138,9 @@ static rt_size_t hal_eth_dev_write(rt_device_t dev, rt_off_t pos, const void* bu
     struct pbuf* p;
     rt_size_t w_size;
 
-    RT_ASSERT(dev != RT_NULL);
+    if (size == 0 || dev == RT_NULL || buffer == RT_NULL) {
+        return 0;
+    }
 
     p = pbuf_alloc(PBUF_TRANSPORT, size, PBUF_RAM);
     if (p == NULL) {
@@ -169,15 +151,26 @@ static rt_size_t hal_eth_dev_write(rt_device_t dev, rt_off_t pos, const void* bu
 
     if (udp_sendto(eth->udp_pcb, p, &eth->remote_addr, eth->remote_port) != ERR_OK) {
         w_size = 0;
-        printf("send fail\n");
     } else {
         w_size = size;
-        printf("send ok\n");
     }
 
     pbuf_free(p);
 
+    if (eth->parent.tx_complete) {
+        eth->parent.tx_complete(&eth->parent, NULL);
+    }
+
     return w_size;
+}
+
+void init_eth_dev(eth_dev_t eth)
+{
+    memset(eth, 0, sizeof(struct eth_dev));
+    IP4_ADDR(&eth->local_addr, 0, 0, 0, 0); /* receive from any ip */
+    IP4_ADDR(&eth->remote_addr, 0, 0, 0, 0);
+    eth->local_port = 0;                    /* alloc a local port */
+    eth->remote_port = 0;
 }
 
 /**
@@ -206,7 +199,7 @@ rt_err_t hal_eth_dev_register(eth_dev_t eth, const char* name, rt_uint16_t flag,
     dev->write = hal_eth_dev_write;
     dev->control = RT_NULL;
 
-    dev->user_data = RT_NULL;
+    dev->user_data = data;
 
     if (rt_device_register(dev, name, flag) != RT_EOK) {
         return FMT_ERROR;

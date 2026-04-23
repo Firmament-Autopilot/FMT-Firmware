@@ -34,6 +34,7 @@ struct eth_dev {
 };
 typedef struct eth_dev* eth_dev_t;
 
+void init_eth_dev(eth_dev_t eth);
 rt_err_t hal_eth_dev_register(eth_dev_t eth, const char* name, rt_uint16_t flag, void* data);
 
 #ifdef __cplusplus

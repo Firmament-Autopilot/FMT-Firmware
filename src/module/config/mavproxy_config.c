@@ -15,9 +15,12 @@
  *****************************************************************************/
 #include <firmament.h>
 
+#include <stdio.h>
+
+#include "hal/eth/eth_dev.h"
 #include "hal/serial/serial.h"
-#include "module/mavproxy/mavproxy.h"
 #include "module/config/mavproxy_config.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/toml/toml.h"
 #include "module/utils/devmq.h"
 
@@ -60,8 +63,6 @@ static void __handle_device_msg(rt_device_t dev, void* msg)
 static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
 {
     fmt_err_t err = FMT_EOK;
-    int i;
-    const char* key;
     uint8_t chan;
     uint8_t idx;
 
@@ -86,6 +87,11 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
         return FMT_ERROR;
     }
 
+    if (toml_string_in(curtab, "name", &DEVICE_LIST(chan)[idx].name) != 0) {
+        TOML_DBG_E("fail to parse name value\n");
+        return FMT_ERROR;
+    }
+
     /* get device type */
     if (toml_string_in(curtab, "type", &DEVICE_LIST(chan)[idx].type) == 0) {
         if (DEVICE_TYPE_IS(chan, idx, serial)) {
@@ -94,15 +100,67 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
             };
             (DEVICE_LIST(chan)[idx].config) = rt_malloc(sizeof(mavproxy_serial_dev_config));
 
-            /* set default value */
-            if (DEVICE_LIST(chan)[idx].config) {
-                *(mavproxy_serial_dev_config*)DEVICE_LIST(chan)[idx].config = serial_default_config;
+            mavproxy_serial_dev_config* config = (mavproxy_serial_dev_config*)DEVICE_LIST(chan)[idx].config;
+
+            if (config != NULL) {
+                int64_t ival;
+
+                *config = serial_default_config; /* set default value */
+                if (toml_int_in(curtab, "baudrate", &ival) == 0) {
+                    config->baudrate = (uint32_t)ival;
+                }
             } else {
                 TOML_DBG_E("malloc fail\n");
-                err = FMT_ERROR;
+                err = FMT_ENOMEM;
             }
         } else if (DEVICE_TYPE_IS(chan, idx, usb)) {
-            /* do nothing */
+            int bval;
+            if (toml_bool_in(curtab, "auto-switch", &bval) == 0) {
+                if (bval) {
+                    /* if auto-switch is true, register devmq to monitor device status */
+                    if (devmq_register(FIND_DEVICE(chan, idx), __handle_device_msg) != FMT_EOK) {
+                        TOML_DBG_W("fail to register %s message queue\n", DEVICE_LIST(chan)[idx].name);
+                    }
+                }
+            }
+        } else if (DEVICE_TYPE_IS(chan, idx, eth)) {
+            char* ip_addr;
+            int64_t port;
+            int ip[4];
+            eth_dev_t eth_dev = (eth_dev_t)rt_malloc(sizeof(struct eth_dev));
+
+            if (eth_dev == NULL) {
+                TOML_DBG_E("fail to alloc mem for eth_dev\n");
+                return FMT_ENOMEM;
+            }
+            /* set default value */
+            init_eth_dev(eth_dev);
+
+            if (toml_string_in(curtab, "local_addr", &ip_addr) == 0) {
+                sscanf(ip_addr, "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]);
+                IP4_ADDR(&eth_dev->local_addr, ip[0], ip[1], ip[2], ip[3]);
+            }
+
+            if (toml_string_in(curtab, "remote_addr", &ip_addr) == 0) {
+                sscanf(ip_addr, "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]);
+                IP4_ADDR(&eth_dev->remote_addr, ip[0], ip[1], ip[2], ip[3]);
+            } else {
+                TOML_DBG_E("eth dev need set remote addr\n");
+                return FMT_EINVAL;
+            }
+
+            if (toml_int_in(curtab, "local_port", &port) == 0) {
+                eth_dev->local_port = port;
+            }
+
+            if (toml_int_in(curtab, "remote_port", &port) == 0) {
+                eth_dev->remote_port = port;
+            } else {
+                TOML_DBG_E("eth dev need set remote port\n");
+                return FMT_EINVAL;
+            }
+
+            hal_eth_dev_register(eth_dev, DEVICE_LIST(chan)[idx].name, RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE, NULL);
         } else {
             TOML_DBG_E("unknown device type: %s\n", DEVICE_LIST(chan)[idx].type);
             err = FMT_ERROR;
@@ -110,56 +168,6 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
     } else {
         TOML_DBG_E("fail to parse type value\n");
         return FMT_ERROR;
-    }
-
-    if (toml_string_in(curtab, "name", &DEVICE_LIST(chan)[idx].name) != 0) {
-        TOML_DBG_E("fail to parse name value\n");
-        return FMT_ERROR;
-    }
-
-    /* traverse keys in table */
-    for (i = 0; 0 != (key = toml_key_in(curtab, i)); i++) {
-        if (MATCH(key, "chan") || MATCH(key, "type") || MATCH(key, "name")) {
-            /* already handled */
-            continue;
-        }
-
-        if (DEVICE_TYPE_IS(chan, idx, serial)) {
-            mavproxy_serial_dev_config* config = (mavproxy_serial_dev_config*)DEVICE_LIST(chan)[idx].config;
-            if (MATCH(key, "baudrate")) {
-                int64_t ival;
-                if (toml_int_in(curtab, key, &ival) == 0) {
-                    config->baudrate = (uint32_t)ival;
-                } else {
-                    TOML_DBG_W("fail to parse baudrate value\n");
-                    continue;
-                }
-            } else {
-                TOML_DBG_W("unknown config key: %s\n", key);
-                continue;
-            }
-        } else if (DEVICE_TYPE_IS(chan, idx, usb)) {
-            if (MATCH(key, "auto-switch")) {
-                int bval;
-                if (toml_bool_in(curtab, key, &bval) == 0) {
-                    if (bval) {
-                        /* if auto-switch is true, register devmq to monitor device status */
-                        if (devmq_register(FIND_DEVICE(chan, idx), __handle_device_msg) != FMT_EOK) {
-                            TOML_DBG_W("fail to register %s message queue\n", DEVICE_LIST(chan)[idx].name);
-                        }
-                    }
-                } else {
-                    TOML_DBG_E("fail to parse auto-switch value\n");
-                    continue;
-                }
-            } else {
-                TOML_DBG_E("unknown config key: %s\n", key);
-                continue;
-            }
-        } else {
-            TOML_DBG_W("unknown device type:%s \n", DEVICE_LIST(chan)[idx].type);
-            continue;
-        }
     }
 
     if (err == FMT_EOK) {
@@ -203,7 +211,7 @@ static fmt_err_t mavproxy_parse_rtcm_device(const toml_table_t* curtab)
     if (toml_string_in(curtab, "type", &mavproxy_rtcm_device_list[idx].type) == 0) {
         if (MATCH(mavproxy_rtcm_device_list[idx].type, "serial")) {
             mavproxy_serial_dev_config serial_default_config = {
-                .baudrate = 0   /* 0 means don't change baudrate */
+                .baudrate = 0 /* 0 means don't change baudrate */
             };
             mavproxy_rtcm_device_list[idx].config = rt_malloc(sizeof(mavproxy_serial_dev_config));
 
