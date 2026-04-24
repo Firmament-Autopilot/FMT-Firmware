@@ -66,6 +66,7 @@ extern "C" {
 #define srss_0_clock_0_bakclk_0_ENABLED 1U
 #define srss_0_clock_0_pll250m_0_ENABLED 1U
 #define srss_0_clock_0_pll250m_1_ENABLED 1U
+#define srss_0_clock_0_pll500m_0_ENABLED 1U
 #define srss_0_clock_0_hfclk_0_ENABLED 1U
 #define CY_CFG_SYSCLK_CLKHF0 0UL
 #define srss_0_clock_0_hfclk_1_ENABLED 1U

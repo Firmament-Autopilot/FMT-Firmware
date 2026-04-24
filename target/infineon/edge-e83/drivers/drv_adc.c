@@ -59,9 +59,9 @@ static rt_err_t ifx_adc_enable(adc_dev_t adc_dev, uint8_t enable)
     }
 
     if (enable == ADC_CMD_ENABLE) {
-        rt_kprintf("ADC enabled");
+        rt_kprintf("ADC enabled\n");
     } else if (enable == ADC_CMD_DISABLE) {
-        rt_kprintf("ADC disabled");
+        rt_kprintf("ADC disabled\n");
     } else {
         return RT_EINVAL;
     }
@@ -74,28 +74,46 @@ static rt_err_t ifx_adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* m
     struct ifx_adc* adc;
     const struct ifx_sar_adc_config* cfg;
     int32_t counts;
-    int16_t mv;
+    int32_t mv;
+    uint8_t phy_channel;
 
     adc = rt_container_of(adc_dev, struct ifx_adc, adc_dev);
     cfg = adc->cfg;
 
-    if (channel >= 8) {
+    /* Validate logical channel range */
+    if (channel >= cfg->num_channels) {
+        rt_kprintf("ADC: invalid logical channel %d (max %d)\n", channel, cfg->num_channels - 1);
         return RT_EINVAL;
     }
 
+    /* Map logical channel to SAR result channel (GPIO0..GPIO7) */
+    phy_channel = cfg->channel_map[channel];
+
+    if (phy_channel >= 8) {
+        rt_kprintf("ADC: invalid physical channel %d\n", phy_channel);
+        return RT_EINVAL;
+    }
+
+    /* Read SAR conversion result */
     counts = Cy_AutAnalog_SAR_ReadResult(
         cfg->sar_idx,
         cfg->input,
-        channel);
+        phy_channel);
 
+    /* Convert raw counts to millivolts */
     mv = Cy_AutAnalog_SAR_CountsTo_mVolts(
         cfg->sar_idx,
         cfg->low_power,
         cfg->sequencer,
         cfg->input,
-        channel,
+        phy_channel,
         cfg->vref_mv,
         counts);
+
+    /* Single-ended channels should not report negative voltage */
+    if (mv < 0) {
+        mv = 0;
+    }
 
     *mVolt = (uint32_t)mv;
 
@@ -125,8 +143,12 @@ int drv_adc_init(void)
                                   RT_DEVICE_FLAG_RDONLY,
                                   RT_NULL);
         if (result != RT_EOK) {
+            rt_kprintf("ADC device %s register failed: %d\n", ifx_adc_obj[i].name, result);
             return result;
         }
+        rt_kprintf("ADC device %s registered (%d channels)\n",
+                   ifx_adc_obj[i].name,
+                   ifx_adc_obj[i].cfg->num_channels);
     }
 
     return RT_EOK;

@@ -64,9 +64,15 @@ extern "C" {
 #define CYBSP_AUTONOMOUS_CONTROLLER_STATE_0_ENABLED 1U
 #define CYBSP_AUTONOMOUS_CONTROLLER_STATE_1_ENABLED 1U
 #define CYBSP_AUTONOMOUS_CONTROLLER_STATE_2_ENABLED 1U
-#define CYBSP_SAR_ADC_GPIO_CH_0_ENABLED 1U
+#define pass_0_sar_0_gpiochan_0_ENABLED 1U
+#define pass_0_sar_0_gpiochan_1_ENABLED 1U
+#define pass_0_sar_0_gpiochan_2_ENABLED 1U
+#define pass_0_sar_0_gpiochan_3_ENABLED 1U
 #define CYBSP_SAR_ADC_SCAN_GRP_0_ENABLED 1U
 #define CYBSP_SAR_ADC_SCAN_GRP_0_SCAN_0_ENABLED 1U
+#define pass_0_sar_0_group_0_scan_1_ENABLED 1U
+#define pass_0_sar_0_group_0_scan_2_ENABLED 1U
+#define pass_0_sar_0_group_0_scan_3_ENABLED 1U
 #define eth_0_ENABLED 1U
 #define ETH_PHY_LAN8710AI 
 #define eth_0_PHY_ADDR 0
