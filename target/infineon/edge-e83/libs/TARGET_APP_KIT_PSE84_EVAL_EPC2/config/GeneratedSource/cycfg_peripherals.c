@@ -204,7 +204,40 @@ cy_stc_autanalog_stt_ac_t CYBSP_AUTONOMOUS_CONTROLLER_stt[] =
 cy_stc_autanalog_sar_hs_chan_t CYBSP_SAR_ADC_gpio_ch_cfg[] =
 {
     {
-        .posPin = CY_AUTANALOG_SAR_PIN_GPIO1,
+        .posPin = CY_AUTANALOG_SAR_PIN_GPIO4,
+        .hsDiffEn = false,
+        .sign = false,
+        .posCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
+        .negPin = CY_AUTANALOG_SAR_PIN_GPIO0,
+        .accShift = false,
+        .negCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
+        .hsLimit = CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED,
+        .fifoSel = CY_AUTANALOG_FIFO_DISABLED,
+    },
+    {
+        .posPin = CY_AUTANALOG_SAR_PIN_GPIO5,
+        .hsDiffEn = false,
+        .sign = false,
+        .posCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
+        .negPin = CY_AUTANALOG_SAR_PIN_GPIO0,
+        .accShift = false,
+        .negCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
+        .hsLimit = CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED,
+        .fifoSel = CY_AUTANALOG_FIFO_DISABLED,
+    },
+    {
+        .posPin = CY_AUTANALOG_SAR_PIN_GPIO6,
+        .hsDiffEn = false,
+        .sign = false,
+        .posCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
+        .negPin = CY_AUTANALOG_SAR_PIN_GPIO0,
+        .accShift = false,
+        .negCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
+        .hsLimit = CY_AUTANALOG_SAR_LIMIT_STATUS_DISABLED,
+        .fifoSel = CY_AUTANALOG_FIFO_DISABLED,
+    },
+    {
+        .posPin = CY_AUTANALOG_SAR_PIN_GPIO7,
         .hsDiffEn = false,
         .sign = false,
         .posCoeff = CY_AUTANALOG_SAR_CH_COEFF_DISABLED,
@@ -228,15 +261,15 @@ cy_stc_autanalog_sar_sta_hs_t CYBSP_SAR_ADC_sta_hs_cfg =
     .hsGpioChan =
     {
         &CYBSP_SAR_ADC_gpio_ch_cfg[0U], 
-        NULL, 
-        NULL, 
-        NULL, 
+        &CYBSP_SAR_ADC_gpio_ch_cfg[1U], 
+        &CYBSP_SAR_ADC_gpio_ch_cfg[2U], 
+        &CYBSP_SAR_ADC_gpio_ch_cfg[3U], 
         NULL, 
         NULL, 
         NULL, 
         NULL, 
     },
-    .hsGpioResultMask =   CY_AUTANALOG_SAR_CHAN_MASK_GPIO0,
+    .hsGpioResultMask =   CY_AUTANALOG_SAR_CHAN_MASK_GPIO0 |  CY_AUTANALOG_SAR_CHAN_MASK_GPIO1 |  CY_AUTANALOG_SAR_CHAN_MASK_GPIO2 |  CY_AUTANALOG_SAR_CHAN_MASK_GPIO3,
 };
 cy_stc_autanalog_sar_sta_t CYBSP_SAR_ADC_sta_cfg =
 {
@@ -281,6 +314,42 @@ cy_stc_autanalog_sar_seq_tab_hs_t CYBSP_SAR_ADC_seq_hs_cfg[] =
 {
     {
         .chanEn = CY_AUTANALOG_SAR_CHAN_MASK_GPIO0,
+        .muxMode = CY_AUTANALOG_SAR_CHAN_CFG_MUX_DISABLED,
+        .mux0Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
+        .mux1Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
+        .sampleTimeEn = true,
+        .sampleTime = CY_AUTANALOG_SAR_SAMPLE_TIME0,
+        .accEn = false,
+        .accCount = CY_AUTANALOG_SAR_ACC_CNT2,
+        .calReq = CY_AUTANALOG_SAR_CAL_DISABLED,
+        .nextAction = CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_NEXT,
+    },
+    {
+        .chanEn = CY_AUTANALOG_SAR_CHAN_MASK_GPIO1,
+        .muxMode = CY_AUTANALOG_SAR_CHAN_CFG_MUX_DISABLED,
+        .mux0Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
+        .mux1Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
+        .sampleTimeEn = true,
+        .sampleTime = CY_AUTANALOG_SAR_SAMPLE_TIME0,
+        .accEn = false,
+        .accCount = CY_AUTANALOG_SAR_ACC_CNT2,
+        .calReq = CY_AUTANALOG_SAR_CAL_DISABLED,
+        .nextAction = CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_NEXT,
+    },
+    {
+        .chanEn = CY_AUTANALOG_SAR_CHAN_MASK_GPIO2,
+        .muxMode = CY_AUTANALOG_SAR_CHAN_CFG_MUX_DISABLED,
+        .mux0Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
+        .mux1Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
+        .sampleTimeEn = true,
+        .sampleTime = CY_AUTANALOG_SAR_SAMPLE_TIME0,
+        .accEn = false,
+        .accCount = CY_AUTANALOG_SAR_ACC_CNT2,
+        .calReq = CY_AUTANALOG_SAR_CAL_DISABLED,
+        .nextAction = CY_AUTANALOG_SAR_NEXT_ACTION_GO_TO_NEXT,
+    },
+    {
+        .chanEn = CY_AUTANALOG_SAR_CHAN_MASK_GPIO3,
         .muxMode = CY_AUTANALOG_SAR_CHAN_CFG_MUX_DISABLED,
         .mux0Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,
         .mux1Sel = CY_AUTANALOG_SAR_CHAN_CFG_MUX0,

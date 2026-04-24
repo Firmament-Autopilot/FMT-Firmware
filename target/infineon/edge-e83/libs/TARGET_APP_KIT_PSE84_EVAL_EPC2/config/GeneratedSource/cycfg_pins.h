@@ -908,39 +908,54 @@ extern "C" {
 #endif
 #define CYBSP_I2C8_SCL_HSIOM ioss_0_port_14_pin_4_HSIOM
 #define CYBSP_I2C8_SCL_IRQ ioss_interrupts_gpio_14_IRQn
-#define CYBSP_ARD_D8_ENABLED 1U
-#define CYBSP_ADC_7_ENABLED CYBSP_ARD_D8_ENABLED
-#define CYBSP_ARD_D8_PORT GPIO_PRT15
-#define CYBSP_ADC_7_PORT CYBSP_ARD_D8_PORT
-#define CYBSP_ARD_D8_PORT_NUM 15U
-#define CYBSP_ADC_7_PORT_NUM CYBSP_ARD_D8_PORT_NUM
-#define CYBSP_ARD_D8_PIN 0U
-#define CYBSP_ADC_7_PIN CYBSP_ARD_D8_PIN
-#define CYBSP_ARD_D8_NUM 0U
-#define CYBSP_ADC_7_NUM CYBSP_ARD_D8_NUM
-#define CYBSP_ARD_D8_DRIVEMODE CY_GPIO_DM_HIGHZ
-#define CYBSP_ADC_7_DRIVEMODE CYBSP_ARD_D8_DRIVEMODE
-#define CYBSP_ARD_D8_INIT_DRIVESTATE 1
-#define CYBSP_ADC_7_INIT_DRIVESTATE CYBSP_ARD_D8_INIT_DRIVESTATE
-#ifndef ioss_0_port_15_pin_0_HSIOM
-    #define ioss_0_port_15_pin_0_HSIOM HSIOM_SEL_GPIO
+#define CYBSP_ARD_ADC_2_ENABLED 1U
+#define CYBSP_ARD_ADC_2_PORT GPIO_PRT15
+#define CYBSP_ARD_ADC_2_PORT_NUM 15U
+#define CYBSP_ARD_ADC_2_PIN 4U
+#define CYBSP_ARD_ADC_2_NUM 4U
+#define CYBSP_ARD_ADC_2_DRIVEMODE CY_GPIO_DM_ANALOG
+#define CYBSP_ARD_ADC_2_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_15_pin_4_HSIOM
+    #define ioss_0_port_15_pin_4_HSIOM HSIOM_SEL_GPIO
 #endif
-#define CYBSP_ARD_D8_HSIOM ioss_0_port_15_pin_0_HSIOM
-#define CYBSP_ADC_7_HSIOM CYBSP_ARD_D8_HSIOM
-#define CYBSP_ARD_D8_IRQ ioss_interrupts_gpio_15_IRQn
-#define CYBSP_ADC_7_IRQ CYBSP_ARD_D8_IRQ
-#define CYBSP_ADC_6_POT_ENABLED 1U
-#define CYBSP_ADC_6_POT_PORT GPIO_PRT15
-#define CYBSP_ADC_6_POT_PORT_NUM 15U
-#define CYBSP_ADC_6_POT_PIN 1U
-#define CYBSP_ADC_6_POT_NUM 1U
-#define CYBSP_ADC_6_POT_DRIVEMODE CY_GPIO_DM_ANALOG
-#define CYBSP_ADC_6_POT_INIT_DRIVESTATE 1
-#ifndef ioss_0_port_15_pin_1_HSIOM
-    #define ioss_0_port_15_pin_1_HSIOM HSIOM_SEL_GPIO
+#define CYBSP_ARD_ADC_2_HSIOM ioss_0_port_15_pin_4_HSIOM
+#define CYBSP_ARD_ADC_2_IRQ ioss_interrupts_gpio_15_IRQn
+#define CYBSP_ARD_ADC_3_ENABLED 1U
+#define CYBSP_ARD_ADC_3_PORT GPIO_PRT15
+#define CYBSP_ARD_ADC_3_PORT_NUM 15U
+#define CYBSP_ARD_ADC_3_PIN 5U
+#define CYBSP_ARD_ADC_3_NUM 5U
+#define CYBSP_ARD_ADC_3_DRIVEMODE CY_GPIO_DM_ANALOG
+#define CYBSP_ARD_ADC_3_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_15_pin_5_HSIOM
+    #define ioss_0_port_15_pin_5_HSIOM HSIOM_SEL_GPIO
 #endif
-#define CYBSP_ADC_6_POT_HSIOM ioss_0_port_15_pin_1_HSIOM
-#define CYBSP_ADC_6_POT_IRQ ioss_interrupts_gpio_15_IRQn
+#define CYBSP_ARD_ADC_3_HSIOM ioss_0_port_15_pin_5_HSIOM
+#define CYBSP_ARD_ADC_3_IRQ ioss_interrupts_gpio_15_IRQn
+#define CYBSP_ARD_ADC_4_ENABLED 1U
+#define CYBSP_ARD_ADC_4_PORT GPIO_PRT15
+#define CYBSP_ARD_ADC_4_PORT_NUM 15U
+#define CYBSP_ARD_ADC_4_PIN 6U
+#define CYBSP_ARD_ADC_4_NUM 6U
+#define CYBSP_ARD_ADC_4_DRIVEMODE CY_GPIO_DM_ANALOG
+#define CYBSP_ARD_ADC_4_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_15_pin_6_HSIOM
+    #define ioss_0_port_15_pin_6_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_ARD_ADC_4_HSIOM ioss_0_port_15_pin_6_HSIOM
+#define CYBSP_ARD_ADC_4_IRQ ioss_interrupts_gpio_15_IRQn
+#define CYBSP_ARD_ADC_5_ENABLED 1U
+#define CYBSP_ARD_ADC_5_PORT GPIO_PRT15
+#define CYBSP_ARD_ADC_5_PORT_NUM 15U
+#define CYBSP_ARD_ADC_5_PIN 7U
+#define CYBSP_ARD_ADC_5_NUM 7U
+#define CYBSP_ARD_ADC_5_DRIVEMODE CY_GPIO_DM_ANALOG
+#define CYBSP_ARD_ADC_5_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_15_pin_7_HSIOM
+    #define ioss_0_port_15_pin_7_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_ARD_ADC_5_HSIOM ioss_0_port_15_pin_7_HSIOM
+#define CYBSP_ARD_ADC_5_IRQ ioss_interrupts_gpio_15_IRQn
 #define CYBSP_SPI_CLK_ENABLED 1U
 #define CYBSP_SPI_CLK_PORT GPIO_PRT16
 #define CYBSP_SPI_CLK_PORT_NUM 16U
@@ -1326,11 +1341,10 @@ extern const cy_stc_gpio_pin_config_t CYBSP_AMIC_1_OUT_config;
 
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C8_SDA_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C8_SCL_config;
-extern const cy_stc_gpio_pin_config_t CYBSP_ARD_D8_config;
-
-#define CYBSP_ADC_7_config CYBSP_ARD_D8_config
-
-extern const cy_stc_gpio_pin_config_t CYBSP_ADC_6_POT_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_2_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_3_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_4_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_5_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SPI_CLK_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SPI_MOSI_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SPI_MISO_config;
