@@ -8,7 +8,7 @@ static struct rt_spi_device spi1_dev;
 
 void drv_spi_device_attach(void)
 {
-    rt_spi_bus_attach_device(&spi1_dev, "spi1_dev", "spi1", (void*)GET_PIN(16, 3));
+    rt_spi_bus_attach_device(&spi1_dev, "spi3_dev1", "spi3", (void*)GET_PIN(21, 7));
 }
 
 static void spi_test_sample(void)
@@ -16,7 +16,7 @@ static void spi_test_sample(void)
     struct rt_spi_device* spi_dev;
     const char tx_buf[] = "abc";
     drv_spi_device_attach();
-    spi_dev = (struct rt_spi_device*)rt_device_find("spi1_dev");
+    spi_dev = (struct rt_spi_device*)rt_device_find("spi3_dev1");
     if (!spi_dev) {
         rt_kprintf("spi device not found!\n");
         return;

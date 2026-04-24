@@ -7,13 +7,13 @@ static int i2c_scan_sample(void)
     rt_uint16_t addr;
     rt_uint8_t dummy = 0x00;
 
-    bus = (struct rt_i2c_bus*)rt_device_find("i2c0");
+    bus = (struct rt_i2c_bus*)rt_device_find("i2c8");
     if (!bus) {
-        rt_kprintf("i2c0 not found!\n");
+        rt_kprintf("i2c8 not found!\n");
         return -1;
     }
 
-    rt_kprintf("Scanning I2C bus i2c0...\n");
+    rt_kprintf("Scanning I2C bus i2c8...\n");
 
     for (addr = 0x03; addr < 0x78; addr++) {
         struct rt_i2c_msg msg = {
@@ -40,9 +40,9 @@ static int i2c_write_sample(void)
     rt_uint16_t addr = 0x1E;
     rt_uint8_t data = 0xAA;
 
-    bus = (struct rt_i2c_bus*)rt_device_find("i2c0");
+    bus = (struct rt_i2c_bus*)rt_device_find("i2c8");
     if (!bus) {
-        rt_kprintf("i2c0 not found!\n");
+        rt_kprintf("i2c8 not found!\n");
         return -1;
     }
 
@@ -69,9 +69,9 @@ static int i2c_read_sample(void)
     rt_uint16_t addr = 0x1E;
     rt_uint8_t data = 0;
 
-    bus = (struct rt_i2c_bus*)rt_device_find("i2c0");
+    bus = (struct rt_i2c_bus*)rt_device_find("i2c8");
     if (!bus) {
-        rt_kprintf("i2c0 not found!\n");
+        rt_kprintf("i2c8 not found!\n");
         return -1;
     }
 

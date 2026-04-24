@@ -63,10 +63,12 @@ extern "C" {
 #define ioss_0_port_11_pin_7_HSIOM P11_7_ETH_REF_CLK
 #define ioss_0_port_13_pin_1_HSIOM P13_1_ETH_MDC
 #define ioss_0_port_13_pin_6_HSIOM P13_6_ETH_MDIO
+#define ioss_0_port_13_pin_7_HSIOM P13_7_SCB8_SPI_MISO
+#define ioss_0_port_14_pin_3_HSIOM P14_3_SCB8_SPI_MOSI
+#define ioss_0_port_14_pin_4_HSIOM P14_4_SCB8_SPI_CLK
 #define ioss_0_port_16_pin_0_HSIOM P16_0_SCB10_SPI_CLK
 #define ioss_0_port_16_pin_1_HSIOM P16_1_SCB10_SPI_MOSI
 #define ioss_0_port_16_pin_2_HSIOM P16_2_SCB10_SPI_MISO
-#define ioss_0_port_16_pin_3_HSIOM P16_3_SCB10_SPI_SELECT0
 #define ioss_0_port_16_pin_5_HSIOM P16_5_TCPWM0_LINE5
 #define ioss_0_port_17_pin_0_HSIOM P17_0_SCB5_UART_RX
 #define ioss_0_port_17_pin_1_HSIOM P17_1_SCB5_UART_TX
