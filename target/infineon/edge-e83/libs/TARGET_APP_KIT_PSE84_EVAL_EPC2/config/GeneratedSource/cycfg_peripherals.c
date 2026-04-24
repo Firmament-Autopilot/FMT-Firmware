@@ -452,9 +452,9 @@ const cy_stc_scb_uart_config_t CYBSP_UART2_config =
 #if defined (COMPONENT_MTB_HAL)
 const mtb_hal_peri_div_t CYBSP_UART2_clock_ref =
 {
-    .clk_dst = (en_clk_dst_t)CYBSP_DEBUG_UART_CLK_DIV_GRP_NUM,
-    .div_type = CYBSP_DEBUG_UART_CLK_DIV_HW,
-    .div_num = CYBSP_DEBUG_UART_CLK_DIV_NUM,
+    .clk_dst = (en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM,
+    .div_type = CYBSP_UART5_CLK_DIV_HW,
+    .div_num = CYBSP_UART5_CLK_DIV_NUM,
 };
 const mtb_hal_clock_t CYBSP_UART2_hal_clock =
 {
@@ -482,18 +482,18 @@ const mtb_hal_uart_configurator_t CYBSP_UART2_hal_config =
 
 const cy_stc_scb_spi_config_t CYBSP_SPI3_config =
 {
-    .spiMode = CY_SCB_SPI_SLAVE,
+    .spiMode = CY_SCB_SPI_MASTER,
     .subMode = CY_SCB_SPI_MOTOROLA,
     .sclkMode = CY_SCB_SPI_CPHA0_CPOL0,
     .parity = CY_SCB_SPI_PARITY_NONE,
     .dropOnParityError = false,
-    .oversample = 0UL,
+    .oversample = 16,
     .rxDataWidth = 8UL,
     .txDataWidth = 8UL,
     .enableMsbFirst = true,
     .enableInputFilter = false,
     .enableFreeRunSclk = false,
-    .enableMisoLateSample = false,
+    .enableMisoLateSample = true,
     .enableTransferSeparation = false,
     .ssPolarity = ((CY_SCB_SPI_ACTIVE_LOW << CY_SCB_SPI_SLAVE_SELECT0) | \
                                          (CY_SCB_SPI_ACTIVE_LOW << CY_SCB_SPI_SLAVE_SELECT1) | \
@@ -654,6 +654,59 @@ const mtb_hal_uart_configurator_t CYBSP_UART5_hal_config =
 #endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
+const cy_stc_scb_spi_config_t scb_8_config =
+{
+    .spiMode = CY_SCB_SPI_MASTER,
+    .subMode = CY_SCB_SPI_MOTOROLA,
+    .sclkMode = CY_SCB_SPI_CPHA0_CPOL0,
+    .parity = CY_SCB_SPI_PARITY_NONE,
+    .dropOnParityError = false,
+    .oversample = 16,
+    .rxDataWidth = 8UL,
+    .txDataWidth = 8UL,
+    .enableMsbFirst = true,
+    .enableInputFilter = false,
+    .enableFreeRunSclk = false,
+    .enableMisoLateSample = true,
+    .enableTransferSeparation = false,
+    .ssPolarity = ((CY_SCB_SPI_ACTIVE_LOW << CY_SCB_SPI_SLAVE_SELECT0) | \
+                                         (CY_SCB_SPI_ACTIVE_LOW << CY_SCB_SPI_SLAVE_SELECT1) | \
+                                         (CY_SCB_SPI_ACTIVE_LOW << CY_SCB_SPI_SLAVE_SELECT2) | \
+                                         (CY_SCB_SPI_ACTIVE_LOW << CY_SCB_SPI_SLAVE_SELECT3)),
+    .ssSetupDelay = false,
+    .ssHoldDelay = false,
+    .ssInterFrameDelay = false,
+    .enableWakeFromSleep = false,
+    .rxFifoTriggerLevel = 63UL,
+    .rxFifoIntEnableMask = 0UL,
+    .txFifoTriggerLevel = 63UL,
+    .txFifoIntEnableMask = 0UL,
+    .masterSlaveIntEnableMask = 0UL,
+};
+
+#if defined (COMPONENT_MTB_HAL)
+const mtb_hal_peri_div_t scb_8_clock_ref =
+{
+    .clk_dst = (en_clk_dst_t)PCLK_SCB8_CLOCK_SCB_EN,
+    .div_type = CY_SYSCLK_DIV_8_BIT,
+    .div_num = 1,
+};
+const mtb_hal_clock_t scb_8_hal_clock =
+{
+    .clock_ref = &scb_8_clock_ref,
+    .interface = &mtb_hal_clock_peri_interface,
+};
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI)
+const mtb_hal_spi_configurator_t scb_8_hal_config =
+{
+    .base = scb_8_HW,
+    .clock = &scb_8_hal_clock,
+    .config = &scb_8_config,
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI) */
 
 const cy_stc_scb_spi_config_t scb_10_config =
 {
@@ -1345,13 +1398,15 @@ void init_cycfg_peripherals(void)
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB0_PERI_NR, CY_MMIO_SCB0_GROUP_NR, CY_MMIO_SCB0_SLAVE_NR, CY_MMIO_SCB0_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB0_CLOCK_SCB_EN, CY_SYSCLK_DIV_16_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB2_PERI_NR, CY_MMIO_SCB2_GROUP_NR, CY_MMIO_SCB2_SLAVE_NR, CY_MMIO_SCB2_CLK_HF_NR);
-    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB2_CLOCK_SCB_EN, CY_SYSCLK_DIV_16_BIT, 1U);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB2_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB3_PERI_NR, CY_MMIO_SCB3_GROUP_NR, CY_MMIO_SCB3_SLAVE_NR, CY_MMIO_SCB3_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB3_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 1U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB4_PERI_NR, CY_MMIO_SCB4_GROUP_NR, CY_MMIO_SCB4_SLAVE_NR, CY_MMIO_SCB4_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB4_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB5_PERI_NR, CY_MMIO_SCB5_GROUP_NR, CY_MMIO_SCB5_SLAVE_NR, CY_MMIO_SCB5_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB5_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB8_PERI_NR, CY_MMIO_SCB8_GROUP_NR, CY_MMIO_SCB8_SLAVE_NR, CY_MMIO_SCB8_CLK_HF_NR);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB8_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 1U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB10_PERI_NR, CY_MMIO_SCB10_GROUP_NR, CY_MMIO_SCB10_SLAVE_NR, CY_MMIO_SCB10_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB10_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 1U);
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)

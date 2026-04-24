@@ -37,7 +37,7 @@ void init_cycfg_peripheral_clocks(void)
     Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U, 86U);
     Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U);
-    Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U, 9U);
+    Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U, 29U);
     Cy_SysClk_PeriPclkEnableDivider((en_clk_dst_t)CYBSP_SPI_CONTROLLER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 1U);
     Cy_SysClk_PeriPclkDisableDivider((en_clk_dst_t)CYBSP_USB_OS_TIMER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 2U);
     Cy_SysClk_PeriPclkSetDivider((en_clk_dst_t)CYBSP_USB_OS_TIMER_CLK_DIV_GRP_NUM, CY_SYSCLK_DIV_8_BIT, 2U, 0U);

@@ -23,6 +23,8 @@
 #include "board.h"
 #include "default_config.h"
 #include "driver/barometer/dps368.h"
+#include "driver/imu/bmi088.h"
+#include "driver/mag/bmm150.h"
 #include "drv_adc.h"
 #include "drv_eth.h"
 #include "drv_gpio.h"
@@ -319,18 +321,17 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
     // /* init onboard sensors */
-    // RT_CHECK(drv_bmi088_init("spi4_dev1", "spi4_dev2", "gyro0", "accel0", 0));
-    // RT_CHECK(drv_icm42688_init("spi4_dev3", "gyro1", "accel1", 0));
-    // RT_CHECK(drv_bmm150_init("spi4_dev4", "mag0", 0));
+    RT_CHECK(drv_bmi088_init("spi3_dev2", "spi3_dev1", "gyro0", "accel0", 0));
+    // RT_CHECK(drv_bmm150_init("spi3_dev3", "mag0", 0));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
     // RT_CHECK(gps_ubx_init("serial3", "gps"));
     // // RT_CHECK(gps_nmea_init("serial3", "gps"));
     // // RT_CHECK(drv_tofsense_init("serial5"));
-    // RT_CHECK(drv_dps368_init("i2c0_dev1", "barometer"));
+    RT_CHECK(drv_dps368_init("spi8_dev1", "barometer"));
 
-    // FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
+    FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     // FMT_CHECK(register_sensor_mag("mag0", 0));
-    // FMT_CHECK(register_sensor_barometer("barometer"));
+    FMT_CHECK(register_sensor_barometer("barometer"));
     // FMT_CHECK(advertise_sensor_optflow(0));
     // FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
@@ -354,7 +355,7 @@ void bsp_post_initialize(void)
     if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
         /* use default system configuration */
         FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
-        printf("Default configuration loaded.\n");
+        rt_kprintf("Default configuration loaded.\n");
     }
 
     /* init rc */

@@ -233,7 +233,8 @@
 // #define BSP_USING_UART5
 // #define BSP_USING_UART5_DMA_TX
 #define BSP_USING_SPI
-#define BSP_USING_SPI1
+#define BSP_USING_SPI3
+#define BSP_USING_SPI8
 #define BSP_USING_HW_I2C
 #define BSP_USING_HW_I2C0
 #define BSP_USING_PWM

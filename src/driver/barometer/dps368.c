@@ -17,7 +17,7 @@
 #include <firmament.h>
 
 #include "hal/barometer/barometer.h"
-#include "hal/i2c/i2c.h"
+#include "hal/spi/spi.h"
 
 #define TMP_RATE_1   0
 #define TMP_RATE_2   1
@@ -54,7 +54,7 @@
 #define PM_PRC_64    6
 #define PM_PRC_128   7
 
-static rt_device_t bus_dev;
+static struct rt_spi_device* spi_dev;
 static uint8_t tmp_ext;
 static float last_temp;
 static uint8_t m_temp_prc;
@@ -72,6 +72,48 @@ static int32_t c30;
 
 const int32_t scaling_facts[] = { 524288, 1572864, 3670016, 7864320, 253952, 516096, 1040384, 2088960 };
 
+static rt_err_t spi_write_reg(uint8_t reg, uint8_t val)
+{
+    uint8_t tx_buf[2];
+
+    tx_buf[0] = reg & 0x7F; // bit7=0 for write
+    tx_buf[1] = val;
+
+    if (rt_spi_transfer(spi_dev, tx_buf, RT_NULL, 2) == 2) {
+        return RT_EOK;
+    }
+
+    return RT_ERROR;
+}
+
+static rt_err_t spi_read_reg(uint8_t reg, uint8_t* val)
+{
+    uint8_t tx_buf[2];
+    uint8_t rx_buf[2];
+
+    tx_buf[0] = reg | 0x80; // bit7=1 for read
+    tx_buf[1] = 0;
+
+    if (rt_spi_transfer(spi_dev, tx_buf, rx_buf, 2) == 2) {
+        *val = rx_buf[1];
+        return RT_EOK;
+    }
+
+    return RT_ERROR;
+}
+
+static rt_err_t spi_read_regs(uint8_t reg, uint8_t* buffer, uint8_t size)
+{
+    uint8_t tx_buf;
+    tx_buf = reg | 0x80;
+
+    if (rt_spi_send_then_recv(spi_dev, &tx_buf, 1, buffer, size) == RT_EOK) {
+        return RT_EOK;
+    }
+
+    return RT_ERROR;
+}
+
 static void getTwosComplement(int32_t* raw, uint8_t length)
 {
     if (*raw & ((uint32_t)1 << (length - 1))) {
@@ -83,16 +125,16 @@ static rt_err_t config_temp(uint8_t temp_rate, uint8_t temp_prc)
 {
     uint8_t reg_val = tmp_ext | (temp_rate << 4) | temp_prc;
 
-    RT_TRY(i2c_write_reg(bus_dev, 0x07, reg_val));
+    RT_TRY(spi_write_reg(0x07, reg_val));
 
     // set TEMP SHIFT ENABLE if oversampling rate higher than eight
-    RT_TRY(i2c_read_reg(bus_dev, 0x09, &reg_val));
+    RT_TRY(spi_read_reg(0x09, &reg_val));
     if (temp_prc > PM_PRC_8) {
         reg_val |= (1 << 2);
     } else {
         reg_val &= 0xFB;
     }
-    RT_TRY(i2c_write_reg(bus_dev, 0x09, reg_val));
+    RT_TRY(spi_write_reg(0x09, reg_val));
 
     m_temp_prc = temp_prc;
 
@@ -103,16 +145,16 @@ static rt_err_t config_pressure(uint8_t pressure_rate, uint8_t pressure_prc)
 {
     uint8_t reg_val = (pressure_rate << 4) | pressure_prc;
 
-    RT_TRY(i2c_write_reg(bus_dev, 0x06, reg_val));
+    RT_TRY(spi_write_reg(0x06, reg_val));
 
     // set PM SHIFT ENABLE if oversampling rate higher than eight
-    RT_TRY(i2c_read_reg(bus_dev, 0x09, &reg_val));
+    RT_TRY(spi_read_reg(0x09, &reg_val));
     if (pressure_prc > TMP_PRC_8) {
         reg_val |= (1 << 3);
     } else {
         reg_val &= 0xF7;
     }
-    RT_TRY(i2c_write_reg(bus_dev, 0x09, reg_val));
+    RT_TRY(spi_write_reg(0x09, reg_val));
 
     m_pressure_prc = pressure_prc;
 
@@ -123,7 +165,7 @@ static rt_err_t read_coeffs(void)
 {
     uint8_t buffer[18] = { 0 };
 
-    RT_TRY(i2c_read_regs(bus_dev, 0x10, buffer, sizeof(buffer)));
+    RT_TRY(spi_read_regs(0x10, buffer, sizeof(buffer)));
 
     c0_half = ((uint32_t)buffer[0] << 4) | (((uint32_t)buffer[1] >> 4) & 0x0F);
     getTwosComplement(&c0_half, 12);
@@ -188,7 +230,7 @@ static rt_err_t get_raw_result(uint8_t reg, int32_t* raw)
 {
     uint8_t buffer[3] = { 0 };
 
-    RT_TRY(i2c_read_regs(bus_dev, reg, buffer, sizeof(buffer)));
+    RT_TRY(spi_read_regs(reg, buffer, sizeof(buffer)));
 
     *raw = (uint32_t)buffer[0] << 16 | (uint32_t)buffer[1] << 8 | (uint32_t)buffer[2];
 
@@ -205,14 +247,6 @@ static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
     case BARO_CMD_CHECK_READY: {
         DEFINE_TIMETAG(baro_interval, 10);
         *(uint8_t*)arg = check_timetag(TIMETAG(baro_interval));
-
-        // uint8_t reg_val = 0;
-        // res = i2c_read_reg(bus_dev, 0x08, &reg_val);
-        // if (res == RT_EOK) {
-        //     *(uint8_t*)arg = ((reg_val & 0x30) == 0x30);
-        // } else {
-        //     *(uint8_t*)arg = 0;
-        // }
     } break;
 
     default:
@@ -251,13 +285,17 @@ static rt_err_t dps368_init(void)
 {
     uint8_t reg_val = 0;
 
-    RT_TRY(i2c_read_reg(bus_dev, 0x0D, &reg_val));
+    // dummy read to switch to SPI mode
+    spi_read_reg(0x00, &reg_val);
+    systime_udelay(1000);
+
+    RT_TRY(spi_read_reg(0x0D, &reg_val));
 
     if (0x10 != reg_val) {
         return RT_ERROR;
     }
 
-    RT_TRY(i2c_read_reg(bus_dev, 0x28, &reg_val));
+    RT_TRY(spi_read_reg(0x28, &reg_val));
     tmp_ext |= reg_val & 0x80;
 
     RT_TRY(read_coeffs());
@@ -265,7 +303,7 @@ static rt_err_t dps368_init(void)
     RT_TRY(config_temp(TMP_RATE_128, TMP_PRC_2));
     RT_TRY(config_pressure(PM_RATE_128, PM_PRC_4));
 
-    RT_TRY(i2c_write_reg(bus_dev, 0x08, 0x07)); /* continues pressure and temperature measurement */
+    RT_TRY(spi_write_reg(0x08, 0x07)); /* continues pressure and temperature measurement */
 
     return RT_EOK;
 }
@@ -281,10 +319,18 @@ rt_err_t drv_dps368_init(const char* device_name, const char* baro_device_name)
         .ops = &_baro_ops
     };
 
-    bus_dev = rt_device_find(device_name);
-    RT_ASSERT(bus_dev != NULL);
+    spi_dev = (struct rt_spi_device*)rt_device_find(device_name);
+    RT_ASSERT(spi_dev != NULL);
 
-    RT_TRY(rt_device_open(bus_dev, RT_DEVICE_OFLAG_RDWR));
+    /* config spi */
+    {
+        struct rt_spi_configuration cfg;
+        cfg.data_width = 8;
+        cfg.mode = RT_SPI_MASTER | RT_SPI_MODE_3 | RT_SPI_MSB;
+        cfg.max_hz = 5 * 1000 * 1000; /* 10M */
+
+        rt_spi_configure(spi_dev, &cfg);
+    }
 
     /* sensor initialization */
     RT_TRY(dps368_init());
