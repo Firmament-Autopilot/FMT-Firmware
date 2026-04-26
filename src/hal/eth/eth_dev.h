@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021-2023 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020-2023 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
+#ifndef ETH_DEV_H__
+#define ETH_DEV_H__
 
-#include "module/task_manager/task_manager.h"
+#include <lwip/ip_addr.h>
 
-fmt_err_t task_local_init(void)
-{
-    return FMT_EOK;
+#include "module/utils/ringbuffer.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct eth_dev {
+    struct rt_device parent;
+    struct udp_pcb* udp_pcb;
+    ringbuffer* rx_rb;
+    struct rt_completion rx_ind;
+    ip_addr_t local_addr, remote_addr;
+    uint16_t local_port, remote_port;
+};
+typedef struct eth_dev* eth_dev_t;
+
+void init_eth_dev(eth_dev_t eth);
+rt_err_t hal_eth_dev_register(eth_dev_t eth, const char* name, rt_uint16_t flag, void* data);
+
+#ifdef __cplusplus
 }
+#endif
 
-void task_local_entry(void* parameter)
-{
-    /* main loop */
-    while (1) {
-        printf("Hello FMT");
-        sys_msleep(1000);
-    }
-}
-
-// TASK_EXPORT __fmt_task_desc = {
-//     .name = "local",
-//     .init = task_local_init,
-//     .entry = task_local_entry,
-//     .priority = 25,
-//     .auto_start = false,
-//     .stack_size = 1024,
-//     .param = NULL,
-//     .dependency = NULL
-// };
+#endif

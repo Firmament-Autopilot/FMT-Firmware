@@ -19,6 +19,8 @@
 
 #include <firmament.h>
 
+#include "module/toml/toml.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,7 +66,9 @@ void rt_hw_board_init(void);
 void bsp_early_initialize(void);
 void bsp_initialize(void);
 void bsp_post_initialize(void);
-void board_show_version(void);
+
+void bsp_show_information(void);
+fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab);
 
 void Error_Handler(void);
 
