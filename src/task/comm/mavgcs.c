@@ -49,7 +49,6 @@ MCN_DECLARE(gcs_cmd);
 #define MAVLOG_ROOT_DIR     "/log"
 #define MAVLOG_MAX_FILE_NUM 256
 #define MAVLOG_MAX_PATH_LEN 100
-#define MAVLOG_BURST_PKTS   4
 
 typedef struct {
     char path[MAVLOG_MAX_PATH_LEN];
@@ -62,6 +61,7 @@ static uint16_t mavlog_file_num;
 static bool mavlog_cancel;
 static int mavlog_download_fd = -1;
 static uint16_t mavlog_download_id = 0xFFFF;
+static uint32_t mavlog_download_ofs;
 
 static void close_mlog_download_fd(void)
 {
@@ -71,6 +71,7 @@ static void close_mlog_download_fd(void)
     }
 
     mavlog_download_id = 0xFFFF;
+    mavlog_download_ofs = 0;
 }
 
 static bool is_mlog_file(const char* file_name)
@@ -273,7 +274,6 @@ static void handle_log_request_data(mavlink_message_t* msg, mavlink_system_t thi
 {
     mavlink_log_request_data_t request = { 0 };
     uint8_t data[MAVLINK_MSG_LOG_DATA_FIELD_DATA_LEN] = { 0 };
-    uint32_t burst_limit;
     uint32_t remaining;
     uint32_t offset;
 
@@ -305,19 +305,17 @@ static void handle_log_request_data(mavlink_message_t* msg, mavlink_system_t thi
         mavlog_download_id = request.id;
     }
 
-    if (lseek(mavlog_download_fd, request.ofs, SEEK_SET) < 0) {
-        close_mlog_download_fd();
-        return;
+    if (mavlog_download_ofs != request.ofs) {
+        if (lseek(mavlog_download_fd, request.ofs, SEEK_SET) < 0) {
+            close_mlog_download_fd();
+            return;
+        }
+        mavlog_download_ofs = request.ofs;
     }
 
     remaining = request.count;
     if (remaining > (mavlog_file_table[request.id].size - request.ofs)) {
         remaining = mavlog_file_table[request.id].size - request.ofs;
-    }
-
-    burst_limit = MAVLOG_BURST_PKTS * MAVLINK_MSG_LOG_DATA_FIELD_DATA_LEN;
-    if (remaining > burst_limit) {
-        remaining = burst_limit;
     }
 
     offset = request.ofs;
@@ -333,6 +331,7 @@ static void handle_log_request_data(mavlink_message_t* msg, mavlink_system_t thi
 
         offset += rb;
         remaining -= rb;
+        mavlog_download_ofs = offset;
     }
 }
 
