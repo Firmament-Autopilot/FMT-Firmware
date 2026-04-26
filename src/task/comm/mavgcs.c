@@ -583,7 +583,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     } break;
 
     case MAVLINK_MSG_ID_COMMAND_INT:
-        if (this_system.sysid == mavlink_msg_command_long_get_target_system(msg)) {
+        if (this_system.sysid == mavlink_msg_command_int_get_target_system(msg)) {
             mavlink_command_int_t command;
             Mission_Data_Bus mission_data = { 0 };
             mavlink_msg_command_int_decode(msg, &command);
