@@ -17,7 +17,6 @@
 #include <firmament.h>
 #include <stdlib.h>
 
-
 #include "FMS.h"
 #include "Plant.h"
 #include "model/fms/fms_interface.h"
@@ -50,6 +49,7 @@ MCN_DECLARE(gcs_cmd);
 #define MAVLOG_ROOT_DIR     "/log"
 #define MAVLOG_MAX_FILE_NUM 256
 #define MAVLOG_MAX_PATH_LEN 100
+#define MAVLOG_BURST_PKTS   4
 
 typedef struct {
     char path[MAVLOG_MAX_PATH_LEN];
@@ -273,6 +273,7 @@ static void handle_log_request_data(mavlink_message_t* msg, mavlink_system_t thi
 {
     mavlink_log_request_data_t request = { 0 };
     uint8_t data[MAVLINK_MSG_LOG_DATA_FIELD_DATA_LEN] = { 0 };
+    uint32_t burst_limit;
     uint32_t remaining;
     uint32_t offset;
 
@@ -312,6 +313,11 @@ static void handle_log_request_data(mavlink_message_t* msg, mavlink_system_t thi
     remaining = request.count;
     if (remaining > (mavlog_file_table[request.id].size - request.ofs)) {
         remaining = mavlog_file_table[request.id].size - request.ofs;
+    }
+
+    burst_limit = MAVLOG_BURST_PKTS * MAVLINK_MSG_LOG_DATA_FIELD_DATA_LEN;
+    if (remaining > burst_limit) {
+        remaining = burst_limit;
     }
 
     offset = request.ofs;
