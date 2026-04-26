@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Controller'.
  *
- * Model version                  : 1.999
+ * Model version                  : 1.1001
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Tue Apr 21 13:30:16 2026
+ * C/C++ source code generated on : Thu Apr 23 10:33:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -236,7 +236,7 @@ extern real32_T w_est_C_mPs;           /* '<S116>/Signal Copy1' */
  * these parameters and exports their symbols.
  *
  */
-extern struct_oqmoiGpNYV6eEvDoym9FPF CONTROL_PARAM;/* Variable: CONTROL_PARAM
+extern struct_mpij009ZVm6ibM4r7FnhHH CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     * Referenced by:
                                                     *   '<S17>/hover_throttle'
                                                     *   '<S23>/hover_throttle'
@@ -262,6 +262,7 @@ extern struct_oqmoiGpNYV6eEvDoym9FPF CONTROL_PARAM;/* Variable: CONTROL_PARAM
                                                     *   '<S124>/kp'
                                                     *   '<S72>/Gain'
                                                     *   '<S72>/Gain1'
+                                                    *   '<S72>/Gain2'
                                                     *   '<S88>/Constant1'
                                                     *   '<S88>/Constant2'
                                                     *   '<S77>/gain1'

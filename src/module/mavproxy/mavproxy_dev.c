@@ -15,8 +15,8 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include "module/mavproxy/mavproxy_dev.h"
 #include "hal/serial/serial.h"
+#include "module/mavproxy/mavproxy_dev.h"
 
 struct mavdev {
     rt_device_t dev;
@@ -135,11 +135,13 @@ uint32_t mavproxy_dev_get_bw(uint8_t chan)
 
     if (dev->type == RT_Device_Class_Char) {
         serial = (struct serial_device*)dev;
-        bw = serial->config.baud_rate / 10; // convert bits to bytes minus overhead
+        bw = serial->config.baud_rate / (8 + 2); // convert bits to bytes minus overhead
     } else if (dev->type == RT_Device_Class_USBDevice) {
-        bw = 250 * 1024;                    // The USB Full Speed (FS) transmission rate is conservatively estimated at 2 Mbps.
+        bw = 2 * 1024 * 1024;                    // The USB Full Speed (FS) transmission rate is conservatively estimated at 2 Mbps.
+    } else if (dev->type == RT_Device_Class_NetIf) {
+        bw = 80 * 1024 * 1024;                   // The ETH speed is estimated at 80 Mbps.
     } else {
-        console_printf("Error device type %d\n", dev->type);
+        console_printf("mavproxy unknown device type %d\n", dev->type);
         bw = 0;
     }
 
@@ -152,6 +154,6 @@ fmt_err_t mavproxy_dev_init(void)
         mavdev_list[i].tx_done = mavdev_tx_done;
         mavdev_list[i].rx_ind = mavdev_rx_ind;
     }
-    
+
     return FMT_EOK;
 }

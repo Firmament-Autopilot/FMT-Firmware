@@ -46,7 +46,7 @@ static param_t __param_list[] = {
     PARAM_FLOAT(VEL_XY_LIM, 5.0, false),
     PARAM_FLOAT(VEL_Z_LIM, 1.5, false),
     PARAM_FLOAT(YAW_P, 2.5, false),
-    PARAM_FLOAT(YAW_RATE_LIM, PI / 3, false),
+    PARAM_FLOAT(YAW_RATE_LIM, PI / 2, false),
     PARAM_FLOAT(ROLL_PITCH_LIM, PI / 6, false),
     PARAM_FLOAT(L1, 15.0, false),
     PARAM_FLOAT(CRUISE_SPEED, 5.0, false),
@@ -59,7 +59,7 @@ static param_t __param_list[] = {
     PARAM_UINT16(LOST_RETURN_TIME, 120, false),
     PARAM_UINT8(LOST_RETURN_EN, 1, false),
     PARAM_UINT16(LAND_LOCK_THRO, 1300, false),
-    PARAM_FLOAT(STICK_SENS, 0.5, false),
+    PARAM_FLOAT(STICK_SENS, 0.8, false),
 };
 PARAM_GROUP_DEFINE(FMS, __param_list);
 
