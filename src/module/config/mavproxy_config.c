@@ -15,9 +15,6 @@
  *****************************************************************************/
 #include <firmament.h>
 
-#include <stdio.h>
-
-#include "hal/eth/eth_dev.h"
 #include "hal/serial/serial.h"
 #include "module/config/mavproxy_config.h"
 #include "module/mavproxy/mavproxy.h"
@@ -124,43 +121,7 @@ static fmt_err_t mavproxy_parse_device(const toml_table_t* curtab)
                 }
             }
         } else if (DEVICE_TYPE_IS(chan, idx, eth)) {
-            char* ip_addr;
-            int64_t port;
-            int ip[4];
-            eth_dev_t eth_dev = (eth_dev_t)rt_malloc(sizeof(struct eth_dev));
-
-            if (eth_dev == NULL) {
-                TOML_DBG_E("fail to alloc mem for eth_dev\n");
-                return FMT_ENOMEM;
-            }
-            /* set default value */
-            init_eth_dev(eth_dev);
-
-            if (toml_string_in(curtab, "local_addr", &ip_addr) == 0) {
-                sscanf(ip_addr, "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]);
-                IP4_ADDR(&eth_dev->local_addr, ip[0], ip[1], ip[2], ip[3]);
-            }
-
-            if (toml_string_in(curtab, "remote_addr", &ip_addr) == 0) {
-                sscanf(ip_addr, "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]);
-                IP4_ADDR(&eth_dev->remote_addr, ip[0], ip[1], ip[2], ip[3]);
-            } else {
-                TOML_DBG_E("eth dev need set remote addr\n");
-                return FMT_EINVAL;
-            }
-
-            if (toml_int_in(curtab, "local_port", &port) == 0) {
-                eth_dev->local_port = port;
-            }
-
-            if (toml_int_in(curtab, "remote_port", &port) == 0) {
-                eth_dev->remote_port = port;
-            } else {
-                TOML_DBG_E("eth dev need set remote port\n");
-                return FMT_EINVAL;
-            }
-
-            hal_eth_dev_register(eth_dev, DEVICE_LIST(chan)[idx].name, RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_STANDALONE, NULL);
+            /* do nothing */
         } else {
             TOML_DBG_E("unknown device type: %s\n", DEVICE_LIST(chan)[idx].type);
             err = FMT_ERROR;

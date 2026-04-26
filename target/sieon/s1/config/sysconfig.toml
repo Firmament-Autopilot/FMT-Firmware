@@ -22,11 +22,6 @@ target = "SIEON S1"
     # chan = 0
     # type = "eth"
     # name = "eth_dev0"
-    # local_addr = "0.0.0.0"
-    # local_port = 0
-    # remote_addr = "192.168.1.24"
-    # remote_port = 14550
-    # auto-switch = true
 
     [[mavproxy.devices]]
     chan = 0
@@ -38,16 +33,6 @@ target = "SIEON S1"
     chan = 0
     type = "usb"
     name = "usbd0"
-    auto-switch = true
-
-    [[mavproxy.devices]]
-    chan = 0
-    type = "eth"
-    name = "eth_dev0"
-    local_addr = "0.0.0.0"
-    local_port = 5000
-    remote_addr = "192.168.1.24"
-    remote_port = 5001
     auto-switch = true
 
     [[mavproxy.devices]]
@@ -118,3 +103,12 @@ target = "SIEON S1"
     from = "control_out"
     to = "main_out"
     chan-map = [[1,2,3,4],[1,2,3,4]]
+
+# Ethernet Configuration
+[ethernet]
+    [[ethernet.devices]]
+    name = "eth_dev0"
+    local_addr = "0.0.0.0"
+    local_port = 0
+    remote_addr = "192.168.1.24"
+    remote_port = 14550
