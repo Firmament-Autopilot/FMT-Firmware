@@ -821,7 +821,7 @@ void sensor_collect(void)
     if (check_timetag(TIMETAG(airspeed_interval))) {
         if (airspeed_dev != NULL) {
             if (sensor_airspeed_measure(airspeed_dev, &airspeed_data) == FMT_EOK) {
-                /* publish barometer data */
+                /* publish airspeed data */
                 mcn_publish(MCN_HUB(sensor_airspeed), &airspeed_data);
             }
         }
