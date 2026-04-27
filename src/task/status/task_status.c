@@ -271,11 +271,11 @@ fmt_err_t task_status_init(void)
 
 void task_status_entry(void* parameter)
 {
-#if defined(FMT_USING_HIL)
+#if defined(FMT_SIM_PLANT)
+    LOG_I("Plant Simulation");
+#elif defined(FMT_USING_HIL)
     LOG_I("HIL Simulation");
-#endif
-
-#if defined(FMT_USING_SIH)
+#elif defined(FMT_USING_SIH)
     LOG_I("SIH Simulation");
 #endif
 

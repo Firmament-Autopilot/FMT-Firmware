@@ -43,6 +43,7 @@ MCN_DECLARE(sensor_gps);
 MCN_DECLARE(mission_data);
 MCN_DECLARE(pilot_cmd);
 MCN_DECLARE(gcs_cmd);
+MCN_DECLARE(control_output);
 
 static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_message_t* msg)
 {
@@ -394,6 +395,22 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     } break;
 #endif
 
+#if defined(FMT_SIM_PLANT)
+    case MAVLINK_MSG_ID_HIL_ACTUATOR_CONTROLS: {
+        mavlink_hil_actuator_controls_t actuator_control;
+        Control_Out_Bus control_out = { 0 };
+
+        mavlink_msg_hil_actuator_controls_decode(msg, &actuator_control);
+
+        control_out.timestamp = systime_now_ms();
+        for (uint8_t i = 0; i < 16; i++) {
+            control_out.actuator_cmd[i] = (actuator_control.controls[i] + 3.0f) * 500;
+        }
+
+        mcn_publish(MCN_HUB(control_output), &control_out);
+    } break;
+#endif
+
     case MAVLINK_MSG_ID_FMT_EXTERNAL_STATE: {
         mavlink_fmt_external_state_t ext_state;
 
@@ -475,7 +492,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
         break;
 
     default: {
-        LOG_W("unhandled mavlink msg:%d", msg->msgid);
+        // LOG_W("unhandled mavlink msg:%d", msg->msgid);
         return FMT_ENOTHANDLE;
     } break;
     }
@@ -492,31 +509,25 @@ fmt_err_t mavgcs_init(void)
     /* register channel */
     FMT_TRY(mavproxy_register_channel(MAVPROXY_GCS_CHAN));
 
+#if defined(FMT_SIM_PLANT)
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HIL_SENSOR, 100, mavlink_msg_hil_sensor_pack_func, true));
+    FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HIL_GPS, 10, mavlink_msg_hil_gps_pack_func, true));
+#else
     /* register periodical mavlink msg */
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HEARTBEAT, 1, mavlink_msg_heartbeat_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_SYS_STATUS, 1, mavlink_msg_sys_status_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_SYSTEM_TIME, 1, mavlink_msg_system_time_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_EXTENDED_SYS_STATE, 1, mavlink_msg_extended_sys_state_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_ATTITUDE, 10, mavlink_msg_attitude_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_LOCAL_POSITION_NED, 5, mavlink_msg_local_position_ned_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_GLOBAL_POSITION_INT, 5, mavlink_msg_global_position_int_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_VFR_HUD, 5, mavlink_msg_vfr_hud_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_ALTITUDE, 5, mavlink_msg_altitude_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_GPS_RAW_INT, 5, mavlink_msg_gps_raw_int_pack_func, true));
-
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_RC_CHANNELS, 5, mavlink_msg_rc_channels_pack_func, true));
-
-#if defined(FMT_USING_SIH) || defined(FMT_USING_VR)
+    #if defined(FMT_USING_SIH) || defined(FMT_USING_VR)
     FMT_TRY(mavproxy_register_period_msg(MAVPROXY_GCS_CHAN, MAVLINK_MSG_ID_HIL_STATE, 50, mavlink_msg_hil_state_pack_func, true));
+    #endif
 #endif
 
     /* register gcs mavlink handler */

@@ -64,17 +64,21 @@ void task_vehicle_entry(void* parameter)
                 /* the model simulation start from 0, so we calcualtet the timestamp relative to start time */
                 timestamp = time_now - time_start;
 
-#if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
+#if !defined(FMT_SIM_PLANT)
+    #if !defined(FMT_USING_HIL) && !defined(FMT_USING_SIH)
                 sensor_collect();
-#endif
+    #endif
                 pilot_cmd_collect();
                 gcs_cmd_collect();
                 mission_data_collect();
+#endif
 
-#ifdef FMT_USING_SIH
+#if defined(FMT_USING_SIH)
                 /* run Plant model */
                 PERIOD_EXECUTE3(plant_step, plant_model_info.period, time_now, plant_interface_step(timestamp););
 #endif
+
+#if !defined(FMT_SIM_PLANT)
                 /* run INS model */
                 PERIOD_EXECUTE3(ins_step, ins_model_info.period, time_now, ins_interface_step(timestamp););
                 /* run FMS model */
@@ -84,6 +88,7 @@ void task_vehicle_entry(void* parameter)
 
                 /* send actuator command */
                 send_actuator_cmd();
+#endif
             }
         }
     }

@@ -27,7 +27,7 @@
 #include "module/config/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
 
-#ifdef FMT_USING_SIH
+#if defined(FMT_USING_SIH)
     #include "model/plant/plant_interface.h"
 #endif
 #ifdef FMT_USING_CM_BACKTRACE
@@ -121,10 +121,12 @@ void bsp_show_information(void)
     banner_item("Target", TARGET_NAME, '.', BANNER_ITEM_LEN);
     banner_item("Vehicle", STR(VEHICLE_TYPE), '.', BANNER_ITEM_LEN);
     banner_item("Airframe", STR(AIRFRAME), '.', BANNER_ITEM_LEN);
+#if !defined(FMT_SIM_PLANT)
     banner_item("INS Model", ins_model_info.info, '.', BANNER_ITEM_LEN);
     banner_item("FMS Model", fms_model_info.info, '.', BANNER_ITEM_LEN);
     banner_item("Control Model", control_model_info.info, '.', BANNER_ITEM_LEN);
-#ifdef FMT_USING_SIH
+#endif
+#if defined(FMT_USING_SIH)
     banner_item("Plant Model", plant_model_info.info, '.', BANNER_ITEM_LEN);
 #endif
 

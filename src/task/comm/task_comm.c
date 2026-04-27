@@ -744,6 +744,62 @@ bool mavlink_msg_position_target_local_pack_func(mavlink_message_t* msg_t)
     return true;
 }
 
+#if defined(FMT_SIM_PLANT)
+bool mavlink_msg_hil_sensor_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_hil_sensor_t hil_sensor = { 0 };
+
+    imu_data_t imu_data;
+    mag_data_t mag_data;
+    baro_data_t baro_data;
+
+    mcn_copy_from_hub(MCN_HUB(sensor_imu0), &imu_data);
+    mcn_copy_from_hub(MCN_HUB(sensor_mag0), &mag_data);
+    mcn_copy_from_hub(MCN_HUB(sensor_baro), &baro_data);
+
+    hil_sensor.time_usec = systime_now_us();
+    hil_sensor.xgyro = imu_data.gyr_B_radDs[0];
+    hil_sensor.ygyro = imu_data.gyr_B_radDs[1];
+    hil_sensor.zgyro = imu_data.gyr_B_radDs[2];
+    hil_sensor.xacc = imu_data.acc_B_mDs2[0];
+    hil_sensor.yacc = imu_data.acc_B_mDs2[1];
+    hil_sensor.zacc = imu_data.acc_B_mDs2[2];
+    hil_sensor.xmag = mag_data.mag_B_gauss[0];
+    hil_sensor.ymag = mag_data.mag_B_gauss[1];
+    hil_sensor.zmag = mag_data.mag_B_gauss[2];
+    hil_sensor.abs_pressure = baro_data.pressure_pa * 1000.0f;
+    hil_sensor.temperature = baro_data.temperature_deg;
+    hil_sensor.pressure_alt = baro_data.altitude_m;
+
+    mavlink_msg_hil_sensor_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &hil_sensor);
+
+    return true;
+}
+
+bool mavlink_msg_hil_gps_pack_func(mavlink_message_t* msg_t)
+{
+    mavlink_hil_gps_t hil_gps = { 0 };
+    gps_data_t gps_data;
+
+    mcn_copy_from_hub(MCN_HUB(sensor_gps), &gps_data);
+
+    hil_gps.time_usec = systime_now_us();
+    hil_gps.lat = gps_data.lat;
+    hil_gps.lon = gps_data.lon;
+    hil_gps.vn = (int16_t)(gps_data.velN * 100);
+    hil_gps.ve = (int16_t)(gps_data.velE * 100);
+    hil_gps.vd = (int16_t)(gps_data.velD * 100);
+    hil_gps.eph = (uint16_t)(gps_data.hAcc * 100);
+    hil_gps.epv = (uint16_t)(gps_data.vAcc * 100);
+    hil_gps.satellites_visible = gps_data.numSV;
+    hil_gps.fix_type = gps_data.fixType;
+
+    mavlink_msg_hil_gps_encode(mavlink_system.sysid, mavlink_system.compid, msg_t, &hil_gps);
+
+    return true;
+}
+#endif
+
 bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
 {
     mavlink_hil_state_t hil_state = { 0 };
@@ -775,7 +831,7 @@ bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t)
 #elif defined(FMT_USING_VR)
     INS_Out_Bus ins_out;
 
-    if(mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
+    if (mcn_copy_from_hub(MCN_HUB(ins_output), &ins_out) != FMT_EOK) {
         return false;
     }
 

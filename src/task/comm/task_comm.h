@@ -42,6 +42,8 @@ bool mavlink_msg_home_position_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_attitude_target_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_position_target_local_pack_func(mavlink_message_t* msg_t);
 bool mavlink_msg_hil_state_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_hil_sensor_pack_func(mavlink_message_t* msg_t);
+bool mavlink_msg_hil_gps_pack_func(mavlink_message_t* msg_t);
 
 fmt_err_t mavlink_command_acknowledge(uint8_t chan, uint16_t command, uint8_t result);
 
