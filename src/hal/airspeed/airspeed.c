@@ -55,7 +55,7 @@ static rt_err_t hal_airspeed_control(struct rt_device* dev,
 
 /**
  * @brief register an airspeed device
- * 
+ *
  * @param dev airspeed device
  * @param name device name
  * @param flag device flag
