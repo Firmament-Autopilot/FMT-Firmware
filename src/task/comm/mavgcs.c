@@ -91,7 +91,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     } break;
 
     case MAV_CMD_PREFLIGHT_CALIBRATION:
-        if (command->param1 == 1) {        // calibration gyr
+        if (command->param1 == 1) { // calibration gyr
             mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
             mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
@@ -101,6 +101,11 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             mavproxy_cmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
         } else {
             /* all 0 command, cancel current process */
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_GYR);
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_ACC);
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_MAG);
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_LEVEL);
+            mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_CANCELLED_MSG);
         }
 
         mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command->command, MAV_RESULT_ACCEPTED);
