@@ -37,6 +37,47 @@ static const char* adc_ch_names[ADC_NUM_CHANNELS] = {
     "P15[7]/ADC_CH3",
 };
 
+/* External net names and divider settings (Rup: high-side, Rdown: low-side). */
+static const char* adc_src_names[ADC_NUM_CHANNELS] = {
+    "VDD_SERVO", /* ADC4 */
+    "VCC_5V",    /* ADC5 */
+    "ADC_3V3",   /* ADC6 */
+    "ADC_6V6",   /* ADC7 */
+};
+
+static const uint32_t adc_div_rup[ADC_NUM_CHANNELS] = {
+    100000U, /* VDD_SERVO: R159 */
+    10000U,  /* VCC_5V:    R163 */
+    10000U,  /* ADC_3V3:   R160 */
+    27000U,  /* ADC_6V6:   R164 */
+};
+
+static const uint32_t adc_div_rdown[ADC_NUM_CHANNELS] = {
+    15000U, /* VDD_SERVO: R161 */
+    5600U,  /* VCC_5V:    R165 */
+    12000U, /* ADC_3V3:   R162 */
+    10000U, /* ADC_6V6:   R166 */
+};
+
+static uint32_t adc_calc_real_mv(uint32_t ch, uint32_t pin_mv)
+{
+    uint64_t num;
+    uint32_t den;
+
+    if (ch >= ADC_NUM_CHANNELS) {
+        return 0U;
+    }
+
+    den = adc_div_rdown[ch];
+    if (den == 0U) {
+        return 0U;
+    }
+
+    /* Vin = Vadc * (Rup + Rdown) / Rdown, with integer rounding. */
+    num = (uint64_t)pin_mv * (uint64_t)(adc_div_rup[ch] + adc_div_rdown[ch]);
+    return (uint32_t)((num + (uint64_t)(den / 2U)) / (uint64_t)den);
+}
+
 static rt_thread_t adc_test_thread = RT_NULL;
 static volatile rt_bool_t adc_test_running = RT_FALSE;
 static uint32_t adc_test_interval = ADC_TEST_TICK;
@@ -47,7 +88,8 @@ static uint32_t adc_test_interval = ADC_TEST_TICK;
 static void adc_test_thread_entry(void* parameter)
 {
     rt_device_t dev;
-    uint32_t mv;
+    uint32_t pin_mv;
+    uint32_t real_mv;
     rt_size_t result;
     rt_err_t ret;
 
@@ -73,10 +115,15 @@ static void adc_test_thread_entry(void* parameter)
         rt_kprintf("[ADC] ");
 
         for (uint32_t ch = 0; ch < ADC_NUM_CHANNELS; ch++) {
-            result = rt_device_read(dev, ch, &mv, sizeof(mv));
+            result = rt_device_read(dev, ch, &pin_mv, sizeof(pin_mv));
 
-            if (result == sizeof(mv)) {
-                rt_kprintf("%s: %4u mV  ", adc_ch_names[ch], mv);
+            if (result == sizeof(pin_mv)) {
+                real_mv = adc_calc_real_mv(ch, pin_mv);
+                rt_kprintf("%s: %4u mV -> %-8s: %5u mV  ",
+                           adc_ch_names[ch],
+                           pin_mv,
+                           adc_src_names[ch],
+                           real_mv);
             } else {
                 rt_kprintf("%s: ERR  ", adc_ch_names[ch]);
             }
@@ -158,7 +205,8 @@ void adc_test_set_interval(uint32_t interval_ms)
 void adc_test(void)
 {
     rt_device_t dev;
-    uint32_t mv;
+    uint32_t pin_mv;
+    uint32_t real_mv;
     rt_size_t result;
 
     dev = rt_device_find("adc0");
@@ -179,10 +227,15 @@ void adc_test(void)
     rt_kprintf("----------------------------\n");
 
     for (uint32_t ch = 0; ch < ADC_NUM_CHANNELS; ch++) {
-        result = rt_device_read(dev, ch, &mv, sizeof(mv));
+        result = rt_device_read(dev, ch, &pin_mv, sizeof(pin_mv));
 
-        if (result == sizeof(mv)) {
-            rt_kprintf("  %s : %u mV\n", adc_ch_names[ch], mv);
+        if (result == sizeof(pin_mv)) {
+            real_mv = adc_calc_real_mv(ch, pin_mv);
+            rt_kprintf("  %s : %u mV -> %s : %u mV\n",
+                       adc_ch_names[ch],
+                       pin_mv,
+                       adc_src_names[ch],
+                       real_mv);
         } else {
             rt_kprintf("  %s : Read FAILED\n", adc_ch_names[ch]);
         }
@@ -200,7 +253,8 @@ void adc_test(void)
 static void adc_read(int argc, char** argv)
 {
     rt_device_t dev;
-    uint32_t mv;
+    uint32_t pin_mv;
+    uint32_t real_mv;
     rt_size_t result;
     uint32_t channel;
 
@@ -227,10 +281,15 @@ static void adc_read(int argc, char** argv)
         return;
     }
 
-    result = rt_device_read(dev, channel, &mv, sizeof(mv));
+    result = rt_device_read(dev, channel, &pin_mv, sizeof(pin_mv));
 
-    if (result == sizeof(mv)) {
-        rt_kprintf("%s : %u mV\n", adc_ch_names[channel], mv);
+    if (result == sizeof(pin_mv)) {
+        real_mv = adc_calc_real_mv(channel, pin_mv);
+        rt_kprintf("%s : %u mV -> %s : %u mV\n",
+                   adc_ch_names[channel],
+                   pin_mv,
+                   adc_src_names[channel],
+                   real_mv);
     } else {
         rt_kprintf("%s : Read FAILED\n", adc_ch_names[channel]);
     }

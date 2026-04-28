@@ -238,7 +238,6 @@
 #define BSP_USING_HW_I2C
 #define BSP_USING_HW_I2C0
 #define BSP_USING_PWM
-#define BSP_USING_PWM5
 #define BSP_USING_SDCARD
 #define BSP_USING_USB
 #define BSP_USING_IPC
