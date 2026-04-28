@@ -21,19 +21,19 @@
 #include <shell.h>
 #include <string.h>
 
+#include "module/config/actuator_config.h"
 #include "module/config/console_config.h"
+#include "module/config/mavproxy_config.h"
+#include "module/config/pilot_cmd_config.h"
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/config/mavproxy_config.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
-#include "module/config/actuator_config.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
-#include "module/config/pilot_cmd_config.h"
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
@@ -45,6 +45,7 @@
 
 // Hardware Drivers
 #include "drv_adc.h"
+#include "drv_fdcan.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -52,13 +53,13 @@
 #include "drv_spi.h"
 #include "drv_systick.h"
 #include "drv_usart.h"
-#include "drv_fdcan.h"
 #include "hal/i2c/i2c.h"
 #include "led.h"
 #include "stm32h7xx_ll_i2c.h"
 #include "usbd/drv_usbd_cdc.h"
 
 // Sensor Drivers
+#include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi055.h"
@@ -471,7 +472,13 @@ void bsp_initialize(void)
     FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
     FMT_CHECK(register_sensor_barometer("barometer"));
     FMT_CHECK(register_sensor_mag("mag0", 0));
-
+    if (strcmp(STR(VEHICLE_TYPE), "Fixwing") == 0 || strcmp(STR(VEHICLE_TYPE), "VTOL") == 0) {
+        if (drv_ms4525_init("i2c2_dev1", "airspeed") == RT_EOK) {
+            FMT_CHECK(register_sensor_airspeed("airspeed"));
+        } else {
+            printf("airspeed sensor init failed!\n");
+        }
+    }
 #endif
 
     /* init finsh */

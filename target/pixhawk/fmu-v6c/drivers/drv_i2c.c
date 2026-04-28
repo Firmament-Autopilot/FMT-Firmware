@@ -325,6 +325,7 @@ static struct stm32_i2c_bus stm32_i2c4 = { .parent.ops = &i2c_bus_ops, .I2C = I2
 /* i2c device instances */
 static struct rt_i2c_device i2c1_dev1 = { .slave_addr = IST8310_ADDRESS, .flags = 0 };
 static struct rt_i2c_device i2c1_dev2 = { .slave_addr = NCP5623C_ADDRESS, .flags = 0 };
+static struct rt_i2c_device i2c2_dev1 = { .slave_addr = MS4525_ADDRESS, .flags = 0 };
 static struct rt_i2c_device i2c4_dev1 = { .slave_addr = IST8310_ADDRESS, .flags = 0 };
 static struct rt_i2c_device i2c4_dev2 = { .slave_addr = MS5611_ADDRESS, .flags = 0 };
 
@@ -343,6 +344,7 @@ rt_err_t drv_i2c_init(void)
     /* attach i2c devices */
     RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev1, "i2c1_dev1", "i2c1", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c1_dev2, "i2c1_dev2", "i2c1", RT_NULL));
+    RT_TRY(rt_i2c_bus_attach_device(&i2c2_dev1, "i2c2_dev1", "i2c2", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c4_dev1, "i2c4_dev1", "i2c4", RT_NULL));
     RT_TRY(rt_i2c_bus_attach_device(&i2c4_dev2, "i2c4_dev2", "i2c4", RT_NULL));
     return RT_EOK;

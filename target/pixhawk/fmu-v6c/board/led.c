@@ -91,8 +91,9 @@ void fms_error_change_cb(uint32_t error)
         _blue_solid = 0;
         _red_mode = 0;
     } else {
-        /* classify errors: ModeDegradation(1) and LostLink(2) are recoverable */
-        if ((error & FMS_Error_LostLink) || (error & FMS_Error_ModeDegradation)) {
+        /* classify errors by the generated numeric values used by FMS models */
+        /* Modedegration(1) Lostlink(2)*/
+        if ((error == 1U) || (error == 2U)) {
             /* recoverable software fault: keep blue blinking, red slow blink */
             _b = 1;
             _blue_solid = 0;

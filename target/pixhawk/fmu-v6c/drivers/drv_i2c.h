@@ -24,6 +24,7 @@ extern "C" {
 
 #define IST8310_ADDRESS  0x0C
 #define NCP5623C_ADDRESS 0x39
+#define MS4525_ADDRESS   0x28
 #define MS5611_ADDRESS   0x77
 
 rt_err_t drv_i2c_init(void);
