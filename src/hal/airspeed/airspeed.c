@@ -71,7 +71,7 @@ rt_err_t hal_airspeed_register(airspeed_dev_t dev, const char* name, rt_uint32_t
 
     device = &(dev->parent);
 
-    device->type = (dev->bus_type == AIRSPEED_SPI_BUS_TYPE) ? RT_Device_Class_SPIDevice : RT_Device_Class_I2CBUS;
+    device->type = (dev->bus_type == AIRSPEED_SPI_BUS_TYPE) ? RT_Device_Class_SPIDevice : RT_Device_Class_I2CDevice;
     device->ref_count = 0;
     device->rx_indicate = RT_NULL;
     device->tx_complete = RT_NULL;
