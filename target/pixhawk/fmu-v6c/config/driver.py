@@ -1,6 +1,7 @@
 # Modify this file to decide which drivers are compiled
 
 DRIVERS = [
+    'airspeed/ms4525.c',
     'barometer/ms5611.c',
     'gps/gps_ubx.c',
     'gps/gps_nmea.c',
