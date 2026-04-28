@@ -40,9 +40,9 @@
 #include "cy_smif.h"
 #include "cycfg_qspi_memslot.h"
 #include "cy_mcwdt.h"
-#include "cy_tcpwm_counter.h"
-#include "cycfg_routing.h"
 #include "cy_tcpwm_pwm.h"
+#include "cycfg_routing.h"
+#include "cy_tcpwm_counter.h"
 
 #if defined (COMPONENT_MTB_HAL)
 #include "mtb_hal.h"
@@ -146,9 +146,6 @@ extern "C" {
 #define scb_8_ENABLED 1U
 #define scb_8_HW SCB8
 #define scb_8_IRQ scb_8_interrupt_IRQn
-#define scb_10_ENABLED 1U
-#define scb_10_HW SCB10
-#define scb_10_IRQ scb_10_interrupt_IRQn
 #define CYBSP_SDHC_1_ENABLED 1U
 #define CYBSP_SDHC_1_HW SDHC1
 #define CYBSP_SDHC_1_IRQ sdhc_1_interrupt_general_IRQn
@@ -202,24 +199,71 @@ extern "C" {
 #define CYBSP_GENERAL_PURPOSE_TIMER_ENABLED 1U
 #define CYBSP_GENERAL_PURPOSE_TIMER_HW TCPWM0
 #define CYBSP_GENERAL_PURPOSE_TIMER_NUM 0UL
-#define CYBSP_GENERAL_PURPOSE_TIMER_IRQ tcpwm_0_interrupts_0_IRQn
 #define CYBSP_USB_OS_TIMER_COUNTER_ENABLED 1U
-#define emUSB_OS_Timer_HW TCPWM0
-#define emUSB_OS_Timer_NUM 1UL
-#define emUSB_OS_Timer_IRQ tcpwm_0_interrupts_1_IRQn
+#define CYBSP_USB_OS_TIMER_COUNTER_HW TCPWM0
+#define CYBSP_USB_OS_TIMER_COUNTER_NUM 1UL
+#define tcpwm_0_group_0_cnt_2_ENABLED 1U
+#define tcpwm_0_group_0_cnt_2_HW TCPWM0
+#define tcpwm_0_group_0_cnt_2_NUM 2UL
+#define tcpwm_0_group_0_cnt_3_ENABLED 1U
+#define tcpwm_0_group_0_cnt_3_HW TCPWM0
+#define tcpwm_0_group_0_cnt_3_NUM 3UL
+#define tcpwm_0_group_0_cnt_4_ENABLED 1U
+#define tcpwm_0_group_0_cnt_4_HW TCPWM0
+#define tcpwm_0_group_0_cnt_4_NUM 4UL
 #define tcpwm_0_group_0_cnt_5_ENABLED 1U
 #define tcpwm_0_group_0_cnt_5_HW TCPWM0
 #define tcpwm_0_group_0_cnt_5_NUM 5UL
-#define CYBSP_DEAD_TIME_PWM_ENABLED 1U
-#define CYBSP_DEAD_TIME_PWM_HW TCPWM0
-#define CYBSP_DEAD_TIME_PWM_NUM 7UL
-#define CYBSP_SMARTIO_PWM_ENABLED 1U
-#define CYBSP_SMARTIO_PWM_HW TCPWM0
-#define CYBSP_SMARTIO_PWM_NUM 262UL
+#define tcpwm_0_group_1_cnt_0_ENABLED 1U
+#define emUSB_OS_Timer_HW TCPWM0
+#define emUSB_OS_Timer_NUM 256UL
+#define emUSB_OS_Timer_IRQ tcpwm_0_interrupts_256_IRQn
+#define tcpwm_0_group_1_cnt_2_ENABLED 1U
+#define tcpwm_0_group_1_cnt_2_HW TCPWM0
+#define tcpwm_0_group_1_cnt_2_NUM 258UL
+#define tcpwm_0_group_1_cnt_3_ENABLED 1U
+#define tcpwm_0_group_1_cnt_3_HW TCPWM0
+#define tcpwm_0_group_1_cnt_3_NUM 259UL
+#define tcpwm_0_group_1_cnt_4_ENABLED 1U
+#define tcpwm_0_group_1_cnt_4_HW TCPWM0
+#define tcpwm_0_group_1_cnt_4_NUM 260UL
+#define tcpwm_0_group_1_cnt_5_ENABLED 1U
+#define tcpwm_0_group_1_cnt_5_HW TCPWM0
+#define tcpwm_0_group_1_cnt_5_NUM 261UL
+#define tcpwm_0_group_1_cnt_8_ENABLED 1U
+#define tcpwm_0_group_1_cnt_8_HW TCPWM0
+#define tcpwm_0_group_1_cnt_8_NUM 264UL
+#define tcpwm_0_group_1_cnt_9_ENABLED 1U
+#define tcpwm_0_group_1_cnt_9_HW TCPWM0
+#define tcpwm_0_group_1_cnt_9_NUM 265UL
+#define tcpwm_0_group_1_cnt_10_ENABLED 1U
+#define tcpwm_0_group_1_cnt_10_HW TCPWM0
+#define tcpwm_0_group_1_cnt_10_NUM 266UL
+#define tcpwm_0_group_1_cnt_11_ENABLED 1U
+#define tcpwm_0_group_1_cnt_11_HW TCPWM0
+#define tcpwm_0_group_1_cnt_11_NUM 267UL
+#define tcpwm_0_group_1_cnt_13_ENABLED 1U
+#define tcpwm_0_group_1_cnt_13_HW TCPWM0
+#define tcpwm_0_group_1_cnt_13_NUM 269UL
+#define tcpwm_0_group_1_cnt_15_ENABLED 1U
+#define tcpwm_0_group_1_cnt_15_HW TCPWM0
+#define tcpwm_0_group_1_cnt_15_NUM 271UL
+#define tcpwm_0_group_1_cnt_17_ENABLED 1U
+#define tcpwm_0_group_1_cnt_17_HW TCPWM0
+#define tcpwm_0_group_1_cnt_17_NUM 273UL
+#define tcpwm_0_group_1_cnt_19_ENABLED 1U
+#define tcpwm_0_group_1_cnt_19_HW TCPWM0
+#define tcpwm_0_group_1_cnt_19_NUM 275UL
 #define RC_TIMER_ENABLED 1U
 #define RC_TIMER_HW TCPWM0
 #define RC_TIMER_NUM 276UL
 #define RC_TIMER_IRQ tcpwm_0_interrupts_276_IRQn
+#define tcpwm_0_group_1_cnt_22_ENABLED 1U
+#define tcpwm_0_group_1_cnt_22_HW TCPWM0
+#define tcpwm_0_group_1_cnt_22_NUM 278UL
+#define tcpwm_0_group_1_cnt_23_ENABLED 1U
+#define tcpwm_0_group_1_cnt_23_HW TCPWM0
+#define tcpwm_0_group_1_cnt_23_NUM 279UL
 
 extern cy_stc_autanalog_cfg_t autonomous_analog_cfg;
 extern cy_stc_autanalog_stt_t autonomous_analog_stt[];
@@ -305,17 +349,6 @@ extern const mtb_hal_clock_t scb_8_hal_clock;
 extern const mtb_hal_spi_configurator_t scb_8_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI) */
 
-extern const cy_stc_scb_spi_config_t scb_10_config;
-
-#if defined (COMPONENT_MTB_HAL)
-extern const mtb_hal_peri_div_t scb_10_clock_ref;
-extern const mtb_hal_clock_t scb_10_hal_clock;
-#endif /* defined (COMPONENT_MTB_HAL) */
-
-#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI)
-extern const mtb_hal_spi_configurator_t scb_10_hal_config;
-#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI) */
-
 extern cy_en_sd_host_card_capacity_t CYBSP_SDHC_1_cardCapacity;
 extern cy_en_sd_host_card_type_t CYBSP_SDHC_1_cardType;
 extern uint32_t CYBSP_SDHC_1_rca;
@@ -366,27 +399,60 @@ extern const cy_stc_mcwdt_config_t CYBSP_CM55_LPTIMER_1_config;
 extern const mtb_hal_lptimer_configurator_t CYBSP_CM55_LPTIMER_1_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_LPTIMER) */
 
-extern const cy_stc_tcpwm_counter_config_t CYBSP_GENERAL_PURPOSE_TIMER_config;
+extern const cy_stc_tcpwm_pwm_config_t CYBSP_GENERAL_PURPOSE_TIMER_config;
 
 #if defined (COMPONENT_MTB_HAL)
 extern const mtb_hal_peri_div_t CYBSP_GENERAL_PURPOSE_TIMER_clock_ref;
 extern const mtb_hal_clock_t CYBSP_GENERAL_PURPOSE_TIMER_hal_clock;
 #endif /* defined (COMPONENT_MTB_HAL) */
 
-#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
-extern const mtb_hal_timer_configurator_t CYBSP_GENERAL_PURPOSE_TIMER_hal_config;
-#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t CYBSP_GENERAL_PURPOSE_TIMER_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
-extern cy_stc_tcpwm_counter_config_t emUSB_OS_Timer_config;
+extern const cy_stc_tcpwm_pwm_config_t CYBSP_USB_OS_TIMER_COUNTER_config;
 
 #if defined (COMPONENT_MTB_HAL)
-extern mtb_hal_peri_div_t emUSB_OS_Timer_clock_ref;
-extern mtb_hal_clock_t emUSB_OS_Timer_hal_clock;
+extern const mtb_hal_peri_div_t CYBSP_USB_OS_TIMER_COUNTER_clock_ref;
+extern const mtb_hal_clock_t CYBSP_USB_OS_TIMER_COUNTER_hal_clock;
 #endif /* defined (COMPONENT_MTB_HAL) */
 
-#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
-extern mtb_hal_timer_configurator_t emUSB_OS_Timer_hal_config;
-#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t CYBSP_USB_OS_TIMER_COUNTER_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_2_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_0_cnt_2_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_0_cnt_2_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_0_cnt_2_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_3_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_0_cnt_3_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_0_cnt_3_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_0_cnt_3_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_4_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_0_cnt_4_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_0_cnt_4_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_0_cnt_4_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
 extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_5_config;
 
@@ -399,26 +465,147 @@ extern const mtb_hal_clock_t tcpwm_0_group_0_cnt_5_hal_clock;
 extern const mtb_hal_pwm_configurator_t tcpwm_0_group_0_cnt_5_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
-extern const cy_stc_tcpwm_pwm_config_t CYBSP_DEAD_TIME_PWM_config;
+extern cy_stc_tcpwm_counter_config_t emUSB_OS_Timer_config;
 
 #if defined (COMPONENT_MTB_HAL)
-extern const mtb_hal_peri_div_t CYBSP_DEAD_TIME_PWM_clock_ref;
-extern const mtb_hal_clock_t CYBSP_DEAD_TIME_PWM_hal_clock;
+extern mtb_hal_peri_div_t emUSB_OS_Timer_clock_ref;
+extern mtb_hal_clock_t emUSB_OS_Timer_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
+extern mtb_hal_timer_configurator_t emUSB_OS_Timer_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_2_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_2_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_2_hal_clock;
 #endif /* defined (COMPONENT_MTB_HAL) */
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
-extern const mtb_hal_pwm_configurator_t CYBSP_DEAD_TIME_PWM_hal_config;
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_2_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
-extern const cy_stc_tcpwm_pwm_config_t CYBSP_SMARTIO_PWM_config;
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_3_config;
 
 #if defined (COMPONENT_MTB_HAL)
-extern const mtb_hal_peri_div_t CYBSP_SMARTIO_PWM_clock_ref;
-extern const mtb_hal_clock_t CYBSP_SMARTIO_PWM_hal_clock;
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_3_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_3_hal_clock;
 #endif /* defined (COMPONENT_MTB_HAL) */
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
-extern const mtb_hal_pwm_configurator_t CYBSP_SMARTIO_PWM_hal_config;
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_3_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_4_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_4_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_4_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_4_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_5_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_5_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_5_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_5_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_8_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_8_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_8_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_8_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_9_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_9_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_9_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_9_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_10_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_10_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_10_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_10_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_11_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_11_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_11_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_11_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_13_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_13_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_13_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_13_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_15_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_15_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_15_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_15_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_17_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_17_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_17_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_17_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_19_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_19_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_19_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_19_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
 extern const cy_stc_tcpwm_counter_config_t RC_TIMER_config;
@@ -431,6 +618,28 @@ extern const mtb_hal_clock_t RC_TIMER_hal_clock;
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER)
 extern const mtb_hal_timer_configurator_t RC_TIMER_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_TIMER) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_22_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_22_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_22_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_22_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
+
+extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_1_cnt_23_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t tcpwm_0_group_1_cnt_23_clock_ref;
+extern const mtb_hal_clock_t tcpwm_0_group_1_cnt_23_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM)
+extern const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_23_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
 void init_cycfg_peripherals(void);
 
