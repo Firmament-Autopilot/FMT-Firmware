@@ -28,6 +28,18 @@
 
 #include "cycfg_peripherals.h"
 
+#define CYBSP_CAN_FD_CH_0_STD_ID_FILTER_0 \
+{\
+    .sfid2 = 0xFFU, \
+    .sfid1 = 0x10U, \
+    .sfec = CY_CANFD_SFEC_DISABLE, \
+    .sft = CY_CANFD_SFT_RANGE_SFID1_SFID2, \
+ }
+#define CYBSP_CAN_FD_CH_0_EXT_ID_FILTER_0 \
+{\
+    .f0_f = &CYBSP_CAN_FD_CH_0_extIdFilterF0Config_0, \
+    .f1_f = &CYBSP_CAN_FD_CH_0_extIdFilterF1Config_0, \
+ }
 #define CYBSP_GENERAL_PURPOSE_TIMER_INPUT_DISABLED 0x7U
 #define CYBSP_USB_OS_TIMER_COUNTER_INPUT_DISABLED 0x7U
 #define tcpwm_0_group_0_cnt_2_INPUT_DISABLED 0x7U
@@ -740,7 +752,7 @@ const mtb_hal_uart_configurator_t CYBSP_UART5_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
 
-const cy_stc_scb_spi_config_t scb_8_config =
+const cy_stc_scb_spi_config_t CYBSP_SPI8_config =
 {
     .spiMode = CY_SCB_SPI_MASTER,
     .subMode = CY_SCB_SPI_MOTOROLA,
@@ -771,27 +783,210 @@ const cy_stc_scb_spi_config_t scb_8_config =
 };
 
 #if defined (COMPONENT_MTB_HAL)
-const mtb_hal_peri_div_t scb_8_clock_ref =
+const mtb_hal_peri_div_t CYBSP_SPI8_clock_ref =
 {
     .clk_dst = (en_clk_dst_t)PCLK_SCB8_CLOCK_SCB_EN,
     .div_type = CY_SYSCLK_DIV_8_BIT,
     .div_num = 1,
 };
-const mtb_hal_clock_t scb_8_hal_clock =
+const mtb_hal_clock_t CYBSP_SPI8_hal_clock =
 {
-    .clock_ref = &scb_8_clock_ref,
+    .clock_ref = &CYBSP_SPI8_clock_ref,
     .interface = &mtb_hal_clock_peri_interface,
 };
 #endif /* defined (COMPONENT_MTB_HAL) */
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI)
-const mtb_hal_spi_configurator_t scb_8_hal_config =
+const mtb_hal_spi_configurator_t CYBSP_SPI8_hal_config =
 {
-    .base = scb_8_HW,
-    .clock = &scb_8_hal_clock,
-    .config = &scb_8_config,
+    .base = CYBSP_SPI8_HW,
+    .clock = &CYBSP_SPI8_hal_clock,
+    .config = &CYBSP_SPI8_config,
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SPI) */
+
+const cy_stc_scb_uart_config_t CYBSP_UART9_config =
+{
+    .uartMode = CY_SCB_UART_STANDARD,
+    .enableMultiProcessorMode = false,
+    .smartCardRetryOnNack = false,
+    .irdaInvertRx = false,
+    .irdaEnableLowPowerReceiver = false,
+    .oversample = 10,
+    .enableMsbFirst = false,
+    .dataWidth = 8UL,
+    .parity = CY_SCB_UART_PARITY_NONE,
+    .stopBits = CY_SCB_UART_STOP_BITS_1,
+    .enableInputFilter = false,
+    .breakWidth = 11UL,
+    .dropOnFrameError = false,
+    .dropOnParityError = false,
+    .breaklevel = false,
+    .receiverAddress = 0x0UL,
+    .receiverAddressMask = 0x0UL,
+    .acceptAddrInFifo = false,
+    .enableCts = false,
+    .ctsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rtsRxFifoLevel = 0UL,
+    .rtsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rxFifoTriggerLevel = 63UL,
+    .rxFifoIntEnableMask = 0UL,
+    .txFifoTriggerLevel = 63UL,
+    .txFifoIntEnableMask = 0UL,
+};
+
+#if defined (COMPONENT_MTB_HAL)
+const mtb_hal_peri_div_t CYBSP_UART9_clock_ref =
+{
+    .clk_dst = (en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM,
+    .div_type = CYBSP_UART5_CLK_DIV_HW,
+    .div_num = CYBSP_UART5_CLK_DIV_NUM,
+};
+const mtb_hal_clock_t CYBSP_UART9_hal_clock =
+{
+    .clock_ref = &CYBSP_UART9_clock_ref,
+    .interface = &mtb_hal_clock_peri_interface,
+};
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+const mtb_hal_uart_configurator_t CYBSP_UART9_hal_config =
+{
+    .base = CYBSP_UART9_HW,
+    .clock = &CYBSP_UART9_hal_clock,
+    .tx_pin = 1,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_pin = 0xFF,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+    .tx_port = 15,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_port = 0xFF,
+    .rts_enable = 0UL,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
+const cy_stc_scb_uart_config_t CYBSP_UART10_config =
+{
+    .uartMode = CY_SCB_UART_STANDARD,
+    .enableMultiProcessorMode = false,
+    .smartCardRetryOnNack = false,
+    .irdaInvertRx = false,
+    .irdaEnableLowPowerReceiver = false,
+    .oversample = 10,
+    .enableMsbFirst = false,
+    .dataWidth = 8UL,
+    .parity = CY_SCB_UART_PARITY_NONE,
+    .stopBits = CY_SCB_UART_STOP_BITS_1,
+    .enableInputFilter = false,
+    .breakWidth = 11UL,
+    .dropOnFrameError = false,
+    .dropOnParityError = false,
+    .breaklevel = false,
+    .receiverAddress = 0x0UL,
+    .receiverAddressMask = 0x0UL,
+    .acceptAddrInFifo = false,
+    .enableCts = false,
+    .ctsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rtsRxFifoLevel = 0UL,
+    .rtsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rxFifoTriggerLevel = 63UL,
+    .rxFifoIntEnableMask = 0UL,
+    .txFifoTriggerLevel = 63UL,
+    .txFifoIntEnableMask = 0UL,
+};
+
+#if defined (COMPONENT_MTB_HAL)
+const mtb_hal_peri_div_t CYBSP_UART10_clock_ref =
+{
+    .clk_dst = (en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM,
+    .div_type = CYBSP_UART5_CLK_DIV_HW,
+    .div_num = CYBSP_UART5_CLK_DIV_NUM,
+};
+const mtb_hal_clock_t CYBSP_UART10_hal_clock =
+{
+    .clock_ref = &CYBSP_UART10_clock_ref,
+    .interface = &mtb_hal_clock_peri_interface,
+};
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+const mtb_hal_uart_configurator_t CYBSP_UART10_hal_config =
+{
+    .base = CYBSP_UART10_HW,
+    .clock = &CYBSP_UART10_hal_clock,
+    .tx_pin = 1,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_pin = 0xFF,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+    .tx_port = 16,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_port = 0xFF,
+    .rts_enable = 0UL,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
+const cy_stc_scb_uart_config_t CYBSP_UART11_config =
+{
+    .uartMode = CY_SCB_UART_STANDARD,
+    .enableMultiProcessorMode = false,
+    .smartCardRetryOnNack = false,
+    .irdaInvertRx = false,
+    .irdaEnableLowPowerReceiver = false,
+    .oversample = 10,
+    .enableMsbFirst = false,
+    .dataWidth = 8UL,
+    .parity = CY_SCB_UART_PARITY_NONE,
+    .stopBits = CY_SCB_UART_STOP_BITS_1,
+    .enableInputFilter = false,
+    .breakWidth = 11UL,
+    .dropOnFrameError = false,
+    .dropOnParityError = false,
+    .breaklevel = false,
+    .receiverAddress = 0x0UL,
+    .receiverAddressMask = 0x0UL,
+    .acceptAddrInFifo = false,
+    .enableCts = false,
+    .ctsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rtsRxFifoLevel = 0UL,
+    .rtsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rxFifoTriggerLevel = 63UL,
+    .rxFifoIntEnableMask = 0UL,
+    .txFifoTriggerLevel = 63UL,
+    .txFifoIntEnableMask = 0UL,
+};
+
+#if defined (COMPONENT_MTB_HAL)
+const mtb_hal_peri_div_t CYBSP_UART11_clock_ref =
+{
+    .clk_dst = (en_clk_dst_t)CYBSP_UART5_CLK_DIV_GRP_NUM,
+    .div_type = CYBSP_UART5_CLK_DIV_HW,
+    .div_num = CYBSP_UART5_CLK_DIV_NUM,
+};
+const mtb_hal_clock_t CYBSP_UART11_hal_clock =
+{
+    .clock_ref = &CYBSP_UART11_clock_ref,
+    .interface = &mtb_hal_clock_peri_interface,
+};
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+const mtb_hal_uart_configurator_t CYBSP_UART11_hal_config =
+{
+    .base = CYBSP_UART11_HW,
+    .clock = &CYBSP_UART11_hal_clock,
+    .tx_pin = 3,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_pin = 0xFF,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+    .tx_port = 17,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_port = 0xFF,
+    .rts_enable = 0UL,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
 
 cy_en_sd_host_card_capacity_t CYBSP_SDHC_1_cardCapacity = CY_SD_HOST_SDSC;
 cy_en_sd_host_card_type_t CYBSP_SDHC_1_cardType = CY_SD_HOST_NOT_EMMC;
@@ -843,6 +1038,163 @@ const mtb_hal_sdio_configurator_t CYBSP_SDHC_1_sdio_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SDIO) */
 
+const cy_stc_canfd_bitrate_t CYBSP_CAN_FD_CH_0_nominalBitrateConfig =
+{
+    .prescaler = 10U - 1U,
+    .timeSegment1 = 5U - 1U,
+    .timeSegment2 = 2U - 1U,
+    .syncJumpWidth = 2U - 1U,
+};
+const cy_stc_canfd_bitrate_t CYBSP_CAN_FD_CH_0_dataBitrateConfig =
+{
+    .prescaler = 5U - 1U,
+    .timeSegment1 = 5U - 1U,
+    .timeSegment2 = 2U - 1U,
+    .syncJumpWidth = 2U - 1U,
+};
+const cy_stc_canfd_transceiver_delay_compensation_t CYBSP_CAN_FD_CH_0_tdcConfig =
+{
+    .tdcEnabled = false,
+    .tdcOffset = 0U,
+    .tdcFilterWindow = 0U,
+};
+const cy_stc_id_filter_t CYBSP_CAN_FD_CH_0_stdIdFilter_0 =
+{
+    .sfid2 = 0xFFU,
+    .sfid1 = 0x10U,
+    .sfec = CY_CANFD_SFEC_DISABLE,
+    .sft = CY_CANFD_SFT_RANGE_SFID1_SFID2,
+};
+const cy_stc_id_filter_t CYBSP_CAN_FD_CH_0_stdIdFilters[] =
+{
+    [0] = CYBSP_CAN_FD_CH_0_STD_ID_FILTER_0,
+};
+const cy_stc_canfd_sid_filter_config_t CYBSP_CAN_FD_CH_0_sidFiltersConfig =
+{
+    .numberOfSIDFilters = 1U,
+    .sidFilter = CYBSP_CAN_FD_CH_0_stdIdFilters,
+};
+const cy_stc_canfd_f0_t CYBSP_CAN_FD_CH_0_extIdFilterF0Config_0 =
+{
+    .efid1 = 0U,
+    .efec = CY_CANFD_EFEC_DISABLE,
+};
+const cy_stc_canfd_f1_t CYBSP_CAN_FD_CH_0_extIdFilterF1Config_0 =
+{
+    .efid2 = 0U,
+    .eft = CY_CANFD_EFT_RANGE_EFID1_EFID2,
+};
+const cy_stc_extid_filter_t CYBSP_CAN_FD_CH_0_extIdFilter_0 =
+{
+    .f0_f = &CYBSP_CAN_FD_CH_0_extIdFilterF0Config_0,
+    .f1_f = &CYBSP_CAN_FD_CH_0_extIdFilterF1Config_0,
+};
+const cy_stc_extid_filter_t CYBSP_CAN_FD_CH_0_extIdFilters[] =
+{
+    [0] = CYBSP_CAN_FD_CH_0_EXT_ID_FILTER_0,
+};
+const cy_stc_canfd_extid_filter_config_t CYBSP_CAN_FD_CH_0_extIdFiltersConfig =
+{
+    .numberOfEXTIDFilters = 1U,
+    .extidFilter = (cy_stc_extid_filter_t*)&CYBSP_CAN_FD_CH_0_extIdFilters,
+    .extIDANDMask = 536870911UL,
+};
+const cy_stc_canfd_global_filter_config_t CYBSP_CAN_FD_CH_0_globalFilterConfig =
+{
+    .nonMatchingFramesStandard = CY_CANFD_ACCEPT_IN_RXFIFO_0,
+    .nonMatchingFramesExtended = CY_CANFD_ACCEPT_IN_RXFIFO_0,
+    .rejectRemoteFramesStandard = false,
+    .rejectRemoteFramesExtended = false,
+};
+const cy_en_canfd_fifo_config_t CYBSP_CAN_FD_CH_0_rxFifo0Config =
+{
+    .mode = CY_CANFD_FIFO_MODE_BLOCKING,
+    .watermark = 0U,
+    .numberOfFIFOElements = 6U,
+    .topPointerLogicEnabled = false,
+};
+const cy_en_canfd_fifo_config_t CYBSP_CAN_FD_CH_0_rxFifo1Config =
+{
+    .mode = CY_CANFD_FIFO_MODE_BLOCKING,
+    .watermark = 0U,
+    .numberOfFIFOElements = 2U,
+    .topPointerLogicEnabled = false,
+};
+const cy_stc_canfd_config_t CYBSP_CAN_FD_CH_0_config =
+{
+    .txCallback = NULL,
+    .rxCallback = NULL,
+    .errorCallback = NULL,
+    .canFDMode = true,
+    .bitrate = &CYBSP_CAN_FD_CH_0_nominalBitrateConfig,
+    .fastBitrate = &CYBSP_CAN_FD_CH_0_dataBitrateConfig,
+    .tdcConfig = &CYBSP_CAN_FD_CH_0_tdcConfig,
+    .sidFilterConfig = &CYBSP_CAN_FD_CH_0_sidFiltersConfig,
+    .extidFilterConfig = &CYBSP_CAN_FD_CH_0_extIdFiltersConfig,
+    .globalFilterConfig = &CYBSP_CAN_FD_CH_0_globalFilterConfig,
+    .rxBufferDataSize = CY_CANFD_BUFFER_DATA_SIZE_8,
+    .rxFIFO1DataSize = CY_CANFD_BUFFER_DATA_SIZE_8,
+    .rxFIFO0DataSize = CY_CANFD_BUFFER_DATA_SIZE_8,
+    .txBufferDataSize = CY_CANFD_BUFFER_DATA_SIZE_8,
+    .rxFIFO0Config = &CYBSP_CAN_FD_CH_0_rxFifo0Config,
+    .rxFIFO1Config = &CYBSP_CAN_FD_CH_0_rxFifo1Config,
+    .noOfRxBuffers = 4U,
+    .noOfTxBuffers = 2U,
+    .messageRAMaddress = CY_CAN0MRAM_BASE + 0U,
+    .messageRAMsize = 4096U,
+};
+cy_stc_canfd_t0_t CYBSP_CAN_FD_CH_0_T0RegisterBuffer_0 =
+{
+    .id = 0x22U,
+    .rtr = CY_CANFD_RTR_DATA_FRAME,
+    .xtd = CY_CANFD_XTD_STANDARD_ID,
+    .esi = CY_CANFD_ESI_ERROR_ACTIVE,
+};
+cy_stc_canfd_t0_t CYBSP_CAN_FD_CH_0_T0RegisterBuffer_1 =
+{
+    .id = 0U,
+    .rtr = CY_CANFD_RTR_DATA_FRAME,
+    .xtd = CY_CANFD_XTD_STANDARD_ID,
+    .esi = CY_CANFD_ESI_ERROR_ACTIVE,
+};
+cy_stc_canfd_t1_t CYBSP_CAN_FD_CH_0_T1RegisterBuffer_0 =
+{
+    .dlc = 0U,
+    .brs = true,
+    .fdf = CY_CANFD_FDF_CAN_FD_FRAME,
+    .efc = false,
+    .mm = 0U,
+};
+cy_stc_canfd_t1_t CYBSP_CAN_FD_CH_0_T1RegisterBuffer_1 =
+{
+    .dlc = 0U,
+    .brs = false,
+    .fdf = CY_CANFD_FDF_STANDARD_FRAME,
+    .efc = false,
+    .mm = 0U,
+};
+uint32_t CYBSP_CAN_FD_CH_0_dataBuffer_0[] =
+{
+    [CYBSP_CAN_FD_CH_0_DATA_0] = 0x04030201U,
+    [CYBSP_CAN_FD_CH_0_DATA_1] = 0x08070605U,
+};
+uint32_t CYBSP_CAN_FD_CH_0_dataBuffer_1[] =
+{
+    [CYBSP_CAN_FD_CH_0_DATA_0] = 0U,
+    [CYBSP_CAN_FD_CH_0_DATA_1] = 0U,
+};
+cy_stc_canfd_tx_buffer_t CYBSP_CAN_FD_CH_0_txBuffer_0 =
+{
+    .t0_f = &CYBSP_CAN_FD_CH_0_T0RegisterBuffer_0,
+    .t1_f = &CYBSP_CAN_FD_CH_0_T1RegisterBuffer_0,
+    .data_area_f = CYBSP_CAN_FD_CH_0_dataBuffer_0,
+};
+cy_stc_canfd_tx_buffer_t CYBSP_CAN_FD_CH_0_txBuffer_1 =
+{
+    .t0_f = &CYBSP_CAN_FD_CH_0_T0RegisterBuffer_1,
+    .t1_f = &CYBSP_CAN_FD_CH_0_T1RegisterBuffer_1,
+    .data_area_f = CYBSP_CAN_FD_CH_0_dataBuffer_1,
+};
 const cy_stc_smif_config_t CYBSP_SMIF_CORE_0_XSPI_FLASH_config =
 {
     .mode = (uint32_t)CY_SMIF_NORMAL,
@@ -2927,11 +3279,21 @@ void init_cycfg_peripherals(void)
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB5_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB8_PERI_NR, CY_MMIO_SCB8_GROUP_NR, CY_MMIO_SCB8_SLAVE_NR, CY_MMIO_SCB8_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB8_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 1U);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB9_PERI_NR, CY_MMIO_SCB9_GROUP_NR, CY_MMIO_SCB9_SLAVE_NR, CY_MMIO_SCB9_CLK_HF_NR);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB9_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB10_PERI_NR, CY_MMIO_SCB10_GROUP_NR, CY_MMIO_SCB10_SLAVE_NR, CY_MMIO_SCB10_CLK_HF_NR);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB10_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB11_PERI_NR, CY_MMIO_SCB11_GROUP_NR, CY_MMIO_SCB11_SLAVE_NR, CY_MMIO_SCB11_CLK_HF_NR);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB11_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SDHC1_PERI_NR, CY_MMIO_SDHC1_GROUP_NR, CY_MMIO_SDHC1_SLAVE_NR, CY_MMIO_SDHC1_CLK_HF_NR);
 #endif /* defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE) */
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SDHC1_CLK_HF, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_USBHS_PERI_NR, CY_MMIO_USBHS_GROUP_NR, CY_MMIO_USBHS_SLAVE_NR, CY_MMIO_USBHS_CLK_HF_NR);
+#if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_CANFD0_PERI_NR , CY_MMIO_CANFD0_GROUP_NR, CY_MMIO_CANFD0_SLAVE_NR, CY_MMIO_CANFD0_CLK_HF_NR);
+#endif /* defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE) */
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_CANFD0_CLOCK_CAN_EN0, CY_SYSCLK_DIV_8_BIT, 4U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SMIF0_PERI_NR, CY_MMIO_SMIF0_GROUP_NR, CY_MMIO_SMIF0_SLAVE_NR, CY_MMIO_SMIF0_CLK_HF_NR);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SMIF01_PERI_NR, CY_MMIO_SMIF01_GROUP_NR, CY_MMIO_SMIF01_SLAVE_NR, CY_MMIO_SMIF01_CLK_HF_NR);
 #if defined (CY_DEVICE_CONFIGURATOR_IP_ENABLE_FEATURE)

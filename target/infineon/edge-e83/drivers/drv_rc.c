@@ -27,7 +27,7 @@
     #define min(x, y) (x < y ? x : y)
 #endif
 
-#define TIMER_FREQ_HZ 1000000UL
+#define TIMER_FREQ_FALLBACK_HZ 1000000UL
 
 #define RC_CONFIG_DEFAULT                      \
     {                                          \
@@ -40,6 +40,29 @@
 
 static ppm_decoder_t ppm_decoder;
 static sbus_decoder_t sbus_decoder;
+
+/* Keep decoder timing aligned with actual TCPWM clock tree and prescaler. */
+static uint32_t rc_get_timer_freq_hz(void)
+{
+    uint32_t timer_freq_hz = TIMER_FREQ_FALLBACK_HZ;
+    uint32_t prescaler_div = (1UL << (RC_TIMER_config.clockPrescaler & 0x7UL));
+
+#if defined(COMPONENT_MTB_HAL)
+    if (RC_TIMER_hal_clock.interface != NULL &&
+        RC_TIMER_hal_clock.interface->get_frequency_hz != NULL &&
+        RC_TIMER_hal_clock.clock_ref != NULL) {
+        timer_freq_hz = RC_TIMER_hal_clock.interface->get_frequency_hz(RC_TIMER_hal_clock.clock_ref);
+    }
+#endif
+
+    if (prescaler_div == 0U || timer_freq_hz < prescaler_div) {
+        return TIMER_FREQ_FALLBACK_HZ;
+    }
+
+    timer_freq_hz /= prescaler_div;
+
+    return timer_freq_hz ? timer_freq_hz : TIMER_FREQ_FALLBACK_HZ;
+}
 
 void RC_TIMER_IRQHandler(void)
 {
@@ -56,11 +79,9 @@ void RC_TIMER_IRQHandler(void)
     rt_interrupt_leave();
 }
 
-static rt_err_t rc_init(rc_dev_t dev)
+static rt_err_t rc_init(void)
 {
-    (void)dev;
-
-    RT_TRY(ppm_decoder_init(&ppm_decoder, TIMER_FREQ_HZ));
+    RT_TRY(ppm_decoder_init(&ppm_decoder, rc_get_timer_freq_hz()));
 
     if (CY_TCPWM_SUCCESS != Cy_TCPWM_Counter_Init(RC_TIMER_HW, RC_TIMER_NUM, &RC_TIMER_config)) {
         return RT_ERROR;
@@ -149,7 +170,7 @@ static rt_uint16_t rc_read(rc_dev_t rc, rt_uint16_t chan_mask, rt_uint16_t* chan
 }
 
 const static struct rc_ops rc_ops = {
-    .rc_init = rc_init,
+    .rc_init = NULL,
     .rc_config = NULL,
     .rc_control = rc_control,
     .rc_read = rc_read,
@@ -162,6 +183,7 @@ static struct rc_device rc_dev = {
 
 rt_err_t drv_rc_init(void)
 {
+    RT_TRY(rc_init());
     RT_TRY(hal_rc_register(&rc_dev, "rc", RT_DEVICE_FLAG_RDWR, NULL));
     return RT_EOK;
 }

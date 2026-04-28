@@ -71,7 +71,11 @@ extern "C" {
 #define ioss_0_port_14_pin_3_HSIOM P14_3_SCB8_SPI_MOSI
 #define ioss_0_port_14_pin_4_HSIOM P14_4_SCB8_SPI_CLK
 #define ioss_0_port_14_pin_6_HSIOM P14_6_TCPWM0_LINE273
+#define ioss_0_port_15_pin_0_HSIOM P15_0_SCB9_UART_RX
+#define ioss_0_port_15_pin_1_HSIOM P15_1_SCB9_UART_TX
 #define ioss_0_port_15_pin_2_HSIOM P15_2_TCPWM0_LINE275
+#define ioss_0_port_16_pin_0_HSIOM P16_0_SCB10_UART_RX
+#define ioss_0_port_16_pin_1_HSIOM P16_1_SCB10_UART_TX
 #define ioss_0_port_16_pin_2_HSIOM P16_2_TCPWM0_LINE258
 #define ioss_0_port_16_pin_3_HSIOM P16_3_TCPWM0_LINE259
 #define ioss_0_port_16_pin_4_HSIOM P16_4_TCPWM0_LINE260
@@ -80,8 +84,12 @@ extern "C" {
 #define ioss_0_port_16_pin_7_HSIOM P16_7_TCPWM0_LINE279
 #define ioss_0_port_17_pin_0_HSIOM P17_0_SCB5_UART_RX
 #define ioss_0_port_17_pin_1_HSIOM P17_1_SCB5_UART_TX
+#define ioss_0_port_17_pin_2_HSIOM P17_2_SCB11_UART_RX
+#define ioss_0_port_17_pin_3_HSIOM P17_3_SCB11_UART_TX
 #define ioss_0_port_17_pin_4_HSIOM P17_4_TCPWM0_LINE_COMPL4
 #define ioss_0_port_17_pin_5_HSIOM P17_5_TCPWM0_LINE_COMPL261
+#define ioss_0_port_20_pin_4_HSIOM P20_4_CANFD0_TTCAN_RX0
+#define ioss_0_port_20_pin_5_HSIOM P20_5_CANFD0_TTCAN_TX0
 #define ioss_0_port_21_pin_4_HSIOM P21_4_SCB3_SPI_MISO
 #define ioss_0_port_21_pin_5_HSIOM P21_5_SCB3_SPI_MOSI
 #define ioss_0_port_21_pin_6_HSIOM P21_6_SCB3_SPI_CLK

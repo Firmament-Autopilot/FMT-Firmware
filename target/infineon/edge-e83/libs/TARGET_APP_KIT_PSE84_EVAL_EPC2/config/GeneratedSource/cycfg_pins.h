@@ -938,6 +938,30 @@ extern "C" {
 #endif
 #define PWM_CH7_HSIOM ioss_0_port_14_pin_6_HSIOM
 #define PWM_CH7_IRQ ioss_interrupts_gpio_14_IRQn
+#define CYBSP_UART9_RX_ENABLED 1U
+#define CYBSP_UART9_RX_PORT GPIO_PRT15
+#define CYBSP_UART9_RX_PORT_NUM 15U
+#define CYBSP_UART9_RX_PIN 0U
+#define CYBSP_UART9_RX_NUM 0U
+#define CYBSP_UART9_RX_DRIVEMODE CY_GPIO_DM_HIGHZ
+#define CYBSP_UART9_RX_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_15_pin_0_HSIOM
+    #define ioss_0_port_15_pin_0_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_UART9_RX_HSIOM ioss_0_port_15_pin_0_HSIOM
+#define CYBSP_UART9_RX_IRQ ioss_interrupts_gpio_15_IRQn
+#define CYBSP_UART9_TX_ENABLED 1U
+#define CYBSP_UART9_TX_PORT GPIO_PRT15
+#define CYBSP_UART9_TX_PORT_NUM 15U
+#define CYBSP_UART9_TX_PIN 1U
+#define CYBSP_UART9_TX_NUM 1U
+#define CYBSP_UART9_TX_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define CYBSP_UART9_TX_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_15_pin_1_HSIOM
+    #define ioss_0_port_15_pin_1_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_UART9_TX_HSIOM ioss_0_port_15_pin_1_HSIOM
+#define CYBSP_UART9_TX_IRQ ioss_interrupts_gpio_15_IRQn
 #define PWM_CH8_ENABLED 1U
 #define PWM_CH8_PORT GPIO_PRT15
 #define PWM_CH8_PORT_NUM 15U
@@ -998,6 +1022,30 @@ extern "C" {
 #endif
 #define CYBSP_ARD_ADC_5_HSIOM ioss_0_port_15_pin_7_HSIOM
 #define CYBSP_ARD_ADC_5_IRQ ioss_interrupts_gpio_15_IRQn
+#define CYBSP_UART10_RX_ENABLED 1U
+#define CYBSP_UART10_RX_PORT GPIO_PRT16
+#define CYBSP_UART10_RX_PORT_NUM 16U
+#define CYBSP_UART10_RX_PIN 0U
+#define CYBSP_UART10_RX_NUM 0U
+#define CYBSP_UART10_RX_DRIVEMODE CY_GPIO_DM_HIGHZ
+#define CYBSP_UART10_RX_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_16_pin_0_HSIOM
+    #define ioss_0_port_16_pin_0_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_UART10_RX_HSIOM ioss_0_port_16_pin_0_HSIOM
+#define CYBSP_UART10_RX_IRQ ioss_interrupts_gpio_16_IRQn
+#define CYBSP_UART10_TX_ENABLED 1U
+#define CYBSP_UART10_TX_PORT GPIO_PRT16
+#define CYBSP_UART10_TX_PORT_NUM 16U
+#define CYBSP_UART10_TX_PIN 1U
+#define CYBSP_UART10_TX_NUM 1U
+#define CYBSP_UART10_TX_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define CYBSP_UART10_TX_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_16_pin_1_HSIOM
+    #define ioss_0_port_16_pin_1_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_UART10_TX_HSIOM ioss_0_port_16_pin_1_HSIOM
+#define CYBSP_UART10_TX_IRQ ioss_interrupts_gpio_16_IRQn
 #define PWM_CH9_ENABLED 1U
 #define PWM_CH9_PORT GPIO_PRT16
 #define PWM_CH9_PORT_NUM 16U
@@ -1094,6 +1142,30 @@ extern "C" {
 #endif
 #define CYBSP_UART5_TX_HSIOM ioss_0_port_17_pin_1_HSIOM
 #define CYBSP_UART5_TX_IRQ ioss_interrupts_gpio_17_IRQn
+#define CYBSP_UART11_RX_ENABLED 1U
+#define CYBSP_UART11_RX_PORT GPIO_PRT17
+#define CYBSP_UART11_RX_PORT_NUM 17U
+#define CYBSP_UART11_RX_PIN 2U
+#define CYBSP_UART11_RX_NUM 2U
+#define CYBSP_UART11_RX_DRIVEMODE CY_GPIO_DM_HIGHZ
+#define CYBSP_UART11_RX_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_17_pin_2_HSIOM
+    #define ioss_0_port_17_pin_2_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_UART11_RX_HSIOM ioss_0_port_17_pin_2_HSIOM
+#define CYBSP_UART11_RX_IRQ ioss_interrupts_gpio_17_IRQn
+#define CYBSP_UART11_TX_ENABLED 1U
+#define CYBSP_UART11_TX_PORT GPIO_PRT17
+#define CYBSP_UART11_TX_PORT_NUM 17U
+#define CYBSP_UART11_TX_PIN 3U
+#define CYBSP_UART11_TX_NUM 3U
+#define CYBSP_UART11_TX_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
+#define CYBSP_UART11_TX_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_17_pin_3_HSIOM
+    #define ioss_0_port_17_pin_3_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_UART11_TX_HSIOM ioss_0_port_17_pin_3_HSIOM
+#define CYBSP_UART11_TX_IRQ ioss_interrupts_gpio_17_IRQn
 #define PWM_CH15_ENABLED 1U
 #define PWM_CH15_PORT GPIO_PRT17
 #define PWM_CH15_PORT_NUM 17U
@@ -1178,6 +1250,39 @@ extern "C" {
 #endif
 #define CYBSP_ECO_OUT_HSIOM ioss_0_port_19_pin_1_HSIOM
 #define CYBSP_ECO_OUT_IRQ ioss_interrupts_gpio_19_IRQn
+#define CYBSP_TRACE_DATA0_ENABLED 1U
+#define CYBSP_TRACE_DATA0_PORT GPIO_PRT20
+#define CYBSP_TRACE_DATA0_PORT_NUM 20U
+#define CYBSP_TRACE_DATA0_PIN 4U
+#define CYBSP_TRACE_DATA0_NUM 4U
+#define CYBSP_TRACE_DATA0_DRIVEMODE CY_GPIO_DM_HIGHZ
+#define CYBSP_TRACE_DATA0_INIT_DRIVESTATE 1
+#ifndef ioss_0_port_20_pin_4_HSIOM
+    #define ioss_0_port_20_pin_4_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_TRACE_DATA0_HSIOM ioss_0_port_20_pin_4_HSIOM
+#define CYBSP_TRACE_DATA0_IRQ ioss_interrupts_gpio_20_IRQn
+#define CYBSP_DISP_UPDN_ENABLED 1U
+#define CYBSP_DISP_TE_ENABLED CYBSP_DISP_UPDN_ENABLED
+#define CYBSP_DISP_UPDN_PORT GPIO_PRT20
+#define CYBSP_DISP_TE_PORT CYBSP_DISP_UPDN_PORT
+#define CYBSP_DISP_UPDN_PORT_NUM 20U
+#define CYBSP_DISP_TE_PORT_NUM CYBSP_DISP_UPDN_PORT_NUM
+#define CYBSP_DISP_UPDN_PIN 5U
+#define CYBSP_DISP_TE_PIN CYBSP_DISP_UPDN_PIN
+#define CYBSP_DISP_UPDN_NUM 5U
+#define CYBSP_DISP_TE_NUM CYBSP_DISP_UPDN_NUM
+#define CYBSP_DISP_UPDN_DRIVEMODE CY_GPIO_DM_STRONG
+#define CYBSP_DISP_TE_DRIVEMODE CYBSP_DISP_UPDN_DRIVEMODE
+#define CYBSP_DISP_UPDN_INIT_DRIVESTATE 1
+#define CYBSP_DISP_TE_INIT_DRIVESTATE CYBSP_DISP_UPDN_INIT_DRIVESTATE
+#ifndef ioss_0_port_20_pin_5_HSIOM
+    #define ioss_0_port_20_pin_5_HSIOM HSIOM_SEL_GPIO
+#endif
+#define CYBSP_DISP_UPDN_HSIOM ioss_0_port_20_pin_5_HSIOM
+#define CYBSP_DISP_TE_HSIOM CYBSP_DISP_UPDN_HSIOM
+#define CYBSP_DISP_UPDN_IRQ ioss_interrupts_gpio_20_IRQn
+#define CYBSP_DISP_TE_IRQ CYBSP_DISP_UPDN_IRQ
 #define CYBSP_DISP_RST_ENABLED 1U
 #define CYBSP_DISP_RST_PORT GPIO_PRT20
 #define CYBSP_DISP_RST_PORT_NUM 20U
@@ -1367,11 +1472,15 @@ extern const cy_stc_gpio_pin_config_t ETH_PWEN_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C8_SDA_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_I2C8_SCL_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH7_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART9_RX_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART9_TX_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH8_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_2_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_3_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_4_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_5_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART10_RX_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART10_TX_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH9_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH10_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH11_config;
@@ -1380,6 +1489,8 @@ extern const cy_stc_gpio_pin_config_t PWM_CH13_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH14_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART5_RX_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART5_TX_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART11_RX_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_UART11_TX_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH15_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH16_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SDHC_DETECT_config;
@@ -1387,6 +1498,11 @@ extern const cy_stc_gpio_pin_config_t CYBSP_WCO_OUT_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_WCO_IN_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ECO_IN_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_ECO_OUT_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_TRACE_DATA0_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_DISP_UPDN_config;
+
+#define CYBSP_DISP_TE_config CYBSP_DISP_UPDN_config
+
 extern const cy_stc_gpio_pin_config_t CYBSP_DISP_RST_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SPI_3_MISO_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_SPI_3_MOSI_config;
