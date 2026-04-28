@@ -1107,6 +1107,42 @@ const cy_stc_gpio_pin_config_t PWM_CH7_config =
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
 };
+const cy_stc_gpio_pin_config_t CYBSP_UART9_RX_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_HIGHZ,
+    .hsiom = CYBSP_UART9_RX_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_UART9_TX_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
+    .hsiom = CYBSP_UART9_TX_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
 const cy_stc_gpio_pin_config_t PWM_CH8_config =
 {
     .outVal = 0,
@@ -1184,6 +1220,42 @@ const cy_stc_gpio_pin_config_t CYBSP_ARD_ADC_5_config =
     .outVal = 1,
     .driveMode = CY_GPIO_DM_ANALOG,
     .hsiom = CYBSP_ARD_ADC_5_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_UART10_RX_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_HIGHZ,
+    .hsiom = CYBSP_UART10_RX_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_UART10_TX_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
+    .hsiom = CYBSP_UART10_TX_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
     .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
@@ -1341,6 +1413,42 @@ const cy_stc_gpio_pin_config_t CYBSP_UART5_TX_config =
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
 };
+const cy_stc_gpio_pin_config_t CYBSP_UART11_RX_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_HIGHZ,
+    .hsiom = CYBSP_UART11_RX_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_UART11_TX_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
+    .hsiom = CYBSP_UART11_TX_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
 const cy_stc_gpio_pin_config_t PWM_CH15_config =
 {
     .outVal = 0,
@@ -1454,6 +1562,42 @@ const cy_stc_gpio_pin_config_t CYBSP_ECO_OUT_config =
     .outVal = 1,
     .driveMode = CY_GPIO_DM_ANALOG,
     .hsiom = CYBSP_ECO_OUT_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_TRACE_DATA0_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_HIGHZ,
+    .hsiom = CYBSP_TRACE_DATA0_HSIOM,
+    .intEdge = CY_GPIO_INTR_DISABLE,
+    .intMask = 0UL,
+    .vtrip = CY_GPIO_VTRIP_CMOS,
+    .slewRate = CY_GPIO_SLEW_FAST,
+    .driveSel = CY_GPIO_DRIVE_1_2,
+    .vregEn = 0UL,
+    .ibufMode = 0UL,
+    .vtripSel = 0UL,
+    .vrefSel = 0UL,
+    .vohSel = 0UL,
+    .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
+    .nonSec = 1,
+};
+const cy_stc_gpio_pin_config_t CYBSP_DISP_UPDN_config =
+{
+    .outVal = 1,
+    .driveMode = CY_GPIO_DM_STRONG,
+    .hsiom = CYBSP_DISP_UPDN_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
     .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
@@ -1620,11 +1764,15 @@ void init_cycfg_pins(void)
     Cy_GPIO_Pin_Init(CYBSP_I2C8_SDA_PORT, CYBSP_I2C8_SDA_PIN, &CYBSP_I2C8_SDA_config);
     Cy_GPIO_Pin_Init(CYBSP_I2C8_SCL_PORT, CYBSP_I2C8_SCL_PIN, &CYBSP_I2C8_SCL_config);
     Cy_GPIO_Pin_Init(PWM_CH7_PORT, PWM_CH7_PIN, &PWM_CH7_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART9_RX_PORT, CYBSP_UART9_RX_PIN, &CYBSP_UART9_RX_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART9_TX_PORT, CYBSP_UART9_TX_PIN, &CYBSP_UART9_TX_config);
     Cy_GPIO_Pin_Init(PWM_CH8_PORT, PWM_CH8_PIN, &PWM_CH8_config);
     Cy_GPIO_Pin_Init(CYBSP_ARD_ADC_2_PORT, CYBSP_ARD_ADC_2_PIN, &CYBSP_ARD_ADC_2_config);
     Cy_GPIO_Pin_Init(CYBSP_ARD_ADC_3_PORT, CYBSP_ARD_ADC_3_PIN, &CYBSP_ARD_ADC_3_config);
     Cy_GPIO_Pin_Init(CYBSP_ARD_ADC_4_PORT, CYBSP_ARD_ADC_4_PIN, &CYBSP_ARD_ADC_4_config);
     Cy_GPIO_Pin_Init(CYBSP_ARD_ADC_5_PORT, CYBSP_ARD_ADC_5_PIN, &CYBSP_ARD_ADC_5_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART10_RX_PORT, CYBSP_UART10_RX_PIN, &CYBSP_UART10_RX_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART10_TX_PORT, CYBSP_UART10_TX_PIN, &CYBSP_UART10_TX_config);
     Cy_GPIO_Pin_Init(PWM_CH9_PORT, PWM_CH9_PIN, &PWM_CH9_config);
     Cy_GPIO_Pin_Init(PWM_CH10_PORT, PWM_CH10_PIN, &PWM_CH10_config);
     Cy_GPIO_Pin_Init(PWM_CH11_PORT, PWM_CH11_PIN, &PWM_CH11_config);
@@ -1633,9 +1781,13 @@ void init_cycfg_pins(void)
     Cy_GPIO_Pin_Init(PWM_CH14_PORT, PWM_CH14_PIN, &PWM_CH14_config);
     Cy_GPIO_Pin_Init(CYBSP_UART5_RX_PORT, CYBSP_UART5_RX_PIN, &CYBSP_UART5_RX_config);
     Cy_GPIO_Pin_Init(CYBSP_UART5_TX_PORT, CYBSP_UART5_TX_PIN, &CYBSP_UART5_TX_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART11_RX_PORT, CYBSP_UART11_RX_PIN, &CYBSP_UART11_RX_config);
+    Cy_GPIO_Pin_Init(CYBSP_UART11_TX_PORT, CYBSP_UART11_TX_PIN, &CYBSP_UART11_TX_config);
     Cy_GPIO_Pin_Init(PWM_CH15_PORT, PWM_CH15_PIN, &PWM_CH15_config);
     Cy_GPIO_Pin_Init(PWM_CH16_PORT, PWM_CH16_PIN, &PWM_CH16_config);
     Cy_GPIO_Pin_Init(CYBSP_SDHC_DETECT_PORT, CYBSP_SDHC_DETECT_PIN, &CYBSP_SDHC_DETECT_config);
+    Cy_GPIO_Pin_Init(CYBSP_TRACE_DATA0_PORT, CYBSP_TRACE_DATA0_PIN, &CYBSP_TRACE_DATA0_config);
+    Cy_GPIO_Pin_Init(CYBSP_DISP_UPDN_PORT, CYBSP_DISP_UPDN_PIN, &CYBSP_DISP_UPDN_config);
     Cy_GPIO_Pin_Init(CYBSP_DISP_RST_PORT, CYBSP_DISP_RST_PIN, &CYBSP_DISP_RST_config);
     Cy_GPIO_Pin_Init(CYBSP_SPI_3_MISO_PORT, CYBSP_SPI_3_MISO_PIN, &CYBSP_SPI_3_MISO_config);
     Cy_GPIO_Pin_Init(CYBSP_SPI_3_MOSI_PORT, CYBSP_SPI_3_MOSI_PIN, &CYBSP_SPI_3_MOSI_config);

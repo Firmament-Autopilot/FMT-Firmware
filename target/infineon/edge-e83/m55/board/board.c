@@ -263,6 +263,9 @@ void bsp_early_initialize(void)
     /* pwm driver init */
     RT_CHECK(drv_pwm_init());
 
+    /* init RC */
+    RT_CHECK(drv_rc_init());
+
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
 
