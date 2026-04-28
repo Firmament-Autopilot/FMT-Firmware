@@ -38,7 +38,7 @@ MCN_DECLARE(ins_output);
 #define LEVEL_CALIBRATE_COUNT 200
 #define ACC_MAX_THRESHOLD     8.8f
 #define ACC_MIN_THRESHOLD     2.0f
-#define GYR_ROTAT_THRESHOLD   1.0f
+#define GYR_ROTAT_THRESHOLD   0.5f
 #define CALIB_TIME_INTERVAL   20
 
 typedef enum {
@@ -59,7 +59,7 @@ typedef struct {
 } MAVCMD_CALIB_GYR;
 
 typedef struct {
-    uint8_t status; //0:start 1:calibrating 2:finish
+    uint8_t status; // 0:start 1:calibrating 2:finish
     uint8_t done_flag[6];
     uint32_t cnt[6];
     acc_position acc_pos;
@@ -753,7 +753,7 @@ static void level_calibration(void)
             PARAM_SET_FLOAT(CALIB, LEVEL_YOFF, mavcmd_calib_level.board_pitch_off);
 
             mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_DONE_MSG, "level");
-            //console_printf("Update Level Horizontal Offset: [%f %f]\n", mavcmd_calib_level.board_roll_off, mavcmd_calib_level.board_pitch_off);
+            // console_printf("Update Level Horizontal Offset: [%f %f]\n", mavcmd_calib_level.board_roll_off, mavcmd_calib_level.board_pitch_off);
 
             level_calibration_reset();
         }
