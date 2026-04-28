@@ -3,6 +3,7 @@
 MODULES = [
     'calibration/*.c',
     'console/*.c',
+    'config/*.c',
     'system/*.c',
     'ipc/*.c',
     # 'syscmd/*.c',
@@ -18,7 +19,6 @@ MODULES = [
     'workqueue/*.c',
     'math/*.c',
     'filter/*.c',
-    # 'fmtio/*.c',
     'task_manager/*.c',
     'pmu/*.c',
 ]

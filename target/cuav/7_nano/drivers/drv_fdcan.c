@@ -179,11 +179,14 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         /* Retrieve Rx messages from RX FIFO0 */
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
-            can_msg msg;
-
-            msg.std_id = RxHeader.Identifier;
-            msg.ext_id = RxHeader.Identifier;
-            msg.id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
+            can_msg msg = { 0 };
+            if (RxHeader.IdType == FDCAN_EXTENDED_ID) {
+                msg.ext_id = RxHeader.Identifier;
+                msg.id_type = CAN_ID_EXTENDED;
+            } else {
+                msg.std_id = RxHeader.Identifier;
+                msg.id_type = CAN_ID_STANDARD;
+            }
             msg.frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
             msg.data_len = RxHeader.DataLength;
             memcpy(msg.data, RxData, msg.data_len);
@@ -238,9 +241,9 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
     hfdcan->Init.DataSyncJumpWidth = 1;
     hfdcan->Init.DataTimeSeg1 = 1;
     hfdcan->Init.DataTimeSeg2 = 1;
-    hfdcan->Init.MessageRAMOffset = 0;
+    hfdcan->Init.MessageRAMOffset = (can == &can1_dev) ? 0 : 1280;
     hfdcan->Init.StdFiltersNbr = 1;
-    hfdcan->Init.ExtFiltersNbr = 0;
+    hfdcan->Init.ExtFiltersNbr = 1;
     hfdcan->Init.RxFifo0ElmtsNbr = 32;
     hfdcan->Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
     hfdcan->Init.RxFifo1ElmtsNbr = 0;
@@ -267,6 +270,14 @@ static rt_err_t can_configure(can_dev_t can, struct can_configure* cfg)
     sFilterConfig.FilterID2 = 0x000;
     if (HAL_FDCAN_ConfigFilter(hfdcan, &sFilterConfig) != HAL_OK) {
         /* Filter configuration Error */
+        return RT_ERROR;
+    }
+
+    sFilterConfig.IdType = FDCAN_EXTENDED_ID;
+    sFilterConfig.FilterIndex = 0;
+    sFilterConfig.FilterID1 = 0x00000000;
+    sFilterConfig.FilterID2 = 0x00000000;
+    if (HAL_FDCAN_ConfigFilter(hfdcan, &sFilterConfig) != HAL_OK) {
         return RT_ERROR;
     }
 
@@ -331,7 +342,7 @@ static rt_err_t can_control(can_dev_t can, int cmd, void* arg)
         }
 
         /* Configure Rx filter */
-        sFilterConfig.IdType = FDCAN_STANDARD_ID;
+        sFilterConfig.IdType = (filter->id_type == CAN_ID_EXTENDED) ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
         sFilterConfig.FilterIndex = 0;
         sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
         sFilterConfig.FilterID1 = filter->filter_id1;
@@ -355,8 +366,8 @@ static int send_canmsg(can_dev_t can, const can_msg_t msg)
     FDCAN_TxHeaderTypeDef TxHeader;
 
     /* Prepare Tx Header */
-    TxHeader.Identifier = msg->std_id;
-    TxHeader.IdType = msg->id_type == CAN_ID_EXTENDED ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
+    TxHeader.Identifier = (msg->id_type == CAN_ID_EXTENDED) ? msg->ext_id : msg->std_id;
+    TxHeader.IdType = (msg->id_type == CAN_ID_EXTENDED) ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
     TxHeader.TxFrameType = msg->frame_type == CAN_FRAME_REMOTE ? FDCAN_REMOTE_FRAME : FDCAN_DATA_FRAME;
     TxHeader.DataLength = msg->data_len;
     TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
@@ -384,9 +395,15 @@ static int recv_canmsg(can_dev_t can, can_msg_t msg)
 
     /* Retrieve Rx messages from RX FIFO0 */
     if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
-        msg->std_id = RxHeader.Identifier;
-        msg->ext_id = RxHeader.Identifier;
-        msg->id_type = RxHeader.IdType == FDCAN_EXTENDED_ID ? CAN_ID_EXTENDED : CAN_ID_STANDARD;
+        if (RxHeader.IdType == FDCAN_EXTENDED_ID) {
+            msg->std_id = 0;
+            msg->ext_id = RxHeader.Identifier;
+            msg->id_type = CAN_ID_EXTENDED;
+        } else {
+            msg->std_id = RxHeader.Identifier;
+            msg->ext_id = 0;
+            msg->id_type = CAN_ID_STANDARD;
+        }
         msg->frame_type = RxHeader.RxFrameType == FDCAN_REMOTE_FRAME ? CAN_FRAME_REMOTE : CAN_FRAME_DATA;
         msg->data_len = RxHeader.DataLength;
         memcpy(msg->data, RxData, msg->data_len);

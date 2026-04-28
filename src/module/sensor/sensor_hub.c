@@ -174,7 +174,17 @@ static int echo_sensor_gps(void* param)
         return -1;
     }
 
-    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f\n", gps_report.lon, gps_report.lat, gps_report.height, gps_report.fixType, gps_report.numSV, gps_report.hAcc, gps_report.vAcc, gps_report.sAcc);
+    console_printf("lon:%d lat:%d alt:%d fixType:%d numSV:%d hAcc:%.2f vAcc:%.2f sAcc:%.2f heading:%.2f hAcc:%.2f\n",
+                   gps_report.lon,
+                   gps_report.lat,
+                   gps_report.height,
+                   gps_report.fixType,
+                   gps_report.numSV,
+                   gps_report.hAcc,
+                   gps_report.vAcc,
+                   gps_report.sAcc,
+                   gps_report.heading,
+                   gps_report.headingAcc);
 
     return 0;
 }
@@ -811,7 +821,7 @@ void sensor_collect(void)
     if (check_timetag(TIMETAG(airspeed_interval))) {
         if (airspeed_dev != NULL) {
             if (sensor_airspeed_measure(airspeed_dev, &airspeed_data) == FMT_EOK) {
-                /* publish barometer data */
+                /* publish airspeed data */
                 mcn_publish(MCN_HUB(sensor_airspeed), &airspeed_data);
             }
         }

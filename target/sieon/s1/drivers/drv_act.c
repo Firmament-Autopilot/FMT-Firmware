@@ -442,7 +442,7 @@ static void timer_init(void)
     LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM8);
     TIM_InitStruct.Prescaler = APB2_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(aux_pwm_freq) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     TIM_InitStruct.RepetitionCounter = 0;
     LL_TIM_Init(TIM8, &TIM_InitStruct);
@@ -481,7 +481,7 @@ static void timer_init(void)
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM12);
     TIM_InitStruct.Prescaler = APB1_PrescalerValue;
     TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-    TIM_InitStruct.Autoreload = PWM_ARR(main_pwm_freq) - 1;
+    TIM_InitStruct.Autoreload = PWM_ARR(aux_pwm_freq) - 1;
     TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
     LL_TIM_Init(TIM12, &TIM_InitStruct);
     LL_TIM_EnableARRPreload(TIM12);
@@ -853,8 +853,13 @@ rt_size_t main_act_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_uint
                     /* Handle dshot command */
                     dshot_val = val;
                 } else {
-                    float norm_throttle = (val > 1000) ? ((float)(val - 1000) / 1000.0f) : 0.0f;
-                    dshot_val = dshot_throttle_to_value(norm_throttle);
+                    float norm_throttle = (float)(val - 1000) / 1000.0f;
+                    FMS_Out_Bus fms_out;
+                    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) == FMT_EOK && fms_out.status == VehicleStatus_Disarm && norm_throttle < 0.05f) {
+                        dshot_val = DSHOT_CMD_MOTOR_STOP;
+                    } else {
+                        dshot_val = dshot_throttle_to_value(norm_throttle);
+                    }
                 }
 
                 packed_sel |= (1u << i);

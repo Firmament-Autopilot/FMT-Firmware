@@ -36,6 +36,10 @@ target = "YunDrone X1"
     name = "serial2"
     baudrate = 115200
 
+    [[mavproxy.rtcm_devices]]
+    type = "serial"
+    name = "serial3" 
+
 # Pilot CMD Configuration
 [pilot-cmd]
     # channel mapping for [yaw, throttle, roll, pitch]

@@ -91,7 +91,7 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
     } break;
 
     case MAV_CMD_PREFLIGHT_CALIBRATION:
-        if (command->param1 == 1) {        // calibration gyr
+        if (command->param1 == 1) { // calibration gyr
             mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
             mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
@@ -101,6 +101,11 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             mavproxy_cmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
         } else {
             /* all 0 command, cancel current process */
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_GYR);
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_ACC);
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_MAG);
+            mavproxy_cmd_reset(MAVCMD_CALIBRATION_LEVEL);
+            mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_CANCELLED_MSG);
         }
 
         mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command->command, MAV_RESULT_ACCEPTED);
@@ -255,7 +260,7 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     } break;
 
     case MAVLINK_MSG_ID_COMMAND_INT:
-        if (this_system.sysid == mavlink_msg_command_long_get_target_system(msg)) {
+        if (this_system.sysid == mavlink_msg_command_int_get_target_system(msg)) {
             mavlink_command_int_t command;
             Mission_Data_Bus mission_data = { 0 };
             mavlink_msg_command_int_decode(msg, &command);
@@ -337,6 +342,22 @@ static fmt_err_t handle_mavlink_message(mavlink_message_t* msg, mavlink_system_t
     case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
     case MAVLINK_MSG_ID_MISSION_ACK:
         handle_mission_message(msg, MAVPROXY_GCS_CHAN);
+        break;
+
+    case MAVLINK_MSG_ID_LOG_REQUEST_LIST:
+        handle_log_request_list(msg, this_system, MAVPROXY_GCS_CHAN);
+        break;
+
+    case MAVLINK_MSG_ID_LOG_REQUEST_DATA:
+        handle_log_request_data(msg, this_system, MAVPROXY_GCS_CHAN);
+        break;
+
+    case MAVLINK_MSG_ID_LOG_ERASE:
+        handle_log_erase(msg, this_system);
+        break;
+
+    case MAVLINK_MSG_ID_LOG_REQUEST_END:
+        handle_log_request_end(msg, this_system);
         break;
 
 #if defined(FMT_USING_HIL)

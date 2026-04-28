@@ -17,9 +17,10 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "hal/actuator/actuator.h"
 #include "model/control/control_interface.h"
+#include "module/config/actuator_config.h"
 #include "module/mavproxy/mavproxy.h"
-#include "module/sysio/actuator_config.h"
 
 MCN_DECLARE(control_output);
 MCN_DECLARE(rc_trim_channels);
@@ -180,6 +181,17 @@ fmt_err_t actuator_init(void)
         to_dev[i] = rt_device_find(mapping_list[i].to);
         if (to_dev[i] == NULL) {
             return FMT_EEMPTY;
+        }
+
+        if (to_dev[i]->type == RT_Device_Class_Miscellaneous) {
+            actuator_dev_t act_dev = (actuator_dev_t)to_dev[i];
+            for (int j = 0; j < mapping_list[i].map_size; j++) {
+                uint16_t to_chan = mapping_list[i].to_map[j];
+                if (to_chan < 1 || to_chan > 16 || !(act_dev->chan_mask & (1 << (to_chan - 1)))) {
+                    printf("Actuator error: invalid channel %d mapped to %s\n", to_chan, mapping_list[i].to);
+                    return FMT_ERROR;
+                }
+            }
         }
     }
 

@@ -45,7 +45,7 @@ uint8_t check_timetag(TimeTag* timetag)
 {
     uint32_t now = systime_now_ms();
 
-    if (timetag->period > 0 && now - timetag->tag >= timetag->period) {
+    if (timetag->period > 0 && ((now - timetag->tag) >= timetag->period)) {
         timetag->tag = now;
         return 1;
     }
@@ -61,7 +61,7 @@ uint8_t check_timetag(TimeTag* timetag)
  */
 uint8_t check_timetag2(TimeTag* timetag, uint32_t now)
 {
-    if (timetag->period && now - timetag->tag >= timetag->period) {
+    if (timetag->period && ((now - timetag->tag) >= timetag->period)) {
         timetag->tag = now;
         return 1;
     }
@@ -78,7 +78,7 @@ uint8_t check_timetag2(TimeTag* timetag, uint32_t now)
  */
 uint8_t check_timetag3(TimeTag* timetag, uint32_t now, uint32_t period)
 {
-    if (period > 0 && now - timetag->tag >= period) {
+    if (period > 0 && ((now - timetag->tag) >= period)) {
         timetag->tag = now;
         return 1;
     }
@@ -128,11 +128,9 @@ uint64_t systime_now_us(void)
  *
  * @return uint32_t systime in ms
  */
-uint32_t systime_now_ms(void)
+inline uint32_t systime_now_ms(void)
 {
-    uint32_t time_now_ms = systime_now_us() / 1000ULL;
-
-    return time_now_ms;
+    return (uint32_t)((systime_now_us() + 500) / 1000);
 }
 
 /**
@@ -142,11 +140,11 @@ uint32_t systime_now_ms(void)
  */
 void systime_udelay(uint32_t time_us)
 {
-    uint64_t target = systime_now_us() + time_us;
-
     if (systick_dev == NULL) {
         return;
     }
+
+    uint64_t target = systime_now_us() + time_us;
 
     while (systime_now_us() < target)
         ;

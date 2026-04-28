@@ -789,7 +789,7 @@ def main():
             matches = False
             p = SerialPort(port, description=description, hwid=hwid)
             for preferred in preferred_list:
-                if fnmatch.fnmatch(description, preferred) or fnmatch.fnmatch(hwid, preferred):
+                if fnmatch.fnmatch(description, preferred):
                     matches = True
             if matches:
                 ret.append(p)
@@ -798,7 +798,7 @@ def main():
         if len(ret) > 0:
             return ret
         # now the rest
-        ret.extend(others)
+        # ret.extend(others)
         return ret
         
 
@@ -820,7 +820,7 @@ def main():
                 others.append(SerialPort(d))
         if len(ret) > 0:
             return ret
-        ret.extend(others)
+        # ret.extend(others)
         return ret
 
     class SerialPort(object):
@@ -844,8 +844,7 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*MindPX*', '*ArduPilot*',
-                        "*STMicroelectronics Virtual COM Port*", "*USB_to_UART*", '*PX4*'])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*USB*', '*MindPX*'])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
@@ -875,8 +874,7 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*MindPX*', '*ArduPilot*',
-                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*USB*', '*MindPX*'])
                 else:
                     serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
 

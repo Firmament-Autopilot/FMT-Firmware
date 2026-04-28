@@ -35,12 +35,12 @@ target = "QEMU vexpress-a9"\n
     chan = 0\n
     type = "serial"\n
     name = "serial1"\n
-    baudrate = 115200\n
+    baudrate = 3000000\n
     [[mavproxy.devices]]\n
     chan = 1\n
     type = "serial"\n
     name = "serial2"\n
-    baudrate = 115200\n
+    baudrate = 3000000\n
 [actuator]\n
     [[actuator.devices]]\n
     protocol = "pwm"\n
@@ -50,6 +50,6 @@ target = "QEMU vexpress-a9"\n
     [[actuator.mappings]]\n
     from = "control_out"\n
     to = "null_out"\n
-    chan-map = [[1,2,3,4],[1,2,3,4]]
+    chan-map = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]]
 );
 // clang-format on

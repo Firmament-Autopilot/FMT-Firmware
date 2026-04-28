@@ -257,6 +257,7 @@ static int echo_topic(struct optparse options)
         return EXIT_FAILURE;
     }
 
+    syscmd_flush();
     while (cnt) {
         /* type any key to exit */
         if (syscmd_has_input()) {
