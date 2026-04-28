@@ -94,6 +94,26 @@ static rt_err_t ifx_adc_measure(adc_dev_t adc_dev, uint32_t channel, uint32_t* m
         return RT_EINVAL;
     }
 
+    /* Force one fresh conversion result for this channel to avoid stale data. */
+    {
+        uint8_t ch_mask = (uint8_t)(1u << phy_channel);
+        uint32_t timeout = 100000U;
+
+        Cy_AutAnalog_SAR_ClearHSchanResultStatus(cfg->sar_idx, ch_mask);
+        Cy_AutAnalog_StartAutonomousControl();
+
+        while (timeout-- > 0U) {
+            if ((Cy_AutAnalog_SAR_GetHSchanResultStatus(cfg->sar_idx) & ch_mask) != 0U) {
+                break;
+            }
+        }
+
+        if (timeout == 0U) {
+            rt_kprintf("ADC: wait channel %d result timeout\n", phy_channel);
+            return -RT_ETIMEOUT;
+        }
+    }
+
     /* Read SAR conversion result */
     counts = Cy_AutAnalog_SAR_ReadResult(
         cfg->sar_idx,

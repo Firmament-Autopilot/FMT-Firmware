@@ -134,7 +134,6 @@
 #define BSP_USING_UART
 #define BSP_USING_UART2
 #define BSP_USING_PWM
-#define BSP_USING_PWM5
 #define BSP_USING_ADC
 #define BSP_USING_ADC0
 #define BSP_USING_IPC

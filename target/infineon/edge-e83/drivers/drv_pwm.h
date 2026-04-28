@@ -22,8 +22,6 @@
 extern "C" {
 #endif
 
-extern const cy_stc_tcpwm_pwm_config_t tcpwm_0_group_0_cnt_5_config;
-
 rt_err_t drv_pwm_init(void);
 
 #ifdef __cplusplus
