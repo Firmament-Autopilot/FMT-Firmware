@@ -19,19 +19,19 @@
 #include "hal/rc/rc.h"
 #include "hal/serial/serial.h"
 
-#define EVENT_FMTIO_RX (1) // 1 << 0
+#define EVENT_FMTIO_RX          (1) // 1 << 0
 
 #define FMTIO_MOTOR_CHANNEL_NUM 8
 #define FMTIO_RC_CHANNEL_NUM    16
 
 /* default config for rc device */
-#define RC_CONFIG_DEFAULT               \
-    {                                   \
-        1,         /* sbus */           \
-            6,     /* 6 channel */      \
-            0.05f, /* sample time */    \
-            1000,  /* minimal 1000us */ \
-            2000,  /* maximal 2000us */ \
+#define RC_CONFIG_DEFAULT           \
+    {                               \
+        1,     /* sbus */           \
+        6,     /* 6 channel */      \
+        0.05f, /* sample time */    \
+        1000,  /* minimal 1000us */ \
+        2000,  /* maximal 2000us */ \
     }
 
 typedef struct {
@@ -300,6 +300,8 @@ static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_ui
 {
     uint16_t data[FMTIO_MOTOR_CHANNEL_NUM + 1];
     uint8_t chan_num = 0;
+    fmt_err_t err = FMT_EOK;
+    static uint8_t retry_count = 0;
 
     for (int i = 0; i < 16; i++) {
         if (chan_sel & (1 << i)) {
@@ -311,11 +313,20 @@ static rt_size_t pwm_write(actuator_dev_t dev, rt_uint16_t chan_sel, const rt_ui
     data[0] = chan_sel;
     memcpy(&data[1], chan_val, chan_num * sizeof(uint16_t));
 
-    if (send_io_cmd(IO_CODE_W_ACTUATOR, data, chan_num * sizeof(uint16_t) + sizeof(chan_sel)) != FMT_EOK) {
-        return 0;
+    /* Send command with retry logic for async DMA */
+    for (uint8_t retry = 0; retry < 3; retry++) {
+        err = send_io_cmd(IO_CODE_W_ACTUATOR, data, chan_num * sizeof(uint16_t) + sizeof(chan_sel));
+        if (err == FMT_EOK) {
+            retry_count = 0; /* Reset counter on success */
+            return size;
+        }
+        /* Device busy (DMA in progress), yield CPU and retry */
+        rt_thread_yield();
     }
 
-    return size;
+    /* Failed after retries */
+    retry_count++;
+    return 0;
 }
 
 /**
