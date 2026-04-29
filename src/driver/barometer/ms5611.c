@@ -48,7 +48,7 @@
 #define BARO_OSR_2048   3
 #define BARO_OSR_4096   4
 
-#define DEFAULT_OSR     BARO_OSR_2048
+#define DEFAULT_OSR     BARO_OSR_1024
 
 static uint8_t CMD_CONVERT_D1_ADDR[5] = {
     0x40, // OSR=256
@@ -332,7 +332,8 @@ static rt_err_t baro_control(baro_dev_t baro, int cmd, void* arg)
 {
     switch (cmd) {
     case BARO_CMD_CHECK_READY: {
-        *(uint8_t*)arg = _updated;
+        DEFINE_TIMETAG(baro_interval, 10);
+        *(uint8_t*)arg = (_updated && check_timetag(TIMETAG(baro_interval))) ? 1 : 0;
     } break;
 
     default:
