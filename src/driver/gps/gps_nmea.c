@@ -67,7 +67,8 @@ static int nmea_rx_handle(uint16_t msg_id)
 
         gps_report.heading_rad = nmea_decoder.buf.payload_rx_ksxt.heading;
         gps_report.cog_rad = nmea_decoder.buf.payload_rx_ksxt.track;
-        gps_report.c_variance_rad = (3.0f - nmea_decoder.buf.payload_rx_ksxt.heading_fixType) * PI / 6.0f;
+        // gps_report.c_variance_rad = (3.0f - nmea_decoder.buf.payload_rx_ksxt.heading_fixType) * PI / 6.0f;
+        gps_report.c_variance_rad = (nmea_decoder.buf.payload_rx_ksxt.heading_fixType == 0) ? 2 * PI : 0;
 
         gps_report.timestamp_time = systime_now_ms();
         gps_report.timestamp_velocity = systime_now_ms();

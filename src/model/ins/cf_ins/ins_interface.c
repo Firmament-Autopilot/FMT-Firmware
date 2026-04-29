@@ -64,6 +64,8 @@ static param_t __param_list[] = {
     PARAM_FLOAT(GPS_X_OFFSET, 0, false),
     PARAM_FLOAT(GPS_Y_OFFSET, 0, false),
     PARAM_FLOAT(GPS_Z_OFFSET, 0, false),
+    PARAM_FLOAT(GPS_YAW_OFFSET, PI / 2.0f, false),
+    PARAM_UINT8(GPS_YAW_EN, 0, false),
     PARAM_FLOAT(RTK_POS_GAIN, 0.4, false),
     PARAM_FLOAT(RTK_ALT_GAIN, 0.2, false),
     PARAM_FLOAT(RTK_VEL_GAIN, 1.5, false),
@@ -353,6 +355,8 @@ static void init_parameter(void)
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_X_OFFSET), &INS_PARAM.GPS_X_OFFSET));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_Y_OFFSET), &INS_PARAM.GPS_Z_OFFSET));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_Z_OFFSET), &INS_PARAM.GPS_Z_OFFSET));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_YAW_OFFSET), &INS_PARAM.GPS_YAW_OFFSET));
+    FMT_CHECK(param_link_variable(PARAM_GET(INS, GPS_YAW_EN), &INS_PARAM.GPS_YAW_EN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_POS_GAIN), &INS_PARAM.RTK_POS_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_ALT_GAIN), &INS_PARAM.RTK_ALT_GAIN));
     FMT_CHECK(param_link_variable(PARAM_GET(INS, RTK_VEL_GAIN), &INS_PARAM.RTK_VEL_GAIN));
