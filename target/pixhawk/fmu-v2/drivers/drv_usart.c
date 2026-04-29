@@ -40,13 +40,13 @@
 #define USING_UART8
 
 /* UART GPIO define. */
-#define UART1_GPIO_TX       GPIO_Pin_9
-#define UART1_TX_PIN_SOURCE GPIO_PinSource9
-#define UART1_GPIO_RX       GPIO_Pin_10
-#define UART1_RX_PIN_SOURCE GPIO_PinSource10
-#define UART1_GPIO          GPIOA
-#define UART1_GPIO_RCC      RCC_AHB1Periph_GPIOA
-#define RCC_APBPeriph_UART1 RCC_APB2Periph_USART1
+#define UART1_GPIO_TX        GPIO_Pin_9
+#define UART1_TX_PIN_SOURCE  GPIO_PinSource9
+#define UART1_GPIO_RX        GPIO_Pin_10
+#define UART1_RX_PIN_SOURCE  GPIO_PinSource10
+#define UART1_GPIO           GPIOA
+#define UART1_GPIO_RCC       RCC_AHB1Periph_GPIOA
+#define RCC_APBPeriph_UART1  RCC_APB2Periph_USART1
 
 #define UART2_GPIO_CTS       GPIO_Pin_3
 #define UART2_CTS_PIN_SOURCE GPIO_PinSource3
@@ -72,85 +72,85 @@
 #define UART3_GPIO_RCC       RCC_AHB1Periph_GPIOD
 #define RCC_APBPeriph_UART3  RCC_APB1Periph_USART3
 
-#define UART4_GPIO_TX       GPIO_Pin_0
-#define UART4_TX_PIN_SOURCE GPIO_PinSource0
-#define UART4_GPIO_RX       GPIO_Pin_1
-#define UART4_RX_PIN_SOURCE GPIO_PinSource1
-#define UART4_GPIO          GPIOA
-#define UART4_GPIO_RCC      RCC_AHB1Periph_GPIOA
-#define RCC_APBPeriph_UART4 RCC_APB1Periph_UART4
+#define UART4_GPIO_TX        GPIO_Pin_0
+#define UART4_TX_PIN_SOURCE  GPIO_PinSource0
+#define UART4_GPIO_RX        GPIO_Pin_1
+#define UART4_RX_PIN_SOURCE  GPIO_PinSource1
+#define UART4_GPIO           GPIOA
+#define UART4_GPIO_RCC       RCC_AHB1Periph_GPIOA
+#define RCC_APBPeriph_UART4  RCC_APB1Periph_UART4
 
-#define UART6_GPIO_TX       GPIO_Pin_6
-#define UART6_TX_PIN_SOURCE GPIO_PinSource6
-#define UART6_GPIO_RX       GPIO_Pin_7
-#define UART6_RX_PIN_SOURCE GPIO_PinSource7
-#define UART6_GPIO          GPIOC
-#define UART6_GPIO_RCC      RCC_AHB1Periph_GPIOC
-#define RCC_APBPeriph_UART6 RCC_APB2Periph_USART6
+#define UART6_GPIO_TX        GPIO_Pin_6
+#define UART6_TX_PIN_SOURCE  GPIO_PinSource6
+#define UART6_GPIO_RX        GPIO_Pin_7
+#define UART6_RX_PIN_SOURCE  GPIO_PinSource7
+#define UART6_GPIO           GPIOC
+#define UART6_GPIO_RCC       RCC_AHB1Periph_GPIOC
+#define RCC_APBPeriph_UART6  RCC_APB2Periph_USART6
 
-#define UART7_GPIO_TX       GPIO_Pin_8
-#define UART7_TX_PIN_SOURCE GPIO_PinSource8
-#define UART7_GPIO_RX       GPIO_Pin_7
-#define UART7_RX_PIN_SOURCE GPIO_PinSource7
-#define UART7_GPIO          GPIOE
-#define UART7_GPIO_RCC      RCC_AHB1Periph_GPIOE
-#define RCC_APBPeriph_UART7 RCC_APB1Periph_UART7
+#define UART7_GPIO_TX        GPIO_Pin_8
+#define UART7_TX_PIN_SOURCE  GPIO_PinSource8
+#define UART7_GPIO_RX        GPIO_Pin_7
+#define UART7_RX_PIN_SOURCE  GPIO_PinSource7
+#define UART7_GPIO           GPIOE
+#define UART7_GPIO_RCC       RCC_AHB1Periph_GPIOE
+#define RCC_APBPeriph_UART7  RCC_APB1Periph_UART7
 
-#define UART8_GPIO_TX       GPIO_Pin_1
-#define UART8_TX_PIN_SOURCE GPIO_PinSource1
-#define UART8_GPIO_RX       GPIO_Pin_0
-#define UART8_RX_PIN_SOURCE GPIO_PinSource0
-#define UART8_GPIO          GPIOE
-#define UART8_GPIO_RCC      RCC_AHB1Periph_GPIOE
-#define RCC_APBPeriph_UART8 RCC_APB1Periph_UART8
+#define UART8_GPIO_TX        GPIO_Pin_1
+#define UART8_TX_PIN_SOURCE  GPIO_PinSource1
+#define UART8_GPIO_RX        GPIO_Pin_0
+#define UART8_RX_PIN_SOURCE  GPIO_PinSource0
+#define UART8_GPIO           GPIOE
+#define UART8_GPIO_RCC       RCC_AHB1Periph_GPIOE
+#define RCC_APBPeriph_UART8  RCC_APB1Periph_UART8
 
 /* config for serial_configure structure */
-#define SERIAL2_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_9600,      /* 9600 bits/s */    \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
+#define SERIAL2_DEFAULT_CONFIG                \
+    {                                         \
+        BAUD_RATE_9600,  /* 9600 bits/s */    \
+        DATA_BITS_8,     /* 8 databits */     \
+        STOP_BITS_1,     /* 1 stopbit */      \
+        PARITY_NONE,     /* No parity  */     \
+        BIT_ORDER_LSB,   /* LSB first sent */ \
+        NRZ_NORMAL,      /* Normal mode */    \
+        SERIAL_RB_BUFSZ, /* Buffer size */    \
+        0                                     \
     }
 
-#define SERIAL3_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_115200,    /* 115200 bits/s */  \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
+#define SERIAL3_DEFAULT_CONFIG                 \
+    {                                          \
+        BAUD_RATE_115200, /* 115200 bits/s */  \
+        DATA_BITS_8,      /* 8 databits */     \
+        STOP_BITS_1,      /* 1 stopbit */      \
+        PARITY_NONE,      /* No parity  */     \
+        BIT_ORDER_LSB,    /* LSB first sent */ \
+        NRZ_NORMAL,       /* Normal mode */    \
+        SERIAL_RB_BUFSZ,  /* Buffer size */    \
+        0                                      \
     }
 
-#define SERIAL4_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_115200,    /* 115200 bits/s */  \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
+#define SERIAL4_DEFAULT_CONFIG                 \
+    {                                          \
+        BAUD_RATE_115200, /* 115200 bits/s */  \
+        DATA_BITS_8,      /* 8 databits */     \
+        STOP_BITS_1,      /* 1 stopbit */      \
+        PARITY_NONE,      /* No parity  */     \
+        BIT_ORDER_LSB,    /* LSB first sent */ \
+        NRZ_NORMAL,       /* Normal mode */    \
+        SERIAL_RB_BUFSZ,  /* Buffer size */    \
+        0                                      \
     }
 
-#define SERIAL5_DEFAULT_CONFIG                  \
-    {                                           \
-        BAUD_RATE_230400,  /* 115200 bits/s */  \
-            DATA_BITS_8,   /* 8 databits */     \
-            STOP_BITS_1,   /* 1 stopbit */      \
-            PARITY_NONE,   /* No parity  */     \
-            BIT_ORDER_LSB, /* LSB first sent */ \
-            NRZ_NORMAL,    /* Normal mode */    \
-            1024,          /* Buffer size */    \
-            0                                   \
+#define SERIAL5_DEFAULT_CONFIG                 \
+    {                                          \
+        BAUD_RATE_921600, /* 921600 bits/s */  \
+        DATA_BITS_8,      /* 8 databits */     \
+        STOP_BITS_1,      /* 1 stopbit */      \
+        PARITY_NONE,      /* No parity  */     \
+        BIT_ORDER_LSB,    /* LSB first sent */ \
+        NRZ_NORMAL,       /* Normal mode */    \
+        1024,             /* Buffer size */    \
+        0                                      \
     }
 
 /* STM32 uart driver */
@@ -839,7 +839,7 @@ static void _dma_rx_config(struct serial_device* serial, rt_uint8_t* buf, rt_siz
         ;
 
     DMA_InitStructure.DMA_Channel = uart->dma.rx_ch;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (uart->uart_device->DR);
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(uart->uart_device->DR);
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)buf;
     DMA_InitStructure.DMA_BufferSize = uart->dma.setting_recv_len;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
@@ -896,7 +896,7 @@ static void _dma_transmit(struct serial_device* serial, rt_uint8_t* buf, rt_size
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)buf;
     DMA_InitStructure.DMA_BufferSize = size;
     DMA_InitStructure.DMA_Channel = uart->dma.tx_ch;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (uart->uart_device->DR);
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(uart->uart_device->DR);
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
@@ -925,7 +925,7 @@ static void _close_usart(struct serial_device* serial)
 
     if (serial->parent.open_flag & RT_DEVICE_FLAG_INT_RX) {
         /* disable rx irq */
-        //UART_DISABLE_IRQ(uart->irq);	/* we don't disable rx irq, since dma rx need it */
+        // UART_DISABLE_IRQ(uart->irq);	/* we don't disable rx irq, since dma rx need it */
         /* disable interrupt */
         USART_ITConfig(uart->uart_device, USART_IT_RXNE, DISABLE);
     }
