@@ -65,7 +65,7 @@
 
 #define SERIAL5_DEFAULT_CONFIG                 \
     {                                          \
-        BAUD_RATE_230400, /* 115200 bits/s */  \
+        BAUD_RATE_921600, /* 921600 bits/s */  \
         DATA_BITS_8,      /* 8 databits */     \
         STOP_BITS_1,      /* 1 stopbit */      \
         PARITY_NONE,      /* No parity  */     \
