@@ -844,7 +844,7 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*USB*', '*MindPX*'])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*'])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
@@ -874,7 +874,7 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*USB*', '*MindPX*'])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*'])
                 else:
                     serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
 

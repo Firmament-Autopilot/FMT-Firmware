@@ -23,6 +23,7 @@
 #include "module/config/actuator_config.h"
 #include "module/config/console_config.h"
 #include "module/config/ethernet_config.h"
+#include "module/config/gnss_config.h"
 #include "module/config/mavproxy_config.h"
 #include "module/config/pilot_cmd_config.h"
 #include "module/task_manager/task_manager.h"
@@ -194,6 +195,8 @@ RT_WEAK fmt_err_t bsp_parse_toml_sysconfig(toml_table_t* root_tab)
                     err = pilot_cmd_toml_config(sub_tab);
                 } else if (MATCH(key, "actuator")) {
                     err = actuator_toml_config(sub_tab);
+                } else if (MATCH(key, "gnss")) {
+                    err = gnss_toml_config(sub_tab);
                 } else {
                     printf("unknown table: %s\n", key);
                 }

@@ -462,17 +462,17 @@ fmt_err_t send_ubx_msg(ubx_decoder_t* ubx_decoder, const uint16_t msg, const uin
         _calc_ubx_checksum(payload, length, &checksum);
     }
 
-    if (rt_device_write(ubx_decoder->ubx_dev, 0, (const void*)&header, sizeof(header)) != sizeof(header)) {
+    if (rt_device_write(ubx_decoder->ubx_dev, RT_WAITING_FOREVER, (const void*)&header, sizeof(header)) != sizeof(header)) {
         return FMT_ERROR;
     }
 
     if (payload != NULL) {
-        if (rt_device_write(ubx_decoder->ubx_dev, 0, (const void*)payload, length) != length) {
+        if (rt_device_write(ubx_decoder->ubx_dev, RT_WAITING_FOREVER, (const void*)payload, length) != length) {
             return FMT_ERROR;
         }
     }
 
-    if (rt_device_write(ubx_decoder->ubx_dev, 0, (const void*)&checksum, sizeof(checksum)) != sizeof(checksum)) {
+    if (rt_device_write(ubx_decoder->ubx_dev, RT_WAITING_FOREVER, (const void*)&checksum, sizeof(checksum)) != sizeof(checksum)) {
         return FMT_ERROR;
     }
 

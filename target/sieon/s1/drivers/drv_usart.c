@@ -44,7 +44,7 @@
 
 #define SERIAL4_DEFAULT_CONFIG                    \
     {                                             \
-        BAUD_RATE_38400,     /* 115200 bits/s */  \
+        BAUD_RATE_115200,     /* 115200 bits/s */  \
             DATA_BITS_8,     /* 8 databits */     \
             STOP_BITS_1,     /* 1 stopbit */      \
             PARITY_NONE,     /* No parity  */     \

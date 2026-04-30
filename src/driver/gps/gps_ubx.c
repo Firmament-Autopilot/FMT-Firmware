@@ -28,6 +28,8 @@
 // #define DRV_DBG(...) console_printf(__VA_ARGS__)
 #define DRV_DBG(...)
 
+extern uint8_t gps_config_complete;
+
 static rt_device_t serial_device;
 static struct gps_device gps_device;
 static ubx_decoder_t ubx_decoder;
@@ -546,6 +548,8 @@ static void gps_probe_entry(void* parameter)
     }
 
     rt_free(parameter);
+
+    gps_config_complete = 1;
 }
 
 rt_err_t gps_ubx_init(const char* serial_device_name, const char* gps_device_name)
@@ -562,12 +566,22 @@ rt_err_t gps_ubx_init(const char* serial_device_name, const char* gps_device_nam
     serial_device = rt_device_find(serial_device_name);
     RT_ASSERT(serial_device != NULL);
 
+    /* init ublox decoder */
+    FMT_CHECK(init_ubx_decoder(&ubx_decoder, serial_device, ubx_rx_handle));
+
     /* set gps rx indicator */
     RT_CHECK(rt_device_set_rx_indicate(serial_device, gps_serial_rx_ind));
     /* open serial device */
-    RT_CHECK(rt_device_open(serial_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX));
-    /* init ublox decoder */
-    FMT_CHECK(init_ubx_decoder(&ubx_decoder, serial_device, ubx_rx_handle));
+    rt_uint16_t oflag = RT_DEVICE_OFLAG_RDWR;
+    if (serial_device->flag & RT_DEVICE_FLAG_DMA_TX) {
+        oflag |= RT_DEVICE_FLAG_DMA_TX;
+    }
+    if (serial_device->flag & RT_DEVICE_FLAG_DMA_RX) {
+        oflag |= RT_DEVICE_FLAG_DMA_RX;
+    } else {
+        oflag |= RT_DEVICE_FLAG_INT_RX;
+    }
+    RT_CHECK(rt_device_open(serial_device, oflag));
 
     /* create a thread to probe the gps connection */
     rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, str_buffer, 4096, RT_THREAD_PRIORITY_MAX - 2, 5);

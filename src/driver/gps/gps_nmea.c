@@ -21,6 +21,8 @@
 #include "module/sensor/sensor_hub.h"
 #include "protocol/nmea/nmea.h"
 
+extern uint8_t gps_config_complete;
+
 static rt_device_t serial_device;
 static struct gps_device gps_device;
 static nmea_decoder_t nmea_decoder;
@@ -126,6 +128,8 @@ static void gps_probe_entry(void* parameter)
     register_sensor_gps((char*)parameter);
 
     rt_free(parameter);
+
+    gps_config_complete = 1;
 }
 
 static rt_err_t gps_control(gps_dev_t gps_dev, int cmd, void* arg)

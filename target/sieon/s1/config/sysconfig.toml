@@ -112,3 +112,12 @@ target = "SIEON S1"
     local_port = 0
     remote_addr = "192.168.1.24"
     remote_port = 14550
+
+# GNSS Configuration
+[gnss]
+    [[gnss.devices]]
+    id = 0
+    protocol = "ublox"  # ublox or nmea
+    type = "serial"
+    name = "serial3"
+    baudrate = 115200

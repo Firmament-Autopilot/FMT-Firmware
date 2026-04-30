@@ -20,7 +20,6 @@
 #include "module/config/mavproxy_config.h"
 #include "module/mavproxy/mavproxy.h"
 
-
 #define MAX_RTCM_DEV_NUM 5
 
 /*
@@ -46,9 +45,16 @@ struct rtcm_buffer {
 static uint8_t rtcm_dev_num;
 static rt_device_t rtcm_dev[MAX_RTCM_DEV_NUM];
 
+uint8_t gps_config_complete = 0;
+
 static void inject_data(const uint8_t* data, uint16_t len)
 {
-    // TODO: check write complete before next write;
+    if (!gps_config_complete) {
+        /* we only write gps data when gps config complete (gps config thread exist).
+        this avoid multi-thread write serial device simultaneously */
+        return;
+    }
+
     for (uint8_t i = 0; i < rtcm_dev_num; i++) {
         if (rtcm_dev[i] != NULL) {
             rt_device_write(rtcm_dev[i], RT_WAITING_FOREVER, data, len);
@@ -71,6 +77,7 @@ void handle_gps_rtcm_data(const mavlink_message_t* msg)
     if ((packet.flags & 1) == 0) {
         // it is not fragmented, pass direct
         inject_data(packet.data, packet.len);
+
         return;
     }
 
