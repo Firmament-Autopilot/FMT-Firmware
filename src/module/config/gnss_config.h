@@ -25,8 +25,23 @@
 extern "C" {
 #endif
 
+typedef struct {
+    uint32_t baudrate;
+} gnss_serial_dev_config;
+
+typedef struct {
+    uint32_t id;
+    char* protocol;
+    char* type;
+    char* name;
+    bool auto_config;
+    void* config;
+} gnss_device_info;
+
 /* toml configuration */
 fmt_err_t gnss_toml_config(toml_table_t* table);
+uint8_t gnss_get_dev_num(void);
+gnss_device_info* gnss_get_dev_list(void);
 
 #ifdef __cplusplus
 }

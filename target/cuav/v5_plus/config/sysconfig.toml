@@ -90,3 +90,13 @@ target = "CUAV V5+"
     from = "control_out"
     to = "main_out"
     chan-map = [[1,2,3,4],[1,2,3,4]]
+
+# GNSS Configuration
+[gnss]
+    [[gnss.devices]]
+    id = 0
+    protocol = "ublox"  # ublox or nmea
+    type = "serial"
+    name = "serial3"
+    auto-config = true
+    baudrate = 0        # 0 means auto detect baudrate

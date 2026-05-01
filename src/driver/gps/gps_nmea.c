@@ -21,6 +21,9 @@
 #include "module/sensor/sensor_hub.h"
 #include "protocol/nmea/nmea.h"
 
+// #define DRV_DBG(...) console_printf(__VA_ARGS__)
+#define DRV_DBG(...)
+
 extern uint8_t gps_config_complete;
 
 static rt_device_t serial_device;
@@ -28,6 +31,11 @@ static struct gps_device gps_device;
 static nmea_decoder_t nmea_decoder;
 static gps_report_t gps_report;
 static bool nmea_received;
+
+static char nmea_cfg_sentences[][50] = {
+    "KSXT 0.1\r\n",
+    "GPGSA 0.1\r\n",
+};
 
 static rt_err_t gps_serial_rx_ind(rt_device_t dev, rt_size_t size)
 {
@@ -100,34 +108,110 @@ static int nmea_rx_handle(uint16_t msg_id)
     return ret;
 }
 
-static void gps_probe_entry(void* parameter)
+static rt_err_t set_baudrate(rt_device_t dev, uint32_t baudrate)
 {
-    char nmea_cfg[][50] = {
-        "KSXT 0.1\r\n",
-        "GPGSA 0.1\r\n",
-    };
+    struct serial_device* serial_dev = (struct serial_device*)dev;
 
-    nmea_received = false;
+    if (serial_dev->config.baud_rate != baudrate) {
+        struct serial_configure pconfig = serial_dev->config;
 
-    for (uint8_t i = 0; i < sizeof(nmea_cfg) / sizeof(nmea_cfg[0]); i++) {
-        rt_device_write(nmea_decoder.nmea_dev, 0, nmea_cfg[i], strlen(nmea_cfg[i]));
-        systime_msleep(10);
+        pconfig.baud_rate = baudrate;
+
+        return rt_device_control(dev, RT_DEVICE_CTRL_CONFIG, &pconfig);
     }
 
-    uint32_t time_now = systime_now_ms();
-    while ((systime_now_ms() - time_now) < 5000) {
-        if (nmea_received) {
-            printf("NMEA GPS detected.\n");
-            break;
+    return RT_EOK;
+}
+
+static void gps_probe_entry(void* parameter)
+{
+    uint32_t baudrate;
+    gnss_device_info* dev_info = (gnss_device_info*)parameter;
+    gnss_serial_dev_config* dev_config = (gnss_serial_dev_config*)dev_info->config;
+
+    nmea_received = false;
+    baudrate = dev_config->baudrate;
+
+    if (dev_info->auto_config == true) {
+        if (baudrate == 0) {
+            /* baudrate auto detect */
+            uint32_t baudrates[] = { 9600, 19200, 38400, 57600, 115200, 230400, 460800 };
+            uint8_t i;
+
+            for (i = 0; i < sizeof(baudrates) / sizeof(baudrates[0]); i++) {
+                baudrate = baudrates[i];
+
+                if (set_baudrate(nmea_decoder.nmea_dev, baudrate) == RT_EOK) {
+                    DRV_DBG("gps barud rate -> %lu\n", baudrate);
+                } else {
+                    DRV_DBG("gps barud rate -> %lu fail\n", baudrate);
+                    return;
+                }
+
+                /* we send first config for testing */
+                rt_device_write(nmea_decoder.nmea_dev, RT_WAITING_FOREVER, nmea_cfg_sentences[0], strlen(nmea_cfg_sentences[0]));
+
+                uint32_t time_now = systime_now_ms();
+                while ((systime_now_ms() - time_now) < 500) {
+                    if (nmea_received) {
+                        DRV_DBG("NMEA GPS detected on %s, with baudrate of %ld.\n", nmea_decoder.nmea_dev->parent.name, baudrate);
+                        break;
+                    }
+                    systime_msleep(10);
+                }
+
+                if (nmea_received) {
+                    break;
+                }
+            }
+
+            if (i >= sizeof(baudrates) / sizeof(baudrates[0])) {
+                DRV_DBG("gps connection and/or baudrate detection failed\r\n");
+                return;
+            }
+        } else {
+            if (set_baudrate(nmea_decoder.nmea_dev, baudrate) == RT_EOK) {
+                DRV_DBG("gps barud rate -> %lu\n", baudrate);
+            } else {
+                DRV_DBG("gps barud rate -> %lu fail\n", baudrate);
+                return;
+            }
+
+            /* we send first config for testing */
+            rt_device_write(nmea_decoder.nmea_dev, RT_WAITING_FOREVER, nmea_cfg_sentences[0], strlen(nmea_cfg_sentences[0]));
+
+            uint32_t time_now = systime_now_ms();
+            while ((systime_now_ms() - time_now) < 500) {
+                if (nmea_received) {
+                    DRV_DBG("NMEA GPS detected on %s, with baudrate of %ld.\n", nmea_decoder.nmea_dev->parent.name, baudrate);
+                    break;
+                }
+                systime_msleep(10);
+            }
+
+            if (!nmea_received) {
+                return;
+            }
         }
-        systime_msleep(10);
+
+        /* now send config to nmea gnss */
+        for (uint8_t i = 0; i < sizeof(nmea_cfg_sentences) / sizeof(nmea_cfg_sentences[0]); i++) {
+            rt_device_write(nmea_decoder.nmea_dev, RT_WAITING_FOREVER, nmea_cfg_sentences[i], strlen(nmea_cfg_sentences[i]));
+            systime_msleep(10);
+        }
+    } else {
+        if (baudrate > 0) {
+            if (set_baudrate(nmea_decoder.nmea_dev, baudrate) != RT_EOK) {
+                DRV_DBG("NMEA-GPS baudrate set failed\n");
+            }
+        }
+
+        DRV_DBG("NMEA-GPS config skipped.\n");
     }
 
     /* GPS is dected, now register */
     hal_gps_register(&gps_device, "gps", RT_DEVICE_FLAG_RDWR, RT_NULL);
-    register_sensor_gps((char*)parameter);
-
-    rt_free(parameter);
+    register_sensor_gps("gps");
 
     gps_config_complete = 1;
 }
@@ -182,18 +266,11 @@ static struct gps_ops gps_ops = {
     .gps_read = gps_read
 };
 
-rt_err_t gps_nmea_init(const char* serial_dev_name, const char* gps_dev_name)
+rt_err_t gps_nmea_init(gnss_device_info* dev_info)
 {
-    char* str_buffer;
-
     gps_device.ops = &gps_ops;
 
-    str_buffer = (char*)rt_malloc(21);
-    RT_ASSERT(str_buffer != NULL);
-    memset(str_buffer, 0, 21);
-    strncpy(str_buffer, gps_dev_name, 20);
-
-    serial_device = rt_device_find(serial_dev_name);
+    serial_device = rt_device_find(dev_info->name);
     RT_ASSERT(serial_device != NULL);
 
     /* set gps rx indicator */
@@ -204,7 +281,7 @@ rt_err_t gps_nmea_init(const char* serial_dev_name, const char* gps_dev_name)
     FMT_CHECK(init_nmea_decoder(&nmea_decoder, serial_device, nmea_rx_handle));
 
     /* create a thread to probe the gps connection */
-    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, str_buffer, 4096, RT_THREAD_PRIORITY_MAX - 2, 5);
+    rt_thread_t tid = rt_thread_create("gps_probe", gps_probe_entry, dev_info, 4096, RT_THREAD_PRIORITY_MAX - 2, 5);
     RT_ASSERT(tid != NULL);
 
     RT_CHECK(rt_thread_startup(tid));

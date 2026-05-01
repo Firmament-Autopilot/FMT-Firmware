@@ -27,6 +27,7 @@ extern "C" {
 sensor_gps_t sensor_gps_init(const char* gps_dev_name);
 fmt_err_t sensor_gps_read(sensor_gps_t gps_dev, gps_data_t* gps_data);
 uint8_t sensor_gps_check_ready(sensor_gps_t gps_dev);
+fmt_err_t gnss_init(void);
 
 #ifdef __cplusplus
 }

@@ -6,6 +6,7 @@ HAL = [
     'sd/*.c',
     'usb/usbd_cdc.c',
     'actuator/actuator.c',
+    'gps/*.c',
 ]
 
 HAL_CPPPATH = []

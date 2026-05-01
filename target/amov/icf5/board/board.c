@@ -39,7 +39,6 @@
 #include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/barometer/spl06.h"
-#include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm20948.h"
 #include "driver/imu/icm42688p.h"
@@ -54,6 +53,7 @@
 #include "module/file_manager/file_manager.h"
 #include "module/mavproxy/mavproxy.h"
 #include "module/pmu/power_manager.h"
+#include "module/sensor/sensor_gps.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/auto_cmd.h"
@@ -199,10 +199,9 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmm150_init("spi0_dev2", "mag0", 0));
     RT_CHECK(drv_spl06_init("spi0_dev3", "barometer"));
 
-    drv_mtf_01_init("serial3");
+    // drv_mtf_01_init("serial3");
     // drv_up_tx_init("serial3");
     // drv_nlink_linktrack_init("serial4");
-    RT_CHECK(gps_ubx_init("serial4", "gps"));
 
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
@@ -237,6 +236,9 @@ void bsp_post_initialize(void)
         FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
         printf("Default configuration loaded.\n");
     }
+
+    /* init gnss */
+    FMT_CHECK(gnss_init());
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());

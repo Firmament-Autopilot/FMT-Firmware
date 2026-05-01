@@ -23,7 +23,6 @@
 
 #include "board_device.h"
 #include "driver/barometer/bmp581.h"
-#include "driver/gps/gps_ubx.h"
 #include "driver/imu/bmi088.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/ist8310.h"
@@ -47,6 +46,7 @@
 #include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
+#include "module/sensor/sensor_gps.h"
 #include "module/sensor/sensor_hub.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/auto_cmd.h"
@@ -399,7 +399,6 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi2_dev1", "spi2_dev2", "gyro0", "accel0", 0));
     RT_CHECK(drv_ist8310_init("i2c3_dev1", "mag0", 0));
     RT_CHECK(drv_bmp581_init("spi4_dev1", "barometer"));
-    RT_CHECK(gps_ubx_init("serial3", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));
@@ -423,6 +422,9 @@ void bsp_post_initialize(void)
         __toml_root_tab = toml_parse_config_string(default_conf);
     }
     FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
+
+    /* init gnss */
+    FMT_CHECK(gnss_init());
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());

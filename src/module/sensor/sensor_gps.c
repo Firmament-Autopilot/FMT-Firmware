@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "module/sensor/sensor_gps.h"
+#include <firmament.h>
+
+#include <string.h>
+
+#include "driver/gps/gps_nmea.h"
+#include "driver/gps/gps_ubx.h"
 #include "hal/gps/gps.h"
+#include "module/config/gnss_config.h"
+#include "module/sensor/sensor_gps.h"
 
 /**
  * @brief Check if gps data is ready to read
- * 
+ *
  * @param gps_dev GPS sensor device
  * @return uint8_t 1:ready 0:not-ready
  */
@@ -33,7 +40,7 @@ uint8_t sensor_gps_check_ready(sensor_gps_t gps_dev)
 
 /**
  * @brief Read gps data
- * 
+ *
  * @param gps_dev GPS sensor device
  * @param gps_data GPS data buffer
  * @return fmt_err_t FMT_EOK for success
@@ -65,7 +72,7 @@ fmt_err_t sensor_gps_read(sensor_gps_t gps_dev, gps_data_t* gps_data)
 
 /**
  * @brief Initialize gps sensor device
- * 
+ *
  * @param gps_dev_name GPS device name
  * @return sensor_gps_t GPS sensor device
  */
@@ -82,4 +89,25 @@ sensor_gps_t sensor_gps_init(const char* gps_dev_name)
     RT_CHECK(rt_device_open(gps_dev->dev, RT_DEVICE_OFLAG_RDWR));
 
     return gps_dev;
+}
+
+fmt_err_t gnss_init(void)
+{
+    gnss_device_info* dev_list = gnss_get_dev_list();
+
+    if (gnss_get_dev_num() == 0) {
+        /* no gnss device configured */
+        return FMT_EOK;
+    }
+
+    if (strcmp(dev_list[0].protocol, "ublox") == 0) {
+        RT_CHECK(gps_ubx_init(&dev_list[0]));
+    } else if (strcmp(dev_list[0].protocol, "nmea") == 0) {
+        RT_CHECK(gps_nmea_init(&dev_list[0]));
+    } else {
+        printf("unknown gnss protocol:%s\n", dev_list[0].protocol);
+        return FMT_EINVAL;
+    }
+
+    return FMT_EOK;
 }

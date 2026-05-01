@@ -17,8 +17,8 @@
 #include <string.h>
 
 #include "hal/serial/serial.h"
+#include "module/config/gnss_config.h"
 #include "module/toml/toml.h"
-#include "module/utils/devmq.h"
 
 #define TOML_DBG_E(...)             toml_debug("GNSS", "E", __VA_ARGS__)
 #define TOML_DBG_W(...)             toml_debug("GNSS", "W", __VA_ARGS__)
@@ -28,18 +28,6 @@
 #define DEVICE_LIST                 gnss_dev_list
 #define DEVICE_NUM                  gnss_dev_num
 #define DEVICE_TYPE_IS(_idx, _name) MATCH(DEVICE_LIST[_idx].type, #_name)
-
-typedef struct {
-    uint32_t baudrate;
-} gnss_serial_dev_config;
-
-typedef struct {
-    uint32_t id;
-    char* protocol;
-    char* type;
-    char* name;
-    void* config;
-} gnss_device_info;
 
 static uint8_t gnss_dev_num = 0;
 static gnss_device_info gnss_dev_list[GNSS_MAX_DEVICE_NUM] = { 0 };
@@ -55,25 +43,32 @@ static gnss_device_info gnss_dev_list[GNSS_MAX_DEVICE_NUM] = { 0 };
 static fmt_err_t gnss_parse_device(const toml_table_t* curtab, int idx)
 {
     int64_t ival;
+    int bval;
 
     if (toml_int_in(curtab, "id", &ival) != 0) {
         TOML_DBG_E("fail to parse id value\n");
         return FMT_ERROR;
     }
     DEVICE_LIST[idx].id = ival;
-    printf("id:%d\n", DEVICE_LIST[idx].id);
 
     if (toml_string_in(curtab, "protocol", &DEVICE_LIST[idx].protocol) != 0) {
         TOML_DBG_E("fail to parse protocol value\n");
         return FMT_ERROR;
     }
-    printf("protocol:%s\n", DEVICE_LIST[idx].protocol);
+
+    if (toml_bool_in(curtab, "auto-config", &bval) == 0) {
+        if (bval) {
+            DEVICE_LIST[idx].auto_config = true;
+        } else {
+            DEVICE_LIST[idx].auto_config = false;
+        }
+    }
 
     /* get device type */
     if (toml_string_in(curtab, "type", &DEVICE_LIST[idx].type) == 0) {
         if (DEVICE_TYPE_IS(idx, serial)) {
             gnss_serial_dev_config serial_default_config = {
-                .baudrate = 0, // unset
+                .baudrate = 0, // auto detect
             };
             DEVICE_LIST[idx].config = rt_malloc(sizeof(gnss_serial_dev_config));
             gnss_serial_dev_config* config = (gnss_serial_dev_config*)DEVICE_LIST[idx].config;
@@ -84,7 +79,6 @@ static fmt_err_t gnss_parse_device(const toml_table_t* curtab, int idx)
                 /* load configured baudrate */
                 if (toml_int_in(curtab, "baudrate", &ival) == 0) {
                     config->baudrate = (uint32_t)ival;
-                    printf("baudrate:%d\n", config->baudrate);
                 }
             } else {
                 TOML_DBG_E("fail to malloc memory\n");
@@ -103,7 +97,6 @@ static fmt_err_t gnss_parse_device(const toml_table_t* curtab, int idx)
         TOML_DBG_E("fail to parse name value\n");
         return FMT_ERROR;
     }
-    printf("name:%s\n", DEVICE_LIST[idx].name);
 
     return FMT_EOK;
 }
@@ -138,6 +131,16 @@ static fmt_err_t gnss_parse_devices(const toml_array_t* array)
     DEVICE_NUM = idx;
 
     return err;
+}
+
+gnss_device_info* gnss_get_dev_list(void)
+{
+    return DEVICE_LIST;
+}
+
+uint8_t gnss_get_dev_num(void)
+{
+    return DEVICE_NUM;
 }
 
 /**

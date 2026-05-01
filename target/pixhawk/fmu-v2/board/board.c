@@ -30,7 +30,6 @@
 #include "default_config.h"
 #include "driver/airspeed/ms4525.h"
 #include "driver/barometer/ms5611.h"
-#include "driver/gps/gps_ubx.h"
 #include "driver/imu/l3gd20h.h"
 #include "driver/imu/lsm303d.h"
 #include "driver/imu/mpu6000.h"
@@ -53,6 +52,7 @@
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_hub.h"
+#include "module/sensor/sensor_gps.h"
 #include "module/sysio/actuator_cmd.h"
 #include "module/sysio/auto_cmd.h"
 #include "module/sysio/gcs_cmd.h"
@@ -213,8 +213,6 @@ void bsp_initialize(void)
     RT_CHECK(drv_ms5611_init("spi1_dev3", "barometer"));
     /* init optical flow module (a mini tf included) */
     // RT_CHECK(drv_mtf_01_init("serial3"));
-    /* init gps */
-    RT_CHECK(gps_ubx_init("serial2", "gps"));
 
     // drv_nlink_linktrack_init("serial4");
 
@@ -255,6 +253,9 @@ void bsp_post_initialize(void)
         printf("Default configuration loaded.\n");
     }
 
+    /* init gnss */
+    FMT_CHECK(gnss_init());
+
     /* init rc */
     FMT_CHECK(pilot_cmd_init());
 
@@ -269,9 +270,6 @@ void bsp_post_initialize(void)
 
     /* init actuator */
     FMT_CHECK(actuator_init());
-
-    /* start msp server */
-    FMT_CHECK(msp_server_start());
 
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());

@@ -29,31 +29,6 @@
 #define USING_UART6
 #define USING_UART7
 
-/* config for serial_configure structure */
-#define SERIAL3_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_38400,     /* 115200 bits/s */  \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
-    }
-
-#define SERIAL4_DEFAULT_CONFIG                    \
-    {                                             \
-        BAUD_RATE_115200,     /* 115200 bits/s */  \
-            DATA_BITS_8,     /* 8 databits */     \
-            STOP_BITS_1,     /* 1 stopbit */      \
-            PARITY_NONE,     /* No parity  */     \
-            BIT_ORDER_LSB,   /* LSB first sent */ \
-            NRZ_NORMAL,      /* Normal mode */    \
-            SERIAL_RB_BUFSZ, /* Buffer size */    \
-            0                                     \
-    }
-
 /* STM32 uart driver */
 struct stm32_uart {
     USART_TypeDef* uart_device;

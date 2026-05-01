@@ -19,11 +19,13 @@
 
 #include <rtthread.h>
 
+#include "module/config/gnss_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-rt_err_t gps_ubx_init(const char* serial_device_name, const char* gps_device_name);
+rt_err_t gps_ubx_init(gnss_device_info* dev_info);
 
 #ifdef __cplusplus
 }

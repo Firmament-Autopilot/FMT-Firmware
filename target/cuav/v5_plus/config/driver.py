@@ -6,6 +6,7 @@ DRIVERS = [
     'mag/ist8310.c',
     'barometer/ms5611.c',
     'gps/gps_ubx.c',
+    'gps/gps_nmea.c',
     'rgb_led/ncp5623c.c',
     'mtd/ramtron.c',
     'vision_flow/mtf_01.c',

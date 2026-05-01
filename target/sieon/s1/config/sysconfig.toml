@@ -120,4 +120,5 @@ target = "SIEON S1"
     protocol = "ublox"  # ublox or nmea
     type = "serial"
     name = "serial3"
-    baudrate = 115200
+    auto-config = true
+    baudrate = 0        # 0 means auto detect baudrate
