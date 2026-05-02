@@ -34,6 +34,7 @@
 #include "module/sysio/gcs_cmd.h"
 #include "module/sysio/mission_data.h"
 #include "module/sysio/pilot_cmd.h"
+#include "module/sensor/sensor_gps.h"
 #include "module/system/statistic.h"
 #include "module/task_manager/task_manager.h"
 #include "module/toml/toml.h"
@@ -464,9 +465,6 @@ void bsp_initialize(void)
     RT_CHECK(drv_ms5611_init("i2c4_dev2", "barometer"));
     RT_CHECK(drv_ist8310_init("i2c4_dev1", "mag0", 0));
     // RT_CHECK(drv_mtf_01_init("serial4"));
-    RT_CHECK(gps_ubx_init("serial2", "gps")); // GPS1
-    // RT_CHECK(gps_ubx_init("serial3", "gps")); //GPS2
-
     /* register sensor to sensor hub */
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_imu("gyro1", "accel1", 1));
@@ -495,6 +493,9 @@ void bsp_post_initialize(void)
         printf("Default configuration loaded.\n");
         FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
     }
+
+    /* init gnss */
+    FMT_CHECK(gnss_init());
 
     /* init rc */
     FMT_CHECK(pilot_cmd_init());

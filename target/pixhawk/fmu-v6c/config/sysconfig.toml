@@ -92,3 +92,13 @@ target = "Pixhawk 6C"
     from = "control_out"
     to = "aux_out"
     chan-map = [[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8]]
+
+# GNSS Configuration
+[gnss]
+    [[gnss.devices]]
+    id = 0
+    protocol = "ublox"  # ublox or nmea
+    type = "serial"
+    name = "serial2"
+    auto-config = true
+    baudrate = 0        # 0 means auto detect baudrate
