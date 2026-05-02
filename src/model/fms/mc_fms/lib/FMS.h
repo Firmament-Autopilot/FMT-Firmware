@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2247
+ * Model version                  : 1.2249
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Feb 27 15:26:14 2026
+ * C/C++ source code generated on : Sat May  2 17:24:41 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -242,6 +242,7 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_fs;/* '<S138>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_i; /* '<S37>/Switch Case' */
   int8_T Acceleration_Speed_PrevResetSta;/* '<S176>/Acceleration_Speed' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S228>/Discrete-Time Integrator' */
   int8_T SwitchCase_ActiveSubsystem_ai;/* '<S201>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_e; /* '<S191>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_at;/* '<S39>/Switch Case' */
@@ -249,6 +250,7 @@ typedef struct {
   int8_T SwitchCase_ActiveSubsystem_pp;/* '<S351>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_bn;/* '<S361>/Switch Case' */
   int8_T Acceleration_Speed_PrevResetS_j;/* '<S416>/Acceleration_Speed' */
+  int8_T DiscreteTimeIntegrator_PrevRe_e;/* '<S468>/Discrete-Time Integrator' */
   int8_T SwitchCase_ActiveSubsystem_g; /* '<S441>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_ld;/* '<S431>/Switch Case' */
   uint8_T DiscreteTimeIntegrator5_IC_LOAD;/* '<S499>/Discrete-Time Integrator5' */

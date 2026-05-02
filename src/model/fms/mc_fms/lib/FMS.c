@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'FMS'.
  *
- * Model version                  : 1.2247
+ * Model version                  : 1.2249
  * Simulink Coder version         : 9.0 (R2018b) 24-May-2018
- * C/C++ source code generated on : Fri Feb 27 15:26:14 2026
+ * C/C++ source code generated on : Sat May  2 17:24:41 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -136,20 +136,20 @@ struct_xXeuwAPh0ajaUfdgPpGaUB FMS_PARAM = {
   0.15F,
   0.1F,
   0.1F,
-  1.2F,
-  1.5F,
+  0.95F,
+  1.0F,
   5.0F,
-  1.5F,
   2.5F,
-  1.04719806F,
-  0.523599F,
+  2.5F,
+  1.04719758F,
+  0.52359879F,
   15.0F,
   5.0F,
   5.0F,
   1.5F,
   1.0F,
   0.5F,
-  0.7F,
+  0.3F,
   0.6F,
   120U,
   1U,
@@ -5514,6 +5514,7 @@ void FMS_step(void)
           FMS_DW.Acceleration_Speed_DSTATE_j = 0.0F;
           FMS_DW.Acceleration_Speed_PrevResetS_j = 0;
           FMS_DW.l1_heading_e = 0.0F;
+          FMS_DW.DiscreteTimeIntegrator_PrevRe_e = 0;
           FMS_DW.icLoad_j = 1U;
           FMS_DW.Integrator1_IC_LOADING_j = 1U;
           FMS_DW.icLoad_c = 1U;
@@ -5575,6 +5576,11 @@ void FMS_step(void)
         /* DiscreteIntegrator: '<S416>/Acceleration_Speed' */
         if (rtb_Compare_on || (FMS_DW.Acceleration_Speed_PrevResetS_j != 0)) {
           FMS_DW.Acceleration_Speed_DSTATE_j = 0.0F;
+        }
+
+        /* DiscreteIntegrator: '<S468>/Discrete-Time Integrator' */
+        if (rtb_Compare_on || (FMS_DW.DiscreteTimeIntegrator_PrevRe_e != 0)) {
+          FMS_DW.l1_heading_e = 0.0F;
         }
 
         /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
@@ -6936,6 +6942,7 @@ void FMS_step(void)
 
         /* Update for DiscreteIntegrator: '<S468>/Discrete-Time Integrator' */
         FMS_DW.l1_heading_e += 0.004F * rtb_a_l;
+        FMS_DW.DiscreteTimeIntegrator_PrevRe_e = (int8_T)rtb_Compare_on;
 
         /* Update for Delay: '<S398>/Delay' */
         FMS_DW.icLoad_j = 0U;
@@ -9036,6 +9043,7 @@ void FMS_step(void)
           FMS_DW.Acceleration_Speed_DSTATE = 0.0F;
           FMS_DW.Acceleration_Speed_PrevResetSta = 0;
           FMS_DW.l1_heading = 0.0F;
+          FMS_DW.DiscreteTimeIntegrator_PrevRese = 0;
           FMS_DW.icLoad_k = 1U;
           FMS_DW.Integrator1_IC_LOADING = 1U;
           FMS_DW.Integrator_DSTATE_i = 0.0F;
@@ -9086,6 +9094,7 @@ void FMS_step(void)
 
           /* InitializeConditions for DiscreteIntegrator: '<S228>/Discrete-Time Integrator' */
           FMS_DW.l1_heading = 0.0F;
+          FMS_DW.DiscreteTimeIntegrator_PrevRese = 0;
 
           /* InitializeConditions for Delay: '<S158>/Delay' */
           FMS_DW.icLoad_k = 1U;
@@ -9156,6 +9165,11 @@ void FMS_step(void)
         /* DiscreteIntegrator: '<S176>/Acceleration_Speed' */
         if (rtb_Compare_on || (FMS_DW.Acceleration_Speed_PrevResetSta != 0)) {
           FMS_DW.Acceleration_Speed_DSTATE = 0.0F;
+        }
+
+        /* DiscreteIntegrator: '<S228>/Discrete-Time Integrator' */
+        if (rtb_Compare_on || (FMS_DW.DiscreteTimeIntegrator_PrevRese != 0)) {
+          FMS_DW.l1_heading = 0.0F;
         }
 
         /* Outputs for Atomic SubSystem: '<S5>/FMS_Input' */
@@ -10526,6 +10540,7 @@ void FMS_step(void)
 
         /* Update for DiscreteIntegrator: '<S228>/Discrete-Time Integrator' */
         FMS_DW.l1_heading += 0.004F * rtb_a_l;
+        FMS_DW.DiscreteTimeIntegrator_PrevRese = (int8_T)rtb_Compare_on;
 
         /* Update for Delay: '<S158>/Delay' */
         FMS_DW.icLoad_k = 0U;
@@ -13421,6 +13436,7 @@ void FMS_init(void)
 
   /* InitializeConditions for DiscreteIntegrator: '<S468>/Discrete-Time Integrator' */
   FMS_DW.l1_heading_e = 0.0F;
+  FMS_DW.DiscreteTimeIntegrator_PrevRe_e = 0;
 
   /* InitializeConditions for Delay: '<S398>/Delay' */
   FMS_DW.icLoad_j = 1U;
@@ -13547,6 +13563,7 @@ void FMS_init(void)
 
   /* InitializeConditions for DiscreteIntegrator: '<S228>/Discrete-Time Integrator' */
   FMS_DW.l1_heading = 0.0F;
+  FMS_DW.DiscreteTimeIntegrator_PrevRese = 0;
 
   /* InitializeConditions for Delay: '<S158>/Delay' */
   FMS_DW.icLoad_k = 1U;
