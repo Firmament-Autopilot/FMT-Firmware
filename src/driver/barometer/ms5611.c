@@ -20,7 +20,6 @@
 #include "hal/barometer/barometer.h"
 #include "hal/i2c/i2c.h"
 #include "hal/spi/spi.h"
-#include "hal/i2c/i2c.h"
 #include "module/math/conversion.h"
 #include "module/workqueue/workqueue_manager.h"
 
