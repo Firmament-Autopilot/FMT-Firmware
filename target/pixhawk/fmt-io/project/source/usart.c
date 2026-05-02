@@ -103,7 +103,7 @@ uint8_t usart_init(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    USART_InitStructure.USART_BaudRate = 230400;
+    USART_InitStructure.USART_BaudRate = 921600;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -125,7 +125,7 @@ uint8_t usart_init(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-    /* Configure USART Rx as input pull up, 
+    /* Configure USART Rx as input pull up,
      * because input floating will result in unstable voltage level if sbus cable is not connected */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
@@ -146,10 +146,10 @@ uint8_t usart_init(void)
 }
 
 /**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
-  */
+ * @brief  Retargets the C library printf function to the USART.
+ * @param  None
+ * @retval None
+ */
 int fputc(int ch, FILE* f)
 {
     /* Place your implementation of fputc here */
