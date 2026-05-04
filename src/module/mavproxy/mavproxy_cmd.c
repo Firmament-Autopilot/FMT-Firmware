@@ -17,6 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "FMS.h"
 #include "model/ins/ins_interface.h"
 #include "module/file_manager/file_manager.h"
 #include "module/ftp/ftp_manager.h"
@@ -31,6 +32,7 @@ MCN_DECLARE(sensor_imu0);
 MCN_DECLARE(sensor_imu0_0);
 MCN_DECLARE(sensor_mag0_0);
 MCN_DECLARE(ins_output);
+MCN_DECLARE(fms_output);
 
 #define GYR_CALIBRATE_COUNT   200
 #define ACC_CALIBRATE_COUNT   200
@@ -292,6 +294,7 @@ static void gyr_mavlink_calibration(void)
         PARAM_SET_FLOAT(CALIB, GYRO0_YOFF, mavcmd_calib_gyr.bias[1]);
         PARAM_SET_FLOAT(CALIB, GYRO0_ZOFF, mavcmd_calib_gyr.bias[2]);
 
+        sensor_update_calibration();
         gyr_calibration_reset();
     }
 }
@@ -436,6 +439,7 @@ static void accel_calibration(void)
             PARAM_SET_FLOAT(CALIB, ACC0_YZSCALE, mavcmd_calib_acc.RotM[7]);
             PARAM_SET_FLOAT(CALIB, ACC0_ZZSCALE, mavcmd_calib_acc.RotM[8]);
 
+            sensor_update_calibration();
             acc_calibration_reset();
         }
     }
@@ -667,6 +671,7 @@ static void mag_calibration(void)
         PARAM_SET_FLOAT(CALIB, MAG0_YZSCALE, mavcmd_calib_mag.RotM[7]);
         PARAM_SET_FLOAT(CALIB, MAG0_ZZSCALE, mavcmd_calib_mag.RotM[8]);
 
+        sensor_update_calibration();
         mag_calibration_reset();
     } break;
 
@@ -687,6 +692,25 @@ static void level_calibration_reset(void)
 {
     mavproxy_cmd_reset(MAVCMD_CALIBRATION_LEVEL);
     level_calibration_init();
+}
+
+static bool is_calibration_cmd(MavCmd_ID cmd)
+{
+    return cmd == MAVCMD_CALIBRATION_GYR
+        || cmd == MAVCMD_CALIBRATION_ACC
+        || cmd == MAVCMD_CALIBRATION_MAG
+        || cmd == MAVCMD_CALIBRATION_LEVEL;
+}
+
+static fmt_err_t check_calibration_allowed(void)
+{
+    FMS_Out_Bus fms_out;
+
+    if (mcn_copy_from_hub(MCN_HUB(fms_output), &fms_out) != FMT_EOK) {
+        return FMT_ERROR;
+    }
+
+    return fms_out.status == VehicleStatus_Disarm ? FMT_EOK : FMT_EBUSY;
 }
 
 static void level_calibration(void)
@@ -755,13 +779,24 @@ static void level_calibration(void)
             mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_DONE_MSG, "level");
             // console_printf("Update Level Horizontal Offset: [%f %f]\n", mavcmd_calib_level.board_roll_off, mavcmd_calib_level.board_pitch_off);
 
+            sensor_update_calibration();
             level_calibration_reset();
         }
     }
 }
 
-void mavproxy_cmd_set(MavCmd_ID cmd, void* data)
+fmt_err_t mavproxy_cmd_set(MavCmd_ID cmd, void* data)
 {
+    if (is_calibration_cmd(cmd)) {
+        fmt_err_t res = check_calibration_allowed();
+
+        if (res != FMT_EOK) {
+            mavlink_send_statustext(MAVLINK_STATUS_CRITICAL,
+                                    res == FMT_EBUSY ? "Calibration denied: disarm first" : "Calibration denied: vehicle status unavailable");
+            return res;
+        }
+    }
+
     if (cmd == MAVCMD_CALIBRATION_GYR) {
         memset(&mavcmd_calib_gyr, 0, sizeof(mavcmd_calib_gyr));
 #ifdef FMT_RECORD_CALIBRATION_DATA
@@ -789,10 +824,12 @@ void mavproxy_cmd_set(MavCmd_ID cmd, void* data)
         }
     } else {
         /* unknown command */
-        return;
+        return FMT_EINVAL;
     }
 
     cmd_sets[cmd] = 1;
+
+    return FMT_EOK;
 }
 
 void mavproxy_cmd_reset(MavCmd_ID cmd)

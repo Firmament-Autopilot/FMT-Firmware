@@ -90,15 +90,17 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
         mavproxy_send_immediate_msg(MAVPROXY_GCS_CHAN, msg, true);
     } break;
 
-    case MAV_CMD_PREFLIGHT_CALIBRATION:
+    case MAV_CMD_PREFLIGHT_CALIBRATION: {
+        fmt_err_t res = FMT_EOK;
+
         if (command->param1 == 1) { // calibration gyr
-            mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
+            res = mavproxy_cmd_set(MAVCMD_CALIBRATION_GYR, NULL);
         } else if (command->param2 == 1) { // calibration mag
-            mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
+            res = mavproxy_cmd_set(MAVCMD_CALIBRATION_MAG, NULL);
         } else if (command->param5 == 1) { // calibration acc
-            mavproxy_cmd_set(MAVCMD_CALIBRATION_ACC, NULL);
+            res = mavproxy_cmd_set(MAVCMD_CALIBRATION_ACC, NULL);
         } else if (command->param5 == 2) { // calibration level
-            mavproxy_cmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
+            res = mavproxy_cmd_set(MAVCMD_CALIBRATION_LEVEL, NULL);
         } else {
             /* all 0 command, cancel current process */
             mavproxy_cmd_reset(MAVCMD_CALIBRATION_GYR);
@@ -108,8 +110,8 @@ static void handle_mavlink_command(mavlink_command_long_t* command, mavlink_mess
             mavlink_send_statustext(MAVLINK_STATUS_INFO, CAL_QGC_CANCELLED_MSG);
         }
 
-        mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command->command, MAV_RESULT_ACCEPTED);
-        break;
+        mavlink_command_acknowledge(MAVPROXY_GCS_CHAN, command->command, res == FMT_EOK ? MAV_RESULT_ACCEPTED : MAV_RESULT_DENIED);
+    } break;
 
     case MAV_CMD_COMPONENT_ARM_DISARM:
         if (command->param1 == 1.0f) {

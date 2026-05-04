@@ -33,7 +33,7 @@ typedef enum {
 } MavCmd_ID;
 
 void mavproxy_cmd_exec(void);
-void mavproxy_cmd_set(MavCmd_ID cmd, void* data);
+fmt_err_t mavproxy_cmd_set(MavCmd_ID cmd, void* data);
 void mavproxy_cmd_reset(MavCmd_ID cmd);
 
 #ifdef __cplusplus

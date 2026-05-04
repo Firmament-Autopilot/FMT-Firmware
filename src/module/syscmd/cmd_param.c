@@ -17,6 +17,7 @@
 #include <firmament.h>
 #include <string.h>
 
+#include "module/sensor/sensor_hub.h"
 #include "module/syscmd/optparse.h"
 #include "module/syscmd/syscmd.h"
 
@@ -397,6 +398,7 @@ static int save(struct optparse options)
 
     arg = optparse_arg(&options);
     if (param_save(arg) == FMT_EOK) {
+        sensor_update_calibration();
         printf("parameter save to %s\n", (arg != NULL) ? arg : PARAM_FILE_NAME);
     } else {
         printf("parameter save fail\n");
