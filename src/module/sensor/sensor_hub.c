@@ -16,6 +16,7 @@
 #include <board_device.h>
 #include <firmament.h>
 #include <math.h>
+#include <string.h>
 
 #include "module/filter/butter.h"
 #include "module/math/light_matrix.h"
@@ -60,6 +61,8 @@ static sensor_airspeed_t airspeed_dev = NULL;
 
 static Butter3* butter3_gyr[MAX_IMU_DEV_NUM][3];
 static Butter3* butter3_acc[MAX_IMU_DEV_NUM][3];
+static float applied_calibration[45];
+static bool applied_calibration_valid = false;
 
 static void dcm_from_euler(const float rpy[3], float dcm[9])
 {
@@ -399,6 +402,95 @@ static void mag_filter_init(uint8_t id)
     /* do nothing */
 }
 
+static void collect_calibration(float calibration[45])
+{
+    calibration[0] = PARAM_GET_FLOAT(CALIB, LEVEL_XOFF);
+    calibration[1] = PARAM_GET_FLOAT(CALIB, LEVEL_YOFF);
+    calibration[2] = PARAM_GET_FLOAT(CALIB, LEVEL_ZOFF);
+
+    calibration[3] = PARAM_GET_FLOAT(CALIB, GYRO0_XOFF);
+    calibration[4] = PARAM_GET_FLOAT(CALIB, GYRO0_YOFF);
+    calibration[5] = PARAM_GET_FLOAT(CALIB, GYRO0_ZOFF);
+    calibration[6] = PARAM_GET_FLOAT(CALIB, ACC0_XOFF);
+    calibration[7] = PARAM_GET_FLOAT(CALIB, ACC0_YOFF);
+    calibration[8] = PARAM_GET_FLOAT(CALIB, ACC0_ZOFF);
+    calibration[9] = PARAM_GET_FLOAT(CALIB, ACC0_XXSCALE);
+    calibration[10] = PARAM_GET_FLOAT(CALIB, ACC0_XYSCALE);
+    calibration[11] = PARAM_GET_FLOAT(CALIB, ACC0_XZSCALE);
+    calibration[12] = PARAM_GET_FLOAT(CALIB, ACC0_YYSCALE);
+    calibration[13] = PARAM_GET_FLOAT(CALIB, ACC0_YZSCALE);
+    calibration[14] = PARAM_GET_FLOAT(CALIB, ACC0_ZZSCALE);
+
+    calibration[15] = PARAM_GET_FLOAT(CALIB, GYRO1_XOFF);
+    calibration[16] = PARAM_GET_FLOAT(CALIB, GYRO1_YOFF);
+    calibration[17] = PARAM_GET_FLOAT(CALIB, GYRO1_ZOFF);
+    calibration[18] = PARAM_GET_FLOAT(CALIB, ACC1_XOFF);
+    calibration[19] = PARAM_GET_FLOAT(CALIB, ACC1_YOFF);
+    calibration[20] = PARAM_GET_FLOAT(CALIB, ACC1_ZOFF);
+    calibration[21] = PARAM_GET_FLOAT(CALIB, ACC1_XXSCALE);
+    calibration[22] = PARAM_GET_FLOAT(CALIB, ACC1_XYSCALE);
+    calibration[23] = PARAM_GET_FLOAT(CALIB, ACC1_XZSCALE);
+    calibration[24] = PARAM_GET_FLOAT(CALIB, ACC1_YYSCALE);
+    calibration[25] = PARAM_GET_FLOAT(CALIB, ACC1_YZSCALE);
+    calibration[26] = PARAM_GET_FLOAT(CALIB, ACC1_ZZSCALE);
+
+    calibration[27] = PARAM_GET_FLOAT(CALIB, MAG0_XOFF);
+    calibration[28] = PARAM_GET_FLOAT(CALIB, MAG0_YOFF);
+    calibration[29] = PARAM_GET_FLOAT(CALIB, MAG0_ZOFF);
+    calibration[30] = PARAM_GET_FLOAT(CALIB, MAG0_XXSCALE);
+    calibration[31] = PARAM_GET_FLOAT(CALIB, MAG0_XYSCALE);
+    calibration[32] = PARAM_GET_FLOAT(CALIB, MAG0_XZSCALE);
+    calibration[33] = PARAM_GET_FLOAT(CALIB, MAG0_YYSCALE);
+    calibration[34] = PARAM_GET_FLOAT(CALIB, MAG0_YZSCALE);
+    calibration[35] = PARAM_GET_FLOAT(CALIB, MAG0_ZZSCALE);
+
+    calibration[36] = PARAM_GET_FLOAT(CALIB, MAG1_XOFF);
+    calibration[37] = PARAM_GET_FLOAT(CALIB, MAG1_YOFF);
+    calibration[38] = PARAM_GET_FLOAT(CALIB, MAG1_ZOFF);
+    calibration[39] = PARAM_GET_FLOAT(CALIB, MAG1_XXSCALE);
+    calibration[40] = PARAM_GET_FLOAT(CALIB, MAG1_XYSCALE);
+    calibration[41] = PARAM_GET_FLOAT(CALIB, MAG1_XZSCALE);
+    calibration[42] = PARAM_GET_FLOAT(CALIB, MAG1_YYSCALE);
+    calibration[43] = PARAM_GET_FLOAT(CALIB, MAG1_YZSCALE);
+    calibration[44] = PARAM_GET_FLOAT(CALIB, MAG1_ZZSCALE);
+}
+
+static void mark_calibration_applied(void)
+{
+    collect_calibration(applied_calibration);
+    applied_calibration_valid = true;
+}
+
+fmt_err_t sensor_update_calibration(void)
+{
+    float calibration[45];
+
+    collect_calibration(calibration);
+    if (applied_calibration_valid
+        && memcmp(applied_calibration, calibration, sizeof(calibration)) == 0) {
+        return FMT_EOK;
+    }
+
+    for (uint8_t id = 0; id < MAX_IMU_DEV_NUM; id++) {
+        if (imu_dev[id] != NULL) {
+            imu_rotation_init(id);
+            imu_offset_init(id);
+        }
+    }
+
+    for (uint8_t id = 0; id < MAX_MAG_DEV_NUM; id++) {
+        if (mag_dev[id] != NULL) {
+            mag_rotation_init(id);
+            mag_offset_init(id);
+        }
+    }
+
+    memcpy(applied_calibration, calibration, sizeof(applied_calibration));
+    applied_calibration_valid = true;
+
+    return FMT_EOK;
+}
+
 /**
  * @brief Advertise sensor imu topic
  *
@@ -565,6 +657,7 @@ fmt_err_t register_sensor_imu(const char* gyr_dev_name, const char* acc_dev_name
     imu_offset_init(id);
     /* Initialize imu filter */
     imu_filter_init(id);
+    mark_calibration_applied();
 
     return advertise_sensor_imu(id);
 }
@@ -591,6 +684,7 @@ fmt_err_t register_sensor_mag(const char* dev_name, uint8_t id)
     mag_offset_init(id);
     /* Initialize mag filter */
     mag_filter_init(id);
+    mark_calibration_applied();
 
     return advertise_sensor_mag(id);
 }
