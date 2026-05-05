@@ -118,6 +118,8 @@ void bsp_initialize(void)
     /* adc driver init */
     RT_CHECK(drv_adc_init());
 
+    RT_CHECK(drv_ipc_dev_init());
+
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
@@ -126,7 +128,6 @@ void bsp_initialize(void)
 
 void bsp_post_initialize(void)
 {
-    RT_CHECK(drv_ipc_dev_init());
 }
 
 void _start(void)

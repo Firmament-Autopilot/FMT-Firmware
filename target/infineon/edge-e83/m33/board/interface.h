@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef BOARD_DEVICE_H__
-#define BOARD_DEVICE_H__
+#ifndef  _INTERFACE_H_
+#define  _INTERFACE_H_
 
-// Device Name
-#define FMTIO_DEVICE_NAME "ipc0_dev"
+#include "protocol.h"
 
-//#define SPI1_SPEED_HZ 7000000
+fmt_err_t interface_init(void);
+void interface_listen(void);
+fmt_err_t send_io_cmd(uint8_t code, void* data, uint16_t len);
+uint8_t sync_finish(void);
+uint16_t fmt_get_rc_proto(void);
+uint8_t rc_signal_ready(void);
+
+extern IO_RCConfig rc_config;
 
 #endif

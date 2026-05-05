@@ -339,6 +339,8 @@ void bsp_initialize(void)
     // FMT_CHECK(advertise_sensor_rangefinder(0));
 #endif
 
+    RT_CHECK(drv_ipc_dev_init());
+
     /* init finsh */
     finsh_system_init();
     /* Mount finsh to console after finsh system init */
@@ -384,8 +386,6 @@ void bsp_post_initialize(void)
 
     /* initialize power management unit */
     // FMT_CHECK(pmu_init());
-
-    RT_CHECK(drv_ipc_dev_init());
 
     /* show system information */
     bsp_show_information();

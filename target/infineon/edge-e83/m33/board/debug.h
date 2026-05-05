@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef BOARD_DEVICE_H__
-#define BOARD_DEVICE_H__
+#ifndef __DEBUG_H__
+#define __DEBUG_H__
 
-// Device Name
-#define FMTIO_DEVICE_NAME "ipc0_dev"
+#include <firmament.h>
 
-//#define SPI1_SPEED_HZ 7000000
+int debug(const char* fmt, ...);
 
 #endif

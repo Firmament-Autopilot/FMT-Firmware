@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2020-2026 The Firmament Authors. All Rights Reserved.
+ * Copyright 2020 The Firmament Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,29 @@
  * limitations under the License.
  *****************************************************************************/
 
-#ifndef BOARD_DEVICE_H__
-#define BOARD_DEVICE_H__
+#include "debug.h"
+#include "interface.h"
+#include <stdarg.h>
+#include <stdio.h>
 
-// Device Name
-#define FMTIO_DEVICE_NAME "ipc0_dev"
+#define DEBUG_BUFFER_SIZE 100
 
-//#define SPI1_SPEED_HZ 7000000
+static char _dbg_buf[DEBUG_BUFFER_SIZE];
 
-#endif
+int debug(const char* fmt, ...)
+{
+    va_list args;
+    int length;
+
+    // TODO, current not support %f
+    va_start(args, fmt);
+    //length = vsprintf(_dbg_buf, fmt, args);
+    length = vsnprintf(_dbg_buf, DEBUG_BUFFER_SIZE, fmt, args);
+    va_end(args);
+
+    if (length <= IO_BUFFER_SIZE && length) {
+        send_io_cmd(IO_CODE_DBG_TEXT, _dbg_buf, length);
+    }
+
+    return length;
+}
