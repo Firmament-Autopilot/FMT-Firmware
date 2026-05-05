@@ -50,6 +50,7 @@ jobs:
           scons -C target/amov/icf5 -j4
           scons -C target/pixhawk/fmu-v2 -j4
           scons -C target/pixhawk/fmu-v5 -j4
+          scons -C target/pixhawk/fmu-v6c -j4
           scons -C target/cuav/v5_plus -j4
           scons -C target/cuav/v5_nano -j4
           scons -C target/cuav/7_nano -j4
