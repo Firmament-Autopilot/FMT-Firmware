@@ -1,0 +1,18 @@
+import os
+from building import *
+Import('RTT_ROOT')
+
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+src += Glob('usbd/*.c')
+src += Glob('fdcan/*.c')
+
+
+inc = [cwd]
+inc += [cwd + '/usbd']
+inc += [cwd + '/fdcan']
+
+group = DefineGroup('PeripheralDriver', src, depend = [''], CPPPATH = inc)
+
+Return('group')
