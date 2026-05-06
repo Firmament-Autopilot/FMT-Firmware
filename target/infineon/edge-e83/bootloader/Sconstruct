@@ -19,10 +19,10 @@ BUILD_DIR = 'build'
 # =============================================================================
 # Get toolchain path from environment variable RTT_EXEC_PATH
 # If not set, use default path
-EXEC_PATH = os.getenv('RTT_EXEC_PATH')
-if not EXEC_PATH:
-    # Default toolchain path (can be overridden by RTT_EXEC_PATH environment variable)
-    EXEC_PATH = r'C:\Users\XXYYZZ'
+if os.getenv('RTT_EXEC_PATH_OVERRIDE'):
+    EXEC_PATH = os.getenv('RTT_EXEC_PATH_OVERRIDE')
+else:
+    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
 # Cross compiler prefix
 PREFIX = 'arm-none-eabi-'

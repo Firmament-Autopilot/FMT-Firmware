@@ -13,8 +13,6 @@ if os.getenv('RTT_CC'):
 if os.getenv('RTT_ROOT'):
     RTT_ROOT = os.getenv('RTT_ROOT')
 
-# cross_tool provides the cross compiler
-# EXEC_PATH is the compiler execute path, for example, CodeSourcery, Keil MDK, IAR
 if  CROSS_TOOL == 'gcc':
     PLATFORM    = 'gcc'
     EXEC_PATH   = r'D:\ProgramFiles\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\13.3\bin'
@@ -25,8 +23,10 @@ elif CROSS_TOOL == 'iar':
     PLATFORM = 'iccarm'
     EXEC_PATH   = r'C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.3'
 
-# if os.getenv('RTT_EXEC_PATH'):
-#     EXEC_PATH = os.getenv('RTT_EXEC_PATH')
+if os.getenv('RTT_EXEC_PATH_OVERRIDE'):
+    EXEC_PATH = os.getenv('RTT_EXEC_PATH_OVERRIDE')
+else:
+    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
 BUILD = 'debug'
 

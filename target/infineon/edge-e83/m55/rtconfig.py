@@ -28,8 +28,10 @@ elif CROSS_TOOL == 'iar':
     PLATFORM = 'iccarm'
     EXEC_PATH   = r'C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.3'
 
-# if os.getenv('RTT_EXEC_PATH'):
-#     EXEC_PATH = os.getenv('RTT_EXEC_PATH')
+if os.getenv('RTT_EXEC_PATH_OVERRIDE'):
+    EXEC_PATH = os.getenv('RTT_EXEC_PATH_OVERRIDE')
+else:
+    EXEC_PATH = os.getenv('RTT_EXEC_PATH')
 
 BUILD = 'release'
 
