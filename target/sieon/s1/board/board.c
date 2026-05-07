@@ -136,11 +136,12 @@ static void MPU_Config(void)
  */
 static void CPU_Config(void)
 {
+    /* Allow interrupts of all priorities to be responded to */
+    __set_BASEPRI(0);
+    /* Config MPU */
     MPU_Config();
-
     /* Enable I-Cache */
     SCB_EnableICache();
-
     /* Enable D-Cache */
     // SCB_EnableDCache();
 }
@@ -166,9 +167,6 @@ void Error_Handler(void)
  */
 void SystemClock_Config(void)
 {
-    __set_PRIMASK(0);
-    __set_BASEPRI(0);
-
     LL_FLASH_SetLatency(LL_FLASH_LATENCY_4);
     while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_4) {
     }

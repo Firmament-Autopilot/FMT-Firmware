@@ -215,6 +215,8 @@ void SystemClock_Config(void)
 /* this function will be called before rtos start, which is not in the thread context */
 void bsp_early_initialize(void)
 {
+    __set_BASEPRI(0);
+
     /* Enable CPU L1-cache */
     CPU_CACHE_Enable();
 
@@ -256,9 +258,6 @@ void bsp_early_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
-
-    __set_PRIMASK(0);
-    __set_BASEPRI(0);
 }
 
 /* this function will be called after rtos start, which is in thread context */

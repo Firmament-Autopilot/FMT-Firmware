@@ -272,6 +272,8 @@ static void MPU_Config(void)
 
 static void CPU_Config(void)
 {
+    __set_BASEPRI(0);
+
     MPU_Config();
 
     /* Enable I-Cache */
@@ -388,8 +390,6 @@ void bsp_early_initialize(void)
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
-
-    __set_BASEPRI(0);
 }
 
 /* this function will be called after rtos start, which is in thread context */
