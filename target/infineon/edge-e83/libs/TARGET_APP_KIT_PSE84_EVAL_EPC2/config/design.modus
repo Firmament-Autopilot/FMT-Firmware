@@ -4624,6 +4624,40 @@
                         <Param id="inFlash" value="true"/>
                     </Parameters>
                 </Personality>
+                <Personality template="dma" version="3.0" instance="tUDEVSaa2pw">
+                    <Block location="m33syscpuss[0].dw0[0].chan[6]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART4_TX_DMA"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="BUFFERABLE" value="false"/>
+                        <Param id="CHANNEL_PRIORITY" value="3"/>
+                        <Param id="CHAN_STATE_COMPL_0" value="CY_DMA_CHANNEL_ENABLED"/>
+                        <Param id="CRC_0" value="false"/>
+                        <Param id="CRC_DATA_REVERSE" value="false"/>
+                        <Param id="CRC_DATA_XOR" value="0"/>
+                        <Param id="CRC_POLYNOMIAL" value="79764919"/>
+                        <Param id="CRC_REMINDER_REVERSE" value="false"/>
+                        <Param id="CRC_REMINDER_XOR" value="0"/>
+                        <Param id="DATA_TRANSFER_WIDTH_0" value="ByteToWord"/>
+                        <Param id="DESCR_SELECTION" value="0"/>
+                        <Param id="ENABLE_CHAINING_0" value="false"/>
+                        <Param id="INTR_OUT_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="NUM_OF_DESCRIPTORS" value="1"/>
+                        <Param id="PREEMPTABLE" value="false"/>
+                        <Param id="TRIG_DEACT_0" value="CY_DMA_RETRIG_IM"/>
+                        <Param id="TRIG_IN_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="TRIG_OUT_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="X_DST_INCREMENT_0" value="0"/>
+                        <Param id="X_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="X_SRC_INCREMENT_0" value="1"/>
+                        <Param id="Y_DST_INCREMENT_0" value="1"/>
+                        <Param id="Y_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="Y_SRC_INCREMENT_0" value="1"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
                 <Personality template="security_mpu" version="1.0" instance="OpVGRT1d9O8">
                     <Block location="m55appcpuss[0].cm55[0].mpu_ns[0]" locked="true"/>
                     <Parameters>
@@ -8046,6 +8080,10 @@
                 <Net>
                     <Port name="m33syscpuss[0].dw0[0].chan[5].tr_in[0]"/>
                     <Port name="scb[9].tr_tx_req[0]"/>
+                </Net>
+                <Net>
+                    <Port name="m33syscpuss[0].dw0[0].chan[6].tr_in[0]"/>
+                    <Port name="scb[4].tr_tx_req[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[1].div_16[0].clk[0]"/>

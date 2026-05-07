@@ -64,6 +64,10 @@ extern "C" {
 #define CYBSP_UART9_TX_DMA_HW DW0
 #define CYBSP_UART9_TX_DMA_CHANNEL 5U
 #define CYBSP_UART9_TX_DMA_IRQ cpuss_interrupts_dw0_5_IRQn
+#define CYBSP_UART4_TX_DMA_ENABLED 1U
+#define CYBSP_UART4_TX_DMA_HW DW0
+#define CYBSP_UART4_TX_DMA_CHANNEL 6U
+#define CYBSP_UART4_TX_DMA_IRQ cpuss_interrupts_dw0_6_IRQn
 
 extern const cy_stc_dma_descriptor_config_t CYBSP_UART2_TX_DMA_Descriptor_0_config;
 extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART2_TX_DMA_Descriptor_0;
@@ -117,6 +121,15 @@ extern const cy_stc_dma_crc_config_t CYBSP_UART9_TX_DMA_crcConfig;
 
 #if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
 extern const mtb_hal_dma_configurator_t CYBSP_UART9_TX_DMA_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
+
+extern const cy_stc_dma_descriptor_config_t CYBSP_UART4_TX_DMA_Descriptor_0_config;
+extern CY_SECTION(".cy_socmem_data") CY_ALIGN(8) cy_stc_dma_descriptor_t CYBSP_UART4_TX_DMA_Descriptor_0;
+extern const cy_stc_dma_channel_config_t CYBSP_UART4_TX_DMA_channelConfig;
+extern const cy_stc_dma_crc_config_t CYBSP_UART4_TX_DMA_crcConfig;
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA)
+extern const mtb_hal_dma_configurator_t CYBSP_UART4_TX_DMA_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_DMA) */
 
 #if defined(__cplusplus)
