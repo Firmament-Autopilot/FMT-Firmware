@@ -42,6 +42,7 @@
 
 #include "default_config.h"
 #include "module/file_manager/file_manager.h"
+#include "module/mavproxy/mavproxy.h"
 #include "module/param/param.h"
 #include "module/pmu/power_manager.h"
 #include "module/sensor/sensor_gps.h"
@@ -55,7 +56,6 @@
 #include "module/utils/devmq.h"
 #include "module/workqueue/workqueue_manager.h"
 
-
 #define MATCH(a, b)     (strcmp(a, b) == 0)
 #define SYS_CONFIG_FILE "/sys/sysconfig.toml"
 #define SYS_INIT_SCRIPT "/sys/init.sh"
@@ -65,8 +65,6 @@ static const struct dfs_mount_tbl mnt_table[] = {
     { "mtdblk0", "/mnt/mtdblk0", "elm", 0, NULL },
     { NULL } /* NULL indicate the end */
 };
-
-static toml_table_t* __toml_root_tab = NULL;
 
 /**
  * @brief Enable on-board device power supply
@@ -230,6 +228,9 @@ void bsp_early_initialize(void)
     /* System clock initialization */
     SystemClock_Config();
 
+    /* gpio driver init */
+    RT_CHECK(drv_gpio_init());
+
     /* usart driver init */
     RT_CHECK(drv_usart_init());
 
@@ -238,9 +239,6 @@ void bsp_early_initialize(void)
 
     /* systick driver init */
     RT_CHECK(drv_systick_init());
-
-    /* gpio driver init */
-    RT_CHECK(drv_gpio_init());
 
     /* i2c driver init */
     RT_CHECK(drv_i2c_init());
@@ -286,6 +284,9 @@ void bsp_initialize(void)
     /* init parameter system */
     FMT_CHECK(param_init());
 
+    /* init mavproxy */
+    FMT_CHECK(mavproxy_init());
+
     /* init usbd_cdc */
     RT_CHECK(drv_usb_cdc_init());
 
@@ -320,12 +321,11 @@ void bsp_initialize(void)
 void bsp_post_initialize(void)
 {
     /* toml system configure */
-    __toml_root_tab = toml_parse_config_file(SYS_CONFIG_FILE);
-    if (!__toml_root_tab) {
+    if (bsp_parse_toml_sysconfig(toml_parse_config_file(SYS_CONFIG_FILE)) != FMT_EOK) {
         /* use default system configuration */
-        __toml_root_tab = toml_parse_config_string(default_conf);
+        FMT_CHECK(bsp_parse_toml_sysconfig(toml_parse_config_string(default_conf)));
+        printf("Default configuration loaded.\n");
     }
-    FMT_CHECK(bsp_parse_toml_sysconfig(__toml_root_tab));
 
     /* init gnss */
     FMT_CHECK(gnss_init());
@@ -342,11 +342,17 @@ void bsp_post_initialize(void)
     /* init mission data */
     FMT_CHECK(mission_data_init());
 
+    /* init actuator */
+    FMT_CHECK(actuator_init());
+
     /* start device message queue work */
     FMT_CHECK(devmq_start_work());
 
     /* init led control */
     FMT_CHECK(led_control_init());
+
+    /* initialize power management unit */
+    FMT_CHECK(pmu_init());
 
     /* show system information */
     bsp_show_information();
