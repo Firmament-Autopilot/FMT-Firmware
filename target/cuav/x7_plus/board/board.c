@@ -120,8 +120,7 @@ static void EnablePower(void)
  */
 static void CPU_Config(void)
 {
-    // __set_PRIMASK(0);
-    // __set_BASEPRI(0);
+    __set_BASEPRI(0);
 
     /*
      * When enabling the D-cache there is cache coherency issue.
