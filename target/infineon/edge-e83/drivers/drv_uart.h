@@ -24,8 +24,6 @@
 #include "hal/serial/serial.h"
 #include "mtb_hal_uart.h"
 
-#define UART_TX_BUFFER_SIZE 256
-
 struct ifx_uart_config {
     mtb_hal_uart_t* uart_obj;
     const char* name;
@@ -38,10 +36,10 @@ struct ifx_uart_config {
     cy_israddress userIsr;
     cy_stc_sysint_t* UART_SCB_IRQ_cfg;
 
-#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX)
-    uint8_t* tx_buffer;
+#if defined(BSP_USING_UART1_DMA_TX) || defined(BSP_USING_UART2_DMA_TX) || defined(BSP_USING_UART4_DMA_TX) || defined(BSP_USING_UART5_DMA_TX) || defined(BSP_USING_UART9_DMA_TX) || defined(BSP_USING_UART10_DMA_TX) || defined(BSP_USING_UART11_DMA_TX)
     cy_stc_dma_descriptor_t* tx_dma_descriptor;
     volatile uint8_t tx_dma_done;
+    volatile uint8_t tx_using_bounce;
     uint8_t dma_enabled;
     uint8_t dma_initialized;
     rt_sem_t tx_dma_sem;
