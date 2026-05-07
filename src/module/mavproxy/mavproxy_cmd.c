@@ -818,10 +818,12 @@ fmt_err_t mavproxy_cmd_set(MavCmd_ID cmd, void* data)
     } else if (cmd == MAVCMD_CALIBRATION_LEVEL) {
         level_calibration_init();
     } else if (cmd == MAVCMD_STREAM_SESSION) {
-        if (data) {
-            /* ftp stream session */
-            ftp_stream_session = (StreamSession*)data;
+        if (data == NULL) {
+            return FMT_EINVAL;
         }
+
+        /* ftp stream session */
+        ftp_stream_session = (StreamSession*)data;
     } else {
         /* unknown command */
         return FMT_EINVAL;
