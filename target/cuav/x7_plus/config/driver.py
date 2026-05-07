@@ -6,6 +6,7 @@ DRIVERS = [
     # 'imu/bmi055.c',
     'barometer/ms5611.c',
     'gps/gps_ubx.c',
+    'gps/gps_nmea.c',
     # 'gps/gps_dronecan.c',
     # 'rgb_led/rgb_dronecan.c',
     # 'mtd/ramtron.c',
