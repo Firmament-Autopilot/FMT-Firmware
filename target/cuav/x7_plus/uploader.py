@@ -187,6 +187,9 @@ class uploader(object):
 
     MAVLINK_REBOOT_MSH =   bytearray(
         b'\xfd\x10\x00\x00\x01\xff\x00\x7e\x00\x00\x00\x00\x00\x00\x00\x00\x0a\x06\x07\x72\x65\x62\x6f\x6f\x74\x0a\xf3\x46')
+    
+    MAVLINK_ENTER_MSH =   bytearray(
+        b'\xfd\x4a\x00\x00\x04\x00\x00\x7e\x00\x00\x00\x00\x00\x00\x00\x00\x0a\x06\x01\x0a\x00\x00\x00\xb8\xbf\xc7\x17\x96\xd6\x39\x0b\x00\x74\x03\x80\x00\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x10\x00\x00\x00\x6d\x00\x00\x00\xd8\xbf\xc7\x17\x92\xd6\x35\x0b\x00\x75\x03\x80\x00\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x10\x00\x00\x00\x2f\xde\x47')
 
     MAX_FLASH_PRGRAM_TIME = 0.001  # Time on an F7 to send SYNC, RESULT from last data in multi RXed
 
@@ -684,17 +687,15 @@ class uploader(object):
             print("If the board does not respond, unplug and re-plug the USB connector.", file=sys.stderr)
 
         try:
-            # try MAVLINK command first
             self.port.flush()
-            # self.__send(uploader.MAVLINK_REBOOT_ID1)
-            # self.__send(uploader.MAVLINK_REBOOT_ID0)
+            # send \n to activate mavlink console
+            self.__send(uploader.MAVLINK_ENTER_MSH)
+            # sleep for a while to let mavproxy switch to usb
+            time.sleep(0.5)
+            # send MAVLINK reboot command
             self.__send(uploader.MAVLINK_REBOOT_MSH)
-            # then try reboot via NSH
-            # self.__send(uploader.NSH_INIT)
-            # self.__send(uploader.NSH_REBOOT_BL)
-            # self.__send(uploader.NSH_INIT)
-            # self.__send(uploader.NSH_REBOOT)
             self.port.flush()
+
             self.port.baudrate = self.baudrate_bootloader
         except Exception:
             try:
@@ -787,7 +788,7 @@ def main():
             matches = False
             p = SerialPort(port, description=description, hwid=hwid)
             for preferred in preferred_list:
-                if fnmatch.fnmatch(description, preferred) or fnmatch.fnmatch(hwid, preferred):
+                if fnmatch.fnmatch(description, preferred):
                     matches = True
             if matches:
                 ret.append(p)
@@ -796,7 +797,7 @@ def main():
         if len(ret) > 0:
             return ret
         # now the rest
-        ret.extend(others)
+        # ret.extend(others)
         return ret
         
 
@@ -818,7 +819,7 @@ def main():
                 others.append(SerialPort(d))
         if len(ret) > 0:
             return ret
-        ret.extend(others)
+        # ret.extend(others)
         return ret
 
     class SerialPort(object):
@@ -842,13 +843,12 @@ def main():
         else:
             while True:
                 try:
-                    serial_list = auto_detect_serial(preferred_list=['*MindPX*',
-                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*ArduPilot*'])
 
                     if len(serial_list) == 0:
                         print("Error: no serial connection found")
                         print("wait for connect fmt-fmu...")
-                        time.sleep(2)
+                        time.sleep(1)
                         break
                         # return
 
@@ -873,15 +873,14 @@ def main():
                 args.port = "/dev/tty.usbmodem1"
             else:
                 if os.name == 'nt':
-                    serial_list = auto_detect_serial(preferred_list=['*MindPX*',
-                        "*STMicroelectronics Virtual COM Port*", "*3D_Robotics*", "*USB_to_UART*", '*PX4*', '*FMU*', "*Gumstix*"])
+                    serial_list = auto_detect_serial(preferred_list=['*STMicroelectronics Virtual COM Port*', '*ArduPilot*'])
                 else:
                     serial_list = auto_detect_serial(preferred_list=["/dev/ttyUSB*", "/dev/ttyACM*"])
 
                 if len(serial_list) == 0:
                     print("Error: no serial connection found")
                     print("wait for connect fmt-fmu...")
-                    time.sleep(2)
+                    time.sleep(1)
                     continue
 
                 # if len(serial_list) > 1:
@@ -932,7 +931,7 @@ def main():
                     time.sleep(0.05)
                     if test_once:
                         print("Not found fmt_fmu,please connect fmt_fmu!")
-                        time.sleep(2)
+                        time.sleep(1)
                     # and loop to the next port
                     continue
 
