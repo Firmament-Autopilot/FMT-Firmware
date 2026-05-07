@@ -132,6 +132,9 @@ extern "C" {
 #define CYBSP_I2C_CONTROLLER_ENABLED 1U
 #define CYBSP_I2C_CONTROLLER_HW SCB0
 #define CYBSP_I2C_CONTROLLER_IRQ scb_0_interrupt_IRQn
+#define CYBSP_UART1_ENABLED 1U
+#define CYBSP_UART1_HW SCB1
+#define CYBSP_UART1_IRQ scb_1_interrupt_IRQn
 #define CYBSP_UART2_ENABLED 1U
 #define CYBSP_UART2_HW SCB2
 #define CYBSP_UART2_IRQ scb_2_interrupt_IRQn
@@ -328,6 +331,17 @@ extern const mtb_hal_clock_t CYBSP_I2C_CONTROLLER_hal_clock;
 extern const mtb_hal_i2c_configurator_t CYBSP_I2C_CONTROLLER_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_I2C) */
 
+extern const cy_stc_scb_uart_config_t CYBSP_UART1_config;
+
+#if defined (COMPONENT_MTB_HAL)
+extern const mtb_hal_peri_div_t CYBSP_UART1_clock_ref;
+extern const mtb_hal_clock_t CYBSP_UART1_hal_clock;
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+extern const mtb_hal_uart_configurator_t CYBSP_UART1_hal_config;
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
 extern const cy_stc_scb_uart_config_t CYBSP_UART2_config;
 
 #if defined (COMPONENT_MTB_HAL)
@@ -432,6 +446,7 @@ extern const mtb_hal_sdhc_configurator_t CYBSP_SDHC_1_sdhc_hal_config;
 extern const mtb_hal_sdio_configurator_t CYBSP_SDHC_1_sdio_hal_config;
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SDIO) */
 
+extern void canfd0_rx_callback(bool rxFIFOMsg, uint8_t msgBufOrRxFIFONum, cy_stc_canfd_rx_buffer_t* basemsg);
 extern const cy_stc_canfd_bitrate_t CYBSP_CAN_FD_CH_0_nominalBitrateConfig;
 extern const cy_stc_canfd_bitrate_t CYBSP_CAN_FD_CH_0_dataBitrateConfig;
 extern const cy_stc_canfd_transceiver_delay_compensation_t CYBSP_CAN_FD_CH_0_tdcConfig;

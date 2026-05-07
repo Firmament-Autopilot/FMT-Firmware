@@ -516,6 +516,67 @@ const mtb_hal_i2c_configurator_t CYBSP_I2C_CONTROLLER_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_I2C) */
 
+const cy_stc_scb_uart_config_t CYBSP_UART1_config =
+{
+    .uartMode = CY_SCB_UART_STANDARD,
+    .enableMultiProcessorMode = false,
+    .smartCardRetryOnNack = false,
+    .irdaInvertRx = false,
+    .irdaEnableLowPowerReceiver = false,
+    .oversample = 10,
+    .enableMsbFirst = false,
+    .dataWidth = 8UL,
+    .parity = CY_SCB_UART_PARITY_NONE,
+    .stopBits = CY_SCB_UART_STOP_BITS_1,
+    .enableInputFilter = false,
+    .breakWidth = 11UL,
+    .dropOnFrameError = false,
+    .dropOnParityError = false,
+    .breaklevel = false,
+    .receiverAddress = 0x0UL,
+    .receiverAddressMask = 0x0UL,
+    .acceptAddrInFifo = false,
+    .enableCts = false,
+    .ctsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rtsRxFifoLevel = 0UL,
+    .rtsPolarity = CY_SCB_UART_ACTIVE_LOW,
+    .rxFifoTriggerLevel = 63UL,
+    .rxFifoIntEnableMask = 0UL,
+    .txFifoTriggerLevel = 63UL,
+    .txFifoIntEnableMask = 0UL,
+};
+
+#if defined (COMPONENT_MTB_HAL)
+const mtb_hal_peri_div_t CYBSP_UART1_clock_ref =
+{
+    .clk_dst = (en_clk_dst_t)peri_0_group_8_div_16_0_GRP_NUM,
+    .div_type = peri_0_group_8_div_16_0_HW,
+    .div_num = peri_0_group_8_div_16_0_NUM,
+};
+const mtb_hal_clock_t CYBSP_UART1_hal_clock =
+{
+    .clock_ref = &CYBSP_UART1_clock_ref,
+    .interface = &mtb_hal_clock_peri_interface,
+};
+#endif /* defined (COMPONENT_MTB_HAL) */
+
+#if defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART)
+const mtb_hal_uart_configurator_t CYBSP_UART1_hal_config =
+{
+    .base = CYBSP_UART1_HW,
+    .clock = &CYBSP_UART1_hal_clock,
+    .tx_pin = 2,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_pin = 0xFF,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+    .tx_port = 9,
+#if defined (COMPONENT_MW_ASYNC_TRANSFER)
+    .rts_port = 0xFF,
+    .rts_enable = 0UL,
+#endif /* defined (COMPONENT_MW_ASYNC_TRANSFER) */
+};
+#endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_UART) */
+
 const cy_stc_scb_uart_config_t CYBSP_UART2_config =
 {
     .uartMode = CY_SCB_UART_STANDARD,
@@ -1038,19 +1099,20 @@ const mtb_hal_sdio_configurator_t CYBSP_SDHC_1_sdio_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_SDIO) */
 
+void canfd0_rx_callback(bool rxFIFOMsg, uint8_t msgBufOrRxFIFONum, cy_stc_canfd_rx_buffer_t* basemsg);
 const cy_stc_canfd_bitrate_t CYBSP_CAN_FD_CH_0_nominalBitrateConfig =
 {
-    .prescaler = 10U - 1U,
-    .timeSegment1 = 5U - 1U,
-    .timeSegment2 = 2U - 1U,
-    .syncJumpWidth = 2U - 1U,
+    .prescaler = 1U - 1U,
+    .timeSegment1 = 29U - 1U,
+    .timeSegment2 = 10U - 1U,
+    .syncJumpWidth = 1U - 1U,
 };
 const cy_stc_canfd_bitrate_t CYBSP_CAN_FD_CH_0_dataBitrateConfig =
 {
-    .prescaler = 5U - 1U,
-    .timeSegment1 = 5U - 1U,
-    .timeSegment2 = 2U - 1U,
-    .syncJumpWidth = 2U - 1U,
+    .prescaler = 1U - 1U,
+    .timeSegment1 = 29U - 1U,
+    .timeSegment2 = 10U - 1U,
+    .syncJumpWidth = 1U - 1U,
 };
 const cy_stc_canfd_transceiver_delay_compensation_t CYBSP_CAN_FD_CH_0_tdcConfig =
 {
@@ -1123,7 +1185,7 @@ const cy_en_canfd_fifo_config_t CYBSP_CAN_FD_CH_0_rxFifo1Config =
 const cy_stc_canfd_config_t CYBSP_CAN_FD_CH_0_config =
 {
     .txCallback = NULL,
-    .rxCallback = NULL,
+    .rxCallback = canfd0_rx_callback,
     .errorCallback = NULL,
     .canFDMode = true,
     .bitrate = &CYBSP_CAN_FD_CH_0_nominalBitrateConfig,
@@ -3261,6 +3323,14 @@ const mtb_hal_pwm_configurator_t tcpwm_0_group_1_cnt_23_hal_config =
 };
 #endif /* defined (COMPONENT_MTB_HAL) && (MTB_HAL_DRIVER_AVAILABLE_PWM) */
 
+__WEAK void canfd0_rx_callback(bool rxFIFOMsg, uint8_t msgBufOrRxFIFONum, cy_stc_canfd_rx_buffer_t* basemsg);
+
+__WEAK void canfd0_rx_callback(bool rxFIFOMsg, uint8_t msgBufOrRxFIFONum, cy_stc_canfd_rx_buffer_t* basemsg)
+{
+    (void)rxFIFOMsg;
+    (void)msgBufOrRxFIFONum;
+    (void)basemsg;
+}
 void init_cycfg_peripherals(void)
 {
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_PASS_PERI_NR, CY_MMIO_PASS_GROUP_NR, CY_MMIO_PASS_SLAVE_NR, CY_MMIO_PASS_CLK_HF_NR);
@@ -3269,6 +3339,8 @@ void init_cycfg_peripherals(void)
     Cy_SysClk_PeriphAssignDivider(PCLK_I3C_CLOCK_I3C_EN, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB0_PERI_NR, CY_MMIO_SCB0_GROUP_NR, CY_MMIO_SCB0_SLAVE_NR, CY_MMIO_SCB0_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB0_CLOCK_SCB_EN, CY_SYSCLK_DIV_16_BIT, 0U);
+    Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB1_PERI_NR, CY_MMIO_SCB1_GROUP_NR, CY_MMIO_SCB1_SLAVE_NR, CY_MMIO_SCB1_CLK_HF_NR);
+    Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB1_CLOCK_SCB_EN, CY_SYSCLK_DIV_16_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB2_PERI_NR, CY_MMIO_SCB2_GROUP_NR, CY_MMIO_SCB2_SLAVE_NR, CY_MMIO_SCB2_CLK_HF_NR);
     Cy_SysClk_PeriPclkAssignDivider(PCLK_SCB2_CLOCK_SCB_EN, CY_SYSCLK_DIV_8_BIT, 0U);
     Cy_SysClk_PeriGroupSlaveInit(CY_MMIO_SCB3_PERI_NR, CY_MMIO_SCB3_GROUP_NR, CY_MMIO_SCB3_SLAVE_NR, CY_MMIO_SCB3_CLK_HF_NR);

@@ -242,6 +242,8 @@
 #define BSP_USING_USB
 #define BSP_USING_IPC
 #define BSP_USING_RC
+#define BSP_USING_CAN
+#define BSP_USING_CANFD0
 
 /*============================================================================
  * Packages

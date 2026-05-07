@@ -97,16 +97,6 @@
                         <Alias value="CYBSP_SERIAL_INT_1"/>
                     </Aliases>
                 </Block>
-                <Block location="ioss[0].port[9].pin[2]">
-                    <Aliases>
-                        <Alias value="CYBSP_SERIAL_INT_2"/>
-                    </Aliases>
-                </Block>
-                <Block location="ioss[0].port[9].pin[3]">
-                    <Aliases>
-                        <Alias value="CYBSP_SERIAL_INT_3"/>
-                    </Aliases>
-                </Block>
                 <Block location="ioss[0].port[12].pin[3]">
                     <Aliases>
                         <Alias value="CYBSP_I2S_TX_FSYNC"/>
@@ -207,19 +197,9 @@
                         <Alias value="CYBSP_I2S_TX_MCK"/>
                     </Aliases>
                 </Block>
-                <Block location="m33syscpuss[0].dw0[0].chan[0]">
-                    <Aliases>
-                        <Alias value="CYBSP_UART2_RX_DMA"/>
-                    </Aliases>
-                </Block>
                 <Block location="pdm[0]">
                     <Aliases>
                         <Alias value="CYBSP_PDM"/>
-                    </Aliases>
-                </Block>
-                <Block location="scb[1]">
-                    <Aliases>
-                        <Alias value="CYBSP_UART1"/>
                     </Aliases>
                 </Block>
                 <Block location="sdhc[0]">
@@ -281,10 +261,10 @@
                         <Param id="brs_7" value="false"/>
                         <Param id="brs_8" value="false"/>
                         <Param id="brs_9" value="false"/>
-                        <Param id="dataPrescaler" value="5"/>
-                        <Param id="dataSyncJumpWidth" value="2"/>
-                        <Param id="dataTimeSegment1" value="5"/>
-                        <Param id="dataTimeSegment2" value="2"/>
+                        <Param id="dataPrescaler" value="1"/>
+                        <Param id="dataSyncJumpWidth" value="1"/>
+                        <Param id="dataTimeSegment1" value="29"/>
+                        <Param id="dataTimeSegment2" value="10"/>
                         <Param id="data_0_0" value="0x04030201"/>
                         <Param id="data_0_1" value="0"/>
                         <Param id="data_0_10" value="0"/>
@@ -1383,10 +1363,10 @@
                         <Param id="modeFifo1" value="CY_CANFD_FIFO_MODE_BLOCKING"/>
                         <Param id="noOfRxBuffers" value="4"/>
                         <Param id="noOfTxBuffers" value="2"/>
-                        <Param id="nominalPrescaler" value="10"/>
-                        <Param id="nominalSyncJumpWidth" value="2"/>
-                        <Param id="nominalTimeSegment1" value="5"/>
-                        <Param id="nominalTimeSegment2" value="2"/>
+                        <Param id="nominalPrescaler" value="1"/>
+                        <Param id="nominalSyncJumpWidth" value="1"/>
+                        <Param id="nominalTimeSegment1" value="29"/>
+                        <Param id="nominalTimeSegment2" value="10"/>
                         <Param id="nonMatchingFramesExtended" value="CY_CANFD_ACCEPT_IN_RXFIFO_0"/>
                         <Param id="nonMatchingFramesStandard" value="CY_CANFD_ACCEPT_IN_RXFIFO_0"/>
                         <Param id="numberOfEXTIDFilters" value="1"/>
@@ -1428,7 +1408,7 @@
                         <Param id="rtr_8" value="CY_CANFD_RTR_DATA_FRAME"/>
                         <Param id="rtr_9" value="CY_CANFD_RTR_DATA_FRAME"/>
                         <Param id="rxBufferDataValue" value="8"/>
-                        <Param id="rxCallback" value="NULL"/>
+                        <Param id="rxCallback" value="canfd0_rx_callback"/>
                         <Param id="rxFifo0DataValue" value="8"/>
                         <Param id="rxFifo1DataValue" value="8"/>
                         <Param id="sfecSidFilter0" value="CY_CANFD_SFEC_DISABLE"/>
@@ -2982,6 +2962,48 @@
                         <Param id="vtrip" value="CY_GPIO_VTRIP_CMOS"/>
                     </Parameters>
                 </Personality>
+                <Personality template="pin" version="3.0" instance="NbSxLM4fxp4">
+                    <Block location="ioss[0].port[9].pin[2]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_SERIAL_INT_2"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="DriveModes" value="CY_GPIO_DM_STRONG_IN_OFF"/>
+                        <Param id="driveStrength" value="CY_GPIO_DRIVE_1_2"/>
+                        <Param id="driveStrengthTrim" value="CY_GPIO_DRIVE_STRENGTH_DEFAULT"/>
+                        <Param id="extended_drive_sel" value="false"/>
+                        <Param id="inFlash" value="true"/>
+                        <Param id="initialState" value="1"/>
+                        <Param id="isrTrigger" value="CY_GPIO_INTR_DISABLE"/>
+                        <Param id="nonSec" value="1"/>
+                        <Param id="pullUpRes" value="CY_GPIO_PULLUP_RES_DISABLE"/>
+                        <Param id="sioOutputBuffer" value="true"/>
+                        <Param id="slewRate" value="CY_GPIO_SLEW_FAST"/>
+                        <Param id="vtrip" value="CY_GPIO_VTRIP_CMOS"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="pin" version="3.0" instance="TP0I2J7cf9I">
+                    <Block location="ioss[0].port[9].pin[3]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_SERIAL_INT_3"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="DriveModes" value="CY_GPIO_DM_HIGHZ"/>
+                        <Param id="driveStrength" value="CY_GPIO_DRIVE_1_2"/>
+                        <Param id="driveStrengthTrim" value="CY_GPIO_DRIVE_STRENGTH_DEFAULT"/>
+                        <Param id="extended_drive_sel" value="false"/>
+                        <Param id="inFlash" value="true"/>
+                        <Param id="initialState" value="1"/>
+                        <Param id="isrTrigger" value="CY_GPIO_INTR_DISABLE"/>
+                        <Param id="nonSec" value="1"/>
+                        <Param id="pullUpRes" value="CY_GPIO_PULLUP_RES_DISABLE"/>
+                        <Param id="sioOutputBuffer" value="true"/>
+                        <Param id="slewRate" value="CY_GPIO_SLEW_FAST"/>
+                        <Param id="vtrip" value="CY_GPIO_VTRIP_CMOS"/>
+                    </Parameters>
+                </Personality>
                 <Personality template="pin" version="3.0" instance="z-Nxbt8Ei1g">
                     <Block location="ioss[0].port[10].pin[0]" locked="true">
                         <Aliases>
@@ -4398,10 +4420,44 @@
                 <Personality template="protection_sau" version="1.0" instance="KuXzqOfm0ZU">
                     <Block location="m33syscpuss[0].cm33[0].sau[0]" locked="true"/>
                 </Personality>
+                <Personality template="dma" version="3.0" instance="3XNFAhSEAFc">
+                    <Block location="m33syscpuss[0].dw0[0].chan[0]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART2_TX_DMA"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="BUFFERABLE" value="false"/>
+                        <Param id="CHANNEL_PRIORITY" value="3"/>
+                        <Param id="CHAN_STATE_COMPL_0" value="CY_DMA_CHANNEL_ENABLED"/>
+                        <Param id="CRC_0" value="false"/>
+                        <Param id="CRC_DATA_REVERSE" value="false"/>
+                        <Param id="CRC_DATA_XOR" value="0"/>
+                        <Param id="CRC_POLYNOMIAL" value="79764919"/>
+                        <Param id="CRC_REMINDER_REVERSE" value="false"/>
+                        <Param id="CRC_REMINDER_XOR" value="0"/>
+                        <Param id="DATA_TRANSFER_WIDTH_0" value="ByteToWord"/>
+                        <Param id="DESCR_SELECTION" value="0"/>
+                        <Param id="ENABLE_CHAINING_0" value="false"/>
+                        <Param id="INTR_OUT_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="NUM_OF_DESCRIPTORS" value="1"/>
+                        <Param id="PREEMPTABLE" value="false"/>
+                        <Param id="TRIG_DEACT_0" value="CY_DMA_RETRIG_IM"/>
+                        <Param id="TRIG_IN_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="TRIG_OUT_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="X_DST_INCREMENT_0" value="0"/>
+                        <Param id="X_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="X_SRC_INCREMENT_0" value="1"/>
+                        <Param id="Y_DST_INCREMENT_0" value="1"/>
+                        <Param id="Y_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="Y_SRC_INCREMENT_0" value="1"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
                 <Personality template="dma" version="3.0" instance="Horz4xvYhGI">
                     <Block location="m33syscpuss[0].dw0[0].chan[1]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_UART2_TX_DMA"/>
+                            <Alias value="CYBSP_UART1_TX_DMA"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -4436,6 +4492,108 @@
                     <Block location="m33syscpuss[0].dw0[0].chan[2]" locked="true">
                         <Aliases>
                             <Alias value="CYBSP_UART5_TX_DMA"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="BUFFERABLE" value="false"/>
+                        <Param id="CHANNEL_PRIORITY" value="3"/>
+                        <Param id="CHAN_STATE_COMPL_0" value="CY_DMA_CHANNEL_ENABLED"/>
+                        <Param id="CRC_0" value="false"/>
+                        <Param id="CRC_DATA_REVERSE" value="false"/>
+                        <Param id="CRC_DATA_XOR" value="0"/>
+                        <Param id="CRC_POLYNOMIAL" value="79764919"/>
+                        <Param id="CRC_REMINDER_REVERSE" value="false"/>
+                        <Param id="CRC_REMINDER_XOR" value="0"/>
+                        <Param id="DATA_TRANSFER_WIDTH_0" value="ByteToWord"/>
+                        <Param id="DESCR_SELECTION" value="0"/>
+                        <Param id="ENABLE_CHAINING_0" value="false"/>
+                        <Param id="INTR_OUT_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="NUM_OF_DESCRIPTORS" value="1"/>
+                        <Param id="PREEMPTABLE" value="false"/>
+                        <Param id="TRIG_DEACT_0" value="CY_DMA_RETRIG_IM"/>
+                        <Param id="TRIG_IN_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="TRIG_OUT_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="X_DST_INCREMENT_0" value="0"/>
+                        <Param id="X_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="X_SRC_INCREMENT_0" value="1"/>
+                        <Param id="Y_DST_INCREMENT_0" value="1"/>
+                        <Param id="Y_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="Y_SRC_INCREMENT_0" value="1"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="dma" version="3.0" instance="VUx1S6j9gpo">
+                    <Block location="m33syscpuss[0].dw0[0].chan[3]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART10_TX_DMA"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="BUFFERABLE" value="false"/>
+                        <Param id="CHANNEL_PRIORITY" value="3"/>
+                        <Param id="CHAN_STATE_COMPL_0" value="CY_DMA_CHANNEL_ENABLED"/>
+                        <Param id="CRC_0" value="false"/>
+                        <Param id="CRC_DATA_REVERSE" value="false"/>
+                        <Param id="CRC_DATA_XOR" value="0"/>
+                        <Param id="CRC_POLYNOMIAL" value="79764919"/>
+                        <Param id="CRC_REMINDER_REVERSE" value="false"/>
+                        <Param id="CRC_REMINDER_XOR" value="0"/>
+                        <Param id="DATA_TRANSFER_WIDTH_0" value="ByteToWord"/>
+                        <Param id="DESCR_SELECTION" value="0"/>
+                        <Param id="ENABLE_CHAINING_0" value="false"/>
+                        <Param id="INTR_OUT_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="NUM_OF_DESCRIPTORS" value="1"/>
+                        <Param id="PREEMPTABLE" value="false"/>
+                        <Param id="TRIG_DEACT_0" value="CY_DMA_RETRIG_IM"/>
+                        <Param id="TRIG_IN_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="TRIG_OUT_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="X_DST_INCREMENT_0" value="0"/>
+                        <Param id="X_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="X_SRC_INCREMENT_0" value="1"/>
+                        <Param id="Y_DST_INCREMENT_0" value="1"/>
+                        <Param id="Y_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="Y_SRC_INCREMENT_0" value="1"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="dma" version="3.0" instance="yN0RIDYdpKg">
+                    <Block location="m33syscpuss[0].dw0[0].chan[4]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART11_TX_DMA"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="BUFFERABLE" value="false"/>
+                        <Param id="CHANNEL_PRIORITY" value="3"/>
+                        <Param id="CHAN_STATE_COMPL_0" value="CY_DMA_CHANNEL_ENABLED"/>
+                        <Param id="CRC_0" value="false"/>
+                        <Param id="CRC_DATA_REVERSE" value="false"/>
+                        <Param id="CRC_DATA_XOR" value="0"/>
+                        <Param id="CRC_POLYNOMIAL" value="79764919"/>
+                        <Param id="CRC_REMINDER_REVERSE" value="false"/>
+                        <Param id="CRC_REMINDER_XOR" value="0"/>
+                        <Param id="DATA_TRANSFER_WIDTH_0" value="ByteToWord"/>
+                        <Param id="DESCR_SELECTION" value="0"/>
+                        <Param id="ENABLE_CHAINING_0" value="false"/>
+                        <Param id="INTR_OUT_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="NUM_OF_DESCRIPTORS" value="1"/>
+                        <Param id="PREEMPTABLE" value="false"/>
+                        <Param id="TRIG_DEACT_0" value="CY_DMA_RETRIG_IM"/>
+                        <Param id="TRIG_IN_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="TRIG_OUT_TYPE_0" value="CY_DMA_1ELEMENT"/>
+                        <Param id="X_DST_INCREMENT_0" value="0"/>
+                        <Param id="X_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="X_SRC_INCREMENT_0" value="1"/>
+                        <Param id="Y_DST_INCREMENT_0" value="1"/>
+                        <Param id="Y_NUM_OF_ELEMENTS_0" value="1"/>
+                        <Param id="Y_SRC_INCREMENT_0" value="1"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="dma" version="3.0" instance="bkqvGRj4JyI">
+                    <Block location="m33syscpuss[0].dw0[0].chan[5]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART9_TX_DMA"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -4879,7 +5037,7 @@
                 <Personality template="pclk_v2" version="1.1" instance="K-5Nwjsysyw">
                     <Block location="peri[0].group[1].div_8[4]" locked="true"/>
                     <Parameters>
-                        <Param id="intDivider" value="1"/>
+                        <Param id="intDivider" value="5"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
@@ -4992,7 +5150,7 @@
                 <Personality template="pclk_v2" version="1.1" instance="qPrVcLjdQhU">
                     <Block location="peri[0].group[8].div_16[0]" locked="true"/>
                     <Parameters>
-                        <Param id="intDivider" value="87"/>
+                        <Param id="intDivider" value="174"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
@@ -5092,6 +5250,60 @@
                         <Param id="ModeUser" value="CY_SCB_I2C_MASTER"/>
                         <Param id="SlaveAddress" value="8"/>
                         <Param id="SlaveAddressMask" value="254"/>
+                        <Param id="inFlash" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="uart" version="3.0" instance="o2BjzOot2gY">
+                    <Block location="scb[1]" locked="true">
+                        <Aliases>
+                            <Alias value="CYBSP_UART1"/>
+                        </Aliases>
+                    </Block>
+                    <Parameters>
+                        <Param id="ApiMode" value="HIGH_LEVEL"/>
+                        <Param id="BaudRate" value="115200"/>
+                        <Param id="BitsOrder" value="CY_SCB_UART_LSB_FIRST"/>
+                        <Param id="BreakLevel" value="0"/>
+                        <Param id="BreakSignalBits" value="11"/>
+                        <Param id="ComMode" value="CY_SCB_UART_STANDARD"/>
+                        <Param id="CtsPolarity" value="CY_SCB_UART_ACTIVE_LOW"/>
+                        <Param id="DataWidth" value="8"/>
+                        <Param id="DropOnFrameErr" value="false"/>
+                        <Param id="DropOnParityErr" value="false"/>
+                        <Param id="EnableHalfDuplex" value="false"/>
+                        <Param id="EnableInputFilter" value="false"/>
+                        <Param id="EnableTxEn" value="false"/>
+                        <Param id="FlowControl" value="false"/>
+                        <Param id="IntrRxBreakDetected" value="false"/>
+                        <Param id="IntrRxFrameErr" value="false"/>
+                        <Param id="IntrRxFull" value="false"/>
+                        <Param id="IntrRxNotEmpty" value="false"/>
+                        <Param id="IntrRxOverflow" value="false"/>
+                        <Param id="IntrRxParityErr" value="false"/>
+                        <Param id="IntrRxTrigger" value="false"/>
+                        <Param id="IntrRxUnderflow" value="false"/>
+                        <Param id="IntrTxEmpty" value="false"/>
+                        <Param id="IntrTxNotFull" value="false"/>
+                        <Param id="IntrTxOverflow" value="false"/>
+                        <Param id="IntrTxTrigger" value="false"/>
+                        <Param id="IntrTxUartDone" value="false"/>
+                        <Param id="IntrTxUartLostArb" value="false"/>
+                        <Param id="IntrTxUartNack" value="false"/>
+                        <Param id="IntrTxUnderflow" value="false"/>
+                        <Param id="IrdaLowPower" value="false"/>
+                        <Param id="IrdaPolarity" value="NON_INVERTING"/>
+                        <Param id="MpRxAcceptAddress" value="false"/>
+                        <Param id="MpRxAddress" value="0"/>
+                        <Param id="MpRxAddressMask" value="255"/>
+                        <Param id="MultiProc" value="false"/>
+                        <Param id="Oversample" value="10"/>
+                        <Param id="ParityType" value="CY_SCB_UART_PARITY_NONE"/>
+                        <Param id="RtsPolarity" value="CY_SCB_UART_ACTIVE_LOW"/>
+                        <Param id="RtsTriggerLevel" value="63"/>
+                        <Param id="RxTriggerLevel" value="63"/>
+                        <Param id="SmCardRetryOnNack" value="false"/>
+                        <Param id="StopBits" value="CY_SCB_UART_STOP_BITS_1"/>
+                        <Param id="TxTriggerLevel" value="63"/>
                         <Param id="inFlash" value="true"/>
                     </Parameters>
                 </Personality>
@@ -7640,6 +7852,14 @@
                     <Port name="scb[0].i2c_sda[0]"/>
                 </Net>
                 <Net>
+                    <Port name="ioss[0].port[9].pin[2].digital_inout[0]"/>
+                    <Port name="scb[1].uart_tx[0]"/>
+                </Net>
+                <Net>
+                    <Port name="ioss[0].port[9].pin[3].digital_inout[0]"/>
+                    <Port name="scb[1].uart_rx[0]"/>
+                </Net>
+                <Net>
                     <Port name="ioss[0].port[10].pin[0].digital_inout[0]"/>
                     <Port name="scb[4].uart_rx[0]"/>
                 </Net>
@@ -7804,12 +8024,28 @@
                     <Port name="scb[3].spi_clk[0]"/>
                 </Net>
                 <Net>
-                    <Port name="m33syscpuss[0].dw0[0].chan[1].tr_in[0]"/>
+                    <Port name="m33syscpuss[0].dw0[0].chan[0].tr_in[0]"/>
                     <Port name="scb[2].tr_tx_req[0]"/>
+                </Net>
+                <Net>
+                    <Port name="m33syscpuss[0].dw0[0].chan[1].tr_in[0]"/>
+                    <Port name="scb[1].tr_tx_req[0]"/>
                 </Net>
                 <Net>
                     <Port name="m33syscpuss[0].dw0[0].chan[2].tr_in[0]"/>
                     <Port name="scb[5].tr_tx_req[0]"/>
+                </Net>
+                <Net>
+                    <Port name="m33syscpuss[0].dw0[0].chan[3].tr_in[0]"/>
+                    <Port name="scb[10].tr_tx_req[0]"/>
+                </Net>
+                <Net>
+                    <Port name="m33syscpuss[0].dw0[0].chan[4].tr_in[0]"/>
+                    <Port name="scb[11].tr_tx_req[0]"/>
+                </Net>
+                <Net>
+                    <Port name="m33syscpuss[0].dw0[0].chan[5].tr_in[0]"/>
+                    <Port name="scb[9].tr_tx_req[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[1].div_16[0].clk[0]"/>
@@ -7818,6 +8054,10 @@
                 <Net>
                     <Port name="peri[0].group[1].div_8[2].clk[0]"/>
                     <Port name="tcpwm[0].group[1].cnt[0].clock_counter_en[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[8].div_16[0].clk[0]"/>
+                    <Port name="scb[1].clock_scb_en[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[9].div_8[0].clk_pclk_root[0]"/>
