@@ -104,8 +104,8 @@ static struct ifx_spi ifx_spi_obj[] = {
     {
         .name = "spi8",
         .base = scb_8_HW,
-        .default_cfg = &scb_8_config,
-        .hal_cfg = &scb_8_hal_config,
+        .default_cfg = &CYBSP_SPI8_config,
+        .hal_cfg = &CYBSP_SPI8_hal_config,
         .context = &scb_8_spi_context,
         .intr_cfg = { .intrSrc = scb_8_IRQ, .intrPriority = INT_PRIORITY },
     },

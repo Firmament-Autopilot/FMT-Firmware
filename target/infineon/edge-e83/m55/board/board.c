@@ -36,6 +36,7 @@
 #include "drv_systick.h"
 #include "drv_uart.h"
 #include "drv_usbd_cdc.h"
+#include "drv_can.h"
 #include "model/control/control_interface.h"
 #include "model/fms/fms_interface.h"
 #include "model/ins/ins_interface.h"
@@ -271,6 +272,9 @@ void bsp_early_initialize(void)
 
     /* spi driver init */
     RT_CHECK(drv_spi_init());
+
+    /* can driver init */
+    RT_CHECK(drv_can_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
