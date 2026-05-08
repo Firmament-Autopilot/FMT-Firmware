@@ -167,7 +167,7 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
             rt_uint8_t* recv_ptr = message->recv_buf;
 
             while (size--) {
-                rt_uint8_t data = 0xFF;
+                rt_uint8_t data = 0x00;
 
                 if (send_ptr != RT_NULL) {
                     data = *send_ptr++;
@@ -203,11 +203,15 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
             rt_uint16_t* recv_ptr = message->recv_buf;
 
             while (size--) {
-                rt_uint16_t data = 0xFF;
+                rt_uint16_t data = 0x0000;
 
                 if (send_ptr != RT_NULL) {
                     data = *send_ptr++;
                 }
+
+                // start spi !!!!
+                LL_SPI_StartMasterTransfer(SPI);
+
                 /* Wait until the transmit buffer is empty */
                 while (LL_SPI_IsActiveFlag_TXP(SPI) == RESET)
                     ;
@@ -429,25 +433,25 @@ rt_err_t drv_spi_init(void)
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_device_1, "spi1_dev1", "spi1", (void*)&stm32_spi1_cs_1));
     }
 
-    /* attach spi1_device_2 (RM3100) to spi1 */
+    /* attach spi1_device_2 (ADIS16470) to spi1 */
     {
         static struct rt_spi_device rt_spi1_device_2;
         static struct stm32_spi_cs stm32_spi1_cs_2;
         LL_GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
         stm32_spi1_cs_2.GPIOx = GPIOF;
-        stm32_spi1_cs_2.GPIO_Pin = LL_GPIO_PIN_2;
+        stm32_spi1_cs_2.GPIO_Pin = LL_GPIO_PIN_10;
 
         LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOF);
 
-        GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
+        GPIO_InitStruct.Pin = LL_GPIO_PIN_10;
         GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
         GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
         GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
         GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
         LL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-        LL_GPIO_SetOutputPin(GPIOF, LL_GPIO_PIN_2);
+        LL_GPIO_SetOutputPin(GPIOF, LL_GPIO_PIN_10);
 
         RT_TRY(rt_spi_bus_attach_device(&rt_spi1_device_2, "spi1_dev2", "spi1", (void*)&stm32_spi1_cs_2));
     }

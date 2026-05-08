@@ -24,6 +24,7 @@
 #include "board_device.h"
 #include "driver/barometer/ms5611.h"
 #include "driver/gps/gps_ubx.h"
+#include "driver/imu/adis16470.h"
 #include "driver/imu/icm20689.h"
 #include "driver/imu/icm42688p.h"
 #include "driver/mag/ist8310.h"
@@ -39,6 +40,7 @@
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
+
 
 #include "default_config.h"
 #include "module/file_manager/file_manager.h"
@@ -77,6 +79,7 @@ static void EnablePower(void)
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOE);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOG);
     LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOH);
+    LL_AHB4_GRP1_EnableClock(LL_AHB4_GRP1_PERIPH_GPIOD);
 
     /* init gpio */
     GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
@@ -103,14 +106,14 @@ static void EnablePower(void)
     LL_GPIO_SetOutputPin(GPIOG, LL_GPIO_PIN_7);
 
     /* init gpio */
-    // GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
-    // GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-    // GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    // GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    // GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-    // LL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-    // /* HS_USB_EN set to disable HS，use FS instead */
-    // LL_GPIO_SetOutputPin(GPIOH, LL_GPIO_PIN_15);
+    GPIO_InitStruct.Pin = LL_GPIO_PIN_11;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+    /* HIPOWER_EN active high */
+    LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_11);
 }
 
 /**
@@ -264,6 +267,9 @@ void bsp_initialize(void)
     /* system time module init */
     FMT_CHECK(systime_init());
 
+    /* wait some time for power and sensor become stable */
+    systime_mdelay(500);
+
     /* start recording boot log */
     FMT_CHECK(boot_log_init());
 
@@ -296,13 +302,18 @@ void bsp_initialize(void)
     FMT_CHECK(advertise_sensor_gps(0));
     FMT_CHECK(advertise_sensor_airspeed(0));
 #else
+
     /* init onboard sensors */
+#ifdef USING_X7_PLUS_PRO
+    RT_CHECK(drv_adis16470_init("spi1_dev2", "gyro0", "accel0"));
+    RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro1", "accel1", 0));
+#else
     RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
-    // RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1", 0));
+    RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1", 0));
+#endif
     RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
     // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")
     RT_CHECK(drv_ms5611_init("spi4_dev2", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial3", "gps"));
 
     FMT_CHECK(register_sensor_imu("gyro0", "accel0", 0));
     FMT_CHECK(register_sensor_mag("mag0", 0));

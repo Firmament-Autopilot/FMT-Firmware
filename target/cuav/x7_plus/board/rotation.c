@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include <firmament.h>
 #include "module/math/rotation.h"
+#include <firmament.h>
+
 
 void icm42688_rotate_to_frd(float* data, uint32_t dev_id)
 {
     rotation(ROTATION_PITCH_180_YAW_270, data, data + 1, data + 2);
+}
+
+void adis16470_rotate_to_frd(float* data, uint8_t dev_id)
+{
+    float temp = data[0];
+    data[0] = data[1];
+    data[1] = temp;
+    data[2] = -data[2];
 }
