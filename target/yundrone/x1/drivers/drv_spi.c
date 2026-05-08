@@ -215,6 +215,10 @@ static rt_uint32_t transfer(struct rt_spi_device* device, struct rt_spi_message*
                 if (send_ptr != RT_NULL) {
                     data = *send_ptr++;
                 }
+
+                /* start spi */
+                LL_SPI_StartMasterTransfer(SPI);
+                
                 /* Wait until the transmit buffer is empty */
                 wait_flag_until_timeout(SPI, SPI_SR_TXP, RESET, SPI_TIMEOUT_US);
 
