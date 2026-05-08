@@ -16,6 +16,7 @@ HAL = [
     'i2c/*.c',
     'actuator/*.c',
     'rc/*.c',
+    'adc/*.c',
 ]
 
 HAL_CPPPATH = []

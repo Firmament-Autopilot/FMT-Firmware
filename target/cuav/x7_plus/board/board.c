@@ -30,6 +30,7 @@
 #include "driver/mag/ist8310.h"
 #include "driver/mag/rm3100.h"
 #include "driver/mtd/ramtron.h"
+#include "drv_adc.h"
 #include "drv_gpio.h"
 #include "drv_i2c.h"
 #include "drv_pwm.h"
@@ -40,7 +41,6 @@
 #include "drv_usart.h"
 #include "drv_usbd_cdc.h"
 #include "led.h"
-
 
 #include "default_config.h"
 #include "module/file_manager/file_manager.h"
@@ -213,6 +213,21 @@ void SystemClock_Config(void)
     if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK) {
         Error_Handler();
     }
+
+    /* Peripherals Common Clock Configuration */
+    LL_RCC_PLL2P_Enable();
+    LL_RCC_PLL2_SetVCOInputRange(LL_RCC_PLLINPUTRANGE_8_16);
+    LL_RCC_PLL2_SetVCOOutputRange(LL_RCC_PLLVCORANGE_MEDIUM);
+    LL_RCC_PLL2_SetM(1);
+    LL_RCC_PLL2_SetN(10);
+    LL_RCC_PLL2_SetP(2);
+    LL_RCC_PLL2_SetQ(2);
+    LL_RCC_PLL2_SetR(2);
+    LL_RCC_PLL2_Enable();
+
+    /* Wait till PLL is ready */
+    while (LL_RCC_PLL2_IsReady() != 1) {
+    }
 }
 
 /* this function will be called before rtos start, which is not in the thread context */
@@ -253,6 +268,9 @@ void bsp_early_initialize(void)
 
     /* init remote controller driver */
     RT_CHECK(drv_rc_init());
+
+    /* adc driver init */
+    RT_CHECK(drv_adc_init());
 
     /* system statistic module */
     FMT_CHECK(sys_stat_init());
@@ -304,13 +322,13 @@ void bsp_initialize(void)
 #else
 
     /* init onboard sensors */
-#ifdef USING_X7_PLUS_PRO
+    #ifdef USING_X7_PLUS_PRO
     RT_CHECK(drv_adis16470_init("spi1_dev2", "gyro0", "accel0"));
     RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro1", "accel1", 0));
-#else
+    #else
     RT_CHECK(drv_icm42688_init("spi4_dev1", "gyro0", "accel0", 0));
     RT_CHECK(drv_icm20689_init("spi1_dev1", "gyro1", "accel1", 0));
-#endif
+    #endif
     RT_CHECK(drv_rm3100_init("spi2_dev2", "mag0"));
     // RT_CHECKdrv_ist8310_init("i2c1_dev1", "mag0")
     RT_CHECK(drv_ms5611_init("spi4_dev2", "barometer"));
