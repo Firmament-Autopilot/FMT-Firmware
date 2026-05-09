@@ -334,7 +334,7 @@ void bsp_initialize(void)
     RT_CHECK(drv_bmi088_init("spi3_dev2", "spi3_dev1", "gyro0", "accel0", 0));
     // RT_CHECK(drv_bmm150_init("spi3_dev3", "mag0", 0));
     // RT_CHECK(drv_spl06_init("spi1_dev1", "barometer"));
-    // RT_CHECK(gps_ubx_init("serial3", "gps"));
+    RT_CHECK(gps_ubx_init("serial9", "gps"));
     // // RT_CHECK(gps_nmea_init("serial3", "gps"));
     // // RT_CHECK(drv_tofsense_init("serial5"));
     RT_CHECK(drv_dps368_init("spi8_dev1", "barometer"));

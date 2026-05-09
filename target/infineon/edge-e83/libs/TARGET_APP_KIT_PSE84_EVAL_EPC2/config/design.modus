@@ -5027,7 +5027,7 @@
                 <Personality template="pclk_v2" version="1.1" instance="E5ESJtxKQgk">
                     <Block location="peri[0].group[1].div_8[0]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_UART5_CLK_DIV"/>
+                            <Alias value="CYBSP_UART1_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -5060,11 +5060,11 @@
                 <Personality template="pclk_v2" version="1.1" instance="tnSz0e9-xoU">
                     <Block location="peri[0].group[1].div_8[3]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_PWM_DT_CLK_DIV"/>
+                            <Alias value="CYBSP_UART2_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="intDivider" value="250"/>
+                        <Param id="intDivider" value="87"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
@@ -5089,7 +5089,7 @@
                 <Personality template="pclk_v2" version="1.1" instance="r7obuVjoVXM">
                     <Block location="peri[0].group[1].div_16[1]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_DEBUG_UART_CLK_DIV"/>
+                            <Alias value="CYBSP_UART4_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
@@ -5100,34 +5100,34 @@
                 <Personality template="pclk_v2" version="1.1" instance="h1jyRfliPco">
                     <Block location="peri[0].group[1].div_16[2]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_GENERAL_PURPOSE_TIMER_CLK_DIV"/>
+                            <Alias value="CYBSP_UART9_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="intDivider" value="10000"/>
+                        <Param id="intDivider" value="87"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
                 <Personality template="pclk_v2" version="1.1" instance="38UMBOxuje4">
                     <Block location="peri[0].group[1].div_16[3]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_PWM_LED_CTRL_CLK_DIV"/>
+                            <Alias value="CYBSP_UART10_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="intDivider" value="20"/>
+                        <Param id="intDivider" value="87"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
                 <Personality template="pclk_v2" version="1.1" instance="WOOQVPnOl_Y">
                     <Block location="peri[0].group[1].div_16_5[0]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_BT_UART_CLK_DIV"/>
+                            <Alias value="CYBSP_UART11_CLK_DIV"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="fracDivider" value="16"/>
-                        <Param id="intDivider" value="108"/>
+                        <Param id="fracDivider" value="26"/>
+                        <Param id="intDivider" value="86"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
@@ -5152,6 +5152,34 @@
                     <Parameters>
                         <Param id="fracDivider" value="0"/>
                         <Param id="intDivider" value="505050"/>
+                        <Param id="startOnReset" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="pclk_v2" version="1.1" instance="Pd7pPspGW_s">
+                    <Block location="peri[0].group[2].div_8[0]" locked="true"/>
+                    <Parameters>
+                        <Param id="intDivider" value="1"/>
+                        <Param id="startOnReset" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="pclk_v2" version="1.1" instance="jNzfHCwtqQo">
+                    <Block location="peri[0].group[2].div_8[1]" locked="true"/>
+                    <Parameters>
+                        <Param id="intDivider" value="1"/>
+                        <Param id="startOnReset" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="pclk_v2" version="1.1" instance="EI0KtD_iRPo">
+                    <Block location="peri[0].group[2].div_8[2]" locked="true"/>
+                    <Parameters>
+                        <Param id="intDivider" value="1"/>
+                        <Param id="startOnReset" value="true"/>
+                    </Parameters>
+                </Personality>
+                <Personality template="pclk_v2" version="1.1" instance="84G9-5bdH-E">
+                    <Block location="peri[0].group[2].div_8[3]" locked="true"/>
+                    <Parameters>
+                        <Param id="intDivider" value="1"/>
                         <Param id="startOnReset" value="true"/>
                     </Parameters>
                 </Personality>
@@ -8051,8 +8079,28 @@
                     <Port name="scb[4].tr_tx_req[0]"/>
                 </Net>
                 <Net>
+                    <Port name="peri[0].group[1].div_16[1].clk[0]"/>
+                    <Port name="scb[4].clock_scb_en[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[1].div_16[2].clk[0]"/>
+                    <Port name="scb[9].clock_scb_en[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[1].div_16[3].clk[0]"/>
+                    <Port name="scb[10].clock_scb_en[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[1].div_16_5[0].clk[0]"/>
+                    <Port name="scb[11].clock_scb_en[0]"/>
+                </Net>
+                <Net>
                     <Port name="peri[0].group[1].div_8[2].clk[0]"/>
                     <Port name="tcpwm[0].group[1].cnt[0].clock_counter_en[0]"/>
+                </Net>
+                <Net>
+                    <Port name="peri[0].group[1].div_8[3].clk[0]"/>
+                    <Port name="scb[2].clock_scb_en[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[8].div_16[0].clk[0]"/>
@@ -8082,11 +8130,6 @@
                     <Port name="canfd[0].chan[0].clock_can_en[0]"/>
                     <Port name="peri[0].group[1].div_8[4].clk[0]"/>
                     <Port name="tcpwm[0].group[1].cnt[20].clock_counter_en[0]"/>
-                </Net>
-                <Net>
-                    <Port name="pass[0].clk_hf[0]"/>
-                    <Port name="peri[0].mmio[0].clk_pclk_root[5]"/>
-                    <Port name="srss[0].clock[0].hfclk[9].root_clk[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[1].div_16[0].clk[0]"/>
@@ -8126,12 +8169,13 @@
                     <Port name="srss[0].clock[0].hfclk[0].root_clk[0]"/>
                 </Net>
                 <Net>
-                    <Port name="peri[0].group[1].div_8[0].clk[0]"/>
-                    <Port name="scb[2].clock_scb_en[0]"/>
-                    <Port name="scb[4].clock_scb_en[0]"/>
-                    <Port name="scb[9].clock_scb_en[0]"/>
-                    <Port name="scb[10].clock_scb_en[0]"/>
-                    <Port name="scb[11].clock_scb_en[0]"/>
+                    <Port name="pass[0].clk_hf[0]"/>
+                    <Port name="peri[0].group[2].div_8[0].clk_pclk_root[0]"/>
+                    <Port name="peri[0].group[2].div_8[1].clk_pclk_root[0]"/>
+                    <Port name="peri[0].group[2].div_8[2].clk_pclk_root[0]"/>
+                    <Port name="peri[0].group[2].div_8[3].clk_pclk_root[0]"/>
+                    <Port name="peri[0].mmio[0].clk_pclk_root[5]"/>
+                    <Port name="srss[0].clock[0].hfclk[9].root_clk[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[1].mmio[0].clk_pclk_root[0]"/>

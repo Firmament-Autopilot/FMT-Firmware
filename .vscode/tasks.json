@@ -7,6 +7,114 @@
             "label": "echo",
             "type": "shell",
             "command": "echo ${env:USERNAME}"
+        },
+        {
+            "label": "edge-e83: build bootloader",
+            "type": "shell",
+            "command": "scons -j8",
+            "options": {
+                "cwd": "${workspaceFolder}/target/infineon/edge-e83/bootloader"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "edge-e83: build m33",
+            "type": "shell",
+            "command": "scons -j8",
+            "options": {
+                "cwd": "${workspaceFolder}/target/infineon/edge-e83/m33"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "edge-e83: build m55",
+            "type": "shell",
+            "command": "scons -j8",
+            "options": {
+                "cwd": "${workspaceFolder}/target/infineon/edge-e83/m55"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "edge-e83: build all",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "edge-e83: build bootloader",
+                "edge-e83: build m33",
+                "edge-e83: build m55"
+            ],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "edge-e83: program m33 (DAPLink)",
+            "type": "process",
+            "command": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
+            "args": [
+                "-s",
+                "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/openocd/scripts",
+                "-s",
+                "${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource",
+                "-c",
+                "set QSPI_FLASHLOADER ${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource/PSE84_SMIF.FLM",
+                "-c",
+                "source [find interface/cmsis-dap.cfg]",
+                "-c",
+                "transport select swd",
+                "-c",
+                "source [find target/infineon/pse84xgxs2.cfg]",
+                "-c",
+                "init; reset halt; program ${workspaceFolder}/target/infineon/edge-e83/m33/build/rtthread.hex verify reset exit;"
+            ],
+            "dependsOn": [
+                "edge-e83: build m33"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "cwd": "${workspaceFolder}/target/infineon/edge-e83/tools"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "edge-e83: program m55 (DAPLink)",
+            "type": "process",
+            "command": "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/bin/openocd.exe",
+            "args": [
+                "-s",
+                "${workspaceFolder}/target/infineon/edge-e83/tools/OpenOCD-Infineon/openocd/scripts",
+                "-s",
+                "${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource",
+                "-c",
+                "set QSPI_FLASHLOADER ${workspaceFolder}/target/infineon/edge-e83/libs/TARGET_APP_KIT_PSE84_EVAL_EPC2/config/GeneratedSource/PSE84_SMIF.FLM",
+                "-c",
+                "source [find interface/cmsis-dap.cfg]",
+                "-c",
+                "transport select swd",
+                "-c",
+                "set ENABLE_CM55 1",
+                "-c",
+                "source [find target/infineon/pse84xgxs2.cfg]",
+                "-c",
+                "init; reset halt; program ${workspaceFolder}/target/infineon/edge-e83/m55/rtthread.hex verify reset exit;"
+            ],
+            "dependsOn": [
+                "edge-e83: build m55"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "cwd": "${workspaceFolder}/target/infineon/edge-e83/tools"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "edge-e83: program m33+m55 (DAPLink)",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "edge-e83: program m33 (DAPLink)",
+                "edge-e83: program m55 (DAPLink)"
+            ],
+            "problemMatcher": []
         }
     ]
 }
