@@ -35,6 +35,11 @@ target = "Edge-E83"\n
 	chan = 0\n
 	type = "usb"\n
 	name = "usbd_cdc"\n
-    auto-switch = true
+    auto-switch = true\n
+[actuator]\n
+    [[actuator.devices]]\n
+    protocol = "pwm"\n
+    name = "main_out"\n
+    freq = 400
 );
 // clang-format on

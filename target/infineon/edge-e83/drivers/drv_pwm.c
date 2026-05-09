@@ -28,24 +28,28 @@
 #define PWM_FREQ_125HZ         (125U)
 #define PWM_FREQ_250HZ         (250U)
 #define PWM_FREQ_400HZ         (400U)
+#define PWM_MIN_PULSE_US       (1000U)
+
+/* Keep TCPWM prescaler as configured by generated peripherals (div1). */
+#define PWM_CLOCK_PRESCALER    CY_TCPWM_PWM_PRESCALER_DIVBY_1
 
 #define MAIN_PWM_CHAN          (8U)
 #define AUX_PWM_CHAN           (8U)
 #define PWM_DEFAULT_FREQUENCY  PWM_FREQ_400HZ
 
 #if defined(COMPONENT_CM55) || defined(CORE_NAME_CM55_0)
-#define PWM_USE_MAIN_OUT       (1U)
+#define PWM_USE_MAIN_OUT       (0U)
 #define PWM_USE_AUX_OUT        (0U)
 #elif defined(COMPONENT_CM33) || defined(CORE_NAME_CM33_0)
-#define PWM_USE_MAIN_OUT       (0U)
+#define PWM_USE_MAIN_OUT       (1U)
 #define PWM_USE_AUX_OUT        (1U)
 #else
 #define PWM_USE_MAIN_OUT       (1U)
 #define PWM_USE_AUX_OUT        (1U)
 #endif
 
-/* TCPWM clock configured by CYBSP_PWM_CLK_DIV is 10MHz. */
-#define TIMER_FREQUENCY_HZ     (10000000U)
+/* Effective TCPWM counter clock for actuator channels is ~400kHz on current edge-e83 clock tree. */
+#define TIMER_FREQUENCY_HZ     (400000U)
 
 #define PWM_MAIN_CH1_CNT       (271U)
 #define PWM_MAIN_CH2_CNT       (264U)
@@ -210,25 +214,6 @@ static rt_err_t pwm_assign_clock(uint32_t cnt_num)
     return RT_EOK;
 }
 
-static void pwm_fix_compl_waveform(const struct pwm_channel* pwm)
-{
-#if (CY_IP_MXTCPWM_VERSION >= 2U)
-    if ((pwm->cnt_num == PWM_AUX_CH15_CNT) || (pwm->cnt_num == PWM_AUX_CH16_CNT)) {
-        /* CH15/CH16 pins are routed to LINE_COMPLx, so drive that path with normal PWM. */
-        Cy_TCPWM_PWM_Configure_LineSelect(pwm->base,
-                                          pwm->cnt_num,
-                                          CY_TCPWM_OUTPUT_PWM_SIGNAL,
-                                          CY_TCPWM_OUTPUT_PWM_SIGNAL);
-        Cy_TCPWM_PWM_Configure_LineSelectBuff(pwm->base,
-                                              pwm->cnt_num,
-                                              CY_TCPWM_OUTPUT_PWM_SIGNAL,
-                                              CY_TCPWM_OUTPUT_PWM_SIGNAL);
-    }
-#else
-    (void)pwm;
-#endif
-}
-
 static rt_bool_t pwm_counter_seen(const uint32_t* list, uint8_t used, uint32_t cnt_num)
 {
     for (uint8_t i = 0; i < used; i++) {
@@ -329,6 +314,15 @@ static rt_err_t pwm_config_group(actuator_dev_t dev, const struct actuator_confi
     return RT_EOK;
 }
 
+static void pwm_set_group_safe_output(struct pwm_group* group)
+{
+    float safe_dc = pwm_val_to_dc(PWM_MIN_PULSE_US, *group->freq_hz);
+
+    for (uint8_t i = 0; i < group->num_channels; i++) {
+        pwm_write_channel(group, i, safe_dc);
+    }
+}
+
 static void pwm_enable_group(struct pwm_group* group)
 {
     uint32_t enabled_cnt[MAIN_PWM_CHAN + AUX_PWM_CHAN];
@@ -369,6 +363,8 @@ static rt_err_t pwm_control_group(int cmd, struct pwm_group* group)
 {
     switch (cmd) {
     case ACT_CMD_CHANNEL_ENABLE:
+        /* Keep behavior consistent with STM32 implementation: apply 1000us before enabling outputs. */
+        pwm_set_group_safe_output(group);
         pwm_enable_group(group);
         return RT_EOK;
     case ACT_CMD_CHANNEL_DISABLE:
@@ -526,6 +522,7 @@ rt_err_t drv_pwm_init(void)
 
         for (uint8_t i = 0; i < group->num_channels; i++) {
             const struct pwm_channel* pwm = &group->channels[i];
+            cy_stc_tcpwm_pwm_config_t pwm_cfg;
             cy_en_tcpwm_status_t status;
 
             if (pwm_counter_seen(initialized_cnt, initialized_num, pwm->cnt_num)) {
@@ -536,7 +533,10 @@ rt_err_t drv_pwm_init(void)
                 return RT_ERROR;
             }
 
-            status = Cy_TCPWM_PWM_Init(pwm->base, pwm->cnt_num, pwm->pwm_config);
+            pwm_cfg = *(pwm->pwm_config);
+            pwm_cfg.clockPrescaler = PWM_CLOCK_PRESCALER;
+
+            status = Cy_TCPWM_PWM_Init(pwm->base, pwm->cnt_num, &pwm_cfg);
             if (status != CY_TCPWM_SUCCESS) {
                 DRV_DBG("Initialize TCPWM PWM counter %u failed\n", pwm->cnt_num);
                 return RT_ERROR;
