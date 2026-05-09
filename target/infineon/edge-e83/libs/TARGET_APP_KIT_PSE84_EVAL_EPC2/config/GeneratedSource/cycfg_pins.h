@@ -1142,30 +1142,30 @@ extern "C" {
 #endif
 #define PWM_CH14_HSIOM ioss_0_port_16_pin_7_HSIOM
 #define PWM_CH14_IRQ ioss_interrupts_gpio_16_IRQn
-#define CYBSP_UART5_RX_ENABLED 1U
-#define CYBSP_UART5_RX_PORT GPIO_PRT17
-#define CYBSP_UART5_RX_PORT_NUM 17U
-#define CYBSP_UART5_RX_PIN 0U
-#define CYBSP_UART5_RX_NUM 0U
-#define CYBSP_UART5_RX_DRIVEMODE CY_GPIO_DM_HIGHZ
-#define CYBSP_UART5_RX_INIT_DRIVESTATE 1
+#define CYBSP_I2C5_SCL_ENABLED 1U
+#define CYBSP_I2C5_SCL_PORT GPIO_PRT17
+#define CYBSP_I2C5_SCL_PORT_NUM 17U
+#define CYBSP_I2C5_SCL_PIN 0U
+#define CYBSP_I2C5_SCL_NUM 0U
+#define CYBSP_I2C5_SCL_DRIVEMODE CY_GPIO_DM_OD_DRIVESLOW
+#define CYBSP_I2C5_SCL_INIT_DRIVESTATE 1
 #ifndef ioss_0_port_17_pin_0_HSIOM
     #define ioss_0_port_17_pin_0_HSIOM HSIOM_SEL_GPIO
 #endif
-#define CYBSP_UART5_RX_HSIOM ioss_0_port_17_pin_0_HSIOM
-#define CYBSP_UART5_RX_IRQ ioss_interrupts_gpio_17_IRQn
-#define CYBSP_UART5_TX_ENABLED 1U
-#define CYBSP_UART5_TX_PORT GPIO_PRT17
-#define CYBSP_UART5_TX_PORT_NUM 17U
-#define CYBSP_UART5_TX_PIN 1U
-#define CYBSP_UART5_TX_NUM 1U
-#define CYBSP_UART5_TX_DRIVEMODE CY_GPIO_DM_STRONG_IN_OFF
-#define CYBSP_UART5_TX_INIT_DRIVESTATE 1
+#define CYBSP_I2C5_SCL_HSIOM ioss_0_port_17_pin_0_HSIOM
+#define CYBSP_I2C5_SCL_IRQ ioss_interrupts_gpio_17_IRQn
+#define CYBSP_I2C5_SDA_ENABLED 1U
+#define CYBSP_I2C5_SDA_PORT GPIO_PRT17
+#define CYBSP_I2C5_SDA_PORT_NUM 17U
+#define CYBSP_I2C5_SDA_PIN 1U
+#define CYBSP_I2C5_SDA_NUM 1U
+#define CYBSP_I2C5_SDA_DRIVEMODE CY_GPIO_DM_OD_DRIVESLOW
+#define CYBSP_I2C5_SDA_INIT_DRIVESTATE 1
 #ifndef ioss_0_port_17_pin_1_HSIOM
     #define ioss_0_port_17_pin_1_HSIOM HSIOM_SEL_GPIO
 #endif
-#define CYBSP_UART5_TX_HSIOM ioss_0_port_17_pin_1_HSIOM
-#define CYBSP_UART5_TX_IRQ ioss_interrupts_gpio_17_IRQn
+#define CYBSP_I2C5_SDA_HSIOM ioss_0_port_17_pin_1_HSIOM
+#define CYBSP_I2C5_SDA_IRQ ioss_interrupts_gpio_17_IRQn
 #define CYBSP_UART11_RX_ENABLED 1U
 #define CYBSP_UART11_RX_PORT GPIO_PRT17
 #define CYBSP_UART11_RX_PORT_NUM 17U
@@ -1513,8 +1513,8 @@ extern const cy_stc_gpio_pin_config_t PWM_CH11_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH12_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH13_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH14_config;
-extern const cy_stc_gpio_pin_config_t CYBSP_UART5_RX_config;
-extern const cy_stc_gpio_pin_config_t CYBSP_UART5_TX_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_I2C5_SCL_config;
+extern const cy_stc_gpio_pin_config_t CYBSP_I2C5_SDA_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART11_RX_config;
 extern const cy_stc_gpio_pin_config_t CYBSP_UART11_TX_config;
 extern const cy_stc_gpio_pin_config_t PWM_CH15_config;

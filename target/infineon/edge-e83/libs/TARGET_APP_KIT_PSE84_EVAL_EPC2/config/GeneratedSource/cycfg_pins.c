@@ -1413,11 +1413,11 @@ const cy_stc_gpio_pin_config_t PWM_CH14_config =
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
 };
-const cy_stc_gpio_pin_config_t CYBSP_UART5_RX_config =
+const cy_stc_gpio_pin_config_t CYBSP_I2C5_SCL_config =
 {
     .outVal = 1,
-    .driveMode = CY_GPIO_DM_HIGHZ,
-    .hsiom = CYBSP_UART5_RX_HSIOM,
+    .driveMode = CY_GPIO_DM_OD_DRIVESLOW,
+    .hsiom = CYBSP_I2C5_SCL_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
     .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
@@ -1431,11 +1431,11 @@ const cy_stc_gpio_pin_config_t CYBSP_UART5_RX_config =
     .pullUpRes = CY_GPIO_PULLUP_RES_DISABLE,
     .nonSec = 1,
 };
-const cy_stc_gpio_pin_config_t CYBSP_UART5_TX_config =
+const cy_stc_gpio_pin_config_t CYBSP_I2C5_SDA_config =
 {
     .outVal = 1,
-    .driveMode = CY_GPIO_DM_STRONG_IN_OFF,
-    .hsiom = CYBSP_UART5_TX_HSIOM,
+    .driveMode = CY_GPIO_DM_OD_DRIVESLOW,
+    .hsiom = CYBSP_I2C5_SDA_HSIOM,
     .intEdge = CY_GPIO_INTR_DISABLE,
     .intMask = 0UL,
     .vtrip = CY_GPIO_VTRIP_CMOS,
@@ -1817,8 +1817,8 @@ void init_cycfg_pins(void)
     Cy_GPIO_Pin_Init(PWM_CH12_PORT, PWM_CH12_PIN, &PWM_CH12_config);
     Cy_GPIO_Pin_Init(PWM_CH13_PORT, PWM_CH13_PIN, &PWM_CH13_config);
     Cy_GPIO_Pin_Init(PWM_CH14_PORT, PWM_CH14_PIN, &PWM_CH14_config);
-    Cy_GPIO_Pin_Init(CYBSP_UART5_RX_PORT, CYBSP_UART5_RX_PIN, &CYBSP_UART5_RX_config);
-    Cy_GPIO_Pin_Init(CYBSP_UART5_TX_PORT, CYBSP_UART5_TX_PIN, &CYBSP_UART5_TX_config);
+    Cy_GPIO_Pin_Init(CYBSP_I2C5_SCL_PORT, CYBSP_I2C5_SCL_PIN, &CYBSP_I2C5_SCL_config);
+    Cy_GPIO_Pin_Init(CYBSP_I2C5_SDA_PORT, CYBSP_I2C5_SDA_PIN, &CYBSP_I2C5_SDA_config);
     Cy_GPIO_Pin_Init(CYBSP_UART11_RX_PORT, CYBSP_UART11_RX_PIN, &CYBSP_UART11_RX_config);
     Cy_GPIO_Pin_Init(CYBSP_UART11_TX_PORT, CYBSP_UART11_TX_PIN, &CYBSP_UART11_TX_config);
     Cy_GPIO_Pin_Init(PWM_CH15_PORT, PWM_CH15_PIN, &PWM_CH15_config);
