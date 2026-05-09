@@ -479,6 +479,8 @@ void uart10_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART10_INDEX])
 void uart11_dma_tx_isr_callback(void) { uart_dma_tx_isr(&uart_obj[UART11_INDEX]); }
 #endif
 
+static rt_err_t ifx_control(struct serial_device* serial, int cmd, void* arg);
+
 static rt_err_t ifx_configure(struct serial_device* serial,
                               struct serial_configure* cfg)
 {
@@ -512,6 +514,10 @@ static rt_err_t ifx_configure(struct serial_device* serial,
         uart->config->dma_initialized = 1u;
     }
 #endif
+
+    if (serial->parent.open_flag & RT_DEVICE_FLAG_INT_RX) {
+        ifx_control(serial, RT_DEVICE_CTRL_SET_INT, (void*)RT_DEVICE_FLAG_INT_RX);
+    }
 
     return RT_EOK;
 }
