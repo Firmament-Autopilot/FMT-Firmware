@@ -4040,11 +4040,11 @@
                 <Personality template="pin" version="3.0" instance="bJvo-mnHrEw">
                     <Block location="ioss[0].port[17].pin[0]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_UART5_RX"/>
+                            <Alias value="CYBSP_I2C5_SCL"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="DriveModes" value="CY_GPIO_DM_HIGHZ"/>
+                        <Param id="DriveModes" value="CY_GPIO_DM_OD_DRIVESLOW"/>
                         <Param id="driveStrength" value="CY_GPIO_DRIVE_1_2"/>
                         <Param id="driveStrengthTrim" value="CY_GPIO_DRIVE_STRENGTH_DEFAULT"/>
                         <Param id="extended_drive_sel" value="false"/>
@@ -4061,11 +4061,11 @@
                 <Personality template="pin" version="3.0" instance="HRi0BF6rmYs">
                     <Block location="ioss[0].port[17].pin[1]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_UART5_TX"/>
+                            <Alias value="CYBSP_I2C5_SDA"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="DriveModes" value="CY_GPIO_DM_STRONG_IN_OFF"/>
+                        <Param id="DriveModes" value="CY_GPIO_DM_OD_DRIVESLOW"/>
                         <Param id="driveStrength" value="CY_GPIO_DRIVE_1_2"/>
                         <Param id="driveStrengthTrim" value="CY_GPIO_DRIVE_STRENGTH_DEFAULT"/>
                         <Param id="extended_drive_sel" value="false"/>
@@ -5497,57 +5497,26 @@
                         <Param id="inFlash" value="true"/>
                     </Parameters>
                 </Personality>
-                <Personality template="uart" version="3.0" instance="VzDToSDijBc">
+                <Personality template="i2c" version="4.0" instance="VzDToSDijBc">
                     <Block location="scb[5]" locked="true">
                         <Aliases>
-                            <Alias value="CYBSP_UART5"/>
+                            <Alias value="CYBSP_I2C5"/>
                         </Aliases>
                     </Block>
                     <Parameters>
-                        <Param id="ApiMode" value="HIGH_LEVEL"/>
-                        <Param id="BaudRate" value="115200"/>
-                        <Param id="BitsOrder" value="CY_SCB_UART_LSB_FIRST"/>
-                        <Param id="BreakLevel" value="0"/>
-                        <Param id="BreakSignalBits" value="11"/>
-                        <Param id="ComMode" value="CY_SCB_UART_STANDARD"/>
-                        <Param id="CtsPolarity" value="CY_SCB_UART_ACTIVE_LOW"/>
-                        <Param id="DataWidth" value="8"/>
-                        <Param id="DropOnFrameErr" value="false"/>
-                        <Param id="DropOnParityErr" value="false"/>
-                        <Param id="EnableHalfDuplex" value="false"/>
-                        <Param id="EnableInputFilter" value="false"/>
-                        <Param id="EnableTxEn" value="false"/>
-                        <Param id="FlowControl" value="false"/>
-                        <Param id="IntrRxBreakDetected" value="false"/>
-                        <Param id="IntrRxFrameErr" value="false"/>
-                        <Param id="IntrRxFull" value="false"/>
-                        <Param id="IntrRxNotEmpty" value="false"/>
-                        <Param id="IntrRxOverflow" value="false"/>
-                        <Param id="IntrRxParityErr" value="false"/>
-                        <Param id="IntrRxTrigger" value="false"/>
-                        <Param id="IntrRxUnderflow" value="false"/>
-                        <Param id="IntrTxEmpty" value="false"/>
-                        <Param id="IntrTxNotFull" value="false"/>
-                        <Param id="IntrTxOverflow" value="false"/>
-                        <Param id="IntrTxTrigger" value="false"/>
-                        <Param id="IntrTxUartDone" value="false"/>
-                        <Param id="IntrTxUartLostArb" value="false"/>
-                        <Param id="IntrTxUartNack" value="false"/>
-                        <Param id="IntrTxUnderflow" value="false"/>
-                        <Param id="IrdaLowPower" value="false"/>
-                        <Param id="IrdaPolarity" value="NON_INVERTING"/>
-                        <Param id="MpRxAcceptAddress" value="false"/>
-                        <Param id="MpRxAddress" value="0"/>
-                        <Param id="MpRxAddressMask" value="255"/>
-                        <Param id="MultiProc" value="false"/>
-                        <Param id="Oversample" value="10"/>
-                        <Param id="ParityType" value="CY_SCB_UART_PARITY_NONE"/>
-                        <Param id="RtsPolarity" value="CY_SCB_UART_ACTIVE_LOW"/>
-                        <Param id="RtsTriggerLevel" value="63"/>
-                        <Param id="RxTriggerLevel" value="63"/>
-                        <Param id="SmCardRetryOnNack" value="false"/>
-                        <Param id="StopBits" value="CY_SCB_UART_STOP_BITS_1"/>
-                        <Param id="TxTriggerLevel" value="63"/>
+                        <Param id="AcceptAddress" value="false"/>
+                        <Param id="AcceptGeneralCall" value="false"/>
+                        <Param id="DataRate" value="100"/>
+                        <Param id="EnableRxFifo" value="true"/>
+                        <Param id="EnableTxFifo" value="true"/>
+                        <Param id="EnableWakeup" value="false"/>
+                        <Param id="ManualDataRateCtrl" value="false"/>
+                        <Param id="ManualDigitalFilter" value="true"/>
+                        <Param id="ManualHighPhaseDutyCycle" value="9"/>
+                        <Param id="ManualLowPhaseDutyCycle" value="16"/>
+                        <Param id="ModeUser" value="CY_SCB_I2C_SLAVE"/>
+                        <Param id="SlaveAddress" value="8"/>
+                        <Param id="SlaveAddressMask" value="254"/>
                         <Param id="inFlash" value="true"/>
                     </Parameters>
                 </Personality>
@@ -8007,11 +7976,11 @@
                 </Net>
                 <Net>
                     <Port name="ioss[0].port[17].pin[0].digital_inout[0]"/>
-                    <Port name="scb[5].uart_rx[0]"/>
+                    <Port name="scb[5].i2c_scl[0]"/>
                 </Net>
                 <Net>
                     <Port name="ioss[0].port[17].pin[1].digital_inout[0]"/>
-                    <Port name="scb[5].uart_tx[0]"/>
+                    <Port name="scb[5].i2c_sda[0]"/>
                 </Net>
                 <Net>
                     <Port name="ioss[0].port[17].pin[2].digital_inout[0]"/>
@@ -8066,10 +8035,6 @@
                     <Port name="scb[1].tr_tx_req[0]"/>
                 </Net>
                 <Net>
-                    <Port name="m33syscpuss[0].dw0[0].chan[2].tr_in[0]"/>
-                    <Port name="scb[5].tr_tx_req[0]"/>
-                </Net>
-                <Net>
                     <Port name="m33syscpuss[0].dw0[0].chan[3].tr_in[0]"/>
                     <Port name="scb[10].tr_tx_req[0]"/>
                 </Net>
@@ -8084,10 +8049,6 @@
                 <Net>
                     <Port name="m33syscpuss[0].dw0[0].chan[6].tr_in[0]"/>
                     <Port name="scb[4].tr_tx_req[0]"/>
-                </Net>
-                <Net>
-                    <Port name="peri[0].group[1].div_16[0].clk[0]"/>
-                    <Port name="scb[0].clock_scb_en[0]"/>
                 </Net>
                 <Net>
                     <Port name="peri[0].group[1].div_8[2].clk[0]"/>
@@ -8128,6 +8089,11 @@
                     <Port name="srss[0].clock[0].hfclk[9].root_clk[0]"/>
                 </Net>
                 <Net>
+                    <Port name="peri[0].group[1].div_16[0].clk[0]"/>
+                    <Port name="scb[0].clock_scb_en[0]"/>
+                    <Port name="scb[5].clock_scb_en[0]"/>
+                </Net>
+                <Net>
                     <Port name="peri[0].group[1].div_8[1].clk[0]"/>
                     <Port name="scb[3].clock_scb_en[0]"/>
                     <Port name="scb[8].clock_scb_en[0]"/>
@@ -8163,7 +8129,6 @@
                     <Port name="peri[0].group[1].div_8[0].clk[0]"/>
                     <Port name="scb[2].clock_scb_en[0]"/>
                     <Port name="scb[4].clock_scb_en[0]"/>
-                    <Port name="scb[5].clock_scb_en[0]"/>
                     <Port name="scb[9].clock_scb_en[0]"/>
                     <Port name="scb[10].clock_scb_en[0]"/>
                     <Port name="scb[11].clock_scb_en[0]"/>
